@@ -148,69 +148,38 @@
 <para>
   However, having the interpreter waiting for the return of an event handling method could conceivably be a problem for
   some few existing programs. Since, in older ooDialog versions, the return from an event handler method was
-  meaningless, some programmers may not have returned from the method in a timely manner, and never realized this was a
-  mistake. In addition, there are a large number of event notifications in Windows where the operating system ignores
-  the reply. Therefore, the ooDialog framework uses two different ways to invoke the event handling method. The first,
-  preferred, method is for the interpreter to invoke the method directly, wait for the return, and then use the return
-  to reply to the Windows event notification. The second is to invoke the event handling method using the <emphasis
-  role="italic">startWith</emphasis>() method of the <computeroutput>Object</computeroutput> class. This starts the
-  event handling method concurrently, and the ooDialog framework replies to the Windows event notification immediately.
+  meaningless, some programmers may not have returned an actual value from the method, and / or they may not have returned
+  from the method in a timely manner. The programmer may not have realized this was a mistake.
 </para>
 <para>
-  In general, whether the ooDialog framework invokes the event handling method and waits for the return, or uses
-  <emphasis role="italic">startWith</emphasis>() and replies to the Windows event notification immediately is determined
-  using these rules:
+  In addition, there are a large number of event notifications in Windows where the operating system ignores the reply.
+  Therefore, the ooDialog framework uses three different ways to invoke the event handling method. This is controlled by the
+  <link linkend="sctCommonWillReply">willReply</link> argument that is common to all event connection methods.
 </para>
-<orderedlist>
-<listitem>
 <para>
-  Event connections made using the event connection methods that existed prior to ooDialog 4.2.0, using the existing
-  event keywords, and existing arguments, use <emphasis role="italic">startWith</emphasis> to invoke the event handlers.
-  The programmer can not change this. For the purpose of this discussion, these methods will be called existing
-  connection methods.
+  The first, preferred, method is for the interpreter to invoke the method directly, wait for the return, and then use the
+  return value to reply to the Windows event notification. The second is to return 0 immediately to the operaring system,
+  and invoke the event handling method to run concurrently as a separate activity. The third is to invoke the event handler
+  directly, wait for the reply from the event handler, but ignore the returned value.
 </para>
-</listitem>
-<listitem>
+<note><title>Event handling methods must be public</title>
 <para>
-  All event connections made using event connection methods introduced after ooDialog 4.1.0 assume the programmer wants
-  the event handler invoked directly and for the ooDialog framework to wait for the return. These methods will be called
-  new connection methods. For instance, the <xref linkend="clsDateTimePicker"/> control did not exist in ooDialog 4.1.0, so
-  its event connection method, <xref linkend="mthConnectDateTimePickerEvent"/> falls into this category.
+  Event handling methods must be public, they <emphasis role="italic">can not</emphasis> be private. The dialog object has
+  no way of knowing an event has happened. Some object, some thing, outside of the dialog object, knows of the event. That
+  other object must notify the dialog that the event has happened. In this case the other object is the operating system.
 </para>
-</listitem>
-<listitem>
 <para>
-  For new connection methods, when the reply to an event notification has a meaning for the notification, the framework
-  always invokes the event handler directly and waits for the return. The programmer can not change this. If the
-  programmer does not want to reply to the event, then he should simply not connect the event.
+  Private methods of an object can not be invoked from outside of the object. If an event handling method is private, there
+  is no way for the operating systme to invoke that method to notify the dialog that the event has happened.
 </para>
-</listitem>
-<listitem>
-<para>
-  All new connection methods have an optional argument that allows the programmer to specify whether she wants the
-  framework to wait for the return, or use <emphasis role="italic">startWith</emphasis> and reply immediately. When the
-  reply to an event is ignored by the operating system, the optional argument will be used to direct the framework to
-  invoke the event handler directly or use <emphasis role="italic">startWith</emphasis>. By default, the framework
-  invokes the connected method directly.
-</para>
-</listitem>
-<listitem>
-<para>
-  Over time, the existing connections will be enhanced to also take an optional argument. This will allow the
-  programmer to specify that the framework invoke the event handler directly and wait for the return. This enhancement
-  has started, but is far from complete.
-</para>
-</listitem>
-<listitem>
-<para>
-  The documentation for each event connection method, for each event, will specify how the event handler will be
-  invoked.
-</para>
-</listitem>
-</orderedlist>
+</note>
+</section>
 
+
+<section id="sctCoding Event Handler Examples"><title>Coding Event Handler Examples</title>
+<indexterm><primary>Coding Event Handler Examples</primary></indexterm>
 <para>
-  The following code snippets and examples expand on these details.
+  The following code snippets and examples expand on the discussion of how to code event handling methods.
 </para>
 <para>
   Best practice would be to always code event handlers as if they are expected to return a value to the operating
@@ -224,9 +193,9 @@
   the display. Note these points about the code snippet. Since the <emphasis role="italic">connectButtonEvent</emphasis>
   method is the replacement for the <xref linkend="ovvDeprecated"/> <emphasis
   role="italic">connectButtonNotify</emphasis> it is in essence an existing connection method, using the original
-  arguments. Therefore, the method is invoked from the message processing loop using <emphasis
-  role="italic">startWith</emphasis>. Because of this, technically, it does not have to be unguarded and does not have
-  to return a value. Nevertheless, it is the <emphasis role="italic">correct</emphasis> way to code the event handler.
+  arguments. Therefore, by default, the method is invoked from the message processing loop to run concurrently as a separate
+  activity. Because of this, technically, it does not have to be unguarded and does not have to return a value. Nevertheless,
+  the example is the <emphasis role="italic">correct</emphasis> way to code the event handler.
 <programlisting>
 <![CDATA[
 ::method initDialog
@@ -248,7 +217,7 @@
 <para>
   Consider this snippet from a similar program, but where the push button starts a process that calculates the grains of
   sand in the universe. Since it is not expected that the calculation will finish in a reasonable amount of time, an
-  early reply is used to return a value in a timely manner. The handler also disables the push button so tha the user
+  early reply is used to return a value in a timely manner. The handler also disables the push button so that the user
   can not start a second calculation until the first calculation finishes.
 <programlisting>
 <![CDATA[
@@ -273,21 +242,25 @@
 
 </para>
 <para>
-  The following examples are all for events where the event handler must return a value.
+  The following examples are all for events where having the interpreter wait for the returned value from the event handler
+  is the best way to handle the notifications.
 </para>
 <variablelist>
   <varlistentry id="exampleEventHandler1"><term><emphasis role="bold">Returning Values</emphasis></term>
   <listitem>
   <para>
-    The month <xref linkend="clsMonthCalendar"/> control has the
-    <xref linkend="evtMonthCalendarGETDAYSTATE"/> event that is sent to request information on how certain
-    days are to be shown. The programmer can customize the calendar by returning a set of days that should be displayed
-    in bold. For instance, in a business application paid holidays could be displayed in bold.
+    The <xref linkend="clsMonthCalendar"/> control has the <xref linkend="evtMonthCalendarGETDAYSTATE"/> event that is sent
+    to request information on how certain days are to be shown. The programmer can customize the calendar by returning a set
+    of days that should be displayed in bold. For instance, in a business application paid holidays could be displayed in
+    bold.
   </para>
   <para>
     Since the <emphasis role="italic">connectMonthCalendarEvent</emphasis> method did not exist in ooDialog 4.1.0 and
-    the return value for this event is meaningful, the second and third rules above apply.  That is, the interpreter
-    invokes the event handler directly, waits for the reply, and the programmer can not change this behavior.
+    the return value for this event controls what the operating system does, the <link
+    linkend="sctCommonWillReply">willReply</link> argument is forced to true by the ooDialog framework. That is, the
+    interpreter invokes the event handler directly, waits for the reply value, and returns that value to the operating
+    system., The programmer can not change this behavior. If the programmer does not wish to return a meaningful value from
+    the event handler, the event should not be connected.
   </para>
 
 <programlisting>
@@ -346,11 +319,10 @@
   <varlistentry id="exampleEventHandler2"><term><emphasis role="bold">Event Synchronization</emphasis></term>
   <listitem>
   <para>
-    The <xref linkend="clsDateTimePicker"/> (date time picker) control has the
- <xref linkend="mthConnectDateTimePickerEvent"/> event notification that is sent when the drop down calendar
-    is shown. This gives the programmer a chance to customize the month calendar that is shown. Since the month calendar
-    is not shown until the event handling method returns, replying directly to the notification allows the programmer to
-    completely finish the customizations before the month calendar appears on the screen.
+    The <xref linkend="clsDateTimePicker"/> control has the DROPDOWN event notification that is sent when the drop down
+    calendar is shown. This gives the programmer a chance to customize the month calendar that is shown. Since the month
+    calendar is not shown until the event handling method returns, replying directly to the notification allows the
+    programmer to completely finish the customizations before the month calendar appears on the screen.
   </para>
 
 <programlisting>
@@ -376,12 +348,12 @@
 </programlisting>
   <para>
     In the above example, the <emphasis role="italic">connectDateTimePickerEvent</emphasis> method did not exist in
-    ooDialog 4.1.0, but the return value for this event is ignored by the OS. Therefore, the second and fourth rules
-    above apply. That is, by default the interpreter invokes the event handler directly and waits for a reply. However
-    the programmer can change this behavior if he wants. If there is no reason to have the interpreter wait until the
-    event handler finishes, then the programmer could use the fourth optional argument. The
-    <computeroutput>.false</computeroutput> value tells the ooDialog framework to use the <emphasis
-    role="italic">startWith</emphasis> method to invoke the event handler.
+    ooDialog 4.1.0. Therefore, by default the interpreter invokes the event handler directly, waits for a reply, and expects
+    a returned value. However, the operating system ignores the actual value of the return. The programmer can change the
+    default behavior if he wants. If there is no reason to have the interpreter wait until the event handler finishes, then
+    the programmer could use the optional <emphasis role="italic">willReply</emphasis> argument. The
+    <computeroutput>.false</computeroutput> value tells the ooDialog framework to invoke the event handler to run
+    concurrently as a separate activity.
   </para>
 
 <programlisting>
@@ -401,27 +373,51 @@
 
 ]]>
 </programlisting>
+  <para>
+    However, if the programmer is going to customize the calendar, having the event handler run concurrently is likely to
+    have the calendar shown befor the customization is finished. So, it makes much more sense to at least use the <emphasis
+    role="italic">sync</emphasis> option in this way:
+  </para>
+<programlisting>
+<![CDATA[
+
+::method initDialog
+
+  self~connectDateTimePickerEvent(IDC_DTP, "DROPDOWN", onDropDown, 'SYNC')
+  ...
+
+
+::method onDropDown unguarded
+  use arg idFrom, hwndFrom
+
+  dt = self~newDateTimePicker(IDC_DTP);
+  monthCal = dt~getMonthCal
+  monthCal~setFirstDayOfWeek(3)
+  monthCal~addStyle("NOTODAY")
+
+]]>
+</programlisting>
   </listitem></varlistentry>
   <varlistentry id="exampleEventHandler3"><term><emphasis role="bold">Veto Events</emphasis></term>
   <listitem>
   <para>
-    The <xref linkend="clsTab"/> control has the <xref linkend="mthConnectTabEvent"/> event.
-    It is sent when the user selects a different tab, and is sent <emphasis role="bold">before</emphasis> the selected
-    tab is changed. The programmer can <emphasis role="italic">veto</emphasis> the change to a new tab by returning
-    <computeroutput>.false</computeroutput> to the event notification, or allow the change by returning
-    <computeroutput>.true</computeroutput>. One reason for preventing the change might be that the user had entered
-    invalid data in the current tab page.
+    The <xref linkend="clsTab"/> control has the SELCHANGING event. It is sent when the user selects a different tab, and is
+    sent <emphasis role="bold">before</emphasis> the selected tab is changed. The programmer can <emphasis
+    role="italic">veto</emphasis> the change to a new tab by returning <computeroutput>.false</computeroutput> to the event
+    notification, or allow the change by returning <computeroutput>.true</computeroutput>. One reason for preventing the
+    change might be that the user had entered invalid data in the current tab page.
   </para>
   <para>
     <emphasis role="bold">Note:</emphasis> Since the <emphasis role="italic">connectTabEvent</emphasis> method is the
     replacement for the <emphasis role="italic">ovvDeprecated</emphasis> <emphasis
-    role="italic">connectTabNotify</emphasis> method, it essentially is a method that existed in ooDialog 4.1.0. The
-    above rules one and five apply. That is, when the same arguments are used as existed in 4.1.0, the event handler is
-    invoked using <emphasis role="italic">startWith</emphasis> and the interpreter does not wait for a return value.
-    With this behavior, it is impossible for the programmer to veto the change to a new tab. Therefore the programmer
-    has to use the fourth optional argument to change the default behavior. Specifying
+    role="italic">connectTabNotify</emphasis> method, it essentially is a method that existed in ooDialog 4.1.0. When the
+    same arguments are used as existed in 4.1.0, the default for <emphasis role="italic">willReply</emphasis> is false. The
+    event handler is invoked to run concurrently as a separate activity and the interpreter does not wait for a return value.
+    With this behavior, it is impossible for the programmer to veto the change to a new tab. Therefore the programmer has to
+    use the optional <emphasis role="italic">willReply</emphasis> argument to change the default behavior. Specifying
     <computeroutput>.true</computeroutput> causes the ooDialog framework to invoke the <emphasis
-    role="italic">onTabChanging</emphasis> method directly and wait for the return value.
+    role="italic">onTabChanging</emphasis> method directly, wait for the return value, and pass that value to the operating
+    system.
   </para>
 <programlisting>
 <![CDATA[
@@ -437,13 +433,13 @@
   index = self~newTab(idFrom)~selectedIndex + 1
   dlg = tabContent[index]
 
-  if dlg~validate then return .true
+  if dlg~allowChange then return .true
   else return .false
 
 ]]>
 </programlisting>
   <para>
-    In the above example, since the <emphasis role="italic">validate</emphasis> method is returning
+    In the above example, since the <emphasis role="italic">allowChange</emphasis> method is returning
     <computeroutput>.true</computeroutput> or <computeroutput>.false</computeroutput> the event handler could have been
     coded this way:
   </para>
@@ -453,14 +449,14 @@
 
   ...
 
-  return dlg~validate
+  return dlg~allowChange
 ]]>
 </programlisting>
   <para>
     The example used:
 <programlisting>
 <![CDATA[
-  if dlg~validate then return .true
+  if dlg~allowChange then return .true
   else return .false
 ]]>
 </programlisting>
@@ -471,8 +467,8 @@
   <varlistentry id="exampleEventHandler4"><term><emphasis role="bold">Lengthy Processing</emphasis></term>
   <listitem>
   <para>
-    As previously noted, the Rexx programmer does not need to be overly worried about taking to much time to return a
-    value from an event handler. In most very case there is plenty of time to process the event and return a value.
+    As previously noted, the Rexx programmer does not need to be overly worried about taking too much time to return a
+    value from an event handler. In most every case there is plenty of time to process the event and return a value.
     However, sometimes the programmer may want to, or need to, do some lengthy processing in the event handler. For
     these cases, the programmer needs to figure out how to return a value from the event handler and also do the needed
     processing. This is really a <emphasis role="italic">concurrency</emphasis> problem, not an event handling problem.
@@ -499,7 +495,7 @@
   index = self~newTab(idFrom)~selectedIndex + 1
   dlg = tabContent[index]
 
-  if \ dlg~validate then return .false  -- Tab will not be changed
+  if \ dlg~allowChange then return .false  -- Tab will not be changed
 
   reply .true  -- Tab is changed for the user.
 
@@ -521,7 +517,7 @@
   index = self~newTab(idFrom)~selectedIndex + 1
   dlg = tabContent[index]
 
-  if dlg~validate then do
+  if dlg~allowChange then do
     dp = .DataProcesser~new
     dp~start("processDlgData", dlg)
     return .true
@@ -534,7 +530,50 @@
   </listitem></varlistentry>
 </variablelist>
 
-</section>
+</section> <!-- End Coding Event Handler Examples section -->
+
+
+<section id="sctCommonWillReply"><title>Common <emphasis role="italic">willReply</emphasis> argument</title>
+<indexterm><primary>Common willReply argument</primary></indexterm>
+
+<para>
+  It is the intent that every event connection method have an optional <emphasis role="italic">willReply</emphasis> argument
+  to give the programmer some control of how the interpreter invokes the event handler. For each event connection method, 3
+  values are accepted for the <emphasis role="italic">willReply</emphasis> argument:
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">.true</emphasis></term>
+  <listitem>
+  <para>
+    When <emphasis role="italic">willReply</emphasis> is true, the interpreter waits for the return value from the event
+    handler and enforces that the method has returned a value. That is, the event handling method must return some value.
+    That value is returned to the operating system.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">.false</emphasis></term>
+  <listitem>
+  <para>
+    When <emphasis role="italic">willReply</emphasis> is false, the interpreter immediately returns 0 to the operating
+    system. It then invokes the event handling method to run concurrently as a separate activity. The return from the event
+    handling method, if any, is ignored.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">sync</emphasis></term>
+  <listitem>
+  <para>
+    When <emphasis role="italic">willReply</emphasis> is the keyword <emphasis role="italic">sync</emphasis>, the interpreter
+    waits for the return from the event handler, but it discards the value returned. It does not enforce that a value is
+    actually returned.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+<para>
+  The default value if the argument is omitted varies depending on the event connection method. In general, the default for
+  event connections that existed prior to ooDialog 4.2.0 is false and for event connections that were added in ooDialog 4.2.0
+  and afterwards is true.
+</para>
+
+</section> <!-- End Common willReply argument section -->
 
 <section id="sctMethodsEventNotification"><title>Method Table</title>
 <para>
@@ -7834,7 +7873,7 @@ ctrlID: 200 dx: 0 dy: 1 listView: a ListView endScroll
       <varlistentry><term>event [required]</term>
       <listitem>
       <para>
-        A single keyword indicating which event is to be connected. The event keywords are:
+        A single keyword indicating which event is to be connected. Case is not significant. The event keywords are:
         <variablelist>
           <varlistentry><term>KEYDOWN</term>
           <listitem>
@@ -7894,16 +7933,24 @@ ctrlID: 200 dx: 0 dy: 1 listView: a ListView endScroll
   <para>
     The return codes are:
     <variablelist>
-    <varlistentry><term>0</term>
-    <listitem><para>No error detected.
-    </para></listitem></varlistentry>
-    <varlistentry><term>-1</term>
-    <listitem><para>The resource ID could not be resolved or the event argument is
-    incorrect.
-    </para></listitem></varlistentry>
-    <varlistentry><term>1</term>
-    <listitem><para>The messages was not connected correctly.
-    </para></listitem></varlistentry>
+      <varlistentry><term>0</term>
+      <listitem>
+      <para>
+        No error detected.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-1</term>
+      <listitem>
+      <para>
+        The resource ID could not be resolved or the event argument is incorrect.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>1</term>
+      <listitem>
+      <para>
+        The messages was not connected correctly.
+      </para>
+      </listitem></varlistentry>
     </variablelist>
   </para>
   </listitem></varlistentry>
@@ -8026,6 +8073,91 @@ ctrlID: 200 dx: 0 dy: 1 listView: a ListView endScroll
   </listitem></varlistentry>
 </variablelist>
 
+
+<section id="evtTabKEYDOWN" xreflabel="KEYDOWN"><title>KeyDown Event Handler</title>
+<indexterm><primary>Tab class</primary><secondary>events</secondary><tertiary>KEYDOWN</tertiary></indexterm>
+<para>
+  The event handler for the key down event is invoked when the user types a key when the tab control has the focus.
+</para>
+<para>
+  The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthConnectTabEvent"/> method
+  determines the event handler needs to respond to the notification.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onKeyDown unguarded
+  use arg id, vKey, tabControl
+
+  return 0
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves 3 arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The numeric resource ID of the tab control sending the notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>vKey</term>
+    <listitem>
+    <para>
+      The virtual key code of the key typed. The <xref linkend="clsVK"/> class can be used to decode this value.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>arg2</term>
+    <listitem>
+    <para>
+      The Rexx <xref linkend="clsTab"/> object representing the underlying tab control that sent the notification.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    The operating system ignores the return from this notification so 0 makes a good return value.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example lets the user navigate through the tabs by typing N for next tab, P for previous tab, HOME for the
+    first tab and END for the last tab:
+
+<programlisting>
+<![CDATA[
+::method onKeyDown unguarded
+  use arg id, vKey, tabControl
+
+  lastTab = tabControl~items
+
+  select
+    when vKey == .VK~N then self~onNext
+    when vKey == .VK~P then self~onPrevious
+    when vKey == .VK~home then self~goTo(tabControl, 0)
+    when vKey == .VK~end then self~goTo(tabControl, lastTab)
+    otherwise nop  -- ignore all other keys
+  end
+  -- End select
+
+  return 0
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End KeyDown Event Handler -->
 </section>
 
 <section id="mthConnectToolBarEvent" xreflabel="connectToolBarEvent"><title>connectToolBarEvent</title>
