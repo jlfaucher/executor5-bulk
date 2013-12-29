@@ -132,6 +132,7 @@
   self~connectButtonEvent(IDC_PB_PREVIOUS, CLICKED, onPrevious)
   self~connectButtonEvent(IDC_PB_NEXT, CLICKED, onNext)
   self~connectTabEvent(IDC_TAB, SELCHANGE, onNewTab)
+  self~connectTabEvent(IDC_TAB, "KEYDOWN", "onTabKeyDown", 'SYNC')
 
 
 /** initDialog()
@@ -266,18 +267,45 @@
   self~checkButtons
 
 
-::method onNext
+::method onNext unguarded
   expose tabControl
 
   tabControl~selectIndex(tabControl~selectedIndex + 1)
   self~onNewTab
 
 
-::method onPrevious
+::method goTo private unguarded
+  use strict arg tabControl, index
+
+  tabControl~selectIndex(index)
+  self~onNewTab
+
+
+::method onPrevious unguarded
   expose tabControl
 
   tabControl~selectIndex(tabControl~selectedIndex - 1)
   self~onNewTab
+
+::method onTabKeyDown unguarded
+  use arg id, vKey, tabControl
+
+  lastTab = tabControl~items
+
+  -- We have to reply or the message loop can not process messages and if the
+  -- dialog for the new tab has not been started yet, it can not execute.
+  reply 0
+
+  select
+    when vKey == .VK~N then self~onNext
+    when vKey == .VK~P then self~onPrevious
+    when vKey == .VK~home then self~goTo(tabControl, 0)
+    when vKey == .VK~end then self~goTo(tabControl, lastTab)
+    otherwise nop  -- ignore all other keys
+  end
+  -- End select
+
+  return
 
 
 ::method checkButtons private
