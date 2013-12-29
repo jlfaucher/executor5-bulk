@@ -1585,7 +1585,6 @@ RexxMethod4(RexxObjectPtr, image_userIcon_cls, RexxObjectPtr, dlg, RexxObjectPtr
 {
     RexxObjectPtr result = NULLOBJECT;
     SIZE s = {0};
-    uint32_t defFlags = LR_LOADFROMFILE;
 
     if ( ! requiredClass(context->threadContext, dlg, "PlainBaseDialog", 1) )
     {
@@ -1630,11 +1629,6 @@ RexxMethod4(RexxObjectPtr, image_userIcon_cls, RexxObjectPtr, dlg, RexxObjectPtr
     if ( defFlags == OOD_NO_VALUE )
     {
         goto out;
-    }
-    if ( argumentExists(4) )
-    {
-        // Make sure the user has compatible flags for this operation.
-        defFlags = (flags &  ~LR_SHARED) | LR_LOADFROMFILE;
     }
 
     HANDLE hImage = LoadImage(NULL, fileName, IMAGE_ICON, s.cx, s.cy, defFlags);

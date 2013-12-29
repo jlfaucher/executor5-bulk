@@ -2429,34 +2429,26 @@ MsgReplyType processTCN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
             }
             else
             {
-                invokeDispatch(c, pcpbd, methodName, args);
+                genericInvoke(pcpbd, methodName, args, tag);
             }
             break;
         }
 
         case TCN_KEYDOWN :
         {
-            if ( willReply )
-            {
-                invokeDirect(c, pcpbd, methodName, args);
-            }
-            else
-            {
-                invokeDispatch(c, pcpbd, methodName, args);
-            }
+            uint32_t      vKey  = (uint32_t)((NMTCKEYDOWN *)lParam)->wVKey;
+            RexxObjectPtr rxKey = c->UnsignedInt32(vKey);
+
+            c->ArrayPut(args, rxKey, 2);
+            genericInvoke(pcpbd, methodName, args, tag);
+
+            c->ReleaseLocalReference(rxKey);
             break;
         }
 
         case TCN_SELCHANGE :
         {
-            if ( willReply )
-            {
-                invokeDirect(c, pcpbd, methodName, args);
-            }
-            else
-            {
-                invokeDispatch(c, pcpbd, methodName, args);
-            }
+            genericInvoke(pcpbd, methodName, args, tag);
             break;
         }
 
