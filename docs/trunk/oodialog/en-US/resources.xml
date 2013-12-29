@@ -2820,7 +2820,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 </row>
 <row>
 <entry><xref linkend="mthNewClsResourceImage"/></entry>
-<entry>Instantiates a new resource image that represents the module specified by the specified file name.</entry>
+<entry>Instantiates a new resource image that represents the executable module specified by the <emphasis role="italic">fileOrDlg</emphasis> argument.</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
@@ -2857,8 +2857,7 @@ A fancy purple: 16734709 (0x00FF59F5)
 
 
 <section id="mthNewClsResourceImage" xreflabel="new"><title>new (Class method)</title>
-<indexterm><primary>new</primary>
-<secondary>ResouceImage class</secondary></indexterm>
+<indexterm><primary>new</primary><secondary>ResouceImage class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--new(--fileOrDlg--)---------------------------><
@@ -2872,47 +2871,38 @@ A fancy purple: 16734709 (0x00FF59F5)
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
-    <para>The arguments are:
-    <variablelist>
-      <varlistentry><term>fileName</term>
-      <listitem>
-      <para>
-        Specifies the file name of the module containing resources that the ooDialog program wants to
-        access.  If the module is in the path, (or the current directory,) the file name alone is
-        sufficent. The operating system will search the path for the file as it normally does when a
-        program is executed.  If the module is not in the path then a full, or relative, file name is
-        required.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>dlg</term>
-      <listitem>
-      <para>
-        The second optional <emphasis role="italic">dlg</emphasis> argument is a dialog object in the
-        current program.  It specifies that the module containing the resources that the ooDialog
-        program wants to acess is one of the modules already avalable to the program.  That is, either
-        the <computeroutput>oodialog.dll</computeroutput> module, or the module used for instantiating a
-        <xref linkend="mthNewClsResDialog"/> <computeroutput>ResDialog</computeroutput> object.
-      </para>
-      <para>
-        To specify the <computeroutput>oodialog.dll</computeroutput> module, the file name must be
-        oodialog.dll and the dialog object can be any instantiated dialog in the current program.
-      </para>
-      <para>
-        To specify the module used with a ResDialog, the dialog object must be the instantiated
-        ResDialog dialog object.
-      </para>
-      </listitem></varlistentry>
+  <para>The single arguments is:
+  <variablelist>
+    <varlistentry><term>fileOrDlg [required]</term>
+    <listitem>
+    <para>
+      This argument must be either a string file name or a dialog object. If <emphasis role="italic">fileOrDlg</emphasis> is
+      a string, it specifies the file name of an executable module containing resources that the ooDialog program
+      wants to access. If it is a dialog object in the current program, then it specifies that the module containing the
+      resources is one of the modules already avalable to the program.  That is, either the
+      <computeroutput>oodialog.dll</computeroutput> module, or the module used for instantiating a <xref
+      linkend="mthNewClsResDialog"/> <computeroutput>ResDialog</computeroutput> object.
+    </para>
+    <para>
+      If the dialog object is a <xref linkend="clsResDialog"/> it specifies the module used to instantiate the dialog object.
+      If the dialog object is not a <emphasis role="italic">ResDialog</emphasis> then it specifies the oodialog.dll module,
+      which is always loaded in any ooDialog program.
+    </para>
+    <para>
+      If <emphasis role="italic">fileOrDlg</emphasis> is a string file name, then the file name alone is sufficent. The
+      operating system will search the path for the file as it normally does when a program is executed.  If the module is
+      not in the path then a full, or relative, file name is required.
+    </para>
+    </listitem></varlistentry>
   </variablelist>
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    Returns a new ResourceImage object.  This object may be null if an error occurred.  Use the
-    <xref linkend="mthIsNullClsResourceImage"/> method to check for this.  Both the
-    <xref linkend="dotSystemErrorCode"/> or the
-    <xref linkend="mthSystemErrorCodeClsResourceImage"/> method should contain an
-    error code if the object is null.
+    Returns a new <emphasis role="italic">ResourceImage</emphasis> object. This object may be null if an error occurred.  Use
+    the <xref linkend="mthIsNullClsResourceImage"/> method to check for this.  Both the <xref linkend="dotSystemErrorCode"/>
+    or the <xref linkend="mthSystemErrorCodeClsResourceImage"/> method should contain an error code if the object is null.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
@@ -2926,7 +2916,8 @@ A fancy purple: 16734709 (0x00FF59F5)
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
-  <para>This example instantiates a resource image using the oodialog.dll module and uses it to load
+  <para>
+    This example instantiates a resource image using the oodialog.dll module and uses it to load
     the generally available icon resources from that module.  The icons are then displayed in a
     list-view control.
 <programlisting>
@@ -2945,13 +2936,12 @@ A fancy purple: 16734709 (0x00FF59F5)
   size = .Size~new(.SM~cxIcon, .SM~cyIcon)
 
   oodModule = .ResourceImage~new(self)
-  icons = oodModule~getImages(ids, .Image~toID(IMAGE_ICON), size)
+  icons = oodModule~getImages(ids, 'ICON', size)
 
-  flags = .DlgUtil~or(.Image~toID(ILC_COLOR24), .Image~toID(ILC_MASK))
-  imageList = .ImageList~create(size, flags, 4, 0)
+  imageList = .ImageList~create(size, 'COLOR24 MASK', 4, 0)
   imageList~addImages(icons)
 
-  list~setImageList(imageList, .Image~toID(LVSIL_NORMAL))
+  list~setImageList(imageList, 'NORMAL'
 
   names = .array~new()
   names[1] = "IDI_DLG_OODIALOG"
