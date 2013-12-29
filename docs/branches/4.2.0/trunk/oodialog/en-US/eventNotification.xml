@@ -156,6 +156,17 @@
   role="italic">startWith</emphasis>() method of the <computeroutput>Object</computeroutput> class. This starts the
   event handling method concurrently, and the ooDialog framework replies to the Windows event notification immediately.
 </para>
+<note><title>Event handling methods must be public</title>
+<para>
+  Event handling methods must be public, they <emphasis role="italic">can not</emphasis> be private. The dialog object has
+  no way of knowing an event has happened. Some object, some thing, outside of the dialog object, knows of the event. That
+  other object must notify the dialog that the event has happened. In this case the other object is the operating system.
+</para>
+<para>
+  Private methods of an object can not be invoked from outside of the object. If an event handling method is private, there
+  is no way for the operating systme to invoke that method to notify the dialog that the event has happened.
+</para>
+</note>
 <para>
   In general, whether the ooDialog framework invokes the event handling method and waits for the return, or uses
   <emphasis role="italic">startWith</emphasis>() and replies to the Windows event notification immediately is determined
