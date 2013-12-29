@@ -7875,19 +7875,19 @@ ctrlID: 200 dx: 0 dy: 1 listView: a ListView endScroll
       <para>
         A single keyword indicating which event is to be connected. Case is not significant. The event keywords are:
         <variablelist>
-          <varlistentry><term>KEYDOWN</term>
+          <varlistentry><term><xref linkend="evtTabKEYDOWN"/></term>
           <listitem>
           <para>
             The notification is sent when a key has been pressed while the tab control has the focus.
           </para>
           </listitem></varlistentry>
-          <varlistentry><term>SELCHANGE</term>
+          <varlistentry><term><xref linkend="evtTabSELCHANGE"/></term>
           <listitem>
           <para>
             A new tab has been selected in the tab control. This method is called after the selection has changed.
           </para>
           </listitem></varlistentry>
-          <varlistentry><term>SELCHANGING</term>
+          <varlistentry><term><xref linkend="evtTabSELCHANGING"/></term>
           <listitem>
           <para>
             A new tab has been selected in the tab control. This method is called before the selection is changed. The
@@ -7918,11 +7918,9 @@ ctrlID: 200 dx: 0 dy: 1 listView: a ListView endScroll
       <varlistentry><term>willReply [optional]</term>
       <listitem>
       <para>
-        The <emphasis role="italic">willReply</emphasis> argument controls whether the interpreter
-        <link linkend="sctCodingEventHandlers">waits</link> for the reply from the event handler. The default is
-        <computeroutput>.false</computeroutput>, the interpreter will not wait for the reply. If <emphasis
-        role="italic">willReply</emphasis> is <computeroutput>.true</computeroutput>, the interpreter waits until the
-        event handling method returns a value.
+        The <link linkend="sctCommonWillReply">willReply</link> argument controls how the interpreter invokes the event
+        handler for the connected evetn. The default if <emphasis role="italic">willReply</emphasis> is omitted is
+        <computeroutput>.false</computeroutput>.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -7959,33 +7957,6 @@ ctrlID: 200 dx: 0 dy: 1 listView: a ListView endScroll
   <para>
     See the sections on <link linkend="sctConnectingEventHandlers">connecting</link> and <link
     linkend="sctCodingEventHandlers">coding</link> event handlers for additional information on event handlers.
-  </para>
-  <para>
-    The event-handling method for the KEYDOWN event receives two arguments: info about the event, the control ID of the
-    tab control is in the low order word of this argument. The second argument is the virtual key code that was pressed.
-    Use the the <xref linkend="clsVK"/> class to determine which key was pressed. Example:
-
-<programlisting>
-<![CDATA[
-::method onKeyDown unguarded
-  use arg info, vkey
-
-  id = .DlgUtil~loWord(info)
-
-  if vKey == .VK~NEXT | vKey == .VK~PREVIOUS then do
-    -- do something ...
-  end
-  else if vKey == .VK~HOME | vKey == .VK~END then do
-    -- do something else ...
-  end
-
-  -- Other keys are ignored
-
-  return 0
-
-]]>
-</programlisting>
-
   </para>
   <para>
     The event-handling method for the SELCHANGE event receives two arguments: info about the event, the control ID of
@@ -8081,7 +8052,7 @@ ctrlID: 200 dx: 0 dy: 1 listView: a ListView endScroll
 </para>
 <para>
   The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthConnectTabEvent"/> method
-  determines the event handler needs to respond to the notification.
+  determines how the event handler needs to respond to the notification.
 </para>
 
 <programlisting>
@@ -8156,9 +8127,183 @@ ctrlID: 200 dx: 0 dy: 1 listView: a ListView endScroll
   </para>
   </listitem></varlistentry>
 </variablelist>
-
 </section>  <!-- End KeyDown Event Handler -->
-</section>
+
+
+<section id="evtTabSELCHANGE" xreflabel="SELCHANGE"><title>SelChange Event Handler</title>
+<indexterm><primary>Tab class</primary><secondary>events</secondary><tertiary>SELCHANGE</tertiary></indexterm>
+<para>
+  The event handler for the SELCHANGE event is invoked when the currently selected tab of the control has changed. Note that
+  the notification is sent after the change has happened.
+</para>
+<para>
+  The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthConnectTabEvent"/> method
+  determines how the event handler needs to respond to the notification.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onSelChange unguarded
+  use arg id, hwndFrom, tabControl
+
+  return 0
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves 3 arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The numeric resource ID of the tab control sending the notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hwndFrom</term>
+    <listitem>
+    <para>
+      The window handle of the tab control sending the notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>tabControl</term>
+    <listitem>
+    <para>
+      The Rexx <xref linkend="clsTab"/> object representing the underlying tab control that sent the notification.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    The operating system ignores the return from this notification so 0 makes a good return value.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example comes from a program that sometimes allows hexidecimal numbers to be used and at other times does
+    not. When the user changes the tab to the one with index 3, and if hexidecimal numbers are currently allowed, the
+    hexidecimal entry field is enabled, otherwise it is disabled:
+<programlisting>
+<![CDATA[
+::method onSelChange unguarded
+  use arg id, hwndFrom, tabControl
+
+  edit = self~newEdit(IDC_EDIT_HEX)
+
+  if tabControl~selectedIndex == 3 & self~allowHexidecimal then edit~enable
+  else edit~disable
+
+  return 0
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End SelChange Event Handler -->
+
+
+<section id="evtTabSELCHANGING" xreflabel="SELCHANGING"><title>SelChanging Event Handler</title>
+<indexterm><primary>Tab class</primary><secondary>events</secondary><tertiary>SELCHANGING</tertiary></indexterm>
+<para>
+  The event handler for the SELCHANGING event is invoked when the user has selected a new tab. The notification is sent
+  before the change has been made.
+</para>
+<para>
+  The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthConnectTabEvent"/> method
+  determines how the event handler needs to respond to the notification.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onSelChanging unguarded
+  use arg id, hwndFrom, tabControl
+
+  return .true
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves 3 arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The numeric resource ID of the tab control sending the notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hwndFrom</term>
+    <listitem>
+    <para>
+      The window handle of the tab control sending the notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>tabControl</term>
+    <listitem>
+    <para>
+      The Rexx <xref linkend="clsTab"/> object representing the underlying tab control that sent the notification.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    When the <emphasis role="italic">willReply</emphasis> argument was set to true in the connect tab event method, the event
+    handler must return true or false. A return of true allows the tab to be changed, a return of false prevents the tab from
+    changing.
+  </para>
+  <para>
+    When the <emphasis role="italic">willReply</emphasis> argument was set to false or SYNC in the connect tab event method,
+    the ooDialog framwork replies to the operating system allowing the the tab to change. The return from the event handler
+    is ignored, but returning 0 is best practice.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example validates the data entered on a page of the tab control when the user goes to switch pages. If
+    invalid data was entered on the current page of the tab control, the user is prevented from switching to a different tab
+    until she enters valid data.
+
+    A message dialog might be put saying something like: <emphasis role="italic">Your work telephone number is required.
+    Please enter a valid telephone number before changing to a new page.</emphasis>
+<programlisting>
+<![CDATA[
+::method initDialog
+
+  self~connectTabEvent(IDC_TAB, "SELCHANGING", .true)
+
+::method onSelChanging unguarded
+  use arg id, hwndFrom, tabControl
+
+  currentTab = tabControl~selectedIndex
+  if \ self~validateTab(currentTab) then do
+    -- The programmer should put up a message explaining
+    -- why the page of the tab is not changing ...
+    return .false
+  end
+
+  return .true
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End SelChanging Event Handler -->
+
+</section>  <!-- End connectTabEvent() -->
 
 <section id="mthConnectToolBarEvent" xreflabel="connectToolBarEvent"><title>connectToolBarEvent</title>
 <indexterm><primary>connectToolBarEvent</primary></indexterm>
