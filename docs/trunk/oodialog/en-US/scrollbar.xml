@@ -93,7 +93,8 @@ modify scroll bar controls.
 <table id="tblScrollBarMethods" frame="all">
 <title>ScrollBar Methods and Attributes</title>
 <tgroup cols="2">
-<colspec colwidth="1*" /><colspec colwidth="3*" />
+<colspec colwidth="1*"/>
+<colspec colwidth="3*" />
 <thead>
 <row>
 <entry>Method</entry>
@@ -131,63 +132,7 @@ modify scroll bar controls.
 </row>
 <row>
 <entry><xref linkend="sctSBEventCode"/></entry>
-<entry>The scroll bar was scrolled up by one unit.</entry>
-</row>
-<row>
-<entry><xref linkend="sctSBEventCode"/></entry>
-<entry>The scroll bar was scrolled to the left by one unit.</entry>
-</row>
-<row>
-<entry><xref linkend="sctSBEventCode"/></entry>
-<entry>The scroll bar was scrolled down by one unit.</entry>
-</row>
-<row>
-<entry><xref linkend="sctSBEventCode"/></entry>
-<entry>The scroll bar was scrolled to the right by one unit.</entry>
-</row>
-<row>
-<entry><xref linkend="sctSBEventCode"/></entry>
-<entry>The scroll bar was scrolled up by one page size.</entry>
-</row>
-<row>
-<entry><xref linkend="sctSBEventCode"/></entry>
-<entry>The scroll bar was scrolled to the left by one page size.</entry>
-</row>
-<row>
-<entry><xref linkend="sctSBEventCode"/></entry>
-<entry>The scroll bar was scrolled down by one page size.</entry>
-</row>
-<row>
-<entry><xref linkend="sctSBEventCode"/></entry>
-<entry>The scroll bar was scrolled to the right by one page size.</entry>
-</row>
-<row>
-<entry><xref linkend="sctSBEventCode"/></entry>
-<entry>The scroll box (thumb) of the scroll bar was dragged and the user has released the mouse button.</entry>
-</row>
-<row>
-<entry><xref linkend="sctSBEventCode"/></entry>
-<entry>The user is dragging the scroll box. This message is sent repeatedly until the user releases the mouse button.</entry>
-</row>
-<row>
-<entry><xref linkend="sctSBEventCode"/></entry>
-<entry>The scroll bar was scrolled completely to the top.</entry>
-</row>
-<row>
-<entry><xref linkend="sctSBEventCode"/></entry>
-<entry>The scroll bar was scrolled completely to the left.</entry>
-</row>
-<row>
-<entry><xref linkend="sctSBEventCode"/></entry>
-<entry>The scroll bar was scrolled completely to the bottom.</entry>
-</row>
-<row>
-<entry><xref linkend="sctSBEventCode"/></entry>
-<entry>The scroll bar was scrolled completely to the right.</entry>
-</row>
-<row>
-<entry><xref linkend="sctSBEventCode"/></entry>
-<entry>Scrolling has been ended, that is, the appropriate key or mouse button has been released.</entry>
+<entry>The <computeroutput>ScrollBar</computeroutput> classs provides a set of ::constant values for the numeric scrool event codes.</entry>
 </row>
 <row>
 <entry align="center"><emphasis role="bold">Instance Methods</emphasis></entry>
@@ -252,14 +197,12 @@ modify scroll bar controls.
 <section id="tmthConnectScrollBarEvent" xreflabel="connectScrollBarEvent">
 <title>connectScrollBarEvent (dialog object method)</title>
 <para>
-  To connect an individual event notification from a scroll bar control use the
- <xref linkend="mthConnectScrollBarEvent"/> method of the
-  <xref linkend="chpDialogObject"/> object. The basic syntax is:
+  To connect an individual event notification from a scroll bar control use the <xref linkend="mthConnectScrollBarEvent"/>
+  method of the <xref linkend="chpDialogObject"/> object. The basic syntax is:
 
 <programlisting> <![CDATA[
->>--connectScrollBarEvent(--id--,--event--+----------------+--)----------------><
-                                          +--,-methodName--+
-
+>>--connectScrollBarEvent(--id--,--event--+----------------+-+--------------+-)--><
+                                          +--,-methodName--+ +-,-willReply--+
 ]]>
 </programlisting>
 </para>
@@ -308,7 +251,7 @@ modify scroll bar controls.
 </section>  <!-- End EventNotification::connectEachSBEvent() (dialog object method) -->
 
 
-<section id="sctSBEventCode"><title>Event Constants</title>
+<section id="sctSBEventCode" xreflabel="Scroll Event Constants"><title>Scroll Event Constants</title>
 <indexterm><primary>scroll bar event constants</primary></indexterm>
 <indexterm><primary>ScrollBar class</primary><secondary>scroll bar event constants</secondary></indexterm>
 
@@ -331,8 +274,9 @@ modify scroll bar controls.
 <table id="tblScrollBarConstants" frame="all">
 <title>ScrollBar Event Constants</title>
 <tgroup cols="3">
-<colspec colwidth="1*" /><colspec colwidth="5*" />
-<colspec colwidth="1*" /><colspec colwidth="5*" />
+<colspec colwidth="1*"/>
+<colspec colwidth="2*" />
+<colspec colwidth="5*"/>
 <thead>
 <row>
 <entry>Constant</entry>
@@ -343,77 +287,77 @@ modify scroll bar controls.
 <tbody>
 <row>
 <entry>LINEUP</entry>
-<entry>LINEUP</entry>
+<entry>LineUp</entry>
 <entry>The scroll bar was scrolled up by one unit.</entry>
 </row>
 <row>
 <entry>LINELEFT</entry>
-<entry>LINELEFT</entry>
+<entry>LineLeft</entry>
 <entry>The scroll bar was scrolled to the left by one unit.</entry>
 </row>
 <row>
 <entry>LINEDOWN</entry>
-<entry>LINEDOWN</entry>
+<entry>LineDown</entry>
 <entry>The scroll bar was scrolled down by one unit.</entry>
 </row>
 <row>
 <entry>LINERIGHT</entry>
-<entry>LINERIGHT</entry>
+<entry>LineRight</entry>
 <entry>The scroll bar was scrolled to the right by one unit.</entry>
 </row>
 <row>
 <entry>PAGEUP</entry>
-<entry>PAGEUP</entry>
+<entry>PageUp</entry>
 <entry>The scroll bar was scrolled up by one page size.</entry>
 </row>
 <row>
 <entry>PAGELEFT</entry>
-<entry>PAGELEFT</entry>
+<entry>PageLeft</entry>
 <entry>The scroll bar was scrolled to the left by one page size.</entry>
 </row>
 <row>
 <entry>PAGEDOWN</entry>
-<entry>PAGEDOWN</entry>
+<entry>PageDown</entry>
 <entry>The scroll bar was scrolled down by one page size.</entry>
 </row>
 <row>
 <entry>PAGERIGHT</entry>
-<entry>PAGERIGHT</entry>
+<entry>PageRight</entry>
 <entry>The scroll bar was scrolled to the right by one page size.</entry>
 </row>
 <row>
 <entry>THUMBPOSITION</entry>
-<entry>POSITION</entry>
+<entry>Position</entry>
 <entry>The scroll box (thumb) of the scroll bar was dragged and the user has released the mouse button.</entry>
 </row>
 <row>
 <entry>THUMBTRACK</entry>
-<entry>DRAG</entry>
+<entry>Drag</entry>
 <entry>The user is dragging the scroll box. This message is sent repeatedly until the user releases the mouse button.</entry>
 </row>
 <row>
 <entry>TOP</entry>
-<entry>TOP</entry>
+<entry>Top</entry>
 <entry>The scroll bar was scrolled completely to the top.</entry>
 </row>
 <row>
 <entry>LEFT</entry>
-<entry>LEFT</entry>
+<entry>Left</entry>
 <entry>The scroll bar was scrolled completely to the left.</entry>
 </row>
 <row>
 <entry>BOTTOM</entry>
-<entry>BOTTOM</entry>
+<entry>Bottom</entry>
 <entry>The scroll bar was scrolled completely to the bottom.</entry>
 </row>
 <row>
 <entry>RIGHT</entry>
-<entry>RIGHT</entry>
+<entry>Right</entry>
 <entry>The scroll bar was scrolled completely to the right.</entry>
 </row>
 <row>
 <entry>ENDSCROLL</entry>
-<entry>ENDSCROLL</entry>
+<entry>EndScroll</entry>
 <entry>Scrolling has been ended, that is, the appropriate key or mouse button has been released.</entry>
 </row>
 </tbody></tgroup>
@@ -426,50 +370,62 @@ modify scroll bar controls.
 <indexterm><primary>ScrollBar class</primary><secondary>determinePosition</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--determinePosition(--posData--,--+------------+--+-------------+------------><
+>>--determinePosition(--posData--,--+------------+--+-------------+--)---------><
                                     +-singleStep-+  +-,--pageStep-+
-
-
 ]]>
 </programlisting>
 
-<para>The determinePosition method determines the new position of the scroll box
-based on the position sent with the scroll bar notification messages.</para>
+<para>
+  The <emphasis role="italic">determinePosition</emphasis> method determines the new position of the scroll box based on the
+  position info sent with the scroll bar notification messages.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>posData</term>
-<listitem><para>The position sent with the scroll bar notification messages.
-</para></listitem></varlistentry>
-<varlistentry><term>singleStep</term>
-<listitem><para>The value by which the scroll box position is increased or decreased
-when the user performs a single-step event like using the Down or Up arrow
-keys or clicking on the arrow buttons of the scroll bar.
-</para></listitem></varlistentry>
-<varlistentry><term>pageStep</term>
-<listitem><para>The value by which the scroll box position is increased or decreased
-when the user performs a page-step event like using the PgDn or
-PgUp arrow keys or clicking on an area in the scroll bar that is not occupied
-by the scroll box or the arrow buttons.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The resulting position based on
-<emphasis role="italic">posData</emphasis> and the current position.
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  <variablelist>
+    <varlistentry><term>posData [required]</term>
+    <listitem>
+    <para>
+      The position information sent with the scroll bar notification messages.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>singleStep [optional]</term>
+    <listitem>
+    <para>
+      The value by which the scroll box position is increased or decreased when the user performs a single-step event like
+      using the Down or Up arrow keys or clicking on the arrow buttons of the scroll bar. The default if this argument is
+      omitted is 1.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>pageStep [optional]</term>
+    <listitem>
+    <para>
+      The value by which the scroll box position is increased or decreased when the user performs a page-step event like
+      using the PgDn or PgUp arrow keys or clicking on an area in the scroll bar that is not occupied by the scroll box or
+      the arrow buttons. The default if this argument is omitted is 10.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The resulting position based on <emphasis role="italic">posData</emphasis> and the current position.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 
-
-<note><title>Note</title><para>
-The position of a scroll bar cannot be modified directly by
-a user. The Object Rexx program must react to the notification that is the
-result of the user interaction and set the resulting position of the scroll
-box using <xref linkend="mthSetPos"/>. Use the determinePosition
-method to determine the resulting position within your notification handler
-for the scroll bar notification messages.
-</para></note>
+<note><title>Note</title>
+<para>
+  The position of a scroll bar cannot be modified directly by a user. The ooDialog program must react to the notification
+  that is the result of the user interaction and set the resulting position of the scroll box using <xref
+  linkend="mthSetPos"/>. Use the <emphasis role="italic">determinePosition</emphasis> method to determine the resulting
+  position within your notification handler for the scroll bar notification messages.
+</para>
+</note>
 </section>  <!-- End UserDialog::determinePosition -->
 
 <section id="mthPosition" xreflabel="position"><title>position</title>
