@@ -1616,7 +1616,7 @@ MsgReplyType processBCN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
             NMBCDROPDOWN  *pDropDown  = (NMBCDROPDOWN*)lParam;
             RexxObjectPtr  buttonRect = rxNewRect(c, &pDropDown->rcButton);
 
-            args = c->ArrayOfThree(idFrom, rxButton, buttonRect);
+            args = c->ArrayOfThree(idFrom, buttonRect, rxButton);
             genericInvoke(pcpbd, methodName, args, tag);
 
             c->ReleaseLocalReference(buttonRect);
@@ -6690,8 +6690,6 @@ RexxMethod7(RexxObjectPtr, en_connectAllSBEvents, RexxObjectPtr, rxID, CSTRING, 
             OPTIONAL_int32_t, min, OPTIONAL_int32_t, max, OPTIONAL_int32_t, pos,
             OPTIONAL_RexxObjectPtr, willReply, CSELF, pCSelf)
 {
-    RexxMethodContext *c = context;
-
     oodResetSysErrCode(context->threadContext);
 
     pCEventNotification pcen = (pCEventNotification)pCSelf;
@@ -6719,7 +6717,7 @@ RexxMethod7(RexxObjectPtr, en_connectAllSBEvents, RexxObjectPtr, rxID, CSTRING, 
 
     if ( *msg == '\0' )
     {
-        context->RaiseException1(Rexx_Error_Invalid_argument_null, c->WholeNumber(2));
+        context->RaiseException1(Rexx_Error_Invalid_argument_null, context->WholeNumber(2));
         goto err_out;
     }
 
@@ -6801,133 +6799,6 @@ RexxMethod7(RexxObjectPtr, en_connectAllSBEvents, RexxObjectPtr, rxID, CSTRING, 
 
 err_out:
     return TheOneObj;
-}
-
-/** EventNotification::connectStaticEvent()
- *
- *
- */
-RexxMethod5(RexxObjectPtr, en_connectStaticEvent, RexxObjectPtr, rxID, CSTRING, event,
-            OPTIONAL_CSTRING, methodName, OPTIONAL_RexxObjectPtr, willReply, CSELF, pCSelf)
-{
-    pCEventNotification pcen = (pCEventNotification)pCSelf;
-
-    int32_t id;
-    if ( ! oodSafeResolveID(&id, context, pcen->rexxSelf, rxID, -1, 1, true) )
-    {
-        return TheNegativeOneObj;
-    }
-
-    uint32_t tag = _willReplyToTag(context, willReply, false, 4);
-    if ( tag == TAG_INVALID )
-    {
-        return TheNegativeOneObj;
-    }
-
-    uint32_t notificationCode;
-    if ( ! keyword2stn(context, event, &notificationCode) )
-    {
-        return TheNegativeOneObj;
-    }
-
-    if ( argumentOmitted(3) || *methodName == '\0' )
-    {
-        methodName = stn2name(notificationCode);
-    }
-
-    if ( addCommandMessage(pcen, context, MAKEWPARAM(id, notificationCode), 0xFFFFFFFF, 0, 0, methodName, tag) )
-    {
-        return TheZeroObj;
-    }
-
-    return TheOneObj;
-}
-
-/** EventNotification::connectStatusBarEvent()
- *
- *  Connects a Rexx dialog method with a status bare control event.
- *
- *  @param  rxID        The resource ID of the dialog control.  Can be numeric
- *                      or symbolic.
- *
- *  @param  event       Keyword specifying which event to connect.  Keywords at
- *                      this time:
- *
- *
- *
- *
- *
- *  @param  methodName  [OPTIONAL] The name of the method to be invoked in the
- *                      Rexx dialog.  If this argument is omitted then the
- *                      method name is constructed by prefixing the event
- *                      keyword with 'on'.  For instance onAutoBreak.
- *
- *  @param  willReply   [OPTIONAL] Specifies if the method invocation should be
- *                      direct or indirect. With a direct invocation, the
- *                      interpreter waits in the Windows message loop for the
- *                      return from the Rexx method. With indirect, the Rexx
- *                      method is invoked through ~startWith(), which of course
- *                      returns immediately.  By default willReply is set to
- *                      true.
- *
- *  @return  True if the event notification was connected, otherwsie false.
- *
- *  @note   If a symbolic ID is  used and it can not be resolved to a numeric
- *          number an exception is raised.
- *
- *  @remarks  This method is new since the 4.0.0 release, therefore an exception
- *            is raised for a bad resource ID rather than returning -1.
- *
- *            For controls new since 4.0.0, event notifications that have a
- *            reply are documented as always being 'direct' reply and
- *            notifications that ignore the return are documented as allowing
- *            the programmer to specify.  This means that willReply is only
- *            ignored for SBN_SIMPLEMODECHANGE and not ignored for any of the
- *            other events.
- */
-RexxMethod5(RexxObjectPtr, en_connectStatusBarEvent, RexxObjectPtr, rxID, CSTRING, event,
-            OPTIONAL_CSTRING, methodName, OPTIONAL_RexxObjectPtr, _willReply, CSELF, pCSelf)
-{
-    pCEventNotification pcen = (pCEventNotification)pCSelf;
-
-    int32_t id = oodResolveSymbolicID(context->threadContext, pcen->rexxSelf, rxID, -1, 1, true);
-    if ( id == OOD_ID_EXCEPTION )
-    {
-        goto err_out;
-    }
-
-    uint32_t notificationCode;
-    if ( ! keyword2sbn(context, event, &notificationCode) )
-    {
-        goto err_out;
-    }
-    if ( argumentOmitted(3) || *methodName == '\0' )
-    {
-        methodName = sbn2name(notificationCode);
-    }
-
-    uint32_t tag = 0;
-    if ( isMustReplySbn(notificationCode) )
-    {
-        tag = TAG_REPLYFROMREXX;
-    }
-    else
-    {
-        tag = _willReplyToTag(context, _willReply, true, 4);
-        if ( tag == TAG_INVALID )
-        {
-            goto err_out;
-        }
-    }
-    tag |= TAG_STATUSBAR;
-
-    if ( addNotifyMessage(pcen, context, id, 0xFFFFFFFF, notificationCode, 0xFFFFFFFF, methodName, tag) )
-    {
-        return TheTrueObj;
-    }
-
-err_out:
-    return TheFalseObj;
 }
 
 /** EventNotification::connectEachScrollBarEvent()
@@ -7178,6 +7049,133 @@ RexxMethod10(RexxObjectPtr, en_connectEachSBEvent, RexxObjectPtr, rxID, CSTRING,
 
 err_out:
     return TheOneObj;
+}
+
+/** EventNotification::connectStaticEvent()
+ *
+ *
+ */
+RexxMethod5(RexxObjectPtr, en_connectStaticEvent, RexxObjectPtr, rxID, CSTRING, event,
+            OPTIONAL_CSTRING, methodName, OPTIONAL_RexxObjectPtr, willReply, CSELF, pCSelf)
+{
+    pCEventNotification pcen = (pCEventNotification)pCSelf;
+
+    int32_t id;
+    if ( ! oodSafeResolveID(&id, context, pcen->rexxSelf, rxID, -1, 1, true) )
+    {
+        return TheNegativeOneObj;
+    }
+
+    uint32_t tag = _willReplyToTag(context, willReply, false, 4);
+    if ( tag == TAG_INVALID )
+    {
+        return TheNegativeOneObj;
+    }
+
+    uint32_t notificationCode;
+    if ( ! keyword2stn(context, event, &notificationCode) )
+    {
+        return TheNegativeOneObj;
+    }
+
+    if ( argumentOmitted(3) || *methodName == '\0' )
+    {
+        methodName = stn2name(notificationCode);
+    }
+
+    if ( addCommandMessage(pcen, context, MAKEWPARAM(id, notificationCode), 0xFFFFFFFF, 0, 0, methodName, tag) )
+    {
+        return TheZeroObj;
+    }
+
+    return TheOneObj;
+}
+
+/** EventNotification::connectStatusBarEvent()
+ *
+ *  Connects a Rexx dialog method with a status bare control event.
+ *
+ *  @param  rxID        The resource ID of the dialog control.  Can be numeric
+ *                      or symbolic.
+ *
+ *  @param  event       Keyword specifying which event to connect.  Keywords at
+ *                      this time:
+ *
+ *
+ *
+ *
+ *
+ *  @param  methodName  [OPTIONAL] The name of the method to be invoked in the
+ *                      Rexx dialog.  If this argument is omitted then the
+ *                      method name is constructed by prefixing the event
+ *                      keyword with 'on'.  For instance onAutoBreak.
+ *
+ *  @param  willReply   [OPTIONAL] Specifies if the method invocation should be
+ *                      direct or indirect. With a direct invocation, the
+ *                      interpreter waits in the Windows message loop for the
+ *                      return from the Rexx method. With indirect, the Rexx
+ *                      method is invoked through ~startWith(), which of course
+ *                      returns immediately.  By default willReply is set to
+ *                      true.
+ *
+ *  @return  True if the event notification was connected, otherwsie false.
+ *
+ *  @note   If a symbolic ID is  used and it can not be resolved to a numeric
+ *          number an exception is raised.
+ *
+ *  @remarks  This method is new since the 4.0.0 release, therefore an exception
+ *            is raised for a bad resource ID rather than returning -1.
+ *
+ *            For controls new since 4.0.0, event notifications that have a
+ *            reply are documented as always being 'direct' reply and
+ *            notifications that ignore the return are documented as allowing
+ *            the programmer to specify.  This means that willReply is only
+ *            ignored for SBN_SIMPLEMODECHANGE and not ignored for any of the
+ *            other events.
+ */
+RexxMethod5(RexxObjectPtr, en_connectStatusBarEvent, RexxObjectPtr, rxID, CSTRING, event,
+            OPTIONAL_CSTRING, methodName, OPTIONAL_RexxObjectPtr, _willReply, CSELF, pCSelf)
+{
+    pCEventNotification pcen = (pCEventNotification)pCSelf;
+
+    int32_t id = oodResolveSymbolicID(context->threadContext, pcen->rexxSelf, rxID, -1, 1, true);
+    if ( id == OOD_ID_EXCEPTION )
+    {
+        goto err_out;
+    }
+
+    uint32_t notificationCode;
+    if ( ! keyword2sbn(context, event, &notificationCode) )
+    {
+        goto err_out;
+    }
+    if ( argumentOmitted(3) || *methodName == '\0' )
+    {
+        methodName = sbn2name(notificationCode);
+    }
+
+    uint32_t tag = 0;
+    if ( isMustReplySbn(notificationCode) )
+    {
+        tag = TAG_REPLYFROMREXX;
+    }
+    else
+    {
+        tag = _willReplyToTag(context, _willReply, true, 4);
+        if ( tag == TAG_INVALID )
+        {
+            goto err_out;
+        }
+    }
+    tag |= TAG_STATUSBAR;
+
+    if ( addNotifyMessage(pcen, context, id, 0xFFFFFFFF, notificationCode, 0xFFFFFFFF, methodName, tag) )
+    {
+        return TheTrueObj;
+    }
+
+err_out:
+    return TheFalseObj;
 }
 
 /** EventNotification::connectTabEvent()
