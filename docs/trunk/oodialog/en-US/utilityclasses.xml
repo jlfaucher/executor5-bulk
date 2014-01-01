@@ -340,9 +340,9 @@ ResourceUtils::<xref linkend="atrConstDir"/>
 <indexterm><primary>ApplicationManager class</primary><secondary>srcDir</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--srcDir-----------------------------------------------------><
+>>--srcDir------------------------------------------------------><
 
->>--srcDir = varName-------------------------------------------><
+>>--srcDir = varName--------------------------------------------><
 
 ]]>
 </programlisting>
@@ -1460,6 +1460,10 @@ ResourceUtils::<xref linkend="mthResolveSymbolicID"/>
 <entry>Casts an unsigned whole number to its signed equivalent.</entry>
 </row>
 <row>
+<entry><xref linkend="mthSigned32"/></entry>
+<entry>Casts a 32-bit unsigned whole number to its 32-bit signed equivalent.</entry>
+</row>
+<row>
 <entry><xref linkend="mthSLoWord"/></entry>
 <entry>Returns the low-order word portion of a number as a number in the range of -32768 through 32767.</entry>
 </row>
@@ -1474,6 +1478,10 @@ ResourceUtils::<xref linkend="mthResolveSymbolicID"/>
 <row>
 <entry><xref linkend="mthUnsigned"/></entry>
 <entry>Casts a signed whole number to its unsigned equivalent.</entry>
+</row>
+<row>
+<entry><xref linkend="mthUnsigned32"/></entry>
+<entry>Casts a 32-bit signed whole number to its 32-bit unsigned equivalent.</entry>
 </row>
 <row>
 <entry><xref linkend="mthThreadID"/></entry>
@@ -2691,6 +2699,68 @@ return 0
 </section>  <!-- End DlgUtil::signed() -->
 
 
+<section id="mthSigned32" xreflabel="signed32"><title>signed32</title>
+<indexterm><primary>signed32</primary></indexterm>
+<indexterm><primary>DlgUtil class</primary><secondary>signed32</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--signed(--unsigned--)-------------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Casts a 32-bit unsigned whole number to its 32-bit signed equivalent.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>unsigned</term>
+      <listitem>
+      <para>
+        The unsigned 32-bit whole number to cast.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The 32-bit signed equivalent of <emphasis role="italic">unsigned</emphasis>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The <xref linkend="mthSigned"/> method works with whole numbers of the same size as the addressing mode of the
+    interpreter. I.e., if the address mode is 32-bit, <emphasis role="italic">signed</emphasis> works with
+    32-bit numbers and if the addressing mode is 64-bit it works with 64-bit numbers.
+  </para>
+  <para>
+    In 32-bit addressing mode, <emphasis role="italic">signed</emphasis> accepts a whole number in the range of 0 to
+    4,294,967,295 and returns a whole number in the range of -2,147,483,648 to 2,147,483,647.
+  </para>
+  <para>
+    In 64-bit addressing mode, <emphasis role="italic">signed</emphasis> accepts a whole number in the range of 0 to
+    18,446,744,073,709,551,615 and returns a whole number in the range of -9,223,372,036,854,775,808 to
+    9,223,372,036,854,775,807.
+  </para>
+  <para>
+    In general, the <emphasis role="italic">signed</emphasis> and <emphasis role="italic">unsigned</emphasis> methods work
+    well. However, there is a problem in 64-bit addressing mode when trying to convert a number known to be 32-bit. A number
+    such as 0xfffffdd8 is positive 4294966744 if treated as a 64-bit number. However it is -552 if treated as a 32-bit
+    number. The <emphasis role="italic">signed32</emphasis> and <xref linkend="mthUnsigned32"/> methods are for use in these
+    cases.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DlgUtil::signed() -->
+
+
 <section id="mthSLoWord" xreflabel="sLoWord"><title>sLoWord (Class Method)</title>
 <indexterm><primary>sLoWord</primary></indexterm>
 <indexterm><primary>DlgUtil class</primary><secondary>sLoWord</secondary></indexterm>
@@ -3039,6 +3109,68 @@ In the ok method thread ID:                 2344
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End DlgUtil::unsigned() -->
+
+
+<section id="mthUnsigned32" xreflabel="unsigned32"><title>unsigned32</title>
+<indexterm><primary>unsigned32</primary></indexterm>
+<indexterm><primary>DlgUtil class</primary><secondary>unsigned32</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--unsigned32(--signed--)-----------------------><
+
+]]>
+</programlisting>
+
+<para>
+  Casts a 32-bit signed whole number to its 32 bit-unsigned equivalent.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>signed</term>
+      <listitem>
+      <para>
+        The signed 32-bit whole number to be cast.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The unsigned 32-bit whole number equivalent to <emphasis role="italic">signed</emphasis>.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The <xref linkend="mthSigned"/> method works with whole numbers of the same size as the addressing mode of the
+    interpreter. I.e., if the address mode is 32-bit, <emphasis role="italic">unsigned</emphasis> works with 32-bit numbers
+    and if the addressing mode is 64-bit it works with 64-bit numbers.
+  </para>
+  <para>
+    In 32-bit addressing mode, <emphasis role="italic">unsigned</emphasis> accepts a whole number in the range of
+    -2,147,483,648 to 2,147,483,647 and returns a whole number in the range of 0 to 4,294,967,295.
+  </para>
+  <para>
+    In 64-bit addressing mode, <emphasis role="italic">unsigned</emphasis> accepts a whole number in the range of
+    -9,223,372,036,854,775,808 to 9,223,372,036,854,775,807 and returns a whole number in the range of 0 to
+    18,446,744,073,709,551,615.
+  </para>
+  <para>
+    In general, the <emphasis role="italic">signed</emphasis> and <emphasis role="italic">unsigned</emphasis> methods work
+    well. However, there is a problem in 64-bit addressing mode when trying to convert a number known to be 32-bit. A number
+    such as 0xfffffdd8 is positive 4294966744 if treated as a 64-bit number. However it is -552 if treated as a 32-bit
+    number. The <emphasis role="italic">unsigned32</emphasis> and <xref linkend="mthSigned32"/> methods are for use in these
+    cases.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End DlgUtil::unsigned32() -->
 
 
 <section id="mthVersion" xreflabel="version"><title>version (Class Method)</title>
