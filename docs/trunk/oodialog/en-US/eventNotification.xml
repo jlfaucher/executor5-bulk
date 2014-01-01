@@ -758,10 +758,10 @@
 </para>
 </note>
 <para>
-  Each user message and each connected event generates a message entry in an ooDialog table. Internally, ooDialog examines
-  every window message, and its parameters, that the Windows dialog receives. If the window message and its parameters match
-  an entry in the message table, ooDialog invokes the method specified in the message table. For <emphasis
-  role="italic">addUserMsg</emphasis>, this is the method specified by <emphasis role="italic">mth</emphasis> argument.
+  Each added user message and each connected event generates a message entry in an ooDialog table. Internally, ooDialog
+  examines every window message, and its parameters, that the Windows dialog receives. If the window message and its
+  parameters match an entry in the message table, ooDialog invokes the method specified in the message table. For <emphasis
+  role="italic">addUserMsg</emphasis>, this is the method specified by the <emphasis role="italic">mth</emphasis> argument.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -811,7 +811,7 @@
       <para>
         A filter to apply to the <emphasis role="italic">wP</emphasis> argument. The filter is bitwise <emphasis
         role="italic">anded</emphasis> with <emphasis role="italic">wP</emphasis> and if the result equals the actual numeric
-        value of the wParam ssent, it is considered a match. If omitted a filter of 0 is used.
+        value of the wParam sent, it is considered a match. If omitted a filter of 0 is used.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>lP [optional]</term>
@@ -858,7 +858,7 @@
 
   <warning><title>Incorrect use can crash your program.</title>
   <para>
-    If the <emphasis role="italic">wlRply</emphasis> is set to .true an, incorrect return from the connected event handler
+    If the <emphasis role="italic">wlRply</emphasis> is set to .true, an incorrect return from the connected event handler
     can crash your application.
   </para>
   <para>
@@ -885,9 +885,9 @@
 
 <note><title>WM_NOTIFY is special cased.</title>
 <para>
-  The WM_NOTIFY window message is handled as a special case. The LPARAM argument sent with the WM_NOTIFY has a number of
-  pieces of information embedded within it. One of those pieces is the numeric notification code for the message. This is the
-  important piece that the ooDialog framework uses to filter the messages, Therefore, if the <emphasis
+  The WM_NOTIFY window message is handled as a special case. The LPARAM argument sent with the WM_NOTIFY message has a number
+  of pieces of information embedded within it. One of those pieces is the numeric notification code for the message. This is
+  the important piece that the ooDialog framework uses to filter the messages, Therefore, if the <emphasis
   role="italic">winMsg</emphasis> argument is WM_NOTIFY, the <emphasis role="italic">lP</emphasis> argument should be the
   notification code for the desired message and the filter should be <emphasis role="italic">0xffffffff</emphasis>.
 </para>
@@ -897,11 +897,11 @@
   ooDialog added support for the split button, a programmer could have used it in their ooDialog programs by creating a
   dialog template in a resource only DLL with a split button and using <emphasis role="italic">addUserMsg</emphasis> to
   capture the drop down notification. Looking up the numeric values for this notification, the programmer would have found
-  that WM_NOTIFY == '0x004E' and that BCN_DROPDOWN == '0x4294966048'. Assuming the ID for the split button is 1004. The
+  that WM_NOTIFY == '0x004E' and that BCN_DROPDOWN == '0xfffffb20'. Assuming the ID for the split button is 1004. The
   programmer would code <emphasis role="italic">addUserMsg</emphasis> like this:
 <programlisting>
 <![CDATA[
-  addUserMsg('onDropDown', '0x004E', '0xFFFFFFFF', 1004, ''0xFFFFFFFF, '0xfffffb20', '0xFFFFFFFF', .true)
+  addUserMsg('onDropDown', '0x004E', '0xFFFFFFFF', 1004, '0xFFFFFFFF', '0xfffffb20', '0xFFFFFFFF', .true)
 ]]>
 </programlisting>
 </para>
@@ -916,29 +916,32 @@
     <varlistentry><term><emphasis role="bold">WM_NOTIFY handlers:</emphasis></term>
     <listitem>
     <para>
-      xxx and xxx sss.
+      The event <link linkend="evtAddUserMsgNotify">handler</link> for WM_NOTIFY messages receives 4 arguments.
     </para>
     </listitem></varlistentry>
     <varlistentry><term><emphasis role="bold">WM_COMMAND handlers:</emphasis></term>
     <listitem>
     <para>
-      xxx and xxx sss.
+      The event <link linkend="evtAddUserMsgCommand">handler</link> for WM_COMMAND messages receives 2 arguments.
     </para>
     </listitem></varlistentry>
     <varlistentry><term><emphasis role="bold">All Others</emphasis></term>
     <listitem>
     <para>
-      xxx and xxx sss.
+      The event <link linkend="evtAddUserMsgOther">handler</link> for all other messages receives 2 arguments.
     </para>
     </listitem></varlistentry>
   </variablelist>
 
   <para>
-    will be the numeric value of the WPARAM and LPARAM parameters for the window message. If either WPARAM or LPARAM are
-    pointers, the numeric value will not do the ooDialog programmer any good. There is no way in
-    ooDialog Rexx code to access whatever the pointer points to. (The exception to this would be if ooDialog already had a
-    connect event method for the specific window message. In which case there is no need to use <emphasis
-    role="italic">addUserMsg</emphasis>.)
+    Note that some of the arguments sent to the event handlers will be the numeric value of the WPARAM and LPARAM parameters
+    for the window message. If either WPARAM or LPARAM are pointers, the numeric value will not do the ooDialog programmer
+    any good. There is no way in ooDialog Rexx code to access whatever the pointer points to.
+  </para>
+  <para>
+    The exception to this would be if ooDialog already had a connect event method for the specific window message. In this
+    case the ooDialog framework accesses the memory and sends the correct, appropriate arguments to the event handler. In
+    which case there is no need to use <emphasis role="italic">addUserMsg</emphasis>.
   </para>
   <para>
     Filters can be used to ensure that only the specific message desired is connected to the Rexx method, or to match
@@ -1086,10 +1089,9 @@
 
 <para>
   The event handler connected through the <xref linkend="mthAddUserMsg"/> is invoked when ooDialog
-  internally matches a message sent to the <xref linkend="ovvUnderlying"/> Windows dialog using the arguments specified by
-  the programmer in the invocation of the <emphasis role="italic">addUserMsg</emphasis> method. The <emphasis
-  role="italic">other message</emphasis> event handler is invoked when the window message matched is not WM_NOTIFY or
-  WM_COMMAND.
+  internally matches a message sent to the <xref linkend="ovvUnderlying"/> Windows dialog using the arguments specified to
+  the <emphasis role="italic">addUserMsg</emphasis> method. The <emphasis role="italic">other message</emphasis> event
+  handler is invoked when the window message matched is not WM_NOTIFY or WM_COMMAND.
 </para>
 <para>
   The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthAddUserMsg"/> method determines
@@ -1173,11 +1175,10 @@
 </programlisting>
 
 <para>
-  The event handler connected through the <xref linkend="mthAddUserMsg"/> is invoked when ooDialog
-  internally matches a message sent to the <xref linkend="ovvUnderlying"/> Windows dialog using the
-  arguments specified by the programmer in the invocation of the <emphasis role="italic">addUserMsg</emphasis> method. The
-  <emphasis role="italic">WM_COMMAN message</emphasis> event handler is invoked when the window message matched is
-  WM_COMMAND.
+  The event handler connected through the <xref linkend="mthAddUserMsg"/> is invoked when ooDialog internally matches a
+  message sent to the <xref linkend="ovvUnderlying"/> Windows dialog using the arguments specified to the <emphasis
+  role="italic">addUserMsg</emphasis> method. The <emphasis role="italic">WM_COMMAND message</emphasis> event handler is
+  invoked when the window message matched is WM_COMMAND.
 </para>
 <para>
   The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthAddUserMsg"/> method determines
@@ -1195,7 +1196,7 @@
     <para>
       The numeric value of the<link linkend="ovvWindowMessages">WPARAM</link> parameter sent with the window message that
       was connected through <emphasis role="italic">addUserMsg</emphasis>. This numeric value will contain the resource ID of
-      the control sending the message and numeric code of the event that caused the notification to be sent
+      the control sending the message and the numeric code of the event that caused the notification to be sent
     </para>
     </listitem></varlistentry>
     <varlistentry><term>lParam</term>
@@ -1240,12 +1241,14 @@
     id         =  rb1~id
     wParam     = .DlgUtil~makeWParam(id, BN_CLICK)
 
-    self~addUserMsg(onRbClick, WM_COMMAND, '0xFFFFFFFF', wParam, '0xFFFFFFFF', 0, 0, .true)
+    self~addUserMsg(onRbClick, WM_COMMAND, '0xFFFFFFFF', wParam, '0xFFFFFFFF', -
+                    0, 0, .true)
 
     id     =  rb2~id
     wParam = .DlgUtil~makeWParam(id, BN_CLICK)
 
-    self~addUserMsg(onRbClick, WM_COMMAND, '0xFFFFFFFF', wParam, '0xFFFFFFFF', 0, 0, .true)
+    self~addUserMsg(onRbClick, WM_COMMAND, '0xFFFFFFFF', wParam, '0xFFFFFFFF', -
+                    0, 0, .true)
 
     ...
 
@@ -1290,9 +1293,9 @@
 
 <para>
   The event handler connected through the <xref linkend="mthAddUserMsg"/> is invoked when ooDialog internally matches a
-  message sent to the <xref linkend="ovvUnderlying"/> Windows dialog using the arguments specified by the programmer in the
-  invocation of the <emphasis role="italic">addUserMsg</emphasis> method. The <emphasis role="italic">notify
-  message</emphasis> event handler is invoked when the window message matched is WM_NOTIFY.
+  message sent to the <xref linkend="ovvUnderlying"/> Windows dialog using the arguments specified to the <emphasis
+  role="italic">addUserMsg</emphasis> method. The <emphasis role="italic">notify message</emphasis> event handler is invoked
+  when the window message matched is WM_NOTIFY.
 </para>
 <para>
   The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthAddUserMsg"/> method determines
@@ -1351,7 +1354,8 @@
     ...
     WM_NOTIFY    = '0x004E'
     BCN_DROPDOWN = '0xfffffb20'
-    self~addUserMsg('onDropDown', WM_NOTIFY, '0xFFFFFFFF', 2, '0xFFFFFFFF', BCN_DROPDOWN, '0xFFFFFFFF', .true)
+    self~addUserMsg('onDropDown', WM_NOTIFY, '0xFFFFFFFF', 2, '0xFFFFFFFF', -
+                    BCN_DROPDOWN, '0xFFFFFFFF', .true)
     ...
 
 ::method onDropDown unguarded
