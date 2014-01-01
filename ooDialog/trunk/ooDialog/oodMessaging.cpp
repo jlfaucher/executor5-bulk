@@ -1326,6 +1326,59 @@ bool invokeDirect(RexxThreadContext *c, pCPlainBaseDialog pcpbd, CSTRING methodN
 /**
  * Invokes the Rexx dialog's event handling method for a Windows message.
  *
+ * The method is invoked directly through SenMessage to the method name and the
+ * reply is used to set DWLP_MSGRESULT in the window words of the dialog.
+ *
+ * @param c       Thread context we are operating in.
+ * @param obj     The Rexx dialog whose method will be invoked.
+ * @param method  The name of the method being invoked
+ * @param args    The argument array for the method being invoked
+ *
+ * @return True for no problems, otherwise false.  If false is returned a
+ *         condition was raised during the execution of the Rexx method or a
+ *         condition was raised by us for improper use by the programmer.
+ *
+ * @remarks  This function should only be called for processing a messaged added
+ *           through addUserMessage() where the user specified willReply ==
+ *           true.  In this case we use the reply from the user to reply to the
+ *           operating system.
+ *
+ *           Since we can only reply to the operating system, we enforce that
+ *           the user has returned a number, and if so, we just use it.
+ *           Theoretically, it would seem that it is possible that this will
+ *           crash.  In the doc we warn the user of this and it if crashes ...
+ *           oh well.
+ */
+bool invokeDirectUseReturn(RexxThreadContext *c, pCPlainBaseDialog pcpbd, CSTRING methodName, RexxArrayObject args)
+{
+    RexxObjectPtr rexxReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
+
+    bool isGood = msgReplyIsGood(c, pcpbd, rexxReply, methodName, false);
+    if ( isGood )
+    {
+        intptr_t reply;
+
+        if ( c->Intptr(rexxReply, &reply) )
+        {
+            setWindowPtr(pcpbd->hDlg, DWLP_MSGRESULT, reply);
+        }
+        else
+        {
+            invalidReturnWholeNumberException(c, methodName, rexxReply, true);
+
+            isGood = false;
+            checkForCondition(c, false);
+            endDialogPremature(pcpbd, pcpbd->hDlg, RexxConditionRaised);
+        }
+    }
+    c->ReleaseLocalReference(rexxReply);
+
+    return isGood;
+}
+
+/**
+ * Invokes the Rexx dialog's event handling method for a Windows message.
+ *
  * The method invocation is done directly by sending a message to the method.
  *
  * @param c       Thread context we are operating in.
@@ -1370,7 +1423,8 @@ bool invokeSync(RexxThreadContext *c, pCPlainBaseDialog pcpbd, CSTRING methodNam
 }
 
 /**
- *  TODO need doc here.
+ *  This function sorts out how the event handling method should be invoked by
+ *  examining the tag.
  *
  * @param pcpbd
  * @param method
@@ -1385,7 +1439,14 @@ MsgReplyType genericInvoke(pCPlainBaseDialog pcpbd, CSTRING method, RexxArrayObj
 
     if ( (tag & TAG_EXTRAMASK) == TAG_REPLYFROMREXX )
     {
-        invokeDirect(c, pcpbd, method, args);
+        if ( (tag & TAG_CTRLMASK) == TAG_USERADDED )
+        {
+            invokeDirectUseReturn(c, pcpbd, method, args);
+        }
+        else
+        {
+            invokeDirect(c, pcpbd, method, args);
+        }
     }
     else if ( (tag & TAG_EXTRAMASK) == TAG_SYNC )
     {
@@ -1402,7 +1463,7 @@ MsgReplyType genericInvoke(pCPlainBaseDialog pcpbd, CSTRING method, RexxArrayObj
 /* genericCommandInvoke
  *
  * The simplest form of invoking the Rexx method connected to a WM_COMMAND
- * message.  And actually, all WM_COMMAND messages are invoked with through this
+ * message.  And actually, all WM_COMMAND messages are invoked through this
  * function. As far as I can tell, the return to the operating system is never
  * meaningful.
  *
@@ -2885,6 +2946,9 @@ MsgReplyType processCustomDraw(RexxThreadContext *c, CSTRING methodName, uint32_
  *          since it is a valid window handle.  Existing code would not have
  *          used args 3 and 4, they didn't exist.  New code can use them
  *          effectively.
+ *
+ *          MSDN says, or at least implies, that *all* WM_NOTIFY messages are
+ *          from dialog controls.
  */
 MsgReplyType searchNotifyTable(WPARAM wParam, LPARAM lParam, pCPlainBaseDialog pcpbd)
 {
@@ -2968,7 +3032,10 @@ MsgReplyType searchNotifyTable(WPARAM wParam, LPARAM lParam, pCPlainBaseDialog p
             c->ReleaseLocalReference(idFrom);
             c->ReleaseLocalReference(hwndFrom);
             c->ReleaseLocalReference(notifyCode);
-            c->ReleaseLocalReference(rxCtrl);
+            if ( rxCtrl != TheNilObj )
+            {
+                c->ReleaseLocalReference(rxCtrl);
+            }
             c->ReleaseLocalReference(args);
 
             return ReplyTrue;
@@ -3002,9 +3069,14 @@ MsgReplyType searchNotifyTable(WPARAM wParam, LPARAM lParam, pCPlainBaseDialog p
  *           is not much to do.
  *
  *           Note that for WM_COMMAND messages, lParam is always the window
- *           handle of the dialog control, if a control iniated the message. For
- *           menu items and accelerators, it is always 0. So, converting to a
- *           pseudo pointer is always the correct thing to do.
+ *           handle of the dialog control, if a control initiated the message.
+ *           For menu items and accelerators, it is always 0. So, converting to
+ *           a pseudo pointer is always the correct thing to do.
+ *
+ *           Currently we just pass the wParam and lParam values as numbers to
+ *           the event handler.  It might be nice to try and convert the window
+ *           handle to the dialog control object and add that to the args.  This
+ *           might be especially useful for the addUserMessage() cases.
  */
 MsgReplyType searchCommandTable(WPARAM wParam, LPARAM lParam, pCPlainBaseDialog pcpbd)
 {
@@ -3108,6 +3180,26 @@ MsgReplyType searchMiscTable(uint32_t msg, WPARAM wParam, LPARAM lParam, pCPlain
 
                 case TAG_MOUSE :
                     return processMouseMsg(c, method, tag, msg, wParam, lParam, pcpbd);
+
+                case TAG_USERADDED :
+                {
+                    /* The user added this message through addUserMessage().
+                     * Since we have no idea what the message might be, we have
+                     * to just pass wParam and lParam to the method.  We also
+                     * simply honor the user's willReplly set up.
+                     */
+                    RexxObjectPtr wp = c->Uintptr(wParam);
+                    RexxObjectPtr lp = c->Intptr(lParam);
+
+                    args = c->ArrayOfTwo(wp, lp);
+                    genericInvoke(pcpbd, method, args, tag);
+
+                    c->ReleaseLocalReference(wp);
+                    c->ReleaseLocalReference(lp);
+                    c->ReleaseLocalReference(args);
+
+                    return ReplyTrue;
+                }
 
                 default :
                     break;
@@ -5629,6 +5721,8 @@ RexxMethod9(uint32_t, en_addUserMessage, CSTRING, methodName, CSTRING, wm, OPTIO
     {
         goto done_out;
     }
+
+    tag |= TAG_USERADDED;
 
     bool success;
     if ( (wmf.wm & wmf.wmFilter) == WM_COMMAND )

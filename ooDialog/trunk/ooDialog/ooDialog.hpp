@@ -134,7 +134,10 @@
  *  of a Windows message based on the tag.
  *
  *  The least significant byte is used to define the type of control.  This byte
- *  can be isolated using TAG_CTRLMASK.
+ *  can be isolated using TAG_CTRLMASK. The value of the byte is not a 'flag' in
+ *  the usual sense, but a constant value.  Thus, the control byte has 256
+ *  unique values. The lowest values are used for dialog controls.  Over time,
+ *  the higher values have beend added for uses unrelated to a dialog control.
  */
 #define TAG_CTRLMASK              0x000000FF
 
@@ -154,6 +157,7 @@
 #define TAG_MENU                  0x0000000F
 #define TAG_TOOLBAR               0x00000010
 #define TAG_STATUSBAR             0x00000011
+#define TAG_USERADDED             0x000000FE
 #define TAG_CUSTOMDRAW            0x000000FF
 
 /**

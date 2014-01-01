@@ -538,7 +538,9 @@ REXX_METHOD_PROTOTYPE(dlgutil_sloWord_cls);
 REXX_METHOD_PROTOTYPE(dlgutil_makeLPARAM_cls);
 REXX_METHOD_PROTOTYPE(dlgutil_makeWPARAM_cls);
 REXX_METHOD_PROTOTYPE(dlgutil_unsigned_cls);
+REXX_METHOD_PROTOTYPE(dlgutil_unsigned32_cls);
 REXX_METHOD_PROTOTYPE(dlgutil_signed_cls);
+REXX_METHOD_PROTOTYPE(dlgutil_signed32_cls);
 REXX_METHOD_PROTOTYPE(dlgutil_and_cls);
 REXX_METHOD_PROTOTYPE(dlgutil_or_cls);
 REXX_METHOD_PROTOTYPE(dlgutil_shiftLeft_cls);
@@ -1943,7 +1945,9 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(dlgutil_makeLPARAM_cls,         dlgutil_makeLPARAM_cls),
     REXX_METHOD(dlgutil_makeWPARAM_cls,         dlgutil_makeWPARAM_cls),
     REXX_METHOD(dlgutil_unsigned_cls,           dlgutil_unsigned_cls),
+    REXX_METHOD(dlgutil_unsigned32_cls,         dlgutil_unsigned32_cls),
     REXX_METHOD(dlgutil_signed_cls,             dlgutil_signed_cls),
+    REXX_METHOD(dlgutil_signed32_cls,           dlgutil_signed32_cls),
     REXX_METHOD(dlgutil_and_cls,                dlgutil_and_cls),
     REXX_METHOD(dlgutil_or_cls,                 dlgutil_or_cls),
     REXX_METHOD(dlgutil_shiftLeft_cls,          dlgutil_shiftLeft_cls),

@@ -1317,9 +1317,19 @@ RexxMethod1(uintptr_t, dlgutil_unsigned_cls, intptr_t, n1)
     return (uintptr_t)n1;
 }
 
+RexxMethod1(uint32_t, dlgutil_unsigned32_cls, int32_t, n1)
+{
+    return (uint32_t)n1;
+}
+
 RexxMethod1(intptr_t, dlgutil_signed_cls, uintptr_t, n1)
 {
     return (intptr_t)n1;
+}
+
+RexxMethod1(int32_t, dlgutil_signed32_cls, uint32_t, n1)
+{
+    return (int32_t)n1;
 }
 
 inline bool inBounds(RexxThreadContext *c, size_t pos, uint32_t n, uint32_t upperLimit)
