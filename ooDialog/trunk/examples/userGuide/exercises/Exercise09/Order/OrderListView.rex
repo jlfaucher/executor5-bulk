@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2011-2013 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2011-2014 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -50,10 +50,10 @@
           08Jan13: Removed stand-alone startup (not now needed).
           11Jan13: Commented-out 'say' instructions.
           01Apr13: After ooDialog 4.2.2, Support folder moved to exercise
-                   folder, so change to ::Requires needed. 
+                   folder, so change to ::Requires needed.
    v03-00 24May13: Exercice08 Update to use View & Component mixin.
-   v04-00 23Oct13: Uses new ListView superclass. 
-   
+   v04-00 23Oct13: Uses new ListView superclass.
+
    Outstanding Problems: None reported.
 
 *******************************************************************************/
@@ -79,28 +79,28 @@
 
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-::CLASS OrderListView SUBCLASS ListView PUBLIC 
+::CLASS OrderListView SUBCLASS ListView PUBLIC
   /*----------------------------------------------------------------------------
     Class Methods
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-    
+
   /*----------------------------------------------------------------------------
     Instance Methods
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
   ::METHOD getDlgConfig CLASS PRIVATE
     dlgConfig = .Directory~new
-    -- Text to appear on the List View:    
-    dlgConfig[text] = .HRSolv	-- The class object containing text strings 
+    -- Text to appear on the List View:
+    dlgConfig[text] = .HRSolv	-- The class object containing text strings
     				-- visible to the user.
-    dlgConfig[lvColumns] ="OrderNo-60-1-k,CustNo-65-2,CustName-140-6,Date-60-3-fr" 
+    dlgConfig[lvColumns] ="OrderNo-60-1-k,CustNo-65-2,CustName-140-6,Date-60-3-fr"
     dlgConfig[dlgSize] = "255-273"	-- width-height of Dialog
     dlgConfig[lvSize] = "225-225"	-- width-height of ListView control
     dlgConfig[dlgIcon] = "OrderCustomer\bmp\orderlist.ico"
     return dlgConfig
 
-    
+
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD lvFieldFormat PRIVATE
     use strict arg fieldNumber, fieldValue
@@ -111,7 +111,7 @@
       return month||"/"||day||"/"||year
     end
     else return .false
-    	    
+
 /*============================================================================*/
 
 
@@ -136,7 +136,7 @@
   ::CONSTANT noMenu       "This menu item is not yet implemented."
   ::CONSTANT showButton   "Show Order"
   ::CONSTANT cancelButton "Cancel"
-  
+
 /*============================================================================*/
 
 

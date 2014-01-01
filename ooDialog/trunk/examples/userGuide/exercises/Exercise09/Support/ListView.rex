@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2011-2013 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2011-2014 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -42,25 +42,25 @@
    Description: Provides a list superclass for lists of Customers, Products, etc.
                 This makes the constructioon of list dialogs very easy.
                 Supports two ways of surfacing item components such as Customer
-                and Product: first by double-click on a l;ist item, second by 
+                and Product: first by double-click on a l;ist item, second by
                 selecting a list item and pressing the "show" button.
-                
-                Format of list is done via the variable dlgInfo (an array) which 
-                is provided by the sublcass in its required getDlgInfo class 
+
+                Format of list is done via the variable dlgInfo (an array) which
+                is provided by the sublcass in its required getDlgInfo class
                 method. The format of dlgInfo is:
                 dlgInfo[1]: a class that provides the set of text constants
-                  to display, including dialog title, menu text, button text, 
-                  and text in a warning message. This not only provides for 
+                  to display, including dialog title, menu text, button text,
+                  and text in a warning message. This not only provides for
                   customisation but also for NLS.
                 dlgInfo[2]: A string that specifies the columns in the list view.
-                  The string format for a single column is: 
+                  The string format for a single column is:
                     n-columnTitle-columnWidth
                   Multiple columns are comma-separated. For example:
                     "2-Family Name-80,5-Job Description-100,1-Number-60"
                   This specifies three columns, the left-most specifying the first
                   column in the list view. Each column specification defines
                   (a) the field in the data record (b), the column title, and
-                  (c) the width of the column in pixels. Thus the first spec 
+                  (c) the width of the column in pixels. Thus the first spec
                   ("2-Family Name-80") specifies that the first column contains
                   the second field from the data record, the column heading is
                   "Family Name", and the width of the column in 80 pixels.
@@ -78,13 +78,13 @@
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD newInstance CLASS PUBLIC
-    use arg idListModel, rootDlg			-- Defined by MVF 
-    dlgConfig = self~getDlgConfig	 -- Dialog info/config is provided by the subclass. 
+    use arg idListModel, rootDlg			-- Defined by MVF
+    dlgConfig = self~getDlgConfig	 -- Dialog info/config is provided by the subclass.
     dlg = self~new
     if dlg~initCode = 0 then do
       -- Add a symbolic resource IDs:
       dlg~constdir[IDC_LISTVIEW] = 200
-      dlg~constdir[IDC_SHOWITEM] = 201  
+      dlg~constdir[IDC_SHOWITEM] = 201
       --say ".ListView-newInstance-01: HRS class =" dlgText
       --say ".ListView-newInstance-02: Dialog Title =" dlgText~dlgTitle
       --dlg~create(100, 100, 225, 273, "Test ListView UserDlg 2", "VISIBLE")
@@ -93,7 +93,7 @@
       --dlg~execute("SHOWTOP")
     end
     return dlg						-- Required by MVF
-    
+
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD init
     forward class (super) continue
@@ -105,7 +105,7 @@
     expose rootDlg dlgConfig modelData
     use arg idListModel, rootDlg, dlgConfig
     forward class (super) continue		-- super invokes defineDialog
-    modelData = RESULT    
+    modelData = RESULT
 
     columnSpec = dlgConfig[lvColumns]	-- a comma-speparated spec of col no & width.
     dlgSize = dlgConfig[dlgSize]
@@ -113,19 +113,19 @@
     self~addIconResource(199, dlgConfig[dlgIcon])
     self~create(100, 100, dlgWidth, dlgHeight, dlgConfig[text]~dlgTitle, "VISIBLE MINIMIZEBOX")
     self~popupAsChild(rootDlg, "SHOWTOP",,199)
-    
+
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD defineDialog
     expose dlgConfig
     dlgText = dlgConfig[text]
     lvSize = dlgConfig[lvSize]
     parse var lvSize lvW "-" lvH
-    -- say "ListView-defineDialog-01: lvWdth lvHeight =" lvW lvH    
+    -- say "ListView-defineDialog-01: lvWdth lvHeight =" lvW lvH
     self~createListView(IDC_LISTVIEW, 15,10,lvW,lvH, "REPORT SHOWSELALWAYS")
     self~createPushButton(IDCANCEL, 150, 235, 50, 14, "", dlgText~cancelButton)
     self~createPushButton(IDC_SHOWITEM, 89, 235, 54, 14, "DEFAULT DISABLED", -
                           dlgText~showButton, showItem)
-  
+
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD initDialog
     expose lv dlgConfig keyColSpec keyColNum
@@ -145,36 +145,36 @@
     --       since this uses the text as the method name.
     menu~connectCommandEvent(903,actionMenu11)
     menu~connectCommandEvent(913,actionMenu21)
-    
+
     -- Get a reference to the ListView:
     lv = self~newListView(IDC_LISTVIEW)
-    lv~addExtendedStyle("FULLROWSELECT GRIDLINES") 
+    lv~addExtendedStyle("FULLROWSELECT GRIDLINES")
 
     -- Format the ListView:
     -- 1. Make an array out of the string columns specs:
     arrColSpecs = dlgConfig[lvColumns]~makeArray(",")
     --say "ListView-initDialog-01: arColSpecs:" arrColSpecs[1] arrColSpecs[2] arrColSpecs[3]
-    -- 2. Make an array for any format flags (either "f" or "r" or "fr" - 
+    -- 2. Make an array for any format flags (either "f" or "r" or "fr" -
     --    f = invoke self~format(n) where n is the column name)
     --    r = right-adjust data in the column
-    -- 3. Note that a key column cannot (in this version) be formatted 
+    -- 3. Note that a key column cannot (in this version) be formatted
     --    using format flags.
     -- Parse the column definitions and issue the 'insertColumnsPX's; also
     --  make an array of the data fields to be shown:
     fileColNumbers = .array~new	-- an array of the file column numbers in the spec.
     arrColCallBacks = .array~new
-    keyColNum = 1		-- if no key column defined, then default is 1. 
+    keyColNum = 1		-- if no key column defined, then default is 1.
     do i = 1 to arrColSpecs~items	-- do for each column spec
-      colSpec = arrColSpecs[i]    
+      colSpec = arrColSpecs[i]
       parse var colSpec colHeader "-" pixels "-" colNum "-" flags
-      --say "ListView-initDialog-02:" 
+      --say "ListView-initDialog-02:"
       fileColNumbers[i] = colNum
       if flags~caselessPos("R") >0 then colAlign = "R"; else colAlign = "L"
       lv~insertColumnPX(i-1,colHeader,pixels,colAlign)
       if flags~caselessPos("K") then keyColNum = i
-      if flags~caselessPos("F") then arrColCallBacks[i] = .true 
+      if flags~caselessPos("F") then arrColCallBacks[i] = .true
     end
-      	    
+
 /*    lv~insertColumnPX(0,"Number",60,"LEFT")
     lv~insertColumnPX(1,"Name",150,"LEFT")
     lv~insertColumnPX(2,"Zip",60,"LEFT") */
@@ -184,8 +184,8 @@
     self~loadList(fileColNumbers,arrColCallBacks)
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-  ::METHOD loadList PRIVATE    
-    expose lv modelData 
+  ::METHOD loadList PRIVATE
+    expose lv modelData
     use strict arg fileColNumbers, arrColCallBacks
     -- fileColNumbers is an array of the file columns to be selected and shown
     -- on the listview. E.g. .array~of(3,1,5) states that fields (i.e. columns)
@@ -195,7 +195,7 @@
     colsRequired = fileColNumbers~items
     --say "ListView-loadlist-01: fileColNumbers =" fileColNumbers~toString(,",")
     arrData = modelData[records]
-   
+
     arrRow = .array~new	     	     -- The array to be used in addRowFromArray().
     do i=1 to rows			-- iterate over data rows
       do j = 1 to colsRequired		   -- iterate over the cols required
@@ -207,7 +207,7 @@
      	  -- col = 2 -- debug stmt - wrong column to check if subclass returns .false.
      	  formattedField= self~lvFieldFormat(col, arrData[i,col])
      	  if formattedField \= .false then arrRow[j] = formattedField
-     	  else say "ListView-loadList-01: Error in specifying correct field for subclass method 'lvFieldFormat'." 
+     	  else say "ListView-loadList-01: Error in specifying correct field for subclass method 'lvFieldFormat'."
         end
       end
       lv~addRowFromArray(arrRow, , 'null')
@@ -233,19 +233,19 @@
       parse var self . className	-- Q: Who am I? A: an xxxxListView
       parse var className classRoot "LISTVIEW"
       --say "ListView-showItem-03: Class Name Root =" classRoot
-      modelClassName = classRoot||"Model" 
+      modelClassName = classRoot||"Model"
       objectMgr~showModel(modelClassName, info~text, rootDlg)
       self~disableControl("IDC_SHOWITEM")
       --self~focusControl("IDC_LISTVIEW")
     end
- 
-    
+
+
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD openItem UNGUARDED
     --say "openItem-01."
     self~showItem
-    
-    
+
+
   /*----------------------------------------------------------------------------
     Event-Handler Methods - Menu Events
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -264,18 +264,18 @@
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD noMenuFunction UNGUARDED
-   expose dlgText 
+   expose dlgText
     use arg title
     ret = MessageDialog(dlgtext~noMenu, self~hwnd, title, 'WARNING')
-    
+
 
   /*----------------------------------------------------------------------------
     Event Handling Methods - List Items
-    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */    
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD itemSelected UNGUARDED
-    use arg id, itemIndex, columnIndex, keyState    
+    use arg id, itemIndex, columnIndex, keyState
     --say "ListView-itemSelected-01; item index =" itemIndex
     if itemIndex > -1 then do
       self~enableControl("IDC_SHOWITEM")
@@ -284,8 +284,7 @@
     else self~disableControl("IDC_SHOWITEM")
 
 /*============================================================================*/
-    
-    
 
 
- 
+
+

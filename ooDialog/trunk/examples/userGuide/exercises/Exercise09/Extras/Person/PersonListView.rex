@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2011-2013 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2011-2014 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -73,29 +73,29 @@
     Class Methods
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+  /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     getDlgConfig - invoked by the ListView superclass to get info about what to
-                   display on the listview. 
+                   display on the listview.
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
   ::METHOD getDlgConfig CLASS PRIVATE
     dlgConfig = .Directory~new
     -- Text to appear on the List View:
-    dlgConfig[text] = .HRSplv	-- The class object containing text strings 
-    				-- visible to the user.	
+    dlgConfig[text] = .HRSplv	-- The class object containing text strings
+    				-- visible to the user.
     dlgConfig[lvColumns] = "Family Name-80-2,Job Description-100-5,Number-60-1-k"
     dlgConfig[dlgSize]   = "205-273"	 -- width-height of the dialog
     dlgConfig[lvSize]    = "170-215"	 -- width-height of the listview control
     dlgConfig[dlgIcon]   = "extras\person\bmp\personlist.ico"
     return dlgConfig
 
-    
+
   /*----------------------------------------------------------------------------
     Instance Methods
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 --  ::METHOD initDialog
 --    self~initDialog:super
-    
+
 /*============================================================================*/
 
 
@@ -104,7 +104,7 @@
   ==============================================================================
   HRSplv (Human-Readable Strings for PersonListView)		  v01-00 09Oct13
   ---
-  The HRpclv class provides constant character strings for user-visible text 
+  The HRpclv class provides constant character strings for user-visible text
   (excluding column-headings) used by the PersonListView class.
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 

@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: ooDialog User Guide XML file.
     #
-    # Copyright (c) 2012-2013 Rexx Language Association. All rights reserved.
+    # Copyright (c) 2012-2014 Rexx Language Association. All rights reserved.
     #
     # This program and the accompanying materials are made available under
     # the terms of the Common Public License v1.0 which accompanies this
@@ -44,7 +44,7 @@
 -->
 <!-- Appendix 06 - Direct Manipulation				  v01-00 22Aug13
 
-     An overview of drag-drop or direct manipulation - part of the 
+     An overview of drag-drop or direct manipulation - part of the
      Model-View Framework (MVF).
 
      Changes:
@@ -85,7 +85,7 @@
       drag operation, then an instance of the <computeroutput>Mouse</computeroutput> class must be
       instantiated (typically in the dialog's <computeroutput>initDialog</computeroutput> method) and
       associated with the window. For example:
-      <programlisting><![CDATA[     mouse = .Mouse~new(self)]]></programlisting> 
+      <programlisting><![CDATA[     mouse = .Mouse~new(self)]]></programlisting>
       Mouse events are
       then connected to the mouse instance. For example, here's the code for
       connecting a left-button-down (aka "start drag" or "pickup") event:
@@ -106,7 +106,7 @@
       various statements to do with setting the drag cursor and establishing the initial state of
       the drag operation (e.g. the "we're not over a target" state) are omitted.</para>
   </section>
-  
+
   <section id="apx6-dm-factoring" xreflabel="Factoring the Drag/Drop Code">
     <title>Factoring the Drag/Drop Code</title>
     <para>Drag/drop code is not particularly simple. So the question is, can the code be factored so
@@ -135,12 +135,12 @@
       discussed in the next section). Everything else is handled by the
         <computeroutput>View</computeroutput> superclass (the superclass of all "view" components
       and located in the <computeroutput>Support</computeroutput> folder).</para>
-      <para>Finally, <computeroutput>View</computeroutput> delegates most of the detailed 
+      <para>Finally, <computeroutput>View</computeroutput> delegates most of the detailed
       handling of a drag/drop operation to the Drag Manager (<computeroutput>DragMgr.rex</computeroutput> - also located
-      in the <computeroutput>Support</computeroutput> folder).  
+      in the <computeroutput>Support</computeroutput> folder).
     </para>
   </section>
-  
+
   <section id="apx6-dm-setup" xreflabel="Enabling Drag/Drop">
       <title id="apx6-dm-setup.title">Enabling Drag/Drop</title>
     <para>In Exercise08, all mouse events are registered in the
@@ -216,7 +216,7 @@
       dialog's window handle, and area within the dialog within which a drop is allowed. </para>
     <para>Finally, note that a view component can be both a source and a target.</para>
   </section>
-  
+
   <section id="apx6-dm-drag" xreflabel="Pickup and Drag">
     <title id="apx6-dm-drag.title">Pickup and Drag</title>
     <para>The top part of the following figure shows the pickup and drag operation. The lower half
@@ -228,7 +228,7 @@
         </imageobject>
       </mediaobject>
     </figure>
-    <para>The operation is as follows: 
+    <para>The operation is as follows:
     <orderedlist>
       <listitem><para>The operation starts with the user pressing and holding the "primary" button (usually the left
             button) of the mouse while over a "source" dialog. This results in the event

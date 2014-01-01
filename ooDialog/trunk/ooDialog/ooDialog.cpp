@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2013 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -5567,7 +5567,7 @@ RexxMethod1(RexxObjectPtr, pbdlg_test, CSELF, pCSelf)
     RexxMethodContext *c = context;
     pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)pCSelf;
 
-    printf("There are no tests at this time.\n");
+    printf("BCN_DROPDOWN == 0x%x, %d\n", BCN_DROPDOWN, BCN_DROPDOWN);
 
     return NULLOBJECT;
 }

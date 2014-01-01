@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2011-2013 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2011-2014 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -38,7 +38,7 @@
 
    Customer List View						  v04-00 14Nov13
    ------------------
-   
+
    Contains: classes "CustomerListView" and "HRSclv".
 
    Pre-requisite: CustomerListView.rc, CustomerListView.h, CustList.ico,
@@ -50,7 +50,7 @@
    v02-00 08Jan13: Removed stand-alone startup code (not needed after Ex06)
                    Commented out say's.
    v03-00 24May13: Updated to use View and Component mixins.
-   v04-00 14Nov13: Uses the LisView superclass introduced in Exercise 9. 
+   v04-00 14Nov13: Uses the LisView superclass introduced in Exercise 9.
 
    Outstanding Problems: None reported.
 *******************************************************************************/
@@ -83,7 +83,7 @@
     v03-00 24May13: Inherits directly from RcDialog plus the View & Component mixins
     v04-00 14Oct13: Most code provided by the ListView superclass introduced
                     in Exercise 9.
- 
+
 
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
@@ -95,9 +95,9 @@
 
   ::METHOD getDlgConfig CLASS PRIVATE
     dlgConfig = .Directory~new
-    -- Text to appear on the List View:    
+    -- Text to appear on the List View:
     dlgConfig[text] = .HRSclv	-- Text strings visible to the user
-    				-- Columns (Fields) to show in List View:    
+    				-- Columns (Fields) to show in List View:
     dlgConfig[lvColumns] = "Number-60-1-k,Name-170-2,Zip-80-5"
     dlgConfig[dlgSize]   = "225-273"	-- width-height of dialog
     dlgConfig[lvSize]    = "190-215"
@@ -118,10 +118,10 @@
   ---
   The HRSclv class provides constant character strings for dialog title, menus,
   buttons, and user-visible messages issued by the CustomerListView class.
-  
+
   Changes:
   v01-00 07Jun12: First Version
-  v02-00 14Nov13: Second version (used from Exercise 9)  
+  v02-00 14Nov13: Second version (used from Exercise 9)
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 ::CLASS HRSclv PRIVATE		-- Human-Readable Strings
@@ -132,7 +132,7 @@
   ::CONSTANT menu21       "About"
   ::CONSTANT noMenu       "This menu item is not yet implemented."
   ::CONSTANT showButton   "Show Customer"
-  ::CONSTANT cancelButton "Cancel"  
+  ::CONSTANT cancelButton "Cancel"
 
 /*============================================================================*/
 

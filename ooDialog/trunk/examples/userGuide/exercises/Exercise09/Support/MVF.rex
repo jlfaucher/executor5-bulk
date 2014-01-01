@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2011-2013 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2011-2014 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -38,21 +38,21 @@
 
    MVF - Model-View Framework					 v01-00  20May13
    ----------------
-   The starter program for the Model-View Framework. 
-   
+   The starter program for the Model-View Framework.
+
    Outstanding Problems: None reported.
 
    Changes:
      v01-00 20May13: First Version.
-     
-------------------------------------------------------------------------------*/  
-   
+
+------------------------------------------------------------------------------*/
+
 /*//////////////////////////////////////////////////////////////////////////////
   ==============================================================================
   MVF								  v01-00 20May13
   --------------------
   This class starts the various parts of the MFV. Later versions may do more.
-  
+
   = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 ::REQUIRES "support/ObjectMgr.rex"
@@ -64,7 +64,7 @@
   ::ATTRIBUTE theObjectManager PUBLIC
   ::ATTRIBUTE theViewManager   PUBLIC
   ::ATTRIBUTE theEventManager  PUBLIC
-  
+
   /*----------------------------------------------------------------------------
     Instance Methods
     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -79,6 +79,5 @@
     say "MVF-init-01: eventMgr =" self~theEventManager
 --    r = viewMgr  = .ViewMgr~new
 --    r = eventMgr = .EventMgr~new
-    
+
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-   
