@@ -71,15 +71,6 @@ program:
 
 <para>This class encapsulates all the communications necessary to send mail via an
 SMTP server.</para>
-<figure><title>The SMTP class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/SMTPClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
-
-
 
 <table id="ooRexxSMTPClass" frame="all" pgwide="0">
 <title>ooRexx SMTP Class</title>
@@ -123,7 +114,6 @@ smtperrno
 </tbody>
 </tgroup>
 </table>
-
 
 <note><title>Note</title>
 <para>The SMTP class also has available class methods that its
@@ -332,13 +322,45 @@ The initial value for the repsonse is a zero-length string.</para>
 
 <para>This class encapsulates all information needed to communicate a complete message
 to the SMTP server.</para>
-<figure><title>The SMTPMsg class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/SMTPMsgClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
+
+<table id="ooRexxSMTPMsgClass" frame="all" pgwide="0">
+<title>ooRexx SMTPMsg Class</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">SMTPMsg</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2">
+<screen>new
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>addRecipient
+content
+from
+</screen>
+      </entry>
+      <entry>
+<screen>subject
+recipients
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
 <note><title>Note</title>
 <para>The SMTPMsg class also has available class methods that its
 metaclass, the Class class, defines.
