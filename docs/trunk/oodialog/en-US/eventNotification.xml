@@ -2848,21 +2848,21 @@ The drop down combo box sent a selection ended cancel notification message.
         <para>
           Sent by a date and time picker (DTP) control when the user closes the drop-down month calendar. The month
           calendar is closed when the user chooses a date from the month calendar or clicks the drop-down arrow while
-          the calendar is open. The return value from the event handler is ignored for this event.
+          the calendar is open. The return value from the event handler is ignored by the operating system for this event.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>DATETIMECHANGE</term>
         <listitem>
         <para>
           Sent by a date and time picker (DTP) control whenever a change occurs. The return value from the event
-          handler is ignored for this event.
+          handler is ignored by the operating system for this event.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>DROPDOWN</term>
         <listitem>
         <para>
           Sent by a date and time picker (DTP) control when the user activates the drop-down month calendar. The return
-          value from the event handler is ignored for this event.
+          value from the event handler is ignored by the operating system for this event.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>FORMAT</term>
@@ -2903,14 +2903,15 @@ The drop down combo box sent a selection ended cancel notification message.
         <listitem>
         <para>
           Notifies a date and time picker control's parent window, (which is the dialog window,) that the control has
-          lost the input focus. The return value from the event handler is ignored for this event.
+          lost the input focus. The return value from the event handler is ignored by the operating system for this event.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>SETFOCUS</term>
         <listitem>
         <para>
           Notifies a date and time picker control's parent window, (which is the dialog window,) that the control has
-          received the input focus. The return value from the event handler is ignored for this event.
+          received the input focus. The return value from the event handler is ignored by the operating system for this
+          event.
         </para>
         </listitem></varlistentry>
       </variablelist>
@@ -3021,7 +3022,7 @@ The drop down combo box sent a selection ended cancel notification message.
 <programlisting>
 <![CDATA[
 ::method onCloseUp unguarded
-  use arg idFrom, hwndFrom
+  use arg idFrom, hwndFrom, code, dtpObj
 
   return 0
 ]]>
@@ -3031,7 +3032,7 @@ The drop down combo box sent a selection ended cancel notification message.
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method receives 2 arguments:
+    The event handling method receives r arguments:
   </para>
   <variablelist>
     <varlistentry><term>idFrom</term>
@@ -3045,6 +3046,18 @@ The drop down combo box sent a selection ended cancel notification message.
     <listitem>
     <para>
       The window handle of the date and time picker.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>code</term>
+    <listitem>
+    <para>
+      The date time picker event code the caused the event notification to be sent.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>dtpObj</term>
+    <listitem>
+    <para>
+      The Rexx date time picker object that represents the date time picker control that sent the notification.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3066,8 +3079,8 @@ The drop down combo box sent a selection ended cancel notification message.
 <![CDATA[
 
 ::method onCloseUp unguarded
-  expose dtp lastChange
-  use arg id, hwnd
+  expose lastChange
+  use arg id, hwnd, code, dtp
 
   newDate = dtp~getDateTime
   if newDate \= lastChange then do
@@ -3102,7 +3115,7 @@ The drop down combo box sent a selection ended cancel notification message.
 <programlisting>
 <![CDATA[
 ::method onDateTimeChange unguarded
-  use arg dateTime, valid, idFrom, hwndFrom
+  use arg dateTime, valid, idFrom, hwndFrom, code, dtpObj
 
   return 0
 ]]>
@@ -3112,7 +3125,7 @@ The drop down combo box sent a selection ended cancel notification message.
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method receives 4 arguments:
+    The event handling method receives 6 arguments:
   </para>
   <variablelist>
     <varlistentry><term>dateTime</term>
@@ -3144,6 +3157,18 @@ The drop down combo box sent a selection ended cancel notification message.
     <listitem>
     <para>
       The window handle of the date and time picker.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>code</term>
+    <listitem>
+    <para>
+      The date time picker event code the caused the event notification to be sent.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>dtpObj</term>
+    <listitem>
+    <para>
+      The Rexx date time picker object that represents the date time picker control that sent the notification.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3232,7 +3257,7 @@ The drop down combo box sent a selection ended cancel notification message.
 <programlisting>
 <![CDATA[
 ::method onDropDown unguarded
-  use arg idFrom, hwndFrom
+  use arg idFrom, hwndFrom, code, dtpObj
 
   return 0
 ]]>
@@ -3242,7 +3267,7 @@ The drop down combo box sent a selection ended cancel notification message.
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The drop down event handler receives 2 arguments:
+    The drop down event handler receives 4 arguments:
   </para>
   <variablelist>
     <varlistentry><term>idFrom</term>
@@ -3256,6 +3281,18 @@ The drop down combo box sent a selection ended cancel notification message.
     <listitem>
     <para>
       The window handle of the date and time picker.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>code</term>
+    <listitem>
+    <para>
+      The date time picker event code the caused the event notification to be sent.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>dtpObj</term>
+    <listitem>
+    <para>
+      The Rexx date time picker object that represents the date time picker control that sent the notification.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3276,11 +3313,10 @@ The drop down combo box sent a selection ended cancel notification message.
     Rexx month calendar object is no longer valid.
   </para>
   <para>
-    In Windows Vista and later versions of Windows, the DTP control has the
- <xref linkend="mthSetMonthCalStyle"/> method which can be used to set the month calendar's style
-    once and the DTP control will then use that style each time it creates the month calendar. Therefore, the technique
-    of setting the month calendar style during the drop down event handler is really only needed for Windows XP and
-    earlier.
+    In Windows Vista and later versions of Windows, the DTP control has the <xref linkend="mthSetMonthCalStyle"/> method
+    which can be used to set the month calendar's style once and the DTP control will then use that style each time it
+    creates the month calendar. Therefore, the technique of setting the month calendar style during the drop down event
+    handler is really only needed for Windows XP and earlier.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
@@ -3293,8 +3329,6 @@ The drop down combo box sent a selection ended cancel notification message.
 <![CDATA[
 
 ::method initDialog
-  expose dtp
-
   dtp = self~newDateTimePicker(IDC_DTP_APPOINTMENT_TIME);
 
   if .OS~isAtLeastVista then do
@@ -3306,8 +3340,7 @@ The drop down combo box sent a selection ended cancel notification message.
   ...
 
 ::method onDropDown unguarded
-  expose dtp
-  use arg idFrom, hwndFrom
+  use arg idFrom, hwndFrom, code, dtp
 
   -- We know this is not Vista or later, othewise we would not
   -- have gotten the event notification.
@@ -3339,7 +3372,7 @@ The drop down combo box sent a selection ended cancel notification message.
 <programlisting>
 <![CDATA[
 ::method onFormat unguarded
-  use arg field, dateTime, idFrom, hwndFrom
+  use arg field, dateTime, idFrom, hwndFrom, code, dtpObj
 
   return text
 ]]>
@@ -3349,7 +3382,7 @@ The drop down combo box sent a selection ended cancel notification message.
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method receives 4 arguments:
+    The event handling method receives 6 arguments:
   </para>
   <variablelist>
     <varlistentry><term>field</term>
@@ -3376,6 +3409,18 @@ The drop down combo box sent a selection ended cancel notification message.
     <listitem>
     <para>
       The window handle of the date and time picker.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>code</term>
+    <listitem>
+    <para>
+      The date time picker event code the caused the event notification to be sent.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>dtpObj</term>
+    <listitem>
+    <para>
+      The Rexx date time picker object that represents the date time picker control that sent the notification.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3446,7 +3491,7 @@ The drop down combo box sent a selection ended cancel notification message.
 <programlisting>
 <![CDATA[
 ::method onFormatQuery unguarded
-  use arg field, size, id, hwnd
+  use arg field, size, id, hwnd, code, dtpObj
 
   return 0
 ]]>
@@ -3456,7 +3501,7 @@ The drop down combo box sent a selection ended cancel notification message.
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method receives 4 arguments:
+    The event handling method receives 6 arguments:
   </para>
   <variablelist>
     <varlistentry><term>field</term>
@@ -3485,6 +3530,18 @@ The drop down combo box sent a selection ended cancel notification message.
       The window handle of the date and time picker.
     </para>
     </listitem></varlistentry>
+    <varlistentry><term>code</term>
+    <listitem>
+    <para>
+      The date time picker event code the caused the event notification to be sent.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>dtpObj</term>
+    <listitem>
+    <para>
+      The Rexx date time picker object that represents the date time picker control that sent the notification.
+    </para>
+    </listitem></varlistentry>
   </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
@@ -3510,8 +3567,8 @@ The drop down combo box sent a selection ended cancel notification message.
 <![CDATA[
 
 ::method onFormatQuery unguarded
-  expose dtp haveSizes xxSize xxxSize xxxxSize
-  use arg field, size, id, hwnd
+  expose haveSizes xxSize xxxSize xxxxSize
+  use arg field, size, id, hwnd, code, dtp
 
   if \ haveSizes then do
     xxSize  = self~calcSize('XX')
@@ -3555,7 +3612,7 @@ The drop down combo box sent a selection ended cancel notification message.
 <programlisting>
 <![CDATA[
 ::method onKeyDown unguarded
-  use arg field, dateTiem, vKey, idFrom, hwndFrom
+  use arg field, dateTiem, vKey, idFrom, hwndFrom, code, dtpObj
 
   return dateTime
 ]]>
@@ -3565,7 +3622,7 @@ The drop down combo box sent a selection ended cancel notification message.
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method receives xx arguments:
+    The event handling method receives 7 arguments:
   </para>
   <variablelist>
     <varlistentry><term>field</term>
@@ -3599,6 +3656,18 @@ The drop down combo box sent a selection ended cancel notification message.
     <listitem>
     <para>
       The window handle of the date and time picker.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>code</term>
+    <listitem>
+    <para>
+      The date time picker event code the caused the event notification to be sent.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>dtpObj</term>
+    <listitem>
+    <para>
+      The Rexx date time picker object that represents the date time picker control that sent the notification.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3641,7 +3710,7 @@ The drop down combo box sent a selection ended cancel notification message.
 <![CDATA[
 
 ::method onKeyDown unguarded
-  use arg field, dt, vKey, idFrom, hwndFrom
+  use arg field, dt, vKey, idFrom, hwndFrom, code, dtpObj
 
   select
     when field == 'XX' then do
@@ -3684,7 +3753,7 @@ The drop down combo box sent a selection ended cancel notification message.
 <programlisting>
 <![CDATA[
 ::method onKillFocus unguarded
-  use arg idFrom, hwndFrom
+  use arg idFrom, hwndFrom, code, dtpObj
 
   return 0
 ]]>
@@ -3694,7 +3763,7 @@ The drop down combo box sent a selection ended cancel notification message.
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The kill focus event handler receives 2 arguments:
+    The kill focus event handler receives 4 arguments:
   </para>
   <variablelist>
     <varlistentry><term>idFrom</term>
@@ -3708,6 +3777,18 @@ The drop down combo box sent a selection ended cancel notification message.
     <listitem>
     <para>
       The window handle of the date and time picker.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>code</term>
+    <listitem>
+    <para>
+      The date time picker event code the caused the event notification to be sent.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>dtpObj</term>
+    <listitem>
+    <para>
+      The Rexx date time picker object that represents the date time picker control that sent the notification.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3738,7 +3819,7 @@ The drop down combo box sent a selection ended cancel notification message.
 <programlisting>
 <![CDATA[
 ::method onSetFocus unguarded
-  use arg idFrom, hwndFrom
+  use arg idFrom, hwndFrom, code, dtpObj
 
   return 0
 ]]>
@@ -3748,7 +3829,7 @@ The drop down combo box sent a selection ended cancel notification message.
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The set focus event handler receives 2 arguments:
+    The set focus event handler receives 4 arguments:
   </para>
   <variablelist>
     <varlistentry><term>idFrom</term>
@@ -3762,6 +3843,18 @@ The drop down combo box sent a selection ended cancel notification message.
     <listitem>
     <para>
       The window handle of the date and time picker.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>code</term>
+    <listitem>
+    <para>
+      The date time picker event code the caused the event notification to be sent.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>dtpObj</term>
+    <listitem>
+    <para>
+      The Rexx date time picker object that represents the date time picker control that sent the notification.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3790,7 +3883,7 @@ The drop down combo box sent a selection ended cancel notification message.
 <programlisting>
 <![CDATA[
 ::method onUserString unguarded
-  use arg dateTime, userStr, idFrom, hwndFrom
+  use arg dateTime, userStr, idFrom, hwndFrom, code, dtpObj
 
   return newDateTime
 ]]>
@@ -3800,7 +3893,7 @@ The drop down combo box sent a selection ended cancel notification message.
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method receives 4 arguments:
+    The event handling method receives 6 arguments:
   </para>
   <variablelist>
     <varlistentry><term>dateTime</term>
@@ -3827,6 +3920,18 @@ The drop down combo box sent a selection ended cancel notification message.
     <listitem>
     <para>
       The window handle of the date and time picker.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>code</term>
+    <listitem>
+    <para>
+      The date time picker event code the caused the event notification to be sent.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>dtpObj</term>
+    <listitem>
+    <para>
+      The Rexx date time picker object that represents the date time picker control that sent the notification.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -3876,7 +3981,7 @@ The drop down combo box sent a selection ended cancel notification message.
 
 ::method onUserString unguarded
   expose resetting stInvalid
-  use arg dt, userStr, id, hwnd
+  use arg dt, userStr, id, hwnd, code, dtpObj
 
   stInvalid~setText('')
 
@@ -3899,8 +4004,8 @@ The drop down combo box sent a selection ended cancel notification message.
 
 </section>  <!-- End UserString Event Handler -->
 
-
 </section>  <!-- End EventNotification::connectDateTimePickerEvent() -->
+
 
 <section id="mthConnectDraw" xreflabel="connectDraw"><title>connectDraw</title>
 <indexterm><primary>connectDraw</primary></indexterm>
@@ -3917,7 +4022,8 @@ The drop down combo box sent a selection ended cancel notification message.
 <para>
   The <emphasis role="italic">connectDraw</emphasis> method connects the draw control event notification with a method
   in the Rexx dialog. This notification is sent to the underlying dialog by an owner-drawn button, combo box, list box,
-  or menu, when a visual aspect of the control or menu has changed.
+  static, or menu, when a visual aspect of the control or menu has changed. In addition, if a tab control or a list-view have
+  the owner draw fixed style, the also recieve the notifiction.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -3978,48 +4084,15 @@ The drop down combo box sent a selection ended cancel notification message.
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    The notification for the draw control is only sent to the above mentioned controls when they have the OWNERDRAW style.
-    The notification itself is to inform the application that it needs to draw the control at this time. Note that the
-    ooDialog framework is not well suited to drawing operations and it is unlikely that this notification is of much use
-    except in rare circumstances.
+    The notification for the draw control is only sent to the above mentioned controls when they have the OWNERDRAW or
+    OWNERDRAWFIXED styles. The notification itself is to inform the application that it needs to draw the control at this
+    time. Note that the ooDialog framework is not well suited to drawing operations and it is unlikely that this notification
+    is of much use except in rare circumstances.
   </para>
   <para>
-    The details for coding an event handler for the DRAW event are as follows:
+    See the sections on <link linkend="sctConnectingEventHandlers">connecting</link> and <link
+    linkend="sctCodingEventHandlers">coding</link> event handlers for additional information on event handlers.
   </para>
-<programlisting>
-<![CDATA[
-::method onDrawEvent unguarded
-  use arg id, pointer
-
-  -- Do something
-
-  return 0
-]]>
-</programlisting>
-
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The event handling method recieves 2 arguments:
-  </para>
-  <variablelist>
-    <varlistentry><term>id</term>
-    <listitem>
-    <para>
-      The resource ID of the control that needs to be drawn.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>pointer</term>
-    <listitem>
-    <para>
-      The numeric value of a pointer to a memory location. This is of no use to the ooDialog programmer. There is no way to
-      access the data the pointer points to from the ooDialog program.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </listitem></varlistentry>
-</variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
@@ -4035,7 +4108,82 @@ The drop down combo box sent a selection ended cancel notification message.
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>
+
+
+<section id="evtEventNotificationDRAW" xreflabel="DRAW"><title>Draw Event Handler</title>
+<indexterm><primary>EventNotification class</primary><secondary>events</secondary><tertiary>DRAW</tertiary></indexterm>
+<para>
+  The event handler for the Draw event is invoked when a button, combo box, list box, or menu, with the owner-draw style,
+  needs to be redrawn.
+</para>
+<para>
+  The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthConnectDraw"/> method
+  determines how the event handler needs to respond to the notification.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onDraw unguarded
+  use arg id, pointer, cntrlObj
+
+  return zz
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves xx arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The resource ID of the control that needs to be drawn.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>pointer</term>
+    <listitem>
+    <para>
+      The numeric value of a pointer to a memory location. This is of no use to the ooDialog programmer. There is no way to
+      access the data the pointer points to from the ooDialog program.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>cntrlObj</term>
+    <listitem>
+    <para>
+      The Rexx dialog control object that represents the control that needs to be drawn. If it is a menu item that needs to
+      be drawn, this may be the <computeroutput>.nil</computeroutput> object. <emphasis role="bold">Please Note:</emphasis>
+      In future versions of ooDialog this may be the Rexx menu object that contains the menu item needing to be drawn.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example ...
+
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End Draw Event Handler -->
+
+</section>  <!-- End EventNotification::connectDraw() -->
 
 <section id="mthConnectEditEvent" xreflabel="connectEditEvent"><title>connectEditEvent</title>
 <indexterm><primary>connectEditEvent</primary></indexterm>
@@ -4302,6 +4450,166 @@ The drop down combo box sent a selection ended cancel notification message.
 
 </section>  <!-- End EventNotification::connectEditEvent() -->
 
+<section id="mthConnectHelp" xreflabel="connectHelp"><title>connectHelp</title>
+<indexterm><primary>connectHelp</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>connectHelp</secondary></indexterm>
+<indexterm><primary>EventNotification class</primary><secondary>connectHelp</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--connectHelp(--+--------------+--)------------><
+                  +--methodName--+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">connectHelp</emphasis> method connects the Windows Help event with a method in the dialog. The Windows Help
+  event occurs when the user presses the F1 key.  (Only the Help events generated when the dialog is the active window
+  are connected.)
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The only argument is:
+  <variablelist>
+    <varlistentry><term>methodName [optional]</term>
+    <listitem>
+    <para>
+      The name of the method that to be invoked when the help event occurs. The name can not be the empty string. When
+      this argument is omitted the name defaults to <emphasis role="italic">onHelp</emphasis>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+  <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      No error.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      An (internal) error prevented the message from being connected to a method.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Note that the Windows help event notification connected by this method is not the same as the help <emphasis
+    role="bold">command</emphasis> event notification <link linkend="sctStandardEventMethods">automatically</link> connected
+    when a dialog object is instantiated.
+  </para>
+  <para>
+    The method connected to the Help event will receive the following four arguments in the order listed:
+  <variablelist>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The resource ID of the dialog, dialog control, or menu item that had the focus when the F1 key was pressed.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>type</term>
+    <listitem>
+    <para>
+      Specifies if the ID in argument 1 was from a window (a dialog or dialog control) or from a menu item.  This
+      argument will either be <computeroutput>WINDOW</computeroutput> or <computeroutput>MENU
+    </computeroutput>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>mouseX</term>
+    <listitem>
+    <para>
+      The x coordinate of the mouse at the time the F1 key was pressed.  This value is an absolute screen coordinate
+      (pixel) and note that the mouse will not necessarily be over the dialog.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>mouseY</term>
+    <listitem>
+    <para>
+      The y coordinate of the mouse at the time the F1 key was pressed.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
+  <listitem>
+  <para>
+    Syntax errors are raised when incorrect usage is detected.
+  </para>
+  <para>
+    If the programmer does not provide a matching method in the Rexx dialog, a syntax condition will be raised if any
+    help events happen.
+  </para>
+  <para>
+    In Windows itself, the dialog receives this notification as a WM_HELP message.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+
+<programlisting>
+<![CDATA[
+
+::method init
+    self~init:super
+    ...
+    self~connectResize(onResize)
+    self~connectHelp(onHelp)
+    ...
+
+::method onHelp unguarded
+    use arg id, type, mouseX, mouseY
+    if type == "MENU" then w = 'Menu id' id; else w = 'Dialog id' id
+    say "Help request:"
+    say " " w
+    say "  Mouse position x:" mouseX "y:" mouseY
+
+    return 0
+
+/* As the user presses the F1 key at various times when the dialog has the focus
+ * the output might be as follows:
+ */
+
+Help request:
+  Dialog id 12
+  Mouse position x: 420 y: 106
+Help request:
+  Menu id 60
+  Mouse position x: 204 y: 93
+Help request:
+  Menu id 65
+  Mouse position x: 203 y: 166
+Help request:
+  Dialog id 14
+  Mouse position x: 218 y: 410
+Help request:
+  Dialog id 80
+  Mouse position x: 387 y: 462
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>
+
+
+<section id="sctConnectingKeyPressEvents"><title>Connecting Key Press Events</title>
+<indexterm><primary>Connecting Key Press Events</primary></indexterm>
+
+<para>
+
+</para>
+
 <section id="mthConnectFKeyPressDialogObject" xreflabel="connectFKeyPress"><title>connectFKeyPress</title>
 <indexterm><primary>connectFKeyPress</primary><secondary>dialog object</secondary></indexterm>
 <indexterm><primary>EventNotification class</primary><secondary>connectFKeyPress</secondary></indexterm>
@@ -4470,159 +4778,8 @@ The drop down combo box sent a selection ended cancel notification message.
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>
 
-<section id="mthConnectHelp" xreflabel="connectHelp"><title>connectHelp</title>
-<indexterm><primary>connectHelp</primary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>connectHelp</secondary></indexterm>
-<indexterm><primary>EventNotification class</primary><secondary>connectHelp</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--connectHelp(--+--------------+--)------------><
-                  +--methodName--+
-]]>
-</programlisting>
-
-<para>
-  The <emphasis role="italic">connectHelp</emphasis> method connects the Windows Help event with a method in the dialog. The Windows Help
-  event occurs when the user presses the F1 key.  (Only the Help events generated when the dialog is the active window
-  are connected.)
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The only argument is:
-  <variablelist>
-    <varlistentry><term>methodName [optional]</term>
-    <listitem>
-    <para>
-      The name of the method that to be invoked when the help event occurs. The name can not be the empty string. When
-      this argument is omitted the name defaults to <emphasis role="italic">onHelp</emphasis>.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-  <variablelist>
-    <varlistentry><term>0</term>
-    <listitem>
-    <para>
-      No error.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>1</term>
-    <listitem>
-    <para>
-      An (internal) error prevented the message from being connected to a method.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para></listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Note that the Windows help event notification connected by this method is not the same as the help <emphasis
-    role="bold">command</emphasis> event notification <link linkend="sctStandardEventMethods">automatically</link> connected
-    when a dialog object is instantiated.
-  </para>
-  <para>
-    The method connected to the Help event will receive the following four arguments in the order listed:
-  <variablelist>
-    <varlistentry><term>id</term>
-    <listitem>
-    <para>
-      The resource ID of the dialog, dialog control, or menu item that had the focus when the F1 key was pressed.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>type</term>
-    <listitem>
-    <para>
-      Specifies if the ID in argument 1 was from a window (a dialog or dialog control) or from a menu item.  This
-      argument will either be <computeroutput>WINDOW</computeroutput> or <computeroutput>MENU
-    </computeroutput>.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>mouseX</term>
-    <listitem>
-    <para>
-      The x coordinate of the mouse at the time the F1 key was pressed.  This value is an absolute screen coordinate
-      (pixel) and note that the mouse will not necessarily be over the dialog.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>mouseY</term>
-    <listitem>
-    <para>
-      The y coordinate of the mouse at the time the F1 key was pressed.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
-  <listitem>
-  <para>
-    Syntax errors are raised when incorrect usage is detected.
-  </para>
-  <para>
-    If the programmer does not provide a matching method in the Rexx dialog, a syntax condition will be raised if any
-    help events happen.
-  </para>
-  <para>
-    In Windows itself, the dialog receives this notification as a WM_HELP message.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-
-<programlisting>
-<![CDATA[
-
-::method init
-    self~init:super
-    ...
-    self~connectResize(onResize)
-    self~connectHelp(onHelp)
-    ...
-
-::method onHelp unguarded
-    use arg id, type, mouseX, mouseY
-    if type == "MENU" then w = 'Menu id' id; else w = 'Dialog id' id
-    say "Help request:"
-    say " " w
-    say "  Mouse position x:" mouseX "y:" mouseY
-
-    return 0
-
-/* As the user presses the F1 key at various times when the dialog has the focus
- * the output might be as follows:
- */
-
-Help request:
-  Dialog id 12
-  Mouse position x: 420 y: 106
-Help request:
-  Menu id 60
-  Mouse position x: 204 y: 93
-Help request:
-  Menu id 65
-  Mouse position x: 203 y: 166
-Help request:
-  Dialog id 14
-  Mouse position x: 218 y: 410
-Help request:
-  Dialog id 80
-  Mouse position x: 387 y: 462
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>
+</section>  <!-- End EventNotification::connectFKeyPress() -->
 
 <section id="mthConnectKeyPressDialogObject" xreflabel="connectKeyPress"><title>connectKeyPress</title>
 <indexterm><primary>connectKeyPress</primary><secondary>dialog object</secondary></indexterm>
@@ -4885,112 +5042,6 @@ Help request:
   <para>
     The ooDialog method connected to the key press event will receive the following five arguments in the order listed:
     <variablelist>
-      <varlistentry><term>keyCode</term>
-      <listitem>
-      <para>
-        The numeric code of the key pressed.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>shift</term>
-      <listitem>
-      <para>
-        A boolean (true or false) that denotes whether a shift key was down or up at the time of the key press. It will
-        be true if a shift key was down and false if the shift key was not down.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>control</term>
-      <listitem>
-      <para>
-        True if a control key was down at the time of the key press, false if it was not.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>alt</term>
-      <listitem>
-      <para>
-        True if an alt key was down at the time of the key press, false if it was not.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>extraInfo</term>
-      <listitem>
-      <para>
-        This argument is a string containing keywords.  It supplies extra information about the keyboard state at the
-        time of a key press event. The string will contain some combination of these keywords
-        <variablelist>
-          <varlistentry><term>numOn</term>
-          <listitem>
-          <para>
-            Num Lock was on at the time of the key press event.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>numOff</term>
-          <listitem>
-          <para>
-            Num Lock was off.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>capsOn</term>
-          <listitem>
-          <para>
-            Caps Lock was on at the time of the key press event.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>capsOff</term>
-          <listitem>
-          <para>
-            Caps Lock was off.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>scrollOn</term>
-          <listitem>
-          <para>
-            Scroll Lock was on at the time of the key press event.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>scrollOff</term>
-          <listitem>
-          <para>
-            Scroll Lock was off.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>lShift</term>
-          <listitem>
-          <para>
-            The left shift key was down at the time of the key press event.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>rShift</term>
-          <listitem>
-          <para>
-            The right shift key was down.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>lControl</term>
-          <listitem>
-          <para>
-            The left control key was down at the time of the key press event.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>rControl</term>
-          <listitem>
-          <para>
-            The right control key was down.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>lAlt</term>
-          <listitem>
-          <para>
-            The left alt key was down at the time of the key press event.
-          </para>
-          </listitem></varlistentry>
-          <varlistentry><term>rAlt</term>
-          <listitem>
-          <para>
-            The right alt key was down.
-          </para>
-          </listitem></varlistentry>
-        </variablelist>
-      </para>
-      </listitem></varlistentry>
     </variablelist>
   </para>
   </listitem></varlistentry>
@@ -5043,7 +5094,434 @@ Help request:
   </listitem></varlistentry>
 </variablelist>
 
-</section>
+</section> <!-- End EventNotification::connectKeyPress() -->
+
+<section id="mthDisconnectKeyPressDialogObject" xreflabel="disconnectKeyPress"><title>disconnectKeyPress</title>
+<indexterm><primary>disconnectKeyPress</primary><secondary>dialog object</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>disconnectKeyPress</secondary></indexterm>
+<indexterm><primary>EventNotification class</primary><secondary>disconnectFKeyPress</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--disconnectKeyPress(--+--------------+--)-----><
+                         +--methodName--+
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">disconnectKeyPress</emphasis> method disconnects a key press event from a method that was
+  previously connected using <xref linkend="mthConnectKeyPressDialogObject"/>, or
+ <xref linkend="mthConnectFKeyPressDialogObject"/>.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+    <variablelist>
+      <varlistentry><term>methodName [optional]</term>
+      <listitem>
+      <para>
+        If <emphasis role="italic">methodName</emphasis> is specified, only the key press events connected to that
+        method are disconnected. If the argument is omitted, then all key press events for the dialog will be
+        disconnected.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The possible return values are:
+    <variablelist>
+      <varlistentry><term>0</term>
+      <listitem>
+      <para>
+        Success.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-2</term>
+      <listitem>
+      <para>
+        While trying to disconnect the method, the underlying mechanism in the Windows API that is used to capture key
+        events had an error. This is unlikely to happen.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>-7</term>
+      <listitem>
+      <para>
+        Either the <emphasis role="italic">methodName</emphasis> method is already disconnected, or there are no methods
+        connected at all.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The dialog control object also has a <xref linkend="mthDisconnectKeyPressDialogControlObject"/>
+    method. The method of the dialog object (this method) can only disconnect key press events that were set with the
+    dialog object's versions of <xref linkend="mthConnectKeyPressDialogObject"/> and
+ <xref linkend="mthConnectFKeyPressDialogObject"/> methods. This method can not disconnect key press
+    events that were set with the dialog control object's versions of
+ <xref linkend="mthConnectKeyPressDialogControlObject"/> and
+ <xref linkend="mthConnectFKeyPressDialogControlObject"/> methods.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when some incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example is a variation on the <link linkend="connectKeyPressExample">example</link> shown for the
+    <xref linkend="mthConnectKeyPressDialogObject"/> method. It builds on the fictitious customer
+    order system.  The F7 key saves the completed invoice into the system and enters a different phase of the companies
+    business process. At this point (for whatever fictitious business reason) the fields can no longer be cleared and
+    the user is not allowed to look up customer or product information.  But, the user may still need to print the
+    invoice.  To prevent the accidental press of the hot keys causing the wrong action, those key presses are
+    disconnected.
+  </para>
+  <para>
+    To demonstrate how key press connections can be added and removed through out the life time of the dialog, this
+    example adds the F9 hot key.  F9 starts a new order entry cycle and re-connects the hot keys used during the
+    creation of a customer invoice.  When the user then saves the next completed invoice, key press connections are
+    removed, when she starts a new invoice key press connections are restored.  This cycle could continue though out the
+    day without the user ever closing the main dialog.
+
+<programlisting>
+<![CDATA[
+
+::method initDialog
+
+  ...
+
+  -- Capture F2 key presses, but not Ctrl-F2 or Alt-F2, etc..
+  self~connectKeyPress(onF2, .VK~F2, "NONE")
+
+  -- Same idea for F3, F4, F5, and F7.  This uses the actual numeric value for
+  -- the keys without bothering to use the .VK class to translate.
+  self~connectKeyPress(onF3, 114, "NONE")
+  self~connectKeyPress(onF4, 115, "NONE")
+  self~connectKeyPress(onF5, 116, "NONE")
+  self~connectKeyPress(onF7, 118, "NONE")
+  self~connectKeyPress(onF9, 120, "NONE")
+
+  ...
+
+::method onF2 unguarded
+  self~showCustomerLookupDialog
+
+  return 0
+
+::method onF3 unguarded
+
+  prodNum = self~newEdit(IDC_EDIT_PRODUCT)~getText
+  if prodNum \== "" then self~showProductInfo(prodNum)
+  return 0
+
+::method onF4
+  self~resetAllFields
+  return 0
+
+::method onF5
+  self~printInvoice
+  return 0
+
+::method onF7
+
+  self~saveToDataBase
+  self~disconnectKeyPress(onF2)
+  self~disconnectKeyPress(onF3)
+  self~disconnectKeyPress(onF4)
+  return 0
+
+::method onF9
+
+  self~resetAllFields
+  self~connectKeyPress(onF2, 112, "NONE")
+  self~connectKeyPress(onF3, 114, "NONE")
+  self~connectKeyPress(onF4, 115, "NONE")
+  return 0
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End EventNotification::disconnectKeyPress() -->
+
+<section id="mthHasKeyPressConnectionDialogObject" xreflabel="hasKeyPressConnection"><title>hasKeyPressConnection</title>
+<indexterm><primary>hasKeyPressConnection</primary><secondary>dialog object</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>hasKeyPressConnection</secondary></indexterm>
+<indexterm><primary>EventNotification class</primary><secondary>hasKeyPressConnection</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--hasKeyPressConnection(--+--------------+--)--><
+                            +--methodName--+
+
+]]>
+</programlisting>
+
+<para>
+  This method is used to query if a connection to a key press event already exists.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>The single optional argument is:
+  <variablelist>
+    <varlistentry><term>methodName [optional]</term>
+    <listitem>
+    <para>
+      Query if any key press events are connected to the specified method. If this argument is omitted, the query is if
+      any key press events are connected to <emphasis role="bold">any</emphasis> methods.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns <computeroutput>.true</computeroutput> if the method is connected to a key press event or
+    <computeroutput>.false</computeroutput> otherwise.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    The dialog control object also has a
+ <xref linkend="mthHasKeyPressConnectionDialogControlObject"/> method. The method of the dialog
+    object (this method) can only check for connections that were set with the dialog object's versions of
+ <xref linkend="mthConnectKeyPressDialogObject"/> and
+ <xref linkend="mthConnectFKeyPressDialogObject"/> methods. This method can not check for connections
+    that were set with the dialog control object's versions of
+ <xref linkend="mthConnectKeyPressDialogControlObject"/> and
+ <xref linkend="mthConnectFKeyPressDialogControlObject"/> methods.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example could come from a dialog where the user has the option to use hot keys or not.  When the
+    reset button is pushed the state of the dialog fields are reset.  The hot keys enabled check box is set to reflect
+    whether hot keys are currently enabled or not.
+
+<programlisting>
+
+<![CDATA[
+
+::method defineDialog
+
+  ...
+  self~createCheckBox(IDC_CHECK_FKEYSENABlED, 30, 60, , , , "Hot Keys Enabled")
+  ...
+  self~createPushButton(IDC_PB_RESET, 60, 135, 45, 15, , "Reset", onReset)
+  ...
+
+::method onReset unguarded
+
+  ...
+  if self~hasKeyPressConnection then
+    self~newCheckBox(IDC_CHECK_FKEYSENABlED)~check
+  else
+    self~newCheckBox(IDC_CHECK_FKEYSENABlED)~uncheck
+  ...
+  return 0
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End EventNotification::hasKeyPressConnection() -->
+
+<section id="evtEventNotificationKEYPRESS" xreflabel="KEYPRESS"><title>KeyPress Event Handler</title>
+<indexterm><primary>EventNotification class</primary><secondary>events</secondary><tertiary>KEYPRESS</tertiary></indexterm>
+<para>
+  The event handler for the key press event is invoked when a key connected through the <xref
+  linkend="mthConnectKeyPressDialogObject"/> or the <xref linkend="mthConnectFKeyPressDialogObject"/> method is typed when the
+  dialog has the focus.
+</para>
+<para>
+  The interpreter replies immediately to the operating system when the key is pressed. Tthe event handler is then invoked
+  concurrently as a separate activity and the interpreter does not wait for the return. The value returned from the event
+  handler is ignored and the programmer need not return a value from the handerl. However, good practice would be to always
+  return a value from an event handler.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onKeyPress unguarded
+  use arg keyCode, shift, control, alt, extraInfo
+
+  return 0
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves 5 arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>keyCode</term>
+    <listitem>
+    <para>
+      The numeric code of the key pressed.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>shift</term>
+    <listitem>
+    <para>
+      A boolean (true or false) that denotes whether a shift key was down or up at the time of the key press. It will
+      be true if a shift key was down and false if the shift key was not down.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>control</term>
+    <listitem>
+    <para>
+      True if a control key was down at the time of the key press, false if it was not.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>alt</term>
+    <listitem>
+    <para>
+      True if an alt key was down at the time of the key press, false if it was not.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>extraInfo</term>
+    <listitem>
+    <para>
+      This argument is a string containing keywords.  It supplies extra information about the keyboard state at the
+      time of a key press event. The string will contain some combination of these keywords
+      <variablelist>
+        <varlistentry><term>numOn</term>
+        <listitem>
+        <para>
+          Num Lock was on at the time of the key press event.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>numOff</term>
+        <listitem>
+        <para>
+          Num Lock was off.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>capsOn</term>
+        <listitem>
+        <para>
+          Caps Lock was on at the time of the key press event.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>capsOff</term>
+        <listitem>
+        <para>
+          Caps Lock was off.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>scrollOn</term>
+        <listitem>
+        <para>
+          Scroll Lock was on at the time of the key press event.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>scrollOff</term>
+        <listitem>
+        <para>
+          Scroll Lock was off.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>lShift</term>
+        <listitem>
+        <para>
+          The left shift key was down at the time of the key press event.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>rShift</term>
+        <listitem>
+        <para>
+          The right shift key was down.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>lControl</term>
+        <listitem>
+        <para>
+          The left control key was down at the time of the key press event.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>rControl</term>
+        <listitem>
+        <para>
+          The right control key was down.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>lAlt</term>
+        <listitem>
+        <para>
+          The left alt key was down at the time of the key press event.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>rAlt</term>
+        <listitem>
+        <para>
+          The right alt key was down.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    The return value from the event handler is discarded. Zero would make a good value to return.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example comes from an application where the user can type F3 to close the current dialog and Alt-F3 to
+    close the entire application. The event handler checks that only the Alt key is down when the F3 key is pressed and
+    closes the application if that is true. Otherwise, if only the F3 key is pressed, then the handler closes the dialog:
+
+<programlisting>
+<![CDATA[
+::method initDialog
+  self~connectKeyPress(onQuitKey, .VK~F3)
+
+::method onQuitKey
+  use arg key, shift, control, alt, info
+  say 'Key press:' key 'shift?' shift 'control?' control || -
+      ' alt?' alt 'extra info:' info
+
+  if shift then return
+  if control then return
+  if alt then return self~quitApplication
+
+  -- Only F3 is pressed, close this dialog
+  return self~cancel:super
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End KeyPress Event Handler -->
+
+</section> <!-- End Connecting Key Press Events section -->
+
 
 <section id="mthConnectListBoxEvent" xreflabel="connectListBoxEvent"><title>connectListBoxEvent</title>
 <indexterm><primary>connectListBoxEvent</primary></indexterm>
@@ -8795,11 +9273,9 @@ ctrlID: 200 dx: 0 dy: 1 listView: a ListView endScroll
     <varlistentry><term>willReply [optional]</term>
     <listitem>
     <para>
-      The default behavior is for the interpreter to wait in the window <xref linkend="ovvWindowMessages"/> processing loop
-      for the return from the event handler, (the default for <emphasis role="italic">willReply</emphasis> is
-      <computeroutput>.true</computeroutput>). However, the operating system ignores the return from this event notification.
-      Specifying <computeroutput>.false</computeroutput> changes the default behavior so that the interpreter does not wait
-      for the return from the event handling method.
+      The <link linkend="sctCommonWillReply">willReply</link> argument controls how the interpreter invokes the event
+      handler for the connected event. The default if <emphasis role="italic">willReply</emphasis> is omitted is
+      <computeroutput>.true</computeroutput>.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -12670,254 +13146,6 @@ trackbar position by extracting the high-oder word. Example:
 ]]>
 </programlisting>
 </para>
-</section>
-
-<section id="mthDisconnectKeyPressDialogObject" xreflabel="disconnectKeyPress"><title>disconnectKeyPress</title>
-<indexterm><primary>disconnectKeyPress</primary><secondary>dialog object</secondary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>disconnectKeyPress</secondary></indexterm>
-<indexterm><primary>EventNotification class</primary><secondary>disconnectFKeyPress</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--disconnectKeyPress(--+--------------+--)-----><
-                         +--methodName--+
-
-]]>
-</programlisting>
-
-<para>
-  The <emphasis role="italic">disconnectKeyPress</emphasis> method disconnects a key press event from a method that was
-  previously connected using <xref linkend="mthConnectKeyPressDialogObject"/>, or
- <xref linkend="mthConnectFKeyPressDialogObject"/>.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The single argument is:
-    <variablelist>
-      <varlistentry><term>methodName [optional]</term>
-      <listitem>
-      <para>
-        If <emphasis role="italic">methodName</emphasis> is specified, only the key press events connected to that
-        method are disconnected. If the argument is omitted, then all key press events for the dialog will be
-        disconnected.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    The possible return values are:
-    <variablelist>
-      <varlistentry><term>0</term>
-      <listitem>
-      <para>
-        Success.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>-2</term>
-      <listitem>
-      <para>
-        While trying to disconnect the method, the underlying mechanism in the Windows API that is used to capture key
-        events had an error. This is unlikely to happen.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>-7</term>
-      <listitem>
-      <para>
-        Either the <emphasis role="italic">methodName</emphasis> method is already disconnected, or there are no methods
-        connected at all.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    The dialog control object also has a <xref linkend="mthDisconnectKeyPressDialogControlObject"/>
-    method. The method of the dialog object (this method) can only disconnect key press events that were set with the
-    dialog object's versions of <xref linkend="mthConnectKeyPressDialogObject"/> and
- <xref linkend="mthConnectFKeyPressDialogObject"/> methods. This method can not disconnect key press
-    events that were set with the dialog control object's versions of
- <xref linkend="mthConnectKeyPressDialogControlObject"/> and
- <xref linkend="mthConnectFKeyPressDialogControlObject"/> methods.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    Raises syntax errors when some incorrect usage is detected.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    The following example is a variation on the <link linkend="connectKeyPressExample">example</link> shown for the
-    <xref linkend="mthConnectKeyPressDialogObject"/> method. It builds on the fictitious customer
-    order system.  The F7 key saves the completed invoice into the system and enters a different phase of the companies
-    business process. At this point (for whatever fictitious business reason) the fields can no longer be cleared and
-    the user is not allowed to look up customer or product information.  But, the user may still need to print the
-    invoice.  To prevent the accidental press of the hot keys causing the wrong action, those key presses are
-    disconnected.
-  </para>
-  <para>
-    To demonstrate how key press connections can be added and removed through out the life time of the dialog, this
-    example adds the F9 hot key.  F9 starts a new order entry cycle and re-connects the hot keys used during the
-    creation of a customer invoice.  When the user then saves the next completed invoice, key press connections are
-    removed, when she starts a new invoice key press connections are restored.  This cycle could continue though out the
-    day without the user ever closing the main dialog.
-
-<programlisting>
-<![CDATA[
-
-::method initDialog
-
-  ...
-
-  -- Capture F2 key presses, but not Ctrl-F2 or Alt-F2, etc..
-  self~connectKeyPress(onF2, .VK~F2, "NONE")
-
-  -- Same idea for F3, F4, F5, and F7.  This uses the actual numeric value for
-  -- the keys without bothering to use the .VK class to translate.
-  self~connectKeyPress(onF3, 114, "NONE")
-  self~connectKeyPress(onF4, 115, "NONE")
-  self~connectKeyPress(onF5, 116, "NONE")
-  self~connectKeyPress(onF7, 118, "NONE")
-  self~connectKeyPress(onF9, 120, "NONE")
-
-  ...
-
-::method onF2 unguarded
-  self~showCustomerLookupDialog
-
-  return 0
-
-::method onF3 unguarded
-
-  prodNum = self~newEdit(IDC_EDIT_PRODUCT)~getText
-  if prodNum \== "" then self~showProductInfo(prodNum)
-  return 0
-
-::method onF4
-  self~resetAllFields
-  return 0
-
-::method onF5
-  self~printInvoice
-  return 0
-
-::method onF7
-
-  self~saveToDataBase
-  self~disconnectKeyPress(onF2)
-  self~disconnectKeyPress(onF3)
-  self~disconnectKeyPress(onF4)
-  return 0
-
-::method onF9
-
-  self~resetAllFields
-  self~connectKeyPress(onF2, 112, "NONE")
-  self~connectKeyPress(onF3, 114, "NONE")
-  self~connectKeyPress(onF4, 115, "NONE")
-  return 0
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-
-</section>
-
-<section id="mthHasKeyPressConnectionDialogObject" xreflabel="hasKeyPressConnection"><title>hasKeyPressConnection</title>
-<indexterm><primary>hasKeyPressConnection</primary><secondary>dialog object</secondary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>hasKeyPressConnection</secondary></indexterm>
-<indexterm><primary>EventNotification class</primary><secondary>hasKeyPressConnection</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--hasKeyPressConnection(--+--------------+--)--><
-                            +--methodName--+
-
-]]>
-</programlisting>
-
-<para>
-  This method is used to query if a connection to a key press event already exists.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>The single optional argument is:
-  <variablelist>
-    <varlistentry><term>methodName [optional]</term>
-    <listitem>
-    <para>
-      Query if any key press events are connected to the specified method. If this argument is omitted, the query is if
-      any key press events are connected to <emphasis role="bold">any</emphasis> methods.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-    Returns <computeroutput>.true</computeroutput> if the method is connected to a key press event or
-    <computeroutput>.false</computeroutput> otherwise.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
-  <listitem>
-  <para>
-    The dialog control object also has a
- <xref linkend="mthHasKeyPressConnectionDialogControlObject"/> method. The method of the dialog
-    object (this method) can only check for connections that were set with the dialog object's versions of
- <xref linkend="mthConnectKeyPressDialogObject"/> and
- <xref linkend="mthConnectFKeyPressDialogObject"/> methods. This method can not check for connections
-    that were set with the dialog control object's versions of
- <xref linkend="mthConnectKeyPressDialogControlObject"/> and
- <xref linkend="mthConnectFKeyPressDialogControlObject"/> methods.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    The following example could come from a dialog where the user has the option to use hot keys or not.  When the
-    reset button is pushed the state of the dialog fields are reset.  The hot keys enabled check box is set to reflect
-    whether hot keys are currently enabled or not.
-
-<programlisting>
-
-<![CDATA[
-
-::method defineDialog
-
-  ...
-  self~createCheckBox(IDC_CHECK_FKEYSENABlED, 30, 60, , , , "Hot Keys Enabled")
-  ...
-  self~createPushButton(IDC_PB_RESET, 60, 135, 45, 15, , "Reset", onReset)
-  ...
-
-::method onReset unguarded
-
-  ...
-  if self~hasKeyPressConnection then
-    self~newCheckBox(IDC_CHECK_FKEYSENABlED)~check
-  else
-    self~newCheckBox(IDC_CHECK_FKEYSENABlED)~uncheck
-  ...
-  return 0
-
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-
 </section>
 
 </section>
