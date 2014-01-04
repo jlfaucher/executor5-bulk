@@ -707,6 +707,17 @@ static RexxStringObject wmsz2string(RexxThreadContext *c, WPARAM wParam)
 }
 
 /**
+ * Releases the local reference on a Rexx object if the objet is not NULL
+ */
+inline void safeLocalRelease(RexxThreadContext *c, RexxObjectPtr o)
+{
+    if ( o != NULLOBJECT )
+    {
+        c->ReleaseLocalReference(o);
+    }
+}
+
+/**
  * Checks if a SYSTEMTIME struct's values are all 0.
  *
  * @param sysTime  Pointer to the struct to check.
@@ -1683,7 +1694,7 @@ MsgReplyType processBCN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
     RexxObjectPtr   idFrom   = idFrom2rexxArg(c, lParam);
     RexxObjectPtr   rxButton = controlFrom2rexxArg(pcpbd, lParam, buttonType);
     RexxArrayObject args;
-                                                LBN_SELCHANGE = 1
+
     switch ( code )
     {
         case BCN_HOTITEMCHANGE :
@@ -1718,7 +1729,6 @@ MsgReplyType processBCN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
     return ReplyTrue;
 }
 
-
 /**
  * Processes date time picker notification messages.
  *
@@ -1737,9 +1747,12 @@ MsgReplyType processBCN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
  */
 MsgReplyType processDTN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, uint32_t code, LPARAM lParam, pCPlainBaseDialog pcpbd)
 {
-    RexxObjectPtr rexxReply;
-    RexxObjectPtr idFrom = idFrom2rexxArg(c, lParam);
-    RexxObjectPtr hwndFrom = hwndFrom2rexxArg(c, lParam);
+    RexxObjectPtr rexxReply = NULLOBJECT;
+    RexxObjectPtr args      = NULLOBJECT;
+    RexxObjectPtr idFrom    = idFrom2rexxArg(c, lParam);
+    RexxObjectPtr hwndFrom  = hwndFrom2rexxArg(c, lParam);
+    RexxObjectPtr rxCode    = c->UnsignedInt32(code);
+    RexxObjectPtr rxDTP     = createControlFromHwnd(c, pcpbd, ((NMHDR *)lParam)->hwndFrom, winDateTimePicker, true);
     bool          expectReply = (tag & TAG_REPLYFROMREXX) == TAG_REPLYFROMREXX;
 
     switch ( code )
@@ -1763,16 +1776,12 @@ MsgReplyType processDTN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
             }
 
             RexxArrayObject args = c->ArrayOfFour(dt, valid, idFrom, hwndFrom);
+            c->ArrayPut(args, rxCode, 5);
+            c->ArrayPut(args, rxDTP, 6);
 
-            if ( expectReply )
-            {
-                invokeDirect(c, pcpbd, methodName, args);
-            }
-            else
-            {
-                invokeDispatch(c, pcpbd, methodName, args);
-            }
+            genericInvoke(pcpbd, methodName, args, tag);
 
+            c->ReleaseLocalReference(dt);
             break;
         }
 
@@ -1780,10 +1789,13 @@ MsgReplyType processDTN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
         {
             LPNMDATETIMEFORMAT pFormat = (LPNMDATETIMEFORMAT)lParam;
 
+            RexxObjectPtr format = c->String(pFormat->pszFormat);
             RexxObjectPtr dt;
             sysTime2dt(c, &(pFormat->st), &dt, dtFull);
 
             RexxArrayObject args = c->ArrayOfFour(c->String(pFormat->pszFormat), dt, idFrom, hwndFrom);
+            c->ArrayPut(args, rxCode, 5);
+            c->ArrayPut(args, rxDTP, 6);
 
             rexxReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
 
@@ -1801,6 +1813,10 @@ MsgReplyType processDTN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
                 }
             }
 
+            c->ReleaseLocalReference(dt);
+            c->ReleaseLocalReference(format);
+            safeLocalRelease(c, rexxReply);
+
             break;
         }
 
@@ -1808,9 +1824,12 @@ MsgReplyType processDTN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
         {
             LPNMDATETIMEFORMATQUERY pQuery = (LPNMDATETIMEFORMATQUERY)lParam;
 
-            RexxObjectPtr _size = rxNewSize(c, 0, 0);
+            RexxObjectPtr _size  = rxNewSize(c, 0, 0);
+            RexxObjectPtr format = c->String(pQuery->pszFormat);
 
-            RexxArrayObject args = c->ArrayOfFour(c->String(pQuery->pszFormat), _size, idFrom, hwndFrom);
+            RexxArrayObject args = c->ArrayOfFour(format, _size, idFrom, hwndFrom);
+            c->ArrayPut(args, rxCode, 5);
+            c->ArrayPut(args, rxDTP, 6);
 
             rexxReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
 
@@ -1821,6 +1840,10 @@ MsgReplyType processDTN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
                 pQuery->szMax.cx = size->cx;
                 pQuery->szMax.cy = size->cy;
             }
+
+            c->ReleaseLocalReference(_size);
+            c->ReleaseLocalReference(format);
+            safeLocalRelease(c, rexxReply);
 
             break;
         }
@@ -1835,6 +1858,8 @@ MsgReplyType processDTN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
             RexxStringObject userString = c->String(pdts->pszUserString);
 
             RexxArrayObject args = c->ArrayOfFour(dt, userString, idFrom, hwndFrom);
+            c->ArrayPut(args, rxCode, 5);
+            c->ArrayPut(args, rxDTP, 6);
 
             rexxReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
 
@@ -1845,9 +1870,11 @@ MsgReplyType processDTN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
                     if ( ! dt2sysTime(c, rexxReply, &(pdts->st), dtFull) )
                     {
                         checkForCondition(c, false);
-                        goto done_out;
                     }
-                    pdts->dwFlags = GDT_VALID;
+                    else
+                    {
+                        pdts->dwFlags = GDT_VALID;
+                    }
                 }
                 else if ( rexxReply == TheNilObj )
                 {
@@ -1855,12 +1882,17 @@ MsgReplyType processDTN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
                     {
                         wrongReplyMsgException(c, methodName, "can only be .nil if the DTP control has the SHOWNONE style");
                         checkForCondition(c, false);
-                        goto done_out;
                     }
-                    pdts->dwFlags = GDT_NONE;
+                    else
+                    {
+                        pdts->dwFlags = GDT_NONE;
+                    }
                 }
             }
 
+            c->ReleaseLocalReference(dt);
+            c->ReleaseLocalReference(userString);
+            safeLocalRelease(c, rexxReply);
 
             break;
         }
@@ -1872,12 +1904,13 @@ MsgReplyType processDTN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
             RexxObjectPtr dt;
             sysTime2dt(c, &(pQuery->st), &dt, dtFull);
 
-            RexxArrayObject args = c->NewArray(5);
-            c->ArrayPut(args, c->String(pQuery->pszFormat), 1);
-            c->ArrayPut(args, dt, 2);
-            c->ArrayPut(args, c->Int32(pQuery->nVirtKey), 3);
-            c->ArrayPut(args, idFrom, 4);
+            RexxObjectPtr format = c->String(pQuery->pszFormat);
+            RexxObjectPtr vKey   = c->Int32(pQuery->nVirtKey);
+
+            RexxArrayObject args = c->ArrayOfFour(format, dt, vKey, idFrom);
             c->ArrayPut(args, hwndFrom, 5);
+            c->ArrayPut(args, rxCode, 6);
+            c->ArrayPut(args, rxDTP, 7);
 
             rexxReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
 
@@ -1892,10 +1925,15 @@ MsgReplyType processDTN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
                     else
                     {
                         wrongClassReplyException(c, methodName, "DateTime");
+                        checkForCondition(c, false);
                     }
-                    checkForCondition(c, false);
                 }
             }
+
+            c->ReleaseLocalReference(dt);
+            c->ReleaseLocalReference(format);
+            c->ReleaseLocalReference(vKey);
+            safeLocalRelease(c, rexxReply);
 
             break;
         }
@@ -1905,16 +1943,9 @@ MsgReplyType processDTN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
         case NM_KILLFOCUS:
         case NM_SETFOCUS:
         {
-            RexxArrayObject args = c->ArrayOfTwo(idFrom, hwndFrom);
+            RexxArrayObject args = c->ArrayOfFour(idFrom, hwndFrom, rxCode, rxDTP);
 
-            if ( expectReply )
-            {
-                invokeDirect(c, pcpbd, methodName, args);
-            }
-            else
-            {
-                invokeDispatch(c, pcpbd, methodName, args);
-            }
+            genericInvoke(pcpbd, methodName, args, tag);
 
             break;
         }
@@ -1926,7 +1957,13 @@ MsgReplyType processDTN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
             break;
     }
 
-done_out:
+    safeLocalRelease(c, rexxReply);
+    c->ReleaseLocalReference(idFrom);
+    c->ReleaseLocalReference(hwndFrom);
+    c->ReleaseLocalReference(rxCode);
+    c->ReleaseLocalReference(rxDTP);
+    safeLocalRelease(c, args);
+
     return ReplyTrue;
 }
 
