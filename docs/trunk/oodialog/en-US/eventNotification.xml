@@ -1077,16 +1077,6 @@
 
 <section id="evtAddUserMsgOther"><title>addUserMsg Other Message Event Handler</title>
 <indexterm><primary>addUserMsg</primary><secondary>event handlers</secondary><tertiary>other messages</tertiary></indexterm>
-
-<programlisting>
-<![CDATA[
-::method onEvent unguarded
-  use arg wParam, lParam
-
-  return 0
-]]>
-</programlisting>
-
 <para>
   The event handler connected through the <xref linkend="mthAddUserMsg"/> is invoked when ooDialog
   internally matches a message sent to the <xref linkend="ovvUnderlying"/> Windows dialog using the arguments specified to
@@ -1097,6 +1087,16 @@
   The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthAddUserMsg"/> method determines
   how the event handler needs to respond to the notification.
 </para>
+
+<programlisting>
+<![CDATA[
+::method onEvent unguarded
+  use arg wParam, lParam
+
+  return 0
+]]>
+</programlisting>
+
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
@@ -1164,16 +1164,6 @@
 
 <section id="evtAddUserMsgCommand"><title>addUserMsg WM_COMMAND Message Event Handler</title>
 <indexterm><primary>addUserMsg</primary><secondary>event handlers</secondary><tertiary>WM_COMMAND messages</tertiary></indexterm>
-
-<programlisting>
-<![CDATA[
-::method onWmCommand unguarded
-  use arg wParam, lParam
-
-  return 0
-]]>
-</programlisting>
-
 <para>
   The event handler connected through the <xref linkend="mthAddUserMsg"/> is invoked when ooDialog internally matches a
   message sent to the <xref linkend="ovvUnderlying"/> Windows dialog using the arguments specified to the <emphasis
@@ -1184,27 +1174,67 @@
   The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthAddUserMsg"/> method determines
   how the event handler needs to respond to the notification.
 </para>
+
+<programlisting>
+<![CDATA[
+::method onWmCommand unguarded
+  use arg wParam, lParam, id, notifyCode, controlObj
+
+  return 0
+]]>
+</programlisting>
+
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    This event handling method receives two arguments.
+    This event handling method receives five arguments. The <emphasis role="italic">wParam</emphasis> and <emphasis
+    role="italic">lParam</emphasis> arguments have to be retained for backwards compatibility, but the last 3 arguments are
+    really what are useful.
   </para>
   <variablelist>
     <varlistentry><term>wParam</term>
     <listitem>
     <para>
       The numeric value of the<link linkend="ovvWindowMessages">WPARAM</link> parameter sent with the window message that
-      was connected through <emphasis role="italic">addUserMsg</emphasis>. This numeric value will contain the resource ID of
-      the control sending the message and the numeric code of the event that caused the notification to be sent
+      was connected through <emphasis role="italic">addUserMsg</emphasis>. This numeric value will contain the resource ID
+      of the control sending the message and the numeric code of the event that caused the notification to be sent. However,
+      the ooDialog framework extracts these values and sends them as the <emphasis role="italic">id</emphasis> and <emphasis
+      role="italic">notifyCode</emphasis> arguments.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>lParam</term>
     <listitem>
     <para>
       The numeric value of the <link linkend="ovvWindowMessages">LPARAM</link> parameter sent with the window message that
-      was connected through <emphasis role="italic">addUserMsg</emphasis>. The LPARAM value is always the window handle of
-      the control sending the notification.
+      was connected through <emphasis role="italic">addUserMsg</emphasis>. If a dialog control sent the notification, then
+      the LPARAM value is always the window handle of the control sending the notification. If a menu item or accelerator key
+      sent the notification, then this value will always be zero.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The numeric resource id of the object sending the notification. Typically this will be a dialog control, however it
+      could be a menu item or an accelerator key. See the remarks section.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>notifyCode</term>
+    <listitem>
+    <para>
+      The numeric notification code of the event that caused the notification to be sent. If the notification was sent by a
+      menu item this will always be 0. If sent by an accelerator key, it will always be 1. When the notification is sent by a
+      dialog control, it will be a notification code defined by the control. Note that notification codes do not have unique
+      values. For example, the list box LBN_SETFOCUS notification code has the value of 4, as does the button's BN_DISABLED
+      code.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>controlObj</term>
+    <listitem>
+    <para>
+      The Rexx dialog control object that represents the underlying dialog control that sent the notification, if a dialog
+      control sent the notification. When a menu item or an accelerator key sent the notification, this will be the
+      <computeroutput>.nil</computeroutput> object.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -1217,6 +1247,49 @@
    a numeric value. This value is passed on unchanged to the operating system. Otherwise the return, if any, from the event
    handler is ignored.
   </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The following table can be used to determine if the <emphasis role="italic">id</emphasis> argument is a dialog control
+    ID, a menu item ID, or an accelerator key ID:.
+  </para>
+  <table id="tblWmCommandArgs" frame="all">
+  <title>WM_COMMAND Event Handler Arguments</title>
+  <tgroup cols="4">
+  <colspec colwidth="2*" />
+  <colspec colwidth="4*" />
+  <colspec colwidth="4*" />
+  <colspec colwidth="4*" />
+  <thead>
+  <row>
+  <entry>Source</entry>
+  <entry>notifyCode</entry>
+  <entry>ID</entry>
+  <entry>Control Object</entry>
+  </row>
+  </thead>
+  <tbody>
+  <row>
+  <entry>Menu</entry>
+  <entry>0</entry>
+  <entry>Menu item ID</entry>
+  <entry>The <computeroutput>.nil</computeroutput> object</entry>
+  </row>
+  <row>
+  <entry>Accelerator</entry>
+  <entry>1</entry>
+  <entry>Accelerator key ID</entry>
+  <entry>The <computeroutput>.nil</computeroutput> object</entry>
+  </row>
+  <row>
+  <entry>Dialog Control</entry>
+  <entry>Control defined code</entry>
+  <entry>Resource ID of the control</entry>
+  <entry>Rexx dialog control</entry>
+  </row>
+  </tbody></tgroup>
+  </table>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
   <listitem>
@@ -1254,10 +1327,7 @@
 
 ::method onRbClick unguarded
     expose rb1 rb2 BN_CLICK
-    use arg wParam, lParam
-
-    id   = .DlgUtil~loWord(wParam)
-    code = .DlgUtil~hiWord(wParam)
+    use arg wParam, lParam, id, code, rbObj
 
     if code == BN_CLICK then do
       if id == rb1~id then do
@@ -1281,16 +1351,6 @@
 
 <section id="evtAddUserMsgNotify"><title>addUserMsg WM_NOTIFY Message Event Handler</title>
 <indexterm><primary>addUserMsg</primary><secondary>event handlers</secondary><tertiary>WM_NOTIFY messages</tertiary></indexterm>
-
-<programlisting>
-<![CDATA[
-::method onWmNotify unguarded
-  use arg idFrom, hwndFrom, notifyCode, rexxControl
-
-  return 0
-]]>
-</programlisting>
-
 <para>
   The event handler connected through the <xref linkend="mthAddUserMsg"/> is invoked when ooDialog internally matches a
   message sent to the <xref linkend="ovvUnderlying"/> Windows dialog using the arguments specified to the <emphasis
@@ -1301,6 +1361,16 @@
   The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthAddUserMsg"/> method determines
   how the event handler needs to respond to the notification.
 </para>
+
+<programlisting>
+<![CDATA[
+::method onWmNotify unguarded
+  use arg idFrom, hwndFrom, notifyCode, rexxControl
+
+  return 0
+]]>
+</programlisting>
+
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
@@ -1482,8 +1552,17 @@ rexxControl: a Button
   </listitem></varlistentry>
 </variablelist>
 
+
 <section id="evtACTIVATE" xreflabel="ACTIVATE"><title>Activate Event Handler</title>
 <indexterm><primary>dialog object</primary><secondary>events</secondary><tertiary>ACTIVATE</tertiary></indexterm>
+<para>
+  The event handler for the ACTIVATE event is invoked when the dialog window is either losing or gaining the active
+  window status.
+</para>
+<para>
+  The programmer must return a value from the event handler and the interpreter waits for the return value from the
+  event handler.
+</para>
 
 <programlisting>
 <![CDATA[
@@ -1494,14 +1573,6 @@ rexxControl: a Button
 ]]>
 </programlisting>
 
-<para>
-  The event handler for the ACTIVATE event is invoked when the dialog window is either losing or gaining the active
-  window status.
-</para>
-<para>
-  The programmer must return a value from the event handler and the interpreter waits for the return value from the
-  event handler.
-</para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
@@ -1591,11 +1662,10 @@ rexxControl: a Button
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
   <listitem>
   <para>
-    The following example comes from code ooDialog uses internally to handle a problem with a
- <xref linkend="clsListView"/> control when it is used in a <xref linkend="clsTab"/> control. When
-    the dialog is being inactivated the handle of the focused control is saved. When it is being activated, the handle
-    of the last focused control is passed on the to <xref linkend="clsControlDialog"/> that contains
-    the list-view for processing.
+    The following example comes from code ooDialog uses internally to handle a problem with a <xref linkend="clsListView"/>
+    control when it is used in a <xref linkend="clsTab"/> control. When the dialog is being inactivated the handle of the
+    focused control is saved. When it is being activated, the handle of the last focused control is passed on the to <xref
+    linkend="clsControlDialog"/> that contains the list-view for processing.
 
 <programlisting>
 <![CDATA[
@@ -1617,97 +1687,8 @@ rexxControl: a Button
 
 </section>  <!-- End Activate Event Handler -->
 
-</section>
+</section>  <!-- End connectActivate() -->
 
-<section id="mthConnectAllSBEvents" xreflabel="connectAllSBEvents"><title>connectAllSBEvents</title>
-<indexterm><primary>connectAllSBEvents</primary></indexterm>
-<indexterm><primary>dialog object</primary><secondary>connectAllSBEvents</secondary></indexterm>
-<indexterm><primary>EventNotification class</primary><secondary>connectAllSBEvents</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--connectAllSBEvents(-id-,-mName-+------+-+------+-+-----+-+--------------+-)--><
-                                   +-,-mn-+ +-,-mx-+ +-,-p-+ +-,-willReply--+
-
-]]>
-</programlisting>
-
-<para>
-  Connects all scroll bar events to one method.
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-  </para>
-  <variablelist>
-    <varlistentry><term>id [required]</term>
-    <listitem>
-    <para>
-      The resource ID of the scroll bar.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>mName [required]</term>
-    <listitem>
-    <para>
-      The method that is invoked for all events sent by the scroll bar. There is no default name for the method, the name
-      must be specified.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>mn, mx [optional]</term>
-    <listitem>
-    <para>
-      Sets the minimum and maximum values for the range of the scroll bar.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>p [optional]</term>
-    <listitem>
-    <para>
-      Sets the current position of the scroll bar.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>willReply [optional]</term>
-    <listitem>
-    <para>
-      The <link linkend="sctCommonWillReply">willReply</link> argument controls how the interpreter invokes the event
-      handler for the connected event. The default if <emphasis role="italic">willReply</emphasis> is omitted is
-      <computeroutput>.false</computeroutput>.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <variablelist>
-    <varlistentry><term>-1</term>
-    <listitem>
-    <para>
-      The specified symbolic ID could not be resolved.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>0</term>
-    <listitem>
-    <para>
-      No error.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    This method requires that the <xref linkend="ovvUnderlying"/> scroll bar exists. Therefore, the method
-    is best invoked in the <xref linkend="mthInitDialog"/> method.
-  </para>
-  <para>
-    See the sections on <link linkend="sctConnectingEventHandlers">connecting</link> and <link
-    linkend="sctCodingEventHandlers">coding</link> event handlers for additional information on event handlers. The section
-    for the <xref linkend="evtScrollBarSCROLL"/> event handler contains information specific to the event handler for scroll
-    bar events.
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>
 
 <section id="mthConnectButtonEvent" xreflabel="connectButtonEvent"><title>connectButtonEvent</title>
 <indexterm><primary>connectButtonEvent</primary></indexterm>
@@ -1984,7 +1965,7 @@ rexxControl: a Button
 <programlisting>
 <![CDATA[
 ::method onButtonEvent unguarded
-  use arg info, hwnd
+  use arg info, hwnd, id, notifyCode, buttonObj
 
   return 0
 ]]>
@@ -1994,21 +1975,42 @@ rexxControl: a Button
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 2 arguments:
+    The event handling method recieves 5 arguments. The first and second arguments need to be retained for backwards
+    compatibility, but the last 3 arguments are really what is needed:
   </para>
   <variablelist>
     <varlistentry><term>info</term>
     <listitem>
     <para>
       A numeric value that contains info about the event. The low order word contains the resource ID of the button sending
-      the event. The high order word contains the button event code. The <xref linkend="mthLoWord"/> and <xref
-      linkend="mthHiWord"/> methods of the <xref linkend="clsDlgUtil"/> class can be used to extract these values.
+      the event. The high order word contains the button event code. However, the ooDialog framework extracts these values
+      for you and sends them as the third and fourth arguments.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>hwnd</term>
     <listitem>
     <para>
       The window handle of the button that sent the notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The numeric resource id of the button sending the notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>notifyCode</term>
+    <listitem>
+    <para>
+      The numeric notification code of the event that caused the notification to be sent. Each dialog control has its own
+      specific notification codes.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>controlObj</term>
+    <listitem>
+    <para>
+      The Rexx button control object that represents the underlying dialog control that sent the notification. It is possible
+      this will be the <computeroutput>.nil</computeroutput> object if some error happened, but this is very unlikely.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -2022,14 +2024,38 @@ rexxControl: a Button
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
   <listitem>
   <para>
-    The following example shows how to extract the resource ID of the button sending he notification:
+    The following example uses one event handler for all the push buttons in the application. It uses the <emphasis
+    role="italic">id</emphasis> argument to determine which button was pushed:
 
 <programlisting>
 <![CDATA[
 ::method onButtonEvent unguarded
-  use arg info, handle
-  id = .DlgUtil~loWord(info)
-  eventCode = .DlgUtil~hiWord(info)
+  use arg info, handle, id, notifyCode, pushButton
+
+  select
+    when id = .constDir[IDC_PB_SLEEP] then do
+      reply 0
+      pushButton~disable
+      self~putToSleep
+      pushButton~enable
+      return
+    end
+
+  when id = .constDir[IDC_PB_LOAD] then do
+    reply 0
+    pushButton~disable
+    self~loadNext
+    pushButton~enable
+    return
+  end
+
+  when id = .constDir[IDC_PB_REPORT] then do
+    self~emailStatus
+  end
+
+    otherwise nop
+  end
+
   ...
 
   return 0
@@ -2055,9 +2081,9 @@ rexxControl: a Button
 <programlisting>
 <![CDATA[
 ::method onHotItem unguarded
-  use arg x, y, z
+  use arg id, entering, rxButton
 
-  return zz
+  return 0
 ]]>
 </programlisting>
 
@@ -2065,25 +2091,26 @@ rexxControl: a Button
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves xx arguments:
+    The event handling method recieves 3 arguments:
   </para>
   <variablelist>
-    <varlistentry><term>arg</term>
+    <varlistentry><term>id</term>
     <listitem>
     <para>
-      xx
+      The numeric resource id of the button sending the notification.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>arg1</term>
+    <varlistentry><term>entering</term>
     <listitem>
     <para>
-      xx
+      This argument is always true or false. If true, the user has started hovering the mouse over the button. If false, the
+      user was hoving the mouse and has now moved the mouse so it is no longer over the button.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>arg2</term>
+    <varlistentry><term>rxButton</term>
     <listitem>
     <para>
-      xx
+      The Rexx button object that represents the button sending the notification.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -2091,7 +2118,7 @@ rexxControl: a Button
   <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The operating system ignores the value of the return. 0 makes a good value to return.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
@@ -2324,7 +2351,7 @@ rexxControl: a Button
 <programlisting>
 <![CDATA[
 ::method onComboBoxEvent unguarded
-  use arg info, hwnd
+  use arg info, hwnd, info, notifyCode, comboBox
 
   return 0
 ]]>
@@ -2334,7 +2361,8 @@ rexxControl: a Button
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 2 arguments:
+    The event handling method recieves 5 arguments. The first and second arguments need to be retained for backwards
+    compatibility, but only the last 3 arguments are really needed:
   </para>
   <variablelist>
     <varlistentry><term>info</term>
@@ -2351,6 +2379,27 @@ rexxControl: a Button
       The window handle of the combo box that sent the notification.
     </para>
     </listitem></varlistentry>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The numeric resource id of the combo box sending the notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>notifyCode</term>
+    <listitem>
+    <para>
+      The numeric notification code of the event that caused the notification to be sent. Each dialog control has its own
+      specific notification codes.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>controlObj</term>
+    <listitem>
+    <para>
+      The Rexx combo box control object that represents the underlying dialog control that sent the notification. It is
+      possible this will be the <computeroutput>.nil</computeroutput> object if some error happened, but this is very
+      unlikely.
+    </para>
+    </listitem></varlistentry>
   </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
@@ -2362,19 +2411,21 @@ rexxControl: a Button
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
   <listitem>
   <para>
-    The following example shows how to extract the resource ID of the combo box sending the notification and take some
-    action depending on which combo box sent the notification:
+    The following example connects the CLOSEUP event of a combo box. The event handler checks if the item selected was
+    Apple, and if it was, the selection is changed to Cherry:
 
 <programlisting>
 <![CDATA[
-::method playSong unguarded
-  use arg info, hwnd
+::method init
 
-  id = .DlgUtil~loWord(info)
-  if id == self~constDir[IDC_CB_PROFESSIONS] then do
-    -- take some action
-    ...
-  end
+  ,,,
+
+  self~connectComboBoxEvent(IDC_CB_DROPDOWNLIST, CLOSEUP, onCbCloseUp)
+
+::method onCbCloseUp unguarded
+  use arg info, hwnd, id, notifyCode, comboBox
+
+  if comboBox~selected == 'Apple' then comboBox~select('Cherry')
 
   return 0
 ]]>
@@ -2383,13 +2434,13 @@ rexxControl: a Button
   </listitem></varlistentry>
 </variablelist>
 
-</section>  <!-- End General Button Event Handler -->
+</section>  <!-- End General combo box Event Handler -->
 
 </section>  <!-- End EventNotification::connectionComboBoxEvent() -->
 
 
 <section id="mthConnectCommandEvents" xreflabel="connectCommandEvents"><title>connectCommandEvents</title>
-<indexterm><primary>connectCommandEvents</primary></indexterm>
+<indexterm><primary>connectCommandEvents</primary><secondary>EventNotification class</secondary></indexterm>
 <indexterm><primary>dialog object</primary><secondary>connectCommandEvents</secondary></indexterm>
 <indexterm><primary>EventNotification class</primary><secondary>connectCommandEvents</secondary></indexterm>
 
@@ -2457,9 +2508,8 @@ rexxControl: a Button
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Two arguments are sent to the connected method.  The first contains the notification code in the high word and the
-    ID of the control in the low word. The second argument is the window handle of the control. The example below shows how
-    to code the event handler for a COMMAND event notification.
+    See the sections on <link linkend="sctConnectingEventHandlers">connecting</link> and <link
+    linkend="sctCodingEventHandlers">coding</link> event handlers for additional information on event handlers.
   </para>
   <para>
     The number of different notification codes and the meanings of the notifications are dependent on the type of dialog
@@ -2483,51 +2533,262 @@ rexxControl: a Button
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example connects a list box command event notifications to the <emphasis role="italic">onCommand</emphasis>()
-    method of the dialog. Note that the notification code 1 corresponds to the list box SELCHANGE event, 4 is the
-    SETFOCUS, and 5 is KILLFOCUS events.
+    This example connects list box command event notifications to the <emphasis role="italic">onEvent</emphasis> method of
+    the dialog. Note that the notification code 1 corresponds to the list box SELCHANGE event, 4 is the SETFOCUS, and 5 is
+    KILLFOCUS events.
 <programlisting>
 <![CDATA[
 
 ::method initDialog
   ...
-  self~connectCommandEvents(IDC_LB_FILES, onCommand)
+  self~connectCommandEvents(IDC_LB_FILES, onEvent)
 
-::method onCommand unguarded
-  use arg cmdCode, hwnd
-  say 'cmdCode:                  ' cmdCode
-  say 'hwnd:                     ' hwnd
-  say 'hi word notification code:' .DlgUtil~hiWord(cmdCode)
-  say 'lo word resource ID:      ' .DlgUtil~loWord(cmdCode)
-  say '(List box resource ID)    ' self~constDir[IDC_LB_FILES]
+
+::method onEvent unguarded
+  use arg info, hwnd, id, notifyCode, lb
+
+  LBN_SELCHANGE = 1
+
+  say 'Control ID:          ' id
+  say 'Notification code:   ' notifyCode
+  say 'Dialog control:      ' lb
+
+  if notifyCode == LBN_SELCHANGE then do
+    say 'Current selection is:' lb~selected
+  end
   say
-  return 0
+
 
 /* Output might be:
-cmdCode:                   263147
-hwnd:                      0x00100AD0
-hi word notification code: 4
-lo word resource ID:       1003
-(List box resource ID)     1003
 
-cmdCode:                   66539
-hwnd:                      0x00100AD0
-hi word notification code: 1
-lo word resource ID:       1003
-(List box resource ID)     1003
+Control ID:           1003
+Notification code:    4
+Dialog control:       a ListBox
 
-cmdCode:                   328683
-hwnd:                      0x00100AD0
-hi word notification code: 5
-lo word resource ID:       1003
-(List box resource ID)     1003
+Control ID:           1003
+Notification code:    1
+Dialog control:       a ListBox
+Current selection is: Bakersfield
+
+Control ID:           1003
+Notification code:    1
+Dialog control:       a ListBox
+Current selection is: San Jose
+
+Control ID:           1003
+Notification code:    1
+Dialog control:       a ListBox
+Current selection is: New York
+
+Control ID:           1003
+Notification code:    1
+Dialog control:       a ListBox
+Current selection is: Los Angles
+
 */
-
 ]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
+
+<section id="evtGeneralCOMMAND"><title>Connect COMMAND Event Handler</title>
+<indexterm><primary>connectCommandEvent</primary><secondary>event handler</secondary></indexterm>
+<para>
+  The event handler connected through the <xref linkend="mthConnectCommandEvents"/> is invoked when ooDialog internally
+  matches a message sent to the <xref linkend="ovvUnderlying"/> Windows dialog using the arguments specified to the <emphasis
+  role="italic">connectCommandEvents</emphasis> method.
+</para>
+<para>
+  The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthConnectCommandEvents"/> method
+  determines how the event handler needs to respond to the notification.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onCommandEvent unguarded
+  use arg wParam, lParam, id, notifyCode, controlObj
+
+  return 0
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    This event handling method receives five arguments. The <emphasis role="italic">wParam</emphasis> and <emphasis
+    role="italic">lParam</emphasis> arguments have to be retained for backwards compatibility, but the last 3 arguments are
+    really what are useful.
+  </para>
+  <variablelist>
+    <varlistentry><term>wParam</term>
+    <listitem>
+    <para>
+      The numeric value of the<link linkend="ovvWindowMessages">WPARAM</link> parameter sent with the window message that
+      was connected through <emphasis role="italic">connectCommandEvents</emphasis>. This numeric value will contain the
+      resource ID of the control sending the message and the numeric code of the event that caused the notification to be
+      sent. However, the ooDialog framework extracts these values and sends them as the <emphasis role="italic">id</emphasis>
+      and <emphasis role="italic">notifyCode</emphasis> arguments.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>lParam</term>
+    <listitem>
+    <para>
+      The numeric value of the <link linkend="ovvWindowMessages">LPARAM</link> parameter sent with the window message that
+      was connected through <emphasis role="italic">connectCommandEvents</emphasis>. The LPARAM value is always the window
+      handle of the control sending the notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The numeric resource id of the dialog control sending the notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>notifyCode</term>
+    <listitem>
+    <para>
+      The numeric notification code of the event that caused the notification to be sent. It will be a notification code
+      defined by the control. Note that notification codes do not have unique values. For example, the list box LBN_SETFOCUS
+      notification code has the value of 4, as does the button's BN_DISABLED code.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>controlObj</term>
+    <listitem>
+    <para>
+      The Rexx dialog control object that represents the underlying dialog control that sent the notification. If an error
+      occurred, this will be the <computeroutput>.nil</computeroutput> object. It is very unlikely that an error will occur.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    The command event notification is sent as a WM_COMMAND window message. In general the operating system ignores the
+    return from a WM_COMMAND message. This makes 0 a good value to return. However, the MSDN documentation is the authority
+    on what return value the operating system expects from a particular event notification and the ooDialog programmer should
+    consult that documentation for a specific COMMAND event being connected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+   The example displays the 3 different types of combo box controls and shows all the event notifications sent from the combo
+   boxes. The ::constant directive is used to define the numeric value of all notifications a combo box might possibly send
+   and the <emphasis role="italic">connectCommandEvents</emphasis> method is used to connect all notifications to a single
+   event handler. That event handler decodes each notification and displays it:
+
+<programlisting>
+<![CDATA[
+
+::class 'ComboBoxTypes' subclass RcDialog
+
+::constant CB_SIMPLE        1001
+::constant CB_DROPDOWN      1003
+::constant CB_DROPDOWNLIST  1005
+
+::constant  CBN_ERRSPACE        -1
+::constant  CBN_SELCHANGE       1
+::constant  CBN_DBLCLK          2
+::constant  CBN_SETFOCUS        3
+::constant  CBN_KILLFOCUS       4
+::constant  CBN_EDITCHANGE      5
+::constant  CBN_EDITUPDATE      6
+::constant  CBN_DROPDOWN        7
+::constant  CBN_CLOSEUP         8
+::constant  CBN_SELENDOK        9
+::constant  CBN_SELENDCANCEL    10
+
+::method init
+
+  forward class (super) continue
+
+  self~connectCommandEvents(IDC_CB_SIMPLE, onEvent, .true)
+  self~connectCommandEvents(IDC_CB_DROPDOWN, onEvent, .true)
+  self~connectCommandEvents(IDC_CB_DROPDOWNLIST, onEvent, .true)
+
+::method onEvent unguarded
+    use arg , , id, code, cb
+
+    say 'id:  ' id
+    say 'code:' code
+    say 'cb:  ' cb
+
+    select
+      when id == self~CB_SIMPLE then cbName = 'The simple combo box'
+      when id == self~CB_DROPDOWN then cbName = 'The drop down combo box'
+      when id == self~CB_DROPDOWNLIST then cbName = 'The drop down list combo box'
+      otherwise cbName = 'An error has occurred'
+    end
+
+    select
+      when code == self~CBN_ERRSPACE     then msg = 'sent a error space notification message.'
+      when code == self~CBN_SELCHANGE    then msg = 'sent a selection change notification message.'
+      when code == self~CBN_DBLCLK       then msg = 'sent a double click notification message.'
+      when code == self~CBN_SETFOCUS     then msg = 'sent a set focus notification message.'
+      when code == self~CBN_KILLFOCUS    then msg = 'sent a kill focus notification message.'
+      when code == self~CBN_EDITCHANGE   then msg = 'sent a edit change notification message.'
+      when code == self~CBN_EDITUPDATE   then msg = 'sent a edit update notification message.'
+      when code == self~CBN_DROPDOWN     then msg = 'sent a drop down notification message.'
+      when code == self~CBN_CLOSEUP      then msg = 'sent a close up notification message.'
+      when code == self~CBN_SELENDOK     then msg = 'sent a selection ended ok notification message.'
+      when code == self~CBN_SELENDCANCEL then msg = 'sent a selection ended cancel notification message.'
+      otherwise msg = 'processing the event notification.'
+    end
+    -- End select
+
+    say cbName msg
+    say
+
+    return 0
+
+/*  Output might be:
+
+id:   1001
+code: 3
+cb:   a ComboBox
+The simple combo box sent a set focus notification message.
+
+id:   1001
+code: 4
+cb:   a ComboBox
+The simple combo box sent a kill focus notification message.
+
+id:   1003
+code: 3
+cb:   a ComboBox
+The drop down combo box sent a set focus notification message.
+
+id:   1003
+code: 7
+cb:   a ComboBox
+The drop down combo box sent a drop down notification message.
+
+id:   1003
+code: 10
+cb:   a ComboBox
+The drop down combo box sent a selection ended cancel notification message.
+
+id:   1003
+code: 8
+cb:   a ComboBox
+The drop down combo box sent a close up notification message.
+
+id:   1003
+code: 10
+cb:   a ComboBox
+The drop down combo box sent a selection ended cancel notification message.
+*/
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End WM_COMMAND message Event Handler -->
+
+
 </section>
 
 <section id="mthConnectDateTimePickerEvent" xreflabel="connectDateTimePickerEvent"><title>connectDateTimePickerEvent</title>
@@ -3771,171 +4032,6 @@ lo word resource ID:       1003
   </para>
   <para>
     In Windows itself, the dialog receives this event notification as a WM_DRAWITEM message.
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>
-
-<section id="mthConnectEachSBEvent" xreflabel="connectEachSBEvent"><title>connectEachSBEvent</title>
-<indexterm><primary>connectEachSBEvent</primary></indexterm>
-<programlisting>
-<![CDATA[
->>--connectEachSBEvent(-id-,-mthWhenUp-,-mthWhenDown-+---------------+--------->
-                                                     +-,-mthWhenDrag-+
-
->--+-------+-+-------+-+-------+--+-----------+-+-----------+-+----------+----->
-   +-,-min-+-+-,-max-+ +-,-pos-+  +-,-mthPgUp-+ +-,-mthPgDn-+ +-,-mthTop-+
-
->--+-------------+-+------------+-+------------+-+-------------+--)------------><
-   +-,-mthButtom-+ +-,-mthTrack-+ +-,-mthEndSc-+ +-,-willReply-+
-
-]]>
-</programlisting>
-
-<para>
-  The <emphasis role="italic">connectEachSBEvent</emphasis> method connects an <xref linkend="ovvEvents"/> notification
-  message from a scroll bar to a method in the Rexx dialog object. Optionally, the method can also initialize the scroll bar,
-  (set the range and current position.)
-</para>
-<variablelist>
-  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem>
-  <para>
-    The arguments are:
-  </para>
-  <variablelist>
-    <varlistentry><term>id [required]</term>
-    <listitem>
-    <para>
-                The ID of the scroll bar.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>mthWhenUp [required]</term>
-    <listitem>
-    <para>
-                The method that is called each time the scroll bar is incremented.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>mthWhenDown [required]</term>
-    <listitem>
-    <para>
-                The method that is called each time the scroll bar is decremented.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>mthWhenDrag [optional]</term>
-    <listitem>
-    <para>
-                The method that is called each time the scroll bar is dragged with
-    the mouse.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>min, max [optional]</term>
-    <listitem>
-    <para>
-                The minimum and maximum values for the scroll bar.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>pos [optional]</term>
-    <listitem>
-    <para>
-                The current or preselected value.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>mthPgUp [optional]</term>
-    <listitem>
-    <para>
-                The method that is called each time the scroll bar is focused and the
-    PgUp key is pressed.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>mthPgDn [optional]</term>
-    <listitem>
-    <para>
-                The method that is called each time the scroll bar is focused and the
-    PgDn key is pressed.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>mthTop [optional]</term>
-    <listitem>
-    <para>
-                The method that is called each time the scroll bar is focused and the
-    Home key is pressed.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>mthBottom [optional]</term>
-    <listitem><para>
-      The method that is called each time the scroll bar is focused and the End key is pressed.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>mthTrack [optional]</term>
-    <listitem>
-    <para>
-      The method that is called each time the scroll box is dragged.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>mthEndSc [optional]</term>
-    <listitem>
-    <para>
-      The method that is called each time the scroll box is released after the dragging.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>willReply [optional]</term>
-    <listitem>
-    <para>
-      The <link linkend="sctCommonWillReply">willReply</link> argument controls how the interpreter invokes the event
-      handler for the connected event. The default if <emphasis role="italic">willReply</emphasis> is omitted is
-      <computeroutput>.false</computeroutput>.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem>
-  <para>
-  <variablelist>
-    <varlistentry><term>-1</term>
-    <listitem>
-    <para>
-      The specified symbolic ID could not be resolved.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>0</term>
-    <listitem>
-    <para>
-      No error.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    This method requires that the <xref linkend="ovvUnderlying"/> scroll bar exists. Therefore, the method
-    is best invoked in the <xref linkend="mthInitDialog"/> method.
-  </para>
-  <para>
-    See the sections on <link linkend="sctConnectingEventHandlers">connecting</link> and <link
-    linkend="sctCodingEventHandlers">coding</link> event handlers for additional information on event handlers. The section
-    for the <xref linkend="evtScrollBarSCROLL"/> event handler contains information specific to the event handler for scroll
-    bar events.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-  <listitem>
-  <para>
-    In the following example, scroll bar with symbolic ID IDC_SB is connected to three methods. The range is initialized
-    to 1 as the minimum and 20 as the maximum. The current position is set to 6:
-
-<programlisting>
-<![CDATA[
-::class MyDialog subclass UserDialog
-  ...
-::method initDialog
-
-  self~connectEachSBEvent(IDC_SB,"Increase", "Decrease", "Drag", 1, 20, 6)
-]]>
-</programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -8048,6 +8144,270 @@ ctrlID: 200 dx: 0 dy: 1 listView: a ListView endScroll
 </variablelist>
 </section>
 
+
+<section id="sctConnecting Scroll Bar Events"><title>Connecting Scroll Bar Events</title>
+<indexterm><primary>Connecting Scroll Bar Events</primary></indexterm>
+
+<para>
+  For connecting scroll bars, ooDialog provides the typical <emphasis role="italic">connectScrollBarEvent</emphasis> method
+  along with 2 convenience methods.
+</para>
+
+<section id="mthConnectAllSBEvents" xreflabel="connectAllSBEvents"><title>connectAllSBEvents</title>
+<indexterm><primary>connectAllSBEvents</primary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>connectAllSBEvents</secondary></indexterm>
+<indexterm><primary>EventNotification class</primary><secondary>connectAllSBEvents</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--connectAllSBEvents(-id-,-mName-+------+-+------+-+-----+-+--------------+-)--><
+                                   +-,-mn-+ +-,-mx-+ +-,-p-+ +-,-willReply--+
+
+]]>
+</programlisting>
+
+<para>
+  Connects all scroll bar events to one method.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the scroll bar.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>mName [required]</term>
+    <listitem>
+    <para>
+      The method that is invoked for all events sent by the scroll bar. There is no default name for the method, the name
+      must be specified.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>mn, mx [optional]</term>
+    <listitem>
+    <para>
+      Sets the minimum and maximum values for the range of the scroll bar.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>p [optional]</term>
+    <listitem>
+    <para>
+      Sets the current position of the scroll bar.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>willReply [optional]</term>
+    <listitem>
+    <para>
+      The <link linkend="sctCommonWillReply">willReply</link> argument controls how the interpreter invokes the event
+      handler for the connected event. The default if <emphasis role="italic">willReply</emphasis> is omitted is
+      <computeroutput>.false</computeroutput>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <variablelist>
+    <varlistentry><term>-1</term>
+    <listitem>
+    <para>
+      The specified symbolic ID could not be resolved.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      No error.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method requires that the <xref linkend="ovvUnderlying"/> scroll bar exists. Therefore, the method
+    is best invoked in the <xref linkend="mthInitDialog"/> method.
+  </para>
+  <para>
+    See the sections on <link linkend="sctConnectingEventHandlers">connecting</link> and <link
+    linkend="sctCodingEventHandlers">coding</link> event handlers for additional information on event handlers. The section
+    for the <xref linkend="evtScrollBarSCROLL"/> event handler contains information specific to the event handler for scroll
+    bar events.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End EventNotification::connectAllSBEvents -->
+
+<section id="mthConnectEachSBEvent" xreflabel="connectEachSBEvent"><title>connectEachSBEvent</title>
+<indexterm><primary>connectEachSBEvent</primary></indexterm>
+<programlisting>
+<![CDATA[
+>>--connectEachSBEvent(-id-,-mthWhenUp-,-mthWhenDown-+---------------+--------->
+                                                     +-,-mthWhenDrag-+
+
+>--+-------+-+-------+-+-------+--+-----------+-+-----------+-+----------+----->
+   +-,-min-+-+-,-max-+ +-,-pos-+  +-,-mthPgUp-+ +-,-mthPgDn-+ +-,-mthTop-+
+
+>--+-------------+-+------------+-+------------+-+-------------+--)------------><
+   +-,-mthButtom-+ +-,-mthTrack-+ +-,-mthEndSc-+ +-,-willReply-+
+
+]]>
+</programlisting>
+
+<para>
+  The <emphasis role="italic">connectEachSBEvent</emphasis> method connects an <xref linkend="ovvEvents"/> notification
+  message from a scroll bar to a method in the Rexx dialog object. Optionally, the method can also initialize the scroll bar,
+  (set the range and current position.)
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+                The ID of the scroll bar.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>mthWhenUp [required]</term>
+    <listitem>
+    <para>
+                The method that is called each time the scroll bar is incremented.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>mthWhenDown [required]</term>
+    <listitem>
+    <para>
+                The method that is called each time the scroll bar is decremented.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>mthWhenDrag [optional]</term>
+    <listitem>
+    <para>
+                The method that is called each time the scroll bar is dragged with
+    the mouse.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>min, max [optional]</term>
+    <listitem>
+    <para>
+                The minimum and maximum values for the scroll bar.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>pos [optional]</term>
+    <listitem>
+    <para>
+                The current or preselected value.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>mthPgUp [optional]</term>
+    <listitem>
+    <para>
+                The method that is called each time the scroll bar is focused and the
+    PgUp key is pressed.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>mthPgDn [optional]</term>
+    <listitem>
+    <para>
+                The method that is called each time the scroll bar is focused and the
+    PgDn key is pressed.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>mthTop [optional]</term>
+    <listitem>
+    <para>
+                The method that is called each time the scroll bar is focused and the
+    Home key is pressed.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>mthBottom [optional]</term>
+    <listitem><para>
+      The method that is called each time the scroll bar is focused and the End key is pressed.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>mthTrack [optional]</term>
+    <listitem>
+    <para>
+      The method that is called each time the scroll box is dragged.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>mthEndSc [optional]</term>
+    <listitem>
+    <para>
+      The method that is called each time the scroll box is released after the dragging.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>willReply [optional]</term>
+    <listitem>
+    <para>
+      The <link linkend="sctCommonWillReply">willReply</link> argument controls how the interpreter invokes the event
+      handler for the connected event. The default if <emphasis role="italic">willReply</emphasis> is omitted is
+      <computeroutput>.false</computeroutput>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+  <variablelist>
+    <varlistentry><term>-1</term>
+    <listitem>
+    <para>
+      The specified symbolic ID could not be resolved.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      No error.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    This method requires that the <xref linkend="ovvUnderlying"/> scroll bar exists. Therefore, the method
+    is best invoked in the <xref linkend="mthInitDialog"/> method.
+  </para>
+  <para>
+    See the sections on <link linkend="sctConnectingEventHandlers">connecting</link> and <link
+    linkend="sctCodingEventHandlers">coding</link> event handlers for additional information on event handlers. The section
+    for the <xref linkend="evtScrollBarSCROLL"/> event handler contains information specific to the event handler for scroll
+    bar events.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    In the following example, scroll bar with symbolic ID IDC_SB is connected to three methods. The range is initialized
+    to 1 as the minimum and 20 as the maximum. The current position is set to 6:
+
+<programlisting>
+<![CDATA[
+::class MyDialog subclass UserDialog
+  ...
+::method initDialog
+
+  self~connectEachSBEvent(IDC_SB,"Increase", "Decrease", "Drag", 1, 20, 6)
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End EventNotification::connectEachSBEvent -->
+
 <section id="mthConnectScrollBarEvent" xreflabel="connectScrollBarEvent"><title>connectScrollBarEvent</title>
 <indexterm><primary>connectScrollBarEvent</primary></indexterm>
 <programlisting>
@@ -8223,14 +8583,9 @@ ctrlID: 200 dx: 0 dy: 1 listView: a ListView endScroll
   </para>
   <para>
     See the sections on <link linkend="sctConnectingEventHandlers">connecting</link> and <link
-    linkend="sctCodingEventHandlers">coding</link> event handlers for additional information on event handlers.
-  </para>
-  <para>
-    When the user interacts with a scroll bar, the operating system does not reposition the scroll box (the thumb box.)
-    Rather, the operating system relies on the application, (in essence the programmer,) to update the scroll bar position
-    during the scroll bar event notification. Therefore, if the scroll bar event is not connected, or the programmer
-    does not reposition the scroll box in the event handler, it will appear to the user that the scroll box can not be
-    moved.
+    linkend="sctCodingEventHandlers">coding</link> event handlers for additional information on event handlers. The section
+    for the <xref linkend="evtScrollBarSCROLL"/> event handler contains information specific to the event handler for scroll
+    bar events.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -8257,16 +8612,15 @@ ctrlID: 200 dx: 0 dy: 1 listView: a ListView endScroll
   self~connectScrollBarEvent(IDC_SB_FILE, "POSITION")
 
 ::method onPosition unguarded
-  use arg posInfo, hwnd
+  use arg posInfo, hwnd, scrollBar
 
   -- Set the scroll bar to the new position and have it redraw itself.
-  scrollBar = self~newScrollBar(IDC_SB_FILE)
   newPos = scrollBar~determinePosition(posInfo)
   scrollBar~setPos(newPos, .true)
 
   -- Determine the new position ourself and the display it for comparison
-  pos       = .DlgUtil~hiWord(posData)
-  eventCode = .DlgUtil~loWord(posData)
+  pos       = .DlgUtil~hiWord(posInfo)
+  eventCode = .DlgUtil~loWord(posInfo)
 
   say "New Position:     " pos
   say "Verify event code:"
@@ -8279,6 +8633,8 @@ ctrlID: 200 dx: 0 dy: 1 listView: a ListView endScroll
   </para>
   </listitem></varlistentry>
 </variablelist>
+
+</section>  <!-- End EventNotification::connectScrollBarEvent -->
 
 <section id="evtScrollBarSCROLL" xreflabel="SCROLL"><title>Scroll Event Handler</title>
 <indexterm><primary>ScrollBar class</primary><secondary>events</secondary><tertiary>SCROLL</tertiary></indexterm>
@@ -8294,7 +8650,7 @@ ctrlID: 200 dx: 0 dy: 1 listView: a ListView endScroll
 <programlisting>
 <![CDATA[
 ::method onScroll unguarded
-  use arg posInfo, hwnd
+  use arg posInfo, hwnd, scrollBar
 
   return 0
 ]]>
@@ -8304,7 +8660,7 @@ ctrlID: 200 dx: 0 dy: 1 listView: a ListView endScroll
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 2 arguments:
+    The event handling method recieves 3 arguments:
   </para>
   <variablelist>
     <varlistentry><term>posInfo</term>
@@ -8321,6 +8677,15 @@ ctrlID: 200 dx: 0 dy: 1 listView: a ListView endScroll
       When the notification comes from a <xref linkend="clsScrollBar"/> bar control, the <emphasis
       role="italic">hwnd</emphasis> argument is the window handle of the scroll bar. When the
       notification does not come from a scroll bar control, <emphasis role="italic">hwnd</emphasis> is 0.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>scrollBar</term>
+    <listitem>
+    <para>
+      When the notification comes from a <xref linkend="clsScrollBar"/> bar control, the <emphasis
+      role="italic">scrollBar</emphasis> argument is the Rexx <computeroutput>ScrollBar</computeroutput> object representing
+      the underlying scroll bar. When the notification does not come from a scroll bar control, <emphasis
+      role="italic">scrollBar</emphasis> will be the <computeroutput>.nil</computeroutput> object.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -8348,10 +8713,9 @@ ctrlID: 200 dx: 0 dy: 1 listView: a ListView endScroll
 <programlisting>
 <![CDATA[
 ::method onScroll unguarded
-  use arg posInfo, hwnd
+  use arg posInfo, hwnd, scrollBar
 
   -- Set the scroll bar to the new position and have it redraw itself.
-  scrollBar = self~newScrollBar(IDC_SB_FILE)
   newPos = scrollBar~determinePosition(posInfo)
   scrollBar~setPos(newPos, .true)
 ]]>
@@ -8365,7 +8729,9 @@ ctrlID: 200 dx: 0 dy: 1 listView: a ListView endScroll
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
   <listitem>
   <para>
-    The following example ...
+    The following example connects all the scroll events to a single event handler. In the event handler the <emphasis
+    role="italic">determinePosition</emphasis> method is used to find the new positiona and the scroll bar is updated with
+    the new postion:
 
 <programlisting>
 <![CDATA[
@@ -8378,10 +8744,9 @@ ctrlID: 200 dx: 0 dy: 1 listView: a ListView endScroll
   self~connectAllSBEvents(IDC_SB_FILE, onScroll)
 
 ::method onScroll unguarded
-  use arg posInfo, hwnd
+  use arg posInfo, hwnd, scrollBar
 
   -- Set the scroll bar to the new position and have it redraw itself.
-  scrollBar = self~newScrollBar(IDC_SB_FILE)
   newPos = scrollBar~determinePosition(posInfo)
   scrollBar~setPos(newPos, .true)
 
@@ -8393,7 +8758,9 @@ ctrlID: 200 dx: 0 dy: 1 listView: a ListView endScroll
 </variablelist>
 
 </section>  <!-- End Scroll Event Handler -->
-</section>
+</section>  <!-- End Connecting Scroll Bar Events section -->
+
+
 
 <section id="mthConnectSizeMoveEnded" xreflabel="connectSizeMoveEnded"><title>connectSizeMoveEnded</title>
 <indexterm><primary>connectSizeMoveEnded</primary></indexterm>
