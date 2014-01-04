@@ -4690,15 +4690,15 @@ Help request:
 
   </para>
   <para>
-    The event handling method receives the same arguments as the <link linkend="connectKeyPressEventHandler">event</link>
-    handler for the <emphasis role="italic">connectKeyPress</emphasis> method.
+    Both the <emphasis role="italic">connectFKeyPress</emphasis> and the <xref linkend="mthConnectKeyPressDialogObject"/>
+    methods use the same event <link linkend="evtEventNotificationKEYPRESS">handler</link>.
   </para>
   <para>
     Unlike most other methods that connect event notifications, the underlying Windows dialog must exist before this
-    method can be used. That means it can be used in <xref linkend="mthInitDialog"/> or any time
-    thereafter.  There is a maximum limit of 63 methods, per dialog, that can be connected to key press events.
-    Connections can be removed using the <xref linkend="mthDisconnectKeyPressDialogObject"/>
-    method if there is no longer a need for a notification of a key press.
+    method can be used. That means it can be used in <xref linkend="mthInitDialog"/> or any time thereafter.  There is a
+    maximum limit of 63 methods, per dialog, that can be connected to key press events. Connections can be removed using the
+    <xref linkend="mthDisconnectKeyPressDialogObject"/> method if there is no longer a need for a notification of a key
+    press.
   </para>
   <para>
     The dialog control object also has a <xref linkend="mthConnectFKeyPressDialogControlObject"/>()
@@ -4726,11 +4726,6 @@ Help request:
   <para>
     If the programmer does not provide a matching method in the Rexx dialog, a syntax condition will be raised if any F
     Key key press events happen.
-  </para>
-  <para>
-    Due to the nature of key press events, the low-level implementation of capturing the key strokes is different from
-    most of the other methods of the <computeroutput>EventNotification</computeroutput> class. There is no single message
-    sent to the underlying dialog for a key stroke event.
   </para>
   </listitem>
   </varlistentry>
