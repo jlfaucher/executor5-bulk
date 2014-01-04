@@ -431,11 +431,7 @@ return .true
 
   if \ imagesLoaded then return
 
-  -- The low word of the id argument is the button resource ID.  The high word
-  -- is the notification ID.  In this case, we know it will be:
-  --   BCN_HOTITEMCHANGE
-
-  isViewButton = (.DlgUtil~loWord(id) == self~constDir[IDC_PB_VIEW])
+  isViewButton = (id == .constDir[IDC_PB_VIEW])
 
   if entering then do
     text = "DEATH if you touch me"

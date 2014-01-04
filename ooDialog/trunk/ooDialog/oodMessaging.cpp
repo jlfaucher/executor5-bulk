@@ -1480,19 +1480,42 @@ MsgReplyType genericInvoke(pCPlainBaseDialog pcpbd, CSTRING method, RexxArrayObj
  *
  * (1)  We could create the Rexx control object from the hwnd.  But if we decide
  * to do that, we will just add it as the third argument.
+ *
+ * @remarks  The original ooDialog always sent the numeric value of wParam as
+ *           the first arg and the numeric value of lParam as the second arg to
+ *           the event handler.  Sending the control ID, the notification code
+ *           and the Rexx dialog object constructed from the window handle makes
+ *           much more sense.  But those args must be added as the next 3 args
+ *           for backwards compatibility.  If thenotification comes from a menu
+ *           or accelerator, the Rexx dialog control object should come out as
+ *           the .nil object.
  */
 static MsgReplyType genericCommandInvoke(RexxThreadContext *c, pCPlainBaseDialog pcpbd, CSTRING methodName,
                                          uint32_t tag, WPARAM wParam, LPARAM lParam)
 {
-    RexxObjectPtr wp   = c->Uintptr(wParam);
-    RexxObjectPtr lp   = pointer2string(c, (void *)lParam);
+    oodControl_t ctrlType = controlHwnd2controlType((HWND)lParam);
 
-    RexxArrayObject args = c->ArrayOfTwo(wp, lp);
+    RexxObjectPtr notifyCode = c->UnsignedInt32(HIWORD(wParam));
+    RexxObjectPtr id         = c->UnsignedInt32(LOWORD(wParam));
+    RexxObjectPtr wp         = c->Uintptr(wParam);
+    RexxObjectPtr lp         = pointer2string(c, (void *)lParam);
+    RexxObjectPtr ctrlObj    = createControlFromHwnd(pcpbd->dlgProcContext, pcpbd, (HWND)lParam, ctrlType, true);
+
+    RexxArrayObject args = c->ArrayOfFour(wp, lp, id, notifyCode);
+    c->ArrayPut(args, ctrlObj, 5);
+
     genericInvoke(pcpbd, methodName, args, tag);
 
     c->ReleaseLocalReference(wp);
     c->ReleaseLocalReference(lp);
+    c->ReleaseLocalReference(id);
+    c->ReleaseLocalReference(notifyCode);
+    if ( ctrlObj != TheNilObj )
+    {
+        c->ReleaseLocalReference(ctrlObj);
+    }
     c->ReleaseLocalReference(args);
+
     return ReplyTrue;
 }
 
@@ -1660,7 +1683,7 @@ MsgReplyType processBCN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
     RexxObjectPtr   idFrom   = idFrom2rexxArg(c, lParam);
     RexxObjectPtr   rxButton = controlFrom2rexxArg(pcpbd, lParam, buttonType);
     RexxArrayObject args;
-
+                                                LBN_SELCHANGE = 1
     switch ( code )
     {
         case BCN_HOTITEMCHANGE :
@@ -3210,11 +3233,18 @@ MsgReplyType searchMiscTable(uint32_t msg, WPARAM wParam, LPARAM lParam, pCPlain
                 RexxObjectPtr wp = c->Uintptr(wParam);
                 RexxObjectPtr h  = pointer2string(c, (void *)lParam);
 
-                args = c->ArrayOfTwo(wp, h);
+                oodControl_t  ctrlType = controlHwnd2controlType((HWND)lParam);
+                RexxObjectPtr sb       = createControlFromHwnd(pcpbd->dlgProcContext, pcpbd, (HWND)lParam, ctrlType, true);
+
+                args = c->ArrayOfThree(wp, h, sb);
                 genericInvoke(pcpbd, method, args, tag);
 
                 c->ReleaseLocalReference(wp);
                 c->ReleaseLocalReference(h);
+                if ( sb != TheNilObj )
+                {
+                    c->ReleaseLocalReference(sb);
+                }
                 c->ReleaseLocalReference(args);
 
                 return ReplyTrue;
