@@ -890,6 +890,74 @@ done_out:
   return result;
 }
 
+/**
+ * Convert an owner draw type to the ooDialog control type
+ *
+ * @param odt
+ * @return oodControl_t
+ */
+inline oodControl_t odt2oodt(uint32_t odt)
+{
+    switch (odt)
+    {
+        case ODT_BUTTON   : return winPushButton;
+        case ODT_COMBOBOX : return winComboBox;
+        case ODT_HEADER   : return winUnknown;
+        case ODT_LISTBOX  : return winListBox;
+        case ODT_LISTVIEW : return winListView;
+        case ODT_MENU     : return winUnknown;
+        case ODT_STATIC   : return winStatic;
+        case ODT_TAB      : return winTab;
+        default           : return winUnknown;
+    }
+}
+
+/**
+ * Turn the different owner draw flags in to a list of keywords
+ *
+ * @param c
+ * @param lpDI
+ *
+ * @return RexxStringObject
+ */
+static RexxStringObject od2keywords(RexxThreadContext *c, LPDRAWITEMSTRUCT lpDI)
+{
+    char buf[512];
+    buf[0] = '\0';
+
+    if (      lpDI->CtlType == ODT_BUTTON )    strcat(buf, "ODT_BUTTON ");
+    else if ( lpDI->CtlType == ODT_COMBOBOX )  strcat(buf, "ODT_COMBOBOX ");
+    else if ( lpDI->CtlType == ODT_HEADER )    strcat(buf, "ODT_HEADER ");
+    else if ( lpDI->CtlType == ODT_LISTBOX )   strcat(buf, "ODT_LISTBOX ");
+    else if ( lpDI->CtlType == ODT_LISTVIEW )  strcat(buf, "ODT_LISTVIEW ");
+    else if ( lpDI->CtlType == ODT_MENU )      strcat(buf, "ODT_MENU ");
+    else if ( lpDI->CtlType == ODT_STATIC )    strcat(buf, "ODT_STATIC ");
+    else if ( lpDI->CtlType == ODT_TAB )       strcat(buf, "ODT_TAB ");
+    else                                       strcat(buf, "ODT_UNKNOWN ");
+
+    if ( lpDI->itemAction & ODA_DRAWENTIRE )  strcat(buf, "ODA_DRAWENTIRE ");
+    if ( lpDI->itemAction & ODA_FOCUS      )  strcat(buf, "ODA_FOCUS ");
+    if ( lpDI->itemAction & ODA_SELECT     )  strcat(buf, "ODA_SELECT ");
+
+    if ( lpDI->itemState & ODS_CHECKED      )  strcat(buf, "ODS_CHECKED ");
+    if ( lpDI->itemState & ODS_COMBOBOXEDIT )  strcat(buf, "ODS_COMBOBOXEDIT ");
+    if ( lpDI->itemState & ODS_DEFAULT      )  strcat(buf, "ODS_DEFAULT ");
+    if ( lpDI->itemState & ODS_DISABLED     )  strcat(buf, "ODS_DISABLED ");
+    if ( lpDI->itemState & ODS_FOCUS        )  strcat(buf, "ODS_FOCUS ");
+    if ( lpDI->itemState & ODS_GRAYED       )  strcat(buf, "ODS_GRAYED ");
+    if ( lpDI->itemState & ODS_HOTLIGHT     )  strcat(buf, "ODS_HOTLIGHT ");
+    if ( lpDI->itemState & ODS_INACTIVE     )  strcat(buf, "ODS_INACTIVE ");
+    if ( lpDI->itemState & ODS_NOACCEL      )  strcat(buf, "ODS_NOACCEL ");
+    if ( lpDI->itemState & ODS_NOFOCUSRECT  )  strcat(buf, "ODS_NOFOCUSRECT ");
+    if ( lpDI->itemState & ODS_SELECTED     )  strcat(buf, "ODS_SELECTED ");
+
+    if ( buf[0] != '\0' )
+    {
+        buf[strlen(buf) - 1] = '\0';
+    }
+    return c->String(buf);
+}
+
 
 // Some HTx values are negative
 int32_t keyword2ncHitTestt(CSTRING keyword)
@@ -3309,7 +3377,7 @@ MsgReplyType searchMiscTable(uint32_t msg, WPARAM wParam, LPARAM lParam, pCPlain
                 RexxStringObject hFocus = pointer2string(c, (void *)GetFocus());
 
                 MsgReplyType reply = ReplyFalse;
-                RexxArrayObject args = c->ArrayOfFour(flag, hwnd, hFocus, isMinimized);
+                args = c->ArrayOfFour(flag, hwnd, hFocus, isMinimized);
 
                 RexxObjectPtr msgReply = c->SendMessage(pcpbd->rexxSelf, method, args);
 
@@ -3333,14 +3401,7 @@ MsgReplyType searchMiscTable(uint32_t msg, WPARAM wParam, LPARAM lParam, pCPlain
                 // should be returned if processed, the opposite of the usual.
                 // There are no arguments.  The user can not use sync, because
                 // of previous documentation.
-                if ( willReply )
-                {
-                    c->SendMessage0(pcpbd->rexxSelf, method);
-                }
-                else
-                {
-                    invokeDispatch(c, pcpbd, method, NULLOBJECT);
-                }
+                genericInvoke(pcpbd, method, NULLOBJECT, tag);
                 return ReplyFalse;
             }
             else if ( msg == WM_SIZING )
@@ -3348,13 +3409,13 @@ MsgReplyType searchMiscTable(uint32_t msg, WPARAM wParam, LPARAM lParam, pCPlain
                 /* The user must reply.  Args to ooRexx: The sizing RECT,
                  * WMSZ_xx keyword.
                  */
-                PRECT wRect = (PRECT)lParam;
+                MsgReplyType reply = ReplyFalse;
+                PRECT        wRect = (PRECT)lParam;
 
                 RexxStringObject wmsz = wmsz2string(c, wParam);
                 RexxObjectPtr    rect = rxNewRect(c, wRect);
 
-                MsgReplyType    reply = ReplyFalse;
-                RexxArrayObject args  = c->ArrayOfTwo(rect, wmsz);
+                args = c->ArrayOfTwo(rect, wmsz);
 
                 RexxObjectPtr msgReply = c->SendMessage(pcpbd->rexxSelf, method, args);
 
@@ -3374,6 +3435,63 @@ MsgReplyType searchMiscTable(uint32_t msg, WPARAM wParam, LPARAM lParam, pCPlain
                 c->ReleaseLocalReference(args);
 
                 return reply;
+            }
+            else if ( msg == WM_DRAWITEM )
+            {
+                LPDRAWITEMSTRUCT lpDI = (LPDRAWITEMSTRUCT)lParam;
+
+                /* use arg ctrlID, lp, rexxObj, itemID, flags, hdc, rect, itemData */
+
+                RexxObjectPtr ctrlID = c->UnsignedInt32((uint32_t)wParam);
+                RexxObjectPtr lp     = c->Intptr(lParam);
+
+                RexxObjectPtr flags   = od2keywords(c, lpDI);
+                RexxObjectPtr hdc     = pointer2string(c, (void *)lpDI->hDC);
+                RexxObjectPtr rexxObj = createControlFromHwnd(c, pcpbd, lpDI->hwndItem, odt2oodt(lpDI->CtlType), true);
+                RexxObjectPtr rect    = rxNewRect(c, &(lpDI->rcItem));
+
+                RexxObjectPtr itemID;
+                if ( lpDI->CtlType == ODT_MENU )
+                {
+                    itemID = c->UnsignedInt32(lpDI->itemID);
+                }
+                else
+                {
+                    itemID = c->UnsignedInt32(lpDI->itemID + 1);
+                }
+
+                RexxObjectPtr itemData;
+                if ( lpDI->itemData == 0 )
+                {
+                    itemData = TheNilObj;
+                }
+                else
+                {
+                    itemData = (RexxObjectPtr)lpDI->itemData;
+                }
+
+                args = c->ArrayOfFour(ctrlID, lp, rexxObj, itemID);
+                c->ArrayPut(args, flags, 5);
+                c->ArrayPut(args, hdc, 6);
+                c->ArrayPut(args, rect, 7);
+                c->ArrayPut(args, itemData, 8);
+
+                // Adding TAG_USERADDED causes genericInvoke() to return the
+                // user's return value in the dialog's DWLP_MSGRESULT window
+                // word.
+                tag = willReply ? tag | TAG_USERADDED : tag;
+                genericInvoke(pcpbd, method, args, tag);
+
+                c->ReleaseLocalReference(ctrlID);
+                c->ReleaseLocalReference(lp);
+                c->ReleaseLocalReference(rexxObj);
+                c->ReleaseLocalReference(itemID);
+                c->ReleaseLocalReference(flags);
+                c->ReleaseLocalReference(hdc);
+                c->ReleaseLocalReference(rect);
+                c->ReleaseLocalReference(args);
+
+                return ReplyTrue;
             }
 
             // lParam might not come out right ...
@@ -6165,7 +6283,8 @@ err_out:
 
 /** EventNotification::connectDraw()
  *
- * @remarks  This is the original ooDialog implementation, plus willReply.
+ * @remarks  This is the original ooDialog implementation, plus willReply. We
+ *           now send the DRAWITEMSTRUCT values to the event handler.
  */
 RexxMethod4(RexxObjectPtr, en_connectDraw, OPTIONAL_RexxObjectPtr, rxID, OPTIONAL_CSTRING, methodName,
             OPTIONAL_RexxObjectPtr, willReply, CSELF, pCSelf)
@@ -6187,7 +6306,6 @@ RexxMethod4(RexxObjectPtr, en_connectDraw, OPTIONAL_RexxObjectPtr, rxID, OPTIONA
     {
         return TheNegativeOneObj;
     }
-
 
     if ( argumentOmitted(2) || *methodName == '\0' )
     {
@@ -7931,8 +8049,8 @@ RexxMethod4(RexxObjectPtr, en_connectWmEvent, OPTIONAL_CSTRING, methodName, OPTI
 
             // Before the sync option was added to the _willReply argument,
             // .true was documented for connectResize() as waiting for the event
-            // handler, but not requiring a return value.  Unfortunately this
-            // needs to be maintained.
+            // handler, but not requiring a return value.  This needs to be
+            // maintained.
             tag = (tag == TAG_REPLYFROMREXX ? TAG_SYNC : tag);
             break;
 
@@ -7946,7 +8064,7 @@ RexxMethod4(RexxObjectPtr, en_connectWmEvent, OPTIONAL_CSTRING, methodName, OPTI
         case WM_EXITSIZEMOVE :
             if ( argumentOmitted(1) || *methodName == '\0' ) methodName = "onSizeMoveEnded";
 
-            // Already documented with this behavior
+            // Already documented as the default being true.
             tag = _willReplyToTag(context, willReply, true, 2);
             if ( tag == TAG_INVALID )
             {
