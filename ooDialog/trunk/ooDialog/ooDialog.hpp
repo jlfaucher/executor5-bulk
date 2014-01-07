@@ -298,6 +298,9 @@ typedef enum
     // A special value used by the data table / data table connection functions.
     winNotAControl         = 42,
 
+    // A special value used to indicate a dialog instead of a dialog control
+    winDialog              = 51,
+
     winUnknown             = 55
 } oodControl_t;
 

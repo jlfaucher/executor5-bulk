@@ -169,6 +169,7 @@ oodControl_t winName2controlType(const char *className)
     else if ( strcmp(className, TRACKBAR_CLASS    ) == 0 ) return winTrackBar;
     else if ( strcmp(className, WC_TREEVIEW       ) == 0 ) return winTreeView;
     else if ( strcmp(className, UPDOWN_CLASS      ) == 0 ) return winUpDown;
+    else if ( strcmp(className, "#32770"          ) == 0 ) return winDialog;
     else
     {
         return winUnknown;

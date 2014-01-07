@@ -935,9 +935,9 @@ static RexxStringObject od2keywords(RexxThreadContext *c, LPDRAWITEMSTRUCT lpDI)
     else if ( lpDI->CtlType == ODT_TAB )       strcat(buf, "ODT_TAB ");
     else                                       strcat(buf, "ODT_UNKNOWN ");
 
-    if ( lpDI->itemAction & ODA_DRAWENTIRE )  strcat(buf, "ODA_DRAWENTIRE ");
-    if ( lpDI->itemAction & ODA_FOCUS      )  strcat(buf, "ODA_FOCUS ");
-    if ( lpDI->itemAction & ODA_SELECT     )  strcat(buf, "ODA_SELECT ");
+    if ( lpDI->itemAction & ODA_DRAWENTIRE )   strcat(buf, "ODA_DRAWENTIRE ");
+    if ( lpDI->itemAction & ODA_FOCUS      )   strcat(buf, "ODA_FOCUS ");
+    if ( lpDI->itemAction & ODA_SELECT     )   strcat(buf, "ODA_SELECT ");
 
     if ( lpDI->itemState & ODS_CHECKED      )  strcat(buf, "ODS_CHECKED ");
     if ( lpDI->itemState & ODS_COMBOBOXEDIT )  strcat(buf, "ODS_COMBOBOXEDIT ");
@@ -3282,16 +3282,39 @@ MsgReplyType searchMiscTable(uint32_t msg, WPARAM wParam, LPARAM lParam, pCPlain
                             RexxObjectPtr y        = c->Int32(phi->MousePos.y);
                             RexxObjectPtr cntxID   = c->Uintptr(phi->dwContextId);
 
+                            RexxObjectPtr sendingObj = TheNilObj;
+                            bool          release    = false;
+                            if ( phi->iContextType == HELPINFO_WINDOW )
+                            {
+                                HWND         hwnd     = (HWND)phi->hItemHandle;
+                                oodControl_t ctrlType = controlHwnd2controlType(hwnd);
+                                if ( ctrlType == winDialog )
+                                {
+                                    pCPlainBaseDialog pcpbd = (pCPlainBaseDialog)getWindowPtr(hwnd, GWLP_USERDATA);
+                                    sendingObj = (pcpbd == NULL ? TheNilObj : pcpbd->rexxSelf);
+                                }
+                                else
+                                {
+                                    sendingObj = createControlFromHwnd(c, pcpbd, hwnd, ctrlType, true);
+                                    release = true;
+                                }
+                            }
+
                             args = c->ArrayOfFour(ctrlID, cntxType, x, y);
                             c->ArrayPut(args, cntxID, 5);
+                            c->ArrayPut(args, sendingObj, 6);
 
-                            invokeDispatch(c, pcpbd, method, args);
+                            genericInvoke(pcpbd, method, args, tag);
 
                             c->ReleaseLocalReference(ctrlID);
                             c->ReleaseLocalReference(cntxType);
                             c->ReleaseLocalReference(x);
                             c->ReleaseLocalReference(y);
                             c->ReleaseLocalReference(cntxID);
+                            if ( release )
+                            {
+                                c->ReleaseLocalReference(sendingObj);
+                            }
                             c->ReleaseLocalReference(args);
 
                             return ReplyTrue;
