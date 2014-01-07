@@ -1983,8 +1983,8 @@ rexxControl: a Button
     <listitem>
     <para>
       A numeric value that contains info about the event. The low order word contains the resource ID of the button sending
-      the event. The high order word contains the button event code. However, the ooDialog framework extracts these values
-      for you and sends them as the third and fourth arguments.
+      the event. The high order word contains the button event code. However, the ooDialog framework now extracts these
+      values for you and sends them as the third and fourth arguments.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>hwnd</term>
@@ -2351,7 +2351,7 @@ rexxControl: a Button
 <programlisting>
 <![CDATA[
 ::method onComboBoxEvent unguarded
-  use arg info, hwnd, info, notifyCode, comboBox
+  use arg info, hwnd, id, notifyCode, comboBox
 
   return 0
 ]]>
@@ -2370,7 +2370,8 @@ rexxControl: a Button
     <para>
       A numeric value that contains info about the event. The low order word contains the resource ID of the combo box
       sending the event. The high order word contains the combo box event code. The <xref linkend="mthLoWord"/> and <xref
-      linkend="mthHiWord"/> methods of the <xref linkend="clsDlgUtil"/> class can be used to extract these values.
+      linkend="mthHiWord"/> methods of the <xref linkend="clsDlgUtil"/> class can be used to extract these values. However,
+      the ooDialog framework now extracts those values for you and sends them as the third and fourth arguments.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>hwnd</term>
@@ -4023,7 +4024,7 @@ The drop down combo box sent a selection ended cancel notification message.
   The <emphasis role="italic">connectDraw</emphasis> method connects the draw control event notification with a method
   in the Rexx dialog. This notification is sent to the underlying dialog by an owner-drawn button, combo box, list box,
   static, or menu, when a visual aspect of the control or menu has changed. In addition, if a tab control or a list-view have
-  the owner draw fixed style, the also recieve the notifiction.
+  the owner draw fixed style, they also recieve the notifiction.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -4087,7 +4088,14 @@ The drop down combo box sent a selection ended cancel notification message.
     The notification for the draw control is only sent to the above mentioned controls when they have the OWNERDRAW or
     OWNERDRAWFIXED styles. The notification itself is to inform the application that it needs to draw the control at this
     time. Note that the ooDialog framework is not well suited to drawing operations and it is unlikely that this notification
-    is of much use except in rare circumstances.
+    is of much use except when the drawing to be done is not very complex.
+  </para>
+  <para>
+    Prior to ooDialog 4.2.4, the arguments sent to the event handler for this connection were not helpful in attempting to do
+    owner draw. The arguments now sent to the event handler will make the task easier and ambitious programmers may want to
+    try owner draw in medium complex applications. <emphasis role="bold">Note</emphasis> however that the <emphasis
+    role="italic">willReply</emphasis> argument must be set to <computeroutput>.true</computeroutput> or <emphasis
+    role="italic">SYNC</emphasis> or the drawing efforts will produce highly unpredictable results.
   </para>
   <para>
     See the sections on <link linkend="sctConnectingEventHandlers">connecting</link> and <link
@@ -4124,9 +4132,9 @@ The drop down combo box sent a selection ended cancel notification message.
 <programlisting>
 <![CDATA[
 ::method onDraw unguarded
-  use arg id, pointer, cntrlObj
+  use arg id, lp, drawObj, itemID, flags, hDC, rcItem, itemData
 
-  return zz
+  return .true
 ]]>
 </programlisting>
 
@@ -4134,23 +4142,24 @@ The drop down combo box sent a selection ended cancel notification message.
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves xx arguments:
+    The event handling method recieves 8 arguments:
   </para>
   <variablelist>
     <varlistentry><term>id</term>
     <listitem>
     <para>
-      The resource ID of the control that needs to be drawn.
+      The resource ID of the control that needs to be drawn. This value is not valid for menu items
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>pointer</term>
+    <varlistentry><term>lp</term>
     <listitem>
     <para>
       The numeric value of a pointer to a memory location. This is of no use to the ooDialog programmer. There is no way to
-      access the data the pointer points to from the ooDialog program.
+      access the data the pointer points to from the ooDialog program. This argument is retained for backwards compatibility.
+      The following arguments contain the values of the data the pointer points to. They are the important arguments.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>cntrlObj</term>
+    <varlistentry><term>drawObj</term>
     <listitem>
     <para>
       The Rexx dialog control object that represents the control that needs to be drawn. If it is a menu item that needs to
@@ -4158,22 +4167,331 @@ The drop down combo box sent a selection ended cancel notification message.
       In future versions of ooDialog this may be the Rexx menu object that contains the menu item needing to be drawn.
     </para>
     </listitem></varlistentry>
+    <varlistentry><term>itemID</term>
+    <listitem>
+    <para>
+      The menu item ID for a menu item or the one-based index of the item in a list box or combo box. For an empty list box
+      or combo box, this member can be 0. This allows the application to draw only the focus rectangle at the coordinates
+      specified by the rcItem member even though there are no items in the control. This indicates to the user whether the
+      list box or combo box has the focus. Which keywords are present in the <emphasis role="italic">flags</emphasis>
+      determines whether the rectangle is to be drawn as though the list box or combo box has the focus.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>flags</term>
+    <listitem>
+    <para>
+      A list of the following keywords separated by spaces, case is not significant. The keywords are separated into 3
+      groups, type, action, and state. The keywords in the same group all start with the same prefix, ODT_ for type, ODA_ for
+      action, and ODS_ for state. The list will contain at least one keyword from the type group. The keywords provide
+      information that allows the application to detemine what drawing operation needs to be done:
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>ODT_BUTTON       </member>
+        <member>ODT_COMBOBOX     </member>
+        <member>ODT_HEADER       </member>
+        <member>ODT_LISTBOX      </member>
+        <member>ODT_LISTVIEW     </member>
+        <member>ODT_MENU         </member>
+        <member>ODT_STATIC       </member>
+        <member>ODT_TAB          </member>
+        <member>ODT_UNKNOWN      </member>
+        <member>ODA_DRAWENTIRE   </member>
+        <member>ODA_FOCUS        </member>
+        <member>ODA_SELECT       </member>
+        <member>ODS_CHECKED      </member>
+        <member>ODS_COMBOBOXEDIT </member>
+        <member>ODS_DEFAULT      </member>
+        <member>ODS_DISABLED     </member>
+        <member>ODS_FOCUS        </member>
+        <member>ODS_GRAYED       </member>
+        <member>ODS_HOTLIGHT     </member>
+        <member>ODS_INACTIVE     </member>
+        <member>ODS_NOACCEL      </member>
+        <member>ODS_NOFOCUSRECT  </member>
+        <member>ODS_SELECTED     </member>
+      </simplelist>
+      <variablelist>
+        <varlistentry><term>ODT_BUTTON</term>
+        <listitem>
+        <para>
+          An owner-drawn button is sending the notification.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>ODT_COMBOBOX</term>
+        <listitem>
+        <para>
+          A owner-drawn combo box is sending the notification.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>ODT_HEADER</term>
+        <listitem>
+        <para>
+          A header control is sending the notification. It is unlikely this keyword will ever be seen. ooDialog does not yet
+          have support for header controls and MSDN does not document this.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>ODT_LISTBOX</term>
+        <listitem>
+        <para>
+          An owner-drawn list box is sending the notification.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>ODT_LISTVIEW</term>
+        <listitem>
+        <para>
+          A list-view is sending the notification.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>ODT_MENU</term>
+        <listitem>
+        <para>
+          An owner-drawn menu item is sending the notification.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>ODT_STATIC</term>
+        <listitem>
+        <para>
+          An owner-drawn static control is sending the notification.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>ODT_TAB</term>
+        <listitem>
+        <para>
+          A tab control is sending the notification.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>ODT_UNKNOWN</term>
+        <listitem>
+        <para>
+          The notification was sent by something unexpected to the ooDialog framework. It is doubtful that this keyword will
+          ever be seen.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>ODA_DRAWENTIRE</term>
+        <listitem>
+        <para>
+          The entire control needs to be drawn.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>ODA_FOCUS</term>
+        <listitem>
+        <para>
+          The control has lost or gained the keyboard focus. The state keywords should be checked to determine whether the
+          control has the focus.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>ODA_SELECT</term>
+        <listitem>
+        <para>
+          The selection status has changed. The state keywords should be checked to determine the new selection state.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>ODS_CHECKED</term>
+        <listitem>
+        <para>
+          The menu item is to be checked. This keyword is used only in a menu.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>ODS_COMBOBOXEDIT</term>
+        <listitem>
+        <para>
+          The drawing takes place in the selection field (edit control) of an owner-drawn combo box.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>ODS_DEFAULT</term>
+        <listitem>
+        <para>
+          The item is the default item.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>ODS_DISABLED</term>
+        <listitem>
+        <para>
+          The item is to be drawn as disabled.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>ODS_FOCUS</term>
+        <listitem>
+        <para>
+          The item has the keyboard focus.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>ODS_GRAYED</term>
+        <listitem>
+        <para>
+          The item is to be grayed. This keyword is used only in a menu.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>ODS_HOTLIGHT</term>
+        <listitem>
+        <para>
+          The item is being hot-tracked, that is, the item will be highlighted when the mouse is on the item.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>ODS_INACTIVE</term>
+        <listitem>
+        <para>
+          The item is inactive and the window associated with the menu is inactive.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>ODS_NOACCEL</term>
+        <listitem>
+        <para>
+          The control is drawn without the keyboard accelerator cues.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>ODS_NOFOCUSRECT</term>
+        <listitem>
+        <para>
+          The control is drawn without focus indicator cues.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term>ODS_SELECTED</term>
+        <listitem>
+        <para>
+          The menu item's status is selected.
+        </para>
+        </listitem></varlistentry>
+      </variablelist>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hDC</term>
+    <listitem>
+    <para>
+      The <xref linkend="defDeviceContext"/> for the drawing area. This device context must be used to do the drawing. It is
+      passed by the operating system and <emphasis role="italic">must not</emphasis> freed by the application. In addition,
+      upon return from the event handler, the device context must be set back to the same state it was on entry to the event
+      handler.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>rcItem</term>
+    <listitem>
+    <para>
+      A <xref linkend="clsRect"/> object that defines the boundaries of the control to be drawn. This rectangle is in the
+      device context specified by the <emphasis role="italic">hDC</emphasis> argument. The operating system automatically
+      clips anything that the owner window draws in the device context for combo boxes, list boxes, and buttons, but does not
+      clip menu items. When drawing menu items, the owner window must not draw outside the boundaries of the rectangle
+      defined by this argument.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>itemData</term>
+    <listitem>
+    <para>
+      The item data associated with the menu item or control, or the <computeroutput>.nil</computeroutput> object when there
+      is no item data. Menu items and many dialog controls allow the application to associate a user object with each item.
+      However, ooDialog does not completely support this at this time. For instance, the <xref
+      linkend="mthGetItemDataClsListView"/> and <xref linkend="mthSetItemDataClsListView"/> methods support associating user
+      objects with the list-view items. But the support has not yet been added to combo boxes and list boxes. Because of
+      this, it is likely that the <emphasis role="italic">itemData</emphasis> argument will usually be the
+      <computeroutput>.nil</computeroutput> object.
+    </para>
+    </listitem></varlistentry>
   </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The MSDN documentation says that the event handler should return true when the application has handled the DRAW event
+    notification. Which implies that false should be returned otherwise. Therefore, the ooDialog programmer should probably
+    return true from the event handler. However, some experimentation with returning false has not shown any discernable
+    differeence than returning true.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Although this documentation says the the device context passed in the <emphasis role="italic">hDC</emphasis> argument
+    must be used to do the drawing in the event handler, ooDialog has examples that did not do this. Examples written prior
+    to ooDialog 4.2.0 did not have the device context passed into the event handler. These examples used the <xref
+    linkend="mthGetControlDC"/> method to get a device context for the owner-drawn control. This technique seems to work
+    okay. Nevertheless, if the ooDialog programmer is trying to use owner-drawn controls, it is highly likely that performing
+    the user drawing the way it is intended to be done is more likely to have success.
+  </para>
+  <para>
+    When the device context passed as the <emphasis role="italic">hDC</emphasis> argument is used to perform the drawing, as
+    intended by the operating system, it is critical that the <link linkend="sctCommonWillReply">willReply</link> argument be
+    set to true or <emphasis role="italic">SYNC</emphasis>. The result of any drawing operations done with the device context
+    when the interpreter does not wait for the event handler to return will be highly unpredictable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
   <listitem>
   <para>
-    The following example ...
+    The following example creates a large owner-drawn button that takes up most of the dialog. The client area of the button
+    is then used as a <emphasis role="italic">canvass</emphasis> to draw on. The event handler is invoked every time the
+    button needs to be drawn. The event handler draws a circle on the button area and writes <emphasis
+    role="italic">Circle</emphasis> on the button. This is a complete example that allows the user to experiment a little. An
+    interesting experiment is to uncomment the say statement in the <emphasis role="italic">drawIt</emphasis> method to see
+    when the event handler is executing:
 
 <programlisting>
 <![CDATA[
 
+  dlg = .OwnerDrawDlg~new
+  if dlg~initCode <> 0 then return 99
+  dlg~execute("SHOWTOP")
+
+return 0
+
+::requires "ooDialog.cls"
+
+::class 'OwnerDrawDlg' subclass UserDialog
+
+::method init
+
+  forward class (super) continue
+  self~create(6, 15, 187, 135, "Owner-drawn Button Dialog", "CENTER")
+
+  self~connectDraw(10, "drawIt", .true)
+
+::method defineDialog
+  self~createPushButton(10, 6, 6, 175, 123, "OWNER", "")
+
+::method drawIt unguarded
+  use arg id, lp, drawObj, itemID, flags, dc, r, itemData
+
+  -- Uncomment this line to seen when the event handler is executed:
+  --say 'Draw It'
+
+  -- Create a pen to draw a circle with.
+  pen    = drawObj~createPen(5, "SOLID", 1)
+  oldPen = drawObj~objectToDc(dc, pen)
+
+  -- Create a font to use to draw text with.
+  properties = .directory~new
+  properties~weight = 700
+  properties~italic = .true
+
+  font    = drawObj~createFontEx("Arial", 24, properties)
+  oldFont = drawObj~fontToDC(dc, font)
+
+  drawObj~transparentText(dc)
+
+  -- Get the midpoint of the button rectangle and set the text align to center
+  pos = .Point~new(r~right % 2, r~bottom  % 2)
+  oldAlign = drawObj~setTextAlign(dc, 'CENTER BASELINE NOUPDATECP')
+
+  -- Get a rectangle indented 5 from the button's area.
+  dr = .Rect~new(r~left + 5, r~top + 5, r~right - 10, r~bottom - 10)
+
+  -- Draw a circle, within the rectangle
+  drawObj~drawArc(dc, dr~left, dr~top, dr~right, dr~bottom)
+
+  -- Write some text at the position we calculated above.
+  drawObj~writeDirect(dc, pos~x, pos~y, 'Circle')
+
+  -- Now restore the DC so it is the same as passed into us.
+  drawObj~setTextAlign(dc, oldAlign)
+  drawObj~fontToDC(dc, oldFont)
+  drawObj~objectToDc(dc, oldPen)
+
+  drawObj~opaqueText(dc)
+
+  drawObj~deleteFont(font)
+  drawObj~deleteObject(pen)
+
+  return .true
 
 ]]>
 </programlisting>
@@ -4372,7 +4690,7 @@ The drop down combo box sent a selection ended cancel notification message.
 <programlisting>
 <![CDATA[
 ::method onEditEvent unguarded
-  use arg info, hwnd
+  use arg info, hwnd, id, notifyCode, controlObj
 
   return 0
 ]]>
@@ -4382,7 +4700,8 @@ The drop down combo box sent a selection ended cancel notification message.
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 2 arguments:
+    The event handling method recieves 5 arguments. The first and second arguments need to be retained for backwards
+    compatibility, but only the last 3 arguments are really needed:
   </para>
   <variablelist>
     <varlistentry><term>info</term>
@@ -4390,13 +4709,34 @@ The drop down combo box sent a selection ended cancel notification message.
     <para>
       A numeric value that contains info about the event. The low order word contains the resource ID of the edit control
       sending the event. The high order word contains the edit control event code. The <xref linkend="mthLoWord"/> and <xref
-      linkend="mthHiWord"/> methods of the <xref linkend="clsDlgUtil"/> class can be used to extract these values.
+      linkend="mthHiWord"/> methods of the <xref linkend="clsDlgUtil"/> class can be used to extract these values. However,
+      the ooDialog framework now extracts those values for you and sends them as the third and fourth arguments.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>hwnd</term>
     <listitem>
     <para>
       The window handle of the edit control that sent the notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The numeric resource id of the edit control sending the notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>notifyCode</term>
+    <listitem>
+    <para>
+      The numeric notification code of the event that caused the notification to be sent. Each dialog control has its own
+      specific notification codes.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>controlObj</term>
+    <listitem>
+    <para>
+      The Rexx edit control object that represents the underlying dialog control that sent the notification. It is possible
+      this will be the <computeroutput>.nil</computeroutput> object if some error happened, but this is very unlikely.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -4410,30 +4750,29 @@ The drop down combo box sent a selection ended cancel notification message.
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
   <listitem>
   <para>
-    The following example shows how to extract the resource ID of the edit control sending the notification and take some
-    action depending on which edit control sent the notification:
+    The following example connects several edit controls to the same event handle and then uses the <emphasis
+    role="italic">id</emphasis> argument to determine which edit control is sending the notification and take some action
+    specific to that edit control. The code is somewhat simplistic as it ignores what the notification code is. In a real
+    word program the actions taken would depend on what the event was:
 
 <programlisting>
 <![CDATA[
-::method playSong unguarded
-  use arg info, hwnd
+::method onEditEvent unguarded
+  use arg info, hwnd, id, notifyCode, editObj
 
-  id = .DlgUtil~loWord(info)
-  if id == self~constDir[IDC_EDIT_AMOUNT] then do
-    ec = self~newEdit("IDC_EDIT_AMOUNT")
-    if ec~getText~space(0) \== "" & ec~getText~dataType("N") == 0 then do
-      ec~setModified(.false)
-      ec~select
-      ec~replaceSelText("0")
+  if id == .constDir[IDC_EDIT_AMOUNT] then do
+    if editObj~getText~space(0) \== "" & editObj~getText~dataType("N") == 0 then do
+      editObj~setModified(.false)
+      editObj~select
+      editObj~replaceSelText("0")
     end
   end
-  else if id == self~constDir[IDC_EDIT_ZIP] then do
-    ec = self~newEdit("IDC_EDIT_ZIP")
-    zip = ec~getText~strip
+  else if id == .constDir[IDC_EDIT_ZIP] then do
+    zip = editObj~getText~strip
       if \ self~validZipCode(zip) then doe
         -- Put up message box telling
         -- user what the problem is ...
-        ec~setText("")
+        editObj~setText("")
       end
   end
 
@@ -4456,27 +4795,35 @@ The drop down combo box sent a selection ended cancel notification message.
 <indexterm><primary>EventNotification class</primary><secondary>connectHelp</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectHelp(--+--------------+--)------------><
-                  +--methodName--+
+>>--connectHelp(--+--------------+--+--------------+--)---------><
+                  +--methodName--+  +-,-willReply--+
 ]]>
 </programlisting>
 
 <para>
-  The <emphasis role="italic">connectHelp</emphasis> method connects the Windows Help event with a method in the dialog. The Windows Help
-  event occurs when the user presses the F1 key.  (Only the Help events generated when the dialog is the active window
-  are connected.)
+  The <emphasis role="italic">connectHelp</emphasis> method connects the Windows Help event with a method in the dialog. The
+  Windows Help event occurs when the user presses the F1 key.  (Only the Help events generated when the dialog is the active
+  window are connected.)
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The only argument is:
+    The arguments are:
   <variablelist>
     <varlistentry><term>methodName [optional]</term>
     <listitem>
     <para>
       The name of the method that to be invoked when the help event occurs. The name can not be the empty string. When
       this argument is omitted the name defaults to <emphasis role="italic">onHelp</emphasis>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>willReply [optional]</term>
+    <listitem>
+    <para>
+      The <link linkend="sctCommonWillReply">willReply</link> argument controls how the interpreter invokes the event
+      handler for the connected event. The default if <emphasis role="italic">willReply</emphasis> is omitted is
+      <computeroutput>.false</computeroutput>.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -4568,11 +4915,11 @@ The drop down combo box sent a selection ended cancel notification message.
     ...
 
 ::method onHelp unguarded
-    use arg id, type, mouseX, mouseY
+    use arg id, type, mouseX, mouseY, cntxID, helpObj
     if type == "MENU" then w = 'Menu id' id; else w = 'Dialog id' id
     say "Help request:"
     say " " w
-    say "  Mouse position x:" mouseX "y:" mouseY
+    say "  Mouse position x:" mouseX "y:" mouseY 'help object:' helpObj
 
     return 0
 
@@ -4582,32 +4929,176 @@ The drop down combo box sent a selection ended cancel notification message.
 
 Help request:
   Dialog id 12
-  Mouse position x: 420 y: 106
+  Mouse position x: 420 y: 106 help object: a Button
 Help request:
   Menu id 60
-  Mouse position x: 204 y: 93
+  Mouse position x: 204 y: 93 help object: the NIL object
 Help request:
   Menu id 65
-  Mouse position x: 203 y: 166
+  Mouse position x: 203 y: 166 help object: the NIL object
 Help request:
   Dialog id 14
-  Mouse position x: 218 y: 410
+  Mouse position x: 218 y: 410 help object: a RadioButton
 Help request:
   Dialog id 80
-  Mouse position x: 387 y: 462
+  Mouse position x: 387 y: 462 help object: a Tab
 ]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>
+
+<section id="evtEventNotificationHELP" xreflabel="HELP"><title>Help Event Handler</title>
+<indexterm><primary>EventNotification class</primary><secondary>events</secondary><tertiary>HELP</tertiary></indexterm>
+<para>
+  The event handler for the Help event is invoked when the user presses the F1 key when the active window is the dialog.
+</para>
+<para>
+  The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthConnectEditEvent"/> method
+  determines how the event handler needs to respond to the notification.
+</para>
+<para>
+
+<programlisting>
+<![CDATA[
+::method onHelp unguarded
+  use arg id, type, mouseX, mouseY, cntxID, helpObj
+
+  return .true
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves 6 arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The resource ID of the dialog, dialog control, or menu item that had the focus when the F1 key was pressed.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>type</term>
+    <listitem>
+    <para>
+      Specifies if the ID in argument 1 was from a window (a dialog or dialog control) or from a menu item.  This
+      argument will either be <computeroutput>WINDOW</computeroutput> or <computeroutput>MENU</computeroutput>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>mouseX</term>
+    <listitem>
+    <para>
+      The x coordinate of the mouse at the time the F1 key was pressed.  This value is an absolute screen coordinate
+      (pixel) and note that the mouse will not necessarily be over the dialog.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>mouseY</term>
+    <listitem>
+    <para>
+      The y coordinate of the mouse at the time the F1 key was pressed. The same caveats as for the <emphasis
+      role="italic">mouseX</emphasis> argument apply.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>cntxID</term>
+    <listitem>
+    <para>
+      The help context identifier of the dialog, control, or menu. ooDialog does not yet have good support for setting help
+      context IDs for dialogs or dialog controls. However, ooDialog does support setting the help ID for menus. therefor if
+      the <emphasis role="italic">type</emphasis> is <emphasis role="italic">WINDOW</emphasis>, this argument will probably
+      be 0.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>helpObj</term>
+    <listitem>
+    <para>
+      The Rexx dialog object or the Rexx dialog control object that had the focus when the F1 key was pressed. Otherwise,
+      the <computeroutput>.nil</computeroutput> object if it was a menu item that had the focus. <emphasis
+      role="bold">Note:</emphasis> It is anticipated that future versions of ooDialog will return the Rexx menu object that
+      contains the menu item instead of the <computeroutput>.nil</computeroutput> object.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    The MSDN documentation says to return true from the event handler.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example shows a simple event handler that prints out the values of the arguments sent to it. This can be
+    useful is understanding how the event handler for the <emphasis role="italic">connectHelp</emphasis> method works:
+
+<programlisting>
+<![CDATA[
+
+::method init
+  expose menubar
+
+  forward class (super) continue
+
+  if \ self~createMenuBar then do
+    self~initCode = 1
+    return
+  end
+
+  self~connectHelp('onHelp', 'SYNC')
+
+::method onHelp unguarded
+  use arg id, type, x, y, cntxID, helpObj
+
+  say 'onHelp'
+  say 'id:' id 'type:' type 'x:' x 'y:' y 'cntxID:' cntxID 'helpObj:' heldObj
+
+  return .true
+
+/* Output might be for example:
+onHelp
+id: 1 type: WINDOW x: 796 y: 463 cntxID: 0 helpObj: a Button
+onHelp
+id: 2 type: WINDOW x: 796 y: 463 cntxID: 0 helpObj: a Button
+onHelp
+id: 1002 type: WINDOW x: 796 y: 463 cntxID: 0 helpObj: a Tab
+onHelp
+id: 65535 type: WINDOW x: 796 y: 463 cntxID: 0 helpObj: a GroupBox
+onHelp
+id: 1003 type: WINDOW x: 796 y: 463 cntxID: 0 helpObj: a RadioButton
+onHelp
+id: 833 type: MENU x: 976 y: 319 cntxID: 46 helpObj: The NIL object
+onHelp
+id: 821 type: MENU x: 976 y: 319 cntxID: 45 helpObj: The NIL object
+onHelp
+id: 821 type: MENU x: 323 y: 161 cntxID: 45 helpObj: The NIL object
+onHelp
+id: 812 type: MENU x: 323 y: 161 cntxID: 44 helpObj: The NIL object
+onHelp
+id: 1003 type: WINDOW x: 796 y: 375 cntxID: 0 helpObj: a RadioButton
+onHelp
+id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
+
+*/
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End Help Event Handler -->
+
+</section>  <!-- End EventNotification::connectHelp() -->
 
 
 <section id="sctConnectingKeyPressEvents"><title>Connecting Key Press Events</title>
 <indexterm><primary>Connecting Key Press Events</primary></indexterm>
 
 <para>
-
+  This section contains methods related to connecting key press events.
 </para>
 
 <section id="mthConnectFKeyPressDialogObject" xreflabel="connectFKeyPress"><title>connectFKeyPress</title>
@@ -5341,7 +5832,7 @@ Help request:
 <para>
   The interpreter replies immediately to the operating system when the key is pressed. Tthe event handler is then invoked
   concurrently as a separate activity and the interpreter does not wait for the return. The value returned from the event
-  handler is ignored and the programmer need not return a value from the handerl. However, good practice would be to always
+  handler is ignored and the programmer need not return a value from the handler. However, good practice would be to always
   return a value from an event handler.
 </para>
 
@@ -5514,15 +6005,16 @@ Help request:
 <indexterm><primary>connectListBoxEvent</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectListBoxEvent(--id--,--event--+---------------+--)----><
-                                        +-,--methodName-+
+>>--connectListBoxEvent(--id--,--event--+---------------+--+--------------+--)-><
+                                        +-,--methodName-+  +-,-willReply--+
 
 ]]>
 </programlisting>
 
-<para>The connectListBoxEvent method connects a particular
-WM_NOTIFY message for a list box with a method. The WM_NOTIFY message
-informs the dialog that an event has occurred in the list box.</para>
+<para>
+  Connects a method in the Rexx dialog to the Windows <xref linkend="ovvEvents"/> notification from a <xref
+  linkend="clsListBox"/> control.
+</para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
 <listitem><para>The arguments are:
