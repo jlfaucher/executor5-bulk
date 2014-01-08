@@ -4520,11 +4520,13 @@ return 0
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem><para>The arguments are:
   <variablelist>
-    <varlistentry><term>id</term>
-    <listitem><para>The ID of the edit control of which a notification is to be connected
-    to a method.
-    </para></listitem></varlistentry>
-    <varlistentry><term>event</term>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The ID of the edit control whose notification event is to be connected to a method.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>event [required]</term>
     <listitem>
     <para>
       A single keyword, case is not significant, specifying the event to be connected with a method:
@@ -4854,38 +4856,6 @@ return 0
     role="bold">command</emphasis> event notification <link linkend="sctStandardEventMethods">automatically</link> connected
     when a dialog object is instantiated.
   </para>
-  <para>
-    The method connected to the Help event will receive the following four arguments in the order listed:
-  <variablelist>
-    <varlistentry><term>id</term>
-    <listitem>
-    <para>
-      The resource ID of the dialog, dialog control, or menu item that had the focus when the F1 key was pressed.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>type</term>
-    <listitem>
-    <para>
-      Specifies if the ID in argument 1 was from a window (a dialog or dialog control) or from a menu item.  This
-      argument will either be <computeroutput>WINDOW</computeroutput> or <computeroutput>MENU
-    </computeroutput>.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>mouseX</term>
-    <listitem>
-    <para>
-      The x coordinate of the mouse at the time the F1 key was pressed.  This value is an absolute screen coordinate
-      (pixel) and note that the mouse will not necessarily be over the dialog.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>mouseY</term>
-    <listitem>
-    <para>
-      The y coordinate of the mouse at the time the F1 key was pressed.
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
@@ -4991,7 +4961,7 @@ Help request:
     <listitem>
     <para>
       The x coordinate of the mouse at the time the F1 key was pressed.  This value is an absolute screen coordinate
-      (pixel) and note that the mouse will not necessarily be over the dialog.
+      (pixel.) Note that the mouse will not necessarily be over the dialog.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>mouseY</term>
@@ -5005,9 +4975,9 @@ Help request:
     <listitem>
     <para>
       The help context identifier of the dialog, control, or menu. ooDialog does not yet have good support for setting help
-      context IDs for dialogs or dialog controls. However, ooDialog does support setting the help ID for menus. therefor if
-      the <emphasis role="italic">type</emphasis> is <emphasis role="italic">WINDOW</emphasis>, this argument will probably
-      be 0.
+      context IDs for dialogs or dialog controls. However, ooDialog does support setting the help ID for menus. If the
+      <emphasis role="italic">type</emphasis> argument is <emphasis role="italic">WINDOW</emphasis>, this argument will
+      probably be 0.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>helpObj</term>
@@ -6004,8 +5974,8 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
 <indexterm><primary>connectListBoxEvent</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectListBoxEvent(--id--,--event--+---------------+--+--------------+--)-><
-                                        +-,--methodName-+  +-,-willReply--+
+>>--connectListBoxEvent(--id--,--event--+----------+--+--------------+--)------><
+                                        +-,--mName-+  +-,-willReply--+
 
 ]]>
 </programlisting>
@@ -6015,101 +5985,255 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
   linkend="clsListBox"/> control.
 </para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the list box of which a notification is to be connected to
-a method.
-</para></listitem></varlistentry>
-<varlistentry><term>event</term>
-<listitem><para>The event to be connected with a method:
-<variablelist>
-<varlistentry><term>DBLCLK</term>
-<listitem><para>An entry in the list box has been selected with a double click.
-</para></listitem></varlistentry>
-<varlistentry><term>ERRSPACE</term>
-<listitem><para>An out-of-memory problem has occurred.
-</para></listitem></varlistentry>
-<varlistentry><term>GOTFOCUS</term>
-<listitem><para>The list box got the input focus.
-</para></listitem></varlistentry>
-<varlistentry><term>LOSTFOCUS</term>
-<listitem><para>The list box lost the input focus.
-</para></listitem></varlistentry>
-<varlistentry><term>SELCANCEL</term>
-<listitem><para>The selection in the list box has been canceled.
-</para></listitem></varlistentry>
-<varlistentry><term>SELCHANGE</term>
-<listitem><para>Another list box entry has been selected.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term>msgToRaise</term>
-<listitem><para>The message that is to be sent whenever the specified notification is
-received from the list box. Provide a method with a matching name. If you
-omit this argument, the event is preceded by <computeroutput>On</computeroutput>.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The return codes are:
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>No error detected.
-</para></listitem></varlistentry>
-<varlistentry><term>-1</term>
-<listitem><para>The resource ID could not be resolved or the event argument is
-incorrect.
-</para></listitem></varlistentry>
-<varlistentry><term>1</term>
-<listitem><para>The message was not connected correctly. The message was not connected
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-<listitem>
-<para>
-  See the sections on <link linkend="sctConnectingEventHandlers">connecting</link> and <link
-  linkend="sctCodingEventHandlers">coding</link> event handlers for additional information on event handlers.
-</para>
-<para>
-  The event-handling methods receive two arguments: the first is a combination of the ID of the listbox and the ID of
-  the notification message. (Extract the low-order word to get the listbox ID.)  The second argument is the window
-  handle of the listbox. Example:
-
-<programlisting>
-<![CDATA[
-::method playSong unguarded
-  use arg eventID, handle
-  id = .DlgUtil~loWord(eventID)
-  ...
-  return 0
-]]>
-</programlisting>
-
-</para>
-</listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example displays the text of the selected list box entry:
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the list box whose event notification is to be connected to the method.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>event [required]</term>
+    <listitem>
+    <para>
+      A single keyword, case is not significant, which specifies the event to be connected:
+    <variablelist>
+      <varlistentry><term>DBLCLK</term>
+      <listitem>
+      <para>
+        An entry in the list box has been selected with a double click.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>ERRSPACE</term>
+      <listitem>
+      <para>
+        An out-of-memory problem has occurred.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>GOTFOCUS</term>
+      <listitem>
+      <para>
+        The list box has gained the input focus.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>LOSTFOCUS</term>
+      <listitem>
+      <para>
+        The list box has lost the input focus.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>SELCANCEL</term>
+      <listitem>
+      <para>
+        The selection in the list box has been canceled.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>SELCHANGE</term>
+      <listitem>
+      <para>
+        Another list box entry has been selected.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>mName [optional]</term>
+    <listitem>
+    <para>
+      The name of the method to be invoked whenever the specified notification is received from the list box. Provide an
+      event handling method with a matching name. If this argument is omitted, ooDialog generates a name that consists of the
+      event keyword preceded by <computeroutput>on</computeroutput>. For example <emphasis
+      role="italic">onLostFocus</emphasis>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>willReply [optional]</term>
+    <listitem>
+    <para>
+      The <link linkend="sctCommonWillReply">willReply</link> argument controls how the interpreter invokes the event
+      handler for the connected event. The default if <emphasis role="italic">willReply</emphasis> is omitted is
+      <computeroutput>.false</computeroutput>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return codes are:
+  <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      No error detected.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>-1</term>
+    <listitem>
+    <para>
+      The resource ID could not be resolved or the event argument is incorrect.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      The message was not connected correctly.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    See the sections on <link linkend="sctConnectingEventHandlers">connecting</link> and <link
+    linkend="sctCodingEventHandlers">coding</link> event handlers for additional information on event handlers.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example displays the text of the selected list box entry each time the user selects a new item:
 <programlisting>
 <![CDATA[
 ::class MyDlgClass subclass UserDialog
 
 ::method init
-  self~connectListBoxEvent(IDC_LB_PLAYLIST, "SELCHANGE", "SelectionChanged")
+  self~connectListBoxEvent(IDC_LB_PLAYLIST, "SELCHANGE", "onSelectionChanged")
 
-::method selectionChanged unguarded
-  li = self~newListBox(IDC_LB_PLAYLIST)
-  say "New selection is:" li~selected
+::method onSelectionChanged unguarded
+  use arg , , id, code, lbox
+
+  say "New selection is:" lbox~selected
   return 0
 ]]>
 </programlisting>
-</para>
-</listitem></varlistentry>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 
-</section>
+<section id="evtListBoxGeneral" xreflabel="General"><title>General ListBox Event Handler</title>
+<indexterm><primary>ListBox class</primary><secondary>events</secondary><tertiary>General</tertiary></indexterm>
+<para>
+  The event handler for all of the list box events recieves the same arguments and is coded in the same fashion. When
+  the handler is invoked is fairly clear from the name of the event. The GOTFOCUS event handler is invoked when the list box
+  gets the focus, etc..
+</para>
+<para>
+  The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthConnectListBoxEvent"/> method
+  determines how the event handler needs to respond to the notification.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onListBoxEvent unguarded
+  use arg info, hwnd, id, notifyCode, listBox
+
+  return 0
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves 5 arguments. The first and second arguments need to be retained for backwards
+    compatibility, but only the last 3 arguments are really needed:
+  </para>
+  <variablelist>
+    <varlistentry><term>info</term>
+    <listitem>
+    <para>
+      A numeric value that contains info about the event. The low order word contains the resource ID of the list box sending
+      the event. The high order word contains the list box event code. The <xref linkend="mthLoWord"/> and <xref
+      linkend="mthHiWord"/> methods of the <xref linkend="clsDlgUtil"/> class can be used to extract these values. However,
+      the ooDialog framework now extracts those values for you and sends them as the third and fourth arguments.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hwnd</term>
+    <listitem>
+    <para>
+      The window handle of the list box that sent the notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The numeric resource id of the list box sending the notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>notifyCode</term>
+    <listitem>
+    <para>
+      The numeric notification code of the event that caused the notification to be sent. Each dialog control has its own
+      specific notification codes.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>listBox</term>
+    <listitem>
+    <para>
+      The Rexx list box object that represents the underlying dialog control that sent the notification. It is possible
+      this will be the <computeroutput>.nil</computeroutput> object if some error happened, but this is very unlikely.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    The operating system ignores the return from this notification. 0 makes a good return value.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example comes from an application that fills a list box with the names of movies. When the user clicks on a
+    movie in the list box, the application fills a number of other controls with information specific to the selected movie:
+
+<programlisting>
+<![CDATA[
+::method onMovieClick unguarded
+   expose movieData
+   use arg , , id, nCode, listBox
+
+   movieName = listBox~selected
+
+   combo = self~newComboBox(35)
+   combo~deleteAll
+
+   -- If no movie in the list box is selected, set eveything blank, otherwise,
+   -- set everything to match the selected movie.
+   if movieName == "" then do
+     self~newEdit(32)~setText("")
+     self~newEdit(33)~setText("")
+     self~newEdit(34)~setText("")
+     combo~add("")
+   end
+   else do
+     d = movieData[movieName]
+     self~newEdit(32)~setText(d~produced)
+     self~newEdit(33)~setText(d~star)
+     self~newEdit(34)~setText(d~director)
+
+     do n over d~with
+        combo~add(n)
+     end
+     combo~selectIndex(1)
+   end
+
+   return 0
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End General ListBox Event Handler -->
+
+</section> <!-- End EventNotification::connectListBoxEvent() -->
 
 <section id="mthConnectListViewEvent" xreflabel="connectListViewEvent"><title>connectListViewEvent</title>
 <indexterm><primary>connectListViewEvent</primary></indexterm>
@@ -6336,8 +6460,8 @@ incorrect.
       <para>
         This event is exactly the same as the KEYDOWN event. Except, when this keyword is used, the ooDialog framework sends
         a different set of arguments to the event handler. The additional arguments provide more information to the
-        programmer than the
-        arguments sent when the KEYDOWN keyword is used. The two keywords are needed to provide backwards compatibility.
+        programmer than the arguments sent when the KEYDOWN keyword is used. The two keywords are needed to provide backwards
+        compatibility.
       </para>
       </listitem></varlistentry>
       <varlistentry><term>SELECTCHANGED</term>
@@ -6370,11 +6494,9 @@ incorrect.
     <varlistentry><term>willReply [optional]</term>
     <listitem>
     <para>
-      The value of the <emphasis role="italic">willReply</emphasis> argument must be true or false. The arugment controls
-      whether the interpreter <link linkend="sctCodingEventHandlers">waits</link> for the reply from the event handler. The
-      default is <computeroutput>.false</computeroutput>, the interpreter will not wait for the reply. If <emphasis
-      role="italic">willReply</emphasis> is <computeroutput>.true</computeroutput>, the interpreter waits until the
-      event handling method returns a value.
+      The <link linkend="sctCommonWillReply">willReply</link> argument controls how the interpreter invokes the event
+      handler for the connected event. The default if <emphasis role="italic">willReply</emphasis> is omitted is
+      <computeroutput>.false</computeroutput>.
     </para>
     <para>
       <emphasis role="bold">Note:</emphasis> The <emphasis role="italic">willReply</emphasis> argument is ignored for the

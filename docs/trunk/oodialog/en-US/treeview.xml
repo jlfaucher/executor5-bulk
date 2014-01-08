@@ -152,7 +152,7 @@
 <entry>dropHighlighted</entry>
 </row>
 <row>
-<entry><xref linkend="edittrc"/></entry>
+<entry><xref linkend="mthEditClsTreeview"/></entry>
 <entry>Edit</entry>
 </row>
 <row>
@@ -833,34 +833,36 @@ is the target of a drag-and-drop operation.</para>
 </variablelist>
 </section>
 
-<section id="edittrc" xreflabel="edit"><title>Edit</title>
-<indexterm><primary>Edit</primary>
+<section id="mthEditClsTreeview" xreflabel="edit"><title>edit</title>
+<indexterm><primary>edit</primary>
 <secondary>TreeView class</secondary></indexterm>
 <programlisting>
 <![CDATA[
 >>--edit(--hItem--)------------------------------><
-
-
 ]]>
 </programlisting>
 
-<para>The Edit method starts editing the text of the
-specified item by replacing the text with a single-line edit control containing
-this text. It implicitly selects and focuses the specified item.</para>
+<para>
+  The <emphasis role="italic">edit</emphasis> method starts editing the text of the specified item by replacing the text with
+  a single-line edit control containing this text. It implicitly selects and focuses the specified item.
+</para>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The only argument is:
-<variablelist>
-<varlistentry><term>hItem</term>
-<listitem><para>The handle to the item to be edited.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The handle to the edit control used to edit the item text, or -1
-if <emphasis role="italic">hItem</emphasis> is not specified or is 0, or 0
-in all other cases.
-</para></listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem><para>The only argument is:
+  <variablelist>
+    <varlistentry><term>hItem</term>
+    <listitem><para>The handle to the item to be edited.
+    </para></listitem></varlistentry>
+  </variablelist>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    On success, the handle to the edit control used to edit the item text. On error, -1 if <emphasis
+    role="italic">hItem</emphasis> is 0, or 0 for all other errors.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </section>
 
