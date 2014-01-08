@@ -1703,23 +1703,107 @@ done_out:
     return itemIndex;
 }
 
+#define BEGIN_EVENT_NOTIFICATION_CODE
+
+inline bool selectionDidChange(LPNMLISTVIEW p)
+{
+    return ((p->uNewState & LVIS_SELECTED) != (p->uOldState & LVIS_SELECTED));
+}
+
+inline bool focusDidChange(LPNMLISTVIEW p)
+{
+    return ((p->uNewState & LVIS_FOCUSED) != (p->uOldState & LVIS_FOCUSED));
+}
+
+/* matchSelectFocus
+ * Check that: (a) tag is for select change and focuse change, and (b) that
+ * either the selection or the focus actually changed.
+ */
+inline bool matchSelectFocus(uint32_t tag, LPNMLISTVIEW p)
+{
+    return ((tag & TAG_SELECTCHANGED) && (tag & TAG_FOCUSCHANGED)) && (selectionDidChange(p) || focusDidChange(p));
+}
+
+/* matchSelect
+ * Check that: (a) tag is only for selection change and not focuse change, and (b)
+ * that the selection actually changed.
+ */
+inline bool matchSelect(uint32_t tag, LPNMLISTVIEW p)
+{
+    return ((tag & TAG_SELECTCHANGED) && !(tag & TAG_FOCUSCHANGED)) && (selectionDidChange(p));
+}
+
+/* matchFocus
+ * Check that: (a) tag is only for focus change and not selection change, and (b)
+ * that the focus actually changed.
+ */
+inline bool matchFocus(uint32_t tag, LPNMLISTVIEW p)
+{
+    return ((tag & TAG_FOCUSCHANGED) && !(tag & TAG_SELECTCHANGED)) && (focusDidChange(p));
+}
+
+/**
+ * Helper function to determine a list view item's index using a hit test.
+ *
+ * @param hwnd  Handle of the list view.
+ * @param pIA   Pointer to an item activate structure.
+ *
+ * @remarks  This function should only be used when the list view is in report
+ *           mode.  If the subitem hit test does not produce an item index, we
+ *           only look for a y position that falls within the bounding rectangle
+ *           of a visible item.
+ *
+ *           We start with the top visible index and look at each item on the
+ *           page.  The count per page only includes fully visible items, so we
+ *           also check for a last, partially visible item.
+ */
+static void getItemIndexFromHitPoint(LPNMITEMACTIVATE pIA, HWND hwnd)
+{
+    LVHITTESTINFO lvhti = {0};
+    lvhti.pt.x = pIA->ptAction.x;
+    lvhti.pt.y = pIA->ptAction.y;
+    lvhti.flags = LVHT_ONITEM;
+
+    ListView_SubItemHitTestEx(hwnd, &lvhti);
+    pIA->iItem = lvhti.iItem;
+
+    if ( pIA->iItem == -1 )
+    {
+        int topIndex = ListView_GetTopIndex(hwnd);
+        int count = ListView_GetCountPerPage(hwnd);
+        RECT r;
+
+        for ( int i = topIndex; i <= count; i++)
+        {
+            if ( ListView_GetItemRect(hwnd, i, &r, LVIR_BOUNDS) )
+            {
+                if ( lvhti.pt.y >= r.top && lvhti.pt.y < r.bottom )
+                {
+                    pIA->iItem = i;
+                    break;
+                }
+            }
+        }
+    }
+}
 
 /**
  * Processes the LVN_BEGINGDRAG and LVN_BEGINRDRAG notifications.
  *
- * @param c
+ * @param pcpbd
+ * @param lParam
  * @param methodName
  * @param tag
- * @param lParam
- * @param pcpbd
- * @param code  The notification code.  This allows us to distinguish between
- *              LVN_BEGINDRAG and LVN_BEGINRDRAG, even though we currently
- *              handle both notifications the same..
+ * @param ifFrom
+ * @param notifyCode  Sent to the event handler so that the user can distinguish
+ *                    between LVN_BEGINDRAG and LVN_BEGINRDRAG.
+ *
+ * @param rxLV
  *
  * @return MsgReplyType
  *
  * @notes  For the begin drag notifications, we use the TAG_PRESERVE_OLD, even
- *         though we do not have an "new" behavior.  At some point we may add
+ *         though we do not have a "new" behavior.  At some point we may add
  *         BEGINGDRAGEX and BEGINRDRAGEX keywords.
  *
  *         For the record, the arguments sent to the event handler under the old
@@ -1732,41 +1816,37 @@ done_out:
  *
  *         For a "new" behavior the most likely arguments would be:
  *
- *           use arg id, item, pt, lvObj
+ *           use arg id, item, pt, notiftCode, lvObj
  *
  *         where pt would be a .Point object and we would send the Rexx
  *         list-view object in addition.
  */
-MsgReplyType lvnBeginDrag(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam,
-                          pCPlainBaseDialog pcpbd, uint32_t code)
+MsgReplyType lvnBeginDrag(pCPlainBaseDialog pcpbd, LPARAM lParam, CSTRING methodName, uint32_t tag, uint32_t code)
 {
-    bool expectReply = (tag & TAG_REPLYFROMREXX) == TAG_REPLYFROMREXX;
-    bool preserveOld = (tag & TAG_FLAGMASK) == TAG_PRESERVE_OLD;
+    RexxThreadContext *c     = pcpbd->dlgProcContext;
+    LPNMLISTVIEW       pnmlv = (LPNMLISTVIEW)lParam;
 
-    LPNMLISTVIEW pnmlv = (LPNMLISTVIEW)lParam;
-
-    if ( preserveOld )
+    if ( (tag & TAG_FLAGMASK) == TAG_PRESERVE_OLD )
     {
         char buf[256];
         sprintf(buf, "%d %d", pnmlv->ptAction.x, pnmlv->ptAction.y);
 
-        RexxObjectPtr    idFrom = idFrom2rexxArg(c, lParam);
-        RexxObjectPtr    item   = c->Int32(pnmlv->iItem);
-        RexxStringObject point  = c->String(buf);
-        RexxArrayObject  args   = c->ArrayOfThree(idFrom, item, point);
+        RexxObjectPtr notifyCode = c->UnsignedInt32(code);
+        RexxObjectPtr idFrom     = idFrom2rexxArg(c, lParam);
+        RexxObjectPtr rxLV       = controlFrom2rexxArg(pcpbd, lParam, winListView);
+        RexxObjectPtr item       = c->Int32(pnmlv->iItem);
+        RexxObjectPtr point      = c->String(buf);
 
-        if ( expectReply )
-        {
-            invokeDirect(c, pcpbd, methodName, args);
-        }
-        else
-        {
-            invokeDispatch(c, pcpbd, methodName, args);
-        }
+        RexxArrayObject args = c->ArrayOfFour(idFrom, item, point, notifyCode);
+        c->ArrayPut(args, rxLV, 5);
+
+        genericInvoke(pcpbd, methodName, args, tag);
 
         c->ReleaseLocalReference(idFrom);
         c->ReleaseLocalReference(item);
         c->ReleaseLocalReference(point);
+        c->ReleaseLocalReference(notifyCode);
+        c->ReleaseLocalReference(rxLV);
         c->ReleaseLocalReference(args);
     }
     else
@@ -1778,17 +1858,164 @@ MsgReplyType lvnBeginDrag(RexxThreadContext *c, CSTRING methodName, uint32_t tag
 }
 
 
-MsgReplyType lvnEndLabelEdit(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd)
+MsgReplyType lvnBeginEndScroll(pCPlainBaseDialog pcpbd, LPARAM lParam, CSTRING methodName, uint32_t tag, uint32_t code)
 {
-    RexxObjectPtr idFrom      = idFrom2rexxArg(c, lParam);
-    bool          expectReply = (tag & TAG_REPLYFROMREXX) == TAG_REPLYFROMREXX;
-    NMLVDISPINFO *pdi         = (NMLVDISPINFO *)lParam;
+    RexxThreadContext *c  = pcpbd->dlgProcContext;
+    NMLVSCROLL        *ps = (NMLVSCROLL  *)lParam;
+
+    RexxObjectPtr idFrom = idFrom2rexxArg(c, lParam);
+    RexxObjectPtr rxLV   = controlFrom2rexxArg(pcpbd, lParam, winListView);
+    RexxObjectPtr rxDx   = c->Int32(ps->dx);
+    RexxObjectPtr rxDy   = c->Int32(ps->dy);
+
+    RexxArrayObject args = c->ArrayOfFour(idFrom, rxDx, rxDy, rxLV);
+    c->ArrayPut(args, code == LVN_BEGINSCROLL ? TheTrueObj : TheFalseObj, 5);
+
+    genericInvoke(pcpbd, methodName, args, tag);
+
+    c->ReleaseLocalReference(idFrom);
+    c->ReleaseLocalReference(rxDx);
+    c->ReleaseLocalReference(rxDy);
+    c->ReleaseLocalReference(rxLV);
+    c->ReleaseLocalReference(args);
+
+    return ReplyTrue;
+}
+
+
+MsgReplyType lvnBeginLabelEdit(pCPlainBaseDialog pcpbd, LPARAM lParam, CSTRING methodName, uint32_t tag)
+{
+    RexxThreadContext *c   = pcpbd->dlgProcContext;
+    NMLVDISPINFO      *pdi = (NMLVDISPINFO *)lParam;
+
+    RexxObjectPtr idFrom = idFrom2rexxArg(c, lParam);
+    RexxObjectPtr rxLV   = controlFrom2rexxArg(pcpbd, lParam, winListView);
 
     if ( (tag & TAG_FLAGMASK) == TAG_PRESERVE_OLD )
     {
-        // To preserve old behaviour for DefListEditHandler, we don't
-        // need to do anything except set the reply value.  Otherwise,
-        // we need to invoke the named method with the old args.
+        // To preserve old behavior for DefListEditStater, we don't need
+        // to do anything. Otherwise, we need to invoke the named method
+        // with the old args, plus the list view object.
+        if ( StrCmpI(methodName, "DefListEditStarter") != 0 )
+        {
+            RexxObjectPtr    useLess = c->Intptr(lParam);
+            RexxArrayObject  args    = c->ArrayOfThree(idFrom, useLess, rxLV);
+
+            invokeDispatch(c, pcpbd, methodName, args);
+
+            c->ReleaseLocalReference(idFrom);
+            c->ReleaseLocalReference(useLess);
+            c->ReleaseLocalReference(rxLV);
+            c->ReleaseLocalReference(args);
+        }
+        return ReplyTrue;
+    }
+
+    // Implement the new behavior
+    HWND hEdit = ListView_GetEditControl(pdi->hdr.hwndFrom);
+
+    RexxObjectPtr   itemID = c->UnsignedInt32(pdi->item.iItem);
+    RexxObjectPtr   rxEdit = createControlFromHwnd(c, pcpbd, hEdit, winEdit, false);
+    RexxArrayObject args   = c->ArrayOfFour(idFrom, itemID, rxEdit, rxLV);
+
+    if ( tag & TAG_REPLYFROMREXX )
+    {
+        RexxObjectPtr msgReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
+
+        msgReply = requiredBooleanReply(c, pcpbd, msgReply, methodName, false);
+        if ( msgReply == NULL )
+        {
+            // Dialog is ended, we don't care about releasing local references.
+            setWindowPtr(pcpbd->hDlg, DWLP_MSGRESULT, TRUE);
+            return ReplyFalse;
+        }
+
+        // Return false to let the text be edited, true to disallow it.
+        // The return from Rexx is true to allow, false to disallow.
+        setWindowPtr(pcpbd->hDlg, DWLP_MSGRESULT, msgReply == TheTrueObj ? FALSE : TRUE);
+    }
+    else
+    {
+        // This is okay, we know the tag is not will reply.
+        genericInvoke(pcpbd, methodName, args, tag);
+    }
+
+    c->ReleaseLocalReference(idFrom);
+    c->ReleaseLocalReference(itemID);
+    c->ReleaseLocalReference(rxLV);
+    if ( rxEdit != TheNilObj )
+    {
+        c->ReleaseLocalReference(rxEdit);
+    }
+    c->ReleaseLocalReference(args);
+
+    return ReplyTrue;
+}
+
+
+MsgReplyType lvnColumnClick(pCPlainBaseDialog pcpbd, LPARAM lParam, CSTRING methodName, uint32_t tag)
+{
+    RexxThreadContext *c  = pcpbd->dlgProcContext;
+
+    RexxObjectPtr idFrom = idFrom2rexxArg(c, lParam);
+    RexxObjectPtr rxCol  = c->UnsignedInt32((ULONG)((NM_LISTVIEW *)lParam)->iSubItem);
+    RexxObjectPtr rxLV   = controlFrom2rexxArg(pcpbd, lParam, winListView);
+
+    RexxArrayObject args = c->ArrayOfThree(idFrom, rxCol, rxLV);
+
+    genericInvoke(pcpbd, methodName, args, tag);
+
+    c->ReleaseLocalReference(idFrom);
+    c->ReleaseLocalReference(rxCol);
+    c->ReleaseLocalReference(rxLV);
+    c->ReleaseLocalReference(args);
+
+    return ReplyTrue;
+}
+
+
+/**
+ * Process the LVN_ENDLABELEDIT notification.
+ *
+ * @param pcpbd
+ * @param lParam
+ * @param methodName
+ * @param tag
+ * @param idFrom
+ * @param rxLV
+ *
+ * @return MsgReplyType
+ *
+ * @remarks  The end label edit notification is sent when the user ends editing
+ *           the label. If the user did not cancel the editing then
+ *           pdi->item.pszText contains the text the user entered.  If there is
+ *           text entered and the event handler returns true, the list view
+ *           updates the item label with the new text.  If the event handler
+ *           returns false, the item's lable is not changed.  If there is no
+ *           text in pdi->item.pszText then the return is ignored.
+ *
+ *           What the old ooDialog did is always accept the text.  So to
+ *           preserve old behavior we just need to always accept the text if
+ *           there is any.  The old DefListEventHandler is removed from
+ *           ooDialog, so we can not invoke it.  However if the user assigned
+ *           there own event handler we need to inovke it, but we add the Rexx
+ *           list-view object to the end of the argument list.
+ *
+ *           Note that SYNC is not allowed for willReply for this event.
+ *           Either, the user omits willReply and gets the old behavior, or does
+ *           not omit willReply and gets the new behavior.  The new behavior is
+ *           that the user must reply true or false.
+ */
+MsgReplyType lvnEndLabelEdit(pCPlainBaseDialog pcpbd, LPARAM lParam, CSTRING methodName, uint32_t tag)
+{
+    RexxThreadContext *c   = pcpbd->dlgProcContext;
+    NMLVDISPINFO      *pdi = (NMLVDISPINFO *)lParam;
+
+    RexxObjectPtr idFrom = idFrom2rexxArg(c, lParam);
+    RexxObjectPtr rxLV   = controlFrom2rexxArg(pcpbd, lParam, winListView);
+
+    if ( (tag & TAG_FLAGMASK) == TAG_PRESERVE_OLD )
+    {
         if ( StrCmpI(methodName, "DefListEditHandler") != 0 )
         {
             RexxArrayObject args;
@@ -1796,21 +2023,16 @@ MsgReplyType lvnEndLabelEdit(RexxThreadContext *c, CSTRING methodName, uint32_t 
             RexxObjectPtr itemID = c->UnsignedInt32(pdi->item.iItem);
             RexxObjectPtr text   = pdi->item.pszText ? c->String(pdi->item.pszText) : NULLOBJECT;
 
+            args = c->ArrayOfFour(idFrom, itemID, text, rxLV);
+            invokeDispatch(c, pcpbd, methodName, args);
+
             if ( text != NULLOBJECT )
             {
-                args = c->ArrayOfThree(idFrom, itemID, text);
-                invokeDispatch(c, pcpbd, methodName, args);
-
                 c->ReleaseLocalReference(text);
             }
-            else
-            {
-                args = c->ArrayOfTwo(idFrom, itemID);
-                invokeDispatch(c, pcpbd, methodName, args);
-            }
-
             c->ReleaseLocalReference(idFrom);
             c->ReleaseLocalReference(itemID);
+            c->ReleaseLocalReference(rxLV);
             c->ReleaseLocalReference(args);
         }
 
@@ -1819,22 +2041,27 @@ MsgReplyType lvnEndLabelEdit(RexxThreadContext *c, CSTRING methodName, uint32_t 
             maybeUpdateFullRowText(c, pdi);
         }
 
+        // If there is text we set reply to true, if not we set reply to false.
+        // This is the old behavior, it doesn't matter if the user connected
+        // their own event handler or not.
         setWindowPtr(pcpbd->hDlg, DWLP_MSGRESULT, pdi->item.pszText ? TRUE : FALSE);
         return ReplyTrue;
     }
 
+    // Implement the new behavior.
     RexxObjectPtr   itemID = c->UnsignedInt32(pdi->item.iItem);
     RexxObjectPtr   text   = pdi->item.pszText ? c->String(pdi->item.pszText) : TheNilObj;
-    RexxObjectPtr   rxLV   = createControlFromHwnd(c, pcpbd, pdi->hdr.hwndFrom, winListView, true);
     RexxArrayObject args   = c->ArrayOfFour(idFrom, itemID, text, rxLV);
 
-    if ( expectReply )
+    if ( (tag & TAG_REPLYFROMREXX) == TAG_REPLYFROMREXX )
     {
         RexxObjectPtr msgReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
 
         msgReply = requiredBooleanReply(c, pcpbd, msgReply, methodName, false);
         if ( msgReply == NULL )
         {
+            // requiredBooleanReply() has ended the dialog, so we do not care
+            // about releasing local references.
             return ReplyFalse;
         }
 
@@ -1854,7 +2081,8 @@ MsgReplyType lvnEndLabelEdit(RexxThreadContext *c, CSTRING methodName, uint32_t 
     }
     else
     {
-        invokeDispatch(c, pcpbd, methodName, args);
+        // This is okay, we know the tag is not will reply.
+        genericInvoke(pcpbd, methodName, args, tag);
     }
 
     c->ReleaseLocalReference(idFrom);
@@ -1868,6 +2096,146 @@ MsgReplyType lvnEndLabelEdit(RexxThreadContext *c, CSTRING methodName, uint32_t 
 
     return ReplyTrue;
 }
+
+MsgReplyType lvnGetInfoTip(pCPlainBaseDialog pcpbd, LPARAM lParam, CSTRING methodName, uint32_t tag)
+{
+    RexxThreadContext *c   = pcpbd->dlgProcContext;
+    NMLVGETINFOTIP    *tip = (LPNMLVGETINFOTIP)lParam;
+
+    RexxObjectPtr idFrom = idFrom2rexxArg(c, lParam);
+    RexxObjectPtr rxLV   = controlFrom2rexxArg(pcpbd, lParam, winListView);
+    RexxObjectPtr item   = c->Int32(tip->iItem);
+    RexxObjectPtr text   = tip->dwFlags == 0 ? c->String(tip->pszText) : c->NullString();
+    RexxObjectPtr len    = c->Int32(tip->cchTextMax - 1);
+
+    RexxArrayObject args = c->ArrayOfFour(idFrom, item, text, len);
+    c->ArrayPut(args, rxLV, 5);
+
+    RexxObjectPtr rexxReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
+
+    if ( msgReplyIsGood(c, pcpbd, rexxReply, methodName, false) )
+    {
+        CSTRING newText = c->ObjectToStringValue(rexxReply);
+        if ( strlen(newText) > 0 )
+        {
+            _snprintf(tip->pszText, tip->cchTextMax - 1, "%s", newText);
+        }
+    }
+
+    c->ReleaseLocalReference(idFrom);
+    c->ReleaseLocalReference(item);
+    c->ReleaseLocalReference(text);
+    c->ReleaseLocalReference(len);
+    c->ReleaseLocalReference(rxLV);
+    c->ReleaseLocalReference(args);
+    safeLocalRelease(c, rexxReply);
+
+    return ReplyTrue;
+}
+
+
+MsgReplyType lvnItemChanged(pCPlainBaseDialog pcpbd, LPARAM lParam, CSTRING methodName, uint32_t tag)
+{
+    RexxThreadContext *c   = pcpbd->dlgProcContext;
+    LPNMLISTVIEW       pLV = (LPNMLISTVIEW)lParam;
+
+    MsgReplyType  msgReply = ReplyTrue;
+
+    RexxObjectPtr idFrom = idFrom2rexxArg(c, lParam);
+    RexxObjectPtr item   = c->Int32(pLV->iItem);
+    RexxObjectPtr rxLV   = controlFrom2rexxArg(pcpbd, lParam, winListView);
+
+    RexxObjectPtr   flags = NULLOBJECT;
+    RexxArrayObject args  = NULLOBJECT;
+
+    char tmpBuffer[20];
+    char *p;
+
+    /* The use of the tag field allows a finer degree of control as to exactly
+     * which event the user wants to be notified of, then does the initial
+     * message match above.  Because of that, this specific LVN_ITEMCHANGED
+     * notification may not match the tag.  So, if we do not match here, we
+     * continue the search through the message table because this notification
+     * may match some latter entry in the table.
+     */
+
+    if ( (tag & TAG_STATECHANGED) && (pLV->uChanged == LVIF_STATE) )
+    {
+        if ( (tag & TAG_CHECKBOXCHANGED) && (pLV->uNewState & LVIS_STATEIMAGEMASK) )
+        {
+            p = (pLV->uNewState == INDEXTOSTATEIMAGEMASK(2) ? "CHECKED" : "UNCHECKED");
+
+            flags = c->String(p);
+            args  = c->ArrayOfFour(idFrom, item, flags, rxLV);
+
+            genericInvoke(pcpbd, methodName, args, tag);
+        }
+        else if ( matchSelectFocus(tag, pLV) )
+        {
+            tmpBuffer[0] = '\0';
+
+            if ( selectionDidChange(pLV) )
+            {
+                if ( pLV->uNewState & LVIS_SELECTED )
+                {
+                    strcpy(tmpBuffer, "SELECTED");
+                }
+                else
+                {
+                    strcpy(tmpBuffer, "UNSELECTED");
+                }
+            }
+
+            if ( focusDidChange(pLV) )
+            {
+                if ( pLV->uNewState & LVIS_FOCUSED )
+                {
+                    tmpBuffer[0] == '\0' ? strcpy(tmpBuffer, "FOCUSED") : strcat(tmpBuffer, " FOCUSED");
+                }
+                else
+                {
+                    tmpBuffer[0] == '\0' ? strcpy(tmpBuffer, "UNFOCUSED") : strcat(tmpBuffer, " UNFOCUSED");
+                }
+            }
+
+            flags = c->String(tmpBuffer);
+            args = c->ArrayOfFour(idFrom, item, flags, rxLV);
+
+            genericInvoke(pcpbd, methodName, args, tag);
+        }
+        else if ( matchSelect(tag, pLV) )
+        {
+            p = (pLV->uNewState & LVIS_SELECTED) ? "SELECTED" : "UNSELECTED";
+
+            flags = c->String(p);
+            args = c->ArrayOfFour(idFrom, item, flags, rxLV);
+
+            genericInvoke(pcpbd, methodName, args, tag);
+            msgReply = ContinueSearching;  // Not sure if this is wise with the C++ API
+        }
+        else if ( matchFocus(tag, pLV) )
+        {
+            p = (pLV->uNewState & LVIS_FOCUSED) ? "FOCUSED" : "UNFOCUSED";
+
+            flags = c->String(p);
+            args = c->ArrayOfFour(idFrom, item, flags, rxLV);
+
+            genericInvoke(pcpbd, methodName, args, tag);
+            msgReply = ContinueSearching;  // Not sure if this is wise with the C++ API
+        }
+        else
+        {
+            // This message in the message table does not match, keep searching.
+            msgReply = ContinueSearching;
+        }
+    }
+
+    safeLocalRelease(c, flags);
+    safeLocalRelease(c, args);
+
+    return msgReply;
+}
+
 
 /**
  * Processes the LVN_KEYDOWN notification.
@@ -1888,47 +2256,42 @@ MsgReplyType lvnEndLabelEdit(RexxThreadContext *c, CSTRING methodName, uint32_t 
  *         if the user sets will reply to true, we check that a value is
  *         returned from the event handler, but we ignore what value it is.
  *
- *         The args sent for KEYDOWN are: id and the virtual key code
+ *         The args sent for KEYDOWN are, with rxLvObj added from original:
+ *
+ *         use arg id, vKey, rxLvObj
  *
  *         The args sent for KEYDOWNEX are:
  *
  *         use arg vKey, bShift, bControl, bAlt, info, rxLvObj
  */
-MsgReplyType lvnKeyDown(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd)
+MsgReplyType lvnKeyDown(pCPlainBaseDialog pcpbd, LPARAM lParam, CSTRING methodName, uint32_t tag)
 {
+    RexxThreadContext *c = pcpbd->dlgProcContext;
     uint16_t vKey        = ((NMLVKEYDOWN *)lParam)->wVKey;
-    bool     expectReply = (tag & TAG_REPLYFROMREXX) == TAG_REPLYFROMREXX;
     bool     preserveOld = (tag & TAG_FLAGMASK) == TAG_PRESERVE_OLD;
 
     RexxArrayObject args   = NULLOBJECT;
-    RexxObjectPtr   idFrom = NULLOBJECT;
     RexxObjectPtr   rxVKey = NULLOBJECT;
-    RexxObjectPtr   rxLV   = NULLOBJECT;
+    RexxObjectPtr   idFrom = idFrom2rexxArg(c, lParam);
+    RexxObjectPtr   rxLV   = controlFrom2rexxArg(pcpbd, lParam, winListView);
 
     if ( preserveOld )
     {
-        idFrom = idFrom2rexxArg(c, lParam);
         rxVKey = c->UnsignedInt32(vKey);
-        args   = c->ArrayOfTwo(idFrom, rxVKey);
+        args   = c->ArrayOfThree(idFrom, rxVKey, rxLV);
     }
     else
     {
-        rxLV  = createControlFromHwnd(c, pcpbd, ((NMHDR *)lParam)->hwndFrom, winListView, true);
-        args  = getKeyEventRexxArgs(c, (WPARAM)vKey, false, rxLV);
+        args = getKeyEventRexxArgs(c, (WPARAM)vKey, false, rxLV);
     }
 
-    if ( expectReply )
-    {
-        invokeDirect(c, pcpbd, methodName, args);
-    }
-    else
-    {
-        invokeDispatch(c, pcpbd, methodName, args);
-    }
+    genericInvoke(pcpbd, methodName, args, tag);
+
+    c->ReleaseLocalReference(idFrom);
+    c->ReleaseLocalReference(rxLV);
 
     if ( preserveOld )
     {
-        c->ReleaseLocalReference(idFrom);
         c->ReleaseLocalReference(rxVKey);
         c->ReleaseLocalReference(args);
     }
@@ -1940,6 +2303,83 @@ MsgReplyType lvnKeyDown(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
     return ReplyTrue;
 }
 
+
+MsgReplyType lvnNmClick(pCPlainBaseDialog pcpbd, LPARAM lParam, CSTRING methodName, uint32_t tag, uint32_t code)
+{
+    RexxThreadContext *c   = pcpbd->dlgProcContext;
+    LPNMITEMACTIVATE   pIA = (LPNMITEMACTIVATE)lParam;
+
+    RexxObjectPtr idFrom     = idFrom2rexxArg(c, lParam);
+    RexxObjectPtr notifyCode = c->UnsignedInt32(code);
+    RexxObjectPtr rxLV       = controlFrom2rexxArg(pcpbd, lParam, winListView);
+
+    char tmpBuffer[20];
+    if ( pIA->uKeyFlags == 0 )
+    {
+        strcpy(tmpBuffer, "NONE");
+    }
+    else
+    {
+        tmpBuffer[0] = '\0';
+
+        if ( pIA->uKeyFlags & LVKF_SHIFT )
+            strcpy(tmpBuffer, "SHIFT");
+        if ( pIA->uKeyFlags & LVKF_CONTROL )
+            tmpBuffer[0] == '\0' ? strcpy(tmpBuffer, "CONTROL") : strcat(tmpBuffer, " CONTROL");
+        if ( pIA->uKeyFlags & LVKF_ALT )
+            tmpBuffer[0] == '\0' ? strcpy(tmpBuffer, "ALT") : strcat(tmpBuffer, " ALT");
+    }
+
+    // The user can click on an item in a list view, or on the
+    // background of the list view.  For report mode only, the user can
+    // also click on a subitem of the item.  When the click is on the
+    // background, the item index and column index will be sent to the
+    // Rexx method as -1.
+    //
+    // In report mode, if the list view has the extended full row select
+    // stylye, everything works as expected.  But, without that style,
+    // if the user clicks anywhere on the row outside of the item icon
+    // and item text, the OS does not report the item index.  This looks
+    // odd to the user.  For this case we go to some extra trouble to
+    // get the correct item index.
+    if ( pIA->iItem == -1 && pIA->iSubItem != -1 )
+    {
+        HWND hwnd = pIA->hdr.hwndFrom;
+        if ( isInReportView(hwnd)  )
+        {
+            getItemIndexFromHitPoint(pIA, hwnd);
+        }
+        else
+        {
+            // iSubItem is always 0 when not in report mode, but -1 is
+            // more consistent.
+            pIA->iSubItem = -1;
+        }
+    }
+
+    RexxObjectPtr rxItem    = c->Int32(pIA->iItem);
+    RexxObjectPtr rxSubitem = c->Int32(pIA->iSubItem);
+    RexxObjectPtr keyState  = c->String(tmpBuffer);
+
+    RexxArrayObject args = c->ArrayOfFour(idFrom, rxItem, rxSubitem, keyState);
+    c->ArrayPut(args, notifyCode, 5);
+    c->ArrayPut(args, rxLV, 6);
+
+    genericInvoke(pcpbd, methodName, args, tag);
+
+    c->ReleaseLocalReference(idFrom);
+    c->ReleaseLocalReference(rxItem);
+    c->ReleaseLocalReference(rxSubitem);
+    c->ReleaseLocalReference(keyState);
+    c->ReleaseLocalReference(notifyCode);
+    c->ReleaseLocalReference(rxLV);
+    c->ReleaseLocalReference(args);
+
+    return ReplyTrue;
+}
+
+
+#define END_EVENT_NOTIFICATION_CODE
 
 /**
  * A list view item sort callback function that sorts the list-view here, using

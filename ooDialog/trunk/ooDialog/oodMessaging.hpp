@@ -82,6 +82,7 @@ extern RexxArrayObject getKeyEventRexxArgs(RexxThreadContext *c, WPARAM wParam, 
 extern void            releaseKeyEventRexxArgs(RexxThreadContext *c, RexxArrayObject args);
 
 // Shared event processing function
+extern MsgReplyType  genericInvoke(pCPlainBaseDialog pcpbd, CSTRING method, RexxArrayObject args, uint32_t tag);
 extern bool          invokeDirect(RexxThreadContext *c, pCPlainBaseDialog pcpbd, CSTRING methodName, RexxArrayObject args);
 extern bool          invokeSync(RexxThreadContext *c, pCPlainBaseDialog pcpbd, CSTRING methodName, RexxArrayObject args);
 extern MsgReplyType  invokeDispatch(RexxThreadContext *c, pCPlainBaseDialog pcpbd, CSTRING methodName, RexxArrayObject args);
@@ -96,9 +97,15 @@ extern RexxObjectPtr ncHitTest2string(RexxThreadContext *c, WPARAM hit);
 extern MsgReplyType processMenuMsg(pCPlainBaseDialog pcpbd, uint32_t wmMsg, WPARAM wParam, LPARAM lParam, CSTRING method, uint32_t tag);
 
 // List-view functions.  Defined in oodListView.cpp:
-extern MsgReplyType lvnBeginDrag(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd, uint32_t code);
-extern MsgReplyType lvnEndLabelEdit(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd);
-extern MsgReplyType lvnKeyDown(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd);
+extern MsgReplyType lvnBeginDrag(pCPlainBaseDialog pcpbd, LPARAM lParam, CSTRING methodName, uint32_t tag, uint32_t code);
+extern MsgReplyType lvnBeginEndScroll(pCPlainBaseDialog pcpbd, LPARAM lParam, CSTRING methodName, uint32_t tag, uint32_t code);
+extern MsgReplyType lvnBeginLabelEdit(pCPlainBaseDialog pcpbd, LPARAM lParam, CSTRING methodName, uint32_t tag);
+extern MsgReplyType lvnColumnClick(pCPlainBaseDialog pcpbd, LPARAM lParam, CSTRING methodName, uint32_t tag);
+extern MsgReplyType lvnEndLabelEdit(pCPlainBaseDialog pcpbd, LPARAM lParam, CSTRING methodName, uint32_t tag);
+extern MsgReplyType lvnGetInfoTip(pCPlainBaseDialog pcpbd, LPARAM lParam, CSTRING methodName, uint32_t tag);
+extern MsgReplyType lvnItemChanged(pCPlainBaseDialog pcpbd, LPARAM lParam, CSTRING methodName, uint32_t tag);
+extern MsgReplyType lvnKeyDown(pCPlainBaseDialog pcpbd, LPARAM lParam, CSTRING methodName, uint32_t tag);
+extern MsgReplyType lvnNmClick(pCPlainBaseDialog pcpbd, LPARAM lParam, CSTRING methodName, uint32_t tag, uint32_t code);
 
 // ReBar functions.  Defined in oodReBar.cpp:
 extern MsgReplyType rbnNcHitTest(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd);
@@ -119,6 +126,17 @@ extern MsgReplyType  tvnGetInfoTip(RexxThreadContext *c, CSTRING methodName, uin
 extern MsgReplyType  tvnItemExpand(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd, uint32_t code);
 extern MsgReplyType  tvnKeyDown(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd);
 extern MsgReplyType  tvnSelChange(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd, uint32_t code);
+
+/**
+ * Releases the local reference on a Rexx object if the objet is not NULL
+ */
+inline void safeLocalRelease(RexxThreadContext *c, RexxObjectPtr o)
+{
+    if ( o != NULLOBJECT )
+    {
+        c->ReleaseLocalReference(o);
+    }
+}
 
 inline RexxObjectPtr notifyCode2rexxArg(RexxThreadContext *c, LPARAM lParam)
 {

@@ -322,10 +322,11 @@
 
     lb~deselectIndex
 
-::method onMovieClick
-   expose movieData lb
+::method onMovieClick unguarded
+   expose movieData
+   use arg , , id, nCode, listBox
 
-   movieName = lb~selected
+   movieName = listBox~selected
 
    combo = self~newComboBox(35)
    combo~deleteAll
@@ -333,22 +334,24 @@
    -- If no movie in the list box is selected, set eveything blank, otherwise,
    -- set everything to match the selected movie.
    if movieName == "" then do
-     self~setEditData(32, "")
-     self~setEditData(33, "")
-     self~setEditData(34, "")
+     self~newEdit(32)~setText("")
+     self~newEdit(33)~setText("")
+     self~newEdit(34)~setText("")
      combo~add("")
    end
    else do
      d = movieData[movieName]
-     self~setEditData(32, d~produced)
-     self~setEditData(33, d~star)
-     self~setEditData(34, d~director)
+     self~newEdit(32)~setText(d~produced)
+     self~newEdit(33)~setText(d~star)
+     self~newEdit(34)~setText(d~director)
 
      do n over d~with
         combo~add(n)
      end
      combo~selectIndex(1)
    end
+
+   return 0
 
 ::method queryFromSibling unguarded
   expose lb films

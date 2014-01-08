@@ -142,18 +142,18 @@ return 0
  *  the focus to the edti control.  And that's it.
  */
 ::method onClick unguarded
-  expose list edit editVisible lastIdx lastCol
-  use arg id, itemIndex, columnIndex, keyState
+  expose edit editVisible lastIdx lastCol
+  use arg id, itemIndex, columnIndex, keyState, , lv
 
   if lastIdx == itemIndex & lastCol == columnIndex then do
     if columnIndex > 0 then do
-        r = list~getSubitemRect(itemIndex, columnIndex, 'LABEL')
+        r = lv~getSubitemRect(itemIndex, columnIndex, 'LABEL')
 
         r~right  -= r~left
         r~bottom -= r~top
         flags = "SHOWWINDOW NOZORDERCHANGE"
 
-        edit~setWindowPos(list~hwnd, r, flags)
+        edit~setWindowPos(lv~hwnd, r, flags)
 
         editVisible = .true
         edit~assignFocus

@@ -707,17 +707,6 @@ static RexxStringObject wmsz2string(RexxThreadContext *c, WPARAM wParam)
 }
 
 /**
- * Releases the local reference on a Rexx object if the objet is not NULL
- */
-inline void safeLocalRelease(RexxThreadContext *c, RexxObjectPtr o)
-{
-    if ( o != NULLOBJECT )
-    {
-        c->ReleaseLocalReference(o);
-    }
-}
-
-/**
  * Checks if a SYSTEMTIME struct's values are all 0.
  *
  * @param sysTime  Pointer to the struct to check.
@@ -731,43 +720,6 @@ inline bool isZeroDate(SYSTEMTIME *sysTime)
 {
     return sysTime->wYear == 0 && sysTime->wMonth == 0 && sysTime->wDay == 0 &&
            sysTime->wHour == 0;
-}
-
-inline bool selectionDidChange(LPNMLISTVIEW p)
-{
-    return ((p->uNewState & LVIS_SELECTED) != (p->uOldState & LVIS_SELECTED));
-}
-
-inline bool focusDidChange(LPNMLISTVIEW p)
-{
-    return ((p->uNewState & LVIS_FOCUSED) != (p->uOldState & LVIS_FOCUSED));
-}
-
-/* matchSelectFocus
- * Check that: (a) tag is for select change and focuse change, and (b) that
- * either the selection or the focus actually changed.
- */
-inline bool matchSelectFocus(uint32_t tag, LPNMLISTVIEW p)
-{
-    return ((tag & TAG_SELECTCHANGED) && (tag & TAG_FOCUSCHANGED)) && (selectionDidChange(p) || focusDidChange(p));
-}
-
-/* matchSelect
- * Check that: (a) tag is only for selection change and not focuse change, and (b)
- * that the selection actually changed.
- */
-inline bool matchSelect(uint32_t tag, LPNMLISTVIEW p)
-{
-    return ((tag & TAG_SELECTCHANGED) && !(tag & TAG_FOCUSCHANGED)) && (selectionDidChange(p));
-}
-
-/* matchFocus
- * Check that: (a) tag is only for focus change and not selection change, and (b)
- * that the focus actually changed.
- */
-inline bool matchFocus(uint32_t tag, LPNMLISTVIEW p)
-{
-    return ((tag & TAG_FOCUSCHANGED) && !(tag & TAG_SELECTCHANGED)) && (focusDidChange(p));
 }
 
 /**
@@ -1518,7 +1470,7 @@ MsgReplyType genericInvoke(pCPlainBaseDialog pcpbd, CSTRING method, RexxArrayObj
 
     if ( (tag & TAG_EXTRAMASK) == TAG_REPLYFROMREXX )
     {
-        if ( (tag & TAG_CTRLMASK) == TAG_USERADDED )
+        if ( ((tag & TAG_CTRLMASK) == TAG_USERADDED) || ((tag & TAG_USE_RETURN) == TAG_USE_RETURN) )
         {
             invokeDirectUseReturn(c, pcpbd, method, args);
         }
@@ -1608,51 +1560,6 @@ inline RexxStringObject mcnViewChange2rexxString(RexxThreadContext *c, uint32_t 
     return c->String(v);
 }
 
-
-/**
- * Helper function to determine a list view item's index using a hit test.
- *
- * @param hwnd  Handle of the list view.
- * @param pIA   Pointer to an item activate structure.
- *
- * @remarks  This function should only be used when the list view is in report
- *           mode.  If the subitem hit test does not produce an item index, we
- *           only look for a y position that falls within the bounding rectangle
- *           of a visible item.
- *
- *           We start with the top visible index and look at each item on the
- *           page.  The count per page only includes fully visible items, so we
- *           also check for a last, partially visible item.
- */
-static void getItemIndexFromHitPoint(LPNMITEMACTIVATE pIA, HWND hwnd)
-{
-    LVHITTESTINFO lvhti = {0};
-    lvhti.pt.x = pIA->ptAction.x;
-    lvhti.pt.y = pIA->ptAction.y;
-    lvhti.flags = LVHT_ONITEM;
-
-    ListView_SubItemHitTestEx(hwnd, &lvhti);
-    pIA->iItem = lvhti.iItem;
-
-    if ( pIA->iItem == -1 )
-    {
-        int topIndex = ListView_GetTopIndex(hwnd);
-        int count = ListView_GetCountPerPage(hwnd);
-        RECT r;
-
-        for ( int i = topIndex; i <= count; i++)
-        {
-            if ( ListView_GetItemRect(hwnd, i, &r, LVIR_BOUNDS) )
-            {
-                if ( lvhti.pt.y >= r.top && lvhti.pt.y < r.bottom )
-                {
-                    pIA->iItem = i;
-                    break;
-                }
-            }
-        }
-    }
-}
 
 inline RexxObjectPtr getToolTipFromLParam(LPARAM lParam)
 {
@@ -1821,7 +1728,6 @@ MsgReplyType processDTN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
     RexxObjectPtr hwndFrom  = hwndFrom2rexxArg(c, lParam);
     RexxObjectPtr rxCode    = c->UnsignedInt32(code);
     RexxObjectPtr rxDTP     = createControlFromHwnd(c, pcpbd, ((NMHDR *)lParam)->hwndFrom, winDateTimePicker, true);
-    bool          expectReply = (tag & TAG_REPLYFROMREXX) == TAG_REPLYFROMREXX;
 
     switch ( code )
     {
@@ -2037,351 +1943,48 @@ MsgReplyType processDTN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
 
 MsgReplyType processLVN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, uint32_t code, LPARAM lParam, pCPlainBaseDialog pcpbd)
 {
-    char          tmpBuffer[20];
-    RexxObjectPtr idFrom = idFrom2rexxArg(c, lParam);
-
     MsgReplyType  msgReply = ReplyFalse;
-    bool          expectReply = (tag & TAG_REPLYFROMREXX) == TAG_REPLYFROMREXX;
 
     switch ( code )
     {
-        case NM_CLICK:
-        case NM_DBLCLK:
-        {
-            LPNMITEMACTIVATE pIA = (LPNMITEMACTIVATE)lParam;
-
-            if ( pIA->uKeyFlags == 0 )
-            {
-                strcpy(tmpBuffer, "NONE");
-            }
-            else
-            {
-                tmpBuffer[0] = '\0';
-
-                if ( pIA->uKeyFlags & LVKF_SHIFT )
-                    strcpy(tmpBuffer, "SHIFT");
-                if ( pIA->uKeyFlags & LVKF_CONTROL )
-                    tmpBuffer[0] == '\0' ? strcpy(tmpBuffer, "CONTROL") : strcat(tmpBuffer, " CONTROL");
-                if ( pIA->uKeyFlags & LVKF_ALT )
-                    tmpBuffer[0] == '\0' ? strcpy(tmpBuffer, "ALT") : strcat(tmpBuffer, " ALT");
-            }
-
-            // The user can click on an item in a list view, or on the
-            // background of the list view.  For report mode only, the user can
-            // also click on a subitem of the item.  When the click is on the
-            // background, the item index and column index will be sent to the
-            // Rexx method as -1.
-            //
-            // In report mode, if the list view has the extended full row select
-            // stylye, everything works as expected.  But, without that style,
-            // if the user clicks anywhere on the row outside of the item icon
-            // and item text, the OS does not report the item index.  This looks
-            // odd to the user.  For this case we go to some extra trouble to
-            // get the correct item index.
-            if ( pIA->iItem == -1 && pIA->iSubItem != -1 )
-            {
-                HWND hwnd = pIA->hdr.hwndFrom;
-                if ( isInReportView(hwnd)  )
-                {
-                    getItemIndexFromHitPoint(pIA, hwnd);
-                }
-                else
-                {
-                    // iSubItem is always 0 when not in report mode, but -1 is
-                    // more consistent.
-                    pIA->iSubItem = -1;
-                }
-            }
-
-            RexxArrayObject args = c->ArrayOfFour(idFrom, c->Int32(pIA->iItem), c->Int32(pIA->iSubItem), c->String(tmpBuffer));
-
-            if ( expectReply )
-            {
-                invokeDirect(c, pcpbd, methodName, args);
-            }
-            else
-            {
-                invokeDispatch(c, pcpbd, methodName, args);
-            }
-
+        case LVN_BEGINDRAG :
+        case LVN_BEGINRDRAG :
+            msgReply = lvnBeginDrag(pcpbd, lParam, methodName, tag, code);
             break;
-        }
-
-        case LVN_ITEMCHANGED:
-        {
-            LPNMLISTVIEW pLV = (LPNMLISTVIEW)lParam;
-
-            RexxObjectPtr item = c->Int32(pLV->iItem);
-            char *p;
-
-            /* The use of the tag field allows a finer degree of control as to exactly which event
-             * the user wants to be notified of, then does the initial message match above.  Because
-             * of that, this specific LVN_ITEMCHANGED notification may not match the tag.  So, if we
-             * do not match here, we continue the search through the message table because this
-             * notification may match some latter entry in the table.
-             */
-            if ( (tag & TAG_STATECHANGED) && (pLV->uChanged == LVIF_STATE) )
-            {
-                if ( (tag & TAG_CHECKBOXCHANGED) && (pLV->uNewState & LVIS_STATEIMAGEMASK) )
-                {
-                    p = (pLV->uNewState == INDEXTOSTATEIMAGEMASK(2) ? "CHECKED" : "UNCHECKED");
-
-                    RexxArrayObject args = c->ArrayOfThree(idFrom, item, c->String(p));
-
-                    if ( expectReply )
-                    {
-                        invokeDirect(c, pcpbd, methodName, args);
-                    }
-                    else
-                    {
-                        invokeDispatch(c, pcpbd, methodName, args);
-                    }
-                }
-                else if ( matchSelectFocus(tag, pLV) )
-                {
-                    tmpBuffer[0] = '\0';
-
-                    if ( selectionDidChange(pLV) )
-                    {
-                        if ( pLV->uNewState & LVIS_SELECTED )
-                        {
-                            strcpy(tmpBuffer, "SELECTED");
-                        }
-                        else
-                        {
-                            strcpy(tmpBuffer, "UNSELECTED");
-                        }
-                    }
-
-                    if ( focusDidChange(pLV) )
-                    {
-                        if ( pLV->uNewState & LVIS_FOCUSED )
-                        {
-                            tmpBuffer[0] == '\0' ? strcpy(tmpBuffer, "FOCUSED") : strcat(tmpBuffer, " FOCUSED");
-                        }
-                        else
-                        {
-                            tmpBuffer[0] == '\0' ? strcpy(tmpBuffer, "UNFOCUSED") : strcat(tmpBuffer, " UNFOCUSED");
-                        }
-                    }
-
-                    RexxArrayObject args = c->ArrayOfThree(idFrom, item, c->String(tmpBuffer));
-
-                    if ( expectReply )
-                    {
-                        invokeDirect(c, pcpbd, methodName, args);
-                    }
-                    else
-                    {
-                        invokeDispatch(c, pcpbd, methodName, args);
-                    }
-                }
-                else if ( matchSelect(tag, pLV) )
-                {
-                    p = (pLV->uNewState & LVIS_SELECTED) ? "SELECTED" : "UNSELECTED";
-
-                    RexxArrayObject args = c->ArrayOfThree(idFrom, item, c->String(p));
-
-                    if ( expectReply )
-                    {
-                        if ( invokeDirect(c, pcpbd, methodName, args) )
-                        {
-                            // No condition was raised, it is safe to continue searching.
-                            msgReply = ContinueSearching;  // Not sure if this is wise with the C++ API
-                        }
-                    }
-                    else
-                    {
-                        invokeDispatch(c, pcpbd, methodName, args);
-                        msgReply = ContinueSearching;  // Not sure if this is wise with the C++ API
-                    }
-                }
-                else if ( matchFocus(tag, pLV) )
-                {
-                    p = (pLV->uNewState & LVIS_FOCUSED) ? "FOCUSED" : "UNFOCUSED";
-
-                    RexxArrayObject args = c->ArrayOfThree(idFrom, item, c->String(p));
-
-                    if ( expectReply )
-                    {
-                        if ( invokeDirect(c, pcpbd, methodName, args) )
-                        {
-                            // No condition was raised, it is safe to continue searching.
-                            msgReply = ContinueSearching;  // Not sure if this is wise with the C++ API
-                        }
-                    }
-                    else
-                    {
-                        invokeDispatch(c, pcpbd, methodName, args);
-                        msgReply = ContinueSearching;  // Not sure if this is wise with the C++ API
-                    }
-                }
-                else
-                {
-                    // This message in the message table does not match, keep searching.
-                    msgReply = ContinueSearching;
-                }
-            }
-
-            break;
-        }
-
-        case LVN_COLUMNCLICK :
-        {
-            RexxObjectPtr rxLV = controlFrom2rexxArg(pcpbd, lParam, winListView);
-            uint32_t      col = (ULONG)((NM_LISTVIEW *)lParam)->iSubItem;
-
-            msgReply = ReplyTrue;
-
-            RexxArrayObject args = c->ArrayOfThree(idFrom, c->UnsignedInt32(col), rxLV);
-
-            if ( expectReply )
-            {
-                invokeDirect(c, pcpbd, methodName, args);
-            }
-            else
-            {
-                invokeDispatch(c, pcpbd, methodName, args);
-            }
-
-            break;
-        }
 
         case LVN_BEGINSCROLL :
         case LVN_ENDSCROLL   :
-        {
-            NMLVSCROLL    *ps   = (NMLVSCROLL  *)lParam;
-            RexxObjectPtr  rxLV = controlFrom2rexxArg(pcpbd, lParam, winListView);
-            RexxObjectPtr  rxDx = c->Int32(ps->dx);
-            RexxObjectPtr  rxDy = c->Int32(ps->dy);
-
-            msgReply = ReplyTrue;
-
-            RexxArrayObject args = c->ArrayOfFour(idFrom, rxDx, rxDy, rxLV);
-
-            c->ArrayPut(args, code == LVN_BEGINSCROLL ? TheTrueObj : TheFalseObj, 5);
-
-            if ( expectReply )
-            {
-                invokeDirect(c, pcpbd, methodName, args);
-            }
-            else
-            {
-                invokeDispatch(c, pcpbd, methodName, args);
-            }
-
-            c->ReleaseLocalReference(rxLV);
-            c->ReleaseLocalReference(rxDx);
-            c->ReleaseLocalReference(rxDy);
-            c->ReleaseLocalReference(args);
-
+            msgReply = lvnBeginEndScroll(pcpbd, lParam, methodName, tag, code);
             break;
-        }
 
         case LVN_BEGINLABELEDIT :
-        {
-            NMLVDISPINFO *pdi = (NMLVDISPINFO *)lParam;
+            msgReply = lvnBeginLabelEdit(pcpbd, lParam, methodName, tag);
+            break;
 
-            if ( (tag & TAG_FLAGMASK) == TAG_PRESERVE_OLD )
-            {
-                // To preserve old behavior for DefListEditStater, we don't need
-                // to do anything. Otherwise, we need to invoke the named method
-                // with the old args.
-                if ( StrCmpI(methodName, "DefListEditStarter") != 0 )
-                {
-                    RexxObjectPtr    useLess = c->Intptr(lParam);
-                    RexxArrayObject  args    = c->ArrayOfTwo(idFrom, useLess);
-
-                    invokeDispatch(c, pcpbd, methodName, args);
-
-                    c->ReleaseLocalReference(idFrom);
-                    c->ReleaseLocalReference(useLess);
-                }
-                return ReplyTrue;
-            }
-
-            HWND hLv   = pdi->hdr.hwndFrom;
-            HWND hEdit = ListView_GetEditControl(hLv);
-
-            RexxObjectPtr   itemID = c->UnsignedInt32(pdi->item.iItem);
-            RexxObjectPtr   rxLv   = controlFrom2rexxArg(pcpbd, lParam, winListView);
-            RexxObjectPtr   rxEdit = createControlFromHwnd(c, pcpbd, hEdit, winEdit, false);
-            RexxArrayObject args   = c->ArrayOfFour(idFrom, itemID, rxEdit, rxLv);
-
-            if ( expectReply )
-            {
-                RexxObjectPtr msgReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
-
-                msgReply = requiredBooleanReply(c, pcpbd, msgReply, methodName, false);
-                if ( msgReply == NULL )
-                {
-                    setWindowPtr(pcpbd->hDlg, DWLP_MSGRESULT, TRUE);
-                    return ReplyFalse;
-                }
-
-                // Return false to let the text be edited, true to disallow it.
-                // The return from Rexx is true to allow, false to disallow.
-                setWindowPtr(pcpbd->hDlg, DWLP_MSGRESULT, msgReply == TheTrueObj ? FALSE : TRUE);
-            }
-            else
-            {
-                invokeDispatch(c, pcpbd, methodName, args);
-            }
-
-            c->ReleaseLocalReference(idFrom);
-            c->ReleaseLocalReference(itemID);
-            if ( rxLv != TheNilObj )
-            {
-                c->ReleaseLocalReference(rxLv);
-            }
-            if ( rxEdit != TheNilObj )
-            {
-                c->ReleaseLocalReference(rxEdit);
-            }
-            c->ReleaseLocalReference(args);
-
-            return ReplyTrue;
-        }
+        case LVN_COLUMNCLICK :
+            msgReply = lvnColumnClick(pcpbd, lParam, methodName, tag);
+            break;
 
         case LVN_ENDLABELEDIT :
-            return lvnEndLabelEdit(c, methodName, tag, lParam, pcpbd);
+            msgReply = lvnEndLabelEdit(pcpbd, lParam, methodName, tag);
+            break;
 
         case LVN_GETINFOTIP :
-        {
-            NMLVGETINFOTIP *tip = (LPNMLVGETINFOTIP)lParam;
+            msgReply = lvnGetInfoTip(pcpbd, lParam, methodName, tag);
+            break;
 
-            RexxObjectPtr item = c->Int32(tip->iItem);
-            RexxObjectPtr text = tip->dwFlags == 0 ? c->String(tip->pszText) : c->NullString();
-            RexxObjectPtr len  = c->Int32(tip->cchTextMax - 1);
-
-            RexxArrayObject args = c->ArrayOfFour(idFrom, item, text, len);
-
-            RexxObjectPtr msgReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
-
-            if ( msgReplyIsGood(c, pcpbd, msgReply, methodName, false) )
-            {
-                CSTRING newText = c->ObjectToStringValue(msgReply);
-                if ( strlen(newText) > 0 )
-                {
-                    _snprintf(tip->pszText, tip->cchTextMax - 1, "%s", newText);
-                }
-            }
-
-            c->ReleaseLocalReference(idFrom);
-            c->ReleaseLocalReference(item);
-            c->ReleaseLocalReference(text);
-            c->ReleaseLocalReference(len);
-            c->ReleaseLocalReference(args);
-
-            return ReplyTrue;
-        }
-
-        case LVN_BEGINDRAG :
-        case LVN_BEGINRDRAG :
-            return lvnBeginDrag(c, methodName, tag, lParam, pcpbd, code);
+        case LVN_ITEMCHANGED:
+            msgReply = lvnItemChanged(pcpbd, lParam, methodName, tag);
+            break;
 
         case LVN_KEYDOWN :
-            return lvnKeyDown(c, methodName, tag, lParam, pcpbd);
+            msgReply = lvnKeyDown(pcpbd, lParam, methodName, tag);
+            break;
+
+        case NM_CLICK:
+        case NM_DBLCLK:
+            msgReply = lvnNmClick(pcpbd, lParam, methodName, tag, code);
+            break;
 
         default :
             break;
@@ -3499,10 +3102,13 @@ MsgReplyType searchMiscTable(uint32_t msg, WPARAM wParam, LPARAM lParam, pCPlain
                 c->ArrayPut(args, rect, 7);
                 c->ArrayPut(args, itemData, 8);
 
-                // Adding TAG_USERADDED causes genericInvoke() to return the
+                // Adding TAG_USE_RETURN causes genericInvoke() to return the
                 // user's return value in the dialog's DWLP_MSGRESULT window
                 // word.
-                tag = willReply ? tag | TAG_USERADDED : tag;
+                //
+                // Originally I thought we needed this for WM_DRAWITEM, but
+                // returning false or true seems to have no effect.
+                tag = willReply ? tag | TAG_USE_RETURN : tag;
                 genericInvoke(pcpbd, method, args, tag);
 
                 c->ReleaseLocalReference(ctrlID);
@@ -4360,6 +3966,8 @@ static bool keyword2lvn(RexxMethodContext *c, CSTRING keyword, uint32_t *code, u
         return false;
     }
 
+    // GETINFOTIP above is forced to TAG_REPLYFROMREXX, so, if not GETINFOTIP,
+    // then honor the willReply argument.
     if ( (*tag & TAG_REPLYFROMREXX) !=  TAG_REPLYFROMREXX )
     {
         uint32_t extraTag = _willReplyToTag(c, willReply, false, 4);

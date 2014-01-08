@@ -649,16 +649,15 @@
  * We use the event to demonstrate some of the list-view methods.
  */
 ::method onColumnClick unguarded
-  expose lv
-  use arg id, column
+  use arg id, column, listView
 
   -- Get the current width, in pixels, of the column clicked and then set its
   -- width to 10 pixels more.
-  lv~setColumnWidthPx(column, lv~columnWidthPx(column) + 10)
+  listView~setColumnWidthPx(column, listView~columnWidthPx(column) + 10)
 
   -- Display information about the column clicked.
   d = .Directory~new
-  if lv~getColumnInfo(column, d) then do
+  if listView~getColumnInfo(column, d) then do
     tab = '09'x
     msg = "Column Title:"tab d~text               || .endOfLine            ||  -
           "Subitem index:"tab d~subitem           || .endOfLine            ||  -
@@ -682,24 +681,24 @@
  * We use the event to demonstrate some of the list-view methods.
  */
 ::method onDoubleClick unguarded
-  expose lv
-  use arg id
+  use arg id, item, subitem, keyState, nCode, listView
+  say id item subitem keyState nCode listView
 
   -- Get the index of the item with the focus, use the index to retrieve the
   -- item information and the text associated with it
-  index = lv~focused
+  index = listView~focused
 
   -- The item's information is returned in the .directory object passed in to
   -- the getItemInfo() method.
   d = .directory~new
-  lv~getItemInfo(index, d)
+  listView~getItemInfo(index, d)
 
   parse value d~text with lastName ', ' firstName
 
   pronoun = 'his'
   if d~image == 1 then pronoun = "her"
 
-  age = lv~itemText(index, 5)
+  age = listView~itemText(index, 5)
 
   msg = "You have doubled clicked on" firstName lastName || "0d0a0d0a"x ,
         "Should" pronoun "age be increased by 1?"
@@ -707,17 +706,17 @@
   ret = MessageDialog(msg, self~hwnd, "Age Increment", YESNO, INFORMATION)
   if ret == self~IDYES then do
     age += 1
-    lv~setItemText(index, 5, age)
+    listView~setItemText(index, 5, age)
 
     -- Now we need to update the age in the record for this item. We retrieve
     -- the record from the user item data and update the age.
-    rec = lv~getItemData(index)
+    rec = listView~getItemData(index)
     rec~age = age
   end
 
   -- Deselect the focused item and move the focus to the first item
-  lv~deselect(index)
-  lv~focus(0)
+  listView~deselect(index)
+  listView~focus(0)
 
 
 /** onGetInfoTip()
@@ -770,8 +769,8 @@
  * the newly selected item gaining the selection.
  */
 ::method onSelectChanged unguarded
-  expose haveSelection pbEdit lv
-  use arg id, itemIndex, state
+  expose haveSelection pbEdit
+  use arg id, itemIndex, state, lv
 
   if state == 'SELECTED' then haveSelection = .true
   else if state == 'UNSELECTED' & lv~selected == -1 then haveSelection = .false

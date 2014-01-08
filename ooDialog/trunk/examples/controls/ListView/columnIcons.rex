@@ -91,8 +91,8 @@
     list~setView("SMALLICON")
 
 ::method onColClick unguarded
-    expose list itemColumns
-    use arg id, colIndex
+    expose itemColumns
+    use arg id, colIndex, listView
 
     -- Adjust for 0-based indexes
     i = colIndex + 1
@@ -114,7 +114,7 @@
       itemColumns[i] = 0
     end
 
-    list~sortItems('InternalListViewSort', d)
+    listView~sortItems('InternalListViewSort', d)
     return 0
 
 

@@ -87,12 +87,12 @@
   end
 
 ::method onClick
-  use arg id, itemIndex, columnIndex, keyState
+  use arg id, itemIndex, columnIndex, keyState, nCode, listView
 
   -- Compensate for zero-based indexes ;-(
   itemIndex += 1
   columnIndex += 1
 
-  say 'onClick() row:' itemIndex 'column:' columnIndex 'key state:' keyState
+  say 'onClick() row:' itemIndex 'column:' columnIndex 'key state:' keyState  'lv:' listView
   return 0
 
