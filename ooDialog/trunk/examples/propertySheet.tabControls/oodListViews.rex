@@ -512,7 +512,8 @@
   use strict arg smallIcons, normalIcons, records
 
   self~connectListViewEvent(IDC_LISTVIEW, "COLUMNCLICK")
-  self~connectListViewEvent(IDC_LISTVIEW, "ACTIVATE", "onDoubleClick")
+  self~connectListViewEvent(IDC_LISTVIEW, "ACTIVATE", "onActivate", .true)
+  self~connectListViewEvent(IDC_LISTVIEW, "DBLCLK", "onDoubleClick", .true)
   self~connectListViewEvent(IDC_LISTVIEW, "BEGINDRAG", "DefListDragHandler")
   self~connectListViewEvent(IDC_LISTVIEW, "BEGINEDIT", "onBeginEdit", .true)
   self~connectListViewEvent(IDC_LISTVIEW, "ENDEDIT", , .true)
@@ -641,6 +642,7 @@
 
   return
 
+
 /** onColumnClick()
  *
  * The event handler for a column click event, invoked when the user clicks on a
@@ -675,14 +677,34 @@
 
 /** onDoubleClick()
  *
- * The event handler for a double click, invoked when a list-view item is double
- * clicked.
+ * The event handler for a double clikc event, invoked when a list-view item is
+ * double clicked.
  *
- * We use the event to demonstrate some of the list-view methods.
+ * We use the event to demonstrate:
+ *
+ * 1.)  That a double click also activates an item and that the double click
+ *      comes first.  When you double click an item you will see a message box
+ *      displaying the arguments to this method, the 'age increase' message box,
+ *      and then a message box from the onActivate() method.
+ *
+ * 2.)  Some of the list-view methods.
+ *
  */
 ::method onDoubleClick unguarded
-  use arg id, item, subitem, keyState, nCode, listView
-  say id item subitem keyState nCode listView
+  use arg id, item, subitem, state, isSingleClick, listView
+
+  tab  = '09'x
+  tab2 = tab~copies(2)
+  true = self~booleanToText(isSingleClick)
+  msg = 'onDoubleClick()'       || .endOfLine~copies(2) || -
+        'id:'tab2 id            || .endOfLine || -
+        'item:'tab2 item        || .endOfLine || -
+        'subitem:'tab2 subitem  || .endOfLine || -
+        'state:'tab2 state      || .endOfLine || -
+        'single click:'tab true || .endOfLine || -
+        'listView:'tab2 listView
+
+  ret = MessageDialog(msg, self~hwnd, "onDoubleClick Method Invoked", OK, INFORMATION)
 
   -- Get the index of the item with the focus, use the index to retrieve the
   -- item information and the text associated with it
@@ -700,7 +722,7 @@
 
   age = listView~itemText(index, 5)
 
-  msg = "You have doubled clicked on" firstName lastName || "0d0a0d0a"x ,
+  msg = "You have double clicked on the item for" firstName lastName || "0d0a0d0a"x ,
         "Should" pronoun "age be increased by 1?"
 
   ret = MessageDialog(msg, self~hwnd, "Age Increment", YESNO, INFORMATION)
@@ -717,6 +739,30 @@
   -- Deselect the focused item and move the focus to the first item
   listView~deselect(index)
   listView~focus(0)
+  return 0
+
+
+/** onActivate()
+ *
+ * The event handler for an activate event, invoked when a list-view item is
+ * activated.
+ *
+ * We use the event to demonstrate that a double click event also generates an
+ * activate event.  We just print out the argument values here.
+ */
+::method onActivate unguarded
+  use arg id, ptr, nCode, listView
+
+  tab = '09'x
+  msg = 'onActivate()'     || .endOfLine~copies(2) || -
+        'id:'tab id        || .endOfLine || -
+        'ptr:'tab ptr      || .endOfLine || -
+        'nCode:'tab nCode  || .endOfLine || -
+        'listView:'tab listView
+
+  ret = MessageDialog(msg, self~hwnd, "onActivate Method Invoked", OK, INFORMATION)
+
+  return 0
 
 
 /** onGetInfoTip()
@@ -784,6 +830,13 @@
     if rec~isEditable then pbEdit~enable
     else pbEdit~disable
   end
+
+
+::method booleanToText unguarded private
+  use strict arg boolean
+  if boolean == .true then return 'true'
+  else if boolean == .false then return 'false'
+  else return 'not a boolean'
 
 
 /** addRecord()

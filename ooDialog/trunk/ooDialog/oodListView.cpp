@@ -1814,9 +1814,14 @@ static void getItemIndexFromHitPoint(LPNMITEMACTIVATE pIA, HWND hwnd)
  *         where id is the list-view control ID, item is the 0-based item ID,
  *         and point is a string "x y"
  *
+ *         In 4.2.4 we add a fourth and fifth arg, which mouse button and the
+ *         Rexx list view object.
+ *
+ *         use arg id, item, pt, isLMB, listView
+ *
  *         For a "new" behavior the most likely arguments would be:
  *
- *           use arg id, item, pt, notiftCode, lvObj
+ *           use arg id, item, pt, isLMB, lvObj
  *
  *         where pt would be a .Point object and we would send the Rexx
  *         list-view object in addition.
@@ -1831,13 +1836,13 @@ MsgReplyType lvnBeginDrag(pCPlainBaseDialog pcpbd, LPARAM lParam, CSTRING method
         char buf[256];
         sprintf(buf, "%d %d", pnmlv->ptAction.x, pnmlv->ptAction.y);
 
-        RexxObjectPtr notifyCode = c->UnsignedInt32(code);
-        RexxObjectPtr idFrom     = idFrom2rexxArg(c, lParam);
-        RexxObjectPtr rxLV       = controlFrom2rexxArg(pcpbd, lParam, winListView);
-        RexxObjectPtr item       = c->Int32(pnmlv->iItem);
-        RexxObjectPtr point      = c->String(buf);
+        RexxObjectPtr isLMB  = (code == LVN_BEGINDRAG) ? TheTrueObj : TheFalseObj;
+        RexxObjectPtr idFrom = idFrom2rexxArg(c, lParam);
+        RexxObjectPtr rxLV   = controlFrom2rexxArg(pcpbd, lParam, winListView);
+        RexxObjectPtr item   = c->Int32(pnmlv->iItem);
+        RexxObjectPtr point  = c->String(buf);
 
-        RexxArrayObject args = c->ArrayOfFour(idFrom, item, point, notifyCode);
+        RexxArrayObject args = c->ArrayOfFour(idFrom, item, point, isLMB);
         c->ArrayPut(args, rxLV, 5);
 
         genericInvoke(pcpbd, methodName, args, tag);
@@ -1845,7 +1850,6 @@ MsgReplyType lvnBeginDrag(pCPlainBaseDialog pcpbd, LPARAM lParam, CSTRING method
         c->ReleaseLocalReference(idFrom);
         c->ReleaseLocalReference(item);
         c->ReleaseLocalReference(point);
-        c->ReleaseLocalReference(notifyCode);
         c->ReleaseLocalReference(rxLV);
         c->ReleaseLocalReference(args);
     }
@@ -2309,9 +2313,9 @@ MsgReplyType lvnNmClick(pCPlainBaseDialog pcpbd, LPARAM lParam, CSTRING methodNa
     RexxThreadContext *c   = pcpbd->dlgProcContext;
     LPNMITEMACTIVATE   pIA = (LPNMITEMACTIVATE)lParam;
 
-    RexxObjectPtr idFrom     = idFrom2rexxArg(c, lParam);
-    RexxObjectPtr notifyCode = c->UnsignedInt32(code);
-    RexxObjectPtr rxLV       = controlFrom2rexxArg(pcpbd, lParam, winListView);
+    RexxObjectPtr idFrom  = idFrom2rexxArg(c, lParam);
+    RexxObjectPtr isClick = (code == NM_CLICK) ? TheTrueObj : TheFalseObj;
+    RexxObjectPtr rxLV    = controlFrom2rexxArg(pcpbd, lParam, winListView);
 
     char tmpBuffer[20];
     if ( pIA->uKeyFlags == 0 )
@@ -2362,7 +2366,7 @@ MsgReplyType lvnNmClick(pCPlainBaseDialog pcpbd, LPARAM lParam, CSTRING methodNa
     RexxObjectPtr keyState  = c->String(tmpBuffer);
 
     RexxArrayObject args = c->ArrayOfFour(idFrom, rxItem, rxSubitem, keyState);
-    c->ArrayPut(args, notifyCode, 5);
+    c->ArrayPut(args, isClick, 5);
     c->ArrayPut(args, rxLV, 6);
 
     genericInvoke(pcpbd, methodName, args, tag);
@@ -2371,7 +2375,6 @@ MsgReplyType lvnNmClick(pCPlainBaseDialog pcpbd, LPARAM lParam, CSTRING methodNa
     c->ReleaseLocalReference(rxItem);
     c->ReleaseLocalReference(rxSubitem);
     c->ReleaseLocalReference(keyState);
-    c->ReleaseLocalReference(notifyCode);
     c->ReleaseLocalReference(rxLV);
     c->ReleaseLocalReference(args);
 

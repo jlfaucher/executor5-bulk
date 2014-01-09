@@ -191,7 +191,7 @@
 #define TAG_PRESERVE_OLD          0x00100000
 
 // Indicates that, in genericInvoke(), if we have TAG_WILLREPLY we should use
-// the a return value from the event handler as a reply to the notification
+// the return value from the event handler as a reply to the notification
 // message.  This must be tested for as:
 //
 // if ( (TAG & TAG_USE_RETURN) == TAG_USE_RETURN )

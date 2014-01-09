@@ -2757,8 +2757,10 @@ MsgReplyType searchNotifyTable(WPARAM wParam, LPARAM lParam, pCPlainBaseDialog p
             RexxObjectPtr notifyCode = notifyCode2rexxArg(c, lParam);
             RexxObjectPtr rxCtrl     = controlFrom2rexxArg(pcpbd, lParam, ctrlType);
 
+            uint32_t tag = ((m[i].tag & TAG_REPLYFROMREXX) ? m[i].tag | TAG_USE_RETURN : m[i].tag);
+
             RexxArrayObject args = c->ArrayOfFour(idFrom, hwndFrom, notifyCode, rxCtrl);
-            genericInvoke(pcpbd, m[i].rexxMethod, args, m[i].tag);
+            genericInvoke(pcpbd, m[i].rexxMethod, args, tag);
 
             c->ReleaseLocalReference(idFrom);
             c->ReleaseLocalReference(hwndFrom);
@@ -3870,12 +3872,12 @@ static bool keyword2lvn(RexxMethodContext *c, CSTRING keyword, uint32_t *code, u
     *isDefEdit = false;
     *tag = 0;
 
-    if ( StrCmpI(keyword,      "CHANGING")    == 0 ) lvn = LVN_ITEMCHANGING;
+    if ( StrCmpI(keyword,      "ACTIVATE")    == 0 ) lvn = LVN_ITEMACTIVATE;
     else if ( StrCmpI(keyword, "CHANGED")     == 0 ) lvn = LVN_ITEMCHANGED;
-    else if ( StrCmpI(keyword, "INSERTED")    == 0 ) lvn = LVN_INSERTITEM;
+    else if ( StrCmpI(keyword, "CHANGING")    == 0 ) lvn = LVN_ITEMCHANGING;
     else if ( StrCmpI(keyword, "DELETE")      == 0 ) lvn = LVN_DELETEITEM;
     else if ( StrCmpI(keyword, "DELETEALL")   == 0 ) lvn = LVN_DELETEALLITEMS;
-    else if ( StrCmpI(keyword, "ACTIVATE")    == 0 ) lvn = LVN_ITEMACTIVATE;
+    else if ( StrCmpI(keyword, "INSERTED")    == 0 ) lvn = LVN_INSERTITEM;
     else if ( StrCmpI(keyword, "DEFAULTEDIT") == 0 )
     {
         *isDefEdit = true;
@@ -3886,30 +3888,30 @@ static bool keyword2lvn(RexxMethodContext *c, CSTRING keyword, uint32_t *code, u
         lvn = LVN_BEGINDRAG;
         *tag = TAG_LISTVIEW | TAG_PRESERVE_OLD;
     }
-    else if ( StrCmpI(keyword, "BEGINRDRAG")  == 0 )
-    {
-        lvn = LVN_BEGINRDRAG;
-        *tag = TAG_LISTVIEW | TAG_PRESERVE_OLD;
-    }
     else if ( StrCmpI(keyword, "BEGINEDIT") == 0 )
     {
         lvn = LVN_BEGINLABELEDIT;
         *tag = TAG_LISTVIEW;
+    }
+    else if ( StrCmpI(keyword, "BEGINRDRAG")  == 0 )
+    {
+        lvn = LVN_BEGINRDRAG;
+        *tag = TAG_LISTVIEW | TAG_PRESERVE_OLD;
     }
     else if ( StrCmpI(keyword, "BEGINSCROLL") == 0 )
     {
         lvn = LVN_BEGINSCROLL;
         *tag = TAG_LISTVIEW;
     }
-    else if ( StrCmpI(keyword, "CLICK") == 0 )
-    {
-        lvn = NM_CLICK;
-        *tag = TAG_LISTVIEW;
-    }
     else if ( StrCmpI(keyword, "CHECKBOXCHANGED") == 0 )
     {
         lvn = LVN_ITEMCHANGED;
         *tag = TAG_LISTVIEW | TAG_STATECHANGED | TAG_CHECKBOXCHANGED;
+    }
+    else if ( StrCmpI(keyword, "CLICK") == 0 )
+    {
+        lvn = NM_CLICK;
+        *tag = TAG_LISTVIEW;
     }
     else if ( StrCmpI(keyword, "COLUMNCLICK") == 0 )
     {

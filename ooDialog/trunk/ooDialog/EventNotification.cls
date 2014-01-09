@@ -81,9 +81,9 @@
 ::method disconnectKeyPress unguarded external "LIBRARY oodialog en_disconnectKeyPress"
 ::method hasKeyPressConnection unguarded external "LIBRARY oodialog en_hasKeyPressConnection"
 
-::method defListDragHandler
-   use arg id, item, pt
-   lc = self~newListView(id)
+::method defListDragHandler unguarded
+   use arg id, item, pt, isLMB, lc
+
    hc = lc~cursor_Cross   /* change cursor and store current */
    parse value lc~getRect with left top right bottom
    parse var pt oldx oldy
