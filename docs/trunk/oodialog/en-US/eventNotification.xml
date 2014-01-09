@@ -6986,6 +6986,7 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
 
   return 0
 ]]>
+</programlisting>
 
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -7010,7 +7011,7 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
     <listitem>
     <para>
       This argument reports whether the check box was checked or unchecked.  Its value will be either
-      <emphasis role="italic">CHECKED</emphasis> or <emphasis role="italic">UNCHECKED</emphasis/> &quot;&quot;
+      <emphasis role="italic">CHECKED</emphasis> or <emphasis role="italic">UNCHECKED</emphasis>.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>listView</term>
@@ -7114,14 +7115,22 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
     <varlistentry><term>itemIndex</term>
     <listitem>
     <para>
-      The index of the item whose checkbox was changed.
+      The index of the item that was clicked on.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>state</term>
+    <varlistentry><term>columnIndex</term>
     <listitem>
     <para>
-      This argument reports whether the check box was checked or unchecked. Its value will be either <emphasis
-      role="italic">CHECKED</emphasis> or <emphasis role="italic">UNCHECKED</emphasis/>.
+      The index of the column in the item that was clicked on. If not in report view, this will always be 0.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>keyState</term>
+    <listitem>
+    <para>
+      One or more keywords, separated by blanks, that report the shift, alt, control key state. It will either be the single
+      key word: <emphasis role="italic">NONE</emphasis>, or any combination of <emphasis role="italic">SHIFT</emphasis>
+      <emphasis role="italic">CONTORL</emphasis> <emphasis role="italic">ALT</emphasis>. The keywords report which of the
+      keys were pressed at the time of the mouse click or double click.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>listView</term>
