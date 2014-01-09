@@ -6265,7 +6265,8 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
     <varlistentry><term>event [required]</term>
     <listitem>
     <para>
-      The event keyword. Use exactly one of the following keywords, case is not significant:
+      The event keyword. Use exactly one of the following keywords, case is not significant. Each keyword in the list is
+      linked to the event handler documentation for that event:
     </para>
     <para>
       <simplelist type='vert' columns='3'>
@@ -6295,20 +6296,21 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
       </simplelist>
     </para>
     <variablelist>
-      <varlistentry><term>ACTIVATE</term>
+      <varlistentry><term><link linkend="evtListViewGeneral">ACTIVATE</link></term>
       <listitem>
       <para>
-        An item is activated by double-clicking the left mouse button.
+        A list view item has been activated. One way an item is activated by is double-clicking the item with the left mouse
+        button.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>BEGINDRAG</term>
+      <varlistentry><term><xref linkend="evtListViewBEGINDRAG"/> </term>
       <listitem>
       <para>
         A drag-and-drop operation was initiated. See <xref linkend="mthDefListDragHandler"/> for information on how to
         implement a drag-and-drop handler.
       </para>
       </listitem></varlistentry>
-      <varlistentry id="kywListViewBEGINEDIT" xreflabel="BEGINEDIT"><term>BEGINEDIT</term>
+      <varlistentry id="kywListViewBEGINEDIT" xreflabel="BEGINEDIT"><term><xref linkend="evtListViewBEGINEDIT"/> </term>
       <listitem>
       <para>
         Editing a label has been started. Do not connect this event if you are using the DEFAULTEDIT keyword. The results are
@@ -6322,7 +6324,7 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
         explains the difference between the two types of notifications.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>BEGINRDRAG</term>
+      <varlistentry><term><link linkend="evtListViewBEGINDRAG">BEGINRDRAG</link></term>
       <listitem>
       <para>
         A drag-and-drop operation involving the right mouse button was initiated. See
@@ -6330,10 +6332,64 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
         handler.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>BEGINSCROLL</term>
+      <varlistentry><term><link linkend="evtListViewBEGINSCROLL">BEGINSCROLL</link></term>
       <listitem>
       <para>
         A scrolling operation is starting.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><link linkend="evtListViewGeneral">CHANGED</link></term>
+      <listitem>
+      <para>
+        An item has changed. The notification for this event is sent after the item changed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><link linkend="evtListViewGeneral">CHANGING</link></term>
+      <listitem>
+      <para>
+        An item is about to change. The notification for this event is sent before the item is changed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><xref linkend="evtListViewCHECKBOXCHANGED"/></term>
+      <listitem>
+      <para>
+        The check box state of an item changed.  (The check box was checked or unchecked.) This event can only occur if
+        the list-view has the check box <link linkend="mthAddExtendedStyle">extended</link> list-view style.  Use this
+        keyword instead of the CHANGED keyword.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><xref linkend="evtListViewCLICK"/></term>
+      <listitem>
+      <para>
+        This event notification is generated when the list-view is clicked with the left mouse button. However, in report
+        view only, this excludes the column headers. Connecting the CLICK event is a replacement for the
+        <xref linkend="mthConnectNotifyEvent"/> method's CLICK event.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><xref linkend="evtListViewCOLUMNCLICK"/></term>
+      <listitem>
+      <para>
+        In report view only, a column header has been clicked. Contrast this with the CLICK keyword.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><link linkend="evtListViewCOLUMNCLICK">DBLCLK</link></term>
+      <listitem>
+      <para>
+        This event is generated when the list-view is double-clicked with the left mouse button. However, in
+        report view only, this excludes the column headers. Connecting the DBLCLK event is a replacement for the
+        <xref linkend="mthConnectNotifyEvent"/> method's DBLCLK event.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><link linkend="evtListViewGeneral">DELETE</link></term>
+      <listitem>
+      <para>
+        An item has been deleted.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><link linkend="evtListViewGeneral">DELETEALL</link></term>
+      <listitem>
+      <para>
+        All items have been deleted.
       </para>
       </listitem></varlistentry>
       <varlistentry id="kywListViewDEFAULTEDIT" xreflabel="DEFAULTEDIT"><term>DEFAULTEDIT</term>
@@ -6351,60 +6407,6 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
         result is undefined.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>CHANGING</term>
-      <listitem>
-      <para>
-        An item is about to change. The notification for this event is sent before the item is changed.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>CHANGED</term>
-      <listitem>
-      <para>
-        An item has changed. The notification for this event is sent after the item changed.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>CHECKBOXCHANGED</term>
-      <listitem>
-      <para>
-        The check box state of an item changed.  (The check box was checked or unchecked.) This event can only occur if
-        the list-view has the check box <link linkend="mthAddExtendedStyle">extended</link> list-view style.  Use this
-        keyword instead of the CHANGED keyword.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>CLICK</term>
-      <listitem>
-      <para>
-        This event notification is generated when the list-view is clicked with the left mouse button. However, in report
-        view only, this excludes the column headers. Connecting the CLICK event is a replacement for the
-        <xref linkend="mthConnectNotifyEvent"/> method's CLICK event.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>COLUMNCLICK</term>
-      <listitem>
-      <para>
-        In report view only, a column header has been clicked.  Contrast this with the CLICK keyword.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>DBLCLK</term>
-      <listitem>
-      <para>
-        This event is generated when the list-view is double-clicked with the left mouse button. However, in
-        report view only, this excludes the column headers. Connecting the DBLCLK event is a replacement for the
-        <xref linkend="mthConnectNotifyEvent"/> method's DBLCLK event.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>DELETE</term>
-      <listitem>
-      <para>
-        An item has been deleted.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>DELETEALL</term>
-      <listitem>
-      <para>
-        All items have been deleted.
-      </para>
-      </listitem></varlistentry>
       <varlistentry id="kywListViewENDEDIT" xreflabel="ENDEDIT"><term>ENDEDIT</term>
       <listitem>
       <para>
@@ -6419,7 +6421,7 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
         explains the difference between the two types of notifications.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>ENDSCROLL</term>
+      <varlistentry><term><link linkend="evtListViewBEGINSCROLL">ENDSCROLL</link></term>
       <listitem>
       <para>
         A scrolling operation has ended.
@@ -6432,7 +6434,7 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
         CHANGED keyword.
       </para>
       </listitem></varlistentry>
-      <varlistentry id="kywListViewGETINFOTIP" xreflabel="GETINFOTIP"><term>GETINFOTIP</term>
+      <varlistentry id="kywListViewGETINFOTIP" xreflabel="GETINFOTIP"><term><xref linkend="evtListViewGETINFOTIP"/></term>
       <listitem>
       <para>
         The list-view control is requesting text to display an info tip. The notification is only sent when the list-view
@@ -6440,7 +6442,7 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
         be set using the <link linkend="mthAddExtendedStyle">addExtendedStyle</link> method.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>INSERTED</term>
+      <varlistentry><term><link linkend="evtListViewGeneral">INSERTED</link></term>
       <listitem>
       <para>
         A new item has been inserted.
@@ -6587,47 +6589,87 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
   </listitem></varlistentry>
 </variablelist>
 
-<section id="evtListViewBEGINDRAG" xreflabel="BEGINDRAG"><title>BeginDrag Event Handler</title>
-<indexterm><primary>ListView Event</primary><secondary>BEGINDRAG</secondary></indexterm>
 
+<section id="evtListViewBEGINDRAG" xreflabel="BEGINDRAG"><title>BeginDrag / BeginRDrag Event Handler</title>
+<indexterm><primary>ListView class</primary><secondary>events</secondary><tertiary>BEGINDRAG</tertiary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>events</secondary><tertiary>BEGINRDRAG</tertiary></indexterm>
 <para>
-  The event-handling method connected to BEGINDRAG receives three arguments: the control ID of the list-view control,
-  the index of the list item to be dragged, and the point where the mouse cursor was pressed (x and y positions,
-  separated by a blank).
+  The event handler for the BegingDrag or BeginRDrag events is invoked when a drag-and-drop operation involving the left
+  mouse button or the right mouse button is being initiated.
+</para>
+<para>
+  The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthConnectListViewEvent"/> method
+  determines how the event handler needs to respond to the notification.
 </para>
 
 <programlisting>
 <![CDATA[
 ::method onBeginDrag unguarded
-  use arg id, item, where
+  use arg id, item, point, isLMB, listView
 
   return 0
 ]]>
 </programlisting>
-</section>
 
-<section id="evtListViewBEGINRDRAG" xreflabel="BEGINRDRAG"><title>BeginRDrag Event Handler</title>
-<indexterm><primary>ListView Event</primary><secondary>BEGINRDRAG</secondary></indexterm>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves 5 arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The numeric resource ID of the list view sending the notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>item</term>
+    <listitem>
+    <para>
+      The index of the item being dragged.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>point</term>
+    <listitem>
+    <para>
+      The point where the mouse cursor was pressed (x and y positions, separated by a blank).
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>isLMB</term>
+    <listitem>
+    <para>
+      True if the drag was started with the left mouse button, false if the drag was started with the right mouse button.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>listView</term>
+    <listitem>
+    <para>
+      The Rexx list view object that represents the underlying list view that sent the notification.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    The operating system ignores the return value from the event handler. 0 makes a good return value.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The defListDragHandler() method is an example of coding a begin drag handler. This method can be found in the
+    ooDialog.cls file.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
 
-<para>
-  The event-handling method connected to BEGINRDRAG receives three arguments: the control ID of the list-view control,
-  the index of the list item to be dragged, and the point where the mouse cursor was pressed (x and y positions,
-  separated by a blank).
-</para>
-
-<programlisting>
-<![CDATA[
-::method onBeginRightDrag unguarded
-  use arg id, item, where
-
-  return 0
-]]>
-</programlisting>
-</section>
+</section>  <!-- End BeginDrag Event Handler -->
 
 
 <section id="evtListViewBEGINEDIT" xreflabel="BEGINEDIT"><title>BeginEdit Event Handler</title>
-<indexterm><primary>ListView Event</primary><secondary>BEGINEDIT</secondary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>events</secondary><tertiary>BEGINEDIT</tertiary></indexterm>
 <para>
   The event handler for the BEGINEDIT event is invoked when the user begins a label editing operation on an item of the
   list-view. When label editing begins, an edit control is created by the operating systm, but not positioned or displayed.
@@ -6801,19 +6843,17 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
 </section>  <!-- End BeginEdit Event Handler -->
 
 
-<section id="evtListViewBEGINSCROLL" xreflabel="BEGINSCROLL"><title>BeginScroll Event Handler</title>
+<section id="evtListViewBEGINSCROLL" xreflabel="BEGINSCROLL"><title>BeginScroll / EndScroll Event Handler</title>
 <indexterm><primary>ListView class</primary><secondary>events</secondary><tertiary>BEGINSCROLL</tertiary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>events</secondary><tertiary>ENDSCROLL</tertiary></indexterm>
 <para>
-  The event handler for the begin scroll event is invoked when a scrolling operation starts. The scrolling operation can be
-  either horizontal or vertical scrolling.
+  The event handler for the begin scroll event is invoked when a scrolling operation starts and the event handler for the
+  end scroll event is invoked when a scrolling operation ends. The scrolling operation can be either horizontal or vertical
+  scrolling. Both event handlers recieve the same arguments and are basically coded the same.
 </para>
 <para>
-  If the programmer specifies true for the <emphasis role="italic">willReply</emphasis> argument in the <xref
-  linkend="mthConnectListViewEvent"/> method, then the event handler must return a value and the interpreter waits for this
-  return. If the <emphasis role="italic">willReply</emphasis> argument is false, the event handler does not need to return a
-  value and the interpreter does not wait for the return. However, it is good practice to always return a value from an event
-  handler. The operating system ignores the value of the return, so any value can be returned. Zero makes a good return value
-  in situations where the operating system ignores the returned value.
+  The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthConnectListViewEvent"/> method
+  determines how the event handler needs to respond to the notification.
 </para>
 
 <programlisting>
@@ -6865,7 +6905,7 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
     <varlistentry><term>listView</term>
     <listitem>
     <para>
-      The Rexx list-view object that generated the event notification.
+      The Rexx list view object that represents the underlying list view that generated the event notification.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>isBeginScroll</term>
@@ -6873,7 +6913,7 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
     <para>
       The event handlers for both the BEGINSCROLL and ENDSCROLL are identical. This argument allows the Rexx programmer to
       connect both events to the same method and then distinguish in the event handler which event occurred. This argument is
-      true if the event which caused the event handler to be invoked was the BEGINSCROLL event and false if the event was the
+      true if the event which caused the event handler to be invoked was the BEGINSCROLL event and false if the event was
       ENDSCROLL.
     </para>
     </listitem></varlistentry>
@@ -6882,7 +6922,7 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
   <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
   <listitem>
   <para>
-    The value of the return is ignored by the operating system. Zero makes a good return value.
+    The value of the return is ignored by the operating system. 0 makes a good return value.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
@@ -6895,29 +6935,29 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
 <![CDATA[
 
 ::method onScroll unguarded
-  use arg ctrlID, dx, dy, lv, isBeginScroll
+  use arg id, dx, dy, listView, isBeginScroll
 
   if isBegin then op = 'beginScroll'
   else op = 'endScroll'
 
-  say 'ctrlID:' ctrlID 'dx:' dx 'dy:' dy 'listView:' lv op
+  say 'id:' id 'dx:' dx 'dy:' dy 'listView:' listView op
 
   return 0
 
 /* Output might be for example: */
 
-ctrlID: 200 dx: 5 dy: 0 listView: a ListView beginScroll
-ctrlID: 200 dx: 5 dy: 0 listView: a ListView endScroll
-ctrlID: 200 dx: 5 dy: 0 listView: a ListView beginScroll
-ctrlID: 200 dx: 5 dy: 0 listView: a ListView endScroll
-ctrlID: 200 dx: 5 dy: 0 listView: a ListView beginScroll
-ctrlID: 200 dx: 5 dy: 0 listView: a ListView endScroll
-ctrlID: 200 dx: 158 dy: 0 listView: a ListView beginScroll
-ctrlID: 200 dx: 158 dy: 0 listView: a ListView endScroll
-ctrlID: 200 dx: -173 dy: 0 listView: a ListView beginScroll
-ctrlID: 200 dx: -173 dy: 0 listView: a ListView endScroll
-ctrlID: 200 dx: 0 dy: 1 listView: a ListView beginScroll
-ctrlID: 200 dx: 0 dy: 1 listView: a ListView endScroll
+id 200 dx: 5 dy: 0 listView: a ListView beginScroll
+id 200 dx: 5 dy: 0 listView: a ListView endScroll
+id 200 dx: 5 dy: 0 listView: a ListView beginScroll
+id 200 dx: 5 dy: 0 listView: a ListView endScroll
+id 200 dx: 5 dy: 0 listView: a ListView beginScroll
+id 200 dx: 5 dy: 0 listView: a ListView endScroll
+id 200 dx: 158 dy: 0 listView: a ListView beginScroll
+id 200 dx: 158 dy: 0 listView: a ListView endScroll
+id 200 dx: -173 dy: 0 listView: a ListView beginScroll
+id 200 dx: -173 dy: 0 listView: a ListView endScroll
+id 200 dx: 0 dy: 1 listView: a ListView beginScroll
+id 200 dx: 0 dy: 1 listView: a ListView endScroll
 
 ]]>
 </programlisting>
@@ -6925,50 +6965,78 @@ ctrlID: 200 dx: 0 dy: 1 listView: a ListView endScroll
   </listitem></varlistentry>
 </variablelist>
 
-</section>  <!-- End BeginScroll Event Handler -->
+</section>  <!-- End BeginScroll / EndScroll Event Handler -->
 
 
 <section id="evtListViewCHECKBOXCHANGED" xreflabel="CHECKBOXCHANGED"><title>CheckBoxChanged Event Handler</title>
-<indexterm><primary>ListView Event</primary><secondary>CHECKBOXCHANGED</secondary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>events</secondary><tertiary>CHECKBOXCHANGED</tertiary></indexterm>
 <para>
   The event handler for the checkbox changed event is invoked when the user checks or unchecks a checkbox in the
-  <computeroutput>ListView</computeroutput> control. The method receives three arguments:
+  <computeroutput>ListView</computeroutput> control.
+</para>
+<para>
+  The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthConnectListViewEvent"/> method
+  determines how the event handler needs to respond to the notification.
 </para>
 
 <programlisting>
 <![CDATA[
 ::method onCheckboxChanged unguarded
-  use arg id, itemIndex, state
+  use arg id, itemIndex, state, listView
 
   return 0
 ]]>
-</programlisting>
+
 <variablelist>
-  <varlistentry><term>id</term>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The resource ID of the list-view control whose item had the checkbox state changed.
+    The event handling method recieves 4 arguments:
   </para>
+  <variablelist>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The resource ID of the list view control sending the notification message.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>itemIndex</term>
+    <listitem>
+    <para>
+      The index of the item whose checkbox was changed.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>state</term>
+    <listitem>
+    <para>
+      This argument reports whether the check box was checked or unchecked.  Its value will be either
+      <emphasis role="italic">CHECKED</emphasis> or <emphasis role="italic">UNCHECKED</emphasis/> &quot;&quot;
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>listView</term>
+    <listitem>
+    <para>
+      The Rexx list view object that represents the underlying list view that generated the event notification.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
   </listitem></varlistentry>
-  <varlistentry><term>itemIndex</term>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
   <listitem>
   <para>
-    The index of the item whose checkbox was changed.
+    The operating system ignores the return from this event handler. 0 makes a good return values.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term>state</term>
-  <listitem><para>This argument reports whether the check box was checked or
-  unchecked.  Its value will be either &quot;CHECKED&quot; or &quot;UNCHECKED&quot;
-  </para></listitem></varlistentry>
-</variablelist>
-<para>
-  <emphasis role="bold">Example:</emphasis> The following example is from an address book application. A list-view
-  control is filled with the information from the address book, one item for each entry.  The check box changed event is
-  connected to the <emphasis role="italic">onCheckboxChanged</emphasis> method. The <emphasis
-  role="italic">onCheckboxChanged</emphasis> method will receive 3 arguments: the resource ID of the control, the index
-  of the item whose check box changed, and the changed state. If the user checks the check box, that entry is added to a
-  mail merge being constructed.  If the user unchecks the box, the entry is removed from the mail merge.
-</para>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example is from an address book application. A list-view control is filled with the information from the
+    address book, one item for each entry. The check box changed event is connected to the <emphasis
+    role="italic">onCheckboxChanged</emphasis> method. The <emphasis
+    role="italic">onCheckboxChanged</emphasis> method will receive 3 arguments: the resource ID of the control, the index of
+    the item whose check box changed, and the changed state. If the user checks the check box, that entry is added to a mail
+    merge being constructed. If the user unchecks the box, the entry is removed from the mail merge.
+
 <programlisting>
 <![CDATA[
 ::class MailingListDlg subclass UserDialog
@@ -6986,8 +7054,7 @@ ctrlID: 200 dx: 0 dy: 1 listView: a ListView endScroll
   ...
 
 ::method onCheckboxChanged unguarded
-  expose mailList
-  use arg id, itemIndex, state
+  use arg id, itemIndex, state, mailList
 
   if state == "CHECKED" then
     self~addToMailMerge(mailList, itemIndex)
@@ -6997,16 +7064,24 @@ ctrlID: 200 dx: 0 dy: 1 listView: a ListView endScroll
   return 0
 ]]>
 </programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
 
 </section>  <!-- End CheckBoxChanged Event Handler -->
 
+
 <section id="evtListViewCLICK" xreflabel="CLICK"><title>Click / Double Click Event Handler</title>
-<indexterm><primary>ListView Event</primary><secondary>CLICK</secondary></indexterm>
-<indexterm><primary>ListView Event</primary><secondary>DBLCLK</secondary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>events</secondary><tertiary>CLICK</tertiary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>events</secondary><tertiary>DBLCLK</tertiary></indexterm>
 <para>
   The event handling method for the CLICK event is invoked when the user clicks on the list-view with the left mouse.
   The event handler for the DBLCLK is invoked when the user double clicks on the list-view. This excludes the column
-  headers in report view. Both event handlers receive the same arguments.
+  headers in report view. Both event handlers receive the same arguments and are coded the same way.
+</para>
+<para>
+  The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthConnectListViewEvent"/> method
+  determines how the event handler needs to respond to the notification.
 </para>
 <para>
   Note that the user can click on a list-view item, or on the background of the list view. When the click is on the
@@ -7017,68 +7092,128 @@ ctrlID: 200 dx: 0 dy: 1 listView: a ListView endScroll
 <programlisting>
 <![CDATA[
   ::method onClick unguarded
-    use arg id, itemIndex, columnIndex, keyState
+    use arg id, itemIndex, columnIndex, keyState, listView
 
     return 0
 ]]>
 </programlisting>
 
 <variablelist>
-  <varlistentry><term>id</term>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The resource ID of the list-view control whose item was clicked.
+    The event handling method recieves 5 arguments:
   </para>
+  <variablelist>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The resource ID of the list view control sending the notification message.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>itemIndex</term>
+    <listitem>
+    <para>
+      The index of the item whose checkbox was changed.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>state</term>
+    <listitem>
+    <para>
+      This argument reports whether the check box was checked or unchecked. Its value will be either <emphasis
+      role="italic">CHECKED</emphasis> or <emphasis role="italic">UNCHECKED</emphasis/>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>listView</term>
+    <listitem>
+    <para>
+      The Rexx list view object that represents the underlying list view that generated the event notification.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
   </listitem></varlistentry>
-  <varlistentry><term>itemIndex</term>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
   <listitem>
   <para>
-    The zero-based index of the item that was clicked, or -1 if the background of the list-view was clicked. In report
-    view this is often thought of as the row index.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term>columnIndex</term>
-  <listitem>
-  <para>
-    The zero-based index of the subitem that was clicked, or -1 if the click was on the background of the list view. In
-    report view this is often thought of as the column of row. In all views other than report view, this arg will always
-    be 0.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term>keyState</term>
-  <listitem>
-  <para>
-    This argument reports the state of the shift, control, and alt keys at the time of the mouse click.  The argument is
-    a string of keywords separated by blanks.  The keywords consist of: SHIFT, CONTROL, ALT, or NONE. The presence of a
-    keyword indicates the key was held down when the user clicked on the list-view control.  NONE of course indicates
-    that none of the keys were down.  If the user managed to hold all three of the keys down at the time of the mouse
-    click, the argument would be the string: <emphasis role="italic">SHIFT CONTROL ALT</emphasis>.
+    The operating system ignores the return from this event handler. 0 makes a good return values.
   </para>
   </listitem></varlistentry>
 </variablelist>
 </section>
 
+
 <section id="evtListViewCOLUMNCLICK" xreflabel="COLUMNCLICK"><title>ColumnClick Event Handler</title>
-<indexterm><primary>ListView Event</primary><secondary>COLUMNCLICK</secondary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>events</secondary><tertiary>COLUMNCLICK</tertiary></indexterm>
 <para>
-  The event-handling method connected to COLUMNCLICK receives two arguments: the control ID of the list-view control and
-  the zero-based column number of which the header button was pressed.
+  The event handler for the column click event is invoked when when the user clicks on a column header in a list view.
+</para>
+<para>
+  The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthConnectListViewEvent"/> method
+  determines how the event handler needs to respond to the notification.
 </para>
 
 <programlisting>
 <![CDATA[
 ::method onColumnClick unguarded
-  use arg id, column
+  use arg id, col, listView
 
   return 0
 ]]>
 </programlisting>
 
-</section>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves xx arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The resource ID of the list view control sending the notification message.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>col</term>
+    <listitem>
+    <para>
+      The zero-based index of the column that was clicked.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>listView</term>
+    <listitem>
+    <para>
+      The Rexx list view object that represents the underlying list view that generated the event notification.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example ...
+
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End ColumnClick Event Handler -->
 
 
 <section id="evtListViewENDEDIT" xreflabel="ENDEDIT"><title>EndEdit Event Handler</title>
-<indexterm><primary>ListView Event</primary><secondary>ENDEDIT</secondary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>events</secondary><tertiary>ENDEDIT</tertiary></indexterm>
 <para>
   The event handler for the ENDEDIT event is invoked when the user finishes a label editing operation on an item of the
   list-view. A label editing operation is only available when the list-view has the <xref linkend="styListViewEDIT"/> style.
@@ -7266,25 +7401,30 @@ ctrlID: 200 dx: 0 dy: 1 listView: a ListView endScroll
 </section>  <!-- End EndEdit Event Handler -->
 
 
-<section id="evtListViewENDSCROLL" xreflabel="ENDSCROLL"><title>EndScroll Event Handler</title>
-<indexterm><primary>ListView class</primary><secondary>events</secondary><tertiary>ENDSCROLL</tertiary></indexterm>
+<section id="evtListViewGeneral" xreflabel="General"><title>General ListView Event Handler</title>
+<indexterm><primary>ListView class</primary><secondary>events</secondary><tertiary>General</tertiary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>events</secondary><tertiary>ACTIVATE</tertiary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>events</secondary><tertiary>CHANGED</tertiary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>events</secondary><tertiary>CHANGING</tertiary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>events</secondary><tertiary>DELETE</tertiary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>events</secondary><tertiary>DELETEALL</tertiary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>events</secondary><tertiary>INSERTED</tertiary></indexterm>
 <para>
-  The event handler for the end scroll event is invoked when a scrolling operation ends. The scrolling operation can be
-  either horizontal or vertical scrolling.
+  A number of the list view events are processed internally by ooDialog in the same manner. The event handlers for these
+  events are sent the same arguments and are essentially coded the same way. This <emphasis role="italic">general</emphasis>
+  event handler is described here for the ACTIVATE, CHANGED, CHANGING, DELETE, DELETEALL, INSERTED events. The description
+  for event keyword in the <xref linkend="mthConnectListViewEvent"/> documentation details when each event will invoke this
+  event handler.
 </para>
 <para>
-  If the programmer specifies true for the <emphasis role="italic">willReply</emphasis> argument in the <xref
-  linkend="mthConnectListViewEvent"/> method, then the event handler must return a value and the interpreter waits for this
-  return. If the <emphasis role="italic">willReply</emphasis> argument was false, the event handler does not need to return a
-  value and the interpreter does not wait for the return. However, it is good practice to always return a value from an event
-  handler. The operating system ignores the value of the return, so any value can be returned. Zero makes a good return value
-  in situations where the operating system ignores the returned value.
+  The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthConnectListViewEvent"/> method
+  determines how the event handler needs to respond to the notification.
 </para>
 
 <programlisting>
 <![CDATA[
-::method onEndScroll unguarded
-  use arg ctrlID, dx, dy, listView, isBeginScroll
+::method onListViewEvent unguarded
+  use arg id, ptr, notifyCode, listView
 
   return 0
 ]]>
@@ -7294,52 +7434,34 @@ ctrlID: 200 dx: 0 dy: 1 listView: a ListView endScroll
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 5 arguments:
+    The event handling method recieves 4 arguments:
   </para>
   <variablelist>
-    <varlistentry><term>ctrlID</term>
+    <varlistentry><term>id</term>
     <listitem>
     <para>
-      The resource ID of the list-view that generated the event notification.
+      The numeric resource ID of the list view sending the notification.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>dx</term>
+    <varlistentry><term>ptr</term>
     <listitem>
     <para>
-      The Microsoft documentation says that this value specifies in pixels the horizontal position where a scrolling
-      operation should end. However, a similar description for the <emphasis role="italic">dy</emphasis> value is not
-      correct, making it difficult to tell if the Microsoft documentation is accurate for the <emphasis
-      role="italic">dx</emphasis> value.
-    </para>
-    <para>
-      The value is 0 if the scrolling operation was vertical. It is negative if the horizontal scrolling was to the left, and
-      positive if the operation was to the right.
+      The numeric value of a pointer to a memory location in the running application. This is of no conceivable use to the
+      ooDialog programmer, but is retained for backwards compatibility.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>dy</term>
+    <varlistentry><term>notifyCode</term>
     <listitem>
     <para>
-      The Microsoft documentation says that this value specifies in pixels the vertical position where a scrolling
-      operation should end However, experimentation shows that is actually the number of items that were scrolled.
-    </para>
-    <para>
-      The value is 0 if the scrolling operation was horizontal. It is negative if the vertical scrolling was towards the
-      top, and positive if the operation was towards the bottom.
+      The numeric notification code of the event that caused the notification to be sent. Each dialog control has its own
+      specific notification codes.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>listView</term>
     <listitem>
     <para>
-      The Rexx list-view object that generated the event notification.
-    </para>
-    </listitem></varlistentry>
-    <varlistentry><term>isBeginScroll</term>
-    <listitem>
-    <para>
-      The event handlers for both the BEGINSCROLL and ENDSCROLL are identical. This argument allows the Rexx programmer to
-      connect both events to the same method and then distinguish in the event handler which event occurred. This argument is
-      true if the event which caused the event handler to be invoked was the BEGINSCROLL event and false if the event was the
-      ENDSCROLL.
+      The Rexx list view object that represents the underlying dialog control that sent the notification. It is possible
+      this will be the <computeroutput>.nil</computeroutput> object if some error happened, but this is very unlikely.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -7347,54 +7469,120 @@ ctrlID: 200 dx: 0 dy: 1 listView: a ListView endScroll
   <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
   <listitem>
   <para>
-    The value of the return is ignored by the operating system. Zero makes a good return value.
+    The implementation for these general list view events has been in ooDialog for a very long time. The implementation
+    returns 0 to the operating system. 0 makes a good return value.
   </para>
+  <para>
+    However, beginning in ooDialog 4.2.4, <emphasis role="italic"><emphasis role="bold">if</emphasis></emphasis> the <link
+    linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthConnectListViewEvent"/> method is set to
+    true by the programmer, the ooDialog framework will take the value returned from the event handler and return that value
+    to the operating system. See the remarks section for some guidance on the meaning of a returned value for these general
+    events.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The return from the event notifications in this <emphasis role="italic">general</emphasis> category is ignored by the
+    operating system for some of the events, but has meaning for some of the other events. ooDialog has been enhanced to
+    allow the programmer to return a meaningful value to the operating system from this general event handler. If the
+    <emphasis role="italic">willReply</emphasis> argument is set to true, the intepreter waits for the return value from the
+    event handler and returns that value to the operating system. Here is a brief description of the meaning for the returned
+    value for the general events:
+  </para>
+  <variablelist>
+    <varlistentry><term>ACTIVATE</term>
+    <listitem>
+    <para>
+      MSDN says the event handler must return 0 for this event.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>CHANGED</term>
+    <listitem>
+    <para>
+      The operating system ignores the return for this event. 0 makes a good return value.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>CHANGING</term>
+    <listitem>
+    <para>
+      Return true to prevent the change or false to allow the change. Note however that this general event handler is not
+      sent sufficient information for the programmer ot make a good decision if she should prevent the change. A future
+      enhancement to ooDialog may allow better handling of this event notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>DELETE</term>
+    <listitem>
+    <para>
+      The operating system ignores the return for this event. 0 makes a good return value.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>DELETEALL</term>
+    <listitem>
+    <para>
+      The operating system sends this notification when all items in a list view are about to be deleted. After that a DELETE
+      notification is sent for each item that is deleted. If the event handler returns true for the DELETEALL notification
+      the individual DELETE notifications are not sent. If the event handler returns false, the individual notifications are
+      sent.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>INSERTED</term>
+    <listitem>
+    <para>
+      The operating system ignores the return for this event. 0 makes a good return value.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
   <listitem>
   <para>
-    The following example connects both the BEGINSCROLL and ENDSCROLL events to the same event handling method. The method
-    simply prints out the values sent by the operating system:
+    The following example comes from an application that fills a list box with the names of movies. When the user clicks on a
+    movie in the list box, the application fills a number of other controls with information specific to the selected movie:
 
 <programlisting>
 <![CDATA[
+::method onMovieClick unguarded
+   expose movieData
+   use arg , , id, nCode, listBox
 
-::method onScroll unguarded
-  use arg ctrlID, dx, dy, lv, isBeginScroll
+   movieName = listBox~selected
 
-  if isBegin then op = 'beginScroll'
-  else op = 'endScroll'
+   combo = self~newComboBox(35)
+   combo~deleteAll
 
-  say 'ctrlID:' ctrlID 'dx:' dx 'dy:' dy 'listView:' lv op
+   -- If no movie in the list box is selected, set eveything blank, otherwise,
+   -- set everything to match the selected movie.
+   if movieName == "" then do
+     self~newEdit(32)~setText("")
+     self~newEdit(33)~setText("")
+     self~newEdit(34)~setText("")
+     combo~add("")
+   end
+   else do
+     d = movieData[movieName]
+     self~newEdit(32)~setText(d~produced)
+     self~newEdit(33)~setText(d~star)
+     self~newEdit(34)~setText(d~director)
 
-  return 0
+     do n over d~with
+        combo~add(n)
+     end
+     combo~selectIndex(1)
+   end
 
-/* Output might be for example: */
-
-ctrlID: 200 dx: 5 dy: 0 listView: a ListView beginScroll
-ctrlID: 200 dx: 5 dy: 0 listView: a ListView endScroll
-ctrlID: 200 dx: 5 dy: 0 listView: a ListView beginScroll
-ctrlID: 200 dx: 5 dy: 0 listView: a ListView endScroll
-ctrlID: 200 dx: 5 dy: 0 listView: a ListView beginScroll
-ctrlID: 200 dx: 5 dy: 0 listView: a ListView endScroll
-ctrlID: 200 dx: 158 dy: 0 listView: a ListView beginScroll
-ctrlID: 200 dx: 158 dy: 0 listView: a ListView endScroll
-ctrlID: 200 dx: -173 dy: 0 listView: a ListView beginScroll
-ctrlID: 200 dx: -173 dy: 0 listView: a ListView endScroll
-ctrlID: 200 dx: 0 dy: 1 listView: a ListView beginScroll
-ctrlID: 200 dx: 0 dy: 1 listView: a ListView endScroll
-
+   return 0
 ]]>
 </programlisting>
   </para>
   </listitem></varlistentry>
 </variablelist>
 
-</section>  <!-- End BeginScroll Event Handler -->
+</section>  <!-- End General ListView Event Handler -->
 
 
-<section id="evtListViewGETINFOTIP"><title>GetInfoTip Event Handler</title>
-<indexterm><primary>ListView Event</primary><secondary>GETINFOTIP</secondary></indexterm>
+<section id="evtListViewGETINFOTIP" xreflabel="GETINFOTIP"><title>GetInfoTip Event Handler</title>
+<indexterm><primary>ListView class</primary><secondary>events</secondary><tertiary>GETINFOTIP</tertiary></indexterm>
 <para>
   The event handler method connected to the get info tip event is invoked when the list-view control requests the text to
   display in the info tip. The programmer must return a string value and the interpreter waits for this return. The <emphasis
@@ -7495,7 +7683,7 @@ ctrlID: 200 dx: 0 dy: 1 listView: a ListView endScroll
 
 
 <section id="evtListViewKEYDOWN" xreflabel="KEYDOWN"><title>KeyDown Event Handler</title>
-<indexterm><primary>ListView Event</primary><secondary>KEYDOWN</secondary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>events</secondary><tertiary>KEYDOWN</tertiary></indexterm>
 <para>
   The event-handling method connected to KEYDOWN receives two arguments: the control ID of the list-view control and the
   virtual key code pressed. Use the <xref linkend="mthKey2Name"/> method of the
@@ -7515,7 +7703,7 @@ ctrlID: 200 dx: 0 dy: 1 listView: a ListView endScroll
 </section>
 
 <section id="evtListViewKEYDOWNEX" xreflabel="KEYDOWNEX"><title>KeyDown (extended) Event Handler</title>
-<indexterm><primary>ListView Event</primary><secondary>KEYDOWNEX</secondary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>events</secondary><tertiary>KEYDOWNEX</tertiary></indexterm>
 <para>
   The event-handling method connected through the KEYDOWNEX keyword is similar to the event handler for the <link
   linkend="evtListViewKEYDOWN">KeyDown</link> event handler. It is invoked for the same event, when the user presses a key
@@ -7719,7 +7907,7 @@ ctrlID: 200 dx: 0 dy: 1 listView: a ListView endScroll
 
 
 <section id="evtListViewFOCUSCHANGED" xreflabel="FOCUSCHANGED"><title>FocusChanged Event Handler</title>
-<indexterm><primary>ListView Event</primary><secondary>FOCUSCHANGED</secondary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>events</secondary><tertiary>FOCUSCHANGED</tertiary></indexterm>
 <para>
   The event handler for the focus changed event is invoked when an item gains or loses focus. The method receives three
   arguments:
@@ -7757,7 +7945,7 @@ ctrlID: 200 dx: 0 dy: 1 listView: a ListView endScroll
 </section>
 
 <section id="evtListViewSELECTCHANGE" xreflabel="SELECTCHANGE"><title>SelectChange Event Handler</title>
-<indexterm><primary>ListView Event</primary><secondary>SELECTCHANGE</secondary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>events</secondary><tertiary>SELECTCHANGE</tertiary></indexterm>
 <para>
   The event handler for the selection changed event is invoked when the selection state of an item changes. The method
   receives three arguments:
@@ -7796,7 +7984,7 @@ ctrlID: 200 dx: 0 dy: 1 listView: a ListView endScroll
 </section>
 
 <section id="evtListViewSELECTFOCUSCHANGED" xreflabel="SELECTFOCUSCHANGED"><title>SelectFocusChanged Event Handler</title>
-<indexterm><primary>ListView Event</primary><secondary>SELECTFOCUSCHANGED</secondary></indexterm>
+<indexterm><primary>ListView class</primary><secondary>events</secondary><tertiary>SELECTFOCUSCHANGED</tertiary></indexterm>
 <para>
   The event handle for the selection or focus changed event is invoked when either the selection or the focus of an item
   changes. The method receives 3 arguments:
@@ -13655,7 +13843,7 @@ trackbar position by extracting the high-oder word. Example:
 <indexterm><primary>defListDragHandler</primary></indexterm>
 <programlisting>
 <![CDATA[
->>-defListDragHandler(--id--,--item--,--point--)----------------><
+>>-defListDragHandler(--id--,--item--,--point--,--isLMB--,--listView--)--------><
 
 ]]>
 </programlisting>
@@ -13680,7 +13868,7 @@ trackbar position by extracting the high-oder word. Example:
 <para>
   If the programmer wants to implement her own drag-and-drop event handler, she may want to examine the how the
   <emphasis role="italic">defListDragHandler</emphasis> method in the <computeroutput>ooDialog.cls</computeroutput>
-  file. In addition the <computeroutput>oodlist.rex</computeroutput> example program uses the <emphasis
+  file. In addition the <computeroutput>oodListViews.rex</computeroutput> example program uses the <emphasis
   role="italic">defListDragHandler</emphasis>. Running the example program will show the behavior of the current
   <emphasis role="italic">defListDragHandler</emphasis> implementation.
 </para>
@@ -13693,7 +13881,7 @@ trackbar position by extracting the high-oder word. Example:
   ...
 
   self~connectListViewEvent(ID_LV_ICON, "BEGINDRAG", "defListDragHandler")
-  -- Drag and drop operations are not automatically handled.
+  -- The ooDialog framework now automatically handles Drag and drop operations.
 ]]>
 </programlisting>
 </para>
