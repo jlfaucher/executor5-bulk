@@ -922,7 +922,7 @@
     <varlistentry><term><emphasis role="bold">WM_COMMAND handlers:</emphasis></term>
     <listitem>
     <para>
-      The event <link linkend="evtAddUserMsgCommand">handler</link> for WM_COMMAND messages receives 2 arguments.
+      The event <link linkend="evtAddUserMsgCommand">handler</link> for WM_COMMAND messages receives 5 arguments.
     </para>
     </listitem></varlistentry>
     <varlistentry><term><emphasis role="bold">All Others</emphasis></term>
@@ -1725,25 +1725,25 @@ rexxControl: a Button
         A keyword specifying the event to be connected with a method. This can be exactly one of the following, case is
         not significant:
         <variablelist>
-          <varlistentry><term>CLICKED</term>
+          <varlistentry><term><link linkend="evtButtonGeneral">CLICKED</link></term>
           <listitem>
           <para>
             The button has been clicked.
           </para>
           </listitem></varlistentry>
-          <varlistentry><term>DBLCLK</term>
+          <varlistentry><term><link linkend="evtButtonGeneral">DBLCLK</link></term>
           <listitem>
           <para>
             The button has been double-clicked.
           </para>
           </listitem></varlistentry>
-          <varlistentry><term>DISABLE</term>
+          <varlistentry><term><link linkend="evtButtonGeneral">DISABLE</link></term>
           <listitem>
           <para>
             The button has been disabled.
           </para>
           </listitem></varlistentry>
-          <varlistentry><term>DROPDOWN</term>
+          <varlistentry><term><xref linkend="evtButtonDROPDOWN"/></term>
           <listitem>
           <para>
             Requires Windoes version <emphasis role="bold">Vista</emphasis> or later.
@@ -1752,25 +1752,25 @@ rexxControl: a Button
             The user has clicked on the down arrow in a <emphasis role="italic">split</emphasis> button.
           </para>
           </listitem></varlistentry>
-          <varlistentry><term>GOTFOCUS</term>
+          <varlistentry><term><link linkend="evtButtonGeneral">GOTFOCUS</link></term>
           <listitem>
           <para>
             The button got the input focus.
           </para>
           </listitem></varlistentry>
-          <varlistentry><term>LOSTFOCUS</term>
+          <varlistentry><term><link linkend="evtButtonGeneral">LOSTFOCUS</link></term>
           <listitem>
           <para>
             The button lost the input focus.
           </para>
           </listitem></varlistentry>
-          <varlistentry><term>HILITE</term>
+          <varlistentry><term><link linkend="evtButtonGeneral">HILITE</link></term>
           <listitem>
           <para>
             The button has been selected.
           </para>
           </listitem></varlistentry>
-          <varlistentry><term>HOTITEM</term>
+          <varlistentry><term><xref linkend="evtButtonHOTITEM"/></term>
           <listitem>
           <para>
             Requires Common Control <xref linkend="ovvComctl32"/> version <emphasis role="bold">6.0</emphasis> or later.
@@ -1780,13 +1780,13 @@ rexxControl: a Button
             button.
           </para>
           </listitem></varlistentry>
-          <varlistentry><term>PAINT</term>
+          <varlistentry><term><link linkend="evtButtonGeneral">PAINT</link></term>
           <listitem>
           <para>
             The button is to be repainted. This notification is only sent for owner-drawn buttons.
           </para>
           </listitem></varlistentry>
-          <varlistentry><term>UNHILITE</term>
+          <varlistentry><term><link linkend="evtButtonGeneral">UNHILITE</link></term>
           <listitem>
           <para>
             The highlighting is to be removed (lost selection).
@@ -1951,7 +1951,14 @@ rexxControl: a Button
 
 
 <section id="evtButtonGeneral" xreflabel="General"><title>General Button Event Handler</title>
-<indexterm><primary>Button class</primary><secondary>events</secondary><tertiary>General</tertiary></indexterm>
+<indexterm><primary>Button class</primary><secondary>events</secondary><tertiary>CLICKED</tertiary></indexterm>
+<indexterm><primary>Button class</primary><secondary>events</secondary><tertiary>DBLCLK</tertiary></indexterm>
+<indexterm><primary>Button class</primary><secondary>events</secondary><tertiary>DISABLE</tertiary></indexterm>
+<indexterm><primary>Button class</primary><secondary>events</secondary><tertiary>GOTFOCUS</tertiary></indexterm>
+<indexterm><primary>Button class</primary><secondary>events</secondary><tertiary>HILITE</tertiary></indexterm>
+<indexterm><primary>Button class</primary><secondary>events</secondary><tertiary>LOSTFOCUS</tertiary></indexterm>
+<indexterm><primary>Button class</primary><secondary>events</secondary><tertiary>PAINT</tertiary></indexterm>
+<indexterm><primary>Button class</primary><secondary>events</secondary><tertiary>UNHILITE</tertiary></indexterm>
 <para>
   The event handler for most of the button events recieves the same arguments and is coded in the same fashion. When the
   handler is invoked is fairly clear from the name of the event. The CLICKED event handler is invoked when the button is
@@ -2194,71 +2201,71 @@ rexxControl: a Button
       method:
     </para>
     <variablelist>
-      <varlistentry><term>CHANGE</term>
+      <varlistentry><term><link linkend="evtComboBoxGeneral">CHANGE</link></term>
       <listitem>
       <para>
         The text in the edit control has been altered. This notification is sent after Windows updated the screen.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>UPDATE</term>
-      <listitem>
-      <para>
-        The text in the edit control has been altered. This notification is sent before Windows updates the screen.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>CLOSEUP</term>
+      <varlistentry><term><link linkend="evtComboBoxGeneral">CLOSEUP</link></term>
       <listitem>
       <para>
         The list of the combo box has been closed.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>DROPDOWN</term>
-      <listitem>
-      <para>
-        The list of the combo box is about to be made visible.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>DBLCLK</term>
+      <varlistentry><term><link linkend="evtComboBoxGeneral">DBLCLK</link></term>
       <listitem>
       <para>
         An entry in the combo box list has been selected with a double click.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>ERRSPACE</term>
+      <varlistentry><term><link linkend="evtComboBoxGeneral">DROPDOWN</link></term>
+      <listitem>
+      <para>
+        The list of the combo box is about to be made visible.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><link linkend="evtComboBoxGeneral">ERRSPACE</link></term>
       <listitem>
       <para>
         An out-of-memory problem has occurred.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>GOTFOCUS</term>
+      <varlistentry><term><link linkend="evtComboBoxGeneral">GOTFOCUS</link></term>
       <listitem>
       <para>
         The combo box got the input focus.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>LOSTFOCUS</term>
+      <varlistentry><term><link linkend="evtComboBoxGeneral">LOSTFOCUS</link></term>
       <listitem>
       <para>
         The combo box lost the input focus.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>SELCHANGE</term>
+      <varlistentry><term><link linkend="evtComboBoxGeneral">SELCHANGE</link></term>
       <listitem>
       <para>
         Another entry in the combo box list has been selected.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>SELENDOK</term>
+      <varlistentry><term><link linkend="evtComboBoxGeneral">SELENDCANCEL</link></term>
+      <listitem>
+      <para>
+        After the selection of another entry, another control or dialog was selected, which canceled the selection of the
+        entry.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><link linkend="evtComboBoxGeneral">SELENDOK</link></term>
       <listitem>
       <para>
         The list was closed after another entry was selected.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>SELENDCANCEL</term>
+      <varlistentry><term><link linkend="evtComboBoxGeneral">UPDATE</link></term>
       <listitem>
       <para>
-        After the selection of another entry, another control or dialog was selected, which canceled the selection of the
-        entry.
+        The text in the edit control has been altered. This notification is sent before Windows updates the screen.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -2337,7 +2344,17 @@ rexxControl: a Button
 </variablelist>
 
 <section id="evtComboBoxGeneral" xreflabel="General"><title>General ComboBox Event Handler</title>
-<indexterm><primary>ComboBox class</primary><secondary>events</secondary><tertiary>General</tertiary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>events</secondary><tertiary>CHANGE</tertiary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>events</secondary><tertiary>CLOSEUP</tertiary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>events</secondary><tertiary>DBLCLK</tertiary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>events</secondary><tertiary>DROPDOWN</tertiary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>events</secondary><tertiary>ERRSPACE</tertiary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>events</secondary><tertiary>GOTFOCUS</tertiary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>events</secondary><tertiary>LOSTFOCUS</tertiary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>events</secondary><tertiary>SELCHANGE</tertiary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>events</secondary><tertiary>SELENDCANCEL</tertiary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>events</secondary><tertiary>SELENDOK</tertiary></indexterm>
+<indexterm><primary>ComboBox class</primary><secondary>events</secondary><tertiary>UPDATE</tertiary></indexterm>
 <para>
   The event handler for all of the combo box events recieves the same arguments and is coded in the same fashion. When the
   handler is invoked is fairly clear from the name of the event. The DROPDOWN event handler is invoked when the drop down
@@ -2805,9 +2822,8 @@ The drop down combo box sent a selection ended cancel notification message.
 </programlisting>
 
 <para>
-  The <emphasis role="italic">connectDateTimePickerEvent</emphasis> method connects an
-  <xref linkend="ovvEvents"/> notification message from a date time <xref linkend="clsDateTimePicker"/>
-  control to a method in the Rexx dialog.
+  The <emphasis role="italic">connectDateTimePickerEvent</emphasis> method connects an <xref linkend="ovvEvents"/>
+  notification message from a <xref linkend="clsDateTimePicker"/> control to a method in the Rexx dialog.
 </para>
 <para>
 </para>
@@ -2838,13 +2854,13 @@ The drop down combo box sent a selection ended cancel notification message.
         <member>DROPDOWN      </member>
         <member>FORMAT        </member>
         <member>FORMATQUERY   </member>
-        <member>USERSTRING    </member>
         <member>KEYDOWN       </member>
         <member>KILLFOCUS     </member>
         <member>SETFOCUS      </member>
+        <member>USERSTRING    </member>
       </simplelist>
       <variablelist>
-        <varlistentry><term>CLOSEUP</term>
+        <varlistentry><term><xref linkend="evtDateTimePickerCLOSEUP"/></term>
         <listitem>
         <para>
           Sent by a date and time picker (DTP) control when the user closes the drop-down month calendar. The month
@@ -2852,21 +2868,21 @@ The drop down combo box sent a selection ended cancel notification message.
           the calendar is open. The return value from the event handler is ignored by the operating system for this event.
         </para>
         </listitem></varlistentry>
-        <varlistentry><term>DATETIMECHANGE</term>
+        <varlistentry><term><xref linkend="evtDateTimePickerDATETIMECHANGE"/></term>
         <listitem>
         <para>
           Sent by a date and time picker (DTP) control whenever a change occurs. The return value from the event
           handler is ignored by the operating system for this event.
         </para>
         </listitem></varlistentry>
-        <varlistentry><term>DROPDOWN</term>
+        <varlistentry><term><xref linkend="evtDateTimePickerDROPDOWN"/></term>
         <listitem>
         <para>
           Sent by a date and time picker (DTP) control when the user activates the drop-down month calendar. The return
           value from the event handler is ignored by the operating system for this event.
         </para>
         </listitem></varlistentry>
-        <varlistentry><term>FORMAT</term>
+        <varlistentry><term><xref linkend="evtDateTimePickerFORMAT"/></term>
         <listitem>
         <para>
           Sent by a date and time picker (DTP) control to request text to be displayed in a
@@ -2874,7 +2890,7 @@ The drop down combo box sent a selection ended cancel notification message.
           ignored for this event, the event handler must <link linkend="sctCodingEventHandlers">return</link> a reply.
         </para>
         </listitem></varlistentry>
-        <varlistentry><term>FORMATQUERY</term>
+        <varlistentry><term><xref linkend="evtDateTimePickerFORMATQUERY"/></term>
         <listitem>
         <para>
           Sent by a date and time picker (DTP) control to retrieve the maximum allowable size of the string that will be
@@ -2883,16 +2899,7 @@ The drop down combo box sent a selection ended cancel notification message.
           <link linkend="sctCodingEventHandlers">return</link> a reply.
         </para>
         </listitem></varlistentry>
-        <varlistentry><term>USERSTRING</term>
-        <listitem>
-        <para>
-          Sent by a date and time picker (DTP) control when a user finishes editing a string in the control. This
-          notification message is only sent by DTP controls that have the CANPARSE style. The <emphasis
-          role="italic">willReply</emphasis> argument is ignored for this event, the event handler must
-          <link linkend="sctCodingEventHandlers">return</link> a reply.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>KEYDOWN</term>
+        <varlistentry><term><xref linkend="evtDateTimePickerKEYDOWN"/></term>
         <listitem>
         <para>
           Sent by a date and time picker (DTP) control when the user types in a <link
@@ -2900,19 +2907,28 @@ The drop down combo box sent a selection ended cancel notification message.
           ignored for this event, the event handler must <link linkend="sctCodingEventHandlers">return</link> a reply.
         </para>
         </listitem></varlistentry>
-        <varlistentry><term>KILLFOCUS</term>
+        <varlistentry><term><xref linkend="evtDateTimePickerKILLFOCUS"/></term>
         <listitem>
         <para>
           Notifies a date and time picker control's parent window, (which is the dialog window,) that the control has
           lost the input focus. The return value from the event handler is ignored by the operating system for this event.
         </para>
         </listitem></varlistentry>
-        <varlistentry><term>SETFOCUS</term>
+        <varlistentry><term><xref linkend="evtDateTimePickerSETFOCUS"/></term>
         <listitem>
         <para>
           Notifies a date and time picker control's parent window, (which is the dialog window,) that the control has
           received the input focus. The return value from the event handler is ignored by the operating system for this
           event.
+        </para>
+        </listitem></varlistentry>
+        <varlistentry><term><xref linkend="evtDateTimePickerUSERSTRING"/></term>
+        <listitem>
+        <para>
+          Sent by a date and time picker (DTP) control when a user finishes editing a string in the control. This
+          notification message is only sent by DTP controls that have the CANPARSE style. The <emphasis
+          role="italic">willReply</emphasis> argument is ignored for this event, the event handler must
+          <link linkend="sctCodingEventHandlers">return</link> a reply.
         </para>
         </listitem></varlistentry>
       </variablelist>
@@ -3599,7 +3615,7 @@ The drop down combo box sent a selection ended cancel notification message.
 </section>  <!-- End FormatQuery Event Handler -->
 
 
-<section id="evtDateTimePickerKEYDOWN" xreflabel="KEYDOWN"><title>KEYDOWN Event Handler</title>
+<section id="evtDateTimePickerKEYDOWN" xreflabel="KEYDOWN"><title>KeyDown Event Handler</title>
 <indexterm><primary>DateTimePicker Event</primary><secondary>KEYDOWN</secondary></indexterm>
 <para>
   The event handler for the key down event is invoked when the user types a key in a
@@ -4532,25 +4548,37 @@ return 0
       A single keyword, case is not significant, specifying the event to be connected with a method:
     </para>
     <variablelist>
-      <varlistentry><term>CHANGE</term>
+      <varlistentry><term><link linkend="evtEditGeneral">CHANGE</link></term>
       <listitem>
       <para>
         The text has been altered. This notification is sent after the screen has been updated.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>UPDATE</term>
-      <listitem>
-      <para>
-        The text has been altered. This notification is sent before the screen is updated.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>ERRSPACE</term>
+      <varlistentry><term><link linkend="evtEditGeneral">ERRSPACE</link></term>
       <listitem>
       <para>
         An out-of-memory problem has occurred.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>MAXTEXT</term>
+      <varlistentry><term><link linkend="evtEditGeneral">GOTFOCUS</link></term>
+      <listitem>
+      <para>
+        The edit control got the input focus.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><link linkend="evtEditGeneral">HSCROLL</link></term>
+      <listitem>
+      <para>
+        The horizontal scroll bar has been used.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><link linkend="evtEditGeneral">LOSTFOCUS</link></term>
+      <listitem>
+      <para>
+        The edit control lost the input focus.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><link linkend="evtEditGeneral">MAXTEXT</link></term>
       <listitem>
       <para>
         The text inserted exceeds the specified number of characters for the edit control. This notification is also sent
@@ -4571,28 +4599,16 @@ return 0
         </listitem>
       </itemizedlist>
       </listitem></varlistentry>
-      <varlistentry><term>HSCROLL</term>
+      <varlistentry><term><link linkend="evtEditGeneral">UPDATE</link></term>
       <listitem>
       <para>
-        The horizontal scroll bar has been used.
+        The text has been altered. This notification is sent before the screen is updated.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>VSCROLL</term>
+      <varlistentry><term><link linkend="evtEditGeneral">VSCROLL</link></term>
       <listitem>
       <para>
         The vertical scroll bar has been used.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>GOTFOCUS</term>
-      <listitem>
-      <para>
-        The edit control got the input focus.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>LOSTFOCUS</term>
-      <listitem>
-      <para>
-        The edit control lost the input focus.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -4678,7 +4694,14 @@ return 0
 </variablelist>
 
 <section id="evtEditGeneral" xreflabel="General"><title>General Edit Event Handler</title>
-<indexterm><primary>Edit class</primary><secondary>events</secondary><tertiary>General</tertiary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>events</secondary><tertiary>CHANGE</tertiary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>events</secondary><tertiary>ERRSPACE</tertiary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>events</secondary><tertiary>HSCROLL</tertiary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>events</secondary><tertiary>GOTFOCUS</tertiary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>events</secondary><tertiary>LOSTFOCUS</tertiary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>events</secondary><tertiary>MAXTEXT</tertiary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>events</secondary><tertiary>UPDATE</tertiary></indexterm>
+<indexterm><primary>Edit class</primary><secondary>events</secondary><tertiary>VSCROLL</tertiary></indexterm>
 <para>
   The event handler for all of the edit control events recieves the same arguments and is coded in the same fashion. When
   the handler is invoked is fairly clear from the name of the event. The GOTFOCUS event handler is invoked when the edit
@@ -4924,7 +4947,7 @@ Help request:
   The event handler for the Help event is invoked when the user presses the F1 key when the active window is the dialog.
 </para>
 <para>
-  The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthConnectEditEvent"/> method
+  The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthConnectHelp"/> method
   determines how the event handler needs to respond to the notification.
 </para>
 
@@ -6002,37 +6025,37 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
     <para>
       A single keyword, case is not significant, which specifies the event to be connected:
     <variablelist>
-      <varlistentry><term>DBLCLK</term>
+      <varlistentry><term><link linkend="evtListBoxGeneral">DBLCLK</link></term>
       <listitem>
       <para>
         An entry in the list box has been selected with a double click.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>ERRSPACE</term>
+      <varlistentry><term><link linkend="evtListBoxGeneral">ERRSPACE</link></term>
       <listitem>
       <para>
         An out-of-memory problem has occurred.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>GOTFOCUS</term>
+      <varlistentry><term><link linkend="evtListBoxGeneral">GOTFOCUS</link></term>
       <listitem>
       <para>
         The list box has gained the input focus.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>LOSTFOCUS</term>
+      <varlistentry><term><link linkend="evtListBoxGeneral">LOSTFOCUS</link></term>
       <listitem>
       <para>
         The list box has lost the input focus.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>SELCANCEL</term>
+      <varlistentry><term><link linkend="evtListBoxGeneral">SELCANCEL</link></term>
       <listitem>
       <para>
         The selection in the list box has been canceled.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>SELCHANGE</term>
+      <varlistentry><term><link linkend="evtListBoxGeneral">SELCHANGE</link></term>
       <listitem>
       <para>
         Another list box entry has been selected.
@@ -6116,7 +6139,12 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
 </variablelist>
 
 <section id="evtListBoxGeneral" xreflabel="General"><title>General ListBox Event Handler</title>
-<indexterm><primary>ListBox class</primary><secondary>events</secondary><tertiary>General</tertiary></indexterm>
+<indexterm><primary>ListBox class</primary><secondary>events</secondary><tertiary>DBLCLK</tertiary></indexterm>
+<indexterm><primary>ListBox class</primary><secondary>events</secondary><tertiary>ERRSPACE</tertiary></indexterm>
+<indexterm><primary>ListBox class</primary><secondary>events</secondary><tertiary>GOTFOCUS</tertiary></indexterm>
+<indexterm><primary>ListBox class</primary><secondary>events</secondary><tertiary>LOSTFOCUS</tertiary></indexterm>
+<indexterm><primary>ListBox class</primary><secondary>events</secondary><tertiary>SELCANCEL</tertiary></indexterm>
+<indexterm><primary>ListBox class</primary><secondary>events</secondary><tertiary>SELCHANGE</tertiary></indexterm>
 <para>
   The event handler for all of the list box events recieves the same arguments and is coded in the same fashion. When
   the handler is invoked is fairly clear from the name of the event. The GOTFOCUS event handler is invoked when the list box
@@ -6407,7 +6435,7 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
         result is undefined.
       </para>
       </listitem></varlistentry>
-      <varlistentry id="kywListViewENDEDIT" xreflabel="ENDEDIT"><term>ENDEDIT</term>
+      <varlistentry id="kywListViewENDEDIT" xreflabel="ENDEDIT"><term><xref linkend="evtListViewENDEDIT"/></term>
       <listitem>
       <para>
         Label editing has ended. Do not connect this event if you are using the DEFAULTEDIT keyword. The results are
@@ -6427,7 +6455,7 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
         A scrolling operation has ended.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>FOCUSCHANGED</term>
+      <varlistentry><term><xref linkend="evtListViewFOCUSCHANGED"/></term>
       <listitem>
       <para>
         The focus state of an item changed.  (The item gained or lost the focus.) Use this keyword instead of the
@@ -6448,13 +6476,13 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
         A new item has been inserted.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>KEYDOWN</term>
+      <varlistentry><term><xref linkend="evtListViewKEYDOWN"/> </term>
       <listitem>
       <para>
         A key was pressed inside the list view. This notification is not sent while a label is being edited.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>KEYDOWNEX</term>
+      <varlistentry><term><xref linkend="evtListViewKEYDOWNEX"/></term>
       <listitem>
       <para>
         A key was pressed inside the list view. This notification is not sent while a label is being edited.
@@ -6466,14 +6494,14 @@ id: 1003 type: WINDOW x: 473 y: 347 cntxID: 0 helpObj: a RadioButton
         compatibility.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>SELECTCHANGED</term>
+      <varlistentry><term><xref linkend="evt ListViewSELECTCHANGED"/></term>
       <listitem>
       <para>
         The selection state of an item changed.  (The item was selected or unselected.)  Use this keyword instead of the
         CHANGED keyword.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>SELECTFOCUSCHANGED</term>
+      <varlistentry><term><xref linkend="evt ListViewSELECTFOCUSCHANGED"/></term>
       <listitem>
       <para>
         The selection state or the focus state of an item changed.  This event argument combines the selection changed
@@ -7154,7 +7182,8 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
 <section id="evtListViewCOLUMNCLICK" xreflabel="COLUMNCLICK"><title>ColumnClick Event Handler</title>
 <indexterm><primary>ListView class</primary><secondary>events</secondary><tertiary>COLUMNCLICK</tertiary></indexterm>
 <para>
-  The event handler for the column click event is invoked when when the user clicks on a column header in a list view.
+  The event handler for the column click event is invoked when when the user clicks on a column header in a list view in
+  report view.
 </para>
 <para>
   The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthConnectListViewEvent"/> method
@@ -7174,7 +7203,7 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves xx arguments:
+    The event handling method recieves 3 arguments:
   </para>
   <variablelist>
     <varlistentry><term>id</term>
@@ -7200,18 +7229,55 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
   <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
   <listitem>
   <para>
-    xx
+    The operating system ignores the return for this notification. 0 makes a good return value.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
   <listitem>
   <para>
-    The following example ...
+    The following example comes from and application that allows the user to sort the columns in the list view when it is in
+    report view. Whend the application is first opened none of the columns are sorted and the first click on any column sorts
+    the list-view items on that column in ascending order. Subsequent clicks on the column header reverses the current state.
+    If the column is sorted in ascending order, a click sorts it in descending order ...
 
 <programlisting>
 <![CDATA[
+::method connectEvents private
+
+    self~connectButtonEvent(IDC_RB_REPORT, "CLICKED", onReport, .true)
+    self~connectButtonEvent(IDC_RB_LIST, "CLICKED", onList, sync)
+    self~connectButtonEvent(IDC_RB_ICON, "CLICKED", onIcon)
+    self~connectButtonEvent(IDC_RB_SMALL_ICON, "CLICKED", onSmallIcon, .false)
+    self~connectListViewEvent(IDC_LV_VIEWS, "COLUMNCLICK", onColClick, .true)
+    self~connectListViewEvent(IDC_LV_VIEWS, "BEGINDRAG", defListDragHandler)
 
 
+::method onColClick unguarded
+    expose itemColumns
+    use arg id, colIndex, listView
+
+    -- Adjust for 0-based indexes
+    i = colIndex + 1
+
+    d = .directory~new
+    d~column = colIndex
+    d~caseless = .false
+
+    if itemColumns[i] == -1 then do
+      d~ascending = .true
+      itemColumns[i] = 0
+    end
+    else if itemColumns[i] == 0 then do
+      d~ascending = .false
+      itemColumns[i] = 1
+    end
+    else do
+      d~ascending = .true
+      itemColumns[i] = 0
+    end
+
+    listView~sortItems('InternalListViewSort', d)
+    return 0
 ]]>
 </programlisting>
   </para>
@@ -7238,110 +7304,107 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
 <variablelist>
   <varlistentry><term><emphasis role="bold">New event handler description:</emphasis></term>
   <listitem>
+  <para>
+    The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthConnectListViewEvent"/> method
+    determines how the event handler needs to respond to the notification.
+  </para>
+
+<programlisting>
+<![CDATA[
+::method onEndEdit unguarded
+  use arg id, itemID, text, listViewCtrl
+
+  return trueOrFalse
+]]>
+</programlisting>
+
+  <variablelist>
+    <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+    <listitem>
     <para>
-      Whether the programmer must return a value and if the interpreter waits, or does not wait, for this return is
-      determined by the value of the <emphasis role="italic">willReply</emphasis> argument. If <emphasis
-      role="italic">willReply</emphasis> is true, the programmer must return true or false from the event handler and the
-      interpreter waits for that reply. If <emphasis role="italic">willReply</emphasis> is false the interpreter does not
-      wait for a reply.
+      The event handling method receives 4 arguments:
     </para>
-
-    <programlisting>
-    <![CDATA[
-    ::method onEndEdit unguarded
-      use arg id, itemID, text, listViewCtrl
-
-      return trueOrFalse
-    ]]>
-    </programlisting>
-
     <variablelist>
-      <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+      <varlistentry><term>id</term>
       <listitem>
       <para>
-        The event handling method receives 4 arguments:
-      </para>
-      <variablelist>
-        <varlistentry><term>id</term>
-        <listitem>
-        <para>
-          The resource id of the list-view sending the notification.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>itemID</term>
-        <listitem>
-        <para>
-          The item index whose label being edited.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>text</term>
-        <listitem>
-        <para>
-          If the user canceled the edit operation then the <emphasis role="italic">text</emphasis> argument will be the .nil
-          object. If the edit operation was not canceled then this argument will be the text the user entered.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>listViewCtrl</term>
-        <listitem>
-        <para>
-          The Rexx list-view object whose underlying list-view control has sent the notification. This is a convenience for
-          the programmer. It is the same Rexx object the programmer would recieve through the <xref
-          linkend="mthNewListView"/> method.
-        </para>
-        </listitem></varlistentry>
-      </variablelist>
-      </listitem></varlistentry>
-      <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
-      <listitem>
-      <para>
-        When the programmer used true for the <emphasis role="italic">willReply</emphasis> argument, the event handler must
-        return true or false. To accept the edit text, return true. To disallow the the change to the label, return false.
-        If, the edit operation was canceled by the user, the operating system ignores the return from the event handler.
-        Returning a value from the event handler gives the programmer the option of determining if the new label for the
-        specific list-view item is acceptable.
+        The resource id of the list-view sending the notification.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+      <varlistentry><term>itemID</term>
       <listitem>
       <para>
-        The following example checks the new text entered by the user. The label for the list-view items is displayed as last
-        name, comma, first name. If the user's text is not in that format, the new text is rejected by returning false:
+        The item index whose label being edited.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>text</term>
+      <listitem>
+      <para>
+        If the user canceled the edit operation then the <emphasis role="italic">text</emphasis> argument will be the .nil
+        object. If the edit operation was not canceled then this argument will be the text the user entered.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>listViewCtrl</term>
+      <listitem>
+      <para>
+        The Rexx list-view object whose underlying list-view control has sent the notification. This is a convenience for
+        the programmer. It is the same Rexx object the programmer would recieve through the <xref
+        linkend="mthNewListView"/> method.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+    <listitem>
+    <para>
+      When the programmer used true for the <emphasis role="italic">willReply</emphasis> argument, the event handler must
+      return true or false. To accept the edit text, return true. To disallow the the change to the label, return false.
+      If, the edit operation was canceled by the user, the operating system ignores the return from the event handler.
+      Returning a value from the event handler gives the programmer the option of determining if the new label for the
+      specific list-view item is acceptable.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+    <listitem>
+    <para>
+      The following example checks the new text entered by the user. The label for the list-view items is displayed as last
+      name, comma, first name. If the user's text is not in that format, the new text is rejected by returning false:
 
 <programlisting>
 <![CDATA[
 
 ::method onEndEdit unguarded
-  use arg id, itemIndex, text, listViewCtrl
+use arg id, itemIndex, text, listViewCtrl
 
-  if text == .nil then return .false
+if text == .nil then return .false
 
-  if text~words == 2 & text~word(1)~right(1) == ',' then do
-    reply .true
+if text~words == 2 & text~word(1)~right(1) == ',' then do
+  reply .true
 
-    rec = listViewCtrl~getItemData(itemIndex)
-    rec~FirstName = text~word(2)
-    rec~LastName  = text~word(1)~strip('T', ',')
-
-    return
-  end
-
-  reply .false
-
-  msg = "The format for a record label must be" || .endOfLine || -
-        "last name, comma, first name.  For"    || .endOfLine || -
-        "example: Swift, Tom"                   || .endOfLine~copies(2) || -
-        "The change is rejected."
-
-  title = "Label Editing Error"
-  j = MessageDialog(msg, self~hwnd, title, , "WARNING")
+  rec = listViewCtrl~getItemData(itemIndex)
+  rec~FirstName = text~word(2)
+  rec~LastName  = text~word(1)~strip('T', ',')
 
   return
+end
+
+reply .false
+
+msg = "The format for a record label must be" || .endOfLine || -
+      "last name, comma, first name.  For"    || .endOfLine || -
+      "example: Swift, Tom"                   || .endOfLine~copies(2) || -
+      "The change is rejected."
+
+title = "Label Editing Error"
+j = MessageDialog(msg, self~hwnd, title, , "WARNING")
+
+return
 
 ]]>
 </programlisting>
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Old event handler description:</emphasis></term>
   <listitem>
@@ -7356,7 +7419,7 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
   <programlisting>
   <![CDATA[
   ::method onEndEdit unguarded
-    use arg id, itemIndex, maybeText
+    use arg id, itemIndex, maybeText, listView
   ]]>
   </programlisting>
 
@@ -7364,7 +7427,7 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
     <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
     <listitem>
     <para>
-      The event handling method receives 3 arguments:
+      The event handling method receives 4 arguments:
     </para>
     <variablelist>
       <varlistentry><term>id</term>
@@ -7386,13 +7449,20 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
         did not cancel, then the <emphasis role="italic">text</emphasis> argument is the text the user entered.
       </para>
       </listitem></varlistentry>
+      <varlistentry><term>listView</term>
+      <listitem>
+      <para>
+        The Rexx list-view object that represents the underlying list-view control has sent the notification.
+      </para>
+      </listitem></varlistentry>
     </variablelist>
     </listitem></varlistentry>
     <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
     <listitem>
     <para>
       Returning, or not returning, a value has no meaning. The interpreter does not wait for the return and its value, if any
-      is discarded.
+      is discarded. However, best practice would be to always return a value from an event handler, 0 makes a good return
+      value.
     </para>
     </listitem></varlistentry>
     <varlistentry><term><emphasis role="bold">Remarks</emphasis></term>
@@ -7408,6 +7478,70 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
 </variablelist>
 
 </section>  <!-- End EndEdit Event Handler -->
+
+
+<section id="evtListViewFOCUSCHANGED" xreflabel="FOCUSCHANGED"><title>FocusChanged Event Handler</title>
+<indexterm><primary>ListView class</primary><secondary>events</secondary><tertiary>FOCUSCHANGED</tertiary></indexterm>
+<para>
+  The event handler for the focus changed event is invoked when a list view item gains or loses the focus.
+</para>
+<para>
+  The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthConnectListViewEvent"/> method
+  determines how the event handler needs to respond to the notification.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onFocusChanged unguarded
+  use arg id, itemIndex, state, listView
+
+  return 0
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves 4 arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The resource ID of the list view control that sent the notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>itemIndex</term>
+    <listitem>
+    <para>
+      The index of the item which gained or lost the focus.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>state</term>
+    <listitem>
+    <para>
+      This argument reports whether the focus was gained or lost. Its value will be either <emphasis
+      role="italic">FOCUSED</emphasis> or <emphasis role="italic">UNFOCUSED</emphasis>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>listView</term>
+    <listitem>
+    <para>
+      The Rexx <computeroutput>ListView</computeroutput> object whose underlying Windows list view sent the notification.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    The operating system ignores the return from this notification. 0 make a good return value.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End FocusChanged Event Handler -->
 
 
 <section id="evtListViewGeneral" xreflabel="General"><title>General ListView Event Handler</title>
@@ -7543,48 +7677,6 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
     </listitem></varlistentry>
   </variablelist>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
-  <listitem>
-  <para>
-    The following example comes from an application that fills a list box with the names of movies. When the user clicks on a
-    movie in the list box, the application fills a number of other controls with information specific to the selected movie:
-
-<programlisting>
-<![CDATA[
-::method onMovieClick unguarded
-   expose movieData
-   use arg , , id, nCode, listBox
-
-   movieName = listBox~selected
-
-   combo = self~newComboBox(35)
-   combo~deleteAll
-
-   -- If no movie in the list box is selected, set eveything blank, otherwise,
-   -- set everything to match the selected movie.
-   if movieName == "" then do
-     self~newEdit(32)~setText("")
-     self~newEdit(33)~setText("")
-     self~newEdit(34)~setText("")
-     combo~add("")
-   end
-   else do
-     d = movieData[movieName]
-     self~newEdit(32)~setText(d~produced)
-     self~newEdit(33)~setText(d~star)
-     self~newEdit(34)~setText(d~director)
-
-     do n over d~with
-        combo~add(n)
-     end
-     combo~selectIndex(1)
-   end
-
-   return 0
-]]>
-</programlisting>
-  </para>
-  </listitem></varlistentry>
 </variablelist>
 
 </section>  <!-- End General ListView Event Handler -->
@@ -7602,7 +7694,7 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
 <programlisting>
 <![CDATA[
 ::method onGetInfoTip unguarded
-  use arg id, itemIndex, text, maxLen
+  use arg id, itemIndex, text, maxLen, listView
 
   return infoText
 ]]>
@@ -7612,7 +7704,7 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method receives 4 arguments:
+    The event handling method receives 5 arguments:
   </para>
   <variablelist>
     <varlistentry><term>id</term>
@@ -7646,6 +7738,13 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
       role="italic">maxLen</emphasis> characters.
     </para>
     </listitem></varlistentry>
+    <varlistentry><term>listView</term>
+    <listitem>
+    <para>
+      The Rexx list view object that represents the underlying dialog control that sent the notification. It is possible
+      this will be the <computeroutput>.nil</computeroutput> object if some error happened, but this is very unlikely.
+    </para>
+    </listitem></varlistentry>
   </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
@@ -7669,8 +7768,8 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
 <![CDATA[
 
 ::method onGetInfoTip unguarded
-  expose lv records useInfoTips
-  use arg id, item, text, maxLen
+  expose records useInfoTips
+  use arg id, item, text, maxLen, listView
 
   text = ''
 
@@ -7694,22 +7793,95 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
 <section id="evtListViewKEYDOWN" xreflabel="KEYDOWN"><title>KeyDown Event Handler</title>
 <indexterm><primary>ListView class</primary><secondary>events</secondary><tertiary>KEYDOWN</tertiary></indexterm>
 <para>
-  The event-handling method connected to KEYDOWN receives two arguments: the control ID of the list-view control and the
-  virtual key code pressed. Use the <xref linkend="mthKey2Name"/> method of the
- <xref linkend="clsVK"/> class to determine which key was pressed.
+  The event handler for the key down event is invoked when the user types a key when the list view has the focus.
+</para>
+<para>
+  The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthConnectListViewEvent"/> method
+  determines how the event handler needs to respond to the notification.
 </para>
 
 <programlisting>
 <![CDATA[
 ::method onKeyDown unguarded
-  use arg id, vkey
-  say "Key" .VK~key2name(vkey) "was pressed."
+  use arg id, vKey, listView
+
+  return zz
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves 3 arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The resource ID of the list-view control that sent the notification.
+    </para>
+    <varlistentry><term>vKey</term>
+    <listitem>
+    <para>
+      The virtual key code of of the key pressed. The <xref linkend="clsVK"/> class can be used to determine which key was
+      pressed.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>listView</term>
+    <listitem>
+    <para>
+      The Rexx list view object that represents the underlying dialog control that sent the notification. It is possible
+      this will be the <computeroutput>.nil</computeroutput> object if some error happened, but this is very unlikely.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    The operating system ignores the return for this notification. 0 make a good return value.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example is from an application that allows the user to delete a list view item by pressing the Del key when
+    the item to be deleted is selected. The list view is single selection
+
+<programlisting>
+<![CDATA[
+::method onKeyDown unguarded
+  use arg id, vkey, listView
+
+  if vKey == .VK~DELETE then do
+    selectedIndex = listView~selected
+    if selectedIndex <> -1 then do
+      listView~delete(selectedIndex)
+      if selectedIndex == listView~items then do
+        if selectedIndex == 0 then do
+          -- Do nothing, there are no items in the list-view now.
+          nop
+        end
+        else do
+          listView~select(selectedIndex - 1)
+        end
+      end
+      else do
+        listView~select(selectedIndex)
+      end
+    end
+  end
 
   return 0
 ]]>
 </programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
 
-</section>
+</section>  <!-- End KeyDown Event Handler -->
+
 
 <section id="evtListViewKEYDOWNEX" xreflabel="KEYDOWNEX"><title>KeyDown (extended) Event Handler</title>
 <indexterm><primary>ListView class</primary><secondary>events</secondary><tertiary>KEYDOWNEX</tertiary></indexterm>
@@ -7717,13 +7889,18 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
   The event-handling method connected through the KEYDOWNEX keyword is similar to the event handler for the <link
   linkend="evtListViewKEYDOWN">KeyDown</link> event handler. It is invoked for the same event, when the user presses a key
   within the list-view. However, it receives a different set of arguments than that provided when the KEYDOWN keyword is
-  used.
+  used. The arguments sent to the KEYDOWNEX event handler provide more information about the event. This allows the
+  programmer to write a more flexible event handler.
+</para>
+<para>
+  The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthConnectListViewEvent"/> method
+  determines how the event handler needs to respond to the notification.
 </para>
 
 <programlisting>
 <![CDATA[
 ::method onKeyDownEx unguarded
-  use arg vKey, isShift, isCtrl, isAlt, extraInfo, listViewObj
+  use arg vKey, isShift, isCtrl, isAlt, extraInfo, listViewObj, id
 
   return response
 ]]>
@@ -7733,14 +7910,14 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
   <varlistentry><term><emphasis role="bold">Event Handler Method Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method receives 6 arguments:
+    The event handling method receives 7 arguments:
   </para>
   <variablelist>
     <varlistentry><term>vKey</term>
     <listitem>
     <para>
-      The virtual key code of of the key pressed. Use the <xref linkend="mthKey2Name"/> method of the <xref linkend="clsVK"/>
-      class to determine which key was pressed.
+      The virtual key code of of the key pressed. The <xref linkend="clsVK"/> class can be used to determine which key was
+      pressed.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>isShift</term>
@@ -7856,18 +8033,23 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
       The Rexx <computeroutput>ListView</computeroutput> object whose underlying Windows list-view had the keydown event.
     </para>
     </listitem></varlistentry>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The resource ID of the list-view control that sent the notification.
+    </para>
   </variablelist>
   </listitem></varlistentry>
 
   <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
   <listitem>
   <para>
-    When the <emphasis role="italic">willReply</emphasis> argument to the <link linkend="mthConnectListViewEvent"></link>
-    method is true, the event handler must return a value. However, the operating system ignores the return value, so any
-    value can be used. 0 makes a good return.
+    When the <emphasis role="italic">willReply</emphasis> argument to the <xref linkend="mthConnectListViewEvent"/> method is
+    true, the event handler must return a value. However, the operating system ignores the return value, so any value can be
+    used. 0 makes a good return.
   </para>
   <para>
-    If <emphasis role="italic">willReply</emphasis> is false, the event handler does not <emphasis
+    If <emphasis role="italic">willReply</emphasis> is false or SYNC, the event handler does not <emphasis
     role="italic">have</emphasis> to return a value, but good practice would be to always return a value from an event
     handler.
   </para>
@@ -7884,7 +8066,7 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
 <![CDATA[
 
 ::method onKeyDownEx unguarded
-    use arg vKey, isShift, isCtrl, isAlt, extraInfo, listViewObj
+    use arg vKey, isShift, isCtrl, isAlt, extraInfo, listViewObj, id
 
     if vKey == .VK~DELETE & isCtrl then do
         selectedIndex = listView~selected
@@ -7912,130 +8094,146 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
   </listitem></varlistentry>
 </variablelist>
 
-</section>
+</section>  <!-- End KeyDown (extended) Event Handler -->
 
-
-<section id="evtListViewFOCUSCHANGED" xreflabel="FOCUSCHANGED"><title>FocusChanged Event Handler</title>
-<indexterm><primary>ListView class</primary><secondary>events</secondary><tertiary>FOCUSCHANGED</tertiary></indexterm>
-<para>
-  The event handler for the focus changed event is invoked when an item gains or loses focus. The method receives three
-  arguments:
-</para>
-
-<programlisting>
-<![CDATA[
-::method onFocusChanged unguarded
-  use arg id, itemIndex, state
-
-  return 0
-]]>
-</programlisting>
-<variablelist>
-  <varlistentry><term>id</term>
-  <listitem>
-  <para>
-    The resource ID of the list-view control whose item had the focus changed.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term>itemIndex</term>
-  <listitem>
-  <para>
-    The index of the item which gained or lost the focus.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term>state</term>
-  <listitem>
-  <para>
-    This argument reports whether the focus was gained or lost.  Its value will be either &quot;FOCUSED&quot; or
-    &quot;UNFOCUSED&quot;
-  </para>
-  </listitem></varlistentry>
-</variablelist>
-</section>
 
 <section id="evtListViewSELECTCHANGE" xreflabel="SELECTCHANGE"><title>SelectChange Event Handler</title>
 <indexterm><primary>ListView class</primary><secondary>events</secondary><tertiary>SELECTCHANGE</tertiary></indexterm>
 <para>
-  The event handler for the selection changed event is invoked when the selection state of an item changes. The method
-  receives three arguments:
+  The event handler for the select change event is invoked when only the selection state of a list view item changes.
+</para>
+<para>
+  The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthConnectListViewEvent"/> method
+  determines how the event handler needs to respond to the notification.
 </para>
 
 <programlisting>
 <![CDATA[
-::method onSelectChanged unguarded
-  use arg id, itemIndex, state
+::method onSelectChange unguarded
+  use arg id, itemIndex, state, listView
 
   return 0
 ]]>
 </programlisting>
 
 <variablelist>
-  <varlistentry><term>id</term>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The resource ID of the list-view control whose item had the selection changed.
+    The event handling method recieves xx arguments:
   </para>
+  <variablelist>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The resource ID of the list view that sent the notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>itemIndex</term>
+    <listitem>
+    <para>
+      The index of the list view item whose selection was changed.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>state</term>
+    <listitem>
+    <para>
+      This argument reports whether the item was selected or unselected.  Its value will be either <emphasis
+      role="italic">SELECTED</emphasis> or <emphasis role="italic">UNSELECTED</emphasis>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>listView</term>
+    <listitem>
+    <para>
+      The Rexx <computeroutput>ListView</computeroutput> object that represents the underlying Windows list view that sent
+      the notification.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
   </listitem></varlistentry>
-  <varlistentry><term>itemIndex</term>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
   <listitem>
   <para>
-    The index of the item whose selection was changed.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term>state</term>
-  <listitem>
-  <para>
-    This argument reports whether the item was selected or unselected.  Its value will be either
-    &quot;SELECTED&quot; or &quot;UNSELECTED&quot;
+    The operating system ignores the return from this notification. 0 makes a good return value.
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>
+
+</section>  <!-- End SelectChange Event Handler -->
+
+
 
 <section id="evtListViewSELECTFOCUSCHANGED" xreflabel="SELECTFOCUSCHANGED"><title>SelectFocusChanged Event Handler</title>
 <indexterm><primary>ListView class</primary><secondary>events</secondary><tertiary>SELECTFOCUSCHANGED</tertiary></indexterm>
 <para>
-  The event handle for the selection or focus changed event is invoked when either the selection or the focus of an item
-  changes. The method receives 3 arguments:
+  The event handler for the selection or focus changed event is invoked when either the selection or the focus of a list view
+  item changes.
+</para>
+<para>
+  The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthConnectListViewEvent"/> method
+  determines how the event handler needs to respond to the notification.
 </para>
 
 <programlisting>
 <![CDATA[
 ::method onSelectFocusChanged unguarded
-  use arg id, itemIndex, state
+  use arg id, itemIndex, listView
 
   return 0
 ]]>
 </programlisting>
 
 <variablelist>
-  <varlistentry><term>id</term>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The resource ID of the list-view control whose item had the either the focus or the selection changed.
+    The event handling method recieves 4 arguments:
   </para>
+  <variablelist>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The resource ID of the list view that sent the notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>itemIndex</term>
+    <listitem>
+    <para>
+      The index of the list view item where the state was changed.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>state</term>
+    <listitem>
+    <para>
+      This argument reports whether the focus was gained or lost and whether the selection was gained or lost. Its
+      value will contain at least one of the keywords: <emphasis role="italic">SELECTED</emphasis>, <emphasis
+      role="italic">UNSELECTED</emphasis>, <emphasis role="italic">FOCUS</emphasis>, or <emphasis
+      role="italic">UNFOCUSED</emphasis>. It is possible for both the selection and focus changed to be reported at once, however
+      sometimes each change is reported separately. (This has nothing to do with ooDialog, it is how the operating system
+      sends the messages.)
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>listView</term>
+    <listitem>
+    <para>
+      The Rexx <computeroutput>ListView</computeroutput> object that represents the underlying Windows list view that sent
+      the notification.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
   </listitem></varlistentry>
-  <varlistentry><term>itemIndex</term>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
   <listitem>
   <para>
-    The index of the item where the state was changed.
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term>state</term>
-  <listitem>
-  <para>
-    This argument reports whether the focus was gained or lost and whether the selection was gained or lost. Its
-    value will contain at least one of the keywords: &quot;SELECTED&quot;, &quot;UNSELECTED&quot;,
-    &quot;FOCUSED&quot; or &quot;UNFOCUSED&quot;.  It is possible for both the selection and focus changed to be
-    reported at once, however sometimes each change is reported separately. (This has nothing to do with ooDialog,
-    it is how the operating system sends the messages.)
+    The operating system ignores the return from this notification. 0 makes a good return value.
   </para>
   </listitem></varlistentry>
 </variablelist>
 
-</section>
+</section>  <!-- End SelectFocusChanged Event Handler -->
 
-</section>
+</section>  <!-- End EventNotification::connectionListViewEvent() -->
+
 
 <section id="mthConnectMonthCalendarEvent" xreflabel="connectMonthCalendarEvent"><title>connectMonthCalendarEvent</title>
 <indexterm><primary>connectMonthCalendarEvent</primary></indexterm>
@@ -8050,9 +8248,8 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
 </programlisting>
 
 <para>
-  The <emphasis role="italic">connectMonthCalendarEvent</emphasis> method connects an
-  <xref linkend="ovvEvents"/> notification message from a month <xref linkend="clsMonthCalendar"/>
-  control to a method in the Rexx dialog.
+  The <emphasis role="italic">connectMonthCalendarEvent</emphasis> method connects an <xref linkend="ovvEvents"/>
+  notification message from a <xref linkend="clsMonthCalendar"/> control to a method in the Rexx dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -8073,12 +8270,15 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
       </para>
       <para>
         <simplelist type='vert' columns='3'>
-          <member>GETDAYSTATE</member>  <member>SELECT</member>          <member>VIEWCHANGE</member>
-          <member>RELEASED</member>     <member>SELCHANGE</member>
+          <member>GETDAYSTATE</member>
+          <member>RELEASED</member>
+          <member>SELCHANGE</member>
+          <member>SELECT</member>
+          <member>VIEWCHANGE</member>
         </simplelist>
       </para>
       <variablelist>
-        <varlistentry><term>GETDAYSTATE</term>
+        <varlistentry><term><xref linkend="evtMonthCalendarGETDAYSTATE"/></term>
         <listitem>
         <para>
            Sent by a month calendar control to request information about how individual days should be displayed. This
@@ -8087,28 +8287,28 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
            <link linkend="sctCodingEventHandlers">return</link> a reply.
         </para>
         </listitem></varlistentry>
-        <varlistentry><term>RELEASED</term>
+        <varlistentry><term><xref linkend="evtMonthCalendarRELEASED"/></term>
         <listitem>
         <para>
           Sent by the month calendar when the control is releasing the mouse capture. The return value from the event
           handler is ignored for this event.
         </para>
         </listitem></varlistentry>
-        <varlistentry><term>SELECT</term>
+        <varlistentry><term><xref linkend="evtMonthCalendarSELECT"/></term>
         <listitem>
         <para>
           Sent by a month calendar control when the user makes an explicit date selection within the control. The return
           value from the event handler is ignored for this event.
         </para>
         </listitem></varlistentry>
-        <varlistentry><term>SELCHANGE</term>
+        <varlistentry><term><xref linkend="evtMonthCalendarSELCHANGE"/></term>
         <listitem>
         <para>
           Sent by a month calendar control when the currently selected date or range of dates changes. The return value
           from the event handler is ignored for this event.
         </para>
         </listitem></varlistentry>
-        <varlistentry><term>VIEWCHANGE</term>
+        <varlistentry><term><xref linkend="evtMonthCalendarVIEWCHANGE"/></term>
         <listitem>
         <para>
           <emphasis role="bold">Requires Windows Vista or later</emphasis>. Sent by a month calendar control when the
@@ -8130,12 +8330,13 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
       <varlistentry><term>willReply [optional]</term>
       <listitem>
       <para>
-        The <emphasis role="italic">willReply</emphasis> argument controls whether the interpreters waits for the reply
-        from the event handler. The default is <computeroutput>.true</computeroutput>, the interpreter waits until the
-        event handling method returns a value. If <emphasis role="italic">willReply</emphasis> is
-        <computeroutput>.false</computeroutput>, the interpreter will not wait for the reply. However, this argument is
-        ignored for the GETDAYSTATE event. If the programmer connects the GETDAYSTATE, the interpreter waits for the
-        return from the connected method. This can not be changed.
+        The <link linkend="sctCommonWillReply">willReply</link> argument controls how the interpreter invokes the event
+        handler for the connected event. The default if <emphasis role="italic">willReply</emphasis> is omitted is
+        <computeroutput>.true</computeroutput>.
+      </para>
+      <para>
+        However, this argument is ignored for the GETDAYSTATE event. If the programmer connects the GETDAYSTATE, the event
+        handler must return a value. This can not be changed.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -8569,8 +8770,8 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
 <indexterm><primary>EventNotification class</primary><secondary>connectMove</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectMove(--+--------------+--)------------><
-                  +--methodName--+
+>>--connectMove(--+--------------+--+--------------+--)---------><
+                  +--methodName--+  +-,-willReply--+
 ]]>
 </programlisting>
 
@@ -8582,13 +8783,21 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The only argument is:
+    The arguments are:
   <variablelist>
     <varlistentry><term>methodName [optional]</term>
     <listitem>
     <para>
       The name of the method that will be invoked each time the dialog has moved. The name can not be the empty string.
       When this argument is omitted the name defaults to <emphasis role="italic">onMove</emphasis>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>willReply [optional]</term>
+    <listitem>
+    <para>
+      The <link linkend="sctCommonWillReply">willReply</link> argument controls how the interpreter invokes the event
+      handler for the connected event. The default if <emphasis role="italic">willReply</emphasis> is omitted is
+      <computeroutput>.false</computeroutput>.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -8652,7 +8861,109 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>
+
+<section id="evtEventNotificationMOVE" xreflabel="MOVE"><title>Move Event Handler</title>
+<indexterm><primary>EventNotification class</primary><secondary>events</secondary><tertiary>MOVE</tertiary></indexterm>
+<para>
+  The event handler for the Move event is invoked when the position of the dialog has changed.
+</para>
+<para>
+  The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthConnectMove"/> method
+  determines how the event handler needs to respond to the notification.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onMove unguarded
+  use arg wParam, lParam
+
+  return 0
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves 2 arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>wParam</term>
+    <listitem>
+    <para>
+      The numeric value of the WPARAM paramater of the notification <xref linkend="ovvWindowMessages"/>. This argument has no
+      meaning and is likely 0. Even if it is not 0, it still has no meaning.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>lParam</term>
+    <listitem>
+    <para>
+      The numeric value of the LPARAM parameter of the notivication message. This value contains the new position
+      co-ordinates of the dialog. The low word of the number contains the new X position and the high word contains new y
+      position. The <xref linkend="mthLoWord"/> and <xref linkend="mthHiWord"/> methods can be used to extract these values.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    The MSDN documentation says to return 0 from the event handler.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    A complete working example to play with:
+
+<programlisting>
+<![CDATA[
+/* Simple connectMove() example */
+
+  dlg = .MoveDlg~new
+  dlg~execute("SHOWTOP", IDI_DLG_OOREXX)
+
+::requires "ooDialog.cls"
+
+::class 'MoveDlg' subclass UserDialog
+
+::method init
+  forward class (super) continue
+
+  self~connectMove(onMove, .true)
+
+  self~create(30, 30, 257, 123, "Move Me Dialog", "CENTER")
+
+::method defineDialog
+
+  self~createPushButton(IDOK, 142, 99, 50, 14, "DEFAULT", "Ok")
+  self~createPushButton(IDCANCEL, 197, 99, 50, 14, , "Cancel")
+
+::method onMove unguarded
+  use arg unUsed, posInfo
+
+  -- Get the new position ...
+  x = .DlgUtil~loWord(posInfo)
+  y = .DlgUtil~hiWord(posInfo)
+
+  -- If x is greater than 400, the move us back
+  -- to an x position of 50
+  if x > 400 then do
+    p = .Point~new(50, y)
+    self~moveTo(p)
+    j = SysSleep(.01)
+  end
+
+  return 0
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End Move Event Handler -->
+
+</section>  <!-- End EventNotification::connectMove() -->
 
 <section id="mthConnectNotifyEvent" xreflabel="connectNotifyEvent"><title>connectNotifyEvent</title>
 <indexterm><primary>connectNotifyEvent</primary></indexterm>
@@ -8660,8 +8971,8 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
 <indexterm><primary>EventNotification class</primary><secondary>connectNotifyEvent</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectNotifyEvent(--id--,--event--+---------------+--)-----><
-                                       +-,--methodName-+
+>>--connectNotifyEvent(--id--,--event--+---------------+--+--------------+--)--><
+                                       +-,--methodName-+  +-,-willReply--+
 
 ]]>
 </programlisting>
@@ -8671,84 +8982,154 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
   a dialog control to a method in the Rexx dialog object.
 </para>
 <para>
-  Most event notifications are specific to the particular type of control that sends them. These generic event
-  notifications are common to a number of dialog controls. In general, if one of the dialog control specific event
-  connection methods, such as <xref linkend="mthConnectListViewEvent"/> can make a connection
-  for the event, then <emphasis role="italic">connectNotifyEvent</emphasis> should not be used. In these cases, the
-  dialog control does not send one of the generic event notifications. It sends a notification specific to itself.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-  <listitem><para>The arguments are:
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
   <variablelist>
-    <varlistentry><term>id</term>
-    <listitem><para>The ID of the dialog control of which a notification is to be connected
-    to a method.
-    </para></listitem></varlistentry>
-    <varlistentry><term>event</term>
-    <listitem><para>The event to be connected with a method:
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the dialog control for which the notification is to be connected. This can be numeric or symbolic.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>event [required]</term>
+    <listitem>
+    <para>
+      Exactly one of the following key words, case is not significant, that specifies which event is to be connected:
+    </para>
     <variablelist>
-      <varlistentry><term>OUTOFMEMORY</term>
-      <listitem><para>The dialog control went out of memory.
-      </para></listitem></varlistentry>
       <varlistentry><term>CLICK</term>
-      <listitem><para>The left mouse button was clicked on the dialog control.
-      </para></listitem></varlistentry>
+      <listitem>
+      <para>
+        The left mouse button was clicked on the dialog control.
+      </para>
+      </listitem></varlistentry>
       <varlistentry><term>DBLCLK</term>
-      <listitem><para>The left mouse button was double-clicked on the dialog control.
-      </para></listitem></varlistentry>
+      <listitem>
+      <para>
+        The left mouse button was double-clicked on the dialog control.
+      </para>
+      </listitem></varlistentry>
       <varlistentry><term>ENTER</term>
-      <listitem><para>The return key was pressed in the dialog item.
-      </para></listitem></varlistentry>
-      <varlistentry><term>RCLICK</term>
-      <listitem><para>The right mouse button was clicked on the dialog item.
-      </para></listitem></varlistentry>
-      <varlistentry><term>RDBLCLK</term>
-      <listitem><para>The right mouse button was double-clicked on the dialog control.
-      </para></listitem></varlistentry>
+      <listitem>
+      <para>
+        The return key was pressed in the dialog item.
+      </para>
+      </listitem></varlistentry>
       <varlistentry><term>GOTFOCUS</term>
-      <listitem><para>The dialog item got the input focus.
-      </para></listitem></varlistentry>
+      <listitem>
+      <para>
+        The dialog item got the input focus.
+      </para>
+      </listitem></varlistentry>
       <varlistentry><term>LOSTFOCUS</term>
-      <listitem><para>The dialog item lost the input focus.
-      </para></listitem></varlistentry>
+      <listitem>
+      <para>
+        The dialog item lost the input focus.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>OUTOFMEMORY</term>
+      <listitem>
+      <para>
+        The dialog control is out of memory.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>RCLICK</term>
+      <listitem>
+      <para>
+        The right mouse button was clicked on the dialog item.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>RDBLCLK</term>
+      <listitem>
+      <para>
+        The right mouse button was double-clicked on the dialog control.
+      </para>
+      </listitem></varlistentry>
     </variablelist>
-    </para></listitem></varlistentry>
-    <varlistentry><term>methodName</term>
-    <listitem><para>The message that is to be sent whenever the specified notification is
-    received. Provide a method with a matching name. If you omit this argument,
-    the event is preceded by <computeroutput>On</computeroutput>.
-    </para></listitem></varlistentry>
+    </listitem></varlistentry>
+    <varlistentry><term>methodName [optional]</term>
+    <listitem>
+    <para>
+      The name of the event handling method. This method is invoked each time the specified event occurs. The method name can
+      not be the empty string. If you omit this argument, the event handler method name is generated for you. This name will
+      be the event keyword, preceded by <computeroutput>on</computeroutput>. For example: <emphasis
+      role="italic">onLostFocus</emphasis>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>willReply [optional]</term>
+    <listitem>
+    <para>
+      The <link linkend="sctCommonWillReply">willReply</link> argument controls how the interpreter invokes the event
+      handler for the connected event. The default if <emphasis role="italic">willReply</emphasis> is omitted is
+      <computeroutput>.false</computeroutput>.
+    </para>
+    </listitem></varlistentry>
   </variablelist>
-  </para></listitem></varlistentry>
+  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-  <listitem><para>The return codes are:
+  <listitem>
+  <para>
+    The return codes are:
+  </para>
   <variablelist>
     <varlistentry><term>0</term>
-    <listitem><para>No error detected.
-    </para></listitem></varlistentry>
+    <listitem>
+    <para>
+      No error detected.
+    </para>
+    </listitem></varlistentry>
     <varlistentry><term>-1</term>
-    <listitem><para>The resource ID could not be resolved or the event argument is
-    incorrect.
-    </para></listitem></varlistentry>
+    <listitem>
+    <para>
+      The resource ID could not be resolved or the event argument is incorrect.
+    </para>
+    </listitem></varlistentry>
     <varlistentry><term>1</term>
-    <listitem><para>The message was not connected correctly. The message was not connected
-    </para></listitem></varlistentry>
+    <listitem>
+    <para>
+      The message was not connected correctly.
+    </para>
+    </listitem></varlistentry>
   </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+
+  <warning><title>Use of the <emphasis role="italic">connectNotifyEvent method is discouraged</emphasis></title>
+  <para>
+    Most event notifications are specific to the particular type of control that sends them. These generic event
+    notifications are common to a number of dialog controls. In general, if one of the dialog control specific event
+    connection methods, such as <xref linkend="mthConnectListViewEvent"/>, can make a connection for the event, then
+    <emphasis role="italic">connectNotifyEvent</emphasis> should not be used. In these cases, the dialog control does not
+    send one of the generic event notifications. It sends a notification specific to itself.
+  </para>
+  <para>
+    In addition, most of the dialog control specific event connections provide better information to the event handler than
+    that provided by the event handler used for a generic connection.
+  </para>
+  </warning>
+
+  <para>
+    In Windows itself, these events are sent to the parent dialog using the WM_NOTIFY message.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
-    <para>
-      Syntax errors are raised when incorrect usage is detected.
-    </para>
-    <para>
-      If the programmer does not provide a matching method in the Rexx dialog, a syntax condition will be raised if the
-      connected event happen.
-    </para>
-    <para>
-      In Windows itself, these events are sent to the parent dialog using the WM_NOTIFY message.
-    </para>
+  <para>
+    Syntax errors are raised when incorrect usage is detected.
+  </para>
+  <para>
+    If the programmer does not provide a matching method in the Rexx dialog, a syntax condition will be raised if the
+    connected event happen.
+  </para>
+  <para>
+    In Windows itself, these events are sent to the parent dialog using the WM_NOTIFY message.
+  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
@@ -8774,7 +9155,89 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
   </listitem></varlistentry>
 </variablelist>
 
-</section>
+<section id="evtNotifyGeneral" xreflabel="General"><title>General Notify Event Handler</title>
+<indexterm><primary>connectNotifyEvent</primary><secondary>events</secondary><tertiary>OUTOFMEMORY</tertiary></indexterm>
+<indexterm><primary>connectNotifyEvent</primary><secondary>events</secondary><tertiary>CLICK</tertiary></indexterm>
+<indexterm><primary>connectNotifyEvent</primary><secondary>events</secondary><tertiary>DBLCLK</tertiary></indexterm>
+<indexterm><primary>connectNotifyEvent</primary><secondary>events</secondary><tertiary>ENTER</tertiary></indexterm>
+<indexterm><primary>connectNotifyEvent</primary><secondary>events</secondary><tertiary>RCLICK</tertiary></indexterm>
+<indexterm><primary>connectNotifyEvent</primary><secondary>events</secondary><tertiary>RDBLCLK</tertiary></indexterm>
+<indexterm><primary>connectNotifyEvent</primary><secondary>events</secondary><tertiary>GOTFOCUS</tertiary></indexterm>
+<indexterm><primary>connectNotifyEvent</primary><secondary>events</secondary><tertiary>LOSTFOCUS</tertiary></indexterm>
+<para>
+  All event handlers connected through the <xref linkend="mthConnectNotifyEvent"/> method are sent the same arguments and
+  are essentially coded the same way.
+</para>
+<para>
+  The <link linkend="sctCommonWillReply">willReply</link> argument in the <emphasis
+  role="italic">connectNotifyEvent</emphasis> method determines how the event handler needs to respond to the notification.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onNotifyEvent unguarded
+  use arg id, ptr, notifyCode, controlObj
+
+  return 0
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves 4 arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The numeric resource ID of the dialog control sending the notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>ptr</term>
+    <listitem>
+    <para>
+      The numeric value of a pointer to a memory location in the running application. This is of no conceivable use to the
+      ooDialog programmer, but is retained for backwards compatibility.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>notifyCode</term>
+    <listitem>
+    <para>
+      The numeric notification code of the event that caused the notification to be sent.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>controlObj</term>
+    <listitem>
+    <para>
+      The Rexx dialog control object that represents the underlying dialog control that sent the notification. It is possible
+      this will be the <computeroutput>.nil</computeroutput> object if some error happened, but this is very unlikely.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    In general, 0 should be returned. For most of the events connected through the <emphasis
+    role="italic">connectNotifyEvent</emphasis> method, the operating system ignores the returned value.
+  </para>
+  <para>
+    Nevertheless, beginning in ooDialog 4.2.4, <emphasis role="italic"><emphasis role="bold">if</emphasis></emphasis> the
+    <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthConnectNotifyEvent"/> method is set
+    to true by the programmer, the ooDialog framework will take the value returned from the event handler and return that
+    value to the operating system. If, through research, the ooDialog programmer determines a better return value for his
+    particular use of <emphasis role="italic">connectNotifyEvent</emphasis>, then he is encouraged to set <emphasis
+    role="italic">willReply</emphasis> to true and return the better value from his event handler.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End General Notify Event Handler -->
+
+</section>  <!-- End EventNotification::connectionNotifyEvent() -->
+
 
 <section id="mthConnectPosChanged" xreflabel="connectPosChanged"><title>connectPosChanged</title>
 <indexterm><primary>connectPosChanged</primary></indexterm>
@@ -8782,8 +9245,8 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
 <indexterm><primary>EventNotification class</primary><secondary>connectPosChanged</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectPosChanged(--+--------------+--)------><
-                        +--methodName--+
+>>--connectPosChanged(--+--------------+--+--------------+--)---><
+                        +--methodName--+  +-,-willReply--+
 ]]>
 </programlisting>
 
@@ -8796,13 +9259,21 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The only argument is:
+    The arguments are:
   <variablelist>
     <varlistentry><term>methodName [optional]</term>
     <listitem>
     <para>
       The name of the method that will be invoked each time the dialog has moved. The name can not be the empty string.
       When this argument is omitted the name defaults to <emphasis role="italic">onPosChanged</emphasis>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>willReply [optional]</term>
+    <listitem>
+    <para>
+      The <link linkend="sctCommonWillReply">willReply</link> argument controls how the interpreter invokes the event
+      handler for the connected event. The default if <emphasis role="italic">willReply</emphasis> is omitted is
+      <computeroutput>.false</computeroutput>.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -8851,6 +9322,7 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
   self~connectPosChanged("onNewPos")
 
 ::method onNewPos unguarded
+  use arg wp, lp
   rect = self~windowRect
   say "The new dialog window rectangle is:"
   say "  Left:  " rect~left
@@ -8864,6 +9336,60 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
   </para>
   </listitem></varlistentry>
 </variablelist>
+
+<section id="evtEventNotificationPOSCHANGED" xreflabel="POSCHANGED"><title>PosChanged Event Handler</title>
+<indexterm><primary>EventNotification class</primary><secondary>events</secondary><tertiary>POSCHANGED</tertiary></indexterm>
+<para>
+  The event handler for the Position Changed event is invoked when the size, position, or place in the Z order of the dialog
+  has changed.
+</para>
+<para>
+  The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthConnectMove"/> method
+  determines how the event handler needs to respond to the notification.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onPosChanged unguarded
+  use arg wParam, lParam
+
+  return 0
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves 2 arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>wParam</term>
+    <listitem>
+    <para>
+      The numeric value of the WPARAM paramater of the notification <xref linkend="ovvWindowMessages"/>. This argument has no
+      meaning and is likely 0. Even if it is not 0, it still has no meaning.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>lParam</term>
+    <listitem>
+    <para>
+      The numeric value of the LPARAM parameter of the notivication message. This is a pointer to a memory location and has
+      no conceivable use in the ooDialog program.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    The event handler should probably return 0.
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End PosChanged Event Handler -->
+
 </section>
 
 <section id="mthConnectReBarEvent" xreflabel="connectReBarEvent"><title>connectReBarEvent</title>
@@ -8928,39 +9454,16 @@ id 200 dx: 0 dy: 1 listView: a ListView endScroll
     <varlistentry><term>willReply [optional]</term>
     <listitem>
     <para>
-      The <emphasis role="italic">willReply</emphasis> argument controls whether the interpreter <link
+      The <link linkend="sctCommonWillReply">willReply</link> argument controls whether the interpreter <link
       linkend="sctCodingEventHandlers">waits</link>, or does not wait, for the reply from the event handler. The value of
       this argument can be <computeroutput>.true</computeroutput>, <computeroutput>.false</computeroutput>, or the keyword
       <emphasis role="italic">sync</emphasis>, case insignificant. The default if the argument is omitted is
       <computeroutput>.true</computeroutput>
     </para>
-    <variablelist>
-      <varlistentry><term><emphasis role="bold">.true</emphasis></term>
-      <listitem>
-      <para>
-        The interpreter waits for the return from the event handler and the event handler <emphasis
-        role="italic">must</emphasis> return a value.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term><emphasis role="bold">.false</emphasis></term>
-      <listitem>
-      <para>
-        The interpreter does not wait for the return from the event handler. Because of this any return from the event
-        handler is discarded.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term><emphasis role="bold">sync</emphasis></term>
-      <listitem>
-      <para>
-        The interpreter waits until the event handler method returns, but ignores the return value. The event handler is not
-        required to return a value, but good practice would be to always return a value from an event handler.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
     <para>
       For those event notifications that the operating system expects a return value, the <emphasis
       role="italic">willReply</emphasis> argument is ignored. For these events, the event handler must always return a value
-      of the correct type. I.e., if the operating system expects a reply of true or false, the event handler mus always
+      of the correct type. I.e., if the operating system expects a reply of true or false, the event handler must always
       return true or false. The events in the following list fall into this category:
     </para>
     <para>
