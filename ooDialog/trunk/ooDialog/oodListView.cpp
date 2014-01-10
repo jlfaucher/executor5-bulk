@@ -2287,16 +2287,17 @@ MsgReplyType lvnKeyDown(pCPlainBaseDialog pcpbd, LPARAM lParam, CSTRING methodNa
     else
     {
         args = getKeyEventRexxArgs(c, (WPARAM)vKey, false, rxLV);
+        c->ArrayPut(args, idFrom, 7);
     }
 
     genericInvoke(pcpbd, methodName, args, tag);
 
     c->ReleaseLocalReference(idFrom);
-    c->ReleaseLocalReference(rxLV);
 
     if ( preserveOld )
     {
         c->ReleaseLocalReference(rxVKey);
+        c->ReleaseLocalReference(rxLV);
         c->ReleaseLocalReference(args);
     }
     else

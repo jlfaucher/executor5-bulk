@@ -3130,6 +3130,8 @@ MsgReplyType searchMiscTable(uint32_t msg, WPARAM wParam, LPARAM lParam, pCPlain
             RexxObjectPtr lp = c->Intptr(lParam);
 
             args = c->ArrayOfTwo(wp, lp);
+
+            tag = willReply ? tag | TAG_USE_RETURN : tag;
             genericInvoke(pcpbd, method, args, tag);
 
             c->ReleaseLocalReference(wp);
@@ -4674,6 +4676,21 @@ static bool keyword2tvn(RexxMethodContext *c, CSTRING keyword, uint32_t *code, u
     *code = tvn;
     *pTag = tag;
     return true;
+}
+
+static uint32_t methodName2windowMessage(CSTRING methodName)
+{
+    uint32_t msg = 0;
+
+    if (      strcmp(methodName, "CONNECTACTIVATE")      == 0 ) msg = WM_ACTIVATE;
+    else if ( strcmp(methodName, "CONNECTHELP")          == 0 ) msg = WM_HELP;     // (F1)
+    else if ( strcmp(methodName, "CONNECTMOVE")          == 0 ) msg = WM_MOVE;
+    else if ( strcmp(methodName, "CONNECTPOSCHANGED")    == 0 ) msg = WM_WINDOWPOSCHANGED;
+    else if ( strcmp(methodName, "CONNECTRESIZE")        == 0 ) msg = WM_SIZE;
+    else if ( strcmp(methodName, "CONNECTRESIZING")      == 0 ) msg = WM_SIZING;
+    else if ( strcmp(methodName, "CONNECTSIZEMOVEENDED") == 0 ) msg = WM_EXITSIZEMOVE;
+
+    return msg;
 }
 
 /**
@@ -7610,21 +7627,6 @@ err_out:
     return TheFalseObj;
 }
 
-uint32_t methodName2windowMessage(CSTRING methodName)
-{
-    uint32_t msg = 0;
-
-    if (      strcmp(methodName, "CONNECTACTIVATE")      == 0 ) msg = WM_ACTIVATE;
-    else if ( strcmp(methodName, "CONNECTHELP")          == 0 ) msg = WM_HELP;     // (F1)
-    else if ( strcmp(methodName, "CONNECTMOVE")          == 0 ) msg = WM_MOVE;
-    else if ( strcmp(methodName, "CONNECTPOSCHANGED")    == 0 ) msg = WM_WINDOWPOSCHANGED;
-    else if ( strcmp(methodName, "CONNECTRESIZE")        == 0 ) msg = WM_SIZE;
-    else if ( strcmp(methodName, "CONNECTRESIZING")      == 0 ) msg = WM_SIZING;
-    else if ( strcmp(methodName, "CONNECTSIZEMOVEENDED") == 0 ) msg = WM_EXITSIZEMOVE;
-
-    return msg;
-}
-
 /** EventNotification::connectWmEvent()
  *
  *  This is a generic method used for a number of connectXXX methods.  It is
@@ -7674,7 +7676,7 @@ RexxMethod4(RexxObjectPtr, en_connectWmEvent, OPTIONAL_CSTRING, methodName, OPTI
             break;
 
         case WM_WINDOWPOSCHANGED :
-            if ( argumentOmitted(1) || *methodName == '\0' ) methodName = "onPosChaged";
+            if ( argumentOmitted(1) || *methodName == '\0' ) methodName = "onPosChanged";
             break;
 
         case WM_SIZE :
