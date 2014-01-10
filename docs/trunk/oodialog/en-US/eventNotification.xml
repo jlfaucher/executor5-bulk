@@ -8099,10 +8099,10 @@ return
 </section>  <!-- End KeyDown (extended) Event Handler -->
 
 
-<section id="evtListViewSELECTCHANGE" xreflabel="SELECTCHANGE"><title>SelectChange Event Handler</title>
-<indexterm><primary>ListView class</primary><secondary>events</secondary><tertiary>SELECTCHANGE</tertiary></indexterm>
+<section id="evtListViewSELECTCHANGED" xreflabel="SELECTCHANGED"><title>SelectChanged Event Handler</title>
+<indexterm><primary>ListView class</primary><secondary>events</secondary><tertiary>SELECTCHANGED</tertiary></indexterm>
 <para>
-  The event handler for the select change event is invoked when only the selection state of a list view item changes.
+  The event handler for the select changed event is invoked when only the selection state of a list view item has changed.
 </para>
 <para>
   The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthConnectListViewEvent"/> method
@@ -8111,7 +8111,7 @@ return
 
 <programlisting>
 <![CDATA[
-::method onSelectChange unguarded
+::method onSelectChanged unguarded
   use arg id, itemIndex, state, listView
 
   return 0
@@ -8122,7 +8122,7 @@ return
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves xx arguments:
+    The event handling method recieves 4 arguments:
   </para>
   <variablelist>
     <varlistentry><term>id</term>
@@ -8161,7 +8161,7 @@ return
   </listitem></varlistentry>
 </variablelist>
 
-</section>  <!-- End SelectChange Event Handler -->
+</section>  <!-- End SelectChanged Event Handler -->
 
 
 
