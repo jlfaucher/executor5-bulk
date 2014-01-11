@@ -60,6 +60,135 @@ using namespace Gdiplus;
 
 
 /**
+ * Initializes the string to int map for IDs and flags used by images and image
+ * lists.  This will included things like a button control's alignment flags for
+ * an image list, image list creation flags, OEM icon IDs, etc..
+ *
+ * @return String2Int*
+ *
+ * @note  All IDs are included here, except the obsolete ones, and things like
+ *        OBM_OLD*, all of which were for 16-bit Windows.
+ */
+static String2Int *imageInitMap(void)
+{
+    String2Int *cMap = new String2Int;
+
+    cMap->insert(String2Int::value_type("IDI_APPLICATION", 32512));
+    cMap->insert(String2Int::value_type("IDI_HAND",        32513));
+    cMap->insert(String2Int::value_type("IDI_QUESTION",    32514));
+    cMap->insert(String2Int::value_type("IDI_EXCLAMATION", 32515));
+    cMap->insert(String2Int::value_type("IDI_ASTERISK",    32516));
+    cMap->insert(String2Int::value_type("IDI_WINLOGO",     32517));
+
+    cMap->insert(String2Int::value_type("IMAGE_BITMAP",      0));
+    cMap->insert(String2Int::value_type("IMAGE_ICON",        1));
+    cMap->insert(String2Int::value_type("IMAGE_CURSOR",      2));
+    cMap->insert(String2Int::value_type("IMAGE_ENHMETAFILE", 3));
+
+    cMap->insert(String2Int::value_type("OCR_NORMAL",      32512));
+    cMap->insert(String2Int::value_type("OCR_IBEAM",       32513));
+    cMap->insert(String2Int::value_type("OCR_WAIT",        32514));
+    cMap->insert(String2Int::value_type("OCR_CROSS",       32515));
+    cMap->insert(String2Int::value_type("OCR_UP",          32516));
+    cMap->insert(String2Int::value_type("OCR_SIZENWSE",    32642));
+    cMap->insert(String2Int::value_type("OCR_SIZENESW",    32643));
+    cMap->insert(String2Int::value_type("OCR_SIZEWE",      32644));
+    cMap->insert(String2Int::value_type("OCR_SIZENS",      32645));
+    cMap->insert(String2Int::value_type("OCR_SIZEALL",     32646));
+    cMap->insert(String2Int::value_type("OCR_NO",          32648));
+    cMap->insert(String2Int::value_type("OCR_HAND",        32649));
+    cMap->insert(String2Int::value_type("OCR_APPSTARTING", 32650));
+
+    cMap->insert(String2Int::value_type("OBM_CLOSE",      32754));
+    cMap->insert(String2Int::value_type("OBM_UPARROW",    32753));
+    cMap->insert(String2Int::value_type("OBM_DNARROW",    32752));
+    cMap->insert(String2Int::value_type("OBM_RGARROW",    32751));
+    cMap->insert(String2Int::value_type("OBM_LFARROW",    32750));
+    cMap->insert(String2Int::value_type("OBM_REDUCE",     32749));
+    cMap->insert(String2Int::value_type("OBM_ZOOM",       32748));
+    cMap->insert(String2Int::value_type("OBM_RESTORE",    32747));
+    cMap->insert(String2Int::value_type("OBM_REDUCED",    32746));
+    cMap->insert(String2Int::value_type("OBM_ZOOMD",      32745));
+    cMap->insert(String2Int::value_type("OBM_RESTORED",   32744));
+    cMap->insert(String2Int::value_type("OBM_UPARROWD",   32743));
+    cMap->insert(String2Int::value_type("OBM_DNARROWD",   32742));
+    cMap->insert(String2Int::value_type("OBM_RGARROWD",   32741));
+    cMap->insert(String2Int::value_type("OBM_LFARROWD",   32740));
+    cMap->insert(String2Int::value_type("OBM_MNARROW",    32739));
+    cMap->insert(String2Int::value_type("OBM_COMBO",      32738));
+    cMap->insert(String2Int::value_type("OBM_UPARROWI",   32737));
+    cMap->insert(String2Int::value_type("OBM_DNARROWI",   32736));
+    cMap->insert(String2Int::value_type("OBM_RGARROWI",   32735));
+    cMap->insert(String2Int::value_type("OBM_LFARROWI",   32734));
+    cMap->insert(String2Int::value_type("OBM_SIZE",       32766));
+    cMap->insert(String2Int::value_type("OBM_BTSIZE",     32761));
+    cMap->insert(String2Int::value_type("OBM_CHECK",      32760));
+    cMap->insert(String2Int::value_type("OBM_CHECKBOXES", 32759));
+    cMap->insert(String2Int::value_type("OBM_BTNCORNERS", 32758));
+
+    cMap->insert(String2Int::value_type("LR_DEFAULTCOLOR",     0x0000));
+    cMap->insert(String2Int::value_type("LR_MONOCHROME",       0x0001));
+    cMap->insert(String2Int::value_type("LR_COLOR",            0x0002));
+    cMap->insert(String2Int::value_type("LR_COPYRETURNORG",    0x0004));
+    cMap->insert(String2Int::value_type("LR_COPYDELETEORG",    0x0008));
+    cMap->insert(String2Int::value_type("LR_LOADFROMFILE",     0x0010));
+    cMap->insert(String2Int::value_type("LR_LOADTRANSPARENT",  0x0020));
+    cMap->insert(String2Int::value_type("LR_DEFAULTSIZE",      0x0040));
+    cMap->insert(String2Int::value_type("LR_VGACOLOR",         0x0080));
+    cMap->insert(String2Int::value_type("LR_LOADMAP3DCOLORS",  0x1000));
+    cMap->insert(String2Int::value_type("LR_CREATEDIBSECTION", 0x2000));
+    cMap->insert(String2Int::value_type("LR_COPYFROMRESOURCE", 0x4000));
+    cMap->insert(String2Int::value_type("LR_SHARED",           0x8000));
+
+    // ImageList_Create flags
+    cMap->insert(String2Int::value_type("ILC_MASK", 0x0001));
+    cMap->insert(String2Int::value_type("ILC_COLOR", 0x0000));
+    cMap->insert(String2Int::value_type("ILC_COLORDDB", 0x00FE));
+    cMap->insert(String2Int::value_type("ILC_COLOR4", 0x0004));
+    cMap->insert(String2Int::value_type("ILC_COLOR8", 0x0008));
+    cMap->insert(String2Int::value_type("ILC_COLOR16", 0x0010));
+    cMap->insert(String2Int::value_type("ILC_COLOR24", 0x0018));
+    cMap->insert(String2Int::value_type("ILC_COLOR32", 0x0020));
+    cMap->insert(String2Int::value_type("ILC_PALETTE", 0x0800));
+    cMap->insert(String2Int::value_type("ILC_MIRROR", 0x2000));
+    cMap->insert(String2Int::value_type("ILC_PERITEMMIRROR", 0x8000));
+
+    // Button image list alignment values
+    cMap->insert(String2Int::value_type("BUTTON_IMAGELIST_ALIGN_LEFT",   0));
+    cMap->insert(String2Int::value_type("BUTTON_IMAGELIST_ALIGN_RIGHT",  1));
+    cMap->insert(String2Int::value_type("BUTTON_IMAGELIST_ALIGN_TOP",    2));
+    cMap->insert(String2Int::value_type("BUTTON_IMAGELIST_ALIGN_BOTTOM", 3));
+    cMap->insert(String2Int::value_type("BUTTON_IMAGELIST_ALIGN_CENTER", 4));
+
+    cMap->insert(String2Int::value_type("LVSIL_NORMAL", 0));
+    cMap->insert(String2Int::value_type("LVSIL_SMALL", 1));
+    cMap->insert(String2Int::value_type("LVSIL_STATE", 2));
+
+    cMap->insert(String2Int::value_type("TVSIL_NORMAL", 0));
+    cMap->insert(String2Int::value_type("TVSIL_STATE", 2));
+
+    //cMap->insert(String2Int::value_type("", ));
+
+    return cMap;
+}
+
+uint32_t mapSymbol(RexxMethodContext *c, CSTRING symbol, size_t argPos, bool raiseException)
+{
+    static String2Int *imageConstantsMap = NULL;
+
+    if ( imageConstantsMap == NULL )
+    {
+        imageConstantsMap = imageInitMap();
+    }
+    int idValue = getKeywordValue(imageConstantsMap, symbol);
+    if ( idValue == -1 && raiseException )
+    {
+        wrongArgValueException(c->threadContext, argPos, "the Image class symbol IDs", symbol);
+    }
+    return (uint32_t)idValue;
+}
+
+/**
  * Gets the image list type from the specified argument object, where the object
  * could be the numeric value, a string keyword, or omitted altogether.
  *
@@ -162,19 +291,19 @@ static uint32_t getImageFlagsArg(RexxMethodContext *context, RexxObjectPtr _flag
             char *token = strtok(dup, " ");
             while ( token != NULL )
             {
-                if (      strcmp(token, "DEFAULTCOLOR")     == 0 ) flags |= LR_DEFAULTCOLOR           ;
-                else if ( strcmp(token, "MONOCHROME")       == 0 ) flags |= LR_MONOCHROME             ;
-                else if ( strcmp(token, "COLOR")            == 0 ) flags |= LR_COLOR                  ;
-                else if ( strcmp(token, "COPYRETURNORG")    == 0 ) flags |= LR_COPYRETURNORG          ;
-                else if ( strcmp(token, "COPYDELETEORG")    == 0 ) flags |= LR_COPYDELETEORG          ;
-                else if ( strcmp(token, "LOADFROMFILE")     == 0 ) flags |= LR_LOADFROMFILE           ;
-                else if ( strcmp(token, "LOADTRANSPARENT")  == 0 ) flags |= LR_LOADTRANSPARENT        ;
-                else if ( strcmp(token, "DEFAULTSIZE")      == 0 ) flags |= LR_DEFAULTSIZE            ;
-                else if ( strcmp(token, "VGACOLOR")         == 0 ) flags |= LR_VGACOLOR               ;
-                else if ( strcmp(token, "LOADMAP3DCOLORS")  == 0 ) flags |= LR_LOADMAP3DCOLORS        ;
-                else if ( strcmp(token, "CREATEDIBSECTION") == 0 ) flags |= LR_CREATEDIBSECTION       ;
-                else if ( strcmp(token, "COPYFROMRESOURCE") == 0 ) flags |= LR_COPYFROMRESOURCE       ;
-                else if ( strcmp(token, "SHARED")           == 0 ) flags |= LR_SHARED                 ;
+                if (      StrCmpI(token, "DEFAULTCOLOR")     == 0 ) flags |= LR_DEFAULTCOLOR           ;
+                else if ( StrCmpI(token, "MONOCHROME")       == 0 ) flags |= LR_MONOCHROME             ;
+                else if ( StrCmpI(token, "COLOR")            == 0 ) flags |= LR_COLOR                  ;
+                else if ( StrCmpI(token, "COPYRETURNORG")    == 0 ) flags |= LR_COPYRETURNORG          ;
+                else if ( StrCmpI(token, "COPYDELETEORG")    == 0 ) flags |= LR_COPYDELETEORG          ;
+                else if ( StrCmpI(token, "LOADFROMFILE")     == 0 ) flags |= LR_LOADFROMFILE           ;
+                else if ( StrCmpI(token, "LOADTRANSPARENT")  == 0 ) flags |= LR_LOADTRANSPARENT        ;
+                else if ( StrCmpI(token, "DEFAULTSIZE")      == 0 ) flags |= LR_DEFAULTSIZE            ;
+                else if ( StrCmpI(token, "VGACOLOR")         == 0 ) flags |= LR_VGACOLOR               ;
+                else if ( StrCmpI(token, "LOADMAP3DCOLORS")  == 0 ) flags |= LR_LOADMAP3DCOLORS        ;
+                else if ( StrCmpI(token, "CREATEDIBSECTION") == 0 ) flags |= LR_CREATEDIBSECTION       ;
+                else if ( StrCmpI(token, "COPYFROMRESOURCE") == 0 ) flags |= LR_COPYFROMRESOURCE       ;
+                else if ( StrCmpI(token, "SHARED")           == 0 ) flags |= LR_SHARED                 ;
                 else
                 {
                     wrongArgKeywordsException(context->threadContext, argPos, IMAGE_FLAGS_LIST, _flags);
@@ -206,6 +335,68 @@ static uint32_t getImageFlagsArg(RexxMethodContext *context, RexxObjectPtr _flag
         }
     }
     return flags;
+}
+
+uint32_t getSystemImageID(RexxMethodContext *c, RexxObjectPtr id, size_t argPos)
+{
+    uint32_t resourceID;
+
+    if ( ! c->UnsignedInt32(id, &resourceID) )
+    {
+        CSTRING keyword = c->ObjectToStringValue(id);
+
+        if (      StrCmpI(keyword, "IDI_HAND"       )     == 0 ) resourceID = 32513                     ;
+        else if ( StrCmpI(keyword, "IDI_QUESTION"   )     == 0 ) resourceID = 32514                     ;
+        else if ( StrCmpI(keyword, "IDI_EXCLAMATION")     == 0 ) resourceID = 32515                     ;
+        else if ( StrCmpI(keyword, "IDI_ASTERISK"   )     == 0 ) resourceID = 32516                     ;
+        else if ( StrCmpI(keyword, "IDI_WINLOGO"    )     == 0 ) resourceID = 32517                     ;
+        else if ( StrCmpI(keyword, "IDI_SHEILD"     )     == 0 ) resourceID = 32518                     ;
+        else if ( StrCmpI(keyword, "OCR_NORMAL"     )     == 0 ) resourceID = OCR_NORMAL                ;
+        else if ( StrCmpI(keyword, "OCR_IBEAM"      )     == 0 ) resourceID = OCR_IBEAM                 ;
+        else if ( StrCmpI(keyword, "OCR_WAIT"       )     == 0 ) resourceID = OCR_WAIT                  ;
+        else if ( StrCmpI(keyword, "OCR_CROSS"      )     == 0 ) resourceID = OCR_CROSS                 ;
+        else if ( StrCmpI(keyword, "OCR_UP"         )     == 0 ) resourceID = OCR_UP                    ;
+        else if ( StrCmpI(keyword, "OCR_SIZENWSE"   )     == 0 ) resourceID = OCR_SIZENWSE              ;
+        else if ( StrCmpI(keyword, "OCR_SIZENESW"   )     == 0 ) resourceID = OCR_SIZENESW              ;
+        else if ( StrCmpI(keyword, "OCR_SIZEWE"     )     == 0 ) resourceID = OCR_SIZEWE                ;
+        else if ( StrCmpI(keyword, "OCR_SIZENS"     )     == 0 ) resourceID = OCR_SIZENS                ;
+        else if ( StrCmpI(keyword, "OCR_SIZEALL"    )     == 0 ) resourceID = OCR_SIZEALL               ;
+        else if ( StrCmpI(keyword, "OCR_NO"         )     == 0 ) resourceID = OCR_NO                    ;
+        else if ( StrCmpI(keyword, "OCR_HAND"       )     == 0 ) resourceID = OCR_HAND                  ;
+        else if ( StrCmpI(keyword, "OCR_APPSTARTING")     == 0 ) resourceID = OCR_APPSTARTING           ;
+        else if ( StrCmpI(keyword, "OBM_CLOSE"      )     == 0 ) resourceID = OBM_CLOSE                 ;
+        else if ( StrCmpI(keyword, "OBM_UPARROW"    )     == 0 ) resourceID = OBM_UPARROW               ;
+        else if ( StrCmpI(keyword, "OBM_DNARROW"    )     == 0 ) resourceID = OBM_DNARROW               ;
+        else if ( StrCmpI(keyword, "OBM_RGARROW"    )     == 0 ) resourceID = OBM_RGARROW               ;
+        else if ( StrCmpI(keyword, "OBM_LFARROW"    )     == 0 ) resourceID = OBM_LFARROW               ;
+        else if ( StrCmpI(keyword, "OBM_REDUCE"     )     == 0 ) resourceID = OBM_REDUCE                ;
+        else if ( StrCmpI(keyword, "OBM_ZOOM"       )     == 0 ) resourceID = OBM_ZOOM                  ;
+        else if ( StrCmpI(keyword, "OBM_RESTORE"    )     == 0 ) resourceID = OBM_RESTORE               ;
+        else if ( StrCmpI(keyword, "OBM_REDUCED"    )     == 0 ) resourceID = OBM_REDUCED               ;
+        else if ( StrCmpI(keyword, "OBM_ZOOMD"      )     == 0 ) resourceID = OBM_ZOOMD                 ;
+        else if ( StrCmpI(keyword, "OBM_RESTORED"   )     == 0 ) resourceID = OBM_RESTORED              ;
+        else if ( StrCmpI(keyword, "OBM_UPARROWD"   )     == 0 ) resourceID = OBM_UPARROWD              ;
+        else if ( StrCmpI(keyword, "OBM_DNARROWD"   )     == 0 ) resourceID = OBM_DNARROWD              ;
+        else if ( StrCmpI(keyword, "OBM_RGARROWD"   )     == 0 ) resourceID = OBM_RGARROWD              ;
+        else if ( StrCmpI(keyword, "OBM_LFARROWD"   )     == 0 ) resourceID = OBM_LFARROWD              ;
+        else if ( StrCmpI(keyword, "OBM_MNARROW"    )     == 0 ) resourceID = OBM_MNARROW               ;
+        else if ( StrCmpI(keyword, "OBM_COMBO"      )     == 0 ) resourceID = OBM_COMBO                 ;
+        else if ( StrCmpI(keyword, "OBM_UPARROWI"   )     == 0 ) resourceID = OBM_UPARROWI              ;
+        else if ( StrCmpI(keyword, "OBM_DNARROWI"   )     == 0 ) resourceID = OBM_DNARROWI              ;
+        else if ( StrCmpI(keyword, "OBM_RGARROWI"   )     == 0 ) resourceID = OBM_RGARROWI              ;
+        else if ( StrCmpI(keyword, "OBM_LFARROWI"   )     == 0 ) resourceID = OBM_LFARROWI              ;
+        else if ( StrCmpI(keyword, "OBM_SIZE"       )     == 0 ) resourceID = OBM_SIZE                  ;
+        else if ( StrCmpI(keyword, "OBM_BTSIZE"     )     == 0 ) resourceID = OBM_BTSIZE                ;
+        else if ( StrCmpI(keyword, "OBM_CHECK"      )     == 0 ) resourceID = OBM_CHECK                 ;
+        else if ( StrCmpI(keyword, "OBM_CHECKBOXES" )     == 0 ) resourceID = OBM_CHECKBOXES            ;
+        else if ( StrCmpI(keyword, "OBM_BTNCORNERS" )     == 0 ) resourceID = OBM_BTNCORNERS            ;
+        else
+        {
+            resourceID = OOD_NO_VALUE;
+        }
+    }
+
+    return resourceID;
 }
 
 /**
@@ -1321,133 +1512,9 @@ out:
     return result;
 }
 
-/**
- * Initializes the string to int map for IDs and flags used by images and image
- * lists.  This will included things like a button control's alignment flags for
- * an image list, image list creation flags, OEM icon IDs, etc..
- *
- * @return String2Int*
- *
- * @note  All IDs are included here, except the obsolete ones, and things like
- *        OBM_OLD*, all of which were for 16-bit Windows.
- */
-static String2Int *imageInitMap(void)
-{
-    String2Int *cMap = new String2Int;
-
-    cMap->insert(String2Int::value_type("IDI_APPLICATION", 32512));
-    cMap->insert(String2Int::value_type("IDI_HAND",        32513));
-    cMap->insert(String2Int::value_type("IDI_QUESTION",    32514));
-    cMap->insert(String2Int::value_type("IDI_EXCLAMATION", 32515));
-    cMap->insert(String2Int::value_type("IDI_ASTERISK",    32516));
-    cMap->insert(String2Int::value_type("IDI_WINLOGO",     32517));
-
-    cMap->insert(String2Int::value_type("IMAGE_BITMAP",      0));
-    cMap->insert(String2Int::value_type("IMAGE_ICON",        1));
-    cMap->insert(String2Int::value_type("IMAGE_CURSOR",      2));
-    cMap->insert(String2Int::value_type("IMAGE_ENHMETAFILE", 3));
-
-    cMap->insert(String2Int::value_type("OCR_NORMAL",      32512));
-    cMap->insert(String2Int::value_type("OCR_IBEAM",       32513));
-    cMap->insert(String2Int::value_type("OCR_WAIT",        32514));
-    cMap->insert(String2Int::value_type("OCR_CROSS",       32515));
-    cMap->insert(String2Int::value_type("OCR_UP",          32516));
-    cMap->insert(String2Int::value_type("OCR_SIZENWSE",    32642));
-    cMap->insert(String2Int::value_type("OCR_SIZENESW",    32643));
-    cMap->insert(String2Int::value_type("OCR_SIZEWE",      32644));
-    cMap->insert(String2Int::value_type("OCR_SIZENS",      32645));
-    cMap->insert(String2Int::value_type("OCR_SIZEALL",     32646));
-    cMap->insert(String2Int::value_type("OCR_NO",          32648));
-    cMap->insert(String2Int::value_type("OCR_HAND",        32649));
-    cMap->insert(String2Int::value_type("OCR_APPSTARTING", 32650));
-
-    cMap->insert(String2Int::value_type("OBM_CLOSE",      32754));
-    cMap->insert(String2Int::value_type("OBM_UPARROW",    32753));
-    cMap->insert(String2Int::value_type("OBM_DNARROW",    32752));
-    cMap->insert(String2Int::value_type("OBM_RGARROW",    32751));
-    cMap->insert(String2Int::value_type("OBM_LFARROW",    32750));
-    cMap->insert(String2Int::value_type("OBM_REDUCE",     32749));
-    cMap->insert(String2Int::value_type("OBM_ZOOM",       32748));
-    cMap->insert(String2Int::value_type("OBM_RESTORE",    32747));
-    cMap->insert(String2Int::value_type("OBM_REDUCED",    32746));
-    cMap->insert(String2Int::value_type("OBM_ZOOMD",      32745));
-    cMap->insert(String2Int::value_type("OBM_RESTORED",   32744));
-    cMap->insert(String2Int::value_type("OBM_UPARROWD",   32743));
-    cMap->insert(String2Int::value_type("OBM_DNARROWD",   32742));
-    cMap->insert(String2Int::value_type("OBM_RGARROWD",   32741));
-    cMap->insert(String2Int::value_type("OBM_LFARROWD",   32740));
-    cMap->insert(String2Int::value_type("OBM_MNARROW",    32739));
-    cMap->insert(String2Int::value_type("OBM_COMBO",      32738));
-    cMap->insert(String2Int::value_type("OBM_UPARROWI",   32737));
-    cMap->insert(String2Int::value_type("OBM_DNARROWI",   32736));
-    cMap->insert(String2Int::value_type("OBM_RGARROWI",   32735));
-    cMap->insert(String2Int::value_type("OBM_LFARROWI",   32734));
-    cMap->insert(String2Int::value_type("OBM_SIZE",       32766));
-    cMap->insert(String2Int::value_type("OBM_BTSIZE",     32761));
-    cMap->insert(String2Int::value_type("OBM_CHECK",      32760));
-    cMap->insert(String2Int::value_type("OBM_CHECKBOXES", 32759));
-    cMap->insert(String2Int::value_type("OBM_BTNCORNERS", 32758));
-
-    cMap->insert(String2Int::value_type("LR_DEFAULTCOLOR",     0x0000));
-    cMap->insert(String2Int::value_type("LR_MONOCHROME",       0x0001));
-    cMap->insert(String2Int::value_type("LR_COLOR",            0x0002));
-    cMap->insert(String2Int::value_type("LR_COPYRETURNORG",    0x0004));
-    cMap->insert(String2Int::value_type("LR_COPYDELETEORG",    0x0008));
-    cMap->insert(String2Int::value_type("LR_LOADFROMFILE",     0x0010));
-    cMap->insert(String2Int::value_type("LR_LOADTRANSPARENT",  0x0020));
-    cMap->insert(String2Int::value_type("LR_DEFAULTSIZE",      0x0040));
-    cMap->insert(String2Int::value_type("LR_VGACOLOR",         0x0080));
-    cMap->insert(String2Int::value_type("LR_LOADMAP3DCOLORS",  0x1000));
-    cMap->insert(String2Int::value_type("LR_CREATEDIBSECTION", 0x2000));
-    cMap->insert(String2Int::value_type("LR_COPYFROMRESOURCE", 0x4000));
-    cMap->insert(String2Int::value_type("LR_SHARED",           0x8000));
-
-    // ImageList_Create flags
-    cMap->insert(String2Int::value_type("ILC_MASK", 0x0001));
-    cMap->insert(String2Int::value_type("ILC_COLOR", 0x0000));
-    cMap->insert(String2Int::value_type("ILC_COLORDDB", 0x00FE));
-    cMap->insert(String2Int::value_type("ILC_COLOR4", 0x0004));
-    cMap->insert(String2Int::value_type("ILC_COLOR8", 0x0008));
-    cMap->insert(String2Int::value_type("ILC_COLOR16", 0x0010));
-    cMap->insert(String2Int::value_type("ILC_COLOR24", 0x0018));
-    cMap->insert(String2Int::value_type("ILC_COLOR32", 0x0020));
-    cMap->insert(String2Int::value_type("ILC_PALETTE", 0x0800));
-    cMap->insert(String2Int::value_type("ILC_MIRROR", 0x2000));
-    cMap->insert(String2Int::value_type("ILC_PERITEMMIRROR", 0x8000));
-
-    // Button image list alignment values
-    cMap->insert(String2Int::value_type("BUTTON_IMAGELIST_ALIGN_LEFT",   0));
-    cMap->insert(String2Int::value_type("BUTTON_IMAGELIST_ALIGN_RIGHT",  1));
-    cMap->insert(String2Int::value_type("BUTTON_IMAGELIST_ALIGN_TOP",    2));
-    cMap->insert(String2Int::value_type("BUTTON_IMAGELIST_ALIGN_BOTTOM", 3));
-    cMap->insert(String2Int::value_type("BUTTON_IMAGELIST_ALIGN_CENTER", 4));
-
-    cMap->insert(String2Int::value_type("LVSIL_NORMAL", 0));
-    cMap->insert(String2Int::value_type("LVSIL_SMALL", 1));
-    cMap->insert(String2Int::value_type("LVSIL_STATE", 2));
-
-    cMap->insert(String2Int::value_type("TVSIL_NORMAL", 0));
-    cMap->insert(String2Int::value_type("TVSIL_STATE", 2));
-
-    //cMap->insert(String2Int::value_type("", ));
-
-    return cMap;
-}
-
 RexxMethod1(uint32_t, image_toID_cls, CSTRING, symbol)
 {
-    static String2Int *imageConstantsMap = NULL;
-
-    if ( imageConstantsMap == NULL )
-    {
-        imageConstantsMap = imageInitMap();
-    }
-    int idValue = getKeywordValue(imageConstantsMap, symbol);
-    if ( idValue == -1 )
-    {
-        wrongArgValueException(context->threadContext, 1, "the Image class symbol IDs", symbol);
-    }
-    return (uint32_t)idValue;
+    return mapSymbol(context, symbol, 1, true);
 }
 
 
@@ -1456,14 +1523,17 @@ RexxMethod1(uint32_t, image_toID_cls, CSTRING, symbol)
  *  Instantiate an .Image object from one of the system images, or loaded from
  *  an image file (.bmp, .ico, etc..)
  *
- *  @param   id  Either the numeric resource id of an OEM system image, or the
- *               file name of a stand-alone image file.
+ *  @param   id  Either the numeric resource id of a system image, a system
+ *               image keyword, or the file name of a stand-alone image file.
  *
  *               The programmer should use one of the .OEM constants to load a
  *               system image, or the raw number if she knows it.  If id is not
- *               a number, it is assumed to be a file name.  Note that many of
- *               the .OEM constants have the same numeric value.  The type
- *               argument distinguishes whether a bitmap or an icon is loaded
+ *               a number, or a system image keyword, it is assumed to be a file
+ *               name.
+ *
+ *               Note that many of the .OEM constants have the same numeric
+ *               value. The type argument distinguishes whether a bitmap or an
+ *               icon is loaded
  *
  *  @note  This method is designed to always return an .Image object, or raise
  *         an exception.  The user would need to test the returned .Image object
@@ -1483,8 +1553,8 @@ RexxMethod4(RexxObjectPtr, image_getImage_cls, RexxObjectPtr, id, OPTIONAL_RexxO
     bool fromFile = true;
     LPCTSTR name = NULL;
 
-    int resourceID;
-    if ( context->Int32(id, &resourceID) )
+    int32_t resourceID = getSystemImageID(context, id, 1);
+    if ( resourceID != OOD_NO_VALUE )
     {
         name = MAKEINTRESOURCE(resourceID);
         fromFile = false;

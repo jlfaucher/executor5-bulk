@@ -1346,7 +1346,16 @@ MsgReplyType invokeDispatch(RexxThreadContext *c, pCPlainBaseDialog pcpbd, CSTRI
  */
 bool invokeDirect(RexxThreadContext *c, pCPlainBaseDialog pcpbd, CSTRING methodName, RexxArrayObject args)
 {
-    RexxObjectPtr rexxReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
+    RexxObjectPtr rexxReply;
+
+    if ( args == NULLOBJECT )
+    {
+        rexxReply = c->SendMessage0(pcpbd->rexxSelf, methodName);
+    }
+    else
+    {
+        rexxReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
+    }
 
     bool isGood = msgReplyIsGood(c, pcpbd, rexxReply, methodName, false);
     c->ReleaseLocalReference(rexxReply);
@@ -1382,7 +1391,16 @@ bool invokeDirect(RexxThreadContext *c, pCPlainBaseDialog pcpbd, CSTRING methodN
  */
 bool invokeDirectUseReturn(RexxThreadContext *c, pCPlainBaseDialog pcpbd, CSTRING methodName, RexxArrayObject args)
 {
-    RexxObjectPtr rexxReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
+    RexxObjectPtr rexxReply;
+
+    if ( args == NULLOBJECT )
+    {
+        rexxReply = c->SendMessage0(pcpbd->rexxSelf, methodName);
+    }
+    else
+    {
+        rexxReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
+    }
 
     bool isGood = msgReplyIsGood(c, pcpbd, rexxReply, methodName, false);
     if ( isGood )
@@ -1447,7 +1465,17 @@ bool invokeDirectUseReturn(RexxThreadContext *c, pCPlainBaseDialog pcpbd, CSTRIN
  */
 bool invokeSync(RexxThreadContext *c, pCPlainBaseDialog pcpbd, CSTRING methodName, RexxArrayObject args)
 {
-    RexxObjectPtr rexxReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
+    RexxObjectPtr rexxReply;
+
+    if ( args == NULLOBJECT )
+    {
+        rexxReply = c->SendMessage0(pcpbd->rexxSelf, methodName);
+    }
+    else
+    {
+        rexxReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
+    }
+
     bool haveCondition = endOnCondition(c, pcpbd, methodName, false);
     c->ReleaseLocalReference(rexxReply);
     return ! haveCondition;
@@ -3027,8 +3055,7 @@ MsgReplyType searchMiscTable(uint32_t msg, WPARAM wParam, LPARAM lParam, pCPlain
             {
                 // We handle this individually because MSDN documents that 0
                 // should be returned if processed, the opposite of the usual.
-                // There are no arguments.  The user can not use sync, because
-                // of previous documentation.
+                // There are no arguments to the event handler.
                 genericInvoke(pcpbd, method, NULLOBJECT, tag);
                 return ReplyFalse;
             }
@@ -7684,9 +7711,16 @@ RexxMethod4(RexxObjectPtr, en_connectWmEvent, OPTIONAL_CSTRING, methodName, OPTI
 
             // Before the sync option was added to the _willReply argument,
             // .true was documented for connectResize() as waiting for the event
-            // handler, but not requiring a return value.  This needs to be
-            // maintained.
-            tag = (tag == TAG_REPLYFROMREXX ? TAG_SYNC : tag);
+            // handler, but not requiring a return value.  .true was also
+            // documented as the default if willReply is omitted.  This needs to
+            // be maintained.
+            //
+            // So, if tag is reply from Rexx, we change it to sync.  If the arg
+            // is omitted we change it to sync. This should not break anything.
+            if ( argumentOmitted(2) ||  tag == TAG_REPLYFROMREXX )
+            {
+                tag = TAG_SYNC;
+            }
             break;
 
         case WM_SIZING :
