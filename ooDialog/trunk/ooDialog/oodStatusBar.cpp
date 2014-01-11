@@ -49,8 +49,8 @@
 #include "oodCommon.hpp"
 #include "oodControl.hpp"
 #include "oodResources.hpp"
-//#include "oodMessaging.hpp"
-//#include "oodShared.hpp"
+#include "oodMessaging.hpp"
+#include "oodShared.hpp"
 
 
 /**
@@ -129,6 +129,55 @@ RexxObjectPtr stbStoreIcon(RexxMethodContext *c, RexxObjectPtr icon, uint32_t in
     c->ArrayPut(icons, icon, index);
     return existing;
 }
+
+
+/**
+ * Handles the mouse click notifications from the status bar
+ *
+ * @param pcpbd
+ * @param lParam
+ * @param methodName
+ * @param tag
+ * @param code
+ *
+ * @return MsgReplyType
+ *
+ * @remarks  For all of these notifications, the user must reply true or false.
+ *           Use one-based index for the section index.
+ */
+MsgReplyType sbnNmClick(pCPlainBaseDialog pcpbd, LPARAM lParam, CSTRING methodName, uint32_t tag, uint32_t code)
+{
+    RexxThreadContext *c    = pcpbd->dlgProcContext;
+    NMMOUSE           *nmm  = (NMMOUSE *)lParam;
+    MsgReplyType      reply = ReplyTrue;
+
+    RexxObjectPtr idFrom       = idFrom2rexxArg(c, lParam);
+    RexxObjectPtr rxSb         = controlFrom2rexxArg(pcpbd, lParam, winStatusBar);
+    RexxObjectPtr rxSectIndex  = c->Uintptr(nmm->dwItemSpec + 1);
+    RexxObjectPtr rxPt         = rxNewPoint(c, &(nmm->pt));
+
+    RexxArrayObject args = c->ArrayOfFour(idFrom, rxSectIndex, rxPt, rxSb);
+
+    RexxObjectPtr msgReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
+
+    msgReply = requiredBooleanReply(c, pcpbd, msgReply, methodName, false);
+    setWindowPtr(pcpbd->hDlg, DWLP_MSGRESULT, msgReply == TheTrueObj ? TRUE : FALSE);
+
+    if ( msgReply == NULL || msgReply == TheFalseObj )
+    {
+        reply = ReplyFalse;
+    }
+
+    c->ReleaseLocalReference(idFrom);
+    c->ReleaseLocalReference(rxSb);
+    c->ReleaseLocalReference(rxSectIndex);
+    c->ReleaseLocalReference(rxPt);
+    c->ReleaseLocalReference(args);
+
+    return reply;
+}
+
+
 
 /** StatusBar::getBorders()
  *

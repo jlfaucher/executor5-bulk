@@ -110,6 +110,9 @@ extern MsgReplyType lvnNmClick(pCPlainBaseDialog pcpbd, LPARAM lParam, CSTRING m
 // ReBar functions.  Defined in oodReBar.cpp:
 extern MsgReplyType rbnNcHitTest(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd);
 
+// StatusBar functions.  Defined in oodStatusBar.cpp:
+extern MsgReplyType sbnNmClick(pCPlainBaseDialog pcpbd, LPARAM lParam, CSTRING methodName, uint32_t tag, uint32_t code);
+
 // ToolBar functions.  Defined in oodToolBar.cpp:
 extern MsgReplyType tbnDeletingButton(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd);
 extern MsgReplyType tbnGetButtonInfo(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd);

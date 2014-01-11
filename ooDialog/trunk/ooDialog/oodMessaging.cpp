@@ -1519,6 +1519,34 @@ MsgReplyType genericInvoke(pCPlainBaseDialog pcpbd, CSTRING method, RexxArrayObj
     return ReplyTrue;
 }
 
+
+static MsgReplyType genericNotifyInvoke(pCPlainBaseDialog pcpbd, CSTRING methodName, uint32_t tag,
+                                        WPARAM wParam, LPARAM lParam)
+{
+    RexxThreadContext *c = pcpbd->dlgProcContext;
+
+    oodControl_t  ctrlType   = controlHwnd2controlType(((NMHDR *)lParam)->hwndFrom);
+    RexxObjectPtr idFrom     = idFrom2rexxArg(c, lParam);
+    RexxObjectPtr hwndFrom   = hwndFrom2rexxArg(c, lParam);
+    RexxObjectPtr notifyCode = notifyCode2rexxArg(c, lParam);
+    RexxObjectPtr rxCtrl     = controlFrom2rexxArg(pcpbd, lParam, ctrlType);
+
+    RexxArrayObject args = c->ArrayOfFour(idFrom, hwndFrom, notifyCode, rxCtrl);
+    genericInvoke(pcpbd, methodName, args, tag);
+
+    c->ReleaseLocalReference(idFrom);
+    c->ReleaseLocalReference(hwndFrom);
+    c->ReleaseLocalReference(notifyCode);
+    if ( rxCtrl != TheNilObj )
+    {
+        c->ReleaseLocalReference(rxCtrl);
+    }
+    c->ReleaseLocalReference(args);
+
+    return ReplyTrue;
+}
+
+
 /* genericCommandInvoke
  *
  * The simplest form of invoking the Rexx method connected to a WM_COMMAND
@@ -2209,6 +2237,47 @@ MsgReplyType processRBN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
 }
 
 /**
+ * Handles the connected StatusBar event notifications.
+ *
+ * The tag code must have included the TAG_STATUSBAR flag for this function to
+ * be invoked.  Since the StatusBar control is newer than ooDialog 4.2.0, all
+ * StatusBar event connections have that tag.
+ *
+ * @param c
+ * @param methodName
+ * @param tag
+ * @param code
+ * @param lParam
+ * @param pcpbd
+ *
+ * @return MsgReplyType
+ *
+ * @remarks
+ *
+ */
+MsgReplyType processSBN(pCPlainBaseDialog pcpbd, CSTRING methodName, uint32_t tag, uint32_t code,
+                        WPARAM wParam, LPARAM lParam)
+{
+    switch ( code )
+    {
+        case NM_CLICK :
+        case NM_DBLCLK :
+        case NM_RCLICK :
+        case NM_RDBLCLK :
+            return sbnNmClick(pcpbd, lParam, methodName, tag, code);
+
+        case SBN_SIMPLEMODECHANGE :
+            return genericNotifyInvoke(pcpbd, methodName, tag, wParam, lParam);
+
+        default :
+            break;
+    }
+
+    // This should never happen, we can't get here.
+    return ReplyFalse;
+}
+
+/**
  * Processes tab control notifications.
  *
  * Note this is only invoked when TAG_TAB is set in the tag.
@@ -2757,6 +2826,9 @@ MsgReplyType searchNotifyTable(WPARAM wParam, LPARAM lParam, pCPlainBaseDialog p
                 case TAG_REBAR :
                     return processRBN(c, m[i].rexxMethod, m[i].tag, code, lParam, pcpbd);
 
+                case TAG_STATUSBAR :
+                    return processSBN(pcpbd, m[i].rexxMethod, m[i].tag, code, wParam, lParam);
+
                 case TAG_TAB :
                     return processTCN(c, m[i].rexxMethod, m[i].tag, code, lParam, pcpbd);
 
@@ -2778,28 +2850,7 @@ MsgReplyType searchNotifyTable(WPARAM wParam, LPARAM lParam, pCPlainBaseDialog p
 
             // We matched an entry in the table, but not a tag.  Invoke the Rexx
             // method with some useful arguments.
-
-            oodControl_t  ctrlType   = controlHwnd2controlType(((NMHDR *)lParam)->hwndFrom);
-            RexxObjectPtr idFrom     = idFrom2rexxArg(c, lParam);
-            RexxObjectPtr hwndFrom   = hwndFrom2rexxArg(c, lParam);
-            RexxObjectPtr notifyCode = notifyCode2rexxArg(c, lParam);
-            RexxObjectPtr rxCtrl     = controlFrom2rexxArg(pcpbd, lParam, ctrlType);
-
-            uint32_t tag = ((m[i].tag & TAG_REPLYFROMREXX) ? m[i].tag | TAG_USE_RETURN : m[i].tag);
-
-            RexxArrayObject args = c->ArrayOfFour(idFrom, hwndFrom, notifyCode, rxCtrl);
-            genericInvoke(pcpbd, m[i].rexxMethod, args, tag);
-
-            c->ReleaseLocalReference(idFrom);
-            c->ReleaseLocalReference(hwndFrom);
-            c->ReleaseLocalReference(notifyCode);
-            if ( rxCtrl != TheNilObj )
-            {
-                c->ReleaseLocalReference(rxCtrl);
-            }
-            c->ReleaseLocalReference(args);
-
-            return ReplyTrue;
+            return genericNotifyInvoke(pcpbd, m[i].rexxMethod, m[i].tag, wParam, lParam);
         }
     }
 
@@ -4193,7 +4244,7 @@ static bool keyword2sbn(RexxMethodContext *c, CSTRING keyword, uint32_t *flag)
     if ( StrCmpI(keyword,      "CLICK")             == 0 ) sbn = NM_CLICK              ;
     else if ( StrCmpI(keyword, "DBLCLK")            == 0 ) sbn = NM_DBLCLK             ;
     else if ( StrCmpI(keyword, "RCLICK")            == 0 ) sbn = NM_RCLICK             ;
-    else if ( StrCmpI(keyword, "RDBLCLKE")          == 0 ) sbn = NM_RDBLCLK            ;
+    else if ( StrCmpI(keyword, "RDBLCLK")           == 0 ) sbn = NM_RDBLCLK            ;
     else if ( StrCmpI(keyword, "SIMPLEMODECHANGE")  == 0 ) sbn = SBN_SIMPLEMODECHANGE  ;
     else
     {
@@ -4207,7 +4258,7 @@ static bool keyword2sbn(RexxMethodContext *c, CSTRING keyword, uint32_t *flag)
 inline bool isMustReplySbn(uint32_t sbn)
 {
     return sbn ==  NM_CLICK   || sbn ==  NM_DBLCLK || sbn ==  NM_RCLICK ||
-           sbn ==  NM_RDBLCLK || sbn ==  SBN_SIMPLEMODECHANGE;
+           sbn ==  NM_RDBLCLK;
 }
 
 /**
