@@ -9520,8 +9520,8 @@ return
 <indexterm><primary>EventNotification class</primary><secondary>connectResize</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectResize(--+--------------+--+---------+--)------------><
-                    +--methodName--+  +-,-synch-+
+>>--connectResize(--+--------------+--+--------------+--)-------><
+                    +--methodName--+  +-,-willReply--+
 ]]>
 </programlisting>
 
@@ -9540,6 +9540,15 @@ return
     <para>
       The name of the method that is invoked each time the size of the dialog has changed. The method name can not be the
       empty string. When this argument is omitted the name defaults to <emphasis role="italic">onResize</emphasis>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>willReply [optional]</term>
+    <listitem>
+    <para>
+      The <link linkend="sctCommonWillReply">willReply</link> argument controls how the interpreter invokes the event
+      handler for the connected event. The default if <emphasis role="italic">willReply</emphasis> is omitted is
+      <computeroutput>SYNC</computeroutput>. See the <emphasis role="italic">Remarks</emphasis> section for some discussion
+      on why the default is not false as it normally would be for older event connection methods.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>synch [optional]</term>
@@ -9574,19 +9583,25 @@ return
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
+    See the sections on <link linkend="sctConnectingEventHandlers">connecting</link> and <link
+    linkend="sctCodingEventHandlers">coding</link> event handlers for additional information on event handlers.
+  </para>
+  <para>
     Typically when the user is resizing a window, there are many event notifications that come quickly. In older
     ooDialog versions, where the notification was placed on a queue to be processed at a later date, this caused a
     number of notifications to be placed on the queue before a single notification was processed. Programs that
-    connected the resize event perform poorly when many notifications pile up before they are processed.
+    connected the resize event performed poorly when many notifications pile up before they are processed.
   </para>
   <para>
-    The poor performance is mostly fixed by having the interpreter invoke the event handler directly, which causes each
-    notification to be processed one by one. When <emphasis role="italic">synch</emphasis> is true, all ooDialog
-    programs that connect the resize event are likely to perform much better. This is why the default is true.
+    The poor performance is mostly fixed by having the interpreter invoke the event handler directly and wait for the return
+    from the event handler, which causes each notification to be processed one by one. When <emphasis
+    role="italic">willReply</emphasis> is set to <emphasis role="italic">SYNC</emphasis>, all ooDialog programs that connect
+    the resize event are likely to perform much better. This is why the default for <emphasis
+    role="italic">willReply</emphasis> is set to <emphasis role="italic">SYNC</emphasis>
   </para>
   <para>
     Normally, when the interpreter waits for the event handler to return, a syntax condition is raised if a value is not
-    returned from the event handler. The <emphasis role="italic">synch</emphasis> option causes the interpreter to wait
+    returned from the event handler. The <emphasis role="italic">SYNCH</emphasis> option causes the interpreter to wait
     until the event handler returns, but to not expect a returned value. This provides backwards compatibility for older
     programs where the programmer <emphasis role="bold"><emphasis role="italic">mistakenly</emphasis></emphasis> did not
     return a value from event handlers. Best practice is to <emphasis role="italic">always</emphasis> return a value
@@ -9611,7 +9626,7 @@ return
     The underlying dialog receives the WM_SIZE message as the notification for this event.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example 1:</emphasis></term>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
 
 <programlisting>
@@ -9641,12 +9656,64 @@ return
 ]]>
 </programlisting>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Example 2:</emphasis></term>
+</variablelist>
+
+<section id="evtEventNotificationRESIZE" xreflabel="RESIZE"><title>Resize Event Handler</title>
+<indexterm><primary>EventNotification class</primary><secondary>events</secondary><tertiary>RESIZE</tertiary></indexterm>
+<para>
+  The event handler for the Resize event is invoked when the size of the dialog has changed.
+</para>
+<para>
+  The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthConnectResize"/> method
+  determines how the event handler needs to respond to the notification.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onResize unguarded
+  use arg wParam, lParam
+
+  return 0
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    This example is pulled from the File Viewer <link linkend="exampleFileViewer">example</link> at the end of the
-    &quot;Appearance and Behavior Methods&quot; section. A complete working example is presented there that uses a number of
-    the dialog methods.
+    The event handling method recieves 2 arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>wParam</term>
+    <listitem>
+    <para>
+      A numeric code that specifies the type of resizing. The dialog object provides a number of <link
+      linkend="tblConstantsDlgObject">constant</link> values to make it easier to decode the numeric value of the <emphasis
+      role="italic">wParam</emphasis> argument. The constants all begin with <emphasis role="italic">SIZE_</emphasis>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>lParam</term>
+    <listitem>
+    <para>
+      The numeric value of the LPARAM parameter of the notivication message. This value contains the new size co-ordinates of
+      the dialog. The low word of the number contains the new width and the high word contains new height. The <xref
+      linkend="mthLoWord"/> and <xref linkend="mthHiWord"/> methods can be used to extract these values.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    The MSDN documentation says to return 0 from the event handler.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example is pulled from the File Viewer <link linkend="exampleFileViewer">example</link> at the end of the <xref
+    linkend="sctAppearanceBehaviorMethods"/> section. A complete working example is presented there that uses a number of the
+    dialog methods:
 
 <programlisting>
 <![CDATA[
@@ -9657,7 +9724,7 @@ return
   wasMinimized = .false
   style = "VSCROLL HSCROLL MULTILINE READONLY"
   self~createEdit(IDC_MULTILINE, 0, 0, 170, 180, style, "cEntry")
-  self~connectResize("onSize")
+  self~connectResize("onSize", .true)
   ...
 
 /* The first arg, sizeEvent, is a flag that the OS sends specifying the type of
@@ -9671,9 +9738,9 @@ return
   expose wasMinimized
   use arg sizeEvent, sizeInfo
 
-  if sizeEvent = 1 then wasMinimized = .true
+  if sizeEvent == self~SIZE_MINIMIZED then wasMinimized = .true
 
-  if sizeEvent = 0 |  sizeEvent = 2 then do
+  if sizeEvent == self~SIZE_RESTORED |  sizeEvent == self~SIZE_MAXIMIZED then do
     if \ wasMinimized then self~resizeEditControl
     wasMinimized = .false
   end
@@ -9684,7 +9751,10 @@ return
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>
+
+</section>  <!-- End Resize Event Handler -->
+
+</section>  <!-- End EventNotification::connectResize() -->
 
 <section id="mthConnectResizing" xreflabel="connectResizing"><title>connectResizing</title>
 <indexterm><primary>connectResizing</primary></indexterm>
@@ -9692,8 +9762,8 @@ return
 <indexterm><primary>EventNotification class</primary><secondary>connectResizing</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectResizing(--+--------------+--)--------><
-                      +--methodName--+
+>>--connectResizing(--+--------------+--+--------------+--)-----><
+                      +--methodName--+  +-,-willReply--+
 ]]>
 </programlisting>
 
@@ -9706,7 +9776,7 @@ return
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The only argument is:
+    The arguments are:
   <variablelist>
     <varlistentry><term>methodName [optional]</term>
     <listitem>
@@ -9714,6 +9784,15 @@ return
       The name of the method that is invoked each time the size of the dialog is about to be changed. The method name
       can not be the empty string. When this argument is omitted the name defaults to <emphasis
       role="italic">onResizing</emphasis>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>willReply [optional]</term>
+    <listitem>
+    <para>
+      Although the <link linkend="sctCommonWillReply">willReply</link> argument is accepted so that the <emphasis
+      role="italic">connectResizing</emphasis> method is similar to the other event connection methods, its value is always
+      considered to be true. That is, the interpreter waits for the return value from the event handler. The event handler
+      must always return true or false.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -9740,7 +9819,7 @@ return
   <listitem>
   <para>
     By processing the sizing event notification, the programmer can monitor the size and position of the drag rectangle
-    of the dialog being resized and, if desired, can change its size or position.
+    of the dialog being resized and, if desired, can change its new size or position.
   </para>
   <para>
     See the sections on <link linkend="sctConnectingEventHandlers">connecting</link> and <link
@@ -9892,7 +9971,7 @@ return
 ::method init
   ...
 
-  self~connectResizing("onSizing")
+  self~connectResizing("onSizing", .true)
 
 ::method onSizing unguarded
   use arg rect, direction
@@ -9922,7 +10001,234 @@ return
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>
+
+<section id="evtEventNotificationRESIZING" xreflabel="RESIZE"><title>Resizing Event Handler</title>
+<indexterm><primary>EventNotification class</primary><secondary>events</secondary><tertiary>RESIZEING</tertiary></indexterm>
+<para>
+  The event handler for the Resizing event is invoked when the size of the dialog is about to be changed. That is, it is
+  invoked with arguments specifying the new size of the dialog, but before the change is actually made.
+</para>
+<para>
+  The operating system expects the application to reply to this message, either to allow the change or to disallow the
+  change. The Rexx event hander must reply to this notification, this can not be changed.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onResize unguarded
+  use arg wParam, lParam
+
+  return .false
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves 2 arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>rect</term>
+    <listitem>
+    <para>
+      A <computeroutput>Rect</computeroutput> object that specifies the size the dialog is about to be changed to.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>direction</term>
+    <listitem>
+    <para>
+      A keyword that specifies which edge of the dialog window is being sized. The keyword will be exactly one of the
+      following:
+    </para>
+    <para>
+      <simplelist type='vert' columns='3'>
+        <member>BOTTOM</member>   <member>BOTTOMLEFT</member> <member>BOTTOMLEFT</member>
+        <member>LEFT</member>     <member>RIGHT</member>      <member>TOP</member>
+        <member>TOPLEFT</member>  <member>TOPRIGHT</member>
+      </simplelist>
+    </para>
+    <variablelist>
+      <varlistentry><term>BOTTOM</term>
+      <listitem>
+      <para>
+        The bottom edge is being dragged.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>BOTTOMLEFT</term>
+      <listitem>
+      <para>
+        The bottom-left corner is being dragged.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>BOTTOMRIGHT</term>
+      <listitem>
+      <para>
+        The bottom-right corner is being dragged.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>LEFT</term>
+      <listitem>
+      <para>
+        The left edge is being dragged.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>RIGHT</term>
+      <listitem>
+      <para>
+        The right edge is being dragged.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>TOP</term>
+      <listitem>
+      <para>
+        The top edge is being dragged.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>TOPLEFT</term>
+      <listitem>
+      <para>
+        The top-left corner is being dragged.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>TOPRIGHT</term>
+      <listitem>
+      <para>
+        The top-right corner is being dragged.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    Return false to indicate the the co-ordinates specified in the <emphasis role="italic">rect</emphasis> arg are unchanged.
+    Otherwise, return true to indicate the co-ordinates have been changed and the operating system will set the new size of
+    the dialog to the changed co-ordinates.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The application can effect how the dialog is resized by changing the values of the <emphasis
+    role="italic">rect</emphasis> argument and returning true. The operating updates the size of the drag rectangle with the
+    new values in the <emphasis role="italic">rect</emphasis> argument rather than with the original values. Typically this
+    is done to prevent the user from resizing the dialog too small or too  big.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example shows an event handler that prevents the dialog from being sized smaller than a minimum size, but puts no
+    restriction on the maximum size.
+
+<programlisting>
+<![CDATA[
+::method onResizing unguarded
+  expose minWidth minHeight
+  use arg r, direction
+
+  select
+    when direction == 'TOP' then do
+      if r~bottom - r~top < minHeight then do
+        r~top = r~bottom - minHeight
+        return .true
+      end
+    end
+    when direction == 'BOTTOM' then do
+      if r~bottom - r~top < minHeight then do
+        r~bottom = r~top + minHeight
+        return .true
+      end
+    end
+    when direction == 'LEFT' then do
+      if r~right - r~left < minWidth then do
+        r~left = r~right - minWidth
+        return .true
+      end
+    end
+    when direction == 'RIGHT' then do
+      if r~right - r~left < minWidth then do
+        r~right = r~left + minWidth
+        return .true
+      end
+    end
+    when direction == 'BOTTOMLEFT' then do
+      didChange = .false
+
+      if r~bottom - r~top < minHeight then do
+        r~bottom = r~top + minHeight
+        didChange = .true
+      end
+
+      if r~right - r~left < minWidth then do
+        r~left = r~right - minWidth
+        didChange = .true
+      end
+
+      return didChange
+    end
+    when direction == 'BOTTOMRIGHT' then do
+      didChange = .false
+
+      if r~bottom - r~top < minHeight then do
+        r~bottom = r~top + minHeight
+        didChange = .true
+      end
+
+      if r~right - r~left < minWidth then do
+        r~right = r~left + minWidth
+        didChange = .true
+      end
+
+      return didChange
+    end
+    when direction == 'TOPLEFT' then do
+      didChange = .false
+
+      if r~bottom - r~top < minHeight then do
+        r~top = r~bottom - minHeight
+        didChange = .true
+      end
+
+      if r~right - r~left < minWidth then do
+        r~left = r~right - minWidth
+        didChange = .true
+      end
+
+      return didChange
+    end
+    when direction == 'TOPRIGHT' then do
+      didChange = .false
+
+      if r~bottom - r~top < minHeight then do
+        r~top = r~bottom - minHeight
+        didChange = .true
+      end
+
+      if r~right - r~left < minWidth then do
+        r~right = r~left + minWidth
+        didChange = .true
+      end
+
+      return didChange
+    end
+    otherwise
+      nop
+  end
+  -- End select
+  return .false
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End Resize Event Handler -->
+
+</section>  <!-- End EventNotification::connectResizing() -->
 
 
 <section id="sctConnectingScrollBarEvents"><title>Connecting Scroll Bar Events</title>
@@ -10538,8 +10844,8 @@ return
 </variablelist>
 
 </section>  <!-- End Scroll Event Handler -->
-</section>  <!-- End Connecting Scroll Bar Events section -->
 
+</section>  <!-- End Connecting Scroll Bar Events section -->
 
 
 <section id="mthConnectSizeMoveEnded" xreflabel="connectSizeMoveEnded"><title>connectSizeMoveEnded</title>
@@ -10676,8 +10982,8 @@ return
 <indexterm><primary>dialog object</primary><secondary>connectStaticEvent</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectStaticNotify(--id--,--event--,-+---------------+--)--><
-                                          +-,--methodName-+
+>>--connectStaticNotify(--id--,--event--,-+----------+--+--------------+--)----><
+                                          +-,--mName-+  +-,-willReply--+
 
 ]]>
 </programlisting>
@@ -10710,25 +11016,25 @@ return
     <para>
       A keyword specifying the event to be connected with a method:
       <variablelist>
-        <varlistentry><term>CLICK</term>
+        <varlistentry><term><link linkend="evtStaticGeneral">CLICK</link></term>
         <listitem>
         <para>
           The static control has been clicked with the mouse.
         </para>
         </listitem></varlistentry>
-        <varlistentry><term>DBLCLK</term>
+        <varlistentry><term><link linkend="evtStaticGeneral">DBLCLK</link></term>
         <listitem>
         <para>
           The static control has been double-clicked with the mouse.
         </para>
         </listitem></varlistentry>
-        <varlistentry><term>DISABLE</term>
+        <varlistentry><term><link linkend="evtStaticGeneral">DISABLE</link></term>
         <listitem>
         <para>
           The static control has been disabled.
         </para>
         </listitem></varlistentry>
-        <varlistentry><term>ENABLE</term>
+        <varlistentry><term><link linkend="evtStaticGeneral">ENABLE</link></term>
         <listitem>
         <para>
           The static control has been enabled.
@@ -10737,13 +11043,21 @@ return
       </variablelist>
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>methodName [optional]</term>
+    <varlistentry><term>mName [optional]</term>
     <listitem>
     <para>
       The method that is to be invoked whenever the specified notification is received from the static control. The
       programmer defines this method. The method name can not be the empty string. If this argument is omitted, a
       method name is automatically generated that consists of the event keyword preceded by
       <computeroutput>on</computeroutput>. For instance, <computeroutput>onClick</computeroutput>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>willReply [optional]</term>
+    <listitem>
+    <para>
+      The <link linkend="sctCommonWillReply">willReply</link> argument controls how the interpreter invokes the event
+      handler for the connected event. The default if <emphasis role="italic">willReply</emphasis> is omitted is
+      <computeroutput>.false</computeroutput>.
     </para>
     </listitem></varlistentry>
     </variablelist>
@@ -10777,23 +11091,10 @@ return
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
-  <orderedlist>
-  <listitem>
   <para>
     See the sections on <link linkend="sctConnectingEventHandlers">connecting</link> and <link
     linkend="sctCodingEventHandlers">coding</link> event handlers for additional information on event handlers.
   </para>
-  </listitem>
-  <listitem>
-  <para>
-    The defined event-handling method will receive two arguments. The first arg contains information about the
-    specific control and its event. The second arg is the window handle of the static control.
-  </para>
-  <para>
-    The low word of the first arg is the control ID and the high word is the event ID.
-  </para>
-  </listitem>
-  </orderedlist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
@@ -10817,26 +11118,132 @@ return
 </programlisting>
   <para>
     In this example, (a continuation of the above example,) the control ID determines if the user has double clicked on
-    the employee job duties field, or the employee name field.  The event ID is not used, or needed. Its purpose in the
-    code snippet is simply an example. The same thing applies to the window handle.
+    the employee job duties field, or the employee name field. The first 2 and the fourth args are not needed or used so they
+    are just discarded. The last arg, the Rexx static control object is passed on the the userUpdate() method:
   </para>
 <programlisting>
 <![CDATA[
 ::method editStats unguarded
-  use arg ctrlInfo, ctrlHwnd
-
-  ctrlID = .DlgUtil~loWord(ctrlInfo)
-  eventID = .DlgUtil~hiWord(ctrlInfo)
+  use arg , , id, , staticCtrl
 
   rec = self~getCurrentRecord
 
-  if self~userUpdate(ctrlID, rec) then self~setStats(rec)
+  if self~userUpdate(id, staticCtrl, rec) then self~setStats(rec)
 
   return 0
 ]]>
 </programlisting>
   </listitem></varlistentry>
 </variablelist>
+
+<section id="evtStaticGeneral" xreflabel="General"><title>General Static Event Handler</title>
+<indexterm><primary>Static class</primary><secondary>events</secondary><tertiary>CLICKED</tertiary></indexterm>
+<indexterm><primary>Static class</primary><secondary>events</secondary><tertiary>DBLCLK</tertiary></indexterm>
+<indexterm><primary>Static class</primary><secondary>events</secondary><tertiary>DISABLE</tertiary></indexterm>
+<indexterm><primary>Static class</primary><secondary>events</secondary><tertiary>ENABLE</tertiary></indexterm>
+<para>
+  The event handler for all the static control events recieves the same arguments and is coded in the same fashion. When the
+  handler is invoked is fairly clear from the name of the event. The CLICKED event handler is invoked when the static control
+  is clicked, etc..
+</para>
+<para>
+  The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthConnectStaticEvent"/> method
+  determines how the event handler needs to respond to the notification.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onStaticEvent unguarded
+  use arg info, hwnd, id, notifyCode, staticObj
+
+  return 0
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves 5 arguments. The first and second arguments need to be retained for backwards
+    compatibility, but the last 3 arguments are really what is needed:
+  </para>
+  <variablelist>
+    <varlistentry><term>info</term>
+    <listitem>
+    <para>
+      A numeric value that contains info about the event. The low order word contains the resource ID of the static control
+      sending the event. The high order word contains the static control event code. However, the ooDialog framework now
+      extracts these values for you and sends them as the third and fourth arguments.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hwnd</term>
+    <listitem>
+    <para>
+      The window handle of the static control that sent the notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The numeric resource id of the static control sending the notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>notifyCode</term>
+    <listitem>
+    <para>
+      The numeric notification code of the event that caused the notification to be sent. Each dialog control has its own
+      specific notification codes.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>controlObj</term>
+    <listitem>
+    <para>
+      The Rexx static control object that represents the underlying dialog control that sent the notification. It is possible
+      this will be the <computeroutput>.nil</computeroutput> object if some error happened, but this is very unlikely.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    The operating system ignores the return from this notification. 0 makes a good return value.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example comes from an application that uses a static image control. When the user double clicks on the
+    static control, the application switches to the next application mode and the image on the control switches to the icon
+    that represents the current mode of the application:
+
+<programlisting>
+<![CDATA[
+::method defineDialog
+  expose someIcon questionIcon isQuestion
+
+  self~createStaticImage(IDC_ICON_QUESTION, 14, 17, 20, 20, "NOTIFY ICON SIZEIMAGE")
+  self~createStaticText(IDC_ST_QUESTION, 59, 17, 122, 20)
+  self~createPushButton(IDOK, 126, 74, 50, 14, "DEFAULT", 'Ok')
+
+  self~connectStaticEvent(IDC_ICON_QUESTION, "DBLCLK", onDoubleClick, .true)
+
+  questionIcon = .Image~getImage(IDI_QUESTION, ICON)
+  ...
+
+::method onDoubleClick unguarded
+  use arg info, hwnd, id, notifyCode, static
+
+  self~swapIcons(static)
+  return 0
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End General Static Event Handler -->
+
 </section>
 
 
