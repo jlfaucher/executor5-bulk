@@ -2255,8 +2255,7 @@ MsgReplyType processRBN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
  * @remarks
  *
  */
-MsgReplyType processSBN(pCPlainBaseDialog pcpbd, CSTRING methodName, uint32_t tag, uint32_t code,
-                        WPARAM wParam, LPARAM lParam)
+MsgReplyType processSBN(pCPlainBaseDialog pcpbd, CSTRING methodName, uint32_t tag, uint32_t code, LPARAM lParam)
 {
     switch ( code )
     {
@@ -2267,7 +2266,7 @@ MsgReplyType processSBN(pCPlainBaseDialog pcpbd, CSTRING methodName, uint32_t ta
             return sbnNmClick(pcpbd, lParam, methodName, tag, code);
 
         case SBN_SIMPLEMODECHANGE :
-            return genericNotifyInvoke(pcpbd, methodName, tag, wParam, lParam);
+            return sbnSimpleModeChange(pcpbd, methodName, tag, lParam);
 
         default :
             break;
@@ -2827,7 +2826,7 @@ MsgReplyType searchNotifyTable(WPARAM wParam, LPARAM lParam, pCPlainBaseDialog p
                     return processRBN(c, m[i].rexxMethod, m[i].tag, code, lParam, pcpbd);
 
                 case TAG_STATUSBAR :
-                    return processSBN(pcpbd, m[i].rexxMethod, m[i].tag, code, wParam, lParam);
+                    return processSBN(pcpbd, m[i].rexxMethod, m[i].tag, code, lParam);
 
                 case TAG_TAB :
                     return processTCN(c, m[i].rexxMethod, m[i].tag, code, lParam, pcpbd);

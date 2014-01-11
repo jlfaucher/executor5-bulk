@@ -152,11 +152,13 @@ MsgReplyType sbnNmClick(pCPlainBaseDialog pcpbd, LPARAM lParam, CSTRING methodNa
     MsgReplyType      reply = ReplyTrue;
 
     RexxObjectPtr idFrom       = idFrom2rexxArg(c, lParam);
+    RexxObjectPtr nCode        = notifyCode2rexxArg(c, lParam);
     RexxObjectPtr rxSb         = controlFrom2rexxArg(pcpbd, lParam, winStatusBar);
     RexxObjectPtr rxSectIndex  = c->Uintptr(nmm->dwItemSpec + 1);
     RexxObjectPtr rxPt         = rxNewPoint(c, &(nmm->pt));
 
-    RexxArrayObject args = c->ArrayOfFour(idFrom, rxSectIndex, rxPt, rxSb);
+    RexxArrayObject args = c->ArrayOfFour(idFrom, nCode, rxSectIndex, rxPt);
+    c->ArrayPut(args, rxSb, 5);
 
     RexxObjectPtr msgReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
 
@@ -169,12 +171,33 @@ MsgReplyType sbnNmClick(pCPlainBaseDialog pcpbd, LPARAM lParam, CSTRING methodNa
     }
 
     c->ReleaseLocalReference(idFrom);
+    c->ReleaseLocalReference(nCode);
     c->ReleaseLocalReference(rxSb);
     c->ReleaseLocalReference(rxSectIndex);
     c->ReleaseLocalReference(rxPt);
     c->ReleaseLocalReference(args);
 
     return reply;
+}
+
+
+MsgReplyType sbnSimpleModeChange(pCPlainBaseDialog pcpbd, CSTRING methodName, uint32_t tag, LPARAM lParam)
+{
+    RexxThreadContext *c = pcpbd->dlgProcContext;
+
+    RexxObjectPtr idFrom     = idFrom2rexxArg(c, lParam);
+    RexxObjectPtr notifyCode = notifyCode2rexxArg(c, lParam);
+    RexxObjectPtr rxSb       = controlFrom2rexxArg(pcpbd, lParam, winStatusBar);
+
+    RexxArrayObject args = c->ArrayOfThree(idFrom, notifyCode, rxSb);
+    genericInvoke(pcpbd, methodName, args, tag);
+
+    c->ReleaseLocalReference(idFrom);
+    c->ReleaseLocalReference(notifyCode);
+    c->ReleaseLocalReference(rxSb);
+    c->ReleaseLocalReference(args);
+
+    return ReplyTrue;
 }
 
 
