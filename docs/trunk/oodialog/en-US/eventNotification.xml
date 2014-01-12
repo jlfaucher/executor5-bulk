@@ -9429,29 +9429,40 @@ return
     </para>
     <para>
       <simplelist type='vert' columns='3'>
-        <member>AUTOBREAK</member>
-        <member>NCHITTEST</member>
-        <member>RELEASEDCAPTURE</member>
-        <member>?</member>
+        <member>AUTOBREAK       </member>
+        <member>AUTOSIZE        </member>
+        <member>BEGINDRAG       </member>
+        <member>CHEVRONPUSHED   </member>
+        <member>CHILDSIZE       </member>
+        <member>DELETEDBAND     </member>
+        <member>DELETINGBAND    </member>
+        <member>ENDDRAG         </member>
+        <member>GETOBJECT       </member>
+        <member>HEIGHTCHANGE    </member>
+        <member>LAYOUTCHANGED   </member>
+        <member>MINMAX          </member>
+        <member>NCHITTEST       </member>
+        <member>RELEASEDCAPTURE </member>
+        <member>SPLITTERDRAG    </member>
       </simplelist>
     </para>
     <variablelist>
-      <varlistentry id="kywReBarAUTOBREAK" xreflabel="AUTOBREAK"><term>AUTOBREAK</term>
+      <varlistentry id="kywReBarAUTOBREAK" xreflabel="AUTOBREAK"><term><xref linkend="evtRebarAUTOBREAK"/></term>
       <listitem>
       <para>
-        xxx
+        Notifies the dialog that a break will appear in the bar. The dialog determines whether to make the break.
       </para>
       </listitem></varlistentry>
-      <varlistentry id="kywReBarNCHITEST" xreflabel="NCHITEST"><term>NCHITEST</term>
+      <varlistentry id="kywReBarNCHITEST" xreflabel="NCHITEST"><term><xref linkend="evtReBarNCHITTEST"/> </term>
       <listitem>
       <para>
-        xxx
+        Sent by a rebar control when the control receives a hit test request.
       </para>
       </listitem></varlistentry>
-      <varlistentry id="kywReBarRELEASEDCAPTURE" xreflabel="RELEASEDCAPTURE"><term>RELEASEDCAPTURE</term>
+      <varlistentry id="kywReBarRELEASEDCAPTURE" xreflabel="RELEASEDCAPTURE"><term><xref linkend="evtReBarRELEASEDCAPTURE"/></term>
       <listitem>
       <para>
-        xxx
+        Notifies the dialog window that the rebar control is releasing mouse capture.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -9519,7 +9530,300 @@ return
     The underlying dialog receives the RBN_* messages as the notifications for the rebar events.
   </para>
   </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+  </para>
+
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </listitem></varlistentry>
 </variablelist>
+
+
+<section id="evtReBarAUTOBREAK" xreflabel="AUTOBREAK"><title>AutoBreak Event Handler</title>
+<indexterm><primary>ReBar class</primary><secondary>events</secondary><tertiary>AUTOBREAK</tertiary></indexterm>
+<para>
+  The event handler for the auto break event is invoked when a break will appear in the bar. The application can allow, or
+  disallow, the break by responding to the notification.
+</para>
+<para>
+  If this event notification is connected, the event handler must respond and return a value to the notification.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onAutoBreak unguarded
+  use arg id, bandIndex, wID, style, reBar, itemData, msgID
+
+  return .true
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves 7 arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The numeric resource ID of the control that sent the notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>bandIndex</term>
+    <listitem>
+    <para>
+     The one based index of the band affected by the notification. This is 0 if no band is affected.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>wID</term>
+    <listitem>
+    <para>
+      The application-defined ID of the band.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>style</term>
+    <listitem>
+    <para>
+      A list of style keywords that specify the current style of the band.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>rebar</term>
+    <listitem>
+    <para>
+      The Rexx rebar object that represents the underlying rebar control.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>itemData</term>
+    <listitem>
+    <para>
+      The item data assigned to the band, or the <computeroutput>.nil</computeroutput> object if there is no item data
+      assigned.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>msgID</term>
+    <listitem>
+    <para>
+      TBD what is this?
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    The event handler must return true or false. True allows the break to occur and false prevents the break.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    xxx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example ...
+
+<programlisting>
+<![CDATA[
+
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End AutoBreak Event Handler -->
+
+
+<section id="evtReBarNCHITTEST" xreflabel="NCHITTEST"><title>NcHitTest Event Handler</title>
+<indexterm><primary>ReBar class</primary><secondary>events</secondary><tertiary>NCHITTEST</tertiary></indexterm>
+<para>
+  The event handler for the non-client hit test event is invoked when the rebar control recieves a hit test request. The
+  control then sends the NcHitTest notification to the dialog. The event handler can choose to allow the rebar to perform
+  default processing of the hit test message, or to return its own value to over-ride the default hit test processing.
+</para>
+<para>
+  The event handler must always return a value for this notification.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onNcHitTest unguarded
+  use arg id, bandIndex, pos, hit, rebar
+
+  return zz
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves 5 arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The numeric resource ID of the control that sent the notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>bandIndex</term>
+    <listitem>
+    <para>
+     The one based index of the band affected by the notification. This is 0 if no band is affected.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>pos</term>
+    <listitem>
+    <para>
+      A <xref linkend="clsPoint"/> object specifying the mouse co-ordinates of the hit test message.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hit</term>
+    <listitem>
+    <para>
+      One of the keywords in the <link linkend="tblHitTestKeyWord">hit test table</link>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>rebar</term>
+    <listitem>
+    <para>
+      The Rexx rebar object that represents the underlying rebar control that sent the noitification.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    Return zero to allow the rebar to perform default processing of the hit test message, or return one of the <link
+    linkend="tblHitTestKeyWord">hit keywords</link> to override the default hit test processing.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The NCHITTEST event connection is provided for completeness. It is not entirely clear to the author what the use of the
+    notification is, or what effect over-riding the default processing has.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example prints out the values sent by the rebar control for the notification and if the <emphasis
+    role="italic">hit</emphasis> argument is SIZE returns a non-zero value:
+
+<programlisting>
+<![CDATA[
+::method onNcHitTest unguarded
+  use arg id, bandIndex, pos, ht, reBar
+  say 'onNcHitTest() id:' id 'bandIndex:' bandIndex 'pos:' pos 'ht:' ht 'reBar:' reBar
+
+  if ht == 'SIZE' then return 'NOWHERE'
+  else return 0
+
+/* Output might be for example:
+
+onNcHitTest() id: 1003 bandIndex: 5 pos: a Point (233, 13) ht: CAPTION reBar: a ReBar
+onNcHitTest() id: 1003 bandIndex: 5 pos: a Point (230, 14) ht: SIZE reBar: a ReBar
+onNcHitTest() id: 1003 bandIndex: 5 pos: a Point (227, 14) ht: SIZE reBar: a ReBar
+onNcHitTest() id: 1003 bandIndex: 5 pos: a Point (225, 15) ht: SIZE reBar: a ReBar
+onNcHitTest() id: 1003 bandIndex: 5 pos: a Point (223, 15) ht: SIZE reBar: a ReBar
+onNcHitTest() id: 1003 bandIndex: 0 pos: a Point (222, 16) ht: CLIENT reBar: a ReBar
+onNcHitTest() id: 1003 bandIndex: 4 pos: a Point (220, 16) ht: CAPTION reBar: a ReBar
+onNcHitTest() id: 1003 bandIndex: 4 pos: a Point (219, 16) ht: CAPTION reBar: a ReBar
+*/
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End NcHitTest Event Handler -->
+
+<section id="evtReBarRELEASEDCAPTURE" xreflabel="RELEASEDCAPTURE"><title>ReleasedCapture Event Handler</title>
+<indexterm><primary>ReBar class</primary><secondary>events</secondary><tertiary>RELEASEDCAPTURE</tertiary></indexterm>
+<para>
+  The event handler for the released capture event is invoked the rebar control has released the mouse capture.
+</para>
+<para>
+  The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthConnectReBarEvent"/> method
+  determines how the event handler needs to respond to the notification.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onReleasedCapture unguarded
+  use arg id, rebar
+
+  return 0
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves 2 arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The numeric resource ID of the control that sent the notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>rebar</term>
+    <listitem>
+    <para>
+      The Rexx rebar object that represents the underlying rebar control that sent the noitification.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    The operating system ignores the return from this notification. 0 makes a good value to return.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example prints out the values of the arguments sent by the rebar control for the released capture event:
+
+<programlisting>
+<![CDATA[
+::method onRelease unguarded
+  use arg id, reBar
+  say 'onRelease() id:' id 'reBar:' reBar
+  return 0
+
+/* Output might be:
+
+onRelease() id: 1003 reBar: a ReBar
+onRelease() id: 1003 reBar: a ReBar
+onRelease() id: 1003 reBar: a ReBar
+*/
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End ReleasedCapture Event Handler -->
 
 </section>  <!-- End EventNotification::connectReBarEvent() -->
 
@@ -11812,8 +12116,6 @@ return
   -- End select
 
   return 0
-
-
 ]]>
 </programlisting>
   </para>

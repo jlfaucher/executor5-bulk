@@ -66,6 +66,128 @@
   control object.
 </para>
 
+
+<section id="sctHitTestKeywords"><title>Hit Test Keywords</title>
+<indexterm><primary>Hit Test Keywords</primary></indexterm>
+
+<para>
+  Windows has defined a number of numeric codes that are used to determine where the mouse cursor is positioned. These codes
+  are used for what is commonly called a <emphasis role="italic">hit test</emphasis>. ooDialog defines a keyword for each of
+  these codes.
+</para>
+
+<table id="tblHitTestKeyWord" frame="all"> <title>Possible <emphasis role="italic">Hit Test</emphasis> Values</title>
+<tgroup cols="2">
+<colspec colwidth="1*" /><colspec colwidth="4*" />
+<thead>
+<row>
+<entry>Keyword</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+  <entry>ERROR</entry>
+  <entry>On the screen background or on a dividing line between windows (same as NOWHERE.)</entry>
+</row>
+<row>
+  <entry>TRANSPARENT</entry>
+  <entry>In a window currently covered by another window in the same thread.</entry>
+</row>
+<row>
+  <entry>NOWHERE</entry>
+  <entry>On the screen background or on a dividing line between windows.</entry>
+</row>
+<row>
+  <entry></entry>
+  <entry>In a client area.</entry>
+</row>
+<row>
+  <entry>CAPTION</entry>
+  <entry>In a title bar.</entry>
+</row>
+<row>
+  <entry>SYSMENU</entry>
+  <entry>In a window menu or in a Close button in a child window.</entry>
+</row>
+<row>
+  <entry>GROWBOX</entry>
+  <entry>In a size box.</entry>
+</row>
+<row>
+  <entry>MENU</entry>
+  <entry>In a menu.</entry>
+</row>
+<row>
+  <entry>HSCROLL</entry>
+  <entry>In a horizontal scroll bar.</entry>
+</row>
+<row>
+  <entry>VSCROLL</entry>
+  <entry>In the vertical scroll bar.</entry>
+</row>
+<row>
+  <entry>MINBUTTON</entry>
+  <entry>In a Minimize button.</entry>
+</row>
+<row>
+  <entry>MAXBUTTON</entry>
+  <entry>In a Maximize button.</entry>
+</row>
+<row>
+  <entry>LEFT</entry>
+  <entry>In the left border of a resizable window (the user can click the mouse to resize the window horizontally).</entry>
+</row>
+<row>
+  <entry>RIGHT</entry>
+  <entry>In the right border of a resizable window (the user can click the mouse to resize the window horizontally).</entry>
+</row>
+<row>
+  <entry>TOP</entry>
+  <entry>In the upper-horizontal border of a window.</entry>
+</row>
+<row>
+  <entry>TOPLEFT</entry>
+  <entry>In the upper-left corner of a window border.</entry>
+</row>
+<row>
+  <entry>TOPRIGHT</entry>
+  <entry>In the upper-right corner of a window border.</entry>
+</row>
+<row>
+  <entry>BOTTOM</entry>
+  <entry>In the lower-horizontal border of a resizable window (the user can click the mouse to resize the window vertically).</entry>
+</row>
+<row>
+  <entry>BOTTOMLEFT</entry>
+  <entry>In the lower-left corner of a border of a resizable window (the user can click the mouse to resize the window diagonally).</entry>
+</row>
+<row>
+  <entry>BOTTOMRIGHT</entry>
+  <entry>In the lower-right corner of a border of a resizable window (the user can click the mouse to resize the window diagonally).</entry>
+</row>
+<row>
+  <entry>BORDER</entry>
+  <entry>In the border of a window that does not have a sizing border.</entry>
+</row>
+<row>
+  <entry>OBJECT</entry>
+  <entry>Microsoft does not describe what this means.</entry>
+</row>
+<row>
+  <entry>CLOSE</entry>
+  <entry>In a Close button.</entry>
+</row>
+<row>
+  <entry>HELP</entry>
+  <entry>In a Help button.</entry>
+</row>
+</tbody></tgroup>
+</table>
+
+</section> <!-- End Hit Test Keywords section -->
+
+
 <section id="sctMethodsMouse"><title>Method Table</title>
 <para>
   The following table lists the class and instance methods of the <computeroutput>Mouse</computeroutput> class:
@@ -1828,44 +1950,7 @@
     <para>
       A single keyword that indicates the result of the operating system's hit test of the mouse position. This defines
       exactly where in the non-client area the mouse position is.  Over the max button, on the border, etc.. The keyword
-      will be one of the words in the following table:
-
-      <table id="tblHitTestHover" frame="all"> <title>Possible <emphasis role="italic">hit</emphasis> Values</title>
-      <tgroup cols="2">
-      <colspec colwidth="1*" /><colspec colwidth="4*" />
-      <thead>
-      <row>
-      <entry>Keyword</entry>
-      <entry>Description</entry>
-      </row>
-      </thead>
-      <tbody>
-      <row><entry>ERROR";    </entry><entry>On the screen background or on a dividing line between windows (same as NOWHERE.)</entry></row>
-      <row><entry>TRANSPARENT</entry><entry>In a window currently covered by another window in the same thread.</entry></row>
-      <row><entry>NOWHERE";  </entry><entry>On the screen background or on a dividing line between windows.</entry></row>
-      <row><entry>CLIENT";   </entry><entry>In a client area.</entry></row>
-      <row><entry>CAPTION";  </entry><entry>In a title bar.</entry></row>
-      <row><entry>SYSMENU";  </entry><entry>In a window menu or in a Close button in a child window.</entry></row>
-      <row><entry>GROWBOX";  </entry><entry>In a size box.</entry></row>
-      <row><entry>MENU";     </entry><entry>In a menu.</entry></row>
-      <row><entry>HSCROLL";  </entry><entry>In a horizontal scroll bar.</entry></row>
-      <row><entry>VSCROLL";  </entry><entry>In the vertical scroll bar.</entry></row>
-      <row><entry>MINBUTTON";</entry><entry>In a Minimize button.</entry></row>
-      <row><entry>MAXBUTTON";</entry><entry>In a Maximize button.</entry></row>
-      <row><entry>LEFT";     </entry><entry>In the left border of a resizable window (the user can click the mouse to resize the window horizontally).</entry></row>
-      <row><entry>RIGHT";    </entry><entry>In the right border of a resizable window (the user can click the mouse to resize the window horizontally).</entry></row>
-      <row><entry>TOP";      </entry><entry>In the upper-horizontal border of a window.</entry></row>
-      <row><entry>TOPLEFT";  </entry><entry>In the upper-left corner of a window border.</entry></row>
-      <row><entry>TOPRIGHT"; </entry><entry>In the upper-right corner of a window border.</entry></row>
-      <row><entry>BOTTOM";   </entry><entry>In the lower-horizontal border of a resizable window (the user can click the mouse to resize the window vertically).</entry></row>
-      <row><entry>BOTTOMLEFT"</entry><entry>In the lower-left corner of a border of a resizable window (the user can click the mouse to resize the window diagonally).</entry></row>
-      <row><entry>BOTTOMRIGHT</entry><entry>In the lower-right corner of a border of a resizable window (the user can click the mouse to resize the window diagonally).</entry></row>
-      <row><entry>BORDER";   </entry><entry>In the border of a window that does not have a sizing border.</entry></row>
-      <row><entry>OBJECT";   </entry><entry>Microsoft does not describe what this means.</entry></row>
-      <row><entry>CLOSE";    </entry><entry>In a Close button.</entry></row>
-      <row><entry>HELP";     </entry><entry>In a Help button.</entry></row>
-      </tbody></tgroup>
-      </table>
+      will be one of the words in the <link linkend="tblHitTestKeyWord">hit test table</link>.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>pos</term>
@@ -1896,10 +1981,10 @@
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    To receive either of the mouse leave events, the programmer must first invoke the
- <xref linkend="mthTrackEvent"/> method with the proper arguments. The mouse tracking is canceled when the
-    mouse leave notification, (or the mouse hover notification,) is generated. To receive further mouse leave or mouse
-    hover events, the <emphasis role="italic">trackEvent</emphasis> method must be invoked again.
+    To receive either of the mouse leave events, the programmer must first invoke the <xref linkend="mthTrackEvent"/> method
+    with the proper arguments. The mouse tracking is canceled when the mouse leave notification, (or the mouse hover
+    notification,) is generated. To receive further mouse leave or mouse hover events, the <emphasis
+    role="italic">trackEvent</emphasis> method must be invoked again.
   </para>
   </listitem></varlistentry>
 </variablelist>
