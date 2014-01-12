@@ -881,12 +881,18 @@ MsgReplyType rbnAutobreak(pCPlainBaseDialog pcpbd, CSTRING methodName, uint32_t 
  *           null.  But, it is definitely not the itemData of a band, and the
  *           doc for the ReBar NM_NCHITTEST does not say it is filled in.  Do
  *           not send it to Rexx.
+ *
+ *           In addition, the doc is not very clear on how to  return one of the
+ *           HT* values documented under WM_NCHITTEST to override the default
+ *           hit test processing. Originally we returned the value in
+ *           DWLP_MSGRESULT. But maybe the dwHitInfo field is suppossed to be
+ *           set to a new value?  Now we do both.
  */
 MsgReplyType rbnNcHitTest(pCPlainBaseDialog pcpbd, CSTRING methodName, uint32_t tag, LPARAM lParam)
 {
     RexxThreadContext *c = pcpbd->dlgProcContext;
 
-    MsgReplyType  winReply = ReplyTrue;
+    MsgReplyType  winReply = ReplyFalse;
     RexxObjectPtr idFrom   = idFrom2rexxArg(c, lParam);
     RexxObjectPtr rxRB     = createControlFromHwnd(c, pcpbd, ((NMHDR *)lParam)->hwndFrom, winReBar, true);
 
@@ -906,6 +912,7 @@ MsgReplyType rbnNcHitTest(pCPlainBaseDialog pcpbd, CSTRING methodName, uint32_t 
         if ( *htText != '0' )
         {
             uint32_t ht = keyword2ncHitTestt(htText);
+            pMouse->dwHitInfo = ht;
             setWindowPtr(pcpbd->hDlg, DWLP_MSGRESULT, ht);
             winReply = ReplyTrue;
         }
