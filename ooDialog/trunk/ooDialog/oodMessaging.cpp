@@ -1660,11 +1660,10 @@ RexxObjectPtr getToolIDFromLParam(RexxThreadContext *c, LPARAM lParam)
  * Several controls use the NM_RELEASEDCAPTURE notification.  We standardize the
  * args to the event handler by routing things though this generic function.
  *
- * @param c
+ * @param pcpbd
  * @param methodName
  * @param tag
  * @param lParam
- * @param pcpbd
  * @param type
  *
  * @return MsgReplyType
@@ -1673,27 +1672,16 @@ RexxObjectPtr getToolIDFromLParam(RexxThreadContext *c, LPARAM lParam)
  *           the control sending the notification and the Rexx control object
  *           itself.
  */
-MsgReplyType genericReleasedCapture(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam,
-                                    pCPlainBaseDialog pcpbd, oodControl_t type)
+MsgReplyType genericReleasedCapture(pCPlainBaseDialog pcpbd, CSTRING methodName, uint32_t tag,
+                                    LPARAM lParam, oodControl_t type)
 {
+    RexxThreadContext *c = pcpbd->dlgProcContext;
+
     RexxObjectPtr   idFrom = idFrom2rexxArg(c, lParam);
     RexxObjectPtr   rxRB   = createControlFromHwnd(c, pcpbd, ((NMHDR *)lParam)->hwndFrom, type, true);
     RexxArrayObject args   = c->ArrayOfTwo(idFrom, rxRB);
 
-    switch ( tag & TAG_EXTRAMASK )
-    {
-        case TAG_REPLYFROMREXX :
-            invokeDirect(c, pcpbd, methodName, args);
-            break;
-
-        case TAG_SYNC :
-            invokeSync(c, pcpbd, methodName, args);
-            break;
-
-        default :
-            invokeDispatch(c, pcpbd, methodName, args);
-            break;
-    }
+    genericInvoke(pcpbd, methodName, args, tag);
 
     c->ReleaseLocalReference(idFrom);
     c->ReleaseLocalReference(rxRB);
@@ -2198,36 +2186,14 @@ MsgReplyType processRBN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
     switch ( code )
     {
         case NM_NCHITTEST :
-            return rbnNcHitTest(c, methodName, tag, lParam, pcpbd);
+            return rbnNcHitTest(pcpbd, methodName, tag, lParam);
 
         case NM_RELEASEDCAPTURE :
-            return genericReleasedCapture(c, methodName, tag, lParam, pcpbd, winReBar);
+            return genericReleasedCapture(pcpbd, methodName, tag, lParam, winReBar);
 
-        /*
-        case TVN_BEGINLABELEDIT :
-            return tvnBeginLabelEdit(c, methodName, tag, lParam, pcpbd);
+        case RBN_AUTOBREAK :
+            return rbnAutobreak(pcpbd, methodName, tag, lParam);
 
-        case TVN_DELETEITEM :
-            return tvnDeleteItem(c, methodName, tag, lParam, pcpbd);
-
-        case TVN_ENDLABELEDIT :
-            return tvnEndLabelEdit(c, methodName, tag, lParam, pcpbd);
-
-        case TVN_GETINFOTIP :
-            return tvnGetInfoTip(c, methodName, tag, lParam, pcpbd);
-
-        case TVN_KEYDOWN :
-            return tvnKeyDown(c, methodName, tag, lParam, pcpbd);
-
-        case TVN_ITEMEXPANDED :
-        case TVN_ITEMEXPANDING :
-            return tvnItemExpand(c, methodName, tag, lParam, pcpbd, code);
-
-        case TVN_SELCHANGED :
-        case TVN_SELCHANGING :
-            return tvnSelChange(c, methodName, tag, lParam, pcpbd, code);
-
-        */
         default :
             break;
     }
@@ -2403,7 +2369,7 @@ MsgReplyType processTBN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
             return tbnQuery(c, methodName, tag, lParam, pcpbd, code);
 
         case NM_RELEASEDCAPTURE :
-            return genericReleasedCapture(c, methodName, tag, lParam, pcpbd, winToolBar);
+            return genericReleasedCapture(pcpbd, methodName, tag, lParam, winToolBar);
 
         case TBN_TOOLBARCHANGE :
             return tbnSimple(c, methodName, tag, lParam, pcpbd);

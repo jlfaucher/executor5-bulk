@@ -181,7 +181,7 @@ uint32_t keyword2rbbs(CSTRING flags)
  *
  * @return A Rexx string object.
  */
- RexxStringObject rbbs2keyword(RexxMethodContext *c, uint32_t flags)
+ RexxStringObject rbbs2keyword(RexxThreadContext *c, uint32_t flags)
 {
     char buf[256];
     *buf = '\0';
@@ -694,7 +694,7 @@ RexxMethod2(RexxObjectPtr, rbbi_setMask, CSTRING, mask, CSELF, prbbi)
  */
 RexxMethod1(RexxStringObject, rbbi_style, CSELF, prbbi)
 {
-    return rbbs2keyword(context, ((LPREBARBANDINFO)prbbi)->fStyle);
+    return rbbs2keyword(context->threadContext, ((LPREBARBANDINFO)prbbi)->fStyle);
 }
 RexxMethod2(RexxObjectPtr, rbbi_setStyle, CSTRING, style, CSELF, prbbi)
 {
@@ -798,6 +798,64 @@ static void genericRbnInvoke(RexxThreadContext *c, pCPlainBaseDialog pcpbd, CSTR
     }
 }
 
+
+/**
+ * Handles the RBN_AUTOBREAK notification.  The user must reply true or false,
+ * true to accept the break, false to reject it.
+ *
+ * @param pcpbd
+ * @param methodName
+ * @param tag
+ * @param lParam
+ *
+ * @return MsgReplyType
+ *
+ * @note  Args to Rexx are:
+ *
+ *        use arg idFrom, bandIndex, wID, style, reBar, itemData, msgID
+ */
+MsgReplyType rbnAutobreak(pCPlainBaseDialog pcpbd, CSTRING methodName, uint32_t tag, LPARAM lParam)
+{
+    RexxThreadContext *c = pcpbd->dlgProcContext;
+
+    MsgReplyType  winReply = ReplyTrue;
+    RexxObjectPtr idFrom   = idFrom2rexxArg(c, lParam);
+    RexxObjectPtr rxRB     = createControlFromHwnd(c, pcpbd, ((NMHDR *)lParam)->hwndFrom, winReBar, true);
+
+    LPNMREBARAUTOBREAK prab = (LPNMREBARAUTOBREAK)lParam;
+
+    uint32_t tmp = (uint32_t)-1;
+    printf("-1 + 1 == %u\n", tmp + 1);
+
+    RexxObjectPtr bandIndex = c->UnsignedInt32(prab->uBand + 1); // could be -1, need to test
+    RexxObjectPtr wID       = c->UnsignedInt32(prab->wID);       // application defined ID
+    RexxObjectPtr style     = rbbs2keyword(c, prab->fStyleCurrent);
+    RexxObjectPtr itemData  = prab->lParam == NULL ? TheNilObj : (RexxObjectPtr)prab->lParam;
+    RexxObjectPtr rxMsgID   = c->UnsignedInt32(prab->uMsg);      // not sure what this is, or if we need it?
+
+    RexxArrayObject args = c->ArrayOfFour(idFrom, bandIndex, wID, style);
+    c->ArrayPut(args, rxRB, 5);
+    c->ArrayPut(args, itemData, 6);
+    c->ArrayPut(args, rxMsgID, 7);
+
+    RexxObjectPtr msgReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
+    msgReply = requiredBooleanReply(c, pcpbd, msgReply, methodName, false);
+
+    prab->fAutoBreak = (msgReply == TheFalseObj ? FALSE : TRUE);
+
+    c->ReleaseLocalReference(idFrom);
+    c->ReleaseLocalReference(bandIndex);
+    c->ReleaseLocalReference(wID);
+    c->ReleaseLocalReference(style);
+    c->ReleaseLocalReference(rxRB);
+    c->ReleaseLocalReference(itemData);
+    c->ReleaseLocalReference(rxMsgID);
+    c->ReleaseLocalReference(args);
+
+    return winReply;
+}
+
+
 /**
  * Sent by a rebar control when the control receives a WM_NCHITTEST message.
  *
@@ -824,8 +882,10 @@ static void genericRbnInvoke(RexxThreadContext *c, pCPlainBaseDialog pcpbd, CSTR
  *           doc for the ReBar NM_NCHITTEST does not say it is filled in.  Do
  *           not send it to Rexx.
  */
-MsgReplyType rbnNcHitTest(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd)
+MsgReplyType rbnNcHitTest(pCPlainBaseDialog pcpbd, CSTRING methodName, uint32_t tag, LPARAM lParam)
 {
+    RexxThreadContext *c = pcpbd->dlgProcContext;
+
     MsgReplyType  winReply = ReplyTrue;
     RexxObjectPtr idFrom   = idFrom2rexxArg(c, lParam);
     RexxObjectPtr rxRB     = createControlFromHwnd(c, pcpbd, ((NMHDR *)lParam)->hwndFrom, winReBar, true);
@@ -857,6 +917,10 @@ MsgReplyType rbnNcHitTest(RexxThreadContext *c, CSTRING methodName, uint32_t tag
     c->ReleaseLocalReference(htWord);
     c->ReleaseLocalReference(rxRB);
     c->ReleaseLocalReference(args);
+    if ( msgReply != NULLOBJECT )
+    {
+        c->ReleaseLocalReference(msgReply);
+    }
 
     return winReply;
 }

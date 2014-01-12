@@ -88,7 +88,7 @@ extern bool          invokeSync(RexxThreadContext *c, pCPlainBaseDialog pcpbd, C
 extern MsgReplyType  invokeDispatch(RexxThreadContext *c, pCPlainBaseDialog pcpbd, CSTRING methodName, RexxArrayObject args);
 extern bool          msgReplyIsGood(RexxThreadContext *c, pCPlainBaseDialog pcpbd, RexxObjectPtr reply, CSTRING methodName, bool clear);
 extern RexxObjectPtr requiredBooleanReply(RexxThreadContext *c, pCPlainBaseDialog pcpbd, RexxObjectPtr reply, CSTRING method, bool clear);
-extern MsgReplyType  genericReleasedCapture(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd, oodControl_t type);
+extern MsgReplyType  genericReleasedCapture(pCPlainBaseDialog pcpbd, CSTRING methodName, uint32_t tag, LPARAM lParam, oodControl_t type);
 extern int32_t       keyword2ncHitTestt(CSTRING keyword);
 extern CSTRING       ncHitTest2string(WPARAM hit);
 extern RexxObjectPtr ncHitTest2string(RexxThreadContext *c, WPARAM hit);
@@ -108,7 +108,8 @@ extern MsgReplyType lvnKeyDown(pCPlainBaseDialog pcpbd, LPARAM lParam, CSTRING m
 extern MsgReplyType lvnNmClick(pCPlainBaseDialog pcpbd, LPARAM lParam, CSTRING methodName, uint32_t tag, uint32_t code);
 
 // ReBar functions.  Defined in oodReBar.cpp:
-extern MsgReplyType rbnNcHitTest(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd);
+extern MsgReplyType rbnNcHitTest(pCPlainBaseDialog pcpbd, CSTRING methodName, uint32_t tag, LPARAM lParam);
+extern MsgReplyType rbnAutobreak(pCPlainBaseDialog pcpbd, CSTRING methodName, uint32_t tag, LPARAM lParam);
 
 // StatusBar functions.  Defined in oodStatusBar.cpp:
 extern MsgReplyType sbnNmClick(pCPlainBaseDialog pcpbd, LPARAM lParam, CSTRING methodName, uint32_t tag, uint32_t code);
