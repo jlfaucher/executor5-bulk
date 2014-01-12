@@ -9148,7 +9148,7 @@ return
 
 ::method onDblClk unguarded
   use arg id, hwnd
-  say "Control" id " has been double-clicked! It's window handle is:" hwnd
+  say "Control" id " has been double-clicked! Its window handle is:" hwnd
 
   return 0
 ]]>
@@ -9430,13 +9430,25 @@ return
     <para>
       <simplelist type='vert' columns='3'>
         <member>AUTOBREAK</member>
-        <member>?</member>
-        <member>?</member>
+        <member>NCHITTEST</member>
+        <member>RELEASEDCAPTURE</member>
         <member>?</member>
       </simplelist>
     </para>
     <variablelist>
       <varlistentry id="kywReBarAUTOBREAK" xreflabel="AUTOBREAK"><term>AUTOBREAK</term>
+      <listitem>
+      <para>
+        xxx
+      </para>
+      </listitem></varlistentry>
+      <varlistentry id="kywReBarNCHITEST" xreflabel="NCHITEST"><term>NCHITEST</term>
+      <listitem>
+      <para>
+        xxx
+      </para>
+      </listitem></varlistentry>
+      <varlistentry id="kywReBarRELEASEDCAPTURE" xreflabel="RELEASEDCAPTURE"><term>RELEASEDCAPTURE</term>
       <listitem>
       <para>
         xxx
@@ -9456,11 +9468,9 @@ return
     <varlistentry><term>willReply [optional]</term>
     <listitem>
     <para>
-      The <link linkend="sctCommonWillReply">willReply</link> argument controls whether the interpreter <link
-      linkend="sctCodingEventHandlers">waits</link>, or does not wait, for the reply from the event handler. The value of
-      this argument can be <computeroutput>.true</computeroutput>, <computeroutput>.false</computeroutput>, or the keyword
-      <emphasis role="italic">sync</emphasis>, case insignificant. The default if the argument is omitted is
-      <computeroutput>.true</computeroutput>
+      The <link linkend="sctCommonWillReply">willReply</link> argument controls how the interpreter invokes the event
+      handler for the connected event. The default if <emphasis role="italic">willReply</emphasis> is omitted is
+      <computeroutput>.true</computeroutput>.
     </para>
     <para>
       For those event notifications that the operating system expects a return value, the <emphasis
@@ -9478,8 +9488,6 @@ return
         <member>MINMAX        </member>
       </simplelist>
     </para>
-    </listitem></varlistentry>
-  </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
@@ -9835,113 +9843,6 @@ return
     notification events are handled internally by the <computeroutput>ResizingAdmin</computeroutput> object.
   </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Event Handler:</emphasis></term>
-  <listitem>
-  <para>
-    The event handler for the sizing event is invoked when the user is dragging the sizing border of the dialog to
-    change the size of the dialog. The programmer must reply <computeroutput>.true</computeroutput> or
-    <computeroutput>.false</computeroutput> to this notification.
-  </para>
-  <para>
-    The event handler receives 2 arguments. The first argument is a <computeroutput>Rect</computeroutput> object with
-    the coordinates of the new size for the dialog. The programmer can change the coordinates in the
-    <computeroutput>Rect</computeroutput> object and reply <computeroutput>.true</computeroutput>. This causes the
-    dialog to be resized to the changed coordinates in the <computeroutput>Rect</computeroutput> object rather than the
-    coordinates originally specified.
-  </para>
-  <para>
-    If the programmer replies <computeroutput>.false</computeroutput>, then any changes to the coordinates in the
-    <computeroutput>Rect</computeroutput> object are ignored and the dialog's size is changed to the size originally
-    specified.
-  </para>
-  <para>
-    A typical event handler would look like this:
-  </para>
-
-<programlisting>
-<![CDATA[
-::method onResizing unguarded
-  use arg rect, direction
-  ...
-  return boolean
-]]>
-</programlisting>
-  <para>
-    The arguments to the event handler are:
-    <variablelist>
-      <varlistentry><term>rect</term>
-      <listitem>
-      <para>
-        A <computeroutput>Rect</computeroutput> object that specifies the size the dialog is about to be changed to.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term>direction</term>
-      <listitem>
-      <para>
-        A keyword that specifies which edge of the dialog window is being sized. The keyword will be exactly one of the
-        following:
-      </para>
-      <para>
-        <simplelist type='vert' columns='3'>
-          <member>BOTTOM</member>   <member>BOTTOMLEFT</member> <member>BOTTOMLEFT</member>
-          <member>LEFT</member>     <member>RIGHT</member>      <member>TOP</member>
-          <member>TOPLEFT</member>  <member>TOPRIGHT</member>
-        </simplelist>
-      </para>
-      <variablelist>
-        <varlistentry><term>BOTTOM</term>
-        <listitem>
-        <para>
-          The bottom edge is being dragged.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>BOTTOMLEFT</term>
-        <listitem>
-        <para>
-          The bottom-left corner is being dragged.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>BOTTOMRIGHT</term>
-        <listitem>
-        <para>
-          The bottom-right corner is being dragged.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>LEFT</term>
-        <listitem>
-        <para>
-          The left edge is being dragged.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>RIGHT</term>
-        <listitem>
-        <para>
-          The right edge is being dragged.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>TOP</term>
-        <listitem>
-        <para>
-          The top edge is being dragged.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>TOPLEFT</term>
-        <listitem>
-        <para>
-          The top-left corner is being dragged.
-        </para>
-        </listitem></varlistentry>
-        <varlistentry><term>TOPRIGHT</term>
-        <listitem>
-        <para>
-          The top-right corner is being dragged.
-        </para>
-        </listitem></varlistentry>
-      </variablelist>
-      </listitem></varlistentry>
-    </variablelist>
-  </para>
-  </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details:</emphasis></term>
   <listitem>
   <para>
@@ -10125,31 +10026,32 @@ return
 
 <programlisting>
 <![CDATA[
+
 ::method onResizing unguarded
   expose minWidth minHeight
   use arg r, direction
 
   select
     when direction == 'TOP' then do
-      if r~bottom - r~top < minHeight then do
+      if minHeight > r~bottom - r~top then do
         r~top = r~bottom - minHeight
         return .true
       end
     end
     when direction == 'BOTTOM' then do
-      if r~bottom - r~top < minHeight then do
+      if minHeight > r~bottom - r~top then do
         r~bottom = r~top + minHeight
         return .true
       end
     end
     when direction == 'LEFT' then do
-      if r~right - r~left < minWidth then do
+      if minWidth > r~right - r~left then do
         r~left = r~right - minWidth
         return .true
       end
     end
     when direction == 'RIGHT' then do
-      if r~right - r~left < minWidth then do
+      if minWidth > r~right - r~left then do
         r~right = r~left + minWidth
         return .true
       end
@@ -10157,12 +10059,12 @@ return
     when direction == 'BOTTOMLEFT' then do
       didChange = .false
 
-      if r~bottom - r~top < minHeight then do
+      if minHeight > r~bottom - r~top then do
         r~bottom = r~top + minHeight
         didChange = .true
       end
 
-      if r~right - r~left < minWidth then do
+      if minWidth > r~right - r~left then do
         r~left = r~right - minWidth
         didChange = .true
       end
@@ -10172,12 +10074,12 @@ return
     when direction == 'BOTTOMRIGHT' then do
       didChange = .false
 
-      if r~bottom - r~top < minHeight then do
+      if minHeight > r~bottom - r~top then do
         r~bottom = r~top + minHeight
         didChange = .true
       end
 
-      if r~right - r~left < minWidth then do
+      if minWidth > r~right - r~left then do
         r~right = r~left + minWidth
         didChange = .true
       end
@@ -10187,12 +10089,12 @@ return
     when direction == 'TOPLEFT' then do
       didChange = .false
 
-      if r~bottom - r~top < minHeight then do
+      if minHeight > r~bottom - r~top then do
         r~top = r~bottom - minHeight
         didChange = .true
       end
 
-      if r~right - r~left < minWidth then do
+      if minWidth > r~right - r~left then do
         r~left = r~right - minWidth
         didChange = .true
       end
@@ -10202,12 +10104,12 @@ return
     when direction == 'TOPRIGHT' then do
       didChange = .false
 
-      if r~bottom - r~top < minHeight then do
+      if minHeight > r~bottom - r~top then do
         r~top = r~bottom - minHeight
         didChange = .true
       end
 
-      if r~right - r~left < minWidth then do
+      if minWidth > r~right - r~left then do
         r~right = r~left + minWidth
         didChange = .true
       end
@@ -10219,6 +10121,7 @@ return
   end
   -- End select
   return .false
+
 ]]>
 </programlisting>
   </para>
@@ -10227,7 +10130,7 @@ return
 
 </section>  <!-- End Resizing Event Handler -->
 
-</section>  <!-- End EventNotification::connectResizing() -->
+</section>  <!-- End EventNotification::connectResizing -->
 
 
 <section id="sctConnectingScrollBarEvents"><title>Connecting Scroll Bar Events</title>
@@ -10974,7 +10877,101 @@ return
   </listitem></varlistentry>
 </variablelist>
 
-</section>
+<section id="evtEventNotificationSIZEMOVEENDED" xreflabel="SIZEMOVEENDED"><title>SizeMoveEnded Event Handler</title>
+<indexterm><primary>EventNotification class</primary><secondary>events</secondary><tertiary>SIZEMOVEEDNDED</tertiary></indexterm>
+<para>
+  The event handler for the SizeMoveEnded event is invoked once, and only once, when the user has ended moving or ended
+  sizing a window.
+</para>
+<para>
+  The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthConnectMove"/> method
+  determines how the event handler needs to respond to the notification.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onSizeMoveEnded unguarded
+  use arg
+
+  return 0
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method does not recieve any arguments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    The operaing system ignores any return from this notification. 0 make a good return value.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example uses the resize and the size move ended event together. Rather than redraw the dialog controls for every new
+    size while the user is dragging the dialog border, it waits and only redraws the controls when the user finishes reszing.
+    To do this it sets a flag when the user starts to resize the dialog and then waits for the size move ended event to know
+    that the user has finished:
+
+<programlisting>
+<![CDATA[
+::method onResize unguarded
+  expose u sizing minMaximized lastSizeInfo
+  use arg sizingType, sizeinfo
+
+  -- Save the size information so we know the final size of the dialog.
+  lastSizeInfo = sizeInfo
+
+  -- The size / move ended event does not occur when the user maximizes,
+  -- minimizes, or restores from maximized / minimized.  Because of that, we
+  -- need to redraw the client area under those conditions.
+
+  if sizingType == self~SIZE_MAXIMIZED | sizingType == self~SIZE_MINIMIZED then do
+    minMaximized = .true
+    if sizingType == self~SIZE_MAXIMIZED then do
+      u~resize(self, sizeinfo)
+      self~redrawClient(.true)
+    end
+  end
+  else if sizingType == self~SIZE_RESTORED, minMaximized then do
+    minMaximized = .false
+    u~resize(self, sizeinfo)
+    self~redrawClient(.true)
+  end
+  else do
+    -- We are resizing now.
+    sizing = .true
+  end
+
+  return 0
+
+
+::method onSizeMoveEnded unguarded
+  expose u sizing lastSizeInfo
+
+  -- If we were resizing, force the dialog controls to redraw themselves.
+  if sizing then do
+    u~resize(self, lastSizeInfo)
+    self~redrawClient(.true)
+  end
+
+  -- We are not resizing anymore.
+  sizing = .false
+  return 0
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End SizeMoveEnded Event Handler -->
+
+</section>  <!-- End EventNotification::connecSizeMoveEnded() -->
 
 <section id="mthConnectStaticEvent" xreflabel="connectStaticEvent"><title>connectStaticEvent</title>
 <indexterm><primary>connectStaticEvent</primary></indexterm>
@@ -11243,7 +11240,7 @@ return
 
 </section>  <!-- End General Static Event Handler -->
 
-</section>
+</section>  <!-- End EventNotification::connectStaticEvent() -->
 
 
 <section id="mthConnectStatusBarEvent" xreflabel="connectStatusBarEvent"><title>connectStatusBarEvent</title>
@@ -11289,7 +11286,7 @@ return
       </simplelist>
     </para>
     <variablelist>
-      <varlistentry id="kywStatusBarCLICK" xreflabel="CLICK"><term>CLICK</term>
+      <varlistentry id="kywStatusBarCLICK" xreflabel="CLICK"><term><link linkend="evtStatusBarGeneral">CLICK</link></term>
       <listitem>
       <para>
         Sent by a status bar control to notify the dialog that the user has clicked the left mouse button within the
@@ -11297,7 +11294,7 @@ return
         processing by the operating system. Return false to allow default processing of the click.
       </para>
       </listitem></varlistentry>
-      <varlistentry id="kywStatusBarDBLCLK" xreflabel="DBLCLK"><term>DBLCLK</term>
+      <varlistentry id="kywStatusBarDBLCLK" xreflabel="DBLCLK"><term><link linkend="evtStatusBarGeneral">DBLCLK</link></term>
       <listitem>
       <para>
         Sent by a status bar control to notify the dialog that the user has double-clicked the left mouse button within the
@@ -11305,7 +11302,7 @@ return
         processing by the operating system. Return false to allow default processing of the click.
       </para>
       </listitem></varlistentry>
-      <varlistentry id="kywStatusBarRCLICK" xreflabel="RCLICK"><term>RCLICK</term>
+      <varlistentry id="kywStatusBarRCLICK" xreflabel="RCLICK"><term><link linkend="evtStatusBarGeneral">RCLICK</link></term>
       <listitem>
       <para>
         Sent by a status bar control to notify the dialog that the user has clicked the right mouse button within the
@@ -11313,7 +11310,7 @@ return
         processing by the operating system. Return false to allow default processing of the click.
       </para>
       </listitem></varlistentry>
-      <varlistentry id="kywStatusBarRDBLCLK" xreflabel="RDBLCLK"><term>RDBLCLK</term>
+      <varlistentry id="kywStatusBarRDBLCLK" xreflabel="RDBLCLK"><term><link linkend="evtStatusBarGeneral">RDBLCLK</link></term>
       <listitem>
       <para>
         Sent by a status bar control to notify the dialog that the user has double-clicked the right mouse button within the
@@ -11321,7 +11318,7 @@ return
         processing by the operating system. Return false to allow default processing of the click.
       </para>
       </listitem></varlistentry>
-      <varlistentry id="kywStatusBarSIMPLEMODECHANGE" xreflabel="SIMPLEMODECHANGE"><term>SIMPLEMODECHANGE</term>
+      <varlistentry id="kywStatusBarSIMPLEMODECHANGE" xreflabel="SIMPLEMODECHANGE"><term><xref linkend="evtStatusBarSIMPLEMODECHANGE"/></term>
       <listitem>
       <para>
         Sent by a status bar control when the simple mode changes due to the invocation of the <xref linkend="mthSimple"/>
@@ -11342,35 +11339,10 @@ return
     <varlistentry><term>willReply [optional]</term>
     <listitem>
     <para>
-      The <emphasis role="italic">willReply</emphasis> argument controls whether the interpreter <link
-      linkend="sctCodingEventHandlers">waits</link>, or does not wait, for the reply from the event handler. The value of
-      this argument can be <computeroutput>.true</computeroutput>, <computeroutput>.false</computeroutput>, or the keyword
-      <emphasis role="italic">sync</emphasis>, case insignificant. The default if the argument is omitted is
-      <computeroutput>.true</computeroutput>
+      The <link linkend="sctCommonWillReply">willReply</link> argument controls how the interpreter invokes the event
+      handler for the connected event. The default if <emphasis role="italic">willReply</emphasis> is omitted is
+      <computeroutput>.false</computeroutput>.
     </para>
-    <variablelist>
-      <varlistentry><term><emphasis role="bold">.true</emphasis></term>
-      <listitem>
-      <para>
-        The interpreter waits for the return from the event handler and the event handler <emphasis
-        role="italic">must</emphasis> return a value.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term><emphasis role="bold">.false</emphasis></term>
-      <listitem>
-      <para>
-        The interpreter does not wait for the return from the event handler. Because of this any return from the event
-        handler is discarded.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term><emphasis role="bold">sync</emphasis></term>
-      <listitem>
-      <para>
-        The interpreter waits until the event handler method returns, but ignores the return value. The event handler is not
-        required to return a value, but good practice would be to always return a value from an event handler.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
     <para>
       For those event notifications that the operating system expects a return value, the <emphasis
       role="italic">willReply</emphasis> argument is ignored. For these events, the event handler must always return a value
@@ -11383,7 +11355,6 @@ return
         <member>DBLCLK          </member>
         <member>RCLICK          </member>
         <member>RDBLCLK         </member>
-        <member>SIMPLEMODECHANGE</member>
       </simplelist>
     </para>
     </listitem></varlistentry>
@@ -11417,7 +11388,213 @@ return
     The underlying dialog receives the SBN_* messages as the notifications for the status bar events.
   </para>
   </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example shows the programmer connecting left and right mouse clicks, along with a simple mode change to the
+    status bar in the application:
+
+<programlisting>
+<![CDATA[
+::method initDialog
+
+  self~connectStatusBarEvent(IDC_STATUSBAR, "RCLICK", onRightClick)
+  self~connectStatusBarEvent(IDC_STATUSBAR, "CLICK", onClick)
+  self~connectStatusBarEvent(IDC_STATUSBAR, "SIMPLEMODECHANGE", onModeChange)
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
 </variablelist>
+
+<section id="evtStatusBarGeneral" xreflabel="General"><title>General StatusBar Mouse Click Event Handler</title>
+<indexterm><primary>StatusBar class</primary><secondary>events</secondary><tertiary>General</tertiary></indexterm>
+<indexterm><primary>StatusBar class</primary><secondary>events</secondary><tertiary>CLICK</tertiary></indexterm>
+<indexterm><primary>StatusBar class</primary><secondary>events</secondary><tertiary>DBLCLK</tertiary></indexterm>
+<indexterm><primary>StatusBar class</primary><secondary>events</secondary><tertiary>RCLICK</tertiary></indexterm>
+<indexterm><primary>StatusBar class</primary><secondary>events</secondary><tertiary>RDBLCLK</tertiary></indexterm>
+<para>
+  A number of the statusbar events related to mouse clicks are processed internally by ooDialog in the same manner. The event
+  handlers for these events are sent the same arguments and are essentially coded the same way. This <emphasis
+  role="italic">general</emphasis> event handler is described here for the CLICK, DBLCLK, RCLICK, and RDBLCLK events. The
+  description for event keyword in the <xref linkend="mthConnectStatusBarEvent"/> documentation details when each event will
+  invoke this event handler.
+</para>
+<para>
+  The event handler must always reply either true or false to respond to these notification.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onStatusBarClick unguarded
+  use arg id, nCode, index, pt, statusBar
+
+  return .true
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves 5 arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The numeric resource ID of the statusbar sending the notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>notifyCode</term>
+    <listitem>
+    <para>
+      The numeric notification code of the event that caused the notification to be sent. Each dialog control has its own
+      specific notification codes.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>index</term>
+    <listitem>
+    <para>
+      The one-based index of the section that was clicked.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>pt</term>
+    <listitem>
+    <para>
+      A <xref linkend="clsPoint"/> object that specifies the location of the click. Not that MSDN says this point is in
+      screen <xref linkend="defScreenCoordinates"/>, but from experimentation it appears to actually be in client
+      co-ordinates.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>statusBar</term>
+    <listitem>
+    <para>
+      The Rexx status bar object that represents the underlying dialog control that sent the notification. It is possible
+      this will be the <computeroutput>.nil</computeroutput> object if some error happened, but this is very unlikely.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    The event handler must return true or false. Return true to indicate that the mouse click was handled and suppress
+    default processing by the operating system. Return false to allow default processing of the click.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example has a status bar divided into 4 sections. The fourth section allows the user to toggle between
+    simple status bar mode and normal by right clicking on section 4. Note that when the status bar is in simple mode, the
+    index sent is 256:
+
+<programlisting>
+<![CDATA[
+::method onRightClick unguarded
+  use arg id, nCode, index, pt, sb
+
+  if index == 4 | index = 256 then do
+    if sb~isSimple then sb~simple(.false)
+    else sb~simple(.true)
+  end
+
+  return .true
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End General StatusBar Event Handler -->
+
+<section id="evtStatusBarSIMPLEMODECHANGE" xreflabel="SIMPLEMODECHANGE"><title>SimpleModeChange Event Handler</title>
+<indexterm><primary>StatusBar class</primary><secondary>events</secondary><tertiary>SIMPLEMODECHANGE</tertiary></indexterm>
+<para>
+  The event handler for the simple mode change event is invoked when the simple mode of the statusbar changes due to a <xref
+  linkend="mthSimple"/> message.
+</para>
+<para>
+  The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthConnectStatusBarEvent"/> method
+  determines how the event handler needs to respond to the notification.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onModeChange unguarded
+  use arg id, code, sb
+
+  return 0
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves 3 arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The numeric resource ID of the statusbar sending the notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>notifyCode</term>
+    <listitem>
+    <para>
+      The numeric notification code of the event that caused the notification to be sent.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>controlObj</term>
+    <listitem>
+    <para>
+      The Rexx dialog control object that represents the underlying dialog control that sent the notification. It is possible
+      this will be the <computeroutput>.nil</computeroutput> object if some error happened, but this is very unlikely.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    The operating system ignores the return from this notification. 0 make a good return value.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example comes from an application that runs in <emphasis role="italic">basic</emphasis> and in a <emphasis
+    role="italic">advance</emphasis> mode. The status bar for the application contains a short cut to swtich modes by double
+    clicking on a section in the status bar, using the F3 key, or the mode can be switched from the menu. No matter which
+    method is used, the application switches mode by invoking the <xref linkend="mthSimple"/> method of the status bar.
+    Therefore all the work of swithcing modes is done in th simple mode change event handler:
+
+<programlisting>
+<![CDATA[
+::method onModeChange unguarded
+  use arg id, code, sb
+
+  if sb~isSimple then do
+      self~statusBarUpdates = 'off'
+      self~setSimpleTasks
+      self~useWizrds = .true
+  end
+  else do
+      self~statusBarUpdates = 'on'
+      self~useAdavncedTasks
+      self~useWizrds = .false
+  end
+  return 0
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End SimpleModeChange Event Handler -->
 
 </section>  <!-- End EventNotification::connectStatusBarEvent() -->
 
