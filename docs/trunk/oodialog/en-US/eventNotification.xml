@@ -9631,12 +9631,18 @@ return
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
   <listitem>
   <para>
-    The following example ...
+    The following example connects several rebar events in the <emphasis role="italic">initDialog</emphasis> method:
 
 <programlisting>
 <![CDATA[
+::method initDialog
 
+  self~connectReBarEvent(IDC_RBAR, "RELEASEDCAPTURE", onRelease, sync)
+  self~connectReBarEvent(IDC_RBAR, "NCHITTEST", onNcHitTest)
+  self~connectReBarEvent(IDC_RBAR, "AUTOBREAK", onBreak)
 
+  rb = self~newReBar(IDC_RBAR)
+  ...
 ]]>
 </programlisting>
   </para>
@@ -9662,7 +9668,7 @@ return
 ::method onNcHitTest unguarded
   use arg id, bandIndex, pos, hit, rebar
 
-  return zz
+  return 'CAPTION'
 ]]>
 </programlisting>
 
@@ -11874,9 +11880,9 @@ onRelease() id: 1003 reBar: a ReBar
   <para>
     The following example comes from an application that runs in <emphasis role="italic">basic</emphasis> and in a <emphasis
     role="italic">advance</emphasis> mode. The status bar for the application contains a short cut to swtich modes by double
-    clicking on a section in the status bar, using the F3 key, or the mode can be switched from the menu. No matter which
-    method is used, the application switches mode by invoking the <xref linkend="mthSimple"/> method of the status bar.
-    Therefore all the work of swithcing modes is done in th simple mode change event handler:
+    clicking on a section in the status bar. The user can also switch modes with the F3 key, or from the menu. No matter
+    which method is used, the application switches mode by invoking the <xref linkend="mthSimple"/> method of the
+    status bar. Therefore all the work of switching modes is done in th simple mode change event handler:
 
 <programlisting>
 <![CDATA[
@@ -12334,10 +12340,40 @@ onRelease() id: 1003 reBar: a ReBar
     </para>
     <para>
       <simplelist type='vert' columns='3'>
-        <member>?</member>
-        <member>?</member>
-        <member>?</member>
-        <member>?</member>
+        <member>BEGINADJUST   </member>
+        <member>BEGINDRAG     </member>
+        <member>CHAR          </member>
+        <member>CLICK         </member>
+        <member>CUSTHELP      </member>
+        <member>DBLCLK        </member>
+        <member>DELETINGBUTTON</member>
+        <member>DRAGOUT       </member>
+        <member>DRAGOVER      </member>
+        <member>DROPDOWN      </member>
+        <member>DUPACCELERATOR</member>
+        <member>ENDADJUST     </member>
+        <member>ENDDRAG       </member>
+        <member>GETBUTTONINFO </member>
+        <member>GETDISPINFO   </member>
+        <member>GETINFOTIP    </member>
+        <member>GETOBJECT     </member>
+        <member>HOTITEMCHANGE </member>
+        <member>INITCUSTOMIZE </member>
+        <member>KEYDOWN       </member>
+        <member>LDOWN         </member>
+        <member>MAPACCELERATOR</member>
+        <member>QUERYDELETE   </member>
+        <member>QUERYINSERT   </member>
+        <member>RCLICK        </member>
+        <member>RDBLCLK       </member>
+        <member>RELEASEDCAPTURE</member>
+        <member>RESET         </member>
+        <member>RESTORE       </member>
+        <member>SAVE          </member>
+        <member>TOOLTIPSCREATED</member>
+        <member>TOOLBARCHANGE </member>
+        <member>WRAPACCELERATOR</member>
+        <member>WRAPHOTITEM   </member>
       </simplelist>
     </para>
     <variablelist>
@@ -12361,35 +12397,10 @@ onRelease() id: 1003 reBar: a ReBar
     <varlistentry><term>willReply [optional]</term>
     <listitem>
     <para>
-      The <emphasis role="italic">willReply</emphasis> argument controls whether the interpreter <link
-      linkend="sctCodingEventHandlers">waits</link>, or does not wait, for the reply from the event handler. The value of
-      this argument can be <computeroutput>.true</computeroutput>, <computeroutput>.false</computeroutput>, or the keyword
-      <emphasis role="italic">sync</emphasis>, case insignificant. The default if the argument is omitted is
-      <computeroutput>.true</computeroutput>
+      The <link linkend="sctCommonWillReply">willReply</link> argument controls how the interpreter invokes the event
+      handler for the connected event. The default if <emphasis role="italic">willReply</emphasis> is omitted is
+      <computeroutput>.true</computeroutput>.
     </para>
-    <variablelist>
-      <varlistentry><term><emphasis role="bold">.true</emphasis></term>
-      <listitem>
-      <para>
-        The interpreter waits for the return from the event handler and the event handler <emphasis
-        role="italic">must</emphasis> return a value.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term><emphasis role="bold">.false</emphasis></term>
-      <listitem>
-      <para>
-        The interpreter does not wait for the return from the event handler. Because of this any return from the event
-        handler is discarded.
-      </para>
-      </listitem></varlistentry>
-      <varlistentry><term><emphasis role="bold">sync</emphasis></term>
-      <listitem>
-      <para>
-        The interpreter waits until the event handler method returns, but ignores the return value. The event handler is not
-        required to return a value, but good practice would be to always return a value from an event handler.
-      </para>
-      </listitem></varlistentry>
-    </variablelist>
     <para>
       For those event notifications that the operating system expects a return value, the <emphasis
       role="italic">willReply</emphasis> argument is ignored. For these events, the event handler must always return a value
