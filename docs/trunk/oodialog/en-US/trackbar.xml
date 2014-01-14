@@ -104,8 +104,7 @@
   with <computeroutput>TrackBar</computeroutput> objects, including the pertinent methods from other classes:
 </para>
 
-<table id="tblTrackBarMethods" frame="all">
-<title>Trackbar Instance Methods</title>
+<table id="tblTrackBarMethods" frame="all"> <title>Trackbar Instance Methods</title>
 <tgroup cols="2">
 <colspec colwidth="1*" />
 <colspec colwidth="4*" />
@@ -131,6 +130,18 @@
 <row>
 <entry><xref linkend="tmthConnectTrackBarEvent"/></entry>
 <entry>Connects trackbar event notifications to a method in the Rexx dialog object</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Constant</emphasis></entry>
+<entry align="center"><emphasis role="bold">Methods</emphasis></entry>
+</row>
+<row>
+<entry><link linkend="sctConstantsClsTrackBar">constants</link></entry>
+<entry>The <computeroutput>TrackBar</computeroutput> class provides a number of constant values used to decode the reason for <xref linkend="evtTrackBarMOVE"/> event notification.</entry>
+</row>
+<row>
+<entry align="center"><emphasis role="bold">Instance</emphasis></entry>
+<entry align="center"><emphasis role="bold">Methods</emphasis></entry>
 </row>
 <row>
 <entry><xref linkend="mthClearSelRange"/></entry>
@@ -218,6 +229,67 @@
 </row>
 </tbody></tgroup>
 </table>
+</section>
+
+<section id="sctConstantsClsCustomDraw" xreflabel="CustomDraw constants"><title>Constants</title>
+<indexterm><primary>constant methods</primary><secondary>TrackBar class</secondary></indexterm>
+<indexterm><primary>TrackBar class</primary><secondary>constants</secondary></indexterm>
+<para>
+  A trackbar notifies the owner dialog of user interaction by sending an event notification to the dialog. This <xref
+  linkend="evtTrackBarMOVE"/> event can be connected through the <xref linkend="mthConnectTrackBarEvent"/> method. Part of
+  the information sent the the event handler is the reason for the notifcation. The following table lists the trackbar
+  notification contstans and the events (virtual key codes or mouse events) that cause the notifications to be sent.
+</para>
+<table id="tblTrackBarConstants" frame="all"> <title>Trackbar Constants</title>
+<tgroup cols="2">
+<colspec colwidth="1*" />
+<colspec colwidth="4*" />
+<thead>
+<row>
+<entry>Constant</entry>
+<entry>Event Notification Reason</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>UP</entry>
+<entry>The virtual LEFT or UP keys</entry>
+</row>
+<row>
+<entry>DOWN</entry>
+<entry>The virtual RIGHT or DOWN keys.</entry>
+</row>
+<row>
+<entry>PAGEUP</entry>
+<entry>The PRIOR virtual key (the user clicked the channel above or to the left of the slider.)</entry>
+</row>
+<row>
+<entry>PAGEDOWN</entry>
+<entry>The virtual NEXT key (the user clicked the channel below or to the right of the slider.</entry>
+</row>
+<row>
+<entry>POSITION</entry>
+<entry>Left mouse button up, following a THUMBTRACK notification message.</entry>
+</row>
+<row>
+<entry>DRAG</entry>
+<entry>Slider movement (the user dragged the slider with the mouse.)</entry>
+</row>
+<row>
+<entry>TOP</entry>
+<entry>The RIGHT or DOWN virtual keys'</entry>
+</row>
+<row>
+<entry>BOTTOM</entry>
+<entry>The virtual END key.</entry>
+</row>
+<row>
+<entry>ENDTRACK</entry>
+<entry>KEYUP (the user released a key that sent a relevant virtual key code.)</entry>
+</row>
+</tbody></tgroup>
+</table>
+
 </section>
 
 <section id="tmthNewTrackBar" xreflabel="newTrackBar"><title>newTrackBar (dialog object method)</title>

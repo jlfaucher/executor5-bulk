@@ -12370,17 +12370,227 @@ onRelease() id: 1003 reBar: a ReBar
         <member>RESET         </member>
         <member>RESTORE       </member>
         <member>SAVE          </member>
-        <member>TOOLTIPSCREATED</member>
         <member>TOOLBARCHANGE </member>
         <member>WRAPACCELERATOR</member>
         <member>WRAPHOTITEM   </member>
       </simplelist>
     </para>
     <variablelist>
-      <varlistentry id="kywToolBarBEGINADJUST" xreflabel="BEGINADJUST"><term>BEGINADJUST</term>
+      <varlistentry id="kywToolBarBEGINADJUST" xreflabel="BEGINADJUST"><term><link linkend="evtToolBarGeneral">BEGINADJUST</link></term>
       <listitem>
       <para>
-        xxx
+        Notifies the dialog that the user has begun customizing a toolbar
+      </para>
+      </listitem></varlistentry>
+      <varlistentry id="kywToolBarBEGINDRAG" xreflabel="BEGINDRAG"><term>BEGINDRAG</term>
+      <listitem>
+      <para>
+        Notifies the dialog that the user has begun dragging a button in a toolbar.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry id="kywToolBarCHAR" xreflabel="CHAR"><term>CHAR</term>
+      <listitem>
+      <para>
+        Sent by the toolbar when a character key is pressed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry id="kywToolBarCLICK" xreflabel="CLICK"><term><link linkend="evtToolBarGeneralClick">CLICK</link></term>
+      <listitem>
+      <para>
+        Sent by a toolbar control to notify the dialog that the user has clicked the left mouse button within the
+        control.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry id="kywToolBarCUSTHELP" xreflabel="CUSTHELP"><term><link linkend="evtToolBarGeneral">CUSTHELP</link></term>
+      <listitem>
+      <para>
+        Notifies the dialog that the user has chosen the Help button in the Customize Toolbar dialog box.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry id="kywToolBarDBLCLK" xreflabel="DBLCLK"><term><link linkend="evtToolBarGeneralClick">DBLCLK</link></term>
+      <listitem>
+      <para>
+        Sent by a toolbar control to notify the dialog that the user has double-clicked the left mouse button within the
+        control.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry id="kywToolBarDELETINGBUTTON" xreflabel="DELETINGBUTTON"><term>DELETINGBUTTON</term>
+      <listitem>
+      <para>
+        Sent by a toolbar when a button is about to be deleted.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry id="kywToolBarDUPACCELERATOR" xreflabel="DUPACCELERATOR"><term>DUPACCELERATOR</term>
+      <listitem>
+      <para>
+        Sent by a toolbar to determine whether an accelerator key can be used on two or more active toolbars.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry id="kywToolBarDRAGOUT" xreflabel="DRAGOUT"><term>DRAGOUT</term>
+      <listitem>
+      <para>
+        Sent by a toolbar control when the user clicks a button and then moves the cursor off the button.
+      </para>
+      <para>
+        This notification allows an application to implement drag-and-drop functionality for toolbar buttons. When processing
+        this notification, the application would begin the drag-and-drop operation.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry id="kywToolBarDRAGOVER" xreflabel="DRAGOVER"><term>DRAGOVER</term>
+      <listitem>
+      <para>
+        Sent by a toolbar control to determine whether a <xref linkend="mthMarkButton"/> message should be sent for a button
+        that is being dragged over.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry id="kywToolBarDROPDOWN" xreflabel="DROPDOWN"><term>DROPDOWN</term>
+      <listitem>
+      <para>
+        Sent by a toolbar control when the user clicks a dropdown button.
+      </para>
+      <para>
+        Dropdown buttons can be plain (DROPDOWN style), display an arrow next to the button image (WHOLEDROPDOWN style), or
+        display an arrow that is separated from the image (DRAWDDARROWS extended style). If a separated arrow is used,
+        DROPDOWN is sent only if the user clicks the arrow portion of the button. If the user clicks the main part of the
+        button, a button CLICKED event notification is sent, just as with a standard button. For the other two styles of
+        dropdown button, DROPDOWN is sent when the user clicks any part of the button.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry id="kywToolBarENDDRAG" xreflabel="ENDDRAG"><term>ENDDRAG</term>
+      <listitem>
+      <para>
+        Notifies the dialog that the user has stopped dragging a button in a toolbar.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry id="kywToolBarENDADJUST" xreflabel="ENDADJUST"><term><link linkend="evtToolBarGeneral">ENDADJUST</link></term>
+      <listitem>
+      <para>
+        Notifies the dialog that the user has ended customizing a toolbar.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry id="kywToolBarGETBUTTONINFO" xreflabel="GETBUTTONINFO"><term>GETBUTTONINFO</term>
+      <listitem>
+      <para>
+        Retrieves toolbar customization information and notifies the dialog of any changes being made to the toolbar.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry id="kywToolBarGETDISPINFO" xreflabel="GETDISPINFO"><term>GETDISPINFO</term>
+      <listitem>
+      <para>
+        Retrieves display information for a toolbar item.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry id="kywToolBarGETINFOTIP" xreflabel="GETINFOTIP"><term>GETINFOTIP</term>
+      <listitem>
+      <para>
+        Retrieves infotip information for a toolbar item.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry id="kywToolBarGETOBJECT" xreflabel="GETOBJECT"><term>GETOBJECT</term>
+      <listitem>
+      <para>
+        Sent by a toolbar control that uses the REGISTERDROP style to request a drop target object when the pointer passes
+        over one of its buttons.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry id="kywToolBarHOTITEMCHANGE" xreflabel="HOTITEMCHANGE"><term>HOTITEMCHANGE</term>
+      <listitem>
+      <para>
+        Sent by a toolbar control when the hot (highlighted) item changes.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry id="kywToolBarINITCUSTOMIZE" xreflabel="INITCUSTOMIZE"><term>INITCUSTOMIZE</term>
+      <listitem>
+      <para>
+        Notifies the dialog that customizing has started.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry id="kywToolBarKEYDOWN" xreflabel="KEYDOWN"><term>KEYDOWN</term>
+      <listitem>
+      <para>
+        Sent by a toolbar control when the control has the keyboard focus and the user presses a key.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry id="kywToolBarLDOWN" xreflabel="LDOWN"><term>LDOWN</term>
+      <listitem>
+      <para>
+        Notifies the dialog that the left mouse button has been pressed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry id="kywToolBarMAPACCELERATOR" xreflabel="MAPACCELERATOR"><term>MAPACCELERATOR</term>
+      <listitem>
+      <para>
+        Requests the index of the button in the toolbar corresponding to the specified accelerator character.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry id="kywToolBarQUERYDELETE" xreflabel="QUERYDELETE"><term>QUERYDELETE</term>
+      <listitem>
+      <para>
+        Notifies the dialog whether a button may be deleted from a toolbar while the user is customizing the toolbar. The
+        event handler can accept or refuse the deletion.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry id="kywToolBarQUERYINSERT" xreflabel="QUERYINSERT"><term>QUERYINSERT</term>
+      <listitem>
+      <para>
+        Notifies the dialog that a button may be inserted to the left of the specified button while the user is customizing a
+        toolbar. The event handler can accept or refuse the insertion.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry id="kywToolBarRCLICK" xreflabel="RCLICK"><term><link linkend="evtToolBarGeneralClick">RCLICK</link></term>
+      <listitem>
+      <para>
+        Sent by a toolbar control to notify the dialog that the user has clicked the right mouse button within the
+        control.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry id="kywToolBarRDBLCLK" xreflabel="RDBLCLK"><term><link linkend="evtToolBarGeneralClick">RDBLCLK</link></term>
+      <listitem>
+      <para>
+        Sent by a toolbar control to notify the dialog that the user has double-clicked the right mouse button within the
+        control.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry id="kywToolBarRELEASEDCAPTURE" xreflabel="RELEASEDCAPTURE"><term>RELEASEDCAPTURE</term>
+      <listitem>
+      <para>
+        Notifies the dialog that the toolbar is releasing the mouse capture.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry id="kywToolBarRESET" xreflabel="RESET"><term>RESET</term>
+      <listitem>
+      <para>
+        Notifies the dialog that the user has reset the content of the Customize Toolbar dialog box.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry id="kywToolBarRESTORE" xreflabel="RESTORE"><term>RESTORE</term>
+      <listitem>
+      <para>
+        Notifies the dialog that a toolbar is in the process of being restored.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry id="kywToolBarSAVE" xreflabel="SAVE"><term>SAVE</term>
+      <listitem>
+      <para>
+        Notifies the dialog that a toolbar is in the process of being saved.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry id="kywToolBarTOOLBARCHANGE" xreflabel="TOOLBARCHANGE"><term><link linkend="evtToolBarGeneral">TOOLBARCHANGE</link></term>
+      <listitem>
+      <para>
+        Notifies the dialog that the user has customized a toolbar.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry id="kywToolBarWRAPACCELERATOR" xreflabel="WRAPACCELERATOR"><term>WRAPACCELERATOR</term>
+      <listitem>
+      <para>
+        Requests the index of the button in one or more toolbars corresponding to the specified accelerator character.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry id="kywToolBarWRAPHOTITEM" xreflabel="WRAPHOTITEM"><term>WRAPHOTITEM</term>
+      <listitem>
+      <para>
+        Notifies an application with two or more toolbars that the hot item is about to change.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -12459,6 +12669,185 @@ onRelease() id: 1003 reBar: a ReBar
   </para>
   </listitem></varlistentry>
 </variablelist>
+
+<section id="evtToolBarGeneral" xreflabel="General"><title>General ToolBar Event Handler</title>
+<indexterm><primary>ToolBar class</primary><secondary>events</secondary><tertiary>General</tertiary></indexterm>
+<indexterm><primary>ToolBar class</primary><secondary>events</secondary><tertiary>BEGINADJUST</tertiary></indexterm>
+<indexterm><primary>ToolBar class</primary><secondary>events</secondary><tertiary>CUSTHELP</tertiary></indexterm>
+<indexterm><primary>ToolBar class</primary><secondary>events</secondary><tertiary>ENDJUST</tertiary></indexterm>
+<indexterm><primary>ToolBar class</primary><secondary>events</secondary><tertiary>TOOLBARCHANGE</tertiary></indexterm>
+<para>
+  A number of the toolbar events are processed internally by ooDialog in the same manner. The event handlers for these events
+  are sent the same arguments and are essentially coded the same way. This <emphasis role="italic">general</emphasis> event
+  handler is described here for the BEGINADJUST, CUSTHELP, ENDADJUST, and TOOLBARCHANGE events. The description for event
+  keyword in the <xref linkend="mthConnectStatusBarEvent"/> documentation details when each event will invoke this event
+  handler.
+</para>
+<para>
+  The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthConnectToolBarEvent"/> method
+  determines how the event handler needs to respond to the notification.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onToolBarEvent unguarded
+  use arg id, notifyCode, toolBar
+
+  return .true
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves 3 arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The numeric resource ID of the statusbar sending the notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>notifyCode</term>
+    <listitem>
+    <para>
+      The numeric notification code of the event that caused the notification to be sent. Each dialog control has its own
+      specific notification codes.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>toolBar</term>
+    <listitem>
+    <para>
+      The Rexx toolbar object that represents the underlying dialog control that sent the notification. It is possible this
+      will be the <computeroutput>.nil</computeroutput> object if some error happened, but this is very unlikely.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    The operating system ignores the return value for these events. 0 makes a good value to return.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example
+
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End General ToolBar Event Handler -->
+
+<section id="evtToolBarGeneralClick" xreflabel="General"><title>General ToolBar Mouse Click Event Handler</title>
+<indexterm><primary>ToolBar class</primary><secondary>events</secondary><tertiary>General</tertiary></indexterm>
+<indexterm><primary>ToolBar class</primary><secondary>events</secondary><tertiary>CLICK</tertiary></indexterm>
+<indexterm><primary>ToolBar class</primary><secondary>events</secondary><tertiary>DBLCLK</tertiary></indexterm>
+<indexterm><primary>ToolBar class</primary><secondary>events</secondary><tertiary>RCLICK</tertiary></indexterm>
+<indexterm><primary>ToolBar class</primary><secondary>events</secondary><tertiary>RDBLCLK</tertiary></indexterm>
+<para>
+  A number of the toolbar events related to mouse clicks are processed internally by ooDialog in the same manner. The event
+  handlers for these events are sent the same arguments and are essentially coded the same way. This <emphasis
+  role="italic">general</emphasis> click event handler is described here for the CLICK, DBLCLK, RCLICK, and RDBLCLK events.
+  The description for event keyword in the <xref linkend="mthConnectToolBarEvent"/> documentation details when each event
+  will invoke this event handler.
+</para>
+<para>
+  The event handler must always reply either true or false to respond to these notification.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onToolBarClick unguarded
+  use arg id, nCode, buttonID, pt, toolBar
+
+  return .true
+]]>
+</programlisting>
+
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves 5 arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>id</term>
+    <listitem>
+    <para>
+      The numeric resource ID of the toolbar sending the notification.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>notifyCode</term>
+    <listitem>
+    <para>
+      The numeric notification code of the event that caused the notification to be sent. Each dialog control has its own
+      specific notification codes.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>index</term>
+    <listitem>
+    <para>
+      The resource ID of the button that was clicked, or 0 if the click was not on a button in the toolbar.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>pt</term>
+    <listitem>
+    <para>
+      A <xref linkend="clsPoint"/> object that specifies the location of the click. Not that MSDN says this point is in
+      screen <xref linkend="defScreenCoordinates"/>, but from experimentation it appears to actually be in client
+      co-ordinates.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>toolBar</term>
+    <listitem>
+    <para>
+      The Rexx toolbar object that represents the underlying dialog control that sent the notification. It is possible
+      this will be the <computeroutput>.nil</computeroutput> object if some error happened, but this is very unlikely.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    The event handler must return true or false. Return true to indicate that the mouse click was handled and suppress
+    default processing by the operating system. Return false to allow default processing of the click.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example has a toolbar with 3 buttons. The application allows the user to right click on the buttons to
+    perform an extended action of the buttons purpose. For instance, one button is a File Open button. A regular click opens
+    a file in the default encoding, a right click allows the user to specify the encoding  to open the file:
+
+<programlisting>
+<![CDATA[
+::method onRightClick unguarded
+  use arg id, nCode, buttonID, pt, toolBar
+
+  if buttonID <> 0 then do
+    self~buttonExtendedAction(buttonID, toolBar)
+  end
+
+  return .true
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End General ToolBar Click Event Handler -->
 
 </section>  <!-- End EventNotification::connectToolBarEvent() -->
 
@@ -12556,17 +12945,13 @@ onRelease() id: 1003 reBar: a ReBar
     <varlistentry><term>willReply [optional]</term>
     <listitem>
     <para>
-      The <emphasis role="italic">willReply</emphasis> argument controls whether the interpreter <link
-      linkend="sctCodingEventHandlers">waits</link> for the reply from the event handler, for some of the ToolTip events.
-      The default is <computeroutput>.true</computeroutput>, the interpreter will wait for the reply. If <emphasis
-      role="italic">willReply</emphasis> is <computeroutput>.false</computeroutput>, the interpreter does not wait for the
-      event handling method to return a value.
+      The <link linkend="sctCommonWillReply">willReply</link> argument controls how the interpreter invokes the event
+      handler for the connected event. The default if <emphasis role="italic">willReply</emphasis> is omitted is
+      <computeroutput>.true</computeroutput>.
     </para>
     <para>
-      For the SHOW and NEEDTEXT events, the <emphasis role="italic">willReply</emphasis> argument is ignored. The event
-      handler for those events must always return a value. For the POP and PARSELINKS events, the <emphasis
-      role="italic">willReply</emphasis> argument can be used to specify whether the interpreter requires a reply from the
-      event handler or not.
+      However, for the SHOW and NEEDTEXT events, the <emphasis role="italic">willReply</emphasis> argument is ignored. The
+      event handler for those events must always return a value.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -12608,10 +12993,8 @@ onRelease() id: 1003 reBar: a ReBar
   The event handler for the LINKCLICK event is invoked when the text link inside a Balloon ToolTip is clicked.
 </para>
 <para>
-  By default, the interpreter waits for the return from the event handler for this event and the event handler must return a
-  value. The actual value of the return has no meaning. This behaviour can be changed through the <emphasis
-  role="italic">willReply</emphasis> argument to the <xref linkend="mthConnectToolTipEvent"/> method. If <emphasis
-  role="italic">willReply</emphasis> is false, the interpreter does not wait for the return.
+  The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthConnectToolTipEvent"/> method
+  determines how the event handler needs to respond to the notification.
 </para>
 
 <programlisting>
@@ -12673,9 +13056,9 @@ onRelease() id: 1003 reBar: a ReBar
 <programlisting>
 <![CDATA[
 ::method onNeedText unguarded
-  use arg
+  use arg toolID, toolTip, info
 
-  return zz
+  return .true
 ]]>
 </programlisting>
 
@@ -12686,14 +13069,14 @@ onRelease() id: 1003 reBar: a ReBar
     The event handling method recieves 3 arguments:
   </para>
   <variablelist>
-    <varlistentry><term>rxToolID</term>
+    <varlistentry><term>toolID</term>
     <listitem>
     <para>
       The Rexx object used as the second part of the tool <link linkend="sctToolIdentification">identification</link> the
       operating system uses. This can be the Rexx dialog control object or the numeric ID that identifies the tool.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>rxToolTip</term>
+    <varlistentry><term>toolTip</term>
     <listitem>
     <para>
       The Rexx tool tip object.
@@ -12844,10 +13227,8 @@ onRelease() id: 1003 reBar: a ReBar
   The event handler for the POP event is invoked when the ToolTip is about to hide a displayed tip.
 </para>
 <para>
-  By default, the interpreter waits for the return from the event handler for this event and the event handler must return a
-  value. The actual value of the return has no meaning. This behaviour can be changed through the <emphasis
-  role="italic">willReply</emphasis> argument to the <xref linkend="mthConnectToolTipEvent"/> method. If <emphasis
-  role="italic">willReply</emphasis> is false, the interpreter does not wait for the return.
+  The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthConnectToolTipEvent"/> method
+  determines how the event handler needs to respond to the notification.
 </para>
 
 <programlisting>
@@ -12953,8 +13334,8 @@ onRelease() id: 1003 reBar: a ReBar
   <para>
     A ToolTip's window rectangle is somewhat larger than its text display rectangle, and its origin is offset up and to the
     left. If the application needs to accurately position the text display rectangle of a ToolTip, use the <xref
-    linkend="mthAdjustRect"/> method converts a text display rectangle into the corresponding ToolTip window rectangle and
-    vice versa.
+    linkend="mthAdjustRect"/> method. This converts a text display rectangle into the corresponding ToolTip window rectangle
+    and vice versa.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -13000,123 +13381,292 @@ onRelease() id: 1003 reBar: a ReBar
 <indexterm><primary>connectTrackBarEvent</primary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectTrackBarEvent(--id--,--event--+---------------+--)---><
-                                         +-,--methodName-+
-
+>>--connectTrackBarEvent(--id--,--event--+----------+--+-------------+--)------><
+                                         +-,--mName-+  +-,-willReply-+
 ]]>
 </programlisting>
 
-<para>The connectTrackBarEvent method connects a particular
-WM_NOTIFY message for a trackbar control, which is also called a track bar,
-with a method. The WM_NOTIFY message informs the dialog that an event has
-occurred with regard to the trackbar control.</para>
+<para>
+  The <emphasis role="italic">connectTrackBarEvent</emphasis> method connects a particular trackbar POSITION event
+  notification to a method in the Rexx dialog.
+</para>
+
+<note><title>Take Note</title>
+<para>
+  The method can only be called after the underlying trackbar has been created. A good location for this connection is
+  the <xref linkend="mthInitDialog"/>  method.
+</para>
+</note>
 <variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>id</term>
-<listitem><para>The ID of the trackbar control of which a notification is to be connected
-to a method.
-</para></listitem></varlistentry>
-<varlistentry><term>event</term>
-<listitem><para>The event to be connected with a method:
-<variablelist>
-<varlistentry><term>UP</term>
-<listitem><para>The Up or right key has been pressed.
-</para></listitem></varlistentry>
-<varlistentry><term>DOWN</term>
-<listitem><para>The Down or left key has been pressed.
-</para></listitem></varlistentry>
-<varlistentry><term>TOP</term>
-<listitem><para>The Home key has been pressed.
-</para></listitem></varlistentry>
-<varlistentry><term>BOTTOM</term>
-<listitem><para>The End key has been pressed.
-</para></listitem></varlistentry>
-<varlistentry><term>PAGEUP</term>
-<listitem><para>The PgUp key has been pressed.
-</para></listitem></varlistentry>
-<varlistentry><term>PAGEDOWN</term>
-<listitem><para>The PgDn key has been pressed.
-</para></listitem></varlistentry>
-<varlistentry><term>DRAG</term>
-<listitem><para>The trackbar has been moved.
-</para></listitem></varlistentry>
-<varlistentry><term>POSITION</term>
-<listitem><para>The left mouse button has been released, following a DRAG notification.
-</para></listitem></varlistentry>
-<varlistentry><term>ENDTRACK</term>
-<listitem><para>The trackbar movement is completed, that is, the appropriate key or mouse
-button has been released.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term>msgToRaise</term>
-<listitem><para>The message that is to be sent whenever the specified notification is
-received from the trackbar control. Provide a method with a matching name. If
-you omit this argument, the event is preceded by <computeroutput>On</computeroutput>.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
-<listitem><para>The return codes are:
-<variablelist>
-<varlistentry><term>0</term>
-<listitem><para>No error detected.
-</para></listitem></varlistentry>
-<varlistentry><term>-1</term>
-<listitem><para>The resource ID could not be resolved or the event argument is
-incorrect.
-</para></listitem></varlistentry>
-<varlistentry><term>1</term>
-<listitem><para>The messages was not connected correctly.
-</para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="bold">Example:</emphasis></term>
-<listitem><para>The following example connects the POSITION event (release mouse button
-after dragging) with method PosSet, which extracts the new trackbar position
-from the notification arguments and displays it together with the event type
-for POSITION, which should be 4:
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>id [required]</term>
+    <listitem>
+    <para>
+      The resource ID of the trackbar control whose notification is to be connected.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>event [required]</term>
+    <listitem>
+    <para>
+      Exactly one of the following keywords that specifies the event to be connected. Case is not significant:
+    </para>
+    <variablelist>
+      <varlistentry><term>UP</term>
+      <listitem>
+      <para>
+        The Up or right key has been pressed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>DOWN</term>
+      <listitem>
+      <para>
+        The Down or left key has been pressed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>TOP</term>
+      <listitem>
+      <para>
+        The Home key has been pressed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>BOTTOM</term>
+      <listitem>
+      <para>
+        The End key has been pressed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>PAGEUP</term>
+      <listitem>
+      <para>
+        The PgUp key has been pressed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>PAGEDOWN</term>
+      <listitem>
+      <para>
+        The PgDn key has been pressed.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>DRAG</term>
+      <listitem>
+      <para>
+        The thumb of the trackbar has been moved.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>POSITION</term>
+      <listitem><para>
+        The left mouse button has been released, following a DRAG notification.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>ENDTRACK</term>
+      <listitem>
+      <para>
+        The trackbar movement is completed, that is, the appropriate key or mouse button has been released.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </listitem></varlistentry>
+    <varlistentry><term>mName [optional]</term>
+    <listitem>
+    <para>
+      The name of the method to invoke whenever the specified notification is received the dialog. Provide a
+      method with a matching name. If this argument is omitted, the ooDialog framework generates a method name automatically.
+      The name will the event keyword preceded by <computeroutput>on</computeroutput>. For example, <emphasis
+      role="italic">onDrag</emphasis>.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>willReply [optional]</term>
+    <listitem>
+    <para>
+      The <link linkend="sctCommonWillReply">willReply</link> argument controls how the interpreter invokes the event
+      handler for the connected event. The default if <emphasis role="italic">willReply</emphasis> is omitted is
+      <computeroutput>.false</computeroutput>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The return codes are:
+  </para>
+  <variablelist>
+    <varlistentry><term>0</term>
+    <listitem>
+    <para>
+      No error detected.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>-1</term>
+    <listitem>
+    <para>
+      The resource ID could not be resolved or the event argument is incorrect.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>1</term>
+    <listitem>
+    <para>
+      The messages was not connected correctly.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    The following example connects the POSITION event (the mouse button is released dragging) with method posSet, which
+    extracts the new trackbar position from the notification arguments and displays it together with the event type for
+    POSITION, which should be 4:
+
 <programlisting>
 <![CDATA[
-::class MyDlgClass subclass UserDialog
+::class ExampleDialog subclass UserDialog
 
 ::method initDialog
-  self~InitDialog:super(...)
-  self~connectTrackBarEvent("MYSLIDER", "POSITION", posSet)
 
-::method posSet unguarded
-  use arg ev_pos, hnd
-  pos = .DlgUtil~hiWord(ev_pos)
+  self~connectTrackBarEvent("MYSLIDER", "POSITION", onPosition, 'SYNC')
 
-  say "Verify event code (should be 4):" .DlgUtil~loWord(ev_pos)
+::method onPosition unguarded
+  use arg posInfo, hwnd, trackBar
+
+  pos = .DlgUtil~hiWord(posInfo)
+
+  say 'TrackBar new position:          ' pos
+  say "Verify event code (should be 4):" .DlgUtil~loWord(posInfo)
+
+  return 0
+
+/*  Output might be:
+
+TrackBar new position:           80
+Verify event code (should be 4): 4
+TrackBar new position:           0
+Verify event code (should be 4): 4
+TrackBar new position:           29
+Verify event code (should be 4): 4
+
+*/
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+<section id="evtTrackBarMOVE" xreflabel="MOVE"><title>TrackBar Move Event Handler</title>
+<indexterm><primary>TrackBar class</primary><secondary>events</secondary><tertiary>MOVE</tertiary></indexterm>
+<para>
+  The event handler for the Move event is invoked when the user moves the moves the slider in a trackbar.
+</para>
+<para>
+  The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthConnectTrackBarEvent"/> method
+  determines how the event handler needs to respond to the notification.
+</para>
+
+<programlisting>
+<![CDATA[
+::method onPage unguarded
+  use arg posInfo, hwnd, trackBar
 
   return 0
 ]]>
 </programlisting>
-</para></listitem></varlistentry>
-</variablelist>
 
-<note><title>Notes</title><para>
-<orderedlist>
-<listitem><para>The method can only be called after the trackbar was created by Windows.
-A good location for this connection is the initDialog method.</para></listitem>
-<listitem><para>The event-handling methods receive two arguments: an event-position pair
-and the handle to the trackbar control. For some events, you can retrieve the
-trackbar position by extracting the high-oder word. Example:
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The event handling method recieves 3 arguments:
+  </para>
+  <variablelist>
+    <varlistentry><term>posInfo</term>
+    <listitem>
+    <para>
+      The <emphasis role="italic">posInfo</emphasis> argument contains the move event code in the low word of the
+      argument. For the POSITION and the DRAG move events only, the high word contains the position of the thumb box of the
+      slider in the trackbar. For all the other events, the high word will be zero.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>hwnd</term>
+    <listitem>
+    <para>
+      The <emphasis role="italic">hwnd</emphasis> argument is the window handle of the trackbar.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>scrollBar</term>
+    <listitem>
+    <para>
+      The Rexx trackbar object that represents the underlying trackbar that sent the notification.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
+  <listitem>
+  <para>
+    The operating system ignores the return from this notification so 0 makes a good return value.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    For the event notifications where the high word of <emphasis role="italic">posInfo</emphasis> is zero, the position can
+    be gotten directly from the <emphasis role="italic">trackBar</emphasis> object sent as the third argument
+  </para>
+  <para>
+    The <xref linkend="clsTrackBar"/> class provides some <link linkend="sctConstantsClsCustomDraw">constant</link> values
+    as a convenience to help decode the numeric move event code:
+
 <programlisting>
 <![CDATA[
-::method handler unguarded
-  use arg ev_pos, handle
-  position = .DlgUtil~hiWord(ev_pos)
+::method onMove unguarded
+  use arg posInfo, hwnd, trackBar
 
-  return 0
+  code = .DlgUtil~lowWord(posInfo)
+
+  if code == trackBar~UP then do
+    ...
+  end
+  else if code == trackBar~DOWN then do
+    ...
+  end
+  else if code == trackBar~PAPEUP then do
+    ...
+  end
+  --- and so on ...
 ]]>
-</programlisting></para></listitem>
-</orderedlist>
-</para></note>
-</section>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example</emphasis></term>
+  <listitem>
+  <para>
+    The following example sets a static text label to the new position of a trackbar each time a move event occurs.
+
+<programlisting>
+<![CDATA[
+    ::method onEndTrack unguarded
+    expose tbLabels
+    use arg eventInfo, hwndTrackBar, trackBar
+
+    -- Get the resource ID of the trackBar and use that as an index into the
+    -- table of the labels.
+    id = trackBar~id
+    tbLabels[id]~setText(trackBar~pos)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+
+</section>  <!-- End Trackbar General Event Handler -->
+
+</section>  <!-- End EventNotification::connectTrackBarEvent -->
 
 <section id="mthConnectTreeViewEvent" xreflabel="connectTreeViewEvent"><title>connectTreeViewEvent</title>
 <indexterm><primary>connectTreeViewEvent</primary></indexterm>
