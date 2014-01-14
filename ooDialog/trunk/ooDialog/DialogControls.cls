@@ -924,6 +924,17 @@
 ::class 'SliderControl' subclass DialogControl public
 ::class 'TrackBar' subclass SliderControl public
 
+-- TB_xx event notification reason codes
+::constant UP                   0
+::constant DOWN                 1
+::constant PAGEUP               2
+::constant PAGEDOWN             3
+::constant POSITION             4
+::constant DRAG                 5
+::constant TOP                  6
+::constant BOTTOM               7
+::constant ENDTRACK             8
+
 -- TBM_ messages are defined as WM_USER + x
 -- WM_USER == 0x0400
 

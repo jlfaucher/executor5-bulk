@@ -1169,12 +1169,14 @@ MsgReplyType tbnQuery(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LP
 MsgReplyType tbnSimple(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd)
 {
     RexxObjectPtr idFrom = idFrom2rexxArg(c, lParam);
+    RexxObjectPtr nCode  = c->UnsignedInt32(((NMHDR *)lParam)->code);
     RexxObjectPtr rxTB   = createControlFromHwnd(c, pcpbd, ((NMHDR *)lParam)->hwndFrom, winToolBar, true);
-    RexxArrayObject args = c->ArrayOfTwo(idFrom, rxTB);
+    RexxArrayObject args = c->ArrayOfThree(idFrom, nCode, rxTB);
 
     genericTbnInvoke(c, pcpbd, methodName, args, tag);
 
     c->ReleaseLocalReference(idFrom);
+    c->ReleaseLocalReference(nCode);
     c->ReleaseLocalReference(rxTB);
     c->ReleaseLocalReference(args);
 

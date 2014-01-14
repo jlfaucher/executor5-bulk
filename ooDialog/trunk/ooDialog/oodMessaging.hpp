@@ -112,7 +112,6 @@ extern MsgReplyType rbnNcHitTest(pCPlainBaseDialog pcpbd, CSTRING methodName, ui
 extern MsgReplyType rbnAutobreak(pCPlainBaseDialog pcpbd, CSTRING methodName, uint32_t tag, LPARAM lParam);
 
 // StatusBar functions.  Defined in oodStatusBar.cpp:
-extern MsgReplyType sbnNmClick(pCPlainBaseDialog pcpbd, LPARAM lParam, CSTRING methodName, uint32_t tag, uint32_t code);
 extern MsgReplyType sbnSimpleModeChange(pCPlainBaseDialog pcpbd, CSTRING methodName, uint32_t tag, LPARAM lParam);
 
 // ToolBar functions.  Defined in oodToolBar.cpp:

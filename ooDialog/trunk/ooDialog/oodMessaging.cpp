@@ -1657,6 +1657,78 @@ RexxObjectPtr getToolIDFromLParam(RexxThreadContext *c, LPARAM lParam)
 
 
 /**
+ * Generic handle for the mouse click notifications, NM_CLICK, etc.  Currently
+ * this supports ToolBar, and StatusBar.
+ *
+ * @param pcpbd
+ * @param lParam
+ * @param methodName
+ * @param tag
+ * @param code
+ *
+ * @return MsgReplyType
+ *
+ * @remarks  For all of these notifications, the user must reply true or false.
+ *
+ *           For a Status bar, dwItemSpec is the section index, use one-based
+ *           index.  For a ToolBar, dwItemSpec is the resurce id of the button
+ *           pushed.  For both controls dwItemSpec can be -1.
+ *
+ *           use arg id, nCode, index, pt, ctrl
+ */
+MsgReplyType genericNmClick(pCPlainBaseDialog pcpbd, LPARAM lParam, CSTRING methodName, oodControl_t ctrlType, uint32_t code)
+{
+    RexxThreadContext *c    = pcpbd->dlgProcContext;
+    NMMOUSE           *nmm  = (NMMOUSE *)lParam;
+    MsgReplyType      reply = ReplyTrue;
+
+    RexxObjectPtr idFrom       = idFrom2rexxArg(c, lParam);
+    RexxObjectPtr nCode        = notifyCode2rexxArg(c, lParam);
+    RexxObjectPtr rxCtrl       = controlFrom2rexxArg(pcpbd, lParam, ctrlType);
+    RexxObjectPtr rxPt         = rxNewPoint(c, &(nmm->pt));
+
+    RexxObjectPtr rxSectIndex;
+    if ( (intptr_t)nmm->dwItemSpec == -1 )
+    {
+        rxSectIndex = TheZeroObj;
+    }
+    else if ( ctrlType == winStatusBar )
+    {
+        rxSectIndex = c->Uintptr(nmm->dwItemSpec + 1);
+    }
+    else
+    {
+        rxSectIndex = c->Uintptr(nmm->dwItemSpec);
+    }
+
+    RexxArrayObject args = c->ArrayOfFour(idFrom, nCode, rxSectIndex, rxPt);
+    c->ArrayPut(args, rxCtrl, 5);
+
+    RexxObjectPtr msgReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
+
+    msgReply = requiredBooleanReply(c, pcpbd, msgReply, methodName, false);
+    setWindowPtr(pcpbd->hDlg, DWLP_MSGRESULT, msgReply == TheTrueObj ? TRUE : FALSE);
+
+    if ( msgReply == NULL || msgReply == TheFalseObj )
+    {
+        reply = ReplyFalse;
+    }
+
+    if ( rxSectIndex != TheZeroObj )
+    {
+        c->ReleaseLocalReference(rxSectIndex);
+    }
+    c->ReleaseLocalReference(idFrom);
+    c->ReleaseLocalReference(nCode);
+    c->ReleaseLocalReference(rxCtrl);
+    c->ReleaseLocalReference(rxPt);
+    c->ReleaseLocalReference(args);
+
+    return reply;
+}
+
+
+/**
  * Several controls use the NM_RELEASEDCAPTURE notification.  We standardize the
  * args to the event handler by routing things though this generic function.
  *
@@ -2229,7 +2301,7 @@ MsgReplyType processSBN(pCPlainBaseDialog pcpbd, CSTRING methodName, uint32_t ta
         case NM_DBLCLK :
         case NM_RCLICK :
         case NM_RDBLCLK :
-            return sbnNmClick(pcpbd, lParam, methodName, tag, code);
+            return genericNmClick(pcpbd, lParam, methodName, winStatusBar, code);
 
         case SBN_SIMPLEMODECHANGE :
             return sbnSimpleModeChange(pcpbd, methodName, tag, lParam);
@@ -2343,6 +2415,12 @@ MsgReplyType processTBN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
 {
     switch ( code )
     {
+
+        case NM_CLICK :
+        case NM_DBLCLK :
+        case NM_RCLICK :
+        case NM_RDBLCLK :
+            return genericNmClick(pcpbd, lParam, methodName, winToolBar, code);
 
         case TBN_BEGINADJUST :
             return tbnSimple(c, methodName, tag, lParam, pcpbd);
