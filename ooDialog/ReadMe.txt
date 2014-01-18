@@ -28,6 +28,8 @@ ooDialog 4.2.1           ooRexx 4.1.0
 
 ooDialog 4.2.2           ooRexx 4.1.0
 
+ooDialog 4.2.3           ooRexx 4.1.0
+
 The ooDialog version numbers have been decoupled from the ooRexx version
 numbers.  Future versions of ooDialog will be released as independent
 installation packages.  If a new version of ooDialog is available, users
