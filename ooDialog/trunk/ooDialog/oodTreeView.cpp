@@ -495,6 +495,7 @@ MsgReplyType tvnBeginDrag(RexxThreadContext *c, CSTRING methodName, uint32_t tag
 
     LPNMTREEVIEW    pnmtv = (LPNMTREEVIEW)lParam;
     RexxObjectPtr   hItem = pointer2string(c, pnmtv->itemNew.hItem);
+    RexxObjectPtr   rxTv  = createControlFromHwnd(c, pcpbd, pnmtv->hdr.hwndFrom, winTreeView, true);
     RexxArrayObject args;
 
     if ( (tag & TAG_FLAGMASK) == TAG_PRESERVE_OLD || isDefDrag )
@@ -504,45 +505,31 @@ MsgReplyType tvnBeginDrag(RexxThreadContext *c, CSTRING methodName, uint32_t tag
         _snprintf(buff, sizeof(buff), "%d %d", pnmtv->ptDrag.x, pnmtv->ptDrag.y);
 
         RexxStringObject ptStr = c->String(buff);
-        args = c->ArrayOfThree(idFrom, hItem, ptStr);
+        args = c->ArrayOfFour(idFrom, hItem, ptStr, rxTv);
 
-        if ( expectReply )
-        {
-            invokeDirect(c, pcpbd, methodName, args);
-        }
-        else
-        {
-            invokeDispatch(c, pcpbd, methodName, args);
-        }
+        genericInvoke(pcpbd, methodName, args, tag);
 
         c->ReleaseLocalReference(ptStr);
         c->ReleaseLocalReference(hItem);
         c->ReleaseLocalReference(idFrom);
+        c->ReleaseLocalReference(rxTv);
         c->ReleaseLocalReference(args);
 
         return ReplyTrue;
     }
 
-    RexxObjectPtr rxTv     = createControlFromHwnd(c, pcpbd, pnmtv->hdr.hwndFrom, winTreeView, true);
     RexxObjectPtr userData = pnmtv->itemNew.lParam != NULL ? (RexxObjectPtr)pnmtv->itemNew.lParam : TheNilObj;
     RexxObjectPtr rxPt     = rxNewPoint(c, pnmtv->ptDrag.x, pnmtv->ptDrag.y);
 
     args = c->ArrayOfFour(idFrom, hItem, rxPt, rxTv);
     c->ArrayPut(args, userData, 5);
 
-    if ( expectReply )
-    {
-        invokeDirect(c, pcpbd, methodName, args);
-    }
-    else
-    {
-        invokeDispatch(c, pcpbd, methodName, args);
-    }
+    genericInvoke(pcpbd, methodName, args, tag);
 
     c->ReleaseLocalReference(idFrom);
     c->ReleaseLocalReference(hItem);
     c->ReleaseLocalReference(rxPt);
-    c->ReleaseLocalReference(userData);
+    c->ReleaseLocalReference(rxTv);
     c->ReleaseLocalReference(args);
 
     return ReplyTrue;
@@ -567,11 +554,12 @@ MsgReplyType tvnBeginDrag(RexxThreadContext *c, CSTRING methodName, uint32_t tag
  *         invoked. To test for this case, we test for the method to invoke
  *         being defTreeEditStarter.
  *
- *         Otherwise, for the old style event handler we send 2 args: the id of
- *         the tree-view and the handle to the item being edited.  willReply can
- *         only be false for this case, so we always use invokeDispatch().
- *         Editing the label is always allowed for this case, and we do not need
- *         to do anything for it to be allowed.
+ *         Otherwise, for the old style event handler we send 3 args: the id of
+ *         the tree-view, the handle to the item being edited, and the tree view
+ *         object. willReply can only be false for this case, because it wasn't
+ *         used by the programmer, so we always use invokeDispatch(). Editing
+ *         the label is always allowed for this case, and we do not need to do
+ *         anything for it to be allowed.
  *
  *         For the new style event handler, we send 5 args:
  *
@@ -585,9 +573,10 @@ MsgReplyType tvnBeginDrag(RexxThreadContext *c, CSTRING methodName, uint32_t tag
  */
 MsgReplyType tvnBeginLabelEdit(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd)
 {
-    RexxObjectPtr  idFrom      = idFrom2rexxArg(c, lParam);
-    bool           expectReply = (tag & TAG_REPLYFROMREXX) == TAG_REPLYFROMREXX;
     NMTVDISPINFO  *pdi         = (NMTVDISPINFO *)lParam;
+    RexxObjectPtr  idFrom      = idFrom2rexxArg(c, lParam);
+    RexxObjectPtr  rxTv        = createControlFromHwnd(c, pcpbd, pdi->hdr.hwndFrom, winTreeView, true);
+    bool           expectReply = (tag & TAG_REPLYFROMREXX) == TAG_REPLYFROMREXX;
 
     HWND hTv   = pdi->hdr.hwndFrom;
     HWND hEdit = TreeView_GetEditControl(hTv);
@@ -600,19 +589,20 @@ MsgReplyType tvnBeginLabelEdit(RexxThreadContext *c, CSTRING methodName, uint32_
         {
             RexxObjectPtr    hItem   = pointer2string(c, pdi->item.hItem);
 
-            args = c->ArrayOfTwo(idFrom, hItem);
+            args = c->ArrayOfThree(idFrom, hItem, rxTv);
 
             invokeDispatch(c, pcpbd, methodName, args);
 
             c->ReleaseLocalReference(hItem);
+            c->ReleaseLocalReference(rxTv);
             c->ReleaseLocalReference(args);
         }
 
         return ReplyTrue;
     }
 
+    // Note, userData never needs to be released.
     RexxObjectPtr hItem    = pointer2string(c, pdi->item.hItem);
-    RexxObjectPtr rxTv     = createControlFromHwnd(c, pcpbd, pdi->hdr.hwndFrom, winTreeView, true);
     RexxObjectPtr rxEdit   = createControlFromHwnd(c, pcpbd, hEdit, winEdit, false);
     RexxObjectPtr userData = pdi->item.lParam != NULL ? (RexxObjectPtr)pdi->item.lParam : TheNilObj;
 
@@ -633,11 +623,14 @@ MsgReplyType tvnBeginLabelEdit(RexxThreadContext *c, CSTRING methodName, uint32_
     }
     else
     {
-        invokeDispatch(c, pcpbd, methodName, args);
+        // We call genericInvoke() as a shortcut, if tag is reply from Rexx it
+        // is already handled above.
+        genericInvoke(pcpbd, methodName, args, tag);
     }
 
     c->ReleaseLocalReference(idFrom);
     c->ReleaseLocalReference(hItem);
+    c->ReleaseLocalReference(rxTv);
     if ( rxEdit != TheNilObj )
     {
         c->ReleaseLocalReference(rxEdit);
@@ -675,43 +668,37 @@ MsgReplyType tvnBeginLabelEdit(RexxThreadContext *c, CSTRING methodName, uint32_
  */
 MsgReplyType tvnDeleteItem(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd)
 {
-    RexxObjectPtr  idFrom      = idFrom2rexxArg(c, lParam);
-    bool           expectReply = (tag & TAG_REPLYFROMREXX) == TAG_REPLYFROMREXX;
+    LPNMTREEVIEW   pnmtv    = (LPNMTREEVIEW)lParam;
+    RexxObjectPtr  idFrom   = idFrom2rexxArg(c, lParam);
+    RexxObjectPtr  rxTv     = createControlFromHwnd(c, pcpbd, pnmtv->hdr.hwndFrom, winTreeView, true);
 
     RexxArrayObject args;
 
     if ( (tag & TAG_FLAGMASK) == TAG_PRESERVE_OLD )
     {
-        RexxObjectPtr    rxLp    = c->Intptr(lParam);
+        RexxObjectPtr rxLp = c->Intptr(lParam);
 
-        args = c->ArrayOfTwo(idFrom, rxLp);
+        args = c->ArrayOfThree(idFrom, rxLp, rxTv);
         invokeDispatch(c, pcpbd, methodName, args);
 
         c->ReleaseLocalReference(rxLp);
         c->ReleaseLocalReference(idFrom);
+        c->ReleaseLocalReference(rxTv);
         c->ReleaseLocalReference(args);
 
         return ReplyTrue;
     }
 
-    LPNMTREEVIEW  pnmtv    = (LPNMTREEVIEW)lParam;
     RexxObjectPtr hItem    = pointer2string(c, pnmtv->itemOld.hItem);
-    RexxObjectPtr rxTv     = createControlFromHwnd(c, pcpbd, pnmtv->hdr.hwndFrom, winTreeView, true);
     RexxObjectPtr userData = pnmtv->itemOld.lParam != NULL ? (RexxObjectPtr)pnmtv->itemOld.lParam : TheNilObj;
 
     args = c->ArrayOfFour(idFrom, hItem, rxTv, userData);
 
-    if ( expectReply )
-    {
-        invokeDirect(c, pcpbd, methodName, args);
-    }
-    else
-    {
-        invokeDispatch(c, pcpbd, methodName, args);
-    }
+    genericInvoke(pcpbd, methodName, args, tag);
 
     c->ReleaseLocalReference(idFrom);
     c->ReleaseLocalReference(hItem);
+    c->ReleaseLocalReference(rxTv);
     c->ReleaseLocalReference(args);
 
     return ReplyTrue;
@@ -744,6 +731,12 @@ MsgReplyType tvnDeleteItem(RexxThreadContext *c, CSTRING methodName, uint32_t ta
  *         The text is always accepted for this case, the user can not over-ride
  *         this behaviour.
  *
+ *         Since some existing event handlers may have tested for the presence
+ *         or absence of arg 3 to determine if the user canceled or not, we can
+ *         not add as the 3rd arg to the user canceled case. It might be okay to
+ *         add it as a fourth arg to the user did not cancel, but it is probably
+ *         not a good idea, so we don't add it for PRESERVE_OLD at all.
+ *
  *         For the new style event handler, we send 5 args:
  *
  *         use arg id, hItem, text, rxTv, userData
@@ -756,9 +749,9 @@ MsgReplyType tvnDeleteItem(RexxThreadContext *c, CSTRING methodName, uint32_t ta
  */
 MsgReplyType tvnEndLabelEdit(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd)
 {
+    NMTVDISPINFO  *pdi         = (NMTVDISPINFO *)lParam;
     RexxObjectPtr  idFrom      = idFrom2rexxArg(c, lParam);
     bool           expectReply = (tag & TAG_REPLYFROMREXX) == TAG_REPLYFROMREXX;
-    NMTVDISPINFO  *pdi         = (NMTVDISPINFO *)lParam;
 
     RexxArrayObject args;
 
@@ -793,9 +786,10 @@ MsgReplyType tvnEndLabelEdit(RexxThreadContext *c, CSTRING methodName, uint32_t 
         return ReplyTrue;
     }
 
+    MsgReplyType    winReply = ReplyTrue;
+    RexxObjectPtr   rxTv     = createControlFromHwnd(c, pcpbd, pdi->hdr.hwndFrom, winTreeView, true);
     RexxObjectPtr   hItem    = pointer2string(c, pdi->item.hItem);
     RexxObjectPtr   text     = pdi->item.pszText ? c->String(pdi->item.pszText) : TheNilObj;
-    RexxObjectPtr   rxTv     = createControlFromHwnd(c, pcpbd, pdi->hdr.hwndFrom, winTreeView, true);
     RexxObjectPtr   userData = pdi->item.lParam != NULL ? (RexxObjectPtr)pdi->item.lParam : TheNilObj;
 
     args = c->ArrayOfFour(idFrom, hItem, text, rxTv);
@@ -808,28 +802,28 @@ MsgReplyType tvnEndLabelEdit(RexxThreadContext *c, CSTRING methodName, uint32_t 
         msgReply = requiredBooleanReply(c, pcpbd, msgReply, methodName, false);
         if ( msgReply == NULL )
         {
-            return ReplyFalse;
+            winReply = ReplyFalse;
         }
-
-        if ( text != TheNilObj )
+        else if ( text != TheNilObj )
         {
             setWindowPtr(pcpbd->hDlg, DWLP_MSGRESULT, msgReply == TheTrueObj ? TRUE : FALSE);
         }
     }
     else
     {
-        invokeDispatch(c, pcpbd, methodName, args);
+        genericInvoke(pcpbd, methodName, args, tag);
     }
 
     c->ReleaseLocalReference(idFrom);
     c->ReleaseLocalReference(hItem);
+    c->ReleaseLocalReference(rxTv);
     if ( text != TheNilObj )
     {
         c->ReleaseLocalReference(text);
     }
     c->ReleaseLocalReference(args);
 
-    return ReplyTrue;
+    return winReply;
 }
 
 
@@ -847,9 +841,9 @@ MsgReplyType tvnEndLabelEdit(RexxThreadContext *c, CSTRING methodName, uint32_t 
  * @notes  If the user connects this event, then the event handler must return a
  *         value.
  *
- *         We send 5 args to the event handler:
+ *         We send 6 args to the event handler:
  *
- *         use arg id, hItem, curText, maxLen, userData
+ *         use arg id, hItem, curText, maxLen, userData, rxTv
  *
  *         The event handler returns the text to display as the tool tip.
  *         Returning the empty string results in no change to the tool tip text.
@@ -857,9 +851,10 @@ MsgReplyType tvnEndLabelEdit(RexxThreadContext *c, CSTRING methodName, uint32_t 
  */
 MsgReplyType tvnGetInfoTip(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd)
 {
-    RexxObjectPtr   idFrom      = idFrom2rexxArg(c, lParam);
-    bool            expectReply = (tag & TAG_REPLYFROMREXX) == TAG_REPLYFROMREXX;
-    NMTVGETINFOTIP *tip         = (LPNMTVGETINFOTIP)lParam;
+    NMTVGETINFOTIP *tip      = (LPNMTVGETINFOTIP)lParam;
+    RexxObjectPtr   idFrom   = idFrom2rexxArg(c, lParam);
+    RexxObjectPtr   rxTv     = createControlFromHwnd(c, pcpbd, tip->hdr.hwndFrom, winTreeView, true);
+    MsgReplyType    winReply = ReplyTrue;
 
     RexxObjectPtr handle   = pointer2string(c, tip->hItem);
     RexxObjectPtr userData = tip->lParam ? (RexxObjectPtr)tip->lParam : TheNilObj;
@@ -868,27 +863,30 @@ MsgReplyType tvnGetInfoTip(RexxThreadContext *c, CSTRING methodName, uint32_t ta
 
     RexxArrayObject args = c->ArrayOfFour(idFrom, handle, text, len);
     c->ArrayPut(args, userData, 5);
+    c->ArrayPut(args, rxTv, 6);
 
     RexxObjectPtr rxReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
 
-    if ( ! msgReplyIsGood(c, pcpbd, rxReply, methodName, false) )
+    if ( msgReplyIsGood(c, pcpbd, rxReply, methodName, false) )
     {
-        return ReplyFalse;
-    }
-
-    CSTRING newText = c->ObjectToStringValue(rxReply);
-    if ( strlen(newText) > 0 )
-    {
-        int32_t l = _snprintf(tip->pszText, tip->cchTextMax - 1, "%s", newText);
-        if ( l < 0 || l ==  tip->cchTextMax - 1 )
+        CSTRING newText = c->ObjectToStringValue(rxReply);
+        if ( strlen(newText) > 0 )
         {
-            tip->pszText[tip->cchTextMax - 1] = '\0';
+            int32_t l = _snprintf(tip->pszText, tip->cchTextMax - 1, "%s", newText);
+            if ( l < 0 || l ==  tip->cchTextMax - 1 )
+            {
+                tip->pszText[tip->cchTextMax - 1] = '\0';
+            }
         }
+    }
+    else
+    {
+        winReply = ReplyFalse;
     }
 
     c->ReleaseLocalReference(idFrom);
+    c->ReleaseLocalReference(rxTv);
     c->ReleaseLocalReference(handle);
-    c->ReleaseLocalReference(userData);
     c->ReleaseLocalReference(text);
     c->ReleaseLocalReference(len);
     c->ReleaseLocalReference(rxReply);
@@ -910,32 +908,38 @@ MsgReplyType tvnGetInfoTip(RexxThreadContext *c, CSTRING methodName, uint32_t ta
  *
  * @return MsgReplyType
  *
- * @remarks  TVN_ITEMEXPANDING: The Rexx programmer returns .true expanding /
+ * @remarks  We send the same arguments to the event handler for both
+ *           notifications.
+ *
+ *           use arg idFrom, handle, what, extra, rxTv, notifyCode
+ *
+ *           TVN_ITEMEXPANDING: The Rexx programmer returns .true expanding /
  *           collapsing the item is okay, or .false do not allow the expansion /
  *           collapse. The return to Windows is TRUE to prevent the expansion /
  *           collapse
  *
  *           TVN_ITEMEXPANDED: If the Rexx programmer sets 'willReply' to true,
- *           we wait for the reply, but discard the actual reply.  This then has
- *           the 'sync' effect.
+ *           we wait for the reply, but discard the actual reply.
  */
-MsgReplyType tvnItemExpand(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd, uint32_t code)
+MsgReplyType tvnItemExpand(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam,
+                           pCPlainBaseDialog pcpbd, uint32_t code)
 {
-    RexxObjectPtr  idFrom      = idFrom2rexxArg(c, lParam);
-    bool           expectReply = (tag & TAG_REPLYFROMREXX) == TAG_REPLYFROMREXX;
     NMTREEVIEW    *nmtv        = (NMTREEVIEW *)lParam;
+    RexxObjectPtr  idFrom      = idFrom2rexxArg(c, lParam);
+    RexxObjectPtr  handle      = pointer2string(c, nmtv->itemNew.hItem);
+    RexxObjectPtr  rxTv        = createControlFromHwnd(c, pcpbd, nmtv->hdr.hwndFrom, winTreeView, true);
+    RexxObjectPtr  nCode       = c->UnsignedInt32(code);
+    bool           expectReply = (tag & TAG_REPLYFROMREXX) == TAG_REPLYFROMREXX;
 
-    // The arguments are the same whether we wait for the reply or not.
-    RexxObjectPtr handle = pointer2string(c, nmtv->itemNew.hItem);
-    RexxObjectPtr extra  = c->String("");
-    CSTRING       _what  = "ERROR";
+    CSTRING _extra = "";
+    CSTRING _what  = "ERROR";
 
     if ( (nmtv->action & 0xf) == TVE_COLLAPSE )
     {
         _what = "COLLAPSED";
         if ( nmtv->action & TVE_COLLAPSERESET )
         {
-            extra = c->String("RESET");
+            _extra = "RESET";
         }
     }
     else if ( (nmtv->action & 0xf) == TVE_EXPAND )
@@ -943,7 +947,7 @@ MsgReplyType tvnItemExpand(RexxThreadContext *c, CSTRING methodName, uint32_t ta
         _what = "EXPANDED";
         if ( nmtv->action & TVE_EXPANDPARTIAL )
         {
-            extra = c->String("PARTIAL");
+            _extra = "PARTIAL";
         }
     }
     else if ( nmtv->action == TVE_TOGGLE )
@@ -951,8 +955,11 @@ MsgReplyType tvnItemExpand(RexxThreadContext *c, CSTRING methodName, uint32_t ta
         _what = (nmtv->itemNew.state & TVIS_EXPANDED) ? "COLLAPSED" : "EXPANDED";
     }
 
-    RexxStringObject what = c->String(_what);
-    RexxArrayObject  args = c->ArrayOfFour(idFrom, handle, what, extra);
+    RexxStringObject what  = c->String(_what);
+    RexxStringObject extra = c->String(_extra);
+    RexxArrayObject  args  = c->ArrayOfFour(idFrom, handle, what, extra);
+    c->ArrayPut(args, rxTv, 5);
+    c->ArrayPut(args, nCode, 6);
 
     if ( expectReply )
     {
@@ -973,13 +980,15 @@ MsgReplyType tvnItemExpand(RexxThreadContext *c, CSTRING methodName, uint32_t ta
     }
     else
     {
-        invokeDispatch(c, pcpbd, methodName, args);
+        genericInvoke(pcpbd, methodName, args, tag);
     }
 
     c->ReleaseLocalReference(idFrom);
     c->ReleaseLocalReference(handle);
     c->ReleaseLocalReference(what);
     c->ReleaseLocalReference(extra);
+    c->ReleaseLocalReference(rxTv);
+    c->ReleaseLocalReference(nCode);
     c->ReleaseLocalReference(args);
 
     return ReplyTrue;
@@ -999,11 +1008,11 @@ MsgReplyType tvnItemExpand(RexxThreadContext *c, CSTRING methodName, uint32_t ta
  *
  * @notes  If the user uses the KEYDOWN keyword, then the tag preserve is added,
  *         if the user used the KEYDOWNEX keyword then preserve is not added.
- *         However, for both keywords the willReply can be significant.
+ *         For both keywords willReply dicates are we invoke the event handler.
  *
  *         For KEYDOWN, we ignore the return for willReply.
  *
- *         The args sent for KEYDOWN are: id and the virtual key code
+ *         The args sent for KEYDOWN are: id, vKey, rxTv
  *
  *         The args sent for KEYDOWNEX are:
  *
@@ -1016,32 +1025,27 @@ MsgReplyType tvnItemExpand(RexxThreadContext *c, CSTRING methodName, uint32_t ta
 MsgReplyType tvnKeyDown(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd)
 {
     RexxObjectPtr   idFrom      = idFrom2rexxArg(c, lParam);
+    RexxObjectPtr   rxTv        = createControlFromHwnd(c, pcpbd, ((NMHDR *)lParam)->hwndFrom, winTreeView, true);
     bool            expectReply = (tag & TAG_REPLYFROMREXX) == TAG_REPLYFROMREXX;
     uint16_t        vKey        = ((NMTVKEYDOWN *)lParam)->wVKey;
 
     if ( (tag & TAG_FLAGMASK) == TAG_PRESERVE_OLD )
     {
         RexxObjectPtr   rxVKey = c->UnsignedInt32(vKey);
-        RexxArrayObject args   = c->ArrayOfTwo(idFrom, rxVKey);
+        RexxArrayObject args   = c->ArrayOfThree(idFrom, rxVKey, rxTv);
 
-        if ( expectReply )
-        {
-            invokeDirect(c, pcpbd, methodName, args);
-        }
-        else
-        {
-            invokeDispatch(c, pcpbd, methodName, args);
-        }
+        genericInvoke(pcpbd, methodName, args, tag);
 
         c->ReleaseLocalReference(idFrom);
         c->ReleaseLocalReference(rxVKey);
+        c->ReleaseLocalReference(rxTv);
         c->ReleaseLocalReference(args);
 
         return ReplyTrue;
     }
 
-    RexxObjectPtr   rxTV  = createControlFromHwnd(c, pcpbd, ((NMHDR *)lParam)->hwndFrom, winTreeView, true);
-    RexxArrayObject args  = getKeyEventRexxArgs(c, (WPARAM)vKey, false, rxTV);
+    RexxArrayObject args     = getKeyEventRexxArgs(c, (WPARAM)vKey, false, rxTv);
+    MsgReplyType    winReply = ReplyTrue;
 
     if ( expectReply )
     {
@@ -1050,19 +1054,19 @@ MsgReplyType tvnKeyDown(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
         rxReply = requiredBooleanReply(c, pcpbd, rxReply, methodName, false);
         if ( rxReply == NULL )
         {
-            return ReplyFalse;
+            winReply = ReplyFalse;
         }
 
         setWindowPtr(pcpbd->hDlg, DWLP_MSGRESULT, rxReply == TheTrueObj ? 0 : TRUE);
     }
     else
     {
-        invokeDispatch(c, pcpbd, methodName, args);
+        genericInvoke(pcpbd, methodName, args, tag);
     }
 
     releaseKeyEventRexxArgs(c, args);
 
-    return ReplyTrue;
+    return winReply;
 }
 
 

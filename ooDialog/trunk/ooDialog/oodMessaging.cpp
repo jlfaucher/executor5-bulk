@@ -3651,14 +3651,13 @@ static uint32_t _willReplyToTag(RexxMethodContext *context, RexxObjectPtr _willR
         return defaultTrue ? TAG_REPLYFROMREXX : TAG_NOTHING;
     }
 
-    RexxMethodContext *c = context;
     logical_t willReply;
-    if ( c->Logical(_willReply, &willReply) )
+    if ( context->Logical(_willReply, &willReply) )
     {
         return willReply ? TAG_REPLYFROMREXX : TAG_NOTHING;
     }
 
-    CSTRING keyword = c->ObjectToStringValue(_willReply);
+    CSTRING keyword = context->ObjectToStringValue(_willReply);
     if ( StrCmpI(keyword, "SYNC") == 0 )
     {
         return TAG_SYNC;
