@@ -1,0 +1,360 @@
+::*============================================================================
+::*
+::* Rexpand.kml      Syntax Expansion (template filling) for REXX & KEXX coders
+::* ===========
+::*
+::* Coded by Jon Wolfers                                            August 1999
+::*
+::* Version 1.0                                                         25Aug99
+::*         1.01 Do not expand keywords inside comments                 14Jun00
+::*         1.02 Align end with then,when or else when apropriate       06Dec02
+::*         1.03 Allow iff an if construct without else                 12Jan05
+::*         1.04 Add ' ' after (iff) then to allow use of end key       23Apr05/*{1.04}*/
+::*         1.05 Handle ::method                                        21Mar06/*{1.05}*/
+::*         1.06 Handle ['']                                            05Dec08/*{1.06}*/
+::*
+::* [e-mail Sahananda at Windhorse.biz - improvements welcome]
+::*
+::*============================================================================
+::*
+::* Rexpand.kml contains a suite of Kedit Macros which provide Syntax Expansion
+::* facilities for coders in REXX or KEXX.
+::*
+::* These macros imitate the Syntax Expansion facilities provided for REXX
+::* programming with the 'E' editor provided with PC DOS 7.
+::*
+::* When enabled, Rexpand watches for the Keywords IF, DO, SELECT, WHEN & '/*'
+::* and when it sees them it completes the REXX structure, So if it sees a 'DO'
+::* for instance it puts a matching 'END' in.  If it sees an 'IF', it puts in a
+::* 'THEN' & an 'ELSE'.  This makes the task of writing REXX code easier.
+::*
+::*============================================================================
+::*
+::* Rexpand has been tested on KEDIT for Windows V 1.5
+::*
+::* It does not seem to have any overhead on a modest P120 with 16M under W95.
+::*
+::*============================================================================
+::*
+::*  How does it do it?
+::*  ==================
+::*
+::* When Rexpand is active, it watches every time you key in a space to see
+::* if it is appropriate to complete a REXX structure and if so completes it.
+::*
+::*============================================================================
+::*
+::*  How to install it?
+::*  ==================
+::*
+::* To install Rexpand.kml first of all place this file in the USER directory
+::* under your KEDIT directory.
+::*
+::* In order to get KEDIT to load the macros into memory put this line in your
+::* profile (Probably a file called WINPROF.KEX - See Overview of KEDIT
+::* profiles in the online help):
+::*
+::* "define rexpand.kml"
+::*
+::* Now KEDIT will load the macros into memory when you start a KEDIT session.
+::*
+::* Rexpand is now ready to use.
+::*
+::*============================================================================
+::*
+::*  How do I use it?
+::*  ================
+::* Ctrl-E turns Rexpand on or off for the file that you are currently editing.
+::* Normally Rexpand is off when you start editing a file, but if you would
+::* like to start with it turned on put the following line in your Profile
+::* (after the define above):
+::*
+::* "macro rexpand"
+::*
+::* (See also SET REPROFILE in the online help)
+::* Once Rexpand is turned on all you have to do is type one of the activating
+::* keywords [if when do select /*] FOLLOWED by a space and rexpand will
+::* complete the syntax expansion for you.
+::*
+::*============================================================================
+::*
+::*  Insert Mode.
+::*  ============
+::*
+::* Syntax expansion makes most sense when used in insert mode, so Rexpand will
+::* normally put you in insert mode (and let you know that it has) if you are
+::* not.
+::*
+::* If you do not want Rexpand to change the insertmode setting put the
+::* following line in your profile (after the define rexpand.kml line):
+::*
+::* "macro rexpand SUPPRESS"
+::*
+::* If you are happy for Rexpand to set insert mode on but do not want it to
+::* tell you that it is so doing, put this line in your profile (after the
+::* define rexpand.kml line):
+::*
+::* "macro rexpand NOMSG"
+::*
+::* The above lines affect any file you are editing.
+::*
+::*============================================================================
+::*
+::*  Example Profile lines
+::*  =====================
+::*
+::* This is what you might put in your profile:
+::*
+::* if wordpos(ftype.1(),'REX KEX KML')>0              /* REXX specific bits */
+::* then do
+::*    'DEFINE rexpand.kml'                            /* Load Rexpand       */
+::*    'macro  rexpand'                           /* Start with expansion on */
+::*    'macro  rexpand NOMSG' /* No need for messages when insertmode put on */
+::* end
+::*
+::*============================================================================
+::*
+::*  Considerations
+::*  ==============
+::*
+::* Rexpand only pays attention when you type a space, so it will not notice a
+::* 'DO' for example followed imediately by an enter.  In that case type a
+::* space.
+::*
+::* Sometimes when you are editing already written code, Rexpand can be a bit
+::* over enthusiastic putting in extra 'END's etc..  If this happens press
+::* Ctl-E to turn Rexpand off.
+::*
+::* ========================Sample Expansions==================================
+::*
+::* Here are samples of expansions, ^ marks where the cursor ends up.  The
+::* keyword that triggers expansion is in the box.
+::*
+::*                     +--+
+::*                     |DO|
+::*                     +--+
+::*
+::* do ^
+::*    do ^
+::*
+::*    end /* DO */
+::* end /* DO */
+::*
+::* DO ^
+::*
+::* END /* DO */
+::*
+::* (when do follows then or else the end is alligned with them)
+::* if
+::* then do ^
+::*
+::* end /* DO */
+::* else do ^
+::*
+::* end /* DO */
+::*
+::*                     +--+
+::*                     |IF|
+::*                     +--+
+::*
+::* if ^ then
+::* else
+::*
+::* IF ^ THEN
+::* ELSE
+::*
+::* iff becomes
+::* if ^ then
+::*
+::*
+::*                     +------+
+::*                     |SELECT|
+::*                     +------+
+::*
+::* select
+::*    when^
+::*    otherwise
+::*
+::* end /* select */
+::*
+::* (The when will be syntax expanded when you press a space)
+::*
+::*                     +----+
+::*                     |WHEN|
+::*                     +----+
+::*
+::* when ^ then
+::*
+::*                     +--+
+::*                     |/*|
+::*                     +--+
+::*
+::* /* ^ */
+::*
+::*                     +--------+                                             /*{1.05}*/
+::*                     |::method|                                             /*{1.05}*/
+::*                     +--------+                                             /*{1.05}*/
+::*                                                                            /*{1.05}*/
+::* /* --------------------------------------------------------------------- *//*{1.05}*/
+::* ::method ^                                                                 /*{1.05}*/
+::* /* --------------------------------------------------------------------- *//*{1.05}*/
+::*                                                                            /*{1.05}*/
+::*                     +-+                                                    /*{1.06}*/
+::*                     |[|                                                    /*{1.06}*/
+::*                     +-+                                                    /*{1.06}*/
+::*                                                                            /*{1.06}*/
+::* ['^']                                                                      /*{1.06}*/
+::*                                                                            /*{1.06}*/
+::*============================================================================
+::* Rexpand: turns expansion on or off
+:rexpand
+if arg(1,'e')
+then 'editv set rexxexpandins' translate(arg(1))
+else do
+   'editv getf rexxexpand'
+   if rexxexpand='on'
+   then rexxexpand='off'
+   else rexxexpand='on'
+   'editv putf rexxexpand'
+   'MSG REXX syntax expansion turned' rexxexpand||', ctl-e to toggle'
+end
+
+::*============================================================================
+::* ctrl-e: the keyboard shortcut to turn syntax expansion on or off
+:c-e
+'macro rexpand'
+
+::*============================================================================
+::* space: look for & if appropriate expand things
+:space
+
+move=0
+intext = ' '
+'editv getf rexxexpand'
+if rexxexpand='on'
+then do
+   'extract /field/fieldword/'
+   if field.4='TEXT'
+   then do
+      parse upper var fieldword.1 key .
+      parse var field.1 preceding =(field.3) following
+      if field.3=1 then preceding=''
+      select
+         when key='DO' then do
+               if translate(right(preceding,2))='DO' & (lastpos('/'||'*',preceding)<=lastpos('*'||'/',preceding))
+               then do
+                  if words(preceding)>1                                        /*{1.02}*/
+                  then slide=(5)*(wordpos(translate(word(preceding,words(preceding)-1)),'THEN ELSE')>0) /*{1.02}*/
+                  else slide=0                                                 /*{1.02}*/
+                  'input' copies(' ',max(field.3-2,1))
+                  'input' copies(' ',max(field.3-3-slide,0))||word('end END',(key=fieldword.1)+1) '/'||'* DO *'||'/' /*{1.02}*/
+                  'up 2'
+                  'clocate :'||field.3
+                  'macro rexxexpandins'
+               end
+            end
+         when key='IF' then do
+               if translate(right(preceding,2))='IF' & (lastpos('/'||'*',preceding)<=lastpos('*'||'/',preceding))
+               then do
+/*                'cinsert' ' '||word('then THEN',(key=fieldword.1)+1)||' '  *//*{1.04}*/
+                  'input' copies(' ',max(field.3-3,0))||word('then THEN',(key=fieldword.1)+1)||' '
+                  'input' copies(' ',max(field.3-3,0))||word('else ELSE',(key=fieldword.1)+1)||' '
+/*                'up 1'                                                     */
+                  'up 2'
+                  'clocate :'||field.3
+                  'macro rexxexpandins'
+               end
+            end
+         when key='IFF' then do                           /* if without else */
+               if translate(right(preceding,3))='IFF' & (lastpos('/'||'*',preceding)<=lastpos('*'||'/',preceding))
+               then do
+                  'cinsert' ' '||word('then THEN',(key=fieldword.1)+1)||' '    /*{1.04}*/
+                  'clocate :'||field.3-2
+                  'cdelete 1'
+                  'clocate 1'
+                  'macro rexxexpandins'
+               end
+            end
+         when key='WHEN' then do
+               if translate(right(preceding,4))='WHEN' & (lastpos('/'||'*',preceding)<=lastpos('*'||'/',preceding))
+               then do
+                  'cinsert ' word('then THEN',(key=fieldword.1)+1)
+                  'clocate :'||field.3
+                  'macro rexxexpandins'
+               end
+            end
+         when key='SELECT' then do
+                    if translate(right(preceding,6))='SELECT' & translate(right(preceding,7))<>'"SELECT' & (lastpos('/'||'*',preceding)<=lastpos('*'||'/',preceding))
+                    then do
+                            'input' copies(' ',max(field.3-4,0))||'when'
+                            'input' copies(' ',max(field.3-4,0))||'otherwise'
+                            'input   '
+                            'input' copies(' ',max(field.3-7,0))||'end /* select */'
+                            'up 3'
+                            'clocate :'||field.3+1
+                            move=-1
+                            'macro rexxexpandins'
+                    end /* DO */
+              end /* DO */
+         when fieldword.2='/'||'*'
+         then do
+            if right(preceding,2)='/'||'*' then do
+               if pos('*'||'/',following)>=pos('/'||'*',following) then do
+                  'cinsert  *'||'/'
+                  'clocate :'||field.3
+                  'macro rexxexpandins'
+               end
+            end
+         end
+         when key='METHOD' | key = 'CLASS' | key = 'ROUTINE' then do           /*{1.05}*/
+               if translate(space(preceding,0))='::'||key & following = '' & line.1() > 1 /*{1.05}*/
+               then do                                                         /*{1.05}*/
+                  'up 1'                                                       /*{1.05}*/
+                  if left(space(translate(curline.3())),8) <> left('::'||key,8) /*{1.05}*/
+                  then do                                                      /*{1.05}*/
+                     if key = 'METHOD'
+                     then fillchar = '-'
+                     else fillchar = '='
+                     'down 1'                                                  /*{1.05}*/
+                     'input /*' copies(fillchar,73) '*/'                       /*{1.05}*/
+                     'add'                                                     /*{1.05}*/
+                     'up 3'                                                    /*{1.05}*/
+                     'input /*' copies(fillchar,73) '*/'                       /*{1.05}*/
+                     'down 1'                                                  /*{1.05}*/
+                     'clocate :'||field.3                                      /*{1.05}*/
+                  end /* DO */                                                 /*{1.05}*/
+                  else 'down 1'                                                /*{1.05}*/
+               end                                                             /*{1.05}*/
+            end
+         when right(key,1) = '[' /*& key <> '['*/ then do                      /*{1.06}*/
+               if pos('ROW',translate(preceding)) > 0
+               then  do 
+                  "cinsert '']"
+                  move = 1
+                  intext = ''
+                  'macro rexxexpandins'
+                end /* DO */
+            end /* DO */
+/*       when key = '(' then msg 'rexxpand found' word(preceding,words(preceding)) */
+         otherwise ; nop
+      end
+   end
+end
+if length(intext) > 0 then 'text' intext
+'clocate' move
+
+::*============================================================================
+::* Rexxexpandins handles turning insert mode on & off
+:rexxexpandins
+if ~insertmode()
+then do
+   'editv get rexxexpandins'
+   if rexxexpandins<>'SUPPRESS'
+   then do
+      'SET INSERTMODE ON'
+      if rexxexpandins<>'NOMSG'
+      then 'MSG Insert mode turned on by REXX/KEXX expansion'
+   end
+end
+
+::*============================================================================

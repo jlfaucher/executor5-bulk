@@ -1,0 +1,160 @@
+*******************************************************************************
+* Rexindex.kex  Popup menu of subroutines, classes & methods in a REXX script.*
+*                                                                             *
+* Works with ooRexx methods & classes as well as Classic Rexx                 *
+*                                                                             *
+* I run this from f12 by including the following in WINPROF.KEX:              *
+*                                                                             *
+* if wordpos(ftype.1(),'REX KEX KML CLS')>0 then 'define f12 macro rexindex'  *
+*                                                                             *
+* Sahananda Windhorse:Evolution 2003 - 2014                                   *
+*                                                                             *
+* Amendments                                                                  *
+*                                                                             *
+* 1.01 Jan 2005 Output Index in Alphabetic Order                              */*{1.01}*/
+* 1.02 Feb 2005 Allow for space between :: and directive                      */*{1.02}*/
+* 1.03 Feb 2005 Respect CLASS Methods (with same name as regular methods)     */*{1.03}*/
+* 1.04 Dec 2007 Ignore Attribute directives (new with ooRexx 3.2)             */*{1.04}*/
+* 1.05 Jan 2014 Allow whitespace before directives                            */*{1.05}*/
+*               Treat routines correctly & sort to top                        */*{1.05}*/
+*               Ignore constant & options directives                          */*{1.05}*/
+*               Bugfix: bring back wrong class method if keyword mixed case   */*{1.05}*/
+*                                                                             *
+*******************************************************************************
+menu_length = 28
+old_pos     = line.1()
+
+temp_file   = dosenv('temp')||'\$rexindx.tmp'     /* A file to sort index in *//*{1.01}*/
+dosquiet 'erase' temp_file                        /* Clear last use          *//*{1.01}*/
+
+'all'
+'top'
+
+this_block = ''
+lines.1    = ''
+pop_line   = 1
+class_bit  = ''
+do forever                                              /* Build the menu    */
+  'nomsg locate reg /(^[a-zA-Z0-9_]#\:|^ *\:\:)/'       /* locate a label    *//*{1.05}*/
+  if rc<>0 then leave                                   /* Weve got them all */
+
+  'extract /curline/line/' ; line=strip(curline.3)
+  directive = ''
+  parm      = ''
+  parse var line this_block':' rest                     /* get block name    */
+  if left(rest,1) = ':' then parse var rest . 2 directive this_block parms     /*{1.03}*/
+  parse upper var parms parms '--' .                                           /*{1.03}*/
+  parse upper var parms parms '/*' .                                           /*{1.03}*/
+  parse upper var directive uDirective
+
+                                                        /* dont add to menu  *//*{1.05}*/
+  if wordpos(uDirective,'REQUIRES ATTRIBUTE CONSTANT OPTIONS') >0 then iterate
+  if wordpos('ATTRIBUTE',parms)>0 then iterate          /* dont add to menu  */
+
+  classMethod = (wordpos('CLASS',parms) > 0)
+  select
+     when translate(directive) = 'CLASS'         /* prefix methods with this */
+        then class_bit = This_block||':'
+     when translate(directive) = 'ROUTINE'                                     /*{1.05}*/
+        then do
+           call lineout temp_file,' ROUTINE:'||this_block                      /*{1.05}*/
+           class_bit = ''                                                      /*{1.05}*/
+        end
+     when classMethod
+        then call lineout temp_file,class_bit||this_block '(CLASS)'            /*{1.03}*/
+     otherwise
+             call lineout temp_file,class_bit||this_block                      /*{1.01}*/
+  end /* select */
+end
+call lineout temp_file                                     /* close the file *//*{1.01}*/
+
+'K' temp_file '(NOPROFILE NOFILEMENU)'                     /* Edit the file  *//*{1.01}*/
+'top'                                                                          /*{1.01}*/
+'sort * a'                                                 /* sort the menu  *//*{1.01}*/
+'top'                                                                          /*{1.01}*/
+do forever                                            /* process sorted menu *//*{1.01}*/
+   'down 1'                                                                    /*{1.01}*/
+   if rc<>0 then leave                                                         /*{1.01}*/
+   lines.pop_line = lines.pop_line||'/'||curline.3()       /* Add it to menu *//*{1.01}*/
+   call check_menu_length                                                      /*{1.01}*/
+end /* DO */                                                                   /*{1.01}*/
+'qquit'                                               /* Back to target file *//*{1.01}*/
+
+'nomsg locate :'||strip(old_pos)
+
+call show_menu
+
+lines.1  = ''                                    /* see what they asked for. */
+pop_line = 1
+
+parse var popup.1 this_block '(' classtag ')' .                                /*{1.03}*/
+classmethod=(classtag='CLASS')
+
+if this_block <> ''                                         /* Move to label */
+then do
+   'top'
+   if pos(':',this_block) > 0                 /* this is a method of a class */
+   then do                                    /* first find class directive  */
+      parse var this_block this_class':'this_block
+      'locate reg /^( )*\:\:( )*class(:b)'||strip(this_class)||'(:b|$)/'       /*{1.02}*/
+   end /* DO */
+
+   'extract /stay/'
+   'Set stay ON'
+   'nomsg locate reg /^'||strip(this_block)||'\:/' /* look for classic label */
+
+   if rc<>0                                /* not a label - must be a method */
+   then do
+      found=0                                                                  /*{1.03}*/
+      do forever                  /* look for method or routine within class *//*{1.03}*/
+         'nomsg locate reg /^ *\:\: *(method|routine):b'||strip(this_block)||'(:b|$)/' /*{1.02}*/ /*{1.03}*/ /*{1.05}*/
+         if rc<>0 then leave                              /* Nothing found!? *//*{1.03}*/
+         parse value curline.3() with . parms '--' .       /* strip comments *//*{1.03}*/
+         parse upper var parms parms '/*' .                /* strip comments *//*{1.05}*/
+         if classmethod                      /* check this is a class method *//*{1.03}*/
+         then if wordpos('CLASS',parms)>0     /* if that is what is required *//*{1.03}*/
+              then leave                                                       /*{1.03}*/
+              else nop                                                         /*{1.03}*/
+         else if wordpos('CLASS',parms)=0                                      /*{1.03}*/
+              then leave                                                       /*{1.03}*/
+      end /* DO */                                                             /*{1.03}*/
+   end /* DO */                                                                /*{1.03}*/
+   'Set stay' stay.1
+   'left 0'
+end /* DO */
+
+exit
+
+/* ================= show menu ==============================================*/
+show_menu:
+
+  if lines.pop_line='/Previous/-'                      /* Is there an orphan */
+  then do                                              /* Cut it off         */
+     pop_line=pop_line-1
+     parse var lines.pop_line lines.pop_line'/-/More' .
+  end
+
+  pop_line=1
+  do forever
+     popupline=lines.pop_line
+     'popup' popupline||'/'
+     select
+        when popup.1='More'     then pop_line=pop_line+1
+        when popup.1='Previous' then pop_line=pop_line-1
+        otherwise leave
+     end
+  end
+
+return
+
+/* ================ check menu length =======================================*/
+check_menu_length:
+
+  if words(translate(space(lines.pop_line,0),' ','/'))>menu_length
+  then do
+     lines.pop_line=lines.pop_line||'/-/More'
+     pop_line=pop_line+1
+     lines.pop_line='/Previous/-'
+  end
+
+return
