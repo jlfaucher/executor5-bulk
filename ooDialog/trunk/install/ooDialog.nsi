@@ -152,6 +152,7 @@ Section  "ooDialog ${SHORTVERSION} Core (required)" SecCore
   SectionIn 1 RO
 
   DetailPrint "********** Installing ooDialog  **********"
+  DetailPrint "  NSIS installer with max string length ${NSIS_MAX_STRLEN}"
   DetailPrint ""
 
 
