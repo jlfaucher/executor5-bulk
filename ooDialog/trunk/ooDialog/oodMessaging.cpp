@@ -2673,7 +2673,7 @@ MsgReplyType processTVN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
     }
 
     // This should never happen, we can't get here.
-    return ReplyTrue;
+    return ReplyFalse;
 }
 
 /**

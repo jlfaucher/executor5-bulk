@@ -733,9 +733,10 @@ MsgReplyType tvnDeleteItem(RexxThreadContext *c, CSTRING methodName, uint32_t ta
  *
  *         Since some existing event handlers may have tested for the presence
  *         or absence of arg 3 to determine if the user canceled or not, we can
- *         not add as the 3rd arg to the user canceled case. It might be okay to
- *         add it as a fourth arg to the user did not cancel, but it is probably
- *         not a good idea, so we don't add it for PRESERVE_OLD at all.
+ *         not add the tree view object as the 3rd arg to the user canceled
+ *         case. It might be okay to add it as a fourth arg to the user did not
+ *         cancel, but it is probably not a good idea, so we don't add it for
+ *         PRESERVE_OLD at all.
  *
  *         For the new style event handler, we send 5 args:
  *
@@ -924,12 +925,11 @@ MsgReplyType tvnGetInfoTip(RexxThreadContext *c, CSTRING methodName, uint32_t ta
 MsgReplyType tvnItemExpand(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam,
                            pCPlainBaseDialog pcpbd, uint32_t code)
 {
-    NMTREEVIEW    *nmtv        = (NMTREEVIEW *)lParam;
-    RexxObjectPtr  idFrom      = idFrom2rexxArg(c, lParam);
-    RexxObjectPtr  handle      = pointer2string(c, nmtv->itemNew.hItem);
-    RexxObjectPtr  rxTv        = createControlFromHwnd(c, pcpbd, nmtv->hdr.hwndFrom, winTreeView, true);
-    RexxObjectPtr  nCode       = c->UnsignedInt32(code);
-    bool           expectReply = (tag & TAG_REPLYFROMREXX) == TAG_REPLYFROMREXX;
+    NMTREEVIEW    *nmtv   = (NMTREEVIEW *)lParam;
+    RexxObjectPtr  idFrom = idFrom2rexxArg(c, lParam);
+    RexxObjectPtr  handle = pointer2string(c, nmtv->itemNew.hItem);
+    RexxObjectPtr  rxTv   = createControlFromHwnd(c, pcpbd, nmtv->hdr.hwndFrom, winTreeView, true);
+    RexxObjectPtr  nCode  = c->UnsignedInt32(code);
 
     CSTRING _extra = "";
     CSTRING _what  = "ERROR";
@@ -961,9 +961,9 @@ MsgReplyType tvnItemExpand(RexxThreadContext *c, CSTRING methodName, uint32_t ta
     c->ArrayPut(args, rxTv, 5);
     c->ArrayPut(args, nCode, 6);
 
-    if ( expectReply )
+    if ( code == TVN_ITEMEXPANDING )
     {
-        if ( code == TVN_ITEMEXPANDING )
+        if ( (tag & TAG_REPLYFROMREXX) == TAG_REPLYFROMREXX )
         {
             RexxObjectPtr rxReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
             rxReply = requiredBooleanReply(c, pcpbd, rxReply, methodName, false);
@@ -975,7 +975,7 @@ MsgReplyType tvnItemExpand(RexxThreadContext *c, CSTRING methodName, uint32_t ta
         }
         else
         {
-            invokeDirect(c, pcpbd, methodName, args);
+            genericInvoke(pcpbd, methodName, args, tag);
         }
     }
     else
@@ -1008,9 +1008,10 @@ MsgReplyType tvnItemExpand(RexxThreadContext *c, CSTRING methodName, uint32_t ta
  *
  * @notes  If the user uses the KEYDOWN keyword, then the tag preserve is added,
  *         if the user used the KEYDOWNEX keyword then preserve is not added.
- *         For both keywords willReply dicates are we invoke the event handler.
+ *         For both keywords willReply dicates how we invoke the event handler.
  *
- *         For KEYDOWN, we ignore the return for willReply.
+ *         For KEYDOWN, for any value of willReply, we ignore the return from
+ *         the event handler.
  *
  *         The args sent for KEYDOWN are: id, vKey, rxTv
  *
@@ -1024,10 +1025,9 @@ MsgReplyType tvnItemExpand(RexxThreadContext *c, CSTRING methodName, uint32_t ta
  */
 MsgReplyType tvnKeyDown(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd)
 {
-    RexxObjectPtr   idFrom      = idFrom2rexxArg(c, lParam);
-    RexxObjectPtr   rxTv        = createControlFromHwnd(c, pcpbd, ((NMHDR *)lParam)->hwndFrom, winTreeView, true);
-    bool            expectReply = (tag & TAG_REPLYFROMREXX) == TAG_REPLYFROMREXX;
-    uint16_t        vKey        = ((NMTVKEYDOWN *)lParam)->wVKey;
+    RexxObjectPtr   idFrom = idFrom2rexxArg(c, lParam);
+    RexxObjectPtr   rxTv   = createControlFromHwnd(c, pcpbd, ((NMHDR *)lParam)->hwndFrom, winTreeView, true);
+    uint16_t        vKey   = ((NMTVKEYDOWN *)lParam)->wVKey;
 
     if ( (tag & TAG_FLAGMASK) == TAG_PRESERVE_OLD )
     {
@@ -1047,7 +1047,7 @@ MsgReplyType tvnKeyDown(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
     RexxArrayObject args     = getKeyEventRexxArgs(c, (WPARAM)vKey, false, rxTv);
     MsgReplyType    winReply = ReplyTrue;
 
-    if ( expectReply )
+    if ( (tag & TAG_REPLYFROMREXX) == TAG_REPLYFROMREXX )
     {
         RexxObjectPtr rxReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
 
@@ -1099,33 +1099,35 @@ MsgReplyType tvnKeyDown(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
  *         changing and true to allow.  To Windows we return TRUE to prevent the
  *         change and FALSE to allow it.
  */
-MsgReplyType tvnSelChange(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd, uint32_t code)
+MsgReplyType tvnSelChange(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam,
+                          pCPlainBaseDialog pcpbd, uint32_t code)
 {
-    RexxObjectPtr  idFrom      = idFrom2rexxArg(c, lParam);
-    bool           expectReply = (tag & TAG_REPLYFROMREXX) == TAG_REPLYFROMREXX;
+    LPNMTREEVIEW   pnmtv  = (LPNMTREEVIEW)lParam;
+    RexxObjectPtr  idFrom = idFrom2rexxArg(c, lParam);
+    RexxObjectPtr  rxTv   = createControlFromHwnd(c, pcpbd, pnmtv->hdr.hwndFrom, winTreeView, true);
 
     RexxArrayObject args;
+    MsgReplyType    winReply  = ReplyTrue;
 
     if ( (tag & TAG_FLAGMASK) == TAG_PRESERVE_OLD )
     {
         RexxObjectPtr rxLp = c->Intptr(lParam);
 
-        args = c->ArrayOfTwo(idFrom, rxLp);
-        invokeDispatch(c, pcpbd, methodName, args);
+        args = c->ArrayOfThree(idFrom, rxLp, rxTv);
+        genericInvoke(pcpbd, methodName, args, tag);
 
-        c->ReleaseLocalReference(rxLp);
         c->ReleaseLocalReference(idFrom);
+        c->ReleaseLocalReference(rxLp);
+        c->ReleaseLocalReference(rxTv);
         c->ReleaseLocalReference(args);
 
-        return ReplyTrue;
+        return winReply;
     }
 
-    LPNMTREEVIEW   pnmtv    = (LPNMTREEVIEW)lParam;
     RexxObjectPtr  hItemOld = pointer2string(c, pnmtv->itemOld.hItem);
     RexxObjectPtr  hItemNew = pointer2string(c, pnmtv->itemNew.hItem);
     RexxObjectPtr  userOld  = pnmtv->itemOld.lParam != NULL ? (RexxObjectPtr)pnmtv->itemOld.lParam : TheNilObj;
     RexxObjectPtr  userNew  = pnmtv->itemNew.lParam != NULL ? (RexxObjectPtr)pnmtv->itemNew.lParam : TheNilObj;
-    RexxObjectPtr  rxTv     = createControlFromHwnd(c, pcpbd, pnmtv->hdr.hwndFrom, winTreeView, true);
 
     CSTRING str = "UNKNOWN";
     if ( pnmtv->action == TVC_BYKEYBOARD )
@@ -1143,9 +1145,9 @@ MsgReplyType tvnSelChange(RexxThreadContext *c, CSTRING methodName, uint32_t tag
     c->ArrayPut(args, action, 6);
     c->ArrayPut(args, rxTv, 7);
 
-    if ( expectReply )
+    if ( code == TVN_SELCHANGING )
     {
-        if ( code == TVN_SELCHANGING )
+        if ( (tag & TAG_REPLYFROMREXX) == TAG_REPLYFROMREXX )
         {
             RexxObjectPtr rxReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
             rxReply = requiredBooleanReply(c, pcpbd, rxReply, methodName, false);
@@ -1153,24 +1155,31 @@ MsgReplyType tvnSelChange(RexxThreadContext *c, CSTRING methodName, uint32_t tag
             {
                 setWindowPtr(pcpbd->hDlg, DWLP_MSGRESULT, rxReply == TheTrueObj ? FALSE : TRUE);
             }
+            else
+            {
+                winReply = ReplyFalse;
+            }
         }
         else
         {
-            invokeDirect(c, pcpbd, methodName, args);
+            genericInvoke(pcpbd, methodName, args, tag);
         }
     }
     else
     {
-        invokeDispatch(c, pcpbd, methodName, args);
+        genericInvoke(pcpbd, methodName, args, tag);
     }
 
     c->ReleaseLocalReference(idFrom);
     c->ReleaseLocalReference(hItemOld);
+    c->ReleaseLocalReference(userOld);
     c->ReleaseLocalReference(hItemNew);
+    c->ReleaseLocalReference(userNew);
     c->ReleaseLocalReference(action);
+    c->ReleaseLocalReference(rxTv);
     c->ReleaseLocalReference(args);
 
-    return ReplyTrue;
+    return winReply;
 }
 
 
