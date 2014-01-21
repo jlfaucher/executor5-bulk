@@ -356,27 +356,33 @@ RexxMethod1(RexxObjectPtr, trckbar_getSelRange, CSELF, pCSelf)
  *                   updown control is changed.  The default is 1.  This
  *                   argument is only used if change is true and cancel is
  *                   false.
+ *
+ *  @note  I don't think NewBuffer() will ever fail, bu if it does we raise an
+ *         out of memory exception and return .nil
  */
 RexxMethod3(RexxObjectPtr, ud_deltaPosReply_cls, OPTIONAL_logical_t, change, OPTIONAL_logical_t, cancel, OPTIONAL_int32_t, newDelta)
 {
-    if ( ! change )
-    {
-        return TheFalseObj;
-    }
-
     RexxBufferObject _dpr = context->NewBuffer(sizeof(DELTAPOSREPLY));
     if ( _dpr == NULLOBJECT )
     {
-        return TheFalseObj;
+        outOfMemoryException(context->threadContext);
+        return TheNilObj;
     }
 
     PDELTAPOSREPLY pdpr = (PDELTAPOSREPLY)context->BufferData(_dpr);
-    pdpr->change = true;
-    pdpr->cancel = cancel ? true : false;
+    memset(pdpr, 0, sizeof(DELTAPOSREPLY));
 
-    if ( ! pdpr->cancel )
+    if ( argumentExists(1) && change )
     {
-        pdpr->newDelta = argumentExists(1) ? newDelta : 1;
+        pdpr->change = true;
+        if ( cancel )
+        {
+            pdpr->cancel = true;
+        }
+        else
+        {
+            pdpr->newDelta = argumentExists(1) ? newDelta : 1;
+        }
     }
     return _dpr;
 }

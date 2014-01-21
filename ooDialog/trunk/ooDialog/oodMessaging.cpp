@@ -2683,6 +2683,12 @@ MsgReplyType processTVN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
  * There is currently only one notify message for an up-down; UDN_DELTAPOS, so
  * the processing is straight forward.
  *
+ * Arguments sent to Rexx:
+ *
+ *   use arg pos, delta, id, hwnd, upDown
+ *
+ * The event handler must reply with
+ *
  * @param c
  * @param methodName
  * @param lParam
@@ -2692,20 +2698,27 @@ MsgReplyType processTVN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
  */
 MsgReplyType processUDN(RexxThreadContext *c, CSTRING methodName, LPARAM lParam, pCPlainBaseDialog pcpbd)
 {
-    LPNMUPDOWN pUPD = (LPNMUPDOWN)lParam;
+    MsgReplyType winReply = ReplyTrue;
+    LPNMUPDOWN   pUPD     = (LPNMUPDOWN)lParam;
 
-    RexxArrayObject args = c->ArrayOfFour(c->Int32(pUPD->iPos), c->Int32(pUPD->iDelta),
-                                          idFrom2rexxArg(c, lParam), hwndFrom2rexxArg(c, lParam));
+    RexxObjectPtr  pos    = c->Int32(pUPD->iPos);
+    RexxObjectPtr  delta  = c->Int32(pUPD->iDelta);
+    RexxObjectPtr  idFrom = idFrom2rexxArg(c, lParam);
+    RexxObjectPtr  rxHwnd = hwndFrom2rexxArg(c, lParam);
+    RexxObjectPtr  rxUpd   = createControlFromHwnd(c, pcpbd, pUPD->hdr.hwndFrom, winUpDown, true);
+
+    RexxArrayObject args = c->ArrayOfFour(pos, delta, idFrom, rxHwnd);
+    c->ArrayPut(args, rxUpd, 5);
 
     RexxObjectPtr msgReply = c->SendMessage(pcpbd->rexxSelf, methodName, args);
 
     if ( msgReplyIsGood(c, pcpbd, msgReply, methodName, false) )
     {
-        if ( msgReply != TheFalseObj )
+        if ( c->IsOfType(msgReply, "BUFFER") )
         {
-            if ( c->IsOfType(msgReply, "BUFFER") )
+            PDELTAPOSREPLY pdpr = (PDELTAPOSREPLY)c->BufferData((RexxBufferObject)msgReply);
+            if ( pdpr->change )
             {
-                PDELTAPOSREPLY pdpr = (PDELTAPOSREPLY)c->BufferData((RexxBufferObject)msgReply);
                 if ( pdpr->cancel )
                 {
                     setWindowPtr(GetParent(pUPD->hdr.hwndFrom), DWLP_MSGRESULT, 1);
@@ -2715,13 +2728,29 @@ MsgReplyType processUDN(RexxThreadContext *c, CSTRING methodName, LPARAM lParam,
                     pUPD->iDelta = pdpr->newDelta;
                 }
             }
-            else
-            {
-                wrongClassReplyException(c, methodName, "PositionChangeReplyBuffer");
-            }
+        }
+        else
+        {
+            wrongClassReplyException(c, methodName, "PositionChangeReplyBuffer");
+            checkForCondition(c, false);
+            endDialogPremature(pcpbd, pcpbd->hDlg, RexxConditionRaised);
+            winReply = ReplyFalse;
         }
     }
-    return ReplyTrue;
+    else
+    {
+        winReply = ReplyFalse;
+    }
+
+    c->ReleaseLocalReference(pos);
+    c->ReleaseLocalReference(delta);
+    c->ReleaseLocalReference(idFrom);
+    c->ReleaseLocalReference(rxHwnd);
+    c->ReleaseLocalReference(rxUpd);
+    c->ReleaseLocalReference(msgReply);
+    c->ReleaseLocalReference(args);
+
+    return winReply;
 }
 
 /**

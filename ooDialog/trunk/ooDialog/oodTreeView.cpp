@@ -652,9 +652,10 @@ MsgReplyType tvnBeginLabelEdit(RexxThreadContext *c, CSTRING methodName, uint32_
  *
  * @return MsgReplyType
  *
- * @remarks  For the preserve old behaviour case, only 2 args are sent: idFrom
- *           and LPARAM turned into a number.  willReply can only be false for
- *           this case.
+ * @remarks  For the preserve old behaviour case, 3 args are sent: idFrom,
+ *           LPARAM turned into a number, and the Rexx tree view object.
+ *           willReply can only be false for this case because it was omitted
+ *           altogether in the invocation of connectTreeViewEvent().
  *
  *           For the NMTREEVIEW structure. The itemOld member is a TVITEM
  *           structure whose hItem and lParam members contain valid information
@@ -1082,22 +1083,25 @@ MsgReplyType tvnKeyDown(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
  *
  * @return MsgReplyType
  *
- * @notes  The arguments sent to the event handlers are the same for both
- *         notifications.  For SELCHANGING the user can return FALSE to prevent
- *         the selection from changing, or true to allow the change.
+ * @notes  The arguments sent to the event handlers are depenedent on
+ *         TAG_PRESERVE_OLD.
  *
  *         For the preserve old case, the arguments sent to the event handler
- *         are: id and LPARAM as a number.  willReply can only be false for this
- *         case.
+ *         are:
+ *
+ *         use arg id lParam, rxTv, nCode
+ *
+ *         Because preserve old is only added when willReply is omitted,
+ *         willReply can only be false for this case.
  *
  *         For the new event handler case the args sent to the event handler
  *         are:
  *
- *         use arg id, hItemOld, userOld, hItemNew, userNew, action, rxTv
+ *         use arg id, hItemOld, userOld, hItemNew, userNew, action, rxTv, nCode
  *
- *         As noted above, from Rexx return false to prevent the selection from
- *         changing and true to allow.  To Windows we return TRUE to prevent the
- *         change and FALSE to allow it.
+ *         The application can return false to prevent the selection from
+ *         changing and true to allow the change.  To Windows we return TRUE to
+ *         prevent the change and FALSE to allow it.
  */
 MsgReplyType tvnSelChange(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam,
                           pCPlainBaseDialog pcpbd, uint32_t code)
@@ -1105,6 +1109,7 @@ MsgReplyType tvnSelChange(RexxThreadContext *c, CSTRING methodName, uint32_t tag
     LPNMTREEVIEW   pnmtv  = (LPNMTREEVIEW)lParam;
     RexxObjectPtr  idFrom = idFrom2rexxArg(c, lParam);
     RexxObjectPtr  rxTv   = createControlFromHwnd(c, pcpbd, pnmtv->hdr.hwndFrom, winTreeView, true);
+    RexxObjectPtr  nCode  = c->UnsignedInt32(code);
 
     RexxArrayObject args;
     MsgReplyType    winReply  = ReplyTrue;
@@ -1113,12 +1118,13 @@ MsgReplyType tvnSelChange(RexxThreadContext *c, CSTRING methodName, uint32_t tag
     {
         RexxObjectPtr rxLp = c->Intptr(lParam);
 
-        args = c->ArrayOfThree(idFrom, rxLp, rxTv);
+        args = c->ArrayOfFour(idFrom, rxLp, rxTv, nCode);
         genericInvoke(pcpbd, methodName, args, tag);
 
         c->ReleaseLocalReference(idFrom);
         c->ReleaseLocalReference(rxLp);
         c->ReleaseLocalReference(rxTv);
+        c->ReleaseLocalReference(nCode);
         c->ReleaseLocalReference(args);
 
         return winReply;
@@ -1144,6 +1150,7 @@ MsgReplyType tvnSelChange(RexxThreadContext *c, CSTRING methodName, uint32_t tag
     c->ArrayPut(args, userNew, 5);
     c->ArrayPut(args, action, 6);
     c->ArrayPut(args, rxTv, 7);
+    c->ArrayPut(args, nCode, 8);
 
     if ( code == TVN_SELCHANGING )
     {
@@ -1177,6 +1184,7 @@ MsgReplyType tvnSelChange(RexxThreadContext *c, CSTRING methodName, uint32_t tag
     c->ReleaseLocalReference(userNew);
     c->ReleaseLocalReference(action);
     c->ReleaseLocalReference(rxTv);
+    c->ReleaseLocalReference(nCode);
     c->ReleaseLocalReference(args);
 
     return winReply;
