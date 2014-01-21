@@ -12787,7 +12787,7 @@ onRelease() id: 1003 reBar: a ReBar
       The numeric resource ID of the toolbar sending the notification.
     </para>
     </listitem></varlistentry>
-    <varlistentry><term>notifyCode</term>
+    <varlistentry><term>nCode</term>
     <listitem>
     <para>
       The numeric notification code of the event that caused the notification to be sent. Each dialog control has its own
@@ -14344,7 +14344,7 @@ Verify event code (should be 4): 4
   This event notification has been enhanced since the original ooDialog implementation. If the <emphasis
   role="italic">willReply</emphasis> argument to the <xref linkend="mthConnectTreeViewEvent"/> method is omitted the old
   implementation is used. If the argument is not omitted, the new implementation is used. How the two event handlers work is
-  described separately.
+  described separately below.
 </para>
 
 <variablelist>
@@ -14380,7 +14380,7 @@ Verify event code (should be 4): 4
         <varlistentry><term>hItem</term>
         <listitem>
         <para>
-          The tree-view item handle whose item is being deleted.
+          The item handle of the item being deleted.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>rxTv</term>
@@ -14403,10 +14403,8 @@ Verify event code (should be 4): 4
       <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
       <listitem>
       <para>
-        When the programmer used true for the <emphasis role="italic">willReply</emphasis> argument, the event handler must
-        return a value. However, the tree-view ignores the returned value, so any value can be used. 0 makes a good return.
-        If <emphasis role="italic">willReply</emphasis> is false, the event handler does not need to return a value. Good
-        practice would probably be to always return a value from an event handler.
+        The operating system ignores the return from this notification. 0 makes a good return for cases where the operating
+        system ignores the return value from an event notification.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -14422,7 +14420,7 @@ Verify event code (should be 4): 4
   <programlisting>
   <![CDATA[
   ::method onDelete unguarded
-    use arg id, useLess
+    use arg id, useLess, rxTv
   ]]>
   </programlisting>
 
@@ -14430,7 +14428,7 @@ Verify event code (should be 4): 4
     <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
     <listitem>
     <para>
-      The event handling method receives 2 arguments:
+      The event handling method receives 3 arguments:
     </para>
     <variablelist>
       <varlistentry><term>id</term>
@@ -14442,8 +14440,17 @@ Verify event code (should be 4): 4
       <varlistentry><term>useLess</term>
       <listitem>
       <para>
-        This argument is a number that has no meaning within the Rexx code. It is the value the old implementation of the
-        event notification sent to the event handler.
+        This argument is a number that has no meaning within the Rexx code. The old implementation of this event notification
+        sent the numeric value of a pointer to memory to the event handler. However, there is nothing that can be done with
+        the number in a Rexx program.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>rxTv</term>
+      <listitem>
+      <para>
+        The Rexx tree-view object whose underlying tree-view control has sent the notification. This is a convenience for
+        the programmer. It is the same Rexx object the programmer would recieve through the <xref
+        linkend="mthNewTreeView"/> method.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -14452,7 +14459,7 @@ Verify event code (should be 4): 4
     <listitem>
     <para>
       The interpreter does not wait for the return from the event handler, so the return has no meaning. Good practice would
-      be to return a value anyway.
+      be to return a value anyway. 0 makes a good return value.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -14473,7 +14480,7 @@ Verify event code (should be 4): 4
   these event notifications have been enhanced since the original ooDialog implementation. If the <emphasis
   role="italic">willReply</emphasis> argument to the <xref linkend="mthConnectTreeViewEvent"/> method is omitted the old
   implementation is used. If the argument is not omitted, the new implementation is used. How the two event handlers work is
-  described separately.
+  described separately below.
 </para>
 
 <variablelist>
@@ -14506,10 +14513,10 @@ Verify event code (should be 4): 4
           The resource id of the tree-view sending the notification.
         </para>
         </listitem></varlistentry>
-        <varlistentry><term>itemID</term>
+        <varlistentry><term>hItem</term>
         <listitem>
         <para>
-          The item index whose label is being edited.
+          The item handle of the tree-view item that was edited by the user.
         </para>
         </listitem></varlistentry>
         <varlistentry><term>text</term>
@@ -14557,7 +14564,7 @@ Verify event code (should be 4): 4
 <![CDATA[
 
 ::method onEndEdit unguarded
-  use arg id, itemIndex, text, treeViewCtrl, itemData
+  use arg id, hItem, text, treeViewCtrl, itemData
 
   if text == .nil then return .false
 
@@ -14661,10 +14668,6 @@ Verify event code (should be 4): 4
   The event handler for the EXPANDED event is invoked after a tree-view item has been expanded or collapsed.
 </para>
 <para>
-  This event notification has been enhanced since the original ooDialog by adding a fifth arg, the Rexx treeview object, sent
-  to the event handler.
-</para>
-<para>
   The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthConnectTreeViewEvent"/>
   method determines how the event handler needs to respond to the notification.
 </para>
@@ -14720,7 +14723,7 @@ Verify event code (should be 4): 4
     <listitem>
     <para>
       The Rexx tree-view object whose underlying tree-view control has sent the notification. This is a convenience for
-      the programmer. It is the same Rexx object the programmer would recieve through the <xref linkend="mthNewListView"/>
+      the programmer. It is the same Rexx object the programmer would recieve through the <xref linkend="mthNewTreeView"/>
       method.
     </para>
     </listitem></varlistentry>
@@ -14756,7 +14759,7 @@ Verify event code (should be 4): 4
 <![CDATA[
 
 ::method onExpanded unguarded
-  use arg id, item, what, extra, treeView
+  use arg id, item, what, extra, treeView, notifyCode
   say "The item with handle" item "has been" what
 
   return 0
@@ -14783,25 +14786,14 @@ Verify event code (should be 4): 4
   going to be expanded or collapsed.
 </para>
 <para>
-  This event notification has been enhanced since the original ooDialog implementation. However, the only enhancement is to
-  allow the programmer to specify if the interepreter should wait for a return from the event handler. The aruments sent to
-  the event handler remain the same.
-</para>
-<para>
-  If the <emphasis role="italic">willReply</emphasis> argument to <xref linkend="mthConnectTreeViewEvent"/> method is true,
-  the interpreter will wait for the reply from the event handler. The programmer <emphasis role="italic">must</emphasis>
-  return either true or false. The programmer can prevent the expansion or collapse for the item by returning false. To allow
-  the expansion or collapse to take place, the programmer must return true.
-</para>
-<para>
-  If the <emphasis role="italic">willReply</emphasis> argument to <xref linkend="mthConnectTreeViewEvent"/> method is false,
-  or omitted, then the interpreter does not wait for the return from the event handler.
+  The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthConnectTreeViewEvent"/>
+  method determines how the event handler needs to respond to the notification.
 </para>
 
 <programlisting>
 <![CDATA[
 ::method onExpanding unguarded
-  use arg id, hItem, what, extra
+  use arg id, hItem, what, extra, treeView, notifyCode
 
   return trueOrFalse
 ]]>
@@ -14811,7 +14803,7 @@ Verify event code (should be 4): 4
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method recieves 4 arguments:
+    The event handling method recieves 6 arguments:
   </para>
   <variablelist>
     <varlistentry><term>id</term>
@@ -14845,16 +14837,41 @@ Verify event code (should be 4): 4
       role="italic">extra</emphasis> argument will always be the empty string.
     </para>
     </listitem></varlistentry>
+    <varlistentry><term>treeView</term>
+    <listitem>
+    <para>
+      The Rexx tree-view object whose underlying tree-view control has sent the notification. This is a convenience for
+      the programmer. It is the same Rexx object the programmer would recieve through the <xref linkend="mthNewTreeView"/>
+      method.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>notifyCode</term>
+    <listitem>
+    <para>
+      The numeric notification code of the event that caused the notification to be sent.
+    </para>
+    </listitem></varlistentry>
   </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
   <listitem>
   <para>
     If the programmer used the <emphasis role="italic">willReply</emphasis> argument with a true value, the event handler
-    must return true or false. Returning true, allows the expansion or collapse to happen. Returning false prevents the
-    expansion or collapse. If the <emphasis role="italic">willReply</emphasis> argument was false or omitted, the interpreter
-    does not wait for the reply. The event handler can return any value, or not return a value at all. Good practice would be
-    to always return a value from an event handler.
+    must return true or false. This allows the application to control the expansion or collapse of the tree-view items.
+  </para>
+  <para>
+    Returning true, allows the expansion or collapse to happen. Returning false prevents the expansion or collapse. If the
+    <emphasis role="italic">willReply</emphasis> argument was false, SYNC or omitted, the application can not control the
+    action. Expansion or collapse is always allowed. The event handler can return any value, or not return a value at all.
+    Good practice would be to always return a value from an event handler.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The event handlers for both the EXPANDING and the <xref linkend="evtTreeViewEXPANDED"/> events are similar and are sent
+    the same arguments. It is possible to connect both events to the same event handler and use the 6th <emphasis
+    role="italic">notifyCode</emphasis> to determine which event caused the event handler to be invoked.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
@@ -14866,7 +14883,7 @@ Verify event code (should be 4): 4
 <![CDATA[
 
 ::method onExpanding unguarded
-  use arg id, item, what, extra
+  use arg id, item, what, extra, rxTv, notifyCode
   say "Item with handle" item "is going to be" what
 
   return .true
@@ -14898,7 +14915,7 @@ Verify event code (should be 4): 4
 <programlisting>
 <![CDATA[
 ::method onGetInfoTip unguarded
-  use arg id, hItem, text, maxLen, itemData
+  use arg id, hItem, text, maxLen, itemData, rxTv
 
   return infoText
 ]]>
@@ -14908,7 +14925,7 @@ Verify event code (should be 4): 4
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method receives 5 arguments:
+    The event handling method receives 6 arguments:
   </para>
   <variablelist>
     <varlistentry><term>id</term>
@@ -14948,13 +14965,21 @@ Verify event code (should be 4): 4
       <computeroutput>.nil</computeroutput> object.
     </para>
     </listitem></varlistentry>
+    <varlistentry><term>rxTv</term>
+    <listitem>
+    <para>
+      The Rexx tree-view object whose underlying tree-view control has sent the notification. This is a convenience for
+      the programmer. It is the same Rexx object the programmer would recieve through the <xref linkend="mthNewTreeView"/>
+      method.
+    </para>
+    </listitem></varlistentry>
   </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
   <listitem>
   <para>
-    The event handler must return a string value. If the string is not the empty string, it will be displayed as the info
-    tip. If the empty string is returned, then the the previous value of <emphasis role="italic">text</emphasis> is
+    The event handler must return a string value. If the returned string is not the empty string, it will be displayed as the
+    info tip. If the empty string is returned, then the the previous value of <emphasis role="italic">text</emphasis> is
     displayed. That is, if <emphasis role="italic">text</emphasis> is the empty string, no info tip will be shown. However,
     if <emphasis role="italic">text</emphasis> is not the empty string, that text will be displayed unchanged.
   </para>
@@ -14986,24 +15011,20 @@ Verify event code (should be 4): 4
 <section id="evtTreeViewKEYDOWN" xreflabel="KEYDOWN"><title>KeyDown Event Handler</title>
 <indexterm><primary>TreeView class</primary><secondary>events</secondary><tertiary>KEYDOWN</tertiary></indexterm>
 <para>
-  The event handler for the key down event is invoked when the user types a key within the tree-view control. The event
-  handler is similar to the event handler for the <link linkend="evtTreeViewKEYDOWNEX">KEYDOWNEX</link> event, it is invoked
-  for the same event. However, when the KEYDOWN keyword is use, the event handler receives fewer arguments than when the
-  KEYDWONEX key word is used.
+  The event handler for the key down event is invoked when the user types a key when the tree-view control has the keyboard
+  focus. The event handler is similar to the event handler for the <link linkend="evtTreeViewKEYDOWNEX">KEYDOWNEX</link>
+  event, it is invoked for the same event. However, when the KEYDOWN keyword is use, the event handler receives fewer
+  arguments than when the KEYDWONEX key word is used.
 </para>
 <para>
-  This event notification has been enhanced since the original ooDialog implementation. However, the only enhancement is to
-  allow the programmer to specify if the interepreter should wait for a return from the event handler. The aruments sent to
-  the event handler remain the same.
-  If the <emphasis role="italic">willReply</emphasis> argument to the <xref linkend="mthConnectTreeViewEvent"/> method is
-  true, the interpreter will wait for the return from the event handler. If <emphasis role="italic">willReply</emphasis> is
-  false, or omitted, the interpreter does not wait.
+  The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthConnectTreeViewEvent"/>
+  method determines how the event handler needs to respond to the notification.
 </para>
 
 <programlisting>
 <![CDATA[
 ::method onKeyDown unguarded
-  use arg id, vKey
+  use arg id, vKey, rxTv
 
   return 0
 ]]>
@@ -15013,7 +15034,7 @@ Verify event code (should be 4): 4
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method receives xx arguments:
+    The event handling method receives 3 arguments:
   </para>
   <variablelist>
     <varlistentry><term>id</term>
@@ -15028,16 +15049,24 @@ Verify event code (should be 4): 4
       The virtual key code of the key typed.
     </para>
     </listitem></varlistentry>
+    <varlistentry><term>rxTv</term>
+    <listitem>
+    <para>
+      The Rexx tree-view object whose underlying tree-view control has sent the notification. This is a convenience for
+      the programmer. It is the same Rexx object the programmer would recieve through the <xref linkend="mthNewTreeView"/>
+      method.
+    </para>
+    </listitem></varlistentry>
   </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
   <listitem>
   <para>
-    When <emphasis role="italic">willReply</emphasis> is true the interpreter will wait for the return from the event
-    handler, and the event handler must return a value. However the tree-view control ignores the actual value of the
-    return, so the event handler can return any value. 0 makes a good return. The interpreter does not wait for the the
-    return from the event handler if <emphasis role="italic">willReply</emphasis> is false or omitted. So no return is
-    required. Good practice would be to always return a value from an event handler.
+    Using the KEYDOWN event keyword, as opposed to using the KEYDOWNEX keyword, causes the ooDialog framework to use the
+    original ooDialog implementation. In the original implementation, the return from an event handler was ignored. Returning
+    a value from the KEYDOWN event handler has no effect. So no return is required. However, good practice would be to always
+    return a value from an event handler. See the <xref linkend="evtTreeViewKEYDOWNEX"/> event handler for a discussion of
+    what the operating system expects from a key down event handler.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
@@ -15096,8 +15125,8 @@ Verify event code (should be 4): 4
     <varlistentry><term>vKey</term>
     <listitem>
     <para>
-      The virtual key code of of the key pressed. Use the <xref linkend="mthKey2Name"/> method of the <xref linkend="clsVK"/>
-      class to determine which key was pressed.
+      The virtual key code of of the key pressed. The <xref linkend="clsVK"/> class can be used to determine which key was
+      pressed.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>isShift</term>
@@ -15229,7 +15258,7 @@ Verify event code (should be 4): 4
     the operating system ingores the return value.
   </para>
   <para>
-    If <emphasis role="italic">willReply</emphasis> is false, the event handler does not <emphasis
+    If <emphasis role="italic">willReply</emphasis> was omitted, false, or SYNC, the event handler does not <emphasis
     role="italic">have</emphasis> to return a value, but good practice would be to always return a value from an event
     handler.
   </para>
@@ -15265,13 +15294,13 @@ Verify event code (should be 4): 4
 <section id="evtTreeViewSELCHANGED" xreflabel="SELCHANGED"><title>SelChanged Event Handler</title>
 <indexterm><primary>TreeView class</primary><secondary>events</secondary><tertiary>SELCHANGED</tertiary></indexterm>
 <para>
-  The event handler for the CHANGED event is invoked when the selection has changed from one item to another.
+  The event handler for the selection changed event is invoked when the selection has changed from one item to another.
 </para>
 <para>
   This event notification has been enhanced since the original ooDialog implementation. If the <emphasis
   role="italic">willReply</emphasis> argument to the <xref linkend="mthConnectTreeViewEvent"/> method is omitted the old
   implementation is used. If the argument is not omitted, the new implementation is used. How the two event handlers work is
-  described separately:
+  described separately below:
 </para>
 
 <variablelist>
@@ -15282,13 +15311,14 @@ Verify event code (should be 4): 4
       determined by the value of the <emphasis role="italic">willReply</emphasis> argument. If <emphasis
       role="italic">willReply</emphasis> is true, the programmer must return a value from the event handler and the
       interpreter waits for that reply. If <emphasis role="italic">willReply</emphasis> is false the interpreter does not
-      wait for a reply.
+      wait for a reply. If <emphasis role="italic">willReply</emphasis> was SYNC, the interpreter waits for the reply, but
+      the actual value of the reply is disgarded.
     </para>
 
     <programlisting>
     <![CDATA[
     ::method onSelChanged unguarded
-      use arg id, hItemOld, userOld, hItemNew, userNew, action, rxTv
+      use arg id, hItemOld, userOld, hItemNew, userNew, action, rxTv, nCode
 
       return 0
     ]]>
@@ -15298,7 +15328,7 @@ Verify event code (should be 4): 4
       <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
       <listitem>
       <para>
-        The event handling method receives 7 arguments:
+        The event handling method receives 8 arguments:
       </para>
       <variablelist>
         <varlistentry><term>id</term>
@@ -15377,15 +15407,20 @@ Verify event code (should be 4): 4
           linkend="mthNewTreeView"/> method.
         </para>
         </listitem></varlistentry>
+        <varlistentry><term>nCode</term>
+        <listitem>
+        <para>
+          The numeric notification code of the event that caused the notification to be sent. Each dialog control has its own
+          specific notification codes.
+        </para>
+        </listitem></varlistentry>
       </variablelist>
       </listitem></varlistentry>
       <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
       <listitem>
       <para>
-        When the programmer used true for the <emphasis role="italic">willReply</emphasis> argument, the event handler must
-        return a value. However, the tree-view ignores the returned value, so any value can be used. 0 makes a good return.
-        If <emphasis role="italic">willReply</emphasis> is false, the event handler does not need to return a value. Good
-        practice would probably be to always return a value from an event handler.
+        The operarting system ignores the returned value for this event notification. In these cases, 0 makes a good return.
+        Good practice would be to always return a value from an event handler.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -15401,7 +15436,7 @@ Verify event code (should be 4): 4
   <programlisting>
   <![CDATA[
   ::method onSelChanged unguarded
-    use arg id, useLess
+    use arg id, useLess, rxTv, nCode
   ]]>
   </programlisting>
 
@@ -15409,7 +15444,7 @@ Verify event code (should be 4): 4
     <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
     <listitem>
     <para>
-      The event handling method receives 2 arguments:
+      The event handling method receives 4 arguments:
     </para>
     <variablelist>
       <varlistentry><term>id</term>
@@ -15425,16 +15460,38 @@ Verify event code (should be 4): 4
         event notification sent to the event handler.
       </para>
       </listitem></varlistentry>
+      <varlistentry><term>rxTv</term>
+      <listitem>
+      <para>
+        The Rexx <computeroutput>TreeView</computeroutput> object whose underlying Windows tree-view sent the selection
+        changed notification.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>nCode</term>
+      <listitem>
+      <para>
+        The numeric notification code of the event that caused the notification to be sent. Each dialog control has its own
+        specific notification codes.
+      </para>
+      </listitem></varlistentry>
     </variablelist>
     </listitem></varlistentry>
     <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
     <listitem>
     <para>
-      The interpreter does not wait for the return from the event handler, so the return has no meaning. Good practice would
-      be to return a value anyway.
+      The operating system ignores the returned value from this notification. Good practice would be to always return a value
+      from any event handler. 0 is a good value for cases where the operating system ingores the returned value.
     </para>
     </listitem></varlistentry>
   </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The event handlers for both the SELCHANGED and the <xref linkend="evtTreeViewSELCHANGING"/> events are similar and are
+    sent the same arguments. It is possible to connect both events to the same event handler and use the <emphasis
+    role="italic">nCode</emphasis> argument to determine which event caused the event handler to be invoked.
+  </para>
   </listitem></varlistentry>
 </variablelist>
 
@@ -15444,40 +15501,40 @@ Verify event code (should be 4): 4
 <section id="evtTreeViewSELCHANGING" xreflabel="SELCHANGING"><title>SelChanging Event Handler</title>
 <indexterm><primary>TreeView class</primary><secondary>events</secondary><tertiary>SELCHANGING</tertiary></indexterm>
 <para>
-  The event handler for the CHANGING event is invoked when the selection is about to change from one item to another.
+  The event handler for the CHANGING event is invoked when the selection is about to change from one item to another. The
+  notification is sent before the change is made.
 </para>
 <para>
   This event notification has been enhanced since the original ooDialog implementation. If the <emphasis
   role="italic">willReply</emphasis> argument to the <xref linkend="mthConnectTreeViewEvent"/> method is omitted the old
   implementation is used. If the argument is not omitted, the new implementation is used. Replying to the notification gives
-  the programmer the opportunity to cancel the change in selection. How the two event handlers work is described separately:
+  the programmer the opportunity to cancel the change in selection. How the two event handlers work is described separately
+  below:
 </para>
 
 <variablelist>
   <varlistentry><term><emphasis role="bold">New event handler description:</emphasis></term>
   <listitem>
-    <para>
-      Whether the programmer must return a value and if the interpreter waits, or does not wait, for this return is
-      determined by the value of the <emphasis role="italic">willReply</emphasis> argument. If <emphasis
-      role="italic">willReply</emphasis> is true, the programmer must return true or false from the event handler and the
-      interpreter waits for that reply. If <emphasis role="italic">willReply</emphasis> is false the interpreter does not
-      wait for a reply.
-    </para>
+  <para>
+    The <link linkend="sctCommonWillReply">willReply</link> argument in the <xref linkend="mthConnectTreeViewEvent"/>
+    method determines how the event handler needs to respond to the notification. Replying to this notification gives the
+    application the opportunity to cancel the selection change
+  </para>
 
-    <programlisting>
-    <![CDATA[
-    ::method onSelChanging unguarded
-      use arg id, hItemOld, userOld, hItemNew, userNew, action, rxTv
+<programlisting>
+<![CDATA[
+::method onSelChanging unguarded
+  use arg id, hItemOld, userOld, hItemNew, userNew, action, rxTv, nCode
 
-      return trueOrFalse
-    ]]>
-    </programlisting>
+  return trueOrFalse
+]]>
+</programlisting>
 
     <variablelist>
       <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
       <listitem>
       <para>
-        The event handling method receives 7 arguments:
+        The event handling method receives 8 arguments:
       </para>
       <variablelist>
         <varlistentry><term>id</term>
@@ -15557,6 +15614,13 @@ Verify event code (should be 4): 4
           linkend="mthNewTreeView"/> method.
         </para>
         </listitem></varlistentry>
+        <varlistentry><term>nCode</term>
+        <listitem>
+        <para>
+          The numeric notification code of the event that caused the notification to be sent. Each dialog control has its own
+          specific notification codes.
+        </para>
+        </listitem></varlistentry>
       </variablelist>
       </listitem></varlistentry>
       <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
@@ -15566,9 +15630,8 @@ Verify event code (should be 4): 4
         return true or false. Return true to allow the selection change. Return false to cancel the selection change.
       </para>
       <para>
-        If <emphasis role="italic">willReply</emphasis> is false, the event handler does not need to return a value. The
-        interpreter will not wait for the return from the event handler. Good practice would probably be to always return a
-        value from an event handler.
+        Otherwise, the interpreter does not pass the returned value on to the operating system, and the event handler is not
+        required to return a value. However, good practice would probably be to always return a value from an event handler.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -15584,7 +15647,7 @@ Verify event code (should be 4): 4
   <programlisting>
   <![CDATA[
   ::method onSelChanging unguarded
-    use arg id, useLess
+    use arg id lParam, rxTv, nCode
   ]]>
   </programlisting>
 
@@ -15592,7 +15655,7 @@ Verify event code (should be 4): 4
     <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
     <listitem>
     <para>
-      The event handling method receives 2 arguments:
+      The event handling method receives 4 arguments:
     </para>
     <variablelist>
       <varlistentry><term>id</term>
@@ -15601,11 +15664,26 @@ Verify event code (should be 4): 4
         The resource id of the tree-view sending the notification.
       </para>
       </listitem></varlistentry>
-      <varlistentry><term>useLess</term>
+      <varlistentry><term>lParma</term>
       <listitem>
       <para>
         This argument is a number that has no meaning within the Rexx code. It is the value the old implementation of the
         event notification sent to the event handler.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>rxTv</term>
+      <listitem>
+      <para>
+        The Rexx tree-view object whose underlying tree-view control has sent the notification. This is a convenience for
+        the programmer. It is the same Rexx object the programmer would recieve through the <xref
+        linkend="mthNewTreeView"/> method.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>nCode</term>
+      <listitem>
+      <para>
+        The numeric notification code of the event that caused the notification to be sent. Each dialog control has its own
+        specific notification codes.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -15618,6 +15696,14 @@ Verify event code (should be 4): 4
     </para>
     </listitem></varlistentry>
   </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The event handlers for both the SELCHANGING and the <xref linkend="evtTreeViewSELCHANGED"/> events are similar and are
+    sent the same arguments. It is possible to connect both events to the same event handler and use the <emphasis
+    role="italic">nCode</emphasis> argument to determine which event caused the event handler to be invoked.
+  </para>
   </listitem></varlistentry>
 </variablelist>
 
@@ -15633,14 +15719,14 @@ Verify event code (should be 4): 4
 <indexterm><primary>EventNotification class</primary><secondary>connectUpDownEvent</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--connectUpDownEvent(--id--,--event--+----------------+--)-------------------><
-                                       +--,-methodName--+
+>>--connectUpDownEvent(--id--,--event--+---------------+--+-------------+--)---><
+                                       +-,-methodName--+  +-,-willReply-+
 ]]>
 </programlisting>
 
 <para>
   The <emphasis role="italic">connectUpDownEvent</emphasis> method connects an <xref linkend="ovvEvents"/>
-  notification message from a <xref linkend="clsUpDown"/> control to a method in the Rexx dialog.
+  notification message from an <xref linkend="clsUpDown"/> control to a method in the Rexx dialog.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
@@ -15662,7 +15748,7 @@ Verify event code (should be 4): 4
         significant. Unlike most controls, the up-down control only has one event notification.
       </para>
       <variablelist>
-        <varlistentry><term>DELTAPOS</term>
+        <varlistentry><term><xref linkend="evtUpDownDELTAPOS"/></term>
         <listitem>
         <para>
            Sent when the position of the control is about to change. This happens when the user requests a change in the
@@ -15683,6 +15769,16 @@ Verify event code (should be 4): 4
         control. The programmer defines this method. If this argument is omitted, a method name is automatically
         generated that consists of the event keyword preceded by <computeroutput>on</computeroutput>. For instance,
         <computeroutput>onDeltaPos</computeroutput>. The method name can not be the empty string.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term>willReply [optional]</term>
+      <listitem>
+      <para>
+        The <link linkend="sctCommonWillReply">willReply</link> argument controls how the interpreter invokes the event
+        handler for the connected event. However, currently the up-down control only has one event notification and the
+        operating system expects a return value from that notification. When the event is connected the <emphasis
+        role="italic">willReply</emphasis> argument is ignored. The event handler for DELTAPOS must always return a delta
+        postion buffer.
       </para>
       </listitem></varlistentry>
     </variablelist>
@@ -15721,31 +15817,32 @@ Verify event code (should be 4): 4
 
 <section id="evtUpDownDELTAPOS" xreflabel="DELTAPOS"><title>DeltaPos Event Handler</title>
 <indexterm><primary>UpDown class</primary><secondary>events</secondary><tertiary>DELTAPOS</tertiary></indexterm>
-
-<programlisting>
-<![CDATA[
-::method onDeltaPos unguarded
-  use arg pos, delta, id, hwnd
-
-  return buffer
-]]>
-</programlisting>
-
 <para>
   The event handler for the up-down DELTAPOS event is invoked when when the position of the control is about to change.
   The arguments the event handler receives allow the programmer to examine the proposed change in position, to modify
   the change, or to cancel the change all together.
 </para>
 <para>
-  The programmer must return a value from the event handler and the interpreter waits for this return. The
- <xref linkend="mthDeltaPosReply"/> class method of the <xref linkend="clsUpDown"/> class is
-  used to properly construct the return value from the event handler.
+  The programmer must return a value from the event handler and the interpreter waits for this return. The <xref
+  linkend="mthDeltaPosReply"/> class method of the <xref linkend="clsUpDown"/> class is used to properly construct the return
+  value from the event handler. This return value can not be manually constructed in Rexx code, so the programmer must use
+  the <emphasis role="italic">deltaPosReply</emphasis> method to return a value from the event handler.
 </para>
+
+<programlisting>
+<![CDATA[
+::method onDeltaPos unguarded
+  use arg pos, delta, id, hwnd, rxUpd
+
+  return buffer
+]]>
+</programlisting>
+
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The event handling method receives four arguments:
+    The event handling method receives 5arguments:
   </para>
   <variablelist>
     <varlistentry><term>pos</term>
@@ -15772,6 +15869,13 @@ Verify event code (should be 4): 4
     <listitem>
     <para>
       The window <xref linkend="defHandle"/> of the up-down control whose position is about to change.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>rxUpd</term>
+    <listitem>
+    <para>
+      The Rexx up-down object whose underlying up-down has sent the notification. This is a convenience for the
+      programmer. It is the same Rexx object the programmer would recieve through the <xref linkend="mthNewUpDown"/> method.
     </para>
     </listitem></varlistentry>
   </variablelist>
