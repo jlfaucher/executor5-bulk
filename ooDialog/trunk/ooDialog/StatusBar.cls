@@ -47,12 +47,16 @@
 ::method getIcon external  "LIBRARY oodialog stb_getIcon"
 ::method getParts external  "LIBRARY oodialog stb_getParts"
 ::method getRect external  "LIBRARY oodialog stb_getRect"
+::method getText external  "LIBRARY oodialog stb_getText"
+::method getTextLength external  "LIBRARY oodialog stb_getTextLength"
+::method getTipText external  "LIBRARY oodialog stb_getTipText"
 ::method isSimple external  "LIBRARY oodialog stb_isSimple"
 ::method setBkColor external  "LIBRARY oodialog stb_setBkColor"
 ::method setIcon external  "LIBRARY oodialog stb_setIcon"
 ::method setMinHeight external  "LIBRARY oodialog stb_setMinHeight"
 ::method setParts external  "LIBRARY oodialog stb_setParts"
 ::method setText external  "LIBRARY oodialog stb_setText"
+::method setTipText external  "LIBRARY oodialog stb_setTipText"
 ::method simple	external  "LIBRARY oodialog stb_simple"
 
 

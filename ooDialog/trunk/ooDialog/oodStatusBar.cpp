@@ -59,8 +59,13 @@
 #define STATUSBAR_CLASS        "StatusBar"
 
 #define STB_ICON_ATTRIBUTE     "STB!!ICONS!!ATTRIBUTE"
+#define STB_DRAWTYPE_KEYWORDS "LOWERBOREDERS, NOBORDERS, OWNERDRAW, POPUT, RTLREADING, or NOTABPARSING"
 
-uint32_t keyword2sbars(CSTRING flags)
+#define STB_MAX_TOOLTIP_LENGTH  511
+
+
+
+static uint32_t keyword2sbars(CSTRING flags)
 {
     uint32_t val = 0;
 
@@ -82,7 +87,7 @@ uint32_t keyword2sbars(CSTRING flags)
  *
  * @return A Rexx string object.
  */
- RexxStringObject sbars2keyword(RexxMethodContext *c, uint32_t flags)
+static RexxStringObject sbars2keyword(RexxMethodContext *c, uint32_t flags)
 {
     char buf[256];
     *buf = '\0';
@@ -100,6 +105,43 @@ uint32_t keyword2sbars(CSTRING flags)
     }
     return c->String(buf);
 }
+
+
+static uint32_t keyword2drawType(RexxMethodContext *c, CSTRING keyword, size_t argPos)
+{
+    uint32_t val = 0;
+
+    if ( keyword != NULL )
+    {
+        if (      StrCmpI(keyword, "LOWERBORDERS" ) == 0 ) val = 0                ;
+        else if ( StrCmpI(keyword, "NOBORDERS"    ) == 0 ) val = SBT_NOBORDERS    ;
+        else if ( StrCmpI(keyword, "OWNERDRAW"    ) == 0 ) val = SBT_OWNERDRAW    ;
+        else if ( StrCmpI(keyword, "POPOUT"       ) == 0 ) val = SBT_POPOUT       ;
+        else if ( StrCmpI(keyword, "RTLREADING"   ) == 0 ) val = SBT_RTLREADING   ;
+        else if ( StrCmpI(keyword, "NOTABPARSING" ) == 0 ) val = SBT_NOTABPARSING ;
+        else
+        {
+            wrongArgKeywordException(c, argPos, STB_DRAWTYPE_KEYWORDS, keyword);
+            val = OOD_NO_VALUE;
+        }
+    }
+
+    return val;
+}
+
+static RexxStringObject drawtype2keyword(RexxMethodContext *c, uint32_t flag)
+{
+
+    if (      flag == 0                ) return c->String("LOWERBORDERS");
+    else if ( flag == SBT_NOBORDERS    ) return c->String("NOBORDERS"   );
+    else if ( flag == SBT_OWNERDRAW    ) return c->String("OWNERDRAW"   );
+    else if ( flag == SBT_POPOUT       ) return c->String("POPOUT"      );
+    else if ( flag == SBT_RTLREADING   ) return c->String("RTLREADING"  );
+    else if ( flag == SBT_NOTABPARSING ) return c->String("NOTABPARSING");
+
+    return c->String("UNKNOWN");
+}
+
 
 RexxObjectPtr stbGetIcon(RexxMethodContext *c, uint32_t index)
 {
@@ -247,6 +289,102 @@ RexxMethod2(RexxObjectPtr, stb_getRect, uint32_t, index, CSELF, pCSelf)
         return rxNewRect(context, &r);
     }
     return TheNilObj;
+}
+
+/** StatusBar::getText()
+ *
+ *
+ */
+RexxMethod3(RexxObjectPtr, stb_getText, uint32_t, index, OPTIONAL_RexxObjectPtr, d, CSELF, pCSelf)
+{
+    RexxObjectPtr rxResult = TheNilObj;
+    HWND          hSb      = getDChCtrl(pCSelf);
+
+    index--;
+    uint32_t result = (uint32_t)SendMessage(hSb, SB_GETTEXTLENGTH, index, 0);
+
+    char *buf = (char *)LocalAlloc(LPTR, LOWORD(result) * sizeof(char));
+    if ( buf == NULL )
+    {
+        outOfMemoryException(context->threadContext);
+        goto done_out;
+    }
+
+    RexxDirectoryObject drawInfo = NULLOBJECT;
+    if ( argumentExists(2) )
+    {
+        if ( ! context->IsDirectory(d) )
+        {
+            wrongClassException(context->threadContext, 2, "Directory", d);
+            goto done_out;
+        }
+        drawInfo = (RexxDirectoryObject)d;
+    }
+
+    result = (uint32_t)SendMessage(hSb, SB_GETTEXT, index, (LPARAM)buf);
+
+    rxResult = context->String(buf);
+    if ( drawInfo != NULLOBJECT )
+    {
+        context->DirectoryPut(drawInfo, rxResult, "TEXT");
+        context->DirectoryPut(drawInfo, context->UnsignedInt32(HIWORD(result)), "DRAWTYPE");
+        context->DirectoryPut(drawInfo, context->UnsignedInt32(LOWORD(result)), "TEXTLENGTH");
+    }
+
+done_out:
+    safeLocalFree(buf);
+    return rxResult;
+}
+
+/** StatusBar::getTextLength()
+ *
+ *  Gets the length of the text for the specified pard of the status bar, and
+ *  optionally the draw type of the text.
+ *
+ *  @param  [required]  One-based index of the part.
+ *
+ *  @param  [optional]  A directory object in which to return some extra
+ *          information.  If present these indexes are filled in:  DRAWTYPE,
+ *          TEXTLENGTH.
+ *  @returns  The length of the text or -1 on error.
+ *
+ */
+RexxMethod3(RexxObjectPtr, stb_getTextLength, uint32_t, index, OPTIONAL_RexxObjectPtr, d, CSELF, pCSelf)
+{
+    index--;
+    uint32_t result = (uint32_t)SendMessage(getDChCtrl(pCSelf), SB_GETTEXTLENGTH, index, 0);
+
+    RexxObjectPtr rxResult = context->UnsignedInt32(LOWORD(result));
+
+    if ( argumentExists(2) )
+    {
+        if ( ! context->IsDirectory(d) )
+        {
+            wrongClassException(context->threadContext, 2, "Directory", d);
+            return TheNegativeOneObj;
+        }
+        RexxDirectoryObject drawInfo = (RexxDirectoryObject)d;
+
+        context->DirectoryPut(drawInfo, drawtype2keyword(context, HIWORD(result)), "DRAWTYPE");
+        context->DirectoryPut(drawInfo, rxResult, "TEXTLENGTH");
+    }
+
+    return rxResult;
+}
+
+/** StatusBar::getTipText()
+ *
+ *
+ */
+RexxMethod2(RexxObjectPtr, stb_getTipText, uint32_t, index, CSELF, pCSelf)
+{
+    char *buf[STB_MAX_TOOLTIP_LENGTH + 1] = {'\0'};
+
+    index--;
+
+    SendMessage(getDChCtrl(pCSelf), SB_GETTIPTEXT, MAKEWPARAM(index, STB_MAX_TOOLTIP_LENGTH), (LPARAM)buf);
+
+    return context->String((CSTRING)buf);
 }
 
 /** StatusBar::isSimple()
@@ -398,19 +536,50 @@ done_out:
  *
  *  @param  index      [required]  The 1-based index of the part.
  *
- *  @param  style      [optional]  List of keywords that specify the style of
- *                     the status bar.  If this argument is omitted the status
- *                     bar has its default style.
+ *  @param  type       [optional]  Single keyword that specifies the draw type
+ *                     of the text.  If this argument is omitted the draw typw
+ *                     will be the default type.
  *
  *  @return  True on success, false otherwise.
+ *
+ *  @note  We use LOWERBORDERS to specify the default type.  There is no keywork
+ *         for it, it is just 0.
  */
-RexxMethod4(logical_t, stb_setText, CSTRING, text, uint32_t, index, OPTIONAL_CSTRING, _style, CSELF, pCSelf)
+RexxMethod4(logical_t, stb_setText, CSTRING, text, uint32_t, index, OPTIONAL_CSTRING, _type, CSELF, pCSelf)
 {
-    uint32_t style = keyword2sbars(_style);
+    uint32_t type = 0;
+
+    if ( argumentExists(2) )
+    {
+        type = keyword2drawType(context, _type, 2);
+        if ( type == OOD_NO_VALUE )
+        {
+            return FALSE;
+        }
+    }
 
     index--;
-    index |= style;
+    index |= type;
     return SendMessage(getDChCtrl(pCSelf), SB_SETTEXT, (WPARAM)index, (LPARAM)text);
+}
+
+/** StatusBar::setTipText()
+ *
+ *
+ */
+RexxMethod3(RexxObjectPtr, stb_setTipText, uint32_t, index, CSTRING, text, CSELF, pCSelf)
+{
+    if ( strlen(text) > STB_MAX_TOOLTIP_LENGTH )
+    {
+        stringTooLongException(context->threadContext, 2, STB_MAX_TOOLTIP_LENGTH, strlen(text));
+        return TheNegativeOneObj;
+    }
+
+    index--;
+
+    SendMessage(getDChCtrl(pCSelf), SB_SETTIPTEXT, index, (LPARAM)text);
+
+    return TheZeroObj;
 }
 
 /** StatusBar::simple()

@@ -1176,12 +1176,16 @@ REXX_METHOD_PROTOTYPE(stb_getBorders);
 REXX_METHOD_PROTOTYPE(stb_getIcon);
 REXX_METHOD_PROTOTYPE(stb_getParts);
 REXX_METHOD_PROTOTYPE(stb_getRect);
+REXX_METHOD_PROTOTYPE(stb_getText);
+REXX_METHOD_PROTOTYPE(stb_getTextLength);
+REXX_METHOD_PROTOTYPE(stb_getTipText);
 REXX_METHOD_PROTOTYPE(stb_isSimple);
 REXX_METHOD_PROTOTYPE(stb_setBkColor);
 REXX_METHOD_PROTOTYPE(stb_setIcon);
 REXX_METHOD_PROTOTYPE(stb_setMinHeight);
 REXX_METHOD_PROTOTYPE(stb_setParts);
 REXX_METHOD_PROTOTYPE(stb_setText);
+REXX_METHOD_PROTOTYPE(stb_setTipText);
 REXX_METHOD_PROTOTYPE(stb_simple);
 
 // ListBox
@@ -3008,12 +3012,16 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(stb_getIcon,                    stb_getIcon),
     REXX_METHOD(stb_getParts,                   stb_getParts),
     REXX_METHOD(stb_getRect,                    stb_getRect),
+    REXX_METHOD(stb_getText,                    stb_getText),
+    REXX_METHOD(stb_getTextLength,              stb_getTextLength),
+    REXX_METHOD(stb_getTipText,                 stb_getTipText),
     REXX_METHOD(stb_isSimple,                   stb_isSimple),
     REXX_METHOD(stb_setBkColor,                 stb_setBkColor),
     REXX_METHOD(stb_setIcon,                    stb_setIcon),
     REXX_METHOD(stb_setMinHeight,               stb_setMinHeight),
     REXX_METHOD(stb_setParts,                   stb_setParts),
     REXX_METHOD(stb_setText,                    stb_setText),
+    REXX_METHOD(stb_setTipText,                 stb_setTipText),
     REXX_METHOD(stb_simple,                     stb_simple),
 
     REXX_METHOD(dss_makeDayStateBuffer,         dss_makeDayStateBuffer),
