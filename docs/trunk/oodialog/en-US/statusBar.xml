@@ -45,10 +45,64 @@
 <chapter id="clsStatusBar" xreflabel="StatusBar"><title>StatusBar Controls</title>
 <indexterm><primary>StatusBar class</primary></indexterm>
 <para>
-  xxx
+  A status bar is a horizontal window at the bottom of a dialog that the programmer can use to display status information
+  about the application. Status bars can be divided into more than one part to display different types of status information.
+  Status bars set their initial size and position automatically, ignoring any co-ordinates the programmer may have specified.
+  By default they position themselves at the bottom edge of the dialog with a width as wide as the dialog and a height that
+  is calculated based on the metrics for the font of the dialog.
 </para>
 <para>
-  yyy
+  Unlike other dialog controls, many resource editors do not have built-in supprort for status bars. However it is easy to
+  manually edit the .rc file and add a status bar. One technique is to add another control, say a combo box control, save the
+  .rc file and then edit the combo box control definition in the .rc file to make it a status bar.
+</para>
+<para>
+  As an example of this, the following listing shows part of a .rc file with a combo box, that is intended to be edited to
+  change it to a status bar;
+
+<programlisting>
+<![CDATA[
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+IDD_DLL_TEST DIALOGEX 0, 0, 227, 114
+STYLE DS_3DLOOK | DS_CENTER | DS_MODALFRAME | DS_SHELLFONT | WS_CAPTION | WS_VISIBLE | WS_POPUP | WS_SYSMENU
+CAPTION "DLL Dialog"
+FONT 8, "Ms Shell Dlg", 400, 0, 1
+{
+    CONTROL         "", IDC_CB, WC_COMBOBOX, WS_TABSTOP | NOT WS_VISIBLE | CBS_DROPDOWN | CBS_HASSTRINGS, 10, 33, 47, 12
+    CONTROL         "", IDC_EDIT, WC_EDIT, NOT WS_BORDER | WS_TABSTOP | NOT WS_VISIBLE | ES_AUTOHSCROLL, 10, 55, 59, 12
+    CONTROL         "Test", IDC_PB_TEST, WC_BUTTON, WS_TABSTOP | BS_PUSHBUTTON | BS_SPLITBUTTON, 10, 72, 70, 18
+    CONTROL         "OK", IDOK, WC_BUTTON, WS_TABSTOP | BS_DEFPUSHBUTTON, 112, 72, 50, 14
+    CONTROL         "Cancel", IDCANCEL, WC_BUTTON, WS_TABSTOP | BS_PUSHBUTTON, 167, 72, 50, 14
+}
+]]>
+</programlisting>
+  Once the template is started as above, it is a simple matter to replace the IDE_CB line with the proper values for a status
+  bar as below:
+
+<programlisting>
+<![CDATA[
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+IDD_DLL_TEST DIALOGEX 0, 0, 227, 114
+STYLE DS_3DLOOK | DS_CENTER | DS_MODALFRAME | DS_SHELLFONT | WS_CAPTION | WS_VISIBLE | WS_POPUP | WS_SYSMENU
+CAPTION "DLL Dialog"
+FONT 8, "Ms Shell Dlg", 400, 0, 1
+{
+    CONTROL         "", IDC_STATUSBAR, STATUSCLASSNAME, SBARS_TOOLTIPS, 0, 1, 227, 21
+    CONTROL         "", IDC_EDIT, WC_EDIT, NOT WS_BORDER | WS_TABSTOP | NOT WS_VISIBLE | ES_AUTOHSCROLL, 10, 55, 59, 12
+    CONTROL         "Test", IDC_PB_TEST, WC_BUTTON, WS_TABSTOP | BS_PUSHBUTTON | BS_SPLITBUTTON, 10, 72, 70, 18
+    CONTROL         "OK", IDOK, WC_BUTTON, WS_TABSTOP | BS_DEFPUSHBUTTON, 112, 72, 50, 14
+    CONTROL         "Cancel", IDCANCEL, WC_BUTTON, WS_TABSTOP | BS_PUSHBUTTON, 167, 72, 50, 14
+}
+]]>
+</programlisting>
+  As noted, the status bar will ignore the size and position co-ordinate, so any 4 values will sufffice. This technique will
+  work for the ooDialog programmer wishing to ust a status bar in their <xref linkend="clsRcDialog"/> or <xref
+  linkend="clsResDialog"/> dialogs.
+</para>
+<para>
+  The other good option for adding status bars to <computeroutput>RcDialog</computeroutput> or
+  <computeroutput>ResDialog</computeroutput> dialogs is to use the <xref linkend="mthCreateStatusBarWindow"/> method of the
+  <xref linkend="clsCreateWindows"/> class.
 </para>
 <para>
   The <computeroutput>StatusBar</computeroutput> class provides methods to work with and manipulate the underlying Windows
@@ -69,8 +123,8 @@
   <varlistentry><term><emphasis role="bold">Dynamic Definition:</emphasis></term>
   <listitem>
   <para>
-    To dynamically define a tab in a <xref linkend="clsUserDialog"/> class, use the <xref linkend="tmthCreateStatusBar"/>
-    method.
+    To dynamically define a status bar in a <xref linkend="clsUserDialog"/> class, use the <xref
+    linkend="tmthCreateStatusBar"/> method.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Event Notification</emphasis></term>
@@ -78,6 +132,13 @@
   <para>
     To connect the <xref linkend="ovvEvents"/> notifications sent by the underlying status bar control to
     a method in the Rexx dialog object use the <xref linkend="tmthConnectStatusBarEvent"/> method.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Window Creation:</emphasis></term>
+  <listitem>
+  <para>
+    To dynamically create a status bar window in a dialog, use the <xref linkend="tmthCreateStatusBarWindow"/> method. This
+    can only be done after the underlying Windows dialog has been created.
   </para>
   </listitem></varlistentry>
 </variablelist>
@@ -91,8 +152,8 @@
 <table id="tblStatusBarMethods" frame="all">
 <title>Important StatusBar Methods</title>
 <tgroup cols="2">
-<colspec colwidth="1*" />
-<colspec colwidth="4*" />
+<colspec colwidth="2*" />
+<colspec colwidth="5*" />
 <thead>
 <row>
 <entry>Method</entry>
@@ -106,11 +167,15 @@
 </row>
 <row>
 <entry><xref linkend="tmthNewStatusBar"/></entry>
-<entry>Returns a <computeroutput>StatusBar</computeroutput> object for the control with the specified ID.</entry>
+<entry>Returns a Rexx <computeroutput>StatusBar</computeroutput> object for the control with the specified ID.</entry>
 </row>
 <row>
 <entry><xref linkend="tmthCreateStatusBar"/></entry>
-<entry>Creates a status bar control in the dialog template of a <xref linkend="clsUserDialog"/></entry>
+<entry>Creates a status bar control in the dialog template of a <xref linkend="clsUserDialog"/>.</entry>
+</row>
+<row>
+<entry><xref linkend="tmthCreateStatusBarWindow"/></entry>
+<entry>Creates a status bar control in an existing Windows dialog.</entry>
 </row>
 <row>
 <entry><xref linkend="tmthConnectStatusBarEvent"/></entry>
@@ -137,6 +202,18 @@
 <entry>x.</entry>
 </row>
 <row>
+<entry><xref linkend="mthGetTextClsStatusBar"/></entry>
+<entry>x.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetTextLength"/></entry>
+<entry>x.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetTipText"/></entry>
+<entry>x.</entry>
+</row>
+<row>
 <entry><xref linkend="mthIsSimpleClsStatusBar"/></entry>
 <entry>x.</entry>
 </row>
@@ -158,6 +235,10 @@
 </row>
 <row>
 <entry><xref linkend="mthSetTextClsStatusBar"/></entry>
+<entry>x.</entry>
+</row>
+<row>
+<entry><xref linkend="mthSetTipText"/></entry>
 <entry>x.</entry>
 </row>
 <row>
@@ -211,53 +292,59 @@
 </para>
 </section>  <!-- End connectStatusBarEvent() [EventNotification method] -->
 
+<section id="tmthCreateStatusBarWindow" xreflabel="createStatusBarWindow"><title>createStatusBarWindow (CreateWindows method)</title>
+
+<para>
+  A status bar control window can be created and added to any dialog through the <xref linkend="mthCreateStatusBarWindow"/>()
+  method. The basic syntax is:
+<programlisting> <![CDATA[
+>>--createStatusBarWindow(--id--+----------+--)--><
+                                +-,-style--+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End CreateWindows::CreateStatusBarWindow() [CreateWindows method] -->
+
+
 <section id="mthGetBorders" xreflabel="getBorders"><title>getBorders</title>
 <indexterm><primary>getBorders</primary></indexterm>
 <indexterm><primary>StatusBar class</primary><secondary>getBorders</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getBorders(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--getBorders-----------------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Returns an array of three integers containing the borders of the status bar. The meaning of the three integers is explained
+  in the <emphasis role="italic">Remarks</emphasis> section.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    There are no arguments to this method.
   </para>
-  <variablelist>
-    <varlistentry><term>TERM</term>
-    <listitem>
-    <para>
-      xx
-    </para>
-    </listitem></varlistentry>
-  </variablelist>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
+    Returns an array containing the borders on succees, or the <computeroutput>.nil</computeroutput> object on error.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
   <listitem>
   <para>
-    Additional comments.
+    The item at index 1 is the  width of the horizontal border, the item at index 2 is the width of the vertical border, and
+    the item at index 3 is the width of the border between rectangles. The borders determine the spacing between the outside
+    edge of the window and the rectangles within the window that contain text. The borders also determine the spacing between
+    rectangles.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
   <listitem>
   <para>
     Raises syntax errors when incorrect usage is detected.
-  </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
@@ -266,7 +353,22 @@
     This example ...
 <programlisting>
 <![CDATA[
+::method onTest2 unguarded
 
+  sb = self~newStatusBar(IDC_STATUS)
+  a = sb~getBorders
+  say 'Width Horizontal Border:' a[1]
+  say 'Width Vetical Border   :' a[2]
+  say 'Spacing Border         :' a[3]
+  say
+
+/* Output might be:
+
+Width Horizontal Border: 0
+Width Vetical Border   : 2
+Spacing Border         : 2
+
+*/
 ]]>
 </programlisting>
   </para>
@@ -279,25 +381,24 @@
 <indexterm><primary>StatusBar class</primary><secondary>getIcon</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getIcon(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--getIcon(--index--)---------------------------><
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Retrieves the icon image for the specified part.
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>index [required]</term>
     <listitem>
     <para>
-      xx
+      The one-based index of the part whose icon is needed.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -305,13 +406,8 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
+    Returns the icon for the specified part, or the <computeroutput>.nil</computeroutput> object if the part does not have an
+    icon.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -319,17 +415,21 @@
   <para>
     Raises syntax errors when incorrect usage is detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example comes from an application that assigns an icon to every part in the status bar. When the dialog is closed,
+    each icon is retrieved and released to free up system resources:
 <programlisting>
 <![CDATA[
+::method leaving
 
+  status = self~newStatusBar(IDC_STATUSBAR)
+  do i = 1 to status~getParts
+    icon = status~getIcon(i)
+    icon~release
+  end
 ]]>
 </programlisting>
   </para>
@@ -342,25 +442,28 @@
 <indexterm><primary>StatusBar class</primary><secondary>getParts</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getParts(--+--------+--)---------------------------------------------><
-                  +--type--+
+>>--getParts(--+-----------+--)------------------><
+               +--margins--+
 ]]>
 </programlisting>
 
 <para>
-  xx
+  Returns the number of parts in the status bar, and optionally, the co-ordinate of the right edge of each part
 </para>
 <variablelist>
   <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
   <listitem>
   <para>
-    The arguments are:
+    The single argument is:
   </para>
   <variablelist>
-    <varlistentry><term>TERM</term>
+    <varlistentry><term>margins [optional] [in / out]</term>
     <listitem>
     <para>
-      xx
+      An <computeroutput>Array</computeroutput> object. If this argument is used, on return the indexes 1 through the number
+      of parts will contain the right margin of that part. I.e., index 1 will contain the right margin of part 1, index 2
+      will contain the right margin for part 2, etc.. If any index is -1, the position of the right edge for that part
+      extends to the right edge of the window.
     </para>
     </listitem></varlistentry>
   </variablelist>
@@ -368,13 +471,7 @@
   <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
   <listitem>
   <para>
-    xx
-  </para>
-  </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
-  <listitem>
-  <para>
-    Additional comments.
+    Returns the number of parts in the status bar.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Details</emphasis></term>
@@ -382,17 +479,34 @@
   <para>
     Raises syntax errors when incorrect usage is detected.
   </para>
-  <para>
-    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
-  </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
   <listitem>
   <para>
-    This example ...
+    This example gets the number of parts in a status bar and also the right edge of each part:
 <programlisting>
 <![CDATA[
+::method onTest2 unguarded
 
+  sb = self~newStatusBar(IDC_STATUS)
+
+  margins = .array~new
+  count = sb~getParts(margins)
+  say 'Status bar has' count 'parts.'
+  do i = 1 to count
+    say '  part' i 'right edge at'   margins[i]
+  end
+  say
+
+/* Output might be:
+
+Status bar has 4 parts.
+  part 1 right edge at 50
+  part 2 right edge at 100
+  part 3 right edge at 200
+  part 4 right edge at -1
+
+*/
 ]]>
 </programlisting>
   </para>
@@ -405,7 +519,213 @@
 <indexterm><primary>StatusBar class</primary><secondary>getRect</secondary></indexterm>
 <programlisting>
 <![CDATA[
->>--getRect(--+--------+--)---------------------------------------------><
+>>--getRect(--index--)---------------------------><
+]]>
+</programlisting>
+
+<para>
+  Returns a <xref linkend="clsRect"/>  object that contains the bounding rectangle of the specified part in this status bar.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single arguments is;
+  </para>
+  <variablelist>
+    <varlistentry><term>index [required]</term>
+    <listitem>
+    <para>
+      The one-based index of the part whose bounding rectangle is needed.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns the bounding rectangle on success, or the the <computeroutput>.nil</computeroutput> object on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example attempts to get the bounding rectangle for part 6 to part 2, descending, for a status bar. The status bar
+    only has 4 parts:
+<programlisting>
+<![CDATA[
+::method onTest2 unguarded
+
+  sb = self~newStatusBar(IDC_STATUS)
+
+  do i = 6 to 2 by -1
+    r = sb~getRect(i)
+    say 'Rect for part' i':' r
+  end
+  say
+
+/* Output might be:
+
+Rect for part 6: The NIL object
+Rect for part 5: The NIL object
+Rect for part 4: a Rect (202, 2, 325, 23)
+Rect for part 3: a Rect (102, 2, 200, 23)
+Rect for part 2: a Rect (52, 2, 100, 23)
+
+*/
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End StatusBar::getRect() -->
+
+<section id="mthGetTextClsStatusBar" xreflabel="getText"><title>getText</title>
+<indexterm><primary>getText</primary><secondary>StatusBar class</secondary></indexterm>
+<indexterm><primary>StatusBar class</primary><secondary>getText</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getText(--index--+---------+--)--------------><
+                     +-,-info--+
+]]>
+</programlisting>
+
+<para>
+  Retrieves the text of the specified part and optionally some extra information related to the part.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>index [required]</term>
+    <listitem>
+    <para>
+      The one-based index of the part whose text is needed.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>info [optional] [in / out]</term>
+    <listitem>
+    <para>
+      A <computeroutput>Directory</computeroutput> object in which some extra information can be retrieved. If this argument
+      is used, on return the object will contain these indexes:
+    </para>
+    <variablelist>
+      <varlistentry><term><emphasis role="bold">DRAWTYPE:</emphasis></term>
+      <listitem>
+      <para>
+        A key word that specifies the type of operation used to draw the text.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">TEXTLENGTH:</emphasis></term>
+      <listitem>
+      <para>
+        xxx and xxx sss.
+      </para>
+      </listitem></varlistentry>
+      <varlistentry><term><emphasis role="bold">TEXT:</emphasis></term>
+      <listitem>
+      <para>
+        The text of the specified part.
+      </para>
+      </listitem></varlistentry>
+    </variablelist>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+::method onTest2 unguarded
+
+  sb = self~newStatusBar(IDC_STATUS)
+
+  do i = 1 to sb~getParts
+    info = .directory~new
+    text = sb~getText(i, info)
+    say 'Text for part' i':' text
+    say '  Text length:   ' info~textLength
+    say '  Text draw type:' info~drawType
+    say '  Text (again):  ' info~text
+    say
+  end
+  say
+
+/* Output might be:
+
+Text for part 1: Ok
+  Text length:    2
+  Text draw type: LOWERBORDERS
+  Text (again):   Ok
+
+Text for part 2: Test
+  Text length:    4
+  Text draw type: LOWERBORDERS
+  Text (again):   Test
+
+Text for part 3: Friday
+  Text length:    6
+  Text draw type: LOWERBORDERS
+  Text (again):   Friday
+
+Text for part 4: Viking Victory
+  Text length:    14
+  Text draw type: LOWERBORDERS
+  Text (again):   Viking Victory
+
+*/
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End StatusBar::getText() -->
+
+<section id="mthGetTextLength" xreflabel="getTextLength"><title>getTextLength</title>
+<indexterm><primary>getTextLength</primary></indexterm>
+<indexterm><primary>StatusBar class</primary><secondary>getTextLength</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getTextLength(--+--------+--)---------------------------------------------><
                   +--type--+
 ]]>
 </programlisting>
@@ -461,7 +781,70 @@
   </para>
   </listitem></varlistentry>
 </variablelist>
-</section>  <!-- End StatusBar::getRect() -->
+</section>  <!-- End StatusBar::getTextLength() -->
+
+<section id="mthGetTipText" xreflabel="getTipText"><title>getTipText</title>
+<indexterm><primary>getTipText</primary></indexterm>
+<indexterm><primary>StatusBar class</primary><secondary>getTipText</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getTipText(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End StatusBar::getTipText() -->
 
 <section id="mthIsSimpleClsStatusBar" xreflabel="isSimple"><title>isSimple</title>
 <indexterm><primary>isSimple</primary><secondary>StatusBar class</secondary></indexterm>
@@ -840,6 +1223,69 @@
   </listitem></varlistentry>
 </variablelist>
 </section>  <!-- End StatusBar::setText() -->
+
+<section id="mthSetTipText" xreflabel="setTipText"><title>setTipText</title>
+<indexterm><primary>setTipText</primary></indexterm>
+<indexterm><primary>StatusBar class</primary><secondary>setTipText</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--setTipText(--+--------+--)---------------------------------------------><
+                  +--type--+
+]]>
+</programlisting>
+
+<para>
+  xx
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>TERM</term>
+    <listitem>
+    <para>
+      xx
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    xx
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    Additional comments.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example ...
+<programlisting>
+<![CDATA[
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End StatusBar::setTipText() -->
 
 <section id="mthSimple" xreflabel="simple"><title>simple</title>
 <indexterm><primary>simple</primary></indexterm>

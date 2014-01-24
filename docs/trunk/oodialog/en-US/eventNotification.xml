@@ -11653,7 +11653,7 @@ onRelease() id: 1003 reBar: a ReBar
     <para>
       The <link linkend="sctCommonWillReply">willReply</link> argument controls how the interpreter invokes the event
       handler for the connected event. The default if <emphasis role="italic">willReply</emphasis> is omitted is
-      <computeroutput>.false</computeroutput>.
+      <computeroutput>.true</computeroutput>.
     </para>
     <para>
       For those event notifications that the operating system expects a return value, the <emphasis
@@ -11729,8 +11729,8 @@ onRelease() id: 1003 reBar: a ReBar
   A number of the statusbar events related to mouse clicks are processed internally by ooDialog in the same manner. The event
   handlers for these events are sent the same arguments and are essentially coded the same way. This <emphasis
   role="italic">general</emphasis> event handler is described here for the CLICK, DBLCLK, RCLICK, and RDBLCLK events. The
-  description for event keyword in the <xref linkend="mthConnectStatusBarEvent"/> documentation details when each event will
-  invoke this event handler.
+  description for the event keyword in the <xref linkend="mthConnectStatusBarEvent"/> documentation details when each event
+  will invoke this event handler.
 </para>
 <para>
   The event handler must always reply either true or false to respond to these notification.
@@ -11768,13 +11768,14 @@ onRelease() id: 1003 reBar: a ReBar
     <varlistentry><term>index</term>
     <listitem>
     <para>
-      The one-based index of the section that was clicked.
+      The one-based index of the section that was clicked. When a status bar is in simple mode there is only one part and the
+      index will always be one.
     </para>
     </listitem></varlistentry>
     <varlistentry><term>pt</term>
     <listitem>
     <para>
-      A <xref linkend="clsPoint"/> object that specifies the location of the click. Not that MSDN says this point is in
+      A <xref linkend="clsPoint"/> object that specifies the location of the click. Note that MSDN says this point is in
       screen <xref linkend="defScreenCoordinates"/>, but from experimentation it appears to actually be in client
       co-ordinates.
     </para>
@@ -11800,16 +11801,18 @@ onRelease() id: 1003 reBar: a ReBar
   <para>
     The following example has a status bar divided into 4 sections. The fourth section allows the user to toggle between
     simple status bar mode and normal by right clicking on section 4. Note that when the status bar is in simple mode, the
-    index sent is 256:
+    user can click anywhere to take the status bar out of simple mode:
 
 <programlisting>
 <![CDATA[
 ::method onRightClick unguarded
   use arg id, nCode, index, pt, sb
 
-  if index == 4 | index = 256 then do
-    if sb~isSimple then sb~simple(.false)
-    else sb~simple(.true)
+  if sb~isSimple then do
+    sb~simple(.false)
+  end
+  else if index == 4 then do
+    sb~simple(.true)
   end
 
   return .true
@@ -11872,7 +11875,7 @@ onRelease() id: 1003 reBar: a ReBar
   <varlistentry><term><emphasis role="bold">Return:</emphasis></term>
   <listitem>
   <para>
-    The operating system ignores the return from this notification. 0 make a good return value.
+    The operating system ignores the return from this notification. 0 makes a good return value.
   </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">Example</emphasis></term>
