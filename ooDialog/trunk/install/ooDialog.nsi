@@ -118,7 +118,7 @@
   Var IsAdminUser                   ; is the installer being run by an admin:           true / false
   Var ooRexxVersion                 ; Discovered ooRexx version
   Var isMinimumRequiredRexx         ; Installed ooRexx meets minimum required for this version of ooDialog true / false
-  Var installerProblemIntro         ; First sentence when the installer detects a file can not be deleted, i.e. oodialog.dll
+  Var keyFileName                   ; Used to construct the full path name of a check for locked file.
 
 ;--------------------------------
 ;Pages
@@ -934,25 +934,6 @@ Function WrongRexxVersion
 FunctionEnd
 
 
-/** InstallerProblem()
- *
- * Puts up a generic message box stating that the intaller detected a problem
- */
-Function InstallerProblem
-
-  MessageBox MB_OK|MB_ICONEXCLAMATION|MB_TOPMOST \
-    "$installerProblemIntro\
-    You MUST close the ooDialog reference documentation and close$\n\
-    any running ooDialog programs before executing the ooDialog$\n\
-    installation program.$\n$\n\
-    The ooDialog installer is aborting.$\n$\n\
-    After the installer closes, please close any running$\n\
-    ooDialog programs and make sure all the ooDialog$\n\
-    documentation is closed, then retry the installation."
-
-FunctionEnd
-
-
 /** DeterminRexxVersion()
  *
  *
@@ -993,87 +974,70 @@ FunctionEnd
  */
 Function CheckForProblems
 
-  ${If} ${FileExists} $INSTDIR\doc\oodialogTest.pdf
-      ClearErrors
-      CopyFiles /SILENT $INSTDIR\doc\oodialog.pdf $INSTDIR\doc\oodialogTest.pdf
-      ${If} ${Errors}
-          StrCpy $installerProblemIntro "The installer detected a problem trying to copy oodialog.pdf$\n$\n"
-          Call InstallerProblem
+  StrCpy $keyFileName '$INSTDIR\oodialog.dll'
 
-          ; ooDialog.pdf was not copied, we don't need to do anything before
-          ; aborting.
-          Abort
-      ${EndIf}
-
-      ClearErrors
-      Delete $INSTDIR\doc\oodialog.pdf
-      ${If} ${Errors}
-          StrCpy $installerProblemIntro "The installer detected a problem with oodialog.pdf$\n$\n"
-          Call InstallerProblem
-
-          ; ooDialog.pdf was not deleted, we just need to delete the copy.
-          Delete $INSTDIR\doc\oodialogTest.pdf
-          Abort
-      ${EndIf}
-
-      ; ooDialog.pdf was deleted, we rename the copy to keep things clean
-      Rename $INSTDIR\doc\oodialogTest.pdf $INSTDIR\doc\oodialog.pdf
-  ${EndIf}  ; if exist oodialog.pdf
-
-  ; We check oodguide.pdf also, but it may not exist.
-  ${If} ${FileExists} $INSTDIR\doc\oodguide.pdf
-      ClearErrors
-      CopyFiles /SILENT $INSTDIR\doc\oodguide.pdf $INSTDIR\doc\oodguideTest.pdf
-      ${If} ${Errors}
-          StrCpy $installerProblemIntro "The installer detected a problem trying to copy oodguide.pdf$\n$\n"
-          Call InstallerProblem
-
-          ; oodguide.pdf was not copied, we don't need to do anything before
-          ; aborting.
-          Abort
-      ${EndIf}
-
-      ClearErrors
-      Delete $INSTDIR\doc\oodguide.pdf
-      ${If} ${Errors}
-          StrCpy $installerProblemIntro "The installer detected a problem with oodguide.pdf$\n$\n"
-          Call InstallerProblem
-
-          ; oodguide.pdf was not deleted, we just need to delete the copy.
-          Delete $INSTDIR\doc\oodguideTest.pdf
-          Abort
-      ${EndIf}
-
-      ; oodguide.pdf was deleted, we rename the copy to keep things clean
-      Rename $INSTDIR\doc\oodguideTest.pdf $INSTDIR\doc\oodguide.pdf
-  ${EndIf} ; if exist oodguide.pdf
-
-  ClearErrors
-  CopyFiles /SILENT $INSTDIR\oodialog.dll $INSTDIR\oodialogTest.dll
-  ${If} ${Errors}
-      StrCpy $installerProblemIntro "The installer detected a problem trying to copy oodialog.dll$\n$\n"
-      Call InstallerProblem
-
-      ; oodialog.dll was not copied, we don't need to do anything before
-      ; aborting.
-
-      Abort
+  LockedList::IsFileLocked $keyFileName
+  Pop $R0
+  ${If} $R0 == true
+    goto ooDialogIsRunning
   ${EndIf}
 
-  ClearErrors
-  Delete $INSTDIR\oodialog.dll
-  ${If} ${Errors}
-      StrCpy $installerProblemIntro "The installer detected a problem with oodialog.dll$\n$\n"
-      Call InstallerProblem
-
-      ; oodialog.dll was not deleted, we just need to delete the copy.
-      Delete $INSTDIR\oodialogTest.dll
-
-      Abort
+  StrCpy $keyFileName '$INSTDIR\ooDialog.exe'
+  LockedList::IsFileLocked $keyFileName
+  Pop $R0
+  ${If} $R0 == true
+    goto ooDialogIsRunning
   ${EndIf}
 
-  ; ooDialog.dll was deleted, we rename the copy to keep things clean
-  Rename $INSTDIR\oodialogTest.dll $INSTDIR\oodialog.dll
+  StrCpy $keyFileName '$INSTDIR\ooDialog.com'
+  LockedList::IsFileLocked $keyFileName
+  Pop $R0
+  ${If} $R0 == true
+    goto ooDialogIsRunning
+  ${EndIf}
+
+  StrCpy $keyFileName '$INSTDIR\doc\oodialog.pdf'
+  LockedList::IsFileLocked $keyFileName
+  Pop $R0
+  ${If} $R0 == true
+    goto ooDialogDocIsOpened
+  ${EndIf}
+
+  StrCpy $keyFileName '$INSTDIR\doc\oodguide.pdf'
+  LockedList::IsFileLocked $keyFileName
+  Pop $R0
+  ${If} $R0 == true
+    goto ooDialogDocIsOpened
+  ${EndIf}
+
+
+  goto done_out
+
+  ooDialogIsRunning:
+      MessageBox MB_OK \
+        "WARNING.  The file:$\n$\n\
+          $keyFileName$\n$\n\
+        is locked and can not be updated by the installer.  This indicates$\n\
+        that all ooDialog programs have not been halted$\n$\n\
+        Continuing with the install in this case is known to cause problems.$\n\
+        The installer will quit.  Ensure all ooDialog programs are halted and$\n\
+        all ooDialog documentation is closed.  Then retry the install."
+
+        Quit
+
+  ooDialogDocIsOpened:
+      MessageBox MB_OK \
+        "WARNING.  The file:$\n$\n\
+          $keyFileName$\n$\n\
+        is locked and can not be updated by the installer.  This indicates$\n\
+        that all ooDialog documentation has not been closed$\n$\n\
+        Continuing with the install in this case is known to cause problems.$\n\
+        The installer will quit.  Ensure all ooDialog documentation is closed$\n\
+        and all ooDialog programs have been halted.  Then retry the install."
+
+        Quit
+
+  done_out:
 
 FunctionEnd
 
