@@ -113,6 +113,7 @@ extern MsgReplyType rbnAutobreak(pCPlainBaseDialog pcpbd, CSTRING methodName, ui
 
 // StatusBar functions.  Defined in oodStatusBar.cpp:
 extern MsgReplyType sbnSimpleModeChange(pCPlainBaseDialog pcpbd, CSTRING methodName, uint32_t tag, LPARAM lParam);
+extern bool         isSimple(HWND hwnd);
 
 // ToolBar functions.  Defined in oodToolBar.cpp:
 extern MsgReplyType tbnDeletingButton(RexxThreadContext *c, CSTRING methodName, uint32_t tag, LPARAM lParam, pCPlainBaseDialog pcpbd);

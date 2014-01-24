@@ -1672,7 +1672,14 @@ RexxObjectPtr getToolIDFromLParam(RexxThreadContext *c, LPARAM lParam)
  *
  *           For a Status bar, dwItemSpec is the section index, use one-based
  *           index.  For a ToolBar, dwItemSpec is the resurce id of the button
- *           pushed.  For both controls dwItemSpec can be -1.
+ *           pushed.
+ *
+ *           For both controls dwItemSpec can be -1.  However, for a status bar
+ *           in simple mode, we get 255.  Adding 1 to get the Rexx index gives
+ *           us 256.  Which doesn't make sense to me.  256 would be a valid part
+ *           index, the last one.  MSDN says that in simple mode there is only 1
+ *           part.  So we check for this and use an idex of 1, the first and
+ *           only part.
  *
  *           use arg id, nCode, index, pt, ctrl
  */
@@ -1694,7 +1701,14 @@ MsgReplyType genericNmClick(pCPlainBaseDialog pcpbd, LPARAM lParam, CSTRING meth
     }
     else if ( ctrlType == winStatusBar )
     {
-        rxSectIndex = c->Uintptr(nmm->dwItemSpec + 1);
+        if ( nmm->dwItemSpec == 0xff && isSimple(nmm->hdr.hwndFrom) )
+        {
+            rxSectIndex = TheOneObj;
+        }
+        else
+        {
+            rxSectIndex = c->Uintptr(nmm->dwItemSpec + 1);
+        }
     }
     else
     {
@@ -1714,7 +1728,7 @@ MsgReplyType genericNmClick(pCPlainBaseDialog pcpbd, LPARAM lParam, CSTRING meth
         reply = ReplyFalse;
     }
 
-    if ( rxSectIndex != TheZeroObj )
+    if ( rxSectIndex != TheZeroObj && rxSectIndex != TheOneObj)
     {
         c->ReleaseLocalReference(rxSectIndex);
     }
@@ -7188,13 +7202,9 @@ RexxMethod5(RexxObjectPtr, en_connectStaticEvent, RexxObjectPtr, rxID, CSTRING, 
  *                      method name is constructed by prefixing the event
  *                      keyword with 'on'.  For instance onAutoBreak.
  *
- *  @param  willReply   [OPTIONAL] Specifies if the method invocation should be
- *                      direct or indirect. With a direct invocation, the
- *                      interpreter waits in the Windows message loop for the
- *                      return from the Rexx method. With indirect, the Rexx
- *                      method is invoked through ~startWith(), which of course
- *                      returns immediately.  By default willReply is set to
- *                      true.
+ *  @param  willReply   [OPTIONAL] Common willReply behavior.  By default
+ *                      willReply is set to true.  Note that the mouse clicks
+ *                      all require a reply.
  *
  *  @return  True if the event notification was connected, otherwsie false.
  *
@@ -7205,11 +7215,10 @@ RexxMethod5(RexxObjectPtr, en_connectStaticEvent, RexxObjectPtr, rxID, CSTRING, 
  *            is raised for a bad resource ID rather than returning -1.
  *
  *            For controls new since 4.0.0, event notifications that have a
- *            reply are documented as always being 'direct' reply and
- *            notifications that ignore the return are documented as allowing
- *            the programmer to specify.  This means that willReply is only
- *            ignored for SBN_SIMPLEMODECHANGE and not ignored for any of the
- *            other events.
+ *            reply are usually documented as always requiring a reply. This may
+ *            be over-kill for the mouse clicks, but the clicks are processed
+ *            using the generic mouse click function, so we keep this as
+ *            requiring a reply.
  */
 RexxMethod5(RexxObjectPtr, en_connectStatusBarEvent, RexxObjectPtr, rxID, CSTRING, event,
             OPTIONAL_CSTRING, methodName, OPTIONAL_RexxObjectPtr, _willReply, CSELF, pCSelf)

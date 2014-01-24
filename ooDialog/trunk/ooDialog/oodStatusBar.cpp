@@ -172,6 +172,14 @@ RexxObjectPtr stbStoreIcon(RexxMethodContext *c, RexxObjectPtr icon, uint32_t in
     return existing;
 }
 
+bool isSimple(HWND hwnd)
+{
+    if ( SendMessage(hwnd, SB_ISSIMPLE, 0, 0) == 0 )
+    {
+        return false;
+    }
+    return true;
+}
 
 MsgReplyType sbnSimpleModeChange(pCPlainBaseDialog pcpbd, CSTRING methodName, uint32_t tag, LPARAM lParam)
 {
@@ -327,7 +335,7 @@ RexxMethod3(RexxObjectPtr, stb_getText, uint32_t, index, OPTIONAL_RexxObjectPtr,
     if ( drawInfo != NULLOBJECT )
     {
         context->DirectoryPut(drawInfo, rxResult, "TEXT");
-        context->DirectoryPut(drawInfo, context->UnsignedInt32(HIWORD(result)), "DRAWTYPE");
+        context->DirectoryPut(drawInfo, drawtype2keyword(context, HIWORD(result)), "DRAWTYPE");
         context->DirectoryPut(drawInfo, context->UnsignedInt32(LOWORD(result)), "TEXTLENGTH");
     }
 
