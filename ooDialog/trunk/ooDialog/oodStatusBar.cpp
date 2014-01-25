@@ -575,7 +575,7 @@ RexxMethod4(logical_t, stb_setText, CSTRING, text, uint32_t, index, OPTIONAL_CST
  *
  *
  */
-RexxMethod3(RexxObjectPtr, stb_setTipText, uint32_t, index, CSTRING, text, CSELF, pCSelf)
+RexxMethod3(RexxObjectPtr, stb_setTipText, CSTRING, text, uint32_t, index, CSELF, pCSelf)
 {
     if ( strlen(text) > STB_MAX_TOOLTIP_LENGTH )
     {
@@ -594,8 +594,12 @@ RexxMethod3(RexxObjectPtr, stb_setTipText, uint32_t, index, CSTRING, text, CSELF
  *
  *
  */
-RexxMethod2(uint32_t, stb_simple, logical_t, simple, CSELF, pCSelf)
+RexxMethod2(uint32_t, stb_simple, OPTIONAL_logical_t, simple, CSELF, pCSelf)
 {
+    if ( argumentOmitted(1) )
+    {
+        simple = TRUE;
+    }
     SendMessage(getDChCtrl(pCSelf), SB_SIMPLE, simple, 0);
     return 0;
 }
