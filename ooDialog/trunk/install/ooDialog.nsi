@@ -974,6 +974,8 @@ FunctionEnd
  */
 Function CheckForProblems
 
+check_for_locked_files:
+
   StrCpy $keyFileName '$INSTDIR\oodialog.dll'
 
   LockedList::IsFileLocked $keyFileName
@@ -1010,30 +1012,41 @@ Function CheckForProblems
     goto ooDialogDocIsOpened
   ${EndIf}
 
-
   goto done_out
 
   ooDialogIsRunning:
-      MessageBox MB_OK \
+      MessageBox MB_RETRYCANCEL|MB_ICONEXCLAMATION|MB_TOPMOST \
         "WARNING.  The file:$\n$\n\
           $keyFileName$\n$\n\
         is locked and can not be updated by the installer.  This indicates$\n\
         that all ooDialog programs have not been halted$\n$\n\
-        Continuing with the install in this case is known to cause problems.$\n\
-        The installer will quit.  Ensure all ooDialog programs are halted and$\n\
-        all ooDialog documentation is closed.  Then retry the install."
+        Continuing with the install in this case is known to cause problems.$\n$\n\
+        To Retry:$\n$\n\
+        Ensure all ooDialog programs are halted and all ooDialog documenta-$\n\
+        tion is closed and then push Retry.$\n$\n\
+        To Quit the install and fix the problem:$\n$\n\
+        Push Cancel.  Determine which ooDialog programs are open and close$\n\
+        them.  Ensure no other ooDialog programs are open and that all$\n\
+        ooDialog documentation is closed.  Then retry the install." \
+        /SD IDCANCEL IDRETRY check_for_locked_files
 
         Quit
 
   ooDialogDocIsOpened:
-      MessageBox MB_OK \
+      MessageBox MB_RETRYCANCEL|MB_ICONEXCLAMATION|MB_TOPMOST \
         "WARNING.  The file:$\n$\n\
           $keyFileName$\n$\n\
         is locked and can not be updated by the installer.  This indicates$\n\
         that all ooDialog documentation has not been closed$\n$\n\
-        Continuing with the install in this case is known to cause problems.$\n\
-        The installer will quit.  Ensure all ooDialog documentation is closed$\n\
-        and all ooDialog programs have been halted.  Then retry the install."
+        Continuing with the install in this case is known to cause problems.$\n$\n\
+        To Retry:$\n$\n\
+        Ensure all ooDialog programs are halted and all ooDialog documenta-$\n\
+        tion is closed and then push Retry.$\n$\n\
+        To Quit the install and fix the problem:$\n$\n\
+        Push Cancel.  Determine why the documentation is open and close it.$\n\
+        Ensure all ooDialog programs are closed and any other ooDialog$\n\
+        documentation is closed.  Then retry the install." \
+        /SD IDCANCEL IDRETRY check_for_locked_files
 
         Quit
 
