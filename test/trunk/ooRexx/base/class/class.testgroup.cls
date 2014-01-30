@@ -11,9 +11,8 @@ end
 -- the subclassing here will switch the install order around
 ::class class1 subclass class3
 ::method init class
-  say "class1~init"
+  nop
 ::method activate class
-  say "class1~activate"
   instance = self~new
   -- this should not give an error
   instance~foo
@@ -33,9 +32,8 @@ end
 -- this class will run first because this is the first class without a dependency
 ::class class2
 ::method init class
-  say "class2~init"
+  nop
 ::method activate class
-  say "class2~activate"
   .local~class.testgroup~class2 = .true
   if .local~class.testgroup~class3 == .true then
       call setError "class3~activate ran before class2~activate"
@@ -50,9 +48,8 @@ end
 -- dependency order
 ::class class3
 ::method init class
-  say "class3~init"
+  nop
 ::method activate class
-  say "class3~activate"
   .local~class.testgroup~class3 = .true
   if .local~class.testgroup~class1 == .true then
       call setError "class3~activate did not run before class1~activate"
