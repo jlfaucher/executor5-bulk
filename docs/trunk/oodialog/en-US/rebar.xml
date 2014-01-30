@@ -80,6 +80,13 @@
     a method in the Rexx dialog object use the <xref linkend="tmthConnectReBarEvent"/> method.
   </para>
   </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Window Creation:</emphasis></term>
+  <listitem>
+  <para>
+    To dynamically create a rebar window in a dialog, use the <xref linkend="tmthCreateReBarWindow"/> method. This can only
+    be done after the underlying Windows dialog has been created.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
 </para>
 
@@ -119,6 +126,10 @@
 <row>
 <entry><xref linkend="tmthCreateReBar"/></entry>
 <entry>Creates a rebar control in the dialog template of a <xref linkend="clsUserDialog"/></entry>
+</row>
+<row>
+<entry><xref linkend="tmthCreateReBarWindow"/></entry>
+<entry>Creates a rebar control in an existing Windows dialog.</entry>
 </row>
 <row>
 <entry><xref linkend="tmthConnectReBarEvent"/></entry>
@@ -164,6 +175,19 @@
 </programlisting>
 </para>
 </section>  <!-- End UserDialog::createReBar() [UserDialog method] -->
+
+
+<section id="tmthCreateRBarWindow" xreflabel="createRBarWindow"><title>createReBarWindow (CreateWindows method)</title>
+<para>
+  A rebar control window can be created and added to any dialog through the <xref linkend="mthCreateReBarWindow"/>() method.
+  The basic syntax is:
+<programlisting> <![CDATA[
+>>--createReBarWindow(--id--+----------+--)------><
+                            +-,-style--+
+]]>
+</programlisting>
+</para>
+</section>  <!-- End CreateWindows::CreateReBarWindow() [CreateWindows method] -->
 
 
 <section id="tmthConnectReBarEvent" xreflabel="connectReBarEvent"><title>connectReBarEvent (dialog object method)</title>
