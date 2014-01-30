@@ -52,6 +52,7 @@
 ::method checkButton external  "LIBRARY oodialog tb_checkButton"
 ::method commandToIndex external  "LIBRARY oodialog tb_commandToIndex"
 ::method customize external  "LIBRARY oodialog tb_customize"
+::method enableButton external  "LIBRARY oodialog tb_enableButton"
 ::method getButton external  "LIBRARY oodialog tb_getButton"
 ::method getButtonText external  "LIBRARY oodialog tb_getButtonText"
 ::method getButtonTextEx external  "LIBRARY oodialog tb_getButtonTextEx"

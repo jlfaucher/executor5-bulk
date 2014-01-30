@@ -1152,6 +1152,8 @@ REXX_METHOD_PROTOTYPE(cb_find);
 REXX_METHOD_PROTOTYPE(cb_getCue);
 REXX_METHOD_PROTOTYPE(cb_getComboBoxInfo);
 REXX_METHOD_PROTOTYPE(cb_getEditControl);
+REXX_METHOD_PROTOTYPE(cb_getItemData);
+REXX_METHOD_PROTOTYPE(cb_setItemData);
 REXX_METHOD_PROTOTYPE(cb_getItemHeight);
 REXX_METHOD_PROTOTYPE(cb_getMinVisible);
 REXX_METHOD_PROTOTYPE(cb_getText);
@@ -1159,9 +1161,11 @@ REXX_METHOD_PROTOTYPE(cb_insert);
 REXX_METHOD_PROTOTYPE(cb_isDropDown);
 REXX_METHOD_PROTOTYPE(cb_isGrandchild);
 REXX_METHOD_PROTOTYPE(cb_removeFullColor);
+REXX_METHOD_PROTOTYPE(cb_removeItemData);
 REXX_METHOD_PROTOTYPE(cb_select);
 REXX_METHOD_PROTOTYPE(cb_setCue);
 REXX_METHOD_PROTOTYPE(cb_setFullColor);
+REXX_METHOD_PROTOTYPE(cb_setItemData);
 REXX_METHOD_PROTOTYPE(cb_setItemHeight);
 REXX_METHOD_PROTOTYPE(cb_setMinVisible);
 
@@ -1297,6 +1301,7 @@ REXX_METHOD_PROTOTYPE(tb_changeBitmap);
 REXX_METHOD_PROTOTYPE(tb_checkButton);
 REXX_METHOD_PROTOTYPE(tb_commandToIndex);
 REXX_METHOD_PROTOTYPE(tb_customize);
+REXX_METHOD_PROTOTYPE(tb_enableButton);
 REXX_METHOD_PROTOTYPE(tb_getButton);
 REXX_METHOD_PROTOTYPE(tb_getButtonText);
 REXX_METHOD_PROTOTYPE(tb_getButtonTextEx);
@@ -2551,6 +2556,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(cb_getCue,                      cb_getCue),
     REXX_METHOD(cb_getComboBoxInfo,             cb_getComboBoxInfo),
     REXX_METHOD(cb_getEditControl,              cb_getEditControl),
+    REXX_METHOD(cb_getItemData,                 cb_getItemData),
     REXX_METHOD(cb_getItemHeight,               cb_getItemHeight),
     REXX_METHOD(cb_getMinVisible,               cb_getMinVisible),
     REXX_METHOD(cb_getText,                     cb_getText),
@@ -2558,9 +2564,11 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(cb_isDropDown,                  cb_isDropDown),
     REXX_METHOD(cb_isGrandchild,                cb_isGrandchild),
     REXX_METHOD(cb_removeFullColor,             cb_removeFullColor),
+    REXX_METHOD(cb_removeItemData,              cb_removeItemData),
     REXX_METHOD(cb_select,                      cb_select),
     REXX_METHOD(cb_setCue,                      cb_setCue),
     REXX_METHOD(cb_setFullColor,                cb_setFullColor),
+    REXX_METHOD(cb_setItemData,                 cb_setItemData),
     REXX_METHOD(cb_setItemHeight,               cb_setItemHeight),
     REXX_METHOD(cb_setMinVisible,               cb_setMinVisible),
 
@@ -2945,6 +2953,7 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(tb_checkButton,                tb_checkButton),
     REXX_METHOD(tb_commandToIndex,             tb_commandToIndex),
     REXX_METHOD(tb_customize,                  tb_customize),
+    REXX_METHOD(tb_enableButton,               tb_enableButton),
     REXX_METHOD(tb_getButton,                  tb_getButton),
     REXX_METHOD(tb_getButtonText,              tb_getButtonText),
     REXX_METHOD(tb_getButtonTextEx,            tb_getButtonTextEx),

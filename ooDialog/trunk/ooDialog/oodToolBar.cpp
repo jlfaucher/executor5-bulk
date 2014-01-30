@@ -1555,6 +1555,24 @@ RexxMethod2(uint32_t, tb_commandToIndex, RexxObjectPtr, rxCmdID, CSELF, pCSelf)
     return (uint32_t)index;
 }
 
+/** ToolBar::enableButton()
+ */
+RexxMethod3(logical_t, tb_enableButton, RexxObjectPtr, rxCmdID, OPTIONAL_logical_t, enable, CSELF, pCSelf)
+{
+    uint32_t id =  oodGlobalID(context, rxCmdID, 1, true);
+    if ( id == OOD_ID_EXCEPTION )
+    {
+        return FALSE;
+    }
+
+    if ( argumentOmitted(2) )
+    {
+        enable = TRUE;
+    }
+
+    return SendMessage(getDChCtrl(pCSelf), TB_ENABLEBUTTON, id, enable);
+}
+
 /** ToolBar::indexToCommand()
  *
  *  Retrieves the command ID for the button specified by the. one-based index.

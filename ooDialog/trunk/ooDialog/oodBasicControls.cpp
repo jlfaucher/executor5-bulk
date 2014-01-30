@@ -3014,6 +3014,32 @@ RexxMethod2(int32_t, lb_selectIndex, OPTIONAL_int32_t, index, CSELF, pCSelf)
 #define COMBOBOX_CLASS   "ComboBox"
 
 
+/**
+ * Returns the user data for the specified combo box item as a Rexx object
+ *
+ * @param hComboBox
+ * @param index
+ *
+ * @return The Rexx object set as the user data, or the .nil object if no user
+ *         data is set.  Returns NULLOBJECT on a combo box error.
+ */
+static RexxObjectPtr getCurrentComboBoxUserData(HWND hComboBox, uint32_t index)
+{
+    RexxObjectPtr result = TheNilObj;
+
+    LRESULT iData = SendMessage(hComboBox, CB_GETITEMDATA, index, 0);
+    if ( iData == CB_ERR )
+    {
+        result = NULLOBJECT;
+    }
+    else if ( iData != NULL )
+    {
+        result = (RexxObjectPtr)iData;
+    }
+    return result;
+}
+
+
 void freeComboBoxData(pSubClassData pSCData)
 {
     if ( pSCData )
@@ -3270,6 +3296,36 @@ done_out:
 }
 
 
+/** ComboBox::getItemData()
+ *
+ *  Returns the user data associated with the specified combo box item, or .nil
+ *  if there is no user data associated.
+ *
+ *  @param  index  [required]  The one-based index of the item whose user data
+ *                 is to be retrieved.
+ *
+ *  @return  Returns the associated user data, or .nil if there is no associated
+ *           data.
+ */
+RexxMethod2(RexxObjectPtr, cb_getItemData, uint32_t, index, CSELF, pCSelf)
+{
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+    if ( pcdc == NULL )
+    {
+        return TheNilObj;
+    }
+
+    index--;
+    RexxObjectPtr result = getCurrentComboBoxUserData(pcdc->hCtrl, index);
+    if ( result == NULLOBJECT )
+    {
+        oodSetSysErrCode(context->threadContext, ERROR_SIGNAL_REFUSED);
+        return TheNilObj;
+    }
+    return result;
+}
+
+
 /** ComboBox::getItemHeight()
  *
  *  Determines the height of the list items or the height of the selection field
@@ -3475,6 +3531,43 @@ done_out:
     return result;
 }
 
+
+/** ComboBox::removeItemData()
+ *
+ */
+RexxMethod2(RexxObjectPtr, cb_removeItemData, uint32_t, index, CSELF, pCSelf)
+{
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+    if ( pcdc == NULL )
+    {
+        return TheNilObj;
+    }
+
+    index--;
+    RexxObjectPtr result = getCurrentComboBoxUserData(pcdc->hCtrl, index);
+    if ( result == NULLOBJECT )
+    {
+        oodSetSysErrCode(context->threadContext, ERROR_SIGNAL_REFUSED);
+        return TheNilObj;
+    }
+
+    if ( result != TheNilObj )
+    {
+        LRESULT ret = SendMessage(pcdc->hCtrl, CB_SETITEMDATA, index, (LPARAM)NULL);
+        if ( ret != CB_ERR && ret != CB_ERRSPACE )
+        {
+            unProtectControlUserData(context, pcdc, result);
+        }
+        else
+        {
+            // Not removed, set result back to the .nil ojbect.
+            result = TheNilObj;
+            oodSetSysErrCode(context->threadContext, ERROR_SIGNAL_REFUSED);
+        }
+    }
+
+    return result;
+}
 
 /** ComboBox::select()
  *
@@ -3707,6 +3800,80 @@ RexxMethod4(RexxObjectPtr, cb_setFullColor, OPTIONAL_RexxObjectPtr, _bk, OPTIONA
 
 done_out:
     return result;
+}
+
+
+/** ComboBox::setItemData()
+ *
+ *  Assigns a user data value to the specified combo box item.
+ *
+ *  @param  index  [required]  The one-based index of the item whose user data
+ *                 is to be set.
+ *
+ *  @param  data   [optional]  The user data to be set. If this argument is
+ *                 omitted, the current user data, if any, is removed.
+ *
+ *  @return  Returns the previous user data object for the specified combo box
+ *           item, if there was a user data object, or .nil if there wasn't.
+ *
+ *           On error, .nil is returned.  An error is very unlikely.  An error
+ *           can be checked for by examining the .systemErrorCode object.
+ *
+ *  @notes  Sets the .systemErrorCode.  On error set to:
+ *
+ *          156  ERROR_SIGNAL_REFUSED The recipient process has refused the
+ *          signal.
+ *
+ *          This is not a system error, the code is just used here to indicate a
+ *          combo box error when setting the user data.  The combo box provides
+ *          no information on why it failed.
+ */
+RexxMethod3(RexxObjectPtr, cb_setItemData, uint32_t, index, OPTIONAL_RexxObjectPtr, data, CSELF, pCSelf)
+{
+    pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
+    if ( pcdc == NULL )
+    {
+        return TheNilObj;
+    }
+
+    index--;
+    RexxObjectPtr oldUserData = getCurrentComboBoxUserData(pcdc->hCtrl, index);
+
+    if ( oldUserData == NULLOBJECT )
+    {
+        oodSetSysErrCode(context->threadContext, ERROR_SIGNAL_REFUSED);
+        return TheNilObj;
+    }
+
+    if ( argumentExists(2) )
+    {
+        LRESULT ret = SendMessage(pcdc->hCtrl, CB_SETITEMDATA, index, (LPARAM)data);
+        if ( ret != CB_ERR && ret != CB_ERRSPACE )
+        {
+            unProtectControlUserData(context, pcdc, oldUserData);
+            protectControlUserData(context, pcdc, data);
+        }
+        else
+        {
+            oldUserData = TheNilObj;
+            oodSetSysErrCode(context->threadContext, ERROR_SIGNAL_REFUSED);
+        }
+    }
+    else
+    {
+        LRESULT ret = SendMessage(pcdc->hCtrl, CB_SETITEMDATA, index, (LPARAM)NULL);
+        if ( ret != CB_ERR && ret != CB_ERRSPACE )
+        {
+            unProtectControlUserData(context, pcdc, oldUserData);
+        }
+        else
+        {
+            oldUserData = TheNilObj;
+            oodSetSysErrCode(context->threadContext, ERROR_SIGNAL_REFUSED);
+        }
+    }
+
+    return oldUserData;
 }
 
 

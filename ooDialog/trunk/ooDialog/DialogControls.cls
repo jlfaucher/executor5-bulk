@@ -308,6 +308,7 @@
    use strict arg
    return self~sendWinIntMsg(self~CB_GETHORIZONTALEXTENT, 0, 0)
 
+::method getItemData unguarded external "LIBRARY oodialog cb_getItemData"
 ::method getItemHeight unguarded external "LIBRARY oodialog cb_getItemHeight"
 ::method getMinVisible unguarded external "LIBRARY oodialog cb_getMinVisible"
 ::method getText unguarded external "LIBRARY oodialog cb_getText"
@@ -335,6 +336,7 @@
    return self~sendWinIntMsg(self~CB_SHOWDROPDOWN, 1, 0)
 
 ::method removeFullColor unguarded external "LIBRARY oodialog cb_removeFullColor"
+::method removeItemData unguarded external "LIBRARY oodialog cb_removeItemData"
 ::method select unguarded external "LIBRARY oodialog cb_select"
 ::method selected unguarded
    use strict arg
@@ -363,6 +365,7 @@
    self~sendWinIntMsg(self~CB_SETHORIZONTALEXTENT, extent, 0)
    return 0
 
+::method setItemData unguarded external "LIBRARY oodialog cb_setItemData"
 ::method setItemHeight unguarded external "LIBRARY oodialog cb_setItemHeight"
 ::method setMinVisible unguarded external "LIBRARY oodialog cb_setMinVisible"
 

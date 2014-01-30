@@ -824,9 +824,6 @@ MsgReplyType rbnAutobreak(pCPlainBaseDialog pcpbd, CSTRING methodName, uint32_t 
 
     LPNMREBARAUTOBREAK prab = (LPNMREBARAUTOBREAK)lParam;
 
-    uint32_t tmp = (uint32_t)-1;
-    printf("-1 + 1 == %u\n", tmp + 1);
-
     RexxObjectPtr bandIndex = c->UnsignedInt32(prab->uBand + 1); // could be -1, need to test
     RexxObjectPtr wID       = c->UnsignedInt32(prab->wID);       // application defined ID
     RexxObjectPtr style     = rbbs2keyword(c, prab->fStyleCurrent);
