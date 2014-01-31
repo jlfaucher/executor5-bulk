@@ -1,0 +1,632 @@
+#!/usr/bin/rexx
+/*
+  SVN Revision: $Rev: 4823 $
+  Change Date:  $Date: 2009-06-21 20:33:27 -0400 (Sun, 21 Jun 2009) $
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 - 2009 Rexx Language Association. All rights reserved.  */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~addWithSuite(.MutableBuffer_subWordsMethod.testGroup, .mbsubWordsSuite)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+-- Test suite class providing a 1-time set up and tear down.
+::class 'mbsubWordsSuite' subclass ooTestSuite public
+
+::method 'setUp'
+    .local~vblank = ' '
+    .local~zeros1 = copies('0',10000)||'1'
+    .local~v26 = 'A B C D E F G H I J K L M N O P Q R S T U V W X Y Z'
+    .local~v125 = "'"copies('* ',125)"'"
+    .local~v8 = 'one two  three   four    five     six      seven       eight'
+    .local~v10000 = copies('J ',9999)||'K '
+    .local~vwbw = 'John'||copies(' ',10000)||'Buckley'
+    .local~vwbwwbw = 'J'||copies(' ',5000)||copies('*',10000)||copies(' ',5000)||'R'
+    .local~v19 = '19'
+    .local~v14 = '14'
+
+::method 'tearDown'
+    .local~remove(vblank)
+    .local~remove(zeros1)
+    .local~remove(v26)
+    .local~remove(v125)
+    .local~remove(v8)
+    .local~remove(v10000)
+    .local~remove(vwbw)
+    .local~remove(vwbwwbw)
+    .local~remove(v19)
+    .local~remove(v14)
+
+
+::class "MutableBuffer_subWordsMethod.testGroup" subclass ooTestCase public
+
+::method 'test001'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new('SUBWORD1 SUBWORD2')~subWords(1.000000009)
+
+::method 'test002'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new('SUBWORD1 SUBWORD2')~subWords(2.000000009)
+
+::method 'test003'
+    if .ooRexxUnit.architecture == 32 then
+        self~assertSameArray('SUBWORD1 SUBWORD2', .mutablebuffer~new('SUBWORD1 SUBWORD2')~subWords(1.000000004))
+    else
+        self~assertSameArray('SUBWORD1 SUBWORD2', .mutablebuffer~new('SUBWORD1 SUBWORD2')~subWords(1.000000000000000004))
+
+::method 'test003a'
+    self~assertSameArray('SUBWORD1 SUBWORD2', .mutablebuffer~new('SUBWORD1 SUBWORD2')~subWords)
+
+::method 'test003b'
+    self~assertSameArray('SUBWORD1 SUBWORD2', .mutablebuffer~new('SUBWORD1 SUBWORD2')~subWords(,2))
+
+::method 'test004'
+    if .ooRexxUnit.architecture == 32 then
+        self~assertSameArray('SUBWORD2', .mutablebuffer~new('SUBWORD1 SUBWORD2')~subWords(2.000000004))
+    else
+        self~assertSameArray('SUBWORD2', .mutablebuffer~new('SUBWORD1 SUBWORD2')~subWords(2.000000000000000004))
+
+::method 'test005'
+    self~assertSameArray('J', .mutablebuffer~new('4a'x)~subWords(.zeros1))
+
+::method 'test006'
+    self~assertSameArray('', .mutablebuffer~new(.vblank)~subWords(2.55*200-255))
+
+::method 'test007'
+    self~assertSameArray('SUBWORD', .mutablebuffer~new('SUBWORD')~subWords('31'x))
+
+::method 'test008'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new('SUBWORD')~subWords('30'x)
+
+::method 'test009'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new(' ')~subWords('30'x)
+
+::method 'test010'
+    self~assertSameArray('JR', .mutablebuffer~new('4a52'x)~subWords(1E0))
+
+::method 'test011'
+    self~assertSameArray('', .mutablebuffer~new('4a52'x)~subWords(2E0))
+
+::method 'test012'
+    self~assertSameArray('A B C D E F G H I J K L M N O', .mutablebuffer~new('4120422043204420452046204720482049204a204b204c204d204e204f'x)~subWords(' 1'))
+
+::method 'test013'
+    numeric digits 1
+    self~assertSameArray('L M N O P Q R S T U V W X Y Z', .mutablebuffer~new(.v26)~subWords('1'||'2'))
+
+::method 'test014'
+    numeric digits 1
+    self~assertSameArray('L M N O P Q R S T U V W X Y Z', .mutablebuffer~new(.v26)~subWords(' +12 '))
+
+::method 'test015'
+    numeric digits 1
+    self~assertSameArray('J K L M N O P Q R S T U V W X Y Z', .mutablebuffer~new(.v26)~subWords(+12))
+
+::method 'test016'
+    numeric digits 1
+    self~assertSameArray('L M N O P Q R S T U V W X Y Z', .mutablebuffer~new(.v26)~subWords(12))
+
+::method 'test017'
+    numeric digits 1
+    self~assertSameArray('S T U V W X Y Z', .mutablebuffer~new(.v26)~subWords(.v19))
+
+::method 'test018'
+    numeric digits 1
+    self~assertSameArray('N O P Q R S T U V W X Y Z', .mutablebuffer~new(.v26)~subWords(.v14))
+
+::method 'test019'
+    numeric digits 1
+    self~assertSameArray('2E+1', .mutablebuffer~new(12+6)~subWords(1))
+
+::method 'test020'
+    numeric digits 1
+    self~assertSameArray('12+6', .mutablebuffer~new('12+6')~subWords(1))
+
+::method 'test021'
+    self~assertSameArray('ASDF QWER ZXCV', .mutablebuffer~new('     asdf qwer zxcv     ASDF QWER ZXCV')~subWords('.004E3'))
+
+::method 'test022'
+    self~assertSameArray('four    five     six      seven       eight', .mutablebuffer~new(.v8)~subWords(-4+8))
+
+::method 'test023'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new(.v8)~subWords(-4-8)
+
+::method 'test024'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new(.v8)~subWords(1.5)
+
+::method 'test025'
+    self~assertSameArray('', .mutablebuffer~new('6173646620717765722041534446205157455220'x)~subWords('30303035'x))
+
+::method 'test026'
+    self~assertSameArray('ZXCV', .mutablebuffer~new('61736466207a786376000000000041534446205a584356'x)~subWords((3*3*3)/9))
+
+::method 'test027'
+    self~assertSameArray('NV', .mutablebuffer~new(nv)~subWords(1))
+
+::method 'test029'
+    self~assertSameArray('NV.10', .mutablebuffer~new(nv.10)~subWords(1))
+
+::method 'test030'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new(.v125)~subWords(nv)
+
+::method 'test032'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new(.v125)~subWords(nv.10)
+
+::method 'test033'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new(novala)~subWords(novalb)
+
+::method 'test035'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new(.v125)~subWords(nv)
+
+::method 'test036'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new(.v125)~subWords(nv.10)
+
+::method 'test037'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new(novala)~subWords(novalb,)
+
+::method 'test038'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new(.v125)~subWords(nv.)
+
+::method 'test039'
+    self~assertSameArray('J K', .mutablebuffer~new(.v10000)~subWords(9999))
+
+::method 'test040'
+    self~assertSameArray('K', .mutablebuffer~new(.v10000)~subWords(10000))
+
+::method 'test041'
+    self~assertSameArray('', .mutablebuffer~new(.v10000)~subWords(10001))
+
+::method 'test042'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~assertSameArray('7 8 9 0', .mutablebuffer~new(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX)~subWords(7,))
+
+::method 'test043'
+    self~assertSameArray(.vwbwwbw, .mutablebuffer~new(.vwbwwbw)~subWords(1))
+
+::method 'test044'
+    self~assertSameArray(copies('*',10000)||copies(' ',5000)||'R', .mutablebuffer~new(.vwbwwbw)~subWords(2))
+
+::method 'test045'
+    self~assertSameArray('R', .mutablebuffer~new(.vwbwwbw)~subWords(3))
+
+::method 'test046'
+    self~assertSameArray('John'||copies(' ',10000)||'Buckley', .mutablebuffer~new(.vwbw)~subWords(1))
+
+::method 'test047'
+    self~assertSameArray('Buckley', .mutablebuffer~new(.vwbw)~subWords(2))
+
+::method 'test048'
+    self~assertSameArray('00345', .mutablebuffer~new(00345)~subWords(1))
+
+::method 'test049'
+    self~assertSameArray('00345', .mutablebuffer~new(00345)~subWords(1))
+
+::method 'test050'
+    self~assertSameArray('3 4 5', .mutablebuffer~new((3 4 5))~subWords(1))
+
+::method 'test051'
+    self~assertSameArray('4 5', .mutablebuffer~new((3 4 5))~subWords(2))
+
+::method 'test052'
+    self~assertSameArray('5', .mutablebuffer~new((3 4 5))~subWords(3))
+
+::method 'test053'
+    self~assertSameArray('', .mutablebuffer~new((3 4 5))~subWords(4))
+
+::method 'test054'
+    self~assertSameArray('one two  three   four    five     six      seven       eight', .mutablebuffer~new(.v8)~subWords(1))
+
+::method 'test055'
+    self~assertSameArray('six      seven       eight', .mutablebuffer~new(.v8)~subWords(6))
+
+::method 'test056'
+    self~assertSameArray('eight', .mutablebuffer~new(.v8)~subWords(8))
+
+::method 'test057'
+    self~assertSameArray('one two  three   four    five     six      seven       eight', .mutablebuffer~new(.v8)~subWords(1))
+
+::method 'test058'
+    self~assertSameArray('two  three   four    five     six      seven       eight', .mutablebuffer~new(.v8)~subWords(2))
+
+::method 'test059'
+    self~assertSameArray('', .mutablebuffer~new(.v8)~subWords(9))
+
+::method 'test060'
+    v8. = .v8
+    self~assertSameArray('four    five     six      seven       eight', .mutablebuffer~new(v8.10)~subWords(4))
+
+::method 'test061'
+    v8. = .v8
+    self~assertSameArray('five     six      seven       eight', .mutablebuffer~new(v8.10)~subWords(5))
+
+::method 'test062'
+    v8. = .v8
+    self~assertSameArray('six      seven       eight', .mutablebuffer~new(v8.10)~subWords(6))
+
+::method 'test063'
+    self~assertSameArray('A B C D E F G H I J K L M N O P Q R S T U V W X Y Z Z Y X W V U T S R Q P O N M L K J I H G F E D C B A', .mutablebuffer~new((.v26||' '||reverse(.v26)))~subWords(1))
+
+::method 'test064'
+    self~assertSameArray('Z Z Y X W V U T S R Q P O N M L K J I H G F E D C B A', .mutablebuffer~new((.v26' 'reverse(.v26)))~subWords(26))
+
+::method 'test065'
+    self~assertSameArray('Z Y X W V U T S R Q P O N M L K J I H G F E D C B A', .mutablebuffer~new((.v26 reverse(.v26)))~subWords(27))
+
+::method 'test066'
+    self~assertSameArray('two three four five six seven', .mutablebuffer~new('one two three four five six seven')~subWords(2))
+
+::method 'test067'
+    self~assertSameArray('', .mutablebuffer~new(.v26)~subWords(length(translate(.v26,'',' '))))
+
+::method 'test068'
+    self~assertSameArray('V W X Y Z', .mutablebuffer~new(.v26)~subWords(x2d(16)))
+
+::method 'test069'
+    self~assertSameArray('CHAR', .mutablebuffer~new((dataType(6) dataType('A')))~subWords(2))
+
+::method 'test070'
+    self~assertSameArray('call to routine', .mutablebuffer~new(errorText(40))~subWords(lastPos('O','WORD')))
+
+::method 'test071'
+    self~assertSameArray('BW OR', .mutablebuffer~new('SU BW OR D')~subWords(2,2))
+
+::method 'test074'
+    self~assertSameArray('', .mutablebuffer~new('')~subWords(1,1))
+
+::method 'test074a'
+    self~assertSameArray('', .mutablebuffer~new('')~subWords(,1))
+
+::method 'test075'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new('SUBWORD1 SUBWORD2')~subWords(1.000000009,1.000000009)
+
+::method 'test076'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new('SUBWORD1 SUBWORD2')~subWords(2.000000009,2.000000009)
+
+::method 'test077'
+    if .ooRexxUnit.architecture == 32 then
+        self~assertSameArray('SUBWORD1', .mutablebuffer~new('SUBWORD1 SUBWORD2')~subWords(1.000000004,1.000000004))
+    else
+        self~assertSameArray('SUBWORD1', .mutablebuffer~new('SUBWORD1 SUBWORD2')~subWords(1.000000000000000004,1.000000000000000004))
+
+::method 'test078'
+    if .ooRexxUnit.architecture == 32 then
+        self~assertSameArray('SUBWORD2', .mutablebuffer~new('SUBWORD1 SUBWORD2')~subWords(2.000000004,2.000000004))
+    else
+        self~assertSameArray('SUBWORD2', .mutablebuffer~new('SUBWORD1 SUBWORD2')~subWords(2.000000000000000004,2.000000000000000004))
+
+::method 'test079'
+    self~assertSameArray('J', .mutablebuffer~new('4a'x)~subWords(.zeros1,2))
+
+::method 'test080'
+    self~assertSameArray('', .mutablebuffer~new(.vblank)~subWords(2.55*200-255,1))
+
+::method 'test081'
+    self~assertSameArray('', .mutablebuffer~new('SUBWORD')~subWords('31'x,'30'x))
+
+::method 'test082'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new('SUBWORD')~subWords('30'x,'30'x)
+
+::method 'test083'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new(' ')~subWords('30'x,'30'x)
+
+::method 'test084'
+    self~assertSameArray('JR', .mutablebuffer~new('4a52'x)~subWords(1E0,1E0))
+
+::method 'test085'
+    self~assertSameArray('', .mutablebuffer~new('4a52'x)~subWords(2E0,1E0))
+
+::method 'test086'
+    self~assertSameArray('A B', .mutablebuffer~new('4120422043204420452046204720482049204a204b204c204d204e204f'x)~subWords(' 1',' 2'))
+
+::method 'test087'
+    numeric digits 1
+    self~assertSameArray('L M N O P Q R S T U V W', .mutablebuffer~new(.v26)~subWords('1'||'2','1'||'2'))
+
+::method 'test088'
+    numeric digits 1
+    self~assertSameArray('L M N O P Q R S T U V W', .mutablebuffer~new(.v26)~subWords(' +12 ',' +12 '))
+
+::method 'test089'
+    numeric digits 1
+    self~assertSameArray('J K L M N O P Q R S', .mutablebuffer~new(.v26)~subWords(+12,+12))
+
+::method 'test090'
+    numeric digits 1
+    self~assertSameArray('L M N O P Q R S T U V W', .mutablebuffer~new(.v26)~subWords(12,12))
+
+::method 'test091'
+    numeric digits 1
+    self~assertSameArray('S T U V W X Y Z', .mutablebuffer~new(.v26)~subWords(.v19,.v19))
+
+::method 'test092'
+    numeric digits 1
+    self~assertSameArray('N O P Q R S T U V W X Y Z', .mutablebuffer~new(.v26)~subWords(.v14,.v14))
+
+::method 'test093'
+    numeric digits 1
+    self~assertSameArray('2E+1', .mutablebuffer~new((12+6))~subWords(1,1))
+
+::method 'test094'
+    numeric digits 1
+    self~assertSameArray('12+6', .mutablebuffer~new('12+6')~subWords(1,1))
+
+::method 'test095'
+    self~assertSameArray('ASDF QWER ZXCV', .mutablebuffer~new('     asdf qwer zxcv     ASDF QWER ZXCV')~subWords('.004E3','.003E3'))
+
+::method 'test096'
+    self~assertSameArray('four    five     six      seven', .mutablebuffer~new(.v8)~subWords(-4+8,-4+8))
+
+::method 'test097'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new(.v8)~subWords(-4-8,-4+8)
+
+::method 'test098'
+    self~expectSyntax(93.923)
+    xre = .mutablebuffer~new(.v8)~subWords(1,1.5)
+
+::method 'test099'
+    self~assertSameArray('ZXCV', .mutablebuffer~new('61736466207a786376000000000041534446205a584356'x)~subWords((3*3*3)/9,2))
+
+::method 'test100'
+    self~assertSameArray('NV', .mutablebuffer~new(nv)~subWords(1,1))
+
+::method 'test102'
+    self~assertSameArray('NV.10', .mutablebuffer~new(nv.10)~subWords(1,1))
+
+::method 'test103'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new(.v125)~subWords(nv,1)
+
+::method 'test104'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new(.v125)~subWords(nv.,1)
+
+::method 'test105'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new(.v125)~subWords(nv.10,1)
+
+::method 'test106'
+    self~expectSyntax(93.923)
+    xre = .mutablebuffer~new(.v125)~subWords(1,nv)
+
+::method 'test107'
+    self~expectSyntax(93.923)
+    xre = .mutablebuffer~new(.v125)~subWords(1,nv.)
+
+::method 'test108'
+    self~expectSyntax(93.923)
+    xre = .mutablebuffer~new(.v125)~subWords(1,nv.10)
+
+::method 'test109'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new(novala)~subWords(novalb,novalc)
+
+::method 'test110'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new(.v125)~subWords(nv,1)
+
+::method 'test111'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new(.v125)~subWords(nv.,1)
+
+::method 'test112'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new(.v125)~subWords(nv.10,1)
+
+::method 'test113'
+    self~expectSyntax(93.923)
+    xre = .mutablebuffer~new(.v125)~subWords(1,nv)
+
+::method 'test114'
+    self~expectSyntax(93.923)
+    xre = .mutablebuffer~new(.v125)~subWords(1,nv.)
+
+::method 'test115'
+    self~expectSyntax(93.923)
+    xre = .mutablebuffer~new(.v125)~subWords(1,nv.10)
+
+::method 'test116'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new(novala)~subWords(novalb,novalc)
+
+::method 'test117'
+    self~assertSameArray('J K', .mutablebuffer~new(.v10000)~subWords(9999,2))
+
+::method 'test118'
+    self~assertSameArray('K', .mutablebuffer~new(.v10000)~subWords(10000,2))
+
+::method 'test119'
+    self~assertSameArray('', .mutablebuffer~new(.v10000)~subWords(10001,2))
+
+::method 'test120'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~assertSameArray('7 8 9 0', .mutablebuffer~new(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX)~subWords(7,2+3))
+
+::method 'test121'
+    self~assertSameArray('J', .mutablebuffer~new(.vwbwwbw)~subWords(1,1))
+
+::method 'test122'
+    self~assertSameArray('J'||copies(' ',5000)||copies('*',10000), .mutablebuffer~new(.vwbwwbw)~subWords(1,2))
+
+::method 'test123'
+    self~assertSameArray(copies('*',10000), .mutablebuffer~new(.vwbwwbw)~subWords(2,1))
+
+::method 'test124'
+    self~assertSameArray(copies('*',10000)||copies(' ',5000)||'R', .mutablebuffer~new(.vwbwwbw)~subWords(2,2))
+
+::method 'test125'
+    self~assertSameArray('R', .mutablebuffer~new(.vwbwwbw)~subWords(3,1))
+
+::method 'test126'
+    self~assertSameArray('John', .mutablebuffer~new(.vwbw)~subWords(1,1))
+
+::method 'test127'
+    self~assertSameArray('Buckley', .mutablebuffer~new(.vwbw)~subWords(2,1))
+
+::method 'test128'
+    self~assertSameArray('John'||copies(' ',10000)||'Buckley', .mutablebuffer~new(.vwbw)~subWords(1,2))
+
+::method 'test129'
+    self~assertSameArray('Buckley', .mutablebuffer~new(.vwbw)~subWords(2,2))
+
+::method 'test130'
+    self~assertSameArray('00345', .mutablebuffer~new((00345))~subWords(1,1))
+
+::method 'test131'
+    self~assertSameArray('00345', .mutablebuffer~new((00345))~subWords(1,2))
+
+::method 'test132'
+    self~assertSameArray('3 4 5', .mutablebuffer~new((3 4 5))~subWords(1,3))
+
+::method 'test133'
+    self~assertSameArray('4 5', .mutablebuffer~new((3 4 5))~subWords(2,2))
+
+::method 'test134'
+    self~assertSameArray('5', .mutablebuffer~new((3 4 5))~subWords(3,1))
+
+::method 'test135'
+    self~assertSameArray('', .mutablebuffer~new((3 4 5))~subWords(4,4))
+
+::method 'test136'
+    self~assertSameArray('one two  three   four    five     six      seven       eight', .mutablebuffer~new(.v8)~subWords(1,8))
+
+::method 'test137'
+    self~assertSameArray('six      seven       eight', .mutablebuffer~new(.v8)~subWords(6,4))
+
+::method 'test138'
+    self~assertSameArray('eight', .mutablebuffer~new(.v8)~subWords(8,3))
+
+::method 'test139'
+    self~assertSameArray('one two  three   four    five     six      seven       eight', .mutablebuffer~new(.v8)~subWords(1,8))
+
+::method 'test140'
+    self~assertSameArray('two  three   four    five     six      seven       eight', .mutablebuffer~new(.v8)~subWords(2,8))
+
+::method 'test141'
+    self~assertSameArray('', .mutablebuffer~new(.v8)~subWords(9,1))
+
+::method 'test142'
+    v8. = .v8
+    self~assertSameArray('four    five     six      seven       eight', .mutablebuffer~new(v8.10)~subWords(4,5))
+
+::method 'test143'
+    v8. = .v8
+    self~assertSameArray('five     six      seven       eight', .mutablebuffer~new(v8.10)~subWords(5,5))
+
+::method 'test144'
+    v8. = .v8
+    self~assertSameArray('six      seven       eight', .mutablebuffer~new(v8.10)~subWords(6,4))
+
+::method 'test145'
+    self~assertSameArray('A B C D E F G H I J K L M N O P Q R S T U V W X Y Z Z', .mutablebuffer~new((.v26||' '||reverse(.v26)))~subWords(1,27))
+
+::method 'test146'
+    self~assertSameArray('Z Z', .mutablebuffer~new((.v26' 'reverse(.v26)))~subWords(26,2))
+
+::method 'test147'
+    self~assertSameArray('Z Y X W V U T S R Q P O N M L K J I H G F E D C B A', .mutablebuffer~new((.v26 reverse(.v26)))~subWords(27,26))
+
+::method 'test148'
+    self~assertSameArray('two three four five six', .mutablebuffer~new('one two three four five six seven')~subWords(2,subStr('3 4 5 6 7',5,1)))
+
+::method 'test149'
+    self~assertSameArray('', .mutablebuffer~new(.v26)~subWords(length(translate(.v26,'',' ')),.zeros1))
+
+::method 'test150'
+    self~assertSameArray('V W X Y Z', .mutablebuffer~new(.v26)~subWords(x2d(16),x2d('A')))
+
+::method 'test151'
+    self~assertSameArray('CHAR', .mutablebuffer~new((dataType(6) dataType('A')))~subWords(2,dataType(7,'N')))
+
+::method 'test152'
+    self~assertSameArray('call to routine', .mutablebuffer~new(errorText(40))~subWords(lastPos('O','WORD'),WORDlength('J. R. BUCKLEY',3)))
+
+::method 'test153'
+    self~assertSameArray('BW OR', .mutablebuffer~new('SU BW OR D')~subWords(2,2))
+
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_SUBWORD"
+    self~assertSameArray('is the', .mutablebuffer~new('Now is the time')~subWords(2,2))
+    self~assertSameArray('the time', .mutablebuffer~new('Now is the time')~subWords(3))
+    self~assertSameArray("", .mutablebuffer~new('Now is the time')~subWords(5))
+
+   -- new tests
+    self~assertSameArray('', .mutablebuffer~new('Now is the time')~subWords(2,0))
+    self~assertSameArray('the  time', .mutablebuffer~new('Now  is  the  time  ')~subWords(3))
+    self~assertSameArray("time", .mutablebuffer~new('Now  is  the  time  ')~subWords(4))
+    self~assertSameArray("", .mutablebuffer~new('Now  is  the  time  ')~subWords(5))
+
+
+::method assertSameArray
+  use arg expected, received
+  if expected~isa(.String) then do
+      source = expected
+      expected = .array~new
+      do i = 1 to words(source)
+          expected~append(source~word(i))
+      end
+  end
+
+  self~assertEquals(expected~items, received~items)
+
+  do i = 1 to expected~items
+      self~assertEquals(expected[i], received[i])
+  end
+

@@ -1,0 +1,168 @@
+#!/usr/bin/rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2010-2010 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+    parse source . . fileSpec;
+
+    group = .TestGroup~new(fileSpec)
+    group~markNoTests("The rxunixsys extension has not been integrated in the ooRexx distribution at this time")
+
+    /* TODO uncomment the below, add code to only load package on Unixes
+    group~add(.SysUnix.testGroup)
+    group~restrictOS("LINUX")
+    */
+
+    if group~isAutomatedTest then return group
+
+    testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires 'ooTest.frm'
+::class 'SysUnix.testgroup' subclass ooTestCase public
+
+::method 'testSysUname_1'
+    self~assertNotEquals("", SysUname("S"))
+    self~assertNotEquals("", SysUname("N"))
+    self~assertNotEquals("", SysUname("R"))
+    self~assertNotEquals("", SysUname("V"))
+    self~assertNotEquals("", SysUname("M"))
+    self~assertNotEquals("", SysUname())
+
+::method 'testSysGetpid_1'
+    self~assertEquals("NUM", SysGetpid()~datatype())
+
+::method 'testSysGetppid_1'
+    self~assertEquals("NUM", SysGetppid()~datatype())
+
+::method 'testSysGettid_1'
+    self~assertEquals("NUM", SysGettid()~datatype())
+
+::method 'testSysGetsid_1'
+    pid = SysGetpid()
+    self~assertEquals("NUM", SysGetsid(pid)~datatype())
+
+::method 'testSysGetuid_1'
+    self~assertEquals("NUM", SysGetuid()~datatype())
+
+::method 'testSysGeteuid_1'
+    self~assertEquals("NUM", SysGeteuid()~datatype())
+
+::method 'testSysGetgid_1'
+    self~assertEquals("NUM", SysGetgid()~datatype())
+
+::method 'testSysGetegid_1'
+    self~assertEquals("NUM", SysGetegid()~datatype())
+
+::method 'testSysGetpwuid_1'
+    uid = SysGetuid()
+    self~assertNotEquals("", SysGetpwuid(uid, "N"))
+    self~assertNotEquals("", SysGetpwuid(uid, "U"))
+    self~assertNotEquals("", SysGetpwuid(uid, "G"))
+    self~assertNotEquals("", SysGetpwuid(uid, "R"))
+    self~assertNotEquals("", SysGetpwuid(uid, "D"))
+    self~assertNotEquals("", SysGetpwuid(uid, "D"))
+    self~assertNotEquals("", SysGetpwuid(uid, "S"))
+    self~assertEquals("", SysGetpwuid(uid, "P"))
+
+::method 'testSysGetpwnam_1'
+    uid = SysGetuid()
+    self~assertNotEquals("", SysGetpwnam(SysGetpwuid(uid, 'N'), 'N'))
+    self~assertNotEquals("", SysGetpwnam(SysGetpwuid(uid, 'N'), 'U'))
+    self~assertNotEquals("", SysGetpwnam(SysGetpwuid(uid, 'N'), 'G'))
+    self~assertNotEquals("", SysGetpwnam(SysGetpwuid(uid, 'N'), 'R'))
+    self~assertNotEquals("", SysGetpwnam(SysGetpwuid(uid, 'N'), 'S'))
+    self~assertNotEquals("", SysGetpwnam(SysGetpwuid(uid, 'N'), 'D'))
+    self~assertEquals("", SysGetpwnam(SysGetpwuid(uid, 'N'), 'P'))
+
+::method 'testSysGetgrgid_1'
+    gid = SysGetgid()
+    self~assertNotEquals("", SysGetgrgid(gid, 'N'))
+    self~assertNotEquals("", SysGetgrgid(gid, 'G'))
+    self~assertEquals("", SysGetgrgid(gid, 'P'))
+    self~assertTrue(SysGetgrgid(gid, 'M')~isa(.array))
+
+::method 'testSysGetgrnam_1'
+    gid = SysGetgid()
+    self~assertNotEquals("", SysGetgrnam(SysGetgrgid(gid, 'N'), 'N'))
+    self~assertNotEquals("", SysGetgrnam(SysGetgrgid(gid, 'N'), 'G'))
+    self~assertEquals("", SysGetgrnam(SysGetgrgid(gid, 'N'), 'P'))
+    self~assertTrue(SysGetgrnam(SysGetgrgid(gid, 'N'), 'M')~isa(.array))
+
+::method 'testSysStat_1'
+    parse source . . file
+    self~assertNotEquals("", SysStat(file, 'D'))
+    self~assertNotEquals("", SysStat(file, 'I'))
+    self~assertNotEquals("", SysStat(file, 'P'))
+    self~assertNotEquals("", SysStat(file, 'N'))
+    self~assertNotEquals("", SysStat(file, 'U'))
+    self~assertNotEquals("", SysStat(file, 'G'))
+    self~assertNotEquals("", SysStat(file, 'N'))
+    self~assertNotEquals("", SysStat(file, 'R'))
+    self~assertNotEquals("", SysStat(file, 'S'))
+    self~assertNotEquals("", SysStat(file, 'A'))
+    self~assertNotEquals("", SysStat(file, 'M'))
+    self~assertNotEquals("", SysStat(file, 'C'))
+
+::method 'testSysAccess_1'
+    parse source . . file
+    self~assertEquals("NUM", SysAccess(file, 0)~datatype())
+    self~assertEquals("NUM", SysAccess(file, 1)~datatype())
+    self~assertEquals("NUM", SysAccess(file, 2)~datatype())
+    self~assertEquals("NUM", SysAccess(file, 4)~datatype())
+
+::method 'testSysWordexp_1'
+    parse source . . file
+    self~assertTrue(SysWordexp('~/*')~isa(.array))
+
+::method 'testSysSetxattr'
+    parse source . . file
+    self~assertEquals("NUM", SysSetxattr(file, 'user.mime_type', 'rexx/exec')~datatype())
+
+::method 'testSysGetxattr'
+    parse source . . file
+    self~assertNotEquals("", SysGetxattr(file, 'user.mime_type'))
+
+::method 'testSysListxattr'
+    parse source . . file
+    self~assertTrue(SysListxattr(file)~isa(.array))
+
+::method 'testSysRemovexattr'
+    parse source . . file
+    self~assertEquals("NUM", SysRemovexattr(file, 'user.mime_type')~datatype())
+

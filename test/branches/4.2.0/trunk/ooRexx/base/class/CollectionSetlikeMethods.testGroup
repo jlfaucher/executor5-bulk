@@ -1,0 +1,317 @@
+#!/usr/bin/rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
+
+  group = .TestGroup~new(fileSpec)
+  group~add(.CollectionSetlikeMethods.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires 'ooTest.frm'     -- load the ooRexxUnit classes
+
+::class "CollectionSetlikeMethods.testGroup" subclass ooTestCase public
+
+
+::method init
+  expose inputBag1 inputBag2 differenceBag1 differenceBag2 intersectionBag unionBag xorBag emptyBag -
+         inputSet1 inputSet2 differenceSet1 differenceSet2 intersectionSet unionSet xorSet emptySet
+
+  forward class (super) continue
+
+  inputBag1      =.bag~of("1", "2", "2"               )
+  inputBag2      =.bag~of(     "2", "2",           "3")
+  differenceBag1 =.bag~of("1"                         )
+  differenceBag2 =.bag~of(                         "3")
+  intersectionBag=.bag~of(     "2", "2"               )
+  unionBag       =.bag~of("1", "2", "2", "2", "2", "3")
+  xorBag         =.bag~of("1",                     "3")
+  emptyBag       =.bag~new
+
+  inputSet1      =.set~of("1", "2"      )
+  inputSet2      =.set~of(     "2", "3" )
+  differenceSet1 =.Set~of("1"           )
+  differenceSet2 =.Set~of(          "3" )
+  intersectionSet=.Set~of(     "2"      )
+  unionSet       =.Set~of("1", "2", "3" )
+  xorSet         =.Set~of("1",      "3" )
+  emptySet       =.set~new
+
+  self~assertTrue(sameContent(inputBag1, inputBag1))
+  self~assertTrue(sameContent(emptyBag,  emptyBag), "subtest2: sameContent(emptyBag, emptyBag)")
+
+  self~assertTrue(sameContent(inputSet1, inputSet1))
+  self~assertTrue(sameContent(emptySet,  emptySet))
+
+  self~assertTrue(sameContent(emptyBag,  emptySet ), "subtest5: sameContent(emptyBag, emptySet)")
+
+  self~assertTrue(inputBag1~subSet(inputBag1))
+  self~assertTrue(emptyBag ~subSet(inputBag1), "subtest6b:  emptyBag ~subSet(inputBag1)")
+  self~assertFalse(inputBag1~subSet(emptyBag), "subtest6c: inputBag1~subSet(emptyBag) ")
+  self~assertFalse(inputBag2~subSet(emptyBag), "subtest6d: inputBag2~subSet(emptyBag) ")
+
+  self~assertFalse(inputBag2~subSet(inputBag1))
+  self~assertFalse(inputBag1~subSet(inputBag2))
+
+
+
+::method "test_difference_bag_set"
+
+  expose inputBag1 inputBag2 differenceBag1 differenceBag2 intersectionBag unionBag xorBag emptyBag -
+         inputSet1 inputSet2 differenceSet1 differenceSet2 intersectionSet unionSet xorSet emptySet
+
+  self~assertTrue(sameContent(emptyBag, emptyBag~difference(emptyBag)), "subtest1: sameContent(emptyBag, emptyBag~difference(emptyBag))")
+  self~assertTrue(sameContent(emptySet, emptySet~difference(emptySet)), "subtest2: sameContent(emptySet, emptySet~difference(emptySet))")
+
+  self~assertTrue(sameContent(inputBag1, inputBag1~difference(emptyBag)), "subtest3: sameContent(inputBag1, inputBag1~difference(emptyBag))")
+  self~assertTrue(sameContent(inputSet1, inputSet1~difference(emptySet)), "subtest4: sameContent(inputSet1, inputSet1~difference(emptySet))")
+
+  self~assertTrue(sameContent(differenceBag1, inputBag1~difference(inputBag2)), "subtest5: sameContent(differenceBag1, inputBag1~difference(inputBag2))")
+  self~assertTrue(sameContent(differenceSet1, inputSet1~difference(inputSet2)), "subtest6: sameContent(differenceSet1, inputSet1~difference(inputSet2))")
+
+  self~assertTrue(sameContent(differenceBag2, inputBag2~difference(inputBag1)), "subtest7: sameContent(differenceBag2, inputBag2~difference(inputBag1))")
+  self~assertTrue(sameContent(differenceSet2, inputSet2~difference(inputSet1)), "subtest8: sameContent(differenceSet2, inputSet2~difference(inputSet1))")
+
+
+::method "test_intersection_bag_set"
+
+  expose inputBag1 inputBag2 differenceBag1 differenceBag2 intersectionBag unionBag xorBag emptyBag -
+         inputSet1 inputSet2 differenceSet1 differenceSet2 intersectionSet unionSet xorSet emptySet
+
+  self~assertTrue(sameContent(emptyBag, emptyBag~interSection(emptyBag)), "subtest1: sameContent(emptyBag, emptyBag~interSection(emptyBag))")
+  self~assertTrue(sameContent(emptySet, emptySet~interSection(emptySet)), "subtest2: sameContent(emptySet, emptySet~interSection(emptySet))")
+
+  self~assertTrue(sameContent(emptyBag, inputBag1~interSection(emptyBag)), "subtest3: sameContent(emptyBag, inputBag1~interSection(emptyBag))")
+  self~assertTrue(sameContent(emptySet, inputSet1~interSection(emptySet)), "subtest4: sameContent(emptySet, inputSet1~interSection(emptySet))")
+
+  self~assertTrue(sameContent(interSectionBag, inputBag1~interSection(inputBag2)), "subtest5: sameContent(interSectionBag, inputBag1~interSection(inputBag2))")
+  self~assertTrue(sameContent(interSectionSet, inputSet1~interSection(inputSet2)), "subtest6: sameContent(interSectionSet, inputSet1~interSection(inputSet2))")
+
+  self~assertTrue(sameContent(interSectionBag, inputBag2~interSection(inputBag1)), "subtest7: sameContent(interSectionBag, inputBag2~interSection(inputBag1))")
+  self~assertTrue(sameContent(interSectionSet, inputSet2~interSection(inputSet1)), "subtest8: sameContent(interSectionSet, inputSet2~interSection(inputSet1))")
+
+
+
+::method "test_union_bag_set"
+
+  expose inputBag1 inputBag2 differenceBag1 differenceBag2 intersectionBag unionBag xorBag emptyBag -
+         inputSet1 inputSet2 differenceSet1 differenceSet2 intersectionSet unionSet xorSet emptySet
+
+
+  self~assertTrue(sameContent(emptyBag, emptyBag~union(emptyBag)), "subtest1: sameContent(emptyBag, emptyBag~union(emptyBag))")
+  self~assertTrue(sameContent(emptySet, emptySet~union(emptySet)), "subtest2: sameContent(emptySet, emptySet~union(emptySet))")
+
+  self~assertTrue(sameContent(inputBag1, inputBag1~union(emptyBag)), "subtest3: sameContent(inputBag1, inputBag1~union(emptyBag))")
+  self~assertTrue(sameContent(inputSet1, inputSet1~union(emptySet)), "subtest4: sameContent(inputSet1, inputSet1~union(emptySet))")
+
+  self~assertTrue(sameContent(unionBag, inputBag1~union(inputBag2)), "subtest5: sameContent(unionBag, inputBag1~union(inputBag2))")
+  self~assertTrue(sameContent(unionSet, inputSet1~union(inputSet2)), "subtest6: sameContent(unionSet, inputSet1~union(inputSet2))")
+
+  self~assertTrue(sameContent(unionBag, inputBag2~union(inputBag1)), "subtest7: sameContent(unionBag, inputBag2~union(inputBag1))")
+  self~assertTrue(sameContent(unionSet, inputSet2~union(inputSet1)), "subtest8: sameContent(unionSet, inputSet2~union(inputSet1))")
+
+
+::method "test_xor_bag_set"
+
+  expose inputBag1 inputBag2 differenceBag1 differenceBag2 intersectionBag unionBag xorBag emptyBag -
+         inputSet1 inputSet2 differenceSet1 differenceSet2 intersectionSet unionSet xorSet emptySet
+
+
+  self~assertTrue(sameContent(emptyBag, emptyBag~xor(emptyBag)), "subtest1: sameContent(emptyBag, emptyBag~xor(emptyBag))")
+  self~assertTrue(sameContent(emptySet, emptySet~xor(emptySet)), "subtest2: sameContent(emptySet, emptySet~xor(emptySet))")
+
+  self~assertTrue(sameContent(inputBag1, inputBag1~xor(emptyBag)), "subtest3: sameContent(inputBag1, inputBag1~xor(emptyBag))")
+  self~assertTrue(sameContent(inputSet1, inputSet1~xor(emptySet)), "subtest4: sameContent(inputSet1, inputSet1~xor(emptySet))")
+
+  self~assertTrue(sameContent(xorBag, inputBag1~xor(inputBag2)), "subtest5: sameContent(xorBag, inputBag1~xor(inputBag2))")
+  self~assertTrue(sameContent(xorSet, inputSet1~xor(inputSet2)), "subtest6: sameContent(xorSet, inputSet1~xor(inputSet2))")
+
+  self~assertTrue(sameContent(xorBag, inputBag2~xor(inputBag1)), "subtest7: sameContent(xorBag, inputBag2~xor(inputBag1))")
+  self~assertTrue(sameContent(xorSet, inputSet2~xor(inputSet1)), "subtest8: sameContent(xorSet, inputSet2~xor(inputSet1))")
+
+
+::method "test_directory"
+
+   -- test the directory class, indicate collection has unique indixes
+  self~do_the_tests(.directory, .true)
+
+
+::method "test_relation"
+
+   -- test the directory class, indicate collection has unique indixes
+  self~do_the_tests(.relation, .false)
+
+
+::method "test_bag"
+   -- test the directory class, indicate collection has unique indixes
+  self~do_the_tests(.bag, .false)
+
+
+::method "test_table"
+   -- test the directory class, indicate collection has unique indixes
+  self~do_the_tests(.table, .true)
+
+::method "test_set"
+   -- test the directory class, indicate collection has unique indixes
+  self~do_the_tests(.set, .true)
+
+
+
+
+::method "do_the_tests"
+
+  expose inputBag1 inputBag2 differenceBag1 differenceBag2 intersectionBag unionBag xorBag emptyBag -
+         inputSet1 inputSet2 differenceSet1 differenceSet2 intersectionSet unionSet xorSet emptySet
+  use arg clz, bUniqueIdx
+
+  if bUniqueIdx then
+  do
+     coll_Input1      =inputSet1
+     coll_Input2      =inputSet2
+     coll_Difference1 =differenceSet1
+     coll_Difference2 =differenceSet2
+     coll_Intersection=intersectionSet
+     coll_Union       =unionSet
+     coll_Xor         =xorSet
+     coll_Empty       =emptySet
+  end
+  else
+  do
+     coll_Input1      =inputBag1
+     coll_Input2      =inputBag2
+     coll_Difference1 =differenceBag1
+     coll_Difference2 =differenceBag2
+     coll_Intersection=intersectionBag
+     coll_Union       =unionBag
+     coll_Xor         =xorBag
+     coll_Empty       =emptyBag
+  end
+
+  coll0=clz~new
+
+  coll1=clz~new
+  call putAll coll1, coll_Input1    -- create collection content
+
+  coll2=clz~new
+  call putAll coll2, coll_Input2    -- create collection content
+
+  self~assertTrue(sameContent(coll_Empty, coll0~difference(coll0) ), "do_the_test: subtest01: sameContent(coll_Empty, coll0~difference(coll0) ) ")
+  self~assertTrue(sameContent(coll_Empty, coll0~interSection(coll0)), "do_the_test: subtest02: sameContent(coll_Empty, coll0~interSection(coll0) ")
+  self~assertTrue(coll0~subSet(coll0), "do_the_test: subtest03: coll0~subSet(coll0)                             ")
+  self~assertTrue(sameContent(coll_Empty, coll0~union(coll0)      ), "do_the_test: subtest04: sameContent(coll_Empty, coll0~union(coll0)      ) ")
+  self~assertTrue(sameContent(coll_Empty, coll0~xor(coll0)        ), "do_the_test: subtest05: sameContent(coll_Empty, coll0~xor(coll0)        ) ")
+
+
+  self~assertTrue(coll1~subset(coll1), "do_the_test: subtest06a: coll1~subset(coll1)")
+  self~assertTrue(coll2~subset(coll2), "do_the_test: subtest06b: coll2~subset(coll2)")
+
+  self~assertTrue(coll0~subset(coll1), "do_the_test: subtest07a: coll0~subset(coll1)")
+  self~assertTrue(coll0~subset(coll2), "do_the_test: subtest07b: coll0~subset(coll2)")
+
+  self~assertTrue(coll0~subset(coll1), "do_the_test: subtest08a: coll0~subset(coll1)")
+  self~assertTrue(coll0~subset(coll2), "do_the_test: subtest08b: coll0~subset(coll2)")
+
+  self~assertFalse(coll1~subset(coll2), "do_the_test: subtest09a: coll1~subset(coll2)")
+  self~assertFalse(coll2~subset(coll1), "do_the_test: subtest09b: coll2~subset(coll1)")
+
+  self~assertFalse(coll1~subset(coll0), "do_the_test: subtest09c: coll1~subset(coll0)")
+  self~assertFalse(coll2~subset(coll0), "do_the_test: subtest09d: coll2~subset(coll0)")
+
+  self~assertTrue(sameContent(coll_Difference1,  coll1~difference(coll2) ), "do_the_test: subtest10:  sameContent(coll_Difference1,  coll1~difference(coll2) )) ")
+  self~assertTrue(sameContent(coll_Difference2,  coll2~difference(coll1) ), "do_the_test: subtest11:  sameContent(coll_Difference2,  coll2~difference(coll1) )) ")
+
+  self~assertTrue(sameContent(coll_Intersection, coll1~interSection(coll2)), "do_the_test: subtest12a: sameContent(coll_Intersection, coll1~interSection(coll2)) ")
+  self~assertTrue(sameContent(coll_Intersection, coll2~interSection(coll1)), "do_the_test: subtest12b: sameContent(coll_Intersection, coll2~interSection(coll1)) ")
+
+  self~assertTrue(sameContent(coll_Union,        coll1~union(coll2)       ), "do_the_test: subtest13a: sameContent(coll_Union,        coll1~union(coll2)       ) ")
+  self~assertTrue(sameContent(coll_Union,        coll2~union(coll1)       ), "do_the_test: subtest13b: sameContent(coll_Union,        coll2~union(coll1)       ) ")
+
+  self~assertTrue(sameContent(coll_Xor,          coll1~xor(coll2)         ), "do_the_test: subtest14a: sameContent(coll_Xor,          coll1~xor(coll2)         ) ")
+  self~assertTrue(sameContent(coll_Xor,          coll2~xor(coll1)         ), "do_the_test: subtest14b: sameContent(coll_Xor,          coll2~xor(coll1)         ) ")
+
+
+
+
+/* Test whether both collections contain the same entries.
+   returns .true, if the same, .false else
+*/
+::routine "sameContent"
+  use arg coll_1, coll_2
+
+  if coll_1~items<>coll_2~items then      -- not the same amount of objects
+     return .false
+
+   -- work on a copy
+  tmp=coll_1~copy
+  do o over coll_2
+     if \tmp~hasindex(o) then             -- no entry anymore ?
+        return .false
+
+     tmp~remove(o)                        -- remove object
+  end
+
+  return (tmp~items=0)                    -- if the same, then no items left
+
+
+::routine "putAll"                        -- put all objects of "coll" into "target" collection
+  use arg target, coll
+
+  do o over coll
+     target~put(o,o)
+  end
+  return target
+
+
+::routine "dumpColl"
+  use arg coll, title
+  if arg(2, "o") then title=o~class~id "object ("coll~items" entries)"
+
+  say ">>>" title":"
+  do o over coll
+     .output~charout("" o~string)
+  end
+  say
+  say "-----------------------------------<<<"

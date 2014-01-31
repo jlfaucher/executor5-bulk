@@ -1,0 +1,851 @@
+#!/usr/bin/rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
+
+  group = .TestGroup~new(fileSpec)
+  group~add(.Stem.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+   -- class named exactly like file
+::class "Stem.testGroup" subclass ooTestCase public
+
+::method init
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+  forward class (super) continue    -- let superclass initialize
+
+  clz=.Stem                        -- collection class object to use
+  bUserDefinedIndex=.true           -- user defined index? (determines what MAKEARRAY returns)
+  bSingleItem      =.true           -- index associates only one item
+
+  collDir=.directory~new            -- define directory containing predefined collections
+  collDir~emptyColl=clz~new
+
+  o1=.object~new
+  o2=.object~new
+
+  collDir~coll_1   =clz~new~~put("1","1")~~put("2","2")~~put("2","2")~~put(o1,"o1")~~put(o1,"o1")
+  collDir~coll_2   =clz~new              ~~put("2","2")~~put("999","2")~~put("2","2")~~put(o1,"o1")~~put(o1,"o1")~~put(o2,"o2")~~put(o2,"o2")~~put("3","3")
+
+  collDir~allIndexes1=.array~of("1", "2", "o1")
+  collDir~allIndexes2=.array~of(     "2", "o1", "o2", "3")
+
+  collDir~allItems1=.array~of("1", "2", o1)
+  collDir~allItems2=.array~of(     "2", o1, o2, "3")
+
+   /* determine resulting collection   */
+  collDir~difference1 =clz~new~~put("1","1")  /* coll_1~difference(coll_2) */
+  collDir~difference2 =clz~new~~put("3","3")~~put(o2,"o2")  /* coll_2~difference(coll_1) */
+
+  collDir~interSectionColl=clz~new~~put("2","2")~~put("2","2")~~put(o1,"o1")
+
+  collDir~unionColl       =clz~new~~put("1","1")~~put("2","2")~~put(o1,"o1")~~put(o2,"o2")~~put("3","3")
+
+  collDir~xorColl         =clz~new~~put("1","1")~~put(o2,"o2")~~put("3","3")
+
+
+
+::method "test_AT"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  coll=collDir~coll_1      -- get the prepared Stem
+  self~assertEquals("1", coll~at("1"))
+  self~assertEquals("2", coll~at("2"))
+  self~assertEquals(coll, coll~at)
+
+  val="oha, Dackel"
+  self~assertEquals(val, coll~at(val))
+
+  a.=clz~new("def")
+  self~assertEquals(a., a.~at)
+  self~assertEquals(a.||val, a.~at(val))
+  self~assertEquals(a.||1"."2"."3, a.~at(1,2,3))
+
+
+
+::method "test_[]"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  coll=collDir~coll_1      -- get the prepared Stem
+  self~assertEquals("1", coll~"[]"("1"))
+  self~assertEquals("2", coll~"[]"("2"))
+  self~assertEquals(coll~string, coll~"[]")
+  self~assertEquals(coll, coll~"[]")
+
+  val="oha, Dackel"
+  self~assertEquals(val, coll~"[]"(val))
+
+  a.=clz~new("def")
+  self~assertEquals(a.~string, a.~"[]")
+  self~assertEquals(a., a.~"[]")
+  self~assertEquals(a.||val, a.~"[]"(val))
+  self~assertEquals(a.||1"."2"."3, a.~"[]"(1,2,3))
+
+
+
+
+::method "test_allIndexes"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  self~assertTrue(sameContent(.bag~new~union(collDir~allIndexes1      ),                                            .bag~new~union(collDir~coll_1~allIndexes)))
+
+  self~assertTrue(sameContent(.bag~new~union(collDir~allIndexes2      ),                                            .bag~new~union(collDir~coll_2~allIndexes)))
+
+  tmp=collDir~emptyColl~allIndexes
+  self~assertTrue(tmp~isInstanceOf(.array))
+  self~assertEquals(0, tmp~items)
+
+
+::method "test_allItems"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  self~assertTrue(sameContent(.bag~new~union(collDir~allItems1      ),                                            .bag~new~union(collDir~coll_1~allItems)))
+
+  self~assertTrue(sameContent(.bag~new~union(collDir~allItems2      ),                                            .bag~new~union(collDir~coll_2~allItems)))
+
+  tmp=collDir~emptyColl~allItems
+  self~assertTrue(tmp~isInstanceOf(.array))
+  self~assertEquals(0, tmp~items)
+
+
+
+::method "test_difference"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  ce=collDir~emptyColl
+  c1=collDir~coll_1
+  c2=collDir~coll_2
+
+  self~assertTrue(sameContent(ce, ce~difference(ce)))
+
+  self~assertTrue(sameContent(c1, c1~difference(ce)))
+  self~assertTrue(sameContent(c2, c2~difference(ce)))
+
+  self~assertTrue(sameContent(collDir~difference1, c1~difference(c2)))
+  self~assertTrue(sameContent(collDir~difference2, c2~difference(c1)))
+
+  self~assertTrue(sameContent(ce, c1~difference(c1)))
+  self~assertTrue(sameContent(ce, c2~difference(c2)))
+
+
+   -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
+  c =clz~new~~put(1, "1")~~put(2, "2")~~put(o1, o1)~~put("a","a")
+  other=.array~new
+  other[104]="2"
+  other[106]=o1
+  other[107]="a"
+                 -- expected result
+  d1=clz~new~~put("1", "1")
+  d2=c~difference(other)
+
+  self~assertTrue(sameContent(d1, d2), "subtest8: 'other' is an 'OrderedCollection'")
+
+   -- now test where other is a MapCollection: "makeArray" returns "allItems"
+  other=.table~new
+  other["2"]="2"
+  other[o1] =o1
+  other["a"] ="a"
+                 -- expected result
+  d1=clz~new~~put("1", "1")
+  d2=c~difference(other)
+  self~assertTrue(sameContent(d1, d2), "subtest9: 'other' is a 'MapCollection'")
+
+
+
+::method "test_empty"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  ce=collDir~emptyColl
+  self~assertTrue(sameContent(ce, ce~copy~~empty))
+
+  c1=collDir~coll_1~copy
+  self~assertTrue(sameContent(ce, c1~copy~~empty))
+
+  c2=collDir~coll_2~copy
+  self~assertTrue(sameContent(ce, c2~copy~~empty))
+
+
+::method "test_hasIndex"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  coll=collDir~coll_1      -- get the prepared Stem
+  self~assertTrue(coll~hasIndex("1"))
+  self~assertTrue(coll~hasIndex("2"))
+  self~assertFalse(coll~hasIndex("3"))
+
+
+
+::method "test_hasItem"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  coll=collDir~coll_1      -- get the prepared Stem
+  self~assertTrue(coll~hasItem("1"))
+  self~assertTrue(coll~hasItem("2"))
+  self~assertFalse(coll~hasItem("3"))
+
+
+::method "test_index"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  coll=collDir~coll_1      -- get the prepared Stem
+  self~assertEquals("1", coll~index("1"))
+  self~assertEquals("2", coll~index("2"))
+  self~assertNull(coll~index("3"))
+
+
+
+::method "test_interSection"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  ce=collDir~emptyColl
+  c1=collDir~coll_1
+  c2=collDir~coll_2
+  res=collDir~interSectionColl
+
+  self~assertTrue(sameContent(ce, ce~interSection(ce)))
+  self~assertTrue(sameContent(ce, c1~interSection(ce)))
+  self~assertTrue(sameContent(ce, c2~interSection(ce)))
+
+  self~assertTrue(sameContent(res, c1~interSection(c2)))
+  self~assertTrue(sameContent(res, c2~interSection(c1)))
+
+  self~assertTrue(sameContent(c1, c1~interSection(c1)))
+  self~assertTrue(sameContent(c2, c2~interSection(c2)))
+
+
+   -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
+  c =clz~new~~put("1", "1")~~put("2", "2")~~put(o1, o1)~~put("a","a")
+  other=.array~new
+  other[104]="2"
+  other[106]=o1
+  other[107]="a"
+                 -- expected result
+  d1=clz~new~~put("a", "a")~~put(2,2)~~put(o1,o1)
+  d2=c~interSection(other)
+
+  self~assertTrue(sameContent(d1, d2), "subtest8: 'other' is an 'OrderedCollection'")
+
+   -- now test where other is a MapCollection: "makeArray" returns "allItems"
+  other=.table~new
+  other["2"]=2
+  other[o1] =o1
+  other["a"] ="a"
+                 -- expected result
+  d1=clz~new~~put("<2-value>", "2")~~put("<o1-value>", o1)~~put("a","a")
+  d2=c~interSection(other)
+  self~assertTrue(sameContent(d1, d2), "subtest9: 'other' is a 'MapCollection'")
+
+
+
+::method "test_isInstanceOf"     -- test whether collection object is of the correct kind (class)
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  o=collDir~coll_1
+
+  self~assertTrue(o~isInstanceOf(.Object), "01: subclass of .Object")
+  self~assertTrue(o~isInstanceOf(clz), "02: subclass of .Object")
+
+  if .ooRexxUnit.languageLevel>6.01 then
+     self~assertTrue(o~isInstanceOf(.MapCollection), "03: subclass of .OrderedCollection")
+
+
+
+::method "test_isEmpty"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  self~assertTrue(collDir~emptyColl~isEmpty)
+  self~assertFalse(collDir~coll_1~isEmpty)
+  self~assertFalse(collDir~coll_2~isEmpty)
+
+  self~assertTrue(collDir~coll_1~copy~~empty~isEmpty)
+
+
+
+::method "test_items"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  self~assertEquals(0, collDir~emptyColl~items)
+  self~assertEquals(3, collDir~coll_1~items)
+  self~assertEquals(4, collDir~coll_2~items)
+
+
+
+::method "test_makeArray"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  tmp=collDir~coll_1~makeArray
+  self~assertTrue(tmp~isInstanceOf(.array))
+  if bUserDefinedIndex then
+     self~assertTrue(sameContent(.bag~new~union(tmp                ),                                               .bag~new~union(collDir~allIndexes1)))
+  else
+     self~assertTrue(sameContent(.bag~new~union(tmp                ),                                               .bag~new~union(collDir~allItems1)))
+
+
+  tmp=collDir~coll_2~makeArray
+  self~assertTrue(tmp~isInstanceOf(.array))
+  if bUserDefinedIndex then
+     self~assertTrue(sameContent(.bag~new~union(tmp                ),                                               .bag~new~union(collDir~allIndexes2)))
+  else
+     self~assertTrue(sameContent(.bag~new~union(tmp                ),                                               .bag~new~union(collDir~allItems2)))
+
+
+  tmp=collDir~emptyColl~makeArray
+  self~assertTrue(tmp~isInstanceOf(.array))
+  self~assertEquals(0, tmp~items)
+
+
+
+::method "test_PUT"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  tmpColl=clz~new
+  self~assertEquals(0, tmpColl              ~items)
+
+  self~assertEquals(1, tmpColl~~put("1","1")~items)
+  self~assertTrue(tmpColl~hasindex("1"))
+  self~assertTrue(tmpColl~hasitem("1"))
+
+  self~assertEquals(2, tmpColl~~put("2","2")~items)
+  self~assertTrue(tmpColl~hasindex("2"))
+  self~assertTrue(tmpColl~hasitem("2"))
+
+  self~assertEquals(2, tmpColl~~put("3","2")~items)
+  self~assertTrue(tmpColl~hasindex("2"))
+  self~assertTrue(tmpColl~hasitem("3"))
+
+  self~assertEquals(2, tmpColl~~put("2","2")~items)
+  self~assertTrue(tmpColl~hasindex("2"))
+  self~assertTrue(tmpColl~hasitem("2"))
+
+  self~assertEquals(3, tmpColl~~put("3","3")~items)
+  self~assertTrue(tmpColl~hasindex("3"))
+  self~assertTrue(tmpColl~hasitem("3"))
+
+  self~assertTrue(sameContent(.bag~of("1","2","3"), tmpColl))
+
+
+::method "test_[]="
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  tmpColl=clz~new
+  self~assertEquals(0, tmpColl              ~items)
+
+  self~assertEquals(1, tmpColl~~"[]="("1","1")~items)
+  self~assertTrue(tmpColl~hasindex("1"))
+  self~assertTrue(tmpColl~hasitem("1"))
+
+  self~assertEquals(2, tmpColl~~"[]="("2","2")~items)
+  self~assertTrue(tmpColl~hasindex("2"))
+  self~assertTrue(tmpColl~hasitem("2"))
+
+  self~assertEquals(2, tmpColl~~"[]="("3","2")~items)
+  self~assertTrue(tmpColl~hasindex("2"))
+  self~assertTrue(tmpColl~hasitem("3"))
+
+  self~assertEquals(2, tmpColl~~"[]="("2","2")~items)
+  self~assertTrue(tmpColl~hasindex("2"))
+  self~assertTrue(tmpColl~hasitem("2"))
+
+  self~assertEquals(3, tmpColl~~"[]="("3","3")~items)
+  self~assertTrue(tmpColl~hasindex("3"))
+  self~assertTrue(tmpColl~hasitem("3"))
+
+  self~assertTrue(sameContent(.bag~of("1","2","3"), tmpColl))
+
+
+
+::method "test_putAll"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  tmpColl=clz~new
+
+  ce=collDir~emptyColl
+  c1=collDir~coll_1
+  c2=collDir~coll_2
+  cu=collDir~unionColl
+
+  self~assertTrue(sameContent(ce, ce~copy~~putAll(ce)))
+  self~assertTrue(sameContent(c1, c1~copy~~putAll(ce)))
+  self~assertTrue(sameContent(c2, c2~copy~~putAll(ce)))
+
+  self~assertTrue(sameContent(c1, clz~new~~putAll(c1)))
+  self~assertTrue(sameContent(c2, clz~new~~putAll(c2)))
+
+  self~assertTrue(sameContent(cu, c1~copy~~putAll(c2)))
+  self~assertTrue(sameContent(cu, c2~copy~~putAll(c1)))
+
+
+
+::method "test_remove"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  ce=collDir~emptyColl~copy
+  c1=collDir~coll_1~copy
+
+  self~assertNull(ce~remove("1"))
+  self~assertNull(ce~remove(""))
+
+  self~assertNull(c1~remove("99"))
+
+  self~assertEquals("1", c1~remove("1"))
+  self~assertNull(c1~remove("1"))
+
+  self~assertEquals("2", c1~remove("2"))
+  self~assertNull(c1~remove("2"))
+
+  self~assertEquals(o1, c1~remove("o1"))
+  self~assertNull(c1~remove("o1"))
+
+  self~assertEquals(0, c1~items)
+
+
+
+::method "test_removeItem"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  ce=collDir~emptyColl~copy
+  c1=collDir~coll_1~copy
+
+  self~assertNull(ce~removeItem("1"))
+  self~assertNull(ce~removeItem(.nil))
+
+  self~assertNull(c1~removeItem("99"))
+
+  self~assertEquals("1", c1~removeItem("1"))
+  self~assertNull(c1~removeItem("1"))
+
+  self~assertEquals("2", c1~removeItem("2"))
+  self~assertNull(c1~removeItem("2"))
+
+  self~assertEquals(o1, c1~removeItem(o1))
+  self~assertNull(c1~removeItem(o1))
+
+  self~assertEquals(0, c1~items)
+
+
+
+::method "test_subset"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  ce=collDir~emptyColl
+  c1=collDir~coll_1
+  c2=collDir~coll_2
+  cu=collDir~unionColl
+
+  self~assertTrue(ce~subset(ce))
+  self~assertTrue(ce~subset(c1))
+  self~assertTrue(ce~subset(c2))
+
+  self~assertTrue(c1~subset(c1))
+  self~assertTrue(c2~subset(c2))
+
+  self~assertTrue(ce~subset(cu))
+  self~assertTrue(c1~subset(cu))
+  self~assertTrue(c2~subset(cu))
+
+  self~assertFalse(c1~subset(ce))
+  self~assertFalse(c1~subset(c2))
+
+  self~assertFalse(c2~subset(ce))
+  self~assertFalse(c2~subset(c1))
+
+
+   -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
+      -- use a relation which is bag-like
+  c =clz~new~~put("1", "1")~~put("2", "2")~~put(o1, o1)
+  other=.array~new
+  other[104]="2"
+  other[106]=o1
+  d2=c~subSet(other)
+  self~assertFalse(d2, "subtest14: 'other' is an 'OrderedCollection'")
+
+   -- now test where other is a 'MapCollection': "makeArray" returns "allItems"
+  other=.table~new   -- use a table which is set-like
+  other["2"]="2"
+  other[o1] =o1
+  d2=c~subSet(other)
+
+  self~assertFalse(d2, "subtest15: 'other' is a 'MapCollection'")
+
+
+
+   -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
+  other=.array~new
+  other[101]="1"
+  other[102]="2"
+  other[103]="3"
+  other[104]="2"
+  other[106]=o1
+  other[107]=o1
+  d2=c~subSet(other)
+  self~assertTrue(d2, "subtest16: 'other' is an 'OrderedCollection'")
+
+   -- now test where other is a 'MapCollection': "makeArray" returns "allItems"
+  other=.table~new
+  other["1"]="1"
+  other["2"]="2"
+  other[o1] =o1
+  other["3"] ="3"
+  d2=c~subSet(other)
+
+  self~assertTrue(d2, "subtest17: 'other' is a 'MapCollection'")
+
+
+
+::method "test_Supplier"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  ce=collDir~emptyColl
+  c1=collDir~coll_1
+
+  self~assertTrue(sameContent(ce, makeColl(clz, ce)))
+  self~assertTrue(sameContent(c1, makeColl(clz, c1)))
+
+  return
+
+makeColl: procedure
+  use arg clz, tmpColl
+
+  new=clz~new
+  s=tmpColl~supplier
+  do while s~available
+     new~put(s~item, s~index)
+     s~next
+  end
+  return new
+
+
+
+::method "test_union"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  ce=collDir~emptyColl
+  c1=collDir~coll_1
+  c2=collDir~coll_2
+  res=collDir~unionColl
+
+  self~assertTrue(sameContent(ce, ce~union(ce)))
+
+  self~assertTrue(sameContent(c1, c1~union(ce)))
+  self~assertTrue(sameContent(c2, c2~union(ce)))
+
+  self~assertTrue(sameContent(c1, ce~union(c1)))
+  self~assertTrue(sameContent(c2, ce~union(c2)))
+
+  self~assertTrue(sameContent(res, c1~union(c2)))
+  self~assertTrue(sameContent(res, c2~union(c1)))
+
+
+   -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
+  c =clz~new~~put("1", 1)~~put("2", 2)~~put(o1, o1)
+  other=.array~new
+  other[104]="2"
+  other[106]=o1
+
+      -- expected result
+  d1=clz~new
+  d1~~put(1,1)~~put(2,2)~~put(2,2)~~put(o1,o1)~~put(o1,o1)
+  d2=c~union(other)
+  self~assertTrue(sameContent(d1, d2), "subtest8: 'other' is an 'OrderedCollection'")
+
+   -- now test where other is a 'MapCollection': "makeArray" returns "allItems"
+  other=.table~new
+  other["2"]=2
+  other[o1] =o1
+  d2=c~union(other)
+
+  self~assertTrue(sameContent(d1, d2), "subtest9: 'other' is a 'MapCollection'")
+
+
+
+::method "test_xor"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  ce=collDir~emptyColl
+  c1=collDir~coll_1
+  c2=collDir~coll_2
+  res=collDir~xorColl
+
+  self~assertTrue(sameContent(ce, ce~xor(ce)))
+  self~assertTrue(sameContent(c1, c1~xor(ce)))
+
+  self~assertTrue(sameContent(c2, c2~xor(ce)))
+
+  self~assertTrue(sameContent(res, c1~xor(c2)))
+  self~assertTrue(sameContent(res, c2~xor(c1)))
+
+  self~assertTrue(sameContent(ce, c1~xor(c1)))
+  self~assertTrue(sameContent(ce, c2~xor(c2)))
+
+
+   -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
+  c =clz~new~~put("1", 1)~~put("2", 2)~~put(o1,o1)
+  other=.array~new
+  other[104]="2"
+  other[106]=o1
+  d1=clz~new~~put(1,1)     -- expected result
+  d2=c~xor(other)
+  self~assertTrue(sameContent(d1, d2), "subtest8: 'other' is an 'OrderedCollection'")
+
+   -- now test where other is a 'MapCollection': "makeArray" returns "allItems"
+  other=.table~new
+  other["2"]=2
+  other[o1] =o1
+  d2=c~xor(other)
+
+  self~assertTrue(sameContent(d1, d2), "subtest9: 'other' is a 'MapCollection'")
+
+
+::method "test_equivalent"
+  emptystem = .stem~new
+  stem1 = .stem~new
+  stem1[1] = "a"
+  stem1[2] = "b"
+  stem1[3] = "c"
+
+  stem2 = stem1~copy
+
+  -- empty stems of two different sizes...still equivalent
+
+
+  self~assertTrue(emptystem~equivalent(.stem~new))
+  -- empty vs. non-empty, two ways
+  self~assertFalse(stem1~equivalent(emptystem))
+  self~assertFalse(emptystem~equivalent(stem1))
+  -- simple true test
+  self~assertTrue(stem1~equivalent(stem2))
+  stem2[2] = 'z'
+  -- same number of items, different values
+  self~assertFalse(stem1~equivalent(stem2))
+  -- same values, different indexes
+  stem3 = stem1~copy
+  stem3~remove(2)
+  stem3[4] = "b"
+  self~assertFalse(stem1~equivalent(stem3))
+  -- different number of items
+  stem3~remove(4)
+  self~assertFalse(stem1~equivalent(stem3))
+  self~assertFalse(stem3~equivalent(stem1))
+
+::method "test_disjoint"
+  emptystem = .stem~new
+  stem1 = .stem~new
+  stem1[1] = "a"
+  stem1[2] = "b"
+  stem1[3] = "c"
+
+  stem2 = stem1~copy
+  -- same indexes, different values
+  stem3 = .stem~new
+  stem1[1] = "x"
+  stem1[2] = "y"
+  stem1[3] = "z"
+
+  -- empty stems of two different sizes...still equivalent
+
+
+  self~assertTrue(emptystem~disjoint(.stem~new))
+  -- empty vs. non-empty, two ways
+  self~assertTrue(stem1~disjoint(emptystem))
+  self~assertTrue(emptystem~disjoint(stem1))
+  -- simple overlap test
+  self~assertFalse(stem1~disjoint(stem2))
+  -- same indices, different values
+  self~assertTrue(stem1~disjoint(stem3))
+  -- same values, different indexes
+  stem3~empty
+  stem3[4] = "a"
+  stem3[5] = "b"
+  stem3[6] = "c"
+  self~assertTrue(stem1~disjoint(stem3))
+  -- different number of items
+  stem2~remove(3)
+  self~assertFalse(stem1~disjoint(stem2))
+
+
+
+/* --------------------- Stem specific methods -------------------- */
+
+/* test the default value */
+
+::method "test_default_value"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+         /* explicitly created stem object      */
+  s=clz~new          -- no default value given, hence empty string ""
+  self~assertSame("", s~at)
+  self~assertSame("1", s~at("1"))
+  self~assertSame("aha", s~at("aha"))
+  self~assertSame("1.A.1", s~at(1, "A", 1))
+
+  self~assertSame("", s~"[]")
+  self~assertSame("1", s~"[]"("1"))
+  self~assertSame("aha", s~"[]"("aha"))
+  self~assertSame("1.A.1", s~"[]"(1, "A", 1))
+
+       /* implicitly created stem object, using stem name as default value  */
+  self~assertSame("A.", a.~at)
+  self~assertSame("A.1", a.~at("1"))
+  self~assertSame("A.aha", a.~at("aha"))
+  self~assertSame("A.1.A.1", a.~at(1, "A", 1))
+
+  self~assertSame("A.", a.~"[]")
+  self~assertSame("A.1", a.~"[]"("1"))
+  self~assertSame("A.aha", a.~"[]"("aha"))
+  self~assertSame("A.1.A.1", a.~"[]"(1, "A", 1))
+
+      /* explicitly created stem object, changing default values */
+  defVal1="DefaultValue1"
+  defVal2="DefaultValue2"
+  s=clz~new(defVal1)
+
+  self~assertSame(defVal1, s~at)
+  self~assertSame(defVal1, s~"[]")
+
+  self~assertEquals(0, s~items)
+  s~put("1", "1")
+  self~assertEquals(1, s~items)
+
+         /* resetting default value, will empty stem  */
+  s~put(defVal2)
+  self~assertSame(defVal2, s~at)
+  self~assertSame(defVal2, s~"[]")
+  self~assertEquals(0, s~items)
+  s~put("1", "1")
+  self~assertEquals(1, s~items)
+
+
+
+
+
+
+::method "test_unknown_error1"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a=clz~new
+  self~expectSyntax(93.903)
+  a~unknown
+
+
+::method "test_unknown_error2"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a=clz~new
+  self~expectSyntax(93.938)
+  a~unknown(.object~new)
+
+::method "test_unknown_error3"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a=clz~new
+  self~expectSyntax(93.903)
+  a~unknown(nixi)
+
+
+::method "test_unknown_error4"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a=clz~new
+  self~expectSyntax(93.902)
+  a~unknown(nixi, noxi, nixo)
+
+
+::method "test_unknown_error5"
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+
+  a=clz~new
+  self~expectSyntax(93.938)
+  a~unknown(.nil, .nil)
+
+::method TestToDirectory01
+  a.1 = "abc"
+  a.1.2..4 = "def"
+
+  d = a.~toDirectory
+  self~assertSame(2, d~items)
+  self~assertSame("abc", d[1])
+  self~assertSame("def", d["1.2..4"])
+
+::method TestToDirectory02
+  self~expectSyntax(93.902)
+  a.1 = "abc"
+  d = a.~toDirectory(1)
+
+
+/* Test whether both collections contain the same entries.
+   returns .true, if the same, .false else
+*/
+::routine "sameContent"
+  use arg coll_1, coll_2
+
+  if coll_1~items<>coll_2~items then      -- not the same amount of objects
+     return .false
+   -- work on a copy
+  tmp=coll_1~copy
+  do o over coll_2
+     if \tmp~hasindex(o) then             -- no entry anymore ?
+        return .false
+
+     tmp~remove(o)                        -- remove object
+  end
+
+  return (tmp~items=0)                    -- if the same, then no items left
+
+
+::routine "dumpColl"
+  use arg coll, title
+  if arg(2, "o") then title=o~class~id "object ("coll~items" entries)"
+
+  .output~charout(">>>" title": [")
+  do o over coll
+     .output~charout("" o~string)
+  end
+  say "] <<<"
+  say
+
