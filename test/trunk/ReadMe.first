@@ -1,5 +1,5 @@
 
-                  ooRexxUnit 4.0.0 snapshot 04 Quick Start
+                  ooRexxUnit 4.2.0 snapshot 04 Quick Start
                   ========================================
 
 This is the read me file explaining how the ooTest framework is used by
@@ -11,8 +11,8 @@ tutorial in PDF format.  This file: ooTestQuick.pdf provides additional
 useful information and is a brief tutorial on how to write a test case.
 
 NOTE: You need to match the ooRexxUnit version level with the version of
-the ooRexx interpreter you are running.  To use the ooRexxUnit 4.0.0 test
-framework you must have the 4.0.0 version of the interpreter running.
+the ooRexx interpreter you are running.  To use the ooRexxUnit 4.2.0 test
+framework you must have the 4.2.0 version of the interpreter running.
 
 Quick Start to execute tests:
 =============================
@@ -32,10 +32,15 @@ getting familiar with the test suite.
 picking and installing the proper set are in the Release.notes in the doc
 directory.
 
+NOTE: at this time the pre-compiled binareies are NOT available.  If you are
+interested enough to want the pre-compiled binaries, post a note to either
+the ooRexx developers list or the ooRexx users list requesting the binaries
+and one of the developers will make thenm available.
+
 3.) If you understand, somewhat, compiling C / C++ files you can compile
 your own binaries as part of running the automated test suite.  Details for
 this step have not been written, just post a question on the ooRexx
-developers list.
+developers list or the ooRexx users list.
 
 Start in the root directory, the directory that contains this file.  The
 Rexx program that runs the tests is: testOORexx.rex
@@ -58,11 +63,11 @@ If you have done a normal install of the interpreter so that file
 associations are set up (done automatically by the installer) you can
 simply use the following command line.
 
-E:\ooRexxUnit.4.0.0>testOORexx -X native_api
+C:\ooRexxUnit.4.2.0>testOORexx -X native_api
 
 of course you can always use the full invocation the interpreter like this:
 
-E:\ooRexxUnit.4.0.0>rexx testOORexx.rex -X native_api
+E:\ooRexxUnit.4.2.0>rexx testOORexx.rex -X native_api
 
 Linux
 -----
@@ -99,15 +104,17 @@ Help
 
 This command will print out some help:
 
-E:\ooRexxUnit.4.0.0>testOORexx.rex /?
-testOORexx version 1.0.0 ooTest Framework version 1.0.0_3.2.0
+C:\ooTest-4.2.0-snapshot06>testOORexx.rex /?
+testOORexx version 1.1.0 ooTest Framework version 1.0.0_4.0.0
 
 usage: testOORexx [OPTIONS]
 Try 'testOORexx --help' for more information.
 
+C:\ooTest-4.2.0-snapshot06>
+
 This command will print out the syntax of testOORexx:
 
-E:\ooRexxUnit.4.0.0>testOORexx.rex --help
+C:\ooTest-4.2.0-snapshot06>testOORexx.rex --help
 
 Note that not all command line options are implemented yet.  You will get a
 polite message if you use an un-implemented option.
@@ -126,7 +133,7 @@ All test groups from the root on down are gathered together to be run for
 one invocation of testOORexx.  This command line will run only the test
 groups in the ooRexx\base\expressions subdirectory.
 
-E:\ooRexxUnit.4.0.0>testOORexx.rex -R ooRexx\base\expressions
+C:\ooTest-4.2.0-snapshot06>testOORexx.rex -R ooRexx\base\expressions
 
 There will be 10 test groups executed.
 
@@ -136,33 +143,34 @@ test groups that match the file name part.
 
 This command line will run a single test group, the ADDITION.testGroup:
 
-E:\ooRexxUnit.4.0.0>testOORexx.rex -R ooRexx\base\expressions -f Addition
+C:\ooTest-4.2.0-snapshot06>testOORexx.rex -R ooRexx\base\expressions -f Addition
 
 and you will get output like this:
 
-E:\ooRexxUnit.4.0.0>testOORexx.rex -R ooRexx\base\expressions -f Addition
+C:\ooTest-4.2.0-snapshot06>testOORexx.rex -R ooRexx\base\expressions -f Addition
 Searching for test containers..
-Executing automated test suite...
+Executing automated test suite..
 
 ooTest Framework - Automated Test of the ooRexx Interpreter
 
 
-Interpreter:     REXX-ooRexx_4.0.0(MT) 6.03 13 May 2009
+Interpreter:     REXX-ooRexx_4.2.0(MT)_64-bit 6.04 30 Jan 2014
 Addressing Mode: 64
 ooRexxUnit:      2.0.0_3.2.0    ooTest: 1.0.0_4.0.0
 
-Tests ran:           2839
-Assertions:          3576
+Tests ran:           200
+Assertions:          304
 Failures:            0
 Errors:              0
 Skipped files:       0
 
-File search:        00:00:00.297000
-Suite construction: 00:00:00.266000
-Test execution:     00:00:01.015000
-Total time:         00:00:02.281000
+File search:        00:00:00.078000
+Suite construction: 00:00:00.000000
+Test execution:     00:00:00.093000
+Total time:         00:00:01.155000
 
-E:\ooRexxUnit.4.0.0>
+
+C:\ooTest-4.2.0-snapshot06>
 
 
    3.)  Writing your first test group to contribute to the ooRexx project
@@ -172,7 +180,7 @@ In the misc subdirectory there is a template file.  Simply copy it to a
 subdirectory that might be appropriate, renaming it to the name of your test
 group.  For example:
 
-E:\ooRexxUnit.4.0.0>copy misc\template.testGroup ooRexx\MyTests.testGroup
+C:\ooTest-4.2.0-snapshot06>copy misc\template.testGroup ooRexx\MyTests.testGroup
 
 Edit the file and start writing your test cases.
 
@@ -186,17 +194,14 @@ The template.testGroup file will execute as is and contains all the
 boilerplate needed.  By simply copying it to a new file name, a working test
 group is created:
 
-E:\ooRexxUnit.4.0.0>copy misc\template.testGroup ooRexx\MyTests.testGroup
-        1 file(s) copied.
-
-E:\ooRexxUnit\4.0.0>testOORexx.rex ooRexx\MyTests.testGroup
+C:\ooTest-4.2.0-snapshot06>testOORexx.rex ooRexx\MyTests.testGroup
 Searching for test containers..
 Executing automated test suite..
 
 ooTest Framework - Automated Test of the ooRexx Interpreter
 
 
-Interpreter:     REXX-ooRexx_4.0.0(MT) 6.03 13 May 2009
+Interpreter:     REXX-ooRexx_4.2.0(MT)_64-bit 6.04 30 Jan 2014
 Addressing Mode: 64
 ooRexxUnit:      2.0.0_3.2.0    ooTest: 1.0.0_4.0.0
 
@@ -206,9 +211,10 @@ Failures:            0
 Errors:              0
 Skipped files:       0
 
-File search:        00:00:00.406000
+File search:        00:00:00.078000
 Suite construction: 00:00:00.000000
-Test execution:     00:00:00.000000
-Total time:         00:00:01.000000
+Test execution:     00:00:00.078000
+Total time:         00:00:01.154000
 
-E:\ooRexxUnit.4.0.0>
+
+C:\ooTest-4.2.0-snapshot06>
