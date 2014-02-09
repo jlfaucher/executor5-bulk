@@ -445,6 +445,14 @@ The "ooFoods.rdbx" database file has been corrupted.
 <entry></entry>
 </row>
 <row>
+<entry>READONLY_ROLLBACK</entry>
+<entry></entry>
+</row>
+<row>
+<entry>READONLY_DBMOVED</entry>
+<entry></entry>
+</row>
+<row>
 <entry>ABORT_ROLLBACK</entry>
 <entry></entry>
 </row>
@@ -710,6 +718,10 @@ The "ooFoods.rdbx" database file has been corrupted.
 <entry>SAVEPOINT</entry>
 <entry></entry>
 </row>
+<row>
+<entry>RECURSIVE</entry>
+<entry></entry>
+</row>
 
 <row>
 <entry align="center"><emphasis role="bold"></emphasis></entry>
@@ -825,6 +837,30 @@ The "ooFoods.rdbx" database file has been corrupted.
 <row>
 <entry>CONFIG_URI</entry>
 <entry>int</entry>
+</row>
+<row>
+<entry>CONFIG_PCACHE2</entry>
+<entry>sqlite3_pcache_methods2*</entry>
+</row>
+<row>
+<entry>CONFIG_GETPCACHE2</entry>
+<entry>sqlite3_pcache_methods2*</entry>
+</row>
+<row>
+<entry>CONFIG_COVERING_INDEX_SCAN</entry>
+<entry>int</entry>
+</row>
+<row>
+<entry>CONFIG_SQLLOG</entry>
+<entry>xSqllog, void*</entry>
+</row>
+<row>
+<entry>CONFIG_MMAP_SIZE</entry>
+<entry>sqlite3_int64, sqlite3_int64</entry>
+</row>
+<row>
+<entry>CONFIG_WIN32_HEAPSIZE</entry>
+<entry>int nByte</entry>
 </row>
 
 <row>
@@ -951,6 +987,34 @@ The "ooFoods.rdbx" database file has been corrupted.
 </row>
 <row>
 <entry>FCNTL_PRAGMA</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FCNTL_BUSYHANDLER</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FCNTL_TEMPFILENAME</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FCNTL_MMAP_SIZE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FCNTL_TRACE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FCNTL_HAS_MOVED</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FCNTL_SYNC</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FCNTL_COMMIT_PHASETWO</entry>
 <entry></entry>
 </row>
 
@@ -1286,11 +1350,15 @@ The "ooFoods.rdbx" database file has been corrupted.
 </row>
 <row>
 <entry>ANY</entry>
-<entry>sqlite3_create_function only</entry>
+<entry>Deprecated</entry>
 </row>
 <row>
 <entry>UTF16_ALIGNED</entry>
 <entry>sqlite3_create_collation only</entry>
+</row>
+<row>
+<entry>DETERMINISTIC</entry>
+<entry></entry>
 </row>
 
 <row>
@@ -1326,15 +1394,15 @@ The "ooFoods.rdbx" database file has been corrupted.
 <!-- NOTE these 3 constants should maybe be updated each time a new version of SQLite is used? ... -->
 <row>
 <entry>VERSION</entry>
-<entry>&quot;3.8.1&quot; The value of this constant will vary depending on the exact version of the SQLite database engine embedded in ooSQLite. Typically this documentation is updated when ooSQLite is upgraded to use a new version of the SQLite library so that the value shown here is current.</entry>
+<entry>&quot;3.8.3&quot; The value of this constant will vary depending on the exact version of the SQLite database engine embedded in ooSQLite. Typically this documentation is updated when ooSQLite is upgraded to use a new version of the SQLite library so that the value shown here is current.</entry>
 </row>
 <row>
 <entry>VERSION_NUMBER</entry>
-<entry>3008001 The value of this constant will vary depending on the exact version of the SQLite database engine embedded in ooSQLite. Typically this documentation is updated when ooSQLite is upgraded to use a new version of the SQLite library so that the value shown here is current.</entry>
+<entry>3008003 The value of this constant will vary depending on the exact version of the SQLite database engine embedded in ooSQLite. Typically this documentation is updated when ooSQLite is upgraded to use a new version of the SQLite library so that the value shown here is current.</entry>
 </row>
 <row>
 <entry>SOURCE_ID</entry>
-<entry>&quot;2013-10-17 12:57:35 c78be6d786c19073b3a6730dfe3fb1be54f5657a&quot; The value of this constant will vary depending on the exact version of the SQLite database engine embedded in ooSQLite. Typically this documentation is updated when ooSQLite is upgraded to use a new version of the SQLite library so that the value shown here is current.</entry>
+<entry>&quot;2014-02-03 14:04:11 6c643e45c274e755dc5a1a65673df79261c774be&quot; The value of this constant will vary depending on the exact version of the SQLite database engine embedded in ooSQLite. Typically this documentation is updated when ooSQLite is upgraded to use a new version of the SQLite library so that the value shown here is current.</entry>
 </row>
 
 </tbody></tgroup>
@@ -1728,6 +1796,14 @@ The "ooFoods.rdbx" database file has been corrupted.
 <entry></entry>
 </row>
 <row>
+<entry>READONLY_ROLLBACK</entry>
+<entry></entry>
+</row>
+<row>
+<entry>READONLY_DBMOVED</entry>
+<entry></entry>
+</row>
+<row>
 <entry>ABORT_ROLLBACK</entry>
 <entry></entry>
 </row>
@@ -2028,6 +2104,10 @@ The "ooFoods.rdbx" database file has been corrupted.
 <entry>SAVEPOINT</entry>
 <entry></entry>
 </row>
+<row>
+<entry>RECURSIVE</entry>
+<entry></entry>
+</row>
 </tbody></tgroup>
 </table>
 </section>
@@ -2214,6 +2294,30 @@ The "ooFoods.rdbx" database file has been corrupted.
 <row>
 <entry>CONFIG_URI</entry>
 <entry>int</entry>
+</row>
+<row>
+<entry>CONFIG_PCACHE2</entry>
+<entry>sqlite3_pcache_methods2*</entry>
+</row>
+<row>
+<entry>CONFIG_GETPCACHE2</entry>
+<entry>sqlite3_pcache_methods2*</entry>
+</row>
+<row>
+<entry>CONFIG_COVERING_INDEX_SCAN</entry>
+<entry>int</entry>
+</row>
+<row>
+<entry>CONFIG_SQLLOG</entry>
+<entry>xSqllog, void*</entry>
+</row>
+<row>
+<entry>CONFIG_MMAP_SIZE</entry>
+<entry>sqlite3_int64, sqlite3_int64</entry>
+</row>
+<row>
+<entry>CONFIG_WIN32_HEAPSIZE</entry>
+<entry>int nByte</entry>
 </row>
 </tbody></tgroup>
 </table>
@@ -2406,6 +2510,22 @@ The "ooFoods.rdbx" database file has been corrupted.
 </row>
 <row>
 <entry>FCNTL_MMAP_SIZE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FCNTL_TRACE</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FCNTL_HAS_MOVED</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FCNTL_SYNC</entry>
+<entry></entry>
+</row>
+<row>
+<entry>FCNTL_COMMIT_PHASETWO</entry>
 <entry></entry>
 </row>
 </tbody></tgroup>
@@ -2919,11 +3039,15 @@ The "ooFoods.rdbx" database file has been corrupted.
 </row>
 <row>
 <entry>ANY</entry>
-<entry>sqlite3_create_function only</entry>
+<entry>Deprecated</entry>
 </row>
 <row>
 <entry>UTF16_ALIGNED</entry>
 <entry>sqlite3_create_collation only</entry>
+</row>
+<row>
+<entry>DETERMINISTIC</entry>
+<entry></entry>
 </row>
 </tbody></tgroup>
 </table>
