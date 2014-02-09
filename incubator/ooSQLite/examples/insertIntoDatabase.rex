@@ -235,46 +235,46 @@
 ::method addStreetAddresses
   use strict arg db
 
-  sql = "INSERT INTO street_addr (street1, street2, city, state, zip, contact_id, type_id)" -
-        "VALUES(?1, ?2, ?3, ?4, ?5, ?6, ?7);"
+  sql = "INSERT INTO street_addr (street1, street2, city, state, zip, zip_ext, country, contact_id, type_id)" -
+        "VALUES(?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9);"
 
   stmt = .ooSQLiteStmt~new(db, sql)
   if stmt~initCode <> 0 then return self~stmtError(stmt, db, 'PREPARE', 'street_addr')
 
   -- Tom Sawyer
-  vals = .Array~of('61 Mud St', '', 'St. Petersburg', 'Missouri', '62264', 1, 1)
-  ret = self~addRecord(db, stmt, vals, 7, 'street_adr')
+  vals = .Array~of('61 Mud St', '', 'St. Petersburg', 'Missouri', '63366', '', 'United States', 1, 1)
+  ret = self~addRecord(db, stmt, vals, 9, 'street_adr')
   if ret == 99 then return ret
 
-  vals = .Array~of('raft', '', 'Mississippi River', 'Missouri', '62264', 1, 5)
-  ret = self~addRecord(db, stmt, vals, 7, 'street_adr')
+  vals = .Array~of('raft', '', 'Mississippi River', 'Missouri', '62264', '4598', 'United States', 1, 5)
+  ret = self~addRecord(db, stmt, vals, 9, 'street_adr')
   if ret == 99 then return ret
 
   -- Howard Martin
-  vals = .Array~of('505 Dellwood Ave', 'Apt. #23', 'Boulder', 'Colorado', '80301', 2, 1)
-  ret = self~addRecord(db, stmt, vals, 7, 'street_adr')
+  vals = .Array~of('505 Dellwood Ave', 'Apt. #23', 'Boulder', 'Colorado', '80301', '', 'United States', 2, 1)
+  ret = self~addRecord(db, stmt, vals, 9, 'street_adr')
   if ret == 99 then return ret
 
-  vals = .Array~of('928 Perl St', '', 'Boulder', 'Colorado', '80302', 2, 3)
-  ret = self~addRecord(db, stmt, vals, 7, 'street_adr')
+  vals = .Array~of('928 Perl St', '', 'Boulder', 'Colorado', '80302', '2448', 'United States', 2, 3)
+  ret = self~addRecord(db, stmt, vals, 9, 'street_adr')
   if ret == 99 then return ret
 
   -- Mary Lyle
-  vals = .Array~of('4325 NE Knott St', '', 'Portland', 'Oregon', '97266', 3, 1)
-  ret = self~addRecord(db, stmt, vals, 7, 'street_adr')
+  vals = .Array~of('4325 NE Knott St', '', 'Portland', 'Oregon', '97266', '', 'United States', 3, 1)
+  ret = self~addRecord(db, stmt, vals, 9, 'street_adr')
   if ret == 99 then return ret
 
-  vals = .Array~of('5555 N Channel Ave', '#71', 'Portland', 'Oregon', '97603', 3, 4)
-  ret = self~addRecord(db, stmt, vals, 7, 'street_adr')
+  vals = .Array~of('5555 N Channel Ave', '#71', 'Portland', 'Oregon', '97603', '2278', 'United States', 3, 4)
+  ret = self~addRecord(db, stmt, vals, 9, 'street_adr')
   if ret == 99 then return ret
 
   -- Frank Lyle
-  vals = .Array~of('7633 SE Garrett Dr', '', 'Portland', 'Oregon', '97222', 4, 1)
-  ret = self~addRecord(db, stmt, vals, 7, 'street_adr')
+  vals = .Array~of('7633 SE Garrett Dr', '', 'Portland', 'Oregon', '97222', '', 'United States', 4, 1)
+  ret = self~addRecord(db, stmt, vals, 9, 'street_adr')
   if ret == 99 then return ret
 
-  vals = .Array~of('3900 Northeast 158th Ave', '', 'Portland', 'Oregon', '97603', 4, 3)
-  ret = self~addRecord(db, stmt, vals, 7, 'street_adr')
+  vals = .Array~of('3900 Northeast 158th Ave', '', 'Portland', 'Oregon', '97603', '7774', 'United States', 4, 3)
+  ret = self~addRecord(db, stmt, vals, 9, 'street_adr')
   if ret == 99 then return ret
 
   stmt~finalize

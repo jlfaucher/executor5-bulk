@@ -118,6 +118,8 @@
         "  city TEXT NOT NULL DEFAULT '',"                  || .endOfLine || -
         "  state TEXT NOT NULL DEFAULT '',"                 || .endOfLine || -
         "  zip TEXT NOT NULL DEFAULT '',"                   || .endOfLine || -
+        "  zip_ext TEXT NOT NULL DEFAULT '',"               || .endOfLine || -
+        "  country TEXT NOT NULL DEFAULT '',"               || .endOfLine || -
         "  contact_id INTEGER NOT NULL,"                    || .endOfLine || -
         "  type_id INTEGER NOT NULL,"                       || .endOfLine || -
         "  FOREIGN KEY(contact_id) REFERENCES contacts(id)" || .endOfLine || -
