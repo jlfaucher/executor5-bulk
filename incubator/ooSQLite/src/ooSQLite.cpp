@@ -4045,6 +4045,7 @@ RexxMethod1(int, oosql_test_cls, ARGLIST, args)
     printf("READONLY_RECOVERY       =%d\n", SQLITE_READONLY_RECOVERY       );
     printf("READONLY_CANTLOCK       =%d\n", SQLITE_READONLY_CANTLOCK       );
     printf("READONLY_ROLLBACK       =%d\n", SQLITE_READONLY_ROLLBACK       );
+    printf("SQLITE_READONLY_DBMOVED =%d\n", SQLITE_READONLY_DBMOVED        );
     printf("ABORT_ROLLBACK          =%d\n", SQLITE_ABORT_ROLLBACK          );
     printf("CONSTRAINT_CHECK        =%d\n", SQLITE_CONSTRAINT_CHECK        );
     printf("CONSTRAINT_COMMITHOOK   =%d\n", SQLITE_CONSTRAINT_COMMITHOOK   );
@@ -4055,6 +4056,7 @@ RexxMethod1(int, oosql_test_cls, ARGLIST, args)
     printf("CONSTRAINT_TRIGGER      =%d\n", SQLITE_CONSTRAINT_TRIGGER      );
     printf("CONSTRAINT_UNIQUE       =%d\n", SQLITE_CONSTRAINT_UNIQUE       );
     printf("CONSTRAINT_VTAB         =%d\n", SQLITE_CONSTRAINT_VTAB         );
+    printf("CONSTRAINT_ROWID        =%d\n", SQLITE_CONSTRAINT_ROWID        );
     printf("NOTICE_RECOVER_WAL      =%d\n", SQLITE_NOTICE_RECOVER_WAL      );
     printf("NOTICE_RECOVER_ROLLBACK =%d\n", SQLITE_NOTICE_RECOVER_ROLLBACK );
     printf("WARNING_AUTOINDEX       =%d\n", SQLITE_WARNING_AUTOINDEX       );

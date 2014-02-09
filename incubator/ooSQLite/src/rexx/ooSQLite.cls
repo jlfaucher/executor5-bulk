@@ -536,9 +536,9 @@
 -- (oosqlite.dll / oosqlite.so depending on platform.)
 --
 -- Copy the values directly from the top of sqlite3.h.
-::constant VERSION        "3.8.1"
-::constant VERSION_NUMBER 3008001
-::constant SOURCE_ID      "2013-10-17 12:57:35 c78be6d786c19073b3a6730dfe3fb1be54f5657a"
+::constant VERSION        "3.8.3"
+::constant VERSION_NUMBER 3008003
+::constant SOURCE_ID      "2014-02-03 14:04:11 6c643e45c274e755dc5a1a65673df79261c774be"
 
 
 -- OO_ prefix indicates constant is not from the SQLite library.
@@ -632,6 +632,7 @@
 ::constant READONLY_RECOVERY          264
 ::constant READONLY_CANTLOCK          520
 ::constant READONLY_ROLLBACK          776
+::constant READONLY_DBMOVED           1032
 ::constant ABORT_ROLLBACK             516
 ::constant CONSTRAINT_CHECK           275
 ::constant CONSTRAINT_COMMITHOOK      531
@@ -705,6 +706,8 @@
 ::constant FUNCTION             31   /* NULL            Function Name   */
 ::constant SAVEPOINT            32   /* Operation       Savepoint Name  */
 --::constant COPY                  0   /* No longer used */
+::constant RECURSIVE            33   /* NULL            NULL            */
+
 
 /* Authorizer Return Codes */
 ::constant DENY   1   /* Abort the SQL statement with an error */
@@ -735,14 +738,18 @@
 ::constant CONFIG_MEMSTATUS     9  /* boolean */
 ::constant CONFIG_MUTEX        10  /* sqlite3_mutex_methods* */
 ::constant CONFIG_GETMUTEX     11  /* sqlite3_mutex_methods* */
--- ::constant CONFIG_CHUNKALLOC 12 which is now unused. */
+/* previously SQLITE_CONFIG_CHUNKALLOC 12 which is now unused. */
 ::constant CONFIG_LOOKASIDE    13  /* int int */
 ::constant CONFIG_PCACHE       14  /* no-op */
 ::constant CONFIG_GETPCACHE    15  /* no-op */
 ::constant CONFIG_LOG          16  /* xFunc, void* */
 ::constant CONFIG_URI          17  /* int */
--- ::constant CONFIG_PCACHE2      18  /* sqlite3_pcache_methods2*  obsolete */
--- ::constant CONFIG_GETPCACHE2   19  /* sqlite3_pcache_methods2*  obsolete */
+::constant CONFIG_PCACHE2      18  /* sqlite3_pcache_methods2* */
+::constant CONFIG_GETPCACHE2   19  /* sqlite3_pcache_methods2* */
+::constant CONFIG_COVERING_INDEX_SCAN 20  /* int */
+::constant CONFIG_SQLLOG       21  /* xSqllog, void* */
+::constant CONFIG_MMAP_SIZE    22  /* sqlite3_int64, sqlite3_int64 */
+::constant CONFIG_WIN32_HEAPSIZE      23  /* int nByte */
 
 
 /* Database Connection Configuration Options */
@@ -784,6 +791,11 @@
 ::constant FCNTL_BUSYHANDLER            15
 ::constant FCNTL_TEMPFILENAME           16
 ::constant FCNTL_MMAP_SIZE              18
+::constant FCNTL_TRACE                  19
+::constant FCNTL_HAS_MOVED              20
+::constant FCNTL_SYNC                   21
+::constant FCNTL_COMMIT_PHASETWO        22
+
 
 
 /* Fundamental Datatypes */
@@ -888,8 +900,9 @@
 ::constant UTF16LE        2
 ::constant UTF16BE        3
 ::constant UTF16          4    /* Use native byte order */
-::constant ANY            5    /* sqlite3_create_function only */
+::constant ANY            5    /* Deprecated */
 ::constant UTF16_ALIGNED  8    /* sqlite3_create_collation only */
+::constant DETERMINISTIC  2048
 
 
 /* Virtual Table Configuration Options */
