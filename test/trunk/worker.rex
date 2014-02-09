@@ -126,6 +126,15 @@ return finishTestRun(cl, testResult, overAllPhase, containers)
   overallPhase~done
   testResult~addEvent(overallPhase)
 
+  currenMonitor = .output~destination(.stream~new("ooTest.log")~~command("open write"))
+
+  testResult~print("ooTest Framework - Automated Test of the ooRexx Interpreter")
+
+  if .testOpts~debug then j = printDebug(containers, testResult, cl)
+  else if .testOpts~printOptions then j = printOptions(.true)
+
+  .output~destination
+
   testResult~print("ooTest Framework - Automated Test of the ooRexx Interpreter")
 
   if .testOpts~debug then j = printDebug(containers, testResult, cl)
@@ -187,6 +196,8 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
 ::attribute buildFirst set private
 ::attribute forceBuild get                     -- B
 ::attribute forceBuild set private
+::attribute logFile get                        -- l
+::attribute logFile set private
 ::attribute noTests get                        -- n
 ::attribute noTests set private
 ::attribute waitAtCompletion get               -- w
@@ -537,6 +548,10 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
 
     when word == '-I' then do
       j = self~addMultiWordOpt(i, '-I')
+    end
+
+    when word == '-L' then do
+      testOpts~logFileAppend = .true
     end
 
     when word == '-n' then do
@@ -1052,6 +1067,8 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
   testOpts~fileList = .nil
   testOpts~filesWithPattern = .nil
   testOpts~forceBuild = .false
+  testOpts~logFile = .nil
+  testOpts~logFileAppend = .false
   testOpts~noOptionsFile = .false
   testOpts~noTests = .false
   testOpts~optionsFile = .nil
@@ -1077,6 +1094,8 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
   optsTable[fileList             ] = "filelist"
   optsTable[filesWithPattern     ] = "fileswithpattern"
   optsTable[forceBuild           ] = "boolean"
+  optsTable[logFile              ] = "string"
+  optsTable[logFileAppend        ] = "boolean"
   optsTable[noOptionsFile        ] = "invalid"
   optsTable[noTests              ] = "boolean"
   optsTable[optionsFile          ] = "invalid"
@@ -1180,6 +1199,8 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
   say '                                    indicates all test types'
   say
   say ' Output control:'
+  say '  -l  -DlogFile=FILE                Put test results in log file FILE'
+  say '  -L  -DlogFileAppend=bool          Append test results to log file'
   say '  -s  -DshowProgress=bool           Show test group progress'
   say '  -S  -DshowTestcases=bool          Show test case progress'
   say '  -u  -DsuppressTestcaseTicks=bool  Do not show ticks during test execution'
