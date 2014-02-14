@@ -2350,7 +2350,7 @@ static int do_meta_command(char *zLine, struct callback_data *p){
   if( c=='k' && strncmp(azArg[0], "key", n)==0 && nArg==2 ){
     const char *zKey;
     char *zErrMsg = 0;
-    open_db(p);
+    open_db(p, 0);
     zKey = azArg[1];
     rc = sqlite3_key(p->db, azArg[1], (int)strlen(zKey));
     if( rc!=SQLITE_OK ){
@@ -2520,7 +2520,7 @@ static int do_meta_command(char *zLine, struct callback_data *p){
   if( c=='r' && strncmp(azArg[0], "rekey", n)==0 && nArg==2 ){
     const char *zKey;
     char *zErrMsg = 0;
-    open_db(p);
+    open_db(p, 0);
     zKey = azArg[1];
     rc = sqlite3_rekey(p->db, azArg[1], (int)strlen(zKey));
     if( rc!=SQLITE_OK ){
