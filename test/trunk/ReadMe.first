@@ -14,6 +14,18 @@ NOTE: You need to match the ooRexxUnit version level with the version of
 the ooRexx interpreter you are running.  To use the ooRexxUnit 4.2.0 test
 framework you must have the 4.2.0 version of the interpreter running.
 
+Installation Notes:
+===================
+
+* The test suite framework must be able to write temporary files in its
+sub-directory structure.  Do not install this snapshot into a directory
+structure that may restict file writing privileges.  On Windows Vista and
+later, the typical user can not write files to the C:\Program Files
+sub-directory tree.
+
+* In general, it is not advised to install the snapshot into a sub-directory
+tree that will have spaces in the path name.
+
 PLEASE NOTE:
 
 All example text shown here, such as:
@@ -24,6 +36,34 @@ is, of course, dependent on where you have installed the teste suite.  For
 the purpose of writing this read me file, the test suite was installed at:
 
 C:\ooTest-4.2.0-snapshot06
+
+Gotchas for the General User:
+=============================
+
+Some test cases may make assumptions that cause the test to fail when the
+test suite is run in an unexpected environment.  Some of these are known and
+listed below.  Most likely there are other circumstances not as yet known.
+
+Windows Platform:
+-----------------
+
+The SpecialFolders.testGroup assumes an English languge version of Windows.
+Test cases in this test group will fail if run under a different language
+version of Windows.
+
+The WindowsEventLog.testGroup has tests in it that will fail if the test
+suite is not executed with Administrator privileges.
+
+Several tests in the SysCurPos.testgroup will fail if the output of
+exectuing the test suite is redirected to a file.  There is an additional
+test case in the CHAROUT.testGroup that will fail.  The test suite is
+intened to be run in a command shell with no redirection of its output.
+
+
+Unix-like Platforms:
+-------------------
+
+There is a test case that will fail if the test suite is executed as root.
 
 
 Quick Start to execute tests:
