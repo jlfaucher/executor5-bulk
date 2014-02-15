@@ -1,45 +1,39 @@
-This file shows the results when running the entire ooRexx 4.0.0 test suite
+This file shows the results when running the entire ooRexx 4.2.0 test suite
 on a Windows system, at the time of the snapshot release.
 
 Note that this is intended only to give a feel for what the results might
 look like.  On a Linux system results will be similar.
 
-The 1 failure listed happened because stdout was redirected into a file to
-capture the output.  When run without redirection, the test case would pass.
-
 Please find bugs and report them.  Ideally, open a bug report on SourceForge.
 
-C:\ooTest.4.0.0>testOORexx -X native_api
-Searching for      .................................
+C:\ooTest-4.2.0-snapshot06>testOORexx -X native_api
+Searching for test containers.........
+Executing automated test suite...............     .000000000C 000000000C
+000000000C 000000000C
+..............................
+..................................................................foo
+.........
 ...........................................................................
-..........................................................
+...........................................................................
+......................................................
 
 ooTest Framework - Automated Test of the ooRexx Interpreter
 
 
-Interpreter:     REXX-ooRexx_4.0.0(MT) 6.03 16 Jun 2009
+Interpreter:     REXX-ooRexx_4.2.0(MT)_64-bit 6.04 30 Jan 2014
 Addressing Mode: 64
-ooRexxUnit:      2.0.0_3.2.0 	ooTest: 1.0.0_4.0.0
+ooRexxUnit:      2.0.0_3.2.0    ooTest: 1.0.0_4.0.0
 
-Tests ran:           18506
-Assertions:          574002
-Failures:            1
+Tests ran:           19635
+Assertions:          577419
+Failures:            0
 Errors:              0
-Skipped files:       9
+Skipped files:       12
 
-[failure] [20090617 16:44:17.375000]
-  svn:    r4693   Change date: 2009-05-17 15:21:25 -0700
-  Test:   TEST_STDOUT_START
-  Class:  CHAROUT.testGroup
-  File:   C:\ooTest.4.0.0\ooRexx\base\bif\CHAROUT.testGroup
-  Line:   1388
-  Failed: expectSyntax
-    Expected: SYNTAX 93.958
-    Actual:   Not raised
+File search:        00:00:08.409000
+Suite construction: 00:00:01.701000
+Test execution:     00:06:02.766000
+Total time:         00:06:13.422000
 
-File search:        00:00:05.313000
-Suite construction: 00:00:02.234000
-Test execution:     00:02:59.594000
-Total time:         00:03:07.860000
 
-C:\ooTest.4.0.0>
+C:\ooTest-4.2.0-snapshot06>

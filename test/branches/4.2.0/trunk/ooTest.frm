@@ -286,7 +286,10 @@ return 0
   -- need some special set up.  Like a ftp server, mail server, etc..
   ::constant TCPIP_TEST                  11
 
-  ::constant MAX_TEST_TYPE               11
+  -- A test type that can only work with an English language version of Windows.
+  ::constant ENGLISH_ONLY_TEST           12
+
+  ::constant MAX_TEST_TYPE               12
 
   -- The default test type is the unit test (see above for value.)
   ::constant DEFAULT_TEST_TYPE            1
@@ -310,7 +313,7 @@ return 0
     use strict arg format = 'C'
 
     tests = .set~of(self~UNIT_TEST, self~UNIT_LONG_TEST, self~SAMPLE_TEST, self~GUI_TEST, self~GUI_SAMPLE_TEST, -
-                    self~OLE_TEST, self~DOC_EXAMPLE_TEST, self~NATIVE_API_TEST)
+                    self~OLE_TEST, self~DOC_EXAMPLE_TEST, self~NATIVE_API_TEST, self~ENGLISH_ONLY_TEST)
 
     select
       when format~left(1)~upper == 'C' then return tests
@@ -1808,6 +1811,7 @@ return 0
   ::attribute file private
   ::attribute filePatterns private
   ::attribute fileNames private
+  ::attribute excludeFileNames private
 
   ::attribute totalFound get
   ::attribute totalFound set private
@@ -1837,13 +1841,14 @@ return 0
     self~totalFound = 0
     self~filePatterns = .nil
     self~fileNames = .nil
+    self~excludeFileNames = .array~new
     self~file = .nil
     self~searchType = self~ALL
 
   -- End init()
 
   /** useFileName()
-   * Sets this test finder to locat a single file specified by fileName.
+   * Sets this test finder to locate a single file specified by fileName.
    *
    */
   ::method useFileName
@@ -1853,6 +1858,10 @@ return 0
 
   -- End useFileName()
 
+  /** useFiles()
+   *
+   * Sets this test finder to searches only for the files listed in names.
+   */
   ::method useFiles
     expose fileNames
     use strict arg names
@@ -1875,6 +1884,33 @@ return 0
     self~searchType = self~FILES
 
   -- End useFiles()
+
+  /** excludeFiles()
+   *
+   * Sets this test finder to exclude any files listed in names from the found
+   * files list.
+   */
+  ::method excludeFiles
+    expose excludeFileNames
+    use strict arg names
+
+    if \ names~isA(.string), \ names~isA(.collection) then
+      raise syntax 88.916 array ("1 'names'", "a string or a collection" names)
+
+    if excludeFileNames == .nil then excludeFileNames = .array~new
+    if names~isA(.string) then do
+      name = self~getCorrectFileName(names)
+      excludeFileNames~append(name)
+    end
+    else do n over names
+      if \ n~isA(.string) then
+        raise syntax 88.900 array("The file name must be a string object; found" n)
+
+      name = self~getCorrectFileName(n)
+      excludeFileNames~append(name)
+    end
+
+  -- End excludeFiles()
 
   ::method getCorrectFileName private
     expose extension sl
@@ -2090,39 +2126,60 @@ return 0
    *
    */
   ::method findFiles private
-    expose simpleFileSpec searchType fileNames
+    expose simpleFileSpec searchType fileNames excludeFileNames
 
     f = .array~new
 
     if searchType == self~SINGLEFILE then do
       j = SysFileTree(self~file, files., "FO")
-      if j = 0, files.0 == 1 then f[1] = files.1
+      -- if we found exactly 1 file and it is not excluded, then use it.
+      if j = 0, files.0 == 1, \ self~isExcludedFile(files.1) then f[1] = files.1
     end
     else do
       j = SysFileTree(simpleFileSpec, files., "FOS")
+
       select
         when searchType == self~ALL then do i = 1 to files.0
-          f[i] = files.i
+          -- If the file is not excluded then use it.
+          if \ self~isExcludedFile(files.i) then f[i] = files.i
         end
 
         when searchType == self~PATTERN then do i = 1 to files.0
-          if self~matchFile(files.i) then f~append(files.i)
+          -- If the file natches our pattern, and not in the excluded file name list, use it
+          if self~matchFile(files.i), \ self~isExcludedFile(files.i) then f~append(files.i)
         end
 
         otherwise do i = 1 to files.0
           n = filespec("NAME", files.i)
           do fn over fileNames
-            if fn~caselessCompare(n) == 0 then f~append(files.i)
+            -- If the file is in our file name list, and not in the excluded file name list, use it
+            if fn~caselessCompare(n) == 0, \ self~isExcludedFile(files.i) then f~append(files.i)
           end
         end
       end
       -- End select
     end
 
-    self~totalFound = files.0
+    self~totalFound = f~items
 
   return f
   -- End findFiles()
+
+  /** isExcludedFile()
+   *
+   * Checks if the specified file is in our excluded file list.
+   */
+  ::method isExcludedFile private
+    expose excludeFileNames
+    use strict arg fileName
+
+    n = filespec("NAME", fileName)
+    do fn over excludeFileNames
+      if fn~caselessCompare(n) == 0 then return .true
+    end
+    return .false
+  -- End isExcludedFile()
+
 
   ::method matchFile
     expose filePatterns

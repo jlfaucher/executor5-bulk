@@ -298,6 +298,8 @@ return testResult
   prgFile = createRexxPrgFile(src, 'tempRxPrgFile')
   self~assertTrue(prgFile \== "")
 
+  prgFile = '"' || prgFile || '"'
+
   'rexx' prgFile
   j = deleteFile(prgFile)
   j = SysSleep(.5)
@@ -308,6 +310,8 @@ return testResult
 
   prgFile = createRexxPrgFile(src, 'tempRxPrgFile')
   self~assertTrue(prgFile \== "")
+
+  prgFile = '"' || prgFile || '"'
 
   'rexx' prgFile
   j = deleteFile(prgFile)
