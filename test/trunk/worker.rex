@@ -77,6 +77,7 @@ arguments = arg(1)
    select
      when .testOpts~singleFile \== .nil then finder~useFileName(.testOpts~singleFile)
      when .testOpts~fileList \== .nil then finder~useFiles(.testOpts~fileList)
+     when .testOpts~excludeFileList \== .nil then finder~excludeFiles(.testOpts~excludeFileList)
      when .testOpts~filesWithPattern \== .nil then finder~usePatterns(.testOpts~filesWithPattern)
      otherwise nop
    end
@@ -626,6 +627,10 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
       testOpts~waitAtCompletion = .true
     end
 
+    when word == '-x' then do
+      j = self~addMultiWordOpt(i, '-x')
+    end
+
     when word == '-X' then do
       j = self~addMultiWordOpt(i, '-X')
     end
@@ -710,6 +715,7 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
     when opt == '-I' then optName = 'TESTTYPEINCLUDES'
     when opt == '-p' then optName = 'FILESWITHPATTERN'
     when opt == '-t' then optName = 'TESTCASES'
+    when opt == '-x' then optName = 'EXCLUDEFILELIST'
     when opt == '-X' then optName = 'TESTTYPEEXCLUDES'
   end
   -- End select
@@ -832,6 +838,26 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
           return .false
         end
         testOpts~fileList~put(f)
+      end
+
+      return .true
+    end
+
+    when name == 'EXCLUDEFILELIST' then do
+      if value = "" then do
+        self~addErrorMsg("The" displayName "option must be followed by at least 1 file name.")
+        return .false
+      end
+
+      -- Don't uppercase words in set.
+      files = makeSetOfWords(value, .false)
+      if testOpts~excludeFileList == .nil then testOpts~excludeFileList = .set~new
+      do f over files
+        if \ self~checkFileName(f) then do
+          self~addErrorMsgAtTop("The" displayName "option only accepts valid file names that do not require quoting.")
+          return .false
+        end
+        testOpts~excludeFileList~put(f)
       end
 
       return .true
@@ -1105,6 +1131,7 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
   testOpts~buildFirst = .false
   testOpts~debug = .false
   testOpts~defaultTestTypes = .ooTestTypes~defaultTestSet
+  testOpts~excludeFileList = .nil
   testOpts~fileList = .nil
   testOpts~filesWithPattern = .nil
   testOpts~forceBuild = .false
@@ -1132,6 +1159,7 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
   optsTable[buildFirst           ] = "boolean"
   optsTable[debug                ] = "boolean"
   optsTable[defaultTestTypes     ] = "testtypes"
+  optsTable[excludeFileList      ] = "filelist"
   optsTable[fileList             ] = "filelist"
   optsTable[filesWithPattern     ] = "fileswithpattern"
   optsTable[forceBuild           ] = "boolean"
@@ -1236,6 +1264,7 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
   say '  -O  -DnoOptonsFile=bool           Do not use any options file'
   say '  -p  -DfilesWithPattern=PA         Execute test groups matching PA'
   say '  -R, -DtestCaseRoot=DIR            DIR is root of search tree'
+  say '  -x  -DexcludeFileList=N1 N2 ...   Exclude the N1 N2 ... test groups'
   say '  -X  -DtestTypeExcludes=X1 X1 ...  Exclude test types X1 X2 ... keyword "all"'
   say '                                    indicates all test types'
   say

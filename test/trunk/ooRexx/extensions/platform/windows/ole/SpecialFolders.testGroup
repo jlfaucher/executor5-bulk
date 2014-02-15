@@ -68,6 +68,12 @@ NOTE:   If the user has changed the name of a "special folder" the following lin
         meant to test that the correct Hex value is being used during the development
 */
 
+::method init class
+  forward class (super) continue
+
+  self~ooTestType = self~ENGLISH_ONLY_TEST
+
+
 ::method 'testInternetExplorer'
     objShell = .oleObject~new('Shell.Application')
     sp = '1'~x2d
