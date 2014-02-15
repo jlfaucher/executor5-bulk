@@ -114,6 +114,8 @@ return testResult
   -- Assert the file was created okay
   self~assertNotSame('', prg)
 
+  prg = '"' || prg ||  '"'
+
   'rexx' prg '| rxqueue'
 
   -- Delete the temp file
@@ -156,6 +158,8 @@ return testResult
 
   prg = createRexxPrgFile(src, "TestRxQueue")
   self~assertNotSame('', prg)
+
+  prg = '"' || prg ||  '"'
 
   'rexx' prg stdErrToStdOut '| rxqueue'
   j = deleteFile(prg)
