@@ -1008,6 +1008,7 @@ REXX_METHOD_PROTOTYPE(winex_write);
 REXX_METHOD_PROTOTYPE(winex_createBrush);
 REXX_METHOD_PROTOTYPE(winex_createPen);
 REXX_METHOD_PROTOTYPE(winex_deleteObject);
+REXX_METHOD_PROTOTYPE(winex_getSysBrush);
 REXX_METHOD_PROTOTYPE(winex_getTextAlign);
 REXX_METHOD_PROTOTYPE(winex_setTextAlign);
 REXX_METHOD_PROTOTYPE(winex_getTextExtent);
@@ -1019,6 +1020,7 @@ REXX_METHOD_PROTOTYPE(winex_drawLine);
 REXX_METHOD_PROTOTYPE(winex_drawPixel);
 REXX_METHOD_PROTOTYPE(winex_getPixel);
 REXX_METHOD_PROTOTYPE(winex_fillDrawing);
+REXX_METHOD_PROTOTYPE(winex_fillRect);
 REXX_METHOD_PROTOTYPE(winex_drawArcOrPie);
 REXX_METHOD_PROTOTYPE(winex_drawAngleArc);
 REXX_METHOD_PROTOTYPE(winex_fontColor);
@@ -2418,12 +2420,14 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(winex_getTextAlign,             winex_getTextAlign),
     REXX_METHOD(winex_setTextAlign,             winex_setTextAlign),
     REXX_METHOD(winex_getDC,                    winex_getDC),
+    REXX_METHOD(winex_getSysBrush,              winex_getSysBrush),
     REXX_METHOD(winex_freeDC,                   winex_freeDC),
     REXX_METHOD(winex_rectangle,                winex_rectangle),
     REXX_METHOD(winex_drawLine,                 winex_drawLine),
     REXX_METHOD(winex_drawPixel,                winex_drawPixel),
     REXX_METHOD(winex_getPixel,                 winex_getPixel),
     REXX_METHOD(winex_fillDrawing,              winex_fillDrawing),
+    REXX_METHOD(winex_fillRect,                 winex_fillRect),
     REXX_METHOD(winex_drawArcOrPie,             winex_drawArcOrPie),
     REXX_METHOD(winex_drawAngleArc,             winex_drawAngleArc),
     REXX_METHOD(winex_fontColor,                winex_fontColor),

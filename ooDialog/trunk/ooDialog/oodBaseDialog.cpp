@@ -1584,6 +1584,39 @@ RexxMethod2(POINTERSTRING, winex_createBrush, OPTIONAL_uint32_t, color, OPTIONAL
 }
 
 
+/** WindowExtensions::getSysBrush()
+ *
+ * Retrieves a handle to a logical brush that corresponds to the specified
+ * system color index.
+ *
+ * @param color           [REQUIRED]  The color index of the system brush.  Thsi
+ *                        can be the raw numeric value, or one of the system
+ *                        color keywords
+ *
+ * @return The handle to the brush on success, or .nil on failure.
+ *
+ * @note  System brushes do not need to be, and should NOT be deleted like a
+ *        brush returned from the createBrush() method.  But, they can be used
+ *        anywhere a brush is needed.
+ */
+RexxMethod1(RexxObjectPtr, winex_getSysBrush, RexxObjectPtr, color)
+{
+    RexxObjectPtr result = TheNilObj;
+    uint32_t      index;
+
+    if ( getSystemColor(context, color, &index, 1) )
+    {
+        HBRUSH hBrush = GetSysColorBrush(index);
+        if ( hBrush != NULL )
+        {
+            result = pointer2string(context, hBrush);
+        }
+    }
+
+    return result;
+}
+
+
 /** WindowExtensions::deleteObject()
  *
  *  Deletes a logical pen, brush, font, bitmap, region, or palette, freeing all
@@ -1686,6 +1719,77 @@ syserr_out:
 
 err_out:
     return 1;
+}
+
+
+/** WindowExtensions::fillRect()
+ *
+ *  Fills a rectangle using the specified brush. within the specified device
+ *  context.
+ *
+ *  @param  hDC     Handle to the device context.
+ *  @param  rect    A .Rectangle object that specifies the area to be filled.
+ *  @param  hBrush  The handle to the brush to be used, or one of the system
+ *                  colors.
+ *
+ *  @return  True on success, false on error.
+ *
+ *  @note  Sets .SystemErrorCode.  If hDC is null, the error code is set to 1
+ *         ERROR_INVALID_FUNCTION "Incorrect function."  The system may set
+ *         other error codes.
+ *
+ *  @note  Unlike the rectangle(), the fillRect() method does not outline the
+ *         rectangle with the pen of the device context.
+ *
+ */
+RexxMethod3(RexxObjectPtr, winex_fillRect, POINTERSTRING, _hDC, RexxObjectPtr, _rect,
+            RexxObjectPtr, _hBrush)
+{
+    oodResetSysErrCode(context->threadContext);
+    RexxMethodContext *c = context;
+    HBRUSH hBrush = NULL;
+    HDC    hDC    = (HDC)_hDC;
+
+    if ( hDC == NULL )
+    {
+        oodSetSysErrCode(context->threadContext, ERROR_INVALID_FUNCTION);
+        goto err_out;
+    }
+
+    CSTRING tmpBrush = c->ObjectToStringValue(_hBrush);
+    if ( isPointerString(tmpBrush) )
+    {
+        hBrush = (HBRUSH)string2pointer(tmpBrush);
+    }
+    else
+    {
+        uint32_t index;
+
+        if ( ! getSystemColor(context, _hBrush, &index, 3) )
+        {
+            goto err_out;
+        }
+        hBrush = (HBRUSH)(index + 1);
+    }
+
+    PRECT pRect = rxGetRect(context, _rect, 2);
+    if ( pRect == NULL )
+    {
+        goto err_out;
+    }
+
+    pRect->right++;
+    pRect->bottom++;
+
+    if ( FillRect(hDC, pRect, hBrush) )
+    {
+        return TheTrueObj;
+    }
+
+    oodSetSysErrCode(context->threadContext);
+
+err_out:
+    return TheFalseObj;
 }
 
 
@@ -1900,15 +2004,22 @@ done_out:
  *  @remarks  TODO allow .Point object for the args.   TODO use ExtFloodFill()
  *            instead.
  */
-RexxMethod4(logical_t, winex_fillDrawing, POINTERSTRING, _hDC, int32_t, x, int32_t, y, int32_t, color)
+RexxMethod4(logical_t, winex_fillDrawing, POINTERSTRING, _hDC, int32_t, x, int32_t, y, uint32_t, color)
 {
     oodResetSysErrCode(context->threadContext);
 
     HDC hDC = (HDC)_hDC;
+    COLORREF clr = color;
+
+    if ( color >= 0 && color <= 18 )
+    {
+        ;
+    }
+    clr = PALETTEINDEX(color);
 
     if ( hDC != NULL )
     {
-        if ( FloodFill(hDC, x, y, PALETTEINDEX(color)) == 0 )
+        if ( FloodFill(hDC, x, y, clr) == 0 )
         {
             goto syserr_out;
         }
