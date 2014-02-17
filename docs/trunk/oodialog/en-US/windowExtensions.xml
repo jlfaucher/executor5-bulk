@@ -131,7 +131,11 @@
 </row>
 <row>
 <entry><xref linkend="mthFillDrawing"/></entry>
-<entry>Fills in an outline figure within the device context using the active brush.</entry>
+<entry>Fills an area of the display surface with the current brush. The area to be filled is outlined by the color specified.</entry>
+</row>
+<row>
+<entry><xref linkend="mthFillRect"/></entry>
+<entry>Fills a rectangle using the specified brush within the specified device context.</entry>
 </row>
 <row>
 <entry><xref linkend="mthFontColor"/></entry>
@@ -156,6 +160,10 @@
 <row>
 <entry><xref linkend="mthGetPixel"/></entry>
 <entry>Returns the color number of a pixel within the device context.</entry>
+</row>
+<row>
+<entry><xref linkend="mthGetSysBrush"/></entry>
+<entry>Retrieves a handle to a logical brush that corresponds to the specified system color index.</entry>
 </row>
 <row>
 <entry><xref linkend="mthGetTextAlign"/></entry>
@@ -1518,35 +1526,199 @@ context. </para>
 <programlisting>
 <![CDATA[
 >>--fillDrawing(--dc--,--x--,--y--,--color--)----><
-
 ]]>
 </programlisting>
 
-<para>The fillDrawing method fills an outline figure
-in the given device context using the active brush. </para>
-<variablelist>
-<varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
-<listitem><para>The arguments are:
-<variablelist>
-<varlistentry><term>dc</term>
-<listitem><para>The device context.
-</para></listitem></varlistentry>
-<varlistentry><term>x, y</term>
-<listitem><para>The inside starting position for filling the outline figure with the
-color of the brush, in pixels.
-</para></listitem></varlistentry>
-<varlistentry><term>color</term>
-<listitem>
 <para>
-  The <xref linkend="defColor"/> of the outline figure whose inside will be filled.
+  Fills an area of the display surface with the current brush. The area to be filled is outlined by the color specified.
 </para>
-</listitem></varlistentry>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>dc [required]</term>
+    <listitem>
+    <para>
+      The device context containing the area to be filled.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>x [required]</term>
+    <listitem>
+    <para>
+      The x co-ordinate of the position in the area to start filling.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>y [required]</term>
+    <listitem>
+    <para>
+      The x co-ordinate of the position in the area to start filling.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>color [required]</term>
+    <listitem>
+    <para>
+      Specifies the color that outlines the area to be filled. The color can be spedified as a color pallette <link
+      linkend="derColor">index</link>, or as a <xref linkend="defColorRef"/> color.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true on success, false on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    The operating system assumes that the area to be filled is completely bounded by the color specified by the <emphasis
+    role="italic">color</emphasis> argument. The operating system begins filling at the point specified by the <emphasis
+    role="italic">x</emphasis> and <emphasis role="italic">y</emphasis> arguments and continues in all directions until it
+    reaches the boundary.
+  </para>
+  <para>
+    The MSDN documentation says there are a number of reasons why this method may fail, and lists some of the reasons as
+    being:
+  </para>
+  <itemizedlist>
+  <listitem>
+  <para>
+    The filling could not be completed.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    The specified point has the boundary color specified by the <emphasis role="italic">color</emphasis> argument.
+  </para>
+  </listitem>
+  <listitem>
+  <para>
+    The point is outside the clipping regionthat is, it is not visible on the device.
+  </para>
+  </listitem>
+  </itemizedlist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable. If <emphasis role="italic">dc</emphasis> is
+    zero, the error code is set to: 1, <emphasis role="italic">ERROR_INVALID_FUNCTION Incorrect function.</emphasis> The
+    operating system may set other error codes for other reasons.
+  </para>
+  </listitem></varlistentry>
 </variablelist>
-</para>
-</listitem></varlistentry>
-</variablelist>
-</section>
+</section>  <!-- End WindowExtensions::fillDrawing() -->
 
+
+<section id="mthFillRect" xreflabel="fillRect"><title>fillRect</title>
+<indexterm><primary>fillRect</primary></indexterm>
+<indexterm><primary>WindowExtensions class</primary><secondary>fillRect</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>fillRect</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>fillRect</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--fillRect(--dc--,--rect--,--brush--)----------><
+]]>
+</programlisting>
+
+<para>
+  Fills a rectangle using the specified brush within the specified device context.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The arguments are:
+  </para>
+  <variablelist>
+    <varlistentry><term>dc [required]</term>
+    <listitem>
+    <para>
+      The device context that contains the rectangle.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>rect [required]</term>
+    <listitem>
+    <para>
+      A <xref linkend="clsRect"/> object that specifies the rectangle to be filled.
+    </para>
+    </listitem></varlistentry>
+    <varlistentry><term>brush [required]</term>
+    <listitem>
+    <para>
+      Specifies the brush that is to be used to fill the rectangle. This can either be the handle of the brush or the index
+      of the system color to be used. Brush handles are retrieved using methods such as <xref linkend="mthCreateBrush"/> or
+      <xref linkend="mthGetSysBrush"/>. A system color index can be either the non-negative whole number ID or the keyword
+      ID. Both types of IDs can be looked up in the System Color Elements <link linkend="tblSysColors">table</link>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    Returns true on success, false on error.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+  	Unlike the <xref linkend="mthRectangle"/> method, the <emphasis role="italic">fileRect</emphasis> method does not outline
+    the rectangle with the pen of the device context.
+  </para>
+  <para>
+    In addition, for programmers that may read the Microsoft <xref linkend="defWindowsDoc"/> on the Windows <emphasis
+    role="italic">FillRect</emphasis> API, the <emphasis role="italic">fillRect</emphasis> method fills the entire recatangle
+    specified. The Windows API does not include the rectangle's right and bottom sides. That API fills a rectangle up to, but
+    not including, the right column and bottom row. If the ooDialog programmer needs that behaviour, she should subtract 1
+    from the right and bottom co-ordinates of the <emphasis role="italic">rect</emphasis> object.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  <para>
+    Sets the <link linkend="dotSystemErrorCode">.SystemErrorCode</link> variable. If <emphasis role="italic">dc</emphasis> is
+    zero, the error code is set to: 1, <emphasis role="italic">ERROR_INVALID_FUNCTION Incorrect function.</emphasis> The
+    operating system may set other error codes for other reasons.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example comes from a clock program that displays the digital time. The time is updated every second. If the previous
+    time is not erased, it just becomes a smear as the different digits are written over the top of each other. The example
+    gets a system brush that is the color of the background of the clock and uses that to erase the bacground of the area
+    that displays the digital time before it is updated with the current time:
+<programlisting>
+<![CDATA[
+  -- Get a system brush using the button's system color. Do not delete system
+  -- brushes
+  btnBrush = self~getSysBrush('BTNFACE')
+  curBrush = self~objectToDC(dc, btnBrush)
+
+  -- Erase the area where the time will be displayed by painting the
+  -- background with our button brush.  Get the size of the area, the
+  -- text extent, taken up by the time.  Use that to calculate our
+  -- rectangle.
+  s = button~getTextExtent(dc, time)
+  r = .Rect~new(290, 40, 290 + s~width, 40 + s~height)
+  self~fillRect(dc, r, btnBrush)
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End WindowExtensions::fillRect() -->
 
 <section id="mthFontColor" xreflabel="fontColor"><title>fontColor</title>
 <indexterm><primary>fontColor</primary></indexterm>
@@ -1841,6 +2013,81 @@ within the device context. </para>
 </para></listitem></varlistentry>
 </variablelist>
 </section>
+
+<section id="mthGetSysBrush" xreflabel="getSysBrush"><title>getSysBrush</title>
+<indexterm><primary>getSysBrush</primary></indexterm>
+<indexterm><primary>WindowExtensions class</primary><secondary>getSysBrush</secondary></indexterm>
+<indexterm><primary>dialog object</primary><secondary>getSysBrush</secondary></indexterm>
+<indexterm><primary>dialog control object</primary><secondary>getSysBrush</secondary></indexterm>
+<programlisting>
+<![CDATA[
+>>--getSysBrush(--sysColor--)--------------------><
+]]>
+</programlisting>
+
+<para>
+  Retrieves a handle to a logical brush that corresponds to the specified system color index.
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">Arguments:</emphasis></term>
+  <listitem>
+  <para>
+    The single argument is:
+  </para>
+  <variablelist>
+    <varlistentry><term>sysColor [required]</term>
+    <listitem>
+    <para>
+      Specifies the system color to be used. This can be either the non-negative whole number ID or the keyword ID. Both
+      types of IDs can be looked up in the System Color Elements <link linkend="tblSysColors">table</link>.
+    </para>
+    </listitem></varlistentry>
+  </variablelist>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Return value:</emphasis></term>
+  <listitem>
+  <para>
+    The handle to the brush on success, or .nil on failure.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Remarks:</emphasis></term>
+  <listitem>
+  <para>
+    A brush is a bitmap that the system uses to paint the interiors of filled shapes. System color brushes track changes in
+    system colors. In other words, when the user changes a system color, the associated system color brush automatically
+    changes to the new color.
+  </para>
+  <para>
+    To paint with a system color brush, an application should use <emphasis role="italic">getSysBrush</emphasis> instead of
+    useing <xref linkend="mthCreateBrush"/>, because <emphasis role="italic">getSysBrush</emphasis> returns a cached brush
+    instead of allocating a new one. System color brushes are owned by the system and must not be destroyed.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Details</emphasis></term>
+  <listitem>
+  <para>
+    Raises syntax errors when incorrect usage is detected.
+  </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">Example:</emphasis></term>
+  <listitem>
+  <para>
+    This example gets a brush with the system color of a push button and then selects it into a device context to use it form
+    painting:
+<programlisting>
+<![CDATA[
+
+  -- Get a system brush using the button's system color. Do not delete system
+  -- brushes
+  btnBrush = self~getSysBrush('BTNFACE')
+  curBrush = self~objectToDC(dc, btnBrush)
+
+]]>
+</programlisting>
+  </para>
+  </listitem></varlistentry>
+</variablelist>
+</section>  <!-- End WindowExtensions::getSysBrush() -->
 
 <section id="mthGetTextAlign" xreflabel="getTextAlign"><title>getTextAlign</title>
 <indexterm><primary>getTextAlign</primary></indexterm>

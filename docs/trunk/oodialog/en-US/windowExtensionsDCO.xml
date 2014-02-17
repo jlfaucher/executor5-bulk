@@ -107,7 +107,7 @@ WindowExtensions::<xref linkend="mthCreatePen"/>
 WindowExtensions::<xref linkend="mthDeleteFont"/>
 
 <![CDATA[
->>--deleteFont(--hFont--)----------------------------><
+>>--deleteFont(--hFont--)------------------------><
 ]]>
 </programlisting>
 </section>
@@ -117,7 +117,7 @@ WindowExtensions::<xref linkend="mthDeleteFont"/>
 WindowExtensions::<xref linkend="mthDeleteObject"/>
 
 <![CDATA[
->>--deleteObject(--obj--)----------------------------><
+>>--deleteObject(--obj--)------------------------><
 ]]>
 </programlisting>
 </section>
@@ -170,7 +170,7 @@ WindowExtensions::<xref linkend="mthDrawPie"/>
 WindowExtensions::<xref linkend="mthDrawPixel"/>
 
 <![CDATA[
->>--drawPixel(--dc--,--x--,--y--,--color--)----------><
+>>--drawPixel(--dc--,--x--,--y--,--color--)------><
 ]]>
 </programlisting>
 </section>
@@ -185,12 +185,22 @@ WindowExtensions::<xref linkend="mthFillDrawing"/>
 </programlisting>
 </section>
 
+<section id="wedcoFillRect" xreflabel="fillRect"><title>fillRect</title>
+<programlisting>
+WindowExtensions::<xref linkend="mthfillRect"/>
+
+<![CDATA[
+>>--fillRect(--dc--,--rect--,--brush--)----------><
+]]>
+</programlisting>
+</section>
+
 <section id="wedcoFreeDC" xreflabel="freeDC"><title>freeDC</title>
 <programlisting>
 WindowExtensions::<xref linkend="mthFreeDC"/>
 
 <![CDATA[
->>--freeDC(--dc--)-----------------------------------><
+>>--freeDC(--dc--)-------------------------------><
 ]]>
 </programlisting>
 </section>
@@ -200,7 +210,7 @@ WindowExtensions::<xref linkend="mthFreeDC"/>
 WindowExtensions::<xref linkend="mthFontColor"/>
 
 <![CDATA[
->>--fontColor(--color--,--dc--)----------------------><
+>>--fontColor(--color--,--dc--)------------------><
 ]]>
 </programlisting>
 </section>
@@ -210,7 +220,7 @@ WindowExtensions::<xref linkend="mthFontColor"/>
 WindowExtensions::<xref linkend="mthFontToDC"/>
 
 <![CDATA[
->>--fontToDC(--dc--,--hFont--)-----------------------><
+>>--fontToDC(--dc--,--hFont--)-------------------><
 ]]>
 </programlisting>
 </section>
@@ -220,7 +230,7 @@ WindowExtensions::<xref linkend="mthFontToDC"/>
 WindowExtensions::<xref linkend="mthGetArcDirection"/>
 
 <![CDATA[
->>--getArcDirection(--dc--)--------------------------><
+>>--getArcDirection(--dc--)----------------------><
 ]]>
 </programlisting>
 </section>
@@ -230,7 +240,7 @@ WindowExtensions::<xref linkend="mthGetArcDirection"/>
 WindowExtensions::<xref linkend="mthGetDC"/>
 
 <![CDATA[
->>--getDC--------------------------------------------><
+>>--getDC----------------------------------------><
 ]]>
 </programlisting>
 </section>
@@ -240,7 +250,7 @@ WindowExtensions::<xref linkend="mthGetDC"/>
 WindowExtensions::<xref linkend="mthGetFont"/>
 
 <![CDATA[
->>--getFont----------------------------------------------------><
+>>--getFont--------------------------------------><
 ]]>
 </programlisting>
 </section>
@@ -250,7 +260,17 @@ WindowExtensions::<xref linkend="mthGetFont"/>
 WindowExtensions::<xref linkend="mthGetPixel"/>
 
 <![CDATA[
->>--getPixel(--dc--,--x--,--y--)---------------------><
+>>--getPixel(--dc--,--x--,--y--)-----------------><
+]]>
+</programlisting>
+</section>
+
+<section id="wedcoGetSysBrush" xreflabel="getSysBrush"><title>getSysBrush</title>
+<programlisting>
+WindowExtensions::<xref linkend="mthGetSysBrush"/>
+
+<![CDATA[
+>>--getSysBrush(--sysColor--)--------------------><
 ]]>
 </programlisting>
 </section>
@@ -280,7 +300,7 @@ WindowExtensions::<xref linkend="mthGetTextExtent"/>
 WindowExtensions::<xref linkend="mthHScrollPos"/>
 
 <![CDATA[
->>--hScrollPos---------------------------------------><
+>>--hScrollPos-----------------------------------><
 ]]>
 </programlisting>
 </section>
@@ -290,7 +310,7 @@ WindowExtensions::<xref linkend="mthHScrollPos"/>
 WindowExtensions::<xref linkend="mthLoadBitmap"/>
 
 <![CDATA[
->>--loadBitmap(--bmpFilename--+------------+--)------><
+>>--loadBitmap(--bmpFilename--+------------+--)--><
                               +-,-loadOpt--+
 ]]>
 </programlisting>
@@ -301,7 +321,7 @@ WindowExtensions::<xref linkend="mthLoadBitmap"/>
 WindowExtensions::<xref linkend="mthObjectToDC"/>
 
 <![CDATA[
->>--objectToDC(--dc--,--obj--)-----------------------><
+>>--objectToDC(--dc--,--obj--)-------------------><
 ]]>
 </programlisting>
 </section>
@@ -311,7 +331,7 @@ WindowExtensions::<xref linkend="mthObjectToDC"/>
 WindowExtensions::<xref linkend="mthOpaqueText"/>
 
 <![CDATA[
->>--opaqueText(--dc--)-------------------------------><
+>>--opaqueText(--dc--)---------------------------><
 ]]>
 </programlisting>
 </section>
@@ -321,7 +341,7 @@ WindowExtensions::<xref linkend="mthOpaqueText"/>
 WindowExtensions::<xref linkend="mthRectangle"/>
 
 <![CDATA[
->>--rectangle(--dc--,--x--,--y--,--x2--,--y2--+-----------+--)-----------------><
+>>--rectangle(--dc--,--x--,--y--,--x2--,--y2--+-----------+--)--><
                                               +-,-keyWord-+
 ]]>
 </programlisting>
@@ -332,7 +352,7 @@ WindowExtensions::<xref linkend="mthRectangle"/>
 WindowExtensions::<xref linkend="mthRemoveBitmap"/>
 
 <![CDATA[
->>--removeBitmap(--hBitmap--)------------------------><
+>>--removeBitmap(--hBitmap--)--------------------><
 ]]>
 </programlisting>
 </section>
@@ -342,7 +362,7 @@ WindowExtensions::<xref linkend="mthRemoveBitmap"/>
 WindowExtensions::<xref linkend="mthScrollClsWE"/>
 
 <![CDATA[
->>--scroll(--cx--,--cy--)----------------------------><
+>>--scroll(--cx--,--cy--)------------------------><
 ]]>
 </programlisting>
 </section>
@@ -352,7 +372,7 @@ WindowExtensions::<xref linkend="mthScrollClsWE"/>
 WindowExtensions::<xref linkend="mthSetArcDirection"/>
 
 <![CDATA[
->>--setArcDirection(--dc--+--------------+--)--------><
+>>--setArcDirection(--dc--+--------------+--)----><
                           +-,-direction--+
 ]]>
 </programlisting>
@@ -363,7 +383,7 @@ WindowExtensions::<xref linkend="mthSetArcDirection"/>
 WindowExtensions::<xref linkend="mthSetFont"/>
 
 <![CDATA[
->>--setFont(--fontHandle--+---------+--)-------------------------><
+>>--setFont(--fontHandle--+---------+--)----------><
                           +-,redraw-+
 ]]>
 </programlisting>
@@ -374,7 +394,7 @@ WindowExtensions::<xref linkend="mthSetFont"/>
 WindowExtensions::<xref linkend="mthSetHScrollPos"/>
 
 <![CDATA[
->>--setHScrollPos(--position--+-----------+--)-------><
+>>--setHScrollPos(--position--+-----------+--)---><
                               +-,-redraw--+
 ]]>
 </programlisting>
@@ -395,7 +415,7 @@ WindowExtensions::<xref linkend="mthSetTextAlign"/>
 WindowExtensions::<xref linkend="mthSetVScrollPos"/>
 
 <![CDATA[
->>--setVScrollPos(--position--+-----------+--)-------><
+>>--setVScrollPos(--position--+-----------+--)---><
                               +-,-redraw--+
 ]]>
 </programlisting>
@@ -406,7 +426,7 @@ WindowExtensions::<xref linkend="mthSetVScrollPos"/>
 WindowExtensions::<xref linkend="mthTransparentText"/>
 
 <![CDATA[
->>--transparentText(--dc--)--------------------------><
+>>--transparentText(--dc--)----------------------><
 ]]>
 </programlisting>
 </section>
@@ -416,7 +436,7 @@ WindowExtensions::<xref linkend="mthTransparentText"/>
 WindowExtensions::<xref linkend="mthVScrollPos"/>
 
 <![CDATA[
->>--vScrollPos---------------------------------------><
+>>--vScrollPos-----------------------------------><
 ]]>
 </programlisting>
 </section>
@@ -426,7 +446,7 @@ WindowExtensions::<xref linkend="mthVScrollPos"/>
 WindowExtensions::<xref linkend="mthWrite"/>
 
 <![CDATA[
->>--write(-x-,-y-,-text-+---------+-+---------+-+--------+-+------+-+------+-)---><
+>>--write(-x-,-y-,-text-+---------+-+---------+-+--------+-+------+-+------+-)-><
                         +-,-fName-+ +-,-fSize-+ +-,-opts-+ +-,-fg-+ +-,-bk-+
 ]]>
 </programlisting>
@@ -437,7 +457,7 @@ WindowExtensions::<xref linkend="mthWrite"/>
 WindowExtensions::<xref linkend="mthWriteDirect"/>
 
 <![CDATA[
->>--writeDirect(--dc--,--xPos--,--yPos--,--text--)---><
+>>--writeDirect(--dc--,--xPos--,--yPos--,--text--)--------------><
 ]]>
 </programlisting>
 </section>
