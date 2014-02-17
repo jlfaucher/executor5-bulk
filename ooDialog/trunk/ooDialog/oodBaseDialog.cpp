@@ -2013,9 +2013,8 @@ RexxMethod4(logical_t, winex_fillDrawing, POINTERSTRING, _hDC, int32_t, x, int32
 
     if ( color >= 0 && color <= 18 )
     {
-        ;
+        clr = PALETTEINDEX(color);
     }
-    clr = PALETTEINDEX(color);
 
     if ( hDC != NULL )
     {
@@ -2029,13 +2028,13 @@ RexxMethod4(logical_t, winex_fillDrawing, POINTERSTRING, _hDC, int32_t, x, int32
         oodSetSysErrCode(context->threadContext, ERROR_INVALID_FUNCTION);
         goto err_out;
     }
-    return 0;
+    return TRUE;
 
 syserr_out:
   oodSetSysErrCode(context->threadContext);
 
 err_out:
-    return 1;
+    return FALSE;
 }
 
 

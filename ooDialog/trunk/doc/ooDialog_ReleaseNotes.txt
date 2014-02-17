@@ -83,6 +83,13 @@ Feature Requests in ooDialog:
 
  * #581 Add item data capability to combo box
 
+ * #588 There is no way to get a system brush in ooDialog
+
+ * #589 There is no way to fill a rectangle without getting an outline
+        around it
+
+ * #590 Enhance the fillDrawing() method to accept a COLORREF
+
 
 Miscellaneous Fixes:
 --------------------
@@ -109,15 +116,20 @@ New dialog classes:
 New dialog control classes:
 ---------------------------
 
+ReBar control class:
+
+Rebar controls act as containers for child windows.
+
 StatusBar control class:
 
 Status bar controls provide a place for the application to display
 status information along the bottom of the dialog.
 
-ReBar control class:
+ToolBar control class:
 
-Rebar controls act as containers for child windows.
-
+A toolbar is a control window that contains one or more buttons. Each
+button, when clicked by a user, sends a command event notification to
+the dialog window that owns the toolbar.
 
 
 New utility classes:
@@ -149,12 +161,17 @@ signed32()
 
 usigned32()
 
-
 In the ImageList class:
 -----------------------
 
 getIcon()
 
+In the WindowExtensions class:
+------------------------------
+
+fillRect()
+
+getSysBrush()
 
 
 New Attributes:
@@ -259,6 +276,13 @@ In the TreeView class:
 
   *  The setImageList() method has been enhanced to accept a string key
      word for the type agrument.
+
+In the WindowExtensions class:
+------------------------------
+
+  * The fillDrawing() method has been enhanced to accept a COLORREF for
+    the argument that specifies the bounding color of the area to be
+    filled.
 
 
 Enhanced Public Routines:
