@@ -131,7 +131,7 @@ return finishTestRun(cl, testResult, overAllPhase, containers)
     if .testOpts~logFileAppend then mode = 'append'
     else mode = 'replace'
 
-    currenMonitor = .output~destination(.stream~new("ooTest.log")~~command("open write" mode))
+    currenMonitor = .output~destination(.stream~new(.testOpts~logFile)~~command("open write" mode))
 
     testResult~print("ooTest Framework - Automated Test of the ooRexx Interpreter")
 
