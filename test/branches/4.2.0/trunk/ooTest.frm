@@ -2131,7 +2131,7 @@ return 0
     f = .array~new
 
     if searchType == self~SINGLEFILE then do
-      j = SysFileTree(self~file, files., "FO")
+      j = SysFileTree(self~file, files., "FOS")
       -- if we found exactly 1 file and it is not excluded, then use it.
       if j = 0, files.0 == 1, \ self~isExcludedFile(files.1) then f[1] = files.1
     end
