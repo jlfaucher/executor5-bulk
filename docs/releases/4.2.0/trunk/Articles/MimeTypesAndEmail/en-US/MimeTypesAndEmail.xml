@@ -1,0 +1,378 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "MimeTypesAndEmail.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: Article - Mime Types And Email
+    #
+    # Copyright (c) 2014, Rexx Language Association. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<article>
+<title>Mime Types And Email</title>
+<xi:include href="Article_Info.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+<para>This article will introduce using the Mime Types and Email (smtp) 
+classes provided with Open Object Rexx. The article provides some basic 
+introduction to both classes as well as some <quote>hands on</quote> examples.
+</para>
+<para>Mime types are the basic structure for email content. All email 
+content must be enclosed in one or more mime types. This includes the 
+usual standard text of the email. An email program provides all the 
+necessary programming for enclosing your email message content into one 
+or more mime structures.
+</para>
+
+<section><title>Introduction</title>
+<para>Mime types fall into two basic types. The first type encloses only 
+standard text and may not include any binary information. The second 
+type can only enclose encoded binary data. In the context of email, the 
+standard text mime type is used to enclose the body of the email 
+message. The binary mime type is usually used to enclose attachments 
+which might include pictures, spreadsheets, PDFs, or other binary file 
+types.
+</para>
+<para>Now that we understand how mime types are used let's see how we can use
+ooRexx to construct some mime types.
+</para>
+<para>In order to use the mime classes in your ooRexx program you must 
+include the class definition file into your script. You can do this by 
+placing the following at the bottom of your script.
+</para>
+<programlisting>
+::requires "mime.cls"
+</programlisting>
+<para>This ooRexx directive causes the interpreter to include the Mime 
+class source code into your script prior to the interpreter starting the
+ execution of your program. This makes all the mime class definitions 
+available to your program.
+</para>
+<para>We will not show this construct in any of the following examples, we 
+will assume that it will be incorporated into you own script at the 
+appropriate position in the script.
+</para>
+</section>
+
+<section><title>The MimePart Class</title>
+<para>The MimePart class is used to enclose either a standard text or an 
+encoded binary mime type. It is a very simple class to use and has only a
+few methods that are critical. But it also has methods that can be used
+to modify how the mime type is interpreted by a receiving system.
+</para>
+<para>Creating a new MimePart object instance is easy. Here are some examles
+of how it is done in ooRexx.
+</para>
+<programlisting>
+mymimepart = .mimepart~new()
+     /* or */
+mymimepart = .mimepart~new('text/plain')
+</programlisting>
+<para>The example above will create a new MimePart object instance and give
+it a Mime Type of <quote>text/plain</quote>. This labels the content
+contained in the MimePart object as just plain ASCII text with no encoded
+binary content.
+</para>
+<para>The argument to the <emphasis role="bold">new</emphasis> method is
+optional. The default type is <quote>text/plain</quote>. You can of course
+supply your own Mime Type string or even specify it later. The following
+example shows how to do that.
+</para>
+<programlisting>
+mymimepart = .mimepart~new()
+mymimepart~type('application/vnd.ms-excel')
+</programlisting>
+<para>There are many Mime Types available for mime content. It is up to you
+to choose the correct type for the content of the MimePart object. 
+Valid Mime Types are standardized and maintained by the
+<ulink url="http://www.iana.org/">Internet Assigned Numbers Authority (IANA)</ulink>.
+A complete list of types is maintained by IANA
+<ulink url="http://www.iana.org/assignments/media-types/media-types.xhtml">here</ulink>.
+The list does not specify whether or not a particular type is encoded 
+binary or not. It is up to you to either encode the data or not. More on
+this later.
+</para>
+<para>Now that we have a mime object we can begin to add some text to it.
+Text is added via the <emphasis role="bold">addContent</emphasis> method.
+Each time you call the <emphasis role="bold">addContent</emphasis> method
+it concatenates the argument text to the existing content (if any). Here
+is how you add content to the mime object.
+</para>
+<programlisting>
+mymimepart~addContent('This is the start of my article.')
+mymimepart~addContent('It describes the method to plant a garden with Texas wild flowers.')
+mymimepart~addContent('We will concern ourselves with only wild flowers and not anything else.')
+          /*  .  */
+          /*  .  */
+          /*  .  */
+mymimepart~addContent('I hope you enjoy your garden as much as I have enjoyed mine.')
+</programlisting>
+<para>There are a few points to consider when adding text to a mime part object.
+</para>
+<orderedlist>
+    <listitem>
+        <para>Your text is added just as you specify it. If you want line 
+        separation characters (CR and LF) inserted into the text you will need 
+        to supply them yourself in the argument text.
+        </para>
+	</listitem>
+    <listitem>
+        <para>Any ASCII text can be added to the content.
+        </para>
+    </listitem>
+</orderedlist>
+<para>If you need to add line separator characters you can do it like this.
+</para>
+<programlisting>
+/* this add a CRLF sequence to the end of a line */
+mymimepart~addContent('This is the start of my article.' || .string~cr || .string~nl)
+</programlisting>
+<para>The following is an example of how to add the contents of a text file to a mime object.
+</para>
+<programlisting>
+CRLF = .string~cr || .string~nl
+
+-- read in the text file
+instream = .stream~new('mytextfile.txt')
+instream~open('read')
+lines = instream~arrayin()
+instream~close()
+
+-- create the mime part
+mymimepart = .mimepart~new('text/plain')
+
+-- add the file contents to the mimepart object
+do line over lines
+   mymimepart~addContent(line || CRLF)
+   end
+</programlisting>
+<para>We now have a mimepart populated with the contents of the text file.
+</para>
+<para>So what about binary files? How do we get them added to a mimepart
+object? Actually, it is pretty easy.
+</para>
+<para>In reality, mimepart objects can only contain ASCII data. That means 
+that all binary file types must be encoded in such a way that they are 
+converted to just ASCII text. There are many supported encodings but the
+most popular and best supported type is base64. This encoding converts 
+the binary content into plain ASCII characters. You should note that the
+encoded content will be larger than the original content by about 20%.
+</para>
+<para>So how do you get you binary content encoded into base64 content?
+ooRexx supplies a simple way to do that via the
+<emphasis role="bold">encodeBase64</emphasis> String method. The following
+is an example of how to create a base64 encoded mimepart object.
+</para>
+<programlisting>
+CRLF = .string~cr || .string~nl
+
+-- create the mime part
+mymimepart = .mimepart~new('text/plain')
+mymimepart~encoding('base64')
+
+-- read in the binary file and encode it
+instream = .stream~new('mybinaryfile.bin')
+instrean~open('read')
+do while instream~state() = 'READY'
+   line = instream~charIn(, 72)
+   line = line~encodeBase64()
+   mymimepart~addContent(line || CRLF)
+   end
+instream~close()
+</programlisting>
+<para>One of the things to note with the example above is that we broke the
+binary string into 72 byte chunks, encoded it and then appended it with
+line separators. The line separators were not really necessary but if 
+we ever needed to look at the encoded string it would be formatted in a 
+human readable form. Functions that decode the base64 encoding strings 
+will ignore any blanks, tabs or line separators.
+</para>
+<note><title>Note</title>
+<para>If you do decide to break up the encoded string be sure to break it 
+up into chunks that are evenly divisable by three. If you don't, the 
+encoded string will not be interpreted correctly.
+</para>
+</note>
+</section>
+
+<section><title>The MimeMultiPart Class</title>
+<para>The MimeMulitPart class is similar to the MimePart class but the 
+content of the MimeMultiPart class is one or more MimePart classes. It 
+can hold as many Mimepart classes as you want and they can be any mix of
+plain text or encoded binary mime parts.
+</para>
+<para>Creating a new MimeMultiPart object instance is easy. Here are some
+examles of how it is done in ooRexx.
+</para>
+<programlisting>
+mymimemultipart = .mimemultipart~new()
+     /* or */
+mymimemultipart = .mimemultipart~new('multipart/mixed')
+</programlisting>
+<para>The example above will create a new MimePart object instance and
+give it a Mime Type of <quote>multipart/mixed</quote>.
+This labels the content contained in the MimeMultiPart object as a 
+mixture of multiple mimeparts, both plain text and encoded binary parts.
+<quote>multipart/mixed</quote> is the default type if you do not specify
+the type argument.
+</para>
+<para>Here is an example of how to use the MimeMultiPart class.
+</para>
+<programlisting>
+-- assume that the objects mymimepart1 and mymimepart2 already exist.
+
+-- create the mimemultipart instance
+mymimemultipart = .mimepart~new('text/plain')
+
+-- add the content
+mymimemultipart~addPart(mymimepart1)
+mymimemultipart~addPart(mymimepart2)
+</programlisting>
+<para>That is all there is to creating a MimMultiPart object instance.
+</para>
+<para>The need for a mime type that encapsulates multiple mime parts is so 
+that all the parts can be transmitted without opening a socket 
+connection for each part. This saves a lot of overhead.
+</para>
+</section>
+
+<section><title>The SMTPMsg Class</title>
+<para>This section shows you how to construct an SMTP message for use with 
+any SMTP-based email system. As you will see the class is easy to use 
+and completely based on using the mime type classes discussed previously
+for holding the content of the message to be emailed.
+</para>
+<para>This class does NOT send the message to anyone, that is the function
+of the SMTP Class.
+</para>
+<para>As you will see from the example below, all the methods of this class
+manipulate familiar parts of a standard email message including the 
+message recipient, the subject line, the from line and of course the 
+content of the message.
+</para>
+<programlisting>
+-- assume mymimepart1 instace already exists
+
+-- create and initialize the SMTPMsg instance
+mymsg = .SMTPMsg~new()
+mymsg~addRecipient('mybuddy@gmail.com')
+mymsg~from('me@gmail.com')
+mymsg~subject('Hello from your best buddy')
+
+-- now add the content
+mymsg~content(mymimepart1)
+</programlisting>
+<para>That is all there is to it. But there are points to remember.
+</para>
+<orderedlist>
+    <listitem>
+        <para>You can invoke the <emphasis role="bold">addRecipient</emphasis>
+        mehod as many time as you want. The method will concatenate all the
+        recipients together into a single list.
+        </para>
+    </listitem>
+	<listitem>
+        <para>The <emphasis role="bold">content</emphasis> method 
+        should only be called once. It can only be passed either a single 
+        MimePart instance or a single MimeMultiPart instnce. If you call it more
+        than once then previous content will be replaced. You can see now why 
+        we need the MimeMultiPart class since it is the only way we can send 
+        multiple objects via an email message.
+        </para>
+    </listitem>
+</orderedlist>
+</section>
+
+<section><title>The SMTP Class</title>
+<para>This class is used to send an SMTPMsg instance to an SMTP email 
+server. It assumes that the SMTPMsg instance is fully initialized and 
+ready to send to the server.
+</para>
+<para>While this class is relatively easy to use, it has a number of debug 
+facilities which you can take advantage of if necessary. The following 
+example shows how to use this class.
+</para>
+<programlisting>
+-- assume the SMTPMsg object msg exists at this point and is fully initialized
+
+-- send the mail message
+smtpconx = .smtp~new
+retc = smtpconx~connect('127.0.0.1', 'dashley', 'xx')
+-- the following block is just for debugging the connection
+if retc = -1 then do
+   say smtpconx~cmdresponse~makestring
+   return
+   end
+retc = smtpconx~send(msg)
+-- the following block is just for debugging the message send
+if retc = -1 then do
+   say smtpconx~cmdresponse~makestring
+   return
+   end
+retc = smtpconx~logoff
+</programlisting>
+<para>There are several things that need to be to be noted in the example above.
+</para>
+<orderedlist>
+    <listitem>
+        <para>There are two blocks of code in the example that are there strictly
+        for debugging purposes. They can be eliminated if you wish.
+        </para>
+    </listitem>
+	<listitem>
+        <para>The <emphasis role="bold">cmdresponse</emphasis>
+        method contains a standard ooRexx array of text strings. These represent
+        the strings exchanged between the client and server machines during a 
+        single command/response exchange. Every time a new command is sent the 
+        array is replaced with the contents of the current command/response 
+        exchange.
+        </para>
+    </listitem>
+	<listitem>
+        <para>The arguments to the <emphasis role="bold">connect</emphasis> method
+        are the server URL, the email account on the server to be used, and the
+        password for that account. Refer to the
+        <citetitle>ooRexx RxSock TCP/IP Socket Functions Reference</citetitle>
+        for more information.
+        </para>
+    </listitem>
+</orderedlist>
+</section>
+
+<xi:include href="Legal_Notice.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+</article>
+

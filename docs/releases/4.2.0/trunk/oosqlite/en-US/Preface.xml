@@ -1,0 +1,333 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE preface PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "oosqlite.ent">
+%BOOK_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Description: Open Object Rexx: ooSqlite XML file.
+    #
+    # Copyright (c) 2012-2014 Rexx Language Association. All rights reserved.
+    #
+    # This program and the accompanying materials are made available under
+    # the terms of the Common Public License v1.0 which accompanies this
+    # distribution. A copy is also available at the following address:
+    # http://www.oorexx.org/license.html
+    #
+    # Redistribution and use in source and binary forms, with or
+    # without modification, are permitted provided that the following
+    # conditions are met:
+    #
+    # Redistributions of source code must retain the above copyright
+    # notice, this list of conditions and the following disclaimer.
+    # Redistributions in binary form must reproduce the above copyright
+    # notice, this list of conditions and the following disclaimer in
+    # the documentation and/or other materials provided with the distribution.
+    #
+    # Neither the name of Rexx Language Association nor the names
+    # of its contributors may be used to endorse or promote products
+    # derived from this software without specific prior written permission.
+    #
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    #
+    #########################################################################
+-->
+<preface id="oosqlite-Preface">
+<title>Preface</title>
+
+<para>
+  This book describes the ooSQLite framework, which is implemented as an external library package for ooRexx. External
+  library packages are often called <emphasis role="italic">extensions</emphasis>, or <emphasis role="italic">native
+  extensions</emphasis>. The library package extends the capability of the Rexx interpreter by adding functionality or
+  features not present in the base interpreter.
+</para>
+<para>
+  The ooSQLite library package gives programmers access to the SQLite database engine directly from their Rexx programs.
+  This book describes the Classes, Methods, and Funtions in ooSQLite that allow that access and describes how to use
+  them.
+</para>
+
+
+<xi:include href="Common_Content/Conventions.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+
+<section id="whoshoulduse"><title>Who Should Use This Book</title>
+<para>
+  This book is intended for Open Object Rexx programmers who are using or intend to use ooSQLite in their Rexx
+  programs. The book does not teach SQL nor relational database design or management. It provides a basic introduction
+  to using SQLite through the documentation of the classes and functions available in ooSQLite. In depth documentation
+  of SQLite is provided by the developers of SQLite at their <ulink
+  url="http://www.sqlite.org/index.html">website</ulink>, not in this book.
+</para>
+</section>
+
+<section id="bookstructure"><title>How This Book is Structured</title>
+<para>
+  This book is primarily a reference to the classes and functions in ooSQLite. ooSQLite provides an object-orientated
+  interface and a classic Rexx interface to SQLite. The book is broken into two main sections. The first section
+  describes the object-orientated interface and the second section describes the classic Rexx section. Preceding the
+  object-orientated section are the two chapters, <emphasis role="italic">About This Book</emphasis> and <emphasis
+  role="italic">Brief Overview</emphasis>. They contain a small amount of overall information. A detailed index follows
+  the classic Rexx section.
+</para>
+<para>
+  The object-orientated section contains a reference for each class in ooSQLite. Each class reference contains a single
+  section for every class, instance, and attribute method of the class. The first section in a class reference is a
+  table listing every method with a brief description and a link to the detailed documentation for the method.
+</para>
+<para>
+  Each method section starts with a <link linkend="syndia">syntax</link> diagram as a synopsis of how to invoke the
+  method. Text follows describing the method, listing each argument to the method, and the return from the method. Most
+  method sections have a <emphasis role="italic">remarks</emphasis> component discussing the method in more detail. Most
+  method sections also have a <emphasis role="italic">details</emphasis> component pointing to the SQLite documentation
+  that is most relevant to the method. To fully understand the use of any single method, the reader should also consult
+  the SQLite documentation relevant to that method. Finally, many, but not all, of the method sections end with a short
+  code snippet as an example of using the method.
+</para>
+<para>
+  The classic Rexx section starts with a table that lists every function available for the classic Rexx programmer. This
+  table is similar to the method table that begins each class reference. The table contains a brief description of the
+  function and a link to the detailed documentation for the function. Each function is fully documented in a single
+  section.
+</para>
+<para>
+  The reference for each single function is very similar to the reference to each single method. It starts with a syntax
+  diagram, describes the function, lists the arguments and return. It usually has a remarks component. The details
+  component points the way to the authoritative SQLite documentation. Some, but not all function references contain an
+  example.
+</para>
+<para>
+  Each method and function reference is meant to be stand alone. All the details to use any method or function are
+  included within the section for that method or function. Each method and function is listed in the index. The reader
+  can look up any function or method in the index or the table of contents and go straight to the reference for the
+  function or method.
+</para>
+<para>
+  Within the reference for a single class, each method appears in alphabetical order. Likewise the reference for each
+  function appears in this reference manual in alphabetical order.
+</para>
+</section>
+
+<section id="relinf"><title>Related Information</title>
+<para>See also:
+<citetitle pubwork="book">Open Object Rexx: Reference</citetitle></para>
+<para>
+  There is a wealth of information on SQLite and how to use SQLite on the Web. This information is directly applicable
+  to using ooSQLite. The SQLite <ulink url="http://www.sqlite.org/index.html">home</ulink> page is the authoritative
+  answer to any SQLite question. In addition there is a SQLiter users mailing <ulink
+  url="http://sqlite.org:8080/cgi-bin/mailman/listinfo/sqlite-users">list</ulink> that can be subscribed to.
+</para>
+</section>
+
+<section id="syndia"><title>How to Read the Syntax Diagrams</title>
+<para>
+  Throughout this book, syntax is described using the structure defined below. This is similar to, but slightly
+  different than, the IBM syntax diagrams used in other ooRexx reference documentation.  The author is calling these
+  diagrams <emphasis role="italic">simplified railroad tracks</emphasis>. It primarily strives to limit all diagrams to
+  2 lines, and does away with much of the complexity of true IBM railroad tracks. The body of text following the
+  syntax diagrams will resolve any ambiguities in the diagram.
+</para>
+<itemizedlist>
+<listitem>
+<para>
+  Read the syntax diagrams from left to right, from top to bottom, following the path of the line.
+</para>
+<para>
+  The <computeroutput>&gt;&gt;---</computeroutput> symbol indicates the beginning of a statement.
+</para>
+<para>
+  The <computeroutput>---&gt;</computeroutput> symbol indicates that the statement syntax is continued on the next
+  line. In most cases statement continuation is avoided.
+</para>
+<para>
+  The <computeroutput>&gt;---</computeroutput> symbol indicates that a statement is continued from the previous line.
+</para>
+<para>
+  The <computeroutput>---&gt;&lt;</computeroutput> symbol indicates the end of a statement.
+</para>
+<para>
+  Diagrams of syntactical units other than complete statements start with the <computeroutput>&gt;---</computeroutput>
+  symbol and end with the  <computeroutput>---&gt;</computeroutput> symbol.
+</para></listitem>
+<listitem>
+<para>
+  Required items appear on the horizontal line (the main path).
+
+<programlisting>
+<![CDATA[
+>>-STATEMENT--required_item------------------------------------><
+
+
+]]>
+</programlisting>
+</para></listitem>
+<listitem>
+<para>
+  Optional items appear below the main path.
+
+<programlisting>
+<![CDATA[
+>>-STATEMENT--+---------------+--------------------------------><
+              +-optional_item-+
+
+
+]]>
+</programlisting>
+</para></listitem></itemizedlist>
+<para>
+  In this reference, the syntax being presented is the syntax for method invocations and function calls. The diagrams
+  show the method, or function, names and their arguments.  For method invocations, the section the method is included
+  in, and / or the text itself, make it clear as to which class the method belongs to.  The arguments to the method or
+  function are enclosed in parenthesis and separated by commas.  The arguments are represented by appropriate variable
+  names and these variable names are then described in the text for the method.  When arguments are optional, the
+  default value and or behavior if the argument is omitted is also described in the text.  In all cases, the text rather
+  than the syntax diagram should be considered definitive.
+</para>
+<para>
+  The following example shows the described syntax:
+</para>
+<programlisting>
+<![CDATA[
+
+>>--rollbackHook(--callBackObj--+------------+--+-------------+--)-------------><
+                                +-,-mthName--+  +-,-userData--+
+
+
+]]>
+</programlisting>
+</section>
+
+<section id="helpGettingHelp"><title>Getting Help and Submitting Feedback</title>
+<para>The Open Object Rexx Project has a number of methods to obtain help and submit feedback for ooRexx and the
+extension packages that are part of ooRexx. These methods, in no particular order of preference, are listed
+below.</para>
+
+<section><title>The Open Object Rexx SourceForge Site</title>
+<para>The <ulink url="http://www.oorexx.org/">Open Object Rexx Project</ulink> utilizes
+<ulink url="http://sourceforge.net/"><citetitle>SourceForge</citetitle></ulink>
+to house the
+<ulink url="http://sourceforge.net/projects/oorexx"><citetitle>ooRexx Project</citetitle></ulink>
+source repositories, mailing lists and other
+project features. Over time it has become apparent that the Developer and User mailing lists are better tools for
+carrying on discussions concerning ooRexx and that the Forums provided by SourceForge are cumbersome to use. The ooRexx
+user is most likely to get timely replies from one of the mailing lists.
+</para>
+<para>
+  Here is a list of some of the most useful facilities provided by SourceForge.
+</para>
+<variablelist>
+<varlistentry id="helpDevelList"><term>The Developer Mailing List</term>
+<listitem><para>You can subscribe to the oorexx-devel mailing list at
+<ulink url="http://sourceforge.net/mail/?group_id=119701">
+<citetitle>ooRexx Mailing List Subscriptions</citetitle></ulink> page.
+This list is for discussing ooRexx project development activities and future
+interpreter enhancements.  It also supports a historical archive of past
+messages.
+</para></listitem>
+</varlistentry>
+<varlistentry id="helpUsersList"><term>The Users Mailing List</term>
+<listitem><para>You can subscribe to the oorexx-users mailing list at
+<ulink url="http://sourceforge.net/mail/?group_id=119701">
+<citetitle>ooRexx Mailing List Subscriptions</citetitle></ulink> page.
+This list is for discussing using ooRexx.
+It also supports a historical archive of past messages.</para></listitem>
+</varlistentry>
+<varlistentry><term>The Announcements Mailing List</term>
+<listitem><para>You can subscribe to the oorexx-announce mailing list at
+<ulink url="http://sourceforge.net/mail/?group_id=119701">
+<citetitle>ooRexx Mailing List Subscriptions</citetitle></ulink> page.
+This list is only used to
+announce significant ooRexx project events.</para></listitem>
+</varlistentry>
+<varlistentry><term>The Bug Mailing List</term>
+<listitem><para>You can subscribe to the oorexx-bugs mailing list at
+<ulink url="http://sourceforge.net/mail/?group_id=119701">
+<citetitle>ooRexx Mailing List Subscriptions</citetitle></ulink> page.
+This list is only used for
+monitoring changes to the ooRexx bug tracking system.</para></listitem>
+</varlistentry>
+<varlistentry><term>Bug Reports</term>
+<listitem><para>You can create a bug report at
+<ulink url="http://sourceforge.net/tracker/?group_id=119701&amp;atid=684730">
+<citetitle>ooRexx Bug Report</citetitle></ulink> page.
+Please try to provide as much information in the bug report
+as possible so that the developers can determine the problem as quickly as
+possible.  Sample programs that can reproduce your problem will make it easier to
+debug reported problems.
+</para></listitem>
+</varlistentry>
+<varlistentry><term>Documentation Feedback</term>
+<listitem><para>You can submit feedback for, or report errors in, the documentation at
+<ulink url="http://sourceforge.net/tracker/?group_id=119701&amp;atid=1001880">
+<citetitle>ooRexx Documentation Report</citetitle></ulink> page.
+Please try to provide as much information in a documentation report as possible. In addition
+to listing the document and section the report concerns, direct quotes of the text will help the
+developers locate the text in the source code for the document. (Section numbers are generated
+when the document is produced and are not available in the source code itself.) Suggestions as
+to how to reword or fix the existing text should also be included.
+</para></listitem>
+</varlistentry>
+<varlistentry><term>Request For Enhancement</term>
+<listitem><para>You can suggest ooRexx features at the
+<ulink url="http://sourceforge.net/tracker/?group_id=119701&amp;atid=684733">
+<citetitle>ooRexx Feature Requests</citetitle></ulink> page.
+</para></listitem>
+</varlistentry>
+<varlistentry><term>Patch Reports</term>
+<listitem><para>If you create an enhancement patch for ooRexx please
+post the patch using the
+<ulink url="http://sourceforge.net/tracker/?group_id=119701&amp;atid=684732">
+<citetitle>ooRexx Patch Report</citetitle></ulink> page.
+Please provide as much information in the patch report
+as possible so that the developers can evaluate the enhancement
+as quickly as possible.</para>
+<para>Please do not post bug fix patches here, instead you should open a bug report
+and attach the patch to it.</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>The ooRexx Forums</term>
+<listitem><para>The ooRexx project maintains a set of forums that anyone
+may contribute to or monitor. They are located on the
+<ulink url="http://sourceforge.net/forum/?group_id=119701">
+<citetitle>ooRexx Forums</citetitle></ulink> page.
+There are currently three forums available: Help, Developers and Open
+Discussion. In addition, you can monitor the forums via email.
+</para></listitem>
+</varlistentry>
+</variablelist>
+</section>
+
+<section><title>The Rexx Language Association Mailing List</title>
+<para>The <ulink url="http://www.rexxla.org/"><citetitle>Rexx Language Association</citetitle></ulink>
+maintains a mailing list for its members.
+This mailing list is only available to RexxLA members thus you will need to
+join RexxLA in order to get on the list. The dues for RexxLA membership are
+small and are charged on a yearly basis. For details on joining RexxLA please
+refer to the
+<ulink url="http://rexxla.org/"><citetitle>RexxLA Home Page</citetitle></ulink>
+or the
+<ulink url="http://www.rexxla.org/rexxla/join.html">
+<citetitle>RexxLA Membership Application</citetitle></ulink> page.</para>
+</section>
+
+<section><title>comp.lang.rexx Newsgroup</title>
+<para>The <ulink url="http://groups.google.com/group/comp.lang.rexx/topics?hl=en">comp.lang.rexx</ulink> newsgroup
+is a good place to obtain help from many
+individuals within the Rexx community. You can obtain help on Open Object
+Rexx or on any number of other Rexx interpreters and tools.</para>
+</section>
+
+</section>
+
+</preface>
+
