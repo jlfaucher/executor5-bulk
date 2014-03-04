@@ -99,6 +99,12 @@ RexxMethod3(int,                       // Return type
 {
     int socketfd, zero = 0;
 
+#ifdef WIN32
+    WORD wVersionRequested;
+    WSADATA wsaData;
+    wVersionRequested = MAKEWORD( 1, 1 );
+    int rc = WSAStartup( wVersionRequested, &wsaData );
+#endif
     // perform function and return
     socketfd = socket(domain, type, protocol);
 #if defined(WIN32)
@@ -113,10 +119,12 @@ RexxMethod3(int,                       // Return type
 /* Method: accept                                                             */
 /* Description: accept a connection                                           */
 /* Arguments:                                                                 */
+/*         inetaddr - Inetaddr instance uninitialized (optional)              */
 /*----------------------------------------------------------------------------*/
 
-RexxMethod0(RexxObjectPtr,             // Return type
-            orxAccept6)                // Object_method name
+RexxMethod1(RexxObjectPtr,             // Return type
+            orxAccept6,                // Object_method name
+            OPTIONAL_RexxObjectPtr, inetaddr) // INetaddr instance
 {
     RexxObjectPtr rxsockfd, newrxsockfd;
     RexxClassObject classinst;
@@ -126,6 +134,7 @@ RexxMethod0(RexxObjectPtr,             // Return type
     struct sockaddr_in6 * myaddr6 = (struct sockaddr_in6 *)&myaddr;
     socklen_t len = sizeof(struct sockaddr_storage);
     int retc;
+    char str[INET6_ADDRSTRLEN];
 
     // get the socket file descriptor
     rxsockfd = context->GetObjectVariable("socketfd");
@@ -136,6 +145,35 @@ RexxMethod0(RexxObjectPtr,             // Return type
     if (retc == -1)
     {
         return context->Int32(retc);
+    }
+    if (inetaddr != NULLOBJECT)
+    {
+        if (!context->IsOfType(inetaddr, "InetAddress"))
+        {
+            RexxArrayObject arrobj;
+            const char *msg = "Argument 1 must be of type .InetAddress.";
+            context->ArrayAppendString(arrobj, msg, strlen(msg));
+            context->RaiseException(88900, arrobj);
+            return context->String("-1");
+        }
+        // fill out the caller's inetaddress
+        if (myaddr.ss_family == AF_INET)
+        {
+            context->SendMessage1(inetaddr, "family=",
+                                  context->UnsignedInt64((uint64_t)myaddr4->sin_family));
+            context->SendMessage1(inetaddr, "port=",
+                                  context->UnsignedInt64((uint64_t)myaddr4->sin_port));
+            inet_ntop(AF_INET, myaddr4, str, INET6_ADDRSTRLEN);
+        }
+        else
+        {
+            context->SendMessage1(inetaddr, "family=",
+                                  context->UnsignedInt64((uint64_t)myaddr6->sin6_family));
+            context->SendMessage1(inetaddr, "port=",
+                                  context->UnsignedInt64((uint64_t)myaddr6->sin6_port));
+            inet_ntop(AF_INET6, myaddr4, str, INET6_ADDRSTRLEN);
+        }
+        context->SendMessage1(inetaddr, "address=", context->String(str));
     }
     classinst = context->FindClass("Socket");
     newrxsockfd = context->SendMessage1(classinst, "new", context->Int32(retc));
@@ -219,7 +257,11 @@ RexxMethod0(int,                       // Return type
     context->Int32(rxsockfd, &socketfd);
     // perform function and return
     retc = shutdown(socketfd, 2);
+#if defined(WIN32)
+    retc = closesocket(sock);
+#else
     retc = close(socketfd);
+#endif
     return retc;
 }
 

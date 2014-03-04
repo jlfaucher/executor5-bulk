@@ -246,6 +246,7 @@ return
 /* Method: accept                                                             */
 /* Description: accept a connection                                           */
 /* Arguments:                                                                 */
+/*         inetaddr - Inetaddr instance uninitialized (optional)              */
 /*----------------------------------------------------------------------------*/
 
 ::method accept unguarded external "LIBRARY orxsock6 orxAccept6"
@@ -274,6 +275,60 @@ return
 /*----------------------------------------------------------------------------*/
 
 ::method connect external "LIBRARY orxsock6 orxConnect6"
+
+/*----------------------------------------------------------------------------*/
+/* Method: convert_protocol_family                                            */
+/* Description: convert a number to a protocol family.                        */
+/* Arguments:                                                                 */
+/*         fam - protocol number                                              */
+/*----------------------------------------------------------------------------*/
+
+::method convert_protocol_family class
+use strict arg fam
+if fam~datatype('W') <> 1 then return fam
+select
+   when fam = 0 then return 'PF_UNSPEC'
+   when fam = 1 then return 'PF_LOCAL'
+   when fam = 2 then return 'PF_INET'
+   when fam = 3 then return 'PF_AX25'
+   when fam = 4 then return 'PF_IPX'
+   when fam = 5 then return 'PF_APPLETALK'
+   when fam = 6 then return 'PF_NETROM'
+   when fam = 7 then return 'PF_BRIDGE'
+   when fam = 8 then return 'PF_ATMPVC'
+   when fam = 9 then return 'PF_X25'
+   when fam = 10 then return 'PF_INET6'
+   when fam = 11 then return 'PF_ROSE'
+   when fam = 12 then return 'PF_DECnet'
+   when fam = 13 then return 'PF_NETBEUI'
+   when fam = 14 then return 'PF_SECURITY'
+   when fam = 15 then return 'PF_KEY'
+   when fam = 16 then return 'PF_NETLINK'
+   when fam = 17 then return 'PF_PACKET'
+   when fam = 18 then return 'PF_ASH'
+   when fam = 19 then return 'PF_ECONET'
+   when fam = 20 then return 'PF_ATMSVC'
+   when fam = 21 then return 'PF_RDS'
+   when fam = 22 then return 'PF_SNA'
+   when fam = 23 then return 'PF_IRDA'
+   when fam = 24 then return 'PF_PPPOX'
+   when fam = 25 then return 'PF_WANPIPE'
+   when fam = 26 then return 'PF_LLC'
+   when fam = 27 then return 'PF_CAN'
+   when fam = 30 then return 'PF_TIPC'
+   when fam = 31 then return 'PF_BLUETOOTH'
+   when fam = 32 then return 'PF_IUCV'
+   when fam = 33 then return 'PF_RXRPC'
+   when fam = 34 then return 'PF_ISDN'
+   when fam = 35 then return 'PF_PHONET'
+   when fam = 36 then return 'PF_IEEE802154'
+   when fam = 37 then return 'PF_CAIF'
+   when fam = 38 then return 'PF_ALG'
+   when fam = 39 then return 'PF_NFC'
+   when fam = 40 then return 'PF_VSOCK'
+   otherwise nop
+   end
+return fam
 
 /*----------------------------------------------------------------------------*/
 /* Method: errno                                                              */
@@ -572,6 +627,25 @@ return err
 
 ::method setsockopt external "LIBRARY orxsock6 orxSetSockOpt6"
 
+/*----------------------------------------------------------------------------*/
+/* Method: string                                                             */
+/* Description: returns a string representing the socket.                     */
+/*----------------------------------------------------------------------------*/
+
+::method string
+expose socketfd
+return socketfd
+
+/*----------------------------------------------------------------------------*/
+/* Method: uninit                                                             */
+/* Description: close the socket.                                             */
+/*----------------------------------------------------------------------------*/
+
+::method uninit
+expose socketfd
+if socketfd <> -1 then retc = self~close()
+return
+
 
 /*----------------------------------------------------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -677,6 +751,61 @@ use strict arg ptr
 addr = .InetAddress~new(.InetAddress~AF_INET, 0, .InetAddress~INADDR_ANY)
 call orxAddrFromStruct6 ptr, addr
 return addr
+
+/*----------------------------------------------------------------------------*/
+/* Method: convert_address_family                                             */
+/* Description: convert a number to an address family.                        */
+/* Arguments:                                                                 */
+/*         fam - family number                                                */
+/*----------------------------------------------------------------------------*/
+
+::method convert_address_family class
+use strict arg fam
+if fam~datatype('W') <> 1 then return fam
+select
+   when fam = 0 then return 'AF_UNSPEC'
+   when fam = 1 then return 'AF_LOCAL'
+   when fam = 2 then return 'AF_INET'
+   when fam = 3 then return 'AF_AX25'
+   when fam = 4 then return 'AF_IPX'
+   when fam = 5 then return 'AF_APPLETALK'
+   when fam = 6 then return 'AF_NETROM'
+   when fam = 7 then return 'AF_BRIDGE'
+   when fam = 8 then return 'AF_ATMPVC'
+   when fam = 9 then return 'AF_X25'
+   when fam = 10 then return 'AF_INET6'
+   when fam = 11 then return 'AF_ROSE'
+   when fam = 12 then return 'AF_DECnet'
+   when fam = 13 then return 'AF_NETBEUI'
+   when fam = 14 then return 'AF_SECURITY'
+   when fam = 15 then return 'AF_KEY'
+   when fam = 16 then return 'AF_NETLINK'
+   when fam = 17 then return 'AF_PACKET'
+   when fam = 18 then return 'AF_ASH'
+   when fam = 19 then return 'AF_ECONET'
+   when fam = 20 then return 'AF_ATMSVC'
+   when fam = 21 then return 'AF_RDS'
+   when fam = 22 then return 'AF_SNA'
+   when fam = 23 then return 'AF_IRDA'
+   when fam = 24 then return 'AF_PPPOX'
+   when fam = 25 then return 'AF_WANPIPE'
+   when fam = 26 then return 'AF_LLC'
+   when fam = 27 then return 'AF_CAN'
+   when fam = 30 then return 'AF_TIPC'
+   when fam = 31 then return 'AF_BLUETOOTH'
+   when fam = 32 then return 'AF_IUCV'
+   when fam = 33 then return 'AF_RXRPC'
+   when fam = 34 then return 'AF_ISDN'
+   when fam = 35 then return 'AF_PHONET'
+   when fam = 36 then return 'AF_IEEE802154'
+   when fam = 37 then return 'AF_CAIF'
+   when fam = 38 then return 'AF_ALG'
+   when fam = 39 then return 'AF_NFC'
+   when fam = 40 then return 'AF_VSOCK'
+   otherwise nop
+   end
+return fam
+
 
 
 /*----------------------------------------------------------------------------*/
