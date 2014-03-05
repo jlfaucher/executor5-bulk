@@ -491,7 +491,7 @@ RexxMethod0(RexxObjectPtr,             // Return type
     char host[HOST_NAME_MAX + 1];
 
     // perform function and return
-    gethostname(host, sizeof(HOST_NAME_MAX + 1));
+    int retc = gethostname(host, sizeof(host));
     return context->String(host);
 }
 

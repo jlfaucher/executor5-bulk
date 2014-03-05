@@ -136,6 +136,16 @@ do while \stop
    say '   Address:' addr~address
    say '   Port   :' addr~port
    say '   Family :' .INetAddress~convert_address_family(addr~family)
+   retc = cs~getSockName(addr)
+   say 'Local socket address infornation:'
+   say '   Address:' addr~address
+   say '   Port   :' addr~port
+   say '   Family :' .INetAddress~convert_address_family(addr~family)
+   retc = cs~getPeerName(addr)
+   say 'Client address infornation:'
+   say '   Address:' addr~address
+   say '   Port   :' addr~port
+   say '   Family :' .INetAddress~convert_address_family(addr~family)
    -- receive the command from the client
    cmd = cs~recv(4096)
    if retc = -1 then do
