@@ -666,7 +666,7 @@ RexxMethod1(RexxObjectPtr,             // Return type
 {
     RexxObjectPtr rxsockfd;
     int socketfd, sockval_int, retc;
-    char * sockval_str;
+    char sockval_str[512];
     socklen_t len;
 
     // get the socket file descriptor
@@ -698,7 +698,6 @@ RexxMethod1(RexxObjectPtr,             // Return type
         case SO_SECURITY_AUTHENTICATION:
         case SO_SECURITY_ENCRYPTION_TRANSPORT:
         case SO_SECURITY_ENCRYPTION_NETWORK:
-        case SO_BINDTODEVICE:
         case SO_ATTACH_FILTER:
         case SO_DETACH_FILTER:
         case SO_TIMESTAMP:
@@ -718,7 +717,6 @@ RexxMethod1(RexxObjectPtr,             // Return type
         case SO_SELECT_ERR_QUEUE:
         case SO_BUSY_POLL:
         case SO_PASSCRED:
-        case SO_PEERCRED:
         {
             // boolean/int options
             len = (int) sizeof(int);
@@ -743,7 +741,14 @@ RexxMethod1(RexxObjectPtr,             // Return type
             }
             return context->Int64((int64_t)retc);
         }
+        case SO_BINDTODEVICE:
+        {
+            len = sizeof(sockval_str);
+            retc = getsockopt(socketfd, SOL_SOCKET, option, &sockval_str, &len);
+            return context->String(sockval_str, len);
+        }
         case SO_PEERNAME:    // there is a better way to do this
+        case SO_PEERCRED:    // we do not support credentials
         default:
             return context->Int64(-1);
     }
@@ -1131,7 +1136,6 @@ RexxMethod2(int,                       // Return type
         case SO_SECURITY_AUTHENTICATION:
         case SO_SECURITY_ENCRYPTION_TRANSPORT:
         case SO_SECURITY_ENCRYPTION_NETWORK:
-        case SO_BINDTODEVICE:
         case SO_ATTACH_FILTER:
         case SO_DETACH_FILTER:
         case SO_TIMESTAMP:
@@ -1150,8 +1154,7 @@ RexxMethod2(int,                       // Return type
         case SO_LOCK_FILTER:
         case SO_SELECT_ERR_QUEUE:
         case SO_BUSY_POLL:
-        case SO_PASSCRED:
-        case SO_PEERCRED:
+        case SO_PASSCRED:     
         {
             // boolean/int options
             context->Int32(val, &sockval_int);
@@ -1168,7 +1171,14 @@ RexxMethod2(int,                       // Return type
             len = sizeof(so_linger);
             return setsockopt(socketfd, SOL_SOCKET, option, &so_linger, len);
         }
+        case SO_BINDTODEVICE:
+        {
+            CSTRING strval = context->CString(val);
+            len = strlen(strval);
+            return setsockopt(socketfd, SOL_SOCKET, option, strval, len);
+        }
         case SO_PEERNAME:    // there is a better way to do this
+        case SO_PEERCRED:    // we do not support credentials
         default:
             return -1;
     }

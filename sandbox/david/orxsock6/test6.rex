@@ -122,7 +122,8 @@ reply
 stop = .false
 do while \stop
    -- accept a client connection socket
-   cs = s~accept()
+   addr = .InetAddress~new()
+   cs = s~accept(addr)
    if retc = -1 then do
       say 'Could not listen on the work server socket.'
       return
@@ -131,6 +132,10 @@ do while \stop
       say 'Accepted entity is not a socket.'
       return
       end
+   say 'Client address infornation:'
+   say '   Address:' addr~address
+   say '   Port   :' addr~port
+   say '   Family :' .INetAddress~convert_address_family(addr~family)
    -- receive the command from the client
    cmd = cs~recv(4096)
    if retc = -1 then do

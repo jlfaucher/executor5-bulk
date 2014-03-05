@@ -736,14 +736,17 @@ return
 
 ::method init
 expose address port family
-use strict arg address, port, family
+if arg() = 3 then do
+   use strict arg address, port, family
+   end
+else use strict arg
 return
 
 /*----------------------------------------------------------------------------*/
 /* Method: fromstruct                                                         */
 /* Description: return InetAddress from the supplied pointer                  */
 /* Arguments:                                                                 */
-/*         prt - pointer to a sockaddr struct                                 */
+/*         ptr - pointer to a sockaddr struct                                 */
 /*----------------------------------------------------------------------------*/
 
 ::method fromstruct
