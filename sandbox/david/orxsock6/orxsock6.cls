@@ -203,6 +203,8 @@
 /*----------------------------------------------------------------------------*/
 
 ::attribute socketfd                   -- socket file descriptor
+::attribute retc                       -- last socket API return code
+::attribute errno                      -- last socket API errno
 
 /*----------------------------------------------------------------------------*/
 /* Methods                                                                    */
@@ -329,14 +331,6 @@ select
    otherwise nop
    end
 return fam
-
-/*----------------------------------------------------------------------------*/
-/* Method: errno                                                              */
-/* Description: get the errno value.                                          */
-/* Arguments:                                                                 */
-/*----------------------------------------------------------------------------*/
-
-::method errno external "LIBRARY orxsock6 orxGetErrno6"
 
 /*----------------------------------------------------------------------------*/
 /* Method: convert_err_number                                                 */
