@@ -634,8 +634,12 @@ RexxMethod1(int,                       // Return type
     ent = getprotobyname(protoname);
     if (ent == NULL)
     {
+        context->SetObjectVariable("retc", context->Int32(-1));
+        context->SetObjectVariable("errno", context->Int32(22));
         return -1;
     }
+    context->SetObjectVariable("retc", context->Int32(0));
+    context->SetObjectVariable("errno", context->Int32(0));
     return ent->p_proto;
 }
 
@@ -659,6 +663,8 @@ RexxMethod1(RexxStringObject,          // Return type
     {
         return context->String("-1");
     }
+    context->SetObjectVariable("retc", context->Int32(0));
+    context->SetObjectVariable("errno", context->Int32(0));
     return context->String(ent->p_name);
 }
 
@@ -796,6 +802,15 @@ RexxMethod1(RexxObjectPtr,             // Return type
             // boolean/int options
             len = (int) sizeof(int);
             retc = getsockopt(socketfd, SOL_SOCKET, option, &sockval_int, &len);
+            context->SetObjectVariable("retc", context->Int32(retc));
+            if (retc == -1)
+            {
+                context->SetObjectVariable("errno", context->Int32(sock_errno()));
+            }
+            else
+            {
+                context->SetObjectVariable("errno", context->Int32(0));
+            }
             if (retc = -1)
             {
                 return context->Int64((int64_t)retc);
@@ -807,6 +822,15 @@ RexxMethod1(RexxObjectPtr,             // Return type
             struct linger so_linger;
             len = (int) sizeof(so_linger);
             retc = getsockopt(socketfd, SOL_SOCKET, option, &so_linger, &len);
+            context->SetObjectVariable("retc", context->Int32(retc));
+            if (retc == -1)
+            {
+                context->SetObjectVariable("errno", context->Int32(sock_errno()));
+            }
+            else
+            {
+                context->SetObjectVariable("errno", context->Int32(0));
+            }
             if (retc = 0)
             {
                 RexxClassObject l_class= context->FindClass("Linger");
@@ -820,11 +844,22 @@ RexxMethod1(RexxObjectPtr,             // Return type
         {
             len = sizeof(sockval_str);
             retc = getsockopt(socketfd, SOL_SOCKET, option, &sockval_str, &len);
+            context->SetObjectVariable("retc", context->Int32(retc));
+            if (retc == -1)
+            {
+                context->SetObjectVariable("errno", context->Int32(sock_errno()));
+            }
+            else
+            {
+                context->SetObjectVariable("errno", context->Int32(0));
+            }
             return context->String(sockval_str, len);
         }
         case SO_PEERNAME:    // there is a better way to do this
         case SO_PEERCRED:    // we do not support credentials
         default:
+            context->SetObjectVariable("retc", context->Int32(-1));
+            context->SetObjectVariable("errno", context->Int32(22));
             return context->Int64(-1);
     }
 }
