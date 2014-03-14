@@ -57,5 +57,5 @@ html:
 
 
 clean:
-	rm -f tmp
+	rm -rf tmp
 
