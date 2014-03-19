@@ -306,6 +306,20 @@ Section  installFiles
   ${File} "${SRCDIR}\Dialogs\simple.dialogs\typingTutor\" "typingTutor.h"
   ${File} "${SRCDIR}\Dialogs\simple.dialogs\typingTutor\" "typingTutor.rc"
 
+  ${SetOutPath} "$INSTDIR\Dialogs\useful.dialogs\AskDlg"
+  ${File} "${SRCDIR}\Dialogs\useful.dialogs\AskDlg\" "ask.rex"
+  ${File} "${SRCDIR}\Dialogs\useful.dialogs\AskDlg\" "AskDlg.cls"
+  ${File} "${SRCDIR}\Dialogs\useful.dialogs\AskDlg\" "calcPI"
+  ${File} "${SRCDIR}\Dialogs\useful.dialogs\AskDlg\" "compareTest.rex"
+  ${File} "${SRCDIR}\Dialogs\useful.dialogs\AskDlg\" "doSomeThing"
+  ${File} "${SRCDIR}\Dialogs\useful.dialogs\AskDlg\" "firstTest.rex"
+  ${File} "${SRCDIR}\Dialogs\useful.dialogs\AskDlg\" "testAskDlg.rex"
+
+  ${SetOutPath} "$INSTDIR\Dialogs\useful.dialogs\InfoMessage"
+  ${File} "${SRCDIR}\Dialogs\useful.dialogs\InfoMessage\" "info.rex"
+  ${File} "${SRCDIR}\Dialogs\useful.dialogs\InfoMessage\" "InfoMessage.cls"
+  ${File} "${SRCDIR}\Dialogs\useful.dialogs\InfoMessage\" "testInfoMessage.rex"
+
   ${SetOutPath} "$INSTDIR\Dialogs\useful.dialogs\PickOne"
   ${File} "${SRCDIR}\Dialogs\useful.dialogs\PickOne\" "pickAnInterpreter.rex"
   ${File} "${SRCDIR}\Dialogs\useful.dialogs\PickOne\" "PickOneDlg.cls"

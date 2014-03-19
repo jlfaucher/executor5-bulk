@@ -41,6 +41,17 @@
 ::requires "ooDialog.cls"
 
 /**
+ * Routine PickOne()
+ *
+ * Supplies the .PickOne class as a public routine.
+ */
+::routine PickOne public
+  use strict arg msg, title, radioButtons, selected = 1, minimumWidth = 120, fontName = "MS Shell Dlg 2", fontSize = 8
+
+  return .PickOne~new(msg, title, radioButtons, selected, minimumWidth, fontName, fontSize)~execute
+
+
+/**
  * Class PickOneDlg
  *
  * This class provides the programmer with a self-contained dialog that allows

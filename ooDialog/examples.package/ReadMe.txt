@@ -1,6 +1,6 @@
 
                               Release Notes
-                      Extra ooDialog Samples v0.0.7
+                      Extra ooDialog Samples v0.0.8
                       =============================
 
   The extra ooDialog samples package is meant to provide ooDialog
@@ -34,6 +34,53 @@
   Notes:
   ------
 
+  *  Version 0.0.8 of the package requires ooDialog 4.2.0 or later to run
+  most of the example programs in the package.  Some example programs now
+  require ooDialog 4.2.1.
+
+  *  The release contains around 3 dozen example programs.
+
+  Changes Since v0.0.7:
+  ---------------------
+
+  Examples:
+  ---------
+
+  The standard dialogs shipped with ooDialog are convenience dialogs that
+  make some common tasks easy to perform.  Typically convenience dialog
+  classes and or convenience functions and are not very flexible.  Some
+  examples have been added that demonstrate how to code your own
+  convenience dialogs / functions and write in the flexiblity you might
+  want.
+
+  These convenience dialogs have been added:
+
+  * Dialogs\useful.dialogs\AskDlg\AskDlg.cls
+
+    A replacement for the standard AskDialog class that allows the
+    programmer to specify the font for the dialog
+
+  * Dialogs\useful.dialogs\InfoMessge\InfoMessage.cls
+
+    A replacement for the standard InfoDialog routine that allows the
+    programmer to specify the postion of the dialog and / or the font for
+    the dialog
+
+  The convenience dialogs / routines can be used as is, and provide
+  examples of how to write your own convenience dialogs / routines.  Some
+  simple test programs are included that demonstrate how to use the new
+  classes.
+
+
+                        Cumlative Release Notes:
+                        ========================
+
+                              Release Notes
+                      Extra ooDialog Samples v0.0.7
+                      =============================
+  Notes:
+  ------
+
   *  Version 0.0.7 of the package requires ooDialog 4.2.0 or later to run
   most of the example programs in the package.  Some example programs now
   require ooDialog 4.2.1.  This is in anticipation of an upcoming release
@@ -55,12 +102,8 @@
   * makeDLL.example\
 
 
-
-                        Cumlative Release Notes:
-                        ========================
-
                               Release Notes
-                      Extra ooDialog Samples v0.0.7
+                      Extra ooDialog Samples v0.0.6
                       =============================
   Notes:
   ------
