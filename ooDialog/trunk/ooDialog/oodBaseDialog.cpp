@@ -1778,9 +1778,6 @@ RexxMethod3(RexxObjectPtr, winex_fillRect, POINTERSTRING, _hDC, RexxObjectPtr, _
         goto err_out;
     }
 
-    pRect->right++;
-    pRect->bottom++;
-
     if ( FillRect(hDC, pRect, hBrush) )
     {
         return TheTrueObj;
