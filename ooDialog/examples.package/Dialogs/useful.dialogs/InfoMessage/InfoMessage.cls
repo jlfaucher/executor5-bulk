@@ -300,9 +300,13 @@ return 0
 
   -- Calculate size of the icon.  The static control will be resized to the
   -- actual size of the icon when it is created.  We can get the *pixel* size of
-  -- the icon using the system metrics class.  But, we need the size in dialog
-  -- units.
-  iconSize = .Size~new(.SM~cxIcon, .SM~cyIcon)
+  -- the icon from the system metrics.  But, we need the size in dialog units.
+  SM_CXICON = 11
+  SM_CYICON = 12
+  cx = .DlgUtil~getSystemMetrics(SM_CXICON)
+  cy = .DlgUtil~getSystemMetrics(SM_CYICON)
+
+  iconSize = .Size~new(cx, cy)
   self~pixel2dlgUnit(iconSize)
 
   -- Get the max width of the dialog, use that to determine the max width of our
