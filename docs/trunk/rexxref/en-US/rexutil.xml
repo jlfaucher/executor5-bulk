@@ -4054,8 +4054,7 @@ line = SysTextScreenRead(2, 0, 80)
 </example>
 </section>
 
-<section id="utlSystextscreensize"><title>SysTextScreenSize (Windows
-only)</title>
+<section id="utlSystextscreensize"><title>SysTextScreenSize (Windows only)</title>
 <indexterm><primary>SysTextScreenSize</primary></indexterm>
 <indexterm><primary>rexxutil functions</primary>
 <secondary>SysTextScreenSize</secondary></indexterm>
@@ -4065,8 +4064,11 @@ only)</title>
 ]]>
 </programlisting>
 
-<para>Returns the size of the screen in the format:
-<computeroutput>row col</computeroutput>.</para>
+<para>
+  Returns the size of the console screen buffer, in character rows and columns. The size of the buffer is returned as a
+  string in the format: <computeroutput>row col</computeroutput>. On error, the string: <computeroutput>0 0</computeroutput>
+  is returned.
+</para>
 <indexterm><primary>rexxutil functions</primary>
 <secondary>SysTextScreenSize</secondary>
 <tertiary>example</tertiary></indexterm>
