@@ -1,0 +1,220 @@
+#/*----------------------------------------------------------------------------*/
+#/*                                                                            */
+#/* Copyright (c) 2014-2014 Rexx Language Association. All rights reserved.    */
+#/*                                                                            */
+#/* This program and the accompanying materials are made available under       */
+#/* the terms of the Common Public License v1.0 which accompanies this         */
+#/* distribution. A copy is also available at the following address:           */
+#/* http://www.oorexx.org/license.html                                         */
+#/*                                                                            */
+#/* Redistribution and use in source and binary forms, with or                 */
+#/* without modification, are permitted provided that the following            */
+#/* conditions are met:                                                        */
+#/*                                                                            */
+#/* Redistributions of source code must retain the above copyright             */
+#/* notice, this list of conditions and the following disclaimer.              */
+#/* Redistributions in binary form must reproduce the above copyright          */
+#/* notice, this list of conditions and the following disclaimer in            */
+#/* the documentation and/or other materials provided with the distribution.   */
+#/*                                                                            */
+#/* Neither the name of Rexx Language Association nor the names                */
+#/* of its contributors may be used to endorse or promote products             */
+#/* derived from this software without specific prior written permission.      */
+#/*                                                                            */
+#/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+#/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+#/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+#/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+#/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+#/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+#/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+#/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+#/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+#/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+#/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+#/*                                                                            */
+#/*----------------------------------------------------------------------------*/
+
+
+# This is a Visual C++, nMake compatible make file for ooConsole.
+#
+# The compiler needs to be able to find the ooRexx native API headers and
+# libraries. If REXX_HOME is set on the system, the correct directory will be
+# automatically added to the LIB and INCLUDE environment variables by this make
+# file.
+#
+# Otherwise, either uncomment the REXX_HOME line and define the correct
+# REXX_HOME, or be sure the LIB and INCLUDE environment variables allow the
+# compiler to find  the ooRexx native API headers and libraries.
+#
+# On a build system for ooRexx, you can set REXX_HOME to point to Win32Dbg or
+# Win32Rel, as appropriate, in your build directory.  For this to work, you
+# will have to have built the interpreter.
+#
+# A command line svn is needed to automatically get the correct svn revision
+# into the compiled binary.  If a command line svn is not available, the build
+# will work, but the svn revision will be 0.  If you are building yourself, you
+# can build one time, will which generate a file: src\ooConsole.ver.incl.  You
+# can then edit this file manually to set the svn revision number.  Edit:
+#
+#   OOCONSOLE_VER_STR="0.0.1.0"
+#   SVN_REVSION=0
+#
+# to, for example:
+#
+#   OOCONSOLE_VER_STR="0.0.1.8524"
+#   SVN_REVSION=8524
+#
+# A working Rexx and zip.exe is needed on the system to build the distribution
+# file.  (The target is 'dist')
+#
+# Unncomment the next line and define the correct REXX_HOME, if needed:
+
+#REXX_HOME = C:\work.ooRexx\wc\main\Win32Dbg   # For example
+
+# Define DEBUG on the command line, or here, to build a debug version.  By
+# default non-debug (release) versions are built.
+# I.e. nMake DEBUG=1 /F Makefile.win
+#DEBUG = 1
+
+
+!IF DEFINED(REXX_HOME)
+INCLUDE = $(INCLUDE);$(REXX_HOME)\api
+LIB = $(LIB);$(REXX_HOME)\api
+!ENDIF
+
+REXX_LIBS = rexx.lib rexxapi.lib
+WIN_LIBS  = user32.lib
+
+# Generate and include the version information.  Quit if there is an error.
+!IF [src\platform\windows\generateVersionFile.bat] != 0
+!  ERROR Build error: could not gerate version file, ooConsole.ver.incl
+!ENDIF
+
+!include "src\ooConsole.ver.incl"
+
+# Generate the compiler information.  Quit if there is an  error.
+!IF [install\platform\windows\determineCompiler.bat] != 0
+!  ERROR Build error: could not generate compiler informatin.
+!ENDIF
+
+!include install\platform\windows\compiler.info.incl
+
+PLATFORM_DIR = src\platform\windows
+
+# Currently in determineCompiler.bat MSVCVER gets set to 10.0 for VC++ 2010,
+# and any later compiler.  So this works okay.  If the batch file gets changed,
+# then this needs to be revisited.
+!IF "$(MSVCVER)" == "10.0"
+MISCDEFS = /DHAVE_STDINT_H
+!ENDIF
+
+# Stuff we pass to the nsis script
+ROOTDIR = $(MAKEDIR)
+SRCDIR = $(ROOTDIR)\src
+EXAMPLEDIR = $(ROOTDIR)\examples
+LONGVER = $(OOCONSOLE_MAJOR).$(OOCONSOLE_MINOR).$(OOCONSOLE_MOD_LVL).$(OOCONSOLE_BLD_LVL)
+SHORTVER = $(OOCONSOLE_MAJOR).$(OOCONSOLE_MINOR).$(OOCONSOLE_MOD_LVL)
+
+!if "$(CPU)" == "X64"
+NSISCPU = x86_64
+!else
+NSISCPU = x86_32
+!endif
+
+
+#
+# Use the same complier / link command as when building other external packages,
+# such as ooDialog:
+#
+
+
+WARNINGFLAGS = /W3 /D_CRT_SECURE_NO_DEPRECATE /D_CRT_NONSTDC_NO_DEPRECATE
+VERDEFS = /DOOCONSOLE_VER_MAJOR=$(OOCONSOLE_MAJOR) /DOOCONSOLE_VER_MINOR=$(OOCONSOLE_MINOR) /DOOCONSOLE_VER_LEVEL=$(OOCONSOLE_MOD_LVL) /DOOCONSOLE_VER_BUILD=$(OOCONSOLE_BLD_LVL) /DOOCONSOLE_VER_STRING=\"$(OOCONSOLE_VER_STR)\" /DOOCONSOLE_COPYRIGHT_YEAR=\"$(OOCONSOLE_COPY_YEAR)\"
+EXTRAINCLUDE = /I $(PLATFORM_DIR)
+
+BASEFLAGS = $(WARNINGFLAGS) $(VERDEFS) $(EXTRAINCLUDE)
+
+EXTRADBG = /DOOCONSOLEDBG=0
+
+# The linker flag /OPT:REF removes unreferenced functions and data.  In order for
+# /OPT:REF to work, the code must be compiled with /Gy.  /Gy is automatically turned
+# on with /Zi.  /OPT:REF is the default unless /DEBUG is specified.
+!IF DEFINED(DEBUG)
+
+OUT_DIR = build\debug
+BIN_DIR = bin.dbg\windows
+EXAMPLE_BUILD = DEBUG=1
+DBGPACKAGE = -debug
+
+MISCDEFS = $(MISCDEFS) /D:_X86_ /DWIN32 /DNULL=0 $(EXTRADBG)
+CFLAGS =  /nologo /EHsc /Zi /Od /MTd /D_DEBUG /DEBUGTYPE:CV /Fd$(OUT_DIR)\ooConsoleDbg.pdb $(BASEFLAGS) $(MISCDEFS) /c
+LFLAGS_EXE = /nologo /DEBUG /OPT:REF -debugtype:cv /SUBSYSTEM:Console $(REXX_LIBS) $(WIN_LIBS)
+LFLAGS_DLL = /nologo /DEBUG /OPT:REF -debugtype:cv /SUBSYSTEM:Windows $(REXX_LIBS) $(WIN_LIBS) -def:$(PLATFORM_DIR)\ooConsole.def /DLL
+
+!ELSE
+
+OUT_DIR = build\release
+BIN_DIR = bin\windows
+
+MISCDEFS = $(MISCDEFS) /D:_X86_ /DWIN32 /DNDEBUG /DNULL=0
+CFLAGS = /nologo /EHsc /O2 /Gs /Gy /FAs /Fa$(OUT_DIR)\ /MT $(BASEFLAGS) $(MISCDEFS) /c
+
+LFLAGS_EXE = /nologo /SUBSYSTEM:Console $(REXX_LIBS) $(WIN_LIBS)
+LFLAGS_DLL = /nologo /SUBSYSTEM:Windows $(REXX_LIBS) $(WIN_LIBS) -def:$(PLATFORM_DIR)\ooConsole.def /DLL
+
+!ENDIF
+
+# For NSIS
+OUTDIR = $(ROOTDIR)\$(BIN_DIR)
+
+OBJ_FILES = $(OUT_DIR)\ooConsole.obj $(OUT_DIR)\APICommon.obj
+
+
+# What we want to build.  ooConsole3.exe is the command line version of SQLite.
+# ooConsole3.exe should be no different than what you can download from the
+# SQLite website as sqlite3.exe, except that it has a few defaults changed.
+all: $(BIN_DIR)\ooconsole.dll $(BIN_DIR)\ooConsole.cls
+
+
+$(OUT_DIR)\ooConsole.obj: $(PLATFORM_DIR)\ooConsole.cpp $(PLATFORM_DIR)\ooConsole.hpp src\APICommon.hpp Makefile.win
+  cl $(CFLAGS) /DOOCONSOLE_BUILD /Fo.\$(OUT_DIR)\ $(PLATFORM_DIR)\ooConsole.cpp
+
+$(OUT_DIR)\APICommon.obj: src\APICommon.cpp src\APICommon.hpp Makefile.win
+  cl $(CFLAGS) /Fo.\$(OUT_DIR)\ src\APICommon.cpp
+
+$(OUT_DIR)\ooconsole.dll: $(OBJ_FILES)
+    link $(LFLAGS_DLL) $(OBJ_FILES) -out:$(OUT_DIR)\ooconsole.dll
+
+$(BIN_DIR)\ooconsole.dll: $(OUT_DIR)\ooconsole.dll
+    copy $(OUT_DIR)\ooconsole.dll $(BIN_DIR) 1>nul 2>&1
+
+$(BIN_DIR)\ooConsole.cls: src\rexx\ooConsole.cls
+    copy src\rexx\ooConsole.cls $(BIN_DIR) 1>nul 2>&1
+
+package: all
+    @echo .
+    @echo Creating installation package
+    @cd $(ROOTDIR)\install\platform\windows
+    makensis /DVERSION=$(LONGVER) /DSHORTVERSION=$(SHORTVER) /DROOTDIR=$(ROOTDIR) /DOUTDIR=$(OUTDIR) \
+             /DCPU=$(NSISCPU) /DDEBUGPKG=$(DBGPACKAGE) ooConsole.nsi
+    @cd $(OOD_ROOT_DIR)
+
+dist: all
+    @echo Create distribution file
+    rexx src\rexx\makeDistFile.rex $(OOCONSOLE_VER_STR)
+
+clean:
+    del /Q $(BIN_DIR)\*.dll $(BIN_DIR)\*.cls 1>nul 2>&1
+	  del /Q $(OUT_DIR)\* 1>nul 2>&1
+
+clean_all:
+    del /Q bin\windows\* 1>nul 2>&1
+    del /Q bin\linux\* 1>nul 2>&1
+
+    del /Q bin.dbg\windows\* 1>nul 2>&1
+    del /Q bin.dbg\linux\* 1>nul 2>&1
+
+	  del /Q build\release\* 1>nul 2>&1
+	  del /Q build\debug\* 1>nul 2>&1
+
