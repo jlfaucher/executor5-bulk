@@ -3464,11 +3464,11 @@ the word at which the search is to be started.</para>
 ]]>
 </programlisting>
 
-<para>Returns the largest integer not less than the receiving string.
+<para>Returns the largest integer not less than the receiving string value.
 The receiving string is first rounded according
 to standard Rexx rules, as though the operation
 <computeroutput>receiving_string+0</computeroutput> had been carried out.
-The ceiling is then calculated and returned.
+The ceiling is then calculated from that result and returned.
 The result is never in exponential form. If there are no nonzero digits in
 the result, any minus sign is removed.  </para>
 <indexterm><primary>examples</primary>
@@ -3480,6 +3480,7 @@ the result, any minus sign is removed.  </para>
 '-2'~ceiling          ->    -2
 12.3~ceiling          ->    13
 '-12.3'~ceiling       ->    -12
+'-0.1'~ceiling        ->    0
 </programlisting>
 </example>
 
@@ -4193,11 +4194,11 @@ the same comparison performed by the "==" comparison method.</para>
 ]]>
 </programlisting>
 
-<para>Returns the largest integer not greater than the receiving string.
-The receiving string is first rounded according
+<para>Returns the largest integer not greater than the receiving string value.
+The receiving string value is first rounded according
 to standard Rexx rules, as though the operation
 <computeroutput>receiving_string+0</computeroutput> had been carried out.
-The floor is then calculated and returned.
+The floor is then calculated from that result and returned.
 The result is never in exponential form. If there are no nonzero digits in
 the result, any minus sign is removed.  </para>
 <indexterm><primary>examples</primary>
@@ -4971,13 +4972,13 @@ whole number or zero.</para>
 ]]>
 </programlisting>
 
-<para>Returns the nearest to the receiving string.
+<para>Returns the nearest integer to the receiving string value.
 The receiving string is first rounded according
 to standard Rexx rules, as though the operation
 <computeroutput>receiving_string+0</computeroutput> had been carried out.
-The rounded value is then calculated and returned.
+The rounded value is then calculated from that result and returned.
 The result is never in exponential form. If there are no nonzero digits in
-the result, any minus sign is removed.  </para>
+the result, any minus sign is removed.</para>
 <indexterm><primary>examples</primary>
 <secondary>round method</secondary></indexterm>
 <example id="ex.string-round">
@@ -4989,6 +4990,7 @@ the result, any minus sign is removed.  </para>
 '-2.4'~round          ->    -2
 2.5~round             ->    3
 '-2.5'~round          ->    -3
+'-0.1'~round          ->    0
 </programlisting>
 </example>
 
