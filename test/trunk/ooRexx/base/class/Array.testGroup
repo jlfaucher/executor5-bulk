@@ -835,6 +835,11 @@ return testResult
 
   self~assertEquals(0, c1~items)
 
+  -- bug 1257...make sure removing the last item does not mess up the last element pointer
+  a = .array~of(1,2,3)
+  a~removeItem(3)
+  self~assertEquals(2, a~lastItem)
+
 
 
 ::method "test_subset"
