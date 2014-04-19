@@ -36,7 +36,7 @@
 #/*----------------------------------------------------------------------------*/
 
 
-# This is a Visual C++, nMake compatible make file for ooConsole.
+# This is a Visual C++, nMake compatible make file for ooShapes.
 #
 # The compiler needs to be able to find the ooRexx native API headers and
 # libraries. If REXX_HOME is set on the system, the correct directory will be
@@ -54,15 +54,16 @@
 # A command line svn is needed to automatically get the correct svn revision
 # into the compiled binary.  If a command line svn is not available, the build
 # will work, but the svn revision will be 0.  If you are building yourself, you
-# can build one time, will which generate a file: src\ooConsole.ver.incl.  You
-# can then edit this file manually to set the svn revision number.  Edit:
+# can build one time, will which generate a file:
+# src\ooShapes.ver.incl.  You can then edit this file manually to set
+# the svn revision number.  Edit:
 #
-#   OOCONSOLE_VER_STR="0.0.1.0"
+#   OOSHAPES_VER_STR="0.0.1.0"
 #   SVN_REVSION=0
 #
 # to, for example:
 #
-#   OOCONSOLE_VER_STR="0.0.1.8524"
+#   OOSHAPES_VER_STR="0.0.1.8524"
 #   SVN_REVSION=8524
 #
 # A working Rexx and zip.exe is needed on the system to build the distribution
@@ -88,19 +89,17 @@ WIN_LIBS  = user32.lib
 
 # Generate and include the version information.  Quit if there is an error.
 !IF [src\generateVersionFile.bat] != 0
-!  ERROR Build error: could not gerate version file, ooConsole.ver.incl
+!  ERROR Build error: could not gerate version file, ooShapes.ver.incl
 !ENDIF
 
-!include "src\ooConsole.ver.incl"
+!include "src\ooShapes.ver.incl"
 
 # Generate the compiler information.  Quit if there is an  error.
 !IF [src\determineCompiler.bat] != 0
 !  ERROR Build error: could not generate compiler informatin.
 !ENDIF
 
-!include "src\compiler.info.incl"
-
-PLATFORM_DIR = src\platform\windows
+!include src\compiler.info.incl
 
 # Currently in determineCompiler.bat MSVCVER gets set to 10.0 for VC++ 2010,
 # and any later compiler.  So this works okay.  If the batch file gets changed,
@@ -113,30 +112,26 @@ MISCDEFS = /DHAVE_STDINT_H
 ROOTDIR = $(MAKEDIR)
 SRCDIR = $(ROOTDIR)\src
 EXAMPLEDIR = $(ROOTDIR)\examples
-LONGVER = $(OOCONSOLE_MAJOR).$(OOCONSOLE_MINOR).$(OOCONSOLE_MOD_LVL).$(OOCONSOLE_BLD_LVL)
-SHORTVER = $(OOCONSOLE_MAJOR).$(OOCONSOLE_MINOR).$(OOCONSOLE_MOD_LVL)
+LONGVER = $(OOSHAPES_MAJOR).$(OOSHAPES_MINOR).$(OOSHAPES_MOD_LVL).$(OOSHAPES_BLD_LVL)
+SHORTVER = $(OOSHAPES_MAJOR).$(OOSHAPES_MINOR).$(OOSHAPES_MOD_LVL)
 
 !if "$(CPU)" == "X64"
 NSISCPU = x86_64
 !IF DEFINED(DEBUG)
 BIN_DIR = bin.debug64\windows
 APICOMMON_DIR = ..\APICommon\bin.debug64\windows
-SHAPES_DIR = ..\ooShapes\bin.debug64\windows
 !else
 BIN_DIR = bin.release64\windows
 APICOMMON_DIR = ..\APICommon\bin.release64\windows
-SHAPES_DIR = ..\ooShapes\bin.release64\windows
 !endif
 !else
 NSISCPU = x86_32
 !IF DEFINED(DEBUG)
 BIN_DIR = bin.debug32\windows
 APICOMMON_DIR = ..\APICommon\bin.debug32\windows
-SHAPES_DIR = ..\ooShapes\bin.debug32\windows
 !else
 BIN_DIR = bin.release32\windows
 APICOMMON_DIR = ..\APICommon\bin.release32\windows
-SHAPES_DIR = ..\ooShapes\bin.release32\windows
 !endif
 !endif
 
@@ -148,12 +143,10 @@ SHAPES_DIR = ..\ooShapes\bin.release32\windows
 
 
 WARNINGFLAGS = /W3 /D_CRT_SECURE_NO_DEPRECATE /D_CRT_NONSTDC_NO_DEPRECATE
-VERDEFS = /DOOCONSOLE_VER_MAJOR=$(OOCONSOLE_MAJOR) /DOOCONSOLE_VER_MINOR=$(OOCONSOLE_MINOR) /DOOCONSOLE_VER_LEVEL=$(OOCONSOLE_MOD_LVL) /DOOCONSOLE_VER_BUILD=$(OOCONSOLE_BLD_LVL) /DOOCONSOLE_VER_STRING=\"$(OOCONSOLE_VER_STR)\" /DOOCONSOLE_COPYRIGHT_YEAR=\"$(OOCONSOLE_COPY_YEAR)\"
-EXTRAINCLUDE = /I src /I $(PLATFORM_DIR) /I $(APICOMMON_DIR) /I $(SHAPES_DIR)
+VERDEFS = /DOOSHAPES_VER_MAJOR=$(OOSHAPES_MAJOR) /DOOSHAPES_VER_MINOR=$(OOSHAPES_MINOR) /DOOSHAPES_VER_LEVEL=$(OOSHAPES_MOD_LVL) /DOOSHAPES_VER_BUILD=$(OOSHAPES_BLD_LVL) /DOOSHAPES_VER_STRING=\"$(OOSHAPES_VER_STR)\" /DOOSHAPES_COPYRIGHT_YEAR=\"$(OOSHAPES_COPY_YEAR)\"
+EXTRAINCLUDE = /I src /I $(APICOMMON_DIR)
 
 BASEFLAGS = $(WARNINGFLAGS) $(VERDEFS) $(EXTRAINCLUDE)
-
-EXTRADBG = /DOOCONSOLEDBG=1
 
 # The linker flag /OPT:REF removes unreferenced functions and data.  In order for
 # /OPT:REF to work, the code must be compiled with /Gy.  /Gy is automatically turned
@@ -184,25 +177,39 @@ LFLAGS_DLL = /nologo /SUBSYSTEM:Windows $(REXX_LIBS) $(WIN_LIBS) /DLL
 # For NSIS
 OUTDIR = $(ROOTDIR)\$(BIN_DIR)
 
-OBJ_FILES = $(OUT_DIR)\ooConsole.obj $(APICOMMON_DIR)\APICommon.obj $(SHAPES_DIR)\ooShapesAid.obj
+OBJ_FILES = $(APICOMMON_DIR)\APICommon.obj $(OUT_DIR)\ooShapes.obj $(OUT_DIR)\ooShapesPE.obj $(OUT_DIR)\ooShapesAid.obj
+
 
 
 # What we want to build.
-all: $(BIN_DIR)\ooconsole.dll $(BIN_DIR)\ooConsole.cls
+all: $(BIN_DIR)\ooshapes.dll $(BIN_DIR)\ooShapes.cls $(BIN_DIR)\ooShapesAid.obj \
+     $(BIN_DIR)\ooShapes.hpp
 
 
-$(OUT_DIR)\ooConsole.obj: $(PLATFORM_DIR)\ooConsole.cpp $(PLATFORM_DIR)\ooConsole.hpp $(APICOMMON_DIR)\APICommon.obj \
-                          $(SHAPES_DIR)\ooShapesAid.obj Makefile.win
-  cl $(CFLAGS) /DOOCONSOLE_BUILD /Fo.\$(OUT_DIR)\ $(PLATFORM_DIR)\ooConsole.cpp
+$(OUT_DIR)\ooShapes.obj: src\ooShapes.cpp src\ooShapes.hpp $(APICOMMON_DIR)\APICommon.obj Makefile.win
+  cl $(CFLAGS) /Fo.\$(OUT_DIR)\ src\ooShapes.cpp
 
-$(OUT_DIR)\ooconsole.dll: $(OBJ_FILES)
-    link $(LFLAGS_DLL) -def:$(PLATFORM_DIR)\ooConsole.def $(OBJ_FILES) -out:$(OUT_DIR)\ooconsole.dll
+$(OUT_DIR)\ooShapesPE.obj: src\ooShapesPE.cpp src\ooShapes.hpp $(APICOMMON_DIR)\APICommon.obj  Makefile.win
+  cl $(CFLAGS) /Fo.\$(OUT_DIR)\ src\ooShapesPE.cpp
 
-$(BIN_DIR)\ooconsole.dll: $(OUT_DIR)\ooconsole.dll
-    copy $(OUT_DIR)\ooconsole.dll $(BIN_DIR) 1>nul 2>&1
+$(OUT_DIR)\ooShapesAid.obj: src\ooShapesAid.cpp src\ooShapes.hpp $(APICOMMON_DIR)\APICommon.obj  Makefile.win
+  cl $(CFLAGS) /Fo.\$(OUT_DIR)\ src\ooShapesAid.cpp
 
-$(BIN_DIR)\ooConsole.cls: src\rexx\ooConsole.cls
-    copy src\rexx\ooConsole.cls $(BIN_DIR) 1>nul 2>&1
+$(OUT_DIR)\ooshapes.dll: $(OBJ_FILES)
+    link $(LFLAGS_DLL) -def:src\ooShapes.def $(OBJ_FILES) -out:$(OUT_DIR)\ooshapes.dll
+
+$(BIN_DIR)\ooshapes.dll: $(OUT_DIR)\ooshapes.dll
+    copy $(OUT_DIR)\ooshapes.dll $(BIN_DIR) 1>nul 2>&1
+
+$(BIN_DIR)\ooShapes.cls: src\rexx\ooShapes.cls
+    copy src\rexx\ooShapes.cls $(BIN_DIR) 1>nul 2>&1
+
+$(BIN_DIR)\ooShapesAid.obj: $(OUT_DIR)\ooShapesAid.obj
+    copy $(OUT_DIR)\ooShapesAid.obj $(BIN_DIR) 1>nul 2>&1
+    copy $(ROOTDIR)\vc100.pdb $(BIN_DIR) 1>nul 2>&1
+
+$(BIN_DIR)\ooShapes.hpp: src\ooShapes.hpp
+    copy src\ooShapes.hpp $(BIN_DIR) 1>nul 2>&1
 
 package: all
     @echo .
@@ -214,21 +221,23 @@ package: all
 
 dist: all
     @echo Create distribution file
-    rexx src\rexx\makeDistFile.rex $(OOCONSOLE_VER_STR)
+    rexx src\rexx\makeDistFile.rex $(OOSHAPES_VER_STR)
 
 clean:
     del /Q $(BIN_DIR)\*.dll $(BIN_DIR)\*.cls 1>nul 2>&1
 	  del /Q $(OUT_DIR)\* 1>nul 2>&1
 
 clean_all:
+    del /Q /S *.pdb 1>nul 2>&1
+
     del /Q bin.release64\windows\* 1>nul 2>&1
     del /Q bin.release64\linux\* 1>nul 2>&1
 
-    del /Q bin.release32\windows\* 1>nul 2>&1
-    del /Q bin.release32\linux\* 1>nul 2>&1
-
     del /Q bin.debug64\windows\* 1>nul 2>&1
     del /Q bin.debug64\linux\* 1>nul 2>&1
+
+    del /Q bin.release32\windows\* 1>nul 2>&1
+    del /Q bin.release32\linux\* 1>nul 2>&1
 
     del /Q bin.debug32\windows\* 1>nul 2>&1
     del /Q bin.debug32\linux\* 1>nul 2>&1

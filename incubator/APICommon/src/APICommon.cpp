@@ -1,6 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2012-2013 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
+/* Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -411,6 +412,26 @@ RexxObjectPtr invalidTypeException(RexxThreadContext *c, size_t pos, const char 
 {
     char buffer[256];
     snprintf(buffer, sizeof(buffer), "Argument %d is not a valid %s", pos, type);
+    userDefinedMsgException(c, buffer);
+    return NULLOBJECT;
+}
+
+/**
+ * Argument 'argument' is not a valid 'type'; found 'actual'
+ *
+ * Argument 1 is not a valid COLORREF; found a Directoy
+ *
+ * Raises 88.900
+ *
+ * @param c    Thread context we are executing in.
+ * @param pos  Argumet position
+ * @param type  "Some thing"
+ * @param actual
+ */
+RexxObjectPtr invalidTypeException(RexxThreadContext *c, size_t pos, const char *type, RexxObjectPtr actual)
+{
+    char buffer[256];
+    snprintf(buffer, sizeof(buffer), "Argument %d is not a valid %s; found %s", pos, type, c->ObjectToStringValue(actual));
     userDefinedMsgException(c, buffer);
     return NULLOBJECT;
 }
@@ -835,7 +856,7 @@ RexxObjectPtr wrongArgKeywordsException(RexxThreadContext *c, size_t pos, CSTRIN
 {
 
     char buffer[512];
-    snprintf(buffer, sizeof(buffer), "Argument %d, must contain one or more of %s; found \"%s\"",
+    snprintf(buffer, sizeof(buffer), "Method argument %d, must contain one or more of %s; found \"%s\"",
               pos, list, actual);
     userDefinedMsgException(c, buffer);
     return NULLOBJECT;
@@ -843,13 +864,37 @@ RexxObjectPtr wrongArgKeywordsException(RexxThreadContext *c, size_t pos, CSTRIN
 
 RexxObjectPtr wrongArgKeywordsException(RexxThreadContext *c, size_t pos, CSTRING list, RexxObjectPtr actual)
 {
-    return wrongArgOptionException(c, pos, list, c->ObjectToStringValue(actual));
+    return wrongArgKeywordsException(c, pos, list, c->ObjectToStringValue(actual));
 }
 
 /**
  * Similar to 93.915 and 93.914  (actually a combination of the two.)
  *
  * Method argument <pos>, keyword must be exactly one of <list>; found
+ * "<actual>"
+ *
+ * Method argument 2 must be exactly one of left, right, top, or bottom found
+ * "Side"
+ *
+ * @param c
+ * @param pos
+ * @param list
+ * @param actual  String, actual keyword
+ *
+ * @return RexxObjectPtr
+ */
+RexxObjectPtr wrongArgKeywordException(RexxMethodContext *c, size_t pos, CSTRING list, CSTRING actual)
+{
+    char buffer[512];
+    snprintf(buffer, sizeof(buffer), "Method argument %d, keyword must be exactly one of %s; found \"%s\"", pos, list, actual);
+    userDefinedMsgException(c, buffer);
+    return NULLOBJECT;
+}
+
+/**
+ * Similar to 93.915 and 93.914  (actually a combination of the two.)
+ *
+ * Argument <pos>, keyword must be exactly one of <list>; found
  * "<actual>"
  *
  * Method argument 2 must be exactly one of left, right, top, or bottom found
@@ -1343,22 +1388,98 @@ bool isOutOfMemoryException(RexxThreadContext *c)
 
 
 /**
- * Outputs the typical condition message.  For example:
+ * Given a condition object, extracts and returns as a whole number the subcode
+ * of the condition.
+ */
+static inline wholenumber_t conditionSubCode(RexxCondition *condition)
+{
+    return (condition->code - (condition->rc * 1000));
+}
+
+
+/**
+ * Doubles a buffer of size *bytes and returns the new buffer and new size.
+ *
+ * @param buffer
+ * @param bytes
+ *
+ * @return char*
+ *
+ * @notes  The existing buffer is assumed to contain null terminated text.  This
+ *         text is copied into the new buffer on success.  The existing buffer
+ *         is freed.
+ *
+ *         Null is returned if memory allocation fails.
+ */
+static char *doubleBuffer(char *buffer, size_t *bytes)
+{
+    *bytes *= 2;
+    char *tmp = (char *)malloc(*bytes);
+    if ( tmp == NULL )
+    {
+        // We just bail.
+        free(buffer);
+        return NULL;
+    }
+
+    strcpy(tmp, buffer);
+    free(buffer);
+    return tmp;
+}
+
+/**
+ * Returns a buffer with the typical condition message.  For example:
  *
  *      4 *-* say dt~number
  * Error 97 running C:\work\qTest.rex line 4:  Object method not found
  * Error 97.1:  Object "a DateTime" does not understand message "NUMBER"
  *
- * @param c          The thread context we are operating in.
- * @param condObj    The condition information object.  The object returned from
- *                   the C++ API GetConditionInfo()
- * @param condition  The RexxCondition struct.  The filled in struct from the
- *                   C++ API DecodeConditionInfo().
+ * @param c       The thread context we are operating in.
+ * @param major   The major error code, i.e., Error 93, the 93
+ * @param minor   The minor error subcode, i.e., Error 93.900, the 900
  *
- * @assumes  There is a condition and that condObje and condition are valid.
+ * @returns  A buffer allocated through malloc containing the standard
+ *           condition message.  The caller is responsible for freeing the
+ *           buffer using free().
+ *
+ * @assumes  The the condition has already been preformed.
+ *
+ * @notes  Null is returned if free() fails.  If for some reason there is
+ *         no condition object, the string: "No condition object" is returned.
+ *         The caller must still free this string.
+ *
+ *         Either or both of major and minor can be null.  Both are only set on
+ *         success.
+ *
+ *         This is an OS neutral version of an ooDialog function.
  */
-void standardConditionMsg(RexxThreadContext *c, RexxDirectoryObject condObj, RexxCondition *condition)
+static char *getConditionMsg(RexxThreadContext *c, wholenumber_t *major, wholenumber_t *minor)
 {
+#define BIG_BUF 2048
+#define MED_BUF  512
+
+    size_t bytes  = BIG_BUF;
+    char *condMsg = (char *)malloc(bytes);
+    if ( condMsg == NULL )
+    {
+        return condMsg;
+    }
+    memset(condMsg, 0, BIG_BUF);
+
+    RexxDirectoryObject condObj = c->GetConditionInfo();
+    RexxCondition       condition;
+    if ( condObj == NULLOBJECT )
+    {
+        strcpy(condMsg, "No condition object");
+        return condMsg;
+    }
+
+    size_t usedBytes = 0;
+    size_t cBytes    = 0;
+    char   buf[MED_BUF] = {'\0'};
+
+    c->DecodeConditionInfo(condObj, &condition);
+
     RexxObjectPtr list = c->SendMessage0(condObj, "TRACEBACK");
     if ( list != NULLOBJECT )
     {
@@ -1371,17 +1492,54 @@ void standardConditionMsg(RexxThreadContext *c, RexxDirectoryObject condObj, Rex
                 RexxObjectPtr o = c->ArrayAt(a, i);
                 if ( o != NULLOBJECT )
                 {
-                    printf("%s\n", c->ObjectToStringValue(o));
+                    cBytes = snprintf(buf, MED_BUF, "%s\n", c->ObjectToStringValue(o));
+
+                    while ( cBytes + usedBytes >= bytes )
+                    {
+                        condMsg = doubleBuffer(condMsg, &bytes);
+                        if ( condMsg == NULL )
+                        {
+                            return NULL;
+                        }
+                    }
+
+                    strcat(condMsg, buf);
+                    usedBytes += cBytes;
                 }
             }
         }
     }
-    printf("Error %d running %s line %d: %s\n", condition->rc, c->CString(condition->program),
-           condition->position, c->CString(condition->errortext));
 
-    printf("Error %d.%03d:  %s\n", condition->rc, conditionSubCode(condition), c->CString(condition->message));
+    cBytes = snprintf(buf, MED_BUF, "Error %d running %s line %d: %s\n", condition.rc,
+                       c->CString(condition.program), condition.position, c->CString(condition.errortext));
+
+    // The next, last string is short.  We add some padding to the needed size
+    // to account for it.  If we come up short, doubling the current buffer is
+    // always sufficient to finish.
+    if ( cBytes + usedBytes + 256 >= bytes )
+    {
+        condMsg = doubleBuffer(condMsg, &bytes);
+        if ( condMsg == NULL )
+        {
+            return NULL;
+        }
+    }
+    strcat(condMsg, buf);
+
+    snprintf(buf, MED_BUF, "Error %d.%03d:  %s\n", condition.rc, conditionSubCode(&condition),
+              c->CString(condition.message));
+    strcat(condMsg, buf);
+
+    if ( major != NULL )
+    {
+        *major = condition.rc;
+    }
+    if ( minor != NULL )
+    {
+        *minor = conditionSubCode(&condition);
+    }
+    return condMsg;
 }
-
 
 /**
  * Given a thread context, checks for a raised condition, and prints out the
@@ -1397,21 +1555,19 @@ bool checkForCondition(RexxThreadContext *c, bool clear)
 {
     if ( c->CheckCondition() )
     {
-        RexxCondition condition;
-        RexxDirectoryObject condObj = c->GetConditionInfo();
-
-        if ( condObj != NULLOBJECT )
+        // Use the local function.
+        char *msg = getConditionMsg(c, NULL, NULL);
+        if ( msg )
         {
-            c->DecodeConditionInfo(condObj, &condition);
-            standardConditionMsg(c, condObj, &condition);
-
+            printf(msg);
+            free(msg);
+        }
             if ( clear )
             {
                 c->ClearCondition();
             }
             return true;
         }
-    }
     return false;
 }
 

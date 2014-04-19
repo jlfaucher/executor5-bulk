@@ -47,10 +47,11 @@
 #include <string.h>
 
 #include "APICommon.hpp"
+#include "ooShapes.hpp"
 
-#include <memory>
-#include <new>
-using namespace std;
+// #include <memory>
+// #include <new>
+// using namespace std;
 
 
 // Initialized in ooConsoleLoad().
@@ -133,20 +134,20 @@ void RexxEntry ooConsoleUnload(RexxThreadContext *c)
 
 /**
  * Generic function to return either the compact or full version for the
- * ooSQLite extension.
+ * ooConsole extension.
  *
- * This is not part of the SQLite library, it is an ooSQLite only interface.
- * Used by both the object orientated (.ooSQLite) and classic Rexx interfaces.
+ * This is not part of the SQLite library, it is an ooConsole only interface.
+ * Used by both the object orientated (.ooConsole) and classic Rexx interfaces.
  *
  * @param c     Thread context we are operating in.
  * @param full  If true, the full version is returned, otherwise the one line
  *              version.
  *
- * @return A formatted string specifying the ooSQLite version.
+ * @return A formatted string specifying the ooConsole version.
  */
 RexxStringObject genGetVersion(RexxThreadContext *c, logical_t full, logical_t minimal)
 {
-    char   buf[512];
+    char   buf[512] = {'\0'};
     size_t bits = 32;
 
 #ifdef __REXX64__
@@ -157,7 +158,8 @@ RexxStringObject genGetVersion(RexxThreadContext *c, logical_t full, logical_t m
     {
         char buf1[512];
 
-        snprintf(buf1, sizeof(buf1), "          Built %s %s\n          Copyright (c) RexxLA %s.\n"
+        snprintf(buf1, sizeof(buf1), "ooConsole Built %s %s\n"
+                                     "          Copyright (c) RexxLA %s.\n"
                                      "          All Rights Reserved.\n\n",
                  __DATE__, __TIME__, OOCONSOLE_COPYRIGHT_YEAR);
         strcat(buf, buf1);
@@ -192,9 +194,88 @@ RexxStringObject genGetVersion(RexxThreadContext *c, logical_t full, logical_t m
  */
 #define OOCONSOLE_CLASS    "ooConsole"
 
+static inline pCooConsole ensureCSelf(RexxMethodContext *c, void *pCSelf)
+{
+    if ( pCSelf == NULL )
+    {
+        baseClassInitializationException(c, "ooConsole");
+    }
+    return (pCooConsole)pCSelf;
+}
+
+/**
+ * Gets the standard handles for this console.
+ *
+ * @param c
+ * @param pCon
+ *
+ * @return bool
+ */
+static bool goodHandles(RexxMethodContext *c, pCooConsole pCon)
+{
+    pCon->errRC = 0;
+
+    pCon->hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    if ( pCon->hStdOut == INVALID_HANDLE_VALUE || pCon->hStdOut == NULL )
+    {
+        pCon->errRC = GetLastError();
+        pCon->isValid = false;
+        return false;
+    }
+
+    pCon->hStdIn  = GetStdHandle(STD_INPUT_HANDLE);
+    if ( pCon->hStdIn == INVALID_HANDLE_VALUE || pCon->hStdIn == NULL )
+    {
+        pCon->errRC = GetLastError();
+        pCon->isValid = false;
+        return false;
+    }
+
+    pCon->hStdErr = GetStdHandle(STD_ERROR_HANDLE);
+    if ( pCon->hStdErr == INVALID_HANDLE_VALUE || pCon->hStdErr == NULL )
+    {
+        pCon->errRC = GetLastError();
+        pCon->isValid = false;
+        return false;
+    }
+
+    pCon->isValid = true;
+    return true;
+}
+
+/**
+ * Checks both that the console CSelf is not null and that the console is
+ * usable.  Usable means that the we are in a character mode window.
+ *
+ * @param c
+ * @param pCSelf
+ *
+ * @return pCooConn
+ */
+static pCooConsole requiredConsole(RexxMethodContext *c, void *pCSelf)
+{
+    pCooConsole pCon = ensureCSelf(c, pCSelf);
+    if ( pCon != NULL )
+    {
+        if ( pCon->isValid )
+        {
+            if ( pCon->isLongTerm )
+            {
+                return pCon;
+            }
+            if ( goodHandles(c, pCon) )
+            {
+                return pCon;
+            }
+        }
+        pCon = NULL;
+    }
+    return pCon;
+}
 
 
-/** ooConsloe::version  [class method]
+
+/** ooConsole::version  [class method]
  *
  *  @param type  [optional]  The style of the version output returned.  Keywords
  *               are, but only 1st letter is required:
@@ -235,12 +316,11 @@ RexxMethod1(RexxObjectPtr, oocon_version_cls, OPTIONAL_CSTRING, type)
 
 /** ooConsole::init()
  *
- *  @param ???
+ *  @param If ... default is true.
  */
-RexxMethod2(RexxObjectPtr, oocon_init, OSELF, self)
+RexxMethod2(RexxObjectPtr, oocon_init, OPTIONAL_logical_t, longTerm, OSELF, self)
 {
     // Get a buffer for the ooConsole CSelf.
-    /*
     RexxBufferObject cselfBuffer = context->NewBuffer(sizeof(CooConsole));
     if ( cselfBuffer == NULLOBJECT )
     {
@@ -252,8 +332,22 @@ RexxMethod2(RexxObjectPtr, oocon_init, OSELF, self)
 
     pCooConsole pCon = (pCooConsole)context->BufferData(cselfBuffer);
     memset(pCon, 0, sizeof(CooConsole));
-    */
 
+    if ( argumentOmitted(1) )
+    {
+        longTerm = TRUE;
+    }
+    pCon->isLongTerm = longTerm ? true : false;
+
+    if ( ! goodHandles(context, pCon) )
+    {
+        pCon->isValid = false;
+        return NULLOBJECT;
+    }
+
+    pCon->isValid    = true;
+
+    return TheZeroObj;
 }
 
 /** ooConsole::uninit()
@@ -267,11 +361,39 @@ RexxMethod1(RexxObjectPtr, oocon_uninit, CSELF, pCSelf)
         pCooConsole pCon = (pCooConsole)pCSelf;
 
 #if OOCONSOLEDBG == 1
-        printf("ooConsloe::uninit()\n");
+        printf("ooConsole::uninit()\n");
 #endif
     }
     return TheZeroObj;
 }
+
+/** ooConsole::screenBuffersize()
+ *
+ *
+ */
+RexxMethod1(RexxObjectPtr, oocon_screenBufferSize, CSELF, pCSelf)
+{
+    pCooConsole pcon = requiredConsole(context, pCSelf);
+    if ( pcon == NULL )
+    {
+        return TheNilObj;
+    }
+
+    CONSOLE_SCREEN_BUFFER_INFO csbiInfo;
+    if ( GetConsoleScreenBufferInfo(pcon->hStdOut, &csbiInfo) == 0 )
+    {
+        pcon->errRC = GetLastError();
+        return TheNilObj;
+    }
+
+    //char buffer[100];
+    //wsprintf(buffer, "%d %d", csbiInfo.dwSize.Y, csbiInfo.dwSize.X);
+
+    pcon->errRC = 0;
+    //return context->String(buffer);
+    return rxNewSize(context, csbiInfo.dwSize.Y, csbiInfo.dwSize.X);
+}
+
 
 /**
  * Internal use only.
@@ -294,12 +416,36 @@ RexxMethod1(int, oocon_test, ARGLIST, args)
 
 #define ooConsole_Routines_Section
 
+/** screenBuffersize()
+ *
+ *
+ */
+RexxRoutine0(RexxObjectPtr, oocon_screenBufferSize_rtn)
+{
+    HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    if ( hStdOut == INVALID_HANDLE_VALUE || hStdOut == NULL )
+    {
+        return context->UnsignedInt32(GetLastError());
+    }
+
+    CONSOLE_SCREEN_BUFFER_INFO csbiInfo;
+    if ( GetConsoleScreenBufferInfo(hStdOut, &csbiInfo) == 0 )
+    {
+        return context->UnsignedInt32(GetLastError());
+    }
+
+    char buffer[100];
+    wsprintf(buffer, "%d %d", csbiInfo.dwSize.Y, csbiInfo.dwSize.X);
+    return context->String(buffer);
+}
+
+
 
 /** ooconVersion()
  *
  *
  */
-RexxRoutine1(RexxStringObject, ooconVersion_rtn, OPTIONAL_CSTRING, type)
+RexxRoutine1(RexxStringObject, oocon_version_rtn, OPTIONAL_CSTRING, type)
 {
     if ( argumentExists(1) )
     {
@@ -307,20 +453,16 @@ RexxRoutine1(RexxStringObject, ooconVersion_rtn, OPTIONAL_CSTRING, type)
         {
             case 'O' :
                 return genGetVersion(context->threadContext, FALSE, FALSE);
-                break;
 
             case 'F' :
                 return genGetVersion(context->threadContext, TRUE, FALSE);
-                break;
 
             case 'C' :
                 return genGetVersion(context->threadContext, FALSE, TRUE);
-                break;
 
             default :
                 wrongArgOptionException(context->threadContext, 1, VALID_VERSION_TYPES, type);
-                return TheZeroObj;
-                break;
+                return context->String("0");
         }
     }
 
@@ -331,9 +473,9 @@ RexxRoutine1(RexxStringObject, ooconVersion_rtn, OPTIONAL_CSTRING, type)
  *
  *  Private routine to use for quick tests.  Code varies as to what it does.
  */
-RexxRoutine0(int, ooconTest_rtn)
+RexxRoutine0(int, oocon_test_rtn)
 {
-    printf("No tests at this time.")
+    printf("No tests at this time.");
 
     return 0;
 }
@@ -341,13 +483,15 @@ RexxRoutine0(int, ooconTest_rtn)
 
 
 
-REXX_TYPED_ROUTINE_PROTOTYPE(ooconVerison_rtn);
-REXX_TYPED_ROUTINE_PROTOTYPE(ooconTest_rtn);
+REXX_TYPED_ROUTINE_PROTOTYPE(oocon_screenBufferSize_rtn);
+REXX_TYPED_ROUTINE_PROTOTYPE(oocon_verison_rtn);
+REXX_TYPED_ROUTINE_PROTOTYPE(oocon_test_rtn);
 
 RexxRoutineEntry ooConsole_functions[] =
 {
-    REXX_TYPED_ROUTINE(ooconVersion_rtn, ooconVersion_rtn),
-    REXX_TYPED_ROUTINE(ooconTest_rtn,    ooconTest_rtn),
+    REXX_TYPED_ROUTINE(oocon_screenBufferSize_rtn, oocon_screenBufferSize_rtn),
+    REXX_TYPED_ROUTINE(oocon_version_rtn,          oocon_version_rtn),
+    REXX_TYPED_ROUTINE(oocon_test_rtn,             oocon_test_rtn),
     REXX_LAST_ROUTINE()
 };
 
@@ -357,12 +501,14 @@ REXX_METHOD_PROTOTYPE(oocon_version_cls);
 
 REXX_METHOD_PROTOTYPE(oocon_init);
 REXX_METHOD_PROTOTYPE(oocon_uninit);
+REXX_METHOD_PROTOTYPE(oocon_screenBufferSize);
 REXX_METHOD_PROTOTYPE(oocon_test);
 
 RexxMethodEntry ooConsole_methods[] = {
     REXX_METHOD(oocon_version_cls,                oocon_version_cls),
     REXX_METHOD(oocon_init,                       oocon_init),
     REXX_METHOD(oocon_uninit,                     oocon_uninit),
+    REXX_METHOD(oocon_screenBufferSize,           oocon_screenBufferSize),
     REXX_METHOD(oocon_test,                       oocon_test),
     REXX_LAST_METHOD()
 };

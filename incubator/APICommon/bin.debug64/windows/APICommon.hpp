@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/;
 /*                                                                            */;
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */;
-/* Copyright (c) 2005-2013 Rexx Language Association. All rights reserved.    */;
+/* Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.    */;
 /*                                                                            */;
 /* This program and the accompanying materials are made available under       */;
 /* the terms of the Common Public License v1.0 which accompanies this         */;
@@ -47,6 +47,7 @@
 
 #define NO_MEMORY_MSG             "failed to allocate memory"
 #define INVALID_CONSTANT_MSG      "the valid %s_XXX constants"
+#define NO_LOCAL_ENVIRONMENT_MSG  "the .local environment was not found"
 
 extern void  severeErrorException(RexxThreadContext *c, const char *msg);
 extern void  systemServiceException(RexxThreadContext *context, const char *msg);
@@ -100,6 +101,7 @@ extern RexxObjectPtr wrongArgValueException(RexxThreadContext *c, size_t pos, co
 extern RexxObjectPtr wrongArgKeywordsException(RexxThreadContext *c, size_t pos, CSTRING list, CSTRING actual);
 extern RexxObjectPtr wrongArgKeywordsException(RexxThreadContext *c, size_t pos, CSTRING list, RexxObjectPtr actual);
 extern RexxObjectPtr wrongArgKeywordException(RexxThreadContext *c, size_t pos, CSTRING list, CSTRING actual);
+extern RexxObjectPtr wrongArgKeywordException(RexxMethodContext *c, size_t pos, CSTRING list, CSTRING actual);
 extern RexxObjectPtr invalidConstantException(RexxMethodContext *c, size_t argNumber, char *msg, const char *sub, RexxObjectPtr actual);
 extern RexxObjectPtr invalidConstantException(RexxMethodContext *c, size_t argNumber, char *msg, const char *sub, const char *actual);
 extern RexxObjectPtr wrongRangeException(RexxThreadContext *c, size_t pos, int min, int max, RexxObjectPtr actual);
@@ -110,6 +112,7 @@ extern RexxObjectPtr notBooleanException(RexxThreadContext *c, size_t pos, RexxO
 extern RexxObjectPtr wrongArgOptionException(RexxThreadContext *c, size_t pos, CSTRING list, RexxObjectPtr actual);
 extern RexxObjectPtr wrongArgOptionException(RexxThreadContext *c, size_t pos, CSTRING list, CSTRING actual);
 extern RexxObjectPtr invalidTypeException(RexxThreadContext *c, size_t pos, const char *type);
+extern RexxObjectPtr invalidTypeException(RexxThreadContext *c, size_t pos, const char *type, RexxObjectPtr actual);
 extern RexxObjectPtr noSuchRoutineException(RexxThreadContext *c, CSTRING rtnName, size_t pos);
 extern RexxObjectPtr unsupportedRoutineException(RexxCallContext *c, CSTRING rtnName);
 extern RexxObjectPtr invalidReturnWholeNumberException(RexxThreadContext *c, CSTRING name, RexxObjectPtr actual, bool isMethod);
@@ -133,7 +136,7 @@ extern RexxObjectPtr   rxNewBuiltinObject(RexxThreadContext *c, CSTRING classNam
 
 extern bool    isOutOfMemoryException(RexxThreadContext *c);
 extern bool    checkForCondition(RexxThreadContext *c, bool clear);
-extern void    standardConditionMsg(RexxThreadContext *c, RexxDirectoryObject condObj, RexxCondition *condition);
+extern bool    isOutOfMemoryException(RexxThreadContext *c);
 extern bool    isInt(int, RexxObjectPtr, RexxThreadContext *);
 extern bool    isOfClassType(RexxMethodContext *, RexxObjectPtr, CSTRING);
 extern void    dbgPrintClassID(RexxThreadContext *c, RexxObjectPtr obj);
@@ -224,6 +227,24 @@ inline RexxObjectPtr missingArgException(RexxThreadContext *c, size_t argPos)
 }
 
 /**
+ *  Missing argument in method; argument 'argument' is required
+ *
+ *  Missing argument in method; argument 2 is required
+ *
+ *  Raises 93.90
+ *
+ * @param c    The method context we are operating under.
+ * @param pos  The 'argument' position.
+ *
+ * @return NULLOBJECT
+ */
+inline RexxObjectPtr missingArgException(RexxMethodContext *c, size_t argPos)
+{
+    c->RaiseException1(Rexx_Error_Incorrect_method_noarg, c->WholeNumber(argPos));
+    return NULLOBJECT;
+}
+
+/**
  *  Too many arguments in invocation; 'number' expected
  *
  *  Too many arguments in invocation; 5 expected
@@ -284,10 +305,11 @@ inline void wrongObjInArrayException(RexxThreadContext *c, size_t argPos, size_t
 /**
  * Similar to 93.915 and 93.914  (actually a combination of the two.)
  *
- * Argument <pos>, keyword must be exactly one of <list>; found
+ * Method argument <pos>, keyword must be exactly one of <list>; found
  * "<actual>"
  *
- * Argument 2 must be exactly one of left, right, top, or bottom found "Side"
+ * Method argument 2 must be exactly one of left, right, top, or bottom found
+ * "Side"
  *
  * @param c
  * @param pos
@@ -296,13 +318,9 @@ inline void wrongObjInArrayException(RexxThreadContext *c, size_t argPos, size_t
  *
  * @return RexxObjectPtr
  */
-inline RexxObjectPtr wrongArgKeywordException(RexxThreadContext *c, size_t pos, CSTRING list, RexxObjectPtr actual)
-{
-    return wrongArgKeywordException(c, pos, list, c->ObjectToStringValue(actual));
-}
 inline RexxObjectPtr wrongArgKeywordException(RexxMethodContext *c, size_t pos, CSTRING list, RexxObjectPtr actual)
 {
-    return wrongArgKeywordException(c->threadContext, pos, list, c->ObjectToStringValue(actual));
+    return wrongArgKeywordException(c, pos, list, c->ObjectToStringValue(actual));
 }
 
 /**
@@ -357,15 +375,6 @@ inline void directoryIndexExceptionMsg(RexxThreadContext *c, size_t pos, CSTRING
 inline void missingIndexesInDirectoryException(RexxMethodContext *c, int argPos, CSTRING indexes)
 {
     missingIndexesInDirectoryException(c->threadContext, argPos, indexes);
-}
-
-/**
- * Given a condition object, extracts and returns as a whole number the subcode
- * of the condition.
- */
-inline wholenumber_t conditionSubCode(RexxCondition *condition)
-{
-    return (condition->code - (condition->rc * 1000));
 }
 
 inline RexxObjectPtr rxNewBag(RexxMethodContext *c)

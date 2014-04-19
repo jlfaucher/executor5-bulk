@@ -35,35 +35,53 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-#ifndef ooConsole_Included
-#define ooConsole_Included
+::requires 'ooshapes' LIBRARY
 
-#ifdef _WIN32
-    #define NEED_DLL_MAIN
-    #include "winOS.hpp"
-    #undef  NEED_DLL_MAIN
-#else
-    #include "unixOS.hpp"
-#endif
+::class 'Rect' public
+::method init external "LIBRARY ooshapes rect_init"
+::attribute left get external "LIBRARY ooshapes rect_left"
+::attribute left set external "LIBRARY ooshapes rect_setLeft"
+::attribute top get external "LIBRARY ooshapes rect_top"
+::attribute top set external "LIBRARY ooshapes rect_setTop"
+::attribute right get external "LIBRARY ooshapes rect_right"
+::attribute right set external "LIBRARY ooshapes rect_setRight"
+::attribute bottom get external "LIBRARY ooshapes rect_bottom"
+::attribute bottom set external "LIBRARY ooshapes rect_setBottom"
+::method copy external "LIBRARY ooshapes rect_copy"
+::method string external "LIBRARY ooshapes rect_string"
 
-#include "oorexxapi.h"
+::class 'Point' public
+::method init external "LIBRARY ooshapes point_init"
+::attribute x get external "LIBRARY ooshapes point_x"
+::attribute x set external "LIBRARY ooshapes point_setX"
+::attribute y get external "LIBRARY ooshapes point_y"
+::attribute y set external "LIBRARY ooshapes point_setY"
+::method copy external "LIBRARY ooshapes point_copy"
+::method '+' external "LIBRARY ooshapes point_add"
+::method '-' external "LIBRARY ooshapes point_subtract"
+::method incr external "LIBRARY ooshapes point_incr"
+::method decr external "LIBRARY ooshapes point_decr"
+::method inRect external "LIBRARY ooshapes point_inRect"
+::method string external "LIBRARY ooshapes point_string"
 
-#define VALID_VERSION_TYPES       "[O]neLine [F]ull [C]ompact [L]ibVersion [N]umber [S]ourceID"
-#define NO_LOCAL_ENVIRONMENT_MSG  "the .local environment was not found"
+::class 'Size' public
+::method init external "LIBRARY ooshapes size_init"
+::attribute width get external "LIBRARY ooshapes size_cx"
+::attribute width set external "LIBRARY ooshapes size_setCX"
+::attribute height get external "LIBRARY ooshapes size_cy"
+::attribute height set external "LIBRARY ooshapes size_setCY"
+::method string external "LIBRARY ooshapes size_string"
+::method '=' external "LIBRARY ooshapes size_compare"
+::method '==' external "LIBRARY ooshapes size_compare"
+::method '\=' external "LIBRARY ooshapes size_compare"
+::method '\==' external "LIBRARY ooshapes size_compare"
+::method '<' external "LIBRARY ooshapes size_compare"
+::method '<<' external "LIBRARY ooshapes size_compare"
+::method '<=' external "LIBRARY ooshapes size_compare"
+::method '<<=' external "LIBRARY ooshapes size_compare"
+::method '>' external "LIBRARY ooshapes size_compare"
+::method '>>' external "LIBRARY ooshapes size_compare"
+::method '>=' external "LIBRARY ooshapes size_compare"
+::method '>>=' external "LIBRARY ooshapes size_compare"
+::method equateTo external "LIBRARY ooshapes size_equateTo"
 
-
-
-/* Struct for the ooConsole object CSelf. */
-typedef struct _ooConsoleCSelf {
-    HANDLE   hStdErr;
-    HANDLE   hStdIn;
-    HANDLE   hStdOut;
-    uint32_t errRC;        // Error code
-    bool     isValid;      // Is a valid object
-    bool     isLongTerm;   // Is a long term object
-} CooConsole;
-typedef CooConsole *pCooConsole;
-
-
-
-#endif  /* ooConsole_Included */

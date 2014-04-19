@@ -1,3 +1,4 @@
+#!/usr/bin/rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 2014-2014 Rexx Language Association. All rights reserved.    */
@@ -35,35 +36,104 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-#ifndef ooConsole_Included
-#define ooConsole_Included
+/**
+ * This file is used to create a binary distribution of ooConsole.  The binary
+ * distribution can just be unpacked where ever the user would like.
+ *
+ * Note that when packaging up the example programs, we just take everything
+ * in the directories.  Trying to maintain file lists of the examples is to
+ * hard to maintain.  ??
+ */
 
-#ifdef _WIN32
-    #define NEED_DLL_MAIN
-    #include "winOS.hpp"
-    #undef  NEED_DLL_MAIN
-#else
-    #include "unixOS.hpp"
-#endif
+use arg cmdLine
 
-#include "oorexxapi.h"
+  os = getOSName()
 
-#define VALID_VERSION_TYPES       "[O]neLine [F]ull [C]ompact [L]ibVersion [N]umber [S]ourceID"
-#define NO_LOCAL_ENVIRONMENT_MSG  "the .local environment was not found"
+  if os == "WINDOWS" then do
+    cpCmd      = 'copy'
+    mdCmd      = 'md'
+    rmCmd      = 'del'
+    rmDir      = 'rd /q /s'
+    toNull     = '> nul 2>&1'
+    sl         = '\'
+    zipCmd     = 'zip -X9r'
+    ext        = 'win.zip'
+    setEnvFile = 'setOOConsole.bat'
+    osBinDir    = 'bin\windows\'
+  end
+  else do
+    cpCmd      = 'cp'
+    mdCmd      = 'mkdir -p'
+    rmCmd      = 'rm -f'
+    rmDir      = 'rm -rf'
+    toNull     = '> /dev/null 2>&1'
+    sl         = '/'
+    zipCmd     = 'tar -czvf'
+    ext        = '_lin.tgz'
+    setEnvFile = 'setOOConsoleEnv.sh'
+    osBinDir   = 'bin/linux/'
+  end
+
+  svn_rev = cmdLine~strip('B', '"')
+
+  bitness = 'x86_32'
+  if getBitness() == 64 then bitness = 'x86_64'
+
+  parse var svn_rev major '.' minor '.' lvl '.' svn
+
+  outDir = 'ooConsole.'svn_rev || sl
+  outFile = 'ooConsole_'major'_'minor'_'lvl'_'svn'_' || bitness || ext
+
+  say 'outDir:' outDir
+  say 'outFile:' outFile
+
+  rmDir outDir toNull
+  rmCmd outFile toNull
+
+  mdCmd outDir'bin'
+  mdCmd outDir'doc'
+  mdCmd outDir'examples'
+
+  cpCmd 'CPLv1.0.txt' outDir
+  cpCmd 'NOTICE' outDir
+  cpCmd setEnvFile outDir
+
+  if os == "WINDOWS" then do
+    cpCmd osBinDir'ooConsole.cls'       outDir'bin'
+    cpCmd osBinDir'ooconsole.dll'       outDir'bin'
+  end
+  else do
+    cpCmd osBinDir'ooConsole.cls'       outDir'bin'
+    cpCmd osBinDir'libooconsole.so'     outDir'bin'
+  end
+
+  cpCmd 'doc'sl'ooconsole.pdf'          outDir'doc'
+
+  cpCmd 'examples'sl'version.rex'         outDir'examples'
+
+  zipCmd outFile outDir
 
 
+::routine getOSName
 
-/* Struct for the ooConsole object CSelf. */
-typedef struct _ooConsoleCSelf {
-    HANDLE   hStdErr;
-    HANDLE   hStdIn;
-    HANDLE   hStdOut;
-    uint32_t errRC;        // Error code
-    bool     isValid;      // Is a valid object
-    bool     isLongTerm;   // Is a long term object
-} CooConsole;
-typedef CooConsole *pCooConsole;
+  parse upper source os .
+  if os~abbrev("WIN") then os = "WINDOWS"
+  return os
 
 
+::routine getBitness
 
-#endif  /* ooConsole_Included */
+  tmpOutFile = 'tmpXXX_delete.me'
+
+  'rexx -v >' tmpOutFile '2>&1'
+
+  fsObj = .stream~new(tmpOutFile)
+  tmpArray = fsObj~arrayin
+  parse value tmpArray[3] with . . mode
+  fsObj~close
+
+  j = SysFileDelete(tmpOutFile)
+
+  say 'mode is:' mode
+
+return mode

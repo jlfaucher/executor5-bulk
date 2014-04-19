@@ -37,8 +37,8 @@
 #/*----------------------------------------------------------------------------*/
 
 
-ooSQLitePath=`pwd`/bin
+ooConsolePath=`pwd`/bin.release64/linux
 
-export PATH=$ooSQLitePath:$PATH
-export LD_LIBRARY_PATH=$ooSQLitePath:$LD_LIBRARY_PATH
+export PATH=$ooConsolePath:$PATH
+export LD_LIBRARY_PATH=$ooConsolePath:$LD_LIBRARY_PATH
 

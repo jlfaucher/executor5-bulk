@@ -118,8 +118,18 @@ SHORTVER = $(OOSQLITE_MAJOR).$(OOSQLITE_MINOR).$(OOSQLITE_MOD_LVL)
 
 !if "$(CPU)" == "X64"
 NSISCPU = x86_64
+!IF DEFINED(DEBUG)
+APICOMMON_DIR = ..\APICommon\bin.debug64\windows
+!else
+APICOMMON_DIR = ..\APICommon\bin.release64\windows
+!endif
 !else
 NSISCPU = x86_32
+!IF DEFINED(DEBUG)
+APICOMMON_DIR = ..\APICommon\bin.debug32\windows
+!else
+APICOMMON_DIR = ..\APICommon\bin.release32\windows
+!endif
 !endif
 
 
@@ -152,7 +162,7 @@ NSISCPU = x86_32
 
 WARNINGFLAGS = /W3 /D_CRT_SECURE_NO_DEPRECATE /D_CRT_NONSTDC_NO_DEPRECATE
 VERDEFS = /DOOSQLITE_VER_MAJOR=$(OOSQLITE_MAJOR) /DOOSQLITE_VER_MINOR=$(OOSQLITE_MINOR) /DOOSQLITE_VER_LEVEL=$(OOSQLITE_MOD_LVL) /DOOSQLITE_VER_BUILD=$(OOSQLITE_BLD_LVL) /DOOSQLITE_VER_STRING=\"$(OOSQLITE_VER_STR)\" /DOOSQLITE_COPYRIGHT_YEAR=\"$(OOSQLITE_COPY_YEAR)\"
-EXTRAINCLUDE = /I src\sqlite /I $(PLATFORM_DIR)
+EXTRAINCLUDE = /I src\sqlite /I $(PLATFORM_DIR) /I $(APICOMMON_DIR)
 
 SQLITEFLAGS=/DSQLITE_ENABLE_COLUMN_METADATA /DSQLITE_ENABLE_MEMORY_MANAGEMENT /DSQLITE_ENABLE_FTS3 /DSQLITE_ENABLE_FTS3_PARENTHESIS /DSQLITE_DEFAULT_FOREIGN_KEYS=1 /DSQLITE_CORE
 BASEFLAGS = $(WARNINGFLAGS) $(VERDEFS) $(EXTRAINCLUDE) $(SQLITEFLAGS)
@@ -192,7 +202,7 @@ LFLAGS_DLL = /nologo /SUBSYSTEM:Windows $(REXX_LIBS) $(WIN_LIBS) -def:$(PLATFORM
 # For NSIS
 OUTDIR = $(ROOTDIR)\$(BIN_DIR)
 
-OBJ_FILES = $(OUT_DIR)\sqlite3.obj $(OUT_DIR)\ooSQLite.obj $(OUT_DIR)\APICommon.obj   $(OUT_DIR)\ooSqlSysLibrary.obj \
+OBJ_FILES = $(OUT_DIR)\sqlite3.obj $(OUT_DIR)\ooSQLite.obj $(APICOMMON_DIR)\APICommon.obj   $(OUT_DIR)\ooSqlSysLibrary.obj \
             $(OUT_DIR)\nextchar.obj $(OUT_DIR)\ieee754.obj $(OUT_DIR)\percentile.obj  $(OUT_DIR)\rot13.obj \
             $(OUT_DIR)\regexp.obj $(OUT_DIR)\spellfix.obj  $(OUT_DIR)\totype.obj $(OUT_DIR)\wholenumber.obj
 
@@ -209,11 +219,8 @@ $(OUT_DIR)\sqlite3.obj: src\sqlite\sqlite3.c src\sqlite\sqlite3.h Makefile.win
 $(OUT_DIR)\shell.obj: src\sqlite\shell.c src\sqlite\sqlite3.h Makefile.win
   cl $(CFLAGS) /Fo.\$(OUT_DIR)\ src\sqlite\shell.c
 
-$(OUT_DIR)\ooSQLite.obj: src\ooSQLite.cpp src\ooSQLite.hpp src\APICommon.hpp src\sqlite\sqlite3.h Makefile.win
+$(OUT_DIR)\ooSQLite.obj: src\ooSQLite.cpp src\ooSQLite.hpp  src\sqlite\sqlite3.h Makefile.win
   cl $(CFLAGS) /DOOSQLITE_BUILD /Fo.\$(OUT_DIR)\ src\ooSQLite.cpp
-
-$(OUT_DIR)\APICommon.obj: src\APICommon.cpp src\APICommon.hpp Makefile.win
-  cl $(CFLAGS) /Fo.\$(OUT_DIR)\ src\APICommon.cpp
 
 $(OUT_DIR)\ooSqlSysLibrary.obj: $(PLATFORM_DIR)\ooSqlSysLibrary.cpp $(PLATFORM_DIR)\ooSqlSysLibrary.hpp Makefile.win
   cl $(CFLAGS) $(SYSLIB_FLAGS) /Fo.\$(OUT_DIR)\ $(PLATFORM_DIR)\ooSqlSysLibrary.cpp

@@ -35,6 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
+::requires 'ooShapes.cls'
 ::requires 'ooconsole' LIBRARY
 
 
@@ -57,6 +58,8 @@
 ::method version class external "LIBRARY ooconsole oocon_version_cls"
 
 ::method init external "LIBRARY ooconsole oocon_init"
+::method unint external "LIBRARY ooconsole oocon_uninit"
+::method screenBufferSize external "LIBRARY ooconsole oocon_screenBufferSize"
 
 ::method test external "LIBRARY ooconsole oocon_test"                           -- Do not document, internal use only
 
@@ -72,14 +75,15 @@
 
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 
-::routine ooconVersion public external "LIBRARY ooconsole ooconVersion_rtn"
+::routine ooconVersion public external "LIBRARY ooconsole oocon_version_rtn"
+::routine ooconScreenBufferSize public external "LIBRARY ooconsole oocon_screenBufferSize_rtn"
 
 
-::routine ooconTest public external "LIBRARY ooconsole ooconTest_rtn"           -- Internal use only
+::routine ooconTest public external "LIBRARY ooconsole oocon_test_rtn"           -- Internal use only
 
 
 /**
-    The ooConsoleConstants class contains all Constant values ...
+ *  The ooConsoleConstants class contains all Constant values ...
  */
 ::class 'ooConsoleConstants' public mixinclass Object
 

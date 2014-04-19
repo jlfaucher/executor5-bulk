@@ -1,6 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2014-2014 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
+/* Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -35,35 +36,53 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-#ifndef ooConsole_Included
-#define ooConsole_Included
+#ifndef ooShapes_Included
+#define ooShapes_Included
 
-#ifdef _WIN32
-    #define NEED_DLL_MAIN
-    #include "winOS.hpp"
-    #undef  NEED_DLL_MAIN
-#else
-    #include "unixOS.hpp"
+
+typedef struct tagORXRECT
+{
+    LONG    left;
+    LONG    top;
+    LONG    right;
+    LONG    bottom;
+} ORXRECT, *PORXRECT;
+
+typedef struct tagORXPOINT
+{
+    LONG  x;
+    LONG  y;
+} ORXPOINT, *PORXPOINT;
+
+typedef struct tagORXSIZE
+{
+    LONG        cx;
+    LONG        cy;
+} ORXSIZE, *PORXSIZE;
+
+
+extern bool rxIsNormalized(PORXRECT r);
+extern bool rxCopyRect(PORXRECT rect, PORXRECT r);
+extern bool rxSetRect(PORXRECT rect, long x, long y, long x2, long y2);
+extern bool rxPtInRect(PORXRECT r, PORXPOINT pt);
+
+extern PORXPOINT     rxGetPoint(RexxMethodContext *context, RexxObjectPtr p, size_t argPos);
+extern RexxObjectPtr rxNewPoint(RexxThreadContext *c, long x, long y);
+extern RexxObjectPtr rxNewPoint(RexxMethodContext *c, long x, long y);
+extern RexxObjectPtr rxNewPoint(RexxThreadContext *c, ORXPOINT *pt);
+extern RexxObjectPtr rxNewPoint(RexxMethodContext *c, ORXPOINT *pt);
+extern PORXRECT      rxGetRect(RexxMethodContext *context, RexxObjectPtr r, size_t argPos);
+extern RexxObjectPtr rxNewRect(RexxMethodContext *context, long l, long t, long r, long b);
+extern RexxObjectPtr rxNewRect(RexxThreadContext *context, PORXRECT r);
+extern RexxObjectPtr rxNewRect(RexxMethodContext *context, PORXRECT r);
+extern PORXSIZE      rxGetSize(RexxMethodContext *context, RexxObjectPtr s, size_t argPos);
+extern RexxObjectPtr rxNewSize(RexxThreadContext *c, long cx, long cy);
+extern RexxObjectPtr rxNewSize(RexxMethodContext *c, long cx, long cy);
+extern RexxObjectPtr rxNewSize(RexxMethodContext *c, PORXSIZE s);
+
+extern bool          goodMinMaxArgs(RexxMethodContext *c, RexxArrayObject args, size_t min, size_t max, size_t *arraySize);
+extern bool          getRectFromArglist(RexxMethodContext *, RexxArrayObject, PORXRECT, bool, int, int, size_t *, size_t *);
+extern bool          getPointFromArglist(RexxMethodContext *, RexxArrayObject, PORXPOINT, int, int, size_t *, size_t *);
+extern bool          getSizeFromArglist(RexxMethodContext *, RexxArrayObject, PORXPOINT, int, int, size_t *, size_t *);
+
 #endif
-
-#include "oorexxapi.h"
-
-#define VALID_VERSION_TYPES       "[O]neLine [F]ull [C]ompact [L]ibVersion [N]umber [S]ourceID"
-#define NO_LOCAL_ENVIRONMENT_MSG  "the .local environment was not found"
-
-
-
-/* Struct for the ooConsole object CSelf. */
-typedef struct _ooConsoleCSelf {
-    HANDLE   hStdErr;
-    HANDLE   hStdIn;
-    HANDLE   hStdOut;
-    uint32_t errRC;        // Error code
-    bool     isValid;      // Is a valid object
-    bool     isLongTerm;   // Is a long term object
-} CooConsole;
-typedef CooConsole *pCooConsole;
-
-
-
-#endif  /* ooConsole_Included */

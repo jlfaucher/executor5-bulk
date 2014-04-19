@@ -1,0 +1,169 @@
+#/*----------------------------------------------------------------------------*/
+#/*                                                                            */
+#/* Copyright (c) 2014-2014 Rexx Language Association. All rights reserved.    */
+#/*                                                                            */
+#/* This program and the accompanying materials are made available under       */
+#/* the terms of the Common Public License v1.0 which accompanies this         */
+#/* distribution. A copy is also available at the following address:           */
+#/* http://www.oorexx.org/license.html                                         */
+#/*                                                                            */
+#/* Redistribution and use in source and binary forms, with or                 */
+#/* without modification, are permitted provided that the following            */
+#/* conditions are met:                                                        */
+#/*                                                                            */
+#/* Redistributions of source code must retain the above copyright             */
+#/* notice, this list of conditions and the following disclaimer.              */
+#/* Redistributions in binary form must reproduce the above copyright          */
+#/* notice, this list of conditions and the following disclaimer in            */
+#/* the documentation and/or other materials provided with the distribution.   */
+#/*                                                                            */
+#/* Neither the name of Rexx Language Association nor the names                */
+#/* of its contributors may be used to endorse or promote products             */
+#/* derived from this software without specific prior written permission.      */
+#/*                                                                            */
+#/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+#/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+#/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+#/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+#/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+#/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+#/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+#/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+#/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+#/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+#/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+#/*                                                                            */
+#/*----------------------------------------------------------------------------*/
+
+
+# This is a Visual C++, nMake compatible make file for APICommon.
+#
+# The compiler needs to be able to find the ooRexx native API headers. If
+# REXX_HOME is set on the system, the correct directory will be automatically
+# added to the LIB and INCLUDE environment variables by this make file.
+#
+# But, we really want to use the ooRexx 4.1.0 version of the native APIs.  So,
+# it is better to point things at a static location containing the 4.1.0
+# version of the native APIs.  This is done in this make file.
+#
+# Define the correct REXX_HOME here, if needed:
+
+REXX_HOME = C:\Rexx\static.ooRexx.4.1.0.release
+
+# Define DEBUG on the command line, or here, to build a debug version.  By
+# default non-debug (release) versions are built.
+# I.e. nMake DEBUG=1 /F Makefile.win
+# DEBUG = 1
+
+
+# We don't really need the libraries because we are no linking ...
+!IF DEFINED(REXX_HOME)
+INCLUDE = $(INCLUDE);$(REXX_HOME)\api
+LIB = $(LIB);$(REXX_HOME)\api
+!ENDIF
+
+REXX_LIBS = rexx.lib rexxapi.lib
+WIN_LIBS  = user32.lib
+
+# Generate the compiler information.  Quit if there is an  error.
+!IF [src\determineCompiler.bat] != 0
+!  ERROR Build error: could not generate compiler informatin.
+!ENDIF
+
+!include src\compiler.info.incl
+
+# Currently in determineCompiler.bat MSVCVER gets set to 10.0 for VC++ 2010,
+# and any later compiler.  So this works okay.  If the batch file gets changed,
+# then this needs to be revisited.
+!IF "$(MSVCVER)" == "10.0"
+MISCDEFS = /DHAVE_STDINT_H
+!ENDIF
+
+# Stuff we need to determine locations
+ROOTDIR = $(MAKEDIR)
+SRCDIR = $(ROOTDIR)\src
+
+# Determine the final output directory
+!if "$(CPU)" == "X64"
+!IF DEFINED(DEBUG)
+BIN_DIR = bin.debug64\windows
+!else
+BIN_DIR = bin.release64\windows
+!endif
+!else
+!IF DEFINED(DEBUG)
+BIN_DIR = bin.debug32\windows
+!else
+BIN_DIR = bin.release32\windows
+!endif
+!endif
+
+
+#
+# Use the same complier / link command as when building other external packages,
+# such as ooDialog:
+#
+
+
+WARNINGFLAGS = /W3 /D_CRT_SECURE_NO_DEPRECATE /D_CRT_NONSTDC_NO_DEPRECATE
+VERDEFS = # No version definitions for now.
+EXTRAINCLUDE = /I src
+
+BASEFLAGS = $(WARNINGFLAGS) $(VERDEFS) $(EXTRAINCLUDE)
+
+
+# The linker flag /OPT:REF removes unreferenced functions and data.  In order
+# for /OPT:REF to work, the code must be compiled with /Gy.  /Gy is
+# automatically turned on with /Zi.  /OPT:REF is the default unless /DEBUG is
+# specified.
+!IF DEFINED(DEBUG)
+
+OUT_DIR = build\debug
+
+MISCDEFS = $(MISCDEFS) /D:_X86_ /DWIN32 /DNULL=0 $(EXTRADBG)
+CFLAGS =  /nologo /EHsc /Zi /Od /MTd /D_DEBUG /DEBUGTYPE:CV $(BASEFLAGS) $(MISCDEFS) /c
+
+!ELSE
+
+OUT_DIR = build\release
+
+MISCDEFS = $(MISCDEFS) /D:_X86_ /DWIN32 /DNDEBUG /DNULL=0
+CFLAGS = /nologo /EHsc /O2 /Gs /Gy /FAs /Fa$(OUT_DIR)\ /MT $(BASEFLAGS) $(MISCDEFS) /c
+
+!ENDIF
+
+
+# What we want to build.
+all: $(BIN_DIR)\APICommon.obj $(BIN_DIR)\APICommon.hpp
+
+
+$(OUT_DIR)\APICommon.obj: src\APICommon.cpp src\APICommon.hpp Makefile.win
+  cl $(CFLAGS) /Fo.\$(OUT_DIR)\ src\APICommon.cpp
+
+$(BIN_DIR)\APICommon.obj: $(OUT_DIR)\APICommon.obj
+    copy $(OUT_DIR)\APICommon.obj $(BIN_DIR) 1>nul 2>&1
+    copy $(ROOTDIR)\vc100.pdb $(BIN_DIR) 1>nul 2>&1
+
+$(BIN_DIR)\APICommon.hpp: src\APICommon.hpp
+    copy src\APICommon.hpp $(BIN_DIR) 1>nul 2>&1
+
+clean:
+    del /Q $(BIN_DIR)\* 1>nul 2>&1
+	  del /Q $(OUT_DIR)\* 1>nul 2>&1
+
+clean_all:
+    del /Q /S bin.release64\linux\* 1>nul 2>&1
+    del /Q /S bin.release64\windows\* 1>nul 2>&1
+
+    del /Q /S bin.debug64\windows\* 1>nul 2>&1
+    del /Q /S bin.debug64\linux\* 1>nul 2>&1
+
+    del /Q /S bin.release32\windows\* 1>nul 2>&1
+    del /Q /S bin.release32\linux\* 1>nul 2>&1
+
+    del /Q /S bin.debug32\windows\* 1>nul 2>&1
+    del /Q /S bin.debug32\linux\* 1>nul 2>&1
+
+	  del /Q /S build\release\* 1>nul 2>&1
+	  del /Q /S build\debug\* 1>nul 2>&1
+
