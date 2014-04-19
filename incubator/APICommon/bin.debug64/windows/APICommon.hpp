@@ -45,9 +45,21 @@
 #endif
 
 
+extern RexxObjectPtr       TheTrueObj;
+extern RexxObjectPtr       TheFalseObj;
+extern RexxObjectPtr       TheNilObj;
+extern RexxObjectPtr       TheZeroObj;
+extern RexxObjectPtr       TheOneObj;
+extern RexxObjectPtr       TheTwoObj;
+extern RexxObjectPtr       TheNegativeOneObj;
+extern RexxObjectPtr       TheZeroPointerObj;
+extern RexxDirectoryObject TheDotLocalObj;
+
 #define NO_MEMORY_MSG             "failed to allocate memory"
 #define INVALID_CONSTANT_MSG      "the valid %s_XXX constants"
 #define NO_LOCAL_ENVIRONMENT_MSG  "the .local environment was not found"
+
+extern bool RexxEntry packageLoadHelper(RexxThreadContext *c);
 
 extern void  severeErrorException(RexxThreadContext *c, const char *msg);
 extern void  systemServiceException(RexxThreadContext *context, const char *msg);

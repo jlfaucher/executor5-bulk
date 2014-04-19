@@ -49,22 +49,6 @@
 #include "APICommon.hpp"
 #include "ooShapes.hpp"
 
-// #include <memory>
-// #include <new>
-// using namespace std;
-
-
-// Initialized in ooConsoleLoad().
-RexxObjectPtr       TheTrueObj        = NULLOBJECT;
-RexxObjectPtr       TheFalseObj       = NULLOBJECT;
-RexxObjectPtr       TheNilObj         = NULLOBJECT;
-RexxObjectPtr       TheZeroObj        = NULLOBJECT;
-RexxObjectPtr       TheOneObj         = NULLOBJECT;
-RexxObjectPtr       TheTwoObj         = NULLOBJECT;
-RexxObjectPtr       TheNegativeOneObj = NULLOBJECT;
-RexxObjectPtr       TheZeroPointerObj = NULLOBJECT;
-RexxDirectoryObject TheDotLocalObj    = NULLOBJECT;
-
 
 /**
  * RexxPackageLoader function.
@@ -81,32 +65,9 @@ RexxDirectoryObject TheDotLocalObj    = NULLOBJECT;
  */
 void RexxEntry ooConsoleLoad(RexxThreadContext *c)
 {
-    TheTrueObj    = c->True();
-    TheFalseObj   = c->False();
-    TheNilObj     = c->Nil();
-    TheZeroObj    = TheFalseObj;
-    TheOneObj     = TheTrueObj;
-
-    TheNegativeOneObj = c->WholeNumber(-1);
-    c->RequestGlobalReference(TheNegativeOneObj);
-
-    TheTwoObj = c->WholeNumber(2);
-    c->RequestGlobalReference(TheTwoObj);
-
-    TheZeroPointerObj = c->NewPointer(NULL);
-    c->RequestGlobalReference(TheZeroPointerObj);
-
-    RexxDirectoryObject local = c->GetLocalEnvironment();
-    if ( local != NULLOBJECT )
+    if ( packageLoadHelper(c) )
     {
-        TheDotLocalObj = local;
-
-        c->DirectoryPut(local, c->NullString(), "ROUTINEERRORMESSAGE");
-    }
-    else
-    {
-        severeErrorException(c, NO_LOCAL_ENVIRONMENT_MSG);
-        return;
+        c->DirectoryPut(TheDotLocalObj, c->NullString(), "ROUTINEERRORMESSAGE");
     }
 }
 

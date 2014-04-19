@@ -73,6 +73,97 @@
 #include "APICommon.hpp"
 #include "ooShapes.hpp"
 
+
+static RexxStringObject genGetVersion(RexxMethodContext *c, CSTRING name, bool full, bool minimal)
+{
+    char   buf[512] = {'\0'};
+    size_t bits = 32;
+
+#ifdef __REXX64__
+    bits = 64;
+#endif
+
+    if ( full )
+    {
+        size_t rx = c->InterpreterVersion();
+
+        snprintf(buf, sizeof(buf), "%s\n"
+                                   "      Version %d.%d.%d.%d (%d bit)\n"
+                                   "      Built %s %s\n"
+                                   "      Copyright (c) RexxLA %s.\n"
+                                   "      All Rights Reserved.\n\n"
+                                   "Rexx: Open Object Rexx Version %d.%d.%d\n\n",
+                 name,
+                 OOSHAPES_VER_MAJOR, OOSHAPES_VER_MINOR, OOSHAPES_VER_LEVEL, OOSHAPES_VER_BUILD, bits,
+                 __DATE__, __TIME__, OOSHAPES_COPYRIGHT_YEAR,
+                 (rx >> 16) & 0xff, (rx >> 8) & 0xff, rx & 0x0000ff);
+    }
+    else
+    {
+        if ( minimal )
+        {
+            snprintf(buf, sizeof(buf), "%d.%d.%d.%d\n",
+                     OOSHAPES_VER_MAJOR, OOSHAPES_VER_MINOR, OOSHAPES_VER_LEVEL, OOSHAPES_VER_BUILD);
+        }
+        else
+        {
+            snprintf(buf, sizeof(buf), "%s Version %d.%d.%d.%d (%d bit)\n",
+                     name, OOSHAPES_VER_MAJOR, OOSHAPES_VER_MINOR, OOSHAPES_VER_LEVEL,
+                     OOSHAPES_VER_BUILD, bits);
+        }
+    }
+
+    return c->String(buf);
+}
+
+/** version  [class method]
+ *
+ *  @param type  [optional]  The style of the version output returned.  Keywords
+ *               are, but only 1st letter is required:
+ *
+ *                 Compact
+ *                 Full
+ *                 OneLine
+ *
+ *               The defualt is OneLine
+ *
+ * @note This method is mapped, as a class method, to each of the .Point, .Rect,
+ *       and .Size classes.  It reports the package version actually.
+ *
+ */
+RexxMethod2(RexxObjectPtr, ooShapes_version_cls, OPTIONAL_CSTRING, type, OSELF, self)
+{
+    RexxObjectPtr rxName = context->SendMessage0(self, "DEFAULTNAME");
+    CSTRING       name   = context->ObjectToStringValue(rxName);
+
+    if ( argumentExists(1) )
+    {
+        switch ( toupper(*type) )
+        {
+            case 'O' :
+                return genGetVersion(context, name, false, false);
+                break;
+
+            case 'F' :
+                return genGetVersion(context, name, true, false);
+                break;
+
+            case 'C' :
+                return genGetVersion(context, name, false, true);
+                break;
+
+            default :
+                wrongArgKeywordException(context, 1, "Compact, Full, or Oneline", type);
+                return TheZeroObj;
+                break;
+        }
+    }
+
+    return genGetVersion(context, name, false, false);
+}
+
+
+
 /**
  * Methods for the .Point class.
  */

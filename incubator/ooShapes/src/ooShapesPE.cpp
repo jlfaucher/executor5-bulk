@@ -71,7 +71,7 @@
     {
         if ( fdwReason == DLL_PROCESS_ATTACH )
         {
-            printf("Loading DLL\n"); // Don't need to do anything
+            ; // Don't need to do anything
         }
         else if ( fdwReason == DLL_PROCESS_DETACH )
         {
@@ -86,18 +86,6 @@
 
 #include "oorexxapi.h"
 #include "APICommon.hpp"
-
-
-// Initialized in ooShapesLoad().
-RexxObjectPtr       TheTrueObj        = NULLOBJECT;
-RexxObjectPtr       TheFalseObj       = NULLOBJECT;
-RexxObjectPtr       TheNilObj         = NULLOBJECT;
-RexxObjectPtr       TheZeroObj        = NULLOBJECT;
-RexxObjectPtr       TheOneObj         = NULLOBJECT;
-RexxObjectPtr       TheTwoObj         = NULLOBJECT;
-RexxObjectPtr       TheNegativeOneObj = NULLOBJECT;
-RexxObjectPtr       TheZeroPointerObj = NULLOBJECT;
-RexxDirectoryObject TheDotLocalObj    = NULLOBJECT;
 
 
 /**
@@ -115,32 +103,9 @@ RexxDirectoryObject TheDotLocalObj    = NULLOBJECT;
  */
 void RexxEntry ooShapesLoad(RexxThreadContext *c)
 {
-    TheTrueObj    = c->True();
-    TheFalseObj   = c->False();
-    TheNilObj     = c->Nil();
-    TheZeroObj    = TheFalseObj;
-    TheOneObj     = TheTrueObj;
-
-    TheNegativeOneObj = c->WholeNumber(-1);
-    c->RequestGlobalReference(TheNegativeOneObj);
-
-    TheTwoObj = c->WholeNumber(2);
-    c->RequestGlobalReference(TheTwoObj);
-
-    TheZeroPointerObj = c->NewPointer(NULL);
-    c->RequestGlobalReference(TheZeroPointerObj);
-
-    RexxDirectoryObject local = c->GetLocalEnvironment();
-    if ( local != NULLOBJECT )
+    if ( packageLoadHelper(c) )
     {
-        TheDotLocalObj = local;
-
-        c->DirectoryPut(local, c->NullString(), "ROUTINEERRORMESSAGE");
-    }
-    else
-    {
-        severeErrorException(c, NO_LOCAL_ENVIRONMENT_MSG);
-        return;
+        c->DirectoryPut(TheDotLocalObj, c->NullString(), "ROUTINEERRORMESSAGE");
     }
 }
 
@@ -164,6 +129,8 @@ void RexxEntry ooShapesUnLoad(RexxThreadContext *c)
 }
 
 
+// Generic
+REXX_METHOD_PROTOTYPE(ooShapes_version_cls);
 
 // .Rect
 REXX_METHOD_PROTOTYPE(rect_init);
@@ -204,6 +171,7 @@ REXX_METHOD_PROTOTYPE(size_string);
 
 
 RexxMethodEntry ooShapes_methods[] = {
+    REXX_METHOD(ooShapes_version_cls,           ooShapes_version_cls),
     REXX_METHOD(rect_init,                      rect_init),
     REXX_METHOD(rect_left,                      rect_left),
     REXX_METHOD(rect_top,                       rect_top),
@@ -242,7 +210,7 @@ RexxPackageEntry ooShapes_package_entry =
 {
     STANDARD_PACKAGE_HEADER
     REXX_INTERPRETER_4_1_0,              // needs at least the 4.1.0 interpreter
-    "ooConsole",                         // name of the package
+    "ooShapes",                          // name of the package
     "1.0.0",                             // package information
     ooShapesLoad,                        // package load function
     ooShapesUnLoad,                      // package unload function

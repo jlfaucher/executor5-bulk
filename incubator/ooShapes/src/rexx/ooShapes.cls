@@ -38,6 +38,7 @@
 ::requires 'ooshapes' LIBRARY
 
 ::class 'Rect' public
+::method version class external "LIBRARY ooshapes ooShapes_version_cls"
 ::method init external "LIBRARY ooshapes rect_init"
 ::attribute left get external "LIBRARY ooshapes rect_left"
 ::attribute left set external "LIBRARY ooshapes rect_setLeft"
@@ -51,6 +52,7 @@
 ::method string external "LIBRARY ooshapes rect_string"
 
 ::class 'Point' public
+::method version class external "LIBRARY ooshapes ooShapes_version_cls"
 ::method init external "LIBRARY ooshapes point_init"
 ::attribute x get external "LIBRARY ooshapes point_x"
 ::attribute x set external "LIBRARY ooshapes point_setX"
@@ -65,6 +67,7 @@
 ::method string external "LIBRARY ooshapes point_string"
 
 ::class 'Size' public
+::method version class external "LIBRARY ooshapes ooShapes_version_cls"
 ::method init external "LIBRARY ooshapes size_init"
 ::attribute width get external "LIBRARY ooshapes size_cx"
 ::attribute width set external "LIBRARY ooshapes size_setCX"

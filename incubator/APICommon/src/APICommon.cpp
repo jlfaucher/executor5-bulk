@@ -49,6 +49,46 @@
 #include "oorexxapi.h"
 #include "APICommon.hpp"
 
+RexxObjectPtr       TheTrueObj        = NULLOBJECT;
+RexxObjectPtr       TheFalseObj       = NULLOBJECT;
+RexxObjectPtr       TheNilObj         = NULLOBJECT;
+RexxObjectPtr       TheZeroObj        = NULLOBJECT;
+RexxObjectPtr       TheOneObj         = NULLOBJECT;
+RexxObjectPtr       TheTwoObj         = NULLOBJECT;
+RexxObjectPtr       TheNegativeOneObj = NULLOBJECT;
+RexxObjectPtr       TheZeroPointerObj = NULLOBJECT;
+RexxDirectoryObject TheDotLocalObj    = NULLOBJECT;
+
+bool RexxEntry packageLoadHelper(RexxThreadContext *c)
+{
+    TheTrueObj    = c->True();
+    TheFalseObj   = c->False();
+    TheNilObj     = c->Nil();
+    TheZeroObj    = TheFalseObj;
+    TheOneObj     = TheTrueObj;
+
+    TheNegativeOneObj = c->WholeNumber(-1);
+    c->RequestGlobalReference(TheNegativeOneObj);
+
+    TheTwoObj = c->WholeNumber(2);
+    c->RequestGlobalReference(TheTwoObj);
+
+    TheZeroPointerObj = c->NewPointer(NULL);
+    c->RequestGlobalReference(TheZeroPointerObj);
+
+    RexxDirectoryObject local = c->GetLocalEnvironment();
+    if ( local != NULLOBJECT )
+    {
+        TheDotLocalObj = local;
+    }
+    else
+    {
+        severeErrorException(c, NO_LOCAL_ENVIRONMENT_MSG);
+        return false;
+    }
+    return true;
+}
+
 
 /**
  * 49.900
@@ -1363,7 +1403,6 @@ RexxObjectPtr rxNewBuiltinObject(RexxThreadContext *c, CSTRING className)
     }
     return o;
 }
-
 RexxObjectPtr rxNewBuiltinObject(RexxMethodContext *c, CSTRING className)
 {
     return rxNewBuiltinObject(c->threadContext, className);

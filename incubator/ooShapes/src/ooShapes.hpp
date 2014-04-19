@@ -42,22 +42,22 @@
 
 typedef struct tagORXRECT
 {
-    LONG    left;
-    LONG    top;
-    LONG    right;
-    LONG    bottom;
+    long    left;
+    long    top;
+    long    right;
+    long    bottom;
 } ORXRECT, *PORXRECT;
 
 typedef struct tagORXPOINT
 {
-    LONG  x;
-    LONG  y;
+    long  x;
+    long  y;
 } ORXPOINT, *PORXPOINT;
 
 typedef struct tagORXSIZE
 {
-    LONG        cx;
-    LONG        cy;
+    long        cx;
+    long        cy;
 } ORXSIZE, *PORXSIZE;
 
 
