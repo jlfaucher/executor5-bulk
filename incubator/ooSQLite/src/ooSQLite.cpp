@@ -55,17 +55,6 @@
 using namespace std;
 
 
-// Initialized in ooSQLiteLoad().
-RexxObjectPtr       TheTrueObj        = NULLOBJECT;
-RexxObjectPtr       TheFalseObj       = NULLOBJECT;
-RexxObjectPtr       TheNilObj         = NULLOBJECT;
-RexxObjectPtr       TheZeroObj        = NULLOBJECT;
-RexxObjectPtr       TheOneObj         = NULLOBJECT;
-RexxObjectPtr       TheTwoObj         = NULLOBJECT;
-RexxObjectPtr       TheNegativeOneObj = NULLOBJECT;
-RexxObjectPtr       TheZeroPointerObj = NULLOBJECT;
-RexxDirectoryObject TheDotLocalObj    = NULLOBJECT;
-
 // Initialized in the class init methods.
 RexxClassObject     TheOOSQLiteClass            = NULLOBJECT;
 RexxClassObject     TheOOSQLiteConnectionClass  = NULLOBJECT;
@@ -93,39 +82,21 @@ RexxObjectPtr       TheHiddenHelper       = NULLOBJECT;
  */
 void RexxEntry ooSQLiteLoad(RexxThreadContext *c)
 {
+#if OOSQLDBG == 1
+    printf("\nooSQLiteLoad() entered\n");
+#endif
+
+    if ( ! packageLoadHelper(c) )
+    {
+        return;
+    }
+
+    c->DirectoryPut(TheDotLocalObj, c->NullString(), "ROUTINEERRORMESSAGE");
     int rc = sqlite3_initialize();
 
 #if OOSQLDBG == 1
-    printf("\nooSQLiteLoad() entered sqlite3_initialize() rc=%d\n\n", rc);
+    printf("\nooSQLiteLoad() sqlite3_initialize() rc=%d\n\n", rc);
 #endif
-
-    TheTrueObj    = c->True();
-    TheFalseObj   = c->False();
-    TheNilObj     = c->Nil();
-    TheZeroObj    = TheFalseObj;
-    TheOneObj     = TheTrueObj;
-
-    TheNegativeOneObj = c->WholeNumber(-1);
-    c->RequestGlobalReference(TheNegativeOneObj);
-
-    TheTwoObj = c->WholeNumber(2);
-    c->RequestGlobalReference(TheTwoObj);
-
-    TheZeroPointerObj = c->NewPointer(NULL);
-    c->RequestGlobalReference(TheZeroPointerObj);
-
-    RexxDirectoryObject local = c->GetLocalEnvironment();
-    if ( local != NULLOBJECT )
-    {
-        TheDotLocalObj = local;
-
-        c->DirectoryPut(local, c->NullString(), "ROUTINEERRORMESSAGE");
-    }
-    else
-    {
-        severeErrorException(c, NO_LOCAL_ENVIRONMENT_MSG);
-        return;
-    }
 
 #ifndef _WIN32
     crit_sec = sqlite3_mutex_alloc(SQLITE_MUTEX_FAST);
