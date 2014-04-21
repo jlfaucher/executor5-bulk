@@ -36,14 +36,11 @@
 #/*----------------------------------------------------------------------------*/
 
 
-# Makefile for ooSQLite on Linux.  To make the distribution file requires that a
+# Makefile for ooShapes on Linux.  To make the distribution file requires that a
 # working rexx is installed on the system.  The build also requires that the
 # readline-devel package is installed.
 #
 # It seems like this make file might also work on Mac and other unixes.
-#
-# Note that the ooSQLite3 executable is named oosqlite3 here rather than
-# ooSQlite3 as it is on Windows.
 #
 
 # We want to get the svn revision number, but if there are modified files,
@@ -53,43 +50,41 @@ empty :=
 SVN_REV := $(shell svnversion)
 SVN_REV := $(subst $(letter),$(empty),$(SVN_REV))
 
-# Include the ooSQLite version numbers, etc., then fix them up with the svn
+# Include the ooShapes version numbers, etc., then fix them up with the svn
 # revision.
-include src/ooSQLite.ver
+include src/ooShapes.ver
 
-OOSQLITE_BLD_LVL:= $(SVN_REV)
-OOSQLITE_VER_STR:= "$(OOSQLITE_MAJOR).$(OOSQLITE_MINOR).$(OOSQLITE_MOD_LVL).$(OOSQLITE_BLD_LVL)"
+OOSHAPES_BLD_LVL:= $(SVN_REV)
+OOSHAPES_VER_STR:= "$(OOSHAPES_MAJOR).$(OOSHAPES_MINOR).$(OOSHAPES_MOD_LVL).$(OOSHAPES_BLD_LVL)"
 
 PLATFORM_DIR=src/platform/unix
 
-# These definitions come from the Makefile produced by running configure in the
-# ooSQLite/src/platform/unix/sqlite-autoconf directory.  The DEFS =
-# comes directly from the DEFS define in the Makefle, minus the things like
-# -DPACKAGE_NAME=, etc. that we don't need for our build.
-#
-# The GEFS = comes from capturing the output of the build and taking the -D
-# options, minus the same -D options as above.  The only extra thing that we
-# might need is -D_REENTRANT=1 -DSQLITE_THREADSAFE=1  SQLITE_THREADSAFE defaults
-# to 1 in sqlite3.c, so we just add _REENTRANT to the CONFFLAGS.
-#
-# If SQLITE_THREAD was going to be changed it should be addes to SQLITEFLAGS
-# anyway.  There is also in GEFS: -DSQLITE_ENABLE_FTS3 -DSQLITE_ENABLE_RTREE
-# Again, those would be added to SQLITEFLAGS if we want them.  From examining
-# these 2 defines, we come up with CONFFLAGS, which we use.  The rest is for
-# reference.
-#
-# Note that the -D_REENTRANT is also in the link flags in the Makefile.  Not
-# sure that is really needed, but I've added it anyway.
-#
-# Note also that I expected a config.h file to be produced.  But, at least on
-# Fedora there is no config.h produced.
-#
-# DEFS = -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_DLFCN_H=1 -DHAVE_FDATASYNC=1 -DHAVE_USLEEP=1 -DHAVE_LOCALTIME_R=1 -DHAVE_GMTIME_R=1 -DHAVE_DECL_STRERROR_R=1 -DHAVE_STRERROR_R=1 -DHAVE_POSIX_FALLOCATE=1
-# GEFS = -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_DLFCN_H=1 -DHAVE_FDATASYNC=1 -DHAVE_USLEEP=1 -DHAVE_LOCALTIME_R=1 -DHAVE_GMTIME_R=1 -DHAVE_DECL_STRERROR_R=1 -DHAVE_STRERROR_R=1 -DHAVE_POSIX_FALLOCATE=1 -I. -I. -D_REENTRANT=1 -DSQLITE_THREADSAFE=1 -DSQLITE_ENABLE_FTS3 -DSQLITE_ENABLE_RTREE
-CONFFLAGS = -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_DLFCN_H=1 -DHAVE_FDATASYNC=1 -DHAVE_USLEEP=1 -DHAVE_LOCALTIME_R=1 -DHAVE_GMTIME_R=1 -DHAVE_DECL_STRERROR_R=1 -DHAVE_STRERROR_R=1 -DHAVE_POSIX_FALLOCATE=1 -DHAVE_READLINE=1 -D_REENTRANT=1
+# Determine the final output directory.  Define CPU and DEBUG on the command
+# line to make ...
+
+ifeq ($(CPU),X64)
+ifeq ($(DEBUG),1)
+	DBG=-g
+	OUT_DIR=build/debug
+	BIN_DIR=bin.debug64/linux
+else
+	OUT_DIR=build/release
+	BIN_DIR=bin.release64/linux
+endif
+else
+ifeq ($(DEBUG),1)
+	DBG=-g
+	OUT_DIR=build/debug
+	BIN_DIR=bin.debug32/linux
+else
+	OUT_DIR=build/release
+	BIN_DIR=bin.release32/linux
+endif
+endif
+
 
 WARNINGFLAGS=
-VERDEFS=-DOOSQLITE_VER_MAJOR=$(OOSQLITE_MAJOR) -DOOSQLITE_VER_MINOR=$(OOSQLITE_MINOR) -DOOSQLITE_VER_LEVEL=$(OOSQLITE_MOD_LVL) -DOOSQLITE_VER_BUILD=$(OOSQLITE_BLD_LVL) -DOOSQLITE_VER_STRING=\"$(OOSQLITE_VER_STR)\" -DOOSQLITE_COPYRIGHT_YEAR=\"$(OOSQLITE_COPY_YEAR)\"
+VERDEFS=-DOOSHAPES_VER_MAJOR=$(OOSHAPES_MAJOR) -DOOSHAPES_VER_MINOR=$(OOSHAPES_MINOR) -DOOSHAPES_VER_LEVEL=$(OOSHAPES_MOD_LVL) -DOOSHAPES_VER_BUILD=$(OOSHAPES_BLD_LVL) -DOOSHAPES_VER_STRING=\"$(OOSHAPES_VER_STR)\" -DOOSHAPES_COPYRIGHT_YEAR=\"$(OOSHAPES_COPY_YEAR)\"
 EXTRAINCLUDE=-I src/sqlite -I $(PLATFORM_DIR)
 
 SQLITEFLAGS=-DSQLITE_ENABLE_COLUMN_METADATA -DSQLITE_ENABLE_MEMORY_MANAGEMENT -DSQLITE_ENABLE_FTS3 -DSQLITE_ENABLE_FTS3_PARENTHESIS -DSQLITE_DEFAULT_FOREIGN_KEYS=1 -DSQLITE_CORE

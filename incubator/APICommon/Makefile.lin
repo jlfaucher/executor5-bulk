@@ -43,7 +43,6 @@
 
 # Determine the final output directory.  Define CPU and DEBUG on the command
 # line to make ...
-#CPU=X64
 
 ifeq ($(CPU),X64)
 ifeq ($(DEBUG),1)
@@ -55,7 +54,7 @@ else
 	BIN_DIR=bin.release64/linux
 endif
 else
-ifeq $(DEBUG) 1
+ifeq ($(DEBUG),1)
 	DBG=-g
 	OUT_DIR=build/debug
 	BIN_DIR=bin.debug32/linux
@@ -64,9 +63,6 @@ else
 	BIN_DIR=bin.release32/linux
 endif
 endif
-
-#action:
-#	echo CPU is $(CPU) DEBUG is $(DEBUG)
 
 WARNINGFLAGS=
 VERDEFS=

@@ -60,6 +60,23 @@ include src/ooSQLite.ver
 OOSQLITE_BLD_LVL:= $(SVN_REV)
 OOSQLITE_VER_STR:= "$(OOSQLITE_MAJOR).$(OOSQLITE_MINOR).$(OOSQLITE_MOD_LVL).$(OOSQLITE_BLD_LVL)"
 
+# Determine the source of APICommon.  Define DEBUG=XX and CPU=XX to build
+# correctly ..
+
+ifeq ($(CPU),X64)
+ifeq ($(DEBUG),1)
+	APICOMMON_DIR=../APICommon/bin.debug64/linux
+else
+	APICOMMON_DIR=../APICommon/bin.release64/linux
+endif
+else
+ifeq ($(DEBUG),1)
+	APICOMMON_DIR=../APICommon/bin.debug32/linux
+else
+	APICOMMON_DIR=../APICommon/bin.release32/linux
+endif
+endif
+
 PLATFORM_DIR=src/platform/unix
 
 # These definitions come from the Makefile produced by running configure in the
@@ -90,7 +107,7 @@ CONFFLAGS = -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STD
 
 WARNINGFLAGS=
 VERDEFS=-DOOSQLITE_VER_MAJOR=$(OOSQLITE_MAJOR) -DOOSQLITE_VER_MINOR=$(OOSQLITE_MINOR) -DOOSQLITE_VER_LEVEL=$(OOSQLITE_MOD_LVL) -DOOSQLITE_VER_BUILD=$(OOSQLITE_BLD_LVL) -DOOSQLITE_VER_STRING=\"$(OOSQLITE_VER_STR)\" -DOOSQLITE_COPYRIGHT_YEAR=\"$(OOSQLITE_COPY_YEAR)\"
-EXTRAINCLUDE=-I src/sqlite -I $(PLATFORM_DIR)
+EXTRAINCLUDE=-I src/sqlite -I $(PLATFORM_DIR) -I $(APICOMMON_DIR)
 
 SQLITEFLAGS=-DSQLITE_ENABLE_COLUMN_METADATA -DSQLITE_ENABLE_MEMORY_MANAGEMENT -DSQLITE_ENABLE_FTS3 -DSQLITE_ENABLE_FTS3_PARENTHESIS -DSQLITE_DEFAULT_FOREIGN_KEYS=1 -DSQLITE_CORE
 BASEFLAGS = $(WARNINGFLAGS) $(VERDEFS) $(EXTRAINCLUDE) $(SQLITEFLAGS) $(CONFFLAGS)
@@ -109,9 +126,9 @@ EXE_LLIBS=-L$(OUT_DIR) -ldl -lpthread -lstdc++ -lreadline -lcurses
 
 CFLAGS=-c -fPIC $(BASEFLAGS)
 
-OOSQLITE_OBJS=$(OUT_DIR)/sqlite3.o $(OUT_DIR)/ooSQLite.o $(OUT_DIR)/APICommon.o $(OUT_DIR)/ooSqlSysLibrary.o \
-            $(OUT_DIR)/ieee754.o $(OUT_DIR)/nextchar.o $(OUT_DIR)/percentile.o $(OUT_DIR)/rot13.o \
-            $(OUT_DIR)/regexp.o $(OUT_DIR)/spellfix.o $(OUT_DIR)/totype.o $(OUT_DIR)/wholenumber.o
+OOSQLITE_OBJS=$(OUT_DIR)/sqlite3.o $(OUT_DIR)/ooSQLite.o $(APICOMMON_DIR)/APICommon.o $(OUT_DIR)/ooSqlSysLibrary.o \
+              $(OUT_DIR)/ieee754.o $(OUT_DIR)/nextchar.o $(OUT_DIR)/percentile.o      $(OUT_DIR)/rot13.o \
+              $(OUT_DIR)/regexp.o  $(OUT_DIR)/spellfix.o $(OUT_DIR)/totype.o          $(OUT_DIR)/wholenumber.o
 
 
 # What we want to build.
@@ -124,11 +141,8 @@ $(OUT_DIR)/sqlite3.o: src/sqlite/sqlite3.c src/sqlite/sqlite3.h Makefile.lin
 $(OUT_DIR)/shell.o: src/sqlite/shell.c src/sqlite/sqlite3.h Makefile.lin
 	gcc $(DBG) $(CFLAGS) $(EXTRA_INCLUDE) -o $(OUT_DIR)/shell.o src/sqlite/shell.c
 
-$(OUT_DIR)/ooSQLite.o: src/ooSQLite.cpp src/ooSQLite.hpp src/APICommon.hpp src/sqlite/sqlite3.h Makefile.lin
+$(OUT_DIR)/ooSQLite.o: src/ooSQLite.cpp src/ooSQLite.hpp $(APICOMMON_DIR)/APICommon.hpp src/sqlite/sqlite3.h Makefile.lin
 	gcc $(DBG)  $(CFLAGS) -DOOSQLITE_BUILD $(EXTRA_INCLUDE) -o $(OUT_DIR)/ooSQLite.o src/ooSQLite.cpp
-
-$(OUT_DIR)/APICommon.o: src/APICommon.cpp src/APICommon.hpp Makefile.lin
-	gcc $(DBG)  $(CFLAGS) $(EXTRA_INCLUDE) -o $(OUT_DIR)/APICommon.o  src/APICommon.cpp
 
 $(OUT_DIR)/ooSqlSysLibrary.o: $(PLATFORM_DIR)/ooSqlSysLibrary.cpp $(PLATFORM_DIR)/ooSqlSysLibrary.hpp Makefile.lin
 	gcc $(DBG)  $(CFLAGS) $(EXTRA_INCLUDE) $(SYSLIB_FLAGS) -o $(OUT_DIR)/ooSqlSysLibrary.o $(PLATFORM_DIR)/ooSqlSysLibrary.cpp
@@ -194,7 +208,7 @@ clean_all:
 	cd ../../../
 
 clean:
-	rm -f $(OUT_DIR)/*.so $(OUT_DIR)/ooSQLite.o $(OUT_DIR)/APICommon.o $(OUT_DIR)/oosqlite3
+	rm -f $(OUT_DIR)/*.so $(OUT_DIR)/ooSQLite.o $(OUT_DIR)/oosqlite3
 	cd examples/user.extensions; make -f Makefile.lin clean
 	cd examples/user.extensions/autoPackages; make -f Makefile.lin clean
 	cd ../../../
