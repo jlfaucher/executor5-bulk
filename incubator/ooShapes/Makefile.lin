@@ -67,18 +67,22 @@ ifeq ($(DEBUG),1)
 	DBG=-g
 	OUT_DIR=build/debug
 	BIN_DIR=bin.debug64/linux
+	APICOMMON_DIR=../APICommon/bin.debug64/linux
 else
 	OUT_DIR=build/release
 	BIN_DIR=bin.release64/linux
+	APICOMMON_DIR=../APICommon/bin.debug64/linux
 endif
 else
 ifeq ($(DEBUG),1)
 	DBG=-g
 	OUT_DIR=build/debug
 	BIN_DIR=bin.debug32/linux
+	APICOMMON_DIR=../APICommon/bin.debug64/linux
 else
 	OUT_DIR=build/release
 	BIN_DIR=bin.release32/linux
+	APICOMMON_DIR=../APICommon/bin./linux
 endif
 endif
 
