@@ -1111,23 +1111,12 @@ extern CRITICAL_SECTION    ps_crit_sec;
 extern DWORD               ComCtl32Version;
 extern char                ComCtl32VersionStr[];
 
-extern RexxObjectPtr       TheTrueObj;
-extern RexxObjectPtr       TheFalseObj;
-extern RexxObjectPtr       TheNilObj;
-extern RexxObjectPtr       TheZeroObj;
-extern RexxObjectPtr       TheTwoObj;
-extern RexxObjectPtr       TheOneObj;
-extern RexxObjectPtr       TheNegativeOneObj;
-
 extern RexxObjectPtr       TheApplicationObj;
 extern RexxDirectoryObject TheConstDir;
 extern oodConstDir_t       TheConstDirUsage;
 extern HICON               TheDefaultSmallIcon;
 extern HICON               TheDefaultBigIcon;
 extern bool                DefaultIconIsShared;
-
-extern RexxDirectoryObject TheDotLocalObj;
-extern RexxPointerObject   TheNullPtrObj;
 
 extern RexxClassObject ThePlainBaseDialogClass;
 extern RexxClassObject TheDynamicDialogClass;

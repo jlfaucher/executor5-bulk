@@ -46,6 +46,7 @@
 #include <WindowsX.h>
 
 #include "APICommon.hpp"
+#include "ooShapes.hpp"
 #include "oodCommon.hpp"
 #include "oodMessaging.hpp"
 #include "oodControl.hpp"
@@ -1447,7 +1448,7 @@ RexxMethod7(logical_t, tt_addToolRect, RexxObjectPtr, dlg, RexxObjectPtr, rxID, 
         return FALSE;
     }
 
-    PRECT pRect = rxGetRect(context, _rect, 3);
+    PRECT pRect = (PRECT)rxGetRect(context, _rect, 3);
     if ( pRect == NULL )
     {
         return FALSE;
@@ -1525,7 +1526,7 @@ RexxMethod3(logical_t, tt_adjustRect, RexxObjectPtr, _rect, OPTIONAL_logical_t, 
         return FALSE;
     }
 
-    PRECT r = rxGetRect(context, _rect, 1);
+    PRECT r = (PRECT)rxGetRect(context, _rect, 1);
     if ( r == NULL )
     {
         return FALSE;
@@ -1798,7 +1799,7 @@ RexxMethod1(RexxObjectPtr, tt_getMargin, CSELF, pCSelf)
     RECT r;
     SendMessage(pcdc->hCtrl, TTM_GETMARGIN, 0, (LPARAM)&r);
 
-    return rxNewRect(context, &r);
+    return rxNewRect(context, (PORXRECT)&r);
 }
 
 
@@ -2159,7 +2160,7 @@ RexxMethod3(logical_t, tt_hitTestInfo, RexxObjectPtr, toolInfo, ARGLIST, args, C
     size_t arraySize;
     size_t argsUsed;
     POINT  point;
-    if ( ! getPointFromArglist(context, args, &point, 2, 3, &arraySize, &argsUsed) )
+    if ( ! getPointFromArglist(context, args, (PORXPOINT)&point, 2, 3, &arraySize, &argsUsed) )
     {
         goto err_out;
     }
@@ -2434,7 +2435,7 @@ RexxMethod4(uint32_t, tt_newToolRect, RexxObjectPtr, r, RexxObjectPtr, toolID, O
         goto done_out;
     }
 
-    PRECT pRect = rxGetRect(context, r, 1);
+    PRECT pRect = (PRECT)rxGetRect(context, r, 1);
     if ( pRect == NULL )
     {
         goto done_out;
@@ -2600,7 +2601,7 @@ RexxMethod2(uint32_t, tt_setMargin, RexxObjectPtr, _r, CSELF, pCSelf)
         return 0;
     }
 
-    PRECT r = rxGetRect(context, _r, 1);
+    PRECT r = (PRECT)rxGetRect(context, _r, 1);
     if ( r == NULL )
     {
         return 0;
@@ -2932,7 +2933,7 @@ RexxMethod2(uint32_t, tt_trackPosition, ARGLIST, args, CSELF, pCSelf)
     size_t countArgs;
     size_t argsUsed;
     POINT  point;
-    if ( ! getPointFromArglist(context, args, &point, 1, 2, &countArgs, &argsUsed) )
+    if ( ! getPointFromArglist(context, args, (PORXPOINT)&point, 1, 2, &countArgs, &argsUsed) )
     {
         return 0;
     }
@@ -3254,7 +3255,7 @@ RexxMethod7(RexxObjectPtr, ti_init, RexxObjectPtr, hwndObj, OPTIONAL_RexxObjectP
 
     if ( argumentExists(5) )
     {
-        PRECT r = rxGetRect(context, _rect, 5);
+        PRECT r = (PRECT)rxGetRect(context, _rect, 5);
         if ( r == NULL )
         {
             goto done_out;
@@ -3297,14 +3298,14 @@ RexxMethod1(RexxObjectPtr, ti_rect, CSELF, cSelf)
     LPTOOLINFO pTI = (LPTOOLINFO)cSelf;
     PRECT pRect = &pTI->rect;
 
-    return rxNewRect(context, pRect);
+    return rxNewRect(context, (PORXRECT)pRect);
 }
 RexxMethod2(RexxObjectPtr, ti_setRect, RexxObjectPtr, rect, CSELF, cSelf)
 {
     LPTOOLINFO pTI = (LPTOOLINFO)cSelf;
     PRECT pRect = &pTI->rect;
 
-    PRECT r = rxGetRect(context, rect, 1);
+    PRECT r = (PRECT)rxGetRect(context, rect, 1);
     if ( r != NULL )
     {
         CopyRect(&pTI->rect, r);

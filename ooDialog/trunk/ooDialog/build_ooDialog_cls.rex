@@ -87,6 +87,7 @@ do i = 1 to 37
   outFile~lineout(sourceLine(i))
 end
 outFile~lineout("")
+outFile~lineout("::requires 'ooShapes.cls'")
 outFile~lineout("::requires 'oodialog' LIBRARY")
 outFile~lineout("")
 

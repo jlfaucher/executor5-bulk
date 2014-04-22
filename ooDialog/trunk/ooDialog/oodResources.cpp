@@ -53,6 +53,7 @@ using namespace Gdiplus;
 #endif
 
 #include "APICommon.hpp"
+#include "ooShapes.hpp"
 #include "oodCommon.hpp"
 #include "oodControl.hpp"
 #include "oodDeviceGraphics.hpp"
@@ -246,7 +247,7 @@ static bool getImageSizeArg(RexxMethodContext *context, RexxObjectPtr size, SIZE
 {
     if ( argumentExists(argPos) )
     {
-        SIZE *p = rxGetSize(context, size, argPos);
+        SIZE *p = (PSIZE)rxGetSize(context, size, argPos);
         if ( p == NULL )
         {
             return false;
@@ -691,7 +692,7 @@ RexxMethod4(RexxObjectPtr, il_create_cls, OPTIONAL_RexxObjectPtr, size,  OPTIONA
     SIZE s = {0};
     if ( argumentExists(1) )
     {
-        SIZE *p = rxGetSize(c, size, 3);
+        SIZE *p = (PSIZE)rxGetSize(c, size, 3);
         if ( p == NULL )
         {
             goto out;
@@ -1686,7 +1687,7 @@ RexxMethod4(RexxObjectPtr, image_userIcon_cls, RexxObjectPtr, dlg, RexxObjectPtr
 
     if ( argumentExists(3) )
     {
-        SIZE *p = rxGetSize(context, size, 3);
+        SIZE *p = (PSIZE)rxGetSize(context, size, 3);
         if ( p == NULL )
         {
             goto out;

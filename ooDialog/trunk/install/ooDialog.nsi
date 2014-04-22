@@ -166,6 +166,8 @@ Section  "ooDialog ${SHORTVERSION} Core (required)" SecCore
     File "${BinDir}\ooDialog.exe"
     File "${BinDir}\oodPlain.cls"
     File "${BinDir}\oodWin32.cls"
+    File "${BinDir}\ooShapes.cls"
+    File "${BinDir}\ooShapes.dll"
     DetailPrint ""
 
     DetailPrint "********** ooDialog ${SHORTVERSION} ooRexxTry **********"

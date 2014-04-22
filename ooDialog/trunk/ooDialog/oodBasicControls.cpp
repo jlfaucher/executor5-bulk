@@ -47,6 +47,7 @@
 
 #include <shlwapi.h>
 #include "APICommon.hpp"
+#include "ooShapes.hpp"
 #include "oodCommon.hpp"
 #include "oodControl.hpp"
 #include "oodMessaging.hpp"
@@ -1137,7 +1138,7 @@ RexxMethod1(RexxObjectPtr, bc_getTextMargin, CSELF, pCSelf)
     HWND hwnd = getDChCtrl(pCSelf);
     RexxObjectPtr result = NULLOBJECT;
 
-    RECT r;
+    ORXRECT r;
     if ( Button_GetTextMargin(hwnd, &r) )
     {
         result = rxNewRect(context, &r);
@@ -1154,7 +1155,7 @@ RexxMethod2(logical_t, bc_setTextMargin, RexxObjectPtr, r, CSELF, pCSelf)
 
     HWND hwnd = getDChCtrl(pCSelf);
 
-    PRECT pRect = rxGetRect(context, r, 1);
+    PORXRECT pRect = rxGetRect(context, r, 1);
     if ( pRect != NULL )
     {
         if ( Button_SetTextMargin(hwnd, pRect) )
@@ -1352,7 +1353,7 @@ RexxMethod4(RexxObjectPtr, bc_setImageList, RexxObjectPtr, imageList, OPTIONAL_R
     // Default would be a 0 margin
     if ( argumentExists(2) )
     {
-        PRECT pRect = rxGetRect(context, margin, 2);
+        PORXRECT pRect = rxGetRect(context, margin, 2);
         if ( pRect == NULL )
         {
             goto err_out;
@@ -2296,7 +2297,7 @@ RexxMethod3(RexxObjectPtr, e_setRect, RexxObjectPtr, rect, OPTIONAL_logical_t, r
         redraw = TRUE;
     }
 
-    PRECT r = NULL;
+    PORXRECT r = NULL;
 
     if ( rect != TheZeroObj )
     {
@@ -2331,7 +2332,7 @@ done_out:
 RexxMethod1(RexxObjectPtr, e_getRect, CSELF, pCSelf)
 {
     HWND hwnd = getDChCtrl(pCSelf);
-    RECT r;
+    ORXRECT r;
 
     SendMessage(hwnd, EM_GETRECT, 0, (LPARAM)&r);
 
@@ -2755,7 +2756,7 @@ RexxMethod2(int32_t, lb_hitTestInfo, ARGLIST, args, CSELF, pCSelf)
     size_t sizeArray;
     size_t argsUsed;
     POINT  point;
-    if ( ! getPointFromArglist(context, args, &point, 1, 3, &sizeArray, &argsUsed) )
+    if ( ! getPointFromArglist(context, args, (PORXPOINT)&point, 1, 3, &sizeArray, &argsUsed) )
     {
         goto done_out;
     }
@@ -3215,10 +3216,10 @@ RexxMethod1(RexxObjectPtr, cb_getComboBoxInfo, CSELF, pCSelf)
         temp = createControlFromHwnd(context, pcdc, cbi.hwndList, winComboLBox, true);
         context->DirectoryPut(d, temp, "LISTBOXOBJ");
 
-        temp = rxNewRect(context, &cbi.rcButton);
+        temp = rxNewRect(context, (PORXRECT)&cbi.rcButton);
         context->DirectoryPut(d, temp, "BUTTONRECT");
 
-        temp = rxNewRect(context, &cbi.rcItem);
+        temp = rxNewRect(context, (PORXRECT)&cbi.rcItem);
         context->DirectoryPut(d, temp, "TEXTRECT");
 
         CSTRING state = "error";

@@ -46,6 +46,7 @@
 #include <shlwapi.h>
 
 #include "APICommon.hpp"
+#include "ooShapes.hpp"
 #include "oodCommon.hpp"
 #include "oodControl.hpp"
 #include "oodResources.hpp"
@@ -294,7 +295,7 @@ RexxMethod2(RexxObjectPtr, stb_getRect, uint32_t, index, CSELF, pCSelf)
     index--;
     if ( SendMessage(getDChCtrl(pCSelf), SB_GETRECT, index, (LPARAM)&r) )
     {
-        return rxNewRect(context, &r);
+        return rxNewRect(context, (PORXRECT)&r);
     }
     return TheNilObj;
 }

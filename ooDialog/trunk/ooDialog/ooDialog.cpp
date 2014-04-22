@@ -49,6 +49,7 @@
 #include <dlgs.h>
 #include <shlwapi.h>
 #include "APICommon.hpp"
+#include "ooShapes.hpp"
 #include "oodCommon.hpp"
 #include "oodShared.hpp"
 #include "oodControl.hpp"
@@ -1923,7 +1924,7 @@ RexxMethod3(RexxStringObject, wb_childWindowFromPoint, RexxObjectPtr, pt, OPTION
         goto err_out;
     }
 
-    PPOINT p = rxGetPoint(context, pt, 1);
+    PPOINT p = (PPOINT)rxGetPoint(context, pt, 1);
     if ( p == NULL )
     {
         goto err_out;
@@ -1980,7 +1981,7 @@ RexxMethod2(RexxObjectPtr, wb_clientRect, OPTIONAL_POINTERSTRING, _hwnd, CSELF, 
 
     RECT r = {0};
     oodGetClientRect(context, (HWND)hwnd, &r);
-    return rxNewRect(context, &r);
+    return rxNewRect(context, (PORXRECT)&r);
 }
 
 /** WindowBase::setRect()
@@ -2031,7 +2032,7 @@ RexxMethod2(RexxObjectPtr, wb_setRect, ARGLIST, args, CSELF, pCSelf)
     size_t countArgs;
     size_t argsUsed;
     RECT   rect;
-    if ( ! getRectFromArglist(context, args, &rect, false, 1, 5, &countArgs, &argsUsed) )
+    if ( ! getRectFromArglist(context, args, (PORXRECT)&rect, false, 1, 5, &countArgs, &argsUsed) )
     {
         return NULLOBJECT;
     }
@@ -2130,7 +2131,7 @@ RexxMethod3(RexxObjectPtr, wb_resizeMove, ARGLIST, args, NAME, method, CSELF, pC
     size_t countArgs;
     size_t argsUsed;
     POINT  point;
-    if ( ! getPointFromArglist(context, args, &point, 1, 3, &countArgs, &argsUsed) )
+    if ( ! getPointFromArglist(context, args, (PORXPOINT)&point, 1, 3, &countArgs, &argsUsed) )
     {
         return NULLOBJECT;
     }
@@ -2268,7 +2269,7 @@ RexxMethod3(RexxObjectPtr, wb_setWindowPos, RexxObjectPtr, _hwndBehind, ARGLIST,
     size_t countArgs;
     size_t    argsUsed;
     RECT   rect;
-    if ( ! getRectFromArglist(context, args, &rect, false, 2, 6, &countArgs, &argsUsed) )
+    if ( ! getRectFromArglist(context, args, (PORXRECT)&rect, false, 2, 6, &countArgs, &argsUsed) )
     {
         goto done_out;
     }
@@ -2379,7 +2380,7 @@ RexxMethod4(RexxObjectPtr, wb_moveSizeWindow, RexxObjectPtr, _hwndBehind, ARGLIS
     size_t countArgs;
     size_t argsUsed;
     POINT  point;
-    if ( ! getPointFromArglist(context, args, &point, 2, 4, &countArgs, &argsUsed) )
+    if ( ! getPointFromArglist(context, args, (PORXPOINT)&point, 2, 4, &countArgs, &argsUsed) )
     {
         goto done_out;
     }
@@ -2541,7 +2542,7 @@ RexxMethod4(logical_t, wb_screenClient, RexxObjectPtr, pt, NAME, method, OSELF, 
 
     if ( c->IsOfType(pt, "POINT") )
     {
-        POINT *p = rxGetPoint(context, pt, 1);
+        POINT *p = (PPOINT)rxGetPoint(context, pt, 1);
         if ( p != NULL )
         {
             if ( *method == 'S' )
@@ -2561,7 +2562,7 @@ RexxMethod4(logical_t, wb_screenClient, RexxObjectPtr, pt, NAME, method, OSELF, 
     }
     else if ( c->IsOfType(pt, "RECT") )
     {
-        RECT *r = rxGetRect(context, pt, 1);
+        RECT *r = (RECT *)rxGetRect(context, pt, 1);
         if ( r != NULL )
         {
             if ( *method == 'S' )
@@ -2612,7 +2613,7 @@ RexxMethod3(logical_t, wb_mapWindowPoints, POINTERSTRING, hwndTo, RexxObjectPtr,
         RexxMethodContext *c = context;
         if ( c->IsOfType(points, "POINT") )
         {
-            pts = rxGetPoint(context, points, 1);
+            pts = (PPOINT)rxGetPoint(context, points, 1);
             if ( pts == NULL )
             {
                 goto done_out;
@@ -2620,7 +2621,7 @@ RexxMethod3(logical_t, wb_mapWindowPoints, POINTERSTRING, hwndTo, RexxObjectPtr,
         }
         else if ( c->IsOfType(points, "RECT") )
         {
-            RECT *r = rxGetRect(context, points, 1);
+            RECT *r = (PRECT)rxGetRect(context, points, 1);
             if ( r == NULL )
             {
                 goto done_out;

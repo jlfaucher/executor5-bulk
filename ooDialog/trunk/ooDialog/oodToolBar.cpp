@@ -46,6 +46,7 @@
 #include <shlwapi.h>
 
 #include "APICommon.hpp"
+#include "ooShapes.hpp"
 #include "oodCommon.hpp"
 #include "oodControl.hpp"
 #include "oodResources.hpp"
@@ -1951,7 +1952,7 @@ RexxMethod2(RexxObjectPtr, tb_setBitmapSize, ARGLIST, args, CSELF, pCSelf)
     size_t sizeArray;
     size_t argsUsed;
     POINT  point;
-    if ( ! getSizeFromArglist(context, args, &point, 1, 2, &sizeArray, &argsUsed) )
+    if ( ! getSizeFromArglist(context, args, (PORXPOINT)&point, 1, 2, &sizeArray, &argsUsed) )
     {
         goto done_out;
     }

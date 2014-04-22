@@ -48,6 +48,7 @@
 #include <WindowsX.h>
 
 #include "APICommon.hpp"
+#include "ooShapes.hpp"
 #include "oodCommon.hpp"
 #include "oodControl.hpp"
 #include "oodShared.hpp"
@@ -1200,7 +1201,7 @@ RexxMethod2(RexxObjectPtr, mouse_dragDetect, RexxObjectPtr, _pt, CSELF, pCSelf)
         return TheFalseObj;
     }
 
-    PPOINT pt = rxGetPoint(context, _pt, 1);
+    PPOINT pt = (PPOINT)rxGetPoint(context, _pt, 1);
     if ( pt == NULL )
     {
         return TheFalseObj;
@@ -1424,7 +1425,7 @@ RexxMethod2(RexxObjectPtr, mouse_setCursorPos, ARGLIST, args, CSELF, pCSelf)
     size_t sizeArray;
     size_t argsUsed;
     POINT  point;
-    if ( ! getPointFromArglist(context, args, &point, 1, 2, &sizeArray, &argsUsed) )
+    if ( ! getPointFromArglist(context, args, (PORXPOINT)&point, 1, 2, &sizeArray, &argsUsed) )
     {
         return NULLOBJECT;
     }
@@ -1775,7 +1776,7 @@ RexxMethod2(logical_t, mouse_clipCursor, ARGLIST, args, CSELF, pCSelf)
     size_t arraySize;
     size_t argsUsed;
 
-    if ( ! getRectFromArglist(context, args, &r, true, 1, 4, &arraySize, &argsUsed) )
+    if ( ! getRectFromArglist(context, args, (PORXRECT)&r, true, 1, 4, &arraySize, &argsUsed) )
     {
         return FALSE;
     }
@@ -1847,7 +1848,7 @@ RexxMethod1(logical_t, mouse_releaseClipCursor, CSELF, pCSelf)
  */
 RexxMethod1(logical_t, mouse_getClipCursor, RexxObjectPtr, _rect)
 {
-    PRECT r = rxGetRect(context, _rect, 1);
+    PRECT r = (PRECT)rxGetRect(context, _rect, 1);
     if ( r == NULL )
     {
         return FALSE;

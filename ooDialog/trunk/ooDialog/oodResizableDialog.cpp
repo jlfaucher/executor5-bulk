@@ -42,6 +42,7 @@
 
 #include <shlwapi.h>
 #include "APICommon.hpp"
+#include "ooShapes.hpp"
 #include "oodCommon.hpp"
 #include "oodShared.hpp"
 #include "oodControl.hpp"
@@ -1675,7 +1676,7 @@ RexxMethod1(RexxObjectPtr, ra_maxSize, CSELF, pCSelf)
 
     if ( prid->haveMaxSize )
     {
-        return rxNewSize(context, &prid->maxSize);
+        return rxNewSize(context, (PORXSIZE)&prid->maxSize);
     }
 
     return TheNilObj;
@@ -1689,7 +1690,7 @@ RexxMethod2(RexxObjectPtr, ra_setMaxSize, RexxObjectPtr, _size, CSELF, pCSelf)
         return NULLOBJECT;
     }
 
-    PSIZE s = rxGetSize(context, _size, 1);
+    PSIZE s = (PSIZE)rxGetSize(context, _size, 1);
     if ( s != NULL )
     {
         prid->maxSize.cx = s->cx;
@@ -1725,7 +1726,7 @@ RexxMethod1(RexxObjectPtr, ra_minSize, CSELF, pCSelf)
 
     if ( prid->haveMinSize )
     {
-        return rxNewSize(context, &prid->minSize);
+        return rxNewSize(context, (PORXSIZE)&prid->minSize);
     }
 
     return TheNilObj;
@@ -1739,7 +1740,7 @@ RexxMethod2(RexxObjectPtr, ra_setMinSize, RexxObjectPtr, _size, CSELF, pCSelf)
         return NULLOBJECT;
     }
 
-    PSIZE s = rxGetSize(context, _size, 1);
+    PSIZE s = (PSIZE)rxGetSize(context, _size, 1);
     if ( s != NULL )
     {
         prid->minSize.cx  = s->cx;

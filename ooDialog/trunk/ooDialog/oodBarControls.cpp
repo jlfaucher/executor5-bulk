@@ -45,7 +45,7 @@
 #include "ooDialog.hpp"     // Must be first, includes windows.h, commctrl.h, and oorexxapi.h
 
 #include <stdio.h>
-#include "APICommon.hpp"
+#include <APICommon.hpp>
 #include "oodCommon.hpp"
 #include "oodControl.hpp"
 

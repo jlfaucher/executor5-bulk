@@ -45,11 +45,11 @@
 #include <dlgs.h>
 #include <shlwapi.h>
 #include "APICommon.hpp"
+#include "ooShapes.hpp"
 #include "oodCommon.hpp"
 #include "oodControl.hpp"
 #include "oodDeviceGraphics.hpp"
 #include "oodMouse.hpp"
-//#include "oodMenu.hpp"
 #include "oodData.hpp"
 #include "oodPropertySheetDialog.hpp"
 #include "oodResizableDialog.hpp"
@@ -1692,7 +1692,7 @@ MsgReplyType genericNmClick(pCPlainBaseDialog pcpbd, LPARAM lParam, CSTRING meth
     RexxObjectPtr idFrom       = idFrom2rexxArg(c, lParam);
     RexxObjectPtr nCode        = notifyCode2rexxArg(c, lParam);
     RexxObjectPtr rxCtrl       = controlFrom2rexxArg(pcpbd, lParam, ctrlType);
-    RexxObjectPtr rxPt         = rxNewPoint(c, &(nmm->pt));
+    RexxObjectPtr rxPt         = rxNewPoint(c, (PORXPOINT)&(nmm->pt));
 
     RexxObjectPtr rxSectIndex;
     if ( (intptr_t)nmm->dwItemSpec == -1 )
@@ -1814,7 +1814,7 @@ MsgReplyType processBCN(RexxThreadContext *c, CSTRING methodName, uint32_t tag, 
         case BCN_DROPDOWN :
         {
             NMBCDROPDOWN  *pDropDown  = (NMBCDROPDOWN*)lParam;
-            RexxObjectPtr  buttonRect = rxNewRect(c, &pDropDown->rcButton);
+            RexxObjectPtr  buttonRect = rxNewRect(c, (PORXRECT)&pDropDown->rcButton);
 
             args = c->ArrayOfThree(idFrom, buttonRect, rxButton);
             genericInvoke(pcpbd, methodName, args, tag);
@@ -3205,7 +3205,7 @@ MsgReplyType searchMiscTable(uint32_t msg, WPARAM wParam, LPARAM lParam, pCPlain
                 PRECT        wRect = (PRECT)lParam;
 
                 RexxStringObject wmsz = wmsz2string(c, wParam);
-                RexxObjectPtr    rect = rxNewRect(c, wRect);
+                RexxObjectPtr    rect = rxNewRect(c, (PORXRECT)wRect);
 
                 args = c->ArrayOfTwo(rect, wmsz);
 
@@ -3240,7 +3240,7 @@ MsgReplyType searchMiscTable(uint32_t msg, WPARAM wParam, LPARAM lParam, pCPlain
                 RexxObjectPtr flags   = od2keywords(c, lpDI);
                 RexxObjectPtr hdc     = pointer2string(c, (void *)lpDI->hDC);
                 RexxObjectPtr rexxObj = createControlFromHwnd(c, pcpbd, lpDI->hwndItem, odt2oodt(lpDI->CtlType), true);
-                RexxObjectPtr rect    = rxNewRect(c, &(lpDI->rcItem));
+                RexxObjectPtr rect    = rxNewRect(c, (PORXRECT)&(lpDI->rcItem));
 
                 RexxObjectPtr itemID;
                 if ( lpDI->CtlType == ODT_MENU )

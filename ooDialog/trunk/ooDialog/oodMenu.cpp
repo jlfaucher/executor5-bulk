@@ -43,6 +43,7 @@
 #include <shlwapi.h>
 #include <WindowsX.h>
 #include "APICommon.hpp"
+#include "ooShapes.hpp"
 #include "oodCommon.hpp"
 #include "oodMessaging.hpp"
 #include "oodShared.hpp"
@@ -2092,7 +2093,7 @@ RexxObjectPtr CppMenu::trackPopup(RexxObjectPtr location, RexxObjectPtr _dlg, CS
         // sure what would be easier for the user ???
     }
 
-    POINT *p = rxGetPoint(c, location, 1);
+    POINT *p = (PPOINT)rxGetPoint(c, location, 1);
     if ( p == NULL )
     {
         goto done_out;
@@ -2126,7 +2127,7 @@ RexxObjectPtr CppMenu::trackPopup(RexxObjectPtr location, RexxObjectPtr _dlg, CS
 
     if ( excludeRect != NULLOBJECT )
     {
-        PRECT exclude = rxGetRect(c, excludeRect, 5);
+        PRECT exclude = (PRECT)rxGetRect(c, excludeRect, 5);
         if ( exclude == NULL )
         {
             goto done_out;

@@ -48,6 +48,7 @@
 #include <OleAcc.h>
 #include <uxtheme.h>
 #include "APICommon.hpp"
+#include "ooShapes.hpp"
 #include "oodCommon.hpp"
 #include "oodMessaging.hpp"
 #include "oodDeviceGraphics.hpp"
@@ -2108,7 +2109,7 @@ RexxMethod2(RexxObjectPtr, dlgctrl_clearRect, ARGLIST, args, CSELF, pCSelf)
     size_t arraySize;
     size_t argsUsed;
 
-    if ( ! getRectFromArglist(context, args, &r, true, 1, 4, &arraySize, &argsUsed) )
+    if ( ! getRectFromArglist(context, args, (PORXRECT)&r, true, 1, 4, &arraySize, &argsUsed) )
     {
         return TheOneObj;
     }
@@ -2145,7 +2146,7 @@ RexxMethod2(RexxObjectPtr, dlgctrl_redrawRect, ARGLIST, args, CSELF, pCSelf)
     size_t arraySize;
     size_t argsUsed;
 
-    if ( ! getRectFromArglist(context, args, &r, true, 1, 5, &arraySize, &argsUsed) )
+    if ( ! getRectFromArglist(context, args, (PORXRECT)&r, true, 1, 5, &arraySize, &argsUsed) )
     {
         return TheOneObj;
     }
@@ -2269,7 +2270,7 @@ RexxMethod3(RexxObjectPtr, dlgctrl_textSize, CSTRING, text, RexxObjectPtr, _size
     oodResetSysErrCode(context->threadContext);
     RexxObjectPtr result = TheFalseObj;
 
-    PSIZE size = rxGetSize(context, _size, 2);
+    PSIZE size = (PSIZE)rxGetSize(context, _size, 2);
     if ( size == NULL )
     {
         return result;

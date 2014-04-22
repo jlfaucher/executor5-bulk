@@ -76,6 +76,27 @@ OOD_INCLUDE_FILE = "$(OR_LIBSRC)\ORXWIN32.MAK"
 !include ooDialog.ver.incl
 !include $(OOD_INCLUDE_FILE)
 
+# Determine where to pick up our helper files ...
+!if "$(CPU)" == "X64"
+!IF DEFINED(DEBUG)
+APICOMMON_DIR = C:\work.ooRexx\wc\incubator\APICommon\bin.debug64\windows
+OOSHAPES_DIR = C:\work.ooRexx\wc\incubator\ooShapes\bin.debug64\windows
+!else
+APICOMMON_DIR = C:\work.ooRexx\wc\incubator\APICommon\bin.release64\windows
+OOSHAPES_DIR = C:\work.ooRexx\wc\incubator\ooShapes\bin.release64\windows
+!endif
+!else
+!IF DEFINED(DEBUG)
+APICOMMON_DIR = C:\work.ooRexx\wc\incubator\APICommon\bin.debug32\windows
+OOSHAPES_DIR = C:\work.ooRexx\wc\incubator\ooShapes\bin.debug32\windows
+!else
+APICOMMON_DIR = C:\work.ooRexx\wc\incubator\APICommon\bin.release32\windows
+OOSHAPES_DIR = C:\work.ooRexx\wc\incubator\ooShapes\bin.release32\windows
+!endif
+!endif
+
+EXTRAINCLUDE = /I $(APICOMMON_DIR) /I $(OOSHAPES_DIR)
+
 # The ooDialog specific version definition
 copy_year_str = -DOOD_COPY_YEAR=\"$(OOD_COPY_YEAR)\"
 ver_str = -DOOD_VER_STR=\""ooDialog $(OOD_MAJOR).$(OOD_MINOR).$(OOD_MOD_LVL).$(OOD_BLD_LVL)"\"
@@ -87,16 +108,19 @@ ood_ver_def = -DOOD_VER=$(OOD_MAJOR) -DOOD_REL=$(OOD_MINOR) -DOOD_MOD=$(OOD_MOD_
 cflags_common = $(cflags_common) -DOODIALOG_WINSDK_6_1
 !endif
 
+cflags_common = $(cflags_common) $(EXTRAINCLUDE)
+
 # We use our own rc flags version.
 rcflags_oodialog = rc $(RC_NOLOGO) /DWIN32 -dOODIALOG_VER=$(OOD_MAJOR) -dOODIALOG_REL=$(OOD_MINOR) -dOODIALOG_SUB=$(OOD_MOD_LVL) -dOODIALOG_BLD=$(OOD_BLD_LVL) -dOODIALOG_VER_STR=\"$(OOD_VER_STR)\" -dOODIALOG_COPY_YEAR=\"$(OOD_COPY_YEAR)\" -dMANIFEST_FILE=$(M_FILE)
 
 C=cl
 OPTIONS= $(cflags_common) $(ood_ver_def) $(cflags_dll) $(OR_ORYXINCL)
 
-all:  $(OOD_OUTDIR)\oodialog.dll $(OOD_OUTDIR)\ooDialog.exe $(OOD_OUTDIR)\ooDialog.com
+all:  $(OOD_OUTDIR)\oodialog.dll $(OOD_OUTDIR)\ooDialog.exe $(OOD_OUTDIR)\ooDialog.com $(OOD_OUTDIR)\ooShapes.dll $(OOD_OUTDIR)\ooShapes.cls
 
 # All Ojbect Files for DLL
-SOURCEF= $(OOD_OUTDIR)\APICommon.obj               $(OOD_OUTDIR)\oodBarControls.obj      $(OOD_OUTDIR)\oodBaseDialog.obj      \
+SOURCEF= $(APICOMMON_DIR)\APICommon.obj            $(OOSHAPES_DIR)\ooShapesAid.obj       \
+         $(OOD_OUTDIR)\oodBarControls.obj          $(OOD_OUTDIR)\oodBaseDialog.obj       \
          $(OOD_OUTDIR)\oodBasicControls.obj        $(OOD_OUTDIR)\oodCommon.obj           $(OOD_OUTDIR)\oodControl.obj         \
          $(OOD_OUTDIR)\oodData.obj                 $(OOD_OUTDIR)\oodDeviceGraphics.obj   $(OOD_OUTDIR)\ooDialog.obj           \
          $(OOD_OUTDIR)\oodKeyboard.obj             $(OOD_OUTDIR)\oodListView.obj         $(OOD_OUTDIR)\oodMenu.obj            \
@@ -108,7 +132,7 @@ SOURCEF= $(OOD_OUTDIR)\APICommon.obj               $(OOD_OUTDIR)\oodBarControls.
          $(OOD_OUTDIR)\oodUtilities.obj            $(OOD_OUTDIR)\oodViewControls.obj     $(OOD_OUTDIR)\oodialog.res
 
 # All Source files that include APICommon.hpp
-APICOMMON_SOURCEF = $(OOD_OUTDIR)\APICommon.obj              $(OOD_OUTDIR)\oodBarControls.obj     $(OOD_OUTDIR)\oodBaseDialog.obj    \
+APICOMMON_SOURCEF =                                          $(OOD_OUTDIR)\oodBarControls.obj     $(OOD_OUTDIR)\oodBaseDialog.obj    \
                     $(OOD_OUTDIR)\oodBasicControls.obj       $(OOD_OUTDIR)\oodCommon.obj          $(OOD_OUTDIR)\oodControl.obj       \
                     $(OOD_OUTDIR)\oodData.obj                $(OOD_OUTDIR)\oodDeviceGraphics.obj  $(OOD_OUTDIR)\ooDialog.obj         \
                     $(OOD_OUTDIR)\oodKeyboard.obj            $(OOD_OUTDIR)\oodListView.obj        $(OOD_OUTDIR)\oodMenu.obj          \
@@ -248,6 +272,16 @@ $(OOD_OUTDIR)\ooDialog.com : $(OOD_OUTDIR)\oodMain.obj $(OOD_OUTDIR)\oodShared.o
     shell32.lib Advapi32.lib\
     -out:$(OOD_OUTDIR)\ooDialog.com
 
+# Copy over the ooShapes package so that it can be easily added to the package
+$(OOD_OUTDIR)\ooShapes.cls : $(OOSHAPES_DIR)\ooShapes.cls
+    @ECHO .
+    @ECHO Copying over ooShapes.cls
+    copy $(OOSHAPES_DIR)\ooShapes.cls $(OOD_OUTDIR)
+
+$(OOD_OUTDIR)\ooShapes.dll : $(OOSHAPES_DIR)\ooShapes.dll
+    @ECHO .
+    @ECHO Copying over ooShapes.dll
+    copy $(OOSHAPES_DIR)\ooShapes.dll $(OOD_OUTDIR)
 
 # Resource file for oodialog.dll
 $(OOD_OUTDIR)\oodialog.res: $(OOD_OODIALOGSRC)\oodialog.rc
@@ -273,7 +307,7 @@ $(SOURCEF) : oodialog.mak
 # Source .obj files that should be recompiled when header file(s) change.
 $(SOURCEF) : ooDialog.hpp
 $(COMMON_SOURCEF) : oodCommon.hpp
-$(APICOMMON_SOURCEF) : APICommon.hpp
+$(APICOMMON_SOURCEF) : $(APICOMMON_DIR)\APICommon.obj
 $(OODDEVICEGRAPHICS_SOURCEF) : oodDeviceGraphics.hpp
 $(OODDATA_SOURCEF) : oodData.hpp
 $(OODCONTROL_SOURCEF) : oodControl.hpp

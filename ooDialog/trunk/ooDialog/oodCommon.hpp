@@ -153,20 +153,6 @@ extern bool       requiredOS(RexxMethodContext *context, os_name_t os, const cha
 extern bool       requiredComCtl32Version(RexxMethodContext *context, const char *methodName, DWORD minimum);
 extern bool       requiredComCtl32Version(RexxMethodContext *context, DWORD minimum, const char *msg);
 
-extern PPOINT        rxGetPoint(RexxMethodContext *context, RexxObjectPtr p, size_t argPos);
-extern RexxObjectPtr rxNewPoint(RexxThreadContext *c, long x, long y);
-extern RexxObjectPtr rxNewPoint(RexxMethodContext *c, long x, long y);
-extern RexxObjectPtr rxNewPoint(RexxThreadContext *c, POINT *pt);
-extern RexxObjectPtr rxNewPoint(RexxMethodContext *c, POINT *pt);
-extern PRECT         rxGetRect(RexxMethodContext *context, RexxObjectPtr r, size_t argPos);
-extern RexxObjectPtr rxNewRect(RexxMethodContext *context, long l, long t, long r, long b);
-extern RexxObjectPtr rxNewRect(RexxThreadContext *context, PRECT r);
-extern RexxObjectPtr rxNewRect(RexxMethodContext *context, PRECT r);
-extern PSIZE         rxGetSize(RexxMethodContext *context, RexxObjectPtr s, size_t argPos);
-extern RexxObjectPtr rxNewSize(RexxThreadContext *c, long cx, long cy);
-extern RexxObjectPtr rxNewSize(RexxMethodContext *c, long cx, long cy);
-extern RexxObjectPtr rxNewSize(RexxMethodContext *c, PSIZE s);
-
 extern bool rxGetWindowText(RexxMethodContext *c, HWND hwnd, RexxStringObject *pStringObj);
 extern bool rxDirectoryFromArray(RexxMethodContext *c, RexxArrayObject a, size_t index, RexxDirectoryObject *d, size_t argPos);
 extern bool rxLogicalFromDirectory(RexxMethodContext *, RexxDirectoryObject, CSTRING, BOOL *, int, bool);
@@ -178,10 +164,6 @@ extern bool              getFormattedErrMsg(char **errBuff, uint32_t errCode, ui
 
 extern RexxObjectPtr     setWindowStyle(RexxMethodContext *c, HWND hwnd, uint32_t style);
 extern int               getKeywordValue(String2Int *cMap, const char * str);
-extern bool              goodMinMaxArgs(RexxMethodContext *c, RexxArrayObject args, size_t min, size_t max, size_t *arraySize);
-extern bool              getRectFromArglist(RexxMethodContext *, RexxArrayObject, PRECT, bool, int, int, size_t *, size_t *);
-extern bool              getPointFromArglist(RexxMethodContext *, RexxArrayObject, PPOINT, int, int, size_t *, size_t *);
-extern bool              getSizeFromArglist(RexxMethodContext *, RexxArrayObject, PPOINT, int, int, size_t *, size_t *);
 
 // These functions are defined in oodUser.cpp.
 extern bool getCategoryHDlg(RexxMethodContext *, RexxObjectPtr, uint32_t *, HWND *, int);

@@ -46,6 +46,7 @@
 #include <shlwapi.h>
 
 #include "APICommon.hpp"
+#include "ooShapes.hpp"
 #include "oodCommon.hpp"
 #include "oodShared.hpp"
 #include "oodMessaging.hpp"
@@ -3251,7 +3252,7 @@ RexxMethod2(int32_t, lv_findNearestXY, ARGLIST, args, CSELF, pCSelf)
     size_t arraySize;
     size_t argsUsed;
     POINT  point;
-    if ( ! getPointFromArglist(context, args, &point, 1, 3, &arraySize, &argsUsed) )
+    if ( ! getPointFromArglist(context, args, (PORXPOINT)&point, 1, 3, &arraySize, &argsUsed) )
     {
         goto err_out;
     }
@@ -3970,7 +3971,7 @@ RexxMethod3(RexxObjectPtr, lv_getItemRect, uint32_t, index, OPTIONAL_CSTRING, pa
     {
         return TheNilObj;
     }
-    return rxNewRect(context, &r);
+    return rxNewRect(context, (PORXRECT)&r);
 }
 
 /** ListView::getSubitem()
@@ -4174,7 +4175,7 @@ RexxMethod4(RexxObjectPtr, lv_getSubitemRect, uint32_t, index, uint32_t, subInde
         }
     }
 
-    return rxNewRect(context, &r);
+    return rxNewRect(context, (PORXRECT)&r);
 }
 
 /** ListView::getView()
@@ -4258,7 +4259,7 @@ RexxMethod2(int32_t, lv_hitTestInfo, ARGLIST, args, CSELF, pCSelf)
     size_t sizeArray;
     size_t argsUsed;
     POINT  point;
-    if ( ! getPointFromArglist(context, args, &point, 1, 3, &sizeArray, &argsUsed) )
+    if ( ! getPointFromArglist(context, args, (PORXPOINT)&point, 1, 3, &sizeArray, &argsUsed) )
     {
         goto done_out;
     }

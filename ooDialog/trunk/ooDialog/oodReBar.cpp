@@ -46,6 +46,7 @@
 #include <shlwapi.h>
 #include <uxtheme.h>
 #include "APICommon.hpp"
+#include "ooShapes.hpp"
 #include "oodCommon.hpp"
 #include "oodControl.hpp"
 #include "oodMessaging.hpp"
@@ -466,7 +467,7 @@ RexxMethod2(RexxObjectPtr, rbbi_setChevronLocation, RexxObjectPtr, _rect, CSELF,
 {
     LPREBARBANDINFO prbbi = (LPREBARBANDINFO)pCSelf;
 
-    RECT *r = rxGetRect(context, _rect, 1);
+    RECT *r = (PRECT)rxGetRect(context, _rect, 1);
     if ( r != NULL )
     {
         prbbi->rcChevronLocation.left   = r->left;
@@ -896,7 +897,7 @@ MsgReplyType rbnNcHitTest(pCPlainBaseDialog pcpbd, CSTRING methodName, uint32_t 
     LPNMMOUSE pMouse = (LPNMMOUSE)lParam;
 
     RexxObjectPtr bandIndex = c->Uintptr(pMouse->dwItemSpec + 1);
-    RexxObjectPtr pt        = rxNewPoint(c, &pMouse->pt);
+    RexxObjectPtr pt        = rxNewPoint(c, (PORXPOINT)&pMouse->pt);
     RexxObjectPtr htWord    = ncHitTest2string(c, pMouse->dwHitInfo);
     RexxArrayObject args    = c->ArrayOfFour(idFrom, bandIndex, pt, htWord);
 
@@ -946,7 +947,7 @@ RexxMethod2(RexxObjectPtr, rebar_getBandBorders, uint32_t, index, CSELF, pCSelf)
 
     index--;
     SendMessage(getDChCtrl(pCSelf), RB_GETBANDBORDERS, index, (LPARAM)&r);
-    return rxNewRect(context, &r);
+    return rxNewRect(context, (PORXRECT)&r);
 }
 
 /** ReBar::getBandCount()
@@ -1009,7 +1010,7 @@ RexxMethod1(RexxObjectPtr, rebar_getBandMargins, CSELF, pCSelf)
     MARGINS m = {0};
 
     SendMessage(getDChCtrl(pCSelf), RB_GETBANDBORDERS, 0, (LPARAM)&m);
-    return rxNewRect(context, (RECT *)&m);
+    return rxNewRect(context, (ORXRECT *)&m);
 }
 
 /** ReBar::getBarHeight()
@@ -1091,7 +1092,7 @@ RexxMethod2(RexxObjectPtr, rebar_getRect, uint32_t, index, CSELF, pCSelf)
     index--;
     if ( SendMessage(getDChCtrl(pCSelf), RB_GETRECT, index, (LPARAM)&r) )
     {
-        return rxNewRect(context, &r);
+        return rxNewRect(context, (PORXRECT)&r);
     }
     return TheNilObj;
 }
@@ -1162,7 +1163,7 @@ RexxMethod2(int32_t, rebar_hitTestInfo, ARGLIST, args, CSELF, pCSelf)
     size_t sizeArray;
     size_t argsUsed;
     POINT  point;
-    if ( ! getPointFromArglist(context, args, &point, 1, 3, &sizeArray, &argsUsed) )
+    if ( ! getPointFromArglist(context, args, (PORXPOINT)&point, 1, 3, &sizeArray, &argsUsed) )
     {
         goto done_out;
     }
@@ -1527,7 +1528,7 @@ RexxMethod3(logical_t, rebar_showBand, uint32_t, index, OPTIONAL_logical_t, show
  */
 RexxMethod2(logical_t, rebar_sizeToRect, RexxObjectPtr, _rect, CSELF, pCSelf)
 {
-    PRECT pRect = rxGetRect(context, _rect, 1);
+    PRECT pRect = (PRECT)rxGetRect(context, _rect, 1);
     if ( pRect != NULL )
     {
         return SendMessage(getDChCtrl(pCSelf), RB_SIZETORECT, 0, (LPARAM)pRect);

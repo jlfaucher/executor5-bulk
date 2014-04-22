@@ -347,59 +347,6 @@
 ::method shellChangeNotify class external "LIBRARY oodialog os_shellChangeNotify"
 
 
-::class 'Rect' public
-::method init class external "LIBRARY oodialog rect_init_cls"
-::method init external "LIBRARY oodialog rect_init"
-::attribute left get external "LIBRARY oodialog rect_left"
-::attribute left set external "LIBRARY oodialog rect_setLeft"
-::attribute top get external "LIBRARY oodialog rect_top"
-::attribute top set external "LIBRARY oodialog rect_setTop"
-::attribute right get external "LIBRARY oodialog rect_right"
-::attribute right set external "LIBRARY oodialog rect_setRight"
-::attribute bottom get external "LIBRARY oodialog rect_bottom"
-::attribute bottom set external "LIBRARY oodialog rect_setBottom"
-::method copy external "LIBRARY oodialog rect_copy"
-::method string external "LIBRARY oodialog rect_string"
-
-::class 'Point' public
-::method init class external "LIBRARY oodialog point_init_cls"
-::method init external "LIBRARY oodialog point_init"
-::attribute x get external "LIBRARY oodialog point_x"
-::attribute x set external "LIBRARY oodialog point_setX"
-::attribute y get external "LIBRARY oodialog point_y"
-::attribute y set external "LIBRARY oodialog point_setY"
-::method copy external "LIBRARY oodialog point_copy"
-::method '+' external "LIBRARY oodialog point_add"
-::method '-' external "LIBRARY oodialog point_subtract"
-::method incr external "LIBRARY oodialog point_incr"
-::method decr external "LIBRARY oodialog point_decr"
-::method inRect external "LIBRARY oodialog point_inRect"
-::method string external "LIBRARY oodialog point_string"
-
-::class 'Size' public
-::method init class external "LIBRARY oodialog size_init_cls"
-::method init external "LIBRARY oodialog size_init"
-::attribute width get external "LIBRARY oodialog size_cx"
-::attribute width set external "LIBRARY oodialog size_setCX"
-::attribute height get external "LIBRARY oodialog size_cy"
-::attribute height set external "LIBRARY oodialog size_setCY"
-::method string external "LIBRARY oodialog size_string"
-
-::method '=' external "LIBRARY oodialog size_compare"
-::method '==' external "LIBRARY oodialog size_compare"
-::method '\=' external "LIBRARY oodialog size_compare"
-::method '\==' external "LIBRARY oodialog size_compare"
-::method '<' external "LIBRARY oodialog size_compare"
-::method '<<' external "LIBRARY oodialog size_compare"
-::method '<=' external "LIBRARY oodialog size_compare"
-::method '<<=' external "LIBRARY oodialog size_compare"
-::method '>' external "LIBRARY oodialog size_compare"
-::method '>>' external "LIBRARY oodialog size_compare"
-::method '>=' external "LIBRARY oodialog size_compare"
-::method '>>=' external "LIBRARY oodialog size_compare"
-::method equateTo external "LIBRARY oodialog size_equateTo"
-
-
 ::class 'Mouse' public
 ::constant HOVER_DEFAULT           4294967295
 

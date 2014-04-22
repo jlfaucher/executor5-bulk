@@ -62,17 +62,6 @@ CRITICAL_SECTION     ps_crit_sec = {0};
 DWORD                ComCtl32Version = 0;
 char                 ComCtl32VersionStr[COMCTL32_VERSION_STRING_LEN + 1] = "";
 
-// Initialized in dlgutil_init_cls
-RexxObjectPtr       TheTrueObj = NULLOBJECT;
-RexxObjectPtr       TheFalseObj = NULLOBJECT;
-RexxObjectPtr       TheNilObj = NULLOBJECT;
-RexxPointerObject   TheNullPtrObj = NULLOBJECT;
-RexxDirectoryObject TheDotLocalObj = NULLOBJECT;
-RexxObjectPtr       TheZeroObj = NULLOBJECT;
-RexxObjectPtr       TheOneObj = NULLOBJECT;
-RexxObjectPtr       TheTwoObj = NULLOBJECT;
-RexxObjectPtr       TheNegativeOneObj = NULLOBJECT;
-
 // Initialized in the DlgUtil class init method (dlgutil_init_cls.)
 RexxObjectPtr       TheApplicationObj = NULLOBJECT;
 RexxDirectoryObject TheConstDir = NULLOBJECT;
@@ -99,15 +88,6 @@ RexxClassObject     ThePropertySheetPageClass = NULLOBJECT;
 
 // Initialized in the ControlDialog class init method (cd_init_cls.)
 RexxClassObject     TheControlDialogClass = NULLOBJECT;
-
-// Initialized in the Point class init method (point_init_cls.)
-RexxClassObject     ThePointClass = NULLOBJECT;
-
-// Initialized in the Size class init method (size_init_cls.)
-RexxClassObject     TheSizeClass = NULLOBJECT;
-
-// Initialized in the Rect class init method (rect_init_cls.)
-RexxClassObject     TheRectClass = NULLOBJECT;
 
 // Initialized in the LvCustomDrawSimple class init method (lvcds_init_cls.)
 RexxClassObject     TheLvCustomDrawSimpleClass = NULLOBJECT;
@@ -330,12 +310,10 @@ bool initCommonControls(RexxThreadContext *context, DWORD classes, CSTRING packa
  */
 void RexxEntry ooDialogLoad(RexxThreadContext *c)
 {
-    TheTrueObj    = c->True();
-    TheFalseObj   = c->False();
-    TheNilObj     = c->Nil();
-    TheNullPtrObj = c->NewPointer(NULL);
-    TheZeroObj    = TheFalseObj;
-    TheOneObj     = TheTrueObj;
+    if ( ! packageLoadHelper(c) )
+    {
+        return;
+    }
 
     if ( ! getComCtl32Version(c, &ComCtl32Version, COMCTL32_4_71, "ooDialog", COMCTL_ERR_TITLE) )
     {
@@ -348,25 +326,8 @@ void RexxEntry ooDialogLoad(RexxThreadContext *c)
         return;
     }
 
-    RexxDirectoryObject local = c->GetLocalEnvironment();
-    if ( local != NULLOBJECT )
-    {
-        TheDotLocalObj = local;
-
-        TheNegativeOneObj = c->WholeNumber(-1);
-        c->RequestGlobalReference(TheNegativeOneObj);
-
-        TheTwoObj = c->WholeNumber(2);
-        c->RequestGlobalReference(TheTwoObj);
-
-        c->DirectoryPut(local, TheNullPtrObj, "NULLHANDLE");
-        c->DirectoryPut(local, c->WholeNumberToObject(0), "SYSTEMERRORCODE");
-    }
-    else
-    {
-        severeErrorException(c, NO_LOCAL_ENVIRONMENT_MSG);
-        return;
-    }
+    c->DirectoryPut(TheDotLocalObj, TheZeroPointerObj, "NULLHANDLE");
+    c->DirectoryPut(TheDotLocalObj, c->WholeNumberToObject(0), "SYSTEMERRORCODE");
 
     /* Initialize GDI+.
     GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);*/
@@ -1643,46 +1604,6 @@ REXX_METHOD_PROTOTYPE(dss_quickDayStateBuffer);
 REXX_METHOD_PROTOTYPE(ds_init);
 REXX_METHOD_PROTOTYPE(ds_value);
 
-
-// .Rect
-REXX_METHOD_PROTOTYPE(rect_init_cls);
-REXX_METHOD_PROTOTYPE(rect_init);
-REXX_METHOD_PROTOTYPE(rect_left);
-REXX_METHOD_PROTOTYPE(rect_top);
-REXX_METHOD_PROTOTYPE(rect_right);
-REXX_METHOD_PROTOTYPE(rect_bottom);
-REXX_METHOD_PROTOTYPE(rect_setLeft);
-REXX_METHOD_PROTOTYPE(rect_setTop);
-REXX_METHOD_PROTOTYPE(rect_setRight);
-REXX_METHOD_PROTOTYPE(rect_setBottom);
-REXX_METHOD_PROTOTYPE(rect_copy);
-REXX_METHOD_PROTOTYPE(rect_string);
-
-// .Point
-REXX_METHOD_PROTOTYPE(point_init_cls);
-REXX_METHOD_PROTOTYPE(point_init);
-REXX_METHOD_PROTOTYPE(point_x);
-REXX_METHOD_PROTOTYPE(point_setX);
-REXX_METHOD_PROTOTYPE(point_y);
-REXX_METHOD_PROTOTYPE(point_setY);
-REXX_METHOD_PROTOTYPE(point_copy);
-REXX_METHOD_PROTOTYPE(point_add);
-REXX_METHOD_PROTOTYPE(point_subtract);
-REXX_METHOD_PROTOTYPE(point_incr);
-REXX_METHOD_PROTOTYPE(point_decr);
-REXX_METHOD_PROTOTYPE(point_inRect);
-REXX_METHOD_PROTOTYPE(point_string);
-
-// .Size
-REXX_METHOD_PROTOTYPE(size_init_cls);
-REXX_METHOD_PROTOTYPE(size_init);
-REXX_METHOD_PROTOTYPE(size_cx);
-REXX_METHOD_PROTOTYPE(size_setCX);
-REXX_METHOD_PROTOTYPE(size_cy);
-REXX_METHOD_PROTOTYPE(size_setCY);
-REXX_METHOD_PROTOTYPE(size_compare);
-REXX_METHOD_PROTOTYPE(size_equateTo);
-REXX_METHOD_PROTOTYPE(size_string);
 
 // .VK
 REXX_METHOD_PROTOTYPE(vk_key2name);
@@ -3041,40 +2962,6 @@ RexxMethodEntry oodialog_methods[] = {
     REXX_METHOD(dss_quickDayStateBuffer,        dss_quickDayStateBuffer),
     REXX_METHOD(ds_init,                        ds_init),
     REXX_METHOD(ds_value,                       ds_value),
-    REXX_METHOD(rect_init_cls,                  rect_init_cls),
-    REXX_METHOD(rect_init,                      rect_init),
-    REXX_METHOD(rect_left,                      rect_left),
-    REXX_METHOD(rect_top,                       rect_top),
-    REXX_METHOD(rect_right,                     rect_right),
-    REXX_METHOD(rect_bottom,                    rect_bottom),
-    REXX_METHOD(rect_setLeft,                   rect_setLeft),
-    REXX_METHOD(rect_setTop,                    rect_setTop),
-    REXX_METHOD(rect_setRight,                  rect_setRight),
-    REXX_METHOD(rect_setBottom,                 rect_setBottom),
-    REXX_METHOD(rect_copy,                      rect_copy),
-    REXX_METHOD(rect_string,                    rect_string),
-    REXX_METHOD(point_init_cls,                 point_init_cls),
-    REXX_METHOD(point_init,                     point_init),
-    REXX_METHOD(point_x,                        point_x),
-    REXX_METHOD(point_setX,                     point_setX),
-    REXX_METHOD(point_y,                        point_y),
-    REXX_METHOD(point_setY,                     point_setY),
-    REXX_METHOD(point_copy,                     point_copy),
-    REXX_METHOD(point_add,                      point_add),
-    REXX_METHOD(point_subtract,                 point_subtract),
-    REXX_METHOD(point_incr,                     point_incr),
-    REXX_METHOD(point_decr,                     point_decr),
-    REXX_METHOD(point_inRect,                   point_inRect),
-    REXX_METHOD(point_string,                   point_string),
-    REXX_METHOD(size_init_cls,                  size_init_cls),
-    REXX_METHOD(size_init,                      size_init),
-    REXX_METHOD(size_cx,                        size_cx),
-    REXX_METHOD(size_setCX,                     size_setCX),
-    REXX_METHOD(size_cy,                        size_cy),
-    REXX_METHOD(size_setCY,                     size_setCY),
-    REXX_METHOD(size_compare,                   size_compare),
-    REXX_METHOD(size_equateTo,                  size_equateTo),
-    REXX_METHOD(size_string,                    size_string),
     REXX_METHOD(vk_key2name,                    vk_key2name),
 
     // Menu classes methods

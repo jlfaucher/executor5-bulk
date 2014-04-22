@@ -49,6 +49,7 @@
 #include <dlgs.h>
 #include <shlwapi.h>
 #include "APICommon.hpp"
+#include "ooShapes.hpp"
 #include "oodCommon.hpp"
 #include "oodShared.hpp"
 #include "oodControl.hpp"
@@ -910,7 +911,7 @@ RexxMethod2(RexxObjectPtr, winex_scroll, ARGLIST, args, CSELF, pCSelf)
     size_t sizeArray;
     size_t argsUsed;
     POINT  point;
-    if ( ! getPointFromArglist(context, args, &point, 1, 2, &sizeArray, &argsUsed) )
+    if ( ! getPointFromArglist(context, args, (PORXPOINT)&point, 1, 2, &sizeArray, &argsUsed) )
     {
         return TheOneObj;
     }
@@ -1772,13 +1773,13 @@ RexxMethod3(RexxObjectPtr, winex_fillRect, POINTERSTRING, _hDC, RexxObjectPtr, _
         hBrush = (HBRUSH)(index + 1);
     }
 
-    PRECT pRect = rxGetRect(context, _rect, 2);
+    PORXRECT pRect = rxGetRect(context, _rect, 2);
     if ( pRect == NULL )
     {
         goto err_out;
     }
 
-    if ( FillRect(hDC, pRect, hBrush) )
+    if ( FillRect(hDC, (const RECT *)pRect, hBrush) )
     {
         return TheTrueObj;
     }
