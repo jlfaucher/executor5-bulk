@@ -85,13 +85,13 @@ SRCDIR = $(ROOTDIR)\src
 
 # Determine the final output directory
 !if "$(CPU)" == "X64"
-!IF DEFINED(DEBUG)
+!if "$(DEBUG)" == "1"
 BIN_DIR = bin.debug64\windows
 !else
 BIN_DIR = bin.release64\windows
 !endif
 !else
-!IF DEFINED(DEBUG)
+!if "$(DEBUG)" == "1"
 BIN_DIR = bin.debug32\windows
 !else
 BIN_DIR = bin.release32\windows
