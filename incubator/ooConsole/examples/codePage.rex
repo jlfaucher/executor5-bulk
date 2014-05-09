@@ -34,54 +34,25 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+  con = .ooConsole~new(.true)
 
-::requires 'ooShapes.cls'
-::requires 'ooconsole' LIBRARY
+  say 'Input codepage: ' con~getCP
+  say 'Output codepage:' con~getOutputCP
 
+  say 'Display mode:' con~getDisplayMode
 
-/** class: ooConsole
- * ...
- *
- */
-::class 'ooConsole' public inherit ooConsoleConstants
+  if \ con~setHistoryInfo(3, 35, .false) then do
+    say 'setHistoryInfo failed.  errRC:' con~errRC
+  end
+  d = con~getHistoryInfo
+  say 'History commands:' d~commands
+  say 'History buffers: ' d~buffers
+  say 'History flag:    ' d~flag
 
-::method version class external "LIBRARY ooconsole oocon_version_cls"
+  return
+  ret = con~setCP(437); say 'ret:' ret
+  ret = con~setOutputCP(437); say 'ret:' ret
 
-::attribute errRC get external "LIBRARY ooconsole oocon_errRC_atr"
+  say "Hello there"
 
-::method init external "LIBRARY ooconsole oocon_init"
-::method unint external "LIBRARY ooconsole oocon_uninit"
-::method getCP external "LIBRARY ooconsole oocon_getCP"
-::method getCursorInfo external "LIBRARY ooconsole oocon_getCursorInfo"
-::method getDisplayMode external "LIBRARY ooconsole oocon_getDisplayMode"
-::method getFontSize external "LIBRARY ooconsole oocon_getFontSize"
-::method getHistoryInfo external "LIBRARY ooconsole oocon_getHistoryInfo"
-::method getMode external "LIBRARY ooconsole oocon_getMode"
-::method getOriginalTitle external "LIBRARY ooconsole oocon_getOriginalTitle"
-::method getOutputCP external "LIBRARY ooconsole oocon_getOutputCP"
-::method getProcessList external "LIBRARY ooconsole oocon_getProcessList"
-::method getScreenBufferSize external "LIBRARY ooconsole oocon_getScreenBufferSize"
-::method getTitle external "LIBRARY ooconsole oocon_getTitle"
-::method getWindow external "LIBRARY ooconsole oocon_getWindow"
-::method getWindowRect external "LIBRARY ooconsole oocon_getWindowRect"
-::method getWindowSize external "LIBRARY ooconsole oocon_getWindowSize"
-::method setCP external "LIBRARY ooconsole oocon_setCP"
-::method setCursorInfo external "LIBRARY ooconsole oocon_setCursorInfo"
-::method setDisplayMode external "LIBRARY ooconsole oocon_setDisplayMode"
-::method setHistoryInfo external "LIBRARY ooconsole oocon_setHistoryInfo"
-::method setMode external "LIBRARY ooconsole oocon_setMode"
-::method setOutputCP external "LIBRARY ooconsole oocon_setOutputCP"
-::method setScreenBufferSize external "LIBRARY ooconsole oocon_setScreenBufferSize"
-::method setTitle external "LIBRARY ooconsole oocon_setTitle"
-::method setWindowRect external "LIBRARY ooconsole oocon_setWindowRect"
-::method setWindowSize external "LIBRARY ooconsole oocon_setWindowSize"
-
-::method test external "LIBRARY ooconsole oocon_test"                           -- Do not document, internal use only
-
-
-
-/**
- *  The ooConsoleConstants class contains all Constant values ...
- */
-::class 'ooConsoleConstants' public mixinclass Object
-
+::requires 'ooConsole.cls'

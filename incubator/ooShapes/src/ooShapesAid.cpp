@@ -77,19 +77,23 @@ RexxClassObject ThePointClass = NULLOBJECT;
 RexxClassObject TheSizeClass  = NULLOBJECT;
 RexxClassObject TheRectClass  = NULLOBJECT;
 
-static inline void getRectClass(RexxThreadContext *c)
+static void getClasses(RexxThreadContext *c)
 {
-    TheRectClass = c->FindClass("RECT");
+    TheRectClass  = rxGetPackageClass(c, "ooShapes.cls", "RECT");
+    TheSizeClass  = rxGetPackageClass(c, "ooShapes.cls", "SIZE");
+    ThePointClass = rxGetPackageClass(c, "ooShapes.cls", "POINT");
     c->RequestGlobalReference(TheRectClass);
-}
-static inline void getSizeClass(RexxThreadContext *c)
-{
-    TheSizeClass = c->FindClass("SIZE");
     c->RequestGlobalReference(TheSizeClass);
+    c->RequestGlobalReference(ThePointClass);
 }
-static inline void getPointClass(RexxThreadContext *c)
+
+static void getClasses(RexxMethodContext *c)
 {
-    ThePointClass = c->FindClass("POINT");
+    TheRectClass  = rxGetContextClass(c, "RECT");
+    TheSizeClass  = rxGetContextClass(c, "SIZE");
+    ThePointClass = rxGetContextClass(c, "POINT");
+    c->RequestGlobalReference(TheRectClass);
+    c->RequestGlobalReference(TheSizeClass);
     c->RequestGlobalReference(ThePointClass);
 }
 
@@ -151,14 +155,18 @@ RexxObjectPtr rxNewPoint(RexxThreadContext *c, long x, long y)
 {
     if ( ThePointClass == NULLOBJECT )
     {
-        getPointClass(c);
+        getClasses(c);
     }
     return c->SendMessage2(ThePointClass, "NEW", c->WholeNumber(x), c->WholeNumber(y));;
 }
 
 RexxObjectPtr rxNewPoint(RexxMethodContext *c, long x, long y)
 {
-    return rxNewPoint(c->threadContext, x, y);
+    if ( ThePointClass == NULLOBJECT )
+    {
+        getClasses(c);
+    }
+    return c->SendMessage2(ThePointClass, "NEW", c->WholeNumber(x), c->WholeNumber(y));;
 }
 
 RexxObjectPtr rxNewPoint(RexxThreadContext *c, ORXPOINT *pt)
@@ -181,26 +189,11 @@ PORXRECT rxGetRect(RexxMethodContext *context, RexxObjectPtr r, size_t argPos)
 }
 
 
-RexxObjectPtr rxNewRect(RexxMethodContext *c, long l, long t, long r, long b)
-{
-    if ( TheRectClass == NULLOBJECT )
-    {
-        getRectClass(c->threadContext);
-    }
-    RexxArrayObject args = c->ArrayOfFour(c->WholeNumber(l),
-                                          c->WholeNumber(t),
-                                          c->WholeNumber(r),
-                                          c->WholeNumber(b));
-
-    return c->SendMessage(TheRectClass, "NEW", args);
-}
-
-
 RexxObjectPtr rxNewRect(RexxThreadContext *c, PORXRECT r)
 {
     if ( TheRectClass == NULLOBJECT )
     {
-        getRectClass(c);
+        getClasses(c);
     }
     RexxArrayObject args = c->ArrayOfFour(c->WholeNumber(r->left),
                                           c->WholeNumber(r->top),
@@ -211,9 +204,24 @@ RexxObjectPtr rxNewRect(RexxThreadContext *c, PORXRECT r)
 }
 
 
+RexxObjectPtr rxNewRect(RexxMethodContext *c, long l, long t, long r, long b)
+{
+    if ( TheRectClass == NULLOBJECT )
+    {
+        getClasses(c);
+    }
+    RexxArrayObject args = c->ArrayOfFour(c->WholeNumber(l),
+                                          c->WholeNumber(t),
+                                          c->WholeNumber(r),
+                                          c->WholeNumber(b));
+
+    return c->SendMessage(TheRectClass, "NEW", args);
+}
+
+
 RexxObjectPtr rxNewRect(RexxMethodContext *context, PORXRECT r)
 {
-    return rxNewRect(context->threadContext, r);
+    return rxNewRect(context, r->left, r->top, r->right, r->bottom);
 }
 
 PORXSIZE rxGetSize(RexxMethodContext *context, RexxObjectPtr s, size_t argPos)
@@ -229,19 +237,23 @@ RexxObjectPtr rxNewSize(RexxThreadContext *c, long cx, long cy)
 {
     if ( TheSizeClass == NULLOBJECT )
     {
-        getSizeClass(c);
+        getClasses(c);
     }
     return c->SendMessage2(TheSizeClass, "NEW", c->WholeNumber(cx), c->WholeNumber(cy));
 }
 
 RexxObjectPtr rxNewSize(RexxMethodContext *c, long cx, long cy)
 {
-    return rxNewSize(c->threadContext, cx, cy);
+    if ( TheSizeClass == NULLOBJECT )
+    {
+        getClasses(c);
+    }
+    return c->SendMessage2(TheSizeClass, "NEW", c->WholeNumber(cx), c->WholeNumber(cy));
 }
 
 RexxObjectPtr rxNewSize(RexxMethodContext *c, PORXSIZE s)
 {
-    return rxNewSize(c->threadContext, s->cx, s->cx);
+    return rxNewSize(c, s->cx, s->cx);
 }
 
 /**

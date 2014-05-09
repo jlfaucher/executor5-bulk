@@ -273,8 +273,8 @@ Section  doInstall
     DetailPrint "********** ooSQLite ${SHORTVERSION} Start Menu Shortcuts **********"
 
     CreateShortCut  "${SMooRexxFolder}\Uninstall ${SHORTNAME}.lnk" "$INSTDIR\${UNINSTALLER}" "" "$INSTDIR\${UNINSTALLER}" 0
-    CreateShortCut  "${SMooRexxFolder}\Documentation\ooSQLite Reference.lnk" "$INSTDIR\doc\oosqlite.pdf" "" "$INSTDIR\doc\oosqlite.pdf" 0
-    CreateShortCut  "${SMooRexxFolder}\Documentation\ooSQLite ReleaseNotes.lnk" "$INSTDIR\doc\ooSQLite-ReleaseNotes.txt" "" "$INSTDIR\doc\ooSQLite-ReleaseNotes.txt" 0
+    CreateShortCut  "${SMooRexxFolder}\ooRexx Documentation\ooSQLite Reference.lnk" "$INSTDIR\doc\oosqlite.pdf" "" "$INSTDIR\doc\oosqlite.pdf" 0
+    CreateShortCut  "${SMooRexxFolder}\ooRexx Documentation\ooSQLite ReleaseNotes.lnk" "$INSTDIR\doc\ooSQLite-ReleaseNotes.txt" "" "$INSTDIR\doc\ooSQLite-ReleaseNotes.txt" 0
 
     DetailPrint ""
 
@@ -589,8 +589,8 @@ Function RemoveFiles
   DetailPrint ""
 
   Delete  "${SMooRexxFolder}\Uninstall ${SHORTNAME}.lnk"
-  Delete  "${SMooRexxFolder}\Documentation\ooSQLite Reference.lnk"
-  Delete  "${SMooRexxFolder}\Documentation\ooSQLite ReleaseNotes.lnk"
+  Delete  "${SMooRexxFolder}\ooRexx Documentation\ooSQLite Reference.lnk"
+  Delete  "${SMooRexxFolder}\ooRexx Documentation\ooSQLite ReleaseNotes.lnk"
 
   DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${SHORTNAME}"
 
@@ -627,8 +627,8 @@ Section "Uninstall"
   DetailPrint "Removing ooSQLite Start Menu short cuts"
 
   Delete  "${SMooRexxFolder}\Uninstall ${SHORTNAME}.lnk"
-  Delete  "${SMooRexxFolder}\Documentation\ooSQLite Reference.lnk"
-  Delete  "${SMooRexxFolder}\Documentation\ooSQLite ReleaseNotes.lnk"
+  Delete  "${SMooRexxFolder}\ooRexx Documentation\ooSQLite Reference.lnk"
+  Delete  "${SMooRexxFolder}\ooRexx Documentation\ooSQLite ReleaseNotes.lnk"
 
   DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${SHORTNAME}"
 

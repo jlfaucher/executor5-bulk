@@ -35,53 +35,34 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-::requires 'ooShapes.cls'
-::requires 'ooconsole' LIBRARY
+  con = .ooConsole~new(.true)
 
+  ci = con~getCursorInfo; say 'getCursorInfo errRC:' con~errRC
+  say 'cursor size:' ci~size
+  say 'visible?    ' ci~visible
 
-/** class: ooConsole
- * ...
- *
- */
-::class 'ooConsole' public inherit ooConsoleConstants
+ if \ con~setCursorInfo(.true, 85) then do
+   say 'setCursorInfo failed.  Err rc:' con~errRC
+   return
+ end
 
-::method version class external "LIBRARY ooconsole oocon_version_cls"
+ say 'Set cursor to 85%'
+ j = SysSleep(10)
 
-::attribute errRC get external "LIBRARY ooconsole oocon_errRC_atr"
+ if \ con~setCursorInfo(.false, 85) then do
+   say 'setCursorInfo failed.  Err rc:' con~errRC
+   return
+ end
 
-::method init external "LIBRARY ooconsole oocon_init"
-::method unint external "LIBRARY ooconsole oocon_uninit"
-::method getCP external "LIBRARY ooconsole oocon_getCP"
-::method getCursorInfo external "LIBRARY ooconsole oocon_getCursorInfo"
-::method getDisplayMode external "LIBRARY ooconsole oocon_getDisplayMode"
-::method getFontSize external "LIBRARY ooconsole oocon_getFontSize"
-::method getHistoryInfo external "LIBRARY ooconsole oocon_getHistoryInfo"
-::method getMode external "LIBRARY ooconsole oocon_getMode"
-::method getOriginalTitle external "LIBRARY ooconsole oocon_getOriginalTitle"
-::method getOutputCP external "LIBRARY ooconsole oocon_getOutputCP"
-::method getProcessList external "LIBRARY ooconsole oocon_getProcessList"
-::method getScreenBufferSize external "LIBRARY ooconsole oocon_getScreenBufferSize"
-::method getTitle external "LIBRARY ooconsole oocon_getTitle"
-::method getWindow external "LIBRARY ooconsole oocon_getWindow"
-::method getWindowRect external "LIBRARY ooconsole oocon_getWindowRect"
-::method getWindowSize external "LIBRARY ooconsole oocon_getWindowSize"
-::method setCP external "LIBRARY ooconsole oocon_setCP"
-::method setCursorInfo external "LIBRARY ooconsole oocon_setCursorInfo"
-::method setDisplayMode external "LIBRARY ooconsole oocon_setDisplayMode"
-::method setHistoryInfo external "LIBRARY ooconsole oocon_setHistoryInfo"
-::method setMode external "LIBRARY ooconsole oocon_setMode"
-::method setOutputCP external "LIBRARY ooconsole oocon_setOutputCP"
-::method setScreenBufferSize external "LIBRARY ooconsole oocon_setScreenBufferSize"
-::method setTitle external "LIBRARY ooconsole oocon_setTitle"
-::method setWindowRect external "LIBRARY ooconsole oocon_setWindowRect"
-::method setWindowSize external "LIBRARY ooconsole oocon_setWindowSize"
+ say 'Set cursor invisible'
+ j = SysSleep(10)
 
-::method test external "LIBRARY ooconsole oocon_test"                           -- Do not document, internal use only
+ if \ con~setCursorInfo(ci~visible, ci~size) then do
+   say 'setCursorInfo failed.  Err rc:' con~errRC
+   return
+ end
 
+ say 'Set cursor back to what it was.'
+ j = SysSleep(10)
 
-
-/**
- *  The ooConsoleConstants class contains all Constant values ...
- */
-::class 'ooConsoleConstants' public mixinclass Object
-
+::requires 'ooConsole.cls'

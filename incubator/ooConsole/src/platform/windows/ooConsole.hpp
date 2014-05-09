@@ -51,6 +51,16 @@
 #define VALID_VERSION_TYPES       "[O]neLine [F]ull [C]ompact [L]ibVersion [N]umber [S]ourceID"
 #define NO_LOCAL_ENVIRONMENT_MSG  "the .local environment was not found"
 
+// MSDN docs say the maximum for a console title is 64 K.  But, passing a length
+// of 65536 into the title functions results in an error.  So does 65500, and
+// 65000.  60000 works.  But, we make it 4000 and in the implmentation, if it
+// fails, we just raise an exception.
+#define MAX_CONSOLETITLE             4000
+
+// In a similar fashion, the GetConsoleProcessList() function fails if we pass
+// in an array of 64K uint32_t types.  But, if we pass in 64K / 4 uint32_t types
+// it works.  1000 PIDs seems more than adequate.
+#define MAX_CONSOLEPIDS              1000
 
 
 /* Struct for the ooConsole object CSelf. */

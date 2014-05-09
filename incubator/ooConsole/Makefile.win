@@ -84,7 +84,7 @@ LIB = $(LIB);$(REXX_HOME)\api
 !ENDIF
 
 REXX_LIBS = rexx.lib rexxapi.lib
-WIN_LIBS  = user32.lib
+WIN_LIBS  = user32.lib shlwapi.lib
 
 # Generate and include the version information.  Quit if there is an error.
 !IF [src\generateVersionFile.bat] != 0
@@ -188,7 +188,7 @@ OBJ_FILES = $(OUT_DIR)\ooConsole.obj $(APICOMMON_DIR)\APICommon.obj $(SHAPES_DIR
 
 
 # What we want to build.
-all: $(BIN_DIR)\ooconsole.dll $(BIN_DIR)\ooConsole.cls
+all: $(BIN_DIR)\ooconsole.dll $(BIN_DIR)\ooConsole.cls $(BIN_DIR)\ooshapes.dll $(BIN_DIR)\ooShapes.cls
 
 
 $(OUT_DIR)\ooConsole.obj: $(PLATFORM_DIR)\ooConsole.cpp $(PLATFORM_DIR)\ooConsole.hpp $(APICOMMON_DIR)\APICommon.obj \
@@ -204,13 +204,24 @@ $(BIN_DIR)\ooconsole.dll: $(OUT_DIR)\ooconsole.dll
 $(BIN_DIR)\ooConsole.cls: src\rexx\ooConsole.cls
     copy src\rexx\ooConsole.cls $(BIN_DIR) 1>nul 2>&1
 
+# Copy over the ooShapes package so that it can be easily added to the package
+$(BIN_DIR)\ooShapes.cls : $(SHAPES_DIR)\ooShapes.cls
+    @ECHO .
+    @ECHO Copying over ooShapes.cls
+    copy $(SHAPES_DIR)\ooShapes.cls $(BIN_DIR)
+
+$(BIN_DIR)\ooshapes.dll : $(SHAPES_DIR)\ooshapes.dll
+    @ECHO .
+    @ECHO Copying over ooshapes.dll
+    copy $(SHAPES_DIR)\ooshapes.dll $(BIN_DIR)
+
 package: all
     @echo .
     @echo Creating installation package
     @cd $(ROOTDIR)\install\platform\windows
     makensis /DVERSION=$(LONGVER) /DSHORTVERSION=$(SHORTVER) /DROOTDIR=$(ROOTDIR) /DOUTDIR=$(OUTDIR) \
              /DCPU=$(NSISCPU) /DDEBUGPKG=$(DBGPACKAGE) ooConsole.nsi
-    @cd $(OOD_ROOT_DIR)
+    @cd $(ROOTDIR)
 
 dist: all
     @echo Create distribution file

@@ -130,6 +130,14 @@ extern RexxObjectPtr unsupportedRoutineException(RexxCallContext *c, CSTRING rtn
 extern RexxObjectPtr invalidReturnWholeNumberException(RexxThreadContext *c, CSTRING name, RexxObjectPtr actual, bool isMethod);
 extern void          notBooleanReplyException(RexxThreadContext *c, CSTRING method, RexxObjectPtr actual);
 
+extern bool              isPointerString(const char *string);
+extern void *            string2pointer(const char *string);
+extern void *            string2pointer(RexxMethodContext *c, RexxStringObject string);
+extern void *            string2pointer(RexxThreadContext *c, RexxObjectPtr ptr);
+extern void              pointer2string(char *, void *pointer);
+extern RexxStringObject  pointer2string(RexxMethodContext *, void *);
+extern RexxStringObject  pointer2string(RexxThreadContext *c, void *pointer);
+
 extern CSTRING rxGetStringAttribute(RexxMethodContext *context, RexxObjectPtr obj, CSTRING name);
 extern bool    rxGetNumberAttribute(RexxMethodContext *context, RexxObjectPtr obj, CSTRING name, wholenumber_t *pNumber);
 extern bool    rxGetUIntPtrAttribute(RexxMethodContext *context, RexxObjectPtr obj, CSTRING name, uintptr_t *pNumber);

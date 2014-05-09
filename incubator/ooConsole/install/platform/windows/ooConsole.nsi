@@ -193,6 +193,8 @@ Section  doInstall
     DetailPrint "********** ooConsole ${SHORTVERSION}  **************"
     File "${BinDir}\ooconsole.dll"
     File "${BinDir}\ooConsole.cls"
+    File "${BinDir}\ooShapes.cls"
+    File "${BinDir}\ooshapes.dll"
     DetailPrint ""
 
     DetailPrint "********** ooConsole ${SHORTVERSION} Documentation **********"
@@ -201,8 +203,7 @@ Section  doInstall
 
     ; Add the files ...
     File "${ROOTDIR}\doc\ooconsole.pdf"
-    File "${ROOTDIR}\doc\ooConsole-ReadMe.txt"
-    File /oname=ooConsole-ReleaseNotes.txt "${ROOTDIR}\doc\ooConsole-ReleaseNotes"
+    File "${ROOTDIR}\doc\ooConsole-ReleaseNotes.txt"
 
     DetailPrint ""
 
@@ -212,14 +213,14 @@ Section  doInstall
 
     ; Add the files ...
     File "${ExamplesDir}\*.rex"
-    File "${ExamplesDir}\*.frm"
+    ;File "${ExamplesDir}\*.frm"
 
     ; Create start menu shortcuts
     DetailPrint "********** ooConsole ${SHORTVERSION} Start Menu Shortcuts **********"
 
     CreateShortCut  "${SMooRexxFolder}\Uninstall ${SHORTNAME}.lnk" "$INSTDIR\${UNINSTALLER}" "" "$INSTDIR\${UNINSTALLER}" 0
-    CreateShortCut  "${SMooRexxFolder}\Documentation\ooConsole Reference.lnk" "$INSTDIR\doc\ooconsole.pdf" "" "$INSTDIR\doc\ooconsole.pdf" 0
-    CreateShortCut  "${SMooRexxFolder}\Documentation\ooConsole ReleaseNotes.lnk" "$INSTDIR\doc\ooConsole-ReleaseNotes.txt" "" "$INSTDIR\doc\ooConsole-ReleaseNotes.txt" 0
+    CreateShortCut  "${SMooRexxFolder}\ooRexx Documentation\ooConsole Reference.lnk" "$INSTDIR\doc\ooconsole.pdf" "" "$INSTDIR\doc\ooconsole.pdf" 0
+    CreateShortCut  "${SMooRexxFolder}\ooRexx Documentation\ooConsole ReleaseNotes.lnk" "$INSTDIR\doc\ooConsole-ReleaseNotes.txt" "" "$INSTDIR\doc\ooConsole-ReleaseNotes.txt" 0
 
     DetailPrint ""
 
@@ -520,7 +521,6 @@ Function RemoveFiles
   Delete $INSTDIR\ooConsole.cls
 
   Delete $INSTDIR\doc\ooconsole.pdf
-  Delete $INSTDIR\doc\ooConsole-ReadMe.txt
   Delete $INSTDIR\doc\ooConsole-ReleaseNotes.txt
 
   ; For the examples just delete the whole tree.
@@ -533,8 +533,8 @@ Function RemoveFiles
   DetailPrint ""
 
   Delete  "${SMooRexxFolder}\Uninstall ${SHORTNAME}.lnk"
-  Delete  "${SMooRexxFolder}\Documentation\ooConsole Reference.lnk"
-  Delete  "${SMooRexxFolder}\Documentation\ooConsole ReleaseNotes.lnk"
+  Delete  "${SMooRexxFolder}\ooRexx Documentation\ooConsole Reference.lnk"
+  Delete  "${SMooRexxFolder}\ooRexx Documentation\ooConsole ReleaseNotes.lnk"
 
   DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${SHORTNAME}"
 
@@ -561,7 +561,6 @@ Section "Uninstall"
   Delete $INSTDIR\ooConsole.cls
 
   Delete $INSTDIR\doc\ooconsole.pdf
-  Delete $INSTDIR\doc\ooConsole-ReadMe.txt
   Delete $INSTDIR\doc\ooConsole-ReleaseNotes.txt
 
   ; For the examples just delete the whole tree.
@@ -570,8 +569,8 @@ Section "Uninstall"
   DetailPrint "Removing ooConsole Start Menu short cuts"
 
   Delete  "${SMooRexxFolder}\Uninstall ${SHORTNAME}.lnk"
-  Delete  "${SMooRexxFolder}\Documentation\ooConsole Reference.lnk"
-  Delete  "${SMooRexxFolder}\Documentation\ooConsole ReleaseNotes.lnk"
+  Delete  "${SMooRexxFolder}\ooRexx Documentation\ooConsole Reference.lnk"
+  Delete  "${SMooRexxFolder}\ooRexx Documentation\ooConsole ReleaseNotes.lnk"
 
   DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${SHORTNAME}"
 

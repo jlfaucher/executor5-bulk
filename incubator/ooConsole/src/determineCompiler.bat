@@ -52,7 +52,7 @@ REM - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 set OOCON_ROOT_DIR=%cd%
 
-pushd install\platform\windows
+pushd src
 
 :DETERMINE_COMPILER
 cl > temp.txt.okayToDelete 2>&1
