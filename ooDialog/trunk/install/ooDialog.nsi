@@ -190,10 +190,10 @@ Section  "ooDialog ${SHORTVERSION} Documentation" SecDoc
     File "${ROOTDIR}\doc\ooDialog_ReleaseNotes.txt"
     File "${ExamplesDir}\ooRexxTry\doc\ooRexxTry.pdf"
 
-    CreateShortCut  "${SMooRexxFolder}\Documentation\ooDialog Reference.lnk" "$INSTDIR\doc\oodialog.pdf" "" "$INSTDIR\doc\oodialog.pdf" 0
-    CreateShortCut  "${SMooRexxFolder}\Documentation\ooDialog User Guide.lnk" "$INSTDIR\doc\oodguide.pdf" "" "$INSTDIR\doc\oodguide.pdf" 0
-    CreateShortCut  "${SMooRexxFolder}\Documentation\ooDialog Release Notes.lnk" "$INSTDIR\doc\ooDialog_ReleaseNotes.txt" "" "$INSTDIR\doc\ooDialog_ReleaseNotes.txt" 0
-    CreateShortCut  "${SMooRexxFolder}\Documentation\ooRexxTry Reference.lnk" "$INSTDIR\doc\ooRexxTry.pdf" "" "$INSTDIR\doc\ooRexxTry.pdf" 0
+    CreateShortCut  "${SMooRexxFolder}\ooRexx Documentation\ooDialog Reference.lnk" "$INSTDIR\doc\oodialog.pdf" "" "$INSTDIR\doc\oodialog.pdf" 0
+    CreateShortCut  "${SMooRexxFolder}\ooRexx Documentation\ooDialog User Guide.lnk" "$INSTDIR\doc\oodguide.pdf" "" "$INSTDIR\doc\oodguide.pdf" 0
+    CreateShortCut  "${SMooRexxFolder}\ooRexx Documentation\ooDialog Release Notes.lnk" "$INSTDIR\doc\ooDialog_ReleaseNotes.txt" "" "$INSTDIR\doc\ooDialog_ReleaseNotes.txt" 0
+    CreateShortCut  "${SMooRexxFolder}\ooRexx Documentation\ooRexxTry Reference.lnk" "$INSTDIR\doc\ooRexxTry.pdf" "" "$INSTDIR\doc\ooRexxTry.pdf" 0
     DetailPrint ""
 SectionEnd
 
@@ -1092,12 +1092,12 @@ Function RemoveFiles
 
   Delete "${SMooRexxFolder}\Try Rexx (GUI).lnk"
 
-  Delete "${SMooRexxFolder}\Documentation\ooRexx ooDialog Method Reference.lnk"
-  Delete "${SMooRexxFolder}\Documentation\ooRexx ooDialog Reference.lnk"
-  Delete "${SMooRexxFolder}\Documentation\ooRexx ooDialog User Guide.lnk"
-  Delete "${SMooRexxFolder}\Documentation\ooDialog Reference.lnk"
-  Delete "${SMooRexxFolder}\Documentation\ooDialog User Guide.lnk"
-  Delete "${SMooRexxFolder}\Documentation\ooRexxTry Reference.lnk"
+  Delete "${SMooRexxFolder}\ooRexx Documentation\ooRexx ooDialog Method Reference.lnk"
+  Delete "${SMooRexxFolder}\ooRexx Documentation\ooRexx ooDialog Reference.lnk"
+  Delete "${SMooRexxFolder}\ooRexx Documentation\ooRexx ooDialog User Guide.lnk"
+  Delete "${SMooRexxFolder}\ooRexx Documentation\ooDialog Reference.lnk"
+  Delete "${SMooRexxFolder}\ooRexx Documentation\ooDialog User Guide.lnk"
+  Delete "${SMooRexxFolder}\ooRexx Documentation\ooRexxTry Reference.lnk"
 
   Delete "${SMooRexxFolder}\${REXXSHORTNAME} Samples\Display Event Log.lnk"  ; Only pre ooDialog 4.2.3
   Delete "${SMooRexxFolder}\${REXXSHORTNAME} Samples\Display Window Tree.lnk"
