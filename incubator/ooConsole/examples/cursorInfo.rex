@@ -35,7 +35,7 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-  con = .ooConsole~new(.true)
+  con = .StdOutput~new
 
   ci = con~getCursorInfo; say 'getCursorInfo errRC:' con~errRC
   say 'cursor size:' ci~size
@@ -63,6 +63,10 @@
  end
 
  say 'Set cursor back to what it was.'
+ j = SysSleep(10)
+
+ say 'Set cursor position to 25, 18.'
+ con~setCursorPosition(.Point~new(25, 18))
  j = SysSleep(10)
 
 ::requires 'ooConsole.cls'

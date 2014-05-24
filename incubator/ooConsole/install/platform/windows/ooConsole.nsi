@@ -89,7 +89,7 @@
 ;General
 
   Name "ooConsole ${VERSION}"
-  OutFile "ooOOConsole-${VERSION}-${CPU}${DEBUGPKG}.exe"
+  OutFile "ooConsole-${VERSION}-${CPU}${DEBUGPKG}.exe"
   ShowInstdetails show
   SetOverwrite on
   SetPluginUnload alwaysoff

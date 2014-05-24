@@ -743,6 +743,13 @@ void arrayToLargeException(RexxThreadContext *c, uint32_t found, uint32_t max, i
     snprintf(buffer, sizeof(buffer), "Argument %d, array items (%d) exceeds maximum (%d) allowed", argPos, found, max);
     userDefinedMsgException(c, buffer);
 }
+void arrayWrongSizeException(RexxThreadContext *c, size_t found, size_t need, int argPos)
+{
+    char buffer[256];
+    snprintf(buffer, sizeof(buffer), "Argument %d, array items must equal (%d), found (%d)", argPos, need, found);
+    userDefinedMsgException(c, buffer);
+}
+
 
 RexxObjectPtr sparseArrayException(RexxThreadContext *c, size_t argPos, size_t index)
 {
@@ -1080,8 +1087,6 @@ RexxObjectPtr invalidReturnWholeNumberException(RexxThreadContext *c, CSTRING na
  *  The return from method "name"() must a logical; found "value"
  *
  *  The return from method onCustomDraw() must be a logical; found an Array
- *
- *  The exception is raised, printed, and the dialog is ended.
  */
 void notBooleanReplyException(RexxThreadContext *c, CSTRING method, RexxObjectPtr actual)
 {
@@ -1090,6 +1095,26 @@ void notBooleanReplyException(RexxThreadContext *c, CSTRING method, RexxObjectPt
              method, c->ObjectToStringValue(actual));
 
     c->RaiseException1(Rexx_Error_Execution_user_defined, c->String(buf));
+}
+
+/**
+ *  93.900
+ *
+ *  Error 93 - Incorrect call to method
+ *        The specified method, built-in function, or external routine exists,
+ *        but you used it incorrectly.
+ *
+ *  Argument pos must be in the range 0 to 4294967295; found "actual"
+ *
+ *  Argument 1 must be in the range 0 to 4294967295; found "an Array"
+ */
+void notUnsignedInt32Exception(RexxMethodContext *c, size_t pos, RexxObjectPtr actual)
+{
+    char buf[256];
+    snprintf(buf, sizeof(buf), "Argument %d must be in the range 0 to 4294967295; found \"%s\"",
+             pos, c->ObjectToStringValue(actual));
+
+    c->RaiseException1(Rexx_Error_Incorrect_method_user_defined, c->String(buf));
 }
 
 
@@ -1293,6 +1318,24 @@ bool rxGetUInt32Attribute(RexxMethodContext *context, RexxObjectPtr obj, CSTRING
         }
     }
     return result;
+}
+
+/**
+ * Checks that an argument value is truly a Directory object.
+ *
+ * @param context
+ * @param d
+ * @param argPos
+ *
+ * @return a RexxDirectoryObject object on sucess, null on error.
+ */
+RexxDirectoryObject rxGetDirectory(RexxMethodContext *context, RexxObjectPtr d, size_t argPos)
+{
+    if ( requiredClass(context->threadContext, d, "Directory", argPos) )
+    {
+        return (RexxDirectoryObject)d;
+    }
+    return NULL;
 }
 
 bool requiredClass(RexxThreadContext *c, RexxObjectPtr obj, const char *name, size_t pos)

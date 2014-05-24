@@ -318,6 +318,15 @@ RexxMethod1(RexxStringObject, point_string, CSELF, p)
     return context->String(buf);
 }
 
+RexxMethod1(RexxStringObject, point_print, CSELF, p)
+{
+    PORXPOINT pt = (PORXPOINT)p;
+
+    TCHAR buf[128];
+    snprintf(buf, sizeof(buf), "(%d, %d)", pt->x, pt->y);
+
+    return context->String(buf);
+}
 
 
 /**
@@ -349,6 +358,16 @@ RexxMethod1(RexxStringObject, size_string, CSELF, s)
 
     TCHAR buf[128];
     snprintf(buf, sizeof(buf), "a Size (%d, %d)", size->cx, size->cy);
+
+    return context->String(buf);
+}
+
+RexxMethod1(RexxStringObject, size_print, CSELF, s)
+{
+    PORXSIZE size = (PORXSIZE)s;
+
+    TCHAR buf[128];
+    snprintf(buf, sizeof(buf), "(%d, %d)", size->cx, size->cy);
 
     return context->String(buf);
 }
@@ -476,6 +495,16 @@ RexxMethod1(RexxStringObject, rect_string, CSELF, pRect)
 
     TCHAR buf[128];
     snprintf(buf, sizeof(buf), "a Rect (%d, %d, %d, %d)", pR->left, pR->top, pR->right, pR->bottom);
+
+    return context->String(buf);
+}
+
+RexxMethod1(RexxStringObject, rect_print, CSELF, pRect)
+{
+    PORXRECT pR = (PORXRECT)pRect;
+
+    TCHAR buf[128];
+    snprintf(buf, sizeof(buf), "(%d, %d, %d, %d)", pR->left, pR->top, pR->right, pR->bottom);
 
     return context->String(buf);
 }

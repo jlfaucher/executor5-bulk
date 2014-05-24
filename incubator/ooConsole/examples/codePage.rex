@@ -34,12 +34,21 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-  con = .ooConsole~new(.true)
+  con = .StdOutput~new
 
-  say 'Input codepage: ' con~getCP
-  say 'Output codepage:' con~getOutputCP
+  inputCodePage = con~getCP
+  outputCodePage = con~getOutputCP
+  historyInfo = con~getHistoryInfo
 
-  say 'Display mode:' con~getDisplayMode
+  say 'Input codepage: ' inputCodePage
+  say 'Output codepage:' outputCodePage
+
+  say 'History commands:' historyInfo~commands
+  say 'History buffers: ' historyInfo~buffers
+  say 'History flag:    ' historyInfo~flag
+
+  dMode = con~getDisplayMode
+  say 'Display mode:' dMode 'errRC:' con~errRC
 
   if \ con~setHistoryInfo(3, 35, .false) then do
     say 'setHistoryInfo failed.  errRC:' con~errRC
@@ -49,10 +58,28 @@
   say 'History buffers: ' d~buffers
   say 'History flag:    ' d~flag
 
-  return
   ret = con~setCP(437); say 'ret:' ret
   ret = con~setOutputCP(437); say 'ret:' ret
 
   say "Hello there"
+
+  con~setCP(inputCodePage)
+  con~setOutputCP(outputCodePage)
+
+  if historyInfo~flag~caselessCompare('Duplicates') == 0 then flag = .true
+  else flag = .false
+
+  con~setHistoryInfo(historyInfo~commands, historyInfo~buffers, flag)
+  say 'setHistoryInfo back to its original setting.  errRC:' con~errRC
+
+  con~setHistoryInfo(historyInfo)
+  say 'setHistoryInfo back to its original setting using a directory.  errRC:' con~errRC
+
+  d = con~getHistoryInfo
+  say 'History Settings Now:'
+  say 'History commands:' d~commands
+  say 'History buffers: ' d~buffers
+  say 'History flag:    ' d~flag
+
 
 ::requires 'ooConsole.cls'

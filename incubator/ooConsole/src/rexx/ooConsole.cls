@@ -46,38 +46,74 @@
 ::class 'ooConsole' public inherit ooConsoleConstants
 
 ::method version class external "LIBRARY ooconsole oocon_version_cls"
-
-::attribute errRC get external "LIBRARY ooconsole oocon_errRC_atr"
-
 ::method init external "LIBRARY ooconsole oocon_init"
 ::method unint external "LIBRARY ooconsole oocon_uninit"
+::attribute errRC get external "LIBRARY ooconsole oocon_errRC_atr"
+::attribute handle get external "LIBRARY ooconsole oocon_handle_atr"
 ::method getCP external "LIBRARY ooconsole oocon_getCP"
-::method getCursorInfo external "LIBRARY ooconsole oocon_getCursorInfo"
 ::method getDisplayMode external "LIBRARY ooconsole oocon_getDisplayMode"
-::method getFontSize external "LIBRARY ooconsole oocon_getFontSize"
 ::method getHistoryInfo external "LIBRARY ooconsole oocon_getHistoryInfo"
-::method getMode external "LIBRARY ooconsole oocon_getMode"
+::method getNumberOfMouseButtons external "LIBRARY ooconsole oocon_getNumberOfMouseButtons"
 ::method getOriginalTitle external "LIBRARY ooconsole oocon_getOriginalTitle"
 ::method getOutputCP external "LIBRARY ooconsole oocon_getOutputCP"
 ::method getProcessList external "LIBRARY ooconsole oocon_getProcessList"
-::method getScreenBufferSize external "LIBRARY ooconsole oocon_getScreenBufferSize"
+::method getSelectionInfo external "LIBRARY ooconsole oocon_getSelectionInfo"
 ::method getTitle external "LIBRARY ooconsole oocon_getTitle"
 ::method getWindow external "LIBRARY ooconsole oocon_getWindow"
-::method getWindowRect external "LIBRARY ooconsole oocon_getWindowRect"
-::method getWindowSize external "LIBRARY ooconsole oocon_getWindowSize"
 ::method setCP external "LIBRARY ooconsole oocon_setCP"
-::method setCursorInfo external "LIBRARY ooconsole oocon_setCursorInfo"
-::method setDisplayMode external "LIBRARY ooconsole oocon_setDisplayMode"
 ::method setHistoryInfo external "LIBRARY ooconsole oocon_setHistoryInfo"
-::method setMode external "LIBRARY ooconsole oocon_setMode"
 ::method setOutputCP external "LIBRARY ooconsole oocon_setOutputCP"
-::method setScreenBufferSize external "LIBRARY ooconsole oocon_setScreenBufferSize"
 ::method setTitle external "LIBRARY ooconsole oocon_setTitle"
-::method setWindowRect external "LIBRARY ooconsole oocon_setWindowRect"
-::method setWindowSize external "LIBRARY ooconsole oocon_setWindowSize"
 
 ::method test external "LIBRARY ooconsole oocon_test"                           -- Do not document, internal use only
 
+::class 'ScreenBuffer' public subclass ooConsole
+::method close external "LIBRARY ooconsole sb_close"
+::method createScreenBuffer external "LIBRARY ooconsole sb_createScreenBuffer"
+::method getCursorInfo external "LIBRARY ooconsole sb_getCursorInfo"
+::method getFontInfo external "LIBRARY ooconsole sb_getFontInfo"
+::method getFontSize external "LIBRARY ooconsole sb_getFontSize"
+::method getLargestWindowSize external "LIBRARY ooconsole sb_getLargestWindowSize"
+::method getMode external "LIBRARY ooconsole sb_getMode"
+::method getScreenBufferInfo external "LIBRARY ooconsole sb_getScreenBufferInfo"
+::method getScreenBufferInfoEX external "LIBRARY ooconsole sb_getScreenBufferInfoEx"
+::method getScreenBufferSize external "LIBRARY ooconsole sb_getScreenBufferSize"
+::method getWindowRect external "LIBRARY ooconsole sb_getWindowRect"
+::method getWindowSize external "LIBRARY ooconsole sb_getWindowSize"
+::method setActiveScreenBuffer external "LIBRARY ooconsole sb_setActiveScreenBuffer"
+::method setCursorInfo external "LIBRARY ooconsole sb_setCursorInfo"
+::method setCursorPosition external "LIBRARY ooconsole sb_setCursorPosition"
+::method setDisplayMode external "LIBRARY ooconsole sb_setDisplayMode"
+::method setFontInfo external "LIBRARY ooconsole sb_setFontInfo"
+::method setMode external "LIBRARY ooconsole sb_setMode"
+::method setScreenBufferInfoEx external "LIBRARY ooconsole sb_setScreenBufferInfoEx"
+::method setScreenBufferSize external "LIBRARY ooconsole sb_setScreenBufferSize"
+::method setTextAttribute external "LIBRARY ooconsole sb_setTextAttribute"
+::method setWindowRect external "LIBRARY ooconsole sb_setWindowRect"
+::method setWindowSize external "LIBRARY ooconsole sb_setWindowSize"
+::method write external "LIBRARY ooconsole sb_write"
+
+::class 'StdOutput' public subclass ScreenBuffer
+::method init external "LIBRARY ooconsole stdout_init"
+::method getStdHandle external "LIBRARY ooconsole stdout_getStdHandle"
+::method setStdHandle external "LIBRARY ooconsole stdout_setStdHandle"
+
+::class 'StdError' public subclass ScreenBuffer
+::method init external "LIBRARY ooconsole stderr_init"
+::method getStdHandle external "LIBRARY ooconsole stderr_getStdHandle"
+::method setStdHandle external "LIBRARY ooconsole stderr_setStdHandle"
+
+::class 'StdInput' public subclass ooConsole
+::method init external "LIBRARY ooconsole stdin_init"
+::method flushInputBuffer external "LIBRARY ooconsole stdin_flushInputBuffer"
+::method getStdHandle external "LIBRARY ooconsole stdin_getStdHandle"
+::method getMode external "LIBRARY ooconsole stdin_getMode"
+::method getNumberOfInputEvents external "LIBRARY ooconsole stdin_getNumberOfInputEvents"
+::method peekInput external "LIBRARY ooconsole stdin_peekInput"
+::method read external "LIBRARY ooconsole stdin_read"
+::method readInput external "LIBRARY ooconsole stdin_readInput"
+::method setMode external "LIBRARY ooconsole stdin_setMode"
+::method setStdHandle external "LIBRARY ooconsole stdin_setStdHandle"
 
 
 /**

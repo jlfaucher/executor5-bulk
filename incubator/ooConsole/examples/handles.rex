@@ -35,59 +35,32 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-::requires 'ooshapes' LIBRARY
+  stdout = .StdOutput~new
+  stderr = .StdError~new
 
-::class 'Rect' public
-::method version class external "LIBRARY ooshapes ooShapes_version_cls"
-::method init external "LIBRARY ooshapes rect_init"
-::attribute left get external "LIBRARY ooshapes rect_left"
-::attribute left set external "LIBRARY ooshapes rect_setLeft"
-::attribute top get external "LIBRARY ooshapes rect_top"
-::attribute top set external "LIBRARY ooshapes rect_setTop"
-::attribute right get external "LIBRARY ooshapes rect_right"
-::attribute right set external "LIBRARY ooshapes rect_setRight"
-::attribute bottom get external "LIBRARY ooshapes rect_bottom"
-::attribute bottom set external "LIBRARY ooshapes rect_setBottom"
-::method copy external "LIBRARY ooshapes rect_copy"
-::method string external "LIBRARY ooshapes rect_string"
-::method print external "LIBRARY ooshapes rect_print"
+  say 'Stdout handle:' stdout~getStdHandle
+  say 'Stderr handle:' stderr~getStdHandle
 
-::class 'Point' public
-::method version class external "LIBRARY ooshapes ooShapes_version_cls"
-::method init external "LIBRARY ooshapes point_init"
-::attribute x get external "LIBRARY ooshapes point_x"
-::attribute x set external "LIBRARY ooshapes point_setX"
-::attribute y get external "LIBRARY ooshapes point_y"
-::attribute y set external "LIBRARY ooshapes point_setY"
-::method copy external "LIBRARY ooshapes point_copy"
-::method '+' external "LIBRARY ooshapes point_add"
-::method '-' external "LIBRARY ooshapes point_subtract"
-::method incr external "LIBRARY ooshapes point_incr"
-::method decr external "LIBRARY ooshapes point_decr"
-::method inRect external "LIBRARY ooshapes point_inRect"
-::method string external "LIBRARY ooshapes point_string"
-::method print external "LIBRARY ooshapes point_print"
+  oldStdoutH = stdout~setStdHandle(stderr~getStdHandle)
+  say 'Switched handles'
+  say 'Stdout handle now:' stdout~getStdHandle
+  say 'Stderr handle now:' stderr~getStdHandle
+  say 'oldStdout handle: ' oldStdoutH
 
-::class 'Size' public
-::method version class external "LIBRARY ooshapes ooShapes_version_cls"
-::method init external "LIBRARY ooshapes size_init"
-::attribute width get external "LIBRARY ooshapes size_cx"
-::attribute width set external "LIBRARY ooshapes size_setCX"
-::attribute height get external "LIBRARY ooshapes size_cy"
-::attribute height set external "LIBRARY ooshapes size_setCY"
-::method string external "LIBRARY ooshapes size_string"
-::method print external "LIBRARY ooshapes size_print"
-::method '=' external "LIBRARY ooshapes size_compare"
-::method '==' external "LIBRARY ooshapes size_compare"
-::method '\=' external "LIBRARY ooshapes size_compare"
-::method '\==' external "LIBRARY ooshapes size_compare"
-::method '<' external "LIBRARY ooshapes size_compare"
-::method '<<' external "LIBRARY ooshapes size_compare"
-::method '<=' external "LIBRARY ooshapes size_compare"
-::method '<<=' external "LIBRARY ooshapes size_compare"
-::method '>' external "LIBRARY ooshapes size_compare"
-::method '>>' external "LIBRARY ooshapes size_compare"
-::method '>=' external "LIBRARY ooshapes size_compare"
-::method '>>=' external "LIBRARY ooshapes size_compare"
-::method equateTo external "LIBRARY ooshapes size_equateTo"
+  stdout~setStdHandle(oldStdoutH)
 
+  scrBuf = stdout~createScreenBuffer
+  say 'New screen buffer' scrBuf~handle
+
+  scrBuf~setActiveScreenBuffer
+  scrBuf~write("We did it".endOfLine)
+  scrBuf~write("Going to sleep now".endOfLine)
+  j = SysSleep(10)
+  scrBuf~write("Done sleeping, going back to normal stdout".endOfLine)
+  stdout~setActiveScreenBuffer
+  stdout~write("Back to normal stdout.".endOfLine)
+  scrBuf~close
+  stdout~write('Closed scrBuf() handle. errRC:' scrBuf~errRC || .endOfLine)
+
+
+::requires 'ooConsole.cls'

@@ -144,6 +144,7 @@ REXX_METHOD_PROTOTYPE(rect_setRight);
 REXX_METHOD_PROTOTYPE(rect_setBottom);
 REXX_METHOD_PROTOTYPE(rect_copy);
 REXX_METHOD_PROTOTYPE(rect_string);
+REXX_METHOD_PROTOTYPE(rect_print);
 
 // .Point
 REXX_METHOD_PROTOTYPE(point_init);
@@ -158,6 +159,7 @@ REXX_METHOD_PROTOTYPE(point_incr);
 REXX_METHOD_PROTOTYPE(point_decr);
 REXX_METHOD_PROTOTYPE(point_inRect);
 REXX_METHOD_PROTOTYPE(point_string);
+REXX_METHOD_PROTOTYPE(point_print);
 
 // .Size
 REXX_METHOD_PROTOTYPE(size_init);
@@ -168,6 +170,7 @@ REXX_METHOD_PROTOTYPE(size_setCY);
 REXX_METHOD_PROTOTYPE(size_compare);
 REXX_METHOD_PROTOTYPE(size_equateTo);
 REXX_METHOD_PROTOTYPE(size_string);
+REXX_METHOD_PROTOTYPE(size_print);
 
 
 RexxMethodEntry ooShapes_methods[] = {
@@ -183,6 +186,7 @@ RexxMethodEntry ooShapes_methods[] = {
     REXX_METHOD(rect_setBottom,                 rect_setBottom),
     REXX_METHOD(rect_copy,                      rect_copy),
     REXX_METHOD(rect_string,                    rect_string),
+    REXX_METHOD(rect_print,                     rect_print),
     REXX_METHOD(point_init,                     point_init),
     REXX_METHOD(point_x,                        point_x),
     REXX_METHOD(point_setX,                     point_setX),
@@ -195,6 +199,7 @@ RexxMethodEntry ooShapes_methods[] = {
     REXX_METHOD(point_decr,                     point_decr),
     REXX_METHOD(point_inRect,                   point_inRect),
     REXX_METHOD(point_string,                   point_string),
+    REXX_METHOD(point_print,                    point_print),
     REXX_METHOD(size_init,                      size_init),
     REXX_METHOD(size_cx,                        size_cx),
     REXX_METHOD(size_setCX,                     size_setCX),
@@ -203,6 +208,7 @@ RexxMethodEntry ooShapes_methods[] = {
     REXX_METHOD(size_compare,                   size_compare),
     REXX_METHOD(size_equateTo,                  size_equateTo),
     REXX_METHOD(size_string,                    size_string),
+    REXX_METHOD(size_print,                     size_print),
     REXX_LAST_METHOD()
 };
 

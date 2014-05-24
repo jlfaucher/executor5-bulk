@@ -34,7 +34,7 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-  con = .ooConsole~new(.true)
+  con = .StdOutput~new
 
   say 'Not full screen'
   say con~getFontSize

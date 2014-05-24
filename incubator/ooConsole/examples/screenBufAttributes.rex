@@ -35,59 +35,58 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-::requires 'ooshapes' LIBRARY
+  con = .StdOutput~new
 
-::class 'Rect' public
-::method version class external "LIBRARY ooshapes ooShapes_version_cls"
-::method init external "LIBRARY ooshapes rect_init"
-::attribute left get external "LIBRARY ooshapes rect_left"
-::attribute left set external "LIBRARY ooshapes rect_setLeft"
-::attribute top get external "LIBRARY ooshapes rect_top"
-::attribute top set external "LIBRARY ooshapes rect_setTop"
-::attribute right get external "LIBRARY ooshapes rect_right"
-::attribute right set external "LIBRARY ooshapes rect_setRight"
-::attribute bottom get external "LIBRARY ooshapes rect_bottom"
-::attribute bottom set external "LIBRARY ooshapes rect_setBottom"
-::method copy external "LIBRARY ooshapes rect_copy"
-::method string external "LIBRARY ooshapes rect_string"
-::method print external "LIBRARY ooshapes rect_print"
+  say 'StdOutput:' con
+  say 'Screen Buffer Size: ' con~getScreenBufferSize~print
+  say 'Window Size:        ' con~getWindowSize~print
+  say 'Window Rect:        ' con~getWindowRect~print
 
-::class 'Point' public
-::method version class external "LIBRARY ooshapes ooShapes_version_cls"
-::method init external "LIBRARY ooshapes point_init"
-::attribute x get external "LIBRARY ooshapes point_x"
-::attribute x set external "LIBRARY ooshapes point_setX"
-::attribute y get external "LIBRARY ooshapes point_y"
-::attribute y set external "LIBRARY ooshapes point_setY"
-::method copy external "LIBRARY ooshapes point_copy"
-::method '+' external "LIBRARY ooshapes point_add"
-::method '-' external "LIBRARY ooshapes point_subtract"
-::method incr external "LIBRARY ooshapes point_incr"
-::method decr external "LIBRARY ooshapes point_decr"
-::method inRect external "LIBRARY ooshapes point_inRect"
-::method string external "LIBRARY ooshapes point_string"
-::method print external "LIBRARY ooshapes point_print"
+  say
+  say 'Screen Buffer Info'
+  d = con~getScreenBufferInfo
+  say 'Attributes:         ' d~Attributes
+  say 'Window Rect:        ' d~WindowRect~print
+  say 'Screen Buffer Size: ' d~BufferSize~print
+  say 'Maximum Window Size:' d~MaxWindowSize~print
+  say 'Cursor Position:    ' d~CursorPos~print
 
-::class 'Size' public
-::method version class external "LIBRARY ooshapes ooShapes_version_cls"
-::method init external "LIBRARY ooshapes size_init"
-::attribute width get external "LIBRARY ooshapes size_cx"
-::attribute width set external "LIBRARY ooshapes size_setCX"
-::attribute height get external "LIBRARY ooshapes size_cy"
-::attribute height set external "LIBRARY ooshapes size_setCY"
-::method string external "LIBRARY ooshapes size_string"
-::method print external "LIBRARY ooshapes size_print"
-::method '=' external "LIBRARY ooshapes size_compare"
-::method '==' external "LIBRARY ooshapes size_compare"
-::method '\=' external "LIBRARY ooshapes size_compare"
-::method '\==' external "LIBRARY ooshapes size_compare"
-::method '<' external "LIBRARY ooshapes size_compare"
-::method '<<' external "LIBRARY ooshapes size_compare"
-::method '<=' external "LIBRARY ooshapes size_compare"
-::method '<<=' external "LIBRARY ooshapes size_compare"
-::method '>' external "LIBRARY ooshapes size_compare"
-::method '>>' external "LIBRARY ooshapes size_compare"
-::method '>=' external "LIBRARY ooshapes size_compare"
-::method '>>=' external "LIBRARY ooshapes size_compare"
-::method equateTo external "LIBRARY ooshapes size_equateTo"
+  say
+  say 'Screen Buffer Info Extended'
+  d = con~getScreenBufferInfoEx
+  say 'Attributes:         ' d~Attributes
+  say 'Window Rect:        ' d~WindowRect~print
+  say 'Screen Buffer Size: ' d~BufferSize~print
+  say 'Maximum Window Size:' d~MaxWindowSize~print
+  say 'Cursor Position:    ' d~CursorPos~print
+  say 'Full Screen Support:' d~FullScreenSupport
+  say 'Color Table:        '
+  line = ''
+  do i = 1 to d~colorTable~items
+    line ||= d~colorTable[i]~right(9)
+    if i // 4 == 0 then do
+      say line
+      line = ''
+    end
+  end
 
+  d2 = .Directory~new
+  d2~attributes = "BgBlue FgBlue FgRed FgIntensity"
+  if \ con~setScreenBufferInfoEx(d2) then do
+    say 'Failed to set NEW screen buffer info.  errRc:' con~errRC
+  end
+  else do
+    say; say 'Set NEW screen buffer attributes.'; say
+  end
+
+  j = SysSleep(10)
+
+  -- Restore the original screen buffer info
+  if \ con~setScreenBufferInfoEx(d) then do
+    say 'Failed to RESTORE screen buffer.  errRc:' con~errRC
+  end
+  else do
+    say 'RESTORED screen buffer.'
+  end
+
+::requires 'ooConsole.cls'

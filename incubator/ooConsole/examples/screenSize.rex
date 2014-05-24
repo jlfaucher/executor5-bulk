@@ -34,22 +34,39 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-  con = .ooConsole~new(.true)
+
+  con = .StdOutput~new
 
   say 'ooConsole:' con
-  say con~getWindowRect
 
-  say con~getWindowSize
+  winRect = con~getWindowRect
+  winSize = con~getWindowSize
+  largestWinSize = con~getLargestWindowSize
+  sBufSize = con~getScreenBufferSize
 
-  s = .Size~new(116, 9000)
-  ret = con~setScreenBufferSize(s); say 'ret:' ret 'errRC:' con~errRC
+  curInfo = con~getScreenBufferInfoEx
 
-  s = .Size~new(114, 77)
-  ret = con~setWindowSize(s); say 'setWindowSize() ret:' ret 'errRC:' con~errRC
+  say 'Window rect:        ' winRect
+  say 'Window size:        ' winSize
+  say 'Largest Window size:' largestWinSize
+  say 'Screen Buffer size: ' sBufSize
+  say
 
-  rect = .Rect~new(0, 1374, 113, 1450)
-  ret = con~setWindowRect(rect, .true) --; say 'setWindowRect() ret:' ret 'errRC:' con~errRC
+  rect = .Rect~new(winRect~left, winRect~top - 30, winRect~right, winRect~bottom - 30)
+  ret = con~setWindowRect(rect, .true); say rect; say 'setWindowRect() ret:' ret 'errRC:' con~errRC
+
+  winSize~height -= 10
+  ret = con~setWindowSize(winSize); say 'setWindowSize() ret:' ret 'errRC:' con~errRC
+
+  sBufSize~height -= 15
+  ret = con~setScreenBufferSize(sBufSize); say 'setScreenBufferSize() ret:' ret 'errRC:' con~errRC
+
+  say 'Window rect:        ' con~getWindowRect
+  say 'Window size:        ' con~getWindowSize
+  say 'Screen Buffer size: ' con~getScreenBufferSize
 
   j = SysSleep(10)
+
+  con~setScreenBufferInfoEx(curInfo)
 
 ::requires 'ooConsole.cls'

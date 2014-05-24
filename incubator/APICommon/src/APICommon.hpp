@@ -98,6 +98,7 @@ extern void  missingIndexesInDirectoryException(RexxThreadContext *c, int argPos
 extern void  missingIndexInStemException(RexxThreadContext *c, int argPos, CSTRING index);
 extern void  stemIndexZeroException(RexxMethodContext *c, size_t pos);
 extern void  emptyArrayException(RexxThreadContext *c, int argPos);
+extern void  arrayWrongSizeException(RexxThreadContext *c, size_t found, size_t need, int argPos);
 extern void  arrayToLargeException(RexxThreadContext *c, uint32_t found, uint32_t max, int argPos);
 extern void  nullObjectException(RexxThreadContext *c, CSTRING name, size_t pos);
 extern void  nullObjectException(RexxThreadContext *c, CSTRING name);
@@ -129,6 +130,7 @@ extern RexxObjectPtr noSuchRoutineException(RexxThreadContext *c, CSTRING rtnNam
 extern RexxObjectPtr unsupportedRoutineException(RexxCallContext *c, CSTRING rtnName);
 extern RexxObjectPtr invalidReturnWholeNumberException(RexxThreadContext *c, CSTRING name, RexxObjectPtr actual, bool isMethod);
 extern void          notBooleanReplyException(RexxThreadContext *c, CSTRING method, RexxObjectPtr actual);
+extern void          notUnsignedInt32Exception(RexxMethodContext *c, size_t pos, RexxObjectPtr actual);
 
 extern bool              isPointerString(const char *string);
 extern void *            string2pointer(const char *string);
@@ -142,6 +144,8 @@ extern CSTRING rxGetStringAttribute(RexxMethodContext *context, RexxObjectPtr ob
 extern bool    rxGetNumberAttribute(RexxMethodContext *context, RexxObjectPtr obj, CSTRING name, wholenumber_t *pNumber);
 extern bool    rxGetUIntPtrAttribute(RexxMethodContext *context, RexxObjectPtr obj, CSTRING name, uintptr_t *pNumber);
 extern bool    rxGetUInt32Attribute(RexxMethodContext *context, RexxObjectPtr obj, CSTRING name, uint32_t *pNumber);
+extern
+RexxDirectoryObject rxGetDirectory(RexxMethodContext *context, RexxObjectPtr d, size_t argPos);
 
 extern bool            requiredClass(RexxThreadContext *c, RexxObjectPtr obj, const char *name, size_t pos);
 extern int32_t         getLogical(RexxThreadContext *c, RexxObjectPtr obj);

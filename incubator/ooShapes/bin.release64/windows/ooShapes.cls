@@ -50,6 +50,7 @@
 ::attribute bottom set external "LIBRARY ooshapes rect_setBottom"
 ::method copy external "LIBRARY ooshapes rect_copy"
 ::method string external "LIBRARY ooshapes rect_string"
+::method print external "LIBRARY ooshapes rect_print"
 
 ::class 'Point' public
 ::method version class external "LIBRARY ooshapes ooShapes_version_cls"
@@ -65,6 +66,7 @@
 ::method decr external "LIBRARY ooshapes point_decr"
 ::method inRect external "LIBRARY ooshapes point_inRect"
 ::method string external "LIBRARY ooshapes point_string"
+::method print external "LIBRARY ooshapes point_print"
 
 ::class 'Size' public
 ::method version class external "LIBRARY ooshapes ooShapes_version_cls"
@@ -74,6 +76,7 @@
 ::attribute height get external "LIBRARY ooshapes size_cy"
 ::attribute height set external "LIBRARY ooshapes size_setCY"
 ::method string external "LIBRARY ooshapes size_string"
+::method print external "LIBRARY ooshapes size_print"
 ::method '=' external "LIBRARY ooshapes size_compare"
 ::method '==' external "LIBRARY ooshapes size_compare"
 ::method '\=' external "LIBRARY ooshapes size_compare"

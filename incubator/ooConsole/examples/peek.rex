@@ -35,59 +35,39 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-::requires 'ooshapes' LIBRARY
+  stdin  = .StdInput~new
 
-::class 'Rect' public
-::method version class external "LIBRARY ooshapes ooShapes_version_cls"
-::method init external "LIBRARY ooshapes rect_init"
-::attribute left get external "LIBRARY ooshapes rect_left"
-::attribute left set external "LIBRARY ooshapes rect_setLeft"
-::attribute top get external "LIBRARY ooshapes rect_top"
-::attribute top set external "LIBRARY ooshapes rect_setTop"
-::attribute right get external "LIBRARY ooshapes rect_right"
-::attribute right set external "LIBRARY ooshapes rect_setRight"
-::attribute bottom get external "LIBRARY ooshapes rect_bottom"
-::attribute bottom set external "LIBRARY ooshapes rect_setBottom"
-::method copy external "LIBRARY ooshapes rect_copy"
-::method string external "LIBRARY ooshapes rect_string"
-::method print external "LIBRARY ooshapes rect_print"
+  mode  = stdin~getMode
 
-::class 'Point' public
-::method version class external "LIBRARY ooshapes ooShapes_version_cls"
-::method init external "LIBRARY ooshapes point_init"
-::attribute x get external "LIBRARY ooshapes point_x"
-::attribute x set external "LIBRARY ooshapes point_setX"
-::attribute y get external "LIBRARY ooshapes point_y"
-::attribute y set external "LIBRARY ooshapes point_setY"
-::method copy external "LIBRARY ooshapes point_copy"
-::method '+' external "LIBRARY ooshapes point_add"
-::method '-' external "LIBRARY ooshapes point_subtract"
-::method incr external "LIBRARY ooshapes point_incr"
-::method decr external "LIBRARY ooshapes point_decr"
-::method inRect external "LIBRARY ooshapes point_inRect"
-::method string external "LIBRARY ooshapes point_string"
-::method print external "LIBRARY ooshapes point_print"
+  say 'Console mode STDIN: ' mode
 
-::class 'Size' public
-::method version class external "LIBRARY ooshapes ooShapes_version_cls"
-::method init external "LIBRARY ooshapes size_init"
-::attribute width get external "LIBRARY ooshapes size_cx"
-::attribute width set external "LIBRARY ooshapes size_setCX"
-::attribute height get external "LIBRARY ooshapes size_cy"
-::attribute height set external "LIBRARY ooshapes size_setCY"
-::method string external "LIBRARY ooshapes size_string"
-::method print external "LIBRARY ooshapes size_print"
-::method '=' external "LIBRARY ooshapes size_compare"
-::method '==' external "LIBRARY ooshapes size_compare"
-::method '\=' external "LIBRARY ooshapes size_compare"
-::method '\==' external "LIBRARY ooshapes size_compare"
-::method '<' external "LIBRARY ooshapes size_compare"
-::method '<<' external "LIBRARY ooshapes size_compare"
-::method '<=' external "LIBRARY ooshapes size_compare"
-::method '<<=' external "LIBRARY ooshapes size_compare"
-::method '>' external "LIBRARY ooshapes size_compare"
-::method '>>' external "LIBRARY ooshapes size_compare"
-::method '>=' external "LIBRARY ooshapes size_compare"
-::method '>>=' external "LIBRARY ooshapes size_compare"
-::method equateTo external "LIBRARY ooshapes size_equateTo"
+  if \ stdin~setMode("EditMode MouseInput") then do
+  --if \ stdin~setMode("ProcessedInput EditMode MouseInput") then do
+  --if \ stdin~setMode("ProcessedInput LineInput") then do
+  -- if \ stdin~setMode(mode) then do
+    say 'Failed to set mode. errRC:' stdin~errRC
+    return
+  end
+  say 'mode now:' stdin~getMode
 
+  say 'type'
+  j = SysSleep(10)
+  say 'done sleeping'
+  say 'char input events:' stdin~getNumberOfInputEvents
+
+  prelim = stdin~peekInput(0)
+  say 'Got prelim:' prelim
+  if prelim == .nil then say 'ErrRC:' stdin~errRC
+  else do
+    say 'Count records:' prelim~items
+  end
+  say
+  ans = stdin~read(100)
+  say
+  say 'ans:' ans
+  say 'hex:' ans~c2x
+  stdin~setMode(mode)
+  return
+
+
+::requires 'ooConsole.cls'

@@ -34,16 +34,17 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-  con = .ooConsole~new(.true)
 
-  say 'ooConsole:' con
-  say con~getScreenBufferSize
-  say 'again' con~getScreenBufferSize
-  say 'again' con~getScreenBufferSize
-  say 'again' con~getScreenBufferSize
+  con = .StdOutput~new
 
-  s = .Size~new(2, 4)
-  say s
+  pids = con~getProcessList
+  if pids == .nil then do
+    say 'getProcessList failed.  errRC:' con~errRC
+    return
+  end
+  say 'Attached processes:' pids~items
+  do i = 1 to pids~items
+    say pids[i]
+  end
 
 ::requires 'ooConsole.cls'
-::requires 'ooDialog.cls'
