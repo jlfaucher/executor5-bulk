@@ -323,13 +323,6 @@ LPWSTR ansi2unicode(LPCSTR str)
  * string.
  *
  * @param wstr    The string to convert.
- * @param len     The length, including the terminating null, of the wide string
- *                to convert.  If this length does not include the terminating
- *                null, the returned string will not include a terminating
- *                string.
- *
- *                If -1 is passed for this parameter, the length will be
- *                calculated and assumed the terminating null is desired.
  *
  * @return The converted string, or null on error.
  *
