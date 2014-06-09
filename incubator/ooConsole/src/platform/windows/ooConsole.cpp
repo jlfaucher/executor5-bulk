@@ -50,6 +50,11 @@
 #include "APICommon.hpp"
 #include "ooShapes.hpp"
 
+RexxInstance   *ThisInterpreter = NULL;
+pCooConsole     ThisConsole = NULL;
+RexxClassObject TheCharInfoClass = NULLOBJECT;
+RexxClassObject TheInputRecordClass = NULLOBJECT;
+
 
 /**
  * RexxPackageLoader function.
@@ -69,6 +74,7 @@ void RexxEntry ooConsoleLoad(RexxThreadContext *c)
     if ( packageLoadHelper(c) )
     {
         c->DirectoryPut(TheDotLocalObj, c->NullString(), "ROUTINEERRORMESSAGE");
+        ThisInterpreter = c->instance;
     }
 }
 
@@ -338,6 +344,23 @@ inline void rect2smallRect(PORXRECT r, PSMALL_RECT sr)
 }
 
 /**
+ * Copies the data in a small rect to a .Rect Rexx object.
+ *
+ * @assumes The Rexx rect is known to be valid.
+ */
+inline void smallRect2rect(RexxMethodContext *c, PSMALL_RECT sr, RexxObjectPtr r)
+{
+    PORXRECT rect = rxGetRect(c, r, 0);
+    if ( rect != NULL )
+    {
+        rect->left   = sr->Left;
+        rect->top    = sr->Top;
+        rect->right  = sr->Right;
+        rect->bottom = sr->Bottom;
+    }
+}
+
+/**
  * Checks for a NULL CSelf pointer and raises an exception if it is null.
  *
  * @param c
@@ -354,12 +377,43 @@ static inline pCooConsole ensureCSelf(RexxMethodContext *c, void *pCSelf)
     return (pCooConsole)pCSelf;
 }
 
-static bool rxGetSmallRect(RexxMethodContext *context, RexxObjectPtr r, size_t argPos, PSMALL_RECT sm)
+static PCHAR_INFO rxGetCharInfo(RexxMethodContext *context, RexxObjectPtr ci, size_t argPos)
+{
+    if ( requiredClass(context->threadContext, ci, "CharInfo", argPos) )
+    {
+        return (PCHAR_INFO)context->ObjectToCSelf(ci);
+    }
+    return NULL;
+}
+
+static bool rxGetSmallRect(RexxMethodContext *context, RexxObjectPtr r, size_t argPos, PSMALL_RECT sr)
 {
     PORXRECT rect = rxGetRect(context, r, argPos);
     if ( rect != NULL )
     {
         rect2smallRect(rect, sr);
+        return true;
+    }
+    return false;
+}
+
+static bool rxGetPointerCoord(RexxMethodContext *context, RexxObjectPtr p, size_t argPos, PCOORD c)
+{
+    PORXPOINT pt = rxGetPoint(context, p, argPos);
+    if ( pt != NULL )
+    {
+        point2coord(pt, c);
+        return true;
+    }
+    return false;
+}
+
+static bool rxGetSizeCoord(RexxMethodContext *context, RexxObjectPtr s, size_t argPos, PCOORD c)
+{
+    PORXSIZE size = rxGetSize(context, s, argPos);
+    if ( size != NULL )
+    {
+        size2coord(size, c);
         return true;
     }
     return false;
@@ -521,6 +575,147 @@ static uint32_t string2attributes(CSTRING attr)
 }
 
 /**
+ * Converts an array into a buffer of attributes.
+ *
+ * @param c
+ * @param attrs
+ * @param argPos
+ * @param count
+ *
+ * @return uint16_t*
+ */
+uint16_t *array2attributes(RexxMethodContext *c, RexxArrayObject attrs, size_t argPos, uint32_t *count)
+{
+    uint32_t cnt = (uint32_t)c->ArrayItems(attrs);
+    if ( cnt == 0 )
+    {
+        emptyArrayException(c->threadContext, (int)argPos);
+        return NULL;
+    }
+
+    uint16_t *buf  = (uint16_t *)LocalAlloc(LPTR, cnt * sizeof(uint16_t));
+    if ( buf == NULL )
+    {
+        outOfMemoryException(c->threadContext);
+        return NULL;
+    }
+
+    for (size_t i = 1; i <= cnt; i++)
+    {
+        RexxObjectPtr rxObj = c->ArrayAt(attrs, i);
+        if ( rxObj == NULLOBJECT )
+        {
+            sparseArrayException(c->threadContext, argPos, i);
+            LocalFree(buf);
+            return NULL;
+        }
+        buf[i - 1] = string2attributes(c->ObjectToStringValue(rxObj));
+    }
+
+    *count = cnt;
+    return buf;
+}
+
+/**
+ * Converts an array into a buffer of CHAR_INFO structs.
+ *
+ * @param c
+ * @param charInfo
+ * @param argPos
+ *
+ * @return CHAR_INFO*
+ */
+CHAR_INFO *array2charInfo(RexxMethodContext *c, RexxArrayObject charInfo, size_t argPos)
+{
+    uint32_t count = (uint32_t)c->ArrayItems(charInfo);
+    if ( count == 0 )
+    {
+        emptyArrayException(c->threadContext, (int)argPos);
+        return NULL;
+    }
+
+    CHAR_INFO *buf  = (CHAR_INFO *)LocalAlloc(LPTR, count * sizeof(CHAR_INFO));
+    if ( buf == NULL )
+    {
+        outOfMemoryException(c->threadContext);
+        return NULL;
+    }
+
+    for (size_t i = 1; i <= count; i++)
+    {
+        RexxObjectPtr rxObj = c->ArrayAt(charInfo, i);
+        if ( rxObj == NULLOBJECT )
+        {
+            sparseArrayException(c->threadContext, argPos, i);
+            LocalFree(buf);
+            return NULL;
+        }
+        if ( ! c->IsOfType(rxObj, "CHARINFO") )
+        {
+            wrongObjInArrayException(c->threadContext, argPos, i, "a CharInfo", rxObj);
+            LocalFree(buf);
+            return NULL;
+        }
+
+        CHAR_INFO *chi = (CHAR_INFO *)c->ObjectToCSelf(rxObj);
+        buf[i - 1].Attributes = chi->Attributes;
+        buf[i - 1].Char       = chi->Char;
+    }
+
+    return buf;
+}
+
+/**
+ * Converts an array into a buffer of INPUT_RECORD structs.
+ *
+ * @param c
+ * @param inRecs
+ * @param argPos
+ *
+ * @return INPUT_RECORDS*
+ */
+INPUT_RECORD *array2inRecord(RexxMethodContext *c, RexxArrayObject inRecs, size_t argPos, uint32_t *count)
+{
+    uint32_t cnt = (uint32_t)c->ArrayItems(inRecs);
+    if ( cnt == 0 )
+    {
+        emptyArrayException(c->threadContext, (int)argPos);
+        return NULL;
+    }
+
+    INPUT_RECORD *buf  = (INPUT_RECORD *)LocalAlloc(LPTR, cnt * sizeof(INPUT_RECORD));
+    if ( buf == NULL )
+    {
+        outOfMemoryException(c->threadContext);
+        return NULL;
+    }
+
+    for (size_t i = 1; i <= cnt; i++)
+    {
+        RexxObjectPtr rxObj = c->ArrayAt(inRecs, i);
+        if ( rxObj == NULLOBJECT )
+        {
+            sparseArrayException(c->threadContext, argPos, i);
+            LocalFree(buf);
+            return NULL;
+        }
+        if ( ! c->IsOfType(rxObj, "INPUTRECORD") )
+        {
+            wrongObjInArrayException(c->threadContext, argPos, i, "an InputRecord", rxObj);
+            LocalFree(buf);
+            return NULL;
+        }
+
+        INPUT_RECORD *pir = (INPUT_RECORD *)c->ObjectToCSelf(rxObj);
+
+        memcpy(&buf[i - 1], pir, sizeof(INPUT_RECORD));
+    }
+
+    *count = cnt;
+    return buf;
+}
+
+/**
  *  Converts a string containing input record types to a flag.
  *
  */
@@ -542,6 +737,50 @@ static uint32_t string2inputRecs(CSTRING types)
     }
 
     return recTypes;
+}
+
+/**
+ * Converts a string of strings separated by NULLs into an array of the strings.
+ *
+ * @param c
+ * @param buffer
+ * @param len
+ *
+ * @return RexxArrayObject
+ */
+static RexxArrayObject nullSeparatedStr2Array(RexxMethodContext *c, char *buffer, uint32_t len)
+{
+    RexxArrayObject a = c->NewArray(5);
+
+    char *p = buffer;
+   while ( p < buffer + len )
+    {
+        c->ArrayAppend(a, c->String(p));
+        p = strchr(p, '\0');
+        p++;
+    }
+    return a;
+}
+
+/**
+ *  Converts a string to the control key state flags.
+ *
+ */
+static uint16_t string2ctrlKeyState(CSTRING keyState)
+{
+    uint16_t state = 0;
+
+    if ( StrStrI(keyState, "rAlt")       != NULL ) state |= RIGHT_ALT_PRESSED ;
+    if ( StrStrI(keyState, "lAlt")       != NULL ) state |= LEFT_ALT_PRESSED  ;
+    if ( StrStrI(keyState, "rCtrl")      != NULL ) state |= RIGHT_CTRL_PRESSED;
+    if ( StrStrI(keyState, "lCtrl")      != NULL ) state |= LEFT_CTRL_PRESSED ;
+    if ( StrStrI(keyState, "shift")      != NULL ) state |= SHIFT_PRESSED     ;
+    if ( StrStrI(keyState, "numLock")    != NULL ) state |= NUMLOCK_ON        ;
+    if ( StrStrI(keyState, "scrollLock") != NULL ) state |= SCROLLLOCK_ON     ;
+    if ( StrStrI(keyState, "capsLock")   != NULL ) state |= CAPSLOCK_ON       ;
+    if ( StrStrI(keyState, "enhanced")   != NULL ) state |= ENHANCED_KEY      ;
+
+    return state;
 }
 
 /**
@@ -570,6 +809,59 @@ static RexxStringObject ctrlKeyState2string(RexxMethodContext *c, uint32_t ctrlS
 }
 
 /**
+ *  Converts the control signal type to a string.
+ *
+ */
+static RexxStringObject ctrlType2string(RexxThreadContext *c, uint32_t ctrlType)
+{
+    char *buf;
+
+    if ( ctrlType == CTRL_C_EVENT )             buf = "Ctrl-C ";
+    else if ( ctrlType == CTRL_BREAK_EVENT )    buf = "Ctrl-Break";
+    else if ( ctrlType == CTRL_SHUTDOWN_EVENT ) buf = "Ctrl-ShutDown";
+    else if ( ctrlType == CTRL_LOGOFF_EVENT )   buf = "Ctrl-LogOff";
+    else if ( ctrlType == CTRL_CLOSE_EVENT )    buf = "Ctrl-Close";
+
+    return c->String(buf);
+}
+
+/**
+ *  Converts a string to the control signal type. Note that only ctrl-c and
+ *  ctrl-break can be sent.
+ *
+ */
+static uint32_t string2ctrlType(RexxMethodContext *c, CSTRING str, size_t argPos)
+{
+    uint32_t ctrlType = (uint32_t)-1;
+
+    if (      StrCmpI(str, "Ctrl-C")     == 0 ) ctrlType = CTRL_C_EVENT;
+    else if ( StrCmpI(str, "Ctrl-Break") == 0 ) ctrlType = CTRL_BREAK_EVENT;
+    else
+    {
+        wrongArgKeywordException(c, argPos, "Ctrl-C or Ctrl-Break", str);
+    }
+
+    return ctrlType;
+}
+
+/*
+ *  Converts a string to the mouse button state flags.
+ *
+ */
+static uint16_t string2buttonState(CSTRING buttonState)
+{
+    uint16_t state = 0;
+
+    if ( StrStrI(buttonState, "leftMost1")     != NULL ) state |= FROM_LEFT_1ST_BUTTON_PRESSED;
+    if ( StrStrI(buttonState, "rightMost")     != NULL ) state |= RIGHTMOST_BUTTON_PRESSED;
+    if ( StrStrI(buttonState, "leftMost2")     != NULL ) state |= FROM_LEFT_2ND_BUTTON_PRESSED;
+    if ( StrStrI(buttonState, "leftMost3")     != NULL ) state |= FROM_LEFT_3RD_BUTTON_PRESSED;
+    if ( StrStrI(buttonState, "leftMost4")     != NULL ) state |= FROM_LEFT_4TH_BUTTON_PRESSED;
+
+    return state;
+}
+
+/**
  *  Converts the mouse button state flags to a string.
  *
  */
@@ -591,10 +883,27 @@ static RexxStringObject buttonState2string(RexxMethodContext *c, uint32_t button
 }
 
 /**
+ *  Converts a string to the mouse event flag.
+ *
+ */
+static uint16_t string2eventFlag(CSTRING event)
+{
+    uint16_t flag = 0;
+
+    if (      StrCmpI(event, "pressOrRelease") == 0 ) flag = 0;
+    else if ( StrCmpI(event, "mouseMoved"    ) == 0 ) flag = MOUSE_MOVED;
+    else if ( StrCmpI(event, "doubleClick"   ) == 0 ) flag = DOUBLE_CLICK;
+    else if ( StrCmpI(event, "mouseVWheeled" ) == 0 ) flag = MOUSE_WHEELED;
+    else if ( StrCmpI(event, "mouseHWheeled" ) == 0 ) flag = MOUSE_HWHEELED;
+
+    return flag;
+}
+
+/**
  *  Converts the mouse event flag to a string.
  *
  */
-static RexxStringObject eventFlags2string(RexxMethodContext *c, uint32_t flags)
+static RexxStringObject eventFlag2string(RexxMethodContext *c, uint32_t flags)
 {
     char buf[64] = {'\0'};
 
@@ -650,7 +959,7 @@ static void addMouseInputRec(RexxMethodContext *c, RexxArrayObject data, MOUSE_E
     RexxObjectPtr    point       = rxNewPoint(c, rec->dwMousePosition.X, rec->dwMousePosition.Y);
     RexxStringObject buttonState = buttonState2string(c, rec->dwButtonState);
     RexxStringObject ctrlState   = ctrlKeyState2string(c, rec->dwControlKeyState);
-    RexxStringObject eventFlags  = eventFlags2string(c, rec->dwEventFlags);
+    RexxStringObject eventFlags  = eventFlag2string(c, rec->dwEventFlags);
 
     c->DirectoryPut(d, c->String("mouse"), "EVENT");
     c->DirectoryPut(d, point, "POSITION");
@@ -890,99 +1199,6 @@ static pCooConsole requiredConsole(RexxMethodContext *c, void *pCSelf)
     return pcon;
 }
 
-/**
- * Parses the string 'handle' and returns which of the 3 'real' standard handles
- * the user specifies.  The default if omitted is STDOUT.
- *
- * @param context
- * @param handle
- * @param pos
- *
- * @return The specified handle on success, .nil on an OS error, or NULL on user
- *         error.
- *
- * @note The 'real' handle simply means that we explicitly query the handle,
- *       rather that returning the 'stashed' handle.
- */
-static RexxObjectPtr realBufferHandle(RexxMethodContext *context, pCooConsole pcon, CSTRING handle, size_t pos)
-{
-    HANDLE h;
-    if ( argumentExists(pos) )
-    {
-        if ( stricmp(handle, "OUT") == 0 )
-        {
-             h = GetStdHandle(STD_OUTPUT_HANDLE);
-        }
-        else if ( stricmp(handle, "ERR") == 0 )
-        {
-            h = GetStdHandle(STD_ERROR_HANDLE);
-        }
-        else if ( stricmp(handle, "IN") == 0 )
-        {
-            h = GetStdHandle(STD_INPUT_HANDLE);
-        }
-        else
-        {
-            wrongArgValueException(context->threadContext, pos, "Out, Err, In", handle);
-            return NULL;
-        }
-    }
-    else
-    {
-        h = GetStdHandle(STD_OUTPUT_HANDLE);
-    }
-
-    if ( h == INVALID_HANDLE_VALUE )
-    {
-        pcon->errRC = GetLastError();
-        return TheNilObj;
-    }
-    return pointer2string(context, h);
-}
-
-/**
- * Set the specified standard handle.  The default if the user omitted the
- * handler speicifier is STDOUT.
- *
- * @param context
- * @param handle
- * @param which
- * @param pos
- *
- * @return True on success and false on error.
- */
-static bool setRealBufferHandle(RexxMethodContext *context, pCooConsole pcon, HANDLE handle, CSTRING which, size_t pos)
-{
-    uint32_t type = STD_OUTPUT_HANDLE;
-    if ( argumentExists(pos) )
-    {
-        if ( stricmp(which, "OUT") == 0 )
-        {
-             type = STD_OUTPUT_HANDLE;
-        }
-        else if ( stricmp(which, "ERR") == 0 )
-        {
-            type = STD_ERROR_HANDLE;
-        }
-        else if ( stricmp(which, "IN") == 0 )
-        {
-            type = STD_INPUT_HANDLE;
-        }
-        else
-        {
-            wrongArgValueException(context->threadContext, pos, "Out, Err, In", which);
-            return false;
-        }
-    }
-
-    if ( SetStdHandle(type, handle) == 0 )
-    {
-        pcon->errRC = GetLastError();
-        return false;
-    }
-    return true;
-}
-
 static bool directoryPoint2coord(RexxMethodContext *c, RexxDirectoryObject info, CSTRING index, COORD *coord)
 {
     RexxObjectPtr rxObj = c->DirectoryAt(info, index);
@@ -1107,10 +1323,96 @@ static RexxObjectPtr genericStdInit(RexxMethodContext *c, RexxClassObject super,
 
 
 /**
+ * This is
+ *
+ * @author Administrator (05/25/2014)
+ *
+ * @param ctrlType
+ *
+ * @return BOOL
+ */
+BOOL WINAPI RexxHandler(DWORD ctrlType)
+{
+    BOOL response = FALSE;
+
+    RexxThreadContext *c;
+    if ( ThisInterpreter->AttachThread(&c) )
+    {
+        if ( ThisConsole != NULL )
+        {
+            RexxObjectPtr reply = c->SendMessage1(ThisConsole->rexxSelf, ThisConsole->handlerMethod,
+                                                  ctrlType2string(c, ctrlType));
+
+            int32_t logical = getLogical(c, reply);
+            if ( logical == -1 )
+            {
+                notBooleanReplyException(c, ThisConsole->handlerMethod, reply == NULLOBJECT ? c->NullString() : reply);
+                checkForCondition(c, false);
+                response = FALSE;
+            }
+            else
+            {
+                response = (BOOL)logical;
+            }
+        }
+        else
+        {
+            printf("ThisConsole == NULL\n");
+        }
+        c->DetachThread();
+    }
+    else
+    {
+        printf("Failed to attach thread\n");
+    }
+
+    return response;
+}
+
+/**
  *  Methods for the .ooConsole class.
  */
 #define OOCONSOLE_CLASS    "ooConsole"
 
+
+/** ooConsole::allocConsole  [class method]
+ *
+ */
+RexxMethod1(RexxObjectPtr, oocon_allocConsole_cls, OPTIONAL_CSTRING, type)
+{
+    if ( AllocConsole() == 0 )
+    {
+        return context->UnsignedInt32(GetLastError());
+    }
+
+    return TheZeroObj;
+}
+
+/** ooConsole::attachConsole  [class method]
+ *
+ */
+RexxMethod1(RexxObjectPtr, oocon_attachConsole_cls, OPTIONAL_CSTRING, type)
+{
+    if ( AttachConsole(ATTACH_PARENT_PROCESS) == 0 )
+    {
+        return context->UnsignedInt32(GetLastError());
+    }
+
+    return TheZeroObj;
+}
+
+/** ooConsole::freeConsole  [class method]
+ *
+ */
+RexxMethod1(RexxObjectPtr, oocon_freeConsole_cls, OPTIONAL_CSTRING, type)
+{
+    if ( FreeConsole() == 0 )
+    {
+        return context->UnsignedInt32(GetLastError());
+    }
+
+    return TheZeroObj;
+}
 
 /** ooConsole::version  [class method]
  *
@@ -1189,6 +1491,10 @@ RexxMethod2(RexxObjectPtr, oocon_init, RexxObjectPtr, cSelf, OSELF, self)
     }
 
     context->SetObjectVariable("CSELF", cSelf);
+
+    pCooConsole pcon = (pCooConsole)context->BufferData((RexxBufferObject)cSelf);
+    pcon->rexxSelf   = self;
+
     return TheZeroObj;
 }
 
@@ -1215,6 +1521,240 @@ RexxMethod1(RexxObjectPtr, oocon_uninit, CSELF, pCSelf)
     }
     return TheZeroObj;
 }
+
+
+/** ooConsole::addAlias()
+ *
+ *  Adds a console alias.
+ *
+ *  @return
+ */
+RexxMethod4(RexxObjectPtr, oocon_addAlias, CSTRING, alias, OPTIONAL_CSTRING, target, OPTIONAL_CSTRING, exe, CSELF, pCSelf)
+{
+    pCooConsole pcon = requiredConsole(context, pCSelf);
+    if ( pcon == NULL )
+    {
+        return TheFalseObj;
+    }
+
+    if ( argumentOmitted(3) )
+    {
+        exe = "rexx.exe";
+    }
+
+    if ( AddConsoleAlias((LPSTR)alias, (LPSTR)target, (LPSTR)exe) == 0 )
+    {
+        pcon->errRC = GetLastError();
+        return TheFalseObj;
+    }
+    return TheTrueObj;
+}
+
+
+/** ooConsole::generateCtrlEvent()
+ *
+ *  Sets the input code page used by the console associated with the calling
+ *  process.
+ *
+ *  @return  True on success, false on error.
+ */
+RexxMethod3(RexxObjectPtr, oocon_generateCtrlEvent, CSTRING, _event, OPTIONAL_uint32_t, groupID, CSELF, pCSelf)
+{
+    pCooConsole pcon = requiredConsole(context, pCSelf);
+    if ( pcon == NULL )
+    {
+        return TheFalseObj;
+    }
+
+    uint32_t event = string2ctrlType(context, _event, 1);
+    if ( (int32_t)event == -1 )
+    {
+        return TheFalseObj;
+    }
+
+    if ( GenerateConsoleCtrlEvent(event, groupID) == 0 )
+    {
+        pcon->errRC = GetLastError();
+        return TheFalseObj;
+    }
+
+    return TheTrueObj;
+}
+
+
+/** ooConsole::getAlias()
+ *
+ *  Gets the console alias.
+ *
+ *  @return
+ */
+RexxMethod3(RexxObjectPtr, oocon_getAlias, CSTRING, alias, CSTRING, exe, CSELF, pCSelf)
+{
+    pCooConsole pcon = requiredConsole(context, pCSelf);
+    if ( pcon == NULL )
+    {
+        return TheNilObj;
+    }
+
+    // We arbitrarily pick MAX_CONSOLETITLE (8000) bytes as the maximum length
+    // for an alias ...
+    char buf[MAX_CONSOLETITLE];
+
+    if ( GetConsoleAlias((LPSTR)alias, buf, sizeof(buf), (LPSTR)exe) == 0 )
+    {
+        pcon->errRC = GetLastError();
+        return TheNilObj;
+    }
+    return context->String(buf);
+}
+
+
+/** ooConsole::getAliases()
+ *
+ *  Gets all  the console aliases for the specified exe.
+ *
+ *  @return
+ */
+RexxMethod2(RexxObjectPtr, oocon_getAliases, CSTRING, exe, CSELF, pCSelf)
+{
+    pCooConsole pcon = requiredConsole(context, pCSelf);
+    if ( pcon == NULL )
+    {
+        return TheNilObj;
+    }
+
+    // See how much room we need
+    uint32_t len = GetConsoleAliasesLength((LPSTR)exe);
+    if ( len == 0 )
+    {
+        // There are no aliases.
+        return context->NullString();
+    }
+
+    char buf[MAX_CONSOLETITLE];
+    char *buffer = NULL;
+
+    if ( len < MAX_CONSOLETITLE )
+    {
+        buffer = buf;
+    }
+    else
+    {
+        buffer = (char *)LocalAlloc(LPTR, len);
+        if ( buffer == NULL )
+        {
+            outOfMemoryException(context->threadContext);
+            pcon->errRC = ERROR_NOT_ENOUGH_MEMORY;
+            return TheNilObj;
+        }
+    }
+
+    if ( GetConsoleAliases(buffer, len, (LPSTR)exe) == 0 )
+    {
+        pcon->errRC = GetLastError();
+        return TheNilObj;
+    }
+
+    RexxArrayObject result = nullSeparatedStr2Array(context, buffer, len);
+
+    if ( len >= MAX_CONSOLETITLE )
+    {
+        LocalFree(buffer);
+    }
+    return result;
+}
+
+
+/** ooConsole::getAliasesLength()
+ *
+ *  Gets the length of the buffer needed to get the console aliases for the
+ *  specified exe.
+ *
+ *  @return
+ */
+RexxMethod2(RexxObjectPtr, oocon_getAliasesLength, CSTRING, exe, CSELF, pCSelf)
+{
+    pCooConsole pcon = requiredConsole(context, pCSelf);
+    if ( pcon == NULL )
+    {
+        return TheNilObj;
+    }
+    return context->UnsignedInt32(GetConsoleAliasesLength((LPSTR)exe));
+}
+
+
+/** ooConsole::getAliasExes()
+ *
+ *  Gets all  the console aliases for the specified exe.
+ *
+ *  @return
+ */
+RexxMethod1(RexxObjectPtr, oocon_getAliasExes, CSELF, pCSelf)
+{
+    pCooConsole pcon = requiredConsole(context, pCSelf);
+    if ( pcon == NULL )
+    {
+        return TheNilObj;
+    }
+
+    // See how much room we need
+    uint32_t len = GetConsoleAliasExesLength();
+    if ( len == 0 )
+    {
+        // There are no aliases.
+        return context->NullString();
+    }
+
+    char buf[MAX_CONSOLETITLE];
+    char *buffer = NULL;
+
+    if ( len < MAX_CONSOLETITLE )
+    {
+        buffer = buf;
+    }
+    else
+    {
+        buffer = (char *)LocalAlloc(LPTR, len);
+        if ( buffer == NULL )
+        {
+            outOfMemoryException(context->threadContext);
+            pcon->errRC = ERROR_NOT_ENOUGH_MEMORY;
+            return TheNilObj;
+        }
+    }
+
+    if ( GetConsoleAliasExes(buffer, len) == 0 )
+    {
+        pcon->errRC = GetLastError();
+        return TheNilObj;
+    }
+
+    RexxArrayObject result = nullSeparatedStr2Array(context, buffer, len);
+
+    if ( len >= MAX_CONSOLETITLE )
+    {
+        LocalFree(buffer);
+    }
+    return result;
+}
+
+
+/** ooConsole::getAliasExesLength()
+ *
+ *  Gets the length needed for the console aliase exes.
+ *
+ *  @return
+ */
+RexxMethod1(RexxObjectPtr, oocon_getAliasExesLength, CSELF, pCSelf)
+{
+    pCooConsole pcon = requiredConsole(context, pCSelf);
+    if ( pcon == NULL )
+    {
+        return TheNilObj;
+    }
+    return context->UnsignedInt32(GetConsoleAliasExesLength());
+}
+
 
 /** ooConsole::getCP()
  *
@@ -1507,23 +2047,72 @@ RexxMethod1(RexxObjectPtr, oocon_getWindow, CSELF, pCSelf)
  *  Sets the input code page used by the console associated with the calling
  *  process.
  *
- *  @return  0 on success, .nil on error.
+ *  @return  True on success, false on error.
  */
 RexxMethod2(RexxObjectPtr, oocon_setCP, uint32_t, cp, CSELF, pCSelf)
 {
     pCooConsole pcon = requiredConsole(context, pCSelf);
     if ( pcon == NULL )
     {
-        return TheNilObj;
+        return TheFalseObj;
     }
 
     if ( SetConsoleCP(cp) == 0 )
     {
         pcon->errRC = GetLastError();
-        return TheNilObj;
+        return TheFalseObj;
     }
 
-    return TheZeroObj;
+    return TheTrueObj;
+}
+
+
+/** ooConsole::setCtrlHandler()
+ *
+ *  Sets the .
+ *
+ *  @return  True on success, false on error.
+ */
+RexxMethod3(RexxObjectPtr, oocon_setCtrlHandler, OPTIONAL_logical_t, add, OPTIONAL_CSTRING, method, CSELF, pCSelf)
+{
+    pCooConsole pcon = requiredConsole(context, pCSelf);
+    if ( pcon == NULL )
+    {
+        return TheFalseObj;
+    }
+
+    if ( argumentOmitted(1) )
+    {
+        add = TRUE;
+    }
+
+    PHANDLER_ROUTINE callBack = NULL;
+    if ( argumentExists(2) )
+    {
+        callBack = RexxHandler;
+    }
+
+    if ( SetConsoleCtrlHandler(callBack, add ? TRUE : FALSE) == 0 )
+    {
+        pcon->errRC = GetLastError();
+        return TheFalseObj;
+    }
+
+    if ( callBack != NULL )
+    {
+        if ( add )
+        {
+            pcon->handlerMethod = method;
+            ThisConsole         = pcon;
+        }
+        else
+        {
+            pcon->handlerMethod = NULL;
+            ThisConsole         = NULL;
+        }
+    }
+
+    return TheTrueObj;
 }
 
 
@@ -1760,6 +2349,72 @@ RexxMethod1(RexxObjectPtr, sb_createScreenBuffer, CSELF, pCSelf)
 
     RexxClassObject stdOutClass = rxGetContextClass(context, "STDOUTPUT");
     return context->SendMessage1(stdOutClass, "NEW", context->NewPointer(hNewOut));
+}
+
+
+/** ScreenBuffer::fillOutputAttribute()
+ *
+ *  @retrun  The count actually written, or 0 on error.  Writing 0 attributes is
+ *           specified as an error.
+ */
+RexxMethod4(uint32_t, sb_fillOutputAttribute, CSTRING, _attr, uint32_t, count, RexxObjectPtr, _dest, CSELF, pCSelf)
+{
+    pCooConsole pcon = requiredConsole(context, pCSelf);
+    if ( pcon == NULL )
+    {
+        return 0;
+    }
+
+    uint32_t actual = 0;
+    uint32_t attr   = string2attributes(_attr);
+
+    COORD dest;
+    if ( ! rxGetPointerCoord(context, _dest, 3, &dest) )
+    {
+        pcon->errRC = ERROR_INVALID_PARAMETER;
+        return 0;
+    }
+
+    if ( FillConsoleOutputAttribute(pcon->handle, attr, count, dest, (LPDWORD)&actual) == 0 )
+    {
+        pcon->errRC = GetLastError();
+        return 0;
+    }
+
+    return actual;
+}
+
+
+/** ScreenBuffer::fillOutputCharacter()
+ *
+ *  @retrun  The count actually written, or 0 on error.  Writing 0 attributes is
+ *           specified as an error.
+ */
+RexxMethod4(uint32_t, sb_fillOutputCharacter, CSTRING, _char, uint32_t, count, RexxObjectPtr, _dest, CSELF, pCSelf)
+{
+    pCooConsole pcon = requiredConsole(context, pCSelf);
+    if ( pcon == NULL )
+    {
+        return 0;
+    }
+
+    uint32_t actual = 0;
+    char     c      = *_char;
+
+    COORD dest;
+    if ( ! rxGetPointerCoord(context, _dest, 3, &dest) )
+    {
+        pcon->errRC = ERROR_INVALID_PARAMETER;
+        return 0;
+    }
+
+    if ( FillConsoleOutputCharacter(pcon->handle, c, count, dest, (LPDWORD)&actual) == 0 )
+    {
+        pcon->errRC = GetLastError();
+        return 0;
+    }
+
+    return actual;
 }
 
 
@@ -2077,6 +2732,160 @@ RexxMethod1(RexxObjectPtr, sb_getWindowSize, CSELF, pCSelf)
 }
 
 
+/** ScreenBuffer::readOutput()
+ *
+ *  Reads character and color attribute data from a rectangular block of
+ *  character cells in a console screen buffer, and the function writes the data
+ *  to a rectangular block at a specified location in the destination buffer.
+ *
+ */
+RexxMethod4(RexxObjectPtr, sb_readOutput, RexxObjectPtr, _bufSize, RexxObjectPtr, _bufCoord,
+            RexxObjectPtr, _readRect, CSELF, pCSelf)
+{
+    RexxObjectPtr result = TheNilObj;
+
+    pCooConsole pcon = requiredConsole(context, pCSelf);
+    if ( pcon == NULL )
+    {
+        goto done_out;
+    }
+
+    COORD bufSize;
+    if ( ! rxGetSizeCoord(context, _bufSize, 1, &bufSize) )
+    {
+        pcon->errRC = ERROR_INVALID_PARAMETER;
+        goto done_out;
+    }
+
+    COORD bufCoord;
+    if ( ! rxGetSizeCoord(context, _bufCoord, 2, &bufCoord) )
+    {
+        pcon->errRC = ERROR_INVALID_PARAMETER;
+        goto done_out;
+    }
+
+    SMALL_RECT readRect;
+    if ( ! rxGetSmallRect(context, _readRect, 3, &readRect) )
+    {
+        pcon->errRC = ERROR_INVALID_PARAMETER;
+        goto done_out;
+    }
+
+    CHAR_INFO buf[MAX_CHARINFOBUFFER] = {0};
+    if ( ReadConsoleOutput(pcon->handle, buf, bufSize, bufCoord, &readRect) == 0 )
+    {
+        pcon->errRC = GetLastError();
+    }
+    else
+    {
+        uint32_t lastCell = (readRect.Right - readRect.Left + 1) * (readRect.Bottom - readRect.Top + 1);
+        RexxArrayObject a = context->NewArray(lastCell);
+
+        for ( size_t i = 0; i < lastCell; i++ )
+        {
+            RexxBufferObject obj = context->NewBuffer(sizeof(CHAR_INFO));
+
+            PCHAR_INFO pci = (PCHAR_INFO)context->BufferData(obj);
+            pci->Char.AsciiChar = buf[i].Char.AsciiChar;
+            pci->Attributes     = buf[i].Attributes;
+
+            RexxObjectPtr ci = context->SendMessage1(TheCharInfoClass, "NEW", obj);
+            context->ArrayAppend(a, ci);
+        }
+
+        smallRect2rect(context, &readRect, _readRect);
+
+        result = a;
+    }
+
+done_out:
+    return result;
+}
+
+
+/** ScreenBuffer::readOutputAttribute()
+ *
+ *  Reads a number of character attributes from consecutive cells of a console
+ *  screen buffer into a buffer, beginning at a specified location.
+ *
+ */
+RexxMethod3(RexxObjectPtr, sb_readOutputAttribute, uint32_t, count, RexxObjectPtr, _dest, CSELF, pCSelf)
+{
+    RexxObjectPtr result = TheNilObj;
+
+    pCooConsole pcon = requiredConsole(context, pCSelf);
+    if ( pcon == NULL )
+    {
+        goto done_out;
+    }
+
+    COORD dest;
+    if ( ! rxGetPointerCoord(context, _dest, 2, &dest) )
+    {
+        pcon->errRC = ERROR_INVALID_PARAMETER;
+        goto done_out;
+    }
+
+    uint16_t buf[MAX_READBUFFER];
+    uint32_t countRead = 0;
+    if ( ReadConsoleOutputAttribute(pcon->handle, buf, count, dest, (LPDWORD)&countRead) == 0 )
+    {
+        pcon->errRC = GetLastError();
+    }
+    else
+    {
+        RexxArrayObject a = context->NewArray(count);
+        for ( size_t i = 0; i < countRead; i++ )
+        {
+            context->ArrayAppend(a, attribute2string(context, buf[i]));
+        }
+        result = a;
+    }
+
+done_out:
+    return result;
+}
+
+
+/** ScreenBuffer::readOutputCharacter()
+ *
+ *  Reads a number of charactersfrom consecutive cells of a console screen
+ *  buffer into a buffer, beginning at a specified location.
+ *
+ */
+RexxMethod3(RexxObjectPtr, sb_readOutputCharacter, uint32_t, count, RexxObjectPtr, _location, CSELF, pCSelf)
+{
+    RexxObjectPtr result = TheNilObj;
+
+    pCooConsole pcon = requiredConsole(context, pCSelf);
+    if ( pcon == NULL )
+    {
+        goto done_out;
+    }
+
+    COORD location;
+    if ( ! rxGetPointerCoord(context, _location, 2, &location) )
+    {
+        pcon->errRC = ERROR_INVALID_PARAMETER;
+        goto done_out;
+    }
+
+    char buf[MAX_READBUFFER] = {'\0'};
+    uint32_t countRead = 0;
+    if ( ReadConsoleOutputAttribute(pcon->handle, (LPWORD)buf, count, location, (LPDWORD)&countRead) == 0 )
+    {
+        pcon->errRC = GetLastError();
+    }
+    else
+    {
+        result = context->NewString(buf, countRead);
+    }
+
+done_out:
+    return result;
+}
+
+
 /** ScreenBuffer::scrollScreenBuffer()
  *
  *  Sets the input code page used by the console associated with the calling
@@ -2085,21 +2894,44 @@ RexxMethod1(RexxObjectPtr, sb_getWindowSize, CSELF, pCSelf)
  *  @return  0 on success, .nil on error.
  */
 RexxMethod5(RexxObjectPtr, sb_scrollScreenBuffer, RexxObjectPtr, _scrollRect, RexxObjectPtr, _destPos,
-            RexxObjectPtr, charInfo, OPTIONAL_RexxObjectPtr, clipRect, CSELF, pCSelf)
+            RexxObjectPtr, _charInfo, OPTIONAL_RexxObjectPtr, _clipRect, CSELF, pCSelf)
 {
     pCooConsole pcon = requiredConsole(context, pCSelf);
     if ( pcon == NULL )
     {
-        return TheNilObj;
+        return TheFalseObj;
     }
 
     SMALL_RECT scrollRect;
     if ( ! rxGetSmallRect(context, _scrollRect, 1, &scrollRect) )
     {
-        return TheNilObj;
+        return TheFalseObj;
     }
 
-    if ( ScrollConsoleScreenBuffer(pcon->handle, scrollRect) == 0 )
+    COORD destPos;
+    if ( ! rxGetPointerCoord(context, _destPos, 2, &destPos) )
+    {
+        return TheFalseObj;
+    }
+
+    PCHAR_INFO chari = rxGetCharInfo(context, _charInfo, 3);
+    if ( chari == NULL )
+    {
+        return TheFalseObj;
+    }
+
+    SMALL_RECT clipRect;
+    PSMALL_RECT pClipRect = NULL;
+    if ( argumentExists(4) )
+    {
+        if ( ! rxGetSmallRect(context, _clipRect, 4, &clipRect) )
+        {
+            return TheFalseObj;
+        }
+        pClipRect = &clipRect;
+    }
+
+    if ( ScrollConsoleScreenBuffer(pcon->handle, &scrollRect, pClipRect, destPos, chari) == 0 )
     {
         pcon->errRC = GetLastError();
         return TheFalseObj;
@@ -2558,7 +3390,7 @@ RexxMethod3(RexxObjectPtr, sb_setWindowRect, RexxObjectPtr, _rect, OPTIONAL_logi
     }
 
     SMALL_RECT sRect;
-    if ( ! rxGetSmallRect(context, _rect, 1, &sRect)
+    if ( ! rxGetSmallRect(context, _rect, 1, &sRect) )
     {
         return TheNilObj;
     }
@@ -2633,6 +3465,141 @@ RexxMethod2(uint32_t, sb_write, CSTRING, msg, CSELF, pCSelf)
     if ( WriteConsole(pcon->handle, msg, count, (LPDWORD)&countWrote, NULL) == 0 )
     {
         pcon->errRC = GetLastError();
+    }
+
+    return countWrote;
+}
+
+/** ScreenBuffer::writeOutput()
+ *
+ *  Writes character and color attribute data to a specified rectangular block
+ *  of character cells in a console screen buffer. The data to be written is
+ *  taken from a correspondingly sized rectangular block at a specified location
+ *  in the source buffer.
+ *
+ */
+RexxMethod5(RexxObjectPtr, sb_writeOutput, RexxArrayObject, charInfo, RexxObjectPtr, _bufSize,
+            RexxObjectPtr, _bufCoord, RexxObjectPtr, _writeRect, CSELF, pCSelf)
+{
+    RexxObjectPtr result = TheFalseObj;
+
+    pCooConsole pcon = requiredConsole(context, pCSelf);
+    if ( pcon == NULL )
+    {
+        goto done_out;
+    }
+
+    COORD bufSize;
+    if ( ! rxGetSizeCoord(context, _bufSize, 2, &bufSize) )
+    {
+        pcon->errRC = ERROR_INVALID_PARAMETER;
+        goto done_out;
+    }
+
+    COORD bufCoord;
+    if ( ! rxGetSizeCoord(context, _bufCoord, 3, &bufCoord) )
+    {
+        pcon->errRC = ERROR_INVALID_PARAMETER;
+        goto done_out;
+    }
+
+    SMALL_RECT writeRect;
+    if ( ! rxGetSmallRect(context, _writeRect, 4, &writeRect) )
+    {
+        pcon->errRC = ERROR_INVALID_PARAMETER;
+        goto done_out;
+    }
+
+    CHAR_INFO *buf = array2charInfo(context, charInfo, 1);
+    if ( buf == NULL )
+    {
+        goto done_out;
+    }
+
+    if ( WriteConsoleOutput(pcon->handle, buf, bufSize, bufCoord, &writeRect) == 0 )
+    {
+        pcon->errRC = GetLastError();
+    }
+    else
+    {
+        result = TheTrueObj;
+    }
+
+    LocalFree(buf);
+    smallRect2rect(context, &writeRect, _writeRect);
+
+done_out:
+    return result;
+}
+
+
+/** ScreenBuffer::writeOutputAttribute()
+ *
+ *  Copies a number of character attributes to consecutive cells of a console
+ *  screen buffer, beginning at a specified location.
+ *
+ */
+RexxMethod3(uint32_t, sb_writeOutputAttribute, RexxArrayObject, attrs, RexxObjectPtr, _dest, CSELF, pCSelf)
+{
+    pCooConsole pcon = requiredConsole(context, pCSelf);
+    if ( pcon == NULL )
+    {
+        return 0;
+    }
+
+    COORD dest;
+    if ( ! rxGetPointerCoord(context, _dest, 2, &dest) )
+    {
+        pcon->errRC = ERROR_INVALID_PARAMETER;
+        return 0;
+    }
+
+    uint32_t count;
+    uint16_t *buf = array2attributes(context, attrs, 1, &count);
+    if ( buf == NULL )
+    {
+        return 0;
+    }
+
+    uint32_t countWrote = 0;
+    if ( WriteConsoleOutputAttribute(pcon->handle, buf, count, dest, (LPDWORD)&countWrote) == 0 )
+    {
+        pcon->errRC = GetLastError();
+        countWrote  = 0;
+    }
+
+    LocalFree(buf);
+    return countWrote;
+}
+
+
+/** ScreenBuffer::writeOutputCharacter()
+ *
+ *  Copies a number of character to consecutive cells of a console screen
+ *  buffer, beginning at a specified location.
+ *
+ */
+RexxMethod3(uint32_t, sb_writeOutputCharacter, CSTRING, chars, RexxObjectPtr, _dest, CSELF, pCSelf)
+{
+    pCooConsole pcon = requiredConsole(context, pCSelf);
+    if ( pcon == NULL )
+    {
+        return 0;
+    }
+
+    COORD dest;
+    if ( ! rxGetPointerCoord(context, _dest, 2, &dest) )
+    {
+        pcon->errRC = ERROR_INVALID_PARAMETER;
+        return 0;
+    }
+
+    uint32_t count = (uint32_t)strlen(chars);
+    uint32_t countWrote = 0;
+    if ( WriteConsoleOutputCharacter(pcon->handle, chars, count, dest, (LPDWORD)&countWrote) == 0 )
+    {
+        pcon->errRC = GetLastError();
+        countWrote  = 0;
     }
 
     return countWrote;
@@ -3061,14 +4028,519 @@ RexxMethod2(RexxObjectPtr, stdin_setStdHandle, POINTER, handle, CSELF, pCSelf)
 }
 
 
+/** StdInput::writeInput()
+ *
+ *  Writes data, in the form of input records, directly to the console input
+ *  buffer.
+ *
+ */
+RexxMethod2(RexxObjectPtr, stdin_writeInput, RexxArrayObject, recs, CSELF, pCSelf)
+{
+    pCooConsole pcon = requiredConsole(context, pCSelf);
+    if ( pcon == NULL )
+    {
+        return TheZeroObj;
+    }
+
+    RexxMethodContext *c = context;
+
+    uint32_t count;
+    uint32_t countWritten = 0;
+
+    INPUT_RECORD *inBuf = array2inRecord(context, recs, 1, &count);
+    if ( inBuf == NULL )
+    {
+        return TheZeroObj;
+    }
+
+    if ( WriteConsoleInput(pcon->handle, inBuf, count, (LPDWORD)&countWritten) == 0 )
+    {
+        pcon->errRC = GetLastError();
+        return TheZeroObj;
+    }
+
+    return context->UnsignedInt32(countWritten);
+}
+
+
+
+/**
+ * Methods for the .CharInfo class.
+ */
+#define CHARINFO_CLASS  "CharInfo"
+
+
+RexxMethod1(RexxObjectPtr, char_init_cls, OSELF, self)
+{
+    if ( isOfClassType(context, self, CHARINFO_CLASS) )
+    {
+        TheCharInfoClass = (RexxClassObject)self;
+        context->RequestGlobalReference(TheCharInfoClass);
+    }
+    return NULLOBJECT;
+}
+
+RexxMethod2(RexxObjectPtr, char_from_cls, OPTIONAL_CSTRING,  chari, OPTIONAL_CSTRING, attr)
+{
+    RexxBufferObject obj = context->NewBuffer(sizeof(CHAR_INFO));
+
+    PCHAR_INFO pci = (PCHAR_INFO)context->BufferData(obj);
+    pci->Char.AsciiChar = argumentExists(1) ? *chari : ' ';
+    pci->Attributes     = argumentExists(2) ? string2attributes(attr) : FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED;
+
+    RexxObjectPtr charInfoObj = context->SendMessage1(TheCharInfoClass, "NEW", obj);
+
+    return charInfoObj;
+}
+RexxMethod1(RexxObjectPtr, char_init, RexxObjectPtr,  cSelfBuf)
+{
+    if ( context->IsBuffer(cSelfBuf) )
+    {
+        context->SetObjectVariable("CSELF", cSelfBuf);
+    }
+    else
+    {
+        wrongClassException(context->threadContext, 1, "Buffer");
+    }
+
+    return NULLOBJECT;
+}
+RexxMethod1(RexxObjectPtr, char_char, CSELF, p)
+{
+    char buf[2] = {'\0'};
+    buf[0] = ((PCHAR_INFO)p)->Char.AsciiChar;
+    return context->String(buf);
+}
+RexxMethod1(RexxObjectPtr, char_attribute, CSELF, p)
+{
+     return attribute2string(context, ((PCHAR_INFO)p)->Attributes);
+}
+RexxMethod2(RexxObjectPtr, char_setChar, CSTRING, chari, CSELF, p)
+{
+    ((PCHAR_INFO)p)->Char.AsciiChar = *chari;
+    return NULLOBJECT;
+}
+RexxMethod2(RexxObjectPtr, char_setAttribute, CSTRING, attr, CSELF, p)
+{
+    ((PCHAR_INFO)p)->Attributes = string2attributes(attr);
+    return NULLOBJECT;
+}
+
+
+/**
+ * Methods for the .InputRecord class.
+ */
+#define INPUTRECORD_CLASS  "InputRecord"
+
+
+RexxMethod1(RexxObjectPtr, inrec_init_cls, OSELF, self)
+{
+    if ( isOfClassType(context, self, INPUTRECORD_CLASS) )
+    {
+        TheInputRecordClass = (RexxClassObject)self;
+        context->RequestGlobalReference(TheInputRecordClass);
+    }
+    return NULLOBJECT;
+}
+
+RexxMethod1(RexxObjectPtr, inrec_init, RexxObjectPtr,  cSelfBuf)
+{
+    if ( context->IsBuffer(cSelfBuf) )
+    {
+        context->SetObjectVariable("CSELF", cSelfBuf);
+    }
+    else
+    {
+        wrongClassException(context->threadContext, 1, "Buffer");
+    }
+
+    return NULLOBJECT;
+}
+
+RexxMethod1(RexxObjectPtr, inrec_controlKeys, CSELF, p)
+{
+    PINPUT_RECORD pir = (PINPUT_RECORD)p;
+
+    if ( pir->EventType == KEY_EVENT )
+    {
+        return ctrlKeyState2string(context, pir->Event.KeyEvent.dwControlKeyState);
+    }
+    else if ( pir->EventType == MOUSE_EVENT )
+    {
+        return ctrlKeyState2string(context, pir->Event.MouseEvent.dwControlKeyState);
+    }
+    return TheNilObj;
+}
+
+RexxMethod2(RexxObjectPtr, inrec_setControlKeys, CSTRING, ctrlKeys, CSELF, p)
+{
+    PINPUT_RECORD pir = (PINPUT_RECORD)p;
+
+    if ( pir->EventType == KEY_EVENT )
+    {
+        pir->Event.KeyEvent.dwControlKeyState = string2ctrlKeyState(ctrlKeys);
+    }
+    else if ( pir->EventType == MOUSE_EVENT )
+    {
+        pir->Event.MouseEvent.dwControlKeyState = string2ctrlKeyState(ctrlKeys);
+    }
+    return NULLOBJECT;
+}
+
+RexxMethod6(RexxObjectPtr, inrec_keyFrom_cls, CSTRING, chari, logical_t, keyDown, uint16_t, vKeyCode,
+            uint16_t, vScanCode, uint16_t, repeatCount, CSTRING, controlKeys)
+{
+    RexxBufferObject obj = context->NewBuffer(sizeof(INPUT_RECORD));
+
+    PINPUT_RECORD pir = (PINPUT_RECORD)context->BufferData(obj);
+    pir->EventType = KEY_EVENT;
+    pir->Event.KeyEvent.uChar.AsciiChar = *chari;
+    pir->Event.KeyEvent.bKeyDown = keyDown ? TRUE : FALSE;
+    pir->Event.KeyEvent.wVirtualKeyCode = vKeyCode;
+    pir->Event.KeyEvent.wVirtualScanCode = vScanCode;
+    pir->Event.KeyEvent.wRepeatCount = repeatCount;
+    pir->Event.KeyEvent.dwControlKeyState = string2ctrlKeyState(controlKeys);
+
+    RexxObjectPtr inRecObj = context->SendMessage1(TheInputRecordClass, "NEW", obj);
+
+    return inRecObj;
+}
+
+RexxMethod1(RexxObjectPtr, inrec_char, CSELF, p)
+{
+    PINPUT_RECORD pir = (PINPUT_RECORD)p;
+
+    if ( pir->EventType == KEY_EVENT )
+    {
+        char buf[2] = {'\0'};
+        buf[0] = pir->Event.KeyEvent.uChar.AsciiChar;
+        return context->String(buf);
+    }
+    return TheNilObj;
+}
+RexxMethod2(RexxObjectPtr, inrec_setChar, CSTRING, chari, CSELF, p)
+{
+    PINPUT_RECORD pir = (PINPUT_RECORD)p;
+
+    if ( pir->EventType == KEY_EVENT )
+    {
+        pir->Event.KeyEvent.uChar.AsciiChar = *chari;
+    }
+    return NULLOBJECT;
+}
+
+RexxMethod1(RexxObjectPtr, inrec_keyDown, CSELF, p)
+{
+    PINPUT_RECORD pir = (PINPUT_RECORD)p;
+
+    if ( pir->EventType == KEY_EVENT )
+    {
+        return pir->Event.KeyEvent.bKeyDown ? TheTrueObj : TheFalseObj;
+    }
+    return TheNilObj;
+}
+
+RexxMethod2(RexxObjectPtr, inrec_setKeyDown, logical_t, keyDown, CSELF, p)
+{
+    PINPUT_RECORD pir = (PINPUT_RECORD)p;
+
+    if ( pir->EventType == KEY_EVENT )
+    {
+        pir->Event.KeyEvent.bKeyDown = keyDown ? TRUE : FALSE;
+    }
+    return NULLOBJECT;
+}
+
+RexxMethod1(RexxObjectPtr, inrec_vKeyCode, CSELF, p)
+{
+    PINPUT_RECORD pir = (PINPUT_RECORD)p;
+
+    if ( pir->EventType == KEY_EVENT )
+    {
+        return context->UnsignedInt32(pir->Event.KeyEvent.wVirtualKeyCode);
+    }
+    return TheNilObj;
+}
+
+RexxMethod2(RexxObjectPtr, inrec_setVKeyCode, uint32_t, vKeyCode, CSELF, p)
+{
+    PINPUT_RECORD pir = (PINPUT_RECORD)p;
+
+    if ( pir->EventType == KEY_EVENT )
+    {
+        pir->Event.KeyEvent.wVirtualKeyCode = vKeyCode;
+    }
+    return NULLOBJECT;
+}
+
+RexxMethod1(RexxObjectPtr, inrec_vScanCode, CSELF, p)
+{
+    PINPUT_RECORD pir = (PINPUT_RECORD)p;
+
+    if ( pir->EventType == KEY_EVENT )
+    {
+        return context->UnsignedInt32(pir->Event.KeyEvent.wVirtualScanCode);
+    }
+    return TheNilObj;
+}
+
+RexxMethod2(RexxObjectPtr, inrec_setVScanCode, uint32_t, vScanCode, CSELF, p)
+{
+    PINPUT_RECORD pir = (PINPUT_RECORD)p;
+
+    if ( pir->EventType == KEY_EVENT )
+    {
+        pir->Event.KeyEvent.wVirtualScanCode = vScanCode;
+    }
+    return NULLOBJECT;
+}
+
+RexxMethod1(RexxObjectPtr, inrec_repeatCount, CSELF, p)
+{
+    PINPUT_RECORD pir = (PINPUT_RECORD)p;
+
+    if ( pir->EventType == KEY_EVENT )
+    {
+        return context->UnsignedInt32(pir->Event.KeyEvent.wRepeatCount);
+    }
+    return TheNilObj;
+}
+
+RexxMethod2(RexxObjectPtr, inrec_setRepeatCount, uint32_t, repeatCount, CSELF, p)
+{
+    PINPUT_RECORD pir = (PINPUT_RECORD)p;
+
+    if ( pir->EventType == KEY_EVENT )
+    {
+        pir->Event.KeyEvent.wRepeatCount = repeatCount;
+    }
+    return NULLOBJECT;
+}
+
+RexxMethod4(RexxObjectPtr, inrec_mouseFrom_cls, RexxObjectPtr, position, CSTRING, buttonState, CSTRING, controlKeys,
+            CSTRING, eventFlag)
+{
+    COORD pos;
+    if ( ! rxGetPointerCoord(context, position, 1, &pos) )
+    {
+        return NULLOBJECT;
+    }
+
+    RexxBufferObject obj = context->NewBuffer(sizeof(INPUT_RECORD));
+
+    PINPUT_RECORD pir = (PINPUT_RECORD)context->BufferData(obj);
+    pir->EventType = MOUSE_EVENT;
+    pir->Event.MouseEvent.dwMousePosition   = pos;
+    pir->Event.MouseEvent.dwButtonState     = string2buttonState(buttonState);
+    pir->Event.MouseEvent.dwControlKeyState = string2ctrlKeyState(controlKeys);
+    pir->Event.MouseEvent.dwEventFlags      = string2eventFlag(eventFlag);
+
+    RexxObjectPtr inRecObj = context->SendMessage1(TheInputRecordClass, "NEW", obj);
+
+    return inRecObj;
+}
+
+RexxMethod1(RexxObjectPtr, inrec_position, CSELF, p)
+{
+    PINPUT_RECORD pir = (PINPUT_RECORD)p;
+
+    if ( pir->EventType == MOUSE_EVENT )
+    {
+        return rxNewPoint(context, pir->Event.MouseEvent.dwMousePosition.X, pir->Event.MouseEvent.dwMousePosition.Y);
+    }
+    return TheNilObj;
+}
+RexxMethod2(RexxObjectPtr, inrec_setPosition, RexxObjectPtr, position, CSELF, p)
+{
+    PINPUT_RECORD pir = (PINPUT_RECORD)p;
+
+    if ( pir->EventType == MOUSE_EVENT )
+    {
+        COORD pos;
+        if ( ! rxGetPointerCoord(context, position, 1, &pos) )
+        {
+            return NULLOBJECT;
+        }
+        pir->Event.MouseEvent.dwMousePosition = pos;
+    }
+    return NULLOBJECT;
+}
+
+RexxMethod1(RexxObjectPtr, inrec_buttonState, CSELF, p)
+{
+    PINPUT_RECORD pir = (PINPUT_RECORD)p;
+
+    if ( pir->EventType == MOUSE_EVENT )
+    {
+        return buttonState2string(context, pir->Event.MouseEvent.dwButtonState);
+    }
+    return TheNilObj;
+}
+
+RexxMethod2(RexxObjectPtr, inrec_setButtonState, CSTRING, state, CSELF, p)
+{
+    PINPUT_RECORD pir = (PINPUT_RECORD)p;
+
+    if ( pir->EventType == MOUSE_EVENT )
+    {
+        pir->Event.MouseEvent.dwButtonState = string2buttonState(state);
+    }
+    return NULLOBJECT;
+}
+
+RexxMethod1(RexxObjectPtr, inrec_eventFlag, CSELF, p)
+{
+    PINPUT_RECORD pir = (PINPUT_RECORD)p;
+
+    if ( pir->EventType == MOUSE_EVENT )
+    {
+        return eventFlag2string(context, pir->Event.MouseEvent.dwEventFlags);
+    }
+    return TheNilObj;
+}
+
+RexxMethod2(RexxObjectPtr, inrec_setEventFlag, CSTRING, event, CSELF, p)
+{
+    PINPUT_RECORD pir = (PINPUT_RECORD)p;
+
+    if ( pir->EventType == MOUSE_EVENT )
+    {
+        pir->Event.MouseEvent.dwEventFlags = string2eventFlag(event);
+    }
+    return NULLOBJECT;
+}
+
+RexxMethod1(RexxObjectPtr, inrec_windowFrom_cls, RexxObjectPtr, _size)
+{
+    COORD size;
+    if ( ! rxGetPointerCoord(context, _size, 1, &size) )
+    {
+        return NULLOBJECT;
+    }
+
+    RexxBufferObject obj = context->NewBuffer(sizeof(INPUT_RECORD));
+
+    PINPUT_RECORD pir = (PINPUT_RECORD)context->BufferData(obj);
+    pir->EventType = WINDOW_BUFFER_SIZE_EVENT;
+    pir->Event.WindowBufferSizeEvent.dwSize = size;
+
+    RexxObjectPtr inRecObj = context->SendMessage1(TheInputRecordClass, "NEW", obj);
+
+    return inRecObj;
+}
+
+RexxMethod1(RexxObjectPtr, inrec_size, CSELF, p)
+{
+    PINPUT_RECORD pir = (PINPUT_RECORD)p;
+
+    if ( pir->EventType == WINDOW_BUFFER_SIZE_EVENT )
+    {
+        return rxNewPoint(context, pir->Event.WindowBufferSizeEvent.dwSize.X, pir->Event.WindowBufferSizeEvent.dwSize.Y);
+    }
+    return TheNilObj;
+}
+RexxMethod2(RexxObjectPtr, inrec_setSize, RexxObjectPtr, _size, CSELF, p)
+{
+    PINPUT_RECORD pir = (PINPUT_RECORD)p;
+
+    if ( pir->EventType == WINDOW_BUFFER_SIZE_EVENT )
+    {
+        COORD size;
+        if ( ! rxGetPointerCoord(context, _size, 1, &size) )
+        {
+            return NULLOBJECT;
+        }
+        pir->Event.WindowBufferSizeEvent.dwSize = size;
+    }
+    return NULLOBJECT;
+}
+
+RexxMethod1(RexxObjectPtr, inrec_focusFrom_cls, logical_t, setFocus)
+{
+    RexxBufferObject obj = context->NewBuffer(sizeof(INPUT_RECORD));
+
+    PINPUT_RECORD pir = (PINPUT_RECORD)context->BufferData(obj);
+    pir->EventType = FOCUS_EVENT;
+    pir->Event.FocusEvent.bSetFocus = setFocus ? TRUE : FALSE;
+
+    RexxObjectPtr inRecObj = context->SendMessage1(TheInputRecordClass, "NEW", obj);
+
+    return inRecObj;
+}
+
+RexxMethod1(RexxObjectPtr, inrec_setFocus, CSELF, p)
+{
+    PINPUT_RECORD pir = (PINPUT_RECORD)p;
+
+    if ( pir->EventType == FOCUS_EVENT )
+    {
+        return context->Logical(pir->Event.FocusEvent.bSetFocus);
+    }
+    return TheNilObj;
+}
+RexxMethod2(RexxObjectPtr, inrec_setSetFocus, logical_t, setFocus, CSELF, p)
+{
+    PINPUT_RECORD pir = (PINPUT_RECORD)p;
+
+    if ( pir->EventType == FOCUS_EVENT )
+    {
+        pir->Event.FocusEvent.bSetFocus = setFocus ? TRUE : FALSE;
+    }
+    return NULLOBJECT;
+}
+
+RexxMethod1(RexxObjectPtr, inrec_menuFrom_cls, uint32_t, ID)
+{
+    RexxBufferObject obj = context->NewBuffer(sizeof(INPUT_RECORD));
+
+    PINPUT_RECORD pir = (PINPUT_RECORD)context->BufferData(obj);
+    pir->EventType = MENU_EVENT;
+    pir->Event.MenuEvent.dwCommandId = ID;
+
+    RexxObjectPtr inRecObj = context->SendMessage1(TheInputRecordClass, "NEW", obj);
+
+    return inRecObj;
+}
+
+RexxMethod1(RexxObjectPtr, inrec_ID, CSELF, p)
+{
+    PINPUT_RECORD pir = (PINPUT_RECORD)p;
+
+    if ( pir->EventType == MENU_EVENT )
+    {
+        return context->UnsignedInt32(pir->Event.MenuEvent.dwCommandId);
+    }
+    return TheNilObj;
+}
+RexxMethod2(RexxObjectPtr, inrec_setID, uint32_t, ID, CSELF, p)
+{
+    PINPUT_RECORD pir = (PINPUT_RECORD)p;
+
+    if ( pir->EventType == MENU_EVENT )
+    {
+        pir->Event.MenuEvent.dwCommandId = ID;
+    }
+    return NULLOBJECT;
+}
+
 
 // .ooConsole
+REXX_METHOD_PROTOTYPE(oocon_allocConsole_cls);
+REXX_METHOD_PROTOTYPE(oocon_attachConsole_cls);
+REXX_METHOD_PROTOTYPE(oocon_freeConsole_cls);
 REXX_METHOD_PROTOTYPE(oocon_version_cls);
 
 REXX_METHOD_PROTOTYPE(oocon_errRC_atr);
 REXX_METHOD_PROTOTYPE(oocon_handle_atr);
 REXX_METHOD_PROTOTYPE(oocon_init);
 REXX_METHOD_PROTOTYPE(oocon_uninit);
+REXX_METHOD_PROTOTYPE(oocon_addAlias);
+REXX_METHOD_PROTOTYPE(oocon_generateCtrlEvent);
+REXX_METHOD_PROTOTYPE(oocon_getAlias);
+REXX_METHOD_PROTOTYPE(oocon_getAliases);
+REXX_METHOD_PROTOTYPE(oocon_getAliasesLength);
+REXX_METHOD_PROTOTYPE(oocon_getAliasExes);
+REXX_METHOD_PROTOTYPE(oocon_getAliasExesLength);
 REXX_METHOD_PROTOTYPE(oocon_getCP);
 REXX_METHOD_PROTOTYPE(oocon_getDisplayMode);
 REXX_METHOD_PROTOTYPE(oocon_getHistoryInfo);
@@ -3080,6 +4552,7 @@ REXX_METHOD_PROTOTYPE(oocon_getProcessList);
 REXX_METHOD_PROTOTYPE(oocon_getSelectionInfo);
 REXX_METHOD_PROTOTYPE(oocon_getWindow);
 REXX_METHOD_PROTOTYPE(oocon_setCP);
+REXX_METHOD_PROTOTYPE(oocon_setCtrlHandler);
 REXX_METHOD_PROTOTYPE(oocon_setHistoryInfo);
 REXX_METHOD_PROTOTYPE(oocon_setOutputCP);
 REXX_METHOD_PROTOTYPE(oocon_setTitle);
@@ -3090,6 +4563,8 @@ REXX_METHOD_PROTOTYPE(oocon_test);
 // .ScreenBuffer
 REXX_METHOD_PROTOTYPE(sb_close);
 REXX_METHOD_PROTOTYPE(sb_createScreenBuffer);
+REXX_METHOD_PROTOTYPE(sb_fillOutputAttribute);
+REXX_METHOD_PROTOTYPE(sb_fillOutputCharacter);
 REXX_METHOD_PROTOTYPE(sb_getCursorInfo);
 REXX_METHOD_PROTOTYPE(sb_getFontInfo);
 REXX_METHOD_PROTOTYPE(sb_getFontSize);
@@ -3100,6 +4575,10 @@ REXX_METHOD_PROTOTYPE(sb_getScreenBufferInfoEx);
 REXX_METHOD_PROTOTYPE(sb_getScreenBufferSize);
 REXX_METHOD_PROTOTYPE(sb_getWindowRect);
 REXX_METHOD_PROTOTYPE(sb_getWindowSize);
+REXX_METHOD_PROTOTYPE(sb_readOutput);
+REXX_METHOD_PROTOTYPE(sb_readOutputAttribute);
+REXX_METHOD_PROTOTYPE(sb_readOutputCharacter);
+REXX_METHOD_PROTOTYPE(sb_scrollScreenBuffer);
 REXX_METHOD_PROTOTYPE(sb_setActiveScreenBuffer);
 REXX_METHOD_PROTOTYPE(sb_setCursorInfo);
 REXX_METHOD_PROTOTYPE(sb_setCursorPosition);
@@ -3112,6 +4591,9 @@ REXX_METHOD_PROTOTYPE(sb_setTextAttribute);
 REXX_METHOD_PROTOTYPE(sb_setWindowRect);
 REXX_METHOD_PROTOTYPE(sb_setWindowSize);
 REXX_METHOD_PROTOTYPE(sb_write);
+REXX_METHOD_PROTOTYPE(sb_writeOutput);
+REXX_METHOD_PROTOTYPE(sb_writeOutputAttribute);
+REXX_METHOD_PROTOTYPE(sb_writeOutputCharacter);
 
 // .StdOutput
 REXX_METHOD_PROTOTYPE(stdout_init);
@@ -3122,7 +4604,6 @@ REXX_METHOD_PROTOTYPE(stdout_setStdHandle);
 REXX_METHOD_PROTOTYPE(stderr_init);
 REXX_METHOD_PROTOTYPE(stderr_getStdHandle);
 REXX_METHOD_PROTOTYPE(stderr_setStdHandle);
-
 
 // .StdInput
 REXX_METHOD_PROTOTYPE(stdin_init);
@@ -3136,15 +4617,65 @@ REXX_METHOD_PROTOTYPE(stdin_readInput);
 REXX_METHOD_PROTOTYPE(stdin_setMode);
 REXX_METHOD_PROTOTYPE(stdin_setStdHandle);
 
+// .CharInfo
+REXX_METHOD_PROTOTYPE(char_init_cls);
+REXX_METHOD_PROTOTYPE(char_from_cls);
+REXX_METHOD_PROTOTYPE(char_init);
+REXX_METHOD_PROTOTYPE(char_char);
+REXX_METHOD_PROTOTYPE(char_attribute);
+REXX_METHOD_PROTOTYPE(char_setChar);
+REXX_METHOD_PROTOTYPE(char_setAttribute);
 
+// .InputRecord
+REXX_METHOD_PROTOTYPE(inrec_init_cls);
+REXX_METHOD_PROTOTYPE(inrec_init);
+REXX_METHOD_PROTOTYPE(inrec_controlKeys);
+REXX_METHOD_PROTOTYPE(inrec_setControlKeys);
+REXX_METHOD_PROTOTYPE(inrec_keyFrom_cls);
+REXX_METHOD_PROTOTYPE(inrec_char);
+REXX_METHOD_PROTOTYPE(inrec_setChar);
+REXX_METHOD_PROTOTYPE(inrec_keyDown);
+REXX_METHOD_PROTOTYPE(inrec_setKeyDown);
+REXX_METHOD_PROTOTYPE(inrec_vKeyCode);
+REXX_METHOD_PROTOTYPE(inrec_setVKeyCode);
+REXX_METHOD_PROTOTYPE(inrec_vScanCode);
+REXX_METHOD_PROTOTYPE(inrec_setVScanCode);
+REXX_METHOD_PROTOTYPE(inrec_repeatCount);
+REXX_METHOD_PROTOTYPE(inrec_setRepeatCount);
+REXX_METHOD_PROTOTYPE(inrec_mouseFrom_cls);
+REXX_METHOD_PROTOTYPE(inrec_position);
+REXX_METHOD_PROTOTYPE(inrec_setPosition);
+REXX_METHOD_PROTOTYPE(inrec_buttonState);
+REXX_METHOD_PROTOTYPE(inrec_setButtonState);
+REXX_METHOD_PROTOTYPE(inrec_eventFlag);
+REXX_METHOD_PROTOTYPE(inrec_setEventFlag);
+REXX_METHOD_PROTOTYPE(inrec_windowFrom_cls);
+REXX_METHOD_PROTOTYPE(inrec_size);
+REXX_METHOD_PROTOTYPE(inrec_setSize);
+REXX_METHOD_PROTOTYPE(inrec_focusFrom_cls);
+REXX_METHOD_PROTOTYPE(inrec_setFocus);
+REXX_METHOD_PROTOTYPE(inrec_setSetFocus);
+REXX_METHOD_PROTOTYPE(inrec_menuFrom_cls);
+REXX_METHOD_PROTOTYPE(inrec_ID);
+REXX_METHOD_PROTOTYPE(inrec_setID);
 
 
 RexxMethodEntry ooConsole_methods[] = {
+    REXX_METHOD(oocon_allocConsole_cls,           oocon_allocConsole_cls),
+    REXX_METHOD(oocon_attachConsole_cls,          oocon_attachConsole_cls),
+    REXX_METHOD(oocon_freeConsole_cls,            oocon_freeConsole_cls),
     REXX_METHOD(oocon_version_cls,                oocon_version_cls),
     REXX_METHOD(oocon_errRC_atr,                  oocon_errRC_atr),
     REXX_METHOD(oocon_handle_atr,                 oocon_handle_atr),
     REXX_METHOD(oocon_init,                       oocon_init),
     REXX_METHOD(oocon_uninit,                     oocon_uninit),
+    REXX_METHOD(oocon_addAlias,                   oocon_addAlias),
+    REXX_METHOD(oocon_generateCtrlEvent,          oocon_generateCtrlEvent),
+    REXX_METHOD(oocon_getAlias,                   oocon_getAlias),
+    REXX_METHOD(oocon_getAliases,                 oocon_getAliases),
+    REXX_METHOD(oocon_getAliasesLength,           oocon_getAliasesLength),
+    REXX_METHOD(oocon_getAliasExes,               oocon_getAliasExes),
+    REXX_METHOD(oocon_getAliasExesLength,         oocon_getAliasExesLength),
     REXX_METHOD(oocon_getCP,                      oocon_getCP),
     REXX_METHOD(oocon_getDisplayMode,             oocon_getDisplayMode),
     REXX_METHOD(oocon_getHistoryInfo,             oocon_getHistoryInfo),
@@ -3156,6 +4687,7 @@ RexxMethodEntry ooConsole_methods[] = {
     REXX_METHOD(oocon_getSelectionInfo,           oocon_getSelectionInfo),
     REXX_METHOD(oocon_getWindow,                  oocon_getWindow),
     REXX_METHOD(oocon_setCP,                      oocon_setCP),
+    REXX_METHOD(oocon_setCtrlHandler,             oocon_setCtrlHandler),
     REXX_METHOD(oocon_setHistoryInfo,             oocon_setHistoryInfo),
     REXX_METHOD(oocon_setOutputCP,                oocon_setOutputCP),
     REXX_METHOD(oocon_setTitle,	                  oocon_setTitle),
@@ -3164,6 +4696,8 @@ RexxMethodEntry ooConsole_methods[] = {
 
     REXX_METHOD(sb_close,                         sb_close),
     REXX_METHOD(sb_createScreenBuffer,            sb_createScreenBuffer),
+    REXX_METHOD(sb_fillOutputAttribute,           sb_fillOutputAttribute),
+    REXX_METHOD(sb_fillOutputCharacter,           sb_fillOutputCharacter),
     REXX_METHOD(sb_getCursorInfo,		          sb_getCursorInfo),
     REXX_METHOD(sb_getFontInfo,                   sb_getFontInfo),
     REXX_METHOD(sb_getFontSize,                   sb_getFontSize),
@@ -3174,6 +4708,10 @@ RexxMethodEntry ooConsole_methods[] = {
     REXX_METHOD(sb_getScreenBufferSize,           sb_getScreenBufferSize),
     REXX_METHOD(sb_getWindowRect,                 sb_getWindowRect),
     REXX_METHOD(sb_getWindowSize,                 sb_getWindowSize),
+    REXX_METHOD(sb_readOutput,                    sb_readOutput),
+    REXX_METHOD(sb_readOutputAttribute,           sb_readOutputAttribute),
+    REXX_METHOD(sb_readOutputCharacter,           sb_readOutputCharacter),
+    REXX_METHOD(sb_scrollScreenBuffer,            sb_scrollScreenBuffer),
     REXX_METHOD(sb_setActiveScreenBuffer,         sb_setActiveScreenBuffer),
     REXX_METHOD(sb_setCursorInfo,		          sb_setCursorInfo),
     REXX_METHOD(sb_setCursorPosition,             sb_setCursorPosition),
@@ -3186,6 +4724,9 @@ RexxMethodEntry ooConsole_methods[] = {
     REXX_METHOD(sb_setWindowRect,                 sb_setWindowRect),
     REXX_METHOD(sb_setWindowSize,                 sb_setWindowSize),
     REXX_METHOD(sb_write,                         sb_write),
+    REXX_METHOD(sb_writeOutput,                   sb_writeOutput),
+    REXX_METHOD(sb_writeOutputAttribute,          sb_writeOutputAttribute),
+    REXX_METHOD(sb_writeOutputCharacter,          sb_writeOutputCharacter),
 
     REXX_METHOD(stdout_init,                      stdout_init),
     REXX_METHOD(stdout_getStdHandle,              stdout_getStdHandle),
@@ -3205,6 +4746,49 @@ RexxMethodEntry ooConsole_methods[] = {
     REXX_METHOD(stdin_readInput,                  stdin_readInput),
     REXX_METHOD(stdin_setMode,                    stdin_setMode),
     REXX_METHOD(stdin_setStdHandle,               stdin_setStdHandle),
+    REXX_METHOD(stdin_writeInput,                 stdin_writeInput),
+
+    // .CharInfo
+    REXX_METHOD(char_init_cls,                    char_init_cls),
+    REXX_METHOD(char_from_cls,                      char_from_cls),
+    REXX_METHOD(char_init,                        char_init),
+    REXX_METHOD(char_char,                        char_char),
+    REXX_METHOD(char_attribute,                   char_attribute),
+    REXX_METHOD(char_setChar,                     char_setChar),
+    REXX_METHOD(char_setAttribute,                char_setAttribute),
+
+    // .InputRecord
+    REXX_METHOD(inrec_init_cls,                   inrec_init_cls),
+    REXX_METHOD(inrec_init,                       inrec_init),
+    REXX_METHOD(inrec_controlKeys,                inrec_controlKeys),
+    REXX_METHOD(inrec_setControlKeys,             inrec_setControlKeys),
+    REXX_METHOD(inrec_keyFrom_cls,                inrec_keyFrom_cls),
+    REXX_METHOD(inrec_char,                       inrec_char),
+    REXX_METHOD(inrec_setChar,                    inrec_setChar),
+    REXX_METHOD(inrec_keyDown,                    inrec_keyDown),
+    REXX_METHOD(inrec_setKeyDown,                 inrec_setKeyDown),
+    REXX_METHOD(inrec_vKeyCode,                   inrec_vKeyCode),
+    REXX_METHOD(inrec_setVKeyCode,                inrec_setVKeyCode),
+    REXX_METHOD(inrec_vScanCode,                  inrec_vScanCode),
+    REXX_METHOD(inrec_setVScanCode,               inrec_setVScanCode),
+    REXX_METHOD(inrec_repeatCount,                inrec_repeatCount),
+    REXX_METHOD(inrec_setRepeatCount,             inrec_setRepeatCount),
+    REXX_METHOD(inrec_mouseFrom_cls,              inrec_mouseFrom_cls),
+    REXX_METHOD(inrec_position,                   inrec_position),
+    REXX_METHOD(inrec_setPosition,                inrec_setPosition),
+    REXX_METHOD(inrec_buttonState,                inrec_buttonState),
+    REXX_METHOD(inrec_setButtonState,             inrec_setButtonState),
+    REXX_METHOD(inrec_eventFlag,                  inrec_eventFlag),
+    REXX_METHOD(inrec_setEventFlag,               inrec_setEventFlag),
+    REXX_METHOD(inrec_windowFrom_cls,             inrec_windowFrom_cls),
+    REXX_METHOD(inrec_size,                       inrec_size),
+    REXX_METHOD(inrec_setSize,                    inrec_setSize),
+    REXX_METHOD(inrec_focusFrom_cls,              inrec_focusFrom_cls),
+    REXX_METHOD(inrec_setFocus,                   inrec_setFocus),
+    REXX_METHOD(inrec_setSetFocus,                inrec_setSetFocus),
+    REXX_METHOD(inrec_menuFrom_cls,               inrec_menuFrom_cls),
+    REXX_METHOD(inrec_ID,                         inrec_ID),
+    REXX_METHOD(inrec_setID,                      inrec_setID),
 
     REXX_LAST_METHOD()
 };

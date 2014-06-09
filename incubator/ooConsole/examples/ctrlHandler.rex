@@ -35,84 +35,31 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-#ifndef ooConsole_Included
-#define ooConsole_Included
+  con = .MyStdOutput~new
 
-#ifdef _WIN32
-    #define NEED_DLL_MAIN
-    #include "winOS.hpp"
-    #undef  NEED_DLL_MAIN
-#else
-    #include "unixOS.hpp"
-#endif
+  processList = con~getProcessList
+  say 'processList:' processList
 
-#include "oorexxapi.h"
+  if \ con~setCtrlHandler(.true, handler) then do
+    say 'setCtrlHandler failed.  errRC:' con~errRC
+    return
+  end
 
-#define VALID_VERSION_TYPES       "[O]neLine [F]ull [C]ompact [L]ibVersion [N]umber [S]ourceID"
-#define NO_LOCAL_ENVIRONMENT_MSG  "the .local environment was not found"
+  say 'sleeping... thread ID:'  .DlgUtil~threadID
+  i = 0
+  do forever
+    if i == 4 then con~generateCtrlEvent('Ctrl-C')
+    z = SysSleep(4)
+    i += 1
+  end
 
-// MSDN docs say the maximum for a console title is 64 K.  But, passing a length
-// of 65536 into the title functions results in an error.  So does 65500, and
-// 65000.  60000 works.  But, we make it 8000 and in the implmentation, if it
-// fails, we just fail it.
-#define MAX_CONSOLETITLE             8000
+::requires 'ooConsole.cls'
+::requires 'ooDialog.cls'
 
-// In a similar fashion, the GetConsoleProcessList() function fails if we pass
-// in an array of 64K uint32_t types.  But, if we pass in 64K / 4 uint32_t types
-// it works.  1000 PIDs seems more than adequate.
-#define MAX_CONSOLEPIDS              1000
+::class 'MyStdOutput' subclass StdOutput
 
-// Similar thing for the buffer for ReadConsole.  Trial and error shows that
-// 31366 works and 31367 fails
-#define MAX_READBUFFER               31366
-
-// Trial and error, 3136 works, 3137 fails
-#define MAX_INPUTRECORDS             3136
-
-// ReadConsoleInput() buffer ??
-#define MAX_CHARINFOBUFFER           16384
-
-static bool _isVersion(DWORD major, DWORD minor, unsigned int sp, unsigned int type, unsigned int condition);
-
-// Enum for a Windows OS, don't need many right now.
-typedef enum
-{
-    XP_OS, Vista_OS, Windows7_OS
-} os_name_t;
-
-inline bool _isAtLeastXP(void)
-{
-    return _isVersion(5, 1, 2, 0, VER_GREATER_EQUAL);
-}
-
-inline bool _isAtLeastVista(void)
-{
-    return _isVersion(6, 0, 0, 0, VER_GREATER_EQUAL);
-}
-
-inline bool _isAtLeastWindows7(void)
-{
-    return _isVersion(6, 1, 0, 0, VER_GREATER_EQUAL);
-}
-
-// Enum for the type of console
-typedef enum
-{
-    STDINPUT, STDOUTPUT, STDERROR
-} console_type_t;
-
-/* Struct for the ooConsole object CSelf. */
-typedef struct _ooConsoleCSelf {
-    HANDLE          handle;
-    RexxObjectPtr   rexxSelf;
-    CSTRING         handlerMethod;
-    console_type_t  type;
-    uint32_t        errRC;        // Error code
-    bool            isValid;      // Is a valid object
-    bool            isCreated;    // Is a created screen buffer
-} CooConsole;
-typedef CooConsole *pCooConsole;
-
-
-
-#endif  /* ooConsole_Included */
+::method handler
+  use arg ctrl
+  say 'ctrl:' ctrl
+  say 'Thread ID:' .DlgUtil~threadID
+  return .false

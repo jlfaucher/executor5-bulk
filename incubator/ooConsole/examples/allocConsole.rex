@@ -35,84 +35,27 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-#ifndef ooConsole_Included
-#define ooConsole_Included
+  ret = .ooConsole~freeConsole
+  if ret <> 0 then do
+    say 'freeConsole() error.  RC:' ret
+    return 99
+  end
 
-#ifdef _WIN32
-    #define NEED_DLL_MAIN
-    #include "winOS.hpp"
-    #undef  NEED_DLL_MAIN
-#else
-    #include "unixOS.hpp"
-#endif
+  ret = .ooConsole~allocConsole
+  if ret <> 0 then do
+    say 'allocConsole error.  RC:' ret
+    return 99
+  end
 
-#include "oorexxapi.h"
+  stdout = .StdOutput~new
 
-#define VALID_VERSION_TYPES       "[O]neLine [F]ull [C]ompact [L]ibVersion [N]umber [S]ourceID"
-#define NO_LOCAL_ENVIRONMENT_MSG  "the .local environment was not found"
+  stdout~write('Got stdout:' stdout || .endOfLine)
+  stdout~write('  StdOut handle:' stdout~handle || .endOfLine)
+  stdout~write('Sleeping...'.endOfLine)
+  z = SysSleep(5)
 
-// MSDN docs say the maximum for a console title is 64 K.  But, passing a length
-// of 65536 into the title functions results in an error.  So does 65500, and
-// 65000.  60000 works.  But, we make it 8000 and in the implmentation, if it
-// fails, we just fail it.
-#define MAX_CONSOLETITLE             8000
-
-// In a similar fashion, the GetConsoleProcessList() function fails if we pass
-// in an array of 64K uint32_t types.  But, if we pass in 64K / 4 uint32_t types
-// it works.  1000 PIDs seems more than adequate.
-#define MAX_CONSOLEPIDS              1000
-
-// Similar thing for the buffer for ReadConsole.  Trial and error shows that
-// 31366 works and 31367 fails
-#define MAX_READBUFFER               31366
-
-// Trial and error, 3136 works, 3137 fails
-#define MAX_INPUTRECORDS             3136
-
-// ReadConsoleInput() buffer ??
-#define MAX_CHARINFOBUFFER           16384
-
-static bool _isVersion(DWORD major, DWORD minor, unsigned int sp, unsigned int type, unsigned int condition);
-
-// Enum for a Windows OS, don't need many right now.
-typedef enum
-{
-    XP_OS, Vista_OS, Windows7_OS
-} os_name_t;
-
-inline bool _isAtLeastXP(void)
-{
-    return _isVersion(5, 1, 2, 0, VER_GREATER_EQUAL);
-}
-
-inline bool _isAtLeastVista(void)
-{
-    return _isVersion(6, 0, 0, 0, VER_GREATER_EQUAL);
-}
-
-inline bool _isAtLeastWindows7(void)
-{
-    return _isVersion(6, 1, 0, 0, VER_GREATER_EQUAL);
-}
-
-// Enum for the type of console
-typedef enum
-{
-    STDINPUT, STDOUTPUT, STDERROR
-} console_type_t;
-
-/* Struct for the ooConsole object CSelf. */
-typedef struct _ooConsoleCSelf {
-    HANDLE          handle;
-    RexxObjectPtr   rexxSelf;
-    CSTRING         handlerMethod;
-    console_type_t  type;
-    uint32_t        errRC;        // Error code
-    bool            isValid;      // Is a valid object
-    bool            isCreated;    // Is a created screen buffer
-} CooConsole;
-typedef CooConsole *pCooConsole;
+  say 'Going to sleep again ...'
+  z = SysSleep(5)
 
 
-
-#endif  /* ooConsole_Included */
+::requires 'ooConsole.cls'

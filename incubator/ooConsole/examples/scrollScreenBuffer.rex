@@ -35,84 +35,56 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-#ifndef ooConsole_Included
-#define ooConsole_Included
+/** scrollScreenBuffer.rex
+ *
+ * This example is a direct copy of a C++ example from the MSDN library.  It
+ * scrolls the bottom 15 lines of the display window up 15 lines.
+ */
 
-#ifdef _WIN32
-    #define NEED_DLL_MAIN
-    #include "winOS.hpp"
-    #undef  NEED_DLL_MAIN
-#else
-    #include "unixOS.hpp"
-#endif
+    say .endOfLine"Printing 20 lines for reference. " || -
+        "Notice that line 6 is discarded during scrolling.".endOfLine
+    do i = 1 while i <= 20
+        say i
+    end
+    j = SysSleep(4)
 
-#include "oorexxapi.h"
+    stdOut = .StdOutput~new
 
-#define VALID_VERSION_TYPES       "[O]neLine [F]ull [C]ompact [L]ibVersion [N]umber [S]ourceID"
-#define NO_LOCAL_ENVIRONMENT_MSG  "the .local environment was not found"
+    if stdOut == .nil then do
+        say "Failed to get StdOuput object.  ErrRC:" stOut~ErrRC
+        return
+    end
 
-// MSDN docs say the maximum for a console title is 64 K.  But, passing a length
-// of 65536 into the title functions results in an error.  So does 65500, and
-// 65000.  60000 works.  But, we make it 8000 and in the implmentation, if it
-// fails, we just fail it.
-#define MAX_CONSOLETITLE             8000
+    -- Get the screen buffer size.
 
-// In a similar fashion, the GetConsoleProcessList() function fails if we pass
-// in an array of 64K uint32_t types.  But, if we pass in 64K / 4 uint32_t types
-// it works.  1000 PIDs seems more than adequate.
-#define MAX_CONSOLEPIDS              1000
+    csbiInfo = stdOut~getScreenBufferInfo
+    if csbiInfo == .nil then do
+        say "getScreenBufferInfo() failed:" stdOut~ErrRC
+        return
+    end
 
-// Similar thing for the buffer for ReadConsole.  Trial and error shows that
-// 31366 works and 31367 fails
-#define MAX_READBUFFER               31366
+    -- The scrolling rectangle is the bottom 15 rows of the
+    -- display window.
 
-// Trial and error, 3136 works, 3137 fails
-#define MAX_INPUTRECORDS             3136
+    scrollRect = .Rect~new(0, csbiInfo~windowRect~Bottom - 15, csbiInfo~windowRect~Right, csbiInfo~windowRect~Bottom - 1)
 
-// ReadConsoleInput() buffer ??
-#define MAX_CHARINFOBUFFER           16384
+    -- The destination for the scroll rectangle is one row up.
 
-static bool _isVersion(DWORD major, DWORD minor, unsigned int sp, unsigned int type, unsigned int condition);
+    coordDest = .Point~new(0, csbiInfo~windowRect~Bottom - 16)
 
-// Enum for a Windows OS, don't need many right now.
-typedef enum
-{
-    XP_OS, Vista_OS, Windows7_OS
-} os_name_t;
+    -- The clipping rectangle is the same as the scrolling rectangle.
 
-inline bool _isAtLeastXP(void)
-{
-    return _isVersion(5, 1, 2, 0, VER_GREATER_EQUAL);
-}
+    clipRect = scrollRect
 
-inline bool _isAtLeastVista(void)
-{
-    return _isVersion(6, 0, 0, 0, VER_GREATER_EQUAL);
-}
+    -- Fill the bottom row with green blanks.
 
-inline bool _isAtLeastWindows7(void)
-{
-    return _isVersion(6, 1, 0, 0, VER_GREATER_EQUAL);
-}
+    fill = .CharInfo~from(' ', "BgGreen FgRed")
 
-// Enum for the type of console
-typedef enum
-{
-    STDINPUT, STDOUTPUT, STDERROR
-} console_type_t;
+    -- Scroll up one line.
 
-/* Struct for the ooConsole object CSelf. */
-typedef struct _ooConsoleCSelf {
-    HANDLE          handle;
-    RexxObjectPtr   rexxSelf;
-    CSTRING         handlerMethod;
-    console_type_t  type;
-    uint32_t        errRC;        // Error code
-    bool            isValid;      // Is a valid object
-    bool            isCreated;    // Is a created screen buffer
-} CooConsole;
-typedef CooConsole *pCooConsole;
+    if \ stdout~scrollScreenBuffer(scrollRect, coordDest, fill, clipRect) then do
+        say "scrollScreenBuffer() failed:" stdOut~ErrRC
+        return;
+    end
 
-
-
-#endif  /* ooConsole_Included */
+::requires "ooConsole.cls"
