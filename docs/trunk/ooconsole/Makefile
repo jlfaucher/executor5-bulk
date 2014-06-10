@@ -46,7 +46,7 @@ all: pdf html
 pdf: datepub svnrev
 	- rm -rf tmp/en-US/pdf
 	publican build --formats=pdf --langs=en-US
-	cd tmp/en-US/pdf; mv ooRexx*.pdf $(PRODUCT).pdf; cp $(PRODUCT).pdf ../../../; cd ../../..
+	cd tmp/en-US/pdf; mv *Documentation-en-US.pdf $(PRODUCT).pdf; cp $(PRODUCT).pdf ../../../; cd ../../..
 
 html: datepub.tmp svnrev.tmp
 	- rm -rf tmp/en-US/html
