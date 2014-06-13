@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2014 Rexx Language Association. All rights reserved.         */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -35,11 +35,15 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 -- ::options trace i
+
+-- a compiled pattern that can perform regex operations
 ::class Pattern public
 
 -- compile a string regex expression into a pattern
 ::method compile class
-  -- the compiler is configurable, but there is a default
+  -- the compiler is configurable by overriding this in a superclass
+  -- or providing a different compiler on the invocation.
+  -- the default is standard (or close to standard) regex expressions.
   use strict arg pattern, compiler = (.RegexCompiler~new)
   return compiler~compile(pattern)
 
@@ -50,19 +54,25 @@
   use strict arg pattern, compiler = (.RegexCompiler~new)
   return compiler~compileReplacement(pattern)
 
+-- initialize a pattern instance.  Arguments are the string pattern
+-- we were compiled from, the root of the evaluation tree, and the
+-- list of groups used for back references.
 ::method init
   expose pattern root groups
   use strict arg pattern, root, groups
 
+-- Patterns are immutable, be we do provide read-only access to the elements
 ::attribute pattern GET
 ::attribute groups GET
 ::attribute root GET
+
 -- retrieve the number of capturing groups
 -- contained within this pattern.
 ::attribute groupCount GET
   expose groups
   return groups~items
 
+-- display a pattern instance as its source string pattern
 ::method string
   expose pattern
   return pattern
@@ -103,9 +113,9 @@
 -- are searched.  The return value is a MatchResult object with the
 -- full details of the match.
 ::method find
-  use strict arg text, start = 1
+  use strict arg text, start = 1, end = (text~length)
   -- create a matching context for this
-  context = .MatchContext~new(text)
+  context = .MatchContext~new(text, start, end)
   -- and just perform a search and return the match position
   -- value
   return context~find(self, start)
@@ -149,7 +159,7 @@
       end
   end
 
-  -- append and tail piece, if there is one
+  -- append any tail piece, if there is one
   if indexPosition <= text~length then do
       list~append(text~substr(indexPosition))
   end
@@ -4846,10 +4856,10 @@ self~init:super(regionText, regionStart, regionEnd, start, end)
 -- search the region for the first position with a pattern match.  Returns
 -- a match result object with the match result
 ::method find
-  expose startPosition root
+  expose text startPosition root
   -- the start is optional, but defalt to the beginning of the
   -- region (typical)
-  use strict arg pattern, start = (startPosition)
+  use strict arg pattern, start = (startPosition), end = (test~length)
   -- set up the context for matching
   self~prepareMatch(pattern)
   -- forward to the common matching routine

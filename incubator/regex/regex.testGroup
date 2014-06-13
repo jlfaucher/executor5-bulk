@@ -1,11 +1,7 @@
 #!/usr/bin/rexx
-/*
-  SVN Revision: $Rev: 3371 $
-  Change Date:  $Date: 2008-09-21 00:33:29 -0400 (Sun, 21 Sep 2008) $
-*/
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2005-2010 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -84,6 +80,14 @@ return testResult
   use arg pattern, string
   return pattern~find(self~td(string))
 
+::method findStart
+  use arg pattern, string, start
+  return pattern~find(self~td(string), start)
+
+::method findStartLength
+  use arg pattern, string, start, length
+  return pattern~find(self~td(string), start, length)
+
 -- utility method to perform tests on character class
 -- tests to ensure they will only match characters
 -- in the given set
@@ -127,8 +131,22 @@ return testResult
   res = r~matched & r~start == start & r~end == end & r~text == text & r~length == text~length
   -- if this fails, redo the comparisons with trace on to help diagnose the failure
   if \res then do
+      -- rerun the compare with tracing so we know what is off
       trace i
       return r~matched & r~start == start & r~end == end & r~text == text & r~length == text~length
+  end
+  return .true
+
+-- utilty method to verify a nomatch result
+::method verifyNoMatchResult
+  use arg r, text
+
+  res = \r~matched & r~start == 0 & r~end == 0 & r~text == "" & r~length == 0
+  -- if this fails, redo the comparisons with trace on to help diagnose the failure
+  if \res then do
+      -- rerun the compare with tracing so we know what is off
+      trace i
+      return \r~matched & r~start == 0 & r~end == 0 & r~text == "" & r~length == 0
   end
   return .true
 
@@ -168,16 +186,48 @@ return testResult
 
   r = self~find(p, "xxxfooyyy")
   self~assertTrue(self~verifyMatchResult(r, 4, 7, "foo"))
-  self~assertEquals(3, r~length)
-  self~assertEquals("foo", r~text)
+
+  -- boundary case, start looking at the beginning postion
+  r = self~findStart(p, "xxxfooyyy", 4)
+  self~assertTrue(self~verifyMatchResult(r, 4, 7, "foo"))
+  -- prefix is null because of start position
+  self~assertEquals("", r~prefix)
+  self~assertEquals("yyy", r~suffix)
+
+  -- start looking one position past the string
+  r = self~findStart(p, "xxxfooyyy", 5)
+  self~assertTrue(self~verifyNoMatchResult(r, "xxxfooyyy"))
+  self~assertEquals("", r~prefix)
+  self~assertEquals("ooyyy", r~suffix)
+
+  -- now specify a range length
+
+  -- boundary case, stop looking at the end postion
+  r = self~findStartLength(p, "xxxfooyyy", 1, 6)
+  self~assertTrue(self~verifyMatchResult(r, 4, 7, "foo"))
+  self~assertEquals("xxx", r~prefix)
+  self~assertEquals("", r~suffix)
+
+  -- stop looking right before the end
+  r = self~findStartLength(p, "xxxfooyyy", 1, 5)
+  self~assertTrue(self~verifyNoMatchResult(r, "xxxfooyyy"))
+  self~assertEquals("", r~prefix)
+  self~assertEquals("xxxfo", r~suffix)
+
+  -- search at the exact position, but too short
+  r = self~findStartLength(p, "xxxfooyyy", 4, 2)
+  self~assertTrue(self~verifyNoMatchResult(r, "xxxfooyyy"))
+  self~assertEquals("", r~prefix)
+  self~assertEquals("fo", r~suffix)
+
+  -- search at the exact position
+  r = self~findStartLength(p, "xxxfooyyy", 4, 3)
+  self~assertTrue(self~verifyMatchResult(r, 4, 7, "foo"))
+  self~assertEquals("", r~prefix)
+  self~assertEquals("", r~suffix)
 
   r = self~find(p, "xyzzy")
-  self~assertFalse(r~matched)
-  self~assertEquals(0, r~start)
-  self~assertEquals(0, r~end)
-  self~assertEquals("", r~text)
-  self~assertEquals("", r~prefix)
-  self~assertEquals("xyzzy", r~suffix)
+  self~assertTrue(self~verifyNoMatchResult(r, "xyzzy"))
 
   -- case insensitivity tests
   p = .Pattern~compile("foo", .RegexCompiler~new(.RegexCompiler~caseless))
@@ -240,11 +290,7 @@ return testResult
   self~assertTrue(self~startsWith(p, "AB"))
 
   r = self~find(p, "foo")
-  self~assertTrue(r~matched)
-  self~assertEquals(1, r~start)
-  self~assertEquals(2, r~end)
-  self~assertEquals(1, r~length)
-  self~assertEquals("f", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 1, 2, "f"))
   self~assertEquals("", r~prefix)
   self~assertEquals("oo", r~suffix)
 
@@ -879,10 +925,7 @@ return testResult
 
   r = self~find(p, "xaaxaaaxyz")
   -- this will only match at the second grouping of a's
-  self~assertTrue(r~matched)
-  self~assertEquals(5, r~start)
-  self~assertEquals(8, r~end)
-  self~assertEquals("aaa", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 5, 8, "aaa"))
 
   p = .Pattern~compile("ab{2}c")     -- repetitive in the middle
   self~assertFalse(self~matches(p, "ac"))  -- must have 2 a's
@@ -910,10 +953,7 @@ return testResult
 
   r = self~find(p, "xaaxaaaxyz")
   -- this will only match at the second grouping of a's
-  self~assertTrue(r~matched)
-  self~assertEquals(5, r~start)
-  self~assertEquals(8, r~end)
-  self~assertEquals("aaa", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 5, 8, "aaa"))
 
   p = .Pattern~compile("ab{2}?c")     -- repetitive in the middle
   self~assertFalse(self~matches(p, "ac"))  -- must have 2 a's
@@ -941,10 +981,7 @@ return testResult
 
   r = self~find(p, "xaaxaaaxyz")
   -- this will only match at the second grouping of a's
-  self~assertTrue(r~matched)
-  self~assertEquals(5, r~start)
-  self~assertEquals(8, r~end)
-  self~assertEquals("aaa", r~text)
+  self~assertTrue(self~verifyMatchResult(r, 5, 8, "aaa"))
 
   p = .Pattern~compile("ab{2}+c")     -- repetitive in the middle
   self~assertFalse(self~matches(p, "ac"))  -- must have 2 a's
