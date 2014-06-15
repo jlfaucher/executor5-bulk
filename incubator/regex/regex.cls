@@ -34,7 +34,7 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
--- ::options trace i
+-- ::options trace commands
 
 -- a compiled pattern that can perform regex operations
 ::class "Pattern" public
@@ -355,7 +355,7 @@
 
 -- initialize a regex compiler instance
 ::method init
-  expose defaultLibrary addedLibraries
+  expose defaultLibrary patternLibrary addedLibraries
   use strict arg options = .nil
 
   -- default all of these settings before processing any explicit
@@ -370,6 +370,10 @@
 
   -- initialize the libraries
   defaultLibrary = self~class~defaultPatternLibrary
+  -- this is the library for patterns added directly to this compiler instance
+  -- we only create this the first time the library is requested
+  patternLibrary = .nil
+  -- these are additional libraries that can be attached to the compiler
   addedLibraries = .array~new
 
 -- compile a regex expression using the posix-like
@@ -382,13 +386,31 @@
   parser = .RegexParser~new(self, pattern, options, compileLibrary)
   return parser~parse
 
+-- retrieve the compiler's pattern library instance.  This is lazily created on
+-- first request
+::attribute patternLibrary GET
+  expose patternLibrary
+
+  -- create this if this is the first request
+  if patternLibrary == .nil then do
+      patternLibrary = .PatternLibrary~new
+  end
+
+  return patternLibrary
+
 -- retrieve a named class family from the libraries this compile is working with.
 -- Search order is 1) libraries added to the
 -- compiler, 2) the default system library
-::method classFamily
-  expose defaultLibrary addedLibraries
+::method getFamily
+  expose defaultLibrary patternLibrary addedLibraries
   use strict arg name
   name = name~upper -- make sure we always use an uppercase name
+
+  -- if we've had any patterns added, check that first
+  if patternLibrary \= .nil then do
+      family = patternLibrary~getFamily(name)
+      return family
+  end
 
   loop library over addedLibraries
      family = library~getFamily(name)
@@ -401,10 +423,16 @@
 -- retrieve a name pattern from the libraries this compile is working with.
 -- Search order is 1) libraries added to the
 -- compiler, 2) the default system library
-::method namedPattern
-  expose defaultLibrary addedLibraries
+::method getPattern
+  expose patternLibrary defaultLibrary addedLibraries
   use strict arg name
   name = name~upper -- make sure we always use an uppercase name
+
+  -- if we've had any patterns added, check that first
+  if patternLibrary \= .nil then do
+      pattern = patternLibrary~getPattern(name)
+      return pattern
+  end
 
   loop library over addedLibraries
      pattern = library~getPattern(name)
@@ -412,6 +440,26 @@
   end
 
   return defaultLibrary~getPattern(name)
+
+-- add a named character family to this compiler instance.  This will
+-- override any other libraries this compiler searches (except for any
+-- library provided on the compile method)
+::method addFamily
+  use strict arg name, characters
+
+  -- request the pattern library from this instance (which may
+  -- create it for the first time) and add the family
+  self~patternLibrary~addFamily(name, characters)
+
+-- add a named pattern to this compiler instance.  This will
+-- override any other libraries this compiler searches (except for any
+-- library provided on the compile method)
+::method addPattern
+  use strict arg name, pattern
+
+  -- request the pattern library from this instance (which may
+  -- create it for the first time) and add the family
+  self~patternLibrary~addPattern(name, pattern)
 
 -- add a library to the compiler instance
 ::method addPatternLibrary
@@ -465,7 +513,7 @@
 -- retrieve a named class family from the libraries this compile is working with.
 -- Search order is 1)  library specified on the compile, 2) libraries added to the
 -- compiler, 3) the default system library
-::method classFamily
+::method getFamily
   expose compileLibrary compiler
   use strict arg name
   name = name~upper -- make sure we always use an uppercase name
@@ -476,13 +524,13 @@
   end
 
   -- the compiler handles steps 2&3
-  return compiler~classFamily(name)
+  return compiler~getFamily(name)
 
 
 -- retrieve a name pattern from the libraries this compile is working with.
 -- Search order is 1)  library specified on the compile, 2) libraries added to the
 -- compiler, 3) the default system library
-::method namedPattern
+::method getPattern
   expose compileLibrary compiler
   use strict arg name
   name = name~upper -- make sure we always use an uppercase name
@@ -493,7 +541,7 @@
   end
 
   -- the compiler handles steps 2&3
-  return compiler~namedPattern(name)
+  return compiler~getPattern(name)
 
 -- we occasionally need to retrieve the current position
 ::attribute current GET
@@ -1909,7 +1957,7 @@
 ::method createNamedClassFamily
   use arg familyName, negated
 
-  familyChars = self~classFamily(familyName)
+  familyChars = self~getFamily(familyName)
   if familyChars == .nil then do
       raise syntax 93.900 array("Unknown named class family '"familyName"'")
   end
@@ -2137,7 +2185,7 @@
           -- get the pattern name
           patternName = self~extractDelimited('{', '}')
           patternName = patternName~upper
-          pattern = self~namedPattern(patternName)
+          pattern = self~getPattern(patternName)
 
           if pattern == .nil then do
               raise syntax 93.900 array("Unrecognized pattern reference:" patternName)
@@ -5654,7 +5702,7 @@ return string~substr(sectionstart, sectionEnd - sectionStart)
   use strict arg pattern
 
   -- compile this pattern, making sure we are added to the pattern search order
-  return compiler~compile(pattern, self)
+  return compiler~compile(pattern, ,self)
 
 -- retrieve a character family from this library
 ::method getFamily
@@ -5686,7 +5734,7 @@ return string~substr(sectionstart, sectionEnd - sectionStart)
   -- we always use the uppercase name
   name = name~upper
   -- step 1:  Check this library directly
-  family = patterns[name]
+  pattern = patterns[name]
 
   -- if we found something, retrieve the compiled pattern
   -- from it (which may force it to compile if this is the
@@ -5722,7 +5770,7 @@ return string~substr(sectionstart, sectionEnd - sectionStart)
   expose pattern library patternString
 
   -- already compiled?  We're done
-  if pattern \= .nil then pattern
+  if pattern \= .nil then return pattern
 
   -- compile this pattern and return
   pattern = library~compile(patternString)
