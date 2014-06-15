@@ -100,6 +100,7 @@ return rrc
   argTable["oldBuildVal"] = .nil
 
   rCode = locateAPIDir(testResult, fileSpec, argTable)
+  say 'old build dir:' argTable["oldBuildVal"]
   if rCode \== .ooTestConstants~SUCCESS_RC then return rCode
 
   oldHomeVal = argTable["oldHomeVal"]
@@ -190,6 +191,7 @@ return rCode
   end
   else do
     dir = findBuildDir()
+    say 'dir:' dir
     if dir \== .nil then do
       argTable['oldBuildVal'] = replaceEnvValue("OOREXX_BUILD_HOME", dir)
     end
