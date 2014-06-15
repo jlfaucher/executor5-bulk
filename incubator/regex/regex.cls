@@ -37,7 +37,7 @@
 -- ::options trace i
 
 -- a compiled pattern that can perform regex operations
-::class Pattern public
+::class "Pattern" public
 
 -- compile a string regex expression into a pattern
 ::method compile class
@@ -238,7 +238,7 @@
           end
           -- option = UNIXLINES
           when validOptions~word(4)~abbrev(option, 1) then do
-              targer~unixLinesMode = .true
+              target~unixLinesMode = .true
           end
           -- option = CASELESS
           when validOptions~word(5)~abbrev(option, 1) then do
@@ -297,7 +297,6 @@
 -- are available when run.
 ::method activate class
 
-
   -- initialize the default pattern library
   self~initializePatternLibrary
 
@@ -306,52 +305,82 @@
 
 -- initialize the default pattern library on first use
 ::method initializePatternLibrary class private
-  expose patternLibrary
+  expose defaultPatternLibrary
 
-  patternLibrary = .PatternLibrary~new
+  defaultPatternLibrary = .PatternLibrary~new
+  -- a version for brevity during the setup phase
+  pl = defaultPatternLibrary
 
+  pl~addFamily("LOWER", self~lowerCaseCharacters)
+  pl~addFamily("UPPER", self~upperCaseCharacters)
+  pl~addFamily("ASCII", xrange('00'x, '7F'x))
+  pl~addFamily("ALPHA", self~lowerCaseCharacters||self~upperCaseCharacters)
+  pl~addFamily("DIGIT", self~digitCharacters)
+  pl~addFamily("ALNUM", self~lowerCaseCharacters||self~upperCaseCharacters||self~digitCharacters)
+  pl~addFamily("PUNCT", "!""#$%&'()*+,-./:;<=>?@[\]^_`{|}~")
+  pl~addFamily("GRAPH", pl~getFamily('ALNUM')||pl~getFamily('PUNCT'))
+  pl~addFamily("PRINT", pl~getFamily('GRAPH'))
+  pl~addFamily("BLANK", " " || '09'x)
+  pl~addFamily("CNTRL",  xrange("00"x, "1F"x) || "7F"x)
+  pl~addFamily("XDIGIT", "0123456789abcdefABCDEF")
+  pl~addFamily("ODIGIT", "01234567")
+  pl~addFamily("SPACE", self~whiteSpaceCharacters)
+  pl~addFamily("WORD", self~wordCharacters)
 
-  patternLibrary~addFamily("LOWER", self~lowerCaseCharacters)
-  patternLibrary~addFamily("UPPER", self~upperCaseCharacters)
-  patternLibrary~addFamily("ASCII", xrange('00'x, '7F'x))
-  patternLibrary~addFamily("ALPHA", self~lowerCaseCharacters||self~upperCaseCharacters)
-  patternLibrary~addFamily("DIGIT", self~digitCharacters)
-  patternLibrary~addFamily("ALNUM", self~lowerCaseCharacters||self~upperCaseCharacters||self~digitCharacters)
-  patternLibrary~addFamily("PUNCT", "!""#$%&'()*+,-./:;<=>?@[\]^_`{|}~")
-  patternLibrary~addFamily("GRAPH", patternLibrary~getFamily('ALNUM')||patternLibrary~getFamily('PUNCT'))
-  patternLibrary~addFamily("PRINT", patternLibrary~getFamily('GRAPH'))
-  patternLibrary~addFamily("BLANK", " " || '09'x)
-  patternLibrary~addFamily("CNTRL",  xrange("00"x, "1F"x) || "7F"x)
-  patternLibrary~addFamily("XDIGIT", "0123456789abcdefABCDEF")
-  patternLibrary~addFamily("ODIGIT", "01234567")
-  patternLibrary~addFamily("SPACE", self~whiteSpaceCharacters)
-  patternLibrary~addFamily("WORD", self~wordCharacters)
+  pl~addFamily("REXXSYMBOL", pl~getFamily('ALNUM') || ".!?_" )
+  pl~addFamily("REXXVARIABLESTART", pl~getFamily("ALPHA") || "!?_")
+  pl~addFamily("REXXOPERATOR", "+-\/%*|&=<>" || 'aaac'x)
+  pl~addFamily("REXXSPECIAL", ",;:~()[]")
 
-  patternLibrary~addFamily("REXXSYMBOL", patternLibrary~getFamily('ALNUM') || ".!?_" )
-  patternLibrary~addFamily("REXXVARIABLESTART", patternLibrary~getFamily("ALPHA") || "!?_")
-  patternLibrary~addFamily("REXXOPERATOR", "+-\/%*|&=<>" || 'aaac'x)
-  patternLibrary~addFamily("REXXSPECIAL", ",;:~()[]")
+  pl~addFamily("EMAILUSERNAME", pl~getFamily("ALNUM") || ".!#$%&'*+/=?^_`{|}~-")
+  pl~addFamily("URLUSERNAME", pl~getFamily("ALNUM") || "-._~%!$&'()*+,;=")
+  pl~addFamily("URLVALID]", pl~getFamily("ALNUM") || "-._~%!$&'()*+,;=:@/?")
 
-  patternLibrary~addFamily("EMAILUSERNAME", patternLibrary~getFamily("ALNUM") || ".!#$%&'*+/=?^_`{|}~-")
-  patternLibrary~addFamily("URLUSERNAME", patternLibrary~getFamily("ALNUM") || "-._~%!$&'()*+,;=")
-  patternLibrary~addFamily("URLVALID]", patternLibrary~getFamily("ALNUM") || "-._~%!$&'()*+,;=:@/?")
+  pl~addPattern('TOPLEVELDOMAIN', "(?:\p{Alpha}{2}|com|org|net|edu|gov|mil|biz|info|mobi|name|aero|asia|jobs|museum|travel)\b")
+  pl~addPattern('EMAILUSERNAME', "(?:\p{EmailUserName}+(?:\.\p{EmailUserName}+)*)")
+  pl~addPattern('INTERNETDOMAIN', "(?:\p{Alnum}(?:[\p{Alnum}-]*\p{Alnum})?\.)+\m{TopLevelDomain}")
+  pl~addPattern('EMAIL', "(?<username>\m{EmailUserName})@(?<domain>\m{InternetDomain})")
+  pl~addPattern('IPV4DIGITS', "(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])")
+  pl~addPattern('IPV4ADDRESS', "\b\m{IPV4Digits}\.\m{IPV4Digits}\.\m{IPV4Digits}\.\m{IPV4Digits}\b")
+  pl~addPattern('STANDARDIPV6ADDRESS', "(?<![:.\w])(?:\p{Alnum}{1,4}:){7}\p{Alnum}{1,4}(?![:.\w])")
+  pl~addPattern('URLPROTOCOL', "\p{Alpha}[\p{Alnum}+\-.]*:")
+  pl~addPattern('URLUSER', "\p{URLUSERNAME}+@")
+  pl~addPattern('IPV6HOST', "\[[\p{XDigit}:.]+\]")
+  pl~addPattern('IPV6FUTUREHOST', "\[v[\p{XDigit}][\p{XDigit}\-._~%!$&'()*+,;=:]+\]")
+  pl~addPattern('URLPORT', ":[0-9]+")
+  pl~addPattern('URLPATH', "(/[\p{Alnum}\-._~%!$&'()*+,;=:@]+)*/")
+  pl~addPattern('URLQUERY', "\?[\p{URLValid}]*")
+  pl~addPattern('URLFRAGMENT', "\#[p{URLValid}]*")
+  pl~addPattern('URL', "(?<protocol>\m{URLProtocol})(?<user>\m{URLUser})?(?<host>\m{InternetDomain}|\m{IPv6Host}|\m{IPv6FutureHost})(?<port>\m{URLPort})(?<path>\m{URLPath})(?<query>\m{URLQuery})?(?<fragment>\m{URLFragment})?")
 
-  patternLibrary~addPattern('TOPLEVELDOMAIN', "(?:\p{Alpha}{2}|com|org|net|edu|gov|mil|biz|info|mobi|name|aero|asia|jobs|museum|travel)\b")
-  patternLibrary~addPattern('EMAILUSERNAME', "(?:\p{EmailUserName}+(?:\.\p{EmailUserName}+)*)")
-  patternLibrary~addPattern('INTERNETDOMAIN', "(?:\p{Alnum}(?:[\p{Alnum}-]*\p{Alnum})?\.)+\m{TopLevelDomain}")
-  patternLibrary~addPattern('EMAIL', "(?<username>\m{EmailUserName})@(?<domain>\m{InternetDomain})")
-  patternLibrary~addPattern('IPV4DIGITS', "(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])")
-  patternLibrary~addPattern('IPV4ADDRESS', "\b\m{IPV4Digits}\.\m{IPV4Digits}\.\m{IPV4Digits}\.\m{IPV4Digits}\b")
-  patternLibrary~addPattern('STANDARDIPV6ADDRESS', "(?<![:.\w])(?:\p{Alnum}{1,4}:){7}\p{Alnum}{1,4}(?![:.\w])")
-  patternLibrary~addPattern('URLPROTOCOL', "\p{Alpha}[\p{Alnum}+\-.]*:")
-  patternLibrary~addPattern('URLUSER', "\p{URLUSERNAME}+@")
-  patternLibrary~addPattern('IPV6HOST', "\[[\p{XDigit}:.]+\]")
-  patternLibrary~addPattern('IPV6FUTUREHOST', "\[v[\p{XDigit}][\p{XDigit}\-._~%!$&'()*+,;=:]+\]")
-  patternLibrary~addPattern('URLPORT', ":[0-9]+")
-  patternLibrary~addPattern('URLPATH', "(/[\p{Alnum}\-._~%!$&'()*+,;=:@]+)*/")
-  patternLibrary~addPattern('URLQUERY', "\?[\p{URLValid}]*")
-  patternLibrary~addPattern('URLFRAGMENT', "\#[p{URLValid}]*")
-  patternLibrary~addPattern('URL', "(?<protocol>\m{URLProtocol})(?<user>\m{URLUser})?(?<host>\m{InternetDomain}|\m{IPv6Host}|\m{IPv6FutureHost})(?<port>\m{URLPort})(?<path>\m{URLPath})(?<query>\m{URLQuery})?(?<fragment>\m{URLFragment})?")
+-- initialize a regex compiler instance
+::method init
+  expose defaultLibrary addedLibraries
+  use strict arg options = .nil
+
+  -- default all of these settings before processing any explicit
+  -- options that have been provided.
+  self~multiLineMode = .false
+  self~unixLinesMode = .false
+  self~caselessMode = .false
+  self~dotAllMode = .false
+
+  -- validate the compile options before starting
+  .RegexOptionsValidator~validateOptions(self, options)
+
+  -- initialize the libraries
+  defaultLibrary = self~class~defaultPatternLibrary
+  addedLibraries = .array~new
+
+-- compile a regex expression using the posix-like
+-- regular expression syntax
+::method compile
+  use strict arg pattern, options = "", compileLibrary  = .nil
+
+  -- create a parser instance and convert the string pattern
+  -- into an executable pattern object.
+  parser = .RegexParser~new(self, pattern, options, compileLibrary)
+  return parser~parse
 
 -- retrieve a named class family from the libraries this compile is working with.
 -- Search order is 1) libraries added to the
@@ -377,8 +406,8 @@
   use strict arg name
   name = name~upper -- make sure we always use an uppercase name
 
-  if compileLibrary \= .nil then do
-     pattern = compileLibrary~getPattern(name)
+  loop library over addedLibraries
+     pattern = library~getPattern(name)
      if pattern \= nil then return pattern
   end
 
@@ -394,37 +423,6 @@
   if \library~isA(.PatternLibrary) then do
       library = .PatternLibrary~new(library)
   end
-
--- initialize a regex compiler instance
-::method init
-  expose defaultLibrary compileLibrary addedLibraries
-  use strict arg options = .nil
-
-  -- default all of these settings before processing any explicit
-  -- options that have been provided.
-  self~multiLineMode = .false
-  self~unixLinesMode = .false
-  self~caselessMode = .false
-  self~dotAllMode = .false
-
-  -- validate the compile options before starting
-  .RegexOptionsValidator~validateOptions(self, options)
-
-  -- initialize the libraries
-  defaultLibrary = self~class~defaultPatternLibrary
-  compileLibrary = .nil
-  addedLibraries = .array~new
-
--- compile a regex expression using the posix-like
--- regular expression syntax
-::method compile
-  use strict arg pattern, options = "", compileLibrary  = .nil
-
-  -- create a parser instance and convert the string pattern
-  -- into an executable pattern object.
-  parser = .RegexParser~new(self, pattern, options, compileLibrary)
-  return parser~parse
-
 
 -- internal class to manage the actual compiling process.  Since the compiler
 -- instance can be recursively invoked to handle named patterns, we need to
@@ -451,17 +449,18 @@
   -- create the group reference item for the main matching context
   self~createGroupReference(0)
 
+-- parse the pattern and return an executable Pattern instance
+::method parse
+  expose pattern groups
+
   -- this is the last node that will get control only if all other
   -- elements match cleanly.  The expression parser hooks this up to the
   -- end of the expression graph.
   lastNode = .TerminatorNode~new
 
--- parse the pattern and return an executable Pattern instance
-::method parse
   rootNode = self~parseExpression(lastNode)
   -- and return a usable pattern for this
   return .Pattern~new(pattern, rootNode, groups)
-
 
 -- retrieve a named class family from the libraries this compile is working with.
 -- Search order is 1)  library specified on the compile, 2) libraries added to the
@@ -565,19 +564,19 @@
 -- test if a character is a metacharacter that needs to be skipped
 ::method isMetaCharacter
   use arg ch
-  return self~METACHARACTERS~pos(ch) > 0
+  return .RegexCompiler~METACHARACTERS~pos(ch) > 0
 
 -- test if a character is a metacharacter in the context of parsing
 -- a class range
 ::method isClassMetaCharacter
   use arg ch
-  return self~CLASSMETACHARACTERS~pos(ch) > 0
+  return .RegexCompiler~CLASSMETACHARACTERS~pos(ch) > 0
 
 -- test if a character is a closure character
 -- a class range
 ::method isClosureCharacter
   use arg ch
-  return self~CLOSURECHARACTERS~pos(ch) > 0
+  return .RegexCompiler~CLOSURECHARACTERS~pos(ch) > 0
 
 -- extract a string from a pattern that is delimited
 -- by a pair of markers
@@ -633,7 +632,6 @@
 -- part of an alternative sequence, it just returns the base sub expression.
 ::method parseExpression
   expose pattern matchNodes current length
-
   use arg terminator   -- this is the end node that gets plugged into the end of the expression.
 
   alternative = .nil   -- if we have alternatives in this expression, we group them all
@@ -2055,12 +2053,12 @@
               raise syntax 93.900 array("Character expected after \c escape")
           end
           -- check and convert the lower case characters
-          ctrl = self~LOWERCASECHARACTERS~pos(control)
+          ctrl = .RegexCompiler~LOWERCASECHARACTERS~pos(control)
           if ctrl \= 0 then do
               return d2c(ctrl)
           end
           -- now uppercase versions
-          ctrl = self~UPPERCASECHARACTERS~pos(control)
+          ctrl = .RegexCompiler~UPPERCASECHARACTERS~pos(control)
           if ctrl \= 0 then do
               return d2c(ctrl)
           end
@@ -2484,8 +2482,9 @@
 -- invoke the next handler in the chain
 ::method matchNext
   expose next
+
   use arg context, position, target
-  -- if there is not node attached, assume it matches
+  -- if there is no node attached, assume it matches
   if next == .nil then do
       -- set the end match position
       context~matchEnd = position

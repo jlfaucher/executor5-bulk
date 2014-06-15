@@ -2165,6 +2165,7 @@ return testResult
   self~assertTrue(self~verifyMatchResult(r, 1, 7, "abcabc"))
   self~assertTrue(self~verifyMatchResult(r~group("Foo"), 1, 4, "abc"))
 
+/* TODO:  needs reworking
   compiler = .RegexCompiler~new
   compiler~registerNamedPattern("abc", "(?<foo>bar)")
   p = .Pattern~compile("\m{abc}\k<0{abc}>", compiler)
@@ -2182,6 +2183,7 @@ return testResult
   -- should match everything
   r = self~find(p, "barbar")
   self~assertTrue(self~verifyMatchResult(r, 1, 7, "barbar"))
+  */
 
 -- test various boundary conditions using generalized class definitions
 ::method testClassBoundary
