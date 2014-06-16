@@ -420,7 +420,7 @@
   return defaultLibrary~getFamily(name)
 
 
--- retrieve a name pattern from the libraries this compile is working with.
+-- retrieve a named pattern from the libraries this compile is working with.
 -- Search order is 1) libraries added to the
 -- compiler, 2) the default system library
 ::method getPattern
@@ -527,7 +527,7 @@
   return compiler~getFamily(name)
 
 
--- retrieve a name pattern from the libraries this compile is working with.
+-- retrieve a named pattern from the libraries this compile is working with.
 -- Search order is 1)  library specified on the compile, 2) libraries added to the
 -- compiler, 3) the default system library
 ::method getPattern
@@ -548,17 +548,20 @@
 -- extract a substring from the parsing context
 ::method extract
   expose pattern
-  use arg start, end
+  use strict arg start, end
+
   return pattern~substr(start, end - start)
 
 -- extract the next character and step the parsing position
 -- Returns .nil if past the end of the pattern
 ::method next
   expose pattern current length
+
   -- .nil triggers the end of the parsing
   if current > length then do
       return .nil
   end
+
   -- grab the character at the current position and
   -- step to the next slot
   ch = pattern~subchar(current)
@@ -577,12 +580,13 @@
   ch = pattern~subchar(current)
   return ch
 
--- peek at the next at a given offset from the current parsing position without
+-- peek at the next character at a given offset from the current parsing position without
 -- moving the cursor.  The offset can be positive or negative.  Returns .nil
 -- if the resulting position is beyond the pattern bounds
 ::method peekOffset
   expose pattern current length
   use arg offset
+
   position = current + offset
 
   if position > length | position < 1 then do
@@ -595,42 +599,54 @@
 -- process reading of a single character, taking escaping
 -- into account
 ::method singleChar
+
   ch = self~next
   -- have an escape character?
   if ch == '\' then do
       return self~parseEscapedCharacters
   end
+
   return ch   -- return whatever this is, including .nil
 
 -- move the cursor to a previous position, ensuring that we
 -- don't move past the beginning
 ::method previous
-  expose current length
+  expose current
 
   current = max(current - 1, 1)
 
 -- test if a character is a metacharacter that needs to be skipped
 ::method isMetaCharacter
   use arg ch
+
   return .RegexCompiler~METACHARACTERS~pos(ch) > 0
 
 -- test if a character is a metacharacter in the context of parsing
 -- a class range
 ::method isClassMetaCharacter
   use arg ch
+
   return .RegexCompiler~CLASSMETACHARACTERS~pos(ch) > 0
 
 -- test if a character is a closure character
 -- a class range
 ::method isClosureCharacter
   use arg ch
+
   return .RegexCompiler~CLOSURECHARACTERS~pos(ch) > 0
+
+-- test if a character is a digit character
+::method isDigit
+  use arg ch
+
+  return .RegexCompiler~DIGITCHARACTERS~pos(ch) > 0
 
 -- extract a string from a pattern that is delimited
 -- by a pair of markers
 ::method extractDelimited
   expose pattern current length
   use arg start, end
+
   -- In theory, we should be at the start delimiter now.  If
   -- not there, this is an error
   if \pattern~match(current, start) then do
@@ -639,7 +655,7 @@
 
   -- step over the delimiter
   startPos = current + start~length
-  -- and look for the closing delimiter
+  -- and look for the closing delimiter (no escaping here, so we just search)
   endPos = pattern~pos(end, startPos)
   if endPos == 0 then do
       raise syntax 6.900 array("Missing closing delimeter" end)
@@ -659,7 +675,7 @@
      if ch == .nil then do
          leave
      end
-     if \ch~datatype("W") then do
+     if \self~isDigit(ch) then do
          -- non-numeric character, so backup and quit the loop
          self~previous
          leave
@@ -680,7 +696,7 @@
 -- part of an alternative sequence, it just returns the base sub expression.
 ::method parseExpression
   expose pattern matchNodes current length
-  use arg terminator   -- this is the end node that gets plugged into the end of the expression.
+  use strict arg terminator   -- this is the end node that gets plugged into the end of the expression.
 
   alternative = .nil   -- if we have alternatives in this expression, we group them all
   do forever
