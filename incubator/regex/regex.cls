@@ -619,27 +619,27 @@
 ::method isMetaCharacter
   use arg ch
 
-  return .RegexCompiler~METACHARACTERS~pos(ch) > 0
+  return .RegexCompiler~METACHARACTERS~contains(ch)
 
 -- test if a character is a metacharacter in the context of parsing
 -- a class range
 ::method isClassMetaCharacter
   use arg ch
 
-  return .RegexCompiler~CLASSMETACHARACTERS~pos(ch) > 0
+  return .RegexCompiler~CLASSMETACHARACTERS~contains(ch)
 
 -- test if a character is a closure character
 -- a class range
 ::method isClosureCharacter
   use arg ch
 
-  return .RegexCompiler~CLOSURECHARACTERS~pos(ch) > 0
+  return .RegexCompiler~CLOSURECHARACTERS~contains(ch)
 
 -- test if a character is a digit character
 ::method isDigit
   use arg ch
 
-  return .RegexCompiler~DIGITCHARACTERS~pos(ch) > 0
+  return .RegexCompiler~DIGITCHARACTERS~contains(ch)
 
 -- extract a string from a pattern that is delimited
 -- by a pair of markers
@@ -2152,7 +2152,7 @@
       end
       otherwise do
           -- if not one of the reserved characters at this point, we return the escaped char
-          if '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ<>'~pos(ch) == 0 then do
+          if \'0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ<>'~contains(ch) then do
               return ch
           end
 
@@ -2179,7 +2179,7 @@
           raise syntax 93.900 array("Missing character after escape")
       end
       -- numbered back reference
-      when '123456789'~pos(ch) > 0 then do
+      when '123456789'~contains(ch) then do
           -- a back reference
           if \self~haveGroup(ch) then do
               raise syntax 93.900 array("Unrecognized group back reference" ch)
@@ -2524,7 +2524,7 @@
   ch = self~next
 
   if .nil \= ch then do
-      if '1234567890abcdefABCDEF'~pos(ch) == 0 then do
+      if \'1234567890abcdefABCDEF'~contains(ch) then do
           raise syntax 93.900 array("Invalid hex digit '"ch"'")
       end
       return ch
