@@ -580,6 +580,27 @@
   ch = pattern~subchar(current)
   return ch
 
+-- step ahead one character and then peek at the next character.
+-- this combines two operations that are frequently needed in
+-- succession.
+::method stepAndPeek
+  expose pattern current length
+
+  -- step first, unconditionally (we're usually at a good character
+  -- position when we issue this, but since the EOS test if any
+  -- pointer greater than the length, this is always safe).
+  current = current + 1
+
+  -- .nil triggers the end of the parsing
+  if current > length then do
+      return .nil
+  end
+
+  -- grab the character at the current position and
+  -- step to the next slot
+  ch = pattern~subchar(current)
+  return ch
+
 -- peek at the next character at a given offset from the current parsing position without
 -- moving the cursor.  The offset can be positive or negative.  Returns .nil
 -- if the resulting position is beyond the pattern bounds
@@ -751,10 +772,13 @@
 -- that might be associated with a single subexpression
 ::method parseSequence
   use arg terminator
+
   firstNode = .nil
   lastNode = .nil
 
   do forever
+      -- just take a peek at the next character here so we can decide
+      -- which option to take.
       ch = self~peek
 
       select
@@ -826,6 +850,7 @@
           end
       end
 
+      -- now figure out any closures to the section we just parsed.
       node = self~parseClosure(node)
       -- now process the chaining
       if firstNode == .nil then do
@@ -956,6 +981,8 @@
       groups = .directory~new
   end
 
+  -- right now, this is just stored in the group registry and
+  -- returned to the creating context.
   groupInfo = .GroupReference~new(id)
   groups[id] = groupInfo
   return groupInfo
@@ -964,6 +991,7 @@
 -- (used for resolving back references)
 ::method haveGroup
   expose groups
+
   use arg id
   return groups~hasIndex(id)
 
@@ -980,8 +1008,8 @@
   ch = self~peek
   -- do we have a group qualifier.  These are all non-capturing groups
   if ch == '?' then do
-      self~next -- step over the peeked character
-      ch = self~peek
+      -- step over the peeked character and get the next one.
+      ch = self~stepAndPeek
       select
           -- (?: is a non-capturing group.  Just like a normal group,
           -- but without the capture part
@@ -1016,8 +1044,8 @@
               groupInfo~lastNode = wrapper
           end
           -- positive zero-length lookahead.  This checks that the given
-          -- pattern is at the current position, but it's match is always
-          -- zero-length, so it does not step the position nor does it's
+          -- pattern is at the current position, but its match is always
+          -- zero-length, so it does not step the position nor does its
           -- match position count toward the bounds of the final match
           when ch == '=' then do
               self~next -- step over the peeked character
@@ -1066,7 +1094,7 @@
                   self~next -- step over the modifier
                   -- parse the encapsulated group expression, but terminate
                   -- with a normal terminator node.  This will perform a
-                  -- and of range check on the matches to ensure the
+                  -- end of range check on the matches to ensure the
                   -- tests will butt up against the current position.
                   node = self~parseExpression(.TerminatorNode~new)
 
@@ -1088,6 +1116,7 @@
                   -- zero length matches do not have closures
                   closure = .false
               end
+              -- this is a named capture group
               else do
                   -- back up for the delimiter parsing
                   self~previous
@@ -1130,8 +1159,8 @@
           end
           -- a boundary defined by a character class
           when ch == 'b' then do
-              self~next
-              ch = self~peek
+              -- step over the current and peek at the next one.
+              ch = self~stepAndPeek
               -- the default type is simple class boundary
               boundaryType = .ClassBoundaryNode
               select
@@ -1229,15 +1258,13 @@
 ::method parseConditional
   -- we're positioned at the the ( that starts the conditional now.
   -- step over that and examine the different options
-  self~next
-  ch = self~peek  -- get the next character and process the different options
+  ch = self~stepAndPeek
   select
       -- this is a lookahead or lookbehind construct
       when ch == '?' then do
           -- step ahead one character and see which
           -- flavor this is
-          self~next
-          ch = self~peek
+          ch = self~stepAndPeek
           select
               -- forward lookahead test
               when ch == '=' then do
@@ -1473,9 +1500,8 @@
 
   select
       when ch == '?' then do
-          self~next
           -- a question repetitor
-          ch = self~peek
+          ch = self~stepAndPeek
 
           if ch == '?' then do
               self~next
@@ -1490,9 +1516,8 @@
           end
       end
       when ch == '*' then do
-          self~next
           -- zero or more occurrences
-          ch = self~peek
+          ch = self~stepAndPeek
 
           if ch == '?' then do
               self~next
@@ -1507,9 +1532,8 @@
           end
       end
       when ch == '+' then do
-          self~next
           -- one or more occurrences
-          ch = self~peek
+          ch = self~stepAndPeek
 
           if ch == '?' then do
               self~next
@@ -1748,8 +1772,8 @@
               end
           end
           when ch == '&' then do
-              self~next   -- step over the first &
-              ch = self~peek
+              -- step over the first & and peek at the next char
+              ch = self~stepAndPeek
               if ch == '&' then do     -- this is a logical "&&"
                   if prev == .nil then do
                       raise syntax 35.900 array("Missing left term for '&&' operator")
