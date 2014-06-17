@@ -1341,9 +1341,9 @@
           -- potentially a compound back reference name?  This requires
           -- more complicated parsing
           if ch == '<' then do
-              -- parse out the group name
-              path = .array~new
-              self~parseGroupName(path)
+              -- parse out the group name (which might include nested group
+              -- references)
+              path = self~parseGroupName(path)
               -- we can validate the first, the rest are very dynamic
               if \self~haveGroup(path[1]) then do
                   raise syntax 93.900 array("Unrecognized group back reference:" path[1])
@@ -1890,7 +1890,7 @@
   end
 
 -- parse a range of characters for a class.  This should either
--- be a set of specifically specified characters (including escaped
+-- be a set of specific characters (including escaped
 -- characters, or a range in the form "x-z".  The range will be terminated
 -- by any of the meta characters.  We may also encounter a named family
 -- class, in which case we'll return just that piece.  Range negations have
@@ -1954,9 +1954,9 @@
           if endRange == .nil then do
               leave
           end
-          -- a '-' at the very end of a range is interpretered as a
+          -- a '-' at the very end of a range is interpreted as a
           -- '-' character rather than the range operator.  Also,
-          -- in a '--' sequence, the second '-' is just the character.
+          -- in a '--' sequence, the second '-' is just a character.
           if \self~isClassMetaCharacter(endRange) then do
               -- if the endRange character is an escape, then we
               -- need to process both characters
@@ -1985,12 +1985,8 @@
 ::method parseNamedClassFamily
   use arg negated
 
+  -- pull out the name and create a family
   familyName = self~extractDelimited('{', '}')
-
-  if familyName~match(1, "Is") then do
-      familyName = familyName~substr(3)
-  end
-
   return self~createNamedClassFamily(familyName, negated)
 
 -- create a named class family
@@ -1998,16 +1994,27 @@
   use arg familyName, negated
 
   familyChars = self~getFamily(familyName)
-  if familyChars == .nil then do
-      raise syntax 93.900 array("Unknown named class family '"familyName"'")
+  if familyChars \= .nil then do
+     -- now return the appropriate node type for the match
+     -- NOTE:  Not sure I know how the caseless flag is supposed to be
+     -- applied here.  For example, with the Java implementation,
+     -- (?i)/p{Lower} does not match A.  The other sources of information
+     -- don't really touch on it.  I'm inclined to have it work with case
+     -- insensitive matches, but this is not a strong stance.
+     return self~classNode(familyChars, negated)
   end
-  -- now return the appropriate node type for the match
-  -- NOTE:  Not sure I know how the caseless flag is supposed to be
-  -- applied here.  For example, with the Java implementation,
-  -- (?i)/p{Lower} does not match A.  The other sources of information
-  -- don't really touch on it.  I'm inclined to have it work with case
-  -- insensitive matches, but this is not a strong stance.
-  return self~classNode(familyChars, negated)
+  -- One convention is the append Is to the name.  We
+  -- just drop that part and handle it like a general situation.
+  if familyName~match(1, "Is") then do
+     subFamilyName = familyName~substr(3)
+     familyChars = self~getFamily(subFamilyName)
+     if familyChars \= .nil then do
+        return self~classNode(familyChars, negated)
+     end
+  end
+
+  -- did not find this, raise an error
+  raise syntax 93.900 array("Unknown named class family '"familyName"'")
 
 -- parse out a section of as-is characters that conforms to an atom
 -- specification
@@ -2279,15 +2286,14 @@
   end
 
 -- parse a group back reference.  The back reference is in the
--- form <group{result<group...>}> for as many levels as are needed.
+-- form <group{result{group...}}> for as many levels as are needed.
 -- Thus <group> will return the match value for named group "group".
 -- <group{result}> will return the named result "result" within group
--- "group", while <group{result<subgroup>}> will return the value of
+-- "group", while <group{result{subgroup}}> will return the value of
 -- group "subgroup" within named result "result" of group "group"
 ::method parseNamedGroup
-  -- create an accumulator, and start parsing the potentially lengthy group name
-  path = .array~new
-  self~parseGroupName(path)
+  -- parse the potentially lengthy group name
+  path = self~parseGroupName
 
   -- the first level is all we can verify exists at this point
   if \self~haveGroup(path[1]) then do
@@ -2313,50 +2319,11 @@
       end
   end
 
-  referenceName = ""  -- the accumulated name
-  loop forever
-      ch = self~next -- get the next character
-      -- end of the group name portion?
-      if ch == '>' then do
-          -- apply Rexx symbol rules to the name and make uppercase
-          referenceName = referenceName~upper
-
-          if \nested then do
-              if \self~haveGroup(referenceName) then do
-                  raise syntax 93.900 array("Unrecognized group back reference:" referenceName)
-              end
-              if self~caselessMode then do
-                  return .CaselessGroupBackReferenceNode~new(referenceName)
-              end
-              else do
-                  return .GroupBackReferenceNode~new(referenceName)
-              end
-          end
-      end
-      -- result reference inside of a group
-      else if ch == '{' then do
-          -- we allow a default here...going right to the
-          -- result means use the 0 group.
-          if referenceName == "" then do
-              referenceName = "0"
-          end
-          -- get the result portion
-          resultNode = self~parseResultName
-          -- now get an appropriate node to handle the group cascade of names
-          if self~caselessMode then do
-              return .CaselessGroupResultBackReferenceNode~new(referenceName, resultNode)
-          end
-          else do
-              return .GroupResultBackReferenceNode~new(referenceName, resultNode)
-          end
-
-      end
-  end
-
--- parse a the group portion of a resulution path
+-- parse the group portion of a resolution path.  This will be
+-- of the form <name{groupname{groupname{groupname...}}}>
 ::method parseGroupName
   -- this is the path accumulator array
-  use arg path
+  path = .array~new
   self~next -- step over the '<' delimiter that started this
   referenceName = ""  -- the accumulated name
   loop forever
@@ -2373,7 +2340,7 @@
           -- apply Rexx symbol rules to the name and make uppercase
           referenceName = referenceName~upper
           path~append(referenceName)
-          return
+          return path
       end
       -- result reference inside of a group
       else if ch == '{' then do
@@ -2387,45 +2354,52 @@
           path~append(referenceName)
           self~previous
           -- get the result portion
-          self~parseResultName(path)
+          self~parseSubgroupName(path)
           -- perform the delimiter check
           ch = self~next
           if ch \== '>' then do
               raise syntax 93.900 array("Missing closing '>' on group name")
           end
-          return
+          return path
       end
       else do
           referenceName = referenceName || ch
       end
   end
 
--- parse a the result portion of a resulution path
-::method parseResultName
+-- parse the result portion of a resolution path.  This was
+-- started off by a { in the path name, we terminate on
+-- a matching }.  This name may include an additional
+-- path qualifiers bracketed by { } pairs.  Note:  After the
+-- first level, all additional references must be to named groups.
+::method parseSubgroupName
   -- this is the path accumulator array
   use arg path
-  self~next -- step over the '<' delimiter that started this
+
+  self~next -- step over the '{' delimiter that started this
   referenceName = ""  -- the accumulated name
+
   loop forever
       ch = self~next -- get the next character
       if ch == .nil then do
               raise syntax 93.900 array("Missing closing '}' on result name")
       end
-      -- end of the result name portion?
+      -- end of the group name portion?
       else if ch == '}' then do
           -- apply Rexx symbol rules to the name and make uppercase
           referenceName = referenceName~upper
           path~append(referenceName)
           return
       end
-      -- group reference inside of a result
-      else if ch == '<' then do
+      -- group reference inside of a group reference
+      else if ch == '{' then do
           -- apply Rexx symbol rules to the name and make uppercase
           referenceName = referenceName~upper
           path~append(referenceName)
           self~previous
-          -- get the result portion
-          self~parseGroupName(path)
+          -- Ok, recurse on this, adding additional pieces to the
+          -- path.
+          self~parseSubgroupName(path)
           -- perform the delimiter check.  We should have
           -- a } after the close of the group name.
           ch = self~next
@@ -2434,6 +2408,7 @@
           end
           return
       end
+      -- just add this character to the name
       else do
           referenceName = referenceName || ch
       end
