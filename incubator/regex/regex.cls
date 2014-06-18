@@ -4036,7 +4036,8 @@
       return .false
   end
 
-  -- exhausted the max, so now search for the next
+  -- we match the back value, now continue matching from the end of
+  -- this point.
   return self~matchNext(context, position + matchValue~length, target)
 
 ::method calculateMatchMetrics
@@ -4055,6 +4056,7 @@
   expose ref
   use arg ref
   self~init:super
+
 
 -- resolve the matching text for this back reference.
 -- returns .nil if this cannot be located
@@ -4330,7 +4332,7 @@
 
 
 
--- support for a (?(cond)then) node
+-- support for a (?(cond)then|) node
 ::class "IfThenElseNode" subclass MatchNode
 ::method init
   expose condition thenNode elseNode
@@ -4353,7 +4355,7 @@
       if \thenNode~match(context, position, target) then do
           return .false
       end
-      -- this succeed, so update the match position before
+      -- this succeeded, so update the match position before
       -- forwarding
       position = context~matchEnd
   end
@@ -4365,7 +4367,7 @@
       if \elseNode~match(context, position, target) then do
           return .false
       end
-      -- this succeed, so update the match position before
+      -- this succeeded, so update the match position before
       -- forwarding
       position = context~matchEnd
   end
@@ -4406,13 +4408,20 @@
   expose id groupMatch
   use arg context, position, target
 
+  -- get the group information from the context so we can
+  -- store match information back into it.
   info = context~namedGroupInfo(id)
 
+  -- now have the group try to match.
   if groupMatch~match(context, position, target) then do
+      -- ok, we have a match now store that match information back into
+      -- the context information, and continue on from the end of the
+      -- matching point.
       info~setMatch(target, position, context~matchEnd)
       return self~matchNext(context, context~matchEnd, target)
   end
   else do
+      -- make sure the match information is cleared.
       info~clearMatch
       return .false
   end
@@ -4454,13 +4463,19 @@
 ::method match
   use arg context, position, target
 
-  if \context~checkEnd(position) then do
-      if self~leftSide~match(context, position, target) then do
-         return self~matchNext(context, context~matchEnd, target)
-      end
-      else if self~rightSide~match(context, position, target) then do
-         return self~matchNext(context, context~matchEnd, target)
-      end
+  -- NOTE:  We do not check if we're at the end before doing
+  -- these tests.  One of these patterns might be an end anchor,
+  -- which would return .true.  We need to let each of the possibilities
+  -- decide whether past the end is bad or not.
+
+  -- this is an OR with logical shortcutting, so if the left expression
+  -- is true, we don't check the right side, but unconditionally take the
+  -- left path.
+  if self~leftSide~match(context, position, target) then do
+     return self~matchNext(context, context~matchEnd, target)
+  end
+  else if self~rightSide~match(context, position, target) then do
+     return self~matchNext(context, context~matchEnd, target)
   end
 
   return .false
@@ -4472,12 +4487,21 @@
 ::method match
   use arg context, position, target
 
-  if \context~checkEnd(position) then do
-      if self~leftSide~match(context, position, target) then do
-         if self~rightSide~match(context, position, target) then do
-             return self~matchNext(context, context~matchEnd, target)
-         end
-      end
+
+  -- NOTE:  We do not check if we're at the end before doing
+  -- these tests.  One of these patterns might be an end anchor,
+  -- which would return .true.  We need to let each of the possibilities
+  -- decide whether past the end is bad or not.
+
+  -- we need both the left and right sides of the expression to
+  -- be true before passing on the expression
+  if self~leftSide~match(context, position, target) then do
+
+     -- TODO:  What position should this be continuing from?  This sort of
+     -- assumes from the last match position from the second test.  Is that right?
+     if self~rightSide~match(context, position, target) then do
+         return self~matchNext(context, context~matchEnd, target)
+     end
   end
 
   return .false
@@ -4507,9 +4531,7 @@
   return self~matchNext(context, position, target)
 
 
-::method terminator
-  expose terminator
-  return terminator
+::attribute terminator GET
 
 
 -- method for the group terminator to make a callback to indicate
@@ -4564,6 +4586,7 @@
 ::method getGroupReference
   expose id
   use arg context
+
   return context~getGroupReference(id)
 
 -- method for the group terminator to make a callback to indicate
@@ -4626,6 +4649,7 @@
   end
   -- roll the info change back to the prior value
   -- we did not get a complete and proper match
+  group~restorePreviousMatch(context, save)
   return .false
 
 
@@ -4833,7 +4857,7 @@
   end
 
   -- must have a CRLF sequence before this to match
-  if \target~match(position - 2, .RegexCompiler~CRLF) then do
+  if \target~match(position - 2, ededed|||) then do
       return .false
   end
   -- and go finish up
