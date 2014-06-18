@@ -870,7 +870,7 @@ return
 
 ::class GtkWidget public
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxWidgetNew"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetNew"
 
 -- This attribute is not a part of the GTK system. It has been added to
 -- support callbacks or any other use the user may have.
@@ -883,66 +883,66 @@ return
 use strict arg clsname
 return .context~package~findClass(clsname)~new()
 
-::METHOD set_cself EXTERNAL "LIBRARY rexxgtk GrxWidgetSetCSELF"
-::METHOD destroy EXTERNAL "LIBRARY rexxgtk GrxWidgetDestroy"
-::METHOD font EXTERNAL "LIBRARY rexxgtk GrxWidgetGetSetFont"
-::METHOD get_font EXTERNAL "LIBRARY rexxgtk GrxWidgetGetSetFont"
-::METHOD 'font=' EXTERNAL "LIBRARY rexxgtk GrxWidgetGetSetFont"
-::METHOD set_font EXTERNAL "LIBRARY rexxgtk GrxWidgetGetSetFont"
-::METHOD modify_font EXTERNAL "LIBRARY rexxgtk GrxWidgetGetSetFont"
-::METHOD grab_focus EXTERNAL "LIBRARY rexxgtk GrxWidgetGrabFocus"
-::METHOD hide EXTERNAL "LIBRARY rexxgtk GrxWidgetHide"
-::METHOD hide_all EXTERNAL "LIBRARY rexxgtk GrxWidgetHideAll"
-::METHOD set_size_request EXTERNAL "LIBRARY rexxgtk GrxWidgetSetSizeRequest"
-::METHOD show EXTERNAL "LIBRARY rexxgtk GrxWidgetShow"
-::METHOD show_all EXTERNAL "LIBRARY rexxgtk GrxWidgetShowAll"
-::METHOD name EXTERNAL "LIBRARY rexxgtk GrxWidgetGetSetName"
-::METHOD get_name EXTERNAL "LIBRARY rexxgtk GrxWidgetGetSetName"
-::METHOD 'name=' EXTERNAL "LIBRARY rexxgtk GrxWidgetGetSetName"
-::METHOD set_name EXTERNAL "LIBRARY rexxgtk GrxWidgetGetSetName"
-::METHOD 'sensitive=' EXTERNAL "LIBRARY rexxgtk GrxWidgetSetSensitive"
-::METHOD set_sensitive EXTERNAL "LIBRARY rexxgtk GrxWidgetSetSensitive"
-::METHOD modify_fg EXTERNAL "LIBRARY rexxgtk GrxWidgetModifyFG"
-::METHOD modify_bg EXTERNAL "LIBRARY rexxgtk GrxWidgetModifyBG"
-::METHOD set_data EXTERNAL "LIBRARY rexxgtk GrxWidgetSetData"
-::METHOD get_data EXTERNAL "LIBRARY rexxgtk GrxWidgetGetData"
-::METHOD activate EXTERNAL "LIBRARY rexxgtk GrxWidgetActivate"
-::METHOD reparent EXTERNAL "LIBRARY rexxgtk GrxWidgetReparent"
-::METHOD is_focus EXTERNAL "LIBRARY rexxgtk GrxWidgetIsFocus"
-::METHOD grab_default EXTERNAL "LIBRARY rexxgtk GrxWidgetGrabDefault"
-::METHOD set_parent_window EXTERNAL "LIBRARY rexxgtk GrxWidgetGetSetParentWindow"
-::METHOD 'parent_window=' EXTERNAL "LIBRARY rexxgtk GrxWidgetGetSetParentWindow"
-::METHOD get_parent_window EXTERNAL "LIBRARY rexxgtk GrxWidgetGetSetParentWindow"
-::METHOD parent_window EXTERNAL "LIBRARY rexxgtk GrxWidgetGetSetParentWindow"
-::METHOD get_toplevel EXTERNAL "LIBRARY rexxgtk GrxWidgetGetToplevel"
-::METHOD toplevel EXTERNAL "LIBRARY rexxgtk GrxWidgetGetToplevel"
-::METHOD get_ancestor EXTERNAL "LIBRARY rexxgtk GrxWidgetGetAncestor"
-::METHOD ancestor EXTERNAL "LIBRARY rexxgtk GrxWidgetGetAncestor"
-::METHOD is_ancestor EXTERNAL "LIBRARY rexxgtk GrxWidgetIsAncestor"
-::METHOD 'direction=' EXTERNAL "LIBRARY rexxgtk GrxWidgetGetSetDirection"
-::METHOD set_direction EXTERNAL "LIBRARY rexxgtk GrxWidgetGetSetDirection"
-::METHOD get_direction EXTERNAL "LIBRARY rexxgtk GrxWidgetGetSetDirection"
-::METHOD direction EXTERNAL "LIBRARY rexxgtk GrxWidgetGetSetDirection"
-::METHOD get_default_direction EXTERNAL "LIBRARY rexxgtk GrxWidgetGetDefaultDirection"
-::METHOD default_direction EXTERNAL "LIBRARY rexxgtk GrxWidgetGetDefaultDirection"
-::METHOD queue_draw_area EXTERNAL "LIBRARY rexxgtk GrxWidgetQueueDrawArea"
-::METHOD reset_shapes EXTERNAL "LIBRARY rexxgtk GrxWidgetResetShapes"
-::METHOD set_scroll_adjustments EXTERNAL "LIBRARY rexxgtk GrxWidgetSetScrollAdjustments"
-::METHOD mnemonic_activate EXTERNAL "LIBRARY rexxgtk GrxWidgetMnemonicActivate"
-::METHOD get_accessible EXTERNAL "LIBRARY rexxgtk GrxWidgetGetAccessible"
-::METHOD get_child_visible EXTERNAL "LIBRARY rexxgtk GrxWidgetGetChildVisible"
-::METHOD child_visible EXTERNAL "LIBRARY rexxgtk GrxWidgetGetChildVisible"
-::METHOD get_parent EXTERNAL "LIBRARY rexxgtk GrxWidgetGetParent"
-::METHOD parent EXTERNAL "LIBRARY rexxgtk GrxWidgetGetParent"
-::METHOD get_menus EXTERNAL "LIBRARY rexxgtk GrxWidgetGetMenus"
-::METHOD add_accelerator EXTERNAL "LIBRARY rexxgtk GrxWidgetAddAccelerator"
-::METHOD remove_accelerator EXTERNAL "LIBRARY rexxgtk GrxWidgetRemoveAccelerator"
-::METHOD set_accel_path EXTERNAL "LIBRARY rexxgtk GrxWidgetSetAccelPath"
-::METHOD set_events EXTERNAL "LIBRARY rexxgtk GrxWidgetSetEvents"
-::METHOD 'events=' EXTERNAL "LIBRARY rexxgtk GrxWidgetSetEvents"
-::METHOD realize EXTERNAL "LIBRARY rexxgtk GrxWidgetRealize"
-::METHOD unrealize EXTERNAL "LIBRARY rexxgtk GrxWidgetUnrealize"
-::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxWidgetSignalConnect"
+::METHOD set_cself EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetSetCSELF"
+::METHOD destroy EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetDestroy"
+::METHOD font EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetGetSetFont"
+::METHOD get_font EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetGetSetFont"
+::METHOD 'font=' EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetGetSetFont"
+::METHOD set_font EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetGetSetFont"
+::METHOD modify_font EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetGetSetFont"
+::METHOD grab_focus EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetGrabFocus"
+::METHOD hide EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetHide"
+::METHOD hide_all EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetHideAll"
+::METHOD set_size_request EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetSetSizeRequest"
+::METHOD show EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetShow"
+::METHOD show_all EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetShowAll"
+::METHOD name EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetGetSetName"
+::METHOD get_name EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetGetSetName"
+::METHOD 'name=' EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetGetSetName"
+::METHOD set_name EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetGetSetName"
+::METHOD 'sensitive=' EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetSetSensitive"
+::METHOD set_sensitive EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetSetSensitive"
+::METHOD modify_fg EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetModifyFG"
+::METHOD modify_bg EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetModifyBG"
+::METHOD set_data EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetSetData"
+::METHOD get_data EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetGetData"
+::METHOD activate EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetActivate"
+::METHOD reparent EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetReparent"
+::METHOD is_focus EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetIsFocus"
+::METHOD grab_default EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetGrabDefault"
+::METHOD set_parent_window EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetGetSetParentWindow"
+::METHOD 'parent_window=' EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetGetSetParentWindow"
+::METHOD get_parent_window EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetGetSetParentWindow"
+::METHOD parent_window EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetGetSetParentWindow"
+::METHOD get_toplevel EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetGetToplevel"
+::METHOD toplevel EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetGetToplevel"
+::METHOD get_ancestor EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetGetAncestor"
+::METHOD ancestor EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetGetAncestor"
+::METHOD is_ancestor EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetIsAncestor"
+::METHOD 'direction=' EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetGetSetDirection"
+::METHOD set_direction EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetGetSetDirection"
+::METHOD get_direction EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetGetSetDirection"
+::METHOD direction EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetGetSetDirection"
+::METHOD get_default_direction EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetGetDefaultDirection"
+::METHOD default_direction EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetGetDefaultDirection"
+::METHOD queue_draw_area EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetQueueDrawArea"
+::METHOD reset_shapes EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetResetShapes"
+::METHOD set_scroll_adjustments EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetSetScrollAdjustments"
+::METHOD mnemonic_activate EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetMnemonicActivate"
+::METHOD get_accessible EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetGetAccessible"
+::METHOD get_child_visible EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetGetChildVisible"
+::METHOD child_visible EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetGetChildVisible"
+::METHOD get_parent EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetGetParent"
+::METHOD parent EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetGetParent"
+::METHOD get_menus EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetGetMenus"
+::METHOD add_accelerator EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetAddAccelerator"
+::METHOD remove_accelerator EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetRemoveAccelerator"
+::METHOD set_accel_path EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetSetAccelPath"
+::METHOD set_events EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetSetEvents"
+::METHOD 'events=' EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetSetEvents"
+::METHOD realize EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetRealize"
+::METHOD unrealize EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetUnrealize"
+::METHOD signal_connect EXTERNAL "LIBRARY oorexxgtk2 GrxWidgetSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -1094,11 +1094,11 @@ return .false
 
 ::class GtkContainer public subclass GtkWidget
 
-::METHOD add EXTERNAL "LIBRARY rexxgtk GrxContainerAdd"
-::METHOD remove EXTERNAL "LIBRARY rexxgtk GrxContainerRemove"
-::METHOD set_border_width EXTERNAL "LIBRARY rexxgtk GrxContainerSetBorderWidth"
-::METHOD 'border_width=' EXTERNAL "LIBRARY rexxgtk GrxContainerSetBorderWidth"
-::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxContainerSignalConnect"
+::METHOD add EXTERNAL "LIBRARY oorexxgtk2 GrxContainerAdd"
+::METHOD remove EXTERNAL "LIBRARY oorexxgtk2 GrxContainerRemove"
+::METHOD set_border_width EXTERNAL "LIBRARY oorexxgtk2 GrxContainerSetBorderWidth"
+::METHOD 'border_width=' EXTERNAL "LIBRARY oorexxgtk2 GrxContainerSetBorderWidth"
+::METHOD signal_connect EXTERNAL "LIBRARY oorexxgtk2 GrxContainerSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -1124,14 +1124,14 @@ return
 
 ::class GtkBox public subclass GtkContainer
 
-::METHOD pack_end EXTERNAL "LIBRARY rexxgtk GrxBoxPackEnd"
+::METHOD pack_end EXTERNAL "LIBRARY oorexxgtk2 GrxBoxPackEnd"
 
 ::method pack_end_defaults
 use strict arg mywidget
 self~pack_end(myWidget, .true, .true, 0)
 return
 
-::METHOD pack_start EXTERNAL "LIBRARY rexxgtk GrxBoxPackStart"
+::METHOD pack_start EXTERNAL "LIBRARY oorexxgtk2 GrxBoxPackStart"
 
 ::method pack_start_defaults
 use strict arg mywidget
@@ -1155,8 +1155,8 @@ use strict arg homog, spacing
 self~init_2args(homog, spacing)
 return
 
-::METHOD init_1args private EXTERNAL "LIBRARY rexxgtk GrxHBoxNewFromPtr"
-::METHOD init_2args private EXTERNAL "LIBRARY rexxgtk GrxHBoxNew"
+::METHOD init_1args private EXTERNAL "LIBRARY oorexxgtk2 GrxHBoxNewFromPtr"
+::METHOD init_2args private EXTERNAL "LIBRARY oorexxgtk2 GrxHBoxNew"
 
 
 /*============================================================================*/
@@ -1175,8 +1175,8 @@ use strict arg homog, spacing
 self~init_2args(homog, spacing)
 return
 
-::METHOD init_1args private EXTERNAL "LIBRARY rexxgtk GrxVBoxNewFromPtr"
-::METHOD init_2args private EXTERNAL "LIBRARY rexxgtk GrxVBoxNew"
+::METHOD init_1args private EXTERNAL "LIBRARY oorexxgtk2 GrxVBoxNewFromPtr"
+::METHOD init_2args private EXTERNAL "LIBRARY oorexxgtk2 GrxVBoxNew"
 
 
 /*============================================================================*/
@@ -1185,7 +1185,7 @@ return
 
 ::class GtkAlignment public subclass GtkContainer
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxAlignmentNew"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxAlignmentNew"
 
 
 /*============================================================================*/
@@ -1196,10 +1196,10 @@ return
 
 ::class GtkPaned public subclass GtkContainer
 
-::METHOD add1 EXTERNAL "LIBRARY rexxgtk GrxPanedAdd1"
-::METHOD add2 EXTERNAL "LIBRARY rexxgtk GrxPanedAdd2"
-::METHOD pack1 EXTERNAL "LIBRARY rexxgtk GrxPanedPack1"
-::METHOD pack2 EXTERNAL "LIBRARY rexxgtk GrxPanedPack2"
+::METHOD add1 EXTERNAL "LIBRARY oorexxgtk2 GrxPanedAdd1"
+::METHOD add2 EXTERNAL "LIBRARY oorexxgtk2 GrxPanedAdd2"
+::METHOD pack1 EXTERNAL "LIBRARY oorexxgtk2 GrxPanedPack1"
+::METHOD pack2 EXTERNAL "LIBRARY oorexxgtk2 GrxPanedPack2"
 
 
 /*============================================================================*/
@@ -1208,7 +1208,7 @@ return
 
 ::class GtkHPaned public subclass GtkPaned
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxHPanedNew"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxHPanedNew"
 
 
 /*============================================================================*/
@@ -1217,7 +1217,7 @@ return
 
 ::class GtkVPaned public subclass GtkPaned
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxVPanedNew"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxVPanedNew"
 
 
 /*============================================================================*/
@@ -1226,15 +1226,15 @@ return
 
 ::class GtkEventBox public subclass GtkContainer
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxEventBoxNew"
-::METHOD set_above_child EXTERNAL "LIBRARY rexxgtk GrxEventBoxGetSetAboveChild"
-::METHOD 'above_child=' EXTERNAL "LIBRARY rexxgtk GrxEventBoxGetSetAboveChild"
-::METHOD get_above_child EXTERNAL "LIBRARY rexxgtk GrxEventBoxGetSetAboveChild"
-::METHOD above_child EXTERNAL "LIBRARY rexxgtk GrxEventBoxGetSetAboveChild"
-::METHOD set_visible_window EXTERNAL "LIBRARY rexxgtk GrxEventBoxGetSetVisibleWindow"
-::METHOD 'visible_window=' EXTERNAL "LIBRARY rexxgtk GrxEventBoxGetSetVisibleWindow"
-::METHOD get_visible_window EXTERNAL "LIBRARY rexxgtk GrxEventBoxGetSetVisibleWindow"
-::METHOD visible_window EXTERNAL "LIBRARY rexxgtk GrxEventBoxGetSetVisibleWindow"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxEventBoxNew"
+::METHOD set_above_child EXTERNAL "LIBRARY oorexxgtk2 GrxEventBoxGetSetAboveChild"
+::METHOD 'above_child=' EXTERNAL "LIBRARY oorexxgtk2 GrxEventBoxGetSetAboveChild"
+::METHOD get_above_child EXTERNAL "LIBRARY oorexxgtk2 GrxEventBoxGetSetAboveChild"
+::METHOD above_child EXTERNAL "LIBRARY oorexxgtk2 GrxEventBoxGetSetAboveChild"
+::METHOD set_visible_window EXTERNAL "LIBRARY oorexxgtk2 GrxEventBoxGetSetVisibleWindow"
+::METHOD 'visible_window=' EXTERNAL "LIBRARY oorexxgtk2 GrxEventBoxGetSetVisibleWindow"
+::METHOD get_visible_window EXTERNAL "LIBRARY oorexxgtk2 GrxEventBoxGetSetVisibleWindow"
+::METHOD visible_window EXTERNAL "LIBRARY oorexxgtk2 GrxEventBoxGetSetVisibleWindow"
 
 
 /*============================================================================*/
@@ -1243,13 +1243,13 @@ return
 
 ::class GtkWindow public subclass GtkContainer
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxWindowNew"
-::METHOD 'title=' EXTERNAL "LIBRARY rexxgtk GrxWindowSetTitle"
-::METHOD set_title EXTERNAL "LIBRARY rexxgtk GrxWindowSetTitle"
-::METHOD 'modal=' EXTERNAL "LIBRARY rexxgtk GrxWindowSetModal"
-::METHOD set_modal EXTERNAL "LIBRARY rexxgtk GrxWindowSetModal"
-::METHOD add_accel_group EXTERNAL "LIBRARY rexxgtk GrxWindowAddAccelGroup"
-::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxWindowSignalConnect"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxWindowNew"
+::METHOD 'title=' EXTERNAL "LIBRARY oorexxgtk2 GrxWindowSetTitle"
+::METHOD set_title EXTERNAL "LIBRARY oorexxgtk2 GrxWindowSetTitle"
+::METHOD 'modal=' EXTERNAL "LIBRARY oorexxgtk2 GrxWindowSetModal"
+::METHOD set_modal EXTERNAL "LIBRARY oorexxgtk2 GrxWindowSetModal"
+::METHOD add_accel_group EXTERNAL "LIBRARY oorexxgtk2 GrxWindowAddAccelGroup"
+::METHOD signal_connect EXTERNAL "LIBRARY oorexxgtk2 GrxWindowSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -1273,14 +1273,14 @@ return
 
 ::class GtkScrolledWindow public subclass GtkContainer
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxScrolledWindowNew"
-::METHOD hadjustment EXTERNAL "LIBRARY rexxgtk GrxScrolledWindowGetHAdjustment"
-::METHOD get_hadjustment EXTERNAL "LIBRARY rexxgtk GrxScrolledWindowGetHAdjustment"
-::METHOD vadjustment EXTERNAL "LIBRARY rexxgtk GrxScrolledWindowGetVAdjustment"
-::METHOD get_vadjustment EXTERNAL "LIBRARY rexxgtk GrxScrolledWindowGetVAdjustment"
-::METHOD set_policy EXTERNAL "LIBRARY rexxgtk GrxScrolledWindowSetPolicy"
-::METHOD add_with_viewport EXTERNAL "LIBRARY rexxgtk GrxScrolledWindowAddWithViewport"
-::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxScrolledWindowSignalConnect"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxScrolledWindowNew"
+::METHOD hadjustment EXTERNAL "LIBRARY oorexxgtk2 GrxScrolledWindowGetHAdjustment"
+::METHOD get_hadjustment EXTERNAL "LIBRARY oorexxgtk2 GrxScrolledWindowGetHAdjustment"
+::METHOD vadjustment EXTERNAL "LIBRARY oorexxgtk2 GrxScrolledWindowGetVAdjustment"
+::METHOD get_vadjustment EXTERNAL "LIBRARY oorexxgtk2 GrxScrolledWindowGetVAdjustment"
+::METHOD set_policy EXTERNAL "LIBRARY oorexxgtk2 GrxScrolledWindowSetPolicy"
+::METHOD add_with_viewport EXTERNAL "LIBRARY oorexxgtk2 GrxScrolledWindowAddWithViewport"
+::METHOD signal_connect EXTERNAL "LIBRARY oorexxgtk2 GrxScrolledWindowSignalConnect"
 
 -- This method is not a part of the GTK system. It has been added to
 -- support creating GtkAdjustment objects from C++ methods.
@@ -1305,8 +1305,8 @@ return
 
 ::class GtkViewport public subclass GtkContainer
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxViewportNew"
-::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxViewportSignalConnect"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxViewportNew"
+::METHOD signal_connect EXTERNAL "LIBRARY oorexxgtk2 GrxViewportSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -1340,18 +1340,18 @@ button~label = label
 button~use_stock = .true
 return button
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxButtonNew"
-::METHOD label EXTERNAL "LIBRARY rexxgtk GrxButtonGetSetLabel"
-::METHOD get_label EXTERNAL "LIBRARY rexxgtk GrxButtonGetSetLabel"
-::METHOD 'label=' EXTERNAL "LIBRARY rexxgtk GrxButtonGetSetLabel"
-::METHOD set_label EXTERNAL "LIBRARY rexxgtk GrxButtonGetSetLabel"
-::METHOD set_use_underline EXTERNAL "LIBRARY rexxgtk GrxButtonUseUnderline"
-::METHOD 'use_underline=' EXTERNAL "LIBRARY rexxgtk GrxButtonUseUnderline"
-::METHOD 'relief=' EXTERNAL "LIBRARY rexxgtk GrxButtonSetRelief"
-::METHOD set_relief EXTERNAL "LIBRARY rexxgtk GrxButtonSetRelief"
-::METHOD set_use_stock EXTERNAL "LIBRARY rexxgtk GrxButtonSetUseStock"
-::METHOD 'use_stock=' EXTERNAL "LIBRARY rexxgtk GrxButtonSetUseStock"
-::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxButtonSignalConnect"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxButtonNew"
+::METHOD label EXTERNAL "LIBRARY oorexxgtk2 GrxButtonGetSetLabel"
+::METHOD get_label EXTERNAL "LIBRARY oorexxgtk2 GrxButtonGetSetLabel"
+::METHOD 'label=' EXTERNAL "LIBRARY oorexxgtk2 GrxButtonGetSetLabel"
+::METHOD set_label EXTERNAL "LIBRARY oorexxgtk2 GrxButtonGetSetLabel"
+::METHOD set_use_underline EXTERNAL "LIBRARY oorexxgtk2 GrxButtonUseUnderline"
+::METHOD 'use_underline=' EXTERNAL "LIBRARY oorexxgtk2 GrxButtonUseUnderline"
+::METHOD 'relief=' EXTERNAL "LIBRARY oorexxgtk2 GrxButtonSetRelief"
+::METHOD set_relief EXTERNAL "LIBRARY oorexxgtk2 GrxButtonSetRelief"
+::METHOD set_use_stock EXTERNAL "LIBRARY oorexxgtk2 GrxButtonSetUseStock"
+::METHOD 'use_stock=' EXTERNAL "LIBRARY oorexxgtk2 GrxButtonSetUseStock"
+::METHOD signal_connect EXTERNAL "LIBRARY oorexxgtk2 GrxButtonSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -1391,20 +1391,20 @@ button~label = label
 button~use_underline = .true
 return button
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxToggleButtonNew"
-::METHOD mode EXTERNAL "LIBRARY rexxgtk GrxToggleButtonGetSetMode"
-::METHOD get_mode EXTERNAL "LIBRARY rexxgtk GrxToggleButtonGetSetMode"
-::METHOD set_mode EXTERNAL "LIBRARY rexxgtk GrxToggleButtonGetSetMode"
-::METHOD 'mode=' EXTERNAL "LIBRARY rexxgtk GrxToggleButtonGetSetMode"
-::METHOD active EXTERNAL "LIBRARY rexxgtk GrxToggleButtonGetSetActive"
-::METHOD get_active EXTERNAL "LIBRARY rexxgtk GrxToggleButtonGetSetActive"
-::METHOD 'active=' EXTERNAL "LIBRARY rexxgtk GrxToggleButtonGetSetActive"
-::METHOD set_active EXTERNAL "LIBRARY rexxgtk GrxToggleButtonGetSetActive"
-::METHOD inconsistent EXTERNAL "LIBRARY rexxgtk GrxToggleButtonGetSetInconsistent"
-::METHOD get_inconsistent EXTERNAL "LIBRARY rexxgtk GrxToggleButtonGetSetInconsistent"
-::METHOD set_inconsistent EXTERNAL "LIBRARY rexxgtk GrxToggleButtonGetSetInconsistent"
-::METHOD 'inconsistent=' EXTERNAL "LIBRARY rexxgtk GrxToggleButtonGetSetInconsistent"
-::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxToggleButtonSignalConnect"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxToggleButtonNew"
+::METHOD mode EXTERNAL "LIBRARY oorexxgtk2 GrxToggleButtonGetSetMode"
+::METHOD get_mode EXTERNAL "LIBRARY oorexxgtk2 GrxToggleButtonGetSetMode"
+::METHOD set_mode EXTERNAL "LIBRARY oorexxgtk2 GrxToggleButtonGetSetMode"
+::METHOD 'mode=' EXTERNAL "LIBRARY oorexxgtk2 GrxToggleButtonGetSetMode"
+::METHOD active EXTERNAL "LIBRARY oorexxgtk2 GrxToggleButtonGetSetActive"
+::METHOD get_active EXTERNAL "LIBRARY oorexxgtk2 GrxToggleButtonGetSetActive"
+::METHOD 'active=' EXTERNAL "LIBRARY oorexxgtk2 GrxToggleButtonGetSetActive"
+::METHOD set_active EXTERNAL "LIBRARY oorexxgtk2 GrxToggleButtonGetSetActive"
+::METHOD inconsistent EXTERNAL "LIBRARY oorexxgtk2 GrxToggleButtonGetSetInconsistent"
+::METHOD get_inconsistent EXTERNAL "LIBRARY oorexxgtk2 GrxToggleButtonGetSetInconsistent"
+::METHOD set_inconsistent EXTERNAL "LIBRARY oorexxgtk2 GrxToggleButtonGetSetInconsistent"
+::METHOD 'inconsistent=' EXTERNAL "LIBRARY oorexxgtk2 GrxToggleButtonGetSetInconsistent"
+::METHOD signal_connect EXTERNAL "LIBRARY oorexxgtk2 GrxToggleButtonSignalConnect"
 
 ::method signal_toggled
 return
@@ -1431,7 +1431,7 @@ check~label = label
 check~use_underline = .true
 return check
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxCheckButtonNew"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxCheckButtonNew"
 
 
 /*============================================================================*/
@@ -1450,8 +1450,8 @@ rb = .GtkRadioButton~new(widget, label)
 rb~use_underline = .true
 return rb
                          
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxRadioButtonNew"
-::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxRadioButtonSignalConnect"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxRadioButtonNew"
+::METHOD signal_connect EXTERNAL "LIBRARY oorexxgtk2 GrxRadioButtonSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -1470,14 +1470,14 @@ return
 use strict arg color
 return .GtkColorButton~new(color)
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxColorButtonNew"
-::METHOD 'title=' EXTERNAL "LIBRARY rexxgtk GrxColorButtonSetTitle"
-::METHOD set_title EXTERNAL "LIBRARY rexxgtk GrxColorButtonSetTitle"
-::METHOD color EXTERNAL "LIBRARY rexxgtk GrxColorButtonGetSetColor"
-::METHOD get_color EXTERNAL "LIBRARY rexxgtk GrxColorButtonGetSetColor"
-::METHOD set_color EXTERNAL "LIBRARY rexxgtk GrxColorButtonGetSetColor"
-::METHOD 'color=' EXTERNAL "LIBRARY rexxgtk GrxColorButtonGetSetColor"
-::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxColorButtonSignalConnect"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxColorButtonNew"
+::METHOD 'title=' EXTERNAL "LIBRARY oorexxgtk2 GrxColorButtonSetTitle"
+::METHOD set_title EXTERNAL "LIBRARY oorexxgtk2 GrxColorButtonSetTitle"
+::METHOD color EXTERNAL "LIBRARY oorexxgtk2 GrxColorButtonGetSetColor"
+::METHOD get_color EXTERNAL "LIBRARY oorexxgtk2 GrxColorButtonGetSetColor"
+::METHOD set_color EXTERNAL "LIBRARY oorexxgtk2 GrxColorButtonGetSetColor"
+::METHOD 'color=' EXTERNAL "LIBRARY oorexxgtk2 GrxColorButtonGetSetColor"
+::METHOD signal_connect EXTERNAL "LIBRARY oorexxgtk2 GrxColorButtonSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -1492,8 +1492,8 @@ return
 
 ::class GtkFileChooserButton public subclass GtkHBox inherit GtkFileChooser
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxFileChooserButtonNew"
-::METHOD signal_connect_p private EXTERNAL "LIBRARY rexxgtk GrxFileChooserButtonSignalConnect"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxFileChooserButtonNew"
+::METHOD signal_connect_p private EXTERNAL "LIBRARY oorexxgtk2 GrxFileChooserButtonSignalConnect"
 
 ::METHOD signal_connect
 use strict arg event
@@ -1521,12 +1521,12 @@ button = self~new()
 button~set_font(font)
 return button
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxFontButtonNew"
-::METHOD 'title=' EXTERNAL "LIBRARY rexxgtk GrxFontButtonSetTitle"
-::METHOD set_title EXTERNAL "LIBRARY rexxgtk GrxFontButtonSetTitle"
-::METHOD font_name EXTERNAL "LIBRARY rexxgtk GrxFontButtonGetFontName"
-::METHOD get_font_name EXTERNAL "LIBRARY rexxgtk GrxFontButtonGetFontName"
-::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxFontButtonSignalConnect"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxFontButtonNew"
+::METHOD 'title=' EXTERNAL "LIBRARY oorexxgtk2 GrxFontButtonSetTitle"
+::METHOD set_title EXTERNAL "LIBRARY oorexxgtk2 GrxFontButtonSetTitle"
+::METHOD font_name EXTERNAL "LIBRARY oorexxgtk2 GrxFontButtonGetFontName"
+::METHOD get_font_name EXTERNAL "LIBRARY oorexxgtk2 GrxFontButtonGetFontName"
+::METHOD signal_connect EXTERNAL "LIBRARY oorexxgtk2 GrxFontButtonSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -1541,13 +1541,13 @@ return
 
 ::class GtkTable public subclass GtkContainer
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxTableNew"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxTableNew"
 
-::METHOD 'row_spacings=' EXTERNAL "LIBRARY rexxgtk GrxTableSetRowSpacings"
-::METHOD set_row_spacings EXTERNAL "LIBRARY rexxgtk GrxTableSetRowSpacings"
-::METHOD 'col_spacings=' EXTERNAL "LIBRARY rexxgtk GrxTableSetColSpacings"
-::METHOD set_col_spacings EXTERNAL "LIBRARY rexxgtk GrxTableSetColSpacings"
-::METHOD attach EXTERNAL "LIBRARY rexxgtk GrxTableAttach"
+::METHOD 'row_spacings=' EXTERNAL "LIBRARY oorexxgtk2 GrxTableSetRowSpacings"
+::METHOD set_row_spacings EXTERNAL "LIBRARY oorexxgtk2 GrxTableSetRowSpacings"
+::METHOD 'col_spacings=' EXTERNAL "LIBRARY oorexxgtk2 GrxTableSetColSpacings"
+::METHOD set_col_spacings EXTERNAL "LIBRARY oorexxgtk2 GrxTableSetColSpacings"
+::METHOD attach EXTERNAL "LIBRARY oorexxgtk2 GrxTableAttach"
 
 ::method attach_defaults
 use strict arg widget, left, right, top, bottom
@@ -1561,15 +1561,15 @@ return
 
 ::class GtkComboBox public subclass GtkWidget
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxComboBoxNew"
-::METHOD append_text EXTERNAL "LIBRARY rexxgtk GrxComboBoxAppendText"
-::METHOD get_active_text EXTERNAL "LIBRARY rexxgtk GrxComboBoxGetActiveText"
-::METHOD active_text EXTERNAL "LIBRARY rexxgtk GrxComboBoxGetActiveText"
-::METHOD get_active EXTERNAL "LIBRARY rexxgtk GrxComboBoxGetSetActive"
-::METHOD active EXTERNAL "LIBRARY rexxgtk GrxComboBoxGetSetActive"
-::METHOD set_active EXTERNAL "LIBRARY rexxgtk GrxComboBoxGetSetActive"
-::METHOD 'active=' EXTERNAL "LIBRARY rexxgtk GrxComboBoxGetSetActive"
-::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxComboBoxSignalConnect"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxComboBoxNew"
+::METHOD append_text EXTERNAL "LIBRARY oorexxgtk2 GrxComboBoxAppendText"
+::METHOD get_active_text EXTERNAL "LIBRARY oorexxgtk2 GrxComboBoxGetActiveText"
+::METHOD active_text EXTERNAL "LIBRARY oorexxgtk2 GrxComboBoxGetActiveText"
+::METHOD get_active EXTERNAL "LIBRARY oorexxgtk2 GrxComboBoxGetSetActive"
+::METHOD active EXTERNAL "LIBRARY oorexxgtk2 GrxComboBoxGetSetActive"
+::METHOD set_active EXTERNAL "LIBRARY oorexxgtk2 GrxComboBoxGetSetActive"
+::METHOD 'active=' EXTERNAL "LIBRARY oorexxgtk2 GrxComboBoxGetSetActive"
+::METHOD signal_connect EXTERNAL "LIBRARY oorexxgtk2 GrxComboBoxSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -1593,7 +1593,7 @@ return
 
 ::class GtkComboBoxText public subclass GtkComboBox
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxComboBoxNewText"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxComboBoxNewText"
 
 
 /*============================================================================*/
@@ -1602,26 +1602,26 @@ return
 
 ::class GtkEntry public subclass GtkWidget
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxEntryNew"
-::METHOD max_length EXTERNAL "LIBRARY rexxgtk GrxEntryGetSetMaxLength"
-::METHOD get_max_length EXTERNAL "LIBRARY rexxgtk GrxEntryGetSetMaxLength"
-::METHOD set_max_length EXTERNAL "LIBRARY rexxgtk GrxEntryGetSetMaxLength"
-::METHOD 'max_length=' EXTERNAL "LIBRARY rexxgtk GrxEntryGetSetMaxLength"
-::METHOD set_width_chars EXTERNAL "LIBRARY rexxgtk GrxEntrySetWidthChars"
-::METHOD 'width_chars=' EXTERNAL "LIBRARY rexxgtk GrxEntrySetWidthChars"
-::METHOD text EXTERNAL "LIBRARY rexxgtk GrxEntryGetSetText"
-::METHOD get_text EXTERNAL "LIBRARY rexxgtk GrxEntryGetSetText"
-::METHOD set_text EXTERNAL "LIBRARY rexxgtk GrxEntryGetSetText"
-::METHOD 'text=' EXTERNAL "LIBRARY rexxgtk GrxEntryGetSetText"
-::METHOD visibility EXTERNAL "LIBRARY rexxgtk GrxEntryGetSetVisibility"
-::METHOD get_visibility EXTERNAL "LIBRARY rexxgtk GrxEntryGetSetVisibility"
-::METHOD set_visibility EXTERNAL "LIBRARY rexxgtk GrxEntryGetSetVisibility"
-::METHOD 'visibility=' EXTERNAL "LIBRARY rexxgtk GrxEntryGetSetVisibility"
-::METHOD invisible_char EXTERNAL "LIBRARY rexxgtk GrxEntryGetSetInvisibleChar"
-::METHOD get_invisible_char EXTERNAL "LIBRARY rexxgtk GrxEntryGetSetInvisibleChar"
-::METHOD set_invisible_char EXTERNAL "LIBRARY rexxgtk GrxEntryGetSetInvisibleChar"
-::METHOD 'invisible_char=' EXTERNAL "LIBRARY rexxgtk GrxEntryGetSetInvisibleChar"
-::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxEntrySignalConnect"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxEntryNew"
+::METHOD max_length EXTERNAL "LIBRARY oorexxgtk2 GrxEntryGetSetMaxLength"
+::METHOD get_max_length EXTERNAL "LIBRARY oorexxgtk2 GrxEntryGetSetMaxLength"
+::METHOD set_max_length EXTERNAL "LIBRARY oorexxgtk2 GrxEntryGetSetMaxLength"
+::METHOD 'max_length=' EXTERNAL "LIBRARY oorexxgtk2 GrxEntryGetSetMaxLength"
+::METHOD set_width_chars EXTERNAL "LIBRARY oorexxgtk2 GrxEntrySetWidthChars"
+::METHOD 'width_chars=' EXTERNAL "LIBRARY oorexxgtk2 GrxEntrySetWidthChars"
+::METHOD text EXTERNAL "LIBRARY oorexxgtk2 GrxEntryGetSetText"
+::METHOD get_text EXTERNAL "LIBRARY oorexxgtk2 GrxEntryGetSetText"
+::METHOD set_text EXTERNAL "LIBRARY oorexxgtk2 GrxEntryGetSetText"
+::METHOD 'text=' EXTERNAL "LIBRARY oorexxgtk2 GrxEntryGetSetText"
+::METHOD visibility EXTERNAL "LIBRARY oorexxgtk2 GrxEntryGetSetVisibility"
+::METHOD get_visibility EXTERNAL "LIBRARY oorexxgtk2 GrxEntryGetSetVisibility"
+::METHOD set_visibility EXTERNAL "LIBRARY oorexxgtk2 GrxEntryGetSetVisibility"
+::METHOD 'visibility=' EXTERNAL "LIBRARY oorexxgtk2 GrxEntryGetSetVisibility"
+::METHOD invisible_char EXTERNAL "LIBRARY oorexxgtk2 GrxEntryGetSetInvisibleChar"
+::METHOD get_invisible_char EXTERNAL "LIBRARY oorexxgtk2 GrxEntryGetSetInvisibleChar"
+::METHOD set_invisible_char EXTERNAL "LIBRARY oorexxgtk2 GrxEntryGetSetInvisibleChar"
+::METHOD 'invisible_char=' EXTERNAL "LIBRARY oorexxgtk2 GrxEntryGetSetInvisibleChar"
+::METHOD signal_connect EXTERNAL "LIBRARY oorexxgtk2 GrxEntrySignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -1676,12 +1676,12 @@ if p1~isInstanceOf(.GtkAdjustment) then self~init_3args(p1, p2, p3)
 else self~init_range(p1, p2, p3)
 return
 
-::METHOD init_3args private EXTERNAL "LIBRARY rexxgtk GrxSpinButtonNew"
-::METHOD init_range private EXTERNAL "LIBRARY rexxgtk GrxSpinButtonNewWithRange"
+::METHOD init_3args private EXTERNAL "LIBRARY oorexxgtk2 GrxSpinButtonNew"
+::METHOD init_range private EXTERNAL "LIBRARY oorexxgtk2 GrxSpinButtonNewWithRange"
 
-::METHOD set_digits EXTERNAL "LIBRARY rexxgtk GrxSpinButtonSetDigits"
-::METHOD 'digits=' EXTERNAL "LIBRARY rexxgtk GrxSpinButtonSetDigits"
-::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxSpinButtonSignalConnect"
+::METHOD set_digits EXTERNAL "LIBRARY oorexxgtk2 GrxSpinButtonSetDigits"
+::METHOD 'digits=' EXTERNAL "LIBRARY oorexxgtk2 GrxSpinButtonSetDigits"
+::METHOD signal_connect EXTERNAL "LIBRARY oorexxgtk2 GrxSpinButtonSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -1702,7 +1702,7 @@ return
 
 ::class GtkDialog public subclass GtkWindow
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxDialogNewWithButtons"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxDialogNewWithButtons"
 
 ::method 'vbox=' private
 expose vbox
@@ -1714,15 +1714,15 @@ return
 expose vbox
 return vbox
 
-::METHOD 'has_separator=' EXTERNAL "LIBRARY rexxgtk GrxDialogSetHasSeparator"
-::METHOD set_has_separator EXTERNAL "LIBRARY rexxgtk GrxDialogSetHasSeparator"
-::METHOD 'default_response=' EXTERNAL "LIBRARY rexxgtk GrxDialogSetDefaultResponse"
-::METHOD set_default_response EXTERNAL "LIBRARY rexxgtk GrxDialogSetDefaultResponse"
-::METHOD add_button EXTERNAL "LIBRARY rexxgtk GrxDialogAddButton"
+::METHOD 'has_separator=' EXTERNAL "LIBRARY oorexxgtk2 GrxDialogSetHasSeparator"
+::METHOD set_has_separator EXTERNAL "LIBRARY oorexxgtk2 GrxDialogSetHasSeparator"
+::METHOD 'default_response=' EXTERNAL "LIBRARY oorexxgtk2 GrxDialogSetDefaultResponse"
+::METHOD set_default_response EXTERNAL "LIBRARY oorexxgtk2 GrxDialogSetDefaultResponse"
+::METHOD add_button EXTERNAL "LIBRARY oorexxgtk2 GrxDialogAddButton"
 -- Note: the name of this method cannot be 'run' as that would override the
 -- private 'run' instance method of the ooRexx Object class.
-::METHOD dialog_run EXTERNAL "LIBRARY rexxgtk GrxDialogRun"
-::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxDialogSignalConnect"
+::METHOD dialog_run EXTERNAL "LIBRARY oorexxgtk2 GrxDialogRun"
+::METHOD signal_connect EXTERNAL "LIBRARY oorexxgtk2 GrxDialogSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -1740,7 +1740,7 @@ return
 
 ::class GtkMessageDialog public subclass GtkDialog
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxMessageDialogNew"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxMessageDialogNew"
 
 
 /*============================================================================*/
@@ -1749,9 +1749,9 @@ return
 
 ::class GtkColorSelectionDialog public subclass GtkDialog
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxColorSelectionDialogNew"
-::METHOD color EXTERNAL "LIBRARY rexxgtk GrxColorSelectionDialogGetColor"
-::METHOD get_color EXTERNAL "LIBRARY rexxgtk GrxColorSelectionDialogGetColor"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxColorSelectionDialogNew"
+::METHOD color EXTERNAL "LIBRARY oorexxgtk2 GrxColorSelectionDialogGetColor"
+::METHOD get_color EXTERNAL "LIBRARY oorexxgtk2 GrxColorSelectionDialogGetColor"
 
 
 /*============================================================================*/
@@ -1760,13 +1760,13 @@ return
 
 ::class GtkFontSelectionDialog public subclass GtkDialog
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxFontSelectionDialogNew"
-::METHOD 'font_name=' EXTERNAL "LIBRARY rexxgtk GrxFontSelectionDialogGetSetFontName"
-::METHOD set_font_name EXTERNAL "LIBRARY rexxgtk GrxFontSelectionDialogGetSetFontName"
-::METHOD font_name EXTERNAL "LIBRARY rexxgtk GrxFontSelectionDialogGetSetFontName"
-::METHOD get_font_name EXTERNAL "LIBRARY rexxgtk GrxFontSelectionDialogGetSetFontName"
-::METHOD 'preview_text=' EXTERNAL "LIBRARY rexxgtk GrxFontSelectionDialogSetPreviewText"
-::METHOD set_preview_text EXTERNAL "LIBRARY rexxgtk GrxFontSelectionDialogSetPreviewText"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxFontSelectionDialogNew"
+::METHOD 'font_name=' EXTERNAL "LIBRARY oorexxgtk2 GrxFontSelectionDialogGetSetFontName"
+::METHOD set_font_name EXTERNAL "LIBRARY oorexxgtk2 GrxFontSelectionDialogGetSetFontName"
+::METHOD font_name EXTERNAL "LIBRARY oorexxgtk2 GrxFontSelectionDialogGetSetFontName"
+::METHOD get_font_name EXTERNAL "LIBRARY oorexxgtk2 GrxFontSelectionDialogGetSetFontName"
+::METHOD 'preview_text=' EXTERNAL "LIBRARY oorexxgtk2 GrxFontSelectionDialogSetPreviewText"
+::METHOD set_preview_text EXTERNAL "LIBRARY oorexxgtk2 GrxFontSelectionDialogSetPreviewText"
 
 
 /*============================================================================*/
@@ -1775,28 +1775,28 @@ return
 
 ::class GtkAboutDialog public subclass GtkDialog
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxAboutDialogNew"
-::METHOD 'name=' EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetName"
-::METHOD set_name EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetName"
-::METHOD 'version=' EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetVersion"
-::METHOD set_version EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetVersion"
-::METHOD 'copyright=' EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetCopyright"
-::METHOD set_copyright EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetCopyright"
-::METHOD 'comments=' EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetComments"
-::METHOD set_comments EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetComments"
-::METHOD 'license=' EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetLicense"
-::METHOD set_license EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetLicense"
-::METHOD 'wrap_license=' EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetWrapLicense"
-::METHOD set_wrap_license EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetWrapLicense"
-::METHOD 'website=' EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetWebsite"
-::METHOD set_website EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetWebsite"
-::METHOD 'website_label=' EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetWebsiteLabel"
-::METHOD set_website_label EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetWebsiteLabel"
-::METHOD set_authors EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetAuthors"
-::METHOD set_artists EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetArtists"
-::METHOD set_documentors EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetDocumentors"
-::METHOD 'logo=' EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetLogo"
-::METHOD set_logo EXTERNAL "LIBRARY rexxgtk GrxAboutDialogSetLogo"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxAboutDialogNew"
+::METHOD 'name=' EXTERNAL "LIBRARY oorexxgtk2 GrxAboutDialogSetName"
+::METHOD set_name EXTERNAL "LIBRARY oorexxgtk2 GrxAboutDialogSetName"
+::METHOD 'version=' EXTERNAL "LIBRARY oorexxgtk2 GrxAboutDialogSetVersion"
+::METHOD set_version EXTERNAL "LIBRARY oorexxgtk2 GrxAboutDialogSetVersion"
+::METHOD 'copyright=' EXTERNAL "LIBRARY oorexxgtk2 GrxAboutDialogSetCopyright"
+::METHOD set_copyright EXTERNAL "LIBRARY oorexxgtk2 GrxAboutDialogSetCopyright"
+::METHOD 'comments=' EXTERNAL "LIBRARY oorexxgtk2 GrxAboutDialogSetComments"
+::METHOD set_comments EXTERNAL "LIBRARY oorexxgtk2 GrxAboutDialogSetComments"
+::METHOD 'license=' EXTERNAL "LIBRARY oorexxgtk2 GrxAboutDialogSetLicense"
+::METHOD set_license EXTERNAL "LIBRARY oorexxgtk2 GrxAboutDialogSetLicense"
+::METHOD 'wrap_license=' EXTERNAL "LIBRARY oorexxgtk2 GrxAboutDialogSetWrapLicense"
+::METHOD set_wrap_license EXTERNAL "LIBRARY oorexxgtk2 GrxAboutDialogSetWrapLicense"
+::METHOD 'website=' EXTERNAL "LIBRARY oorexxgtk2 GrxAboutDialogSetWebsite"
+::METHOD set_website EXTERNAL "LIBRARY oorexxgtk2 GrxAboutDialogSetWebsite"
+::METHOD 'website_label=' EXTERNAL "LIBRARY oorexxgtk2 GrxAboutDialogSetWebsiteLabel"
+::METHOD set_website_label EXTERNAL "LIBRARY oorexxgtk2 GrxAboutDialogSetWebsiteLabel"
+::METHOD set_authors EXTERNAL "LIBRARY oorexxgtk2 GrxAboutDialogSetAuthors"
+::METHOD set_artists EXTERNAL "LIBRARY oorexxgtk2 GrxAboutDialogSetArtists"
+::METHOD set_documentors EXTERNAL "LIBRARY oorexxgtk2 GrxAboutDialogSetDocumentors"
+::METHOD 'logo=' EXTERNAL "LIBRARY oorexxgtk2 GrxAboutDialogSetLogo"
+::METHOD set_logo EXTERNAL "LIBRARY oorexxgtk2 GrxAboutDialogSetLogo"
 
 
 /*============================================================================*/
@@ -1805,7 +1805,7 @@ return
 
 ::class GtkFileChooserDialog public subclass GtkDialog inherit GtkFileChooser
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxFileChooserDialogNew"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxFileChooserDialogNew"
 
 
 /*============================================================================*/
@@ -1814,22 +1814,22 @@ return
 
 ::class GtkAssistant public subclass GtkWindow
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxAssistantNew"
-::METHOD set_current_page EXTERNAL "LIBRARY rexxgtk GrxAssistantGetSetCurrentPage"
-::METHOD 'current_page=' EXTERNAL "LIBRARY rexxgtk GrxAssistantGetSetCurrentPage"
-::METHOD get_current_page EXTERNAL "LIBRARY rexxgtk GrxAssistantGetSetCurrentPage"
-::METHOD current_page EXTERNAL "LIBRARY rexxgtk GrxAssistantGetSetCurrentPage"
-::METHOD get_nth_page EXTERNAL "LIBRARY rexxgtk GrxAssistantGetNthPage"
-::METHOD nth_page EXTERNAL "LIBRARY rexxgtk GrxAssistantGetNthPage"
-::METHOD prepend_page EXTERNAL "LIBRARY rexxgtk GrxAssistantPrependPage"
-::METHOD append_page EXTERNAL "LIBRARY rexxgtk GrxAssistantAppendPage"
-::METHOD insert_page EXTERNAL "LIBRARY rexxgtk GrxAssistantInsertPage"
-::METHOD set_page_type EXTERNAL "LIBRARY rexxgtk GrxAssistantSetPageType"
-::METHOD set_page_complete EXTERNAL "LIBRARY rexxgtk GrxAssistantSetPageComplete"
-::METHOD set_page_header_image EXTERNAL "LIBRARY rexxgtk GrxAssistantSetPageHeaderImage"
-::METHOD set_page_side_image EXTERNAL "LIBRARY rexxgtk GrxAssistantSetPageSideImage"
-::METHOD set_page_title EXTERNAL "LIBRARY rexxgtk GrxAssistantSetPageTitle"
-::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxAssistantSignalConnect"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxAssistantNew"
+::METHOD set_current_page EXTERNAL "LIBRARY oorexxgtk2 GrxAssistantGetSetCurrentPage"
+::METHOD 'current_page=' EXTERNAL "LIBRARY oorexxgtk2 GrxAssistantGetSetCurrentPage"
+::METHOD get_current_page EXTERNAL "LIBRARY oorexxgtk2 GrxAssistantGetSetCurrentPage"
+::METHOD current_page EXTERNAL "LIBRARY oorexxgtk2 GrxAssistantGetSetCurrentPage"
+::METHOD get_nth_page EXTERNAL "LIBRARY oorexxgtk2 GrxAssistantGetNthPage"
+::METHOD nth_page EXTERNAL "LIBRARY oorexxgtk2 GrxAssistantGetNthPage"
+::METHOD prepend_page EXTERNAL "LIBRARY oorexxgtk2 GrxAssistantPrependPage"
+::METHOD append_page EXTERNAL "LIBRARY oorexxgtk2 GrxAssistantAppendPage"
+::METHOD insert_page EXTERNAL "LIBRARY oorexxgtk2 GrxAssistantInsertPage"
+::METHOD set_page_type EXTERNAL "LIBRARY oorexxgtk2 GrxAssistantSetPageType"
+::METHOD set_page_complete EXTERNAL "LIBRARY oorexxgtk2 GrxAssistantSetPageComplete"
+::METHOD set_page_header_image EXTERNAL "LIBRARY oorexxgtk2 GrxAssistantSetPageHeaderImage"
+::METHOD set_page_side_image EXTERNAL "LIBRARY oorexxgtk2 GrxAssistantSetPageSideImage"
+::METHOD set_page_title EXTERNAL "LIBRARY oorexxgtk2 GrxAssistantSetPageTitle"
+::METHOD signal_connect EXTERNAL "LIBRARY oorexxgtk2 GrxAssistantSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -1853,18 +1853,18 @@ return
 
 ::class GtkLabel public subclass GtkWidget
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxLabelNew"
-::METHOD get_justify EXTERNAL "LIBRARY rexxgtk GrxLabelGetSetJustify"
-::METHOD justify EXTERNAL "LIBRARY rexxgtk GrxLabelGetSetJustify"
-::METHOD 'justify=' EXTERNAL "LIBRARY rexxgtk GrxLabelGetSetJustify"
-::METHOD set_justify EXTERNAL "LIBRARY rexxgtk GrxLabelGetSetJustify"
-::METHOD set_label EXTERNAL "LIBRARY rexxgtk GrxLabelGetSetLabel"
-::METHOD 'label=' EXTERNAL "LIBRARY rexxgtk GrxLabelGetSetLabel"
-::METHOD get_label EXTERNAL "LIBRARY rexxgtk GrxLabelGetSetLabel"
-::METHOD label EXTERNAL "LIBRARY rexxgtk GrxLabelGetSetLabel"
-::METHOD set_selectable EXTERNAL "LIBRARY rexxgtk GrxLabelSetSelectable"
-::METHOD 'selectable=' EXTERNAL "LIBRARY rexxgtk GrxLabelSetSelectable"
-::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxLabelSignalConnect"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxLabelNew"
+::METHOD get_justify EXTERNAL "LIBRARY oorexxgtk2 GrxLabelGetSetJustify"
+::METHOD justify EXTERNAL "LIBRARY oorexxgtk2 GrxLabelGetSetJustify"
+::METHOD 'justify=' EXTERNAL "LIBRARY oorexxgtk2 GrxLabelGetSetJustify"
+::METHOD set_justify EXTERNAL "LIBRARY oorexxgtk2 GrxLabelGetSetJustify"
+::METHOD set_label EXTERNAL "LIBRARY oorexxgtk2 GrxLabelGetSetLabel"
+::METHOD 'label=' EXTERNAL "LIBRARY oorexxgtk2 GrxLabelGetSetLabel"
+::METHOD get_label EXTERNAL "LIBRARY oorexxgtk2 GrxLabelGetSetLabel"
+::METHOD label EXTERNAL "LIBRARY oorexxgtk2 GrxLabelGetSetLabel"
+::METHOD set_selectable EXTERNAL "LIBRARY oorexxgtk2 GrxLabelSetSelectable"
+::METHOD 'selectable=' EXTERNAL "LIBRARY oorexxgtk2 GrxLabelSetSelectable"
+::METHOD signal_connect EXTERNAL "LIBRARY oorexxgtk2 GrxLabelSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -1885,9 +1885,9 @@ return
 
 ::class GtkFixed public subclass GtkContainer
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxFixedNew"
-::METHOD put EXTERNAL "LIBRARY rexxgtk GrxFixedPut"
-::METHOD move EXTERNAL "LIBRARY rexxgtk GrxFixedMove"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxFixedNew"
+::METHOD put EXTERNAL "LIBRARY oorexxgtk2 GrxFixedPut"
+::METHOD move EXTERNAL "LIBRARY oorexxgtk2 GrxFixedMove"
 
 
 /*============================================================================*/
@@ -1902,18 +1902,18 @@ exp = self~new(label)
 exp~use_underline = .true
 return exp
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxExpanderNew"
-::METHOD set_expanded EXTERNAL "LIBRARY rexxgtk GrxExpanderSetExpanded"
-::METHOD 'expanded=' EXTERNAL "LIBRARY rexxgtk GrxExpanderSetExpanded"
-::METHOD label EXTERNAL "LIBRARY rexxgtk GrxExpanderGetSetLabel"
-::METHOD get_label EXTERNAL "LIBRARY rexxgtk GrxExpanderGetSetLabel"
-::METHOD set_label EXTERNAL "LIBRARY rexxgtk GrxExpanderGetSetLabel"
-::METHOD 'label=' EXTERNAL "LIBRARY rexxgtk GrxExpanderGetSetLabel"
-::METHOD set_use_underline EXTERNAL "LIBRARY rexxgtk GrxExpanderSetUseUnderline"
-::METHOD 'use_underline=' EXTERNAL "LIBRARY rexxgtk GrxExpanderSetUseUnderline"
-::METHOD set_spacing EXTERNAL "LIBRARY rexxgtk GrxExpanderSetSpacing"
-::METHOD 'spacing=' EXTERNAL "LIBRARY rexxgtk GrxExpanderSetSpacing"
-::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxExpanderSignalConnect"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxExpanderNew"
+::METHOD set_expanded EXTERNAL "LIBRARY oorexxgtk2 GrxExpanderSetExpanded"
+::METHOD 'expanded=' EXTERNAL "LIBRARY oorexxgtk2 GrxExpanderSetExpanded"
+::METHOD label EXTERNAL "LIBRARY oorexxgtk2 GrxExpanderGetSetLabel"
+::METHOD get_label EXTERNAL "LIBRARY oorexxgtk2 GrxExpanderGetSetLabel"
+::METHOD set_label EXTERNAL "LIBRARY oorexxgtk2 GrxExpanderGetSetLabel"
+::METHOD 'label=' EXTERNAL "LIBRARY oorexxgtk2 GrxExpanderGetSetLabel"
+::METHOD set_use_underline EXTERNAL "LIBRARY oorexxgtk2 GrxExpanderSetUseUnderline"
+::METHOD 'use_underline=' EXTERNAL "LIBRARY oorexxgtk2 GrxExpanderSetUseUnderline"
+::METHOD set_spacing EXTERNAL "LIBRARY oorexxgtk2 GrxExpanderSetSpacing"
+::METHOD 'spacing=' EXTERNAL "LIBRARY oorexxgtk2 GrxExpanderSetSpacing"
+::METHOD signal_connect EXTERNAL "LIBRARY oorexxgtk2 GrxExpanderSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -1928,14 +1928,14 @@ return
 
 ::class GtkHandleBox public subclass GtkContainer
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxHandleBoxNew"
-::METHOD set_shadow_type EXTERNAL "LIBRARY rexxgtk GrxHandleBoxSetShadowType"
-::METHOD 'shadow_type=' EXTERNAL "LIBRARY rexxgtk GrxHandleBoxSetShadowType"
-::METHOD set_position EXTERNAL "LIBRARY rexxgtk GrxHandleBoxSetPosition"
-::METHOD 'position=' EXTERNAL "LIBRARY rexxgtk GrxHandleBoxSetPosition"
-::METHOD set_snap_edge EXTERNAL "LIBRARY rexxgtk GrxHandleBoxSetSnapEdge"
-::METHOD 'snap_edge=' EXTERNAL "LIBRARY rexxgtk GrxHandleBoxSetSnapEdge"
-::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxHandleBoxSignalConnect"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxHandleBoxNew"
+::METHOD set_shadow_type EXTERNAL "LIBRARY oorexxgtk2 GrxHandleBoxSetShadowType"
+::METHOD 'shadow_type=' EXTERNAL "LIBRARY oorexxgtk2 GrxHandleBoxSetShadowType"
+::METHOD set_position EXTERNAL "LIBRARY oorexxgtk2 GrxHandleBoxSetPosition"
+::METHOD 'position=' EXTERNAL "LIBRARY oorexxgtk2 GrxHandleBoxSetPosition"
+::METHOD set_snap_edge EXTERNAL "LIBRARY oorexxgtk2 GrxHandleBoxSetSnapEdge"
+::METHOD 'snap_edge=' EXTERNAL "LIBRARY oorexxgtk2 GrxHandleBoxSetSnapEdge"
+::METHOD signal_connect EXTERNAL "LIBRARY oorexxgtk2 GrxHandleBoxSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -1953,33 +1953,33 @@ return
 
 ::class GtkNotebook public subclass GtkContainer
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxNotebookNew"
-::METHOD append_page EXTERNAL "LIBRARY rexxgtk GrxNotebookAppendPage"
-::METHOD prepend_page EXTERNAL "LIBRARY rexxgtk GrxNotebookPrependPage"
-::METHOD insert_page EXTERNAL "LIBRARY rexxgtk GrxNotebookInsertPage"
-::METHOD append_page_menu EXTERNAL "LIBRARY rexxgtk GrxNotebookAppendPageMenu"
-::METHOD prepend_page_menu EXTERNAL "LIBRARY rexxgtk GrxNotebookPrependPageMenu"
-::METHOD insert_page_menu EXTERNAL "LIBRARY rexxgtk GrxNotebookInsertPageMenu"
-::METHOD remove_page EXTERNAL "LIBRARY rexxgtk GrxNotebookRemovePage"
-::METHOD set_show_border EXTERNAL "LIBRARY rexxgtk GrxNotebookSetShowBorder"
-::METHOD 'show_border=' EXTERNAL "LIBRARY rexxgtk GrxNotebookSetShowBorder"
-::METHOD set_show_tabs EXTERNAL "LIBRARY rexxgtk GrxNotebookSetShowTabs"
-::METHOD 'show_tabs=' EXTERNAL "LIBRARY rexxgtk GrxNotebookSetShowTabs"
-::METHOD set_tab_pos EXTERNAL "LIBRARY rexxgtk GrxNotebookSetTabPos"
-::METHOD 'tab_pos=' EXTERNAL "LIBRARY rexxgtk GrxNotebookSetTabPos"
-::METHOD set_homogeneous_tabs EXTERNAL "LIBRARY rexxgtk GrxNotebookSetHomogeneousTabs"
-::METHOD 'homogeneous_tabs=' EXTERNAL "LIBRARY rexxgtk GrxNotebookSetHomogeneousTabs"
-::METHOD set_tab_border EXTERNAL "LIBRARY rexxgtk GrxNotebookSetTabBorder"
-::METHOD 'tab_border=' EXTERNAL "LIBRARY rexxgtk GrxNotebookSetTabBorder"
-::METHOD set_scrollable EXTERNAL "LIBRARY rexxgtk GrxNotebookSetScrollable"
-::METHOD 'scrollable=' EXTERNAL "LIBRARY rexxgtk GrxNotebookSetScrollable"
-::METHOD popup_enable EXTERNAL "LIBRARY rexxgtk GrxNotebookPopupEnable"
-::METHOD popup_disable EXTERNAL "LIBRARY rexxgtk GrxNotebookPopupDisable"
-::METHOD set_current_page EXTERNAL "LIBRARY rexxgtk GrxNotebookGetSetCurrentPage"
-::METHOD 'current_page=' EXTERNAL "LIBRARY rexxgtk GrxNotebookGetSetCurrentPage"
-::METHOD get_current_page EXTERNAL "LIBRARY rexxgtk GrxNotebookGetSetCurrentPage"
-::METHOD current_page EXTERNAL "LIBRARY rexxgtk GrxNotebookGetSetCurrentPage"
-::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxNotebookSignalConnect"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxNotebookNew"
+::METHOD append_page EXTERNAL "LIBRARY oorexxgtk2 GrxNotebookAppendPage"
+::METHOD prepend_page EXTERNAL "LIBRARY oorexxgtk2 GrxNotebookPrependPage"
+::METHOD insert_page EXTERNAL "LIBRARY oorexxgtk2 GrxNotebookInsertPage"
+::METHOD append_page_menu EXTERNAL "LIBRARY oorexxgtk2 GrxNotebookAppendPageMenu"
+::METHOD prepend_page_menu EXTERNAL "LIBRARY oorexxgtk2 GrxNotebookPrependPageMenu"
+::METHOD insert_page_menu EXTERNAL "LIBRARY oorexxgtk2 GrxNotebookInsertPageMenu"
+::METHOD remove_page EXTERNAL "LIBRARY oorexxgtk2 GrxNotebookRemovePage"
+::METHOD set_show_border EXTERNAL "LIBRARY oorexxgtk2 GrxNotebookSetShowBorder"
+::METHOD 'show_border=' EXTERNAL "LIBRARY oorexxgtk2 GrxNotebookSetShowBorder"
+::METHOD set_show_tabs EXTERNAL "LIBRARY oorexxgtk2 GrxNotebookSetShowTabs"
+::METHOD 'show_tabs=' EXTERNAL "LIBRARY oorexxgtk2 GrxNotebookSetShowTabs"
+::METHOD set_tab_pos EXTERNAL "LIBRARY oorexxgtk2 GrxNotebookSetTabPos"
+::METHOD 'tab_pos=' EXTERNAL "LIBRARY oorexxgtk2 GrxNotebookSetTabPos"
+::METHOD set_homogeneous_tabs EXTERNAL "LIBRARY oorexxgtk2 GrxNotebookSetHomogeneousTabs"
+::METHOD 'homogeneous_tabs=' EXTERNAL "LIBRARY oorexxgtk2 GrxNotebookSetHomogeneousTabs"
+::METHOD set_tab_border EXTERNAL "LIBRARY oorexxgtk2 GrxNotebookSetTabBorder"
+::METHOD 'tab_border=' EXTERNAL "LIBRARY oorexxgtk2 GrxNotebookSetTabBorder"
+::METHOD set_scrollable EXTERNAL "LIBRARY oorexxgtk2 GrxNotebookSetScrollable"
+::METHOD 'scrollable=' EXTERNAL "LIBRARY oorexxgtk2 GrxNotebookSetScrollable"
+::METHOD popup_enable EXTERNAL "LIBRARY oorexxgtk2 GrxNotebookPopupEnable"
+::METHOD popup_disable EXTERNAL "LIBRARY oorexxgtk2 GrxNotebookPopupDisable"
+::METHOD set_current_page EXTERNAL "LIBRARY oorexxgtk2 GrxNotebookGetSetCurrentPage"
+::METHOD 'current_page=' EXTERNAL "LIBRARY oorexxgtk2 GrxNotebookGetSetCurrentPage"
+::METHOD get_current_page EXTERNAL "LIBRARY oorexxgtk2 GrxNotebookGetSetCurrentPage"
+::METHOD current_page EXTERNAL "LIBRARY oorexxgtk2 GrxNotebookGetSetCurrentPage"
+::METHOD signal_connect EXTERNAL "LIBRARY oorexxgtk2 GrxNotebookSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -2023,7 +2023,7 @@ return
 
 ::class GtkRange public subclass GtkWidget
 
-::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxRangeSignalConnect"
+::METHOD signal_connect EXTERNAL "LIBRARY oorexxgtk2 GrxRangeSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -2046,14 +2046,14 @@ return
 
 ::class GtkScale public subclass GtkRange
 
-::METHOD set_digits EXTERNAL "LIBRARY rexxgtk GrxScaleGetSetDigits"
-::METHOD 'digits=' EXTERNAL "LIBRARY rexxgtk GrxScaleGetSetDigits"
-::METHOD get_digits EXTERNAL "LIBRARY rexxgtk GrxScaleGetSetDigits"
-::METHOD digits EXTERNAL "LIBRARY rexxgtk GrxScaleGetSetDigits"
-::METHOD set_value_pos EXTERNAL "LIBRARY rexxgtk GrxScaleGetSetValuePos"
-::METHOD 'value_pos=' EXTERNAL "LIBRARY rexxgtk GrxScaleGetSetValuePos"
-::METHOD get_value_pos EXTERNAL "LIBRARY rexxgtk GrxScaleGetSetValuePos"
-::METHOD value_pos EXTERNAL "LIBRARY rexxgtk GrxScaleGetSetValuePos"
+::METHOD set_digits EXTERNAL "LIBRARY oorexxgtk2 GrxScaleGetSetDigits"
+::METHOD 'digits=' EXTERNAL "LIBRARY oorexxgtk2 GrxScaleGetSetDigits"
+::METHOD get_digits EXTERNAL "LIBRARY oorexxgtk2 GrxScaleGetSetDigits"
+::METHOD digits EXTERNAL "LIBRARY oorexxgtk2 GrxScaleGetSetDigits"
+::METHOD set_value_pos EXTERNAL "LIBRARY oorexxgtk2 GrxScaleGetSetValuePos"
+::METHOD 'value_pos=' EXTERNAL "LIBRARY oorexxgtk2 GrxScaleGetSetValuePos"
+::METHOD get_value_pos EXTERNAL "LIBRARY oorexxgtk2 GrxScaleGetSetValuePos"
+::METHOD value_pos EXTERNAL "LIBRARY oorexxgtk2 GrxScaleGetSetValuePos"
 
 
 /*============================================================================*/
@@ -2076,8 +2076,8 @@ use strict arg value, lower, upper, step, page, pagesz
 self~init_6args(value, lower, upper, step, page, pagesz)
 return
 
-::METHOD init_6args private EXTERNAL "LIBRARY rexxgtk GrxHScaleNew"
-::METHOD init_3args private EXTERNAL "LIBRARY rexxgtk GrxHScaleNewWithRange"
+::METHOD init_6args private EXTERNAL "LIBRARY oorexxgtk2 GrxHScaleNew"
+::METHOD init_3args private EXTERNAL "LIBRARY oorexxgtk2 GrxHScaleNewWithRange"
 
 
 
@@ -2101,8 +2101,8 @@ use strict arg value, lower, upper, step, page, pagesz
 self~init_6args(value, lower, upper, step, page, pagesz)
 return
 
-::METHOD init_6args private EXTERNAL "LIBRARY rexxgtk GrxVScaleNew"
-::METHOD init_3args private EXTERNAL "LIBRARY rexxgtk GrxVScaleNewWithRange"
+::METHOD init_6args private EXTERNAL "LIBRARY oorexxgtk2 GrxVScaleNew"
+::METHOD init_3args private EXTERNAL "LIBRARY oorexxgtk2 GrxVScaleNewWithRange"
 
 
 /*============================================================================*/
@@ -2129,10 +2129,10 @@ img = .GtkImage~new()
 img~set_from_icon_name(iconname, size)
 return img
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxImageNew"
-::METHOD set_from_file EXTERNAL "LIBRARY rexxgtk GrxImageSetFromFile"
-::METHOD set_from_stock EXTERNAL "LIBRARY rexxgtk GrxImageSetFromStock"
-::METHOD set_from_icon_name EXTERNAL "LIBRARY rexxgtk GrxImageSetFromIconName"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxImageNew"
+::METHOD set_from_file EXTERNAL "LIBRARY oorexxgtk2 GrxImageSetFromFile"
+::METHOD set_from_stock EXTERNAL "LIBRARY oorexxgtk2 GrxImageSetFromStock"
+::METHOD set_from_icon_name EXTERNAL "LIBRARY oorexxgtk2 GrxImageSetFromIconName"
 
 
 /*============================================================================*/
@@ -2141,13 +2141,13 @@ return img
 
 ::class GtkProgressBar public subclass GtkWidget
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxProgressBarNew"
-::METHOD set_text EXTERNAL "LIBRARY rexxgtk GrxProgressBarSetText"
-::METHOD 'text=' EXTERNAL "LIBRARY rexxgtk GrxProgressBarSetText"
-::METHOD set_fraction EXTERNAL "LIBRARY rexxgtk GrxProgressBarSetFraction"
-::METHOD set_pulse_step EXTERNAL "LIBRARY rexxgtk GrxProgressBarSetPulseStep"
-::METHOD pulse EXTERNAL "LIBRARY rexxgtk GrxProgressBarPulse"
-::METHOD 'fraction=' EXTERNAL "LIBRARY rexxgtk GrxProgressBarSetFraction"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxProgressBarNew"
+::METHOD set_text EXTERNAL "LIBRARY oorexxgtk2 GrxProgressBarSetText"
+::METHOD 'text=' EXTERNAL "LIBRARY oorexxgtk2 GrxProgressBarSetText"
+::METHOD set_fraction EXTERNAL "LIBRARY oorexxgtk2 GrxProgressBarSetFraction"
+::METHOD set_pulse_step EXTERNAL "LIBRARY oorexxgtk2 GrxProgressBarSetPulseStep"
+::METHOD pulse EXTERNAL "LIBRARY oorexxgtk2 GrxProgressBarPulse"
+::METHOD 'fraction=' EXTERNAL "LIBRARY oorexxgtk2 GrxProgressBarSetFraction"
 
 
 /*============================================================================*/
@@ -2156,47 +2156,47 @@ return img
 
 ::class GtkTextView public subclass GtkContainer
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxTextViewNew"
-::METHOD get_buffer EXTERNAL "LIBRARY rexxgtk GrxTextViewGetBuffer"
-::METHOD buffer EXTERNAL "LIBRARY rexxgtk GrxTextViewGetBuffer"
-::METHOD get_wrap_mode EXTERNAL "LIBRARY rexxgtk GrxTextViewGetSetWrapMode"
-::METHOD wrap_mode EXTERNAL "LIBRARY rexxgtk GrxTextViewGetSetWrapMode"
-::METHOD 'wrap_mode=' EXTERNAL "LIBRARY rexxgtk GrxTextViewGetSetWrapMode"
-::METHOD set_wrap_mode EXTERNAL "LIBRARY rexxgtk GrxTextViewGetSetWrapMode"
-::METHOD get_justification EXTERNAL "LIBRARY rexxgtk GrxTextViewGetSetJustification"
-::METHOD justification EXTERNAL "LIBRARY rexxgtk GrxTextViewGetSetJustification"
-::METHOD set_justification EXTERNAL "LIBRARY rexxgtk GrxTextViewGetSetJustification"
-::METHOD 'justification=' EXTERNAL "LIBRARY rexxgtk GrxTextViewGetSetJustification"
-::METHOD get_editable EXTERNAL "LIBRARY rexxgtk GrxTextViewGetSetEditable"
-::METHOD editable EXTERNAL "LIBRARY rexxgtk GrxTextViewGetSetEditable"
-::METHOD set_editable EXTERNAL "LIBRARY rexxgtk GrxTextViewGetSetEditable"
-::METHOD 'editable=' EXTERNAL "LIBRARY rexxgtk GrxTextViewGetSetEditable"
-::METHOD get_cursor_visible EXTERNAL "LIBRARY rexxgtk GrxTextViewGetSetCursorVisible"
-::METHOD cursor_visible EXTERNAL "LIBRARY rexxgtk GrxTextViewGetSetCursorVisible"
-::METHOD set_cursor_visible EXTERNAL "LIBRARY rexxgtk GrxTextViewGetSetCursorVisible"
-::METHOD 'cursor_visible=' EXTERNAL "LIBRARY rexxgtk GrxTextViewGetSetCursorVisible"
-::METHOD get_pixels_above_lines EXTERNAL "LIBRARY rexxgtk GrxTextViewGetSetPixelsAboveLines"
-::METHOD pixels_above_lines EXTERNAL "LIBRARY rexxgtk GrxTextViewGetSetPixelsAboveLines"
-::METHOD set_pixels_above_lines EXTERNAL "LIBRARY rexxgtk GrxTextViewGetSetPixelsAboveLines"
-::METHOD 'pixels_above_lines=' EXTERNAL "LIBRARY rexxgtk GrxTextViewGetSetPixelsAboveLines"
-::METHOD get_pixels_below_lines EXTERNAL "LIBRARY rexxgtk GrxTextViewGetSetPixelsBelowLines"
-::METHOD pixels_below_lines EXTERNAL "LIBRARY rexxgtk GrxTextViewGetSetPixelsBelowLines"
-::METHOD set_pixels_below_lines EXTERNAL "LIBRARY rexxgtk GrxTextViewGetSetPixelsBelowLines"
-::METHOD 'pixels_below_lines=' EXTERNAL "LIBRARY rexxgtk GrxTextViewGetSetPixelsBelowLines"
-::METHOD get_pixels_inside_wrap EXTERNAL "LIBRARY rexxgtk GrxTextViewGetSetPixelsInsideWrap"
-::METHOD pixels_inside_wrap EXTERNAL "LIBRARY rexxgtk GrxTextViewGetSetPixelsInsideWrap"
-::METHOD set_pixels_inside_wrap EXTERNAL "LIBRARY rexxgtk GrxTextViewGetSetPixelsInsideWrap"
-::METHOD 'pixels_inside_wrap=' EXTERNAL "LIBRARY rexxgtk GrxTextViewGetSetPixelsInsideWrap"
-::METHOD get_left_margin EXTERNAL "LIBRARY rexxgtk GrxTextViewGetSetLeftMargin"
-::METHOD left_margin EXTERNAL "LIBRARY rexxgtk GrxTextViewGetSetLeftMargin"
-::METHOD set_left_margin EXTERNAL "LIBRARY rexxgtk GrxTextViewGetSetLeftMargin"
-::METHOD 'left_margin=' EXTERNAL "LIBRARY rexxgtk GrxTextViewGetSetLeftMargin"
-::METHOD get_right_margin EXTERNAL "LIBRARY rexxgtk GrxTextViewGetSetRightMargin"
-::METHOD right_margin EXTERNAL "LIBRARY rexxgtk GrxTextViewGetSetRightMargin"
-::METHOD set_right_margin EXTERNAL "LIBRARY rexxgtk GrxTextViewGetSetRightMargin"
-::METHOD 'right_margin=' EXTERNAL "LIBRARY rexxgtk GrxTextViewGetSetRightMargin"
-::METHOD add_child_at_offset EXTERNAL "LIBRARY rexxgtk GrxTextViewAddChildAtOffset"
-::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxTextViewSignalConnect"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxTextViewNew"
+::METHOD get_buffer EXTERNAL "LIBRARY oorexxgtk2 GrxTextViewGetBuffer"
+::METHOD buffer EXTERNAL "LIBRARY oorexxgtk2 GrxTextViewGetBuffer"
+::METHOD get_wrap_mode EXTERNAL "LIBRARY oorexxgtk2 GrxTextViewGetSetWrapMode"
+::METHOD wrap_mode EXTERNAL "LIBRARY oorexxgtk2 GrxTextViewGetSetWrapMode"
+::METHOD 'wrap_mode=' EXTERNAL "LIBRARY oorexxgtk2 GrxTextViewGetSetWrapMode"
+::METHOD set_wrap_mode EXTERNAL "LIBRARY oorexxgtk2 GrxTextViewGetSetWrapMode"
+::METHOD get_justification EXTERNAL "LIBRARY oorexxgtk2 GrxTextViewGetSetJustification"
+::METHOD justification EXTERNAL "LIBRARY oorexxgtk2 GrxTextViewGetSetJustification"
+::METHOD set_justification EXTERNAL "LIBRARY oorexxgtk2 GrxTextViewGetSetJustification"
+::METHOD 'justification=' EXTERNAL "LIBRARY oorexxgtk2 GrxTextViewGetSetJustification"
+::METHOD get_editable EXTERNAL "LIBRARY oorexxgtk2 GrxTextViewGetSetEditable"
+::METHOD editable EXTERNAL "LIBRARY oorexxgtk2 GrxTextViewGetSetEditable"
+::METHOD set_editable EXTERNAL "LIBRARY oorexxgtk2 GrxTextViewGetSetEditable"
+::METHOD 'editable=' EXTERNAL "LIBRARY oorexxgtk2 GrxTextViewGetSetEditable"
+::METHOD get_cursor_visible EXTERNAL "LIBRARY oorexxgtk2 GrxTextViewGetSetCursorVisible"
+::METHOD cursor_visible EXTERNAL "LIBRARY oorexxgtk2 GrxTextViewGetSetCursorVisible"
+::METHOD set_cursor_visible EXTERNAL "LIBRARY oorexxgtk2 GrxTextViewGetSetCursorVisible"
+::METHOD 'cursor_visible=' EXTERNAL "LIBRARY oorexxgtk2 GrxTextViewGetSetCursorVisible"
+::METHOD get_pixels_above_lines EXTERNAL "LIBRARY oorexxgtk2 GrxTextViewGetSetPixelsAboveLines"
+::METHOD pixels_above_lines EXTERNAL "LIBRARY oorexxgtk2 GrxTextViewGetSetPixelsAboveLines"
+::METHOD set_pixels_above_lines EXTERNAL "LIBRARY oorexxgtk2 GrxTextViewGetSetPixelsAboveLines"
+::METHOD 'pixels_above_lines=' EXTERNAL "LIBRARY oorexxgtk2 GrxTextViewGetSetPixelsAboveLines"
+::METHOD get_pixels_below_lines EXTERNAL "LIBRARY oorexxgtk2 GrxTextViewGetSetPixelsBelowLines"
+::METHOD pixels_below_lines EXTERNAL "LIBRARY oorexxgtk2 GrxTextViewGetSetPixelsBelowLines"
+::METHOD set_pixels_below_lines EXTERNAL "LIBRARY oorexxgtk2 GrxTextViewGetSetPixelsBelowLines"
+::METHOD 'pixels_below_lines=' EXTERNAL "LIBRARY oorexxgtk2 GrxTextViewGetSetPixelsBelowLines"
+::METHOD get_pixels_inside_wrap EXTERNAL "LIBRARY oorexxgtk2 GrxTextViewGetSetPixelsInsideWrap"
+::METHOD pixels_inside_wrap EXTERNAL "LIBRARY oorexxgtk2 GrxTextViewGetSetPixelsInsideWrap"
+::METHOD set_pixels_inside_wrap EXTERNAL "LIBRARY oorexxgtk2 GrxTextViewGetSetPixelsInsideWrap"
+::METHOD 'pixels_inside_wrap=' EXTERNAL "LIBRARY oorexxgtk2 GrxTextViewGetSetPixelsInsideWrap"
+::METHOD get_left_margin EXTERNAL "LIBRARY oorexxgtk2 GrxTextViewGetSetLeftMargin"
+::METHOD left_margin EXTERNAL "LIBRARY oorexxgtk2 GrxTextViewGetSetLeftMargin"
+::METHOD set_left_margin EXTERNAL "LIBRARY oorexxgtk2 GrxTextViewGetSetLeftMargin"
+::METHOD 'left_margin=' EXTERNAL "LIBRARY oorexxgtk2 GrxTextViewGetSetLeftMargin"
+::METHOD get_right_margin EXTERNAL "LIBRARY oorexxgtk2 GrxTextViewGetSetRightMargin"
+::METHOD right_margin EXTERNAL "LIBRARY oorexxgtk2 GrxTextViewGetSetRightMargin"
+::METHOD set_right_margin EXTERNAL "LIBRARY oorexxgtk2 GrxTextViewGetSetRightMargin"
+::METHOD 'right_margin=' EXTERNAL "LIBRARY oorexxgtk2 GrxTextViewGetSetRightMargin"
+::METHOD add_child_at_offset EXTERNAL "LIBRARY oorexxgtk2 GrxTextViewAddChildAtOffset"
+::METHOD signal_connect EXTERNAL "LIBRARY oorexxgtk2 GrxTextViewSignalConnect"
 
 -- This method is not a part of the GTK system. It has been added to
 -- support creating GtkTextBuffer objects from C++ methods.
@@ -2259,23 +2259,23 @@ return
 
 ::class GtkTextBuffer public
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxTextBufferNew"
-::METHOD set_text EXTERNAL "LIBRARY rexxgtk GrxTextBufferGetSetText"
-::METHOD 'text=' EXTERNAL "LIBRARY rexxgtk GrxTextBufferGetSetText"
-::METHOD get_text EXTERNAL "LIBRARY rexxgtk GrxTextBufferGetSetText"
-::METHOD text EXTERNAL "LIBRARY rexxgtk GrxTextBufferGetSetText"
-::METHOD insert_text EXTERNAL "LIBRARY rexxgtk GrxTextBufferInsertText"
-::METHOD cut_clipboard EXTERNAL "LIBRARY rexxgtk GrxTextBufferCutClipboard"
-::METHOD copy_clipboard EXTERNAL "LIBRARY rexxgtk GrxTextBufferCopyClipboard"
-::METHOD paste_clipboard EXTERNAL "LIBRARY rexxgtk GrxTextBufferPasteClipboard"
-::METHOD create_tag_int EXTERNAL "LIBRARY rexxgtk GrxTextBufferCreateTagInt"
-::METHOD create_tag_float EXTERNAL "LIBRARY rexxgtk GrxTextBufferCreateTagFloat"
-::METHOD forward_search EXTERNAL "LIBRARY rexxgtk GrxTextBufferForwardSearch"
-::METHOD forward_search_next EXTERNAL "LIBRARY rexxgtk GrxTextBufferForwardSearchNext"
-::METHOD apply_tag_by_name EXTERNAL "LIBRARY rexxgtk GrxTextBufferApplyTagByName"
-::METHOD remove_all_tags EXTERNAL "LIBRARY rexxgtk GrxTextBufferRemoveAllTags"
-::METHOD insert_image EXTERNAL "LIBRARY rexxgtk GrxTextBufferInsertImage"
-::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxTextBufferSignalConnect"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxTextBufferNew"
+::METHOD set_text EXTERNAL "LIBRARY oorexxgtk2 GrxTextBufferGetSetText"
+::METHOD 'text=' EXTERNAL "LIBRARY oorexxgtk2 GrxTextBufferGetSetText"
+::METHOD get_text EXTERNAL "LIBRARY oorexxgtk2 GrxTextBufferGetSetText"
+::METHOD text EXTERNAL "LIBRARY oorexxgtk2 GrxTextBufferGetSetText"
+::METHOD insert_text EXTERNAL "LIBRARY oorexxgtk2 GrxTextBufferInsertText"
+::METHOD cut_clipboard EXTERNAL "LIBRARY oorexxgtk2 GrxTextBufferCutClipboard"
+::METHOD copy_clipboard EXTERNAL "LIBRARY oorexxgtk2 GrxTextBufferCopyClipboard"
+::METHOD paste_clipboard EXTERNAL "LIBRARY oorexxgtk2 GrxTextBufferPasteClipboard"
+::METHOD create_tag_int EXTERNAL "LIBRARY oorexxgtk2 GrxTextBufferCreateTagInt"
+::METHOD create_tag_float EXTERNAL "LIBRARY oorexxgtk2 GrxTextBufferCreateTagFloat"
+::METHOD forward_search EXTERNAL "LIBRARY oorexxgtk2 GrxTextBufferForwardSearch"
+::METHOD forward_search_next EXTERNAL "LIBRARY oorexxgtk2 GrxTextBufferForwardSearchNext"
+::METHOD apply_tag_by_name EXTERNAL "LIBRARY oorexxgtk2 GrxTextBufferApplyTagByName"
+::METHOD remove_all_tags EXTERNAL "LIBRARY oorexxgtk2 GrxTextBufferRemoveAllTags"
+::METHOD insert_image EXTERNAL "LIBRARY oorexxgtk2 GrxTextBufferInsertImage"
+::METHOD signal_connect EXTERNAL "LIBRARY oorexxgtk2 GrxTextBufferSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -2309,15 +2309,15 @@ use strict arg value, upper, lower, step, page, pagesz
 self~init_6args(value, upper, lower, step, page, pagesz)
 return
 
-::METHOD init_1args private EXTERNAL "LIBRARY rexxgtk GrxAdjustmentNewFromPtr"
-::METHOD init_6args private EXTERNAL "LIBRARY rexxgtk GrxAdjustmentNew"
+::METHOD init_1args private EXTERNAL "LIBRARY oorexxgtk2 GrxAdjustmentNewFromPtr"
+::METHOD init_6args private EXTERNAL "LIBRARY oorexxgtk2 GrxAdjustmentNew"
 
-::METHOD set_value EXTERNAL "LIBRARY rexxgtk GrxAdjustmentGetSetValue"
-::METHOD 'value=' EXTERNAL "LIBRARY rexxgtk GrxAdjustmentGetSetValue"
-::METHOD get_value EXTERNAL "LIBRARY rexxgtk GrxAdjustmentGetSetValue"
-::METHOD value EXTERNAL "LIBRARY rexxgtk GrxAdjustmentGetSetValue"
-::METHOD clamp_page EXTERNAL "LIBRARY rexxgtk GrxAdjustmentClampPage"
-::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxAdjustmentSignalConnect"
+::METHOD set_value EXTERNAL "LIBRARY oorexxgtk2 GrxAdjustmentGetSetValue"
+::METHOD 'value=' EXTERNAL "LIBRARY oorexxgtk2 GrxAdjustmentGetSetValue"
+::METHOD get_value EXTERNAL "LIBRARY oorexxgtk2 GrxAdjustmentGetSetValue"
+::METHOD value EXTERNAL "LIBRARY oorexxgtk2 GrxAdjustmentGetSetValue"
+::METHOD clamp_page EXTERNAL "LIBRARY oorexxgtk2 GrxAdjustmentClampPage"
+::METHOD signal_connect EXTERNAL "LIBRARY oorexxgtk2 GrxAdjustmentSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -2335,9 +2335,9 @@ return
 
 ::class GtkListStore public
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxListStoreNew"
-::METHOD append EXTERNAL "LIBRARY rexxgtk GrxListStoreAppend"
-::METHOD set_value EXTERNAL "LIBRARY rexxgtk GrxListStoreSetValue"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxListStoreNew"
+::METHOD append EXTERNAL "LIBRARY oorexxgtk2 GrxListStoreAppend"
+::METHOD set_value EXTERNAL "LIBRARY oorexxgtk2 GrxListStoreSetValue"
 
 
 /*============================================================================*/
@@ -2348,18 +2348,18 @@ return
 
 ::class GtkMenuShell public subclass GtkContainer
 
-::METHOD append EXTERNAL "LIBRARY rexxgtk GrxMenuShellAppend"
-::METHOD prepend EXTERNAL "LIBRARY rexxgtk GrxMenuShellPrepend"
-::METHOD insert EXTERNAL "LIBRARY rexxgtk GrxMenuShellInsert"
-::METHOD deactivate EXTERNAL "LIBRARY rexxgtk GrxMenuShellDeactivate"
-::METHOD select_item EXTERNAL "LIBRARY rexxgtk GrxMenuShellSelectItem"
-::METHOD select_first EXTERNAL "LIBRARY rexxgtk GrxMenuShellSelectFirst"
-::METHOD deselect EXTERNAL "LIBRARY rexxgtk GrxMenuShellDeselect"
-::METHOD activate_item EXTERNAL "LIBRARY rexxgtk GrxMenuShellActivateItem"
-::METHOD cancel EXTERNAL "LIBRARY rexxgtk GrxMenuShellCancel"
-::METHOD set_take_focus EXTERNAL "LIBRARY rexxgtk GrxMenuShellSetTakeFocus"
-::METHOD get_take_focus EXTERNAL "LIBRARY rexxgtk GrxMenuShellGetTakeFocus"
-::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxMenuShellSignalConnect"
+::METHOD append EXTERNAL "LIBRARY oorexxgtk2 GrxMenuShellAppend"
+::METHOD prepend EXTERNAL "LIBRARY oorexxgtk2 GrxMenuShellPrepend"
+::METHOD insert EXTERNAL "LIBRARY oorexxgtk2 GrxMenuShellInsert"
+::METHOD deactivate EXTERNAL "LIBRARY oorexxgtk2 GrxMenuShellDeactivate"
+::METHOD select_item EXTERNAL "LIBRARY oorexxgtk2 GrxMenuShellSelectItem"
+::METHOD select_first EXTERNAL "LIBRARY oorexxgtk2 GrxMenuShellSelectFirst"
+::METHOD deselect EXTERNAL "LIBRARY oorexxgtk2 GrxMenuShellDeselect"
+::METHOD activate_item EXTERNAL "LIBRARY oorexxgtk2 GrxMenuShellActivateItem"
+::METHOD cancel EXTERNAL "LIBRARY oorexxgtk2 GrxMenuShellCancel"
+::METHOD set_take_focus EXTERNAL "LIBRARY oorexxgtk2 GrxMenuShellSetTakeFocus"
+::METHOD get_take_focus EXTERNAL "LIBRARY oorexxgtk2 GrxMenuShellGetTakeFocus"
+::METHOD signal_connect EXTERNAL "LIBRARY oorexxgtk2 GrxMenuShellSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -2392,34 +2392,34 @@ return
 
 ::class GtkMenu public subclass GtkMenuShell
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxMenuNew"
-::METHOD reorder_child EXTERNAL "LIBRARY rexxgtk GrxMenuReorderChild"
-::METHOD attach EXTERNAL "LIBRARY rexxgtk GrxMenuAttach"
-::METHOD popup EXTERNAL "LIBRARY rexxgtk GrxMenuPopup"
-::METHOD set_accel_group EXTERNAL "LIBRARY rexxgtk GrxMenuGetSetAccelGroup"
-::METHOD 'accel_group=' EXTERNAL "LIBRARY rexxgtk GrxMenuGetSetAccelGroup"
-::METHOD get_accel_group EXTERNAL "LIBRARY rexxgtk GrxMenuGetSetAccelGroup"
-::METHOD accel_group EXTERNAL "LIBRARY rexxgtk GrxMenuGetSetAccelGroup"
-::METHOD set_accel_path EXTERNAL "LIBRARY rexxgtk GrxMenuSetAccelPath"
-::METHOD 'accel_path=' EXTERNAL "LIBRARY rexxgtk GrxMenuSetAccelPath"
-::METHOD set_title EXTERNAL "LIBRARY rexxgtk GrxMenuGetSetTitle"
-::METHOD 'title=' EXTERNAL "LIBRARY rexxgtk GrxMenuGetSetTitle"
-::METHOD get_title EXTERNAL "LIBRARY rexxgtk GrxMenuGetSetTitle"
-::METHOD title EXTERNAL "LIBRARY rexxgtk GrxMenuGetSetTitle"
-::METHOD set_tearoff_state EXTERNAL "LIBRARY rexxgtk GrxMenuSetTearoffState"
-::METHOD 'tearoff_state=' EXTERNAL "LIBRARY rexxgtk GrxMenuSetTearoffState"
-::METHOD get_tearoff_state EXTERNAL "LIBRARY rexxgtk GrxMenuGetTearoffState"
-::METHOD tearoff_state EXTERNAL "LIBRARY rexxgtk GrxMenuGetTearoffState"
-::METHOD popdown EXTERNAL "LIBRARY rexxgtk GrxMenuPopdown"
-::METHOD reposition EXTERNAL "LIBRARY rexxgtk GrxMenuReposition"
-::METHOD set_active EXTERNAL "LIBRARY rexxgtk GrxMenuGetSetActive"
-::METHOD 'active=' EXTERNAL "LIBRARY rexxgtk GrxMenuGetSetActive"
-::METHOD get_active EXTERNAL "LIBRARY rexxgtk GrxMenuGetSetActive"
-::METHOD active EXTERNAL "LIBRARY rexxgtk GrxMenuGetSetActive"
-::METHOD attach_to_widget EXTERNAL "LIBRARY rexxgtk GrxMenuAttachToWidget"
-::METHOD detach EXTERNAL "LIBRARY rexxgtk GrxMenuDetach"
-::METHOD get_attach_widget EXTERNAL "LIBRARY rexxgtk GrxMenuGetAttachWidget"
-::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxMenuSignalConnect"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxMenuNew"
+::METHOD reorder_child EXTERNAL "LIBRARY oorexxgtk2 GrxMenuReorderChild"
+::METHOD attach EXTERNAL "LIBRARY oorexxgtk2 GrxMenuAttach"
+::METHOD popup EXTERNAL "LIBRARY oorexxgtk2 GrxMenuPopup"
+::METHOD set_accel_group EXTERNAL "LIBRARY oorexxgtk2 GrxMenuGetSetAccelGroup"
+::METHOD 'accel_group=' EXTERNAL "LIBRARY oorexxgtk2 GrxMenuGetSetAccelGroup"
+::METHOD get_accel_group EXTERNAL "LIBRARY oorexxgtk2 GrxMenuGetSetAccelGroup"
+::METHOD accel_group EXTERNAL "LIBRARY oorexxgtk2 GrxMenuGetSetAccelGroup"
+::METHOD set_accel_path EXTERNAL "LIBRARY oorexxgtk2 GrxMenuSetAccelPath"
+::METHOD 'accel_path=' EXTERNAL "LIBRARY oorexxgtk2 GrxMenuSetAccelPath"
+::METHOD set_title EXTERNAL "LIBRARY oorexxgtk2 GrxMenuGetSetTitle"
+::METHOD 'title=' EXTERNAL "LIBRARY oorexxgtk2 GrxMenuGetSetTitle"
+::METHOD get_title EXTERNAL "LIBRARY oorexxgtk2 GrxMenuGetSetTitle"
+::METHOD title EXTERNAL "LIBRARY oorexxgtk2 GrxMenuGetSetTitle"
+::METHOD set_tearoff_state EXTERNAL "LIBRARY oorexxgtk2 GrxMenuSetTearoffState"
+::METHOD 'tearoff_state=' EXTERNAL "LIBRARY oorexxgtk2 GrxMenuSetTearoffState"
+::METHOD get_tearoff_state EXTERNAL "LIBRARY oorexxgtk2 GrxMenuGetTearoffState"
+::METHOD tearoff_state EXTERNAL "LIBRARY oorexxgtk2 GrxMenuGetTearoffState"
+::METHOD popdown EXTERNAL "LIBRARY oorexxgtk2 GrxMenuPopdown"
+::METHOD reposition EXTERNAL "LIBRARY oorexxgtk2 GrxMenuReposition"
+::METHOD set_active EXTERNAL "LIBRARY oorexxgtk2 GrxMenuGetSetActive"
+::METHOD 'active=' EXTERNAL "LIBRARY oorexxgtk2 GrxMenuGetSetActive"
+::METHOD get_active EXTERNAL "LIBRARY oorexxgtk2 GrxMenuGetSetActive"
+::METHOD active EXTERNAL "LIBRARY oorexxgtk2 GrxMenuGetSetActive"
+::METHOD attach_to_widget EXTERNAL "LIBRARY oorexxgtk2 GrxMenuAttachToWidget"
+::METHOD detach EXTERNAL "LIBRARY oorexxgtk2 GrxMenuDetach"
+::METHOD get_attach_widget EXTERNAL "LIBRARY oorexxgtk2 GrxMenuGetAttachWidget"
+::METHOD signal_connect EXTERNAL "LIBRARY oorexxgtk2 GrxMenuSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -2442,18 +2442,18 @@ return self~new(label, .false)
 use strict arg label
 return self~new(label, .true)
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxMenuItemNew"
-::METHOD set_right_justified EXTERNAL "LIBRARY rexxgtk GrxMenuItemGetSetRightJustified"
-::METHOD 'right_justified=' EXTERNAL "LIBRARY rexxgtk GrxMenuItemGetSetRightJustified"
-::METHOD get_right_justified EXTERNAL "LIBRARY rexxgtk GrxMenuItemGetSetRightJustified"
-::METHOD right_justified EXTERNAL "LIBRARY rexxgtk GrxMenuItemGetSetRightJustified"
-::METHOD set_submenu EXTERNAL "LIBRARY rexxgtk GrxMenuItemSetSubmenu"
-::METHOD remove_submenu EXTERNAL "LIBRARY rexxgtk GrxMenuItemRemoveSubmenu"
-::METHOD set_accel_path EXTERNAL "LIBRARY rexxgtk GrxMenuItemSetAccelPath"
-::METHOD 'accel_path=' EXTERNAL "LIBRARY rexxgtk GrxMenuItemSetAccelPath"
-::METHOD select EXTERNAL "LIBRARY rexxgtk GrxMenuItemSelect"
-::METHOD deselect EXTERNAL "LIBRARY rexxgtk GrxMenuItemDeselect"
-::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxMenuItemSignalConnect"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxMenuItemNew"
+::METHOD set_right_justified EXTERNAL "LIBRARY oorexxgtk2 GrxMenuItemGetSetRightJustified"
+::METHOD 'right_justified=' EXTERNAL "LIBRARY oorexxgtk2 GrxMenuItemGetSetRightJustified"
+::METHOD get_right_justified EXTERNAL "LIBRARY oorexxgtk2 GrxMenuItemGetSetRightJustified"
+::METHOD right_justified EXTERNAL "LIBRARY oorexxgtk2 GrxMenuItemGetSetRightJustified"
+::METHOD set_submenu EXTERNAL "LIBRARY oorexxgtk2 GrxMenuItemSetSubmenu"
+::METHOD remove_submenu EXTERNAL "LIBRARY oorexxgtk2 GrxMenuItemRemoveSubmenu"
+::METHOD set_accel_path EXTERNAL "LIBRARY oorexxgtk2 GrxMenuItemSetAccelPath"
+::METHOD 'accel_path=' EXTERNAL "LIBRARY oorexxgtk2 GrxMenuItemSetAccelPath"
+::METHOD select EXTERNAL "LIBRARY oorexxgtk2 GrxMenuItemSelect"
+::METHOD deselect EXTERNAL "LIBRARY oorexxgtk2 GrxMenuItemDeselect"
+::METHOD signal_connect EXTERNAL "LIBRARY oorexxgtk2 GrxMenuItemSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -2485,7 +2485,7 @@ return .GtkImageMenuItem~new(label, 2, accelgrp)
 use strict arg label
 return .GtkImageMenuItem~new(label, 1)
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxImageMenuItemNew"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxImageMenuItemNew"
 
 
 /*============================================================================*/
@@ -2494,18 +2494,18 @@ return .GtkImageMenuItem~new(label, 1)
 
 ::class GtkMenuBar public subclass GtkMenuShell
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxMenuBarNew"
-::METHOD append EXTERNAL "LIBRARY rexxgtk GrxMenuBarAppend"
-::METHOD prepend EXTERNAL "LIBRARY rexxgtk GrxMenuBarPrepend"
-::METHOD insert EXTERNAL "LIBRARY rexxgtk GrxMenuBarInsert"
-::METHOD set_pack_direction EXTERNAL "LIBRARY rexxgtk GrxMenuBarGetSetPackDirection"
-::METHOD 'pack_direction=' EXTERNAL "LIBRARY rexxgtk GrxMenuBarGetSetPackDirection"
-::METHOD get_pack_direction EXTERNAL "LIBRARY rexxgtk GrxMenuBarGetSetPackDirection"
-::METHOD pack_direction EXTERNAL "LIBRARY rexxgtk GrxMenuBarGetSetPackDirection"
-::METHOD set_child_pack_direction EXTERNAL "LIBRARY rexxgtk GrxMenuBarGetSetChildPackDirection"
-::METHOD 'child_pack_direction=' EXTERNAL "LIBRARY rexxgtk GrxMenuBarGetSetChildPackDirection"
-::METHOD get_child_pack_direction EXTERNAL "LIBRARY rexxgtk GrxMenuBarGetSetChildPackDirection"
-::METHOD child_pack_direction EXTERNAL "LIBRARY rexxgtk GrxMenuBarGetSetChildPackDirection"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxMenuBarNew"
+::METHOD append EXTERNAL "LIBRARY oorexxgtk2 GrxMenuBarAppend"
+::METHOD prepend EXTERNAL "LIBRARY oorexxgtk2 GrxMenuBarPrepend"
+::METHOD insert EXTERNAL "LIBRARY oorexxgtk2 GrxMenuBarInsert"
+::METHOD set_pack_direction EXTERNAL "LIBRARY oorexxgtk2 GrxMenuBarGetSetPackDirection"
+::METHOD 'pack_direction=' EXTERNAL "LIBRARY oorexxgtk2 GrxMenuBarGetSetPackDirection"
+::METHOD get_pack_direction EXTERNAL "LIBRARY oorexxgtk2 GrxMenuBarGetSetPackDirection"
+::METHOD pack_direction EXTERNAL "LIBRARY oorexxgtk2 GrxMenuBarGetSetPackDirection"
+::METHOD set_child_pack_direction EXTERNAL "LIBRARY oorexxgtk2 GrxMenuBarGetSetChildPackDirection"
+::METHOD 'child_pack_direction=' EXTERNAL "LIBRARY oorexxgtk2 GrxMenuBarGetSetChildPackDirection"
+::METHOD get_child_pack_direction EXTERNAL "LIBRARY oorexxgtk2 GrxMenuBarGetSetChildPackDirection"
+::METHOD child_pack_direction EXTERNAL "LIBRARY oorexxgtk2 GrxMenuBarGetSetChildPackDirection"
 
 
 /*============================================================================*/
@@ -2514,55 +2514,55 @@ return .GtkImageMenuItem~new(label, 1)
 
 ::class GtkToolbar public subclass GtkContainer
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxToolbarNew"
-::METHOD insert EXTERNAL "LIBRARY rexxgtk GrxToolbarInsert"
-::METHOD get_item_index EXTERNAL "LIBRARY rexxgtk GrxToolbarGetItemIndex"
-::METHOD item_index EXTERNAL "LIBRARY rexxgtk GrxToolbarGetItemIndex"
-::METHOD get_n_items EXTERNAL "LIBRARY rexxgtk GrxToolbarGetNItems"
-::METHOD n_items EXTERNAL "LIBRARY rexxgtk GrxToolbarGetNItems"
-::METHOD get_nth_item EXTERNAL "LIBRARY rexxgtk GrxToolbarGetNthItem"
-::METHOD nth_item EXTERNAL "LIBRARY rexxgtk GrxToolbarGetNthItem"
-::METHOD get_drop_index EXTERNAL "LIBRARY rexxgtk GrxToolbarGetDropIndex"
-::METHOD drop_index EXTERNAL "LIBRARY rexxgtk GrxToolbarGetDropIndex"
-::METHOD set_drop_highlight_item EXTERNAL "LIBRARY rexxgtk GrxToolbarSetDropHighlightItem"
-::METHOD set_show_arrow EXTERNAL "LIBRARY rexxgtk GrxToolbarGetSetShowArrow"
-::METHOD 'show_arrow=' EXTERNAL "LIBRARY rexxgtk GrxToolbarGetSetShowArrow"
-::METHOD get_show_arrow EXTERNAL "LIBRARY rexxgtk GrxToolbarGetSetShowArrow"
-::METHOD show_arrow EXTERNAL "LIBRARY rexxgtk GrxToolbarGetSetShowArrow"
-::METHOD set_orientation EXTERNAL "LIBRARY rexxgtk GrxToolbarGetSetOrientation"
-::METHOD 'orientation=' EXTERNAL "LIBRARY rexxgtk GrxToolbarGetSetOrientation"
-::METHOD get_orientation EXTERNAL "LIBRARY rexxgtk GrxToolbarGetSetOrientation"
-::METHOD orientation EXTERNAL "LIBRARY rexxgtk GrxToolbarGetSetOrientation"
-::METHOD set_tooltips EXTERNAL "LIBRARY rexxgtk GrxToolbarSetTooltips"
-::METHOD set_icon_size EXTERNAL "LIBRARY rexxgtk GrxToolbarGetSetIconSize"
-::METHOD 'icon_size=' EXTERNAL "LIBRARY rexxgtk GrxToolbarGetSetIconSize"
-::METHOD get_icon_size EXTERNAL "LIBRARY rexxgtk GrxToolbarGetSetIconSize"
-::METHOD icon_size EXTERNAL "LIBRARY rexxgtk GrxToolbarGetSetIconSize"
-::METHOD unset_icon_size EXTERNAL "LIBRARY rexxgtk GrxToolbarUnsetIconSize"
-::METHOD get_style EXTERNAL "LIBRARY rexxgtk GrxToolbarGetSetStyle"
-::METHOD style EXTERNAL "LIBRARY rexxgtk GrxToolbarGetSetStyle"
-::METHOD set_style EXTERNAL "LIBRARY rexxgtk GrxToolbarGetSetStyle"
-::METHOD 'style=' EXTERNAL "LIBRARY rexxgtk GrxToolbarGetSetStyle"
-::METHOD get_relief_style EXTERNAL "LIBRARY rexxgtk GrxToolbarGetReliefStyle"
-::METHOD relief_style EXTERNAL "LIBRARY rexxgtk GrxToolbarGetReliefStyle"
-::METHOD get_tooltips EXTERNAL "LIBRARY rexxgtk GrxToolbarGetTooltips"
-::METHOD tooltips EXTERNAL "LIBRARY rexxgtk GrxToolbarGetTooltips"
-::METHOD append_item EXTERNAL "LIBRARY rexxgtk GrxToolbarAppendItem"
-::METHOD prepend_item EXTERNAL "LIBRARY rexxgtk GrxToolbarPrependItem"
-::METHOD insert_item EXTERNAL "LIBRARY rexxgtk GrxToolbarInsertItem"
-::METHOD append_space EXTERNAL "LIBRARY rexxgtk GrxToolbarAppendSpace"
-::METHOD prepend_space EXTERNAL "LIBRARY rexxgtk GrxToolbarPrependSpace"
-::METHOD insert_space EXTERNAL "LIBRARY rexxgtk GrxToolbarInsertSpace"
-::METHOD append_element EXTERNAL "LIBRARY rexxgtk GrxToolbarAppendElement"
-::METHOD prepend_element EXTERNAL "LIBRARY rexxgtk GrxToolbarPrependElement"
-::METHOD insert_element EXTERNAL "LIBRARY rexxgtk GrxToolbarInsertElement"
-::METHOD append_widget EXTERNAL "LIBRARY rexxgtk GrxToolbarAppendWidget"
-::METHOD prepend_widget EXTERNAL "LIBRARY rexxgtk GrxToolbarPrependWidget"
-::METHOD insert_widget EXTERNAL "LIBRARY rexxgtk GrxToolbarInsertWidget"
-::METHOD insert_stock EXTERNAL "LIBRARY rexxgtk GrxToolbarInsertStock"
-::METHOD remove_space EXTERNAL "LIBRARY rexxgtk GrxToolbarRemoveSpace"
-::METHOD unset_style EXTERNAL "LIBRARY rexxgtk GrxToolbarUnsetStyle"
-::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxToolbarSignalConnect"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarNew"
+::METHOD insert EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarInsert"
+::METHOD get_item_index EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarGetItemIndex"
+::METHOD item_index EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarGetItemIndex"
+::METHOD get_n_items EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarGetNItems"
+::METHOD n_items EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarGetNItems"
+::METHOD get_nth_item EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarGetNthItem"
+::METHOD nth_item EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarGetNthItem"
+::METHOD get_drop_index EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarGetDropIndex"
+::METHOD drop_index EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarGetDropIndex"
+::METHOD set_drop_highlight_item EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarSetDropHighlightItem"
+::METHOD set_show_arrow EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarGetSetShowArrow"
+::METHOD 'show_arrow=' EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarGetSetShowArrow"
+::METHOD get_show_arrow EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarGetSetShowArrow"
+::METHOD show_arrow EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarGetSetShowArrow"
+::METHOD set_orientation EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarGetSetOrientation"
+::METHOD 'orientation=' EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarGetSetOrientation"
+::METHOD get_orientation EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarGetSetOrientation"
+::METHOD orientation EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarGetSetOrientation"
+::METHOD set_tooltips EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarSetTooltips"
+::METHOD set_icon_size EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarGetSetIconSize"
+::METHOD 'icon_size=' EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarGetSetIconSize"
+::METHOD get_icon_size EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarGetSetIconSize"
+::METHOD icon_size EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarGetSetIconSize"
+::METHOD unset_icon_size EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarUnsetIconSize"
+::METHOD get_style EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarGetSetStyle"
+::METHOD style EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarGetSetStyle"
+::METHOD set_style EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarGetSetStyle"
+::METHOD 'style=' EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarGetSetStyle"
+::METHOD get_relief_style EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarGetReliefStyle"
+::METHOD relief_style EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarGetReliefStyle"
+::METHOD get_tooltips EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarGetTooltips"
+::METHOD tooltips EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarGetTooltips"
+::METHOD append_item EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarAppendItem"
+::METHOD prepend_item EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarPrependItem"
+::METHOD insert_item EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarInsertItem"
+::METHOD append_space EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarAppendSpace"
+::METHOD prepend_space EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarPrependSpace"
+::METHOD insert_space EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarInsertSpace"
+::METHOD append_element EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarAppendElement"
+::METHOD prepend_element EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarPrependElement"
+::METHOD insert_element EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarInsertElement"
+::METHOD append_widget EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarAppendWidget"
+::METHOD prepend_widget EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarPrependWidget"
+::METHOD insert_widget EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarInsertWidget"
+::METHOD insert_stock EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarInsertStock"
+::METHOD remove_space EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarRemoveSpace"
+::METHOD unset_style EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarUnsetStyle"
+::METHOD signal_connect EXTERNAL "LIBRARY oorexxgtk2 GrxToolbarSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -2590,46 +2590,46 @@ return
 use strict arg sid
 return .GtkToolItem~new(sid)
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxToolItemNew"
-::METHOD set_homogeneous EXTERNAL "LIBRARY rexxgtk GrxToolItemGetSetHomogeneous"
-::METHOD 'homogeneous=' EXTERNAL "LIBRARY rexxgtk GrxToolItemGetSetHomogeneous"
-::METHOD get_homogeneous EXTERNAL "LIBRARY rexxgtk GrxToolItemGetSetHomogeneous"
-::METHOD homogeneous EXTERNAL "LIBRARY rexxgtk GrxToolItemGetSetHomogeneous"
-::METHOD set_expand EXTERNAL "LIBRARY rexxgtk GrxToolItemGetSetExpand"
-::METHOD 'expand=' EXTERNAL "LIBRARY rexxgtk GrxToolItemGetSetExpand"
-::METHOD get_expand EXTERNAL "LIBRARY rexxgtk GrxToolItemGetSetExpand"
-::METHOD expand EXTERNAL "LIBRARY rexxgtk GrxToolItemGetSetExpand"
-::METHOD set_tooltip EXTERNAL "LIBRARY rexxgtk GrxToolItemSetTooltip"
-::METHOD set_use_drag_window EXTERNAL "LIBRARY rexxgtk GrxToolItemGetSetUseDragWindow"
-::METHOD 'use_drag_window=' EXTERNAL "LIBRARY rexxgtk GrxToolItemGetSetUseDragWindow"
-::METHOD get_use_drag_window EXTERNAL "LIBRARY rexxgtk GrxToolItemGetSetUseDragWindow"
-::METHOD use_drag_window EXTERNAL "LIBRARY rexxgtk GrxToolItemGetSetUseDragWindow"
-::METHOD set_visible_horizontal EXTERNAL "LIBRARY rexxgtk GrxToolItemGetSetVisibleHorizontal"
-::METHOD 'visible_horizontal=' EXTERNAL "LIBRARY rexxgtk GrxToolItemGetSetVisibleHorizontal"
-::METHOD get_visible_horizontal EXTERNAL "LIBRARY rexxgtk GrxToolItemGetSetVisibleHorizontal"
-::METHOD visible_horizontal EXTERNAL "LIBRARY rexxgtk GrxToolItemGetSetVisibleHorizontal"
-::METHOD set_visible_vertical EXTERNAL "LIBRARY rexxgtk GrxToolItemGetSetVisibleVertical"
-::METHOD 'visible_vertical=' EXTERNAL "LIBRARY rexxgtk GrxToolItemGetSetVisibleVertical"
-::METHOD get_visible_vertical EXTERNAL "LIBRARY rexxgtk GrxToolItemGetSetVisibleVertical"
-::METHOD visible_vertical EXTERNAL "LIBRARY rexxgtk GrxToolItemGetSetVisibleVertical"
-::METHOD set_is_important EXTERNAL "LIBRARY rexxgtk GrxToolItemGetSetIsImportant"
-::METHOD 'is_important=' EXTERNAL "LIBRARY rexxgtk GrxToolItemGetSetIsImportant"
-::METHOD get_is_important EXTERNAL "LIBRARY rexxgtk GrxToolItemGetSetIsImportant"
-::METHOD is_important EXTERNAL "LIBRARY rexxgtk GrxToolItemGetSetIsImportant"
-::METHOD get_icon_size EXTERNAL "LIBRARY rexxgtk GrxToolItemGetIconSize"
-::METHOD icon_size EXTERNAL "LIBRARY rexxgtk GrxToolItemGetIconSize"
-::METHOD get_orientation EXTERNAL "LIBRARY rexxgtk GrxToolItemGetOrientation"
-::METHOD orientation EXTERNAL "LIBRARY rexxgtk GrxToolItemGetOrientation"
-::METHOD get_toolbar_style EXTERNAL "LIBRARY rexxgtk GrxToolItemGetToolbarStyle"
-::METHOD toolbar_style EXTERNAL "LIBRARY rexxgtk GrxToolItemGetToolbarStyle"
-::METHOD get_relief_style EXTERNAL "LIBRARY rexxgtk GrxToolItemGetReliefStyle"
-::METHOD relief_style EXTERNAL "LIBRARY rexxgtk GrxToolItemGetReliefStyle"
-::METHOD retrieve_proxy_menu_item EXTERNAL "LIBRARY rexxgtk GrxToolItemRetrieveProxyMenuItem"
-::METHOD get_proxy_menu_item EXTERNAL "LIBRARY rexxgtk GrxToolItemGetProxyMenuItem"
-::METHOD proxy_menu_item EXTERNAL "LIBRARY rexxgtk GrxToolItemGetProxyMenuItem"
-::METHOD set_proxy_menu_item EXTERNAL "LIBRARY rexxgtk GrxToolItemSetProxyMenuItem"
-::METHOD rebuild_menu EXTERNAL "LIBRARY rexxgtk GrxToolItemRebuildMenu"
-::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxToolItemSignalConnect"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxToolItemNew"
+::METHOD set_homogeneous EXTERNAL "LIBRARY oorexxgtk2 GrxToolItemGetSetHomogeneous"
+::METHOD 'homogeneous=' EXTERNAL "LIBRARY oorexxgtk2 GrxToolItemGetSetHomogeneous"
+::METHOD get_homogeneous EXTERNAL "LIBRARY oorexxgtk2 GrxToolItemGetSetHomogeneous"
+::METHOD homogeneous EXTERNAL "LIBRARY oorexxgtk2 GrxToolItemGetSetHomogeneous"
+::METHOD set_expand EXTERNAL "LIBRARY oorexxgtk2 GrxToolItemGetSetExpand"
+::METHOD 'expand=' EXTERNAL "LIBRARY oorexxgtk2 GrxToolItemGetSetExpand"
+::METHOD get_expand EXTERNAL "LIBRARY oorexxgtk2 GrxToolItemGetSetExpand"
+::METHOD expand EXTERNAL "LIBRARY oorexxgtk2 GrxToolItemGetSetExpand"
+::METHOD set_tooltip EXTERNAL "LIBRARY oorexxgtk2 GrxToolItemSetTooltip"
+::METHOD set_use_drag_window EXTERNAL "LIBRARY oorexxgtk2 GrxToolItemGetSetUseDragWindow"
+::METHOD 'use_drag_window=' EXTERNAL "LIBRARY oorexxgtk2 GrxToolItemGetSetUseDragWindow"
+::METHOD get_use_drag_window EXTERNAL "LIBRARY oorexxgtk2 GrxToolItemGetSetUseDragWindow"
+::METHOD use_drag_window EXTERNAL "LIBRARY oorexxgtk2 GrxToolItemGetSetUseDragWindow"
+::METHOD set_visible_horizontal EXTERNAL "LIBRARY oorexxgtk2 GrxToolItemGetSetVisibleHorizontal"
+::METHOD 'visible_horizontal=' EXTERNAL "LIBRARY oorexxgtk2 GrxToolItemGetSetVisibleHorizontal"
+::METHOD get_visible_horizontal EXTERNAL "LIBRARY oorexxgtk2 GrxToolItemGetSetVisibleHorizontal"
+::METHOD visible_horizontal EXTERNAL "LIBRARY oorexxgtk2 GrxToolItemGetSetVisibleHorizontal"
+::METHOD set_visible_vertical EXTERNAL "LIBRARY oorexxgtk2 GrxToolItemGetSetVisibleVertical"
+::METHOD 'visible_vertical=' EXTERNAL "LIBRARY oorexxgtk2 GrxToolItemGetSetVisibleVertical"
+::METHOD get_visible_vertical EXTERNAL "LIBRARY oorexxgtk2 GrxToolItemGetSetVisibleVertical"
+::METHOD visible_vertical EXTERNAL "LIBRARY oorexxgtk2 GrxToolItemGetSetVisibleVertical"
+::METHOD set_is_important EXTERNAL "LIBRARY oorexxgtk2 GrxToolItemGetSetIsImportant"
+::METHOD 'is_important=' EXTERNAL "LIBRARY oorexxgtk2 GrxToolItemGetSetIsImportant"
+::METHOD get_is_important EXTERNAL "LIBRARY oorexxgtk2 GrxToolItemGetSetIsImportant"
+::METHOD is_important EXTERNAL "LIBRARY oorexxgtk2 GrxToolItemGetSetIsImportant"
+::METHOD get_icon_size EXTERNAL "LIBRARY oorexxgtk2 GrxToolItemGetIconSize"
+::METHOD icon_size EXTERNAL "LIBRARY oorexxgtk2 GrxToolItemGetIconSize"
+::METHOD get_orientation EXTERNAL "LIBRARY oorexxgtk2 GrxToolItemGetOrientation"
+::METHOD orientation EXTERNAL "LIBRARY oorexxgtk2 GrxToolItemGetOrientation"
+::METHOD get_toolbar_style EXTERNAL "LIBRARY oorexxgtk2 GrxToolItemGetToolbarStyle"
+::METHOD toolbar_style EXTERNAL "LIBRARY oorexxgtk2 GrxToolItemGetToolbarStyle"
+::METHOD get_relief_style EXTERNAL "LIBRARY oorexxgtk2 GrxToolItemGetReliefStyle"
+::METHOD relief_style EXTERNAL "LIBRARY oorexxgtk2 GrxToolItemGetReliefStyle"
+::METHOD retrieve_proxy_menu_item EXTERNAL "LIBRARY oorexxgtk2 GrxToolItemRetrieveProxyMenuItem"
+::METHOD get_proxy_menu_item EXTERNAL "LIBRARY oorexxgtk2 GrxToolItemGetProxyMenuItem"
+::METHOD proxy_menu_item EXTERNAL "LIBRARY oorexxgtk2 GrxToolItemGetProxyMenuItem"
+::METHOD set_proxy_menu_item EXTERNAL "LIBRARY oorexxgtk2 GrxToolItemSetProxyMenuItem"
+::METHOD rebuild_menu EXTERNAL "LIBRARY oorexxgtk2 GrxToolItemRebuildMenu"
+::METHOD signal_connect EXTERNAL "LIBRARY oorexxgtk2 GrxToolItemSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -2650,7 +2650,7 @@ return
 
 ::class GtkSeparatorMenuItem public subclass GtkMenuItem
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxSeparatorMenuItemNew"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxSeparatorMenuItemNew"
 
 
 /*============================================================================*/
@@ -2673,34 +2673,34 @@ use strict arg icon, label
 self~init_1args(icon, label)
 return
 
-::METHOD init_2args private EXTERNAL "LIBRARY rexxgtk GrxToolButtonNew"
-::METHOD init_1args private EXTERNAL "LIBRARY rexxgtk GrxToolButtonNewFromStock"
+::METHOD init_2args private EXTERNAL "LIBRARY oorexxgtk2 GrxToolButtonNew"
+::METHOD init_1args private EXTERNAL "LIBRARY oorexxgtk2 GrxToolButtonNewFromStock"
 
-::METHOD get_label EXTERNAL "LIBRARY rexxgtk GrxToolButtonGetSetLabel"
-::METHOD label EXTERNAL "LIBRARY rexxgtk GrxToolButtonGetSetLabel"
-::METHOD set_label EXTERNAL "LIBRARY rexxgtk GrxToolButtonGetSetLabel"
-::METHOD 'label=' EXTERNAL "LIBRARY rexxgtk GrxToolButtonGetSetLabel"
-::METHOD set_label_widget EXTERNAL "LIBRARY rexxgtk GrxToolButtonGetSetLabelWidget"
-::METHOD 'label_widget=' EXTERNAL "LIBRARY rexxgtk GrxToolButtonGetSetLabelWidget"
-::METHOD get_use_underline EXTERNAL "LIBRARY rexxgtk GrxToolButtonGetUseUnderline"
-::METHOD use_underline EXTERNAL "LIBRARY rexxgtk GrxToolButtonGetUseUnderline"
-::METHOD set_use_underline EXTERNAL "LIBRARY rexxgtk GrxToolButtonSetUseUnderline"
-::METHOD 'use_underline=' EXTERNAL "LIBRARY rexxgtk GrxToolButtonSetUseUnderline"
-::METHOD get_stock_id EXTERNAL "LIBRARY rexxgtk GrxToolButtonGetSetStockId"
-::METHOD stock_id EXTERNAL "LIBRARY rexxgtk GrxToolButtonGetSetStockId"
-::METHOD set_stock_id EXTERNAL "LIBRARY rexxgtk GrxToolButtonGetSetStockId"
-::METHOD 'stock_id=' EXTERNAL "LIBRARY rexxgtk GrxToolButtonGetSetStockId"
-::METHOD get_icon_name EXTERNAL "LIBRARY rexxgtk GrxToolButtonGetSetIconName"
-::METHOD icon_name EXTERNAL "LIBRARY rexxgtk GrxToolButtonGetSetIconName"
-::METHOD set_icon_name EXTERNAL "LIBRARY rexxgtk GrxToolButtonGetSetIconName"
-::METHOD 'icon_name=' EXTERNAL "LIBRARY rexxgtk GrxToolButtonGetSetIconName"
-::METHOD get_icon_widget EXTERNAL "LIBRARY rexxgtk GrxToolButtonGetSetIconWidget"
-::METHOD icon_widget EXTERNAL "LIBRARY rexxgtk GrxToolButtonGetSetIconWidget"
-::METHOD set_icon_widget EXTERNAL "LIBRARY rexxgtk GrxToolButtonGetSetIconWidget"
-::METHOD 'icon_widget=' EXTERNAL "LIBRARY rexxgtk GrxToolButtonGetSetIconWidget"
-::METHOD get_label_widget EXTERNAL "LIBRARY rexxgtk GrxToolButtonGetSetLabelWidget"
-::METHOD label_widget EXTERNAL "LIBRARY rexxgtk GrxToolButtonGetSetLabelWidget"
-::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxToolButtonSignalConnect"
+::METHOD get_label EXTERNAL "LIBRARY oorexxgtk2 GrxToolButtonGetSetLabel"
+::METHOD label EXTERNAL "LIBRARY oorexxgtk2 GrxToolButtonGetSetLabel"
+::METHOD set_label EXTERNAL "LIBRARY oorexxgtk2 GrxToolButtonGetSetLabel"
+::METHOD 'label=' EXTERNAL "LIBRARY oorexxgtk2 GrxToolButtonGetSetLabel"
+::METHOD set_label_widget EXTERNAL "LIBRARY oorexxgtk2 GrxToolButtonGetSetLabelWidget"
+::METHOD 'label_widget=' EXTERNAL "LIBRARY oorexxgtk2 GrxToolButtonGetSetLabelWidget"
+::METHOD get_use_underline EXTERNAL "LIBRARY oorexxgtk2 GrxToolButtonGetUseUnderline"
+::METHOD use_underline EXTERNAL "LIBRARY oorexxgtk2 GrxToolButtonGetUseUnderline"
+::METHOD set_use_underline EXTERNAL "LIBRARY oorexxgtk2 GrxToolButtonSetUseUnderline"
+::METHOD 'use_underline=' EXTERNAL "LIBRARY oorexxgtk2 GrxToolButtonSetUseUnderline"
+::METHOD get_stock_id EXTERNAL "LIBRARY oorexxgtk2 GrxToolButtonGetSetStockId"
+::METHOD stock_id EXTERNAL "LIBRARY oorexxgtk2 GrxToolButtonGetSetStockId"
+::METHOD set_stock_id EXTERNAL "LIBRARY oorexxgtk2 GrxToolButtonGetSetStockId"
+::METHOD 'stock_id=' EXTERNAL "LIBRARY oorexxgtk2 GrxToolButtonGetSetStockId"
+::METHOD get_icon_name EXTERNAL "LIBRARY oorexxgtk2 GrxToolButtonGetSetIconName"
+::METHOD icon_name EXTERNAL "LIBRARY oorexxgtk2 GrxToolButtonGetSetIconName"
+::METHOD set_icon_name EXTERNAL "LIBRARY oorexxgtk2 GrxToolButtonGetSetIconName"
+::METHOD 'icon_name=' EXTERNAL "LIBRARY oorexxgtk2 GrxToolButtonGetSetIconName"
+::METHOD get_icon_widget EXTERNAL "LIBRARY oorexxgtk2 GrxToolButtonGetSetIconWidget"
+::METHOD icon_widget EXTERNAL "LIBRARY oorexxgtk2 GrxToolButtonGetSetIconWidget"
+::METHOD set_icon_widget EXTERNAL "LIBRARY oorexxgtk2 GrxToolButtonGetSetIconWidget"
+::METHOD 'icon_widget=' EXTERNAL "LIBRARY oorexxgtk2 GrxToolButtonGetSetIconWidget"
+::METHOD get_label_widget EXTERNAL "LIBRARY oorexxgtk2 GrxToolButtonGetSetLabelWidget"
+::METHOD label_widget EXTERNAL "LIBRARY oorexxgtk2 GrxToolButtonGetSetLabelWidget"
+::METHOD signal_connect EXTERNAL "LIBRARY oorexxgtk2 GrxToolButtonSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -2721,12 +2721,12 @@ obj = .GtkMenuToolButton~new(.nil, .nil)
 obj~set_stock_id(id)
 return obj
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxMenuToolButtonNew"
-::METHOD get_menu EXTERNAL "LIBRARY rexxgtk GrxMenuToolButtonGetSetMenu"
-::METHOD menu EXTERNAL "LIBRARY rexxgtk GrxMenuToolButtonGetSetMenu"
-::METHOD set_menu EXTERNAL "LIBRARY rexxgtk GrxMenuToolButtonGetSetMenu"
-::METHOD 'menu=' EXTERNAL "LIBRARY rexxgtk GrxMenuToolButtonGetSetMenu"
-::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxMenuToolButtonSignalConnect"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxMenuToolButtonNew"
+::METHOD get_menu EXTERNAL "LIBRARY oorexxgtk2 GrxMenuToolButtonGetSetMenu"
+::METHOD menu EXTERNAL "LIBRARY oorexxgtk2 GrxMenuToolButtonGetSetMenu"
+::METHOD set_menu EXTERNAL "LIBRARY oorexxgtk2 GrxMenuToolButtonGetSetMenu"
+::METHOD 'menu=' EXTERNAL "LIBRARY oorexxgtk2 GrxMenuToolButtonGetSetMenu"
+::METHOD signal_connect EXTERNAL "LIBRARY oorexxgtk2 GrxMenuToolButtonSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -2741,11 +2741,11 @@ return
 
 ::class GtkSeparatorToolItem public subclass GtkToolItem
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxSeparatorToolItemNew"
-::METHOD set_draw EXTERNAL "LIBRARY rexxgtk GrxSeparatorToolItemGetSetDraw"
-::METHOD 'draw=' EXTERNAL "LIBRARY rexxgtk GrxSeparatorToolItemGetSetDraw"
-::METHOD get_draw EXTERNAL "LIBRARY rexxgtk GrxSeparatorToolItemGetSetDraw"
-::METHOD draw EXTERNAL "LIBRARY rexxgtk GrxSeparatorToolItemGetSetDraw"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxSeparatorToolItemNew"
+::METHOD set_draw EXTERNAL "LIBRARY oorexxgtk2 GrxSeparatorToolItemGetSetDraw"
+::METHOD 'draw=' EXTERNAL "LIBRARY oorexxgtk2 GrxSeparatorToolItemGetSetDraw"
+::METHOD get_draw EXTERNAL "LIBRARY oorexxgtk2 GrxSeparatorToolItemGetSetDraw"
+::METHOD draw EXTERNAL "LIBRARY oorexxgtk2 GrxSeparatorToolItemGetSetDraw"
 
 
 /*============================================================================*/
@@ -2754,8 +2754,8 @@ return
 
 ::class GtkAccelGroup public
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxAccelGroupNew"
-::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxAccelGroupSignalConnect"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxAccelGroupNew"
+::METHOD signal_connect EXTERNAL "LIBRARY oorexxgtk2 GrxAccelGroupSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -2773,16 +2773,16 @@ return
 
 ::class GtkStatusbar public subclass GtkHBox
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxStatusbarNew"
-::METHOD get_context_id EXTERNAL "LIBRARY rexxgtk GrxStatusbarGetContextId"
-::METHOD push EXTERNAL "LIBRARY rexxgtk GrxStatusbarPush"
-::METHOD pop EXTERNAL "LIBRARY rexxgtk GrxStatusbarPop"
-::METHOD remove EXTERNAL "LIBRARY rexxgtk GrxStatusbarRemove"
-::METHOD set_has_resize_grip EXTERNAL "LIBRARY rexxgtk GrxStatusbarGetSetHasResizeGrip"
-::METHOD 'has_resize_grip=' EXTERNAL "LIBRARY rexxgtk GrxStatusbarGetSetHasResizeGrip"
-::METHOD get_has_resize_grip EXTERNAL "LIBRARY rexxgtk GrxStatusbarGetSetHasResizeGrip"
-::METHOD has_resize_grip EXTERNAL "LIBRARY rexxgtk GrxStatusbarGetSetHasResizeGrip"
-::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxStatusbarSignalConnect"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxStatusbarNew"
+::METHOD get_context_id EXTERNAL "LIBRARY oorexxgtk2 GrxStatusbarGetContextId"
+::METHOD push EXTERNAL "LIBRARY oorexxgtk2 GrxStatusbarPush"
+::METHOD pop EXTERNAL "LIBRARY oorexxgtk2 GrxStatusbarPop"
+::METHOD remove EXTERNAL "LIBRARY oorexxgtk2 GrxStatusbarRemove"
+::METHOD set_has_resize_grip EXTERNAL "LIBRARY oorexxgtk2 GrxStatusbarGetSetHasResizeGrip"
+::METHOD 'has_resize_grip=' EXTERNAL "LIBRARY oorexxgtk2 GrxStatusbarGetSetHasResizeGrip"
+::METHOD get_has_resize_grip EXTERNAL "LIBRARY oorexxgtk2 GrxStatusbarGetSetHasResizeGrip"
+::METHOD has_resize_grip EXTERNAL "LIBRARY oorexxgtk2 GrxStatusbarGetSetHasResizeGrip"
+::METHOD signal_connect EXTERNAL "LIBRARY oorexxgtk2 GrxStatusbarSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -2802,8 +2802,8 @@ return
 
 ::class GtkCellRenderer public
 
-::METHOD set_fixed_size EXTERNAL "LIBRARY rexxgtk GrxCellRendererSetFixedSize"
-::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxCellRendererSignalConnect"
+::METHOD set_fixed_size EXTERNAL "LIBRARY oorexxgtk2 GrxCellRendererSetFixedSize"
+::METHOD signal_connect EXTERNAL "LIBRARY oorexxgtk2 GrxCellRendererSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -2821,8 +2821,8 @@ return
 
 ::class GtkCellRendererText public subclass GtkCellRenderer
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxCellRendererTextNew"
-::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxCellRendererTextSignalConnect"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxCellRendererTextNew"
+::METHOD signal_connect EXTERNAL "LIBRARY oorexxgtk2 GrxCellRendererTextSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -2837,7 +2837,7 @@ return
 
 ::class GtkCellRendererPixbuf public subclass GtkCellRenderer
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxCellRendererPixbufNew"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxCellRendererPixbufNew"
 
 
 /*============================================================================*/
@@ -2846,7 +2846,7 @@ return
 
 ::class GtkCellRendererProgress public subclass GtkCellRenderer
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxCellRendererProgressNew"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxCellRendererProgressNew"
 
 
 /*============================================================================*/
@@ -2855,16 +2855,16 @@ return
 
 ::class GtkCellRendererToggle public subclass GtkCellRenderer
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxCellRendererToggleNew"
-::METHOD set_radio EXTERNAL "LIBRARY rexxgtk GrxCellRendererToggleGetSetRadio"
-::METHOD 'radio=' EXTERNAL "LIBRARY rexxgtk GrxCellRendererToggleGetSetRadio"
-::METHOD get_radio EXTERNAL "LIBRARY rexxgtk GrxCellRendererToggleGetSetRadio"
-::METHOD radio EXTERNAL "LIBRARY rexxgtk GrxCellRendererToggleGetSetRadio"
-::METHOD set_active EXTERNAL "LIBRARY rexxgtk GrxCellRendererToggleGetSetActive"
-::METHOD 'active=' EXTERNAL "LIBRARY rexxgtk GrxCellRendererToggleGetSetActive"
-::METHOD get_active EXTERNAL "LIBRARY rexxgtk GrxCellRendererToggleGetSetActive"
-::METHOD active EXTERNAL "LIBRARY rexxgtk GrxCellRendererToggleGetSetActive"
-::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxCellRendererToggleSignalConnect"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxCellRendererToggleNew"
+::METHOD set_radio EXTERNAL "LIBRARY oorexxgtk2 GrxCellRendererToggleGetSetRadio"
+::METHOD 'radio=' EXTERNAL "LIBRARY oorexxgtk2 GrxCellRendererToggleGetSetRadio"
+::METHOD get_radio EXTERNAL "LIBRARY oorexxgtk2 GrxCellRendererToggleGetSetRadio"
+::METHOD radio EXTERNAL "LIBRARY oorexxgtk2 GrxCellRendererToggleGetSetRadio"
+::METHOD set_active EXTERNAL "LIBRARY oorexxgtk2 GrxCellRendererToggleGetSetActive"
+::METHOD 'active=' EXTERNAL "LIBRARY oorexxgtk2 GrxCellRendererToggleGetSetActive"
+::METHOD get_active EXTERNAL "LIBRARY oorexxgtk2 GrxCellRendererToggleGetSetActive"
+::METHOD active EXTERNAL "LIBRARY oorexxgtk2 GrxCellRendererToggleGetSetActive"
+::METHOD signal_connect EXTERNAL "LIBRARY oorexxgtk2 GrxCellRendererToggleSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -2879,8 +2879,8 @@ return
 
 ::class GtkCellRendererAccel public subclass GtkCellRendererText
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxCellRendererAccelNew"
-::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxCellRendererAccelSignalConnect"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxCellRendererAccelNew"
+::METHOD signal_connect EXTERNAL "LIBRARY oorexxgtk2 GrxCellRendererAccelSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -2898,8 +2898,8 @@ return
 
 ::class GtkCellRendererCombo public subclass GtkCellRendererText
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxCellRendererComboNew"
-::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxCellRendererComboSignalConnect"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxCellRendererComboNew"
+::METHOD signal_connect EXTERNAL "LIBRARY oorexxgtk2 GrxCellRendererComboSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -2914,17 +2914,17 @@ return
 
 ::class GtkTreeView public subclass GtkContainer
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxTreeViewNew"
-::METHOD append_column EXTERNAL "LIBRARY rexxgtk GrxTreeViewAppendColumn"
-::METHOD insert_column EXTERNAL "LIBRARY rexxgtk GrxTreeViewInsertColumn"
-::METHOD remove_column EXTERNAL "LIBRARY rexxgtk GrxTreeViewRemoveColumn"
-::METHOD set_model EXTERNAL "LIBRARY rexxgtk GrxTreeViewGetSetModel"
-::METHOD 'model=' EXTERNAL "LIBRARY rexxgtk GrxTreeViewGetSetModel"
-::METHOD get_model EXTERNAL "LIBRARY rexxgtk GrxTreeViewGetSetModel"
-::METHOD model EXTERNAL "LIBRARY rexxgtk GrxTreeViewGetSetModel"
-::METHOD get_selection EXTERNAL "LIBRARY rexxgtk GrxTreeViewGetSelection"
-::METHOD expand_all EXTERNAL "LIBRARY rexxgtk GrxTreeViewExpandAll"
-::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxTreeViewSignalConnect"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxTreeViewNew"
+::METHOD append_column EXTERNAL "LIBRARY oorexxgtk2 GrxTreeViewAppendColumn"
+::METHOD insert_column EXTERNAL "LIBRARY oorexxgtk2 GrxTreeViewInsertColumn"
+::METHOD remove_column EXTERNAL "LIBRARY oorexxgtk2 GrxTreeViewRemoveColumn"
+::METHOD set_model EXTERNAL "LIBRARY oorexxgtk2 GrxTreeViewGetSetModel"
+::METHOD 'model=' EXTERNAL "LIBRARY oorexxgtk2 GrxTreeViewGetSetModel"
+::METHOD get_model EXTERNAL "LIBRARY oorexxgtk2 GrxTreeViewGetSetModel"
+::METHOD model EXTERNAL "LIBRARY oorexxgtk2 GrxTreeViewGetSetModel"
+::METHOD get_selection EXTERNAL "LIBRARY oorexxgtk2 GrxTreeViewGetSelection"
+::METHOD expand_all EXTERNAL "LIBRARY oorexxgtk2 GrxTreeViewExpandAll"
+::METHOD signal_connect EXTERNAL "LIBRARY oorexxgtk2 GrxTreeViewSignalConnect"
 
 ::method create_tree_model private
 use strict arg ptr
@@ -2992,9 +2992,9 @@ return .false
 
 ::class GtkTreeRowReference public
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxTreeRowReferenceNew"
-::METHOD valid EXTERNAL "LIBRARY rexxgtk GrxTreeRowReferenceValid"
-::METHOD get_path EXTERNAL "LIBRARY rexxgtk GrxTreeRowReferenceGetPath"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxTreeRowReferenceNew"
+::METHOD valid EXTERNAL "LIBRARY oorexxgtk2 GrxTreeRowReferenceValid"
+::METHOD get_path EXTERNAL "LIBRARY oorexxgtk2 GrxTreeRowReferenceGetPath"
 
 ::method create_tree_path private
 use strict arg ptr
@@ -3017,15 +3017,15 @@ do i = 3 to arg() by 2
    end
 return obj
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxTreeViewColumnNew"
-::METHOD set_title EXTERNAL "LIBRARY rexxgtk GrxTreeViewColumnGetSetTitle"
-::METHOD 'title=' EXTERNAL "LIBRARY rexxgtk GrxTreeViewColumnGetSetTitle"
-::METHOD get_title EXTERNAL "LIBRARY rexxgtk GrxTreeViewColumnGetSetTitle"
-::METHOD title EXTERNAL "LIBRARY rexxgtk GrxTreeViewColumnGetSetTitle"
-::METHOD pack_start EXTERNAL "LIBRARY rexxgtk GrxTreeViewColumnPackStart"
-::METHOD pack_end EXTERNAL "LIBRARY rexxgtk GrxTreeViewColumnPackEnd"
-::METHOD set_attribute EXTERNAL "LIBRARY rexxgtk GrxTreeViewColumnSetAttribute"
-::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxTreeViewColumnSignalConnect"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxTreeViewColumnNew"
+::METHOD set_title EXTERNAL "LIBRARY oorexxgtk2 GrxTreeViewColumnGetSetTitle"
+::METHOD 'title=' EXTERNAL "LIBRARY oorexxgtk2 GrxTreeViewColumnGetSetTitle"
+::METHOD get_title EXTERNAL "LIBRARY oorexxgtk2 GrxTreeViewColumnGetSetTitle"
+::METHOD title EXTERNAL "LIBRARY oorexxgtk2 GrxTreeViewColumnGetSetTitle"
+::METHOD pack_start EXTERNAL "LIBRARY oorexxgtk2 GrxTreeViewColumnPackStart"
+::METHOD pack_end EXTERNAL "LIBRARY oorexxgtk2 GrxTreeViewColumnPackEnd"
+::METHOD set_attribute EXTERNAL "LIBRARY oorexxgtk2 GrxTreeViewColumnSetAttribute"
+::METHOD signal_connect EXTERNAL "LIBRARY oorexxgtk2 GrxTreeViewColumnSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -3040,10 +3040,10 @@ return
 
 ::class GtkTreeStore public
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxTreeStoreNew"
-::METHOD append EXTERNAL "LIBRARY rexxgtk GrxTreeStoreAppend"
-::METHOD set_value EXTERNAL "LIBRARY rexxgtk GrxTreeStoreSetValue"
-::METHOD remove EXTERNAL "LIBRARY rexxgtk GrxTreeStoreRemove"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxTreeStoreNew"
+::METHOD append EXTERNAL "LIBRARY oorexxgtk2 GrxTreeStoreAppend"
+::METHOD set_value EXTERNAL "LIBRARY oorexxgtk2 GrxTreeStoreSetValue"
+::METHOD remove EXTERNAL "LIBRARY oorexxgtk2 GrxTreeStoreRemove"
 
 
 /*============================================================================*/
@@ -3052,11 +3052,11 @@ return
 
 ::class GtkTreeSelection public
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxTreeSelectionNewFromPtr"
-::METHOD get_selected_rows EXTERNAL "LIBRARY rexxgtk GrxTreeSelectionGetSelectedRows"
-::METHOD set_mode EXTERNAL "LIBRARY rexxgtk GrxTreeSelectionSetMode"
-::METHOD 'mode=' EXTERNAL "LIBRARY rexxgtk GrxTreeSelectionSetMode"
-::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxTreeSelectionSignalConnect"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxTreeSelectionNewFromPtr"
+::METHOD get_selected_rows EXTERNAL "LIBRARY oorexxgtk2 GrxTreeSelectionGetSelectedRows"
+::METHOD set_mode EXTERNAL "LIBRARY oorexxgtk2 GrxTreeSelectionSetMode"
+::METHOD 'mode=' EXTERNAL "LIBRARY oorexxgtk2 GrxTreeSelectionSetMode"
+::METHOD signal_connect EXTERNAL "LIBRARY oorexxgtk2 GrxTreeSelectionSignalConnect"
 
 ::method create_tree_row_reference private
 use strict arg ptr
@@ -3075,16 +3075,16 @@ return
 
 ::class GtkCalendar public subclass GtkWidget
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxCalendarNew"
-::METHOD select_month EXTERNAL "LIBRARY rexxgtk GrxCalendarSelectMonth"
-::METHOD select_day EXTERNAL "LIBRARY rexxgtk GrxCalendarSelectDay"
-::METHOD mark_day EXTERNAL "LIBRARY rexxgtk GrxCalendarMarkDay"
-::METHOD unmark_day EXTERNAL "LIBRARY rexxgtk GrxCalendarUnmarkDay"
-::METHOD clear_marks EXTERNAL "LIBRARY rexxgtk GrxCalendarClearMarks"
-::METHOD get_display_options EXTERNAL "LIBRARY rexxgtk GrxCalendarGetDisplayOptions"
-::METHOD set_display_options EXTERNAL "LIBRARY rexxgtk GrxCalendarSetDisplayOptions"
-::METHOD get_date EXTERNAL "LIBRARY rexxgtk GrxCalendarGetDate"
-::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxCalendarSignalConnect"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxCalendarNew"
+::METHOD select_month EXTERNAL "LIBRARY oorexxgtk2 GrxCalendarSelectMonth"
+::METHOD select_day EXTERNAL "LIBRARY oorexxgtk2 GrxCalendarSelectDay"
+::METHOD mark_day EXTERNAL "LIBRARY oorexxgtk2 GrxCalendarMarkDay"
+::METHOD unmark_day EXTERNAL "LIBRARY oorexxgtk2 GrxCalendarUnmarkDay"
+::METHOD clear_marks EXTERNAL "LIBRARY oorexxgtk2 GrxCalendarClearMarks"
+::METHOD get_display_options EXTERNAL "LIBRARY oorexxgtk2 GrxCalendarGetDisplayOptions"
+::METHOD set_display_options EXTERNAL "LIBRARY oorexxgtk2 GrxCalendarSetDisplayOptions"
+::METHOD get_date EXTERNAL "LIBRARY oorexxgtk2 GrxCalendarGetDate"
+::METHOD signal_connect EXTERNAL "LIBRARY oorexxgtk2 GrxCalendarSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -3212,14 +3212,14 @@ return GrxGetHostName()
 
 ::class GSList public
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxGSListNew"
-::METHOD uninit EXTERNAL "LIBRARY rexxgtk GrxGSListUninit"
-::METHOD append EXTERNAL "LIBRARY rexxgtk GrxGSListAppend"
-::METHOD head EXTERNAL "LIBRARY rexxgtk GrxGSListFirst"
-::METHOD item EXTERNAL "LIBRARY rexxgtk GrxGSListItem"
-::METHOD next EXTERNAL "LIBRARY rexxgtk GrxGSListNext"
-::METHOD insert EXTERNAL "LIBRARY rexxgtk GrxGSListInsert"
-::METHOD prepend EXTERNAL "LIBRARY rexxgtk GrxGSListPrepend"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxGSListNew"
+::METHOD uninit EXTERNAL "LIBRARY oorexxgtk2 GrxGSListUninit"
+::METHOD append EXTERNAL "LIBRARY oorexxgtk2 GrxGSListAppend"
+::METHOD head EXTERNAL "LIBRARY oorexxgtk2 GrxGSListFirst"
+::METHOD item EXTERNAL "LIBRARY oorexxgtk2 GrxGSListItem"
+::METHOD next EXTERNAL "LIBRARY oorexxgtk2 GrxGSListNext"
+::METHOD insert EXTERNAL "LIBRARY oorexxgtk2 GrxGSListInsert"
+::METHOD prepend EXTERNAL "LIBRARY oorexxgtk2 GrxGSListPrepend"
 
 ::method toArray
 -- convert the list to an array
@@ -3241,14 +3241,14 @@ return list
 
 ::class GList public subclass object
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxGListNew"
-::METHOD uninit EXTERNAL "LIBRARY rexxgtk GrxGListUninit"
-::METHOD append EXTERNAL "LIBRARY rexxgtk GrxGListAppend"
-::METHOD head EXTERNAL "LIBRARY rexxgtk GrxGListFirst"
-::METHOD item EXTERNAL "LIBRARY rexxgtk GrxGListItem"
-::METHOD next EXTERNAL "LIBRARY rexxgtk GrxGListNext"
-::METHOD insert EXTERNAL "LIBRARY rexxgtk GrxGListInsert"
-::METHOD prepend EXTERNAL "LIBRARY rexxgtk GrxGListPrepend"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxGListNew"
+::METHOD uninit EXTERNAL "LIBRARY oorexxgtk2 GrxGListUninit"
+::METHOD append EXTERNAL "LIBRARY oorexxgtk2 GrxGListAppend"
+::METHOD head EXTERNAL "LIBRARY oorexxgtk2 GrxGListFirst"
+::METHOD item EXTERNAL "LIBRARY oorexxgtk2 GrxGListItem"
+::METHOD next EXTERNAL "LIBRARY oorexxgtk2 GrxGListNext"
+::METHOD insert EXTERNAL "LIBRARY oorexxgtk2 GrxGListInsert"
+::METHOD prepend EXTERNAL "LIBRARY oorexxgtk2 GrxGListPrepend"
 
 ::method toArray
 -- convert the list to an array
@@ -3281,16 +3281,16 @@ return list
 
 ::class GtkFileChooser public mixinclass Object
 
-::METHOD set_current_folder EXTERNAL "LIBRARY rexxgtk GrxFileChooserSetCurrentFolder"
-::METHOD 'current_folder=' EXTERNAL "LIBRARY rexxgtk GrxFileChooserSetCurrentFolder"
-::METHOD add_filter EXTERNAL "LIBRARY rexxgtk GrxFileChooserAddFilter"
-::METHOD get_filename EXTERNAL "LIBRARY rexxgtk GrxFileChooserGetFilename"
-::METHOD filename EXTERNAL "LIBRARY rexxgtk GrxFileChooserGetFilename"
-::METHOD filenames EXTERNAL "LIBRARY rexxgtk GrxFileChooserGetFilenames"
-::METHOD get_filenames EXTERNAL "LIBRARY rexxgtk GrxFileChooserGetFilenames"
-::METHOD set_select_multiple EXTERNAL "LIBRARY rexxgtk GrxFileChooserSetSelectMultiple"
-::METHOD 'select_multiple=' EXTERNAL "LIBRARY rexxgtk GrxFileChooserSetSelectMultiple"
-::METHOD signal_connect EXTERNAL "LIBRARY rexxgtk GrxFileChooserSignalConnect"
+::METHOD set_current_folder EXTERNAL "LIBRARY oorexxgtk2 GrxFileChooserSetCurrentFolder"
+::METHOD 'current_folder=' EXTERNAL "LIBRARY oorexxgtk2 GrxFileChooserSetCurrentFolder"
+::METHOD add_filter EXTERNAL "LIBRARY oorexxgtk2 GrxFileChooserAddFilter"
+::METHOD get_filename EXTERNAL "LIBRARY oorexxgtk2 GrxFileChooserGetFilename"
+::METHOD filename EXTERNAL "LIBRARY oorexxgtk2 GrxFileChooserGetFilename"
+::METHOD filenames EXTERNAL "LIBRARY oorexxgtk2 GrxFileChooserGetFilenames"
+::METHOD get_filenames EXTERNAL "LIBRARY oorexxgtk2 GrxFileChooserGetFilenames"
+::METHOD set_select_multiple EXTERNAL "LIBRARY oorexxgtk2 GrxFileChooserSetSelectMultiple"
+::METHOD 'select_multiple=' EXTERNAL "LIBRARY oorexxgtk2 GrxFileChooserSetSelectMultiple"
+::METHOD signal_connect EXTERNAL "LIBRARY oorexxgtk2 GrxFileChooserSignalConnect"
 
 -- The following are the methods that can be connected to signals. By default
 -- they do nothing.
@@ -3314,10 +3314,10 @@ return
 
 ::class GtkFileFilter public
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxFileFilterNew"
-::METHOD set_name EXTERNAL "LIBRARY rexxgtk GrxFileFilterSetName"
-::METHOD 'name=' EXTERNAL "LIBRARY rexxgtk GrxFileFilterSetName"
-::METHOD add_pattern EXTERNAL "LIBRARY rexxgtk GrxFileFilterAddPattern"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxFileFilterNew"
+::METHOD set_name EXTERNAL "LIBRARY oorexxgtk2 GrxFileFilterSetName"
+::METHOD 'name=' EXTERNAL "LIBRARY oorexxgtk2 GrxFileFilterSetName"
+::METHOD add_pattern EXTERNAL "LIBRARY oorexxgtk2 GrxFileFilterAddPattern"
 
 
 /*============================================================================*/
@@ -3326,7 +3326,7 @@ return
 
 ::class GtkClipboard public
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxClipboardNew"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxClipboardNew"
 
 
 /*============================================================================*/
@@ -3339,18 +3339,18 @@ return
 use strict arg spath
 return .GtkTreePath~new(spath)
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxTreePathNew"
-::METHOD to_string EXTERNAL "LIBRARY rexxgtk GrxTreePathToString"
-::METHOD up EXTERNAL "LIBRARY rexxgtk GrxTreePathUp"
-::METHOD down EXTERNAL "LIBRARY rexxgtk GrxTreePathDown"
-::METHOD prev EXTERNAL "LIBRARY rexxgtk GrxTreePathPrev"
-::METHOD next EXTERNAL "LIBRARY rexxgtk GrxTreePathNext"
-::METHOD prepend_index EXTERNAL "LIBRARY rexxgtk GrxTreePathPrependIndex"
-::METHOD append_index EXTERNAL "LIBRARY rexxgtk GrxTreePathAppendIndex"
-::METHOD get_depth EXTERNAL "LIBRARY rexxgtk GrxTreePathGetDepth"
-::METHOD depth EXTERNAL "LIBRARY rexxgtk GrxTreePathGetDepth"
-::METHOD is_ancestor EXTERNAL "LIBRARY rexxgtk GrxTreePathIsAncestor"
-::METHOD is_descendant EXTERNAL "LIBRARY rexxgtk GrxTreePathIsDescendant"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxTreePathNew"
+::METHOD to_string EXTERNAL "LIBRARY oorexxgtk2 GrxTreePathToString"
+::METHOD up EXTERNAL "LIBRARY oorexxgtk2 GrxTreePathUp"
+::METHOD down EXTERNAL "LIBRARY oorexxgtk2 GrxTreePathDown"
+::METHOD prev EXTERNAL "LIBRARY oorexxgtk2 GrxTreePathPrev"
+::METHOD next EXTERNAL "LIBRARY oorexxgtk2 GrxTreePathNext"
+::METHOD prepend_index EXTERNAL "LIBRARY oorexxgtk2 GrxTreePathPrependIndex"
+::METHOD append_index EXTERNAL "LIBRARY oorexxgtk2 GrxTreePathAppendIndex"
+::METHOD get_depth EXTERNAL "LIBRARY oorexxgtk2 GrxTreePathGetDepth"
+::METHOD depth EXTERNAL "LIBRARY oorexxgtk2 GrxTreePathGetDepth"
+::METHOD is_ancestor EXTERNAL "LIBRARY oorexxgtk2 GrxTreePathIsAncestor"
+::METHOD is_descendant EXTERNAL "LIBRARY oorexxgtk2 GrxTreePathIsDescendant"
 
 ::method create_tree_model private
 use strict arg ptr
@@ -3363,20 +3363,20 @@ return .GtkTreeModel~new(ptr)
 
 ::class GtkTreeModel public
 
-::METHOD init EXTERNAL "LIBRARY rexxgtk GrxTreeModelNew"
-::METHOD get_n_columns EXTERNAL "LIBRARY rexxgtk GrxTreeModelGetNColumns"
-::METHOD n_columns EXTERNAL "LIBRARY rexxgtk GrxTreeModelGetNColumns"
-::METHOD get_column_type EXTERNAL "LIBRARY rexxgtk GrxTreeModelGetColumnType"
-::METHOD column_type EXTERNAL "LIBRARY rexxgtk GrxTreeModelGetColumnType"
-::METHOD get_iter EXTERNAL "LIBRARY rexxgtk GrxTreeModelGetIter"
-::METHOD get_iter_from_string EXTERNAL "LIBRARY rexxgtk GrxTreeModelGetIterFromString"
-::METHOD get_value EXTERNAL "LIBRARY rexxgtk GrxTreeModelGetValue"
-::METHOD value EXTERNAL "LIBRARY rexxgtk GrxTreeModelGetValue"
-::METHOD iter_next EXTERNAL "LIBRARY rexxgtk GrxTreeModelIterNext"
-::METHOD get_path EXTERNAL "LIBRARY rexxgtk GrxTreeModelGetPath"
-::METHOD path EXTERNAL "LIBRARY rexxgtk GrxTreeModelGetPath"
-::METHOD has_parent EXTERNAL "LIBRARY rexxgtk GrxTreeModelHasParent"
-::METHOD get_parent EXTERNAL "LIBRARY rexxgtk GrxTreeModelGetParent"
+::METHOD init EXTERNAL "LIBRARY oorexxgtk2 GrxTreeModelNew"
+::METHOD get_n_columns EXTERNAL "LIBRARY oorexxgtk2 GrxTreeModelGetNColumns"
+::METHOD n_columns EXTERNAL "LIBRARY oorexxgtk2 GrxTreeModelGetNColumns"
+::METHOD get_column_type EXTERNAL "LIBRARY oorexxgtk2 GrxTreeModelGetColumnType"
+::METHOD column_type EXTERNAL "LIBRARY oorexxgtk2 GrxTreeModelGetColumnType"
+::METHOD get_iter EXTERNAL "LIBRARY oorexxgtk2 GrxTreeModelGetIter"
+::METHOD get_iter_from_string EXTERNAL "LIBRARY oorexxgtk2 GrxTreeModelGetIterFromString"
+::METHOD get_value EXTERNAL "LIBRARY oorexxgtk2 GrxTreeModelGetValue"
+::METHOD value EXTERNAL "LIBRARY oorexxgtk2 GrxTreeModelGetValue"
+::METHOD iter_next EXTERNAL "LIBRARY oorexxgtk2 GrxTreeModelIterNext"
+::METHOD get_path EXTERNAL "LIBRARY oorexxgtk2 GrxTreeModelGetPath"
+::METHOD path EXTERNAL "LIBRARY oorexxgtk2 GrxTreeModelGetPath"
+::METHOD has_parent EXTERNAL "LIBRARY oorexxgtk2 GrxTreeModelHasParent"
+::METHOD get_parent EXTERNAL "LIBRARY oorexxgtk2 GrxTreeModelGetParent"
 
 ::method create_tree_path private
 use strict arg ptr

@@ -54,7 +54,7 @@ call gtk_main
 return
 
 
-::requires 'rexxgtk.cls'
+::requires 'oorexxgtk2.cls'
 
 ::class myMainWindow subclass GtkWindow
 

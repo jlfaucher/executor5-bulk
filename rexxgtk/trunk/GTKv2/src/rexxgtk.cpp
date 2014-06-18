@@ -92,7 +92,7 @@ RexxRoutine0(int, GrxInit)
     int rc = 0;
     char ** argv = (char **)&rexxgtk_argv;
 
-    g_thread_init(NULL);
+//    g_thread_init(NULL);
     gdk_threads_init();
     gtk_set_locale ();
     gtk_init (&rexxgtk_argc, &argv);

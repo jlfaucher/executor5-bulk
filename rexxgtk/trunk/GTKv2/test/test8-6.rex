@@ -139,7 +139,7 @@ window~show_all()
 call gtk_main
 return
 
-::requires 'rexxgtk.cls'
+::requires 'oorexxgtk2.cls'
 
 ::routine setup_tree_view
 use strict arg treeview, BUY_IT, QUANTITY, PRODUCT

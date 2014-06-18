@@ -72,5 +72,5 @@ dialog~destroy()
 return
 
 
-::requires 'rexxgtk.cls'
+::requires 'oorexxgtk2.cls'
 
