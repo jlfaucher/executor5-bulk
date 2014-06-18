@@ -2387,7 +2387,7 @@
 
 
 -- parse the group portion of a resolution path.  This will be
--- of the form <name{groupname{groupname{groupname...}}}>
+-- of the form <name{groupname/groupname/groupname/...}>
 ::method parseGroupName
   -- this is the path accumulator array
   path = .array~new
@@ -2409,8 +2409,8 @@
           path~append(referenceName)
           return path
       end
-      -- result reference inside of a group
-      else if ch == '{' then do
+      -- is this a fuller path specification?
+      else if ch == '/' then do
           -- we allow a default here...going right to the
           -- result means use the 0 group.
           if referenceName == "" then do
@@ -2419,7 +2419,6 @@
           -- apply Rexx symbol rules to the name and make uppercase
           referenceName = referenceName~upper
           path~append(referenceName)
-          self~previous
           -- get the result portion
           self~parseSubgroupName(path)
           -- perform the delimiter check
@@ -2435,46 +2434,46 @@
   end
 
 
--- parse the result portion of a resolution path.  This was
--- started off by a { in the path name, we terminate on
--- a matching }.  This name may include an additional
--- path qualifiers bracketed by { } pairs.  Note:  After the
--- first level, all additional references must be to named groups.
+-- parse additions pieces of a resolution path after the first
+-- element.  These will be the names of nested named groups separated
+-- by '/'.   Note:  After the  first level, all additional references
+-- must be to named groups.
 ::method parseSubgroupName
   -- this is the path accumulator array
   use arg path
 
-  self~next -- step over the '{' delimiter that started this
+  -- we should be positioned on the first character of the next named group
+  -- now.
   referenceName = ""  -- the accumulated name
 
   loop forever
       ch = self~next -- get the next character
       if ch == .nil then do
-              raise syntax 93.900 array("Missing closing '}' on result name")
+         raise syntax 93.900 array("Missing closing '}' in group path specification")
       end
       -- end of the group name portion?
       else if ch == '}' then do
+          -- we must have something here
+          if referenceName == "" then do
+             raise syntax 93.900 array("Missing group name in path specification")
+          end
           -- apply Rexx symbol rules to the name and make uppercase
           referenceName = referenceName~upper
           path~append(referenceName)
           return
       end
-      -- group reference inside of a group reference
-      else if ch == '{' then do
+      -- Next step in the path
+      else if ch == '/' then do
+          -- we must have something here
+          if referenceName == "" then do
+             raise syntax 93.900 array("Missing group name in path specification")
+          end
           -- apply Rexx symbol rules to the name and make uppercase
           referenceName = referenceName~upper
           path~append(referenceName)
-          self~previous
-          -- Ok, recurse on this, adding additional pieces to the
-          -- path.
-          self~parseSubgroupName(path)
-          -- perform the delimiter check.  We should have
-          -- a } after the close of the group name.
-          ch = self~next
-          if ch \== '}' then do
-              raise syntax 93.900 array("Missing closing '}' on result name")
-          end
-          return
+          -- clear the name for the next path through the loop
+          referenceName = ""
+          -- step forward to the first name characters and head around
       end
       -- just add this character to the name
       else do
@@ -4857,7 +4856,7 @@
   end
 
   -- must have a CRLF sequence before this to match
-  if \target~match(position - 2, ededed|||) then do
+  if \target~match(position - 2, .RegexCompiler~CRLF) then do
       return .false
   end
   -- and go finish up
@@ -4973,7 +4972,7 @@
 
 
 -- A node that holds and executes an indirect match to another
--- pattern
+-- pattern. usually for library pattern references.
 ::class "PatternNode" subclass MatchNode
 ::method init
   expose name pattern
@@ -4983,6 +4982,7 @@
 ::method match
   expose name pattern
   use arg context, position, target
+
   -- create a new context to execute this
   subcontext = context~createNestedPatternContext(pattern)
   -- attempt a match from the current position
@@ -5024,6 +5024,7 @@
 -- return a response if the operation matched.
 ::method matched
   expose start
+
   return start > 0
 
 
@@ -5038,18 +5039,21 @@
 ::attribute regionEnd GET
 ::attribute regionLength GET
   expose regionStart regionEnd
+
   return regionEnd - regionStart + 1  -- end position is Rexx-like last character
 
 
 -- retrieve the length of the match string
 ::attribute length GET
   expose end start
+
   return end - start -- end position is one past the last match character
 
 
 -- retrieves the match text
 ::attribute text GET
   expose regionText start
+
   -- return the match text
   if start == 0 then do
       return ''
@@ -5062,6 +5066,7 @@
 -- of the match region
 ::attribute prefix GET
   expose regionText start regionStart
+
   -- no match is always a null string
   if start == 0 then do
       return ""
@@ -5074,10 +5079,13 @@
 -- of the match region
 ::attribute suffix GET
   expose regionText start end regionStart regionEnd
+
   -- no match is always the entire region string
   if start == 0 then do
       return regionText~substr(regionStart, regionEnd - regionStart)
   end
+
+  -- just everything from the end to the end of text region
   return regionText~substr(end, regionEnd - end)
 
 
@@ -5085,6 +5093,7 @@
 -- past the end of the match region, returns regionEnd + 1
 ::method nextMatch
   expose end
+
   -- NOTE:  This is the correct result even if the match string
   -- is zero-length
   return end + 1
@@ -5097,15 +5106,17 @@
 ::method init
   expose results
   use strict arg regionText, regionStart, regionEnd, group
+
   self~init:super(regionText, regionStart, regionEnd, group~start, group~end)
   results = group~namedResults
 
 
 -- retrieve a named result piece.  This is the name used
--- in the \m{name} element used to invoke the piece
+-- in the \m{name} element used to tag the section
 ::method result
   expose results
   use strict arg id
+
   -- make sure this is uppercase
   id = id~upper
   return results[id]
@@ -5118,6 +5129,7 @@
 ::method init
   expose groups
   use strict arg regionText, regionStart, regionEnd, start, end, groups
+
   self~init:super(regionText, regionStart, regionEnd, start, end)
 
 
@@ -5126,13 +5138,16 @@
 ::method group
   expose groups
   use strict arg id
+
   -- make sure this is uppercase
   id = id~upper
   group = groups[id]
+
   -- give a reasonable default rather than raising an error
   if .nil == group then do
       return .nil
   end
+
   -- this gets wrappered into a result item
   return .GroupMatchResult~new(self~regionText, self~regionStart, self~regionEnd, group)
 
@@ -5146,6 +5161,7 @@
   expose groups
   -- default is to retrieve the entire group match
   use strict arg id = "0"
+
   -- make sure this is uppercase
   id = id~upper
 
@@ -5154,25 +5170,13 @@
   if group == .nil then do
       return .nil
   end
+
   -- return the match text (which will be null if not matched)
   text = group~matchText
   if text == .nil then do
       return ""
   end
   return text
-
-
--- a combined match result that includes replacement string information
-::class "MatchReplacementResult" public subclass MatchResult
-::method init
-  expose resultText replacementLength replacementCount
-  use arg match, resultText, replacementLength, replacementCount
-  self~init:super(match~regionText, match~regionStart, match~regionEnd, match~start, match~end, match~groups)
-
-
--- the length of the replacement string
-::attribute replacementLength GET
-::attribute resultText GET
 
 
 

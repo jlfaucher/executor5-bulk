@@ -2178,7 +2178,7 @@ return testResult
   self~assertTrue(self~verifyMatchResult(r, 1, 7, "barbar"))
 
   -- same, but the back reference path goes one level deeper
-  p = .Pattern~compile("\m{abc}\k<{abc{foo}}>", compiler)
+  p = .Pattern~compile("\m{abc}\k<{abc/foo}>", compiler)
   -- should match everything
   r = self~find(p, "barbar")
   self~assertTrue(self~verifyMatchResult(r, 1, 7, "barbar"))
