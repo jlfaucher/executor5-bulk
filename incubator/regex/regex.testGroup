@@ -2125,7 +2125,7 @@ return testResult
   self~assertTrue(self~matches(p, "postmaster@oorexx.org"))
   r = self~find(p, "postmaster@oorexx.org")
   self~assertTrue(self~verifyMatchResult(r, 1, "postmaster@oorexx.org"~length + 1, "postmaster@oorexx.org"))
-  re = r~group(0)~result("email")
+  re = r~group(0)~group("email")
   self~assertTrue(self~verifyMatchResult(re, 1, "postmaster@oorexx.org"~length + 1, "postmaster@oorexx.org"))
   self~assertTrue(self~verifyMatchResult(re~group("username"), 1, "postmaster"~length + 1, "postmaster"))
   self~assertTrue(self~verifyMatchResult(re~group("domain"), 12, 12 + "oorexx.org"~length, "oorexx.org"))
@@ -2167,18 +2167,18 @@ return testResult
 
   compiler = .RegexCompiler~new
   compiler~addPattern("abc", "(?<foo>bar)")
-  p = .Pattern~compile("\m{abc}\k<0{abc}>", compiler)
+  p = .Pattern~compile("\m{abc}\k<0/abc>", compiler)
   -- should match everything
   r = self~find(p, "barbar")
   self~assertTrue(self~verifyMatchResult(r, 1, 7, "barbar"))
   -- same as above, but the group is defaulted
-  p = .Pattern~compile("\m{abc}\k<{abc}>", compiler)
+  p = .Pattern~compile("\m{abc}\k</abc>", compiler)
   -- should match everything
   r = self~find(p, "barbar")
   self~assertTrue(self~verifyMatchResult(r, 1, 7, "barbar"))
 
   -- same, but the back reference path goes one level deeper
-  p = .Pattern~compile("\m{abc}\k<{abc/foo}>", compiler)
+  p = .Pattern~compile("\m{abc}\k</abc/foo>", compiler)
   -- should match everything
   r = self~find(p, "barbar")
   self~assertTrue(self~verifyMatchResult(r, 1, 7, "barbar"))

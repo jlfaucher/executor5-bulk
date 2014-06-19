@@ -49,14 +49,6 @@
   return compiler~compile(pattern)
 
 
--- compile a string regex expression used as replacement text
--- into a pattern
-::method compileReplacement class
-  -- the compiler is configurable, but there is a default
-  use strict arg pattern, compiler = (.RegexCompiler~new)
-  return compiler~compileReplacement(pattern)
-
-
 -- initialize a pattern instance.  Arguments are the string pattern
 -- we were compiled from, the root of the evaluation tree, and the
 -- list of groups used for back references.
@@ -64,10 +56,12 @@
   expose pattern root groups
   use strict arg pattern, root, groups
 
+
 -- Patterns are immutable, be we do provide read-only access to the elements
 ::attribute pattern GET
 ::attribute groups GET
 ::attribute root GET
+
 
 -- retrieve the number of capturing groups
 -- contained within this pattern.
@@ -185,30 +179,6 @@
   return metrics
 
 
--- perform an inplace replacement in a mutableBuffer
-::method replaceBuffer
-  use arg text, replacement
-
-  -- do the search first.  If not there, then there's
-  -- no need to compile the replacement piece
-  matchResult = self~find(text)
-  if \matchResult~matched then do
-      -- this is a wrappered match result with a 0 replacement length
-      return .ReplacementMatchResult~new(matchResult, 0)
-  end
-
-  -- if the replacement is in string form, then convert into
-  -- a replacer
-  if replacement~isA(.String) then do
-      replacement = self~class~compileReplacement(replacement)
-  end
-
-  -- perform the replacement using the matchResult context
-  replacementLength = replacement~replace(text, matchResult)
-  -- and merge the match result with the replacement metric
-  return .ReplacementMatchResult~new(matchResult, replacementLength)
-
-
 -- non-public class used by both the RegexCompiler and RegexParser to
 -- validate compile options
 ::class "RegexOptionsValidator"
@@ -223,7 +193,7 @@
 -- validate any compiler options.  These can be done on behalf of the compiler at
 -- creation time, or passed to the compiler at compile time to override the defaults
 ::method validateOptions class
-  use arg target, options
+  use strict arg target, options
 
   if options == .nil then do
       return
@@ -639,7 +609,7 @@
 -- if the resulting position is beyond the pattern bounds
 ::method peekOffset
   expose pattern current length
-  use arg offset
+  use strict arg offset
 
   position = current + offset
 
@@ -674,7 +644,7 @@
 
 -- test if a character is a metacharacter that needs to be skipped
 ::method isMetaCharacter
-  use arg ch
+  use strict arg ch
 
   return .RegexCompiler~METACHARACTERS~contains(ch)
 
@@ -682,7 +652,7 @@
 -- test if a character is a metacharacter in the context of parsing
 -- a class range
 ::method isClassMetaCharacter
-  use arg ch
+  use strict arg ch
 
   return .RegexCompiler~CLASSMETACHARACTERS~contains(ch)
 
@@ -690,14 +660,14 @@
 -- test if a character is a closure character
 -- a class range
 ::method isClosureCharacter
-  use arg ch
+  use strict arg ch
 
   return .RegexCompiler~CLOSURECHARACTERS~contains(ch)
 
 
 -- test if a character is a digit character
 ::method isDigit
-  use arg ch
+  use strict arg ch
 
   return .RegexCompiler~DIGITCHARACTERS~contains(ch)
 
@@ -706,7 +676,7 @@
 -- by a pair of markers
 ::method extractDelimited
   expose pattern current length
-  use arg start, end
+  use strict arg start, end
 
   -- In theory, we should be at the start delimiter now.  If
   -- not there, this is an error
@@ -813,7 +783,7 @@
 -- parse out a subexpression.  This also handles any of the modifiers
 -- that might be associated with a single subexpression
 ::method parseSequence
-  use arg terminator
+  use strict arg terminator
 
   firstNode = .nil
   lastNode = .nil
@@ -1012,18 +982,19 @@
 -- A named group can be used in multiple places
 ::method getGroupReference
   expose groups
-  use arg id
+  use strict arg id
+
   -- prevent numeric names from overlapping with the numbered groups
   if id~datatype('Whole') then do
       raise syntax 93.900 array("Numeric names cannot be use for named groups; found" id);
   end
-  return self~createGroupReference(id)
+  return self~createGroupReference(id~upper)
 
 
 -- create a group reference item in our set of groups
 ::method createGroupReference private
   expose groups
-  use arg id
+  use strict arg id
   if groups == .nil then do
       groups = .directory~new
   end
@@ -1039,13 +1010,14 @@
 -- (used for resolving back references)
 ::method haveGroup
   expose groups
+  use strict arg id
 
-  use arg id
-  return groups~hasIndex(id)
+  return groups~hasIndex(id~upper)
 
 
 -- parse group information
 ::method parseGroup
+
   -- group specifications can change the mode settings, but the
   -- scope of the change is limited to the containing group.
   -- We need to restore these once we're finished parsing the group
@@ -1443,7 +1415,7 @@
 
 -- calculate the match metrics for a given pattern.
 ::method getPatternMetrics
-  use arg head
+  use strict arg head
 
   metrics = .MatchMetrics~new
   -- forward this to the matching tree
@@ -1531,7 +1503,7 @@
 -- restore the flag settings from a previous
 -- saveFlags collection
 ::method restoreFlags
-  use arg flags
+  use strict arg flags
 
   self~unixLinesMode = flags~unixLinesMode
   self~caselessMode = flags~caselessMode
@@ -1542,7 +1514,7 @@
 -- process the closures for a group node.  This handles all of the
 -- repetition count details
 ::method parseGroupClosure
-  use arg groupInfo
+  use strict arg groupInfo
   -- we're parsing any closure items that may follow the group itself.
   -- If there are closure items to process, this will end up adjusting the
   -- firstNode/lastNode information in groupInfo
@@ -1659,7 +1631,7 @@
 -- modifiers, we might need to wrap the node sequence in
 -- an enclosing node that handles the modifiers
 ::method parseClosure
-  use arg target
+  use strict arg target
   ch = self~next
 
   select
@@ -1954,7 +1926,7 @@
 -- class, in which case we'll return just that piece.  Range negations have
 -- already been processed by our caller
 ::method parseClassRange
-  use arg negated    -- determines the type of node we return
+  use strict arg negated    -- determines the type of node we return
   firstchar = .true
   characters = ""
 
@@ -2042,7 +2014,7 @@
 
 -- parse a named class family and turn it into an equivalent family class
 ::method parseNamedClassFamily
-  use arg negated
+  use strict arg negated
 
   -- pull out the name and create a family
   familyName = self~extractDelimited('{', '}')
@@ -2051,7 +2023,7 @@
 
 -- create a named class family
 ::method createNamedClassFamily
-  use arg familyName, negated
+  use strict arg familyName, negated
 
   familyChars = self~getFamily(familyName)
   if familyChars \= .nil then do
@@ -2132,7 +2104,7 @@
 
 -- create a node for matching a character string
 ::method stringNode
-  use arg string
+  use strict arg string
 
   if self~caselessMode then do
       return .CaselessStringNode~new(string)
@@ -2146,7 +2118,7 @@
 -- node gets created depends on whether this is a negation operation
 -- and whether caseless matches are called for.
 ::method classNode
-  use arg characters, negated
+  use strict arg characters, negated
   -- if this is a ^ form, then we need the appropriate reverse node
   if negated then do
       if self~caselessMode then do
@@ -2440,7 +2412,7 @@
 -- must be to named groups.
 ::method parseSubgroupName
   -- this is the path accumulator array
-  use arg path
+  use strict arg path
 
   -- we should be positioned on the first character of the next named group
   -- now.
@@ -2619,7 +2591,7 @@
 -- invoke the next handler in the chain
 ::method matchNext
   expose next
-  use arg context, position, target
+  use strict arg context, position, target
 
   -- if there is no node attached, assume it matches
   if next == .nil then do
@@ -2638,7 +2610,7 @@
 -- just passes the request down the chain
 ::method calculateMatchMetrics
   expose next
-  use arg metrics
+  use strict arg metrics
   if next \== .nil then do
       next~calculateMatchMetrics(metrics)
   end
@@ -2648,7 +2620,7 @@
 -- creates a completely new set of metrics rather than add to the existing
 -- ones.
 ::method calculateChildMatchMetrics
-  use arg child
+  use strict arg child
   -- get our repetition node values as if it was the only thing of interest
   submetrics = .MatchMetrics~new
 
@@ -2685,7 +2657,7 @@
 -- even if it is zero-length
 ::class "EveryThingNode" subclass MatchNode
 ::method match
-  use arg context, position, target
+  use strict arg context, position, target
   -- we always match, so just send along to the successor
   return self~matchNext(context, position, target)
 
@@ -2694,7 +2666,7 @@
 -- A node that enforces anchoring at the beginning of the text
 ::class "BeginTextNode" subclass MatchNode
 ::method match
-  use arg context, position, target
+  use strict arg context, position, target
 
   -- if not at the beginning, this fails
   if \context~atStart(position) then do
@@ -2708,7 +2680,7 @@
 -- A node that enforces anchoring at the end of the text
 ::class "EndTextNode" subclass MatchNode
 ::method match
-  use arg context, position, target
+  use strict arg context, position, target
   -- must be at the end to match
   if \context~checkEnd(position) then do
       return .false
@@ -2723,7 +2695,7 @@
 ::class "ClassBoundaryNode" subclass MatchNode
 ::method init
   expose boundaryClass
-  use arg boundaryClass
+  use strict arg boundaryClass
 
   self~init:super
 
@@ -2732,7 +2704,7 @@
 
 
 ::method match
-  use arg context, position, target
+  use strict arg context, position, target
 
   -- At the very end (e.g., past the end really), the last character
   -- must be of the boundary character.  Note that we need to check for a
@@ -2776,7 +2748,7 @@
 -- will override this
 ::method checkBoundary
   expose boundaryClass
-  use arg context, position, target
+  use strict arg context, position, target
 
   return boundaryClass~match(context, position, target)
 
@@ -2786,7 +2758,7 @@
 -- position is NOT on a class boundary
 ::class "NotClassBoundaryNode" subclass ClassBoundaryNode
 ::method match
-  use arg context, position, target
+  use strict arg context, position, target
 
   -- At the very end (e.g., past the end really), the last character
   -- must not be a boundary character.  Note that we need to check for a
@@ -2834,7 +2806,7 @@
 -- the range
 ::class "BeginClassBoundaryNode" subclass ClassBoundaryNode
 ::method match
-  use arg context, position, target
+  use strict arg context, position, target
 
   -- At the very end (e.g., past the end really), by definition this
   -- cannot be a beginning word boundary.
@@ -2866,7 +2838,7 @@
 -- be a class character.
 ::class "EndClassBoundaryNode" subclass ClassBoundaryNode
 ::method match
-  use arg context, position, target
+  use strict arg context, position, target
 
   -- At the very beginning?  by definition this
   -- cannot be a ending word boundary.
@@ -2898,7 +2870,7 @@
 -- position of the context.
 ::class "LastMatchNode" subclass MatchNode
 ::method match
-  use arg context, position, target
+  use strict arg context, position, target
 
   -- this must be the start of the match region
   if position \= context~regionStart then do
@@ -2913,7 +2885,7 @@
 -- of data
 ::class "AllDotNode" subclass MatchNode
 ::method match
-  use arg context, position, target
+  use strict arg context, position, target
 
   if context~checkEnd(position) then do
       return .false
@@ -2925,7 +2897,7 @@
 
 
 ::method calculateMatchMetrics
-  use arg metrics
+  use strict arg metrics
   -- a dot is always a single character, so easy to manage
   metrics~addLength(1)
   self~calculateMatchMetrics:super(metrics)
@@ -2936,7 +2908,7 @@
 -- in this case)
 ::class "InternetDotNode" subclass AllDotNode
 ::method match
-  use arg context, position, target
+  use strict arg context, position, target
 
   if context~checkEnd(position) then do
       return .false
@@ -2956,7 +2928,7 @@
 -- this is just linefeeds)
 ::class "UnixDotNode" subclass AllDotNode
 ::method match
-  use arg context, position, target
+  use strict arg context, position, target
 
   if context~checkEnd(position) then do
       return .false
@@ -2976,7 +2948,7 @@
 ::class "StringNode" subclass matchNode
 ::method init
   expose matchString
-  use arg matchString
+  use strict arg matchString
   self~init:super
 
 
@@ -2994,7 +2966,7 @@
 
 ::method match
   expose matchString
-  use arg context, position, target
+  use strict arg context, position, target
 
   -- must have at least the same length as the string available
   if context~checkEnd(position + matchString~length - 1) then do
@@ -3010,7 +2982,7 @@
 
 ::method calculateMatchMetrics
   expose matchString
-  use arg metrics
+  use strict arg metrics
   -- always the length of this string
   metrics~addLength(matchString~length)
   self~calculateMatchMetrics:super(metrics)
@@ -3033,7 +3005,7 @@
 ::class "ClassNode" subclass MatchNode
 ::method init
   expose characters
-  use arg characters
+  use strict arg characters
   self~init:super
 
 
@@ -3043,7 +3015,7 @@
 
 ::method match
   expose characters
-  use arg context, position, target
+  use strict arg context, position, target
 
   if context~checkEnd(position) then do
       return .false
@@ -3058,12 +3030,12 @@
 
 -- apply the appropriate character match operation for a given subclass
 ::method characterMatch
-  use arg position, target, characters
+  use strict arg position, target, characters
   return target~matchChar(position, characters)
 
 
 ::method calculateMatchMetrics
-  use arg metrics
+  use strict arg metrics
   -- also just a single character match
   metrics~addLength(1)
   self~calculateMatchMetrics:super(metrics)
@@ -3074,7 +3046,7 @@
 ::class "NotClassNode" subclass ClassNode
 -- apply the appropriate character match operation for a given subclass
 ::method characterMatch
-  use arg position, target, characters
+  use strict arg position, target, characters
   -- this must NOT match any of the charactets
   return \target~matchChar(position, characters)
 
@@ -3084,7 +3056,7 @@
 ::class "CaselessClassNode" subclass ClassNode
 -- apply the appropriate character match operation for a given subclass
 ::method characterMatch
-  use arg position, target, characters
+  use strict arg position, target, characters
   -- this must match any of the characters
   return target~caselessMatchChar(position, characters)
 
@@ -3094,7 +3066,7 @@
 ::class "CaselessNotClassNode" subclass ClassNode
 -- apply the appropriate character match operation for a given subclass
 ::method characterMatch
-  use arg position, target, characters
+  use strict arg position, target, characters
   -- this must NOT match any of the characters
   return \target~caselessMatchChar(position, characters)
 
@@ -3104,14 +3076,14 @@
 ::class "ClassIntersectionNode" subclass MatchNode
 ::method init
   expose subExpressions
-  use arg subExpressions
+  use strict arg subExpressions
 
   self~init:super
 
 
 ::method match
   expose subExpressions
-  use arg context, position, target
+  use strict arg context, position, target
 
   -- perform a match operation on each in turn
   do test over subExpressions
@@ -3125,7 +3097,7 @@
 
 
 ::method calculateMatchMetrics
-  use arg metrics
+  use strict arg metrics
   -- also just a single character match
   metrics~addLength(1)
   self~calculateMatchMetrics:super(metrics)
@@ -3144,7 +3116,7 @@
 
 ::method match
   expose alternatives
-  use arg context, position, target
+  use strict arg context, position, target
 
   -- return on the first match
   do alternative over alternatives
@@ -3167,7 +3139,7 @@
 -- calculate match metrics for an alternative node
 ::method calculateMatchMetrics
   expose alternatives
-  use arg metrics
+  use strict arg metrics
 
   -- create a metrics item for the merge
   accumulator = .MatchMetrics~new
@@ -3190,7 +3162,7 @@
 -- add an expression to our list of alternatives
 ::method addAlternative
   expose alternatives
-  use arg newChoice
+  use strict arg newChoice
 
   newChoice~terminate   -- make sure this has a terminator
   alternatives~append(newChoice)
@@ -3201,7 +3173,7 @@
 -- on a '\r\n' sequence, but only if the lineend sequence is at the very end
 ::class "InternetLineEndNode" subclass MatchNode
 ::method match
-  use arg context, position, target
+  use strict arg context, position, target
 
   -- at the end, this is automatically a match.
   if context~checkEnd(position) then do
@@ -3236,7 +3208,7 @@
 -- or the END of input, but only if the lineend character is at the very end
 ::class "UnixLineEndNode" subclass MatchNode
 ::method match
-  use arg context, position, target
+  use strict arg context, position, target
 
   -- at the end is automatically a match
   if context~checkEnd(position) then do
@@ -3271,7 +3243,7 @@
 -- OR the end of the input
 ::class "InternetMultiLineEndNode" subclass MatchNode
 ::method match
-  use arg context, position, target
+  use strict arg context, position, target
 
   -- end match, this is true
   if context~checkEnd(position) then do
@@ -3303,7 +3275,7 @@
 -- but NOT the end of the input
 ::class "UnixMultiLineEndNode" subclass MatchNode
 ::method match
-  use arg context, position, target
+  use strict arg context, position, target
 
   -- end match, this is true
   if context~checkEnd(position) then do
@@ -3330,7 +3302,7 @@
 -- check for being at the end of the text string.  Does not recognize linend sequences.
 ::class "TextEndNode" subclass MatchNode
 ::method match
-  use arg context, position, target
+  use strict arg context, position, target
 
   if context~checkEnd(position) then do
       return self~matchNext(context, position, target)
@@ -3345,7 +3317,8 @@
 ::class "QuestionNode" subclass MatchNode
 ::method init
   expose optional
-  use arg optional
+  use strict arg optional
+
   self~init:super
   optional~terminate  -- these needs termination
 
@@ -3356,7 +3329,7 @@
 
 ::method calculateMatchMetrics
   expose optional
-  use arg metrics
+  use strict arg metrics
 
   -- our following match pattern is optional, so we ignore any
   -- additions it makes to the metrics before sending it down the chain.
@@ -3373,7 +3346,7 @@
 -- match itself first, and back off if it does not find a match.
 ::class "GreedyQuestionNode" subclass QuestionNode
 ::method match
-  use arg context, position, target
+  use strict arg context, position, target
 
   -- if we match the optional part, and if we match the following part,
   -- this is gold.
@@ -3392,7 +3365,7 @@
 -- it will not perform its own match.
 ::class "ReluctantQuestionNode" subclass QuestionNode
 ::method match
-  use arg context, position, target
+  use strict arg context, position, target
 
   -- first try for a match on the trailing part.  If that matches, we ignore
   -- the optional section
@@ -3414,7 +3387,7 @@
 -- not back up...EVER!
 ::class "PossessiveQuestionNode" subclass QuestionNode
 ::method match
-  use arg context, position, target
+  use strict arg context, position, target
 
   -- try for the optional match...no backtracking if it is a match.
   if self~optional~match(context, position, target) then do
@@ -3429,16 +3402,20 @@
 -- a mixin used for the different varieties of group nodes to implement
 -- common methods
 ::class "GroupNodeMixin" mixinclass MatchNode
-::method init
+-- set the ID attribute
+::method setGroupID
   expose id
-  use arg id
+  use strict arg id
+
 
   -- get the group reference for a question node.  This will also
   -- set this as the current group in the group context
 ::method getGroupReference
   expose id
-  use arg context
+  use strict arg context
 
+
+  trace ?i
   -- if this is a capturing group, return the
   -- saved item.  Otherwise, return a dummy to handle
   -- the save/restore logic
@@ -3458,7 +3435,7 @@
 -- override that will pop the group context before
 -- making a call out to a successor node.
 ::method matchNext
-  use arg context, position, target
+  use strict arg context, position, target
 
   context~exitGroup   -- we're done
   return self~matchNext:super(context, position, target)
@@ -3467,7 +3444,7 @@
 -- invoke the next handler in the chain.  This will pop and
 -- push the group context around the call out
 ::method wrappedMatchNext
-  use arg context, position, target
+  use strict arg context, position, target
 
   info = context~exitGroup   -- we're leaving this context
   ret = self~matchNext:super(context, position, target)
@@ -3481,14 +3458,17 @@
 ::class "GroupQuestionNode" subclass QuestionNode inherit GroupNodeMixin
 ::method init
   expose id
-  use arg id, optional
+  use strict arg id, optional
 
+  -- initialize the main super class
   self~init:super(optional)
-  self~init:.GroupNodeMixin(id) -- the mixing manages the id portion
+
+  -- and also the mixin
+  self~setGroupId(id) -- the mixing manages the id portion
 
 
 ::method calculateMatchMetrics
-  use arg metrics
+  use strict arg metrics
 
   -- our following match pattern is optional, so we ignore any
   -- additions it makes to the metrics before sending it down the chain.
@@ -3507,7 +3487,7 @@
 -- updates the group position accordingly
 ::class "GreedyGroupQuestionNode" subclass GroupQuestionNode
 ::method match
-  use arg context, position, target
+  use strict arg context, position, target
 
   -- save the group context
   info = self~getGroupReference(context)
@@ -3516,7 +3496,7 @@
   -- this is gold.
   if self~optional~match(context, position, target) then do
       -- update the group capture information
-      info~setMatch(target, position, context~matchEnd)
+      info~setMatch(context, position, context~matchEnd)
 
       -- handle as a group match
       if self~wrappedMatchNext(context, context~matchEnd, target) then do
@@ -3529,7 +3509,7 @@
   end
 
   -- we always match, even if it is nothing
-  info~setMatch(target, position, position)
+  info~setMatch(context, position, position)
 
   -- try again, but without the optional section.
   return self~matchNext(context, position, target)
@@ -3541,11 +3521,11 @@
 -- updates the group position accordingly
 ::class "ReluctantGroupQuestionNode" subclass QuestionNode
 ::method match
-  use arg context, position, target
+  use strict arg context, position, target
 
   info = self~getGroupReference(context)
   -- we always match, even if it is nothing
-  info~setMatch(target, position, position)
+  info~setMatch(context, position, position)
 
   -- first try for a match on the trailing part.  If that matches, we ignore
   -- the optional section
@@ -3563,7 +3543,7 @@
   end
 
   -- update the group capture information
-  info~setMatch(target, position, context~matchEnd)
+  info~setMatch(context, position, context~matchEnd)
   -- now try the final part
   return self~matchNext(context, context~matchPosition, target)
 
@@ -3574,16 +3554,16 @@
 -- updates the group position accordingly
 ::class "PossessiveGroupQuestionNode" subclass GroupQuestionNode
 ::method match
-  use arg context, position, target
+  use strict arg context, position, target
 
   info = self~getGroupReference(context)
   -- we always match, even if it is nothing
-  info~setMatch(target, position, position)
+  info~setMatch(context, position, position)
 
   -- try for the optional match...no backtracking if it is a match.
   if self~optional~match(context, position, target) then do
       -- update the group capture information
-      info~setMatch(target, position, context~matchEnd)
+      info~setMatch(context, position, context~matchEnd)
       position = context~matchEnd
   end
   else do
@@ -3598,7 +3578,7 @@
 ::class "RepetitionNode" subclass MatchNode
 ::method init
   expose repNode min max
-  use arg repNode, min, max
+  use strict arg repNode, min, max
   self~init:super
   repNode~terminate   -- we need to ensure the chain ends in a terminator
 
@@ -3606,7 +3586,7 @@
 -- parts are implemented in the recursiveMatch method that each subclass
 -- implements
 ::method match
-  use arg context, position, target
+  use strict arg context, position, target
   current = position
   repNode = self~repNode
 
@@ -3628,7 +3608,7 @@
 
 ::method calculateMatchMetrics
   expose repNode min max
-  use arg metrics
+  use strict arg metrics
   -- get our repetition node values as if it was the only thing of interest
   submetrics = self~calculateChildMatchMetrics(repNode)
 
@@ -3655,7 +3635,7 @@
 ::class "GreedyRepetitionNode" subclass RepetitionNode
 -- implement greedy repetition matching logic
 ::method recursiveMatch
-  use arg context, position, target, repNode, matches, max
+  use strict arg context, position, target, repNode, matches, max
 
   -- we hit the max count, now try to match the trailing bit
   if matches >= max then do
@@ -3725,7 +3705,7 @@
 -- in the base class.  The reluctant part of the algorithm is
 -- done here
 ::method recursiveMatch
-  use arg context, position, target, repNode, matches, max
+  use strict arg context, position, target, repNode, matches, max
 
   loop forever
       -- check the successor without consuming any more of the
@@ -3762,7 +3742,7 @@
 -- in the base class.  The reluctant part of the algorithm is
 -- done here
 ::method recursiveMatch
-  use arg context, position, target, repNode, matches, max
+  use strict arg context, position, target, repNode, matches, max
   do i = self~min + 1 to self~max
       -- match failure means we've got all we can get
       if \repNode~match(context, position, target) then do
@@ -3784,9 +3764,11 @@
 ::class "GroupRepetitionNode" subclass MatchNode  inherit GroupNodeMixin
 ::method init
   expose repNode min max
-  use arg id, repNode, min, max
+  use strict arg id, repNode, min, max
+
   self~init:super
-  self~init:.GroupNodeMixin(id)
+  -- and also the mixin
+  self~setGroupId(id) -- the mixing manages the id portion
   repNode~terminate   -- we need to ensure the chain ends in a terminator
 
 
@@ -3795,7 +3777,8 @@
 -- implements
 ::method match
   expose id
-  use arg context, position, target
+  use strict arg context, position, target
+
   repNode = self~repNode
   info = self~getGroupReference(context)
   -- save the original state in case we need to back up
@@ -3811,7 +3794,7 @@
           return .false
       end
       -- update the capture info to the current bit
-      info~setMatch(target, position, context~matchEnd)
+      info~setMatch(context, position, context~matchEnd)
       position = context~matchEnd
   end
   -- The subclasses handle the match rules after the minimum
@@ -3825,7 +3808,7 @@
 
 ::method calculateMatchMetrics
   expose repNode min max
-  use arg metrics
+  use strict arg metrics
   -- get our repetition node values as if it was the only thing of interest
   submetrics = self~calculateChildMatchMetrics(repNode)
 
@@ -3853,7 +3836,7 @@
 ::class "GreedyGroupRepetitionNode" subclass GroupRepetitionNode
 -- implement greedy repetition matching logic
 ::method recursiveMatch
-  use arg context, info, position, target, repNode, matches, max
+  use strict arg context, info, position, target, repNode, matches, max
   -- save the original state in case we need to back up
   saved = info~saveMatch
 
@@ -3875,13 +3858,13 @@
       -- can be negative.
       if matchLength <= 0 then do
           -- the match positions are reversed.
-          info~setMatch(target, context~matchEnd, position)
+          info~setMatch(context, context~matchEnd, position)
           -- and this is our new position point
           position = context~matchEnd
           leave match -- no more matching here
       end
       loop forever
-          info~setMatch(target, position, position + matchLength)
+          info~setMatch(context, position, position + matchLength)
           -- step the match position to the end of the last
           -- successful match
           position = context~matchEnd
@@ -3922,7 +3905,7 @@
           -- step back the fixed length and decrement our counter
           position -= matchLength
           -- update the group match
-          info~setMatch(target, position, position + matchLength)
+          info~setMatch(context, position, position + matchLength)
           counter -= 1
       end
   end
@@ -3942,7 +3925,7 @@
 -- in the base class.  The reluctant part of the algorithm is
 -- done here
 ::method recursiveMatch
-  use arg context, info, position, target, repNode, matches, max
+  use strict arg context, info, position, target, repNode, matches, max
 
   loop forever
       -- check the successor without consuming any more of the
@@ -3974,7 +3957,7 @@
           return .false
       end
       -- update the group information
-      info~setMatch(target, position, context~matchEnd)
+      info~setMatch(context, position, context~matchEnd)
       -- step forward, and try again
       position = context~matchEnd
       matches += 1
@@ -3989,14 +3972,14 @@
 -- in the base class.  The reluctant part of the algorithm is
 -- done here
 ::method recursiveMatch
-  use arg context, info, position, target, repNode, matches, max
+  use strict arg context, info, position, target, repNode, matches, max
   do i = matches + 1 to self~max
       -- match failure means we've got all we can get
       if \repNode~match(context, position, target) then do
           leave
       end
       -- update the group information
-      info~setMatch(target, position, context~matchEnd)
+      info~setMatch(context, position, context~matchEnd)
       -- a zero-length match also terminates matching
       if position == context~matchEnd then do
           leave
@@ -4018,7 +4001,7 @@
 ::class "BackReferenceNode" subclass MatchNode
 -- main matching method for a back reference.
 ::method match
-  use arg context, position, target
+  use strict arg context, position, target
 
   -- get the match text defined for this type of back reference
   -- if nothing is there, then this match fails
@@ -4040,7 +4023,7 @@
   return self~matchNext(context, position + matchValue~length, target)
 
 ::method calculateMatchMetrics
-  use arg metrics
+  use strict arg metrics
 
   -- the maximum can no longer be trusted
   metrics~validMaximum = .false
@@ -4053,7 +4036,7 @@
 ::class "GroupBackReferenceNode" subclass BackReferenceNode
 ::method init
   expose ref
-  use arg ref
+  use strict arg ref
   self~init:super
 
 
@@ -4061,7 +4044,7 @@
 -- returns .nil if this cannot be located
 ::method matchText
   expose ref
-  use arg context
+  use strict arg context
   -- retrieve the match result for our target back ref
   refGroup = context~getBackReferenceResult(ref)
 
@@ -4077,7 +4060,7 @@
 -- simple method for performing the implementation specific
 -- matching for a back reference.  Intended to be overridden
 ::method submatch
-  use arg context, position, target, matchValue
+  use strict arg context, position, target, matchValue
   return target~match(position, matchValue)
 
 
@@ -4087,7 +4070,7 @@
 -- simple method for performing the implementation specific
 -- matching for a back reference.  Intended to be overridden
 ::method submatch
-  use arg context, position, target, matchValue
+  use strict arg context, position, target, matchValue
   return target~caselessMatch(position, matchValue)
 
 
@@ -4097,7 +4080,7 @@
 ::method init
   expose resultPath
   -- the result path
-  use arg resultPath
+  use strict arg resultPath
   self~init:super
 
 
@@ -4106,7 +4089,7 @@
 -- process
 ::method matchText
   expose resultPath
-  use arg context
+  use strict arg context
 
   -- the first two matches here are a little different, since
   -- there will a guarantee of 2 names and the first one comes
@@ -4149,7 +4132,7 @@
 -- simple method for performing the implementation specific
 -- matching for a back reference.  Intended to be overridden
 ::method submatch
-  use arg context, position, target, matchValue
+  use strict arg context, position, target, matchValue
   return target~match(position, matchValue)
 
 
@@ -4159,7 +4142,7 @@
 -- simple method for performing the implementation specific
 -- matching for a back reference.  Intended to be overridden
 ::method submatch
-  use arg context, position, target, matchValue
+  use strict arg context, position, target, matchValue
   return target~caselessMatch(position, matchValue)
 
 
@@ -4168,13 +4151,13 @@
 ::class "GroupNode" subclass MatchNode
 ::method init
   expose id groupMatch
-  use arg id, groupMatch
+  use strict arg id, groupMatch
   self~init:super
 
 
 ::method match
   expose id groupMatch
-  use arg context, position, target
+  use strict arg context, position, target
 
   info = context~getGroupReference(id)
 
@@ -4182,7 +4165,7 @@
   -- the match position inside group matches, record this
   -- in the corresponding group information and continue
   if groupMatch~match(context, position, target) then do
-      info~setMatch(target, position, context~matchEnd)
+      info~setMatch(context, position, context~matchEnd)
       return self~matchNext(context, context~matchEnd, target)
   end
   else do
@@ -4198,7 +4181,7 @@
 ::class "BackReferenceTestNode" subclass MatchNode
 ::method init
   expose ref
-  use arg ref
+  use strict arg ref
   self~init:super
 
 
@@ -4208,7 +4191,7 @@
 -- node
 ::method match
   expose ref
-  use arg context, position, target
+  use strict arg context, position, target
   -- retrieve the match result for our target back ref
   refGroup = context~getBackReferenceResult(ref)
   -- and just return the matched indictor
@@ -4227,7 +4210,7 @@
 ::method init
   expose resultPath
   -- the result path
-  use arg resultPath
+  use strict arg resultPath
   self~init:super
 
 
@@ -4236,7 +4219,7 @@
 -- process
 ::method match
   expose resultPath
-  use arg context, position, target
+  use strict arg context, position, target
   -- the first two matches here are a little different, since
   -- there will a guarantee of 2 names and the first one comes
   -- from the current matching context.  After that, the
@@ -4285,7 +4268,7 @@
 ::class "IfThenNode" subclass MatchNode
 ::method init
   expose condition thenNode
-  use arg condition, thenNode
+  use strict arg condition, thenNode
   self~init:super
   thenNode~terminate   -- make sure the then node is terminated
   condition~terminate  -- and the condition also
@@ -4293,7 +4276,7 @@
 
 ::method match
   expose condition thenNode
-  use arg context, position, target
+  use strict arg context, position, target
 
   -- if the condition succeeds, then attempt the then portion
   if condition~match(context, position, target) then do
@@ -4315,7 +4298,7 @@
 -- calculate match metrics for a conditional node
 ::method calculateMatchMetrics
   expose thenNode
-  use arg metrics
+  use strict arg metrics
 
   -- calculate metrics for the then branch
   submetrics = self~calculateChildMatchMetrics(thenNode)
@@ -4335,7 +4318,7 @@
 ::class "IfThenElseNode" subclass MatchNode
 ::method init
   expose condition thenNode elseNode
-  use arg condition, thenNode, elseNode
+  use strict arg condition, thenNode, elseNode
   self~init:super
   thenNode~terminate   -- make sure both nodes are terminated
   elseNode~terminate
@@ -4344,7 +4327,7 @@
 
 ::method match
   expose condition thenNode elseNode
-  use arg context, position, target
+  use strict arg context, position, target
 
   -- if the condition succeeds, then attempt the then portion
   if condition~match(context, position, target) then do
@@ -4378,7 +4361,7 @@
 -- calculate match metrics for a conditional node
 ::method calculateMatchMetrics
   expose thenNode
-  use arg metrics
+  use strict arg metrics
 
   -- calculate metrics for the then branch
   submetrics = self~calculateChildMatchMetrics(thenNode)
@@ -4399,13 +4382,13 @@
 ::class "NamedGroupNode" subclass MatchNode
 ::method init
   expose id groupMatch
-  use arg id, groupMatch
+  use strict arg id, groupMatch
   self~init:super
 
 
 ::method match
   expose id groupMatch
-  use arg context, position, target
+  use strict arg context, position, target
 
   -- get the group information from the context so we can
   -- store match information back into it.
@@ -4416,7 +4399,7 @@
       -- ok, we have a match now store that match information back into
       -- the context information, and continue on from the end of the
       -- matching point.
-      info~setMatch(target, position, context~matchEnd)
+      info~setMatch(context, position, context~matchEnd)
       return self~matchNext(context, context~matchEnd, target)
   end
   else do
@@ -4431,7 +4414,7 @@
 ::class "ClassLogicalNode" subclass MatchNode
 ::method init
   expose leftSide rightSide
-  use arg leftSide, rightSide
+  use strict arg leftSide, rightSide
 
   self~init:super
   -- ensure these side branches have terminator elements
@@ -4441,7 +4424,7 @@
 
 ::method calculateMatchMetrics
   expose leftSide rightSide
-  use arg metrics
+  use strict arg metrics
 
   leftMetrics = self~calculateChildMatchMetrics(leftSide)
   rightMetrics = self~calculateChildMatchMetrics(rightSide)
@@ -4460,7 +4443,7 @@
 -- class logical OR node
 ::class "ClassOrNode" subclass ClassLogicalNode
 ::method match
-  use arg context, position, target
+  use strict arg context, position, target
 
   -- NOTE:  We do not check if we're at the end before doing
   -- these tests.  One of these patterns might be an end anchor,
@@ -4484,7 +4467,7 @@
 -- class logical AND
 ::class "ClassAndNode" subclass ClassLogicalNode
 ::method match
-  use arg context, position, target
+  use strict arg context, position, target
 
 
   -- NOTE:  We do not check if we're at the end before doing
@@ -4519,7 +4502,7 @@
 
 
 ::method match
-  use arg context, position, target
+  use strict arg context, position, target
 
   -- our successor is our real node, but if it
   -- matches, it will go through the GroupTerminator
@@ -4561,12 +4544,12 @@
   expose id
   -- capturing groups all have an id.  This is either an
   -- already allocated numeric or a string name
-  use arg id
+  use strict arg id
   self~init:super
 
 
 ::method match
-  use arg context, position, target
+  use strict arg context, position, target
   -- our successor is our real node, but if it
   -- matches, it will go through the GroupTerminator
   -- node which will poke us to update the group state
@@ -4584,7 +4567,7 @@
 -- return the group reference information for a capturing group
 ::method getGroupReference
   expose id
-  use arg context
+  use strict arg context
 
   return context~getGroupReference(id)
 
@@ -4592,11 +4575,11 @@
 -- a successful match.  This uses the saved local information for
 -- the position
 ::method setGroupEnd
-  use arg context, target, end
+  use strict arg context, target, end
   -- get the group information
   info = getGroupReference(context)
   -- and update with the current match information
-  info~setMatch(target, context~getLocal(self), end)
+  info~setMatch(context, context~getLocal(self), end)
 
 
 -- The terminator updates the match information before
@@ -4605,24 +4588,25 @@
 -- the match information to a previous value.  This will update the
 -- information, but also return the previous information for saving
 ::method updateAndSaveMatch
-  use arg context, target, end
+  use strict arg context, target, end
   -- get the group information
   info = self~getGroupReference(context)
   save = .directory~new
   save~start = info~start
   save~end = info~end
   -- and update with the current match information
-  info~setMatch(target, context~getLocal(self), end)
+  info~setMatch(context, context~getLocal(self), end)
   return save
 
 
 -- this is the reverse of the previous.  Restores the
 -- start and end information using a previous saved state
 ::method restorePreviousMatch
-  use arg context, save
+  use strict arg context, save
+
   -- get the group information
   info = self~getGroupReference(context)
-  info~start = save~start
+  info~start = save['START']
   info~end = save~end
 
 
@@ -4631,13 +4615,13 @@
 ::class "GroupTerminator" subclass TerminatorNode
 ::method init
   expose group
-  use arg group
+  use strict arg group
   self~init:super
 
 
 ::method match
   expose group
-  use arg context, position, target
+  use strict arg context, position, target
 
   -- this will update the group information and return the
   -- old information to us in case we need to revert
@@ -4657,7 +4641,7 @@
 ::class "AtomicGroupNode" subclass MatchNode
 ::method init
   expose group
-  use arg group
+  use strict arg group
   self~init:super
   -- The first match that comes out of the group will forward to
   -- the terminator, which will tell it everything is good.  At
@@ -4667,7 +4651,7 @@
 
 ::method match
   expose group
-  use arg context, position, target
+  use strict arg context, position, target
 
   -- do the group match and accounting, then forward along.
   if group~match(context, position, target) then do
@@ -4687,13 +4671,13 @@
 ::class "PositiveLookaheadNode" subclass MatchNode
 ::method init
   expose group
-  use arg group
+  use strict arg group
   self~init:super
 
 
 ::method match
   expose group
-  use arg context, position, target
+  use strict arg context, position, target
 
   -- do the group match and accounting, then forward along.
   -- NOTE:  both of these match the same position
@@ -4714,12 +4698,12 @@
 ::class "NegativeLookaheadNode" subclass MatchNode
 ::method init
   expose group
-  use arg group
+  use strict arg group
   self~init:super
 
 ::method match
   expose group
-  use arg context, position, target
+  use strict arg context, position, target
 
   -- do the group match and accounting, then forward along.
   -- NOTE:  both of these match the same position
@@ -4740,7 +4724,7 @@
 ::class "PositiveLookBehindNode" subclass MatchNode
 ::method init
   expose group min max
-  use arg group, metrics
+  use strict arg group, metrics
   self~init:super
 
   min = metrics~minLength
@@ -4760,7 +4744,7 @@
 
 ::method match
   expose group min max
-  use arg context, position, target
+  use strict arg context, position, target
 
   -- this is how much we back up for the first test
   backPosition = position - min
@@ -4790,7 +4774,7 @@
 -- backward matching method designed to be overridden by a subclass.
 -- this version performs the positive match
 ::method backMatch
-  use arg context, position, target, subContext, backPosition
+  use strict arg context, position, target, subContext, backPosition
 
   -- we need to test the shortest matches first
   do i = backPosition by -1 while subContext~checkStart(i)
@@ -4816,7 +4800,7 @@
 -- backward matching method designed to be overridden by a subclass.
 -- this version performs the positive match
 ::method backMatch
-  use arg context, position, target, subContext, backPosition
+  use strict arg context, position, target, subContext, backPosition
 
   -- we need to test the shortest matches first
   do i = backPosition by -1 while subContext~checkStart(i)
@@ -4837,7 +4821,7 @@
 -- a \r\n sequence
 ::class "InternetMultilineCaretNode" subclass MatchNode
 ::method match
-  use arg context, position, target
+  use strict arg context, position, target
 
   -- the end is always game over, even if preceeded by a newline
   if context~checkEnd(position) then do
@@ -4870,7 +4854,7 @@
 -- a \n sequence
 ::class "UnixMultilineCaretNode" subclass MatchNode
 ::method match
-  use arg context, position, target
+  use strict arg context, position, target
 
   -- the end is always game over, even if preceeded by a newline
   if context~checkEnd(position) then do
@@ -4895,7 +4879,7 @@
 -- end-of-match processing.
 ::class "TerminatorNode" subclass MatchNode
 ::method match
-  use arg context, position, target
+  use strict arg context, position, target
 
   -- set the end match position
   context~matchEnd = position
@@ -4924,7 +4908,7 @@
 ::class "SearchNode" subclass MatchNode
 ::method init
   expose minLength
-  use arg pattern
+  use strict arg pattern
   self~init:super
 
   self~next = pattern  -- this is our search pattern
@@ -4939,7 +4923,7 @@
 
 ::method match
   expose minLength
-  use arg context, position, target
+  use strict arg context, position, target
   -- NB, + 1 is needed because the start position is not
   -- zero based.  We might have exactly enough for a single test
   probes = (context~endPosition - position) - minLength + 1
@@ -4961,7 +4945,7 @@
 
 
 ::method calculateMatchMetrics
-  use arg metrics
+  use strict arg metrics
 
   -- get the successor metrics, but we need to tweak them
   self~calculateMatchMetrics:super(metrics)
@@ -4976,19 +4960,19 @@
 ::class "PatternNode" subclass MatchNode
 ::method init
   expose name pattern
-  use arg name, pattern
+  use strict arg name, pattern
 
 
 ::method match
   expose name pattern
-  use arg context, position, target
+  use strict arg context, position, target
 
   -- create a new context to execute this
   subcontext = context~createNestedPatternContext(pattern)
   -- attempt a match from the current position
   matchResult = subcontext~match(pattern, position)
   -- record the result of this with the current group
-  context~addResult(name, matchResult)
+  context~setGroupResult(name, matchResult, subcontext~groups)
   -- if this matched, then foward along
   if matchResult~matched then do
       return self~matchNext(context, matchResult~end, target)
@@ -4999,7 +4983,7 @@
 
 ::method calculateMatchMetrics
   expose pattern
-  use arg metrics
+  use strict arg metrics
   -- add in the metrics from the pattern
   metrics~addMetrics(pattern~matchMetrics)
   -- get the successor metrics, but we need to tweak them
@@ -5007,13 +4991,59 @@
 
 
 
--- base class for a match result from a group match.  This is
--- similar to the MatchResult class, but lacks the ability to request
--- embedded group values
-::class "BaseMatchResult"
+-- A small class that contains the specifics of the information from the
+-- match context.
+::class "MatchText"
 ::method init
-  expose regionStart regionEnd start end regionText
-  use strict arg regionText, regionStart, regionEnd, start, end
+  expose regionText regionStart regionEnd
+  use strict arg regionText, regionStart, regionEnd
+
+
+-- accessor methods
+::attribute regionText
+::attribute regionStart
+::attribute regionEnd
+
+
+-- get the size of the matching text region
+::attribute textLength GET
+  expose regionStart regionEnd
+
+  return regionEnd - regionStart + 1  -- end position is Rexx-like last character
+
+
+ -- extract a text subpiece
+::method text
+  expose regionText regionStart
+  use strict arg start = (regionStart), length = (self~regionEnd)
+
+  return regionText~substr(start, length)
+
+
+ -- extract a prefix section
+::method prefix
+  expose regionText regionStart
+  use strict arg start
+
+  return regionText~substr(regionStart, start - regionStart)
+
+
+ -- extract a suffix section
+::method suffix
+  expose regionText regionEnd
+  use strict arg end
+
+  return regionText~substr(end, regionEnd - end)
+
+
+
+-- Information about an individual match.  The match
+-- may have embedded groups.  The match information for
+-- the embedded groups can also be retrieved
+::class "MatchResult"
+::method init
+  expose matchText start end groups
+  use strict arg matchText, start, end, groups
 
 -- belt and braces...if the start is 0, make sure the end is zero also
   if start == 0 then do
@@ -5033,14 +5063,11 @@
 ::attribute end GET
 
 
--- information about the string region we're matching on
-::attribute regionText GET PRIVATE   -- only available internally
-::attribute regionStart GET
-::attribute regionEnd GET
-::attribute regionLength GET
-  expose regionStart regionEnd
+-- retrieve the length of the matching region
+::attribute textLength GET
+  expose matchText
 
-  return regionEnd - regionStart + 1  -- end position is Rexx-like last character
+  return return matchText~regionLength  -- get the information from the descriptor
 
 
 -- retrieve the length of the match string
@@ -5052,41 +5079,42 @@
 
 -- retrieves the match text
 ::attribute text GET
-  expose regionText start
+  expose matchText start
 
-  -- return the match text
+  -- No match position?  Nothing to return.
   if start == 0 then do
       return ''
   end
+
   -- extract the text subpiece
-  return regionText~substr(start, self~length)
+  return matchText~text(start, self~length)
 
 
 -- retrieve the prefix string before the match, up to the start
 -- of the match region
 ::attribute prefix GET
-  expose regionText start regionStart
+  expose matchText start
 
   -- no match is always a null string
   if start == 0 then do
       return ""
   end
 
-  return regionText~substr(regionStart, start - regionStart)
+  return matchText~prefix(start)
 
 
 -- retrieve any text following the match position, up to the end
 -- of the match region
 ::attribute suffix GET
-  expose regionText start end regionStart regionEnd
+  expose matchText start end
 
   -- no match is always the entire region string
   if start == 0 then do
-      return regionText~substr(regionStart, regionEnd - regionStart)
+      return matchText~text
   end
 
   -- just everything from the end to the end of text region
-  return regionText~substr(end, regionEnd - end)
+  return matchText~suffix(end)
 
 
 -- return the position of character after the match position.  If
@@ -5099,61 +5127,48 @@
   return end + 1
 
 
-
--- the class for a group result.  This adds in the retrieval
--- of embedded match results from named pattern references
-::class "GroupMatchResult" subclass BaseMatchResult
-::method init
-  expose results
-  use strict arg regionText, regionStart, regionEnd, group
-
-  self~init:super(regionText, regionStart, regionEnd, group~start, group~end)
-  results = group~namedResults
-
-
--- retrieve a named result piece.  This is the name used
--- in the \m{name} element used to tag the section
-::method result
-  expose results
-  use strict arg id
-
-  -- make sure this is uppercase
-  id = id~upper
-  return results[id]
-
-
--- Information about an individual match.  The match
--- may have embedded groups.  The match information for
--- the embedded groups can also be retrieved
-::class "MatchResult" subclass BaseMatchResult
-::method init
+-- resolve a group path name
+::method resolveGroupInfo PRIVATE
   expose groups
-  use strict arg regionText, regionStart, regionEnd, start, end, groups
+  use strict arg path
 
-  self~init:super(regionText, regionStart, regionEnd, start, end)
+  -- simple path, just return the match info
+  if \path~contains('/') then do
+      return groups[path~upper]
+  end
+
+  -- we have a complex path to handle...parse out the first piece,
+  -- resolve our group, then pass this along to resolve the rest of
+  -- the pieces.
+  parse upper var path groupName '/' path
+
+  -- get this level...if we can't handle this, this can't be resolved
+  group = groups[groupName]
+  if group == .nil then do
+      return .nil
+  end
+
+  -- pass this along to the next level
+  return group~resolveGroupInfo(path)
 
 
 -- retrieve a group.  This is either a numeric id
 -- or a symbolic name
 ::method group
   expose groups
-  use strict arg id
+  use strict arg path
 
-  -- make sure this is uppercase
-  id = id~upper
-  group = groups[id]
+  -- resolve the group path
+  group = self~resolveGroupInfo(path)
 
   -- give a reasonable default rather than raising an error
   if .nil == group then do
       return .nil
   end
 
-  -- this gets wrappered into a result item
-  return .GroupMatchResult~new(self~regionText, self~regionStart, self~regionEnd, group)
-
-
--- used for creating a MatchReplacementResult
-::attribute groups GET PRIVATE
+  -- this relies on the base match information for a lot of the string specifics,
+  -- so wrapper this.
+  return group~matchResult(self)
 
 
 -- retrieve the text for a given group item in a match result
@@ -5180,25 +5195,42 @@
 
 
 
+-- the class for a group result.  There's really not much difference
+-- between this and a top-level match result...this is really just a tagging
+-- difference at this point.
+::class "GroupMatchResult" subclass MatchResult
+
+
+
 -- the current active context for a match operation.  This
 -- provides information to the matching filters and holds any
 -- intermediate state required by the filters.  This also
 -- implements the matching operations.
 ::class "MatchContext"
 ::method init
-  expose text startPosition endPosition matchPosition matchEnd
+  expose text startPosition endPosition matchPosition matchEnd matchText
   use strict arg text, startPosition = 1, length = (text~length)
+
   -- make sure the length is bounded.  The end position is one
   -- past the end
   endPosition = min(text~length + 1, startPosition + length)
+
+  -- create an object we can hand out for inclusion in match results
+  matchText = .MatchText~new(text, startPosition, endPosition)
   matchPosition = 0
   matchEnd = 0
+
+
+-- accessor for the matchText information
+::attribute matchText GET
+-- we also need access to the groups for constructing embedded references
+::attribute groups GET
 
 
 -- prepare for a match using a given pattern instance
 ::method prepareMatch private
   expose root groups locals groupStack rootGroup
-  use arg pattern
+  use strict arg pattern
 
   -- get the pattern root and a copy of the groups information
   root = pattern~root
@@ -5209,6 +5241,7 @@
   do name over groups
       groups[name] = groups[name]~copy
   end
+
   locals = .table~new   -- this allows patterns to save/retrieve local state
   groupStack = .queue~new -- create a stack for pushing and popping group usage
 
@@ -5221,7 +5254,8 @@
 -- and stop range.  Used by lookbehind matchers to restrict the
 -- search range of the filters
 ::method createSubContext
-  use arg start, end
+  use strict arg start, end
+
   -- just clone the context and update the bounds
   copy = self~copy
   copy~setRange(start, end)
@@ -5232,7 +5266,8 @@
 -- create a new context for invoking a nested pattern
 ::method createNestedPatternContext
   expose text startPosition endPosition
-  use arg pattern
+  use strict arg pattern
+
   -- create a context as if this was toplevel
   return self~class~new(text, startPosition, endPosition - startPosition)
 
@@ -5240,7 +5275,8 @@
 -- Retrieve the group reference item for a given group
 ::method getGroupReference
   expose groups
-  use arg id
+  use strict arg id
+
   -- return the information inherited from the pattern
   return groups[id]
 
@@ -5248,43 +5284,46 @@
 -- record the entering of a group
 ::method enterGroup
   expose groupStack
-  use arg group
+  use strict arg group
+
   groupStack~push(group)
 
 
 -- perform exit clean up for group completion
 ::method exitGroup
-   expose groupStack
-   return groupStack~pull   -- just pop this group instance off of the stack
-
-
--- add a named result object to the currently active group
-::method addResult
   expose groupStack
-  use arg name, result
+
+  return groupStack~pull   -- just pop this group instance off of the stack
+
+
+-- Poke the group at the top of the execution stack with the result of
+-- an embedded Pattern reference operation.
+::method setGroupResult
+  expose groupStack
+  use strict arg name, result, groups
 
   group = groupStack~peek
-  group~addResult(name, result)
+  group~setPatternMatch(self, result, groups)
 
 
 -- save a local value
 ::method setLocal
   expose locals
-  use arg index, value
+  use strict arg index, value
   locals[index] = value
 
 
 -- retrieve a local value
 ::method getLocal
   expose locals
-  use arg index
+  use strict arg index
   return locals[index]
 
 
 -- remove a given local value
 ::method removeLocal
   expose locals
-  use arg index
+  use strict arg index
   locals~remove(index)
 
 
@@ -5293,6 +5332,7 @@
 ::method matches
   expose text startPosition matchPosition matchEndRequired root
   use strict arg pattern
+
   -- set up the context for matching
   self~prepareMatch(pattern)
   matchEndRequired = .true   -- this must match exactly
@@ -5314,6 +5354,7 @@
 ::method startsWith
   expose text startPosition matchPosition matchEndRequired root
   use strict arg pattern, start = (startPosition)
+
   -- set up the context for matching
   self~prepareMatch(pattern)
 
@@ -5339,6 +5380,7 @@
   -- the start is optional, but defalt to the beginning of the
   -- region (typical)
   use strict arg pattern, start = (startPosition), end = (test~length)
+
   -- set up the context for matching
   self~prepareMatch(pattern)
   -- forward to the common matching routine
@@ -5355,6 +5397,7 @@
   -- the start is optional, but defalt to the beginning of the
   -- region (typical)
   use strict arg pattern, start = (startPosition)
+
   -- set up the context for matching
   self~prepareMatch(pattern)
   -- forward to the common matching routine
@@ -5368,6 +5411,7 @@
   -- the start is optional, but defalt to the beginning of the
   -- region (typical)
   use strict arg start, pattern
+
   -- adjust the starting position to the bounds
   start = max(startPosition, start)
   -- set the initial match position
@@ -5375,7 +5419,7 @@
 
   if start > endPosition then do
       matchPosition = 0
-      return self~matchResult  -- give a match result object with the info
+      return self~result     -- give a match result object with the info
   end
 
   matchEndRequired = .false  -- This does not need to match exactly
@@ -5387,15 +5431,17 @@
 
 -- return a result object from the match result
 ::method result
-  expose text startPosition endPosition matchPosition matchEnd groups rootGroup
-  rootGroup~setMatch(text, matchPosition, matchEnd)
-  return .MatchResult~new(text, startPosition, endPosition, matchPosition, matchEnd, groups)
+  expose matchText matchPosition matchEnd groups rootGroup
+
+  rootGroup~setMatch(self, matchPosition, matchEnd)
+  return .MatchResult~new(matchText, matchPosition, matchEnd, groups)
 
 
 -- check if we're at the start position
 ::method atStart
   expose startPosition
-  use arg test
+  use strict arg test
+
   return test == startPosition
 
 
@@ -5404,14 +5450,16 @@
 -- to make tests prior to the current position
 ::method checkStart
   expose startPosition
-  use arg test
+  use strict arg test
+
   return test >= startPosition
 
 
 -- tests for whether a position is past the end of the range
 ::method checkEnd
   expose endPosition
-  use arg test
+  use strict arg test
+
   if test >= endPosition then do
       -- remember that we've hit the end of the pattern
       return .true
@@ -5431,8 +5479,12 @@
 
 -- change the bounds of the search to a restricted range.
 ::method setRange private
-  expose startPosition endPosition
-  use arg startPosition, endPosition
+  expose matchText text startPosition endPosition
+  use strict arg startPosition, endPosition
+
+  -- we need an updated matchText with the new range positions
+  -- recorded
+  matchText = .MatchText~new(text, startPosition, endPosition)
 
 
 -- indicates whether the pattern must exactly match the end
@@ -5443,12 +5495,12 @@
 -- beginning and end positions.
 ::method setMatchPosition
   expose matchPosition matchEnd
-  use arg matchPosition, matchEnd
+  use strict arg matchPosition, matchEnd
 
 -- retrieve a backreference value
 ::method getBackReferenceResult
   expose groups
-  use arg id
+  use strict arg id
 
   if groups == .nil then do
       raise syntax 93.900 array("Back reference to unknown group" id);
@@ -5467,7 +5519,7 @@
 -- range to the given position.
 ::method matchOffset
   expose startPosition
-  use arg position
+  use strict arg position
 
   return position - startPosition
 
@@ -5476,12 +5528,14 @@
 -- the class for managing group information during a pattern match
 ::class "GroupReference"
 ::method init
-  expose id start end text participated namedResults
-  use arg id
+  expose id start end context participated namedGroups
+  use strict arg id
+
+  -- these will be filled in during the course of matching
   start = 0
   end = 0
-  text = .nil
-  namedResults = .nil  -- This is only used when an embedded pattern is used
+  context = .nil
+  namedGroups = .nil   -- This is only used when an embedded pattern is used
   participated = .true -- participation is different from "matching"
 
 
@@ -5492,55 +5546,77 @@
 
 -- indicates whether a group participated in a match
 ::attribute participated
+-- the context we're attached to.  This gets set when the context
+-- first initiates a pattern search and copies the group information.
+::attribute context
 
 
 -- the list of results from named patterns used inside this
 -- group.  Returns .nil if none were used (common)
-::attribute namedResults
+::attribute namedGroups
 
 
--- add a named result to this group
-::method addResult
-  expose namedResults
-  use arg name, result
+-- add a named subgroup to this group
+::method addGroup
+  expose namedGroups
+  use strict arg name, group
+
   -- we create this lazily, since it's more common
   -- that a group not have any of these
-  if namedResults == .nil then do
-      namedResults = .directory~new
+  if namedGroups == .nil then do
+      namedGroups = .directory~new
   end
 
   -- add this to the directory table
-  namedResults[name] = result
+  namedGroups[name~upper] = group
 
 
--- retrieve a named result from the group information
-::method result
-  expose namedResults
-  use arg name
+-- retrieve a named group result from the group information
+::method group
+  expose namedGroups
+  use strict arg name
 
-  if namedResults == .nil then do
+  if namedGroups == .nil then do
       return .nil
   end
 
-  return namedResults[name]
+  return namedGroups[name~upper]
 
 
 -- indicates whether this match was a success or a failure
 ::method matched
   expose start
+
   return start > 0
 
 
--- set the match values
+-- set the match values for an embedded pattern.  When created, this
+-- item is just a placeholder for the group that contains the pattern reference.
+-- Once the match is made, we can fill in the group information that was
+-- pulled from the pattern and used by the context for matching
+::method setPatternMatch
+  expose context start end namedGroups
+  use strict arg context, result, namedGroups
+
+  -- set the the match positions from the match result
+  start = result~start
+  end = result~end
+
+
+-- set the match values for an embedded pattern.  When created, this
+-- item is just a placeholder for the group that contains the pattern reference.
+-- Once the match is made, we can fill in the group information that was
+-- pulled from the pattern and used by the context for matching
 ::method setMatch
-  expose text start end
-  use arg text, start, end
+  expose context start end
+  use strict arg context, start, end
 
 
 -- clear the match values
 ::method clearMatch
-  expose text start end
-  text = .nil
+  expose start end
+
+  -- it is useful to keep the context, since that contains the text we use.
   start = 0
   end = 0
 
@@ -5548,18 +5624,20 @@
 -- return the text that was matched.  Returns .nil if
 -- this match was not successful
 ::method matchText
-  expose text start end
+  expose context start end
 
+  -- we only have text if we've got a matching position
   if start > 0 then do
-      return text~substr(start, end - start)
+      return context~matchText~text(start, end - start)
   end
-
+  -- no matching text
   return .nil
 
 
 -- get a copy of the match positions
 ::method saveMatch
   expose start end
+
   r = .directory~new
   r~start = start
   r~end = end
@@ -5569,9 +5647,26 @@
 -- restore the match location from a saved copy
 ::method restoreMatch
   expose start end
-  use arg r
+  use strict arg r
+
   start = r['START']
   end = r~end
+
+
+-- return a match result for this group.
+::method matchResult
+  expose context start end
+
+  -- if we don't have a set context, then create a dummy matchText
+  if context == .nil then do
+      matchText = .MatchText~new(" ", 1, 1)
+  end
+  else do
+      matchText = context~matchText
+  end
+
+  -- this gets wrappered into a result item
+  return .GroupMatchResult~new(matchText, start, end, group)
 
 
 
@@ -5783,7 +5878,7 @@ return string~substr(sectionstart, sectionEnd - sectionStart)
   expose string matchstart matchend sectionstart sectionlength
 
   sectionStart = matchStart
-  use arg matchStart
+  use strict arg matchStart
 
   self~validateposition
 
@@ -5831,6 +5926,7 @@ return string~substr(sectionstart, sectionEnd - sectionStart)
   deterministic = .true  -- indicates whether calculations are even possible
 
 
+-- accessors for the various metric values
 ::attribute minLength
 ::attribute maxLength
 ::attribute validMaximum
@@ -5840,22 +5936,24 @@ return string~substr(sectionstart, sectionEnd - sectionStart)
 -- bump both the min and max by the same value
 ::method addLength
   expose minLength maxLength
-  use arg length
+  use strict arg length
 
   minLength += length
   maxLength += length
 
 
+-- increment the pattern minimum
 ::method addMin
   expose minLength
-  use arg length
+  use strict arg length
 
   minLength += length
 
 
+-- increment the pattern maximum
 ::method addMax
   expose maxLength
-  use arg length
+  use strict arg length
 
   maxLength += length
 
@@ -5863,7 +5961,7 @@ return string~substr(sectionstart, sectionEnd - sectionStart)
 -- add a node's metric set to our accumulated set
 ::method addMetrics
   expose deterministic validMaximum
-  use arg other
+  use strict arg other
 
   -- add in the minumum and maximum
   self~addMin(other~minLength)
@@ -5879,7 +5977,7 @@ return string~substr(sectionstart, sectionEnd - sectionStart)
 -- metrics
 ::method mergeMetrics
   expose minLength maxLength deterministic validMaximum
-  use arg other
+  use strict arg other
 
   -- calculate the new minimum and maximum
   minLength = min(minLength, other~minLength)
@@ -5888,142 +5986,6 @@ return string~substr(sectionstart, sectionEnd - sectionStart)
   -- or in the various flags
   deterministic = deterministic & other~deterministic
   validMaximum = validMaximum & other~validMaximum
-
-
-
--- base class for a string replacement node
-::class "ReplacementNode"
--- abstract method that all replacement nodes need to override
-::method getText Abstract
-
-
-
--- A node that returns the current
-::class "StringReplacementNode"
-::method init
-  expose text
-  use arg text
-
-
-::method getText
-  expose text
-  return text
-
-
-
--- A node that returns the value of a match group.
--- if the match group does not exist
-::class "GroupReplacementNode"
-::method init
-  expose id
-  use arg id
-
-
-::method getText
-  expose id
-  use arg result
-  group = result~group(id)
-  -- if this is there, return the text
-  if group \= .nil then do
-      return group~text
-  end
-  -- return a null string
-  return ""
-
-
-
--- A node that returns the entire match string
-::class "MatchReplacementNode"
-::method getText
-  use arg result
-  return result~text
-
-
-
--- A node that returns the prefix of the match string
-::class "PrefixReplacementNode"
-::method getText
-  use arg result
-  return result~prefix
-
-
-
--- A node that returns the suffix of the match string
-::class "SuffixReplacementNode"
-::method getText
-  use arg result
-  return result~suffix
-
-
-
--- A node that returns the value of an embedded match
--- pattern.  Return null if the result does not exist
-::class "ResultReplacementNode"
-::method init
-  expose id
-  use arg id
-
-
-::method getText
-  expose id
-  use arg result
-  subresult = result~result(id)
-  -- if this is there, return the text
-  if subresult \= .nil then do
-      return subresult~text
-  end
-  -- return a null string
-  return ""
-
-
-
--- A special type of pattern used for performing string replacements
-::class "ReplacementPattern" public
--- compile a replacement pattern
-::method compile class
-  -- the compiler is configurable, but there is a default
-  use strict arg pattern, compiler = (.RegexCompiler~new)
-  return compiler~compileReplacement(pattern)
-
-
-::method init
-  expose pattern sections
-  use strict arg pattern, sections
-
-
-::attribute pattern GET
-::attribute stages GET
-
-
-::method string
-  expose pattern
-  return pattern
-
-
--- perform a replacement operation within a mutable buffer instance
-::method replace
-  expose sections
-  use arg buffer, matchResult
-
-  -- nothing to replace if there is no match
-  if \matchResult~matched then do
-      return 0
-  end
-
-  -- delete the information
-  buffer~delete(matchResult~start, matchResult~length)
-
-  position = matchResult~start  -- replacement starts at the match begining
-  -- insert the text from each of the pieces into the buffer starting
-  -- at the match position
-  do section over sections
-      next = section~getText(matchResult)
-      buffer~insert(next, position)
-      position += next~length
-  end
-
-  -- return the length of the changed string
-  return position - matchResult~start
 
 
 
