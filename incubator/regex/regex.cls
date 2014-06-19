@@ -1145,6 +1145,12 @@
                   referenceName = self~extractDelimited('<', '>')
                   -- apply Rexx symbol rules to the name and make uppercase
                   referenceName = referenceName~upper
+
+                  -- check that this is unique
+                  if self~haveGroup(referenceName) then do
+                      raise syntax 93.900 array("Duplicate named group in pattern:" referenceName)
+                  end
+
                   -- add this to our reference table
                   self~getGroupReference(referenceName)
                   -- a named capturing group
@@ -2269,13 +2275,34 @@
           -- get the pattern name
           patternName = self~extractDelimited('{', '}')
           patternName = patternName~upper
+          -- a reference to a registered pattern impliclitly creates
+          -- a named group that can be used to retrieve the information.  However,
+          -- since it is possible to use a named pattern in more than one position,
+          -- the group can be explicitly named by specifying {group:pattern}.
+          if patternName~contains(":") then do
+             parse var patternName groupName ":" patternName
+          end
+          else do
+             groupName = patternName
+          end
+
+          -- see if we can resolve the pattern.
           pattern = self~getPattern(patternName)
 
           if pattern == .nil then do
               raise syntax 93.900 array("Unrecognized pattern reference:" patternName)
           end
+
+          -- check that this is unique
+          if self~haveGroup(groupName) then do
+              raise syntax 93.900 array("Duplicate named group in pattern:" groupName)
+          end
+
+          -- add this to our reference table
+          self~getGroupReference(groupName)
+
           -- this handles the indirection
-          return .PatternNode~new(patternName, pattern)
+          return .PatternNode~new(groupName, patternName, pattern)
       end
       -- start of text anchor
       when ch == 'A' then do
@@ -2421,10 +2448,10 @@
   loop forever
       ch = self~next -- get the next character
       if ch == .nil then do
-         raise syntax 93.900 array("Missing closing '}' in group path specification")
+         raise syntax 93.900 array("Missing closing '>' in group path specification")
       end
       -- end of the group name portion?
-      else if ch == '}' then do
+      else if ch == '>' then do
           -- we must have something here
           if referenceName == "" then do
              raise syntax 93.900 array("Missing group name in path specification")
@@ -2432,6 +2459,8 @@
           -- apply Rexx symbol rules to the name and make uppercase
           referenceName = referenceName~upper
           path~append(referenceName)
+          -- need to back up on the terminator
+          self~previous
           return
       end
       -- Next step in the path
@@ -3415,7 +3444,6 @@
   use strict arg context
 
 
-  trace ?i
   -- if this is a capturing group, return the
   -- saved item.  Otherwise, return a dummy to handle
   -- the save/restore logic
@@ -3423,7 +3451,7 @@
       group = context~getGroupReference(id)
   end
   else do
-      group = .GroupReference~new
+      group = .GroupReference~new("")
   end
 
   -- make this the current group
@@ -4046,7 +4074,7 @@
   expose ref
   use strict arg context
   -- retrieve the match result for our target back ref
-  refGroup = context~getBackReferenceResult(ref)
+  refGroup = context~getBackReferenceGroup(ref)
 
   -- if the back reference did not match, then this is a
   -- failure here too
@@ -4075,7 +4103,7 @@
 
 
 
--- a back reference node to handle more complex group/result resolution
+-- a back reference node to handle more complex group resolution
 ::class "ResultBackReferenceNode" subclass BackReferenceNode
 ::method init
   expose resultPath
@@ -4097,36 +4125,10 @@
   -- match results are used for retrieval
 
   -- retrieve the match result for our target back ref
-  refGroup = context~getBackReferenceResult(resultPath[1])
-  result = refGroup~result(resultPath[2])
-  -- this might not be here, so return .nil for any failure
-  if result == .nil then do
-      return .nil
-  end
+  refGroup = context~resolveBackReferencePath(resultPath)
 
-  count = resultPath~items
-  -- resolution here is done in pairs, though there could be an odd
-  -- number
-  loop i = 3 by 2 while i < count
-      group = result~group(resultPath[i])
-      if group == .nil then do
-          return .nil
-      end
-      -- if this is the last item, the group value is the
-      -- desired text
-      if i == count then do
-          return group~text
-      end
-
-      -- step to the next result
-      result = group~result(resultPath[i + 1])
-      -- and fail it it is not there
-      if result == .nil then do
-          return .nil
-      end
-  end
   -- we're after the result text now
-  return result~text
+  return refGroup~matchText
 
 
 -- simple method for performing the implementation specific
@@ -4193,7 +4195,7 @@
   expose ref
   use strict arg context, position, target
   -- retrieve the match result for our target back ref
-  refGroup = context~getBackReferenceResult(ref)
+  refGroup = context~getBackReferenceGroup(ref)
   -- and just return the matched indictor
   return refGroup~participated
 
@@ -4226,7 +4228,7 @@
   -- match results are used for retrieval
 
   -- retrieve the match result for our target back ref
-  refGroup = context~getBackReferenceResult(resultPath[1])
+  refGroup = context~getBackReferenceGroup(resultPath[1])
   result = refGroup~result(resultPath[2])
   -- this might not be here, so return .nil for any failure
   if result == .nil then do
@@ -4959,12 +4961,12 @@
 -- pattern. usually for library pattern references.
 ::class "PatternNode" subclass MatchNode
 ::method init
-  expose name pattern
-  use strict arg name, pattern
+  expose groupName patternName pattern
+  use strict arg groupName, patternName, pattern
 
 
 ::method match
-  expose name pattern
+  expose groupName pattern
   use strict arg context, position, target
 
   -- create a new context to execute this
@@ -4972,7 +4974,7 @@
   -- attempt a match from the current position
   matchResult = subcontext~match(pattern, position)
   -- record the result of this with the current group
-  context~setGroupResult(name, matchResult, subcontext~groups)
+  context~setGroupResult(groupName, matchResult, subcontext~groups)
   -- if this matched, then foward along
   if matchResult~matched then do
       return self~matchNext(context, matchResult~end, target)
@@ -5009,14 +5011,16 @@
 ::attribute textLength GET
   expose regionStart regionEnd
 
-  return regionEnd - regionStart + 1  -- end position is Rexx-like last character
+  return regionEnd - regionStart -- end position is one past the end
 
 
  -- extract a text subpiece
 ::method text
-  expose regionText regionStart
-  use strict arg start = (regionStart), length = (self~regionEnd)
+  expose regionText regionStart regionEnd
+  use strict arg start = (regionStart), length = (self~textLength)
 
+  -- cap the length at the size of the region
+  length = min(length, self~textLength)
   return regionText~substr(start, length)
 
 
@@ -5131,6 +5135,11 @@
 ::method resolveGroupInfo PRIVATE
   expose groups
   use strict arg path
+
+  -- we might not have any groups hung off of us
+  if groups == .nil then do
+      return .nil
+  end
 
   -- simple path, just return the match info
   if \path~contains('/') then do
@@ -5299,10 +5308,9 @@
 -- Poke the group at the top of the execution stack with the result of
 -- an embedded Pattern reference operation.
 ::method setGroupResult
-  expose groupStack
   use strict arg name, result, groups
 
-  group = groupStack~peek
+  group = self~getGroupReference(name)
   group~setPatternMatch(self, result, groups)
 
 
@@ -5498,7 +5506,7 @@
   use strict arg matchPosition, matchEnd
 
 -- retrieve a backreference value
-::method getBackReferenceResult
+::method getBackReferenceGroup
   expose groups
   use strict arg id
 
@@ -5512,6 +5520,28 @@
   end
 
   return groupRef
+
+-- resolve a group backreference path that may be more than one
+-- level deep.  These will be references to elements defined in
+-- embedded patterns
+::method resolveBackReferencePath
+  expose groups
+  use strict arg path
+
+  -- get the base group (which will raise an error on our behalf if it does not
+  -- exist
+  group = self~getBackReferenceGroup(path[1])
+
+  loop i = 2 to path~items
+     -- get an item from our current group level.
+     group = group~group(path[i])
+     if group == .nil then do
+         -- report the element we can't find
+         raise syntax 93.900 array("Back reference to unknown group" path[i]);
+     end
+  end
+  -- return the final located group
+  return group
 
 
 -- return the offset of the given position.  This will be
@@ -5655,7 +5685,7 @@
 
 -- return a match result for this group.
 ::method matchResult
-  expose context start end
+  expose context start end namedGroups
 
   -- if we don't have a set context, then create a dummy matchText
   if context == .nil then do
@@ -5666,7 +5696,7 @@
   end
 
   -- this gets wrappered into a result item
-  return .GroupMatchResult~new(matchText, start, end, group)
+  return .GroupMatchResult~new(matchText, start, end, namedGroups)
 
 
 
