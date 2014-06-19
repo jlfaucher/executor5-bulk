@@ -131,8 +131,6 @@
   list = .array~new   -- our set of match results
   indexPosition = 1   -- split always starts at the beginning
 
-  -- now loop until we no longer match
-  result = self~find(text, indexPosition)
   -- non-limited is more typical and simpler
   if limit < 0 then do
       -- now loop until we no longer match
@@ -167,6 +165,54 @@
       list~append(text~substr(indexPosition))
   end
   return list
+
+
+-- perform a regex replacement on a string value
+-- NOTE:  The text can be either a mutableBuffer or a string.  If this
+-- is a mutable buffer, it will be updated with the replacement result
+-- at the end.  If the text is a string, then we'll return a new string
+::method replace
+  use strict arg text, replacement, count = 999999999
+
+  indexPosition = 1   -- split always starts at the beginning
+  -- use a mutable buffer for making the replacements
+  buffer = .MutableBuffer~new
+
+  loop count = 1 to limit
+      -- now loop until we no longer match
+      result = self~find(text, indexPosition)
+      if \result~matched then do
+          -- add the remainder of the string to the buffer
+          buffer~append(result~suffix)
+          leave
+      end
+      -- copy the prefix section to the buffer, followed by our
+      -- replacement string
+      buffer~append(result~prefix)
+      buffer~append(replacement)
+      -- advance to the next position.  Note that
+      -- this works correctly even if the match length
+      -- is a null string
+      indexPosition = result~nextMatch
+  end
+
+  -- final fixup.  We have a buffer with the replacement result, now
+  -- see if we copy this back into the source buffer or return as a string
+  -- object.
+  if text~isA(.MutableBuffer) then do
+      -- delete all of the old text
+      text~delete(1)
+      -- and add in the replacement text
+      text~append(buffer~string)
+      -- return value is the original buffer
+      return text
+  end
+  else do
+      -- return as a string
+      return buffer~string
+  end
+
+
 
 
 -- return a set of match metrics for this pattern instance
@@ -4998,7 +5044,7 @@
 ::class "MatchText"
 ::method init
   expose regionText regionStart regionEnd
-  use strict arg regionText, regionStart, regionEnd
+  use strict arg regionText, regionStart = 1, regionEnd = (regionText~length + 1)
 
 
 -- accessor methods
@@ -5689,7 +5735,7 @@
 
   -- if we don't have a set context, then create a dummy matchText
   if context == .nil then do
-      matchText = .MatchText~new(" ", 1, 1)
+      matchText = .MatchText~new("")
   end
   else do
       matchText = context~matchText
@@ -5704,14 +5750,16 @@
 -- regular expressions
 ::class "Parser" public
 ::method init
-  expose string matchstart matchend sectionstart sectionend compiler matchResult
+  expose string matchstart matchend sectionstart sectionend compiler matchResult matchText
   use strict arg string, compiler = (.RegexCompiler~new)
 
   matchstart = 1;    -- There is an implicit absolute trigger of 1 at the start
   matchend = 1;      -- All numeric movement triggers have a zero-length size
   sectionstart = 1;  -- The section also starts here
-  sectionend = string~length -- and is the length of the string
+  sectionEnd = string~length -- and is the length of the string
   matchResult = .nil -- no match result at the start
+
+  matchText = .MatchText~new(string)
 
 
 -- return the current match position for the parsing context
@@ -5766,16 +5814,9 @@ return string~substr(sectionstart, sectionEnd - sectionStart)
 
 
 -- return the current section parsed into blank delimited words
-::method sectionwords
+::method sectionWords
+  -- word list does all of the work here
   return self~section~wordList
-  count = section~words
-  wordlist = .array~new(count)
-
-  do i = 1 to count
-     wordlist[i] = section~word(i)
-  end
-
-  return wordlist
 
 
 -- return the remainder of the string after the last
@@ -5791,7 +5832,7 @@ return string~substr(sectionstart, sectionEnd - sectionStart)
 -- indicator of whether the string was located.
 -- details of the match can be retrieved from the context.
 ::method find
-  expose string matchstart matchend sectionstart sectionEnd matchResult
+  expose string matchStart matchEnd sectionStart sectionEnd matchResult
   use strict arg needle
 
   temp = string~pos(needle, matchend)
@@ -5806,9 +5847,9 @@ return string~substr(sectionstart, sectionEnd - sectionStart)
   else do
       matchResult = .nil  -- clear the old match result
       matchStart = temp
-      sectionstart = matchend
-      matchend = matchstart + needle~length
-      sectionEnd = matchstart
+      sectionStart = matchEnd
+      matchEnd = matchStart + needle~length
+      sectionEnd = matchStart
       return .true
   end
 
@@ -5876,22 +5917,23 @@ return string~substr(sectionstart, sectionEnd - sectionStart)
   end
 
 
-  -- return a .MatchResult object that represents the last match
-  -- operation.  This will either be a MatchResult returned from a
-  -- regex find operation or one constructed from the current parser
-  -- state that represents the prior operations
-  ::attribute matchResult GET
-  expose methodResult string matchStart matchEnd
+-- return a .MatchResult object that represents the last match
+-- operation.  This will either be a MatchResult returned from a
+-- regex find operation or one constructed from the current parser
+-- state that represents the prior operations
+::attribute matchResult GET
+  expose methodResult string matchStart matchEnd matchText
 
-  -- if the matchResult is not set, then construct one
+  -- if the matchResult is not set, then construct a phony one for just
+  -- a text match or movement
   if methodResult == .nil then do
-      methodResult = .MatchResult~new(string, 1, string~length, matchStart, matchEnd, .false, .nil)
+      methodResult = .MatchResult~new(matchText, matchStart, matchEnd, .false, .nil)
   end
 
   return methodResult
 
 
--- relative postional movement of the pointer
+-- relative postional movement of the pointer (can be either positive or negative)
 ::method move
   expose string matchstart matchend sectionstart sectionlength
   use strict arg delta
@@ -5903,7 +5945,7 @@ return string~substr(sectionstart, sectionEnd - sectionStart)
   self~validateposition
 
 
--- absolute positional movement
+-- absolute positional movement.  This an absolute position.
 ::method moveTo
   expose string matchstart matchend sectionstart sectionlength
 
@@ -5915,7 +5957,7 @@ return string~substr(sectionstart, sectionEnd - sectionStart)
 
 -- Validate and adjust the positional values after a non-search
 -- parse movement
-::method validateposition private
+::method validatePosition private
   expose string matchstart matchend sectionstart sectionlength matchResult
 
   matchResult = .nil  -- clear the old match result
