@@ -103,4 +103,39 @@ return testResult
   message = "abc"~startWith("substr",  .array~of(1, 2))
   self~assertEquals("abc"~substr(1,2), message~result)
 
+::method copy
+  o1 = .test2~new
+  o2 = o1~copy
+
+  self~assertSame(o1~a, o2~a)
+  self~assertSame(o1~b, o2~b)
+  self~assertSame(o1~c, o2~c)
+  self~assertSame(o1~d, o2~d)
+
+  o2~a *= 2
+  o2~c *= 2
+
+  self~assertSame(o1~a * 2, o2~a)
+  self~assertSame(o1~b, o2~b)
+  self~assertSame(o1~c * 2, o2~c)
+  self~assertSame(o1~d, o2~d)
+
+
 -- End of class: object.testGroup
+
+::class test1
+::method init
+  expose a b
+  a = 1
+  b = 2
+
+::attribute a
+::attribute b
+
+::class test2 subclass test1
+::method init
+  expose c d
+  c = 1
+  d = 2
+  self~init:super
+
