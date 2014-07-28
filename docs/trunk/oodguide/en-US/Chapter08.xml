@@ -42,12 +42,13 @@
     #
     #########################################################################
 -->
-<!-- Chapter08 - <Title?>		 		  	  v01-00 26Aug13
+<!-- Chapter08 - <Title?>		 		  	  v01-00 28Jly14
 
     Changes:
      v01-00 10May13: First version.
+     v01-01 28Jly14: Version 2 - minor tidy-up only.
 
-    8   *  ???	                                           chapEight
+    8   *  Dialog-to-Dialog Drag/Drop            chapEight
     8.1   * Introduction                                   chap08-intro
     8.2   * Direct Manipulation                            chap08-dragdrop
     8.3   * Refactoring the MVF                            chap08-mvfRefactoring
@@ -57,8 +58,8 @@
 
     
 Topics (in no particular order):
-  4. Moving the View supers into a single mixin.
-  5. Drag/Drop Customer/Product to OrderForm
+  1. Moving the View supers into a single mixin.
+  2. Drag/Drop Customer/Product to OrderForm
 -->
 <chapter id="chapEight">
   <title>Dialog-to-Dialog Drag-Drop</title>
@@ -149,9 +150,9 @@ Topics (in no particular order):
                 <computeroutput>dmQueryDrop</computeroutput> message to
                 <computeroutput>.OrderFormModel</computeroutput>, which accepts a drop of a Customer
               as follows: <programlisting><![CDATA[  ::METHOD dmQueryDrop CLASS PUBLIC
-    use arg sourceClassName
-    if sourceClassName = "CUSTOMERMODEL" then return .true
-    else return .false]]></programlisting>Returning <computeroutput>.true</computeroutput> changes
+     use arg sourceClassName
+     if sourceClassName = "CUSTOMERMODEL" then return .true
+     else return .false]]></programlisting>Returning <computeroutput>.true</computeroutput> changes
               the mouse cursor to the "drop ok" icon; returning
                 <computeroutput>.false</computeroutput> changes the mouse cursor to the "no entry"
               or "no drop allowed" cursor (the code for doing this is in the Drag/Drop
@@ -174,23 +175,23 @@ Topics (in no particular order):
               target's <computeroutput>dmDrop</computeroutput> method typically asks the source's
               model object for data. For example, the drop method in
                 <computeroutput>OrderFormView</computeroutput> is as follows:<programlisting><![CDATA[  ::METHOD dmDrop PUBLIC
-    expose cd1 cd2
-    use strict arg sourceModel, sourceDlg
-    parse var sourceModel . modelName
-    select
-      when modelName =  "CUSTOMERMODEL" then do
-        cd1~getCustomer(sourceModel); return .true; end
-      when modelName = "PRODUCTMODEL" then do
-        cd2~getProduct(sourceModel); return .true; end
-    end
-    return .false]]></programlisting>Note that the variables <computeroutput>cd1</computeroutput>
-              and <computeroutput>cd2</computeroutput> are the Customer Details and
-              the Product Details control dialogs respectively (see <xref linkend="chap08-orderForm"/>). The method
-              <computeroutput>getCustomerData</computeroutput> in the Customer Details control
-              dialog invokes <computeroutput>query</computeroutput> on the source's model instance -
-              in this case <computeroutput>CustomerModel</computeroutput>. The customer details part of
-              the Order Form is then populated with the customer data received. Similarly for product
-              details.</para>
+     expose cd1 cd2
+     use strict arg sourceModel, sourceDlg
+     parse var sourceModel . modelName
+     select
+       when modelName =  "CUSTOMERMODEL" then do
+         cd1~getCustomer(sourceModel); return .true; end
+       when modelName = "PRODUCTMODEL" then do
+         cd2~getProduct(sourceModel); return .true; end
+     end
+     return .false]]></programlisting>Note that the variables <computeroutput>cd1</computeroutput>
+              and <computeroutput>cd2</computeroutput> are the Customer Details and the Product
+              Details control dialogs respectively (see <xref linkend="chap08-orderForm"/>). The
+              method <computeroutput>getCustomerData</computeroutput> in the Customer Details
+              control dialog invokes <computeroutput>query</computeroutput> on the source's model
+              instance - in this case <computeroutput>CustomerModel</computeroutput>. The customer
+              details part of the Order Form is then populated with the customer data received.
+              Similarly for product details.</para>
           </listitem>
         </itemizedlist>
       </listitem>
@@ -270,8 +271,8 @@ Topics (in no particular order):
     <para>For <emphasis role="italic"><emphasis role="bold">View</emphasis></emphasis> components
       such as <computeroutput>CustomerView.rex</computeroutput>:</para>
     <itemizedlist>
-      <listitem><para>Add to the start of the *.rex file:<programlisting><![CDATA[   ::REQUIRES "Support\View.rex"
-    ::REQUIRES "Support\Component.rex"]]></programlisting></para></listitem>
+      <listitem><para>Add to the start of the *.rex file:<programlisting><![CDATA[  ::REQUIRES "Support\View.rex"
+   ::REQUIRES "Support\Component.rex"]]></programlisting></para></listitem>
       <listitem><para>Sublass from <computeroutput>RcView</computeroutput>,
           <computeroutput>ResView</computeroutput>, or <computeroutput>UdView</computeroutput> as
           appropriate.</para></listitem>
@@ -285,10 +286,10 @@ Topics (in no particular order):
     <para>For <emphasis role="italic"><emphasis role="bold">Model</emphasis></emphasis> and
         <emphasis role="italic"><emphasis role="bold">Data</emphasis></emphasis> components, there's
       no change; merely ensure there's
-      a<programlisting>     <![CDATA[  ::REQUIRES "Support\Model.rex"]]></programlisting>at the
-      start of any Model program file, and
-      a<programlisting>     <![CDATA[  ::REQUIRES "Support\GenericFile.rex"]]></programlisting> at
-      the start of any Data program file. </para>  <!-- End of 8.4.2 -->
+      a<programlisting><![CDATA[  ::REQUIRES "Support\Model.rex"]]></programlisting>at the start of
+      any Model program file, and
+      a<programlisting><![CDATA[  ::REQUIRES "Support\GenericFile.rex"]]></programlisting> at the
+      start of any Data program file. </para>  <!-- End of 8.4.2 -->
   </section>  <!-- End of 8.4 -->
  
   <!-- *********************************************************************************************** -->  
@@ -323,7 +324,7 @@ Topics (in no particular order):
       event in which it's interested and its object id (i.e. <computeroutput>self</computeroutput>).
       For example, the "register interest" invocation in
         <computeroutput>OrderFormView</computeroutput> is:
-      <programlisting><![CDATA[   self~registerInterest("appClosing", self)]]></programlisting>This
+      <programlisting><![CDATA[  self~registerInterest("appClosing", self)]]></programlisting>This
       message is handled by the <computeroutput>Component</computeroutput> mixin, which forwards the
       message to the Event Manager, which then adds the event to its directory of events. In this
       directory, each index is the event name, and each item is an array of objects that have
@@ -333,11 +334,11 @@ Topics (in no particular order):
       <emphasis role="italic">and</emphasis>
       <computeroutput>Component</computeroutput>) is closed, it asks for the event "appClosing" to
       be triggered:
-      <programlisting><![CDATA[   self~triggerEvent("appClosing")]]></programlisting>The
+      <programlisting><![CDATA[  self~triggerEvent("appClosing")]]></programlisting>The
         <computeroutput>Component</computeroutput> mixin sends this to the Event Manager which then
       sends a <computeroutput>notify</computeroutput> message to each component that has registered
       interest in this event. The Order Form provides a method to capture this event and close its
-      control dialogs:<programlisting><![CDATA[   ::METHOD notify PUBLIC
+      control dialogs:<programlisting><![CDATA[  ::METHOD notify PUBLIC
       use strict arg event
       if event = "AppClosing" then self~closeControlDialogs]]></programlisting>Thus each Order Form
       that's open when the app closes receives a notification so that it can close its control
@@ -363,11 +364,11 @@ Topics (in no particular order):
           tab. The "Find Customer" button is enabled. Click on the button, and the Customer details
           are entered on the form. Accessing customer details is done by the following code
           (excluding error-handling code): <programlisting><![CDATA[  ::METHOD findCustomer UNGUARDED
-    expose ecCustNum objectMgr 
-    custNo = ecCustNum~getLine(1) 
-    idCust = objectMgr~getComponentId("CustomerModel",custNo)
-    dirCustData = idCust~query
-    self~setCustomer(dirCustData)]]></programlisting></para></listitem>
+     expose ecCustNum objectMgr 
+     custNo = ecCustNum~getLine(1) 
+     idCust = objectMgr~getComponentId("CustomerModel",custNo)
+     dirCustData = idCust~query
+     self~setCustomer(dirCustData)]]></programlisting></para></listitem>
         <listitem>
         <para>Products can also be entered using the keyboard. Click on the "Order Lines" tab, and
           enter a product number (e.g. "CU003") into the "Product No." field. Then enter a quantity
