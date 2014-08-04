@@ -258,8 +258,121 @@ string_x2c ::= 'x2c'
 
 string_x2d ::= 'x2d' ( '(' n ')' )?
 
+method_new ::= 'new(' name ',' source ( ',' context )? ')'
 
+method_newfile ::= 'newFile(' filename ')'
 
+method_loadexternalmethod ::= 'loadExternalMethod(' name ',' descriptor ')'
 
+method_isguarded ::= 'isGuarded'
 
+method_isprivate ::= 'isPrivate'
 
+method_isprotected ::= 'isProtected'
+
+method_package ::= 'package'
+
+method_setguarded ::= 'setGuarded'
+
+method_setprivate ::= 'setPrivate'
+
+method_setprotected ::= 'setProtected'
+
+method_setsecuritymanager ::= 'setSecurityManager' ( '(' security_manager_object ')' )?
+
+method_setunguarded ::= 'setUnguarded'
+
+method_source ::= 'source'
+
+routine_new ::= 'new(' name ',' source ( ',' context )? ')'
+
+routine_newfile ::= 'newFile(' filename ')'
+
+routine loadexternalroutine ::= 'loadExternalRoutine(' name ',' descriptor ')'
+
+routine_call ::= 'call' ( '(' ( argument ( ( ',' argument )+ )? )? ')' )?
+
+routine_callwith ::= 'callWith(' array ')'
+
+routine_package ::= 'package'
+
+routine_setsecuritymanager ::= 'setSecurityManager' ( '(' security_manager_object ')' )?
+
+routine_source ::= 'source'
+
+package_new ::= 'new(' name ',' source ( ',' methodobject )? ')'
+
+package_addclass ::= 'addClass(' name ',' class ')'
+
+package_addpackage ::= 'addPackage(' package ')'
+
+package_addpublicclass ::= 'addPublicClass(' name ',' class ')'
+
+package_addpublicroutine ::= 'addPublicRoutine(' name ',' routine ')'
+
+package_addroutine ::= 'addRoutine(' name ',' routine ')'
+
+package_classes ::= 'classes'
+
+package_definemethods ::= 'defineMethods'
+
+package_digits ::= 'digits'
+
+package_findclass ::= 'findClass(' name ')'
+
+package_findroutine ::= 'findRoutine(' name ')'
+
+package_form ::= 'form'
+
+package_fuzz ::= 'fuzz'
+
+package_importedclasses ::= 'importedClasses'
+
+package_importedpackages ::= 'importedPackages'
+
+package_importedroutines ::= 'importedRoutines'
+
+package_loadlibrary ::= 'loadLibrary(' name ')'
+
+package_loadpackage ::= 'loadPackage(' name ( ',' source )? ')'
+
+package_name ::= 'name'
+
+package+publicclasses ::= 'publicClasses'
+
+package+publicroutines ::= 'publicRoutines'
+
+package_routines ::= 'routines'
+
+package_setsecuritymanager ::= 'setSecurityManager' ( '(' security_manager_object ')' )?
+
+package_source ::= 'source'
+
+package_sourceline ::= 'sourceLine(' n ')'
+
+package_sourcesize ::= 'sourceSize'
+
+package_trace ::= 'trace'
+
+message_new ::= 'new(' target ',' messagename ( ( 'Individual' ( ',' argument )+ ) |
+                                              ( 'Array' ',' array )
+                                              )? ')'
+message_arguments ::= 'arguments'
+
+message_completed ::= 'completed'
+
+message_errorcondition ::= 'errorCondition'
+
+message_haserror ::= 'hasError'
+
+message_messagename ::= 'messageName'
+
+message_notify ::= 'notify(' message ')'
+
+message_result ::= 'result'
+
+message_send ::= 'send' ( '(' target ')' )?
+
+message_start ::= 'start' ( '(' target ')' )?
+
+message_target ::= 'target'

@@ -5913,12 +5913,12 @@ Object class (<xref linkend="clsObject" />).</para>
 <indexterm><primary>method</primary>
 <secondary>new method</secondary>
 <tertiary>of Method class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-new(name,source--+-------------+---)-------------------><
-                    +--, context--+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/method_new.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a new instance of method class, which is an executable
 representation of the code contained in the
@@ -5943,11 +5943,12 @@ routine search scope from the caller of new method.
 <indexterm><primary>method</primary>
 <secondary>newFile method</secondary>
 <tertiary>of Method class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-newFile(filename)-------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/method_newfile.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a new instance of method class, which is an executable
 representation of the code contained in the file filename. The filename is a
@@ -5960,11 +5961,13 @@ string.</para>
 <indexterm><primary>method</primary>
 <secondary>loadExternalMethod method</secondary>
 <tertiary>of Method class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-loadExternalMethod(name,descriptor)------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/method_loadexternalmethod.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Resolves a native method in an external library package and returns a
 Method object instance that can used to call the external method.  The
 <emphasis role="italic">descriptor</emphasis> is a string containing
@@ -5995,11 +5998,13 @@ method = .Method~loadExternalMethod("homeAddress=", 'LIBRARY mylib setHomeAddres
 <tertiary>of Method class</tertiary></indexterm>
 <indexterm><primary>concurrency</primary>
 <secondary>isGuarded method</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-isGuarded--------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/method_isguarded.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Returns true ("1") if the method is a Guarded method.  Returns false ("0") for Unguarded methods.
 </para>
 </section>
@@ -6010,11 +6015,13 @@ method = .Method~loadExternalMethod("homeAddress=", 'LIBRARY mylib setHomeAddres
 <indexterm><primary>method</primary>
 <secondary>isPrivate method</secondary>
 <tertiary>of Method class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-isPrivate--------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/method_isprivate.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Returns true ("1") if the method is a Private method.  Returns false ("0") for Public methods.
 See <xref linkend="pubpri" />
 for details on private method restrictions.
@@ -6027,11 +6034,13 @@ for details on private method restrictions.
 <indexterm><primary>method</primary>
 <secondary>isProtected method</secondary>
 <tertiary>of Method class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-isProtected--------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/method_isprotected.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Returns true ("1") if the method is a Protected method.  Returns false ("0") for unprotected methods.
 </para>
 </section>
@@ -6042,11 +6051,13 @@ for details on private method restrictions.
 <indexterm><primary>method</primary>
 <secondary>package method</secondary>
 <tertiary>of Method class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-package-----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/method_package.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Returns the Package class instance that defined the method instance.  The
 package instance controls and defines the search order for classes and routines
 referenced by the method code.</para>
@@ -6060,11 +6071,12 @@ referenced by the method code.</para>
 <tertiary>of Method class</tertiary></indexterm>
 <indexterm><primary>concurrency</primary>
 <secondary>setGuarded method</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-setGuarded--------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/method_setguarded.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Specifies that the method is a guarded method that requires
 exclusive access to its scope variable pool to run.
@@ -6080,11 +6092,12 @@ Guarded is the default state for method objects.
 <indexterm><primary>method</primary>
 <secondary>setPrivate method</secondary>
 <tertiary>of Method class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-setPrivate--------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/method_setprivate.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Specifies that a method is a private method.
 By default, method objects are created as public methods.
@@ -6099,11 +6112,12 @@ for details on private method restrictions.
 <indexterm><primary>method</primary>
 <secondary>setProtected method</secondary>
 <tertiary>of Method class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-setProtected------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/method_setprotected.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Specifies that a method is a protected method. Method objects are not
 protected by default.
@@ -6116,12 +6130,12 @@ protected by default.
 <indexterm><primary>method</primary>
 <secondary>setSecurityManager method</secondary>
 <tertiary>of Method class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-setSecurityManager--+---------------------------+-----------><
-                       +-(security_manager_object)-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/method_setsecuritymanager.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Replaces the existing security manager with the specified
 <emphasis role="italic">security_manager_object</emphasis>. If
@@ -6137,11 +6151,12 @@ existing security manager is removed.</para>
 <tertiary>of Method class</tertiary></indexterm>
 <indexterm><primary>concurrency</primary>
 <secondary>setUnguarded method</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-setUnguarded------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/method_setunguarded.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Turns off the guard attribute of the method, allowing this method to run
 on an object even if another method has acquired exclusive access to the scope
@@ -6161,11 +6176,13 @@ case, the method runs immediately regardless of its guarded state.
 <indexterm><primary>method</primary>
 <secondary>source method</secondary>
 <tertiary>of Method class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-source------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/method_source.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Returns the method source code as a single-index array of source
 lines. If the source code is not available,
 <emphasis role="bold">source</emphasis> returns an array of zero
@@ -6235,12 +6252,12 @@ Object class (<xref linkend="clsObject" />).</para>
 <indexterm><primary>method</primary>
 <secondary>new method</secondary>
 <tertiary>of Routine class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-new(name,source--+-------------+---)-------------------><
-                    +--, context--+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/routine_new.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a new instance of the routine class, which is an executable
 representation of the code contained in the
@@ -6264,11 +6281,12 @@ the caller of new method.
 <indexterm><primary>method</primary>
 <secondary>newFile method</secondary>
 <tertiary>of Routine class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-newFile(filename)-------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/routine_newfile.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a new instance of the routine class, which is an executable
 representation of the code contained in the file filename. The filename is a
@@ -6282,11 +6300,13 @@ string.
 <indexterm><primary>method</primary>
 <secondary>loadExternalRoutine method</secondary>
 <tertiary>of Routine class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-loadExternalRoutine(name,descriptor)------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/routine_loadexternalroutine.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Resolves a native routine in an external library package and returns a
 Routine object instance that can used to call the external routine.  The
 <emphasis role="italic">descriptor</emphasis> is a string containing
@@ -6315,14 +6335,13 @@ routine = .Routine~loadExternalRoutine("Pi", "LIBRARY rxmath RxCalcPi")
 <indexterm><primary>method</primary>
 <secondary>call method</secondary>
 <tertiary>of Routine class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-call-+--------------------+------------------------------------><
-        |    +-,--------+    |
-        |    V          |    |
-        +-(----argument-+--)-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/routine_call.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Calls the routine object using the provided arguments.  The code in the
 routine object is called as if it was an external routine call.  The return
 value will be any value returned by the executed routine.</para>
@@ -6334,11 +6353,13 @@ value will be any value returned by the executed routine.</para>
 <indexterm><primary>method</primary>
 <secondary>callWith method</secondary>
 <tertiary>of Routine class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-call(array)----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/routine_callwith.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Calls the routine object using the arguments provided in
 <emphasis role="italic">array</emphasis>. Each element of array will be mapped
 to its corresponding call argument.  The code in the routine object is called as
@@ -6353,11 +6374,13 @@ by the executed routine.
 <indexterm><primary>method</primary>
 <secondary>package method</secondary>
 <tertiary>of Routine class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-package-----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/routine_package.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Returns the Package class instance that defined the routine instance.  The
 package instance controls and defines the search order for classes and routines
 referenced by the routine code.</para>
@@ -6369,12 +6392,12 @@ referenced by the routine code.</para>
 <indexterm><primary>method</primary>
 <secondary>setSecurityManager method</secondary>
 <tertiary>of Routine class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-setSecurityManager--+---------------------------+-----------><
-                       +-(security_manager_object)-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/routine_setsecuritymanager.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Replaces the existing security manager with the specified
 <emphasis role="italic">security_manager_object</emphasis>. If
@@ -6388,11 +6411,13 @@ existing security manager is removed.</para>
 <indexterm><primary>method</primary>
 <secondary>source method</secondary>
 <tertiary>of Routine class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-source------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/routine_source.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Returns the routine source code as a single-index array of source lines.
 If the source code is not available,
 <emphasis role="bold">source</emphasis> returns an array of zero
@@ -6489,12 +6514,12 @@ Object class (<xref linkend="clsObject" />).</para>
 <indexterm><primary>method</primary>
 <secondary>new method</secondary>
 <tertiary>of Package class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-new(name,source--+------------------+---)-------------------><
-                    +--, methodobject--+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/package_new.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a new instance of the package class, which is a representation of
 the code contained in the
@@ -6515,11 +6540,13 @@ scope of the provided method or routine is used.
 <indexterm><primary>method</primary>
 <secondary>addClass method</secondary>
 <tertiary>of Package class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-addClass(name,class)----------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/package_addclass.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Adds the class object <emphasis role="italic">class</emphasis> to the
 available classes under the name <emphasis role="italic">name</emphasis>.  This
 is added to the package as a non-public class.</para>
@@ -6531,11 +6558,13 @@ is added to the package as a non-public class.</para>
 <indexterm><primary>method</primary>
 <secondary>addPackage method</secondary>
 <tertiary>of Package class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-addPackage(package)----------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/package_addpackage.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Adds the package object <emphasis role="italic">package</emphasis> to the
 dependent packages under the name
 <emphasis role="italic">name</emphasis>.
@@ -6549,11 +6578,13 @@ directive in the original package source.</para>
 <indexterm><primary>method</primary>
 <secondary>addPublicClass method</secondary>
 <tertiary>of Package class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-addPublicClass(name,class)----------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/package_addpublicclass.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Adds the class object <emphasis role="italic">class</emphasis> to the
 available public classes under the name <emphasis role="italic">name</emphasis>.
 This is added to the package as a public class.</para>
@@ -6565,11 +6596,13 @@ This is added to the package as a public class.</para>
 <indexterm><primary>method</primary>
 <secondary>addPublicRoutine method</secondary>
 <tertiary>of Package class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-addPublicRoutine(name,routine)----------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/package_addpublicroutine.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Adds the routine object <emphasis role="italic">routine</emphasis> to the
 available routines under the name
 <emphasis role="italic">name</emphasis>.  This is added to the package as a
@@ -6582,11 +6615,13 @@ public routine.</para>
 <indexterm><primary>method</primary>
 <secondary>addRoutine method</secondary>
 <tertiary>of Package class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-addRoutine(name,routine)----------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/package_addroutine.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Adds the routine object <emphasis role="italic">routine</emphasis> to the
 available routines under the name
 <emphasis role="italic">name</emphasis>.  This is added to the package as a
@@ -6599,11 +6634,13 @@ non-public routine.</para>
 <indexterm><primary>method</primary>
 <secondary>classes method</secondary>
 <tertiary>of Package class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-classes----------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/package_addclasses.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Returns a directory containing all classes defined by this package or
 imported as public classes from another package.</para>
 </section>
@@ -6614,11 +6651,13 @@ imported as public classes from another package.</para>
 <indexterm><primary>method</primary>
 <secondary>definedMethods method</secondary>
 <tertiary>of Package class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-definedMethods----------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/package_definedmethods.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Returns a directory containing all unattached methods defined by this
 package.  This is the same directory available to code within the package via
 the .METHODS environment symbol.</para>
@@ -6630,11 +6669,13 @@ the .METHODS environment symbol.</para>
 <indexterm><primary>method</primary>
 <secondary>digits method</secondary>
 <tertiary>of Package class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-digits------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/package_digits.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Returns the initial NUMERIC DIGITS (<xref linkend="keyNumeric" />)
 setting used for all Rexx code contained within the package.  The default
 value is 9.  The ::OPTIONS (<xref linkend="optionsd" />) can
@@ -6648,11 +6689,13 @@ override the default value.
 <indexterm><primary>method</primary>
 <secondary>findClass method</secondary>
 <tertiary>of Package class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-findClass(name)---------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/package_findclass.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Performs the standard environment symbol searches given class
 <emphasis role="italic">name</emphasis>.
 The search is performed using the same search mechanism used for environment
@@ -6667,11 +6710,13 @@ found, .nil will be returned.</para>
 <indexterm><primary>method</primary>
 <secondary>findRoutine method</secondary>
 <tertiary>of Package class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-findRoutine(name)---------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/package_findroutine.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Searches for a routine within the package search order.  This includes
 ::ROUTINE directives within the package, public routines imported from other
 packages, or routines added using the addRoutine method. The argument
@@ -6685,11 +6730,13 @@ not found, .nil will be returned.</para>
 <indexterm><primary>method</primary>
 <secondary>form method</secondary>
 <tertiary>of Package class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-form--------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/package_form.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Returns the initial NUMERIC FORM (<xref linkend="keyNumeric" />) setting
 used for all Rexx code contained within the package.  The default value is
 SCIENTIFIC.  The ::OPTIONS directive
@@ -6704,11 +6751,13 @@ value.
 <indexterm><primary>method</primary>
 <secondary>fuzz method</secondary>
 <tertiary>of Package class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-fuzz--------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/package_fuzz.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Returns the initial NUMERIC FUZZ (<xref linkend="keyNumeric" />) setting
 used for all Rexx code contained within the package.  The default value is 0.
 The ::OPTIONS directive
@@ -6723,11 +6772,13 @@ value.
 <indexterm><primary>method</primary>
 <secondary>importedClasses method</secondary>
 <tertiary>of Package class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-importedClasses--------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/package_importedclasses.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Returns a directory containing all public classes imported from other
 packages.</para>
 </section>
@@ -6738,11 +6789,13 @@ packages.</para>
 <indexterm><primary>method</primary>
 <secondary>importedPackages method</secondary>
 <tertiary>of Package class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-importedPackagess-------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/package_importedpackages.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Returns an Array containing all packages imported by the target package.
 </para>
 </section>
@@ -6753,11 +6806,13 @@ packages.</para>
 <indexterm><primary>method</primary>
 <secondary>importedRoutines method</secondary>
 <tertiary>of Package class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-importedRoutines-------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/package_importedroutines.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Returns a directory containing all public routines imported from other
 packages.</para>
 </section>
@@ -6768,11 +6823,13 @@ packages.</para>
 <indexterm><primary>method</primary>
 <secondary>loadLibrary method</secondary>
 <tertiary>of Package class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-loadLibrary(name)-----------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/package_loadlibrary.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Loads a native library package and adds it to the list of libraries loaded
 by the interpreter. The <emphasis role="italic">name</emphasis> identifies a
 native external library file that will be located and loaded as if it had been
@@ -6786,12 +6843,13 @@ loadLibrary will return 1 (true), otherwise it returns 0 (false).</para>
 <indexterm><primary>method</primary>
 <secondary>loadPackage method</secondary>
 <tertiary>of Package class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-loadPackage(name-+---------+-)----------------------------><
-                    +-,source-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/package_loadpackage.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Loads a package and adds it to the list of packages loaded by the package
 manager.   If only <emphasis role="italic">name</emphasis> is specified,
 <emphasis role="italic">name</emphasis> identifies a file that will be located
@@ -6809,11 +6867,13 @@ will be added to the receiving package object's dependent packages.</para>
 <indexterm><primary>method</primary>
 <secondary>name method</secondary>
 <tertiary>of Package class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-name-------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/package_name.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Returns the string name of the package.</para>
 </section>
 
@@ -6823,11 +6883,13 @@ will be added to the receiving package object's dependent packages.</para>
 <indexterm><primary>method</primary>
 <secondary>publicClasses method</secondary>
 <tertiary>of Package class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-publicClasses--------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/package_publicclasses.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Returns a directory containing all public classes defined in this package.</para>
 </section>
 
@@ -6837,11 +6899,13 @@ will be added to the receiving package object's dependent packages.</para>
 <indexterm><primary>method</primary>
 <secondary>publicRoutines method</secondary>
 <tertiary>of Package class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-publicRoutines-------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/package_publicroutines.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Returns a directory containing all public routines defined in this
 package.</para>
 </section>
@@ -6852,11 +6916,13 @@ package.</para>
 <indexterm><primary>method</primary>
 <secondary>routines method</secondary>
 <tertiary>of Package class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-routines-------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/package_routines.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Returns a directory containing all routines defined in this
 package.</para>
 </section>
@@ -6867,12 +6933,12 @@ package.</para>
 <indexterm><primary>method</primary>
 <secondary>setSecurityManager method</secondary>
 <tertiary>of Package class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-setSecurityManager--+---------------------------+-----------><
-                       +-(security_manager_object)-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/package_setsecuritymanager.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Replaces the existing security manager with the specified
 <emphasis role="italic">security_manager_object</emphasis>. If
@@ -6886,11 +6952,13 @@ existing security manager is removed.</para>
 <indexterm><primary>method</primary>
 <secondary>source method</secondary>
 <tertiary>of Package class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-source------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/package_source.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Returns the package source code as a single-index array of source lines.
 If the source code is not available,
 <emphasis role="bold">source</emphasis> returns an array of zero
@@ -6903,11 +6971,13 @@ items.</para>
 <indexterm><primary>method</primary>
 <secondary>sourceLine method</secondary>
 <tertiary>of Package class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-sourceLine(n)------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/package_sourceline.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Returns the <emphasis role="italic">n</emphasis>th source line from the
 package source.  If the source code is not available or the indicated line does
 not exist, a null string is returned.</para>
@@ -6919,11 +6989,13 @@ not exist, a null string is returned.</para>
 <indexterm><primary>method</primary>
 <secondary>sourceSize method</secondary>
 <tertiary>of Package class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-sourceSize---------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/package_sourcesize.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Returns the size of the source code for the package object. If the source
 code is not available, 0 is returned.</para>
 </section>
@@ -6934,11 +7006,13 @@ code is not available, 0 is returned.</para>
 <indexterm><primary>method</primary>
 <secondary>trace method</secondary>
 <tertiary>of Package class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-trace-------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/package_trace.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Returns the initial TRACE (<xref linkend="keyTrace" />) setting used for
 all Rexx code contained within the package.  The default value is Normal. The
 ::OPTIONS directive (<xref linkend="optionsd" />) can override the default
@@ -7020,16 +7094,12 @@ Object class (<xref linkend="clsObject" />).</para>
 <indexterm><primary>method</primary>
 <secondary>new method</secondary>
 <tertiary>of Message class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-new(target,messagename-+-------------------------------+-)--><
-                          |             +---------------+ |
-                          |             V               | |
-                          +-,Individual---+-----------+-+-+
-                          |               +-,argument-+   |
-                          +-,Array,argument---------------+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/message_new.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Initializes the message object for sending the message name
 <emphasis role="italic">messagename</emphasis> to object
@@ -7081,11 +7151,11 @@ arguments. </para>
 <secondary>arguments method</secondary>
 <tertiary>of Message class</tertiary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-arguments----------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/message_arguments.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns an array of argument objects used to invoke the message.</para>
 </section>
@@ -7096,11 +7166,13 @@ arguments. </para>
 <indexterm><primary>method</primary>
 <secondary>completed method</secondary>
 <tertiary>of Message class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-completed---------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/message_completed.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Returns <computeroutput>1</computeroutput> if the message object has
 completed executing its message, or <computeroutput>0</computeroutput>. You can use this
 method to test for completion as an alternative to calling
@@ -7114,11 +7186,12 @@ the message to complete.</para>
 <indexterm><primary>method</primary>
 <secondary>errorCondition method</secondary>
 <tertiary>of Message class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-errorCondition----------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/message_errorcondition.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns an error condition object from any execution error with the message
 object's message invocation. If the message completed normally, or is still executing,
@@ -7131,11 +7204,12 @@ object's message invocation. If the message completed normally, or is still exec
 <indexterm><primary>method</primary>
 <secondary>hasError method</secondary>
 <tertiary>of Message class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-hasError----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/message_haserror.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns <computeroutput>1</computeroutput> if the message object's
 message was terminated with an error condition. Returns
@@ -7150,11 +7224,11 @@ completed without error.</para>
 <secondary>messageName method</secondary>
 <tertiary>of Message class</tertiary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-messageName----------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/message_messagename.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the string message name used to invoke a method.</para>
 </section>
@@ -7165,11 +7239,12 @@ completed without error.</para>
 <indexterm><primary>method</primary>
 <secondary>notify method</secondary>
 <tertiary>of Message class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-notify(message)---------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/message_notify.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Requests notification about the completion of processing of the message
 <emphasis role="bold">send</emphasis> or <emphasis role="bold">start</emphasis>.
@@ -7222,11 +7297,12 @@ method to obtain any result from the messages
 <indexterm><primary>method</primary>
 <secondary>result method</secondary>
 <tertiary>of Message class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-result------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/message_result.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the result of the message <emphasis role="bold">send</emphasis> or
 <emphasis role="bold">start</emphasis>.
@@ -7256,12 +7332,12 @@ say "The result of message was" bond~result     /* Result is 007     */
 <indexterm><primary>method</primary>
 <secondary>send method</secondary>
 <tertiary>of Message class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-send--+----------+------------------------------------------><
-         +-(target)-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/message_send.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the result (if any) of sending the message. If you specify
 <emphasis role="italic">target</emphasis>, this method sends the message to
@@ -7283,12 +7359,12 @@ from the message.</para>
 <indexterm><primary>method</primary>
 <secondary>start method</secondary>
 <tertiary>of Message class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-start--+----------+-----------------------------------------><
-          +-(target)-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/message_start.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 
 <para>Sends the message to start processing at a specific target whereas
@@ -7365,11 +7441,11 @@ Goodbye, Stan...
 <secondary>target method</secondary>
 <tertiary>of Message class</tertiary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-target---------------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/message_target.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the object that is the target of the invoked message.</para>
 </section>
