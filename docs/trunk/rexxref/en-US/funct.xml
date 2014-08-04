@@ -69,14 +69,11 @@ call in the continuing evaluation of the expression. You can include function
 calls to internal and external routines in an expression anywhere that a data
 term (such as a string) would be valid, using the following notation:</para>
 <para></para>
-<programlisting>
-<![CDATA[
-                   +-,--------------+
-                   V                |
->>-function_name(----+------------+-+--)-----------------------><
-                     +-expression-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/funct_xmp.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <indexterm><primary>names</primary>
 <secondary>of functions</secondary></indexterm>
@@ -531,12 +528,11 @@ arguments to produce character strings.</para></listitem>
 <indexterm><primary>testing</primary></indexterm>
 <indexterm><primary>abbreviations with ABBREV function</primary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-ABBREV(information,info--+---------+--)---------------------><
-                            +-,length-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/abbrev.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns <computeroutput>1</computeroutput> if
 <emphasis role="italic">info</emphasis> is equal to the leading characters
@@ -599,11 +595,11 @@ end;
 <indexterm><primary>built-in functions</primary>
 <secondary>ABS</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-ABS(number)-------------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/abs.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the absolute value of <emphasis role="italic">number</emphasis>.
 The result has no sign and
@@ -631,12 +627,11 @@ ABS(" -0.307")    ->    0.307
 <indexterm><primary>built-in functions</primary>
 <secondary>ADDRESS</secondary></indexterm>
 
-<para></para>
-<programlisting>
-<![CDATA[
->>-ADDRESS()---------------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/address.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the name of the environment
 <indexterm><primary>ADDRESS function</primary>
@@ -677,14 +672,11 @@ ADDRESS()    ->    "bash"       /* default under Linux   */
 <indexterm><primary>retrieving</primary>
 <secondary>arguments with ARG function</secondary></indexterm>
 
-<para></para>
-<programlisting>
-<![CDATA[
->>-ARG(--+----------------+--)---------------------------------><
-         +-n--+---------+-+
-              +-,option-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/arg.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns one or more arguments, or information about the arguments to a
 program, internal routine, or method.</para>
@@ -794,11 +786,11 @@ or internal routine with the ARG or PARSE ARG instructions.</para></listitem>
 <indexterm><primary>unpacking a string</primary>
 <secondary>with B2X</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-B2X(binary_string)------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/b2x.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a string, in character format, that represents
 <emphasis role="italic">binary_string</emphasis> converted to hexadecimal.</para>
@@ -851,11 +843,11 @@ X2D(B2X("10111"))  ->   "23"   /* decimal 23 */
 <indexterm><primary>built-in functions</primary>
 <secondary>BEEP</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-BEEP(frequency,duration)------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/beep.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Sounds the speaker at frequency (Hertz) for duration (milliseconds).
 The frequency can be any whole number in the range 37 to 32767 Hertz. The
@@ -910,13 +902,11 @@ end
 <indexterm><primary>character</primary>
 <secondary>strings, ANDing</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-BITAND(string1--+--------------------------+--)-------------><
-                   +-,--+---------+--+------+-+
-                        +-string2-+  +-,pad-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/bitand.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a string composed of the two input strings logically ANDed, bit
 by bit. (The encodings of the strings are used in the logical operation.)
@@ -961,13 +951,11 @@ BITAND("pQrS", ,"DF"x)         ->    "PQRS"      /* ASCII   */
 <secondary>strings, ORing</secondary></indexterm>
 <indexterm><primary>ORing character together</primary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-BITOR(string1--+--------------------------+--)--------------><
-                  +-,--+---------+--+------+-+
-                       +-string2-+  +-,pad-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/bitor.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a string composed of the two input strings logically inclusive-ORed,
 bit by bit. (The encodings of the strings are used in the logical operation.)
@@ -1014,14 +1002,11 @@ BITOR("pQrS", ,"20"x)         ->    "pqrs" /* ASCII   */
 <indexterm><primary>exclusive-ORing character strings together</primary></indexterm>
 <indexterm><primary>XORing character strings together</primary></indexterm>
 
-<para></para>
-<programlisting>
-<![CDATA[
->>-BITXOR(string1--+--------------------------+--)-------------><
-                   +-,--+---------+--+------+-+
-                        +-string2-+  +-,pad-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/bitxor.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a string composed of the two input strings logically eXclusive-ORed,
 bit by bit. (The encodings of the strings are used in the logical operation.)
@@ -1066,12 +1051,11 @@ BITXOR("C711"x,"222222"x," ")     ->  "E53302"x  /* ASCII  */
 <secondary>character to decimal</secondary></indexterm>
 
 <para></para>
-<programlisting>
-<![CDATA[
->>-C2D(string--+----+--)---------------------------------------><
-               +-,n-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/c2d.svg" scale="50" />
+</imageobject>
+</mediaobject>
 <para>
 Returns the decimal value of the binary representation of
 <emphasis role="italic">string</emphasis>. If the result cannot be expressed as
@@ -1143,11 +1127,11 @@ C2D("0031"X,0)    ->        0
 <indexterm><primary>unpacking a string</primary>
 <secondary>with C2X</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-C2X(string)-------------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/c2x.svg" scale="50" />
+</imageobject>
+</mediaobject>
 <para>Returns a string, in character format, that represents
 <emphasis role="italic">string</emphasis> converted to hexadecimal.
 The returned string contains twice as many bytes as the input string. On an
@@ -1199,12 +1183,11 @@ C2X("ZD8")      ->    "5A4438" /* "354134343338"X in ASCII */
 <secondary>centering using CENTER method</secondary></indexterm>
 
 <para></para>
-<programlisting>
-<![CDATA[
->>-+-CENTER(-+--string,length--+------+--)---------------------><
-   +-CENTRE(-+                 +-,pad-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/center.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a string of length <emphasis role="italic">length</emphasis>
 with <emphasis role="italic">string</emphasis> centered in it and with
@@ -1248,12 +1231,11 @@ spellings, this function can be called either CENTRE or CENTER.</para></note>
 <indexterm><primary>built-in functions</primary>
 <secondary>CHANGESTR</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-CHANGESTR(needle,haystack,newneedle--+--------+--)------------------------><
-                                        +-,count-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/changestr.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a copy of <emphasis role="italic">haystack</emphasis> in which
 <emphasis role="italic">newneedle</emphasis> replaces
@@ -1292,13 +1274,11 @@ CHANGESTR("1","101100","X", 1) ->    "X01100"
 <indexterm><primary>string</primary>
 <secondary>from stream</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-CHARIN(--+------+--+---------------------------+--)---------><
-            +-name-+  +-,--+-------+--+---------+-+
-                           +-start-+  +-,length-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/charin.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a string of up to <emphasis role="italic">length</emphasis>
 characters read from the character input stream
@@ -1375,13 +1355,11 @@ press the Enter key.</para></listitem>
 <secondary>functions</secondary>
 <tertiary>CHAROUT</tertiary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-CHAROUT(--+------+--+---------------------------+--)--------><
-             +-name-+  +-,--+--------+--+--------+-+
-                            +-string-+  +-,start-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/charout.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the count of characters remaining after attempting to write
 <emphasis role="italic">string</emphasis> to the character output stream
@@ -1465,12 +1443,11 @@ Call CHAROUT myfile
 <secondary>functions</secondary>
 <tertiary>CHARS</tertiary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-CHARS(--+------+--)-----------------------------------------><
-           +-name-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/chars.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the total number of characters remaining in the character input
 stream <emphasis role="italic">name</emphasis>. The count includes any
@@ -1514,12 +1491,11 @@ CHARS()           ->   1    /* perhaps */
 <indexterm><primary>finding</primary>
 <secondary>mismatch using COMPARE</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-COMPARE(string1,string2--+------+--)------------------------><
-                            +-,pad-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/compare.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns <computeroutput>0</computeroutput> if the strings
 <emphasis role="italic">string1</emphasis> and
@@ -1561,12 +1537,11 @@ COMPARE("ab-- ","ab","-")    ->    5
 <indexterm><primary>trap conditions</primary>
 <secondary>information about trapped conditions</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-CONDITION(--+--------+--)-----------------------------------><
-               +-option-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/condition.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the condition information associated with the current trapped
 condition. (See <xref linkend="condtra" />
@@ -1673,11 +1648,11 @@ returns the values it returned before the condition was trapped.</para></note>
 <indexterm><primary>string</primary>
 <secondary>reapting using COPIES</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-COPIES(string,n)--------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/copies.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns <emphasis role="italic">n</emphasis> concatenated copies of
 <emphasis role="italic">string</emphasis>. The
@@ -1706,11 +1681,11 @@ COPIES("abc",0)    ->    ""
 <indexterm><primary>built-in functions</primary>
 <secondary>COUNTSTR</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-COUNTSTR(needle,haystack)-----------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/countstr.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a count of the occurrences of
 <emphasis role="italic">needle</emphasis> in
@@ -1743,12 +1718,11 @@ COUNTSTR("KK","J0KKK0")       ->    1
 <indexterm><primary>decimal</primary>
 <secondary>to character conversion</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-D2C(wholenumber--+----+--)----------------------------------><
-                    +-,n-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/d2c.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a string, in character format, that is the ASCII representation
 of the decimal number. If you specify <emphasis role="italic">n</emphasis>,
@@ -1796,12 +1770,11 @@ D2C(-180,2)  ->   " L"     /* the leading character is a "FF"x    */
 <indexterm><primary>decimal</primary>
 <secondary>to hexadecimal conversion</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-D2X(wholenumber--+----+--)----------------------------------><
-                    +-,n-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/d2x.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a string, in character format, that represents
 <emphasis role="italic">wholenumber</emphasis>, a decimal number, converted to
@@ -1861,12 +1834,11 @@ D2X(12,0)      ->    ""
 <indexterm><primary>numbers</primary>
 <secondary>checking with DATATYPE</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-DATATYPE(string--+-------+--)-------------------------------><
-                    +-,type-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/datatype.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns <computeroutput>NUM</computeroutput> if you specify only
 <emphasis role="italic">string</emphasis> and if
@@ -2008,21 +1980,11 @@ independent of the encoding of those characters (for example, ASCII or EBCDIC).
 <indexterm><primary>built-in functions</primary>
 <secondary>DATE</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-DATE(-------------------------------------------------------->
-
->--+-------------------------------------------------------------+-->
-   +-option--+-------------------------------------------------+-+
-             +-,string--+----------+---------------------------+
-             |          +-,option2-+                           |
-             +-+-,--,------------------+--+-,osep------------+-+
-               +-,string--+-,option2-+-+  +-+-,osep-+--,isep-+
-                          +-,--------+      +-,-----+
-
->--)-----------------------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/date.svg" scale="50" />
+</imageobject>
+</mediaobject>
 <para>
  </para>
 <para>Returns, by default, the local date in the format:
@@ -2305,12 +2267,11 @@ combining a value from Time() for the time of day.</para>
 <indexterm><primary>string</primary>
 <secondary>deleting part, DELSTR function</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-DELSTR(string,n--+---------+--)-----------------------------><
-                    +-,length-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/delstr.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns <emphasis role="italic">string</emphasis> after deleting the
 substring that begins at the <emphasis role="italic">n</emphasis>th character
@@ -2354,12 +2315,11 @@ DELSTR("abcde",6)      ->    "abcde"
 <indexterm><primary>word</primary>
 <secondary>deleting from a string</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-DELWORD(string,n--+---------+--)----------------------------><
-                     +-,length-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/delword.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns <emphasis role="italic">string</emphasis> after deleting the
 substring that starts at the <emphasis role="italic">n</emphasis>th word and
@@ -2406,11 +2366,11 @@ DELWORD("Now is the  time",2,2)  ->  "Now time"
 <indexterm><primary>built-in functions</primary>
 <secondary>DIGITS</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-DIGITS()----------------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/digits.svg" scale="50" />
+</imageobject>
+</mediaobject>
 <para>
 Returns the current setting
 of NUMERIC DIGITS. See <xref linkend="keyNumeric" /> for more
@@ -2438,12 +2398,11 @@ DIGITS()    ->    9      /* by default */
 <secondary>DIRECTORY</secondary></indexterm>
 
 <para></para>
-<programlisting>
-<![CDATA[
->>-DIRECTORY(--+--------------+--)-----------------------------><
-               +-newdirectory-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/directory.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the current directory, changing it to
 <emphasis role="italic">newdirectory</emphasis> if
@@ -2488,11 +2447,11 @@ else
 <indexterm><primary>built-in functions</primary>
 <secondary>ENDLOCAL</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-ENDLOCAL()--------------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/endlocal.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Restores the directory and environment variables in effect before the last
 SETLOCAL (<xref linkend="bifSetlocal" />
@@ -2532,11 +2491,11 @@ n = ENDLOCAL()                   /* restores the initial environment */
 <indexterm><primary>built-in functions</primary>
 <secondary>ERRORTEXT</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-ERRORTEXT(n)------------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/errortext.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the Rexx error message associated with error number
 <emphasis role="italic">n</emphasis>.
@@ -2569,11 +2528,11 @@ ERRORTEXT(60)    ->    ""
 <indexterm><primary>built-in functions</primary>
 <secondary>FILESPEC</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-FILESPEC(option,filespec)-----------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/filespec.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a selected element of <emphasis role="italic">filespec</emphasis>,
 given file specification, identified by one of the following option strings:
@@ -2637,11 +2596,11 @@ say FILESPEC(part,thisfile)        /* says "SYSTEM.INI"      */
 <indexterm><primary>built-in functions</primary>
 <secondary>FORM</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-FORM()------------------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/form.svg" scale="50" />
+</imageobject>
+</mediaobject>
 <para>
 Returns the current setting of NUMERIC
 FORM. See <xref linkend="keyNumeric" /> for more information.</para>
@@ -2674,19 +2633,11 @@ FORM()    ->    "SCIENTIFIC"  /* by default */
 <secondary>formatting for display</secondary></indexterm>
 <indexterm><primary>numbers for display</primary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-FORMAT(number------------------------------------------------>
-
->--+-------------------------------------------------------------+-->
-   +-,--+--------+--+------------------------------------------+-+
-        +-before-+  +-,--+-------+--+------------------------+-+
-                         +-after-+  +-,--+------+--+-------+-+
-                                         +-expp-+  +-,expt-+
-
->--)-----------------------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/format.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns <emphasis role="italic">number</emphasis>, rounded and formatted.
 </para>
@@ -2778,11 +2729,11 @@ FORMAT("1234567e5", ,3,0)   ->    "123456700000.000"
 <indexterm><primary>built-in functions</primary>
 <secondary>FUZZ</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-FUZZ()------------------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/fuzz.svg" scale="50" />
+</imageobject>
+</mediaobject>
 <para>
 Returns the current setting of NUMERIC
 FUZZ. See <xref linkend="keyNumeric" /> for more information.</para>
@@ -2809,16 +2760,11 @@ FUZZ()    ->    0     /* by default */
 <secondary>INSERT</secondary></indexterm>
 <indexterm><primary>inserting a string into another</primary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-INSERT(new,target-------------------------------------------->
-
->--+---------------------------------------+--)----------------><
-   +-,--+---+--+-------------------------+-+
-        +-n-+  +-,--+--------+--+------+-+
-                    +-length-+  +-,pad-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/insert.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Inserts the string <emphasis role="italic">new</emphasis>, padded or
 truncated to length <emphasis role="italic">length</emphasis>, into the string
@@ -2866,13 +2812,11 @@ INSERT("123","abc", ,5,"-")    ->    "123--abc"
 <indexterm><primary>position</primary>
 <secondary>last occurrence of a string</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-LASTPOS(needle,haystack-+---------------------------+--)----------------------><
-                           +-,--+-------+--+---------+-+
-                                +-start-+  +-,length-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/lastpos.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the position of the last occurrence of one string,
 <emphasis role="italic">needle</emphasis>,
@@ -2921,12 +2865,11 @@ LASTPOS(" ","abc def ghi",7,3)  ->    0
 <indexterm><primary>formatting</primary>
 <secondary>text left justification</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-LEFT(string,length--+------+--)-----------------------------><
-                       +-,pad-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/left.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a string of length <emphasis role="italic">length</emphasis>,
 containing the leftmost <emphasis role="italic">length</emphasis> characters
@@ -2937,12 +2880,11 @@ is a blank. <emphasis role="italic">length</emphasis> must be a positive
 whole number or zero. The LEFT function is exactly equivalent to:
 </para>
 
-<programlisting>
-<![CDATA[
->>-SUBSTR(string,1,length--+------+--)-------------------------><
-                           +-,pad-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/left_xmp.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Here are some examples:</para>
 <indexterm><primary>LEFT function</primary>
@@ -2972,11 +2914,11 @@ LEFT("abc  def",7)     ->    "abc  de"
 <indexterm><primary>word</primary>
 <secondary>finding length of</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-LENGTH(string)----------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/length.svg" scale="50" />
+</imageobject>
+</mediaobject>
 <para>
 Returns the length of <emphasis role="italic">string</emphasis>.</para>
 <para>Here are some examples:</para>
@@ -3008,13 +2950,11 @@ LENGTH("")            ->    0
 <indexterm><primary>LINES function</primary>
 <secondary>from stream</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-LINEIN(--+------+--+-------------------------+--)-----------><
-            +-name-+  +-,--+------+--+--------+-+
-                           +-line-+  +-,count-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/linein.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns <emphasis role="italic">count</emphasis> lines read from the
 character input stream <emphasis role="italic">name</emphasis>. The
@@ -3111,13 +3051,11 @@ stream, as in a dialog with a user, use the PULL or PARSE PULL instruction.
 <secondary>functions</secondary>
 <tertiary>LINEOUT</tertiary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-LINEOUT(--+------+--+--------------------------+--)---------><
-             +-name-+  +-,--+--------+--+-------+-+
-                            +-string-+  +-,line-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/lineout.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns <computeroutput>0</computeroutput> if successful in writing
 <emphasis role="italic">string</emphasis> to the character
@@ -3232,13 +3170,11 @@ instruction instead.</para></note>
 <secondary>functions</secondary>
 <tertiary>LINES</tertiary></indexterm>
 
-<programlisting>
-<![CDATA[
-                        +-, Normal-+
->>-LINES(--+------+-----+----------+---)-----------------------><
-           +-name-+     +-, Count--+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/lines.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns <computeroutput>1</computeroutput> if any data remains between
 the current read position and the end of the character input stream
@@ -3292,13 +3228,11 @@ or the presence of data in a transient stream.</para></note>
 <indexterm><primary>string</primary>
 <secondary>lowercasing using LOWER function</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-LOWER(string-+----------------------------+--)--------------><
-                +--,--+-----+--+-----------+-+
-                      +--n--+  +--,length--+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/lower.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a new string with the characters of <emphasis role="italic">string</emphasis> beginning with
 character <emphasis role="italic">n</emphasis> for <emphasis role="italic">length</emphasis>
@@ -3329,13 +3263,11 @@ lower("ABCDEF", 3, 2)         ->    "ABcdEF"
 <indexterm><primary>built-in functions</primary>
 <secondary>MAX</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
-         +-,------+
-         V        |
->>-MAX(----number-+--)-----------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/max.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the largest number of the list specified, formatted according to
 the current NUMERIC settings. You can specify any number of
@@ -3365,13 +3297,11 @@ MAX(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21)   ->    21
 <indexterm><primary>built-in functions</primary>
 <secondary>MIN</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
-         +-,------+
-         V        |
->>-MIN(----number-+--)-----------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/min.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the smallest number of the list specified, formatted according
 to the current NUMERIC settings. You can specify any number of
@@ -3402,16 +3332,11 @@ MIN(21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1)   ->   1
 <secondary>OVERLAY</secondary></indexterm>
 <indexterm><primary>overlaying a string onto another</primary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-OVERLAY(new,target------------------------------------------->
-
->--+---------------------------------------+--)----------------><
-   +-,--+---+--+-------------------------+-+
-        +-n-+  +-,--+--------+--+------+-+
-                    +-length-+  +-,pad-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/overlay.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the string <emphasis role="italic">target</emphasis>,
 which, starting at the <emphasis role="italic">n</emphasis>th character,
@@ -3460,13 +3385,11 @@ OVERLAY("123","abc",5,6,"+")    ->    "abc+123+++"
 <indexterm><primary>locating</primary>
 <secondary>string in another string</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-POS(needle,haystack--+---------------------------+--)--------------------------><
-                        +-,--+-------+--+---------+-+
-                             +-start-+  +-,length-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/pos.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the position of one string,
 <emphasis role="italic">needle</emphasis>, in another,
@@ -3512,12 +3435,11 @@ POS(" ","abc def ghi",5,3)  ->    0
 <indexterm><primary>built-in functions</primary>
 <secondary>QUALIFY</secondary></indexterm>
 
-<para></para>
-<programlisting>
-<![CDATA[
->>-QUALIFY(name)-----------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/qualify.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the a fully qualified file name for <emphasis role="italic">name</emphasis>.
 Qualifying merely expands the file name into a name that includes directory information.
@@ -3535,12 +3457,11 @@ The file does not need to exist to generate the full name.
 <indexterm><primary>external data queue</primary>
 <secondary>counting lines in</secondary></indexterm>
 
-<para></para>
-<programlisting>
-<![CDATA[
->>-QUEUED()----------------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/queued.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the number of lines remaining in the external data queue when the
 function is called. (See <xref linkend="iostrms" />
@@ -3569,14 +3490,11 @@ QUEUED()    ->    5    /* Perhaps */
 <indexterm><primary>pseudo random number RANDOM function</primary></indexterm>
 <indexterm><primary>random number RANDOM function</primary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-RANDOM(--+------------------------------------+--)----------><
-            +--max-------------------------------+
-            +-+--------+-,-+-------+--+--------+-+
-              +--min---+   +--max--+  +--,seed-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/random.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a quasi-random whole number in the range
 <emphasis role="italic">min</emphasis> to
@@ -3649,11 +3567,11 @@ seed is not saved across internal routine calls.</para></listitem>
 <indexterm><primary>built-in functions</primary>
 <secondary>REVERSE</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-REVERSE(string)---------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/reverse.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns <emphasis role="italic">string</emphasis> reversed.</para>
 <para>Here are some examples:</para>
@@ -3687,12 +3605,11 @@ REVERSE("XYZ ")    ->    " ZYX"
 <indexterm><primary>zeros</primary>
 <secondary>added on left with RIGHT function</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-RIGHT(string,length--+------+--)----------------------------><
-                        +-,pad-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/right.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a string of length
 <emphasis role="italic">length</emphasis> containing the rightmost
@@ -3727,12 +3644,11 @@ RIGHT("12",5,"0")     ->    "00012"
 <secondary>RXFUNCADD</secondary></indexterm>
 <indexterm><primary>register external functions</primary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-RXFUNCADD(name,module-+------------+-)----------------------><
-                         +-,procedure-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/rxfuncadd.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Registers the function,
 making it available to
@@ -3775,11 +3691,11 @@ rxfuncadd("SysCls","rexxutil", "SysCls") -> 0 /* if SysCls can be located */
 <indexterm><primary>built-in functions</primary>
 <secondary>RXFUNCDROP</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-RXFUNCDROP(name)--------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/rxfuncdrop.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Removes (deregisters) the function
 <emphasis role="italic">name</emphasis> from the list of available
@@ -3806,11 +3722,11 @@ rxfuncdrop("SysLoadFuncs")         -> 0 /* if successfully removed   */
 <indexterm><primary>built-in functions</primary>
 <secondary>RXFUNCQUERY</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-RXFUNCQUERY(name)-------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/rxfuncquery.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Queries the list of available functions for the function
 <emphasis role="italic">name</emphasis>. It returns a value of
@@ -3851,15 +3767,11 @@ rxfuncquery("SysLoadFuncs")        -> 0 /* if registered             */
 <secondary>creating and deleting queues</secondary></indexterm>
 <indexterm><primary>Queue interface from Rexx programs</primary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-RXQUEUE(-+-"Create"-+------------+-+-)----------------------><
-            |          +-,queuename-+ |
-            +-"Delete",queuename------+
-            +-"Get"-------------------+
-            +-"Set",newqueuename------+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/rxqueue.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Creates and deletes external data queues. It also sets and queries their
 names.</para>
@@ -3955,12 +3867,11 @@ rxqueue("delete", "Fred")  -> "0"
 <indexterm><primary>built-in functions</primary>
 <secondary>SETLOCAL</secondary></indexterm>
 
-<para></para>
-<programlisting>
-<![CDATA[
->>-SETLOCAL()--------------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/setlocal.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Saves the current working directory and the current values of the environment
 variables that are local to the current process.</para>
@@ -4002,12 +3913,11 @@ n = ENDLOCAL()           /* restores initial environment including */
 <indexterm><primary>built-in functions</primary>
 <secondary>SIGN</secondary></indexterm>
 
-<para></para>
-<programlisting>
-<![CDATA[
->>-SIGN(number)------------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/sign.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a number that indicates the sign of
 <emphasis role="italic">number</emphasis>.
@@ -4049,12 +3959,11 @@ SIGN(0.0)          ->     0
 <indexterm><primary>retrieving</primary>
 <secondary>lines with SOURCELINE</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-SOURCELINE(--+---+--)---------------------------------------><
-                +-n-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/sourceline.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the line number of the final line in the program if you omit
 <emphasis role="italic">n</emphasis>. If you specify
@@ -4092,13 +4001,11 @@ SOURCELINE(1)   ->   "/* This is a 10-line Rexx program */"
 <secondary>text spacing</secondary></indexterm>
 <indexterm><primary>spacing, formatting, SPACE function</primary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-SPACE(string--+--------------------+--)---------------------><
-                 +-,--+---+--+------+-+
-                      +-n-+  +-,pad-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/space.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the whitespace-delimited words in
 <emphasis role="italic">string</emphasis> with
@@ -4139,15 +4046,11 @@ SPACE("abc  def  ",2,"+")    ->    "abc++def"
 <secondary>functions</secondary>
 <tertiary>STREAM</tertiary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-STREAM(name--+-----------------------------------+--)-------><
-                |    +-State----------------------+ |
-                +-,--+----------------------------+-+
-                     +-Command--,--stream_command-+
-                     +-Description----------------+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/stream.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a string describing the state of, or the result of an operation
 upon, the character stream <emphasis role="italic">name</emphasis>.
@@ -4225,61 +4128,32 @@ is set whenever one of the file system primitives returns with a -1.</para>
 <para>The argument <emphasis role="italic">streamcommand</emphasis>
 can be any expression that the language processor evaluates to a command
 string that corresponds to the following diagram:</para>
-<programlisting>
-<![CDATA[
-           +-BOTH--| Write Options |--+
->>-+-OPEN--+--------------------------+--+-------------+-+-----><
-   |       +-READ---------------------+  +-| Options |-+ |
-   |       +-WRITE--| Write Options |-+                  |
-   +-CLOSE-----------------------------------------------+
-   +-FLUSH-----------------------------------------------+
-   |               +- = -+                    +-CHAR-+   |
-   +-+-SEEK-----+--+-----+-offset--+-------+--+------+---+
-   | +-POSITION-+  +- < -+         +-READ--+  +-LINE-+   |
-   |               +- + -+         +-WRITE-+             |
-   |               +- ; -+                               |
-   +-QUERY--+-DATETIME--------------------------+--------+
-            +-EXISTS----------------------------+
-            +-HANDLE----------------------------+
-            |                       +-CHAR-+    |
-            +-+-SEEK-----+--+-READ--+------+--+-+
-            | +-POSITION-+  |       +-LINE-+  | |
-            |               |        +-CHAR-+ | |
-            |               +-WRITE--+------+-+ |
-            |               |        +-LINE-+ | |
-            |               +-SYS-------------+ |
-            +-SIZE------------------------------+
-            +-STREAMTYPE------------------------+
-            +-TIMESTAMP-------------------------+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/stream_command.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para><emphasis role="bold">Write Options:</emphasis></para>
 <indexterm><primary>STREAM function</primary>
 <secondary>write options</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
-|--+---------+--------------------------------------------------|
-   +-APPEND--+
-   +-REPLACE-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/stream_write_options.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para><emphasis role="bold">Options:</emphasis></para>
 <indexterm><primary>STREAM function</primary>
 <secondary>options</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
-                   +-----------------------------------+
-                   V                                   |
-|--+------------+----+-NOBUFFER----------------------+-+--------|
-   +-SHARED-----+    +-BINARY--+-------------------+-+
-   +-SHAREREAD--+              +-RECLENGTH--length-+
-   +-SHAREWRITE-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/stream_options.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <variablelist>
 <varlistentry><term>OPEN</term>
@@ -4632,13 +4506,11 @@ stream("..\file.txt","c","query timestamp")
 <indexterm><primary>zeros</primary>
 <secondary>removal with STRIP function</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-STRIP(string--+---------------------------+--)---------------><
-                 +-,--+--------+--+--------+-+
-                      +-option-+  +-,chars-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/strip.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns <emphasis role="italic">string</emphasis> with leading
 characters, trailing characters, or both, removed, based on the
@@ -4699,13 +4571,11 @@ STRIP("12.0000", "T", '.0') -> "12"
 <indexterm><primary>string</primary>
 <secondary>extracting using SUBSTR function</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-SUBSTR(string,n--+-------------------------+--)-------------><
-                    +-,--+--------+--+------+-+
-                         +-length-+  +-,pad-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/substr.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the substring of <emphasis role="italic">string</emphasis> that
 begins at the <emphasis role="italic">n</emphasis>th
@@ -4753,12 +4623,11 @@ than one substring is to be extracted from a string. See also
 <indexterm><primary>word</primary>
 <secondary>extracting from a string</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-SUBWORD(string,n--+---------+--)----------------------------><
-                     +-,length-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/subword.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the substring of <emphasis role="italic">string</emphasis> that
 starts at the <emphasis role="italic">n</emphasis>th
@@ -4800,11 +4669,11 @@ SUBWORD("Now is the  time",5)      ->    ""
 <indexterm><primary>variable</primary>
 <secondary>testing for initialization</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-SYMBOL(name)------------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/symbol.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the state of the symbol named by
 <emphasis role="italic">name</emphasis>. It returns
@@ -4852,14 +4721,11 @@ SYMBOL("*")      ->   "BAD" /* not a valid symbol */
 <indexterm><primary>elapsed-time clock</primary>
 <secondary>measuring intervals with</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-TIME(--+-----------------------------------+--)-------------><
-          +-option--+-----------------------+-+
-                    +-,string--+----------+-+
-                               +-,option2-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/time.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the local time in the 24-hour clock format hh:mm:ss
 (hours, minutes, and seconds) by default, for example,
@@ -5119,12 +4985,11 @@ If the number of seconds in the elapsed time exceeds nine digits
 <indexterm><primary>TRACE setting</primary>
 <secondary>querying</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-TRACE(--+--------+--)---------------------------------------><
-           +-option-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/trace.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns trace actions currently in effect and, optionally, alters the
 setting.</para>
@@ -5171,16 +5036,11 @@ TRACE("?I")   ->   "O"  /* now in interactive debugging */
 <indexterm><primary>uppercase translation</primary>
 <secondary>with TRANSLATE function</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-TRANSLATE(string--------------------------------------------->
-
->--+--------------------------------------------+--+-------------------------+-)-><
-   +-,--+--------+--+-------------------------+-+  +-,--+-----+--+---------+-+
-        +-tableo-+  +-,--+--------+--+------+-+         +-pos-+  +-,length-+
-                         +-tablei-+  +-,pad-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/translate.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns <emphasis role="italic">string</emphasis> with each character
 translated to another character or unchanged. You can also use this function to
@@ -5255,12 +5115,11 @@ string specified as the second argument is moved to the beginning of the string.
 <secondary>truncating</secondary></indexterm>
 <indexterm><primary>truncating numbers</primary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-TRUNC(number--+----+--)-------------------------------------><
-                 +-,n-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/trunc.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the integer part of <emphasis role="italic">number</emphasis>
 and <emphasis role="italic">n</emphasis> decimal places.
@@ -5309,13 +5168,11 @@ it.
 <indexterm><primary>string</primary>
 <secondary>uppercasing using UPPER function</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-UPPER(string-+----------------------------+--)--------------><
-                +--,--+-----+--+-----------+-+
-                      +--n--+  +--,length--+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/upper.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a new string with the characters of <emphasis role="italic">string</emphasis> beginning with
 character <emphasis role="italic">n</emphasis> for <emphasis role="italic">length</emphasis>
@@ -5345,11 +5202,11 @@ upper("abcdef", 3, 2)         ->    "abCDef"
 <indexterm><primary>built-in functions</primary>
 <secondary>USERID</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-USERID()----------------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/userid.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>The return value is the active user identification.</para>
 </section>
@@ -5368,13 +5225,11 @@ upper("abcdef", 3, 2)         ->    "abCDef"
 <secondary>access with VALUE function</secondary></indexterm>
 <indexterm><primary>getting value with VALUE</primary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-VALUE(name--+--------------------------------+--)-----------><
-               +-,--+----------+--+-----------+-+
-                    +-newvalue-+  +-,selector-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/value.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the value of the symbol that
 <emphasis role="italic">name</emphasis> (often constructed
@@ -5597,11 +5452,11 @@ NOVALUE condition is trapped. See
 <indexterm><primary>variable</primary>
 <secondary>checking name</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-VAR(name)---------------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/var.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns <computeroutput>1</computeroutput> if
 <emphasis role="italic">name</emphasis> is the name of a variable (that is,
@@ -5637,14 +5492,11 @@ VAR("*")       -> 0  /* an invalid symbol */
 <secondary>verifying contents of</secondary></indexterm>
 <indexterm><primary>verifying contents of a string</primary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-VERIFY(string,reference--+----------------------------------------------+--)---><
-                            +-,--+--------+--+---------------------------+-+
-                                 +-option-+  +-,--+-------+--+---------+-+
-                                                  +-start-+  +-,length-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/verify.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a number that, by default, indicates whether
 <emphasis role="italic">string</emphasis> is
@@ -5723,11 +5575,11 @@ VERIFY("ABCDEF","ADEF","M",2,3)        ->    4
 <indexterm><primary>locating</primary>
 <secondary>word in another string</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-WORD(string,n)----------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/word.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the <emphasis role="italic">n</emphasis>th whitespace-delimited
 word in
@@ -5760,11 +5612,11 @@ WORD("Now is the time",5)    ->    ""
 <indexterm><primary>built-in functions</primary>
 <secondary>WORDINDEX</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-WORDINDEX(string,n)-----------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/wordindex.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the position of the first character in the
 <emphasis role="italic">n</emphasis>th whitespace-delimited word in <emphasis
@@ -5798,11 +5650,11 @@ WORDINDEX("Now is the time",6)    ->    0
 <indexterm><primary>finding</primary>
 <secondary>word length</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-WORDLENGTH(string,n)----------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/wordlength.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the length of the <emphasis role="italic">n</emphasis>th
 whitespace-delimited word in the <emphasis role="italic">string</emphasis> or
@@ -5836,12 +5688,11 @@ WORDLENGTH("Now is the time",6)       ->    0
 <indexterm><primary>word</primary>
 <secondary>locating in a string</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-WORDPOS(phrase,string--+--------+--)------------------------><
-                          +-,start-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/wordpos.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the word number of the first word of
 <emphasis role="italic">phrase</emphasis> found in
@@ -5893,11 +5744,11 @@ WORDPOS("be","To be or not to be",3)          ->  6
 <indexterm><primary>word</primary>
 <secondary>extracting from a string</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-WORDS(string)-----------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/words.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the number of whitespace-delimited words in
 <emphasis role="italic">string</emphasis>.</para>
@@ -5928,11 +5779,11 @@ WORDS(" ")                  ->    0
 <indexterm><primary>hexadecimal</primary>
 <secondary>to binary, converting with X2B</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-X2B(hexstring)----------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/x2b.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a string, in character format, that represents
 <emphasis role="italic">hexstring</emphasis> converted
@@ -5987,11 +5838,11 @@ X2B(D2X("12"))   ->  "1100"
 <secondary>to character, converting with X2C</secondary></indexterm>
 <indexterm><primary>packing a string with X2C</primary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-X2C(hexstring)----------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/x2c.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a string, in character format, that represents
 <emphasis role="italic">hexstring</emphasis> converted
@@ -6032,13 +5883,11 @@ X2C("3732 73")      ->  "72s"       /*  ASCII             */
 <indexterm><primary>hexadecimal</primary>
 <secondary>to decimal, converting with X2D</secondary></indexterm>
 
-<para></para>
-<programlisting>
-<![CDATA[
->>-X2D(hexstring--+----+--)------------------------------------><
-                  +-,n-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/x2d.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the decimal representation of
 <emphasis role="italic">hexstring</emphasis>.  The
@@ -6111,12 +5960,11 @@ X2D("0031",0)    ->    0
 <indexterm><primary>collating sequence using XRANGE</primary></indexterm>
 <indexterm><primary>sequence, collating using XRANGE</primary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-XRANGE(--+-------+--+------+--)-----------------------------><
-            +-start-+  +-,end-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/xrange.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a string of all valid 1-byte encodings (in ascending order)
 between and including the values <emphasis role="italic">start</emphasis> and

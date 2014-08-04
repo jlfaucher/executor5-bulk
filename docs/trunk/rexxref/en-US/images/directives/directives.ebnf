@@ -1,0 +1,25 @@
+attribute ::= '::ATTRIBUTE' name ( 'GET' | 'SET' )? ( 'CLASS' )? ( 'ABSTRACT' )?
+                            ( 'PUBIC' | 'PRIVATE')? ( 'GUARDED' | 'UNGUARDED' )?
+                            ( 'UNPROTECTED' | 'PROTECTED' )?
+
+class ::= '::CLASS' classname ( 'METACLASS' metaclassname )? ( 'SUBCLASS' object |
+                    'MIXINCLASS' mclass | 'SUBCLASS' sclass )? ( 'PRIVATE' |
+                    'PUBLIC' )? ( 'INHERIT' oclass )?
+
+constant ::= '::CONSTANT' name value
+
+method ::= '::METHOD' methodname ( 'CLASS' )? ( 'ATTRIBUTE' )? ( 'ABSTRACT' )?
+                      ( 'PUBIC' | 'PRIVATE')? ( 'GUARDED' | 'UNGUARDED' )?
+                      ( 'UNPROTECTED' | 'PROTECTED' )?
+                      ( 'EXTERNAL' spec )?
+
+options ::= '::OPTIONS' ( 'DIGITS' digits )? ( 'FORM' form )? ( 'FUZZ' fuzz )?
+                        ( 'TRACS' trace )?
+
+requires ::= '::REQUITES' programname ( 'LIBRARY' )?
+
+routine ::= '::ROUTINE' routinename ( 'PRIVATE' | 'PUBLIC' )? ( 'EXTERNAL' spec )?
+
+
+
+

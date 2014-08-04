@@ -87,20 +87,11 @@ can use any classes, methods, and routines that the directives established.</par
 <para>The ::ATTRIBUTE directive creates attribute methods and defines the
 method properties.</para>
 
-<programlisting>
-<![CDATA[
->>-::ATTRIBUTE--name--+-----+-------+-------+---+----------+---------->
-                      +-GET-+       +-CLASS-+   +-ABSTRACT-+
-                      +-SET-+
-
-    +-PUBLIC--+  +-GUARDED---+  +-UNPROTECTED-+
- >--+---------+--+-----------+--+-------------+------------------->
-    +-PRIVATE-+  +-UNGUARDED-+  +-PROTECTED---+
-
- >--+---------------+---;-----------------------------------------><
-    +-EXTERNAL-spec-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/directives/attribute.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>The ::ATTRIBUTE directive creates accessor methods for object instance
 variables.  An accessor method allows an object instance variable to be
@@ -260,17 +251,11 @@ class definition that creates a duplicate get or set method.
 
 <para>The ::CLASS directive causes the interpreter to create a Rexx class.</para>
 
-<programlisting>
-<![CDATA[
->>-::CLASS--classname--+----------------------+------------------->
-                       +-METACLASS--metaclass-+
-
-   .-SUBCLASS--Object---.  +-PRIVATE-+
->--+--------------------+--+---------+--+-------------------+--;--><
-   +-MIXINCLASS--mclass-+  +-PUBLIC--+  +-INHERIT--iclasses-+
-   +-SUBCLASS--sclass---+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/directives/class.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 
 <para>The ::CLASS directive creates a Rexx class named
@@ -379,11 +364,11 @@ PUBLIC in any order. </para></listitem>
 <para>The ::CONSTANT directive creates methods that return constant
 values for a class and its instances.</para>
 
-<programlisting>
-<![CDATA[
->>-::CONSTANT--name--value-------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/directives/constant.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>A ::CONSTANT directive defines a method that returns a constant value.
 This is useful for creating named constants associated with a class.
@@ -454,19 +439,12 @@ say "Pi is" instance~pi          -- also displays "Pi is 3.1415926"
 <para>The ::METHOD directive creates a method object and defines the method
 attributes.</para>
 
-<programlisting>
-<![CDATA[
->>-::METHOD--methodname--+-------+--+-----------+--+----------+--->
-                         +-CLASS-+  +-ATTRIBUTE-+  +-ABSTRACT-+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/directives/method.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
-    +-PUBLIC--+  +-GUARDED---+  +-UNPROTECTED-+
- >--+---------+--+-----------+--+-------------+------------------->
-    +-PRIVATE-+  +-UNGUARDED-+  +-PROTECTED---+
-
- >--+---------------+---;-----------------------------------------><
-    +-EXTERNAL-spec-+
-]]>
-</programlisting>
 <para>A ::METHOD directive creates method objects that may be associated with a
 class instance.  The created method may be from Rexx code, mapped to method in
 an external native library, or automatically generated.  The type of method is
@@ -634,15 +612,11 @@ class and use the same <emphasis role="italic">methodname</emphasis>.
 settings for all Rexx code contained within a package.
 </para>
 
-<programlisting>
-<![CDATA[
->>-::OPTIONS--+---------------+--+-----------+--+-----------+---->
-              +-DIGITS-digits-+  +-FORM-form-+  +-FUZZ-fuzz-+
-
- >------------+-------------+------------------------------------><
-              +-TRACE-trace-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/directives/options.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Any of the options may be specified on a single ::OPTIONS directive in any
 order.  If an option is specified more than once, the last specified value
@@ -755,12 +729,12 @@ method.
 the classes and objects of the Rexx program
 <emphasis role="italic">programname</emphasis>.</para>
 
-<programlisting>
-<![CDATA[
->>-::REQUIRES--"programname"--+---------+-;--------------------><
-                              +-LIBRARY-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/directives/requires.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>If the LIBRARY option is not specified, all public classes and routines
 defined in the named program are made available to the executing program. The
 <emphasis role="italic">programname
@@ -836,13 +810,11 @@ directive. Only null clauses can appear between them.</para>
 
 <para>The ::ROUTINE directive creates named routines within a program.</para>
 
-<programlisting>
-<![CDATA[
-                           +-PRIVATE-+
->>-::ROUTINE--routinename--+---------+--+---------------+-------><
-                           +-PUBLIC--+  +-EXTERNAL-spec-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/directives/routine.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>The <emphasis role="italic">routinename</emphasis>
 is a literal string or a symbol that is taken as a constant.
