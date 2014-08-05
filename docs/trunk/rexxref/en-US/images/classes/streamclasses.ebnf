@@ -1,0 +1,59 @@
+stream_new ::= 'new(' name ')'
+
+stream_arrayin ::= 'arrayIn' ( '(' ( 'Lines' | 'Chars' ) ')' )?
+
+stream_arrayout ::= 'arrayOut(' array ( ',' ( 'Lines' | 'Chars' ) )? ')'
+
+stream_charin ::= 'charIn' ( '(' ( start ( ',' length )? )? ')' )?
+
+stream_charout ::= 'charOut' ( '(' ( start ( ',' length )? )? ')' )?
+
+stream_chars ::= 'chars'
+
+stream_close ::= 'close'
+
+stream_command ::= 'command(' stream_command ')'
+
+stream_description ::= 'description'
+
+stream_flush ::= 'flush'
+
+stream_init ::= 'init(' name ')'
+
+stream_linein ::= 'lineIn' ( '(' ( line ( ',' count )? )? ')' )?
+
+stream_lineout ::= 'lineOut' ( '(' ( string ( ',' line )? )? ')' )?
+
+stream_lines ::= 'lines' ( '(' ( 'Count' | 'Normal' )? ')' )?
+
+stream_makearray ::= 'makeArray' ( '(' ( 'Lines' | 'Charc' )? ')' )?
+
+stream_open ::= 'open' ( '(' ( 'Both' write_options | 'Read' | 'Wtite' write_options )?
+                             ( 'Shared' | 'Sharedread' | 'Sharedwrite' )?
+                             ( ( 'Nobuffer' | 'Binary' ( 'Reclength' length )? )? )+
+                         ')' )?
+
+stream_write_options ::= ( ( 'Append' | 'Replace' )? )+
+
+stream_position ::= 'position(' ( '=' | '<' | '+' | '-' )? 'Offset'
+                                ( 'Read' | 'Write' ) ( 'Char' | 'Line' )? ')'
+
+stream_qualify ::= 'qualify'
+
+stream_query ::= 'query(' ( 'Datetime' | 'Exists' | 'Handle' | ( 'Seek' | 'Position' )
+                            ( 'Read' ( 'Char' | 'Line' )? |
+                              'Write' ( 'Char' | 'Line' )? | 'Sys' ) |
+                             'Size' | 'Streamtype' | 'Timestamp' ) ')'
+
+stream_say ::= 'say' ( '(' ( string )? ')' )?
+
+stream_seek ::= 'seek(' ( '=' | '<' | '+' | '-' )? 'Offset'
+                        ( 'Read' | 'Write' ) ( 'Char' | 'Line' )? ')'
+
+stream_state ::= 'state'
+
+stream_string ::= 'string'
+
+stream_supplier ::= 'supplier'
+
+stream_uninit ::= 'uninit'

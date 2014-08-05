@@ -594,11 +594,12 @@ OutputStream class (<xref linkend="clsOutputStream" />).</para>
 <indexterm><primary>method</primary>
 <secondary>new method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-new(name)---------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stream_new.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Initializes a stream object for stream
 <emphasis role="italic">name</emphasis>, but does not open the stream.
@@ -611,13 +612,12 @@ Returns the new stream object.</para>
 <indexterm><primary>method</primary>
 <secondary>arrayIn method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
-            +-(LINES)-+
->>-arrayIn--+---------+----------------------------------------><
-            +-(CHARS)-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stream_arrayin.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a fixed array that contains the data of the stream in line or
 character format, starting from the current read position. The line format is
@@ -633,13 +633,12 @@ method, the first line can be a partial line.
 <indexterm><primary>method</primary>
 <secondary>arrayOut method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
-                  +-,--LINES-+
->>-arrayOut(array-+----------+-)-------------------------------><
-                  +-,--CHARS-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stream_arrayout.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Writes the data in array
 <emphasis role="italic">array</emphasis> to the stream.
@@ -655,13 +654,12 @@ default method is LINES.
 <indexterm><primary>method</primary>
 <secondary>charIn method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-charIn-+----------------------------+-----------------------><
-          +-(-+-------+--+---------+-)-+
-              +-start-+  +-,length-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stream_charin.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a string of up to <emphasis role="italic">length</emphasis>
 characters from the input stream. The stream advances
@@ -683,13 +681,12 @@ fails, the stream opens for input only.
 <indexterm><primary>method</primary>
 <secondary>charOut method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-charOut-+----------------------------+----------------------><
-           +-(-+--------+--+--------+-)-+
-               +-string-+  +-,start-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stream_charout.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the count of characters remaining after trying to write
 <emphasis role="italic">string</emphasis> to the output stream.
@@ -716,11 +713,12 @@ for output only.
 <indexterm><primary>method</primary>
 <secondary>chars method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-chars-------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stream_chars.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the total number of characters remaining in the
 input stream.
@@ -743,11 +741,12 @@ CHARS always returns <computeroutput>1</computeroutput>.
 <indexterm><primary>method</primary>
 <secondary>close method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-close-------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stream_close.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Closes the stream.
 <emphasis role="bold">close</emphasis> returns
@@ -764,11 +763,12 @@ a null string (&quot;&quot;).</para>
 <indexterm><primary>method</primary>
 <secondary>command method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-command(stream_command)-------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stream_command.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a string after performing the specified
 <emphasis role="italic">stream_command</emphasis>. The returned string depends
@@ -795,59 +795,28 @@ is set whenever one of the file system primitives returns with a
 <para>The argument <emphasis role="italic">stream_command</emphasis>
 can be any expression that to one of the following command strings:
 </para>
-<programlisting>
-<![CDATA[
-           +-BOTH--| Write Options |-+
->>-+-OPEN--+-------------------------+--+-------------+-+------><
-   |       +-READ--------------------+  +-| Options |-+ |
-   |       +-WRITE--+---------+------+                  |
-   |                +-APPEND--+                         |
-   |                +-REPLACE-+                         |
-   +-CLOSE----------------------------------------------+
-   +-FLUSH----------------------------------------------+
-   |               +- = -+                    +-CHAR-+  |
-   +-+-SEEK-----+--+-----+-offset--+-------+--+------+--+
-   | +-POSITION-+  +- < -+         +-READ--+  +-LINE-+  |
-   |               +- + -+         +-WRITE-+            |
-   |               +- - -+                              |
-   +-QUERY--+-DATETIME--------------------------+-------+
-            +-EXISTS----------------------------+
-            +-HANDLE----------------------------+
-            |                       +-CHAR-+    |
-            +-+-SEEK-----+--+-READ--+------+--+-+
-            | +-POSITION-+  |       +-LINE-+  | |
-            |               |        +-CHAR-+ | |
-            |               +-WRITE--+------+-+ |
-            |               |        +-LINE-+ | |
-            |               +-SYS-------------+ |
-            +-SIZE------------------------------+
-            +-STREAMTYPE------------------------+
-            +-TIMESTAMP-------------------------+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/stream_command.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para><emphasis role="bold">Write Options:</emphasis></para>
 
-<programlisting>
-<![CDATA[
-|--+---------+--------------------------------------------------|
-   +-APPEND--+
-   +-REPLACE-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/stream_write_options.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para><emphasis role="bold">Options:</emphasis></para>
 
-<programlisting>
-<![CDATA[
-                   +-----------------------------------+
-                   V                                   |
-|--+------------+----+-NOBUFFER----------------------+-+--------|
-   +-SHARED-----+    +-BINARY--+-------------------+-+
-   +-SHAREREAD--+              +-RECLENGTH--length-+
-   +-SHAREWRITE-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/stream_options.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <variablelist>
 <varlistentry><term>OPEN</term>
@@ -1185,11 +1154,12 @@ stream_name~command("query timestamp")
 <indexterm><primary>method</primary>
 <secondary>description method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-description-------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stream_description.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns any descriptive string associated with the
 current state of the stream or the Nil object if no descriptive string is
@@ -1206,11 +1176,12 @@ available, additional information about ERROR or NOTREADY states.</para>
 <indexterm><primary>method</primary>
 <secondary>flush method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-flush-------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stream_flush.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns <computeroutput>READY:</computeroutput>. It forces the stream to write
 any buffered data to the output stream.
@@ -1224,11 +1195,11 @@ any buffered data to the output stream.
 <secondary>init method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-init(name)-----------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stream_init.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Initializes a stream object defined by <emphasis role="italic">name</emphasis>.
 </para>
@@ -1240,13 +1211,12 @@ any buffered data to the output stream.
 <indexterm><primary>method</primary>
 <secondary>lineIn method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-lineIn-+-------------------------+--------------------------><
-          +-(-+------+-+--------+-)-+
-              +-line-+ +-,count-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stream_linein.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the next <emphasis role="italic">count</emphasis> lines. The
 count must be <computeroutput>0</computeroutput> or
@@ -1269,13 +1239,12 @@ that fails, the stream is opened for input only.
 <indexterm><primary>method</primary>
 <secondary>lineOut method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-lineOut-+--------------------------+------------------------><
-           +-(-+--------+-+-------+-)-+
-               +-string-+ +-,line-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stream_lineout.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns <computeroutput>0</computeroutput> if successful in writing
 <emphasis role="italic">string</emphasis> to the output stream
@@ -1296,13 +1265,12 @@ opened for output only.
 <indexterm><primary>method</primary>
 <secondary>lines method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
-           +-Count--+
->>-lines(--+--------+---)--------------------------------------><
-           +-Normal-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stream_lines.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the number of completed lines that available for input.
 If the stream has already been read with
@@ -1350,13 +1318,12 @@ remaining in the file or 0 if no lines remain.</para>
 <indexterm><primary>method</primary>
 <secondary>makeArray method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
-              +-(LINES)-+
->>-makeArray--+---------+--------------------------------------><
-              +-(CHARS)-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stream_makearray.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a fixed array that contains
 the data of the stream in line or character format, starting from the current
@@ -1372,32 +1339,20 @@ method, the first line can be a partial line.
 <indexterm><primary>method</primary>
 <secondary>open method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
-         +-(BOTH-| Write Options |--+  +-SHARED-----+
->>-open--+--------------------------+--+------------+----------->
-         +-(READ--------------------+  +-SHAREREAD--+
-         +-(WRITE-| Write Options |-+  +-SHAREWRITE-+
 
-   +-----------------------------------+
-   V                                   |
->----+-------------------------------+-+--+---+----------------><
-     +-NOBUFFER----------------------+    +-)-+
-     +-BINARY--+-------------------+-+
-               +-RECLENGTH--length-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stream_open.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para><emphasis role="bold">Write Options:</emphasis></para>
 
-<programlisting>
-<![CDATA[
-   +-------------+
-   V +-APPEND--+ |
-|----+---------+-+----------------------------------------------|
-     +-REPLACE-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/bif/stream_write_options.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Opens the stream and returns
 <computeroutput>READY:</computeroutput>. If the method is unsuccessful, it
@@ -1497,15 +1452,12 @@ stream_name~open("read")
 <indexterm><primary>method</primary>
 <secondary>position method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
-             +- = -+                  +-CHAR-+
->>-position(-+-----+-offset-+-READ--+-+------+-)---------------><
-             +- < -+        +-WRITE-+ +-LINE-+
-             +- + -+
-             +- - -+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stream_position.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para><emphasis role="bold">position</emphasis> is a synonym for
 <emphasis role="bold">seek</emphasis>. (See
@@ -1518,11 +1470,12 @@ stream_name~open("read")
 <indexterm><primary>method</primary>
 <secondary>qualify method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-qualify-----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stream_qualify.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the stream's fully qualified name. The stream need
 not be open.</para>
@@ -1535,23 +1488,11 @@ not be open.</para>
 <indexterm><primary>query method</primary>
 <secondary>of Stream class</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-query(--+-DATETIME--------------------------+--)------------><
-           +-EXISTS----------------------------+
-           +-HANDLE----------------------------+
-           |                       +-CHAR-+    |
-           +-+-SEEK-----+--+-READ--+------+--+-+
-           | +-POSITION-+  |       +-LINE-+  | |
-           |               |        +-CHAR-+ | |
-           |               +-WRITE--+------+-+ |
-           |               |        +-LINE-+ | |
-           |               +-SYS-------------+ |
-           +-SIZE------------------------------+
-           +-STREAMTYPE------------------------+
-           +-TIMESTAMP-------------------------+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stream_query.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Used with these options, the <emphasis role="bold">query</emphasis>
 method returns specific information about a stream. Except for
@@ -1694,13 +1635,12 @@ time because it provides the full 4-digit year.</para>
 <indexterm><primary>method</primary>
 <secondary>say method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-say--+----------------+-------------------------------------><
-        +-(-+--------+-)-+
-            +-string-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stream_say.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns <computeroutput>0</computeroutput> if successful in writing
 <emphasis role="italic">string</emphasis> to the output stream
@@ -1714,15 +1654,12 @@ an error occurs while writing the line.</para>
 <indexterm><primary>method</primary>
 <secondary>seek method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
-         +- = -+                  +-CHAR-+
->>-seek(-+-----+-offset-+-------+-+------+-)-------------------><
-         +- < -+        +-READ--+ +-LINE-+
-         +- + -+        +-WRITE-+
-         +- - -+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stream_seek.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Sets the read or write position to a given number
 (<emphasis role="italic">offset</emphasis>) within a persistent stream. If
@@ -1810,11 +1747,12 @@ fromend  = 125
 <indexterm><primary>method</primary>
 <secondary>state method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-state-------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stream_state.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a string indicating the current stream state.
 </para>
@@ -1856,11 +1794,12 @@ the stream is closed or has not yet been opened.
 <indexterm><primary>method</primary>
 <secondary>string method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-string------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stream_string.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a string that indicates the name of the object the stream
 represents i.e. the name of the file.
@@ -1873,11 +1812,12 @@ represents i.e. the name of the file.
 <indexterm><primary>method</primary>
 <secondary>supplier method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-supplier----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stream_supplier.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a StreamSupplier object (<xref linkend="clsStreamSupplier" />) for the stream containing
 the remaining stream lines and linenumber positions for the stream.
@@ -1890,11 +1830,12 @@ the remaining stream lines and linenumber positions for the stream.
 <indexterm><primary>method</primary>
 <secondary>uninit method</secondary>
 <tertiary>of Stream class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-uninit------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stream_uninit.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>This method cleans up the object when it is garbage collected. It should
 not be invoked directly except via an
