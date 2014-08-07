@@ -176,22 +176,32 @@ bag_union ::= 'union(' argument ')'
 
 bag_xor ::= 'xor(' argument ')'
 
+cqueue_of ::= 'of' ( '(' item ( ( ',' item )+ )? ')' )?
 
+cqueue_init ::= 'init(' size ')'
 
+cqueue_append ::= 'append(' item ')'
 
+cqueue_insert ::= 'insert(' item ( ',' index )? ')'
 
+cqueue_intersection ::= 'intersection(' argument ')'
 
+cqueue_makearray ::= 'makeArray(' ( order )? ')'
 
+cqueue_push ::= 'push(' item ( ',' option )? ')'
 
+cqueue_queue ::= 'queue(' item ( ',' 'Normal' | ',' 'Unique' )? ')'
 
+cqueue_resize ::= 'resize(' newsize ( ',' order )? ')'
 
+cqueue_section ::= 'section(' start ( ',' items )? ')'
 
+cqueue_size ::= 'size'
 
+cqueue_string ::= 'string(' ( '","' | delimiter )? ( ',' 'Fifo' | ',' order )? ')'
 
+cqueue_supplier ::= 'supplier(' ( order )? ')'
 
+cqueue_union ::= 'union(' argument ')'
 
-
-
-
-
-
+cqueue_xor ::= 'xor(' argument ')'
