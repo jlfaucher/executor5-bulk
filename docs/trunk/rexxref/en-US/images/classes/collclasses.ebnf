@@ -448,13 +448,63 @@ relation_uniqueindexes ::= 'uniqueIndexes'
 
 relation_xor ::= 'xor(' argument ')'
 
+set_of ::= 'of' ( '(' item ( ( ',' item )+ )? ')' )?
 
+set_putset ::= '[' index ']' '=' item
 
+set_hasitem ::= 'hasItem(' item ( ',' index )? ')'
 
+set_intersection ::= 'intersection(' argument ')'
 
+set_put ::= 'put(' item ',' index ')'
 
+set_putall ::= 'putAll(' collection ')'
 
+set_subset ::= 'subset(' argument ')'
 
+set_union ::= 'union' '(' argument ')'
+
+set_xor ::= 'xor(' argument ')'
+
+stem_new ::= 'new' ( '(' name ')' )?
+
+stem_atget ::= '[' index ']'
+
+stem_putset ::= '[' index ']' '=' item
+
+stem_allindexes ::= 'allIndexes'
+
+stem_allitems ::= 'allItems'
+
+stem_at ::= 'at(' tail ')'
+
+stem_empty ::= 'empty'
+
+stem_hasindex ::= 'hasIndex(' tail ')'
+
+stem_hasitem ::= 'hasItem(' value ')'
+
+stem_index ::= 'index(' item ')'
+
+stem_isempty ::= 'isEmpty'
+
+stem_items ::= 'items'
+
+stem_makearray ::= 'makeArray'
+
+stem_put ::= 'put(' item ',' tail ')'
+
+stem_remove ::= 'remove(' tail ')'
+
+stem_removeitem ::= 'removeItem(' item ')'
+
+stem_request ::= 'request(' classid ')'
+
+stem_supplier ::= 'supplier'
+
+stem_todirectory ::= 'toDirextory'
+
+stem_unknown ::= 'unknown(' messagename ',' messageargs ')'
 
 
 

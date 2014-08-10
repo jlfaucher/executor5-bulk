@@ -6810,13 +6810,12 @@ Table class (<xref linkend="clsTable" />).</para>
 <indexterm><primary>method</primary>
 <secondary>of method</secondary>
 <tertiary>of Set class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
-       +-,----+
-       V      |
->>-of(---item-+-)----------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/set_of.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a newly created set containing the specified
 <emphasis role="italic">item</emphasis> objects.</para>
@@ -6828,11 +6827,12 @@ Table class (<xref linkend="clsTable" />).</para>
 <indexterm><primary>method</primary>
 <secondary>[]= method</secondary>
 <tertiary>of Set class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-[index]=item------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/set_putset.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Add an item to the Set.
 This method is the same as the
@@ -6845,11 +6845,12 @@ put() (<xref linkend="mthSetPut" />) method.</para>
 <indexterm><primary>method</primary>
 <secondary>hasItem method</secondary>
 <tertiary>of Set class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-hasItem(item)-----------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/set_hasitem.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns <computeroutput>1</computeroutput> (true) if the collection contains
 the specified item at any index location.  Returns
@@ -6863,11 +6864,11 @@ the specified item at any index location.  Returns
 <secondary>intersection method</secondary>
 <tertiary>of Set class</tertiary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-intersection(argument)--------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/set_intersection.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a new collection (of the same class as the receiver) containing
 only those items from the receiver whose indexes are in both the receiver
@@ -6884,12 +6885,12 @@ index values in the receiver collection.</para>
 <indexterm><primary>method</primary>
 <secondary>put method</secondary>
 <tertiary>of Set class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-put(item-+--------+-)---------------------------------------><
-            +-,index-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/set_put.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Adds <emphasis role="italic">item</emphasis> to the Set.
 If there is an equivalent item in the Set, the exiting item will
@@ -6907,11 +6908,12 @@ as <emphasis role="italic">item</emphasis>.
 <secondary>putAll method</secondary>
 <tertiary>of Set class</tertiary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-putAll(collection)------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/set_putall.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Adds all items <emphasis role="italic">collection</emphasis> to the target set.  The
 <emphasis role="italic">collection</emphasis> argument can be any object that supports a supplier
 method.  Items from <emphasis role="italic">collection</emphasis> are added using the item values
@@ -6929,11 +6931,11 @@ supplier will overwrite previous items with the same index.
 <secondary>subset method</secondary>
 <tertiary>of Set class</tertiary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-subset(argument)--------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/set_subset.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns <computeroutput>1</computeroutput> (true) if all items in the
 receiver collection are also contained in the
@@ -6952,11 +6954,11 @@ index values in the receiver collection.</para>
 <secondary>union method</secondary>
 <tertiary>of Set class</tertiary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-union(argument)---------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/set_union.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a new Set contains
 all the items from the receiver collection and selected items from the
@@ -6979,11 +6981,11 @@ index values in the receiver collection.</para>
 <secondary>xor method</secondary>
 <tertiary>of Set class</tertiary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-xor(argument)-----------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/set_xor.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a new Set that contains
 all items from the receiver collection and the
@@ -7121,12 +7123,12 @@ MapCollection class (<xref linkend="clsMapCollection" />).</para>
 <indexterm><primary>method</primary>
 <secondary>new method</secondary>
 <tertiary>of Stem class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-new-+--------+----------------------------------------------><
-       +-(name)-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stem_new.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a new stem object. If you specify a string
 <emphasis role="italic">name</emphasis>, this
@@ -7140,14 +7142,12 @@ stem name is a null string ("").</para>
 <indexterm><primary>method</primary>
 <secondary>[] method</secondary>
 <tertiary>of Stem class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
-     +-,---------+
-     V           |
->>-[---+-------+-+-]-------------------------------------------><
-       +-index-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stem_atget.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the item associated with the specified
 <emphasis role="italic">index</emphasis>es. Each
@@ -7175,14 +7175,12 @@ If no default value has been assigned, the stem name is returned. </para>
 <indexterm><primary>method</primary>
 <secondary>[]= method</secondary>
 <tertiary>of Stem class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
-     +-,---------+
-     V           |
->>-[---+-------+-+-]=value-------------------------------------><
-       +-index-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stem_putset.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Makes the value a member item of the stem collection and associates it
 with the specified index. The final index is derived by concatenation each of
@@ -7201,11 +7199,12 @@ re-initialize the stem and remove all existing assigned indexes.
 <indexterm><primary>method</primary>
 <secondary>allIndexes method</secondary>
 <tertiary>of Stem class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-allIndexes--------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stem_allindexes.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns an array of all the stem tail names used in the stem.</para>
 </section>
@@ -7216,11 +7215,12 @@ re-initialize the stem and remove all existing assigned indexes.
 <indexterm><primary>method</primary>
 <secondary>allItems method</secondary>
 <tertiary>of Stem class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-allItems----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stem_allitems.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns an array of all items contained in the stem.</para>
 </section>
@@ -7231,11 +7231,12 @@ re-initialize the stem and remove all existing assigned indexes.
 <indexterm><primary>method</primary>
 <secondary>at method</secondary>
 <tertiary>of Stem class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-at(tail)----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stem_at.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the item associated with the specified
 <emphasis role="italic">tail</emphasis>. The Nil object is returned
@@ -7250,11 +7251,12 @@ with the specified <emphasis role="italic">tail</emphasis>.
 <indexterm><primary>method</primary>
 <secondary>empty method</secondary>
 <tertiary>of Stem class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-empty-------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stem_empty.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Removes all items from the stem.</para>
 </section>
@@ -7265,11 +7267,12 @@ with the specified <emphasis role="italic">tail</emphasis>.
 <indexterm><primary>method</primary>
 <secondary>hasIndex method</secondary>
 <tertiary>of Stem class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-hasIndex(tail)----------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stem_hasindex.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns <computeroutput>1</computeroutput> (true) if the collection
 contains any item associated with a stem tail
@@ -7283,11 +7286,12 @@ or <computeroutput>0</computeroutput> (false).</para>
 <indexterm><primary>method</primary>
 <secondary>hasItem method</secondary>
 <tertiary>of Stem class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-hasItem(value)----------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stem_hasitem.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns <computeroutput>1</computeroutput> (true) if the collection
 contains the <emphasis role="italic">value</emphasis> at any tail position or
@@ -7302,11 +7306,12 @@ Item equality is determined by using the == method of <emphasis role="italic">it
 <indexterm><primary>method</primary>
 <secondary>index method</secondary>
 <tertiary>of Stem class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-index(item)-------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stem_index.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the index of the specified item within the stem.
 Returns the Nil object if the stem does not contain the specified item.
@@ -7320,11 +7325,12 @@ Item equality is determined by using the == method of <emphasis role="italic">it
 <indexterm><primary>method</primary>
 <secondary>isEmpty method</secondary>
 <tertiary>of Stem class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-isEmpty-----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stem_isempty.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns <computeroutput>1</computeroutput> (true) if the stem
 is empty.  Returns
@@ -7337,11 +7343,12 @@ is empty.  Returns
 <indexterm><primary>method</primary>
 <secondary>items method</secondary>
 <tertiary>of Stem class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-items-------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stem_items.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the number of items in the collection.</para>
 </section>
@@ -7352,11 +7359,12 @@ is empty.  Returns
 <indexterm><primary>method</primary>
 <secondary>makeArray method</secondary>
 <tertiary>of Stem class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-makeArray---------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stem_makearray.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns an array of all stem indexes that currently have an associated
 value. The items appear in the array in an unspecified order.
@@ -7369,11 +7377,12 @@ value. The items appear in the array in an unspecified order.
 <indexterm><primary>method</primary>
 <secondary>put method</secondary>
 <tertiary>of Stem class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-put(item,tail)----------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stem_put.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Replaces any existing item associated with the specified
 <emphasis role="italic">tail</emphasis> with
@@ -7387,11 +7396,12 @@ the new item <emphasis role="italic">item</emphasis>.
 <indexterm><primary>method</primary>
 <secondary>remove method</secondary>
 <tertiary>of Stem class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-remove(tail)------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stem_remove.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns and removes from the stem the member item with index
 <emphasis role="italic">tail</emphasis>. Returns the Nil object if no item has index
@@ -7405,11 +7415,12 @@ the new item <emphasis role="italic">item</emphasis>.
 <indexterm><primary>method</primary>
 <secondary>removeItem method</secondary>
 <tertiary>of Stem class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-removeItem(item)--------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stem_removeitem.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Removes an item from the stem. If the target item exists at more than
 one tail, the first located item is removed.
@@ -7425,11 +7436,12 @@ removed item.
 <indexterm><primary>method</primary>
 <secondary>request method</secondary>
 <tertiary>of Stem class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-request(classid)--------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stem_request.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>
 This method requests
@@ -7449,11 +7461,12 @@ stem object's default value.
 <indexterm><primary>method</primary>
 <secondary>supplier method</secondary>
 <tertiary>of Stem class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-supplier----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stem_supplier.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a Supplier (<xref linkend="clsSupplier" />) object for the stem.
 The supplier allows you to iterate though the index/item pairs contained in the Stem
@@ -7468,11 +7481,12 @@ The supplier iterates the items in an unspecified order.
 <indexterm><primary>method</primary>
 <secondary>toDirectory method</secondary>
 <tertiary>of Stem class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-toDirectory-------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stem_todirectory.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a Directory (<xref linkend="clsDirectory" />) object for the stem.
 The directory will contain a
@@ -7485,11 +7499,12 @@ name/value pair for each stem index with a directly assigned value.</para>
 <indexterm><primary>method</primary>
 <secondary>unknown method</secondary>
 <tertiary>of Stem class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-unknown-(messagename,messageargs)---------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stem_unknown.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Reissues or forwards all unknown
 messages to the stem's current default value.  For additional information, see
