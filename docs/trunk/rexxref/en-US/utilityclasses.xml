@@ -7277,11 +7277,12 @@ Object class (<xref linkend="clsObject" />).</para>
 <indexterm><primary>method</primary>
 <secondary>new method</secondary>
 <tertiary>of Buffer class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-new---------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/buffer_new.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Creating Buffer object instances directly from Rexx code is not supported.
 The Buffer class new method will raise an error if invoked.</para>
@@ -7396,11 +7397,12 @@ Orderable class (<xref linkend="clsObject" />).</para>
 <indexterm><primary>method</primary>
 <secondary>isCaseSensitive method</secondary>
 <tertiary>of File class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-isCaseSensitive---------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/file_iscasesensitive.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns .true ("1") if the file system is case-sensitive. Otherwise returns .false ("0").
 </para>
@@ -7414,11 +7416,12 @@ Orderable class (<xref linkend="clsObject" />).</para>
 <indexterm><primary>method</primary>
 <secondary>listRoots method</secondary>
 <tertiary>of File class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-listRoots---------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/file_listroots.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the file system root elements, as an array of string.
 On Windows, each of the drives is a root element (Ex : "C:\").
@@ -7445,11 +7448,12 @@ R:\
 <indexterm><primary>method</primary>
 <secondary>pathSeparator method</secondary>
 <tertiary>of File class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-pathSeparator-----------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/file_pathseparator.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the separator used for file search paths (";" on Windows, ":" on Unix).
 </para>
@@ -7463,11 +7467,12 @@ R:\
 <indexterm><primary>method</primary>
 <secondary>separator method</secondary>
 <tertiary>of File class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-separator---------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/file_separator.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the file name separator used by the file system ("\" on Windows, "/" on Unix).
 </para>
@@ -7490,11 +7495,12 @@ file = .File~new("dir1" || .File~separator || "dir2" || .File~separator || "file
 <indexterm><primary>method</primary>
 <secondary>absoluteFile method</secondary>
 <tertiary>of File class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-absoluteFile------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/file_absolutefile.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the fully qualified path as a new instance of File.
 </para>
@@ -7525,11 +7531,12 @@ say .File~new("../my file")~absoluteFile           -- /opt/my file
 <indexterm><primary>method</primary>
 <secondary>absolutePath method</secondary>
 <tertiary>of File class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-absolutePath------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/file_absolutepath.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the fully qualified path as a string.
 </para>
@@ -7560,11 +7567,12 @@ say .File~new("../my file")~absolutePath           -- /opt/my file
 <indexterm><primary>method</primary>
 <secondary>canRead method</secondary>
 <tertiary>of File class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-canRead-----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/file_canread.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns .true ("1") if the file exists and is readable. Otherwise returns .false ("0").
 </para>
@@ -7576,11 +7584,12 @@ say .File~new("../my file")~absolutePath           -- /opt/my file
 <indexterm><primary>method</primary>
 <secondary>canWrite method</secondary>
 <tertiary>of File class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-canWrite----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/file_canwrite.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns .true ("1") if the file exists and is writable. Otherwise returns .false ("0").
 </para>
@@ -7592,11 +7601,12 @@ say .File~new("../my file")~absolutePath           -- /opt/my file
 <indexterm><primary>method</primary>
 <secondary>compareTo method</secondary>
 <tertiary>of File class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-compareTo(other)--------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/file_compareto.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Performs a sorting comparison of the target File object to the <emphasis role="italic">other</emphasis> File object.
 The comparison is made on the absolute paths (strings) of both File objects.
@@ -7624,11 +7634,12 @@ file1~compareTo(file2)    -- 1 on Unix ("/dir/file" is greater than "/DIR/FILE")
 <indexterm><primary>method</primary>
 <secondary>delete method</secondary>
 <tertiary>of File class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-delete------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/file_delete.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Deletes the file or directory denoted by the absolute path of the target File object.
 Only empty directories can be deleted.
@@ -7643,11 +7654,12 @@ Only empty directories can be deleted.
 <indexterm><primary>method</primary>
 <secondary>exists method</secondary>
 <tertiary>of File class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-exists------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/file_exists.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns .true ("1") if the file or directory (denoted by the absolute path of the target File object) exists.
 Otherwise returns .false ("0").
@@ -7660,11 +7672,12 @@ Otherwise returns .false ("0").
 <indexterm><primary>method</primary>
 <secondary>hashCode method</secondary>
 <tertiary>of File class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-hashCode----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/file_hashcode.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a string value that is used as a hash value for MapCollection such as Table, Relation, Set, Bag,
 and Directory.
@@ -7677,12 +7690,12 @@ and Directory.
 <indexterm><primary>method</primary>
 <secondary>init method</secondary>
 <tertiary>of File class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-init(path-+------+-)----------------------------------------><
-             +-,dir-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/file_init.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Initializes a new File instance with the path <emphasis role="italic">path</emphasis>
 (after normalization).
@@ -7724,11 +7737,12 @@ file = .File~new("file", samples)            -- /opt/ooRexx/samples/file
 <indexterm><primary>method</primary>
 <secondary>isCaseSensitive method</secondary>
 <tertiary>of File class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-isCaseSensitive---------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/file_iscasesensitive.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns .true ("1") if the file system is case-sensitive. Otherwise returns .false ("0").
 </para>
@@ -7742,11 +7756,12 @@ file = .File~new("file", samples)            -- /opt/ooRexx/samples/file
 <indexterm><primary>method</primary>
 <secondary>isDirectory method</secondary>
 <tertiary>of File class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-isDirectory---------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/file_isdirectory.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns .true ("1") if the absolute path of the target File object references a directory.
 Otherwise returns .false ("0").
@@ -7759,11 +7774,12 @@ Otherwise returns .false ("0").
 <indexterm><primary>method</primary>
 <secondary>isFile method</secondary>
 <tertiary>of File class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-isFile------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/file_isfile.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns .true ("1") if the absolute path of the target File object references a file.
 Otherwise returns .false ("0").
@@ -7776,11 +7792,12 @@ Otherwise returns .false ("0").
 <indexterm><primary>method</primary>
 <secondary>isHidden method</secondary>
 <tertiary>of File class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-isHidden----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/file_ishidden.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns .true ("1") if the absolute path of the target File object references an existing file or
 directory which is hidden. Otherwise returns .false ("0").
@@ -7809,13 +7826,17 @@ say .File~new("/tmp/.dir/file")~isHidden        -- 1
 <indexterm><primary>method</primary>
 <secondary>lastModified method</secondary>
 <tertiary>of File class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-lastModified------------------------------------------------><
 
->>-lastModified=date-------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/file_lastmodified1.svg" scale="50" />
+</imageobject>
+</mediaobject>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/file_lastmodified2.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <variablelist>
   <varlistentry><term><emphasis role="bold">lastModified get:</emphasis></term>
@@ -7868,11 +7889,12 @@ say .File~new("/tmp/.dir/file")~isHidden        -- 1
 <indexterm><primary>method</primary>
 <secondary>length method</secondary>
 <tertiary>of File class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-length------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/file_length.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the size in bytes of the file/directory denoted by the absolute
 path of the receiver object.
@@ -7885,11 +7907,12 @@ path of the receiver object.
 <indexterm><primary>method</primary>
 <secondary>list method</secondary>
 <tertiary>of File class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-list--------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/file_list.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns an array of files/directories names which are immediate children of the directory
 denoted by the absolute path of the receiver object.
@@ -7924,11 +7947,12 @@ factor.rex
 <indexterm><primary>method</primary>
 <secondary>listFiles method</secondary>
 <tertiary>of File class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-listFiles---------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/file_listfiles.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns an array of files/directories which are immediate children of the directory
 denoted by the absolute path of the receiver object.
@@ -7979,11 +8003,12 @@ c:\program files\oorexx\samples\api\callrxwn\backward.fnc
 <indexterm><primary>method</primary>
 <secondary>makeDir method</secondary>
 <tertiary>of File class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-makeDir-----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/file_makedir.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Makes just the directory represented by the last name (<xref linkend="mthFileName" />)
 portion of the receiver object's absolute path. Does not create any parent directories,
@@ -8000,11 +8025,12 @@ If the directory already exists then the result is .false.
 <indexterm><primary>method</primary>
 <secondary>makeDirs method</secondary>
 <tertiary>of File class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-makeDirs----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/file_makedirs.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Creates the entire directory hierarchy represented by the absolute path
 of the receiver object.
@@ -8020,11 +8046,12 @@ If the directory already exists then the result is .false.
 <indexterm><primary>method</primary>
 <secondary>name method</secondary>
 <tertiary>of File class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-name--------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/file_name.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the name portion of the receiver object's absolute path.
 This is everything after the last path separator. On Windows, the file's
@@ -8053,11 +8080,12 @@ say .File~new("/")~name                                  -- empty string
 <indexterm><primary>method</primary>
 <secondary>parent method</secondary>
 <tertiary>of File class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-parent------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/file_parent.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the parent directory portion of the receiver object's absolute path.
 If no separator is found or the absolute path ends with a separator
@@ -8086,11 +8114,12 @@ say .File~new("/")~parent                                  -- The NIL object
 <indexterm><primary>method</primary>
 <secondary>parentFile method</secondary>
 <tertiary>of File class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-parentFile--------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/file_parentfile.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the parent (<xref linkend="mthFileParent" /> directory
 portion as a File object.
@@ -8105,11 +8134,12 @@ If no separator is found or the absolute path ends with a separator
 <indexterm><primary>method</primary>
 <secondary>path method</secondary>
 <tertiary>of File class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-path--------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/file_path.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the original path (after normalization) used to create the File object.
 The normalization consists in adjusting the separators to the platform's convention and removing
@@ -8123,11 +8153,12 @@ the final separator (if any).
 <indexterm><primary>method</primary>
 <secondary>pathSeparator method</secondary>
 <tertiary>of File class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-pathSeparator-----------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/file_pathseparator.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the separator used for file search paths (";" on Windows, ":" on Unix).
 </para>
@@ -8141,11 +8172,12 @@ the final separator (if any).
 <indexterm><primary>method</primary>
 <secondary>renameTo method</secondary>
 <tertiary>of File class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-renameTo(dest)----------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/file_renameto.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Changes the name of the file/directory denoted by the absolute path of the target object.
 The new name is <emphasis role="italic">dest</emphasis>.
@@ -8164,11 +8196,12 @@ The new name is <emphasis role="italic">dest</emphasis>.
 <indexterm><primary>method</primary>
 <secondary>separator method</secondary>
 <tertiary>of File class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-separator---------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/file_separator.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the file name separator used by the file system ("\" on Windows, "/" on Unix).
 </para>
@@ -8182,11 +8215,12 @@ The new name is <emphasis role="italic">dest</emphasis>.
 <indexterm><primary>method</primary>
 <secondary>setReadOnly method</secondary>
 <tertiary>of File class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-setReadOnly-------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/file_setreadonly.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Sets the read-only flag of the file/directory denoted by the absolute path of the target object.
 </para>
@@ -8200,11 +8234,12 @@ The new name is <emphasis role="italic">dest</emphasis>.
 <indexterm><primary>method</primary>
 <secondary>string method</secondary>
 <tertiary>of File class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-string------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/file_string.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a string that indicates the path used to create the File object.
 </para>
