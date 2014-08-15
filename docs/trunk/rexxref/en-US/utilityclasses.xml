@@ -5634,11 +5634,12 @@ Object class (<xref linkend="clsObject" />).</para>
 <secondary>create method</secondary>
 <tertiary>of RexxQueue class</tertiary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-create(name)--------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/rxqueue_create.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Attempts to create an external Rexx named queue using <emphasis role="italic">name</emphasis>.  If
 a <emphasis role="italic">name</emphasis> queue already exists, a new queue with a Rexx-generated name will be
 created.  This method returns the name of the created queue, which will be either
@@ -5653,11 +5654,12 @@ created.  This method returns the name of the created queue, which will be eithe
 <secondary>delete class method</secondary>
 <tertiary>of RexxQueue class</tertiary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-delete(name)--------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/rxqueue_delete_class.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 
 <para>Attempts to delete an external Rexx named queue named <emphasis role="italic">name</emphasis>.  This method
 returns "0" if the queue was successfully deleted.  Non-zero results are the error codes from the RexxDeleteQueue()
@@ -5672,11 +5674,12 @@ programming interface.
 <secondary>exists method</secondary>
 <tertiary>of RexxQueue class</tertiary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-exists(name)--------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/rxqueue_exists.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Tests if an external Rexx queue <emphasis role="italic">name</emphasis> currently exists, returning
 1 (true) if it does and 0 (false) otherwise.
 </para>
@@ -5689,11 +5692,12 @@ programming interface.
 <secondary>open method</secondary>
 <tertiary>of RexxQueue class</tertiary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-open(name)--------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/rxqueue_open.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Tests if the external Rexx named queue <emphasis role="italic">name</emphasis>exists and
 creates the queue if it does not.
 </para>
@@ -5706,11 +5710,12 @@ creates the queue if it does not.
 <secondary>delete method</secondary>
 <tertiary>of RexxQueue class</tertiary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-delete------------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/rxqueue_delete.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 
 <para>Deletes the Rexx external queue associated with this RexxQueue instance.
 </para>
@@ -5723,11 +5728,11 @@ creates the queue if it does not.
 <secondary>empty method</secondary>
 <tertiary>of RexxQueue class</tertiary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-empty-------------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/rxqueue_empty.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Removes all items from the Rexx external queue associated with this RexxQueue instance.
 </para>
@@ -5740,11 +5745,12 @@ creates the queue if it does not.
 <secondary>get method</secondary>
 <tertiary>of RexxQueue class</tertiary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-get------------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/rxqueue_get.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 
 <para>Returns the name of the Rexx external queue associated with this instance.
 </para>
@@ -5757,12 +5763,12 @@ creates the queue if it does not.
 <secondary>init method</secondary>
 <tertiary>of RexxQueue class</tertiary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-init(-+------+-)----------------------------------><
-         +-name-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/rxqueue_init.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 
 <para>Initializes a new RexxQueue instance associated with the named Rexx external queue.  If
 <emphasis role="italic">name</emphasis> is not specified, the SESSION queue is used.  If the named
@@ -5777,11 +5783,11 @@ queue does not exist, one will be created.
 <secondary>lineIn method</secondary>
 <tertiary>of RexxQueue class</tertiary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-lineIn--------------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/rxqueue_linein.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Reads a single line from the Rexx external queue.  If the queue is empty,
 <emphasis role="bold">lineIn</emphasis> will wait until a line is added to the queue.
@@ -5795,12 +5801,11 @@ queue does not exist, one will be created.
 <secondary>lineOut method</secondary>
 <tertiary>of RexxQueue class</tertiary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-lineOut(-+------+-)----------------------------------><
-            +-line-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/rxqueue_lineout.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Adds a line to the Rexx external queue in first-in-first-out (FIFO) order.  If
 <emphasis role="italic">line</emphasis> is not specified, a null string ("") is added.
@@ -5814,11 +5819,11 @@ queue does not exist, one will be created.
 <secondary>makeArray method</secondary>
 <tertiary>of RexxQueue class</tertiary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-makeArray---------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/rxqueue_makearray.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a single-index array with the same number of items as the receiver object.
 Items in the new array will have the same order as the items in the external queue.
@@ -5833,11 +5838,11 @@ The external queue is emptied.
 <secondary>pull method</secondary>
 <tertiary>of RexxQueue class</tertiary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-pull--------------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/rxqueue_pull.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Reads a line from the Rexx external queue.  If the queue is currently empty,
 this method will immediately return the Nil Object without waiting for lines to be added to the queue.
@@ -5851,12 +5856,11 @@ this method will immediately return the Nil Object without waiting for lines to 
 <secondary>push method</secondary>
 <tertiary>of RexxQueue class</tertiary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-push(-+------+-)----------------------------------><
-         +-line-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/rxqueue_push.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Adds a line to the Rexx external queue in last-in-last-out (LIFO) order.  If
 <emphasis role="italic">line</emphasis> is not specified, a null string ("") is added.
@@ -5870,12 +5874,11 @@ this method will immediately return the Nil Object without waiting for lines to 
 <secondary>queue method</secondary>
 <tertiary>of RexxQueue class</tertiary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-queue(-+------+-)----------------------------------><
-          +-line-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/rxqueue_queue.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Adds a line to the Rexx external queue in first-in-first-out (FIFO) order.  If
 <emphasis role="italic">line</emphasis> is not specified, a null string ("") is added.
@@ -5889,11 +5892,11 @@ this method will immediately return the Nil Object without waiting for lines to 
 <secondary>queued method</secondary>
 <tertiary>of RexxQueue class</tertiary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-queued---------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/rxqueue_queued.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the count of lines currently in the Rexx external queue.
 </para>
@@ -5906,12 +5909,11 @@ this method will immediately return the Nil Object without waiting for lines to 
 <secondary>say method</secondary>
 <tertiary>of RexxQueue class</tertiary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-say(-+------+-)----------------------------------><
-        +-line-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/rxqueue_say.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Adds a line to the Rexx external queue in first-in-first-out (FIFO) order.  If
 <emphasis role="italic">line</emphasis> is not specified, a null string ("") is added.
@@ -5925,12 +5927,11 @@ this method will immediately return the Nil Object without waiting for lines to 
 <secondary>set method</secondary>
 <tertiary>of RexxQueue class</tertiary></indexterm>
 
-
-<programlisting>
-<![CDATA[
->>-set(name)----------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/rxqueue_set.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Switches the Rexx external queue associated with the RexxQueue instance.  The new queue must have
 been previously created.  The method return value is the name of current queue being used by the instance.
