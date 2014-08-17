@@ -132,15 +132,11 @@ ADDRESS VALUE"ENVIR"||number
 <indexterm><primary>VALUE subkeyword</primary>
 <secondary>in an ADDRESS instruction</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-ADDRESS--+-----------------------------+--;-----------------><
-            +-environment--+------------+-+
-            |              +-expression-+ |
-            +-+-------+--expression1------+
-              +-VALUE-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/address.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>ADDRESS temporarily or permanently changes the destination of commands.
 Commands are strings sent to an external environment. You can send commands
@@ -258,12 +254,11 @@ describes the creation of alternative subcommand environments.</para>
 <indexterm><primary>ARG subkeyword</primary>
 <secondary>in a PARSE instruction</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-ARG--+---------------+--;-----------------------------------><
-        +-template_list-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/arg.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <indexterm><primary>arguments</primary>
 <secondary>of functions</secondary></indexterm>
@@ -276,13 +271,12 @@ describes the creation of alternative subcommand environments.</para>
 <para>ARG retrieves the argument strings provided to a program, internal
 routine, or method and assigns them to variables.  It is a short form of the
 instruction:</para>
-<para></para>
-<programlisting>
-<![CDATA[
->>-PARSE UPPER ARG--+---------------+--;-----------------------><
-                    +-template_list-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/parseupperarg.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>The <emphasis role="italic">template_list</emphasis> can be a single
 template or list of templates separated by commas.
@@ -395,26 +389,11 @@ language processor then parses the string values.</para></listitem>
 <indexterm><primary>NAME subkeyword</primary>
 <secondary>in a CALL instruction</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
-                       +-,--------------+
-                       V                |
->>-CALL--+-+-name---+----+------------+-+------------------+--;--><
-         | +-(expr)-+    +-expression-+                    |
-         +-OFF--+-ANY-----------------+--------------------+
-         |      +-ERROR---------------+                    |
-         |      +-FAILURE-------------+                    |
-         |      +-HALT----------------+                    |
-         |      +-NOTREADY------------+                    |
-         |      +-USER--usercondition-+                    |
-         +-ON--+-ANY-----------------+--+----------------+-+
-               +-ERROR---------------+  +-NAME--trapname-+
-               +-FAILURE-------------+
-               +-HALT----------------+
-               +-NOTREADY------------+
-               +-USER--usercondition-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/call.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>CALL calls a routine (if you specify
 <emphasis role="italic">name</emphasis>) or controls the trapping

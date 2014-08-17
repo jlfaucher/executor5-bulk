@@ -1255,14 +1255,11 @@ are described in <xref linkend="mssg" />.</para>
 (see <xref linkend="funct" />), which
 are of the following form:
 </para>
-<programlisting>
-<![CDATA[
-                    +-,--------------+
-                    V                |
->>-symbolorstring(----+------------+-+--)----------------------><
-                      +-expression-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/xmpsyntax08.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>The <emphasis role="italic">symbolorstring</emphasis> is a symbol or
 literal string.</para>
@@ -1939,27 +1936,17 @@ to an object to perform an action, obtain a result, or both.</para>
 <para>A <emphasis>message term</emphasis> can have one of the following forms:
 </para>
 
-<programlisting>
-<![CDATA[
->>-receiver-+- ~ --+-messagename--+---------+------------------->
-            +- ~~ -+              +-:symbol-+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/xmpsyntax09.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
->--+--------------------------+--------------------------------><
-   +-(--+----------------+--)-+
-        | +-,----------+ |
-        | V            | |
-        +---expression-+-+
-]]>
-</programlisting>
-
-<programlisting>
-<![CDATA[
->>-receiver[--+----------------+--]----------------------------><
-              | +-,----------+ |
-              | V            | |
-              +---expression-+-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/xmpsyntax10.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>The <emphasis role="italic">receiver</emphasis> is a term (see
 <xref linkend="expres" /> for a definition
@@ -2816,12 +2803,11 @@ is to perform an action. You use a message term (see
 if the main purpose of the message is to obtain a result.</para>
 <para>A <emphasis>message instruction</emphasis> is a clause of the form:
 </para>
-<programlisting>
-<![CDATA[
->>-messageterm--+-------------+--;-----------------------------><
-                +-=expression-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/xmpsyntax11.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>If there is only a <emphasis role="italic">messageterm</emphasis>,
 the message is sent in exactly the same way as for a message term (see
@@ -3047,7 +3033,7 @@ environment.</para>
 <para>Rexx programs can call other Rexx programs as external
 functions or subroutines with the
 CALL (<xref linkend="keyCall" />) instruction.</para>
-<para>If a program is called with the
+<para>If a program is called with the 
 CALL (<xref linkend="keyCall" />) instruction, the program runs in the same
 process as the calling program.
 If you call another program by a Rexx command, the program is executed in
