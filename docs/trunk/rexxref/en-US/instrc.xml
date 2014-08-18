@@ -448,15 +448,12 @@ must exactly match any label name or built-in function name. (See
 <xref linkend="labels" /> for a description of label names.)</para>
 <para>The called routine can optionally return a result. In this case, the CALL
 instruction is functionally identical with the clause:</para>
-<para></para>
-<programlisting>
-<![CDATA[
-                 +-,--------------+
-                 V                |
->>-result=name(----+------------+-+--)--;----------------------><
-                   +-expression-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/funct_call.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>You can use any number of <emphasis role="italic">expression</emphasis>s,
 separated by
@@ -673,17 +670,11 @@ available to the caller.</para></listitem>
 <indexterm><primary>UNTIL subkeyword</primary>
 <secondary>in a DO instruction</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-DO---+-------------+--+---------------+--+-----------------+--;-->
-        +-LABEL--name-+  +-| repetitor |-+  +-| conditional |-+
-
->--+---------------------+--END--+--------+--;---------------------><
-   | +-----------------+ |       +--name--+
-   | V                 | |
-   +---instruction--;--+-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/do.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para><emphasis role="bold">repetitor:</emphasis>
 <indexterm><primary>= (equal sign)</primary>
@@ -693,25 +684,22 @@ available to the caller.</para></listitem>
 <indexterm><primary>conditional</primary>
 <secondary>loops</secondary></indexterm>
 <indexterm><primary>FOREVER phrase of DO instruction</primary></indexterm>
-<programlisting>
-<![CDATA[
-|--+-control1=expri--+-----------+--+-----------+--+------------+-+--|
-   |                 +-TO--exprt-+  +-BY--exprb-+  +-FOR--exprf-+ |
-   +-control2--OVER--collection-----------------------------------+
-   +-FOREVER------------------------------------------------------+
-   +-exprr--------------------------------------------------------+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/do_forever.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para><emphasis role="bold">conditional:</emphasis></para>
 <indexterm><primary>UNTIL phrase of DO instruction</primary></indexterm>
 <indexterm><primary>WHILE phrase of DO instruction</primary></indexterm>
-<programlisting>
-<![CDATA[
-|--+-WHILE--exprw-+---------------------------------------------|
-   +-UNTIL--expru-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/do_while.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>DO groups instructions and optionally processes them repetitively. During
 repetitive execution, a control variable
@@ -816,14 +804,11 @@ get placed in the array in no particular order.
 <indexterm><primary>variable</primary>
 <secondary>resetting of</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
-         +------------+
-         V            |
->>-DROP----+-name---+-+--;-------------------------------------><
-           +-(name)-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/drop.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>DROP &quot;unassigns&quot; variables, that is, restores them to their
 original uninitialized state. If <emphasis role="italic">name</emphasis>
@@ -894,12 +879,11 @@ Drop  z.
 <tertiary>setting on exit</tertiary></indexterm>
 <indexterm><primary>unconditionally leaving your program</primary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-EXIT--+------------+--;-------------------------------------><
-         +-expression-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/exit.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <indexterm><primary>leaving your program</primary></indexterm>
 <para>EXIT leaves a program unconditionally. Optionally, EXIT returns a
@@ -960,14 +944,11 @@ numerical value between 0 and 255 (an unsigned byte).
 <indexterm><primary>instructions</primary>
 <secondary>EXPOSE</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
-           +------------+
-           V            |
->>-EXPOSE----+-name---+-+--;-----------------------------------><
-             +-(name)-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/expose.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>EXPOSE causes the object
 variables identified in <emphasis role="italic">name</emphasis>
@@ -1058,18 +1039,11 @@ c.1="7."        /*  This sets "C.1" in the object             */
 <indexterm><primary>YO subkeyword</primary>
 <secondary>in a FORWARD instruction</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-FORWARD--+----------+--+------------------------+------------>
-            +-CONTINUE-+  +-ARGUMENTS--expra-------+
-                          |           +-,-----+    |
-                          |           V       |    |
-                          +-ARRAY--(----expri-+--)-+
-
->--+----------------+--+--------------+--+-----------+---------><
-   +-MESSAGE--exprm-+  +-CLASS--exprs-+  +-TO--exprt-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/forward.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 
 <note><title>Note</title>
@@ -1186,14 +1160,11 @@ INIT method.</para>
 <indexterm><primary>WHEN subkeyword</primary>
 <secondary>in an GUARD instruction</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-GUARD--+-ON--+------------------+--+--;---------------------><
-          |     +-WHEN--expression-+  |
-          +-OFF--+------------------+-+
-                 +-WHEN--expression-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/guard.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>GUARD controls a method's exclusive access to an object.</para>
 <para>GUARD ON acquires for an active method exclusive use of
@@ -1272,16 +1243,11 @@ several activities run concurrently. See
 <indexterm><primary>ELSE subkeyword</primary>
 <secondary>in an IF instruction</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-IF--expression--+---+--THEN--+---+--instruction-------------->
-                   +-;-+        +-;-+
-
->--+--------------------------+--------------------------------><
-   +-ELSE--+---+--instruction-+
-           +-;-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/if.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>IF conditionally processes an instruction or group of instructions
 depending on the evaluation of the <emphasis role="italic">expression</emphasis>.
@@ -1388,11 +1354,11 @@ allows the expression on the IF clause to be ended by THEN, without a semicolon
 <indexterm><primary>string</primary>
 <secondary>interpretation of</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-INTERPRET--expression--;------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/interpret.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>INTERPRET processes instructions that have been built dynamically by
 evaluating <emphasis role="italic">expression</emphasis>.</para>
@@ -1519,12 +1485,11 @@ instruction.</para></listitem>
 <indexterm><primary>loops</primary>
 <secondary>modification of</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-ITERATE--+------+--;----------------------------------------><
-            +-name-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/iterate.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <indexterm><primary>altering</primary>
 <secondary>flow within a repetitive loop</secondary></indexterm>
@@ -1593,12 +1558,11 @@ the innermost loop.</para></listitem>
 <indexterm><primary>repetitive loops</primary>
 <secondary>exiting</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-LEAVE--+------+--;------------------------------------------><
-          +-name-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/leave.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>LEAVE causes an immediate exit from one or more repetitive loops or block instruction
 (simple DO or SELECT).
@@ -1685,17 +1649,11 @@ LEAVE selects the innermost block.</para></listitem>
 <indexterm><primary>UNTIL subkeyword</primary>
 <secondary>in a LOOP instruction</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-LOOP--+-------------+--+---------------+--+-----------------+--;-->
-         +-LABEL--name-+  +-| repetitor |-+  +-| conditional |-+
-
->--+--------------------+--END--+--------+--;-----------------------><
-   | +----------------+ |       +--name--+
-   | V                | |
-   +---instruction--;-+-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/loop.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para><emphasis role="bold">repetitor:</emphasis>
 <indexterm><primary>= (equal sign)</primary>
@@ -1705,25 +1663,22 @@ LEAVE selects the innermost block.</para></listitem>
 <indexterm><primary>conditional</primary>
 <secondary>loops</secondary></indexterm>
 <indexterm><primary>FOREVER phrase of LOOP instruction</primary></indexterm>
-<programlisting>
-<![CDATA[
-|--+-control1=expri--+-----------+--+-----------+--+------------+-+--|
-   |                 +-TO--exprt-+  +-BY--exprb-+  +-FOR--exprf-+ |
-   +-control2--OVER--collection-----------------------------------+
-   +-FOREVER------------------------------------------------------+
-   +-exprr--------------------------------------------------------+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/do_forever.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para><emphasis role="bold">conditional:</emphasis></para>
 <indexterm><primary>UNTIL phrase of LOOP instruction</primary></indexterm>
 <indexterm><primary>WHILE phrase of LOOP instruction</primary></indexterm>
-<programlisting>
-<![CDATA[
-|--+-WHILE--exprw-+---------------------------------------------|
-   +-UNTIL--expru-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/do_while.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>LOOP groups instructions and processes them repetitively. During
 repetitive execution, a control variable
@@ -1825,11 +1780,11 @@ get placed in the array in no particular order.
 <indexterm><primary>instructions</primary>
 <secondary>NOP</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-NOP;--------------------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/nop.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>NOP is a dummy instruction that has no effect.  It can be useful as the
 target of a THEN or ELSE clause.</para>
@@ -1878,19 +1833,11 @@ and is, therefore, a valid target for the THEN clause.</para></note>
 <indexterm><primary>VALUE subkeyword</primary>
 <secondary>in a NUMERIC instruction</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-NUMERIC--+-DIGITS--+-------------+----------+--;------------><
-            |         +-expression1-+          |
-            |       +-SCIENTIFIC-------------+ |
-            +-FORM--+------------------------+-+
-            |       +-ENGINEERING------------+ |
-            |       +-+-------+--expression2-+ |
-            |         +-VALUE-+                |
-            +-FUZZ--+-------------+------------+
-                    +-expression3-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/numeric.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>NUMERIC changes the way in which a program carries out arithmetic
 operations. The options of this instruction are described in detail in
@@ -1973,12 +1920,11 @@ internal subroutine and function calls. See the CALL instruction
 <indexterm><primary>instructions</primary>
 <secondary>OPTIONS</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-OPTIONS--+------------+--;-------------------------------------><
-            +-expression-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/options.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>The OPTIONS instruction is used to pass special requests to the
 language processor.</para>
@@ -2023,22 +1969,11 @@ language processor.</para>
 <indexterm><primary>VERSION subkeyword</primary>
 <secondary>in a PARSE instruction</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-PARSE--+-------+--+----------+------------------------------->
-          +-UPPER-+  +-CASELESS-+
-          +-LOWER-+
-
->--+-ARG-------------------------+--+---------------+--;-------><
-   +-LINEIN----------------------+  +-template_list-+
-   +-PULL------------------------+
-   +-SOURCE----------------------+
-   +-VALUE--+------------+--WITH-+
-   |        +-expression-+       |
-   +-VAR--name-------------------+
-   +-VERSION---------------------+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/parse.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 
 <note><title>Note</title>
@@ -2110,12 +2045,12 @@ parses the next line of the default input stream.
 of Rexx input and output.) PARSE LINEIN
 is a shorter form of the following instruction:
 </para>
-<programlisting>
-<![CDATA[
->>-PARSE VALUE LINEIN() WITH--+---------------+--;--------------><
-                              +-template_list-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/parse_val.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>If no line is available, program execution usually pauses
 until a line is complete. Use PARSE LINEIN only when direct access to the
@@ -2276,15 +2211,11 @@ compiled for 32-bit addressing mode.
 <indexterm><primary>EXPOSE subkeyword</primary>
 <secondary>in a PROCEDURE instruction</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-PROCEDURE--+------------------------+--;--------------------><
-              |         +------------+ |
-              |         V            | |
-              +-EXPOSE----+-name---+-+-+
-                          +-(name)-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/procedure.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>PROCEDURE, within an internal
 routine (subroutine or function), protects the caller's variables by making
@@ -2453,12 +2384,11 @@ for details and examples of how routines are called.</para>
 <indexterm><primary>PULL subkeyword</primary>
 <secondary>in an PARSE instruction</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-PULL--+---------------+--;----------------------------------><
-         +-template_list-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/pull.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>PULL reads a string from the head of the external data queue or, if
 the external data queue is empty, from the standard input stream (typically the keyboard).
@@ -2467,12 +2397,12 @@ discussion of Rexx input and output.) It is a short
 form of the following instruction:</para>
 <indexterm><primary>uppercase translation</primary>
 <secondary>during PULL instruction</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-PARSE UPPER PULL--+---------------+--;----------------------><
-                     +-template_list-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/parse_upper_pull.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>The current head
 of the queue is read as one string.  Without a
@@ -2531,12 +2461,11 @@ number of lines currently in the external data queue.</para>
 <indexterm><primary>writing to external data queue</primary>
 <secondary>with PUSH</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-PUSH--+------------+--;-------------------------------------><
-         +-expression-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/push.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>PUSH stacks the string resulting from the evaluation of
 <emphasis role="italic">expression</emphasis> LIFO (Last In, First Out)
@@ -2572,12 +2501,11 @@ of lines currently in the external data queue.</para>
 <indexterm><primary>writing to external data queue</primary>
 <secondary>with QUEUE</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-QUEUE--+------------+--;------------------------------------><
-          +-expression-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/queue.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>QUEUE appends the string resulting from
 <emphasis role="italic">expression</emphasis> to the tail
@@ -2632,43 +2560,19 @@ of lines currently in the external data queue.</para>
 <indexterm><primary>RETURN subkeyword</primary>
 <secondary>in a RAISE instruction</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-RAISE--+-condition------------+--+-------------+--;---------><
-          +-ERROR--errorcode-----+  +-| options |-+
-          +-FAILURE--failurecode-+
-          +-SYNTAX--number-------+
-          +-USER--usercondition--+
-          +-PROPAGATE------------+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/raise.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para><emphasis role="bold">options:</emphasis></para>
 
-<programlisting>
-<![CDATA[
-|--+------------------------+--+--------------------+----------->
-   +-ADDITIONAL--expra------+  +-DESCRIPTION--exprd-+
-   |           +-,-----+    |
-   |           V       |    |
-   +-ARRAY--(----expri-+--)-+
-
-   +-| EXIT |----------+
->--+-------------------+----------------------------------------|
-   +-RETURN--+-------+-+
-             +-exprr-+
-]]>
-</programlisting>
-
-<para><emphasis role="bold">EXIT:</emphasis></para>
-
-<programlisting>
-<![CDATA[
-|--EXIT--+-------+----------------------------------------------|
-         +-expre-+
-]]>
-</programlisting>
-
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/raise_options.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <note><title>Note</title>
 <para>You can specify the options ADDITIONAL, ARRAY, DESCRIPTION,
@@ -2800,12 +2704,11 @@ syntax:
 <indexterm><primary>instructions</primary>
 <secondary>REPLY</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-REPLY--+------------+--;------------------------------------><
-          +-expression-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/reply.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>REPLY sends an early
 reply from a method to its caller. The method issuing REPLY returns control,
@@ -2865,12 +2768,11 @@ description of concurrency.</para>
 <indexterm><primary>subroutines</primary>
 <secondary>passing back values from</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-RETURN--+------------+--;-----------------------------------><
-           +-expression-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/return.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>RETURN returns control, and possibly a result, from a Rexx program,
 method, or routine to the point of its invocation.</para>
@@ -2936,12 +2838,11 @@ returned to the operating system is zero.
 <indexterm><primary>terminal</primary>
 <secondary>writing to with SAY</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-SAY--+------------+--;--------------------------------------><
-        +-expression-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/return.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>SAY writes a line to the default output stream, which displays it to the
 user. However, the output destination can depend on the implementation. See
@@ -2952,12 +2853,12 @@ character output stream. The resulting string can be of any length. If
 you omit <emphasis role="italic">expression</emphasis>,
 the null string is written.</para>
 <para>The SAY instruction is a shorter form of the following instruction:</para>
-<programlisting>
-<![CDATA[
->>-CALL LINEOUT,--+------------+--;----------------------------><
-                  +-expression-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/call_lineout.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>except that:</para>
 <itemizedlist>
@@ -3015,23 +2916,11 @@ the output data remains a single logical line.</para></listitem>
 <indexterm><primary>END subkeyword</primary>
 <secondary>in a SELECT instruction</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-SELECT--+-------------+-;------------------------------------->
-           +-LABEL--name-+
-
-   +------------------------------------------------------+
-   V                                                      |
->----WHEN--expression--+---+--THEN--+---+--instruction--;-+------>
-                       +-;-+        +-;-+
-
->-+------------------------------------------+-END-+--------+-;-><
-  +-OTHERWISE--+---+--+--------------------+-+     +--name--+
-               +-;-+  | +----------------+ |
-                      | V                | |
-                      +---instruction--;-+-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/select.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>SELECT conditionally calls one of several alternative instructions.</para>
 <para>Each <emphasis role="italic">expression</emphasis>
@@ -3175,37 +3064,11 @@ semicolon (;).</para></listitem>
 <indexterm><primary>NAME subkeyword</primary>
 <secondary>in a SIGNAL instruction</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-SIGNAL------------------------------------------------------->
-
->--+-labelname---------------------------------------+--;------><
-   +-+-------+--expression---------------------------+
-   | +-VALUE-+                                       |
-   +-OFF--+-ANY-----------------+--------------------+
-   |      +-ERROR---------------+                    |
-   |      +-FAILURE-------------+                    |
-   |      +-HALT----------------+                    |
-   |      +-LOSTDIGITS----------+                    |
-   |      +-NOMETHOD------------+                    |
-   |      +-NOSTRING------------+                    |
-   |      +-NOTREADY------------+                    |
-   |      +-NOVALUE-------------+                    |
-   |      +-SYNTAX--------------+                    |
-   |      +-USER--usercondition-+                    |
-   +-ON--+-ANY-----------------+--+----------------+-+
-         +-ERROR---------------+  +-NAME--trapname-+
-         +-FAILURE-------------+
-         +-HALT----------------+
-         +-LOSTDIGITS----------+
-         +-NOMETHOD------------+
-         +-NOSTRING------------+
-         +-NOTREADY------------+
-         +-NOVALUE-------------+
-         +-SYNTAX--------------+
-         +-USER--usercondition-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/signal.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>SIGNAL causes an unusual change in the flow of control (if you specify
 <emphasis role="italic">labelname</emphasis> or VALUE
@@ -3282,33 +3145,19 @@ can use SIGL to determine the source of a transfer of control to a label.</para>
 <indexterm><primary>VALUE subkeyword</primary>
 <secondary>in a TRACE instruction</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-TRACE--+-+--------+-----------------------+--;--------------><
-          | +-number-+                       |
-          |                +-Normal--------+ |
-          +-+-----------+--+---------------+-+
-            | +-------+ |  +-All-----------+
-            | V       | |  +-Commands------+
-            +-----?---+-+  +-Error---------+
-                           +-Failure-------+
-                           +-Intermediates-+
-                           +-Labels--------+
-                           +-Off-----------+
-                           +-Results-------+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/trace1.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Or, alternatively:</para>
-<programlisting>
-<![CDATA[
->>-TRACE--+-----------------------+--;-------------------------><
-          +-string----------------+
-          +-symbol----------------+
-          +-+-------+--expression-+
-            +-VALUE-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/trace2.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>TRACE controls the tracing action (that is, how much is displayed to the
 user) during the processing of a Rexx program. Tracing describes some or all
@@ -3719,15 +3568,11 @@ in error is always traced.</para>
 <indexterm><primary>STRICT subkeyword</primary>
 <secondary>in a USE instruction</secondary></indexterm>
 
-<programlisting>
-<![CDATA[
-                            +-,----------------------+
-                            V                        |
->>-USE--+-----------+--ARG----+--------------------+-+-----------------------><
-        +-- STRICT--+         +-name-+----------+--+
-                                     +-=--expr--+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/use.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>USE ARG retrieves the argument objects provided in a program, routine,
 function, or method and assigns them to variables or message term assignments.</para>

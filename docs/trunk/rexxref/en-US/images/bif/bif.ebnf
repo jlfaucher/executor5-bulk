@@ -86,9 +86,9 @@ lines ::= 'lines(' ( name )? ( ( ', Normal' | ', Count' )? )? ')'
 
 lower ::= 'lower(' string ( ',' ( n )? ( ',' length )? )? ')'
 
-max ::= 'max(' number ( ',' number )+ ')'
+max ::= 'max(' number ( ( ',' number )+ )? ')'
 
-min ::= 'min(' number ( ',' number )+ ')'
+min ::= 'min(' number ( ( ',' number )+ )? ')'
 
 overlay ::= 'overlay(' new ',' target ( ',' ( ( n )? ( ',' ( ( length )?
             ( ',' pad )? )? )? )? )? ')'
