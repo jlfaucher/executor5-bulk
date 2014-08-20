@@ -1,0 +1,13 @@
+register ::= '"rxsubcom register"' envname dllname procname
+
+drop ::= '"rxsubcom drop"' envname dllname
+
+query ::= '"rxsubcom query"' envname ( dllname )?
+
+load ::= '"rxsubcom load"' envname ( dllname )?
+
+rzqueue ::= '"rxqueue"' ( queryname )? ( '/fifo' | '/lifo' | '/clear' )?
+
+rexc ::= '"rexxc"' inputfile ( outputfile )? ( '/s' )?
+
+rxmigrate ::= '"rxmigrate"' inputfile outputfile

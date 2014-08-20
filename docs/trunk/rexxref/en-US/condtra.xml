@@ -61,17 +61,18 @@ condition trap can modify the flow of execution in a Rexx program. Condition
 traps are turned on or off using the ON or OFF subkeywords of the SIGNAL and
 CALL instructions (see
 <xref linkend="keyCall" /> and <xref linkend="keySignal" />).</para>
-<programlisting>
-<![CDATA[
->>-+-CALL---+--------------------------------------------------->
-   +-SIGNAL-+
 
->--+-OFF--+-condition-----------+--------------------+--;------><
-   |      +-USER--usercondition-+                    |
-   +-ON--+-condition-----------+--+----------------+-+
-         +-USER--usercondition-+  +-NAME--trapname-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/call.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/signal.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <indexterm><primary>condition</primary>
 <secondary>definition</secondary></indexterm>

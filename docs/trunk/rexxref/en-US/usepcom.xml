@@ -130,11 +130,12 @@ instruction.</para>
 <secondary>in a RXSUBCOM command</secondary></indexterm>
 <para>RXSUBCOM REGISTER registers a dynamic-link library subcommand handler.
 This command makes a command environment available to Rexx.</para>
-<programlisting>
-<![CDATA[
->>-RXSUBCOM--REGISTER--envname--dllname--procname--------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/services/register.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Parameters:</para>
 <variablelist>
@@ -181,12 +182,12 @@ the subcommand handler.
 <indexterm><primary>DROP keyword</primary>
 <secondary>in a RXSUBCOM command</secondary></indexterm>
 <para>RXSUBCOM DROP deregisters a subcommand handler.</para>
-<programlisting>
-<![CDATA[
->>-RXSUBCOM--DROP--envname--+---------+------------------------><
-                            +-dllname-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/services/drop.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para><emphasis role="bold">Parameters:</emphasis></para>
 <variablelist>
@@ -220,12 +221,12 @@ RXSUBCOM_NONDROP.
 <secondary>in a RXSUBCOM command</secondary></indexterm>
 <para>RXSUBCOM QUERY checks the existence of a subcommand handler. The query
 result is returned.</para>
-<programlisting>
-<![CDATA[
->>-RXSUBCOM--QUERY--envname--+---------+-----------------------><
-                             +-dllname-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/services/query.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para><emphasis role="bold">Parameters:</emphasis></para>
 <variablelist>
@@ -255,12 +256,12 @@ handler routine.
 <indexterm><primary>LOAD keyword</primary>
 <secondary>in a RXSUBCOM command</secondary></indexterm>
 <para>RXSUBCOM LOAD loads a subcommand handler dynamic-link library.</para>
-<programlisting>
-<![CDATA[
->>-RXSUBCOM--LOAD--envname--+---------+------------------------><
-                            +-dllname-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/services/load.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para><emphasis role="bold">Parameters:</emphasis></para>
 <variablelist>
@@ -289,14 +290,12 @@ handler routine.
 
 <section id="rxq"><title>The RXQUEUE Filter</title>
 <indexterm><primary>RXQUEUE filter</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-RXQUEUE--+-----------+--+--------+--------------------------><
-            +-queuename-+  +-/FIFO--+
-                           +-/LIFO--+
-                           +-/CLEAR-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/services/rxqueue.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>The RXQUEUE filter usually operates on the default queue named SESSION.
 However, if an environment variable named RXQUEUE exists, the RXQUEUE value
@@ -421,12 +420,12 @@ runs without error, but no tracing of instruction lines, expression results,
 or intermediate expression values occurs.</para></listitem>
 </orderedlist>
 <para>The syntax of the RexxC utility is:</para>
-<programlisting>
-<![CDATA[
->>-RexxC--inputfile--+------------+--+----+--------------------><
-                     +-outputfile-+  +-/s-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/services/rexxc.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>If you specify the <emphasis role="italic">outputfile</emphasis>,
 the language processor processes
@@ -455,11 +454,12 @@ procedure is to create a new tokenized file from the original source with
 the new version of Open Object Rexx. However, if the source code is no longer
 available, RxMigrate can be used to convert the old tokenized file. The syntax
 of the RxMigrate utility is:</para>
-<programlisting>
-<![CDATA[
->>-RxMigrate--inputfile--outputfile----------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/services/rxmigrate.svg" scale="50" />
+</imageobject>
+</mediaobject>
 </section>
 
 </chapter>

@@ -1,0 +1,204 @@
+rxmessagebox ::= 'RxMessageBox(' text ( ',' ( title )? ( ',' ( button )? ( ',' icon )? )? )? ')'
+
+rxwinexec ::= 'RxWinExec(' cmdline ( ',' cmdshow )? ')'
+
+sysaddrexxmacro ::= 'SysAddRexxMacro(' name ',' file ( ',' order )? ')'
+
+sysbootdrive ::= 'SysBootDrive()'
+
+sysclearrexxmacrospace ::= 'SysClearRexxMacroSpace()'
+
+syscloseeventsem ::= 'SysCloseEventSem(' handle ')'
+
+sysclosemutexsem ::= 'SysCloseMutexSem(' handle ')'
+
+syscls ::= 'SysCls()'
+
+syscreateeventsem ::= 'SysCreateEventSem(' ( name )? ( ',' manual_reset )? ')'
+
+syscreatemutexsem ::= 'SysCreateMutexSem(' ( name )? ')'
+
+syscreatepipe ::= 'SysCreatePipe()'
+
+syscurpos ::= 'SysCurPos(' ( row ',' column )? ')'
+
+syscurstate ::= 'SysCurState(' state ')'
+
+sysdriveinfo ::= 'SysDriveInfo(' drive ')'
+
+sysdrivemap ::= 'SysDriveInfo(' ( drive )? ( ',' opt )? ')'
+
+sysdropfuncs ::= 'SysDropFuncs' ( '()' )?
+
+sysdroprexxmacro ::= 'SysDropRexxMacro(' name ')'
+
+sysdumpvariables ::= 'SysDumpVariables' ( '(' name ')' )?
+
+sysfilecopy ::= 'SysFileCopy(' source ',' target ')'
+
+sysfiledelete ::= 'SysFileDelete(' file ')'
+
+sysfileexists ::= 'SysFileExists(' filename ')'
+
+sysfilemove ::= 'SysFileMove(' source ',' target ')'
+
+sysfilesearch ::= 'SysFileSearch(' target ',' file ',' stem ( ',' options )? ')'
+
+sysfilesystemtype ::= 'SysFileSystemType(' drive ')'
+
+sysfiletree ::= 'SysFileTree(' filespec ',' stem ( ',' ( options )?
+                               ( ',' ( tattrib )? ( ',' nattrib )? )? )? ')'
+
+sysfork ::= 'SysFork()'
+
+sysfromunicode ::= 'SysFromUnicode(' string ',' codepage ',' mappingflags ','
+                                     defaultchar ',' outstem ')'
+
+sysgeterrortext ::= 'SysGetErrorText(' errornumber ')'
+
+sysgetfiledatetime ::= 'SysGetFileDateTime(' filename ( ',' timesel )? ')'
+
+sysgetkey ::= 'SysGetKey(' ( opt )? ')'
+
+sysgetmessage ::= 'SysGetMessage(' num ( ',' filename ( ',' str ( ( ',' str )+ )? )? |
+                                         ',' str ( ( ',' str )+ )? )? ')'
+
+sysgetmessagex ::= 'SysGetMessageX(' set ',' num ( ',' filename ( ',' str ( ( ',' str )+ )? )? |
+                                         ',' str ( ( ',' str )+ )? )? ')'
+
+sysini1 ::= 'SysIni(' ( inifile )? ',' app ',' key ',' val ',' stem ')'
+
+sysini2 ::= 'SysIni(' ( inifile )? ',' app ',' key ',' val ')'
+
+sysini3 ::= 'SysIni(' ( inifile )? ',' app ',' key ')'
+
+sysini4 ::= 'SysIni(' ( inifile )? ',' app ',' key ',' '"DELETE:"' ')'
+
+sysini5 ::= 'SysIni(' ( inifile )? ',' app ',' '"DELETE:"' ')'
+
+sysini6 ::= 'SysIni(' ( inifile )? ',' app ',' '"DELETE:"' ')'
+
+sysini7 ::= 'SysIni(' ( inifile )? ',' app ',' '"ALL:"' ',' '"stem"' ')'
+
+sysini8 ::= 'SysIni(' ( inifile )? ',' '"ALL:"' ',' '"stem"' ')'
+
+sysisfile ::= 'SysIsFile(' filename ')'
+
+sysisfilecompressed ::= 'SysIsFileCompressed(' filename ')'
+
+sysisfiledirectory ::= 'SysIsFileDirectory(' dirname ')'
+
+sysisfileencrypted ::= 'SysIsFileEncrypted(' filename ')'
+
+sysisfilelink ::= 'SysIsFileLink(' linkname ')'
+
+sysisfilenotcontentindexed ::= 'SysIsFileNotContentIndexed(' filename ')'
+
+sysisfileoffline ::= 'SysIsFileOffline(' filename ')'
+
+sysisfilesparse ::= 'SysIsFileSparse(' filename ')'
+
+sysisfilestemporary ::= 'SysIsFileTemporary(' filename ')'
+
+syslinver ::= 'SysLinVer' ( '()' )?
+
+sysloadfuncs ::= 'SysLoadFuncs' ( '()' )?
+
+sysloadrexxmacrospace ::= 'SysLoadRexxMacroSpace(' file ')'
+
+sysmkdir ::= 'SysMkDir(' dirspec ')'
+
+sysopeneventsem ::= 'SysOpenEventSem(' name ')'
+
+sysopenmutexsem ::= 'SysOpenMutexSem(' name ')'
+
+sysposteventsem ::= 'SysPostEventSem(' handle ')'
+
+syspulseeventsem ::= 'SysPulseEventSem(' handle ')'
+
+sysqueryprocess1 ::= 'SysQueryProcess(' ( '"PID"' | '"TID"' | '"PPRIO"' | '"TPRIO"' |
+                                         '"PTIME"' | '"TTIME"' )? ')'
+
+sysqueryprocess3 ::= 'SysQueryProcess(' ( '"PID"' | '"PPID"' | '"PPRIO"' | '"RTIME"' |
+                                         '"PMEM"' | '"PSWAPS"' | '"PRCVDSIG"' )? ')'
+
+sysqueryrexxmacro ::= 'SysQueryRexxMacro(' name ')'
+
+sysreleasemutexsem ::= 'SysReleaseMutexSem(' handle ')'
+
+sysreorderrexxmacro ::= 'SysReorderRexxMacro(' name ',' order ')'
+
+sysrequestmutexsem ::= 'SysRequestMutexSem(' handle ( ',' timeout )? ')'
+
+sysreseteventsem ::= 'SysResetEventSem(' handle ')'
+
+sysrmdir ::= 'SysRmDir(' dirspec ')'
+
+syssaverexxmacrospace ::= 'SysSaveRexxMacroSpace(' file ')'
+
+syssearchpath ::= 'SysSearchPath(' path ',' filename ( ',' option )? ')'
+
+syssetfiledatetime ::= 'SysSetFileDateTime(' filename ( ',' ( newdate )? ( ',' newtime )? )? ')'
+
+syssetpriority ::= 'SysSetPriority(' class ',' delta ')'
+
+sysshutdownsystem ::= 'SysShutdownSystem(' ( computer ( ',' ( message )? ( ',' ( timeout )?
+                                             ( ',' ( force )? ( ',' reboot )? )? )? )? )? ')'
+
+syssleep ::= 'SysSleep(' secs ')'
+
+sysstemcopy ::= 'SysStemCopy(' fromstem ',' tostrm ( ',' ( from )? ( ',' ( to )? ( ',' ( count )?
+                               ( ',' ( '"I"' | '"O"' ) )? )? )? )? ')'
+
+sysstemdelete ::= 'SysStemDelete(' stem ',' startitem ( ',' itemcount )? ')'
+
+syssteminsert ::= 'SysStemInsert(' stem ',' position ',' value ')'
+
+sysstemsort ::= 'SysStemSort(' stem ',' ( '"A"' | '"D"' ) ',' ( '"C"' | '"I"' ) ','
+                                        ( '"1"' | start ) ',' end ',' ( '"1"' | firstcol ) ',' lastcol ')'
+
+sysswitchsession ::= 'SysSwitchSession(' name ')'
+
+syssystemdirectory ::= 'SysSystemDirectory()'
+
+systempfilename ::= 'SysTempFileName(' template ( ',' filter )? ')'
+
+systextscreenread ::= 'SysTextScreenRead(' row ',' column ( ',' len )? ')'
+
+systextscreensize ::= 'SysTextScreenSize()'
+
+systounicode ::= 'SysToUnicode(' string ',' codepage ',' translateflags ',' outstem ')'
+
+sysutilversion ::= 'SysUtilVersion()'
+
+sysvolumnlabel ::= 'SysVolumnLabel(' ( driveletter )? ')'
+
+syswait ::= 'SysWait()'
+
+syswaiteventsem ::= 'SysWaitEventSem(' handle ( ',' timeout )? ')'
+
+syswaitnamedpipe ::= 'SysWaitNamedPipe(' name ( ',' timeout )? ')'
+
+syswindecryptfile ::= 'SysWinDecryptFile(' filename ')'
+
+syswinencryptfile ::= 'SysWinEncryptFile(' filename ')'
+
+syswingetdefaultprinter ::= 'SysWinGetDefaultPrinter' ( '()' )?
+
+syswingetprinters ::= 'SysWinGetPrinters(' stem ')'
+
+syswinsetdefaultprinter ::= 'SysWinSetDefaultPrinter(' description ')'
+
+syswinver ::= 'SysWinVer' ( '()' )?
+
+
+
+
+
+
+
+
+
+
+
+
