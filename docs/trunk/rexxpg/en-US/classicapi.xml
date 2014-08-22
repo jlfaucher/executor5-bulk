@@ -130,7 +130,7 @@ a theoretical maximum length of 4 gigabytes. The following structure defines
 an RXSTRING:</para>
 <example>
 <title>RXSTRING</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 typedef struct {
    size_t          strlength;     /* length of string             */
@@ -145,7 +145,7 @@ typedef RXSTRING *PRXSTRING;      /* pointer to an RXSTRING       */
 These APIs use a constant version of the RXSTRING, the CONSTRXSTRING.</para>
 <example>
 <title>RXSTRING</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 typedef struct {
    size_t          strlength;     /* length of string             */
@@ -240,7 +240,7 @@ same process.</para>
 <tertiary>RexxStart</tertiary></indexterm>
 <indexterm><primary>RexxStart</primary></indexterm>
 <para>RexxStart calls the Rexx interpreter to run a Rexx procedure. </para>
-<programlisting>
+<programlisting language="C++">
 retc = RexxStart(ArgCount, ArgList, ProgramName, Instore, EnvName,
                  CallType, Exits, ReturnCode, Result);
 </programlisting>
@@ -381,7 +381,7 @@ to be used. The RXSYSEXIT structures have the following form:</para>
 <indexterm><primary>RXSYSEXIT data structure</primary></indexterm>
 <example>
 <title>RXSYSEXIT</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 typedef struct {
    const char *    sysexit_name;  /* name of exit handler        */
@@ -450,7 +450,7 @@ in the macrospace, the return code is -3 (&quot;Program is unreadable&quot;).</p
   it should compile and execute on Windows.  This is dependent on having the build environment set up correctly. Note that
   you need to provide a <computeroutput>test.rex</computeroutput> program for the executable to pass to the interpreter:
 </para>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 /* rexxStartExample.c
 
@@ -543,7 +543,7 @@ if called.  This is maintained for binary compatibility with previous releases.
 <para>RexxDidRexxTerminate always returns 1 for 4.0.  This is maintained for
 binary compatibility with early releases.
 </para>
-<programlisting>
+<programlisting language="C++">
 retc = RexxDidRexxTerminate();
 </programlisting>
 </section>
@@ -588,7 +588,7 @@ command.</para>
 <para>  The following example is a sample subcommand handler definition. </para>
 <example>
 <title>Command handler</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxReturnCode REXXENTRY command_handler(
   PCONSTRXSTRING Command,     /* Command string from Rexx            */
@@ -662,7 +662,7 @@ longer than the default RXSTRING. If the subcommand handler sets
 <secondary>subcommand handler example</secondary></indexterm>
 <example>
 <title>Subcommand handler</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxReturnCode REXXENTRY Edit_Commands(
   PCONSTRXSTRING Command,     /* Command string passed from the caller    */
@@ -724,7 +724,7 @@ subcommand handlers.</para>
 <secondary>RexxRegisterSubcomDll</secondary></indexterm>
 <para>RexxRegisterSubcomDll registers a subcommand handler that resides in
 a dynamic-link library routine.</para>
-<programlisting>
+<programlisting language="C++">
 retc = RexxRegisterSubcomDll(EnvName, ModuleName, EntryPoint,
                              UserArea, DropAuth);
 </programlisting>
@@ -823,7 +823,7 @@ request.</entry>
 <secondary>RexxRegisterSubcomExe</secondary></indexterm>
 <para>RexxRegisterSubcomExe registers a subcommand handler that resides within
 the application code.</para>
-<programlisting>
+<programlisting language="C++">
 retc = RexxRegisterSubcomExe(EnvName, EntryPoint, UserArea);
 </programlisting>
 
@@ -915,7 +915,7 @@ as routine ISPCIR in the ISPCIR dynamic-link library.</para>
 <secondary>exit example</secondary></indexterm>
 <example>
 <title>RexxStart</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 const char  *user_info[2];       /* saved user information     */
 
@@ -940,7 +940,7 @@ rc = RexxRegisterSubcomExe("Editor", /* register editor handler    */
 <indexterm><primary>subcommand interface</primary>
 <secondary>RexxDeregisterSubcom</secondary></indexterm>
 <para>RexxDeregisterSubcom deregisters a subcommand handler.</para>
-<programlisting>
+<programlisting language="C++">
 retc = RexxDeregisterSubcom(EnvName, ModuleName);
 </programlisting>
 
@@ -1007,7 +1007,7 @@ droppable.&quot;</entry>
 <secondary>RexxQuerySubcom</secondary></indexterm>
 <para>RexxQuerySubcom
 queries a subcommand handler and retrieves saved user information.</para>
-<programlisting>
+<programlisting language="C++">
 retc = RexxQuerySubcom(EnvName, ModuleName, Flag, UserWord);
 </programlisting>
 
@@ -1075,7 +1075,7 @@ environment is not registered (other Rexx subcommand functions).</entry>
 <section id="rxquerysubcomxmp"><title>Example</title>
 <example>
 <title>Command handlers</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxReturnCode REXXENTRY Edit_Commands(
   PCONSTRXSTRING  Command,    /* Command string passed from the caller    */
@@ -1143,7 +1143,7 @@ directly from a Rexx program using the Rexx RXFUNCADD built-in function.</para>
 <para>The following is a sample external function definition:</para>
 <example>
 <title>External functions</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 size_t REXXENTRY SysLoadFuncs(
      const char *Name,                   /* name of the function       */
@@ -1224,7 +1224,7 @@ are available to all processes. The function names cannot be duplicated.</para>
 <secondary>simple function</secondary></indexterm>
 <example>
 <title>External functions</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 size_t REXXENTRY SysMkDir(
      const char *Name,                 /* name of the function       */
@@ -1267,7 +1267,7 @@ external functions.</para>
 <indexterm><primary>RexxRegisterFunctionDll</primary></indexterm>
 <para>RexxRegisterFunctionDll registers an external function that resides in
 a dynamic-link library routine.</para>
-<programlisting>
+<programlisting language="C++">
 retc = RexxRegisterFunctionDll(FuncName, ModuleName, EntryPoint);
 </programlisting>
 
@@ -1346,7 +1346,7 @@ SysLoadFuncs routine below for a function registration example.</para>
 <section id="regfudllxmp"><title>Example</title>
 <example>
 <title>External functions</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 static const char *RxFncTable[] =      /* function package list      */
 {
@@ -1398,7 +1398,7 @@ size_t REXXENTRY SysLoadFuncs(
 <indexterm><primary>RexxRegisterFunctionExe</primary></indexterm>
 <para>RexxRegisterFunctionExe registers an external function that resides within
 the application code.</para>
-<programlisting>
+<programlisting language="C++">
 retc = RexxRegisterFunctionExe(FuncName, EntryPoint);
 </programlisting>
 
@@ -1454,7 +1454,7 @@ process as the RexxRegisterFunctionExe issuer can call local external functions.
 <secondary>RexxDeregisterFunction</secondary></indexterm>
 <indexterm><primary>RexxDeregisterFunction</primary></indexterm>
 <para>RexxDeregisterFunction deregisters an external function.</para>
-<programlisting>
+<programlisting language="C++">
 retc = RexxDeregisterFunction(FuncName);
 </programlisting>
 
@@ -1498,7 +1498,7 @@ retc = RexxDeregisterFunction(FuncName);
 <secondary>RexxQueryFunction</secondary></indexterm>
 <indexterm><primary>RexxQueryFunction</primary></indexterm>
 <para>RexxQueryFunction queries the existence of a registered external function.</para>
-<programlisting>
+<programlisting language="C++">
 retc = RexxQueryFunction(FuncName);
 </programlisting>
 
@@ -1575,7 +1575,7 @@ within an executable application module.
 definition: </para>
 <example>
 <title>Rexx_IO_exit</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 int REXXENTRY Rexx_IO_exit(
      int   ExitNumber,    /* code defining the exit function    */
@@ -1666,7 +1666,7 @@ exit code marks the exit list end.</para>
 <secondary>RXSYSEXIT data structure</secondary></indexterm>
 <example>
 <title>RXSYSEXIT</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 typedef struct {
    const char *    sysexit_name;       /* name of exit handler        */
@@ -1684,7 +1684,7 @@ typedef struct {
 <secondary>sample exit</secondary></indexterm>
 <example>
 <title>RXSYSEXIT</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 ...
 {
@@ -1728,7 +1728,7 @@ int REXXENTRY Init_exit(
 
 ]]>
 </programlisting>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
   rc = RexxQueryExit("EditInit",       /* retrieve application work  */
       NULL,                            /* area anchor from Rexx      */
@@ -1899,7 +1899,7 @@ or 44 (&quot;Function or message did not return data&quot;).</para></listitem>
 <listitem><para>Parameter list: </para>
 <example>
 <title>RXFUNC parameter list</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 typedef struct {
    struct {
@@ -1983,7 +1983,7 @@ when indicated by the parameter list flags.</para></listitem>
 <listitem><para>Parameter list: </para>
 <example>
 <title>RXCMD parameter list</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 typedef struct {
    struct {                            /* Condition flags             */
@@ -2043,7 +2043,7 @@ the exit handler provided.</para></listitem>
 <listitem><para>Parameter list: </para>
 <example>
 <title>RXMSQ parameter list</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 typedef struct {
    RXSTRING          rxmsq_retc;       /* Pointer to dequeued entry   */
@@ -2069,7 +2069,7 @@ the exit handler provided.</para></listitem>
 <listitem><para>Parameter list: </para>
 <example>
 <title>RXMSQ parameter list</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 typedef struct {
    struct {                            /* Operation flag              */
@@ -2099,7 +2099,7 @@ the exit handler provided.</para></listitem>
 <listitem><para>Parameter list: </para>
 <example>
 <title>RXMSQ parameter list</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 typedef struct {
    size_t            rxmsq_size;       /* Number of Lines in Queue    */
@@ -2124,7 +2124,7 @@ data queue that the exit handler provided.</para></listitem>
 <listitem><para>Parameter list:</para>
 <example>
 <title>RXMSQ parameter list</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 typedef struct {
    CONSTRXSTRING     rxmsq_name;       /* RXSTRING containing         */
@@ -2164,7 +2164,7 @@ the exit handler provided.</para></listitem>
 <listitem><para>Parameter list:</para>
 <example>
 <title>RXSIO parameter list</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 typedef struct {
    CONSTRXSTRING      rxsio_string;     /* String to display.          */
@@ -2191,7 +2191,7 @@ that the exit handler provided.</para></listitem>
 <listitem><para>Parameter list:</para>
 <example>
 <title>RXSIO parameter list</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 typedef struct {
    CONSTRXSTRING       rxsio_string;     /* Trace line to display.      */
@@ -2217,7 +2217,7 @@ stream that the exit handler provided.</para></listitem>
 <listitem><para>Parameter list:</para>
 <example>
 <title>RXSIO parameter list</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 typedef struct {
    RXSTRING          rxsiotrd_retc;    /* RXSTRING for input.         */
@@ -2241,7 +2241,7 @@ stream that the exit handler provided.</para></listitem>
 <listitem><para>Parameter list: </para>
 <example>
 <title>RXSIO parameter list</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 typedef struct {
    RXSTRING          rxsiodtr_retc;    /* RXSTRING for input.         */
@@ -2284,7 +2284,7 @@ exit handler returns TRUE.</para></listitem>
 <listitem><para>Parameter list:</para>
 <example>
 <title>RXHLT parameter list</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 typedef struct {
    struct {                            /* Halt flag                   */
@@ -2342,7 +2342,7 @@ to FALSE, the Rexx interpreter exits the interactive debug mode.</para></listite
 <listitem><para>Parameter list:</para>
 <example>
 <title>RXTRC parameter list</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 typedef struct {
    struct {
@@ -2430,7 +2430,7 @@ The system exit functions are:</para>
 <secondary>RexxRegisterExitDll</secondary></indexterm>
 <para>RexxRegisterExitDll registers an exit handler that resides in a
 dynamic-link library routine.</para>
-<programlisting>
+<programlisting language="C++">
 retc = RexxRegisterExitDll(ExitName, ModuleName, EntryPoint,
                            UserArea, DropAuth);
 </programlisting>
@@ -2523,7 +2523,7 @@ request.</entry>
 <secondary>RexxRegisterExitExe</secondary></indexterm>
 <para>RexxRegisterExitExe registers an exit handler that resides within the
 application code.</para>
-<programlisting>
+<programlisting language="C++">
 retc = RexxRegisterExitExe(ExitName, EntryPoint, UserArea);
 </programlisting>
 
@@ -2600,7 +2600,7 @@ has been properly registered.</para>
 <secondary>registration example</secondary></indexterm>
 <example>
 <title>SYSEXIT</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 const char      *user_info[2];       /* saved user information     */
 
@@ -2625,7 +2625,7 @@ rc = RexxRegisterExitExe("IO_Exit",  /* register editor handler    */
 <indexterm><primary>SYSEXIT interface</primary>
 <secondary>RexxDeregisterExit</secondary></indexterm>
 <para>RexxDeregisterExit deregisters an exit handler.</para>
-<programlisting>
+<programlisting language="C++">
 retc = RexxDeregisterExit(ExitName, ModuleName);
 </programlisting>
 
@@ -2692,7 +2692,7 @@ and DLL names
 <secondary>RexxQueryExit</secondary></indexterm>
 <para>RexxQueryExit queries an exit handler and retrieves saved user
 information.</para>
-<programlisting>
+<programlisting language="C++">
 retc = RexxQueryExit(ExitName, ModuleName, Flag, UserWord);
 </programlisting>
 
@@ -2755,7 +2755,7 @@ and DLL names
 <section id="queryrexitxmp"><title>Example</title>
 <example>
 <title>Command handler</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 int REXXENTRY Edit_IO_Exit(
   int       Code,       /* Major exit code                          */
@@ -2845,7 +2845,7 @@ if made from the same thread.</para>
 <secondary>RexxVariablePool</secondary></indexterm>
 <indexterm><primary>RexxVariablePool</primary></indexterm>
 <para>RexxVariablePool accesses variables of a currently active Rexx procedure.</para>
-<programlisting>
+<programlisting language="C++">
 retc = RexxVariablePool(RequestBlockList);
 </programlisting>
 
@@ -2871,7 +2871,7 @@ Each block is a separate variable access request.
 <secondary>SHVBLOCK data structure</secondary></indexterm>
 <example>
 <title>SHVBLOCK</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 typedef struct shvnode {
     struct shvnode    *shvnext;
@@ -3138,7 +3138,7 @@ issued.
 <secondary>RexxVariablePool example</secondary></indexterm>
 <example>
 <title>RexxVariablePool</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 /*********************************************************************/
 /*                                                                   */
@@ -3187,7 +3187,7 @@ system memory functions.</para>
 <secondary>system memory interface</secondary>
 <tertiary>RexxAllocateMemory</tertiary></indexterm>
 <indexterm><primary>RexxAllocateMemory</primary></indexterm>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 void * REXXENTRY RexxAllocateMemory( size_t size );
 ]]>
@@ -3212,7 +3212,7 @@ memory could be allocated.</para>
 <secondary>system memory interface</secondary>
 <tertiary>RexxFreeMemory</tertiary></indexterm>
 <indexterm><primary>RexxFreeMemory</primary></indexterm>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxReturnCode REXXENTRY RexxFreeMemory( void *MemoryBlock );
 ]]>
@@ -3260,7 +3260,7 @@ queues.</para>
 <indexterm><primary>queue interface</primary>
 <secondary>RexxCreateQueue</secondary></indexterm>
 <para>RexxCreateQueue creates a new (empty) queue.</para>
-<programlisting>
+<programlisting language="C++">
 retc = RexxCreateQueue(Buffer, BuffLen, RequestedName, DupFlag);
 </programlisting>
 
@@ -3336,7 +3336,7 @@ Lowercase characters in queue names are translated to uppercase.</para>
 name does not already exist.  In contrast to RexxCreateQueue, RexxOpenQueue will not
 create a differently named queue if the indicated queue name already exists.
 </para>
-<programlisting>
+<programlisting language="C++">
 retc = RexxOpenQueue(RequestedName, CreatedFlag);
 </programlisting>
 
@@ -3399,7 +3399,7 @@ Lowercase characters in queue names are translated to uppercase.</para>
 <indexterm><primary>queue interface</primary>
 <secondary>RexxDeleteQueue</secondary></indexterm>
 <para>RexxDeleteQueue deletes a queue.</para>
-<programlisting>
+<programlisting language="C++">
 retc = RexxDeleteQueue(QueueName);
 </programlisting>
 
@@ -3458,7 +3458,7 @@ or delete a queue named SESSION.</entry>
 <indexterm><primary>queue interface</primary>
 <secondary>RexxQueueExists</secondary></indexterm>
 <para>RexxQueueExists tests if name queue exists.</para>
-<programlisting>
+<programlisting language="C++">
 retc = RexxQueueExists(QueueName);
 </programlisting>
 
@@ -3508,7 +3508,7 @@ or delete a queue named SESSION.</entry>
 <indexterm><primary>queue interface</primary>
 <secondary>RexxQueryQueue</secondary></indexterm>
 <para>RexxQueryQueue returns the number of entries remaining in the named queue.</para>
-<programlisting>
+<programlisting language="C++">
 retc = RexxQueryQueue(QueueName, Count);
 </programlisting>
 
@@ -3561,7 +3561,7 @@ or delete a queue named SESSION.</entry>
 <indexterm><primary>queue interface</primary>
 <secondary>RexxAddQueue</secondary></indexterm>
 <para>RexxAddQueue adds an entry to a queue.</para>
-<programlisting>
+<programlisting language="C++">
 retc = RexxAddQueue(QueueName, EntryData, AddFlag);
 </programlisting>
 
@@ -3636,7 +3636,7 @@ request.</entry>
 <para>RexxPullFromQueue removes the top entry from the queue and returns it to the
 caller.
 </para>
-<programlisting>
+<programlisting language="C++">
 retc = RexxPullFromQueue(QueueName, DataBuf, DateTime, WaitFlag);
 </programlisting>
 
@@ -3719,7 +3719,7 @@ request.</entry>
 <indexterm><primary>queue interface</primary>
 <secondary>RexxClearQueue</secondary></indexterm>
 <para>RexxClearQueue clears all entries from a named queue.</para>
-<programlisting>
+<programlisting language="C++">
 retc = RexxClearQueue(QueueName);
 </programlisting>
 
@@ -3772,7 +3772,7 @@ or delete a queue named SESSION.</entry>
 caller.  RexxPullQueue is deprecated in favor of its more portable
 replacement RexxPullFromQueue (<xref linkend="rpulfque" />).
 </para>
-<programlisting>
+<programlisting language="C++">
 retc = RexxPullQueue(QueueName, DataBuf, DateTime, WaitFlag);
 </programlisting>
 
@@ -3876,7 +3876,7 @@ state and do not degrade the Rexx procedure performance.</para>
 <indexterm><primary>queue interface</primary>
 <secondary>RexxSetHalt</secondary></indexterm>
 <para>RexxSetHalt raises a HALT condition in a running Rexx program.</para>
-<programlisting>
+<programlisting language="C++">
 retc = RexxSetHalt(ProcessId, ThreadId);
 </programlisting>
 
@@ -3940,7 +3940,7 @@ RXHLT exit enabled.</para>
 <indexterm><primary>queue interface</primary>
 <secondary>RexxSetTrace</secondary></indexterm>
 <para>RexxSetTrace turns on the interactive debug mode for a Rexx procedure.</para>
-<programlisting>
+<programlisting language="C++">
 retc = RexxSetTrace(ProcessId, ThreadId);
 </programlisting>
 
@@ -4005,7 +4005,7 @@ RXTRC exit.</para>
 <indexterm><primary>queue interface</primary>
 <secondary>RexxResetTrace</secondary></indexterm>
 <para>RexxResetTrace turns off the interactive debug mode for a Rexx procedure.</para>
-<programlisting>
+<programlisting language="C++">
 retc = RexxResetTrace(ProcessId,ThreadId);
 </programlisting>
 
@@ -4127,7 +4127,7 @@ loading routines in the macrospace.</para>
 <indexterm><primary>macrospace interface</primary>
 <secondary>RexxAddMacro</secondary></indexterm>
 <para>RexxAddMacro loads a Rexx procedure into the macrospace.</para>
-<programlisting>
+<programlisting language="C++">
 retc = RexxAddMacro(FuncName, SourceFile, Position);
 </programlisting>
 
@@ -4203,7 +4203,7 @@ function.</entry>
 <indexterm><primary>macrospace interface</primary>
 <secondary>RexxDropMacro</secondary></indexterm>
 <para>RexxDropMacro removes a Rexx procedure from the macrospace.</para>
-<programlisting>
+<programlisting language="C++">
 retc = RexxDropMacro(FuncName);
 </programlisting>
 
@@ -4248,7 +4248,7 @@ retc = RexxDropMacro(FuncName);
 <secondary>RexxClearMacroSpace</secondary></indexterm>
 <para>RexxClearMacroSpace removes all loaded Rexx procedures from the
 macrospace.</para>
-<programlisting>
+<programlisting language="C++">
 retc = RexxClearMacroSpace();
 </programlisting>
 
@@ -4289,7 +4289,7 @@ from the macrospace, including functions loaded by other processes.</para>
 <secondary>RexxSaveMacroSpace</secondary></indexterm>
 <para>RexxSaveMacroSpace saves all or part of the macrospace Rexx procedures
 to a disk file.</para>
-<programlisting>
+<programlisting language="C++">
 retc = RexxSaveMacroSpace(FuncCount, FuncNames, MacroLibFile);
 </programlisting>
 
@@ -4365,7 +4365,7 @@ programs.</para>
 <secondary>RexxLoadMacroSpace</secondary></indexterm>
 <para>RexxLoadMacroSpace loads all or part of the Rexx procedures from a saved
 macrospace file.</para>
-<programlisting>
+<programlisting language="C++">
 retc = RexxLoadMacroSpace(FuncCount, FuncNames, MacroLibFile);
 </programlisting>
 
@@ -4449,7 +4449,7 @@ the entire load request is discarded and the macrospace remains unchanged.</para
 <indexterm><primary>macrospace interface</primary>
 <secondary>RexxQueryMacro</secondary></indexterm>
 <para>RexxQueryMacro searches the macrospace for a specified function.</para>
-<programlisting>
+<programlisting language="C++">
 retc = RexxQueryMacro(FuncName, Position)
 </programlisting>
 
@@ -4500,7 +4500,7 @@ of the current function.
 <secondary>RexxReorderMacro</secondary></indexterm>
 <para>RexxReorderMacro changes the search order position of a loaded macrospace
 function.</para>
-<programlisting>
+<programlisting language="C++">
 retc = RexxReorderMacro(FuncName, Position)
 </programlisting>
 

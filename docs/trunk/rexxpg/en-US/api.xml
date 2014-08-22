@@ -101,7 +101,7 @@ reuse it to run multiple programs.
 RexxCreateInterpreter() (<xref linkend="createinterpreter" />) API:</para>
 <example>
 <title>API - Rexx CreateInterpreter</title>
-<programlisting>
+<programlisting language="C++">
 RexxInstance *instance;
 RexxThreadContext *threadContext;
 RexxOption options[25];
@@ -117,7 +117,7 @@ like running programs, loading class packages, etc.  For example, the following
 code will run a program using a created instance, checking for syntax errors upon completion:</para>
 <example>
 <title>API - RexxInstance and RexxThreadContext</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
     // create an Array object to hold the program arguments
     RexxArrayObject args = threadContext->NewArray(instanceInfo->argCount);
@@ -176,7 +176,7 @@ a final step, the interpreter instance is destroyed once we're finished using it
 thread context interface for the current thread.</para>
 <example>
 <title>API - RexxInstance and RexxThreadContext</title>
-<programlisting>
+<programlisting language="C++">
 RexxInstance *instance;
 RexxThreadContext *threadContext;
 RexxOption options[25];
@@ -232,7 +232,7 @@ name terminates the option list.  The available interpreter options are:</para>
 that will be used for all Rexx programs run under this instance.</para>
 <example>
 <title>API - RexxOption</title>
-<programlisting>
+<programlisting language="C++">
 RexxOption options[2];
 
 options[0].optionName = INITIAL_ADDRESS_ENVIRONMENT;
@@ -250,7 +250,7 @@ access to globally defined application data.
 </para>
 <example>
 <title>API - RexxOption</title>
-<programlisting>
+<programlisting language="C++">
 RexxOption options[2];
 
 options[0].optionName = APPLICATION_DATA;
@@ -267,7 +267,7 @@ are separated by semicolons (;).  On Unix-based systems, a colon (:) is used.
 </para>
 <example>
 <title>API - RexxOption</title>
-<programlisting>
+<programlisting language="C++">
 RexxOption options[2];
 
 options[0].optionName = EXTERNAL_CALL_PATH;
@@ -283,7 +283,7 @@ the extension ".".  Multiple extensions are separated by a comma (,).
 </para>
 <example>
 <title>API - RexxOption</title>
-<programlisting>
+<programlisting language="C++">
 RexxOption options[2];
 
 options[0].optionName = EXTERNAL_CALL_EXTENSIONS;
@@ -300,7 +300,7 @@ can be loaded by specifying this option multiple times.
 </para>
 <example>
 <title>API - RexxOption</title>
-<programlisting>
+<programlisting language="C++">
 RexxOption options[2];
 
 options[0].optionName = LOAD_REQUIRED_LIBRARY;
@@ -321,7 +321,7 @@ can be registered by specifying this option multiple times.
 </para>
 <example>
 <title>API - RexxOption</title>
-<programlisting>
+<programlisting language="C++">
 RexxOption options[2];
 RexxLibraryPackage package;
 
@@ -345,7 +345,7 @@ See <xref linkend="exitsapi" /> for details.
 </para>
 <example>
 <title>API - RexxOption</title>
-<programlisting>
+<programlisting language="C++">
 RexxContextExit exits[2];
 RexxOption options[2];
 
@@ -371,7 +371,7 @@ described in <xref linkend="commandapi" />.
 </para>
 <example>
 <title>API - RexxOption</title>
-<programlisting>
+<programlisting language="C++">
 RexxContextEnvironment environments[2];
 RexxOption options[2];
 
@@ -397,7 +397,7 @@ See <xref linkend="sysex" /> for details.
 </para>
 <example>
 <title>API - RexxOption</title>
-<programlisting>
+<programlisting language="C++">
 RXSYSEXIT exits[2];
 RexxOption options[2];
 
@@ -423,7 +423,7 @@ described in <xref linkend="subcom" />.
 </para>
 <example>
 <title>API - RexxOption</title>
-<programlisting>
+<programlisting language="C++">
 RexxRegisteredEnvironment environments[2];
 RexxOption options[2];
 
@@ -642,7 +642,7 @@ as a struct when compiled for C code, or a C++ class when compiled for ++.  The
 struct version looks like this:</para>
 <example>
 <title>API - RexxInstance</title>
-<programlisting>
+<programlisting language="C++">
 struct RexxInstance_
 {
     RexxInstanceInterface *functions;   // the interface function vector
@@ -661,7 +661,7 @@ may be called from any thread and in any context.  The services are called using
 fields in the interface structure.  The RexxInstanceInterface looks like this:</para>
 <example>
 <title>API - RexxInstanceInterface</title>
-<programlisting>
+<programlisting language="C++">
 typedef struct
 {
     wholenumber_t interfaceVersion;    // The interface version identifier
@@ -684,12 +684,12 @@ interface functions are available.</para>
 <para>The remainder of the fields are functions that can be called to perform RexxInstance
 operations.  Note that the first argument to all of the functions is a pointer to a RexxInstance
 structure.  A call to the InterpreterVersion API from C code would look like this:</para>
-<programlisting>
+<programlisting language="C++">
 size_t version = context->functions->InterpreterVersion(context);
 </programlisting>
 <para>When using C++ code, the RexxThreadContext struct has convenience methods that simplify calling
 these functions:</para>
-<programlisting>
+<programlisting language="C++">
 size_t version = context->InterpreterVersion();
 </programlisting>
 <para>Note that in the C++ call, it is no longer necessary to pass the RexxInstance as the
@@ -698,7 +698,7 @@ first object.  That's handled automatically by the C++ method.</para>
 RexxThreadContext looks like this:</para>
 <example>
 <title>API - RexxThreadContext</title>
-<programlisting>
+<programlisting language="C++">
 struct RexxThreadContext_
 {
     RexxInstance *instance;             // the owning instance
@@ -714,11 +714,11 @@ The RexxThreadContext functions all require a RexxThreadContext pointer as
 the first argument.  The RexxThreadContext class also defines C++ convenience methods for accessing its
 own functions and the functions for the RexxInstance as well.  For example, to call the
 InterpreterVersion() API using a RexxThreadContext from C code, it is necessary to code</para>
-<programlisting>
+<programlisting language="C++">
 size_t version = context->instance->functions->InterpreterVersion(context->instance);
 </programlisting>
 <para>The C++ version is simply</para>
-<programlisting>
+<programlisting language="C++">
 // context is a RexxThreadContext *
 size_t version = context->InterpreterVersion();
 </programlisting>
@@ -935,7 +935,7 @@ structure defining the methods and routines contained within the library.
 The RexxGetPackage() routine takes no arguments and has a RexxPackageEntry *return value.
 This is normally created using the OOREXX_GET_PACKAGE()
 macro defined in the oorexxapi.h include file.</para>
-<programlisting>
+<programlisting language="C++">
 // package loading stub.
 OOREXX_GET_PACKAGE(package);
 </programlisting>
@@ -951,7 +951,7 @@ package and descriptors of any methods and/or routines defined within
 the package.  The structure looks like this:</para>
 <example>
 <title>API - RexxPackageEntry</title>
-<programlisting>
+<programlisting language="C++">
 typedef struct _RexxPackageEntry
 {
     int size;                      // size of the structure...helps compatibility
@@ -1031,7 +1031,7 @@ creating the exported method table.
 library package:</para>
 <example>
 <title>API - RexxPackageEntry and RexxRoutineEntry</title>
-<programlisting>
+<programlisting language="C++">
 // now build the actual entry list
 RexxRoutineEntry rxmath_functions[] =
 {
@@ -1111,7 +1111,7 @@ REXX_TYPED_ROUTINE_PROTOTYPE() macros to generate the appropriate declarations.
 For example,</para>
 <example>
 <title>API - REXX_TYPED_ROUTINE_PROTYPE</title>
-<programlisting>
+<programlisting language="C++">
 // create function declarations for the linker
 REXX_TYPED_ROUTINE_PROTOTYPE(RxCalcPi);
 REXX_TYPED_ROUTINE_PROTOTYPE(RxCalcSqrt);
@@ -1137,7 +1137,7 @@ These macros are named "RexxRoutine<emphasis role="italic">n</emphasis>, where
 passed to your routine.  For example,</para>
 <example>
 <title>API - RexxRoutine2</title>
-<programlisting>
+<programlisting language="C++">
 RexxRoutine2(int, beep, wholenumber_t, frequency, wholenumber_t, duration)
 {
     return Beep(frequency, duration);  /* sound beep                 */
@@ -1153,7 +1153,7 @@ The return value is an <emphasis role="italic">int</emphasis> value.
 <para>An argument can be made optional by prefixing the type with "OPTIONAL_".  For example,</para>
 <example>
 <title>API - RexxRoutine2</title>
-<programlisting>
+<programlisting language="C++">
 RexxRoutine2(int, beep, wholenumber_t, frequency, OPTIONAL_wholenumber_t, duration)
 {
     return Beep(frequency, duration);  /* sound beep                 */
@@ -1226,7 +1226,7 @@ mechanism.
 <listitem><para>An instance of the Rexx Stem class.  For routine calls, a stem argument
 may be specified either using the stem variable name directly or giving the stem
 variable name as a quoted string.  For example, for a routine defined using</para>
-<programlisting>
+<programlisting language="C++">
 RexxRoutine1(int, MyRoutine, RexxStemObject, stem)
 </programlisting>
 <para>the following calls are equivalent:</para>
@@ -1262,7 +1262,7 @@ returning C literal values.
 For example, the following is not valid:</para>
 <example>
 <title>API - CString</title>
-<programlisting>
+<programlisting language="C++">
 RexxRoutine0(CSTRING, MyRoutine)
 {
    ....
@@ -1277,7 +1277,7 @@ String() (<xref linkend="mthString" />) API is more appropriate in this
 situation.</para>
 <example>
 <title>API - RexxStringObject</title>
-<programlisting>
+<programlisting language="C++">
 RexxRoutine0(RexxStringObject, MyRoutine)
 {
    ....
@@ -1352,7 +1352,7 @@ a REXX_METHOD_PROTOTYPE() macro to generate the appropriate declarations.
 For example,</para>
 <example>
 <title>API - REXX_METHOD_PROTOTYPE</title>
-<programlisting>
+<programlisting language="C++">
 // create function declarations for the linker
 REXX_METHOD_PROTOTYPE(point_init);
 REXX_METHOD_PROTOTYPE(point_add);
@@ -1378,7 +1378,7 @@ These macros are named "RexxMethod<emphasis role="italic">n</emphasis>, where
 be passed to your method.  For example,</para>
 <example>
 <title>API - RexxMethod2</title>
-<programlisting>
+<programlisting language="C++">
 RexxMethod2(int, beep, wholenumber_t, frequency, wholenumber_t, duration)
 {
     return Beep(frequency, duration);  /* sound beep                 */
@@ -1394,7 +1394,7 @@ The return value is an <emphasis role="italic">int</emphasis> value.
 <para>An argument can be made optional by prefixing the type with "OPTIONAL_".  For example,</para>
 <example>
 <title>API - RexxMethod2</title>
-<programlisting>
+<programlisting language="C++">
 RexxMethod2(int, beep, wholenumber_t, frequency, OPTIONAL_wholenumber_t, duration)
 {
     return Beep(frequency, duration);  /* sound beep                 */
@@ -1467,7 +1467,7 @@ mechanism.
 <listitem><para>An instance of Rexx Stem class.  To pass a Stem to a method, a stem argument
 must be specified using a stem variable name directly.
 For example, for a method defined using</para>
-<programlisting>
+<programlisting language="C++">
 RexxMethod1(int, MyMethod, RexxStemObject, stem)
 </programlisting>
 <para>the following call passes a stem object associated with a stem variable to the method:</para>
@@ -1501,7 +1501,7 @@ returning C literal values.
 For example, the following is not valid:</para>
 <example>
 <title>API - CString</title>
-<programlisting>
+<programlisting language="C++">
 RexxMethod0(CSTRING, MyMethod)
 {
    ....
@@ -1515,7 +1515,7 @@ RexxMethod0(CSTRING, MyMethod)
 situation.</para>
 <example>
 <title>API - RexxStringObject</title>
-<programlisting>
+<programlisting language="C++">
 RexxMethod0(RexxStringObject, MyMethod)
 {
    ....
@@ -1580,7 +1580,7 @@ Objects that rely on CSELF values typically set the variable CSELF inside an ini
 example:</para>
 <example>
 <title>API - CSELF</title>
-<programlisting>
+<programlisting language="C++">
 RexxMethod2(RexxObjectPtr, stream_init, OSELF, self, CSTRING, name)
 {
     // create a new stream info member
@@ -1600,7 +1600,7 @@ is retrieved and cast to the correct type:
 
 <example>
 <title>API - CSELF</title>
-<programlisting>
+<programlisting language="C++">
 RexxMethod3(size_t, stream_charout, CSELF, streamPtr, OPTIONAL_RexxStringObject, data, OPTIONAL_int64_t, position)
 {
     StreamInfo *stream_info = (StreamInfo *)streamPtr;
@@ -1642,7 +1642,7 @@ is frequently used to allocate a C++ struct or class instance that is the native
 class implementation.  For example</para>
 <example>
 <title>API - RexxBufferObject</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxMethod0(RexxObjectPtr, myclass_init)
 {
@@ -1667,7 +1667,7 @@ stores a reference to the Buffer in the MYDATA object variable.  Other C++ metho
 this instance by using the C++ equivalent to the Rexx EXPOSE instruction.</para>
 <example>
 <title>API - RexxBufferObject</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxMethod0(RexxObjectPtr, myclass_dosomething)
 {
@@ -1689,7 +1689,7 @@ memory, it may be necessary to add an UNINIT method to your class to ensure the
 resources are not leaked.</para>
 <example>
 <title>API - RexxBufferObject</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxMethod0(RexxObjectPtr, myclass_uninit)
 {
@@ -1717,7 +1717,7 @@ it will be necessary to implement an UNINIT method to handle the cleanup.  Here
 are the Buffer examples above reworked for the Pointer class:</para>
 <example>
 <title>API - RexxObjectPtr</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxMethod0(RexxObjectPtr, myclass_init)
 {
@@ -1784,7 +1784,7 @@ code might look like this:</para>
 <para>The corresponding C++ method would look like this:</para>
 <example>
 <title>API - RexxObjectPtr</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxMethod2(RexxObjectPtr, setTitle, POINTER, handle, CSTRING, title)
 {
@@ -1810,7 +1810,7 @@ native C++ data is backing an object instance and the backing data is created in
 object INIT method.  Here's the Pointer example above reworked to use CSELF:</para>
 <example>
 <title>API - CSELF</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxMethod0(RexxObjectPtr, myclass_init)
 {
@@ -1865,7 +1865,7 @@ attribute method in the base class:</para>
 </programlisting>
 <para>The subclass method can then access the method using SendMessage() (<xref linkend="mthSendMessage0" />)
 to access the value.</para>
-<programlisting>
+<programlisting language="C++">
 RexxObjectPtr self = context->GetSelf()
 RexxPointerObject = context->SendMessage0(self, "MYDATA");
 </programlisting>
@@ -1911,7 +1911,7 @@ reside as entry points within the application that creates the interpreter insta
 declaration: </para>
 <example>
 <title>API - Rexx_IO_Exit</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 int REXXENTRY Rexx_IO_exit(
      RexxExitContext *context,   // the exit context API vector
@@ -2211,7 +2211,7 @@ or 44 (&quot;Function or message did not return data&quot;).</para></listitem>
 <listitem><para>Parameter list: </para>
 <example>
 <title>API - Rexx_IO_Exit parameter list</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 
 typedef  struct _RXOFNC_FLAGS {        /* fl */
@@ -2290,7 +2290,7 @@ or 44 (&quot;Function or message did not return data&quot;).</para></listitem>
 <listitem><para>Parameter list: </para>
 <example>
 <title>API - Rexx_IO_Exit parameter list</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 
 typedef  struct _RXEXF_FLAGS {         /* fl */
@@ -2367,7 +2367,7 @@ or 44 (&quot;Function or message did not return data&quot;).</para></listitem>
 <listitem><para>Parameter list: </para>
 <example>
 <title>API - Rexx_IO_Exit parameter list</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 typedef struct {
    struct {
@@ -2455,7 +2455,7 @@ when indicated by the parameter list flags.</para></listitem>
 <listitem><para>Parameter list: </para>
 <example>
 <title>API - Rexx_IO_Exit parameter list</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 typedef struct {
    struct {                            /* Condition flags             */
@@ -2515,7 +2515,7 @@ the exit handler provided.</para></listitem>
 <listitem><para>Parameter list: </para>
 <example>
 <title>API - Rexx_IO_Exit parameter list</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 typedef struct {
    RXSTRING          rxmsq_retc;       /* Pointer to dequeued entry   */
@@ -2541,7 +2541,7 @@ the exit handler provided.</para></listitem>
 <listitem><para>Parameter list: </para>
 <example>
 <title>API - Rexx_IO_Exit parameter list</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 typedef struct {
    struct {                            /* Operation flag              */
@@ -2571,7 +2571,7 @@ the exit handler provided.</para></listitem>
 <listitem><para>Parameter list: </para>
 <example>
 <title>API - Rexx_IO_Exit parameter list</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 typedef struct {
    size_t            rxmsq_size;       /* Number of Lines in Queue    */
@@ -2596,7 +2596,7 @@ data queue that the exit handler provided.</para></listitem>
 <listitem><para>Parameter list:</para>
 <example>
 <title>API - Rexx_IO_Exit parameter list</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 typedef struct {
    RXSTRING     rxmsq_name;       /* RXSTRING containing         */
@@ -2636,7 +2636,7 @@ the exit handler provided.</para></listitem>
 <listitem><para>Parameter list:</para>
 <example>
 <title>API - Rexx_IO_Exit parameter list</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 typedef struct {
    CONSTRXSTRING      rxsio_string;     /* String to display.          */
@@ -2663,7 +2663,7 @@ that the exit handler provided.</para></listitem>
 <listitem><para>Parameter list:</para>
 <example>
 <title>API - Rexx_IO_Exit parameter list</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 typedef struct {
    CONSTRXSTRING       rxsio_string;     /* Trace line to display.      */
@@ -2689,7 +2689,7 @@ stream that the exit handler provided.</para></listitem>
 <listitem><para>Parameter list:</para>
 <example>
 <title>API - Rexx_IO_Exit parameter list</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 typedef struct {
    RXSTRING          rxsiotrd_retc;    /* RXSTRING for input.         */
@@ -2713,7 +2713,7 @@ stream that the exit handler provided.</para></listitem>
 <listitem><para>Parameter list: </para>
 <example>
 <title>API - Rexx_IO_Exit parameter list</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 typedef struct {
    RXSTRING          rxsiodtr_retc;    /* RXSTRING for input.         */
@@ -2755,7 +2755,7 @@ the variable name will be returned as the value.
 <listitem><para>Parameter list:</para>
 <example>
 <title>API - Rexx_IO_Exit parameter list</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 
 typedef  struct _RXVARNOVALUE_PARM {   /* var */
@@ -2796,7 +2796,7 @@ returned as a result.
 <listitem><para>Parameter list:</para>
 <example>
 <title>API - Rexx_IO_Exit parameter list</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 
 typedef  struct _RXVALCALL_PARM {      /* val */
@@ -2845,7 +2845,7 @@ exit handler returns TRUE.</para></listitem>
 <listitem><para>Parameter list:</para>
 <example>
 <title>API - Rexx_IO_Exit parameter list</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 typedef struct {
    struct {                            /* Halt flag                   */
@@ -2904,7 +2904,7 @@ to FALSE, the Rexx interpreter exits the interactive debug mode.</para></listite
 <listitem><para>Parameter list:</para>
 <example>
 <title>API - Rexx_IO_Exit parameter list</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 typedef struct {
    struct {
@@ -2996,7 +2996,7 @@ issues a command to the named ADDRESS target, the handler is called with the eva
 name of the address environment.  The handler is responsible for executing the command and returning a
 return code value back to the Rexx program.  Handlers are called using the following function signature:</para>
 
-<programlisting>
+<programlisting language="C++">
 RexxObjectPtr RexxEntry TestCommandHandler(RexxExitContext *context,
      RexxStringObject address, RexxStringObject command)
 </programlisting>
@@ -3037,7 +3037,7 @@ RaiseCondition() (<xref linkend="mthRaiseCondition" />) API provided by the Rexx
 example:</para>
 <example>
 <title>API - Command handler interface</title>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 // if this was an unknown command, give our generic unknown command return code
 if (errorStatus == COMMAND_FAILURE) {
@@ -3089,18 +3089,20 @@ return context->WholeNumber(rc);
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxArrayObject arr;
 RexxObjectPtr obj1, obj2, obj3, obj4;
 
->>--arr = context->Array(obj1);------------------------------------------><
+// Method Syntax Form(s)
 
->>--arr = context->Array(obj1, obj2);------------------------------------><
+arr = context->Array(obj1);
 
->>--arr = context->Array(obj1, obj2, obj3);------------------------------><
+arr = context->Array(obj1, obj2);
 
->>--arr = context->Array(obj1, obj2, obj3, obj4);------------------------><
+arr = context->Array(obj1, obj2, obj3);
+
+arr = context->Array(obj1, obj2, obj3, obj4);
 ]]>
 </programlisting>
 <para>This method has four forms.
@@ -3152,13 +3154,15 @@ It create a new one-dimension Array with the specified objects.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxArrayObject arr;
 RexxObjectPtr obj;
 size_t n;
 
->>--n = context->ArrayAppend(arr, obj);----------------------------------><
+// Method Syntax Form(s)
+
+n = context->ArrayAppend(arr, obj);
 ]]>
 </programlisting>
 <para>Append an Object to the end of an Array.
@@ -3203,13 +3207,15 @@ size_t n;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxArrayObject arr;
 CSTRING str;
 size_t n, len;
 
->>--n = context->ArrayAppendString(arr, str, len);-----------------------><
+// Method Syntax Form(s)
+
+n = context->ArrayAppendString(arr, str, len);
 ]]>
 </programlisting>
 <para>Append an object to the end of an Array.  The appended object is
@@ -3258,13 +3264,15 @@ a String object created from a pointer and length.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxArrayObject arr;
 RexxObjectPtr obj;
 size_t idx;
 
->>--obj = context->ArrayAt(arr, idx);------------------------------------><
+// Method Syntax Form(s)
+
+obj = context->ArrayAt(arr, idx);
 ]]>
 </programlisting>
 <para>Retrieve an object from a specified Array index.
@@ -3310,12 +3318,14 @@ Returns NULLOBJECT if there is no value at the specified index.</para>
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxArrayObject arr;
 size_t sz;
 
->>--sz = context->ArrayDimension(arr);-----------------------------------><
+// Method Syntax Form(s)
+
+sz = context->ArrayDimension(arr);
 ]]>
 </programlisting>
 <para>Returns number of dimensions of an Array.
@@ -3357,12 +3367,14 @@ size_t sz;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxArrayObject arr;
 size_t sz;
 
->>--sz = context->ArrayItems(arr);---------------------------------------><
+// Method Syntax Form(s)
+
+sz = context->ArrayItems(arr);
 ]]>
 </programlisting>
 <para>Returns number of elements in an Array.
@@ -3404,12 +3416,14 @@ size_t sz;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxArrayObject arr;
 RexxObjectPtr obj1, obj2, obj3, obj4;
 
->>--arr = context->ArrayOfFour(obj1, obj2, obj3, obj4);------------------><
+// Method Syntax Form(s)
+
+arr = context->ArrayOfFour(obj1, obj2, obj3, obj4);
 ]]>
 </programlisting>
 <para>Create a new one-dimension Array with the specified objects.
@@ -3460,12 +3474,14 @@ RexxObjectPtr obj1, obj2, obj3, obj4;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxArrayObject arr;
 RexxObjectPtr obj1, obj2, obj3;
 
->>--arr = context->ArrayOfThree(obj1, obj2, obj3);-----------------------><
+// Method Syntax Form(s)
+
+arr = context->ArrayOfThree(obj1, obj2, obj3);
 ]]>
 </programlisting>
 <para>Create a new one-dimension Array with the specified objects.
@@ -3513,12 +3529,14 @@ RexxObjectPtr obj1, obj2, obj3;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxArrayObject arr;
 RexxObjectPtr obj1, obj2;
 
->>--arr = context->ArrayOfTwo(obj1, obj2);-------------------------------><
+// Method Syntax Form(s)
+
+arr = context->ArrayOfTwo(obj1, obj2);
 ]]>
 </programlisting>
 <para>Create a new one-dimension Array with the specified objects..
@@ -3563,12 +3581,14 @@ RexxObjectPtr obj1, obj2;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxArrayObject arr;
 RexxObjectPtr obj;
 
->>--arr = context->ArrayOfOne(obj);--------------------------------------><
+// Method Syntax Form(s)
+
+arr = context->ArrayOfOne(obj);
 ]]>
 </programlisting>
 <para>Create a new one-dimension Array with the specified object.
@@ -3610,13 +3630,15 @@ RexxObjectPtr obj;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxArrayObject arr;
 RexxObjectPtr obj;
 size_t idx;
 
->>--context->ArrayPut(arr, obj, idx);------------------------------------><
+// Method Syntax Form(s)
+
+context->ArrayPut(arr, obj, idx);
 ]]>
 </programlisting>
 <para>Replace/add an Object to an Array.
@@ -3664,12 +3686,14 @@ size_t idx;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxArrayObject arr;
 size_t sz;
 
->>--sz = context->ArraySize(arr);----------------------------------------><
+// Method Syntax Form(s)
+
+sz = context->ArraySize(arr);
 ]]>
 </programlisting>
 <para>Returns the size of an Array.
@@ -3705,11 +3729,13 @@ size_t sz;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxThreadContext *tc
 
->>--success = context->AttachThread(&tc);-------------------------------><
+// Method Syntax Form(s)
+
+success = context->AttachThread(&tc);
 ]]>
 </programlisting>
 <para>Attaches the current thread to the Rexx interpreter instance
@@ -3755,12 +3781,14 @@ a RexxThreadContext object valid for the current context is returned via the
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxBufferObject obj;
 POINTER str;
 
->>--str = context->BufferData(obj);--------------------------------------------><
+// Method Syntax Form(s)
+
+str = context->BufferData(obj);
 ]]>
 </programlisting>
 <para>Returns a pointer to a Buffer object's data area.
@@ -3802,12 +3830,14 @@ POINTER str;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxBufferObject obj;
 size_t sz;
 
->>--sz = context->BufferLength(obj);-------------------------------------><
+// Method Syntax Form(s)
+
+sz = context->BufferLength(obj);
 ]]>
 </programlisting>
 <para>Return the length of a Buffer object's data area.
@@ -3849,12 +3879,14 @@ size_t sz;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxBufferStringObject obj;
 POINTER str;
 
->>--str = context->BufferStringData(obj);--------------------------------------><
+// Method Syntax Form(s)
+
+str = context->BufferStringData(obj);
 ]]>
 </programlisting>
 <para>Returns a pointer to a RexxBufferString object's data area.
@@ -3900,12 +3932,14 @@ it can be used in any other context.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxBufferStringObject obj;
 size_t sz;
 
->>--sz = context->BufferStringLength(obj);-------------------------------><
+// Method Syntax Form(s)
+
+sz = context->BufferStringLength(obj);
 ]]>
 </programlisting>
 <para>Return the length of a RexxBufferStringObject instance.
@@ -3947,13 +3981,15 @@ size_t sz;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 CSTRING name;
 RexxObjectPtr ret;
 RexxArrayObject arr;
 
->>--ret = context->CallProgram(name, arr);----------------------------><
+// Method Syntax Form(s)
+
+ret = context->CallProgram(name, arr);
 ]]>
 </programlisting>
 <para>Returns the result object of the routine.
@@ -4004,12 +4040,14 @@ can be used to check if any errors occurred during the call.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj, ret;
 RexxArrayObject arr;
 
->>--ret = context->CallRoutine(obj, arr);-----------------------------><
+// Method Syntax Form(s)
+
+ret = context->CallRoutine(obj, arr);
 ]]>
 </programlisting>
 <para>Returns the result object of the routine.
@@ -4060,11 +4098,13 @@ can be used to check if any errors occurred during the call.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 logical_t flag;
 
->>--flag = context->CheckCondition();------------------------------------><
+// Method Syntax Form(s)
+
+flag = context->CheckCondition();
 ]]>
 </programlisting>
 <para>Checks to see if any conditions have resulted from a call to a Rexx API.  .
@@ -4103,9 +4143,11 @@ logical_t flag;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
->>--context->ClearCondition();-------------------------------------------><
+// Method Syntax Form(s)
+
+context->ClearCondition();
 ]]>
 </programlisting>
 <para>Clears any pending condition status.
@@ -4144,15 +4186,17 @@ logical_t flag;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 RexxStringObject ostr;
 CSTRING str;
 
->>--str = context->CString(obj);-----------------------------------------><
+// Method Syntax Form(s)
 
->>--ostr = context->CString(str);----------------------------------------><
+str = context->CString(obj);
+
+ostr = context->CString(str);
 ]]>
 </programlisting>
 <para>There are two forms of this method.
@@ -4200,12 +4244,14 @@ For the second form, a String object is created from the ASCII-Z string data..</
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxDirectoryObject dirj;
 RexxCondition cond;
 
->>--context->DecodeConditionInfo(dir, &cond);----------------------------><
+// Method Syntax Form(s)
+
+context->DecodeConditionInfo(dir, &cond);
 ]]>
 </programlisting>
 <para>Decodes the condition information into a RexxCondition structure.
@@ -4246,9 +4292,11 @@ RexxCondition cond;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
->>--context->DetachThread()-------------;-------------------------------><
+// Method Syntax Form(s)
+
+context->DetachThread();
 ]]>
 </programlisting>
 <para>Detaches the thread represented by the RexxThreadContext object from it's
@@ -4288,13 +4336,15 @@ issuing the call is no longer a valid, active interface.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxDirectoryObject dirobj;
 RexxObjectPtr obj;
 CSTRING str;
 
->>--obj = context->DirectoryAt(dirobj, str);-----------------------------><
+// Method Syntax Form(s)
+
+obj = context->DirectoryAt(dirobj, str);
 ]]>
 </programlisting>
 <para>Return the object at the specified index.
@@ -4340,13 +4390,15 @@ CSTRING str;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxDirectoryObject dirobj;
 RexxObjectPtr item;
 CSTRING index;
 
->>--context->DirectoryPut(dirobj, item, index);--------------------------><
+// Method Syntax Form(s)
+
+context->DirectoryPut(dirobj, item, index);
 ]]>
 </programlisting>
 <para>Replace/add an Object at the specified Directory index.
@@ -4394,13 +4446,15 @@ CSTRING index;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxDirectoryObject dirobj;
 RexxObjectPtr obj;
 CSTRING str;
 
->>--obj = context->DirectoryRemove(dirobj, str);-------------------------><
+// Method Syntax Form(s)
+
+obj = context->DirectoryRemove(dirobj, str);
 ]]>
 </programlisting>
 <para>Removes and returns the object at the specified Directory index.
@@ -4447,11 +4501,13 @@ did not exist in the target Directory.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 wholenumber_t rc;
 
->>--rc = context->DisplayCondition();------------------------------------><
+// Method Syntax Form(s)
+
+rc = context->DisplayCondition();
 ]]>
 </programlisting>
 <para>If any syntax conditions are currently pending in the Rexx context, then
@@ -4492,15 +4548,17 @@ major error number for the syntax error.  Returns 0 if there is no current synta
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 double n;
 logical_t flag;
 
->>--obj = context->Double(n);--------------------------------------------><
+// Method Syntax Form(s)
 
->>--flag = context->Double(obj, &n);-------------------------------------><
+obj = context->Double(n);
+
+flag = context->Double(obj, &n);
 ]]>
 </programlisting>
 <para>There are two forms of this method.
@@ -4551,12 +4609,14 @@ If successful, the converted value is placed in
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 double n;
 
->>--obj = context->DoubleToObject(n);------------------------------------><
+// Method Syntax Form(s)
+
+obj = context->DoubleToObject(n);
 ]]>
 </programlisting>
 <para>Converts C double value to an Object.
@@ -4598,13 +4658,15 @@ double n;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 size_t p;
 double n;
 
->>--obj = context->DoubleToObject(n, p);---------------------------------><
+// Method Syntax Form(s)
+
+obj = context->DoubleToObject(n, p);
 ]]>
 </programlisting>
 <para>Converts C double value to an Object with a specific precision.
@@ -4645,11 +4707,13 @@ double n;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 CSTRING name;
 
->>--context->DropContextVariable(name);-------------------------------><
+// Method Syntax Form(s)
+
+context->DropContextVariable(name);
 ]]>
 </programlisting>
 <para>Drops a Rexx variable in the current routine's caller variable context.
@@ -4685,11 +4749,13 @@ CSTRING name;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 CSTRING str;
 
->>--context->DropObjectVariable(str);------------------------------------><
+// Method Syntax Form(s)
+
+context->DropObjectVariable(str);
 ]]>
 </programlisting>
 <para>Drops an instance variable in the current method's scope.
@@ -4731,12 +4797,14 @@ CSTRING str;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxStemObject sobj;
 size_t n;
 
->>--context->DropStemArrayElement(sobj, n);------------------------------><
+// Method Syntax Form(s)
+
+context->DropStemArrayElement(sobj, n);
 ]]>
 </programlisting>
 <para>Drops an element of the Stem object.
@@ -4781,12 +4849,14 @@ size_t n;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxStemObject sobj;
 CSTRING name;
 
->>--context->DropStemElement(sobj, name);--------------------------------><
+// Method Syntax Form(s)
+
+context->DropStemElement(sobj, name);
 ]]>
 </programlisting>
 <para>Drops an element of the Stem object.
@@ -4831,11 +4901,13 @@ CSTRING name;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 
->>--obj = context->False();----------------------------------------------><
+// Method Syntax Form(s)
+
+obj = context->False();
 ]]>
 </programlisting>
 <para>This method returns the Rexx .false ( 0 ) object.
@@ -4873,12 +4945,14 @@ RexxObjectPtr obj;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxClassObject class;
 CSTRING name;
 
->>--class = context->FindClass(name);---------------------------------><
+// Method Syntax Form(s)
+
+class = context->FindClass(name);
 ]]>
 </programlisting>
 <para>Locates a Class object in the current thread context.
@@ -4914,12 +4988,14 @@ CSTRING name;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 CSTRING name;
 RexxClassObject obj;
 
->>--obj = context->FindContextClass(name);-------------------------------><
+// Method Syntax Form(s)
+
+obj = context->FindContextClass(name);
 ]]>
 </programlisting>
 <para>Locate a Class object in the current Method or Routine Package context.
@@ -4961,13 +5037,15 @@ RexxClassObject obj;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxPackageObject pkg;
 RexxClassObject class;
 CSTRING name;
 
->>--class = context->FindPackageClass(pkg, name);---------------------><
+// Method Syntax Form(s)
+
+class = context->FindPackageClass(pkg, name);
 ]]>
 </programlisting>
 <para>Locate a class object in a given Package object's context.
@@ -5012,13 +5090,15 @@ CSTRING name;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxBufferStringObject obj;
 RexxStringObject strobj;
 size_t len;
 
->>--str = context->FinishBufferString(obj, len);---------------------------><
+// Method Syntax Form(s)
+
+str = context->FinishBufferString(obj, len);
 ]]>
 </programlisting>
 <para>Converts a RexxBufferStringObject into a completed, immutable String object of the
@@ -5058,14 +5138,16 @@ given length and returns a reference to the completed String object.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 CSTRING str;
 RexxObjectPtr obj, ret;
 RexxClassObject sobj;
 RexxArrayObject arr;
 
->>--ret = context->ForwardMessage(obj, str, cobj, arr);------------------><
+// Method Syntax Form(s)
+
+ret = context->ForwardMessage(obj, str, cobj, arr);
 ]]>
 </programlisting>
 <para>Forwards a message to a different object or method.  This is
@@ -5122,11 +5204,13 @@ target method does not return a result.</para>
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxDirectoryObject obj;
 
->>--obj = context->GetAllContextVariables();--------------------------><
+// Method Syntax Form(s)
+
+obj = context->GetAllContextVariables();
 ]]>
 </programlisting>
 <para>Returns all the Rexx variables in the current routine's caller's context as
@@ -5167,12 +5251,14 @@ may be accessed via the Stem object values.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxStemObject sobj;
 RexxDirectoryObject obj;
 
->>--obj = context->GetAllStemElements(sobj);-----------------------------><
+// Method Syntax Form(s)
+
+obj = context->GetAllStemElements(sobj);
 ]]>
 </programlisting>
 <para>Returns all elements of a Stem object as a Directory object.
@@ -5217,7 +5303,9 @@ Each assigned Stem tail element will be an entry in the Directory.
 </informaltable>
 <programlisting>
 <![CDATA[
->>--ptr = context->GetApplicationData();------------------------------><
+// Method Syntax Form(s)
+
+ptr = context->GetApplicationData();
 ]]>
 </programlisting>
 <para>Returns the application data pointer that was set via the APPLICATION_DATA
@@ -5252,12 +5340,14 @@ option when the intepreter instance was created.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 size_t n;
 
->>--obj = context->GetArgument(n);------------------------------------><
+// Method Syntax Form(s)
+
+obj = context->GetArgument(n);
 ]]>
 </programlisting>
 <para>Returns the specified argument to the method or routine.  This
@@ -5298,11 +5388,13 @@ NULLOBJECT if the argument was not specified.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxArrayObject arr;
 
->>--arr = context->GetArguments();------------------------------------><
+// Method Syntax Form(s)
+
+arr = context->GetArguments();
 ]]>
 </programlisting>
 <para>Returns an Array object of the arguments to the method or routine.
@@ -5337,11 +5429,13 @@ This is the same argument Array returned by the ARGLIST argument type.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 
->>--obj = context->GetCallerContext();--------------------------------><
+// Method Syntax Form(s)
+
+obj = context->GetCallerContext();
 ]]>
 </programlisting>
 <para>Get the RexxContext object corresponding to the routine or exit's
@@ -5380,11 +5474,13 @@ calling context.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxDirectoryObject dir;
 
->>--dir = context->GetConditionInfo();--------------------------------><
+// Method Syntax Form(s)
+
+dir = context->GetConditionInfo();
 ]]>
 </programlisting>
 <para>Returns a Directory object containing the condition information.
@@ -5419,11 +5515,13 @@ there are no pending conditions, NULLOBJECT is returned.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 stringsize_t sz;
 
->>--sz = context->GetContextDigits();---------------------------------><
+// Method Syntax Form(s)
+
+sz = context->GetContextDigits();
 ]]>
 </programlisting>
 <para>Get the routine caller's current NUMERIC DIGITS setting.
@@ -5455,11 +5553,13 @@ stringsize_t sz;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 stringsize_t sz;
 
->>--sz = context->GetContextForm();-----------------------------------><
+// Method Syntax Form(s)
+
+sz = context->GetContextForm();
 ]]>
 </programlisting>
 <para>Get the routine caller's current NUMERIC FORM setting.
@@ -5491,11 +5591,13 @@ stringsize_t sz;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 stringsize_t sz;
 
->>--sz = context->GetContextFuzz();-----------------------------------><
+// Method Syntax Form(s)
+
+sz = context->GetContextFuzz();
 ]]>
 </programlisting>
 <para>Get the routine caller's current NUMERIC FUZZ setting.
@@ -5529,12 +5631,14 @@ stringsize_t sz;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 CSTRING name;
 
->>--obj = context->GetContextVariable(name);--------------------------><
+// Method Syntax Form(s)
+
+obj = context->GetContextVariable(name);
 ]]>
 </programlisting>
 <para>Gets the value of a Rexx variable in the routine or exit caller's variable context.
@@ -5580,11 +5684,13 @@ has not been assigned a value.</para>
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxDirectoryObject dir;
 
->>--dir = context->GetGlobalEnvironment();----------------------------><
+// Method Syntax Form(s)
+
+dir = context->GetGlobalEnvironment();
 ]]>
 </programlisting>
 <para>Returns a reference to the .environment Directory.
@@ -5622,11 +5728,13 @@ RexxDirectoryObject dir;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxDirectoryObject dir;
 
->>--dir = context->GetLocalEnvironment();-----------------------------><
+// Method Syntax Form(s)
+
+dir = context->GetLocalEnvironment();
 ]]>
 </programlisting>
 <para>Returns a reference to the interpreter instance .local Directory.
@@ -5658,11 +5766,13 @@ RexxDirectoryObject dir;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 CSTRING str;
 
->>--str = context->GetMessageName(obj);-------------------------------><
+// Method Syntax Form(s)
+
+str = context->GetMessageName(obj);
 ]]>
 </programlisting>
 <para>Returns the message name used to invoke the current method.
@@ -5694,11 +5804,13 @@ CSTRING str;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxMethodObject obj;
 
->>--obj = context->GetMethod();---------------------------------------><
+// Method Syntax Form(s)
+
+obj = context->GetMethod();
 ]]>
 </programlisting>
 <para>Returns the Method object for the currently executing method.
@@ -5736,12 +5848,14 @@ RexxMethodObject obj;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxMethodObject obj;
 RexxPackageObject pkg;
 
->>--pkg = context->GetMethodPackage(obj);-----------------------------><
+// Method Syntax Form(s)
+
+pkg = context->GetMethodPackage(obj);
 ]]>
 </programlisting>
 <para>Returns the Package object associated with the specified Method instance.
@@ -5777,12 +5891,14 @@ RexxPackageObject pkg;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 CSTRING str;
 RexxObjectPtr obj;
 
->>--obj = context->GetObjectVariable(str);-------------------------------><
+// Method Syntax Form(s)
+
+obj = context->GetObjectVariable(str);
 ]]>
 </programlisting>
 <para>Retrieves a Rexx instance variable value from the current object's method scope context.
@@ -5828,12 +5944,14 @@ variable has not been assigned a value.</para>
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxDirectoryObject dir;
 RexxPackageObject pkg;
 
->>--dir = context->GetPackageClasses(pkg);----------------------------><
+// Method Syntax Form(s)
+
+dir = context->GetPackageClasses(pkg);
 ]]>
 </programlisting>
 <para>Returns a Directory object containing the Package public and private classes, indexed by class name.
@@ -5875,12 +5993,14 @@ RexxPackageObject pkg;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxDirectoryObject dir;
 RexxPackageObject pkg;
 
->>--dir = context->GetPackageMethods(pkg);----------------------------><
+// Method Syntax Form(s)
+
+dir = context->GetPackageMethods(pkg);
 ]]>
 </programlisting>
 <para>Returns a Directory object containing the Package unattached methods, indexed by Method name.
@@ -5924,12 +6044,14 @@ using the .methods environment symbol from Rexx code.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxDirectoryObject dir;
 RexxPackageObject pkg;
 
->>--dir = context->GetPackagePublicClasses(pkg);----------------------><
+// Method Syntax Form(s)
+
+dir = context->GetPackagePublicClasses(pkg);
 ]]>
 </programlisting>
 <para>Returns a Directory object containing the Package public classes, indexed by class name.
@@ -5971,12 +6093,14 @@ RexxPackageObject pkg;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxDirectoryObject dir;
 RexxPackageObject pkg;
 
->>--dir = context->GetPackagePublicRoutines(pkg);---------------------><
+// Method Syntax Form(s)
+
+dir = context->GetPackagePublicRoutines(pkg);
 ]]>
 </programlisting>
 <para>Returns a Directory object containing the Package public routines, indexed by routine name.
@@ -6018,12 +6142,14 @@ RexxPackageObject pkg;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxDirectoryObject dir;
 RexxPackageObject pkg;
 
->>--dir = context->GetPackageRoutines(pkg);---------------------------><
+// Method Syntax Form(s)
+
+dir = context->GetPackageRoutines(pkg);
 ]]>
 </programlisting>
 <para>Returns a Directory object containing the Package public and private routines, indexed by routine name.
@@ -6059,11 +6185,13 @@ RexxPackageObject pkg;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxRoutineObject obj;
 
->>--obj = context->GetRoutine();--------------------------------------><
+// Method Syntax Form(s)
+
+obj = context->GetRoutine();
 ]]>
 </programlisting>
 <para>Returns current Routine object.
@@ -6095,11 +6223,13 @@ RexxRoutineObject obj;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 CSTRING name;
 
->>--name = context->GetRoutineName();---------------------------------><
+// Method Syntax Form(s)
+
+name = context->GetRoutineName();
 ]]>
 </programlisting>
 <para>Returns the name of the current routine.
@@ -6137,12 +6267,14 @@ CSTRING name;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxRoutineObject obj;
 RexxPackageObject pkg;
 
->>--pkg = context->GetRoutinePackage(obj);----------------------------><
+// Method Syntax Form(s)
+
+pkg = context->GetRoutinePackage(obj);
 ]]>
 </programlisting>
 <para>Returns Routine object's associated Package object.
@@ -6178,11 +6310,13 @@ RexxPackageObject pkg;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 
->>--obj = context->GetScope();----------------------------------------><
+// Method Syntax Form(s)
+
+obj = context->GetScope();
 ]]>
 </programlisting>
 <para>Return the current active method's scope.
@@ -6214,11 +6348,13 @@ RexxObjectPtr obj;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 
->>--obj = context->GetSelf();-----------------------------------------><
+// Method Syntax Form(s)
+
+obj = context->GetSelf();
 ]]>
 </programlisting>
 <para>Returns the Object that is the current method's message target.  This
@@ -6258,13 +6394,15 @@ argument using the OSELF type.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxStemObject sobj;
 RexxObjectPtr obj;
 size_t n;
 
->>--obj = context->GetStemArrayElement(sobj, n);-------------------------><
+// Method Syntax Form(s)
+
+obj = context->GetStemArrayElement(sobj, n);
 ]]>
 </programlisting>
 <para>Retrieves an element of a Stem object using a numeric index.
@@ -6310,13 +6448,15 @@ size_t n;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxStemObject sobj;
 RexxObjectPtr obj;
 CSTRING name;
 
->>--obj = context->GetStemElement(sobj, name);---------------------------><
+// Method Syntax Form(s)
+
+obj = context->GetStemElement(sobj, name);
 ]]>
 </programlisting>
 <para>Retrieves an element of a Stem object.
@@ -6365,13 +6505,15 @@ has not been assigned a value.</para>
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxStemObject sobj;
 RexxObjectPtr obj;
 CSTRING name;
 
->>--obj = context->GetStemValue(sobj);-----------------------------------><
+// Method Syntax Form(s)
+
+obj = context->GetStemValue(sobj);
 ]]>
 </programlisting>
 <para>Retrieves the base name value of a Stem object.
@@ -6407,11 +6549,13 @@ CSTRING name;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 
->>--obj = context->GetSuper();----------------------------------------><
+// Method Syntax Form(s)
+
+obj = context->GetSuper();
 ]]>
 </programlisting>
 <para>Returns the current method's super class scope.  This is equivalent to the
@@ -6445,9 +6589,11 @@ argument type.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
->>--context->Halt();-----------------------------------------------------><
+// Method Syntax Form(s)
+
+context->Halt();
 ]]>
 </programlisting>
 <para>Raise a HALT condition on all threads associated with the interpreter instance.
@@ -6479,9 +6625,11 @@ argument type.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
->>--context->HaltThread();----------------------------------------------><
+// Method Syntax Form(s)
+
+context->HaltThread();
 ]]>
 </programlisting>
 <para>Raises a HALT condition on the thread corresponding to the current
@@ -6520,13 +6668,15 @@ argument type.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 logical_t flag;
 RexxObjectPtr obj;
 CSTRING name;
 
->>--flag = context->HasMethod(obj, name);-------------------------------><
+// Method Syntax Form(s)
+
+flag = context->HasMethod(obj, name);
 ]]>
 </programlisting>
 <para>Tests if an object supports the specified method name.
@@ -6565,11 +6715,13 @@ CSTRING name;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxDirectoryObject obj;
 
->>--context->InvalidRoutine();----------------------------------------><
+// Method Syntax Form(s)
+
+context->InvalidRoutine();
 ]]>
 </programlisting>
 <para>Raises the standard Error 40,  "Invalid call to routine" synatx error for the
@@ -6609,15 +6761,17 @@ returns.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 logical_t flag;
 int32_t n;
 
->>--obj = context->Int32(n);---------------------------------------------><
+// Method Syntax Form(s)
 
->>--logical_t = context->Int32(obj, &n);---------------------------------><
+obj = context->Int32(n);
+
+logical_t = context->Int32(obj, &n);
 ]]>
 </programlisting>
 <para>There a two forms of this method.
@@ -6667,12 +6821,14 @@ placed in <emphasis role="italic">n</emphasis>.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 int32_t n;
 
->>--obj = context->Int32ToObject(n);-------------------------------------><
+// Method Syntax Form(s)
+
+obj = context->Int32ToObject(n);
 ]]>
 </programlisting>
 <para>Convert a C 32-bit integer <emphasis role="italic">n</emphasis> to an Object.
@@ -6714,15 +6870,17 @@ int32_t n;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 logical_t flag;
 int64_t n;
 
->>--obj = context->Int64(n);---------------------------------------------><
+// Method Syntax Form(s)
 
->>--logical_t = context->Int64(obj, &n);---------------------------------><
+obj = context->Int64(n);
+
+logical_t = context->Int64(obj, &n);
 ]]>
 </programlisting>
 <para>There a two forms of this method.
@@ -6772,12 +6930,14 @@ placed in <emphasis role="italic">n</emphasis>.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 int64_t n;
 
->>--obj = context->Int64ToObject(n);-------------------------------------><
+// Method Syntax Form(s)
+
+obj = context->Int64ToObject(n);
 ]]>
 </programlisting>
 <para>Convert the C 64-bit integer <emphasis role="italic">n</emphasis> to an Object.
@@ -6821,11 +6981,13 @@ int64_t n;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 size_t version;
 
->>--version = context->InterpreterVersion();----------------------------><
+// Method Syntax Form(s)
+
+version = context->InterpreterVersion();
 ]]>
 </programlisting>
 <para>Returns the version of the interpreter.  The returned version
@@ -6870,15 +7032,17 @@ used to compile your code.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 logical_t flag;
 intptr_t n;
 
->>--obj = context->Intptr(&n);-------------------------------------------><
+// Method Syntax Form(s)
 
->>--flag = context->Intptr(obj, &n);-------------------------------------><
+obj = context->Intptr(&n);
+
+flag = context->Intptr(obj, &n);
 ]]>
 </programlisting>
 <para>There are two forms of this method.
@@ -6930,12 +7094,14 @@ placed in <emphasis role="italic">n</emphasis>.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 intptr_t n;
 
->>--obj = context->IntptrToObject(&n);-----------------------------------><
+// Method Syntax Form(s)
+
+obj = context->IntptrToObject(&n);
 ]]>
 </programlisting>
 <para>Convert the C signed integer <emphasis role="italic">n</emphasis> to an Object.
@@ -6977,12 +7143,14 @@ intptr_t n;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 logical_t flag;
 
->>--flag = context->IsArray(obj);---------------------------------------><
+// Method Syntax Form(s)
+
+flag = context->IsArray(obj);
 ]]>
 </programlisting>
 <para>Tests if an Object is an Array.
@@ -7026,12 +7194,14 @@ the RexxObjectPtr value may be safely cast to a RexxArrayObject.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 logical_t flag;
 
->>--flag = context->IsBuffer(obj);--------------------------------------><
+// Method Syntax Form(s)
+
+flag = context->IsBuffer(obj);
 ]]>
 </programlisting>
 <para>Tests if an Object is a Buffer object.
@@ -7075,12 +7245,14 @@ the RexxObjectPtr value may be safely cast to a RexxBufferObject.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 logical_t flag;
 
->>--flag = context->IsDirectory(obj);-----------------------------------><
+// Method Syntax Form(s)
+
+flag = context->IsDirectory(obj);
 ]]>
 </programlisting>
 <para>Tests if an Object is a Directory object.
@@ -7124,13 +7296,15 @@ the RexxObjectPtr value may be safely cast to a RexxDirectoryObject.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 RexxClassObj class;
 logical_t flag;
 
->>--flag = context->IsInstanceOf(obj, class);---------------------------><
+// Method Syntax Form(s)
+
+flag = context->IsInstanceOf(obj, class);
 ]]>
 </programlisting>
 <para>Tests if an Object is an instance of the specified class.
@@ -7175,12 +7349,14 @@ logical_t flag;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 logical_t flag;
 
->>--flag = context->IsMethod(obj);--------------------------------------><
+// Method Syntax Form(s)
+
+flag = context->IsMethod(obj);
 ]]>
 </programlisting>
 <para>Tests if an Object is a Method object.
@@ -7224,12 +7400,14 @@ the RexxObjectPtr value may be safely cast to a RexxMethodObject.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 logical_t flag;
 
->>--flag = context->IsMutableBuffer(obj);-------------------------------><
+// Method Syntax Form(s)
+
+flag = context->IsMutableBuffer(obj);
 ]]>
 </programlisting>
 <para>Tests if an Object is a MutableBuffer object.
@@ -7273,13 +7451,15 @@ the RexxObjectPtr value may be safely cast to a RexxMutableBufferObject.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 CSTRING class;
 logical_t flag;
 
->>--flag = context->IsOfType(obj, class);-------------------------------><
+// Method Syntax Form(s)
+
+flag = context->IsOfType(obj, class);
 ]]>
 </programlisting>
 <para>Tests an object to see if it is an instance of the named class.
@@ -7327,12 +7507,14 @@ This method combines the operations of the FindClass() and IsInstanceOf() method
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 logical_t flag;
 
->>--flag = context->IsPointer(obj);-------------------------------------><
+// Method Syntax Form(s)
+
+flag = context->IsPointer(obj);
 ]]>
 </programlisting>
 <para>Tests if an Object is a Pointer object.
@@ -7376,12 +7558,14 @@ the RexxObjectPtr value may be safely cast to a RexxPointerObject.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 logical_t flag;
 
->>--flag = context->IsRoutine(obj);-------------------------------------><
+// Method Syntax Form(s)
+
+flag = context->IsRoutine(obj);
 ]]>
 </programlisting>
 <para>Tests if an Object a Routine object.
@@ -7425,12 +7609,14 @@ the RexxObjectPtr value may be safely cast to a RexxPointerObject.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 logical_t flag;
 
->>--flag = context->IsStem(obj);----------------------------------------><
+// Method Syntax Form(s)
+
+flag = context->IsStem(obj);
 ]]>
 </programlisting>
 <para>Tests if an Object is a Stem object.
@@ -7474,12 +7660,14 @@ the RexxObjectPtr value may be safely cast to a RexxStemObject.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 logical_t flag;
 
->>--flag = context->IsString(obj);--------------------------------------><
+// Method Syntax Form(s)
+
+flag = context->IsString(obj);
 ]]>
 </programlisting>
 <para>Tests if an Object is a String object.
@@ -7525,11 +7713,13 @@ the RexxObjectPtr value may be safely cast to a RexxStringObject.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 size_t langlevel;
 
->>--langlevel = context->LanguageLevel();-------------------------------><
+// Method Syntax Form(s)
+
+langlevel = context->LanguageLevel();
 ]]>
 </programlisting>
 <para>Returns the language level of the interpreter.
@@ -7575,12 +7765,14 @@ used to compile your code.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 CSTRING name;
 logical_t success;
 
->>--logical_t = context->LoadLibrary(name);---------------------------------><
+// Method Syntax Form(s)
+
+success = context->LoadLibrary(name);
 ]]>
 </programlisting>
 <para>Loads an external library with the given name and adds it to the global Rexx environment.
@@ -7625,12 +7817,14 @@ False is returned for any errors in loading the package.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 CSTRING name;
 RexxPackageObject pkg;
 
->>--pkg = context->LoadPackage(name);---------------------------------><
+// Method Syntax Form(s)
+
+pkg = context->LoadPackage(name);
 ]]>
 </programlisting>
 <para>Returns the Package object loaded from the specified file path/name.
@@ -7676,13 +7870,15 @@ can be retrieved using GetConditionInfo() (<xref linkend="mthGetConditionInfo" /
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 CSTRING name, data;
 size_t sz;
 RexxPackageObject pkg;
 
->>--pkg = context->LoadPackageFromData(name, data, sz);---------------><
+// Method Syntax Form(s)
+
+pkg = context->LoadPackageFromData(name, data, sz);
 ]]>
 </programlisting>
 <para>Returns the loaded package object  from the specified file path/name.
@@ -7734,14 +7930,16 @@ can be retrieved using GetConditionInfo() (<xref linkend="mthGetConditionInfo" /
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 logical_t flag, n;
 
->>--flag = context->Logical(obj, &n);------------------------------------><
+// Method Syntax Form(s)
 
->>--obj = context->Logical(n);-------------------------------------------><
+flag = context->Logical(obj, &n);
+
+obj = context->Logical(n);
 ]]>
 </programlisting>
 <para>This method has two forms.
@@ -7792,12 +7990,14 @@ an Object version of the logical value.</para>
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 logical_t flag, n;
 
->>--obj = context->LogicalToObject(n);-----------------------------------><
+// Method Syntax Form(s)
+
+obj = context->LogicalToObject(n);
 ]]>
 </programlisting>
 <para>Converts a C logical value to an Object.
@@ -7839,12 +8039,14 @@ logical_t flag, n;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxMutableBufferObject obj;
 size_t sz;
 
->>--sz = context->MutableBufferCapacity(obj);-------------------------------------><
+// Method Syntax Form(s)
+
+sz = context->MutableBufferCapacity(obj);
 ]]>
 </programlisting>
 <para>Return the current buffer size of the MutableBuffer.  The capacity is the total
@@ -7887,12 +8089,14 @@ size of the buffer.  The length value is the amount of data currently contained 
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxMutableBufferObject obj;
 POINTER str;
 
->>--str = context->MutableBufferData(obj);-------------------------------------><
+// Method Syntax Form(s)
+
+str = context->MutableBufferData(obj);
 ]]>
 </programlisting>
 <para>Returns a pointer to a MutableBuffer object's data area.
@@ -7934,12 +8138,14 @@ POINTER str;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxMutableBufferObject obj;
 size_t sz;
 
->>--sz = context->MutableBufferLength(obj);-------------------------------------><
+// Method Syntax Form(s)
+
+sz = context->MutableBufferLength(obj);
 ]]>
 </programlisting>
 <para>Return the current length of the data in a MutableBuffer object's data area.
@@ -7981,12 +8187,14 @@ size_t sz;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxArrayObject obj;
 size_t len;
 
->>--obj = context->NewArray(d);------------------------------------------><
+// Method Syntax Form(s)
+
+obj = context->NewArray(d);
 ]]>
 </programlisting>
 <para>Create an Array object of the specified size.
@@ -8028,12 +8236,14 @@ size_t len;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxBufferObject obj;
 size_t len;
 
->>--obj = context->NewBuffer(len);---------------------------------------><
+// Method Syntax Form(s)
+
+obj = context->NewBuffer(len);
 ]]>
 </programlisting>
 <para>Create a Buffer object with a specific data size.
@@ -8075,12 +8285,14 @@ size_t len;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxBufferStringObject obj;
 size_t len;
 
->>--obj = context->NewBufferString(len);---------------------------------><
+// Method Syntax Form(s)
+
+obj = context->NewBufferString(len);
 ]]>
 </programlisting>
 <para>Create a RexxBufferString with the indicated buffer size.  A RexxBufferString
@@ -8125,11 +8337,13 @@ transform this into a completed String object.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxDirectoryObject obj;
 
->>--obj = context->NewDirectory();---------------------------------------><
+// Method Syntax Form(s)
+
+obj = context->NewDirectory();
 ]]>
 </programlisting>
 <para>Create a Directory object.
@@ -8167,13 +8381,15 @@ RexxDirectoryObject obj;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxMethodObject obj;
 CSTRING name, code;
 size_t sz;
 
->>--obj = context->NewMethod(name, code, sz);----------------------------><
+// Method Syntax Form(s)
+
+obj = context->NewMethod(name, code, sz);
 ]]>
 </programlisting>
 <para>Create a new Method object from an in-memory buffer.
@@ -8225,12 +8441,16 @@ can be retrieved using GetConditionInfo() (<xref linkend="mthGetConditionInfo" /
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxMutableBufferObject obj;
 size_t len;
 
->>--obj = context->NewMutableBuffer(len);--------------------------------><
+// Method Syntax Form(s)
+
+obj = context->NewMethod(name, code, sz);
+
+obj = context->NewMutableBuffer(len);
 ]]>
 </programlisting>
 <para>Create a MutableBuffer object with a specific initial capacity.  The new buffer will
@@ -8273,12 +8493,14 @@ have an initial length of 0.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxPointerObject obj;
 POINTER p;
 
->>--obj = context->NewPointer(p);----------------------------------------><
+// Method Syntax Form(s)
+
+obj = context->NewPointer(p);
 ]]>
 </programlisting>
 <para>Create a new Pointer object from a C pointer.
@@ -8320,13 +8542,15 @@ POINTER p;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxRoutineObject obj;
 CSTRING name, code;
 size_t sz;
 
->>--obj = context->NewRoutine(name, code, sz);---------------------------><
+// Method Syntax Form(s)
+
+obj = context->NewRoutine(name, code, sz);
 ]]>
 </programlisting>
 <para>Create a new Routine object from an in-memory buffer.
@@ -8378,12 +8602,14 @@ can be retrieved using GetConditionInfo() (<xref linkend="mthGetConditionInfo" /
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxStemObject obj;
 CSTRING str;
 
->>--obj = context->NewStem(str);-----------------------------------------><
+// Method Syntax Form(s)
+
+obj = context->NewStem(str);
 ]]>
 </programlisting>
 <para>Create an new Stem object with the specified base name.
@@ -8425,15 +8651,17 @@ CSTRING str;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxStringObject obj;
 CSTRING str;
 size_t len;
 
->>--obj = context->NewString(str, len);----------------------------------><
+// Method Syntax Form(s)
 
->>--obj = context->NewString(str);---------------------------------------><
+obj = context->NewString(str, len);
+
+obj = context->NewString(str);
 ]]>
 </programlisting>
 <para>There are two forms of this method. Both create a new String object from program data.
@@ -8480,12 +8708,14 @@ size_t len;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxSupplierObject obj;
 RexxArrayObject arr1, arr2;
 
->>--obj = context->NewSupplier(arr1, arr2);------------------------------><
+// Method Syntax Form(s)
+
+obj = context->NewSupplier(arr1, arr2);
 ]]>
 </programlisting>
 <para>This method returns a Supplier object based on the supplied argument Arrays.
@@ -8530,11 +8760,13 @@ RexxArrayObject arr1, arr2;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 
->>--obj = context->Nil();------------------------------------------------><
+// Method Syntax Form(s)
+
+obj = context->Nil();
 ]]>
 </programlisting>
 <para>Returns the Rexx Nil object.
@@ -8572,11 +8804,13 @@ RexxObjectPtr obj;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxStringObject obj;
 
->>--obj = context->NullString();-----------------------------------------><
+// Method Syntax Form(s)
+
+obj = context->NullString();
 ]]>
 </programlisting>
 <para>This method returns a string object of zero length.
@@ -8614,12 +8848,14 @@ RexxStringObject obj;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 POINTER ptr;
 
->>--ptr = context->ObjectToCSelf(obj);--------------------------------><
+// Method Syntax Form(s)
+
+ptr = context->ObjectToCSelf(obj);
 ]]>
 </programlisting>
 <para>Returns a pointer to the CSELF value for another object.
@@ -8666,12 +8902,14 @@ Objects that rely on CSELF values typically set the variable CSELF inside an INI
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 POINTER ptr;
 
->>--ptr = context->ObjectToCSelfScoped(obj,scope);---------------------><
+// Method Syntax Form(s)
+
+ptr = context->ObjectToCSelfScoped(obj,scope);
 ]]>
 </programlisting>
 <para>Returns a pointer to the CSELF value for another object.
@@ -8722,13 +8960,15 @@ Objects that rely on CSELF values typically set the variable CSELF inside an INI
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 double n;
 logical_t flag;
 
->>--flag = context->ObjectToDouble(obj, &n);-----------------------------><
+// Method Syntax Form(s)
+
+flag = context->ObjectToDouble(obj, &n);
 ]]>
 </programlisting>
 <para>Converts an Object to a C double value.
@@ -8775,13 +9015,15 @@ logical_t flag;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 int32_t n;
 logical_t flag;
 
->>--flag = context->ObjectToInt32(obj, &n);------------------------------><
+// Method Syntax Form(s)
+
+flag = context->ObjectToInt32(obj, &n);
 ]]>
 </programlisting>
 <para>Convert an Object into a 32-bit integer.
@@ -8828,13 +9070,15 @@ logical_t flag;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 int64_t n;
 logical_t flag;
 
->>--flag = context->ObjectToInt64(obj, &n);------------------------------><
+// Method Syntax Form(s)
+
+flag = context->ObjectToInt64(obj, &n);
 ]]>
 </programlisting>
 <para>Convert an Object into a 64-bit integer.
@@ -8881,13 +9125,15 @@ logical_t flag;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 intptr_t n;
 logical_t flag;
 
->>--flag = context->ObjectToIntptr(obj, &n);-----------------------------><
+// Method Syntax Form(s)
+
+flag = context->ObjectToIntptr(obj, &n);
 ]]>
 </programlisting>
 <para>Convert an Object to an intptr_t value.
@@ -8934,12 +9180,14 @@ logical_t flag;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 logical_t flag, n;
 
->>--flag = context->ObjectToLogical(obj, &n);----------------------------><
+// Method Syntax Form(s)
+
+flag = context->ObjectToLogical(obj, &n);
 ]]>
 </programlisting>
 <para>Converts an Object to a C logical value (0 or 1).
@@ -8986,12 +9234,14 @@ logical_t flag, n;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 RexxStringObject str;
 
->>--str = context->ObjectToString(obj);----------------------------------><
+// Method Syntax Form(s)
+
+str = context->ObjectToString(obj);
 ]]>
 </programlisting>
 <para>Convert an Object to a String object.
@@ -9033,13 +9283,15 @@ RexxStringObject str;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 size_t n;
 logical_t flag;
 
->>--flag = context->ObjectToStringSize(obj, &n);-------------------------><
+// Method Syntax Form(s)
+
+flag = context->ObjectToStringSize(obj, &n);
 ]]>
 </programlisting>
 <para>Convert an Object to a stringsize_t number value.
@@ -9086,12 +9338,14 @@ logical_t flag;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 CSTRING str;
 
->>--str = context->ObjectToStringValue(obj);-----------------------------><
+// Method Syntax Form(s)
+
+str = context->ObjectToStringValue(obj);
 ]]>
 </programlisting>
 <para>Convert an Object to a C ASCII-Z string.
@@ -9133,13 +9387,15 @@ CSTRING str;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 uintptr_t n;
 logical_t flag;
 
->>--flag = context->ObjectToUintptr(obj, &n);----------------------------><
+// Method Syntax Form(s)
+
+flag = context->ObjectToUintptr(obj, &n);
 ]]>
 </programlisting>
 <para>Convert an Object to an uintptr_t value.
@@ -9186,13 +9442,15 @@ logical_t flag;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 uint32_t n;
 logical_t flag;
 
->>--flag = context->ObjectToUnsignedInt32(obj, &n);----------------------><
+// Method Syntax Form(s)
+
+flag = context->ObjectToUnsignedInt32(obj, &n);
 ]]>
 </programlisting>
 <para>Convert an Object to an uint32_t value.
@@ -9239,13 +9497,15 @@ logical_t flag;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 uint64_t n;
 logical_t flag;
 
->>--flag = context->ObjectToUnsignedInt64(obj, &n);----------------------><
+// Method Syntax Form(s)
+
+flag = context->ObjectToUnsignedInt64(obj, &n);
 ]]>
 </programlisting>
 <para>Convert an Object to an uint64_t value.
@@ -9290,13 +9550,15 @@ logical_t flag;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 ValueDescriptor desc;
 logical_t flag;
 
->>--flag = context->ObjectToValue(obj, &desc);---------------------------><
+// Method Syntax Form(s)
+
+flag = context->ObjectToValue(obj, &desc);
 ]]>
 </programlisting>
 <para>Convert a Rexx object to another type.  The target type is identified
@@ -9350,13 +9612,15 @@ value of the requested type.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 wholenumber_t wn;
 logical_t flag;
 
->>--flag = context->ObjectToWholeNumber(obj, &wn);-----------------------><
+// Method Syntax Form(s)
+
+flag = context->ObjectToWholeNumber(obj, &wn);
 ]]>
 </programlisting>
 <para>Convert an Object to a whole number value.
@@ -9403,12 +9667,14 @@ logical_t flag;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxPointerObject obj;
 POINTER p;
 
->>--p = context->PointerValue(obj);--------------------------------------><
+// Method Syntax Form(s)
+
+p = context->PointerValue(obj);
 ]]>
 </programlisting>
 <para>Return the wrappered C pointer value from a RexxPointerObject.
@@ -9450,14 +9716,16 @@ POINTER p;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 CSTRING str;
 RexxStringObject sobj;
 RexxArrayObject arr;
 RexxObjectPtr obj;
 
->>--context->RaiseCondition(str, sobj, add, obj);-------------------------><
+// Method Syntax Form(s)
+
+context->RaiseCondition(str, sobj, add, obj);
 ]]>
 </programlisting>
 <para>Raise a condition.  The raised condition is held in a pending
@@ -9511,12 +9779,14 @@ Rexx code.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 size_t n;
 RexxObjectPtr obj;
 
->>--context->RaiseException(n, obj);-------------------------------------><
+// Method Syntax Form(s)
+
+context->RaiseException(n, obj);
 ]]>
 </programlisting>
 <para>Raise a SYNTAX condition.  The raised condition is held in a pending
@@ -9566,11 +9836,13 @@ Rexx code.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 size_t n;
 
->>--context->RaiseException0(n);-----------------------------------------><
+// Method Syntax Form(s)
+
+context->RaiseException0(n);
 ]]>
 </programlisting>
 <para>Raise an exception condition with no message substitution values.
@@ -9612,12 +9884,14 @@ size_t n;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 size_t n;
 RexxObjectPtr obj;
 
->>--context->RaiseException1(n, obj);------------------------------------><
+// Method Syntax Form(s)
+
+context->RaiseException1(n, obj);
 ]]>
 </programlisting>
 <para>Raise an exception condition with a single message substitution value.
@@ -9662,12 +9936,14 @@ RexxObjectPtr obj;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 size_t n;
 RexxObjectPtr obj1, obj2;
 
->>--context->RaiseException2(n, obj1, obj2);-----------------------------><
+// Method Syntax Form(s)
+
+context->RaiseException2(n, obj1, obj2);
 ]]>
 </programlisting>
 <para>Raise an exception condition with two message substitution values.
@@ -9715,12 +9991,14 @@ RexxObjectPtr obj1, obj2;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 CSTRING name;
 logical_t success;
 
->>--logical_t = context->RegisterLibrary(name, table);---------------------------------><
+// Method Syntax Form(s)
+
+success = context->RegisterLibrary(name, table);
 ]]>
 </programlisting>
 <para>Registers an in-process library package with the global Rexx environment.  The package is
@@ -9770,11 +10048,13 @@ False is returned if a package has already be loaded or registered with the give
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr ref;
 
->>--context->ReleaseGlobalReference(ref);--------------------------------><
+// Method Syntax Form(s)
+
+context->ReleaseGlobalReference(ref);
 ]]>
 </programlisting>
 <para>Release access to a global object reference.  This removes the global
@@ -9818,11 +10098,13 @@ garbage collection protection from the object reference.  Once released,
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr ref;
 
->>--context->ReleaseLocalReference(ref);---------------------------------><
+// Method Syntax Form(s)
+
+context->ReleaseLocalReference(ref);
 ]]>
 </programlisting>
 <para>Removes local context protection from an object reference.
@@ -9866,11 +10148,13 @@ Once released,
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr ref, obj;
 
->>--ref = context->RequestGlobalReference(obj);--------------------------><
+// Method Syntax Form(s)
+
+ref = context->RequestGlobalReference(obj);
 ]]>
 </programlisting>
 <para>Requests global garbage collection protection for an object reference.
@@ -9911,12 +10195,14 @@ API context.</para>
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 RexxStemObject stem;
 
->>--stem = context->ResolveStemVariable(obj);-------------------------><
+// Method Syntax Form(s)
+
+stem = context->ResolveStemVariable(obj);
 ]]>
 </programlisting>
 <para>Resolves a stem variable object using the same mechanism applied to
@@ -9964,12 +10250,14 @@ stem variable is returned as a result.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj, ret;
 RexxArrayObject arr;
 
->>--ret = context->SendMessage(obj, meg, arr);---------------------------><
+// Method Syntax Form(s)
+
+ret = context->SendMessage(obj, meg, arr);
 ]]>
 </programlisting>
 <para>Send a message to an Object.
@@ -10023,11 +10311,13 @@ can be used to check if an error occurred during the call.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj, ret;
 
->>--ret = context->SendMessage0(obj, meg);-------------------------------><
+// Method Syntax Form(s)
+
+ret = context->SendMessage0(obj, meg);
 ]]>
 </programlisting>
 <para>Send a message to an Object.
@@ -10079,11 +10369,13 @@ can be used to check if an error occurred during the call.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj, ret, arg1;
 
->>--ret = context->SendMessage2(obj, meg, arg1);-------------------------><
+// Method Syntax Form(s)
+
+ret = context->SendMessage2(obj, meg, arg1);
 ]]>
 </programlisting>
 <para>Send a message to an Object.
@@ -10138,11 +10430,13 @@ can be used to check if an error occurred during the call.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj, ret, arg1, arg2;
 
->>--ret = context->SendMessage2(obj, meg, arg1, arg2);-------------------><
+// Method Syntax Form(s)
+
+ret = context->SendMessage2(obj, meg, arg1, arg2);
 ]]>
 </programlisting>
 <para>Send a message to an Object.
@@ -10196,12 +10490,14 @@ can be used to check if an error occurred during the call.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 CSTRING name;
 
->>--context->SetContextVariable(name, obj);---------------------------><
+// Method Syntax Form(s)
+
+context->SetContextVariable(name, obj);
 ]]>
 </programlisting>
 <para>Sets the value of a Rexx variable in the current function context.
@@ -10244,9 +10540,11 @@ to set the associated compound variable.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
->>--context->SetGuardOff();----------------------------------------------><
+// Method Syntax Form(s)
+
+context->SetGuardOff();
 ]]>
 </programlisting>
 <para>Release the guard lock for this method scope.
@@ -10278,9 +10576,11 @@ to set the associated compound variable.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
->>--context->SetGuardOn();-----------------------------------------------><
+// Method Syntax Form(s)
+
+context->SetGuardOn();
 ]]>
 </programlisting>
 <para>Obtain the guard lock for this object scope.
@@ -10318,13 +10618,15 @@ to set the associated compound variable.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxMutableBufferObject obj;
 size_t len;
 POINTER data;
 
->>--data = context->SetMutableBufferCapacity(obj,len);----------------------------------><
+// Method Syntax Form(s)
+
+data = context->SetMutableBufferCapacity(obj,len);
 ]]>
 </programlisting>
 <para>Ensure the MutableBuffer object's data area is at least the indicated size.  If necessary,
@@ -10375,13 +10677,15 @@ may reallocate the data area, the return value should replace any previous buffe
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxMutableBufferObject obj;
 size_t len;
 size_t newLen;
 
->>--newLen = context->SetMutableBufferLength(obj,len);----------------------------------><
+// Method Syntax Form(s)
+
+newLen = context->SetMutableBufferLength(obj,len);
 ]]>
 </programlisting>
 <para>Sets the length of the data in the MutableBuffer's data area.  If the length is greater than
@@ -10428,12 +10732,14 @@ is larger than the current data area, the new length will be capped at the lengt
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 CSTRING str;
 RexxObjectPtr obj;
 
->>--context->SetObjectVariable(str, obj);--------------------------------><
+// Method Syntax Form(s)
+
+context->SetObjectVariable(str, obj);
 ]]>
 </programlisting>
 <para>Sets an instance variable in the current method's variable scope to a new value.
@@ -10479,13 +10785,15 @@ Only simple and stem variables may be set using this API.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxStemObject sobj;
 RexxObjectPtr obj;
 size_t n;
 
->>--context->SetStemArrayElement(sobj, n, obj);--------------------------><
+// Method Syntax Form(s)
+
+context->SetStemArrayElement(sobj, n, obj);
 ]]>
 </programlisting>
 <para>Sets an element of the Stem object. If the element exists it is replaced.
@@ -10534,13 +10842,15 @@ This method uses a numeric index as the element name.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxStemObject sobj;
 RexxObjectPtr obj;
 CSTRING name;
 
->>--context->SetStemElement(sobj, name, obj);----------------------------><
+// Method Syntax Form(s)
+
+context->SetStemElement(sobj, name, obj);
 ]]>
 </programlisting>
 <para>Sets an element of the Stem object. If the element exists it is replaced.
@@ -10582,11 +10892,13 @@ CSTRING name;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 logical_t flag;
 
->>--context->SetThreadTrace(flag);---------------------------------------><
+// Method Syntax Form(s)
+
+context->SetThreadTrace(flag);
 ]]>
 </programlisting>
 <para>Sets the interactive trace state for the current thread.
@@ -10622,11 +10934,13 @@ logical_t flag;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 logical_t flag;
 
->>--context->SetTrace(flag);---------------------------------------------><
+// Method Syntax Form(s)
+
+context->SetTrace(flag);
 ]]>
 </programlisting>
 <para>Sets the interactvive trace state for the interpreter instance.  This will enable tracing in
@@ -10669,15 +10983,17 @@ all active threads for the interpreter instance.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxRoutineObject obj;
 CSTRING str;
 size_t len;
 
->>--obj = context->String(str, len);-------------------------------------><
+// Method Syntax Form(s)
 
->>--obj = context->String(str);------------------------------------------><
+obj = context->String(str, len);
+
+obj = context->String(str);
 ]]>
 </programlisting>
 <para>There are two forms of this method. Both create a new String object from a C string.
@@ -10722,12 +11038,14 @@ size_t len;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 CSTRING str;
 
->>--str = context->StringData(obj);--------------------------------------><
+// Method Syntax Form(s)
+
+str = context->StringData(obj);
 ]]>
 </programlisting>
 <para>Returns a read-only pointer to the String object's string data.
@@ -10769,13 +11087,15 @@ CSTRING str;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 POINTER str;
 size_t c, len1, len2;
 
->>--c = context->StringGet(obj, len1, str, len2);------------------------><
+// Method Syntax Form(s)
+
+c = context->StringGet(obj, len1, str, len2);
 ]]>
 </programlisting>
 <para>Copies all or part of the String object to a C string buffer.
@@ -10829,12 +11149,14 @@ size_t c, len1, len2;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 size_t sz;
 
->>--sz = context->StringLength(obj);-------------------------------------><
+// Method Syntax Form(s)
+
+sz = context->StringLength(obj);
 ]]>
 </programlisting>
 <para>Return the length a String object.
@@ -10876,11 +11198,13 @@ size_t sz;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr srcobj, newobj;
 
->>--newobj = context->StringLower(srcobj);-------------------------------><
+// Method Syntax Form(s)
+
+newobj = context->StringLower(srcobj);
 ]]>
 </programlisting>
 <para>Convert a String object to lower case, returning a new String object.
@@ -10922,15 +11246,17 @@ RexxObjectPtr srcobj, newobj;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 logical_t flag;
 stringsize_t n;
 
->>--obj = context->StringSize(&n);-------------------------------------------><
+// Method Syntax Form(s)
 
->>--flag = context->StringSize(obj, &n);-------------------------------------><
+obj = context->StringSize(&n);
+
+flag = context->StringSize(obj, &n);
 ]]>
 </programlisting>
 <para>There are two forms of this method.
@@ -10982,12 +11308,14 @@ placed in <emphasis role="italic">n</emphasis>.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 size_t sz;
 
->>--obj = context->StringSizeToObject(sz);-------------------------------><
+// Method Syntax Form(s)
+
+obj = context->StringSizeToObject(sz);
 ]]>
 </programlisting>
 <para>Convert a stringsize_t value to an Object.
@@ -11029,11 +11357,13 @@ size_t sz;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr srcobj, newobj;
 
->>--newobj = context->StringUpper(srcobj);-------------------------------><
+// Method Syntax Form(s)
+
+newobj = context->StringUpper(srcobj);
 ]]>
 </programlisting>
 <para>Convert a String object upper case, returning a new String object.
@@ -11075,12 +11405,14 @@ RexxObjectPtr srcobj, newobj;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxSupplierObjectPtr sobj;
 logical_t flag;
 
->>--flag = context->SupplierAvailable(sobj);-----------------------------><
+// Method Syntax Form(s)
+
+flag = context->SupplierAvailable(sobj);
 ]]>
 </programlisting>
 <para>Returns 1 if there is another supplier item available.
@@ -11122,12 +11454,14 @@ logical_t flag;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxSupplierObjectPtr sobj;
 RexxObjectPtr obj;
 
->>--obj = context->SupplierIndex(sobj);----------------------------------><
+// Method Syntax Form(s)
+
+obj = context->SupplierIndex(sobj);
 ]]>
 </programlisting>
 <para>Return the current supplier object index value.
@@ -11169,12 +11503,14 @@ RexxObjectPtr obj;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxSupplierObjectPtr sobj;
 RexxObjectPtr obj;
 
->>--obj = context->SupplierItem(sobj);-----------------------------------><
+// Method Syntax Form(s)
+
+obj = context->SupplierItem(sobj);
 ]]>
 </programlisting>
 <para>Return the current supplier item object.
@@ -11216,11 +11552,13 @@ RexxObjectPtr obj;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxSupplierObjectPtr sobj;
 
->>--context->SupplierNext(sobj);-----------------------------------------><
+// Method Syntax Form(s)
+
+context->SupplierNext(sobj);
 ]]>
 </programlisting>
 <para>Advance a Supplier object to the next enumeration position.
@@ -11256,9 +11594,11 @@ RexxSupplierObjectPtr sobj;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
->>--context->Terminate();----------------------------------------------><
+// Method Syntax Form(s)
+
+context->Terminate();
 ]]>
 </programlisting>
 <para>Terminates the current Rexx interpreter instance.  Terminate() may
@@ -11299,11 +11639,13 @@ returning.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 
->>--obj = context->True();-----------------------------------------------><
+// Method Syntax Form(s)
+
+obj = context->True();
 ]]>
 </programlisting>
 <para>This method returns the Rexx .true object.
@@ -11341,15 +11683,17 @@ RexxObjectPtr obj;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 logical_t flag;
 uintptr_t n;
 
->>--obj = context->Uintptr(&n);------------------------------------------><
+// Method Syntax Form(s)
 
->>--flag = context->Uintptr(obj, &n);------------------------------------><
+obj = context->Uintptr(&n);
+
+flag = context->Uintptr(obj, &n);
 ]]>
 </programlisting>
 <para>There are two forms of this method.
@@ -11401,12 +11745,14 @@ If successful, the converted value is placed in
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 uintptr_t n;
 
->>--obj = context->UintptrToObject(&n);----------------------------------><
+// Method Syntax Form(s)
+
+obj = context->UintptrToObject(&n);
 ]]>
 </programlisting>
 <para>Convert a uintptr_t value <emphasis role="italic">n</emphasis> to an Object.
@@ -11448,15 +11794,17 @@ uintptr_t n;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 logical_t flag;
 uint32_t n;
 
->>--obj = context->UnsignedInt32(n);-------------------------------------><
+// Method Syntax Form(s)
 
->>--flag = context->UnsignedInt32(obj, &n);------------------------------><
+obj = context->UnsignedInt32(n);
+
+flag = context->UnsignedInt32(obj, &n);
 ]]>
 </programlisting>
 <para>There are two forms of this method.
@@ -11508,12 +11856,14 @@ placed in <emphasis role="italic">n</emphasis>.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 uint32_t n;
 
->>--obj = context->UnsignedInt32ToObject(n);-----------------------------><
+// Method Syntax Form(s)
+
+obj = context->UnsignedInt32ToObject(n);
 ]]>
 </programlisting>
 <para>Convert a C 32-bit unsigned integer <emphasis role="italic">n</emphasis> to an Object.
@@ -11555,15 +11905,17 @@ uint32_t n;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 logical_t flag;
 uint64_t n;
 
->>--obj = context->UnsignedInt64(n);-------------------------------------><
+// Method Syntax Form(s)
 
->>--flag = context->UnsignedInt64(obj, &n);------------------------------><
+obj = context->UnsignedInt64(n);
+
+flag = context->UnsignedInt64(obj, &n);
 ]]>
 </programlisting>
 <para>There are two forms of this method.
@@ -11615,12 +11967,14 @@ placed in <emphasis role="italic">n</emphasis>.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 uint64_t n;
 
->>--obj = context->UnsignedInt64ToObject(n);-----------------------------><
+// Method Syntax Form(s)
+
+obj = context->UnsignedInt64ToObject(n);
 ]]>
 </programlisting>
 <para>Convert a C 64-bit unsigned integer <emphasis role="italic">n</emphasis> to an Object.
@@ -11660,12 +12014,14 @@ uint64_t n;
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxArrayObj obj;
 ValueDescriptor desc[3];
 
->>--obj = context->ValuesToObject(desc);---------------------------------><
+// Method Syntax Form(s)
+
+obj = context->ValuesToObject(desc);
 ]]>
 </programlisting>
 <para>Converts an array of ValueDescriptor structs to an Array of objects.
@@ -11707,12 +12063,14 @@ ValueDescriptor desc[3];
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 ValueDescriptor desc;;
 
->>--obj = context->ValueToObject(&desc);---------------------------------><
+// Method Syntax Form(s)
+
+obj = context->ValueToObject(&desc);
 ]]>
 </programlisting>
 <para>Convert a type to an Object representation.  The source type is identified
@@ -11759,15 +12117,17 @@ there are no specific conversion APIs.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 wholenumber_t n;
 logical_t flag;
 
->>--obj = context->WholeNumber(n);---------------------------------------><
+// Method Syntax Form(s)
 
->>--flag = context->WholeNumber(obj, &n);--------------------------------><
+obj = context->WholeNumber(n);
+
+flag = context->WholeNumber(obj, &n);
 ]]>
 </programlisting>
 <para>There are two forms of this method.
@@ -11819,12 +12179,14 @@ placed in <emphasis role="italic">n</emphasis>.
 </tbody>
 </tgroup>
 </informaltable>
-<programlisting>
+<programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
 wholenumber_t n;
 
->>--obj = context->WholeNumberToObject(n);-------------------------------><
+// Method Syntax Form(s)
+
+obj = context->WholeNumberToObject(n);
 ]]>
 </programlisting>
 <para>Convert a C wholenumber_t value to an Object.
