@@ -60,13 +60,18 @@
 <indexterm><primary>New</primary></indexterm>
 <para>Init the standard screen or create a new window.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--.Window~new()--------------------------------------------------------><
 
->>--.Window~new(nlines, ncols, begin_y, begin_x)-------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_new1.svg" scale="50" />
+</imageobject>
+</mediaobject>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_new2.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>The first invocation of this method creates the standard screen and
 must pass zero arguments. Subsequest invocations create standard windows
@@ -110,11 +115,13 @@ win = .Window~new(10, 20, 5, 10)
 <indexterm><primary>Orxncurses_Version</primary></indexterm>
 <para>Return the Orxnncurses_Version string.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--.Window~orxncurses_version()-----------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_orxncurses_version.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -126,12 +133,13 @@ win = .Window~new(10, 20, 5, 10)
 <indexterm><primary>SetBase</primary></indexterm>
 <para>Set whether or not the library uses one-based indexes or zero-based indexes. The default is one-based.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--.Window~setbase(--+--------+--)--------------------------------------><
-                      +--base--+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_setbase.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -163,11 +171,13 @@ scr~napms(500)
 <para>Initialize for soft label. This method must be invoked prior to
 creating the standard screen.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--.Window~slk_init(fmt)------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_slk_init.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -212,11 +222,13 @@ scr~slk_refresh()
 <indexterm><primary>Acs_map</primary></indexterm>
 <para>Return an ACS character.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~acs_map(str)-----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_acs_map.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -233,11 +245,13 @@ scr~slk_refresh()
 <indexterm><primary>Addch</primary></indexterm>
 <para>Add a single character to the screen.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~addch(ch)--------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_addch.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -277,11 +291,13 @@ strm~close()
 <indexterm><primary>Addchnstr</primary></indexterm>
 <para>Add a chtype character string to the screen.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~addchnstr(str, n)------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_addchnstr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -303,11 +319,13 @@ strm~close()
 <indexterm><primary>Addchstr</primary></indexterm>
 <para>Add a chtype character string to the screen.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~addchstr(str)----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_addchstr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -325,11 +343,13 @@ strm~close()
 <indexterm><primary>Addnstr</primary></indexterm>
 <para>Add a character string to the screen.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~addnstr(str, n)--------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_addnstr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -350,11 +370,13 @@ strm~close()
 <indexterm><primary>Addstr</primary></indexterm>
 <para>Add a character string to the screen.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~addstr(str)------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_addstr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -380,11 +402,13 @@ scr~addstr('Goodbye, cruel C Programming!')
 <indexterm><primary>Assume_default_colors</primary></indexterm>
 <para>Set default colors.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~assume_default_colors(fg, bg)------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_assume_default_colors.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -405,11 +429,13 @@ scr~addstr('Goodbye, cruel C Programming!')
 <indexterm><primary>Attroff</primary></indexterm>
 <para>Turn off one or more attributes.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~attroff(attr)----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_attroff.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -437,11 +463,13 @@ scr~attroff(scr~A_BOLD)
 <indexterm><primary>Attron</primary></indexterm>
 <para>Turn on one or more attributes.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~attron(attr)-----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_attron.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -467,11 +495,13 @@ scr~attron(scr~A_BOLD)
 <indexterm><primary>Attrset</primary></indexterm>
 <para>Turn on one or more attributes.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~attrset(attr)----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_attrset.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -510,11 +540,13 @@ do a = 1 to text~items()
 <indexterm><primary>Baudrate</primary></indexterm>
 <para>Return the terminal baud rate.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~baudrate()-------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_baudrate.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -526,11 +558,13 @@ do a = 1 to text~items()
 <indexterm><primary>Beep</primary></indexterm>
 <para>Beep the terminal.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~beep()-----------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_beep.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -553,11 +587,13 @@ scr~beep()
 <indexterm><primary>Bkgd</primary></indexterm>
 <para>Set backgroung attributes for the whole screen.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~bkgd(attr)-------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_bkgd.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -586,11 +622,13 @@ scr~bkgd(scr~COLOR_PAIR(1))
 <indexterm><primary>Bkgdset</primary></indexterm>
 <para>Set backgroung attributes for the next output text.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~bkgdset(attr)----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_bkgdset.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -607,11 +645,13 @@ scr~bkgd(scr~COLOR_PAIR(1))
 <indexterm><primary>Border</primary></indexterm>
 <para>Set window border.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~border(ls, rs, bs, tl, tr, bl, br)-------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_border.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -667,11 +707,13 @@ scr~border('ba'~x2d(), 'ba'~x2d(), 'cd'~x2d(), 'cd'~x2d(),,
 <indexterm><primary>Box</primary></indexterm>
 <para>Draw a box around the edges of a window.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~box(vchr, hch)---------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_box.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -702,11 +744,13 @@ scr~box('*'~c2d(), '*'~c2d())
 <indexterm><primary>Can_change_color</primary></indexterm>
 <para>Returns whether or not a terminal can changes its color set.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~can_change_color()-----------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_can_change_color.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -730,11 +774,13 @@ if \scr~can_change_color() then do
 <indexterm><primary>Cbreak</primary></indexterm>
 <para>Activates cbreak (buffering) mode.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~cbreak()---------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_cbreak.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -746,11 +792,13 @@ if \scr~can_change_color() then do
 <indexterm><primary>Chgat</primary></indexterm>
 <para>Change attributes on the window.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~chgat(n, attr, color)--------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_chgat.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -775,11 +823,13 @@ if \scr~can_change_color() then do
 <indexterm><primary>Clear</primary></indexterm>
 <para>Clear the window.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~clear()----------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_clear.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -801,11 +851,13 @@ scr~clear()
 <indexterm><primary>Clearok</primary></indexterm>
 <para>Force a repaint of the window on the next refresh call.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~clearok(bf)------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_clearok.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -822,11 +874,13 @@ scr~clear()
 <indexterm><primary>Clrtobot</primary></indexterm>
 <para>Clear the window from the current cursor position.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~cleartobot()-----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_cleartobot.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -849,11 +903,13 @@ scr~clrtobot()
 <indexterm><primary>Clrtoeol</primary></indexterm>
 <para>Clear the line from the current cursor position.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~cleartoeol()-----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_cleartoeol.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -889,11 +945,13 @@ do forever
 <indexterm><primary>Color_pair</primary></indexterm>
 <para>Returns the number of possible COLOR_PAIR attributes.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~color_pair()-----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_color_pair.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -917,11 +975,13 @@ scr~bkgd(scr~color_pair(1))
 <indexterm><primary>Color_pairs</primary></indexterm>
 <para>Returns the number of possible COLOR_PAIRS.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~color_pairs()----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_color_pairs.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -933,11 +993,13 @@ scr~bkgd(scr~color_pair(1))
 <indexterm><primary>Colors</primary></indexterm>
 <para>Returns the number of possible COLORs.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~colors()---------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_colors.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -949,11 +1011,13 @@ scr~bkgd(scr~color_pair(1))
 <indexterm><primary>Color_set</primary></indexterm>
 <para>Sets foreground and background text color.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~colorset(num)----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_color_set.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -970,11 +1034,13 @@ scr~bkgd(scr~color_pair(1))
 <indexterm><primary>Cols</primary></indexterm>
 <para>Returns the number of columns on the stdscr.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~cols()-----------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_cols.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -986,13 +1052,13 @@ scr~bkgd(scr~color_pair(1))
 <indexterm><primary>Copywin</primary></indexterm>
 <para>Copy a rectangle from one window to self.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~copywin(swin, sminrow, smincol, dminrow, dmincol, ---------------->
 
->---------------dmaxrow, dmaxcol, overlay)-------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_copywin.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -1062,11 +1128,13 @@ retc = bottom~copywin(top, 1, 1, 1, 1, 5, 13, .false)
 <indexterm><primary>Curs_set</primary></indexterm>
 <para>Control the cursor visibility.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~curs_set(vis)----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_curs_set.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -1098,11 +1166,13 @@ scr~curs_set(2)
 <indexterm><primary>Curses_version</primary></indexterm>
 <para>Return the nCurses version string.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~curses_version()-------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_curses_version.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -1115,11 +1185,13 @@ scr~curs_set(2)
 <para>Delete the character under the cursor and slide remaining characters
 on the line one position to the left.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~delch()----------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_delch.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -1145,11 +1217,13 @@ do c = 1 to 11
 <para>Delete the line under the cursor and slide remaining lines below the
 cursor up one line.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~deleteln()-------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_deleteln.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -1172,11 +1246,13 @@ scr~deleteln()
 <indexterm><primary>Delwin</primary></indexterm>
 <para>Destroy a window.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~delwin()---------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_delwin.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -1212,11 +1288,13 @@ scr~refresh()
 <indexterm><primary>Derwin</primary></indexterm>
 <para>Create a derrived window from self.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~derwin(nlines, ncols, begy, begx)--------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_derwin.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -1245,11 +1323,13 @@ scr~refresh()
 <indexterm><primary>Doupdate</primary></indexterm>
 <para>Update the terminal.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~doupdate()-------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_doupdate.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -1295,11 +1375,13 @@ scr~doupdate()
 <indexterm><primary>Dupwin</primary></indexterm>
 <para>Duplicate a window (self).</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~dupwin()---------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_dupwin.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -1331,11 +1413,13 @@ barney = fred~dupwin()
 <indexterm><primary>Echo</primary></indexterm>
 <para>Turn on echo.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~echo()-----------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_echo.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -1347,11 +1431,13 @@ barney = fred~dupwin()
 <indexterm><primary>Echochar</primary></indexterm>
 <para>Echo one character.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~echochar()-------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_echochar.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -1363,11 +1449,13 @@ barney = fred~dupwin()
 <indexterm><primary>Endwin</primary></indexterm>
 <para>End nCurses formatting.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~endwin()---------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_endwin.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -1389,11 +1477,13 @@ scr~endwin()
 <indexterm><primary>Erase</primary></indexterm>
 <para>Erase the window.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~erase()----------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_erase.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -1404,11 +1494,13 @@ scr~endwin()
 <title>Erasechar</title>
 <indexterm><primary>Erasechar</primary></indexterm>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~erasechar()------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_erasechar.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Return the terminal's erase char.</para>
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
@@ -1421,11 +1513,13 @@ scr~endwin()
 <indexterm><primary>Filter</primary></indexterm>
 <para>Restrict output to a single line.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~filter()---------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_filter.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -1437,11 +1531,13 @@ scr~endwin()
 <indexterm><primary>Flash</primary></indexterm>
 <para>Briefly flash the screen.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~flash()----------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_flash.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -1464,11 +1560,13 @@ scr~flash()
 <indexterm><primary>Flushinp</primary></indexterm>
 <para>Flush the input queue.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~flushinp()-------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_flushinp.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -1491,11 +1589,13 @@ scr~flushinp()
 <para>Get the y &amp; x screen coordinate for the top left corner of the window
 relative to the stdscr.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~getbegyx()-------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_getbegyx.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -1507,11 +1607,13 @@ relative to the stdscr.</para>
 <indexterm><primary>Getbkgd</primary></indexterm>
 <para>Get the background attribute for the the window.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~getbkgd()--------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_getbkgd.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -1523,11 +1625,13 @@ relative to the stdscr.</para>
 <indexterm><primary>Getch</primary></indexterm>
 <para>Get character from the keyboard.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~getch()----------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_getch.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -1549,11 +1653,13 @@ char = scr~getch()
 <indexterm><primary>Getmaxyx</primary></indexterm>
 <para>Get the width and height of a window.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~getmaxyx()-------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_getmaxyx.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -1576,11 +1682,13 @@ parse var maxyx maxy maxx .
 <indexterm><primary>Getmouse</primary></indexterm>
 <para>Get a mouse event.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~getmouse()-------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_getmouse.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -1616,11 +1724,13 @@ do forever
 <indexterm><primary>Getnstr</primary></indexterm>
 <para>Get a string from the terminal.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~getnstr(n)-------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_getnstr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -1653,11 +1763,13 @@ password = scr~getnstr(8)
 <indexterm><primary>Getparyx</primary></indexterm>
 <para>Get the width and height of a window relative to the parent window.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~getparyx()-------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_getparyx.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -1669,11 +1781,13 @@ password = scr~getnstr(8)
 <indexterm><primary>Getstr</primary></indexterm>
 <para>Get a string from the terminal.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~getstr()---------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_getstr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -1685,11 +1799,13 @@ password = scr~getnstr(8)
 <indexterm><primary>Getwin</primary></indexterm>
 <para>Create a new window from a file.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~getwin(filename)-------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_getwin.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -1717,11 +1833,13 @@ win~refresh()
 <indexterm><primary>Getyx</primary></indexterm>
 <para>Get the cursor location from a window.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~getyx()----------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_getyx.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -1733,11 +1851,13 @@ win~refresh()
 <indexterm><primary>Halfdelay</primary></indexterm>
 <para>Simalar to the cbreak method.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~halfdelay()------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_halfdelay.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -1754,11 +1874,13 @@ win~refresh()
 <indexterm><primary>Has_colors</primary></indexterm>
 <para>Determine if the terminal has color support.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~has_colors()-----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_has_colors.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -1783,11 +1905,13 @@ if \scr~has_colors() then do
 <indexterm><primary>Has_ic</primary></indexterm>
 <para>Determine if the terminal has insert character support.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~has_ic()---------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_has_ic.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -1799,11 +1923,13 @@ if \scr~has_colors() then do
 <indexterm><primary>Has_il</primary></indexterm>
 <para>Determine if the terminal has insert line support.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~has_il()---------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_has_il.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -1815,11 +1941,13 @@ if \scr~has_colors() then do
 <indexterm><primary>Hline</primary></indexterm>
 <para>Draw a horizontal line.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~hline(ch, n)-----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_hline.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -1858,11 +1986,13 @@ do y = 1 to maxy
 <indexterm><primary>Idcok</primary></indexterm>
 <para>Use hardware to insert/delete characters.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~idcok(bf)--------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_idcok.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -1879,11 +2009,13 @@ do y = 1 to maxy
 <indexterm><primary>Idlok</primary></indexterm>
 <para>Use hardware to insert/delete lines.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~idlok(bf)--------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_idlok.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -1900,11 +2032,13 @@ do y = 1 to maxy
 <indexterm><primary>Immedok</primary></indexterm>
 <para>Use hardware to provide auto refresh.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~immeok(bf)-------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_immedok.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -1921,11 +2055,13 @@ do y = 1 to maxy
 <indexterm><primary>Inch</primary></indexterm>
 <para>Return the attr/char under the cursor.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~inch()-----------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_inch.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -1937,11 +2073,13 @@ do y = 1 to maxy
 <indexterm><primary>Inchstr</primary></indexterm>
 <para>Return the attr/char array.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~inchstr()--------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_inchstr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -1953,11 +2091,13 @@ do y = 1 to maxy
 <indexterm><primary>Inchnstr</primary></indexterm>
 <para>Return the attr/char array.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~inchnstr(n)------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_inchnstr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -1974,11 +2114,13 @@ do y = 1 to maxy
 <indexterm><primary>Init_color</primary></indexterm>
 <para>Allow the user to redefine colors.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~init_color(c, r, g, b)-------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_init_color.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -2007,11 +2149,13 @@ do y = 1 to maxy
 <indexterm><primary>Init_pair</primary></indexterm>
 <para>Assign foreground an background colors to a color pair.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~init_pair(c, f, b)-----------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_init_pair.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -2046,11 +2190,13 @@ scr~init_pair(1, scr~COLOR_WHITE, scr~COLOR_BLUE)
 <indexterm><primary>Innstr</primary></indexterm>
 <para>Read a string from the terminal.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~innstr(n)--------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_innstr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -2067,11 +2213,13 @@ scr~init_pair(1, scr~COLOR_WHITE, scr~COLOR_BLUE)
 <indexterm><primary>Insch</primary></indexterm>
 <para>Insert attr/char under the cursor.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~insch(ch)--------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_insch.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -2103,11 +2251,13 @@ do i = len to 1 by -1
 <indexterm><primary>Insdelln</primary></indexterm>
 <para>Insert/delete lines.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~insdelln(n)------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_insdelin.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -2124,11 +2274,13 @@ do i = len to 1 by -1
 <indexterm><primary>Insertln</primary></indexterm>
 <para>Insert one line.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~insertln()-------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_insertln.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -2151,11 +2303,13 @@ scr~insertln()
 <indexterm><primary>Insnstr</primary></indexterm>
 <para>Insert part of a string.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~insnstr(str)-----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_insnstr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -2176,11 +2330,13 @@ scr~insertln()
 <indexterm><primary>Insstr</primary></indexterm>
 <para>Insert a string.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~insstr(str)------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_insstr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -2197,11 +2353,13 @@ scr~insertln()
 <indexterm><primary>OrxCurInstr</primary></indexterm>
 <para>Read a string from the terminal.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~instr()----------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_instr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -2213,11 +2371,13 @@ scr~insertln()
 <indexterm><primary>Intrflush</primary></indexterm>
 <para>Turn on/off input queue flushing when a interrupt key is typed at the keyboard.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~intrflush(bf)----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_intrflush.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -2234,11 +2394,13 @@ scr~insertln()
 <indexterm><primary>Is_linetouched</primary></indexterm>
 <para>Determine if a line has been changed since the last refresh.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~is_linetouched(n)------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_is_linetouched.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -2255,11 +2417,13 @@ scr~insertln()
 <indexterm><primary>Is_wintouched</primary></indexterm>
 <para>Determine if a window has been changed since the last refresh.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~is_wintouched()--------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_is_wintouched.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -2271,11 +2435,13 @@ scr~insertln()
 <indexterm><primary>Isbitset</primary></indexterm>
 <para>Return true if a bit is set.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~isbitset(field, bit)---------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_isbitset.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -2296,11 +2462,13 @@ scr~insertln()
 <indexterm><primary>Isendwin</primary></indexterm>
 <para>Return true if endwin() has been called.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~isendwin()-------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_isendwin.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -2312,11 +2480,13 @@ scr~insertln()
 <indexterm><primary>Keyname</primary></indexterm>
 <para>Return a string representing the specified input key.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~keyname()--------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_keyname.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -2333,11 +2503,13 @@ scr~insertln()
 <indexterm><primary>Keypad</primary></indexterm>
 <para>Turn on/off reading keypad (function, etc) keys.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~keypad(bf)-------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_keypad.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -2364,11 +2536,13 @@ scr~keypad(.true)
 <indexterm><primary>Killchar</primary></indexterm>
 <para>Return the kill terminal's kill character.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~killchar()-------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_killchar.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -2380,11 +2554,13 @@ scr~keypad(.true)
 <indexterm><primary>Leaveok</primary></indexterm>
 <para>Turn on/off synchrnizing the logical and the hardware cursor location after a refresh.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~leaveok(bf)------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_leaveok.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -2401,11 +2577,13 @@ scr~keypad(.true)
 <indexterm><primary>Lines</primary></indexterm>
 <para>Return the number of lines on the stdscr.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~lines()----------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_lines.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -2417,11 +2595,13 @@ scr~keypad(.true)
 <indexterm><primary>Longname</primary></indexterm>
 <para>Return the terminal string description.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~longname()-------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_longname.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -2433,11 +2613,13 @@ scr~keypad(.true)
 <indexterm><primary>Meta</primary></indexterm>
 <para>Turn on/off reading the Alt key info in the 8th bit.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~meta(bf)---------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_meta.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -2454,11 +2636,13 @@ scr~keypad(.true)
 <indexterm><primary>Mouse_trafo</primary></indexterm>
 <para>Translate mouse y and x coordinates to window coordinates.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~mouse_trafo(y, x, bf)--------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_mouse_trafo.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -2483,12 +2667,13 @@ scr~keypad(.true)
 <indexterm><primary>Mousemask</primary></indexterm>
 <para>Set/return the mouse event mask.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~mousemask(--+-------+--)-----------------------------------------><
-                    +--new--+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_mousemask.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -2528,11 +2713,13 @@ else do
 <indexterm><primary>Move</primary></indexterm>
 <para>Move the cursor.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~move(y, x)-------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_move.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -2572,16 +2759,18 @@ do forever
 </example>
 </section>
 
-<section id="OrxCurMvaddch">
-<title>OrxCurMvaddch</title>
-<indexterm><primary>OrxCurMvaddch</primary></indexterm>
+<section id="Mvaddch">
+<title>Mvaddch</title>
+<indexterm><primary>Mvaddch</primary></indexterm>
 <para>Add a single character to the screen after moving the cursor.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~mvaddch(y, x, ch)------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_mvaddch.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -2602,16 +2791,18 @@ do forever
 <para>Either ERR (-1) or OK (0).</para>
 </section>
 
-<section id="OrxCurMvaddchnstr">
-<title>OrxCurMvaddchnstr</title>
-<indexterm><primary>OrxCurMvaddchnstr</primary></indexterm>
+<section id="Mvaddchnstr">
+<title>Mvaddchnstr</title>
+<indexterm><primary>Mvaddchnstr</primary></indexterm>
 <para>Add a chtype character string to the screen after moving the cursor.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~mvaddchnstr(y, x, str, n)----------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_mvaddchnstr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -2636,16 +2827,18 @@ do forever
 <para>Either ERR (-1) or OK (0).</para>
 </section>
 
-<section id="OrxCurMvaddchstr">
-<title>OrxCurMvaddchstr</title>
-<indexterm><primary>OrxCurMvaddchstr</primary></indexterm>
+<section id="Mvaddchstr">
+<title>Mvaddchstr</title>
+<indexterm><primary>Mvaddchstr</primary></indexterm>
 <para>Add a chtype character string to the screen after moving the cursor.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~mvaddchstr(y, x, str)--------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_mvaddchstr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -2671,11 +2864,13 @@ do forever
 <indexterm><primary>Mvaddnstr</primary></indexterm>
 <para>Add a character string to the screen after moving the cursor.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~mvaddnstr(y, x, str, n)------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_mvaddnstr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -2704,11 +2899,13 @@ do forever
 <indexterm><primary>Mvaddstr</primary></indexterm>
 <para>Add a character string to the screen after moving the cursor.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~mvaddstr(y, x, str)----------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_mvaddstr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -2749,11 +2946,13 @@ do y = 1 to maxy
 <indexterm><primary>Mvchgat</primary></indexterm>
 <para>Change attributes on the window after moving the cursor.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~chgat(y, x, n, attr, color)--------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_mvchgat.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -2786,11 +2985,13 @@ do y = 1 to maxy
 <indexterm><primary>Mvderwin</primary></indexterm>
 <para>Display a different portion of the parent window.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~mvderwin(y, x)---------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_mvderwin.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -2811,11 +3012,13 @@ do y = 1 to maxy
 <indexterm><primary>OrxCurMvgetch</primary></indexterm>
 <para>Get character from the keyboard after moving the cursor.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~getch(y, x)------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_mvgetch.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -2836,11 +3039,13 @@ do y = 1 to maxy
 <indexterm><primary>Mvgetnstr</primary></indexterm>
 <para>Get a string from the terminal after moving the cursor.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~mvgetstr(y, x, n)------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_mvgetnstr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -2860,16 +3065,18 @@ do y = 1 to maxy
 <para>A character string.</para>
 </section>
 
-<section id="OrxCurMvgetstr">
-<title>OrxCurMvgetstr</title>
-<indexterm><primary>OrxCurMvgetstr</primary></indexterm>
+<section id="Mvgetstr">
+<title>Mvgetstr</title>
+<indexterm><primary>Mvgetstr</primary></indexterm>
 <para>Get a string from the terminal after moving the cursor.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~mvgetstr(y, x)---------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_mvgetstr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -2890,11 +3097,13 @@ do y = 1 to maxy
 <indexterm><primary>Mvhline</primary></indexterm>
 <para>Draw a horizontal line after moving the cursor.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~hline(y, x, ch, n)-----------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_mvhline.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -2939,11 +3148,13 @@ do c = 1 to 12 by 2
 <indexterm><primary>Mvinch</primary></indexterm>
 <para>Return the attr/char under the cursor after moving the cursor.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~inch(y, x)-------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_mvinch.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -2964,11 +3175,13 @@ do c = 1 to 12 by 2
 <indexterm><primary>Mvinchnstr</primary></indexterm>
 <para>Return the attr/char under the cursor after moving the cursor.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~mvinchnstr(y, x, n)----------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_mvinchnstr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -2993,11 +3206,13 @@ do c = 1 to 12 by 2
 <indexterm><primary>Mvinchstr</primary></indexterm>
 <para>Return the attr/char under the cursor after moving the cursor.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~mvinch(y, x)-----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_mvinchstr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -3018,11 +3233,13 @@ do c = 1 to 12 by 2
 <indexterm><primary>Mvinnstr</primary></indexterm>
 <para>Read a string from the terminal after moving the cursor.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~mvinnstr(y, x, n)------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_mvinnstr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -3047,11 +3264,13 @@ do c = 1 to 12 by 2
 <indexterm><primary>Mvinsch</primary></indexterm>
 <para>Insert the attr/char under the cursor after moving the cursor.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~mvinsch(y, x, ch)------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_mvinsch.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -3076,11 +3295,13 @@ do c = 1 to 12 by 2
 <indexterm><primary>Mvinsstr</primary></indexterm>
 <para>Insert a string after moving the cursor.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~mvinsstr(y, x, str)----------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_mvinsstr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -3105,11 +3326,13 @@ do c = 1 to 12 by 2
 <indexterm><primary>Mvinstr</primary></indexterm>
 <para>Read a string from the terminal after moving the cursor.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~mvinstr(y, x)----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_mvinstr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -3130,11 +3353,13 @@ do c = 1 to 12 by 2
 <indexterm><primary>Mvvline</primary></indexterm>
 <para>Draw a vertical line after moving the cursor.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~mvvline(y, x, ch, n)-------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_mvvline.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -3179,11 +3404,13 @@ do c = 1 to 12 by 2
 <indexterm><primary>Mvwin</primary></indexterm>
 <para>Move a window.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~mvwin(y, x)------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_mvwin.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -3227,11 +3454,13 @@ do y = 2 to maxy
 <indexterm><primary>Napms</primary></indexterm>
 <para>Pause the program for number of microseconds.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~napms(n)---------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_napms.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -3261,11 +3490,13 @@ scr~napms(500)
 <indexterm><primary>Ncurses_mouse_version</primary></indexterm>
 <para>Return the Ncurses mouse version string.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~ncurses_mouse_version()------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_ncurses_mouse_version.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -3294,11 +3525,13 @@ else do
 <indexterm><primary>Ncurses_version</primary></indexterm>
 <para>Return the Ncurses version string.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~ncurses_version()------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_ncurses_version.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -3327,11 +3560,13 @@ else do
 <indexterm><primary>Nl</primary></indexterm>
 <para>Distinguish between cr and lf.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~nl()-------------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_nl.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -3343,11 +3578,13 @@ else do
 <indexterm><primary>Nocbreak</primary></indexterm>
 <para>Deactivates cbreak (buffering) mode.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~nocbreak()-------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_nocbreak.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -3359,11 +3596,13 @@ else do
 <indexterm><primary>Nodelay</primary></indexterm>
 <para>Transforms getch() function to nonblocking.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~nodelay(bf)------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_nodelay.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -3390,11 +3629,13 @@ scr~nodelay(.TRUE);		/* turn off getch() wait */
 <indexterm><primary>Noecho</primary></indexterm>
 <para>Turn off echo.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~noecho()---------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_noecho.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -3415,11 +3656,13 @@ scr~noecho()
 <indexterm><primary>Nonl</primary></indexterm>
 <para>Do not distinguish between cr and lf.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~nonl()-----------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_nonl.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -3431,11 +3674,13 @@ scr~noecho()
 <indexterm><primary>Noqiflush</primary></indexterm>
 <para>Do no flush the input queue on interrupt.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~noqiflush()------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_noqiflush.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -3447,11 +3692,13 @@ scr~noecho()
 <indexterm><primary>Noraw</primary></indexterm>
 <para>Do not remove modification done by the terminal to input.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~noraw()----------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_noraw.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -3463,11 +3710,13 @@ scr~noecho()
 <indexterm><primary>Notimeout</primary></indexterm>
 <para>Pause input function after user presses ESC key.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~notimeout(bf)----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_notimeout.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -3484,11 +3733,13 @@ scr~noecho()
 <indexterm><primary>Overlay</primary></indexterm>
 <para>Overlay the destination window.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~overlay(dwin)----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_overlay.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -3524,11 +3775,13 @@ scr~overlay(alpha)
 <indexterm><primary>Overwrite</primary></indexterm>
 <para>Overwrite the destination window.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~overwrite(dwin)--------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_overwrite.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -3564,11 +3817,13 @@ scr~overwrite(alpha)   -- see book text
 <indexterm><primary>Pair_content</primary></indexterm>
 <para>Return the pair of colors in a color pair.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~pair_content()---------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_pair_content.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -3585,11 +3840,13 @@ scr~overwrite(alpha)   -- see book text
 <indexterm><primary>Pair_number</primary></indexterm>
 <para>Return the default pair attr.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~pair_number(attr)------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_pair_number.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -3606,11 +3863,13 @@ scr~overwrite(alpha)   -- see book text
 <indexterm><primary>Pechochar</primary></indexterm>
 <para>This method is not valid for a window.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~pechochar()------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_pechochar.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -3622,11 +3881,13 @@ scr~overwrite(alpha)   -- see book text
 <indexterm><primary>OrxCurPnoutrefresh</primary></indexterm>
 <para>This method is not valid for windows.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~pnoutrefresh()---------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_pnoutrefresh.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -3638,11 +3899,13 @@ scr~overwrite(alpha)   -- see book text
 <indexterm><primary>Prefresh</primary></indexterm>
 <para>This method is not valid for windows.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~prefresh()-------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_prefresh.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -3654,11 +3917,13 @@ scr~overwrite(alpha)   -- see book text
 <indexterm><primary>Putwin</primary></indexterm>
 <para>Save a new window to a file.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~putwin(fname)----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_putwin.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -3691,11 +3956,13 @@ else do
 <indexterm><primary>Qiflush</primary></indexterm>
 <para>Flush the input queue on interrupt.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~qiflush()--------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_qiflush.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
@@ -3708,11 +3975,13 @@ else do
 <indexterm><primary>Raw</primary></indexterm>
 <para>Remove modification done by the terminal to input.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~raw()------------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_raw.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -3724,11 +3993,13 @@ else do
 <indexterm><primary>Redrawwin</primary></indexterm>
 <para>Redraw an entire window.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~redrawwin()------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_redrawwin.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -3740,11 +4011,13 @@ else do
 <indexterm><primary>Refresh</primary></indexterm>
 <para>Refresh the screen and turn nCurses formatting on.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~refresh()--------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_refresh.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -3766,11 +4039,13 @@ scr~refresh()
 <indexterm><primary>Scr_dump</primary></indexterm>
 <para>Dump the terminal screen to a file.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~scr_dump(fname)--------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_scr_dump.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -3803,11 +4078,13 @@ else do
 <indexterm><primary>Scr_restore</primary></indexterm>
 <para>Restore the terminal screen drom a file.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~scr_restore(fname)-----------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_scr_restore.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -3837,11 +4114,13 @@ if retc = scr~ERR then do
 <indexterm><primary>Scrl</primary></indexterm>
 <para>Scroll a window.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~scrl(num)--------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_scrl.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -3858,11 +4137,13 @@ if retc = scr~ERR then do
 <indexterm><primary>Scroll</primary></indexterm>
 <para>Scroll a window.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~scroll()---------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_scroll.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -3874,11 +4155,13 @@ if retc = scr~ERR then do
 <indexterm><primary>Scrollok</primary></indexterm>
 <para>Allow a window to scroll.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~scrollok(bf)-----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_scrollok.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -3905,11 +4188,13 @@ scr~scrollok(.true)
 <indexterm><primary>Setscrreg</primary></indexterm>
 <para>Set a window reagion scrollable.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~setscrreg(top, bot)----------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_setscrreg.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -3930,11 +4215,13 @@ scr~scrollok(.true)
 <indexterm><primary>Slk_attr</primary></indexterm>
 <para>Return soft label attr_t.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~slk_attr()-------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_slk_attr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -3946,11 +4233,13 @@ scr~scrollok(.true)
 <indexterm><primary>Slk_attroff</primary></indexterm>
 <para>Turn off one or more soft label attributes.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~slk_attroff(attr)------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_slk_attroff.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -3967,11 +4256,13 @@ scr~scrollok(.true)
 <indexterm><primary>Slk_attron</primary></indexterm>
 <para>Turn on one or more soft label attributes.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~slk_attron(attr)-------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_slk_attron.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -3988,11 +4279,13 @@ scr~scrollok(.true)
 <indexterm><primary>Slk_attrset</primary></indexterm>
 <para>Set soft label attributes.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~slk_attrset(attr)------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_slk_attrset.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -4009,11 +4302,13 @@ scr~scrollok(.true)
 <indexterm><primary>Slk_clear</primary></indexterm>
 <para>Hide the soft labels.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~slk_clear()------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_slk_clear.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -4047,11 +4342,13 @@ ch = scr~getch()
 <indexterm><primary>Slk_color</primary></indexterm>
 <para>Set soft label colors.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~slk_color(color)-------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_slk_color.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -4068,11 +4365,13 @@ ch = scr~getch()
 <indexterm><primary>Slk_label</primary></indexterm>
 <para>Return the soft label text.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~slk_label(num)-------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_slk_label.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -4089,11 +4388,13 @@ ch = scr~getch()
 <indexterm><primary>Slk_noutrefresh</primary></indexterm>
 <para>Prepares soft labels for a refresh.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~slk_noutrefresh()----------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_slk_noutrefresh.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -4105,11 +4406,13 @@ ch = scr~getch()
 <indexterm><primary>Slk_refresh</primary></indexterm>
 <para>Refresh soft labels.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~slk_refresh()--------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_slk_refresh.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -4144,11 +4447,13 @@ scr~slk_refresh()
 <indexterm><primary>Slk_restore</primary></indexterm>
 <para>Restore soft labels.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~slk_restore()--------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_slk_restore.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -4171,11 +4476,13 @@ scr~slk_restore()
 <indexterm><primary>Slk_set</primary></indexterm>
 <para>Set soft label text.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~slk_set(text, num)---------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_slk_set.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -4219,11 +4526,13 @@ scr~slk_refresh()
 <indexterm><primary>Slk_touch</primary></indexterm>
 <para>Touch soft labels.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~slk_touch()----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_slk_touch.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -4235,11 +4544,13 @@ scr~slk_refresh()
 <indexterm><primary>Standend</primary></indexterm>
 <para>Turn off text attributes.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~standend()-----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_standend.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -4251,11 +4562,13 @@ scr~slk_refresh()
 <indexterm><primary>Standout</primary></indexterm>
 <para>Turn on text attributes.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~standout()-----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_standout.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -4267,11 +4580,13 @@ scr~slk_refresh()
 <indexterm><primary>Start_color</primary></indexterm>
 <para>Turn on using color attributes.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~start_color()--------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_start_color.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -4292,11 +4607,13 @@ scr~start_color()
 <indexterm><primary>Subpad</primary></indexterm>
 <para>This method is not valid for a window.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~subpad()-------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_subpad.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -4308,11 +4625,13 @@ scr~start_color()
 <indexterm><primary>Subwin</primary></indexterm>
 <para>Create a subwindow.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~subwin(nlines, ncols, begy, begx)------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_subwin.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -4351,11 +4670,13 @@ sonny = scr~subwin(5, 20, 11, 31)
 <indexterm><primary>Syncok</primary></indexterm>
 <para>Turn on/off aut touch for a window.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~syncok(bf)-----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_syncok.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -4372,12 +4693,13 @@ sonny = scr~subwin(5, 20, 11, 31)
 <indexterm><primary>Tabsize</primary></indexterm>
 <para>Return/set the tab size.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~tabsize(--+------+--)------------------------------------------><
-                  +--sz--+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_tabsize.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -4394,11 +4716,13 @@ sonny = scr~subwin(5, 20, 11, 31)
 <indexterm><primary>Termattrs</primary></indexterm>
 <para>Return the which attributes the terminal is capable of producing.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~termattrs()----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_termattrs.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -4410,11 +4734,13 @@ sonny = scr~subwin(5, 20, 11, 31)
 <indexterm><primary>Termname</primary></indexterm>
 <para>Return the terminal name.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~termname()-----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_termname.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -4426,11 +4752,13 @@ sonny = scr~subwin(5, 20, 11, 31)
 <indexterm><primary>Timeout</primary></indexterm>
 <para>Set the timeout for text input.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~timeout(tmout)-------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_timeout.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -4447,11 +4775,13 @@ sonny = scr~subwin(5, 20, 11, 31)
 <indexterm><primary>Touchline</primary></indexterm>
 <para>Mark one or more lines as changed.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~touchline(bf)--------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_touchline.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -4491,11 +4821,13 @@ do y = 2 to maxy
 <indexterm><primary>Touchwin</primary></indexterm>
 <para>Mark window as changed.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~touchwin()-----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_touchwin.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -4507,11 +4839,13 @@ do y = 2 to maxy
 <indexterm><primary>Typeahead</primary></indexterm>
 <para>Set the typeahead for text input.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~typeahead(fd)--------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_typeahead.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -4528,11 +4862,13 @@ do y = 2 to maxy
 <indexterm><primary>Unctrl</primary></indexterm>
 <para>Convert a control code to a ^code sequence.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~unctrl(ch)-----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_unctrl.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -4549,11 +4885,13 @@ do y = 2 to maxy
 <indexterm><primary>Ungetch</primary></indexterm>
 <para>Put a character into the keyboard buffer.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~ungetch(ch)----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_ungetch.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -4570,11 +4908,13 @@ do y = 2 to maxy
 <indexterm><primary>Untouchwin</primary></indexterm>
 <para>Unmark window as changed.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~untouchwin()---------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_untouchwin.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -4586,11 +4926,13 @@ do y = 2 to maxy
 <indexterm><primary>Use_default_colors</primary></indexterm>
 <para>Use the default terminal colors.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~use_default_colors()-------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_use_default_colors.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -4602,11 +4944,13 @@ do y = 2 to maxy
 <indexterm><primary>Use_env</primary></indexterm>
 <para>Use the default terminal colors.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~use_env()------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_use_env.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -4618,11 +4962,13 @@ do y = 2 to maxy
 <indexterm><primary>Vline</primary></indexterm>
 <para>Draw a vertical line.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~vline(ch, n)---------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_vline.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -4661,11 +5007,13 @@ do y = 1 to maxy
 <indexterm><primary>Wenclose</primary></indexterm>
 <para>Determine if a mouse click are within a window (self).</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~wenclose(y, x)-------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_wenclose.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -4686,11 +5034,13 @@ do y = 1 to maxy
 <indexterm><primary>Wnoutrefresh</primary></indexterm>
 <para>Copy modified text to the screen.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~wnoutrefresh()-------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_wnoutrefresh.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -4702,11 +5052,13 @@ do y = 1 to maxy
 <indexterm><primary>Wredrawln</primary></indexterm>
 <para>Redraw a line to the screen.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~wredrawln(beg, n)----------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_wredrawln.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -4727,11 +5079,13 @@ do y = 1 to maxy
 <indexterm><primary>Wsyncdown</primary></indexterm>
 <para>Ensure subwindows are touched when the main window is touched.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~wsyncdown()----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_wsyncdown.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -4743,11 +5097,13 @@ do y = 1 to maxy
 <indexterm><primary>Wsyncup</primary></indexterm>
 <para>Ensure parent windows are touched when the sub window is touched.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~wsyncup()------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_wsyncup.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -4759,11 +5115,13 @@ do y = 1 to maxy
 <indexterm><primary>Wtouchln</primary></indexterm>
 <para>Mark one or more lines as changed.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~wtouchln(y, n, bf)---------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/window_wtouchln.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -4796,11 +5154,13 @@ do y = 1 to maxy
 <indexterm><primary>New</primary></indexterm>
 <para>Create a new pad.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--.Pad~new(nlines, ncols)----------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/pad_new.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -4835,11 +5195,13 @@ win = .Window~new(5, 10)
 <indexterm><primary>Echochar</primary></indexterm>
 <para>This method is not valid foa a pad.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--pad~echochar()-------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/pad_echochar.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -4851,11 +5213,13 @@ win = .Window~new(5, 10)
 <indexterm><primary>Mvwin</primary></indexterm>
 <para>This method is not valid for a pad.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--pad~mvwin()----------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/pad_mvwin.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -4867,11 +5231,13 @@ win = .Window~new(5, 10)
 <indexterm><primary>Pechochar</primary></indexterm>
 <para>Echo one character to a pad and the stdscr..</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--pad~pechochar(ch)----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/pad_pechochar.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -4888,11 +5254,13 @@ win = .Window~new(5, 10)
 <indexterm><primary>OrxCurPnoutrefresh</primary></indexterm>
 <para>Refresh a pad.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--pad~pnoutrefresh(minrow, mincol, sminrow, smincol, smaxrow, smaxcol)-><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/pad_pnoutrefresh.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -4963,11 +5331,13 @@ scr~doupdate()
 <indexterm><primary>Prefresh</primary></indexterm>
 <para>Refresh the pad to the stdscr.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--pad~prefresh(minrow, mincol, sminrow, smincol, smaxrow, smaxcol)-----><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/pad_prefresh.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -5026,11 +5396,13 @@ p~prefresh(1, 1, 1, 1, 2, 16)
 <indexterm><primary>Redrawwin</primary></indexterm>
 <para>This method is not valid for a pad.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--win~redrawwin()------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/pad_redrawwin.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -5042,11 +5414,13 @@ p~prefresh(1, 1, 1, 1, 2, 16)
 <indexterm><primary>Refresh</primary></indexterm>
 <para>This method is not valid for a pad.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--pad~refresh()--------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/pad_refresh.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -5058,11 +5432,13 @@ p~prefresh(1, 1, 1, 1, 2, 16)
 <indexterm><primary>Scrl</primary></indexterm>
 <para>This method is not valid for a pad.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--pad~scrl()-----------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/pad_scrl.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -5074,11 +5450,13 @@ p~prefresh(1, 1, 1, 1, 2, 16)
 <indexterm><primary>Scroll</primary></indexterm>
 <para>This method is not valid for a pad.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--pad~scroll()---------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/pad_scroll.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -5090,11 +5468,13 @@ p~prefresh(1, 1, 1, 1, 2, 16)
 <indexterm><primary>Scrollok</primary></indexterm>
 <para>This method is not valid for a pad.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--pad~scrollok()-------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/pad_scrollok.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -5106,11 +5486,13 @@ p~prefresh(1, 1, 1, 1, 2, 16)
 <indexterm><primary>Subpad</primary></indexterm>
 <para>Create a subpad.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--pad~subpad(nlines, ncols, begy, begx)------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/pad_subpad.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -5156,11 +5538,13 @@ pea = pod~subpad(20, 20, 30, 30)
 <indexterm><primary>Subwin</primary></indexterm>
 <para>This method is not valid for a pad.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--pad~subwin()-------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/pad_subwin.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -5172,11 +5556,13 @@ pea = pod~subpad(20, 20, 30, 30)
 <indexterm><primary>Wnoutrefresh</primary></indexterm>
 <para>This method is not valid for a pad.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--pad~wnoutrefresh()-------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/pad_wnoutrefresh.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -5196,11 +5582,13 @@ pea = pod~subpad(20, 20, 30, 30)
 <indexterm><primary>Bstate</primary></indexterm>
 <para>The mouse button state.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--me~bstate()----------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/me_bstate.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -5212,11 +5600,13 @@ pea = pod~subpad(20, 20, 30, 30)
 <indexterm><primary>Id</primary></indexterm>
 <para>The mouse event pointing device ID.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--me~id()--------------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/me_id.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -5228,11 +5618,13 @@ pea = pod~subpad(20, 20, 30, 30)
 <indexterm><primary>X</primary></indexterm>
 <para>The mouse column number position.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--me~x()---------------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/me_x.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -5244,11 +5636,13 @@ pea = pod~subpad(20, 20, 30, 30)
 <indexterm><primary>Y</primary></indexterm>
 <para>The mouse row number position.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--me~y()---------------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/me_y.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -5259,7 +5653,7 @@ pea = pod~subpad(20, 20, 30, 30)
 <chapter id="chtypemethods"><title>Chtype Class Method Reference</title>
 
 <!--#########################################################################
-    # Start of instance methods
+    # Start of class methods
     #########################################################################
 -->
 
@@ -5268,11 +5662,13 @@ pea = pod~subpad(20, 20, 30, 30)
 <indexterm><primary>New</primary></indexterm>
 <para>Create a chtype instance.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--.chtype~new(attr, num, char)-----------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/cht_new.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
@@ -5302,11 +5698,13 @@ pea = pod~subpad(20, 20, 30, 30)
 <indexterm><primary>Attr</primary></indexterm>
 <para>Returns/sets the numeric attribute value of the chtype.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--cht~attr()-----------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/cht_attr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -5318,11 +5716,13 @@ pea = pod~subpad(20, 20, 30, 30)
 <indexterm><primary>Char</primary></indexterm>
 <para>Returns/sets the character of the chtype.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--cht~char()-----------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/cht_char.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -5334,11 +5734,13 @@ pea = pod~subpad(20, 20, 30, 30)
 <indexterm><primary>Colorpair</primary></indexterm>
 <para>Returns/sets the numeric color pair value of the chtype.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--cht~colorpair()------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/cht_colorpair.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
@@ -5350,11 +5752,13 @@ pea = pod~subpad(20, 20, 30, 30)
 <indexterm><primary>String</primary></indexterm>
 <para>Returns the numeric value of the chtype.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--cht~string()---------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/cht_string.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <para>None.</para>
 <para><emphasis role="bold">Returns:</emphasis></para>
