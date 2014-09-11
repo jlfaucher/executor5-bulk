@@ -991,6 +991,8 @@ return testResult
     self~assertSame('1.000000E+1', format(9.99999999,1,6,1,1))
 
 ::method test300
+    -- rounds to "10.0000000" and expt trigger does not force exponential
+    self~expectSyntax(93.942)
     self~assertSame('1.000000E+1', format(9.99999999,1,6,1,2))
 
 ::method test301
@@ -1000,6 +1002,8 @@ return testResult
     self~assertSame('1.000000E+01', format(9.99999999,1,6,2,1))
 
 ::method test303
+    -- rounds to "10.0000000" and expt trigger does not force exponential
+    self~expectSyntax(93.942)
     self~assertSame('1.000000E+01', format(9.99999999,1,6,2,2))
 
 ::method test306
@@ -1839,6 +1843,8 @@ return testResult
     self~assertSame('9.9999999900', format(9.99999999,1,10,4,5))
 
 ::method test582
+    -- rounds to "10.0000000" and expt trigger does not force exponential
+    self~expectSyntax(93.942)
     numeric digits 9 -- dependent upon digits setting
     self~assertSame('1.0000000000E+0001', format(9.999999995,1,10,4,3))
 
@@ -1865,11 +1871,15 @@ return testResult
     self~assertSame('1.0000000000E+01', format(9.999999995,1,10,2,1))
 
 ::method test590
+    -- rounds to "10.0000000" and expt trigger does not force exponential
+    self~expectSyntax(93.942)
     numeric digits 9 -- dependent upon digits setting
     self~assertSame('1.0000000000E+01', format(9.999999995,1,10,2,2))
 
 ::method test591
     numeric digits 9 -- dependent upon digits setting
+    -- rounds to "10.0000000" and expt trigger does not force exponential
+    self~expectSyntax(93.942)
     self~assertSame('1.0000000000E+01', format(9.999999995,1,10,2,3))
 
 ::method test592
@@ -1900,6 +1910,8 @@ return testResult
 
 ::method test600
     numeric digits 9 -- dependent upon digits setting
+    -- rounds to "10.0000000" and expt trigger does not force exponential
+    self~expectSyntax(93.942)
     self~assertSame('1.0000000000E+1', format(9.999999995,1,10,1,2))
 
 ::method test601
@@ -1927,6 +1939,8 @@ return testResult
     self~assertSame('1.00000000E+1', format(9.999999995,1,8,1,1))
 
 ::method test609
+    -- rounds to "10.0000000" and expt trigger does not force exponential
+    self~expectSyntax(93.942)
     self~assertSame('1.00000000E+1', format(9.999999995,1,8,1,2))
 
 ::method test610
@@ -1936,6 +1950,8 @@ return testResult
     self~assertSame('1.000000E+1', format(9.9999999,1,6,1,1))
 
 ::method test612
+    -- rounds to "10.0000000" and expt trigger does not force exponential
+    self~expectSyntax(93.942)
     self~assertSame('1.000000E+1', format(9.9999999,1,6,1,2))
 
 ::method test613
@@ -1945,6 +1961,8 @@ return testResult
     self~assertSame('1.000000E+1', format(9.99999999,1,6,1,1))
 
 ::method test615
+    -- rounds to "10.0000000" and expt trigger does not force exponential
+    self~expectSyntax(93.942)
     self~assertSame('1.000000E+1', format(9.99999999,1,6,1,2))
 
 ::method test616
@@ -1954,7 +1972,13 @@ return testResult
     self~assertSame('1.000000E+1', format(9.999999995,1,6,1,1))
 
 ::method test618
+    -- rounds to "10.0000000" and expt trigger does not force exponential
+    self~expectSyntax(93.942)
     self~assertSame('1.000000E+1', format(9.999999995,1,6,1,2))
+
+::method test618a
+    -- rounds to "10.0000000" and expt trigger will force exponential
+    self~assertSame('1.000000E+1', format(9.999999995,1,6,1,1))
 
 ::method test619
     self~assertSame('1.0000E+1', format(9.9999999,1,4,1,0))
@@ -2679,6 +2703,7 @@ return testResult
     self~assertSame('1.234573E+04', FORMAT('12345.73', , ,2,2)) --
     self~assertSame('1.235E+4', FORMAT('12345.73', ,3, ,0))
     self~assertSame('1.235', FORMAT('1.234573', ,3, ,0))
+    self~assertSame('1.235    ', FORMAT('1.234573', ,3,2,0))
     self~assertSame('12345.73', FORMAT('12345.73', , ,3,6))
     self~assertSame('123456700000.000', FORMAT('1234567e5', ,3,0))
 
