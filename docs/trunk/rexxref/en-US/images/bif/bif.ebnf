@@ -160,8 +160,8 @@ time ::= 'time(' ( option ( ',' ( string )? ( ',' option2 )? )?)?  ')'
 
 trace ::= 'trace(' ( option )? ')'
 
-translate ::= 'translate(' string ( ',' ( tableo ( ',' ( tablei ( ',' pad )? )? )? | 
-                                          pos ( ',' length )? ) )? ')'
+translate ::= 'translate(' string ( ( ',' tableo ( ',' ( tablei ( ',' pad )? )? )? )? 
+                                    ( ',' pos ( ',' length )? )? )? ')'
 
 trunc ::= 'trunc(' number ( ',' n )? ')'
 
