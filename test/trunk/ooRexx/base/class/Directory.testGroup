@@ -123,9 +123,9 @@ return testResult
 ::method "test_allItems"
   expose collDir clz bUserDefinedIndex bSingleItem
 
-  self~assertTrue(sameContent(.bag~new~union(collDir~allItems1      ),                                            .bag~new~union(collDir~coll_1~allItems)))
+  self~assertTrue(sameContent(.bag~new~union(collDir~allItems1), .bag~new~union(collDir~coll_1~allItems)))
 
-  self~assertTrue(sameContent(.bag~new~union(collDir~allItems2      ),                                            .bag~new~union(collDir~coll_2~allItems)))
+  self~assertTrue(sameContent(.bag~new~union(collDir~allItems2), .bag~new~union(collDir~coll_2~allItems)))
 
   tmp=collDir~emptyColl~allItems
   self~assertTrue(tmp~isInstanceOf(.array))

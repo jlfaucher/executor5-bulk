@@ -254,10 +254,10 @@ return testResult
    dir['MIKE'] = 'Shrek'
    dir['Dennis'] = 'Miller'
    dir['Linda'] = 'Miller'
-   arr = .array~of('MIKE', 'Dennis') 
+   arr = .array~of('MIKE', 'Dennis')
    -- Note: The array is converted to a bag in the xor method and the
    --       array indexes are lost
    newdir = dir~xor(arr)
    self~assertEquals('Miller', newdir['Linda'])
    self~assertEquals(1, newdir~items)
-                                                            
+

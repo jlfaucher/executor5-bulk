@@ -53,18 +53,6 @@ return testResult
 
 ::class "Collection_arrayMethod.testGroup" subclass ooTestCase public
 
-::method "test_1"
-   arr = .array~new()
-   self~assertEquals('an Array', arr)
-   arr1 = .array~new(1)
-   self~assertEquals('an Array', arr1)
-   arr2 = .array~new(1,1)
-   self~assertEquals('an Array', arr2)
-   arr3 = .array~new(1,1,1)
-   self~assertEquals('an Array', arr3)
-   arr4 = .array~new(1,1,1,1)
-   self~assertEquals('an Array', arr4)
-
 ::method "test_2"
    arr = .array~of()
    self~assertEquals(0, arr~items)
