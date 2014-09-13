@@ -314,6 +314,7 @@ return .false
  */
 ::routine isWholeRange public
   use strict arg number, min, max
+
   if number~isA(.String) then do
     if number~dataType('W') then do
       if number >= min, number <= max then return .true
@@ -1499,7 +1500,7 @@ return str
   else
     self~definedInFile="n/a_"self~identityHash -- indicate that no file name available
 
-  self~init:super    -- let superclass initialize
+  self~init:super   -- let superclass initialize
 
 
 ::method caseInfo attribute                 -- ooRexxUnit only

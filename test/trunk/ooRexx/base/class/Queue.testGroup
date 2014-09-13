@@ -303,23 +303,6 @@ return testResult
     -- Test that a relatively big integer does not cause a problem.
     self~assertFalse(q~hasindex(  999999999 ), 'This queue can not have an index of 999,999,999')
 
-    /*
-      This test does not work as I anticipated, it generates a syntax error
-      rather than false.
-
-    numeric digits 10
-    self~assertTrue(q~hasindex( 1000000000 ), 'This queue can not have an index of 1,000,000,000')
-    */
-
-    /*
-      Rick does not agree with my thinking that this is valid.
-
-    -- Test that we can try any non-exisitent index, of any type.
-    self~assertFalse(q~hasindex(   0 ), 'No queue can have an index of 0')
-
-    tbl = .table~new
-    self~assertFalse(q~hasindex( tbl ), 'No queue can have an index of' tbl)
-    */
 
     -- Test that hasindex is correct after the queue has been re-ordered.
     q = self~fillQueueWithBoth( .queue~new )

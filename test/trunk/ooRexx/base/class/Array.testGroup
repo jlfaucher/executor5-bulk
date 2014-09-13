@@ -97,9 +97,9 @@ return testResult
 ::method "test_allIndexes"
   expose collDir clz bUserDefinedIndex bSingleItem
 
-  self~assertTrue(sameContent(.bag~new~union(collDir~allIndexes1      ),                                            .bag~new~union(collDir~coll_1~allIndexes)))
+  self~assertTrue(sameContent(.bag~new~union(collDir~allIndexes1), .bag~new~union(collDir~coll_1~allIndexes)))
 
-  self~assertTrue(sameContent(.bag~new~union(collDir~allIndexes2      ),                                            .bag~new~union(collDir~coll_2~allIndexes)))
+  self~assertTrue(sameContent(.bag~new~union(collDir~allIndexes2), .bag~new~union(collDir~coll_2~allIndexes)))
 
   tmp=collDir~emptyColl~allIndexes
   self~assertTrue(tmp~isInstanceOf(.array))
@@ -699,7 +699,7 @@ return testResult
 ::method "test_put_syntax1"
 
   a=.array~new
-  self~expectSyntax("93.903")
+  self~expectSyntax("93.901")
   a~put
 
 
@@ -1474,14 +1474,14 @@ makeColl: procedure
 ::method "test_section_syntax5"
 
   a=.array~new
-  self~expectSyntax("93.906")
+  self~expectSyntax("93.923")
   a~section(1, .nil)
 
 
 ::method "test_section_syntax6"
 
   a=.array~new
-  self~expectSyntax("93.906")
+  self~expectSyntax("93.923")
   a~section(1, .string)
 
 
@@ -1542,12 +1542,12 @@ makeColl: procedure
 
   a=.array~of(.set~new,, "2v",, .directory~new)
   str1="2v"
-  str2=nl||str1||nl
-  str3="~"str1"~"
+  str2="a Set"||nl||str1||nl||"a Directory"
+  str3="a Set~"str1"~a Directory"
 
   self~assertEquals(str2, a~makestring)
-  self~assertEquals(str1, a~makestring("c"))
-  self~assertEquals(str1, a~makestring("C"))
+  self~assertEquals("a Set"||str1||"a Directory", a~makestring("c"))
+  self~assertEquals("a Set"||str1||"a Directory", a~makestring("C"))
   self~assertEquals(str2, a~makestring("l"))
   self~assertEquals(str2, a~makestring("L"))
   self~assertEquals(str3, a~makestring(,"~"))
@@ -1880,6 +1880,8 @@ makeColl: procedure
   self~assertEquals(3, target~insert(4, .array~of(2,3)))
 
 ::method testDelete
+  -- TODO ADD cases where an extension was performed.
+  -- TODO add case where a non- occupied slot is deleted
   target = .array~of("A","B","C")
   self~assertEquals("B", target~delete(2))
   self~assertEquals(2, target~size)
