@@ -55,16 +55,12 @@ return testResult
 
 ::method "test_1"
    que = .queue~new()
-   self~assertEquals('a Queue', que)
    self~assertEquals(0, que~items)
    que1 = .queue~of('Mike')
-   self~assertEquals('a Queue', que1)
    self~assertEquals(1, que1~items)
    que2 = .queue~of('Mike', 'David', 'Tom')
-   self~assertEquals('a Queue', que2)
    self~assertEquals(3, que2~items)
    que3 = .queue~of('Dick', .array~new())
-   self~assertEquals('a Queue', que3)
    self~assertEquals(2, que3~items)
 
 ::method "test_2"
@@ -202,7 +198,7 @@ return testResult
    self~assertEquals(2, idx)
    idx = que~next(3)
    self~assertEquals(.nil, idx)
-   self~expectSyntax(93.966)
+   self~expectSyntax(93.907)
    idx = que~next(0)
 
 ::method "test_14"
@@ -218,8 +214,8 @@ return testResult
    self~assertEquals(1, idx)
    idx = que~previous(3)
    self~assertEquals(2, idx)
-   self~expectSyntax(93.966)
    idx = que~previous(4)
+   self~assertSame(3, idx)
 
 ::method "test_16"
    que = .queue~of('Mike', 'David', 'Tom', 'David')
@@ -251,21 +247,21 @@ return testResult
 
 ::method "test_18"
    que1 = .queue~of("Mike", "Rick", "Fred", "Rick")
-   self~expectSyntax(93.966)
+   self~expectSyntax(93.907)
    t1 = que1[0]
 
 ::method "test_19"
    que1 = .queue~of("Mike", "Rick", "Fred", "Rick")
-   self~expectSyntax(93.966)
+   self~expectSyntax(93.907)
    t1 = que1[-1]
 
 ::method "test_20"
    que1 = .queue~of("Mike", "Rick", "Fred", "Rick")
-   self~expectSyntax(93.966)
+   self~expectSyntax(93.907)
    t1 = que1['Mike']
 
 ::method "test_21"
    que1 = .queue~of("Mike", "Rick", "Fred", "Rick")
-   self~expectSyntax(93.966)
+   self~expectSyntax(93.907)
    t1 = que1[.nil]
 

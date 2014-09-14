@@ -69,12 +69,14 @@ return testResult
    self~assertEquals(0, dir~isEmpty)
    self~assertEquals(1, dir~items)
    self~assertEquals('Shrek', dir['Mike'])
-   dir['Dennis'] = .array~new()
+   arr = .array~new
+   dir['Dennis'] = arr
    self~assertEquals(2, dir~items)
-   self~assertEquals('an Array', dir['Dennis'])
-   dir~put(.queue~new(), 'Linda')
+   self~assertSame(arr, dir['Dennis'])
+   q = .queue~new
+   dir~put(q, 'Linda')
    self~assertEquals(3, dir~items)
-   self~assertEquals('a Queue', dir~at('Linda'))
+   self~assertSame(q, dir~at('Linda'))
 
 ::method "test_3"
    dir = .directory~new()
@@ -83,22 +85,18 @@ return testResult
    dir~put(.queue~new(), 'Linda')
    arr = dir~allIndexes()
    self~assertEquals(3, arr~items)
-   -- these should be in alphabetical order
-   self~assertEquals('Dennis', arr[1])
-   self~assertEquals('Linda', arr[2])
-   self~assertEquals('Mike', arr[3])
+   self~assertTrue(arr~equivalent(.array~of('Mike', 'Dennis', 'Linda')))
 
 ::method "test_4"
    dir = .directory~new()
-   dir['Mike'] = 'Shrek'
-   dir['Dennis'] = .array~new()
-   dir~put(.queue~new(), 'Linda')
-   arr = dir~allItems()
-   self~assertEquals(3, arr~items)
-   -- these should be in alphabetical order (index order)
-   self~assertEquals('an Array', arr[1])
-   self~assertEquals('a Queue', arr[2])
-   self~assertEquals('Shrek', arr[3])
+   dir~setEntry('Mike', 'Shrek')
+   arr = .array~new
+   dir['Dennis'] = arr
+   queue = .queue~new
+   dir~put(queue, 'Linda')
+   items = dir~allItems()
+   self~assertEquals(3, items~items)
+   self~assertTrue(items~equivalent(.array~of('Shrek', arr, queue)))
 
 ::method "test_5"
    dir = .directory~new()
@@ -260,4 +258,52 @@ return testResult
    newdir = dir~xor(arr)
    self~assertEquals('Miller', newdir['Linda'])
    self~assertEquals(1, newdir~items)
+
+::method "test_19"
+  dir = .directory~new
+  dir~setMethod("Self", "return self")
+  dir~setMethod("Super", "return super")
+
+  self~assertSame(.directory, dir~super)
+  self~assertSame(dir, dir~self)
+  self~assertTrue(dir~hasIndex('SUPER'))
+  self~assertTrue(dir~hasEntry('super'))
+
+  dir~foo = "bar"
+
+  self~assertEquals(3, dir~items)
+
+  indexes = dir~allIndexes
+  self~assertTrue(indexes~equivalent(.array~of("SELF", "SUPER", "FOO")))
+
+  items = dir~allItems
+  self~assertTrue(items~equivalent(.array~of(dir, .directory, "bar")))
+
+  dir~self = "xyz"
+  self~assertEquals("xyz", dir~self)
+
+  self~assertEquals('xyz', dir~remove('SELF'))
+  self~assertSame(.nil, dir~self)
+  self~assertFalse(dir~hasIndex('SELF'))
+
+  dir~unsetmethod('super')
+  self~assertSame(.nil, dir~super)
+  self~assertFalse(dir~hasEntry('super'))
+
+  dir~setmethod('test', 'return "foo"')
+  self~assertEquals('foo', dir~test)
+  dir~setmethod('test')
+  self~assertSame(.nil, dir~test)
+
+::method "test_20"
+  dir = .directory~new
+
+  dir~setEntry('foo', 'bar')
+  self~assertTrue(dir~allIndexes~equivalent(.array~of("FOO")))
+  self~assertEquals("bar", dir['FOO'])
+  self~assertEquals("bar", dir~entry('foo'))
+  self~assertTrue(dir~hasentry('foo'))
+  self~assertEquals("bar", dir~removeEntry('foo'))
+  self~assertSame(.nil, dir['FOO'])
+
 
