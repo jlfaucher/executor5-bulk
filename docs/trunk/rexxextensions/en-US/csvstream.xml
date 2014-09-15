@@ -159,11 +159,13 @@ The Stream class also has available class methods that its metaclass, the Class 
 <secondary>CLOSE method</secondary></indexterm>
 <indexterm><primary>CLOSE method</primary>
 <secondary>scvStream</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-CLOSE-------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/csvstream_close.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>
 Closes the stream that receives the message. CLOSE returns READY: if closing the stream is 
 successful, or an appropriate error message. If you have tried to close an unopened file, then the 
@@ -178,11 +180,13 @@ then the headers will be updated to the stream at this point if they have been c
 <secondary>CSVLINEIN method</secondary></indexterm>
 <indexterm><primary>CSVLINEIN method</primary>
 <secondary>scvStream</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-CSVLINEIN---------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/csvstream_csvlinein.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>
 Reads and returns a row of CSV data from the stream. Note that a row of data may be stored in more 
 than one logical line of the stream. An array is returned, the nth element of which contains the nth field 
@@ -217,11 +221,13 @@ the CSVStream)
 <secondary>CSVLINEOUT method</secondary></indexterm>
 <indexterm><primary>CSVLINEOUT method</primary>
 <secondary>scvStream</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-CSVLINEOUT-(-collection-Object-)-------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/csvstream_csvlineout.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>
 Writes a row of CSV data to a stream. Note that a row of data may be stored in more than one logical 
 line of the stream. If the stream was instantiated with headersExist as .true then the collection-object 
@@ -242,11 +248,13 @@ number of tails on the stem.
 <secondary>GETHEADERS method</secondary></indexterm>
 <indexterm><primary>GETHEADERS method</primary>
 <secondary>scvStream</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-GETHEADERS--------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/csvstream_getheaders.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>
 Returns a csvStreamHeader object.
 </para>
@@ -263,12 +271,13 @@ as the file is opened, but literal information will not be present till the firs
 <secondary>INIT method</secondary></indexterm>
 <indexterm><primary>INIT method</primary>
 <secondary>scvStream</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-INIT(name-+----------------+-)--------------------------------><
-             +-,-HeadersExist-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/csvstream_init.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>
 Initializes a stream object for a stream named name, but does not open the stream.
 </para>
@@ -362,11 +371,13 @@ MyCsvStream~stripChar = '0' /* strip Leading zeroes */
 <secondary>SETHEADERS method</secondary></indexterm>
 <indexterm><primary>SETHEADERS method</primary>
 <secondary>scvStream</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>-SETHEADERS(headerobj)---------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/csvstream_setheaders.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>
 Passed a csvStreamHeader object will apply it to the csvStream. Together with Get Headers this allows you to 
 base one CSV file on another.
