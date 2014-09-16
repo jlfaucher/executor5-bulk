@@ -331,9 +331,30 @@ any:
    self~assertEquals(tmp_drive, avo~drive)
    self~assertEquals(tmp_swim, avo~swim)
 
-::METHOD "test_INHERIT_01"
-   self~expectSyntax(98.942)     -- reflect USE STRICT ARG error message
+::METHOD "test_REXX_DEFINED_01"
+   self~expectSyntax(98.985)
    .object~inherit(.String)
+
+::METHOD "test_REXX_DEFINED_02"
+   self~expectSyntax(98.985)
+   -- make sure non-primitive classes are also marked as rexx defined
+   .datetime~inherit(.String)
+
+::METHOD "test_REXX_DEFINED_03"
+   self~expectSyntax(98.985)
+   .array~uninherit(.Collection)
+
+::METHOD "test_REXX_DEFINED_04"
+   self~expectSyntax(98.985)
+   .object~define("FOO", "RETURN 123")
+
+::METHOD "test_REXX_DEFINED_05"
+   self~expectSyntax(98.985)
+   .object~delete("OBJECTNAME=")
+
+::METHOD "test_REXX_DEFINED_06"
+   self~expectSyntax(98.985)
+   .object~delete("OBJECTNAME=")
 
 ::METHOD "test_INHERIT_02"
    self~expectSyntax(98.942)
@@ -657,10 +678,11 @@ getBags: procedure         -- return indices in an index bag, and method items i
 ::method "test_SUBCLASSES"
 
    self~assertTrue(.object~subclasses~items>15)
-   self~assertTrue(.relation~subclasses~items>0)
    self~assertTrue(.alarm~subclasses~items=0)
 
-
+   subclasses = .fahrzeug~subclasses
+   self~assertEquals(2, subclasses~items)
+   self~assertTrue(subclasses~equivalent(.array~of(.StrassenFahrzeug, .WasserFahrzeug)))
 
 ::method "test_SUPERCLASSES"
 

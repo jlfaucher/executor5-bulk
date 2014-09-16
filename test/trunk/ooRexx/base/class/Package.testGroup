@@ -118,6 +118,7 @@ return testResult
   src = .array~new()
   src[1] = "::routine test1 public"
   src[2] = "  return 1"
+  x = random()
 
   package = .package~new("ROUTINETEST1", src)
 
@@ -140,8 +141,8 @@ return testResult
      i += 1
   end
 
-  routine = .routine~new("testing", src)
   self~expectSyntax('43.901')
+  routine = .routine~new("testing", src)
   routine~call
 
 ::method testClasses01

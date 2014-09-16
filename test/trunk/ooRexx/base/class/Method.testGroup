@@ -59,12 +59,12 @@ return testResult
 ::method "test_New_And_Source"
   name="AHA"
   value="say 'hello'; say; say 'hallo';"
-  m=.method~new(key, value)
+  m=.method~new(name, value)
   self~assertSame(value, m~source~at(1))
 
 
   value2=.array~of("say 'hello';", "say;", "say 'hallo';")
-  m2=.method~new(key, value2)
+  m2=.method~new(name, value2)
   self~assertEquals(value2, m2~source)
 
 
@@ -72,7 +72,7 @@ return testResult
                    "a=b",- -- <-- *NO* semi-colon at end!
                    "-- some line comment " ,-
                    "say 'hello world' " )
-  m3=.method~new(key, value3)
+  m3=.method~new(name, value3)
   self~assertEquals(value3, m3~source)
 
 
@@ -80,7 +80,7 @@ return testResult
                    "a=b;",- -- <-- semi-colon at end!
                    "-- some line comment " ,-
                    "say 'hello world' " )
-  m4=.method~new(key, value4)
+  m4=.method~new(name, value4)
   src4=m4~source
   do i=1 to value4~items
      self~assertEquals(value4[i], src4[i])
