@@ -824,8 +824,8 @@ makeColl: procedure
 ::method "test_NEW"
   expose collDir clz bUserDefinedIndex bSingleItem o1 o2
 
-  self~expectSyntax(93.902)
-  a=clz~new(3)
+  self~expectSyntax(93.923)
+  a=clz~new('abc')
 
 
 ::method "test_OF"
@@ -948,7 +948,7 @@ makeColl: procedure
   expose collDir clz bUserDefinedIndex bSingleItem o1 o2
 
   a=clz~new
-  self~expectSyntax(93.966)
+  self~expectSyntax(93.907)
   a~insert("a",0)       -- insert using an illegal index value
 
 
@@ -980,7 +980,7 @@ makeColl: procedure
   expose collDir clz bUserDefinedIndex bSingleItem o1 o2
 
   a=clz~new
-  self~expectSyntax(93.903)
+  self~expectSyntax(93.901)
   a~next
 
 
@@ -988,7 +988,7 @@ makeColl: procedure
   expose collDir clz bUserDefinedIndex bSingleItem o1 o2
 
   a=clz~new
-  self~expectSyntax(93.966)
+  self~expectSyntax(93.907)
   a~next(.nil)
 
 
@@ -996,7 +996,7 @@ makeColl: procedure
   expose collDir clz bUserDefinedIndex bSingleItem o1 o2
 
   a=clz~new
-  self~expectSyntax(93.903)
+  self~expectSyntax(93.901)
   a~previous
 
 
@@ -1004,7 +1004,7 @@ makeColl: procedure
   expose collDir clz bUserDefinedIndex bSingleItem o1 o2
 
   a=clz~new
-  self~expectSyntax(93.966)
+  self~expectSyntax(93.907)
   a~previous(.nil)
 
 
@@ -1012,7 +1012,7 @@ makeColl: procedure
   expose collDir clz bUserDefinedIndex bSingleItem o1 o2
 
   a=clz~new
-  self~expectSyntax(93.966)
+  self~expectSyntax(93.907)
   a~put("a",0)
 
 
@@ -1023,11 +1023,17 @@ makeColl: procedure
   self~expectSyntax(93.903)
   a~put("a")
 
+::method "test_put_error3"
+
+  a=.queue~of(1,2,3)
+  self~expectSyntax(93.966)
+  a~put("a", 4)
+
 ::method "test_[]=_error1"
   expose collDir clz bUserDefinedIndex bSingleItem o1 o2
 
   a=clz~new
-  self~expectSyntax(93.966)
+  self~expectSyntax(93.907)
   a~"[]="("a",0)
 
 
@@ -1035,7 +1041,7 @@ makeColl: procedure
   expose collDir clz bUserDefinedIndex bSingleItem o1 o2
 
   a=clz~new
-  self~expectSyntax(93.903)
+  self~expectSyntax(93.901)
   a~"[]="("a")
 
 
@@ -1043,7 +1049,7 @@ makeColl: procedure
   expose collDir clz bUserDefinedIndex bSingleItem o1 o2
 
   a=clz~new
-  self~expectSyntax(93.966)
+  self~expectSyntax(93.907)
   a~remove("a")
 
 
