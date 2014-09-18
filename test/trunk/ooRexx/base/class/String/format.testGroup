@@ -988,6 +988,7 @@ return testResult
     self~assertSame('1.000000E+1', 9.99999999~format(1,6,1,1))
 
 ::method test300
+    self~expectSyntax(93.942)
     self~assertSame('1.000000E+1', 9.99999999~format(1,6,1,2))
 
 ::method test301
@@ -997,6 +998,7 @@ return testResult
     self~assertSame('1.000000E+01', 9.99999999~format(1,6,2,1))
 
 ::method test303
+    self~expectSyntax(93.942)
     self~assertSame('1.000000E+01', 9.99999999~format(1,6,2,2))
 
 ::method test306
@@ -1836,6 +1838,7 @@ return testResult
     self~assertSame('9.9999999900', 9.99999999~format(1,10,4,5))
 
 ::method test582
+    self~expectSyntax(93.942)
     numeric digits 9 -- needs a predictable digits setting
     self~assertSame('1.0000000000E+0001', 9.999999995~format(1,10,4,3))
 
@@ -1862,10 +1865,12 @@ return testResult
     self~assertSame('1.0000000000E+01', 9.999999995~format(1,10,2,1))
 
 ::method test590
+    self~expectSyntax(93.942)
     numeric digits 9 -- needs a predictable digits setting
     self~assertSame('1.0000000000E+01', 9.999999995~format(1,10,2,2))
 
 ::method test591
+    self~expectSyntax(93.942)
     numeric digits 9 -- needs a predictable digits setting
     self~assertSame('1.0000000000E+01', 9.999999995~format(1,10,2,3))
 
@@ -1896,6 +1901,7 @@ return testResult
     self~assertSame('1.0000000000E+1', 9.999999995~format(1,10,1,1))
 
 ::method test600
+    self~expectSyntax(93.942)
     numeric digits 9 -- needs a predictable digits setting
     self~assertSame('1.0000000000E+1', 9.999999995~format(1,10,1,2))
 
@@ -1924,6 +1930,7 @@ return testResult
     self~assertSame('1.00000000E+1', 9.999999995~format(1,8,1,1))
 
 ::method test609
+    self~expectSyntax(93.942)
     self~assertSame('1.00000000E+1', 9.999999995~format(1,8,1,2))
 
 ::method test610
@@ -1933,6 +1940,7 @@ return testResult
     self~assertSame('1.000000E+1', 9.9999999~format(1,6,1,1))
 
 ::method test612
+    self~expectSyntax(93.942)
     self~assertSame('1.000000E+1', 9.9999999~format(1,6,1,2))
 
 ::method test613
@@ -1942,6 +1950,7 @@ return testResult
     self~assertSame('1.000000E+1', 9.99999999~format(1,6,1,1))
 
 ::method test615
+    self~expectSyntax(93.942)
     self~assertSame('1.000000E+1', 9.99999999~format(1,6,1,2))
 
 ::method test616
@@ -1951,6 +1960,7 @@ return testResult
     self~assertSame('1.000000E+1', 9.999999995~format(1,6,1,1))
 
 ::method test618
+    self~expectSyntax(93.942)
     self~assertSame('1.000000E+1', 9.999999995~format(1,6,1,2))
 
 ::method test619
