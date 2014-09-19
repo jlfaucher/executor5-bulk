@@ -88,12 +88,13 @@ are invoked from the Rexx programming environment:
 <para>The SockLoadFuncs() call loads all RxSock functions.
 </para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--SockLoadFuncs(--+--------+--)----------------------------------------><
-                    +--parm--+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/funcs_sockloadfuncs.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>
 All parameters that you supply are only used to bypass copyright information.
 </para>
@@ -125,11 +126,13 @@ system and can be deleted or replaced.
 <indexterm><primary>version of functions</primary></indexterm>
 <para>The SockVersion() call provides the version of RxSock.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--SockVersion()--------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/funcs_sockversion.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para><emphasis role="bold">Return Values:</emphasis></para>
 <para>The returned value is in the form version.subversion, for example 2.1.
 </para>
@@ -152,12 +155,13 @@ oldVersion = (1 = RxFuncQuery("SockVersion"))
 <para>The SockAccept() call accepts a connection request from a remote host.
 </para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--SockAccept(socket--+-------------+--)--------------------------------><
-                       +--, address--+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/funcs_sockaccept.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>where:</para>
 <variablelist>
    <varlistentry>
@@ -242,11 +246,13 @@ SockPSock_Errno(). Possible values:</para>
 <para>The SockBind() call binds a local name to the socket.
 </para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--SockBind(socket, address)--------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/funcs_sockbind.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>where:</para>
 <variablelist>
    <varlistentry>
@@ -333,11 +339,13 @@ SockPSock_Errno(). Possible values:</para>
 socket.
 </para>
 <para><emphasis role="bold">Syntax</emphasis></para>
-<programlisting>
-<![CDATA[
->>--SockClose(socket)----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/funcs_sockclose.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>where:</para>
 <variablelist>
    <varlistentry>
@@ -382,11 +390,13 @@ environments, with closesocket().
 <para>The SockConnect() socket call requests a connection to a remote host.
 </para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--SockConnect(socket, address)-----------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/funcs_sockconnect.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>where:</para>
 <variablelist>
    <varlistentry>
@@ -530,12 +540,13 @@ SockPSock_Errno(). Possible values are:</para>
 <para>The SockGetHostByAddr() call retrieves information about a specific host using its
 address.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--SockGetHostByAddr(dotAddress, host--+------------+--)----------------><
-                                        +--, domain--+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/funcs_sockgethostbyaddr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>where:</para>
 <variablelist>
    <varlistentry>
@@ -571,11 +582,13 @@ error.</para>
 its name or any alias.
 </para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--SockGetHostByName(nameAddress, host)---------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/funcs_sockgethostbyname.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>where:</para>
 <variablelist>
    <varlistentry>
@@ -605,11 +618,13 @@ error.</para>
 <para>The SockGetHostId() call retrieves the dotAddress of the local host.
 </para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--SockGetHostId()------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/funcs_sockgethostid.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>The return value is the dotAddress of the local host.
 </para>
 <note><para>SockGetHostId() interfaces with the C function gethostid().
@@ -625,11 +640,13 @@ error.</para>
 <para>The SockGetPeerName() call gets the name of the peer connected to a socket.
 </para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--SockGetPeerName(socket, address)-------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/funcs_sockgetpeername.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>where:</para>
 <variablelist>
    <varlistentry>
@@ -677,11 +694,13 @@ SockPSock_Errno(). Possible values are:</para>
 <para>The SockGetSockName() call gets the local socket name.
 </para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--SockGetSockName(socket, address)-------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/funcs_sockgetsockname.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>where:</para>
 <variablelist>
    <varlistentry>
@@ -740,11 +759,13 @@ SockPSock_Errno(). Possible values are:</para>
 <para>The SockGetSockOpt() call gets the socket options associated with a socket.
 </para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--SockGetSockOpt(socket, level, optName, optVal)-----------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/funcs_sockgetsockopt.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>where:</para>
 <variablelist>
    <varlistentry>
@@ -938,11 +959,13 @@ SockPSock_Errno(). Possible values are:</para>
 <para>The SockInit() call initializes the socket data structures and checks whether the
 TCP/IP network is active.</para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--SockInit()-----------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/funcs_sockinit.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>SockInit() can be called at the beginning of each program that uses SockSocket().
 However, it is not obligatory because each RxSock function is automatically
 initialized. For this reason, explicit initialization is not available in all system
@@ -964,11 +987,13 @@ error.</para>
 <para>The SockIoctl() call performs special operations on the socket.
 </para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--SockIoctl(socket, ioctlCmd, ioctlData)-------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/funcs_sockioctl.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>where:</para>
 <variablelist>
    <varlistentry>
@@ -1040,11 +1065,13 @@ environments, with ioctlsocket().
 connections and creates a connection request queue for incoming requests.
 </para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--SockListen(socket, backlog)------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/funcs_socklisten.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>where:</para>
 <variablelist>
    <varlistentry>
@@ -1113,12 +1140,13 @@ device. It describes the last error encountered during a call to a socket librar
 function.
 </para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--SockPSock_Errno(--+----------------+--)------------------------------><
-                      +--error_string--+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/funcs_sockpsock_errno.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>where:</para>
 <variablelist>
    <varlistentry>
@@ -1146,12 +1174,13 @@ Subsequent socket calls do not clear the error code.
 <para>The SockRecv() call receives data on a connected socket.
 </para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--SockRecv(socket, var, len--+-----------+--)--------------------------><
-                               +--, flags--+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/funcs_sockrecv.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>where:</para>
 <variablelist>
    <varlistentry>
@@ -1245,12 +1274,13 @@ error code SockSock_Errno() or SockPSock_Errno(). Possible values are:</para>
 <para>The SockRecvFrom() call receives data on a socket.
 </para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--SockRecvFrom(socket, var, len--+-----------+--, address)-------------><
-                                   +--, flags--+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/funcs_sockrecvfrom.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>where:</para>
 <variablelist>
    <varlistentry>
@@ -1340,12 +1370,13 @@ Possible values are:</para>
 readiness for writing, and pending exceptional conditions.
 </para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--SockSelect(reads, writes, excepts--+-------------+--)----------------><
-                                       +--, timeout--+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/funcs_sockselect.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>where:</para>
 <variablelist>
    <varlistentry>
@@ -1457,12 +1488,13 @@ rc = SockSelect("r.","w.",)
 <para>The SockSend() call sends data to a connected socket.
 </para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--SockSend(socket, data--+-----------+--)------------------------------><
-                           +--, flags--+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/funcs_socksend.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>where:</para>
 <variablelist>
    <varlistentry>
@@ -1555,12 +1587,13 @@ SockPSock_Errno(). Possible values are:</para>
 <para>The SockSentTo() call sends data to a connected or unconnected socket.
 </para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--SockSendTo(socket, data--+-----------+--, address)-------------------><
-                             +--, flags--+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/funcs_socksendto.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>where:</para>
 <variablelist>
    <varlistentry>
@@ -1667,11 +1700,13 @@ SockSock_Errno() or SockPSock_Errno(). Possible values are:</para>
 <para>The SockSetSockOpt() call sets options associated with a socket.
 </para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--SockSetSockOpt(socket, level, optName, optVal)-----------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/funcs_socksetsockopt.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>where:</para>
 <variablelist>
    <varlistentry>
@@ -1869,11 +1904,13 @@ Possible values are:</para>
 call is optional.
 </para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--SockShutDown(socket, howto)------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/funcs_sockshutdown.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>>where:</para>
 <variablelist>
    <varlistentry>
@@ -1942,11 +1979,13 @@ Possible values are:</para>
 Subsequent socket API calls do not reset this error code.
 </para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--SockSock_Errno()-----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/funcs_socksock_errno.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <note><para>SockSock_Errno() interfaces with the C function sock_errno().
 </para></note>
 </section>
@@ -1963,11 +2002,13 @@ descriptor representing the end point. Each socket type provides a different
 communication service.
 </para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--SockSocket(domain, type, protocol)-----------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/funcs_socksocket.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>where:</para>
 <variablelist>
    <varlistentry>
@@ -2055,11 +2096,13 @@ SockSock_Errno() or SockPSock_Errno(). Possible values are:</para>
 socket.
 </para>
 <para><emphasis role="bold">Syntax:</emphasis></para>
-<programlisting>
-<![CDATA[
->>--SockSoClose(socket)--------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/funcs_socksoclose.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>where:</para>
 <variablelist>
    <varlistentry>

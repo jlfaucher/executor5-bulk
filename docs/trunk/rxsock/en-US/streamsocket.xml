@@ -129,12 +129,12 @@ OutputStream class.</para>
 <indexterm><primary>method</primary>
 <secondary>new method</secondary>
 <tertiary>of StreamSocket class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-new(host, port--+-------------+--)--------------------------><
-                   +--, bufsize--+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/streamsock_new.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Initializes a stream object for the
 <emphasis role="italic">host</emphasis> and
@@ -179,13 +179,12 @@ Returns the new stream object.</para>
 <indexterm><primary>method</primary>
 <secondary>charIn method</secondary>
 <tertiary>of StreamSocket class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-charIn-+----------------------------+-----------------------><
-          +-(-+-------+--+---------+-)-+
-              +-start-+  +-,length-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/streamsock_charin.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a string of up to <emphasis role="italic">length</emphasis>
 characters from the input stream. If you omit
@@ -204,13 +203,12 @@ fails, the stream opens for input only.
 <indexterm><primary>method</primary>
 <secondary>charOut method</secondary>
 <tertiary>of StreamSocket class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-charOut-+----------------------------+----------------------><
-           +-(-+--------+--+--------+-)-+
-               +-string-+  +-,start-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/streamsock_charout.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the count of characters remaining after trying to write
 <emphasis role="italic">string</emphasis> to the output stream.</para>
@@ -231,11 +229,12 @@ socket streams are not considered persistent.
 <indexterm><primary>method</primary>
 <secondary>chars method</secondary>
 <tertiary>of StreamSocket class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-chars-------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/streamsock_chars.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns <computeroutput>1</computeroutput> if the stream is open.
 Otherwise returns<computeroutput>0</computeroutput>.
@@ -248,11 +247,12 @@ Otherwise returns<computeroutput>0</computeroutput>.
 <indexterm><primary>method</primary>
 <secondary>close method</secondary>
 <tertiary>of StreamSocket class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-close-------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/streamsock_close.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Closes the stream.
 <emphasis role="bold">close</emphasis> returns
@@ -269,11 +269,12 @@ a null string (&quot;&quot;).</para>
 <indexterm><primary>method</primary>
 <secondary>description method</secondary>
 <tertiary>of StreamSocket class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-description-------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/streamsock_description.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns any descriptive string associated with the
 current state of the stream or the Nil object if no descriptive string is
@@ -291,13 +292,12 @@ available, additional information about ERROR or NOTREADY states. (The
 <indexterm><primary>method</primary>
 <secondary>lineIn method</secondary>
 <tertiary>of StreamSocket class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-lineIn-+-------------------------+--------------------------><
-          +-(-+------+-+--------+-)-+
-              +-line-+ +-,count-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/streamsock_linein.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns the next <emphasis role="italic">count</emphasis> lines. The
 count must be <computeroutput>0</computeroutput> or
@@ -317,13 +317,12 @@ open, the it tries to open the stream for reading and writing.
 <indexterm><primary>method</primary>
 <secondary>lineOut method</secondary>
 <tertiary>of StreamSocket class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-lineOut-+--------------------------+------------------------><
-           +-(-+--------+-+-------+-)-+
-               +-string-+ +-,line-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/streamsock_lineout.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns <computeroutput>0</computeroutput> if successful in writing
 <emphasis role="italic">string</emphasis> to the output stream
@@ -341,11 +340,12 @@ to be a persistent stream.
 <indexterm><primary>method</primary>
 <secondary>lines method</secondary>
 <tertiary>of StreamSocket class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-lines-------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/streamsock_lines.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns <computeroutput>1</computeroutput> if the stream is open.
 Otherwise returns<computeroutput>0</computeroutput>.
@@ -358,11 +358,12 @@ Otherwise returns<computeroutput>0</computeroutput>.
 <indexterm><primary>method</primary>
 <secondary>open method</secondary>
 <tertiary>of StreamSocket class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-open---------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/streamsock_open.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Opens the stream for input and output and returns
 <computeroutput>READY:</computeroutput>. If the method is unsuccessful, it
@@ -381,11 +382,12 @@ which is set whenever one of the file system primitives returns with a
 <indexterm><primary>method</primary>
 <secondary>position method</secondary>
 <tertiary>of StreamSocket class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-position----------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/streamsock_position.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>This method is invalid for this class and will raise an error if invoked.</para>
 </section>
@@ -396,13 +398,12 @@ which is set whenever one of the file system primitives returns with a
 <indexterm><primary>method</primary>
 <secondary>say method</secondary>
 <tertiary>of StreamSocket class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-say--+----------------+-------------------------------------><
-        +-(-+--------+-)-+
-            +-string-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/streamsock_say.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns <computeroutput>0</computeroutput> if successful in writing
 <emphasis role="italic">string</emphasis> to the output stream
@@ -416,11 +417,12 @@ an error occurs while writing the line.</para>
 <indexterm><primary>method</primary>
 <secondary>state method</secondary>
 <tertiary>of StreamSocket class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-state-------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/streamsock_state.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a string indicating the current stream state.
 </para>
@@ -454,11 +456,12 @@ the stream is closed or has not yet been opened.
 <indexterm><primary>method</primary>
 <secondary>string method</secondary>
 <tertiary>of StreamSocket class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-string------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/streamsock_string.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a string that indicates the name of the object the stream
 represents i.e. the <computeroutput>hostname:port</computeroutput>.
