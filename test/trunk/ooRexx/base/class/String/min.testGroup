@@ -89,6 +89,9 @@ return testResult
     numeric digits 18
     self~assertSame(-12345679999999999.0, '-12345679999999998.96'~min( -12345679999999999))
 
+::method 'test009'
+   self~assertSame(1.23456789, 1.23456789123456789~min)
+
 -- from bif.testgroup
    -- test the BIF, using examples from the documentation
 ::method "test_MIN"

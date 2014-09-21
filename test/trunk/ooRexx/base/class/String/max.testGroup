@@ -101,6 +101,9 @@ return testResult
     numeric digits 18
     self~assertSame(-12345679999999999, (-12345679999999999)~max( '-12345679999999998.96'))
 
+::method 'test013'
+   self~assertSame(1.23456789, 1.23456789123456789~max)
+
 -- from bif.testgroup
    -- test the BIF, using examples from the documentation
 ::method "test_MAX"
