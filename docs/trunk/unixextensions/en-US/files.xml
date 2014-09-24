@@ -50,11 +50,13 @@
 
 <section id="utlSysAccess"><title>SysAccess</title>
 <indexterm><primary>SysAccess</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-SysAccess(file, mode)---------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/files_sysaccess.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Checks to see if the user has access permissions on a file.</para>
 <para>This function uses the <filename>access()</filename>
 C API to perform the action.</para>
@@ -84,11 +86,13 @@ retc = SysAccess("/home/dashley/temp.txt", 2)
 
 <section id="utlSysChmod"><title>SysChmod</title>
 <indexterm><primary>SysChmod</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-SysChmod(file, mode)----------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/files_syschmod.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Sets the mode bits of a file.</para>
 <para>This function uses the <filename>chmod()</filename>
 C API to perform the action.</para>
@@ -123,11 +127,13 @@ retc = SysChmod("/home/dashley/temp.txt", "rwSrwsr-x")
 
 <section id="utlSysChown"><title>SysChown</title>
 <indexterm><primary>SysChown</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-SysChown(srcpath, uid, gid)---------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/files_syschown.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Change the user and group ownership attributes of a file.</para>
 <para>This function uses the <filename>chown()</filename>
 C API to perform the action.</para>
@@ -162,11 +168,13 @@ call SysChown "/home/username/myfile", 501, 530
 
 <section id="utlSysChroot"><title>SysChroot</title>
 <indexterm><primary>SysChroot</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-SysChroot(srcpath)------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/files_syschroot.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Change the root directory of the current process.</para>
 <para>This function uses the <filename>chroot()</filename>
 C API to perform the action.</para>
@@ -193,11 +201,13 @@ call SysChroot "/home/username/"
 
 <section id="utlSysClose"><title>SysClose</title>
 <indexterm><primary>SysClose</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-SysClose(fh)------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/files_sysclose.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Close the specified file handle.</para>
 <para>This function uses the <filename>close()</filename>
 C API to perform the action.</para>
@@ -224,11 +234,13 @@ call SysClose 0
 
 <section id="utlSysEuidaccess"><title>SysEuidaccess (not available on all systems)</title>
 <indexterm><primary>SysEuidaccess</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-SysEuidaccess(file, mode)-----------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/files_syseuidaccess.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Checks to see if the effective user has access permissions on a file.</para>
 <para>This function uses the <filename>euidaccess()</filename>
 C API to perform the action.</para>
@@ -258,11 +270,13 @@ retc = SysEuidaccess("/home/dashley/temp.txt", 2)
 
 <section id="utlSysGetdirlist"><title>SysGetdirlist</title>
 <indexterm><primary>SysGetdirlist</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-SysGetdirlist(dir)------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/files_sysgetdirlist.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Returns an ooRexx array of the file/directory name(s) contained in a subdirectory.</para>
 <para>The returned array will contain ALL file and subdirectory
 names including files usually not
@@ -297,11 +311,13 @@ do entry over arr
 
 <section id="utlSysLchown"><title>SysLchown</title>
 <indexterm><primary>SysLchown</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-SysLchown(srcpath, uid, gid)--------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/files_syslchown.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Change the user and group ownership attributes of a symbolic link.</para>
 <para>This function uses the <filename>lchown()</filename>
 C API to perform the action.</para>
@@ -334,11 +350,13 @@ call SysLchown "/home/username/myfile", 501, 530
 
 <section id="utlSysLink"><title>SysLink</title>
 <indexterm><primary>SysLink</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-SysLink(srcpath, targetpath)--------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/files_syslink.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Create a symbolic (hard) link.</para>
 <para>This function uses the <filename>link()</filename>
 C API to perform the action.</para>
@@ -368,11 +386,13 @@ call SysLink "/pub", "/home/username/myownpublink"
 
 <section id="utlSysMkdir"><title>SysMkdir</title>
 <indexterm><primary>SysMkdir</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-SysMkdir(dir, mode)-----------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/files_sysmkdir.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Create a subdirectory.</para>
 <para>This function uses the <filename>mkdir()</filename>
 C API to perform the action.</para>
@@ -402,11 +422,13 @@ retc = SysMkdir("./pub", b2d("111111101"))
 
 <section id="utlSysRmdir"><title>SysRmdir</title>
 <indexterm><primary>SysRmdir</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-SysRmdir(dir)-----------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/files_sysrmdir.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Remove a subdirectory.</para>
 <para>This function uses the <filename>rmdir()</filename>
 C API to perform the action.</para>
@@ -433,11 +455,13 @@ retc = SysRmdir("./pub")
 
 <section id="utlSysStat"><title>SysStat</title>
 <indexterm><primary>SysStat</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-SysStat(file, option)---------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/files_sysstat.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Returns information about a file.</para>
 <para>This function uses the <filename>stat64()</filename>
 C API to perform the action.</para>
@@ -509,11 +533,13 @@ SysStat("/home/dashley/temp.txt", "a")  -->  2009-12-02 13:22:16
 
 <section id="utlSysSymlink"><title>SysSymlink</title>
 <indexterm><primary>SysSymlink</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-SysSymlink(srcpath, targetpath)-----------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/files_syssymlink.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Create a symbolic (soft) link.</para>
 <para>This function uses the <filename>symlink()</filename>
 C API to perform the action.</para>
@@ -543,11 +569,13 @@ call SysSymlink "/pub", "/home/username/myownpublink"
 
 <section id="utlSysUmask"><title>SysUmask</title>
 <indexterm><primary>SysUmask</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-SysUmask(umask)---------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/files_sysumask.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Set the umask.</para>
 <para>This function uses the <filename>umask()</filename>
 C API to perform the action.</para>
@@ -575,12 +603,13 @@ call SysUmask 2
 
 <section id="utlSysUname"><title>SysUname</title>
 <indexterm><primary>SysUname</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-SysUname(--+----------+--)----------------------------------><
-              +--option--+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/files_sysuname.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Returns system information.</para>
 <para>This function uses the <filename>uname()</filename>
 C API to perform the action.</para>
@@ -631,11 +660,13 @@ SysUname("m")   -->  i686
 
 <section id="utlSysUnLink"><title>SysUnLink</title>
 <indexterm><primary>SysLink</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-SysUnLink(srcpath)------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/files_sysunlink.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Removes a hard link.</para>
 <para>This function uses the <filename>unlink()</filename>
 C API to perform the action.</para>
@@ -662,11 +693,13 @@ call SysUnLink "/home/username/myownpublink"
 
 <section id="utlSysWordexp"><title>SysWordexp</title>
 <indexterm><primary>SysWordexp</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-SysWordexp(exp)---------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/files_syswordexp.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Performs a shell-like expansion of the input expression and returns the result in an
 array. This function will expand the characters "*", "?" and "~" (the tilde).
 </para>

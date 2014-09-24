@@ -50,11 +50,13 @@
 
 <section id="utlSysCrypt"><title>SysCrypt</title>
 <indexterm><primary>SysCrypt</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-SysCrypt(str, salt)-----------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/misc_syscrypt.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Returns an encrypted version of <emphasis>str</emphasis>.</para>
 <para>This function uses the <filename>crypt()</filename>
 C API to perform the action.</para>
@@ -84,11 +86,13 @@ encstr = SysCrypt("String to encrypt.", "3A")
 
 <section id="utlSysGetsid"><title>SysGetsid</title>
 <indexterm><primary>SysGetsid</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-SysGetsid()-------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/misc_sysgetsid.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Gets the current session id.</para>
 <para>This function uses the <filename>getsid()</filename>
 C API to perform the action.</para>
@@ -111,11 +115,13 @@ mysid = SysGetsid()
 
 <section id="utlSysGeterrno"><title>SysGeterrno</title>
 <indexterm><primary>SysGeterrno</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-SysGeterrno()-----------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/misc_sysgeterrno.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Returns the errno numeric value.</para>
 <para><emphasis role="bold">Parameter:</emphasis></para>
 <para>None</para>
@@ -136,11 +142,13 @@ errno = SysGeterrno()
 
 <section id="utlSysGeterrnomsg"><title>SysGeterrnomsg</title>
 <indexterm><primary>SysGeterrnomsg</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-SysGeterrnomsg(errno)---------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/misc_sysgeterrnomsg.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Returns a short description of the errno value.</para>
 <para><emphasis role="bold">Parameter:</emphasis></para>
 <variablelist>
@@ -166,11 +174,13 @@ say SysGeterrnomsg(26)
 
 <section id="utlSysGetsizeofptr"><title>SysGetsizeofptr</title>
 <indexterm><primary>SysGetsizeofptr</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-SysGetsizeofptr()-------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/misc_sysgetsizeofptr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Gets the size (in bits) of a pointer.</para>
 <para>This function uses the <filename>sizeof(void *)</filename>
 C macro to perform the action.</para>
@@ -193,11 +203,13 @@ addrmode = SysGetsizeofptr()
 
 <section id="utlSysSetsid"><title>SysSetsid</title>
 <indexterm><primary>SysSetsid</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-SysSetsid()-------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/misc_syssetsid.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Set the session id.</para>
 <para>This function uses the <filename>setsid()</filename>
 C API to perform the action.</para>
@@ -220,11 +232,13 @@ call SysSetsid 0
 
 <section id="utlSysSignal"><title>SysSignal</title>
 <indexterm><primary>SysSignal</primary></indexterm>
-<programlisting>
-<![CDATA[
->>-SysSignal(signum, option)-----------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/funcs/misc_syssignal.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>Sets the disposition of a signal to either SIG_IGN (ignore) or SIG_DFL (default).</para>
 <note><title>Note</title><para>You should be VERY carefull when calling this function as it can
 cause problems with the Rexx interpreter. If you don't know what you are doing then you
