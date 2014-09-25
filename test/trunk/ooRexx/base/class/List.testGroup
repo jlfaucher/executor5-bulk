@@ -1264,6 +1264,20 @@ makeColl: procedure
 
   return
 
+::method testbug1283
+  l = .list~of(1,2,3)
+  l~remove(l~first)
+
+  save = l~first
+
+  loop i = 4 to 100
+    l~append(i)
+  end
+
+  self~assertEquals(save, l~first)
+  self~assertEquals(2, l[save])
+
+
 /* Test whether both collections contain the same entries.
    returns .true, if the same, .false else
 */
