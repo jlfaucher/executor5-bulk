@@ -1,127 +1,4 @@
 #!/usr/bin/rexx
-/*
--- this is a ooRexx line comment, will get ignored by pre-processor which analyzes this header
--- enclosed between the very first block comment, i.e. everything between the first "/*" .. "*/"
-
-   name:             ooRexxUnit.cls
-   author:           Rony G. Flatscher, Rick McGuire
-   date:             2005-08-07
-   version:          2.0.0
-   changed1:         2005-08-07, ---rgf, moved assertion routines to a class "Assert", which
-                                 serves as a superclass for TestCase: this is the junit-approach
-                     2005-08-20, ---rgf, added license, assertCount, corrected some little bugs
-                     2005-08-21, ---rgf, added public routine "makeTestSuiteFromFileList()"
-                     2005-08-30, ---rgf, changed some comments from "ooRexx" to "ooRexxUnit"
-                     2005-10-09, ---rgf, only count assertions, if successful
-                     2005-10-14, ---rgf, changed failure-message string slightly to improve understandibility
-                     2005-10-27, ---rgf, added ability to report which assertion failed for what reason
-                                         (suggested by Walter Pachl)
-                     2005-10-28, ---rgf, added @assertFailure attribute to lead-in the report on
-                                         the assertion failure, removed angle-brackets from that added text
-                     2006-03-25, ---rgf, removed 'private' attribute from TestResult's ooRexx only attributes
-                                         "logQueue" and "TestCaseTable"
-                     2006-04-11, Rick McGuire, added condition-handling to Assert and TestCase.run()
-                     2006-05-17, ---rgf, altered Rick's code slightly,
-                                            expectSyntax(errorCode) and
-                                            expectCondition(conditionName)
-                     2006-10-17, ---rgf, escape non-printable chars in error/failure string information to
-                                         a Rexx style string literal (concatenating hexadecimal strings);
-                                         use new syntax error # 93.964 (application error) instead of
-                                         error # 40.1, which had to be used prior to ooRexx 3.1.1
-                     2006-11-05, ---rgf, - moved initialisation of "defaultTestResultClass" to the class'
-                                           constructor; *but* this also needs the definition of the "TestResult"
-                                           class to be moved physically before the "TestCase" class (otherwise
-                                           the class is not known yet and the string ".TESTREUSLT" is stored
-                                           instead of the class object!!);
-                                         - error message encodings now always add a colon to the word "ERROR"; the
-                                           the error message after the eye catcher string "--->" is not enquoted
-                                           in square brackets anymore
-                                         - failure message encodings, if given, now use the string "--->"
-                                           as an eye catcher for parsing and is not enquoted in square brackets anymore
-                     2006-11-27, ---rgf, - changed Assert[Not]Same to show ObjectID in failure message to ease comparison
-                     2006-11-28, ---rgf, - corrected logic to intercept any condition from running a test case
-                     2006-12-13, ---rgf, - changed wording from "expected condition...was not received" to
-                                           "expected condition...was not raised"
-                                         - made sure that "makeTestSuiteFromFileList()" will create an own test suite per
-                                           test class for which mandatory test methods got listed
-                     2006-12-14, ---rgf, added hashbang line
-                     2006-12-26/27/28, ---rgf, - removed "bWalterPachl" flag (to show reason of failure) as
-                                           reason of failures are always shown; even if no failure message
-                                           is supplied the assertion methods will still supply the "@assertionFailure"
-                                           string to indicate expected and (not matching) received values
-                                         - enhanced "assertEquals" to work on ordered and unordered collections:
-                                           - unordered collections (of any type) are regarded to be equal, if both contain
-                                             the same number of the same index/value pairs;
-                                           - ordered collections (of any type) are regarded to be equal, if the items
-                                             in the MAKEARRAY object are the same in the same order
-                     2006-12-30, ---rgf, added method assertNotEquals to Assert class (ooRexxUnit only, makes it easier
-                                         to test for unequal collection values)
-                     2007-01-24, ---rgf, - changed EOL to Unix style (to make hash-bang work on Unix)
-                                         - added a function ooRexxUnit.getShellName(): central routine to return
-                                           the name of the shell to ADDRESS to
-                     2007-01-??, Mark Miesfeld, - added ooRexxUnit.getShellName()
-                                                - added ooRexxUnit.getOSName()
-                     2007-04-28, ---rgf, - makeTestSuiteFromFileList(): if required files are missing
-                                           in testUnit's, then program does not abend, rather it ignores
-                                           that testUnit, displying the condition on STDERR
-                                         - added ooRexxUnit.formatConditionObject()
-                     2007-05-27, ---rgf, - added environment symbols ".oorexxunit.interpreterName",
-                                           ".oorexxunit.languageLevel" and ".oorexxunit.interpreterDate",
-                                           retrieved from "PARSE VERSION"
-                     2007-05-30, ---rgf, - added environment symbols ".ooRexxUnit.shellName", "ooRexxUnit.OSName",
-                                           ".ooRexxUnit.line.separator", ".ooRexxUnit.directory.separator",
-                                           ".ooRexxUnit.path.separator"
-                     2007-07-12, ---rgf, - added attribute 'definedInFile' to 'TestCase' class
-                                         - 'TestResult': new directory entry in queue for 'startTest' and 'endTest'
-                                           named 'OOREXXUNIT.CLASS_TESTCASEINFO', which refers to the class object's
-                                           'testCaseInfo' directory
-                                         - 'makeTestCaseString()': now returns fully qualified filename after
-                                           '@' marker or the string "n/a_XXXXXXXX", where "XXXXXX" is o~"=="~c2x
-                     2007-07-19, ---rgf, - added option to "TestCase" and "TestSuite"'s 'run' method to
-                                           display information about the test case to be run about to stderr;
-                                           this can be used to present the user a feedback about the proceedings
-                                           of the tests
-                     2007-08-17, ---rgf, - corrected a small typo; now that we have a release version removing pre 3.2
-                                           code and tests, using new features
-                     2007-08-18, ---mm,  - add public routine simpleFormatTestResults()
-                     2007-10-10, ---rgf, - enhanced framework to allow accepting testSuite objects at testSuite
-                                           creation time (and also collections of test cases)
-                     2008-01-07  ---mm,  - Major re-work of the framework, bumping level to 2.0.0
-
-
-   language-level:   6.0.2
-   needs:            ooRexx 3.2 or later
--- determines the minimum ooRexx language level (6.02 = ooRexx, IBM Object REXX)
-
-   purpose:          Supply the base classes for a JUnit compliant testing framework for ooRexx
-
-   remark:           The original design tried, wherever possible, to use the JUnit class and
-                     method names in an effort to make ooRexxUnit easier to understand.  However,
-                     this lead to some poor design choices in spots and this design goal no
-                     longer has a high priority in ooRexxUnit 2.0.0.
-
-                     Nevetheless, ooRexxUnitstill sticks closely to the design of JUnit 3.8.x
-                     and persons familiar with JUnit should have no trouble in understanding
-                     ooRexxUnit.  For an excellent overview of this design read the cookstour
-                     document, the link to which is provided below.
-
-   license:          CPL 1.0 (Common Public License v1.0, see below)
-
-   link:             http://www.junit.org
-                     http://junit.sourceforge.net/doc/cookbook/cookbook.htm
-                     http://junit.sourceforge.net/doc/cookstour/cookstour.htm
-
-
--- there may be any number of subcategories, most important listed first, second important second, ...
--- no need to append numbers, but may be easier to realize the category level easily
-
--- this is the main categorization
-   category0:        ooRexxUnit
-
--- this is the next concrete categorization
-   category1:        framework
-*/
-
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 2005-2007 Rexx Language Association. All rights reserved.    */
@@ -159,56 +36,6 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-  -- Define the version number with: x.x.x_y.y.y  Where x is the ooRexxUnit.cls
-  -- version, and y is the minimum ooRexx interpreter level required.
-  .local~ooRexxUnit.version=2.0.0_3.2.0
-
-  .local~chars.NonPrintable=xrange("00"x, "1F"x) || "FF"x  -- define non-printable chars
-
-  parse version interpreterName languageLevel interpreterDate
-  .local~ooRexxUnit.interpreterName=interpreterName
-  .local~ooRexxUnit.languageLevel=languageLevel
-  .local~ooRexxUnit.interpreterDate=interpreterDate
-
-  .local~ooRexxUnit.shellName=ooRexxUnit.getShellName()
-  .local~ooRexxUnit.OSName   =ooRexxUnit.getOSName()
-
-
-  -- define end-of-line chars
-  .local~ooRexxUnit.line.separator=.endOfLine
-
-  -- Set the path and directory separator characers for the current OS. A select
-  -- is used so that if the test suite needs to be run on an OS with different
-  -- characters, it can easily be added here.
-  select
-    when .ooRexxUnit.OSName == "WINDOWS" then do
-      .local~ooRexxUnit.directory.separator = '\'
-      .local~ooRexxUnit.path.separator=";"
-    end
-    otherwise do
-      .local~ooRexxUnit.directory.separator = '/'
-      .local~ooRexxUnit.path.separator=":"
-    end
-  end
-  -- End select
-
-  -- Put the default test result class into the environment.
-  .local~ooRexxUnit.default.TestResult.Class = .TestResult
-
-  -- Define a 'marker' that can be used to flag a known test case failure.
-  .local~ooRexxUnit.knownBugFlag = "tracker bug #"
-
-  -- Capture the ooRexxUnit framework directory and ensure it is in the path.
-  -- Also capture the original path in case someone needs it.
-  parse source . . fileSpec
-  .local~ooRexxUnit.dir = fileSpec~left(fileSpec~caseLessPos("OOREXXUNIT.CLS") - 2 )
-  .local~ooRexxUnit.originalPath = addToPath(.ooRexxUnit.dir)
-
-  -- Add the test utility class to the local environment so that it is available
-  -- to anyone running in this process.
-  .local~put(.TESTUTIL, 'TESTUTIL')
-
-  .local~ooRexxUnit.architecture = getAddressingMode()
 
 -- End of entry point.
 
@@ -216,94 +43,155 @@
   Directives, Classes, or Routines.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 
-/** isSubClassOf()
- *
- * Tests if an object is a class object that is a subclass of the specified
- * class.  (Note that this is different then testing that an object is an
- * instance of a class.)
- *
- * During the execution of an automated test suite, many of the framework's
- * class objects can be created by different requires directives.  This prevents
- * the use of a simple comparison to test if an object is a specific class
- * object.  This public routine provides a way to test the class of a class
- * object for this situation.
- *
- * @param cObj            REQUIRED  The object to test.
- * @param superClassName  REQUIRED  A string, the name of the class to test for.
- *
- * Return true if the object is a subclass of the specified class, otherwise
- * false.
- *
- */
-::routine isSubClassOf public
-  use strict arg cObj, superClassName
+-- main control class the tests.  Holds a lot of global test values rather than
+-- storing them in .local
+::class "ooRexxUnit"
+-- main setup method for the unit test framework
+::method activate class
 
-  -- This is a recursive function and these are the base cases.
-  if \ cObj~isA(.class) then return .false
+  -- this is the framework version number
+  self~version = 3.0.0
+  -- this is the minimum language level required by the framework
+  self~mininumInterpreterVersion = 5.0.0
 
-  if cObj~id~caselessEquals(superClassName) then return .true
+  parse version self~interpreterName self~languageLevel self~interpreterDate
 
-  supers = cObj~superClasses
-  if supers~items == 0 then return .false
+  -- Note:  initialize the OSName first, other methods depend on this
+  self~OSName = self~getOSName
+  self~shellName = self~getShellName
 
-  -- Do a breadth-first search
-  do cObj over supers
-    if cObj~id~caselessEquals(superClassName) then return .true
+  -- this is our default class for reporting errors.  Can be replaced
+  self~defaultTestResultClass = .TestResult
+
+  -- Define a 'marker' that can be used to flag a known test case failure.
+  self~knownBugFlag = "tracker bug #"
+
+  -- Capture the ooRexxUnit framework directory and ensure it is in the path.
+  -- Also capture the original path in case someone needs it.
+  self~frameworkDirectory = .File~new(.context~package~name)~parent
+  -- set up an original search path for files, includeing the framework directory
+  self~originalPath = self~addToPath(self~frameWorkDirectory)
+
+  self~architecture = self~getAddressingMode
+
+-- class attributes for global data
+::attribute version class
+::attribute minimumInterpreterVersion class
+::attribute minimumInterpreterVersion class
+::attribute shellName class
+::attribute OSName class
+
+::attribute defaultTestResultClass class
+::attribute knownBugFlag class
+::attribute frameworkDirectory class
+::attribute originalPath class
+::attribute architecture class
+
+
+-- Determine and return the shell name to be used in ADDRESS keyword statements. This
+-- is a central location to make it easy to maintain in the future, in case a non-Windows
+-- and non-Unix compatible operating systems comes up, or new shell variants develop.
+::method getShellName private class
+  expose OSName
+
+
+   -- make sure we address the shell
+   shell="CMD"
+
+   -- for now, we have a Windows/not Windows situation.
+   if \OSName~caselessEquals("Windows") do
+   do
+      -- get the fully qualified shell name from the environment
+      unixShell=value("SHELL", , "environment")
+      // and get the shell name portion
+      shell = .File~new(unixShell)~name
+   end
+   return shell
+
+
+-- Determine and return the operating system under which the currently executing
+-- program is running.  Provides an uniform method for test cases to determine
+-- which operating system they are executing on.
+--
+-- The possible list of return words as of ooRexx 3.2.0 is:
+--
+--   WINDOWS, LINUX, SUNOS, AIX, MACOSX, CYGNUS, FREEBSD, and NETBSD
+--
+-- Although it is doubtful that ooRexx is compilable on CYGNUS, FREEBSD, or
+-- NETBSD.
+--
+::method getOSName private class
+  parse upper source os .
+  if os~abbrev("WIN") then os = "WINDOWS"
+  return os
+
+
+-- Adds the specified directory to the path only if it is not already in the
+-- path.  By default the directory is added to the beginning of the path.
+--
+-- @param  dir  REQUIRED
+--   The directory to add to the path
+-- @param  at   OPTIONAL
+--   Where to add the directory, beginning or end. Only the first letter is
+--   needed.  Specifying anything other than "E"nd results in the beginning.
+-- @return  Returns the old path, the current path at time of invocation.
+--
+::class addToPath class
+  use strict arg dir, at = 'B'
+
+  at = at~left(1)~upper
+  if at \== 'E' then at = 'B'
+
+  curPath = value("PATH", , 'ENVIRONMENT')
+  if \self~isInPath(dir) then do
+    if at == 'B' then
+      newPath = dir || .File~pathSeparator || curPath
+    else
+      newPath curPath || .File~pathSeparator || dir
   end
 
-  -- The recursive part.
-  do cObj over supers
-    if isSubClassOf(cObj, superClassName) then return .true
-  end
-  return .false
--- End isSubClassOf()
+  call value "PATH", newPath, "ENVIRONMENT"
 
-::routine querySuperClasses public
-  use arg classObj
-  classes = classObj~superClasses
-  do c over classes
-    say c
-  end
-return 0
+  return curPath
 
-/** isBoolean()
- *
- * Tests if an object is a boolean (.true or .false.)
- *
- * Note that this function will always return true or false so that it is always
- * safe to use in an logical expression.  If no argument is supplied (which of
- * course makes no sense) then false is returned.
- *
- * @param obj   The object to test.
- *
- * Returns true if the object is strictly true, otherwise false.
- */
-::routine isBoolean public
-  use arg obj
-  if arg(1, 'E') then do
-    if obj~isA(.string) then do
-      if obj~datatype('O') then return .true
-    end
+-- Returns true if the specified directory is in the current PATH, otherwise
+-- returns false.
+::method isInPath
+  use strict arg dir
+
+  path = value("PATH", ,'ENVIRONMENT')
+  sl   = .File~separator
+  sep  = .File~pathSeparator
+
+  if \.File~isCaseSensitive then do
+    if path~caselessContains(dir || sep) then return .true
+    if path~caseLessContains(dir || sl || pathSep) then return .true
+    if path~right(dir~length)~caselessEquals(dir) then return .true
   end
+  else do
+    if path~contains(dir || sep) then return .true
+    if path~contains(dir || sl || pathSep) then return .true
+    if path~right(dir~length)~equals(dir) then return .true
+  end
+
 return .false
--- End isBoolean()
 
-/** isPositive()
- * Tests if an object is a positive, whole number.
- *
- * @param number  REQUIRED  The object to test.
- *
- * Returns true if the object is strictly a whole number greater than zero.
- */
-::routine isPositive public
-  use strict arg number
-  if number~isA(.String) then do
-    if number~dataType('W') then do
-      if number > 0 then return .true
-    end
-  end
-return .false
--- End isBoolean()
+-- Determine if this is a 32-bit or 64-bit interpreter.
+::method getAddressingMode private class
+  parse version ")_" mode "-bit"
+  return mode
+
+/* class: TestUtil - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+    A class with static (class) utility methods that can be used anywhere.
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class "TestUtil" public
+::method activate class
+  expose nonPrintableChars
+
+  -- the nonprintable characters
+  nonPrintableChars = xrange("00"x, "1F"x) || "FF"x
 
 /** isWholeRange()
  * Tests if an object is a whole number within the range of min and max.
@@ -312,265 +200,57 @@ return .false
  * @param min     REQUIRED  The minimal value of the range.
  * @param max     REQURIED  The maximal value of the range.
  */
-::routine isWholeRange public
+::method isWholeRange class
   use strict arg number, min, max
 
-  if number~isA(.String) then do
-    if number~dataType('W') then do
-      if number >= min, number <= max then return .true
-    end
-  end
-return .false
--- End isWholeRange()
-
-/* pathCompact( path, len )- - - - - - - - - - - - - - - - - - - - - - - - - -*\
-
-  Takes a long path name and compacts it to a shorter path name by removing some
-  path components in the middle of the path name and replacing them with
-  ellipses (...)
-
-  Input:
-    path REQUIRED
-      The path name to compact.
-
-    len  REQUIRED
-      The maximum length of the returned compacted path.
-
-  Returns:
-    A compacted path no longer than specified.  If the input path name is
-    already less than or equal to the specified length, it is returned
-    unchanged.
-\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::routine pathCompact public
-  use strict arg path, len
-
-  if path~length <= len then return path
-
-  sl = .ooRexxUnit.directory.separator
-
-  -- Get position of directory separator after character 15
-  fp = path~pos(sl, 15)
-
-  -- Divide into leading and trailing pieces.  Leading piece, add "..."
-  leading = path~left(fp) || "..."
-  trailing = path~substr(fp)
-
-  -- Find a position of the directory separator in the trailing part, such that
-  -- when the trailing part starts there, the overall length of the resulting
-  -- string is the specified length, or shorter.
-  trailPos = trailing~pos(sl, trailing~length - (len - leading~length))
-  if trailPos == 0 then do
-    -- The last component of the path is too long, shorten the leading.
-    leading = "..."
-    trailPos = trailing~pos(sl, trailing~length - (len - leading~length))
-  end
-
-  if trailPos == 0 then do
-    -- Still too long, just use the last len characters.
-    leading = ""
-    trailing = trailing~right(len)
-  end
-  else do
-    trailing = trailing~substr(trailPos)
-  end
-
-return leading || trailing
--- End pathCompact( path, len )
-
-
-/** addToPath()
- * Adds the specified directory to the path only if it is not already in the
- * path.  By default the directory is added to the beginning of the path.
- *
- * @param  dir  REQUIRED
- *   The directory to add to the path
- * @param  at   OPTIONAL
- *   Where to add the directory, beginning or end. Only the first letter is
- *   needed.  Specifying anything other than "E"nd results in the beginning.
- * @return  Returns the old path, the current path at time of invocation.
- */
-::routine addToPath public
-  use strict arg dir, at = 'B'
-
-  at = at~left(1)~upper
-  if at \== 'E' then at = 'B'
-
-  curPath = value("PATH", , 'ENVIRONMENT')
-  if \ isInPath(dir) then do
-    if at == 'B' then
-      j = value("PATH", dir || .ooRexxUnit.path.separator || curPath, 'ENVIRONMENT')
-    else
-      j = value("PATH", curPath || .ooRexxUnit.path.separator || dir, 'ENVIRONMENT')
-  end
-
-return curPath
--- End addToPath()
-
-
-/** isInPath()
- * Returns true if the specified directory is in the current PATH, otherwise
- * returns false.
- */
-::routine isInPath public
-  use strict arg dir
-
-  path = value("PATH", , 'ENVIRONMENT')
-  sl   = .ooRexxUnit.directory.separator
-  sep  = .ooRexxUnit.path.separator
-
-  if .ooRexxUnit.OSName == "WINDOWS" then do
-    if path~caseLessPos(dir || sep) <> 0 then return .true
-    if path~caseLessPos(dir || sl || pathSep) <> 0 then return .true
-    if path~right(dir~length)~caselessCompare(dir) == 0 then return .true
-  end
-  else do
-    if path~pos(dir || sep) <> 0 then return .true
-    if path~pos(dir || sl || pathSep) <> 0 then return .true
-    if path~right(dir~length)~compare(dir) == 0 then return .true
-  end
-
-return .false
---End isInPath()
-
-
-/** pp()
- * Enclose a string value in square brackets "pretty print."
- */
-::routine pp public
-  return "[" || arg(1)~string || "]"
-
-/** ppp()
- * Enclose a string value in square brackets, escaping non-printable chars as
- * Rexx concatenated Rexx hex strings.
-*/
-::routine ppp public
-  use arg string
-
-  if verify(string, .chars.NonPrintable, "Match")>0 then
-     return "[" || escapeString(string) || "]" -- escape non-printable characters
-
-  return "[" || string || "]"
-
-/** addN
- * If name starts with a vowel, then "n" is returned, "" else
- */
-::routine addN public
-  parse arg name
-
-  if "aeiou"~caselessPos(name~left(1))>0 then return "n"
-  return ""
-
-/** escapeString()
- * Escape non-printable characters in string.
- */
-::routine escapeString public
-  use arg str
-  tmpStr=.mutableBuffer~new
-
-  do forever while str<>""
-     start=verify(str, .chars.nonPrintable, "Match")
-     if start>0 then    -- non-printing char found, look for printable char after it
-     do
-            -- find non-matching position, deduct one to point to last non-printable chars in string
-        end=verify(str, .chars.nonPrintable, "Nomatch", start)-1
-        if end=-1 then   -- no non-matching (=ending) position found: rest is non-printable
-           end=length(str)
-
-        if start>1 then -- printable chars before section with non-printable chars ?
-        do
-           chunk = .TestUtil~enQuote(substr(str, 1, start-1))
-           if tmpStr~length<>0 then tmpStr~~append(" || ")~~append(chunk)
-                               else tmpStr~append(chunk)
-        end
-
-            -- extract non-printable chars, encode them as a Rexx hex string
-        chunk = .TestUtil~enQuote(substr(str, start, end-start+1)~c2x) || "x"
-
-        if tmpStr~length<>0 then tmpStr~~append(" || ")~~append(chunk)
-                            else tmpStr~append(chunk)
-
-            -- extract non-processed part of string
-        str=substr(str, end+1)   -- get remaining string
-     end
-     else   -- only printable chars available respectively left
-     do
-        if tmpStr~length<>0 then tmpStr~~append(" || ")~~append(.TestUtil~enquote(str))
-                            else tmpStr~append(str)
-        leave         -- str=""
-     end
-  end
-  return tmpStr~string
-
-
-/** timeStamp()
- * Return a date / time string.  This allows a consistent format of time stamps
- * throughout the test framework.
- */
-::routine timeStamp public
-  return pp(date("S") time("L"))
-
-/** isConditionObj()
- * Tests if an object is likely to be a condition object returned from the
- * condition('O') BIF.  This is not a foolproof test.
- */
-::routine isConditionObj public
-  use strict arg cObj
-  if cObj~isA(.directory), cObj~hasEntry("CONDITION"), cObj~hasEntry("INSTRUCTION") then return .true
+  if number~isA(.String), number~dataType('W'), number >= min, number <= max then return .true
   return .false
 
-/** conditionObjLineNumber()
- * Given an object, will return the line number of a syntax exception, if the
- * object is a condition object for a syntax exception.  Othewise returns -1.
- */
-::routine conditionObjLineNumber public
-  use strict arg obj
+-- escape non printable characters in strings
+::method escapeString class
+  expose nonPrintableChars
+  use arg str
 
-  lineNumber = -1
+  -- quick test to see if there is anything to do
+  if str~verify(nonPrintableChars, "Match") = 0 then return str
 
-  if isConditionObj(obj) then do
-    if obj~traceBack~isA(.list) then do
-      parse value obj~traceBack~lastItem with number "*-*" .
-      lineNumber = number~strip
-      if \ isPositive(lineNumber) then lineNumber = -1
-    end
-    else if obj~condition == "SYNTAX" then do
-      lineNumber = obj~position
-    end
+  buff = .mutableBuffer~new
+  sep = ""
+
+  // loop searching for sections of non-printable charactes
+  loop while str<>""
+     start=str~ (str, nonPrintableChars, "Match")
+     -- non-printing char found, look for printable char after it
+     if start > 0 then do
+        -- find non-matching position, deduct one to point to last non-printable chars in string
+        end=str~verify(nonPrintableChars, "Nomatch", start) - 1
+        -- no non-matching (=ending) position found: rest is non-printable
+        if end = -1 then end = str~length
+
+        -- printable chars before section with non-printable chars ?
+        if start>1 then do
+           buff~append(sep, '"', str~left(start - 1), '"')
+           sep = " || "
+        end
+
+        buff~append(sep, '"', str~substr(start, end - start + 1)~c2x, '"x')
+        sep = " || "
+
+        -- extract non-processed part of string
+        str = str~substr(end + 1)
+     end
+     ,
+     else do
+        buff~append(sep, '"', str, '"')
+        leave
+     end
   end
+  return buff~string
 
-  return lineNumber
-
-/** getAddressingMode()
- * Determine if this is a 32-bit or 64-bit interpreter.
- */
-::routine getAddressingMode
-
-  tmpOutFile = 'tmpXXX_delete.me'
-
-  'rexx -v >' tmpOutFile '2>&1'
-
-  fsObj = .stream~new(tmpOutFile)
-  tmpArray = fsObj~arrayin
-  parse value tmpArray[3] with . . mode
-  fsObj~close
-
-  j = SysFileDelete(tmpOutFile)
-
-return mode
-
-
-/* class: TestUtil - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
-
-    A class with static (class) utility methods that can be used anywhere.
-
-\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class "TestUtil" public
-
-/** enQuote()
- * Enclose a string in double quotes.
- */
-::method enQuote class
-  return '"' || arg(1)~string || '"'
+-- Return a date / time string.  This allows a consistent format of time stamps
+-- throughout the test framework.
+::method timeStamp class
+  return "[".datetime~new~isoDate"]"
 
 
 /* class: NoiseAdjustable- - - - - - - - - - - - - - - - - - - - - - - - - - -*\
@@ -580,21 +260,21 @@ return mode
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class "NoiseAdjustable" public mixinclass Object
 
-  ::constant MAX_VERBOSITY      10
-  ::constant MIN_VERBOSITY       0
-  ::constant DEFAULT_VERBOSITY   2
+::constant MAX_VERBOSITY      10
+::constant MIN_VERBOSITY       0
+::constant DEFAULT_VERBOSITY   2
 
-  ::attribute verbose private
+::attribute verbose private
 
-  ::method setVerbosity
-    use strict arg level
+::method setVerbosity
+  use strict arg level
 
-    if \ isWholeRange(level, self~MIN_VERBOSITY, self~MAX_VERBOSITY) then
-      raise syntax 88.907 array("1 'level'", self~MIN_VERBOSITY, self~MAX_VERBOSITY, level)
-    self~verbose = level
+  if \.TestUtil~isWholeRange(level, self~MIN_VERBOSITY, self~MAX_VERBOSITY) then
+    raise syntax 88.907 array("1 'level'", self~MIN_VERBOSITY, self~MAX_VERBOSITY, level)
+  self~verbose = level
 
-  ::method getVerbosity
-    return self~verbose
+::method getVerbosity
+  return self~verbose
 
 -- End of class: NoiseAdjustable
 
@@ -671,9 +351,9 @@ return mode
   expose TestCaseTable fStop logQueue fAssertions
   use arg aTestCase
 
-  dateTime=timeStamp()
+  dateTime=.TestUtils~timeStamp
   TestCaseTable[aTestCase]~queue(dateTime": endTest")
-  dir=.directory~new~~setentry("OOREXXUNIT.CONDITION", dateTime":" pp("endTest") aTestCase~string)
+  dir=.directory~new~~setentry("OOREXXUNIT.CONDITION", dateTime": [endTest]" aTestCase~string)
 
   -- save class' 'caseInfo' with test case for later analysis
   dir~setentry("OOREXXUNIT.class_testCaseInfo", aTestCase~class~caseInfo)
@@ -720,9 +400,9 @@ return mode
   if TestCaseTable~hasindex(aTestCase)=.false then -- already a queue created for it?
      TestCaseTable[aTestCase]=.queue~new
 
-  dateTime=timeStamp()
+  dateTime=.TestUtils~timeStamp
   TestCaseTable[aTestCase]~queue(dateTime": startTest")
-  dir=.directory~new~~setentry("OOREXXUNIT.CONDITION", dateTime":" pp("startTest") aTestCase~string)
+  dir=.directory~new~~setentry("OOREXXUNIT.CONDITION", dateTime": [startTest]") aTestCase~string)
 
   -- save class' 'testCaseInfo' with test case for later analysis
   dir~setentry("OOREXXUNIT.class_testCaseInfo", aTestCase~class~caseInfo)
@@ -775,7 +455,7 @@ return mode
 ::method setFormatter
   use strict arg formatterClass
 
-  if \ isSubclassOf(formatterClass, "ResultFormatter") then
+  if \formatterClass~isSubclassOf(.ResultFormatter) then
      raise syntax 88.914 array ("1 'formatterClass'", "ResultFormatter")
   self~formatter = formatterClass
 
@@ -802,12 +482,8 @@ return mode
 ::method init
   use strict arg testResult, title = ""
 
-  if \ isSubClassOf(testResult~class, "TestCollectingParameter") then
+  if \ testResult~class~isSubclassOf(.TestCollectingParameter) then
      raise syntax 88.914 array ("1 'testResult'", "TestCollectingParameter")
-
-  if \ title~isA(.string) then
-    raise syntax 88.914 array ("2 'title'", "String")
-
 
   self~testResult = testResult
   self~title = title
@@ -862,7 +538,7 @@ return mode
 ::method failureToString private
   use arg data
 
-  str = data~when":" pp("failure") data~testString "---> @assertFailure" -
+  str = data~when": [failure]" data~testString "---> @assertFailure" -
         data~type": expected="data~expected", actual="data~actual"."
 
   if data~msg <> "" then str = str ||"09"x || data~msg
@@ -872,8 +548,7 @@ return str
 ::method errorToString private
   use arg data
 
-  str = data~when':' pp('error') data~testString '---> condition' -
-        pp(data~type) 'raised unexpectedly.'
+  str = data~when': [error]' data~testString '---> condition ['data~type'] raised unexpectedly.'
 
   if data~conditionObject~message <> .nil then str = str || '09'x || data~conditionObject~message
 
@@ -943,7 +618,7 @@ return str
   say "[failure]" data~when
   say "  Test:  " data~testname
   say "  Class: " data~className
-  say "  File:  " pathCompact(data~where, 70)
+  say "  File:  " data~where
   say "  Line:  " data~line
   say "  Failed:" data~type
   say "    Expected:" data~expected
@@ -963,12 +638,12 @@ return str
   say "[error]" data~when
   say "  Test: " data~testName
   say "  Class:" data~className
-  say "  File: " pathCompact(data~where, 70)
-  say "  Event:" pp(data~type) "raised unexpectedly."
+  say "  File: " data~where
+  say "  Event: ["data~type"] raised unexpectedly."
   if data~conditionObject~message \== .nil then
     say "    "data~conditionObject~message
   if different then
-    say "    Program:" pathCompact(data~conditionObject~program, 60)
+    say "    Program:" data~conditionObject~program
   say "    Line:   " data~line
   if data~conditionObject~traceBack~isA(.list) then do line over data~conditionObject~traceBack
     say line
@@ -1038,13 +713,10 @@ return str
 
 ::method setLine
   expose lineNumber
-  use strict arg number
-  if \ isPositive(number) then
-    raise syntax 88.905 array ("1 'number'", number)
-  lineNumber = number
+  use strict arg lineNumber
 
 ::method line
-  expose lineNumber conditionObject
+  expose lineNumber
 
   if lineNumber \== .nil then return lineNumber
   else return self~conditionObjLineNumber
@@ -1056,23 +728,18 @@ return str
 ::method conditionObjLineNumber
   expose conditionObject testName
 
-  lineNumber = -1
-
-  if isConditionObj(conditionObject) then do
-    if conditionObject~stackFrames~isA(.list) then do
-      do frame over conditionObject~stackFrames
-          if frame~name~caselessEquals(testName) then do
-               return frame~line
-          end
-      end
-      return -1
-    end
-    else if conditionObject~condition == "SYNTAX" then do
-      lineNumber = conditionObject~position
-    end
+  -- belt and braces:  make sure we have a condition object
+  if conditionObject == .nil then do
+    return -1
   end
 
-  return lineNumber
+  do frame over conditionObject~stackFrames
+      if frame~name~caselessEquals(testName) then do
+           return frame~line
+      end
+  end
+
+  return -1
 
 
 /* class: AssertFailure- - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
@@ -1132,6 +799,18 @@ return str
 ::method assertCount
   return self~fAssertions     -- count assertions, ooRexxUnit only
 
+-- test for collection equality.  This does not take order into account,
+-- only that the collections contain the same members
+::method isCollEqual
+  use arg expected, received
+
+  -- if both are collections, they need to be equivalent
+  if expected~isA(.Collection), received~isA(.Collection) then
+     return expected~equivalent(received)
+
+  -- not collections, this is false
+  return .false
+
 
 /** assertEquals()
  * Checks if two objects are equal, or, if not, checks that the two objects are
@@ -1141,7 +820,7 @@ return str
   use strict arg expected, actual, msg = ""
 
   if \ (expected = actual) then do
-    if \ isCollEqual(expected, actual) then do
+    if \self~isCollEqual(expected, actual) then do
       self~fail(self~makeFailure(expected, actual, msg, "assertEquals"))
     end
   end
@@ -1170,7 +849,7 @@ return str
   use strict arg expected, actual, msg = ""
 
   -- If the 2 objects are not equal AND they are not 2 equal collections ...
-  if \ (expected = actual), \ isCollEqual(expected, actual) then do
+  if \ (expected = actual), \ self~isCollEqual(expected, actual) then do
     -- ... the assertion holds
     self~fAssertions += 1
     return
@@ -1433,7 +1112,7 @@ return str
         type = 'expectSyntax'
      end
 
-    data = .AssertFailure~new(timeStamp(), self~definedInFile, type)
+    data = .AssertFailure~new(.TestUtils~timeStamp, self~definedInFile, type)
 
     data~expected = expected
     data~actual = "Not raised"
@@ -1447,7 +1126,7 @@ return str
 ::method makeFailure private
   use strict arg expected, actual, msg, type
 
-  data = .AssertFailure~new(timeStamp(), self~definedInFile, type)
+  data = .AssertFailure~new(.TestUtils~timeStamp, self~definedInFile, type)
 
   if expected~isA(.string), expected~left(1) == "[", expected~right(1) == "]" then
     data~expected = expected
@@ -1463,12 +1142,12 @@ return str
 
   return data
 
-
 ::method formatObjectInfo private
   use arg o, hint = ""
 
-  return pp(hint || ppp(o~string)", identityHash=".TestUtil~enQuote(o~identityHash))
-
+  buf = .MutableBuffer~new
+  buf~append('[', hint, '[', .TestUtils~escapeString(o~string), ', identityHash="', o~identityHash, '"]')
+  return buf~string
 
 ::method exclusiveOr private
   use strict arg t1, t2
@@ -1559,7 +1238,7 @@ return str
   aTestResult~startTest(self)       -- remember test started
   self~setUp                        -- make sure setup is invoked before test
   if bGiveFeedback then
-     .error~say( "... running TestCase object" pp(self~string) "..." )
+     .error~say( "... running TestCase object ["self~string"] ..." )
 
   self~doTheTest(fName, aTestResult)  -- carry out the testmethod
   self~tearDown                       -- make sure tearDown is invoked after test
@@ -1615,7 +1294,7 @@ exceptionHandler:
     type = cObj~condition
     if cObj~hasentry("CODE") then type = type cObj~code
 
-    err = .ErrorReport~new(timeStamp(), self~definedInFile, type, cObj)
+    err = .ErrorReport~new(.TestUtils~timeStamp, self~definedInFile, type, cObj)
     err~className = self~class~id
     err~testName = self~getName
     err~testString = self~string
@@ -1634,13 +1313,11 @@ exceptionHandler:
   expose fName
   parse arg fName
 
-/** Create a string representation of this test case, a counterpart to Java's
- *  toString()
- */
+-- Create a string representation of this test case
 ::method string
-  className=self~class~id   -- get class name
-  return "testCase:" pp(self~getName) "(a" || addN(className) className || "@" || -
-          self~definedInFile")"
+  buf = .mutableBuffer~new
+  buf~append("testCase: [", self~getName, "] (", self~defaultName, "@", self~definedInFile, ")")
+  return buf~string
 
 
 /** setUp()
@@ -1686,6 +1363,61 @@ exceptionHandler:
   -- extract the middle section of the data and return as an array
   return source~section(2, source~size - 2)
 
+
+/* *********************************************************************************** */
+/* *********************************************************************************** */
+/* *********************************************************************************** */
+/* *********************************************************************************** */
+   -- parse file-info into the supplied directory object
+   /*
+      uses the information about the program in the very first block-comment at the top:
+
+      - keyword":" text
+            if keyword starts with "changed", "purpose", "remark", "link", "category" then
+            entry is a queue and text will get enqueued at the end it; the first four letters
+            are used for matching these words
+
+      - arrLines:
+
+   */
+::method makeDirTestInfo
+
+   tmpDir = caseInfo   -- get directory object to add infos to
+   -- The test information can be stored as a resource within the file.
+   -- if this is there, parse it out
+   sourceInfo = self~class~package~resources~testinfo
+   -- just punt if this is not there as a resource
+
+   if sourceInfo == .nil then return
+
+   keyWord=""
+
+   -- we have data, parse it into info entries
+   loop line over sourceInfo
+      -- ignore all comments
+      if line~strip~left(2)="--" || line = "" then iterate    -- ignore comment
+
+      -- we might already have a keyword we're working on...in that case, we
+      -- just append the data to the entry
+
+         -- a keyWord already set and this line has no new keyword, than append it
+      if \line~contains(":") then
+      do
+         if keyWord<>"" then  -- already a keyWord found, append this line to with a line-end
+            tmpdir[keyword] ||= .endofline || line
+         iterate
+      end
+
+      parse value line with keyword . ":" rest
+      keyword = keyword~upper
+
+      if \tmpDir~hasIndex(keyWord) then
+         tmpDir[keyWord] = rest~strip
+      else
+         tmpdir[keyword] ||= .endofline || rest~strip
+   end
+
+
 /* *********************************************************************************** */
 /* *********************************************************************************** */
 ::class "TestSuite" subclass TestCase public
@@ -1702,14 +1434,14 @@ exceptionHandler:
   do
      use strict arg arg1    -- make sure, only one arg supplied
 
-     if isSubClassOf(arg1~class, "TestSuite") then -- a TestSuite object ?
+     if arg1~class~isSubclassOf(.TestSuite) then -- a TestSuite object ?
      do
         self~addTest(arg1)                -- just add it
         return
      end
 
       -- a TestCase class object in hand?
-     else if arg1~isA(.class), isSubClassOf(arg1, "TestCase") then
+     else if arg1~isA(.class), arg1~isSubClassOf(.TestCase) then
      do
         testCaseClass=arg1
         testMethods=self~class~getTestMethods(testCaseClass)
@@ -1722,8 +1454,8 @@ exceptionHandler:
       -- a collection of individual TestCase objects to add?
      else if arg1~isA(.Collection) then
      do
-        do tc over arg1~makeArray         -- iterate over test cases
-           if isSubClassOf(tc~class, "TestCase") then
+        do tc over arg1~allItems          -- iterate over test cases
+           if tc~class~isSubClassOf(.TestCase) then
               self~addTest(tc)
            else
               raise syntax 88.914 array ("'collection item ["tc"]'", "'TestCase' or 'TestSuite'")
@@ -1735,10 +1467,101 @@ exceptionHandler:
   return
 
 
+-- Add a set of files to a given TestSuite object
+::method addFileList
+   use arg testCaseFileList
+
+   -- do not run tests, if calling/requiring the testUnit files
+   .ooRexxUnit~runTestsLocally = .false
+
+   do fileName over testCaseFileList
+
+       testUnitList=self~loadTestFile(fileName)
+
+       do arr over testUnitList  -- loop over array objects
+          classObject   =arr[1]  -- a class object
+          mandatoryTests=arr[2]  -- a list
+
+          -- mandatory tests available, just use them to create testCases
+          if mandatoryTests~isA(.list), \mandatoryTests~isEmpty then do
+            tsMand=.testSuite~new     -- create a test suite for this test class
+            do testMethodName over mandatoryTests
+               tsMand~addTest(classObject~new(testMethodName))   -- create and add testCase
+            end
+            ts~addTest(tsMand)      -- now add the test suite of mandatory methods to the overall test suite
+          end
+          -- no mandatory tests defined, hence use all testmethods
+          else do
+             ts~addTest(.testSuite~new(classObject))  -- creates testCases from all testmethods
+          end
+       end
+   end
+   return ts      -- return the testSuite object
+
+::method loadTestFile private
+  use strict arg filename
+
+   signal on syntax
+   r = .routine~newfile(fileName)
+
+   -- call and return the return result, which should be a test group of
+   -- what is contained in there.
+   return r[]
+
+syntax:
+   .error~say("Error loading a test unit file:")
+   .error~say("    testUnit-file: ["fileName"]")
+   self~dumpConditionObject(.error, condition('o'))
+   return .array~new    -- return empty array so no testsuite gets built for this testUnit
+
+-- write the contents of the condition object to the given string, in sorted order by name
+::method dumpConditionObject
+   use arg outStream, condition
+
+   -- get the index names and sort them
+   names = co~allIndexes
+   names~stableSort
+
+   indent1 = 12
+
+   sumIndent = indent1 + 2
+
+   blanks=copies(" ", sumIndent) "--> "
+
+   NL = .string~nl
+   TAB1 = .string~tab
+   TAB2 = TAB1~copies(2)
+   TAB3 = TAB1~copies(3)
+   TAB4 = TAB1~copies(4)
+
+   do index over name
+      value = co[index]
+      if value~isA(.Collection) then items = o~items
+                                else items
+
+      tmpString=.MutableBuffer~new
+
+      tmpString~append(TAB3, index~left(indent1,"."), "[", value~string, "]")
+      if value~isA(.Collection) then
+         tmpString~append(" containing ", items, " item(s)")
+
+      -- write out the main value string
+      outStream~say(tmpString~string)
+
+      -- a collection object in hand?
+      if value~isA(.Collection) then do
+         loop item over value
+            tmpString~setText("")
+            tmpString~append(TAB3, blanks, "[", item~string, "]")
+            outStream~say(tmpString~string)
+         end
+      end
+   end
+
 ::method getTestMethods class -- use reflection to retrieve testmethods, sort alphabetically
   use strict arg classObj
 
-  if \ classObj~isA(.class) then
+  if \classObj~isA(.class) then
     raise syntax 88.914 array ("1 'classObj'", 'Class')
 
   -- Get the test methods names.  By convention this is all methods starting
@@ -1752,31 +1575,31 @@ exceptionHandler:
   methSupplier = classObj~methods
   do while methSupplier~available -- iterate over supplied methods
      name = methSupplier~index
-     if name~left(4)="TEST" then testMethodNames~put(name)
+     if name~match(1, "TEST") then testMethodNames~put(name)
      methSupplier~next
   end
 
   return testMethodNames~makearray~sort
 
 
+-- add a test to the queue of individual test cases to run
 ::method addTest
   use strict arg aTestCase
 
-  if \isSubClassOf(aTestCase~class, "TestCase") then
-     raise syntax 88.914 array ("'aTestCase'", "'TestCase' or 'TestSuite'")
+  if \aTestCase~class~isSubclassOf(.TestCase) then
+     raise syntax 88.914 array ("'aTestCase'", "'TestCase'")
 
   self~testQueue~queue(aTestCase)
   self~countTestCases += 1
 
+::method displayString
+  return self~string'@'self~identityHash
 
 ::method execute
   use arg aTestResult = (self~createResult), bGiveFeedback = .false
 
-  if \ isBoolean(bGiveFeedback) then
-    raise syntax 88.916 array ("2 'bGiveFeedback'", "true or false", bGivefeedback)
-
   if bGiveFeedback then
-     .error~say( "running testSuite" pp(self~string"@"self~identityHash) "with" pp(self~countTestCases) "test cases ...")
+     .error~say( "running testSuite [" self~displayString"] with ["self~countTestCases"] test cases ...")
 
   tests = self~testQueue
 
@@ -1831,241 +1654,16 @@ exceptionHandler:
 
 /* *********************************************************************************** */
 /* *********************************************************************************** */
-::routine iif public -- utility routine
-  if arg(1)=.true then return arg(2)
-                  else return arg(3)
 
 
 
 
-   /* function returning .true, if both collections can be regarded to be equal (i.e.,
-      each can be regarded to be a subset of the other), .false else
-   */
-::routine IsCollEqual public
-  use arg expected, received
-
-  /* Starting with 3.2 (language level 6.02) no more guessing necessary, check for collection
-     type and act accordingly.
-  */
-  if expected~isA(.Collection), received~isA(.Collection), -
-     expected~subset(received), received~subset(expected) then
-  do
-     return .true -- the one collection is a subset of the other
-  end
-
-  return .false   -- not dealing with collections or collections not a subset of each other
-
-
-/* *********************************************************************************** */
-/* *********************************************************************************** */
-/* *********************************************************************************** */
-/* *********************************************************************************** */
-   -- parse file-info into the supplied directory object
-   /*
-      uses the information about the program in the very first block-comment at the top:
-
-      - keyword":" text
-            if keyword starts with "changed", "purpose", "remark", "link", "category" then
-            entry is a queue and text will get enqueued at the end it; the first four letters
-            are used for matching these words
-
-      - arrLines:
-
-   */
-::routine makeDirTestInfo public
-   use arg aTestCaseClass, arrLines
-
-   tmpDir=aTestCaseClass~caseInfo   -- get directory object to add infos to
-
-   keyWord=""
-   tOut=xrange("A","Z")||xrange("a","z")
-   tIn =xrange("A","Z")||xrange("a","z")||xrange()
-
-   do i=1 to arrLines~items while arrLines[i]<>"*/"
-      if arrLines[i]~strip~left(2)="--" then iterate    -- ignore comment
-
-         -- a keyWord already set and this line has no new keyword, than append it
-      if pos(":", arrLines[i])=0 then
-      do
-         if keyWord<>"" then  -- alreay a keyWord found, append line to it
-         do
-            tmpDir~entry(keyWord)~queue(arrLines[i])
-         end
-         iterate
-      end
-
-
-      parse value arrLines[i] with name ":" rest
-
-      keyWord=name~translate(tOut, tIn)~space(0)   -- a keyWord change ?
-
-      if tmpDir~hasEntry(keyWord)=.false then
-         tmpDir~setentry(keyWord, .queue~new)      -- create a new queue for this keyword
-
-      tmpDir~entry(keyWord)~queue(rest~strip)      -- add line
-   end
 
 
 
-   -- create a testSuite object by calling the supplied testCaseFileList; needs testCase programs
-   -- modelled after the example programs
-::routine makeTestSuiteFromFileList public
-   use arg testCaseFileList, ts
-
-   if arg(2, "Omitted") then  -- no TestSuite object supplied?
-      ts=.testSuite~new
-
-      -- make sure, that the tests are not run when CALLing/REQUIRE'ing the testUnit programs
-   .local~bRunTestsLocally=.false   -- do not run tests, if calling/requiring the testUnit files
-
-   do fileName over testCaseFileList
-/*
-       call (fileName)        -- call file
-       testUnitList=result    -- retrieve result (a list of array objects)
-*/
-       testUnitList=callTestUnit(fileName)
-
-       do arr over testUnitList  -- loop over array objects
-          classObject   =arr[1]  -- a class object
-          mandatoryTests=arr[2]  -- a list
-
-          -- check whether mandatory tests are defined
-          bMandatoryTests=(.nil<>arr[2])
-          if bMandatoryTests=.true then   -- o.k. not .nil in hand
-          do
-             bMandatoryTests=(.list=mandatoryTests~class)   -- is there a list in hand
-             if bMandatoryTests then
-             do
-                bMandatoryTests=(mandatoryTests~items>0)    -- are there any entries?
-             end
-          end
-
-          if bMandatoryTests then   -- mandatory tests available, just use them to create testCases
-          do
-            tsMand=.testSuite~new     -- create a test suite for this test class
-            do testMethodName over mandatoryTests
-               tsMand~addTest( classObject~new(testMethodName) )   -- create and add testCase
-            end
-            ts~addTest(tsMand)      -- now add the test suite of mandatory methods to the overall test suite
-          end
-          else    -- no mandatory tests defined, hence use all testmethods
-          do
-             ts~addTest(.testSuite~new(classObject))  -- creates testCases from all testmethods
-          end
-       end
-   end
-   return ts      -- return the testSuite object
-
-
-callTestUnit: procedure -- rgf, 2007-04-28: possible, that a ::requires causes program to fail
-   parse arg fileName
-   signal on syntax
-   call (fileName)      -- call file
-   return result        -- return its return value
-
-syntax:
-   .error~say("ooRexxUnit's routine 'makeTestSuiteFromFileList', 'callTestUnit()':")
-   .error~say("    testUnit-file: ["fileName"]")
-   .error~say(ooRexxUnit.formatConditionObject(condition("O")))
-
-   return .array~new    -- return empty array so no testsuite gets built for this testUnit
 
 
 
-/* Determine and return the shell name to be used in ADDRESS keyword statements. This
-   is a central location to make it easy to maintain in the future, in case a non-Windows
-   and non-Unix compatible operating systems comes up, or new shell variants develop.
-*/
-::routine ooRexxUnit.getShellName public
-
-   parse upper source opsys +1
-
-      -- make sure we address the shell
-   shell="CMD"          -- default to the OS2/Windows shell
-   if pos(opsys, "WO")=0 then    -- if not running under OS/2 or Windows assume Unix
-   do
-      unixShell=value("SHELL", , "environment")    -- get the fully qualified shell
-      shell=substr(unixShell, 1+lastpos("/", unixShell))    -- extract name of shell
-   end
-
-   return shell
-
-/* Determine and return the operating system under which the currently executing
-   program is running.  Provides an uniform method for test cases to determine
-   which operating system they are executing on.
-
-   The possible list of return words as of ooRexx 3.2.0 is:
-
-     WINDOWS, LINUX, SUNOS, AIX, MACOSX, CYGNUS, FREEBSD, and NETBSD
-
-   Although it is doubtful that ooRexx is compilable on CYGNUS, FREEBSD, or
-   NETBSD.
-*/
-::routine ooRexxUnit.getOSName public
-
-  parse upper source os .
-  if os~abbrev("WIN") then os = "WINDOWS"
-  return os
-
-
-
-/* Returns a string containing the directory entries in sorted order. In case an entry
-   is a colleciton itself, its elements will be returned as strings.
-*/
-::routine ooRexxUnit.formatConditionObject public  /* dump condition object */
-   use arg co
-
-   arr=co~allIndexes~~stableSortWith(.CaselessComparator~new)
-   len=length(arr~items)
-   indent1=12
-   sumIndent=len+indent1+2
-
-   blanks=copies(" ", sumIndent) "--> "
-   res=.mutableBuffer~new
-
-   NL="0a"x
-   TAB1="09"x
-   TAB2=TAB1~copies(2)
-   TAB3=TAB1~copies(3)
-   TAB4=TAB1~copies(4)
-
-   do index over arr
-      o=co~entry(index)
-      if o~isA(.Collection) then items=o~items
-                            else items=""
-
-      tmpString=.MutableBuffer~new
-
-      tmpString~~append(TAB3)~~append(index~left(indent1,"."))~~append(pp(o))
-      if items<>"" then tmpString~~append(" containing ")~~append(items)~~append(" item(s)")
-
-      if res~length=0 then    -- first value to assign
-      do
-         res~~append(tmpString~string)
-      end
-      else                    -- value already available
-      do
-         res~~append(NL)~~append(tmpString~string)
-      end
-
-      if items<>"" then       -- a collection object in hand?
-      do
-         nr=0
-         do item over o       -- list items
-            nr=nr+1
-            res~~append(NL)~~append(TAB3)~~append(blanks)~~append(pp(item))
-         end
-
-         res~~append(TAB3)
-      end
-   end
-   return res~string
-
-
-pp: procedure
-   use arg a
-   if .nil=a then return "[.nil]"
-   return "[" || a~string || "]"
 
 
    -- simple dumping of the testResult data
