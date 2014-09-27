@@ -1203,6 +1203,26 @@ return str
   -- Assertion holds.
   self~fAssertions += 1
 
+-- create a routine from an array of lines with the intent of checking
+-- errors raised at translate time rather than runtime.
+::method assertSyntaxError
+  use strict arg error, code
+
+  self~expectSyntax(error)
+  -- this will translate this code and nothing else.
+  r = .routine~new("test", code)
+
+-- compare an array of items.  each item must be the same, and in the same
+-- order.
+::method assertSameList
+  use strict arg expected, actual, msg = "assertSameList"
+
+  self~assertTrue(actual~isa(.array), msg': actual must be an array')
+  self~assertEquals(expected~items, actual~items, msg': expected and actual lists are different sizes')
+
+  loop i = 1 to expected~last
+      self~assertEquals(expected[i], actual[i], msg': mismatch on element' i)
+  end
 
 ::method assertSame
   use strict arg expected, actual, msg = ""
