@@ -1,0 +1,504 @@
+#!/usr/bin/rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
+
+  group = .TestGroup~new(fileSpec)
+  group~add(.Package.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+::requires "FileUtils.cls"
+
+
+::class "Package.testGroup" subclass ooTestCase public
+
+::method "test_New01"
+  -- just load an empty package file
+  file = .ooRexxUnit.dir || .ooRexxUnit.directory.separator || 'testRequires1.rex'
+
+  src = .array~new()
+  src[1] = ""
+  fileName = createFile(src, file)
+
+  package = .package~new(fileName)
+
+  self~assertTrue(package~isA(.package))
+  self~assertSame(0, package~classes~items)
+  self~assertSame(0, package~publicClasses~items)
+  self~assertSame(0, package~routines~items)
+  self~assertSame(0, package~publicRoutines~items)
+  self~assertSame(0, package~definedmethods~items)
+  self~assertSame(0, package~importedClasses~items)
+  self~assertSame(0, package~importedRoutines~items)
+  self~assertSame(0, package~importedPackages~items)
+
+  call deleteFile fileName
+
+  file = .ooRexxUnit.dir || .ooRexxUnit.directory.separator || 'testRequires2.rex'
+  src = .array~new()
+  src[1] = ".local['TESTING'] = 1"
+  fileName = createFile(src, file)
+
+  package = .package~new(fileName)
+
+  self~assertSame(1, .local['TESTING'])
+
+  .local['TESTING'] = .nil
+  src = .array~new()
+  src[1] = "return 123"
+  src[2] = '::requires "'fileName'"'
+
+  routine = .routine~new("testing", src)
+
+  self~assertSame(.nil, .local['TESTING'])
+
+  call deleteFile fileName
+
+  src = .array~new()
+  src[1] = "::routine test1 public"
+  src[2] = "  return 1"
+
+  package = .package~new("ROUTINETEST1", src)
+
+  src = .array~new()
+  src[1] = "return test1()"
+  src[2] = "::requires routinetest1"
+
+  routine = .routine~new("testing", src)
+
+  self~assertSame(1, routine~call)
+
+::method testReclaim01
+
+  src = .array~new()
+  src[1] = "::routine test1 public"
+  src[2] = "  return 1"
+  x = random()
+
+  package = .package~new("ROUTINETEST1", src)
+
+  src = .array~new()
+  src[1] = "return test1()"
+  src[2] = "::requires routinetest1"
+
+  routine = .routine~new("testing", src)
+
+  self~assertSame(1, routine~call)
+
+  package = .weakreference~new(package)
+  drop routine
+
+  i = 1
+  loop until package~value == .nil
+     loop 100
+        x = copies('x', 1000000)
+     end
+     i += 1
+  end
+
+  self~expectSyntax('43.901')
+  routine = .routine~new("testing", src)
+  routine~call
+
+::method testClasses01
+  src = .array~new()
+  src[1] = "::class class1"
+  src[2] = "::class class2 public"
+
+  package = .package~new("CLASSTEST1", src)
+
+  classes = package~classes
+  publicClasses = package~publicClasses
+  self~assertSame(2, classes~items)
+  self~assertTrue(classes['CLASS1']~isA(.class))
+  self~assertTrue(classes['CLASS2']~isA(.class))
+  self~assertSame(1, publicClasses~items, "Public classes")
+  self~assertTrue(publicClasses['CLASS2']~isA(.class))
+  self~assertSame(0, package~importedClasses~items)
+
+::method testRoutines01
+  src = .array~new()
+  src[1] = "::routine routine1"
+  src[2] = "::routine routine2 public"
+
+  package = .package~new("ROUTINETEST2", src)
+
+  routines = package~routines
+  publicRoutines = package~publicRoutines
+  self~assertSame(2, routines~items)
+  self~assertTrue(routines['ROUTINE1']~isA(.routine))
+  self~assertTrue(routines['ROUTINE2']~isA(.routine))
+  self~assertSame(1, publicRoutines~items, "Public routines")
+  self~assertTrue(publicRoutines['ROUTINE2']~isA(.routine))
+
+  self~assertSame(0, package~importedRoutines~items)
+
+::method testMethods01
+  src = .array~new()
+  src[1] = "::method method1"
+  src[2] = "::method method2"
+  src[3] = "::class test1"
+  src[4] = "::method method3"
+
+  package = .package~new("METHODTEST1", src)
+
+  methods = package~definedMethods
+  self~assertSame(2, methods~items)
+  self~assertTrue(methods['METHOD1']~isA(.method))
+  self~assertTrue(methods['METHOD2']~isA(.method))
+
+
+::method testImportedClasses01
+  src = .array~new()
+  src[1] = "::class class1"
+  src[2] = "::class class2 public"
+
+  package = .package~new("IMPORTEDCLASSTEST1", src)
+
+  src = .array~new()
+  src[1] = "return 12"
+  src[2] = "::requires importedclasstest1"
+
+  package2 = .package~new("importedtesting1", src)
+
+  classes = package2~importedclasses
+  self~assertSame(1, classes~items)
+  self~assertTrue(classes['CLASS2']~isA(.class))
+
+  src = .array~new()
+  src[1] = "return 12"
+
+  package2 = .package~new("importedtesting3", src)
+  package2~addPackage(package)
+
+  classes = package2~importedclasses
+  self~assertSame(1, classes~items)
+  self~assertTrue(classes['CLASS2']~isA(.class))
+
+  src = .array~new()
+  src[1] = "::class class1"
+  src[2] = "::class class2"
+
+  self~assertSame(package, package2~importedPackages[1])
+
+  package = .package~new("IMPORTEDCLASSTEST2", src)
+
+  src = .array~new()
+  src[1] = "return 12"
+  src[2] = "::requires importedclasstest2"
+
+  package2 = .package~new("importedtesting2", src)
+  classes = package2~importedclasses
+  self~assertSame(0, classes~items)
+
+::method testImportedRoutines01
+  src = .array~new()
+  src[1] = "::routine routine1"
+  src[2] = "::routine routine2 public"
+
+  package = .package~new("IMPORTEDROUTINETEST1", src)
+
+  src = .array~new()
+  src[1] = "return 12"
+  src[2] = "::requires importedroutinetest1"
+
+  package2 = .package~new("importedtesting1x", src)
+
+  routines = package2~importedroutines
+  self~assertSame(1, routines~items)
+  self~assertTrue(routines['ROUTINE2']~isA(.routine))
+
+  src = .array~new()
+  src[1] = "return 12"
+
+  package2 = .package~new("importedtesting3", src)
+  package2~addPackage(package)
+
+  routines = package2~importedroutines
+  self~assertSame(1, routines~items)
+  self~assertTrue(routines['ROUTINE2']~isA(.routine))
+
+  src = .array~new()
+  src[1] = "::routine routine1"
+  src[2] = "::routine routine2"
+
+  package = .package~new("IMPORTEDROUTINETEST2", src)
+
+  src = .array~new()
+  src[1] = "return 12"
+  src[2] = "::requires importedroutinetest2"
+
+  package2 = .package~new("importedtesting2x", src)
+  routines = package2~importedroutines
+  self~assertSame(0, routines~items)
+
+  self~assertSame(package, package2~importedPackages[1])
+
+::method TestSource01
+  src = .array~new()
+  src[1] = "::routine routine1"
+  src[2] = "::routine routine2 public"
+
+  package = .package~new("SOURCETEST1", src)
+
+  self~assertSame(2, package~sourceSize)
+  self~assertSame(src[1], package~sourceLine(1))
+  self~assertSame(src[2], package~sourceLine(2))
+  self~assertSame("", package~sourceLine(3))
+  self~assertEquals(src, package~source)
+
+::method TestAddRoutine01
+  src = .array~new()
+  src[1] = "::routine routine1"
+  src[2] = "  return routine2()"
+
+  package = .package~new("ADDROUTINETEST1", src)
+
+  src = .array~new()
+  src[1] = "  return 123"
+
+  routine = .routine~new("TestingAddRoutine", src)
+
+  package~addRoutine("ROUTINE2", routine)
+
+  routines = package~routines
+  self~assertSame(2, routines~items)
+  self~assertSame(123, routines["ROUTINE1"]~call)
+  self~assertSame(routine, package~findroutine("ROUTINE2"))
+
+::method TestAddRoutine02
+  src = .array~new()
+  src[1] = "::routine routine1"
+  src[2] = "  return routine2()"
+
+  package = .package~new("ADDROUTINETEST2", src)
+
+  self~expectSyntax('88.901')
+  package~addRoutine
+
+::method TestAddRoutine03
+  src = .array~new()
+  src[1] = "::routine routine1"
+  src[2] = "  return routine2()"
+
+  package = .package~new("ADDROUTINETEST3", src)
+
+  self~expectSyntax('88.901')
+  package~addRoutine("TESTING")
+
+::method TestAddRoutine04
+  src = .array~new()
+  src[1] = "::routine routine1"
+  src[2] = "  return routine2()"
+
+  package = .package~new("ADDROUTINETEST4", src)
+
+  self~expectSyntax('88.914')
+  package~addRoutine("TESTING", .array)
+
+::method TestAddPublicRoutine01
+  src = .array~new()
+  src[1] = "::routine routine1"
+  src[2] = "  return routine2()"
+
+  package = .package~new("ADDPUBLICROUTINETEST1", src)
+
+  src = .array~new()
+  src[1] = "  return 123"
+
+  routine = .routine~new("TestingAddPublicRoutine", src)
+
+  package~addPublicRoutine("ROUTINE2", routine)
+
+  routines = package~routines
+  self~assertSame(2, routines~items)
+  publicRoutines = package~publicRoutines
+  self~assertSame(1, publicRoutines~items)
+  self~assertSame(123, routines["ROUTINE1"]~call)
+  self~assertSame(routine, package~findroutine("ROUTINE2"))
+
+::method TestAddPublicRoutine02
+  src = .array~new()
+  src[1] = "::routine routine1"
+  src[2] = "  return routine2()"
+
+  package = .package~new("ADDPUBLICROUTINETEST2", src)
+
+  self~expectSyntax('88.901')
+  package~addPublicRoutine
+
+::method TestAddPublicRoutine03
+  src = .array~new()
+  src[1] = "::routine routine1"
+  src[2] = "  return routine2()"
+
+  package = .package~new("ADDPUBLICROUTINETEST3", src)
+
+  self~expectSyntax('88.901')
+  package~addPublicRoutine("TESTING")
+
+::method TestAddPublicRoutine04
+  src = .array~new()
+  src[1] = "::routine routine1"
+  src[2] = "  return routine2()"
+
+  package = .package~new("ADDPUBLICROUTINETEST4", src)
+
+  self~expectSyntax('88.914')
+  package~addPublicRoutine("TESTING", .array)
+
+::method TestAddClass01
+  src = .array~new()
+  src[1] = "::class class1"
+
+  package = .package~new("ADDCLASSTEST1", src)
+
+  class = .object~subclass("TEST2")
+
+  package~addClass("TEST2", class)
+
+  classes = package~classes
+  self~assertSame(2, classes~items)
+  self~assertSame(class, classes["TEST2"])
+  self~assertSame(0, package~publicclasses~items)
+  self~assertSame(class, package~findClass("TEST2"))
+
+::method TestAddClass02
+  src = .array~new()
+  src[1] = "::routine routine1"
+  src[2] = "  return routine2()"
+
+  package = .package~new("ADDCLASSTEST2", src)
+
+  self~expectSyntax('88.901')
+  package~addClass
+
+::method TestAddClass03
+  src = .array~new()
+  src[1] = "::routine routine1"
+  src[2] = "  return routine2()"
+
+  package = .package~new("ADDCLASSEST3", src)
+
+  self~expectSyntax('88.901')
+  package~addClass("TESTING")
+
+::method TestAddClass04
+  src = .array~new()
+  src[1] = "::routine routine1"
+  src[2] = "  return routine2()"
+
+  package = .package~new("ADDCLASSTEST4", src)
+
+  self~expectSyntax('88.914')
+  package~addClass("TESTING", "xyz")
+
+::method TestAddPublicClass01
+  src = .array~new()
+  src[1] = "::class class1"
+
+  package = .package~new("ADDPUBLICCLASSTEST1", src)
+
+  class = .object~subclass("TEST2")
+
+  package~addPublicClass("TEST2", class)
+
+  classes = package~classes
+  publicclasses = package~publicclasses
+
+  self~assertSame(2, classes~items)
+  self~assertSame(class, classes["TEST2"])
+  self~assertSame(1, publicclasses~items)
+  self~assertSame(class, publicclasses["TEST2"])
+  self~assertSame(class, package~findClass("TEST2"))
+
+::method TestAddPublicClass02
+  src = .array~new()
+  src[1] = "::routine routine1"
+  src[2] = "  return routine2()"
+
+  package = .package~new("ADDPUBLICCLASSTEST2", src)
+
+  self~expectSyntax('88.901')
+  package~addPublicClass
+
+::method TestAddPublicClass03
+  src = .array~new()
+  src[1] = "::routine routine1"
+  src[2] = "  return routine2()"
+
+  package = .package~new("ADDPUBLICCLASSEST3", src)
+
+  self~expectSyntax('88.901')
+  package~addPublicClass("TESTING")
+
+::method TestAddPublicClass04
+  src = .array~new()
+  src[1] = "::routine routine1"
+  src[2] = "  return routine2()"
+
+  package = .package~new("ADDPUBLICCLASSTEST4", src)
+
+  self~expectSyntax('88.914')
+  package~addPublicClass("TESTING", "xyz")
+
+::method TestLoadLibrary01
+  package = .context~package
+  self~assertTrue(package~loadLibrary("rxmath"))
+  self~assertSame(2, rxcalcsqrt(4))
+  self~assertFalse(package~loadLibrary("invalid_library_name"))
+
+::method TestLoadLibrary02
+  self~expectSyntax('88.901')
+  package = .context~package
+  package~loadLibrary
+
+::method TestLoadLibrary03
+  self~expectSyntax('93.902')
+  package = .context~package
+  package~loadLibrary("a", "b")

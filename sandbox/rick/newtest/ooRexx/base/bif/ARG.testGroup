@@ -1,0 +1,322 @@
+#!/usr/bin/rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2005-2008 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
+
+  group = .TestGroup~new(fileSpec)
+
+  group~add(.ARG.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires "ooTest.frm"     -- load the ooRexxUnit classes
+
+::class "ARG.testGroup" subclass ooTestCase public
+
+::method "test_1"
+   Call arg0
+   return
+   arg0:
+   n = "ARG"()
+   self~assertSame("ARG"(), 0)
+   Return 0
+
+::method "test_2"
+   a1=1
+   call argn a1
+   return
+   argn:
+   self~assertSame("ARG"(), arg(1))
+   DO i=2 to "ARG"()
+      self~assertSame("ARG"(i), 'a'||i)
+      END
+   DO i=i to 20;
+      self~assertSame("ARG"(i), '')
+      END
+   RETURN 0
+
+::method "test_3"
+   call argn '1'
+   return
+   argn:
+   self~assertSame("ARG"(), arg(1))
+   DO i=2 to "ARG"()
+      self~assertSame("ARG"(i), 'a'||i)
+      END
+   DO i=i to 20;
+      self~assertSame("ARG"(i), '')
+      END
+   RETURN 0
+
+::method "test_4"
+   a2='a2'; a3='a3'; a4='a4'; a5 ='a5'
+   a6='a6'; a7='a7'; a8='a8'; a9='a9'
+   a1=9
+   call argn a1,a2,a3,a4,a5,a6,a7,a8,a9
+   return
+   argn:
+   self~assertSame("ARG"(), arg(1))
+   DO i=2 to "ARG"()
+      self~assertSame("ARG"(i), 'a'||i)
+      END
+   DO i=i to 20;
+      self~assertSame("ARG"(i), '')
+      END
+   RETURN 0
+
+::method "test_5"
+   call argn '9','a2','a3','a4','a5','a6','a7','a8','a9'
+   return
+   argn:
+   self~assertSame("ARG"(), arg(1))
+   DO i=2 to "ARG"()
+      self~assertSame("ARG"(i), 'a'||i)
+      END
+   DO i=i to 20;
+      self~assertSame("ARG"(i), '')
+      END
+   RETURN 0
+
+::method "test_6"
+   call argn '7','a'||'2','a'||'3','a'||'4','a'||'5','a'||'6','a'||'7'
+   return
+   argn:
+   self~assertSame("ARG"(), arg(1))
+   DO i=2 to "ARG"()
+      self~assertSame("ARG"(i), 'a'||i)
+      END
+   DO i=i to 20;
+      self~assertSame("ARG"(i), '')
+      END
+   RETURN 0
+
+::method "test_7"
+   a2='a2'; a3='a3'; a4='a4'; a5 ='a5'
+   a6='a6'; a7='a7'; a8='a8'; a9='a9'
+   a1=9
+   call argm a1,,a3,,a5,,a7,,a9
+   return
+   argm:
+   self~assertSame("ARG"(), arg(1))
+   DO i=2 to "ARG"()
+      IF i//2=0 THEN DO;
+         self~assertSame("ARG"(i), '')
+         END
+      ELSE DO;
+         self~assertSame("ARG"(i), 'a'||i)
+         END
+      END
+   DO i=i to 20;
+      self~assertSame("ARG"(i), '')
+      END
+   RETURN 0
+
+::method "test_8"
+   a2='a2'; a3='a3'; a4='a4'; a5 ='a5'
+   a6='a6'; a7='a7'; a8='a8'; a9='a9'
+   a1=9
+   call argm '9',,'a3',,'a5',,'a7',,'a9'
+   return
+   argm:
+   self~assertSame("ARG"(), arg(1))
+   DO i=2 to "ARG"()
+      IF i//2=0 THEN DO;
+         self~assertSame("ARG"(i), '')
+         END
+      ELSE DO;
+         self~assertSame("ARG"(i), 'a'||i)
+         END
+      END
+   DO i=i to 20;
+      self~assertSame("ARG"(i), '')
+      END
+   RETURN 0
+
+::method "test_9"
+   a2='a2'; a3='a3'; a4='a4'; a5 ='a5'
+   a6='a6'; a7='a7'; a8='a8'; a9='a9'
+   a1=9
+   call argm '9',,'a'||'3',,'a'||'5',,'a'||'7',,'a'||'9'
+   return
+   argm:
+   self~assertSame("ARG"(), arg(1))
+   DO i=2 to "ARG"()
+      IF i//2=0 THEN DO;
+         self~assertSame("ARG"(i), '')
+         END
+      ELSE DO;
+         self~assertSame("ARG"(i), 'a'||i)
+         END
+      END
+   DO i=i to 20;
+      self~assertSame("ARG"(i), '')
+      END
+   RETURN 0
+
+::method "test_10"
+   -- test the 'E' option
+   a2='a2'; a3='a3'; a4='a4'; a5 ='a5'
+   a6='a6'; a7='a7'; a8='a8'; a9='a9'
+   a1=9
+   call argm a1,,a3,,a5,,a7,,a9
+   return
+   argm:
+   self~assertSame("ARG"(), arg(1))
+   DO i=2 to "ARG"()
+      IF i//2=0 THEN DO;
+         self~assertSame("ARG"(i, 'e'), 0)
+         END
+      ELSE DO;
+         self~assertSame("ARG"(i, 'e'), 1)
+         END
+      END
+   RETURN 0
+
+::method "test_11"
+   -- test the 'O' option
+   a2='a2'; a3='a3'; a4='a4'; a5 ='a5'
+   a6='a6'; a7='a7'; a8='a8'; a9='a9'
+   a1=9
+   call argm a1,,a3,,a5,,a7,,a9
+   return
+   argm:
+   self~assertSame("ARG"(), arg(1))
+   DO i=2 to "ARG"()
+      IF i//2=0 THEN DO;
+         self~assertSame("ARG"(i, 'o'), 1)
+         END
+      ELSE DO;
+         self~assertSame("ARG"(i, 'o'), 0)
+         END
+      END
+   RETURN 0
+
+::method "test_12"
+   -- test the 'N' option
+   a2='a2'; a3='a3'; a4='a4'; a5 ='a5'
+   a6='a6'; a7='a7'; a8='a8'; a9='a9'
+   a1=9
+   call argm a1,,a3,,a5,,a7,,a9
+   return
+   argm:
+   self~assertSame("ARG"(), arg(1))
+   DO i=2 to "ARG"()
+      IF i//2=0 THEN DO;
+         self~assertSame("ARG"(i, 'n'), '')
+         END
+      ELSE DO;
+         self~assertSame("ARG"(i, 'o'), 0)
+         END
+      END
+   RETURN 0
+
+::method "test_13"
+   -- test the 'A' option
+   a2='a2'; a3='a3'; a4='a4'; a5 ='a5'
+   a6='a6'; a7='a7'; a8='a8'; a9='a9'
+   a1=9
+   call argm a1,,a3,,a5,,a7,,a9
+   return
+   argm:
+   self~assertSame("ARG"(), arg(1))
+   a1 = .array~of(a1,,a3,,a5,,a7,,a9)
+   a2 = arg(1, 'a')
+   self~assertSame(a1~items, a2~items)
+   self~assertSame(arg(), a2~last)
+   do i = 1 to arg()
+      self~assertSame(a1[i], a2[i])
+      end
+   RETURN 0
+
+::method "test_docs"
+   -- test the rexref documentation examples
+  call name1               -- call procedure without arguments
+  call name2 'a', , 'b'    -- call procedure with arguments
+
+  exit
+
+  name1:
+    self~assertSame(0, arg())
+    self~assertSame("", arg(1))
+    self~assertSame("", arg(2))
+    self~assertSame(.false, arg(1, 'e'))
+    self~assertSame(.true, arg(1, 'o'))
+    self~assertSame(0, arg(1, 'a')~items)
+    return
+
+  name2:
+    self~assertSame(3, arg())
+    self~assertSame("a", arg(1))
+    self~assertSame("", arg(2))
+    self~assertSame("b", arg(3))
+    self~assertSame("", arg(4))
+    self~assertSame(.true, arg(1, 'e'))
+    self~assertSame(.false, arg(2, 'e'))
+    self~assertSame(.true, arg(3, 'e'))
+    self~assertSame(.false, arg(1, 'o'))
+    self~assertSame(.true, arg(2, 'o'))
+    self~assertSame(.false, arg(3, 'o'))
+    return
+
+::method "test_external_calls"
+    call "ARG_TEST.rex"
+    self~assertSame(result, 0)
+
+    call "ARG_TEST.rex" "one"
+    self~assertSame(result, 1)
+
+    call "ARG_TEST.rex" "one" "two"
+    self~assertSame(result, 1)
+
+    'rexx -e "return arg()"'
+    self~assertSame(RC, 0)
+
+    'rexx -e "return arg()" "one"'
+    self~assertSame(RC, 1)
+
+    'rexx -e "return arg()" "one" "two"'
+    self~assertSame(RC, 1)
+

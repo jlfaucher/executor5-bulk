@@ -1,0 +1,332 @@
+#!/usr/bin/rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 - 2008 Rexx Language Association. All rights reserved.  */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.String_overlayMethod.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "String_overlayMethod.testGroup" subclass ooTestCase public
+
+::method 'test000'
+    .local~vnull = ''
+    .local~vblank = ' '
+    .local~v1 = '*'
+    .local~v1a = '@'
+    .local~v30 = 'abcdefghijklmnopqrstuvwxyz1234'
+    .local~v256 = copies('12345678',32)
+    .local~v10000 = copies('\',10000)
+    .local~vn0000 = 0000
+    .local~vn1 = 1
+    .local~vn2 = 2
+    .local~vn3 = 3
+    .local~vn4 = 4
+    .local~vn5 = 5
+    .local~vn7 = 7
+    .local~vn10 = 10
+    .local~vn21 = 21
+    .local~vn42 = 42
+    .local~vn50 = 50
+    .local~vn100 = 100
+    .local~vn12345 = 12345
+    .local~vres1 = subStr(.v256,1,8)||.v30||subStr(.v256,39)
+    .local~vres2 = subStr(.v10000,1,9)||.v256||subStr(.v10000,266)
+    .local~vres3 = .v256||copies(' ',32511)||'abcdefghijklmnopqrstuvwxyz1234'
+    .local~vres4 = .v256||copies('>',32511)||'abcdefghijklmnopqrstuvwxyz1234'
+    .local~vres5 = .v256||copies(' ',32511)
+    .local~vres6 = '12345678'||.v30||copies(' ',32738)
+    .local~vres7 = '\\\\\\\\\'||subStr(.v256,1,255)||copies('\',9736)
+
+::method 'test001'
+    self~expectSyntax(93.903)
+    xre = ''~overlay()
+
+--::method 'test002'
+--    self~expectSyntax(40.3)
+--    xre = ""~overLay('ABC',)
+
+::method 'test003'
+    self~expectSyntax(93.903)
+    xre = 'ABC'~overLay()
+
+::method 'test004'
+    self~assertSame(' ', .vblank~overLay(''))
+
+::method 'test005'
+    self~assertSame(' ', '*'~overLay('20'x))
+
+::method 'test006'
+    self~assertSame('*bcdefghijklmnopqrstuvwxyz1234', '6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'x~overLay(.v1))
+
+::method 'test007'
+    self~assertSame(.v30||subStr(.v256,31), .v256~overLay('abcdefghijklmnopqrstuvwxyz1234'))
+
+::method 'test008'
+    self~assertSame(.v256||subStr(.v10000,257), copies('\',10000)~overLay(.v256))
+
+::method 'test009'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1234567890'
+    self~assertSame('1234567890', .v1~overLay(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX))
+
+::method 'test010'
+    self~expectSyntax(93.924)
+    xre = '*'~overLay('20'x,0)
+
+::method 'test011'
+    self~assertSame('*bcdefghijklmnopqrstuvwxyz1234', '6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'x~overLay(.v1,1))
+
+::method 'test012'
+    self~assertSame('*bcdefghijklmnopqrstuvwxyz1234', '6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'x~overLay(.v1,0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001))
+
+::method 'test013'
+    self~assertSame('a*cdefghijklmnopqrstuvwxyz1234', '6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'x~overLay(.v1,0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002))
+
+::method 'test014'
+    self~assertSame(.vres1, .v256~overLay('abcdefghijklmnopqrstuvwxyz1234',9))
+
+::method 'test015'
+    self~assertSame(.vres2, copies('\',10000)~overLay(.v256,10))
+
+::method 'test016'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1234567890'
+    self~assertSame('*         1234567890', .v1~overLay(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,11))
+
+::method 'test017'
+    self~assertSame('*'||copies(' ',254), '*'~overLay('20'x,255))
+
+::method 'test018'
+    self~assertSame(.v30||copies(' ',225)||'*', '6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'x~overLay(.v1,256))
+
+::method 'test019'
+    self~assertSame(.vres3, .v256~overLay('abcdefghijklmnopqrstuvwxyz1234',32768))
+
+::method 'test020'
+    self~assertSame(copies('\',9999)||.v256, copies('\',10000)~overLay(.v256,10000))
+
+::method 'test021'
+    self~assertSame('*'||copies(' ',9999), '6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'x~overLay(.v1,1,10000))
+
+::method 'test022'
+    self~assertSame(.vres6, .v256~overLay('abcdefghijklmnopqrstuvwxyz1234',9,32768))
+
+::method 'test023'
+    self~assertSame(.vres7, copies('\',10000)~overLay(.v256,10,255))
+
+::method 'test024'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1234567890'
+    self~assertSame(.v1||'         '||'1234567890'||' ', .v1~overLay(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,11,11))
+
+::method 'test025'
+    self~assertSame(.v1||copies(' ',253)||'20'x||copies(' ',8), '*'~overLay('20'x,255,9))
+
+::method 'test026'
+    self~assertSame(.v30||copies(' ',225)||.v1, '6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'x~overLay(.v1,256,1))
+
+::method 'test027'
+    self~assertSame(.vres5, .v256~overLay('abcdefghijklmnopqrstuvwxyz1234',32768,0))
+
+::method 'test028'
+    self~assertSame('*'||copies('\',9999), '6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'x~overLay(.v1,1,10000,'5C'x))
+
+::method 'test029'
+    self~assertSame(.vres6, .v256~overLay('abcdefghijklmnopqrstuvwxyz1234',9,32768,' '))
+
+::method 'test030'
+    self~expectSyntax(93.922)
+    xre = copies('\',10000)~overLay(.v256,10,255,'xx')
+
+::method 'test031'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1234567890'
+    self~assertSame(.v1||'|||||||||'||'1234567890'||'|', .v1~overLay(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,11,11,'|'))
+
+::method 'test032'
+    self~assertSame(.v1||copies('4',253)||'20'x||copies('4',8), '*'~overLay('20'x,255,9,2+2))
+
+::method 'test033'
+    self~assertSame(.v30||copies('@',225)||.v1, '6162636465666768696a6b6c6d6e6f707172737475767778797a31323334'x~overLay(.v1,256,1,.v1a))
+
+::method 'test034'
+    self~expectSyntax(93.922)
+    xre = .v256~overLay('abcdefghijklmnopqrstuvwxyz1234',32768,0,6+6)
+
+::method 'test035'
+    self~expectSyntax(93.938)
+    xre = 'nv.'~overLay(nv.,1,60,'1')
+
+::method 'test036'
+    self~expectSyntax(93.924)
+    xre = noval2~overLay(noval1,noval3,noval4,noval5)
+
+::method 'test037'
+    self~expectSyntax(93.924)
+    xre = 'nv'~overLay('nv',nv,3,'1')
+
+::method 'test038'
+    self~expectSyntax(93.924)
+    xre = 'nv.'~overLay('nv.',nv.,60,'1')
+
+::method 'test039'
+    self~expectSyntax(93.924)
+    xre = 'nv.10'~overLay('nv.10',nv.10,100,'1')
+
+::method 'test040'
+    self~expectSyntax(93.922)
+    xre = 'nv'~overLay('nv',1,3,nv)
+
+::method 'test041'
+    self~expectSyntax(93.938)
+    xre = 'nv.'~overLay('nv.',1,60,nv.)
+
+::method 'test042'
+    self~expectSyntax(93.922)
+    xre = 'nv.10'~overLay('nv.10',1,100,nv.10)
+
+::method 'test043'
+    self~expectSyntax(93.924)
+    xre = noval2~overLay(noval1,noval3,noval4,noval5)
+
+::method 'test044'
+    self~assertSame('042888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888', 0000~overLay(2*21,1+1,100*2,4+4))
+
+::method 'test045'
+    self~assertSame('0429999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999', (+0000)~overLay(+42,4*.5,42*5,4+5))
+
+::method 'test046'
+    self~assertSame('4266666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666', (+12345)~overLay(7*3*2,5-4,50*2,2+4))
+
+::method 'test047'
+    self~assertSame('042'||copies('8',198), .vn0000~overLay(.vn2*.vn21,.vn1+.vn1,.vn100*.vn2,.vn4+.vn4))
+
+::method 'test048'
+    vn.5 = .5
+    self~assertSame('042'||copies('9',208), .vn0000~overLay(.vn42,.vn4*vn.5,.vn42*.vn5,.vn4+.vn5))
+
+::method 'test049'
+    self~assertSame('4266666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666', .vn12345~overLay(.vn7*.vn3*.vn2,.vn5-.vn4,.vn50*.vn2,.vn2+.vn4))
+
+::method 'test050'
+    numeric digits 1
+    vn.5 = .5
+    self~assertSame('04E+18888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888', 0000~overLay(2*21,1+1,100*2,4+4))
+    self~assertSame('04E+19999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999', (+0000)~overLay(+42,4*.5,42*5,4+5))
+    self~assertSame('4E+1666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666', (+12345)~overLay(7*3*2,5-4,50*2,2+4))
+    self~assertSame('04E+1'||copies('8',196), .vn0000~overLay(.vn2*.vn21,.vn1+.vn1,.vn100*.vn2,.vn4+.vn4))
+    self~assertSame('042'||copies('9',198), .vn0000~overLay(.vn42,.vn4*vn.5,.vn42*.vn5,.vn4+.vn5))
+    self~assertSame('4E+1666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666', .vn12345~overLay(.vn7*.vn3*.vn2,.vn5-.vn4,.vn50*.vn2,.vn2+.vn4))
+
+::method 'test051'
+    self~assertSame('*bcdefghijklmnopqrstuvwxyz1***', copies(.v1,30)~overLay(subStr(.v30,2,28),pos('O','WORD'),x2d(1A),dataType(6,'N')))
+
+::method 'test052'
+    self~assertSame('ab|||||||||*'||copies('d1'x,11), left(.v30,11)~overLay(right(.v1,10,'|'),center('135',1),subStr('321',2),d2c(209)))
+
+::method 'test053'
+    self~assertSame('5'||copies('0',c2d('J')-1), right('',5,'0')~overLay(word(1+2 2+3 ,2),dataType(7,'N'),c2d('J'),pos('O','')))
+
+::method 'test054'
+    self~assertSame('John R. Buckley', '        Buckley'~overLay('     R.'~overLay(' ohn'~overLay('J'))))
+
+::method 'test055'
+    self~assertSame('Johnley', ' uckley'~overLay('B')~overLay(' ohn'~overLay('J')))
+
+::method 'test056'
+    self~assertSame('BuckleyRRJohnRRRRRRR', 'Buckley'~overLay('John','00'~overLay('1'),'01'~overLay('1'),'X'~overLay('R')))
+
+::method 'test057'
+    .local~remove(vnull)
+    .local~remove(vblank)
+    .local~remove(v1)
+    .local~remove(v1a)
+    .local~remove(v30)
+    .local~remove(v256)
+    .local~remove(v10000)
+    .local~remove(vn0000)
+    .local~remove(vn1)
+    .local~remove(vn2)
+    .local~remove(vn3)
+    .local~remove(vn4)
+    .local~remove(vn5)
+    .local~remove(vn7)
+    .local~remove(vn10)
+    .local~remove(vn21)
+    .local~remove(vn42)
+    .local~remove(vn50)
+    .local~remove(vn100)
+    .local~remove(vn12345)
+    .local~remove(vres1)
+    .local~remove(vres2)
+    .local~remove(vres3)
+    .local~remove(vres4)
+    .local~remove(vres5)
+    .local~remove(vres6)
+    .local~remove(vres7)
+
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_OVERLAY"
+    self~assertSame('ab def', 'abcdef'~OVERLAY(' ',3))
+    self~assertSame('ab. ef', 'abcdef'~OVERLAY('.',3,2))
+    self~assertSame('qqcd', 'abcd'~OVERLAY('qq'))
+    self~assertSame('abcqq', 'abcd'~OVERLAY('qq',4))
+    self~assertSame('abc+123+++', 'abc'~OVERLAY('123',5,6,'+'))
+
+   -- new tests
+    self~assertSame('abc', 'abc'~OVERLAY('',3))
+    self~assertSame('abc', 'abc'~OVERLAY('',3, 0))
+    self~assertSame('ab ', 'abc'~OVERLAY('',3, 1))
+    self~assertSame('abc   ', 'abc'~OVERLAY('',6, 1))
+
+    self~assertSame('abc', 'abc'~OVERLAY('  ',3, 0))
+    self~assertSame('ab ', 'abc'~OVERLAY('  ',3, 1))
+    self~assertSame('abc   ', 'abc'~OVERLAY('  ',6, 1))
+
+    self~assertSame('abc', 'abc'~OVERLAY('12',3, 0))
+    self~assertSame('ab3', 'abc'~OVERLAY('34',3, 1))
+    self~assertSame('abc  5', 'abc'~OVERLAY('56',6, 1))
+
+

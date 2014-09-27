@@ -1,0 +1,908 @@
+#!/usr/bin/rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2008 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYright HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYright   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+use arg testTypes
+
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.INVOCATION.testGroup)
+
+  if arg(1, 'E'), \ group~hasTestTypes(testTypes) then do
+    group~markNoTests("This is a native API test and not included in the test types to execute.")
+
+    if group~isAutomatedTest then return group
+    else return group~suite~execute~~print
+  end
+
+  signal on syntax name packageErr
+  .context~package~loadPackage('INVOCATIONTester.cls')
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+packageErr:
+  err = .ExceptionData~new(timeStamp(), s, .ExceptionData~TRAP)
+  err~setLine(sigl)
+  err~conditionObject = condition('O')
+  err~msg = "Failed to load the external API package needed for this test group."
+
+  if group~isAutomatedTest then return err
+
+  err~print("Test group exception", .false)
+return .ooTestResult~new(5)~~addException(err)
+
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+-- class named exactly like file
+::class "INVOCATION.testGroup" subclass ooTestCase public
+
+::method init class
+  forward class (super) continue
+
+  -- Over-ride the default test type
+  self~ooTestType = .ooTestTypes~NATIVE_API_TEST
+
+::method TestCallReturn
+  tester = .InvocationTester~new
+  self~assertEquals(0, tester~callInstanceProgram(self~resolveTestProgram('tests/callReturn.rex')))
+  self~assertEquals(5, tester~callInstanceProgram(self~resolveTestProgram('tests/callReturn.rex'), .array~of(1,2)))
+  args = .array~new(3)
+  args[1] = 1
+  args[3] = 3
+  self~assertEquals(7, tester~callInstanceProgram(self~resolveTestProgram('tests/callReturn.rex'), args))
+
+::method TestCallType
+  tester = .InvocationTester~new
+  self~assertEquals("COMMAND", tester~callInstanceProgram(self~resolveTestProgram('tests/callType.rex')))
+
+::method TestInitialAddress
+  tester = .InvocationTester~new
+  self~assertEquals(address(), tester~callInstanceProgram(self~resolveTestProgram('tests/initialAddress.rex')))
+  tester~initialAddress = "TESTING"
+  self~assertEquals("TESTING", tester~callInstanceProgram(self~resolveTestProgram('tests/initialAddress.rex')))
+
+::method TestSyntaxError
+  tester = .InvocationTester~new
+  tester~callInstanceProgram(self~resolveTestProgram('tests/syntaxError.rex'))
+  self~assertEquals(42, tester~RC)
+  self~assertEquals(42003, tester~code)
+
+::method TestInitExit
+  tester = .InvocationTester~new
+  tester~exitType = "CONTEXT"
+  tester~initExit = "SKIP"
+  self~assertEquals("TEST1", tester~callInstanceProgram(self~resolveTestProgram('tests/initExit.rex')))
+  tester~initExit = "HANDLE"
+  self~assertEquals("Hello World", tester~callInstanceProgram(self~resolveTestProgram('tests/initExit.rex')))
+  tester~initExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/initExit.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+  tester~initExit = "RAISE"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/initExit.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48900, tester~code)
+  tester~exitType = "DLL"
+  tester~initExit = "SKIP"
+  self~assertEquals("TEST1", tester~callInstanceProgram(self~resolveTestProgram('tests/initExit.rex')))
+  tester~initExit = "HANDLE"
+  self~assertEquals("Hello World", tester~callInstanceProgram(self~resolveTestProgram('tests/initExit.rex')))
+  tester~initExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/initExit.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+  tester~exitType = "EXE"
+  tester~initExit = "SKIP"
+  self~assertEquals("TEST1", tester~callInstanceProgram(self~resolveTestProgram('tests/initExit.rex')))
+  tester~initExit = "HANDLE"
+  self~assertEquals("Hello World", tester~callInstanceProgram(self~resolveTestProgram('tests/initExit.rex')))
+  tester~initExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/initExit.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+
+::method TestTermExit
+  tester = .InvocationTester~new
+  tester~exitType = "CONTEXT"
+  tester~termExit = "SKIP"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/terminationExit.rex'), .array~of("BAD"))
+  self~assertEquals(0, tester~RC)
+  tester~termExit = "HANDLE"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/terminationExit.rex'), .array~of("Hello World"))
+  self~assertEquals(0, tester~RC)
+  tester~termExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/terminationExit.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+  tester~termExit = "RAISE"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/terminationExit.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48900, tester~code)
+  tester~exitType = "DLL"
+  tester~termExit = "SKIP"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/terminationExit.rex'), .array~of("BAD"))
+  self~assertEquals(0, tester~RC)
+  tester~termExit = "HANDLE"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/terminationExit.rex'), .array~of("Hello World"))
+  self~assertEquals(0, tester~RC)
+  tester~termExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/terminationExit.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+  tester~exitType = "EXE"
+  tester~termExit = "SKIP"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/terminationExit.rex'), .array~of("BAD"))
+  self~assertEquals(0, tester~RC)
+  tester~termExit = "HANDLE"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/terminationExit.rex'), .array~of("Hello World"))
+  self~assertEquals(0, tester~RC)
+  tester~termExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/terminationExit.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+
+
+::method TestContextCommandExit
+  tester = .InvocationTester~new
+  tester~exitType = "CONTEXT"
+  tester~commandExit = "SKIP"
+  self~assertEquals("FAILURE 30", tester~callInstanceProgram(self~resolveTestProgram('tests/commandExit.rex'), .array~of("FOOBAR", "ECHO")))
+  tester~commandExit = "HANDLE"
+  self~assertEquals("SUCCESS -1", tester~callInstanceProgram(self~resolveTestProgram('tests/commandExit.rex'), .array~of("FOOBAR", "ECHO")))
+  self~assertEquals("SUCCESS 0", tester~callInstanceProgram(self~resolveTestProgram('tests/commandExit.rex'), .array~of("CMD", "GOOD")))
+  self~assertEquals("ERROR 1", tester~callInstanceProgram(self~resolveTestProgram('tests/commandExit.rex'), .array~of("CMD", "ERROR")))
+  self~assertEquals("FAILURE -2", tester~callInstanceProgram(self~resolveTestProgram('tests/commandExit.rex'), .array~of("CMD", "FAILURE")))
+  tester~commandExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/commandExit.rex'), .array~of("FOOBAR", "ECHO"))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+  tester~commandExit = "RAISE"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/commandExit.rex'), .array~of("FOOBAR", "ECHO"))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48900, tester~code)
+
+::method TestExeCommandExit
+  tester = .InvocationTester~new
+  tester~exitType = "EXE"
+  tester~commandExit = "SKIP"
+  self~assertEquals("FAILURE 30", tester~callInstanceProgram(self~resolveTestProgram('tests/commandExit.rex'), .array~of("FOOBAR", "ECHO")))
+  tester~commandExit = "HANDLE"
+  self~assertEquals("SUCCESS -1", tester~callInstanceProgram(self~resolveTestProgram('tests/commandExit.rex'), .array~of("FOOBAR", "ECHO")))
+  self~assertEquals("SUCCESS 0", tester~callInstanceProgram(self~resolveTestProgram('tests/commandExit.rex'), .array~of("CMD", "GOOD")))
+  self~assertEquals("ERROR 1", tester~callInstanceProgram(self~resolveTestProgram('tests/commandExit.rex'), .array~of("CMD", "ERROR")))
+  self~assertEquals("FAILURE -2", tester~callInstanceProgram(self~resolveTestProgram('tests/commandExit.rex'), .array~of("CMD", "FAILURE")))
+  tester~commandExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/commandExit.rex'), .array~of("FOOBAR", "ECHO"))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+
+::method TestDllCommandExit
+  tester = .InvocationTester~new
+  tester~exitType = "DLL"
+  tester~commandExit = "SKIP"
+  self~assertEquals("FAILURE 30", tester~callInstanceProgram(self~resolveTestProgram('tests/commandExit.rex'), .array~of("FOOBAR", "ECHO")))
+  tester~commandExit = "HANDLE"
+  self~assertEquals("SUCCESS -1", tester~callInstanceProgram(self~resolveTestProgram('tests/commandExit.rex'), .array~of("FOOBAR", "ECHO")))
+  self~assertEquals("SUCCESS 0", tester~callInstanceProgram(self~resolveTestProgram('tests/commandExit.rex'), .array~of("CMD", "GOOD")))
+  self~assertEquals("ERROR 1", tester~callInstanceProgram(self~resolveTestProgram('tests/commandExit.rex'), .array~of("CMD", "ERROR")))
+  self~assertEquals("FAILURE -2", tester~callInstanceProgram(self~resolveTestProgram('tests/commandExit.rex'), .array~of("CMD", "FAILURE")))
+  tester~commandExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/commandExit.rex'), .array~of("FOOBAR", "ECHO"))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+
+::method TestContextFunctionExit
+  tester = .InvocationTester~new
+  tester~exitType = "CONTEXT"
+  tester~functionExit = "SKIP"
+  self~assertEquals("1", tester~callInstanceProgram(self~resolveTestProgram('tests/functionExit.rex'), .array~of("testarguments(1,2)")))
+  tester~functionExit = "HANDLE"
+  self~assertEquals('FUNCTION', tester~callInstanceProgram(self~resolveTestProgram('tests/functionExit.rex'), .array~of("TESTSUBCALL()")))
+  tester~callInstanceProgram(self~resolveTestProgram('tests/functionExit.rex'), .array~of("TESTERROR()"))
+  self~assertEquals(40, tester~RC)
+  self~assertEquals(40001, tester~code)
+  tester~callInstanceProgram(self~resolveTestProgram('tests/functionExit.rex'), .array~of("TESTNOTFOUND()"))
+  self~assertEquals(43, tester~RC)
+  self~assertEquals(43001, tester~code)
+  tester~functionExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/functionExit.rex'), .array~of("TESTSUBCALL()"))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+  tester~functionExit = "RAISE"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/functionExit.rex'), .array~of("TESTSUBCALL()"))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48900, tester~code)
+
+::method TestExeFunctionExit
+  tester = .InvocationTester~new
+  tester~exitType = "EXE"
+  tester~functionExit = "SKIP"
+  self~assertEquals("1", tester~callInstanceProgram(self~resolveTestProgram('tests/functionExit.rex'), .array~of("testarguments(1,2)")))
+  tester~functionExit = "HANDLE"
+  self~assertEquals('FUNCTION', tester~callInstanceProgram(self~resolveTestProgram('tests/functionExit.rex'), .array~of("TESTSUBCALL()")))
+  tester~callInstanceProgram(self~resolveTestProgram('tests/functionExit.rex'), .array~of("TESTERROR()"))
+  self~assertEquals(40, tester~RC)
+  self~assertEquals(40001, tester~code)
+  tester~callInstanceProgram(self~resolveTestProgram('tests/functionExit.rex'), .array~of("TESTNOTFOUND()"))
+  self~assertEquals(43, tester~RC)
+  self~assertEquals(43001, tester~code)
+  tester~functionExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/functionExit.rex'), .array~of("TESTSUBCALL()"))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+
+::method TestDllFunctionExit
+  tester = .InvocationTester~new
+  tester~exitType = "DLL"
+  tester~functionExit = "SKIP"
+  self~assertEquals("1", tester~callInstanceProgram(self~resolveTestProgram('tests/functionExit.rex'), .array~of("testarguments(1,2)")))
+  tester~functionExit = "HANDLE"
+  self~assertEquals('FUNCTION', tester~callInstanceProgram(self~resolveTestProgram('tests/functionExit.rex'), .array~of("TESTSUBCALL()")))
+  tester~callInstanceProgram(self~resolveTestProgram('tests/functionExit.rex'), .array~of("TESTERROR()"))
+  self~assertEquals(40, tester~RC)
+  self~assertEquals(40001, tester~code)
+  tester~callInstanceProgram(self~resolveTestProgram('tests/functionExit.rex'), .array~of("TESTNOTFOUND()"))
+  self~assertEquals(43, tester~RC)
+  self~assertEquals(43001, tester~code)
+  tester~functionExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/functionExit.rex'), .array~of("TESTSUBCALL()"))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+
+::method TestContextObjectFunctionExit
+  tester = .InvocationTester~new
+  tester~exitType = "CONTEXT"
+  tester~objectFunctionExit = "SKIP"
+  self~assertEquals("1", tester~callInstanceProgram(self~resolveTestProgram('tests/functionExit.rex'), .array~of("testarguments(1,2)")))
+  tester~objectFunctionExit = "HANDLE"
+  self~assertEquals("1,2", tester~callInstanceProgram(self~resolveTestProgram('tests/functionExit.rex'), .array~of("testarguments(1,2)")))
+
+  tester~callInstanceProgram(self~resolveTestProgram('tests/functionExit.rex'), .array~of("TESTERROR()"))
+  self~assertEquals(40, tester~RC)
+  self~assertEquals(40001, tester~code)
+  tester~callInstanceProgram(self~resolveTestProgram('tests/functionExit.rex'), .array~of("TESTNOTFOUND()"))
+  self~assertEquals(43, tester~RC)
+  self~assertEquals(43001, tester~code)
+
+  self~assertEquals(1, tester~callInstanceProgram(self~resolveTestProgram('tests/getCallerContext.rex')))
+  self~assertEquals(1, tester~callInstanceProgram(self~resolveTestProgram('tests/contextVariables.rex')))
+
+::method TestContextScriptFunctionExit
+  tester = .InvocationTester~new
+  tester~exitType = "CONTEXT"
+  tester~scriptingExit = "SKIP"
+  self~assertEquals("1", tester~callInstanceProgram(self~resolveTestProgram('tests/functionExit.rex'), .array~of("testarguments(1,2)")))
+  tester~scriptingExit = "HANDLE"
+  self~assertEquals("1", tester~callInstanceProgram(self~resolveTestProgram('tests/functionExit.rex'), .array~of("testarguments(1,2)")))
+
+  tester~callInstanceProgram(self~resolveTestProgram('tests/functionExit.rex'), .array~of("TESTERROR()"))
+  self~assertEquals(40, tester~RC)
+  self~assertEquals(40001, tester~code)
+  tester~callInstanceProgram(self~resolveTestProgram('tests/functionExit.rex'), .array~of("TESTNOTFOUND()"))
+  self~assertEquals(43, tester~RC)
+  self~assertEquals(43001, tester~code)
+
+  self~assertEquals(1, tester~callInstanceProgram(self~resolveTestProgram('tests/getCallerContext.rex')))
+  self~assertEquals(1, tester~callInstanceProgram(self~resolveTestProgram('tests/contextVariables.rex')))
+
+
+  tester~scriptingExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/functionExit.rex'), .array~of("TESTSUBCALL()"))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+  tester~scriptingExit = "RAISE"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/functionExit.rex'), .array~of("TESTSUBCALL()"))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48900, tester~code)
+
+::method TestContextQueueExitPush
+  tester = .InvocationTester~new
+  tester~exitType = "CONTEXT"
+  tester~queueExit = "SKIP"
+  self~assertEquals("1", tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitPush.rex')))
+  tester~queueExit = "HANDLE"
+  self~assertEquals("0", tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitPush.rex')))
+
+  tester~queueExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitPush.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+  tester~queueExit = "RAISE"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitPush.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48900, tester~code)
+
+::method TestExeQueueExitPush
+  tester = .InvocationTester~new
+  tester~exitType = "EXE"
+  tester~queueExit = "SKIP"
+  self~assertEquals("1", tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitPush.rex')))
+  tester~queueExit = "HANDLE"
+  self~assertEquals("0", tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitPush.rex')))
+
+  tester~queueExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitPush.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+
+::method TestDllQueueExitPush
+  tester = .InvocationTester~new
+  tester~exitType = "DLL"
+  tester~queueExit = "SKIP"
+  self~assertEquals("1", tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitPush.rex')))
+  tester~queueExit = "HANDLE"
+  self~assertEquals("0", tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitPush.rex')))
+
+  tester~queueExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitPush.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+
+::method TestContextQueueExitQueue
+  tester = .InvocationTester~new
+  tester~exitType = "CONTEXT"
+  tester~queueExit = "SKIP"
+  self~assertEquals("1", tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitQueue.rex')))
+  tester~queueExit = "HANDLE"
+  self~assertEquals("0", tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitQueue.rex')))
+
+  tester~queueExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitQueue.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+  tester~queueExit = "RAISE"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitQueue.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48900, tester~code)
+
+::method TestExeQueueExitQueue
+  tester = .InvocationTester~new
+  tester~exitType = "EXE"
+  tester~queueExit = "SKIP"
+  self~assertEquals("1", tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitQueue.rex')))
+  tester~queueExit = "HANDLE"
+  self~assertEquals("0", tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitQueue.rex')))
+
+  tester~queueExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitQueue.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+
+::method TestDllQueueExitQueue
+  tester = .InvocationTester~new
+  tester~exitType = "DLL"
+  tester~queueExit = "SKIP"
+  self~assertEquals("1", tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitQueue.rex')))
+  tester~queueExit = "HANDLE"
+  self~assertEquals("0", tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitQueue.rex')))
+
+  tester~queueExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitQueue.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+
+::method TestContextQueueExitSize
+  tester = .InvocationTester~new
+  tester~exitType = "CONTEXT"
+  tester~queueExit = "SKIP"
+  self~assertEquals("0", tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitSize.rex')))
+  tester~queueExit = "HANDLE"
+  self~assertEquals("999999", tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitSize.rex')))
+
+  tester~queueExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitSize.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+  tester~queueExit = "RAISE"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitSize.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48900, tester~code)
+
+::method TestExeQueueExitSize
+  tester = .InvocationTester~new
+  tester~exitType = "EXE"
+  tester~queueExit = "SKIP"
+  self~assertEquals("0", tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitSize.rex')))
+  tester~queueExit = "HANDLE"
+  self~assertEquals("999999", tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitSize.rex')))
+
+  tester~queueExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitSize.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+
+::method TestDllQueueExitSize
+  tester = .InvocationTester~new
+  tester~exitType = "DLL"
+  tester~queueExit = "SKIP"
+  self~assertEquals("0", tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitSize.rex')))
+  tester~queueExit = "HANDLE"
+  self~assertEquals("999999", tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitSize.rex')))
+
+  tester~queueExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitSize.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+
+::method TestContextQueueExitPull
+  tester = .InvocationTester~new
+  tester~exitType = "CONTEXT"
+  tester~queueExit = "SKIP"
+  self~assertEquals("Bonjour", tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitPull.rex')))
+  tester~queueExit = "HANDLE"
+  self~assertEquals("Hello World", tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitPull.rex')))
+
+  tester~queueExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitPull.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+  tester~queueExit = "RAISE"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitPull.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48900, tester~code)
+  .stdque~empty -- safety measure to clear out the queue
+
+::method TestExeQueueExitPull
+  tester = .InvocationTester~new
+  tester~exitType = "EXE"
+  tester~queueExit = "SKIP"
+  self~assertEquals("Bonjour", tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitPull.rex')))
+  tester~queueExit = "HANDLE"
+  self~assertEquals("Hello World", tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitPull.rex')))
+
+  tester~queueExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitPull.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+  .stdque~empty -- safety measure to clear out the queue
+
+::method TestDllQueueExitPull
+  tester = .InvocationTester~new
+  tester~exitType = "DLL"
+  tester~queueExit = "SKIP"
+  self~assertEquals("Bonjour", tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitPull.rex')))
+  tester~queueExit = "HANDLE"
+  self~assertEquals("Hello World", tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitPull.rex')))
+
+  tester~queueExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitPull.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+  .stdque~empty -- safety measure to clear out the queue
+
+::method TestContextQueueExitSet
+  tester = .InvocationTester~new
+  tester~exitType = "CONTEXT"
+  tester~queueExit = "SKIP"
+  .stdque~set('SESSION') -- safety measure to reset the queue
+  self~assertEquals("SESSION YADAYADA", tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitSet.rex')))
+  .stdque~set('SESSION') -- safety measure to reset the queue
+  tester~queueExit = "HANDLE"
+  self~assertEquals("SESSION FOOBAR", tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitSet.rex')))
+
+  tester~queueExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitSet.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+  tester~queueExit = "RAISE"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitSet.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48900, tester~code)
+  .stdque~set('SESSION') -- safety measure to reset the queue
+
+::method TestExeQueueExitSet
+  tester = .InvocationTester~new
+  tester~exitType = "EXE"
+  tester~queueExit = "SKIP"
+  .stdque~set('SESSION') -- safety measure to reset the queue
+  self~assertEquals("SESSION YADAYADA", tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitSet.rex')))
+  .stdque~set('SESSION') -- safety measure to reset the queue
+  tester~queueExit = "HANDLE"
+  self~assertEquals("SESSION FOOBAR", tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitSet.rex')))
+
+  tester~queueExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitSet.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+
+::method TestDllQueueExitSet
+  tester = .InvocationTester~new
+  tester~exitType = "DLL"
+  tester~queueExit = "SKIP"
+  .stdque~set('SESSION') -- safety measure to reset the queue
+  self~assertEquals("SESSION YADAYADA", tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitSet.rex')))
+  .stdque~set('SESSION') -- safety measure to reset the queue
+  tester~queueExit = "HANDLE"
+  self~assertEquals("SESSION FOOBAR", tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitSet.rex')))
+
+  tester~queueExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/queueExitSet.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+
+::method TestContextIOExitSay
+  tester = .InvocationTester~new
+  tester~exitType = "CONTEXT"
+  tester~ioExit = "SKIP"
+  self~assertEquals("HELLO", tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitSay.rex')))
+  tester~ioExit = "CONSOLE"
+  self~assertEquals("NOT RECEIVED", tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitSay.rex')))
+
+  tester~ioExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitSay.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+  tester~ioExit = "RAISE"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitSay.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48900, tester~code)
+
+::method TestExeIOExitSay
+  tester = .InvocationTester~new
+  tester~exitType = "EXE"
+  tester~ioExit = "SKIP"
+  self~assertEquals("HELLO", tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitSay.rex')))
+  tester~ioExit = "CONSOLE"
+  self~assertEquals("NOT RECEIVED", tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitSay.rex')))
+
+  tester~ioExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitSay.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+
+::method TestDllIOExitSay
+  tester = .InvocationTester~new
+  tester~exitType = "DLL"
+  tester~ioExit = "SKIP"
+  self~assertEquals("HELLO", tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitSay.rex')))
+  tester~ioExit = "CONSOLE"
+  self~assertEquals("NOT RECEIVED", tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitSay.rex')))
+
+  tester~ioExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitSay.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+
+::method TestContextIOExitTrace
+  tester = .InvocationTester~new
+  tester~exitType = "CONTEXT"
+  tester~ioExit = "SKIP"
+  self~assertEquals("    47 *-* call trace OFF", tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitTrace.rex')))
+  tester~ioExit = "DEBUG"
+  self~assertEquals("NOT RECEIVED", tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitTrace.rex')))
+
+  tester~ioExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitTrace.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+  tester~ioExit = "RAISE"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitTrace.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48900, tester~code)
+
+::method TestExeIOExitTrace
+  tester = .InvocationTester~new
+  tester~exitType = "EXE"
+  tester~ioExit = "SKIP"
+  self~assertEquals("    47 *-* call trace OFF", tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitTrace.rex')))
+  tester~ioExit = "DEBUG"
+  self~assertEquals("NOT RECEIVED", tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitTrace.rex')))
+
+  tester~ioExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitTrace.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+
+::method TestDllIOExitTrace
+  tester = .InvocationTester~new
+  tester~exitType = "DLL"
+  tester~ioExit = "SKIP"
+  self~assertEquals("    47 *-* call trace OFF", tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitTrace.rex')))
+  tester~ioExit = "DEBUG"
+  self~assertEquals("NOT RECEIVED", tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitTrace.rex')))
+
+  tester~ioExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitTrace.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+
+::method TestContextIOExitPull
+  tester = .InvocationTester~new
+  tester~exitType = "CONTEXT"
+  tester~ioExit = "SKIP"
+  self~assertEquals("Goodnight moon", tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitPull.rex')))
+  tester~ioExit = "CONSOLE"
+  self~assertEquals("Hello World", tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitPull.rex')))
+
+  tester~ioExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitPull.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+  tester~ioExit = "RAISE"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitPull.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48900, tester~code)
+
+::method TestExeIOExitPull
+  tester = .InvocationTester~new
+  tester~exitType = "EXE"
+  tester~ioExit = "SKIP"
+  self~assertEquals("Goodnight moon", tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitPull.rex')))
+  tester~ioExit = "CONSOLE"
+  self~assertEquals("Hello World", tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitPull.rex')))
+
+  tester~ioExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitPull.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+
+::method TestDllIOExitPull
+  tester = .InvocationTester~new
+  tester~exitType = "DLL"
+  tester~ioExit = "SKIP"
+  self~assertEquals("Goodnight moon", tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitPull.rex')))
+  tester~ioExit = "CONSOLE"
+  self~assertEquals("Hello World", tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitPull.rex')))
+
+  tester~ioExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitPull.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+
+::method TestContextIOExitDebug
+  tester = .InvocationTester~new
+  tester~exitType = "CONTEXT"
+  tester~ioExit = "SKIP"
+  self~assertEquals("CALLED", tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitDebug.rex')))
+  tester~ioExit = "DEBUG"
+  self~assertEquals("NOT CALLED", tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitDebug.rex')))
+
+  tester~ioExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitDebug.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+  tester~ioExit = "RAISE"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitDebug.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48900, tester~code)
+
+::method TestExeIOExitDebug
+  tester = .InvocationTester~new
+  tester~exitType = "EXE"
+  tester~ioExit = "SKIP"
+  self~assertEquals("CALLED", tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitDebug.rex')))
+  tester~ioExit = "DEBUG"
+  self~assertEquals("NOT CALLED", tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitDebug.rex')))
+
+  tester~ioExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitDebug.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+
+::method TestDllIOExitDebug
+  tester = .InvocationTester~new
+  tester~exitType = "DLL"
+  tester~ioExit = "SKIP"
+  self~assertEquals("CALLED", tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitDebug.rex')))
+  tester~ioExit = "DEBUG"
+  self~assertEquals("NOT CALLED", tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitDebug.rex')))
+
+  tester~ioExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/ioExitDebug.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+
+::method TestContextNovalueExit
+  tester = .InvocationTester~new
+  tester~exitType = "CONTEXT"
+  tester~novalueExit = "SKIP"
+  self~assertEquals("FOO", tester~callInstanceProgram(self~resolveTestProgram('tests/novalueExit.rex')))
+  tester~novalueExit = "HANDLE"
+  self~assertEquals("BAR", tester~callInstanceProgram(self~resolveTestProgram('tests/novalueExit.rex')))
+
+  tester~novalueExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/novalueExit.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+  tester~novalueExit = "RAISE"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/novalueExit.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48900, tester~code)
+
+::method TestContextValueExit
+  tester = .InvocationTester~new
+  tester~exitType = "CONTEXT"
+  tester~valueExit = "SKIP"
+  -- the default behavior is to raise an error for an unknown environment selector
+  tester~callInstanceProgram(self~resolveTestProgram('tests/valueExit.rex'))
+  self~assertEquals(40, tester~RC)
+  self~assertEquals(40914, tester~code)
+  tester~valueExit = "HANDLE"
+  self~assertEquals("BAR", tester~callInstanceProgram(self~resolveTestProgram('tests/valueExit.rex')))
+
+  tester~valueExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/valueExit.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+  tester~valueExit = "RAISE"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/valueExit.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48900, tester~code)
+
+::method TestContextHaltExit
+  tester = .InvocationTester~new
+  tester~exitType = "CONTEXT"
+  -- this is the default behavior until we turn it on using the command exit
+  tester~haltExit = "SKIP"
+  tester~commandExit = "HANDLE"   -- this gives us a command that will flip the halt exit on
+  self~assertEquals("CALLED", tester~callInstanceProgram(self~resolveTestProgram('tests/haltExit.rex')))
+
+  tester~haltExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/haltExit.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+  tester~haltExit = "RAISE"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/haltExit.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48900, tester~code)
+
+::method TestExeHaltExit
+  tester = .InvocationTester~new
+  tester~exitType = "EXE"
+  -- this is the default behavior until we turn it on using the command exit
+  tester~haltExit = "SKIP"
+  tester~commandExit = "HANDLE"   -- this gives us a command that will flip the halt exit on
+  self~assertEquals("CALLED", tester~callInstanceProgram(self~resolveTestProgram('tests/haltExit.rex')))
+
+  tester~haltExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/haltExit.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+
+::method TestDllHaltExit
+  tester = .InvocationTester~new
+  tester~exitType = "DLL"
+  -- this is the default behavior until we turn it on using the command exit
+  tester~haltExit = "SKIP"
+  tester~commandExit = "HANDLE"   -- this gives us a command that will flip the halt exit on
+  self~assertEquals("CALLED", tester~callInstanceProgram(self~resolveTestProgram('tests/haltExit.rex')))
+
+  tester~haltExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/haltExit.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+
+::method TestContextTraceExit
+  tester = .InvocationTester~new
+  tester~exitType = "CONTEXT"
+  -- this is the default behavior until we turn it on using the command exit
+  tester~traceExit = "SKIP"
+  tester~commandExit = "HANDLE"   -- this gives us a command that will flip the halt exit on
+  self~assertEquals("CALLED", tester~callInstanceProgram(self~resolveTestProgram('tests/traceExit.rex')))
+
+  tester~traceExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/traceExit.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+  tester~traceExit = "RAISE"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/traceExit.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48900, tester~code)
+
+::method TestExeTraceExit
+  tester = .InvocationTester~new
+  tester~exitType = "EXE"
+  -- this is the default behavior until we turn it on using the command exit
+  tester~traceExit = "SKIP"
+  tester~commandExit = "HANDLE"   -- this gives us a command that will flip the halt exit on
+  self~assertEquals("CALLED", tester~callInstanceProgram(self~resolveTestProgram('tests/traceExit.rex')))
+
+  tester~traceExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/traceExit.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+
+::method TestDllTraceExit
+  tester = .InvocationTester~new
+  tester~exitType = "DLL"
+  -- this is the default behavior until we turn it on using the command exit
+  tester~traceExit = "SKIP"
+  tester~commandExit = "HANDLE"   -- this gives us a command that will flip the halt exit on
+  self~assertEquals("CALLED", tester~callInstanceProgram(self~resolveTestProgram('tests/traceExit.rex')))
+
+  tester~traceExit = "ERROR"
+  tester~callInstanceProgram(self~resolveTestProgram('tests/traceExit.rex'))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48001, tester~code)
+
+::method TestCommandHandler
+  tester = .InvocationTester~new
+  self~assertEquals("SUCCESS 0", tester~callInstanceProgram(self~resolveTestProgram('tests/commandHandlerGood.rex'), .array~of("TEST", "GOOD")))
+  self~assertEquals("ERROR 1", tester~callInstanceProgram(self~resolveTestProgram('tests/commandHandlerGood.rex'), .array~of("TEST", "ERROR")))
+  self~assertEquals("FAILURE -1", tester~callInstanceProgram(self~resolveTestProgram('tests/commandHandlerGood.rex'), .array~of("TEST", "FAILURE")))
+  tester~callInstanceProgram(self~resolveTestProgram('tests/commandHandlerGood.rex'), .array~of("TEST", "RAISE"))
+  self~assertEquals(48, tester~RC)
+  self~assertEquals(48900, tester~code)
+  self~assertEquals("SUCCESS Hello World", tester~callInstanceProgram(self~resolveTestProgram('tests/commandHandlerSetvar.rex'), .array~of("TEST")))
+  self~assertEquals("SUCCESS Hello World", tester~callInstanceProgram(self~resolveTestProgram('tests/commandHandlerGetvar.rex'), .array~of("TEST")))
+
+::method TestSubcomHandler
+  tester = .InvocationTester~new
+  self~assertEquals("SUCCESS 0", tester~callInstanceProgram(self~resolveTestProgram('tests/commandHandlerGood.rex'), .array~of("TESTSUBCOM", "GOOD")))
+  self~assertEquals("ERROR 1", tester~callInstanceProgram(self~resolveTestProgram('tests/commandHandlerGood.rex'), .array~of("TESTSUBCOM", "ERROR")))
+  self~assertEquals("FAILURE -1", tester~callInstanceProgram(self~resolveTestProgram('tests/commandHandlerGood.rex'), .array~of("TESTSUBCOM", "FAILURE")))
+  self~assertEquals("SUCCESS Hello World", tester~callInstanceProgram(self~resolveTestProgram('tests/commandHandlerSetvar.rex'), .array~of("TESTSUBCOM")))
+  self~assertEquals("SUCCESS Hello World", tester~callInstanceProgram(self~resolveTestProgram('tests/commandHandlerGetvar.rex'), .array~of("TESTSUBCOM")))
+
+::method TestClassicSubcomHandler
+  tester = .InvocationTester~new
+  self~assertEquals("SUCCESS 0", tester~callInstanceProgram(self~resolveTestProgram('tests/commandHandlerGood.rex'), .array~of("TESTSUBCOMHANDLER", "GOOD")))
+  self~assertEquals("ERROR 1", tester~callInstanceProgram(self~resolveTestProgram('tests/commandHandlerGood.rex'), .array~of("TESTSUBCOMHANDLER", "ERROR")))
+  self~assertEquals("FAILURE -1", tester~callInstanceProgram(self~resolveTestProgram('tests/commandHandlerGood.rex'), .array~of("TESTSUBCOMHANDLER", "FAILURE")))
+  self~assertEquals("SUCCESS Hello World", tester~callInstanceProgram(self~resolveTestProgram('tests/commandHandlerSetvar.rex'), .array~of("TESTSUBCOMHANDLER")))
+  self~assertEquals("SUCCESS Hello World", tester~callInstanceProgram(self~resolveTestProgram('tests/commandHandlerGetvar.rex'), .array~of("TESTSUBCOMHANDLER")))
+
+::method TestPathHandler
+  tester = .InvocationTester~new
+  tester~searchPath = self~resolveTestProgram('path')
+  tester~extensions = ".test1,.test2"
+  -- this tests both calls from within the program and the same resolution for CallProgram()
+  self~assertEquals("TEST1 TEST2", tester~callInstanceProgram('callPath'))
+
+::method TestLoadLibrary
+  tester = .InvocationTester~new
+  tester~loadLibrary = "rxmath"
+  self~assertEquals("2", tester~callInstanceProgram(self~resolveTestProgram('tests/callMath.rex')))
+
+
+::method resolveTestProgram
+  use arg name
+  parse source . . me
+  currentOS = .ooRexxUnit.OSName
+  -- change the path separator if running on windows
+  if currentOS == 'WINDOWS' then
+     name = name~changeStr('/', '\')
+  return filespec('Location', me)||name
+

@@ -1,0 +1,217 @@
+#!/usr/bin/rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYright HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYright   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.XRANGE.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+-- class named exactly like file
+::class "XRANGE.testGroup" subclass ooTestCase public
+
+::method 'test000'
+    .local~x0 = '000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1F'x
+    .local~x2 = '202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3F'x
+    .local~x4 = '404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5F'x
+    .local~x6 = '606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7F'x
+    .local~x8 = '808182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9F'x
+    .local~xa = 'a0a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4b5b6b7b8b9babbbcbdbebF'x
+    .local~xc = 'c0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6d7d8d9dadbdcdddedF'x
+    .local~xe = 'e0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfdfefF'x
+    .local~xs = .x0||.x2||.x4||.x6||.x8||.xa||.xc||.xe
+    .local~ns = ''
+    .local~va = 'a'
+    .local~vz = 'z'
+
+::method 'test001'
+    self~assertSame(.xs, xRange())
+
+::method 'test002'
+    self~assertSame(.xs, xRange(,))
+
+::method 'test003'
+    self~assertSame(.xs, xRange('00'X))
+
+::method 'test004'
+    self~assertSame('FF00'X, xRange('FF'X,'00'X))
+
+::method 'test005'
+    self~assertSame('FEFF0001'X, xRange('FE'X,'01'X))
+
+::method 'test006'
+    self~assertSame(left(.xs,1), xRange(,'00'x))
+
+::method 'test007'
+    self~assertSame('abcdefghi', xRange('a','i'))
+
+::method 'test008'
+    self~assertSame(substr(.x4,2)||.x6||.x8||.xa||.xc||.xe, xRange('A'))
+
+::method 'test009'
+    self~assertSame('1234', xRange('31'x,4))
+
+::method 'test010'
+    self~assertSame('3', xRange(3,3))
+
+::method 'test011'
+    self~assertSame(substr(.xs,53)||left(.xs,52), xRange(4,3))
+
+::method 'test012'
+    self~expectSyntax(40.23)
+    xre = xrange('c1')
+
+::method 'test013'
+    self~expectSyntax(40.23)
+    xre = xrange(,'c1')
+
+::method 'test014'
+    self~expectSyntax(40.23)
+    xre = xrange('c1','c1')
+
+::method 'test015'
+    self~assertSame('C1'X, xRange('c1'x,'c1'x))
+
+::method 'test016'
+    self~assertSame('abcdefghijklmnopqrstuvwxyz', xRange(.va||.ns,.ns||.vz))
+
+::method 'test017'
+    self~assertSame('abcdefghijklmnopqrstuvwxyz', xRange(x2c(c2x(.va)),.vz))
+
+::method 'test018'
+    self~assertSame(left(.xs,98), xRange(,.va))
+
+::method 'test019'
+    self~assertSame(substr(.xs,123), xRange(.vz))
+
+::method 'test020'
+    self~assertSame(substr(.xs,79), xRange(n))
+
+::method 'test021'
+    self~assertSame(substr(.xs,1,87), xRange(,v))
+
+::method 'test022'
+    self~assertSame('NOPQRSTUV', xRange(n,v))
+
+::method 'test023'
+    self~assertSame(7, xRange(2+5,1+6))
+
+::method 'test024'
+    self~assertSame(substr(.xs,58)||left(.xs,46), xRange((9+0)*1,'-'))
+
+::method 'test025'
+    self~assertSame('.', xRange(.,.))
+
+::method 'test026'
+    self~assertSame(left(.xs,47), xRange(,.))
+
+::method 'test027'
+    self~assertSame('ab', xRange(xrange('a','a'),xrange('b','b')))
+
+::method 'test028'
+    .local~remove(x0)
+    .local~remove(x2)
+    .local~remove(x4)
+    .local~remove(x6)
+    .local~remove(x8)
+    .local~remove(xa)
+    .local~remove(xc)
+    .local~remove(xe)
+    .local~remove(xs)
+    .local~remove(ns)
+    .local~remove(va)
+    .local~remove(vz)
+
+::method 'test029'
+    il = '0 16 17 18 200 254 255'
+    jl = '0 1 17 199 200 201 255'
+    do ii = 1 to words(il)
+        i = word(il,ii)
+            do ji = 1 to words(jl)
+                j = word(jl,ji)
+                x = d2c(i)
+                y = d2c(i)
+                self~assertSame(myxrange(x,y), xRange(x,y))
+            end
+    end
+
+myxrange:
+    parse arg a . , e .
+    i = c2d(a)
+    j = c2d(e)
+    h='000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f'x||,
+      '202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f'x||,
+      '404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f'x||,
+      '606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f'x||,
+      '808182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9f'x||,
+      'a0a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4b5b6b7b8b9babbbcbdbebf'x||,
+      'c0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6d7d8d9dadbdcdddedf'x||,
+      'e0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfdfeff'x
+    if a <= e then
+        return substr(h,i+1,j-i+1)
+    else
+        return substr(h,i+1,256-i)||substr(h,1,j+1)
+
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_XRANGE"
+    self~assertSame('abcdef', XRANGE('a','f'))
+    self~assertSame('0304050607'x, XRANGE('03'x,'07'x))
+    self~assertSame('0001020304'x, XRANGE(,'04'x))
+    self~assertSame('FEFF000102'x, XRANGE('FE'x,'02'x))
+    self~assertSame('ij' /* ASCII */, XRANGE('i','j'))
+
+   -- new tests
+    chars=""
+    do i=0 to 255
+       chars=chars||d2c(i)
+    end
+    self~assertSame(chars, XRANGE())
+    self~assertSame(chars, XRANGE("00"x, "ff"x))
+
+
+

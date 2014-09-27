@@ -1,0 +1,406 @@
+#!/usr/bin/rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 - 2008 Rexx Language Association. All rights reserved.  */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.String_verifyMethod.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "String_verifyMethod.testGroup" subclass ooTestCase public
+
+::method 'test000'
+    .local~v0 = ''
+    .local~v1 = '*'
+    .local~v100000 = copies('1234567890',10000)
+    .local~vm = 'm'
+    .local~v2 = 2
+
+::method 'test001'
+    self~assertSame('0', .mutablebuffer~new('')~verify(''))
+
+::method 'test002'
+    self~assertSame('1', .mutablebuffer~new('a')~verify(''))
+
+::method 'test003'
+    self~assertSame('1', .mutablebuffer~new('A')~verify(''))
+
+::method 'test004'
+    self~assertSame('0', .mutablebuffer~new('A')~verify('AAAAAAAAAA'))
+
+::method 'test005'
+    self~assertSame('0', .mutablebuffer~new('AAAAAAAAAA')~verify('A'))
+
+::method 'test006'
+    self~assertSame('1', .mutablebuffer~new('ab')~verify(''))
+
+::method 'test007'
+    self~assertSame('0', .mutablebuffer~new('ab')~verify('ab'))
+
+::method 'test008'
+    self~assertSame('1', .mutablebuffer~new('AB')~verify(''))
+
+::method 'test009'
+    self~assertSame('3', .mutablebuffer~new('ABC')~verify('AB'))
+
+::method 'test010'
+    self~assertSame('1', .mutablebuffer~new('abcdefghijklmnopqrstuvwxyz1234')~verify(''))
+
+::method 'test011'
+    self~assertSame('1', .mutablebuffer~new('ABCDEFGHIJKLMNOPQRSTUVWXYZ1234')~verify(''))
+
+::method 'test012'
+    self~assertSame('0', .mutablebuffer~new('A')~verify('ABCDEFGHIJKLMNOPQRSTUVWXYZ1234'))
+
+::method 'test013'
+    self~assertSame('0', .mutablebuffer~new('R')~verify('ABCDEFGHIJKLMNOPQRSTUVWXYZ1234'))
+
+::method 'test014'
+    self~assertSame('0', .mutablebuffer~new('4')~verify('ABCDEFGHIJKLMNOPQRSTUVWXYZ1234'))
+
+::method 'test015'
+    self~assertSame('0', .mutablebuffer~new('A')~verify("ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij"))
+
+::method 'test016'
+    self~assertSame('0', .mutablebuffer~new('f')~verify("ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij"))
+
+::method 'test017'
+    self~assertSame('0', .mutablebuffer~new('j')~verify("ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij"))
+
+::method 'test018'
+    self~assertSame('1', .mutablebuffer~new('A')~verify("ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij",'M',1-0))
+
+::method 'test019'
+    self~assertSame('0', .mutablebuffer~new('f')~verify("ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij",'m',2*1))
+
+::method 'test020'
+    self~assertSame('0', .mutablebuffer~new('j')~verify("ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij",'Micheal Jackson',251))
+
+::method 'test021'
+    xre = 0
+    self~assertSame(.true, .mutablebuffer~new('A')~verify("ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij",,000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001) == xre)
+
+::method 'test022'
+    xre = '0'
+    self~assertSame(.true, .mutablebuffer~new('f')~verify("ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij",,'3030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303032'x) == xre)
+
+::method 'test023'
+    self~assertSame('0', .mutablebuffer~new('j')~verify("ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij",,251))
+
+::method 'test024'
+    if .ooRexxUnit.architecture == 32 then
+        self~assertSame('0', .mutablebuffer~new('j')~verify("ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij",,251.00000001))
+    else
+        self~assertSame('0', .mutablebuffer~new('j')~verify("ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij",,251.00000000000000001))
+
+::method 'test025'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new('j')~verify("ABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghijABCDEfghij",,251.0000009)
+
+::method 'test026'
+    self~assertSame('1', .mutablebuffer~new('333333333333333333333333333333333333333333333333'x)~verify(''))
+
+::method 'test027'
+    self~assertSame('1', .mutablebuffer~new(1bcde)~verify(''))
+
+::method 'test028'
+    self~assertSame('1', .mutablebuffer~new('ABCDEFG')~verify('HIJKLMN'))
+
+::method 'test030'
+    self~expectSyntax(93.938)
+    xre = .mutablebuffer~new('')~verify(nova.)
+
+::method 'test031'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new('')~verify('',,nov)
+
+::method 'test032'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new('')~verify('',,noval.12)
+
+::method 'test033'
+    self~assertSame('1', .mutablebuffer~new(nov)~verify(''))
+
+::method 'test035'
+    self~assertSame('1', .mutablebuffer~new(noval.12)~verify(''))
+
+::method 'test036'
+    self~assertSame('0', .mutablebuffer~new('')~verify(nov))
+
+::method 'test037'
+    self~expectSyntax(93.938)
+    xre = .mutablebuffer~new('')~verify(nova.)
+
+::method 'test038'
+    self~assertSame('0', .mutablebuffer~new('')~verify(noval.12))
+
+::method 'test039'
+    self~expectSyntax(93.915)
+    xre = .mutablebuffer~new('')~verify('',xov)
+
+::method 'test040'
+    self~expectSyntax(93.938)
+    xre = .mutablebuffer~new('')~verify('',xova.)
+
+::method 'test041'
+    self~expectSyntax(93.915)
+    xre = .mutablebuffer~new('')~verify('',xoval.12)
+
+::method 'test042'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new('')~verify('',,xov)
+
+::method 'test043'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new('')~verify('',,xova.)
+
+::method 'test044'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new('')~verify('',,xoval.12)
+
+::method 'test045'
+    self~assertSame('0', .mutablebuffer~new('')~verify('',nov))
+
+::method 'test046'
+    self~expectSyntax(93.938)
+    xre = .mutablebuffer~new('')~verify('',nova.)
+
+::method 'test047'
+    self~assertSame('0', .mutablebuffer~new('')~verify('',noval.12))
+
+::method 'test048'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new('')~verify('',,nov)
+
+::method 'test049'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new('')~verify('',,nova.)
+
+::method 'test050'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new('')~verify('',,noval.12)
+
+::method 'test051'
+    self~assertSame('0', .mutablebuffer~new(.v0)~verify(''))
+
+::method 'test052'
+    self~assertSame('1', .mutablebuffer~new(.v1)~verify(''))
+
+::method 'test053'
+    v2. = '67'
+    self~assertSame('1', .mutablebuffer~new(v2.[])~verify(''))
+
+::method 'test054'
+    v30.30 = 'abcdefghijklmnopqrstuvwxyz1234'
+    self~assertSame('1', .mutablebuffer~new(v30.30)~verify(''))
+
+::method 'test055'
+    self~assertSame('1', .mutablebuffer~new(.v100000)~verify(''))
+
+::method 'test056'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = 'John R. Buckley'
+    self~assertSame('1', .mutablebuffer~new(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX)~verify('R.'))
+
+::method 'test057'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = 'John R. Buckley'
+    self~assertSame('0', .mutablebuffer~new('R.')~verify(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX))
+
+::method 'test058'
+    v2. = '67'
+    self~assertSame('0', .mutablebuffer~new(.v1)~verify(value(v2.),.vm,.v2))
+
+::method 'test059'
+    self~assertSame('0', .mutablebuffer~new('1')~verify(.v100000))
+
+::method 'test060'
+    self~assertSame('0', .mutablebuffer~new((2*3))~verify(.v100000))
+
+::method 'test061'
+    self~assertSame('0', .mutablebuffer~new((9-9))~verify(.v100000))
+
+::method 'test062'
+    self~assertSame('1', .mutablebuffer~new((112+11))~verify(''))
+
+::method 'test063'
+    self~assertSame('1', .mutablebuffer~new(+1.e28)~verify(''))
+
+::method 'test064'
+    numeric digits 1
+    self~assertSame('0', .mutablebuffer~new((2*3))~verify(.v100000))
+
+::method 'test065'
+    numeric digits 1
+    self~assertSame('0', .mutablebuffer~new((9-9))~verify(.v100000))
+
+::method 'test066'
+    numeric digits 1
+    self~assertSame('1', .mutablebuffer~new((112+11))~verify(''))
+
+::method 'test067'
+    numeric digits 1
+    self~assertSame('1', .mutablebuffer~new((+1.e28))~verify(''))
+
+::method 'test068'
+    self~assertSame('0', .mutablebuffer~new('abc')~verify('',.vm))
+
+::method 'test069'
+    self~assertSame('1', .mutablebuffer~new('abc')~verify('','n'))
+
+::method 'test070'
+    self~expectSyntax(93.915)
+    xre = .mutablebuffer~new('abc')~verify('','o')
+
+::method 'test071'
+    self~assertSame('0', .mutablebuffer~new('')~verify('','m'))
+
+::method 'test072'
+    self~assertSame('0', .mutablebuffer~new('')~verify('','n'))
+
+::method 'test073'
+    self~expectSyntax(93.915)
+    xre = .mutablebuffer~new('')~verify('','o')
+
+::method 'test074'
+    self~assertSame('1', .mutablebuffer~new('abc')~verify(''))
+
+::method 'test075'
+    self~assertSame('0', .mutablebuffer~new('abc')~verify('','m',4))
+
+::method 'test076'
+    self~assertSame('0', .mutablebuffer~new('abc')~verify('','n',4))
+
+::method 'test077'
+    self~expectSyntax(93.915)
+    xre = .mutablebuffer~new('abc')~verify('','o',4)
+
+::method 'test078'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new('abc')~verify('','m',0)
+
+::method 'test079'
+    self~assertSame('0', .mutablebuffer~new('ABC')~verify('DEF',Match))
+
+::method 'test080'
+    self~assertSame('1', .mutablebuffer~new('ABC')~verify('ABC',mona lisa))
+
+::method 'test081'
+    self~assertSame('0', .mutablebuffer~new('ABC')~verify('XYZ',MAMAMAMAMAMAMAMA))
+
+::method 'test082'
+    self~assertSame('0', .mutablebuffer~new('ABC')~verify('XYZ',Mother Night by Kurt Vonigut))
+
+::method 'test083'
+    self~assertSame('0', .mutablebuffer~new('ABC')~verify('DEF','Match'))
+
+::method 'test084'
+    self~assertSame('0', .mutablebuffer~new('414243'x)~verify('444546'x,'4d61746368'x,'31'x))
+
+::method 'test085'
+    self~assertSame('1', .mutablebuffer~new('ABC')~verify('ABC','mona lisa'))
+
+::method 'test086'
+    self~assertSame('0', .mutablebuffer~new('ABC')~verify('XYZ','MAMAMAMAMAMAMAMA'))
+
+::method 'test087'
+    self~assertSame('0', .mutablebuffer~new('ABC')~verify('XYZ','Mother Night by Kurt Vonigut'))
+
+::method 'test088'
+    self~assertSame('0', .mutablebuffer~new('ABC')~verify('XYZ','6d'x))
+
+::method 'test089'
+    self~assertSame('0', .mutablebuffer~new('ABC')~verify('XYZ','4d'x          ))
+
+::method 'test090'
+    self~assertSame('0', .mutablebuffer~new(subStr('ABCDEFG',2,5))~verify(word('A BCDEF G',2)))
+
+::method 'test091'
+    self~assertSame('1', .mutablebuffer~new('BCDEF')~verify('BCDEF',subStr('lmnop',2),dataType(6,'N')))
+
+::method 'test092'
+    self~assertSame('0', .mutablebuffer~new(dataType(6))~verify(dataType('A'),subStr(dataType(6),3),dataType(6,'A')))
+
+::method 'test094'
+    .local~remove(v0)
+    .local~remove(v1)
+    .local~remove(v100000)
+    .local~remove(vm)
+    .local~remove(v2)
+
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_VERIFY"
+    self~assertEquals(0, .mutablebuffer~new('123')~verify('1234567890'))
+    self~assertEquals(2, .mutablebuffer~new('1Z3')~verify('1234567890'))
+    self~assertEquals(1, .mutablebuffer~new('AB4T')~verify('1234567890'))
+    self~assertEquals(3, .mutablebuffer~new('AB4T')~verify('1234567890','M'))
+    self~assertEquals(1, .mutablebuffer~new('AB4T')~verify('1234567890','N'))
+    self~assertEquals(4, .mutablebuffer~new('1P3Q4')~verify('1234567890', ,3))
+    self~assertEquals(2, .mutablebuffer~new('123')~verify('',N,2))  --
+    self~assertEquals(3, .mutablebuffer~new('ABCDE')~verify('', ,3))  --
+    self~assertEquals(6, .mutablebuffer~new('AB3CD5')~verify('1234567890','M',4))
+
+::method testRange01
+    self~assertSame('0', .mutablebuffer~new('')~verify('',,,3))
+    self~assertSame('1', .mutablebuffer~new('abc')~verify('',,,0))
+    self~assertSame('2', .mutablebuffer~new('abc')~verify('',,2,0))
+    self~assertSame('0', .mutablebuffer~new('ab')~verify('a',,,1))
+    self~assertSame('0', .mutablebuffer~new('ABCDEF')~verify('ABC',,,3.0))
+    self~assertSame('4', .mutablebuffer~new('ABCDEF')~verify('ABC',,2,3))
+    self~assertSame('0', .mutablebuffer~new('ABCDEF')~verify('DEF',Match,,3))
+    self~assertSame('4', .mutablebuffer~new('ABCDEF')~verify('ADEF',Match,2,3))
+
+::method testRange02
+    self~expectSyntax(93.923)
+    xre = .mutablebuffer~new('ABCDEF')~verify('ABC',,2,'xxx')
+
+::method testRange03
+    self~expectSyntax(93.923)
+    xre = .mutablebuffer~new('ABCDEF')~verify('ABC',,2,-12)
+
+::method testRange04
+    self~expectSyntax(93.923)
+    xre = .mutablebuffer~new('ABCDEF')~verify('ABC',,2,0.5)

@@ -1,0 +1,819 @@
+#!/usr/bin/rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+    parse source . . fileSpec;
+
+    group = .TestGroup~new(fileSpec)
+    group~add(.SpecialFolders.testGroup)
+    group~restrictOS("WINDOWS")
+
+    if group~isAutomatedTest then return group
+
+    testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires 'ooTest.frm'
+::class 'SpecialFolders.testgroup' subclass ooTestCase public
+
+/*
+NOTE:   If the user has changed the name of a "special folder" the following line in each testMethod may fail
+        self~assertTrue(objFolderItem~name~caselessPos('....') > 0)
+
+        Note that in addition, many of the tests assume an english language version of Windows.  Some of th
+        special folder names are different in other language versions of Windows.  In that case the test
+        fails on the same line as above.  This is to be expected.
+
+        This is being developed on a system where none of the special folder names have been changed and is
+        meant to test that the correct Hex value is being used during the development
+*/
+
+::method init class
+  forward class (super) continue
+
+  self~ooTestType = self~ENGLISH_ONLY_TEST
+
+
+::method 'testInternetExplorer'
+    objShell = .oleObject~new('Shell.Application')
+    sp = '1'~x2d
+    objFolder = objShell~nameSpace(sp)
+    objFolderItem = objFolder~self
+    self~assertSame(objFolderItem~string,objFolder~Self)
+    self~assertNotNull(objFolderItem)
+    self~assertNotNull(objFolderItem~name)
+    self~assertNotNull(objFolderItem~path)
+    self~assertTrue(objFolderItem~name~caselessPos('internet') > 0)
+    objCollection = objFolder~items
+    ctr = 0
+    do objItem over objCollection
+        ctr += 1
+    end
+    self~assertEquals(ctr,objCollection~count)
+
+::method 'testPrograms'
+    objShell = .oleObject~new('Shell.Application')
+    sp = '2'~x2d()
+    objFolder = objShell~nameSpace(sp)
+    objFolderItem = objFolder~self
+    self~assertSame(objFolderItem~string,objFolder~Self)
+    self~assertNotNull(objFolderItem)
+    self~assertNotNull(objFolderItem~name)
+    self~assertNotNull(objFolderItem~path)
+    self~assertTrue(objFolderItem~name~caselessPos('programs') > 0)
+    objCollection = objFolder~items
+    ctr = 0
+    do objItem over objCollection
+        ctr += 1
+    end
+    self~assertEquals(ctr,objCollection~count)
+
+::method 'testControlPanel'
+    objShell = .oleObject~new('Shell.Application')
+    sp = '3'~x2d()
+    objFolder = objShell~nameSpace(sp)
+    objFolderItem = objFolder~self
+    self~assertSame(objFolderItem~string,objFolder~Self)
+    self~assertNotNull(objFolderItem)
+    self~assertNotNull(objFolderItem~name)
+    self~assertNotNull(objFolderItem~path)
+    self~assertTrue(objFolderItem~name~caselessPos('control') > 0)
+    objCollection = objFolder~items
+    ctr = 0
+    do objItem over objCollection
+        ctr += 1
+    end
+    self~assertEquals(ctr,objCollection~count)
+
+::method 'testPrintersFaxes'
+    objShell = .oleObject~new('Shell.Application')
+    sp = '4'~x2d()
+    objFolder = objShell~nameSpace(sp)
+    objFolderItem = objFolder~self
+    self~assertSame(objFolderItem~string,objFolder~Self)
+    self~assertNotNull(objFolderItem)
+    self~assertNotNull(objFolderItem~name)
+    self~assertNotNull(objFolderItem~path)
+    self~assertTrue(objFolderItem~name~caselessPos('printers') > 0)
+    objCollection = objFolder~items
+    ctr = 0
+    do objItem over objCollection
+        ctr += 1
+    end
+    self~assertEquals(ctr,objCollection~count)
+
+::method 'testMyDocuments'
+    objShell = .oleObject~new('Shell.Application')
+    sp = '5'~x2d()
+    objFolder = objShell~nameSpace(sp)
+    objFolderItem = objFolder~self
+    self~assertSame(objFolderItem~string,objFolder~Self)
+    self~assertNotNull(objFolderItem)
+    self~assertNotNull(objFolderItem~name)
+    self~assertNotNull(objFolderItem~path)
+    self~assertTrue(objFolderItem~name~caselessPos('Documents') > 0)
+    objCollection = objFolder~items
+    ctr = 0
+    do objItem over objCollection
+        ctr += 1
+    end
+    self~assertEquals(ctr,objCollection~count)
+
+::method 'testFavorites'
+    objShell = .oleObject~new('Shell.Application')
+    sp = '6'~x2d()
+    objFolder = objShell~nameSpace(sp)
+    objFolderItem = objFolder~self
+    self~assertSame(objFolderItem~string,objFolder~Self)
+    self~assertNotNull(objFolderItem)
+    self~assertNotNull(objFolderItem~name)
+    self~assertNotNull(objFolderItem~path)
+    self~assertTrue(objFolderItem~name~caselessPos('favorites') > 0)
+    objCollection = objFolder~items
+    ctr = 0
+    do objItem over objCollection
+        ctr += 1
+    end
+    self~assertEquals(ctr,objCollection~count)
+
+::method 'testStartup'
+    objShell = .oleObject~new('Shell.Application')
+    sp = '7'~x2d()
+    objFolder = objShell~nameSpace(sp)
+    objFolderItem = objFolder~self
+    self~assertSame(objFolderItem~string,objFolder~Self)
+    self~assertNotNull(objFolderItem)
+    self~assertNotNull(objFolderItem~name)
+    self~assertNotNull(objFolderItem~path)
+    self~assertTrue(objFolderItem~name~caselessPos('startup') > 0)
+    objCollection = objFolder~items
+    ctr = 0
+    do objItem over objCollection
+        ctr += 1
+    end
+    self~assertEquals(ctr,objCollection~count)
+
+::method 'testMyRecentDocuments'
+    objShell = .oleObject~new('Shell.Application')
+    sp = '8'~x2d()
+    objFolder = objShell~nameSpace(sp)
+    objFolderItem = objFolder~self
+    self~assertSame(objFolderItem~string,objFolder~Self)
+    self~assertNotNull(objFolderItem)
+    self~assertNotNull(objFolderItem~name)
+    self~assertNotNull(objFolderItem~path)
+    self~assertTrue(objFolderItem~name~caselessPos('Recent') > 0)
+    objCollection = objFolder~items
+    ctr = 0
+    do objItem over objCollection
+        ctr += 1
+    end
+    self~assertEquals(ctr,objCollection~count)
+
+::method 'testSendTo'
+    objShell = .oleObject~new('Shell.Application')
+    sp = '9'~x2d()
+    objFolder = objShell~nameSpace(sp)
+    objFolderItem = objFolder~self
+    self~assertSame(objFolderItem~string,objFolder~Self)
+    self~assertNotNull(objFolderItem)
+    self~assertNotNull(objFolderItem~name)
+    self~assertNotNull(objFolderItem~path)
+    self~assertTrue(objFolderItem~name~caselessPos('sendto') > 0)
+    objCollection = objFolder~items
+    ctr = 0
+    do objItem over objCollection
+        ctr += 1
+    end
+    self~assertEquals(ctr,objCollection~count)
+
+::method 'testRecycleBin'
+    objShell = .oleObject~new('Shell.Application')
+    sp = 'a'~x2d
+    objFolder = objShell~nameSpace(sp)
+    objFolderItem = objFolder~self
+    self~assertSame(objFolderItem~string,objFolder~Self)
+    self~assertNotNull(objFolderItem)
+    self~assertNotNull(objFolderItem~name)
+    self~assertNotNull(objFolderItem~path)
+    self~assertTrue(objFolderItem~name~caselessPos('recycle') > 0)
+    objCollection = objFolder~items
+    ctr = 0
+    do objItem over objCollection
+        ctr += 1
+    end
+    self~assertEquals(ctr,objCollection~count)
+
+::method 'testStartMenu'
+    objShell = .oleObject~new('Shell.Application')
+    sp = 'b'~x2d
+    objFolder = objShell~nameSpace(sp)
+    objFolderItem = objFolder~self
+    self~assertSame(objFolderItem~string,objFolder~Self)
+    self~assertNotNull(objFolderItem)
+    self~assertNotNull(objFolderItem~name)
+    self~assertNotNull(objFolderItem~path)
+    self~assertTrue(objFolderItem~name~caselessPos('start menu') > 0)
+    objCollection = objFolder~items
+    ctr = 0
+    do objItem over objCollection
+        ctr += 1
+    end
+    self~assertEquals(ctr,objCollection~count)
+
+::method 'testMyMusic'
+    objShell = .oleObject~new('Shell.Application')
+    sp = 'd'~x2d
+    objFolder = objShell~nameSpace(sp)
+    objFolderItem = objFolder~self
+    self~assertSame(objFolderItem~string,objFolder~Self)
+    self~assertNotNull(objFolderItem)
+    self~assertNotNull(objFolderItem~name)
+    self~assertNotNull(objFolderItem~path)
+    self~assertTrue(objFolderItem~name~caselessPos('Music') > 0)
+    objCollection = objFolder~items
+    ctr = 0
+    do objItem over objCollection
+        ctr += 1
+    end
+    self~assertEquals(ctr,objCollection~count)
+
+::method 'testMyVideos'
+    objShell = .oleObject~new('Shell.Application')
+    sp = 'e'~x2d
+    objFolder = objShell~nameSpace(sp)
+    objFolderItem = objFolder~self
+    self~assertSame(objFolderItem~string,objFolder~Self)
+    self~assertNotNull(objFolderItem)
+    self~assertNotNull(objFolderItem~name)
+    self~assertNotNull(objFolderItem~path)
+    self~assertTrue(objFolderItem~name~caselessPos('Videos') > 0)
+    objCollection = objFolder~items
+    ctr = 0
+    do objItem over objCollection
+        ctr += 1
+    end
+    self~assertEquals(ctr,objCollection~count)
+
+::method 'testDesktop'
+    objShell = .oleObject~new('Shell.Application')
+    sp = '10'~x2d
+    objFolder = objShell~nameSpace(sp)
+    objFolderItem = objFolder~self
+    self~assertSame(objFolderItem~string,objFolder~Self)
+    self~assertNotNull(objFolderItem)
+    self~assertNotNull(objFolderItem~name)
+    self~assertNotNull(objFolderItem~path)
+    self~assertTrue(objFolderItem~name~caselessPos('desktop') > 0)
+    objCollection = objFolder~items
+    ctr = 0
+    do objItem over objCollection
+        ctr += 1
+    end
+    self~assertEquals(ctr,objCollection~count)
+
+::method 'testMyComputer'
+    objShell = .oleObject~new('Shell.Application')
+    sp = '11'~x2d
+    objFolder = objShell~nameSpace(sp)
+    objFolderItem = objFolder~self
+    self~assertSame(objFolderItem~string,objFolder~Self)
+    self~assertNotNull(objFolderItem)
+    self~assertNotNull(objFolderItem~name)
+    self~assertNotNull(objFolderItem~path)
+    self~assertTrue(objFolderItem~name~caselessPos('Computer') > 0)
+    objCollection = objFolder~items
+    ctr = 0
+    do objItem over objCollection
+        ctr += 1
+    end
+    self~assertEquals(ctr,objCollection~count)
+
+::method 'testMyNetworkPlaces'
+    objShell = .oleObject~new('Shell.Application')
+    sp = '12'~x2d
+    objFolder = objShell~nameSpace(sp)
+    objFolderItem = objFolder~self
+    self~assertSame(objFolderItem~string,objFolder~Self)
+    self~assertNotNull(objFolderItem)
+    self~assertNotNull(objFolderItem~name)
+    self~assertNotNull(objFolderItem~path)
+    self~assertTrue(objFolderItem~name~caselessPos('Network') > 0)
+    objCollection = objFolder~items
+    ctr = 0
+    do objItem over objCollection
+        ctr += 1
+    end
+    self~assertEquals(ctr,objCollection~count)
+
+::method 'testNetHood'
+    objShell = .oleObject~new('Shell.Application')
+    sp = '13'~x2d
+    objFolder = objShell~nameSpace(sp)
+    objFolderItem = objFolder~self
+    self~assertSame(objFolderItem~string,objFolder~Self)
+    self~assertNotNull(objFolderItem)
+    self~assertNotNull(objFolderItem~name)
+    self~assertNotNull(objFolderItem~path)
+    self~assertTrue(objFolderItem~name~caselessPos('Net') > 0)
+    objCollection = objFolder~items
+    ctr = 0
+    do objItem over objCollection
+        ctr += 1
+    end
+    self~assertEquals(ctr,objCollection~count)
+
+::method 'testFonts'
+    objShell = .oleObject~new('Shell.Application')
+    sp = '14'~x2d
+    objFolder = objShell~nameSpace(sp)
+    objFolderItem = objFolder~self
+    self~assertSame(objFolderItem~string,objFolder~Self)
+    self~assertNotNull(objFolderItem)
+    self~assertNotNull(objFolderItem~name)
+    self~assertNotNull(objFolderItem~path)
+    self~assertTrue(objFolderItem~name~caselessPos('fonts') > 0)
+    objCollection = objFolder~items
+    ctr = 0
+    do objItem over objCollection
+        ctr += 1
+    end
+    self~assertEquals(ctr,objCollection~count)
+
+::method 'testTemplates'
+    objShell = .oleObject~new('Shell.Application')
+    sp = '15'~x2d
+    objFolder = objShell~nameSpace(sp)
+    objFolderItem = objFolder~self
+    self~assertSame(objFolderItem~string,objFolder~Self)
+    self~assertNotNull(objFolderItem)
+    self~assertNotNull(objFolderItem~name)
+    self~assertNotNull(objFolderItem~path)
+    self~assertTrue(objFolderItem~name~caselessPos('templates') > 0)
+    objCollection = objFolder~items
+    ctr = 0
+    do objItem over objCollection
+        ctr += 1
+    end
+    self~assertEquals(ctr,objCollection~count)
+
+::method 'testAllUsersStartMenu'
+    objShell = .oleObject~new('Shell.Application')
+    sp = '16'~x2d
+    objFolder = objShell~nameSpace(sp)
+    objFolderItem = objFolder~self
+    self~assertSame(objFolderItem~string,objFolder~Self)
+    self~assertNotNull(objFolderItem)
+    self~assertNotNull(objFolderItem~name)
+    self~assertNotNull(objFolderItem~path)
+    self~assertTrue(objFolderItem~name~caselessPos('start menu') > 0)
+    objCollection = objFolder~items
+    ctr = 0
+    do objItem over objCollection
+        ctr += 1
+    end
+    self~assertEquals(ctr,objCollection~count)
+
+::method 'testAllUsersPrograms'
+    objShell = .oleObject~new('Shell.Application')
+    sp = '17'~x2d
+    objFolder = objShell~nameSpace(sp)
+    objFolderItem = objFolder~self
+    self~assertSame(objFolderItem~string,objFolder~Self)
+    self~assertNotNull(objFolderItem)
+    self~assertNotNull(objFolderItem~name)
+    self~assertNotNull(objFolderItem~path)
+    self~assertTrue(objFolderItem~name~caselessPos('programs') > 0)
+    objCollection = objFolder~items
+    ctr = 0
+    do objItem over objCollection
+        ctr += 1
+    end
+    self~assertEquals(ctr,objCollection~count)
+
+::method 'testAllUsersStartup'
+    objShell = .oleObject~new('Shell.Application')
+    sp = '18'~x2d
+    objFolder = objShell~nameSpace(sp)
+    objFolderItem = objFolder~self
+    self~assertSame(objFolderItem~string,objFolder~Self)
+    self~assertNotNull(objFolderItem)
+    self~assertNotNull(objFolderItem~name)
+    self~assertNotNull(objFolderItem~path)
+    self~assertTrue(objFolderItem~name~caselessPos('startup') > 0)
+    objCollection = objFolder~items
+    ctr = 0
+    do objItem over objCollection
+        ctr += 1
+    end
+    self~assertEquals(ctr,objCollection~count)
+
+::method 'testAllUsersDesktop'
+    objShell = .oleObject~new('Shell.Application')
+    sp = '19'~x2d
+    objFolder = objShell~nameSpace(sp)
+    objFolderItem = objFolder~self
+    self~assertSame(objFolderItem~string,objFolder~Self)
+    self~assertNotNull(objFolderItem)
+    self~assertNotNull(objFolderItem~name)
+    self~assertNotNull(objFolderItem~path)
+    self~assertTrue(objFolderItem~name~caselessPos('desktop') > 0)
+    objCollection = objFolder~items
+    ctr = 0
+    do objItem over objCollection
+        ctr += 1
+    end
+    self~assertEquals(ctr,objCollection~count)
+
+::method 'testApplicationData'
+    objShell = .oleObject~new('Shell.Application')
+    sp = '1a'~x2d
+    objFolder = objShell~nameSpace(sp)
+    objFolderItem = objFolder~self
+    self~assertSame(objFolderItem~string,objFolder~Self)
+    self~assertNotNull(objFolderItem)
+    self~assertNotNull(objFolderItem~name)
+    self~assertNotNull(objFolderItem~path)
+
+    if self~isVistaOrLater then do
+       self~assertTrue(objFolderItem~name~caselessPos('roaming') > 0)
+    end
+    else do
+       self~assertTrue(objFolderItem~name~caselessPos('application data') > 0)
+    end
+
+    objCollection = objFolder~items
+    ctr = 0
+    do objItem over objCollection
+        ctr += 1
+    end
+    self~assertEquals(ctr,objCollection~count)
+
+::method 'testPrintHood'
+    objShell = .oleObject~new('Shell.Application')
+    sp = '1b'~x2d
+    objFolder = objShell~nameSpace(sp)
+    objFolderItem = objFolder~self
+    self~assertSame(objFolderItem~string,objFolder~Self)
+    self~assertNotNull(objFolderItem)
+    self~assertNotNull(objFolderItem~name)
+    self~assertNotNull(objFolderItem~path)
+    self~assertTrue(objFolderItem~name~caselessPos('print') > 0)
+    objCollection = objFolder~items
+    ctr = 0
+    do objItem over objCollection
+        ctr += 1
+    end
+    self~assertEquals(ctr,objCollection~count)
+
+::method 'testLocalSettingsApplicationData'
+    objShell = .oleObject~new('Shell.Application')
+    sp = '1c'~x2d
+    objFolder = objShell~nameSpace(sp)
+    objFolderItem = objFolder~self
+    self~assertSame(objFolderItem~string,objFolder~Self)
+    self~assertNotNull(objFolderItem)
+    self~assertNotNull(objFolderItem~name)
+    self~assertNotNull(objFolderItem~path)
+
+    if self~isVistaOrLater then do
+       self~assertTrue(objFolderItem~name~caselessPos('local') > 0)
+    end
+    else do
+       self~assertTrue(objFolderItem~name~caselessPos('application data') > 0)
+    end
+
+    objCollection = objFolder~items
+    ctr = 0
+    do objItem over objCollection
+        ctr += 1
+    end
+    self~assertEquals(ctr,objCollection~count)
+
+::method 'testAllUsersFavorites'
+    objShell = .oleObject~new('Shell.Application')
+    sp = '19'~x2d
+    objFolder = objShell~nameSpace(sp)
+    objFolderItem = objFolder~self
+    self~assertSame(objFolderItem~string,objFolder~Self)
+    self~assertNotNull(objFolderItem)
+    self~assertNotNull(objFolderItem~name)
+    self~assertNotNull(objFolderItem~path)
+    self~assertTrue(objFolderItem~name~caselessPos('desktop') > 0)
+    objCollection = objFolder~items
+    ctr = 0
+    do objItem over objCollection
+        ctr += 1
+    end
+    self~assertEquals(ctr,objCollection~count)
+
+::method 'testLocalSettingsTemporaryInternetFiles'
+    objShell = .oleObject~new('Shell.Application')
+    sp = '20'~x2d
+    objFolder = objShell~nameSpace(sp)
+    objFolderItem = objFolder~self
+    self~assertSame(objFolderItem~string,objFolder~Self)
+    self~assertNotNull(objFolderItem)
+    self~assertNotNull(objFolderItem~name)
+    self~assertNotNull(objFolderItem~path)
+    self~assertTrue(objFolderItem~name~caselessPos('temporary internet') > 0)
+    objCollection = objFolder~items
+    ctr = 0
+    do objItem over objCollection
+        ctr += 1
+    end
+    self~assertEquals(ctr,objCollection~count)
+
+::method 'testCookies'
+    objShell = .oleObject~new('Shell.Application')
+    sp = '21'~x2d
+    objFolder = objShell~nameSpace(sp)
+    objFolderItem = objFolder~self
+    self~assertSame(objFolderItem~string,objFolder~Self)
+    self~assertNotNull(objFolderItem)
+    self~assertNotNull(objFolderItem~name)
+    self~assertNotNull(objFolderItem~path)
+    self~assertTrue(objFolderItem~name~caselessPos('cookies') > 0)
+    objCollection = objFolder~items
+    ctr = 0
+    do objItem over objCollection
+        ctr += 1
+    end
+    self~assertEquals(ctr,objCollection~count)
+
+::method 'testLocalSettingsHistory'
+    objShell = .oleObject~new('Shell.Application')
+    sp = '22'~x2d
+    objFolder = objShell~nameSpace(sp)
+    objFolderItem = objFolder~self
+    self~assertSame(objFolderItem~string,objFolder~Self)
+    self~assertNotNull(objFolderItem)
+    self~assertNotNull(objFolderItem~name)
+    self~assertNotNull(objFolderItem~path)
+    self~assertTrue(objFolderItem~name~caselessPos('history') > 0)
+    objCollection = objFolder~items
+    ctr = 0
+    do objItem over objCollection
+        ctr += 1
+    end
+    self~assertEquals(ctr,objCollection~count)
+
+::method 'testAllUsersApplicationData'
+    objShell = .oleObject~new('Shell.Application')
+    sp = '23'~x2d
+    objFolder = objShell~nameSpace(sp)
+    objFolderItem = objFolder~self
+    self~assertSame(objFolderItem~string,objFolder~Self)
+    self~assertNotNull(objFolderItem)
+    self~assertNotNull(objFolderItem~name)
+    self~assertNotNull(objFolderItem~path)
+    self~assertTrue(objFolderItem~name~caselessPos('data') > 0)
+    objCollection = objFolder~items
+    ctr = 0
+    do objItem over objCollection
+        ctr += 1
+    end
+    self~assertEquals(ctr,objCollection~count)
+
+::method 'testWindows'
+    objShell = .oleObject~new('Shell.Application')
+    sp = '24'~x2d
+    objFolder = objShell~nameSpace(sp)
+    objFolderItem = objFolder~self
+    self~assertSame(objFolderItem~string,objFolder~Self)
+    self~assertNotNull(objFolderItem)
+    self~assertNotNull(objFolderItem~name)
+    self~assertNotNull(objFolderItem~path)
+    self~assertTrue(objFolderItem~name~caselessPos('windows') > 0)
+    objCollection = objFolder~items
+    ctr = 0
+    do objItem over objCollection
+        ctr += 1
+    end
+    self~assertEquals(ctr,objCollection~count)
+
+::method 'testSystem32'
+    objShell = .oleObject~new('Shell.Application')
+    sp = '25'~x2d
+    objFolder = objShell~nameSpace(sp)
+    objFolderItem = objFolder~self
+    self~assertSame(objFolderItem~string,objFolder~Self)
+    self~assertNotNull(objFolderItem)
+    self~assertNotNull(objFolderItem~name)
+    self~assertNotNull(objFolderItem~path)
+    self~assertTrue(objFolderItem~name~caselessPos('system32') > 0)
+
+    objCollection = objFolder~items
+    ctr = 0
+    do objItem over objCollection
+        ctr += 1
+    end
+    self~assertEquals(ctr,objCollection~count)
+    self~assertSame(0, sysSystemDirectory()~caselessCompare(objFolderItem~path))
+
+::method 'testProgramFiles'
+    objShell = .oleObject~new('Shell.Application')
+    sp = '26'~x2d
+    objFolder = objShell~nameSpace(sp)
+    objFolderItem = objFolder~self
+    self~assertSame(objFolderItem~string,objFolder~Self)
+    self~assertNotNull(objFolderItem)
+    self~assertNotNull(objFolderItem~name)
+    self~assertNotNull(objFolderItem~path)
+    self~assertTrue(objFolderItem~name~caselessPos('program files') > 0)
+    objCollection = objFolder~items
+    ctr = 0
+    do objItem over objCollection
+        ctr += 1
+    end
+    self~assertEquals(ctr,objCollection~count)
+
+::method 'testMyPictures'
+    objShell = .oleObject~new('Shell.Application')
+    sp = '27'~x2d
+    objFolder = objShell~nameSpace(sp)
+    objFolderItem = objFolder~self
+    self~assertSame(objFolderItem~string,objFolder~Self)
+    self~assertNotNull(objFolderItem)
+    self~assertNotNull(objFolderItem~name)
+    self~assertNotNull(objFolderItem~path)
+    self~assertTrue(objFolderItem~name~caselessPos('Pictures') > 0)
+    objCollection = objFolder~items
+    ctr = 0
+    do objItem over objCollection
+        ctr += 1
+    end
+    self~assertEquals(ctr,objCollection~count)
+
+::method 'testUserProfile'
+    objShell = .oleObject~new('Shell.Application')
+    sp = '28'~x2d
+    objFolder = objShell~nameSpace(sp)
+    objFolderItem = objFolder~self
+    self~assertSame(objFolderItem~string,objFolder~Self)
+    self~assertNotNull(objFolderItem)
+    self~assertNotNull(objFolderItem~name)
+    self~assertNotNull(objFolderItem~path)
+    self~assertTrue(objFolderItem~name~caselessPos(userid()) > 0)
+    objCollection = objFolder~items
+    ctr = 0
+    do objItem over objCollection
+        ctr += 1
+    end
+    self~assertEquals(ctr,objCollection~count)
+
+::method 'testCommonFiles'
+    objShell = .oleObject~new('Shell.Application')
+    sp = '2b'~x2d
+    objFolder = objShell~nameSpace(sp)
+    objFolderItem = objFolder~self
+    self~assertSame(objFolderItem~string,objFolder~Self)
+    self~assertNotNull(objFolderItem)
+    self~assertNotNull(objFolderItem~name)
+    self~assertNotNull(objFolderItem~path)
+    self~assertTrue(objFolderItem~name~caselessPos('common files') > 0)
+    objCollection = objFolder~items
+    ctr = 0
+    do objItem over objCollection
+        ctr += 1
+    end
+    self~assertEquals(ctr,objCollection~count)
+
+::method 'testAllUserTemplates'
+    objShell = .oleObject~new('Shell.Application')
+    sp = '2d'~x2d
+    objFolder = objShell~nameSpace(sp)
+    objFolderItem = objFolder~self
+    self~assertSame(objFolderItem~string,objFolder~Self)
+    self~assertNotNull(objFolderItem)
+    self~assertNotNull(objFolderItem~name)
+    self~assertNotNull(objFolderItem~path)
+    self~assertTrue(objFolderItem~name~caselessPos('templates') > 0)
+    objCollection = objFolder~items
+    ctr = 0
+    do objItem over objCollection
+        ctr += 1
+    end
+    self~assertEquals(ctr,objCollection~count)
+
+::method 'testSharedDocuments'
+    objShell = .oleObject~new('Shell.Application')
+    sp = '2e'~x2d
+    objFolder = objShell~nameSpace(sp)
+
+    -- Not all systems seem to have the All Users Shared Documents folder.
+    -- Assert that we either get an OLEObject, or .nil
+    self~assertEitherOr(objFolder~isA(.oleObject), objFolder == .nil,     -
+                       "objFolder is either an oleObject or .nil")
+
+    -- If objFolder is .nil then return.
+    if objFolder == .nil then return
+
+    objFolderItem = objFolder~self
+    self~assertSame(objFolderItem~string,objFolder~Self)
+    self~assertNotNull(objFolderItem)
+    self~assertNotNull(objFolderItem~name)
+    self~assertNotNull(objFolderItem~path)
+    self~assertTrue(objFolderItem~name~caselessPos('documents') > 0)
+    objCollection = objFolder~items
+    ctr = 0
+    do objItem over objCollection
+        ctr += 1
+    end
+    self~assertEquals(ctr,objCollection~count)
+
+::method 'testAdministrativeTools'
+    objShell = .oleObject~new('Shell.Application')
+    sp = '2f'~x2d
+    objFolder = objShell~nameSpace(sp)
+    objFolderItem = objFolder~self
+    self~assertSame(objFolderItem~string,objFolder~Self)
+    self~assertNotNull(objFolderItem)
+    self~assertNotNull(objFolderItem~name)
+    self~assertNotNull(objFolderItem~path)
+    self~assertTrue(objFolderItem~name~caselessPos('administrative tools') > 0)
+    objCollection = objFolder~items
+    ctr = 0
+    do objItem over objCollection
+        ctr += 1
+    end
+    self~assertEquals(ctr,objCollection~count)
+
+::method 'testNetWorkConnections'
+    objShell = .oleObject~new('Shell.Application')
+    sp = '31'~x2d
+    objFolder = objShell~nameSpace(sp)
+    objFolderItem = objFolder~self
+    self~assertSame(objFolderItem~string,objFolder~Self)
+    self~assertNotNull(objFolderItem)
+    self~assertNotNull(objFolderItem~name)
+    self~assertNotNull(objFolderItem~path)
+    self~assertTrue(objFolderItem~name~caselessPos('network connections') > 0)
+    objCollection = objFolder~items
+    ctr = 0
+    do objItem over objCollection
+        ctr += 1
+    end
+    self~assertEquals(ctr,objCollection~count)
+
+/** isVistaOrLater()
+ * Going from XP to Vista many of the folder names have changed.  For most of
+ * these changes the names are still similiar enough that the tests work.  But
+ * for a few tests the names are too different.  This method is used to test
+ * the OS in those few cases.
+ */
+::method 'isVistaOrLater' private
+
+   wmi = .oleObject~getObject("winmgmts:\\.\root\cimv2")
+   columns = wmi~ExecQuery("Select * from Win32_OperatingSystem")
+
+   osInfo = .nil
+   do obj over columns
+     osInfo = obj
+     leave
+   end
+
+   if osInfo \== .nil then do
+      if osInfo~version > 6.0 then return .true
+   end
+   return .false

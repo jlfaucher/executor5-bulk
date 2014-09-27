@@ -1,0 +1,304 @@
+#!/usr/bin/rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2005-2007 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
+
+  group = .TestGroup~new(fileSpec)
+  group~add(.RESULT_RC_SIGL.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "RESULT_RC_SIGL.testGroup" subclass ooTestCase public
+
+::method init
+  expose fileName
+  fileName="ooRexx.Base.RESULT.rex"         -- define temporary file name
+  forward class (super)       -- a MUST: let superclass initialize, otherwise you'll get into troubles...
+
+::method setUp             -- create external Rexx program for testing
+  expose fileName
+-- say "setUp..."
+
+  s=.stream~new(fileName)~~open("replace")   -- create empty file
+  s~~lineout("/*" date("S") time() ", ---rgf */")~~lineout
+  s~~lineout("exit 234") ~~lineout          -- return value "234" (Linux restriction: 0-255)
+
+  s~~lineout("::routine testExternalWithReturn public")
+  s~~lineout("  return 'ReturnValue'") ~~lineout
+
+  s~~lineout("::routine testExternalWithExit public")
+  s~~lineout("  return 'ExitValue'") ~~lineout
+  s~close
+
+
+
+
+::method tearDown
+  expose fileName
+-- say "tearDown..."
+  call sysFileDelete fileName -- delete file
+
+
+
+::method "test_Result_with_Return"
+
+      -- "rgfTestMethodWithReturn"
+   drop result             -- make sure, variable is dropped
+   self~assertSame("ReturnValue", self~rgfTestMethodWithReturn)
+   self~assertFalse(var("RESULT")) -- must not be set !
+
+      -- via a message object
+   .message~new(self, "rgfTestMethodWithReturn")~send
+   self~assertSame("ReturnValue", result)
+      -- now that a function/method was invoked, Rexx dropped "RESULT"
+   self~assertFalse(var("RESULT")) -- must not be set !
+
+   .message~new(self, "rgfTestMethodWithReturn")~send
+   self~assertTrue(var("RESULT"))  -- must be set !
+
+
+      -- routine
+   self~assertSame("ReturnValue", rgfTestRoutineWithReturn())
+   self~assertFalse(var("RESULT")) -- must not be set !
+
+   call rgfTestRoutineWithReturn
+   self~assertSame("ReturnValue", result)
+      -- now that a function/method was invoked, Rexx dropped "RESULT"
+   self~assertFalse(var("RESULT"))  -- must not be set !
+
+   call rgfTestRoutineWithReturn
+   self~assertTrue(var("RESULT"))   -- must be set !
+
+
+      -- function
+   self~assertSame("ReturnValue", rgfTestProcedureWithReturn())
+   self~assertFalse(var("RESULT")) -- must not be set !
+
+   call rgfTestProcedureWithReturn
+   self~assertSame("ReturnValue", result)
+      -- now that a function/method was invoked, Rexx dropped "RESULT"
+   self~assertFalse(var("RESULT"))  -- must not be set !
+
+   call rgfTestProcedureWithReturn
+   self~assertTrue(var("RESULT"))   -- must be set !
+
+   exit
+
+   rgfTestProcedureWithReturn:
+      return "ReturnValue"
+
+
+::method "test_Result_with_Exit"
+
+      -- "rgfTestMethodWithExit"
+   drop result             -- make sure, variable is dropped
+   self~assertSame("ExitValue", self~rgfTestMethodWithExit)
+   self~assertFalse(var("RESULT")) -- must not be set !
+
+      -- via a message object
+   .message~new(self, "rgfTestMethodWithExit")~send
+   self~assertSame("ExitValue", result)
+      -- now that a function/method was invoked, Rexx dropped "RESULT"
+   self~assertFalse(var("RESULT")) -- must not be set !
+
+   .message~new(self, "rgfTestMethodWithExit")~send
+   self~assertTrue(var("RESULT"))  -- must be set !
+
+
+      -- routine
+   self~assertSame("ExitValue", rgfTestRoutineWithExit())
+   self~assertFalse(var("RESULT")) -- must not be set !
+
+   call rgfTestRoutineWithExit
+   self~assertSame("ExitValue", result)
+      -- now that a function/method was invoked, Rexx dropped "RESULT"
+   self~assertFalse(var("RESULT"))  -- must not be set !
+
+   call rgfTestRoutineWithExit
+   self~assertTrue(var("RESULT"))   -- must be set !
+
+
+::method "test_Result_with_Reply"
+
+      -- "rgfTestMethodWithReply"
+   drop result             -- make sure, variable is dropped
+   self~assertSame("ReplyValue", self~rgfTestMethodWithReply)
+   self~assertFalse(var("RESULT")) -- must not be set !
+
+      -- via a message object
+   .message~new(self, "rgfTestMethodWithReply")~send
+   self~assertSame("ReplyValue", result)
+      -- now that a function/method was invoked, Rexx dropped "RESULT"
+   self~assertFalse(var("RESULT")) -- must not be set !
+
+   .message~new(self, "rgfTestMethodWithReply")~send
+   self~assertTrue(var("RESULT"))  -- must be set !
+
+
+::method  rgfTestMethodWithReturn
+   return "ReturnValue"
+
+
+::method  rgfTestMethodWithExit
+   exit   "ExitValue"
+
+
+::method  rgfTestMethodWithReply
+   reply  "ReplyValue"
+   a=1
+
+
+   -- call as a Rexx function, hence "result" will be set
+::method "test_Result_with_Return_ExternalFile"
+   expose fileName
+   call (fileName)      -- call external program
+
+   if var("RESULT") then tmpResult=result -- save value of "result"
+   if var("RC")     then tmpRC    =rc     -- save value of "rc"
+
+   self~assertTrue(var("TMPRESULT"))
+   self~assertFalse(var("TMPRC"))
+   self~assertSame("234", tmpResult)  -- value of EXIT in external file
+
+      -- routine
+   self~assertSame("ReturnValue", testExternalWithReturn())
+   self~assertFalse(var("RESULT")) -- must not be set !
+
+   call testExternalWithReturn
+   self~assertSame("ReturnValue", result)
+      -- now that a function/method was invoked, Rexx dropped "RESULT"
+   self~assertFalse(var("RESULT"))  -- must not be set !
+
+   call testExternalWithReturn
+   self~assertTrue(var("RESULT"))   -- must be set !
+
+
+   -- call as a Rexx function, hence "result" will be set
+::method "test_Result_with_Exit_ExternalFile"
+   expose fileName
+   call (fileName)      -- call external program
+
+   if var("RESULT") then tmpResult=result -- save value of "result"
+   if var("RC")     then tmpRC    =rc     -- save value of "rc"
+
+   self~assertTrue(var("TMPRESULT"))
+   self~assertFalse(var("TMPRC"))
+   self~assertSame("234", tmpResult)  -- value of EXIT in external file
+
+      -- routine
+   self~assertSame("ExitValue", testExternalWithExit())
+   self~assertFalse(var("RESULT")) -- must not be set !
+
+   call testExternalWithExit
+   self~assertSame("ExitValue", result)
+      -- now that a function/method was invoked, Rexx dropped "RESULT"
+   self~assertFalse(var("RESULT"))  -- must not be set !
+
+   call testExternalWithExit
+   self~assertTrue(var("RESULT"))   -- must be set !
+
+
+   -- now address external Rexx program as a command, hence retrieving a "RC"-value
+   -- instead of a "RESULT"
+::method "test_Result_with_Exit_ADDRESSING_ExternalFile"
+   expose fileName
+
+   currentEnvironment=address()              -- save current environment
+   address (ooRexxUnit.getShellName())       -- set environment to shell
+
+   -- ADDRESS CMD "rexx" fileName
+   "rexx" fileName
+
+   if var("RESULT") then tmpResult=result -- save value of "result"
+   if var("RC")     then tmpRC    =RC     -- save value of "result"
+
+-- say "tmpresult="pp(tmpresult) var("tmpresult")
+-- say "tmprc    ="pp(tmprc)     var("tmprc")
+
+   address (currentEnvironment)              -- restore current environment
+
+--say pp(var("TMPRESULT"))
+   self~assertFalse(var("TMPRESULT"))
+   self~assertTrue(var("TMPRC"))
+   self~assertSame("234", tmpRC)  -- value of EXIT in external file
+
+
+   -- check whether SIGL points to the correct lines
+::method "test_SIGL"
+
+      signal label_1
+
+   label_1 :
+      -- say "l1:" sigl pp(sourceline(sigl))
+      self~assertEquals("signal label_1", sourceline(sigl))
+      signal label_3
+
+   label_2 :
+      -- say "l2:" sigl pp(sourceline(sigl))
+      self~assertEquals("signal label_2", sourceline(sigl))
+      exit
+
+   label_3 :
+      -- say "l3:" sigl pp(sourceline(sigl))
+      self~assertEquals("signal label_3", sourceline(sigl))
+      signal label_2
+
+
+
+
+----------------------- routines ----------------------
+
+::routine rgfTestRoutineWithReturn
+   return "ReturnValue"
+
+::routine rgfTestRoutineWithExit
+   exit   "ExitValue"
+
+
+
+

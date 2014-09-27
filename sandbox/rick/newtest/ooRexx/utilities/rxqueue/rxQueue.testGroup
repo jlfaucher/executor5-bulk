@@ -1,0 +1,180 @@
+#!/usr/bin/rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 - 2008 Rexx Language Association. All rights reserved.  */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+
+  group = .TestGroup~new(s)
+  group~add(.rxQueue.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+  Directives, Classes, or Routines.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::requires 'ooTest.frm'
+::requires 'FileUtils.cls'
+
+/* class: rxQueue.testGroup- - - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class "rxQueue.testGroup" public subclass ooTestCase
+
+-- Set up is used to be sure the queue is empty before the start of each
+-- test.
+::method setup
+  do queued()
+    pull .
+  end
+
+::method test_current_dir_filter
+
+  -- Use a select to allow for expansion.  When this test fails on a plaform
+  -- because cmd is not set correctly, then whoever investigates can add the
+  -- appropriate command for that platform.  Note it is possible that we will
+  -- also need to test for the appropriate shell.
+  os = .ooRexxUnit.OSName
+  select
+    when os == 'WINDOWS' then cmd = 'cd'
+    when os == 'LINUX' then cmd = 'pwd'
+    when os == 'MACOS' then cmd = 'pwd'
+    when os == 'SUNOS' then cmd = 'pwd'
+    when os == 'AIX' then cmd = 'pwd'
+    otherwise cmd = 'pwd'
+  end
+
+  cmd "| rxqueue"
+  count = queued()
+
+  self~assertSame(1, count)
+
+  -- Be sure we don't hang on the parse pull. If the assert fails the test ends
+  -- and we won't hit the parse pull line.
+  self~assertTrue(count > 0)
+
+  parse pull line
+  trueCurrentDir = directory()
+
+  self~assertSame(trueCurrentDir, line)
+
+::method  test_multi_lines
+
+  -- In order to work on different platforms, it is easier to just create our
+  -- own program so we can control the number of lines of output.
+  src = .array~new
+  src[1] = "do i = 1 to 5"
+  src[2] = "  say 'line' i"
+  src[3] = "end"
+  src[4] = "return 5"
+
+  prg = createRexxPrgFile(src, "TestRxQueue")
+
+  -- Assert the file was created okay
+  self~assertNotSame('', prg)
+
+  prg = '"' || prg ||  '"'
+
+  'rexx' prg '| rxqueue'
+
+  -- Delete the temp file
+  j = deleteFile(prg)
+
+  -- Now assert what should be true
+  count = queued()
+  self~assertSame(5, count)
+
+  do i = 1 to 5
+    parse pull line
+    expected = 'line' i
+    self~assertSame(expected, line)
+  end
+
+/** test_stderr_to_rxqueue()
+ * This tests that stderr can be redirected and both stderr and stdout end up
+ * in the queue.  This works on 3.2.0 in Windows and it seems reasonable to
+ * ensure it keeps working in the future.  Note, that it is conceivable that
+ * this may not work on all platforms that ooRexx works on.
+ */
+::method test_stderr_to_rxqueue
+
+  -- Note to someone investigating a failure here.  Add the code to get this
+  -- to work on your platform and, maybe, turn this into a select statement.
+  os = .ooRexxUnit.OSName
+  msg = "Please fix this test if OS is not Windows, Linux, Mac OS X, or AIX"
+  self~assertTrue(os == "WINDOWS" | os == "LINUX" | os = "AIX" | os == "MACOSX", msg)
+
+  -- This redirects stderr correctly on Windows, Linux (bash), and AIX (ksh).
+  -- We may need to add a test for the proper shell in use.
+  stdErrToStdOut = '2>&1'
+
+  src = .array~new
+  src[1] = ".stdout~lineout('stdout line 1')"
+  src[2] = ".stdout~lineout('stdout line 2')"
+  src[3] = ".stderr~lineout('stderr line 3')"
+  src[4] = ".stderr~lineout('stderr line 4')"
+  src[5] = "return 0"
+
+  prg = createRexxPrgFile(src, "TestRxQueue")
+  self~assertNotSame('', prg)
+
+  prg = '"' || prg ||  '"'
+
+  'rexx' prg stdErrToStdOut '| rxqueue'
+  j = deleteFile(prg)
+
+  -- Now test.
+  count = queued()
+  self~assertSame(4, count)
+
+  parse pull line
+  self~assertSame("stdout line 1", line)
+  parse pull line
+  self~assertSame("stdout line 2", line)
+  parse pull line
+  self~assertSame("stderr line 3", line)
+  parse pull line
+  self~assertSame("stderr line 4", line)
+
+-- End of class: rxQueue.testGroup

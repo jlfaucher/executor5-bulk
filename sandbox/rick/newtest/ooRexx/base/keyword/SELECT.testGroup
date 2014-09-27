@@ -1,0 +1,911 @@
+#!/usr/bin/rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2008 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.SELECT.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "SELECT.testGroup" subclass ooTestCase public
+
+::method "test_1"
+   Do i=3 to 1 by -1
+      SELECT;WHEN i=1;THEN;R1='1';WHEN i=2;Then;R2='2';OTHERWISE;R3='3';END
+      End
+   self~assertSame((r1 r2 r3), (1 2 3))
+
+::method "test_2"
+   Do i=3 to 1 by -1
+      SELECT;WHEN i=1 THEN R1='1';WHEN i=2 Then R2='2';OTHERWISE R3='3';END
+      End
+   self~assertSame((r1 r2 r3), (1 2 3))
+
+::method "test_3"
+   Do i=3 to 1 by -1
+      SELECT
+         WHEN i=1 THEN R1='1'
+         WHEN i=2 Then R2='2'
+         OTHERWISE R3='3'
+         END
+      End
+   self~assertSame((r1 r2 r3), (1 2 3))
+
+::method "test_4"
+   Do i=3 to 1 by -1
+      SELECT   /* comm1 */ ; WHEN i=1 THEN R1='1'    /*     comm2           */
+         /* comm3 */   WHEN i=2 Then R2='2'    /*     comm4           */
+         /* comm5 */   OTHERWISE R3='3'        /*     comm6           */
+         END                                            /*     comm7           */
+      SELECT ; /* comm1 */   WHEN i=1 THEN R4='4'    /*     comm2           */
+         /* comm3 */   WHEN i=2 Then R5='5'    /*     comm4           */
+         /* comm5 */   OTHERWISE R6='6'        /*     comm6           */
+         END                                            /*     comm7           */
+      End
+   self~assertSame((r1 r2 r3 r4 r5 r6), (1 2 3 4 5 6))
+
+::method "test_5"
+   a.=0
+   k=0
+   v.=0
+   v.1.1=1; v.2.2=2; v.3.3=3; v.4.4=4;v.5.5=5
+   Do i=1 to 5
+      SELECT ;
+         WHEN ff(1); THEN Call check(1)
+         WHEN ff(2); THEN Call check(2)
+         WHEN ff(3); THEN Call check(3)
+         WHEN ff(4); THEN Call check(3)     /* force err-then             */
+         WHEN ff(8); THEN Call check(5)     /* force err-when             */
+         OTHERWISE;       Call check(4)
+         END
+      /*Call check('after')*/
+     END
+   Do j=1 To k
+      self~assertSame((a.1.j a.2.j a.3.j a.4.j a.5.j), (v.1.j v.2.j v.3.j v.4.j v.5.j))
+      End
+   return
+   check:
+   k=k+1
+   If i<>ARG(1) Then Do;
+      If i<>4 Then self~assertTrue(0)
+      End;
+   a.i.k=i
+   j = i
+   Return
+   ff:                                  /* check,which WHEN is executed?*/
+   If ARG(1)<i Then Return 0            /* goto next WHEN       */
+   If ARG(1)=i Then Return 1            /* This THEN is wanted  */
+   If i=5      Then Return 1            /* forced discrepancy btw.i&ARG */
+   self~assertTrue(0)
+   return 99
+
+::method "test_6"
+   SELECT;
+      WHEN i=k THEN self~assertTrue(0)
+      WHEN i=j Then self~assertTrue(0)
+      OTHERWISE     self~assertTrue(1)
+      END
+
+::method "test_7"
+   SELECT;
+      WHEN i=k THEN nop
+      OTHERWISE     self~assertTrue(1)
+      END
+
+::method "test_8"
+   r1=0; r2=0
+   i=1 ; j=0                           /* ff() returns 1 for ARG(1)=i    */
+   SELECT;
+      WHEN ff(1) THEN R1= 1 ;      /*function ref to check If evaluat*/
+      OTHERWISE       R2 =2 ;
+      END;
+   self~assertSame((r1 r2), (1 0))
+   return
+   ff:                                  /* check,which WHEN is executed?*/
+   If ARG(1)<i Then Return 0            /* goto next WHEN       */
+   If ARG(1)=i Then Return 1            /* This THEN is wanted  */
+   If i=5      Then Return 1            /* forced discrepancy btw.i&ARG */
+   self~assertTrue(0)
+   return 99
+
+::method "test_9"
+   r1=0;r2=0;
+   i=1 ; j=0                           /* ff() returns 1 for ARG(1)=i    */
+   SELECT;
+      WHEN ff(0) THEN R1= 1 ;      /*function ref to check If evaluat*/
+      OTHERWISE       R2 =2 ;
+      END;
+   self~assertSame((r1 r2), (0 2))
+   return
+   ff:                                  /* check,which WHEN is executed?*/
+   If ARG(1)<i Then Return 0            /* goto next WHEN       */
+   If ARG(1)=i Then Return 1            /* This THEN is wanted  */
+   If i=5      Then Return 1            /* forced discrepancy btw.i&ARG */
+   self~assertTrue(0)
+   return 99
+
+::method "test_10"
+   r1=0;r2=0
+   i=1 ; j=0                           /* ff() returns 1 for ARG(1)=i    */
+   SELECT;
+      WHEN i     THEN R1= 1 ;      /* var with value 0 or 1          */
+      OTHERWISE       R2 =2 ;
+      END;
+   self~assertSame((r1 r2), (1 0))
+
+::method "test_11"
+   r1=0;r2=0;
+   i=1 ; j=0                           /* ff() returns 1 for ARG(1)=i    */
+   SELECT;
+      WHEN j     THEN R1= 1 ;      /* var with value 0 or 1          */
+      OTHERWISE       R2 =2 ;
+      END;
+   self~assertSame((r1 r2), (0 2))
+
+::method "test_12"
+   self~expectSyntax(43.1)
+   r1=0;r2=0;
+   SELECT;
+      WHEN '1'   THEN R1= 1 ;      /* const with value 0 or 1        */
+      OTHERWISE       R2= 2 ;
+      END;
+   id='0017'; Call iirbqaa (r1 r2),(1 0) ;R0017: -- Call non-existent function
+   self~assertSame((r1 r2), (1 0))
+
+::method "test_13"
+   r1=0;r2=0;
+   SELECT;
+      WHEN '0'   THEN R1= 1 ;      /* const with value 0 or 1       */
+      OTHERWISE       R2= 2 ;
+      END;
+   self~assertSame((r1 r2), (0 2))
+
+::method "test_14"
+   r1=0;r2=0;                                   /* complex expressions  */
+   SELECT;
+      WHEN SUBSTR(11||((((5+7)*2-2)/2)**2)(9%8)(9//2),1,1) Then R1=1;
+      OTHERWISE       R2 = 2;
+      END;
+   self~assertSame((r1 r2), (1 0))
+
+::method "test_15"
+   self~expectSyntax(34.1)
+   a='a'
+   SELECT
+      WHEN a   THEN R1='1'
+      OTHERWISE self~assertTrue(0)
+      END
+
+::method "test_16"
+   self~expectSyntax(34.1)
+   SELECT
+      WHEN  3  THEN R1='1'
+      OTHERWISE self~assertTrue(0)
+      END
+   return
+
+::method "test_17"
+   i=1
+   a=0
+   /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ /**/Select/**/;
+   /**/When/**/ i=i /**/Then/**/ nop
+   /**/Otherwise/**/ nop
+   End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   /**/Otherwise/**/; End
+   self~assertTrue(1)
+   /*------------  Nesting in /**/Otherwise/**/ ----------*/
+   a=0
+   i=1; j=0
+   /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop; /**/Otherwise/**/ Do; /**/Select/**/;
+   /**/When/**/ i=j /**/Then/**/ Nop
+   /**/Otherwise/**/ nop
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End; End
+   End;
+   self~assertTrue(1)
+   return
+
+::method "test_18"
+   /***************************************************************************/
+   -- There is something wrong with this test. It continually uses '.E' and '.e'
+   -- in expressions. This is not valid syntax in ooRexx!
+   return
+
+   id=0; x="";
+   Do FOREVER
+--    self~assertSame(id, cnt.ok)
+--    If id='' Then Trace ?R
+      SELECT;
+         When id=0 & x==""
+               Then DO; id=id+1; x=e                                   ; End;
+         When id=1 & x==e
+               Then DO; id=id+1; x=E                                   ; End;
+         When id=2 & x==E
+               Then DO; id=id+1; x=0                                   ; End;
+         When id=3 & x==0
+               Then DO; id=id+1; x=0e                                  ; End;
+         When id=4 & x==0e
+               Then DO; id=id+1; x=0E                                  ; End;
+         When id=5 & x==0E
+               Then DO; id=id+1; x=3                                   ; End;
+         When id=6 & x==3
+               Then DO; id=id+1; x=3e                                  ; End;
+         When id=7 & x==3e
+               Then DO; id=id+1; x=3E                                  ; End;
+         When id=8 & x==3E
+               Then DO; id=id+1; x=a                                   ; End;
+         When id=9 & x==a
+               Then DO; id=id+1; x=ae                                  ; End;
+         When id=10 & x==ae
+               Then DO; id=id+1; x=aE                                  ; End;
+         When id=11 & x==aE
+               Then DO; id=id+1; x=48794909983                         ; End;
+         When id=12 & x==48794909983
+               Then DO; id=id+1; x=48794909983e                        ; End;
+         When id=13 & x==48794909983e
+               Then DO; id=id+1; x=48794909983E                        ; End;
+         When id=14 & x==48794909983E
+               Then DO; id=id+1; x=.                                   ; End;
+         When id=15 & x==.
+               Then DO; id=id+1; x=.e                                  ; End;
+         When id=16 & x==.e
+               Then DO; id=id+1; x=.E                                  ; End;
+         When id=17 & x==.E
+               Then DO; id=id+1; x=.                                   ; End;
+         When id=18 & x==.
+               Then DO; id=id+1; x=.e                                  ; End;
+         When id=19 & x==.e
+               Then DO; id=id+1; x=.e+4  /* !!! */                     ; End;
+         When id=20 & x=='.e+4'
+               Then DO; id=id+1; x=1.e-5                               ; End;
+         When id=21 & x==1.e-5
+               Then DO; id=id+1; x=.E                                  ; End;
+         When id=22 & x==.E
+               Then DO; id=id+1; x=2.E+83                              ; End;
+         When id=23 & x==2.E+83
+               Then DO; id=id+1; x=3.E-707107341                       ; End;
+         When id=24 & x==3.E-707107341
+               Then DO; id=id+1; x=.0                                  ; End;
+         When id=25 & x==.0
+               Then DO; id=id+1; x=.0e                                 ; End;
+         When id=26 & x==.0e
+               Then DO; id=id+1; x=.0e+7198                            ; End;
+         When id=27 & x==.0e+7198
+               Then DO; id=id+1; x=.0e-1406                            ; End;
+         When id=28 & x==.0e-1406
+               Then DO; id=id+1; x=.0E                                 ; End;
+         When id=29 & x==.0E
+               Then DO; id=id+1; x=.0E+57                              ; End;
+         When id=30 & x==.0E+57
+               Then DO; id=id+1; x=.0E-1279560                         ; End;
+         When id=31 & x==.0E-1279560
+               Then DO; id=id+1; x=.3                                  ; End;
+         When id=32 & x==.3
+               Then DO; id=id+1; x=.3e                                 ; End;
+         When id=33 & x==.3e
+               Then DO; id=id+1; x=.3e+4769                            ; End;
+         When id=34 & x==.3e+4769
+               Then DO; id=id+1; x=.3e-0                               ; End;
+         When id=35 & x==.3e-0
+               Then DO; id=id+1; x=.3E                                 ; End;
+         When id=36 & x==.3E
+               Then DO; id=id+1; x=.3E+28070568                        ; End;
+         When id=37 & x==.3E+28070568
+               Then DO; id=id+1; x=.3E-024880432                       ; End;
+         When id=38 & x==.3E-024880432
+               Then DO; id=id+1; x=.a                                  ; End;
+         When id=39 & x==.a
+               Then DO; id=id+1; x=.ae                                 ; End;
+         When id=40 & x==.ae
+               Then DO; id=id+1; x='.ae+3253'                          ; End;
+         When id=41 & x=='.ae+3253'
+               Then DO; id=id+1; x='.ae-6'                             ; End;
+         When id=42 & x=='.ae-6'
+               Then DO; id=id+1; x=.aE                                 ; End;
+         When id=43 & x=='.aE'
+               Then DO; id=id+1; x='.aE+4'                             ; End;
+         When id=44 & x=='.aE+4'
+               Then DO; id=id+1; x='.aE-3695887'                       ; End;
+         When id=45 & x=='.aE-3695887'
+               Then DO; id=id+1; x=.468183                             ; End;
+         When id=46 & x==.468183
+               Then DO; id=id+1; x=.468183e                            ; End;
+         When id=47 & x==.468183e
+               Then DO; id=id+1; x=.468183e+59304                      ; End;
+         When id=48 & x==.468183e+59304
+               Then DO; id=id+1; x=.468183e-3                          ; End;
+         When id=49 & x==.468183e-3
+               Then DO; id=id+1; x=.468183E                            ; End;
+         When id=50 & x==.468183E
+               Then DO; id=id+1; x=.468183E+76358784                   ; End;
+         When id=51 & x==.468183E+76358784
+               Then DO; id=id+1; x=.468183E-718703                     ; End;
+         When id=52 & x==.468183E-718703
+               Then DO; id=id+1; x=..                                  ; End;
+         When id=53 & x==..
+               Then DO; id=id+1; x=..e                                 ; End;
+         When id=54 & x==..e
+               Then DO; id=id+1; x=..e+543                             ; End;
+         When id=55 & x=='..e+543'
+               Then DO; id=id+1; x=..e-11478                           ; End;
+         When id=56 & x=='..e-11478'
+               Then DO; id=id+1; x=..E                                 ; End;
+         When id=57 & x==..E
+               Then DO; id=id+1; x=..E+88591206                        ; End;
+         When id=58 & x=='..E+88591206'
+               Then DO; id=id+1; x=..E-53086030                        ; End;
+         When id=59 & x=='..E-53086030'
+               Then DO; id=id+1; x=1                                   ; End;
+         When id=60 & x==1
+               Then DO; id=id+1; x=1e                                  ; End;
+         When id=61 & x==1e
+               Then DO; id=id+1; x=1e+2                                ; End;
+         When id=62 & x==1e+2
+               Then DO; id=id+1; x=1e-7                                ; End;
+         When id=63 & x==1e-7
+               Then DO; id=id+1; x=1E                                  ; End;
+         When id=64 & x==1E
+               Then DO; id=id+1; x=1E+77                               ; End;
+         When id=65 & x==1E+77
+               Then DO; id=id+1; x=1E-1051                             ; End;
+         When id=66 & x==1E-1051
+               Then DO; id=id+1; x=10                                  ; End;
+         When id=67 & x==10
+               Then DO; id=id+1; x=10e                                 ; End;
+         When id=68 & x==10e
+               Then DO; id=id+1; x=10e+9030336                         ; End;
+         When id=69 & x==10e+9030336
+               Then DO; id=id+1; x=10e-5939115                         ; End;
+         When id=70 & x==10e-5939115
+               Then DO; id=id+1; x=10E                                 ; End;
+         When id=71 & x==10E
+               Then DO; id=id+1; x=10E+3                               ; End;
+         When id=72 & x==10E+3
+               Then DO; id=id+1; x=10E-4464                            ; End;
+         When id=73 & x==10E-4464
+               Then DO; id=id+1; x=13                                  ; End;
+         When id=74 & x==13
+               Then DO; id=id+1; x=13e                                 ; End;
+         When id=75 & x==13e
+               Then DO; id=id+1; x=13e+9153009                         ; End;
+         When id=76 & x==13e+9153009
+               Then DO; id=id+1; x=13e-6                               ; End;
+         When id=77 & x==13e-6
+               Then DO; id=id+1; x=13E                                 ; End;
+         When id=78 & x==13E
+               Then DO; id=id+1; x=13E+9230354                         ; End;
+         When id=79 & x==13E+9230354
+               Then DO; id=id+1; x=13E-83                              ; End;
+         When id=80 & x==13E-83
+               Then DO; id=id+1; x=1a                                  ; End;
+         When id=81 & x==1a
+               Then DO; id=id+1; x=1ae                                 ; End;
+         When id=82 & x==1ae
+               Then DO; id=id+1; x=1ae+7                               ; End;
+         When id=83 & x==1ae+7
+               Then DO; id=id+1; x=1ae-42955                           ; End;
+         When id=84 & x==1ae-42955
+               Then DO; id=id+1; x=1aE                                 ; End;
+         When id=85 & x==1aE
+               Then DO; id=id+1; x=1aE+4                               ; End;
+         When id=86 & x==1aE+4
+               Then DO; id=id+1; x=1aE-49223                           ; End;
+         When id=87 & x==1aE-49223
+               Then DO; id=id+1; x=16882                               ; End;
+         When id=88 & x==16882
+               Then DO; id=id+1; x=16882e                              ; End;
+         When id=89 & x==16882e
+               Then DO; id=id+1; x=16882e+5                            ; End;
+         When id=90 & x==16882e+5
+               Then DO; id=id+1; x=16882e-901859                       ; End;
+         When id=91 & x==16882e-901859
+               Then DO; id=id+1; x=16882E                              ; End;
+         When id=92 & x==16882E
+               Then DO; id=id+1; x=16882E+626                          ; End;
+         When id=93 & x==16882E+626
+               Then DO; id=id+1; x=16882E-867944                       ; End;
+         When id=94 & x==16882E-867944
+               Then DO; id=id+1; x=1.                                  ; End;
+         When id=95 & x==1.
+               Then DO; id=id+1; x=1.e                                 ; End;
+         When id=96 & x==1.e
+               Then DO; id=id+1; x=1.e+103320474                       ; End;
+         When id=97 & x==1.e+103320474
+               Then DO; id=id+1; x=1.e-58898631                        ; End;
+         When id=98 & x==1.e-58898631
+               Then DO; id=id+1; x=1.E                                 ; End;
+         When id=99 & x==1.E
+               Then DO; id=id+1; x=1.E+514475                          ; End;
+         When id=100 & x==1.E+514475
+               Then DO; id=id+1; x=1.E-4091                            ; End;
+         When id=101 & x==1.E-4091
+               Then DO; id=id+1; x=3                                   ; End;
+         When id=102 & x==3
+               Then DO; id=id+1; x=3e                                  ; End;
+         When id=103 & x==3e
+               Then DO; id=id+1; x=3e+1192                             ; End;
+         When id=104 & x==3e+1192
+               Then DO; id=id+1; x=3e-94                               ; End;
+         When id=105 & x==3e-94
+               Then DO; id=id+1; x=3E                                  ; End;
+         When id=106 & x==3E
+               Then DO; id=id+1; x=3E+332                              ; End;
+         When id=107 & x==3E+332
+               Then DO; id=id+1; x=3E-501793                           ; End;
+         When id=108 & x==3E-501793
+               Then DO; id=id+1; x=30                                  ; End;
+         When id=109 & x==30
+               Then DO; id=id+1; x=30e                                 ; End;
+         When id=110 & x==30e
+               Then DO; id=id+1; x=30e+796                             ; End;
+         When id=111 & x==30e+796
+               Then DO; id=id+1; x=30e-9920                            ; End;
+         When id=112 & x==30e-9920
+               Then DO; id=id+1; x=30E                                 ; End;
+         When id=113 & x==30E
+               Then DO; id=id+1; x=30E+650234568                       ; End;
+         When id=114 & x==30E+650234568
+               Then DO; id=id+1; x=30E-57093905                        ; End;
+         When id=115 & x==30E-57093905
+               Then DO; id=id+1; x=33                                  ; End;
+         When id=116 & x==33
+               Then DO; id=id+1; x=33e                                 ; End;
+         When id=117 & x==33e
+               Then DO; id=id+1; x=33e+55                              ; End;
+         When id=118 & x==33e+55
+               Then DO; id=id+1; x=33e-4958                            ; End;
+         When id=119 & x==33e-4958
+               Then DO; id=id+1; x=33E                                 ; End;
+         When id=120 & x==33E
+               Then DO; id=id+1; x=33E+901559316                       ; End;
+         When id=121 & x==33E+901559316
+               Then DO; id=id+1; x=33E-37920                           ; End;
+         When id=122 & x==33E-37920
+               Then DO; id=id+1; x=3a                                  ; End;
+         When id=123 & x==3a
+               Then DO; id=id+1; x=3ae                                 ; End;
+         When id=124 & x==3ae
+               Then DO; id=id+1; x=3ae+3                               ; End;
+         When id=125 & x==3ae+3
+               Then DO; id=id+1; x=3ae-95033                           ; End;
+         When id=126 & x==3ae-95033
+               Then DO; id=id+1; x=3aE                                 ; End;
+         When id=127 & x==3aE
+               Then DO; id=id+1; x=3aE+29                              ; End;
+         When id=128 & x==3aE+29
+               Then DO; id=id+1; x=3aE-1314                            ; End;
+         When id=129 & x==3aE-1314
+               Then DO; id=id+1; x=30804                               ; End;
+         When id=130 & x==30804
+               Then DO; id=id+1; x=30804e                              ; End;
+         When id=131 & x==30804e
+               Then DO; id=id+1; x=30804e+247882                       ; End;
+         When id=132 & x==30804e+247882
+               Then DO; id=id+1; x=30804e-186605755                    ; End;
+         When id=133 & x==30804e-186605755
+               Then DO; id=id+1; x=30804E                              ; End;
+         When id=134 & x==30804E
+               Then DO; id=id+1; x=30804E+674581                       ; End;
+         When id=135 & x==30804E+674581
+               Then DO; id=id+1; x=30804E-925                          ; End;
+         When id=136 & x==30804E-925
+               Then DO; id=id+1; x=3.                                  ; End;
+         When id=137 & x==3.
+               Then DO; id=id+1; x=3.e                                 ; End;
+         When id=138 & x==3.e
+               Then DO; id=id+1; x=3.e+741                             ; End;
+         When id=139 & x==3.e+741
+               Then DO; id=id+1; x=3.e-80982672                        ; End;
+         When id=140 & x==3.e-80982672
+               Then DO; id=id+1; x=3.E                                 ; End;
+         When id=141 & x==3.E
+               Then DO; id=id+1; x=3.E+6202                            ; End;
+         When id=142 & x==3.E+6202
+               Then DO; id=id+1; x=3.E-3107                            ; End;
+         Otherwise Signal X9999
+         END;
+      END
+   X9999:
+   self~assertTrue(1)
+

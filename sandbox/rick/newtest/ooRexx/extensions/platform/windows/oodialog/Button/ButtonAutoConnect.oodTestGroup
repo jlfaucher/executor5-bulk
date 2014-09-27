@@ -1,0 +1,608 @@
+#!/usr/bin/rexx
+/*
+  SVN Revision: $Rev: 3050 $
+  Change Date:  $Date: 2008-08-23 12:24:37 -0700 (Sat, 23 Aug 2008) $
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2011 - 2011 Rexx Language Association. All rights reserved.  */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+
+  group = .TestGroup~new(s)
+
+  group~addWithSuite(.ButtonAutoConnect.oodTestGroup, .ButtonSuite)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+  Directives, Classes, or Routines.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::requires 'ooDialog.cls'
+::requires 'ooTest.frm'
+
+::class 'ButtonSuite' public subclass ooTestSuite
+
+::method setUp
+
+  oldDir = directory()
+  path = self~definedInFile~left(self~definedInFile~lastPos('\') - 1)
+  j = directory(path)
+
+  dlg = .SimpleButtonsRc~new("resources\autoDetectAutoConnect.rc", IDD_DIALOG1, , -
+                             "resources\autoDetectAutoConnect.h",                 -
+                             "CENTER CONNECTBUTTONS CONNECTRADIOS CONNECTCHECKS")
+  dlg~clickedStatus = ""
+  dlg~popup("SHOWTOP")
+
+  -- There might be a need here to pause until the underlying dialog is
+  -- created.
+  j = SysSleep(.5)
+
+  .local~testRcDlg = dlg
+  j = directory(oldDir)
+
+::method tearDown
+
+  if .local~hasEntry(testRcDlg) then do
+    if \ .testRcDlg~finished then .testRcDlg~cancel
+    .local~setEntry(testRcDlg)
+  end
+
+  if .local~hasEntry(testUserDlg) then do
+    if \ .testUserDlg~finished then .testUserDlg~cancel
+    .local~setEntry(testUserDlg)
+  end
+
+  if .local~hasEntry(dataStem) then do
+    .local~setEntry(dataStem)
+  end
+
+
+
+/* class: ButtonAutoConnect.oodTestGroup - - - - - - - - - - - - - - - - - - -*\
+
+  Tests the auto connect features when creating a RcDialog.  These general
+  things should work:
+
+    * Auto detect should be on by default
+
+    * Attributes with proper names should be created
+
+    * Setting the attributes before executing the dialog should have
+      the proper check boxes and radio buttons checked.
+
+    * Checking radio button and check boxes during execution of the dialog
+      should give the attributes the proper value when the dialog ends.
+
+    * Clicking a button, check box, or radion button during execution of the
+      dialog should invoke the proper event handler.
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class "ButtonAutoConnect.oodTestGroup" public subclass ooTestCase
+
+::method test_000_autoDetectOn
+  self~assertTrue(.testRcDlg~autoDetect)
+
+::method test_001_IDC_RB_ONE
+  self~assertTrue(.testRcDlg~hasMethod(IDC_RB_ONE))
+
+::method test_002_RadioTwo
+  self~assertTrue(.testRcDlg~hasMethod(RadioTwo))
+
+::method test_003_IDC_RB_THREE
+  self~assertTrue(.testRcDlg~hasMethod(IDC_RB_THREE))
+
+::method test_004_DATA160
+  self~assertTrue(.testRcDlg~hasMethod(DATA160))
+
+::method test_005_IDC_CHECK_ONE
+  self~assertTrue(.testRcDlg~hasMethod(IDC_CHECK_ONE))
+
+::method test_006_CheckTwo
+  self~assertTrue(.testRcDlg~hasMethod(CheckTwo))
+
+::method test_007_IDC_CHECK_THREE
+  self~assertTrue(.testRcDlg~hasMethod(IDC_CHECK_THREE))
+
+::method test_008_DATA180
+  self~assertTrue(.testRcDlg~hasMethod(DATA180))
+
+::method test_009_setAttributes
+
+  -- We don't really test anything here, the test is in test_010...
+  .testRcDlg~cancel
+  j = SysSleep(.5)
+
+  self~createRcDialog
+  dlg = .testRcDlg
+
+  dlg~IDC_RB_ONE      = 0
+  dlg~RadioTwo        = 0
+  dlg~IDC_RB_THREE    = 1
+  dlg~DATA160         = 0
+  dlg~IDC_CHECK_ONE   = 1
+  dlg~CheckTwo        = 0
+  dlg~IDC_CHECK_THREE = 1
+  dlg~DATA180         = 1
+
+  dlg~popup("SHOWTOP")
+
+  -- There might be a need here to pause until the underlying dialog is
+  -- created.
+  j = SysSleep(.5)
+
+::method test_010_checked_IDC_RB_ONE
+  self~assertFalse(.testRcDlg~isRbChecked(1008))
+
+::method test_011_checked_RadioTwo
+  self~assertFalse(.testRcDlg~isRbChecked(150))
+
+::method test_012_checked_IDC_RB_THREE
+  self~assertTrue(.testRcDlg~isRbChecked(1011))
+
+::method test_013_checked_DATA160
+  self~assertFalse(.testRcDlg~isRbChecked(160))
+
+::method test_014_checked_IDC_CHECK_ONE
+  self~assertTrue(.testRcDlg~isCbChecked(1002))
+
+::method test_015_checked_CheckTwo
+  self~assertFalse(.testRcDlg~isCbChecked(170))
+
+::method test_016_checked_IDC_CHECK_THREE
+  self~assertTrue(.testRcDlg~isCbChecked(1012))
+
+::method test_017_checked_DATA180
+  self~assertTrue(.testRcDlg~isCbChecked(180))
+
+::method test_018_push_button_1005
+  .testRcDlg~clickedStatus = ""
+
+  .testRcDlg~newPushButton(1005)~push
+  self~assertSame('The push one button was clicked.', .testRcDlg~clickedStatus)
+
+::method test_019_push_button_190
+  .testRcDlg~clickedStatus = ""
+
+  .testRcDlg~newPushButton(190)~push
+  self~assertSame('The push two button was clicked.', .testRcDlg~clickedStatus)
+
+-- This push button has no text, so it should NOT generate a click.
+::method test_020_push_button_1014
+  .testRcDlg~clickedStatus = ""
+
+  .testRcDlg~newPushButton(1014)~push
+  self~assertSame("", .testRcDlg~clickedStatus)
+
+-- This push button also has no text.
+::method test_021_push_button_200
+  .testRcDlg~clickedStatus = ""
+
+  .testRcDlg~newPushButton(200)~push
+  self~assertSame("", .testRcDlg~clickedStatus)
+
+::method test_022_radio_button_1008
+  .testRcDlg~clickedStatus = ""
+
+  .testRcDlg~newRadioButton(1008)~push
+  self~assertSame('Radio button one was clicked.', .testRcDlg~clickedStatus)
+
+::method test_023_radio_button_150
+  .testRcDlg~clickedStatus = ""
+
+  .testRcDlg~newRadioButton(150)~push
+  self~assertSame('Radio button two was clicked.', .testRcDlg~clickedStatus)
+
+::method test_024_radio_button_1011
+  .testRcDlg~clickedStatus = ""
+
+  .testRcDlg~newRadioButton(1011)~push
+  self~assertSame(1011, .testRcDlg~clickedStatus)
+
+::method test_025_radio_button_160
+  .testRcDlg~clickedStatus = ""
+
+  .testRcDlg~newRadioButton(160)~push
+  self~assertSame(160, .testRcDlg~clickedStatus)
+
+::method test_026_check_box_1002
+  .testRcDlg~clickedStatus = ""
+
+  .testRcDlg~newCheckBox(1002)~push
+  self~assertSame('Check box one was clicked.', .testRcDlg~clickedStatus)
+
+::method test_026_check_box_170
+  .testRcDlg~clickedStatus = ""
+
+  .testRcDlg~newCheckBox(170)~push
+  self~assertSame('Check box two was clicked.', .testRcDlg~clickedStatus)
+
+::method test_026_check_box_1012
+  .testRcDlg~clickedStatus = ""
+
+  .testRcDlg~newCheckBox(1012)~push
+  self~assertSame(1012, .testRcDlg~clickedStatus)
+
+::method test_026_check_box_180
+  .testRcDlg~clickedStatus = ""
+
+  .testRcDlg~newCheckBox(180)~push
+  self~assertSame(180, .testRcDlg~clickedStatus)
+
+::method test_027_check_buttons_close_with_ok
+
+  -- No test here. We check certain of the buttons and then close with ok
+  -- The following methods then check that the data attributes were properly
+  -- set.
+
+  .testRcDlg~newRadioButton(1011)~check
+  .testRcDlg~newCheckBox(1002)~check
+  .testRcDlg~newCheckBox(170)~check
+  .testRcDlg~newCheckBox(1012)~check
+  .testRcDlg~newCheckBox(180)~check
+
+  .testRcDlg~ok
+  j = SysSleep(.5)
+
+::method test_028_checked_IDC_RB_THREE
+  self~assertSame(1, .testRcDlg~IDC_RB_THREE)
+
+::method test_029_checked_IDC_CHECK_ONE
+  self~assertSame(1, .testRcDlg~IDC_CHECK_ONE)
+
+::method test_030_checked_CheckTwo
+  self~assertSame(1, .testRcDlg~CheckTwo)
+
+::method test_031_checked_IDC_CHECK_THREE
+  self~assertSame(1, .testRcDlg~IDC_CHECK_THREE)
+
+::method test_032_checked_DATA180
+  self~assertSame(1, .testRcDlg~DATA180)
+
+::method test_033_re_execute_dlg
+
+  -- We don't really test anything here, the test is in test_034...
+  .testRcDlg~cancel
+  j = SysSleep(.5)
+
+  self~createRcDialog
+  dlg = .testRcDlg
+
+  dlg~popup("SHOWTOP")
+
+  -- There might be a need here to pause until the underlying dialog is
+  -- created.
+  j = SysSleep(.5)
+
+  dlg~newRadioButton(1011)~uncheck
+  dlg~newCheckBox(1002)~uncheck
+  dlg~newCheckBox(170)~uncheck
+  dlg~newCheckBox(1012)~uncheck
+  dlg~newCheckBox(180)~uncheck
+
+  dlg~ok
+  j = SysSleep(.5)
+
+::method test_034_checked_IDC_RB_THREE
+  self~assertSame(0, .testRcDlg~IDC_RB_THREE)
+
+::method test_035_checked_IDC_CHECK_ONE
+  self~assertSame(0, .testRcDlg~IDC_CHECK_ONE)
+
+::method test_036_checked_CheckTwo
+  self~assertSame(0, .testRcDlg~CheckTwo)
+
+::method test_037_checked_IDC_CHECK_THREE
+  self~assertSame(0, .testRcDlg~IDC_CHECK_THREE)
+
+::method test_038_checked_DATA180
+  self~assertSame(0, .testRcDlg~DATA180)
+
+/* ------------------ Switch to using a User dialog ------------------------- */
+
+::method test_039_execute_user_dlg
+
+  -- We don't really test anything here, the test is in test_040...
+  self~createUserDialog
+
+  -- Just make sure the dialog was created
+  self~assertTrue(.testUserDlg~isA(.UserDialog))
+
+::method test_040_user_autoDetectOn
+  self~assertTrue(.testUserDlg~autoDetect)
+
+::method test_041_RadioOne
+  self~assertTrue(.testUserDlg~hasMethod(RadioOne))
+
+::method test_042_RadioTwo
+  self~assertTrue(.testUserDlg~hasMethod(RadioTwo))
+
+::method test_043_DATA1011
+  self~assertTrue(.testUserDlg~hasMethod(DATA1011))
+
+::method test_044_DATA160
+  self~assertTrue(.testUserDlg~hasMethod(DATA160))
+
+::method test_045_CheckOne
+  self~assertTrue(.testUserDlg~hasMethod(CheckOne))
+
+::method test_046_CheckTwo
+  self~assertTrue(.testUserDlg~hasMethod(CheckTwo))
+
+::method test_047_DATA1012
+  self~assertTrue(.testUserDlg~hasMethod(DATA1012))
+
+::method test_048_DATA180
+  self~assertTrue(.testUserDlg~hasMethod(DATA180))
+
+::method test_049_checked_RadioOne
+  self~assertFalse(.testUserDlg~isRbChecked(1008))
+
+::method test_050_checked_RadioTwo
+  self~assertFalse(.testUserDlg~isRbChecked(150))
+
+::method test_051_checked_DATA1011
+  self~assertFalse(.testUserDlg~isRbChecked(1011))
+
+::method test_052_checked_DATA160
+  self~assertTrue(.testUserDlg~isRbChecked(160))
+
+::method test_053_checked_CheckOne
+  self~assertTrue(.testUserDlg~isCbChecked(1002))
+
+::method test_054_checked_CheckTwo
+  self~assertTrue(.testUserDlg~isCbChecked(170))
+
+::method test_055_checked_DATA1012
+  self~assertTrue(.testUserDlg~isCbChecked(1012))
+
+::method test_056_checked_DATA180
+  self~assertTrue(.testUserDlg~isCbChecked(180))
+
+::method test_057_close_user_dlg_with_ok
+
+  -- Again not really a test, more of a set up for the following tests.  The
+  -- dialog data stem has been saved to .local for us.  We check some buttons,
+  -- and close the dialog with ok.
+
+  .testUserDlg~newRadioButton(1008)~check
+  .testUserDlg~newCheckBox(1002)~check
+  .testUserDlg~newCheckBox(170)~check
+  .testUserDlg~newCheckBox(1012)~check
+  .testUserDlg~newCheckBox(180)~check
+
+  .testUserDlg~ok
+  j = SysSleep(.5)
+
+::method test_058_checked_RadioOne
+  self~assertSame(1, .testUserDlg~RadioOne)
+
+::method test_059_checked_CheckOne
+  self~assertSame(1, .testUserDlg~CheckOne)
+
+::method test_060_checked_CheckTwo
+  self~assertSame(1, .testUserDlg~CheckTwo)
+
+::method test_061_checked_DATA1012
+  self~assertSame(1, .testUserDlg~DATA1012)
+
+::method test_062_checked_DATA180
+  self~assertSame(1, .testUserDlg~DATA180)
+
+/* The values of the data stem and the data attributes should be equal */
+
+::method test_063_stem_attribute_match_RadioOne
+  stm. = .dataStem
+  self~assertSame(stm.IDC_RB_ONE, .testUserDlg~RadioOne)
+
+::method test_064_stem_attribute_match_RadioTwo
+  stm. = .dataStem
+  self~assertSame(stm.150, .testUserDlg~RadioTwo)
+
+::method test_065_stem_attribute_match_DATA1011
+  stm. = .dataStem
+  self~assertSame(stm.IDC_RB_THREE, .testUserDlg~DATA1011)
+
+::method test_066_stem_attribute_match_DATA160
+  stm. = .dataStem
+  self~assertSame(stm.160, .testUserDlg~DATA160)
+
+::method test_067_stem_attribute_match_CheckOne
+  stm. = .dataStem
+  self~assertSame(stm.IDC_CHECK_ONE, .testUserDlg~CheckOne)
+
+::method test_068_stem_attribute_match_CheckTwo
+  stm. = .dataStem
+  self~assertSame(stm.170, .testUserDlg~CheckTwo)
+
+::method test_069_stem_attribute_match_DATA1012
+  stm. = .dataStem
+  self~assertSame(stm.IDC_CHECK_THREE, .testUserDlg~DATA1012)
+
+::method test_070_stem_attribute_match_DATA180
+  stm. = .dataStem
+  self~assertSame(stm.180, .testUserDlg~DATA180)
+
+
+-- This method is used to re-execute the Rc dialog. The caller should close a
+-- running Rc dialog before invoking this method.
+::method createRcDialog
+
+  oldDir = directory()
+  path = self~definedInFile~left(self~definedInFile~lastPos('\') - 1)
+  j = directory(path)
+
+  dlg = .SimpleButtonsRc~new("resources\autoDetectAutoConnect.rc", IDD_DIALOG1, , -
+                             "resources\autoDetectAutoConnect.h",                 -
+                             "CENTER CONNECTBUTTONS CONNECTRADIOS CONNECTCHECKS")
+  dlg~clickedStatus = ""
+
+
+  .local~testRcDlg = dlg
+  j = directory(oldDir)
+
+
+-- This method is use
+::method createUserDialog
+  use strict arg doDataStem = .true
+
+  -- We're going to sure any open dialogs are closed.
+  if .local~hasEntry(testRcDlg) then do
+    if \ .testRcDlg~finished then do
+      .testRcDlg~cancel
+      j = SysSleep(.5)
+    end
+  end
+
+  if .local~hasEntry(testUserDlg) then do
+    if \ .testUserDlg~finished then do
+      .testUserDlg~cancel
+      j = SysSleep(.5)
+    end
+  end
+
+  oldDir = directory()
+  path = self~definedInFile~left(self~definedInFile~lastPos('\') - 1)
+  j = directory(path)
+
+  dlgData.IDC_RB_ONE      = 0
+  dlgData.150             = 0
+  dlgData.IDC_RB_THREE    = 0
+  dlgData.160             = 1
+  dlgData.IDC_CHECK_ONE   = 1
+  dlgData.170             = 1
+  dlgData.IDC_CHECK_THREE = 1
+  dlgData.180             = 1
+
+  -- Group box and push buttons can not be set, so this should be ignored
+  dlgData.IDC_GB_BUTTONS  = 1
+
+  if doDataStem then do
+    dlg = .SimpleButtonsUser~new(dlgData., "resources\autoDetectAutoConnect.h")
+  end
+  else do
+    dlg = .SimpleButtonsUser~new(, "resources\autoDetectAutoConnect.h")
+  end
+
+  dlg~popup("SHOWTOP")
+  j = SysSleep(.5)
+
+  .local~dataStem = dlgData.
+  .local~testUserDlg = dlg
+
+  j = directory(oldDir)
+
+
+-- End of class: ButtonAutoConnect.oodTestGroup
+
+
+::class 'SimpleButtonsRc' subclass RcDialog
+
+::attribute clickedStatus
+
+-- This method gets connected for check boxes and radio buttons that have no text
+::method idRadioOne
+  self~clickedStatus = 'Radio button one was clicked.'
+::method idRadioTwo
+  self~clickedStatus = 'Radio button two was clicked.'
+::method idCheckOne
+  self~clickedStatus = 'Check box one was clicked.'
+::method idCheckTwo
+  self~clickedStatus = 'Check box two was clicked.'
+
+::method id
+  self~clickedStatus = arg(1)
+
+::method pushOne
+  self~clickedStatus = 'The push one button was clicked.'
+
+::method pushTwo
+  self~clickedStatus = 'The push two button was clicked.'
+
+::method isCbChecked
+  use strict arg id
+  return self~newCheckBox(id)~checked
+
+::method isRbChecked
+  use strict arg id
+  return self~newRadioButton(id)~checked
+
+
+::class 'SimpleButtonsUser' subclass UserDialog
+
+::method init
+  forward class (super) continue
+
+  self~createCenter(223, 138, "UserDialog Dialog", "VISIBLE NOTMODAL", , "MS Shell Dlg 2", 8)
+
+::method defineDialog
+
+    self~createGroupBox(IDC_GB_BUTTONS,    7,   7, 180, 81, "", "Push All Buttons")
+    self~createRadioButton(IDC_RB_ONE,    18,  20,    ,   ,   ,  "Radio One")
+    self~createRadioButton(150,           18,  35,  56, 10,   , "RadioTwo")
+    self~createRadioButton(IDC_RB_THREE,  18,  50,  60, 10,   , "")
+    self~createRadioButton(160,           18,  65,  58, 10,   , "")
+    self~createCheckBox(IDC_CHECK_ONE,   115,  17,  54, 10,   , "Check One")
+    self~createCheckBox(170,             115,  34,  54, 10,   , "Check Two")
+    self~createCheckBox(IDC_CHECK_THREE, 115,  53,  54, 10,   , "")
+    self~createCheckBox(180,             115,  73,  54, 10,   , "")
+
+    self~createPushButton(IDC_PB_PUSH,       12, 117,  50, 14,          , "Push One")
+    self~createPushButton(190,               12,  94,  50, 14,          , "Push Two", , )
+    self~createPushButton(IDC_PB_PUSH_FOUR, 144,  94,  50, 14,          , "",         , )
+    self~createPushButton(200,                77,  94, 50, 14,          , "",         , )
+    self~createPushButton(IDOK,              108, 114, 50, 14, "DEFAULT", "OK",       , )
+    self~createPushButton(IDCANCEL,          163, 114, 50, 14,          , "Cancel",   , )
+
+::method isCbChecked
+  use strict arg id
+  return self~newCheckBox(id)~checked
+
+::method isRbChecked
+  use strict arg id
+  return self~newRadioButton(id)~checked
+
+-- This method is needed to give access to the dialog data stem to the test
+-- cases
+::method getDlgDataStem
+  return self~dlgData
+
+

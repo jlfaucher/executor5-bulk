@@ -1,0 +1,2710 @@
+#!/usr/bin/rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.FORMAT.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+-- class named exactly like file
+::class "FORMAT.testGroup" subclass ooTestCase public
+
+-- see end of this file in regards to method numbers not in sequence
+
+::method test001
+    self~assertSame('    1.23457E+04', format(12345.67890123,5,5,2,1))
+
+::method test002
+    self~assertSame('    1.23457E+04', format(12345.67890123,5,5,2,2))
+
+::method test003
+    self~assertSame('    1.23457E+04', format(12345.67890123,5,5,2,3))
+
+::method test004
+    self~assertSame('    1.23457E+004', format(12345.67890123,5,5,3,1))
+
+::method test005
+    self~assertSame('    1.23457E+004', format(12345.67890123,5,5,3,2))
+
+::method test006
+    self~assertSame('    1.23457E+004', format(12345.67890123,5,5,3,3))
+
+::method test007
+    self~assertSame('    1.23457E+0004', format(12345.67890123,5,5,4,1))
+
+::method test008
+    self~assertSame('    1.23457E+0004', format(12345.67890123,5,5,4,2))
+
+::method test009
+    self~assertSame('    1.23457E+0004', format(12345.67890123,5,5,4,3))
+
+::method test010
+    self~assertSame('12345.67890', format(12345.67890123,5,5,0,0))
+
+::method test011
+    self~assertSame('12345.67890', format(12345.67890123,5,5,0,1))
+
+::method test012
+    self~assertSame('12345.67890', format(12345.67890123,5,5,0,2))
+
+::method test013
+    self~assertSame('    1.23457E+4', format(12345.67890123,5,5,1,0))
+
+::method test014
+    self~assertSame('    1.23457E+4', format(12345.67890123,5,5,1,1))
+
+::method test015
+    self~assertSame('    1.23457E+4', format(12345.67890123,5,5,1,2))
+
+::method test016
+    self~assertSame('    1.23457E+04', format(12345.67890123,5,5,2,0))
+
+::method test017
+    self~assertSame('    1.23457E+04', format(12345.67890123,5,5,2,1))
+
+::method test018
+    self~assertSame('    1.23457E+04', format(12345.67890123,5,5,2,2))
+
+::method test019
+    self~assertSame('12345.7', format(12345.67890123,5,1,0,0))
+
+::method test020
+    self~assertSame('12345.7', format(12345.67890123,5,1,0,1))
+
+::method test021
+    self~assertSame('12345.7', format(12345.67890123,5,1,0,2))
+
+::method test022
+    self~assertSame('    1.2E+4', format(12345.67890123,5,1,1,0))
+
+::method test023
+    self~assertSame('    1.2E+4', format(12345.67890123,5,1,1,1))
+
+::method test024
+    self~assertSame('    1.2E+4', format(12345.67890123,5,1,1,2))
+
+::method test025
+    self~assertSame('    1.2E+04', format(12345.67890123,5,1,2,0))
+
+::method test026
+    self~assertSame('    1.2E+04', format(12345.67890123,5,1,2,1))
+
+::method test027
+    self~assertSame('    1.2E+04', format(12345.67890123,5,1,2,2))
+
+::method test028
+    self~assertSame('     1.2E+05', format(123456.78,6,1,2,4))
+
+::method test029
+    self~assertSame('     1.2E+05', format(123456.78,6,1,2,5))
+
+::method test030
+    self~assertSame('123456.8', format(123456.78,6,1,2,6))
+
+::method test031
+    self~assertSame('     1.23E+05', format(123456.78,6,2,2,4))
+
+::method test032
+    self~assertSame('     1.23E+05', format(123456.78,6,2,2,5))
+
+::method test033
+    self~assertSame('123456.78', format(123456.78,6,2,2,6))
+
+::method test034
+    self~assertSame('     1.235E+05', format(123456.78,6,3,2,4))
+
+::method test035
+    self~assertSame('     1.235E+05', format(123456.78,6,3,2,5))
+
+::method test036
+    self~assertSame('123456.780', format(123456.78,6,3,2,6))
+
+::method test037
+    self~assertSame('     1.23E+5', format(123456.78,6,2,1,4))
+
+::method test038
+    self~assertSame('     1.23E+5', format(123456.78,6,2,1,5))
+
+::method test039
+    self~assertSame('123456.78', format(123456.78,6,2,1,6))
+
+::method test040
+    self~assertSame('     1.23E+05', format(123456.78,6,2,2,4))
+
+::method test041
+    self~assertSame('     1.23E+05', format(123456.78,6,2,2,5))
+
+::method test042
+    self~assertSame('123456.78', format(123456.78,6,2,2,6))
+
+::method test043
+    self~assertSame('     1.23E+005', format(123456.78,6,2,3,4))
+
+::method test044
+    self~assertSame('     1.23E+005', format(123456.78,6,2,3,5))
+
+::method test045
+    self~assertSame('123456.78', format(123456.78,6,2,3,6))
+
+::method test046
+    self~assertSame('     1.2E+05', format(123456.78,6,1,2,4))
+
+::method test047
+    self~assertSame('     1.2E+05', format(123456.78,6,1,2,5))
+
+::method test048
+    self~assertSame('123456.8', format(123456.78,6,1,2,6))
+
+::method test049
+    self~assertSame('     1.23E+05', format(123456.78,6,2,2,4))
+
+::method test050
+    self~assertSame('     1.23E+05', format(123456.78,6,2,2,5))
+
+::method test051
+    self~assertSame('123456.78', format(123456.78,6,2,2,6))
+
+::method test052
+    self~assertSame('     1.235E+05', format(123456.78,6,3,2,4))
+
+::method test053
+    self~assertSame('     1.235E+05', format(123456.78,6,3,2,5))
+
+::method test054
+    self~assertSame('123456.780', format(123456.78,6,3,2,6))
+
+::method test055
+    self~assertSame('     1.23E+5', format(123456.78,6,2,1,4))
+
+::method test056
+    self~assertSame('     1.23E+5', format(123456.78,6,2,1,5))
+
+::method test057
+    self~assertSame('123456.78', format(123456.78,6,2,1,6))
+
+::method test058
+    self~assertSame('     1.23E+05', format(123456.78,6,2,2,4))
+
+::method test059
+    self~assertSame('     1.23E+05', format(123456.78,6,2,2,5))
+
+::method test060
+    self~assertSame('123456.78', format(123456.78,6,2,2,6))
+
+::method test061
+    self~assertSame('     1.23E+005', format(123456.78,6,2,3,4))
+
+::method test062
+    self~assertSame('     1.23E+005', format(123456.78,6,2,3,5))
+
+::method test063
+    self~assertSame('123456.78', format(123456.78,6,2,3,6))
+
+::method test064
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('7.65467547E+10', format(76546754654.87658765))
+
+::method test065
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('          7.655E+10', format(76546754654.87658765,11,3))
+
+::method test066
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('          7.6547E+10', format(76546754654.87658765,11,4))
+
+::method test067
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('          7.65468E+10', format(76546754654.87658765,11,5))
+
+::method test068
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('           7.655E+10', format(76546754654.87658765,12,3))
+
+::method test069
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('           7.6547E+10', format(76546754654.87658765,12,4))
+
+::method test070
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('           7.65468E+10', format(76546754654.87658765,12,5))
+
+::method test071
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('            7.655E+10', format(76546754654.87658765,13,3))
+
+::method test072
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('            7.6547E+10', format(76546754654.87658765,13,4))
+
+::method test073
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('            7.65468E+10', format(76546754654.87658765,13,5))
+
+::method test074
+    self~assertSame('  2.229E+0007', format(22287634.9876,3,3,4,4))
+
+::method test075
+    self~assertSame('  2.2288E+0007', format(22287634.9876,3,4,4,4))
+
+::method test076
+    self~assertSame('  2.22876E+0007', format(22287634.9876,3,5,4,4))
+
+::method test077
+    self~assertSame('   2.229E+0007', format(22287634.9876,4,3,4,4))
+
+::method test078
+    self~assertSame('   2.2288E+0007', format(22287634.9876,4,4,4,4))
+
+::method test079
+    self~assertSame('   2.22876E+0007', format(22287634.9876,4,5,4,4))
+
+::method test080
+    self~assertSame('    2.229E+0007', format(22287634.9876,5,3,4,4))
+
+::method test081
+    self~assertSame('    2.2288E+0007', format(22287634.9876,5,4,4,4))
+
+::method test082
+    self~assertSame('    2.22876E+0007', format(22287634.9876,5,5,4,4))
+
+::method test083
+    self~assertSame(' 2.23E+0007', format(22287634.9876,2,2,4,4))
+
+::method test084
+    self~assertSame(' 2.229E+0007', format(22287634.9876,2,3,4,4))
+
+::method test085
+    self~assertSame(' 2.2288E+0007', format(22287634.9876,2,4,4,4))
+
+::method test086
+    self~assertSame('  2.23E+0007', format(22287634.9876,3,2,4,4))
+
+::method test087
+    self~assertSame('  2.229E+0007', format(22287634.9876,3,3,4,4))
+
+::method test088
+    self~assertSame('  2.2288E+0007', format(22287634.9876,3,4,4,4))
+
+::method test089
+    self~assertSame('   2.23E+0007', format(22287634.9876,4,2,4,4))
+
+::method test090
+    self~assertSame('   2.229E+0007', format(22287634.9876,4,3,4,4))
+
+::method test091
+    self~assertSame('   2.2288E+0007', format(22287634.9876,4,4,4,4))
+
+::method test092
+    self~assertSame('2.2E+0007', format(22287634.9876,1,1,4,4))
+
+::method test093
+    self~assertSame('2.23E+0007', format(22287634.9876,1,2,4,4))
+
+::method test094
+    self~assertSame('2.229E+0007', format(22287634.9876,1,3,4,4))
+
+::method test095
+    self~assertSame(' 2.2E+0007', format(22287634.9876,2,1,4,4))
+
+::method test096
+    self~assertSame(' 2.23E+0007', format(22287634.9876,2,2,4,4))
+
+::method test097
+    self~assertSame(' 2.229E+0007', format(22287634.9876,2,3,4,4))
+
+::method test098
+    self~assertSame('  2.2E+0007', format(22287634.9876,3,1,4,4))
+
+::method test099
+    self~assertSame('  2.23E+0007', format(22287634.9876,3,2,4,4))
+
+::method test100
+    self~assertSame('  2.229E+0007', format(22287634.9876,3,3,4,4))
+
+::method test101
+    self~assertSame('2E+0007', format(22287634.9876,1,0,4,4))
+
+::method test102
+    self~assertSame('2.2E+0007', format(22287634.9876,1,1,4,4))
+
+::method test103
+    self~assertSame('2.23E+0007', format(22287634.9876,1,2,4,4))
+
+::method test104
+    self~assertSame(' 2E+0007', format(22287634.9876,2,0,4,4))
+
+::method test105
+    self~assertSame(' 2.2E+0007', format(22287634.9876,2,1,4,4))
+
+::method test106
+    self~assertSame(' 2.23E+0007', format(22287634.9876,2,2,4,4))
+
+::method test107
+    self~assertSame('2.2E+007', format(22287634.9876,1,1,3,3))
+
+::method test108
+    self~assertSame('2.2E+007', format(22287634.9876,1,1,3,4))
+
+::method test109
+    self~assertSame('2.2E+007', format(22287634.9876,1,1,3,5))
+
+::method test110
+    self~assertSame('2.2E+0007', format(22287634.9876,1,1,4,3))
+
+::method test111
+    self~assertSame('2.2E+0007', format(22287634.9876,1,1,4,4))
+
+::method test112
+    self~assertSame('2.2E+0007', format(22287634.9876,1,1,4,5))
+
+::method test113
+    self~assertSame('2.2E+00007', format(22287634.9876,1,1,5,3))
+
+::method test114
+    self~assertSame('2.2E+00007', format(22287634.9876,1,1,5,4))
+
+::method test115
+    self~assertSame('2.2E+00007', format(22287634.9876,1,1,5,5))
+
+::method test116
+    self~assertSame('2.2E+07', format(22287634.9876,1,1,2,2))
+
+::method test117
+    self~assertSame('2.2E+07', format(22287634.9876,1,1,2,3))
+
+::method test118
+    self~assertSame('2.2E+07', format(22287634.9876,1,1,2,4))
+
+::method test119
+    self~assertSame('2.2E+007', format(22287634.9876,1,1,3,2))
+
+::method test120
+    self~assertSame('2.2E+007', format(22287634.9876,1,1,3,3))
+
+::method test121
+    self~assertSame('2.2E+007', format(22287634.9876,1,1,3,4))
+
+::method test122
+    self~assertSame('2.2E+0007', format(22287634.9876,1,1,4,2))
+
+::method test123
+    self~assertSame('2.2E+0007', format(22287634.9876,1,1,4,3))
+
+::method test124
+    self~assertSame('2.2E+0007', format(22287634.9876,1,1,4,4))
+
+::method test125
+    self~assertSame('2.2E+7', format(22287634.9876,1,1,1,1))
+
+::method test126
+    self~assertSame('2.2E+7', format(22287634.9876,1,1,1,2))
+
+::method test127
+    self~assertSame('2.2E+7', format(22287634.9876,1,1,1,3))
+
+::method test128
+    self~assertSame('2.2E+07', format(22287634.9876,1,1,2,1))
+
+::method test129
+    self~assertSame('2.2E+07', format(22287634.9876,1,1,2,2))
+
+::method test130
+    self~assertSame('2.2E+07', format(22287634.9876,1,1,2,3))
+
+::method test131
+    self~assertSame('2.2E+007', format(22287634.9876,1,1,3,1))
+
+::method test132
+    self~assertSame('2.2E+007', format(22287634.9876,1,1,3,2))
+
+::method test133
+    self~assertSame('2.2E+007', format(22287634.9876,1,1,3,3))
+
+::method test134
+    self~assertSame('2.2E+7', format(22287634.9876,1,1,1,0))
+
+::method test135
+    self~assertSame('2.2E+7', format(22287634.9876,1,1,1,1))
+
+::method test136
+    self~assertSame('2.2E+7', format(22287634.9876,1,1,1,2))
+
+::method test137
+    self~assertSame('2.2E+07', format(22287634.9876,1,1,2,0))
+
+::method test138
+    self~assertSame('2.2E+07', format(22287634.9876,1,1,2,1))
+
+::method test139
+    self~assertSame('2.2E+07', format(22287634.9876,1,1,2,2))
+
+::method test140
+    self~assertSame('2.2E+7', format(22287634.9876,1,1,1,0))
+
+::method test141
+    self~assertSame('2.2E+7', format(22287634.9876,1,1,1,1))
+
+::method test142
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('22287635.000000000', format(22287634.9876,8,9,8,9))
+
+::method test143
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('22287635.000000000', format(22287634.9876,8,9,9,9))
+
+::method test144
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('22287635.000000000', format(22287634.9876,8,9,10,9))
+
+::method test145
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame(' 22287635.000000000', format(22287634.9876,9,9,8,9))
+
+::method test146
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame(' 22287635.000000000', format(22287634.9876,9,9,9,9))
+
+::method test147
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame(' 22287635.000000000', format(22287634.9876,9,9,10,9))
+
+::method test148
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('  22287635.000000000', format(22287634.9876,10,9,8,9))
+
+::method test149
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('  22287635.000000000', format(22287634.9876,10,9,9,9))
+
+::method test150
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('  22287635.000000000', format(22287634.9876,10,9,10,9))
+
+::method test151
+    self~assertSame('         1000000000.0000000000000000000', format(999999999.999999999999999999,19,19,20,20))
+
+::method test152
+    self~assertSame('         1000000000.00000000000000000000', format(999999999.999999999999999999,19,20,20,20))
+
+::method test153
+    self~assertSame('         1000000000.000000000000000000000', format(999999999.999999999999999999,19,21,20,20))
+
+::method test154
+    self~assertSame('          1000000000.0000000000000000000', format(999999999.999999999999999999,20,19,20,20))
+
+::method test155
+    self~assertSame('          1000000000.00000000000000000000', format(999999999.999999999999999999,20,20,20,20))
+
+::method test156
+    self~assertSame('          1000000000.000000000000000000000', format(999999999.999999999999999999,20,21,20,20))
+
+::method test157
+    self~assertSame('           1000000000.0000000000000000000', format(999999999.999999999999999999,21,19,20,20))
+
+::method test158
+    self~assertSame('           1000000000.00000000000000000000', format(999999999.999999999999999999,21,20,20,20))
+
+::method test159
+    self~assertSame('           1000000000.000000000000000000000', format(999999999.999999999999999999,21,21,20,20))
+
+::method test160
+    self~assertSame('1000000000.00000000000000000000000000000', format(999999999.999999999999999999,10,29,20,20))
+
+::method test161
+    self~assertSame('1000000000.000000000000000000000000000000', format(999999999.999999999999999999,10,30,20,20))
+
+::method test162
+    self~assertSame('1000000000.0000000000000000000000000000000', format(999999999.999999999999999999,10,31,20,20))
+
+::method test163
+    self~assertSame(' 1000000000.00000000000000000000000000000', format(999999999.999999999999999999,11,29,20,20))
+
+::method test164
+    self~assertSame(' 1000000000.000000000000000000000000000000', format(999999999.999999999999999999,11,30,20,20))
+
+::method test165
+    self~assertSame(' 1000000000.0000000000000000000000000000000', format(999999999.999999999999999999,11,31,20,20))
+
+::method test166
+    self~assertSame('1000000000.00000000000000000000000000000', format(999999999.999999999999999999,10,29,30,30))
+
+::method test167
+    self~assertSame('1000000000.000000000000000000000000000000', format(999999999.999999999999999999,10,30,30,30))
+
+::method test168
+    self~assertSame('1000000000.0000000000000000000000000000000', format(999999999.999999999999999999,10,31,30,30))
+
+::method test169
+    self~assertSame(' 1000000000.00000000000000000000000000000', format(999999999.999999999999999999,11,29,30,30))
+
+::method test170
+    self~assertSame(' 1000000000.000000000000000000000000000000', format(999999999.999999999999999999,11,30,30,30))
+
+::method test171
+    self~assertSame(' 1000000000.0000000000000000000000000000000', format(999999999.999999999999999999,11,31,30,30))
+
+::method test172
+    self~assertSame('  1000000000.00000000000000000000000000000', format(999999999.999999999999999999,12,29,30,30))
+
+::method test173
+    self~assertSame('  1000000000.000000000000000000000000000000', format(999999999.999999999999999999,12,30,30,30))
+
+::method test174
+    self~assertSame('  1000000000.0000000000000000000000000000000', format(999999999.999999999999999999,12,31,30,30))
+
+::method test175
+    self~assertSame('1000000000.00000000000000000000000000000', format(999999999.9999999999,10,29,30,30))
+
+::method test176
+    self~assertSame('1000000000.000000000000000000000000000000', format(999999999.9999999999,10,30,30,30))
+
+::method test177
+    self~assertSame('1000000000.0000000000000000000000000000000', format(999999999.9999999999,10,31,30,30))
+
+::method test178
+    self~assertSame(' 1000000000.00000000000000000000000000000', format(999999999.9999999999,11,29,30,30))
+
+::method test179
+    self~assertSame(' 1000000000.000000000000000000000000000000', format(999999999.9999999999,11,30,30,30))
+
+::method test180
+    self~assertSame(' 1000000000.0000000000000000000000000000000', format(999999999.9999999999,11,31,30,30))
+
+::method test181
+    self~assertSame('  1000000000.00000000000000000000000000000', format(999999999.9999999999,12,29,30,30))
+
+::method test182
+    self~assertSame('  1000000000.000000000000000000000000000000', format(999999999.9999999999,12,30,30,30))
+
+::method test183
+    self~assertSame('  1000000000.0000000000000000000000000000000', format(999999999.9999999999,12,31,30,30))
+
+::method test184
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('1000000000.00000000000000000000000000000', format(999999999.999999999,10,29,30,30))
+
+::method test185
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('1000000000.000000000000000000000000000000', format(999999999.999999999,10,30,30,30))
+
+::method test186
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('1000000000.0000000000000000000000000000000', format(999999999.999999999,10,31,30,30))
+
+::method test187
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame(' 1000000000.00000000000000000000000000000', format(999999999.999999999,11,29,30,30))
+
+::method test188
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame(' 1000000000.000000000000000000000000000000', format(999999999.999999999,11,30,30,30))
+
+::method test189
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame(' 1000000000.0000000000000000000000000000000', format(999999999.999999999,11,31,30,30))
+
+::method test190
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('  1000000000.00000000000000000000000000000', format(999999999.999999999,12,29,30,30))
+
+::method test191
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('  1000000000.000000000000000000000000000000', format(999999999.999999999,12,30,30,30))
+
+::method test192
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('  1000000000.0000000000000000000000000000000', format(999999999.999999999,12,31,30,30))
+
+::method test193
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('1000000000.00000000000000000000000000000', format(999999999.99999999,10,29,30,30))
+
+::method test194
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('1000000000.000000000000000000000000000000', format(999999999.99999999,10,30,30,30))
+
+::method test195
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('1000000000.0000000000000000000000000000000', format(999999999.99999999,10,31,30,30))
+
+::method test196
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame(' 1000000000.00000000000000000000000000000', format(999999999.99999999,11,29,30,30))
+
+::method test197
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame(' 1000000000.000000000000000000000000000000', format(999999999.99999999,11,30,30,30))
+
+::method test198
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame(' 1000000000.0000000000000000000000000000000', format(999999999.99999999,11,31,30,30))
+
+::method test199
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('  1000000000.00000000000000000000000000000', format(999999999.99999999,12,29,30,30))
+
+::method test200
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('  1000000000.000000000000000000000000000000', format(999999999.99999999,12,30,30,30))
+
+::method test201
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('  1000000000.0000000000000000000000000000000', format(999999999.99999999,12,31,30,30))
+
+::method test202
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame(' 100000000.00000000000000000000000000000', format(99999999.99999999,10,29,30,30))
+
+::method test203
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame(' 100000000.000000000000000000000000000000', format(99999999.99999999,10,30,30,30))
+
+::method test204
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame(' 100000000.0000000000000000000000000000000', format(99999999.99999999,10,31,30,30))
+
+::method test205
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('  100000000.00000000000000000000000000000', format(99999999.99999999,11,29,30,30))
+
+::method test206
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('  100000000.000000000000000000000000000000', format(99999999.99999999,11,30,30,30))
+
+::method test207
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('  100000000.0000000000000000000000000000000', format(99999999.99999999,11,31,30,30))
+
+::method test208
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('   100000000.00000000000000000000000000000', format(99999999.99999999,12,29,30,30))
+
+::method test209
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('   100000000.000000000000000000000000000000', format(99999999.99999999,12,30,30,30))
+
+::method test210
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('   100000000.0000000000000000000000000000000', format(99999999.99999999,12,31,30,30))
+
+::method test211
+    self~assertSame('         9.99999999000000000000000000000', format(9.99999999,10,29,30,30))
+
+::method test212
+    self~assertSame('         9.999999990000000000000000000000', format(9.99999999,10,30,30,30))
+
+::method test213
+    self~assertSame('         9.9999999900000000000000000000000', format(9.99999999,10,31,30,30))
+
+::method test214
+    self~assertSame('          9.99999999000000000000000000000', format(9.99999999,11,29,30,30))
+
+::method test215
+    self~assertSame('          9.999999990000000000000000000000', format(9.99999999,11,30,30,30))
+
+::method test216
+    self~assertSame('          9.9999999900000000000000000000000', format(9.99999999,11,31,30,30))
+
+::method test217
+    self~assertSame('           9.99999999000000000000000000000', format(9.99999999,12,29,30,30))
+
+::method test218
+    self~assertSame('           9.999999990000000000000000000000', format(9.99999999,12,30,30,30))
+
+::method test219
+    self~assertSame('           9.9999999900000000000000000000000', format(9.99999999,12,31,30,30))
+
+::method test220
+    self~assertSame('9.999999990', format(9.99999999,1,9,30,30))
+
+::method test221
+    self~assertSame('9.9999999900', format(9.99999999,1,10,30,30))
+
+::method test222
+    self~assertSame('9.99999999000', format(9.99999999,1,11,30,30))
+
+::method test223
+    self~assertSame(' 9.999999990', format(9.99999999,2,9,30,30))
+
+::method test224
+    self~assertSame(' 9.9999999900', format(9.99999999,2,10,30,30))
+
+::method test225
+    self~assertSame(' 9.99999999000', format(9.99999999,2,11,30,30))
+
+::method test226
+    self~assertSame('9.999999990', format(9.99999999,1,9,10,10))
+
+::method test227
+    self~assertSame('9.9999999900', format(9.99999999,1,10,10,10))
+
+::method test228
+    self~assertSame('9.99999999000', format(9.99999999,1,11,10,10))
+
+::method test229
+    self~assertSame(' 9.999999990', format(9.99999999,2,9,10,10))
+
+::method test230
+    self~assertSame(' 9.9999999900', format(9.99999999,2,10,10,10))
+
+::method test231
+    self~assertSame(' 9.99999999000', format(9.99999999,2,11,10,10))
+
+::method test232
+    self~assertSame('9.9999999900', format(9.99999999,1,10,9,9))
+
+::method test233
+    self~assertSame('9.9999999900', format(9.99999999,1,10,9,10))
+
+::method test234
+    self~assertSame('9.9999999900', format(9.99999999,1,10,9,11))
+
+::method test235
+    self~assertSame('9.9999999900', format(9.99999999,1,10,10,9))
+
+::method test236
+    self~assertSame('9.9999999900', format(9.99999999,1,10,10,10))
+
+::method test237
+    self~assertSame('9.9999999900', format(9.99999999,1,10,10,11))
+
+::method test238
+    self~assertSame('9.9999999900', format(9.99999999,1,10,11,9))
+
+::method test239
+    self~assertSame('9.9999999900', format(9.99999999,1,10,11,10))
+
+::method test240
+    self~assertSame('9.9999999900', format(9.99999999,1,10,11,11))
+
+::method test241
+    self~assertSame('9.9999999900', format(9.99999999,1,10,7,7))
+
+::method test242
+    self~assertSame('9.9999999900', format(9.99999999,1,10,7,8))
+
+::method test243
+    self~assertSame('9.9999999900', format(9.99999999,1,10,7,9))
+
+::method test244
+    self~assertSame('9.9999999900', format(9.99999999,1,10,8,7))
+
+::method test245
+    self~assertSame('9.9999999900', format(9.99999999,1,10,8,8))
+
+::method test246
+    self~assertSame('9.9999999900', format(9.99999999,1,10,8,9))
+
+::method test247
+    self~assertSame('9.9999999900', format(9.99999999,1,10,9,7))
+
+::method test248
+    self~assertSame('9.9999999900', format(9.99999999,1,10,9,8))
+
+::method test249
+    self~assertSame('9.9999999900', format(9.99999999,1,10,9,9))
+
+::method test250
+    self~assertSame('9.9999999900', format(9.99999999,1,10,5,5))
+
+::method test251
+    self~assertSame('9.9999999900', format(9.99999999,1,10,5,6))
+
+::method test252
+    self~assertSame('9.9999999900', format(9.99999999,1,10,5,7))
+
+::method test253
+    self~assertSame('9.9999999900', format(9.99999999,1,10,6,5))
+
+::method test254
+    self~assertSame('9.9999999900', format(9.99999999,1,10,6,6))
+
+::method test255
+    self~assertSame('9.9999999900', format(9.99999999,1,10,6,7))
+
+::method test256
+    self~assertSame('9.9999999900', format(9.99999999,1,10,7,5))
+
+::method test257
+    self~assertSame('9.9999999900', format(9.99999999,1,10,7,6))
+
+::method test258
+    self~assertSame('9.9999999900', format(9.99999999,1,10,7,7))
+
+::method test259
+    self~assertSame('9.9999999900', format(9.99999999,1,10,3,3))
+
+::method test260
+    self~assertSame('9.9999999900', format(9.99999999,1,10,3,4))
+
+::method test261
+    self~assertSame('9.9999999900', format(9.99999999,1,10,3,5))
+
+::method test262
+    self~assertSame('9.9999999900', format(9.99999999,1,10,4,3))
+
+::method test263
+    self~assertSame('9.9999999900', format(9.99999999,1,10,4,4))
+
+::method test264
+    self~assertSame('9.9999999900', format(9.99999999,1,10,4,5))
+
+::method test265
+    self~assertSame('9.9999999900', format(9.99999999,1,10,5,3))
+
+::method test266
+    self~assertSame('9.9999999900', format(9.99999999,1,10,5,4))
+
+::method test267
+    self~assertSame('9.9999999900', format(9.99999999,1,10,5,5))
+
+::method test268
+    self~assertSame('9.9999999900', format(9.99999999,1,10,1,1))
+
+::method test269
+    self~assertSame('9.9999999900', format(9.99999999,1,10,1,2))
+
+::method test270
+    self~assertSame('9.9999999900', format(9.99999999,1,10,1,3))
+
+::method test271
+    self~assertSame('9.9999999900', format(9.99999999,1,10,2,1))
+
+::method test272
+    self~assertSame('9.9999999900', format(9.99999999,1,10,2,2))
+
+::method test273
+    self~assertSame('9.9999999900', format(9.99999999,1,10,2,3))
+
+::method test274
+    self~assertSame('9.9999999900', format(9.99999999,1,10,3,1))
+
+::method test275
+    self~assertSame('9.9999999900', format(9.99999999,1,10,3,2))
+
+::method test276
+    self~assertSame('9.9999999900', format(9.99999999,1,10,3,3))
+
+::method test277
+    self~assertSame('9.9999999900', format(9.99999999,1,10,0,0))
+
+::method test278
+    self~assertSame('9.9999999900', format(9.99999999,1,10,0,1))
+
+::method test279
+    self~assertSame('9.9999999900', format(9.99999999,1,10,0,2))
+
+::method test280
+    self~assertSame('9.9999999900', format(9.99999999,1,10,1,1))
+
+::method test281
+    self~assertSame('9.9999999900', format(9.99999999,1,10,1,2))
+
+::method test282
+    self~assertSame('9.9999999900   ', format(9.99999999,1,10,1,0))
+
+::method test283
+    self~assertSame('9.9999999900    ', format(9.99999999,1,10,2,0))
+
+::method test284
+    self~assertSame('9.99999999   ', format(9.99999999,1,8,1,0))
+
+::method test285
+    self~assertSame('9.99999999    ', format(9.99999999,1,8,2,0))
+
+::method test286
+    self~assertSame('9.9999999900', format(9.99999999,1,10,2,1))
+
+::method test287
+    self~assertSame('9.9999999900', format(9.99999999,1,10,2,2))
+
+::method test288
+    self~assertSame('9.99999999', format(9.99999999,1,8,0,0))
+
+::method test289
+    self~assertSame('9.99999999', format(9.99999999,1,8,0,1))
+
+::method test290
+    self~assertSame('9.99999999', format(9.99999999,1,8,0,2))
+
+::method test291
+    self~assertSame('9.99999999', format(9.99999999,1,8,1,1))
+
+::method test292
+    self~assertSame('9.99999999', format(9.99999999,1,8,1,2))
+
+::method test293
+    self~assertSame('9.99999999', format(9.99999999,1,8,2,1))
+
+::method test294
+    self~assertSame('9.99999999', format(9.99999999,1,8,2,2))
+
+::method test298
+    self~assertSame('1.000000E+1', format(9.99999999,1,6,1,0))
+
+::method test299
+    self~assertSame('1.000000E+1', format(9.99999999,1,6,1,1))
+
+::method test300
+    -- rounds to "10.0000000" and expt trigger does not force exponential
+    self~expectSyntax(93.942)
+    self~assertSame('1.000000E+1', format(9.99999999,1,6,1,2))
+
+::method test301
+    self~assertSame('1.000000E+01', format(9.99999999,1,6,2,0))
+
+::method test302
+    self~assertSame('1.000000E+01', format(9.99999999,1,6,2,1))
+
+::method test303
+    -- rounds to "10.0000000" and expt trigger does not force exponential
+    self~expectSyntax(93.942)
+    self~assertSame('1.000000E+01', format(9.99999999,1,6,2,2))
+
+::method test306
+    self~assertSame('1.0000E+1', format(9.99999999,1,4,1,0))
+
+::method test307
+    self~assertSame('1.0000E+1', format(9.99999999,1,4,1,1))
+
+::method test308
+    self~assertSame('1.0000E+01', format(9.99999999,1,4,2,0))
+
+::method test309
+    self~assertSame('1.0000E+01', format(9.99999999,1,4,2,1))
+
+::method test312
+    self~assertSame('1.00E+1', format(9.99999999,1,2,1,0))
+
+::method test313
+    self~assertSame('1.00E+1', format(9.99999999,1,2,1,1))
+
+::method test314
+    self~assertSame('1.00E+01', format(9.99999999,1,2,2,0))
+
+::method test315
+    self~assertSame('1.00E+01', format(9.99999999,1,2,2,1))
+
+::method test318
+    self~assertSame('1.0E+1', format(9.99999999,1,1,1,0))
+
+::method test319
+    self~assertSame('1.0E+1', format(9.99999999,1,1,1,1))
+
+::method test320
+    self~assertSame('1.0E+01', format(9.99999999,1,1,2,0))
+
+::method test321
+    self~assertSame('1.0E+01', format(9.99999999,1,1,2,1))
+
+::method test324
+    self~assertSame('1E+1', format(9.99999999,1,0,1,0))
+
+::method test325
+    self~assertSame('1E+1', format(9.99999999,1,0,1,1))
+
+::method test326
+    self~assertSame('1E+01', format(9.99999999,1,0,2,0))
+
+::method test327
+    self~assertSame('1E+01', format(9.99999999,1,0,2,1))
+
+::method test330
+    self~assertSame('1E+1', format(9.99999999,1,0,1,0))
+
+::method test331
+    self~assertSame('1E+1', format(9.99999999,1,0,1,1))
+
+::method test334
+    self~assertSame('1E+1', format(9.99999999,1,0,1,0))
+
+::method test335
+    self~assertSame('1E+1', format(9.99999999,1,0,1,1))
+
+::method test336
+    self~assertSame('    1.2346E+004', format(12345.67890123,5,4,3,1))
+
+::method test337
+    self~assertSame('    1.2346E+004', format(12345.67890123,5,4,3,2))
+
+::method test338
+    self~assertSame('    1.2346E+004', format(12345.67890123,5,4,3,3))
+
+::method test339
+    self~assertSame('    1.23457E+004', format(12345.67890123,5,5,3,1))
+
+::method test340
+    self~assertSame('    1.23457E+004', format(12345.67890123,5,5,3,2))
+
+::method test341
+    self~assertSame('    1.23457E+004', format(12345.67890123,5,5,3,3))
+
+::method test342
+    self~assertSame('    1.234568E+004', format(12345.67890123,5,6,3,1))
+
+::method test343
+    self~assertSame('    1.234568E+004', format(12345.67890123,5,6,3,2))
+
+::method test344
+    self~assertSame('    1.234568E+004', format(12345.67890123,5,6,3,3))
+
+::method test345
+    self~assertSame('    1.2346E+4', format(12345.67890123,5,4,1,0))
+
+::method test346
+    self~assertSame('    1.2346E+4', format(12345.67890123,5,4,1,1))
+
+::method test347
+    self~assertSame('    1.2346E+4', format(12345.67890123,5,4,1,2))
+
+::method test348
+    self~assertSame('    1.23457E+4', format(12345.67890123,5,5,1,0))
+
+::method test349
+    self~assertSame('    1.23457E+4', format(12345.67890123,5,5,1,1))
+
+::method test350
+    self~assertSame('    1.23457E+4', format(12345.67890123,5,5,1,2))
+
+::method test351
+    self~assertSame('    1.234568E+4', format(12345.67890123,5,6,1,0))
+
+::method test352
+    self~assertSame('    1.234568E+4', format(12345.67890123,5,6,1,1))
+
+::method test353
+    self~assertSame('    1.234568E+4', format(12345.67890123,5,6,1,2))
+
+::method test354
+    self~assertSame('    1E+4', format(12345.67890123,5,0,1,0))
+
+::method test355
+    self~assertSame('    1E+4', format(12345.67890123,5,0,1,1))
+
+::method test356
+    self~assertSame('    1E+4', format(12345.67890123,5,0,1,2))
+
+::method test357
+    self~assertSame('    1.2E+4', format(12345.67890123,5,1,1,0))
+
+::method test358
+    self~assertSame('    1.2E+4', format(12345.67890123,5,1,1,1))
+
+::method test359
+    self~assertSame('    1.2E+4', format(12345.67890123,5,1,1,2))
+
+::method test360
+    self~assertSame('    1.23E+4', format(12345.67890123,5,2,1,0))
+
+::method test361
+    self~assertSame('    1.23E+4', format(12345.67890123,5,2,1,1))
+
+::method test362
+    self~assertSame('    1.23E+4', format(12345.67890123,5,2,1,2))
+
+::method test363
+    self~assertSame('    1.23E+05', format(123456.78,5,2,2,4))
+
+::method test364
+    self~assertSame('    1.23E+05', format(123456.78,5,2,2,5))
+
+::method test365
+    self~assertSame('     1.23E+05', format(123456.78,6,2,2,4))
+
+::method test366
+    self~assertSame('     1.23E+05', format(123456.78,6,2,2,5))
+
+::method test367
+    self~assertSame('123456.78', format(123456.78,6,2,2,6))
+
+::method test368
+    self~assertSame('      1.23E+05', format(123456.78,7,2,2,4))
+
+::method test369
+    self~assertSame('      1.23E+05', format(123456.78,7,2,2,5))
+
+::method test370
+    self~assertSame(' 123456.78', format(123456.78,7,2,2,6))
+
+::method test371
+    self~assertSame('     1.2E+05', format(123456.78,6,1,2,4))
+
+::method test372
+    self~assertSame('     1.2E+05', format(123456.78,6,1,2,5))
+
+::method test373
+    self~assertSame('123456.8', format(123456.78,6,1,2,6))
+
+::method test374
+    self~assertSame('     1.23E+05', format(123456.78,6,2,2,4))
+
+::method test375
+    self~assertSame('     1.23E+05', format(123456.78,6,2,2,5))
+
+::method test376
+    self~assertSame('123456.78', format(123456.78,6,2,2,6))
+
+::method test377
+    self~assertSame('     1.235E+05', format(123456.78,6,3,2,4))
+
+::method test378
+    self~assertSame('     1.235E+05', format(123456.78,6,3,2,5))
+
+::method test379
+    self~assertSame('123456.780', format(123456.78,6,3,2,6))
+
+::method test380
+    self~assertSame('    1.23E+05', format(123456.78,5,2,2,4))
+
+::method test381
+    self~assertSame('    1.23E+05', format(123456.78,5,2,2,5))
+
+::method test382
+    self~assertSame('     1.23E+05', format(123456.78,6,2,2,4))
+
+::method test383
+    self~assertSame('     1.23E+05', format(123456.78,6,2,2,5))
+
+::method test384
+    self~assertSame('123456.78', format(123456.78,6,2,2,6))
+
+::method test385
+    self~assertSame('      1.23E+05', format(123456.78,7,2,2,4))
+
+::method test386
+    self~assertSame('      1.23E+05', format(123456.78,7,2,2,5))
+
+::method test387
+    self~assertSame(' 123456.78', format(123456.78,7,2,2,6))
+
+::method test388
+    self~assertSame('     1.2E+05', format(123456.78,6,1,2,4))
+
+::method test389
+    self~assertSame('     1.2E+05', format(123456.78,6,1,2,5))
+
+::method test390
+    self~assertSame('123456.8', format(123456.78,6,1,2,6))
+
+::method test391
+    self~assertSame('     1.23E+05', format(123456.78,6,2,2,4))
+
+::method test392
+    self~assertSame('     1.23E+05', format(123456.78,6,2,2,5))
+
+::method test393
+    self~assertSame('123456.78', format(123456.78,6,2,2,6))
+
+::method test394
+    self~assertSame('     1.235E+05', format(123456.78,6,3,2,4))
+
+::method test395
+    self~assertSame('     1.235E+05', format(123456.78,6,3,2,5))
+
+::method test396
+    self~assertSame('123456.780', format(123456.78,6,3,2,6))
+
+::method test397
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('7.65467547E+10', format(76546754654.87658765))
+
+::method test398
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('           7.6547E+10', format(76546754654.87658765,12,4))
+
+::method test399
+    self~assertSame('   2.2288E+007', format(22287634.9876,4,4,3,3))
+
+::method test400
+    self~assertSame('   2.2288E+007', format(22287634.9876,4,4,3,4))
+
+::method test401
+    self~assertSame('   2.2288E+007', format(22287634.9876,4,4,3,5))
+
+::method test402
+    self~assertSame('   2.2288E+0007', format(22287634.9876,4,4,4,3))
+
+::method test403
+    self~assertSame('   2.2288E+0007', format(22287634.9876,4,4,4,4))
+
+::method test404
+    self~assertSame('   2.2288E+0007', format(22287634.9876,4,4,4,5))
+
+::method test405
+    self~assertSame('   2.2288E+00007', format(22287634.9876,4,4,5,3))
+
+::method test406
+    self~assertSame('   2.2288E+00007', format(22287634.9876,4,4,5,4))
+
+::method test407
+    self~assertSame('   2.2288E+00007', format(22287634.9876,4,4,5,5))
+
+::method test408
+    self~assertSame('  2.229E+007', format(22287634.9876,3,3,3,3))
+
+::method test409
+    self~assertSame('  2.229E+007', format(22287634.9876,3,3,3,4))
+
+::method test410
+    self~assertSame('  2.229E+007', format(22287634.9876,3,3,3,5))
+
+::method test411
+    self~assertSame('  2.229E+0007', format(22287634.9876,3,3,4,3))
+
+::method test412
+    self~assertSame('  2.229E+0007', format(22287634.9876,3,3,4,4))
+
+::method test413
+    self~assertSame('  2.229E+0007', format(22287634.9876,3,3,4,5))
+
+::method test414
+    self~assertSame('  2.229E+00007', format(22287634.9876,3,3,5,3))
+
+::method test415
+    self~assertSame('  2.229E+00007', format(22287634.9876,3,3,5,4))
+
+::method test416
+    self~assertSame('  2.229E+00007', format(22287634.9876,3,3,5,5))
+
+::method test417
+    self~assertSame(' 2.23E+007', format(22287634.9876,2,2,3,3))
+
+::method test418
+    self~assertSame(' 2.23E+007', format(22287634.9876,2,2,3,4))
+
+::method test419
+    self~assertSame(' 2.23E+007', format(22287634.9876,2,2,3,5))
+
+::method test420
+    self~assertSame(' 2.23E+0007', format(22287634.9876,2,2,4,3))
+
+::method test421
+    self~assertSame(' 2.23E+0007', format(22287634.9876,2,2,4,4))
+
+::method test422
+    self~assertSame(' 2.23E+0007', format(22287634.9876,2,2,4,5))
+
+::method test423
+    self~assertSame(' 2.23E+00007', format(22287634.9876,2,2,5,3))
+
+::method test424
+    self~assertSame(' 2.23E+00007', format(22287634.9876,2,2,5,4))
+
+::method test425
+    self~assertSame(' 2.23E+00007', format(22287634.9876,2,2,5,5))
+
+::method test426
+    self~assertSame('2.2E+007', format(22287634.9876,1,1,3,3))
+
+::method test427
+    self~assertSame('2.2E+007', format(22287634.9876,1,1,3,4))
+
+::method test428
+    self~assertSame('2.2E+007', format(22287634.9876,1,1,3,5))
+
+::method test429
+    self~assertSame('2.2E+0007', format(22287634.9876,1,1,4,3))
+
+::method test430
+    self~assertSame('2.2E+0007', format(22287634.9876,1,1,4,4))
+
+::method test431
+    self~assertSame('2.2E+0007', format(22287634.9876,1,1,4,5))
+
+::method test432
+    self~assertSame('2.2E+00007', format(22287634.9876,1,1,5,3))
+
+::method test433
+    self~assertSame('2.2E+00007', format(22287634.9876,1,1,5,4))
+
+::method test434
+    self~assertSame('2.2E+00007', format(22287634.9876,1,1,5,5))
+
+::method test435
+    self~assertSame('2E+0007', format(22287634.9876,1,0,4,4))
+
+::method test436
+    self~assertSame('2.2E+0007', format(22287634.9876,1,1,4,4))
+
+::method test437
+    self~assertSame('2.23E+0007', format(22287634.9876,1,2,4,4))
+
+::method test438
+    self~assertSame(' 2E+0007', format(22287634.9876,2,0,4,4))
+
+::method test439
+    self~assertSame(' 2.2E+0007', format(22287634.9876,2,1,4,4))
+
+::method test440
+    self~assertSame(' 2.23E+0007', format(22287634.9876,2,2,4,4))
+
+::method test441
+    self~assertSame('2E+007', format(22287634.9876,1,0,3,3))
+
+::method test442
+    self~assertSame('2.2E+007', format(22287634.9876,1,1,3,3))
+
+::method test443
+    self~assertSame('2.23E+007', format(22287634.9876,1,2,3,3))
+
+::method test444
+    self~assertSame(' 2E+007', format(22287634.9876,2,0,3,3))
+
+::method test445
+    self~assertSame(' 2.2E+007', format(22287634.9876,2,1,3,3))
+
+::method test446
+    self~assertSame(' 2.23E+007', format(22287634.9876,2,2,3,3))
+
+::method test447
+    self~assertSame('2E+07', format(22287634.9876,1,0,2,2))
+
+::method test448
+    self~assertSame('2.2E+07', format(22287634.9876,1,1,2,2))
+
+::method test449
+    self~assertSame('2.23E+07', format(22287634.9876,1,2,2,2))
+
+::method test450
+    self~assertSame(' 2E+07', format(22287634.9876,2,0,2,2))
+
+::method test451
+    self~assertSame(' 2.2E+07', format(22287634.9876,2,1,2,2))
+
+::method test452
+    self~assertSame(' 2.23E+07', format(22287634.9876,2,2,2,2))
+
+::method test453
+    self~assertSame('2E+7', format(22287634.9876,1,0,1,1))
+
+::method test454
+    self~assertSame('2.2E+7', format(22287634.9876,1,1,1,1))
+
+::method test455
+    self~assertSame('2.23E+7', format(22287634.9876,1,2,1,1))
+
+::method test456
+    self~assertSame(' 2E+7', format(22287634.9876,2,0,1,1))
+
+::method test457
+    self~assertSame(' 2.2E+7', format(22287634.9876,2,1,1,1))
+
+::method test458
+    self~assertSame(' 2.23E+7', format(22287634.9876,2,2,1,1))
+
+::method test459
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame(' 22287635.00000000', format(22287634.9876,9,8,9,8))
+
+::method test460
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame(' 22287635.00000000', format(22287634.9876,9,8,9,9))
+
+::method test461
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame(' 22287635.00000000', format(22287634.9876,9,8,9,10))
+
+::method test462
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame(' 22287635.000000000', format(22287634.9876,9,9,9,8))
+
+::method test463
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame(' 22287635.000000000', format(22287634.9876,9,9,9,9))
+
+::method test464
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame(' 22287635.000000000', format(22287634.9876,9,9,9,10))
+
+::method test465
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame(' 22287635.0000000000', format(22287634.9876,9,10,9,8))
+
+::method test466
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame(' 22287635.0000000000', format(22287634.9876,9,10,9,9))
+
+::method test467
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame(' 22287635.0000000000', format(22287634.9876,9,10,9,10))
+
+::method test468
+    self~assertSame('          1000000000.00000000000000000000', format(999999999.999999999999999999,20,20,19,19))
+
+::method test469
+    self~assertSame('          1000000000.00000000000000000000', format(999999999.999999999999999999,20,20,19,20))
+
+::method test470
+    self~assertSame('          1000000000.00000000000000000000', format(999999999.999999999999999999,20,20,19,21))
+
+::method test471
+    self~assertSame('          1000000000.00000000000000000000', format(999999999.999999999999999999,20,20,20,19))
+
+::method test472
+    self~assertSame('          1000000000.00000000000000000000', format(999999999.999999999999999999,20,20,20,20))
+
+::method test473
+    self~assertSame('          1000000000.00000000000000000000', format(999999999.999999999999999999,20,20,20,21))
+
+::method test474
+    self~assertSame('          1000000000.00000000000000000000', format(999999999.999999999999999999,20,20,21,19))
+
+::method test475
+    self~assertSame('          1000000000.00000000000000000000', format(999999999.999999999999999999,20,20,21,20))
+
+::method test476
+    self~assertSame('          1000000000.00000000000000000000', format(999999999.999999999999999999,20,20,21,21))
+
+::method test477
+    self~assertSame('1000000000.000000000000000000000000000000', format(999999999.999999999999999999,10,30,19,19))
+
+::method test478
+    self~assertSame('1000000000.000000000000000000000000000000', format(999999999.999999999999999999,10,30,19,20))
+
+::method test479
+    self~assertSame('1000000000.000000000000000000000000000000', format(999999999.999999999999999999,10,30,19,21))
+
+::method test480
+    self~assertSame('1000000000.000000000000000000000000000000', format(999999999.999999999999999999,10,30,20,19))
+
+::method test481
+    self~assertSame('1000000000.000000000000000000000000000000', format(999999999.999999999999999999,10,30,20,20))
+
+::method test482
+    self~assertSame('1000000000.000000000000000000000000000000', format(999999999.999999999999999999,10,30,20,21))
+
+::method test483
+    self~assertSame('1000000000.000000000000000000000000000000', format(999999999.999999999999999999,10,30,21,19))
+
+::method test484
+    self~assertSame('1000000000.000000000000000000000000000000', format(999999999.999999999999999999,10,30,21,20))
+
+::method test485
+    self~assertSame('1000000000.000000000000000000000000000000', format(999999999.999999999999999999,10,30,21,21))
+
+::method test486
+    self~assertSame(' 1000000000.000000000000000000000000000000', format(999999999.999999999999999999,11,30,29,29))
+
+::method test487
+    self~assertSame(' 1000000000.000000000000000000000000000000', format(999999999.999999999999999999,11,30,29,30))
+
+::method test488
+    self~assertSame(' 1000000000.000000000000000000000000000000', format(999999999.999999999999999999,11,30,29,31))
+
+::method test489
+    self~assertSame(' 1000000000.000000000000000000000000000000', format(999999999.999999999999999999,11,30,30,29))
+
+::method test490
+    self~assertSame(' 1000000000.000000000000000000000000000000', format(999999999.999999999999999999,11,30,30,30))
+
+::method test491
+    self~assertSame(' 1000000000.000000000000000000000000000000', format(999999999.999999999999999999,11,30,30,31))
+
+::method test492
+    self~assertSame(' 1000000000.000000000000000000000000000000', format(999999999.999999999999999999,11,30,31,29))
+
+::method test493
+    self~assertSame(' 1000000000.000000000000000000000000000000', format(999999999.999999999999999999,11,30,31,30))
+
+::method test494
+    self~assertSame(' 1000000000.000000000000000000000000000000', format(999999999.999999999999999999,11,30,31,31))
+
+::method test495
+    self~assertSame(' 1000000000.000000000000000000000000000000', format(999999999.9999999999,11,30,29,29))
+
+::method test496
+    self~assertSame(' 1000000000.000000000000000000000000000000', format(999999999.9999999999,11,30,29,30))
+
+::method test497
+    self~assertSame(' 1000000000.000000000000000000000000000000', format(999999999.9999999999,11,30,29,31))
+
+::method test498
+    self~assertSame(' 1000000000.000000000000000000000000000000', format(999999999.9999999999,11,30,30,29))
+
+::method test499
+    self~assertSame(' 1000000000.000000000000000000000000000000', format(999999999.9999999999,11,30,30,30))
+
+::method test500
+    self~assertSame(' 1000000000.000000000000000000000000000000', format(999999999.9999999999,11,30,30,31))
+
+::method test501
+    self~assertSame(' 1000000000.000000000000000000000000000000', format(999999999.9999999999,11,30,31,29))
+
+::method test502
+    self~assertSame(' 1000000000.000000000000000000000000000000', format(999999999.9999999999,11,30,31,30))
+
+::method test503
+    self~assertSame(' 1000000000.000000000000000000000000000000', format(999999999.9999999999,11,30,31,31))
+
+::method test504
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame(' 1000000000.000000000000000000000000000000', format(999999999.999999999,11,30,29,29))
+
+::method test505
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame(' 1000000000.000000000000000000000000000000', format(999999999.999999999,11,30,29,30))
+
+::method test506
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame(' 1000000000.000000000000000000000000000000', format(999999999.999999999,11,30,29,31))
+
+::method test507
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame(' 1000000000.000000000000000000000000000000', format(999999999.999999999,11,30,30,29))
+
+::method test508
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame(' 1000000000.000000000000000000000000000000', format(999999999.999999999,11,30,30,30))
+
+::method test509
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame(' 1000000000.000000000000000000000000000000', format(999999999.999999999,11,30,30,31))
+
+::method test510
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame(' 1000000000.000000000000000000000000000000', format(999999999.999999999,11,30,31,29))
+
+::method test511
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame(' 1000000000.000000000000000000000000000000', format(999999999.999999999,11,30,31,30))
+
+::method test512
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame(' 1000000000.000000000000000000000000000000', format(999999999.999999999,11,30,31,31))
+
+::method test513
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame(' 1000000000.000000000000000000000000000000', format(999999999.99999999,11,30,29,29))
+
+::method test514
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame(' 1000000000.000000000000000000000000000000', format(999999999.99999999,11,30,29,30))
+
+::method test515
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame(' 1000000000.000000000000000000000000000000', format(999999999.99999999,11,30,29,31))
+
+::method test516
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame(' 1000000000.000000000000000000000000000000', format(999999999.99999999,11,30,30,29))
+
+::method test517
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame(' 1000000000.000000000000000000000000000000', format(999999999.99999999,11,30,30,30))
+
+::method test518
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame(' 1000000000.000000000000000000000000000000', format(999999999.99999999,11,30,30,31))
+
+::method test519
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame(' 1000000000.000000000000000000000000000000', format(999999999.99999999,11,30,31,29))
+
+::method test520
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame(' 1000000000.000000000000000000000000000000', format(999999999.99999999,11,30,31,30))
+
+::method test521
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame(' 1000000000.000000000000000000000000000000', format(999999999.99999999,11,30,31,31))
+
+::method test522
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('  100000000.000000000000000000000000000000', format(99999999.99999999,11,30,29,29))
+
+::method test523
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('  100000000.000000000000000000000000000000', format(99999999.99999999,11,30,29,30))
+
+::method test524
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('  100000000.000000000000000000000000000000', format(99999999.99999999,11,30,29,31))
+
+::method test525
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('  100000000.000000000000000000000000000000', format(99999999.99999999,11,30,30,29))
+
+::method test526
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('  100000000.000000000000000000000000000000', format(99999999.99999999,11,30,30,30))
+
+::method test527
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('  100000000.000000000000000000000000000000', format(99999999.99999999,11,30,30,31))
+
+::method test528
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('  100000000.000000000000000000000000000000', format(99999999.99999999,11,30,31,29))
+
+::method test529
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('  100000000.000000000000000000000000000000', format(99999999.99999999,11,30,31,30))
+
+::method test530
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('  100000000.000000000000000000000000000000', format(99999999.99999999,11,30,31,31))
+
+::method test531
+    self~assertSame('          9.999999990000000000000000000000', format(9.99999999,11,30,29,29))
+
+::method test532
+    self~assertSame('          9.999999990000000000000000000000', format(9.99999999,11,30,29,30))
+
+::method test533
+    self~assertSame('          9.999999990000000000000000000000', format(9.99999999,11,30,29,31))
+
+::method test534
+    self~assertSame('          9.999999990000000000000000000000', format(9.99999999,11,30,30,29))
+
+::method test535
+    self~assertSame('          9.999999990000000000000000000000', format(9.99999999,11,30,30,30))
+
+::method test536
+    self~assertSame('          9.999999990000000000000000000000', format(9.99999999,11,30,30,31))
+
+::method test537
+    self~assertSame('          9.999999990000000000000000000000', format(9.99999999,11,30,31,29))
+
+::method test538
+    self~assertSame('          9.999999990000000000000000000000', format(9.99999999,11,30,31,30))
+
+::method test539
+    self~assertSame('          9.999999990000000000000000000000', format(9.99999999,11,30,31,31))
+
+::method test540
+    self~assertSame('9.9999999900', format(9.99999999,1,10,29,29))
+
+::method test541
+    self~assertSame('9.9999999900', format(9.99999999,1,10,29,30))
+
+::method test542
+    self~assertSame('9.9999999900', format(9.99999999,1,10,29,31))
+
+::method test543
+    self~assertSame('9.9999999900', format(9.99999999,1,10,30,29))
+
+::method test544
+    self~assertSame('9.9999999900', format(9.99999999,1,10,30,30))
+
+::method test545
+    self~assertSame('9.9999999900', format(9.99999999,1,10,30,31))
+
+::method test546
+    self~assertSame('9.9999999900', format(9.99999999,1,10,31,29))
+
+::method test547
+    self~assertSame('9.9999999900', format(9.99999999,1,10,31,30))
+
+::method test548
+    self~assertSame('9.9999999900', format(9.99999999,1,10,31,31))
+
+::method test549
+    self~assertSame('9.999999990', format(9.99999999,1,9,10,10))
+
+::method test550
+    self~assertSame('9.9999999900', format(9.99999999,1,10,10,10))
+
+::method test551
+    self~assertSame('9.99999999000', format(9.99999999,1,11,10,10))
+
+::method test552
+    self~assertSame(' 9.999999990', format(9.99999999,2,9,10,10))
+
+::method test553
+    self~assertSame(' 9.9999999900', format(9.99999999,2,10,10,10))
+
+::method test554
+    self~assertSame(' 9.99999999000', format(9.99999999,2,11,10,10))
+
+::method test555
+    self~assertSame('9.9999999900', format(9.99999999,1,10,9,9))
+
+::method test556
+    self~assertSame('9.9999999900', format(9.99999999,1,10,9,10))
+
+::method test557
+    self~assertSame('9.9999999900', format(9.99999999,1,10,9,11))
+
+::method test558
+    self~assertSame('9.9999999900', format(9.99999999,1,10,10,9))
+
+::method test559
+    self~assertSame('9.9999999900', format(9.99999999,1,10,10,10))
+
+::method test560
+    self~assertSame('9.9999999900', format(9.99999999,1,10,10,11))
+
+::method test561
+    self~assertSame('9.9999999900', format(9.99999999,1,10,11,9))
+
+::method test562
+    self~assertSame('9.9999999900', format(9.99999999,1,10,11,10))
+
+::method test563
+    self~assertSame('9.9999999900', format(9.99999999,1,10,11,11))
+
+::method test564
+    self~assertSame('9.9999999000', format(9.9999999,1,10,8,7))
+
+::method test565
+    self~assertSame('9.9999999000', format(9.9999999,1,10,8,8))
+
+::method test566
+    self~assertSame('9.9999999000', format(9.9999999,1,10,8,9))
+
+::method test567
+    self~assertSame('9.9999999900', format(9.99999999,1,10,8,7))
+
+::method test568
+    self~assertSame('9.9999999900', format(9.99999999,1,10,8,8))
+
+::method test569
+    self~assertSame('9.9999999900', format(9.99999999,1,10,8,9))
+
+::method test570
+    self~assertSame('9.9999999000', format(9.9999999,1,10,6,5))
+
+::method test571
+    self~assertSame('9.9999999000', format(9.9999999,1,10,6,6))
+
+::method test572
+    self~assertSame('9.9999999000', format(9.9999999,1,10,6,7))
+
+::method test573
+    self~assertSame('9.9999999900', format(9.99999999,1,10,6,5))
+
+::method test574
+    self~assertSame('9.9999999900', format(9.99999999,1,10,6,6))
+
+::method test575
+    self~assertSame('9.9999999900', format(9.99999999,1,10,6,7))
+
+::method test576
+    self~assertSame('9.9999999000', format(9.9999999,1,10,4,3))
+
+::method test577
+    self~assertSame('9.9999999000', format(9.9999999,1,10,4,4))
+
+::method test578
+    self~assertSame('9.9999999000', format(9.9999999,1,10,4,5))
+
+::method test579
+    self~assertSame('9.9999999900', format(9.99999999,1,10,4,3))
+
+::method test580
+    self~assertSame('9.9999999900', format(9.99999999,1,10,4,4))
+
+::method test581
+    self~assertSame('9.9999999900', format(9.99999999,1,10,4,5))
+
+::method test582
+    -- rounds to "10.0000000" and expt trigger does not force exponential
+    self~expectSyntax(93.942)
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('1.0000000000E+0001', format(9.999999995,1,10,4,3))
+
+::method test583
+    self~assertSame('9.9999999000', format(9.9999999,1,10,2,1))
+
+::method test584
+    self~assertSame('9.9999999000', format(9.9999999,1,10,2,2))
+
+::method test585
+    self~assertSame('9.9999999000', format(9.9999999,1,10,2,3))
+
+::method test586
+    self~assertSame('9.9999999900', format(9.99999999,1,10,2,1))
+
+::method test587
+    self~assertSame('9.9999999900', format(9.99999999,1,10,2,2))
+
+::method test588
+    self~assertSame('9.9999999900', format(9.99999999,1,10,2,3))
+
+::method test589
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('1.0000000000E+01', format(9.999999995,1,10,2,1))
+
+::method test590
+    -- rounds to "10.0000000" and expt trigger does not force exponential
+    self~expectSyntax(93.942)
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('1.0000000000E+01', format(9.999999995,1,10,2,2))
+
+::method test591
+    numeric digits 9 -- dependent upon digits setting
+    -- rounds to "10.0000000" and expt trigger does not force exponential
+    self~expectSyntax(93.942)
+    self~assertSame('1.0000000000E+01', format(9.999999995,1,10,2,3))
+
+::method test592
+    self~assertSame('9.9999999000', format(9.9999999,1,10,1,1))
+
+::method test593
+    self~assertSame('9.9999999000', format(9.9999999,1,10,1,2))
+
+::method test594
+    self~assertSame('9.9999999000   ', format(9.9999999,1,10,1,0))
+
+::method test595
+    self~assertSame('9.9999999900   ', format(9.99999999,1,10,1,0))
+
+::method test596
+    self~assertSame('9.9999999900', format(9.99999999,1,10,1,1))
+
+::method test597
+    self~assertSame('9.9999999900', format(9.99999999,1,10,1,2))
+
+::method test598
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('1.0000000000E+1', format(9.999999995,1,10,1,0))
+
+::method test599
+    numeric digits 9 -- dependent upon digits setting
+    self~assertSame('1.0000000000E+1', format(9.999999995,1,10,1,1))
+
+::method test600
+    numeric digits 9 -- dependent upon digits setting
+    -- rounds to "10.0000000" and expt trigger does not force exponential
+    self~expectSyntax(93.942)
+    self~assertSame('1.0000000000E+1', format(9.999999995,1,10,1,2))
+
+::method test601
+    self~assertSame('9.99999990', format(9.9999999,1,8,1,1))
+
+::method test602
+    self~assertSame('9.99999990', format(9.9999999,1,8,1,2))
+
+::method test603
+    self~assertSame('9.99999999   ', format(9.99999999,1,8,1,0))
+
+::method test604
+    self~assertSame('9.99999990   ', format(9.9999999,1,8,1,0))
+
+::method test605
+    self~assertSame('9.99999999', format(9.99999999,1,8,1,1))
+
+::method test606
+    self~assertSame('9.99999999', format(9.99999999,1,8,1,2))
+
+::method test607
+    self~assertSame('1.00000000E+1', format(9.999999995,1,8,1,0))
+
+::method test608
+    self~assertSame('1.00000000E+1', format(9.999999995,1,8,1,1))
+
+::method test609
+    -- rounds to "10.0000000" and expt trigger does not force exponential
+    self~expectSyntax(93.942)
+    self~assertSame('1.00000000E+1', format(9.999999995,1,8,1,2))
+
+::method test610
+    self~assertSame('1.000000E+1', format(9.9999999,1,6,1,0))
+
+::method test611
+    self~assertSame('1.000000E+1', format(9.9999999,1,6,1,1))
+
+::method test612
+    -- rounds to "10.0000000" and expt trigger does not force exponential
+    self~expectSyntax(93.942)
+    self~assertSame('1.000000E+1', format(9.9999999,1,6,1,2))
+
+::method test613
+    self~assertSame('1.000000E+1', format(9.99999999,1,6,1,0))
+
+::method test614
+    self~assertSame('1.000000E+1', format(9.99999999,1,6,1,1))
+
+::method test615
+    -- rounds to "10.0000000" and expt trigger does not force exponential
+    self~expectSyntax(93.942)
+    self~assertSame('1.000000E+1', format(9.99999999,1,6,1,2))
+
+::method test616
+    self~assertSame('1.000000E+1', format(9.999999995,1,6,1,0))
+
+::method test617
+    self~assertSame('1.000000E+1', format(9.999999995,1,6,1,1))
+
+::method test618
+    -- rounds to "10.0000000" and expt trigger does not force exponential
+    self~expectSyntax(93.942)
+    self~assertSame('1.000000E+1', format(9.999999995,1,6,1,2))
+
+::method test618a
+    -- rounds to "10.0000000" and expt trigger will force exponential
+    self~assertSame('1.000000E+1', format(9.999999995,1,6,1,1))
+
+::method test619
+    self~assertSame('1.0000E+1', format(9.9999999,1,4,1,0))
+
+::method test620
+    self~assertSame('1.0000E+1', format(9.9999999,1,4,1,1))
+
+::method test621
+    self~assertSame('1.0000E+1', format(9.99999999,1,4,1,0))
+
+::method test622
+    self~assertSame('1.0000E+1', format(9.99999999,1,4,1,1))
+
+::method test623
+    self~assertSame('1.0000E+1', format(9.999999995,1,4,1,0))
+
+::method test624
+    self~assertSame('1.0000E+1', format(9.999999995,1,4,1,1))
+
+::method test626
+    self~assertSame('1.00E+1', format(9.9999999,1,2,1,0))
+
+::method test627
+    self~assertSame('1.00E+1', format(9.9999999,1,2,1,1))
+
+::method test628
+    self~assertSame('1.00E+1', format(9.99999999,1,2,1,0))
+
+::method test629
+    self~assertSame('1.00E+1', format(9.99999999,1,2,1,1))
+
+::method test630
+    self~assertSame('1.00E+1', format(9.999999995,1,2,1,0))
+
+::method test631
+    self~assertSame('1.00E+1', format(9.999999995,1,2,1,1))
+
+::method test633
+    self~assertSame('1.0E+1', format(9.9999999,1,1,1,0))
+
+::method test634
+    self~assertSame('1.0E+1', format(9.9999999,1,1,1,1))
+
+::method test635
+    self~assertSame('1.0E+1', format(9.99999999,1,1,1,0))
+
+::method test636
+    self~assertSame('1.0E+1', format(9.99999999,1,1,1,1))
+
+::method test637
+    self~assertSame('1.0E+1', format(9.999999995,1,1,1,0))
+
+::method test638
+    self~assertSame('1.0E+1', format(9.999999995,1,1,1,1))
+
+::method test640
+    self~assertSame('1E+1', format(9.9999999,1,0,1,0))
+
+::method test641
+    self~assertSame('1E+1', format(9.9999999,1,0,1,1))
+
+::method test642
+    self~assertSame('1E+1', format(9.99999999,1,0,1,0))
+
+::method test643
+    self~assertSame('1E+1', format(9.99999999,1,0,1,1))
+
+::method test644
+    self~assertSame('1E+1', format(9.999999995,1,0,1,0))
+
+::method test645
+    self~assertSame('1E+1', format(9.999999995,1,0,1,1))
+
+::method test655
+    self~expectSyntax(93.942)
+    xre=format(22287634.9876,0,0,4,4)
+
+::method test656
+    self~expectSyntax(93.942)
+    xre=format(22287634.9876,0,1,4,4)
+
+::method test657
+    self~expectSyntax(93.942)
+    xre=format(22287634.9876,0,2,4,4)
+
+::method test658
+    self~expectSyntax(93.942)
+    xre=format(22287634.9876,1,1,0,0)
+
+::method test659
+    self~expectSyntax(93.942)
+    xre=format(22287634.9876,1,1,0,1)
+
+::method test660
+    self~expectSyntax(93.942)
+    xre=format(22287634.9876,1,1,0,2)
+
+::method test661
+    self~expectSyntax(93.906)
+    xre=format(22287634.9876,1,1,-1,-1)
+
+::method test662
+    self~expectSyntax(93.906)
+    xre=format(22287634.9876,1,1,-1,0)
+
+::method test663
+    self~expectSyntax(93.906)
+    xre=format(22287634.9876,1,1,-1,1)
+
+::method test664
+    self~expectSyntax(93.906)
+    xre=format(22287634.9876,1,1,0,-1)
+
+::method test665
+    self~expectSyntax(93.942)
+    xre=format(22287634.9876,1,1,0,0)
+
+::method test666
+    self~expectSyntax(93.942)
+    xre=format(22287634.9876,1,1,0,1)
+
+::method test667
+    self~expectSyntax(93.906)
+    xre=format(22287634.9876,1,1,1,-1)
+
+::method test668
+    self~expectSyntax(93.906)
+    xre=format(22287634.9876,0,0,-1,-1)
+
+::method test669
+    self~expectSyntax(93.906)
+    xre=format(22287634.9876,0,0,-1,0)
+
+::method test670
+    self~expectSyntax(93.906)
+    xre=format(22287634.9876,0,0,-1,1)
+
+::method test671
+    self~expectSyntax(93.906)
+    xre=format(22287634.9876,0,0,0,-1)
+
+::method test672
+    self~expectSyntax(93.942)
+    xre=format(22287634.9876,0,0,0,0)
+
+::method test673
+    self~expectSyntax(93.942)
+    xre=format(22287634.9876,0,0,0,1)
+
+::method test674
+    self~expectSyntax(93.906)
+    xre=format(22287634.9876,0,0,1,-1)
+
+::method test675
+    self~expectSyntax(93.942)
+    xre=format(22287634.9876,0,0,1,0)
+
+::method test676
+    self~expectSyntax(93.942)
+    xre=format(22287634.9876,0,0,1,1)
+
+::method test677
+    self~expectSyntax(93.942)
+    xre=format(999999999.999999999999999999,9,29,20,20)
+
+::method test678
+    self~expectSyntax(93.942)
+    xre=format(999999999.999999999999999999,9,30,20,20)
+
+::method test679
+    self~expectSyntax(93.942)
+    xre=format(999999999.999999999999999999,9,31,20,20)
+
+::method test680
+    self~expectSyntax(93.942)
+    xre=format(9.99999999,0,9,30,30)
+
+::method test681
+    self~expectSyntax(93.942)
+    xre=format(9.99999999,0,10,30,30)
+
+::method test682
+    self~expectSyntax(93.942)
+    xre=format(9.99999999,0,11,30,30)
+
+::method test683
+    self~expectSyntax(93.942)
+    xre=format(9.99999999,0,9,10,10)
+
+::method test684
+    self~expectSyntax(93.942)
+    xre=format(9.99999999,0,10,10,10)
+
+::method test685
+    self~expectSyntax(93.942)
+    xre=format(9.99999999,0,11,10,10)
+
+::method test686
+    self~expectSyntax(93.942)
+    xre=format(9.99999999,1,4,0,2)
+
+::method test687
+    self~expectSyntax(93.942)
+    xre=format(9.99999999,1,4,1,2)
+
+::method test688
+    self~expectSyntax(93.942)
+    xre=format(9.99999999,1,4,2,2)
+
+::method test689
+    self~expectSyntax(93.942)
+    xre=format(9.99999999,1,2,0,2)
+
+::method test690
+    self~expectSyntax(93.942)
+    xre=format(9.99999999,1,2,1,2)
+
+::method test691
+    self~expectSyntax(93.942)
+    xre=format(9.99999999,1,2,2,2)
+
+::method test692
+    self~expectSyntax(93.942)
+    xre=format(9.99999999,1,1,0,2)
+
+::method test693
+    self~expectSyntax(93.942)
+    xre=format(9.99999999,1,1,1,2)
+
+::method test694
+    self~expectSyntax(93.942)
+    xre=format(9.99999999,1,1,2,2)
+
+::method test695
+    self~expectSyntax(93.942)
+    xre=format(9.99999999,1,0,0,2)
+
+::method test696
+    self~expectSyntax(93.942)
+    xre=format(9.99999999,1,0,1,2)
+
+::method test697
+    self~expectSyntax(93.942)
+    xre=format(9.99999999,1,0,2,2)
+
+::method test698
+    self~expectSyntax(93.906)
+    xre=format(9.99999999,1,0,-1,0)
+
+::method test699
+    self~expectSyntax(93.906)
+    xre=format(9.99999999,1,0,-1,1)
+
+::method test700
+    self~expectSyntax(93.906)
+    xre=format(9.99999999,1,0,-1,2)
+
+::method test701
+    self~expectSyntax(93.942)
+    xre=format(9.99999999,1,0,0,2)
+
+::method test702
+    self~expectSyntax(93.942)
+    xre=format(9.99999999,1,0,1,2)
+
+::method test703
+    self~expectSyntax(93.906)
+    xre=format(9.99999999,1,0,-1,-1)
+
+::method test704
+    self~expectSyntax(93.906)
+    xre=format(9.99999999,1,0,-1,0)
+
+::method test705
+    self~expectSyntax(93.906)
+    xre=format(9.99999999,1,0,-1,1)
+
+::method test706
+    self~expectSyntax(93.906)
+    xre=format(9.99999999,1,0,0,-1)
+
+::method test707
+    self~expectSyntax(93.906)
+    xre=format(9.99999999,1,0,1,-1)
+
+::method test708
+    self~expectSyntax(93.906)
+    xre=format(9.99999999,0,0,-1,-1)
+
+::method test709
+    self~expectSyntax(93.906)
+    xre=format(9.99999999,0,0,-1,0)
+
+::method test710
+    self~expectSyntax(93.906)
+    xre=format(9.99999999,0,0,-1,1)
+
+::method test711
+    self~expectSyntax(93.906)
+    xre=format(9.99999999,0,0,0,-1)
+
+::method test712
+    self~expectSyntax(93.942)
+    xre=format(9.99999999,0,0,0,0)
+
+::method test713
+    self~expectSyntax(93.942)
+    xre=format(9.99999999,0,0,0,1)
+
+::method test714
+    self~expectSyntax(93.906)
+    xre=format(9.99999999,0,0,1,-1)
+
+::method test715
+    self~expectSyntax(93.942)
+    xre=format(9.99999999,0,0,1,0)
+
+::method test716
+    self~expectSyntax(93.942)
+    xre=format(9.99999999,0,0,1,1)
+
+::method test717
+    self~expectSyntax(93.942)
+    xre=format(123456.78,5,2,2,6)
+
+::method test718
+    self~expectSyntax(93.942)
+    xre=format(123456.78,5,2,2,6)
+
+::method test719
+    self~expectSyntax(93.942)
+    xre=format(22287634.9876,0,0,4,4)
+
+::method test720
+    self~expectSyntax(93.942)
+    xre=format(22287634.9876,0,1,4,4)
+
+::method test721
+    self~expectSyntax(93.942)
+    xre=format(22287634.9876,0,2,4,4)
+
+::method test722
+    self~expectSyntax(93.942)
+    xre=format(22287634.9876,0,0,3,3)
+
+::method test723
+    self~expectSyntax(93.942)
+    xre=format(22287634.9876,0,1,3,3)
+
+::method test724
+    self~expectSyntax(93.942)
+    xre=format(22287634.9876,0,2,3,3)
+
+::method test725
+    self~expectSyntax(93.942)
+    xre=format(22287634.9876,0,0,2,2)
+
+::method test726
+    self~expectSyntax(93.942)
+    xre=format(22287634.9876,0,1,2,2)
+
+::method test727
+    self~expectSyntax(93.942)
+    xre=format(22287634.9876,0,2,2,2)
+
+::method test728
+    self~expectSyntax(93.942)
+    xre=format(22287634.9876,0,0,1,1)
+
+::method test729
+    self~expectSyntax(93.942)
+    xre=format(22287634.9876,0,1,1,1)
+
+::method test730
+    self~expectSyntax(93.942)
+    xre=format(22287634.9876,0,2,1,1)
+
+::method test731
+    self~expectSyntax(93.942)
+    xre=format(22287634.9876,0,0,0,0)
+
+::method test732
+    self~expectSyntax(93.942)
+    xre=format(22287634.9876,0,1,0,0)
+
+::method test733
+    self~expectSyntax(93.942)
+    xre=format(22287634.9876,0,2,0,0)
+
+::method test734
+    self~expectSyntax(93.942)
+    xre=format(22287634.9876,1,0,0,0)
+
+::method test735
+    self~expectSyntax(93.942)
+    xre=format(22287634.9876,1,1,0,0)
+
+::method test736
+    self~expectSyntax(93.942)
+    xre=format(22287634.9876,1,2,0,0)
+
+::method test737
+    self~expectSyntax(93.942)
+    xre=format(22287634.9876,2,0,0,0)
+
+::method test738
+    self~expectSyntax(93.942)
+    xre=format(22287634.9876,2,1,0,0)
+
+::method test739
+    self~expectSyntax(93.942)
+    xre=format(22287634.9876,2,2,0,0)
+
+::method test740
+    self~expectSyntax(93.906)
+    xre=format(22287634.9876,-1,-1,0,0)
+
+::method test741
+    self~expectSyntax(93.906)
+    xre=format(22287634.9876,-1,0,0,0)
+
+::method test742
+    self~expectSyntax(93.906)
+    xre=format(22287634.9876,-1,1,0,0)
+
+::method test743
+    self~expectSyntax(93.906)
+    xre=format(22287634.9876,0,-1,0,0)
+
+::method test744
+    self~expectSyntax(93.942)
+    xre=format(22287634.9876,0,0,0,0)
+
+::method test745
+    self~expectSyntax(93.942)
+    xre=format(22287634.9876,0,1,0,0)
+
+::method test746
+    self~expectSyntax(93.906)
+    xre=format(22287634.9876,1,-1,0,0)
+
+::method test747
+    self~expectSyntax(93.942)
+    xre=format(22287634.9876,1,0,0,0)
+
+::method test748
+    self~expectSyntax(93.942)
+    xre=format(22287634.9876,1,1,0,0)
+
+::method test749
+    self~expectSyntax(93.942)
+    xre=format(9.99999999,0,9,10,10)
+
+::method test750
+    self~expectSyntax(93.942)
+    xre=format(9.99999999,0,10,10,10)
+
+::method test751
+    self~expectSyntax(93.942)
+    xre=format(9.99999999,0,11,10,10)
+
+::method test752
+    self~expectSyntax(93.942)
+    numeric digits 9 -- dependent upon digits setting
+    xre=format(9.999999995,1,10,8,7)
+
+::method test753
+    self~expectSyntax(93.942)
+    numeric digits 9 -- dependent upon digits setting
+    xre=format(9.999999995,1,10,8,8)
+
+::method test754
+    self~expectSyntax(93.942)
+    numeric digits 9 -- dependent upon digits setting
+    xre=format(9.999999995,1,10,8,9)
+
+::method test755
+    self~expectSyntax(93.942)
+    numeric digits 9 -- dependent upon digits setting
+    xre=format(9.999999995,1,10,6,5)
+
+::method test756
+    self~expectSyntax(93.942)
+    numeric digits 9 -- dependent upon digits setting
+    xre=format(9.999999995,1,10,6,6)
+
+::method test757
+    self~expectSyntax(93.942)
+    numeric digits 9 -- dependent upon digits setting
+    xre=format(9.999999995,1,10,6,7)
+
+::method test758
+    self~expectSyntax(93.942)
+    numeric digits 9 -- dependent upon digits setting
+    xre=format(9.999999995,1,10,4,4)
+
+::method test759
+    self~expectSyntax(93.942)
+    numeric digits 9 -- dependent upon digits setting
+    xre=format(9.999999995,1,10,4,5)
+
+::method test760
+    self~expectSyntax(93.942)
+    xre=format(9.9999999,1,4,1,2)
+
+::method test761
+    self~expectSyntax(93.942)
+    xre=format(9.99999999,1,4,1,2)
+
+::method test762
+    self~expectSyntax(93.942)
+    xre=format(9.9999999,1,2,1,2)
+
+::method test763
+    self~expectSyntax(93.942)
+    xre=format(9.99999999,1,2,1,2)
+
+::method test764
+    self~expectSyntax(93.942)
+    xre=format(9.9999999,1,1,1,2)
+
+::method test765
+    self~expectSyntax(93.942)
+    xre=format(9.99999999,1,1,1,2)
+
+::method test766
+    self~expectSyntax(93.942)
+    xre=format(9.9999999,1,0,1,2)
+
+::method test767
+    self~expectSyntax(93.942)
+    xre=format(9.99999999,1,0,1,2)
+
+::method test768
+    self~expectSyntax(93.942)
+    xre=format(9.9999999,1,0,0,2)
+
+::method test769
+    self~expectSyntax(93.942)
+    xre=format(9.99999999,1,0,0,2)
+
+::method test770
+    self~expectSyntax(93.942)
+    xre=format(9.999999995,1,0,0,0)
+
+::method test771
+    self~expectSyntax(93.942)
+    xre=format(9.999999995,1,0,0,1)
+
+::method test772
+    self~expectSyntax(93.942)
+    xre=format(9.999999995,1,0,0,2)
+
+::method test773
+    self~expectSyntax(93.906)
+    xre=format(9.9999999,1,0,0,-1)
+
+::method test774
+    self~expectSyntax(93.906)
+    xre=format(9.99999999,1,0,0,-1)
+
+::method test775
+    self~expectSyntax(93.906)
+    xre=format(9.999999995,1,0,0,-1)
+
+::method test776
+    self~expectSyntax(93.942)
+    xre=format(9.999999995,1,0,0,0)
+
+::method test777
+    self~expectSyntax(93.942)
+    xre=format(9.999999995,1,0,0,1)
+
+::method test778
+    self~expectSyntax(93.906)
+    xre=format(9.9999999,0,0,0,-1)
+
+::method test779
+    self~expectSyntax(93.942)
+    xre=format(9.9999999,0,0,0,0)
+
+::method test780
+    self~expectSyntax(93.942)
+    xre=format(9.9999999,0,0,0,1)
+
+::method test781
+    self~expectSyntax(93.906)
+    xre=format(9.99999999,0,0,0,-1)
+
+::method test782
+    self~expectSyntax(93.942)
+    xre=format(9.99999999,0,0,0,0)
+
+::method test783
+    self~expectSyntax(93.942)
+    xre=format(9.99999999,0,0,0,1)
+
+::method test784
+    self~expectSyntax(93.906)
+    xre=format(9.999999995,0,0,0,-1)
+
+::method test785
+    self~expectSyntax(93.942)
+    xre=format(9.999999995,0,0,0,0)
+
+::method test786
+    self~expectSyntax(93.942)
+    xre=format(9.999999995,0,0,0,1)
+
+::method test787
+    numeric digits 3
+    self~assertSame('    1.2E+05', format(123456.78,5,1,2,4))
+    self~assertSame('    1.2E+05', format(123456.78,5,1,2,5))
+    self~assertSame('    1.23E+05', format(123456.78,5,2,2,4))
+    self~assertSame('    1.23E+05', format(123456.78,5,2,2,5))
+    self~assertSame('    1.230E+05', format(123456.78,5,3,2,4))
+    self~assertSame('    1.230E+05', format(123456.78,5,3,2,5))
+    self~assertSame('     1.2E+05', format(123456.78,6,1,2,4))
+    self~assertSame('     1.2E+05', format(123456.78,6,1,2,5))
+    self~assertSame('123000.0', format(123456.78,6,1,2,6))
+    self~assertSame('     1.23E+05', format(123456.78,6,2,2,4))
+    self~assertSame('     1.23E+05', format(123456.78,6,2,2,5))
+    self~assertSame('123000.00', format(123456.78,6,2,2,6))
+    self~assertSame('     1.230E+05', format(123456.78,6,3,2,4))
+    self~assertSame('     1.230E+05', format(123456.78,6,3,2,5))
+    self~assertSame('123000.000', format(123456.78,6,3,2,6))
+    self~assertSame('      1.2E+05', format(123456.78,7,1,2,4))
+    self~assertSame('      1.2E+05', format(123456.78,7,1,2,5))
+    self~assertSame(' 123000.0', format(123456.78,7,1,2,6))
+    self~assertSame('      1.23E+05', format(123456.78,7,2,2,4))
+    self~assertSame('      1.23E+05', format(123456.78,7,2,2,5))
+    self~assertSame(' 123000.00', format(123456.78,7,2,2,6))
+    self~assertSame('      1.230E+05', format(123456.78,7,3,2,4))
+    self~assertSame('      1.230E+05', format(123456.78,7,3,2,5))
+    self~assertSame(' 123000.000', format(123456.78,7,3,2,6))
+
+::method test839
+    numeric digits 3
+    self~expectSyntax(93.942)
+    xre=format(123456.78,5,1,2,6)
+
+::method test840
+    numeric digits 3
+    self~expectSyntax(93.942)
+    xre=format(123456.78,5,2,2,6)
+
+::method test841
+    numeric digits 3
+    self~expectSyntax(93.942)
+    xre=format(123456.78,5,3,2,6)
+
+::method test842
+    numeric digits 3
+    numeric form Engineering
+    self~assertSame('   12.3E+18', format(123456.78E+14,5,1,2,4))
+    self~assertSame('   12.3E+18', format(123456.78E+14,5,1,2,5))
+    self~assertSame('   12.3E+18', format(123456.78E+14,5,1,2,6))
+    self~assertSame('   12.30E+18', format(123456.78E+14,5,2,2,4))
+    self~assertSame('   12.30E+18', format(123456.78E+14,5,2,2,5))
+    self~assertSame('   12.30E+18', format(123456.78E+14,5,2,2,6))
+    self~assertSame('   12.300E+18', format(123456.78E+14,5,3,2,4))
+    self~assertSame('   12.300E+18', format(123456.78E+14,5,3,2,5))
+    self~assertSame('   12.300E+18', format(123456.78E+14,5,3,2,6))
+    self~assertSame('    12.3E+18', format(123456.78E+14,6,1,2,4))
+    self~assertSame('    12.3E+18', format(123456.78E+14,6,1,2,5))
+    self~assertSame('    12.3E+18', format(123456.78E+14,6,1,2,6))
+    self~assertSame('    12.30E+18', format(123456.78E+14,6,2,2,4))
+    self~assertSame('    12.30E+18', format(123456.78E+14,6,2,2,5))
+    self~assertSame('    12.30E+18', format(123456.78E+14,6,2,2,6))
+    self~assertSame('    12.300E+18', format(123456.78E+14,6,3,2,4))
+    self~assertSame('    12.300E+18', format(123456.78E+14,6,3,2,5))
+    self~assertSame('    12.300E+18', format(123456.78E+14,6,3,2,6))
+    self~assertSame('     12.3E+18', format(123456.78E+14,7,1,2,4))
+    self~assertSame('     12.3E+18', format(123456.78E+14,7,1,2,5))
+    self~assertSame('     12.3E+18', format(123456.78E+14,7,1,2,6))
+    self~assertSame('     12.30E+18', format(123456.78E+14,7,2,2,4))
+    self~assertSame('     12.30E+18', format(123456.78E+14,7,2,2,5))
+    self~assertSame('     12.30E+18', format(123456.78E+14,7,2,2,6))
+    self~assertSame('     12.300E+18', format(123456.78E+14,7,3,2,4))
+    self~assertSame('     12.300E+18', format(123456.78E+14,7,3,2,5))
+    self~assertSame('     12.300E+18', format(123456.78E+14,7,3,2,6))
+    self~assertSame('   12.3E-12', format(123456.78E-16,5,1,2,0))
+    self~assertSame('   12.3E-012', format(123456.78E-16,5,1,3,0))
+    self~assertSame('   12.3E-0012', format(123456.78E-16,5,1,4,0))
+    self~assertSame('   12.30E-12', format(123456.78E-16,5,2,2,0))
+    self~assertSame('   12.30E-012', format(123456.78E-16,5,2,3,0))
+    self~assertSame('   12.30E-0012', format(123456.78E-16,5,2,4,0))
+    self~assertSame('   12.300E-12', format(123456.78E-16,5,3,2,0))
+    self~assertSame('   12.300E-012', format(123456.78E-16,5,3,3,0))
+    self~assertSame('   12.300E-0012', format(123456.78E-16,5,3,4,0))
+    self~assertSame('    12.3E-12', format(123456.78E-16,6,1,2,0))
+    self~assertSame('    12.3E-012', format(123456.78E-16,6,1,3,0))
+    self~assertSame('    12.3E-0012', format(123456.78E-16,6,1,4,0))
+    self~assertSame('    12.30E-12', format(123456.78E-16,6,2,2,0))
+    self~assertSame('    12.30E-012', format(123456.78E-16,6,2,3,0))
+    self~assertSame('    12.30E-0012', format(123456.78E-16,6,2,4,0))
+    self~assertSame('    12.300E-12', format(123456.78E-16,6,3,2,0))
+    self~assertSame('    12.300E-012', format(123456.78E-16,6,3,3,0))
+    self~assertSame('    12.300E-0012', format(123456.78E-16,6,3,4,0))
+    self~assertSame('     12.3E-12', format(123456.78E-16,7,1,2,0))
+    self~assertSame('     12.3E-012', format(123456.78E-16,7,1,3,0))
+    self~assertSame('     12.3E-0012', format(123456.78E-16,7,1,4,0))
+    self~assertSame('     12.30E-12', format(123456.78E-16,7,2,2,0))
+    self~assertSame('     12.30E-012', format(123456.78E-16,7,2,3,0))
+    self~assertSame('     12.30E-0012', format(123456.78E-16,7,2,4,0))
+    self~assertSame('     12.300E-12', format(123456.78E-16,7,3,2,0))
+    self~assertSame('     12.300E-012', format(123456.78E-16,7,3,3,0))
+    self~assertSame('     12.300E-0012', format(123456.78E-16,7,3,4,0))
+
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_FORMAT"
+    self~assertSame('   3', FORMAT('3',4))
+    self~assertSame('   2', FORMAT('1.73',4,0))
+    self~assertSame('   1.730', FORMAT('1.73',4,3))
+    self~assertSame('  -0.8', FORMAT('-.76',4,1))
+    self~assertSame('   3.03', FORMAT('3.03',4))
+    self~assertSame('-12.7300', FORMAT(' - 12.73', ,4))
+    self~assertSame('-12.73', FORMAT(' - 12.73'))
+    self~assertSame('0', FORMAT('0.000'))
+
+    self~assertSame('1.234573E+04', FORMAT('12345.73', , ,2,2)) --
+    self~assertSame('1.235E+4', FORMAT('12345.73', ,3, ,0))
+    self~assertSame('1.235', FORMAT('1.234573', ,3, ,0))
+    self~assertSame('1.235    ', FORMAT('1.234573', ,3,2,0))
+    self~assertSame('12345.73', FORMAT('12345.73', , ,3,6))
+    self~assertSame('123456700000.000', FORMAT('1234567e5', ,3,0))
+
+

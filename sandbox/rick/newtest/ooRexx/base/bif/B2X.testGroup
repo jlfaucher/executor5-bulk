@@ -1,0 +1,197 @@
+#!/usr/bin/rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2005-2008 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.B2X.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "B2X.testGroup" subclass ooTestCase public
+
+::method "test_1"
+   self~expectSyntax(40.3)
+   self~assertSame(b2x(), '')
+
+::method "test_2"
+   self~expectSyntax(93.932)
+   self~assertSame(b2x(' '), ' ')
+
+::method "test_2b"
+   self~expectSyntax(93.932)
+   self~assertSame(b2x(.string~tab), ' ')
+
+::method "test_3"
+   self~assertSame(b2x('1111'), 'F')
+
+::method "test_4"
+   self~assertSame(b2x('0001 0001'), '11')
+
+::method "test_4b"
+   self~assertSame(b2x('0001'||.string~tab||'0001'), '11')
+
+::method "test_5"
+   self~assertSame(b2x('1 0001'), '11')
+
+::method "test_6"
+   self~expectSyntax(93.932)
+   self~assertSame(b2x(' 1111'), 'F')
+
+::method "test_6b"
+   self~expectSyntax(93.932)
+   self~assertSame(b2x(.string~tab||'1111'), 'F')
+
+::method "test_7"
+   self~expectSyntax(93.932)
+   self~assertSame(b2x(' 0001 0001'), '11')
+
+::method "test_8"
+   self~expectSyntax(93.932)
+   self~assertSame(b2x(' 1 0001'), '11')
+
+::method "test_9"
+   self~expectSyntax(93.932)
+   self~assertSame(b2x('1111 '), '1')
+
+::method "test_9b"
+   self~expectSyntax(93.932)
+   self~assertSame(b2x('1111'||.string~tab), '1')
+
+::method "test_10"
+   self~expectSyntax(93.932)
+   self~assertSame(b2x('0001 0001 '), '11')
+
+::method "test_11"
+   self~expectSyntax(93.932)
+   self~assertSame(b2x('1 0001 '), '11')
+
+::method "test_12"
+   self~assertSame(b2x(1111), 'F')
+
+::method "test_13"
+   self~assertSame(b2x( 1111), 'F')
+
+::method "test_14"
+   self~assertSame(b2x(1111 ), 'F')
+
+::method "test_15"
+   self~assertSame(b2x(0001 0001), '11')
+
+::method "test_16"
+   self~assertSame(b2x( 0001 0001), '11')
+
+::method "test_17"
+   self~assertSame(b2x(0001 0001 ), '11')
+
+::method "test_18"
+   self~assertSame(b2x(1 0001), '11')
+
+::method "test_19"
+   self~assertSame(b2x( 1 0001), '11')
+
+::method "test_20"
+   self~assertSame(b2x(1 0001 ), '11')
+
+::method "test_21"
+   self~assertSame(b2x(10*11), '6')
+
+::method "test_22"
+   self~assertSame(b2x(11E+2*10), '18')
+
+::method "test_23"
+   self~assertSame(b2x(1.01E+2+10), '7')
+
+::method "test_24"
+   self~assertSame(b2x('1'||Copies(' ',100000)||'0001'), '11')
+
+::method "test_25"
+   self~expectSyntax(93.932)
+   self~assertSame(b2x(' 1 0001'), '11')
+
+::method "test_26"
+   self~expectSyntax(93.932)
+   self~assertSame(b2x('1 0001 '), '11')
+
+::method "test_27"
+   self~expectSyntax(93.934)
+   self~assertSame(b2x(Xrange('00'x,'FF'x)), '11')
+
+::method "test_28"
+   self~expectSyntax(93.934)
+   self~assertSame(b2x(Copies('AB',50000)), '11')
+
+::method "test_29"
+   self~expectSyntax(93.934)
+   self~assertSame(b2x('\'||Copies('10',50000)), '11')
+
+::method "test_30"
+   self~assertSame(b2x('1'||Copies('0',249)), '200000000000000000000000000000000000000000000000000000000000000')
+
+::method "test_31"
+   self~assertSame(Length(B2X('1'||Copies('0',254))), 64)
+
+::method "test_32"
+   self~assertSame(Length(B2X('1'||Copies('0',255))), 64)
+
+::method "test_33"
+   self~assertSame(Length(B2X(Copies('10',50000))), 25000)
+
+-- rexxref documentation tests
+
+::method "test_101"
+   self~assertSame(B2X('11000011'), 'C3')
+
+::method "test_102"
+   self~assertSame(B2X('10111'), '17')
+
+::method "test_103"
+   self~assertSame(B2X('101'), '5')
+
+::method "test_104"
+   self~assertSame(B2X('1 1111 0000'), '1F0')
+

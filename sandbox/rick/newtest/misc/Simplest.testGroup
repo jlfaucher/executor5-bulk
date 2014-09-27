@@ -1,0 +1,111 @@
+#!/usr/bin/rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 - 2008 Rexx Language Association. All rights reserved.  */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+
+  -- 1.) Create a test group.  You need a file path name to create a test group.
+  group = .TestGroup~new(s)
+
+  -- 2.) Add some tests to the test group.  The simplest thing is to add a
+  -- TestCase class object.  This class object will be the TestCase class you
+  -- define in this file.
+  group~add(.Simplest.testGroup)
+
+  -- 3.) Ask the test group if this is an automated test.  If it is, just return
+  -- the test group object.
+  if group~isAutomatedTest then return group
+
+  -- 4.) It is not an automated test, so exeucte the test now and print out
+  -- the results
+
+  -- 4a.) Ask the test group to give us a test suite containing all the
+  -- executable tests that the group has.
+  suite = group~suite
+
+  -- 4b.) Tell the test suite to exeucte its tests and return to us the test
+  -- result.
+  testResult = suite~execute
+
+  -- 4c.) Tell the test result to print out the results using its default
+  -- formatter.
+  testResult~print
+
+  -- 5.) Return the test result.  No use is made of this at this time, but it
+  -- is possible that a use could be made of it in the future.
+return testResult
+-- End of entry point.
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+  Directives, Classes, or Routines.  You must require the ooTest framework file
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::requires 'ooTest.frm'
+
+/* class: Simplest.testGroup - - - - - - - - - - - - - - - - - - - - - - - - -*\
+     The test case class must subclass ooTestCase.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class "Simplest.testGroup" public subclass ooTestCase
+
+  -- The ooTestCase class has a class attribute, ooTestType.  This is used to
+  -- help select subsets of the tests to run in an automated test.  The default
+  -- test type is UNIT and so for most TestCase classes you do not need to do
+  -- anything.
+  --
+  -- Here we over-ride the class to init to assign a different test type to this
+  -- test case class.  Note, you must initialize the superclass before you
+  -- change the test type - or the super class will just change it back to the
+  -- default
+  ::method init class
+    forward class (super) continue
+
+    self~ooTestType = self~FRAMEWORK_EXAMPLE_TEST
+
+  -- Now you just need to write your test case methods.  By convention, you need
+  -- to start each method with: 'test'  This is what allows the test cases to
+  -- be gathered together automaticially.
+  ::method test_YYY
+    a = 4
+    b = 3
+    c = a + b
+    self~assertTrue(c == 7)
+
+  ::method  test_XXX
+    a = 'dog'
+    b = 'DOG'
+    c = a~upper
+    self~assertSame(b, c)
+
+-- End of class: Simplest.testGroup

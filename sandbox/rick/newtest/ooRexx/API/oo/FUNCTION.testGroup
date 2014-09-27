@@ -1,0 +1,918 @@
+#!/usr/bin/rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2008 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYright HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYright   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+use arg testTypes
+
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.FUNCTION.testGroup)
+
+  if arg(1, 'E'), \ group~hasTestTypes(testTypes) then do
+    group~markNoTests("This is a native API test and not included in the test types to execute.")
+
+    if group~isAutomatedTest then return group
+    else return group~suite~execute~~print
+  end
+
+  signal on syntax name packageErr
+  .context~package~loadPackage('FUNCTIONPackage.cls')
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+packageErr:
+  err = .ExceptionData~new(timeStamp(), s, .ExceptionData~TRAP)
+  err~setLine(sigl)
+  err~conditionObject = condition('O')
+  err~msg = "Failed to load the external API package needed for this test group."
+
+  if group~isAutomatedTest then return err
+
+  err~print("Test group exception", .false)
+return .ooTestResult~new(5)~~addException(err)
+
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+-- class named exactly like file
+::class "FUNCTION.testGroup" subclass ooTestCase public
+
+::method init class
+  forward class (super) continue
+
+  -- Over-ride the default test type
+  self~ooTestType = .ooTestTypes~NATIVE_API_TEST
+
+-- The following tests the macros for 0-10 arguments
+::method 'test000'
+  self~assertSame(0, TestZeroIntArgs())
+
+::method 'test001'
+  self~assertSame(1, TestOneIntArg(1))
+
+::method 'test002'
+  self~assertSame(3, TestTwoIntArgs(1,2))
+
+::method 'test003'
+  self~assertSame(6, TestThreeIntArgs(1,2,3))
+
+::method 'test004'
+  self~assertSame(10, TestFourIntArgs(1,2,3,4))
+
+::method 'test005'
+  self~assertSame(15, TestFiveIntArgs(1,2,3,4,5))
+
+::method 'test006'
+  self~assertSame(21, TestSixIntArgs(1,2,3,4,5,6))
+
+::method 'test007'
+  self~assertSame(28, TestSevenIntArgs(1,2,3,4,5,6,7))
+
+::method 'test008'
+  self~assertSame(36, TestEightIntArgs(1,2,3,4,5,6,7,8))
+
+::method 'test009'
+  self~assertSame(45, TestNineIntArgs(1,2,3,4,5,6,7,8,9))
+
+::method 'test010'
+  self~assertSame(55, TestTenIntArgs(1,2,3,4,5,6,7,8,9,10))
+
+-- The following error tests the macros for 0-10 arguments
+::method 'test011'
+  self~expectSyntax('88.922')
+  x = TestZeroIntArgs(1)
+
+::method 'test012'
+  self~expectSyntax('88.922')
+  x = TestOneIntArg(1,1)
+
+::method 'test013'
+  self~expectSyntax('88.922')
+  x = TestTwoIntArgs(1,1,1)
+
+::method 'test014'
+  self~expectSyntax('88.922')
+  x = TestThreeIntArgs(1,1,1,1)
+
+::method 'test015'
+  self~expectSyntax('88.922')
+  x = TestFourIntArgs(1,1,1,1,1)
+
+::method 'test016'
+  self~expectSyntax('88.922')
+  x = TestFiveIntArgs(1,1,1,1,1,1)
+
+::method 'test017'
+  self~expectSyntax('88.922')
+  x = TestSixIntArgs(1,1,1,1,1,1,1)
+
+::method 'test018'
+  self~expectSyntax('88.922')
+  x = TestSevenIntArgs(1,1,1,1,1,1,1,1)
+
+::method 'test019'
+  self~expectSyntax('88.922')
+  x = TestEightIntArgs(1,1,1,1,1,1,1,1,1)
+
+::method 'test020'
+  self~expectSyntax('88.922')
+  x = TestNineIntArgs(1,1,1,1,1,1,1,1,1,1)
+
+::method 'test021'
+  self~expectSyntax('88.922')
+  x = TestTenIntArgs(1,1,1,1,1,1,1,1,1,1,1)
+
+-- The following error tests the macros for 0-10 arguments
+::method 'test022'
+  self~expectSyntax('88.901')
+  x = TestOneIntArg()
+
+::method 'test023'
+  self~expectSyntax('88.901')
+  x = TestTwoIntArgs(1)
+
+::method 'test023a'
+  self~expectSyntax('88.901')
+  x = TestTwoIntArgs(,1)
+
+::method 'test024'
+  self~expectSyntax('88.901')
+  x = TestThreeIntArgs(1,1)
+
+::method 'test024a'
+  self~expectSyntax('88.901')
+  x = TestThreeIntArgs(1,,1)
+
+::method 'test025'
+  self~expectSyntax('88.901')
+  x = TestFourIntArgs(1,1,1)
+
+::method 'test026'
+  self~expectSyntax('88.901')
+  x = TestFiveIntArgs(1,1,1,1)
+
+::method 'test027'
+  self~expectSyntax('88.901')
+  x = TestSixIntArgs(1,1,1,1,1)
+
+::method 'test028'
+  self~expectSyntax('88.901')
+  x = TestSevenIntArgs(1,1,1,1,1,1)
+
+::method 'test029'
+  self~expectSyntax('88.901')
+  x = TestEightIntArgs(1,1,1,1,1,1,1)
+
+::method 'test030'
+  self~expectSyntax('88.901')
+  x = TestNineIntArgs(1,1,1,1,1,1,1,1)
+
+::method 'test031'
+  self~expectSyntax('88.901')
+  x = TestTenIntArgs(1,1,1,1,1,1,1,1,1)
+
+-- test int
+::method 'testint01'
+  numeric digits 11
+  val = 0
+  self~assertSame(val, TestIntArg(val))
+  val = 2147483647
+  self~assertSame(val, TestIntArg(val))
+  val = 1
+  self~assertSame(val, TestIntArg(val))
+  val = -1
+  self~assertSame(val, TestIntArg(val))
+  val = -2147483647
+  self~assertSame(val, TestIntArg(val))
+  self~assertSame(1,TestIntArg(1.0))
+  self~assertSame(1,TestIntArg(1e0))
+
+::method 'testint02'
+  numeric digits 11
+  self~expectSyntax('88.907')
+  x = TestIntArg(2147483648)
+
+::method 'testint03'
+  numeric digits 11
+  self~expectSyntax('88.907')
+  x = TestIntArg('-2147483649')
+
+-- test int32_t
+::method 'testint3201'
+  numeric digits 11
+  val = 0
+  self~assertSame(val, TestInt32Arg(val))
+  val = 2147483647
+  self~assertSame(val, TestInt32Arg(val))
+  val = 1
+  self~assertSame(val, TestInt32Arg(val))
+  val = -1
+  self~assertSame(val, TestInt32Arg(val))
+  val = -2147483647
+  self~assertSame(val, TestInt32Arg(val))
+  self~assertSame(1, TestInt32Arg(1.0))
+  self~assertSame(1, TestInt32Arg(2.1 - 1.1))    -- forces this to be a number string
+  self~assertSame(1, TestInt32Arg(word("2 1 3", 2)))   -- forces this to be a character string
+  self~assertSame(1, TestInt32Arg(1e0))
+
+::method 'testint3202'
+  self~expectSyntax('88.907')
+  x = TestInt32Arg(2147483648)
+
+::method 'testint3203'
+  self~expectSyntax('88.907')
+  x = TestInt32Arg('-2147483649')
+
+-- test uint32_t
+::method 'testuint3201'
+  numeric digits 11
+  val = 0
+  self~assertSame(val, TestUint32Arg(val))
+  val = 4294967295
+  self~assertSame(val, TestUint32Arg(val))
+  val = 1
+  self~assertSame(val, TestUint32Arg(val))
+
+::method 'testuint3202'
+  self~expectSyntax('88.907')
+  TestUint32Arg(4294967296)
+
+::method 'testuint3203'
+  self~expectSyntax('88.907')
+  TestUint32Arg(-1)
+
+-- test int8_t
+::method 'testint801'
+  val = 0
+  self~assertSame(val, TestInt8Arg(val))
+  val = 127
+  self~assertSame(val, TestInt8Arg(val))
+  val = 1
+  self~assertSame(val, TestInt8Arg(val))
+  val = -1
+  self~assertSame(val, TestInt8Arg(val))
+  val = -128
+  self~assertSame(val, TestInt8Arg(val))
+
+::method 'testint802'
+  self~expectSyntax('88.907')
+  TestInt8Arg(128)
+
+::method 'testint803'
+  self~expectSyntax('88.907')
+  TestInt8Arg(-129)
+
+-- test uint8_t
+::method 'testuint801'
+  val = 0
+  self~assertSame(val, TestUint8Arg(val))
+  val = 255
+  self~assertSame(val, TestUint8Arg(val))
+  val = 1
+  self~assertSame(val, TestUint8Arg(val))
+
+::method 'testuint802'
+  self~expectSyntax('88.907')
+  TestUint8Arg(256)
+
+::method 'testuint803'
+  self~expectSyntax('88.907')
+  TestUint8Arg(-1)
+
+-- test int16_t
+::method 'testint1601'
+  val = 0
+  self~assertSame(val, TestInt16Arg(val))
+  val = 32767
+  self~assertSame(val, TestInt16Arg(val))
+  val = 1
+  self~assertSame(val, TestInt16Arg(val))
+  val = -1
+  self~assertSame(val, TestInt16Arg(val))
+  val = -32768
+  self~assertSame(val, TestInt16Arg(val))
+
+::method 'testint1602'
+  self~expectSyntax('88.907')
+  TestInt16Arg(32768)
+
+::method 'testint1603'
+  self~expectSyntax('88.907')
+  TestInt16Arg(-32769)
+
+-- test uint16_t
+::method 'testuint1601'
+  val = 0
+  self~assertSame(val, TestUint16Arg(val))
+  val = 65535
+  self~assertSame(val, TestUint16Arg(val))
+  val = 1
+  self~assertSame(val, TestUint16Arg(val))
+
+::method 'testuint1602'
+  self~expectSyntax('88.907')
+  TestUint16Arg(65536)
+
+::method 'testuint1603'
+  self~expectSyntax('88.907')
+  TestUint16Arg(-1)
+
+-- test int64_t
+::method 'testint6401'
+  numeric digits 20
+  val = 0
+  self~assertSame(val, TestInt64Arg(val))
+  val = 9223372036854775807
+  self~assertSame(val, TestInt64Arg(val))
+  val = 1
+  self~assertSame(val, TestInt64Arg(val))
+  val = -1
+  self~assertSame(val, TestInt64Arg(val))
+  val = '-9223372036854775808'
+  self~assertSame(val, TestInt64Arg(val))
+
+::method 'testint6402'
+  self~expectSyntax('88.907')
+  TestInt64Arg(9223372036854775808)
+
+::method 'testint6403'
+  self~expectSyntax('88.907')
+  TestInt64Arg('-9223372036854775809')
+
+-- test uint64_t
+::method 'testuint6401'
+  numeric digits 21
+  val = 0
+  self~assertSame(val, TestUint64Arg(val))
+  val = 18446744073709551615
+  self~assertSame(val, TestUint64Arg(val))
+  val = 1
+  self~assertSame(val, TestUint64Arg(val))
+
+::method 'testuint6402'
+  self~expectSyntax('88.907')
+  TestUint64Arg(18446744073709551616)
+
+::method 'testuint6403'
+  self~expectSyntax('88.907')
+  TestUint64Arg('-1')
+
+-- test wholenumber_t
+::method 'testWholenumber01'
+  val = 0
+  self~assertSame(val, TestWholeNumberArg(val))
+  val = 65535
+  self~assertSame(val, TestWholeNumberArg(val))
+  val = 1
+  self~assertSame(val, TestWholeNumberArg(val))
+  val = -1
+  self~assertSame(val, TestWholeNumberArg(val))
+  if .ooRexxUnit.architecture == 32 then
+      val = 999999999
+  else
+      val = 999999999999999999
+  self~assertSame(val, TestWholeNumberArg(val))
+  if .ooRexxUnit.architecture == 32 then
+      val = -999999999
+  else
+      val = '-999999999999999999'
+  self~assertSame(val, TestWholeNumberArg(val))
+
+::method 'testWholenumber02'
+  self~expectSyntax('88.907')
+  if .ooRexxUnit.architecture == 32 then
+      TestWholeNumberArg(1000000000)
+  else
+      TestWholeNumberArg(1000000000000000000)
+
+::method 'testWholenumber03'
+  self~expectSyntax('88.907')
+  if .ooRexxUnit.architecture == 32 then
+      TestWholeNumberArg(-1000000000)
+  else
+      TestWholeNumberArg(-1000000000000000000)
+
+
+-- test size_t
+::method 'testSize01'
+  numeric digits 20
+  val = 0
+  self~assertSame(val, TestSizeArg(val))
+  val = 65535
+  self~assertSame(val, TestSizeArg(val))
+  val = 1
+  self~assertSame(val, TestSizeArg(val))
+  if .ooRexxUnit.architecture == 32 then
+      val = 2**32-1
+  else
+      val = 2**64-1
+  self~assertSame(val, TestSizeArg(val))
+
+::method 'testSize02'
+  self~expectSyntax('88.907')
+  numeric digits 20
+  if .ooRexxUnit.architecture == 32 then
+      val = 2**32
+  else
+      val = 2**64
+  TestSizeArg(val)
+
+::method 'testSize03'
+  self~expectSyntax('88.907')
+  TestSizeArg(-1)
+
+-- test ssize_t
+::method 'testSSize01'
+  numeric digits 20
+  val = 0
+  self~assertSame(val, TestSSizeArg(val))
+  val = 65535
+  self~assertSame(val, TestSSizeArg(val))
+  val = 1
+  self~assertSame(val, TestSSizeArg(val))
+  if .ooRexxUnit.architecture == 32 then
+      val = 2**31-1
+  else
+      val = 2**63-1
+  self~assertSame(val, TestSSizeArg(val))
+  if .ooRexxUnit.architecture == 32 then
+      val = -2**31
+  else
+      val = -2**63
+  self~assertSame(val, TestSSizeArg(val))
+
+::method 'testSSize02'
+  self~expectSyntax('88.907')
+  numeric digits 20
+  if .ooRexxUnit.architecture == 32 then
+      val = 2**31
+  else
+      val = 2**63
+  TestSSizeArg(val)
+
+::method 'testSSize03'
+  self~expectSyntax('88.907')
+  numeric digits 20
+  if .ooRexxUnit.architecture == 32 then
+      val = -2**31 - 1
+  else
+      val = -2**63 - 1
+  TestSSizeArg(val)
+
+-- test logical_t
+::method 'testLogical01'
+  val = .true
+  self~assertSame(val, TestLogicalArg(val))
+  val = .false
+  self~assertSame(val, TestLogicalArg(val))
+  val = 2
+  self~expectSyntax('34.901')
+  self~assertSame(val, TestLogicalArg(val))
+  self~assertSame(.false, TestLogicalArg('0'||""))
+  self~assertSame(.false, TestLogicalArg(0))
+  self~assertSame(.true, TestLogicalArg('1'||""))
+  self~assertSame(.true, TestLogicalArg(1))
+
+::method 'testLogical02'
+  self~expectSyntax('34.901')
+  TestLogicalArg(2)
+
+::method 'testLogical03'
+  self~expectSyntax('34.901')
+  TestLogicalArg(1.0)
+
+-- test float
+::method 'testFloat01'
+  numeric digits 15
+  val = 3.40282347E+38
+  self~assertFuzzyEquals(val, TestFloatArg(val), 9)
+  val = 1.17549435E-38
+  self~assertFuzzyEquals(val, TestFloatArg(val), 9)
+  val = 0
+  self~assertFuzzyEquals(val, TestFloatArg(val), 9)
+  val = 1
+  self~assertFuzzyEquals(val, TestFloatArg(val), 9)
+  val = -1
+  self~assertFuzzyEquals(val, TestFloatArg(val), 6)
+  val = "nan"
+  self~assertSame(val, TestFloatArg(val))
+  val = "+infinity"
+  self~assertSame(val, TestFloatArg(val))
+  val = "-infinity"
+  self~assertSame(val, TestFloatArg(val))
+  val = 3.40282347E+40
+  self~assertSame("+infinity", TestFloatArg(val))
+  val = -3.40282347E+40
+  self~assertSame("-infinity", TestFloatArg(val))
+  val = 3.40282347E-50
+  self~assertFuzzyEquals(0, TestFloatArg(val), 9)
+  val = -3.40282347E-50
+  self~assertFuzzyEquals(0, TestFloatArg(val), 9)
+
+::method 'testFloat02'
+  self~expectSyntax('88.921')
+  TestFloatArg('abc')
+
+-- test double
+::method 'testDouble01'
+  numeric digits 23
+  val = 1.79769313E+308
+  self~assertSame(val, TestDoubleArg(val))
+  val = 2.22507386E-308
+  self~assertSame(val, TestDoubleArg(val))
+  val = 0
+  self~assertSame(val, TestDoubleArg(val))
+  val = 1
+  self~assertSame(val, TestDoubleArg(val))
+  val = -1
+  self~assertSame(val, TestDoubleArg(val))
+  val = "nan"
+  self~assertSame(val, TestDoubleArg(val))
+  val = "+infinity"
+  self~assertSame(val, TestDoubleArg(val))
+  val = "-infinity"
+  self~assertSame(val, TestDoubleArg(val))
+  val = 1.79769313E+310
+  self~assertSame("+infinity", TestDoubleArg(val))
+  val = -1.79769313E+310
+  self~assertSame("-infinity", TestDoubleArg(val))
+  val = 1.79769313E-350
+  self~assertSame(0, TestDoubleArg(val))
+  val = -1.79769313E-350
+  self~assertSame(0, TestDoubleArg(val))
+
+::method 'testDouble02'
+  self~expectSyntax('88.921')
+  TestDoubleArg('abc')
+
+-- test CSTRING
+::method 'test045'
+  val = ''
+  self~assertSame(val, TestCstringArg(val))
+  val = copies('AbCdEfGhIjKlMnOpQrStUvWxYz0123456789', 1)
+  self~assertSame(val, TestCstringArg(val))
+  val = copies('AbCdEfGhIjKlMnOpQrStUvWxYz0123456789', 10)
+  self~assertSame(val, TestCstringArg(val))
+  val = copies('AbCdEfGhIjKlMnOpQrStUvWxYz0123456789', 100)
+  self~assertSame(val, TestCstringArg(val))
+  val = copies('AbCdEfGhIjKlMnOpQrStUvWxYz0123456789', 1000)
+  self~assertSame(val, TestCstringArg(val))
+
+-- test POINTER
+::method 'test046'
+  val = TestPointerValue()
+  self~assertTrue(TestPointerArg(val))
+  val = TestNullPointerValue()
+  self~assertTrue(val~isNull())
+
+-- test RexxStemObject
+::method 'testStem01'
+  a.1 = 2
+  b. = TestStemArg(a.)
+  self~assertSame(2, b.1)
+  b.2 = 3
+  self~assertSame(3, a.2)    -- verify same object
+  b. = TestStemArg('a.')
+  self~assertSame(2, b.1)
+  b. = TestStemArg('A.')
+  self~assertSame(2, b.1)
+  b. = TestStemArg('a')      -- no period on name
+  self~assertSame(2, b.1)
+
+  d. = TestStemArg(c.)   -- uninitialized stem variable
+  d.1 = 2
+  self~assertSame(2, c.1)    -- verify same object
+
+  d. = TestStemArg('cc.')   -- uninitialized stem variable
+  d.1 = 2
+  self~assertSame(2, cc.1)    -- verify same object
+
+  e = .stem~new("FRED.")
+  e. = TestStemArg(e)
+  e.1 = 2
+  self~assertSame(2, e[1])    -- verify same object
+
+::method 'testStem02'
+  self~expectSyntax('40.919')
+  TestStemArg(.nil)
+
+
+::method 'testStem03'
+  a.1 = 2
+  b. = TestObjectToValue(a., .TypeConstants~StemType)
+  self~assertSame(2, b.1)
+  b.2 = 3
+  self~assertSame(3, a.2)    -- verify same object
+  b. = TestObjectToValue('a.', .TypeConstants~StemType)
+  self~assertSame(2, b.1)
+  b. = TestObjectToValue('A.', .TypeConstants~StemType)
+  self~assertSame(2, b.1)
+  b. = TestObjectToValue('a', .TypeConstants~StemType)      -- no period on name
+  self~assertSame(2, b.1)
+
+  d. = TestObjectToValue(c., .TypeConstants~StemType)   -- uninitialized stem variable
+  d.1 = 2
+  self~assertSame(2, c.1)    -- verify same object
+
+  d. = TestObjectToValue('cc.', .TypeConstants~StemType)   -- uninitialized stem variable
+  d.1 = 2
+  self~assertSame(2, cc.1)    -- verify same object
+  d. = TestObjectToValue(c., .TypeConstants~StemType) -- uninitialized stem variable
+  d.1 = 2
+  self~assertSame(2, c.1)    -- verify same object
+  e = .stem~new("FRED.")
+  e. = TestObjectToValue(e, .TypeConstants~StemType)
+  e.1 = 2
+  self~assertSame(2, e[1])    -- verify same object
+
+::method 'testStem04'
+  self~expectSyntax('88.900')
+  TestObjectToValue(.nil, .TypeConstants~StemType)
+
+::method 'testName01'
+  self~assertSame('TESTNAMEARG', TestNameArg());
+  self~assertSame('TESTNAMEARG2', TestNameArg2());   -- same native method, different name
+
+::method 'testName02'
+  self~assertSame('TESTGETROUTINENAME', TestGetRoutineName());
+  self~assertSame('TESTGETROUTINENAME2', TestGetRoutineName2());   -- same native method, different name
+
+::method 'testArglist01'
+  args = TestArglistArg()
+  self~assertSame(0, args~items)
+  self~assertSame(0, args~size)
+  args = TestArglistArg(1, 2)
+  self~assertSame(2, args~items)
+  self~assertSame(2, args~size)
+  self~assertSame(1, args[1])
+  self~assertSame(2, args[2])
+  args = TestArglistArg(1,,2)
+  self~assertSame(2, args~items)
+  self~assertSame(3, args~size)
+  self~assertSame(1, args[1])
+  self~assertSame(.nil, args[2])
+  self~assertSame(2, args[3])
+
+  args = TestArglistArg(,2)
+  self~assertSame(1, args~items)
+  self~assertSame(2, args~size)
+  self~assertSame(.nil, args[1])
+  self~assertSame(2, args[2])
+
+  args = TestArglistArg(,)
+  self~assertSame(0, args~items)
+  self~assertSame(0, args~size)
+  self~assertSame(.nil, args[1])
+  self~assertSame(.nil, args[2])
+
+  args = TestArglistArg(1,)
+  self~assertSame(1, args~items)
+  self~assertSame(1, args~size)
+  self~assertSame(1, args[1])
+  self~assertSame(.nil, args[2])
+
+::method 'testGetArguments01'
+  args = TestGetArguments()
+  self~assertSame(0, args~items)
+  self~assertSame(0, args~size)
+  args = TestGetArguments(1, 2)
+  self~assertSame(2, args~items)
+  self~assertSame(2, args~size)
+  self~assertSame(1, args[1])
+  self~assertSame(2, args[2])
+  args = TestGetArguments(1,,2)
+  self~assertSame(2, args~items)
+  self~assertSame(3, args~size)
+  self~assertSame(1, args[1])
+  self~assertSame(.nil, args[2])
+  self~assertSame(2, args[3])
+
+  args = TestGetArguments(,2)
+  self~assertSame(1, args~items)
+  self~assertSame(2, args~size)
+  self~assertSame(.nil, args[1])
+  self~assertSame(2, args[2])
+
+  args = TestGetArguments(,)
+  self~assertSame(0, args~items)
+  self~assertSame(0, args~size)
+  self~assertSame(.nil, args[1])
+  self~assertSame(.nil, args[2])
+
+  args = TestGetArguments(1,)
+  self~assertSame(1, args~items)
+  self~assertSame(1, args~size)
+  self~assertSame(1, args[1])
+  self~assertSame(.nil, args[2])
+
+  args = TestGetArguments(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20)
+  self~assertSame(20, args~items)
+  self~assertSame(20, args~size)
+  self~assertSame(20, args[20])
+
+::method 'testGetArgument01'
+  arg = TestGetArgument(1)
+  self~assertSame(1, arg)
+  arg = TestGetArgument(2, 'abc')
+  self~assertSame('abc', arg)
+  arg = TestGetArgument(3,,'abc')
+  self~assertSame('abc', arg)
+
+::method 'testGetArgument02'
+  self~expectSyntax('88.900')
+  arg = TestGetArgument(2)
+
+::method 'testGetArgument03'
+  self~expectSyntax('88.900')
+  arg = TestGetArgument(2,,'abc')
+
+::method 'testGetArgument04'
+  self~expectSyntax('88.900')
+  arg = TestGetArgument(100,,'abc')
+
+
+::method TestGetVariable01
+
+  var1 = "Hello"
+  self~assertSame("Hello", TestGetContextVariable('VAR1'))
+  self~assertSame("Hello", TestGetContextVariable('var1'))
+
+  stem1.1 = "World"
+
+  a = TestGetContextVariable('stem1.')
+  self~assertTrue(a~isA(.Stem))
+  self~assertSame("World", a[1])
+
+  a = TestGetContextVariable('STEM1.')
+  self~assertTrue(a~isA(.Stem))
+  self~assertSame("World", a[1])
+
+  a = TestGetContextVariable('STEM1.1')
+  self~assertSame("World", a)
+
+::method TestGet02
+  self~expectSyntax('88.900')
+  x = TestGetContextVariable("FOOBAR");
+
+::method TestGet03
+  self~expectSyntax('88.900')
+  x = TestGetContextVariable("STEM1.1");
+
+::method TestSetVariable01
+
+  x = TestSetContextVariable('setVar1', "abc")
+  self~assertSame("abc", setVar1)
+
+  x = TestSetContextVariable('setVar1', "def")
+  self~assertSame("def", setVar1)
+
+  x = TestSetContextVariable('setStem.', .stem~new("FOOBAR."))
+  self~assertSame("FOOBAR.", setStem.[])
+  self~assertSame("FOOBAR.1", setStem.1)
+
+  x = TestSetContextVariable('setStem.', "Fred")
+  self~assertSame("Fred", setStem.[])
+  self~assertSame("Fred", setStem.1)
+
+  -- This is different than object variables.  All forms are
+  -- supported here.
+  Stem1.1 = "Mike"
+  x = TestSetContextVariable("STEM1.1", "George");
+
+  self~assertSame("George", Stem1.1)
+
+::method TestDrop01
+  expose setVar1 setStem.
+  use arg testgroup
+
+  setVar1 = "Mike"
+  x = TestDropContextVariable("setVar1")
+  self~assertFalse(var("SETVAR1"), "Simple var 1")
+
+  setVar1 = "Mike"
+  x = TestDropContextVariable("SETVAR1")
+  self~assertFalse(var("SETVAR1"), "Simple var 2")
+
+  setStem.1 = "Mike"
+  x = TestDropContextVariable("setStem.")
+  self~assertSame("SETSTEM.1", setStem.1, "Stem var 1")
+  setStem.1 = "Mike"
+  x = TestDropContextVariable("SETSTEM.")
+  self~assertSame("SETSTEM.1", setStem.1, "Stem var 1")
+
+::method TestGetAllVariables1
+  d = TestGetAllContextVariables()
+  self~assertSame(self, d['SELF'])
+  self~assertSame(super, d['SUPER'])
+  self~assertSame(.nil, d['FOO'])
+  foo = "bar"
+  d = TestGetAllContextVariables()
+  self~assertSame("bar", d['FOO'])
+
+::method TestGetRoutine01
+  routine = .context~package~FindRoutine('TESTGETROUTINE')
+  self~assertSame(routine, TestGetRoutine());
+  routine = .context~package~FindRoutine('TESTGETROUTINE2')
+  self~assertSame(routine, TestGetRoutine2());
+
+::method TestGetDigits01
+  self~assertSame(digits(), TestGetContextDigits())
+  numeric digits 9
+  self~assertSame(9, TestGetContextDigits())
+  numeric digits 100
+  self~assertSame(100, TestGetContextDigits())
+
+::method TestGetFuzz01
+  self~assertSame(fuzz(), TestGetContextFuzz())
+  numeric fuzz 1
+  self~assertSame(1, TestGetContextFuzz())
+
+::method TestGetForm01
+  self~assertSame(form() == 'ENGINEERING', TestGetContextForm(), "First fuzz test")
+  numeric form ENGINEERING
+  self~assertSame(1, TestGetContextForm(), "Second fuzz test")
+  numeric form SCIENTIFIC
+  self~assertSame(0, TestGetContextForm(), "Third fuzz test")
+
+
+::method testResolveStem01
+  a.1 = 2
+  b. = TestResolveStemVariable(a.)
+  self~assertSame(2, b.1)
+  b.2 = 3
+  self~assertSame(3, a.2)    -- verify same object
+  b. = TestResolveStemVariable('a.')
+  self~assertSame(2, b.1)
+  b. = TestResolveStemVariable('A.')
+  self~assertSame(2, b.1)
+  b. = TestResolveStemVariable('a')      -- no period on name
+  self~assertSame(2, b.1)
+
+  d. = TestResolveStemVariable(c.)   -- uninitialized stem variable
+  d.1 = 2
+  self~assertSame(2, c.1)    -- verify same object
+
+  d. = TestResolveStemVariable('cc.')   -- uninitialized stem variable
+  d.1 = 2
+  self~assertSame(2, cc.1)    -- verify same object
+  d. = TestResolveStemVariable(c.) -- uninitialized stem variable
+  d.1 = 2
+  self~assertSame(2, c.1)    -- verify same object
+  e = .stem~new("FRED.")
+  e. = TestResolveStemVariable(e)
+  e.1 = 2
+  self~assertSame(2, e[1])    -- verify same object
+
+::method 'testResolveStem02'
+  self~expectSyntax('88.900')
+  x = TestResolveStemVariable(.nil)
+
+::method TestFindContextClass01
+  self ~assertSame(.Array, TestFindContextClass("ARRAY"))
+  self ~assertSame(.Array, TestFindContextClass("array"))
+  self ~assertSame(.TypeConstants, TestFindContextClass("typeconstants"))
+
+::method TestFindContextClass02
+  self~expectSyntax('88.900')
+  x = TestFindContextClass("Yada")

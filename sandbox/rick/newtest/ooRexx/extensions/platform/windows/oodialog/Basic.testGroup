@@ -1,0 +1,149 @@
+#!/usr/bin/rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 - 2008 Rexx Language Association. All rights reserved.  */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+
+  group = .TestGroup~new(s)
+  group~add(.Basic.testGroup)
+  group~restrictOS("WINDOWS")
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+  Directives, Classes, or Routines.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::requires 'ooTest.frm'
+::requires "FileUtils.cls"
+
+/* class: Basic.testGroup- - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+    Some very basic ooDialog tests.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class "Basic.testGroup" public subclass ooTestCase
+
+::attribute functionFileName
+
+::method setUp
+  use arg testResult
+
+   file = .ooRexxUnit.dir || .ooRexxUnit.directory.separator || 'ooDialogTest.rex'
+
+   src = .array~new
+   src[1] = "/* This is a temporary file for testing ooDialog. */"
+   src[2] = "/* This file can always be deleted.               */"
+   src[3] = ""
+   self~functionFileName = createFile(src, file)
+
+   -- If self~functionFileName is the empty string, an error happened.  It
+   -- would be nice at this point to end the test.
+
+::method tearDown
+  j = deleteFile(self~functionFileName)
+
+::method test_packageLoad
+
+  src = .array~new
+  src[1] = "return 'ooDialog'"
+  src[2] = "::requires 'ooDialog' LIBRARY"
+  name = addToFile(src, self~functionFileName)
+
+  ret = 'ooDialogTest'()
+
+  self~assertSame("ooDialog", ret)
+
+::method  test_sleepMS_works
+
+  src = .array~new
+  src[1] = "ret = sleepMS(400)"
+  src[2] = "return ret"
+  src[3] = "::requires 'ooDialog.cls'"
+  name = addToFile(src, self~functionFileName)
+
+  ret = 'ooDialogTest'()
+  self~assertSame(0, ret)
+
+::method  test_sleepMS_good_value
+
+  src = .array~new
+  src[1] = "begin = .TimeSpan~new(time('F'))"
+  src[2] = "j = sleepMS(500)"
+  src[3] = "finish = .TimeSpan~new(time('F'))"
+  src[4] = "elapsed = (finish - begin)"
+  src[5] = "return elapsed~microSeconds"
+  src[6] = "::requires 'ooDialog.cls'"
+  name = addToFile(src, self~functionFileName)
+
+  microSeconds = 'ooDialogTest'()
+
+  self~assertTrue(microSeconds >= 500000)
+
+::method  test_0MSSleep_works
+
+  src = .array~new
+  src[1] = "ret = MSSleep(400)"
+  src[2] = "return ret"
+  src[3] = "::requires 'OODPLAIN.CLS'"
+  name = addToFile(src, self~functionFileName)
+
+  ret = 'ooDialogTest'()
+  self~assertSame(0, ret)
+
+::method  test_1MSSleep_good_value
+
+  src = .array~new
+  src[1] = "begin = .TimeSpan~new(time('F'))"
+  src[2] = "j = MSSleep(500)"
+  src[3] = "finish = .TimeSpan~new(time('F'))"
+  src[4] = "elapsed = (finish - begin)"
+  src[5] = "return elapsed~microSeconds"
+  src[6] = "::requires 'OODPLAIN.CLS'"
+  name = addToFile(src, self~functionFileName)
+
+  microSeconds = 'ooDialogTest'()
+
+  self~assertTrue(microSeconds >= 500000)
+
+
+-- End of class: Basic.testGroup

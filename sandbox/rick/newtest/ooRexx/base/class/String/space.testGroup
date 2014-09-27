@@ -1,0 +1,935 @@
+#!/usr/bin/rexx
+/*
+  SVN Revision: $Rev: 8237 $
+  Change Date:  $Date: 2012-08-21 22:02:00 +0200 (Tue, 21 Aug 2012) $
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 - 2008 Rexx Language Association. All rights reserved.  */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.String_spaceMethod.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "String_spaceMethod.testGroup" subclass ooTestCase public
+
+::method 'test0001'
+    self~assertSame('', ''~space)
+
+::method 'test0002'
+    self~assertSame('1', '1'~space())
+
+::method 'test0003'
+    self~assertSame('@@@@aaa@@@@', '@ @@aaa@@ @'~space(,'@'))
+
+::method 'test0004'
+    self~expectSyntax(93.922)
+    xre = '@ @@aaa@@ @'~space(,'')
+
+::method 'test0005'
+    -- § may be encoded in two bytes 'C2A7'x  (utf8 ?)
+    if length('§') > 1 
+       then do
+            self~expectSyntax(93.922)
+            xre = '§ aaa §'~space(,'§')
+            end
+       else self~assertSame('§ aaa §', '§§aaa§§'~space(,'§'))
+
+::method 'test0006'
+    self~expectSyntax(93.922)
+    xre = '@@@aaa@@@'~space(,'@@')
+
+::method 'test0007'
+    self~assertSame('aaa@@@', '   aaa @@'~space(1 ,'@'))
+
+::method 'test0008'
+    self~assertSame('@@aaa', '@  aaa  '~space(1,'@'))
+
+::method 'test0009'
+    -- 1 assumed to be encoded '31'x
+    self~assertSame('aaa', ('090909'x'aaa   ')~space('31'x,'@'))
+
+::method 'test0010'
+    -- 1 assumed to be encoded '31'x
+    self~assertSame('aa'||'09'x'a', ('090909'x'aa a   ')~space('31'x,'09'x))
+
+::method 'test0011'
+    self~assertSame('', '09'x~space)
+
+::method 'test0012'
+    self~assertSame('', ' '~space)
+
+::method 'test0013'
+    self~assertSame('a', 'a'~space)
+
+::method 'test0014'
+    self~assertSame('§', '§'~space)
+
+::method 'test0015'
+    self~assertSame('a', ' a'~space)
+
+::method 'test0016'
+    self~assertSame('a', 'a '~space)
+
+::method 'test0017'
+    self~assertSame('§', ' § '~space)
+
+::method 'test0018'
+    self~assertSame('a b', 'a b'~space)
+
+::method 'test0019'
+    self~assertSame('a b', ' a b'~space)
+
+::method 'test0020'
+    self~assertSame('a b', 'a b '~space)
+
+::method 'test0021'
+    self~assertSame('a b', ' a b '~space)
+
+::method 'test0022'
+    self~assertSame('§ °', ' § ° '~space)
+
+::method 'test0023'
+    self~assertSame('', '09'x~space)
+
+::method 'test0024'
+    self~assertSame('', (' '||'09'x)~space)
+
+::method 'test0025'
+    self~assertSame('', ('09'x' ')~space)
+
+::method 'test0026'
+    self~assertSame('', (' '||'09'x' ')~space)
+
+::method 'test0027'
+    self~assertSame('a b', 'a  b'~space)
+
+::method 'test0028'
+    self~assertSame('a b', ' a  b'~space)
+
+::method 'test0029'
+    self~assertSame('a b', 'a  b '~space)
+
+::method 'test0030'
+    self~assertSame('a b', ' a  b '~space)
+
+::method 'test0031'
+    self~assertSame('§ §', ' §  § '~space)
+
+::method 'test0032'
+    self~assertSame('', ('09'x' ' '09'x)~space)
+
+::method 'test0033'
+    self~assertSame('', ('  '||'09'x)~space)
+
+::method 'test0034'
+    self~assertSame('', ('09'x'  ')~space)
+
+::method 'test0035'
+    self~assertSame('abc def', 'abc def'~space)
+
+::method 'test0036'
+    self~assertSame('abc def', ' abc def'~space)
+
+::method 'test0037'
+    self~assertSame('abc def', 'abc def '~space)
+
+::method 'test0038'
+    self~assertSame('abc def', ' abc def '~space)
+
+::method 'test0039'
+    self~assertSame('§äè °üé', ' §äè °üé'~space)
+
+::method 'test0040'
+    self~assertSame('abc def', 'abc   def'~space)
+
+::method 'test0041'
+    self~assertSame('abc def', ' abc   def'~space)
+
+::method 'test0042'
+    self~assertSame('abc def', 'abc   def '~space)
+
+::method 'test0043'
+    self~assertSame('abc def', ' abc   def '~space)
+
+::method 'test0044'
+    self~assertSame('§äè °üé', ' §äè  °üé '~space)
+
+::method 'test0045'
+    self~assertSame('abc def', ('abc'||'090909'x'def')~space)
+
+::method 'test0046'
+    self~assertSame('§äè §üé', ('§äè'||'090909'x'§üé')~space)
+
+::method 'test0047'
+    self~assertSame('a b c', 'a b  c'~space)
+
+::method 'test0048'
+    self~assertSame('a b c', ' a b  c'~space)
+
+::method 'test0049'
+    self~assertSame('a b c', 'a b  c '~space)
+
+::method 'test0050'
+    self~assertSame('a b c', ' a b  c '~space)
+
+::method 'test0051'
+    self~assertSame('§ °', ' § ° '~space)
+
+::method 'test0052'
+    self~assertSame('a b c', ( 'a b  c' '09'x)~space)
+
+::method 'test0053'
+    self~assertSame('a b c', ('a b'||'0909'x' c')~space)
+
+::method 'test0054'
+    self~assertSame('§ ° ß', ' §  °  ß '~space)
+
+::method 'test0055'
+    self~assertSame('abc def hij', 'abc def hij'~space)
+
+::method 'test0056'
+    self~assertSame('abc def hij', ' abc def hij'~space)
+
+::method 'test0057'
+    self~assertSame('abc def hij', 'abc def hij '~space)
+
+::method 'test0058'
+    self~assertSame('abc def hij', ' abc def hij '~space)
+
+::method 'test0059'
+    self~assertSame('§äè °üé', ' §äè °üé'~space)
+
+::method 'test0060'
+    self~assertSame('abc def hij', 'abc   def   hij'~space)
+
+::method 'test0061'
+    self~assertSame('abc def hij', ' abc   def   hij'~space)
+
+::method 'test0062'
+    self~assertSame('abc def hij', 'abc   def    hij '~space)
+
+::method 'test0063'
+    self~assertSame('abc def hij', ' abc   def   hij '~space)
+
+::method 'test0064'
+    self~assertSame('§äè °üé ß¢¬', (' §äè  °üé    ß¢¬' '0909'x)~space)
+
+::method 'test0065'
+    self~assertSame('', ''~space(0))
+
+::method 'test0066'
+    self~assertSame('', ' '~space(0))
+
+::method 'test0067'
+    self~assertSame('a', 'a'~space(0))
+
+::method 'test0068'
+    self~assertSame('§', '§'~space(0))
+
+::method 'test0069'
+    self~assertSame('a', ' a'~space(0))
+
+::method 'test0070'
+    self~assertSame('a', 'a '~space(0))
+
+::method 'test0071'
+    self~assertSame('§', ' § '~space(0))
+
+::method 'test0072'
+    self~assertSame('ab', 'a b'~space(0))
+
+::method 'test0073'
+    self~assertSame('ab', ' a b'~space(0))
+
+::method 'test0074'
+    self~assertSame('ab', 'a b '~space(0))
+
+::method 'test0075'
+    self~assertSame('ab', ' a b '~space(0))
+
+::method 'test0076'
+    self~assertSame('§§', ' § § '~space(0))
+
+::method 'test0077'
+    self~assertSame('', '09'x~space(0))
+
+::method 'test0078'
+    self~assertSame('', (' '||'09'x)~space(0))
+
+::method 'test0079'
+    self~assertSame('', ('09'x' ')~space(0))
+
+::method 'test0080'
+    self~assertSame('', (' '||'09'x' ')~space(0))
+
+::method 'test0081'
+    self~assertSame('ab', 'a  b'~space(0))
+
+::method 'test0082'
+    self~assertSame('ab', ' a  b'~space(0))
+
+::method 'test0083'
+    self~assertSame('ab', 'a  b '~space(0))
+
+::method 'test0084'
+    self~assertSame('ab', ' a  b '~space(0))
+
+::method 'test0085'
+    self~assertSame('§§', ' §  § '~space(0))
+
+::method 'test0086'
+    self~assertSame('', ('09'x' ' '09'x)~space(0))
+
+::method 'test0087'
+    self~assertSame('', ('09'x' ' '09'x)~space(0))
+
+::method 'test0088'
+    self~assertSame('', ('09'x'  ')~space(0))
+
+::method 'test0089'
+    self~assertSame('', ('09'x' ' '09'x' ')~space(0))
+
+::method 'test0090'
+    self~assertSame('abcdef', 'abc def'~space(0))
+
+::method 'test0091'
+    self~assertSame('abcdef', ' abc def'~space(0))
+
+::method 'test0092'
+    self~assertSame('abcdef', 'abc def '~space(0))
+
+::method 'test0093'
+    self~assertSame('abcdef', ' abc def '~space(0))
+
+::method 'test0094'
+    self~assertSame('§äè°üé', ' §äè °üé'~space(0))
+
+::method 'test0095'
+    self~assertSame('abcdef', 'abc   def'~space(0))
+
+::method 'test0096'
+    self~assertSame('abcdef', ' abc   def'~space(0))
+
+::method 'test0097'
+    self~assertSame('abcdef', 'abc   def '~space(0))
+
+::method 'test0098'
+    self~assertSame('abcdef', ' abc   def '~space(0))
+
+::method 'test0099'
+    self~assertSame('§äè°üé', ' §äè  °üé '~space(0))
+
+::method 'test0100'
+    self~assertSame('abcdef', ('abc'||'090909'x'def')~space(0))
+
+::method 'test0101'
+    self~assertSame('§äè§üé', ('§äè'||'090909'x'§üé')~space(0))
+
+::method 'test0102'
+    self~assertSame('abc', 'a b  c'~space(0))
+
+::method 'test0103'
+    self~assertSame('abc', ' a b  c'~space(0))
+
+::method 'test0104'
+    self~assertSame('abc', 'a b  c '~space(0))
+
+::method 'test0105'
+    self~assertSame('abc', ' a b  c '~space(0))
+
+::method 'test0106'
+    self~assertSame('§°', ' § ° '~space(0))
+
+::method 'test0107'
+    self~assertSame('abc', ( 'a b  c' '09'x)~space(0))
+
+::method 'test0108'
+    self~assertSame('abc', ('a b'||'0909'x' c')~space(0))
+
+::method 'test0109'
+    self~assertSame('§°ß', ' §  °  ß '~space(0))
+
+::method 'test0110'
+    self~assertSame('abcdefhij', 'abc def hij'~space(0))
+
+::method 'test0111'
+    self~assertSame('abcdefhij', ' abc def hij'~space(0))
+
+::method 'test0112'
+    self~assertSame('abcdefhij', 'abc def hij '~space(0))
+
+::method 'test0113'
+    self~assertSame('abcdefhij', ' abc def hij '~space(0))
+
+::method 'test0114'
+    self~assertSame('§äè°üé', ' §äè °üé'~space(0))
+
+::method 'test0115'
+    self~assertSame('abcdefhij', 'abc   def   hij'~space(0))
+
+::method 'test0116'
+    self~assertSame('abcdefhij', ' abc   def   hij'~space(0))
+
+::method 'test0117'
+    self~assertSame('abcdefhij', 'abc   def    hij '~space(0))
+
+::method 'test0118'
+    self~assertSame('abcdefhij', ' abc   def   hij '~space(0))
+
+::method 'test0119'
+    self~assertSame('§äè°üéß¢¬', (' §äè  °üé    ß¢¬' '0909'x)~space(0))
+
+::method 'test0120'
+    self~assertSame('', ''~space(1,'+'))
+
+::method 'test0121'
+    self~assertSame('', ' '~space(1,'+'))
+
+::method 'test0122'
+    self~assertSame('a', 'a'~space(1,'+'))
+
+::method 'test0123'
+    self~assertSame('§', '§'~space(1,'+'))
+
+::method 'test0124'
+    self~assertSame('a', ' a'~space(1,'+'))
+
+::method 'test0125'
+    self~assertSame('a', 'a '~space(1,'+'))
+
+::method 'test0126'
+    self~assertSame('§', ' § '~space(1,'+'))
+
+::method 'test0127'
+    self~assertSame('a+b', 'a b'~space(1,'+'))
+
+::method 'test0128'
+    self~assertSame('a+b', ' a b'~space(1,'+'))
+
+::method 'test0129'
+    self~assertSame('a+b', 'a b '~space(1,'+'))
+
+::method 'test0130'
+    self~assertSame('a+b', ' a b '~space(1,'+'))
+
+::method 'test0131'
+    self~assertSame('§+§', ' § § '~space(1,'+'))
+
+::method 'test0132'
+    self~assertSame('', '09'x~space(1,'+'))
+
+::method 'test0133'
+    self~assertSame('', (' '||'09'x)~space(1,'+'))
+
+::method 'test0134'
+    self~assertSame('', ('09'x' ')~space(1,'+'))
+
+::method 'test0135'
+    self~assertSame('', (' '||'09'x' ')~space(1,'+'))
+
+::method 'test0136'
+    self~assertSame('a+b', 'a  b'~space(1,'+'))
+
+::method 'test0137'
+    self~assertSame('a+b', ' a  b'~space(1,'+'))
+
+::method 'test0138'
+    self~assertSame('a+b', 'a  b '~space(1,'+'))
+
+::method 'test0139'
+    self~assertSame('a+b', ' a  b '~space(1,'+'))
+
+::method 'test0140'
+    self~assertSame('§+§', ' §  § '~space(1,'+'))
+
+::method 'test0141'
+    self~assertSame('', ('09'x' ' '09'x)~space(1,'+'))
+
+::method 'test0142'
+    self~assertSame('', ('09'x' ' '09'x)~space(1,'+'))
+
+::method 'test0143'
+    self~assertSame('', ('09'x'  ')~space(1,'+'))
+
+::method 'test0144'
+    self~assertSame('', ('09'x' ' '09'x' ')~space(1,'+'))
+
+::method 'test0145'
+    self~assertSame('abc+def', 'abc def'~space(1,'+'))
+
+::method 'test0146'
+    self~assertSame('abc+def', ' abc def'~space(1,'+'))
+
+::method 'test0147'
+    self~assertSame('abc+def', 'abc def '~space(1,'+'))
+
+::method 'test0148'
+    self~assertSame('abc+def', ' abc def '~space(1,'+'))
+
+::method 'test0149'
+    self~assertSame('§äè+°üé', ' §äè °üé'~space(1,'+'))
+
+::method 'test0150'
+    self~assertSame('abc+def', 'abc   def'~space(1,'+'))
+
+::method 'test0151'
+    self~assertSame('abc+def', ' abc   def'~space(1,'+'))
+
+::method 'test0152'
+    self~assertSame('abc+def', 'abc   def '~space(1,'+'))
+
+::method 'test0153'
+    self~assertSame('abc+def', ' abc   def '~space(1,'+'))
+
+::method 'test0154'
+    self~assertSame('§äè+°üé', ' §äè  °üé '~space(1,'+'))
+
+::method 'test0155'
+    self~assertSame('abc+def', ('abc'||'090909'x'def')~space(1,'+'))
+
+::method 'test0156'
+    self~assertSame('§äè+§üé', ('§äè'||'090909'x'§üé')~space(1,'+'))
+
+::method 'test0157'
+    self~assertSame('a+b+c', 'a b  c'~space(1,'+'))
+
+::method 'test0158'
+    self~assertSame('a+b+c', ' a b  c'~space(1,'+'))
+
+::method 'test0159'
+    self~assertSame('a+b+c', 'a b  c '~space(1,'+'))
+
+::method 'test0160'
+    self~assertSame('a+b+c', ' a b  c '~space(1,'+'))
+
+::method 'test0161'
+    self~assertSame('§+°', ' § ° '~space(1,'+'))
+
+::method 'test0162'
+    self~assertSame('a+b+c', ( 'a b  c' '09'x)~space(1,'+'))
+
+::method 'test0163'
+    self~assertSame('a+b+c', ('a b'||'0909'x' c')~space(1,'+'))
+
+::method 'test0164'
+    self~assertSame('§+°+ß', ' §  °  ß '~space(1,'+'))
+
+::method 'test0165'
+    self~assertSame('abc+def+hij', 'abc def hij'~space(1,'+'))
+
+::method 'test0166'
+    self~assertSame('abc+def+hij', ' abc def hij'~space(1,'+'))
+
+::method 'test0167'
+    self~assertSame('abc+def+hij', 'abc def hij '~space(1,'+'))
+
+::method 'test0168'
+    self~assertSame('abc+def+hij', ' abc def hij '~space(1,'+'))
+
+::method 'test0169'
+    self~assertSame('§äè+°üé', ' §äè °üé'~space(1,'+'))
+
+::method 'test0170'
+    self~assertSame('abc+def+hij', 'abc   def   hij'~space(1,'+'))
+
+::method 'test0171'
+    self~assertSame('abc+def+hij', ' abc   def   hij'~space(1,'+'))
+
+::method 'test0172'
+    self~assertSame('abc+def+hij', 'abc   def    hij '~space(1,'+'))
+
+::method 'test0173'
+    self~assertSame('abc+def+hij', ' abc   def   hij '~space(1,'+'))
+
+::method 'test0174'
+    self~assertSame('§äè+°üé+ß¢¬', (' §äè  °üé    ß¢¬' '0909'x)~space(1,'+'))
+
+::method 'test0175'
+    self~assertSame('', ''~space(2))
+
+::method 'test0176'
+    self~assertSame('', ' '~space(2))
+
+::method 'test0177'
+    self~assertSame('a', 'a'~space(2))
+
+::method 'test0178'
+    self~assertSame('§', '§'~space(2))
+
+::method 'test0179'
+    self~assertSame('a', ' a'~space(2))
+
+::method 'test0180'
+    self~assertSame('a', 'a '~space(2))
+
+::method 'test0181'
+    self~assertSame('§', ' § '~space(2))
+
+::method 'test0182'
+    self~assertSame('a  b', 'a b'~space(2))
+
+::method 'test0183'
+    self~assertSame('a  b', ' a b'~space(2))
+
+::method 'test0184'
+    self~assertSame('a  b', 'a b '~space(2))
+
+::method 'test0185'
+    self~assertSame('a  b', ' a b '~space(2))
+
+::method 'test0186'
+    self~assertSame('§  §', ' § § '~space(2))
+
+::method 'test0187'
+    self~assertSame('', '09'x~space(2))
+
+::method 'test0188'
+    self~assertSame('', (' '||'09'x)~space(2))
+
+::method 'test0189'
+    self~assertSame('', ('09'x' ')~space(2))
+
+::method 'test0190'
+    self~assertSame('', (' '||'09'x' ')~space(2))
+
+::method 'test0191'
+    self~assertSame('a  b', 'a  b'~space(2))
+
+::method 'test0192'
+    self~assertSame('a  b', ' a  b'~space(2))
+
+::method 'test0193'
+    self~assertSame('a  b', 'a  b '~space(2))
+
+::method 'test0194'
+    self~assertSame('a  b', ' a  b '~space(2))
+
+::method 'test0195'
+    self~assertSame('§  §', ' §  § '~space(2))
+
+::method 'test0196'
+    self~assertSame('', ('09'x' ' '09'x)~space(2))
+
+::method 'test0197'
+    self~assertSame('', ('09'x' ' '09'x)~space(2))
+
+::method 'test0198'
+    self~assertSame('', ('09'x'  ')~space(2))
+
+::method 'test0199'
+    self~assertSame('', ('09'x' ' '09'x' ')~space(2))
+
+::method 'test0200'
+    self~assertSame('abc  def', 'abc def'~space(2))
+
+::method 'test0201'
+    self~assertSame('abc  def', ' abc def'~space(2))
+
+::method 'test0202'
+    self~assertSame('abc  def', 'abc def '~space(2))
+
+::method 'test0203'
+    self~assertSame('abc  def', ' abc def '~space(2))
+
+::method 'test0204'
+    self~assertSame('§äè  °üé', ' §äè °üé'~space(2))
+
+::method 'test0205'
+    self~assertSame('abc  def', 'abc   def'~space(2))
+
+::method 'test0206'
+    self~assertSame('abc  def', ' abc   def'~space(2))
+
+::method 'test0207'
+    self~assertSame('abc  def', 'abc   def '~space(2))
+
+::method 'test0208'
+    self~assertSame('abc  def', ' abc   def '~space(2))
+
+::method 'test0209'
+    self~assertSame('§äè  °üé', ' §äè  °üé '~space(2))
+
+::method 'test0210'
+    self~assertSame('abc  def', ('abc'||'090909'x'def')~space(2))
+
+::method 'test0211'
+    self~assertSame('§äè  §üé', ('§äè'||'090909'x'§üé')~space(2))
+
+::method 'test0212'
+    self~assertSame('a  b  c', 'a b  c'~space(2))
+
+::method 'test0213'
+    self~assertSame('a  b  c', ' a b  c'~space(2))
+
+::method 'test0214'
+    self~assertSame('a  b  c', 'a b  c '~space(2))
+
+::method 'test0215'
+    self~assertSame('a  b  c', ' a b  c '~space(2))
+
+::method 'test0216'
+    self~assertSame('§  °', ' § ° '~space(2))
+
+::method 'test0217'
+    self~assertSame('a  b  c', ( 'a b  c' '09'x)~space(2))
+
+::method 'test0218'
+    self~assertSame('a  b  c', ('a b'||'0909'x' c')~space(2))
+
+::method 'test0219'
+    self~assertSame('§  °  ß', ' §  °  ß '~space(2))
+
+::method 'test0220'
+    self~assertSame('abc  def  hij', 'abc def hij'~space(2))
+
+::method 'test0221'
+    self~assertSame('abc  def  hij', ' abc def hij'~space(2))
+
+::method 'test0222'
+    self~assertSame('abc  def  hij', 'abc def hij '~space(2))
+
+::method 'test0223'
+    self~assertSame('abc  def  hij', ' abc def hij '~space(2))
+
+::method 'test0224'
+    self~assertSame('§äè  °üé', ' §äè °üé'~space(2))
+
+::method 'test0225'
+    self~assertSame('abc  def  hij', 'abc   def   hij'~space(2))
+
+::method 'test0226'
+    self~assertSame('abc  def  hij', ' abc   def   hij'~space(2))
+
+::method 'test0227'
+    self~assertSame('abc  def  hij', 'abc   def    hij '~space(2))
+
+::method 'test0228'
+    self~assertSame('abc  def  hij', ' abc   def   hij '~space(2))
+
+::method 'test0229'
+    self~assertSame('§äè  °üé  ß¢¬', (' §äè  °üé    ß¢¬' '0909'x)~space(2))
+
+::method 'test0230'
+    self~assertSame('', ''~space(2,'+'))
+
+::method 'test0231'
+    self~assertSame('', ' '~space(2,'+'))
+
+::method 'test0232'
+    self~assertSame('a', 'a'~space(2,'+'))
+
+::method 'test0233'
+    self~assertSame('§', '§'~space(2,'+'))
+
+::method 'test0234'
+    self~assertSame('a', ' a'~space(2,'+'))
+
+::method 'test0235'
+    self~assertSame('a', 'a '~space(2,'+'))
+
+::method 'test0236'
+    self~assertSame('§', ' § '~space(2,'+'))
+
+::method 'test0237'
+    self~assertSame('a++b', 'a b'~space(2,'+'))
+
+::method 'test0238'
+    self~assertSame('a++b', ' a b'~space(2,'+'))
+
+::method 'test0239'
+    self~assertSame('a++b', 'a b '~space(2,'+'))
+
+::method 'test0240'
+    self~assertSame('a++b', ' a b '~space(2,'+'))
+
+::method 'test0241'
+    self~assertSame('§++§', ' § § '~space(2,'+'))
+
+::method 'test0242'
+    self~assertSame('', '09'x~space(2,'+'))
+
+::method 'test0243'
+    self~assertSame('', (' '||'09'x)~space(2,'+'))
+
+::method 'test0244'
+    self~assertSame('', ('09'x' ')~space(2,'+'))
+
+::method 'test0245'
+    self~assertSame('', (' '||'09'x' ')~space(2,'+'))
+
+::method 'test0246'
+    self~assertSame('a++b', 'a  b'~space(2,'+'))
+
+::method 'test0247'
+    self~assertSame('a++b', ' a  b'~space(2,'+'))
+
+::method 'test0248'
+    self~assertSame('a++b', 'a  b '~space(2,'+'))
+
+::method 'test0249'
+    self~assertSame('a++b', ' a  b '~space(2,'+'))
+
+::method 'test0250'
+    self~assertSame('§++§', ' §  § '~space(2,'+'))
+
+::method 'test0251'
+    self~assertSame('', ('09'x' ' '09'x)~space(2,'+'))
+
+::method 'test0252'
+    self~assertSame('', ('09'x' ' '09'x)~space(2,'+'))
+
+::method 'test0253'
+    self~assertSame('', ('09'x'  ')~space(2,'+'))
+
+::method 'test0254'
+    self~assertSame('', ('09'x' ' '09'x' ')~space(2,'+'))
+
+::method 'test0255'
+    self~assertSame('abc++def', 'abc def'~space(2,'+'))
+
+::method 'test0256'
+    self~assertSame('abc++def', ' abc def'~space(2,'+'))
+
+::method 'test0257'
+    self~assertSame('abc++def', 'abc def '~space(2,'+'))
+
+::method 'test0258'
+    self~assertSame('abc++def', ' abc def '~space(2,'+'))
+
+::method 'test0259'
+    self~assertSame('§äè++°üé', ' §äè °üé'~space(2,'+'))
+
+::method 'test0260'
+    self~assertSame('abc++def', 'abc   def'~space(2,'+'))
+
+::method 'test0261'
+    self~assertSame('abc++def', ' abc   def'~space(2,'+'))
+
+::method 'test0262'
+    self~assertSame('abc++def', 'abc   def '~space(2,'+'))
+
+::method 'test0263'
+    self~assertSame('abc++def', ' abc   def '~space(2,'+'))
+
+::method 'test0264'
+    self~assertSame('§äè++°üé', ' §äè  °üé '~space(2,'+'))
+
+::method 'test0265'
+    self~assertSame('abc++def', ('abc'||'090909'x'def')~space(2,'+'))
+
+::method 'test0266'
+    self~assertSame('§äè++§üé', ('§äè'||'090909'x'§üé')~space(2,'+'))
+
+::method 'test0267'
+    self~assertSame('a++b++c', 'a b  c'~space(2,'+'))
+
+::method 'test0268'
+    self~assertSame('a++b++c', ' a b  c'~space(2,'+'))
+
+::method 'test0269'
+    self~assertSame('a++b++c', 'a b  c '~space(2,'+'))
+
+::method 'test0270'
+    self~assertSame('a++b++c', ' a b  c '~space(2,'+'))
+
+::method 'test0271'
+    self~assertSame('§++°', ' § ° '~space(2,'+'))
+
+::method 'test0272'
+    self~assertSame('a++b++c', ( 'a b  c' '09'x)~space(2,'+'))
+
+::method 'test0273'
+    self~assertSame('a++b++c', ('a b'||'0909'x' c')~space(2,'+'))
+
+::method 'test0274'
+    self~assertSame('§++°++ß', ' §  °  ß '~space(2,'+'))
+
+::method 'test0275'
+    self~assertSame('abc++def++hij', 'abc def hij'~space(2,'+'))
+
+::method 'test0276'
+    self~assertSame('abc++def++hij', ' abc def hij'~space(2,'+'))
+
+::method 'test0277'
+    self~assertSame('abc++def++hij', 'abc def hij '~space(2,'+'))
+
+::method 'test0278'
+    self~assertSame('abc++def++hij', ' abc def hij '~space(2,'+'))
+
+::method 'test0279'
+    self~assertSame('§äè++°üé', ' §äè °üé'~space(2,'+'))
+
+::method 'test0280'
+    self~assertSame('abc++def++hij', 'abc   def   hij'~space(2,'+'))
+
+::method 'test0281'
+    self~assertSame('abc++def++hij', ' abc   def   hij'~space(2,'+'))
+
+::method 'test0282'
+    self~assertSame('abc++def++hij', 'abc   def    hij '~space(2,'+'))
+
+::method 'test0283'
+    self~assertSame('abc++def++hij', ' abc   def   hij '~space(2,'+'))
+
+::method 'test0284'
+    self~assertSame('§äè++°üé++ß¢¬', (' §äè  °üé    ß¢¬' '0909'x)~space(2,'+'))
+
+::method 'test0285'
+    self~expectSyntax(93.922)
+    xre = ' aaa '~space(,'  ')
+
+::method 'test0286'
+    self~expectSyntax(93.923)
+    xre=' aaa '~space('x',' ')
+
+::method 'test0287'
+    self~expectSyntax(93.922)
+    xre = 'no.v1'~space(,no.v2)
+
+::method 'test0288'
+    self~assertSame(200, (2 2)~space(,0)-2)
+
+::method 'test0289'
+    self~expectSyntax(41.1)
+    xre = (020 020)~space(,'-')-0

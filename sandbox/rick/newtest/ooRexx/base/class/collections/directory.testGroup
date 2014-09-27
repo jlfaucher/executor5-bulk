@@ -1,0 +1,354 @@
+#!/usr/bin/rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 - 2008 Rexx Language Association. All rights reserved.  */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.Collection_directoryMethod.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::method dirMystery
+   -- this is a floating method to test the directory class setMethod method
+   return 'MysteryPerson'
+
+::class "Collection_directoryMethod.testGroup" subclass ooTestCase public
+
+::method "test_1"
+   dir = .directory~new()
+   self~assertEquals('a Directory', dir)
+   self~assertEquals(0, dir~items)
+   self~assertEquals(1, dir~isEmpty)
+
+::method "test_2"
+   dir = .directory~new()
+   dir['Mike'] = 'Shrek'
+   self~assertEquals(0, dir~isEmpty)
+   self~assertEquals(1, dir~items)
+   self~assertEquals('Shrek', dir['Mike'])
+   arr = .array~new
+   dir['Dennis'] = arr
+   self~assertEquals(2, dir~items)
+   self~assertSame(arr, dir['Dennis'])
+   q = .queue~new
+   dir~put(q, 'Linda')
+   self~assertEquals(3, dir~items)
+   self~assertSame(q, dir~at('Linda'))
+
+::method "test_3"
+   dir = .directory~new()
+   dir['Mike'] = 'Shrek'
+   dir['Dennis'] = .array~new()
+   dir~put(.queue~new(), 'Linda')
+   arr = dir~allIndexes()
+   self~assertEquals(3, arr~items)
+   self~assertTrue(arr~equivalent(.array~of('Mike', 'Dennis', 'Linda')))
+
+::method "test_4"
+   dir = .directory~new()
+   dir~setEntry('Mike', 'Shrek')
+   arr = .array~new
+   dir['Dennis'] = arr
+   queue = .queue~new
+   dir~put(queue, 'Linda')
+   items = dir~allItems()
+   self~assertEquals(3, items~items)
+   self~assertTrue(items~equivalent(.array~of('Shrek', arr, queue)))
+
+::method "test_5"
+   dir = .directory~new()
+   dir['Mike'] = 'Shrek'
+   dir['Dennis'] = .array~new()
+   dir~put(.queue~new(), 'Linda')
+   self~assertEquals(3, dir~items)
+   dir~empty
+   self~assertEquals(0, dir~items)
+
+::method "test_6"
+   dir = .directory~new()
+   dir['MIKE'] = 'Shrek'
+   dir['Dennis'] = 'Miller'
+   dir['DAVID'] = 'West'
+   self~assertEquals('Shrek', dir~entry('Mike'))
+   self~assertEquals(.nil, dir~entry('Dennis'))
+   self~assertEquals('West', dir~entry('David'))
+   self~assertEquals(.nil, dir~entry('Linda'))
+
+::method "test_7"
+   dir = .directory~new()
+   dir['MIKE'] = 'Shrek'
+   dir['Dennis'] = 'Miller'
+   dir['DAVID'] = 'West'
+   self~assertEquals(1, dir~hasEntry('MIKE'))
+   self~assertEquals(0, dir~hasEntry('Dennis'))
+   self~assertEquals(1, dir~hasEntry('David'))
+   self~assertEquals(0, dir~hasEntry('Linda'))
+
+::method "test_8"
+   dir = .directory~new()
+   dir['MIKE'] = 'Shrek'
+   dir['Dennis'] = 'Miller'
+   dir['DAVID'] = 'West'
+   self~assertEquals(1, dir~hasIndex('MIKE'))
+   self~assertEquals(1, dir~hasIndex('Dennis'))
+   self~assertEquals(0, dir~hasIndex('David'))
+   self~assertEquals(0, dir~hasIndex('Linda'))
+
+::method "test_9"
+   dir = .directory~new()
+   dir['MIKE'] = 'Shrek'
+   dir['Dennis'] = 'Miller'
+   dir['DAVID'] = 'West'
+   self~assertEquals(1, dir~hasItem('Shrek'))
+   self~assertEquals(1, dir~hasItem('West'))
+   self~assertEquals(0, dir~hasItem('MILLER'))
+   self~assertEquals(0, dir~hasItem('McCall'))
+
+::method "test_10"
+   dir = .directory~new()
+   dir['MIKE'] = 'Shrek'
+   dir['Dennis'] = 'Miller'
+   dir['DAVID'] = 'West'
+   dir['Larry'] = 'Miller'
+   self~assertEquals('MIKE', dir~index('Shrek'))
+   idx = dir~index('Miller')
+   self~assertEquals(1, idx = 'Dennis' | idx = 'Larry')
+   self~assertEquals(.nil, dir~index('McCall'))
+
+::method "test_11"
+   dir = .directory~new()
+   dir['MIKE'] = 'Shrek'
+   dir['Dennis'] = 'Miller'
+   dir['DAVID'] = 'West'
+   arr = dir~makeArray()
+   self~assertEquals(3, arr~items)
+   self~assertEquals(1, arr~hasItem('DAVID'))
+   self~assertEquals(1, arr~hasItem('Dennis'))
+   self~assertEquals(1, arr~hasItem('MIKE'))
+
+::method "test_12"
+   dir = .directory~new()
+   dir['MIKE'] = 'Shrek'
+   dir['Dennis'] = 'Miller'
+   dir['DAVID'] = 'West'
+   self~assertEquals(3, dir~items)
+   item = dir~remove('Dennis')
+   self~assertEquals(2, dir~items)
+   self~assertEquals('Miller', item)
+
+::method "test_13"
+   dir = .directory~new()
+   dir['MIKE'] = 'Shrek'
+   dir['Dennis'] = 'Miller'
+   dir['DAVID'] = 'West'
+   self~assertEquals(3, dir~items)
+   item = dir~removeItem('Miller')
+   self~assertEquals(2, dir~items)
+   self~assertEquals('Miller', item)
+
+::method "test_14"
+   dir = .directory~new()
+   dir['MIKE'] = 'Shrek'
+   dir['Dennis'] = 'Miller'
+   dir['DAVID'] = 'West'
+   self~assertEquals(3, dir~items)
+   dir~setEntry('Mike', 'Humperdink')
+   self~assertEquals(3, dir~items)
+   self~assertEquals('Humperdink', dir['MIKE'])
+   dir~setEntry('David')
+   self~assertEquals(2, dir~items)
+   dir~setEntry('Dennis')
+   self~assertEquals(2, dir~items)
+
+::method "test_15"
+   dir = .directory~new()
+   dir['MIKE'] = 'Shrek'
+   dir['Dennis'] = 'Miller'
+   dir['DAVID'] = 'West'
+   dir~setMethod('DAVID', .methods~dirMystery)
+   self~assertEquals('MysteryPerson', dir['DAVID'])
+   dir~unsetMethod('DAVID')
+   self~assertEquals(.nil, dir['DAVID'])
+   dir['DAVID'] = 'foo'
+   self~assertEquals('foo', dir['DAVID'])
+   dir~setMethod('DAVID', 'return "Spy"')
+   self~assertEquals('Spy', dir['DAVID'])
+   arr = dir~allItems()
+   self~assertEquals(1, arr~hasItem('Spy'))
+
+::method "test_16"
+   dir = .directory~new()
+   dir['MIKE'] = 'Shrek'
+   dir['Dennis'] = 'Miller'
+   sup = dir~supplier
+   self~assertEquals('a Supplier', sup)
+   self~assertEquals(1, sup~available)
+   if sup~index = 'MIKE' then self~assertEquals('Shrek', sup~item)
+   else if sup~index = 'Dennis' then self~assertEquals('Miller', sup~item)
+   sup~next
+   self~assertEquals(1, sup~available)
+   if sup~index = 'MIKE' then self~assertEquals('Shrek', sup~item)
+   else if sup~index = 'Dennis' then self~assertEquals('Miller', sup~item)
+   sup~next
+   self~assertEquals(0, sup~available)
+   self~expectSyntax(93.937)
+   sup~next
+
+::method "test_17"
+   dir = .directory~new()
+   dir['MIKE'] = 'Shrek'
+   dir['Dennis'] = 'Miller'
+   dir['DAVID'] = 'West'
+   self~assertEquals('Shrek', dir~unknown('MIKE', .array~new()))
+   dir~unknown('MIKE=', .array~of('Kinder'))
+   self~assertEquals('Kinder', dir~unknown('MIKE', .array~new()))
+
+::method "test_18"
+   -- xor
+   dir = .directory~new()
+   dir['MIKE'] = 'Shrek'
+   dir['Dennis'] = 'Miller'
+   dir['Linda'] = 'Miller'
+   arr = .array~of('MIKE', 'Dennis')
+   -- Note: The array is converted to a bag in the xor method and the
+   --       array indexes are lost
+   newdir = dir~xor(arr)
+   self~assertEquals('Miller', newdir['Linda'])
+   self~assertEquals(1, newdir~items)
+
+::method "test_19"
+  dir = .directory~new
+  dir~setMethod("Self", "return self")
+  dir~setMethod("Super", "return super")
+
+  self~assertSame(.directory, dir~super)
+  self~assertSame(dir, dir~self)
+  self~assertTrue(dir~hasIndex('SUPER'))
+  self~assertTrue(dir~hasEntry('super'))
+
+  dir~foo = "bar"
+
+  self~assertEquals(3, dir~items)
+
+  indexes = dir~allIndexes
+  self~assertTrue(indexes~equivalent(.array~of("SELF", "SUPER", "FOO")))
+
+  items = dir~allItems
+  self~assertTrue(items~equivalent(.array~of(dir, .directory, "bar")))
+
+  dir~self = "xyz"
+  self~assertEquals("xyz", dir~self)
+
+  self~assertEquals('xyz', dir~remove('SELF'))
+  self~assertSame(.nil, dir~self)
+  self~assertFalse(dir~hasIndex('SELF'))
+
+  dir~unsetmethod('super')
+  self~assertSame(.nil, dir~super)
+  self~assertFalse(dir~hasEntry('super'))
+
+  dir~setmethod('test', 'return "foo"')
+  self~assertEquals('foo', dir~test)
+  dir~setmethod('test')
+  self~assertSame(.nil, dir~test)
+
+::method "test_20"
+  dir = .directory~new
+
+  dir~setEntry('foo', 'bar')
+  self~assertTrue(dir~allIndexes~equivalent(.array~of("FOO")))
+  self~assertEquals("bar", dir['FOO'])
+  self~assertEquals("bar", dir~entry('foo'))
+  self~assertTrue(dir~hasentry('foo'))
+  self~assertEquals("bar", dir~removeEntry('foo'))
+  self~assertSame(.nil, dir['FOO'])
+
+
+::method "test_21"
+   self~expectSyntax(93.938)
+  dir = .directory~new
+  dir[.object~new] = 1
+
+::method "test_22"
+   self~expectSyntax(93.938)
+  dir = .directory~new
+  x = dir[.object~new]
+
+::method "test_23"
+   self~expectSyntax(93.938)
+  dir = .directory~new
+  x = dir~at(.object~new)
+
+::method "test_24"
+   self~expectSyntax(93.938)
+  dir = .directory~new
+  x = dir~put(1, .object~new)
+
+::method "test_25"
+   self~expectSyntax(93.938)
+  dir = .directory~new
+  x = dir~remove(.object~new)
+
+::method "test_26"
+   self~expectSyntax(93.938)
+  dir = .directory~new
+  x = dir~hasIndex(.object~new)
+
+::method "test_27"
+   self~expectSyntax(93.938)
+  dir = .directory~new
+  x = dir~entry(.object~new)
+
+::method "test_28"
+   self~expectSyntax(93.938)
+  dir = .directory~new
+  x = dir~setentry(.object~new, 1)
+
+::method "test_29"
+   self~expectSyntax(93.938)
+  dir = .directory~new
+  x = dir~hasentry(.object~new)
+
