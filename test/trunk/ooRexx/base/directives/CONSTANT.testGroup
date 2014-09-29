@@ -68,8 +68,16 @@ return testResult
   self~assertEquals("1E-4", .test~n5, "n5_class")
   self~assertEquals("1E+4", .test~n6, "n6_class")
   self~assertEquals("23.38885e-5", .test~n7, "n7_class")
+  self~assertEquals("-1E-4", .test~n8, "n8_class")
+  self~assertEquals("+1E+4", .test~n9, "n9_class")
+  self~assertEquals("-1E-4", .test~n10, "n10_class")
+  self~assertEquals("+1E+4", .test~n11, "n11_class")
   self~assertEquals(".NIL", .test~c1, "c1_class")
   self~assertEquals(".", .test~c2, "c2_class")
+  self~assertEquals("-1", .test~minusOne, "minusOne_class")
+  self~assertEquals("+1", .test~plusOne, "plusOne_class")
+  self~assertEquals("NOVALUE1", .test~novalue1, "novalue1_class")
+  self~assertEquals("NoValue2", .test~novalue2, "novalue2_class")
 
   t = .test~new
 
@@ -84,8 +92,14 @@ return testResult
   self~assertEquals("1E-4", t~n5, "n5_instance")
   self~assertEquals("1E+4", t~n6, "n6_instance")
   self~assertEquals("23.38885e-5", t~n7, "n7_instance")
+  self~assertEquals("-1E-4", t~n8, "n8_instance")
+  self~assertEquals("+1E+4", t~n9, "n9_instance")
+  self~assertEquals("-1E-4", t~n10, "n10_instance")
+  self~assertEquals("+1E+4", t~n11, "n11_instance")
   self~assertEquals(".NIL", t~c1, "c1_instance")
   self~assertEquals(".", t~c2, "c2_instance")
+  self~assertEquals("-1", t~minusOne, "minusOne_instance")
+  self~assertEquals("+1", t~plusOne, "plusOne_instance")
 
   self~assertEquals("Fred", t~class~s1, "s1_instance_class")
   self~assertEquals("Rick", t~class~s2, "s2_instance_class")
@@ -285,19 +299,6 @@ return testResult
   self~expectSyntax(21.913)
   p = .Package~new("constant_TestGroup", src)
 
-::method  test_no_values
-  src = .array~new
-
-  src[1] = "return 0"
-  src[2] = ""
-  src[3] = "::class 'TestClass'"
-  src[4] = "::constant PI"
-  src[5] = "::constant ZERO 0.0"
-  src[6] = "::constant MAX_NUMS 5"
-
-  self~expectSyntax(19.916)
-  p = .Package~new("constant_TestGroup", src)
-
 ::method  test_math_expression
   src = .array~new
 
@@ -313,6 +314,50 @@ return testResult
   self~expectSyntax(21.913)
   p = .Package~new("constant_TestGroup", src)
 
+::method  test_bad_positive
+  src = .array~new
+
+  src[1] = "return 0"
+  src[2] = ""
+  src[3] = "::class 'TestClass'"
+  src[4] = "::constant NO_ERR_RC       +a"
+
+  self~expectSyntax(19.916)
+  p = .Package~new("constant_TestGroup", src)
+
+::method  test_bad_positive2
+  src = .array~new
+
+  src[1] = "return 0"
+  src[2] = ""
+  src[3] = "::class 'TestClass'"
+  src[4] = "::constant NO_ERR_RC       +"
+
+  self~expectSyntax(19.916)
+  p = .Package~new("constant_TestGroup", src)
+
+::method  test_bad_negative
+  src = .array~new
+
+  src[1] = "return 0"
+  src[2] = ""
+  src[3] = "::class 'TestClass'"
+  src[4] = "::constant NO_ERR_RC       -a"
+
+  self~expectSyntax(19.916)
+  p = .Package~new("constant_TestGroup", src)
+
+::method  test_no_name
+  src = .array~new
+
+  src[1] = "return 0"
+  src[2] = ""
+  src[3] = "::class 'TestClass'"
+  src[4] = "::constant"
+
+  self~expectSyntax(19.915)
+  p = .Package~new("constant_TestGroup", src)
+
 ::class test mixinclass object
 ::CONSTANT s1 'Fred'
 ::constant S2 "Rick"
@@ -325,8 +370,16 @@ return testResult
 ::constant n5 1e-4
 ::constant n6 1e+4
 ::constant n7 23.38885e-5
+::constant n8 -1e-4
+::constant n9 +1e+4
+::constant n10 - 1e-4
+::constant n11 + 1e+4
 ::constant c1 .nil
 ::constant c2 .
+::constant minusOne -1
+::constant plusOne +1
+::constant novalue1
+::constant 'NoValue2'
 
 ::class test2 subclass test
 

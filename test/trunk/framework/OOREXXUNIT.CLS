@@ -1203,15 +1203,6 @@ return str
   -- Assertion holds.
   self~fAssertions += 1
 
--- create a routine from an array of lines with the intent of checking
--- errors raised at translate time rather than runtime.
-::method assertSyntaxError
-  use strict arg error, code
-
-  self~expectSyntax(error)
-  -- this will translate this code and nothing else.
-  r = .routine~new("test", code)
-
 -- compare an array of items.  each item must be the same, and in the same
 -- order.
 ::method assertSameList
@@ -1332,6 +1323,16 @@ return str
 ::method assertFail
   use strict arg msg = ""
   self~assertTrue(.false, msg) -- just do this as a true assertion
+
+
+-- create a routine from an array of lines with the intent of checking
+-- errors raised at translate time rather than runtime.
+::method assertSyntaxError
+  use strict arg error, code
+
+  self~expectSyntax(error)
+  -- this will translate this code and nothing else.
+  r = .package~new("test", code)
 
 
 /** fail()
