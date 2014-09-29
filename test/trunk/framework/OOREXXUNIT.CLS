@@ -1179,7 +1179,7 @@ return str
   expected = self~formatObjectInfo(expected)
   actual   = self~formatObjectInfo(actual)
 
-  self~fail(self~makeFailure(expected '\=' actual, expected ' =' actual, msg, "asserNotEquals"))
+  self~fail(self~makeFailure(expected '\=' actual, expected ' =' actual, msg, "assertNotEquals"))
 
 
 ::method assertNull
@@ -1202,6 +1202,11 @@ return str
 
   -- Assertion holds.
   self~fAssertions += 1
+
+::method assertIsA
+  use strict arg target, class, msg = 'assertIsA'
+
+  self~assertTrue(target~isa(class), msg)
 
 -- compare an array of items.  each item must be the same, and in the same
 -- order.
@@ -1427,7 +1432,7 @@ return str
 
   if self~conditionExpected then do
      expected = self~conditionName
-     type = 'expectCondtion'
+     type = 'expectCondition'
 
      if expected == "SYNTAX", self~conditionCode <> .nil then do
         expected = expected self~conditionCode
