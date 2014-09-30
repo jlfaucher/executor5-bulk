@@ -56,10 +56,7 @@ return testResult
 ::class "ROUTINE.testGroup" subclass ooTestCase public
 
 ::method testNoName
-  s = random()
-
   self~assertSyntaxError(19.903, ("/**/", "::routine"))
-  self~assertFail
 
 ::method testBadName
   self~assertSyntaxError(19.903, ("/**/", "::routine *"))
