@@ -149,8 +149,11 @@ return testResult
 ::method testExternalLibraryMissingRegisteredName
   self~assertSyntaxError(99.917, "::routine foo external 'REGISTERED'")
 
+::method testExternalLibraryNotRoutine
+  self~assertSyntaxError(90.999, "::routine foo external 'LIBRARY REXX file_case_sensitive'")
+
 ::method testExternalCodeBody
-  self~assertSyntaxError(93.939, ("::routine foo public external 'library rxmath RxCalcPi'", "say hi"))
+  self~assertSyntaxError(99.939, ("::routine foo public external 'library rxmath RxCalcPi'", "say hi"))
 
 ::method testCallType
   self~assertEquals("FUNCTION", calltype())
