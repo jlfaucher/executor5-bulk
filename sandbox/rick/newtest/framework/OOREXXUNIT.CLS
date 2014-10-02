@@ -48,17 +48,18 @@
 ::class "ooRexxUnit"
 -- main setup method for the unit test framework
 ::method activate class
+  expose interpreterName interpreterDate interpreterLanguageLevel osname shellname frameworkDirectory originalPath architecture
 
-  -- this is the framework version number
-  self~version = 3.0.0
-  -- this is the minimum language level required by the framework
-  self~mininumInterpreterVersion = 5.0.0
-
-  parse version self~interpreterName self~languageLevel self~interpreterDate
+  interpreterName = .rexxinfo~name
+  interpreterDate = .rexxinfo~date
+  interpreterLanguageLevel = rexxinfo~languageLevel
 
   -- Note:  initialize the OSName first, other methods depend on this
-  self~OSName = self~getOSName
-  self~shellName = self~getShellName
+  OSName = .rexxinfo~platform
+  -- make the Windows one a little more generic
+  if OSName == "WindowsNT" then OSName = "Windows"
+
+  shellName = self~getShellName
 
   -- this is our default class for reporting errors.  Can be replaced
   self~defaultTestResultClass = .TestResult
@@ -68,24 +69,24 @@
 
   -- Capture the ooRexxUnit framework directory and ensure it is in the path.
   -- Also capture the original path in case someone needs it.
-  self~frameworkDirectory = .File~new(.context~package~name)~parent
+  frameworkDirectory = .File~new(.context~package~name)~parent
   -- set up an original search path for files, includeing the framework directory
-  self~originalPath = self~addToPath(self~frameWorkDirectory)
+  originalPath = self~addToPath(self~frameWorkDirectory)
 
-  self~architecture = self~getAddressingMode
+  architecture = .rexxinfo~architecture
 
 -- class attributes for global data
-::attribute version class
-::attribute minimumInterpreterVersion class
-::attribute minimumInterpreterVersion class
-::attribute shellName class
-::attribute OSName class
+::constant version '3.0.0'
+::constant minimumInterpreterVersion '5.0.0'
+
+::attribute shellName class get
+::attribute OSName class get
 
 ::attribute defaultTestResultClass class
 ::attribute knownBugFlag class
-::attribute frameworkDirectory class
-::attribute originalPath class
-::attribute architecture class
+::attribute frameworkDirectory class get
+::attribute originalPath class get
+::attribute architecture class get
 
 
 -- Determine and return the shell name to be used in ADDRESS keyword statements. This
@@ -100,31 +101,12 @@
 
    -- for now, we have a Windows/not Windows situation.
    if \OSName~caselessEquals("Windows") do
-   do
       -- get the fully qualified shell name from the environment
       unixShell=value("SHELL", , "environment")
       // and get the shell name portion
       shell = .File~new(unixShell)~name
    end
    return shell
-
-
--- Determine and return the operating system under which the currently executing
--- program is running.  Provides an uniform method for test cases to determine
--- which operating system they are executing on.
---
--- The possible list of return words as of ooRexx 3.2.0 is:
---
---   WINDOWS, LINUX, SUNOS, AIX, MACOSX, CYGNUS, FREEBSD, and NETBSD
---
--- Although it is doubtful that ooRexx is compilable on CYGNUS, FREEBSD, or
--- NETBSD.
---
-::method getOSName private class
-  parse upper source os .
-  if os~abbrev("WIN") then os = "WINDOWS"
-  return os
-
 
 -- Adds the specified directory to the path only if it is not already in the
 -- path.  By default the directory is added to the beginning of the path.
@@ -247,12 +229,6 @@ return .false
   end
   return buff~string
 
--- Return a date / time string.  This allows a consistent format of time stamps
--- throughout the test framework.
-::method timeStamp class
-  return "[".datetime~new~isoDate"]"
-
-
 /* class: NoiseAdjustable- - - - - - - - - - - - - - - - - - - - - - - - - - -*\
 
     A class that allows adjusting the level of ouput ("noise") produced.
@@ -300,126 +276,99 @@ return .false
 
 ::class "TestResult" public subclass TestCollectingParameter
 
-::attribute logQueue               -- ooRexxUnit only
-::attribute TestCaseTable          -- ooRexxUnit only
+::attribute logQueue
 
 -- The default formatter class for this test result.
 ::attribute formatter private
 
 ::method init
-  expose fErrors fFailures fRunTests fStop fTestRuns TestCaseTable logQueue fAssertions
+  expose errorList failureList testCount stop testRuns log assertionCount
 
-  fErrors=.queue~new
-  fFailures=.queue~new
-  logQueue=.queue~new
+  errors=.array~new
+  failures=.array~new
+  log=.TestLog~new
 
-  fAssertions=0
-  fRunTests=0
-  fStop=.false
-
-  TestCaseTable=.table~new
+  assertionCount = 0
+  testCount = 0
+  step = .false
 
   self~setVerbosity(self~DEFAULT_VERBOSITY)
   self~formatter = .SimpleFormatter
 
+-- add an error to the result
 ::method addError
-  expose fErrors TestCaseTable logQueue
-  use arg aTestCase, errData
+  expose errors testCases log
+  use strict arg testCase, errData
 
-  fErrors~queue(errData)
-  logQueue~queue(errData)
+  errors~append(errData)
+  log~logError(errData)
 
-  -- TODO find out who uses this info and tell them it is broke.
-  TestCaseTable[aTestCase]~queue(errData)
-
-
+-- add a failure to the result
 ::method addFailure
-  expose fFailures TestCaseTable logQueue
-  use arg aTestCase, failData
+  expose failureCount log
+  use strict arg testCase, failureData
 
-  fFailures~queue(failData)
-  logQueue~queue(failData)
+  failures~append(failureData)
+  log~logFailure(failData)
 
-  -- TODO find out who uses this info and tell them it is broke.
-  TestCaseTable[aTestCase]~queue(failData)
+::attribute assertionCount GET
 
-::method assertCount    -- ooRexxUnit only
-  expose fAssertions
-  return fAssertions
+-- Record test completion
+::method endTest
+  expose stop log assertionCount
+  use strict arg testCase
 
-::method endTest        -- informs that the supplied test was completed
-  expose TestCaseTable fStop logQueue fAssertions
-  use arg aTestCase
+  -- have the test case log the test end
+  testCase~logEndTest
+  -- and add an end event to our test log
+  log~logEndTest(testCase)
 
-  dateTime=.TestUtils~timeStamp
-  TestCaseTable[aTestCase]~queue(dateTime": endTest")
-  dir=.directory~new~~setentry("OOREXXUNIT.CONDITION", dateTime": [endTest]" aTestCase~string)
+  -- add this into the assertion totals
+  assertionCount += testCase~assertionCount
 
-  -- save class' 'caseInfo' with test case for later analysis
-  dir~setentry("OOREXXUNIT.class_testCaseInfo", aTestCase~class~caseInfo)
+  -- reset the termination indicator
+  stop = .false
 
-  logQueue~queue(dir)
-  fAssertions=fAssertions+aTestCase~assertCount
-  fStop=.false          -- reset indicator
+::attribute errorCount get
+  expose errors
+  return errors~items
 
+::attribute errors get
 
-::method errorCount     -- return # of errors
-  expose fErrors
-  return fErrors~items
+::attribute failureCount
+  expose failures
+  return failures~items
 
-::method errors         -- return error queue
-  expose fErrors
-  return fErrors
+::attribute failures get
 
+::attribute testCount get
 
-::method failureCount   -- return # of failures
-  expose fFailures
-  return fFailures~items
-
-::method failures       -- return failure queue
-  expose fFailures
-  return fFailures
-
-
-::method execute            -- convenience method to run given TestCase
-  use arg aTestCase
-  return aTestCase~execute(self)
-
-::method runCount       -- gets the number of run tests
-  expose fRunTests
-  return fRunTests
-
-::method shouldStop     -- return value
-  expose fStop
-  return fStop
+-- test if we should stop running tests
+::method shouldStop
+  expose stop
+  return stop
 
 ::method startTest
-  expose TestCaseTable fStop fRunTests logQueue
-  use arg aTestCase
+  expose stop testCount log
+  use arg testCase
 
-  if TestCaseTable~hasindex(aTestCase)=.false then -- already a queue created for it?
-     TestCaseTable[aTestCase]=.queue~new
+  -- log this both with the test case and globally
+  testCase~logTestStart
+  log~logTestStart(testCase)
 
-  dateTime=.TestUtils~timeStamp
-  TestCaseTable[aTestCase]~queue(dateTime": startTest")
-  dir=.directory~new~~setentry("OOREXXUNIT.CONDITION", dateTime": [startTest]") aTestCase~string)
+  -- reset the stop indicator for a new test
+  stop = .false
+  testCount += 1
 
-  -- save class' 'testCaseInfo' with test case for later analysis
-  dir~setentry("OOREXXUNIT.class_testCaseInfo", aTestCase~class~caseInfo)
+--  mark that the test run should stop
+::method stop
+  expose stop
+  stop=.true
 
-  logQueue~queue(dir)
+-- returns whether the entire test was successful or not
+::method wasSuccessful
+  return self~errorCount + self~failureCount = 0
 
-  fStop=.false          -- reset indicator
-  fRunTests=fRunTests+1 -- increase run counter
-
-::method stop           --  mark that the test run should stop
-  expose fStop
-  fStop=.true
-
-::method wasSuccessful  -- returns whether the entire test was successful or not
-  expose fErrors fFailures
-
-  return (fErrors~items+fFailures~items)=0
 
 /** print()
  * Output the result data using our assigned formatter.
@@ -433,37 +382,12 @@ return .false
  *   be that of this test result.
  */
 ::method print
-  use arg title = "", level = (self~getVerbosity)
+  use strict arg title = "", level = (self~getVerbosity), outStream = .output
 
-  if \ title~isA(.string) then
-    raise syntax 88.914 array ("1 'title'", "String")
+  formatter = self~formatter~new(self, title, level)
+  formatter~print(outStream)
 
-  formatter = self~formatter~new(self, title)
-
-  if arg(2, 'E') then formatter~setVerbosity(level)
-  else formatter~setVerbosity(self~getVerbosity)
-
-  formatter~print
-
-/** setFormatter()
- * Change the current default formatter class for this test result to that
- * specified.
- *
- * @param formatterClass  REQUIRED  (ResultFormatter)
- *   The new default formatter class for this test result.
- */
-::method setFormatter
-  use strict arg formatterClass
-
-  if \formatterClass~isSubclassOf(.ResultFormatter) then
-     raise syntax 88.914 array ("1 'formatterClass'", "ResultFormatter")
-  self~formatter = formatterClass
-
-/** getFormatter()
- * Returns the current default formatter class for this test result.
- */
-::method getFormatter
-  return self~formatter
+::attribute formatter
 
 -- End of class TestResult
 
@@ -480,13 +404,9 @@ return .false
 ::attribute title private
 
 ::method init
+  expose testResult title
   use strict arg testResult, title = ""
 
-  if \ testResult~class~isSubclassOf(.TestCollectingParameter) then
-     raise syntax 88.914 array ("1 'testResult'", "TestCollectingParameter")
-
-  self~testResult = testResult
-  self~title = title
   self~setVerbosity(self~DEFAULT_VERBOSITY)
 
 /** print()  Format and output the data of this formatter's test result. */
@@ -506,20 +426,14 @@ return .false
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class 'SimpleFormatter' public subclass ResultFormatter
 
-::method setTitle
-  use strict arg title
-
-  if \ title~isA(.string) then
-    raise syntax 88.914 array ("1 'title'", "String")
-
-  self~title = title
-
 ::method print
-  aTestResult = self~testResult
+  use strict arg outStream = .output
+
+  testResult = self~testResult
 
   if self~title <> "" then do
-    say self~title
-    say
+    outStream~lineout(self~title)
+    outStream~lineout
   end
 
   say "nr of test runs:            " aTestResult~runCount
@@ -889,7 +803,7 @@ return str
 
   self~expectSyntax(error)
   -- this will translate this code and nothing else.
-  r = .routine~new("test", code)
+  r = .package~new("test", code)
 
 -- compare an array of items.  each item must be the same, and in the same
 -- order.
