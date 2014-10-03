@@ -68,84 +68,120 @@ return testResult
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class "REQUIRES.testGroup" public subclass ooTestCase
 
-::attribute functionFileName
-
-::method setUp
-  use arg testResult
-
-   file = .ooRexxUnit.dir || .ooRexxUnit.directory.separator || 'testRequires.rex'
-
-   src = .array~new()
-   src[1] = "/* This is a temporary file for testing the requires directive. */"
-   src[2] = "/* This file can always be deleted. */"
-   src[3] = ""
-   self~functionFileName = createFile(src, file)
-
-   -- If self~functionFileName is the empty string, an error happened.  It
-   -- would be nice at this point to end the test.
-
--- tearDown() is invoked after every test case method has executed.  Use this
--- opportunity to ensure that the temporary files are deleted.
-::method tearDown
-  j = deleteFile(self~functionFileName)
-
 ::method test_requires_library_std
-  -- First assert that the start of the source file has been created.  This
-  -- allows for failing the test if there is some problem creating the file.
-  self~assertNotSame("", self~functionFileName, "Must be able to create source file")
 
   -- We use rxmath because we know it is part of the distribution.
-  src = .array~new
-  src[1] = "return RxCalcSqrt(4)"
-  src[2] = "::requires 'rxmath' LIBRARY"
-  name = addToFile(src, self~functionFileName)
 
-  ret = 'testRequires'()
+  ret = self~runDynamicSource(("return RxCalcSqrt(4)", "::requires 'rxmath' LIBRARY"))
   self~assertSame(2, ret)
 
 ::method test_requires_library_case_mixed
-  self~assertNotSame("", self~functionFileName, "Must be able to create source file")
 
-  src = .array~new
-  src[1] = "return RxCalcSqrt(4)"
-  src[2] = "::requires 'rxmath' LiBRaRY"
-  name = addToFile(src, self~functionFileName)
-
-  ret = 'testRequires'()
+  ret = self~runDynamicSource(("return RxCalcSqrt(4)", "::requires 'rxmath' LiBRaRY"))
   self~assertSame(2, ret)
 
 ::method test_requires_library_case_lower
-  self~assertNotSame("", self~functionFileName, "Must be able to create source file")
 
-  src = .array~new
-  src[1] = "return RxCalcSqrt(4)"
-  src[2] = "::requires 'rxmath' library"
-  name = addToFile(src, self~functionFileName)
-
-  ret = 'testRequires'()
+  ret = self~runDynamicSource(("return RxCalcSqrt(4)", "::requires 'rxmath' library"))
   self~assertSame(2, ret)
 
 ::method  test_requires_library_syntax1
-  self~assertNotSame("", self~functionFileName, "Must be able to create source file")
-
-  src = .array~new
-  src[1] = "return RxCalcSqrt(4)"
-  src[2] = "::requires 'rxmath' LIBRARY EXTENSIVE"
-  name = addToFile(src, self~functionFileName)
-
-  self~expectSyntax(25.904)
-  ret = 'testRequires'()
+  self~assertSyntaxError(25.904, ("return RxCalcSqrt(4)", "::requires 'rxmath' library EXTENSIVE"))
 
 ::method  test_requires_library_syntax2
-  self~assertNotSame("", self~functionFileName, "Must be able to create source file")
+  self~assertSyntaxError(25.904, ("return RxCalcSqrt(4)", "::requires 'rxmath' libraryE"))
 
-  src = .array~new
-  src[1] = "return RxCalcSqrt(4)"
-  src[2] = "::requires 'rxmath' LIBRARYE"
-  name = addToFile(src, self~functionFileName)
+::method test_missing_library_requires
+  self~assertSyntaxError(98.903, ("return RxCalcSqrt(4)", "::requires 'rxmathxxxxxxxx' library"))
 
-  self~expectSyntax(25.904)
-  ret = 'testRequires'()
+::method test_missing_requires_file
+  self~assertSyntaxError(43.901, ("return RxCalcSqrt(4)", "::requires 'notthere.cls'"))
 
+::method test_no_requires_name
+  self~assertSyntaxError(19.904, ("return RxCalcSqrt(4)", "::requires"))
+
+::method test_no_requires_name_notgood
+  self~assertSyntaxError(19.904, ("return RxCalcSqrt(4)", "::requires *"))
+
+::method test_basic_good_requires
+
+  -- create the requires file as a temporary file
+  file = .TemporaryTestFile~new(self, "basic_good.cls")
+  file~create(("::class test public", "::constant testValue 123", "::routine testRoutine public", "return 'abc'"))
+
+  -- test basic access to both a public routine and a public class.
+  ret = self~runDynamicSource(("return .test~testValue||testRoutine()", "::requires 'basic_good.cls'"))
+  self~assertEquals("123abc", ret)
+
+::method test_no_public_class
+
+  -- create the requires file as a temporary file
+  file = .TemporaryTestFile~new(self, "no_public_class.cls")
+  file~create(("::class test", "::constant testValue 123"))
+
+  -- test basic access to both a public routine and a public class.
+  self~assertRuntimeError(97.1, ("return .test~testValue", "::requires 'no_public_class.cls'"))
+
+::method test_no_public_routine
+
+  -- create the requires file as a temporary file
+  file = .TemporaryTestFile~new(self, "no_public_routine.cls")
+  file~create(("::routine testRoutine private", "return 'abc'"))
+
+  -- test basic access to both a public routine and a public class.
+  self~assertRuntimeError(43.1, ("return testRoutine()", "::requires 'no_public_routine.cls'"))
 
 -- End of class: REQUIRES.testGroup
+
+-- a class for deleting temporary files
+::class TemporaryTestFile
+::method init
+  expose file package
+  use strict arg host, name
+
+  -- get the package the class is defined in
+  package = host~class~package
+
+  dir = .File~new(package~name)~parentFile
+  file = .File~new(name, dir)
+
+-- create a file from an array of lines
+::method create
+  expose file
+  use strict arg lines
+
+  -- make sure this is deleted
+  file~delete
+
+  s = .stream~new(file)
+  s~arrayout(lines)
+  s~close
+
+-- append an array of lines to a file
+::method append
+  expose file
+  use strict arg lines
+
+  s = .stream~new(file)
+  s~open('WRITE APPEND')
+  s~arrayout(lines)
+  s~close
+
+-- create a file from a package resource
+::method createFromResource
+  expose package
+  use strict arg resourceName
+
+  self~create(package~resources~resourceName)
+
+-- append a package resource to a file
+::method appendFromResource
+  expose package
+  use strict arg resourceName
+
+  self~append(package~resources~resourceName)
+
+-- clean up the temporary file after termination.
+::method uninit
+  expose file
+  file~delete
