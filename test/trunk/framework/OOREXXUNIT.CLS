@@ -2116,3 +2116,56 @@ pp: procedure
    f~print
 
 return 0
+
+-- a class for creating/deleting temporary test files
+::class TemporaryTestFile public
+::method init
+  expose file package
+  use strict arg host, name
+
+  -- get the package the class is defined in
+  package = host~class~package
+
+  dir = .File~new(package~name)~parentFile
+  file = .File~new(name, dir)
+
+-- create a file from an array of lines
+::method create
+  expose file
+  use strict arg lines
+
+  -- make sure this is deleted
+  file~delete
+
+  s = .stream~new(file)
+  s~arrayout(lines)
+  s~close
+
+-- append an array of lines to a file
+::method append
+  expose file
+  use strict arg lines
+
+  s = .stream~new(file)
+  s~open('WRITE APPEND')
+  s~arrayout(lines)
+  s~close
+
+-- create a file from a package resource
+::method createFromResource
+  expose package
+  use strict arg resourceName
+
+  self~create(package~resources~resourceName)
+
+-- append a package resource to a file
+::method appendFromResource
+  expose package
+  use strict arg resourceName
+
+  self~append(package~resources~resourceName)
+
+-- clean up the temporary file after termination.
+::method uninit
+  expose file
+  file~delete

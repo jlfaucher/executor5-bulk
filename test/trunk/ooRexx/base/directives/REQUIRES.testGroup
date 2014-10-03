@@ -131,57 +131,41 @@ return testResult
   -- test basic access to both a public routine and a public class.
   self~assertRuntimeError(43.1, ("return testRoutine()", "::requires 'no_public_routine.cls'"))
 
+::method test_namespace_good_requires
+
+  -- create the requires file as a temporary file
+  file = .TemporaryTestFile~new(self, "namespace_good.cls")
+  file~create(("::class test public", "::constant testValue 123", "::routine testRoutine public", "return 'abc'"))
+
+  -- test basic access to both a public routine and a public class.
+  ret = self~runDynamicSource(("call mytest:testRoutine", "return result||mytest:test~testValue||mytest:testRoutine()", "::requires 'namespace_good.cls' namespace mytest"))
+  self~assertEquals("abc123abc", ret)
+
+::method test_namespace_no_public_class
+
+  -- create the requires file as a temporary file
+  file = .TemporaryTestFile~new(self, "namespace_no_public_class.cls")
+  file~create(("::class test", "::constant testValue 123"))
+
+  -- test basic access to both a public routine and a public class.
+  self~assertRuntimeError(98.988, ("return mytest:test~testValue", "::requires 'namespace_no_public_class.cls' namespace mytest"))
+
+::method test_namespace_no_public_routine
+
+  -- create the requires file as a temporary file
+  file = .TemporaryTestFile~new(self, "namespace_no_public_routine.cls")
+  file~create(("::routine testRoutine private", "return 'abc'"))
+
+  -- test basic access to both a public routine and a public class.
+  self~assertRuntimeError(43.902, ("return mytest:testRoutine()", "::requires 'namespace_no_public_routine.cls' namespace mytest"))
+
+::method test_namespace_no_public_call
+
+  -- create the requires file as a temporary file
+  file = .TemporaryTestFile~new(self, "namespace_no_public_call.cls")
+  file~create(("::routine testRoutine private", "return 'abc'"))
+
+  -- test basic access to both a public routine and a public class.
+  self~assertRuntimeError(43.902, ("call mytest:testRoutine", "return result", "::requires 'namespace_no_public_call.cls' namespace mytest"))
+
 -- End of class: REQUIRES.testGroup
-
--- a class for deleting temporary files
-::class TemporaryTestFile
-::method init
-  expose file package
-  use strict arg host, name
-
-  -- get the package the class is defined in
-  package = host~class~package
-
-  dir = .File~new(package~name)~parentFile
-  file = .File~new(name, dir)
-
--- create a file from an array of lines
-::method create
-  expose file
-  use strict arg lines
-
-  -- make sure this is deleted
-  file~delete
-
-  s = .stream~new(file)
-  s~arrayout(lines)
-  s~close
-
--- append an array of lines to a file
-::method append
-  expose file
-  use strict arg lines
-
-  s = .stream~new(file)
-  s~open('WRITE APPEND')
-  s~arrayout(lines)
-  s~close
-
--- create a file from a package resource
-::method createFromResource
-  expose package
-  use strict arg resourceName
-
-  self~create(package~resources~resourceName)
-
--- append a package resource to a file
-::method appendFromResource
-  expose package
-  use strict arg resourceName
-
-  self~append(package~resources~resourceName)
-
--- clean up the temporary file after termination.
-::method uninit
-  expose file
-  file~delete
