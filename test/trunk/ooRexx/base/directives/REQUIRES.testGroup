@@ -321,5 +321,17 @@ return testResult
   self~assertSame(.nil, .local~prologTest)
   self~assertEquals("123abc", ret)
 
+::method test_activate
+
+  -- create the requires files as temporary files
+  file = .TemporaryTestFile~new(self, "activate.cls")
+  file~create(("::class test public", "::method activate class", ".local~activatetest = .test2", "::class test2 public"))
+
+  .local~removeEntry('ACTIVATETEST')
+
+  -- now access both classes and routines in both namespaces, plus the default
+  test2 = self~runDynamicSource(("return .test2", "::requires 'activate.cls'"))
+
+  self~assertSame(test2, .local~activateTest)
 
 -- End of class: REQUIRES.testGroup
