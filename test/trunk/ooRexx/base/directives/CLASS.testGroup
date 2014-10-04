@@ -486,6 +486,36 @@ return testResult
 ::method test_public_private
   self~assertSyntaxError(25.901, "::class test public private")
 
+::method test_direct_abstract_subclass
+  self~assertSyntaxError(98.989, ("x = .test~new", "::class test abstract"))
+
+::method test_direct_abstract_mixinclass
+  self~assertSyntaxError(98.989, ("x = .test~new", "::class test abstract mixinclass object"))
+
+::method test_create_abstract_subclass
+  instance = self~runDynamicSource(("return .test~new", "::class test subclass abstractClass", "::class abstractClass abstract"))
+
+  self~expectSyntax(98.989)
+  -- verify that the superclass is an abstract
+  x = instance~class~superclass~new
+
+::method test_create_abstract_mixinclass
+  instance = self~runDynamicSource(("return .test~new", "::class test mixinclass abstractClass", "::class abstractClass abstract"))
+
+  self~expectSyntax(98.989)
+  -- verify that the superclass is an abstract
+  x = instance~class~superclass~new
+
+::method test_inherit_abstract_mixin
+  -- this should just complete without error
+  instance = self~runDynamicSource(("return .test~new", "::class test inherit abstractClass", "::class abstractClass mixinclass object abstract"))
+
+::method test_abstract_metaclass
+  self~assertSyntaxError(98.990, ("x = .test~new", "::class test abstract subclass class"))
+
+::method test_abstract_twice
+  self~assertSyntaxError(25.901, ("x = .test~new", "::class test abstract subclass object abstract"))
+
 
 
 
