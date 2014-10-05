@@ -209,6 +209,16 @@ return testResult
   self~assertEquals(".NIL", t~class~c1, "c1_instance_class")
   self~assertEquals(".", t~class~c2, "c2_instance_class")
 
+::method test_constant_method_properties
+  m = .test~method('S1')
+
+  self~assertTrue(m~isConstant)
+  self~assertFalse(m~isPrivate)
+  self~assertFalse(m~isGuarded)
+  self~assertFalse(m~isAttribute)
+  self~assertFalse(m~isProtected)
+  self~assertFalse(m~isAbstract)
+
 
 /** The following are tests syntax errors with the constant directive.  Since
  *  putting incorrect syntax for the directive in this file would cause the test
