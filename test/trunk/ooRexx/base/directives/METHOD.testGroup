@@ -204,6 +204,11 @@ return testResult
   t = .methodTest~new
   self~assertTrue(t~hasmethod('anattribute'))
   self~assertTrue(t~hasmethod('anattribute='))
+  getter = t~instanceMethod('ANATTRIBUTE')
+  setter = t~instanceMethod('ANATTRIBUTE=')
+  self~assertTrue(getter~isAttribute)
+  self~assertTrue(setter~isAttribute)
+
   self~assertEquals("ANATTRIBUTE", t~anAttribute)
   t~anattribute = .nil
   self~assertTrue(\var('RESULT'))
@@ -297,6 +302,8 @@ return testResult
 ::method testAbstractMethod
   self~expectSyntax(93.965)
   t = .methodTest~new
+  m = t~instanceMethod('ABSTRACTMETHOD')
+  self~assertTrue(m~isAbstract)
   t~abstractMethod
 
 ::method testExternalMethod
