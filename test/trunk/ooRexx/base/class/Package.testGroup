@@ -283,65 +283,50 @@ return testResult
   self~assertEquals(src, package~source)
 
 ::method TestAddRoutine01
-  src = .array~new()
-  src[1] = "::routine routine1"
-  src[2] = "  return routine2()"
 
-  package = .package~new("ADDROUTINETEST1", src)
+  package = .package~new("ADDROUTINETEST1", ("::routine routine1", "  return routine2()"))
 
-  src = .array~new()
-  src[1] = "  return 123"
-
-  routine = .routine~new("TestingAddRoutine", src)
+  routine = .routine~new("TestingAddRoutine", "return 123")
 
   package~addRoutine("ROUTINE2", routine)
+  package~addPublicRoutine("ROUTINE3", routine)
 
   routines = package~routines
-  self~assertSame(2, routines~items)
-  self~assertSame(123, routines["ROUTINE1"]~call)
+  self~assertSame(3, routines~items)
+  self~assertSame(123, routines["ROUTINE2"]~call)
   self~assertSame(routine, package~findroutine("ROUTINE2"))
 
-::method TestAddRoutine02
-  src = .array~new()
-  src[1] = "::routine routine1"
-  src[2] = "  return routine2()"
+  publicroutines = package~publicroutines
+  self~assertSame(1, publicroutines~items)
+  self~assertSame(123, publicroutines["ROUTINE3"]~call)
+  self~assertSame(routine, package~findpublicroutine("ROUTINE3"))
 
-  package = .package~new("ADDROUTINETEST2", src)
+::method TestAddRoutine02
+
+  package = .package~new("ADDROUTINETEST2", ("::routine routine1", "  return routine2()"))
 
   self~expectSyntax('88.901')
   package~addRoutine
 
 ::method TestAddRoutine03
-  src = .array~new()
-  src[1] = "::routine routine1"
-  src[2] = "  return routine2()"
 
-  package = .package~new("ADDROUTINETEST3", src)
+  package = .package~new("ADDROUTINETEST3", ("::routine routine1", "  return routine2()"))
 
   self~expectSyntax('88.901')
   package~addRoutine("TESTING")
 
 ::method TestAddRoutine04
-  src = .array~new()
-  src[1] = "::routine routine1"
-  src[2] = "  return routine2()"
 
-  package = .package~new("ADDROUTINETEST4", src)
+  package = .package~new("ADDROUTINETEST4", ("::routine routine1", "  return routine2()"))
 
   self~expectSyntax('88.914')
   package~addRoutine("TESTING", .array)
 
 ::method TestAddPublicRoutine01
-  src = .array~new()
-  src[1] = "::routine routine1"
-  src[2] = "  return routine2()"
 
-  package = .package~new("ADDPUBLICROUTINETEST1", src)
+  package = .package~new("ADDPUBLICROUTINETEST1", ("::routine routine1", "  return routine2()"))
 
-  src = .array~new()
-  src[1] = "  return 123"
-
-  routine = .routine~new("TestingAddPublicRoutine", src)
+  routine = .routine~new("TestingAddPublicRoutine", "return 123")
 
   package~addPublicRoutine("ROUTINE2", routine)
 
@@ -351,33 +336,26 @@ return testResult
   self~assertSame(1, publicRoutines~items)
   self~assertSame(123, routines["ROUTINE1"]~call)
   self~assertSame(routine, package~findroutine("ROUTINE2"))
+  self~assertSame(routine, package~findpublicroutine("ROUTINE2"))
 
 ::method TestAddPublicRoutine02
   src = .array~new()
-  src[1] = "::routine routine1"
-  src[2] = "  return routine2()"
 
-  package = .package~new("ADDPUBLICROUTINETEST2", src)
+  package = .package~new("ADDPUBLICROUTINETEST2", ("::routine routine1", "  return routine2()"))
 
   self~expectSyntax('88.901')
   package~addPublicRoutine
 
 ::method TestAddPublicRoutine03
-  src = .array~new()
-  src[1] = "::routine routine1"
-  src[2] = "  return routine2()"
 
-  package = .package~new("ADDPUBLICROUTINETEST3", src)
+  package = .package~new("ADDPUBLICROUTINETEST3", ("::routine routine1", "  return routine2()"))
 
   self~expectSyntax('88.901')
   package~addPublicRoutine("TESTING")
 
 ::method TestAddPublicRoutine04
-  src = .array~new()
-  src[1] = "::routine routine1"
-  src[2] = "  return routine2()"
 
-  package = .package~new("ADDPUBLICROUTINETEST4", src)
+  package = .package~new("ADDPUBLICROUTINETEST4", ("::routine routine1", "  return routine2()"))
 
   self~expectSyntax('88.914')
   package~addPublicRoutine("TESTING", .array)
@@ -413,40 +391,29 @@ return testResult
 
 
 ::method TestAddClass02
-  src = .array~new()
-  src[1] = "::routine routine1"
-  src[2] = "  return routine2()"
 
-  package = .package~new("ADDCLASSTEST2", src)
+  package = .package~new("ADDCLASSTEST2", ("::routine routine1", "  return routine2()"))
 
   self~expectSyntax('88.901')
   package~addClass
 
 ::method TestAddClass03
-  src = .array~new()
-  src[1] = "::routine routine1"
-  src[2] = "  return routine2()"
 
-  package = .package~new("ADDCLASSEST3", src)
+  package = .package~new("ADDCLASSEST3", ("::routine routine1", "  return routine2()"))
 
   self~expectSyntax('88.901')
   package~addClass("TESTING")
 
 ::method TestAddClass04
-  src = .array~new()
-  src[1] = "::routine routine1"
-  src[2] = "  return routine2()"
 
-  package = .package~new("ADDCLASSTEST4", src)
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1", "  return routine2()"))
 
   self~expectSyntax('88.914')
   package~addClass("TESTING", "xyz")
 
 ::method TestAddPublicClass01
-  src = .array~new()
-  src[1] = "::class class1"
 
-  package = .package~new("ADDPUBLICCLASSTEST1", src)
+  package = .package~new("ADDPUBLICCLASSTEST1", "::class class1")
 
   class = .object~subclass("TEST2")
 
@@ -460,33 +427,25 @@ return testResult
   self~assertSame(1, publicclasses~items)
   self~assertSame(class, publicclasses["TEST2"])
   self~assertSame(class, package~findClass("TEST2"))
+  self~assertSame(class, package~findPublicClass("TEST2"))
 
 ::method TestAddPublicClass02
-  src = .array~new()
-  src[1] = "::routine routine1"
-  src[2] = "  return routine2()"
 
-  package = .package~new("ADDPUBLICCLASSTEST2", src)
+  package = .package~new("ADDPUBLICCLASSTEST2", ("::routine routine1", "  return routine2()"))
 
   self~expectSyntax('88.901')
   package~addPublicClass
 
 ::method TestAddPublicClass03
-  src = .array~new()
-  src[1] = "::routine routine1"
-  src[2] = "  return routine2()"
 
-  package = .package~new("ADDPUBLICCLASSEST3", src)
+  package = .package~new("ADDPUBLICCLASSEST3", ("::routine routine1", "  return routine2()"))
 
   self~expectSyntax('88.901')
   package~addPublicClass("TESTING")
 
 ::method TestAddPublicClass04
-  src = .array~new()
-  src[1] = "::routine routine1"
-  src[2] = "  return routine2()"
 
-  package = .package~new("ADDPUBLICCLASSTEST4", src)
+  package = .package~new("ADDPUBLICCLASSTEST4", ("::routine routine1", "  return routine2()"))
 
   self~expectSyntax('88.914')
   package~addPublicClass("TESTING", "xyz")
@@ -506,3 +465,126 @@ return testResult
   self~expectSyntax('93.902')
   package = .context~package
   package~loadLibrary("a", "b")
+
+::method TestAddPackageNoArgs
+  self~expectSyntax('88.901')
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1", "  return routine2()"))
+  package~addPackage
+
+::method TestAddPackageNonePackage
+  self~expectSyntax('88.914')
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1", "  return routine2()"))
+  package~addPackage(.routine~new('test', "return 1"))
+
+::method TestAddNamespacePackage
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1 public" , "  123"))
+  package2 = .package~new("ADDCLASSTEST5", ("::routine routine3 public", "  return 456"))
+  package~addPackage(package2, 'mynamespace')
+  self~assertSame(package2, package~namespaces~mynamespace)
+
+::method TestAddPackageTooManyArgs
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1 public" , "  123"))
+  package2 = .package~new("ADDCLASSTEST5", ("::routine routine3 public", "  return 456"))
+  self~expectSyntax('93.902')
+  package~addPackage(package2, 'mynamespace', 1)
+
+::method TestAddPackageBadNamespaceName
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1 public" , "  123"))
+  package2 = .package~new("ADDCLASSTEST5", ("::routine routine3 public", "  return 456"))
+  self~expectSyntax('88.909')
+  package~addPackage(package2, .nil)
+
+::method TestSourceLineNoArgs
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1 public" , "  123"))
+  self~expectSyntax('93.903')
+  package~sourceLine
+
+::method TestSourceLineBadLineNumber
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1 public" , "  123"))
+  self~expectSyntax('93.924')
+  package~sourceLine('A')
+
+::method TestSourceLineZeroLineNumber
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1 public" , "  123"))
+  self~expectSyntax('93.924')
+  package~sourceLine(0)
+
+::method TestSourceLineOutOfRange
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1 public" , "  123"))
+  self~assertSame("", package~sourceLine(3))
+
+::method TestFindClassNoArgs
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1 public" , "  123"))
+  self~expectSyntax('88.901')
+  x = package~findClass
+
+::method TestFindClassNoString
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1 public" , "  123"))
+  self~expectSyntax('88.909')
+  x = package~findClass(.nil)
+
+::method TestFindClassTwoArgs
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1 public" , "  123"))
+  self~expectSyntax('93.902')
+  x = package~findClass("foo", "bar")
+
+::method TestFindPublicClassNoArgs
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1 public" , "  123"))
+  self~expectSyntax('88.901')
+  x = package~findPublicClass
+
+::method TestFindPublicClassNoString
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1 public" , "  123"))
+  self~expectSyntax('88.909')
+  x = package~findPublicClass(.nil)
+
+::method TestFindPublicClassTwoArgs
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1 public" , "  123"))
+  self~expectSyntax('93.902')
+  x = package~findPublicClass("foo", "bar")
+
+::method TestFindRoutineNoArgs
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1 public" , "  123"))
+  self~expectSyntax('88.901')
+  x = package~findRoutine
+
+::method TestFindRoutineNoString
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1 public" , "  123"))
+  self~expectSyntax('88.909')
+  x = package~findRoutine(.nil)
+
+::method TestFindRoutineTwoArgs
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1 public" , "  123"))
+  self~expectSyntax('93.902')
+  x = package~findRoutine("foo", "bar")
+
+::method TestFindPublicRoutineNoArgs
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1 public" , "  123"))
+  self~expectSyntax('88.901')
+  x = package~findPublicRoutine
+
+::method TestFindPublicRoutineNoString
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1 public" , "  123"))
+  self~expectSyntax('88.909')
+  x = package~findPublicRoutine(.nil)
+
+::method TestFindPublicRoutineTwoArgs
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1 public" , "  123"))
+  self~expectSyntax('93.902')
+  x = package~findPublicRoutine("foo", "bar")
+
+::method TestAnnotationNoArgs
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1 public" , "  123"))
+  self~expectSyntax('88.901')
+  x = package~annotation
+
+::method TestAnnotationNoString
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1 public" , "  123"))
+  self~expectSyntax('88.909')
+  x = package~annotation(.nil)
+
+::method TestAnnotationTwoArgs
+  package = .package~new("ADDCLASSTEST4", ("::routine routine1 public" , "  123"))
+  self~expectSyntax('93.902')
+  x = package~annotation("foo", "bar")
+
