@@ -89,11 +89,63 @@ return testResult
   s = .string~new("hello")
   self~assertTrue(s~hasMethod("length"))
 
+::method test_hasmethod_no_arg
+  self~expectSyntax(93.903)
+  .object~new~hasMethod
+
+::method test_hasmethod_no_string
+  self~expectSyntax(93.938)
+  .object~new~hasMethod(.nil)
+
+::method test_hasmethod_two_args
+  self~expectSyntax(93.902)
+  .object~new~hasMethod("hello", "there")
+
 ::method testSend01
   self~assertEquals("abc"~substr(1,2), "abc"~send('substr', 1, 2))
 
+::method test_send_no_name
+  self~expectSyntax(88.901)
+  "abc"~send()
+
+::method test_send_no_name2
+  self~expectSyntax(88.901)
+  "abc"~send(,1,2)
+
+::method test_send_not_string
+  self~expectSyntax(93.972)
+  "abc"~send(.nil,1,2)
+
+::method test_send_no_method
+  self~expectSyntax(97.1)
+  "abc"~send('substrxxxxxx',1,2)
+
 ::method testSendWith01
   self~assertEquals("abc"~substr(1,2), "abc"~sendWith('substr', .array~of(1, 2)))
+
+::method test_sendwith_no_name
+  self~expectSyntax(88.901)
+  "abc"~sendWith(,(1,2))
+
+::method test_sendwith_no_name2
+  self~expectSyntax(88.901)
+  "abc"~sendWith()
+
+::method test_sendwith_not_string
+  self~expectSyntax(93.972)
+  "abc"~sendWith(.nil,(1,2))
+
+::method test_sendwith_not_array
+  self~expectSyntax(88.913)
+  "abc"~sendWith('substr', .nil)
+
+::method test_sendwith_too_many
+  self~expectSyntax(93.902)
+  "abc"~sendWith('substr', (1,2), (1,2))
+
+::method test_sendwith_no_method
+  self~expectSyntax(97.1)
+  "abc"~sendWiuth('substrxxxxxx',1,2)
 
 ::method testStart01
   message = "abc"~start("substr", 1, 2)
