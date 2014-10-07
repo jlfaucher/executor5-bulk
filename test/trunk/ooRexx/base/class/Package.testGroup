@@ -67,6 +67,7 @@ return testResult
   package = .package~new("testPackage1.rex")
 
   self~assertTrue(package~isA(.package))
+  self~assertEquals(file~fullName, package~name)
   self~assertSame(0, package~classes~items)
   self~assertSame(0, package~publicClasses~items)
   self~assertSame(0, package~routines~items)
@@ -78,6 +79,17 @@ return testResult
   self~assertSame(0, package~resources~items)
   self~assertSame(0, package~namespaces~items)
   self~assertSame(0, package~annotations~items)
+  -- package settings are extensively tested in the ::options tests,
+  -- but this is a good place to test the defaults
+  self~assertSame(.rexxinfo~digits, package~digits)
+  self~assertSame(.rexxinfo~fuzz, package~fuzz)
+  self~assertSame(.rexxinfo~form, package~form)
+  -- some source tests
+  self~assertSame(1, package~sourceSize)
+  self~assertSame("", package~sourceLine(1))
+
+  self~assertSame('N', package~trace)
+
 
   file = .TemporaryTestFile~new(self, "testPackage2.rex")
   file~create(".local['TESTING'] = 1")
@@ -383,8 +395,22 @@ return testResult
   classes = package~classes
   self~assertSame(2, classes~items)
   self~assertSame(class, classes["TEST2"])
-  self~assertSame(0, package~publicclasses~items)
+  self~assertSame(0, package~publicClasses~items)
   self~assertSame(class, package~findClass("TEST2"))
+  -- should not be found as a public class
+  self~assertSame(.nil, package~findPublicClass("TEST2"))
+  -- test that find also locates the REXX-defined classes
+  self~assertSame(.array, package~findClass("ARRAY"))
+  self~assertSame(.array, package~findPublicClass("ARRAY"))
+
+  -- now add a public class
+  class = .object~subclass("TEST3")
+  package~addPublicClass("TEST3", class)
+
+  self~assertSame(class, package~findClass("TEST3"))
+  -- should be found as a public class
+  self~assertSame(class, package~findPublicClass("TEST3"))
+
 
 ::method TestAddClass02
   src = .array~new()
