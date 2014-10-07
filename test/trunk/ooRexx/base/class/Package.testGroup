@@ -90,6 +90,33 @@ return testResult
 
   self~assertSame('N', package~trace)
 
+  -- only the annotations return value is updateable.  Try
+  -- adding to each of these directories and then verify that
+  -- the original remains empty
+  package~classes~temp = .array
+  self~assertSame(0, package~classes~items)
+  package~publicclasses~temp = .array
+  self~assertSame(0, package~publicClasses~items)
+  package~routines~temp = .array
+  self~assertSame(0, package~routines~items)
+  package~publicroutines~temp = .array
+  self~assertSame(0, package~publicRoutines~items)
+  package~definedMethods~temp = .array
+  self~assertSame(0, package~definedmethods~items)
+  package~importedClasses~temp = .array
+  self~assertSame(0, package~importedClasses~items)
+  package~importedRoutines~temp = .array
+  self~assertSame(0, package~importedRoutines~items)
+  package~importedPackages~append(.array)
+  self~assertSame(0, package~importedPackages~items)
+  package~resources~temp = .array
+  self~assertSame(0, package~resources~items)
+  package~namespaces~temp = .array
+  self~assertSame(0, package~namespaces~items)
+  -- this one does update the original stringtable
+  package~annotations~temp = "Hi"
+  self~assertSame(1, package~annotations~items)
+
 
   file = .TemporaryTestFile~new(self, "testPackage2.rex")
   file~create(".local['TESTING'] = 1")
