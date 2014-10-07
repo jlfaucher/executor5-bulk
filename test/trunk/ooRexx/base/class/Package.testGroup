@@ -59,13 +59,12 @@ return testResult
 
 ::method "test_New01"
   -- just load an empty package file
-  file = .ooRexxUnit.dir || .ooRexxUnit.directory.separator || 'testRequires1.rex'
+  -- create the requires file as a temporary file
+  file = .TemporaryTestFile~new(self, "testPackage1.rex")
+  -- this is just an empty file
+  file~create("")
 
-  src = .array~new()
-  src[1] = ""
-  fileName = createFile(src, file)
-
-  package = .package~new(fileName)
+  package = .package~new("testPackage1.rex")
 
   self~assertTrue(package~isA(.package))
   self~assertSame(0, package~classes~items)
@@ -76,63 +75,64 @@ return testResult
   self~assertSame(0, package~importedClasses~items)
   self~assertSame(0, package~importedRoutines~items)
   self~assertSame(0, package~importedPackages~items)
+  self~assertSame(0, package~resources~items)
+  self~assertSame(0, package~namespaces~items)
+  self~assertSame(0, package~annotations~items)
 
-  call deleteFile fileName
+  file = .TemporaryTestFile~new(self, "testPackage2.rex")
+  file~create(".local['TESTING'] = 1")
 
-  file = .ooRexxUnit.dir || .ooRexxUnit.directory.separator || 'testRequires2.rex'
-  src = .array~new()
-  src[1] = ".local['TESTING'] = 1"
-  fileName = createFile(src, file)
+  -- make sure this entry is cleared
+  .local~removeEntry('TESTING')
 
-  package = .package~new(fileName)
-
+  -- verify the prolog runs when loaded from a file
+  package = .package~new("testPackage2.rex")
   self~assertSame(1, .local['TESTING'])
 
-  .local['TESTING'] = .nil
-  src = .array~new()
-  src[1] = "return 123"
-  src[2] = '::requires "'fileName'"'
+  -- remove the entry again. Then run some code that requires this
+  -- file.  It should not get updated this time.
+  .local~removeEntry('TESTING')
 
-  routine = .routine~new("testing", src)
+  res = self~runDynamicSource(("return 123", "::requires 'testPackage2.rex'"))
 
-  self~assertSame(.nil, .local['TESTING'])
+  self~assertFalse(.local~hasEntry('TESTING'))
 
-  call deleteFile fileName
+  -- this creates an in-memory package.  It is not available for ::requires usage
+  package = .package~new("ROUTINETEST1", ("::routine test1 public", "return 1"))
 
-  src = .array~new()
-  src[1] = "::routine test1 public"
-  src[2] = "  return 1"
-
-  package = .package~new("ROUTINETEST1", src)
-
-  src = .array~new()
-  src[1] = "return test1()"
-  src[2] = "::requires routinetest1"
-
-  routine = .routine~new("testing", src)
-
+  -- however, we can use it in creating other executables as a parent package
+  routine = .routine~new("testing", "return test1()", package)
   self~assertSame(1, routine~call)
 
+  -- and a final test to show that the in-memory version is not in the
+  -- package table
+
+  self~assertSyntaxError(43.901, ("return test1()", "::requires 'ROUTINETEST1'"))
+
+-- test memory retention of loaded package files
 ::method testReclaim01
 
-  src = .array~new()
-  src[1] = "::routine test1 public"
-  src[2] = "  return 1"
-  x = random()
+  file = .TemporaryTestFile~new(self, "reclaimPackage.cls")
+  file~create(("::routine test1 public", "  return 1"))
 
-  package = .package~new("ROUTINETEST1", src)
+  -- this loads the package from a file and adds to the cache
+  package = .package~new("reclaimPackage.cls")
 
-  src = .array~new()
-  src[1] = "return test1()"
-  src[2] = "::requires routinetest1"
+  -- delete the file now so this can no longer be loaded from the file
+  file~delete
 
-  routine = .routine~new("testing", src)
+  -- now create some code that references this...should be located in the cache
+  routine = .routine~new("testing", ("return test1()", "::requires 'reclaimPackage.cls'"))
 
   self~assertSame(1, routine~call)
 
+  -- wrap the orginal package in a weak reference
   package = .weakreference~new(package)
+  -- drop the referencing routine
   drop routine
 
+  -- now allocate a lot of storage in an attempt to force
+  -- a garbage collection event
   i = 1
   loop until package~value == .nil
      loop 100
@@ -142,15 +142,14 @@ return testResult
   end
 
   self~expectSyntax('43.901')
-  routine = .routine~new("testing", src)
+  -- now create some more code that references the file...this should fail.
+  routine = .routine~new("testing", ("return test1()", "::requires 'reclaimPackage.cls'"))
   routine~call
 
+-- test creation of classes within a package
 ::method testClasses01
-  src = .array~new()
-  src[1] = "::class class1"
-  src[2] = "::class class2 public"
 
-  package = .package~new("CLASSTEST1", src)
+  package = .package~new("CLASSTEST1", ("::class class1", "::class class2 public"))
 
   classes = package~classes
   publicClasses = package~publicClasses
@@ -161,12 +160,9 @@ return testResult
   self~assertTrue(publicClasses['CLASS2']~isA(.class))
   self~assertSame(0, package~importedClasses~items)
 
+-- test routines within a package
 ::method testRoutines01
-  src = .array~new()
-  src[1] = "::routine routine1"
-  src[2] = "::routine routine2 public"
-
-  package = .package~new("ROUTINETEST2", src)
+  package = .package~new("ROUTINETEST2", ("::routine routine1", "::routine routine2 public"))
 
   routines = package~routines
   publicRoutines = package~publicRoutines
@@ -179,13 +175,8 @@ return testResult
   self~assertSame(0, package~importedRoutines~items)
 
 ::method testMethods01
-  src = .array~new()
-  src[1] = "::method method1"
-  src[2] = "::method method2"
-  src[3] = "::class test1"
-  src[4] = "::method method3"
 
-  package = .package~new("METHODTEST1", src)
+  package = .package~new("METHODTEST1", ("::method method1", "::method method2", "::class test1", "::method method3"))
 
   methods = package~definedMethods
   self~assertSame(2, methods~items)
@@ -194,86 +185,66 @@ return testResult
 
 
 ::method testImportedClasses01
-  src = .array~new()
-  src[1] = "::class class1"
-  src[2] = "::class class2 public"
+  file = .TemporaryTestFile~new(self, "ImportedClassTest1.cls")
+  file~create(("::class class1", "::class class2 public"))
 
-  package = .package~new("IMPORTEDCLASSTEST1", src)
+  -- load this package from the file
+  package = .package~new("ImportedClassTest1.cls")
 
-  src = .array~new()
-  src[1] = "return 12"
-  src[2] = "::requires importedclasstest1"
-
-  package2 = .package~new("importedtesting1", src)
+  package2 = .package~new("importedtesting1", ("return 12", "::requires 'ImportedClassTest1.cls'"))
 
   classes = package2~importedclasses
   self~assertSame(1, classes~items)
   self~assertTrue(classes['CLASS2']~isA(.class))
 
-  src = .array~new()
-  src[1] = "return 12"
-
-  package2 = .package~new("importedtesting3", src)
+  -- add the orginal package to this created one and test the imports
+  package2 = .package~new("importedtesting3", "return 12")
   package2~addPackage(package)
 
   classes = package2~importedclasses
   self~assertSame(1, classes~items)
   self~assertTrue(classes['CLASS2']~isA(.class))
 
-  src = .array~new()
-  src[1] = "::class class1"
-  src[2] = "::class class2"
-
   self~assertSame(package, package2~importedPackages[1])
 
-  package = .package~new("IMPORTEDCLASSTEST2", src)
+  -- now a package with no public classes
+  file = .TemporaryTestFile~new(self, "ImportedClassTest2.cls")
+  file~create(("::class class1", "::class class2"))
 
-  src = .array~new()
-  src[1] = "return 12"
-  src[2] = "::requires importedclasstest2"
+  -- load this package from the file
+  package = .package~new("ImportedClassTest2.cls")
 
-  package2 = .package~new("importedtesting2", src)
+  package2 = .package~new("importedtesting2", ("return 12", "::requires 'ImportedClassTest2.cls'"))
   classes = package2~importedclasses
   self~assertSame(0, classes~items)
 
 ::method testImportedRoutines01
-  src = .array~new()
-  src[1] = "::routine routine1"
-  src[2] = "::routine routine2 public"
+  file = .TemporaryTestFile~new(self, "ImportedRoutineTest1.cls")
+  file~create(("::routine routine1", "::routine routine2 public"))
 
-  package = .package~new("IMPORTEDROUTINETEST1", src)
+  -- load this package from the file
+  package = .package~new("ImportedRoutineTest1.cls")
 
-  src = .array~new()
-  src[1] = "return 12"
-  src[2] = "::requires importedroutinetest1"
+  package2 = .package~new("importedtesting1x", ("return 12", "::requires 'ImportedRoutineTest1.cls'"))
 
-  package2 = .package~new("importedtesting1x", src)
+  routines = package~publicRoutines
 
-  routines = package2~importedroutines
   self~assertSame(1, routines~items)
   self~assertTrue(routines['ROUTINE2']~isA(.routine))
 
-  src = .array~new()
-  src[1] = "return 12"
-
-  package2 = .package~new("importedtesting3", src)
+  package2 = .package~new("importedtesting3", "return 12")
   package2~addPackage(package)
 
   routines = package2~importedroutines
   self~assertSame(1, routines~items)
   self~assertTrue(routines['ROUTINE2']~isA(.routine))
 
-  src = .array~new()
-  src[1] = "::routine routine1"
-  src[2] = "::routine routine2"
+  -- now a package with no public routines
+  file = .TemporaryTestFile~new(self, "ImportedRoutineTest2.cls")
+  file~create(("::routine routine1" , "::routine routine2"))
+  package = .package~new("ImportedRoutineTest2.cls")
 
-  package = .package~new("IMPORTEDROUTINETEST2", src)
-
-  src = .array~new()
-  src[1] = "return 12"
-  src[2] = "::requires importedroutinetest2"
-
-  package2 = .package~new("importedtesting2x", src)
+  package2 = .package~new("importedtesting2x", ("return 12", "::requires 'ImportedRoutineTest2.cls'"))
   routines = package2~importedroutines
   self~assertSame(0, routines~items)
 
