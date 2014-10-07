@@ -418,6 +418,14 @@ self~assertSame('C', word('ABCD BCDE CDEF DEFG',2)[left(subWord('10 20 30 40',2,
     .local~remove(v256)
     .local~remove(v10000)
 
+::method 'test090'
+    self~expectSyntax(93.903)
+    xre='12345'[]
+
+::method 'test091'
+    self~expectSyntax(93.903)
+    Interpret "xre='12345'[]"
+
 -- from bif.testgroup
    -- test the BIF, using examples from the documentation
 ::method "test_SUBSTR"
