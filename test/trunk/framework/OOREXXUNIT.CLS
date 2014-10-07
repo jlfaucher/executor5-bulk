@@ -2129,6 +2129,11 @@ return 0
   dir = .File~new(package~name)~parentFile
   file = .File~new(name, dir)
 
+-- get the full resolved name of this file
+::method fullName
+  expose file
+  return file~absolutePath
+
 -- create a file from an array of lines
 ::method create
   expose file
@@ -2138,7 +2143,13 @@ return 0
   file~delete
 
   s = .stream~new(file)
-  s~arrayout(lines)
+
+  if lines~isA(.String) then do
+    s~lineout(lines)
+  end
+  else do
+    s~arrayout(lines)
+  end
   s~close
 
 -- append an array of lines to a file
@@ -2148,7 +2159,12 @@ return 0
 
   s = .stream~new(file)
   s~open('WRITE APPEND')
-  s~arrayout(lines)
+  if lines~isA(.String) then do
+    s~lineout(lines)
+  end
+  else do
+    s~arrayout(lines)
+  end
   s~close
 
 -- create a file from a package resource
@@ -2164,6 +2180,11 @@ return 0
   use strict arg resourceName
 
   self~append(package~resources~resourceName)
+
+-- allow the file to be deleted
+::method delete
+  expose file
+  file~delete
 
 -- clean up the temporary file after termination.
 ::method uninit

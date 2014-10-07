@@ -98,10 +98,17 @@ return testResult
   self~assertFalse(.local~hasEntry('TESTING'))
 
   -- this creates an in-memory package.  It is not available for ::requires usage
-  package = .package~new("ROUTINETEST1", ("::routine test1 public", "return 1"))
+  package = .package~new("ROUTINETEST1", ("::routine test1 public", "return 1", "::method method1", "return 2"))
 
   -- however, we can use it in creating other executables as a parent package
   routine = .routine~new("testing", "return test1()", package)
+  self~assertSame(1, routine~call)
+
+  -- this also works using a method or a routine as the third argument
+  routine = .routine~new("testing", "return test1()", package~routines~test1)
+  self~assertSame(1, routine~call)
+
+  routine = .routine~new("testing", "return test1()", package~definedMethods~method1)
   self~assertSame(1, routine~call)
 
   -- and a final test to show that the in-memory version is not in the
