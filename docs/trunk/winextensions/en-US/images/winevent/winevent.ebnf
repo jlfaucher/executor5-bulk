@@ -1,0 +1,38 @@
+winevent_new ::= new
+
+winevent_minimumreadmin ::= evlog '~' minimumReadMin
+
+winevent_minimumreadmax ::= evlog '~' minimumReadMax
+
+winevent_minimumreadbuffer ::= evlog '~' minimumReadBuffer
+
+winevent_events ::= evlog '~' events
+
+winevent_open ::= evlog '~' 'open(' ( server )? ( ',' source )? ')'
+
+winevent_close ::= evlog '~' close
+
+winevent_readrecords ::= evlog '~' 'readRecords(' ( direction ( ',' ( server )? ( ',' ( source )?
+                                                  ( ',' ( start )? ( ',' ( count )? )? )? )? )? )? ')'
+
+winevent_write ::= evlog '~' 'write(' srvr ( ',' ( src )? ( ',' ( type )? ( ',' ( category )?
+                                      ( ',' ( id )? ( ',' ( data )?
+                                      ( ( ',' string )+ )? )? )? )? )? )? ')'
+
+winevent_clear ::= evlog '~' 'clear(' ( srvr ( ',' ( src )? ( ',' ( type )?
+                                      ( ',' ( backupFileName )? )? )? )? )? ')'
+
+winevent_minimumread ::= evlog '~' minimumRead
+
+winevent_minimumread_equal ::= evlog '~' minimumRead '=' sizeKB
+
+winevent_isfull ::= evlog '~' 'isFull(' ( server )? ( ',' source )? ')'
+
+winevent_getnumber ::= evlog '~' 'getNumber(' ( server )? ( ',' source )? ')'
+
+winevent_getlognames ::= evlog '~' 'getLogNames(' names ')'
+
+winevent_getlast ::= evlog '~' 'getLast(' ( server )? ( ',' source )? ')'
+
+winevent_getfirst ::= evlog '~' 'getFirst(' ( server )? ( ',' source )? ')'
+

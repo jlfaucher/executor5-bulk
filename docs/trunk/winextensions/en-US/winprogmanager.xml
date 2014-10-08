@@ -124,11 +124,12 @@
 <indexterm><primary>method</primary>
 <secondary>new method</secondary>
 <tertiary>of WindowsProgramManager class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>--new--------------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/pgmmgr/pgmmgr_new.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>
   Creates an instance of the WindowsProgramManager class.
@@ -141,20 +142,12 @@
 <indexterm><primary>method</primary>
 <secondary>AddDesktopIcon method</secondary>
 <tertiary>of WindowsProgramManager class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-addDesktopIcon--(--name--,--program--+--------------------------------+-->
-                                        |                     +-0------+ |
-                                        +-,--+----------+--,--+--------+-+
-                                             +-iconfile-+     +-iconnr-+
 
->--+--------------------------------------------------------------------------+-)-><
-   |                 +-"PERSONAL"-+                           +-"NORMAL"----+ |
-   +-,-+---------+-,-+------------+-,-+------+-,-+--------+-,-+-------------+-+
-       +-workdir-+   +-"COMMON"---+   +-args-+   +-hotkey-+   +-"MAXIMIZED"-+
-                                                              +-"MINIMIZED"-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/pgmmgr/pgmmgr_adddesktopicon.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Adds a shortcut to the Windows desktop. A sample program
 <computeroutput>DESKICON.REX</computeroutput> is provided in the
@@ -215,22 +208,12 @@ default is &quot;NORMAL&quot;.
 <indexterm><primary>method</primary>
 <secondary>addShortCut method</secondary>
 <tertiary>of WindowsProgramManager class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-addShortCut--(--name--,--program--------------------------------------->
 
->--+---------------------------------------------------------------------->
-   |                  +-0------+
-   +-,-+----------+-,-+--------+-,-+---------+-,-+------+-,-+--------+-,-->
-       +-iconfile-+   +-iconnr-+   +-workdir-+   +-args-+   +-hotkey-+
-
->-------------------+--)-------------------------------------------------><
-    +-"NORMAL"----+ |
->---+-------------+-+
-    +-"MAXIMIZED"-+
-    +-"MINIMIZED"-+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/pgmmgr/pgmmgr_addshortcut.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Creates a shortcut within the specified folder.</para>
 <variablelist>
@@ -292,11 +275,12 @@ pm = .WindowsProgramManager~new
 <indexterm><primary>method</primary>
 <secondary>addGroup method</secondary>
 <tertiary>of WindowsProgramManager class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-addGroup(-group-)-------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/pgmmgr/pgmmgr_addgroup.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Adds a program group to the Programs group of the desktop. If the group
 already exists, it is opened. The <emphasis role="italic">group</emphasis>
@@ -327,18 +311,12 @@ must not contain any brackets or parenthesis. Otherwise, this method fails.
 <indexterm><primary>method</primary>
 <secondary>addItem method</secondary>
 <tertiary>of WindowsProgramManager class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-addItem--(--shortcut,program--------------------------------->
 
->--+------------------------------------------------------+----->
-   +-,--+----------+--+---------------------------------+-+
-        +-iconfile-+  +-,--+------------+--+----------+-+
-                           +-iconnumber-+  +-,workdir-+
-
->--)-----------------------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/pgmmgr/pgmmgr_additem.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Adds a shortcut to a program group. The shortcut is placed into the last
 group used with either AddGroup or ShowGroup.</para>
@@ -374,13 +352,11 @@ for example / to _.</para></note>
 <secondary>deleteDesktopIcon method</secondary>
 <tertiary>of WindowsProgramManager class</tertiary></indexterm>
 
-<programlisting>
-<![CDATA[
-                                   +-"PERSONAL"-+
->>-deleteDesktopIcon--(--name--,---+------------+-)------------><
-                                   +-"COMMON"---+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/pgmmgr/pgmmgr_deletedesktopicon.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Deletes a shortcut from the Windows desktop that was previously
 created with AddDesktopIcon.</para>
@@ -471,11 +447,12 @@ exit
 <indexterm><primary>method</primary>
 <secondary>deleteGroup method</secondary>
 <tertiary>of WindowsProgramManager class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-deleteGroup(-group-)----------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/pgmmgr/pgmmgr_deletegroup.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Deletes a program group from the desktop. The
 <emphasis role="italic">group</emphasis> argument specifies
@@ -497,11 +474,12 @@ the name of the program group to be deleted.</para>
 <indexterm><primary>method</primary>
 <secondary>deleteItem method</secondary>
 <tertiary>of WindowsProgramManager class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-deleteItem(shortcut)----------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/pgmmgr/pgmmgr_deleteitem.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Deletes a shortcut from a program group.</para>
 <para>Return value:</para>
@@ -521,13 +499,12 @@ the name of the program group to be deleted.</para>
 <indexterm><primary>method</primary>
 <secondary>showGroup method</secondary>
 <tertiary>of WindowsProgramManager class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-showGroup(-group,-+-----+-)---------------------------------><
-                     +-MIN-+
-                     +-MAX-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/pgmmgr/pgmmgr_showgroup.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Opens a program group. The
 <emphasis role="italic">group</emphasis> argument specifies the name of

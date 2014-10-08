@@ -455,12 +455,12 @@ return 0
 <indexterm><primary>method</primary>
 <secondary>new method</secondary>
 <tertiary>of OLEObject class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>--new(--classID--+-----------+--+--------------+--)-------------------><
-                   +-,-events--+  +-,-getObject--+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_new.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>
   Instantiates a new OLEObject as a proxy for a COM / OLE object with the specified <emphasis
@@ -535,14 +535,11 @@ myOLEObject = .OLEObject~new("InternetExplorer.Application")
 <secondary>dispatch method</secondary>
 <tertiary>of OLEObject class</tertiary></indexterm>
 
-<programlisting>
-<![CDATA[
->>-dispatch(methodname--+------------+--)----------------------><
-                        |  +------+  |
-                        |  V      |  |
-                        +----,arg-+--+
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_dispatch.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>
 Dispatches a method with the optionally supplied arguments.
@@ -555,12 +552,12 @@ Dispatches a method with the optionally supplied arguments.
 <indexterm><primary>method</primary>
 <secondary>getConstant</secondary>
 <tertiary>of OLEObject class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-getConstant(-+--------------+-)-----------------------------><
-                +-ConstantName-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_getconstant.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Retrieves the value of a constant that is associated with this
 OLE object. If no constant of that name exists, the .Nil object will be returned.
@@ -603,11 +600,12 @@ end
 <indexterm><primary>method</primary>
 <secondary>getKnownEvents method</secondary>
 <tertiary>of OLEObject class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-getKnownEvents----------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_getknownevents.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>
   Returns a stem with information on the events (<xref linkend="oleevents" /> that the connectable OLE
@@ -705,11 +703,12 @@ ONSTATUSBAR
 <indexterm><primary>method</primary>
 <secondary>connectEvents</secondary>
 <tertiary>of OLEObject class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>--connectEvents----------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_connectevents.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>
   The connectEvents() method is used to connect the instantiated automation client (the OLEObject
@@ -741,11 +740,12 @@ ONSTATUSBAR
 <indexterm><primary>method</primary>
 <secondary>isConnected</secondary>
 <tertiary>of OLEObject class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>--isConnected------------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_isconnected.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>
   Determines if the OLEObject instance is currently connected to a connectable OLE automation server.
@@ -775,11 +775,12 @@ ONSTATUSBAR
 <indexterm><primary>method</primary>
 <secondary>isConnectable</secondary>
 <tertiary>of OLEObject class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>--isConnectable----------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_isconnectable.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>
   Determines if the OLE object is a connectable object. In other words, does the OLE object support event
@@ -825,11 +826,12 @@ ONSTATUSBAR
 <indexterm><primary>method</primary>
 <secondary>disconnectEvents</secondary>
 <tertiary>of OLEObject class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>--disconnectEvents-------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_disconnectevents.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>
   This method disconnects from the connectable OLE object. The method returns
@@ -895,11 +897,12 @@ ONSTATUSBAR
 <indexterm><primary>method</primary>
 <secondary>removeEventHandler</secondary>
 <tertiary>of OLEObject class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>--removeEventHandler-----------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_removeeventhandler.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>
   Removes the event handler and cleans up the internal data structures used to manage events. No event
@@ -926,11 +929,12 @@ ONSTATUSBAR
 <indexterm><primary>method</primary>
 <secondary>addEventMethod</secondary>
 <tertiary>of OLEObject class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>--addEventMethod(--name-,-methodObject--)--------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_addeventmethod.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>
   <computeroutput>addEventMethod</computeroutput> adds a new method to this object's collection of
@@ -980,11 +984,12 @@ ONSTATUSBAR
 <indexterm><primary>method</primary>
 <secondary>removeEventMethod</secondary>
 <tertiary>of OLEObject class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>--removeEventMethod(--name--)-----------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_removeeventmethod.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>
   Removes the event method with the specified <emphasis role="italic">name</emphasis> that has been
@@ -1021,11 +1026,12 @@ ONSTATUSBAR
 <indexterm><primary>method</primary>
 <secondary>getKnownMethods method</secondary>
 <tertiary>of OLEObject class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-getKnownMethods---------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_getknownmethods.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns a stem with information on the methods that the OLE object
 supplies. It collects this information from the type library of the object. A
@@ -1173,12 +1179,12 @@ GoHome
 <indexterm><primary>method</primary>
 <secondary>getObject method</secondary>
 <tertiary>of OLEObject class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-getObject(Moniker-+--------+-)------------------------------><
-                     +-,class-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_getobject.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>
   This is a class method that allows you to obtain an OLE object through the use of a moniker. A moniker
@@ -1223,11 +1229,12 @@ myOLEObject = .OLEObject~GetObject("C:\DOCS\HELLOWORLD.DOC")
 <indexterm><primary>method</primary>
 <secondary>getOutParameters method</secondary>
 <tertiary>of OLEObject class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-getOutParameters--------------------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_getoutparameters.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>Returns an array containing the results of the single
 <computeroutput>out</computeroutput> parameters
@@ -1275,12 +1282,12 @@ of A and B at position one, and the product at position two.</para>
 <indexterm><primary>method</primary>
 <secondary>unknown method</secondary>
 <tertiary>of OLEObject class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-unknown(messageName--+----------------+--)------------------><
-                        +--,messageArgs--+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/oleobj_unknown.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>
   The <computeroutput>unknown</computeroutput> message is the central mechanism through which methods of
@@ -1617,12 +1624,13 @@ should not present a problem.
 </para></note>
 
 <section id="olevarnew"><title>new Class method</title>
-<programlisting>
-<![CDATA[
->>-new(valueObject-+----------+--+-------------+-)-------------><
-                   +-,varType-+  +-,paramFlags-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/olevar_new.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>
 Instantiates a new OLEVariant object to be used as a parameter in an
 OLEObject method call.  The first argument is the ooRexx object to be
@@ -1698,11 +1706,12 @@ retVal = classSize~createObject(param)
 
 <section><title>!VARVALUE_</title>
 
-<programlisting>
-<![CDATA[
->>-!VARVALUE_--------------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/olevar_varvalue.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>
 Returns the value object set within an instance of an OLEVariant.  If the
 parameter in a COM method call that the OLEVariant was used for is an "out"
@@ -1725,11 +1734,12 @@ size = param~!varValue_
 
 <section><title>!VARVALUE_=</title>
 
-<programlisting>
-<![CDATA[
->>-!VARVALUE_=-------------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/olevar_varvalue_equal.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>
 Sets the value object an instance of an OLEVariant contains.
 </para>
@@ -1737,11 +1747,12 @@ Sets the value object an instance of an OLEVariant contains.
 
 <section><title>!VARTYPE_</title>
 
-<programlisting>
-<![CDATA[
->>-!VARTYPE_---------------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/olevar_vartype.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>
 Returns the variant type specification of the OLEVariant instance.
 </para>
@@ -1749,11 +1760,12 @@ Returns the variant type specification of the OLEVariant instance.
 
 <section><title>!VARTYPE_=</title>
 
-<programlisting>
-<![CDATA[
->>-!VARTYPE_=--------------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/olevar_vartype_equal.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>
 Sets the variant type specification of an OLEVariant instance.  This serves
 the same purpose as the second argument to the
@@ -1766,11 +1778,12 @@ Automation, or .nil.  If not a syntax error is raised.
 
 <section><title>!PARAMFLAGS_</title>
 
-<programlisting>
-<![CDATA[
->>-!PARAMFLAGS_------------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/olevar_paramflags.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>
 Returns the parameter flags specification of the OLEVariant instance.
 </para>
@@ -1778,11 +1791,12 @@ Returns the parameter flags specification of the OLEVariant instance.
 
 <section><title>!PARAMFLAGS_=</title>
 
-<programlisting>
-<![CDATA[
->>-!PARAMFLAGS_=-----------------------------------------------><
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/oleobj/olevar_paramflags_equal.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
 <para>
 Sets the flags specification of an OLEVariant instance.  This serves the
 same purpose as the third argument to the

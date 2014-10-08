@@ -1,0 +1,43 @@
+oleobj_new ::= 'new(' classID ( ',' ( events )? ( ',' getObject )? )? ')'
+
+oleobj_dispatch ::= ole '~' 'dispatch(' methodname ( ( ',' arg )+ )? ')'
+
+oleobj_getconstant ::= ole '~' 'getConstant(' ( ConstantName )? ')'
+
+oleobj_getknownevents ::= ole '~' getKnownEvents
+
+oleobj_conectevents ::= ole '~' connectEvents
+
+oleobj_isconnected ::= ole '~' isConnected
+
+oleobj_isconectable ::= ole '~' isConnectable
+
+oleobj_disconectevents ::= ole '~' disconnectEvents
+
+oleobj_removeeventhandler ::= ole '~' removeEventHandler
+
+oleobj_addeventmethod ::= ole '~' 'addEventMethod(' name ',' methodObject ')'
+
+oleobj_removeeventmethod ::= ole '~' 'removeEventMethod(' name ')'
+
+oleobj_getknownmethods ::= ole '~' getKnownMethods
+
+oleobj_getobject ::= ole '~' 'getObject(' moniker ',' class ')'
+
+oleobj_getoutparameters ::= ole '~' getOutParameters
+
+oleobj_unknown ::= ole '~' 'unknown(' messageName ( ',' messageArgs )? ')'
+
+olevar_varvalue ::= 'new(' valueObject ( ',' ( varType )? ( ',' paramFlags )? )? ')'
+
+olevar_varvalue ::= olevar '~' '!VARVALUE_()'
+
+olevar_varvalue_equal ::= olevar '~' !VARVALUE_ '=' newvalue
+
+olevar_vartype ::= olevar '~' '!VARTYPE_()'
+
+olevar_vartype_equal ::= olevar '~' !VARTYPE_ '=' newtype
+
+olevar_paramflags ::= olevar '~' '!PARAMFLAGS_()'
+
+olevar_paramflags_equal ::= olevar '~' !PARAMFLAGS_ '=' newparamglags

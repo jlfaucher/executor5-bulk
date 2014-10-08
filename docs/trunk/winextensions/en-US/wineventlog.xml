@@ -519,11 +519,12 @@ parse var rec type date time "'" source "'" id userID computer "'" description "
 <indexterm><primary>method</primary>
 <secondary>new method</secondary>
 <tertiary>of WindowsEventLog class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>--new---------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winevent/winevent_new.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>
   Creates an instance of the WindowsEventLog class.
@@ -533,12 +534,12 @@ parse var rec type date time "'" source "'" id userID computer "'" description "
 <section id="atrMinimumReadMin"><title>minimumReadMin (Attribute)</title>
 <indexterm><primary>minimumReadMin</primary>
 <secondary>WindowsEventLog class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--minimumReadMin----------------------><
 
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winevent/winevent_minimumreadmin.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>
   The programmer can set the size (<xref linkend="mthMinimumReadEquals" />) of the minimum read buffer,
@@ -589,12 +590,12 @@ Smallest possible read buffer is 16 kilobytes
 <section id="atrMinimumReadMax"><title>minimumReadMax (Attribute)</title>
 <indexterm><primary>minimumReadMax</primary>
 <secondary>WindowsEventLog class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--minimumReadMax----------------------><
 
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winevent/winevent_minimumreadmax.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>
   The programmer can set the size (<xref linkend="mthMinimumReadEquals" />) of the minimum read buffer,
@@ -644,12 +645,12 @@ Largest possible minimum read buffer is 256 kilobytes
 <section id="atrMinimumReadBuffer"><title>minimumReadBuffer (Attribute)</title>
 <indexterm><primary>minimumReadBuffer</primary>
 <secondary>WindowsEventLog class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--minimumReadBuffer-------------------><
 
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winevent/winevent_minimumreadbuffer.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>
   Returns the current size of the minimum read buffer in bytes. The programmer can adjust the size (<xref
@@ -706,12 +707,12 @@ Adjusted size of the minimum read buffer to 65536 bytes
 <section id="atrEvents"><title>events (Attribute)</title>
 <indexterm><primary>events</primary>
 <secondary>WindowsEventLog class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--events------------------------------><
 
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winevent/winevent_events.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>
   The <computeroutput>events</computeroutput> attribute is an array that holds the event log records that
@@ -775,12 +776,12 @@ The System log has 1983 records
 <indexterm><primary>method</primary>
 <secondary>open method</secondary>
 <tertiary>of WindowsEventLog class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>--open(--+---------+--+------------+--)-----------------------><
-           +-server--+  +-,--source--+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winevent/winevent_open.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>
   Opens the specified event log. Once an event log is opened, other methods of the
@@ -875,11 +876,12 @@ end
 <indexterm><primary>method</primary>
 <secondary>close method</secondary>
 <tertiary>of WindowsEventLog class</tertiary></indexterm>
-<programlisting>
-<![CDATA[
->>-close--------------------------------><
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winevent/winevent_close.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>
   Closes an open event log (<xref linkend="openedEventLog" />). If no log is open, this method does
@@ -951,13 +953,12 @@ end
 <section id="mthReadRecords"><title>readRecords</title>
 <indexterm><primary>readRecords</primary>
 <secondary>WindowsEventLog class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--readRecords(-+-----------+-+----------+-+----------+-+---------+-+---------+--)--><
-                 +-direction-+ +-,-server-+ +-,-source-+ +-,-start-+ +-,-count-+
 
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winevent/winevent_readrecords.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>
   Reads the desired event records from the specified event log. Each record is stored in the events(<xref
@@ -1141,14 +1142,12 @@ Displayed 5 records
 <section id="mthWrite"><title>write</title>
 <indexterm><primary>write</primary>
 <secondary>WindowsEventLog class</secondary></indexterm>
-<programlisting>
-<![CDATA[
-                                                                          +-,--------+
-                                                                          V          |
->>-write(-+------+-+-------+-+-------+-+------------+-+------+-+--------+-+----------+-)--><
-          +-srvr-+ +-,-src-+ +-,type-+ +-,-category-+ +-,-id-+ +-,-data-+ +-,-string-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winevent/winevent_write.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>
   Description
@@ -1261,12 +1260,12 @@ Displayed 5 records
 <section id="mthClearClsWindowsEventLog"><title>clear</title>
 <indexterm><primary>clear</primary>
 <secondary>WindowsEventLog class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--clear(--+---------+--+----------+--+------------------+--)-----------------><
-            +-server--+  +-,-source-+  +-,-backupFileName-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winevent/winevent_clear.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>
   Clears (removes) all event records from the log. Optionally will back up the log first. When the
@@ -1355,12 +1354,12 @@ Displayed 5 records
 <section id="mthMinimumRead"><title>minimumRead</title>
 <indexterm><primary>minimumRead</primary>
 <secondary>WindowsEventLog class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--minimumRead--------------------------><
 
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winevent/winevent_mimimumread.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>
   Determines the current minimum size, in kilobytes, of the buffer used to read (<xref
@@ -1410,12 +1409,12 @@ Current minimum size of the read buffer is: 16 KB
 <section id="mthMinimumReadEquals"><title>minimumRead=</title>
 <indexterm><primary>minimumRead=</primary>
 <secondary>WindowsEventLog class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--minimumRead-=-sizeKB-----------------><
 
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winevent/winevent_mimimumread_equal.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>
   Adjusts the minimum size of the read buffer in increments of 1024 bytes. <emphasis
@@ -1502,12 +1501,12 @@ Current minimum size of the read buffer is: 64 KB
 <section id="mthIsFull"><title>isFull</title>
 <indexterm><primary>isFull</primary>
 <secondary>WindowsEventLog class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--isFull(--+---------+-+----------+--)----------------------><
-             +--server-+ +-,-source-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winevent/winevent_isfull.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>
   Determines if the event log is full.
@@ -1572,12 +1571,12 @@ return success
 <secondary>WindowsEventLog class</secondary></indexterm>
 <indexterm><primary>WindowsEventLog class</primary>
 <secondary>getNumber</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--getNumber(--+---------+-+----------+--)----------------------><
-                +--server-+ +-,-source-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winevent/winevent_getnumber.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>
   Determines the number of records in the event log.
@@ -1642,12 +1641,12 @@ return success
 <secondary>WindowsEventLog class</secondary></indexterm>
 <indexterm><primary>WindowsEventLog class</primary>
 <secondary>getLogNames</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--getLogNames(--names--)--------------><
 
-]]>
-</programlisting>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winevent/winevent_getlognames.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>
   Obtains a list of all the event log names on the current system.
@@ -1712,12 +1711,12 @@ Log: System
 <section id="mthGetLast"><title>getLast</title>
 <indexterm><primary>getLast</primary>
 <secondary>WindowsEventLog class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--getLast(--+---------+-+----------+--)----------------------><
-              +--server-+ +-,-source-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winevent/winevent_getlast.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>
   Determines the absolute record number of the last record
@@ -1805,12 +1804,12 @@ Data     :
 <section id="mthGetFirst"><title>getFirst</title>
 <indexterm><primary>getFirst</primary>
 <secondary>WindowsEventLog class</secondary></indexterm>
-<programlisting>
-<![CDATA[
->>--getFirst(--+---------+-+----------+--)----------------------><
-               +--server-+ +-,-source-+
-]]>
-</programlisting>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/winevent/winevent_getfirst.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>
   Determines the absolute record number of the first record
