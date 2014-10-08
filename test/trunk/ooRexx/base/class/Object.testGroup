@@ -69,6 +69,7 @@ return testResult
   self~assertTrue(o~hasMethod("UNSETMETHOD"))
   self~assertTrue(o~hasMethod("HASMETHOD"))
 
+-- case difference tests
 ::method  test_hasMethod_two
 
   o = .object~new
@@ -155,6 +156,189 @@ return testResult
   message = "abc"~startWith("substr",  .array~of(1, 2))
   self~assertEquals("abc"~substr(1,2), message~result)
 
+::method test_send_override
+  obj = .sendTester~new
+  -- non-array version of the test, just as a baseline
+  self~assertEquals(123, obj~testSend(obj, 'TestTarget'))
+  self~assertEquals(123, obj~testSendWith(obj, 'TestTarget', (1,2)))
+
+  -- now with a superclass override
+  self~assertEquals(456, obj~testSend(obj, ('TestTarget', .sendTester2)))
+  self~assertEquals(456, obj~testSendWith(obj, ('TestTarget', .sendTester2), (1,2)))
+
+  -- this should still work even starting from the top class
+  self~assertEquals(123, obj~testSend(obj, ('TestTarget', .sendTester)))
+  self~assertEquals(123, obj~testSendWith(obj, ('TestTarget', .sendTester), (1,2)))
+
+-- issued from a different class context
+::method test_send_override_bad_context
+  obj = .sendTester~new
+  self~expectSyntax(98.938)
+  obj~send(('TestTarget', .sendTester2))
+
+::method test_send_override_empty_array
+  obj = .sendTester~new
+  self~expectSyntax(93.946)
+  obj~send(.array~new(0))
+
+::method test_send_override_missing_name
+  obj = .sendTester~new
+  self~expectSyntax(88.901)
+  obj~send((,.testclass2))
+
+::method test_send_override_missing_scope
+  obj = .sendTester~new
+  self~expectSyntax(93.946)
+  obj~send(('TestTarget', ))
+
+::method test_send_override_extra_stuff
+  obj = .sendTester~new
+  self~expectSyntax(93.946)
+  obj~send(('TestTarget', .testScope2, 'Extra' ))
+
+::method test_send_override_non_string_name
+  obj = .sendTester~new
+  self~expectSyntax(88.909)
+  obj~send((.array, .testScope2))
+
+::method test_send_override_non_class_scope
+  obj = .sendTester~new
+  self~expectSyntax(88.914)
+  obj~send(('TestTarget', 'TESTCLASS2'))
+
+::method test_send_override_non_class_scope2
+  obj = .sendTester~new
+  self~expectSyntax(88.914)
+  obj~send(('TestTarget', .nil))
+
+::method test_send_override_not_found
+  obj = .sendTester~new
+  self~expectSyntax(97.1)
+  obj~testsend(obj, ('TestTarget', .object))
+
+::method test_send_override_not_non_scope
+  obj = .sendTester~new
+  self~expectSyntax(97.1)
+  obj~testsend(obj, ('TestTarget', .array))
+
+::method test_send_override_no_method
+  obj = .sendTester~new
+  self~expectSyntax(97.1)
+  obj~testSend(obj, ('TestTargetXXXX', .array))
+
+-- issued from a different class context
+::method test_sendwith_override_bad_context
+  obj = .sendTester~new
+  self~expectSyntax(98.938)
+  obj~sendWith(('TestTarget', .sendTester2), (1,2))
+
+::method test_sendWith_override_empty_array
+  obj = .sendTester~new
+  self~expectSyntax(93.946)
+  obj~sendWith(.array~new(0), (1,2))
+
+::method test_sendWith_override_missing_name
+  obj = .sendTester~new
+  self~expectSyntax(88.901)
+  obj~sendWith((,.testclass2), (1,2))
+
+::method test_sendWith_override_missing_scope
+  obj = .sendTester~new
+  self~expectSyntax(93.946)
+  obj~sendWith(('TestTarget', ), (1,2))
+
+::method test_sendWith_override_extra_stuff
+  obj = .sendTester~new
+  self~expectSyntax(93.946)
+  obj~sendWith(('TestTarget', .testScope2, 'Extra' ), (1,2))
+
+::method test_sendWith_override_non_string_name
+  obj = .sendTester~new
+  self~expectSyntax(88.909)
+  obj~sendWith((.array, .testScope2), (1,2))
+
+::method test_sendWith_override_non_class_scope
+  obj = .sendTester~new
+  self~expectSyntax(88.914)
+  obj~sendWith(('TestTarget', 'TESTCLASS2'), (1,2))
+
+::method test_sendWith_override_non_class_scope2
+  obj = .sendTester~new
+  self~expectSyntax(88.914)
+  obj~sendWith(('TestTarget', .nil), (1,2))
+
+::method test_sendWith_override_not_found
+  obj = .sendTester~new
+  self~expectSyntax(97.1)
+  obj~testsendWith(obj, ('TestTarget', .object), (1,2))
+
+::method test_sendWith_override_not_non_scope
+  obj = .sendTester~new
+  self~expectSyntax(97.1)
+  obj~testsendWith(obj, ('TestTarget', .array), (1,2))
+
+::method test_sendWith_override_no_method
+  obj = .sendTester~new
+  self~expectSyntax(97.1)
+  obj~testsendWith(obj, ('TestTargetXXXX', .array), (1,2))
+
+-- test various concatenations with non-string objects on
+-- the left of the expression.  This will concat with the
+-- string value of the object.
+::method test_concat
+  obj = .object~new
+  self~assertEquals(obj~defaultName||"ABC", obj||"ABC")
+  self~assertEquals(obj~defaultName||"ABC", obj"ABC")
+  self~assertEquals(obj~defaultName||" ABC", obj "ABC")
+
+  -- and object with a string method override
+  obj = .test1~new
+
+  self~assertEquals(obj~string||"ABC", obj||"ABC")
+  self~assertEquals(obj~string||"ABC", obj"ABC")
+  self~assertEquals(obj~string||" ABC", obj "ABC")
+
+::method test_concat_no_other
+  obj = .test1~new
+  self~expectSyntax(93.903)
+  x = obj~"||"
+
+::method test_blank_concat_no_other
+  obj = .test1~new
+  self~expectSyntax(93.903)
+  x = obj~" "
+
+::method test_abuttal_concat_no_other
+  obj = .test1~new
+  self~expectSyntax(93.903)
+  x = obj~""
+
+::method test_concat_extra_arg
+  obj = .test1~new
+  self~expectSyntax(93.902)
+  x = obj~"||"(1,2)
+
+::method test_blank_concat_extra_arg
+  obj = .test1~new
+  self~expectSyntax(93.902)
+  x = obj~" "(1,2)
+
+::method test_abbutal_concat_extra_arg
+  obj = .test1~new
+  self~expectSyntax(93.902)
+  x = obj~""(1,2)
+
+::method test_bad_string_method
+  obj = .testbadstring~new
+  -- if the string method does not return a value, it reverts to the default
+  -- name
+  self~assertEquals(obj~defaultName||'abc', obj||'abc')
+
+::method test_string_method_error
+  obj = .testbadstring2~new
+  self~expectSyntax(42.3)
+  x = obj||'abc'
+
 ::method copy
   o1 = .test2~new
   o2 = o1~copy
@@ -186,10 +370,45 @@ return testResult
 ::attribute a
 ::attribute b
 
+::method string
+  return "This is a test..."
+
 ::class test2 subclass test1
 ::method init
   expose c d
   c = 1
   d = 2
   self~init:super
+
+-- small test for testing object send/sendWith with
+-- using different message overrides.  This allows us to
+-- test things like context permission for using method overrides.
+::class sendTester subclass sendTester2
+::method testSend
+  use strict arg object, message
+
+  return object~send(message)
+
+::method testSendWith
+  use strict arg object, message, args
+
+  return object~sendWith(message, args)
+
+-- a base class message target for the tests
+::method testTarget
+  return 123
+
+-- just a simple class to testing superclass overrides
+::class sendTester2
+::method testTarget
+  return 456
+
+-- class with a string method that does not return a value
+::class TestBadString
+::method string
+
+-- class with a string method that causes an error
+::class TestBadString2
+::method string
+  return 1/0
 
