@@ -156,23 +156,61 @@ array_supplier ::= 'supplier'
 
 array_tostring ::= 'toString(' ( 'Line' ( ',' separator )? | 'Char' )? ')'
 
+bag_new ::= 'new'
+
 bag_of ::= 'of' ( '(' item ( ( ',' item )+ )? ')' )?
+
+bag_atget ::= '[' index ']'
 
 bag_putset ::= '[' index ']' '=' item
 
-bag_difference ::= 'difference(' argument ')'
+bag_allat ::= 'allAt(' index ')'
+
+bag_allindex ::= 'allIndex(' item ')'
+
+bag_allindexes ::= 'allIndexes'
+
+bag_allitems ::= 'allItems'
+
+bag_at ::= 'at(' index ')'
+
+bag_difference ::= 'difference'
+
+bag_empty ::= 'empty'
 
 bag_hasindex ::= 'hasIndex(' index ')'
 
+bag_hasitem ::= 'hasItem(' item ( ',' index )? ')'
+
+bag_index ::= 'index(' item ')'
+
 bag_intersection ::= 'intersection(' argument ')'
+
+bag_isempty ::= 'isEmpty'
+
+bag_items ::= 'items'
+
+bag_makearray ::= 'makeArray'
 
 bag_put ::= 'put(' item ',' index ')'
 
 bag_putall ::= 'putAll(' collection ')'
 
+bag_putset ::= '[' index ']' '=' item
+
+bag_remove ::= 'remove(' index ')'
+
+bag_removeall ::= 'removeAll(' index ')'
+
+bag_removeitem ::= 'removeItem(' item ( ',' index )? ')'
+
 bag_subset ::= 'subset(' argument ')'
 
-bag_union ::= 'union(' argument ')'
+bag_supplier ::= 'supplier' ( '(' index ')' )?
+
+bag_union ::= 'union' '(' index ')'
+
+bag_uniqueindexes ::= 'uniqueIndexes'
 
 bag_xor ::= 'xor(' argument ')'
 

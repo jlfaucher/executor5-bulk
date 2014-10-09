@@ -2600,15 +2600,6 @@ in a bag, and the same object can be placed in a bag several times.
       <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
    </row>
    <row>
-      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Relation</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ MapCollection</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
-   </row>
-   <row>
       <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Bag</emphasis></entry>
    </row>
    <row>
@@ -2622,17 +2613,32 @@ in a bag, and the same object can be placed in a bag several times.
    </row>
    <row>
       <entry>
-<screen>difference
+<screen>allAt
+allIndex
+allIndexes
+allItems
+at, []
+difference
+empty
 hasIndex
 hasItem
+index
 intersection
-put, []=
+isEmpty
 </screen>
       </entry>
       <entry>
-<screen>putAll
+<screen>items
+makeArray
+put, []=
+putAll
+remove
+removeAll
+removeItem
 subset
+supplier
 union
+uniqueIndexes
 xor
 </screen>
       </entry>
@@ -2647,8 +2653,6 @@ the Class class (<xref linkend="clsClass" />), defines.
 It also inherits methods from the Set Collection (<xref linkend="clsSetCollection" />)
 class, although there are not currently any methods defined in that class.
 </para></note>
-<para>The Bag class is a subclass of the Relation class. In addition to its own
-methods, it inherits the methods of the Object class and the Relation class.</para>
 
 <section><title>Inherited Methods</title>
 
@@ -2661,36 +2665,6 @@ Collection class (<xref linkend="clsCollection" />).</para>
 <para>Methods inherited from the
 MapCollection class (<xref linkend="clsMapCollection" />).</para>
 <xi:include href="mapcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-
-<para>Methods inherited from the
-Relation class (<xref linkend="clsRelation" />).</para>
-<simplelist type="vert" columns="3">
-<member><xref linkend="mthRelationNew" xrefstyle="select: title"/></member>
-<member><xref linkend="mthRelationAllAt" xrefstyle="select: title"/></member>
-<member><xref linkend="mthRelationAllIndex" xrefstyle="select: title"/></member>
-<member><xref linkend="mthRelationAllIndexes" xrefstyle="select: title"/></member>
-<member><xref linkend="mthRelationAllItems" xrefstyle="select: title"/></member>
-<member><xref linkend="mthRelationAt" xrefstyle="select: title"/></member>
-<member><xref linkend="mthRelationAtGet" xrefstyle="select: title"/></member>
-<member><xref linkend="mthRelationDifference" xrefstyle="select: title"/></member>
-<member><xref linkend="mthRelationEmpty" xrefstyle="select: title"/></member>
-<member><xref linkend="mthRelationHasIndex" xrefstyle="select: title"/></member>
-<member><xref linkend="mthRelationHasItem" xrefstyle="select: title"/></member>
-<member><xref linkend="mthRelationIndex" xrefstyle="select: title"/></member>
-<member><xref linkend="mthRelationIntersection" xrefstyle="select: title"/></member>
-<member><xref linkend="mthRelationIsEmpty" xrefstyle="select: title"/></member>
-<member><xref linkend="mthRelationItems" xrefstyle="select: title"/></member>
-<member><xref linkend="mthRelationMakeArray" xrefstyle="select: title"/></member>
-<member><xref linkend="mthRelationPut" xrefstyle="select: title"/></member>
-<member><xref linkend="mthRelationPutSet" xrefstyle="select: title"/></member>
-<member><xref linkend="mthRelationRemove" xrefstyle="select: title"/></member>
-<member><xref linkend="mthRelationRemoveAll" xrefstyle="select: title"/></member>
-<member><xref linkend="mthRelationRemoveItem" xrefstyle="select: title"/></member>
-<member><xref linkend="mthRelationSubset" xrefstyle="select: title"/></member>
-<member><xref linkend="mthRelationSupplier" xrefstyle="select: title"/></member>
-<member><xref linkend="mthRelationUnion" xrefstyle="select: title"/></member>
-<member><xref linkend="mthRelationXor" xrefstyle="select: title"/></member>
-</simplelist>
 
 </section>
 
@@ -2709,6 +2683,126 @@ Relation class (<xref linkend="clsRelation" />).</para>
 
 <para>Returns a newly created bag containing the specified
 <emphasis role="italic">item</emphasis> objects.</para>
+</section>
+
+<section id="mthBagAtGet"><title>[]</title>
+<indexterm><primary>[] method</primary>
+<secondary>of Bag class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>[] method</secondary>
+<tertiary>of Bag class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/bag_atget.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns an item associated with <emphasis role="italic">index</emphasis>.
+This is the same as the
+at() (<xref linkend="mthBagAt" />) method.</para>
+</section>
+
+<section id="mthBagAllAt"><title>allAt</title>
+<indexterm><primary>allAt method</primary>
+<secondary>of Bag class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>allAt method</secondary>
+<tertiary>of Bag class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/bag_allat.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns a single-index array containing all the items associated with
+index <emphasis role="italic">index</emphasis>.
+Items in the array appear in an unspecified order.
+Index equality is determined by
+using the == method of <emphasis role="italic">index</emphasis>.
+</para>
+</section>
+
+<section id="mthBagAllIndex"><title>allIndex</title>
+<indexterm><primary>allIndex method</primary>
+<secondary>of Bag class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>allIndex method</secondary>
+<tertiary>of Bag class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/bag_allindex.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns a single-index array containing all indexes for item
+<emphasis role="italic">item</emphasis>,
+in an unspecified order.
+Item equality is determined by
+using the == method of <emphasis role="italic">item</emphasis>.
+</para>
+</section>
+
+<section id="mthBagAllIndexes"><title>allIndexes</title>
+<indexterm><primary>allIndexes method</primary>
+<secondary>of Bag class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>allIndexes method</secondary>
+<tertiary>of Bag class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/bag_allindexes.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns an array of all indexes contained in the Bag. The returned
+array will have one index for every item stored in the bag, including
+duplicates.  To retrieve the indexes without duplicates, use the uniqueIndexes (<xref linkend="mthBagUniqueIndexes" />) method.
+</para>
+</section>
+
+<section id="mthBagAllItems"><title>allItems</title>
+<indexterm><primary>allItems method</primary>
+<secondary>of Bag class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>allItems method</secondary>
+<tertiary>of Bag class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/bag_allitems.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns an array of all items contained in the bag.</para>
+</section>
+
+<section id="mthBagAt"><title>at</title>
+<indexterm><primary>at method</primary>
+<secondary>of Bag class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>at method</secondary>
+<tertiary>of Bag class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/bag_at.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the item associated with index
+<emphasis role="italic">index</emphasis>. If the bag
+contains more than one item associated with index
+<emphasis role="italic">index</emphasis>, the item
+returned is unspecified. (The program should not rely on any particular item
+being returned.) Returns the Nil object if the bag has no item associated with index
+<emphasis role="italic">index</emphasis>.
+Index equality is determined by
+using the == method of <emphasis role="italic">index</emphasis>.
+</para>
 </section>
 
 <section id="mthBagPutSet"><title>[]=</title>
@@ -2748,6 +2842,22 @@ collection class object.
 </para>
 </section>
 
+<section id="mthBagEmpty"><title>empty</title>
+<indexterm><primary>empty method</primary>
+<secondary>of Bag class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>empty method</secondary>
+<tertiary>of Bag class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/bag_empty.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Removes all items from the bag.</para>
+</section>
+
 <section id="mthBagHasIndex"><title>hasIndex</title>
 <indexterm><primary>hasIndex method</primary>
 <secondary>of Bag class</secondary></indexterm>
@@ -2766,6 +2876,52 @@ contains any item associated with index <emphasis role="italic">index</emphasis>
 or <computeroutput>0</computeroutput> (false).
 Index equality is determined by
 using the == method of <emphasis role="italic">index</emphasis>.
+</para>
+</section>
+
+<section id="mthBagHasItem"><title>hasItem</title>
+<indexterm><primary>hasItem method</primary>
+<secondary>of Bag class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>hasItem method</secondary>
+<tertiary>of Bag class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/bag_hasitem.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if the bag
+contains the member item <emphasis role="italic">item</emphasis>,
+<computeroutput>0</computeroutput> (false).
+If <emphasis role="italic">index</emphasis> is specified, hasItem()
+will only return true if the bag contains the pairing of
+<emphasis role="italic">item</emphasis> associated with index
+<emphasis role="italic">index</emphasis>.
+Item and index equality is determined by using the == method.
+</para>
+</section>
+
+<section id="mthBagIndex"><title>index</title>
+<indexterm><primary>index method</primary>
+<secondary>of Bag class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>index method</secondary>
+<tertiary>of Bag class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/bag_index.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the index for item <emphasis role="italic">item</emphasis>.
+If there is more than one index associated with item
+<emphasis role="italic">item</emphasis>, the one returned is not
+defined.
+Item equality is determined by
+using the == method of <emphasis role="italic">item</emphasis>.
 </para>
 </section>
 
@@ -2788,6 +2944,64 @@ also in the
 role="italic">argument</emphasis> can be any collection class object.</para>
 </section>
 
+<section id="mthBagIsEmpty"><title>isEmpty</title>
+<indexterm><primary>isEmpty method</primary>
+<secondary>of Bag class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>isEmpty method</secondary>
+<tertiary>of Bag class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/bag_isempty.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if the bag
+is empty.  Returns
+<computeroutput>0</computeroutput> (false) otherwise.</para>
+</section>
+
+<section id="mthBagItems"><title>items</title>
+<indexterm><primary>items method</primary>
+<secondary>of Bag class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>items method</secondary>
+<tertiary>of Bag class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/bag_items.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the number of bag items with index
+<emphasis role="italic">index</emphasis>. If you
+specify no <emphasis role="italic">index</emphasis>, this method returns the
+total number of items associated with all indexes in the bag.
+Index equality is determined by
+using the == method of <emphasis role="italic">index</emphasis>.
+</para>
+</section>
+
+<section id="mthBagMakeArray"><title>makeArray</title>
+<indexterm><primary>makeArray method</primary>
+<secondary>of Bag class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>makeArray method</secondary>
+<tertiary>of Bag class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/bag_makearray.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns a single-index array containing the index objects.
+The collection items appear in the array in an unspecified order.
+</para>
+</section>
+
 <section id="mthBagPut"><title>put</title>
 <indexterm><primary>put method</primary>
 <secondary>of Bag class</secondary></indexterm>
@@ -2803,7 +3017,7 @@ role="italic">argument</emphasis> can be any collection class object.</para>
 
 <para>Makes the object <emphasis role="italic">item</emphasis>
 a member item of the bag and associates it with index
-<emphasis role="italic">index</emphasis>. If the relation already contains
+<emphasis role="italic">index</emphasis>. If the bag already contains
 any items with index
 <emphasis role="italic">index</emphasis>, this method adds a new member item
 <emphasis role="italic">item</emphasis> with
@@ -2830,6 +3044,86 @@ using the item values returned by the supplier.
 </para>
 </section>
 
+<section id="mthBagRemove"><title>remove</title>
+<indexterm><primary>remove method</primary>
+<secondary>of Bag class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>remove method</secondary>
+<tertiary>of Bag class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/bag_remove.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns and removes from a bag the member item with index
+<emphasis role="italic">index</emphasis>. If the bag contains more than
+one item associated with index <emphasis role="italic">index</emphasis>,
+the item returned and removed is unspecified. Returns the Nil object if no item has index
+<emphasis role="italic">index</emphasis>.
+Index equality is determined by
+using the == method of <emphasis role="italic">index</emphasis>.
+</para>
+</section>
+
+<section id="mthBagRemoveAll"><title>removeAll</title>
+<indexterm><primary>removeAll method</primary>
+<secondary>of Bag class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>removeAll method</secondary>
+<tertiary>of Bag class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/bag_removeall.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns and removes from a bag all member items with index
+<emphasis role="italic">index</emphasis>.  All removed items are returned
+in an array containing each of the removed items.  The order of the returned items
+is unspecified.  If no items have the specified index, an empty array is returned.
+Index equality is determined by
+using the == method of <emphasis role="italic">index</emphasis>.
+</para>
+</section>
+
+<section id="mthBagRemoveItem"><title>removeItem</title>
+<indexterm><primary>removeItem method</primary>
+<secondary>of Bag class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>removeItem method</secondary>
+<tertiary>of Bag class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/bag_removeitem.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>
+If <emphasis role="italic">index</emphasis> is not specified, returns and
+removes from a bag the member item <emphasis role="italic">item</emphasis>.
+If the bag contains <emphasis role="italic">item</emphasis> associated
+with more than one index, the item returned and removed is unspecified.
+</para>
+<para>
+If <emphasis role="italic">index</emphasis> is specified, returns and
+removes the member item <emphasis role="italic">item</emphasis> associated
+with index <emphasis role="italic">index</emphasis>.
+If
+<emphasis role="italic">item</emphasis> is the only member with
+<emphasis role="italic">index</emphasis>, then the
+<emphasis role="italic">index</emphasis> is also removed from the Bag.
+</para>
+<para>
+Returns the Nil object if
+<emphasis role="italic">item</emphasis> is not a member item (associated
+with index <emphasis role="italic">index</emphasis>, if specified).
+</para>
+</section>
+
 <section id="mthBagSubset"><title>subset</title>
 <indexterm><primary>subset method</primary>
 <secondary>of Bag class</secondary></indexterm>
@@ -2849,6 +3143,29 @@ receiver collection are also contained in the
 <computeroutput>0</computeroutput> (false) otherwise. The
 <emphasis role="italic">argument</emphasis> can be any
 collection class object.</para>
+</section>
+
+<section id="mthBagSupplier"><title>supplier</title>
+<indexterm><primary>supplier method</primary>
+<secondary>of Bag class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>supplier method</secondary>
+<tertiary>of Bag class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/bag_supplier.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns a Supplier (<xref linkend="clsSupplier" />) object for the bag.
+The supplier allows you to iterate over all index/item pairs in the bag at the time
+the supplier was created.
+The supplier enumerates the items in an unspecified order.
+If you specify
+<emphasis role="italic">index</emphasis>, the
+supplier contains all of the items with the specified index.
+</para>
 </section>
 
 <section id="mthBagUnion"><title>union</title>
@@ -2872,6 +3189,23 @@ method selects items in
 The
 <emphasis role="italic">argument</emphasis> can be any
 collection class object.</para>
+</section>
+
+<section id="mthBagUniqueIndexes"><title>uniqueIndexes</title>
+<indexterm><primary>uniqueIndexes method</primary>
+<secondary>of Bag class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>uniqueIndexes method</secondary>
+<tertiary>of Bag class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/bag_uniqueindexes.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns an array of all indexes contained in the Bag, with no duplicates.
+</para>
 </section>
 
 <section id="mthBagXor"><title>xor</title>
