@@ -74,6 +74,10 @@ stack-like LIFO (last in, first out) order.
 <listitem><para>A collection with character string indexes. Index comparisons are performed
 using the string == comparison method.
 </para></listitem></varlistentry>
+<varlistentry><term>StringTable (<xref linkend="clsStringTable" />)</term>
+<listitem><para>A collection with character string indexes. Index comparisons are performed
+using the string == comparison method.
+</para></listitem></varlistentry>
 <varlistentry><term>List (<xref linkend="clsList" />)</term>
 <listitem><para>A sequenced collection that lets you add new items at any position in
 the sequence. A list generates and returns an index value for each item placed
@@ -128,6 +132,7 @@ the organization of the classes.</para>
 Collection (<xref linkend="clsCollection" />)
    MapCollection (<xref linkend="clsMapCollection" />)
       Directory (<xref linkend="clsDirectory" />)
+      StringTable (<xref linkend="clsStringTable" />)
       Properties (<xref linkend="clsProperties" />)
       Releation (<xref linkend="clsRelation" />)
       Stem (<xref linkend="clsStem" />)
@@ -4253,6 +4258,655 @@ Exit
 </section>
 </section>
 
+<section id="clsStringTable"><title>The StringTable Class</title>
+<indexterm><primary>StringTable class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>StringTable class</secondary></indexterm>
+<indexterm><primary>Map Collection classes</primary>
+<secondary>StringTable class</secondary></indexterm>
+
+<para>A StringTable is a MapCollection using unique character string indexes.  The
+items of the collection can be any valid Rexx object.
+</para>
+<table id="ooRexxStringTableClass" frame="all" pgwide="0">
+<title>ooRexx StringTable Class</title>
+<tgroup cols="2" align="left" colsep="1" rowsep="1">
+<colspec colname="c1" />
+<colspec colname="c2" />
+<tbody>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">StringTable</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ MapCollection</emphasis></entry>
+   </row>
+   <row>
+      <entry namest="c1" nameend="c2">
+<screen>new
+</screen>
+      </entry>
+   </row>
+   <row>
+      <entry>
+<screen>allIndexes
+allItems
+at, []
+empty
+entry
+hasEntry
+hasIndex
+hasItem
+index
+isEmpty
+items
+</screen>
+      </entry>
+      <entry>
+<screen>makeArray
+put, []=
+remove
+removeItem
+setEntry
+setMethod
+supplier
+unknown
+unSetMethod
+xor
+</screen>
+      </entry>
+   </row>
+</tbody>
+</tgroup>
+</table>
+
+<note><title>Note</title>
+<para>The StringTable class also has available class methods that
+metaclass, the Class class (<xref linkend="clsClass" />), defines.
+It also inherits methods from the Map (<xref linkend="clsMapCollection" />) class,
+although there are not currently any methods defined in that class.
+</para></note>
+<para>In addition to the standard put() and at() methods defined for
+Collections, Directories provide access to objects using methods.  For
+example:</para>
+
+<programlisting>
+mydir = .StringTable~new
+mydir~name = "Mike"   -- same as mydir~put("Mike", "NAME")
+say mydir~name        -- same as say mydir['NAME']
+</programlisting>
+<section><title>Inherited Methods</title>
+
+<para>Methods inherited from the
+Object class (<xref linkend="clsObject" />).</para>
+<xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<para>Methods inherited from the
+Collection class (<xref linkend="clsCollection" />).</para>
+<xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<para>Methods inherited from the
+MapCollection (<xref linkend="clsMapCollection" />).</para>
+<xi:include href="mapcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+</section>
+
+<section id="mthStringTableNew"><title>new (Class Method)</title>
+<indexterm><primary>new method</primary>
+<secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>new method</secondary>
+<tertiary>of StringTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stringtable_new.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns an empty StringTable object.</para>
+</section>
+
+<section id="mthStringTableAtGet"><title>[]</title>
+<indexterm><primary>[] method</primary>
+<secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>[] method</secondary>
+<tertiary>of StringTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stringtable_atget.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the item corresponding to <emphasis role="italic">name</emphasis>.
+This method is the same as the at() (<xref linkend="mthStringTablePut" />)
+method.</para>
+</section>
+
+<section id="mthStringTablePutSet"><title>[]=</title>
+<indexterm><primary>[]= method</primary>
+<secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>[]= method</secondary>
+<tertiary>of StringTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stringtable_putset.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Adds or replaces the entry at index <emphasis role="italic">name</emphasis>.
+This method is the same as the put() (<xref linkend="mthStringTablePut" />)
+method.
+</para>
+</section>
+
+<section id="mthStringTableAllIndexes"><title>allIndexes</title>
+<indexterm><primary>allIndexes method</primary>
+<secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>allIndexes method</secondary>
+<tertiary>of StringTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stringtable_allindexes.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns an array of all the StringTable indexes, including those of all
+the setMethods (<xref linkend="mthStringTableSetMethod" />) methods.</para>
+</section>
+
+<section id="mthStringTableAllItems"><title>allItems</title>
+<indexterm><primary>allItems method</primary>
+<secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>allItems method</secondary>
+<tertiary>of StringTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stringtable_allitems.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns an array of all items contained in the StringTable, including those
+returned by all setMethod (<xref linkend="mthStringTableSetMethod" />)
+methods.</para>
+</section>
+
+<section id="mthStringTableAt"><title>at</title>
+<indexterm><primary>at method</primary>
+<secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>at method</secondary>
+<tertiary>of StringTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stringtable_at.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the item associated with index
+<emphasis role="italic">name</emphasis>. If a method defined using setMethod (<xref
+linkend="mthStringTableSetMethod" />) is associated with index
+<emphasis role="italic">name</emphasis>, the result of running this method is
+returned. If the collection has no item or method associated with index
+<emphasis role="italic">name</emphasis>, the Nil object is returned.
+</para>
+<example id="ex.stringtable-at">
+<title>StringTable class - at method</title>
+<programlisting>
+say .environment~at("OBJECT")   /* Produces: "The Object class" */
+</programlisting>
+</example>
+</section>
+
+<section id="mthStringTableEmpty"><title>empty</title>
+<indexterm><primary>empty method</primary>
+<secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>empty method</secondary>
+<tertiary>of StringTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stringtable_empty.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Removes all items from the StringTable.  Empty also removes
+all methods added using setMethod (<xref linkend="mthStringTableSetMethod" />).
+</para>
+</section>
+
+<section id="mthStringTableEntry"><title>entry</title>
+<indexterm><primary>entry method</primary>
+<secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>entry method</secondary>
+<tertiary>of StringTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stringtable_entry.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the StringTable entry with name
+<emphasis role="italic">name</emphasis> (translated to uppercase).
+If there is no such entry, <emphasis role="italic">name</emphasis>
+returns the item for any method that
+setMethod (<xref linkend="mthStringTableSetMethod" />) supplied. If there is
+neither an entry nor a method for <emphasis role="italic">name</emphasis> the
+Nil object is returned.</para>
+</section>
+
+<section id="mthStringTableHasEntry"><title>hasEntry</title>
+<indexterm><primary>hasEntry method</primary>
+<secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>hasEntry method</secondary>
+<tertiary>of StringTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stringtable_hasentry.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if the StringTable has
+an entry or a method for name <emphasis role="italic">name</emphasis>
+(translated to uppercase), or <computeroutput>0</computeroutput> (false).</para>
+</section>
+
+<section id="mthStringTableHasIndex"><title>hasIndex</title>
+<indexterm><primary>hasIndex method</primary>
+<secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>hasIndex method</secondary>
+<tertiary>of StringTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stringtable_hasindex.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if the collection
+contains any item associated with index
+<emphasis role="italic">name</emphasis>, or <computeroutput>0</computeroutput>
+(false).</para>
+</section>
+
+<section id="mthStringTableHasItem"><title>hasItem</title>
+<indexterm><primary>hasItem method</primary>
+<secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>hasItem method</secondary>
+<tertiary>of StringTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stringtable_hasitem.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if the collection
+contains the <emphasis role="italic">item</emphasis> at any index position or
+otherwise returns <computeroutput>0</computeroutput> (false).
+Item equality is determined by using the == method of <emphasis role="italic">item</emphasis>.
+</para>
+</section>
+
+<section id="mthStringTableIndex"><title>index</title>
+<indexterm><primary>index method</primary>
+<secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>index method</secondary>
+<tertiary>of StringTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stringtable_index.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the index of the specified item within the StringTable.  If the
+target item appears at more than one index, the first located index will
+be returned.  If the StringTable does not contain the specified item, the Nil
+object is returned.
+Item equality is determined by using the == method of <emphasis role="italic">item</emphasis>.
+</para>
+</section>
+
+<section id="mthStringTableIsEmpty"><title>isEmpty</title>
+<indexterm><primary>isEmpty method</primary>
+<secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>isEmpty method</secondary>
+<tertiary>of StringTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stringtable_isempty.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if the StringTable
+is empty.  Returns
+<computeroutput>0</computeroutput> (false) otherwise.</para>
+</section>
+
+<section id="mthStringTableItems"><title>items</title>
+<indexterm><primary>items method</primary>
+<secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>items method</secondary>
+<tertiary>of StringTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stringtable_items.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the number of items in the collection.</para>
+</section>
+
+<section id="mthStringTableMakeArray"><title>makeArray</title>
+<indexterm><primary>makeArray method</primary>
+<secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>makeArray method</secondary>
+<tertiary>of StringTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stringtable_makearray.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns a single-index array containing the index objects. The array
+indexes range from <computeroutput>1</computeroutput> to the number of items.
+The collection items appear in the array in an unspecified order.
+(The program should not rely on any order.)</para>
+</section>
+
+<section id="mthStringTablePut"><title>put</title>
+<indexterm><primary>put method</primary>
+<secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>put method</secondary>
+<tertiary>of StringTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stringtable_put.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Makes the object <emphasis role="italic">item</emphasis>
+a member item of the collection and associates
+it with index <emphasis role="italic">name</emphasis>.
+The new item replaces any existing item or method
+associated with index <emphasis role="italic">name</emphasis>.</para>
+</section>
+
+<section id="mthStringTableRemove"><title>remove</title>
+<indexterm><primary>remove method</primary>
+<secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>remove method</secondary>
+<tertiary>of StringTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stringtable_remove.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns and removes the member item with index
+<emphasis role="italic">name</emphasis> from a collection.
+If a method is associated with
+setMethod (<xref linkend="mthStringTableSetMethod" />) for index
+<emphasis role="italic">name</emphasis>,
+the method is removed and running the method is returned. If there is no item or
+method with index
+<emphasis role="italic">name</emphasis>, the Nil object is returned.</para>
+</section>
+
+<section id="mthStringTableRemoveItem"><title>removeItem</title>
+<indexterm><primary>removeItem method</primary>
+<secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>removeItem method</secondary>
+<tertiary>of StringTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stringtable_removeitem.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Removes an item from the StringTable. If the target item exists at more than
+one index, the first located item is removed.  The return value is the
+removed item.
+Item equality is determined by using the == method of <emphasis role="italic">item</emphasis>.
+</para>
+</section>
+
+<section id="mthStringTableSetEntry"><title>setEntry</title>
+<indexterm><primary>setEntry method</primary>
+<secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>setEntry method</secondary>
+<tertiary>of StringTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stringtable_setentry.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Sets the StringTable entry with name
+<emphasis role="italic">name</emphasis> (translated to uppercase)
+to the object <emphasis role="italic">entry</emphasis>, replacing any existing
+entry or method for <emphasis role="italic">name</emphasis>. If you omit
+<emphasis role="italic">entry</emphasis>, this method removes any entry or
+method with this <emphasis role="italic">name</emphasis>.</para>
+</section>
+
+<section id="mthStringTableSetMethod"><title>setMethod</title>
+<indexterm><primary>setMethod method</primary>
+<secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>setMethod method</secondary>
+<tertiary>of StringTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stringtable_setmethod.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Associates entry name <emphasis role="italic">name</emphasis>
+(translated to uppercase) with method <emphasis role="italic">method</emphasis>.
+Thus, the object returns the result of running
+<emphasis role="italic">method</emphasis> when you access this entry.
+This occurs when you specify <emphasis role="italic">name</emphasis> on the at,
+entry, or remove method. This method replaces any existing item or method for
+<emphasis role="italic">name</emphasis>.</para>
+<para>You can specify the name "UNKNOWN" as
+<emphasis role="italic">name</emphasis>. Doing so supplies a
+method that is run whenever an at() or entry() message specifies a name for
+which no item or method exists in the collection. This method's first argument
+is the specified StringTable index. This method has no effect on the action of any
+hasEntry, hasIndex, items, remove, or supplier message sent to the collection.
+</para>
+<para>The <emphasis role="italic">method</emphasis> can be a
+string containing a method source line instead
+of a method object. Alternatively, an array of strings containing individual
+method lines can be passed. In either case, an equivalent method object is
+created. </para>
+<para>If you omit <emphasis role="italic">method</emphasis>, setMethod() removes
+the entry with the specified
+<emphasis role="italic">name</emphasis>.</para>
+</section>
+
+<section id="mthStringTableSupplier"><title>supplier</title>
+<indexterm><primary>supplier method</primary>
+<secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>supplier method</secondary>
+<tertiary>of StringTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stringtable_supplier.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns a Supplier (<xref linkend="clsSupplier" />)
+object for the collection.  The supplier allows you to iterate over
+the index/item pairs in the StringTable at the time the supplier was created.
+The supplier iterates the items in an unspecified order.
+</para>
+</section>
+
+<section id="mthStringTableUnknown"><title>unknown</title>
+<indexterm><primary>unknown method</primary>
+<secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>unknown method</secondary>
+<tertiary>of StringTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stringtable_unknown.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Runs either the entry (<xref linkend="mthStringTableEntry" />) or
+setEntry (<xref linkend="mthStringTableSetEntry" />) method, depending on
+whether
+<emphasis role="italic">messagename</emphasis> ends with an equal sign. If
+<emphasis role="italic">messagename</emphasis> does not end with an
+equal sign, this method runs the entry() method, passing
+<emphasis role="italic">messagename</emphasis> as its argument. The <emphasis
+role="italic">messageargs</emphasis> argument is ignored. The entry() method is
+the return result.</para>
+<para>If <emphasis role="italic">messagename</emphasis> does end with an equal
+sign, this method runs the setEntry() method, passing the first part of
+<emphasis role="italic">messagename</emphasis> (up to, but not including, the
+final equal sign) as its first argument, and the first item in the array
+<emphasis role="italic">messageargs</emphasis> as its second argument. In this
+case, unknown() returns no result.</para>
+</section>
+
+<section id="mthStringTableUnsetMethod"><title>unsetMethod</title>
+<indexterm><primary>unsetMethod method</primary>
+<secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>unsetMethod method</secondary>
+<tertiary>of StringTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stringtable_unsetmethod.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Removes the association between entry name <emphasis role="italic">name</emphasis>
+(translated to uppercase) and a method.</para>
+</section>
+
+<section id="mthStringTableXor"><title>xor</title>
+<indexterm><primary>xor method</primary>
+<secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>xor method</secondary>
+<tertiary>of StringTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stringtable_xor.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns a new StringTable object containing all items from the receiver
+collection and the
+<emphasis role="italic">argument</emphasis> collection;
+all indexes that appear in both collections are removed. The
+<emphasis role="italic">argument</emphasis> can be any
+collection class object.
+The <emphasis role="italic">argument</emphasis> must also allow all of the
+index values in the receiver collection.</para>
+</section>
+
+<section id="stringtableex"><title>Examples</title>
+<indexterm><primary>examples</primary>
+<secondary>of StringTable class</secondary></indexterm>
+<example id="ex.StringTable-examples">
+<title>StringTable class - examples</title>
+<programlisting>
+/******************************************************************************/
+/*  A Phone Book Directory program                                            */
+/*  This program demonstrates use of the directory class.                     */
+/******************************************************************************/
+
+/* Define an UNKNOWN method that adds an abbreviation lookup feature.         */
+/* Directories do not have to have an UNKNOWN method.                         */
+book = .stringtable~new~~setMethod("UNKNOWN", .methods["UNKNOWN"])
+
+book["ANN" ] = "Ann B. ....... 555-6220"
+book["ann" ] = "Little annie . 555-1234"
+book["JEFF"] = "Jeff G. ...... 555-5115"
+book["MARK"] = "Mark C. ...... 555-5017"
+book["MIKE"] = "Mike H. ...... 555-6123"
+book~Rick    = "Rick M. ...... 555-5110"  /* Same as book["RICK"] = ...       */
+
+Do i over book                 /* Iterate over the collection                 */
+  Say book[i]
+end i
+
+Say ""                         /* Index lookup is case sensitive...           */
+Say book~entry("Mike")         /* ENTRY method uppercases before lookup       */
+Say book["ANN"]                /* Exact match                                 */
+Say book~ann                   /* Message sends uppercase before lookup       */
+Say book["ann"]                /* Exact match with lowercase index            */
+
+Say ""
+Say book["M"]                  /* Uses UNKNOWN method for lookup              */
+Say book["Z"]
+Exit
+
+/* Define an unknown method to handle indexes not found.                      */
+/* Check for abbreviations or indicate listing not found                      */
+::Method unknown
+  Parse arg at_index
+  value = ""
+  Do i over self
+    If abbrev(i, at_index) then do
+      If value &lt;> "" then value = value", "
+      value = value || self~at(i)
+    end
+  end i
+  If value = "" then value = "No listing found for" at_index
+  Return value
+</programlisting>
+</example>
+</section>
+</section>
+
 <section id="clsList"><title>The List Class</title>
 <indexterm><primary>List class</primary></indexterm>
 <indexterm><primary>class</primary>
@@ -4566,7 +5220,7 @@ list is empty.
 <para>Returns the first item in the list or the Nil object if the list is
 empty.</para>
 <example id="ex.List-firstItem">
-<title>Directory class - firstItem method</title>
+<title>List class - firstItem method</title>
 <programlisting>
 musketeers=.list~of("Porthos","Athos","Aramis") /* Creates list MUSKETEERS      */
 item=musketeers~firstItem                       /* Gives first item in list     */
