@@ -356,7 +356,24 @@ return testResult
   self~assertSame(o1~c * 2, o2~c)
   self~assertSame(o1~d, o2~d)
 
--- TODO:  This seriously needs to be fleshed out, particularly with setMethod() tests.
+::method test_objectname
+  o = .object~new
+  -- the default string value is the defaultname
+  self~assertEquals(o~defaultname, o~string)
+  o~objectName = "My Test Object"
+  -- this changes the string value
+  self~assertEquals("My Test Object", o~string)
+
+  -- object copy also copies the internal variables.
+  o2 = o~copy
+  self~assertEquals(o~string, o2~string)
+
+  -- should have not connection between the two.
+  o2~objectname = "Your Test Object"
+  -- the copy should change, the original should not.
+  self~assertEquals("Your Test Object", o2~string)
+  self~assertEquals("My Test Object", o~string)
+
 
 
 -- End of class: object.testGroup
@@ -411,4 +428,6 @@ return testResult
 ::class TestBadString2
 ::method string
   return 1/0
+
+
 
