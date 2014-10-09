@@ -7705,15 +7705,6 @@ using the == method.
       <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
    </row>
    <row>
-      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Table</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ MapCollection</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
-   </row>
-   <row>
       <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Set</emphasis></entry>
    </row>
    <row>
@@ -7722,19 +7713,32 @@ using the == method.
    <row>
       <entry namest="c1" nameend="c2">
 <screen>of
+new
 </screen>
       </entry>
    </row>
    <row>
       <entry>
-<screen>hasItem
+<screen>allIndexes
+allItems
+at, []
+empty
+hasIndex
+hasItem
+index
 intersection
-put, []=
-putAll
+isEmpty
+items
 </screen>
       </entry>
       <entry>
-<screen>subset
+<screen>makeArray
+put, []=
+putAll
+remove
+removeItem
+subset
+supplier
 union
 xor
 </screen>
@@ -7748,11 +7752,8 @@ xor
 <para>The Set class also has available class methods that its metaclass,
 the Class class (<xref linkend="clsClass" />), defines.
 </para></note>
-<para>The Set class is a subclass of the Table class. In addition to its own
-methods, it inherits the methods of the Object class (see
-<xref linkend="clsObject" />)
-and the Table class.
-It also inherits methods from the Set Collection (<xref linkend="clsSetCollection" />)
+<para>The Set class
+inherits methods from the Set Collection (<xref linkend="clsSetCollection" />)
 class.
 </para>
 
@@ -7764,31 +7765,6 @@ Object class (<xref linkend="clsObject" />).</para>
 <para>Methods inherited from the
 Collection class (<xref linkend="clsCollection" />).</para>
 <xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-<para>Methods inherited from the
-MapCollection (<xref linkend="clsMapCollection" />).</para>
-<xi:include href="mapcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-
-<para>Methods inherited from the
-Table class (<xref linkend="clsTable" />).</para>
-<simplelist type="vert" columns="3">
-<member><xref linkend="mthTableNew" xrefstyle="select: title"/></member>
-<member><xref linkend="mthTableAllIndexes" xrefstyle="select: title"/></member>
-<member><xref linkend="mthTableAllItems" xrefstyle="select: title"/></member>
-<member><xref linkend="mthTableAt" xrefstyle="select: title"/></member>
-<member><xref linkend="mthTableAtGet" xrefstyle="select: title"/></member>
-<member><xref linkend="mthTableEmpty" xrefstyle="select: title"/></member>
-<member><xref linkend="mthTableHasIndex" xrefstyle="select: title"/></member>
-<member><xref linkend="mthTableHasItem" xrefstyle="select: title"/></member>
-<member><xref linkend="mthTableIndex" xrefstyle="select: title"/></member>
-<member><xref linkend="mthTableIsEmpty" xrefstyle="select: title"/></member>
-<member><xref linkend="mthTableItems" xrefstyle="select: title"/></member>
-<member><xref linkend="mthTableMakeArray" xrefstyle="select: title"/></member>
-<member><xref linkend="mthTablePut" xrefstyle="select: title"/></member>
-<member><xref linkend="mthTablePutSet" xrefstyle="select: title"/></member>
-<member><xref linkend="mthTableRemove" xrefstyle="select: title"/></member>
-<member><xref linkend="mthTableRemoveItem" xrefstyle="select: title"/></member>
-<member><xref linkend="mthTableSupplier" xrefstyle="select: title"/></member>
-</simplelist>
 
 </section>
 
@@ -7807,6 +7783,125 @@ Table class (<xref linkend="clsTable" />).</para>
 
 <para>Returns a newly created set containing the specified
 <emphasis role="italic">item</emphasis> objects.</para>
+</section>
+
+<section id="mthSetNew"><title>new (Class Method)</title>
+<indexterm><primary>new method</primary>
+<secondary>of Set class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>new method</secondary>
+<tertiary>of Sey class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/set_new.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns an empty Set object.</para>
+</section>
+
+<section id="mthSetAtGet"><title>[]</title>
+<indexterm><primary>[] method</primary>
+<secondary>of Set class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>[] method</secondary>
+<tertiary>of Set class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/set_atget.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the item associated with <emphasis role="italic">index</emphasis>.
+This is the same as the
+at () (<xref linkend="mthTableAt" />) method.</para>
+</section>
+
+<section id="mthSetAllIndexes"><title>allIndexes</title>
+<indexterm><primary>allIndexes method</primary>
+<secondary>of Set class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>allIndexes method</secondary>
+<tertiary>of Set class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/set_allindexes.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns an array of all indexes contained in the set.</para>
+</section>
+
+<section id="mthSetAllItems"><title>allItems</title>
+<indexterm><primary>allItems method</primary>
+<secondary>of Set class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>allItems method</secondary>
+<tertiary>of Set class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/set_allitems.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns an array of all items contained in the set.</para>
+</section>
+
+<section id="mthSetAt"><title>at</title>
+<indexterm><primary>at method</primary>
+<secondary>of Set class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>at method</secondary>
+<tertiary>of Set class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/set_at.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the item associated with index
+<emphasis role="italic">index</emphasis>. Returns the Nil object if the collection
+has no item associated with <emphasis role="italic">index</emphasis>.
+</para>
+</section>
+
+<section id="mthSetEmpty"><title>empty</title>
+<indexterm><primary>difference method</primary>
+<secondary>of Set class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>empty method</secondary>
+<tertiary>of Set class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/set_empty.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Removes all items from the set.</para>
+</section>
+
+<section id="mthSetHasIndex"><title>hasIndex</title>
+<indexterm><primary>hasIndex method</primary>
+<secondary>of Set class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>hasIndex method</secondary>
+<tertiary>of Set class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/set_hasindex.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if the collection
+contains any item associated with index <emphasis role="italic">index</emphasis>,
+or <computeroutput>0</computeroutput> (false).</para>
 </section>
 
 <section id="mthSetPutSet"><title>[]=</title>
@@ -7845,6 +7940,26 @@ the specified item at any index location.  Returns
 <computeroutput>0</computeroutput> (false) otherwise.</para>
 </section>
 
+<section id="mthSetIndex"><title>index</title>
+<indexterm><primary>index method</primary>
+<secondary>of Set class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>index method</secondary>
+<tertiary>of Set class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/set_index.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the index of the specified item within the set.  If the
+target item appears at more than one index, the first located index will
+be returned.  Returns the Nil object if the set does not contain the specified item.
+Item equality is determined by using the == method of <emphasis role="italic">item</emphasis>.
+</para>
+</section>
+
 <section id="mthSetIntersection"><title>intersection</title>
 <indexterm><primary>intersection method</primary>
 <secondary>of Set class</secondary></indexterm>
@@ -7865,6 +7980,59 @@ The <emphasis role="italic">argument</emphasis> can be any
 collection class object.
 The <emphasis role="italic">argument</emphasis> must also allow all of the
 index values in the receiver collection.</para>
+</section>
+
+<section id="mthSetIsEmpty"><title>isEmpty</title>
+<indexterm><primary>isEmpty method</primary>
+<secondary>of Set class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>isEmpty method</secondary>
+<tertiary>of Set class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/set_isempty.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if the set
+is empty.  Returns
+<computeroutput>0</computeroutput> (false) otherwise.</para>
+</section>
+
+<section id="mthSetItems"><title>items</title>
+<indexterm><primary>items method</primary>
+<secondary>of Set class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>items method</secondary>
+<tertiary>of Set class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/set_items.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the number of items in the collection.</para>
+</section>
+
+<section id="mthSetMakeArray"><title>makeArray</title>
+<indexterm><primary>makeArray method</primary>
+<secondary>of Set class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>makeArray method</secondary>
+<tertiary>of Set class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/set_makearray.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns a single-index array containing the index objects. The array
+indexes range from <computeroutput>1</computeroutput> to the number of items.
+The collection items appear in the array in an unspecified order.
+</para>
 </section>
 
 <section id="mthSetPut"><title>put</title>
@@ -7912,6 +8080,45 @@ supplier will overwrite previous items with the same index.
 </para>
 </section>
 
+<section id="mthSetRemove"><title>remove</title>
+<indexterm><primary>remove method</primary>
+<secondary>of Set class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>remove method</secondary>
+<tertiary>of Set class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/set_remove.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns and removes the set item with index
+<emphasis role="italic">index</emphasis>. Returns the Nil object if no item has index
+<emphasis role="italic">index</emphasis>.
+</para>
+</section>
+
+<section id="mthSetRemoveItem"><title>removeItem</title>
+<indexterm><primary>removeItem method</primary>
+<secondary>of Set class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>removeItem method</secondary>
+<tertiary>of Set class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/set_removeitem.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Removes an item from the set. If the target item exists at more than
+one index, the first located item is removed.  The return value is the
+removed item.
+Item equality is determined by using the == method of <emphasis role="italic">item</emphasis>.
+</para>
+</section>
+
 <section id="mthSetSubset"><title>subset</title>
 <indexterm><primary>putAll method</primary>
 <secondary>of Set class</secondary></indexterm>
@@ -7933,6 +8140,26 @@ receiver collection are also contained in the
 collection class object.
 The <emphasis role="italic">argument</emphasis> must also allow all of the
 index values in the receiver collection.</para>
+</section>
+
+<section id="mthSetSupplier"><title>supplier</title>
+<indexterm><primary>supplier method</primary>
+<secondary>of Set class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>supplier method</secondary>
+<tertiary>of Set class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/set_supplier.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns a Supplier (<xref linkend="clsSupplier" />) object for the collection.
+The supplier allows you iterate over the index/item pairs contained in the table at the
+time the supplier was created.
+The supplier iterates over the items in an unspecified order.
+</para>
 </section>
 
 <section id="mthSetUnion"><title>union</title>

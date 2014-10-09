@@ -536,21 +536,51 @@ relation_xor ::= 'xor(' argument ')'
 
 set_of ::= 'of' ( '(' item ( ( ',' item )+ )? ')' )?
 
-set_putset ::= '[' index ']' '=' item
+table_new ::= 'new'
 
-set_hasitem ::= 'hasItem(' item ( ',' index )? ')'
+table_atget ::= '[' index ']'
+
+table_putset ::= '[' index ']' '=' item
+
+table_allindexes ::= 'allIndexes'
+
+table_allitems ::= 'allItems'
+
+table_at ::= 'at(' index ')'
+
+table_empty ::= 'empty'
+
+table_hasindex ::= 'hasIndex(' index ')'
+
+table_hasitem ::= 'hasItem(' value ')'
+
+table_index ::= 'index(' item ')'
 
 set_intersection ::= 'intersection(' argument ')'
 
-set_put ::= 'put(' item ',' index ')'
+table_isempty ::= 'isEmpty'
+
+table_items ::= 'items'
+
+table_makearray ::= 'makeArray'
+
+table_put ::= 'put(' item ',' index ')'
 
 set_putall ::= 'putAll(' collection ')'
 
-set_subset ::= 'subset(' argument ')'
+set_putset ::= '[' index ']' '=' item
 
 set_union ::= 'union' '(' argument ')'
 
 set_xor ::= 'xor(' argument ')'
+
+table_remove ::= 'remove(' index ')'
+
+table_removeitem ::= 'removeItem(' item ')'
+
+set_subset ::= 'subset(' argument ')'
+
+table_supplier ::= 'supplier'
 
 stem_new ::= 'new' ( '(' name ')' )?
 
