@@ -374,6 +374,21 @@ return testResult
   self~assertEquals("Your Test Object", o2~string)
   self~assertEquals("My Test Object", o~string)
 
+::method test_objectname_not_string
+  self~expectSyntax(93.938)
+  .object~new~objectname = .nil
+
+::method test_objectname_no_arg
+  self~expectSyntax(93.903)
+  .object~new~'OBJECTNAME='
+
+::method test_objectname_two_args
+  self~expectSyntax(93.902)
+  .object~new~'OBJECTNAME='(1,2)
+
+::method test_objectname_get_one_arg
+  self~expectSyntax(93.902)
+  .object~new~objectname(1)
 
 
 -- End of class: object.testGroup

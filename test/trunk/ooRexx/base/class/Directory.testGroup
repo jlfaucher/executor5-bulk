@@ -762,7 +762,7 @@ makeColl: procedure
   expose collDir clz bUserDefinedIndex bSingleItem o1 o2
 
   a=clz~new
-  self~expectSyntax(93.938)
+  self~expectSyntax(88.909)
   a~at(.object~new)       -- insert using an illegal index value
 
 
@@ -770,14 +770,14 @@ makeColl: procedure
   expose collDir clz bUserDefinedIndex bSingleItem o1 o2
 
   a=clz~new
-  self~expectSyntax(93.938)
+  self~expectSyntax(88.909)
   a~"[]"(.object~new)       -- insert using an illegal index value
 
 ::method "test_put_error1"
   expose collDir clz bUserDefinedIndex bSingleItem o1 o2
 
   a=clz~new
-  self~expectSyntax(93.903)
+  self~expectSyntax(88.901)
   a~put(.object~new)       -- insert using an illegal index value
 
 
@@ -785,7 +785,7 @@ makeColl: procedure
   expose collDir clz bUserDefinedIndex bSingleItem o1 o2
 
   a=clz~new
-  self~expectSyntax(93.938)
+  self~expectSyntax(88.909)
   a~put(nixi, .object~new) -- insert using an illegal index value
 
 
@@ -793,7 +793,7 @@ makeColl: procedure
   expose collDir clz bUserDefinedIndex bSingleItem o1 o2
 
   a=clz~new
-  self~expectSyntax(93.903)   -- checking args differs from PUT!
+  self~expectSyntax(88.901)   -- checking args differs from PUT!
   a~"[]="(.object~new)       -- insert using an illegal index value
 
 
@@ -801,7 +801,7 @@ makeColl: procedure
   expose collDir clz bUserDefinedIndex bSingleItem o1 o2
 
   a=clz~new
-  self~expectSyntax(93.938)
+  self~expectSyntax(88.909)
   a~"[]="(nixi, .object~new) -- insert using an illegal index value
 
 
