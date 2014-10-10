@@ -1587,7 +1587,18 @@ return str
   if bGiveFeedback then
      .error~say( "... running TestCase object" pp(self~string) "..." )
 
+ -- make sure the output streams are in default state
+ .output~destination(.stdout)
+ .error~destination(.stderr)
+ .traceoutput~destination(.stderr)
+
   self~doTheTest(fName, aTestResult)  -- carry out the testmethod
+
+ -- make sure the output streams are in default state
+ .output~destination(.stdout)
+ .error~destination(.stderr)
+ .traceoutput~destination(.stderr)
+
   self~tearDown                       -- make sure tearDown is invoked after test
   aTestResult~endTest(self)           -- remember test ended
 
@@ -1599,6 +1610,7 @@ return str
    -- Trap all conditions propagated from the invocation of the test case
    -- method, or from the check4ConditionFailure method.
    signal on any name exceptionHandler
+
 
    -- The test case method itself is invoked by creating a message object and
    -- sending it to ourself.
@@ -1650,6 +1662,24 @@ exceptionHandler:
   end
 
   return aTestResult
+
+::method disableOutput
+  .output~destination(.NullOutput~new)
+
+::method disableError
+  .error~destination(.NullOutput~new)
+
+::method disableTraceOutput
+  .traceOutput~destination(.NullOutput~new)
+
+::method enableOutput
+  .output~destination(.stdout)
+
+::method enableError
+  .error~destination(.stderr)
+
+::method enableTraceOutput
+  .traceOutput~destination(.error)
 
 
 ::method getName     -- returns the name for this TestCase
@@ -2190,3 +2220,10 @@ return 0
 ::method uninit
   expose file
   file~delete
+
+-- a dummy class for disabling output to .output or .debugoutput
+::class NullOutput
+::method lineout
+  return 0
+
+

@@ -295,6 +295,7 @@ return testResult
   "abc"~start(.nil,1,2)
 
 ::method test_start_no_method
+  self~disableTraceOutput
   self~expectSyntax(97.1)
   "abc"~start('substrxxxxxx',1,2)~result
 
@@ -356,6 +357,7 @@ return testResult
 
 ::method test_start_override_not_found
   obj = .sendTester~new
+  self~disableTraceOutput
   self~expectSyntax(97.1)
   obj~testStart(obj, ('TestTarget', .object))
 
@@ -368,6 +370,95 @@ return testResult
   obj = .sendTester~new
   self~expectSyntax(93.957)
   obj~testStart(obj, ('TestTargetXXXX', .array))
+
+::method test_startWith_no_name
+  self~expectSyntax(88.901)
+  "abc"~startWith()
+
+::method test_startWith_no_name2
+  self~expectSyntax(88.901)
+  "abc"~startWith(,(1,2))
+
+::method test_startWith_not_string
+  self~expectSyntax(93.972)
+  "abc"~startWith(.nil,(1,2))
+
+::method test_startWith_no_method
+  self~disableTraceOutput
+  self~expectSyntax(97.1)
+  "abc"~startWith('substrxxxxxx',(1,2))~result
+
+::method test_startWith_override
+
+  obj = .sendTester~new
+  -- non-array version of the test, just as a baseline
+  self~assertEquals(123, obj~teststartWith(obj, 'TestTarget'))
+  self~assertEquals(123, obj~testStartWith(obj, 'TestTarget', (1,2)))
+
+  -- now with a superclass override
+  self~assertEquals(456, obj~teststartWith(obj, ('TestTarget', .sendTester2)))
+  self~assertEquals(456, obj~testStartWith(obj, ('TestTarget', .sendTester2), (1,2)))
+
+  -- this should still work even starting from the top class
+  self~assertEquals(123, obj~teststartWith(obj, ('TestTarget', .sendTester)))
+  self~assertEquals(123, obj~testStartWith(obj, ('TestTarget', .sendTester), (1,2)))
+
+-- issued from a different class context
+::method test_startWith_override_bad_context
+  obj = .sendTester~new
+  self~expectSyntax(98.938)
+  obj~startWith(('TestTarget', .sendTester2), (1,2))
+
+::method test_startWith_override_empty_array
+  obj = .sendTester~new
+  self~expectSyntax(93.946)
+  obj~startWith(.array~new(0), (1,2))
+
+::method test_startWith_override_missing_name
+  obj = .sendTester~new
+  self~expectSyntax(88.901)
+  obj~startWith((,.testclass2), (1,2))
+
+::method test_startWith_override_missing_scope
+  obj = .sendTester~new
+  self~expectSyntax(93.946)
+  obj~startWith(('TestTarget', ), (1,2))
+
+::method test_startWith_override_extra_stuff
+  obj = .sendTester~new
+  self~expectSyntax(93.946)
+  obj~startWith(('TestTarget', .testScope2, 'Extra' ), (1,2))
+
+::method test_startWith_override_non_string_name
+  obj = .sendTester~new
+  self~expectSyntax(88.909)
+  obj~startWith((.array, .testScope2), (1,2))
+
+::method test_startWith_override_non_class_scope
+  obj = .sendTester~new
+  self~expectSyntax(88.914)
+  obj~startWith(('TestTarget', 'TESTCLASS2'), (1,2))
+
+::method test_startWith_override_non_class_scope2
+  obj = .sendTester~new
+  self~expectSyntax(88.914)
+  obj~startWith(('TestTarget', .nil), (1,2))
+
+::method test_startWith_override_not_found
+  obj = .sendTester~new
+  self~disableTraceOutput
+  self~expectSyntax(97.1)
+  obj~teststartWith(obj, ('TestTarget', .object))
+
+::method test_startWith_override_not_non_scope
+  obj = .sendTester~new
+  self~expectSyntax(93.957)
+  obj~teststartWith(obj, ('TestTarget', .array))
+
+::method test_startWith_override_no_method
+  obj = .sendTester~new
+  self~expectSyntax(93.957)
+  obj~teststartWith(obj, ('TestTargetXXXX', .array))
 
 -- test various concatenations with non-string objects on
 -- the left of the expression.  This will concat with the
@@ -478,6 +569,49 @@ return testResult
   .object~new~objectname(1)
 
 
+::method test_instanceof
+  self~assertTrue(.object~isInstanceOf(.object))
+  self~assertTrue(.object~isa(.object))
+
+  self~assertTrue(.class~isInstanceOf(.object))
+  self~assertTrue(.class~isa(.object))
+
+  self~assertTrue(.class~isInstanceOf(.class))
+  self~assertTrue(.class~isa(.class))
+
+  self~assertTrue("abc"~isInstanceOf(.String))
+  self~assertTrue("abc"~isA(.String))
+
+  self~assertTrue("abc"~isInstanceOf(.Comparable))
+  self~assertTrue("abc"~isA(.Comparable))
+
+  self~assertFalse(.String~isInstanceOf(.String))
+  self~assertFalse(.String~isA(.String))
+
+  self~assertTrue(.String~isInstanceOf(.Class))
+  self~assertTrue(.String~isA(.Class))
+
+  -- some special tests for integer objects and numberstring objects
+
+  self~assertTrue(.true~isInstanceOf(.String))
+  self~assertTrue(.true~isA(.String))
+
+  self~assertTrue((1/3)~isInstanceOf(.String))
+  self~assertTrue((1/3)~isA(.String))
+
+  -- some mixin tests
+  self~assertTrue(.array~new~isInstanceOf(.collection))
+  self~assertTrue(.array~new~isA(.collection))
+  self~assertTrue(.array~new~isInstanceOf(.orderedcollection))
+  self~assertTrue(.array~new~isA(.orderedcollection))
+
+  self~assertTrue(.directory~new~isInstanceOf(.collection))
+  self~assertTrue(.directory~new~isA(.collection))
+
+  self~assertTrue(.directory~new~isInstanceOf(.mapcollection))
+  self~assertTrue(.directory~new~isA(.mapcollection))
+
+
 -- End of class: object.testGroup
 
 ::class test1
@@ -509,7 +643,7 @@ return testResult
   return object~send(message)
 
 ::method testSendWith
-  use strict arg object, message, args
+  use strict arg object, message, args = ((1,2))
 
   return object~sendWith(message, args)
 
@@ -520,7 +654,7 @@ return testResult
   return message~result
 
 ::method testStartWith unguarded
-  use strict arg object, message, args
+  use strict arg object, message, args = ((1,2))
 
   message = object~startWith(message, args)
   return message~result
