@@ -148,14 +148,6 @@ return testResult
   self~expectSyntax(97.1)
   "abc"~sendWiuth('substrxxxxxx',1,2)
 
-::method testStart01
-  message = "abc"~start("substr", 1, 2)
-  self~assertEquals("abc"~substr(1,2), message~result)
-
-::method testStartWith01
-  message = "abc"~startWith("substr",  .array~of(1, 2))
-  self~assertEquals("abc"~substr(1,2), message~result)
-
 ::method test_send_override
   obj = .sendTester~new
   -- non-array version of the test, just as a baseline
@@ -218,12 +210,12 @@ return testResult
 
 ::method test_send_override_not_non_scope
   obj = .sendTester~new
-  self~expectSyntax(97.1)
+  self~expectSyntax(93.957)
   obj~testsend(obj, ('TestTarget', .array))
 
 ::method test_send_override_no_method
   obj = .sendTester~new
-  self~expectSyntax(97.1)
+  self~expectSyntax(93.957)
   obj~testSend(obj, ('TestTargetXXXX', .array))
 
 -- issued from a different class context
@@ -274,13 +266,108 @@ return testResult
 
 ::method test_sendWith_override_not_non_scope
   obj = .sendTester~new
-  self~expectSyntax(97.1)
+  self~expectSyntax(93.957)
   obj~testsendWith(obj, ('TestTarget', .array), (1,2))
 
 ::method test_sendWith_override_no_method
   obj = .sendTester~new
-  self~expectSyntax(97.1)
+  self~expectSyntax(93.957)
   obj~testsendWith(obj, ('TestTargetXXXX', .array), (1,2))
+
+::method testStart01
+  message = "abc"~start("substr", 1, 2)
+  self~assertEquals("abc"~substr(1,2), message~result)
+
+::method testStartWith01
+  message = "abc"~startWith("substr",  .array~of(1, 2))
+  self~assertEquals("abc"~substr(1,2), message~result)
+
+::method test_start_no_name
+  self~expectSyntax(88.901)
+  "abc"~start()
+
+::method test_start_no_name2
+  self~expectSyntax(88.901)
+  "abc"~start(,1,2)
+
+::method test_start_not_string
+  self~expectSyntax(93.972)
+  "abc"~start(.nil,1,2)
+
+::method test_start_no_method
+  self~expectSyntax(97.1)
+  "abc"~start('substrxxxxxx',1,2)~result
+
+::method test_start_override
+
+  obj = .sendTester~new
+  -- non-array version of the test, just as a baseline
+  self~assertEquals(123, obj~testStart(obj, 'TestTarget'))
+  self~assertEquals(123, obj~testStartWith(obj, 'TestTarget', (1,2)))
+
+  -- now with a superclass override
+  self~assertEquals(456, obj~testStart(obj, ('TestTarget', .sendTester2)))
+  self~assertEquals(456, obj~testStartWith(obj, ('TestTarget', .sendTester2), (1,2)))
+
+  -- this should still work even starting from the top class
+  self~assertEquals(123, obj~testStart(obj, ('TestTarget', .sendTester)))
+  self~assertEquals(123, obj~testStartWith(obj, ('TestTarget', .sendTester), (1,2)))
+
+-- issued from a different class context
+::method test_start_override_bad_context
+  obj = .sendTester~new
+  self~expectSyntax(98.938)
+  obj~start(('TestTarget', .sendTester2))
+
+::method test_start_override_empty_array
+  obj = .sendTester~new
+  self~expectSyntax(93.946)
+  obj~start(.array~new(0))
+
+::method test_start_override_missing_name
+  obj = .sendTester~new
+  self~expectSyntax(88.901)
+  obj~start((,.testclass2))
+
+::method test_start_override_missing_scope
+  obj = .sendTester~new
+  self~expectSyntax(93.946)
+  obj~start(('TestTarget', ))
+
+::method test_start_override_extra_stuff
+  obj = .sendTester~new
+  self~expectSyntax(93.946)
+  obj~start(('TestTarget', .testScope2, 'Extra' ))
+
+::method test_start_override_non_string_name
+  obj = .sendTester~new
+  self~expectSyntax(88.909)
+  obj~start((.array, .testScope2))
+
+::method test_start_override_non_class_scope
+  obj = .sendTester~new
+  self~expectSyntax(88.914)
+  obj~start(('TestTarget', 'TESTCLASS2'))
+
+::method test_start_override_non_class_scope2
+  obj = .sendTester~new
+  self~expectSyntax(88.914)
+  obj~start(('TestTarget', .nil))
+
+::method test_start_override_not_found
+  obj = .sendTester~new
+  self~expectSyntax(97.1)
+  obj~testStart(obj, ('TestTarget', .object))
+
+::method test_start_override_not_non_scope
+  obj = .sendTester~new
+  self~expectSyntax(93.957)
+  obj~testStart(obj, ('TestTarget', .array))
+
+::method test_start_override_no_method
+  obj = .sendTester~new
+  self~expectSyntax(93.957)
+  obj~testStart(obj, ('TestTargetXXXX', .array))
 
 -- test various concatenations with non-string objects on
 -- the left of the expression.  This will concat with the
@@ -425,6 +512,18 @@ return testResult
   use strict arg object, message, args
 
   return object~sendWith(message, args)
+
+::method testStart unguarded
+  use strict arg object, message
+
+  message = object~start(message)
+  return message~result
+
+::method testStartWith unguarded
+  use strict arg object, message, args
+
+  message = object~startWith(message, args)
+  return message~result
 
 -- a base class message target for the tests
 ::method testTarget
