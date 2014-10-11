@@ -146,7 +146,7 @@ return testResult
 
 ::method test_sendwith_no_method
   self~expectSyntax(97.1)
-  "abc"~sendWiuth('substrxxxxxx',1,2)
+  "abc"~sendWith('substrxxxxxx',(1,2))
 
 ::method test_send_override
   obj = .sendTester~new
@@ -298,6 +298,7 @@ return testResult
   self~disableTraceOutput
   self~expectSyntax(97.1)
   "abc"~start('substrxxxxxx',1,2)~result
+  call syssleep 1
 
 ::method test_start_override
 
@@ -359,7 +360,8 @@ return testResult
   obj = .sendTester~new
   self~disableTraceOutput
   self~expectSyntax(97.1)
-  obj~testStart(obj, ('TestTarget', .object))
+  obj~testStart(obj, ('TestTarget', .object))~result
+  call syssleep 1
 
 ::method test_start_override_not_non_scope
   obj = .sendTester~new
@@ -387,6 +389,7 @@ return testResult
   self~disableTraceOutput
   self~expectSyntax(97.1)
   "abc"~startWith('substrxxxxxx',(1,2))~result
+  call syssleep 1
 
 ::method test_startWith_override
 
@@ -611,6 +614,139 @@ return testResult
   self~assertTrue(.directory~new~isInstanceOf(.mapcollection))
   self~assertTrue(.directory~new~isA(.mapcollection))
 
+::method test_isa_non_class
+  self~expectSyntax(88.914)
+  'abc'~isa('String')
+
+::method test_isInstanceOf_non_class
+  self~expectSyntax(88.914)
+  'abc'~isInstanceOf('String')
+
+::method test_isa_no_class
+  self~expectSyntax(88.901)
+  'abc'~isa
+
+::method test_isInstanceOf_no_class
+  self~expectSyntax(88.901)
+  'abc'~isInstanceOf
+
+::method test_isa_two_args
+  self~expectSyntax(93.902)
+  'abc'~isa(.string, 1)
+
+::method test_isInstanceOf_two_args
+  self~expectSyntax(93.902)
+  'abc'~isInstanceOf(.string, 1)
+
+::method test_instancemethod
+  -- some tests of instancemethod, instancemethods, and method scope
+  t = .test2~new
+
+  s = t~instanceMethods(.test2)
+  loop while s~available
+     name = s~index
+     method = s~item
+     self~assertSame(.test2, method~scope)
+     self~assertSame(method, t~instanceMethod(name))
+     self~assertSame(method, .test2~method(name))
+     s~next
+  end
+
+  -- because there is an override, we need to get an instance of the
+  -- superclass for comparing methods
+  t2 = .test1~new
+
+  -- go one level down the hierarchy
+  s = t~instanceMethods(.test1)
+  loop while s~available
+     name = s~index
+     method = s~item
+     self~assertSame(.test1, method~scope)
+     self~assertSame(method, t2~instanceMethod(name))
+     self~assertSame(method, .test1~method(name))
+     s~next
+  end
+
+  -- now get all of the methods and compare them with what the
+  -- class reports.
+
+  instanceMethods = .relation~new
+  instanceSupplier = t~instanceMethods
+
+  loop while instanceSupplier~available
+     instanceMethods~put(instanceSupplier~index, instanceSupplier~item)
+     instanceSupplier~next
+  end
+
+  classMethods = .relation~new
+  classSupplier = .test2~methods
+
+  loop while classSupplier~available
+     classMethods~put(classSupplier~index, classSupplier~item)
+     classSupplier~next
+  end
+
+  self~assertTrue(instanceMethods~equivalent(classMethods))
+
+::method test_run
+  t = .runTester~new
+
+  -- base run tests for the different method sources
+  self~assertEquals("Private", t~runMethod("return self~test"))
+  self~assertEquals("Private", t~runMethod(.array~of("return self~test")))
+  self~assertEquals("Private", t~runMethod(.method~new('test', "return self~test")))
+
+  -- base run tests for the different method sources
+  self~assertSame(.runTester, t~runMethod("return super"))
+  self~assertSame(.runTester, t~runMethod(.array~of("return super")))
+  self~assertSame(.runTester, t~runMethod(.method~new('test', "return super")))
+
+  self~assertSame(.nil, t~runMethod("return .context~executable~scope"))
+  self~assertSame(.nil, t~runMethod(.array~of("return .context~executable~scope")))
+  self~assertSame(.nil, t~runMethod(.method~new('test', "return .context~executable~scope")))
+
+  -- test the "name" of this unnamed method
+  self~assertSame("*UNNAMED*", t~runMethod("return .context~name"))
+  self~assertSame("*UNNAMED*", t~runMethod("return .context~stackframes[1]~name"))
+
+  -- just testing single forms of methods from here.
+
+  self~assertSame(.array, t~runMethod1("return arg(1)", .array))
+  self~assertEquals("David Ashley", t~runMethod2(("use strict arg arg1, arg2", "return arg1 arg2"), "David", "Ashley"))
+  self~assertSame(.array, t~runMethodWith("return arg(1)", .array~of(.array)))
+  self~assertEquals("David Ashley", t~runMethodWith(("use strict arg arg1, arg2", "return arg1 arg2"), ("David", "Ashley")))
+
+  self~assertEquals("a 2 b", t~runGeneral(("use strict arg a1 = 1, a2 = 2, a3 = 3", "return a1 a2 a3"), 'individual', 'a',,'b'))
+  self~assertEquals("a 2 b", t~runGeneral(("use strict arg a1 = 1, a2 = 2, a3 = 3", "return a1 a2 a3"), 'array', ('a',,'b')))
+
+::method test_run_no_method
+  self~expectSyntax(88.901)
+  self~runDynamicSource((".test~new~test", "::class test", "::method test", "self~run"))
+
+::method test_run_bad_method_source
+  self~expectSyntax(93.961)
+  .runTester~new~runMethod(.nil)
+
+::method test_run_no_argument_option
+  self~expectSyntax(88.901)
+  .runTester~new~runGeneral("return 123",,1)
+
+::method test_run_bad_argument_option
+  self~expectSyntax(93.915)
+  .runTester~new~runGeneral("return 123",'f',1)
+
+::method test_run_array_argument
+  self~expectSyntax(88.913)
+  .runTester~new~runGeneral("return 123",'a',.nil)
+
+::method test_run_sparse_array_source
+  self~expectSyntax(93.952)
+  .runTester~new~runGeneral(("x = something",,"return 123"),'a',.nil)
+
+::method test_run_non_string_array_value
+  self~expectSyntax(93.952)
+  .runTester~new~runGeneral(("x = something",.nil,"return 123"),'a',.nil)
+
 
 -- End of class: object.testGroup
 
@@ -676,6 +812,49 @@ return testResult
 ::class TestBadString2
 ::method string
   return 1/0
+
+-- a class for doing RUN method testing
+::class runTester
+-- run a method with no arguments
+::method runMethod
+  use strict arg method
+
+  return self~run(method)
+
+-- run a method using an array of args
+::method runMethodWith
+  use strict arg method, args
+
+  return self~run(method, 'A', args)
+
+-- run a method using one individual art
+::method runMethod1
+  use strict arg method, arg1
+
+  return self~run(method, 'I', arg1)
+
+-- run a method using two individual arguments
+::method runMethod2
+  use strict arg method, arg1, arg2
+
+  return self~run(method, 'I', arg1, arg2)
+
+-- run a method using three individual arguments
+::method runMethod3
+  use strict arg method, arg1, arg2, arg3
+
+  return self~run(method, 'I', arg1, arg2, arg3)
+
+-- general run method for argument testing
+::method runGeneral
+
+  forward message('RUN') continue
+  return result
+
+-- private test method to check scope
+::method test private
+  return "Private"
+
 
 
 
