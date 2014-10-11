@@ -615,3 +615,10 @@ return testResult
   self~expectSyntax('93.902')
   x = package~annotation("foo", "bar")
 
+::method test_sparse_array_source
+  self~expectSyntax(93.952)
+  r = .package~new("test", ("x = something",,"return 123"))
+
+::method test_non_string_array_value
+  self~expectSyntax(93.952)
+  r = .package~new("test", ("x = something",.nil,"return 123"))
