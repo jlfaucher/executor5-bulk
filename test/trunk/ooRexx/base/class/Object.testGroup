@@ -747,6 +747,14 @@ return testResult
   self~expectSyntax(93.952)
   .runTester~new~runGeneral(("x = something",.nil,"return 123"),'a',.nil)
 
+::method test_run_private
+  self~expectSyntax(98.991)
+  x = .runTester~new~run(("x = something","return 123"))
+
+::method test_run_class_private
+  -- this should work
+  self~assertEquals(123, .runtester~runMethod(.runTester~new, ("x = something","return 123")))
+
 
 -- End of class: object.testGroup
 
@@ -815,6 +823,12 @@ return testResult
 
 -- a class for doing RUN method testing
 ::class runTester
+-- run a method from the class object with no arguments
+::method runMethod class
+  use strict arg target, method
+
+  return target~run(method)
+
 -- run a method with no arguments
 ::method runMethod
   use strict arg method
