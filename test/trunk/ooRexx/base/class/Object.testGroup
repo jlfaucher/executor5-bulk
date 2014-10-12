@@ -755,6 +755,43 @@ return testResult
   -- this should work
   self~assertEquals(123, .runtester~runMethod(.runTester~new, ("x = something","return 123")))
 
+::method test_run_expose
+  t = .runtester~new
+  t~testValue = 456
+  value = t~runMethod(("expose testValue", "oldValue = testValue", "testValue = 123", "return oldValue"))
+  self~assertEquals(456, t~testValue)
+  -- verify accesses at different scope
+  self~assertEquals('TESTVALUE', value)
+  -- but the variable has been set at the object scope
+  self~assertEquals(123, t~runMethod(("expose testValue", "return testValue")))
+
+::method test_setmethod
+  t = .setTester~new
+  -- test each of the variations of method type.  We'll override the original
+  -- method on each set
+  t~testSet('FOOBAR', 'return 123')
+  self~assertTrue(t~hasMethod("foobar"))
+  self~assertIsA(t~instanceMethod("foobar"), .Method)
+  self~assertEquals(123, t~foobar)
+  t~testSet('FOOBAR', .array~of('return 456'))
+  self~assertEquals(456, t~foobar)
+  t~testSet('FOOBAR', .method~new("test", 'return 789'))
+  self~assertEquals(789, t~foobar)
+  t~testSet('FOOBAR')
+  self~assertFalse(t~hasMethod("foobar"))
+  self~assertSame(.nil, t~instanceMethod("foobar"))
+
+  self~assertTrue(t~hasMethod("testOverride"))
+  self~assertEquals(123, t~testOverride)
+  -- this should remove the method
+  t~testSet('TESTOVERRIDE')
+  self~assertFalse(t~hasMethod("testOverride"))
+  t~testSet('TestOverride', 'return 456')
+  self~assertTrue(t~hasMethod("testOverride"))
+  self~assertEquals(456, t~testOverride)
+  t~testUnset('testOverRide')
+  self~assertTrue(t~hasMethod("testOverride"))
+  self~assertEquals(123, t~testOverride)
 
 -- End of class: object.testGroup
 
@@ -868,6 +905,25 @@ return testResult
 -- private test method to check scope
 ::method test private
   return "Private"
+
+::attribute testValue
+
+-- class for testing setmethod/unsetmethod combinations
+::class setTester
+::method testSet
+  forward message('SETMETHOD')
+
+::method testUnset
+  forward message('UNSETMETHOD')
+
+::method testRun
+  forward message('RUN')
+
+::attribute testValue
+
+::method testOverride
+  return 123
+
 
 
 
