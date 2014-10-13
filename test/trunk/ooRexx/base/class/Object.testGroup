@@ -863,6 +863,79 @@ return testResult
   self~expectSyntax(93.952)
   .setTester~new~testSet("foobar", ("x = something",.nil,"return 123"))
 
+::method test_setmethod_scope
+  t1 = .setTester~new
+  t1~testValue = 'abc'
+  t1~testSet('gettestvalue', ("expose testValue", "return testValue"))
+  self~assertEquals('TESTVALUE', t1~gettestvalue)
+  t1~testSet('settestvalue', ("expose testValue", "testValue = 123"))
+  t1~setTestValue
+  self~assertEquals(123, t1~gettestvalue)
+  self~assertEquals('abc', t1~testvalue)
+
+  -- this explicitly sets the default...the results should be the same as above
+  t1 = .setTester~new
+  t1~testValue = 'abc'
+  t1~testSet('gettestvalue', ("expose testValue", "return testValue"), 'FLOAT')
+  self~assertEquals('TESTVALUE', t1~gettestvalue)
+  t1~testSet('settestvalue', ("expose testValue", "testValue = 123"), 'float')
+  t1~setTestValue
+  self~assertEquals(123, t1~gettestvalue)
+  self~assertEquals('abc', t1~testvalue)
+
+  -- Now create the method at the object scope (which really should have been named
+  -- "CLASS".  This will give it access to the scope variable set by the testValue attribute
+  t1 = .setTester~new
+  t1~testValue = 'abc'
+  t1~testSet('gettestvalue', ("expose testValue", "return testValue"), 'OBJECT')
+  self~assertEquals('abc', t1~gettestvalue)
+  t1~testSet('settestvalue', ("expose testValue", "testValue = 123"), 'object')
+  t1~setTestValue
+  self~assertEquals(123, t1~gettestvalue)
+  self~assertEquals(123, t1~testvalue)
+
+  -- check that SUPER is getting set correctly for these options
+  t1 = .setTester~new
+  t1~testSet('getsuper', "return super")
+  self~assertSame(.setTester, t1~getsuper)
+  t1~testSet('getsuper', "return super", 'Float')
+  self~assertSame(.setTester, t1~getsuper)
+  t1~testSet('getsuper', "return super", 'Object')
+  self~assertSame(.object, t1~getsuper)
+
+  -- now check the scope for the created methods
+  t1 = .setTester~new
+  t1~testSet('getsuper', "return .context~executable~scope")
+  self~assertSame(.nil, t1~getsuper)
+  t1~testSet('getsuper', "return .context~executable~scope", 'Float')
+  self~assertSame(.nil, t1~getsuper)
+  t1~testSet('getsuper', "return .context~executable~scope", 'Object')
+  self~assertSame(.setTester, t1~getsuper)
+
+::method test_invalid_setmethod_option
+  self~expectSyntax(88.916)
+  .setTester~new~testSet('foo', 'return 123', 'Class')
+
+::method test_nonstring_setmethod_option
+  self~expectSyntax(88.909)
+  .setTester~new~testSet('foo', 'return 123', .nil)
+
+::method test_setmethod_extra_arg
+  self~expectSyntax(93.902)
+  .setTester~new~testSet('foo', 'return 123', 'float', 'foo')
+
+::method test_unsetmethod_no_arg
+  self~expectSyntax(88.901)
+  .setTester~new~testUnset
+
+::method test_unsetmethod_non_name
+  self~expectSyntax(88.909)
+  .setTester~new~testUnset(.nil)
+
+::method test_unsetmethod_extra_arg
+  self~expectSyntax(93.902)
+  .setTester~new~testUnset("foo", "bar")
+
 
 -- End of class: object.testGroup
 
