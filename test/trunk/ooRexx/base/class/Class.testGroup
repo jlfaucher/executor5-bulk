@@ -98,6 +98,18 @@ return testResult
   self~assertTrue(.Amphibianvehicle~issubclassof(.roadvehicle))
   self~assertTrue(.Amphibianvehicle~issubclassof(.watervehicle))
 
+::method test_issubclassof_no_arg
+  self~expectSyntax(88.901)
+  x = .vehicle~issubclassof
+
+::method test_issubclassof_two_args
+  self~expectSyntax(93.902)
+  x = .vehicle~issubclassof(.object, .array)
+
+::method test_issubclassof_non_class
+  self~expectSyntax(88.914)
+  x = .vehicle~issubclassof("object")
+
 
 ::METHOD "test_BASECLASS"
 
