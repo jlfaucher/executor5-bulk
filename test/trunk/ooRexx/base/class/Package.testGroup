@@ -622,3 +622,16 @@ return testResult
 ::method test_non_string_array_value
   self~expectSyntax(93.952)
   r = .package~new("test", ("x = something",.nil,"return 123"))
+
+::method test_prolog
+  self~assertSame(.nil, .object~package~prolog)
+  package = .package~new("test", ("return 123", "::class test"))
+  prolog = package~prolog
+  self~assertEquals(123, prolog[])
+
+  package = .method~new("test", "return 123")~package
+  self~assertSame(.nil, package~prolog)
+
+  package = .routine~new("test", "return 123")~package
+  self~assertSame(.nil, package~prolog)
+
