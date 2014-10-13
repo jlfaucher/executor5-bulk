@@ -86,6 +86,17 @@ return testResult
 ::class "Class.testGroup" subclass ooTestCase public
 
 
+::method test_issubclassof
+  self~assertTrue(.vehicle~issubclassof(.object))
+  self~assertFalse(.vehicle~issubclassof(.class))
+
+  self~assertTrue(.roadvehicle~issubclassof(.object))
+  self~assertTrue(.roadvehicle~issubclassof(.vehicle))
+
+  self~assertTrue(.Amphibianvehicle~issubclassof(.object))
+  self~assertTrue(.Amphibianvehicle~issubclassof(.vehicle))
+  self~assertTrue(.Amphibianvehicle~issubclassof(.roadvehicle))
+  self~assertTrue(.Amphibianvehicle~issubclassof(.watervehicle))
 
 
 ::METHOD "test_BASECLASS"
@@ -848,6 +859,18 @@ getBags: procedure         -- return indices in an index bag, and method items i
 .WaterVehicle     ~new("Boat")    ~swim
 .AmphibianVehicle ~new("SwimCar") ~show_off
 */
+
+::method test_issubclassof
+  self~assertTrue(.vehicle~issubclassof(.object))
+  self~assertFalse(.vehicle~issubclassof(.class))
+
+  self~assertTrue(.roadvehicle~issubclassof(.object))
+  self~assertTrue(.roadvehicle~issubclassof(.vehicle))
+
+  self~assertTrue(.Amphibianvehicle~issubclassof(.object))
+  self~assertTrue(.Amphibianvehicle~issubclassof(.vehicle))
+  self~assertTrue(.Amphibianvehicle~issubclassof(.roadvehicle))
+  self~assertTrue(.Amphibianvehicle~issubclassof(.watervehicle))
 
 ::CLASS  Vehicle                                   -- base class
 ::METHOD name    ATTRIBUTE
