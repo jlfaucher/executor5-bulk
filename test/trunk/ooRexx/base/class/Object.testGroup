@@ -793,6 +793,77 @@ return testResult
   self~assertTrue(t~hasMethod("testOverride"))
   self~assertEquals(123, t~testOverride)
 
+  -- test some copy behaviour.  A setMethod/unsetmethod call
+  -- should only affect the target object
+  t1 = .setTester~new
+  t2 = .setTester~new
+  t1~testSet('TestOverride', 'return 456')
+  self~assertEquals(456, t1~testOverride)
+  self~assertEquals(123, t2~testOverride)
+  self~assertEquals(123, .setTester~new~testOverride)
+  -- a copy of t3 should pick up the new behaviour
+  t3 = t1~copy
+  self~assertEquals(456, t3~testOverride)
+  -- remove this method, and check that all of the objects
+  -- still return the correct result
+  t1~testUnset('TestOverride')
+  self~assertEquals(123, t1~testOverride)
+  self~assertEquals(123, t2~testOverride)
+  self~assertEquals(456, t3~testOverride)
+
+  -- set that unsetmethod only works on method set via
+  -- setmethod.
+  t2~testunset('testoverride')
+  self~assertEquals(123, t2~testOverride)
+
+::method test_setmethod_deletion
+  t1 = .setTester~new
+  self~expectSyntax(97.1)
+  t1~testSet('testOverride')
+  t1~testOverride
+
+::method test_setmethod_bad_context
+  t1 = .setTester~new
+  self~expectSyntax(98.991)
+  t1~setmethod('test', 'return 123')
+
+::method test_unsetmethod_bad_context
+  t1 = .setTester~new
+  self~expectSyntax(98.991)
+  t1~unsetmethod('test')
+
+::method test_unsetmethod_class_context
+  t1 = .setTester~new
+  .setTester~testSet(t1, 'testoverride', 'return 456')
+  self~assertEquals(456, t1~testOverride)
+  .setTester~testUnSet(t1, 'testoverride')
+  self~assertEquals(123, t1~testOverride)
+
+::method test_setMethod_no_args
+  self~expectSyntax(88.901)
+  .setTester~new~testSet
+
+::method test_setMethod_no_name
+  self~expectSyntax(88.901)
+  .setTester~new~testSet(,"return 123")
+
+::method test_setmethod_bad_method_source
+  self~expectSyntax(93.961)
+  .setTester~new~testSet("foo", .nil)
+
+::method test_setmethod_bad_name
+  self~expectSyntax(88.909)
+  .setTester~new~testSet(.nil, "return 123")
+
+::method test_setmethod_sparse_array_source
+  self~expectSyntax(93.952)
+  .setTester~new~testSet("foobar", ("x = something",,"return 123"))
+
+::method test_setmethod_non_string_array_value
+  self~expectSyntax(93.952)
+  .setTester~new~testSet("foobar", ("x = something",.nil,"return 123"))
+
+
 -- End of class: object.testGroup
 
 ::class test1
@@ -910,6 +981,14 @@ return testResult
 
 -- class for testing setmethod/unsetmethod combinations
 ::class setTester
+::method testSet class
+  use strict arg object, name, method
+  object~setMethod(name, method)
+
+::method testUnset class
+  use strict arg object, name
+  object~unsetMethod(name)
+
 ::method testSet
   forward message('SETMETHOD')
 
