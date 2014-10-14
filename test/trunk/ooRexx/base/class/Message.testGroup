@@ -373,6 +373,21 @@ return testResult
   self~assertEquals(6, n2~count)
   self~assertSame(m, n2~lastMessage)
 
+::method test_super_override
+  t1 = .SuperTester~new
+  m = .message~new(t1, ('testOverride', .SuperTesterBase))
+
+  self~assertEquals(123, t1~sendMsg(m))
+  self~assertEquals(123, t1~replyMsg(m))
+  self~assertEquals(123, t1~startMsg(m))
+
+  m = .message~new(t1, ('testOverride', .SuperTester))
+
+  self~assertEquals(456, t1~sendMsg(m))
+  self~assertEquals(456, t1~replyMsg(m))
+  self~assertEquals(456, t1~startMsg(m))
+
+
 
 -- simple class with methods for testing async operation
 ::class StartTester
@@ -418,3 +433,27 @@ return testResult
   self~countNotification
   self~lastMessage = message
 
+-- base class for testing message overrides
+::class SuperTesterBase
+::method testOverride
+  return 123
+
+
+-- used for testing messages with superclass overrides
+::class SuperTester subclass SuperTesterBase
+::method sendMsg unguarded
+  use strict arg msg
+  return msg~send
+
+::method startMsg unguarded
+  use strict arg msg
+  msg~start
+  return msg~result
+
+::method replyMsg unguarded
+  use strict arg msg
+  m2 = msg~reply
+  return m2~result
+
+::method testOverride
+  return 456
