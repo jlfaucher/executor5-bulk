@@ -1,0 +1,420 @@
+#!/usr/bin/rexx
+/*
+  SVN Revision: $Rev: 3630 $
+  Change Date:  $Date: 2008-10-28 19:18:18 -0400 (Tue, 28 Oct 2008) $
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
+
+  group = .TestGroup~new(fileSpec)
+  group~add(.Message.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "Message.testGroup" subclass ooTestCase public
+
+::method test_send
+  m = .message~new('abc', 'length')
+  self~assertEquals('abc', m~target)
+  self~assertEquals('LENGTH', m~messageName)
+  self~assertTrue(m~arguments~isEmpty)
+  self~assertFalse(m~hasResult)
+  self~assertFalse(m~hasError)
+  self~assertFalse(m~completed)
+  self~assertEquals(3, m~send)
+  self~assertEquals(3, m~result)
+  self~assertTrue(m~hasResult)
+  self~assertFalse(m~hasError)
+  self~assertTrue(m~completed)
+  -- verify this can be invoked a second time
+  self~assertEquals(3, m~send)
+  -- specify a different receiver
+  self~assertEquals(5, m~send("aeiou"))
+  -- the message object updates
+  self~assertEquals('aeiou', m~target)
+
+  -- new method that takes arguments
+  m = .message~new('abc', 'subchar', 'individual', 3)
+  self~assertTrue(m~arguments~equivalent(.array~of(3)))
+  self~assertEquals('c', m~send)
+  self~assertEquals('a', m~send(,1))
+  -- arguments update
+  self~assertTrue(m~arguments~equivalent(.array~of(1)))
+  self~assertEquals('e', m~send('def',2))
+  self~assertEquals('def', m~target)
+  self~assertTrue(m~arguments~equivalent(.array~of(2)))
+  self~assertEquals('i', m~sendWith('ghi',.array~of(3)))
+  self~assertEquals('ghi', m~target)
+  self~assertTrue(m~arguments~equivalent(.array~of(3)))
+
+  self~assertEquals('g', m~sendWith(,.array~of(1)))
+  self~assertEquals('ghi', m~target)
+  self~assertTrue(m~arguments~equivalent(.array~of(1)))
+
+-- simple start tests
+::method test_start
+  m = .message~new('abc', 'length')
+
+  m~start
+  self~assertEquals(3, m~result)
+  self~assertTrue(m~hasResult)
+  self~assertFalse(m~hasError)
+  self~assertTrue(m~completed)
+
+  -- specify a different receiver
+  m = .message~new('abc', 'length')
+  m~start('aeiou')
+
+  self~assertEquals(5, m~result)
+  -- the message object updates
+  self~assertEquals('aeiou', m~target)
+
+  -- new method that takes arguments
+  m = .message~new('abc', 'subchar', 'individual', 3)
+  self~assertTrue(m~arguments~equivalent(.array~of(3)))
+  m~start
+  self~assertEquals('c', m~result)
+
+  m = .message~new('abc', 'subchar', 'individual', 3)
+  self~assertTrue(m~arguments~equivalent(.array~of(3)))
+  m~start(,1)
+  self~assertEquals('a', m~result)
+
+  -- arguments update
+  self~assertTrue(m~arguments~equivalent(.array~of(1)))
+
+  m = .message~new('abc', 'subchar', 'individual', 3)
+  self~assertTrue(m~arguments~equivalent(.array~of(3)))
+  m~start('def',2)
+  self~assertEquals('e', m~result)
+  self~assertEquals('def', m~target)
+  self~assertTrue(m~arguments~equivalent(.array~of(2)))
+
+  m = .message~new('abc', 'subchar', 'individual', 3)
+  m~startWith('ghi',.array~of(3))
+  self~assertEquals('i', m~result)
+
+  self~assertEquals('ghi', m~target)
+  self~assertTrue(m~arguments~equivalent(.array~of(3)))
+
+  m = .message~new('ghi', 'subchar', 'individual', 3)
+  m~startWith(,.array~of(1))
+  self~assertEquals('g', m~result)
+
+  self~assertEquals('ghi', m~target)
+  self~assertTrue(m~arguments~equivalent(.array~of(1)))
+
+  m = .message~new(.StartTester~new, 'delayValueReturn', 'i', 'abc')
+
+  m~start
+  -- these should all be false now
+  self~assertFalse(m~hasResult)
+  self~assertFalse(m~hasError)
+  self~assertFalse(m~completed)
+
+  -- wait for completion
+  self~assertEquals('abc', m~result)
+  self~assertTrue(m~hasResult)
+  self~assertFalse(m~hasError)
+  self~assertTrue(m~completed)
+
+  m = .message~new(.StartTester~new, 'delayNovalueReturn')
+
+  m~start
+  -- these should all be false now
+  self~assertFalse(m~hasResult)
+  self~assertFalse(m~hasError)
+  self~assertFalse(m~completed)
+
+  self~assertEquals(.nil, m~result)
+  self~assertFalse(m~hasResult)
+  self~assertFalse(m~hasError)
+  self~assertTrue(m~completed)
+
+  self~disableTraceOutput
+
+  m = .message~new(.StartTester~new, 'delayErrorReturn')
+
+  m~start
+  -- these should all be false now
+  self~assertFalse(m~hasResult)
+  self~assertFalse(m~hasError)
+  self~assertFalse(m~completed)
+
+  -- use wait rather than result because we don't want to raise the error
+  m~wait
+  self~assertFalse(m~hasResult)
+  self~assertTrue(m~hasError)
+  self~assertTrue(m~completed)
+
+  condition = m~errorCondition
+  self~assertIsA(condition, .directory)
+  self~assertEquals(42.3, condition~code)
+
+  m = .message~new(.StartTester~new, 'stackframes')
+  m~start
+  frames = m~result
+  self~assertIsA(frames, .array)
+  self~assertEquals(1, frames~items)
+
+-- simple reply tests
+::method test_reply
+  mbase = .message~new('abc', 'length')
+
+  m = mbase~reply
+  self~assertEquals(3, m~result)
+  self~assertTrue(m~hasResult)
+  self~assertFalse(m~hasError)
+  self~assertTrue(m~completed)
+
+  -- verify that we can reuse this object
+  m = mbase~reply
+  self~assertEquals(3, m~result)
+  self~assertTrue(m~hasResult)
+  self~assertFalse(m~hasError)
+  self~assertTrue(m~completed)
+
+  -- specify a different receiver
+  mbase = .message~new('abc', 'length')
+  m = mbase~reply('aeiou')
+
+  self~assertEquals(5, m~result)
+  -- the message object updates
+  self~assertEquals('aeiou', m~target)
+  self~assertEquals('aeiou', mbase~target)
+
+  -- new method that takes arguments
+  mbase = .message~new('abc', 'subchar', 'individual', 3)
+  self~assertTrue(mbase~arguments~equivalent(.array~of(3)))
+  m = mbase~reply
+  self~assertEquals('c', m~result)
+
+  mbase = .message~new('abc', 'subchar', 'individual', 3)
+  m = mbase~reply(,1)
+  self~assertEquals('a', m~result)
+
+  -- arguments update
+  self~assertTrue(m~arguments~equivalent(.array~of(1)))
+  self~assertTrue(mbase~arguments~equivalent(.array~of(1)))
+
+  mbase = .message~new('abc', 'subchar', 'individual', 3)
+  m = mbase~reply('def',2)
+  self~assertEquals('e', m~result)
+  self~assertEquals('def', m~target)
+  self~assertTrue(m~arguments~equivalent(.array~of(2)))
+  self~assertEquals('def', mbase~target)
+  self~assertTrue(mbase~arguments~equivalent(.array~of(2)))
+
+  mbase = .message~new('abc', 'subchar', 'individual', 3)
+  m = mbase~replyWith('ghi',.array~of(3))
+  self~assertEquals('i', m~result)
+
+  self~assertEquals('ghi', m~target)
+  self~assertTrue(m~arguments~equivalent(.array~of(3)))
+  self~assertEquals('ghi', mbase~target)
+  self~assertTrue(mbase~arguments~equivalent(.array~of(3)))
+
+  mbase = .message~new('ghi', 'subchar', 'individual', 3)
+  m = mbase~replyWith(,.array~of(1))
+  self~assertEquals('g', m~result)
+
+  self~assertEquals('ghi', m~target)
+  self~assertTrue(m~arguments~equivalent(.array~of(1)))
+  self~assertEquals('ghi', mbase~target)
+  self~assertTrue(mbase~arguments~equivalent(.array~of(1)))
+
+  mbase = .message~new(.StartTester~new, 'delayValueReturn', 'i', 'abc')
+
+  m = mbase~reply
+  -- these should all be false now
+  self~assertFalse(m~hasResult)
+  self~assertFalse(m~hasError)
+  self~assertFalse(m~completed)
+
+  -- wait for completion
+  self~assertEquals('abc', m~result)
+  self~assertTrue(m~hasResult)
+  self~assertFalse(m~hasError)
+  self~assertTrue(m~completed)
+
+  mbase = .message~new(.StartTester~new, 'delayNovalueReturn')
+
+  m = mbase~reply
+  -- these should all be false now
+  self~assertFalse(m~hasResult)
+  self~assertFalse(m~hasError)
+  self~assertFalse(m~completed)
+
+  self~assertEquals(.nil, m~result)
+  self~assertFalse(m~hasResult)
+  self~assertFalse(m~hasError)
+  self~assertTrue(m~completed)
+
+  self~disableTraceOutput
+
+  mbase = .message~new(.StartTester~new, 'delayErrorReturn')
+
+  m = mbase~reply
+  -- these should all be false now
+  self~assertFalse(m~hasResult)
+  self~assertFalse(m~hasError)
+  self~assertFalse(m~completed)
+
+  -- use wait rather than result because we don't want to raise the error
+  m~wait
+  self~assertFalse(m~hasResult)
+  self~assertTrue(m~hasError)
+  self~assertTrue(m~completed)
+
+  condition = m~errorCondition
+  self~assertIsA(condition, .directory)
+  self~assertEquals(42.3, condition~code)
+
+  mbase = .message~new(.StartTester~new, 'stackframes')
+  m = mbase~reply
+  frames = m~result
+  self~assertIsA(frames, .array)
+  self~assertEquals(1, frames~items)
+
+::method test_notify
+  m = .message~new('abc', 'reverse')
+  -- messages should be message notifiers
+  self~assertIsA(m, .MessageNotification)
+  n1 = .notificationCounter~new
+  mn1 = .message~new(n1, 'countNotification')
+  m~notify(mn1)
+  m~send
+
+  self~assertEquals(1, n1~count)
+  -- add a second notifier
+  n2 = .notificationCounter~new
+  m~notify(n2)
+  -- because we have a completed message, this notification object
+  -- is notified immediately.
+  self~assertEquals(1, n2~count)
+
+  m~send
+  self~assertEquals(2, n1~count)
+  self~assertEquals(2, n2~count)
+  self~assertSame(m, n2~lastMessage)
+
+  -- make a copy...this should get all of the notifiers
+  m2 = m~copy
+  n3 = .notificationCounter~new
+  m2~notify(n3)
+  -- this is a new copy and all state should be reset.  This
+  -- should not have been notified yet
+  self~assertEquals(0, n3~count)
+
+  m~send
+  m2~send
+
+  self~assertEquals(4, n1~count)
+  self~assertEquals(4, n2~count)
+  self~assertSame(m2, n2~lastMessage)
+  self~assertEquals(1, n3~count)
+  self~assertSame(m2, n3~lastMessage)
+
+  -- now test with reply
+  m3 = m~reply
+  m3~wait
+
+  self~assertEquals(5, n1~count)
+  self~assertEquals(5, n2~count)
+  self~assertSame(m3, n2~lastMessage)
+
+  -- and finally a start
+  m~start
+  m~wait
+
+  self~assertEquals(6, n1~count)
+  self~assertEquals(6, n2~count)
+  self~assertSame(m, n2~lastMessage)
+
+
+-- simple class with methods for testing async operation
+::class StartTester
+::method delayValueReturn
+  -- 2 seconds should be long enough
+  call syssleep 2
+
+  -- return the first argument as a result
+  return arg(1)
+
+::method delayNovalueReturn
+  -- 2 seconds should be long enough
+  call syssleep 2
+  return  -- no return value on this one
+
+::method delayErrorReturn
+  -- 2 seconds should be long enough
+  call syssleep 2
+
+  return 1/0   -- cause an execution error
+
+-- return the stack frames to verify this is on another thread.
+::method stackFrames
+  return .context~stackFrames
+
+
+::class NotificationCounter inherit MessageNotification
+::method init
+  expose count lastMessage
+  count = 0
+  lastMessage = .nil
+
+::method countNotification
+  expose count
+  count += 1
+
+::attribute count
+::attribute lastMessage
+
+::method messageComplete
+  use strict arg message
+
+  self~countNotification
+  self~lastMessage = message
+
