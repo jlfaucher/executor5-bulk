@@ -650,6 +650,62 @@ return testResult
   m = .message~new(t1, ('testOverride', .array))
   m~replyWith(,(1,2))~result
 
+::method test_halt_start
+  self~disableTraceOutput
+  m = .message~new(.startTester~new, 'delayValueReturn')
+  -- test that an inactive message returns false
+  self~assertFalse(m~halt)
+  -- start the message, then halt it
+  m~start
+  -- give it a chance to start
+  call syssleep .5
+  self~assertTrue(m~halt)
+  m~wait
+
+  self~assertFalse(m~hasResult)
+  self~assertTrue(m~hasError)
+  self~assertTrue(m~completed)
+
+  condition = m~errorCondition
+  self~assertIsA(condition, .directory)
+  self~assertEquals(4.1, condition~code)
+
+  m = .message~new(.startTester~new, 'delayValueReturn')
+  -- start the message, then halt it
+  m~start
+  -- give it a chance to start
+  call syssleep .5
+  self~assertTrue(m~halt('HALT Test'))
+  m~wait
+
+  self~assertFalse(m~hasResult)
+  self~assertTrue(m~hasError)
+  self~assertTrue(m~completed)
+
+  condition = m~errorCondition
+  self~assertIsA(condition, .directory)
+  self~assertEquals(4.1, condition~code)
+  -- not description set if the error condition is raised
+  self~assertEquals('', condition~description)
+
+  m = .message~new(.startTester~new, 'delayHaltReturn')
+  -- start the message, then halt it
+  m~start
+  -- give it a chance to start
+  call syssleep .5
+  self~assertTrue(m~halt('HALT Test'))
+
+  m~wait
+  self~assertTrue(m~hasResult)
+  self~assertFalse(m~hasError)
+  self~assertTrue(m~completed)
+
+  condition = m~result
+  self~assertIsA(condition, .directory)
+  self~assertEquals('HALT', condition~condition)
+  -- not description set if the error condition is raised
+  self~assertEquals('HALT Test', condition~description)
+
 -- simple class with methods for testing async operation
 ::class StartTester
 ::method delayValueReturn
@@ -669,6 +725,17 @@ return testResult
   call syssleep 2
 
   return 1/0   -- cause an execution error
+
+::method delayHaltReturn
+  signal on HALT
+  -- 2 seconds should be long enough
+  call syssleep 2
+  x = 123
+  return .nil
+
+  halt:
+  return condition('o')
+
 
 -- return the stack frames to verify this is on another thread.
 ::method stackFrames
