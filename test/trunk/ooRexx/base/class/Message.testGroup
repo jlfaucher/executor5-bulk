@@ -387,7 +387,268 @@ return testResult
   self~assertEquals(456, t1~replyMsg(m))
   self~assertEquals(456, t1~startMsg(m))
 
+::method test_no_args
+  self~expectSyntax(93.901)
+  m = .message~new
 
+::method test_no_target
+  self~expectSyntax(88.901)
+  m = .message~new(, 'length')
+
+::method test_no_message
+  self~expectSyntax(88.901)
+  m = .message~new(, 'length')
+
+::method test_no_option
+  self~expectSyntax(88.901)
+  m = .message~new('abc', 'substr', , 1, 2)
+
+::method test_invalid_option
+  self~expectSyntax(93.915)
+  m = .message~new('abc', 'substr', 'something', 1, 2)
+
+::method test_array_option_no_arg
+  self~expectSyntax(93.901)
+  m = .message~new('abc', 'substr', 'array')
+
+::method test_sendwith_no_array
+  self~expectSyntax(88.901)
+  m = .message~new('abc', 'length')
+  m~sendWith('ghi')
+
+::method test_sendwith_not_array
+  self~expectSyntax(88.913)
+  m = .message~new('abc', 'length')
+  m~sendWith('ghi', .nil)
+
+::method test_sendwith_too_many
+  self~expectSyntax(93.902)
+  m = .message~new('abc', 'length')
+  m~sendWith('ghi', (1,2), 3)
+
+::method test_startwith_no_array
+  self~expectSyntax(88.901)
+  m = .message~new('abc', 'length')
+  m~startWith('ghi')
+
+::method test_startwith_not_array
+  self~expectSyntax(88.913)
+  m = .message~new('abc', 'length')
+  m~startWith('ghi', .nil)
+
+::method test_startwith_too_many
+  self~expectSyntax(93.902)
+  m = .message~new('abc', 'length')
+  m~startWith('ghi', (1,2), 3)
+
+::method test_replywith_no_array
+  self~expectSyntax(88.901)
+  m = .message~new('abc', 'length')
+  m~replyWith('ghi')
+
+::method test_replywith_not_array
+  self~expectSyntax(88.913)
+  m = .message~new('abc', 'length')
+  m~replyWith('ghi', .nil)
+
+::method test_replywith_too_many
+  self~expectSyntax(93.902)
+  m = .message~new('abc', 'length')
+  m~replyWith('ghi', (1,2), 3)
+
+-- issued from a different class context
+::method test_send_override_bad_context
+  t1 = .superTester~new
+  self~expectSyntax(98.938)
+  m = .message~new(t1, ('testOverride', .SuperTesterBase))
+  m~send
+
+-- issued from a different class context
+::method test_sendwith_override_bad_context
+  t1 = .superTester~new
+  self~expectSyntax(98.938)
+  m = .message~new(t1, ('testOverride', .SuperTesterBase))
+  m~sendWith(, (1,2))
+
+-- issued from a different class context
+::method test_start_override_bad_context
+  t1 = .superTester~new
+  self~expectSyntax(98.938)
+  m = .message~new(t1, ('testOverride', .SuperTesterBase))
+  m~start
+  m~result
+
+-- issued from a different class context
+::method test_startwith_override_bad_context
+  t1 = .superTester~new
+  self~expectSyntax(98.938)
+  m = .message~new(t1, ('testOverride', .SuperTesterBase))
+  m~startWith(, (1,2))
+  m~result
+
+-- issued from a different class context
+::method test_reply_override_bad_context
+  t1 = .superTester~new
+  self~expectSyntax(98.938)
+  m = .message~new(t1, ('testOverride', .SuperTesterBase))
+  m~reply~result
+
+-- issued from a different class context
+::method test_replywith_override_bad_context
+  t1 = .superTester~new
+  self~expectSyntax(98.938)
+  m = .message~new(t1, ('testOverride', .SuperTesterBase))
+  m~replyWith(, (1,2))~result
+
+::method test_override_empty_array
+  self~expectSyntax(93.946)
+  m = .message~new(t1, .array~new(0))
+
+::method test_override_missing_name
+  self~expectSyntax(88.901)
+  m = .message~new(t1, (,.SuperTesterBase))
+
+::method test_override_missing_scope
+  self~expectSyntax(93.946)
+  m = .message~new(t1, ('testOverride',))
+
+::method test_override_extra_stuff
+  self~expectSyntax(93.946)
+  m = .message~new(t1, ('testOverride', .SuperTesterBase, 'Extra'))
+
+::method test_override_non_string_name
+  self~expectSyntax(88.909)
+  m = .message~new(t1, (.array, .SuperTesterBase))
+
+::method test_override_non_class_scope
+  self~expectSyntax(88.914)
+  m = .message~new(t1, ('testOverride', 'SuperTesterBase'))
+
+::method test_override_non_class_scope2
+  self~expectSyntax(88.914)
+  m = .message~new(t1, ('testOverride', .nil))
+
+::method test_send_override_not_found
+  self~expectSyntax(97.1)
+  self~disableTraceOutput
+  t1 = .superTester~new
+  m = .message~new(t1, ('testOverride', .object))
+  t1~sendMsg(m)
+
+::method test_sendwith_override_not_found
+  self~expectSyntax(97.1)
+  self~disableTraceOutput
+  t1 = .superTester~new
+  m = .message~new(t1, ('testOverride', .object))
+  t1~sendWithMsg(m, (1,2))
+
+::method test_start_override_not_found
+  self~expectSyntax(97.1)
+  self~disableTraceOutput
+  t1 = .superTester~new
+  m = .message~new(t1, ('testOverride', .object))
+  t1~startMsg(m)
+
+::method test_startwith_override_not_found
+  self~expectSyntax(97.1)
+  self~disableTraceOutput
+  t1 = .superTester~new
+  m = .message~new(t1, ('testOverride', .object))
+  t1~startWithMsg(m, (1,2))
+
+::method test_reply_override_not_found
+  self~expectSyntax(97.1)
+  self~disableTraceOutput
+  t1 = .superTester~new
+  m = .message~new(t1, ('testOverride', .object))
+  t1~replyMsg(m)
+
+::method test_replywith_override_not_found
+  self~expectSyntax(97.1)
+  self~disableTraceOutput
+  t1 = .superTester~new
+  m = .message~new(t1, ('testOverride', .object))
+  t1~replyWithMsg(m, (1,2))
+
+::method test_send_override_no_method
+  self~expectSyntax(97.1)
+  self~disableTraceOutput
+  t1 = .superTester~new
+  m = .message~new(t1, ('testOverridexxx', .object))
+  t1~sendMsg(m)
+
+::method test_sendwith_override_no_method
+  self~expectSyntax(97.1)
+  self~disableTraceOutput
+  t1 = .superTester~new
+  m = .message~new(t1, ('testOverridexxx', .object))
+  t1~sendWithMsg(m, (1,2))
+
+::method test_start_override_no_method
+  self~expectSyntax(97.1)
+  self~disableTraceOutput
+  t1 = .superTester~new
+  m = .message~new(t1, ('testOverridexxx', .object))
+  t1~startMsg(m)
+
+::method test_startwith_override_no_method
+  self~expectSyntax(97.1)
+  self~disableTraceOutput
+  t1 = .superTester~new
+  m = .message~new(t1, ('testOverridexxx', .object))
+  t1~startWithMsg(m, (1,2))
+
+::method test_reply_override_no_method
+  self~expectSyntax(97.1)
+  self~disableTraceOutput
+  t1 = .superTester~new
+  m = .message~new(t1, ('testOverridexxx', .object))
+  t1~replyMsg(m)
+
+::method test_replywith_override_no_method
+  self~expectSyntax(97.1)
+  self~disableTraceOutput
+  t1 = .superTester~new
+  m = .message~new(t1, ('testOverridexxx', .object))
+  t1~replyWithMsg(m, (1,2))
+
+::method test_send_override_not_non_scope
+  self~expectSyntax(93.957)
+  t1 = .superTester~new
+  m = .message~new(t1, ('testOverride', .array))
+  m~send
+
+::method test_sendwith_override_not_non_scope
+  self~expectSyntax(93.957)
+  t1 = .superTester~new
+  m = .message~new(t1, ('testOverride', .array))
+  m~sendWith(,(1,2))
+
+::method test_start_override_not_non_scope
+  self~expectSyntax(93.957)
+  t1 = .superTester~new
+  m = .message~new(t1, ('testOverride', .array))
+  m~start
+  m~result
+
+::method test_startwith_override_not_non_scope
+  self~expectSyntax(93.957)
+  t1 = .superTester~new
+  m = .message~new(t1, ('testOverride', .array))
+  m~startWith(,(1,2))
+  m~result
+
+::method test_reply_override_not_non_scope
+  self~expectSyntax(93.957)
+  t1 = .superTester~new
+  m = .message~new(t1, ('testOverride', .array))
+  m~reply~result
+
+::method test_replywith_override_not_non_scope
+  self~expectSyntax(93.957)
+  t1 = .superTester~new
+  m = .message~new(t1, ('testOverride', .array))
+  m~replyWith(,(1,2))~result
 
 -- simple class with methods for testing async operation
 ::class StartTester
@@ -453,6 +714,20 @@ return testResult
 ::method replyMsg unguarded
   use strict arg msg
   m2 = msg~reply
+  return m2~result
+
+::method sendWithMsg unguarded
+  use strict arg msg, args
+  return msg~sendWith(,args)
+
+::method startWithMsg unguarded
+  use strict arg msg, args
+  msg~startWith(,args)
+  return msg~result
+
+::method replyWithMsg unguarded
+  use strict arg msg, args
+  m2 = msg~replyWith(,args)
   return m2~result
 
 ::method testOverride
