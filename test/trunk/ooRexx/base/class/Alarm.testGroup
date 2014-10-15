@@ -58,13 +58,19 @@ return testResult
 ::method test_base_alarm
   t1 = .alarmWaiter~new
   delay = .timespan~fromSeconds(2)
-  alarm = .alarm~new(delay, t1)
+  alarm = .alarm~new(delay, t1, "My Label")
 
   -- wait at most 5 seconds
   t1~wait(5)
 
   self~assertTrue(t1~istriggered)
   self~assertSame(alarm, t1~alarm)
+  self~assertSame("My Label", alarm~attachment)
+  -- verify we got at least the requested delay
+  self~assertTrue(t1~triggerTime >= alarm~scheduledTime)
+
+  -- this should not be an error
+  alarm~cancel
 
   t1 = .alarmWaiter~new
   -- just use numeric seconds
@@ -87,6 +93,8 @@ return testResult
 
   self~assertTrue(t1~istriggered)
   self~assertSame(alarm, t1~alarm)
+  -- these should be the same
+  self~assertEquals(delay, alarm~scheduledTime)
 
   t1 = .alarmWaiter~new
   -- just use now use a date time object.
@@ -141,6 +149,41 @@ return testResult
   self~assertSame(.nil, t1~alarm)
 
 
+  t1 = .alarmWaiter~new
+  -- We're going to use string time format, where the time
+  -- is in the past.
+  time = .datetime~new~addSeconds(-1)
+
+  delay = time~normalTime
+  tomorrowTime = time~addDays(1)~date + .timespan~fromNormalTime(delay)
+  alarm = .alarm~new(delay, t1)
+
+  self~assertFalse(t1~istriggered)
+  -- this should be scheduled
+  self~assertEquals(tomorrowTime, alarm~scheduledTime)
+  -- cancel the alarm now
+  alarm~cancel
+
+::method test_alarm_no_time
+  self~expectSyntax(93.903)
+  t1 = .alarmWaiter~new
+  alarm = .alarm~new(, t1)
+
+::method test_alarm_no_target
+  self~expectSyntax(93.901)
+  t1 = .alarmWaiter~new
+  alarm = .alarm~new(5)
+
+::method test_alarm_bad_time
+  self~expectSyntax(93.951)
+  t1 = .alarmWaiter~new
+  alarm = .alarm~new('Foobar', t1)
+
+::method test_alarm_bad_target
+  self~expectSyntax(88.914)
+  t1 = .alarmWaiter~new
+  alarm = .alarm~new(5, "Sometarget")
+
 
 ::class AlarmWaiter inherit AlarmNotification
 ::method init
@@ -156,13 +199,15 @@ return testResult
 ::attribute stopped
 ::attribute timedOut
 ::attribute alarm
+::attribute triggerTime
 
 ::method triggered unguarded
-  expose ended istriggered alarm
+  expose ended istriggered alarm triggerTime
   use strict arg alarm = .nil
 
   istriggered = .true
   ended = .true
+  triggerTime = .datetime~new
 
 ::method cancel unguarded
   expose stopped alarm
