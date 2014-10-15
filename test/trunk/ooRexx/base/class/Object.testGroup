@@ -936,6 +936,18 @@ return testResult
   self~expectSyntax(93.902)
   .setTester~new~testUnset("foo", "bar")
 
+::method test_uninit
+  -- base test with no uninit method
+  ref = .weakReference~new(.UninitTester~new)
+  hash = ref~value~identityHash
+  self~assertFalse(.UninitTracker~forceUninit(ref, hash))
+
+  -- base test with no uninit method
+  ref = .weakReference~new(.ClassWithUninitMethod~new)
+  hash = ref~value~identityHash
+  self~assertTrue(.UninitTracker~forceUninit(ref, hash))
+
+
 -- TODO:  add UNKNOWN method tests
 -- TODO:  add hashcode/== override tests for collections.
 -- TODO:  add uninit tests
@@ -1080,6 +1092,71 @@ return testResult
 ::method testOverride
   return 123
 
+-- class for tracking uninit calls
+::class UninitTracker
+::method init class
+  expose receivedUninits
+
+  receivedUninits = .set~new
+
+::method recordUninit class
+  expose receivedUninits
+  use arg object
+
+  receivedUninits~put(object~identityHash)
+  say receivedUninits~items
+
+::method hadUninit class
+  expose receivedUninits
+  use arg hash
+
+  return receivedUninits~hasIndex(hash)
+
+::method forceUninit class
+  use arg ref, hash
+
+  -- loop until we see the weak reference value go away
+  loop i = 1 while ref~value \= .nil
+     x = copies("abc def", 1000000)
+  end
+
+  self~dummyCall   -- give a chance for uninits to run
+
+  -- force another GC cycle, just to give this a good chance
+  -- to run
+  ref = .weakreference~new(copies("abc def", 100000))
+  loop while ref~value \= .nil
+     x = copies("abc def", 100000)
+  end
+
+  self~dummyCall     -- another uninit window
+
+  return self~hadUninit(hash)
+
+-- this is method allows us to force a window for running uninits
+::method dummyCall class
+  return
+
+::class UninitTester
+-- a little trick.  Once we have removed an uninit method from
+-- an object, we want to see if an UNINIT is sent to the object.
+-- if the method has been removed, this will cause an error.  The
+-- UKNOWN method traps this call and allows us to signal there is a
+-- problem.
+::method unknown
+  use strict arg name, args
+
+  if name == "UNINIT" then .UninitTracker~recordUninit(self)
+
+::class ClassWithUninitMethod subclass UninitTester
+::method uninit
+  .UninitTracker~recordUninit(self)
+
+::class MixinWithUninitMethod mixinclass object
+::method uninit
+  .UninitTracker~recordUninit(self)
+
+::class UninitFromMixin inherit MixinWithUninitMethod
 
 
 
