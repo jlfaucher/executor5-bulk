@@ -809,6 +809,61 @@ getBags: procedure         -- return indices in an index bag, and method items i
   c = .array~copy
   say c
 
+::method test_define_delete
+  newClass = .DefineTesterBase~subclass('TestClass')
+  newClass~define('newMethod', "return 123")
+  self~assertIsA(newClass~method('NEWMETHOD'), .Method)
+  self~assertSame(newClass, newClass~method('NEWMETHOD')~scope)
+
+  t1 = newClass~new
+  self~assertTrue(t1~hasMethod('NEWMETHOD'))
+  self~assertEquals(123, t1~newMethod)
+  -- now replace that method
+  newClass~define('newMethod', ("/**/", "return 456"))
+  t2 = newClass~new
+  -- the t1 object is unchanged, t2 has the new method
+  self~assertEquals(123, t1~newMethod)
+  self~assertEquals(456, t2~newMethod)
+
+  -- this will hide the method
+  newClass~define('newMethod')
+  t3 = newClass~new
+  self~assertSame(.nil, newClass~method('NEWMETHOD'))
+  self~assertFalse(t3~hasMethod('NEWMETHOD'))
+  self~assertTrue(t2~hasMethod('NEWMETHOD'))
+
+  -- and the third style of adding a method
+  newClass~define('newMethod', .method~new('test', "return 789"))
+  t4 = newClass~new
+  self~assertTrue(t4~hasMethod('NEWMETHOD'))
+  self~assertEquals(789, t4~newMethod)
+
+  -- we're going to make changes to the mixin and check that the
+  -- inheriting class gets the methods.
+  mixin = .DefineTesterMixin~mixinclass('aMixin')
+  newClass = .DefineTesterBase~subclass('TestClass')
+  newClass~inherit(mixin)
+
+  mixin~define('newMethod', "return 'abc'")
+  t1 = newClass~new
+  self~assertTrue(t1~hasMethod('NEWMETHOD'))
+  self~assertEquals('abc', t1~newMethod)
+
+
+
+-- some classes to test the effects of define
+::Class DefineTesterBase
+::method testOverride
+  return "Base"
+
+::class DefineTesterMixin mixinclass Object
+::method testOverride
+  return "Mixin"
+
+::class DefineTester subclass DefineTesterBase
+
+::class MixinDefineTester inherit DefineTesterMixin
+
 
 /* ************************************************************************* */
 /* ************************************************************************* */
