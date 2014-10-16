@@ -1006,6 +1006,11 @@ return testResult
   drop obj
   self~assertFalse(.UninitTracker~forceUninit(ref, hash))
 
+  -- test using a copied object
+  ref = .weakReference~new(.ClassWithUninitMethod~new~copy)
+  hash = ref~value~identityHash
+  self~assertTrue(.UninitTracker~forceUninit(ref, hash))
+
 
 -- TODO:  add UNKNOWN method tests
 -- TODO:  add hashcode/== override tests for collections.
