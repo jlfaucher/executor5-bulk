@@ -947,10 +947,68 @@ return testResult
   hash = ref~value~identityHash
   self~assertTrue(.UninitTracker~forceUninit(ref, hash))
 
+  -- base test with no uninit method
+  ref = .weakReference~new(.UninitFromMixin~new)
+  hash = ref~value~identityHash
+  self~assertTrue(.UninitTracker~forceUninit(ref, hash))
+
+  -- now create a subclass of two classes above, but
+  -- use define to hide the uninit method
+  newClass = .ClassWithUninitMethod~subclass('NoUninit')
+  newClass~define('UNINIT')
+
+  ref = .weakReference~new(newClass~new)
+  hash = ref~value~identityHash
+  self~assertFalse(.UninitTracker~forceUninit(ref, hash))
+
+  -- now add an uninit method back
+  newClass~define('UNINIT', ".UninitTracker~recordUninit(self)")
+
+  ref = .weakReference~new(newClass~new)
+  hash = ref~value~identityHash
+  self~assertTrue(.UninitTracker~forceUninit(ref, hash))
+
+  -- this will delete the uninit method, exposing the original from the base class
+  newClass~delete('UNINIT')
+
+  ref = .weakReference~new(newClass~new)
+  hash = ref~value~identityHash
+  self~assertTrue(.UninitTracker~forceUninit(ref, hash))
+
+  -- base test with no uninit method
+  obj = .UninitTester~new
+  -- now add an uninit method to the instance
+  obj~testSet('UNINIT', ".UninitTracker~recordUninit(self)")
+
+  ref = .weakReference~new(obj)
+  hash = ref~value~identityHash
+  drop obj
+  self~assertTrue(.UninitTracker~forceUninit(ref, hash))
+
+  -- base test with no uninit method
+  obj = .UninitTester~new
+  -- now add an uninit method to the instance
+  obj~testSet('UNINIT', ".UninitTracker~recordUninit(self)")
+  -- and remove the method again
+  obj~testUnSet('UNINIT')
+
+  ref = .weakReference~new(obj)
+  hash = ref~value~identityHash
+  drop obj
+  self~assertTrue(.UninitTracker~forceUninit(ref, hash))
+
+  obj = .ClassWithUninitMethod~new
+  -- now hide the unint method on this instance
+  obj~testSet('UNINIT')
+
+  ref = .weakReference~new(obj)
+  hash = ref~value~identityHash
+  drop obj
+  self~assertFalse(.UninitTracker~forceUninit(ref, hash))
+
 
 -- TODO:  add UNKNOWN method tests
 -- TODO:  add hashcode/== override tests for collections.
--- TODO:  add uninit tests
 
 
 -- End of class: object.testGroup
@@ -1104,7 +1162,6 @@ return testResult
   use arg object
 
   receivedUninits~put(object~identityHash)
-  say receivedUninits~items
 
 ::method hadUninit class
   expose receivedUninits
@@ -1147,6 +1204,12 @@ return testResult
   use strict arg name, args
 
   if name == "UNINIT" then .UninitTracker~recordUninit(self)
+
+::method testSet
+  forward message('SETMETHOD')
+
+::method testUnset
+  forward message('UNSETMETHOD')
 
 ::class ClassWithUninitMethod subclass UninitTester
 ::method uninit
