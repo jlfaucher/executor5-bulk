@@ -891,6 +891,26 @@ getBags: procedure         -- return indices in an index bag, and method items i
   self~assertTrue(t1~hasMethod('NEWMETHOD'))
   self~assertEquals('abc', t1~newMethod)
 
+::method test_define_no_args
+  self~expectSyntax(93.952)
+  .defineTesterBase~define
+
+::method test_define_no_name
+  self~expectSyntax(93.952)
+  .defineTesterBase~define(, "return 123")
+
+::method test_define_extra_arg
+  self~expectSyntax(93.952)
+  .defineTesterBase~define("amethod", "return 123", "huh?")
+
+::method test_define_bad_name
+  self~expectSyntax(93.952)
+  .defineTesterBase~define(.nil, "return 123")
+
+::method test_define_bad_method
+  self~expectSyntax(93.952)
+  .defineTesterBase~define("amethod", .nil)
+
 ::method test_define_sparse_array_source
   self~expectSyntax(93.952)
   .defineTesterBase~define("somemethod", ("x = something",,"return 123"))
