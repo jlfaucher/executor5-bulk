@@ -1103,24 +1103,6 @@ return testResult
   hash = ref~value~identityHash
   self~assertTrue(.UninitTracker~forceUninit(ref, hash))
 
-/*
-  -- specify the directory of methods directly on the subclass call
-  methods = .stringtable~of(('UNINIT', ".UninitTracker~recordUninit(self)"))
-  newClass = .UninitTester~subclass('testClass', , methods)
-
-  ref = .weakReference~new(newClass~new)
-  hash = ref~value~identityHash
-  self~assertTrue(.UninitTracker~forceUninit(ref, hash))
-
-  -- specify the directory of methods directly on the subclass call
-  methods = .stringtable~of(('UNINIT', .nil))
-  newClass = .ClassWithUninitMethod~subclass('testClass', , methods)
-
-  ref = .weakReference~new(newClass~new)
-  hash = ref~value~identityHash
-  self~assertFalse(.UninitTracker~forceUninit(ref, hash))
- */
-
 -- TODO:  add UNKNOWN method tests
 -- TODO:  add hashcode/== override tests for collections.
 
