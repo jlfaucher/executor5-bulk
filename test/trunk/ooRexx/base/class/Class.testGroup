@@ -891,7 +891,17 @@ getBags: procedure         -- return indices in an index bag, and method items i
   self~assertTrue(t1~hasMethod('NEWMETHOD'))
   self~assertEquals('abc', t1~newMethod)
 
+::method test_define_sparse_array_source
+  self~expectSyntax(93.952)
+  .defineTesterBase~define("somemethod", ("x = something",,"return 123"))
 
+::method test_define_bad_method
+  self~expectSyntax(93.974)
+  .defineTesterBase~define("somemethod", .array)
+
+::method test_define_non_string_array_value
+  self~expectSyntax(93.952)
+  .defineTesterBase~define("somemethod", ("x = something",.nil,"return 123"))
 
 -- some classes to test the effects of define
 ::Class DefineTesterBase
