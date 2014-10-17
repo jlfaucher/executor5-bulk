@@ -901,7 +901,7 @@ getBags: procedure         -- return indices in an index bag, and method items i
 
 ::method test_define_extra_arg
   self~expectSyntax(93.902)
-  .defineTesterBase~define("amethod", "return 123", "huh?")
+  .defineTesterBase~define("somemethod", ("x = something",,"return 123"), "huh?")
 
 ::method test_define_bad_name
   self~expectSyntax(88.909)
@@ -918,6 +918,42 @@ getBags: procedure         -- return indices in an index bag, and method items i
 ::method test_define_non_string_array_value
   self~expectSyntax(93.952)
   .defineTesterBase~define("somemethod", ("x = something",.nil,"return 123"))
+
+::method test_defineMethods_no_args
+  self~expectSyntax(88.901)
+  .defineTesterBase~defineMethods
+
+::method test_definemethods_not_collection
+  self~expectSyntax(97.1)
+  .defineTesterBase~defineMethods(.stringtable)
+
+::method test_defineMethods_extra_arg
+  self~expectSyntax(93.902)
+  .defineTesterBase~defineMethods(.stringTable~of(('newMethod', "return 'abc'")), "huh?")
+
+::method test_definemethods_bad_name
+  self~expectSyntax(88.909)
+  .defineTesterBase~defineMethods(.stringTable~of((.nil, "return 'abc'")))
+
+::method test_definemethods_sparse_array_source
+  self~expectSyntax(93.952)
+  .defineTesterBase~defineMethods(.stringTable~of(("somemethod", ("x = something",,"return 123"))))
+
+::method test_definemethods_bad_method
+  self~expectSyntax(93.974)
+  .defineTesterBase~defineMethods(.stringTable~of(("somemethod", .array)))
+
+::method test_definemethods_non_string_array_value
+  self~expectSyntax(93.952)
+  .defineTesterBase~defineMethods(.stringTable~of(("somemethod", ("x = something",.nil,"return 123"))))
+
+::method test_delete_no_args
+  self~expectSyntax(88.901)
+  .defineTesterBase~delete
+
+::method test_delete_extra_arg
+  self~expectSyntax(93.902)
+  .defineTesterBase~delete("somemethod", "huh?")
 
 -- some classes to test the effects of define
 ::Class DefineTesterBase
