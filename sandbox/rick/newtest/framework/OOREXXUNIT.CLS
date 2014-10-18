@@ -703,98 +703,134 @@ return str
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class "Assert" public mixinclass Object
 
-::attribute fAssertions private
+::attribute assertions get
+::attribute assertions set private
 ::attribute definedInFile    -- allows to quickly get filename from which test case is taken
 
 ::method init
-  self~fAssertions = 0
+  self~assertions = 0
   self~clearCondition
 
-::method assertCount
-  return self~fAssertions     -- count assertions, ooRexxUnit only
+-- count a successful assertion
+::method assertionPassed
+  expose assertions
 
--- test for collection equality.  This does not take order into account,
--- only that the collections contain the same members
-::method isCollEqual
-  use arg expected, received
-
-  -- if both are collections, they need to be equivalent
-  if expected~isA(.Collection), received~isA(.Collection) then
-     return expected~equivalent(received)
-
-  -- not collections, this is false
-  return .false
+  assertions += 1
 
 
-/** assertEquals()
- * Checks if two objects are equal, or, if not, checks that the two objects are
- * equal collection objects.
- */
+-- checks that two collections are equilvalent.  Does not take
+-- order into account.  Use assertArraysEqual or assertArraysStrictlyEqual
+-- if order is important
+::method assertCollectionsEqual
+
+  self~assertTrue(actual~isa(.Collection), msg': actual must be an array')
+  self~assertTrue(expected~equivalent(actual), msg': actual must be equivalent to expected')
+
+-- Checks if two objects are equal
 ::method assertEquals
   use strict arg expected, actual, msg = ""
 
-  if \ (expected = actual) then do
-    if \self~isCollEqual(expected, actual) then do
+  -- first compare the objects directly, and if they do not compare,
+  -- try to compare them as collections.  Note that we use the "=" comparison
+  -- variant here.
+  if expected != actual then do
       self~fail(self~makeFailure(expected, actual, msg, "assertEquals"))
-    end
   end
 
   -- Assertion holds
-  self~fAssertions += 1
+  self~assertionPassed
 
 
-/** assertFuzzyEquals()
- * Checks if two objects are equal using fuzzy math
- */
+--  assertFuzzyEquals()
+-- Checks if two objects are equal using fuzzy math
 ::method assertFuzzyEquals
   use strict arg expected, actual, digits = (digits()), msg = ""
 
   numeric digits digits
   numeric fuzz 1
 
-  if \ (expected = actual) then do
+  if expected != actual then do
       self~fail(self~makeFailure(expected, actual, msg, "assertFuzzyEquals"))
   end
 
   -- Assertion holds
-  self~fAssertions += 1
+  self~assertionPassed
 
+
+-- assert that a result does not equal a given value
 ::method assertNotEquals
   use strict arg expected, actual, msg = ""
 
   -- If the 2 objects are not equal AND they are not 2 equal collections ...
-  if \ (expected = actual), \ self~isCollEqual(expected, actual) then do
+  if expected != actual then do
     -- ... the assertion holds
-    self~fAssertions += 1
+    self~assertionPassed
     return
   end
 
   expected = self~formatObjectInfo(expected)
   actual   = self~formatObjectInfo(actual)
 
-  self~fail(self~makeFailure(expected '\=' actual, expected ' =' actual, msg, "asserNotEquals"))
+  self~fail(self~makeFailure(expected '\=' actual, expected ' =' actual, msg, "assertNotEquals"))
 
 
+-- assert that the result is equal to .nil
 ::method assertNull
   use strict arg actual, msg = ""
 
-  if \ (.nil = actual) then do
+  if .nil \== actual then do
     self~fail(self~makeFailure("[.nil]", actual, msg, "assertNull"))
   end
 
-  -- Assertion holds.
-  self~fAssertions += 1
+  -- Assertion holds
+  self~assertionPassed
 
 
+-- assert that a result is not equal to .ni.
 ::method assertNotNull
   use strict arg actual, msg = ""
 
-  if (.nil = actual) then do
+  if .nil == actual then do
     self~fail(self~makeFailure("[Not .nil]", "[.nil]", msg, "assertNotNull"))
   end
 
-  -- Assertion holds.
-  self~fAssertions += 1
+  -- Assertion holds
+  self~assertionPassed
+
+-- verify that a result is an instance of a particular class
+::method assertIsA
+  use strict arg target, class, msg = 'assertIsA'
+
+  self~assertTrue(target~isa(class), msg)
+
+
+-- compare an array of items.  each item must be the same, and in the same
+-- order.  Item comparisons are the non-strict variety
+::method assertArraysEqual
+  use strict arg expected, actual, msg = "assertArraysEqual"
+
+  self~assertTrue(actual~isa(.array), msg': actual must be an array')
+  self~assertEquals(expected~items, actual~items, msg': expected and actual lists are different sizes')
+  self~assertEquals(expected~last, actual~last, msg': have different index structures')
+
+  loop i = 1 to expected~last
+      self~assertEquals(expected[i], actual[i], msg': mismatch on element' i)
+  end
+
+
+-- compare an array of items.  each item must be the same, and in the same
+-- order.  Item comparisons are the strict variety
+::method assertArrayStrictlyEquals
+  use strict arg expected, actual, msg = "assertArraysStrictlyEqual"
+
+  self~assertTrue(actual~isa(.array), msg': actual must be an array')
+  self~assertEquals(expected~items, actual~items, msg': expected and actual lists are different sizes')
+  self~assertEquals(expected~last, actual~last, msg': have different index structures')
+
+  loop i = 1 to expected~last
+      self~assertStrictlyEquals(expected[i], actual[i], msg': mismatch on element' i)
+  end
+
 
 -- create a routine from an array of lines with the intent of checking
 -- errors raised at translate time rather than runtime.
@@ -805,30 +841,20 @@ return str
   -- this will translate this code and nothing else.
   r = .package~new("test", code)
 
--- compare an array of items.  each item must be the same, and in the same
--- order.
-::method assertSameList
-  use strict arg expected, actual, msg = "assertSameList"
 
-  self~assertTrue(actual~isa(.array), msg': actual must be an array')
-  self~assertEquals(expected~items, actual~items, msg': expected and actual lists are different sizes')
-
-  loop i = 1 to expected~last
-      self~assertEquals(expected[i], actual[i], msg': mismatch on element' i)
-  end
-
-::method assertSame
+-- perform a strict comparison on two objects.
+::method assertStrictlyEqual
   use strict arg expected, actual, msg = ""
 
-  if \ (expected == actual) then do
+  if expected \== actual then do
     self~fail(self~makeFailure(expected, actual, msg, "assertSame"))
   end
 
-  -- Assertion holds.
-  self~fAssertions += 1
+  -- Assertion holds
+  self~assertionPassed
 
 
-::method assertNotSame
+::method assertNotStrictlyEqual
   use strict arg expected, actual, msg = ""
 
   if (expected == actual) then do
@@ -838,8 +864,8 @@ return str
     self~fail(self~makeFailure(expected '\==' actual, expected ' ==' actual, msg, "assertNotSame"))
   end
 
-  -- Assertion holds.
-  self~fAssertions += 1
+  -- Assertion holds
+  self~assertionPassed
 
 -- Check if an object is EXACTLY the same object instance
 ::method assertIdentical
@@ -849,8 +875,8 @@ return str
     self~fail(self~makeFailure(expected, actual, msg, "assertIdentical"))
   end
 
-  -- Assertion holds.
-  self~fAssertions += 1
+  -- Assertion holds
+  self~assertionPassed
 
 -- Check if an object is NOT EXACTLY the same object instance
 ::method assertNotIdentical
@@ -860,8 +886,8 @@ return str
     self~fail(self~makeFailure(expected, actual, msg, "assertNotIdentical"))
   end
 
-  -- Assertion holds.
-  self~fAssertions += 1
+  -- Assertion holds
+  self~assertionPassed
 
 
 /** assertEitherOr()
@@ -870,53 +896,86 @@ return str
 ::method assertEitherOr
   use strict arg truthOne, truthTwo, msg = ""
 
-  if \ self~exclusiveOr(truthOne, truthTwo) then do
+  -- assume this works.  Allow an error to be raised if these are not
+  -- logicals
+  if \ truthOne && truthTwo then do
     expected = '[ one .true and one .false ]'
     actual   = '['self~formatObjectInfo(truthOne) self~formatObjectInfo(truthTwo)']'
     self~fail(self~makeFailure(expected, actual, msg, "assertEitherOr"))
   end
 
-  -- Assertion holds.
-  self~fAssertions += 1
+  -- Assertion holds
+  self~assertionPassed
 
 
-/** assertOneOrAnother()
- * Exclusive or for objects.  The actual object is expected to equal either one
- * object, or another object, but not both.
- */
-::method assertOneOrAnother
-  use strict arg one, other, actual, msg = ""
+-- assert that an object is one of a given list
+::method assertOneOf
+  use strict arg choices, actual, msg = ""
 
-  if \ self~exclusiveOrObject(one, other, actual) then do
+  if \choices~hasItem(actual) then
+    -- needs rework here
+
     expected = '['self~formatObjectInfo(one) 'or' self~formatObjectInfo(other)']'
     actual   = self~formatObjectInfo(actual)
     self~fail(self~makeFailure(expected, actual, msg, "assertOneOrAnother"))
   end
 
-  -- Assertion holds.
-  self~fAssertions += 1
+  -- Assertion holds
+  self~assertionPassed
 
 
+-- assert that a condition is true
 ::method assertTrue
   use strict arg actual, msg = ""
 
-  if \ (actual = .true) then do
+  if \actual then do
     self~fail(self~makeFailure("[1]", actual, msg, "assertTrue"))
   end
 
-  -- Assertion holds.
-  self~fAssertions += 1
+  -- Assertion holds
+  self~assertionPassed
 
 
+-- assert that a condition value is false
 ::method assertFalse
   use strict arg actual, msg = ""
 
-  if \ (actual = .false) then do
+  if actual then do
     self~fail(self~makeFailure("[0]", actual, msg, "assertFalse"))
   end
 
-  -- Assertion holds.
-  self~fAssertions += 1
+  -- Assertion holds
+  self~assertionPassed
+
+-- create a package from an array of lines with the intent of checking
+-- errors raised at translate time rather than runtime.
+::method assertSyntaxError
+  use strict arg error, code
+
+  self~expectSyntax(error)
+  -- this will translate this code and nothing else.
+  r = .package~new("test", code)
+
+
+-- create a routine and call from an array of lines with the intent of checking
+-- errors raised at run time rather than during translation.
+::method assertRuntimeError
+  use strict arg error, code
+
+  self~expectSyntax(error)
+  -- this will create a routine and then we invoke it, returning the
+  -- code result.
+  r = .routine~new("test", code)
+  return r[]
+
+-- run some dynamically created source code that will return a result.
+::method runDynamicSource
+  use strict arg code
+
+  -- this will create a routine object and return the result.
+  r = .routine~new("test", code)
+  return r[]
+
 
 /** assertFail()
  * Assert a failure explicitly.  Useful for situations where control is not expected
@@ -954,86 +1013,70 @@ return str
 
   RAISE syntax 93.964 array (msg, data)
 
-
-::attribute conditionExpected private
-::attribute conditionName private
-::attribute conditionCode private
-::attribute conditionMsg private
-
-
+-- clear any expected condition information
 ::method clearCondition
-  self~conditionExpected = .false
-  self~conditionName = .nil
-  self~conditionCode = .nil
-  self~conditionMsg = .nil
+  expose expectedCondition
 
-/** expectSyntax()
- * The syntax error code to expect is required.
- */
+  expectedCondition = .nil
+
+
+-- indicate that the test is expecting a particular syntax error to be raised.
 ::method expectSyntax
+  expose expectedCondition
   use strict arg errorCode, msg = .nil
 
-  self~conditionExpected = .true
-  self~conditionName = "SYNTAX"
-  self~conditionCode = errorCode
-  self~conditionMsg = msg
+  expectedCondition = .ExpectedCondition~new(self~assertionLine, "SYNTAX", errorCode, msg)
 
 
-/** expectCondition()
- * Only the name of the condition is required, and it can be two words.  E.g.
- * "USER SOMETHING"
- */
+-- indicate that a particular condition type is expected.
 ::method expectCondition
+  expose expectedCondition
   use strict arg name, msg = .nil
 
-  self~conditionExpected = .true
-  self~conditionName = name
-  self~conditionMsg = msg
+  expectedCondition = .ExpectedCondition~new(self~assertionLine, name,, msg)
 
 
-/** checkCondition()
- * Return true if the condition raised matches the condition expected, otherwise
- * return false.
- */
+-- check if to see if received condition matches a received condition
 ::method checkCondition
-
+  expose expectedCondition
   use arg receivedCondition
 
-  if self~conditionExpected, self~conditionName == receivedCondition~condition then do
-     -- For a syntax error, the actual error code has to match the expected error code.
-     if self~conditionName == "SYNTAX", self~conditionCode <> receivedCondition~code then
-        return .false
+  -- if we're not expecting a condition, this is a failure
+  if self~expectedCondition == .nil then return .false
 
-     self~fAssertions += 1
+  -- if we have a match, this is a good assertion
+  if expectedCondition~matches(receivedCondition) then do
+     self~assertionPassed
      return .true
   end
   return .false
 
 
-/** check4ConditionFailure()
- * Forces an assert failure if a condition is expected to be raised.  The
- * assumption is that this method is invoked when a condition has not been
- * raised.
- */
-::method check4ConditionFailure
+-- Forces an assert failure if a condition is expected to be raised.  The
+-- assumption is that this method is invoked when a condition has not been
+-- raised.
+::method checkConditionFailure
+  expose expectedCondition
 
-  if self~conditionExpected then do
-     expected = self~conditionName
-     type = 'expectCondtion'
+  if expectedCondition \= .nil then do
 
-     if expected == "SYNTAX", self~conditionCode <> .nil then do
-        expected = expected self~conditionCode
-        type = 'expectSyntax'
-     end
+       -- this needs a complete redoing
+       expected = self~conditionName
+       type = 'expectCondtion'
 
-    data = .AssertFailure~new(.TestUtils~timeStamp, self~definedInFile, type)
+       if expected == "SYNTAX", self~conditionCode <> .nil then do
+          expected = expected self~conditionCode
+          type = 'expectSyntax'
+       end
 
-    data~expected = expected
-    data~actual = "Not raised"
-    if self~conditionMsg <> .nil then data~msg = self~conditionMsg
-    else data~msg = ""
+      data = .AssertFailure~new(.TestUtils~timeStamp, self~definedInFile, type)
 
-    self~fail(data)
+      data~expected = expected
+      data~actual = "Not raised"
+      if self~conditionMsg <> .nil then data~msg = self~conditionMsg
+      else data~msg = ""
+
+      self~fail(data)
   end
 
 
@@ -1063,24 +1106,26 @@ return str
   buf~append('[', hint, '[', .TestUtils~escapeString(o~string), ', identityHash="', o~identityHash, '"]')
   return buf~string
 
-::method exclusiveOr private
-  use strict arg t1, t2
 
-  if \ t1~isA(.string) | \ t2~isA(.string) then return .false
-  if \ t1~datatype('O') | \ t2~datatype('O') then return .false
+-- a holder for expected syntax information
+::class "ExpectedCondition"
+::method init
+  expose condition code assertionLine message
+  use strict arg assertionLine, condition , code = .nil, message = .nil
 
-  -- t1 and t2 are both logicals, for exclusive or they must be different
-  -- logicals.
-  return (t1 \== t2)
+::attribute condition get
+::attribute code get
+::attribute message get
+::attribute assertionLine
 
+-- do a check for condition equality
+::method isMatch
+  expose condition code
+  use strict arg received
 
-::method exclusiveOrObject private
-  use strict arg one, other, actual
-
-  if one == actual, other == actual then return .false
-  if one \== actual, other \== actual then return .false
-  return .true
-
+  -- note:  for non syntax conditions, the code in the condition object
+  -- will be .nil, so this will compare equal.
+  return condition == received~condition & code == receive~code
 
 
 /* *********************************************************************************** */
@@ -1154,6 +1199,19 @@ return str
   if bGiveFeedback then
      .error~say( "... running TestCase object ["self~string"] ..." )
 
+  -- make sure the output streams are in default state
+  .output~destination(.stdout)
+  .error~destination(.stderr)
+  .traceoutput~destination(.stderr)
+
+  self~doTheTest(fName, aTestResult)  -- carry out the testmethod
+
+  -- make sure the output streams are in default state
+  .output~destination(.stdout)
+  .error~destination(.stderr)
+  .traceoutput~destination(.stderr)
+
+
   self~doTheTest(fName, aTestResult)  -- carry out the testmethod
   self~tearDown                       -- make sure tearDown is invoked after test
   aTestResult~endTest(self)           -- remember test ended
@@ -1217,6 +1275,25 @@ exceptionHandler:
   end
 
   return aTestResult
+
+-- methods for temporarily disabling out
+::method disableOutput
+  .output~destination(.NullOutput~new)
+
+::method disableError
+  .error~destination(.NullOutput~new)
+
+::method disableTraceOutput
+  .traceOutput~destination(.NullOutput~new)
+
+::method enableOutput
+  .output~destination(.stdout)
+
+::method enableError
+  .error~destination(.stderr)
+
+::method enableTraceOutput
+  .traceOutput~destination(.error)
 
 
 ::method getName     -- returns the name for this TestCase
@@ -1602,3 +1679,85 @@ syntax:
    f~print
 
 return 0
+
+
+-- a class for creating/deleting temporary test files
+::class TemporaryTestFile public
+::method init
+  expose file package
+  use strict arg host, name
+
+  -- get the package the class is defined in
+  package = host~class~package
+
+  dir = .File~new(package~name)~parentFile
+  file = .File~new(name, dir)
+
+-- get the full resolved name of this file
+::method fullName
+  expose file
+  return file~absolutePath
+
+-- create a file from an array of lines
+::method create
+  expose file
+  use strict arg lines
+
+  -- make sure this is deleted
+  file~delete
+
+  s = .stream~new(file)
+
+  if lines~isA(.String) then do
+    s~lineout(lines)
+  end
+  else do
+    s~arrayout(lines)
+  end
+  s~close
+
+-- append an array of lines to a file
+::method append
+  expose file
+  use strict arg lines
+
+  s = .stream~new(file)
+  s~open('WRITE APPEND')
+  if lines~isA(.String) then do
+    s~lineout(lines)
+  end
+  else do
+    s~arrayout(lines)
+  end
+  s~close
+
+-- create a file from a package resource
+::method createFromResource
+  expose package
+  use strict arg resourceName
+
+  self~create(package~resources~resourceName)
+
+-- append a package resource to a file
+::method appendFromResource
+  expose package
+  use strict arg resourceName
+
+  self~append(package~resources~resourceName)
+
+-- allow the file to be deleted
+::method delete
+  expose file
+  file~delete
+
+-- clean up the temporary file after termination.
+::method uninit
+  expose file
+  file~delete
+
+-- a dummy class for disabling output to .output or .debugoutput
+::class NullOutput
+::method lineout
+  return 0
+
+
