@@ -594,6 +594,10 @@ return str
   self~additionalObject = .nil
   self~additional = .nil
 
+::resource errorMessages
+
+::END
+
 
 /* class: TestProblem- - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
 
@@ -601,18 +605,34 @@ return str
 
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class 'TestProblem' public subclass ReportData
+::method activate
+  expose messages
+  messages = .stringtable~new
+
+  loop line over .context~package~resource('errorMessages')
+     parse var line id text
+     messages[id] = text
+  end
+
+-- format a error message
+::method formatMessage
+  expose messages
+  use strict arg id, substitutions, extra
+
+  text = messages[id]
+  buffer = .mutablebuffer~new(text)
+
+  loop i = 1 to substitutions~last
+     buffer~changestr('&'i, self~formatObject(substitutions[i]))
+  end
+
+  buffer~append(": ", extra)
 
 ::attribute className
 ::attribute testName
 ::attribute testString
 
-::attribute conditionObject get
-::attribute conditionObject set
-  expose conditionObject
-  use strict arg cObj
-  if \ isConditionObj(cObj) then
-    raise syntax 88.900 array ("conditionObject must be set to the object returned from CONDITION('O')")
-  conditionObject = cObj
+::attribute conditionObject
 
 ::method init
   expose conditionObject lineNumber
@@ -635,25 +655,6 @@ return str
   if lineNumber \== .nil then return lineNumber
   else return self~conditionObjLineNumber
 
-/** conditionObjLineNumber()
- * Given an object, will return the line number of a syntax exception, if the
- * object is a condition object for a syntax exception.  Othewise returns -1.
- */
-::method conditionObjLineNumber
-  expose conditionObject testName
-
-  -- belt and braces:  make sure we have a condition object
-  if conditionObject == .nil then do
-    return -1
-  end
-
-  do frame over conditionObject~stackFrames
-      if frame~name~caselessEquals(testName) then do
-           return frame~line
-      end
-  end
-
-  return -1
 
 
 /* class: AssertFailure- - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
@@ -977,10 +978,8 @@ return str
   return r[]
 
 
-/** assertFail()
- * Assert a failure explicitly.  Useful for situations where control is not expected
- * to reach a particular point.
- */
+-- Assert a failure explicitly.  Useful for situations where control is not expected
+-- to reach a particular point.
 ::method assertFail
   use strict arg msg = ""
   self~assertTrue(.false, msg) -- just do this as a true assertion
@@ -1012,6 +1011,31 @@ return str
   msg = "ooRexxUnit.cls - source of syntax exception 'FAIL' method invocation in class 'ASSERT'."
 
   RAISE syntax 93.964 array (msg, data)
+
+
+/** conditionObjLineNumber()
+ * Given an object, will return the line number of a syntax exception, if the
+ * object is a condition object for a syntax exception.  Othewise returns -1.
+ */
+::method conditionObjLineNumber
+  expose conditionObject
+
+  return self~testLineNumber(conditionObject~stackFrames, testMethod)
+
+
+-- Given a collection of stack frames, return the line number of the line in the
+-- test method as a failure point.
+::method testLineNumber
+  use strict arg frames, testMethod
+
+  do frame over frames
+      if frame~executable == testMethod then do
+           return frame~line
+      end
+  end
+
+  -- not found for some reason
+  return -1
 
 -- clear any expected condition information
 ::method clearCondition
@@ -1183,55 +1207,49 @@ return str
   return fCountTestCases
 
 
-::method execute            -- will get implemented in subclasses
-  expose fName
-  use arg aTestResult, bGiveFeedback=.false
-
-  if \datatype(bGiveFeedback,"O") then
-     raise syntax 93.903 array (bGiveFeedback) -- raise error
-
-   -- make sure an instance of .TestResult is used
-  if arg(1, 'O') then aTestResult=self~createResult
-  else aTestResult=arg(1)
+-- execute a specific test case
+::method execute
+  expose testName
+  use arg aTestResult = (self~createResult), giveFeedback=.false
 
   aTestResult~startTest(self)       -- remember test started
   self~setUp                        -- make sure setup is invoked before test
-  if bGiveFeedback then
-     .error~say( "... running TestCase object ["self~string"] ..." )
+  self~feedBack( "... running TestCase object ["self~string"] ..." )
 
   -- make sure the output streams are in default state
   .output~destination(.stdout)
   .error~destination(.stderr)
   .traceoutput~destination(.stderr)
 
-  self~doTheTest(fName, aTestResult)  -- carry out the testmethod
+  self~doTheTest(testName, aTestResult)  -- carry out the testmethod
 
   -- make sure the output streams are in default state
   .output~destination(.stdout)
   .error~destination(.stderr)
   .traceoutput~destination(.stderr)
 
-
-  self~doTheTest(fName, aTestResult)  -- carry out the testmethod
   self~tearDown                       -- make sure tearDown is invoked after test
   aTestResult~endTest(self)           -- remember test ended
 
   return aTestResult
 
-::method doTheTest private
+::method doTheTest
+   expose testMethod
    use arg methodName, aTestResult
 
    -- Trap all conditions propagated from the invocation of the test case
    -- method, or from the check4ConditionFailure method.
    signal on any name exceptionHandler
 
-   -- The test case method itself is invoked by creating a message object and
-   -- sending it to ourself.
-   .message~new(self, methodName)~send
+   -- save the target method for error tracking
+   testMethod = self~instanceMethod(methodName)
+
+   -- now dynamically invoke the method
+   self~send(methodName)
 
    -- The test case method completed without raising a condition.  The last step
    -- is to check if the test case *exepected* a condition to be raised.
-   self~check4ConditionFailure
+   self~checkForConditionFailure
    return aTestResult
 
 exceptionHandler:
@@ -1244,7 +1262,7 @@ exceptionHandler:
   if self~conditionExpected, self~checkCondition(cObj) then return aTestResult
 
   -- If the condition code is 93.964 then this condition was raised by the
-  -- framework to signal a test case failure.  The assert failue object is at
+  -- framework to signal a test case failure.  The assert failure object is at
   -- index 2 of the additional array.
   if cObj~code = 93.964 then do
     data = cObj~additional[2]
