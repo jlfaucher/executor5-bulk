@@ -379,6 +379,10 @@ any:
    self~expectSyntax(98.985)
    .object~delete("OBJECTNAME=")
 
+::METHOD "test_REXX_DEFINED_07"
+   self~expectSyntax(98.985)
+   .object~defineMethods(.stringtable~of(("NewMethod", "return 123")))
+
 ::METHOD "test_INHERIT_02"
    self~expectSyntax(98.942)
    .amphibianVehicle~inherit(.object)
@@ -386,6 +390,63 @@ any:
 ::METHOD "test_INHERIT_03"
     self~expectSyntax(98.944)
    .amphibianVehicle~inherit(.roadVehicle)
+
+::METHOD "test_INHERIT_non_class"
+   self~expectSyntax(98.942)
+   .amphibianVehicle~inherit("object")
+
+::METHOD "test_INHERIT_no_arg"
+   self~expectSyntax(88.901)
+   .amphibianVehicle~inherit
+
+::METHOD "test_INHERIT_no_bad_target"
+   self~expectSyntax(98.945)
+   .amphibianVehicle~inherit(.transportation, .object)
+
+::METHOD "test_INHERIT_self_recursive"
+   self~expectSyntax(98.944)
+   .transportation~inherit(.transportation)
+
+::METHOD "test_INHERIT_recursive"
+   self~expectSyntax(98.944)
+   .amphibianVehicle~inherit(.waterVehicle)
+
+::METHOD "test_INHERIT_subclass"
+   self~expectSyntax(98.944)
+   .Vehicle~inherit(.waterVehicle)
+
+::METHOD "test_INHERIT_bad_position"
+   self~expectSyntax(98.945)
+   .amphibianVehicle~inherit(.transportation, .aircraft)
+
+::METHOD "test_INHERIT_bad_position_class"
+   self~expectSyntax(98.945)
+   .amphibianVehicle~inherit(.transportation, .vehicle)
+
+::METHOD "test_INHERIT_extra_arg"
+   self~expectSyntax(93.902)
+   .amphibianVehicle~inherit(.transportation, .waterVehicle, .object)
+
+::method test_uninherit_no_arg
+   self~expectSyntax(88.901)
+   .amphibianVehicle~uninherit
+
+::method test_uninherit_two_args
+   self~expectSyntax(93.902)
+   .amphibianVehicle~uninherit(.waterVehicle, .transportation)
+
+::method test_uninherit_not_inherited
+   self~expectSyntax(98.945)
+   .amphibianVehicle~uninherit(.collection)
+
+::method test_uninherit_not_class
+   self~expectSyntax(98.942)
+   .amphibianVehicle~uninherit("Foobar")
+
+::method test_uninherit_self
+   self~expectSyntax(98.945)
+   .transportation~uninherit(.transportation)
+
 
 
 ::method "test_INIT_01"
@@ -608,6 +669,8 @@ getBags: procedure         -- return indices in an index bag, and method items i
       cl~new      -- create an object
    end
    self~assertTrue(cl~counter=5)  -- test whether five instances have been created
+   -- dynamically created classes don't have an attached package.
+   self~assertSame(.nil, cl~package)
 
 
       -- test counter metaclass, enhance class methods
@@ -639,6 +702,61 @@ getBags: procedure         -- return indices in an index bag, and method items i
    self~expectSyntax(99.927)
    cl=.object~subclass("subtest_01", .object)
 
+::method test_subclass_no_id
+   self~expectSyntax(88.901)
+   cl=.object~subclass
+
+::method test_subclass_id_not_string
+   self~expectSyntax(88.909)
+   cl=.object~subclass(.object)
+
+::method test_subclass_metaclass_not_metaclass
+   self~expectSyntax(99.927)
+   cl=.object~subclass("someid", .object)
+
+::method test_subclass_class_methods_not_collection
+   self~expectSyntax(97.1)
+   cl=.object~subclass("someid",, .nil)
+
+::method test_subclass_sparse_array_source
+  self~expectSyntax(93.952)
+  cl=.object~subclass("someid",, .stringTable~of(("somemethod", ("x = something",,"return 123"))))
+
+::method test_subclass_bad_method
+  self~expectSyntax(93.974)
+  cl=.object~subclass("someid",, .stringTable~of(("somemethod", .array)))
+
+::method test_subclass_non_string_array_value
+  self~expectSyntax(93.952)
+  cl=.object~subclass("someid",, .stringTable~of(("somemethod", ("x = something",.nil,"return 123"))))
+
+::method test_mixinclass_no_id
+   self~expectSyntax(88.901)
+   cl=.object~mixinclass
+
+::method test_mixinclass_id_not_string
+   self~expectSyntax(88.909)
+   cl=.object~mixinclass(.object)
+
+::method test_mixinclass_metaclass_not_metaclass
+   self~expectSyntax(99.927)
+   cl=.object~mixinclass("someid", .object)
+
+::method test_mixinclass_class_methods_not_collection
+   self~expectSyntax(97.1)
+   cl=.object~mixinclass("someid",, .nil)
+
+::method test_mixinclass_sparse_array_source
+  self~expectSyntax(93.952)
+  cl=.object~mixinclass("someid",, .stringTable~of(("somemethod", ("x = something",,"return 123"))))
+
+::method test_mixinclass_bad_method
+  self~expectSyntax(93.974)
+  cl=.object~mixinclass("someid",, .stringTable~of(("somemethod", .array)))
+
+::method test_mixinclass_non_string_array_value
+  self~expectSyntax(93.952)
+  cl=.object~mixinclass("someid",, .stringTable~of(("somemethod", ("x = something",.nil,"return 123"))))
 
 
 ::method "test_SUBCLASS_MULTIPLE_INHERITANCE_ON_METACLASSES_01"    -- just the arguments, rest already tested
@@ -732,7 +850,7 @@ getBags: procedure         -- return indices in an index bag, and method items i
    rgf_amphibian_vehicle=rgf_road_vehicle~subclass(amphibian_Vehicle_Name)
    rgf_amphibian_vehicle~inherit(rgf_water_vehicle)
 
-   self~expectSyntax(98.945)
+   self~expectSyntax(98.942)
    rgf_amphibian_vehicle~uninherit("class that does not exist")
 
 
@@ -1062,6 +1180,10 @@ getBags: procedure         -- return indices in an index bag, and method items i
 ::CLASS AmphibianVehicle SUBCLASS RoadVehicle INHERIT WaterVehicle
 ::METHOD show_off
   RETURN self~drive self~swim
+
+::class Transportation mixinclass object
+
+::class AirCraft mixinclass object
 
 /* ************************************************************************* */
 
