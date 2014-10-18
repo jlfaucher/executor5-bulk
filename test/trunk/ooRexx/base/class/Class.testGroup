@@ -1073,6 +1073,19 @@ getBags: procedure         -- return indices in an index bag, and method items i
   self~expectSyntax(93.902)
   .defineTesterBase~delete("somemethod", "huh?")
 
+::method test_subclasses_gc
+  cl = .DefineTester~subclass('aSubclass')
+  ref = .weakreference~new(cl)
+  -- make sure this shows up as a subclass
+  self~assertTrue(.DefineTester~subclasses~hasItem(cl))
+
+  drop cl
+  loop while ref~value \= .nil
+     x = copies('abc', 100000)
+  end
+
+  self~assertFalse(.DefineTester~subclasses~hasItem(cl))
+
 -- some classes to test the effects of define
 ::Class DefineTesterBase
 ::method testOverride
