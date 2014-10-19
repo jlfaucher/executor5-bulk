@@ -567,43 +567,31 @@ return str
 -- End of class SimpleFormatter
 
 
-/* class: ReportData - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
-
-    A base class for data objects reporting problems, events, or infomation
-    during the execution of tests using the ooRexxUnit framework.
-
-\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class 'ReportData' public
-
-::attribute when get
-::attribute when set private
-
-::attribute where get
-::attribute where set private
-
-::attribute type get
-::attribute type set private
-
-::attribute additionalObject
-::attribute additional
-
-::method init
-  expose when where type
-  use strict arg when, where, type, ...
-
-  self~additionalObject = .nil
-  self~additional = .nil
-
-::resource errorMessages
+-- messages templates for reporting various test problems.
+::resource TestProblemMessages
 
 ::END
 
+--  A base class for data objects reporting problems, events, or infomation
+--  during the execution of tests using the ooRexxUnit framework.
+::class 'ReportData' public
 
-/* class: TestProblem- - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+::attribute timeStamp get
+::attribute where get
+::attribute type get
+::attribute additionalObject
 
-    The superclass for reporting problems during the execution of tests.
+::method init
+  expose timeStamp where type additionalObject additional
+  use strict arg where, type
 
-\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+  timeStamp = .datetime~new
+
+  additionalObject = .nil
+  additional = .nil
+
+
+-- The base classs for reporting test problems
 ::class 'TestProblem' public subclass ReportData
 ::method activate
   expose messages
@@ -613,6 +601,17 @@ return str
      parse var line id text
      messages[id] = text
   end
+
+::method init
+  expose conditionObject lineNumber testClass testName testString
+  forward class (super) continue
+
+  conditionObject = .nil
+  lineNumber = .nil
+
+  className = .nil
+  testName = .nil
+  testString = .nil
 
 -- format a error message
 ::method formatMessage
@@ -628,53 +627,28 @@ return str
 
   buffer~append(": ", extra)
 
-::attribute className
+::attribute testClass
 ::attribute testName
+::attribute lineNumber
 ::attribute testString
 
 ::attribute conditionObject
 
+
+--  AssertFailure is a report of a test case failure.  A test case fails when an
+--  assertion does not hold.
+::class 'AssertFailure' public subclass TestProblem
 ::method init
-  expose conditionObject lineNumber
+  expose expected actual msg
   forward class (super) continue
 
-  conditionObject = .nil
-  lineNumber = .nil
-
-  self~className = .nil
-  self~testName = .nil
-  self~testString = .nil
-
-::method setLine
-  expose lineNumber
-  use strict arg lineNumber
-
-::method line
-  expose lineNumber
-
-  if lineNumber \== .nil then return lineNumber
-  else return self~conditionObjLineNumber
-
-
-
-/* class: AssertFailure- - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
-
-    AssertFailure is a report of a test case failure.  A test case fails when an
-    assertion does not hold.
-
-\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class 'AssertFailure' public subclass TestProblem
+  expected = .nil
+  actual = .nil
+  msg = .nil
 
 ::attribute expected
 ::attribute actual
 ::attribute msg
-
-::method init
-  forward class (super) continue
-
-  self~expected = .nil
-  self~actual = .nil
-  self~msg = .nil
 
 
 /* class: ErrorReport- - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
@@ -1023,19 +997,6 @@ return str
   return self~testLineNumber(conditionObject~stackFrames, testMethod)
 
 
--- Given a collection of stack frames, return the line number of the line in the
--- test method as a failure point.
-::method testLineNumber
-  use strict arg frames, testMethod
-
-  do frame over frames
-      if frame~executable == testMethod then do
-           return frame~line
-      end
-  end
-
-  -- not found for some reason
-  return -1
 
 -- clear any expected condition information
 ::method clearCondition
@@ -1046,18 +1007,14 @@ return str
 
 -- indicate that the test is expecting a particular syntax error to be raised.
 ::method expectSyntax
-  expose expectedCondition
-  use strict arg errorCode, msg = .nil
-
-  expectedCondition = .ExpectedCondition~new(self~assertionLine, "SYNTAX", errorCode, msg)
+  -- the details are handled by the current testcase under execution
+  forward to(currentTestCase)
 
 
 -- indicate that a particular condition type is expected.
 ::method expectCondition
-  expose expectedCondition
-  use strict arg name, msg = .nil
-
-  expectedCondition = .ExpectedCondition~new(self~assertionLine, name,, msg)
+  -- the details are handled by the current testcase under execution
+  forward to(currentTestCase)
 
 
 -- check if to see if received condition matches a received condition
@@ -1093,7 +1050,7 @@ return str
           type = 'expectSyntax'
        end
 
-      data = .AssertFailure~new(.TestUtils~timeStamp, self~definedInFile, type)
+      data = .AssertFailure~new(self~definedInFile, type)
 
       data~expected = expected
       data~actual = "Not raised"
@@ -1152,93 +1109,76 @@ return str
   return condition == received~condition & code == receive~code
 
 
-/* *********************************************************************************** */
-/* *********************************************************************************** */
-::class "TestCase" public inherit "Assert"
+-- this represents a single test method within a TestCase.  This
+-- handles the details of running a single test method and recording the
+-- results
+::class "TestMethod"
+-- create an individual test associated with a TestCase
+::method init
+  expose testCase testName testMethod expectecCondition
+  use strict arg testCase, testName, testMethod
 
-::attribute defaultTestResultClass class
-::attribute caseInfo class
+  expectedCondition = .nil
 
-::method init class
-  self~defaultTestResultClass=.TestResult -- set default: use TestResult class
-  self~caseInfo=.directory~new
-  forward class (super)
+::method expectSyntax
+  expose expectedCondition
+  use strict arg errorCode, msg = .nil
+
+  expectedCondition = .ExpectedCondition~new(self~testLineNumber(.context~stackFrames), "SYNTAX", errorCode, msg)
+
+-- indicate that a particular condition type is expected.
+::method expectCondition
+  expose expectedCondition
+  use strict arg name, msg = .nil
+
+  expectedCondition = .ExpectedCondition~new(self~testLineNumber(.context~stackFrames), name,, msg)
 
 
-::method init        -- constructor
-  expose fName fCountTestCases    -- name of Testcase (method) to carry out
-  parse arg fName
-  if fname == "" & self~class~id == "text.testgroup" then do
-    say 1/0
+-- Given a collection of stack frames, return the line number of the line in the
+-- test method as a failure point.
+::method testLineNumber
+  expose testMethod
+  use strict arg frames
+
+  do frame over frames
+      if frame~executable == testMethod then do
+           return frame~line
+      end
   end
 
-  fCountTestCases=1  -- default: individual test
-  self~caseInfo=.directory~new -- directory to contain information on test
+  -- not found for some reason
+  return -1
 
-  clzTCI=self~class~caseInfo    -- get access to clz' 'caseInfo' dir
-  s=clzTCI~entry("test_Case-source")
-  if .nil<>s then                   -- if source available, memorize fully qualified file name
-     self~definedInFile=s
-  else
-    self~definedInFile="n/a_"self~identityHash -- indicate that no file name available
-
-  self~init:super   -- let superclass initialize
-
-
-::method caseInfo attribute                 -- ooRexxUnit only
-
-
-::method createResult      -- creates a default TestResult object
-  -- Use the default class in the environment, if it exists, before using the
-  -- self~class~defaultTestResultClass.
-  if .local~hasEntry(ooRexxUnit.default.TestResult.Class) then do
-    if .ooRexxUnit.default.TestResult.Class~isA(.class) then
-      return .ooRexxUnit.default.TestResult.Class~new
-  end
-  return self~class~defaultTestResultClass~new
-
-::method "countTestCases=" private  -- set method
-  expose  fCountTestCases
-  use arg fCountTestCases
-
-
-::method countTestCases -- return nr. of test cases (methods) in this class
-  expose fCountTestCases
-  return fCountTestCases
-
-
--- execute a specific test case
+-- execute a specific test case method
 ::method execute
-  expose testName
-  use arg aTestResult = (self~createResult), giveFeedback=.false
+  expose testCase
 
-  aTestResult~startTest(self)       -- remember test started
-  self~setUp                        -- make sure setup is invoked before test
-  self~feedBack( "... running TestCase object ["self~string"] ..." )
+  -- create the test result
+  testReult = self~createResult
 
-  -- make sure the output streams are in default state
-  .output~destination(.stdout)
-  .error~destination(.stderr)
-  .traceoutput~destination(.stderr)
+  -- record the test
+  testResult~startTest(self)
 
-  self~doTheTest(testName, aTestResult)  -- carry out the testmethod
+  testCase~feedBack( "... running TestCase object ["self~string"] ..." )
 
-  -- make sure the output streams are in default state
-  .output~destination(.stdout)
-  .error~destination(.stderr)
-  .traceoutput~destination(.stderr)
+  -- setup for the test, creating a clean environment
+  testCase~peformTestSetup
 
-  self~tearDown                       -- make sure tearDown is invoked after test
-  aTestResult~endTest(self)           -- remember test ended
+  self~doTheTest(aTestResult)  -- carry out the testmethod
 
-  return aTestResult
+  -- cleanup after  the test, creating a clean environment
+  testCase~peformTestSetup
 
+  testResult~endTest(self)           -- remember test ended
+  return testResult
+
+-- wrapper around executing the actual test method
 ::method doTheTest
-   expose testMethod
-   use arg methodName, aTestResult
+   expose testName testMethod
+   use arg testResult
 
    -- Trap all conditions propagated from the invocation of the test case
-   -- method, or from the check4ConditionFailure method.
+   -- method, or from the checkForConditionFailure method.
    signal on any name exceptionHandler
 
    -- save the target method for error tracking
@@ -1250,7 +1190,7 @@ return str
    -- The test case method completed without raising a condition.  The last step
    -- is to check if the test case *exepected* a condition to be raised.
    self~checkForConditionFailure
-   return aTestResult
+   return testResult
 
 exceptionHandler:
 
@@ -1277,7 +1217,7 @@ exceptionHandler:
     data~testString = self~string
     data~conditionObject = cObj
     data~additionalObject = self
-    aTestResult~addFailure(self, data)
+    testResult~addFailure(self, data)
   end
   else do
     -- This is an unexpected, unanticipated error.
@@ -1289,10 +1229,58 @@ exceptionHandler:
     err~testName = self~getName
     err~testString = self~string
     err~additionalObject = self
-    aTestResult~addError(self, err)
+    testResult~addError(self, err)
   end
 
-  return aTestResult
+  return testResult
+
+-- Create a string representation of this test case
+::method string
+  expose testname testCase
+
+  buf = .mutableBuffer~new
+  buf~append("testCase: [", testName, "] ("testCase~string, ")")
+  return buf~string
+
+
+-- base class for a TestCase class.  This is a class that implements
+-- a set of test methods.  This handles invocation of the different
+-- test methods and recording of result information from the tests.
+::class "TestCase" public inherit "Assert"
+::method init
+  expose fileName
+
+  -- get the containing file name for reporting.
+  fileName = self~class~package~name
+  -- initialize the superclass
+  self~init:super
+
+-- locate the test method names for this test case class.  Returns
+-- an array of executable testMethod objects.
+::method getTestMethods
+
+  -- Get the test methods names.  By convention this is all methods starting
+  -- with "TEST".  We use a set because there may be duplicates in the
+  -- class hierarchy
+  testMethodNames = .set~new
+
+ -- Get all methods that start with "TEST", even ones from the superclasses
+ -- Some tests might have method overrides that test different variants of
+ -- the base test methods
+  methSupplier = classObj~methods
+  do while methSupplier~available -- iterate over supplied methods
+     name = methSupplier~index
+     if name~match(1, "TEST") then testMethodNames~put(name)
+     methSupplier~next
+  end
+
+  -- return the method names in sorted order.
+  return testMethodNames~makearray~sort
+
+-- create a TestResult object.  Subclasses may override this to
+-- supply different types
+::method createResult
+  return .TestResult~new
 
 -- methods for temporarily disabling out
 ::method disableOutput
@@ -1313,20 +1301,26 @@ exceptionHandler:
 ::method enableTraceOutput
   .traceOutput~destination(.error)
 
+-- perform any environment setup required before running a test method
+::method performTestSetup
+  -- this is invoked before each test method is run
+  testcase~setUp
 
-::method getName     -- returns the name for this TestCase
-  expose fName
-  return fName
+  -- make sure the output streams are in default state
+  .output~destination(.stdout)
+  .error~destination(.stderr)
+  .traceoutput~destination(.stderr)
 
-::method setName     -- set the name for this TestCase
-  expose fName
-  parse arg fName
+-- perform any post test environment cleanup
+::method performTestTeardown
 
--- Create a string representation of this test case
-::method string
-  buf = .mutableBuffer~new
-  buf~append("testCase: [", self~getName, "] (", self~defaultName, "@", self~definedInFile, ")")
-  return buf~string
+  -- make sure the output streams are in default state again
+  .output~destination(.stdout)
+  .error~destination(.stderr)
+  .traceoutput~destination(.stderr)
+
+  -- tearDown is also invoked after each test
+  testcase~tearDown
 
 
 /** setUp()
@@ -1350,81 +1344,13 @@ exceptionHandler:
 ::method tearDown
   NOP
 
-/** dataItem
- * dataItem extracts an embedded set of data from the test classes.  The data
- * is in the form of a method that embeds the data as comment in the method code.
- * The first line of the method must be the line "return /*".  The last line must
- * be the line "*/ return".  All lines between the two delimiters are returned as
- * an array of data.
- *
- * The target method must begin with the characters "data" and is requested using
- * the name without the modifier.  For example, a dataitem named "xml1" would be
- * contained in an instance method named "dataxml1" and would be requested using
- * lines = self~dataitem("xml1")
- */
-::method dataItem
-  use strict arg name
+-- Create a string representation of this test case class
+::method string
+  expose filename
 
-  method = self~instanceMethod("DATA"||name~upper)
-  self~assertNotNull(method, "Method DATA"||name~upper "not found")
-  source = method~source
-  self~assertTrue(source~size > 2, "Data item method does not contain correct data")
-  -- extract the middle section of the data and return as an array
-  return source~section(2, source~size - 2)
-
-
-/* *********************************************************************************** */
-/* *********************************************************************************** */
-/* *********************************************************************************** */
-/* *********************************************************************************** */
-   -- parse file-info into the supplied directory object
-   /*
-      uses the information about the program in the very first block-comment at the top:
-
-      - keyword":" text
-            if keyword starts with "changed", "purpose", "remark", "link", "category" then
-            entry is a queue and text will get enqueued at the end it; the first four letters
-            are used for matching these words
-
-      - arrLines:
-
-   */
-::method makeDirTestInfo
-
-   tmpDir = caseInfo   -- get directory object to add infos to
-   -- The test information can be stored as a resource within the file.
-   -- if this is there, parse it out
-   sourceInfo = self~class~package~resources~testinfo
-   -- just punt if this is not there as a resource
-
-   if sourceInfo == .nil then return
-
-   keyWord=""
-
-   -- we have data, parse it into info entries
-   loop line over sourceInfo
-      -- ignore all comments
-      if line~strip~left(2)="--" || line = "" then iterate    -- ignore comment
-
-      -- we might already have a keyword we're working on...in that case, we
-      -- just append the data to the entry
-
-         -- a keyWord already set and this line has no new keyword, than append it
-      if \line~contains(":") then
-      do
-         if keyWord<>"" then  -- already a keyWord found, append this line to with a line-end
-            tmpdir[keyword] ||= .endofline || line
-         iterate
-      end
-
-      parse value line with keyword . ":" rest
-      keyword = keyword~upper
-
-      if \tmpDir~hasIndex(keyWord) then
-         tmpDir[keyWord] = rest~strip
-      else
-         tmpdir[keyword] ||= .endofline || rest~strip
-   end
+  buf = .mutableBuffer~new
+  buf~append(testCase~defaultName, '@', filename, ")")
+  return buf~string
 
 
 /* *********************************************************************************** */
@@ -1567,29 +1493,6 @@ syntax:
       end
    end
 
-::method getTestMethods class -- use reflection to retrieve testmethods, sort alphabetically
-  use strict arg classObj
-
-  if \classObj~isA(.class) then
-    raise syntax 88.914 array ("1 'classObj'", 'Class')
-
-  -- Get the test methods names.  By convention this is all methods starting
-  -- with "TEST".  We use a set because there may be duplicates in the
-  -- class hierarchy
-  testMethodNames = .set~new
-
- -- Get all methods that start with "TEST", even ones from the superclasses
- -- Some tests might have method overrides that test different variants of
- -- the base test methods
-  methSupplier = classObj~methods
-  do while methSupplier~available -- iterate over supplied methods
-     name = methSupplier~index
-     if name~match(1, "TEST") then testMethodNames~put(name)
-     methSupplier~next
-  end
-
-  return testMethodNames~makearray~sort
-
 
 -- add a test to the queue of individual test cases to run
 ::method addTest
@@ -1655,49 +1558,6 @@ syntax:
  */
 ::method tearDown
   NOP
-
-
-/* *********************************************************************************** */
-/* *********************************************************************************** */
--- routines
-
-/* *********************************************************************************** */
-/* *********************************************************************************** */
-
-
-
-
-
-
-
-
-
-
-
-
-   -- simple dumping of the testResult data
-::routine simpleDumpTestResults public
-   use arg aTestResult, title = ""
-
-   f = .SimpleFormatter~new(aTestResult, title)
-   f~print
-
-
-/**
- * Public routine simpleFormatTestResults()
- *
- *  Variation on simpleDumpTestResults() that formats the result output in a
- *  more "console-friendly" manner.  The information is broken up into lines,
- *  with an attempt made to keep all lines no longer than 80 characers wide.
- */
-::routine simpleFormatTestResults public
-   use arg aTestResult, title = ""
-
-   f = .SimpleConsoleFormatter~new(aTestResult, title)
-   f~print
-
-return 0
-
 
 -- a class for creating/deleting temporary test files
 ::class TemporaryTestFile public
