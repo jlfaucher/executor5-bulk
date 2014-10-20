@@ -199,7 +199,7 @@ return .false
   buff = .mutableBuffer~new
   sep = ""
 
-  // loop searching for sections of non-printable charactes
+  -- loop searching for sections of non-printable charactes
   loop while str<>""
      start=str~ (str, nonPrintableChars, "Match")
      -- non-printing char found, look for printable char after it
@@ -252,319 +252,164 @@ return .false
 ::method getVerbosity
   return self~verbose
 
--- End of class: NoiseAdjustable
 
-
-/** class:  TestCollectingParameter
-  *   Defines an interface for a test data collecting parameter.  The TestResult
-  *   class and subclasses apply the 'Collecting Parameter' design pattern.
-  *   This object is used to collect data throughout the execution of a test.
-  */
-::class 'TestCollectingParameter' public inherit NoiseAdjustable
-
-/** Ouputs in some manner the formatted data of this collecting parameter.    */
-::method print          abstract
-
-/** Sets the default formatter class to use when print() is invoked.          */
-::method setFormatter   abstract
-
-/** Returns the current default formatter class of this collecting parameter  */
-::method getFormatter   abstract
-
--- End of class TestCollectingParameter
-
-
-::class "TestResult" public subclass TestCollectingParameter
-
-::attribute logQueue
-
--- The default formatter class for this test result.
-::attribute formatter private
-
+-- Record the result from an individual test method.  This will hold all of the
+-- error/failure information, plus a count of the successful assertions.
+::class "TestResult" public
 ::method init
-  expose errorList failureList testCount stop testRuns log assertionCount
-
-  errors=.array~new
-  failures=.array~new
-  log=.TestLog~new
+  expose testMethod log errorInformation assertionCount isError isFailure
+  use strict arg testMethod
 
   assertionCount = 0
-  testCount = 0
-  step = .false
-
-  self~setVerbosity(self~DEFAULT_VERBOSITY)
-  self~formatter = .SimpleFormatter
+  errorInformation = .nil
+  log = testMethod~log
+  isError = .false
+  isFailure = .false
 
 -- add an error to the result
-::method addError
-  expose errors testCases log
-  use strict arg testCase, errData
+::method setError
+  expose errorInformation log isError
+  use strict arg errorInformation
 
-  errors~append(errData)
-  log~logError(errData)
+  log~logError(self, errorInformation)
+  isError = .true
 
 -- add a failure to the result
-::method addFailure
-  expose failureCount log
-  use strict arg testCase, failureData
+::method setFailure
+  expose errorInformation log expose isFailure
+  use strict arg errorInformation
 
-  failures~append(failureData)
-  log~logFailure(failData)
+  log~logFailure(self, errorInformation)
+  isFailure = .true
 
 ::attribute assertionCount GET
 
 -- Record test completion
 ::method endTest
   expose stop log assertionCount
-  use strict arg testCase
 
-  -- have the test case log the test end
-  testCase~logEndTest
   -- and add an end event to our test log
-  log~logEndTest(testCase)
-
-  -- add this into the assertion totals
-  assertionCount += testCase~assertionCount
-
-  -- reset the termination indicator
-  stop = .false
-
-::attribute errorCount get
-  expose errors
-  return errors~items
-
-::attribute errors get
-
-::attribute failureCount
-  expose failures
-  return failures~items
-
-::attribute failures get
-
-::attribute testCount get
-
--- test if we should stop running tests
-::method shouldStop
-  expose stop
-  return stop
+  log~logEndTest(self)
 
 ::method startTest
-  expose stop testCount log
-  use arg testCase
+  expose log
 
-  -- log this both with the test case and globally
-  testCase~logTestStart
-  log~logTestStart(testCase)
-
-  -- reset the stop indicator for a new test
-  stop = .false
-  testCount += 1
-
---  mark that the test run should stop
-::method stop
-  expose stop
-  stop=.true
+  log~logTestStart(self)
 
 -- returns whether the entire test was successful or not
 ::method wasSuccessful
-  return self~errorCount + self~failureCount = 0
+  expose errorInformation
+  return errorInformation == .nil
+
+::attribute isFailure get
+::attribute isError get
+
+-- display any failure information
+::method displayFailure
+  expose errorInformation
+  use strict arg output
+
+  if errorInformation \= .nil then
+     errorInformation~display(output)
 
 
-/** print()
- * Output the result data using our assigned formatter.
- *
- * @param title    OPTIONAL    (String)
- *   Passes a title on to the formatter.
- *
- * @param level   OPTIONAL    (Whole Number)
- *   Sets the verbosity level of the print out by over-riding the verbosity
- *   level of this test result.  By default the verbosity of the print out will
- *   be that of this test result.
- */
-::method print
-  use strict arg title = "", level = (self~getVerbosity), outStream = .output
-
-  formatter = self~formatter~new(self, title, level)
-  formatter~print(outStream)
-
-::attribute formatter
-
--- End of class TestResult
-
-
-/* class: ResultFormatter- - - - - - - - - - - - - - - - - - - - - - - - - - -*\
-
-    An interface for an object that can format, and then output, the data
-    contained in a test collecting parameter.
-
-\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class 'ResultFormatter' public inherit NoiseAdjustable
-
-::attribute testResult private
-::attribute title private
-
+-- an accumulated set of test results
+::class "ResultSet"
 ::method init
-  expose testResult title
-  use strict arg testResult, title = ""
+  expose tests assertions failures errors failureResult testId
+  use strict arg testId
 
-  self~setVerbosity(self~DEFAULT_VERBOSITY)
+  tests = 0
+  assertions = 0
+  failures = 0
+  errors = 0
+  failureResults = .array~new
 
-/** print()  Format and output the data of this formatter's test result. */
-::method print abstract
+::attribute tests get
+::attribute assersions get
+::attribute failures get
+::attribute errors get
+::attribute failureResults get
 
-/** setTitle()  Set a title for this formatter's output. */
-::method setTitle abstract
+-- mark the start of a set of tests
+::method testStart
+  expose startTime
 
--- End of class ResultFormatter
+  startTime = .DateTime~new
 
+-- mark the end of a set of tests
+::method testEnd
+  expose endTime
 
-/* class: SimpleFormatter- - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+  endTime = .DateTime~new
 
-    Formats and prints to the console a simple rendition of a test result's
-    data.
+-- add a new result to the set for this test case
+::method addResult
+  expose tests assertions failures errors failureResults
+  use strict arg result
 
-\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class 'SimpleFormatter' public subclass ResultFormatter
+  -- this is always an additional test
+  tests += 1
+  -- even failures can have successful assertions
+  assertions += result~assertions
 
-::method print
-  use strict arg outStream = .output
-
-  testResult = self~testResult
-
-  if self~title <> "" then do
-    outStream~lineout(self~title)
-    outStream~lineout
+  -- assertion failure of some sort?  Save the failure
+  -- information for the printout/log
+  if result~isFailure then do
+     failures += 1
+     failureResults~append(result)
+  end
+  -- could be an unexpected exception, which is an error
+  else if result~isError then do
+     erross += 1
+     failureResults~append(result)
   end
 
-  say "nr of test runs:            " aTestResult~runCount
-  say "nr of successful assertions:" aTestResult~assertCount
+-- test if this test has any error information
+::method wasSuccessful
+  expose errors failures
 
-  say "nr of failures:             " aTestResult~failureCount
-  if aTestResult~failureCount > 0 then do data over aTestResult~failures
-    say "  " self~failureToString(data)
+  return errors + failures = 0
+
+-- merge a result set into a another result set to accumulate.
+-- used mostly for test suites that give a consoladated error
+-- report.
+::method merge
+  expose tests assertions failures errors failureResults
+  use strict arg otherSet
+
+  tests += otherSet~tests
+  assertions += otherSet~assertions
+  errors += otherSet~errors
+  failures += otherSet~failures
+
+  failureResults~appendAll(otherSet~failureResults)
+
+-- display this exception status
+::method display
+  expose tests assertions failures errors failureResults testId startTime endTime
+  use strict arg output = .output
+
+  output~lineout("Test Name       "  testId
+  output~lineout("Interpreter:    " .rexxinfo~name)
+  output~lineout("Addressing Mode:" .rexxInfo~architecture)
+  output~lineout("ooRexxUnit:     " .ooRexxUnit~version)
+  output~lineout
+  output~lineout("Tests run:         " tests
+  output~lineout("Assertions:        " assertions
+  output~lineout("Failures:          " failures
+  output~lineout("Errors:            " errors
+
+  if \failureResults~isEmpty then do
+     output~lineout
+     loop result over failureResults
+        output~lineout
+        result~displayFailure(output)
+     end
   end
 
-  say "nr of errors:               " aTestResult~errorCount
-  if aTestResult~errorCount > 0 then do err over aTestResult~errors
-    say "  " self~errorToString(err)
-  end
-
-::method failureToString private
-  use arg data
-
-  str = data~when": [failure]" data~testString "---> @assertFailure" -
-        data~type": expected="data~expected", actual="data~actual"."
-
-  if data~msg <> "" then str = str ||"09"x || data~msg
-
-return str
-
-::method errorToString private
-  use arg data
-
-  str = data~when': [error]' data~testString '---> condition ['data~type'] raised unexpectedly.'
-
-  if data~conditionObject~message <> .nil then str = str || '09'x || data~conditionObject~message
-
-return str
-
--- End of class SimpleFormatter
-
-
-/* class: SimpleConsoleFormatter - - - - - - - - - - - - - - - - - - - - - - -*\
-
-    Formats a test result's data and prints it in a console friendly manner.
-
-\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class 'SimpleConsoleFormatter' public subclass ResultFormatter
-
-::method setTitle
-  use strict arg title
-  if \ title~isA(.String) then
-    raise syntax 88.914 array ("1 'title'", .string~id)
-
-  self~title = title
-
-::method print
-  aTestResult = self~testResult
-
-  if self~title <> "" then do
-    say self~title
-    say
-  end
-
-   versionStr = .ooRexxUnit.interpreterName .ooRexxUnit.languageLevel .ooRexxUnit.interpreterDate
-   say "Interpreter:" versionStr
-   say "ooRexxUnit: " .ooRexxUnit.version
-   say
-   say "Count of tests ran:            " aTestResult~runCount
-   say "Count of successful assertions:" aTestResult~assertCount
-   say "Count of failures:             " aTestResult~failureCount
-   say "Count of errors:               " aTestResult~errorCount
-   say
-
-   if aTestResult~failureCount > 0 then do data over aTestResult~failures
-      self~printFailureInfo(data)
-   end
-
-   if aTestResult~errorCount > 0 then do data over aTestResult~errors
-      self~printErrorInfo(data)
-   end
-
-   -- If a number of failure or error information lines are printed, re-display
-   -- the summary statistics again so that the number of failures is obvious to
-   -- the user.
-   if (aTestResult~failureCount + aTestResult~errorCount) > 3 then do
-     say "Interpreter:" versionStr
-     say "ooRexxUnit: " .ooRexxUnit.version
-     say
-     say "Count of tests ran:            " aTestResult~runCount
-     say "Count of successful assertions:" aTestResult~assertCount
-     say "Count of failures:             " aTestResult~failureCount
-     say "Count of errors:               " aTestResult~errorCount
-     say
-   end
-
-
-::method printFailureInfo private
-  use arg data
-
-  say "[failure]" data~when
-  say "  Test:  " data~testname
-  say "  Class: " data~className
-  say "  File:  " data~where
-  say "  Line:  " data~line
-  say "  Failed:" data~type
-  say "    Expected:" data~expected
-  say "    Actual:  " data~actual
-
-  if data~msg \== "" then
-    say "    Message: " data~msg
-  say
-
-::method printErrorInfo private
-  use arg data
-
-  -- It is possible that the error happened in a file other than the test case
-  -- file.  Most often the files are the same.
-  different = (data~where~compareTo(data~conditionObject~program) <> 0)
-
-  say "[error]" data~when
-  say "  Test: " data~testName
-  say "  Class:" data~className
-  say "  File: " data~where
-  say "  Event: ["data~type"] raised unexpectedly."
-  if data~conditionObject~message \== .nil then
-    say "    "data~conditionObject~message
-  if different then
-    say "    Program:" data~conditionObject~program
-  say "    Line:   " data~line
-  if data~conditionObject~traceBack~isA(.list) then do line over data~conditionObject~traceBack
-    say line
-  end
-  say
-
--- End of class SimpleFormatter
+  output~lineout
+  output~lineout("Execution time:    " endTime - startTime
 
 
 -- messages templates for reporting various test problems.
@@ -572,27 +417,8 @@ return str
 
 ::END
 
---  A base class for data objects reporting problems, events, or infomation
---  during the execution of tests using the ooRexxUnit framework.
-::class 'ReportData' public
-
-::attribute timeStamp get
-::attribute where get
-::attribute type get
-::attribute additionalObject
-
-::method init
-  expose timeStamp where type additionalObject additional
-  use strict arg where, type
-
-  timeStamp = .datetime~new
-
-  additionalObject = .nil
-  additional = .nil
-
-
--- The base classs for reporting test problems
-::class 'TestProblem' public subclass ReportData
+-- The base class for reporting test problems
+::class 'TestFailure' public
 ::method activate
   expose messages
   messages = .stringtable~new
@@ -602,16 +428,14 @@ return str
      messages[id] = text
   end
 
+-- initialize a test failure.  At this level, we are given the
+-- testMethod object, which contains all of the relevant test information,
+-- and type type of failure
 ::method init
-  expose conditionObject lineNumber testClass testName testString
-  forward class (super) continue
+  expose testMethod failureType timestamp
+  use strict arg testMethod, failureType
 
-  conditionObject = .nil
-  lineNumber = .nil
-
-  className = .nil
-  testName = .nil
-  testString = .nil
+  timestamp = .datetime~new
 
 -- format a error message
 ::method formatMessage
@@ -627,71 +451,327 @@ return str
 
   buffer~append(": ", extra)
 
-::attribute testClass
-::attribute testName
-::attribute lineNumber
-::attribute testString
+-- retrieve a specific message identifier
+::method messageText
+  expose messages
+  use strict arg id
 
-::attribute conditionObject
+  return messages~entry(id)
+
+-- display the test failure information
+::method displayFailure
+  expose testMethod failureType timestamp
+  use strict arg output
+
+  output~lineout('['failureType'] ['timestamp~isodate']')
+  testMethod~display(output)
 
 
---  AssertFailure is a report of a test case failure.  A test case fails when an
---  assertion does not hold.
-::class 'AssertFailure' public subclass TestProblem
+--  AssertionFailure is a report of a test case failure.  A test case fails when an
+--  assertion does not hold.  This is the base assertion failure.
+::class 'AssertionFailure' public subclass TestFailure
 ::method init
-  expose expected actual msg
-  forward class (super) continue
+  expose message assertionLine assertionType secondaryAssertion
+  use strict arg testMethod, assertionType, assertionLine, message
 
-  expected = .nil
-  actual = .nil
-  msg = .nil
+  self~init:super(testMethod, "Assertion Failure")
+  secondaryAssertion = .nil
 
-::attribute expected
-::attribute actual
-::attribute msg
+-- display the test failure information
+::method displayFailure
+  expose message assertionLine assertionType secondaryException
+  use strict arg output
+
+  -- display the base information
+  self~displayFailure:super(output)
+  output~lineout("  Line:   " assertionLine)
+  if message ~= .nil then do
+      output~lineout("  Purpose:" message)
+  end
+  output~lineout("  Failed: " self~assertionMessage)
+  if secondaryException \= .nil then do
+     output~lineout("Failure Cause:")
+     secondaryException~displaySecondaryFailure(output)
+  end
 
 
-/* class: ErrorReport- - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+-- display the test secondary failure information
+::method displaySecondaryFailure
+  expose message
+  use strict arg output
 
-    ErrorReports are used for unexpected errors during the execution of a test
-    case.
+  if message ~= .nil then do
+      output~lineout("    Purpose:" message)
+  end
+  output~lineout("    Failed: " self~assertionMessage)
 
-    When an unexpected error happens during the execution of a test case, there
-    is always a condition object at the time the error is trapped.  So, unlike
-    AssertFailures, the condition object is required to instantiate an error
-    report.
 
-\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class 'ErrorReport' public subclass TestProblem
+-- set a secondary assertion on the object
+::attribute secondaryException set
 
+
+-- get an explanation message for a given assertion failure type
+::method assertionMessage
+  expose assertionType
+
+  return self~messageTest(assertionType)
+
+
+--  OneValueAssertionFailure is a report of a test case failure.  A test case fails when an
+--  assertion about an object does not hold.  This is the base assertion failure.
+::class 'OneValueAssertionFailure' public subclass TestFailure
 ::method init
-  use strict arg dateTime, file, type, cObj
-  forward class (super) continue
+  expose message assertionLine assertionType actual
+  use strict arg testMethod, assertionType, assertionLine, message, actual
 
-  self~conditionObject = cObj
+  self~init:super(testMethod, assertionType, assertionLine, message)
+
+-- display the test failure information
+::method displayFailure
+  expose actual
+  use strict arg output
+
+  -- display the base information
+  self~displayFailure:super(output)
+  output~lineout("  Actual: " self~formatObject(actual))
 
 
-/* class: Assert - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
-
-    Assertions will raise a user error, if they do not hold.
-
-\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class "Assert" public mixinclass Object
-
-::attribute assertions get
-::attribute assertions set private
-::attribute definedInFile    -- allows to quickly get filename from which test case is taken
-
+--  TwoValueAssertionFailure is a report of a test case failure.  A test case fails when an
+--  assertion about an object does not hold.  This is the base assertion failure.
+::class 'OneValueAssertionFailure' public subclass TestFailure
 ::method init
-  self~assertions = 0
-  self~clearCondition
+  expose message assertionLine assertionType expected actual
+  use strict arg testMethod, assertionType, assertionLine, message, expected, actual
+
+  self~init:super(testMethod, assertionType, assertionLine, message)
+
+-- display the test failure information
+::method displayFailure
+  expose actual
+  use strict arg output
+
+  -- display the base information
+  self~displayFailure:super(output)
+  output~lineout("    Actual:  " self~formatObject(expected))
+  output~lineout("    Expected:" self~formatObject(actual))
+
+
+-- class for an unexpected execution failure
+::class 'UnexpectedError' public subclass TestFailure
+::method init
+  expose errorLine conditionObject
+  use strict arg testMethod, conditionObject, errorLine
+
+  self~init:super(testMethod, "Unexpected Error")
+
+-- display the test failure information
+::method displayFailure
+  expose message assertionLine assertionType
+  use strict arg output
+
+  -- display the base information
+  self~displayFailure(output)
+  output~lineout("  Line:  " assertionLine)
+  output~lineout("  Failed:" assertionType)
+
+
+-- a holder for expected syntax information
+::class "ExpectedCondition"
+::method init
+  expose condition code assertionLine message
+  use strict arg assertionLine, condition , code = .nil, message = .nil
+
+::attribute condition get
+::attribute code get
+::attribute message get
+::attribute assertionLine
+
+-- do a check for condition equality
+::method isMatch
+  expose condition code
+  use strict arg received
+
+  -- note:  for non syntax conditions, the code in the condition object
+  -- will be .nil, so this will compare equal.
+  return condition == received~condition & code == receive~code
+
+
+-- this represents a single test method within a TestCase.  This
+-- handles the details of running a single test method and recording the
+-- results
+::class "TestMethod"
+-- create an individual test associated with a TestCase
+::method init
+  expose testCase testName testMethod expectedCondition
+  use strict arg testCase, testName, testMethod
+
+  expectedCondition = .nil
+
+::method expectSyntax
+  expose expectedCondition
+  use strict arg errorCode, msg = .nil
+
+  expectedCondition = .ExpectedCondition~new(self~testLineNumber(.context~stackFrames), "SYNTAX", errorCode, msg)
+
+-- indicate that a particular condition type is expected.
+::method expectCondition
+  expose expectedCondition
+  use strict arg name, msg = .nil
+
+  expectedCondition = .ExpectedCondition~new(self~testLineNumber(.context~stackFrames), name,, msg)
+
+
+-- Given a collection of stack frames, return the line number of the line in the
+-- test method as a failure point.
+::method testLineNumber
+  expose testMethod
+  use strict arg frames
+
+  do frame over frames
+      if frame~executable == testMethod then do
+           return frame~line
+      end
+  end
+
+  -- not found for some reason
+  return -1
+
+-- execute a specific test case method
+::method execute
+  expose testCase
+
+  -- create the test result
+  testReult = self~createResult
+
+  -- record the test
+  testResult~startTest(self)
+
+  testCase~feedBack( "... running TestCase object ["self~string"] ..." )
+
+  -- setup for the test, creating a clean environment
+  testCase~peformTestSetup
+
+  self~doTheTest(aTestResult)  -- carry out the testmethod
+
+  -- cleanup after  the test, creating a clean environment
+  testCase~peformTestSetup
+
+  testResult~endTest(self)           -- remember test ended
+  return testResult
+
+-- wrapper around executing the actual test method
+::method doTheTest
+   expose testName testMethod
+   use arg testResult
+
+   -- Trap all conditions propagated from the invocation of the test case
+   -- method, or from the checkForConditionFailure method.
+   signal on any name exceptionHandler
+
+   -- save the target method for error tracking
+   testMethod = self~instanceMethod(methodName)
+
+   -- now dynamically invoke the method
+   self~send(methodName)
+
+   -- The test case method completed without raising a condition.  The last step
+   -- is to check if the test case *exepected* a condition to be raised.
+   self~checkForConditionFailure
+   return testResult
+
+exceptionHandler:
+
+  -- Get the condition object.  (The condition object is a Directory object.)
+  cObj = condition("O")
+
+  -- If a condition was expected to be raised AND this condition matches the
+  -- expected condition, then the test passed so just return.
+  if self~conditionExpected, self~checkCondition(cObj) then return aTestResult
+
+  -- If the condition code is 93.964 then this condition was raised by the
+  -- framework to signal a test case failure.  The assert failure object is at
+  -- index 2 of the additional array.
+  if cObj~code = 93.964 then do
+    data = cObj~additional[2]
+
+    -- It does not seem conceivable that data is not the object I think it is.
+    -- The best thing to do would be to check if it is an AssertFailure object
+    -- and, if not, create an ErrorReport object and do aTestResult~addError()
+    -- Skipping that for now.
+
+    data~className = self~class~id
+    data~testName = self~getName
+    data~testString = self~string
+    data~conditionObject = cObj
+    data~additionalObject = self
+    testResult~addFailure(self, data)
+  end
+  else do
+    -- This is an unexpected, unanticipated error.
+    type = cObj~condition
+    if cObj~hasentry("CODE") then type = type cObj~code
+
+    err = .ErrorReport~new(.TestUtils~timeStamp, self~definedInFile, type, cObj)
+    err~className = self~class~id
+    err~testName = self~getName
+    err~testString = self~string
+    err~additionalObject = self
+    testResult~addError(self, err)
+  end
+
+  return testResult
+
+-- Create a string representation of this test case
+::method string
+  expose testname testCase
+
+  buf = .mutableBuffer~new
+  buf~append("testCase: [", testName, "] ("testCase~string, ")")
+  return buf~string
+
+-- display base test information
+::method display
+  expose testCase testMethod
+  use strict arg output
+
+  -- display the method name, then add the testcase information
+  output~lineout("  Test:  " testMethod)
+  testCase~display(output)
+
+
+-- base class for a TestCase class.  This is a class that implements
+-- a set of test methods.  This handles invocation of the different
+-- test methods and recording of result information from the tests.
+::class "TestCase" public
+::method init
+  expose fileName svnInfo
+
+  -- get the containing file name for reporting.
+  fileName = self~class~package~name
+
+  -- try to determine if this file is in svn and get the information
+  -- if it is
+  svnInfo = .svnInfo~new(fileName)
+
+  -- initialize the superclass
+  self~init:super
+
+-- display base test information
+::method display
+  expose fileName svnInfo
+  use strict arg output
+
+  output~lineout("  Class: " self~class~id)
+  output~lineout("  File:  " fileName)
+  if svnInfo~revision \= .nil then do
+     output~lineout("  SVN:     r"svnInfo~revision "  Change Date: " svnInfo~date)
+  end
 
 -- count a successful assertion
 ::method assertionPassed
-  expose assertions
+  expose currentTestCase
 
-  assertions += 1
-
+  forward to(currentTestCase)
 
 -- checks that two collections are equilvalent.  Does not take
 -- order into account.  Use assertArraysEqual or assertArraysStrictlyEqual
@@ -709,7 +789,7 @@ return str
   -- try to compare them as collections.  Note that we use the "=" comparison
   -- variant here.
   if expected != actual then do
-      self~fail(self~makeFailure(expected, actual, msg, "assertEquals"))
+      self~twoValueFail("assertEquals", expected, actual, msg)
   end
 
   -- Assertion holds
@@ -725,7 +805,7 @@ return str
   numeric fuzz 1
 
   if expected != actual then do
-      self~fail(self~makeFailure(expected, actual, msg, "assertFuzzyEquals"))
+      self~twoValueFail("assertFuzzyEquals", expected, actual, msg)
   end
 
   -- Assertion holds
@@ -734,7 +814,7 @@ return str
 
 -- assert that a result does not equal a given value
 ::method assertNotEquals
-  use strict arg expected, actual, msg = ""
+  use strict arg expected, actual, msg = .nil
 
   -- If the 2 objects are not equal AND they are not 2 equal collections ...
   if expected != actual then do
@@ -743,18 +823,15 @@ return str
     return
   end
 
-  expected = self~formatObjectInfo(expected)
-  actual   = self~formatObjectInfo(actual)
-
-  self~fail(self~makeFailure(expected '\=' actual, expected ' =' actual, msg, "assertNotEquals"))
+  self~twoValueFail("assertNotEquals", expected, actual, msg)
 
 
 -- assert that the result is equal to .nil
 ::method assertNull
-  use strict arg actual, msg = ""
+  use strict arg actual, msg = .nil
 
   if .nil \== actual then do
-    self~fail(self~makeFailure("[.nil]", actual, msg, "assertNull"))
+    self~oneValueFail("assertNull", actual, msg)
   end
 
   -- Assertion holds
@@ -766,7 +843,7 @@ return str
   use strict arg actual, msg = ""
 
   if .nil == actual then do
-    self~fail(self~makeFailure("[Not .nil]", "[.nil]", msg, "assertNotNull"))
+    self~oneValueFail("assertNotNull", actual, msg)
   end
 
   -- Assertion holds
@@ -774,36 +851,41 @@ return str
 
 -- verify that a result is an instance of a particular class
 ::method assertIsA
-  use strict arg target, class, msg = 'assertIsA'
+  use strict arg target, class, msg = .nil
 
-  self~assertTrue(target~isa(class), msg)
+  if \target~isA(class) then do
+    self~twoValueFail("assertIsA", target, class, msg)
+  end
+
+  -- Assertion holds
+  self~assertionPassed
 
 
 -- compare an array of items.  each item must be the same, and in the same
 -- order.  Item comparisons are the non-strict variety
 ::method assertArraysEqual
-  use strict arg expected, actual, msg = "assertArraysEqual"
+  use strict arg expected, actual, msg = .nil
 
-  self~assertTrue(actual~isa(.array), msg': actual must be an array')
-  self~assertEquals(expected~items, actual~items, msg': expected and actual lists are different sizes')
-  self~assertEquals(expected~last, actual~last, msg': have different index structures')
+  self~assertIsA(actual, .array, msg)
+  self~assertEquals(expected~items, actual~items, msg)
+  self~assertEquals(expected~last, actual~last, msg)
 
   loop i = 1 to expected~last
-      self~assertEquals(expected[i], actual[i], msg': mismatch on element' i)
+      self~assertEquals(expected[i], actual[i], msg)
   end
 
 
 -- compare an array of items.  each item must be the same, and in the same
 -- order.  Item comparisons are the strict variety
 ::method assertArrayStrictlyEquals
-  use strict arg expected, actual, msg = "assertArraysStrictlyEqual"
+  use strict arg expected, actual, msg = .nil
 
-  self~assertTrue(actual~isa(.array), msg': actual must be an array')
-  self~assertEquals(expected~items, actual~items, msg': expected and actual lists are different sizes')
-  self~assertEquals(expected~last, actual~last, msg': have different index structures')
+  self~assertTrue(actual~isa(.array), msg)
+  self~assertEquals(expected~items, actual~items, msg)
+  self~assertEquals(expected~last, actual~last, msg)
 
   loop i = 1 to expected~last
-      self~assertStrictlyEquals(expected[i], actual[i], msg': mismatch on element' i)
+      self~assertStrictlyEquals(expected[i], actual[i], msg)
   end
 
 
@@ -959,6 +1041,24 @@ return str
   self~assertTrue(.false, msg) -- just do this as a true assertion
 
 
+-- create an error for a two-value assertion failure.
+::method twoValueFail
+  expose currentTestCase
+  use strict arg type, expected, actual, msg
+
+  failure = .TwoValueAssertionFailure~new(currentTestCase, type, self~assertionLine, msg, expected, actual)
+  self~fail(failure)
+
+
+-- create an error for a two-value assertion failure.
+::method oneValueFail
+  expose currentTestCase
+  use strict arg type, actual, msg
+
+  failure = .OneValueAssertionFailure~new(currentTestCase, type, self~assertionLine, msg, actual)
+  self~fail(failure)
+
+
 /** fail()
  * Raise an application definable syntax condition with code 93.964.  The
  * exception handler for the test case method execution will check for this
@@ -986,24 +1086,12 @@ return str
 
   RAISE syntax 93.964 array (msg, data)
 
-
-/** conditionObjLineNumber()
- * Given an object, will return the line number of a syntax exception, if the
- * object is a condition object for a syntax exception.  Othewise returns -1.
- */
-::method conditionObjLineNumber
-  expose conditionObject
-
-  return self~testLineNumber(conditionObject~stackFrames, testMethod)
-
-
+-- access to the current running test method state
+::attribute currentTestCase
 
 -- clear any expected condition information
 ::method clearCondition
-  expose expectedCondition
-
-  expectedCondition = .nil
-
+  forward to(currentTestCase)
 
 -- indicate that the test is expecting a particular syntax error to be raised.
 ::method expectSyntax
@@ -1087,173 +1175,23 @@ return str
   buf~append('[', hint, '[', .TestUtils~escapeString(o~string), ', identityHash="', o~identityHash, '"]')
   return buf~string
 
-
--- a holder for expected syntax information
-::class "ExpectedCondition"
-::method init
-  expose condition code assertionLine message
-  use strict arg assertionLine, condition , code = .nil, message = .nil
-
-::attribute condition get
-::attribute code get
-::attribute message get
-::attribute assertionLine
-
--- do a check for condition equality
-::method isMatch
-  expose condition code
-  use strict arg received
-
-  -- note:  for non syntax conditions, the code in the condition object
-  -- will be .nil, so this will compare equal.
-  return condition == received~condition & code == receive~code
-
-
--- this represents a single test method within a TestCase.  This
--- handles the details of running a single test method and recording the
--- results
-::class "TestMethod"
--- create an individual test associated with a TestCase
-::method init
-  expose testCase testName testMethod expectecCondition
-  use strict arg testCase, testName, testMethod
-
-  expectedCondition = .nil
-
-::method expectSyntax
-  expose expectedCondition
-  use strict arg errorCode, msg = .nil
-
-  expectedCondition = .ExpectedCondition~new(self~testLineNumber(.context~stackFrames), "SYNTAX", errorCode, msg)
-
--- indicate that a particular condition type is expected.
-::method expectCondition
-  expose expectedCondition
-  use strict arg name, msg = .nil
-
-  expectedCondition = .ExpectedCondition~new(self~testLineNumber(.context~stackFrames), name,, msg)
-
-
--- Given a collection of stack frames, return the line number of the line in the
--- test method as a failure point.
-::method testLineNumber
-  expose testMethod
-  use strict arg frames
-
-  do frame over frames
-      if frame~executable == testMethod then do
-           return frame~line
-      end
-  end
-
-  -- not found for some reason
-  return -1
-
--- execute a specific test case method
+-- execute all of the methods in a test case class, returning the accumulated
+-- statistics
 ::method execute
-  expose testCase
+  testMethods = self~getTestMethods
 
-  -- create the test result
-  testReult = self~createResult
+  -- create a result object for this test case class.
+  testResult = .TestCaseResult~new(self)
 
-  -- record the test
-  testResult~startTest(self)
-
-  testCase~feedBack( "... running TestCase object ["self~string"] ..." )
-
-  -- setup for the test, creating a clean environment
-  testCase~peformTestSetup
-
-  self~doTheTest(aTestResult)  -- carry out the testmethod
-
-  -- cleanup after  the test, creating a clean environment
-  testCase~peformTestSetup
-
-  testResult~endTest(self)           -- remember test ended
-  return testResult
-
--- wrapper around executing the actual test method
-::method doTheTest
-   expose testName testMethod
-   use arg testResult
-
-   -- Trap all conditions propagated from the invocation of the test case
-   -- method, or from the checkForConditionFailure method.
-   signal on any name exceptionHandler
-
-   -- save the target method for error tracking
-   testMethod = self~instanceMethod(methodName)
-
-   -- now dynamically invoke the method
-   self~send(methodName)
-
-   -- The test case method completed without raising a condition.  The last step
-   -- is to check if the test case *exepected* a condition to be raised.
-   self~checkForConditionFailure
-   return testResult
-
-exceptionHandler:
-
-  -- Get the condition object.  (The condition object is a Directory object.)
-  cObj = condition("O")
-
-  -- If a condition was expected to be raised AND this condition matches the
-  -- expected condition, then the test passed so just return.
-  if self~conditionExpected, self~checkCondition(cObj) then return aTestResult
-
-  -- If the condition code is 93.964 then this condition was raised by the
-  -- framework to signal a test case failure.  The assert failure object is at
-  -- index 2 of the additional array.
-  if cObj~code = 93.964 then do
-    data = cObj~additional[2]
-
-    -- It does not seem conceivable that data is not the object I think it is.
-    -- The best thing to do would be to check if it is an AssertFailure object
-    -- and, if not, create an ErrorReport object and do aTestResult~addError()
-    -- Skipping that for now.
-
-    data~className = self~class~id
-    data~testName = self~getName
-    data~testString = self~string
-    data~conditionObject = cObj
-    data~additionalObject = self
-    testResult~addFailure(self, data)
-  end
-  else do
-    -- This is an unexpected, unanticipated error.
-    type = cObj~condition
-    if cObj~hasentry("CODE") then type = type cObj~code
-
-    err = .ErrorReport~new(.TestUtils~timeStamp, self~definedInFile, type, cObj)
-    err~className = self~class~id
-    err~testName = self~getName
-    err~testString = self~string
-    err~additionalObject = self
-    testResult~addError(self, err)
+  -- for each method create a runner for this and execute the test
+  loop methodName overMethods
+     self~currentTestCase = new .TestMethod(self, methodName)
+     -- run the test method, then add the results to our accumulator.
+     methodResult = self~currentTestCase~execute
+     testResult~addResult(methodResult)
   end
 
   return testResult
-
--- Create a string representation of this test case
-::method string
-  expose testname testCase
-
-  buf = .mutableBuffer~new
-  buf~append("testCase: [", testName, "] ("testCase~string, ")")
-  return buf~string
-
-
--- base class for a TestCase class.  This is a class that implements
--- a set of test methods.  This handles invocation of the different
--- test methods and recording of result information from the tests.
-::class "TestCase" public inherit "Assert"
-::method init
-  expose fileName
-
-  -- get the containing file name for reporting.
-  fileName = self~class~package~name
-  -- initialize the superclass
-  self~init:super
 
 -- locate the test method names for this test case class.  Returns
 -- an array of executable testMethod objects.
@@ -1609,6 +1547,14 @@ syntax:
   end
   s~close
 
+-- read all of the lines of a file
+::method arrayIn
+  expose file
+
+  s = .stream~new(file)
+  a = s~arrayIn
+  s~close
+
 -- create a file from a package resource
 ::method createFromResource
   expose package
@@ -1638,4 +1584,39 @@ syntax:
 ::method lineout
   return 0
 
+-- class for holding svn info for a file
+::class "SVNInfo"
+::method init
+  expose revision date
+  use strict arg filename author
+
+  revision = .nil
+  date = .nil
+  author = .nil
+
+  file = .TemporaryTestFile~new(self, "svninfo.dat")
+
+  -- turn off tracing so command errors don't trace
+  trace 'Off'
+
+  'svn --xml info "'filename'" 1>svninfo.dat 2>&1'
+  if rc == 0 then do
+     loop line over file~arrayIn
+        if line~contains("revision=") then do
+           parse var line 'revision="' revision '"'
+        end
+        else if line~contains("<date>") then do
+           parse var line ">" date "<"
+        end
+        else if line~contains("<author>") then do
+           parse var line ">" author "<"
+        end
+     end
+  end
+
+  file~delete
+
+::attribute revision get
+::attribute date get
+::attribute author get
 

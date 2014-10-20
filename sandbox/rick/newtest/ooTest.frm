@@ -809,9 +809,9 @@ return 0
 
     if problem~additionalObject~isA(.ooTestCase) then do
       info = problem~additionalObject~class~caseInfo
-      if info~hasEntry("test_Case-revsion") then do
+      if info~hasEntry("test_Case-revision") then do
         parse value info~entry("test_Case-date") with date time offset junk
-        say "  svn:    r" || info~entry("test_Case-revsion") "  Change date:" date time offset
+        say "  svn:    r" || info~entry("test_Case-revision") "  Change date:" date time offset
       end
     end
 
@@ -1678,7 +1678,7 @@ return 0
 
     data = .directory~new
     data~setentry("test_Case-source", self~pathName)
-    data~setentry("test_Case-revsion", "unknown")
+    data~setentry("test_Case-revision", "unknown")
     data~setentry("test_Case-date", "unknown")
 
     parse value src[3] with '$Rev:' rev '$' .
@@ -1687,7 +1687,7 @@ return 0
     rev = rev~strip
     date = date~strip
 
-    if rev \== "" then data~setentry("test_Case-revsion", rev)
+    if rev \== "" then data~setentry("test_Case-revision", rev)
     if date \== "" then data~setentry("test_Case-date", date)
 
     self~testInfo = data
