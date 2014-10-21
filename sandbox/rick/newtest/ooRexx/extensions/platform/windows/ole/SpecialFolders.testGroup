@@ -743,7 +743,7 @@ NOTE:   If the user has changed the name of a "special folder" the following lin
 
     -- Not all systems seem to have the All Users Shared Documents folder.
     -- Assert that we either get an OLEObject, or .nil
-    self~assertEitherOr(objFolder~isA(.oleObject), objFolder == .nil,     -
+    self~assertTrue(objFolder~isA(.oleObject) | objFolder == .nil,     -
                        "objFolder is either an oleObject or .nil")
 
     -- If objFolder is .nil then return.

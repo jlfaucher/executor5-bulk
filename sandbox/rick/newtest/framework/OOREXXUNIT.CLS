@@ -414,6 +414,22 @@ return .false
 
 -- messages templates for reporting various test problems.
 ::resource TestProblemMessages
+assertEqual Actual must be equal (=) to expected.
+assertNotEqual Actual must not be equal (\=) to expected.
+assertStrictlyEqual Acutual must be strictly equal (==) to expected.
+assertStrictlyNotEqual Actual must not be strictly equal (\==) to expected.
+assertFuzzyEqual Actual is not equal to expected using fuzzy comparison.
+assertNull Actual must be The NIL object.
+assertNotNull Actual cannot be The NIL object.
+assertIsA Actual must be an instance of the expected class.
+assertArrayEquals The actual array must match the expected array in all details.
+assertIdentical Actual must be the same object instance as expected.
+assertNotIdentical Actual must not be the same object instance as expected.
+assertOneOf Actual must be strictly equal to one of the list objects.
+assertTrue Actual must be .true.
+assertFalse Actual must be .false.
+assertFail Control unexpected reached a failure point.
+
 
 ::END
 
@@ -566,20 +582,49 @@ return .false
 -- class for an unexpected execution failure
 ::class 'UnexpectedError' public subclass TestFailure
 ::method init
-  expose errorLine conditionObject
-  use strict arg testMethod, conditionObject, errorLine
+  expose errorLine stackFrames conditionObject
+  use strict arg testMethod, conditionObject
 
   self~init:super(testMethod, "Unexpected Error")
 
+  -- fill in the failure information
+  errorLine = testMethod~conditionLineNumber(conditionObject)
+  stackFrames = testMethod~pruneStackFrames(conditionObject~stackFrames)
+
+
 -- display the test failure information
 ::method displayFailure
-  expose message assertionLine assertionType
+  expose errorLine stackFrames conditionObject
   use strict arg output
 
   -- display the base information
-  self~displayFailure(output)
-  output~lineout("  Line:  " assertionLine)
-  output~lineout("  Failed:" assertionType)
+  self~displayFailure:super(output)
+  output~lineout("  Event:  [SYNTAX" conditionObject~code"] raised unexpectedly")
+  output~lineout("    "conditionObject~message)
+  output~lineout("    Line:" errorLine)
+
+  -- add the trace back lines, excluding anything from the framework
+  loop frame over stackFrames
+     output~lineout(frame~string)
+  end
+
+-- class for a handling a test failure caused by not receiving an
+-- expected error
+::class 'ExpectedErrorFailure' public subclass TestFailure
+::method init
+  expose expectedCondition
+  use strict arg testMethod, expectedCondition
+
+  self~init:super(testMethod, "Condition expected")
+
+-- display the test failure information
+::method displayFailure
+  expose expectedCondition
+  use strict arg output
+
+  -- display the base information
+  self~displayFailure:super(output)
+  expectedCondition~displayFailure(output)
 
 
 -- a holder for expected syntax information
@@ -587,11 +632,6 @@ return .false
 ::method init
   expose condition code assertionLine message
   use strict arg assertionLine, condition , code = .nil, message = .nil
-
-::attribute condition get
-::attribute code get
-::attribute message get
-::attribute assertionLine
 
 -- do a check for condition equality
 ::method isMatch
@@ -601,6 +641,21 @@ return .false
   -- note:  for non syntax conditions, the code in the condition object
   -- will be .nil, so this will compare equal.
   return condition == received~condition & code == receive~code
+
+-- display information about an expected condition failure
+::method displayFailure
+  expose assertionLine, condition, code, message
+  output~lineout("  Failed:  Condition expected")
+  if message != .nil then do
+     output~lineout("    Reason:  " message
+  end
+  output~lineout("    Line:   " assertionLine
+  if condition == 'SYNTAX' then do
+     output~lineout("    Expected: SYNTAX" code
+  end
+  else do
+     output~lineout("    Expected:" condition
+  end
 
 
 -- this represents a single test method within a TestCase.  This
@@ -627,10 +682,19 @@ return .false
 
   expectedCondition = .ExpectedCondition~new(self~testLineNumber(.context~stackFrames), name,, msg)
 
+-- locate the current line number within a test method.  Generally for
+-- determining assertion locations
+::method testLineNumber
+  return self~getLineNumber(.context~stackFrames)
+
+-- Determine the line number within a test method that triggered a condition
+::method conditionLineNumber
+  use strict arg condition
+  return self~getLineNumber(condition~stackFrames)
 
 -- Given a collection of stack frames, return the line number of the line in the
 -- test method as a failure point.
-::method testLineNumber
+::method getLineNumber private
   expose testMethod
   use strict arg frames
 
@@ -642,6 +706,26 @@ return .false
 
   -- not found for some reason
   return -1
+
+-- prune a set of stack frames to remove all stack frames
+-- lower than the test method
+::method pruneStackFrames
+  expose testMethod
+  use strict arg frames
+
+  frames = frames~makeArray
+
+  loop i = 1 to frames~last
+     -- once we hit our target method, return all of the frames
+     -- from the top to the method.
+     if frames[i]~executable == testMethod then
+        return frames~section(1, i)
+     end
+  end
+
+  -- should never get here, but one never knows.
+  return frames
+
 
 -- execute a specific test case method
 ::method execute
@@ -683,7 +767,7 @@ return .false
 
    -- The test case method completed without raising a condition.  The last step
    -- is to check if the test case *exepected* a condition to be raised.
-   self~checkForConditionFailure
+   self~checkForConditionFailure(testResult)
    return testResult
 
 exceptionHandler:
@@ -699,22 +783,16 @@ exceptionHandler:
   -- framework to signal a test case failure.  The assert failure object is at
   -- index 2 of the additional array.
   if conditionObject~code = .TestCase~assertionCode then do
+     -- first get the failure object, then
      failure = conditionObject~additional[2]
-
-     -- now attach the condition object to the result
+     -- attach this to the result for this test
     testResult~addFailure(failure)
   end
   else do
     -- This is an unexpected, unanticipated error.
-    type = cObj~condition
-    if cObj~hasentry("CODE") then type = type cObj~code
-
-    err = .ErrorReport~new(.TestUtils~timeStamp, self~definedInFile, type, cObj)
-    err~className = self~class~id
-    err~testName = self~getName
-    err~testString = self~string
-    err~additionalObject = self
-    testResult~addError(self, err)
+    -- add an error object to the test result
+    err = .UnexpectedError~new(self, conditionObject)
+    testResult~addError(err)
   end
 
   return testResult
@@ -738,29 +816,16 @@ exceptionHandler:
 -- Forces an assert failure if a condition is expected to be raised.  The
 -- assumption is that this method is invoked when a condition has not been
 -- raised.
-::method checkConditionFailure
+::method checkForConditionFailure
   expose expectedCondition
+  use strict arg testResult
 
+  -- if we have an expected condition, attach to the result.
   if expectedCondition \= .nil then do
-
-       -- this needs a complete redoing
-       expected = self~conditionName
-       type = 'expectCondtion'
-
-       if expected == "SYNTAX", self~conditionCode <> .nil then do
-          expected = expected self~conditionCode
-          type = 'expectSyntax'
-       end
-
-      data = .AssertFailure~new(self~definedInFile, type)
-
-      data~expected = expected
-      data~actual = "Not raised"
-      if self~conditionMsg <> .nil then data~msg = self~conditionMsg
-      else data~msg = ""
-
-      self~fail(data)
+       err = .ExpectedErrorFailure~new(self, expectedCondition)
+       testResult~addFailure(err)
   end
+
 
 -- Create a string representation of this test case
 ::method string
@@ -826,7 +891,7 @@ exceptionHandler:
 
 
 -- checks that two collections are equilvalent.  Does not take
--- order into account.  Use assertArraysEqual or assertArraysStrictlyEqual
+-- order into account.  Use assertArrayEqual or assertArrayStrictlyEqual
 -- if order is important
 ::method assertCollectionsEqual
 
@@ -916,12 +981,12 @@ exceptionHandler:
 
 -- compare an array of items.  each item must be the same, and in the same
 -- order.  Item comparisons are the non-strict variety
-::method assertArraysEqual
+::method assertArrayEquals
   expose currentTestCase
   use strict arg expected, actual, msg = .nil
 
   -- set the main assertion failure type.  The nested assertion will have the details.
-  self~setMainAssertion(.TwoValueAssertionFailure~new(currentTestCase, "assertArraysEqual", msg, expected, actual))
+  self~setMainAssertion(.TwoValueAssertionFailure~new(currentTestCase, "assertArrayEquals", msg, expected, actual))
 
   self~assertIsA(actual, .array, "Actual is not an array item")
   self~assertEquals(expected~items, actual~items, "The item count is different between the two arrays")
@@ -942,7 +1007,7 @@ exceptionHandler:
   use strict arg expected, actual, msg = .nil
 
   -- set the main assertion failure type.  The nested assertion will have the details.
-  self~setMainAssertion(.TwoValueAssertionFailure~new(currentTestCase, "assertArraysStrictlyEqual", msg, expected, actual))
+  self~setMainAssertion(.TwoValueAssertionFailure~new(currentTestCase, "assertArrayStrictlyEquals", msg, expected, actual))
 
   self~assertIsA(actual, .array, "Actual is not an array item")
   self~assertEquals(expected~items, actual~items, "The item count is different between the two arrays")
@@ -967,7 +1032,7 @@ exceptionHandler:
 
 
 -- perform a strict comparison on two objects.
-::method assertStrictlyEqual
+::method assertStrictlyEquals
   use strict arg expected, actual, msg = .nil
 
   if expected \== actual then do
@@ -1012,25 +1077,6 @@ exceptionHandler:
 
   -- Assertion holds
   self~assertionPassed
-
-
-/** assertEitherOr()
- * Exclusive or, either arg 1 is true or arg 2 is true, but not both.
- */
-::method assertEitherOr
-  use strict arg truthOne, truthTwo, msg = ""
-
-  -- assume this works.  Allow an error to be raised if these are not
-  -- logicals
-  if \ truthOne && truthTwo then do
-    expected = '[ one .true and one .false ]'
-    actual   = '['self~formatObjectInfo(truthOne) self~formatObjectInfo(truthTwo)']'
-    self~fail(self~makeFailure(expected, actual, msg, "assertEitherOr"))
-  end
-
-  -- Assertion holds
-  self~assertionPassed
-
 
 -- assert that an object is one of a given list
 ::method assertOneOf
@@ -1291,13 +1337,10 @@ exceptionHandler:
   buf~append(testCase~defaultName, '@', filename, ")")
   return buf~string
 
-
-/* *********************************************************************************** */
-/* *********************************************************************************** */
-::class "TestSuite" subclass TestCase public
-
-::attribute testQueue private
-
+-- test suite is a collection of test case files.  This will
+--run all of the indicated tests and return a a consoladated
+-- result object.
+::class "TestSuite" subclass
 ::method init
 
   forward class (super) continue

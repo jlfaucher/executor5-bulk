@@ -714,7 +714,7 @@ return 0
     say 'Addressing Mode:' .ooRexxUnit.architecture
     say "ooRexxUnit:     " self~unitVersion  '09'x || "ooTest:" self~ooTestVersion
     say
-    say "Tests ran:"~left(20)  stats~tests
+    say "Tests run:"~left(20)  stats~tests
     say "Assertions:"~left(20) stats~asserts
 
     select
