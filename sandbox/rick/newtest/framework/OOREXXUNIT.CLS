@@ -400,6 +400,19 @@ return .false
   output~lineout("Failures:          " failures
   output~lineout("Errors:            " errors
 
+  -- display any failure information that is part of this set.
+  self~displayFailure(output)
+
+  output~lineout
+  output~lineout("Execution time:    " endTime - startTime
+
+-- display just the test failure information.  If executing a
+-- test suite, we'll display this early to free up the resources
+-- and just merge the statistic information.
+::method displayFailure
+  expose failureResults
+  use strict arg output = .output
+
   if \failureResults~isEmpty then do
      output~lineout
      loop result over failureResults
@@ -408,8 +421,9 @@ return .false
      end
   end
 
-  output~lineout
-  output~lineout("Execution time:    " endTime - startTime
+  -- release the failure result information once displayed,
+  -- which will free the test details for garbage collection
+  failureResults~empty
 
 
 -- messages templates for reporting various test problems.
@@ -844,11 +858,42 @@ exceptionHandler:
   output~lineout("  Test:  " testMethod)
   testCase~display(output)
 
+-- a mixin class to add the test execution infrastructure to a test case type
+::class "TestExecutor" mixinclass object
+-- run the tests and display the results
+::method run class
+  use strict arg output = .output
+  testResult = self~execute
+
+  testResult~display(output)
+
+
+-- execute an this test case by creating an instance and having it execute.
+::method execute class
+
+  testResult = .ResultSet~new
+  instance = self~createTestInstance(testResult)
+  if instance == .nil then return testResult
+
+  -- execute the tests, returning a composite result
+  return instance~execute
+
+-- create an instance of a test case class, with syntax error protection
+::method createTestInstance class
+  use strict arg testResult
+
+  signal on syntax
+  return self~new
+
+syntax:
+  testResult~addError(.TestInstantiationError(self~testSuite, testClass, condition('o')))
+  return .nil
+
 
 -- base class for a TestCase class.  This is a class that implements
 -- a set of test methods.  This handles invocation of the different
 -- test methods and recording of result information from the tests.
-::class "TestCase" public
+::class "TestCase" public inherit TestExecutor
 ::constant AssertionCode 93.964
 
 ::method init
@@ -1340,172 +1385,66 @@ exceptionHandler:
 -- test suite is a collection of test case files.  This will
 --run all of the indicated tests and return a a consoladated
 -- result object.
-::class "TestSuite" subclass
+::class "TestSuite" inherit TestExecutor
 ::method init
+  expose testQueue
 
-  forward class (super) continue
-  self~testQueue = .queue~new
-
-      -- a class object, use reflection and create test cases
-  if arg()>0 then       -- args there ?
-  do
-     use strict arg arg1    -- make sure, only one arg supplied
-
-     if arg1~class~isSubclassOf(.TestSuite) then -- a TestSuite object ?
-     do
-        self~addTest(arg1)                -- just add it
-        return
-     end
-
-      -- a TestCase class object in hand?
-     else if arg1~isA(.class), arg1~isSubClassOf(.TestCase) then
-     do
-        testCaseClass=arg1
-        testMethods=self~class~getTestMethods(testCaseClass)
-        do name over testMethods          -- iterate over all test methods
-           self~addTest(testCaseClass~new(name))
-        end
-        return
-     end
-
-      -- a collection of individual TestCase objects to add?
-     else if arg1~isA(.Collection) then
-     do
-        do tc over arg1~allItems          -- iterate over test cases
-           if tc~class~isSubClassOf(.TestCase) then
-              self~addTest(tc)
-           else
-              raise syntax 88.914 array ("'collection item ["tc"]'", "'TestCase' or 'TestSuite'")
-        end
-        return
-     end
-     raise syntax 88.914 array ("1", "'TestCase', 'TestSuite' or 'Collection'")
-  end
-  return
-
-
--- Add a set of files to a given TestSuite object
-::method addFileList
-   use arg testCaseFileList
-
-   -- do not run tests, if calling/requiring the testUnit files
-   .ooRexxUnit~runTestsLocally = .false
-
-   do fileName over testCaseFileList
-
-       testUnitList=self~loadTestFile(fileName)
-
-       do arr over testUnitList  -- loop over array objects
-          classObject   =arr[1]  -- a class object
-          mandatoryTests=arr[2]  -- a list
-
-          -- mandatory tests available, just use them to create testCases
-          if mandatoryTests~isA(.list), \mandatoryTests~isEmpty then do
-            tsMand=.testSuite~new     -- create a test suite for this test class
-            do testMethodName over mandatoryTests
-               tsMand~addTest(classObject~new(testMethodName))   -- create and add testCase
-            end
-            ts~addTest(tsMand)      -- now add the test suite of mandatory methods to the overall test suite
-          end
-          -- no mandatory tests defined, hence use all testmethods
-          else do
-             ts~addTest(.testSuite~new(classObject))  -- creates testCases from all testmethods
-          end
-       end
-   end
-   return ts      -- return the testSuite object
-
-::method loadTestFile private
-  use strict arg filename
-
-   signal on syntax
-   r = .routine~newfile(fileName)
-
-   -- call and return the return result, which should be a test group of
-   -- what is contained in there.
-   return r[]
-
-syntax:
-   .error~say("Error loading a test unit file:")
-   .error~say("    testUnit-file: ["fileName"]")
-   self~dumpConditionObject(.error, condition('o'))
-   return .array~new    -- return empty array so no testsuite gets built for this testUnit
-
--- write the contents of the condition object to the given string, in sorted order by name
-::method dumpConditionObject
-   use arg outStream, condition
-
-   -- get the index names and sort them
-   names = co~allIndexes
-   names~stableSort
-
-   indent1 = 12
-
-   sumIndent = indent1 + 2
-
-   blanks=copies(" ", sumIndent) "--> "
-
-   NL = .string~nl
-   TAB1 = .string~tab
-   TAB2 = TAB1~copies(2)
-   TAB3 = TAB1~copies(3)
-   TAB4 = TAB1~copies(4)
-
-   do index over name
-      value = co[index]
-      if value~isA(.Collection) then items = o~items
-                                else items
-
-      tmpString=.MutableBuffer~new
-
-      tmpString~append(TAB3, index~left(indent1,"."), "[", value~string, "]")
-      if value~isA(.Collection) then
-         tmpString~append(" containing ", items, " item(s)")
-
-      -- write out the main value string
-      outStream~say(tmpString~string)
-
-      -- a collection object in hand?
-      if value~isA(.Collection) then do
-         loop item over value
-            tmpString~setText("")
-            tmpString~append(TAB3, blanks, "[", item~string, "]")
-            outStream~say(tmpString~string)
-         end
-      end
-   end
-
+  -- this will be our set of tests to run.
+  testQueue = .queue~new
+  self~checkResourceList
 
 -- add a test to the queue of individual test cases to run
+-- These can be added in a number of forms:
+-- 1)  An instance of a TestCase
+-- 2)  An instance of a TestSuite
+-- 3)  A TestCase class
+-- 4)  A TestSuite class
+-- 5)  A package object that might contain one or more definition of either
 ::method addTest
-  use strict arg aTestCase
+  expose testQueue
+  use strict arg newTestCase
 
-  if \aTestCase~class~isSubclassOf(.TestCase) then
-     raise syntax 88.914 array ("'aTestCase'", "'TestCase'")
+  -- the classes and instances are polymorphic with the execute method, so
+  -- we can just add these directly to the queue.
+  if newTestCase~isA(.TestCase) then do
+     testQueue~append(newTestCase)
+  end
+  else if newTestCase~isA(.TestSuite) then do
+     testQueue~append(newTestCase)
+  end
+  else if newTestCase~isA(.Class), newTestCase~isSubclassOf(.TestCase) then do
+     testQueue~append(newTestCase)
+  end
+  else if newTestCase~isA(.Class), newTestCase~isSubclassOf(.TestSuite) then do
+     testQueue~append(newTestCase)
+  end
+  else if newTestCase~isA(.Package) then do
+     testQueue~append(.TestPackageRunner~new(self, newTestCase))
+  end
 
-  self~testQueue~queue(aTestCase)
-  self~countTestCases += 1
 
 ::method displayString
   return self~string'@'self~identityHash
 
+-- execute the test suite instance
 ::method execute
-  use arg aTestResult = (self~createResult), bGiveFeedback = .false
+  expose testQueue
 
-  if bGiveFeedback then
-     .error~say( "running testSuite [" self~displayString"] with ["self~countTestCases"] test cases ...")
+  testResult = .ResultSet~new
 
-  tests = self~testQueue
-
-  aTestResult~startTest(self)       -- remember test started
+  testResult~startTest(self)        -- remember test started
   self~setUp                        -- make sure setup is invoked before testSuite runs
-  do aTestCase over tests while aTestResult~shouldStop=.false
-     aTestCase~execute(aTestResult, bGiveFeedback)
-  end
-  self~tearDown                     -- make sure tearDown is invoked after testSuite ran
-  aTestResult~endTest(self)         -- remember test ended
 
-  return aTestResult
+  -- execute the tests and merge the result information
+  loop while \testQueue~isEmpty
+     test = testQueue~pull
+     testResult~merge(test~execute())
+  end
+
+  self~tearDown                     -- make sure tearDown is invoked after testSuite ran
+  testResult~endTest(self)          -- remember test ended
+
+  return testResult
 
 
 /** setUp()
@@ -1525,6 +1464,7 @@ syntax:
 ::method setUp
   NOP
 
+
 /** tearDown()
  * tearDown is the counter-point to setUp.  It is invoked immediately after the
  * execution of all test cases contained by this test suite has finished.
@@ -1540,6 +1480,102 @@ syntax:
  */
 ::method tearDown
   NOP
+
+
+-- a class to manage delayed loading of a test file and
+-- running of the test cases.  This will not attempt to load
+-- and inspect the file until it attempts to run it to minimize
+-- the storage impact of running a Suite
+::class "TestFileRunner"
+-- initialize the suite using a target file name.  Note that the
+-- filename has already been fully resolved by the testSuite.
+::method init
+  expose testSuite fileName
+  use strict arg testSuite, fileName
+
+
+-- execute this test suite, returning a ResultSet with any information.  If
+-- there are any problems loading this target file, this will be reflected in the
+-- result set.
+::method execute
+  testResult = .ResultSet~new
+
+  -- try to load the file...the error information is already
+  -- set in the result.
+  package = self~loadFile(testResult)
+  if package == .nil then return testResult
+
+  -- create package runner and execute this
+  runner = .TestPackageRunner(testSuite, package)
+  return runner~execute
+
+
+-- load a TestSuite file to the set.
+::method loadFile
+  expose fileName
+  use strict arg testResult
+
+  -- if we can't resolve this file, just add an error to the result
+  fullName = testSuite~resolveTestProgram(fileName)
+  if fullName == .nil then do
+     testResult~addError(.FileNotFoundFailure(self~testSuite, fileName))
+     return .nil
+  end
+
+   -- now create a routine from this file
+   signal on syntax
+   r = .routine~newfile(fullName)
+
+   -- and return the package for this routine so we can locate the test files.
+   return r~package
+
+-- some sort of syntax error creating the file
+syntax:
+   -- add an error and return .nil to indicate a failure
+   testResult~addError(.FileLoadFailure(self~testSuite, fullName, condition('o')))
+   return .nil
+
+
+-- a class to manage execution of test files from a package
+::class "TestPackageRunner"
+-- initialize the suite using a target file name.  Note that the
+-- filename has already been fully resolved by the testSuite.
+::method init
+  expose testSuite package
+  use strict arg testSuite, package
+
+-- execute this test suite, returning a ResultSet with any information.  If
+-- there are any problems loading this target file, this will be reflected in the
+-- result set.
+::method execute
+  expose package
+
+  testResult = .ResultSet~new
+
+  tests = self~locateTestCases(package)
+
+  -- now execute each of the tests
+  loop test over tests
+     testResults~merge(test~execute)
+  end
+
+-- locate any test cases in a test suite file package
+::method locateTestCases
+  expose testSuite
+  use strict arg package
+
+  testClasses = .array~new
+
+  -- locate the classes that are executable tests.  Other classes
+  -- are likely just part of the tests.
+  loop testClass over package~classes
+     if testClass~isSubclassOf(.TestCase) | testClass~isSubClassOf(.TestSuite) then do
+       testClasses~append(testClass)
+     end
+  end
+
+  return testCases
+
 
 -- a class for creating/deleting temporary test files
 ::class TemporaryTestFile public
