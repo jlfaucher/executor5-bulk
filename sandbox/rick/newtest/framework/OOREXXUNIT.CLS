@@ -253,48 +253,104 @@ return .false
   return self~verbose
 
 
+-- Base class for controlling how tests run.  This implements all
+-- methods for filtering tests, logging progress, controlling where
+-- output goes, etc.  When running collections of tests, there is
+-- generally one controller object that is used for each of the
+-- test objects.  This one is used by default and implements just
+-- default behaviours.
+::class "TestController" mixinclass object
+-- the default output streams
+::method setup
+
+-- where results get written
+::method resultStream
+  -- default is to .error so this can be separated from
+  -- say output on redirect.
+  return .error
+
+-- filter a particular testcase method
+::method filterTestMethod
+  use strict arg testCase, methodName, testMethod
+  -- this version always selects
+  return .true
+
+-- filter an entire testCase or testsuite class
+::method filterTests
+  use strict arg test
+  return .true
+
+-- logging methods.  These are NOPS in the default implementation
+::method logFailure
+  use strict arg testResult
+
+::method logError
+  use strict arg testResult
+
+::method logTestStart
+  use strict arg testMethod
+
+::method logTestEnd
+  use strict arg testMethod
+
+::method logTestCaseStart
+  use strict arg testCase
+
+::method logTestCaseEnd
+  use strict arg testCase
+
+::method logTestSuiteStart
+  use strict arg testSuite
+
+::method logTestSuiteEnd
+  use strict arg testSuite
+
+-- handle display feed back.  This is a nop by default
+::method feedBack
+  use strict arg message
+
+
 -- Record the result from an individual test method.  This will hold all of the
 -- error/failure information, plus a count of the successful assertions.
 ::class "TestResult" public
 ::method init
-  expose testMethod log errorInformation assertionCount isError isFailure
+  expose testMethod errorInformation assertionCount isError isFailure skippedTests
   use strict arg testMethod
 
   assertionCount = 0
   errorInformation = .nil
-  log = testMethod~log
   isError = .false
   isFailure = .false
 
 -- add an error to the result
 ::method setError
-  expose errorInformation log isError
+  expose errorInformation testMethod isError
   use strict arg errorInformation
 
-  log~logError(self, errorInformation)
   isError = .true
+  testMethod~logError(self)
 
 -- add a failure to the result
 ::method setFailure
-  expose errorInformation log expose isFailure
+  expose errorInformation testMethod expose isFailure
   use strict arg errorInformation
 
-  log~logFailure(self, errorInformation)
   isFailure = .true
+  testMethod~logFailure(self)
 
 ::attribute assertionCount GET
 
 -- Record test completion
 ::method endTest
-  expose stop log assertionCount
+  expose testMethod
 
   -- and add an end event to our test log
-  log~logEndTest(self)
+  testMethod~logEndTest(self)
 
 ::method startTest
-  expose log
+  expose testMethod
 
-  log~logTestStart(self)
+  testMethod~logTestStart(self)
 
 -- returns whether the entire test was successful or not
 ::method wasSuccessful
@@ -316,10 +372,12 @@ return .false
 -- an accumulated set of test results
 ::class "ResultSet"
 ::method init
-  expose tests assertions failures errors failureResult testId
-  use strict arg testId
+  expose tests skippedTests skippedTestSets assertions failures errors failureResult testEntity
+  use strict arg testEntity
 
   tests = 0
+  skippedTests = 0
+  skippedTestSets = 0
   assertions = 0
   failures = 0
   errors = 0
@@ -379,6 +437,8 @@ return .false
   use strict arg otherSet
 
   tests += otherSet~tests
+  skippedTests += otherSet~skippedTests
+  skippedTestSets += otherSet~skippedTestSets
   assertions += otherSet~assertions
   errors += otherSet~errors
   failures += otherSet~failures
@@ -387,15 +447,17 @@ return .false
 
 -- display this exception status
 ::method display
-  expose tests assertions failures errors failureResults testId startTime endTime
+  expose tests assertions failures errors failureResults testEntity startTime endTime
   use strict arg output = .output
 
-  output~lineout("Test Name       "  testId
+  output~lineout("Test Name       "  testEntity~displayName
   output~lineout("Interpreter:    " .rexxinfo~name)
   output~lineout("Addressing Mode:" .rexxInfo~architecture)
   output~lineout("ooRexxUnit:     " .ooRexxUnit~version)
   output~lineout
   output~lineout("Tests run:         " tests
+  output~lineout("Tests skipped:     " skippedTests
+  output~lineout("Test sets skipped: " skippedTestSets
   output~lineout("Assertions:        " assertions
   output~lineout("Failures:          " failures
   output~lineout("Errors:            " errors
@@ -659,6 +721,8 @@ assertFail Control unexpected reached a failure point.
 -- display information about an expected condition failure
 ::method displayFailure
   expose assertionLine, condition, code, message
+  use strict arg output = .output
+
   output~lineout("  Failed:  Condition expected")
   if message != .nil then do
      output~lineout("    Reason:  " message
@@ -683,6 +747,24 @@ assertFail Control unexpected reached a failure point.
 
   expectedCondition = .nil
 
+-- logging methods for test events.  These log to the parent entity
+::method logFailure
+  expose testCase
+  forward To(testCase)
+
+::method logError
+  expose testCase
+  forward To(testCase)
+
+::method logTestStart
+  expose testCase
+  forward To(testCase)
+
+::method logTestEnd
+  expose testCase
+  forward To(testCase)
+
+-- mark this test method as expecting a syntax error before completion
 ::method expectSyntax
   expose expectedCondition
   use strict arg errorCode, msg = .nil
@@ -750,6 +832,8 @@ assertFail Control unexpected reached a failure point.
 
   -- record the test
   testResult~startTest(self)
+  -- log the start event
+  testCase~logTestStart(self)
 
   testCase~feedBack( "... running TestCase object ["self~string"] ..." )
 
@@ -762,6 +846,8 @@ assertFail Control unexpected reached a failure point.
   testCase~peformTestSetup
 
   testResult~endTest(self)           -- remember test ended
+  -- log the end event
+  testCase~logTestEnd(self)
   return testResult
 
 -- wrapper around executing the actual test method
@@ -858,32 +944,47 @@ exceptionHandler:
   output~lineout("  Test:  " testMethod)
   testCase~display(output)
 
+
 -- a mixin class to add the test execution infrastructure to a test case type
 ::class "TestExecutor" mixinclass object
 -- run the tests and display the results
 ::method run class
-  use strict arg output = .output
-  testResult = self~execute
-
-  testResult~display(output)
+  use strict arg controller = .TestController~new
+  testResult = self~execute(controller)
+  testResult~display(controller~resultStream)
 
 
 -- execute an this test case by creating an instance and having it execute.
 ::method execute class
+  use strict arg controller = .TestController~new
 
   testResult = .ResultSet~new
-  instance = self~createTestInstance(testResult)
+  instance = self~createTestInstance(controller, testResult)
   if instance == .nil then return testResult
 
   -- execute the tests, returning a composite result
   return instance~execute
 
+
+-- execute this test in the confines of a test suite.
+::method executeInSuite class
+  use strict arg testSuite
+
+  -- if this passes filtration criteria, then execute it
+  if testSuite~filterTests(self) then do
+     return self~execute(testSuite)
+  end
+  -- return a test result that indicates we were skipped
+  else .SkippedTestMethod~new(self)
+
+
+
 -- create an instance of a test case class, with syntax error protection
 ::method createTestInstance class
-  use strict arg testResult
+  use strict arg controller, testResult
 
   signal on syntax
-  return self~new
+  return self~new(controller)
 
 syntax:
   testResult~addError(.TestInstantiationError(self~testSuite, testClass, condition('o')))
@@ -896,8 +997,10 @@ syntax:
 ::class "TestCase" public inherit TestExecutor
 ::constant AssertionCode 93.964
 
+-- The test controller is used for logging, filtering, output redirection, etc.
 ::method init
-  expose fileName svnInfo
+  expose controller fileName svnInfo
+  use strict arg controller = (.TestController~new)
 
   -- get the containing file name for reporting.
   fileName = self~class~package~name
@@ -906,13 +1009,40 @@ syntax:
   -- if it is
   svnInfo = .svnInfo~new(fileName)
 
-  -- initialize the superclass
-  self~init:super
+-- logging methods.  These just forward to the controller object
+::method logFailure
+  expose controller
+  forward to(controller)
+
+::method logError
+  expose controller
+  forward to(controller)
+
+::method logTestStart
+  expose controller
+  forward to(controller)
+
+::method logTestEnd
+  expose controller
+  forward to(controller)
+
+::method logTestCaseStart
+  expose controller
+  forward to(controller)
+
+::method logTestCaseEnd
+  expose controller
+  forward to(controller)
+
+-- handle display feed back.
+::method feedBack
+  expose controller
+  forward to(controller)
 
 -- display base test information
 ::method display
   expose fileName svnInfo
-  use strict arg output
+  use strict arg output = .output
 
   output~lineout("  Class: " self~class~id)
   output~lineout("  File:  " fileName)
@@ -1264,12 +1394,26 @@ syntax:
 ::method checkCondition
   expose currentTestCase
 
+-- execute this test in the confines of
+::method executeInSuite
+  expose controller
+  -- the test suite functions as a controller (which might be running
+  -- under a different controller.  This replaces any controller we
+  -- might have been instantiated with.
+  use strict arg controller
 
+  -- if this passes filtration criteria, then execute it
+  if controller~filterTests(self~class) then do
+     return self~execute
+  end
+  -- return a test result that indicates we were skipped
+  else .SkippedTests~new(self)
 
 
 -- execute all of the methods in a test case class, returning the accumulated
 -- statistics
 ::method execute
+  expose controller
   testMethods = self~getTestMethods
 
   -- create a result object for this test case class.
@@ -1277,10 +1421,13 @@ syntax:
 
   -- for each method create a runner for this and execute the test
   loop methodName overMethods
-     self~currentTestCase = new .TestMethod(self, methodName)
-     -- run the test method, then add the results to our accumulator.
-     methodResult = self~currentTestCase~execute
-     testResult~addResult(methodResult)
+     method = self~instanceMethod(methodName)
+     if controller~filterTestMethod(self, methodName, method) then do
+         self~currentTestCase = new .TestMethod(self, methodName, method)
+         -- run the test method, then add the results to our accumulator.
+         methodResult = self~currentTestCase~execute
+         testResult~addResult(methodResult)
+     end
   end
 
   return testResult
@@ -1288,6 +1435,7 @@ syntax:
 -- locate the test method names for this test case class.  Returns
 -- an array of executable testMethod objects.
 ::method getTestMethods
+  expose controller
 
   -- Get the test methods names.  By convention this is all methods starting
   -- with "TEST".  We use a set because there may be duplicates in the
@@ -1300,7 +1448,9 @@ syntax:
   methSupplier = classObj~methods
   do while methSupplier~available -- iterate over supplied methods
      name = methSupplier~index
-     if name~match(1, "TEST") then testMethodNames~put(name)
+     if name~match(1, "TEST") then do
+        testMethodNames~put(name)
+     end
      methSupplier~next
   end
 
@@ -1391,7 +1541,27 @@ syntax:
 
   -- this will be our set of tests to run.
   testQueue = .queue~new
+  -- tests are frequently listed in a resource within the package,
+  -- check to see if we have such a list
   self~checkResourceList
+
+-- check this class for an annotation that identifies a resource
+-- item in the same package that contains a list of files included
+-- in this test suite.
+::method checkResourceList
+  expose testQueue
+  fileResource = self~class~annotation('TESTFILES')
+
+  if fileResource == .nil then return
+
+  fileList = self~class~package~resource('TESTFILES')
+  if fileList == .nil then return
+
+  -- add each file to the test queue
+  loop file over fileList
+     testQueue~append(.TestFileRunner~new(self, file))
+  end
+
 
 -- add a test to the queue of individual test cases to run
 -- These can be added in a number of forms:
@@ -1400,13 +1570,17 @@ syntax:
 -- 3)  A TestCase class
 -- 4)  A TestSuite class
 -- 5)  A package object that might contain one or more definition of either
+-- 6)  A string file name of a test group
 ::method addTest
   expose testQueue
   use strict arg newTestCase
 
   -- the classes and instances are polymorphic with the execute method, so
   -- we can just add these directly to the queue.
-  if newTestCase~isA(.TestCase) then do
+  if newTestCase~isA(.String) then do
+     testQueue~append(.TestFileRunner~new(self, newTestCase))
+  end
+  else if newTestCase~isA(.TestCase) then do
      testQueue~append(newTestCase)
   end
   else if newTestCase~isA(.TestSuite) then do
@@ -1423,10 +1597,23 @@ syntax:
   end
 
 
-::method displayString
-  return self~string'@'self~identityHash
+-- execute this test in the confines of
+::method executeInSuite
+  expose controller
+  -- the test suite functions as a controller (which might be running
+  -- under a different controller.  This replaces any controller we
+  -- might have been instantiated with.
+  use strict arg controller
 
--- execute the test suite instance
+  -- if this passes filtration criteria, then execute it
+  if controller~filterTests(self~class) then do
+     return self~execute
+  end
+  -- return a test result that indicates we were skipped
+  else .SkippedTests~new(self)
+
+
+-- execute the test suite instance.  This will execute all of the contained tests.
 ::method execute
   expose testQueue
 
@@ -1438,7 +1625,7 @@ syntax:
   -- execute the tests and merge the result information
   loop while \testQueue~isEmpty
      test = testQueue~pull
-     testResult~merge(test~execute())
+     testResult~merge(test~executeinSuite(self))
   end
 
   self~tearDown                     -- make sure tearDown is invoked after testSuite ran
@@ -1494,10 +1681,14 @@ syntax:
   use strict arg testSuite, fileName
 
 
--- execute this test suite, returning a ResultSet with any information.  If
--- there are any problems loading this target file, this will be reflected in the
--- result set.
-::method execute
+-- execute this test in the confines of
+::method executeInSuite class
+  expose testSuite
+  -- the test suite functions as a controller (which might be running
+  -- under a different controller.  This replaces any controller we
+  -- might have been instantiated with.
+  use strict arg testSuite
+
   testResult = .ResultSet~new
 
   -- try to load the file...the error information is already
@@ -1507,7 +1698,7 @@ syntax:
 
   -- create package runner and execute this
   runner = .TestPackageRunner(testSuite, package)
-  return runner~execute
+  return runner~executeInSuite(testSuite)
 
 
 -- load a TestSuite file to the set.
@@ -1544,11 +1735,14 @@ syntax:
   expose testSuite package
   use strict arg testSuite, package
 
--- execute this test suite, returning a ResultSet with any information.  If
--- there are any problems loading this target file, this will be reflected in the
--- result set.
-::method execute
-  expose package
+
+-- execute this test in the confines of
+::method executeInSuite class
+  expose testSuite
+  -- the test suite functions as a controller (which might be running
+  -- under a different controller.  This replaces any controller we
+  -- might have been instantiated with.
+  use strict arg testSuite
 
   testResult = .ResultSet~new
 
@@ -1556,8 +1750,9 @@ syntax:
 
   -- now execute each of the tests
   loop test over tests
-     testResults~merge(test~execute)
+     testResults~merge(test~executeInSuite(testSuite))
   end
+
 
 -- locate any test cases in a test suite file package
 ::method locateTestCases

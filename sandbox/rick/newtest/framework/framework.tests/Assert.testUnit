@@ -1,24 +1,4 @@
 #!/usr/bin/rexx
-/*
-   name:             ooRexx.framework.Assert.testUnit
-   author:           Rony G. Flatscher
-   date:             2006-12-27
-   version:          1.0.0
-
--- line commented lines are ignored, when building the directory of infos from this header
-   changed:          2006-12-30, ---rgf, added test methods for new "assertNotEquals(...)" method
-
-   languageLevel:    6.0
-   purpose:          Test the ooRexxUnit framework
-   remark:           ---
-
-
-   license:          CPL 1.0 (Common Public License v1.0, see below)
-   link:
-
-   category1:        ooRexx
-   category2:        framework
-*/
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 2006 Rexx Language Association. All rights reserved.         */
@@ -55,69 +35,7 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-
-
-
--------------------------------------------------------------------------------------------
--- ===> adapt the "testUnitList" to your testCase classes; each element in the list is <===
--- ===> an array object, the first element containing the testCase class object, the   <===
--- ===> second element is a list of test method names which are regarded to be         <===
--- ===> mandatory (if the list remains empty all test methods are mandatory)           <===
-
-   /* list of array objects, each containing the testUnit class object and an
-      optional list of mandatory test case methods name                       */
-
-mandatoryTestMethods=.list~new   -- no mandatory tests for this testCase class
-testUnitList=.list~of( .array~of(.ooRexx.framework.Assert.testUnit,  mandatoryTestMethods) )
-
-
--------------------------------------------------------------------------------------------
--- ===> the following code needs not to be individualized                              <===
-
-   -- read top comment, containing infos about this program
-arrLines=.array~new
-do i=1 to 150 until arrLines[i]="*/"
-   arrLines[i]=sourceline(i)
-end
-      -- supply information for the testClass(es) in this file; the class attribute
-      -- "TestCaseInfo" (a directory object, index points to a queue) will store
-      -- the parsed infos
-aTestUnitClass=testUnitList~at(testUnitList~first)[1] -- get first testClass
-
-   -- will parse the array lines and store result in class object
-call makeDirTestInfo aTestUnitClass, arrLines
-tmpDir=aTestUnitClass~TestCaseInfo
-parse source s   -- op_sys invocationType fullPathToThisFile
-tmpDir~setentry("test_Case-source", s)
-
-   -- now add this directory to other testCase classes, if any left
-do arr over testUnitList
-   if arr[1]=aTestUnitClass then iterate  -- already handled
-   arr[1]~TestCaseInfo=tmpDir             -- save info in class object
-end
-
--- if this file is CALLed or REQUIRED then define an entry "bRunTestLocally" in .local
--- and set it to .false; this way the independent local invocation of the tests is inhibited
-if .local~hasentry("bRunTestsLocally")=.false then
-   .local~bRunTestsLocally=.true -- if this file is executed directly, then run tests for debugging
-
-if .bRunTestsLocally=.true then  -- run ALL tests in this test unit
-do
-   ts=.testSuite~new             -- create a testSuite
-   do arr over testUnitList
-      -- create a testSuite for the given test case class, use all its testmethods
-      ts~addTest( .testSuite~new(arr[1]))
-   end
-   -- testResult=.testSuite~new(testUnitClass)~execute
-   testResult=ts~execute       -- now run all the tests
-
-   call simpleDumpTestResults testResult
-end
-
-   /* return list of array objects containing test case classes and
-      optionally list of mandatory test methods                      */
-return testUnitList
-
+ooRexx.framework.Assert.testUnit~run
 
 
 ::requires ooRexxUnit.cls     -- load the ooRexxUnit classes
