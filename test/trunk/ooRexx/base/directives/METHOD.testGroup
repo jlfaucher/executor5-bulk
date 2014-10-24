@@ -42,7 +42,7 @@
   parse source . . fileSpec
   group = .TestGroup~new(fileSpec)
 
-  group~add(.METHOD.testGroup)
+  group~add(.Method.Directive.testGroup)
 
   if group~isAutomatedTest then return group
 
@@ -57,7 +57,7 @@ return testResult
 ::method unattachedMethod
   return "unattached"
 
-::class "METHOD.testGroup" subclass ooTestCase public
+::class "Method.Directive.testGroup" subclass ooTestCase public
 
 ::method testNoName
   self~assertSyntaxError(19.902, "::method")
@@ -320,6 +320,197 @@ return testResult
   self~assertTrue(.methodTest~new~hasmethod('isCaseSensitivePrivate'))
   .methodTest~new~isCaseSensitivePrivate
 
+::method testDelegate
+  class = self~buildTestClass('test', ("::class test", "::method init", "expose target", "use strict arg target", -
+      "::method returnValue delegate target", "::method noReturnValue delegate target"))
+
+  test = class~new(.DelegateTarget~new)
+  self~assertTrue(test~hasMethod('returnValue'))
+  self~assertTrue(test~hasMethod('noReturnValue'))
+  self~assertEquals(123, test~returnValue)
+  test~noReturnValue
+  self~assertFalse(var('RESULT'))
+
+  method = test~instanceMethod('returnValue')
+  self~assertFalse(method~isPrivate)
+  self~assertFalse(method~isProtected)
+  self~assertFalse(method~isAbstract)
+  self~assertFalse(method~isAttribute)
+  self~assertTrue(method~isGuarded)
+
+  class = self~buildTestClass('test', ("::class test", "::attribute target class", -
+      "::method returnValue class delegate target", "::method noReturnValue delegate target class"))
+
+  class~target = .DelegateTarget~new
+
+  self~assertTrue(class~hasMethod('returnValue'))
+  self~assertTrue(class~hasMethod('noReturnValue'))
+  self~assertEquals(123, class~returnValue)
+  class~noReturnValue
+  self~assertFalse(var('RESULT'))
+
+  method = class~instanceMethod('returnValue')
+  self~assertFalse(method~isPrivate)
+  self~assertFalse(method~isProtected)
+  self~assertFalse(method~isAbstract)
+  self~assertFalse(method~isAttribute)
+  self~assertTrue(method~isGuarded)
+
+  class = self~buildTestClass('test', ("::class test", "::method init", "expose target", "use strict arg target", -
+      "::method anAttribute delegate target attribute"))
+
+  target = .DelegateTarget~new
+  test = class~new(target)
+  self~assertTrue(test~hasMethod('anAttribute'))
+  self~assertTrue(test~hasMethod('anAttribute='))
+  target~anAttribute = 'abc'
+  self~assertEquals('abc', test~anAttribute)
+  test~anAttribute = 'def'
+  self~assertEquals('def', test~anAttribute)
+  self~assertEquals('def', target~anAttribute)
+
+  method = test~instanceMethod('anAttribute')
+  self~assertFalse(method~isPrivate)
+  self~assertFalse(method~isProtected)
+  self~assertFalse(method~isAbstract)
+  self~assertTrue(method~isAttribute)
+  self~assertTrue(method~isGuarded)
+
+  method = test~instanceMethod('anAttribute=')
+  self~assertFalse(method~isPrivate)
+  self~assertFalse(method~isProtected)
+  self~assertFalse(method~isAbstract)
+  self~assertTrue(method~isAttribute)
+  self~assertTrue(method~isGuarded)
+
+
+  class = self~buildTestClass('test', ("::class test", "::attribute target class", -
+      "::method anAttribute attribute delegate target class"))
+
+  target = .DelegateTarget~new
+  class~target = target
+  self~assertTrue(class~hasMethod('anAttribute'))
+  self~assertTrue(class~hasMethod('anAttribute='))
+  target~anAttribute = 'abc'
+  self~assertEquals('abc', class~anAttribute)
+  class~anAttribute = 'def'
+  self~assertEquals('def', class~anAttribute)
+  self~assertEquals('def', target~anAttribute)
+
+  method = class~instanceMethod('anAttribute')
+  self~assertFalse(method~isPrivate)
+  self~assertFalse(method~isProtected)
+  self~assertFalse(method~isAbstract)
+  self~assertTrue(method~isAttribute)
+  self~assertTrue(method~isGuarded)
+
+  method = class~instanceMethod('anAttribute=')
+  self~assertFalse(method~isPrivate)
+  self~assertFalse(method~isProtected)
+  self~assertFalse(method~isAbstract)
+  self~assertTrue(method~isAttribute)
+  self~assertTrue(method~isGuarded)
+
+  -- now test a bunch of explicit attributes on the methods.  These
+  -- can be simpler, since we're just testing the attributes of the created methods
+  class = self~buildTestClass('test', ("::class test", "::method classDelegate delegate target class private protected unguarded", -
+      "::method delegate private delegate target unguarded protected"))
+
+  method = class~instanceMethod('classDelegate')
+  self~assertTrue(method~isPrivate)
+  self~assertTrue(method~isProtected)
+  self~assertFalse(method~isAbstract)
+  self~assertFalse(method~isAttribute)
+  self~assertFalse(method~isGuarded)
+
+  method = class~method('delegate')
+  self~assertTrue(method~isPrivate)
+  self~assertTrue(method~isProtected)
+  self~assertFalse(method~isAbstract)
+  self~assertFalse(method~isAttribute)
+  self~assertFalse(method~isGuarded)
+
+  -- now test a bunch of explicit attributes on the methods.  These
+  -- can be simpler, since we're just testing the attributes of the created methods
+  class = self~buildTestClass('test', ("::class test", "::method classDelegate public delegate target guarded class unprotected", -
+      "::method delegate guarded delegate target unprotected public"))
+
+  method = class~instanceMethod('classDelegate')
+  self~assertFalse(method~isPrivate)
+  self~assertFalse(method~isProtected)
+  self~assertFalse(method~isAbstract)
+  self~assertFalse(method~isAttribute)
+  self~assertTrue(method~isGuarded)
+
+  method = class~method('delegate')
+  self~assertFalse(method~isPrivate)
+  self~assertFalse(method~isProtected)
+  self~assertFalse(method~isAbstract)
+  self~assertFalse(method~isAttribute)
+  self~assertTrue(method~isGuarded)
+
+  -- now test a bunch of explicit attributes on the methods.  These
+  -- can be simpler, since we're just testing the attributes of the created methods
+  class = self~buildTestClass('test', ("::class test", "::method classDelegate attribute public delegate target guarded class unprotected", -
+      "::method delegate guarded delegate target attribute unprotected public"))
+
+  method = class~instanceMethod('classDelegate')
+  self~assertFalse(method~isPrivate)
+  self~assertFalse(method~isProtected)
+  self~assertFalse(method~isAbstract)
+  self~assertTrue(method~isAttribute)
+  self~assertTrue(method~isGuarded)
+
+  method = class~method('delegate')
+  self~assertFalse(method~isPrivate)
+  self~assertFalse(method~isProtected)
+  self~assertFalse(method~isAbstract)
+  self~assertTrue(method~isAttribute)
+  self~assertTrue(method~isGuarded)
+
+  method = class~instanceMethod('classDelegate=')
+  self~assertFalse(method~isPrivate)
+  self~assertFalse(method~isProtected)
+  self~assertFalse(method~isAbstract)
+  self~assertTrue(method~isAttribute)
+  self~assertTrue(method~isGuarded)
+
+  method = class~method('delegate=')
+  self~assertFalse(method~isPrivate)
+  self~assertFalse(method~isProtected)
+  self~assertFalse(method~isAbstract)
+  self~assertTrue(method~isAttribute)
+  self~assertTrue(method~isGuarded)
+
+::method test_delegate_no_name
+  self~assertSyntaxError(20.926, "::method test delegate")
+
+::method test_delegate_bad_name
+  self~assertSyntaxError(20.926, "::method test delegate 'target'")
+
+::method test_delegate_twice
+  self~assertSyntaxError(25.902, "::method test delegate target delegate another")
+
+::method test_delegate_abstract
+  self~assertSyntaxError(25.902, "::method test delegate target abstract")
+
+::method test_abstract_delegate
+  self~assertSyntaxError(25.902, "::method test abstract delegate target")
+
+::method test_delegate_external
+  self~assertSyntaxError(25.902, "::method test delegate target external 'LIBRARY REXX file_case_sensitive'")
+
+::method test_delegate_no_body
+  self~assertSyntaxError(99.946, ("::method test delegate target", "return 123"))
+
+
+-- simple method for generating a test class
+::method buildTestClass
+  use strict arg name, source
+
+  p = .package~new('test', source)
+  return p~findClass(name)
+
 
 -- a test class will lots of different methods with valid syntaxes and some different semantics
 ::class methodTest
@@ -464,3 +655,13 @@ return testResult
 -- get the context executable
 ::method executable
   return .context~executable
+
+-- simple delegate target for testing DELEGATE keyword
+::class DelegateTarget
+::method returnValue
+  return 123
+
+::method noReturnValue
+  return
+
+::attribute anAttribute
