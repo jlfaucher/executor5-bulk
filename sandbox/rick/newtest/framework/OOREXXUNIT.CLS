@@ -312,33 +312,73 @@ return .false
 
 -- Record the result from an individual test method.  This will hold all of the
 -- error/failure information, plus a count of the successful assertions.
-::class "TestResult" public
+::class "TestResultBase" public
 ::method init
-  expose testMethod errorInformation assertionCount isError isFailure skippedTests
-  use strict arg testMethod
+  expose errorInformation assertionCount isError isFailure skippedTests isSkipped
 
   assertionCount = 0
   errorInformation = .nil
   isError = .false
   isFailure = .false
+  isSkipped = .false
 
 -- add an error to the result
 ::method setError
-  expose errorInformation testMethod isError
+  expose errorInformation isError
   use strict arg errorInformation
 
   isError = .true
+
+-- add a failure to the result
+::method setFailure
+  expose errorInformation isFailure
+  use strict arg errorInformation
+
+  isFailure = .true
+
+::attribute assertionCount GET
+
+-- returns whether the entire test was successful or not
+::method wasSuccessful
+  expose errorInformation
+  return errorInformation == .nil
+
+::attribute isFailure get
+::attribute isError get
+::attribute isSkipped
+
+-- get the error information
+::method failureResult
+  expose errorInformation
+  return errorInformation
+
+-- display any failure information
+::method displayFailure
+  expose errorInformation
+  use strict arg output
+
+  if errorInformation \= .nil then
+     errorInformation~display(output)
+
+
+-- Record the result from an individual test method.  This will hold all of the
+-- error/failure information, plus a count of the successful assertions.
+::class "TestResult" public subclass TestResultBase
+::method init
+  expose testMethod
+  use strict arg testMethod
+
+  self~init:super
+
+-- add an error to the result
+::method setError
+  forward class(super) continue
   testMethod~logError(self)
 
 -- add a failure to the result
 ::method setFailure
-  expose errorInformation testMethod expose isFailure
-  use strict arg errorInformation
-
-  isFailure = .true
+  forward class(super) continue
   testMethod~logFailure(self)
-
-::attribute assertionCount GET
 
 -- Record test completion
 ::method endTest
@@ -352,22 +392,12 @@ return .false
 
   testMethod~logTestStart(self)
 
--- returns whether the entire test was successful or not
-::method wasSuccessful
-  expose errorInformation
-  return errorInformation == .nil
+-- special error for failures instantiating a test class
+::class TestInstantiationError subclass TestResultBase
+::method init
+  use strict arg testClass, conditionObj
 
-::attribute isFailure get
-::attribute isError get
-
--- display any failure information
-::method displayFailure
-  expose errorInformation
-  use strict arg output
-
-  if errorInformation \= .nil then
-     errorInformation~display(output)
-
+  self~setError(.GeneralError~new("Error instantiating test class" testClass~id, conditionObj))
 
 -- an accumulated set of test results
 ::class "ResultSet"
@@ -436,14 +466,35 @@ return .false
   expose tests assertions failures errors failureResults
   use strict arg otherSet
 
-  tests += otherSet~tests
-  skippedTests += otherSet~skippedTests
-  skippedTestSets += otherSet~skippedTestSets
-  assertions += otherSet~assertions
-  errors += otherSet~errors
-  failures += otherSet~failures
-
-  failureResults~appendAll(otherSet~failureResults)
+  -- if the other is a result set, merge everything.
+  if otherSet~isA(.ResultSet) then do
+     tests += otherSet~tests
+     skippedTests += otherSet~skippedTests
+     skippedTestSets += otherSet~skippedTestSets
+     assertions += otherSet~assertions
+     errors += otherSet~errors
+     failures += otherSet~failures
+     failureResults~appendAll(otherSet~failureResults)
+  end
+  -- received a single result...likely a failure
+  else do
+      -- if this was a skipped test, just record that
+      if otherSet~isSkipped then do
+         skippTests += 1
+      end
+      else do
+         -- always add in the assertions
+         assertions += otherSet~assertions
+         if otherSet~isFailure then do
+            failures += 1
+            failureResults~append(otherSet~failureResult)
+         end
+         else if otherSet~isFailure then do
+            errors += 1
+            failureResults~append(otherSet~failureResult)
+         end
+      end
+  end
 
 -- display this exception status
 ::method display
@@ -510,8 +561,8 @@ assertFail Control unexpected reached a failure point.
 ::END
 
 -- The base class for reporting test problems
-::class 'TestFailure' public
-::method activate
+::class 'TestFailureBase' public
+::method activate class
   expose messages
   messages = .stringtable~new
 
@@ -524,8 +575,8 @@ assertFail Control unexpected reached a failure point.
 -- testMethod object, which contains all of the relevant test information,
 -- and type type of failure
 ::method init
-  expose testMethod failureType timestamp
-  use strict arg testMethod, failureType
+  expose failureType timestamp
+  use strict arg failureType
 
   timestamp = .datetime~new
 
@@ -559,12 +610,30 @@ assertFail Control unexpected reached a failure point.
 
 -- display the test failure information
 ::method displayFailure
-  expose testMethod failureType timestamp
+  expose failureType timestamp
   use strict arg output
 
   output~lineout('['failureType'] ['timestamp~isodate']')
-  testMethod~display(output)
 
+-- The base class for reporting test problems
+::class 'TestFailure' public subclass TestFailureBase
+-- initialize a test failure.  At this level, we are given the
+-- testMethod object, which contains all of the relevant test information,
+-- and type type of failure
+::method init
+  expose testMethod
+  use strict arg testMethod, failureType
+  self~init:super(failureType)
+
+  timestamp = .datetime~new
+
+-- display the test failure information
+::method displayFailure
+  expose testMethod
+  use strict arg output
+
+  self~displayFailure:super(output)
+  testMethod~display(output)
 
 --  AssertionFailure is a report of a test case failure.  A test case fails when an
 --  assertion does not hold.  This is the base assertion failure.
@@ -684,6 +753,29 @@ assertFail Control unexpected reached a failure point.
      output~lineout(frame~string)
   end
 
+
+-- class for an unexpected execution failure
+::class 'GeneralError' public subclass TestFailureBase
+::method init
+  expose message conditionObject
+  use strict arg message, conditionObject
+
+  self~init:super("Test Error")
+
+-- display the test failure information
+::method displayFailure
+  expose message conditionObject
+  use strict arg output
+
+  -- display the base information
+  self~displayFailure:super(output)
+  output~lineout(message)
+
+  -- add the trace back lines, excluding anything from the framework
+  loop frame over conditionObject~stackFrames
+     output~lineout(frame~string)
+  end
+
 -- class for a handling a test failure caused by not receiving an
 -- expected error
 ::class 'ExpectedErrorFailure' public subclass TestFailure
@@ -748,21 +840,10 @@ assertFail Control unexpected reached a failure point.
   expectedCondition = .nil
 
 -- logging methods for test events.  These log to the parent entity
-::method logFailure
-  expose testCase
-  forward To(testCase)
-
-::method logError
-  expose testCase
-  forward To(testCase)
-
-::method logTestStart
-  expose testCase
-  forward To(testCase)
-
-::method logTestEnd
-  expose testCase
-  forward To(testCase)
+::method logFailure delegate testCase
+::method logError delegate testCase
+::method logTestStart delegate testCase
+::method logTestEnd delegate testCase
 
 -- mark this test method as expecting a syntax error before completion
 ::method expectSyntax
@@ -975,8 +1056,7 @@ exceptionHandler:
      return self~execute(testSuite)
   end
   -- return a test result that indicates we were skipped
-  else .SkippedTestMethod~new(self)
-
+  else return .SkippedTestMethod~new(self)
 
 
 -- create an instance of a test case class, with syntax error protection
@@ -987,7 +1067,7 @@ exceptionHandler:
   return self~new(controller)
 
 syntax:
-  testResult~addError(.TestInstantiationError(self~testSuite, testClass, condition('o')))
+  testResult~addError(.TestInstantiationError(testClass, condition('o')))
   return .nil
 
 
@@ -1010,34 +1090,14 @@ syntax:
   svnInfo = .svnInfo~new(fileName)
 
 -- logging methods.  These just forward to the controller object
-::method logFailure
-  expose controller
-  forward to(controller)
-
-::method logError
-  expose controller
-  forward to(controller)
-
-::method logTestStart
-  expose controller
-  forward to(controller)
-
-::method logTestEnd
-  expose controller
-  forward to(controller)
-
-::method logTestCaseStart
-  expose controller
-  forward to(controller)
-
-::method logTestCaseEnd
-  expose controller
-  forward to(controller)
-
--- handle display feed back.
-::method feedBack
-  expose controller
-  forward to(controller)
+::method logFailure delegate controller
+::method logError delegate controller
+::method logTestStart delegate controller
+::method logTestEnd delegate controller
+::method logTestCaseStart delegate controller
+::method logTestCaseEnd delegate controller
+-- handle display feed back...also handled by the controller
+::method feedBack delegate controller
 
 -- display base test information
 ::method display
@@ -1051,11 +1111,7 @@ syntax:
   end
 
 -- count a successful assertion
-::method assertionPassed
-  expose currentTestCase
-
-  forward to(currentTestCase)
-
+::method assertionPassed delegate currentTestCase
 
 -- count a successful assertion where we have nesting.
 ::method nestedAssertionPassed
@@ -1372,23 +1428,13 @@ syntax:
 ::attribute currentTestCase
 
 -- clear any expected condition information
-::method clearCondition
-  expose currentTestCase
-  forward to(currentTestCase)
+::method clearCondition delegate currentTestCase
 
 -- indicate that the test is expecting a particular syntax error to be raised.
-::method expectSyntax
-  expose currentTestCase
-  -- the details are handled by the current testcase under execution
-  forward to(currentTestCase)
-
+::method expectSyntax delegate currentTestCase
 
 -- indicate that a particular condition type is expected.
-::method expectCondition
-  expose currentTestCase
-  -- the details are handled by the current testcase under execution
-  forward to(currentTestCase)
-
+::method expectCondition delegate currentTestCase
 
 -- check if to see if received condition matches a received condition
 ::method checkCondition
