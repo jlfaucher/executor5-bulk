@@ -56,9 +56,13 @@ return testResult
 ::method "test_Match"
 
     str="abcDEFghi"
-    self~assertSame(1, str~match(2, "bc"))
-    self~assertSame(1, str~match(2, "bcD"))
-    self~assertSame(0, str~match(2, "bcd"))
-    self~assertSame(0, str~match(2, "ab"))
-    self~assertSame(0, str~match(2, "cD"))
+    self~assertTrue(str~match(2, "bc"))
+    self~assertTrue(str~match(2, "bcD"))
+    self~assertFalse(str~match(2, "bcd"))
+    self~assertFalse(str~match(2, "ab"))
+    self~assertFalse(str~match(2, "cD"))
+
+    -- TODO:  The match test cases are horribly incomplete
+    self~assertFalse(""~match(1, "Abc"))
+
 
