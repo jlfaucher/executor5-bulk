@@ -311,7 +311,7 @@
 
 -- Record the result from an individual test method.  This will hold all of the
 -- error/failure information, plus a count of the successful assertions.
-::class "TestResult" public subclass TestResultBase
+::class "TestMethodResult" public subclass TestResultBase
 ::method init
   expose testMethod
   use strict arg testMethod
@@ -360,7 +360,7 @@
 
 
 -- special result for skipped test cases
-::class SkippedTestMethod subclass TestResultBase
+::class "SkippedTestMethod" subclass TestResultBase
 ::method init
   use strict arg testMethod
 
@@ -370,7 +370,7 @@
   self~isSkipped = .true
 
 -- special result for skipped test cases
-::class SkippedTestSets subclass TestResultBase
+::class "SkippedTestSets" subclass TestResultBase
 ::method init
   use strict arg testClass
 
@@ -883,10 +883,10 @@ assertFail Control unexpected reached a failure point.
 
 -- execute a specific test case method
 ::method execute
-  expose testCase
+  expose testCase testResult
 
   -- create the test result
-  testReult = self~createResult
+  testResult = .TestMethodResult~new(self)
 
   -- record the test
   testResult~startTest(self)
@@ -896,7 +896,7 @@ assertFail Control unexpected reached a failure point.
   testCase~feedBack( "... running TestCase object ["self~string"] ..." )
 
   -- setup for the test, creating a clean environment
-  testCase~peformTestSetup
+  testCase~performTestSetup
 
   self~doTheTest(aTestResult)  -- carry out the testmethod
 
@@ -958,10 +958,11 @@ exceptionHandler:
 
 -- check if to see if received condition matches a received condition
 ::method checkCondition
+  expose expectedCondition
   use arg receivedCondition
 
   -- if we're not expecting a condition, this is a failure
-  if self~expectedCondition == .nil then return .false
+  if expectedCondition == .nil then return .false
 
   -- if we have a match, this is a good assertion
   if expectedCondition~matches(receivedCondition) then do
@@ -1016,7 +1017,7 @@ exceptionHandler:
 ::method execute class
   use strict arg controller = (.TestController~new)
 
-  testResult = .ResultSet~new
+  testResult = .ResultSet~new(self)
   instance = self~createTestInstance(controller, testResult)
   if instance == .nil then return testResult
 
@@ -1033,18 +1034,18 @@ exceptionHandler:
      return self~execute(testSuite)
   end
   -- return a test result that indicates we were skipped
-  else return .SkippedTestMethod~new(self)
+  else return .SkippedTestSet~new(self)
 
 
 -- create an instance of a test case class, with syntax error protection
 ::method createTestInstance class
   use strict arg controller, testResult
 
-  signal on syntax
+--  signal on syntax
   return self~new(controller)
 
 syntax:
-  testResult~addError(.TestInstantiationError(testClass, condition('o')))
+  testResult~addError(.TestInstantiationError~new(testClass, condition('o')))
   return .nil
 
 
@@ -1088,7 +1089,7 @@ syntax:
   end
 
 -- count a successful assertion
-::method assertionPassed delegate currentTestCase
+::method assertionPassed delegate currentTestMethod
 
 -- count a successful assertion where we have nesting.
 ::method nestedAssertionPassed
@@ -1190,11 +1191,11 @@ syntax:
 -- compare an array of items.  each item must be the same, and in the same
 -- order.  Item comparisons are the non-strict variety
 ::method assertArrayEquals
-  expose currentTestCase
+  expose currentTestMethod
   use strict arg expected, actual, msg = .nil
 
   -- set the main assertion failure type.  The nested assertion will have the details.
-  self~setMainAssertion(.TwoValueAssertionFailure~new(currentTestCase, "assertArrayEquals", msg, expected, actual))
+  self~setMainAssertion(.TwoValueAssertionFailure~new(currentTestMethod, "assertArrayEquals", msg, expected, actual))
 
   self~assertIsA(actual, .array, "Actual is not an array item")
   self~assertEquals(expected~items, actual~items, "The item count is different between the two arrays")
@@ -1211,11 +1212,11 @@ syntax:
 -- compare an array of items.  each item must be the same, and in the same
 -- order.  Item comparisons are the strict variety
 ::method assertArrayStrictlyEquals
-  expose currentTestCase
+  expose currentTestMethod
   use strict arg expected, actual, msg = .nil
 
   -- set the main assertion failure type.  The nested assertion will have the details.
-  self~setMainAssertion(.TwoValueAssertionFailure~new(currentTestCase, "assertArrayStrictlyEquals", msg, expected, actual))
+  self~setMainAssertion(.TwoValueAssertionFailure~new(currentTestMethod, "assertArrayStrictlyEquals", msg, expected, actual))
 
   self~assertIsA(actual, .array, "Actual is not an array item")
   self~assertEquals(expected~items, actual~items, "The item count is different between the two arrays")
@@ -1341,26 +1342,26 @@ syntax:
 -- Assert a failure explicitly.  Useful for situations where control is not expected
 -- to reach a particular point.
 ::method assertFail
-  expose currentTestCase
+  expose currentTestMethod
   use strict arg msg = .nil
-  self~fail(.AssertionFailure~new(currentTestCase, "assertFail", msg))
+  self~fail(.AssertionFailure~new(currentTestMethod, "assertFail", msg))
 
 
 -- create an error for a two-value assertion failure.
 ::method twoValueFail
-  expose currentTestCase
+  expose currentTestMethod
   use strict arg type, expected, actual, msg
 
-  failure = .TwoValueAssertionFailure~new(currentTestCase, type, msg, expected, actual)
+  failure = .TwoValueAssertionFailure~new(currentTestMethod, type, msg, expected, actual)
   self~fail(failure)
 
 
 -- create an error for a two-value assertion failure.
 ::method oneValueFail
-  expose currentTestCase
+  expose currentTestMethod
   use strict arg type, actual, msg
 
-  failure = .OneValueAssertionFailure~new(currentTestCase, type, msg, actual)
+  failure = .OneValueAssertionFailure~new(currentTestMethod, type, msg, actual)
   self~fail(failure)
 
 
@@ -1389,20 +1390,16 @@ syntax:
   RAISE syntax (self~assertionCode) array ("Test assertion failure", failure)
 
 -- access to the current running test method state
-::attribute currentTestCase
+::attribute currentTestMethod
 
 -- clear any expected condition information
-::method clearCondition delegate currentTestCase
+::method clearCondition delegate currentTestMethod
 
 -- indicate that the test is expecting a particular syntax error to be raised.
-::method expectSyntax delegate currentTestCase
+::method expectSyntax delegate currentTestMethod
 
 -- indicate that a particular condition type is expected.
-::method expectCondition delegate currentTestCase
-
--- check if to see if received condition matches a received condition
-::method checkCondition
-  expose currentTestCase
+::method expectCondition delegate currentTestMethod
 
 -- execute this test in the confines of
 ::method executeInSuite
@@ -1427,17 +1424,21 @@ syntax:
   testMethods = self~getTestMethods
 
   -- create a result object for this test case class.
-  testResult = .TestCaseResult~new(self)
+  testResult = .TestMethodResult~new(self)
 
   -- for each method create a runner for this and execute the test
-  loop methodName overMethods
+  loop methodName over methods
      method = self~instanceMethod(methodName)
+     self~currentTestMethod = .TestMethod~new(self, methodName, method)
      if controller~filterTestMethod(self, methodName, method) then do
-         self~currentTestCase = new .TestMethod(self, methodName, method)
          -- run the test method, then add the results to our accumulator.
-         methodResult = self~currentTestCase~execute
+         methodResult = self~currentTestMethod~execute
          testResult~addResult(methodResult)
      end
+     else do
+         testResult~addResult(.SkippedTestMethod(self~currentTestMethod))
+     end
+
   end
 
   return testResult
@@ -1455,7 +1456,7 @@ syntax:
  -- Get all methods that start with "TEST", even ones from the superclasses
  -- Some tests might have method overrides that test different variants of
  -- the base test methods
-  methSupplier = classObj~methods
+  methSupplier = self~class~methods
   do while methSupplier~available -- iterate over supplied methods
      name = methSupplier~index
      if name~match(1, "TEST") then do
@@ -1466,11 +1467,6 @@ syntax:
 
   -- return the method names in sorted order.
   return testMethodNames~makearray~sort
-
--- create a TestResult object.  Subclasses may override this to
--- supply different types
-::method createResult
-  return .TestResult~new
 
 -- methods for temporarily disabling out
 ::method disableOutput
@@ -1494,7 +1490,7 @@ syntax:
 -- perform any environment setup required before running a test method
 ::method performTestSetup
   -- this is invoked before each test method is run
-  testcase~setUp
+  self~setUp
 
   -- make sure the output streams are in default state
   .output~destination(.stdout)
@@ -1510,7 +1506,7 @@ syntax:
   .traceoutput~destination(.stderr)
 
   -- tearDown is also invoked after each test
-  testcase~tearDown
+  self~tearDown
 
 
 /** setUp()
@@ -1839,6 +1835,7 @@ syntax:
   s = .stream~new(file)
   a = s~arrayIn
   s~close
+  return a
 
 -- create a file from a package resource
 ::method createFromResource
