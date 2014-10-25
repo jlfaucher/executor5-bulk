@@ -1,7 +1,7 @@
 #!/usr/bin/rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2005-2007 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -52,7 +52,7 @@
 
   interpreterName = .rexxinfo~name
   interpreterDate = .rexxinfo~date
-  interpreterLanguageLevel = rexxinfo~languageLevel
+  interpreterLanguageLevel = .rexxinfo~languageLevel
 
   -- Note:  initialize the OSName first, other methods depend on this
   OSName = .rexxinfo~platform
@@ -70,8 +70,6 @@
   -- Capture the ooRexxUnit framework directory and ensure it is in the path.
   -- Also capture the original path in case someone needs it.
   frameworkDirectory = .File~new(.context~package~name)~parent
-  -- set up an original search path for files, includeing the framework directory
-  originalPath = self~addToPath(self~frameWorkDirectory)
 
   architecture = .rexxinfo~architecture
 
@@ -100,63 +98,13 @@
    shell="CMD"
 
    -- for now, we have a Windows/not Windows situation.
-   if \OSName~caselessEquals("Windows") do
+   if \OSName~caselessEquals("Windows") then do
       -- get the fully qualified shell name from the environment
       unixShell=value("SHELL", , "environment")
-      // and get the shell name portion
+      -- and get the shell name portion
       shell = .File~new(unixShell)~name
    end
    return shell
-
--- Adds the specified directory to the path only if it is not already in the
--- path.  By default the directory is added to the beginning of the path.
---
--- @param  dir  REQUIRED
---   The directory to add to the path
--- @param  at   OPTIONAL
---   Where to add the directory, beginning or end. Only the first letter is
---   needed.  Specifying anything other than "E"nd results in the beginning.
--- @return  Returns the old path, the current path at time of invocation.
---
-::class addToPath class
-  use strict arg dir, at = 'B'
-
-  at = at~left(1)~upper
-  if at \== 'E' then at = 'B'
-
-  curPath = value("PATH", , 'ENVIRONMENT')
-  if \self~isInPath(dir) then do
-    if at == 'B' then
-      newPath = dir || .File~pathSeparator || curPath
-    else
-      newPath curPath || .File~pathSeparator || dir
-  end
-
-  call value "PATH", newPath, "ENVIRONMENT"
-
-  return curPath
-
--- Returns true if the specified directory is in the current PATH, otherwise
--- returns false.
-::method isInPath
-  use strict arg dir
-
-  path = value("PATH", ,'ENVIRONMENT')
-  sl   = .File~separator
-  sep  = .File~pathSeparator
-
-  if \.File~isCaseSensitive then do
-    if path~caselessContains(dir || sep) then return .true
-    if path~caseLessContains(dir || sl || pathSep) then return .true
-    if path~right(dir~length)~caselessEquals(dir) then return .true
-  end
-  else do
-    if path~contains(dir || sep) then return .true
-    if path~contains(dir || sl || pathSep) then return .true
-    if path~right(dir~length)~equals(dir) then return .true
-  end
-
-return .false
 
 -- Determine if this is a 32-bit or 64-bit interpreter.
 ::method getAddressingMode private class
@@ -201,7 +149,7 @@ return .false
 
   -- loop searching for sections of non-printable charactes
   loop while str<>""
-     start=str~ (str, nonPrintableChars, "Match")
+     start=str~verify(nonPrintableChars, "Match")
      -- non-printing char found, look for printable char after it
      if start > 0 then do
         -- find non-matching position, deduct one to point to last non-printable chars in string
@@ -397,7 +345,37 @@ return .false
 ::method init
   use strict arg testClass, conditionObj
 
+  self~init:super
+
   self~setError(.GeneralError~new("Error instantiating test class" testClass~id, conditionObj))
+
+-- special error for failures instantiating a test class
+::class FileNotFoundFailure subclass TestResultBase
+::method init
+  use strict arg testSuite, fileName
+
+  self~init:super
+
+  self~setFailure(.GeneralError~new("Error loading file" fileName "for test suite" testSuite~string))
+
+
+-- special result for skipped test cases
+::class SkippedTestMethod subclass TestResultBase
+::method init
+  use strict arg testMethod
+
+  self~init:super
+
+  self~skippedTests = 1
+  self~isSkipped = .true
+
+-- special result for skipped test cases
+::class SkippedTestSets subclass TestResultBase
+::method init
+  use strict arg testClass
+
+  self~skippedTestSets = 1
+  self~isSkipped = .true
 
 -- an accumulated set of test results
 ::class "ResultSet"
@@ -501,23 +479,23 @@ return .false
   expose tests assertions failures errors failureResults testEntity startTime endTime
   use strict arg output = .output
 
-  output~lineout("Test Name       "  testEntity~displayName
+  output~lineout("Test Name       "  testEntity~displayName)
   output~lineout("Interpreter:    " .rexxinfo~name)
   output~lineout("Addressing Mode:" .rexxInfo~architecture)
   output~lineout("ooRexxUnit:     " .ooRexxUnit~version)
   output~lineout
-  output~lineout("Tests run:         " tests
-  output~lineout("Tests skipped:     " skippedTests
-  output~lineout("Test sets skipped: " skippedTestSets
-  output~lineout("Assertions:        " assertions
-  output~lineout("Failures:          " failures
-  output~lineout("Errors:            " errors
+  output~lineout("Tests run:         " tests)
+  output~lineout("Tests skipped:     " skippedTests)
+  output~lineout("Test sets skipped: " skippedTestSets)
+  output~lineout("Assertions:        " assertions)
+  output~lineout("Failures:          " failures)
+  output~lineout("Errors:            " errors)
 
   -- display any failure information that is part of this set.
   self~displayFailure(output)
 
   output~lineout
-  output~lineout("Execution time:    " endTime - startTime
+  output~lineout("Execution time:    " endTime - startTime)
 
 -- display just the test failure information.  If executing a
 -- test suite, we'll display this early to free up the resources
@@ -566,7 +544,7 @@ assertFail Control unexpected reached a failure point.
   expose messages
   messages = .stringtable~new
 
-  loop line over .context~package~resource('errorMessages')
+  loop line over .context~package~resource('TestProblemMessages')
      parse var line id text
      messages[id] = text
   end
@@ -654,7 +632,7 @@ assertFail Control unexpected reached a failure point.
   -- display the base information
   self~displayFailure:super(output)
   output~lineout("  Line:   " assertionLine)
-  if message ~= .nil then do
+  if message \= .nil then do
       output~lineout("  Purpose:" message)
   end
   output~lineout("  Failed: " self~assertionMessage)
@@ -669,7 +647,7 @@ assertFail Control unexpected reached a failure point.
   expose message
   use strict arg output
 
-  if message ~= .nil then do
+  if message \= .nil then do
       output~lineout("    Purpose:" message)
   end
   output~lineout("    Failed: " self~assertionMessage)
@@ -812,19 +790,19 @@ assertFail Control unexpected reached a failure point.
 
 -- display information about an expected condition failure
 ::method displayFailure
-  expose assertionLine, condition, code, message
+  expose assertionLine condition code message
   use strict arg output = .output
 
   output~lineout("  Failed:  Condition expected")
   if message != .nil then do
-     output~lineout("    Reason:  " message
+     output~lineout("    Reason:  " message)
   end
-  output~lineout("    Line:   " assertionLine
+  output~lineout("    Line:   " assertionLine)
   if condition == 'SYNTAX' then do
-     output~lineout("    Expected: SYNTAX" code
+     output~lineout("    Expected: SYNTAX" code)
   end
   else do
-     output~lineout("    Expected:" condition
+     output~lineout("    Expected:" condition)
   end
 
 
@@ -897,7 +875,6 @@ assertFail Control unexpected reached a failure point.
      -- from the top to the method.
      if frames[i]~executable == testMethod then
         return frames~section(1, i)
-     end
   end
 
   -- should never get here, but one never knows.
@@ -1030,14 +1007,14 @@ exceptionHandler:
 ::class "TestExecutor" mixinclass object
 -- run the tests and display the results
 ::method run class
-  use strict arg controller = .TestController~new
+  use strict arg controller = (.TestController~new)
   testResult = self~execute(controller)
   testResult~display(controller~resultStream)
 
 
 -- execute an this test case by creating an instance and having it execute.
 ::method execute class
-  use strict arg controller = .TestController~new
+  use strict arg controller = (.TestController~new)
 
   testResult = .ResultSet~new
   instance = self~createTestInstance(controller, testResult)
@@ -1315,7 +1292,6 @@ syntax:
 
   if \choices~hasItem(actual) then
      self~oneValueFail("assertOneOf", actual, msg)
-  end
 
   -- Assertion holds
   self~assertionPassed
@@ -1325,9 +1301,8 @@ syntax:
 ::method assertTrue
   use strict arg actual, msg = ""
 
-  if .true \== actual then do
+  if .true \== actual then d
      self~oneValueFail("assertTrue", actual, msg)
-  end
 
   -- Assertion holds
   self~assertionPassed
@@ -1337,22 +1312,11 @@ syntax:
 ::method assertFalse
   use strict arg actual, msg = ""
 
-  if .false \== actual then do
+  if .false \== actual then
      self~oneValueFail("assertFalse", actual, msg)
-  end
 
   -- Assertion holds
   self~assertionPassed
-
--- create a package from an array of lines with the intent of checking
--- errors raised at translate time rather than runtime.
-::method assertSyntaxError
-  use strict arg error, code, msg = .nil
-
-  self~expectSyntax(error, msg)
-  -- this will translate this code and nothing else.
-  r = .package~new("test", code)
-
 
 -- create a routine and call from an array of lines with the intent of checking
 -- errors raised at run time rather than during translation.
@@ -1379,7 +1343,7 @@ syntax:
 ::method assertFail
   expose currentTestCase
   use strict arg msg = .nil
-  self~fail(.AssertionFailure~new(currentTestCase, "assertFail", msg)
+  self~fail(.AssertionFailure~new(currentTestCase, "assertFail", msg))
 
 
 -- create an error for a two-value assertion failure.
@@ -1908,8 +1872,8 @@ syntax:
 -- class for holding svn info for a file
 ::class "SVNInfo"
 ::method init
-  expose revision date
-  use strict arg filename author
+  expose revision date authore
+  use strict arg filename
 
   revision = .nil
   date = .nil
