@@ -54,6 +54,16 @@
    o=.object~new
    self~assertEquals(o, o, "subtest_04")
 
+   self~assertEquals("abc", " abc ")
+   self~assertEquals(1, 1.0)
+
+   -- test "assertEquals"
+::method "test_assertNotEquals_01a"
+   self~assertNotEqual(1 , 2,    "subtest_01")
+   self~assertNotEqual("abc", .nil, "subtest_03")
+   o1=.object~new
+   o2=.object~new
+   self~assertNotEqual(o1, o2, "subtest_04")
 
    -- test "assertEquals"
 ::method "test_assertEquals_02"
@@ -266,80 +276,75 @@
 
 
 /* *** test methods which create failures and demonstrate the
-       resulting failure messages */
+       resulting failure messages.  We expect the syntax error
+       used internally for assertion failures and pass on that */
 
-/*
 ::method "test_fail_assertEquals_01"
-   self~assertEquals(12, 13)
+  self~expectSyntax(self~AssertionCode)
+  self~assertEquals(12, 13)
+
 
 ::method "test_fail_assertEquals_02"
-   self~assertEquals(12, 13, "A message in case of a failure.")
+  self~expectSyntax(self~AssertionCode)
+  self~assertEquals(12, 13, "A message in case of a failure.")
 
 
 ::method "test_fail_assertFalse_01"
-   self~assertFalse(.true)
+  self~expectSyntax(self~AssertionCode)
+  self~assertFalse(.true)
 
 ::method "test_fail_assertFalse_02"
-   self~assertFalse(.true, "A message in case of a failure.")
+  self~expectSyntax(self~AssertionCode)
+  self~assertFalse(.true, "A message in case of a failure.")
 
 
 ::method "test_fail_assertNotNull_01"
-   self~assertNotNull(.nil)
+  self~expectSyntax(self~AssertionCode)
+  self~assertNotNull(.nil)
 
 ::method "test_fail_assertNotNull_02"
-   self~assertNotNull(.nil, "A message in case of a failure.")
+  self~expectSyntax(self~AssertionCode)
+  self~assertNotNull(.nil, "A message in case of a failure.")
 
 
 ::method "test_fail_assertNotSame_01"
-   a=12
-   self~assertNotSame(a, a)
+  self~expectSyntax(self~AssertionCode)
+  a=12
+  self~assertNotSame(a, a)
 
 ::method "test_fail_assertNotSame_02"
-   a=12
-   self~assertNotSame(a, a, "A message in case of a failure.")
-
+  self~expectSyntax(self~AssertionCode)
+  a=12
+  self~assertNotSame(a, a, "A message in case of a failure.")
 
 ::method "test_fail_assertNotEquals_01"
-   self~assertNotEquals(12, 12)
+  self~expectSyntax(self~AssertionCode)
+  self~assertNotEquals(12, 12)
 
 ::method "test_fail_assertNotEquals_02"
-   self~assertNotEquals(12, 12, "A message in case of a failure.")
-
-
+  self~expectSyntax(self~AssertionCode)
+  self~assertNotEquals(12, 12, "A message in case of a failure.")
 
 ::method "test_fail_assertNull_01"
-   self~assertNull(12)
+  self~expectSyntax(self~AssertionCode)
+  self~assertNull(12)
 
 ::method "test_fail_assertNull_02"
-   self~assertNull(12, "A message in case of a failure.")
-
+  self~expectSyntax(self~AssertionCode)
+  self~assertNull(12, "A message in case of a failure.")
 
 ::method "test_fail_assertSame_01"
-   self~assertSame(12, " 12")
+  self~expectSyntax(self~AssertionCode)
+  self~assertSame(12, " 12")
 
 ::method "test_fail_assertSame_02"
-   self~assertSame(12, "12 ", "A message in case of a failure.")
-
+  self~expectSyntax(self~AssertionCode)
+  self~assertSame(12, "12 ", "A message in case of a failure.")
 
 ::method "test_fail_assertTrue_01"
-   self~assertTrue(.false)
+  self~expectSyntax(self~AssertionCode)
+  self~assertTrue(.false)
 
 ::method "test_fail_assertTrue_02"
-   self~assertTrue(.false, "A message in case of a failure.")
-
-
-::method "test_fail_expectSyntax"
-   self~expectSyntax(13.1)          -- but do not raise it!
-
-
-::method "test_fail_expectCondition"
-   self~expectCondition("NOVALUE")  -- but do not raise it!
-
-
-::method "test_fail_unexpectedSyntax"
-   raise syntax 13.1 array("xyz", "01")
-
-
-::method "test_fail_expectedCondition"
-   raise novalue
-*/
+  self~expectSyntax(self~AssertionCode)
+  self~assertTrue(.false, "A message in case of a failure.")
