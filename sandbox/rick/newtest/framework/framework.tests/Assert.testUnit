@@ -62,7 +62,9 @@
 
    self~assertEquals(bag, bag, "subtest_01")
    self~assertEquals(set, set, "subtest_02")
-   self~assertEquals(.bag~new~union(set), .bag~new~union(set), "subtest_03")
+   self~assertIdentical(bag, bag, "subtest_01")
+   self~assertIdentical(set, set, "subtest_02")
+   self~assertCollectionsEqual(.bag~new~union(set), .bag~new~union(set), "subtest_03")
 
    -- test "assertEquals"
 ::method "test_assertEquals_03"
@@ -71,7 +73,7 @@
    r["a"]="a"
    r["a"]="a"
    r["b"]="b"
-   self~assertEquals(b, r, "subtest_01")
+   self~assertCollectionsEqual(b, r, "subtest_01")
 
 
    -- test "assertEquals"
@@ -81,7 +83,7 @@
    t["a"]="a"
    t["a"]="a"
    t["b"]="b"
-   self~assertEquals(s, t, "subtest_01")
+   self~assertCollectionsEqual(s, t, "subtest_01")
 
 
    -- test "assertEquals"
@@ -91,7 +93,7 @@
    d["a"]="a"
    d["a"]="a"
    d["b"]="b"
-   self~assertEquals(s, d, "subtest_01")
+   self~assertCollectionsEqual(s, d, "subtest_01")
 
 
    -- test "assertEquals"
@@ -101,25 +103,25 @@
    q=.queue~new~~queue("a")~~queue("a")~~queue("b")
    c=.circularQueue~new(3)~~queue("a")~~queue("a")~~queue("b")
 
-   self~assertEquals(q, l, "subtest_01")
-   self~assertEquals(l, a, "subtest_02")
-   self~assertEquals(q, a, "subtest_03")
-   self~assertEquals(c, a, "subtest_04")
-   self~assertEquals(c, l, "subtest_05")
-   self~assertEquals(c, q, "subtest_06")
+   self~assertCollectionsEqual(q, l, "subtest_01")
+   self~assertCollectionsEqual(l, a, "subtest_02")
+   self~assertCollectionsEqual(q, a, "subtest_03")
+   self~assertCollectionsEqual(c, a, "subtest_04")
+   self~assertCollectionsEqual(c, l, "subtest_05")
+   self~assertCollectionsEqual(c, q, "subtest_06")
 
 
 
 ::method "test_assertEquals_07"
    s=.set~of("a", "a", "b")
    t=.table~new~union(s)
-   self~assertEquals(s, t, "subtest_01")
+   self~assertCollectionsEqual(s, t, "subtest_01")
 
 
 ::method "test_assertEquals_08"
    s=.set~of("a", "a", "b")
    r=.relation~new~union(s)
-   self~assertEquals(s, r, "subtest_01")
+   self~assertCollectionsEqual(s, r, "subtest_01")
 
 
 ::method "test_assertEquals_09"
@@ -127,7 +129,7 @@
    t["a"]="a"
    t["b"]="b"
    r=.relation~new~union(t)
-   self~assertEquals(t, r, "subtest_01")
+   self~assertCollectionsEqual(t, r, "subtest_01")
 
 
 
@@ -149,9 +151,9 @@
    bag=.bag~of("a", "a", "b", "c")
    set=.set~new~union(bag)
 
-   self~assertNotEquals(bag, set, "subtest_01")
-   self~assertNotEquals(set, bag, "subtest_02")
-   self~assertNotEquals(.bag~new~union(set), .bag~new~union(set)~~put("c"), "subtest_03")
+   self~assertCollectionsNotEqual(bag, set, "subtest_01")
+   self~assertCollectionsNotEqual(set, bag, "subtest_02")
+   self~assertCollectionsNotEqual(.bag~new~union(set), .bag~new~union(set)~~put("c"), "subtest_03")
 
    -- test "assertNotEquals"
 ::method "test_assertNotEquals_03"
@@ -161,7 +163,7 @@
    r["a"]="a"
    r["b"]="b"
    r["c"]="c"
-   self~assertNotEquals(b, r, "subtest_01")
+   self~assertCollectionsNotEqual(b, r, "subtest_01")
 
 
    -- test "assertNotEquals"
@@ -172,7 +174,7 @@
    t["a"]="a"
    t["b"]="b"
    t["c"]="c"
-   self~assertNotEquals(s, t, "subtest_01")
+   self~assertCollectionsNotEqual(s, t, "subtest_01")
 
 
    -- test "assertNotEquals"
@@ -183,7 +185,7 @@
    d["a"]="a"
    d["b"]="b"
    d["c"]="c"
-   self~assertNotEquals(s, d, "subtest_01")
+   self~assertCollectionsNotEqual(s, d, "subtest_01")
 
 
    -- test "assertNotEquals"
@@ -193,25 +195,24 @@
    q=.queue~new~~queue("a")~~queue("a")~~queue("b")~~queue("b")~~queue("c")~~queue("c")
    c=.circularQueue~new(3)~~queue("a")~~queue("a")~~queue("b")~~queue("b")~~queue("c")~~queue("c")~~queue("d")
 
-   self~assertNotEquals(q, l, "subtest_01")
-   self~assertNotEquals(l, a, "subtest_02")
-   self~assertNotEquals(q, a, "subtest_03")
-   self~assertNotEquals(c, a, "subtest_04")
-   self~assertNotEquals(c, l, "subtest_05")
-   self~assertNotEquals(c, q, "subtest_06")
-
+   self~assertCollectionsNotEqual(q, l, "subtest_01")
+   self~assertCollectionsNotEqual(l, a, "subtest_02")
+   self~assertCollectionsNotEqual(q, a, "subtest_03")
+   self~assertCollectionsNotEqual(c, a, "subtest_04")
+   self~assertCollectionsNotEqual(c, l, "subtest_05")
+   self~assertCollectionsNotEqual(c, q, "subtest_06")
 
 
 ::method "test_assertNotEquals_07"
    s=.set~of("a", "a", "b")
    t=.table~new~union(s)~~put("c","c")
-   self~assertNotEquals(s, t, "subtest_01")
+   self~assertCollectionsNotEqual(s, t, "subtest_01")
 
 
 ::method "test_assertNotEquals_08"
    s=.set~of("a", "a", "b")
    r=.relation~new~union(s)~~put("c", "c")
-   self~assertNotEquals(s, r, "subtest_01")
+   self~assertCollectionsNotEqual(s, r, "subtest_01")
 
 
 ::method "test_assertNotEquals_09"
@@ -219,7 +220,7 @@
    t["a"]="a"
    t["b"]="b"
    r=.relation~new~union(t)~~put("c", "c")
-   self~assertNotEquals(t, r, "subtest_01")
+   self~assertCollectionsNotEqual(t, r, "subtest_01")
 
 
 

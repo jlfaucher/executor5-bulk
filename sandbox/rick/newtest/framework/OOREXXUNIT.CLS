@@ -43,6 +43,8 @@
   Directives, Classes, or Routines.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 
+::options novalue error
+
 -- main control class the tests.  Holds a lot of global test values rather than
 -- storing them in .local
 ::class "ooRexxUnit"
@@ -284,7 +286,7 @@
 
   isFailure = .true
 
-::attribute assertions GET
+::attribute assertions
 
 -- returns whether the entire test was successful or not
 ::method wasSuccessful
@@ -318,16 +320,20 @@
 
   self~init:super
 
+
 -- add an error to the result
 ::method setError
   expose testMethod
   forward class(super) continue
   testMethod~logError(self)
 
+
 -- add a failure to the result
 ::method setFailure
+  expose testMethod
   forward class(super) continue
-  self~logFailure(self)
+  testMethod~logFailure(self)
+
 
 -- Record test completion
 ::method testEnd
@@ -335,12 +341,14 @@
   -- reduce this to an actual duration value
   duration = duration~elapsed
 
+
 -- record test start
 ::method testStart
   expose duration
 
   -- get an initial timestamp
   duration = .DateTime~new
+
 
 -- special error for failures instantiating a test class
 ::class TestInstantiationError subclass TestResultBase
@@ -551,7 +559,7 @@ assertFail Control unexpected reached a failure point.
 
   loop line over .context~package~resource('TestProblemMessages')
      parse var line id text
-     messages[id] = text
+     messages~setEntry(id, text)
   end
 
 -- initialize a test failure.  At this level, we are given the
@@ -563,19 +571,22 @@ assertFail Control unexpected reached a failure point.
 
   timestamp = .datetime~new
 
+
+-- format an object for a result
 ::method formatObject
   use strict arg o
 
   buf = .MutableBuffer~new
-  buf~append('[', .TestUtils~escapeString(o~string), ', identityHash="', o~identityHash, '"]')
+  buf~append('[', .TestUtil~escapeString(o~string), ', identityHash="', o~identityHash, '"]')
   return buf~string
 
+
 -- format a error message
-::method formatMessage
+::method formatMessage class
   expose messages
   use strict arg id, substitutions, extra
 
-  text = messages[id]
+  text = messages~entry(id)
   buffer = .mutablebuffer~new(text)
 
   loop i = 1 to substitutions~last
@@ -584,12 +595,14 @@ assertFail Control unexpected reached a failure point.
 
   buffer~append(": ", extra)
 
+
 -- retrieve a specific message identifier
-::method messageText
+::method messageText class
   expose messages
   use strict arg id
 
   return messages~entry(id)
+
 
 -- display the test failure information
 ::method displayFailure
@@ -597,6 +610,7 @@ assertFail Control unexpected reached a failure point.
   use strict arg output
 
   output~lineout('['failureType'] ['timestamp~isodate']')
+
 
 -- The base class for reporting test problems
 ::class 'TestFailure' public subclass TestFailureBase
@@ -618,6 +632,7 @@ assertFail Control unexpected reached a failure point.
   self~displayFailure:super(output)
   testMethod~display(output)
 
+
 --  AssertionFailure is a report of a test case failure.  A test case fails when an
 --  assertion does not hold.  This is the base assertion failure.
 ::class 'AssertionFailure' public subclass TestFailure
@@ -629,9 +644,10 @@ assertFail Control unexpected reached a failure point.
   secondaryAssertion = .nil
   assertionLine = testMethod~testLineNumber
 
+
 -- display the test failure information
 ::method displayFailure
-  expose message assertionLine assertionType secondaryException
+  expose message assertionLine assertionType secondaryAssertion
   use strict arg output
 
   -- display the base information
@@ -641,9 +657,9 @@ assertFail Control unexpected reached a failure point.
       output~lineout("  Purpose:" message)
   end
   output~lineout("  Failed: " self~assertionMessage)
-  if secondaryException \= .nil then do
+  if secondaryAssertion \= .nil then do
      output~lineout("Failure Cause:")
-     secondaryException~displaySecondaryFailure(output)
+     secondaryAssertion~displaySecondaryFailure(output)
   end
 
 
@@ -665,12 +681,12 @@ assertFail Control unexpected reached a failure point.
 ::method assertionMessage
   expose assertionType
 
-  return self~messageTest(assertionType)
+  return .TestFailure~messageText(assertionType)
 
 
 --  OneValueAssertionFailure is a report of a test case failure.  A test case fails when an
 --  assertion about an object does not hold.  This is the base assertion failure.
-::class 'OneValueAssertionFailure' public subclass TestFailure
+::class 'OneValueAssertionFailure' public subclass AssertionFailure
 ::method init
   expose actual
   use strict arg testMethod, assertionType, message, actual
@@ -689,7 +705,7 @@ assertFail Control unexpected reached a failure point.
 
 --  TwoValueAssertionFailure is a report of a test case failure.  A test case fails when an
 --  assertion about an object does not hold.  This is the base assertion failure.
-::class 'TwoValueAssertionFailure' public subclass TestFailure
+::class 'TwoValueAssertionFailure' public subclass AssertionFailure
 ::method init
   expose expected actual
   use strict arg testMethod, assertionType, message, expected, actual
@@ -785,13 +801,13 @@ assertFail Control unexpected reached a failure point.
   use strict arg assertionLine, condition , code = .nil, message = .nil
 
 -- do a check for condition equality
-::method isMatch
+::method matches
   expose condition code
   use strict arg received
 
   -- note:  for non syntax conditions, the code in the condition object
   -- will be .nil, so this will compare equal.
-  return condition == received~condition & code == receive~code
+  return condition == received~condition & code == received~code
 
 -- display information about an expected condition failure
 ::method displayFailure
@@ -799,7 +815,7 @@ assertFail Control unexpected reached a failure point.
   use strict arg output = .output
 
   output~lineout("  Failed:  Condition expected")
-  if message != .nil then do
+  if message \= .nil then do
      output~lineout("    Reason:  " message)
   end
   output~lineout("    Line:   " assertionLine)
@@ -828,12 +844,14 @@ assertFail Control unexpected reached a failure point.
 ::method logTestStart delegate testCase
 ::method logTestEnd delegate testCase
 
+
 -- mark this test method as expecting a syntax error before completion
 ::method expectSyntax
   expose expectedCondition
   use strict arg errorCode, msg = .nil
 
   expectedCondition = .ExpectedCondition~new(self~testLineNumber(.context~stackFrames), "SYNTAX", errorCode, msg)
+
 
 -- indicate that a particular condition type is expected.
 ::method expectCondition
@@ -842,15 +860,18 @@ assertFail Control unexpected reached a failure point.
 
   expectedCondition = .ExpectedCondition~new(self~testLineNumber(.context~stackFrames), name,, msg)
 
+
 -- locate the current line number within a test method.  Generally for
 -- determining assertion locations
 ::method testLineNumber
   return self~getLineNumber(.context~stackFrames)
 
+
 -- Determine the line number within a test method that triggered a condition
 ::method conditionLineNumber
   use strict arg condition
   return self~getLineNumber(condition~stackFrames)
+
 
 -- Given a collection of stack frames, return the line number of the line in the
 -- test method as a failure point.
@@ -866,6 +887,7 @@ assertFail Control unexpected reached a failure point.
 
   -- not found for some reason
   return -1
+
 
 -- prune a set of stack frames to remove all stack frames
 -- lower than the test method
@@ -915,18 +937,15 @@ assertFail Control unexpected reached a failure point.
 
 -- wrapper around executing the actual test method
 ::method doTheTest
-   expose testName testMethod
+   expose testName testCase
    use arg testResult
 
    -- Trap all conditions propagated from the invocation of the test case
    -- method, or from the checkForConditionFailure method.
    signal on any name exceptionHandler
 
-   -- save the target method for error tracking
-   testMethod = self~instanceMethod(methodName)
-
    -- now dynamically invoke the method
-   self~send(methodName)
+   testCase~send(testName)
 
    -- The test case method completed without raising a condition.  The last step
    -- is to check if the test case *exepected* a condition to be raised.
@@ -949,7 +968,7 @@ exceptionHandler:
      -- first get the failure object, then
      failure = conditionObject~additional[2]
      -- attach this to the result for this test
-    testResult~addFailure(failure)
+    testResult~setFailure(failure)
   end
   else do
     -- This is an unexpected, unanticipated error.
@@ -991,6 +1010,13 @@ exceptionHandler:
   end
 
 
+-- mark the test as having passed an assertion
+::method assertionPassed
+  expose testResult
+
+  testResult~assertions += 1
+
+
 -- Create a string representation of this test case
 ::method string
   expose testname testCase
@@ -1001,11 +1027,11 @@ exceptionHandler:
 
 -- display base test information
 ::method display
-  expose testCase testMethod
+  expose testCase testName
   use strict arg output
 
   -- display the method name, then add the testcase information
-  output~lineout("  Test:  " testMethod)
+  output~lineout("  Test:  " testName)
   testCase~display(output)
 
 
@@ -1076,7 +1102,7 @@ syntax:
 
 -- The test controller is used for logging, filtering, output redirection, etc.
 ::method init
-  expose controller fileName svnInfo
+  expose controller fileName svnInfo mainAssertion
   use strict arg controller = (.TestController~new)
 
   -- get the containing file name for reporting.
@@ -1085,6 +1111,7 @@ syntax:
   -- try to determine if this file is in svn and get the information
   -- if it is
   svnInfo = .svnInfo~new(fileName)
+  mainAssertion = .nil
 
 -- logging methods.  These just forward to the controller object
 ::method logFailure delegate controller
@@ -1122,9 +1149,19 @@ syntax:
 -- order into account.  Use assertArrayEqual or assertArrayStrictlyEqual
 -- if order is important
 ::method assertCollectionsEqual
+  use strict arg expected, actual, msg = ""
 
-  self~assertTrue(actual~isa(.Collection), msg': actual must be an array')
+  self~assertTrue(actual~isa(.Collection), msg': actual must be a collection')
   self~assertTrue(expected~equivalent(actual), msg': actual must be equivalent to expected')
+
+
+-- checks that two collections are equilvalent.  Does not take
+-- order into account.  Use assertArrayEqual or assertArrayStrictlyEqual
+-- if order is important
+::method assertCollectionsNotEqual
+  use strict arg expected, actual, msg = ""
+
+  self~assertFalse(expected~equivalent(actual), msg': actual must not be equivalent to expected')
 
 -- Checks if two objects are equal
 ::method assertEqual
@@ -1133,7 +1170,7 @@ syntax:
   -- first compare the objects directly, and if they do not compare,
   -- try to compare them as collections.  Note that we use the "=" comparison
   -- variant here.
-  if expected != actual then do
+  if expected \= actual then do
       self~twoValueFail("assertEqual", expected, actual, msg)
   end
 
@@ -1154,7 +1191,7 @@ syntax:
   numeric digits digits
   numeric fuzz 1
 
-  if expected != actual then do
+  if expected \= actual then do
       self~twoValueFail("assertFuzzyEqual", expected, actual, msg)
   end
 
@@ -1167,7 +1204,7 @@ syntax:
   use strict arg expected, actual, msg = .nil
 
   -- If the 2 objects are not equal AND they are not 2 equal collections ...
-  if expected != actual then do
+  if expected \= actual then do
     -- ... the assertion holds
     self~assertionPassed
     return
@@ -1287,7 +1324,7 @@ syntax:
 
 
 -- do an assertion of non-equality
-::method asserStrictlyNotEqual
+::method assertStrictlyNotEqual
   use strict arg expected, actual, msg = .nil
 
   if (expected == actual) then do
@@ -1307,7 +1344,7 @@ syntax:
 ::method assertIdentical
   use strict arg expected, actual, msg = .nil
 
-  if (expected~identityHash != actual~identityHash) then do
+  if (expected~identityHash \= actual~identityHash) then do
       self~twoValueFail("assertIdentical", expected, actual, msg)
   end
 
@@ -1341,7 +1378,7 @@ syntax:
 ::method assertTrue
   use strict arg actual, msg = ""
 
-  if .true \== actual then d
+  if .true \== actual then
      self~oneValueFail("assertTrue", actual, msg)
 
   -- Assertion holds
@@ -1468,7 +1505,7 @@ syntax:
   testResult~testStart(self)
 
   -- for each method create a runner for this and execute the test
-  loop methodName over methods
+  loop methodName over testMethods
      method = self~instanceMethod(methodName)
      self~currentTestMethod = .TestMethod~new(self, methodName, method)
      if controller~filterTestMethod(self, methodName, method) then do
@@ -1575,10 +1612,8 @@ syntax:
 -- Create a string representation of this test case class
 ::method string
   expose filename
+  return self~class~id'@'filename
 
-  buf = .mutableBuffer~new
-  buf~append(testCase~defaultName, '@', filename, ")")
-  return buf~string
 
 -- test suite is a collection of test case files.  This will
 --run all of the indicated tests and return a a consoladated
