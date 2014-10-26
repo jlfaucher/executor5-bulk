@@ -262,9 +262,9 @@
 -- error/failure information, plus a count of the successful assertions.
 ::class "TestResultBase" public
 ::method init
-  expose errorInformation assertionCount isError isFailure skippedTests isSkipped
+  expose errorInformation assertions isError isFailure skippedTests isSkipped
 
-  assertionCount = 0
+  assertions = 0
   errorInformation = .nil
   isError = .false
   isFailure = .false
@@ -284,7 +284,7 @@
 
   isFailure = .true
 
-::attribute assertionCount GET
+::attribute assertions GET
 
 -- returns whether the entire test was successful or not
 ::method wasSuccessful
@@ -306,7 +306,7 @@
   use strict arg output
 
   if errorInformation \= .nil then
-     errorInformation~display(output)
+     errorInformation~displayFailure(output)
 
 
 -- Record the result from an individual test method.  This will hold all of the
@@ -320,25 +320,27 @@
 
 -- add an error to the result
 ::method setError
+  expose testMethod
   forward class(super) continue
   testMethod~logError(self)
 
 -- add a failure to the result
 ::method setFailure
   forward class(super) continue
-  testMethod~logFailure(self)
+  self~logFailure(self)
 
 -- Record test completion
-::method endTest
-  expose testMethod
+::method testEnd
+  expose duration
+  -- reduce this to an actual duration value
+  duration = duration~elapsed
 
-  -- and add an end event to our test log
-  testMethod~logEndTest(self)
+-- record test start
+::method testStart
+  expose duration
 
-::method startTest
-  expose testMethod
-
-  testMethod~logTestStart(self)
+  -- get an initial timestamp
+  duration = .DateTime~new
 
 -- special error for failures instantiating a test class
 ::class TestInstantiationError subclass TestResultBase
@@ -380,7 +382,7 @@
 -- an accumulated set of test results
 ::class "ResultSet"
 ::method init
-  expose tests skippedTests skippedTestSets assertions failures errors failureResult testEntity
+  expose tests skippedTests skippedTestSets assertions failures errors failureResults testEntity
   use strict arg testEntity
 
   tests = 0
@@ -427,7 +429,7 @@
   end
   -- could be an unexpected exception, which is an error
   else if result~isError then do
-     erross += 1
+     errors += 1
      failureResults~append(result)
   end
 
@@ -474,16 +476,18 @@
       end
   end
 
+
 -- display this exception status
 ::method display
-  expose tests assertions failures errors failureResults testEntity startTime endTime
+  expose tests assertions failures errors failureResults testEntity startTime endTime skippedTests skippedTestSets
   use strict arg output = .output
 
-  output~lineout("Test Name       "  testEntity~displayName)
+  output~lineout("Test Class      "  testEntity~displayName)
+  output~lineout("Test Package    "  testEntity~testPackage)
   output~lineout("Interpreter:    " .rexxinfo~name)
   output~lineout("Addressing Mode:" .rexxInfo~architecture)
   output~lineout("ooRexxUnit:     " .ooRexxUnit~version)
-  output~lineout
+  output~lineout("")
   output~lineout("Tests run:         " tests)
   output~lineout("Tests skipped:     " skippedTests)
   output~lineout("Test sets skipped: " skippedTestSets)
@@ -494,7 +498,7 @@
   -- display any failure information that is part of this set.
   self~displayFailure(output)
 
-  output~lineout
+  output~lineout("")
   output~lineout("Execution time:    " endTime - startTime)
 
 -- display just the test failure information.  If executing a
@@ -505,10 +509,10 @@
   use strict arg output = .output
 
   if \failureResults~isEmpty then do
-     output~lineout
-     loop result over failureResults
-        output~lineout
-        result~displayFailure(output)
+     output~lineout("")
+     loop testResult over failureResults
+        output~lineout("")
+        testResult~displayFailure(output)
      end
   end
 
@@ -527,7 +531,8 @@ assertFuzzyEqual Actual is not equal to expected using fuzzy comparison.
 assertNull Actual must be The NIL object.
 assertNotNull Actual cannot be The NIL object.
 assertIsA Actual must be an instance of the expected class.
-assertArrayEquals The actual array must match the expected array in all details.
+assertArraysEqual The actual array must match the expected array in all details.
+assertArraysStrictlyEqual The actual array must match the expected array in all details.
 assertIdentical Actual must be the same object instance as expected.
 assertNotIdentical Actual must not be the same object instance as expected.
 assertOneOf Actual must be strictly equal to one of the list objects.
@@ -889,7 +894,7 @@ assertFail Control unexpected reached a failure point.
   testResult = .TestMethodResult~new(self)
 
   -- record the test
-  testResult~startTest(self)
+  testResult~testStart(self)
   -- log the start event
   testCase~logTestStart(self)
 
@@ -898,12 +903,12 @@ assertFail Control unexpected reached a failure point.
   -- setup for the test, creating a clean environment
   testCase~performTestSetup
 
-  self~doTheTest(aTestResult)  -- carry out the testmethod
+  self~doTheTest(testResult)  -- carry out the testmethod
 
   -- cleanup after  the test, creating a clean environment
-  testCase~peformTestSetup
+  testCase~performTestTeardown
 
-  testResult~endTest(self)           -- remember test ended
+  testResult~testEnd(self)           -- remember test ended
   -- log the end event
   testCase~logTestEnd(self)
   return testResult
@@ -950,7 +955,7 @@ exceptionHandler:
     -- This is an unexpected, unanticipated error.
     -- add an error object to the test result
     err = .UnexpectedError~new(self, conditionObject)
-    testResult~addError(err)
+    testResult~setError(err)
   end
 
   return testResult
@@ -1012,7 +1017,6 @@ exceptionHandler:
   testResult = self~execute(controller)
   testResult~display(controller~resultStream)
 
-
 -- execute an this test case by creating an instance and having it execute.
 ::method execute class
   use strict arg controller = (.TestController~new)
@@ -1045,9 +1049,24 @@ exceptionHandler:
   return self~new(controller)
 
 syntax:
-  testResult~addError(.TestInstantiationError~new(testClass, condition('o')))
+  testResult~setError(.TestInstantiationError~new(testClass, condition('o')))
   return .nil
 
+-- common display method for test entities
+::method displayName class
+  return self~id
+
+-- the instance display method
+::method displayName
+  return self~class~displayName
+
+-- common display method for test entities
+::method testPackage class
+  return self~package~name
+
+-- the instance display method
+::method testPackage
+  return self~class~testPackage
 
 -- base class for a TestCase class.  This is a class that implements
 -- a set of test methods.  This handles invocation of the different
@@ -1108,30 +1127,35 @@ syntax:
   self~assertTrue(expected~equivalent(actual), msg': actual must be equivalent to expected')
 
 -- Checks if two objects are equal
-::method assertEquals
+::method assertEqual
   use strict arg expected, actual, msg = ""
 
   -- first compare the objects directly, and if they do not compare,
   -- try to compare them as collections.  Note that we use the "=" comparison
   -- variant here.
   if expected != actual then do
-      self~twoValueFail("assertEquals", expected, actual, msg)
+      self~twoValueFail("assertEqual", expected, actual, msg)
   end
 
   -- Assertion holds
   self~assertionPassed
 
 
+-- a compatibility synonym
+::method assertEquals
+  forward message('assertEqual')
+
+
 --  assertFuzzyEquals()
 -- Checks if two objects are equal using fuzzy math
-::method assertFuzzyEquals
+::method assertFuzzyEqual
   use strict arg expected, actual, digits = (digits()), msg = ""
 
   numeric digits digits
   numeric fuzz 1
 
   if expected != actual then do
-      self~twoValueFail("assertFuzzyEquals", expected, actual, msg)
+      self~twoValueFail("assertFuzzyEqual", expected, actual, msg)
   end
 
   -- Assertion holds
@@ -1139,7 +1163,7 @@ syntax:
 
 
 -- assert that a result does not equal a given value
-::method assertNotEquals
+::method assertNotEqual
   use strict arg expected, actual, msg = .nil
 
   -- If the 2 objects are not equal AND they are not 2 equal collections ...
@@ -1149,7 +1173,12 @@ syntax:
     return
   end
 
-  self~twoValueFail("assertNotEquals", expected, actual, msg)
+  self~twoValueFail("assertNotEqual", expected, actual, msg)
+
+
+-- a compatibility synonym
+::method assertNotEquals
+  forward message('assertNotEqual')
 
 
 -- assert that the result is equal to .nil
@@ -1190,7 +1219,7 @@ syntax:
 
 -- compare an array of items.  each item must be the same, and in the same
 -- order.  Item comparisons are the non-strict variety
-::method assertArrayEquals
+::method assertArraysEqual
   expose currentTestMethod
   use strict arg expected, actual, msg = .nil
 
@@ -1211,7 +1240,7 @@ syntax:
 
 -- compare an array of items.  each item must be the same, and in the same
 -- order.  Item comparisons are the strict variety
-::method assertArrayStrictlyEquals
+::method assertArraysStrictlyEqual
   expose currentTestMethod
   use strict arg expected, actual, msg = .nil
 
@@ -1241,7 +1270,7 @@ syntax:
 
 
 -- perform a strict comparison on two objects.
-::method assertStrictlyEquals
+::method assertStrictlyEqual
   use strict arg expected, actual, msg = .nil
 
   if expected \== actual then do
@@ -1252,8 +1281,13 @@ syntax:
   self~assertionPassed
 
 
+-- a compatibility synonym
+::method assertSame
+  forward message('assertStrictlyEqual')
+
+
 -- do an assertion of non-equality
-::method assertNotStrictlyEqual
+::method asserStrictlyNotEqual
   use strict arg expected, actual, msg = .nil
 
   if (expected == actual) then do
@@ -1262,6 +1296,11 @@ syntax:
 
   -- Assertion holds
   self~assertionPassed
+
+
+-- a compatibility synonym
+::method assertNotSame
+  forward message('assertStrictlyNotEqual')
 
 
 -- Check if an object is EXACTLY the same object instance
@@ -1424,7 +1463,9 @@ syntax:
   testMethods = self~getTestMethods
 
   -- create a result object for this test case class.
-  testResult = .TestMethodResult~new(self)
+  testResult = .ResultSet~new(self)
+
+  testResult~testStart(self)
 
   -- for each method create a runner for this and execute the test
   loop methodName over methods
@@ -1438,8 +1479,9 @@ syntax:
      else do
          testResult~addResult(.SkippedTestMethod(self~currentTestMethod))
      end
-
   end
+
+  testResult~testEnd(self)
 
   return testResult
 
@@ -1623,7 +1665,7 @@ syntax:
 ::method execute
   expose testQueue
 
-  testResult = .ResultSet~new
+  testResult = .ResultSet~new(self)
 
   testResult~startTest(self)        -- remember test started
   self~setUp                        -- make sure setup is invoked before testSuite runs
@@ -1695,7 +1737,7 @@ syntax:
   -- might have been instantiated with.
   use strict arg testSuite
 
-  testResult = .ResultSet~new
+  testResult = .ResultSet~new(self)
 
   -- try to load the file...the error information is already
   -- set in the result.
@@ -1715,7 +1757,7 @@ syntax:
   -- if we can't resolve this file, just add an error to the result
   fullName = testSuite~resolveTestProgram(fileName)
   if fullName == .nil then do
-     testResult~addError(.FileNotFoundFailure(self~testSuite, fileName))
+     testResult~setError(.FileNotFoundFailure(self~testSuite, fileName))
      return .nil
   end
 
@@ -1729,7 +1771,7 @@ syntax:
 -- some sort of syntax error creating the file
 syntax:
    -- add an error and return .nil to indicate a failure
-   testResult~addError(.FileLoadFailure(self~testSuite, fullName, condition('o')))
+   testResult~setError(.FileLoadFailure(self~testSuite, fullName, condition('o')))
    return .nil
 
 
@@ -1750,7 +1792,7 @@ syntax:
   -- might have been instantiated with.
   use strict arg testSuite
 
-  testResult = .ResultSet~new
+  testResult = .ResultSet~new(self)
 
   tests = self~locateTestCases(package)
 
