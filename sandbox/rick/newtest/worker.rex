@@ -43,25 +43,20 @@
  * the test suite to be executed from anywhere on the file system without
  * needing the framework directories in the existing path.
  */
-arguments = arg(1)
+   arguments = arg(1)
 
-   parse source . . file
-   overallPhase = .PhaseReport~new(file, .PhaseReport~AUTOMATED_TEST_PHASE)
+   container = .ooRexxTestContainer~new
 
-   cl = .CommandLine~new(arguments)
+   cl = .CommandLine~new(arguments, container)
    if cl~needsHelp then return cl~showHelp
 
-   .local~bRunTestsLocally = .false
+   -- this is the contoller for our test execution.  All options are set on this
 
-   testResult = .ooRexxUnit.default.TestResult.Class~new
-   testResult~noAutoTiming
-
-   -- Set verbosity.
-   testResult~setVerbosity(cl~getVerbosity)
+   -- set the verbosity level in the container.
+   container~verbosity = cl~verbosity
 
    if cl~buildFirst then do
-     -- TODO: Create a phase report here and send it along.
-     ret = buildExternalBins(testResult, file, cl~forceBuild)
+     self~buildExternalBins(testResult, file, cl~forceBuild)
    end
 
    if cl~noTests then return finishTestRun(cl, testResult, overallPhase)
@@ -209,17 +204,12 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
 ::attribute waitAtCompletion get               -- w
 ::attribute waitAtCompletion set private
 
-::attribute testOpts private
-
 ::method init
-  expose cmdLine testOpts
-  use arg cmdLine
+  expose cmdLine container
+  use arg cmdLine, container
 
-  testOpts = .directory~new
   self~setAllDefaults
   if self~needsHelp then return
-
-  .environment~testOpts = testOpts
 
   -- Command line options over-ride options in the options file, so the file, if
   -- there is one, must be read before parsing the rest of the command line.
@@ -1109,7 +1099,7 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
   return .true
 
 ::method setAllDefaults private
-  expose cmdLine originalCommandLine testOpts optsTable
+  expose cmdLine originalCommandLine container optsTable
 
   originalCommandLine = cmdLine~copy
 
@@ -1121,38 +1111,6 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
   self~doVersionOnly = .false
 
   if self~hasHelpArg then return
-
-  -- Set all the known, defined, test options.  In the below, some indexes are
-  -- purposively set to .nil even though that is not necessary.  It is done so
-  -- that the list of valid option words is in one place.
-  testOpts~version = self~version
-
-  testOpts~allTestTypes = .false
-  testOpts~buildFirst = .false
-  testOpts~debug = .false
-  testOpts~defaultTestTypes = .ooTestTypes~defaultTestSet
-  testOpts~excludeFileList = .nil
-  testOpts~fileList = .nil
-  testOpts~filesWithPattern = .nil
-  testOpts~forceBuild = .false
-  testOpts~logFile = .nil
-  testOpts~logFileAppend = .false
-  testOpts~noOptionsFile = .false
-  testOpts~noTests = .false
-  testOpts~optionsFile = .nil
-  testOpts~printOptions = .false
-  testOpts~showProgress = .false
-  testOpts~showTestcases = .false
-  testOpts~singleFile = .nil
-  testOpts~suppressAllTicks = .false
-  testOpts~suppressTestcaseTicks = .false
-  testOpts~testCaseRoot= self~TEST_ROOT || self~SL
-  testOpts~testCases = .nil
-  testOpts~testContainerExt = self~TEST_CONTAINER_EXT
-  testOpts~testTypeExcludes = .nil
-  testOpts~testTypeIncludes = .nil
-  testOpts~verbosity = self~DEFAULT_VERBOSITY
-  testOpts~waitAtCompletion = .false
 
   optsTable = .table~new
   optsTable[allTestTypes         ] = "boolean"
@@ -1416,3 +1374,63 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
     when w == 0 then return '.false'
     otherwise return w
   end
+
+-- main test container and execution controller
+::class 'ooRexxTestContainer' subclass TestContainer
+::method init
+  self~version = self~version
+
+  self~allTestTypes = .false
+  self~buildFirst = .false
+  self~debug = .false
+  self~defaultTestTypes = .ooTestTypes~defaultTestSet
+  self~excludeFileList = .nil
+  self~fileList = .nil
+  self~filesWithPattern = .nil
+  self~forceBuild = .false
+  self~logFile = .nil
+  self~logFileAppend = .false
+  self~noOptionsFile = .false
+  self~noTests = .false
+  self~optionsFile = .nil
+  self~printOptions = .false
+  self~showProgress = .false
+  self~showTestcases = .false
+  self~singleFile = .nil
+  self~suppressAllTicks = .false
+  self~suppressTestcaseTicks = .false
+  self~testCaseRoot= self~TEST_ROOT || self~SL
+  self~testCases = .nil
+  self~testContainerExt = self~TEST_CONTAINER_EXT
+  self~testTypeExcludes = .nil
+  self~testTypeIncludes = .nil
+  self~verbosity = self~DEFAULT_VERBOSITY
+  self~waitAtCompletion = .false
+
+::attribute version
+::attribute allTestTypes
+::attribute buildFirst
+::attribute debug
+::attribute defaultTestTypes
+::attribute excludeFileList
+::attribute fileList
+::attribute filesWithPattern
+::attribute forceBuild
+::attribute logFile
+::attribute logFileAppend
+::attribute noOptionsFile
+::attribute noTests
+::attribute optionsFile
+::attribute printOptions
+::attribute showProgress
+::attribute showTestcases
+::attribute singleFile
+::attribute suppressAllTicks
+::attribute suppressTestcaseTicks
+::attribute testCaseRoot
+::attribute testCases
+::attribute testContainerExt
+::attribute testTypeExcludes
+::attribute testTypeIncludes
+::attribute verbosity
+::attribute waitAtCompletion
