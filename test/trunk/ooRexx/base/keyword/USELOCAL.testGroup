@@ -96,6 +96,22 @@ return testResult
   self~assertSame("STEM.1", t1~getStem(1))
   self~assertSame("STEM.2", t1~getStem(2))
 
+  -- verify that the special variables are protected automatically
+  testValue = self~runDynamicSource((".test~test1", "return .test~test2", "::class test", "::method test1 class", "use local", "result = 1; rc = 2; self = 3; super = 4; sigl = 5;", -
+     "::method test2 class", "return self~result self~rc self~self self~super self~sigl", "::attribute result class", "::attribute rc class", "::attribute self class", "::attribute super class", "::attribute sigl class"))
+
+  -- verify that dynamically create variables are also object variables
+  testClass = self~runDynamicSource(("return .test", "::class test", "::method setVar", "use local", "use strict arg name, value", "call value name, value", -
+     "::method getVar", "use local", "use strict arg name", "return value(name)"))
+
+  t1 = testClass~new
+
+  t1~setVar("FOO", 123)
+  self~assertEquals(123, t1~getVar("FOO"))
+
+  self~assertEquals("RESULT RC SELF SUPER SIGL", testValue)
+
+
 ::method test_use_local_number
   self~assertSyntaxError(31.2, ("::method test", "use local 1"))
 
