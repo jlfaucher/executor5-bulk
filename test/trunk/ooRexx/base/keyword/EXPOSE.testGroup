@@ -160,4 +160,54 @@ return testResult
   t1~setVar("stem.tail", "zyx")
   self~assertSame("zyx", t1~getVar('stem.1'))
 
+::method test_expose_no_variables
+  self~assertSyntaxError(20.902, ("::method test", "expose"))
+
+::method test_expose_number
+  self~assertSyntaxError(31.2, ("::method test", "expose 1"))
+
+::method test_expose_dot
+  self~assertSyntaxError(31.3, ("::method test", "expose ."))
+
+::method test_expose_dot_symbol
+  self~assertSyntaxError(31.3, ("::method test", "expose .foo"))
+
+::method test_expose_bad_variable
+  self~assertSyntaxError(20.902, ("::method test", "expose *"))
+
+::method test_expose_indirect_no_var
+  self~assertSyntaxError(20.906, ("::method test", "expose ()"))
+
+::method test_expose_indirect_no_close
+  self~assertSyntaxError(46.901, ("::method test", "expose (foo"))
+
+::method test_expose_indirect_two_names
+  self~assertSyntaxError(46.1, ("::method test", "expose (foo bar)"))
+
+::method test_expose_indirect_number
+  self~expectSyntax(31.2)
+  self~runDynamicSource((".test~test", "::class test", "::method init class", "expose vars", "vars = '1'", "::method test class", "expose (vars)" ))
+
+::method test_expose_indirect_dot
+  self~expectSyntax(31.3)
+  self~runDynamicSource((".test~test", "::class test", "::method init class", "expose vars", "vars = '.'", "::method test class", "expose (vars)" ))
+
+::method test_expose_indirect_dot_symbol
+  self~expectSyntax(31.3)
+  self~runDynamicSource((".test~test", "::class test", "::method init class", "expose vars", "vars = '.foo'", "::method test class", "expose (vars)" ))
+
+::method test_expose_indirect_bad_variable
+  self~expectSyntax(20.928)
+  self~runDynamicSource((".test~test", "::class test", "::method init class", "expose vars", "vars = '*'", "::method test class", "expose (vars)" ))
+
+::method test_expose_indirect_nested
+  self~expectSyntax(20.928)
+  self~runDynamicSource((".test~test", "::class test", "::method init class", "expose vars", "vars = '(foo)'", "::method test class", "expose (vars)" ))
+
+::method test_misplaced_expose
+  self~assertSyntaxError(99.907, ("::method test", "use strict arg x", "expose foo bar"))
+
+::method test_expose_non_method
+  self~expectSyntax(98.992)
+  self~runDynamicSource(("return test()", "::routine test", "expose xyz", "return 123"))
 
