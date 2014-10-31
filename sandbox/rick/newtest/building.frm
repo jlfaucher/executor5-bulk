@@ -53,11 +53,12 @@
 
 /** buildBinaries()
  */
-::routine buildBinaries public
+
+::class "BinaryBuilder" public
+::method build class
   use strict arg testResult, force
 
-  parse source . . fileSpec
-  os = .ooRexxUnit.OSName
+  os = .ooRexxUnit~OSName
   rrc = .ooTestConstants~UNEXPECTED_ERR_RC
 
   select
@@ -92,7 +93,7 @@
 return rrc
 -- End buildBinaries()
 
-::routine buildWindows public
+::method buildWindows class
   use strict arg testResult, force, fileSpec
 
   argTable = .table~new
@@ -132,7 +133,7 @@ return rCode
 -- End buildWindows()
 
 
-::routine buildUnix public
+::method buildUnix class
   use strict arg testResult, force, fileSpec
 
   argTable = .table~new
@@ -175,12 +176,13 @@ return rCode
 return rCode
 -- End buildUnix()
 
+
 /** locateAPIDir()
  * A private helper function used to locate where the API include and library
  * files are.  It then sets the proper environment macros used by the platform
  * make files to construct the correct compile and link commands.
  */
-::routine locateAPIDir
+::method locateAPIDir class
   use strict arg testResult, fileSpec, argTable
 
   rCode = .ooTestConstants~SUCCESS_RC
@@ -214,7 +216,7 @@ return rCode
  * A private helper routine to do the actual chore of issuing a make command
  * and collecting the results.
  */
-::routine doMake
+::method doMake class
   use strict arg testResult, makeCmd, location, msg, fileSpec
 
   note = .Notification~new(timeStamp(), location, .NotificationTypes~LOG_TYPE)

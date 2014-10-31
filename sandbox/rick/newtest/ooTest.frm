@@ -1798,401 +1798,373 @@ return 0
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class 'ooTestFinder' public
 
-  ::constant ALL         1
-  ::constant FILES       2
-  ::constant PATTERN     3
-  ::constant SINGLEFILE  4
+::constant ALL         1
+::constant FILES       2
+::constant PATTERN     3
+::constant SINGLEFILE  4
 
-  ::attribute testTypes private
-  ::attribute root private
-  ::attribute extension private
-  ::attribute simpleFileSpec private
-  ::attribute searchType private
+::attribute testTypes private
+::attribute root private
+::attribute extension private
+::attribute simpleFileSpec private
+::attribute searchType private
 
-  ::attribute file private
-  ::attribute filePatterns private
-  ::attribute fileNames private
-  ::attribute excludeFileNames private
+::attribute file private
+::attribute filePatterns private
+::attribute fileNames private
+::attribute excludeFileNames private
 
-  ::attribute totalFound get
-  ::attribute totalFound set private
+::attribute totalFound get
+::attribute totalFound set private
 
-  /** init()
-   * Initializes this test finder.
-   *
-   * @param  root         REQUIRED
-   *   The root of the directory tree to search for test containers.
-   * @param  extension  REQUIRED
-   *   The extension for test container files, such as .testGroup
-   * @param  types      OPTIONAL
-   *   The test types to search for.  A value of nil indicates all tests and is
-   *   the default.
-   */
-  ::method init
-    expose root extension simpleFileSpec sl
-    use strict arg root, extension, types = .nil
+/** init()
+ * Initializes this test finder.
+ *
+ * @param  root         REQUIRED
+ *   The root of the directory tree to search for test containers.
+ * @param  extension  REQUIRED
+ *   The extension for test container files, such as .testGroup
+ * @param  types      OPTIONAL
+ *   The test types to search for.  A value of nil indicates all tests and is
+ *   the default.
+ */
+::method init
+  expose root extension simpleFileSpec sl
+  use strict arg root, extension, types = .nil
 
-    sl = .ooRexxUnit.directory.separator
-    if root~right(1) \== sl then root = root || sl
-    if extension~left(1) \== '.' then extension = '.' || extension
+  sl = .RexxInfo~directorySeparator
+  if root~right(1) \== sl then root = root || sl
+  if extension~left(1) \== '.' then extension = '.' || extension
 
-    simpleFileSpec = root || "*" || extension
+  simpleFileSpec = root || "*" || extension
 
-    self~testTypes = types
-    self~totalFound = 0
-    self~filePatterns = .nil
-    self~fileNames = .nil
-    self~excludeFileNames = .array~new
-    self~file = .nil
-    self~searchType = self~ALL
+  self~testTypes = types
+  self~totalFound = 0
+  self~filePatterns = .nil
+  self~fileNames = .nil
+  self~excludeFileNames = .array~new
+  self~file = .nil
+  self~searchType = self~ALL
 
-  -- End init()
+-- End init()
 
-  /** useFileName()
-   * Sets this test finder to locate a single file specified by fileName.
-   *
-   */
-  ::method useFileName
-    use strict arg fileName
-    self~file = fileName
-    self~searchType = self~SINGLEFILE
+/** useFileName()
+ * Sets this test finder to locate a single file specified by fileName.
+ *
+ */
+::method useFileName
+  use strict arg fileName
+  self~file = fileName
+  self~searchType = self~SINGLEFILE
 
-  -- End useFileName()
+-- End useFileName()
 
-  /** useFiles()
-   *
-   * Sets this test finder to searches only for the files listed in names.
-   */
-  ::method useFiles
-    expose fileNames
-    use strict arg names
+/** useFiles()
+ *
+ * Sets this test finder to searches only for the files listed in names.
+ */
+::method useFiles
+  expose fileNames
+  use strict arg names
 
-    if \ names~isA(.string), \ names~isA(.collection) then
-      raise syntax 88.916 array ("1 'names'", "a string or a collection" names)
+  if \ names~isA(.string), \ names~isA(.collection) then
+    raise syntax 88.916 array ("1 'names'", "a string or a collection" names)
 
-    if fileNames == .nil then fileNames = .array~new
-    if names~isA(.string) then do
-      name = self~getCorrectFileName(names)
-      fileNames~append(name)
-    end
-    else do n over names
-      if \ n~isA(.string) then
-        raise syntax 88.900 array("The file name must be a string object; found" n)
+  if fileNames == .nil then fileNames = .array~new
+  if names~isA(.string) then do
+    name = self~getCorrectFileName(names)
+    fileNames~append(name)
+  end
+  else do n over names
+    if \ n~isA(.string) then
+      raise syntax 88.900 array("The file name must be a string object; found" n)
 
-      name = self~getCorrectFileName(n)
-      fileNames~append(name)
-    end
-    self~searchType = self~FILES
+    name = self~getCorrectFileName(n)
+    fileNames~append(name)
+  end
+  self~searchType = self~FILES
 
-  -- End useFiles()
+-- End useFiles()
 
-  /** excludeFiles()
-   *
-   * Sets this test finder to exclude any files listed in names from the found
-   * files list.
-   */
-  ::method excludeFiles
-    expose excludeFileNames
-    use strict arg names
+/** excludeFiles()
+ *
+ * Sets this test finder to exclude any files listed in names from the found
+ * files list.
+ */
+::method excludeFiles
+  expose excludeFileNames
+  use strict arg names
 
-    if \ names~isA(.string), \ names~isA(.collection) then
-      raise syntax 88.916 array ("1 'names'", "a string or a collection" names)
+  if \ names~isA(.string), \ names~isA(.collection) then
+    raise syntax 88.916 array ("1 'names'", "a string or a collection" names)
 
-    if excludeFileNames == .nil then excludeFileNames = .array~new
-    if names~isA(.string) then do
-      name = self~getCorrectFileName(names)
-      excludeFileNames~append(name)
-    end
-    else do n over names
-      if \ n~isA(.string) then
-        raise syntax 88.900 array("The file name must be a string object; found" n)
+  if excludeFileNames == .nil then excludeFileNames = .array~new
+  if names~isA(.string) then do
+    name = self~getCorrectFileName(names)
+    excludeFileNames~append(name)
+  end
+  else do n over names
+    if \ n~isA(.string) then
+      raise syntax 88.900 array("The file name must be a string object; found" n)
 
-      name = self~getCorrectFileName(n)
-      excludeFileNames~append(name)
-    end
+    name = self~getCorrectFileName(n)
+    excludeFileNames~append(name)
+  end
 
-  -- End excludeFiles()
+-- End excludeFiles()
 
-  ::method getCorrectFileName private
-    expose extension sl
-    use strict arg name
+::method getCorrectFileName private
+  expose extension sl
+  use strict arg name
 
-    correctName = name
+  correctName = name
 
-    p = name~lastPos(sl)
-    if p <> 0 then do
-      correctName = name~right(name~length - p)
-      if correctName == "" then
-        raise syntax 88.900 array('The file name "'name'" is improper')
-    end
-
-    if correctName~right(extension~length) \== extension then correctName = correctName || extension
-
-    if correctName~countStr('.') > 1  then
+  p = name~lastPos(sl)
+  if p <> 0 then do
+    correctName = name~right(name~length - p)
+    if correctName == "" then
       raise syntax 88.900 array('The file name "'name'" is improper')
+  end
 
-    return correctName
-  -- End getCorrectFileName()
+  if \correctName~endsWith(extension) then correctName = correctName || extension
 
-  /** usePatterns()
-   * Add the file pattern or patterns to the file patterns array.  The patterns
-   * are stored as regular expressions with the following conventions:
-   *
-   * If the pattern ends in the extension specified in init(), and no directory
-   * slashes are in the pattern, then it will be considered a complete file
-   * name.  The regular expression will be: any series of characters, the
-   * directory slash, the specified pattern.
-   *
-   * If there are no slashes and the pattern does not end in the extension the
-   * pattern will be considered a segment of a file name.  The regular
-   * expression  will be any series of characters, the slash, any series of
-   * characters not a slash, the pattern, any series of characters not a slash,
-   * the extension.
-   *
-   * If the pattern ends in the slash, it will be considered a directory speci-
-   * fication and all files in the directory will be matched.  The regular ex-
-   * pression will be any series of characters, the pattern, any series of
-   * characters not the slash, and the extension.
-   *
-   * If the pattern does contain a slash, but does not end in a slash, the reqular
-   * expression will be any series of characters, and the pattern.
-   */
-  ::method usePatterns
-    expose filePatterns
-    use strict arg patterns
+  if correctName~countStr('.') > 1  then
+    raise syntax 88.900 array('The file name "'name'" is improper')
 
-    if \ patterns~isA(.string), \ patterns~isA(.collection) then
-      raise syntax 88.916 array ("1 'patterns'", "a string or a collection" patterns)
+  return correctName
+-- End getCorrectFileName()
 
-    if filePatterns == .nil then filePatterns = .array~new
-    if patterns~isA(.string) then do
-      regularExpression = self~buildRegEx(patterns)
-      filePatterns~append(regularExpression)
-    end
-    else do pattern over patterns
-      if \ pattern~isA(.string) then
-        raise syntax 88.900 array("The file pattern must be a string object; found" pattern)
+/** usePatterns()
+ * Add the file pattern or patterns to the file patterns array.  The patterns
+ * are stored as regular expressions with the following conventions:
+ *
+ * If the pattern ends in the extension specified in init(), and no directory
+ * slashes are in the pattern, then it will be considered a complete file
+ * name.  The regular expression will be: any series of characters, the
+ * directory slash, the specified pattern.
+ *
+ * If there are no slashes and the pattern does not end in the extension the
+ * pattern will be considered a segment of a file name.  The regular
+ * expression  will be any series of characters, the slash, any series of
+ * characters not a slash, the pattern, any series of characters not a slash,
+ * the extension.
+ *
+ * If the pattern ends in the slash, it will be considered a directory speci-
+ * fication and all files in the directory will be matched.  The regular ex-
+ * pression will be any series of characters, the pattern, any series of
+ * characters not the slash, and the extension.
+ *
+ * If the pattern does contain a slash, but does not end in a slash, the reqular
+ * expression will be any series of characters, and the pattern.
+ */
+::method usePatterns
+  expose filePatterns
+  use strict arg patterns
 
-      regularExpression = self~buildRegEx(pattern)
-      filePatterns~append(regularExpression)
-    end
-    self~searchType = self~PATTERN
-  -- End usePatterns()
+  if \ patterns~isA(.string), \ patterns~isA(.collection) then
+    raise syntax 88.916 array ("1 'patterns'", "a string or a collection" patterns)
 
-  ::method buildRegEx private
-    expose extension sl
-    use strict arg pattern
+  if filePatterns == .nil then filePatterns = .array~new
+  if patterns~isA(.string) then do
+    regularExpression = self~buildRegEx(patterns)
+    filePatterns~append(regularExpression)
+  end
+  else do pattern over patterns
+    if \ pattern~isA(.string) then
+      raise syntax 88.900 array("The file pattern must be a string object; found" pattern)
 
-    endsInSlash = (pattern~right(1) == sl)
-    hasExt = (pattern~right(extension~length)~upper == extension~upper)
-    hasSlash = (pattern~pos(sl) <> 0 )
+    regularExpression = self~buildRegEx(pattern)
+    filePatterns~append(regularExpression)
+  end
+  self~searchType = self~PATTERN
+-- End usePatterns()
 
-    notSlash = '[^' || sl || ']*'
-    select
-      when endsInSlash then do
-        reg = '?*' || pattern~upper || notSlash || '(' || extension~upper || ')'
-        reg = self~maybeEscapeSlashes(reg)
-      end
+::method buildRegEx private
+  expose extension sl
+  use strict arg pattern
 
-      when hasExt, \ hasSlash then do
-        reg = '?*' || sl || pattern~upper
-        reg = self~maybeEscapeSlashes(reg)
-      end
+  endsInSlash = (pattern~right(1) == sl)
+  hasExt = (pattern~right(extension~length)~upper == extension~upper)
+  hasSlash = (pattern~pos(sl) <> 0 )
 
-      when \ hasExt, \ hasSlash then do
-        reg = '?+' || sl || notSlash || '(' || pattern~upper || ')' || notSlash || '(' || extension~upper || ')'
-        reg = self~maybeEscapeSlashes(reg)
-      end
-
-      when hasExt, hasSlash then do
-        reg = '?*' || pattern~upper
-        reg = self~maybeEscapeSlashes(reg)
-      end
-
-      otherwise do
-        -- \ hasExt, hasSlash
-        p = pattern~lastPos(sl)
-        parse var pattern lead =(p + 1) segment
-        reg = '?*' || lead~upper || notSlash || '(' || segment~upper || ')' || notSlash || '(' || extension~upper || ')'
-        reg = self~maybeEscapeSlashes(reg)
-      end
-
-    end
-    -- End select
-
-    return .RegularExpression~new(reg)
-
-
-  ::method maybeEscapeSlashes private
-    use strict arg exp
-
-    if .ooRexxUnit.OSName \== "WINDOWS"then return exp
-
-    escaped = ""
-    do while exp~pos('\') <> 0
-      parse var exp seg'\'exp
-      escaped = escaped || seg || '\\'
-    end
-    escaped = escaped || exp
-
-    return escaped
-
-
-  ::method seek
-    expose testTypes simpleFileSpec
-    use strict arg testResult
-
-    if \ isSubClassOf(testResult~class, "ooTestCollectingParameter") then
-      raise syntax 88.917 array ("1 'testResult'", "must be a subclass of the ooTestCollectingParameter class. Found:" testResult)
-
-    q = .queue~new
-    files = self~findFiles
-
-    if files~items == 0 then do
-      err = .ExceptionData~new(timeStamp(), simpleFileSpec, .ExceptionData~ANOMLY)
-      err~severity = "Warning"
-      err~msg = "No test containers found matching search paramters."
-      testResult~addException(err)
-      return q
+  notSlash = '[^' || sl || ']*'
+  select
+    when endsInSlash then do
+      reg = '?*' || pattern~upper || notSlash || '(' || extension~upper || ')'
+      reg = self~maybeEscapeSlashes(reg)
     end
 
-
-    do fileName over files
-      container = self~getContainer(fileName)
-
-      select
-        when isSubClassOf(container~class, "ExceptionData") then do
-          testResult~addException(container)
-          iterate
-        end
-
-        when \ isSubClassOf(container~class, "TestContainer") then do
-          n = .Notification~new(timeStamp(), fileName, .Notification~SKIP_TYPE)
-          n~reason = "Invocation of test container file did not produce the expected result."
-          n~additional = "Returned object is not a test container, object is:" container
-          rn~additionalObject = container
-          testResult~addNotification(n)
-          iterate
-        end
-
-        when \ container~hasTests then do
-          n = .Notification~new(timeStamp(), fileName, .Notification~SKIP_TYPE)
-          n~reason = "The test container has no executable tests"
-          n~additional = container~getNoTestsReason
-          testResult~addNotification(n)
-          iterate
-        end
-
-        -- If testTypes are .nil then the caller wants any executable tests from
-        -- the container.  We know the container has tests.
-        when testTypes == .nil then q~queue(container)
-
-        -- Caller wants a certain type of tests.
-        when \ container~hasTestTypes(testTypes) then do
-          n = .Notification~new(timeStamp(), fileName, .Notification~SKIP_TYPE)
-          n~reason = "The test container has none of the specified test types"
-          n~additional = "Specified Test Types:" testTypes
-          n~additionalObject = testTypes
-          testResult~addNotification(n)
-          iterate
-        end
-
-        otherwise q~queue(container)
-      end
-      -- End select
+    when hasExt, \ hasSlash then do
+      reg = '?*' || sl || pattern~upper
+      reg = self~maybeEscapeSlashes(reg)
     end
-    -- End do fileName over files
+
+    when \ hasExt, \ hasSlash then do
+      reg = '?+' || sl || notSlash || '(' || pattern~upper || ')' || notSlash || '(' || extension~upper || ')'
+      reg = self~maybeEscapeSlashes(reg)
+    end
+
+    when hasExt, hasSlash then do
+      reg = '?*' || pattern~upper
+      reg = self~maybeEscapeSlashes(reg)
+    end
+
+    otherwise do
+      -- \ hasExt, hasSlash
+      p = pattern~lastPos(sl)
+      parse var pattern lead =(p + 1) segment
+      reg = '?*' || lead~upper || notSlash || '(' || segment~upper || ')' || notSlash || '(' || extension~upper || ')'
+      reg = self~maybeEscapeSlashes(reg)
+    end
+
+  end
+  -- End select
+
+  return .RegularExpression~new(reg)
+
+
+::method maybeEscapeSlashes private
+  use strict arg exp
+
+  if .ooRexxUnit~OSName \== "WINDOWS"then return exp
+
+  escaped = ""
+  do while exp~pos('\') <> 0
+    parse var exp seg'\'exp
+    escaped = escaped || seg || '\\'
+  end
+  escaped = escaped || exp
+
+  return escaped
+
+ locate the test test cases, returning a queue of the test case classes.  This only
+ locates the files and gets the classes, it does not perform any type filtering
+::method seek
+  expose testTypes simpleFileSpec
+  use strict arg testResult
+
+  q = .queue~new
+  files = self~findFiles
+
+  if files~items == 0 then do
+    err = .ExceptionData~new(simpleFileSpec, .ExceptionData~ANOMLY)
+    err~severity = "Warning"
+    err~msg = "No test containers found matching search paramters."
+    testResult~addException(err)
+    return q
+  end
+
+
+  do fileName over files
+     error = self~getTestsFromFile(fileName, testResult, testQueue)
+  end
 
   return q
-  -- End seek()
 
-  ::method getContainer private
-    use arg file
+::method getTestsFromFile private
+  use arg file, testResult, testQueue
 
-    signal on any name callError
-    call (file) self~testTypes
-    container = RESULT
-    return container
+  signal on syntax name loadError
 
-    callError:
-      err = .ExceptionData~new(timeStamp(), file, .ExceptionData~TRAP)
-      err~setLine(sigl)
-      err~conditionObject = condition('O')
-      err~msg = "Initial call of test container failed"
+  -- load this as a routine, which will not run the prolog.  We
+  -- use inspection to locate the test units
+  r = .routine~newfile(file)
 
-  return err
-  -- End getContainer()
+  -- and scan the package looking for eligible test files
+  self~loadPackage(r~package, testResult, testQueue)
+  return
 
-  /** findFiles()
-   *
-   */
-  ::method findFiles private
-    expose simpleFileSpec searchType fileNames excludeFileNames
+  loadError:
+    err = .ExceptionData~new(file, .ExceptionData~TRAP)
+    err~setLine(sigl)
+    err~conditionObject = condition('O')
+    err~msg = "Initial call of test container failed"
+    testResult~addException(err)
+    return
 
-    f = .array~new
 
-    if searchType == self~SINGLEFILE then do
-      j = SysFileTree(self~file, files., "FOS")
-      -- if we found exactly 1 file and it is not excluded, then use it.
-      if j = 0, files.0 == 1, \ self~isExcludedFile(files.1) then f[1] = files.1
-    end
-    else do
-      j = SysFileTree(simpleFileSpec, files., "FOS")
+-- add all test types from a package file to the test group
+::method loadPackage
+  use strict arg package, testResult, testQueue
 
-      select
-        when searchType == self~ALL then do i = 1 to files.0
-          -- If the file is not excluded then use it.
-          if \ self~isExcludedFile(files.i) then f[i] = files.i
-        end
+  -- locate the classes that are executable tests.  Other classes
+  -- are likely just part of the tests.
+  loop testClass over package~classes
+     -- we add an instance to the queue
+     if testClass~isSubclassOf(.TestCase) | testClass~isSubClassOf(.TestGroup) then do
+         testQueue~append(testClass)
+     end
+  end
 
-        when searchType == self~PATTERN then do i = 1 to files.0
-          -- If the file natches our pattern, and not in the excluded file name list, use it
-          if self~matchFile(files.i), \ self~isExcludedFile(files.i) then f~append(files.i)
-        end
 
-        otherwise do i = 1 to files.0
-          n = filespec("NAME", files.i)
-          do fn over fileNames
-            -- If the file is in our file name list, and not in the excluded file name list, use it
-            if fn~caselessCompare(n) == 0, \ self~isExcludedFile(files.i) then f~append(files.i)
-          end
+/** findFiles()
+ *
+ */
+::method findFiles private
+  expose simpleFileSpec searchType fileNames excludeFileNames
+
+  f = .array~new
+
+  if searchType == self~SINGLEFILE then do
+    j = SysFileTree(self~file, files., "FOS")
+    -- if we found exactly 1 file and it is not excluded, then use it.
+    if j = 0, files.0 == 1, \ self~isExcludedFile(files.1) then f[1] = files.1
+  end
+  else do
+    j = SysFileTree(simpleFileSpec, files., "FOS")
+
+    select
+      when searchType == self~ALL then do i = 1 to files.0
+        -- If the file is not excluded then use it.
+        if \ self~isExcludedFile(files.i) then f[i] = files.i
+      end
+
+      when searchType == self~PATTERN then do i = 1 to files.0
+        -- If the file natches our pattern, and not in the excluded file name list, use it
+        if self~matchFile(files.i), \ self~isExcludedFile(files.i) then f~append(files.i)
+      end
+
+      otherwise do i = 1 to files.0
+        n = filespec("NAME", files.i)
+        do fn over fileNames
+          -- If the file is in our file name list, and not in the excluded file name list, use it
+          if fn~caselessCompare(n) == 0, \ self~isExcludedFile(files.i) then f~append(files.i)
         end
       end
-      -- End select
     end
+    -- End select
+  end
 
-    self~totalFound = f~items
+  self~totalFound = f~items
 
-  return f
-  -- End findFiles()
+return f
+-- End findFiles()
 
-  /** isExcludedFile()
-   *
-   * Checks if the specified file is in our excluded file list.
-   */
-  ::method isExcludedFile private
-    expose excludeFileNames
-    use strict arg fileName
+/** isExcludedFile()
+ *
+ * Checks if the specified file is in our excluded file list.
+ */
+::method isExcludedFile private
+  expose excludeFileNames
+  use strict arg fileName
 
-    n = filespec("NAME", fileName)
-    do fn over excludeFileNames
-      if fn~caselessCompare(n) == 0 then return .true
-    end
-    return .false
-  -- End isExcludedFile()
-
-
-  ::method matchFile
-    expose filePatterns
-    use arg file
-
-    do re over filePatterns
-      if re~match(file~upper) then return .true
-    end
+  n = filespec("NAME", fileName)
+  do fn over excludeFileNames
+    if fn~caselessCompare(n) == 0 then return .true
+  end
   return .false
-  -- End matchFiles()
+-- End isExcludedFile()
 
--- End of class: ooTestFinder
+
+::method matchFile
+  expose filePatterns
+  use arg file
+
+  do re over filePatterns
+    if re~match(file~upper) then return .true
+  end
+return .false
+-- End matchFiles()
 
 
 ::class 'ExceptionTypes' public mixinclass Object
@@ -2326,74 +2298,6 @@ return 0
 -- End of class: ExceptionData
 
 
-::class 'NotificationTypes' public mixinclass Object
-
-  ::constant MIN_TYPE    1
-
-  ::constant SKIP_TYPE   1
-  ::constant WARN_TYPE   2
-  ::constant TEXT_TYPE   3
-  ::constant STEP_TYPE   4
-  ::constant STATS_TYPE  5
-  ::constant LOG_TYPE    6
-
-  ::constant MAX_TYPE    6
-
-/* Notes on LOG_TYPE notification
-
-     notification~reason == return code
-     notification~additional == command line
-     notification~message == some message
-     notification~additionObject == .array of lines of captured output
-*/
-
-/* class: Notification - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
-
-    A data object containing information concerning status, events, or other
-    things that might need to be logged during the execution of a test, usually
-    the execution of an automated suite of tests.
-
-    At a minimum the object contains a time stamp, the name of the relevant
-    file, and the notification type.
-
-\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-::class 'Notification' public subclass ReportData inherit NotificationTypes
-
-  ::attribute reason
-  ::attribute message
-  ::attribute warning
-
-  ::attribute originatorsID
-
-  ::method init
-    use strict arg dateTime, file, type
-    forward class (super) continue
-
-    if \ isWholeRange(type, self~MIN_TYPE, self~MAX_TYPE) then
-      raise syntax 88.907 array("3 'type'", self~MIN_TYPE, self~MAX_TYPE, type)
-
-    select
-      when type == self~SKIP_TYPE then do
-        self~reason = "Reason is unknown"
-        self~warning = .nil
-        self~message = .nil
-      end
-      when type == self~WARN_TYPE then do
-        self~reason = .nil
-        self~warning = "Warning is unknown"
-        self~message = .nil
-      end
-      otherwise do
-        self~reason = .nil
-        self~warning = .nil
-        self~message = "Message is unknown"
-      end
-    end
-    -- End select
-
-    self~originatorsID = .nil
-
--- End of class: Notification
 
 /* class: PhaseReport- - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
 

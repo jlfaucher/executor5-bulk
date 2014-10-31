@@ -50,16 +50,7 @@
    cl = .CommandLine~new(arguments, container)
    if cl~needsHelp then return cl~showHelp
 
-   -- this is the contoller for our test execution.  All options are set on this
-
-   -- set the verbosity level in the container.
-   container~verbosity = cl~verbosity
-
-   if cl~buildFirst then do
-     self~buildExternalBins(testResult, file, cl~forceBuild)
-   end
-
-   if cl~noTests then return finishTestRun(cl, testResult, overallPhase)
+   if cl~noTests then return container~finishTestRun
 
    searchPhase  = .PhaseReport~new(file, .PhaseReport~FILE_SEARCH_PHASE)
    msg = "Searching for test containers"
@@ -116,57 +107,6 @@ return finishTestRun(cl, testResult, overAllPhase, containers)
 
 ::requires "ooTest.frm"
 
-::routine finishTestRun
-  use strict arg cl, testResult, overallPhase, containers = .nil
-
-  overallPhase~done
-  testResult~addEvent(overallPhase)
-
-  if .testOpts~logFile <> .nil then do
-    if .testOpts~logFileAppend then mode = 'append'
-    else mode = 'replace'
-
-    currenMonitor = .output~destination(.stream~new(.testOpts~logFile)~~command("open write" mode))
-
-    testResult~print("ooTest Framework - Automated Test of the ooRexx Interpreter")
-
-    if .testOpts~debug then j = printDebug(containers, testResult, cl)
-    else if .testOpts~printOptions then j = printOptions(.true)
-
-    .output~destination
-  end
-
-  testResult~print("ooTest Framework - Automated Test of the ooRexx Interpreter")
-
-  if .testOpts~debug then j = printDebug(containers, testResult, cl)
-  else if .testOpts~printOptions then j = printOptions(.true)
-
-  if cl~waitAtCompletion then do
-    say
-    say "The automated test run is finished, hit enter to continue"
-    pull
-  end
-
-return 0
-
-::routine buildExternalBins
-  use arg testResult, file, force
-
-  signal on syntax name loadErr
-  .context~package~loadPackage('building.frm')
-
-  ret = buildBinaries(testResult, force)
-
-return .ooTestConstants~SUCCESS_RC
-
-loadErr:
-  err = .ExceptionData~new(timeStamp(), file, .ExceptionData~TRAP)
-  err~setLine(sigl)
-  err~conditionObject = condition('O')
-  err~msg = 'Error loading the required framework for compiling ("building.frm")'
-  testResult~addException(err)
-return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
-
 ::class 'CommandLine' public inherit ooTestConstants NoiseAdjustable
 
 ::attribute version get
@@ -219,9 +159,11 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
   self~parse
   if self~needsHelp then return
 
-  self~resolveTestTypes
+  -- have the container resolve the final set of test types
+  container~resolveTestTypes
   self~resolveOptions
 
+-- display help information
 ::method showHelp
   expose errMsg
 
@@ -250,36 +192,12 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
   expose originalCommandLine
   return originalCommandLine
 
+
 /** doTestCaseTicks()  Convenience method. */
 ::method doTestCaseTicks
   if \ self~suppressAllTicks,  \ self~suppressTestcaseTicks, \ self~showProgress, \ self~showTestCases then
     return .true
   return .false
-
-::method resolveTestTypes private
-  expose testOpts
-
-  tmpSet = testOpts~defaultTestTypes~copy
-  includes = testOpts~testTypeIncludes
-  excludes = testOpts~testTypeExcludes
-
-  -- If there are includes, add them into the default set.
-  if includes \== .nil then tmpSet = tmpSet~union(includes)
-
-  -- Now, if there are excludes subtract them out.
-  if  excludes \== .nil then tmpSet = tmpSet~difference(excludes)
-
-  -- A value of .nil is used to signal that all test types are to be used.  This
-  -- reduces the processing in parts of the automated running of the test suite.
-  -- Determine here if the default set now represents all possible tests.
-  if .ooTestTypes~all~difference(tmpSet)~items == 0 then do
-    self~testTypes = .nil
-    testOpts~testTypes = .nil
-  end
-  else do
-    self~testTypes = tmpSet
-    testOpts~testTypes = tmpSet
-  end
 
 
 ::method resolveOptions private
@@ -1169,75 +1087,84 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
   say "usage: testOORexx [OPTIONS]"
   say "Try 'testOORexx --help' for more information."
 
+-- display the full help text
 ::method longHelp private
-  say 'Test the ooRexx interpreter using the automated ooTest framework.'
-  say "usage: 1.  testOORexx"
-  say "       2.  testOORexx fileName"
-  say "       3.  testOORexx [OPTIONS]"
-  say '       4.  testOORexx help [subject]'
-  say
-  say '  1. With no options the automated test suite is executed using the default'
-  say '     set of test types, the default verbosity, and the default formatter.'
-  say
-  say '  2. The single test group specified by "fileName" is executed.'
-  say
-  say '  3. The automated test suite is executed using the specified options.'
-  say
-  say '  4. Show detailed help on "subject"  Use "help topic" to list valid subjects'
-  say
-  say '  Options must start with "-", the only exception is the --help option.  Spaces'
-  say '  are not tolerated in either file names or directory names.'
-  say
-  say '  The long name options are specified using the -D (define option) format.  I.e.,'
-  say '  the "testContainerExt" option is specified as: -DtestContainerExt=ext.'
-  say
-  say '  All command line options, except the help and options file options, are valid'
-  say '  in the options file, but you must use the long name format.  I.e., the'
-  say '  -Dverbosity=NUM option could be: verbosity=5 in the options file.'
-  say
-  say '  Options below shown as: someOpt=bool are true / false, with the default as'
-  say '  false.  The value can be specified as either 1 / 0 or the words true / false.'
-  say
-  say 'Valid options:'
-  say ' Help related:'
-  say '  -h                   Show short help'
-  say '  --help               Show long help (this help)'
-  say '  -v                   Show version and quit'
-  say
-  say ' Generic option:'
-  say '  -D    Define option.  Format must be: -Dname=value'
-  say
-  say ' Test selection:'
-  say '  -a  -DallTestTypes=bool           Include all test types'
-  say '  -b  -DbuildFirst=bool             Build external binaries before running tests'
-  say '  -B  -DforceBuild=bool             Force building (implies -b)'
-  say '  -d  -DdefaultTestTypes=D1 D2 ...  change default test type set to D1 D2 ...'
-  say '  -e  -DtestContainerExt=EXT        change default test container ext to EXT'
-  say '  -f  -DsingleFile=NAME             Excute the single NAME test group'
-  say '  -F  -DfileList=N1 N2 ...          Execute the N1 N2 ... test groups'
-  say '  -I, -DtestTypeIncludes=T1 T2 ...  Include test types T1 T2 ... keyword "all"'
-  say '                                    indicates all test types'
-  say '  -n  -DnoTests=bool                No tests to execute (deliberately)'
-  say '  -o  -DoptionsFile=FILE            Use FILE as options file, not default file'
-  say '  -O  -DnoOptonsFile=bool           Do not use any options file'
-  say '  -p  -DfilesWithPattern=PA         Execute test groups matching PA'
-  say '  -R, -DtestCaseRoot=DIR            DIR is root of search tree'
-  say '  -x  -DexcludeFileList=N1 N2 ...   Exclude the N1 N2 ... test groups'
-  say '  -X  -DtestTypeExcludes=X1 X1 ...  Exclude test types X1 X2 ... keyword "all"'
-  say '                                    indicates all test types'
-  say
-  say ' Output control:'
-  say '  -l  -DlogFile=FILE                Put test results in log file FILE'
-  say '  -L  -DlogFileAppend=bool          Append test results to log file'
-  say '  -s  -DshowProgress=bool           Show test group progress'
-  say '  -S  -DshowTestcases=bool          Show test case progress'
-  say '  -u  -DsuppressTestcaseTicks=bool  Do not show ticks during test execution'
-  say '  -U  -DsuppressAllTicks=bool       Do not show any ticks'
-  say '  -V, -Dverbosity=NUM               Set vebosity to NUM'
-  say '  -w, -DwaitAtCompletion=bool       At test end, wait for user to hit enter'
-  say
+
+  loop text over .context~package~resource('longHelpText')
+     say text
+  end
 
   return self~TEST_HELP_RC
+
+-- full help text
+::resource longHelpText
+Test the ooRexx interpreter using the automated ooTest framework.
+usage: 1.  testOORexx
+       2.  testOORexx fileName
+       3.  testOORexx [OPTIONS]
+       4.  testOORexx help [subject]
+
+  1. With no options the automated test suite is executed using the default
+     set of test types, the default verbosity, and the default formatter.
+
+  2. The single test group specified by "fileName" is executed.
+
+  3. The automated test suite is executed using the specified options.
+
+  4. Show detailed help on "subject"  Use "help topic" to list valid subjects
+
+  Options must start with "-", the only exception is the --help option.  Spaces
+  are not tolerated in either file names or directory names.
+
+  The long name options are specified using the -D (define option) format.  I.e.,
+  the "testContainerExt" option is specified as: -DtestContainerExt=ext.
+
+  All command line options, except the help and options file options, are valid
+  in the options file, but you must use the long name format.  I.e., the
+  -Dverbosity=NUM option could be: verbosity=5 in the options file.
+
+  Options below shown as: someOpt=bool are true / false, with the default as
+  false.  The value can be specified as either 1 / 0 or the words true / false.
+
+Valid options:
+ Help related:
+  -h                   Show short help
+  --help               Show long help (this help)'
+  -v                   Show version and quit
+
+ Generic option:
+  -D    Define option.  Format must be: -Dname=value
+
+ Test selection:
+  -a  -DallTestTypes=bool           Include all test types
+  -b  -DbuildFirst=bool             Build external binaries before running tests
+  -B  -DforceBuild=bool             Force building (implies -b)
+  -d  -DdefaultTestTypes=D1 D2 ...  change default test type set to D1 D2 ...
+  -e  -DtestContainerExt=EXT        change default test container ext to EXT
+  -f  -DsingleFile=NAME             Excute the single NAME test group
+  -F  -DfileList=N1 N2 ...          Execute the N1 N2 ... test groups
+  -I, -DtestTypeIncludes=T1 T2 ...  Include test types T1 T2 ... keyword "all"
+                                    indicates all test types
+  -n  -DnoTests=bool                No tests to execute (deliberately)
+  -o  -DoptionsFile=FILE            Use FILE as options file, not default file
+  -O  -DnoOptonsFile=bool           Do not use any options file
+  -p  -DfilesWithPattern=PA         Execute test groups matching PA
+  -R, -DtestCaseRoot=DIR            DIR is root of search tree
+  -x  -DexcludeFileList=N1 N2 ...   Exclude the N1 N2 ... test groups
+  -X  -DtestTypeExcludes=X1 X1 ...  Exclude test types X1 X2 ... keyword "all"
+                                    indicates all test types
+
+ Output control:
+  -l  -DlogFile=FILE                Put test results in log file FILE
+  -L  -DlogFileAppend=bool          Append test results to log file
+  -s  -DshowProgress=bool           Show test group progress
+  -S  -DshowTestcases=bool          Show test case progress
+  -u  -DsuppressTestcaseTicks=bool  Do not show ticks during test execution
+  -U  -DsuppressAllTicks=bool       Do not show any ticks
+  -V, -Dverbosity=NUM               Set vebosity to NUM
+  -w, -DwaitAtCompletion=bool       At test end, wait for user to hit enter
+
+::END
 
 
 ::method subjectHelp
@@ -1283,6 +1210,7 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
   -- End select
 
   return ret
+
 
 ::routine printDebug
   use strict arg containers, testResult, cl
@@ -1407,6 +1335,7 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
   self~verbosity = self~DEFAULT_VERBOSITY
   self~waitAtCompletion = .false
 
+
 ::attribute version
 ::attribute allTestTypes
 ::attribute buildFirst
@@ -1434,3 +1363,72 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
 ::attribute testTypeIncludes
 ::attribute verbosity
 ::attribute waitAtCompletion
+
+
+-- resolve the test types to be used by this test execution based
+-- on the options
+::method resolveTestTypes private
+  expose defaultTestTypes testTypeIncludes testTypeExcludes
+
+  tmpSet = defaultTestTypes~copy
+
+  -- If there are includes, add them into the default set.
+  if testTypeIncludes \== .nil then tmpSet = tmpSet~union(testTypeIncludes)
+
+  -- Now, if there are excludes subtract them out.
+  if typeTypeExcludes \== .nil then tmpSet = tmpSet~difference(typeTypeExcludes)
+
+  -- A value of .nil is used to signal that all test types are to be used.  This
+  -- reduces the processing in parts of the automated running of the test suite.
+  -- Determine here if the default set now represents all possible tests.
+  if .ooTestTypes~all~equivalent(tmpSet) == 0 then
+    self~testTypes = .nil
+  else self~testTypes = tmpSet
+
+
+-- finish the full test run
+::method finishTestRun
+  expose testResult
+  use strict arg overallPhase, containers = .nil
+
+  overallPhase~done
+  testResult~addEvent(overallPhase)
+
+  -- by default, write everything to the consolve
+  outStream = .output
+
+  -- if we've been asked to log everything, use a stream target that
+  -- also writes to a log file.
+  if self~logFile <> .nil then do
+     outStream = .MultiStream~new((outStream, .stream~new(.testOpts~logFile)~~command("open write" self~logFileMode))
+  end
+
+  testResult~print(outStream, "ooTest Framework - Automated Test of the ooRexx Interpreter")
+
+  if .testOpts~debug then self~printDebug(outStream, containers, testResult)
+  else if .testOpts~printOptions then self~printOptions(outStream, .true)
+
+  if self~waitAtCompletion then do
+    say
+    say "The automated test run is finished, hit enter to continue"
+    pull
+  end
+
+return 0
+
+
+-- special stream for writing information to multiple streams from a single source
+::class "MultiStream" implements OutputStream
+::method init
+  expose streams
+  use strict arg streams
+
+-- handle a lineout call
+::method lineout
+  expose streams
+  use strict arg line
+
+  loop stream over streams
+     stream~lineout(line)
+  end
+

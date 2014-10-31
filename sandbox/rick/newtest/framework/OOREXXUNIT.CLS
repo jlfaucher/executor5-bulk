@@ -215,12 +215,14 @@
 -- default behaviours.
 ::class "TestContainer" mixinclass object
 ::method init
-  expose testTypes resultStream verbose ticker
+  expose testTypes resultStream verbose ticker result
 
-  testTypes = .TestTypes~defaultTestSet
+  -- by default, we allow everything
+  testTypes = .nil
   resultStream = .error
   verbose = .false
   ticker = .nil
+  result = .resultset~new
 
 -- start the ticker running
 ::method startTicker
@@ -229,7 +231,6 @@
   -- don't start this more than once
   if ticker \= .nil then return
   ticker = .ProgressTicker~new
-
 
 -- stop any running ticker
 ::method stopTicker
@@ -249,25 +250,17 @@
 -- return the default result stream for the container
 ::attribute resultStream get
 
--- add additional test types
-::method includeTestTypes
-  expose testTypes
-  use strict arg types
-
-  testTypes = testTypes~union(types)
-
--- exclude test types
-::method excludeTestTypes
-  expose testTypes
-  use strict arg types
-
-  testTypes = testTypes~difference(types)
+-- the result object for the test run
+::attribute result get
 
 
 -- filter a particular testcase method
 ::method filterTestMethod
   expose testTypes
   use strict arg testCase, methodName, testMethod
+
+  -- a .nil value indicates we accept everything
+  if testTypes = .nil then return .true
 
   -- for now, just filter based on the types
   return testMethod~hasTestType(testTypes)
@@ -277,6 +270,9 @@
 ::method filterTests
   expose testTypes
   use strict arg test
+
+  -- a .nil value indicates we accept everything
+  if testTypes = .nil then return .true
 
   return test~hasTestType(testTypes)
 
@@ -329,156 +325,206 @@
   use strict arg group
   return .ResultSet~new(group)
 
--- create a test result for a test method
-::method createResult
-  use strict arg method
-  return .TestMethodResult~new(method)
+-- notification messages added to a result set
+::class 'NotificationTypes' public mixinclass Object
+
+  ::constant MIN_TYPE    1
+
+  ::constant SKIP_TYPE   1
+  ::constant WARN_TYPE   2
+  ::constant TEXT_TYPE   3
+  ::constant STEP_TYPE   4
+  ::constant STATS_TYPE  5
+  ::constant LOG_TYPE    6
+
+  ::constant MAX_TYPE    6
+
+/* Notes on LOG_TYPE notification
+
+     notification~reason == return code
+     notification~additional == command line
+     notification~message == some message
+     notification~additionObject == .array of lines of captured output
+*/
+
+/* class: Notification - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+    A data object containing information concerning status, events, or other
+    things that might need to be logged during the execution of a test, usually
+    the execution of an automated suite of tests.
+
+    At a minimum the object contains a time stamp, the name of the relevant
+    file, and the notification type.
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class 'Notification' public subclass ReportData inherit NotificationTypes
+
+  ::attribute reason
+  ::attribute message
+  ::attribute warning
+
+  ::attribute originatorsID
+
+  ::method init
+    use strict arg dateTime, file, type
+    forward class (super) continue
+
+    if \ isWholeRange(type, self~MIN_TYPE, self~MAX_TYPE) then
+      raise syntax 88.907 array("3 'type'", self~MIN_TYPE, self~MAX_TYPE, type)
+
+    select
+      when type == self~SKIP_TYPE then do
+        self~reason = "Reason is unknown"
+        self~warning = .nil
+        self~message = .nil
+      end
+      when type == self~WARN_TYPE then do
+        self~reason = .nil
+        self~warning = "Warning is unknown"
+        self~message = .nil
+      end
+      otherwise do
+        self~reason = .nil
+        self~warning = .nil
+        self~message = "Message is unknown"
+      end
+    end
+    -- End select
+
+    self~originatorsID = .nil
+
+-- End of class: Notification
 
 
--- Record the result from an individual test method.  This will hold all of the
--- error/failure information, plus a count of the successful assertions.
-::class "TestResultBase" public
-::method init
-  expose errorInformation assertions isError isFailure skippedTests isSkipped
+::class 'ExceptionTypes' public mixinclass Object
 
-  assertions = 0
-  errorInformation = .nil
-  isError = .false
-  isFailure = .false
-  isSkipped = .false
-  isKnownFailure = .false
+  ::constant TRAP        1
+  ::constant ANOMLY      2
+  ::constant UNEXPECTED  3
+  ::constant EXTERNAL    4
 
--- add an error to the result
-::method setError
-  expose errorInformation isError
-  use strict arg errorInformation
+/* class: ExceptionData- - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
 
-  isError = .true
+    A data object containing information concerning an unrecoverable error that
+    occurred during the execution of an automated group of tests.
 
--- add a failure to the result
-::method setFailure
-  expose errorInformation isFailure
-  use strict arg errorInformation
+    Errors that occur during the invocation a test case method are trapped by
+    the exception handle.  However, it is also possible for errors to occur
+    during other phases of an an automated test.  For example, errors that
+    happen during some set up prior to actually invoking a test case method.
 
-  isFailure = .true
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class 'ExceptionData' public subclass TestProblem inherit ExceptionTypes
 
--- add a failure to the result
-::method setKnownFailure
-  expose errorInformation isKnownFailure
-  use strict arg errorInformation
+  ::attribute severity
+  ::attribute msg
 
-  isKnownFailure = .true
+  ::attribute typeName get
+  ::attribute typeName set private
 
-::attribute assertions
+  ::method init
+    forward class (super) continue
 
--- returns whether the entire test was successful or not
-::method wasSuccessful
-  expose errorInformation
-  return errorInformation == .nil
+    self~severity = "Fatal"
+    self~msg = ""
 
-::attribute isFailure get
-::attribute isError get
-::attribute isSkipped
+    select
+      when self~type == self~TRAP then self~typeName = "Trap"
+      when self~type == self~ANOMLY then self~typeName = "Anomly"
+      when self~type == self~UNEXPECTED then self~typeName = "Unexpected Error"
+      when self~type == self~EXTERNAL then self~typeName = "External Command Failure"
+      otherwise self~typeName = "Unexpected Error"
+    end
+    -- End select
 
--- get the error information
-::method failureResult
-  expose errorInformation
-  return errorInformation
+  ::method getMessage
 
--- display any failure information
-::method displayFailure
-  expose errorInformation
-  use strict arg output
+    if self~msg \== "" then return self~msg
+    else return "(none)"
 
-  if errorInformation \= .nil then
-     errorInformation~displayFailure(output)
+  /** print()
+   * Prints to the console the information this object contains.
+   *
+   * @param  title    A name / title for the data print out
+   * @parar  compact  If true compact the file path name(s).
+   */
+  ::method print
+    use strict arg title = "Framework exception", compact = .true,  -
+                   verbose = (.NoiseAdjustable~DEFAULT_VERBOSITY)
 
+    say "["title"]" self~when
+    say "  Type:" self~typeName "Severity:" self~severity
 
--- Record the result from an individual test method.  This will hold all of the
--- error/failure information, plus a count of the successful assertions.
-::class "TestMethodResult" public subclass TestResultBase
-::method init
-  expose testMethod
-  use strict arg testMethod
+    if compact then say "  File:" pathCompact(self~where, 70)
+    else say "  File:" self~where
 
-  self~init:super
+    if self~line <> -1 then say "  Line:" self~line
+    if self~msg \== "" then say " " self~getMessage
 
+    if self~type == self~EXTERNAL then do
+      self~printExternalException(compact, verbose)
+      say
+      return
+    end
 
--- add an error to the result
-::method setError
-  expose testMethod
-  forward class(super) continue
-  testMethod~logError(self)
+    if self~conditionObject <> .nil then do
+      self~printConditionInfo(compact)
+      say
+      return
+    end
 
+    if self~additional~isA(.string) then say " " self~additional
+    say
 
--- add a failure to the result
-::method setFailure
-  expose testMethod
-  use strict arg failureInformation
+  ::method printConditionInfo private
+    use strict arg compact
 
-  -- distinguish between known and new failures
-  if testMethod~isKnownFailure then do
-     self~setKnownFailure(failureInformation)
-     testMethod~logKnownFailure(self)
-  end
-  else do
-     self~setFailure(failureInformation)
-     testMethod~logFailure(self)
-  end
+    obj = self~conditionObject
 
+    sameFiles = (self~where~caselessCompare(obj~program) == 0 & self~line == obj~position)
 
+    say "  Condition:" obj~condition
 
--- Record test completion
-::method testEnd
-  expose duration
-  -- reduce this to an actual duration value
-  duration = duration~elapsed
+    if obj~condition == "SYNTAX" then do
+      say "   " obj~message
+      if \ sameFiles then do
+        if compact then say "    File:" pathCompact(obj~program, 70)
+        else say "    File:" obj~program
+        say "    Line:" obj~position
+      end
+    end
+    else do
+      say "   " obj~description
+    end
 
+    if obj~traceBack~isA(.list) then do line over obj~traceBack
+      say " " line
+    end
 
--- record test start
-::method testStart
-  expose duration
+  ::method printExternalException private
+    use strict arg compact, verbose
 
-  -- get an initial timestamp
-  duration = .DateTime~new
+    n = self~additionalObject
 
+    say " " n~message
+    say "  Command line:" n~additional
+    say "  Return code: " n~reason
 
--- special error for failures instantiating a test class
-::class TestInstantiationError subclass TestResultBase
-::method init
-  use strict arg testClass, conditionObj
+    if n~where \== "" then do
+      l = "  Location:"
+      if compact then say l pathCompact(n~where, 70)
+      else say l n~where
+    end
 
-  self~init:super
+    if verbose >= 5, n~additionalObject \== .nil then do
+      log = n~additionalObject
+      say
+      do line over log
+        say line
+      end
+    end
 
-  self~setError(.GeneralError~new("Error instantiating test class" testClass~id, conditionObj))
-
--- special error for failures instantiating a test class
-::class FileNotFoundFailure subclass TestResultBase
-::method init
-  use strict arg testSuite, fileName
-
-  self~init:super
-
-  self~setFailure(.GeneralError~new("Error loading file" fileName "for test suite" testSuite~string))
-
-
--- special result for skipped test cases
-::class "SkippedTestMethod" subclass TestResultBase
-::method init
-  use strict arg testMethod
-
-  self~init:super
-
-  self~skippedTests = 1
-  self~isSkipped = .true
-
--- special result for skipped test cases
-::class "SkippedTestSets" subclass TestResultBase
-::method init
-  use strict arg testClass
-
-  self~skippedTestSets = 1
-  self~isSkipped = .true
+-- End of class: ExceptionData
 
 -- an accumulated set of test results
 ::class "ResultSet"
@@ -495,23 +541,53 @@
   knownFailures = 0
   failureResults = .array~new
 
+  self~notifications = .array~new
+  self~exceptions = .array~new
+  self~events = .array~new
+  self~knownFailures = .array~new
+
 ::attribute tests get
 ::attribute assersions get
 ::attribute failures get
 ::attribute errors get
 ::attribute failureResults get
 
+::attribute notifications  private
+::attribute exceptions     private
+::attribute events         private
+::attribute knownFailures  private
+::attribute newFailures    private
+
+::attribute newFailureCount   set private
+::attribute newFailureCount   get
+::attribute knownFailureCount set private
+::attribute knownFailureCount get
+
+
+-- start the execution of a test group
+::method startTestGroup
+  expose startTime
+  startTime = .DateTime~new
+
+
+-- start the execution of a test group
+::method endTestGroup
+  expose endTime
+  endTime = .DateTime~new
+
+
 -- mark the start of a set of tests
 ::method testStart
-  expose startTime
-
-  startTime = .DateTime~new
+  expose starttests
+  -- record that we're executing an addition al test case
+  tests += 1
 
 -- mark the end of a set of tests
 ::method testEnd
   expose endTime
 
   endTime = .DateTime~new
+
 
 -- add a new result to the set for this test case
 ::method addResult
@@ -540,6 +616,41 @@
      knownFailures += 1
      failureResults~append(result)
   end
+
+::method addNotification
+  use strict arg notification
+  self~notifications~queue(notification)
+
+/** getNotifications()
+ * Return a copy of the notifications queue so the caller can manipulate it
+ * however she wants.  Note that all the queue return methods should do this,
+ * just not implemented yet.
+ */
+::method getNotifications
+  return self~notifications~copy
+
+::method notificationCount
+  return self~notifications~items
+
+::method addException
+  use strict arg exception
+  self~exceptions~queue(exception)
+
+::method getExceptions
+  return self~exceptions
+
+::method exceptionCount
+  return self~exceptions~items
+
+::method addEvent
+  use strict arg event
+  self~events~queue(event)
+
+::method getEvents
+  return self~events
+
+::method eventCount
+  return self~events~items
 
 -- test if this test has any error information
 ::method wasSuccessful
@@ -718,24 +829,26 @@ assertFail Control unexpected reached a failure point.
 -- testMethod object, which contains all of the relevant test information,
 -- and type type of failure
 ::method init
-  expose testMethod
+  expose methodInfo
   use strict arg testMethod, failureType
   self~init:super(failureType)
+
+  methodInfo = testMethod~methodinfo
 
   timestamp = .datetime~new
 
 -- display the test failure information
 ::method displayFailure
-  expose testMethod
+  expose methodInfo
   use strict arg output
 
   self~displayFailure:super(output)
-  testMethod~display(output)
+  methodInfo~display(output)
 
 
 --  AssertionFailure is a report of a test case failure.  A test case fails when an
 --  assertion does not hold.  This is the base assertion failure.
-::class 'AssertionFailure' public subclass TestFailure
+::class "AssertionFailure" public subclass TestFailure
 ::method init
   expose message assertionLine assertionType secondaryAssertion
   use strict arg testMethod, assertionType, message
@@ -927,17 +1040,41 @@ assertFail Control unexpected reached a failure point.
   end
 
 
+-- information about a TestMethod that does not lock
+-- the test classes in memory
+::class "TestMethodInfo"
+::method init
+  expose testInfo testName
+  use strict arg testCase, testName
+
+  classInfo = testCase~testInfo
+
+
+-- display base test information
+::method display
+  expose testInfo testName
+  use strict arg output
+
+  -- display the method name, then add the testcase information
+  output~lineout("  Test:  " testName)
+  testCase~display(output)
+
+
 -- this represents a single test method within a TestCase.  This
 -- handles the details of running a single test method and recording the
 -- results
 ::class "TestMethod" inherit TestTypes
 -- create an individual test associated with a TestCase
 ::method init
-  expose testCase testName testMethod expectedCondition knownFailure
-  use strict arg testCase, testName, testMethod
+  expose testCase testName testMethod testResult expectedCondition knownFailure methodInfo
+  use strict arg testCase, testResult, testName, testMethod
+
+  methodInfo = .TestMethodInfo~new(testCase, testName)
 
   expectedCondition = .nil
   knownFailure = .nil
+
+::attribute methodInfo GET
 
 -- logging methods for test events.  These log to the parent entity
 ::method logFailure delegate testCase
@@ -966,7 +1103,6 @@ assertFail Control unexpected reached a failure point.
   expose testMethod
 
   return .TestTypes~checkPlatform(testMethod)
-
 
 -- test if this test is marked as a known failure
 ::method isKnownFailure
@@ -1040,36 +1176,28 @@ assertFail Control unexpected reached a failure point.
   -- should never get here, but one never knows.
   return frames
 
-
 -- execute a specific test case method
 ::method execute
-  expose testCase testResult
+  expose testCase
 
-  -- get a test result from the test case
-  testResult = testCase~createResult(self)
-
-  -- record the test
-  testResult~testStart(self)
   -- log the start event
   testCase~logTestMethodStart(self)
 
   -- setup for the test, creating a clean environment
   testCase~performTestSetup
 
-  self~doTheTest(testResult)  -- carry out the testmethod
+  self~doTheTest                     -- carry out the testmethod
 
   -- cleanup after  the test, creating a clean environment
   testCase~performTestTeardown
 
-  testResult~testEnd(self)           -- remember test ended
   -- log the end event
   testCase~logTestMethodEnd(self)
-  return testResult
+
 
 -- wrapper around executing the actual test method
 ::method doTheTest
-   expose testName testCase
-   use arg testResult
+   expose testName testCase testResult knownFailure
 
    -- Trap all conditions propagated from the invocation of the test case
    -- method, or from the checkForConditionFailure method.
@@ -1080,8 +1208,7 @@ assertFail Control unexpected reached a failure point.
 
    -- The test case method completed without raising a condition.  The last step
    -- is to check if the test case *exepected* a condition to be raised.
-   self~checkForConditionFailure(testResult)
-   return testResult
+   self~checkForConditionFailure
 
 exceptionHandler:
 
@@ -1090,7 +1217,7 @@ exceptionHandler:
 
   -- If a condition was expected to be raised AND this condition matches the
   -- expected condition, then the test passed so just return.
-  if self~checkCondition(conditionObject) then return testResult
+  if self~checkCondition(conditionObject) then return
 
   -- If the condition code is 93.964 then this condition was raised by the
   -- framework to signal a test case failure.  The assert failure object is at
@@ -1098,17 +1225,24 @@ exceptionHandler:
   if conditionObject~code = .TestCase~assertionCode then do
      -- first get the failure object, then
      failure = conditionObject~additional[2]
-     -- attach this to the result for this test
-    testResult~setFailure(failure)
+
+     -- if this method is annotated as a known failure, add the known
+     -- failure information to the failure and add to the result known failures list
+     if self~isKnownFailure then do
+        failure~knownFailure = knownFailure
+        testResult~addKnownFailure(failure)
+     end
+     -- add as a normal failure
+     else do
+       testResult~addFailure(failure)
+     end
   end
   else do
     -- This is an unexpected, unanticipated error.
     -- add an error object to the test result
     err = .UnexpectedError~new(self, conditionObject)
-    testResult~setError(err)
+    testResult~addError(err)
   end
-
-  return testResult
 
 
 -- check if to see if received condition matches a received condition
@@ -1141,13 +1275,6 @@ exceptionHandler:
   end
 
 
--- mark the test as having passed an assertion
-::method assertionPassed
-  expose testResult
-
-  testResult~assertions += 1
-
-
 -- Create a string representation of this test case
 ::method string
   expose testname testCase
@@ -1156,49 +1283,24 @@ exceptionHandler:
   buf~append("testCase: [", testName, "] ("testCase~string, ")")
   return buf~string
 
--- display base test information
-::method display
-  expose testCase testName knownFailure
-  use strict arg output
-
-  -- display the method name, then add the testcase information
-  output~lineout("  Test:  " testName)
-  testCase~display(output)
-  if knownFailure \= .nil then
-     output~lineout("  Known Failure:" knownFailure)
-
 
 -- a mixin class to add the test execution infrastructure to a test case type
 ::class "TestExecutor" mixinclass object
 -- run the tests and display the results
 ::method run class
   use strict arg container = (.TestContainer~new)
-  testResult = self~execute(container)
-  testResult~display(container~resultStream)
+  self~execute(container)
+  container~display
 
 -- execute an this test case by creating an instance and having it execute.
 ::method execute class
   use strict arg container = (.TestContainer~new)
 
-  testResult = container~createResultSet(self)
-  instance = self~createTestInstance(container, testResult)
-  if instance == .nil then return testResult
+  instance = self~createTestInstance(container)
+  if instance == .nil then return
 
   -- execute the tests, returning a composite result
-  return instance~execute
-
-
--- execute this test in the confines of a test suite.
-::method executeInSuite class
-  use strict arg testSuite
-
-  -- if this passes filtration criteria, then execute it
-  if testSuite~filterTests(self) then do
-     return self~execute(testSuite)
-  end
-  -- return a test result that indicates we were skipped
-  else return .SkippedTestSet~new(self)
-
+  instance~execute(container)
 
 -- create an instance of a test case class, with syntax error protection
 ::method createTestInstance class
@@ -1208,8 +1310,9 @@ exceptionHandler:
   return self~new(container)
 
 syntax:
-  testResult~setError(.TestInstantiationError~new(testClass, condition('o')))
+  container~testResult~addError(.TestInstantiationError~new(testClass, condition('o')))
   return .nil
+
 
 -- common display method for test entities
 ::method displayName class
@@ -1227,6 +1330,34 @@ syntax:
 ::method testPackage
   return self~class~testPackage
 
+
+-- information class for test case status reporting
+::class "TestCaseInfo"
+::method init
+  expose className fileName mainAssertion
+  use strict arg testCase
+
+  className = testCase~class~id
+  -- get the containing file name for reporting.
+  fileName = testCase~class~package~name
+
+  -- try to determine if this file is in svn and get the information
+  -- if it is
+  svnInfo = .svnInfo~new(fileName)
+
+
+-- display base test information
+::method display
+  expose className fileName svnInfo
+  use strict arg output = .output
+
+  output~lineout("  Class: " className)
+  output~lineout("  File:  " fileName)
+  if svnInfo~revision \= .nil then do
+     output~lineout("  SVN:     r"svnInfo~revision "  Change Date: " svnInfo~date)
+  end
+
+
 -- base class for a TestCase class.  This is a class that implements
 -- a set of test methods.  This handles invocation of the different
 -- test methods and recording of result information from the tests.
@@ -1235,69 +1366,45 @@ syntax:
 
 -- The test container is used for logging, filtering, output redirection, etc.
 ::method init
-  expose container fileName svnInfo mainAssertion
+  expose container testInfo mainAssertion
   use strict arg container = (.TestContainer~new)
 
-  -- get the containing file name for reporting.
-  fileName = self~class~package~name
+  -- creat an information item for this.
+  testInfo = .TestCaseInfo~new(self)
 
-  -- try to determine if this file is in svn and get the information
-  -- if it is
-  svnInfo = .svnInfo~new(fileName)
   mainAssertion = .nil
 
--- execute this test in the confines of a test group
-::method executeInSuite
-  expose container
-  -- the test suite functions as a container (which might be running
-  -- under a different container.  This replaces any container we
-  -- might have been instantiated with.
-  use strict arg container
-
-  -- if this passes filtration criteria, then execute it
-  if container~filterTests(self~class) then do
-     return self~execute
-  end
-  -- return a test result that indicates we were skipped
-  else .SkippedTests~new(self)
-
-
--- create a test result for a test method
-::method createResult
-  expose container
-  use strict arg method
-
-  return container~createResult(method)
+-- access to the base information about the test case
+::attribute testInfo
 
 
 -- execute all of the methods in a test case class, returning the accumulated
 -- statistics
 ::method execute
-  expose container
+  expose container testResult
+  use strict arg container
+
+  testResult = container~testResult
+
   testMethods = self~getTestMethods
 
-  -- create a result object for this test case class.
-  testResult = container~createResultSet(self)
-
   container~logTestCaseStart(self)
-
   testResult~testStart(self)
 
   -- for each method create a runner for this and execute the test
   loop methodName over testMethods
      method = self~instanceMethod(methodName)
-     self~currentTestMethod = .TestMethod~new(self, methodName, method)
+     -- create a wrapper to run this test method
+     self~currentTestMethod = .TestMethod~new(self, testResult, methodName, method)
      if container~filterTestMethod(self, methodName, method) then do
-         -- run the test method, then add the results to our accumulator.
-         methodResult = self~currentTestMethod~execute
-         testResult~addResult(methodResult)
+         -- run the test method, which will add its results to the accumulator
+         self~currentTestMethod~execute
      end
   end
 
   testResult~testEnd(self)
   container~logTestCaseEnd(self)
 
-  return testResult
 
 -- locate the test method names for this test case class.  Returns
 -- an array of executable testMethod objects.
@@ -1370,19 +1477,9 @@ syntax:
 ::method logTestMethodStart delegate container
 ::method logTestMethodEnd delegate container
 
--- display base test information
-::method display
-  expose fileName svnInfo
-  use strict arg output = .output
-
-  output~lineout("  Class: " self~class~id)
-  output~lineout("  File:  " fileName)
-  if svnInfo~revision \= .nil then do
-     output~lineout("  SVN:     r"svnInfo~revision "  Change Date: " svnInfo~date)
-  end
 
 -- count a successful assertion
-::method assertionPassed delegate currentTestMethod
+::method assertionPassed delegate testResult
 
 -- count a successful assertion where we have nesting.
 ::method nestedAssertionPassed
@@ -1879,7 +1976,7 @@ syntax:
   else if newTestCase~isA(.Class), newTestCase~isSubclassOf(.TestCase) then do
      testQueue~append(self~getTestInstances(newTestCase))
   end
-  else if newTestCase~isA(.Class), newTestCase~isSubclassOf(.TestSuite) then do
+  else if newTestCase~isA(.Class), newTestCase~isSubclassOf(.TestGroup) then do
      testQueue~append)
   end
   else if newTestCase~isA(.Package) then do
@@ -1887,37 +1984,30 @@ syntax:
   end
 
 
--- execute this test in the confines of
-::method executeInSuite
-  expose container
-  -- the test suite functions as a container (which might be running
-  -- under a different container.  This replaces any container we
-  -- might have been instantiated with.
+-- execute the test group instance.  This will execute all of the contained tests.
+::method execute
+  expose testQueue
   use strict arg container
 
-  -- if this passes filtration criteria, then execute it
-  if container~filterTests(self~class) then do
-     container~mergeResult(self~execute)
-  end
-
--- execute the test suite instance.  This will execute all of the contained tests.
-::method execute
-  expose testQueue container
-
   -- get a result set from the container
-  testResult = container~createResultSet
+  testResult = container~testResult
+  testResult~startTestGroup(self)   -- record that we're starting a test group
 
-  testResult~startTest(self)        -- remember test started
   self~setUp                        -- make sure setup is invoked before testSuite runs
 
   -- execute the tests and merge the result information
   loop while \testQueue~isEmpty
      test = testQueue~pull
-     testResult~merge(test~executeinSuite(self))
+     -- first check to see if this test passes the selection criteria,
+     -- then run if requested.
+     if container~filterTestCase(test) then do
+        test~execute(container)
+     end
+
   end
 
   self~tearDown                     -- make sure tearDown is invoked after testSuite ran
-  testResult~endTest(self)          -- remember test ended
+  testResult~endTestGroup(self)     -- remember test ended
 
   return testResult
 
