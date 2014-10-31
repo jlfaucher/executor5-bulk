@@ -69,6 +69,7 @@ return testResult
   self~assertTrue(o~hasMethod("UNSETMETHOD"))
   self~assertTrue(o~hasMethod("HASMETHOD"))
 
+-- case difference tests
 ::method  test_hasMethod_two
 
   o = .object~new
@@ -89,11 +90,189 @@ return testResult
   s = .string~new("hello")
   self~assertTrue(s~hasMethod("length"))
 
+::method test_hasmethod_no_arg
+  self~expectSyntax(93.903)
+  .object~new~hasMethod
+
+::method test_hasmethod_no_string
+  self~expectSyntax(93.938)
+  .object~new~hasMethod(.nil)
+
+::method test_hasmethod_two_args
+  self~expectSyntax(93.902)
+  .object~new~hasMethod("hello", "there")
+
 ::method testSend01
   self~assertEquals("abc"~substr(1,2), "abc"~send('substr', 1, 2))
 
+::method test_send_no_name
+  self~expectSyntax(88.901)
+  "abc"~send()
+
+::method test_send_no_name2
+  self~expectSyntax(88.901)
+  "abc"~send(,1,2)
+
+::method test_send_not_string
+  self~expectSyntax(93.972)
+  "abc"~send(.nil,1,2)
+
+::method test_send_no_method
+  self~expectSyntax(97.1)
+  "abc"~send('substrxxxxxx',1,2)
+
 ::method testSendWith01
   self~assertEquals("abc"~substr(1,2), "abc"~sendWith('substr', .array~of(1, 2)))
+
+::method test_sendwith_no_name
+  self~expectSyntax(88.901)
+  "abc"~sendWith(,(1,2))
+
+::method test_sendwith_no_name2
+  self~expectSyntax(88.901)
+  "abc"~sendWith()
+
+::method test_sendwith_not_string
+  self~expectSyntax(93.972)
+  "abc"~sendWith(.nil,(1,2))
+
+::method test_sendwith_not_array
+  self~expectSyntax(88.913)
+  "abc"~sendWith('substr', .nil)
+
+::method test_sendwith_too_many
+  self~expectSyntax(93.902)
+  "abc"~sendWith('substr', (1,2), (1,2))
+
+::method test_sendwith_no_method
+  self~expectSyntax(97.1)
+  "abc"~sendWith('substrxxxxxx',(1,2))
+
+::method test_send_override
+  obj = .sendTester~new
+  -- non-array version of the test, just as a baseline
+  self~assertEquals(123, obj~testSend(obj, 'TestTarget'))
+  self~assertEquals(123, obj~testSendWith(obj, 'TestTarget', (1,2)))
+
+  -- now with a superclass override
+  self~assertEquals(456, obj~testSend(obj, ('TestTarget', .sendTester2)))
+  self~assertEquals(456, obj~testSendWith(obj, ('TestTarget', .sendTester2), (1,2)))
+
+  -- this should still work even starting from the top class
+  self~assertEquals(123, obj~testSend(obj, ('TestTarget', .sendTester)))
+  self~assertEquals(123, obj~testSendWith(obj, ('TestTarget', .sendTester), (1,2)))
+
+-- issued from a different class context
+::method test_send_override_bad_context
+  obj = .sendTester~new
+  self~expectSyntax(98.938)
+  obj~send(('TestTarget', .sendTester2))
+
+::method test_send_override_empty_array
+  obj = .sendTester~new
+  self~expectSyntax(93.946)
+  obj~send(.array~new(0))
+
+::method test_send_override_missing_name
+  obj = .sendTester~new
+  self~expectSyntax(88.901)
+  obj~send((,.testclass2))
+
+::method test_send_override_missing_scope
+  obj = .sendTester~new
+  self~expectSyntax(93.946)
+  obj~send(('TestTarget', ))
+
+::method test_send_override_extra_stuff
+  obj = .sendTester~new
+  self~expectSyntax(93.946)
+  obj~send(('TestTarget', .testScope2, 'Extra' ))
+
+::method test_send_override_non_string_name
+  obj = .sendTester~new
+  self~expectSyntax(88.909)
+  obj~send((.array, .testScope2))
+
+::method test_send_override_non_class_scope
+  obj = .sendTester~new
+  self~expectSyntax(88.914)
+  obj~send(('TestTarget', 'TESTCLASS2'))
+
+::method test_send_override_non_class_scope2
+  obj = .sendTester~new
+  self~expectSyntax(88.914)
+  obj~send(('TestTarget', .nil))
+
+::method test_send_override_not_found
+  obj = .sendTester~new
+  self~expectSyntax(97.1)
+  obj~testsend(obj, ('TestTarget', .object))
+
+::method test_send_override_not_non_scope
+  obj = .sendTester~new
+  self~expectSyntax(93.957)
+  obj~testsend(obj, ('TestTarget', .array))
+
+::method test_send_override_no_method
+  obj = .sendTester~new
+  self~expectSyntax(93.957)
+  obj~testSend(obj, ('TestTargetXXXX', .array))
+
+-- issued from a different class context
+::method test_sendwith_override_bad_context
+  obj = .sendTester~new
+  self~expectSyntax(98.938)
+  obj~sendWith(('TestTarget', .sendTester2), (1,2))
+
+::method test_sendWith_override_empty_array
+  obj = .sendTester~new
+  self~expectSyntax(93.946)
+  obj~sendWith(.array~new(0), (1,2))
+
+::method test_sendWith_override_missing_name
+  obj = .sendTester~new
+  self~expectSyntax(88.901)
+  obj~sendWith((,.testclass2), (1,2))
+
+::method test_sendWith_override_missing_scope
+  obj = .sendTester~new
+  self~expectSyntax(93.946)
+  obj~sendWith(('TestTarget', ), (1,2))
+
+::method test_sendWith_override_extra_stuff
+  obj = .sendTester~new
+  self~expectSyntax(93.946)
+  obj~sendWith(('TestTarget', .testScope2, 'Extra' ), (1,2))
+
+::method test_sendWith_override_non_string_name
+  obj = .sendTester~new
+  self~expectSyntax(88.909)
+  obj~sendWith((.array, .testScope2), (1,2))
+
+::method test_sendWith_override_non_class_scope
+  obj = .sendTester~new
+  self~expectSyntax(88.914)
+  obj~sendWith(('TestTarget', 'TESTCLASS2'), (1,2))
+
+::method test_sendWith_override_non_class_scope2
+  obj = .sendTester~new
+  self~expectSyntax(88.914)
+  obj~sendWith(('TestTarget', .nil), (1,2))
+
+::method test_sendWith_override_not_found
+  obj = .sendTester~new
+  self~expectSyntax(97.1)
+  obj~testsendWith(obj, ('TestTarget', .object), (1,2))
+
+::method test_sendWith_override_not_non_scope
+  obj = .sendTester~new
+  self~expectSyntax(93.957)
+  obj~testsendWith(obj, ('TestTarget', .array), (1,2))
+
+::method test_sendWith_override_no_method
+  obj = .sendTester~new
+  self~expectSyntax(93.957)
+  obj~testsendWith(obj, ('TestTargetXXXX', .array), (1,2))
 
 ::method testStart01
   message = "abc"~start("substr", 1, 2)
@@ -102,6 +281,244 @@ return testResult
 ::method testStartWith01
   message = "abc"~startWith("substr",  .array~of(1, 2))
   self~assertEquals("abc"~substr(1,2), message~result)
+
+::method test_start_no_name
+  self~expectSyntax(88.901)
+  "abc"~start()
+
+::method test_start_no_name2
+  self~expectSyntax(88.901)
+  "abc"~start(,1,2)
+
+::method test_start_not_string
+  self~expectSyntax(93.972)
+  "abc"~start(.nil,1,2)
+
+::method test_start_no_method
+  self~disableTraceOutput
+  self~expectSyntax(97.1)
+  "abc"~start('substrxxxxxx',1,2)~result
+  call syssleep 1
+
+::method test_start_override
+
+  obj = .sendTester~new
+  -- non-array version of the test, just as a baseline
+  self~assertEquals(123, obj~testStart(obj, 'TestTarget'))
+  self~assertEquals(123, obj~testStartWith(obj, 'TestTarget', (1,2)))
+
+  -- now with a superclass override
+  self~assertEquals(456, obj~testStart(obj, ('TestTarget', .sendTester2)))
+  self~assertEquals(456, obj~testStartWith(obj, ('TestTarget', .sendTester2), (1,2)))
+
+  -- this should still work even starting from the top class
+  self~assertEquals(123, obj~testStart(obj, ('TestTarget', .sendTester)))
+  self~assertEquals(123, obj~testStartWith(obj, ('TestTarget', .sendTester), (1,2)))
+
+-- issued from a different class context
+::method test_start_override_bad_context
+  obj = .sendTester~new
+  self~expectSyntax(98.938)
+  obj~start(('TestTarget', .sendTester2))
+
+::method test_start_override_empty_array
+  obj = .sendTester~new
+  self~expectSyntax(93.946)
+  obj~start(.array~new(0))
+
+::method test_start_override_missing_name
+  obj = .sendTester~new
+  self~expectSyntax(88.901)
+  obj~start((,.testclass2))
+
+::method test_start_override_missing_scope
+  obj = .sendTester~new
+  self~expectSyntax(93.946)
+  obj~start(('TestTarget', ))
+
+::method test_start_override_extra_stuff
+  obj = .sendTester~new
+  self~expectSyntax(93.946)
+  obj~start(('TestTarget', .testScope2, 'Extra' ))
+
+::method test_start_override_non_string_name
+  obj = .sendTester~new
+  self~expectSyntax(88.909)
+  obj~start((.array, .testScope2))
+
+::method test_start_override_non_class_scope
+  obj = .sendTester~new
+  self~expectSyntax(88.914)
+  obj~start(('TestTarget', 'TESTCLASS2'))
+
+::method test_start_override_non_class_scope2
+  obj = .sendTester~new
+  self~expectSyntax(88.914)
+  obj~start(('TestTarget', .nil))
+
+::method test_start_override_not_found
+  obj = .sendTester~new
+  self~disableTraceOutput
+  self~expectSyntax(97.1)
+  obj~testStart(obj, ('TestTarget', .object))~result
+  call syssleep 1
+
+::method test_start_override_not_non_scope
+  obj = .sendTester~new
+  self~expectSyntax(93.957)
+  obj~testStart(obj, ('TestTarget', .array))
+
+::method test_start_override_no_method
+  obj = .sendTester~new
+  self~expectSyntax(93.957)
+  obj~testStart(obj, ('TestTargetXXXX', .array))
+
+::method test_startWith_no_name
+  self~expectSyntax(88.901)
+  "abc"~startWith()
+
+::method test_startWith_no_name2
+  self~expectSyntax(88.901)
+  "abc"~startWith(,(1,2))
+
+::method test_startWith_not_string
+  self~expectSyntax(93.972)
+  "abc"~startWith(.nil,(1,2))
+
+::method test_startWith_no_method
+  self~disableTraceOutput
+  self~expectSyntax(97.1)
+  "abc"~startWith('substrxxxxxx',(1,2))~result
+  call syssleep 1
+
+::method test_startWith_override
+
+  obj = .sendTester~new
+  -- non-array version of the test, just as a baseline
+  self~assertEquals(123, obj~teststartWith(obj, 'TestTarget'))
+  self~assertEquals(123, obj~testStartWith(obj, 'TestTarget', (1,2)))
+
+  -- now with a superclass override
+  self~assertEquals(456, obj~teststartWith(obj, ('TestTarget', .sendTester2)))
+  self~assertEquals(456, obj~testStartWith(obj, ('TestTarget', .sendTester2), (1,2)))
+
+  -- this should still work even starting from the top class
+  self~assertEquals(123, obj~teststartWith(obj, ('TestTarget', .sendTester)))
+  self~assertEquals(123, obj~testStartWith(obj, ('TestTarget', .sendTester), (1,2)))
+
+-- issued from a different class context
+::method test_startWith_override_bad_context
+  obj = .sendTester~new
+  self~expectSyntax(98.938)
+  obj~startWith(('TestTarget', .sendTester2), (1,2))
+
+::method test_startWith_override_empty_array
+  obj = .sendTester~new
+  self~expectSyntax(93.946)
+  obj~startWith(.array~new(0), (1,2))
+
+::method test_startWith_override_missing_name
+  obj = .sendTester~new
+  self~expectSyntax(88.901)
+  obj~startWith((,.testclass2), (1,2))
+
+::method test_startWith_override_missing_scope
+  obj = .sendTester~new
+  self~expectSyntax(93.946)
+  obj~startWith(('TestTarget', ), (1,2))
+
+::method test_startWith_override_extra_stuff
+  obj = .sendTester~new
+  self~expectSyntax(93.946)
+  obj~startWith(('TestTarget', .testScope2, 'Extra' ), (1,2))
+
+::method test_startWith_override_non_string_name
+  obj = .sendTester~new
+  self~expectSyntax(88.909)
+  obj~startWith((.array, .testScope2), (1,2))
+
+::method test_startWith_override_non_class_scope
+  obj = .sendTester~new
+  self~expectSyntax(88.914)
+  obj~startWith(('TestTarget', 'TESTCLASS2'), (1,2))
+
+::method test_startWith_override_non_class_scope2
+  obj = .sendTester~new
+  self~expectSyntax(88.914)
+  obj~startWith(('TestTarget', .nil), (1,2))
+
+::method test_startWith_override_not_found
+  obj = .sendTester~new
+  self~disableTraceOutput
+  self~expectSyntax(97.1)
+  obj~teststartWith(obj, ('TestTarget', .object))
+
+::method test_startWith_override_not_non_scope
+  obj = .sendTester~new
+  self~expectSyntax(93.957)
+  obj~teststartWith(obj, ('TestTarget', .array))
+
+::method test_startWith_override_no_method
+  obj = .sendTester~new
+  self~expectSyntax(93.957)
+  obj~teststartWith(obj, ('TestTargetXXXX', .array))
+
+-- test various concatenations with non-string objects on
+-- the left of the expression.  This will concat with the
+-- string value of the object.
+::method test_concat
+  obj = .object~new
+  self~assertEquals(obj~defaultName||"ABC", obj||"ABC")
+  self~assertEquals(obj~defaultName||"ABC", obj"ABC")
+  self~assertEquals(obj~defaultName||" ABC", obj "ABC")
+
+  -- and object with a string method override
+  obj = .test1~new
+
+  self~assertEquals(obj~string||"ABC", obj||"ABC")
+  self~assertEquals(obj~string||"ABC", obj"ABC")
+  self~assertEquals(obj~string||" ABC", obj "ABC")
+
+::method test_concat_no_other
+  obj = .test1~new
+  self~expectSyntax(93.903)
+  x = obj~"||"
+
+::method test_blank_concat_no_other
+  obj = .test1~new
+  self~expectSyntax(93.903)
+  x = obj~" "
+
+::method test_abuttal_concat_no_other
+  obj = .test1~new
+  self~expectSyntax(93.903)
+  x = obj~""
+
+::method test_concat_extra_arg
+  obj = .test1~new
+  self~expectSyntax(93.902)
+  x = obj~"||"(1,2)
+
+::method test_blank_concat_extra_arg
+  obj = .test1~new
+  self~expectSyntax(93.902)
+  x = obj~" "(1,2)
+
+::method test_abbutal_concat_extra_arg
+  obj = .test1~new
+  self~expectSyntax(93.902)
+  x = obj~""(1,2)
+
+::method test_bad_string_method
+  obj = .testbadstring~new
+  -- if the string method does not return a value, it reverts to the default
+  -- name
+  self~assertEquals(obj~defaultName||'abc', obj||'abc')
+
+::method test_string_method_error
+  obj = .testbadstring2~new
+  self~expectSyntax(42.3)
+  x = obj||'abc'
 
 ::method copy
   o1 = .test2~new
@@ -120,7 +537,574 @@ return testResult
   self~assertSame(o1~c * 2, o2~c)
   self~assertSame(o1~d, o2~d)
 
--- TODO:  This seriously needs to be fleshed out, particularly with setMethod() tests.
+::method test_objectname
+  o = .object~new
+  -- the default string value is the defaultname
+  self~assertEquals(o~defaultname, o~string)
+  o~objectName = "My Test Object"
+  -- this changes the string value
+  self~assertEquals("My Test Object", o~string)
+
+  -- object copy also copies the internal variables.
+  o2 = o~copy
+  self~assertEquals(o~string, o2~string)
+
+  -- should have not connection between the two.
+  o2~objectname = "Your Test Object"
+  -- the copy should change, the original should not.
+  self~assertEquals("Your Test Object", o2~string)
+  self~assertEquals("My Test Object", o~string)
+
+::method test_objectname_not_string
+  self~expectSyntax(93.938)
+  .object~new~objectname = .nil
+
+::method test_objectname_no_arg
+  self~expectSyntax(93.903)
+  .object~new~'OBJECTNAME='
+
+::method test_objectname_two_args
+  self~expectSyntax(93.902)
+  .object~new~'OBJECTNAME='(1,2)
+
+::method test_objectname_get_one_arg
+  self~expectSyntax(93.902)
+  .object~new~objectname(1)
+
+
+::method test_instanceof
+  self~assertTrue(.object~isInstanceOf(.object))
+  self~assertTrue(.object~isa(.object))
+
+  self~assertTrue(.class~isInstanceOf(.object))
+  self~assertTrue(.class~isa(.object))
+
+  self~assertTrue(.class~isInstanceOf(.class))
+  self~assertTrue(.class~isa(.class))
+
+  self~assertTrue("abc"~isInstanceOf(.String))
+  self~assertTrue("abc"~isA(.String))
+
+  self~assertTrue("abc"~isInstanceOf(.Comparable))
+  self~assertTrue("abc"~isA(.Comparable))
+
+  self~assertFalse(.String~isInstanceOf(.String))
+  self~assertFalse(.String~isA(.String))
+
+  self~assertTrue(.String~isInstanceOf(.Class))
+  self~assertTrue(.String~isA(.Class))
+
+  -- some special tests for integer objects and numberstring objects
+
+  self~assertTrue(.true~isInstanceOf(.String))
+  self~assertTrue(.true~isA(.String))
+
+  self~assertTrue((1/3)~isInstanceOf(.String))
+  self~assertTrue((1/3)~isA(.String))
+
+  -- some mixin tests
+  self~assertTrue(.array~new~isInstanceOf(.collection))
+  self~assertTrue(.array~new~isA(.collection))
+  self~assertTrue(.array~new~isInstanceOf(.orderedcollection))
+  self~assertTrue(.array~new~isA(.orderedcollection))
+
+  self~assertTrue(.directory~new~isInstanceOf(.collection))
+  self~assertTrue(.directory~new~isA(.collection))
+
+  self~assertTrue(.directory~new~isInstanceOf(.mapcollection))
+  self~assertTrue(.directory~new~isA(.mapcollection))
+
+::method test_isa_non_class
+  self~expectSyntax(88.914)
+  'abc'~isa('String')
+
+::method test_isInstanceOf_non_class
+  self~expectSyntax(88.914)
+  'abc'~isInstanceOf('String')
+
+::method test_isa_no_class
+  self~expectSyntax(88.901)
+  'abc'~isa
+
+::method test_isInstanceOf_no_class
+  self~expectSyntax(88.901)
+  'abc'~isInstanceOf
+
+::method test_isa_two_args
+  self~expectSyntax(93.902)
+  'abc'~isa(.string, 1)
+
+::method test_isInstanceOf_two_args
+  self~expectSyntax(93.902)
+  'abc'~isInstanceOf(.string, 1)
+
+::method test_instancemethod
+  -- some tests of instancemethod, instancemethods, and method scope
+  t = .test2~new
+
+  s = t~instanceMethods(.test2)
+  loop while s~available
+     name = s~index
+     method = s~item
+     self~assertSame(.test2, method~scope)
+     self~assertSame(method, t~instanceMethod(name))
+     self~assertSame(method, .test2~method(name))
+     s~next
+  end
+
+  -- because there is an override, we need to get an instance of the
+  -- superclass for comparing methods
+  t2 = .test1~new
+
+  -- go one level down the hierarchy
+  s = t~instanceMethods(.test1)
+  loop while s~available
+     name = s~index
+     method = s~item
+     self~assertSame(.test1, method~scope)
+     self~assertSame(method, t2~instanceMethod(name))
+     self~assertSame(method, .test1~method(name))
+     s~next
+  end
+
+  -- now get all of the methods and compare them with what the
+  -- class reports.
+
+  instanceMethods = .relation~new
+  instanceSupplier = t~instanceMethods
+
+  loop while instanceSupplier~available
+     instanceMethods~put(instanceSupplier~index, instanceSupplier~item)
+     instanceSupplier~next
+  end
+
+  classMethods = .relation~new
+  classSupplier = .test2~methods
+
+  loop while classSupplier~available
+     classMethods~put(classSupplier~index, classSupplier~item)
+     classSupplier~next
+  end
+
+  self~assertTrue(instanceMethods~equivalent(classMethods))
+
+::method test_run
+  t = .runTester~new
+
+  -- base run tests for the different method sources
+  self~assertEquals("Private", t~runMethod("return self~test"))
+  self~assertEquals("Private", t~runMethod(.array~of("return self~test")))
+  self~assertEquals("Private", t~runMethod(.method~new('test', "return self~test")))
+
+  -- base run tests for the different method sources
+  self~assertSame(.runTester, t~runMethod("return super"))
+  self~assertSame(.runTester, t~runMethod(.array~of("return super")))
+  self~assertSame(.runTester, t~runMethod(.method~new('test', "return super")))
+
+  self~assertSame(.nil, t~runMethod("return .context~executable~scope"))
+  self~assertSame(.nil, t~runMethod(.array~of("return .context~executable~scope")))
+  self~assertSame(.nil, t~runMethod(.method~new('test', "return .context~executable~scope")))
+
+  -- test the "name" of this unnamed method
+  self~assertSame("*UNNAMED*", t~runMethod("return .context~name"))
+  self~assertSame("*UNNAMED*", t~runMethod("return .context~stackframes[1]~name"))
+
+  -- just testing single forms of methods from here.
+
+  self~assertSame(.array, t~runMethod1("return arg(1)", .array))
+  self~assertEquals("David Ashley", t~runMethod2(("use strict arg arg1, arg2", "return arg1 arg2"), "David", "Ashley"))
+  self~assertSame(.array, t~runMethodWith("return arg(1)", .array~of(.array)))
+  self~assertEquals("David Ashley", t~runMethodWith(("use strict arg arg1, arg2", "return arg1 arg2"), ("David", "Ashley")))
+
+  self~assertEquals("a 2 b", t~runGeneral(("use strict arg a1 = 1, a2 = 2, a3 = 3", "return a1 a2 a3"), 'individual', 'a',,'b'))
+  self~assertEquals("a 2 b", t~runGeneral(("use strict arg a1 = 1, a2 = 2, a3 = 3", "return a1 a2 a3"), 'array', ('a',,'b')))
+
+::method test_run_no_method
+  self~expectSyntax(88.901)
+  self~runDynamicSource((".test~new~test", "::class test", "::method test", "self~run"))
+
+::method test_run_bad_method_source
+  self~expectSyntax(93.974)
+  .runTester~new~runMethod(.nil)
+
+::method test_run_no_argument_option
+  self~expectSyntax(88.901)
+  .runTester~new~runGeneral("return 123",,1)
+
+::method test_run_bad_argument_option
+  self~expectSyntax(93.915)
+  .runTester~new~runGeneral("return 123",'f',1)
+
+::method test_run_array_argument
+  self~expectSyntax(88.913)
+  .runTester~new~runGeneral("return 123",'a',.nil)
+
+::method test_run_sparse_array_source
+  self~expectSyntax(93.952)
+  .runTester~new~runGeneral(("x = something",,"return 123"),'a',.nil)
+
+::method test_run_non_string_array_value
+  self~expectSyntax(93.952)
+  .runTester~new~runGeneral(("x = something",.nil,"return 123"),'a',.nil)
+
+::method test_run_private
+  self~expectSyntax(98.991)
+  x = .runTester~new~run(("x = something","return 123"))
+
+::method test_run_class_private
+  -- this should work
+  self~assertEquals(123, .runtester~runMethod(.runTester~new, ("x = something","return 123")))
+
+::method test_run_expose
+  t = .runtester~new
+  t~testValue = 456
+  value = t~runMethod(("expose testValue", "oldValue = testValue", "testValue = 123", "return oldValue"))
+  self~assertEquals(456, t~testValue)
+  -- verify accesses at different scope
+  self~assertEquals('TESTVALUE', value)
+  -- but the variable has been set at the object scope
+  self~assertEquals(123, t~runMethod(("expose testValue", "return testValue")))
+
+::method test_setmethod
+  t = .setTester~new
+  -- test each of the variations of method type.  We'll override the original
+  -- method on each set
+  t~testSet('FOOBAR', 'return 123')
+  self~assertTrue(t~hasMethod("foobar"))
+  self~assertIsA(t~instanceMethod("foobar"), .Method)
+  self~assertEquals(123, t~foobar)
+  t~testSet('FOOBAR', .array~of('return 456'))
+  self~assertEquals(456, t~foobar)
+  t~testSet('FOOBAR', .method~new("test", 'return 789'))
+  self~assertEquals(789, t~foobar)
+  t~testSet('FOOBAR')
+  self~assertFalse(t~hasMethod("foobar"))
+  self~assertSame(.nil, t~instanceMethod("foobar"))
+
+  self~assertTrue(t~hasMethod("testOverride"))
+  self~assertEquals(123, t~testOverride)
+  -- this should remove the method
+  t~testSet('TESTOVERRIDE')
+  self~assertFalse(t~hasMethod("testOverride"))
+  t~testSet('TestOverride', 'return 456')
+  self~assertTrue(t~hasMethod("testOverride"))
+  self~assertEquals(456, t~testOverride)
+  t~testUnset('testOverRide')
+  self~assertTrue(t~hasMethod("testOverride"))
+  self~assertEquals(123, t~testOverride)
+
+  -- test some copy behaviour.  A setMethod/unsetmethod call
+  -- should only affect the target object
+  t1 = .setTester~new
+  t2 = .setTester~new
+  t1~testSet('TestOverride', 'return 456')
+  self~assertEquals(456, t1~testOverride)
+  self~assertEquals(123, t2~testOverride)
+  self~assertEquals(123, .setTester~new~testOverride)
+  -- a copy of t3 should pick up the new behaviour
+  t3 = t1~copy
+  self~assertEquals(456, t3~testOverride)
+  -- remove this method, and check that all of the objects
+  -- still return the correct result
+  t1~testUnset('TestOverride')
+  self~assertEquals(123, t1~testOverride)
+  self~assertEquals(123, t2~testOverride)
+  self~assertEquals(456, t3~testOverride)
+
+  -- set that unsetmethod only works on method set via
+  -- setmethod.
+  t2~testunset('testoverride')
+  self~assertEquals(123, t2~testOverride)
+
+::method test_setmethod_deletion
+  t1 = .setTester~new
+  self~expectSyntax(97.1)
+  t1~testSet('testOverride')
+  t1~testOverride
+
+::method test_setmethod_bad_context
+  t1 = .setTester~new
+  self~expectSyntax(98.991)
+  t1~setmethod('test', 'return 123')
+
+::method test_unsetmethod_bad_context
+  t1 = .setTester~new
+  self~expectSyntax(98.991)
+  t1~unsetmethod('test')
+
+::method test_unsetmethod_class_context
+  t1 = .setTester~new
+  .setTester~testSet(t1, 'testoverride', 'return 456')
+  self~assertEquals(456, t1~testOverride)
+  .setTester~testUnSet(t1, 'testoverride')
+  self~assertEquals(123, t1~testOverride)
+
+::method test_setMethod_no_args
+  self~expectSyntax(88.901)
+  .setTester~new~testSet
+
+::method test_setMethod_no_name
+  self~expectSyntax(88.901)
+  .setTester~new~testSet(,"return 123")
+
+::method test_setmethod_bad_method_source
+  self~expectSyntax(93.974)
+  .setTester~new~testSet("foo", .nil)
+
+::method test_setmethod_bad_name
+  self~expectSyntax(88.909)
+  .setTester~new~testSet(.nil, "return 123")
+
+::method test_setmethod_sparse_array_source
+  self~expectSyntax(93.952)
+  .setTester~new~testSet("foobar", ("x = something",,"return 123"))
+
+::method test_setmethod_non_string_array_value
+  self~expectSyntax(93.952)
+  .setTester~new~testSet("foobar", ("x = something",.nil,"return 123"))
+
+::method test_setmethod_scope
+  t1 = .setTester~new
+  t1~testValue = 'abc'
+  t1~testSet('gettestvalue', ("expose testValue", "return testValue"))
+  self~assertEquals('TESTVALUE', t1~gettestvalue)
+  t1~testSet('settestvalue', ("expose testValue", "testValue = 123"))
+  t1~setTestValue
+  self~assertEquals(123, t1~gettestvalue)
+  self~assertEquals('abc', t1~testvalue)
+
+  -- this explicitly sets the default...the results should be the same as above
+  t1 = .setTester~new
+  t1~testValue = 'abc'
+  t1~testSet('gettestvalue', ("expose testValue", "return testValue"), 'FLOAT')
+  self~assertEquals('TESTVALUE', t1~gettestvalue)
+  t1~testSet('settestvalue', ("expose testValue", "testValue = 123"), 'float')
+  t1~setTestValue
+  self~assertEquals(123, t1~gettestvalue)
+  self~assertEquals('abc', t1~testvalue)
+
+  -- Now create the method at the object scope (which really should have been named
+  -- "CLASS".  This will give it access to the scope variable set by the testValue attribute
+  t1 = .setTester~new
+  t1~testValue = 'abc'
+  t1~testSet('gettestvalue', ("expose testValue", "return testValue"), 'OBJECT')
+  self~assertEquals('abc', t1~gettestvalue)
+  t1~testSet('settestvalue', ("expose testValue", "testValue = 123"), 'object')
+  t1~setTestValue
+  self~assertEquals(123, t1~gettestvalue)
+  self~assertEquals(123, t1~testvalue)
+
+  -- check that SUPER is getting set correctly for these options
+  t1 = .setTester~new
+  t1~testSet('getsuper', "return super")
+  self~assertSame(.setTester, t1~getsuper)
+  t1~testSet('getsuper', "return super", 'Float')
+  self~assertSame(.setTester, t1~getsuper)
+  t1~testSet('getsuper', "return super", 'Object')
+  self~assertSame(.object, t1~getsuper)
+
+  -- now check the scope for the created methods
+  t1 = .setTester~new
+  t1~testSet('getsuper', "return .context~executable~scope")
+  self~assertSame(.nil, t1~getsuper)
+  t1~testSet('getsuper', "return .context~executable~scope", 'Float')
+  self~assertSame(.nil, t1~getsuper)
+  t1~testSet('getsuper', "return .context~executable~scope", 'Object')
+  self~assertSame(.setTester, t1~getsuper)
+
+::method test_invalid_setmethod_option
+  self~expectSyntax(88.916)
+  .setTester~new~testSet('foo', 'return 123', 'Class')
+
+::method test_nonstring_setmethod_option
+  self~expectSyntax(88.909)
+  .setTester~new~testSet('foo', 'return 123', .nil)
+
+::method test_setmethod_extra_arg
+  self~expectSyntax(93.902)
+  .setTester~new~testSet('foo', 'return 123', 'float', 'foo')
+
+::method test_unsetmethod_no_arg
+  self~expectSyntax(88.901)
+  .setTester~new~testUnset
+
+::method test_unsetmethod_non_name
+  self~expectSyntax(88.909)
+  .setTester~new~testUnset(.nil)
+
+::method test_unsetmethod_extra_arg
+  self~expectSyntax(93.902)
+  .setTester~new~testUnset("foo", "bar")
+
+::method test_uninit
+  -- base test with no uninit method
+  ref = .weakReference~new(.UninitTester~new)
+  hash = ref~value~identityHash
+  self~assertFalse(.UninitTracker~forceUninit(ref, hash))
+
+  -- base test with no uninit method
+  ref = .weakReference~new(.ClassWithUninitMethod~new)
+  hash = ref~value~identityHash
+  self~assertTrue(.UninitTracker~forceUninit(ref, hash))
+
+  -- base test with no uninit method
+  ref = .weakReference~new(.UninitFromMixin~new)
+  hash = ref~value~identityHash
+  self~assertTrue(.UninitTracker~forceUninit(ref, hash))
+
+  -- now create a subclass of two classes above, but
+  -- use define to hide the uninit method
+  newClass = .ClassWithUninitMethod~subclass('NoUninit')
+  newClass~define('UNINIT')
+
+  ref = .weakReference~new(newClass~new)
+  hash = ref~value~identityHash
+  self~assertFalse(.UninitTracker~forceUninit(ref, hash))
+
+  -- now add an uninit method back
+  newClass~define('UNINIT', ".UninitTracker~recordUninit(self)")
+
+  ref = .weakReference~new(newClass~new)
+  hash = ref~value~identityHash
+  self~assertTrue(.UninitTracker~forceUninit(ref, hash))
+
+  -- this will delete the uninit method, exposing the original from the base class
+  newClass~delete('UNINIT')
+
+  ref = .weakReference~new(newClass~new)
+  hash = ref~value~identityHash
+  self~assertTrue(.UninitTracker~forceUninit(ref, hash))
+
+  -- base test with no uninit method
+  obj = .UninitTester~new
+  -- now add an uninit method to the instance
+  obj~testSet('UNINIT', ".UninitTracker~recordUninit(self)")
+
+  ref = .weakReference~new(obj)
+  hash = ref~value~identityHash
+  drop obj
+  self~assertTrue(.UninitTracker~forceUninit(ref, hash))
+
+  -- base test with no uninit method
+  obj = .UninitTester~new
+  -- now add an uninit method to the instance
+  obj~testSet('UNINIT', ".UninitTracker~recordUninit(self)")
+  -- and remove the method again
+  obj~testUnSet('UNINIT')
+
+  ref = .weakReference~new(obj)
+  hash = ref~value~identityHash
+  drop obj
+  self~assertTrue(.UninitTracker~forceUninit(ref, hash))
+
+  obj = .ClassWithUninitMethod~new
+  -- now hide the unint method on this instance
+  obj~testSet('UNINIT')
+
+  ref = .weakReference~new(obj)
+  hash = ref~value~identityHash
+  drop obj
+  self~assertFalse(.UninitTracker~forceUninit(ref, hash))
+
+  -- test using a copied object
+  ref = .weakReference~new(.ClassWithUninitMethod~new~copy)
+  hash = ref~value~identityHash
+  self~assertTrue(.UninitTracker~forceUninit(ref, hash))
+
+  -- create an enhanced object that adds an UNINIT method
+  methods = .stringtable~of(('UNINIT', ".UninitTracker~recordUninit(self)"))
+  obj = .UninitTester~enhanced(methods)
+
+  ref = .weakReference~new(obj)
+  hash = ref~value~identityHash
+  drop obj
+  self~assertTrue(.UninitTracker~forceUninit(ref, hash))
+
+  -- create an enhanced object that hides the UNINIT method
+  methods = .stringtable~of(('UNINIT', .nil))
+  obj = .ClassWithUninitMethod~enhanced(methods)
+
+  ref = .weakReference~new(obj)
+  hash = ref~value~identityHash
+  drop obj
+  self~assertFalse(.UninitTracker~forceUninit(ref, hash))
+
+  -- When a method is defined on a class, changes need to be
+  -- reflected by the subclass also.  Create a subclass of our
+  -- base test class, then subclass that again.  We add/remove
+  -- UNINIT methods to the first subclass and verify that new
+  -- instances of the second class function correctly.
+  firstClass = .UninitTester~subclass('FirstClass')
+  secondClass = firstClass~subclass('SecondClass')
+  firstClass~define('UNINIT', ".UninitTracker~recordUninit(self)")
+
+  ref = .weakReference~new(secondClass~new)
+  hash = ref~value~identityHash
+  self~assertTrue(.UninitTracker~forceUninit(ref, hash))
+
+  -- now delete the uninit method to restore to original state
+  firstClass~delete('UNINIT')
+
+  ref = .weakReference~new(secondClass~new)
+  hash = ref~value~identityHash
+  self~assertFalse(.UninitTracker~forceUninit(ref, hash))
+
+  -- this is the reverse of above.  We start with a class that
+  -- has an uninit method then hid it and restore it.
+  firstClass = .ClassWithUninitMethod~subclass('FirstClass')
+  secondClass = firstClass~subclass('SecondClass')
+  -- this hides the method
+  firstClass~define('UNINIT')
+
+  ref = .weakReference~new(secondClass~new)
+  hash = ref~value~identityHash
+  self~assertFalse(.UninitTracker~forceUninit(ref, hash))
+
+  -- now delete the uninit method to restore to original state
+  firstClass~delete('UNINIT')
+
+  ref = .weakReference~new(secondClass~new)
+  hash = ref~value~identityHash
+  self~assertTrue(.UninitTracker~forceUninit(ref, hash))
+
+  -- now the same, using define methods to do the updates
+  firstClass = .UninitTester~subclass('FirstClass')
+  secondClass = firstClass~subclass('SecondClass')
+  methods = .stringtable~of(('UNINIT', ".UninitTracker~recordUninit(self)"))
+  firstClass~defineMethods(methods)
+
+  ref = .weakReference~new(secondClass~new)
+  hash = ref~value~identityHash
+  self~assertTrue(.UninitTracker~forceUninit(ref, hash))
+
+  -- now delete the uninit method to restore to original state
+  firstClass~delete('UNINIT')
+
+  ref = .weakReference~new(secondClass~new)
+  hash = ref~value~identityHash
+  self~assertFalse(.UninitTracker~forceUninit(ref, hash))
+
+  -- this is the reverse of above.  We start with a class that
+  -- has an uninit method then hid it and restore it.
+  firstClass = .ClassWithUninitMethod~subclass('FirstClass')
+  secondClass = firstClass~subclass('SecondClass')
+  methods = .stringtable~of(('UNINIT', .nil))
+  -- this hides the method
+  firstClass~defineMethods(methods)
+
+  ref = .weakReference~new(secondClass~new)
+  hash = ref~value~identityHash
+  self~assertFalse(.UninitTracker~forceUninit(ref, hash))
+
+  -- now delete the uninit method to restore to original state
+  firstClass~delete('UNINIT')
+
+  ref = .weakReference~new(secondClass~new)
+  hash = ref~value~identityHash
+  self~assertTrue(.UninitTracker~forceUninit(ref, hash))
+
+-- TODO:  add UNKNOWN method tests
+-- TODO:  add hashcode/== override tests for collections.
 
 
 -- End of class: object.testGroup
@@ -134,10 +1118,205 @@ return testResult
 ::attribute a
 ::attribute b
 
+::method string
+  return "This is a test..."
+
 ::class test2 subclass test1
 ::method init
   expose c d
   c = 1
   d = 2
   self~init:super
+
+-- small test for testing object send/sendWith with
+-- using different message overrides.  This allows us to
+-- test things like context permission for using method overrides.
+::class sendTester subclass sendTester2
+::method testSend
+  use strict arg object, message
+
+  return object~send(message)
+
+::method testSendWith
+  use strict arg object, message, args = ((1,2))
+
+  return object~sendWith(message, args)
+
+::method testStart unguarded
+  use strict arg object, message
+
+  message = object~start(message)
+  return message~result
+
+::method testStartWith unguarded
+  use strict arg object, message, args = ((1,2))
+
+  message = object~startWith(message, args)
+  return message~result
+
+-- a base class message target for the tests
+::method testTarget
+  return 123
+
+-- just a simple class to testing superclass overrides
+::class sendTester2
+::method testTarget
+  return 456
+
+-- class with a string method that does not return a value
+::class TestBadString
+::method string
+
+-- class with a string method that causes an error
+::class TestBadString2
+::method string
+  return 1/0
+
+-- a class for doing RUN method testing
+::class runTester
+-- run a method from the class object with no arguments
+::method runMethod class
+  use strict arg target, method
+
+  return target~run(method)
+
+-- run a method with no arguments
+::method runMethod
+  use strict arg method
+
+  return self~run(method)
+
+-- run a method using an array of args
+::method runMethodWith
+  use strict arg method, args
+
+  return self~run(method, 'A', args)
+
+-- run a method using one individual art
+::method runMethod1
+  use strict arg method, arg1
+
+  return self~run(method, 'I', arg1)
+
+-- run a method using two individual arguments
+::method runMethod2
+  use strict arg method, arg1, arg2
+
+  return self~run(method, 'I', arg1, arg2)
+
+-- run a method using three individual arguments
+::method runMethod3
+  use strict arg method, arg1, arg2, arg3
+
+  return self~run(method, 'I', arg1, arg2, arg3)
+
+-- general run method for argument testing
+::method runGeneral
+
+  forward message('RUN') continue
+  return result
+
+-- private test method to check scope
+::method test private
+  return "Private"
+
+::attribute testValue
+
+-- class for testing setmethod/unsetmethod combinations
+::class setTester
+::method testSet class
+  use strict arg object, name, method
+  object~setMethod(name, method)
+
+::method testUnset class
+  use strict arg object, name
+  object~unsetMethod(name)
+
+::method testSet
+  forward message('SETMETHOD')
+
+::method testUnset
+  forward message('UNSETMETHOD')
+
+::method testRun
+  forward message('RUN')
+
+::attribute testValue
+
+::method testOverride
+  return 123
+
+-- class for tracking uninit calls
+::class UninitTracker
+::method init class
+  expose receivedUninits
+
+  receivedUninits = .set~new
+
+::method recordUninit class
+  expose receivedUninits
+  use arg object
+
+  receivedUninits~put(object~identityHash)
+
+::method hadUninit class
+  expose receivedUninits
+  use arg hash
+
+  return receivedUninits~hasIndex(hash)
+
+::method forceUninit class
+  use arg ref, hash
+
+  -- loop until we see the weak reference value go away
+  loop i = 1 while ref~value \= .nil
+     x = copies("abc def", 1000000)
+  end
+
+  self~dummyCall   -- give a chance for uninits to run
+
+  -- force another GC cycle, just to give this a good chance
+  -- to run
+  ref = .weakreference~new(copies("abc def", 100000))
+  loop while ref~value \= .nil
+     x = copies("abc def", 100000)
+  end
+
+  self~dummyCall     -- another uninit window
+
+  return self~hadUninit(hash)
+
+-- this is method allows us to force a window for running uninits
+::method dummyCall class
+  return
+
+::class UninitTester
+-- a little trick.  Once we have removed an uninit method from
+-- an object, we want to see if an UNINIT is sent to the object.
+-- if the method has been removed, this will cause an error.  The
+-- UKNOWN method traps this call and allows us to signal there is a
+-- problem.
+::method unknown
+  use strict arg name, args
+
+  if name == "UNINIT" then .UninitTracker~recordUninit(self)
+
+::method testSet
+  forward message('SETMETHOD')
+
+::method testUnset
+  forward message('UNSETMETHOD')
+
+::class ClassWithUninitMethod subclass UninitTester
+::method uninit
+  .UninitTracker~recordUninit(self)
+
+::class MixinWithUninitMethod mixinclass object
+::method uninit
+  .UninitTracker~recordUninit(self)
+
+::class UninitFromMixin inherit MixinWithUninitMethod
+
+
+
 

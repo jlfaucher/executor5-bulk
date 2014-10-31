@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2007-2014 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -762,7 +762,7 @@ makeColl: procedure
   expose collDir clz bUserDefinedIndex bSingleItem o1 o2
 
   a=clz~new
-  self~expectSyntax(93.938)
+  self~expectSyntax(88.909)
   a~at(.object~new)       -- insert using an illegal index value
 
 
@@ -770,14 +770,14 @@ makeColl: procedure
   expose collDir clz bUserDefinedIndex bSingleItem o1 o2
 
   a=clz~new
-  self~expectSyntax(93.938)
+  self~expectSyntax(88.909)
   a~"[]"(.object~new)       -- insert using an illegal index value
 
 ::method "test_put_error1"
   expose collDir clz bUserDefinedIndex bSingleItem o1 o2
 
   a=clz~new
-  self~expectSyntax(93.903)
+  self~expectSyntax(88.901)
   a~put(.object~new)       -- insert using an illegal index value
 
 
@@ -785,7 +785,7 @@ makeColl: procedure
   expose collDir clz bUserDefinedIndex bSingleItem o1 o2
 
   a=clz~new
-  self~expectSyntax(93.938)
+  self~expectSyntax(88.909)
   a~put(nixi, .object~new) -- insert using an illegal index value
 
 
@@ -793,7 +793,7 @@ makeColl: procedure
   expose collDir clz bUserDefinedIndex bSingleItem o1 o2
 
   a=clz~new
-  self~expectSyntax(93.903)   -- checking args differs from PUT!
+  self~expectSyntax(88.901)   -- checking args differs from PUT!
   a~"[]="(.object~new)       -- insert using an illegal index value
 
 
@@ -801,7 +801,7 @@ makeColl: procedure
   expose collDir clz bUserDefinedIndex bSingleItem o1 o2
 
   a=clz~new
-  self~expectSyntax(93.938)
+  self~expectSyntax(88.909)
   a~"[]="(nixi, .object~new) -- insert using an illegal index value
 
 
@@ -842,6 +842,119 @@ makeColl: procedure
   a=clz~new
   self~expectSyntax(93.938)
   a~unknown(.nil, .nil)
+
+::method "test_of_01"
+  self~expectSyntax(97.1)
+                              -- Object "The NIL object" does not understand message "+".
+  d1=.directory~of()
+
+::method "test_of_02"
+  self~expectSyntax(93.903)
+                              -- Missing argument in method; argument 1 is required.
+  d2=.directory~of(,(a,b),)
+
+
+::method "test_of_03"
+  self~expectSyntax(93.903)
+                              -- Missing argument in method; argument 3 is required.
+  d3=.directory~of((a,b),(c,d),,(e,f))
+
+::method "test_of_04"
+  self~expectSyntax(88.909)
+                              -- Method argument 2 must have a string value.
+  d=.directory~new
+  d=.directory~of((d,1))
+
+::method "test_of_05"          -- ok
+  d3=.directory~of((a,b),(c,d),(e,f))
+  d4=.directory~new
+  d4~put(b,a); d4~put(d,c); d4~put(f,e)
+  d5=.directory~new
+  d5[a]=b; d5[c]=d; d5[e]=f
+  d6=.directory~new
+  d6~a=b; d6~c=d; d6~e=f
+  ilist=.array~of(b,d,f)
+  self~assertSame(d3~items,d4~items)
+  Do i=1 To ilist~items
+    ix=ilist[i]
+    self~assertSame(d4[ix],d3[ix])
+    self~assertSame(d5[ix],d4[ix])
+    self~assertSame(d6[ix],d5[ix])
+    End
+
+::method "test_of_06"
+  self~expectSyntax(88.923)
+                              -- OF argument 1 must be a single-dimensional array;
+                              -- found "The NIL object".
+  d=.directory~of(.nil)       -- not an array
+
+::method "test_of_07"
+  a=.array~of(x,y)
+  d=.directory~of(a)
+  self~assertSame(y,d[x])
+
+::method "test_of_08"
+  self~expectSyntax(88.909)
+                              -- Method argument 2 must have a string value.
+  a=.array~of(.nil,u)
+  d=.directory~of(a)
+
+::method "test_of_09"
+  a=.array~of(v,.nil)
+  d=.directory~of(a)          -- an array
+  self~assertSame(.nil,d[v])
+
+::method "test_of_10"
+  self~expectSyntax(88.924)
+                              -- OF argument 1 must be an array with exactly 2 items.
+  d=.directory~of((1,))       -- index no value
+
+::method "test_of_11"
+  self~expectSyntax(88.924)
+                              -- OF argument 1 must be an array with exactly 2 items.
+  d=.directory~of((,2))       -- value, no index
+
+::method "test_of_12"
+  self~expectSyntax(88.924)
+                              -- OF argument 1 must be an array with exactly 2 items.
+  d=.directory~of((1,2,3))    -- too many items in the array
+
+::method "test_of_13"         -- pairs are applied left to right
+  d=.directory~of((x,y),(x,y),(x,z))
+  self~assertSame(1,d~items)
+  self~assertSame(z,d[x])
+  d~put(1,2)
+  self~assertSame(2,d~items)
+  self~assertSame(1,d[2])
+  d~remove(x)
+  self~assertSame(1,d~items)
+  self~assertSame(1,d[2])
+
+
+::method "test_for_01"
+  d1=.directory~of((a,b),(c,d),(e,f))
+  a=.array~new
+  loop el over d1 for 2
+    a~append(el)
+    End
+  self~assertSame(2,a~items)
+
+::method "test_for_02"
+  el='undefined'
+  d2=.directory~of((a,b),(c,d),(e,f))
+  a=.array~new
+  loop el over d2 for 0
+    a~append(el)
+    End
+  self~assertSame(0,a~items)
+
+::method "test_for_03"
+  d3=.directory~of((a,b),(c,d),(e,f))
+  a=.array~new
+  loop el over d3 for 10
+    a~append(el)
+    End
+  self~assertSame(3,a~items)
 
 
 

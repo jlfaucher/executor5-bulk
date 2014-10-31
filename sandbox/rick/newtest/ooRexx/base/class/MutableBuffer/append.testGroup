@@ -66,4 +66,14 @@ return testResult
    self~expectSyntax(93.938)
    b~append(.nil)
 
+::METHOD "testAppend2"
+  b = .mutableBuffer~new
+  b~append("abc", "def")
+   self~AssertEquals("abcdef", b~string, "Append failed 1")
+
+::METHOD "testAppendSyntax3"
+   b = .mutableBuffer~new
+   self~expectSyntax(93.903)
+   b~append("abc",,"def")
+
 

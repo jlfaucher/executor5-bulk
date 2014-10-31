@@ -1,0 +1,213 @@
+#!/usr/bin/rexx
+/*
+  SVN Revision: $Rev: 7493 $
+  Change Date:  $Date: 2012-02-06 20:10:23 -0500 (Mon, 06 Feb 2012) $
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2008 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.EXPOSE.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+::requires 'FileUtils.cls'
+
+::class "EXPOSE.testGroup" subclass ooTestCase public
+
+::method test_expose
+  testClass = self~runDynamicSource(("return .test", "::class test", "::method setVar", "expose var", "use strict arg var", "::method getVar", "expose var", "return var"))
+
+  t1 = testClass~new
+  t1~setVar("abc")
+  self~assertSame("abc", t1~getVar)
+
+  -- just a side check that the variables all get copied
+  t2 = t1~copy
+  t2~setVar("def")
+  self~assertSame("abc", t1~getVar)
+  self~assertSame("def", t2~getVar)
+
+  -- expose a stem variable
+  testClass = self~runDynamicSource(("return .test", "::class test", "::method setStem", "expose stem.", "use strict arg tail, value", -
+     "stem.tail = value", "::method getStem", "expose stem.", "use strict arg tail", "return stem.tail"))
+
+  t1 = testClass~new
+  t1~setStem(1, "abc")
+
+  self~assertSame("abc", t1~getStem(1))
+  self~assertSame("STEM.2", t1~getStem(2))
+
+  t1~setStem(2, "def")
+
+  self~assertSame("abc", t1~getStem(1))
+  self~assertSame("def", t1~getStem(2))
+
+  -- now expose a compound variable
+
+  testClass = self~runDynamicSource(("return .test", "::class test", "::method setStem", "expose stem.1", "use strict arg tail, value", -
+     "stem.tail = value", "::method getStem", "expose stem.1", "use strict arg tail", "return stem.tail"))
+
+  t1 = testClass~new
+  t1~setStem(1, "abc")
+  t1~setStem(2, "def")
+
+  self~assertSame("abc", t1~getStem(1))
+  self~assertSame("STEM.2", t1~getStem(2))
+
+  -- now expose a compound variable where tail element is also exposed
+  testClass = self~runDynamicSource(("return .test", "::class test", "::method setStem", "expose tail stem.tail", "use strict arg testTail, value", -
+     "stem.testTail = value", "::method getStem", "expose tail stem.tail", "use strict arg testTail", "return stem.testTail", "::attribute tail"))
+
+  t1 = testClass~new
+  t1~tail = 1
+  t1~setStem(1, "abc")
+  t1~setStem(2, "def")
+
+  self~assertSame("abc", t1~getStem(1))
+  self~assertSame("STEM.2", t1~getStem(2))
+
+  -- expose in reverse order...the tail will evaluate to the name.
+  testClass = self~runDynamicSource(("return .test", "::class test", "::method setStem", "expose stem.tail tail", "use strict arg testTail, value", -
+     "stem.testTail = value", "::method getStem", "expose stem.tail tail", "use strict arg testTail", "return stem.testTail", "::attribute tail"))
+
+  t1 = testClass~new
+  t1~tail = 1
+  t1~setStem(1, "abc")
+  t1~setStem('TAIL', "ghi")
+
+  self~assertSame("STEM.1", t1~getStem(1))
+  self~assertSame("ghi", t1~getStem('TAIL'))
+
+  -- now indirect versions of the above
+
+  testClass = self~runDynamicSource(("return .test", "::class test", "::method setVar", "expose (vars)", "use strict arg name, value", -
+     "call value name, value", "::method getVar", "expose (vars)", "use strict arg name", "return value(name)", "::attribute vars"))
+
+  t1 = testClass~new
+
+  -- the variable list is uninitizlized initially
+  t1~setVar("FOO", "bar")
+  self~assertSame("FOO", t1~getVar('FOO'))
+
+  -- change the variable list after exposing
+  t1~setVar("VARS", "foo")
+  self~assertSame("foo", t1~vars)
+  self~assertSame("foo", t1~getVar('VARS'))
+  t1~setVar("foo", "bar")
+  self~assertSame("bar", t1~getVar('foo'))
+
+  t1~vars = "stem."
+  t1~setVar("stem.1", "123")
+  self~assertSame("123", t1~getVar('stem.1'))
+  self~assertSame("STEM.2", t1~getVar('stem.2'))
+
+  t1~vars = "stem.1"
+  t1~setVar("stem.1", "456")
+  t1~setVar("stem.2", "789")
+  self~assertSame("456", t1~getVar('stem.1'))
+  self~assertSame("STEM.2", t1~getVar('stem.2'))
+
+  t1~vars = "tail stem.tail"
+  t1~setVar("tail", "1")
+  t1~setVar("stem.1", "xyz")
+  t1~setVar("stem.2", "xyz")
+
+  self~assertSame("xyz", t1~getVar('stem.1'))
+  self~assertSame("STEM.2", t1~getVar('stem.2'))
+
+  t1~setVar("stem.tail", "zyx")
+  self~assertSame("zyx", t1~getVar('stem.1'))
+
+::method test_expose_no_variables
+  self~assertSyntaxError(20.902, ("::method test", "expose"))
+
+::method test_expose_number
+  self~assertSyntaxError(31.2, ("::method test", "expose 1"))
+
+::method test_expose_dot
+  self~assertSyntaxError(31.3, ("::method test", "expose ."))
+
+::method test_expose_dot_symbol
+  self~assertSyntaxError(31.3, ("::method test", "expose .foo"))
+
+::method test_expose_bad_variable
+  self~assertSyntaxError(20.902, ("::method test", "expose *"))
+
+::method test_expose_indirect_no_var
+  self~assertSyntaxError(20.906, ("::method test", "expose ()"))
+
+::method test_expose_indirect_no_close
+  self~assertSyntaxError(46.901, ("::method test", "expose (foo"))
+
+::method test_expose_indirect_two_names
+  self~assertSyntaxError(46.1, ("::method test", "expose (foo bar)"))
+
+::method test_expose_indirect_number
+  self~expectSyntax(31.2)
+  self~runDynamicSource((".test~test", "::class test", "::method init class", "expose vars", "vars = '1'", "::method test class", "expose (vars)" ))
+
+::method test_expose_indirect_dot
+  self~expectSyntax(31.3)
+  self~runDynamicSource((".test~test", "::class test", "::method init class", "expose vars", "vars = '.'", "::method test class", "expose (vars)" ))
+
+::method test_expose_indirect_dot_symbol
+  self~expectSyntax(31.3)
+  self~runDynamicSource((".test~test", "::class test", "::method init class", "expose vars", "vars = '.foo'", "::method test class", "expose (vars)" ))
+
+::method test_expose_indirect_bad_variable
+  self~expectSyntax(20.928)
+  self~runDynamicSource((".test~test", "::class test", "::method init class", "expose vars", "vars = '*'", "::method test class", "expose (vars)" ))
+
+::method test_expose_indirect_nested
+  self~expectSyntax(20.928)
+  self~runDynamicSource((".test~test", "::class test", "::method init class", "expose vars", "vars = '(foo)'", "::method test class", "expose (vars)" ))
+
+::method test_misplaced_expose
+  self~assertSyntaxError(99.907, ("::method test", "use strict arg x", "expose foo bar"))
+
+::method test_expose_non_method
+  self~expectSyntax(98.992)
+  self~runDynamicSource(("return test()", "::routine test", "expose xyz", "return 123"))
+

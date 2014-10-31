@@ -86,6 +86,30 @@ return testResult
 ::class "Class.testGroup" subclass ooTestCase public
 
 
+::method test_issubclassof
+  self~assertTrue(.vehicle~issubclassof(.object))
+  self~assertFalse(.vehicle~issubclassof(.class))
+
+  self~assertTrue(.roadvehicle~issubclassof(.object))
+  self~assertTrue(.roadvehicle~issubclassof(.vehicle))
+  self~assertTrue(.roadvehicle~issubclassof(.roadvehicle))
+
+  self~assertTrue(.Amphibianvehicle~issubclassof(.object))
+  self~assertTrue(.Amphibianvehicle~issubclassof(.vehicle))
+  self~assertTrue(.Amphibianvehicle~issubclassof(.roadvehicle))
+  self~assertTrue(.Amphibianvehicle~issubclassof(.watervehicle))
+
+::method test_issubclassof_no_arg
+  self~expectSyntax(88.901)
+  x = .vehicle~issubclassof
+
+::method test_issubclassof_two_args
+  self~expectSyntax(93.902)
+  x = .vehicle~issubclassof(.object, .array)
+
+::method test_issubclassof_non_class
+  self~expectSyntax(88.914)
+  x = .vehicle~issubclassof("object")
 
 
 ::METHOD "test_BASECLASS"
@@ -356,6 +380,10 @@ any:
    self~expectSyntax(98.985)
    .object~delete("OBJECTNAME=")
 
+::METHOD "test_REXX_DEFINED_07"
+   self~expectSyntax(98.985)
+   .object~defineMethods(.stringtable~of(("NewMethod", "return 123")))
+
 ::METHOD "test_INHERIT_02"
    self~expectSyntax(98.942)
    .amphibianVehicle~inherit(.object)
@@ -363,6 +391,63 @@ any:
 ::METHOD "test_INHERIT_03"
     self~expectSyntax(98.944)
    .amphibianVehicle~inherit(.roadVehicle)
+
+::METHOD "test_INHERIT_non_class"
+   self~expectSyntax(98.942)
+   .amphibianVehicle~inherit("object")
+
+::METHOD "test_INHERIT_no_arg"
+   self~expectSyntax(88.901)
+   .amphibianVehicle~inherit
+
+::METHOD "test_INHERIT_no_bad_target"
+   self~expectSyntax(98.945)
+   .amphibianVehicle~inherit(.transportation, .object)
+
+::METHOD "test_INHERIT_self_recursive"
+   self~expectSyntax(98.944)
+   .transportation~inherit(.transportation)
+
+::METHOD "test_INHERIT_recursive"
+   self~expectSyntax(98.944)
+   .amphibianVehicle~inherit(.waterVehicle)
+
+::METHOD "test_INHERIT_subclass"
+   self~expectSyntax(98.944)
+   .Vehicle~inherit(.waterVehicle)
+
+::METHOD "test_INHERIT_bad_position"
+   self~expectSyntax(98.945)
+   .amphibianVehicle~inherit(.transportation, .aircraft)
+
+::METHOD "test_INHERIT_bad_position_class"
+   self~expectSyntax(98.945)
+   .amphibianVehicle~inherit(.transportation, .vehicle)
+
+::METHOD "test_INHERIT_extra_arg"
+   self~expectSyntax(93.902)
+   .amphibianVehicle~inherit(.transportation, .waterVehicle, .object)
+
+::method test_uninherit_no_arg
+   self~expectSyntax(88.901)
+   .amphibianVehicle~uninherit
+
+::method test_uninherit_two_args
+   self~expectSyntax(93.902)
+   .amphibianVehicle~uninherit(.waterVehicle, .transportation)
+
+::method test_uninherit_not_inherited
+   self~expectSyntax(98.945)
+   .amphibianVehicle~uninherit(.collection)
+
+::method test_uninherit_not_class
+   self~expectSyntax(98.942)
+   .amphibianVehicle~uninherit("Foobar")
+
+::method test_uninherit_self
+   self~expectSyntax(98.945)
+   .transportation~uninherit(.transportation)
+
 
 
 ::method "test_INIT_01"
@@ -585,6 +670,8 @@ getBags: procedure         -- return indices in an index bag, and method items i
       cl~new      -- create an object
    end
    self~assertTrue(cl~counter=5)  -- test whether five instances have been created
+   -- dynamically created classes don't have an attached package.
+   self~assertSame(.nil, cl~package)
 
 
       -- test counter metaclass, enhance class methods
@@ -616,6 +703,61 @@ getBags: procedure         -- return indices in an index bag, and method items i
    self~expectSyntax(99.927)
    cl=.object~subclass("subtest_01", .object)
 
+::method test_subclass_no_id
+   self~expectSyntax(88.901)
+   cl=.object~subclass
+
+::method test_subclass_id_not_string
+   self~expectSyntax(88.909)
+   cl=.object~subclass(.object)
+
+::method test_subclass_metaclass_not_metaclass
+   self~expectSyntax(99.927)
+   cl=.object~subclass("someid", .object)
+
+::method test_subclass_class_methods_not_collection
+   self~expectSyntax(97.1)
+   cl=.object~subclass("someid",, .nil)
+
+::method test_subclass_sparse_array_source
+  self~expectSyntax(93.952)
+  cl=.object~subclass("someid",, .stringTable~of(("somemethod", ("x = something",,"return 123"))))
+
+::method test_subclass_bad_method
+  self~expectSyntax(93.974)
+  cl=.object~subclass("someid",, .stringTable~of(("somemethod", .array)))
+
+::method test_subclass_non_string_array_value
+  self~expectSyntax(93.952)
+  cl=.object~subclass("someid",, .stringTable~of(("somemethod", ("x = something",.nil,"return 123"))))
+
+::method test_mixinclass_no_id
+   self~expectSyntax(88.901)
+   cl=.object~mixinclass
+
+::method test_mixinclass_id_not_string
+   self~expectSyntax(88.909)
+   cl=.object~mixinclass(.object)
+
+::method test_mixinclass_metaclass_not_metaclass
+   self~expectSyntax(99.927)
+   cl=.object~mixinclass("someid", .object)
+
+::method test_mixinclass_class_methods_not_collection
+   self~expectSyntax(97.1)
+   cl=.object~mixinclass("someid",, .nil)
+
+::method test_mixinclass_sparse_array_source
+  self~expectSyntax(93.952)
+  cl=.object~mixinclass("someid",, .stringTable~of(("somemethod", ("x = something",,"return 123"))))
+
+::method test_mixinclass_bad_method
+  self~expectSyntax(93.974)
+  cl=.object~mixinclass("someid",, .stringTable~of(("somemethod", .array)))
+
+::method test_mixinclass_non_string_array_value
+  self~expectSyntax(93.952)
+  cl=.object~mixinclass("someid",, .stringTable~of(("somemethod", ("x = something",.nil,"return 123"))))
 
 
 ::method "test_SUBCLASS_MULTIPLE_INHERITANCE_ON_METACLASSES_01"    -- just the arguments, rest already tested
@@ -709,7 +851,7 @@ getBags: procedure         -- return indices in an index bag, and method items i
    rgf_amphibian_vehicle=rgf_road_vehicle~subclass(amphibian_Vehicle_Name)
    rgf_amphibian_vehicle~inherit(rgf_water_vehicle)
 
-   self~expectSyntax(98.945)
+   self~expectSyntax(98.942)
    rgf_amphibian_vehicle~uninherit("class that does not exist")
 
 
@@ -750,6 +892,213 @@ getBags: procedure         -- return indices in an index bag, and method items i
 
   .local~remove(class.testgroup)
 
+::method test_class_define
+  t1 = .testDefine1~new
+  self~assertFalse(t1~hasMethod('test1'))
+  .testDefine1~define('test1', "return 123")
+  self~assertFalse(t1~hasMethod('test1'))
+  t2 = .testDefine1~new
+  self~assertTrue(t2~hasMethod('test1'))
+  self~assertEquals(123, t2~test1)
+  t3 = .testDefine2~new
+  self~assertTrue(t3~hasMethod('test1'))
+  self~assertEquals(123, t3~test1)
+  .testDefine2~define('test1', .array~of("return 456"))
+  self~assertEquals(123, t3~test1)
+  t4 = .testDefine2~new
+  self~assertEquals(456, t4~test1)
+  .testDefine2~delete('test1')
+  self~assertEquals(456, t4~test1)
+  t5 = .testDefine2~new
+  self~assertEquals(123, t5~test1)
+  -- replace the method in the original
+  .testDefine1~define('test1', .method~new('test1', "return .context~executable~scope"))
+  t1 = .testDefine1~new
+  t2 = .testDefine2~new
+  self~assertSame(.testDefine1, t1~test1)
+  self~assertSame(.testDefine1, t2~test1)
+  -- hide test1 in testDefine2
+  .testDefine2~define('TEST1')
+  t2 = .testDefine2~new
+  self~expectSyntax(97.1)
+  t2~test1
+
+::method test_class_copy
+  self~expectSyntax(93.970)
+  c = .array~copy
+  say c
+
+::method test_define_delete
+  newClass = .DefineTesterBase~subclass('TestClass')
+  newClass~define('newMethod', "return 123")
+  self~assertIsA(newClass~method('NEWMETHOD'), .Method)
+  self~assertSame(newClass, newClass~method('NEWMETHOD')~scope)
+
+  t1 = newClass~new
+  self~assertTrue(t1~hasMethod('NEWMETHOD'))
+  self~assertEquals(123, t1~newMethod)
+  -- now replace that method
+  newClass~define('newMethod', ("/**/", "return 456"))
+  t2 = newClass~new
+  -- the t1 object is unchanged, t2 has the new method
+  self~assertEquals(123, t1~newMethod)
+  self~assertEquals(456, t2~newMethod)
+
+  -- this will hide the method
+  newClass~define('newMethod')
+  t3 = newClass~new
+  self~assertSame(.nil, newClass~method('NEWMETHOD'))
+  self~assertFalse(t3~hasMethod('NEWMETHOD'))
+  self~assertTrue(t2~hasMethod('NEWMETHOD'))
+
+  -- and the third style of adding a method
+  newClass~define('newMethod', .method~new('test', "return 789"))
+  t4 = newClass~new
+  self~assertTrue(t4~hasMethod('NEWMETHOD'))
+  self~assertEquals(789, t4~newMethod)
+
+  -- we're going to make changes to the mixin and check that the
+  -- inheriting class gets the methods.
+  mixin = .DefineTesterMixin~mixinclass('aMixin')
+  newClass = .DefineTesterBase~subclass('TestClass')
+  newClass~inherit(mixin)
+
+  mixin~define('newMethod', "return 'abc'")
+  t1 = newClass~new
+  self~assertTrue(t1~hasMethod('NEWMETHOD'))
+  self~assertEquals('abc', t1~newMethod)
+
+  -- now repeat all of these tests, but use defineMethods
+  -- to define the method
+  newClass = .DefineTesterBase~subclass('TestClass')
+  newClass~defineMethods(.stringtable~of(('newMethod', "return 123")))
+  self~assertIsA(newClass~method('NEWMETHOD'), .Method)
+  self~assertSame(newClass, newClass~method('NEWMETHOD')~scope)
+
+  t1 = newClass~new
+  self~assertTrue(t1~hasMethod('NEWMETHOD'))
+  self~assertEquals(123, t1~newMethod)
+  -- now replace that method
+  newClass~defineMethods(.stringTable~of(('newMethod', ("/**/", "return 456"))))
+  t2 = newClass~new
+  -- the t1 object is unchanged, t2 has the new method
+  self~assertEquals(123, t1~newMethod)
+  self~assertEquals(456, t2~newMethod)
+
+
+  -- this will hide the method
+  newClass~defineMethods(.stringTable~of(('newMethod', .nil)))
+  t3 = newClass~new
+  self~assertSame(.nil, newClass~method('NEWMETHOD'))
+  self~assertFalse(t3~hasMethod('NEWMETHOD'))
+  self~assertTrue(t2~hasMethod('NEWMETHOD'))
+
+  -- and the third style of adding a method
+  newClass~defineMethods(.stringTable~of(('newMethod', .method~new('test', "return 789"))))
+  t4 = newClass~new
+  self~assertTrue(t4~hasMethod('NEWMETHOD'))
+  self~assertEquals(789, t4~newMethod)
+
+  -- we're going to make changes to the mixin and check that the
+  -- inheriting class gets the methods.
+  mixin = .DefineTesterMixin~mixinclass('aMixin')
+  newClass = .DefineTesterBase~subclass('TestClass')
+  newClass~inherit(mixin)
+
+  mixin~defineMethods(.stringTable~of(('newMethod', "return 'abc'")))
+  t1 = newClass~new
+  self~assertTrue(t1~hasMethod('NEWMETHOD'))
+  self~assertEquals('abc', t1~newMethod)
+
+::method test_define_no_args
+  self~expectSyntax(88.901)
+  .defineTesterBase~define
+
+::method test_define_no_name
+  self~expectSyntax(88.901)
+  .defineTesterBase~define(, "return 123")
+
+::method test_define_extra_arg
+  self~expectSyntax(93.902)
+  .defineTesterBase~define("somemethod", ("x = something",,"return 123"), "huh?")
+
+::method test_define_bad_name
+  self~expectSyntax(88.909)
+  .defineTesterBase~define(.nil, "return 123")
+
+::method test_define_sparse_array_source
+  self~expectSyntax(93.952)
+  .defineTesterBase~define("somemethod", ("x = something",,"return 123"))
+
+::method test_define_bad_method
+  self~expectSyntax(93.974)
+  .defineTesterBase~define("somemethod", .array)
+
+::method test_define_non_string_array_value
+  self~expectSyntax(93.952)
+  .defineTesterBase~define("somemethod", ("x = something",.nil,"return 123"))
+
+::method test_defineMethods_no_args
+  self~expectSyntax(88.901)
+  .defineTesterBase~defineMethods
+
+::method test_definemethods_not_collection
+  self~expectSyntax(97.1)
+  .defineTesterBase~defineMethods(.stringtable)
+
+::method test_defineMethods_extra_arg
+  self~expectSyntax(93.902)
+  .defineTesterBase~defineMethods(.stringTable~of(('newMethod', "return 'abc'")), "huh?")
+
+::method test_definemethods_bad_name
+  self~expectSyntax(88.909)
+  .defineTesterBase~defineMethods(.stringTable~of((.nil, "return 'abc'")))
+
+::method test_definemethods_sparse_array_source
+  self~expectSyntax(93.952)
+  .defineTesterBase~defineMethods(.stringTable~of(("somemethod", ("x = something",,"return 123"))))
+
+::method test_definemethods_bad_method
+  self~expectSyntax(93.974)
+  .defineTesterBase~defineMethods(.stringTable~of(("somemethod", .array)))
+
+::method test_definemethods_non_string_array_value
+  self~expectSyntax(93.952)
+  .defineTesterBase~defineMethods(.stringTable~of(("somemethod", ("x = something",.nil,"return 123"))))
+
+::method test_delete_no_args
+  self~expectSyntax(88.901)
+  .defineTesterBase~delete
+
+::method test_delete_extra_arg
+  self~expectSyntax(93.902)
+  .defineTesterBase~delete("somemethod", "huh?")
+
+::method test_subclasses_gc
+  cl = .DefineTester~subclass('aSubclass')
+  ref = .weakreference~new(cl)
+  -- make sure this shows up as a subclass
+  self~assertTrue(.DefineTester~subclasses~hasItem(cl))
+
+  drop cl
+  loop while ref~value \= .nil
+     x = copies('abc', 100000)
+  end
+
+  self~assertFalse(.DefineTester~subclasses~hasItem(cl))
+
+-- some classes to test the effects of define
+::Class DefineTesterBase
+::method testOverride
+  return "Base"
+
+::class DefineTesterMixin mixinclass Object
+::method testOverride
+  return "Mixin"
+
+::class DefineTester subclass DefineTesterBase
+
+::class MixinDefineTester inherit DefineTesterMixin
 
 
 /* ************************************************************************* */
@@ -814,6 +1163,18 @@ getBags: procedure         -- return indices in an index bag, and method items i
 .AmphibianVehicle ~new("SwimCar") ~show_off
 */
 
+::method test_issubclassof
+  self~assertTrue(.vehicle~issubclassof(.object))
+  self~assertFalse(.vehicle~issubclassof(.class))
+
+  self~assertTrue(.roadvehicle~issubclassof(.object))
+  self~assertTrue(.roadvehicle~issubclassof(.vehicle))
+
+  self~assertTrue(.Amphibianvehicle~issubclassof(.object))
+  self~assertTrue(.Amphibianvehicle~issubclassof(.vehicle))
+  self~assertTrue(.Amphibianvehicle~issubclassof(.roadvehicle))
+  self~assertTrue(.Amphibianvehicle~issubclassof(.watervehicle))
+
 ::CLASS  Vehicle                                   -- base class
 ::METHOD name    ATTRIBUTE
 ::METHOD INIT
@@ -833,6 +1194,10 @@ getBags: procedure         -- return indices in an index bag, and method items i
 ::CLASS AmphibianVehicle SUBCLASS RoadVehicle INHERIT WaterVehicle
 ::METHOD show_off
   RETURN self~drive self~swim
+
+::class Transportation mixinclass object
+
+::class AirCraft mixinclass object
 
 /* ************************************************************************* */
 
@@ -986,4 +1351,9 @@ getBags: procedure         -- return indices in an index bag, and method items i
 ::method info
   parse arg string
   forward class (super) array (string"3") -- append '3'
+
+-- a couple of classes for testing define/delete
+::class testDefine1
+::class testDefine2 subclass testDefine1
+
 

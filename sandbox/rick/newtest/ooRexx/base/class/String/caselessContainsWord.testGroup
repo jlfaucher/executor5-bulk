@@ -1,0 +1,1354 @@
+#!/usr/bin/rexx
+/*
+  SVN Revision: $Rev: 3371 $
+  Change Date:  $Date: 2008-09-21 06:33:29 +0200 (So, 21 Sep 2008) $
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 - 2014 Rexx Language Association. All rights reserved.  */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.String_caselessContainsWord.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "String_caselessContainsWord.testGroup" subclass ooTestCase public
+
+::method 'test0000'
+    .local~v26 = 'A B C D E F G H I J K L M N O P Q R S T U V W X Y Z'
+    .local~v8 = 'one two  three   four    five     six      seven       eight'
+    .local~v10000 = COPIES('J ',9999)||'K '
+    .local~vwbw = 'John'||COPIES(' ',10000)||'Buckley'
+    .local~vwbwwbw = 'J'||COPIES(' ',5000)||COPIES('*',10000)||COPIES(' ',5000)||'R'
+    .local~vc1x = '412042'x
+    .local~vc140x = '41202042'x
+    .local~vc7x = '472048'x
+    .local~vc740x = '47202048'x
+    .local~vxnx = '7a786376000000000041534446'x
+
+::method 'test0001'
+    self~assertSame('0', ''~caselessContainsWord(''))
+
+::method 'test0002'
+    self~assertSame('0', ' '~caselessContainsWord(' '))
+
+::method 'test0003'
+    self~assertSame('1', 'WORD1 WORD2'~caselessContainsWord('WORD1'))
+
+::method 'test0004'
+    self~assertSame('1', 'WORD1 WORD2'~caselessContainsWord('WORD2'))
+
+::method 'test0005'
+    self~assertSame('0', 'WORD1 WORD2'~caselessContainsWord('WORD3'))
+
+::method 'test0006'
+    self~assertSame('1', '4a'x~caselessContainsWord('4a'x))
+
+::method 'test0007'
+    self~assertSame('0', '4a'x~caselessContainsWord('4b'x))
+
+::method 'test0008'
+    self~assertSame('1', 'WORD'~caselessContainsWord('WORD'))
+
+::method 'test0009'
+    self~assertSame('0', 'WORD'~caselessContainsWord('DROW'))
+
+::method 'test0010'
+    self~assertSame('1', '4a52'x~caselessContainsWord('20202020204a522020202020'x))
+
+::method 'test0011'
+    self~assertSame('0', '4a52'x~caselessContainsWord('20202020204a20522020202020'x))
+
+::method 'test0012'
+    self~assertSame('1', '4120422043204420452046204720482049204a204b204c204d'x~caselessContainsWord(.vc1x))
+
+::method 'test0013'
+    self~assertSame('1', '4120422043204420452046204720482049204a204b204c204d'x~caselessContainsWord(.vc140x))
+
+::method 'test0014'
+    self~assertSame('1', '4120422043204420452046204720482049204a204b204c204d'x~caselessContainsWord(.vc7x))
+
+::method 'test0015'
+    self~assertSame('1', '4120422043204420452046204720482049204a204b204c204d'x~caselessContainsWord(.vc740x))
+
+::method 'test0016'
+    self~assertSame('1', .v26~caselessContainsWord('A'))
+
+::method 'test0017'
+    self~assertSame('1', .v26~caselessContainsWord('J'))
+
+::method 'test0018'
+    self~assertSame('1', .v26~caselessContainsWord('Z'))
+
+::method 'test0019'
+    self~assertSame('0', .v26~caselessContainsWord('0'))
+
+::method 'test0020'
+    self~assertSame('0', .v26~caselessContainsWord('()'))
+
+::method 'test0021'
+    self~assertSame('1', .v26~caselessContainsWord('A     B     C     D     E     '))
+
+::method 'test0022'
+    self~assertSame('1', .v26~caselessContainsWord('V     W     X     Y     Z     '))
+
+::method 'test0023'
+    self~assertSame('0', .v26~caselessContainsWord('X     Y     Z     A     B     '))
+
+::method 'test0024'
+    numeric digits 1
+    self~assertSame('1', (12+6 12+7 12+8 12+9)~caselessContainsWord(+19))
+
+::method 'test0025'
+    numeric digits 1
+    self~assertSame('0', '12+6 12+7 12+8 12+9'~caselessContainsWord(+19))
+
+::method 'test0026'
+    numeric digits 1
+    self~assertSame('1', (12+1 12+2 12+3 12+4)~caselessContainsWord(+14))
+
+::method 'test0027'
+    numeric digits 1
+    self~assertSame('0', '12+1 12+2 12+3 12+4'~caselessContainsWord(+14))
+
+::method 'test0028'
+    self~assertSame('1', (12+6 12+7 12+8 12+9)~caselessContainsWord(+19))
+
+::method 'test0029'
+    self~assertSame('0', '12+6 12+7 12+8 12+9'~caselessContainsWord(+19))
+
+::method 'test0030'
+    self~assertSame('1', (12+1 12+2 12+3 12+4)~caselessContainsWord(+14))
+
+::method 'test0031'
+    self~assertSame('0', '12+1 12+2 12+3 12+4'~caselessContainsWord(+14))
+
+::method 'test0032'
+    self~assertSame('1', 'NV'~caselessContainsWord(nv))
+
+::method 'test0033'
+    self~expectSyntax(93.938)
+    xre = 'NV.'~caselessContainsWord(nv.)
+
+::method 'test0034'
+    self~assertSame('1', 'NV.10'~caselessContainsWord(nv.10))
+
+::method 'test0035'
+    self~assertSame('1', nv~caselessContainsWord('NV'))
+
+::method 'test0036'
+    self~assertSame('1', nv.~caselessContainsWord('NV.'))
+
+::method 'test0037'
+    self~assertSame('1', nv.10~caselessContainsWord('NV.10'))
+
+::method 'test0038'
+    self~assertSame('1', '     asdf qwer zxcv     ASDF QWER ZXCV'~caselessContainsWord('qwer zxcv ASDF'))
+
+::method 'test0039'
+    self~assertSame('1', .v8~caselessContainsWord('one'))
+
+::method 'test0040'
+    self~assertSame('1', .v8~caselessContainsWord('two                three four'))
+
+::method 'test0041'
+    self~assertSame('0', .v8~caselessContainsWord('seven eight nine'))
+
+::method 'test0042'
+    self~assertSame('1', '6173646620717765722041534446205157455220'x~caselessContainsWord('41534446202020'x))
+
+::method 'test0043'
+    self~assertSame('1', '6173646620717765722041534446205157455220'x~caselessContainsWord('20202041534446'x))
+
+::method 'test0044'
+    self~assertSame('1', '6173646620717765722041534446205157455220'x~caselessContainsWord('204153444620'x))
+
+::method 'test0045'
+    self~assertSame('1', '61736466207a786376000000000041534446205a584356'x~caselessContainsWord('7a786376'x))
+
+::method 'test0046'
+    self~assertSame('1', '61736466207a786376000000000041534446205a584356'x~caselessContainsWord('41534446'x))
+
+::method 'test0047'
+    self~assertSame('1', '61736466207a786376000000000041534446205a584356'x~caselessContainsWord(.vxnx))
+
+::method 'test0048'
+    self~assertSame('1', .v10000~caselessContainsWord('J'))
+
+::method 'test0049'
+    self~assertSame('1', .v10000~caselessContainsWord('J  K'))
+
+::method 'test0050'
+    self~assertSame('1', .v10000~caselessContainsWord('J K'))
+
+::method 'test0051'
+    self~assertSame('1', .v10000~caselessContainsWord('K'))
+
+::method 'test0052'
+    self~assertSame('0', .v10000~caselessContainsWord('K J'))
+
+::method 'test0053'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~assertSame('1', XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~caselessContainsWord('1'))
+
+::method 'test0054'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~assertSame('1', XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~caselessContainsWord('35'x))
+
+::method 'test0055'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~assertSame('1', XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~caselessContainsWord('35202020202020202020203620372020202020202020202038'x))
+
+::method 'test0056'
+    self~assertSame('1', .vwbwwbw~caselessContainsWord('J '||copies('*',10000)))
+
+::method 'test0057'
+    self~assertSame('1', .vwbwwbw~caselessContainsWord(copies('*',10000)||' R'))
+
+::method 'test0058'
+    self~assertSame('1', .vwbwwbw~caselessContainsWord('J'))
+
+::method 'test0059'
+    self~assertSame('1', .vwbwwbw~caselessContainsWord(copies('*',10000)))
+
+::method 'test0060'
+    self~assertSame('1', .vwbwwbw~caselessContainsWord('R'))
+
+::method 'test0061'
+    self~assertSame('1', .vwbw~caselessContainsWord('John'))
+
+::method 'test0062'
+    self~assertSame('1', .vwbw~caselessContainsWord('Buckley'))
+
+::method 'test0063'
+    self~assertSame('1', .vwbw~caselessContainsWord('John Buckley'))
+
+::method 'test0064'
+    self~assertSame('0', .vwbw~caselessContainsWord('Buckley John'))
+
+::method 'test0065'
+    self~assertSame('1', (00345 03450 34500)~caselessContainsWord(00345))
+
+::method 'test0066'
+    self~assertSame('1', (00345 03450 34500)~caselessContainsWord(00345          03450))
+
+::method 'test0067'
+    self~assertSame('1', (00345 03450 34500)~caselessContainsWord(34500))
+
+::method 'test0068'
+    self~assertSame('0', (00345 03450 34500)~caselessContainsWord(34500                    00))
+
+::method 'test0069'
+    self~assertSame('1', (3 4 5)~caselessContainsWord(3 4||copies(' ',10000)||5,))
+
+::method 'test0070'
+    self~assertSame('0', .v8~caselessContainsWord('one two three five'))
+
+::method 'test0071'
+    v8. = .v8
+    self~assertSame('1', v8.~caselessContainsWord('four'||copies(' ',50000)||'five six'))
+
+::method 'test0072'
+    v8. = .v8
+    self~assertSame('1', v8.10~caselessContainsWord('three four five'))
+
+::method 'test0073'
+    v8. = .v8
+    self~assertSame('0', v8.10~caselessContainsWord('seven eight nine'))
+
+::method 'test0074'
+    v8. = .v8
+    self~assertSame('0', v8.10~caselessContainsWord('ten'))
+
+::method 'test0075'
+    self~assertSame('1', (.v26||' '||reverse(.v26))~caselessContainsWord('Z Z'))
+
+::method 'test0076'
+    self~assertSame('1', (.v26' 'reverse(.v26))~caselessContainsWord('Y Z Z Y',))
+
+::method 'test0077'
+    self~assertSame('1', (.v26 reverse(.v26))~caselessContainsWord('X Y Z Z Y',))
+
+::method 'test0078'
+    self~assertSame('1', (.v26||' '||reverse(.v26))~caselessContainsWord('z z',))
+
+::method 'test0079'
+    self~assertSame('1', (.v26' 'reverse(.v26))~caselessContainsWord('y z z y'))
+
+::method 'test0080'
+    self~assertSame('1', (.v26 reverse(.v26))~caselessContainsWord('x y z z y'))
+
+::method 'test0081'
+    self~assertSame('1', subStr('one two three four',5,9)~caselessContainsWord('two three'))
+
+::method 'test0082'
+    self~assertSame('1', (dataType(6) dataType('A'))~caselessContainsWord('NUM                       CHAR'))
+
+::method 'test0083'
+    self~assertSame('1', (dataType(6) dataType('A'))~caselessContainsWord('num                       char'))
+
+::method 'test0084'
+    self~assertSame('1', 'WORD1 WORD2 WORD1 WORD2'~caselessContainsWord('WORD1',3))
+
+::method 'test0085'
+    self~assertSame('1', 'WORD1 WORD2 WORD1 WORD2'~caselessContainsWord('WORD2',3))
+
+::method 'test0086'
+    self~assertSame('0', 'WORD1 WORD2 WORD1 WORD2'~caselessContainsWord('WORD3',3))
+
+::method 'test0087'
+    self~assertSame('1', '4a'x~caselessContainsWord('4a'x,1))
+
+::method 'test0088'
+    self~assertSame('0', '4a'x~caselessContainsWord('4a'x,2))
+
+::method 'test0089'
+    self~expectSyntax(93.924)
+    xre = '4a'x~caselessContainsWord('4b'x,0)
+
+::method 'test0090'
+    self~assertSame('0', '4a'x~caselessContainsWord('4b'x,1))
+
+::method 'test0091'
+    self~assertSame('1', '4a52'x~caselessContainsWord('20202020204a522020202020'x,1))
+
+::method 'test0092'
+    self~assertSame('0', '4a52'x~caselessContainsWord('20202020204a522020202020'x,2))
+
+::method 'test0093'
+    self~assertSame('1', '4120422043204420452046204720482049204a204b204c204d'x~caselessContainsWord(.vc1x,1))
+
+::method 'test0094'
+    self~assertSame('0', '4120422043204420452046204720482049204a204b204c204d'x~caselessContainsWord(.vc1x,2))
+
+::method 'test0095'
+    self~assertSame('1', '4120422043204420452046204720482049204a204b204c204d'x~caselessContainsWord(.vc140x,1))
+
+::method 'test0096'
+    self~assertSame('0', '4120422043204420452046204720482049204a204b204c204d'x~caselessContainsWord(.vc140x,2))
+
+::method 'test0097'
+    self~assertSame('0', '4120422043204420452046204720482049204a204b204c204d'x~caselessContainsWord(.vc7x,13))
+
+::method 'test0098'
+    self~assertSame('0', '4120422043204420452046204720482049204a204b204c204d'x~caselessContainsWord(.vc740x,14))
+
+::method 'test0099'
+    self~assertSame('1', .v26~caselessContainsWord('A',1))
+
+::method 'test0100'
+    self~assertSame('0', .v26~caselessContainsWord('A',2))
+
+::method 'test0101'
+    self~assertSame('1', .v26~caselessContainsWord('J','39'x))
+
+::method 'test0102'
+    self~assertSame('1', .v26~caselessContainsWord('J',X2D('A')))
+
+::method 'test0103'
+    self~assertSame('0', .v26~caselessContainsWord('J','3131'x))
+
+::method 'test0104'
+    self~assertSame('1', .v26~caselessContainsWord('Z',' 25 '))
+
+::method 'test0105'
+    self~assertSame('0', .v26~caselessContainsWord('0',1))
+
+::method 'test0106'
+    self~expectSyntax(93.924)
+    xre = .v26~caselessContainsWord('A     B     C     D     E     ',-1)
+
+::method 'test0107'
+    self~assertSame('1', .v26~caselessContainsWord('V     W     X     Y     Z     ',.22E02+0))
+
+::method 'test0108'
+    self~assertSame('1', .v26~caselessContainsWord('V     W     X     Y     Z     ',.22E02))
+
+::method 'test0109'
+    self~assertSame('0', .v26~caselessContainsWord('X     Y     Z     A     B     ','.22E02'))
+
+::method 'test0110'
+    numeric digits 1
+    self~assertSame('1', 'A Z C E G H I J K L M N O P Q R S T U V W X Y Z'~caselessContainsWord('Z',+19))
+
+::method 'test0111'
+    numeric digits 1
+    self~assertSame('1', 'A Z C D F H I J K L M N O P Q R S T U V W X Y Z'~caselessContainsWord('Z',+14))
+
+::method 'test0112'
+    self~assertSame('1', 'A Z C D E F G H I J K L M N O P Q R S T U V W X Y Z'~caselessContainsWord('Z',+19))
+
+::method 'test0113'
+    self~expectSyntax(93.924)
+    xre = 'NV'~caselessContainsWord('NV',nv)
+
+::method 'test0114'
+    self~expectSyntax(93.924)
+    xre = 'NV.'~caselessContainsWord('NV.',nv.)
+
+::method 'test0115'
+    self~expectSyntax(93.924)
+    xre = 'NV.10'~caselessContainsWord('NV.10',nv.10)
+
+::method 'test0116'
+    self~expectSyntax(93.924)
+    xre = noval2~caselessContainsWord(noval1,noval3)
+
+::method 'test0117'
+    self~assertSame('1', 'NV'~caselessContainsWord(nv,1))
+
+::method 'test0118'
+    self~expectSyntax(93.938)
+    xre = 'NV.'~caselessContainsWord(nv.,1)
+
+::method 'test0119'
+    self~assertSame('1', 'NV.10'~caselessContainsWord(nv.10,1))
+
+::method 'test0120'
+    self~assertSame('1', nv~caselessContainsWord('NV',1))
+
+::method 'test0121'
+    self~assertSame('1', nv.~caselessContainsWord('NV.',1))
+
+::method 'test0122'
+    self~assertSame('1', nv.10~caselessContainsWord('NV.10',1))
+
+::method 'test0123'
+    self~expectSyntax(93.924)
+    xre = 'NV'~caselessContainsWord('NV',nv)
+
+::method 'test0124'
+    self~expectSyntax(93.924)
+    xre = 'NV.'~caselessContainsWord('NV.',nv.)
+
+::method 'test0125'
+    self~expectSyntax(93.924)
+    xre = 'NV.10'~caselessContainsWord('NV.10',nv.10)
+
+::method 'test0126'
+    self~expectSyntax(93.924)
+    xre = noval2~caselessContainsWord(noval1,noval3)
+
+::method 'test0127'
+    self~assertSame('1', '     asdf qwer zxcv     ASDF QWER ZXCV'~caselessContainsWord('qwer zxcv ASDF',2))
+
+::method 'test0128'
+    self~assertSame('0', '     asdf qwer zxcv     ASDF QWER ZXCV'~caselessContainsWord('qwer zxcv ASDF',5))
+
+::method 'test0129'
+    self~assertSame('1', .v8~caselessContainsWord('one',1*1))
+
+::method 'test0130'
+    self~assertSame('0', .v8~caselessContainsWord('one',2*1))
+
+::method 'test0131'
+    self~assertSame('1', .v8~caselessContainsWord('two                three four','000001'))
+
+::method 'test0132'
+    self~assertSame('1', .v8~caselessContainsWord('two                three four',000002))
+
+::method 'test0133'
+    self~assertSame("0", .v8~caselessContainsWord('two                three four',3.00))
+
+::method 'test0134'
+    self~assertSame('1', '6173646620717765722041534446205157455220'x~caselessContainsWord('41534446202020'x,2))
+
+::method 'test0135'
+    self~assertSame('1', '6173646620717765722041534446205157455220'x~caselessContainsWord('41534446202020'x,3))
+
+::method 'test0136'
+    self~assertSame('0', '6173646620717765722041534446205157455220'x~caselessContainsWord('41534446202020'x,4))
+
+::method 'test0137'
+    self~assertSame('1', '6173646620717765722041534446205157455220'x~caselessContainsWord('20202041534446'x,3))
+
+::method 'test0138'
+    self~assertSame('0', '6173646620717765722041534446205157455220'x~caselessContainsWord('20202041534446'x,4))
+
+::method 'test0139'
+    self~assertSame('0', '6173646620717765722041534446205157455220'x~caselessContainsWord('20202041534446'x,5))
+
+::method 'test0140'
+    self~assertSame('1', '6173646620717765722041534446205157455220'x~caselessContainsWord('204153444620'x,1))
+
+::method 'test0141'
+    self~assertSame('1', '6173646620717765722041534446205157455220'x~caselessContainsWord('204153444620'x,2))
+
+::method 'test0142'
+    self~assertSame('0', '6173646620717765722041534446205157455220'x~caselessContainsWord('204153444620'x,4))
+
+::method 'test0143'
+    self~assertSame('1', '61736466207a786376000000000041534446205a584356'x~caselessContainsWord('7a786376'x))
+
+::method 'test0144'
+    self~assertSame('1', '61736466207a786376000000000041534446205a584356'x~caselessContainsWord('41534446'x))
+
+::method 'test0145'
+    self~assertSame('1', '61736466207a786376000000000041534446205a584356'x~caselessContainsWord(.vxnx))
+
+::method 'test0146'
+    self~assertSame('1', .v10000~caselessContainsWord('J',9999))
+
+::method 'test0147'
+    self~assertSame('1', .v10000~caselessContainsWord('J  K','39393939'x))
+
+::method 'test0148'
+    self~assertSame('1', .v10000~caselessContainsWord('J K','9999'))
+
+::method 'test0149'
+    self~assertSame('1', .v10000~caselessContainsWord('K',001))
+
+::method 'test0150'
+    self~assertSame('0', .v10000~caselessContainsWord('K J','001'))
+
+::method 'test0151'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~assertSame('1', XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~caselessContainsWord('1',1))
+
+::method 'test0152'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~assertSame('0', XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~caselessContainsWord('1',9))
+
+::method 'test0153'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~assertSame('1', XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~caselessContainsWord('35'x,'34'x))
+
+::method 'test0154'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~assertSame('1', XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~caselessContainsWord('35'x,'35'x))
+
+::method 'test0155'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~assertSame('0', XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~caselessContainsWord('35'x,'36'x))
+
+::method 'test0156'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~expectSyntax(93.924)
+    xre = XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~caselessContainsWord('352020202020202020203620372020202020202020202038'x,"'34'x")
+
+::method 'test0157'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~expectSyntax(93.924)
+    xre = XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~caselessContainsWord('352020202020202020203620372020202020202020202038'x,"'35'x")
+
+::method 'test0158'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~expectSyntax(93.924)
+    xre = XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~caselessContainsWord('352020202020202020203620372020202020202020202038'x,"'36'x")
+
+::method 'test0159'
+    self~assertSame('1', .vwbwwbw~caselessContainsWord('J '||copies('*',10000),1))
+
+::method 'test0160'
+    self~assertSame('0', .vwbwwbw~caselessContainsWord('J '||copies('*',10000),0+2))
+
+::method 'test0161'
+    self~assertSame('0', .vwbwwbw~caselessContainsWord(copies('*',10000)||' R','3'))
+
+::method 'test0162'
+    self~assertSame('0', .vwbwwbw~caselessContainsWord(copies('*',10000)||' R','04'))
+
+::method 'test0163'
+    self~assertSame('1', .vwbwwbw~caselessContainsWord('J',1))
+
+::method 'test0164'
+    self~assertSame('0', .vwbwwbw~caselessContainsWord('J',2))
+
+::method 'test0165'
+    self~assertSame('1', .vwbwwbw~caselessContainsWord(copies('*',10000),'32'x))
+
+::method 'test0166'
+    self~assertSame('0', .vwbwwbw~caselessContainsWord(copies('*',10000),'33'x))
+
+::method 'test0167'
+    self~assertSame('0', .vwbwwbw~caselessContainsWord('R','000004'))
+
+::method 'test0168'
+    self~assertSame('0', .vwbwwbw~caselessContainsWord('R','000005'))
+
+::method 'test0169'
+    self~assertSame('1', .vwbw~caselessContainsWord('John',1))
+
+::method 'test0170'
+    self~assertSame('0', .vwbw~caselessContainsWord('John',2))
+
+::method 'test0171'
+    self~assertSame('1', .vwbw~caselessContainsWord('Buckley',1))
+
+::method 'test0172'
+    self~assertSame('1', .vwbw~caselessContainsWord('Buckley',2))
+
+::method 'test0173'
+    self~assertSame('1', .vwbw~caselessContainsWord('John Buckley',1))
+
+::method 'test0174'
+    self~assertSame('0', .vwbw~caselessContainsWord('John Buckley',2))
+
+::method 'test0175'
+    self~assertSame('1', (3 4 5)~caselessContainsWord(3 4||copies(' ',10000)||5,1))
+
+::method 'test0176'
+    self~assertSame('0', (3 4 5)~caselessContainsWord(3 4||copies(' ',10000)||5,2))
+
+::method 'test0177'
+    v8. = .v8
+    self~assertSame('1', v8.~caselessContainsWord('four'||copies(' ',50000)||'five six',3))
+
+::method 'test0178'
+    v8. = .v8
+    self~assertSame('1', v8.~caselessContainsWord('four'||copies(' ',50000)||'five six',4))
+
+::method 'test0179'
+    v8. = .v8
+    self~assertSame('0', v8.~caselessContainsWord('four'||copies(' ',50000)||'five six',5))
+
+::method 'test0180'
+    v8. = .v8
+    self~assertSame('1', v8.10~caselessContainsWord('three four five',1))
+
+::method 'test0181'
+    v8. = .v8
+    self~assertSame('1', v8.10~caselessContainsWord('three four five',3))
+
+::method 'test0182'
+    v8. = .v8
+    self~assertSame('0', v8.10~caselessContainsWord('three four five',8))
+
+::method 'test0183'
+    self~assertSame('1', (.v26||' '||reverse(.v26))~caselessContainsWord('Z Z',23))
+
+::method 'test0184'
+    self~assertSame('1', (.v26' 'reverse(.v26))~caselessContainsWord('Y Z Z Y',25))
+    Nop
+
+::method 'test0185'
+    self~assertSame('0', (.v26 (reverse(.v26)))~caselessContainsWord('X Y Z Z Y',25))
+
+::method 'test0186'
+    self~assertSame('1', subStr('one two three four',5,9)~caselessContainsWord('two three',1))
+
+::method 'test0187'
+    self~assertSame('0', subStr('one two three four',5,9)~caselessContainsWord('two three',2))
+
+::method 'test0188'
+    self~assertSame('1', (dataType(6) dataType('A'))~caselessContainsWord('NUM                       CHAR',1))
+
+::method 'test0189'
+    self~assertSame('0', (dataType(6) dataType('A'))~caselessContainsWord('NUM                       CHAR',2))
+
+::method 'test0190'
+    self~assertSame('0', (dataType(6) dataType('A'))~caselessContainsWord('NUM                       CHAR',3))
+
+/*
+::method 'test0191'
+    .local~remove(v26)
+    .local~remove(v8)
+    .local~remove(v10000)
+    .local~remove(vwbw)
+    .local~remove(vwbwwbw)
+    .local~remove(vc1x)
+    .local~remove(vc140x)
+    .local~remove(vc7x)
+    .local~remove(vc740x)
+    .local~remove(vxnx)
+*/
+
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_caselessContainsWord"
+    self~assertEquals(1, 'now is the time'~caselessContainsWord('the'))
+    self~assertEquals(1, 'now is the time'~caselessContainsWord('The'))
+    self~assertEquals(1, 'now is the time'~caselessContainsWord('is the'))
+    self~assertEquals(1, 'now is the time'~caselessContainsWord('Is The'))
+    self~assertEquals(0, 'now is the time'~caselessContainsWord('is time '))
+    self~assertEquals(1, 'To be or not to be'~caselessContainsWord('be'))
+    self~assertEquals(1, 'To be or not to be'~caselessContainsWord('bE',3))
+
+::method "test1_WORDPOS_caseless"
+
+   self~assertEquals(1, 'now is the time'~caselessContainsWord('the'))
+   self~assertEquals(1, 'now is the time'~caselessContainsWord('The'))
+   self~assertEquals(1, 'now is the time'~caselessContainsWord('is tHE'))
+   self~assertEquals(1, 'now is the time'~caselessContainsWord('Is ThE'))
+   self~assertEquals(1, 'now is the time'~caselessContainsWord('is   the'))
+   self~assertEquals(1, 'now is the time'~caselessContainsWord('iS   ThE'))
+   self~assertEquals(0, 'now is   the time'~caselessContainsWord('is    time '))
+   self~assertEquals(1, 'To be or not to be'~caselessContainsWord('be'))
+   self~assertEquals(1, 'To be or not to be'~caselessContainsWord('Be'))
+   self~assertEquals(1, 'To be or not to be'~caselessContainsWord('be',3))
+   self~assertEquals(1, 'To be or not to be'~caselessContainsWord('bE',3))
+
+::method 'test1000'
+    .local~v26 = 'A B C D E F G H I J K L M N O P Q R S T U V W X Y Z'
+    .local~v8 = 'one two  three   four    five     six      seven       eight'
+    .local~v10000 = COPIES('J ',9999)||'K '
+    .local~vwbw = 'John'||COPIES(' ',10000)||'Buckley'
+    .local~vwbwwbw = 'J'||COPIES(' ',5000)||COPIES('*',10000)||COPIES(' ',5000)||'R'
+    .local~vc1x = '412042'x
+    .local~vc140x = '41202042'x
+    .local~vc7x = '472048'x
+    .local~vc740x = '47202048'x
+    .local~vxnx = '7a786376000000000041534446'x
+
+::method 'test1001'
+    self~assertSame('0', ''~caselessContainsWord(''))
+
+::method 'test1002'
+    self~assertSame('0', ' '~caselessContainsWord(' '))
+
+::method 'test1003'
+    self~assertSame('1', 'WORD1 WORD2'~caselessContainsWord('WORD1'))
+
+::method 'test1004'
+    self~assertSame('1', 'WORD1 WORD2'~caselessContainsWord('WORD2'))
+
+::method 'test1005'
+    self~assertSame('0', 'WORD1 WORD2'~caselessContainsWord('WORD3'))
+
+::method 'test1006'
+    self~assertSame('1', '4a'x~caselessContainsWord('4a'x))
+
+::method 'test1007'
+    self~assertSame('0', '4a'x~caselessContainsWord('4b'x))
+
+::method 'test1008'
+    self~assertSame('1', 'WORD'~caselessContainsWord('WORD'))
+
+::method 'test1009'
+    self~assertSame('0', 'WORD'~caselessContainsWord('DROW'))
+
+::method 'test1010'
+    self~assertSame('1', '4a52'x~caselessContainsWord('20202020204a522020202020'x))
+
+::method 'test1011'
+    self~assertSame('0', '4a52'x~caselessContainsWord('20202020204a20522020202020'x))
+
+::method 'test1012'
+    self~assertSame('1', '4120422043204420452046204720482049204a204b204c204d'x~caselessContainsWord(.vc1x))
+
+::method 'test1013'
+    self~assertSame('1', '4120422043204420452046204720482049204a204b204c204d'x~caselessContainsWord(.vc140x))
+
+::method 'test1014'
+    self~assertSame('1', '4120422043204420452046204720482049204a204b204c204d'x~caselessContainsWord(.vc7x))
+
+::method 'test1015'
+    self~assertSame('1', '4120422043204420452046204720482049204a204b204c204d'x~caselessContainsWord(.vc740x))
+
+::method 'test1016'
+    self~assertSame('1', .v26~caselessContainsWord('A'))
+
+::method 'test1017'
+    self~assertSame('1', .v26~caselessContainsWord('J'))
+
+::method 'test1018'
+    self~assertSame('1', .v26~caselessContainsWord('Z'))
+
+::method 'test1019'
+    self~assertSame('0', .v26~caselessContainsWord('0'))
+
+::method 'test1020'
+    self~assertSame('0', .v26~caselessContainsWord('()'))
+
+::method 'test1021'
+    self~assertSame('1', .v26~caselessContainsWord('A     B     C     D     E     '))
+
+::method 'test1022'
+    self~assertSame('1', .v26~caselessContainsWord('V     W     X     Y     Z     '))
+
+::method 'test1023'
+    self~assertSame('0', .v26~caselessContainsWord('X     Y     Z     A     B     '))
+
+::method 'test1024'
+    numeric digits 1
+    self~assertSame('1', (12+6 12+7 12+8 12+9)~caselessContainsWord(+19))
+
+::method 'test1025'
+    numeric digits 1
+    self~assertSame('0', '12+6 12+7 12+8 12+9'~caselessContainsWord(+19))
+
+::method 'test1026'
+    numeric digits 1
+    self~assertSame('1', (12+1 12+2 12+3 12+4)~caselessContainsWord(+14))
+
+::method 'test1027'
+    numeric digits 1
+    self~assertSame('0', '12+1 12+2 12+3 12+4'~caselessContainsWord(+14))
+
+::method 'test1028'
+    self~assertSame('1', (12+6 12+7 12+8 12+9)~caselessContainsWord(+19))
+
+::method 'test1029'
+    self~assertSame('0', '12+6 12+7 12+8 12+9'~caselessContainsWord(+19))
+
+::method 'test1030'
+    self~assertSame('1', (12+1 12+2 12+3 12+4)~caselessContainsWord(+14))
+
+::method 'test1031'
+    self~assertSame('0', '12+1 12+2 12+3 12+4'~caselessContainsWord(+14))
+
+::method 'test1032'
+    self~assertSame('1', 'NV'~caselessContainsWord(nv))
+
+::method 'test1033'
+    self~expectSyntax(93.938)
+    xre = 'NV.'~caselessContainsWord(nv.)
+
+::method 'test1034'
+    self~assertSame('1', 'NV.10'~caselessContainsWord(nv.10))
+
+::method 'test1035'
+    self~assertSame('1', nv~caselessContainsWord('NV'))
+
+::method 'test1036'
+    self~assertSame('1', nv.~caselessContainsWord('NV.'))
+
+::method 'test1037'
+    self~assertSame('1', nv.10~caselessContainsWord('NV.10'))
+
+::method 'test1038'
+    self~assertSame('1', '     asdf qwer zxcv     ASDF QWER ZXCV'~caselessContainsWord('qwer zxcv ASDF'))
+
+::method 'test1039'
+    self~assertSame('1', .v8~caselessContainsWord('one'))
+
+::method 'test1040'
+    self~assertSame('1', .v8~caselessContainsWord('two                three four'))
+
+::method 'test1041'
+    self~assertSame('0', .v8~caselessContainsWord('seven eight nine'))
+
+::method 'test1042'
+    self~assertSame('1', '6173646620717765722041534446205157455220'x~caselessContainsWord('41534446202020'x))
+
+::method 'test1043'
+    self~assertSame('1', '6173646620717765722041534446205157455220'x~caselessContainsWord('20202041534446'x))
+
+::method 'test1044'
+    self~assertSame('1', '6173646620717765722041534446205157455220'x~caselessContainsWord('204153444620'x))
+
+::method 'test1045'
+    self~assertSame('1', '61736466207a786376000000000041534446205a584356'x~caselessContainsWord('7a786376'x))
+
+::method 'test1046'
+    self~assertSame('1', '61736466207a786376000000000041534446205a584356'x~caselessContainsWord('41534446'x))
+
+::method 'test1047'
+    self~assertSame('1', '61736466207a786376000000000041534446205a584356'x~caselessContainsWord(.vxnx))
+
+::method 'test1048'
+    self~assertSame('1', .v10000~caselessContainsWord('J'))
+
+::method 'test1049'
+    self~assertSame('1', .v10000~caselessContainsWord('J  K'))
+
+::method 'test1050'
+    self~assertSame('1', .v10000~caselessContainsWord('J K'))
+
+::method 'test1051'
+    self~assertSame('1', .v10000~caselessContainsWord('K'))
+
+::method 'test1052'
+    self~assertSame('0', .v10000~caselessContainsWord('K J'))
+
+::method 'test1053'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~assertSame('1', XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~caselessContainsWord('1'))
+
+::method 'test1054'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~assertSame('1', XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~caselessContainsWord('35'x))
+
+::method 'test1055'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~assertSame('1', XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~caselessContainsWord('35202020202020202020203620372020202020202020202038'x))
+
+::method 'test1056'
+    self~assertSame('1', .vwbwwbw~caselessContainsWord('J '||copies('*',10000)))
+
+::method 'test1057'
+    self~assertSame('1', .vwbwwbw~caselessContainsWord(copies('*',10000)||' R'))
+
+::method 'test1058'
+    self~assertSame('1', .vwbwwbw~caselessContainsWord('J'))
+
+::method 'test1059'
+    self~assertSame('1', .vwbwwbw~caselessContainsWord(copies('*',10000)))
+
+::method 'test1060'
+    self~assertSame('1', .vwbwwbw~caselessContainsWord('R'))
+
+::method 'test1061'
+    self~assertSame('1', .vwbw~caselessContainsWord('John'))
+
+::method 'test1062'
+    self~assertSame('1', .vwbw~caselessContainsWord('Buckley'))
+
+::method 'test1063'
+    self~assertSame('1', .vwbw~caselessContainsWord('John Buckley'))
+
+::method 'test1064'
+    self~assertSame('0', .vwbw~caselessContainsWord('Buckley John'))
+
+::method 'test1065'
+    self~assertSame('1', (00345 03450 34500)~caselessContainsWord(00345))
+
+::method 'test1066'
+    self~assertSame('1', (00345 03450 34500)~caselessContainsWord(00345          03450))
+
+::method 'test1067'
+    self~assertSame('1', (00345 03450 34500)~caselessContainsWord(34500))
+
+::method 'test1068'
+    self~assertSame('0', (00345 03450 34500)~caselessContainsWord(34500                    00))
+
+::method 'test1069'
+    self~assertSame('1', (3 4 5)~caselessContainsWord(3 4||copies(' ',10000)||5,))
+
+::method 'test1070'
+    self~assertSame('0', .v8~caselessContainsWord('one two three five'))
+
+::method 'test1071'
+    v8. = .v8
+    self~assertSame('1', v8.~caselessContainsWord('four'||copies(' ',50000)||'five six'))
+
+::method 'test1072'
+    v8. = .v8
+    self~assertSame('1', v8.10~caselessContainsWord('three four five'))
+
+::method 'test1073'
+    v8. = .v8
+    self~assertSame('0', v8.10~caselessContainsWord('seven eight nine'))
+
+::method 'test1074'
+    v8. = .v8
+    self~assertSame('0', v8.10~caselessContainsWord('ten'))
+
+::method 'test1075'
+    self~assertSame('1', (.v26||' '||reverse(.v26))~caselessContainsWord('Z Z'))
+
+::method 'test1076'
+    self~assertSame('1', (.v26' 'reverse(.v26))~caselessContainsWord('Y Z Z Y',))
+
+::method 'test1077'
+    self~assertSame('1', (.v26 reverse(.v26))~caselessContainsWord('X Y Z Z Y',))
+
+::method 'test1078'
+    self~assertSame('1', (.v26||' '||reverse(.v26))~caselessContainsWord('z z',))
+
+::method 'test1079'
+    self~assertSame('1', (.v26' 'reverse(.v26))~caselessContainsWord('y z z y'))
+
+::method 'test1080'
+    self~assertSame('1', (.v26 reverse(.v26))~caselessContainsWord('x y z z y'))
+
+::method 'test1081'
+    self~assertSame('1', subStr('one two three four',5,9)~caselessContainsWord('two three'))
+
+::method 'test1082'
+    self~assertSame('1', (dataType(6) dataType('A'))~caselessContainsWord('NUM                       CHAR'))
+
+::method 'test1083'
+    self~assertSame('1', (dataType(6) dataType('A'))~caselessContainsWord('num                       char'))
+
+::method 'test1084'
+    self~assertSame('1', 'WORD1 WORD2 WORD1 WORD2'~caselessContainsWord('WORD1',3))
+
+::method 'test1085'
+    self~assertSame('1', 'WORD1 WORD2 WORD1 WORD2'~caselessContainsWord('WORD2',3))
+
+::method 'test1086'
+    self~assertSame('0', 'WORD1 WORD2 WORD1 WORD2'~caselessContainsWord('WORD3',3))
+
+::method 'test1087'
+    self~assertSame('1', '4a'x~caselessContainsWord('4a'x,1))
+
+::method 'test1088'
+    self~assertSame('0', '4a'x~caselessContainsWord('4a'x,2))
+
+::method 'test1089'
+    self~expectSyntax(93.924)
+    xre = '4a'x~caselessContainsWord('4b'x,0)
+
+::method 'test1090'
+    self~assertSame('0', '4a'x~caselessContainsWord('4b'x,1))
+
+::method 'test1091'
+    self~assertSame('1', '4a52'x~caselessContainsWord('20202020204a522020202020'x,1))
+
+::method 'test1092'
+    self~assertSame('0', '4a52'x~caselessContainsWord('20202020204a522020202020'x,2))
+
+::method 'test1093'
+    self~assertSame('1', '4120422043204420452046204720482049204a204b204c204d'x~caselessContainsWord(.vc1x,1))
+
+::method 'test1094'
+    self~assertSame('0', '4120422043204420452046204720482049204a204b204c204d'x~caselessContainsWord(.vc1x,2))
+
+::method 'test1095'
+    self~assertSame('1', '4120422043204420452046204720482049204a204b204c204d'x~caselessContainsWord(.vc140x,1))
+
+::method 'test1096'
+    self~assertSame('0', '4120422043204420452046204720482049204a204b204c204d'x~caselessContainsWord(.vc140x,2))
+
+::method 'test1097'
+    self~assertSame('0', '4120422043204420452046204720482049204a204b204c204d'x~caselessContainsWord(.vc7x,13))
+
+::method 'test1098'
+    self~assertSame('0', '4120422043204420452046204720482049204a204b204c204d'x~caselessContainsWord(.vc740x,14))
+
+::method 'test1099'
+    self~assertSame('1', .v26~caselessContainsWord('A',1))
+
+::method 'test1100'
+    self~assertSame('0', .v26~caselessContainsWord('A',2))
+
+::method 'test1101'
+    self~assertSame('1', .v26~caselessContainsWord('J','39'x))
+
+::method 'test1102'
+    self~assertSame('1', .v26~caselessContainsWord('J',X2D('A')))
+
+::method 'test1103'
+    self~assertSame('0', .v26~caselessContainsWord('J','3131'x))
+
+::method 'test1104'
+    self~assertSame('1', .v26~caselessContainsWord('Z',' 25 '))
+
+::method 'test1105'
+    self~assertSame('0', .v26~caselessContainsWord('0',1))
+
+::method 'test1106'
+    self~expectSyntax(93.924)
+    xre = .v26~caselessContainsWord('A     B     C     D     E     ',-1)
+
+::method 'test1107'
+    self~assertSame('1', .v26~caselessContainsWord('V     W     X     Y     Z     ',.22E02+0))
+
+::method 'test1108'
+    self~assertSame('1', .v26~caselessContainsWord('V     W     X     Y     Z     ',.22E02))
+
+::method 'test1109'
+    self~assertSame('0', .v26~caselessContainsWord('X     Y     Z     A     B     ','.22E02'))
+
+::method 'test1110'
+    numeric digits 1
+    self~assertSame('1', 'A Z C E G H I J K L M N O P Q R S T U V W X Y Z'~caselessContainsWord('Z',+19))
+
+::method 'test1111'
+    numeric digits 1
+    self~assertSame('1', 'A Z C D F H I J K L M N O P Q R S T U V W X Y Z'~caselessContainsWord('Z',+14))
+
+::method 'test1112'
+    self~assertSame('1', 'A Z C D E F G H I J K L M N O P Q R S T U V W X Y Z'~caselessContainsWord('Z',+19))
+
+::method 'test1113'
+    self~expectSyntax(93.924)
+    xre = 'NV'~caselessContainsWord('NV',nv)
+
+::method 'test1114'
+    self~expectSyntax(93.924)
+    xre = 'NV.'~caselessContainsWord('NV.',nv.)
+
+::method 'test1115'
+    self~expectSyntax(93.924)
+    xre = 'NV.10'~caselessContainsWord('NV.10',nv.10)
+
+::method 'test1116'
+    self~expectSyntax(93.924)
+    xre = noval2~caselessContainsWord(noval1,noval3)
+
+::method 'test1117'
+    self~assertSame('1', 'NV'~caselessContainsWord(nv,1))
+
+::method 'test1118'
+    self~expectSyntax(93.938)
+    xre = 'NV.'~caselessContainsWord(nv.,1)
+
+::method 'test1119'
+    self~assertSame('1', 'NV.10'~caselessContainsWord(nv.10,1))
+
+::method 'test1120'
+    self~assertSame('1', nv~caselessContainsWord('NV',1))
+
+::method 'test1121'
+    self~assertSame('1', nv.~caselessContainsWord('NV.',1))
+
+::method 'test1122'
+    self~assertSame('1', nv.10~caselessContainsWord('NV.10',1))
+
+::method 'test1123'
+    self~expectSyntax(93.924)
+    xre = 'NV'~caselessContainsWord('NV',nv)
+
+::method 'test1124'
+    self~expectSyntax(93.924)
+    xre = 'NV.'~caselessContainsWord('NV.',nv.)
+
+::method 'test1125'
+    self~expectSyntax(93.924)
+    xre = 'NV.10'~caselessContainsWord('NV.10',nv.10)
+
+::method 'test1126'
+    self~expectSyntax(93.924)
+    xre = noval2~caselessContainsWord(noval1,noval3)
+
+::method 'test1127'
+    self~assertSame('1', '     asdf qwer zxcv     ASDF QWER ZXCV'~caselessContainsWord('qwer zxcv ASDF',2))
+
+::method 'test1128'
+    self~assertSame('0', '     asdf qwer zxcv     ASDF QWER ZXCV'~caselessContainsWord('qwer zxcv ASDF',5))
+
+::method 'test1129'
+    self~assertSame('1', .v8~caselessContainsWord('one',1*1))
+
+::method 'test1130'
+    self~assertSame('0', .v8~caselessContainsWord('one',2*1))
+
+::method 'test1131'
+    self~assertSame('1', .v8~caselessContainsWord('two                three four','000001'))
+
+::method 'test1132'
+    self~assertSame('1', .v8~caselessContainsWord('two                three four',000002))
+
+::method 'test1133'
+    self~assertSame("0", .v8~caselessContainsWord('two                three four',3.00))
+
+::method 'test1134'
+    self~assertSame('1', '6173646620717765722041534446205157455220'x~caselessContainsWord('41534446202020'x,2))
+
+::method 'test1135'
+    self~assertSame('1', '6173646620717765722041534446205157455220'x~caselessContainsWord('41534446202020'x,3))
+
+::method 'test1136'
+    self~assertSame('0', '6173646620717765722041534446205157455220'x~caselessContainsWord('41534446202020'x,4))
+
+::method 'test1137'
+    self~assertSame('1', '6173646620717765722041534446205157455220'x~caselessContainsWord('20202041534446'x,3))
+
+::method 'test1138'
+    self~assertSame('0', '6173646620717765722041534446205157455220'x~caselessContainsWord('20202041534446'x,4))
+
+::method 'test1139'
+    self~assertSame('0', '6173646620717765722041534446205157455220'x~caselessContainsWord('20202041534446'x,5))
+
+::method 'test1140'
+    self~assertSame('1', '6173646620717765722041534446205157455220'x~caselessContainsWord('204153444620'x,1))
+
+::method 'test1141'
+    self~assertSame('1', '6173646620717765722041534446205157455220'x~caselessContainsWord('204153444620'x,2))
+
+::method 'test1142'
+    self~assertSame('0', '6173646620717765722041534446205157455220'x~caselessContainsWord('204153444620'x,4))
+
+::method 'test1143'
+    self~assertSame('1', '61736466207a786376000000000041534446205a584356'x~caselessContainsWord('7a786376'x))
+
+::method 'test1144'
+    self~assertSame('1', '61736466207a786376000000000041534446205a584356'x~caselessContainsWord('41534446'x))
+
+::method 'test1145'
+    self~assertSame('1', '61736466207a786376000000000041534446205a584356'x~caselessContainsWord(.vxnx))
+
+::method 'test1146'
+    self~assertSame('1', .v10000~caselessContainsWord('J',9999))
+
+::method 'test1147'
+    self~assertSame('1', .v10000~caselessContainsWord('J  K','39393939'x))
+
+::method 'test1148'
+    self~assertSame('1', .v10000~caselessContainsWord('J K','9999'))
+
+::method 'test1149'
+    self~assertSame('1', .v10000~caselessContainsWord('K',009999))
+
+::method 'test1150'
+    self~assertSame('0', .v10000~caselessContainsWord('K J','009999'))
+
+::method 'test1151'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~assertSame('1', XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~caselessContainsWord('1',1))
+
+::method 'test1152'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~assertSame('0', XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~caselessContainsWord('1',9))
+
+::method 'test1153'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~assertSame('1', XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~caselessContainsWord('35'x,'34'x))
+
+::method 'test1154'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~assertSame('1', XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~caselessContainsWord('35'x,'35'x))
+
+::method 'test1155'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~assertSame('0', XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~caselessContainsWord('35'x,'36'x))
+
+::method 'test1156'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~expectSyntax(93.924)
+    xre = XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~caselessContainsWord('352020202020202020203620372020202020202020202038'x,"'34'x")
+
+::method 'test1157'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~expectSyntax(93.924)
+    xre = XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~caselessContainsWord('352020202020202020203620372020202020202020202038'x,"'35'x")
+
+::method 'test1158'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~expectSyntax(93.924)
+    xre = XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~caselessContainsWord('352020202020202020203620372020202020202020202038'x,"'36'x")
+
+::method 'test1159'
+    self~assertSame('1', .vwbwwbw~caselessContainsWord('J '||copies('*',10000),1))
+
+::method 'test1160'
+    self~assertSame('0', .vwbwwbw~caselessContainsWord('J '||copies('*',10000),0+2))
+
+::method 'test1161'
+    self~assertSame('0', .vwbwwbw~caselessContainsWord(copies('*',10000)||' R','3'))
+
+::method 'test1162'
+    self~assertSame('0', .vwbwwbw~caselessContainsWord(copies('*',10000)||' R','04'))
+
+::method 'test1163'
+    self~assertSame('1', .vwbwwbw~caselessContainsWord('J',1))
+
+::method 'test1164'
+    self~assertSame('0', .vwbwwbw~caselessContainsWord('J',2))
+
+::method 'test1165'
+    self~assertSame('1', .vwbwwbw~caselessContainsWord(copies('*',10000),'32'x))
+
+::method 'test1166'
+    self~assertSame('0', .vwbwwbw~caselessContainsWord(copies('*',10000),'33'x))
+
+::method 'test1167'
+    self~assertSame('0', .vwbwwbw~caselessContainsWord('R','000004'))
+
+::method 'test1168'
+    self~assertSame('0', .vwbwwbw~caselessContainsWord('R','000005'))
+
+::method 'test1169'
+    self~assertSame('1', .vwbw~caselessContainsWord('John',1))
+
+::method 'test1170'
+    self~assertSame('0', .vwbw~caselessContainsWord('John',2))
+
+::method 'test1171'
+    self~assertSame('1', .vwbw~caselessContainsWord('Buckley',1))
+
+::method 'test1172'
+    self~assertSame('1', .vwbw~caselessContainsWord('Buckley',2))
+
+::method 'test1173'
+    self~assertSame('1', .vwbw~caselessContainsWord('John Buckley',1))
+
+::method 'test1174'
+    self~assertSame('0', .vwbw~caselessContainsWord('John Buckley',2))
+
+::method 'test1175'
+    self~assertSame('1', (3 4 5)~caselessContainsWord(3 4||copies(' ',10000)||5,1))
+
+::method 'test1176'
+    self~assertSame('0', (3 4 5)~caselessContainsWord(3 4||copies(' ',10000)||5,2))
+
+::method 'test1177'
+    v8. = .v8
+    self~assertSame('1', v8.~caselessContainsWord('four'||copies(' ',50000)||'five six',3))
+
+::method 'test1178'
+    v8. = .v8
+    self~assertSame('1', v8.~caselessContainsWord('four'||copies(' ',50000)||'five six',4))
+
+::method 'test1179'
+    v8. = .v8
+    self~assertSame('0', v8.~caselessContainsWord('four'||copies(' ',50000)||'five six',5))
+
+::method 'test1180'
+    v8. = .v8
+    self~assertSame('1', v8.10~caselessContainsWord('three four five',1))
+
+::method 'test1181'
+    v8. = .v8
+    self~assertSame('1', v8.10~caselessContainsWord('three four five',3))
+
+::method 'test1182'
+    v8. = .v8
+    self~assertSame('0', v8.10~caselessContainsWord('three four five',8))
+
+::method 'test1183'
+    self~assertSame('1', (.v26||' '||reverse(.v26))~caselessContainsWord('Z Z',23))
+
+::method 'test1184'
+    self~assertSame('1', (.v26' 'reverse(.v26))~caselessContainsWord('Y Z Z Y',25))
+
+::method 'test1185'
+    self~assertSame('0', (.v26 (reverse(.v26)))~caselessContainsWord('X Y Z Z Y',25))
+::method 'test1186'
+    self~assertSame('1', subStr('one two three four',5,9)~caselessContainsWord('two three',1))
+
+::method 'test1187'
+    self~assertSame('0', subStr('one two three four',5,9)~caselessContainsWord('two three',2))
+
+::method 'test1188'
+    self~assertSame('1', (dataType(6) dataType('A'))~caselessContainsWord('NUM                       CHAR',1))
+
+::method 'test1189'
+    self~assertSame('0', (dataType(6) dataType('A'))~caselessContainsWord('NUM                       CHAR',2))
+
+::method 'test1190'
+    self~assertSame('0', (dataType(6) dataType('A'))~caselessContainsWord('NUM                       CHAR',3))
+/*
+::method 'test1191'
+    .local~remove(v26)
+    .local~remove(v8)
+    .local~remove(v10000)
+    .local~remove(vwbw)
+    .local~remove(vwbwwbw)
+    .local~remove(vc1x)
+    .local~remove(vc140x)
+    .local~remove(vc7x)
+    .local~remove(vc740x)
+    .local~remove(vxnx)
+*/

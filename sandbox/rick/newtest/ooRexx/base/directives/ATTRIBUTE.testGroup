@@ -63,9 +63,15 @@ return testResult
   self~assertFalse(getMethod~isPrivate)
   self~assertTrue(getMethod~isGuarded)
   self~assertTrue(getMethod~isProtected)
+  self~assertTrue(getMethod~isAttribute)
+  self~assertFalse(getMethod~isConstant)
+  self~assertFalse(getMethod~isAbstract)
   self~assertFalse(setMethod~isPrivate)
   self~assertTrue(setMethod~isGuarded)
   self~assertTrue(setMethod~isProtected)
+  self~assertTrue(setMethod~isAttribute)
+  self~assertFalse(setMethod~isConstant)
+  self~assertFalse(setMethod~isAbstract)
 
   -- test how the methods are created
   getmethod = .test~new~instanceMethod("V1")
@@ -73,18 +79,30 @@ return testResult
   self~assertFalse(getMethod~isPrivate)
   self~assertFalse(getMethod~isGuarded)
   self~assertFalse(getMethod~isProtected)
+  self~assertTrue(getMethod~isAttribute)
+  self~assertFalse(getMethod~isConstant)
+  self~assertFalse(getMethod~isAbstract)
   self~assertFalse(setMethod~isPrivate)
   self~assertFalse(setMethod~isGuarded)
   self~assertFalse(setMethod~isProtected)
+  self~assertTrue(setMethod~isAttribute)
+  self~assertFalse(setMethod~isConstant)
+  self~assertFalse(setMethod~isAbstract)
 
   getmethod = .test~instanceMethod("V2")
   setmethod = .test~instanceMethod("V2=")
   self~assertFalse(getMethod~isPrivate)
   self~assertFalse(getMethod~isGuarded)
   self~assertTrue(getMethod~isProtected)
+  self~assertTrue(getMethod~isAttribute)
+  self~assertFalse(getMethod~isConstant)
+  self~assertFalse(getMethod~isAbstract)
   self~assertFalse(setMethod~isPrivate)
   self~assertFalse(setMethod~isGuarded)
   self~assertTrue(setMethod~isProtected)
+  self~assertTrue(setMethod~isAttribute)
+  self~assertFalse(setMethod~isConstant)
+  self~assertFalse(setMethod~isAbstract)
 
   -- test how the methods are created
   getmethod = .test~new~instanceMethod("V2")
@@ -92,9 +110,34 @@ return testResult
   self~assertFalse(getMethod~isPrivate)
   self~assertFalse(getMethod~isGuarded)
   self~assertTrue(getMethod~isProtected)
+  self~assertTrue(getMethod~isAttribute)
+  self~assertFalse(getMethod~isConstant)
+  self~assertFalse(getMethod~isAbstract)
   self~assertFalse(setMethod~isPrivate)
   self~assertFalse(setMethod~isGuarded)
   self~assertTrue(setMethod~isProtected)
+  self~assertTrue(setMethod~isAttribute)
+  self~assertFalse(setMethod~isConstant)
+  self~assertFalse(setMethod~isAbstract)
+
+  getmethod = .test~instanceMethod("V5")
+  setmethod = .test~instanceMethod("V5=")
+  self~assertTrue(getMethod~isAttribute)
+  self~assertFalse(getMethod~isConstant)
+  self~assertTrue(getMethod~isAbstract)
+  self~assertTrue(setMethod~isAttribute)
+  self~assertFalse(setMethod~isConstant)
+  self~assertTrue(setMethod~isAbstract)
+
+  -- test how the methods are created
+  getmethod = .test~new~instanceMethod("V5")
+  setmethod = .test~new~instanceMethod("V5=")
+  self~assertTrue(getMethod~isAttribute)
+  self~assertFalse(getMethod~isConstant)
+  self~assertTrue(getMethod~isAbstract)
+  self~assertTrue(setMethod~isAttribute)
+  self~assertFalse(setMethod~isConstant)
+  self~assertTrue(setMethod~isAbstract)
 
   test = .test~new
   self~assertSame("Fred", .test~v1)
@@ -180,57 +223,71 @@ return testResult
  */
 ::method test_dup_abstract
   self~assertSyntaxError(25.925, -
-     "return 0", -
+     ("return 0", -
      "::class 'TestClass'", -
-     "::attribute foo abstract abstract")
+     "::attribute foo abstract abstract"))
 
 ::method test_bad_name
   self~assertSyntaxError(99.925, -
-     "return 0", -
+     ("return 0", -
      "::class 'TestClass'", -
-     "::attribute 1234")
+     "::attribute 1234"))
 
 ::method test_dup_attr
   self~assertSyntaxError(99.931, -
-     "return 0", -
+     ("return 0", -
      "::class 'TestClass'", -
      "::attribute foo", -
-     "::attribute foo")
+     "::attribute foo"))
 
 ::method test_dup_attr_2
   self~assertSyntaxError(99.931, -
-     "return 0", -
+     ("return 0", -
      "::class 'TestClass'", -
      "::attribute foo get", -
-     "::attribute foo")
+     "::attribute foo"))
 
 ::method test_dup_attr_3
   self~assertSyntaxError(99.931, -
-     "return 0", -
+     ("return 0", -
      "::class 'TestClass'", -
      "::attribute foo set", -
-     "::attribute foo")
+     "::attribute foo"))
 
 ::method test_dup_attr_4
   self~assertSyntaxError(99.931, -
-     "return 0", -
+     ("return 0", -
      "::class 'TestClass'", -
      "::method foo", -
-     "::attribute foo get")
+     "::attribute foo get"))
 
 ::method test_dup_attr_5
   self~assertSyntaxError(99.931, -
-     "return 0", -
+     ("return 0", -
      "::class 'TestClass'", -
      "::method 'foo='", -
-     "::attribute foo set")
+     "::attribute foo set"))
 
 ::method test_bad_code_body
   self~assertSyntaxError(99.937, -
-     "return 0", -
+     ("return 0", -
      "::class 'TestClass'", -
      "::attribute foo", -
-     "  return .true")
+     "  return .true"))
+
+::method test_bad_abstract_set
+  self~assertSyntaxError(99.940, -
+     ("return 0", -
+     "::class 'TestClass'", -
+     "::attribute foo set abstract", -
+     "  return .true"))
+
+::method test_bad_abstract_get
+  self~assertSyntaxError(99.940, -
+     ("return 0", -
+     "::class 'TestClass'", -
+     "::attribute foo get abstract", -
+     "  return .true"))
 
 ::method test_private_1
   test = .test~new
@@ -262,102 +319,355 @@ return testResult
 
 ::method test_external_1
   self~assertSyntaxError(19.905, -
-     "return 0", -
+     ("return 0", -
      "::class 'TestClass'", -
-     "::attribute foo external")
+     "::attribute foo external"))
 
 ::method test_external_2
   self~assertSyntaxError(19.905, -
-     "return 0", -
+     ("return 0", -
      "::class 'TestClass'", -
-     "::attribute foo external mylib")
+     "::attribute foo external mylib"))
 
 ::method test_external_3
   self~assertSyntaxError(99.917, -
-     "return 0", -
+     ("return 0", -
      "::class 'TestClass'", -
-     "::attribute foo external 'mylib'")
+     "::attribute foo external 'mylib'"))
 
 ::method test_external_4
   self~assertSyntaxError(99.917, -
-     "return 0", -
+     ("return 0", -
      "::class 'TestClass'", -
-     "::attribute foo external 'library'")
+     "::attribute foo external 'library'"))
 
 ::method test_external_5
   self~assertSyntaxError(98.903, -
-     "return 0", -
+     ("return 0", -
      "::class 'TestClass'", -
-     "::attribute foo external 'library mylib'")
+     "::attribute foo external 'library mylib'"))
 
 ::method test_external_6
   self~assertSyntaxError(90.998, -
-     "return 0", -
+     ("return 0", -
      "::class 'TestClass'", -
-     "::attribute foo external 'library rxsock'")
+     "::attribute foo external 'library rxsock'"))
 
 ::method test_external_7
   self~assertSyntaxError(90.998, -
-     "return 0", -
+     ("return 0", -
      "::class 'TestClass'", -
-     "::attribute foo get external 'library rxsock'")
+     "::attribute foo get external 'library rxsock'"))
 
 ::method test_external_8
   self~assertSyntaxError(90.998, -
-     "return 0", -
+     ("return 0", -
      "::class 'TestClass'", -
-     "::attribute foo get external 'library rxsock whatever'")
+     "::attribute foo get external 'library rxsock whatever'"))
 
 ::method test_external_9
   self~assertSyntaxError(90.998, -
-     "return 0", -
+     ("return 0", -
      "::class 'TestClass'", -
-     "::attribute foo external 'library rxsock whatever'")
+     "::attribute foo external 'library rxsock whatever'"))
 
 ::method test_external_10
   self~assertSyntaxError(90.998, -
-     "return 0", -
+     ("return 0", -
      "::class 'TestClass'", -
-     "::attribute foo set external 'library rxsock'")
+     "::attribute foo set external 'library rxsock'"))
 
 ::method test_external_11
   self~assertSyntaxError(90.998, -
-     "return 0", -
+     ("return 0", -
      "::class 'TestClass'", -
-     "::attribute foo set external 'library rxsock whatever'")
+     "::attribute foo set external 'library rxsock whatever'"))
 
 ::method test_external_12
   self~assertSyntaxError(99.917, -
-     "return 0", -
+     ("return 0", -
      "::class 'TestClass'", -
-     "::attribute foo external 'library rxsock whatever junk'")
+     "::attribute foo external 'library rxsock whatever junk'"))
 
 ::method test_external_13
   self~assertSyntaxError(25.925, -
-     "return 0", -
+     ("return 0", -
      "::class 'TestClass'", -
-     "::attribute foo abstract external 'library rxsock whatever'")
+     "::attribute foo abstract external 'library rxsock whatever'"))
 
 ::method test_external_14
   self~assertSyntaxError(25.925, -
-     "return 0", -
+     ("return 0", -
      "::class 'TestClass'", -
-     "::attribute foo external 'library rxsock whatever' abstract")
+     "::attribute foo external 'library rxsock whatever' abstract"))
 
 ::method test_external_15
   self~assertSyntaxError(99.937, -
-     "return 0", -
+     ("return 0", -
      "::class 'TestClass'", -
      "::attribute foo external 'library rxsock whatever'", -
-     " return .false")
+     " return .false"))
 
-::method assertSyntaxError
-  use arg syntax
+::method test_get_argument
+  self~expectSyntax(93.902)
+  x = .test~v1(123)
 
-  src = arg(2, 'array')
+::method test_set_argument1
+  self~expectSyntax(93.903)
+  x = .test~"V1="
 
-  self~expectSyntax(syntax)
-  p = .Package~new("constant_TestGroup", src)
+::method test_set_argument2
+  self~expectSyntax(93.902)
+  x = .test~"V1="(1,2)
+
+::method test_set_return
+  x = .test~new~V1 = 123
+  self~assertTrue(\var('RESULT'))
+
+::method testDelegate
+  class = self~buildTestClass('test', ("::class test", "::method init", "expose target", "use strict arg target", -
+      "::attribute anAttribute delegate target"))
+
+  target = .DelegateTarget~new
+  test = class~new(target)
+  self~assertTrue(test~hasMethod('anAttribute'))
+  self~assertTrue(test~hasMethod('anAttribute='))
+  target~anAttribute = 'abc'
+  self~assertEquals('abc', test~anAttribute)
+  test~anAttribute = 'def'
+  self~assertEquals('def', test~anAttribute)
+  self~assertEquals('def', target~anAttribute)
+
+  method = test~instanceMethod('anAttribute')
+  self~assertFalse(method~isPrivate)
+  self~assertFalse(method~isProtected)
+  self~assertFalse(method~isAbstract)
+  self~assertTrue(method~isAttribute)
+  self~assertTrue(method~isGuarded)
+
+  method = test~instanceMethod('anAttribute=')
+  self~assertFalse(method~isPrivate)
+  self~assertFalse(method~isProtected)
+  self~assertFalse(method~isAbstract)
+  self~assertTrue(method~isAttribute)
+  self~assertTrue(method~isGuarded)
+
+  -- explicit set/get methods
+  class = self~buildTestClass('test', ("::class test", "::method init", "expose target", "use strict arg target", -
+      "::attribute anAttribute get delegate target"))
+
+  target = .DelegateTarget~new
+  test = class~new(target)
+  self~assertTrue(test~hasMethod('anAttribute'))
+  self~assertFalse(test~hasMethod('anAttribute='))
+  target~anAttribute = 'abc'
+  self~assertEquals('abc', test~anAttribute)
+
+  method = test~instanceMethod('anAttribute')
+  self~assertFalse(method~isPrivate)
+  self~assertFalse(method~isProtected)
+  self~assertFalse(method~isAbstract)
+  self~assertTrue(method~isAttribute)
+  self~assertTrue(method~isGuarded)
+
+  class = self~buildTestClass('test', ("::class test", "::method init", "expose target", "use strict arg target", -
+      "::attribute anAttribute set delegate target"))
+
+  target = .DelegateTarget~new
+  test = class~new(target)
+  self~assertFalse(test~hasMethod('anAttribute'))
+  self~assertTrue(test~hasMethod('anAttribute='))
+  target~anAttribute = 'abc'
+  test~anAttribute = "def"
+  self~assertEquals('def', target~anAttribute)
+
+  method = test~instanceMethod('anAttribute=')
+  self~assertFalse(method~isPrivate)
+  self~assertFalse(method~isProtected)
+  self~assertFalse(method~isAbstract)
+  self~assertTrue(method~isAttribute)
+  self~assertTrue(method~isGuarded)
+
+  class = self~buildTestClass('test', ("::class test", "::attribute target class", -
+      "::attribute anAttribute delegate target class"))
+
+  target = .DelegateTarget~new
+  class~target = target
+  self~assertTrue(class~hasMethod('anAttribute'))
+  self~assertTrue(class~hasMethod('anAttribute='))
+  target~anAttribute = 'abc'
+  self~assertEquals('abc', class~anAttribute)
+  class~anAttribute = 'def'
+  self~assertEquals('def', class~anAttribute)
+  self~assertEquals('def', target~anAttribute)
+
+  method = class~instanceMethod('anAttribute')
+  self~assertFalse(method~isPrivate)
+  self~assertFalse(method~isProtected)
+  self~assertFalse(method~isAbstract)
+  self~assertTrue(method~isAttribute)
+  self~assertTrue(method~isGuarded)
+
+  method = class~instanceMethod('anAttribute=')
+  self~assertFalse(method~isPrivate)
+  self~assertFalse(method~isProtected)
+  self~assertFalse(method~isAbstract)
+  self~assertTrue(method~isAttribute)
+  self~assertTrue(method~isGuarded)
+
+  -- explicit set/test methods on class
+  class = self~buildTestClass('test', ("::class test", "::attribute target class", -
+      "::attribute anAttribute delegate target get class"))
+
+  target = .DelegateTarget~new
+  class~target = target
+  self~assertTrue(class~hasMethod('anAttribute'))
+  self~assertFalse(class~hasMethod('anAttribute='))
+  target~anAttribute = 'abc'
+  self~assertEquals('abc', class~anAttribute)
+
+  method = class~instanceMethod('anAttribute')
+  self~assertFalse(method~isPrivate)
+  self~assertFalse(method~isProtected)
+  self~assertFalse(method~isAbstract)
+  self~assertTrue(method~isAttribute)
+  self~assertTrue(method~isGuarded)
+
+  class = self~buildTestClass('test', ("::class test", "::attribute target class", -
+      "::attribute anAttribute delegate target set class"))
+
+  target = .DelegateTarget~new
+  class~target = target
+  self~assertFalse(class~hasMethod('anAttribute'))
+  self~assertTrue(class~hasMethod('anAttribute='))
+  target~anAttribute = 'abc'
+  class~anAttribute = 'def'
+  self~assertEquals('def', target~anAttribute)
+
+  method = class~instanceMethod('anAttribute=')
+  self~assertFalse(method~isPrivate)
+  self~assertFalse(method~isProtected)
+  self~assertFalse(method~isAbstract)
+  self~assertTrue(method~isAttribute)
+  self~assertTrue(method~isGuarded)
+
+  -- now test a bunch of explicit attributes on the methods.  These
+  -- can be simpler, since we're just testing the attributes of the created methods
+  class = self~buildTestClass('test', ("::class test", "::attribute classDelegate public delegate target guarded class unprotected", -
+      "::attribute delegate guarded delegate target unprotected public"))
+
+  method = class~instanceMethod('classDelegate')
+  self~assertFalse(method~isPrivate)
+  self~assertFalse(method~isProtected)
+  self~assertFalse(method~isAbstract)
+  self~assertTrue(method~isAttribute)
+  self~assertTrue(method~isGuarded)
+
+  method = class~method('delegate')
+  self~assertFalse(method~isPrivate)
+  self~assertFalse(method~isProtected)
+  self~assertFalse(method~isAbstract)
+  self~assertTrue(method~isAttribute)
+  self~assertTrue(method~isGuarded)
+
+  method = class~instanceMethod('classDelegate=')
+  self~assertFalse(method~isPrivate)
+  self~assertFalse(method~isProtected)
+  self~assertFalse(method~isAbstract)
+  self~assertTrue(method~isAttribute)
+  self~assertTrue(method~isGuarded)
+
+  method = class~method('delegate=')
+  self~assertFalse(method~isPrivate)
+  self~assertFalse(method~isProtected)
+  self~assertFalse(method~isAbstract)
+  self~assertTrue(method~isAttribute)
+  self~assertTrue(method~isGuarded)
+
+  class = self~buildTestClass('test', ("::class test", "::attribute classDelegate private get delegate target unguarded class protected", -
+      "::attribute delegate get unguarded delegate target protected private"))
+
+  method = class~instanceMethod('classDelegate')
+  self~assertTrue(method~isPrivate)
+  self~assertTrue(method~isProtected)
+  self~assertFalse(method~isAbstract)
+  self~assertTrue(method~isAttribute)
+  self~assertFalse(method~isGuarded)
+
+  method = class~method('delegate')
+  self~assertTrue(method~isPrivate)
+  self~assertTrue(method~isProtected)
+  self~assertFalse(method~isAbstract)
+  self~assertTrue(method~isAttribute)
+  self~assertFalse(method~isGuarded)
+
+  self~assertFalse(class~hasMethod("classDelegate="))
+  self~assertFalse(class~new~hasMethod("delegate="))
+
+  class = self~buildTestClass('test', ("::class test", "::attribute classDelegate set class delegate target", -
+      "::attribute delegate set delegate target"))
+
+  method = class~instanceMethod('classDelegate=')
+  self~assertFalse(method~isPrivate)
+  self~assertFalse(method~isProtected)
+  self~assertFalse(method~isAbstract)
+  self~assertTrue(method~isAttribute)
+  self~assertTrue(method~isGuarded)
+
+  method = class~method('delegate=')
+  self~assertFalse(method~isPrivate)
+  self~assertFalse(method~isProtected)
+  self~assertFalse(method~isAbstract)
+  self~assertTrue(method~isAttribute)
+  self~assertTrue(method~isGuarded)
+
+  self~assertFalse(class~hasMethod("classDelegate"))
+  self~assertFalse(class~new~hasMethod("delegate"))
+
+::method test_delegate_no_name
+  self~assertSyntaxError(20.926, "::attribute test delegate")
+
+::method test_delegate_bad_name
+  self~assertSyntaxError(20.926, "::attribute test delegate 'target'")
+
+::method test_delegate_twice
+  self~assertSyntaxError(25.925, "::attribute test delegate target delegate another")
+
+::method test_delegate_abstract
+  self~assertSyntaxError(25.925, "::attribute test delegate target abstract")
+
+::method test_abstract_delegate
+  self~assertSyntaxError(25.925, "::attribute test abstract delegate target")
+
+::method test_delegate_external
+  self~assertSyntaxError(25.925, "::attribute test delegate target external 'LIBRARY REXX file_case_sensitive'")
+
+::method test_external_delegate
+  self~assertSyntaxError(25.925, "::attribute test delegate target external 'LIBRARY REXX file_case_sensitive'")
+
+::method test_delegate_set_no_body
+  self~assertSyntaxError(99.947, ("::attribute test delegate target set", "return 123"))
+
+::method test_delegate_get_no_body
+  self~assertSyntaxError(99.947, ("::attribute test get delegate target", "return 123"))
+
+::method test_dup_attribute
+  self~assertSyntaxError(99.931, ("::attribute test", "::attribute test"))
+
+::method test_dup_attribute_set
+  self~assertSyntaxError(99.931, ("::attribute test", "::attribute test set"))
+
+::method test_dup_attribute_get
+  self~assertSyntaxError(99.931, ("::attribute test", "::attribute test get"))
+
+
+-- simple method for generating a test class
+::method buildTestClass
+  use strict arg name, source
+
+  p = .package~new('test', source)
+  return p~findClass(name)
+
 
 ::class test mixinclass object
 -- initialize some class variables for test usage
@@ -440,3 +750,6 @@ return testResult
   use arg value
   self~v10 = value
 
+-- simple delegate target for testing DELEGATE keyword
+::class DelegateTarget
+::attribute anAttribute

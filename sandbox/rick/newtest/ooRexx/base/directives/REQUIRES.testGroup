@@ -68,84 +68,270 @@ return testResult
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class "REQUIRES.testGroup" public subclass ooTestCase
 
-::attribute functionFileName
-
-::method setUp
-  use arg testResult
-
-   file = .ooRexxUnit.dir || .ooRexxUnit.directory.separator || 'testRequires.rex'
-
-   src = .array~new()
-   src[1] = "/* This is a temporary file for testing the requires directive. */"
-   src[2] = "/* This file can always be deleted. */"
-   src[3] = ""
-   self~functionFileName = createFile(src, file)
-
-   -- If self~functionFileName is the empty string, an error happened.  It
-   -- would be nice at this point to end the test.
-
--- tearDown() is invoked after every test case method has executed.  Use this
--- opportunity to ensure that the temporary files are deleted.
-::method tearDown
-  j = deleteFile(self~functionFileName)
-
 ::method test_requires_library_std
-  -- First assert that the start of the source file has been created.  This
-  -- allows for failing the test if there is some problem creating the file.
-  self~assertNotSame("", self~functionFileName, "Must be able to create source file")
 
   -- We use rxmath because we know it is part of the distribution.
-  src = .array~new
-  src[1] = "return RxCalcSqrt(4)"
-  src[2] = "::requires 'rxmath' LIBRARY"
-  name = addToFile(src, self~functionFileName)
 
-  ret = 'testRequires'()
+  ret = self~runDynamicSource(("return RxCalcSqrt(4)", "::requires 'rxmath' LIBRARY"))
   self~assertSame(2, ret)
 
 ::method test_requires_library_case_mixed
-  self~assertNotSame("", self~functionFileName, "Must be able to create source file")
 
-  src = .array~new
-  src[1] = "return RxCalcSqrt(4)"
-  src[2] = "::requires 'rxmath' LiBRaRY"
-  name = addToFile(src, self~functionFileName)
-
-  ret = 'testRequires'()
+  ret = self~runDynamicSource(("return RxCalcSqrt(4)", "::requires 'rxmath' LiBRaRY"))
   self~assertSame(2, ret)
 
 ::method test_requires_library_case_lower
-  self~assertNotSame("", self~functionFileName, "Must be able to create source file")
 
-  src = .array~new
-  src[1] = "return RxCalcSqrt(4)"
-  src[2] = "::requires 'rxmath' library"
-  name = addToFile(src, self~functionFileName)
-
-  ret = 'testRequires'()
+  ret = self~runDynamicSource(("return RxCalcSqrt(4)", "::requires 'rxmath' library"))
   self~assertSame(2, ret)
 
 ::method  test_requires_library_syntax1
-  self~assertNotSame("", self~functionFileName, "Must be able to create source file")
-
-  src = .array~new
-  src[1] = "return RxCalcSqrt(4)"
-  src[2] = "::requires 'rxmath' LIBRARY EXTENSIVE"
-  name = addToFile(src, self~functionFileName)
-
-  self~expectSyntax(25.904)
-  ret = 'testRequires'()
+  self~assertSyntaxError(25.904, ("return RxCalcSqrt(4)", "::requires 'rxmath' library EXTENSIVE"))
 
 ::method  test_requires_library_syntax2
-  self~assertNotSame("", self~functionFileName, "Must be able to create source file")
+  self~assertSyntaxError(25.904, ("return RxCalcSqrt(4)", "::requires 'rxmath' libraryE"))
 
-  src = .array~new
-  src[1] = "return RxCalcSqrt(4)"
-  src[2] = "::requires 'rxmath' LIBRARYE"
-  name = addToFile(src, self~functionFileName)
+::method test_missing_library_requires
+  self~assertSyntaxError(98.903, ("return RxCalcSqrt(4)", "::requires 'rxmathxxxxxxxx' library"))
 
-  self~expectSyntax(25.904)
-  ret = 'testRequires'()
+::method test_missing_requires_file
+  self~assertSyntaxError(43.901, ("return RxCalcSqrt(4)", "::requires 'notthere.cls'"))
 
+::method test_bad_requires_option
+  self~assertSyntaxError(25.904, ("return RxCalcSqrt(4)", "::requires 'notthere.cls' foo"))
+
+::method test_missing_namespace_name
+  self~assertSyntaxError(20.920, ("return RxCalcSqrt(4)", "::requires 'notthere.cls' namespace"))
+
+::method test_string_namespace_name
+  self~assertSyntaxError(20.920, ("return RxCalcSqrt(4)", "::requires 'notthere.cls' namespace 'fred'"))
+
+::method test_bad_namespace_name
+  self~assertSyntaxError(20.920, ("return RxCalcSqrt(4)", "::requires 'notthere.cls' namespace *"))
+
+::method test_no_requires_name
+  self~assertSyntaxError(19.904, ("return RxCalcSqrt(4)", "::requires"))
+
+::method test_no_requires_name_notgood
+  self~assertSyntaxError(19.904, ("return RxCalcSqrt(4)", "::requires *"))
+
+::method test_basic_good_requires
+
+  -- create the requires file as a temporary file
+  file = .TemporaryTestFile~new(self, "basic_good.cls")
+  file~create(("::class test public", "::constant testValue 123", "::routine testRoutine public", "return 'abc'"))
+
+  -- test basic access to both a public routine and a public class.
+  ret = self~runDynamicSource(("return .test~testValue||testRoutine()", "::requires 'basic_good.cls'"))
+  self~assertEquals("123abc", ret)
+
+::method test_no_public_class
+
+  -- create the requires file as a temporary file
+  file = .TemporaryTestFile~new(self, "no_public_class.cls")
+  file~create(("::class test", "::constant testValue 123"))
+
+  -- test basic access to both a public routine and a public class.
+  self~assertRuntimeError(97.1, ("return .test~testValue", "::requires 'no_public_class.cls'"))
+
+::method test_no_public_routine
+
+  -- create the requires file as a temporary file
+  file = .TemporaryTestFile~new(self, "no_public_routine.cls")
+  file~create(("::routine testRoutine private", "return 'abc'"))
+
+  -- test basic access to both a public routine and a public class.
+  self~assertRuntimeError(43.1, ("return testRoutine()", "::requires 'no_public_routine.cls'"))
+
+::method test_namespace_good_requires
+
+  -- create the requires file as a temporary file
+  file = .TemporaryTestFile~new(self, "namespace_good.cls")
+  file~create(("::class test public", "::constant testValue 123", "::routine testRoutine public", "return 'abc'"))
+
+  -- test basic access to both a public routine and a public class.
+  ret = self~runDynamicSource(("call mytest:testRoutine", "return result||mytest:test~testValue||mytest:testRoutine()", "::requires 'namespace_good.cls' namespace mytest"))
+  self~assertEquals("abc123abc", ret)
+
+::method test_namespace_no_public_class
+
+  -- create the requires file as a temporary file
+  file = .TemporaryTestFile~new(self, "namespace_no_public_class.cls")
+  file~create(("::class test", "::constant testValue 123"))
+
+  -- test basic access to both a public routine and a public class.
+  self~assertRuntimeError(98.988, ("return mytest:test~testValue", "::requires 'namespace_no_public_class.cls' namespace mytest"))
+
+::method test_namespace_no_public_routine
+
+  -- create the requires file as a temporary file
+  file = .TemporaryTestFile~new(self, "namespace_no_public_routine.cls")
+  file~create(("::routine testRoutine private", "return 'abc'"))
+
+  -- test basic access to both a public routine and a public class.
+  self~assertRuntimeError(43.902, ("return mytest:testRoutine()", "::requires 'namespace_no_public_routine.cls' namespace mytest"))
+
+::method test_namespace_no_public_call
+
+  -- create the requires file as a temporary file
+  file = .TemporaryTestFile~new(self, "namespace_no_public_call.cls")
+  file~create(("::routine testRoutine private", "return 'abc'"))
+
+  -- test basic access to both a public routine and a public class.
+  self~assertRuntimeError(43.902, ("call mytest:testRoutine", "return result", "::requires 'namespace_no_public_call.cls' namespace mytest"))
+
+::method test_multiple_namespace
+
+  -- create the requires files as temporary files
+  file = .TemporaryTestFile~new(self, "multiple_namespace_a.cls")
+  file~create(("::class test public", "::constant testValue 123", "::routine testRoutine public", "return 'abc'"))
+
+  -- create the requires files as temporary files
+  file = .TemporaryTestFile~new(self, "multiple_namespace_b.cls")
+  file~create(("::class test public", "::constant testValue 456", "::routine testRoutine public", "return 'def'"))
+
+  -- now access both classes and routines in both namespaces, plus the default
+  ret = self~runDynamicSource(("res = .test~testValue||test_a:test~testValue||test_b:test~testValue", -
+      "return res testRoutine()||test_a:testRoutine()||test_b:testRoutine()", -
+      "::requires 'multiple_namespace_a.cls' namespace test_a", "::requires 'multiple_namespace_b.cls' namespace test_b"))
+
+  self~assertEquals("123123456 abcabcdef", ret)
+
+::method test_multiple_namespace2
+
+  -- create the requires files as temporary files
+  file = .TemporaryTestFile~new(self, "multiple_namespace2_a.cls")
+  file~create(("::class test public", "::constant testValue 123", "::routine testRoutine public", "return 'abc'"))
+
+  -- create the requires files as temporary files
+  file = .TemporaryTestFile~new(self, "multiple_namespace2_b.cls")
+  file~create(("::class test public", "::constant testValue 456", "::routine testRoutine public", "return 'def'"))
+
+  -- now access both classes and routines in both namespaces, plus the default
+  ret = self~runDynamicSource(("res = .test~testValue||test_a:test~testValue||test_b:test~testValue", -
+      "return res testRoutine()||test_a:testRoutine()||test_b:testRoutine()", -
+      "::class test public", "::constant testValue 789", "::routine testRoutine public", "return 'ghi'", -
+      "::requires 'multiple_namespace2_a.cls' namespace test_a", "::requires 'multiple_namespace2_b.cls' namespace test_b"))
+
+  self~assertEquals("789123456 ghiabcdef", ret)
+
+::method test_cascaded_requires
+
+  -- create the requires files as temporary files
+  file = .TemporaryTestFile~new(self, "cascade_a.cls")
+  file~create(("::class testa public", "::constant testValue 123", "::routine testRoutinea public", "return 'abc'"))
+
+  -- create the requires files as temporary files
+  file = .TemporaryTestFile~new(self, "cascade_b.cls")
+  file~create(("::class testb public", "::constant testValue 456", "::routine testRoutineb public", "return 'def'", -
+      "::requires 'cascade_a.cls' namespace test"))
+
+  -- now access both classes and routines in both namespaces, plus the default
+  ret = self~runDynamicSource(("res = .test~testValue||.testa~testValue||.testb~testValue", -
+      "return res testRoutine()||testRoutinea()||testRoutineb()", -
+      "::class test public", "::constant testValue 789", "::routine testRoutine public", "return 'ghi'", -
+      "::requires 'cascade_b.cls'"))
+
+  self~assertEquals("789123456 ghiabcdef", ret)
+
+::method test_cascaded_requires2
+
+  -- create the requires files as temporary files
+  file = .TemporaryTestFile~new(self, "cascade2_a.cls")
+  file~create(("::class test public", "::constant testValue 123", "::routine testRoutine public", "return 'abc'"))
+
+  -- create the requires files as temporary files
+  file = .TemporaryTestFile~new(self, "cascade2_b.cls")
+  file~create(("::class test public", "::constant testValue 456", "::routine testRoutine public", "return 'def'", -
+      "::requires 'cascade2_a.cls' namespace test"))
+
+  -- now access both classes and routines in both namespaces, plus the default
+  ret = self~runDynamicSource(("res = .test~testValue||test_a:test~testValue", -
+      "return res testRoutine()||test_a:testRoutine()", -
+      "::class test public", "::constant testValue 789", "::routine testRoutine public", "return 'ghi'", -
+      "::requires 'cascade2_b.cls' namespace test_a"))
+
+  self~assertEquals("789456 ghidef", ret)
+
+::method test_cascaded_requires3
+
+  -- create the requires files as temporary files
+  file = .TemporaryTestFile~new(self, "cascade3_a.cls")
+  file~create(("::class test public", "::constant testValue 123", "::routine testRoutine public", "return 'abc'"))
+
+  -- create the requires files as temporary files this one has conflicts, but the name
+  -- conflicts are private.  The public ones should show through to the top
+  file = .TemporaryTestFile~new(self, "cascade3_b.cls")
+  file~create(("::class test private", "::constant testValue 456", "::routine testRoutine", "return 'def'", -
+      "::requires 'cascade3_a.cls' namespace test"))
+
+  -- now access both classes and routines in both namespaces, plus the default
+  ret = self~runDynamicSource(("res = .test~testValue||test_a:test~testValue", -
+      "return res testRoutine()||test_a:testRoutine()", -
+      "::class test public", "::constant testValue 789", "::routine testRoutine public", "return 'ghi'", -
+      "::requires 'cascade3_b.cls' namespace test_a"))
+
+  self~assertEquals("789123 ghiabc", ret)
+
+::method test_prolog
+
+  -- create the requires files as temporary files
+  file = .TemporaryTestFile~new(self, "prolog.cls")
+  file~create(("parse source . calltype .", ".local~prologTest = calltype", "::class test public", -
+      "::constant testValue 123", "::routine testRoutine public", "return 'abc'"))
+
+  .local~removeEntry('PROLOGTEST')
+
+  -- now access both classes and routines in both namespaces, plus the default
+  ret = self~runDynamicSource(("return .test~testValue||testRoutine()", -
+      "::requires 'prolog.cls'"))
+
+  self~assertEquals("REQUIRES", .local~prologTest)
+  self~assertEquals("123abc", ret)
+
+::method test_prolog2
+
+  -- create the requires files as temporary files
+  file = .TemporaryTestFile~new(self, "prolog2.cls")
+  file~create(("parse source . calltype .", ".local~prologTest = calltype", "::class test public", -
+      "::options prolog", "::constant testValue 123", "::routine testRoutine public", "return 'abc'"))
+
+  .local~removeEntry('PROLOGTEST')
+
+  -- now access both classes and routines in both namespaces, plus the default
+  ret = self~runDynamicSource(("return .test~testValue||testRoutine()", -
+      "::requires 'prolog2.cls'"))
+
+  self~assertEquals("REQUIRES", .local~prologTest)
+  self~assertEquals("123abc", ret)
+
+::method test_prolog3
+
+  -- create the requires files as temporary files
+  file = .TemporaryTestFile~new(self, "prolog3.cls")
+  file~create(("parse source . calltype .", ".local~prologTest = calltype", "::class test public", -
+      "::options noprolog", "::constant testValue 123", "::routine testRoutine public", "return 'abc'"))
+
+  .local~removeEntry('PROLOGTEST')
+
+  -- now access both classes and routines in both namespaces, plus the default
+  ret = self~runDynamicSource(("return .test~testValue||testRoutine()", -
+      "::requires 'prolog3.cls'"))
+
+  self~assertSame(.nil, .local~prologTest)
+  self~assertEquals("123abc", ret)
+
+::method test_activate
+
+  -- create the requires files as temporary files
+  file = .TemporaryTestFile~new(self, "activate.cls")
+  file~create(("::class test public", "::method activate class", ".local~activatetest = .test2", "::class test2 public"))
+
+  .local~removeEntry('ACTIVATETEST')
+
+  -- now access both classes and routines in both namespaces, plus the default
+  test2 = self~runDynamicSource(("return .test2", "::requires 'activate.cls'"))
+
+  self~assertSame(test2, .local~activateTest)
 
 -- End of class: REQUIRES.testGroup

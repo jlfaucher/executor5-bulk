@@ -1,0 +1,524 @@
+#!/usr/bin/rexx
+/*
+  SVN Revision: $Rev: 3371 $
+  Change Date:  $Date: 2008-09-21 00:33:29 -0400 (Sun, 21 Sep 2008) $
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2008 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
+  group = .TestGroup~new(fileSpec)
+
+  group~add(.ANNOTATE.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires 'ooTest.frm'
+
+-- this first one is just to show that ::annotate package with no items is not an error
+::annotate package
+
+-- in this package, we add a lot of annotations for things so
+-- stuff can be checked right from static code
+::annotate package version 1 count +2 negative -1
+::method unattached_method
+-- an itemless one as a double check
+::annotate method 'unattached_method'
+::annotate method 'unattached_method' version 5
+
+::class "ANNOTATE.testGroup" subclass ooTestCase public
+
+::method test_package_annotations
+  package = .context~package
+  self~assertEquals('Frodo', package~annotation('author'))
+  self~assertEquals(2, package~annotation('Version'))
+  self~assertEquals("+2", package~annotation('COUNT'))
+  self~assertEquals("-1", package~annotation('NeGaTiVe'))
+  self~assertEquals(.nil, package~annotation('NotSet'))
+
+  test = .stringtable~of(('AUTHOR', 'Frodo'), ('VERSION', 2), ('COUNT', "+2"), ('NEGATIVE', "-1"))
+  self~assertTrue(test~equivalent(package~annotations))
+
+  package~annotations~count = 5
+  self~assertEquals("5", package~annotation('COUNT'))
+
+  -- copy the package...this should get a new copy of the annotations table
+  newPackage = package~copy
+  self~assertEquals(2, newPackage~annotation('Version'))
+
+  -- bump the version.  This should change the copy version but
+  -- leave the original alone
+  newPackage~annotations~version = 3
+  self~assertEquals(3, newPackage~annotation('Version'))
+  self~assertEquals(2, package~annotation('Version'))
+
+
+::method test_class_annotations
+  self~assertEquals("Willow", .tester~annotation('author'))
+  self~assertEquals(.nil, .tester~annotation('notSet'))
+  self~assertEquals("This is a test", .annotate.testgroup~annotation('HELP'))
+
+  test = .stringtable~of(('AUTHOR', "Willow"))
+  self~assertTrue(test~equivalent(.tester~annotations))
+
+  self~assertEquals(.nil, .unannotated~annotation('help'))
+  self~assertTrue(.stringTable~new~equivalent(.unannotated~annotations))
+
+  .unannotated~annotations~help = "Something New"
+  self~assertEquals("Something New", .unannotated~annotation('help'))
+
+::method test_routine_annotations
+  r = .routines~aRoutine
+  self~assertEquals(100, r~annotation('VERSION'))
+  self~assertEquals(.nil, r~annotation('NOTTHERE'))
+
+  test = .stringtable~of(('VERSION', 100))
+  self~assertTrue(test~equivalent(r~annotations))
+
+  -- copy tests...the new copy gets its own annotation set
+  newRoutine = r~copy
+  newRoutine~annotations~version = 200
+  self~assertEquals(100, r~annotation('VERSION'))
+  self~assertEquals(200, newRoutine~annotation('VERSION'))
+
+
+  r = .routines~unannotated
+
+  self~assertEquals(.nil, r~annotation('help'))
+  self~assertTrue(.stringTable~new~equivalent(r~annotations))
+
+  r~annotations~help = "Something New"
+  self~assertEquals("Something New", r~annotation('help'))
+
+  -- NOTE: class objects cannot be copied, so we don't test that here.
+
+  -- however, class objects are created from their metaclasses and should
+  -- not inherit the annotations.
+  self~assertEquals(100, .aMetaClass~annotations['VERSION'])
+  self~assertEquals(.nil, .derivedClass~annotations['VERSION'])
+
+::method test_method_annotations
+  -- start with the unattached method
+  m = .methods~unattached_method
+
+  self~assertEquals(5, m~annotation('VERSION'))
+  self~assertEquals(.nil, m~annotation('NOTTHERE'))
+
+  test = .stringtable~of(('VERSION', 5))
+  self~assertTrue(test~equivalent(m~annotations))
+
+  m~annotations~version = 6
+  self~assertEquals(6, m~annotation('VERSION'))
+
+  -- copy the method object and verify the annotations
+  -- are disconnected.
+  newMethod = m~copy
+
+  newMethod~annotations~version = 7
+  self~assertEquals(6, m~annotation('VERSION'))
+  self~assertEquals(7, newMethod~annotation('VERSION'))
+
+  -- the tester class has both class and instance methods named
+  -- unattached_method.  Verify these have picked up the correct
+  -- annotations.
+
+  classMethod = .tester~instanceMethod('UNATTACHED_METHOD')
+  instanceMethod = .tester~method('UNATTACHED_METHOD')
+
+  -- we've already verified the basics of method annotations...so
+  -- just verify that these two methods have picked up the
+  -- correct annotation values
+
+  self~assertEquals(4, classMethod~annotation('VERSION'))
+  self~assertEquals(3, instanceMethod~annotation('VERSION'))
+
+  -- an method with no annotations
+  method = .tester~method('unannotated')
+  self~assertEquals(.nil, method~annotation('VERSION'))
+
+  -- not check annotations on abstract methods
+  instanceMethod = .tester~method('abstractMethod')
+  self~assertEquals(204, instanceMethod~annotation('VERSION'))
+
+::method test_constant_annotation
+  -- constants are really just methods, so one the annotations get
+  -- attached, everything else is good.  We need to make sure that
+  -- both the instance and class method get this.  Since there is just
+  -- a single shared method object, this should work.
+  classMethod = .tester~instanceMethod('aConstant')
+  instanceMethod = .tester~method('aConstant')
+
+  self~assertEquals(109, classMethod~annotation('VERSION'))
+  self~assertEquals(109, instanceMethod~annotation('VERSION'))
+
+
+::method test_attribute_annotation
+  -- lots of different tests here for different ways of creating attributes.
+  -- Attributes are complicated because there are two methods involved...but
+  -- not necessarily.  We might only have one of the pair, depending on how
+  -- the attribute is created.
+
+  -- The first two are for attributes that are defined on the the instance
+  -- and class with the same name.  They are annotated separately.  We have
+  -- 4 methods to check here
+  classGet = .tester~instanceMethod('anAttribute')
+  classSet = .tester~instanceMethod('anAttribute=')
+  instanceGet = .tester~method('anAttribute')
+  instanceSet = .tester~method('anAttribute=')
+
+  self~assertEquals(102, classGet~annotation('VERSION'))
+  self~assertEquals(102, classSet~annotation('VERSION'))
+  self~assertEquals(101, instanceGet~annotation('VERSION'))
+  self~assertEquals(101, instanceSet~annotation('VERSION'))
+
+  -- now the same tests for attributes created using ::method attribute
+  classGet = .tester~instanceMethod('aMethodAttribute')
+  classSet = .tester~instanceMethod('aMethodAttribute=')
+  instanceGet = .tester~method('aMethodAttribute')
+  instanceSet = .tester~method('aMethodAttribute=')
+
+  self~assertEquals(1, classGet~annotation('VERSION'))
+  self~assertEquals(1, classSet~annotation('VERSION'))
+  self~assertEquals(1a, instanceGet~annotation('VERSION'))
+  self~assertEquals(1a, instanceSet~annotation('VERSION'))
+
+  -- now attributes where the getter and setter are
+  -- specified separately
+  instanceGet = .tester~method('anotherAttribute')
+  instanceSet = .tester~method('anotherAttribute=')
+
+  self~assertEquals(103, instanceGet~annotation('VERSION'))
+  self~assertEquals(103, instanceSet~annotation('VERSION'))
+
+  classGet = .tester~instanceMethod('anotherClassAttribute')
+  classSet = .tester~instanceMethod('anotherClassAttribute=')
+
+  self~assertEquals(104, classGet~annotation('VERSION'))
+  self~assertEquals(104, classSet~annotation('VERSION'))
+
+  -- now singleton set/get attributes
+
+  -- note, these are different attribute names
+  instanceGet = .tester~method('aGetAttribute')
+  instanceSet = .tester~method('aSetAttribute=')
+
+  self~assertEquals(106, instanceGet~annotation('VERSION'))
+  self~assertEquals(105, instanceSet~annotation('VERSION'))
+
+  classGet = .tester~instanceMethod('aClassGetAttribute')
+  classSet = .tester~instanceMethod('aClassSetAttribute=')
+
+  self~assertEquals(108, classGet~annotation('VERSION'))
+  self~assertEquals(107, classSet~annotation('VERSION'))
+
+  -- note, these are different attribute names
+  instanceGet = .tester~method('split2')
+  instanceSet = .tester~method('split1=')
+
+  self~assertEquals(201, instanceGet~annotation('VERSION'))
+  self~assertEquals(200, instanceSet~annotation('VERSION'))
+
+  -- the class attributes should be unannotated
+  classGet = .tester~instanceMethod('split1')
+  classSet = .tester~instanceMethod('split2=')
+
+  self~assertTrue(classGet~annotations~isEmpty())
+  self~assertTrue(classGet~annotations~isEmpty())
+
+  -- attributes defined with a code body.  We'll just do the
+  -- instance versions here, since all other class vs. instance checks
+  -- have passed.  We're just looking to see if this form of attribute
+  -- is handled properly.
+
+  instanceGet = .tester~method('codeAttribute')
+  instanceSet = .tester~method('codeAttribute=')
+
+  self~assertEquals(202, instanceGet~annotation('VERSION'))
+  self~assertEquals(202, instanceSet~annotation('VERSION'))
+
+  -- and finally an attribute defined as abstract...these can still be
+  -- annotated
+
+  instanceGet = .tester~method('abstractAttribute')
+  instanceSet = .tester~method('abstractAttribute=')
+
+  self~assertEquals(203, instanceGet~annotation('VERSION'))
+  self~assertEquals(203, instanceSet~annotation('VERSION'))
+
+-- start of syntax checks
+
+::method test_annotate_no_target_type
+  self~assertSyntaxError(20.924, "::annotate")
+
+::method test_annotate_string_target_type
+  self~assertSyntaxError(19.925, "::annotate "CLASS"")
+
+::method test_annotate_unknown_target_type
+  self~assertSyntaxError(25.928, "::annotate collection foo")
+
+::method test_annotate_class_no_name
+  self~assertSyntaxError(19.925, "::annotate class")
+
+::method test_annotate_class_bad_name
+  self~assertSyntaxError(19.925, "::annotate class *")
+
+::method test_annotate_class_unknown
+  self~assertSyntaxError(99.945, "::annotate class yadayada")
+
+::method test_annotate_class_bad_attribute_name
+  self~assertSyntaxError(20.919, ("::class test", "::annotate class test 'VERSION'"))
+
+::method test_annotate_class_missing_attribute_value
+  self~assertSyntaxError(19.924, ("::class test", "::annotate class test version"))
+
+::method test_annotate_class_bad_attribute_value
+  self~assertSyntaxError(19.923, ("::class test", "::annotate class test version *"))
+
+::method test_annotate_class_bad_attribute_plus_value
+  self~assertSyntaxError(19.923, ("::class test", "::annotate class test version +abc"))
+
+::method test_annotate_class_bad_attribute_minus_value
+  self~assertSyntaxError(19.923, ("::class test", "::annotate class test version -abc"))
+
+::method test_annotate_routine_no_name
+  self~assertSyntaxError(19.925, "::annotate routine")
+
+::method test_annotate_routine_bad_name
+  self~assertSyntaxError(19.925, "::annotate routine *")
+
+::method test_annotate_routine_unknown
+  self~assertSyntaxError(99.945, "::annotate routine yadayada")
+
+::method test_annotate_routine_bad_attribute_name
+  self~assertSyntaxError(20.919, ("::routine test", "::annotate routine test 'VERSION'"))
+
+::method test_annotate_routine_missing_attribute_value
+  self~assertSyntaxError(19.924, ("::routine test", "::annotate routine test version"))
+
+::method test_annotate_routine_bad_attribute_value
+  self~assertSyntaxError(19.923, ("::routine test", "::annotate routine test version *"))
+
+::method test_annotate_routine_bad_attribute_plus_value
+  self~assertSyntaxError(19.923, ("::routine test", "::annotate routine test version +abc"))
+
+::method test_annotate_routine_bad_attribute_minus_value
+  self~assertSyntaxError(19.923, ("::routine test", "::annotate routine test version -abc"))
+
+::method test_annotate_method_no_name
+  self~assertSyntaxError(19.925, "::annotate method")
+
+::method test_annotate_method_bad_name
+  self~assertSyntaxError(19.925, "::annotate method *")
+
+::method test_annotate_method_unknown
+  self~assertSyntaxError(99.945, "::annotate method yadayada")
+
+::method test_annotate_method_bad_attribute_name
+  self~assertSyntaxError(20.919, ("::method test", "::annotate method test 'VERSION'"))
+
+::method test_annotate_method_missing_attribute_value
+  self~assertSyntaxError(19.924, ("::method test", "::annotate method test version"))
+
+::method test_annotate_method_bad_attribute_value
+  self~assertSyntaxError(19.923, ("::method test", "::annotate method test version *"))
+
+::method test_annotate_method_bad_attribute_plus_value
+  self~assertSyntaxError(19.923, ("::method test", "::annotate method test version +abc"))
+
+::method test_annotate_method_bad_attribute_minus_value
+  self~assertSyntaxError(19.923, ("::method test", "::annotate method test version -abc"))
+
+::method test_annotate_attribute_no_name
+  self~assertSyntaxError(19.925, "::annotate attribute")
+
+::method test_annotate_attribute_bad_name
+  self~assertSyntaxError(19.925, "::annotate attribute *")
+
+::method test_annotate_attribute_unknown
+  self~assertSyntaxError(99.945, "::annotate attribute yadayada")
+
+::method test_annotate_attribute_bad_attribute_name
+  self~assertSyntaxError(20.919, ("::attribute test", "::annotate attribute test 'VERSION'"))
+
+::method test_annotate_attribute_missing_attribute_value
+  self~assertSyntaxError(19.924, ("::attribute test", "::annotate attribute test version"))
+
+::method test_annotate_attribute_bad_attribute_value
+  self~assertSyntaxError(19.923, ("::attribute test", "::annotate attribute test version *"))
+
+::method test_annotate_attribute_bad_attribute_plus_value
+  self~assertSyntaxError(19.923, ("::attribute test", "::annotate attribute test version +abc"))
+
+::method test_annotate_attribute_bad_attribute_minus_value
+  self~assertSyntaxError(19.923, ("::attribute test", "::annotate attribute test version -abc"))
+
+::method test_annotate_constant_no_name
+  self~assertSyntaxError(19.925, "::annotate constant")
+
+::method test_annotate_constant_bad_name
+  self~assertSyntaxError(19.925, "::annotate constant *")
+
+::method test_annotate_constant_unknown
+  self~assertSyntaxError(99.945, "::annotate constant yadayada")
+
+::method test_annotate_constant_bad_constant_name
+  self~assertSyntaxError(20.919, ("::constant test", "::annotate constant test 'VERSION'"))
+
+::method test_annotate_constant_missing_constant_value
+  self~assertSyntaxError(19.924, ("::constant test", "::annotate constant test version"))
+
+::method test_annotate_constant_bad_constant_value
+  self~assertSyntaxError(19.923, ("::constant test", "::annotate constant test version *"))
+
+::method test_annotate_constant_bad_constant_plus_value
+  self~assertSyntaxError(19.923, ("::constant test", "::annotate constant test version +abc"))
+
+::method test_annotate_constant_bad_constant_minus_value
+  self~assertSyntaxError(19.923, ("::constant test", "::annotate constant test version -abc"))
+
+::method test_annotate_constant_non_constant_method
+  self~assertSyntaxError(99.945, ("::method test", "::annotate constant test version abc"))
+
+::method test_annotate_attribute_non_attribute_method
+  self~assertSyntaxError(99.945, ("::method test", "::annotate attribute test version abc"))
+
+-- tests for no annotations on an entity
+::class unannotated
+::routine unannotated
+
+::class tester
+::annotate class tester
+::annotate class tester author "Willow"
+::method unattached_method class
+-- this will annotate the class method
+::annotate method unattached_method version 4
+::method unattached_method
+-- this will annotate the instance method
+::annotate method unattached_method version 3
+-- override and add to the package annotations
+::annotate package author "Frodo" version 2
+-- reach back more classes
+::annotate class annotate.testgroup help "This is a test"
+
+-- a pair of attributes define at the class level and instance
+-- level with the same name.  Annotate both
+::attribute anAttribute class
+::annotate attribute anAttribute
+::annotate attribute anAttribute version 102
+::attribute anAttribute
+::annotate attribute anAttribute version 101
+-- defined via ::method
+::method aMethodAttribute attribute class
+::annotate attribute aMethodAttribute version 1
+::method aMethodAttribute attribute
+::annotate attribute aMethodAttribute version 1a
+
+
+-- separately defined
+::attribute anotherAttribute set
+::attribute anotherAttribute get
+::attribute anotherClassAttribute class set
+::attribute anotherClassAttribute class get
+
+-- only a single setter/getter
+::attribute aSetAttribute set
+::attribute aGetAttribute get
+
+-- only a single setter/getter, but for a class
+::attribute aClassSetAttribute class set
+::attribute aClassGetAttribute class get
+
+-- these are a little complicated.  We define a setter on
+-- either the instance or class level and a getter with the
+-- name name on the other level.  The annotation operation
+-- will only touch the instance version because the instance
+-- is checked first
+::attribute split1 get class
+::attribute split1 set
+
+::attribute split2 get
+::attribute split2 set class
+
+::annotate attribute split1 version 200
+::annotate attribute split2 version 201
+
+-- attributes defined with a code body
+::attribute codeAttribute get
+  expose codeAttribute
+  return codeAttribute
+
+::attribute codeAttribute set
+  expose codeAttribute
+  use strict arg codeAttribute
+
+::annotate attribute codeAttribute version 202
+
+-- some abstract tests
+::attribute abstractAttribute abstract
+::annotate attribute abstractAttribute version 203
+::attribute abstractMethod abstract
+::annotate method abstractMethod version 204
+
+::method unannotated
+
+::constant aConstant 123
+
+::routine aRoutine
+::annotate routine aRoutine
+::annotate routine aRoutine version 100
+::annotate attribute anotherAttribute version 103
+::annotate attribute anotherClassAttribute version 104
+::annotate attribute aSetAttribute version 105
+::annotate attribute aGetAttribute version 106
+::annotate attribute aClassSetAttribute version 107
+::annotate attribute aClassGetAttribute version 108
+::annotate constant aConstant version 109
+
+-- make sure that classes do not inherit annotations from the metaclasses
+::class aMetaClass subclass class
+::annotate class aMetaClass version 100
+
+::class derivedClass metaclass aMetaclass
+
+
+
+
+

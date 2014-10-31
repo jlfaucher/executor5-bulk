@@ -1,0 +1,182 @@
+#!/usr/bin/rexx
+/*
+  SVN Revision: $Rev: 10579 $
+  Change Date:  $Date: 2014-09-29 12:57:30 -0400 (Mon, 29 Sep 2014) $
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2008 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
+  group = .TestGroup~new(fileSpec)
+
+  group~add(.OPTIONS.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires 'ooTest.frm'
+
+::class "OPTIONS.testGroup" subclass ooTestCase public
+
+::method test_option_settings
+
+  -- this references an uninitialized variable, which should have no impact.
+  package = self~runDynamicSource(("x = b", "return .context~package", "::options"))
+  self~assertEquals(.rexxinfo~digits, package~digits)
+  self~assertEquals(.rexxinfo~form, package~form)
+  self~assertEquals(.rexxinfo~fuzz, package~fuzz)
+  self~assertEquals("N", package~trace)
+
+  package = self~runDynamicSource(("x = b", "return .context~package", "::options digits 14 fuzz 2 form engineering trace ?c    "))
+  self~assertEquals(14, package~digits)
+  self~assertEquals('ENGINEERING', package~form)
+  self~assertEquals(2, package~fuzz)
+  self~assertEquals("?C", package~trace)
+
+  -- same as above, but all values as quoted strings
+  package = self~runDynamicSource(("x = b", "return .context~package", "::options digits '14' fuzz '2' form ENGINEERING trace '?C'"))
+  self~assertEquals(14, package~digits)
+  self~assertEquals('ENGINEERING', package~form)
+  self~assertEquals(2, package~fuzz)
+  self~assertEquals("?C", package~trace)
+
+  -- testing a few more valid options
+  package = self~runDynamicSource(("x = b", "return .context~package", "::options digits '20' fuzz 10 form SCIENTIFIC trace 'N'"))
+  self~assertEquals(20, package~digits)
+  self~assertEquals(SCIENTIFIC, package~form)
+  self~assertEquals(10, package~fuzz)
+  self~assertEquals("N", package~trace)
+
+  -- now test that these have really been set
+  ret = self~runDynamicSource(("x = b", "return digits() fuzz() form() trace()", "::options digits '20' fuzz 10 form SCIENTIFIC trace 'N'"))
+  self~assertEquals("20 10 SCIENTIFIC N", ret)
+
+  -- ok, testing options specified multiple times on the same ::options statement
+  package = self~runDynamicSource(("x = b", "return .context~package", "::options digits 12 digits 20"))
+  self~assertEquals(20, package~digits)
+
+  package = self~runDynamicSource(("x = b", "return .context~package", "::options fuzz 2 fuzz 1"))
+  self~assertEquals(1, package~fuzz)
+
+  package = self~runDynamicSource(("x = b", "return .context~package", "::options form scientific form engineering"))
+  self~assertEquals('ENGINEERING', package~form)
+
+  -- now test multiple ::options statements in a package...the accumulate
+
+  package = self~runDynamicSource(("x = b", "return .context~package", "::options digits 10", "::options form engineering", "::options fuzz 2"))
+  self~assertEquals('ENGINEERING', package~form)
+  self~assertEquals(2, package~fuzz)
+  self~assertEquals(10, package~digits)
+
+::method test_missing_digits
+  self~assertSyntaxError(19.917, "::options digits")
+
+::method test_missing_form
+  self~assertSyntaxError(20.925, "::options form")
+
+::method test_bad_form
+  self~assertSyntaxError(25.11, "::options form artistic")
+
+::method test_missing_fuzz
+  self~assertSyntaxError(19.918, "::options fuzz")
+
+::method test_missing_trace
+  self~assertSyntaxError(19.919, "::options trace")
+
+::method test_nonnumeric_digits
+  self~assertSyntaxError(26.5, "::options digits a")
+
+::method test_nonnumber_fuzz
+  self~assertSyntaxError(26.6, "::options fuzz a")
+
+::method test_negative_digits
+  self~assertSyntaxError(26.5, "::options digits '-1'")
+
+::method test_negative_fuzz
+  self~assertSyntaxError(26.6, "::options fuzz '-1'")
+
+::method test_fuzz_equal_digits
+  self~assertSyntaxError(33.1, "::options fuzz 9")
+
+::method test_fuzz_greater_than_digits
+  self~assertSyntaxError(33.1, "::options fuzz 10")
+
+::method test_fuzz_greater_than_digits2
+  self~assertSyntaxError(33.1, "::options digits 4 fuzz 5")
+
+::method test_invalid_trace
+  self~assertSyntaxError(24.1, "::options trace '-1'")
+
+::method test_invalid_trace2
+  self~assertSyntaxError(24.1, "::options trace '*'")
+
+::method test_novalue_error_simple
+  self~assertSyntaxError(98.986, ("return abc", "::options novalue error"))
+
+::method test_novalue_error_compound
+  self~assertSyntaxError(98.986, ("return abc.1.2", "::options novalue error"))
+
+::method test_novalue_error_stem
+  -- stems never raise novalue
+  stem = self~runDynamicSource(("return abc.", "::options novalue error"))
+  self~assertIsA(stem, .stem)
+
+::method test_novalue_error_compound_tails
+  -- variables in tails never raise novalue
+  value = self~runDynamicSource(("abc.a.b = 1", "return abc.a.b", "::options novalue error"))
+  self~assertEquals(1, value )
+
+::method test_novalue_condition_simple
+  -- stems never raise novalue
+  value = self~runDynamicSource(("signal on novalue", "return abc", "novalue: return .true", "::options novalue condition"))
+  self~assertEquals(1, value)
+
+::method test_novalue_condition_compound
+  -- stems never raise novalue
+  value = self~runDynamicSource(("signal on novalue", "return abc.1.2", "novalue: return .true", "::options novalue condition"))
+  self~assertEquals(1, value)
+
+::method test_bad_no_value
+::method test_novalue_bad_value
+  self~assertSyntaxError(25.927, ("return abc.1.2", "::options novalue syntax"))
+
+::method test_novalue_missing_value
+  self~assertSyntaxError(19.922, ("return abc.1.2", "::options novalue"))
+
