@@ -210,6 +210,24 @@ return testResult
   self~assertSameList((1,2), indexes)
   self~assertSameList(('a', 'b'), items)
 
+  -- test with an empty array
+  arr = .array~new
+  indexes = .array~new
+  items = .array~new
+
+  i = 'xyz'
+  v = 'def'
+
+  loop label foo with index i item v over arr
+     indexes~append(i)
+     items~append(v)
+  end foo
+
+  self~assertEquals(0, indexes~items)
+  self~assertEquals(0, items~items)
+  self~assertEquals("xyz", i)
+  self~assertEquals("def", v)
+
 ::method test_no_supplier
   self~expectSyntax(97.1)
   loop with index i over "abc"
@@ -302,3 +320,27 @@ return testResult
 ::method test_with_while_until
   self~assertSyntaxError(27.1, ("loop with index i item v over sup until .true while .false", "end"))
 
+::method test_for_negative
+  self~expectSyntax(26.3)
+  loop with index i over (1,2) for -1
+  end
+
+::method test_for_non_integer
+  self~expectSyntax(26.3)
+  loop with index i over (1,2) for 1.1
+  end
+
+::method test_for_non_numeric
+  self~expectSyntax(26.3)
+  loop with index i over (1,2) for 'a'
+  end
+
+::method test_while_bad_truth
+  self~expectSyntax(34.3)
+  loop with index i over (1,2) while 1.0
+  end
+
+::method test_until_bad_truth
+  self~expectSyntax(34.4)
+  loop with index i over (1,2) until 1.0
+  end
