@@ -200,6 +200,44 @@ return testResult
   -- until test occurs before the control variable is steps
   self~assertEquals(1.5, i)
 
+  -- the symbol followed by "=" overrides the keyword nature of things.
+  -- a couple of simple variations that prove this.
+
+  steps = .array~new
+  do label = 1 to 3
+     steps~append(label)
+  end label    -- test control variable also
+
+  self~assertSameList((1, 2, 3), steps)
+
+  steps = .array~new
+  do forever = 1 to 3
+     steps~append(forever)
+  end forever    -- test control variable also
+
+  self~assertSameList((1, 2, 3), steps)
+
+  steps = .array~new
+  do with = 1 to 3
+     steps~append(with)
+  end with    -- test control variable also
+
+  self~assertSameList((1, 2, 3), steps)
+
+  steps = .array~new
+  do while = 1 to 3
+     steps~append(while)
+  end while   -- test control variable also
+
+  self~assertSameList((1, 2, 3), steps)
+
+  steps = .array~new
+  do until = 1 to 3
+     steps~append(until)
+  end until   -- test control variable also
+
+  self~assertSameList((1, 2, 3), steps)
+
 
 ::method test_dot_var
   self~assertSyntaxError(31.3, ("do . = 1", "end"))
@@ -297,4 +335,160 @@ return testResult
   self~expectSyntax(34.4)
   do i = 1 until 1.0
   end
+
+::method test_bad_assignment1
+  self~assertSyntaxError(35.1, ("do i == 1", "end"))
+
+::method test_bad_assignment2
+  self~assertSyntaxError(35.1, ("do label == 1", "end"))
+
+-- other keywords act as expression terminators for controlled dos.
+-- this is a series of tests that verifies this for all keyword combinations.
+::method test_no_control_expr1
+  self~assertSyntaxError(35.904, ("do i = to", "end"))
+
+::method test_no_control_expr2
+  self~assertSyntaxError(35.904, ("do i = by", "end"))
+
+::method test_no_control_expr3
+  self~assertSyntaxError(35.904, ("do i = for", "end"))
+
+::method test_no_control_expr4
+  self~assertSyntaxError(35.904, ("do i = while", "end"))
+
+::method test_no_control_expr5
+  self~assertSyntaxError(35.904, ("do i = until", "end"))
+
+::method test_to_no_expr1
+  self~assertSyntaxError(35.906, ("do i = 1 to by", "end"))
+
+::method test_to_no_expr2
+  self~assertSyntaxError(35.906, ("do i = 1 to for", "end"))
+
+::method test_to_no_expr3
+  self~assertSyntaxError(35.906, ("do i = 1 to until", "end"))
+
+::method test_to_no_expr4
+  self~assertSyntaxError(35.906, ("do i = 1 to while", "end"))
+
+::method test_to_no_expr5
+  self~assertSyntaxError(35.906, ("do i = 1 to to", "end"))
+
+::method test_by_no_expr1
+  self~assertSyntaxError(35.905, ("do i = 1 by by", "end"))
+
+::method test_by_no_expr2
+  self~assertSyntaxError(35.905, ("do i = 1 by for", "end"))
+
+::method test_by_no_expr3
+  self~assertSyntaxError(35.905, ("do i = 1 by until", "end"))
+
+::method test_by_no_expr4
+  self~assertSyntaxError(35.905, ("do i = 1 by while", "end"))
+
+::method test_by_no_expr5
+  self~assertSyntaxError(35.905, ("do i = 1 by to", "end"))
+
+::method test_for_no_expr1
+  self~assertSyntaxError(35.907, ("do i = 1 for by", "end"))
+
+::method test_for_no_expr2
+  self~assertSyntaxError(35.907, ("do i = 1 for for", "end"))
+
+::method test_for_no_expr3
+  self~assertSyntaxError(35.907, ("do i = 1 for until", "end"))
+
+::method test_for_no_expr4
+  self~assertSyntaxError(35.907, ("do i = 1 for while", "end"))
+
+::method test_for_no_expr5
+  self~assertSyntaxError(35.907, ("do i = 1 for to", "end"))
+
+-- while and until are only terminated by those keywords.
+
+::method test_while_no_expr1
+  self~assertSyntaxError(35.929, ("do i = 1 while until", "end"))
+
+::method test_while_no_expr2
+  self~assertSyntaxError(35.929, ("do i = 1 while while", "end"))
+
+::method test_until_no_expr1
+  self~assertSyntaxError(35.929, ("do i = 1 until until", "end"))
+
+::method test_until_no_expr2
+  self~assertSyntaxError(35.929, ("do i = 1 until while", "end"))
+
+-- keyword parsing does not carry into subexpressions, so variables can be
+-- sub keyword names if they are protected by expressions.  Check all of
+-- the keywords against this
+::method test_protected_keyword
+  to = 1
+  by = 0
+  for = 0
+  while = 0
+  until = 0
+
+  steps = .array~new
+  do i = (to+by+for+while+until) to 2
+     steps~append(i)
+  end
+
+  self~assertSameList((1,2), steps)
+
+  steps = .array~new
+  do i = 1 to (to+by+for+while+until+1)
+     steps~append(i)
+  end
+
+  self~assertSameList((1,2), steps)
+
+  steps = .array~new
+  do i = 1 to 2 by (to+by+for+while+until)
+     steps~append(i)
+  end
+
+  self~assertSameList((1,2), steps)
+
+  steps = .array~new
+  do i = 1 to 2 for (to+by+for+while+until+1)
+     steps~append(i)
+  end
+
+  self~assertSameList((1,2), steps)
+
+  steps = .array~new
+  do i = 1 to 2 while (to+by+for+while+until)
+     steps~append(i)
+  end
+
+  self~assertSameList((1,2), steps)
+
+  steps = .array~new
+  do i = 1 to 2 until \(to+by+for+while+until)
+     steps~append(i)
+  end
+
+  self~assertSameList((1,2), steps)
+
+
+-- test that the keywords are evaluated in the order they appear
+::method test_keyword_order
+
+  q = .queue~of(1, 3, 1, 2)
+
+  steps = .array~new
+  do i = q~pull to q~pull by q~pull for q~pull
+     steps~append(i)
+  end
+
+  self~assertSameList((1,2), steps)
+
+  q = .queue~of(1, 2, 1, 3)
+
+  steps = .array~new
+  do i = q~pull for q~pull by q~pull to q~pull
+     steps~append(i)
+  end
+
+  self~assertSameList((1,2), steps)
 

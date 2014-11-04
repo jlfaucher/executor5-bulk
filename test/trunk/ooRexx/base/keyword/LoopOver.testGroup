@@ -138,6 +138,35 @@ return testResult
   self~assertEquals(0, items~items)
   self~assertEquals('abc', v)
 
+  -- for combined with WHILE/UNTIL
+  items = .array~new
+  loop v over ('a', 'b', 'c') for 4 while v \= 'c'
+     items~append(v)
+  end
+
+  self~assertSameList(('a', 'b'), items)
+
+  items = .array~new
+  loop v over ('a', 'b', 'c') for 2 while v \= 'd'
+     items~append(v)
+  end
+
+  self~assertSameList(('a', 'b'), items)
+
+  items = .array~new
+  loop v over ('a', 'b', 'c') for 4 until v = 'b'
+     items~append(v)
+  end
+
+  self~assertSameList(('a', 'b'), items)
+
+  items = .array~new
+  loop v over ('a', 'b', 'c') for 2 until v = 'd'
+     items~append(v)
+  end
+
+  self~assertSameList(('a', 'b'), items)
+
 ::method test_no_makearray
   self~expectSyntax(98.913)
   loop v over .nil
@@ -222,3 +251,33 @@ return testResult
   loop i over (1,2) until 1.0
   end
 
+-- tests for different keywords acting as expression terminators
+::method test_over_no_expr1
+  self~assertSyntaxError(35.911, ("loop i over for 4", "end"))
+
+::method test_over_no_expr5
+  self~assertSyntaxError(35.911, ("loop i over while .true", "end"))
+
+::method test_over_no_expr6
+  self~assertSyntaxError(35.911, ("loop i over until .true", "end"))
+
+::method test_for_no_expr1
+  self~assertSyntaxError(35.907, ("loop i over x for for", "end"))
+
+::method test_for_no_expr2
+  self~assertSyntaxError(35.907, ("loop i over x for while", "end"))
+
+::method test_for_no_expr3
+  self~assertSyntaxError(35.907, ("loop i over x for until", "end"))
+
+::method test_while_no_expr1
+  self~assertSyntaxError(35.929, ("loop i over x while while", "end"))
+
+::method test_while_no_expr2
+  self~assertSyntaxError(35.929, ("loop i over x while until", "end"))
+
+::method test_until_no_expr1
+  self~assertSyntaxError(35.929, ("loop i over x until while", "end"))
+
+::method test_until_no_expr2
+  self~assertSyntaxError(35.929, ("loop i over x until until", "end"))
