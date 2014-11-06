@@ -1333,30 +1333,30 @@ return str
 -- create a package from an array of lines with the intent of checking
 -- errors raised at translate time rather than runtime.
 ::method assertSyntaxError
-  use strict arg error, code
+  use strict arg error, code, parentPackage = (self~class~package)
 
   self~expectSyntax(error)
   -- this will translate this code and nothing else.
-  r = .package~new("test", code)
+  r = .package~new("test", code, parentPackage)
 
 
 -- create a routine and call from an array of lines with the intent of checking
 -- errors raised at run time rather than during translation.
 ::method assertRuntimeError
-  use strict arg error, code
+  use strict arg error, code, parentPackage = (self~class~package)
 
   self~expectSyntax(error)
   -- this will create a routine and then we invoke it, returning the
   -- code result.
-  r = .routine~new("test", code)
+  r = .routine~new("test", code, parentPackage)
   return r[]
 
 -- run some dynamically created source code that will return a result.
 ::method runDynamicSource
-  use strict arg code
+  use strict arg code, parentPackage = (self~class~package)
 
   -- this will create a routine object and return the result.
-  r = .routine~new("test", code)
+  r = .routine~new("test", code, parentPackage)
   return r[]
 
 
