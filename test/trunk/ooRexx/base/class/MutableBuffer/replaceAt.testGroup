@@ -54,7 +54,7 @@ return testResult
 ::class "ReplaceAt.testGroup" subclass ooTestCase public
 
 ::method 'test001'
-    self~expectSyntax(93.903)
+    self~expectSyntax(88.901)
     xre = .mutablebuffer~new('')~replaceAt()
 
 --::method 'test002'
@@ -62,15 +62,15 @@ return testResult
 --    xre = .mutablebuffer~new("ABC")~replaceAt('ABC',)
 
 ::method 'test003'
-    self~expectSyntax(93.903)
+    self~expectSyntax(88.901)
     xre = .mutablebuffer~new('ABC')~replaceAt(,1)
 
 ::method 'test003b'
-    self~expectSyntax(93.903)
+    self~expectSyntax(88.901)
     xre = .mutablebuffer~new('ABC')~replaceAt("abc",,2)
 
 ::method 'test003c'
-    self~expectSyntax(93.922)
+    self~expectSyntax(88.910)
     xre = .mutablebuffer~new('ABC')~replaceAt("abc",1,2, "  ")
 
 ::method 'test004'
