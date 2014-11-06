@@ -55,14 +55,9 @@ return testResult
 
 ::class "SAY.testGroup" subclass ooTestCase public
 
-::method setUp
-   .output~destination(.myLogger~new)     -- let the SAY messages be sent to the local logger class
-
-::method tearDown
-   .output~destination                    -- restore the original state of the monitor
-
    -- test the ABBREV BIF, using examples from the documentation
 ::method "test_SAY"
+   .output~destination(.myLogger~new)     -- let the SAY messages be sent to the local logger class
    SAY                        -- outputs empty string
    self~assertEquals("", .output~current~pull)
 
