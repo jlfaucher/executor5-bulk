@@ -68,7 +68,7 @@ return testResult
 
 ::method 'test0005'
     -- § may be encoded in two bytes 'C2A7'x  (utf8 ?)
-    if length('§') > 1 
+    if length('§') > 1
        then do
             self~expectSyntax(93.922)
             xre = '§ aaa §'~space(,'§')
@@ -126,9 +126,6 @@ return testResult
 ::method 'test0021'
     self~assertSame('a b', ' a b '~space)
 
-::method 'test0022'
-    self~assertSame('§ °', ' § ° '~space)
-
 ::method 'test0023'
     self~assertSame('', '09'x~space)
 
@@ -153,9 +150,6 @@ return testResult
 ::method 'test0030'
     self~assertSame('a b', ' a  b '~space)
 
-::method 'test0031'
-    self~assertSame('§ §', ' §  § '~space)
-
 ::method 'test0032'
     self~assertSame('', ('09'x' ' '09'x)~space)
 
@@ -177,9 +171,6 @@ return testResult
 ::method 'test0038'
     self~assertSame('abc def', ' abc def '~space)
 
-::method 'test0039'
-    self~assertSame('§äè °üé', ' §äè °üé'~space)
-
 ::method 'test0040'
     self~assertSame('abc def', 'abc   def'~space)
 
@@ -192,14 +183,8 @@ return testResult
 ::method 'test0043'
     self~assertSame('abc def', ' abc   def '~space)
 
-::method 'test0044'
-    self~assertSame('§äè °üé', ' §äè  °üé '~space)
-
 ::method 'test0045'
     self~assertSame('abc def', ('abc'||'090909'x'def')~space)
-
-::method 'test0046'
-    self~assertSame('§äè §üé', ('§äè'||'090909'x'§üé')~space)
 
 ::method 'test0047'
     self~assertSame('a b c', 'a b  c'~space)
@@ -213,17 +198,11 @@ return testResult
 ::method 'test0050'
     self~assertSame('a b c', ' a b  c '~space)
 
-::method 'test0051'
-    self~assertSame('§ °', ' § ° '~space)
-
 ::method 'test0052'
     self~assertSame('a b c', ( 'a b  c' '09'x)~space)
 
 ::method 'test0053'
     self~assertSame('a b c', ('a b'||'0909'x' c')~space)
-
-::method 'test0054'
-    self~assertSame('§ ° ß', ' §  °  ß '~space)
 
 ::method 'test0055'
     self~assertSame('abc def hij', 'abc def hij'~space)
@@ -237,9 +216,6 @@ return testResult
 ::method 'test0058'
     self~assertSame('abc def hij', ' abc def hij '~space)
 
-::method 'test0059'
-    self~assertSame('§äè °üé', ' §äè °üé'~space)
-
 ::method 'test0060'
     self~assertSame('abc def hij', 'abc   def   hij'~space)
 
@@ -252,9 +228,6 @@ return testResult
 ::method 'test0063'
     self~assertSame('abc def hij', ' abc   def   hij '~space)
 
-::method 'test0064'
-    self~assertSame('§äè °üé ß¢¬', (' §äè  °üé    ß¢¬' '0909'x)~space)
-
 ::method 'test0065'
     self~assertSame('', ''~space(0))
 
@@ -264,17 +237,11 @@ return testResult
 ::method 'test0067'
     self~assertSame('a', 'a'~space(0))
 
-::method 'test0068'
-    self~assertSame('§', '§'~space(0))
-
 ::method 'test0069'
     self~assertSame('a', ' a'~space(0))
 
 ::method 'test0070'
     self~assertSame('a', 'a '~space(0))
-
-::method 'test0071'
-    self~assertSame('§', ' § '~space(0))
 
 ::method 'test0072'
     self~assertSame('ab', 'a b'~space(0))
@@ -287,9 +254,6 @@ return testResult
 
 ::method 'test0075'
     self~assertSame('ab', ' a b '~space(0))
-
-::method 'test0076'
-    self~assertSame('§§', ' § § '~space(0))
 
 ::method 'test0077'
     self~assertSame('', '09'x~space(0))
@@ -315,9 +279,6 @@ return testResult
 ::method 'test0084'
     self~assertSame('ab', ' a  b '~space(0))
 
-::method 'test0085'
-    self~assertSame('§§', ' §  § '~space(0))
-
 ::method 'test0086'
     self~assertSame('', ('09'x' ' '09'x)~space(0))
 
@@ -342,9 +303,6 @@ return testResult
 ::method 'test0093'
     self~assertSame('abcdef', ' abc def '~space(0))
 
-::method 'test0094'
-    self~assertSame('§äè°üé', ' §äè °üé'~space(0))
-
 ::method 'test0095'
     self~assertSame('abcdef', 'abc   def'~space(0))
 
@@ -357,14 +315,8 @@ return testResult
 ::method 'test0098'
     self~assertSame('abcdef', ' abc   def '~space(0))
 
-::method 'test0099'
-    self~assertSame('§äè°üé', ' §äè  °üé '~space(0))
-
 ::method 'test0100'
     self~assertSame('abcdef', ('abc'||'090909'x'def')~space(0))
-
-::method 'test0101'
-    self~assertSame('§äè§üé', ('§äè'||'090909'x'§üé')~space(0))
 
 ::method 'test0102'
     self~assertSame('abc', 'a b  c'~space(0))
@@ -378,17 +330,11 @@ return testResult
 ::method 'test0105'
     self~assertSame('abc', ' a b  c '~space(0))
 
-::method 'test0106'
-    self~assertSame('§°', ' § ° '~space(0))
-
 ::method 'test0107'
     self~assertSame('abc', ( 'a b  c' '09'x)~space(0))
 
 ::method 'test0108'
     self~assertSame('abc', ('a b'||'0909'x' c')~space(0))
-
-::method 'test0109'
-    self~assertSame('§°ß', ' §  °  ß '~space(0))
 
 ::method 'test0110'
     self~assertSame('abcdefhij', 'abc def hij'~space(0))
@@ -402,9 +348,6 @@ return testResult
 ::method 'test0113'
     self~assertSame('abcdefhij', ' abc def hij '~space(0))
 
-::method 'test0114'
-    self~assertSame('§äè°üé', ' §äè °üé'~space(0))
-
 ::method 'test0115'
     self~assertSame('abcdefhij', 'abc   def   hij'~space(0))
 
@@ -417,9 +360,6 @@ return testResult
 ::method 'test0118'
     self~assertSame('abcdefhij', ' abc   def   hij '~space(0))
 
-::method 'test0119'
-    self~assertSame('§äè°üéß¢¬', (' §äè  °üé    ß¢¬' '0909'x)~space(0))
-
 ::method 'test0120'
     self~assertSame('', ''~space(1,'+'))
 
@@ -429,17 +369,11 @@ return testResult
 ::method 'test0122'
     self~assertSame('a', 'a'~space(1,'+'))
 
-::method 'test0123'
-    self~assertSame('§', '§'~space(1,'+'))
-
 ::method 'test0124'
     self~assertSame('a', ' a'~space(1,'+'))
 
 ::method 'test0125'
     self~assertSame('a', 'a '~space(1,'+'))
-
-::method 'test0126'
-    self~assertSame('§', ' § '~space(1,'+'))
 
 ::method 'test0127'
     self~assertSame('a+b', 'a b'~space(1,'+'))
@@ -452,9 +386,6 @@ return testResult
 
 ::method 'test0130'
     self~assertSame('a+b', ' a b '~space(1,'+'))
-
-::method 'test0131'
-    self~assertSame('§+§', ' § § '~space(1,'+'))
 
 ::method 'test0132'
     self~assertSame('', '09'x~space(1,'+'))
@@ -480,9 +411,6 @@ return testResult
 ::method 'test0139'
     self~assertSame('a+b', ' a  b '~space(1,'+'))
 
-::method 'test0140'
-    self~assertSame('§+§', ' §  § '~space(1,'+'))
-
 ::method 'test0141'
     self~assertSame('', ('09'x' ' '09'x)~space(1,'+'))
 
@@ -507,9 +435,6 @@ return testResult
 ::method 'test0148'
     self~assertSame('abc+def', ' abc def '~space(1,'+'))
 
-::method 'test0149'
-    self~assertSame('§äè+°üé', ' §äè °üé'~space(1,'+'))
-
 ::method 'test0150'
     self~assertSame('abc+def', 'abc   def'~space(1,'+'))
 
@@ -521,9 +446,6 @@ return testResult
 
 ::method 'test0153'
     self~assertSame('abc+def', ' abc   def '~space(1,'+'))
-
-::method 'test0154'
-    self~assertSame('§äè+°üé', ' §äè  °üé '~space(1,'+'))
 
 ::method 'test0155'
     self~assertSame('abc+def', ('abc'||'090909'x'def')~space(1,'+'))
@@ -543,17 +465,11 @@ return testResult
 ::method 'test0160'
     self~assertSame('a+b+c', ' a b  c '~space(1,'+'))
 
-::method 'test0161'
-    self~assertSame('§+°', ' § ° '~space(1,'+'))
-
 ::method 'test0162'
     self~assertSame('a+b+c', ( 'a b  c' '09'x)~space(1,'+'))
 
 ::method 'test0163'
     self~assertSame('a+b+c', ('a b'||'0909'x' c')~space(1,'+'))
-
-::method 'test0164'
-    self~assertSame('§+°+ß', ' §  °  ß '~space(1,'+'))
 
 ::method 'test0165'
     self~assertSame('abc+def+hij', 'abc def hij'~space(1,'+'))
@@ -567,9 +483,6 @@ return testResult
 ::method 'test0168'
     self~assertSame('abc+def+hij', ' abc def hij '~space(1,'+'))
 
-::method 'test0169'
-    self~assertSame('§äè+°üé', ' §äè °üé'~space(1,'+'))
-
 ::method 'test0170'
     self~assertSame('abc+def+hij', 'abc   def   hij'~space(1,'+'))
 
@@ -581,9 +494,6 @@ return testResult
 
 ::method 'test0173'
     self~assertSame('abc+def+hij', ' abc   def   hij '~space(1,'+'))
-
-::method 'test0174'
-    self~assertSame('§äè+°üé+ß¢¬', (' §äè  °üé    ß¢¬' '0909'x)~space(1,'+'))
 
 ::method 'test0175'
     self~assertSame('', ''~space(2))
@@ -603,9 +513,6 @@ return testResult
 ::method 'test0180'
     self~assertSame('a', 'a '~space(2))
 
-::method 'test0181'
-    self~assertSame('§', ' § '~space(2))
-
 ::method 'test0182'
     self~assertSame('a  b', 'a b'~space(2))
 
@@ -617,9 +524,6 @@ return testResult
 
 ::method 'test0185'
     self~assertSame('a  b', ' a b '~space(2))
-
-::method 'test0186'
-    self~assertSame('§  §', ' § § '~space(2))
 
 ::method 'test0187'
     self~assertSame('', '09'x~space(2))
@@ -645,9 +549,6 @@ return testResult
 ::method 'test0194'
     self~assertSame('a  b', ' a  b '~space(2))
 
-::method 'test0195'
-    self~assertSame('§  §', ' §  § '~space(2))
-
 ::method 'test0196'
     self~assertSame('', ('09'x' ' '09'x)~space(2))
 
@@ -672,9 +573,6 @@ return testResult
 ::method 'test0203'
     self~assertSame('abc  def', ' abc def '~space(2))
 
-::method 'test0204'
-    self~assertSame('§äè  °üé', ' §äè °üé'~space(2))
-
 ::method 'test0205'
     self~assertSame('abc  def', 'abc   def'~space(2))
 
@@ -687,14 +585,8 @@ return testResult
 ::method 'test0208'
     self~assertSame('abc  def', ' abc   def '~space(2))
 
-::method 'test0209'
-    self~assertSame('§äè  °üé', ' §äè  °üé '~space(2))
-
 ::method 'test0210'
     self~assertSame('abc  def', ('abc'||'090909'x'def')~space(2))
-
-::method 'test0211'
-    self~assertSame('§äè  §üé', ('§äè'||'090909'x'§üé')~space(2))
 
 ::method 'test0212'
     self~assertSame('a  b  c', 'a b  c'~space(2))
@@ -708,17 +600,11 @@ return testResult
 ::method 'test0215'
     self~assertSame('a  b  c', ' a b  c '~space(2))
 
-::method 'test0216'
-    self~assertSame('§  °', ' § ° '~space(2))
-
 ::method 'test0217'
     self~assertSame('a  b  c', ( 'a b  c' '09'x)~space(2))
 
 ::method 'test0218'
     self~assertSame('a  b  c', ('a b'||'0909'x' c')~space(2))
-
-::method 'test0219'
-    self~assertSame('§  °  ß', ' §  °  ß '~space(2))
 
 ::method 'test0220'
     self~assertSame('abc  def  hij', 'abc def hij'~space(2))
@@ -732,9 +618,6 @@ return testResult
 ::method 'test0223'
     self~assertSame('abc  def  hij', ' abc def hij '~space(2))
 
-::method 'test0224'
-    self~assertSame('§äè  °üé', ' §äè °üé'~space(2))
-
 ::method 'test0225'
     self~assertSame('abc  def  hij', 'abc   def   hij'~space(2))
 
@@ -746,9 +629,6 @@ return testResult
 
 ::method 'test0228'
     self~assertSame('abc  def  hij', ' abc   def   hij '~space(2))
-
-::method 'test0229'
-    self~assertSame('§äè  °üé  ß¢¬', (' §äè  °üé    ß¢¬' '0909'x)~space(2))
 
 ::method 'test0230'
     self~assertSame('', ''~space(2,'+'))
@@ -768,9 +648,6 @@ return testResult
 ::method 'test0235'
     self~assertSame('a', 'a '~space(2,'+'))
 
-::method 'test0236'
-    self~assertSame('§', ' § '~space(2,'+'))
-
 ::method 'test0237'
     self~assertSame('a++b', 'a b'~space(2,'+'))
 
@@ -782,9 +659,6 @@ return testResult
 
 ::method 'test0240'
     self~assertSame('a++b', ' a b '~space(2,'+'))
-
-::method 'test0241'
-    self~assertSame('§++§', ' § § '~space(2,'+'))
 
 ::method 'test0242'
     self~assertSame('', '09'x~space(2,'+'))
@@ -810,9 +684,6 @@ return testResult
 ::method 'test0249'
     self~assertSame('a++b', ' a  b '~space(2,'+'))
 
-::method 'test0250'
-    self~assertSame('§++§', ' §  § '~space(2,'+'))
-
 ::method 'test0251'
     self~assertSame('', ('09'x' ' '09'x)~space(2,'+'))
 
@@ -837,9 +708,6 @@ return testResult
 ::method 'test0258'
     self~assertSame('abc++def', ' abc def '~space(2,'+'))
 
-::method 'test0259'
-    self~assertSame('§äè++°üé', ' §äè °üé'~space(2,'+'))
-
 ::method 'test0260'
     self~assertSame('abc++def', 'abc   def'~space(2,'+'))
 
@@ -852,14 +720,8 @@ return testResult
 ::method 'test0263'
     self~assertSame('abc++def', ' abc   def '~space(2,'+'))
 
-::method 'test0264'
-    self~assertSame('§äè++°üé', ' §äè  °üé '~space(2,'+'))
-
 ::method 'test0265'
     self~assertSame('abc++def', ('abc'||'090909'x'def')~space(2,'+'))
-
-::method 'test0266'
-    self~assertSame('§äè++§üé', ('§äè'||'090909'x'§üé')~space(2,'+'))
 
 ::method 'test0267'
     self~assertSame('a++b++c', 'a b  c'~space(2,'+'))
@@ -873,17 +735,11 @@ return testResult
 ::method 'test0270'
     self~assertSame('a++b++c', ' a b  c '~space(2,'+'))
 
-::method 'test0271'
-    self~assertSame('§++°', ' § ° '~space(2,'+'))
-
 ::method 'test0272'
     self~assertSame('a++b++c', ( 'a b  c' '09'x)~space(2,'+'))
 
 ::method 'test0273'
     self~assertSame('a++b++c', ('a b'||'0909'x' c')~space(2,'+'))
-
-::method 'test0274'
-    self~assertSame('§++°++ß', ' §  °  ß '~space(2,'+'))
 
 ::method 'test0275'
     self~assertSame('abc++def++hij', 'abc def hij'~space(2,'+'))
@@ -897,9 +753,6 @@ return testResult
 ::method 'test0278'
     self~assertSame('abc++def++hij', ' abc def hij '~space(2,'+'))
 
-::method 'test0279'
-    self~assertSame('§äè++°üé', ' §äè °üé'~space(2,'+'))
-
 ::method 'test0280'
     self~assertSame('abc++def++hij', 'abc   def   hij'~space(2,'+'))
 
@@ -911,9 +764,6 @@ return testResult
 
 ::method 'test0283'
     self~assertSame('abc++def++hij', ' abc   def   hij '~space(2,'+'))
-
-::method 'test0284'
-    self~assertSame('§äè++°üé++ß¢¬', (' §äè  °üé    ß¢¬' '0909'x)~space(2,'+'))
 
 ::method 'test0285'
     self~expectSyntax(93.922)
