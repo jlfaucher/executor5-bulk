@@ -712,9 +712,8 @@ return .ooTestResult~new(5)~~addException(err)
   arr[1]~shvcode = 1 -- RXSHV_FETCH
   arr[1]~shvret = 0
   retc = TestFVariablePool(arr)
-  self~assertEquals(0, retc)
-  self~assertEquals(0, arr[1]~shvret) -- make sure an error was generated
-  self~assertEquals("2TEST", arr[1]~shvvalue)
+  self~assertEquals(8, retc)
+  self~assertEquals(8, arr[1]~shvret) -- make sure an error was generated
 
 ::method 'test_39d_variablepool'
   test1 = 'my test string'
