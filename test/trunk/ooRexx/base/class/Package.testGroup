@@ -64,7 +64,7 @@ return testResult
   -- this is just an empty file
   file~create("")
 
-  package = .package~new("testPackage1.rex")
+  package = .package~new(file~fullName)
 
   self~assertTrue(package~isA(.package))
   self~assertEquals(file~fullName, package~name)
@@ -125,7 +125,7 @@ return testResult
   .local~removeEntry('TESTING')
 
   -- verify the prolog runs when loaded from a file
-  package = .package~new("testPackage2.rex")
+  package = .package~new(file~fullname)
   self~assertSame(1, .local['TESTING'])
 
   -- remove the entry again. Then run some code that requires this
@@ -162,13 +162,13 @@ return testResult
   file~create(("::routine test1 public", "  return 1"))
 
   -- this loads the package from a file and adds to the cache
-  package = .package~new("reclaimPackage.cls")
+  package = .package~new(file~fullname)
 
   -- delete the file now so this can no longer be loaded from the file
   file~delete
 
   -- now create some code that references this...should be located in the cache
-  routine = .routine~new("testing", ("return test1()", "::requires 'reclaimPackage.cls'"))
+  routine = .routine~new("testing", ("return test1()", "::requires '"file~fullname"'"), self~class~package)
 
   self~assertSame(1, routine~call)
 
@@ -235,9 +235,9 @@ return testResult
   file~create(("::class class1", "::class class2 public"))
 
   -- load this package from the file
-  package = .package~new("ImportedClassTest1.cls")
+  package = .package~new(file~fullName)
 
-  package2 = .package~new("importedtesting1", ("return 12", "::requires 'ImportedClassTest1.cls'"))
+  package2 = .package~new("importedtesting1", ("return 12", "::requires '"file~fullName"'"))
 
   classes = package2~importedclasses
   self~assertSame(1, classes~items)
@@ -258,9 +258,9 @@ return testResult
   file~create(("::class class1", "::class class2"))
 
   -- load this package from the file
-  package = .package~new("ImportedClassTest2.cls")
+  package = .package~new(file~fullname)
 
-  package2 = .package~new("importedtesting2", ("return 12", "::requires 'ImportedClassTest2.cls'"))
+  package2 = .package~new("importedtesting2", ("return 12", "::requires '"file~fullname"'"))
   classes = package2~importedclasses
   self~assertSame(0, classes~items)
 
@@ -269,9 +269,9 @@ return testResult
   file~create(("::routine routine1", "::routine routine2 public"))
 
   -- load this package from the file
-  package = .package~new("ImportedRoutineTest1.cls")
+  package = .package~new(file~fullname)
 
-  package2 = .package~new("importedtesting1x", ("return 12", "::requires 'ImportedRoutineTest1.cls'"))
+  package2 = .package~new("importedtesting1x", ("return 12", "::requires '"file~fullname"'"))
 
   routines = package~publicRoutines
 
@@ -288,9 +288,9 @@ return testResult
   -- now a package with no public routines
   file = .TemporaryTestFile~new(self, "ImportedRoutineTest2.cls")
   file~create(("::routine routine1" , "::routine routine2"))
-  package = .package~new("ImportedRoutineTest2.cls")
+  package = .package~new(file~fullname)
 
-  package2 = .package~new("importedtesting2x", ("return 12", "::requires 'ImportedRoutineTest2.cls'"))
+  package2 = .package~new("importedtesting2x", ("return 12", "::requires '"file~fullname"'"))
   routines = package2~importedroutines
   self~assertSame(0, routines~items)
 
