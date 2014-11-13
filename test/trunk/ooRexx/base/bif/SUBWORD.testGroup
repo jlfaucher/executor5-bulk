@@ -324,9 +324,6 @@ return testResult
 ::method 'test069'
     self~assertSame('CHAR', subWord(dataType(6) dataType('A'),2))
 
-::method 'test070'
-    self~assertSame('call to routine', subWord(errorText(40),lastPos('O','WORD')))
-
 ::method 'test071'
     self~assertSame('BW OR', subWord(sUbWoRd('SU BW OR D',2,2),1))
 
@@ -610,9 +607,6 @@ return testResult
 
 ::method 'test151'
     self~assertSame('CHAR', subWord(dataType(6) dataType('A'),2,dataType(7,'N')))
-
-::method 'test152'
-    self~assertSame('call to routine', subWord(errorText(40),lastPos('O','WORD'),WORDlength('J. R. BUCKLEY',3)))
 
 ::method 'test153'
     self~assertSame('BW OR', subWord(sUbWoRd('SU BW OR D',2,2),1,2))
