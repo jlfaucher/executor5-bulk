@@ -324,9 +324,6 @@ return testResult
 ::method 'test069'
     self~assertSameArray('CHAR', (dataType(6) dataType('A'))~subWords(2))
 
-::method 'test070'
-    self~assertSameArray('call to routine', errorText(40)~subWords(lastPos('O','WORD')))
-
 ::method 'test074'
     self~assertSameArray('', ''~subWords(1,1))
 
@@ -604,9 +601,6 @@ return testResult
 
 ::method 'test151'
     self~assertSameArray('CHAR', (dataType(6) dataType('A'))~subWords(2,dataType(7,'N')))
-
-::method 'test152'
-    self~assertSameArray('call to routine', errorText(40)~subWords(lastPos('O','WORD'),WORDlength('J. R. BUCKLEY',3)))
 
 -- from bif.testgroup
    -- test the BIF, using examples from the documentation

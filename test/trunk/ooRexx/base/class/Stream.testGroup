@@ -1046,11 +1046,6 @@ return testResult
 
   self~assertSame(5, lines(fileName, "COUNT"))
 
-  -- This works, but I'm not sure it should always work.
-  do i = 1 to 5
-    self~assertSame(i, linein(fileName))
-  end
-
   ret = stream(fileName, 'C', "close")
   self~assertSame("READY:", ret)
 

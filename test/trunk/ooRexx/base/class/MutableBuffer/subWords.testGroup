@@ -316,9 +316,6 @@ return testResult
 ::method 'test069'
     self~assertSameArray('CHAR', .mutablebuffer~new((dataType(6) dataType('A')))~subWords(2))
 
-::method 'test070'
-    self~assertSameArray('call to routine', .mutablebuffer~new(errorText(40))~subWords(lastPos('O','WORD')))
-
 ::method 'test071'
     self~assertSameArray('BW OR', .mutablebuffer~new('SU BW OR D')~subWords(2,2))
 
@@ -593,9 +590,6 @@ return testResult
 
 ::method 'test151'
     self~assertSameArray('CHAR', .mutablebuffer~new((dataType(6) dataType('A')))~subWords(2,dataType(7,'N')))
-
-::method 'test152'
-    self~assertSameArray('call to routine', .mutablebuffer~new(errorText(40))~subWords(lastPos('O','WORD'),WORDlength('J. R. BUCKLEY',3)))
 
 ::method 'test153'
     self~assertSameArray('BW OR', .mutablebuffer~new('SU BW OR D')~subWords(2,2))
