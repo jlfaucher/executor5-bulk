@@ -995,7 +995,7 @@ return testResult
   ref = .weakReference~new(obj)
   hash = ref~value~identityHash
   drop obj
-  self~assertTrue(.UninitTracker~forceUninit(ref, hash))
+  self~assertFalse(.UninitTracker~forceUninit(ref, hash))
 
   obj = .ClassWithUninitMethod~new
   -- now hide the unint method on this instance
@@ -1265,8 +1265,14 @@ return testResult
 
   return receivedUninits~hasIndex(hash)
 
+::method clear class
+  expose receivedUninits
+  receivedUninits~empty
+
 ::method forceUninit class
   use arg ref, hash
+
+  self~clear
 
   -- loop until we see the weak reference value go away
   loop i = 1 while ref~value \= .nil
