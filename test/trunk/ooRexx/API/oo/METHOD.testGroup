@@ -545,6 +545,41 @@ return .ooTestResult~new(5)~~addException(err)
   self~expectSyntax('88.907')
   tester~TestStringSizeArg(-1)
 
+-- test positive_wholenumber_t
+::method 'testPositiveWholeNumber01'
+  tester = .METHODtester~new
+
+  self~assertSame(1, tester~TestPositiveWholeNumberArg(1.0))
+  val = 65535
+  self~assertSame(val, tester~TestPositiveWholeNumberArg(val))
+  val = 1
+  self~assertSame(val, tester~TestPositiveWholeNumberArg(val))
+  if .ooRexxUnit.architecture == 32 then
+      val = 999999999
+  else
+      val = 999999999999999999
+  self~assertSame(val, tester~TestPositiveWholeNumberArg(val))
+  self~assertSame(1, tester~TestOptionalPositiveWholeNumberArg(1))
+  self~assertSame(0, tester~TestOptionalPositiveWholeNumberArg())
+
+::method 'testPositiveWholeNumber02'
+  tester = .METHODtester~new
+  self~expectSyntax('88.905')
+  if .ooRexxUnit.architecture == 32 then
+      tester~TestPositiveWholeNumberArg(1000000000)
+  else
+      tester~TestPositiveWholeNumberArg(1000000000000000000)
+
+::method 'testPositiveWholeNumber03'
+  tester = .METHODtester~new
+  self~expectSyntax('88.905')
+  tester~TestPositiveWholeNumberArg(-1)
+
+::method 'testPositiveWholeNumber04'
+  tester = .METHODtester~new
+  self~expectSyntax('88.905')
+  tester~TestPositiveWholeNumberArg(0)
+
 -- test size_t
 ::method 'testSize01'
   numeric digits 20

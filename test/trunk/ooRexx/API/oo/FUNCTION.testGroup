@@ -433,6 +433,52 @@ return .ooTestResult~new(5)~~addException(err)
   else
       TestWholeNumberArg(-1000000000000000000)
 
+-- test stringsize_t
+::method 'testStringsize01'
+  val = 0
+  self~assertSame(val, TestStringSizeArg(val))
+  val = 65535
+  self~assertSame(val, TestStringSizeArg(val))
+  val = 1
+  self~assertSame(val, TestStringSizeArg(val))
+  if .ooRexxUnit.architecture == 32 then
+      val = 999999999
+  else
+      val = 999999999999999999
+  self~assertSame(val, TestStringSizeArg(val))
+
+::method 'testStringsize03'
+  self~expectSyntax('88.907')
+      TestStringSizeArg(-1)
+
+-- test positive_wholenumber_t
+::method 'testPositiveWholeNumber01'
+  val = 1.0
+  self~assertSame(1, TestPositiveWholeNumberArg(val))
+  val = 65535
+  self~assertSame(val, TestPositiveWholeNumberArg(val))
+  val = 1
+  self~assertSame(val, TestPositiveWholeNumberArg(val))
+  if .ooRexxUnit.architecture == 32 then
+      val = 999999999
+  else
+      val = 999999999999999999
+  self~assertSame(val, TestPositiveWholeNumberArg(val))
+
+::method 'testPositiveWholeNumber02'
+  self~expectSyntax('88.905')
+  if .ooRexxUnit.architecture == 32 then
+      TestPositiveWholeNumberArg(1000000000)
+  else
+      TestPositiveWholeNumberArg(1000000000000000000)
+
+::method 'testPositiveWholeNumber03'
+  self~expectSyntax('88.905')
+  TestPositiveWholeNumberArg(0)
+
+::method 'testPositiveWholeNumber04'
+  self~expectSyntax('88.905')
+  TestPositiveWholeNumberArg(-1)
 
 -- test size_t
 ::method 'testSize01'
