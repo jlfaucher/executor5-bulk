@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % ARTICLE_ENTITIES SYSTEM "report.ent">
+%ARTICLE_ENTITIES;
+]>
+<!--#########################################################################
+    #
+    # Copyright (c) 2015-2015 Rexx Language Association. All rights reserved.   
+    #                                                                      
+    # This program and the accompanying materials are made available under      
+    # the terms of the Common Public License v1.0 which accompanies this        
+    # distribution. A copy is also available at the following address:          
+    # http://www.oorexx.org/license.html                                        
+    #                                                                           
+    # Redistribution and use in source and binary forms, with or                
+    # without modification, are permitted provided that the following           
+    # conditions are met:                                                       
+    #                                                                           
+    # Redistributions of source code must retain the above copyright            
+    # notice, this list of conditions and the following disclaimer.             
+    # Redistributions in binary form must reproduce the above copyright         
+    # notice, this list of conditions and the following disclaimer in           
+    # the documentation and/or other materials provided with the distribution.  
+    #                                                                           
+    # Neither the name of Rexx Language Association nor the names               
+    # of its contributors may be used to endorse or promote products            
+    # derived from this software without specific prior written permission.     
+    #                                                                           
+    # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS       
+    # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT         
+    # LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS         
+    # FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT  
+    # OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,     
+    # SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED  
+    # TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,       
+    # OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY    
+    # OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING   
+    # NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS        
+    # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.              
+    #                                                                           
+    #########################################################################
+    #
+    # Description: Linux Security Assessment Report
+    #
+    #########################################################################
+-->
+<article>
+<xi:include href="Article_Info.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<xi:include href="summary.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+<section><title>Introduction and Scope</title>
+<para>
+The purpose of the
+<citetitle pubwork="article">Linux Security Assessment</citetitle>
+is to provide feedback and recommendations on improving your Linux security process.
+Feedback and recommendations were primarily derived from analyzing the security
+implementation of one of your operational Linux installations.
+</para>
+<para>
+Note that the partition is not an isolated system, but typically exists within a
+networking infrastructure. Many of the risks from external users are tempered by the
+networking security infrastructure that it resides in. However, our focus is on the
+host-based mechanisms used to secure the partition itself and not on elements found
+outside the host that could affect the host's security.
+</para>
+</section>
+
+<section><title>Linux Assessment Details</title>
+<para>
+The following assessment systematically approaches assessing security on an
+Linux host. Currently this assessment is only valid for RPM-based Linux distributions which
+adhere to the <emphasis role="bold">Linux Standards Base</emphasis> and the
+<emphasis role="bold">Linux Filesystem Standard</emphasis>.
+</para>
+
+<xi:include href="sysinfo.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<xi:include href="config.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<xi:include href="services.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<xi:include href="users.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<xi:include href="permissions.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+<section><title>Customer Questions</title>
+<para>TODO: add these later.
+</para>
+</section>
+</section>
+
+<xi:include href="notices.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<xi:include href="CPLv1.0.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+
+<index></index>
+
+</article>

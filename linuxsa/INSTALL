@@ -1,0 +1,53 @@
+               Installation Notes for LinuxSA
+               ==============================
+
+There are 2 basic ways to install LinuxSA.  From simplest to most complex
+they are:
+
+* Download either the tar.gz or the zip package from SourceForge (the
+contents of both packages are the same).
+
+* Checkout the source from the the ooRexx Subversion repository.
+
+Please read ALL of these notes before attempting to build ooRexx.
+
+Install Using the Downloaded Package
+====================================
+
+The tar.gz and zip packages have exactly the same content. However, the
+files in the tar.gz file are in Unix format (LF separators) and the zip file
+uses the DOS format (CRLF separators). This is the only difference.
+
+Once you have the package, unpack it in the location of your choice. You are
+now ready to use the package. See the README.txt file for usage instructions.
+
+
+Checkout and Install from the Subversion Repository
+===================================================
+
+The entire source tree for LinuxSA is available for anyone and can be checked
+out using a Subversion client and anonymous access.  Apart from the client,
+the procedure is the same on all platforms.  Subversion clients and / or
+instructions for installing Subversion clients for most platforms are
+available at:
+
+  http://subversion.tigris.org/project_packages.html
+
+Once the Subversion client is installed, the command to checkout is as
+follows, using the 1.0 head as an example:
+
+E:\work>svn co https://oorexx.svn.sourceforge.net/svnroot/oorexx/linuxsa/trunk linuxsa
+
+You can also check out the release code for any version of ooRexx.  Using
+the 1.0.0 release as an example, use the proper release number for other
+versions:
+
+E:\work>svn co https://oorexx.svn.sourceforge.net/svnroot/oorexx/linuxsa/releases/1.0.0 linuxsa
+
+In this command, the last word of the command is the directory into which
+the source tree will be checked out.  The name of the directory can be any
+name that is desired, 'linuxsa' might be a common choice.
+
+Again, note that the svn command is the same on any platform.  The example
+happens to be from a Windows system, the svn command is the same on Linux.
+

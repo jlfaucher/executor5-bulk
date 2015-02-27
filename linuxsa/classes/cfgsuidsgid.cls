@@ -1,0 +1,155 @@
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2015-2015 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+
+-- runlevel processint
+::class cfgsuidsgid public subclass linuxsa
+
+::attribute suidlist
+
+::method init
+expose suidlist
+use strict arg self~user, self~system, self~debug = .false
+suidlist = .array~new()
+suidlist~append('/usr/libexec/polkit-explicit-grant-helper')
+suidlist~append('/usr/libexec/polkit-set-default-helper')
+suidlist~append('/usr/libexec/polkit-resolve-exe-helper')
+suidlist~append('/usr/libexec/polkit-grant-helper-pam')
+suidlist~append('/usr/libexec/openssh/ssh-keysign')
+suidlist~append('/usr/libexec/polkit-read-auth-helper')
+suidlist~append('/usr/libexec/polkit-grant-helper')
+suidlist~append('/usr/libexec/utempter/utempter')
+suidlist~append('/usr/libexec/polkit-revoke-helper')
+suidlist~append('/usr/sbin/suexec')
+suidlist~append('/usr/sbin/usernetctl')
+suidlist~append('/usr/sbin/sendmail.sendmail')
+suidlist~append('/usr/sbin/userhelper')
+suidlist~append('/usr/sbin/ccreds_chkpwd')
+suidlist~append('/usr/sbin/lockdev')
+suidlist~append('/usr/kerberos/bin/ksu')
+suidlist~append('/usr/bin/gpasswd')
+suidlist~append('/usr/bin/passwd')
+suidlist~append('/usr/bin/at')
+suidlist~append('/usr/bin/sudo')
+suidlist~append('/usr/bin/chage')
+suidlist~append('/usr/bin/gtali')
+suidlist~append('/usr/bin/gnobots2')
+suidlist~append('/usr/bin/wall')
+suidlist~append('/usr/bin/pulseaudio')
+suidlist~append('/usr/bin/same-gnome')
+suidlist~append('/usr/bin/chsh')
+suidlist~append('/usr/bin/ssh-agent')
+suidlist~append('/usr/bin/gnibbles')
+suidlist~append('/usr/bin/lockfile')
+suidlist~append('/usr/bin/rcp')
+suidlist~append('/usr/bin/gnotski')
+suidlist~append('/usr/bin/glines')
+suidlist~append('/usr/bin/rsh')
+suidlist~append('/usr/bin/mahjongg')
+suidlist~append('/usr/bin/rlogin')
+suidlist~append('/usr/bin/gnotravex')
+suidlist~append('/usr/bin/gnuchess')
+suidlist~append('/usr/bin/locate')
+suidlist~append('/usr/bin/crontab')
+suidlist~append('/usr/bin/staprun')
+suidlist~append('/usr/bin/gnome-falling-blocks')
+suidlist~append('/usr/bin/write')
+suidlist~append('/usr/bin/gnomine')
+suidlist~append('/usr/bin/iagno')
+suidlist~append('/usr/bin/newgrp')
+suidlist~append('/usr/bin/gsa_logger')
+suidlist~append('/usr/bin/chfn')
+suidlist~append('/usr/bin/sudoedit')
+suidlist~append('/usr/bin/Xorg')
+suidlist~append('/usr/local/share/macrovision/service/11.5.0/FNPLicensingService')
+suidlist~append('/usr/lib/squid/pam_auth')
+suidlist~append('/usr/lib/squid/ncsa_auth')
+suidlist~append('/usr/lib/vte/gnome-pty-helper')
+suidlist~append('/usr/lib/nspluginwrapper/plugin-config')
+suidlist~append('/sbin/netreport')
+suidlist~append('/sbin/pam_timestamp_check')
+suidlist~append('/sbin/unix_chkpwd')
+suidlist~append('/sbin/mount.nfs')
+suidlist~append('/bin/mount')
+suidlist~append('/bin/ping')
+suidlist~append('/bin/fusermount')
+suidlist~append('/bin/ping6')
+suidlist~append('/bin/su')
+suidlist~append('/bin/umount')
+suidlist~append('/lib/dbus-1/dbus-daemon-launch-helper')
+return
+
+
+::method get_current
+-- display the question
+question = 'Are there any unauthorized SUID/GID system executables?'
+say question
+-- get the answer
+newarr = .array~new()
+retc = self~execute('find / -xdev \( -perm -4000 -o -perm -2000 \) -type f -print')
+arr = self~arr_from_file(self~tfile)
+do line over arr
+   if self~suidlist~hasItem(line) = .false then newarr~append(line)
+   end
+-- set up the report section
+rptarr = .array~new()
+rptarr~append('<listitem>')
+rptarr~append('<indexterm><primary>SUID</primary></indexterm>')
+rptarr~append('<indexterm><primary>GID</primary></indexterm>')
+rptarr~append('<para>'question'</para>')
+if newarr~items > 0 then do
+   rptarr~append('<programlisting>')
+   do line over newarr
+      rptarr~append(line)
+      end
+   rptarr~append('</programlisting>')
+   rptarr~append('<note><title>Warning</title>')
+   rptarr~append(self~msg9p)
+   rptarr~append('<para>The list of files above should be examined to determine if their')
+   rptarr~append('SUID/SGID bits should really be set.</para>')
+   rptarr~append('</note>')
+   end
+else do
+   rptarr~append('<programlisting>None found</programlisting>')
+   rptarr~append(self~msg2p)
+   end
+rptarr~append('</listitem>')
+return rptarr
+
+                               
+::requires './classes/linuxsa.cls'
+
