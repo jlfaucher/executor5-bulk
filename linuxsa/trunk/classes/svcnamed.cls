@@ -45,7 +45,7 @@ return
 
 ::method get_current
 -- display the question
-question = 'Is named installed/running?'
+question = 'Is the named daemon installed/running?'
 say question
 -- get the answer
 status = self~chkservice('named')

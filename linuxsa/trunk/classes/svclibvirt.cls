@@ -36,7 +36,7 @@
 /*----------------------------------------------------------------------------*/
 
 
-::class svcavahi public subclass linuxsa
+::class svclibvirt public subclass linuxsa
 
 ::method init
 use strict arg self~user, self~system, self~debug = .false
@@ -45,40 +45,44 @@ return
 
 ::method get_current
 -- display the question
-question = 'Is the avahi-daemon installed/running?'
+question = 'Is the libvirt daemon installed/running?'
 say question
 -- get the answer
-status = self~chkservice('avahi-daemon')
+status = self~chkservice('libvirtd')
 -- set up the report section
 rptarr = .array~new()
 rptarr~append('<listitem>')
-rptarr~append('<indexterm><primary>avahi daemon</primary></indexterm>')
-rptarr~append('<para>The Avahi daemon implements the DNS Service Discovery and Multicast DNS protocols, which provide service')
-rptarr~append('and host discovery on a network. It allows a system to automatically identify resources on the network, such')
-rptarr~append('as printers or web servers. This capability is also known as mDNSresponder and is a major part of Zeroconf')
-rptarr~append('networking.</para>')
-rptarr~append('<para>Because the Avahi daemon service keeps an open network port, it is subject to network attacks. Disabling it is')
-rptarr~append('particularly important to reduce the system''s vulnerability to such attacks.</para>')
+rptarr~append('<indexterm><primary>libvirt daemon</primary></indexterm>')
+rptarr~append('<para>Libvirt supplies access to virtual machines on the local host. These')
+rptarr~append('remote sessions provide attack vectors to the hosted virtual machines and')
+rptarr~append('could allow access to the host if the VMs are not properly configured')
+rptarr~append('and protected.</para>')
 rptarr~append('<para>'question'</para>')
-if status = 'none' | status = 'disabled' then do
+if status = 'none' then do
    rptarr~append('<programlisting>Not installed</programlisting>')
    rptarr~append(self~msg7)
    end
 else if status = 'enabled' then do
    rptarr~append('<programlisting>Installed and running</programlisting>')
    rptarr~append('<note><title>Warning</title>')
+   rptarr~append(self~msg7)
+   rptarr~append('<para>Ensure this daemon is needed and properly configured.</para>')
+   rptarr~append('</note>')
+   end
+else if status = 'disabled' then do
+   rptarr~append('<programlisting>Installed and disabled</programlisting>')
+   rptarr~append('<note><title>Warning</title>')
    rptarr~append(self~msg6)
-   rptarr~append('<para>This daemon should be removed from the system.</para>')
+   rptarr~append('<para>Ensure this daemon is needed and properly configured.</para>')
    rptarr~append('</note>')
    end
 else do
    rptarr~append('<programlisting>This daemon is in an unknown state</programlisting>')
    rptarr~append('<note><title>Warning</title>')
    rptarr~append(self~msg6)
+   rptarr~append('<para>This daemon should be removed from the system.</para>')
    rptarr~append('</note>')
    end
-rptarr~append('<para>When removing/diasabling this service be sure to check that the supporting network port')
-rptarr~append('has also been disabled.</para>')
 rptarr~append('</listitem>')
 return rptarr
 

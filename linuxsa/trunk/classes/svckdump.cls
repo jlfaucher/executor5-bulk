@@ -45,7 +45,7 @@ return
 
 ::method get_current
 -- display the question
-question = 'Is kdump installed/running?'
+question = 'Is the kdump daemon installed/running?'
 say question
 -- get the answer
 status = self~chkservice('kdump')
@@ -53,6 +53,8 @@ status = self~chkservice('kdump')
 rptarr = .array~new()
 rptarr~append('<listitem>')
 rptarr~append('<indexterm><primary>kdump daemon</primary></indexterm>')
+rptarr~append('<para>Kdump is a new kernel crash dump analyzer. It uses kexec to boot a secondary kernel ("capture" kernel) following')
+rptarr~append('a system crash. The kernel dump from the system crash is loaded into the capture kernel for analysis.</para>')
 rptarr~append('<para>'question'</para>')
 if status = 'none' then do
    rptarr~append('<programlisting>Not installed</programlisting>')

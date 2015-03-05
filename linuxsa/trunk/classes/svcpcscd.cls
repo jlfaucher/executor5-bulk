@@ -45,7 +45,7 @@ return
 
 ::method get_current
 -- display the question
-question = 'Is pcscd installed/running?'
+question = 'Is the pcscd daemon installed/running?'
 say question
 -- get the answer
 status = self~chkservice('pcscd')
@@ -53,7 +53,8 @@ status = self~chkservice('pcscd')
 rptarr = .array~new()
 rptarr~append('<listitem>')
 rptarr~append('<indexterm><primary>pcscd daemon</primary></indexterm>')
-rptarr~append('<para>If Smart Cards are not in use on the system, disable this service.</para>')
+rptarr~append('<para>The pcscd service provides support for Smart Cards and Smart Card Readers.')
+rptarr~append('If Smart Cards are not in use on the system, disable this service.</para>')
 rptarr~append('<para>'question'</para>')
 if status = 'none' then do
    rptarr~append('<programlisting>Not installed</programlisting>')

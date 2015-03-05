@@ -45,7 +45,7 @@ return
 
 ::method get_current
 -- display the question
-question = 'Are there any other FTP services installed?'
+question = 'Are there any other FTP daemon services installed?'
 say question
 -- get the answer
 newarr = .array~new()
@@ -73,6 +73,9 @@ rptarr~append('<indexterm><primary>proftpd daemon</primary></indexterm>')
 rptarr~append('<indexterm><primary>pureftpd daemon</primary></indexterm>')
 rptarr~append('<indexterm><primary>wuftpd daemon</primary></indexterm>')
 rptarr~append('<indexterm><primary>wu-ftpd daemon</primary></indexterm>')
+rptarr~append('<para>FTP is a common method for allowing remote access to files. Like telnet, the FTP protocol is unencrypted,')
+rptarr~append('which means that passwords and other data transmitted during the session can be captured and that the session')
+rptarr~append('is vulnerable to hijacking. Therefore, running the FTP server software is not recommended.</para>')
 rptarr~append('<para>'question'</para>')
 if newarr~items() = 0 then do
    rptarr~append('<programlisting>None installed</programlisting>')

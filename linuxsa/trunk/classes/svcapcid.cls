@@ -45,7 +45,7 @@ return
 
 ::method get_current
 -- display the question
-question = 'Is apcid installed/running?'
+question = 'Is the apcid daemon installed/running?'
 say question
 -- get the answer
 status = self~chkservice('apcid')
@@ -53,7 +53,8 @@ status = self~chkservice('apcid')
 rptarr = .array~new()
 rptarr~append('<listitem>')
 rptarr~append('<indexterm><primary>apicid daemon</primary></indexterm>')
-rptarr~append('<para>The acpid service provides next generation power management support.</para>')
+rptarr~append('<para>The acpid service provides next generation power management support.')
+rptarr~append('Unless power management features are not necessary, leave this service enabled.</para>')
 rptarr~append('<para>'question'</para>')
 if status = 'none' then do
    rptarr~append('<programlisting>Not installed</programlisting>')

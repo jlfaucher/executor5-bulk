@@ -45,7 +45,7 @@ return
 
 ::method get_current
 -- display the question
-question = 'Is ypbind installed/running?'
+question = 'Is the ypbind daemon installed/running?'
 say question
 -- get the answer
 status = self~chkservice('ypbind')
@@ -53,6 +53,7 @@ status = self~chkservice('ypbind')
 rptarr = .array~new()
 rptarr~append('<listitem>')
 rptarr~append('<indexterm><primary>ypbind daemon</primary></indexterm>')
+rptarr~append('<para>The ypbind daemon/service is obsolete.</para>')
 rptarr~append('<para>'question'</para>')
 if status = 'none' then do
    rptarr~append('<programlisting>Not installed</programlisting>')

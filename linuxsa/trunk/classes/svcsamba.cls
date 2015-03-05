@@ -45,7 +45,7 @@ return
 
 ::method get_current
 -- display the question
-question = 'Is samba installed/running?'
+question = 'Is the samba daemon/service installed/running?'
 say question
 -- get the answer
 status = self~chkservice('smb')

@@ -45,7 +45,7 @@ return
 
 ::method get_current
 -- display the question
-question = 'Is bluetooth installed/running?'
+question = 'Is the bluetooth daemon installed/running?'
 say question
 -- get the answer
 status = self~chkservice('bluetooth')
@@ -53,7 +53,8 @@ status = self~chkservice('bluetooth')
 rptarr = .array~new()
 rptarr~append('<listitem>')
 rptarr~append('<indexterm><primary>bluetooth daemon</primary></indexterm>')
-rptarr~append('<para>The bluetooth service enables the system to use Bluetooth devices.</para>')
+rptarr~append('<para>The bluetooth service enables the system to use Bluetooth devices.')
+rptarr~append('Disable this service if Bluetooth support is not needed.</para>')
 rptarr~append('<para>'question'</para>')
 if status = 'none' then do
    rptarr~append('<programlisting>Not installed</programlisting>')

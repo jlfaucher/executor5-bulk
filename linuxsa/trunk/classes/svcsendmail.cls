@@ -45,7 +45,7 @@ return
 
 ::method get_current
 -- display the question
-question = 'Is sendmail installed/running?'
+question = 'Is the sendmail daemon/service installed/running?'
 say question
 -- get the answer
 status = self~rpmdpkg('sendmail')
@@ -53,6 +53,7 @@ status = self~rpmdpkg('sendmail')
 rptarr = .array~new()
 rptarr~append('<listitem>')
 rptarr~append('<indexterm><primary>sendmail daemon</primary></indexterm>')
+rptarr~append('<para>Sendmail is a Mail Transfer Agent (MTA) for sending and receiving email.</para>')
 rptarr~append('<para>'question'</para>')
 rptarr~append('<programlisting>'status'</programlisting>')
 if status = 'Not installed' then do

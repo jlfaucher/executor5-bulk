@@ -45,7 +45,7 @@ return
 
 ::method get_current
 -- display the question
-question = 'Is xinetd installed/running?'
+question = 'Is the xinetd daemon/service installed/running?'
 say question
 -- get the answer
 status = self~chkservice('xinetd')
@@ -53,6 +53,7 @@ status = self~chkservice('xinetd')
 rptarr = .array~new()
 rptarr~append('<listitem>')
 rptarr~append('<indexterm><primary>xinetd daemon</primary></indexterm>')
+rptarr~append('<para>The xinetd daemon/service is obsolete.</para>')
 rptarr~append('<para>'question'</para>')
 if status = 'none' then do
    rptarr~append('<programlisting>Not installed</programlisting>')

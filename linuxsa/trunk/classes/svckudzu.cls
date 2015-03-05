@@ -45,7 +45,7 @@ return
 
 ::method get_current
 -- display the question
-question = 'Is kudzu installed/running?'
+question = 'Is the kudzu daemon installed/running?'
 say question
 -- get the answer
 status = self~chkservice('kudzu')
@@ -53,6 +53,9 @@ status = self~chkservice('kudzu')
 rptarr = .array~new()
 rptarr~append('<listitem>')
 rptarr~append('<indexterm><primary>kudzu daemon</primary></indexterm>')
+rptarr~append('<para>Kudzu, Red Hat''s hardware detection program, represents an unnecessary security risk as it allows unprivileged')
+rptarr~append('users to perform hardware configuration without authorization. Unless this specific functionality is required,')
+rptarr~append('Kudzu should be disabled.</para>')
 rptarr~append('<para>'question'</para>')
 if status = 'none' then do
    rptarr~append('<programlisting>Not installed</programlisting>')
@@ -79,6 +82,7 @@ else do
    rptarr~append('<para>This daemon should be removed from the system.</para>')
    rptarr~append('</note>')
    end
+rptarr~append(self~msg17)
 rptarr~append('</listitem>')
 return rptarr
 

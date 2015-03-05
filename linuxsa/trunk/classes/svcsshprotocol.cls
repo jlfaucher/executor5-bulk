@@ -69,6 +69,9 @@ if entry = .false then do
    rptarr~append('<para>The PROTOCOL entry in the file is not safe. Please review the entry.</para>')
    rptarr~append('</note>')
    end
+else do
+   rptarr~append('<para>The PROTOCOL entry in the file is correct.</para>')
+   end
 rptarr~append('</listitem>')
 return rptarr
 

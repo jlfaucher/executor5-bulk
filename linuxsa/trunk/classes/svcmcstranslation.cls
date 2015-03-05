@@ -45,7 +45,7 @@ return
 
 ::method get_current
 -- display the question
-question = 'Is SELinux MCS Translations service installed/running?'
+question = 'Isthe  SELinux MCS Translations daemon/service installed/running?'
 say question
 -- get the answer
 status = self~chkservice('mcstrans')

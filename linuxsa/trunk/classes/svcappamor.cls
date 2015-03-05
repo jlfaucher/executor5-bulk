@@ -45,15 +45,15 @@ return
 
 ::method get_current
 -- display the question
-question = 'Is AppAmor installed/active?'
+question = 'Is the AppAmor daemon installed/active?'
 say question
+-- get the answer
+status = self~rpmdpkg('libapparmor1')
+-- set up the report section
 rptarr = .array~new()
 rptarr~append('<listitem>')
 rptarr~append('<indexterm><primary>AppArmor</primary></indexterm>')
 rptarr~append('<indexterm><primary>libimmunix</primary></indexterm>')
--- get the answer
-status = self~rpmdpkg('libapparmor1')
--- set up the report section
 rptarr~append('<para>AppArmor is an effective and easy-to-use Linux application security system')
 rptarr~append('that protects your Linux operating system and applications from the effects of attacks, viruses,')
 rptarr~append(']and malicious applications. AppArmor is not a firewall or a virus detection application--it is a')

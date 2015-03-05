@@ -45,7 +45,7 @@ return
 
 ::method get_current
 -- display the question
-question =  'Is ntpd installed/running?'
+question =  'Is the ntpd daemon installed/running?'
 say question
 -- get the answer
 status = self~chkservice('ntpd')
@@ -53,6 +53,9 @@ status = self~chkservice('ntpd')
 rptarr = .array~new()
 rptarr~append('<listitem>')
 rptarr~append('<indexterm><primary>ntpd daemon</primary></indexterm>')
+rptarr~append('<para>The Network Time Protocol is used to manage the system clock over a network. Computer clocks are not very')
+rptarr~append('accurate, so time will drift on unmanaged systems. Central time protocols can be used both to ensure that time')
+rptarr~append('is consistent among a network of machines, and that their time is consistent with the outside world.</para>')
 rptarr~append('<para>'question'</para>')
 if status = 'none' then do
    rptarr~append('<programlisting>Not installed</programlisting>')

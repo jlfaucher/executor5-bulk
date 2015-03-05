@@ -73,8 +73,9 @@
 ::constant msg12  '<para>The results of this test are not valid for Red Hat/Fedora distributions.</para>'
 ::constant msg13  '<para>The results of this test are not valid for Mandrake distributions.</para>'
 ::constant msg14  '<para>This test is not valid if not run as the root user.</para>'
-::constant msg15   '<para>This service configuration meets best practice requirements.</para>'
-::constant msg16   '<para>This service configuration does not meet best practice requirements.</para>'
+::constant msg15  '<para>This service configuration meets best practice requirements.</para>'
+::constant msg16  '<para>This service configuration does not meet best practice requirements.</para>'
+::constant msg17  '<para>The results of this test are not valid for Ubuntu-based distributions.</para>'
 
 
 /*----------------------------------------------------------------------------*/

@@ -62,6 +62,7 @@ rptarr = .array~new()
 rptarr~append('<listitem>')
 rptarr~append('<indexterm><primary>rsh-server daemon</primary></indexterm>')
 rptarr~append('<indexterm><primary>rsh-server.rpm</primary></indexterm>')
+rptarr~append('<para>The rsh-server daemon/service is obsolete.</para>')
 rptarr~append('<para>'question'</para>')
 rptarr~append('<programlisting>'status'</programlisting>')
 if status = 'Not installed' then do

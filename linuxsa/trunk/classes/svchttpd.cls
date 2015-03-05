@@ -45,7 +45,7 @@ return
 
 ::method get_current
 -- display the question
-question = 'Is httpd/apache installed/running?'
+question = 'Is the httpd/apache daemon installed/running?'
 say question
 -- get the answer
 if .local~sysdist = 'RH' then do
@@ -59,6 +59,14 @@ rptarr = .array~new()
 rptarr~append('<listitem>')
 rptarr~append('<indexterm><primary>httpd daemon</primary></indexterm>')
 rptarr~append('<indexterm><primary>apache2 daemon</primary></indexterm>')
+rptarr~append('<para>The web server is responsible for providing access to content via the HTTP protocol. Web servers represent a')
+rptarr~append('significant security risk because:</para>')
+rptarr~append('<itemizedlist>')
+rptarr~append('<listitem><para>The HTTP port is commonly probed by malicious sources</para></listitem>')
+rptarr~append('<listitem><para>Web server software is very complex, and includes a long history of vulnerabilities</para></listitem>')
+rptarr~append('<listitem><para>The HTTP protocol is unencrypted and vulnerable to passive monitoring</para></listitem>')
+rptarr~append('</itemizedlist>')
+rptarr~append('<para>The system\u2019s default web server software is Apache 2 and is provided in the RPM package httpd.</para>')
 rptarr~append('<para>'question'</para>')
 if status = 'none' then do
    rptarr~append('<programlisting>Not installed</programlisting>')

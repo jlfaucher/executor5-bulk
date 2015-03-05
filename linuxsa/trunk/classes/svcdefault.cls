@@ -45,7 +45,6 @@ expose svclist
 use strict arg self~user, self~system, self~debug = .false
 svclist = .array~new()
 if .local~sysdist = 'FC' | .local~sysdist = 'RH' then do
-   svclist~append(.service~new('apmd', 'disable'))
    svclist~append(.service~new('auditd', 'configure'))
    svclist~append(.service~new('autofs', 'disable'))
    svclist~append(.service~new('cpuspeed', 'enable'))
@@ -122,7 +121,6 @@ else if .local~sysdist = 'SU' then do
    svclist~append(.service~new('zebra', 'disable'))
    end
 else if .local~sysdist = 'UB' then do
-   svclist~append(.service~new('apmd', 'disable'))
    svclist~append(.service~new('autofs', 'disable'))
    svclist~append(.service~new('cron', 'configure'))
    svclist~append(.service~new('dbus', 'disable'))

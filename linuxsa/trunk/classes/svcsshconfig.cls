@@ -55,6 +55,7 @@ rptarr = .array~new()
 rptarr~append('<listitem>')
 rptarr~append('<indexterm><primary>/etc/ssh/sshd_config</primary></indexterm>')
 rptarr~append('<indexterm><primary>SSH configuration</primary></indexterm>')
+rptarr~append('<para>Review the entries in the /etc/ssh/sshd_conf file.</para>')
 rptarr~append('<para>'question'</para>')
 fail = .false
 do line over arr

@@ -45,7 +45,7 @@ return
 
 ::method get_current
 -- display the question
-question = 'Is postfix installed/running?'
+question = 'Is the postfix daemon installed/running?'
 say question
 -- get the answer
 status = self~rpmdpkg('postfix')
@@ -54,6 +54,7 @@ rptarr = .array~new()
 rptarr~append('<listitem>')
 rptarr~append('<indexterm><primary>postfix daemon</primary></indexterm>')
 rptarr~append('<indexterm><primary>postfix.rpm</primary></indexterm>')
+rptarr~append('<para>Postfix is a Mail Transfer Agent (MTA) for sending and receiving email.</para>')
 rptarr~append('<para>'question'</para>')
 rptarr~append('<programlisting>'status'</programlisting>')
 if status = 'Not installed' then do

@@ -45,7 +45,7 @@ return
 
 ::method get_current
 -- display the question
-question = 'Is mdmonitor installed/running?'
+question = 'Is the mdmonitor daemon installed/running?'
 say question
 -- get the answer
 status = self~chkservice('mdmonitor')
@@ -53,6 +53,8 @@ status = self~chkservice('mdmonitor')
 rptarr = .array~new()
 rptarr~append('<listitem>')
 rptarr~append('<indexterm><primary>mdmonitor daemon</primary></indexterm>')
+rptarr~append('<para>The mdmonitor service is used for monitoring a software RAID (hardware RAID setups do not use this service).')
+rptarr~append('This service is extraneous unless software RAID is in use (which is not common).</para>')
 rptarr~append('<para>'question'</para>')
 if status = 'none' then do
    rptarr~append('<programlisting>Not installed</programlisting>')

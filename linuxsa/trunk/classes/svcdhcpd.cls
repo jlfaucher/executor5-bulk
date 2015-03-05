@@ -45,7 +45,7 @@ return
 
 ::method get_current
 -- display the question
-question = 'Is dhcpd installed/running?'
+question = 'Is the dhcpd daemon installed/running?'
 say question
 -- get the answer
 status = self~chkservice('dhcpd')
@@ -53,6 +53,8 @@ status = self~chkservice('dhcpd')
 rptarr = .array~new()
 rptarr~append('<listitem>')
 rptarr~append('<indexterm><primary>dhcpd daemon</primary></indexterm>')
+rptarr~append('<para>The Dynamic Host Configuration Protocol (DHCP) allows systems to request and obtain an IP address and')
+rptarr~append('many other parameters from a server.</para>')
 rptarr~append('<para>'question'</para>')
 if status = 'none' then do
    rptarr~append('<programlisting>Not installed</programlisting>')
@@ -79,6 +81,8 @@ else do
    rptarr~append('<para>This daemon should be removed from the system.</para>')
    rptarr~append('</note>')
    end
+rptarr~append('<para>When removing/diasabling this service be sure to check that the supporting network port')
+rptarr~append('has also been disabled.</para>')
 rptarr~append('</listitem>')
 return rptarr
 

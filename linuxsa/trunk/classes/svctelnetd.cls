@@ -61,6 +61,7 @@ rptarr = .array~new()
 rptarr~append('<listitem>')
 rptarr~append('<indexterm><primary>telnet daemon</primary></indexterm>')
 rptarr~append('<indexterm><primary>telnet.rpm</primary></indexterm>')
+rptarr~append('<para>The telnet daemon/service is obsolete.</para>')
 rptarr~append('<para>'question'</para>')
 rptarr~append('<programlisting>'status'</programlisting>')
 if status~pos('Not installed') > 0 then do

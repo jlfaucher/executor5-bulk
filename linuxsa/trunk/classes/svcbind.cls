@@ -45,7 +45,7 @@ return
 
 ::method get_current
 -- display the question
-question = 'Is bind installed/running?'
+question = 'Is the bind daemon installed/running?'
 say question
 -- get the answer
 status = self~chkservice('bind')
@@ -53,6 +53,8 @@ status = self~chkservice('bind')
 rptarr = .array~new()
 rptarr~append('<listitem>')
 rptarr~append('<indexterm><primary>bind daemon</primary></indexterm>')
+rptarr~append('<para>DNS software should be disabled on any machine which does not need to be a nameserver. Note that the')
+rptarr~append('BIND DNS server software is not installed by default.</para>')
 rptarr~append('<para>'question'</para>')
 if status = 'none' then do
    rptarr~append('<programlisting>Not installed</programlisting>')

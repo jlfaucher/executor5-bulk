@@ -45,7 +45,7 @@ return
 
 ::method get_current
 -- display the question
-question = 'Is squid installed/running?'
+question = 'Is the squid daemon installed/running?'
 say question
 -- get the answer
 status = self~chkservice('squid')

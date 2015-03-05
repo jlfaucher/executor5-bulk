@@ -45,7 +45,7 @@ return
 
 ::method get_current
 -- display the question
-question = 'Is microcode_ctl installed/running?'
+question = 'Is the microcode_ctl daemon installed/running?'
 say question
 -- get the answer
 status = self~chkservice('microcode_ctl')
@@ -53,6 +53,8 @@ status = self~chkservice('microcode_ctl')
 rptarr = .array~new()
 rptarr~append('<listitem>')
 rptarr~append('<indexterm><primary>microcode_ctl daemon</primary></indexterm>')
+rptarr~append('<para>microcode_ctl is a microcode utility for use with Intel IA32 processors (Pentium Pro, PII, Celeron, PIII, Xeon,')
+rptarr~append('Pentium 4, etc).</para>')
 rptarr~append('<para>'question'</para>')
 if status = 'none' then do
    rptarr~append('<programlisting>Not installed</programlisting>')

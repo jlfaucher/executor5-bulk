@@ -45,7 +45,7 @@ return
 
 ::method get_current
 -- display the question
-question = 'Is D-Bus installed/running?'
+question = 'Is the D-Bus daemon/service installed/running?'
 say question
 -- get the answer
 status = self~chkservice('messagebus')

@@ -45,7 +45,7 @@ return
 
 ::method get_current
 -- display the question
-question = 'Is HAL daemon installed/running?'
+question = 'Is the HAL daemon installed/running?'
 say question
 -- get the answer
 status = self~chkservice('haldaemon')

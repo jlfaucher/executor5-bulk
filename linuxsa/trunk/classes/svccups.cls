@@ -45,7 +45,7 @@ return
 
 ::method get_current
 -- display the question
-question = 'Is cups installed/running?'
+question = 'Is the cups daemon installed/running?'
 say question
 -- get the answer
 status = self~rpmdpkg('cups')

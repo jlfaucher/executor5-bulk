@@ -45,7 +45,7 @@ return
 
 ::method get_current
 -- display the question
-question = 'Is hplip installed/running?'
+question = 'Is the hplip daemon installed/running?'
 say question
 -- get the answer
 arr = self~arr_from_file(self~tfile)

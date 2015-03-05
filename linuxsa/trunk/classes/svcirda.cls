@@ -45,7 +45,7 @@ return
 
 ::method get_current
 -- display the question
-question = 'Is irda installed/running?'
+question = 'Is the irda daemon installed/running?'
 say question
 -- get the answer
 status = self~chkservice('irda')

@@ -45,7 +45,7 @@ return
 
 ::method get_current
 -- display the question
-question = 'Is tftp-server installed/running?'
+question = 'Is the tftp-server daemon installed/running?'
 say question
 -- get the answer
 status = self~chkservice('tftp-server')
@@ -53,6 +53,9 @@ status = self~chkservice('tftp-server')
 rptarr = .array~new()
 rptarr~append('<listitem>')
 rptarr~append('<indexterm><primary>tftp-server daemon</primary></indexterm>')
+rptarr~append('<para>FTP is a common method for allowing remote access to files. Like telnet, the FTP protocol is unencrypted,')
+rptarr~append('which means that passwords and other data transmitted during the session can be captured and that the session')
+rptarr~append('is vulnerable to hijacking. Therefore, running the FTP server software is not recommended.</para>')
 rptarr~append('<para>'question'</para>')
 if status = 'none' then do
    rptarr~append('<programlisting>Not installed</programlisting>')

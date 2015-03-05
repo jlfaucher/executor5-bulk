@@ -45,7 +45,7 @@ return
 
 ::method get_current
 -- display the question
-question = 'Is sshd installed/running?'
+question = 'Is the sshd daemon installed/running?'
 say question
 -- get the answer
 status = self~chkservice('sshd')
@@ -53,6 +53,9 @@ status = self~chkservice('sshd')
 rptarr = .array~new()
 rptarr~append('<listitem>')
 rptarr~append('<indexterm><primary>sshd daemon</primary></indexterm>')
+rptarr~append('<para>The SSH protocol is recommended for remote login and remote file transfer. SSH provides confidentiality and')
+rptarr~append('integrity for data exchanged between two systems, as well as server authentication, through the use of public key')
+rptarr~append('cryptography.</para>')
 rptarr~append('<para>'question'</para>')
 if status = 'none' then do
    rptarr~append('<programlisting>Not installed</programlisting>')

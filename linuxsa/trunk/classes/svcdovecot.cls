@@ -45,7 +45,7 @@ return
 
 ::method get_current
 -- display the question
-question = 'Is dovecot installed/running?'
+question = 'Is the dovecot daemon installed/running?'
 say question
 -- get the answer
 status = self~chkservice('dovecot')
@@ -53,7 +53,7 @@ status = self~chkservice('dovecot')
 rptarr = .array~new()
 rptarr~append('<listitem>')
 rptarr~append('<indexterm><primary>dovecot daemon</primary></indexterm>')
-rptarr~append('<para>Dovecot provides IMAP and POP3 services.</para>')
+rptarr~append('<para>Dovecot provides IMAP and POP3 services. It is not installed by default.</para>')
 rptarr~append('<para>'question'</para>')
 if status = 'none' then do
    rptarr~append('<programlisting>Not installed</programlisting>')

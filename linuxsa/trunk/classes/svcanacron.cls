@@ -45,7 +45,7 @@ return
 
 ::method get_current
 -- display the question
-question = 'Is anacron installed/running?'
+question = 'Is the anacron daemon installed/running?'
 say question
 -- get the answer
 status = self~chkservice('anacron')

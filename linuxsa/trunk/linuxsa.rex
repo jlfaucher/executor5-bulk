@@ -107,6 +107,7 @@ questions~append(.questions~new(.cfghosts, user, system, debug))
 questions~append(.questions~new(.cfgsingleuser, user, system, debug))
 questions~append(.questions~new(.cfgmotd, user, system, debug))
 questions~append(.questions~new(.svcdefault, user, system, debug))
+questions~append(.questions~new(.svcrhnsd, user, system, debug))
 questions~append(.questions~new(.svcsyslog, user, system, debug))
 questions~append(.questions~new(.svcappamor, user, system, debug))
 questions~append(.questions~new(.svciptablesaccept, user, system, debug))
@@ -154,6 +155,8 @@ questions~append(.questions~new(.svcsamba, user, system, debug))
 questions~append(.questions~new(.svcsquid, user, system, debug))
 questions~append(.questions~new(.svcsnmp, user, system, debug))
 questions~append(.questions~new(.svcfirewalld, user, system, debug))
+questions~append(.questions~new(.svcvnc, user, system, debug))
+questions~append(.questions~new(.svclibvirt, user, system, debug))
 questions~append(.questions~new(.usrconsoleroot, user, system, debug))
 questions~append(.questions~new(.usrwheelroot, user, system, debug))
 questions~append(.questions~new(.usrwheelrootaudit, user, system, debug))
@@ -301,6 +304,7 @@ return
 ::requires './classes/cfgsingleuser.cls'
 ::requires './classes/cfgmotd.cls'
 ::requires './classes/svcdefault.cls'
+::requires './classes/svcrhnsd.cls'
 ::requires './classes/svcsyslog.cls'
 ::requires './classes/svcappamor.cls'
 ::requires './classes/svciptablesaccept.cls'
@@ -348,6 +352,8 @@ return
 ::requires './classes/svcsquid.cls'
 ::requires './classes/svcsnmp.cls'
 ::requires './classes/svcfirewalld.cls'
+::requires './classes/svcvnc.cls'
+::requires './classes/svclibvirt.cls'
 ::requires './classes/usrconsoleroot.cls'
 ::requires './classes/usrwheelroot.cls'
 ::requires './classes/usrwheelrootaudit.cls'

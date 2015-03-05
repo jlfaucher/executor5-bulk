@@ -45,7 +45,7 @@ return
 
 ::method get_current
 -- display the question
-question = 'Is snmpd installed/running?'
+question = 'Is the snmpd daemon installed/running?'
 say question
 -- get the answer
 status = self~chkservice('snmpd')
