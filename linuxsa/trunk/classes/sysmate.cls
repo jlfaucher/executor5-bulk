@@ -45,13 +45,10 @@ return
 
 ::method get_current
 -- display the question
-question = 'Is mate installed?'
+question = 'Is the mate desktop installed?'
 say question
 -- get the answer
-retc = self~execute('rpm -q mate-desktop')
-arr = self~arr_from_file(self~tfile)
-if arr[1]~pos('not installed') > 0 then status = 'No'
-else status = 'Yes'
+status = self~rpmdpkg('mate-desktop')
 -- set up the report section
 rptarr = .array~new()
 rptarr~append('<listitem>')

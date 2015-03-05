@@ -85,13 +85,9 @@ select
    when sysdesc~caselessPos('red hat') > 0 then .local~sysdist = 'RH'
    when sysdesc~caselessPos('centos') > 0 then .local~sysdist = 'RH'
    when sysdesc~caselessPos('suse') > 0 then .local~sysdist = 'SU'
-   when sysdesc~caselessPos('debian') > 0 | ,
-    sysdesc~caselessPos('ubuntu') > 0 | ,
-    sysdesc~caselessPos('mint') > 0 then do
-      say
-      say 'Error: Debian based systems are not supported by LinuxSA.'
-      exit 8
-      end
+   when sysdesc~caselessPos('debian') > 0 then .local~sysdist = 'UB'
+   when sysdesc~caselessPos('ubuntu') > 0 then .local~sysdist = 'UB'
+   when sysdesc~caselessPos('mint') > 0 then .local~sysdist = 'UB'
    otherwise .local~sysdist = 'Unknown'
    end
 rptarr~append(sysdesc) -- release description

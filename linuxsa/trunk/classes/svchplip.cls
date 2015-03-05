@@ -48,18 +48,15 @@ return
 question = 'Is hplip installed/running?'
 say question
 -- get the answer
-retc = self~execute('rpm -q hplip')
 arr = self~arr_from_file(self~tfile)
-if arr = .nil | arr~items = 0 then status = 'none'
-else if arr[1]~pos('not installed') > 0 then status = 'none'
-else status = 'enabled'
+status = self~rpmdpkg('hplip')
 -- set up the report section
 rptarr = .array~new()
 rptarr~append('<listitem>')
 rptarr~append('<indexterm><primary>hplip daemon</primary></indexterm>')
 rptarr~append('<para>The HPLIP service provides both local and network printing support HP network printers.</para>')
 rptarr~append('<para>'question'</para>')
-if status = 'none' then do
+if status = 'Yes' then do
    rptarr~append('<programlisting>Not installed</programlisting>')
    rptarr~append(self~msg7)
    end

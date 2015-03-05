@@ -49,12 +49,7 @@ return
 question = 'Is the rsh-server daemon installed/enabled?'
 say question
 -- get the answer
-retc = self~execute('rpm -q rsh-server')
-arr = self~arr_from_file(self~tfile)
-status = 'Yes'
-do line over arr
-   if line~pos('not installed') > 0 then status = 'Not installed'
-   end
+status = self~rpmdpkg('rsh-server')
 if status = 'Yes' then do
    retc = self~execute('ls -l /etc/xinetd.d/rsh-server')
    arr = self~arr_from_file(self~tfile)
@@ -69,7 +64,7 @@ rptarr~append('<indexterm><primary>rsh-server daemon</primary></indexterm>')
 rptarr~append('<indexterm><primary>rsh-server.rpm</primary></indexterm>')
 rptarr~append('<para>'question'</para>')
 rptarr~append('<programlisting>'status'</programlisting>')
-if status~pos('Not installed') > 0 then do
+if status = 'Not installed' then do
    rptarr~append(self~msg7)
    end
 else do

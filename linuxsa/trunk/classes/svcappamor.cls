@@ -51,34 +51,24 @@ rptarr = .array~new()
 rptarr~append('<listitem>')
 rptarr~append('<indexterm><primary>AppArmor</primary></indexterm>')
 rptarr~append('<indexterm><primary>libimmunix</primary></indexterm>')
-if .local~sysdist = 'RH' then do
-   rptarr~append('<para>'question'</para>')
-   rptarr~append('<para>The AppAmor test is only valid for SuSE based systems.</para>')
+-- get the answer
+status = self~rpmdpkg('libapparmor1')
+-- set up the report section
+rptarr~append('<para>AppArmor is an effective and easy-to-use Linux application security system')
+rptarr~append('that protects your Linux operating system and applications from the effects of attacks, viruses,')
+rptarr~append(']and malicious applications. AppArmor is not a firewall or a virus detection application--it is a')
+rptarr~append('complete intrusion prevention system.</para>')
+rptarr~append('<para>'question'</para>')
+rptarr~append('<programlisting>'status'</programlisting>')
+if status = 'Not installed' then do
+   rptarr~append('<note><title>Warning</title>')
+   rptarr~append('<para>AppAmoris not installed. This does not meet best practice requirements.')
+   rptarr~append('This does not apply on Red Hat based systems where it is not installed by default.')
+   rptarr~append('</para>')
+   rptarr~append('</note>')
    end
 else do
-   -- get the answer
-   retc = self~execute('rpm -q libapparmor1')
-   arr = self~arr_from_file(self~tfile)
-   status = 'Yes'
-   do line over arr
-      if line~pos('not installed') > 0 then status = 'No'
-      end
-   -- set up the report section
-   rptarr~append('<para>AppArmor is an effective and easy-to-use Linux application security system')
-   rptarr~append('that protects your Linux operating system and applications from the effects of attacks, viruses,')
-   rptarr~append(']and malicious applications. AppArmor is not a firewall or a virus detection application--it is a')
-   rptarr~append('complete intrusion prevention system.</para>')
-   rptarr~append('<para>'question'</para>')
-   rptarr~append('<programlisting>'status'</programlisting>')
-   if item = 'No' then do
-      rptarr~append('<note><title>Warning</title>')
-      rptarr~append('<para>AppAmoris not installed. This does not meet best practice')
-      rptarr~append('requirements.</para>')
-      rptarr~append('</note>')
-      end
-   else do
-      rptarr~append(self~msg8)
-      end
+   rptarr~append(self~msg8)
    end
 rptarr~append('</listitem>')
 

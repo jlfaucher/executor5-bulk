@@ -67,7 +67,6 @@ if .local~sysdist = 'FC' | .local~sysdist = 'RH' then do
    svclist~append(.service~new('rpcgssd', 'disable'))
    svclist~append(.service~new('rpcidmapd', 'disable'))
    svclist~append(.service~new('smartd', 'enable'))
-   svclist~append(.service~new('rsyslog', 'configure'))
    svclist~append(.service~new('xfs', 'disable'))
    svclist~append(.service~new('yum-updatesd', 'disable'))
    end
@@ -122,8 +121,44 @@ else if .local~sysdist = 'SU' then do
    svclist~append(.service~new('xfs', 'disable'))
    svclist~append(.service~new('zebra', 'disable'))
    end
+else if .local~sysdist = 'UB' then do
+   svclist~append(.service~new('apmd', 'disable'))
+   svclist~append(.service~new('autofs', 'disable'))
+   svclist~append(.service~new('cron', 'configure'))
+   svclist~append(.service~new('dbus', 'disable'))
+   svclist~append(.service~new('dnsmasq', 'disable'))
+   svclist~append(.service~new('gpm', 'disable'))
+   svclist~append(.service~new('iptables', 'configure'))
+   svclist~append(.service~new('irqbalance', 'enable'))
+   svclist~append(.service~new('kbd', 'enable'))
+   svclist~append(.service~new('lirc', 'disable'))
+   svclist~append(.service~new('nscd', 'enable'))
+   svclist~append(.service~new('portmap', 'disable'))
+   svclist~append(.service~new('powerd', 'disable'))
+   svclist~append(.service~new('smbfs', 'disable'))
+   svclist~append(.service~new('xfs', 'disable'))
+   end
 else nop
 return
+
+
+::method dpkg
+use strict arg svc, action
+retc = self~execute('dpkg --list' svc)
+arr = self~arr_from_file(self~tfile)
+if arr~items = 0 then return 'none'
+do line over arr
+   if line~word(2) = svc then do
+      if line~word(1)~substr(2, 1) = 'n' & action = 'enable' then return 'install'
+      else if line~word(1)~substr(2, 1) = 'n' & action = 'disable' then return 'ok'
+      else if line~word(1)~substr(2, 1) = 'i' & action = 'enable' then return 'ok'
+      else if line~word(1)~substr(2, 1) = 'i' & action = 'disable' then return 'disable'
+      else if line~word(1)~substr(2, 1) = 'i' & action = 'configure' then return 'ok'
+      else if line~word(1)~substr(2, 1) = 'n' & action = 'configure' then return 'install'
+      else nop
+      end
+   end
+return 'none'
 
 
 ::method chkconfig
@@ -173,7 +208,7 @@ do line over arr
       end
    end
 if action = 'enable' then return 'install'
-return 'unknown'
+return 'none'
 
 
 ::method get_current
@@ -252,8 +287,13 @@ rptarr~append('<indexterm><primary>uuidd daemon</primary></indexterm>')
 rptarr~append('<indexterm><primary>zebra daemon</primary></indexterm>')
 rptarr~append('<orderedlist>')
 do svc over svclist
-   status = self~systemctl(svc~name, svc~action)
-   if status = 'none' then status = self~chkconfig(svc~name, svc~action)
+   if .local~sysdist <> 'UB' then do
+      status = self~systemctl(svc~name, svc~action)
+      if status = 'none' & .local~sysdist <> 'UB' then status = self~chkconfig(svc~name, svc~action)
+      end
+   else do
+      status = self~dpkg(svc~name, svc~action)
+      end
    if status = 'none' then iterate
    rptarr~append('<listitem>')
    rptarr~append('<para>Is the' svc~name 'daemon installed/running?</para>')

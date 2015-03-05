@@ -48,7 +48,12 @@ return
 question = 'Review the <computeroutput>iptables</computeroutput> ACCEPT rules.'
 say question
 -- get the answer
-retc = self~execute('/usr/sbin/iptables -L')
+if .local~sysdist = 'UB' then do
+   retc = self~execute('iptables -L')
+   end
+else do
+   retc = self~execute('/usr/sbin/iptables -L')
+   end
 arr = self~arr_from_file(self~tfile)
 -- set up the report section
 rptarr = .array~new()

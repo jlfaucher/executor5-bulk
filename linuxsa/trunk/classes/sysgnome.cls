@@ -45,18 +45,12 @@ return
 
 ::method get_current
 -- display the question
-question = 'Is gnome installed?'
+question = 'Is the gnome desktop installed?'
 say question
 -- get the answer
-retc = self~execute('rpm -q gnome-desktop')
-arr = self~arr_from_file(self~tfile)
-if arr[1]~pos('not installed') > 0 then do
-   retc = self~execute('rpm -q gnome-desktop3')
-   arr = self~arr_from_file(self~tfile)
-   if arr[1]~pos('not installed') > 0 then status = 'No'
-   else status = 'Yes'
-   end
-else status = 'Yes'
+status = self~rpmdpkg('gnome-desktop')
+if status = 'Not installed' then status = self~rpmdpkg('gnome-desktop3')
+if status = 'Not installed' then status = self~rpmdpkg('gnome-shell')
 -- set up the report section
 rptarr = .array~new()
 rptarr~append('<listitem>')

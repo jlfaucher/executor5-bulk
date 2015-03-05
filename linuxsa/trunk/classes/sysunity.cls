@@ -36,7 +36,7 @@
 /*----------------------------------------------------------------------------*/
 
 
-::class sysrunlevel public subclass linuxsa
+::class sysunity public subclass linuxsa
 
 ::method init
 use strict arg self~user, self~system, self~debug = .false
@@ -45,23 +45,23 @@ return
 
 ::method get_current
 -- display the question
-question = 'Get the current system runlevel.'
+question = 'Is the unity desktop installed?'
 say question
 -- get the answer
-retc = self~execute('/sbin/runlevel')
-arr = self~arr_from_file(self~tfile)
-status = arr[1]~word(2)
+status = self~rpmdpkg('unity')
 -- set up the report section
 rptarr = .array~new()
 rptarr~append('<listitem>')
-rptarr~append('<indexterm><primary>run level</primary></indexterm>')
-rptarr~append('<indexterm><primary>System run level</primary></indexterm>')
+rptarr~append('<indexterm><primary>unity.deb</primary></indexterm>')
+rptarr~append('<indexterm><primary>unity</primary></indexterm>')
 rptarr~append('<para>'question'</para>')
 rptarr~append('<programlisting>'status'</programlisting>')
-if status = 5 then do
+if status = 'Yes' then do
    rptarr~append('<note><title>Warning</title>')
-   rptarr~append('<para>For sensitive systems needing high security it is not recommended to run the')
-   rptarr~append('system at run level 5. You should use run level 3 instead.</para>')
+   rptarr~append('<para>For sensitive systems needing high security, it is not recommended to install')
+   rptarr~append('GUI desktop software.</para>')
+   rptarr~append('<para>If multiple desktops are installed you should consider removing all but one')
+   rptarr~append('as having multiple desktops installed could lead to vulnerabilities.</para>')
    rptarr~append('</note>')
    end
 else do

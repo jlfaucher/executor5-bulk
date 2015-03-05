@@ -48,12 +48,7 @@ return
 question = 'Do GUI sessions automatically lock due to inactivity?'
 say question
 -- get the answer
-retc = self~execute('rpm -q gnome-screensaver')
-arr = self~arr_from_file(self~tfile)
-status = 'No'
-if arr~items > 0 then do
-   if arr[1]~pos('not installed') = 0 then status = 'Yes'
-   end
+status = self~rpmdpkg('gnome-screensaver')
 -- set up the report section
 rptarr = .array~new()
 rptarr~append('<listitem>')
@@ -63,7 +58,7 @@ rptarr~append('<indexterm><primary>locking GUI sessions</primary></indexterm>')
 rptarr~append('<indexterm><primary>gnome-screensaver</primary></indexterm>')
 rptarr~append('<para>'question'</para>')
 rptarr~append('<programlisting>'status'</programlisting>')
-if status = 'No' then do
+if status = 'Not installed' then do
    rptarr~append('<note><title>Warning</title>')
    rptarr~append(self~msg6)
    rptarr~append('<para>The <computeroutput>/etc/gconf/gconf.xml.mandatory/apps/gnome-screensaver</computeroutput> file does not exists or')
@@ -74,7 +69,7 @@ else do
    rptarr~append(self~msg7)
    end
 rptarr~append('<para>This test assumes GNOME is the only installed GUI and is not valid for other')
-rptarr~append('desktop environments like KDE, etc.It also may be invalid if GNOME3 is installed.</para>')
+rptarr~append('desktop environments like KDE, etc. It also may be invalid if GNOME3 is installed.</para>')
 rptarr~append('</listitem>')
 return rptarr
 

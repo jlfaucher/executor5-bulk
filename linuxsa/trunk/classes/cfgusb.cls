@@ -48,10 +48,7 @@ return
 question = 'Are USB devices supported?'
 say question
 -- get the answer
-retc = self~execute('rpm -q libusb')
-arr = self~arr_from_file(self~tfile)
-if arr[1]~pos('not installed') > 0 then status = 'No'
-status = 'Yes'
+status = self~rpmdpkg('libusb')
 -- set up the report section
 rptarr = .array~new()
 rptarr~append('<listitem>')

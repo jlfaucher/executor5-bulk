@@ -48,10 +48,7 @@ return
 question = 'Is the console locking program installed?'
 say question
 -- get the answer
-retc = self~execute('rpm -q vlock')
-arr = self~arr_from_file(self~tfile)
-if arr[1]~pos('not installed') > 0 then status = 'No'
-else status = 'Yes'
+status = self~rpmdpkg('vlock')
 -- set up the report section
 rptarr = .array~new()
 rptarr~append('<listitem>')
@@ -60,7 +57,7 @@ rptarr~append('<indexterm><primary>locking, console</primary></indexterm>')
 rptarr~append('<indexterm><primary>vlock.rpm</primary></indexterm>')
 rptarr~append('<para>'question'</para>')
 rptarr~append('<programlisting>'status'</programlisting>')
-if status = 'No' then do
+if status = 'Not installed' then do
    rptarr~append('<note><title>Warning</title>')
    rptarr~append(self~msg6)
    rptarr~append('<para>vlock is not installed.</para>')

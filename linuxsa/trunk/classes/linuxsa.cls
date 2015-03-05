@@ -156,27 +156,51 @@ return
 /*----------------------------------------------------------------------------*/
 ::method chkservice
 use strict arg svc
-status = self~chkconfig(svc)
-if status = 'none' then status = self~systemctl(svc)
+-- first check to see if the service is running (easiest check for this)
+retc = self~execute('ps -e | grep' svc)
+arr = self~arr_from_file(self~tfile)
+status = 'none'
+if arr~items > 0 then do
+   daemon = arr[1]~word(4)
+   if daemon = svc then status = 'enabled'
+   end
+-- now use alternative methods to find the service status
+if status = 'none' then status = self~chkconfig(svc)
+if status = 'none' & .local~sysdist <> 'UB' then status = self~systemctl(svc)
 return status
 
 
 /*----------------------------------------------------------------------------*/
-/* Use chkconfig to see if a service is active/installed.                     */
+/* Use chkconfig or dpkg to see if a service is active/installed.             */
 /*----------------------------------------------------------------------------*/
 ::method chkconfig
 use strict arg svc
 if .local~sysdist = 'RH' then do
    retc = self~execute('/usr/sbin/chkconfig --list' svc)
+   arr = self~arr_from_file(self~tfile)
+   if arr~items = 0 then return 'none'
+   do line over arr
+      if line~pos('3:on') > 0 | line~pos('5:on') > 0 then return 'enabled'
+      if line~pos('3:off') > 0 & line~pos('5:off') > 0 then return 'disabled'
+      end
    end
-else do
+else if .local~sysdist = 'SU' then do
    retc = self~execute('chkconfig --list' svc)
+   arr = self~arr_from_file(self~tfile)
+   if arr~items = 0 then return 'none'
+   do line over arr
+      if line~pos('3:on') > 0 | line~pos('5:on') > 0 then return 'enabled'
+      if line~pos('3:off') > 0 & line~pos('5:off') > 0 then return 'disabled'
+      end
    end
-arr = self~arr_from_file(self~tfile)
-if arr~items = 0 then return 'none'
-do line over arr
-   if line~pos('3:on') > 0 | line~pos('5:on') > 0 then return 'enabled'
-   if line~pos('3:off') > 0 & line~pos('5:off') > 0 then return 'disabled'
+else do  -- 'UB'
+   retc = self~execute('dpkg --list' svc)
+   arr = self~arr_from_file(self~tfile)
+   do line over arr
+      if line~words > 1 & line~word(2) = svc then do
+         if line~word(1)~substr(2,1) = 'i' then return 'enabled'
+         end
+      end
    end
 return 'none'
 
@@ -195,4 +219,31 @@ do line over arr
    if line~pos('not-found') > 0 then return 'none'
    end
 return 'unknown'
+
+
+/*----------------------------------------------------------------------------*/
+/* Use rpm or dpkg to check if a package is installed.                        */
+/*----------------------------------------------------------------------------*/
+::method rpmdpkg
+use strict arg svc
+if .local~sysdist = 'UB' then do
+   status = 'Not installed'
+   retc = self~execute('dpkg --list' svc)
+   arr = self~arr_from_file(self~tfile)
+   do line over arr
+      if line~words > 1 & line~word(2) = svc then do
+         if line~word(1)~substr(2,1) = 'i' then status = 'Yes'
+         end
+      end
+   end
+else do
+   retc = self~execute('rpm -q' svc)
+   arr = self~arr_from_file(self~tfile)
+   if arr~items = 0 then status = 'Not installed'
+   else if arr[1]~pos('not installed') > 0 then status = 'Not installed'
+   else status = 'Yes'
+   end
+return status
+
+
 

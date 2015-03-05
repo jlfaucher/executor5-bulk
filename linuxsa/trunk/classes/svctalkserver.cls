@@ -48,12 +48,7 @@ return
 question = 'Is the talk-server daemon installed/enabled?'
 say question
 -- get the answer
-retc = self~execute('rpm -q talk-server')
-arr = self~arr_from_file(self~tfile)
-status = 'Yes'
-do line over arr
-   if line~pos('not installed') > 0 then status = 'Not installed'
-   end
+status = self~rpmdpkg('talk-server')
 -- set up the report section
 rptarr = .array~new()
 rptarr~append('<listitem>')

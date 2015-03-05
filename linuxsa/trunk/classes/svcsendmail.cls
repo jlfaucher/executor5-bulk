@@ -48,22 +48,17 @@ return
 question = 'Is sendmail installed/running?'
 say question
 -- get the answer
-retc = self~execute('rpm -q sendmail')
-arr = self~arr_from_file(self~tfile)
-if arr = .nil | arr~items = 0 then status = 'none'
-else if arr[1]~pos('not installed') > 0 then status = 'none'
-else status = 'enabled'
+status = self~rpmdpkg('sendmail')
 -- set up the report section
 rptarr = .array~new()
 rptarr~append('<listitem>')
 rptarr~append('<indexterm><primary>sendmail daemon</primary></indexterm>')
 rptarr~append('<para>'question'</para>')
-if status = 'none' then do
-   rptarr~append('<programlisting>Not installed</programlisting>')
+rptarr~append('<programlisting>'status'</programlisting>')
+if status = 'Not installed' then do
    rptarr~append(self~msg7)
    end
 else do
-   rptarr~append('<programlisting>Installed and running</programlisting>')
    rptarr~append('<note><title>Warning</title>')
    rptarr~append(self~msg6)
    rptarr~append('<para>Ensure this daemon is needed and properly configured.</para>')

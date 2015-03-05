@@ -45,13 +45,11 @@ return
 
 ::method get_current
 -- display the question
-question = 'Is cinnamon installed?'
+question = 'Is the cinnamon desktop installed?'
 say question
 -- get the answer
-retc = self~execute('rpm -q cinnamon-desktop')
-arr = self~arr_from_file(self~tfile)
-if arr[1]~pos('not installed') > 0 then status = 'No'
-else status = 'Yes'
+status = self~rpmdpkg('cinnamon-desktop')
+if status = 'Not installed' then status = self~rpmdpkg('cinnamon')
 -- set up the report section
 rptarr = .array~new()
 rptarr~append('<listitem>')

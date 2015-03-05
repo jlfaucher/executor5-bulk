@@ -55,6 +55,10 @@ if arr = .nil | arr~items() = 0 then do
    arr = self~arr_from_file(self~tfile)
    end
 if arr = .nil | arr~items() = 0 then do
+   retc = self~execute('cat /boot/grub/grub.cfg')
+   arr = self~arr_from_file(self~tfile)
+   end
+if arr = .nil | arr~items() = 0 then do
    retc = self~execute('cat /boot/grub2/grub.cfg')
    arr = self~arr_from_file(self~tfile)
    end

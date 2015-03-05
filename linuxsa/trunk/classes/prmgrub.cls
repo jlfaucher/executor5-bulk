@@ -50,19 +50,23 @@ say question
 -- get the answer
 retc = self~execute('ls -l /boot/grub2/grub.cfg')
 arr = self~arr_from_file(self~tfile)
-if arr = .nil | arr~items() = 0 then do
+if arr~items() = 0 then do
+   retc = self~execute('ls -l /boot/grub/grub.cfg')
+   arr = self~arr_from_file(self~tfile)
+   end
+if arr~items() = 0 then do
    retc = self~execute('ls -l /boot/grub/grub.conf')
    arr = self~arr_from_file(self~tfile)
    end
-if arr = .nil | arr~items() = 0 then do
+if arr~items() = 0 then do
    retc = self~execute('ls -l /etc/grub.conf')
    arr = self~arr_from_file(self~tfile)
    end
 status = 'Yes'
-if arr = .nil | arr~items() = 0 then status = 'Cannot find grub configuration file.'
-if arr[1]~word(1)~substr(1, 10) <> self~bp_perm6 then status = 'No'
-if arr[1]~word(3) <> self~bp_owner then status = 'No'
-if arr[1]~word(4) <> self~bp_grp then status = 'No'
+if arr~items() = 0 then status = 'Cannot find grub configuration file.'
+else if arr[1]~word(1)~substr(1, 10) <> self~bp_perm6 then status = 'No'
+else if arr[1]~word(3) <> self~bp_owner then status = 'No'
+else if arr[1]~word(4) <> self~bp_grp then status = 'No'
 -- set up the report section
 rptarr = .array~new()
 rptarr~append('<listitem>')

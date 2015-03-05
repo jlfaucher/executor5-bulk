@@ -48,12 +48,7 @@ return
 question = 'Is the telnet daemon installed/enabled?'
 say question
 -- get the answer
-retc = self~execute('rpm -q telnet-server')
-arr = self~arr_from_file(self~tfile)
-status = 'Yes'
-do line over arr
-   if line~pos('not installed') > 0 then status = 'Not installed'
-   end
+status = self~rpmdpkg('telnet-server')
 if status = 'Yes' then do
    retc = self~execute('ls -l /etc/xinetd.d/telnet')
    arr = self~arr_from_file(self~tfile)

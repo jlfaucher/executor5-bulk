@@ -38,7 +38,7 @@
 
 
 -- Version information
-ver = '0.1.0'
+ver = '0.2.0'
 
 
 -- Get the cmdline args
@@ -67,6 +67,7 @@ questions~append(.questions~new(.syskde, user, system, debug))
 questions~append(.questions~new(.syscinnamon, user, system, debug))
 questions~append(.questions~new(.sysmate, user, system, debug))
 questions~append(.questions~new(.sysxfce, user, system, debug))
+questions~append(.questions~new(.sysunity, user, system, debug))
 questions~append(.questions~new(.cfggrubpwd, user, system, debug))
 questions~append(.questions~new(.cfguserattrib, user, system, debug))
 questions~append(.questions~new(.cfgnodev, user, system, debug))
@@ -260,6 +261,7 @@ return
 ::requires './classes/syscinnamon.cls'
 ::requires './classes/sysmate.cls'
 ::requires './classes/sysxfce.cls'
+::requires './classes/sysunity.cls'
 ::requires './classes/cfggrubpwd.cls'
 ::requires './classes/cfguserattrib.cls'
 ::requires './classes/cfgnodev.cls'

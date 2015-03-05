@@ -48,10 +48,7 @@ return
 question = 'Is AIDE installed and configured?'
 say question
 -- get the answer
-retc = self~execute('rpm -q aide')
-arr = self~arr_from_file(self~tfile)
-if arr[1]~pos('not installed') > 0 then status = 'No'
-else status = 'Yes'
+status = self~rpmdpkg('aide')
 -- set up the report section
 rptarr = .array~new()
 rptarr~append('<listitem>')
@@ -65,7 +62,7 @@ rptarr~append('users. Ideally, the integrity checking database would be built be
 rptarr~append('though this may prove impractical due to registration and software updates.</para>')
 rptarr~append('<para>'question'</para>')
 rptarr~append('<programlisting>'status'</programlisting>')
-if status = 'No' then do
+if status = 'Not installed' then do
    rptarr~append('<note><title>Warning</title>')
    rptarr~append(self~msg6)
    rptarr~append('<para>AIDE is either not installed or improperly configured.</para>')
