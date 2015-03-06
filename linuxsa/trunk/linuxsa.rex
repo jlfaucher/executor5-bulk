@@ -157,6 +157,8 @@ questions~append(.questions~new(.svcsnmp, user, system, debug))
 questions~append(.questions~new(.svcfirewalld, user, system, debug))
 questions~append(.questions~new(.svcvnc, user, system, debug))
 questions~append(.questions~new(.svclibvirt, user, system, debug))
+questions~append(.questions~new(.svcmariadb, user, system, debug))
+questions~append(.questions~new(.svcmysql, user, system, debug))
 questions~append(.questions~new(.usrconsoleroot, user, system, debug))
 questions~append(.questions~new(.usrwheelroot, user, system, debug))
 questions~append(.questions~new(.usrwheelrootaudit, user, system, debug))
@@ -354,6 +356,8 @@ return
 ::requires './classes/svcfirewalld.cls'
 ::requires './classes/svcvnc.cls'
 ::requires './classes/svclibvirt.cls'
+::requires './classes/svcmariadb.cls'
+::requires './classes/svcmysql.cls'
 ::requires './classes/usrconsoleroot.cls'
 ::requires './classes/usrwheelroot.cls'
 ::requires './classes/usrwheelrootaudit.cls'
