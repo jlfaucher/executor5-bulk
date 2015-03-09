@@ -56,11 +56,19 @@ is to provide feedback and recommendations on improving your Linux security proc
 Feedback and recommendations were primarily derived from analyzing the security
 implementation of one of your operational Linux installations.
 </para>
+<para>The purpose of this report is to analyze the target host and
+suggest a set of best practice requirements.
+The LinuxSA application makes no attempt to implement a security policy. It is up
+to the system administrator to interpret this report and make the necessary
+adjustments to the host in order to implement the applicable security policy.
+That policy may or may not agree with the best practice requirement suggested in
+this report.
+</para>
 <para>
-Note that the partition is not an isolated system, but typically exists within a
+Note that the host is not an isolated system, but typically exists within a
 networking infrastructure. Many of the risks from external users are tempered by the
-networking security infrastructure that it resides in. However, our focus is on the
-host-based mechanisms used to secure the partition itself and not on elements found
+networking security infrastructure in which it resides. However, our focus is on the
+host-based mechanisms used to secure the host itself and not on elements found
 outside the host that could affect the host's security.
 </para>
 </section>
@@ -68,7 +76,7 @@ outside the host that could affect the host's security.
 <section><title>Linux Assessment Details</title>
 <para>
 The following assessment systematically approaches assessing security on an
-Linux host. Currently this assessment is only valid for RPM-based Linux distributions which
+Linux host. Currently this assessment is only valid for Linux distributions which
 adhere to the <emphasis role="bold">Linux Standards Base</emphasis> and the
 <emphasis role="bold">Linux Filesystem Standard</emphasis>.
 </para>
@@ -78,11 +86,8 @@ adhere to the <emphasis role="bold">Linux Standards Base</emphasis> and the
 <xi:include href="services.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 <xi:include href="users.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 <xi:include href="permissions.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<xi:include href="summary.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 
-<section><title>Customer Questions</title>
-<para>TODO: add these later.
-</para>
-</section>
 </section>
 
 <xi:include href="notices.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />

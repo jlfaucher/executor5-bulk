@@ -167,6 +167,14 @@ if arr~items > 0 then do
    end
 -- now use alternative methods to find the service status
 if status = 'none' then status = self~chkconfig(svc)
+-- ###########################################
+--
+-- TODO:
+--
+-- When Ubuntu starts supporting systemd then we will need to remove the test
+-- for 'UB' in the following statement.
+--
+-- ###########################################
 if status = 'none' & .local~sysdist <> 'UB' then status = self~systemctl(svc)
 return status
 
