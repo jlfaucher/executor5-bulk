@@ -1,0 +1,234 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE appendix PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "rxsock.ent">
+%ARTICLE_ENTITIES;
+]>
+<appendix id="admincmds"><title id="admincmds.title">Administrative Commands</title>
+<indexterm><primary>Administrative Commands</primary></indexterm>
+<indexterm><primary>Commands, Administrative</primary></indexterm>
+
+<para>
+This section lists some basic commands for performing administratice commands. It is not
+a complete reference for each command. For that information you should refer to the
+command's man page.
+</para>
+
+<section id="rhelcmds"><title id="rhelcmds.title">Red Hat and Fedora Commands</title>
+
+<section><title>Daemon/Service Status</title>
+<indexterm><primary>Red Hat Administrative Commands</primary></indexterm>
+<indexterm><primary>Fedora Administrative Commands</primary></indexterm>
+<para>
+Older versions of RHEL and Fedora use the <computeroutput>chkconfig</computeroutput> command
+to display the status of a daemon/service.
+</para>
+<programlisting>
+chkconfig --list <emphasis role="italics">service</emphasis>
+</programlisting>
+<para>Newer versions of RHEL and Fedora use the <computeroutput>systemctl</computeroutput>
+command to display the status of a daemon/service.
+</para>
+<programlisting>
+systemctl status <emphasis role="italics">service</emphasis>
+</programlisting>
+</section>
+
+<section><title>Starting and Stopping a Daemon/Service</title>
+<para>
+Older versions of RHEL and Fedora use the <computeroutput>chkconfig</computeroutput> command
+to start and stop a daemon/service.
+</para>
+<programlisting>
+# start a service
+chkconfig <emphasis role="italics">service</emphasis> on
+# stop a service
+chkconfig <emphasis role="italics">service</emphasis> off
+</programlisting>
+<para>Newer versions of RHEL and Fedora use the <computeroutput>systemctl</computeroutput>
+command to start and stop a daemon/service.
+</para>
+<programlisting>
+systemctl start <emphasis role="italics">service</emphasis>
+systemctl stop <emphasis role="italics">service</emphasis>
+</programlisting>
+</section>
+
+<section><title>Installing a Package</title>
+<note><title>Warning</title>
+<para>
+You should always use <computeroutput>yum</computeroutput> to install a package.
+Never use the <computeroutput>rpm</computeroutput> command. Doing so will cause
+problems since the RPM database will be out of sync with the YUM database.
+</para>
+</note>
+<para>
+Current versions of RHEL and Fedora use the <computeroutput>yum</computeroutput> command
+to install packages from the known repositories.
+</para>
+<programlisting>
+sudo yum install <emphasis role="italics">rpmpackage</emphasis>
+</programlisting>
+<para>If you need to install a locally stored package ue the following command.
+</para>
+<programlisting>
+sudo yum localinstall <emphasis role="italics">rpmpackage</emphasis>
+</programlisting>
+<note><title>Information</title>
+<para>Later version of Fedora will be replacing the <computeroutput>yum</computeroutput>
+command with a new command to perform this task.
+</para>
+</note>
+</section>
+
+<section><title>Removing a Package</title>
+<note><title>Warning</title>
+<para>
+You should always use <computeroutput>yum</computeroutput> to remove a package.
+Never use the <computeroutput>rpm</computeroutput> command. Doing so will cause
+problems since the RPM database will be out of sync with the YUM database.
+</para>
+</note>
+<para>
+Current versions of RHEL and Fedora use the <computeroutput>yum</computeroutput> command
+to remove packages.
+</para>
+<programlisting>
+sudo yum remove <emphasis role="italics">rpmpackage</emphasis>
+</programlisting>
+<note><title>Information</title>
+<para>Later version of Fedora will be replacing the <computeroutput>yum</computeroutput>
+command with a new command to perform this task.
+</para>
+</note>
+</section>
+
+</section>
+
+<section id="susecmds"><title id="susecmds.title">SuSE Commands</title>
+<indexterm><primary>SuSE Administrative Commands</primary></indexterm>
+<indexterm><primary>Open SuSE Administrative Commands</primary></indexterm>
+
+<section><title>Daemon/Service Status</title>
+<para>
+Older versions of SuSE use the <computeroutput>chkconfig</computeroutput> command
+to display the status of a daemon/service.
+</para>
+<programlisting>
+chkconfig --list <emphasis role="italics">service</emphasis>
+</programlisting>
+<para>Newer versions of SuSE use the <computeroutput>systemctl</computeroutput>
+command to display the status of a daemon/service.
+</para>
+<programlisting>
+systemctl status <emphasis role="italics">service</emphasis>
+</programlisting>
+</section>
+
+<section><title>Starting and Stopping a Daemon/Service</title>
+<para>
+Older versions of SuSE use the <computeroutput>chkconfig</computeroutput> command
+to start and stop a daemon/service.
+</para>
+<programlisting>
+# start a service
+chkconfig <emphasis role="italics">service</emphasis> on
+# stop a service
+chkconfig <emphasis role="italics">service</emphasis> off
+</programlisting>
+<para>Newer versions of SuSE use the <computeroutput>systemctl</computeroutput>
+command to start and stop a daemon/service.
+</para>
+<programlisting>
+systemctl start <emphasis role="italics">service</emphasis>
+systemctl stop <emphasis role="italics">service</emphasis>
+</programlisting>
+</section>
+
+<section><title>Installing a Package</title>
+<note><title>Warning</title>
+<para>
+You should always use <computeroutput>yast</computeroutput> to install a package.
+Never use the <computeroutput>rpm</computeroutput> command. Doing so will cause
+problems since the RPM database will be out of sync with the YAST database.
+</para>
+</note>
+<para>
+Current versions of SuSE use the <computeroutput>yast</computeroutput> command
+to install packages from the known repositories.
+</para>
+<programlisting>
+sudo yast --install <emphasis role="italics">rpmpackage</emphasis>
+</programlisting>
+</section>
+
+<section><title>Removing a Package</title>
+<note><title>Warning</title>
+<para>
+You should always use <computeroutput>yast</computeroutput> to remove a package.
+Never use the <computeroutput>rpm</computeroutput> command. Doing so will cause
+problems since the RPM database will be out of sync with the YAST database.
+</para>
+</note>
+<para>
+Current versions of SuSE use the <computeroutput>yum</computeroutput> command
+to remove packages.
+</para>
+<programlisting>
+sudo yast --remove <emphasis role="italics">rpmpackage</emphasis>
+</programlisting>
+</section>
+
+</section>
+
+<section id="ubuntucmds"><title id="ubuntucmds.title">Ubuntu and Mint Commands</title>
+<indexterm><primary>Ubuntu Administrative Commands</primary></indexterm>
+<indexterm><primary>Mint Administrative Commands</primary></indexterm>
+
+<section><title>Daemon/Service Status</title>
+<para>
+Older versions of Ubuntu use the <computeroutput>chkconfig</computeroutput> command
+to display the status of a daemon/service.
+</para>
+<programlisting>
+chkconfig --list <emphasis role="italics">service</emphasis>
+</programlisting>
+<para>Newer versions of Ubuntu do not install the <computeroutput>chkconfig</computeroutput>
+command. The only way to tell if a daemon/service is running is with the
+<computeroutput>ps</computeroutput> command unless you install a replacement command.
+</para>
+<programlisting>
+ps -e | grep <emphasis role="italics">service</emphasis>
+</programlisting>
+</section>
+
+<section><title>Starting and Stopping a Daemon/Service</title>
+<para>
+You should refer to the Ubuntu documentation for advice on how to start or stop a daemon/service.
+Future versions may use the <computeroutput>systemctl</computeroutput> command.
+</para>
+</section>
+
+<section><title>Installing a Package</title>
+<para>
+Ubuntu uses the <computeroutput>dpkgt</computeroutput> command
+to install packages.
+</para>
+<programlisting>
+sudo dpkg --install <emphasis role="italics">debpackage</emphasis>
+</programlisting>
+</section>
+
+<section><title>Removing a Package</title>
+<para>
+Ubuntu uses the <computeroutput>dpkg</computeroutput> command
+to remove packages.
+</para>
+<programlisting>
+sudo dpkg --remove <emphasis role="italics">debpackage</emphasis>
+</programlisting>
+</section>
+
+</section>
+
+</appendix>
+
