@@ -55,7 +55,7 @@ if arr~items = 0 then arr[1] = ''
 rptarr = .array~new()
 rptarr~append('<listitem>')
 rptarr~append('<indexterm><primary>/var/log/secure permissions</primary></indexterm>')
-rptarr~append('<para>If the permissions are not "-rw-------" and the user and group are not root')
+rptarr~append('<para>If the permissions are not "'self~bp_perm3'" and the user and group are not root')
 rptarr~append('then thw file <computeroutput>/var/log/secure</computeroutput> is vulnerable.</para>')
 rptarr~append('<para>'question'</para>')
 if arr[1] = '' then do

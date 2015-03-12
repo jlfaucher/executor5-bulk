@@ -36,56 +36,93 @@
 /*----------------------------------------------------------------------------*/
 
 
-::class prmlogmsg public subclass linuxsa
+-- /etc/environment processing
+::class prmrpmyum public subclass linuxsa
+
+::attribute vlist private
 
 ::method init
+expose vlist
 use strict arg self~user, self~system, self~debug = .false
+vlist = .array~new()
+vlist~append('rpm')
+vlist~append('yum')
+vlist~append('dnf')
+vlist~append('yast')
+vlist~append('dpkg')
 return
+
+
+::method get_current_perm private
+-- get the answer
+use strict arg bin
+retc = self~execute('ls -l /usr/bin/' || bin)
+arr = self~arr_from_file(self~tfile)
+if arr~items > 0 then return arr[1]
+retc = self~execute('ls -l /bin/' || bin)
+arr = self~arr_from_file(self~tfile)
+if arr~items > 0 then return arr[1]
+return ''
 
 
 ::method get_current
 -- display the question
-question = 'Are the permissions correct for the <computeroutput>/var/log/messages</computeroutput> file?'
+question = 'Verify permissions and ownership for the package maintenance files.'
 say question
--- get the answer
-retc = self~execute('ls -l /var/log/messages')
-arr = self~arr_from_file(self~tfile)
-if arr~items = 0 then arr[1] = ''
 -- set up the report section
 rptarr = .array~new()
 rptarr~append('<listitem>')
-rptarr~append('<indexterm><primary>/var/log/messages permissions</primary></indexterm>')
-rptarr~append('<para>If the permissions are not "'self~bp_perm3'" and the user and group are not root')
-rptarr~append('then the file <computeroutput>/var/log/messages</computeroutput>is vulnerable.</para>')
+rptarr~append('<indexterm><primary>Package maintenance file permissions</primary></indexterm>')
+rptarr~append('<indexterm><primary>/usr/bin/rpm permissions</primary></indexterm>')
+rptarr~append('<indexterm><primary>/usr/sbin/rpm permissions</primary></indexterm>')
+rptarr~append('<indexterm><primary>/usr/bin/yum permissions</primary></indexterm>')
+rptarr~append('<indexterm><primary>/usr/sbin/yum permissions</primary></indexterm>')
+rptarr~append('<indexterm><primary>/usr/bin/dnf permissions</primary></indexterm>')
+rptarr~append('<indexterm><primary>/usr/sbin/dnf permissions</primary></indexterm>')
+rptarr~append('<indexterm><primary>/usr/bin/yast permissions</primary></indexterm>')
+rptarr~append('<indexterm><primary>/usr/sbin/yast permissions</primary></indexterm>')
+rptarr~append('<indexterm><primary>/usr/bin/dpkg permissions</primary></indexterm>')
+rptarr~append('<indexterm><primary>/usr/sbin/dpkg permissions</primary></indexterm>')
 rptarr~append('<para>'question'</para>')
-if arr[1] = '' then do
-   rptarr~append('<programlisting>File /var/log/messages not found.</programlisting>')
-   rptarr~append('<note><title>Warning</title>'self~msg1)
-   rptarr~append('</note>')
+rptarr~append('<orderedlist>')
+do bin over self~vlist
+   rptarr~append('<listitem>')
+   rptarr~append('<para>Verify permissions and ownership for the system')
+   rptarr~append('<computeroutput>' || bin || '</computeroutput> binary executable.')
+   rptarr~append('The permissions for this file should be "'self~bp_perm1'" and the')
+   rptarr~append('owner and group should be set to root.')
+   rptarr~append('</para>')
+   item = self~get_current_perm(bin)
+   if item = '' then do
+      rptarr~append('<programlisting>File' bin 'not found.</programlisting>')
+      rptarr~append('<note><title>Warning</title>'self~msg1)
+      rptarr~append('</note>')
+      end
+   else do
+      rptarr~append('<programlisting>' || item || '</programlisting>')
+      flag = .true
+      if item~word(1)~substr(1, 10) <> self~bp_perm1 then do
+         rptarr~append('<note><title>Warning</title>'self~msg3)
+         rptarr~append('</note>')
+         flag = .false
+         end
+      if item~word(3) <> self~bp_owner then do
+         rptarr~append('<note><title>Warning</title>'self~msg4)
+         rptarr~append('</note>')
+         flag = .false
+         end
+      if item~word(4) <> self~bp_grp then do
+         rptarr~append('<note><title>Warning</title>'self~msg5)
+         rptarr~append('</note>')
+         flag = .false
+         end
+      if flag then do
+         rptarr~append(self~msg2)
+         end
+      end
+   rptarr~append('</listitem>')
    end
-else do
-   rptarr~append('<programlisting>'arr[1]'</programlisting>')
-   flag = .true
-   if arr[1]~word(1)~substr(1, 10) <> self~bp_perm3 then do
-      rptarr~append('<note><title>Warning</title>'self~msg3)
-      rptarr~append('</note>')
-      flag = .false
-      end
-   if arr[1]~word(3) <> self~bp_owner then do
-      rptarr~append('<note><title>Warning</title>'self~msg4)
-      rptarr~append('</note>')
-      flag = .false
-      end
-   if arr[1]~word(4) <> self~bp_grp then do
-      rptarr~append('<note><title>Warning</title>'self~msg5)
-      rptarr~append('</note>')
-      flag = .false
-      end
-   if flag then do
-      rptarr~append(self~msg2)
-      end
-   end
-rptarr~append(self~msg14)
+rptarr~append('</orderedlist>')
 rptarr~append('</listitem>')
 return rptarr
 

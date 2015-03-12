@@ -202,6 +202,7 @@ questions~append(.questions~new(.prmtcpipsbin, user, system, debug))
 questions~append(.questions~new(.prmuserprofile, user, system, debug))
 questions~append(.questions~new(.prmetccrontab, user, system, debug))
 questions~append(.questions~new(.prmetcanacrontab, user, system, debug))
+questions~append(.questions~new(.prmrpmyum, user, system, debug))
 
 -- start the clock
 start = time('r')
@@ -401,6 +402,7 @@ return
 ::requires './classes/prmuserprofile.cls'
 ::requires './classes/prmetccrontab.cls'
 ::requires './classes/prmetcanacrontab.cls'
+::requires './classes/prmrpmyum.cls'
 
 ::class questions
 ::attribute debug

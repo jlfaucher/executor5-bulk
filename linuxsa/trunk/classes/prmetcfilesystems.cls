@@ -57,7 +57,7 @@ rptarr = .array~new()
 rptarr~append('<listitem>')
 rptarr~append('<indexterm><primary>/etc/filesystems permissions</primary></indexterm>')
 rptarr~append('<para>If the permissions for file <computeroutput>/etc/filesystems</computeroutput>')
-rptarr~append('are not "-rw-r--r--" and the user and group are not')
+rptarr~append('are not "'self~bp_perm4'" and the user and group are not')
 rptarr~append('root then the file is vulnerable.</para>')
 rptarr~append('<para>'question'</para>')
 if item = '' then do

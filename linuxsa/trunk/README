@@ -24,10 +24,10 @@ https://www.nsa.gov/ia/_files/os/redhat/NSA_RHEL_5_GUIDE_v4.2.pdf
 The LinuxSA assessment tool is organized to reflect this document so finding a specific
 assessment activity is as easy as possible.
 
-Altouugh the NSA document has not been updated for later versions of Red Hat, LinuxSA
-has updated the assessment mechanisms to reflect RHEL 6 and 7 as well as Fedora, SuSE,
-Ubuntu, and OpenSuSE. All efforts will be made to continue updating LinuxSA to support
-newer operating system releases and services.
+Altouugh the NSA document has not been updated for later versions of Red Hat or
+other non RPM-based operating systems, LinuxSA has updated the assessment mechanisms to
+reflect RHEL 6 and 7 as well as Fedora, SuSE, Ubuntu, and OpenSuSE. All efforts will be
+made to continue updating LinuxSA to support newer operating system releases and services.
 
 
 Requirements
@@ -36,28 +36,27 @@ Requirements
 1. This tools is meant to be run from your laptop or workstation.
 2. Open Object Rexx (ooRexx) 4.0 or later is required. You can obtain ooRexx at
    http://sourceforge.net/projects/oorexx/files/?source=navbar
-3. Debian based systems (Ubuntu, Mint, etc) are not supported by LinuxSA.
-4. The target Linux distribution must be configured as follows:
+3. The target Linux distribution must be configured as follows:
    a. The remote target machine must have at least one network interface that allows a
       standard user to login via ssh.
-   b. In order to eliminate the prompts for the user's password you should utilize your
-      ssh public key and install it into the machine containing LinuxSA.
+   b. In order to eliminate the prompts for the user's password you should utilize the
+      user's ssh public key and install it into the machine containing LinuxSA.
    c. For Windows you should install the latest version of Putty to provide SSH.
-5 The Publican document system is required to build the output report. You will need to
+4 The Publican document system is required to build the output report. You will need to
   install the Publican RPM or the Publican-Installer-xxx.exe for Windows. There is also
-  a version for Mac OSX (see the Publican Users's Guide).
+  a version for Mac OSX and DEB-based systems (see the Publican Users's Guide).
 
 Notes
 =====
 
 1. Before creating the report you should copy the files from the report_skel subdirectory to
    the report subdirectory.
-2. Edit the report/en-US/report.xml file and apply the customer name and the current date
-   to the file.
+2. Edit the report/en-US/report.xml and report.ent files and apply the customer name and the
+   current date to the files.
 3. After running the linuxsa.rex script you should review the output and make any
-   changes/additions necessary to the report/summary.xml file. There are any number of
-   items you may want to note concerning both specific and general security settings of
-   the customer's target environment. After you make your additions you can rebuild the report.
+   changes/additions necessary to the report/en-US/summary.xml file. There are any number
+   of items you may want to note concerning both specific and general security settings of
+   the customer's target host. After you make your additions you can rebuild the report.
 4. The buildrpt script will build the the report only on a Linux machine. You will need to
    manually run the necessary commands on Windows.
 

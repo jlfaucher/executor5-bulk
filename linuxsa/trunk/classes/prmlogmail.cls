@@ -61,7 +61,7 @@ rptarr = .array~new()
 rptarr~append('<listitem>')
 rptarr~append('<indexterm><primary>/var/log/mail permissions</primary></indexterm>')
 rptarr~append('<indexterm><primary>/var/log/maillog permissions</primary></indexterm>')
-rptarr~append('<para>If the permissions are not "-rw-------" and the user and group are not root')
+rptarr~append('<para>If the permissions are not "'self~bp_perm3'" and the user and group are not root')
 rptarr~append('then the file <computeroutput>/var/log/mail</computeroutput> is vulnerable.</para>')
 rptarr~append('<para>'question'</para>')
 if arr[1] = '' then do

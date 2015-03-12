@@ -60,7 +60,7 @@ do line over arr
    retc = self~execute('ls -l' homedir'/.bash_profile')
    parr = self~arr_from_file(self~tfile)
    if parr~items() = 0 then iterate
-   if parr[1]~substr(1, 10) <> '-rw-r--r--' then do
+   if parr[1]~substr(1, 10) <> self~bp_perm4 then do
          newarr~append(parr[1])
       end
    end
@@ -78,7 +78,7 @@ if newarr~items() > 0 then do
    rptarr~append('<note><title>Warning</title>')
    rptarr~append(self~msg6)
    rptarr~append('<para>These files should have their permission modified to')
-   rptarr~append('"-rw-r--r--".</para>')
+   rptarr~append('"'self~bp_perm4'".</para>')
    rptarr~append('</note>')
    end
 else do

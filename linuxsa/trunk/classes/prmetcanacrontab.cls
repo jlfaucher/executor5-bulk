@@ -56,7 +56,7 @@ else item = arr[1]
 rptarr = .array~new()
 rptarr~append('<listitem>')
 rptarr~append('<indexterm><primary>/etc/anacrontab permissions</primary></indexterm>')
-rptarr~append('<para>If the permissions for file <computeroutput>/etc/anacrontab</computeroutput> are not "-rw-r--r--" and the user and')
+rptarr~append('<para>If the permissions for file <computeroutput>/etc/anacrontab</computeroutput> are not "'self~bp_perm4'" and the user and')
 rptarr~append('group are not root then then the file is vulnerable.</para>')
 rptarr~append('<para>'question'</para>')
 if item = '' then do
