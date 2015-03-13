@@ -106,6 +106,7 @@ questions~append(.questions~new(.cfgusernetrc, user, system, debug))
 questions~append(.questions~new(.cfghosts, user, system, debug))
 questions~append(.questions~new(.cfgsingleuser, user, system, debug))
 questions~append(.questions~new(.cfgmotd, user, system, debug))
+questions~append(.questions~new(.cfgufw, user, system, debug))
 questions~append(.questions~new(.svcdefault, user, system, debug))
 questions~append(.questions~new(.svcrhnsd, user, system, debug))
 questions~append(.questions~new(.svcsyslog, user, system, debug))
@@ -306,6 +307,7 @@ return
 ::requires './classes/cfghosts.cls'
 ::requires './classes/cfgsingleuser.cls'
 ::requires './classes/cfgmotd.cls'
+::requires './classes/cfgufw.cls'
 ::requires './classes/svcdefault.cls'
 ::requires './classes/svcrhnsd.cls'
 ::requires './classes/svcsyslog.cls'
