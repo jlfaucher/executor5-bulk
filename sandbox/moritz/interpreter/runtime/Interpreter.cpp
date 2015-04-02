@@ -149,7 +149,6 @@ void Interpreter::startInterpreter(InterpreterStartupMode mode)
     printf("Interpreter::startInterpreter\n");
     ResourceSection lock;
 
-    printf("isActive()? %d\n", isActive());
     // has everything been shutdown?
     if (!isActive())
     {

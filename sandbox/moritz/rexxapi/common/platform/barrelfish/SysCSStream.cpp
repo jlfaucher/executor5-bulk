@@ -360,6 +360,7 @@ bool SysServerStream::close()
  */
 SysServerConnection::SysServerConnection(SysServerStream *s, struct rexx_client *client) : SysSocketConnection()
 {
+	this->server = s;
     this->client = client;
 }
 

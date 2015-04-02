@@ -9,14 +9,16 @@
 #include <string.h>
 
 #include <barrelfish/barrelfish.h>
+#include <barrelfish/deferred.h>
 
 #include "rexxapi_bindings.h"
 
-#define BUFFER_SIZE 16
+#define BUFFER_SIZE 0x258
 
 int main(int argc, char **argv) {
+	errval_t err;
     if (argc < 2) {
-        printf("Missing args, either server or client\n");
+        debug_printf("Missing args, either server or client\n");
     } else if (strcmp("server", argv[1]) == 0) {
 
         struct rexx_server *server = rexx_export();
@@ -26,17 +28,26 @@ int main(int argc, char **argv) {
         size_t actual;
         rexx_server_read(client, buffer, BUFFER_SIZE, &actual);
 
-        printf("received: %s\n", buffer);
+        debug_printf("received: %s\n", buffer);
 
     } else if (strcmp("client", argv[1]) == 0) {
 
         struct rexx_connection *connection = rexx_connect();
 
-        uint8_t buffer[] = {'A', 'B', 'C', '\0' };
+        uint8_t buffer[BUFFER_SIZE] = {'A', 'B', 'C', '\0' };
 
         size_t actual;
 
-        rexx_write(connection, buffer, 4, &actual);
+        rexx_write(connection, buffer, BUFFER_SIZE, &actual);
 
+    }
+
+	struct waitset *ws = get_default_waitset();
+    while (1) {
+    	err = event_dispatch(ws);
+    	if (err_is_fail(err)) {
+    		err_print_calltrace(err);
+    		USER_PANIC_ERR(err, "dispatching failed");
+    	}
     }
 }
