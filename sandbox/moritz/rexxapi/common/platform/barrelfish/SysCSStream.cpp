@@ -198,6 +198,9 @@ SysClientStream::SysClientStream(const char *name) : SysSocketConnection()
  */
 SysClientStream::~SysClientStream()
 {
+    if (connection != NULL) {
+        close();
+    }
 }
 
 

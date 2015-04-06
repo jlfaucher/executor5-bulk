@@ -1634,7 +1634,6 @@ EndClassDefinition(StackFrame);
         if (programName == OREF_NULL) {
             Interpreter::logicError("Failed to open " BASEIMAGELOAD);
         }
-        printf("%s:%s:%d programName=%s\n", __FILE__, __FUNCTION__, __LINE__, programName->getStringData());
         // create a new stack frame to run under
         ActivityManager::currentActivity->createNewActivationStack();
         try
@@ -1642,13 +1641,11 @@ EndClassDefinition(StackFrame);
             // create an executable object for this.
             Protected<RoutineClass> loader = LanguageParser::createProgram(programName);
 
-            printf("%s:%s:%d \n", __FILE__, __FUNCTION__, __LINE__);
             // we pass the internal Rexx package as an argument to the setup program.
             RexxObject *args = TheRexxPackage;
             ProtectedObject result;
             // now create the core program objects.
             loader->runProgram(ActivityManager::currentActivity, GlobalNames::PROGRAM, OREF_NULL, (RexxObject **)&args, 1, result);
-            printf("%s:%s:%d \n", __FILE__, __FUNCTION__, __LINE__);
         }
         catch (ActivityException )
         {
@@ -1665,5 +1662,5 @@ EndClassDefinition(StackFrame);
     // now save the image
     memoryObject.saveImage();
     ActivityManager::returnActivity(ActivityManager::currentActivity);
-    exit(0);                         // successful build
+//    exit(0);                         // successful build
 }

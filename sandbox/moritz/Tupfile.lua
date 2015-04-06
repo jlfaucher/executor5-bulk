@@ -242,52 +242,10 @@ sourcesLibrexx = {
 }
 
 sourcesOorexx = {
-    --"rexxapi/server/APIServer.cpp",
-    --"rexxapi/server/APIServerInstance.cpp",
-    --"rexxapi/server/APIServerThread.cpp",
-    --"rexxapi/server/MacroSpaceManager.cpp",
-    --"rexxapi/server/platform/unix/linux/APIService.cpp",
-    --"rexxapi/server/QueueManager.cpp",
-    --"rexxapi/server/RegistrationManager.cpp",
-    --"samples/native.api/call.example/runRexxProgram.cpp",
-    --"samples/native.api/call.example/stackOverflow.cpp",
-    --"samples/unix/api/callrexx/callrexx1.cpp",
-    --"testbinaries/orxclassic.cpp",
-    --"testbinaries/orxclassicexits.cpp",
-    --"testbinaries/orxfunction.cpp",
-    --"testbinaries/orxinstance.cpp",
-    --"testbinaries/orxinvocation.cpp",
-    --"testbinaries/orxmethod.cpp",
-    --"testbinaries/rexxinstance.cpp",
-    --"utilities/rexxc/platform/unix/RexxCompiler.cpp",
-    --"utilities/rexximage/rexximage.cpp",
     "utilities/rexx/platform/barrelfish/rexx.cpp",
-    --"utilities/rxqueue/platform/unix/rxqueue.cpp",
-    --"utilities/rxsubcom/platform/unix/rxsubcom.cpp"
 }
 sourcesRexximage = {
-    --"rexxapi/server/APIServer.cpp",
-    --"rexxapi/server/APIServerInstance.cpp",
-    --"rexxapi/server/APIServerThread.cpp",
-    --"rexxapi/server/MacroSpaceManager.cpp",
-    --"rexxapi/server/platform/unix/linux/APIService.cpp",
-    --"rexxapi/server/QueueManager.cpp",
-    --"rexxapi/server/RegistrationManager.cpp",
-    --"samples/native.api/call.example/runRexxProgram.cpp",
-    --"samples/native.api/call.example/stackOverflow.cpp",
-    --"samples/unix/api/callrexx/callrexx1.cpp",
-    --"testbinaries/orxclassic.cpp",
-    --"testbinaries/orxclassicexits.cpp",
-    --"testbinaries/orxfunction.cpp",
-    --"testbinaries/orxinstance.cpp",
-    --"testbinaries/orxinvocation.cpp",
-    --"testbinaries/orxmethod.cpp",
-    --"testbinaries/rexxinstance.cpp",
-    --"utilities/rexxc/platform/unix/RexxCompiler.cpp",
     "utilities/rexximage/platform/barrelfish/rexximage.cpp",
-    --"utilities/rexx/platform/barrelfish/rexx.cpp",
-    --"utilities/rxqueue/platform/unix/rxqueue.cpp",
-    --"utilities/rxsubcom/platform/unix/rxsubcom.cpp"
 }
 
 sourcesRexxAPIServer = {
@@ -295,7 +253,7 @@ sourcesRexxAPIServer = {
     "rexxapi/server/APIServerInstance.cpp",
     "rexxapi/server/APIServerThread.cpp",
     "rexxapi/server/MacroSpaceManager.cpp",
-    "rexxapi/server/platform/unix/linux/APIService.cpp",
+    "rexxapi/server/platform/barrelfish/APIService.cpp",
     "rexxapi/server/QueueManager.cpp",
     "rexxapi/server/RegistrationManager.cpp",
 }
@@ -423,8 +381,18 @@ buildCxxApplication {
 ramfs_files = {}
 tup.append_table(ramfs_files, tup.glob("interpreter/RexxClasses/*.orx"))
 
+ramfs_platform_files = {}
+tup.append_table(ramfs_platform_files, {"interpreter/platform/unix/PlatformObjects.orx"})
+
 tup.frule{
     input = ramfs_files,
     command = '(cd interpreter/RexxClasses; basename -a %f | cpio -oV | gzip -c > ../../%o)',
     output = TOP.."/rexximage_ramfs.cpio.gz"
+}
+
+tup.frule{
+    input = ramfs_platform_files,
+--    command = '(cd interpreter/platform/unix; basename -a %f | cpio -oV | gzip -c > ../../%o)',
+    command = '(cd interpreter/platform/unix; basename -a %f | cpio -oV | gzip -c) > %o',
+    output = TOP.."rexximage_platform_ramfs.cpio.gz"
 }

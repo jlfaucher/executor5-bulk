@@ -25,7 +25,7 @@
 
 const char *service_name = "rexxapi_service";
 
-#define MAX_MESSAGE_SIZE (1<<10)
+#define MAX_MESSAGE_SIZE (1<<12)
 
 /* --------------------- Client ------------------------------ */
 
@@ -86,7 +86,7 @@ static errval_t my_event_dispatch(struct waitset *ws) {
 	if (err_is_fail(err)) {
 		return err;
 	}
-	debug_printf("closure.handler=%p\n", closure.handler);
+//	debug_printf("closure.handler=%p\n", closure.handler);
 	assert(closure.handler != NULL);
 	closure.handler(closure.arg);
 	return SYS_ERR_OK;
@@ -133,6 +133,7 @@ int rexx_read(struct rexx_connection *connection, uint8_t *buffer,
 			message->offset += expected;
 		}
 	}
+//	debug_printf("%s:%s:%d \n", __FILE__, __FUNCTION__, __LINE__);
 	return 1;
 }
 
@@ -201,6 +202,7 @@ int rexx_write(struct rexx_connection *connection, uint8_t *buffer,
 		}
 		*actual += diff;
 	}
+//	debug_printf("%s:%s:%d \n", __FILE__, __FUNCTION__, __LINE__);
 	return 1;
 }
 
@@ -272,7 +274,7 @@ struct rexx_connection *rexx_connect(void) {
 }
 
 void rexx_disconnect(struct rexx_connection *connection) {
-//	debug_printf("%s:%s:%d \n", __FILE__, __FUNCTION__, __LINE__);
+	debug_printf("%s:%s:%d \n", __FILE__, __FUNCTION__, __LINE__);
 	struct message *message;
 	message = connection->messages;
 	while (message) {
@@ -280,6 +282,7 @@ void rexx_disconnect(struct rexx_connection *connection) {
 		free(message);
 		message = next_message;
 	}
+	connection->binding->control(connection->binding, IDC_CONTROL_TEARDOWN);
 	free(connection);
 }
 
@@ -346,7 +349,7 @@ int rexx_server_read(struct rexx_client *client, uint8_t *buffer,
 			message->offset += expected;
 		}
 	}
-//	printf("%s:%s:%d \n", __FILE__, __FUNCTION__, __LINE__);
+//	debug_printf("%s:%s:%d \n", __FILE__, __FUNCTION__, __LINE__);
 	return 1;
 }
 
@@ -362,7 +365,7 @@ static void rexx_server_write_ready(void *st) {
 
 	struct rexx_client *client = (struct rexx_client *) st;
 
-	struct event_closure txcont = MKCONT(rexx_server_write_cb, client->binding);
+	struct event_closure txcont = MKCONT(rexx_server_write_cb, client);
 
 	err = rexxapi_msg__tx(client->binding, txcont,
 			client->pending_message.buffer, client->pending_message.size);
@@ -408,6 +411,7 @@ int rexx_server_write(struct rexx_client *client, uint8_t *buffer,
 		}
 		*actual += diff;
 	}
+//	debug_printf("%s:%s:%d \n", __FILE__, __FUNCTION__, __LINE__);
 	return 1;
 }
 

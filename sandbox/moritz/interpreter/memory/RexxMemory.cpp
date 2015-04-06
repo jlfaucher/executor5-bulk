@@ -201,9 +201,10 @@ void MemoryObject::initialize(bool restoringImage)
     if (!restoringImage)
     {
         createImage();
+    } else {
+        // go restore the state of the memory object
+        restore();
     }
-
-    restore();                           // go restore the state of the memory object
 }
 
 
