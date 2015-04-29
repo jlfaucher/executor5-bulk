@@ -1594,11 +1594,11 @@ max=5
 do label myDoBlock /* define a label 'MYDOBLOCK' */
   loop i=1 to max /* label defaults to control variable 'I' */
     if i = 2 then iterate i
-    if i = 4 the leave myDoBlock
+    if i = 4 then leave myDoBlock
     say i
   end i
-  say 'after looping' max 'times'
 end myDoBlock
+say 'after looping' i 'times'
 /* Displays the following
   1
   3

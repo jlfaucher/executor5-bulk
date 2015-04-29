@@ -849,9 +849,12 @@ X2D(B2X("10111"))  ->   "23"   /* decimal 23 */
 </imageobject>
 </mediaobject>
 
-<para>Sounds the speaker at frequency (Hertz) for duration (milliseconds).
-The frequency can be any whole number in the range 37 to 32767 Hertz. The
-duration can be any number in the range 1 to 60000 milliseconds.</para>
+<para>Sounds the speaker at <emphasis role="italic">frequency</emphasis>
+(Hertz) for <emphasis role="italic">duration</emphasis> (milliseconds).
+The <emphasis role="italic">frequency</emphasis> can be any whole number
+in the range 37 to 32767 Hertz.  The
+<emphasis role="italic">duration</emphasis> can be any whole number in
+the range 0 to 60000 milliseconds.</para>
 <para>This routine is most useful when called as a subroutine.  A null string
 is returned.</para>
 
@@ -2535,7 +2538,7 @@ ERRORTEXT(60)    ->    ""
 </mediaobject>
 
 <para>Returns a selected element of <emphasis role="italic">filespec</emphasis>,
-given file specification, identified by one of the following option strings:
+given file specification, identified by one of the following <emphasis role="italic">option</emphasis> strings:
 </para>
 <variablelist>
 <varlistentry><term>Drive</term>
@@ -2832,7 +2835,7 @@ override this by specifying
 backward scan starts and <emphasis role="italic">length</emphasis>, the range of
 characters to scan.  The
 <emphasis role="italic">start</emphasis> must be a positive whole number and
-defaults to <computeroutput>receiving_string~length</computeroutput> if larger than that
+defaults to the length of <emphasis role="italic">haystack</emphasis> if larger than that
 value or omitted.
 The <emphasis role="italic">length</emphasis> must be a non-negative whole
 number and defaults to <emphasis role="italic">start</emphasis>.
@@ -2877,14 +2880,10 @@ of <emphasis role="italic">string</emphasis>. The string returned is padded
 with <emphasis role="italic">pad</emphasis> characters, or truncated, on the
 right as needed. The default <emphasis role="italic">pad</emphasis> character
 is a blank. <emphasis role="italic">length</emphasis> must be a positive
-whole number or zero. The LEFT function is exactly equivalent to:
+whole number or zero. The LEFT function is equivalent to
+SUBSTR(<emphasis role="italic">string</emphasis>, 1,
+<emphasis role="italic">length[, pad]</emphasis>)
 </para>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/bif/left_xmp.svg" scale="50" />
-</imageobject>
-</mediaobject>
 
 <para>Here are some examples:</para>
 <indexterm><primary>LEFT function</primary>
@@ -5586,9 +5585,9 @@ word in
 <emphasis role="italic">string</emphasis> or returns the null string if less
 than <emphasis role="italic">n</emphasis> words are in
 <emphasis role="italic">string</emphasis>. <emphasis role="italic">n</emphasis>
-must be a positive whole number. This function is equal to
+must be a positive whole number. This function is equivalent to
 SUBWORD(<emphasis role="italic">string</emphasis>,
-<emphasis role="italic">n</emphasis>,1).</para>
+<emphasis role="italic">n</emphasis>, 1).</para>
 <para>Here are some examples:</para>
 <indexterm><primary>WORD function</primary>
 <secondary>example</secondary></indexterm>
