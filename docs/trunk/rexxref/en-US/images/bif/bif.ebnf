@@ -1,134 +1,132 @@
-abbrev ::= 'abbrev(' information ',' info (',' length)? ')'
+funct_xmp ::= 'function_name(' expression ( ',' expression )* ')'
 
-abs ::= 'abs(' number ')'
 
-address ::= 'address()'
+abbrev ::= 'ABBREV(' information ',' info (',' length)? ')'
 
-arg ::= 'arg(' (number (',' option)? )? ')'
+abs ::= 'ABS(' number ')'
 
-b2x ::= 'b2x(' binary_string ')'
+address ::= 'ADDRESS()'
 
-beep ::= 'beep(' frequency ',' duration ')'
+arg ::= 'ARG(' (n (',' option)? )? ')'
 
-bitand ::= 'bitand(' string1 ( ',' string2 ( ',' pad)? )? ')'
+b2x ::= 'B2X(' binary_string ')'
 
-bitor ::= 'bitor(' string1 ( ',' string2 ( ',' pad)? )? ')'
+beep ::= 'BEEP(' frequency ',' duration ')'
 
-bitxor ::= 'bitxor(' string1 ( ',' string2 ( ',' pad)? )? ')'
+bitand ::= 'BITAND(' string1 ',' string2? ',' pad? ')'
 
-c2d ::= 'c2d(' string ( ',' n )? ')'
+bitor ::= 'BITOR(' string1 ',' string2? ',' pad? ')'
 
-c2x ::= 'c2x(' string ')'
+bitxor ::= 'BITXOR(' string1 ',' string2? ',' pad? ')'
 
-center ::= ( 'center(' | 'centre(' ) string ',' length ( ',' pad )? ')'
+c2d ::= 'C2D(' string ( ',' n )? ')'
 
-changestr ::= 'changestr(' needle ',' haystack ',' newneedle ( ',' count )? ')'
+c2x ::= 'C2X(' string ')'
 
-charin ::= 'charin(' ( name (( ',' ( start )? ( ',' length )? )? )? )? ')'
+center ::= ( 'CENTER(' | 'CENTRE(' ) string ',' length ( ',' pad )? ')'
 
-charout ::= 'charout(' ( name (( ',' ( string )? ( ',' start )? )? )? )? ')'
+changestr ::= 'CHANGESTR(' needle ',' haystack ',' newneedle ( ',' count )? ')'
 
-chars ::= 'chars(' ( name )? ')'
+charin ::= 'CHARIN(' name? ',' start? ',' length? ')'
 
-compare ::= 'compare(' string1 ',' string2 ( ',' pad )? ')'
+charout ::= 'CHAROUT(' name? ',' string? ',' start? ')'
 
-condition ::= 'condition(' ( option )? ')'
+chars ::= 'CHARS(' ( name )? ')'
 
-copies ::= 'copies(' string ',' n ')'
+compare ::= 'COMPARE(' string1 ',' string2 ( ',' pad )? ')'
 
-countstr ::= 'countstr(' needle ',' haystack ')'
+condition ::= 'CONDITION(' ( option )? ')'
 
-d2c ::= 'd2c(' whole_number ( ',' n )? ')'
+copies ::= 'COPIES(' string ',' n ')'
 
-d2x ::= 'd2x(' whole_number ( ',' n )? ')'
+countstr ::= 'COUNTSTR(' needle ',' haystack ')'
 
-datatype ::= 'datatype(' string ( ',' type )? ')'
+d2c ::= 'D2C(' wholenumber ( ',' n )? ')'
 
-date ::= 'date(' ( option ( ( ',' string ( ',' option2 )? )? | 
-         ',' ( string )? ',' ( option2 )? ',' ( osep )? ( ',' isep )? ) )? ')'
+d2x ::= 'D2X(' wholenumber ( ',' n )? ')'
 
-delstr ::= 'delstr(' string ',' n ( ',' length )? ')'
+datatype ::= 'DATATYPE(' string ( ',' type )? ')'
 
-delword ::= 'delword(' string ',' n ( ',' length )? ')'
+date ::= 'DATE(' ( 'N' | option | ) ',' ( string ',' ( 'N' | option2 | ) | ',' ) ',' osep? ',' isep? ')'
 
-digits ::= 'digits()'
+delstr ::= 'DELSTR(' string ',' n ( ',' length )? ')'
 
-directory ::= 'directory(' ( newdirectory )? ')'
+delword ::= 'DELWORD(' string ',' n ( ',' length )? ')'
 
-endlocal ::= 'endlocal()'
+digits ::= 'DIGITS()'
 
-errortext ::= 'erortext(' n ')'
+directory ::= 'DIRECTORY(' ( newdirectory )? ')'
 
-filespec ::= 'filespec(' option ',' filespec ')'
+endlocal ::= 'ENDLOCAL()'
 
-form ::= 'form()'
+errortext ::= 'ERRORTEXT(' n ')'
 
-format ::= 'format{' number ( ',' ( before )? ( ',' ( after )? ( ','
-           ( expp )? ( ',' expt  )? )? )? )? ')'
+filespec ::= 'FILESPEC(' option ',' filespec ')'
 
-fuzz ::= 'fuzz()'
+form ::= 'FORM()'
 
-insert ::= 'insert(' new ',' target ( ',' n ( ',' ( length ( ',' pad )? )? )? )? ')'
+format ::= 'FORMAT(' number ',' before? ',' after? ',' expp? ',' expt? ')'
 
-lastpos ::= 'lastpos(' needle ',' haystack ( ',' ( start )? ( ',' count )? )? ')'
+fuzz ::= 'FUZZ()'
 
-left ::= 'left(' string ',' length ( ',' pad )? ')'
+insert ::= 'INSERT(' new ',' target ',' n? ',' length? ',' pad? ')'
 
-left_xmp ::= 'substr(' string ',' '1' ',' length ( ',' pad )? ')'
+lastpos ::= 'LASTPOS(' needle ',' haystack ( ',' ( start )? ( ',' count )? )? ')'
 
-length ::= 'length(' string ')'
+left ::= 'LEFT(' string ',' length ( ',' pad )? ')'
 
-linein ::= 'linein(' ( name ( ',' ( line )? ( ',' count )? )? )? ')'
+length ::= 'LENGTH(' string ')'
 
-lineout ::= 'lineout(' ( name ( ',' ( string )? ( ',' line )? )? )? ')'
+linein ::= 'LINEIN('name? ',' line? ',' count? ')'
 
-lines ::= 'lines(' ( name )? ( ( ', Normal' | ', Count' )? )? ')'
+lineout ::= 'LINEOUT(' name? ',' string? ',' line? ')'
 
-lower ::= 'lower(' string ( ',' ( n )? ( ',' length )? )? ')'
+lines ::= 'LINES(' ( name )? ( ( ', Normal' | ', Count' )? )? ')'
 
-max ::= 'max(' number ( ( ',' number )+ )? ')'
+lower ::= 'LOWER(' string ( ',' ( n )? ( ',' length )? )? ')'
 
-min ::= 'min(' number ( ( ',' number )+ )? ')'
+max ::= 'MAX(' number ( ( ',' number )+ )? ')'
 
-overlay ::= 'overlay(' new ',' target ( ',' ( ( n )? ( ',' ( ( length )?
-            ( ',' pad )? )? )? )? )? ')'
+min ::= 'MIN(' number ( ( ',' number )+ )? ')'
 
-pos ::= 'pos(' needle ',' haystack ( ',' ( start )? ( ',' length )? )? ')'
+overlay ::= 'OVERLAY(' new ',' target ',' n? ',' length? ',' pad? ')'
 
-qualify ::= 'qualify(' name ')'
+pos ::= 'POS(' needle ',' haystack ( ',' ( start )? ( ',' length )? )? ')'
 
-queued ::= 'queued()'
+qualify ::= 'QUALIFY(' name ')'
 
-random ::= 'random(' ( max | min ( ',' ( max )? ( ',' seed )? ) ) ')'
+queued ::= 'QUEUED()'
 
-reverse ::= 'reverse(' string ')'
+random ::= 'RANDOM(' ( max | min? ',' max? ',' seed? ) ')'
 
-right ::= 'right(' string ',' length ( ',' pad )? ')'
+reverse ::= 'REVERSE(' string ')'
 
-rxfuncadd ::= 'rxfuncadd(' name ',' module ( ',' procedure )? ')'
+right ::= 'RIGHT(' string ',' length ( ',' pad )? ')'
 
-rxfuncdrop ::= 'rxfuncdrop(' name ')'
+rxfuncadd ::= 'RxFuncAdd(' name ',' module ( ',' procedure )? ')'
 
-rxfuncquery ::= 'rxfuncquery(' name ')'
+rxfuncdrop ::= 'RxFuncDrop(' name ')'
 
-rxqueue ::= 'rxqueue(' ( 'Create' ( ',' queuename )? |
+rxfuncquery ::= 'RxFuncQuery(' name ')'
+
+rxqueue ::= 'RXQUEUE(' ( 'Create' ( ',' queuename )? |
                          'Delete' ',' queuename |
                          'Get' |
                          'Set' ',' newqueuename ) ')'
 
-setlocal ::= 'setlocal()'
+setlocal ::= 'SETLOCAL()'
 
-sign ::= 'sign(' number ')'
+sign ::= 'SIGN(' number ')'
 
-sourceline ::= 'sourceline(' ( number )? ')'
+sourceline ::= 'SOURCELINE(' n? ')'
 
-space ::= 'space(' string ( ',' ( n )? ( ',' pad )? )? ')'
+space ::= 'SPACE(' string ',' n? ',' pad? ')'
 
-stream ::= 'stream(' name ( ',' ( 'State' |                         
-                                  command ',' stream_command |
+stream ::= 'STREAM(' name ( ',' ( 'State' |                    
+                                  'Command' ',' stream_command |
                                   'Description' ) )? ')'
 
-stream_command ::= ( ( 'Open' ( 'Both' write_options | 'Read' | 'Write' write_options )? options ) |
+stream_command ::= ( ( 'Open' ( 'BOth' write_options | 'REAd' | 'Write' write_options )? options ) |
                      ( 'Close' ) |
                      ( 'Flush' ) |
                      ( ( 'Seek' | 'Position' ) ( '=' | '<' | '+' | ';' | () ) offset ( 'Read' | 'Write' | ) ( 'Char' | 'Line') ) |
@@ -137,58 +135,57 @@ stream_command ::= ( ( 'Open' ( 'Both' write_options | 'Read' | 'Write' write_op
                                  'Handle' |
                                  ( 'Seek' | 'Position' ) ( ('Read' | 'Write' ) ( 'Char' |
                                                                                  'Line')? |
-                                                                     'Sys' ) ) ) |
-                      ( 'Size' ) |
-                      ( 'Streamtype' ) |
-                      ( 'Timestamp' )
+                                                         'Sys' ) |
+                      ( 'SIze' ) |
+                      ( 'STreamtype' ) |
+                      ( 'Timestamp' ) ) )
                    ) ')' 
 
-stream_write_options ::= ( () | 'Append' | 'Replace' )
+stream_write_options ::= ( () | 'APpend' | 'REPlace' )
 
-stream_options ::= ( 'Shared' | 'Shareread' | 'Sharewrite' )?
-                   ( 'Nobuffer' | 'Binary' ( 'Reclength' length )? )+
+stream_options ::= ( 'SHARED' | 'SHARERead' | 'SHAREWrite' )?
+                   ( 'NOBuffer' | 'BInary' ( 'REClength' length )? )*
 
-strip ::= 'strip(' string ( ',' ( option ( ',' chars )? )? )? ')'
+strip ::= 'STRIP(' string ',' ( 'B' | option | ) ',' chars? ')'
 
-substr ::= 'substr(' string ',' n ( ',' ( ( length )? ( ',' pad )? )? )? ')'
+substr ::= 'SUBSTR(' string ',' n ',' length? ',' pad? ')'
 
-subword ::= 'subword(' string ',' n ( ',' length )? ')'
+subword ::= 'SUBWORD(' string ',' n ( ',' length )? ')'
 
-symbol ::= 'symbol(' name ')'
+symbol ::= 'SYMBOL(' name ')'
 
-time ::= 'time(' ( option ( ',' ( string )? ( ',' option2 )? )?)?  ')'
+time ::= 'TIME(' ( 'N' | option | )? ( | ',' string ',' ( 'N' | option2 | )? ) ')' 
 
-trace ::= 'trace(' ( option )? ')'
+trace ::= 'TRACE(' ( option )? ')'
 
-translate ::= 'translate(' string ( ( ',' tableo ( ',' ( tablei ( ',' pad )? )? )? )? 
-                                    ( ',' pos ( ',' length )? )? )? ')'
+translate ::= 'TRANSLATE(' string ',' tableo? ',' tablei? ',' pad? ',' pos? ',' length? ')'
 
-trunc ::= 'trunc(' number ( ',' n )? ')'
+trunc ::= 'TRUNC(' number ( ',' n )? ')'
 
-upper ::= 'upper(' string ( ',' ( n ( ',' length )? )? )? ')'
+upper ::= 'UPPER(' string ',' n? ',' length? ')'
 
-userid ::= 'userid()'
+userid ::= 'USERID()'
 
-value ::= 'value(' name ( ',' ( newvalue )? ( ',' selector )? )? ')'
+value ::= 'VALUE(' name ',' newvalue? ',' selector? ')'
 
-var ::= 'var(' name ')'
+var ::= 'VAR(' name ')'
 
-verify ::= 'verify{' string ',' reference ( ',' ( option )? ( ',' ( start )? ( ',' length )? )? )? ')'  
+verify ::= 'VERIFY(' string ',' reference ',' ( 'N' | option | ) ',' start? ',' length? ')'
 
-word ::= 'word(' string ',' n ')'
+word ::= 'WORD(' string ',' n ')'
 
-wordindex ::= 'wordindex(' string ',' n ')'
+wordindex ::= 'WORDINDEX(' string ',' n ')'
 
-wordlength ::= 'wordlength(' string ',' n ')'
+wordlength ::= 'WORDLENGTH(' string ',' n ')'
 
-wordpos ::= 'wordpos(' phrase ',' string ( ',' start )? ')'
+wordpos ::= 'WORDPOS(' phrase ',' string ( ',' start )? ')'
 
-words ::= 'words(' string ')'
+words ::= 'WORDS(' string ')'
 
-x2b ::= 'x2b(' hexstring ')'
+x2b ::= 'X2B(' hexstring ')'
 
-x2c ::= 'x2c(' hexstring ')'
+x2c ::= 'X2C(' hexstring ')'
 
-x2d ::= 'x2d(' hexstring ')'
+x2d ::= 'X2D(' hexstring ( ',' n )? ')'
 
-xrange ::= 'xrange(' start ( ',' end )? ')'
+xrange ::= 'XRANGE(' start ( ',' end )? ')'
