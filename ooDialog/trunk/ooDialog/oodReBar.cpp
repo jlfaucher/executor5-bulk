@@ -67,7 +67,10 @@
 
 inline bool isRbbiInternalInit(RexxMethodContext *context, RexxObjectPtr child, CSTRING text)
 {
-    return argumentExists(1) && context->IsBuffer(child) && argumentExists(2) && strcmp(text, REBARBANDINFO_OBJ_MAGIC) == 0;
+    return argumentExists(1)
+        && context->IsBuffer(child)
+        && argumentExists(2)
+        && strcmp(text, REBARBANDINFO_OBJ_MAGIC) == 0;
 }
 
 /**
@@ -350,9 +353,14 @@ RexxMethod1(RexxObjectPtr, rbbi_unInit, CSELF, pCSelf)
  *  but we still need to figure out which attributes to accept / are the most
  *  useful.
  */
-RexxMethod7(RexxObjectPtr, rbbi_init, OPTIONAL_RexxObjectPtr, _child, OPTIONAL_CSTRING, text,
-            OPTIONAL_CSTRING, style, OPTIONAL_RexxObjectPtr, itemData, OPTIONAL_RexxObjectPtr, rxID,
-            OPTIONAL_uint32_t, cx, OPTIONAL_CSTRING, mask)
+RexxMethod7(RexxObjectPtr , rbbi_init
+           , OPTIONAL_RexxObjectPtr, _child
+           , OPTIONAL_CSTRING      , text
+           , OPTIONAL_CSTRING      , style
+           , OPTIONAL_RexxObjectPtr, itemData
+           , OPTIONAL_RexxObjectPtr, rxID
+           , OPTIONAL_uint32_t     , cx
+           , OPTIONAL_CSTRING      , mask)
 {
     if ( isRbbiInternalInit(context, _child, text) )
     {
