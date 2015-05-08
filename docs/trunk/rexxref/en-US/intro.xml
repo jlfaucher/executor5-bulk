@@ -2376,7 +2376,7 @@ alphabetic characters translated to uppercase).</para>
 is alphabetic, are environment symbols
 (<xref linkend="ensym" />) and
 may have a
-value other other than the symbol name.
+value other than the symbol name.
 </para>
 </section>
 
@@ -2743,11 +2743,11 @@ its value is the mapped object.</para>
 series of searches to see if the environment symbol has an assigned value. The
 search locations and their ordering are:
 <orderedlist>
-<listitem><para>The directory of classes declared on ::CLASS directives (see
+<listitem><para>The StringTable of classes declared on ::CLASS directives (see
 <xref linkend="clasdi" />)
 within the current program package or added to the current package using
-the addClass() method (<xref linkend="mthPackageAddClass" />.</para></listitem>
-<listitem><para>The directory of PUBLIC classes declared on ::CLASS directives
+the addClass() method (<xref linkend="mthPackageAddClass" />).</para></listitem>
+<listitem><para>The StringTable of PUBLIC classes declared on ::CLASS directives
 of other files included with a ::REQUIRES directive or added to the current
 Package instance using the addPackage() method (<xref linkend="mthPackageAddPackage" />).
 </para></listitem>
@@ -2771,7 +2771,7 @@ by using a null string for the
 <listitem><para>Rexx defined symbols. Other simple environment symbols are
 reserved for use by Rexx built-in environment objects (<xref linkend="oneof" />).
 The currently defined built-in
-objects are .RS, .LINE, .METHODS, .ROUTINES, and .CONTEXT.</para></listitem>
+objects are .RS, .LINE, .METHODS, .ROUTINES, .RESOURCES, and .CONTEXT.</para></listitem>
 </orderedlist>
 </para>
 <para>If an entry is not found for an environment symbol, then the default
@@ -2790,6 +2790,68 @@ in either directory include at least one period in the entry name.</para>
 </note>
 </section>
 </section>
+
+
+<section id="namespacesym"><title>Namespaces</title>
+<indexterm><primary>namespace</primary></indexterm>
+<indexterm><primary>symbols</primary>
+<secondary>namespace</secondary></indexterm>
+<para>
+Namespaces can be used to differentiate between classes or routines of
+of the same name, having been loaded through
+<link linkend="requ">::REQUIRES</link> directives.
+</para>
+<para>
+Using ::REQUIRES with the NAMESPACE option allows to tag a loaded file
+with a namespace name, which in turn can be used to qualify references
+to classes or routines within that namespace to explicitly identify a
+specific class or routine.  A special reserved namespace "REXX" will
+allow to always access the ooRexx-provided classes.
+</para>
+<para>Examples:</para>
+<example><title>Namespaces</title>
+<programlisting>-- disambiguate between two classes with same name
+say .number~id                         --> The Real Number class
+say natural:number~id                  --> The Natural Number class
+
+-- use reserved namespace "REXX" to get ooRexx-predefined .Array
+-- not :class array as defined below
+say rexx:array~of(2, 3, 5, 7)~items    --> 4
+
+-- call ::routine verify, not built-in function
+call natural:verify(17)
+
+-- use natural:number as a message target
+say natural:number~subclass("Integer") --> The Integer class
+
+
+-- subclass natural:number, not ::class number as defined below
+::class rationalNumber subclass natural:number
+
+-- class "number"; same name as a class in 'number.cls'
+::class number
+::method id class
+return "The Real Number class"
+
+-- class "Array"; same name as ooRexx-defined
+::class array
+
+::requires 'number.cls' namespace natural
+</programlisting>
+</example>
+
+<example><title>number.cls</title>
+<programlisting>::class number public
+::method id class
+return "The Natural Number class"
+
+::routine verify public
+return arg(1) >= 0 &amp; arg(1)~dataType("W")
+</programlisting>
+</example>
+
+</section>
+
 
 <section id="msgi"><title>Message Instructions</title>
 <indexterm><primary>message instructions</primary></indexterm>

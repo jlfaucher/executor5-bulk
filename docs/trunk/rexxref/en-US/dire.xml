@@ -44,7 +44,7 @@
     #########################################################################
 -->
 <chapter id="dire"><title>Directives</title>
-<para>A Rexx program contains one or more executable code units.
+<para>An ooRexx program contains one or more executable code units.
 <emphasis role="italic">Directive instructions</emphasis> separate these executable units. A
 directive begins
 with a double colon (::) and is a nonexecutable instruction. For example,
@@ -56,9 +56,140 @@ to set up the program's classes, methods, and routines. Then any program code
 in the main code unit (preceding the first directive) is processed. This code
 can use any classes, methods, and routines that the directives established.</para>
 
+<para>Supported directives are
+<xref linkend="annotd" xrefstyle="select: title"/>,
+<xref linkend="attrd" xrefstyle="select: title"/>,
+<xref linkend="clasdi" xrefstyle="select: title"/>,
+<xref linkend="constantd" xrefstyle="select: title"/>,
+<xref linkend="methd" xrefstyle="select: title"/>,
+<xref linkend="optionsd" xrefstyle="select: title"/>,
+<xref linkend="requ" xrefstyle="select: title"/>,
+<xref linkend="resourced" xrefstyle="select: title"/>, and
+<xref linkend="routd" xrefstyle="select: title"/>.
+</para>
+
+<section id="annotd" revisionflag="added"><title>::ANNOTATE</title>
+<indexterm><primary>::ANNOTATE directive</primary></indexterm>
+<indexterm><primary>directives</primary>
+<secondary>::ANNOTATE</secondary></indexterm>
+<indexterm><primary>annotation</primary>
+<secondary>creation</secondary></indexterm>
+<indexterm><primary>ATTRIBUTE subkeyword</primary>
+<secondary>in an ANNOTATE directive</secondary></indexterm>
+<indexterm><primary>CLASS subkeyword</primary>
+<secondary>in an ANNOTATE directive</secondary></indexterm>
+<indexterm><primary>CONSTANT subkeyword</primary>
+<secondary>in an ANNOTATE directive</secondary></indexterm>
+<indexterm><primary>METHOD subkeyword</primary>
+<secondary>in an ANNOTATE directive</secondary></indexterm>
+<indexterm><primary>PACKAGE subkeyword</primary>
+<secondary>in an ANNOTATE directive</secondary></indexterm>
+<indexterm><primary>ROUTINE subkeyword</primary>
+<secondary>in an ANNOTATE directive</secondary></indexterm>
+
+<para>The ::ANNOTATE directive creates annotations to the package, its
+classes, methods, attributes, constants, or routines.</para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/directives/annotate.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>The ::ANNOTATE directive can add metadata information (called "annotations")
+in the form of <emphasis role="italic">name/value</emphasis> pairs to
+the current package, or any of its classes, methods, attributes,
+constants, and routines.</para>
+
+<para>An annotation <emphasis role="italic">attribute</emphasis>,
+<emphasis role="italic">class</emphasis>,
+<emphasis role="italic">constant</emphasis>,
+<emphasis role="italic">method</emphasis>, and
+<emphasis role="italic">routine</emphasis> must be a valid class name,
+constant name, method name, or routine name defined with its respective
+directive in the same source program.</para>
+
+<para>The annotation <emphasis role="italic">name</emphasis> must be a
+symbol that is taken as a constant; a literal string is not
+allowed. 
+The annotation <emphasis role="italic">value</emphasis> must be a
+single literal string, a symbol, or a valid number, optionally preceded
+by a plus or minus sign, that is taken as a constant.</para>
+
+<para><emphasis role="bold">Example:</emphasis></para>
+<example id="ex.directives-annotate">
+<title>ANNOTATE directive</title>
+<indexterm><primary>examples</primary>
+<secondary>::ANNOTATE directive</secondary></indexterm>
+<programlisting>
+::annotate package author "B. Fox"                 -- annotate current package
+
+::class command
+
+::attribute address
+::attribute command
+
+::method init
+use strict arg command, address = ""
+self~command = command
+self~address = address
+
+::annotate class command languagelevel "6.05"      -- annotate class COMMAND
+::annotate attribute command os "unix windows mac" -- annotate attribute COMMAND
+::annotate method init version "100" maxParms 2    -- annotate method INIT
+</programlisting>
+</example>
+
+<para><emphasis role="bold">Notes:</emphasis></para>
+<orderedlist>
+  <listitem><para>Each ::ANNOTATE directive, except for ::ANNOTATE
+  PACKAGE, must be placed <emphasis role="bold">after</emphasis> its
+  respective ::ATTRIBUTE, ::CLASS, ::CONSTANT, ::METHOD, or ::ROUTINE
+  directive in the sourcefile.</para></listitem>
+
+  <listitem><para>When annotating non-floating attributes, constants, or
+  methods, the ::ANNOTATE directive must precede any following ::CLASS
+  directive.</para></listitem>
+
+  <listitem><para>An annotation for an attribute, a method, or a routine
+  should be placed <emphasis role="bold">after</emphasis> any
+  attribute/method/routine code body, as ::ANNOTATE, like any other
+  directive, will end the code body.</para></listitem>
+
+  <listitem><para>A subclass of an annotated class will not inherit any
+  annotations of its superclass or mixinclass.</para></listitem>
+
+  <listitem><para>A copy of an annotated method, package, or routine
+  object will keep any existing annotations.</para></listitem>
+
+  <listitem><para>The ::ANNOTATE directive cannot be used to annotate
+  packages, classes, methods, attributes, constants, and routines
+  which are provided by ooRexx or have been made available through a
+  ::REQUIRES directive.</para></listitem>
+
+  <listitem><para>Currently ooRexx does not use or predefine any
+  specific annotation <emphasis role="italic">names</emphasis>.</para>
+  </listitem>
+
+  <listitem><para>To query an annotation <emphasis role="italic">name/value</emphasis>
+  pair, to get a list of all attached annotation
+  <emphasis role="italic">name/value</emphasis> pairs, or to add new or
+  change exsting annotations, use
+  <itemizedlist spacing="compact">
+    <listitem><para>the Package class <xref linkend="mthPackageAnnotation" xrefstyle="select: title"/>) method and (<xref linkend="mthPackageAnnotations" xrefstyle="select: title" /> method,</para></listitem>
+    <listitem><para>the Class class <xref linkend="mthClassAnnotation" xrefstyle="select: title" />) method and (<xref linkend="mthClassAnnotations" xrefstyle="select: title" /> method,</para></listitem>
+    <listitem><para>the Method class <xref linkend="mthMethodAnnotation" xrefstyle="select: title" />) method and (<xref linkend="mthMethodAnnotations" xrefstyle="select: title" /> method, or</para></listitem>
+    <listitem><para>the Routine class <xref linkend="mthRoutineAnnotation" xrefstyle="select: title" />) method and (<xref linkend="mthRoutineAnnotations" xrefstyle="select: title" /> method.</para></listitem>
+  </itemizedlist>
+  </para></listitem>
+
+</orderedlist>
+
+</section>
+
 
 <section id="attrd"><title>::ATTRIBUTE</title>
-<indexterm><primary>:: ATTRIBUTE directive</primary></indexterm>
+<indexterm><primary>::ATTRIBUTE directive</primary></indexterm>
 <indexterm><primary>directives</primary>
 <secondary>::ATTRIBUTE</secondary></indexterm>
 <indexterm><primary>attribute</primary>
@@ -82,6 +213,10 @@ can use any classes, methods, and routines that the directives established.</par
 <indexterm><primary>PROTECTED subkeyword</primary>
 <secondary>in an ATTRIBUTE directive</secondary></indexterm>
 <indexterm><primary>UNPROTECTED subkeyword</primary>
+<secondary>in an ATTRIBUTE directive</secondary></indexterm>
+<indexterm><primary>EXTERNAL subkeyword</primary>
+<secondary>in an ATTRIBUTE directive</secondary></indexterm>
+<indexterm><primary>DELEGATE subkeyword</primary>
 <secondary>in an ATTRIBUTE directive</secondary></indexterm>
 
 <para>The ::ATTRIBUTE directive creates attribute methods and defines the
@@ -162,6 +297,35 @@ raise an error if directly invoked.
 For ABSTRACT methods there is no method code body following the directive,
 so another directive (or the end of the program) must follow the
 ::ATTRIBUTE directive.</para>
+
+<para revisionflag="added">If DELEGATE is specified, execution of get method
+<emphasis role="italic">name</emphasis>
+and set method
+<emphasis role="italic">name=</emphasis> (depending on whether SET or GET
+or none of these two is specified on the ::ATTRIBUTE directive)
+is delegated to object
+<emphasis role="italic">delegatename</emphasis>.
+It is a common design pattern to delegate method execution to an
+embedded object.
+The directive for such a delegation
+<programlisting>
+::attribute name delegate delegateName
+</programlisting>
+is equivalent to the following code sequence:
+<example id="ex.directives-attribute-delegate-equivalent">
+<title>DELEGATE subkeyword equivalent code</title>
+<programlisting>
+::method name
+expose delegateName
+forward to(delegateName)
+
+::method "NAME="
+expose delegateName
+forward to(delegateName)
+</programlisting>
+</example>
+</para>
+
 <para>If the EXTERNAL option is specified, then <emphasis role="italic">spec</emphasis>
 identifies a method in an external native library that will be invoked as the
 named method.  The
@@ -414,7 +578,7 @@ say "Pi is" instance~pi          -- also displays "Pi is 3.1415926"
 </section>
 
 <section id="methd"><title>::METHOD</title>
-<indexterm><primary>:: METHOD directive</primary></indexterm>
+<indexterm><primary>::METHOD directive</primary></indexterm>
 <indexterm><primary>directives</primary>
 <secondary>::METHOD</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -525,6 +689,27 @@ equivalent to the following code sequences: </para>
 ABSTRACT methods define a method that an implementing subclass is expected to provide a concrete
 implementation for.  Any attempt to invoke an ABSTRACT method directly will raise a SYNTAX condition.
 </para>
+
+<para revisionflag="added">If DELEGATE is specified, execution of method
+<emphasis role="italic">name</emphasis> is delegated to object
+<emphasis role="italic">delegatename</emphasis>.
+It is a common design pattern to delegate method execution to an
+embedded object.
+The directive for such a delegation
+<programlisting>
+::method name delegate delegateName
+</programlisting>
+is equivalent to the following code sequence:
+<example id="ex.directives-method-delegate-equivalent">
+<title>DELEGATE subkeyword equivalent code</title>
+<programlisting>
+::method name
+expose delegateName
+forward to(delegateName)
+</programlisting>
+</example>
+</para>
+
 <para>If the EXTERNAL option is specified, then <emphasis role="italic">spec</emphasis>
 identifies a method in an external native library that will be invoked as the
 named method.  The
@@ -676,7 +861,7 @@ case only one, nonzero digit appears before the decimal point) or ENGINEERING
 SCIENTIFIC. The subkeywords SCIENTIFIC or ENGINEERING must be specified as
 symbols.
 The package value can be retrieved using the Package class
-form (<xref linkend="mthPackageDigits" />) method.
+form (<xref linkend="mthPackageForm" />) method.
 </para>
 </entry></row>
 <row><entry>FUZZ
@@ -691,7 +876,7 @@ The value <emphasis role="italic">fuzz</emphasis> must be a symbol or string
 that is a valid positive whole number value and must be smaller than the
 current DIGIT ::OPTIONS setting.
 The package value can be retrieved using the Package class
-fuzz (<xref linkend="mthPackageDigits" />) method.
+fuzz (<xref linkend="mthPackageFuzz" />) method.
 </para>
 <para>NUMERIC FUZZ temporarily
 reduces the value of NUMERIC DIGITS by the NUMERIC FUZZ value during every
@@ -699,6 +884,46 @@ numeric comparison. The numbers are subtracted under a precision of DIGITS
 minus FUZZ digits during the comparison and are then compared with 0.
 </para>
 </entry></row>
+
+<row revisionflag="added"><entry>NOVALUE
+<indexterm><primary>::OPTIONS directive</primary>
+<secondary>NOVALUE option</secondary></indexterm>
+</entry>
+<entry>
+<para>
+controls whether NOVALUE conditions will raise an ERROR rather than a
+NOVALUE condition.
+The setting will apply to all of the current source program and can help
+in debugging errors due to uninitialized variables.
+</para>
+<para>
+If ::OPTIONS NOVALUE CONDITION is in effect, NOVALUE conditions will be
+raised as usual.
+If ::OPTIONS NOVALUE ERROR is in effect, an ERROR condition is raised
+instead of any NOVALUE condition.
+The default is ::OPTIONS NOVALUE CONDITION.
+</para>
+</entry></row>
+
+<row revisionflag="added"><entry>PROLOG
+<indexterm><primary>::OPTIONS directive</primary>
+<secondary>PROLOG option</secondary></indexterm>
+</entry>
+<entry>
+<para>
+controls whether prolog code (any code in the source program that comes
+before the first directive) is run when another program requires it
+through a ::REQUIRES directive (see <xref linkend="requ" />)
+</para>
+<para>
+If ::OPTIONS PROLOG is in effect, any prolog code is run as usual when
+the source program is being required using a :REQUIRES directive.
+If ::OPTIONS NOPROLOG is in effect, any prolog code is not
+run.
+The default is ::OPTIONS PROLOG.
+</para>
+</entry></row>
+
 <row><entry>TRACE
 <indexterm><primary>::OPTIONS directive</primary>
 <secondary>TRACE option</secondary></indexterm>
@@ -709,7 +934,7 @@ all Rexx code contained in the package. Tracing describes some or all of the cla
 producing descriptions of clauses as they are processed. TRACE is mainly used for debugging. The value
 <emphasis role="italic">trace</emphasis> must be one of the Trace Alphabetic (<xref linkend="alphaco" />)
 valid for the Trace instruction (<xref linkend="keyTrace" />). The
-package value can be retrieved using the Package class trace (<xref linkend="mthPackageDigits" />)
+package value can be retrieved using the Package class trace (<xref linkend="mthPackageTrace" />)
 method.
 </para>
 </entry></row>
@@ -718,8 +943,94 @@ method.
 </informaltable>
 </section>
 
+<section id="resourced" revisionflag="added"><title>::RESOURCE</title>
+<indexterm><primary>::RESOURCE directive</primary></indexterm>
+<indexterm><primary>directives</primary>
+<secondary>::RESOURCE</secondary></indexterm>
+<indexterm><primary>LIBRARY subkeyword</primary>
+<secondary>in a RESOURCE directive</secondary></indexterm>
+
+<para>The ::RESOURCE directive allows to include associated data
+directly in the program code.</para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/directives/resource.svg" scale="50" />
+</imageobject>
+</mediaobject>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/directives/resourcedata.svg" scale="50" />
+</imageobject>
+</mediaobject>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/directives/resourceend.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>The ::RESOURCE directive allows to include lines of
+<emphasis role="italic">resource_data</emphasis>
+of almost arbitrary form directly within the source program.</para>
+
+<para>The resource <emphasis role="italic">name</emphasis> must be a
+symbol or a literal string that is taken as a constant.
+The optional resource end <emphasis role="italic">delimiter</emphasis>
+must be a symbol or a literal string that is taken as a constant.
+If <emphasis role="italic">delimiter</emphasis> is not specified, it
+defaults to the string "::END".</para>
+
+<indexterm><primary>examples</primary>
+<secondary>::RESOURCE directive</secondary></indexterm>
+<para><emphasis role="bold">Example:</emphasis></para>
+<example id="ex.directives-resource">
+<title>RESOURCE directive</title>
+<programlisting>
+::resource greyCat end "-"
+La nuit, tous les chats sont gris
+--------------------------------- 
+
+::resource "brown fox"
+The quick brown fox jumps over the lazy dog
+::END
+
+::resource nollop end ANONYMOUS
+     The wicked peon quivered,
+then gazed balefully at the judges
+         who examined him.
+ANONYMOUS TYPESETTER
+</programlisting>
+</example>
+
+<para><emphasis role="bold">Notes:</emphasis></para>
+<orderedlist>
+  <listitem><para>Specifiying more than one ::RESOURCE directive with
+  the same resource <emphasis role="italic">name</emphasis> is an error.
+  </para></listitem>
+
+  <listitem><para>The terminating resource end
+  <emphasis role="italic">delimiter</emphasis> must start in the first
+  column and is case-sensitive.
+  Any text following on the same line as the terminating
+  <emphasis role="italic">delimiter</emphasis> is ignored.
+  </para></listitem>
+
+  <listitem><para>Although <emphasis role="italic">resource_data</emphasis>
+  may include almost arbitrary data (including any ooRexx code), it is
+  not well-suited for inclusion of binary data.
+  Including special characters like carriage return ('0d'x), line-feed
+  ('0a'x), or Windows end-of-file ('1a'x) may cause unwanted results.
+  </para></listitem>
+
+  <listitem><para>Resource data is accessible through the .RESOURCE
+  built-in object (<xref linkend="resourcese" />).
+  </para></listitem>
+</orderedlist>
+
+</section>
+
 <section id="requ"><title>::REQUIRES</title>
-<indexterm><primary>:: REQUIRES directive</primary></indexterm>
+<indexterm><primary>::REQUIRES directive</primary></indexterm>
 <indexterm><primary>directives</primary>
 <secondary>::REQUIRES</secondary></indexterm>
 <indexterm><primary>LIBRARY subkeyword</primary>
@@ -744,10 +1055,9 @@ taken as a constant. The string or symbol
 as the target of a CALL instruction. The program <emphasis
 role="italic">programname</emphasis> is called as an external routine with no
 arguments.  The program is searched for using normal external program search
-order.  See <xref linkend="xsearcho" /> for details.  The main
-program code, which precedes the first directive instruction, is run.
+order.  See <xref linkend="xsearcho" /> for details.
 </para>
-<para>If any Rexx code preceeds the first directive in
+<para>If any Rexx code precedes the first directive in
 <emphasis role="italic">programname</emphasis> then that code is executed at the
 time the <emphasis role="italic">::REQUIRES</emphasis> is processed by the
 interpreter. This will be executed prior to executing the main Rexx program in
@@ -763,6 +1073,21 @@ cannot be loaded, the program will not be permitted to run.  All LIBRARY
 which will ensure that the native libraries are available to the initialization
 code of the Rexx packages.
 </para>
+
+<para revisionflag="added">If the NAMESPACE option is specified,
+<emphasis role="italic">namespace</emphasis> must be a symbol that is
+taken as a constant; a literal string is not allowed. 
+</para>
+<para>
+The NAMESPACE option will attach the name <emphasis role="italic">namespace</emphasis>
+to the file loaded by the ::REQUIRES directive.
+This will make it possible to use e. g.
+<emphasis role="italic">namespace</emphasis>:<emphasis role="italic">class</emphasis>
+to differentiate between classes (or routines) of the same name in
+different ::REQUIRES files or the main program.
+For details see <xref linkend="namespacesym" />.
+</para>
+
 <para>::REQUIRES directives can be placed anywhere after the main section of
 code in the package.  The order of ::REQUIRES directives determines the search
 order for classes and routines defined in the named programs and also the load
@@ -792,7 +1117,7 @@ directive. Only null clauses can appear between them.</para>
 </section>
 
 <section id="routd"><title>::ROUTINE</title>
-<indexterm><primary>:: ROUTINE directive</primary></indexterm>
+<indexterm><primary>::ROUTINE directive</primary></indexterm>
 <indexterm><primary>directives</primary>
 <secondary>::ROUTINE</secondary></indexterm>
 <indexterm><primary>PUBLIC subkeyword</primary>

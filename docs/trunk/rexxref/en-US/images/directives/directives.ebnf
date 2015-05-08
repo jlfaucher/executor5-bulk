@@ -1,25 +1,60 @@
-attribute ::= '::ATTRIBUTE' name ( 'GET' | 'SET' )? ( 'CLASS' )? ( 'ABSTRACT' )?
-                            ( 'PUBIC' | 'PRIVATE')? ( 'GUARDED' | 'UNGUARDED' )?
+/*-- interpreter\parser\DirectiveParser.cpp --------------------------*/
+
+/* new in 5.0 */                   
+annotate ::= '::ANNOTATE' ( 'ATTRIBUTE' attribute |
+                            'CLASS' class |
+                            'CONSTANT' constant |
+                            'METHOD' method |
+                            'PACKAGE' |
+                            'ROUTINE' routine ) ( name value )*  
+
+/*-- LanguageParser::attributeDirective() ----------------------------*/
+attribute ::= '::ATTRIBUTE' name ( 'GET' | 'SET' )? ( 'CLASS' )?
+                            ( 'PUBLIC' | 'PRIVATE')? ( 'GUARDED' | 'UNGUARDED' )?
                             ( 'UNPROTECTED' | 'PROTECTED' )?
+                            ( 'ABSTRACT' |
+/* new in 5.0 */              'DELEGATE' delegatename |
+                              'EXTERNAL' spec )?
 
-class ::= '::CLASS' classname ( 'METACLASS' metaclassname )? ( 'SUBCLASS' object |
-                    'MIXINCLASS' mclass | 'SUBCLASS' sclass )? ( 'PRIVATE' |
-                    'PUBLIC' )? ( 'INHERIT' oclass )?
+/*-- LanguageParser::classDirective() --------------------------------*/
+class ::= '::CLASS' classname ( 'METACLASS' metaclass )?
+                    ( 'PRIVATE' | 'PUBLIC' )?
+                    ( 'MIXINCLASS' mclass | 'SUBCLASS' sclass )?
+                    ( 'ABSTRACT' )?
+                    ( 'INHERIT' iclass+ )?
 
-constant ::= '::CONSTANT' name value
+/*-- LanguageParser::constantDirective() -----------------------------*/
+constant ::= '::CONSTANT' name value?
 
-method ::= '::METHOD' methodname ( 'CLASS' )? ( 'ATTRIBUTE' )? ( 'ABSTRACT' )?
-                      ( 'PUBIC' | 'PRIVATE')? ( 'GUARDED' | 'UNGUARDED' )?
+/*-- LanguageParser::methodDirective() -------------------------------*/
+method ::= '::METHOD' methodname ( 'ATTRIBUTE' )? ( 'CLASS' )?
+                      ( 'PUBLIC' | 'PRIVATE')? ( 'GUARDED' | 'UNGUARDED' )?
                       ( 'UNPROTECTED' | 'PROTECTED' )?
-                      ( 'EXTERNAL' spec )?
+                      ( 'ABSTRACT' |           /* doesn't show that delegate+abstract is not allowed */
+/* new in 5.0 */        'DELEGATE' delegatename |
+                        'EXTERNAL' spec )?
 
-options ::= '::OPTIONS' ( 'DIGITS' digits )? ( 'FORM' form )? ( 'FUZZ' fuzz )?
-                        ( 'TRACS' trace )?
+/*-- LanguageParser::optionsDirective() ------------------------------*/
+options ::= '::OPTIONS' ( ( 'DIGITS' digits ) |
+                          ( 'FORM' ('ENGINEERING' | 'SCIENTIFIC') ) |
+                          ( 'FUZZ' fuzz ) |
+/* new in 5.0 */          ( 'NOVALUE' ('CONDITION' | 'ERROR') ) | 
+/* new in 5.0 */          ( ( 'PROLOG' | 'NOPROLOG' ) ) |             
+                          ( 'TRACE' trace ) 
+                        )*
 
-requires ::= '::REQUITES' programname ( 'LIBRARY' )?
+/*-- LanguageParser::requiresDirective() -----------------------------*/
+requires ::= '::REQUIRES' programname ( 'LIBRARY' |
+/* new in 5.0 */                        'NAMESPACE' namespace
+                                      )?
 
+/*-- LanguageParser::resourceDirective() -----------------------------*/
+/* new in 5.0 */
+resource ::= '::RESOURCE' name ( 'END' delimiter )?/* new in 5.0 */
+resourcedata ::= resource_data*
+resourceend ::= ( '::END' ignored_data? |
+                delimiter ignored_data? )
+
+/*-- LanguageParser::routineDirective() ------------------------------*/
 routine ::= '::ROUTINE' routinename ( 'PRIVATE' | 'PUBLIC' )? ( 'EXTERNAL' spec )?
-
-
-
 

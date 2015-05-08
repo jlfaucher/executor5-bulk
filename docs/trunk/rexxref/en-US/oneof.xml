@@ -126,9 +126,23 @@ logical and comparison operations.
 <para>The Local environment object is a directory of interpreter instance
 objects that are always accessible.  You can access objects in the Local
 environment object in the same way as objects in the Environment object.
-The Local object contains the .INPUT, .OUTPUT, .ERROR, .DEBUGINPUT, and .TRACEOUTPUT Monitor objects used for
-Rexx console I/O, the .STDIN, .STDOUT, and .STDERR output streams that are the default
-I/O targets, and the .STDQUE RexxQueue instance used for Rexx external queue operations.
+The Local object contains
+<itemizedlist>
+  <listitem><para>the <xref linkend="inputt" xrefstyle="select: title"/>,
+    <xref linkend="outp" xrefstyle="select: title"/>,
+    <xref linkend="erobj" xrefstyle="select: title"/>,
+    <xref linkend="debuginputobj" xrefstyle="select: title"/>,
+    and <xref linkend="traceoutputobj" xrefstyle="select: title"/>
+    Monitor objects used for console I/O,</para></listitem>
+  <listitem><para>the <xref linkend="stdinobj" xrefstyle="select: title"/>,
+    <xref linkend="stdoutobj" xrefstyle="select: title"/>,
+    and <xref linkend="errorobj" xrefstyle="select: title"/>
+    output streams that are the default I/O targets,</para></listitem>
+  <listitem><para>the <xref linkend="stdqueobj" xrefstyle="select: title"/>
+    RexxQueue instance used for Rexx external queue operations,</para></listitem>
+  <listitem><para>and the <xref linkend="syscargsobj" xrefstyle="select: title"/>
+    array of program command line options.</para></listitem>
+</itemizedlist>
 </para>
 <para>Because both .ENVIRONMENT and .LOCAL are directory objects, you can
 place objects into, or retrieve objects from, these environments by using
@@ -136,12 +150,6 @@ any of the directory methods ([],[]=, PUT, AT, SETENTRY, ENTRY,
 or SETMETHOD). To avoid potential name clashes with built-in objects and public
 objects that Rexx provides, each object that your programs add to these
 environments should have a period in its index.</para>
-<para>Starting with ooRexx 4.2.0 a new object is available in the .LOCAL directory. The object
-is a Rexx Array of all the command line options supplied to the program. Normally all the
-command line objects are combined into a single string and passed to the script as an argument
-retrievable via the BIF ARG(1). The array supplied by the .LOCAL environment is a direct
-collection of the individual C arguments passed to the program. The name of this array is
-SYSCARGS.</para>
 <example>
 <title>.LOCAL</title>
 <programlisting>
@@ -312,6 +320,41 @@ queue lines for the PULL and PARSE PULL instructions.
 </para>
 </section>
 
+<section id="syscargsobj" revisionflag="added"><title>The SYSCARGS Array (.SYSCARGS)</title>
+<indexterm><primary>.SYSCARGS object</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.SYSCARGS object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.SYSCARGS object</secondary></indexterm>
+
+<para>The .SYSCARGS object is an Array of all the command line options
+supplied to the program.  Normally all the command line objects are
+combined into a single string and passed to the script as an argument
+retrievable via the BIF ARG(1).  .SYSCARGS is a direct collection of the
+individual C arguments passed to the program.</para>
+
+<indexterm><primary>examples</primary>
+<secondary>SysCArgs Array</secondary></indexterm>
+<para><emphasis role="bold">Example:</emphasis></para>
+<example id="ex.local-syscargs">
+<title>SysCArgs Array</title>
+<programlisting>
+say .SysCArgs~items "SysCArgs" .SysCArgs~makeString(, ",")
+say arg() "ARGs" arg(1, "A")~makeString(, ",")
+
+/* when called with command line parameters 1 "2 3" 4, displays:
+3 SysCArgs 1,2 3,4
+1 ARGs 1 "2 3" 4
+*/             
+</programlisting>
+</example>
+
+<note><title>Note</title>
+<para>.SysCArgs may not be available in all situations, e. g. in program
+code that gets run via "rexx -e".
+</para></note>
+</section>
+
 <section id="contexte"><title>The Rexx Context (.CONTEXT)</title>
 <indexterm><primary>.CONTEXT</primary></indexterm>
 <indexterm><primary>built-in object</primary>
@@ -338,21 +381,21 @@ If the current instruction is defined within an INTERPRET
 instruction, the line number of INTERPRET instruction is returned.</para>
 </section>
 
-<section id="methe"><title>The METHODS Directory (.METHODS)</title>
-<indexterm><primary>.METHODS Directory</primary></indexterm>
+<section id="methe"><title>The METHODS StringTable (.METHODS)</title>
+<indexterm><primary>.METHODS StringTable</primary></indexterm>
 <indexterm><primary>built-in object</primary>
 <secondary>.METHODS object</secondary></indexterm>
 <indexterm><primary>public object</primary>
 <secondary>.METHODS object</secondary></indexterm>
-<para>The .METHODS environment symbol identifies a directory (see
-<xref linkend="clsDirectory" />) of methods
+<para>The .METHODS environment symbol identifies a StringTable (see
+<xref linkend="clsStringTable" />) of methods
 that ::METHOD directives in the currently running program define.  The
-directory indexes are the method names. The directory
+StringTable indexes are the method names. The StringTable
 values are the method objects. See
 <xref linkend="clsMethod" />.</para>
 <para>Only methods and/or attributes that are not preceded by
 a ::CLASS directive are in
-the .METHODS directory. These are known as <emphasis role="italic">floating
+the .METHODS StringTable. These are known as <emphasis role="italic">floating
 methods</emphasis>. If there are no such methods,
 the .METHODS symbol has the default value of
 <computeroutput>.METHODS</computeroutput>.</para>
@@ -369,16 +412,16 @@ o~talk("echo this text")  /* test "TALK" method */
 </example>
 </section>
 
-<section id="routinee"><title>The ROUTINES Directory (.ROUTINES)</title>
-<indexterm><primary>.ROUTINES Directory</primary></indexterm>
+<section id="routinee"><title>The ROUTINES StringTable (.ROUTINES)</title>
+<indexterm><primary>.ROUTINES StringTable</primary></indexterm>
 <indexterm><primary>built-in object</primary>
 <secondary>.ROUTINES object</secondary></indexterm>
 <indexterm><primary>public object</primary>
 <secondary>.ROUTINES object</secondary></indexterm>
-<para>The .ROUTINES environment symbol identifies a directory (see
-<xref linkend="clsDirectory" />) of routines
+<para>The .ROUTINES environment symbol identifies a StringTable (see
+<xref linkend="clsStringTable" />) of routines
 that ::ROUTINE directives in the currently running program define.  The
-directory indexes are the routine names. The directory
+StringTable indexes are the routine names. The StringTable
 values are the routine objects. See
 <xref linkend="clsRoutine" />.</para>
 <para>
@@ -393,6 +436,58 @@ the .ROUTINES symbol has the default value of
 ::routine talk  /* floating routine by the name of "TALK" */
   use arg text  /* retrieve the argument */
   say text  /* display received argument */
+</programlisting>
+</example>
+</section>
+
+<section id="resourcese" revisionflag="added"><title>The RESOURCES StringTable (.RESOURCES)</title>
+<indexterm><primary>.RESOURCES StringTable</primary></indexterm>
+<indexterm><primary>built-in object</primary>
+<secondary>.RESOURCES object</secondary></indexterm>
+<indexterm><primary>public object</primary>
+<secondary>.RESOURCES object</secondary></indexterm>
+<para>The .RESOURCES environment symbol identifies a StringTable (see
+<xref linkend="clsStringTable" />) of data resources 
+that ::RESOURCE directives in the currently running program define.  The
+StringTable indexes are the resource names, the StringTable
+values are arrays of individual resource data lines. See
+<xref linkend="resourced" />.</para>
+<para>
+If there are no ::RESOURCE directives,
+the .RESOURCES symbol has the default value of
+<computeroutput>.RESOURCES</computeroutput>.</para>
+<example>
+<title>.RESOURCE</title>
+<programlisting>
+do name over .resources
+  say name":" .resources[name]~items "lines"
+  say .resources[name]~makeString
+end
+
+::resource greyCat end "-"
+La nuit, tous les chats sont gris
+--------------------------------- 
+
+::resource "brown fox"
+The quick brown fox jumps over the lazy dog
+::END
+
+::resource nollop end ANONYMOUS
+     The wicked peon quivered,
+then gazed balefully at the judges
+         who examined him.
+ANONYMOUS TYPESETTER
+
+/* Displays:
+GREYCAT: 1 lines
+La nuit, tous les chats sont gris
+BROWN FOX: 1 lines
+The quick brown fox jumps over the lazy dog
+NOLLOP: 3 lines
+     The wicked peon quivered,
+then gazed balefully at the judges
+         who examined him.
+*/
 </programlisting>
 </example>
 </section>

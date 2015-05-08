@@ -1,3 +1,9 @@
+/* new in 5.0, class, method, routine, package */
+all_annotation ::= 'annotation(' name ')'
+
+/* new in 5.0, class, method, routine, package */
+all_annotations ::= 'annotations'
+
 object_new ::= 'new'
 
 object_comparison_operator ::= 'comparison_operator(' argument ')'
@@ -32,18 +38,21 @@ object_objectnameequals ::= 'objectName=(' newname ')'
 
 object_request ::= 'request(' classid ')'
 
-object_run ::= 'run(' method ( 'Individual' ( ',' argument )+ |
-                               'Array' ',' argument )? ')'
+object_run ::= 'run(' method ( '"Individual"' ( ',' argument )* |
+                               '"Array"' ',' argument )? ')'
 
 object_send ::= 'send(' messagename ( ( ',' argument )+ )? ')'
 
-objact_sendwith ::= 'sendWith(' messagename ',' arguments ')'
+object_sendwith ::= 'sendWith(' messagename ',' arguments ')'
 
-object_setmethod ::= 'setMethod(' methodname ( ',' method ( ',' 'Float' | ',' scope )? )? ')'
+/*-- interpreter\classes\ObjectClass.cpp -----------------------------*/
+/*-- RexxObject::setMethod() -----------------------------------------*/
+object_setmethod ::= 'setMethod(' ( methodname |
+                                    methodname ',' method ( | ',' '"FLOAT"' | ',' '"OBJECT"' ) ) ')'
 
 object_start ::= 'start(' messagename ( ( ',' argument )+ )? ')'
 
-objact_startwith ::= 'startWith(' messagename ',' arguments ')'
+object_startwith ::= 'startWith(' messagename ',' arguments ')'
 
 object_string ::= 'string'
 
@@ -75,7 +84,7 @@ class_methods ::= 'methods(' class_object ')'
 
 class_mixinclass ::= 'mixinClass(' classid ( ',' metaclass ( ',' methods )? )? ')'
 
-class_new ::= 'new' ( '(' arg ( ',' arg )+ ')' )?
+class_new ::= 'new(' ( arg (',' arg)* )? ')'
 
 class_querymixinclass ::= 'queryMixinClass'
 
@@ -113,11 +122,11 @@ string_abs ::= 'abs'
 
 string_b2x ::= 'b2x'
 
-string_bitAnd ::= 'bitAnd' ( '(' string ( ',' pad )? ')' )?
+string_bitand ::= 'bitAnd' ( '(' string ( ',' pad )? ')' )?
 
-string_bitOr ::= 'bitOr' ( '(' string ( ',' pad )? ')' )?
+string_bitor ::= 'bitOr' ( '(' string ( ',' pad )? ')' )?
 
-string_bitXor ::= 'bitXOr' ( '(' string ( ',' pad )? ')' )?
+string_bitxor ::= 'bitXOr' ( '(' string ( ',' pad )? ')' )?
 
 string_c2d ::= 'c2d' ( '(' n ')' )?
 
@@ -202,9 +211,9 @@ string_match ::= 'match(' start ',' other ( ',' ( n )? ( ',' length )? )? ')'
 
 string_matchchar ::= 'matchChar(' n ',' chars ')'
 
-string_max ::= 'max' ( '(' number ( ',' number )+ ')' )?
+string_max ::= 'max' ( '(' number ( ',' number )* ')' )?
 
-string_min ::= 'min' ( '(' number ( ',' number )+ ')' )?
+string_min ::= 'min' ( '(' number ( ',' number )* ')' )?
 
 string_overlay ::= 'overlay(' new ( ',' ( ( n )? ( ',' ( ( length )?
                               ( ',' pad )? )? )? )? )? ')'
@@ -288,7 +297,7 @@ routine_new ::= 'new(' name ',' source ( ',' context )? ')'
 
 routine_newfile ::= 'newFile(' filename ')'
 
-routine loadexternalroutine ::= 'loadExternalRoutine(' name ',' descriptor ')'
+routine_loadexternalroutine ::= 'loadExternalRoutine(' name ',' descriptor ')'
 
 routine_call ::= 'call' ( '(' ( argument ( ( ',' argument )+ )? )? ')' )?
 
@@ -300,6 +309,7 @@ routine_setsecuritymanager ::= 'setSecurityManager' ( '(' security_manager_objec
 
 routine_source ::= 'source'
 
+/*-- Package class ---------------------------------------------------*/
 package_new ::= 'new(' name ',' source ( ',' methodobject )? ')'
 
 package_addclass ::= 'addClass(' name ',' class ')'
@@ -314,7 +324,7 @@ package_addroutine ::= 'addRoutine(' name ',' routine ')'
 
 package_classes ::= 'classes'
 
-package_definemethods ::= 'defineMethods'
+package_definedmethods ::= 'definedMethods'
 
 package_digits ::= 'digits'
 
@@ -338,9 +348,9 @@ package_loadpackage ::= 'loadPackage(' name ( ',' source )? ')'
 
 package_name ::= 'name'
 
-package+publicclasses ::= 'publicClasses'
+package_publicclasses ::= 'publicClasses'
 
-package+publicroutines ::= 'publicRoutines'
+package_publicroutines ::= 'publicRoutines'
 
 package_routines ::= 'routines'
 
@@ -354,9 +364,9 @@ package_sourcesize ::= 'sourceSize'
 
 package_trace ::= 'trace'
 
-message_new ::= 'new(' target ',' messagename ( ( 'Individual' ( ',' argument )+ ) |
-                                              ( 'Array' ',' array )
-                                              )? ')'
+message_new ::= 'new(' target ',' messagename ( '"Individual"' ( ',' argument )* |
+                                                '"Array"' ',' argument )? ')'
+
 message_arguments ::= 'arguments'
 
 message_completed ::= 'completed'
