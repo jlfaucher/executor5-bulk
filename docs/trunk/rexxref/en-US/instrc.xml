@@ -274,7 +274,7 @@ instruction:</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/keywords/parseupperarg.svg" scale="50" />
+<imagedata fileref="images/keywords/parse_upper_arg.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -400,14 +400,16 @@ language processor then parses the string values.</para></listitem>
 of certain conditions (if you specify ON or OFF).</para>
 <para>To control trapping, you specify OFF or ON and the condition you want to
 trap. OFF turns off the specified condition trap. ON turns on the specified
-condition trap. All information on condition traps is contained in
+condition trap.
+The <emphasis role="italic">usercondition</emphasis> is a single
+symbol that is taken as a constant.
+The <emphasis role="italic">trapname</emphasis> is a symbol or string
+taken as a constant.
+All information on condition traps is contained in
 <xref linkend="condtra" />.</para>
 <para>To call a routine, specify <emphasis role="italic">name</emphasis>,
-which must be a literal string or symbol that is taken as a constant. The
-<emphasis role="italic">usercondition</emphasis> is a single
-symbol that is taken as a constant. The
-<emphasis role="italic">trapname</emphasis> is a symbol or string
-taken as a constant. The routine called can be: </para>
+which must be a literal string or symbol that is taken as a constant.
+The routine called can be: </para>
 <variablelist>
 <varlistentry><term><emphasis role="bold">An internal routine</emphasis></term>
 <listitem><para>A subroutine that is in the same program as the CALL
@@ -651,24 +653,18 @@ available to the caller.</para></listitem>
 <secondary>with DO construct</secondary></indexterm>
 <indexterm><primary>grouping instructions to run repetitively</primary></indexterm>
 <indexterm><primary>infinite loops</primary></indexterm>
-<indexterm><primary>instructions</primary>
-<secondary>DO</secondary></indexterm>
-<indexterm><primary>END subkeyword</primary>
-<secondary>in a DO instruction</secondary></indexterm>
-<indexterm><primary>TO subkeyword</primary>
-<secondary>in a DO instruction</secondary></indexterm>
-<indexterm><primary>BY subkeyword</primary>
-<secondary>in a DO instruction</secondary></indexterm>
-<indexterm><primary>FOR subkeyword</primary>
-<secondary>in a DO instruction</secondary></indexterm>
-<indexterm><primary>OVER subkeyword</primary>
-<secondary>in a DO instruction</secondary></indexterm>
-<indexterm><primary>FOREVER subkeyword</primary>
-<secondary>in a DO instruction</secondary></indexterm>
-<indexterm><primary>WHILE subkeyword</primary>
-<secondary>in a DO instruction</secondary></indexterm>
-<indexterm><primary>UNTIL subkeyword</primary>
-<secondary>in a DO instruction</secondary></indexterm>
+<indexterm><primary>instructions</primary><secondary>DO</secondary></indexterm>
+<indexterm><primary>END subkeyword</primary><secondary>in a DO instruction</secondary></indexterm>
+<indexterm><primary>TO subkeyword</primary><secondary>in a DO instruction</secondary></indexterm>
+<indexterm><primary>BY subkeyword</primary><secondary>in a DO instruction</secondary></indexterm>
+<indexterm><primary>FOR subkeyword</primary><secondary>in a DO instruction</secondary></indexterm>
+<indexterm><primary>OVER subkeyword</primary><secondary>in a DO instruction</secondary></indexterm>
+<indexterm><primary>WITH subkeyword</primary><secondary>in a DO instruction</secondary></indexterm>
+<indexterm><primary>INDEX subkeyword</primary><secondary>in a DO instruction</secondary></indexterm>
+<indexterm><primary>ITEM subkeyword</primary><secondary>in a DO instruction</secondary></indexterm>
+<indexterm><primary>FOREVER subkeyword</primary><secondary>in a DO instruction</secondary></indexterm>
+<indexterm><primary>WHILE subkeyword</primary><secondary>in a DO instruction</secondary></indexterm>
+<indexterm><primary>UNTIL subkeyword</primary><secondary>in a DO instruction</secondary></indexterm>
 
 <mediaobject>
 <imageobject>
@@ -676,7 +672,7 @@ available to the caller.</para></listitem>
 </imageobject>
 </mediaobject>
 
-<para><emphasis role="bold">repetitor:</emphasis>
+<para><emphasis role="bold">REPETITOR:</emphasis>
 <indexterm><primary>= (equal sign)</primary>
 <secondary>in DO instruction</secondary></indexterm>
 </para>
@@ -684,28 +680,37 @@ available to the caller.</para></listitem>
 <indexterm><primary>conditional</primary>
 <secondary>loops</secondary></indexterm>
 <indexterm><primary>FOREVER phrase of DO instruction</primary></indexterm>
+<indexterm><primary>OVER phrase of DO instruction</primary></indexterm>
+<indexterm><primary>WITH phrase of DO instruction</primary></indexterm>
+<indexterm><primary>INDEX phrase of DO instruction</primary></indexterm>
+<indexterm><primary>ITEM phrase of DO instruction</primary></indexterm>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/keywords/do_forever.svg" scale="50" />
+<imagedata fileref="images/keywords/do_repetitor.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
-<para><emphasis role="bold">conditional:</emphasis></para>
+<para><emphasis role="bold">CONDITIONAL:</emphasis></para>
 <indexterm><primary>UNTIL phrase of DO instruction</primary></indexterm>
 <indexterm><primary>WHILE phrase of DO instruction</primary></indexterm>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/keywords/do_while.svg" scale="50" />
+<imagedata fileref="images/keywords/do_conditional.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
 <para>DO groups instructions and optionally processes them repetitively. During
-repetitive execution, a control variable
-(<emphasis role="italic">control1</emphasis>
-or <emphasis role="italic">control2</emphasis>) can be stepped through some
+repetitive execution, control variables
+(<emphasis role="italic">control1</emphasis>, 
+<emphasis role="italic">control2</emphasis>, 
+(<emphasis role="italic">index</emphasis>, or
+<emphasis role="italic">item</emphasis>) can be stepped through some
 range of values.</para>
+<para>LOOP groups instructions and processes them repetitively.
+LOOP behaves identically to DO, except for the simple LOOP ... END
+case, which is equivalent to DO FOREVER ... END.</para>
 
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
@@ -743,12 +748,16 @@ are evaluated in the order in which they are written.
 <indexterm><primary>TO phrase of DO instruction</primary></indexterm>
 <indexterm><primary>FOR phrase of DO instruction</primary></indexterm>
 </para></listitem>
+<listitem><para>The INDEX, and ITEM phrases can be in any order, if used.
+<indexterm><primary>INDEX phrase of DO instruction</primary></indexterm>
+<indexterm><primary>ITEM phrase of DO instruction</primary></indexterm>
+</para></listitem>
 <listitem><para>The <emphasis role="italic">instruction</emphasis>
 can be any instruction, including assignments,
 commands, message instructions, and keyword instructions (including any of
-the more complex constructs such as IF, SELECT, and the DO instruction itself).
+the more complex constructs such as IF, SELECT, and the DO or LOOP instruction itself).
 </para></listitem>
-<listitem><para>The subkeywords WHILE, UNTIL, and OVER are reserved within a DO
+<listitem><para>The subkeywords WHILE, UNTIL, OVER, WITH, INDEX, and ITEM are reserved within a DO or LOOP
 instruction in that they act as expression terminators for other keywords.  Thus they
 cannot be used as symbols in any of the expressions.
 Similarly, TO, BY, and FOR cannot be used in
@@ -758,7 +767,7 @@ Similarly, TO, BY, and FOR cannot be used in
 <emphasis role="italic">exprf</emphasis>.
 <indexterm><primary>FOREVER repetitor on DO instruction</primary></indexterm>
 FOREVER is also reserved, but only if it immediately
-follows the keyword DO and is not followed by an equal sign.
+follows the keyword DO or LOOP and is not followed by an equal sign.
 However, parentheses around or within an expression can prevent these keywords from terminating an expression. For example,
 </para>
 <example><title>Instructions - DO variable without parenthesis</title>
@@ -787,6 +796,10 @@ that supports a MAKEARRAY method.
 Array and List items return an array with the items in the appropriate order,
 as do Streams. Tables, Stems, Directories, etc. are not ordered so the items
 get placed in the array in no particular order.
+</para></listitem>
+<listitem><para>The <emphasis role="italic">supplier</emphasis>
+can be any expression that evaluates to an object
+that supports a SUPPLIER method.
 </para></listitem>
 </orderedlist>
 <para>For more information, refer to
@@ -1630,32 +1643,26 @@ LEAVE selects the innermost block.</para></listitem>
 <secondary>with LOOP construct</secondary></indexterm>
 <indexterm><primary>grouping instructions to run repetitively</primary></indexterm>
 <indexterm><primary>infinite loops</primary></indexterm>
-<indexterm><primary>instructions</primary>
-<secondary>LOOP</secondary></indexterm>
-<indexterm><primary>END subkeyword</primary>
-<secondary>in a LOOP instruction</secondary></indexterm>
-<indexterm><primary>TO subkeyword</primary>
-<secondary>in a LOOP instruction</secondary></indexterm>
-<indexterm><primary>BY subkeyword</primary>
-<secondary>in a LOOP instruction</secondary></indexterm>
-<indexterm><primary>FOR subkeyword</primary>
-<secondary>in a LOOP instruction</secondary></indexterm>
-<indexterm><primary>OVER subkeyword</primary>
-<secondary>in a LOOP instruction</secondary></indexterm>
-<indexterm><primary>FOREVER subkeyword</primary>
-<secondary>in a LOOP instruction</secondary></indexterm>
-<indexterm><primary>WHILE subkeyword</primary>
-<secondary>in a LOOP instruction</secondary></indexterm>
-<indexterm><primary>UNTIL subkeyword</primary>
-<secondary>in a LOOP instruction</secondary></indexterm>
+<indexterm><primary>instructions</primary><secondary>LOOP</secondary></indexterm>
+<indexterm><primary>END subkeyword</primary><secondary>in a LOOP instruction</secondary></indexterm>
+<indexterm><primary>TO subkeyword</primary><secondary>in a LOOP instruction</secondary></indexterm>
+<indexterm><primary>BY subkeyword</primary><secondary>in a LOOP instruction</secondary></indexterm>
+<indexterm><primary>FOR subkeyword</primary><secondary>in a LOOP instruction</secondary></indexterm>
+<indexterm><primary>OVER subkeyword</primary><secondary>in a LOOP instruction</secondary></indexterm>
+<indexterm><primary>WITH subkeyword</primary><secondary>in a LOOP instruction</secondary></indexterm>
+<indexterm><primary>INDEX subkeyword</primary><secondary>in a LOOP instruction</secondary></indexterm>
+<indexterm><primary>ITEM subkeyword</primary><secondary>in a LOOP instruction</secondary></indexterm>
+<indexterm><primary>FOREVER subkeyword</primary><secondary>in a LOOP instruction</secondary></indexterm>
+<indexterm><primary>WHILE subkeyword</primary><secondary>in a LOOP instruction</secondary></indexterm>
+<indexterm><primary>UNTIL subkeyword</primary><secondary>in a LOOP instruction</secondary></indexterm>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/keywords/loop.svg" scale="50" />
+<imagedata fileref="images/keywords/do.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
-<para><emphasis role="bold">repetitor:</emphasis>
+<para><emphasis role="bold">REPETITOR:</emphasis>
 <indexterm><primary>= (equal sign)</primary>
 <secondary>in LOOP instruction</secondary></indexterm>
 </para>
@@ -1663,115 +1670,31 @@ LEAVE selects the innermost block.</para></listitem>
 <indexterm><primary>conditional</primary>
 <secondary>loops</secondary></indexterm>
 <indexterm><primary>FOREVER phrase of LOOP instruction</primary></indexterm>
+<indexterm><primary>OVER phrase of LOOP instruction</primary></indexterm>
+<indexterm><primary>WITH phrase of LOOP instruction</primary></indexterm>
+<indexterm><primary>INDEX phrase of LOOP instruction</primary></indexterm>
+<indexterm><primary>ITEM phrase of LOOP instruction</primary></indexterm>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/keywords/do_forever.svg" scale="50" />
+<imagedata fileref="images/keywords/do_repetitor.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
-<para><emphasis role="bold">conditional:</emphasis></para>
+<para><emphasis role="bold">CONDITIONAL:</emphasis></para>
 <indexterm><primary>UNTIL phrase of LOOP instruction</primary></indexterm>
 <indexterm><primary>WHILE phrase of LOOP instruction</primary></indexterm>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/keywords/do_while.svg" scale="50" />
+<imagedata fileref="images/keywords/do_conditional.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
-<para>LOOP groups instructions and processes them repetitively. During
-repetitive execution, a control variable
-(<emphasis role="italic">control1</emphasis>
-or <emphasis role="italic">control2</emphasis>) can be stepped through some
-range of values.</para>
-
-<para><emphasis role="bold">Notes:</emphasis></para>
-<orderedlist>
-<listitem><para>The LABEL phrase, if used, must precede any
-<emphasis role="italic">repetitor</emphasis> or <emphasis role="italic">conditional</emphasis>.
-</para></listitem>
-<listitem><para>The <emphasis role="italic">exprr</emphasis>,
-<emphasis role="italic">expri</emphasis>,
-<emphasis role="italic">exprb</emphasis>,
-<emphasis role="italic">exprt</emphasis>, and
-<emphasis role="italic">exprf</emphasis> options, if present,
-are any expressions that evaluate to a number.
-<indexterm><primary>numbers</primary>
-<secondary>in LOOP instruction</secondary></indexterm>
-
-The <emphasis role="italic">exprr</emphasis> and
-<emphasis role="italic">exprf</emphasis> options are further restricted
-to result in a positive whole number or zero. If necessary, the numbers are
-rounded according to the setting of NUMERIC DIGITS.</para></listitem>
-<listitem><para>The <emphasis role="italic">exprw</emphasis> or
-<emphasis role="italic">expru</emphasis> options, if present, can be any
-expression that evaluates to <computeroutput>1</computeroutput> or
-<computeroutput>0</computeroutput>.  This includes the list form of conditional
-expression supported by IF and WHEN, which is
-a list of expressions separated by ",".  Each subexpression must evaluate to
-either <computeroutput>0</computeroutput> or <computeroutput>1</computeroutput>.
-The list of expressions is evaluated left-to-right.  Evaluation will stop with
-the first <computeroutput>0</computeroutput> result and <computeroutput>0</computeroutput>
-will be returned as the condition result.  If all of the subexpressions evaluate
-to <computeroutput>1</computeroutput>, then the condition result is also
-<computeroutput>1</computeroutput>.
-</para></listitem>
-<listitem><para>The TO, BY, and FOR phrases can be in any order, if used, and
-are evaluated in the order in which they are written.
-<indexterm><primary>BY phrase of LOOP instruction</primary></indexterm>
-<indexterm><primary>TO phrase of LOOP instruction</primary></indexterm>
-<indexterm><primary>FOR phrase of LOOP instruction</primary></indexterm>
-</para></listitem>
-<listitem><para>The <emphasis role="italic">instruction</emphasis>
-can be any instruction, including assignments,
-commands, message instructions, and keyword instructions (including any of
-the more complex constructs such as IF, SELECT, and the LOOP instruction itself).
-</para></listitem>
-<listitem><para>The subkeywords WHILE, UNTIL, and OVER are reserved within a DO
-instruction in that they act as expression terminators for other keywords.  Thus they
-cannot be used as symbols in any of the expressions.
-Similarly, TO, BY, and FOR cannot be used in
-<emphasis role="italic">expri</emphasis>,
-<emphasis role="italic">exprt</emphasis>,
-<emphasis role="italic">exprb</emphasis>, or
-<emphasis role="italic">exprf</emphasis>.
-<indexterm><primary>FOREVER repetitor on DO instruction</primary></indexterm>
-FOREVER is also reserved, but only if it immediately
-follows the keyword DO and is not followed by an equal sign.
-However, parentheses
-around or within an expression can prevent these keywords from terminating an expression.
-For example, </para>
-<example><title>Instructions - LOOP variable without parenthesis</title>
-<programlisting>
-loop i = 1 while i &lt; until
-   say i
-end
-</programlisting>
-</example>
-<para>is considered a syntax error because of the variable named UNTIL.  Using parentheses
-around the expression allows the variable UNTIL to be used:</para>
-<example><title>Instructions - LOOP variable with parenthesis</title>
-<programlisting>
-loop i = 1 while (i &lt; until)
-   say i
-end
-</programlisting>
-</example>
-</listitem>
-<listitem><para>The <emphasis role="italic">exprb</emphasis>
-option defaults to <computeroutput>1</computeroutput>,
-if relevant.</para></listitem>
-<listitem><para>The <emphasis role="italic">collection</emphasis>
-can be any expression that evaluates to an object
-that supports a MAKEARRAY method.
-Array and List items return an array with the items in the appropriate order,
-as do Streams. Tables, Stems, Directories, etc. are not ordered so the items
-get placed in the array in no particular order.
-</para></listitem>
-</orderedlist>
-<para>For more information, refer to
-<xref linkend="dokey" />.</para>
+<para>LOOP groups instructions and processes them repetitively.</para>
+<para>LOOP behaves identically to DO, except for the simple LOOP ... END
+case, which is equivalent to DO FOREVER ... END.</para>
+<para>For details refer to <xref linkend="keyDo" />.</para>
 </section>
 
 <section id="keyNop"><title>NOP</title>
@@ -2048,7 +1971,7 @@ is a shorter form of the following instruction:
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/keywords/parse_val.svg" scale="50" />
+<imagedata fileref="images/keywords/parse_value.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -2568,7 +2491,7 @@ of lines currently in the external data queue.</para>
 </imageobject>
 </mediaobject>
 
-<para><emphasis role="bold">options:</emphasis></para>
+<para><emphasis role="bold">OPTIONS:</emphasis></para>
 
 <mediaobject>
 <imageobject>
@@ -2923,6 +2846,21 @@ the output data remains a single logical line.</para></listitem>
 <imagedata fileref="images/keywords/select.svg" scale="50" />
 </imageobject>
 </mediaobject>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/select2.svg" scale="50" />
+</imageobject>
+</mediaobject>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/select3.svg" scale="50" />
+</imageobject>
+</mediaobject>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/select4.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>SELECT conditionally calls one of several alternative instructions.</para>
 <para>Each <emphasis role="italic">expression</emphasis>
@@ -3071,6 +3009,16 @@ semicolon (;).</para></listitem>
 <imagedata fileref="images/keywords/signal.svg" scale="50" />
 </imageobject>
 </mediaobject>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/signal_off.svg" scale="50" />
+</imageobject>
+</mediaobject>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/signal_on.svg" scale="50" />
+</imageobject>
+</mediaobject>
 
 <para>SIGNAL causes an unusual change in the flow of control (if you specify
 <emphasis role="italic">labelname</emphasis> or VALUE
@@ -3149,15 +3097,7 @@ can use SIGL to determine the source of a transfer of control to a label.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/keywords/trace1.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-<para>Or, alternatively:</para>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/keywords/trace2.svg" scale="50" />
+<imagedata fileref="images/keywords/trace.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -3561,6 +3501,7 @@ in error is always traced.</para>
 </section>
 
 <section id="keyUse"><title>USE</title>
+<para>
 <indexterm><primary>USE instruction</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>instructions</primary>
@@ -3575,7 +3516,22 @@ in error is always traced.</para>
 <imagedata fileref="images/keywords/use.svg" scale="50" />
 </imageobject>
 </mediaobject>
+</para>
 
+<para>
+The USE instruction can be used to
+<itemizedlist spacing="compact">
+  <listitem>
+    <para>retrieve the argument objects by using
+    <xref linkend="keyUseArg" xrefstyle="template:USE ARG or USE STRICT ARG"/>,
+    or to</para></listitem>
+  <listitem>
+    <para>define local variables in a method by using
+    <xref linkend="keyUseLocal" xrefstyle="template:USE LOCAL"/>.</para></listitem>
+</itemizedlist>
+</para>
+
+<section id="keyUseArg"><title>USE ARG, USE STRICT ARG</title>
 <para>USE ARG retrieves the argument objects provided in a program, routine,
 function, or method and assigns them to variables or message term assignments.</para>
 <para>Each <emphasis role="italic">name</emphasis> must be a valid variable
@@ -3600,7 +3556,7 @@ message term which
 can appear on the left side of an assignment statement (See
 <xref linkend="assinmt" />).
 </para>
-<para>The STRICT options imposes additional constraints on argument processing.
+<para>The STRICT option imposes additional constraints on argument processing.
 The number of arguments must match the number of
 <emphasis role="italic">name</emphasis>s, otherwise an error is raised.  An argument
 may be considered optional if <emphasis role="italic">expr</emphasis>  has been
@@ -3712,4 +3668,33 @@ without translation or parsing. USE ARG also allows access to both string
 and non-string argument objects; ARG and PARSE ARG convert the arguments to values
 before parsing.</para>
 </section>
+
+<section id="keyUseLocal" revisionflag="added"><title>USE LOCAL</title>
+<indexterm><primary>LOCAL subkeyword</primary><secondary>in a USE instruction</secondary></indexterm>
+<para>USE LOCAL defines local variables in a method.</para>
+<para>Generally object variables must be specified in a method using EXPOSE,
+while all other variables used in the method will become local variables.
+In contrast to this, USE LOCAL allows to explicitly declare local variables,
+while all other variables not listed on the USE LOCAL instruction will
+automatically become object variables.</para>
+<para>Each <emphasis role="italic">name</emphasis> must be a valid variable
+name.
+if no <emphasis role="italic">name</emphasis> is specified, all variables
+will become object variables.
+<indexterm><primary>USE LOCAL instruction</primary><secondary>example</secondary></indexterm>
+<indexterm><primary>examples</primary><secondary>USE LOCAL instruction</secondary></indexterm>
+</para>
+<example>
+<title>Instructions - USE LOCAL</title>
+<programlisting>::method init
+USE LOCAL x y z   - - only x, y, and z are local
+                  - - all other become object variables
+
+::method init
+use local         - - any variable is an object variable
+</programlisting>
+</example>
+</section>
+</section>
+
 </chapter>

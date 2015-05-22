@@ -57,15 +57,15 @@ in the main code unit (preceding the first directive) is processed. This code
 can use any classes, methods, and routines that the directives established.</para>
 
 <para>Supported directives are
-<xref linkend="annotd" xrefstyle="select: title"/>,
-<xref linkend="attrd" xrefstyle="select: title"/>,
-<xref linkend="clasdi" xrefstyle="select: title"/>,
-<xref linkend="constantd" xrefstyle="select: title"/>,
-<xref linkend="methd" xrefstyle="select: title"/>,
-<xref linkend="optionsd" xrefstyle="select: title"/>,
-<xref linkend="requ" xrefstyle="select: title"/>,
-<xref linkend="resourced" xrefstyle="select: title"/>, and
-<xref linkend="routd" xrefstyle="select: title"/>.
+<xref linkend="annotd" xrefstyle="select:title"/>,
+<xref linkend="attrd" xrefstyle="select:title"/>,
+<xref linkend="clasdi" xrefstyle="select:title"/>,
+<xref linkend="constantd" xrefstyle="select:title"/>,
+<xref linkend="methd" xrefstyle="select:title"/>,
+<xref linkend="optionsd" xrefstyle="select:title"/>,
+<xref linkend="requ" xrefstyle="select:title"/>,
+<xref linkend="resourced" xrefstyle="select:title"/>, and
+<xref linkend="routd" xrefstyle="select:title"/>.
 </para>
 
 <section id="annotd" revisionflag="added"><title>::ANNOTATE</title>
@@ -444,9 +444,9 @@ strings or symbols that are taken as constants. In the search order for methods,
 the metaclass methods precede inherited class methods and follow any class
 methods defined by ::METHOD directives with the CLASS option.</para>
 <para>If you specify the PUBLIC option, the class is visible beyond its containing
-Rexx program to any other program that references this program with a ::REQUIRES
-directive. (See <xref linkend="requ" />.) If you do not
-specify the PUBLIC option,
+Rexx program to any other program that references this program with a
+<xref linkend="requ" xrefstyle="template:::REQUIRES directive"/>.
+If you do not specify the PUBLIC option,
 the class is visible only within its containing Rexx program. All public classes
 defined within a program are used before PUBLIC classes created with the same
 name.</para>
@@ -913,7 +913,7 @@ The default is ::OPTIONS NOVALUE CONDITION.
 <para>
 controls whether prolog code (any code in the source program that comes
 before the first directive) is run when another program requires it
-through a ::REQUIRES directive (see <xref linkend="requ" />)
+through a <xref linkend="requ" xrefstyle="template:::REQUIRES directive"/>.
 </para>
 <para>
 If ::OPTIONS PROLOG is in effect, any prolog code is run as usual when
@@ -1150,7 +1150,7 @@ routine, which is ended by another directive or the end of the program.
 </para>
 <para>If you specify the PUBLIC option, the routine is visible beyond its containing
 Rexx program to any other program that references this program with a ::REQUIRES
-directive. If you do not specify the PUBLIC option, the routine is visible
+directive. If you do not specify the PUBLIC option, or specify the PRIVATE option, the routine is visible
 only within its containing Rexx program.</para>
 <para>Routines you define with the ::ROUTINE directive behave like external routines.
 In the search order for routines, they follow internal routines and built-in

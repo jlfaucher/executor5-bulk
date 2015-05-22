@@ -3508,7 +3508,7 @@ QUEUED()    ->    5    /* Perhaps */
 respectively. To start a repeatable sequence of results, use a specific
 <emphasis role="italic">seed</emphasis> as the third
 argument. This
-<emphasis role="italic">seed</emphasis> must be a positive whole number from
+<emphasis role="italic">seed</emphasis> must be a whole number from
 0 to 999999999.</para>
 <para>Here are some examples:</para>
 <indexterm><primary>RANDOM function</primary>
@@ -3518,11 +3518,11 @@ argument. This
 <example id="ex.bif-random">
 <title>Builtin function RANDOM</title>
 <programlisting>
-RANDOM()          ->    305
-RANDOM(5,8)       ->      7
-RANDOM(2)         ->      0  /*  0  to  2    */
-RANDOM(, ,1983)   ->    123  /* reproducible */
-RANDOM(-5, 5)     ->    -3
+RANDOM()          -->   305  /* 0 to 999     */
+RANDOM(5, 8)      -->     7  /* 5 to 8       */
+RANDOM(2)         -->     0  /* 0 to 2       */
+RANDOM(, , 3257)  -->   123  /* reproducible */
+RANDOM(-5, 5)     -->    -3
 </programlisting>
 </example>
 
@@ -5269,27 +5269,49 @@ VALUE("LIST."k) ->  "Hi" /* looks up LIST.5            */
 </programlisting>
 </example>
 
+<para><emphasis role="bold">Notes:</emphasis></para>
+<orderedlist>
+<listitem><para>If the VALUE function refers to an uninitialized Rexx variable,
+the default value of the variable is always returned. The NOVALUE condition
+<indexterm><primary>NOVALUE condition</primary>
+<secondary>not raised by VALUE function</secondary></indexterm>
+is not raised.</para></listitem>
+<listitem><para>The VALUE function is used when a variable contains the name
+of another variable, or when a name is constructed dynamically. If you
+specify <emphasis role="italic">name</emphasis> as a single literal string
+and omit <emphasis role="italic">newvalue</emphasis> and
+<emphasis role="italic">selector</emphasis>, the symbol is a constant and the
+string between the quotation marks can usually replace the whole function call.
+For example, <computeroutput>fred=VALUE("k");</computeroutput> is identical
+with the assignment <computeroutput>fred=k;</computeroutput>, unless the
+NOVALUE condition is trapped. See
+<xref linkend="condtra" />.
+</para></listitem>
+</orderedlist>
+
 <indexterm><primary>global variables</primary>
 <secondary>access with VALUE function</secondary></indexterm>
 <indexterm><primary>variable</primary>
 <secondary>global</secondary></indexterm>
 <indexterm><primary>variable</primary>
 <secondary>external collections</secondary></indexterm>
-<para>To use VALUE to manipulate environment variables,
+<section id="bifBValue-OSenvironment"><title>Operating System environment variables</title>
+<para>To use VALUE to manipulate Windows or Unix environment variables,
 <emphasis role="italic"> selector</emphasis> must
 be the string &quot;ENVIRONMENT&quot; or an expression that evaluates to
 &quot;ENVIRONMENT&quot;. In this case, the variable
 <emphasis role="italic">name</emphasis> need not be a valid Rexx symbol.
 Environment variables set by VALUE are not kept after program termination.
 </para>
-<para><emphasis role="bold">Restriction:</emphasis>
-The values assigned to the variables
+<note><title>Restriction:</title>
+<para>The values assigned to the variables
 must not contain any character that is a hexadecimal zero ("00"X).
- For example: </para>
+For example:</para>
 <programlisting>
 Call VALUE "MYVAR", "FIRST" || "00"X || "SECOND", "ENVIRONMENT"
 </programlisting>
 <para>sets MYVAR to &quot;FIRST&quot;, truncating "00"x and "SECOND".</para>
+</note>
 <para>Here are some more examples: </para>
 <example id="ex.bif-value-1">
 <title>Builtin function VALUE</title>
@@ -5321,52 +5343,15 @@ the value of the external environment variable is set to an
 empty string which on Windows and *nix is not the same as deleting the
 environment variable.</para>
 
-<para>A selector called "WSHENGINE" is also available to the VALUE function
-when a Rexx script is run in a Windows Script Host scripting context
-(running via
-cscript, wscript or as embedded code in HTML for the Microsoft
-Internet Explorer). The only currently supported value is
-"NAMEDITEMS". Calling VALUE with these parameters returns an array
-with the names of the named items that were added at script start.</para>
-
-<para><emphasis role="bold">Example:</emphasis></para>
-<programlisting>
-myArray = VALUE("NAMEDITEMS", ,"WSHENGINE")
-</programlisting>
-
-<para>The value NAMEDITEMS is read-only, writing to it is prohibited.</para>
-
-<para>Object Rexx scripts running via the scripting engine (in WSH
-context) can now call the default method of an object as a function
-call with the object name.</para>
-
-<para><emphasis role="bold">Example:</emphasis></para>
-
-<para>The SESSION object of ASP (Active Server Pages) has the default
-method VALUE. The usual (and recommended) way of using the SESSION
-object would be to use</para>
-
-<programlisting>
-SESSION~VALUE("key","value").
-</programlisting>
-
-<para>Because VALUE is the default method, a function call
-
-<programlisting>
-SESSION("key","value")
-SESSION~VALUE("key","value").
-</programlisting>
-
-causes an invocation of VALUE with the given arguments. For
-objects that have the name of a Rexx function, an explicit call to
-the default method must be made, because Rexx functions have priority
-over this implicit method invocation mechanism.</para>
-
 <note><title>Note</title>
-<para>In contrast to OS/2, the Windows and *nix environments are unchanged after
+<para>Any changes to Windows or Unix environment variables are not kept after
 program termination.</para></note>
-<para>You can use the VALUE function to return a value to the global
-environment directory. To do so, omit
+</section>
+
+<section id="bifBValue-globalenvironment"><title>Global environment variables</title>
+<para>You can use the VALUE function to return a value from the Rexx
+<xref linkend="envo" xrefstyle="template:global environment directory"/>.
+To do so, omit
 <emphasis role="italic">newvalue</emphasis> and specify
 <emphasis role="italic">selector</emphasis> as
 the null string. The language processor sends the message
@@ -5375,10 +5360,10 @@ arguments) to the current environment object. The environment returns the
 object identified by <emphasis role="italic">name</emphasis>. If there is
 no such object, it returns, by default, the string
 <emphasis role="italic">name</emphasis> with an added initial period
-(an environment symbol--see <xref linkend="ensym" />).
+(an environment symbol - see <xref linkend="ensym" />).
 </para>
 
-<para>Here are some examples: </para>
+<para>Here are some examples:</para>
 <indexterm><primary>VALUE function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -5395,8 +5380,8 @@ name = value("NONAME", ,"") /* Sends NONAME message to the environment */
 say "Hello," name           /* Produces:  "Hello, .NONAME"             */
 </programlisting>
 </example>
-<para>You can use the VALUE function to change a value in the Rexx environment
-directory. Include a <emphasis role="italic">newvalue</emphasis> and specify
+<para>You can use the VALUE function to change a value in the global environment directory.
+Include a <emphasis role="italic">newvalue</emphasis> and specify
 <emphasis role="italic">selector</emphasis> as the
 null string. The language processor sends the message
 <emphasis role="italic">name</emphasis> (with <computeroutput>=</computeroutput>
@@ -5405,7 +5390,7 @@ to the current
 environment object. After receiving this message, the environment identifies
 the object <emphasis role="italic">newvalue</emphasis> by the name
 <emphasis role="italic">name</emphasis>.</para>
-<para>Here is an example: </para>
+<para>Here is an example:</para>
 <example id="ex.bif-value-4">
 <title>Builtin function VALUE</title>
 <programlisting>
@@ -5416,28 +5401,7 @@ name = value("MYNAME","David","") /* Sends "MYNAME=("David") message  */
 say "Hello," .myname              /* Produces:  "Hello, David"        */
 </programlisting>
 </example>
-
-<para><emphasis role="bold">Notes:</emphasis></para>
-<orderedlist>
-<listitem><para>If the VALUE function refers to an uninitialized Rexx variable,
-the default value of the variable is always returned. The NOVALUE condition
-<indexterm><primary>NOVALUE condition</primary>
-<secondary>not raised by VALUE function</secondary></indexterm>
-is not raised
-because a reference to an external collection of variables never raises
-NOVALUE.</para></listitem>
-<listitem><para>The VALUE function is used when a variable contains the name
-of another variable, or when a name is constructed dynamically. If you
-specify <emphasis role="italic">name</emphasis> as a single literal string
-and omit <emphasis role="italic">newvalue</emphasis> and
-<emphasis role="italic">selector</emphasis>, the symbol is a constant and the
-string between the quotation marks can usually replace the whole function call.
-For example, <computeroutput>fred=VALUE("k");</computeroutput> is identical
-with the assignment <computeroutput>fred=k;</computeroutput>, unless the
-NOVALUE condition is trapped. See
-<xref linkend="condtra" />.
-</para></listitem>
-</orderedlist>
+</section>
 </section>
 
 

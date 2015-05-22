@@ -304,6 +304,48 @@ end k
 <para>See <xref linkend="do2" /> for a diagram.</para>
 </section>
 
+<section id="reploopSupplier" revisionflag="added"><title>Repetitive Loops over Suppliers</title>
+<indexterm><primary>loops</primary><secondary>over suppliers</secondary></indexterm>
+<indexterm><primary>WITH subkeyword</primary><secondary>in a DO instruction</secondary></indexterm>
+<indexterm><primary>WITH subkeyword</primary><secondary>in a LOOP instruction</secondary></indexterm>
+<indexterm><primary>INDEX subkeyword</primary><secondary>in a DO instruction</secondary></indexterm>
+<indexterm><primary>INDEX subkeyword</primary><secondary>in a LOOP instruction</secondary></indexterm>
+<indexterm><primary>ITEM subkeyword</primary><secondary>in a DO instruction</secondary></indexterm>
+<indexterm><primary>ITEM subkeyword</primary><secondary>in a LOOP instruction</secondary></indexterm>
+<indexterm><primary>OVER subkeyword</primary><secondary>in a DO instruction</secondary></indexterm>
+<indexterm><primary>OVER subkeyword</primary><secondary>in a LOOP instruction</secondary></indexterm>
+<para>A supplier loop specifies one or two control variables,
+<emphasis role="italic">index</emphasis>, and
+<emphasis role="italic">item</emphasis>, which
+receive a different value on each repetition of the loop. (For more information
+on <emphasis role="italic">index</emphasis> and
+<emphasis role="italic">item</emphasis>, see
+<xref linkend="keyDo" />.) These different values are
+taken from successive values of <emphasis role="italic">supplier</emphasis>.
+The <emphasis role="italic">supplier</emphasis>
+is any expression that evaluates to an object that provides a SUPPLIER method.
+The supplier returned determines the set of values
+and their order.
+</para>
+<para>All values for the loop iteration are obtained at the beginning of the
+loop. Therefore, changes to the target object do not affect the
+loop iteration.</para>
+<para>If you want to specify a <emphasis role="italic">name</emphasis>
+on the END clause or on an ITERATE or LEAVE instruction, you have to
+specify the LABEL keyword.</para>
+<example id="ex.loop-supplier">
+<title>LOOP WITH over a supplier</title>
+<programlisting>loop with index name item method over .numericComparator~methods(.nil)
+  say name method~isPrivate method~isProtected method~isGuarded
+end
+</programlisting>
+</example>
+<para>This example can produce:</para>
+<programlisting>COMPARE 0 0 1
+INIT 0 0 1
+</programlisting>
+</section>
+
 <section id="whileuntil"><title>Conditional Phrases (WHILE and UNTIL)</title>
 <indexterm><primary>conditional</primary>
 <secondary>phrase</secondary></indexterm>

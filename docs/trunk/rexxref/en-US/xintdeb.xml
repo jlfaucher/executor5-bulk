@@ -174,16 +174,18 @@ cannot be reexecuted.</para>
 
 <section id="rxtr"><title>RXTRACE Variable</title>
 <indexterm><primary>RXTRACE environment variable</primary></indexterm>
-<para>When the interpreter starts the interpretation of a Rexx procedure it
+<para>When the interpreter starts, it
 checks the setting of the special environment variable,
 <emphasis role="italic">RXTRACE</emphasis>.
 If <emphasis role="italic">RXTRACE</emphasis> has been set to
-<computeroutput>ON</computeroutput> (not case-sensitive), the
+<computeroutput>ON</computeroutput> (not case-sensitive), each time when starting
+a new Rexx procedure, the
 interpreter starts in interactive debug mode as if the Rexx instruction
 <computeroutput>TRACE &apos;?R&apos;</computeroutput> had been the first interpretable
 instruction. All other settings
 of <emphasis role="italic">RXTRACE</emphasis> are ignored.
-<emphasis role="italic">RXTRACE</emphasis> is only checked when starting
+<emphasis role="italic">RXTRACE</emphasis> is only checked when starting 
+a new Rexx interpreter, it is not checked each time when starting
 a new Rexx procedure.</para>
 <para>Use the SET command to set or query an environment
 variable or query all environment variables. To delete an environment variable,
