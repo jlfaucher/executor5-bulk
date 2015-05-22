@@ -734,9 +734,11 @@ rounded according to the setting of NUMERIC DIGITS.</para></listitem>
 expression that evaluates to <computeroutput>1</computeroutput> or
 <computeroutput>0</computeroutput>.  This includes the list form of conditional
 expression supported by IF and WHEN, which is
-a list of expressions separated by ",".  Each subexpression must evaluate to
+a list of expressions separated by ",".
+The list of expressions is evaluated left-to-right. 
+Each subexpression must evaluate to
 either <computeroutput>0</computeroutput> or <computeroutput>1</computeroutput>.
-The list of expressions is evaluated left-to-right.  Evaluation will stop with
+Evaluation will stop with
 the first <computeroutput>0</computeroutput> result and <computeroutput>0</computeroutput>
 will be returned as the condition result.  If all of the subexpressions evaluate
 to <computeroutput>1</computeroutput>, then the condition result is also
@@ -1303,9 +1305,11 @@ Else
 </example>
 
 <para>The <emphasis role="italic">expression</emphasis> may also be
-a list of expressions separated by ",".  Each subexpression must evaluate to
+a list of expressions separated by ",".
+The list of expressions is evaluated left-to-right.
+Each subexpression must evaluate to
 either <computeroutput>0</computeroutput> or <computeroutput>1</computeroutput>.
-The list of expressions is evaluated left-to-right.  Evaluation will stop with
+Evaluation will stop with
 the first <computeroutput>0</computeroutput> result and <computeroutput>0</computeroutput>
 will be returned as the condition result.  If all of the subexpressions evaluate
 to <computeroutput>1</computeroutput>, then the condition result is also
@@ -2906,9 +2910,11 @@ end  /* Select */
 </example>
 
 <para>The <emphasis role="italic">expression</emphasis> may also be
-a list of expressions separated by ",".  Each subexpression must evaluate to
+a list of expressions separated by ",".
+The list of expressions is evaluated left-to-right.
+Each subexpression must evaluate to
 either <computeroutput>0</computeroutput> or <computeroutput>1</computeroutput>.
-The list of expressions is evaluated left-to-right.  Evaluation will stop with
+Evaluation will stop with
 the first <computeroutput>0</computeroutput> result and <computeroutput>0</computeroutput>
 will be returned as the condition result.  If all of the subexpressions evaluate
 to <computeroutput>1</computeroutput>, then the condition result is also

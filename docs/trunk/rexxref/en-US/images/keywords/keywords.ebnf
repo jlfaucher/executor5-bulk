@@ -22,7 +22,7 @@ do_repetitor ::= ( control1 '=' expri ( 'TO' exprt )? ( 'BY' exprb )? ( 'FOR' ex
                    'FOREVER' |
                    exprr )
 
-do_conditional ::= ( 'WHILE' exprw | 'UNTIL' expru )
+do_conditional ::= ( 'WHILE' exprw (',' exprw)* | 'UNTIL' expru (',' expru)* )
 
 drop ::= 'DROP' ( name | '(' name ')' )+ ';'
 
@@ -83,7 +83,7 @@ say ::= 'SAY' expression? ';'
 call_lineout ::= 'CALL' 'LINEOUT' ',' expression? ';'
 
 select ::= 'SELECT' ( 'LABEL' name )? ';'
-select2 ::= ( 'WHEN' expression ';'? 'THEN' ';'? instruction ';' )+
+select2 ::= ( 'WHEN' expression (',' expression)* ';'? 'THEN' ';'? instruction ';' )+
 select3 ::= ( 'OTHERWISE' ';'? ( instruction ';' )* )?
 select4 ::= 'END' name? ';'
 
