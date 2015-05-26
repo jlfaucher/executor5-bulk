@@ -57,10 +57,12 @@ objects that are always accessible.  The Environment object is automatically sea
 are used, or the Environment object may be directly accessed using the .ENVIRONMENT symbol.  Entries stored in the
 Environment use the same name as the corresponding environment symbol, but without a leading period.  For example:
 </para>
-<programlisting>
-  say .true              -> Displays "1"
-  say .environment~true  -> Also displays "1"
-</programlisting>
+<para><programlisting>
+say .true                --> Displays "1"
+say .environment~true    --> Also displays "1"
+say .environment["TRUE"] --> "1"
+say .environment["true"] --> The NIL object
+</programlisting></para>
 <para>The Environment object directory contains all of the Rexx built-in classes (Array, etc.), plus special Rexx
 constants such as .NIL, .TRUE, and .FALSE.</para>
 
@@ -127,20 +129,20 @@ logical and comparison operations.
 objects that are always accessible.  You can access objects in the Local
 environment object in the same way as objects in the Environment object.
 The Local object contains
-<itemizedlist>
-  <listitem><para>the <xref linkend="inputt" xrefstyle="select: title"/>,
-    <xref linkend="outp" xrefstyle="select: title"/>,
-    <xref linkend="erobj" xrefstyle="select: title"/>,
-    <xref linkend="debuginputobj" xrefstyle="select: title"/>,
-    and <xref linkend="traceoutputobj" xrefstyle="select: title"/>
+<itemizedlist spacing="compact">
+  <listitem><para>the <xref linkend="inputt" xrefstyle="template:.INPUT"/>,
+    <xref linkend="outp" xrefstyle="template:.OUTPUT"/>,
+    <xref linkend="erobj" xrefstyle="template:.ERROR"/>,
+    <xref linkend="debuginputobj" xrefstyle="template:.DEBUGINPUT"/>,
+    and <xref linkend="traceoutputobj" xrefstyle="template:.TRACEOUTPUT"/>
     Monitor objects used for console I/O,</para></listitem>
-  <listitem><para>the <xref linkend="stdinobj" xrefstyle="select: title"/>,
-    <xref linkend="stdoutobj" xrefstyle="select: title"/>,
-    and <xref linkend="errorobj" xrefstyle="select: title"/>
+  <listitem><para>the <xref linkend="stdinobj" xrefstyle="template:.STDIN"/>,
+    <xref linkend="stdoutobj" xrefstyle="template:.STDOUT"/>,
+    and <xref linkend="errorobj" xrefstyle="template:.STDERR"/>
     output streams that are the default I/O targets,</para></listitem>
-  <listitem><para>the <xref linkend="stdqueobj" xrefstyle="select: title"/>
+  <listitem><para>the <xref linkend="stdqueobj" xrefstyle="template:.STDQUE"/>
     RexxQueue instance used for Rexx external queue operations,</para></listitem>
-  <listitem><para>and the <xref linkend="syscargsobj" xrefstyle="select: title"/>
+  <listitem><para>and the <xref linkend="syscargsobj" xrefstyle="template:.SYSCARGS"/>
     array of program command line options.</para></listitem>
 </itemizedlist>
 </para>
