@@ -10,7 +10,7 @@ files_sysclose ::= 'SysClose(' fh ')'
 
 files_syseuidaccess ::= 'SysEuidaccess(' file ',' mode ')'
 
-files_sysgetdirlist ::= 'SysGerdirlist(' dir ')'
+files_sysgetdirlist ::= 'SysGetDirList(' dir ')'
 
 files_syslchown ::= 'SysLchown(' srcpath ',' uid ',' gid ')'
 
@@ -34,11 +34,11 @@ files_syswordexp ::= 'SysWordexp(' option ')'
 
 misc_syscrypt ::= 'SysCrypt(' str ',' salt ')'
 
-misc_sysgetsid ::= 'SysGetsid()'
+misc_sysgetsid ::= 'SysGetSID(' ('0' | pid) ')'
 
-misc_sysgeterrno ::= 'SysGeterrno()'
+misc_sysgeterrno ::= 'SysGetErrno()'
 
-misc_sysgeterrnomeg ::= 'SysGeterrnomsg(' errno ')'
+misc_sysgeterrnomsg ::= 'SysGetErrnoMsg(' errno ')'
 
 misc_sysgetsizeofptr ::= 'SysGetsizeofptr()'
 
@@ -100,5 +100,5 @@ xattr_syslistxattr ::= 'SysListxattr(' fname ')'
 
 xattr_sysremovexattr ::= 'SysRemovexattr(' fname ',' xname ')'
 
-xattr_sysSetxattr ::= 'SysSetxattr(' fname ',' xname ',' val ')'
+xattr_syssetxattr ::= 'SysSetxattr(' fname ',' xname ',' val ')'
 

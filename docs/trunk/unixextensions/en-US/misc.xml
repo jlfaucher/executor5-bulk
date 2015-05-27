@@ -84,7 +84,7 @@ encstr = SysCrypt("String to encrypt.", "3A")
 </section>
 
 
-<section id="utlSysGetsid"><title>SysGetsid</title>
+<section id="utlSysGetsid"><title>SysGetSID</title>
 <indexterm><primary>SysGetsid</primary></indexterm>
 
 <mediaobject>
@@ -93,22 +93,36 @@ encstr = SysCrypt("String to encrypt.", "3A")
 </imageobject>
 </mediaobject>
 
-<para>Gets the current session id.</para>
+<!-- http://man7.org/linux/man-pages/man2/getsid.2.html -->
+<para>Gets the session ID of the calling process, or returns the session
+ID of the process with process ID <emphasis role="italic">pid</emphasis>.
+</para>
+<para>The session ID of a process is the process group ID of the session
+leader.
+</para>
 <para>This function uses the <filename>getsid()</filename>
 C API to perform the action.</para>
-<para><emphasis role="bold">Parameter:</emphasis></para>
-<para>None</para>
-<para><emphasis role="bold">Returns</emphasis></para>
-<para>Returns the current sid or -1 on an error.</para>
-<example id="sysGetsid">
-<title>SysGetsid</title>
-<programlisting>
-<![CDATA[
-/* get the session id */
 
-mysid = SysGetsid()
-]]>
-</programlisting>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">pid</emphasis></term>
+<listitem><para><computeroutput>0</computeroutput> or a valid process ID.
+</para></listitem></varlistentry>
+</variablelist>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Returns the session ID of the calling process if
+<emphasis role="italic">pid</emphasis> is <computeroutput>0</computeroutput>.
+Otherwise returns the session ID of the process with process ID
+<emphasis role="italic">pid</emphasis>.
+</para>
+<para>On an error, <computeroutput>-1</computeroutput> is returned.
+</para>
+<example id="sysGetSID">
+<title>SysGetSID</title>
+<programlisting><![CDATA[/* get the session id of the calling process */
+
+mysid = SysGetSID(0)
+]]></programlisting>
 </example>
 </section>
 
