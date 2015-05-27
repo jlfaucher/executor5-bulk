@@ -2099,16 +2099,18 @@ to uppercase before it is parsed.</para>
   parses information describing the language level and the date of the language processor. This information consists of
   five blank-delimited words:
 <itemizedlist>
-<listitem><para>The string <computeroutput>REXX-ooRexx_4.2.0(MT)_32-bit</computeroutput>,
-if using the ooRexx interpreter at version 4, release 2, modification 0, and
-compiled for 32-bit addressing mode.
+<listitem><para>The string <computeroutput>REXX-ooRexx_5.0.0(MT)_64-bit</computeroutput>,
+if using the ooRexx interpreter at version 5, release 0, modification 0, and
+compiled for 64-bit addressing mode.
 </para></listitem>
 <listitem><para>
-  The language level description, for example <computeroutput>6.03</computeroutput>.
+  The language level description, for example
+  <computeroutput>6.05</computeroutput> for ooRexx 5.0, or
+  <computeroutput>6.04</computeroutput> for ooRexx 4.2.
 </para></listitem>
 <listitem><para>
   Three tokens that describe the language processor release date in the same format as the default for the DATE built-in
-  function (see <xref linkend="bifDate" />), for example, &quot;27 Sep 2007&quot;.
+  function (see <xref linkend="bifDate" />), for example, &quot;9 Dec 2014&quot;.
 </para></listitem>
 </itemizedlist>
 </para>
@@ -2373,7 +2375,7 @@ to isolate the first word the user enters.</para>
 <para>If the external data queue is empty, a line is read from the default input
 stream and the program pauses, if necessary, until a line is complete. (This
 is as though PARSE UPPER LINEIN had been processed.
-See <xref linkend="parlini" />.)</para>
+<!-- @@ doesn't work See <xref linkend="parlini" />.) --></para>
 <para>The QUEUED built-in function (see
 <xref linkend="bifQueued" />) returns the
 number of lines currently in the external data queue.</para>

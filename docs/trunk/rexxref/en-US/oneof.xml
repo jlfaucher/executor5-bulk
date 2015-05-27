@@ -63,8 +63,14 @@ say .environment~true    --> Also displays "1"
 say .environment["TRUE"] --> "1"
 say .environment["true"] --> The NIL object
 </programlisting></para>
-<para>The Environment object directory contains all of the Rexx built-in classes (Array, etc.), plus special Rexx
-constants such as .NIL, .TRUE, and .FALSE.</para>
+<para>The Environment object directory contains
+all of the Rexx built-in classes (Array, etc.),
+the special Rexx constants
+<xref linkend="nil" xrefstyle="template:.NIL"/>,
+<xref linkend="TRUE" xrefstyle="template:.TRUE"/>,
+<xref linkend="FALSE" xrefstyle="template:.FALSE"/>,
+<xref linkend="ENDOFLINE" xrefstyle="template:.ENDOFLINE"/>, and the
+<xref linkend="rexxinfoEnv" xrefstyle="template:.RexxInfo object"/>.</para>
 
 <section id="ENDOFLINE"><title>The ENDOFLINE Constant (.ENDOFLINE)</title>
 <indexterm><primary>.ENDOFLINE object</primary></indexterm>
@@ -105,6 +111,22 @@ in an array or other Collection class entry: </para>
 if .nil = board[row,col]   /* .NIL rather than "" */
 then ...
 </programlisting>
+</section>
+
+<section id="rexxinfoEnv"><title>The RexxInfo Object (.RexxInfo)</title>
+<para>
+<indexterm><primary>.RexxInfo object</primary></indexterm>
+<indexterm><primary>built-in object</primary><secondary>.RexxInfo object</secondary></indexterm>
+<indexterm><primary>public object</primary><secondary>.RexxInfo object</secondary></indexterm>
+The RexxInfo object returns the only instance
+of the <xref linkend="clsRexxInfo" xrefstyle="template:RexxInfo class"/>
+and gives access to Rexx language information and other platform-specific
+information in a single place.
+</para>
+<para>See <xref linkend="clsRexxInfo"/>.</para> 
+<para>
+<programlisting><![CDATA[say .RexxInfo~name    --> REXX-ooRexx_5.0.0(MT)_64-bit 6.05 9 Dec 2014 /* e. g. */
+]]></programlisting></para>
 </section>
 
 <section id="TRUE"><title>The TRUE Constant (.TRUE)</title>

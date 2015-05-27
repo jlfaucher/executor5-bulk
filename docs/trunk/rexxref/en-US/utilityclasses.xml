@@ -391,7 +391,7 @@ number. The default <emphasis role="italic">offset</emphasis> is the current sys
 </mediaobject>
 
 <para>Creates a DateTime object from a string returned by the Normal option
-of the Time() (<xref linkend="bifTime" /> built-in function.
+of the Time() (<xref linkend="bifTime" />) built-in function.
 The date component will be set to 1 January 0001.</para>
 <para>
 If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
@@ -6686,6 +6686,617 @@ variable names.
 </para>
 </section>
 </section>
+
+
+<!-- =============================================================== --> 
+<!-- Class RexxInfo ================================================ --> 
+<section id="clsRexxInfo" revisionflag="added"><title>The RexxInfo Class</title>
+<para>The RexxInfo class
+<indexterm><primary>RexxInfo class</primary></indexterm>
+<indexterm><primary>class</primary><secondary>RexxInfo class</secondary></indexterm>
+gives access to Rexx language information and other platform-specific
+information in a single place.
+Only one instance of the RexxInfo class can be obtained via the
+<xref linkend="rexxinfoEnv" xrefstyle="template:.REXXINFO environment symbol"/>,
+other instances cannot be created or copied.
+RexxInfo is a subclass of the
+<xref linkend="clsObject" xrefstyle="template:Object class"/>.
+</para>
+<para>
+RexxInfo provides read-only attribute methods to get
+<itemizedlist spacing="compact">
+  <listitem><para>
+    the default settings for NUMERIC
+    <xref linkend="mthRexxInfoDigits" xrefstyle="template:digits"/>,
+    <xref linkend="mthRexxInfoFuzz" xrefstyle="template:fuzz"/>, and
+    <xref linkend="mthRexxInfoForm" xrefstyle="template:form"/>,
+  </para></listitem>
+  <listitem><para>
+    <xref linkend="mthRexxInfoInternalDigits" xrefstyle="template:internalDigits"/>,
+    the number of digits used internally by REXX for numbers,
+  </para></listitem>
+  <listitem><para>
+    the language processor
+    <xref linkend="mthRexxInfoVersion" xrefstyle="template:version"/> and its sub-components
+    <xref linkend="mthRexxInfoMajorVersion" xrefstyle="template:majorVersion"/>,
+    <xref linkend="mthRexxInfoRelease" xrefstyle="template:release"/>, and
+    <xref linkend="mthRexxInfoRevision" xrefstyle="template:revision"/>,
+  </para></listitem>
+  <listitem><para>
+    the language processor's
+    descriptive <xref linkend="mthRexxInfoName" xrefstyle="template:name"/>,
+    its <xref linkend="mthRexxInfoLanguageLevel" xrefstyle="template:languageLevel"/>, and
+    release <xref linkend="mthRexxInfoDate" xrefstyle="template:date"/>,
+  </para></listitem>
+  <listitem><para>
+    the interpreter's
+    <xref linkend="mthRexxInfoPlatform" xrefstyle="template:platform"/>, and
+    the addressing mode of its <xref linkend="mthRexxInfoArchitecture" xrefstyle="template:architecture"/>,
+  </para></listitem>
+  <listitem><para>
+    and the platform-specific values for
+    <xref linkend="mthRexxInfoEndofline" xrefstyle="template:endofline"/>,
+    <xref linkend="mthRexxInfoPathSeparator" xrefstyle="template:pathSeparator"/>,
+    <xref linkend="mthRexxInfoDirectorySeparator" xrefstyle="template:directorySeparator"/>, and
+    <xref linkend="mthRexxInfoCaseSensitiveFiles" xrefstyle="template:caseSensitiveFiles"/>.
+  </para></listitem>
+</itemizedlist>
+</para>
+
+<table id="ooRexxRexxInfoClass" frame="all" pgwide="0">
+<title>ooRexx RexxInfo Class</title>
+<tgroup cols="1">
+<tbody>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+ <row><entry align="center">Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">RexxInfo</emphasis></entry>
+ </row>
+ <row><entry>
+  <simplelist columns="3">
+   <member><xref linkend="mthRexxInfoArchitecture" xrefstyle="template:architecture"/></member>
+   <member><xref linkend="mthRexxInfoCaseSensitiveFiles" xrefstyle="template:caseSensitiveFiles"/></member>
+   <member><xref linkend="mthRexxInfoDate" xrefstyle="template:date"/></member>
+   <member><xref linkend="mthRexxInfoDigits" xrefstyle="template:digits"/></member>
+   <member><xref linkend="mthRexxInfoDirectorySeparator" xrefstyle="template:directorySeparator"/></member>
+   <member><xref linkend="mthRexxInfoEndofline" xrefstyle="template:endofline"/></member>
+   <member><xref linkend="mthRexxInfoForm" xrefstyle="template:form"/></member>
+   <member><xref linkend="mthRexxInfoFuzz" xrefstyle="template:fuzz"/></member>
+   <member><xref linkend="mthRexxInfoInternalDigits" xrefstyle="template:internalDigits"/></member>
+   <member><xref linkend="mthRexxInfoLanguageLevel" xrefstyle="template:languageLevel"/></member>
+   <member><xref linkend="mthRexxInfoMajorVersion" xrefstyle="template:majorVersion"/></member>
+   <member><xref linkend="mthRexxInfoName" xrefstyle="template:name"/></member>
+   <member><xref linkend="mthRexxInfoPackage" xrefstyle="template:package"/></member>
+   <member><xref linkend="mthRexxInfoPathSeparator" xrefstyle="template:pathSeparator"/></member>
+   <member><xref linkend="mthRexxInfoPlatform" xrefstyle="template:platform"/></member>
+   <member><xref linkend="mthRexxInfoRelease" xrefstyle="template:release"/></member>
+   <member><xref linkend="mthRexxInfoRevision" xrefstyle="template:revision"/></member>
+   <member><xref linkend="mthRexxInfoVersion" xrefstyle="template:version"/></member>
+  </simplelist>
+  </entry>
+ </row>
+</tbody>
+</tgroup>
+</table>
+
+<!-- @@ remove, just put link into table above
+<section><title>Inherited Methods</title>
+<para>Methods inherited from the
+<xref linkend="clsObject" xrefstyle="template:Object class"/>.</para>
+<xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+</section>
+-->
+
+<!-- Class RexxInfo - method architecture ========================== --> 
+<section id="mthRexxInfoArchitecture"><title>architecture</title>
+<para>
+<indexterm><primary>architecture method</primary><secondary>of RexxInfo class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>architecture method</secondary><tertiary>of RexxInfo class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/rexxinfo_architecture.svg" scale="50" />
+</imageobject></mediaobject>
+</para>
+<para>Returns the interpreter's addressing mode, specified as a number in bits.
+</para>
+<para>See also method <xref linkend="mthRexxInfoName" xrefstyle="template:name"/>.
+</para>
+<para><example>
+<title>Class RexxInfo &mdash; architecture method</title>
+<programlisting><![CDATA[say .rexxinfo~architecture    --> 32 /* ooRexx 32-bit */
+say .rexxinfo~architecture    --> 64 /* ooRexx 64-bit */
+]]></programlisting></example></para>
+</section>
+
+<!-- Class RexxInfo - method caseSensitiveFiles ==================== --> 
+<section id="mthRexxInfoCaseSensitiveFiles"><title>caseSensitiveFiles</title>
+<para>
+<indexterm><primary>caseSensitiveFiles method</primary><secondary>of RexxInfo class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>caseSensitiveFiles method</secondary><tertiary>of RexxInfo class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/rexxinfo_caseSensitiveFiles.svg" scale="50" />
+</imageobject></mediaobject>
+</para>
+<para>Returns .true if the file system is case-sensitive,
+e. g. on a Unix platform.
+Otherwise returns .false, e. g. for a Windows file system.
+</para>
+<para>See also File class method
+<xref linkend="clsmthFileIsCaseSensitive" xrefstyle="template:isCaseSensitive"/>
+which returns the same information.
+</para>
+<para><example>
+<title>Class RexxInfo &mdash; caseSensitiveFiles method</title>
+<programlisting><![CDATA[say .RexxInfo~caseSensitiveFiles    --> 0 /* e. g. Windows */
+say .RexxInfo~caseSensitiveFiles    --> 1 /* e. g. Unix */
+]]></programlisting></example></para>
+</section>
+
+<!-- Class RexxInfo - method date ================================== --> 
+<section id="mthRexxInfoDate"><title>date</title>
+<para>
+<indexterm><primary>date method</primary><secondary>of RexxInfo class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>date method</secondary><tertiary>of RexxInfo class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/rexxinfo_date.svg" scale="50" />
+</imageobject></mediaobject>
+</para>
+<para>Returns the language processor release date as a string in the 
+default format of the
+<xref linkend="bifDate" xrefstyle="template:DATE built-in function"/>.
+</para>
+<para>See also
+<itemizedlist spacing="compact">
+ <listitem>
+  <para>RexxInfo method <xref linkend="mthRexxInfoName" xrefstyle="template:name"/> and</para>
+ </listitem>
+ <listitem>
+  <para>keyword instruction <xref linkend="keyParse" xrefstyle="template:PARSE VERSION"/>,</para>
+ </listitem>
+</itemizedlist>
+which both also return this date as the third to fifth token of their result.
+</para>
+<para><example>
+<title>Class RexxInfo &mdash; date method</title>
+<programlisting><![CDATA[say .RexxInfo~date    --> 9 Dec 2014 /* e. g. */
+]]></programlisting></example></para>
+</section>
+
+<!-- Class RexxInfo - method digits ================================ --> 
+<section id="mthRexxInfoDigits"><title>digits</title>
+<para>
+<indexterm><primary>digits method</primary><secondary>of RexxInfo class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>digits method</secondary><tertiary>of RexxInfo class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/rexxinfo_digits.svg" scale="50" />
+</imageobject></mediaobject>
+</para>
+<para>Returns the language processor default for the NUMERIC DIGITS setting.
+</para>
+<para>See also
+<itemizedlist spacing="compact">
+ <listitem>
+  <para>Package method <xref linkend="mthPackageDigits" xrefstyle="template:digits"/>,</para>
+ </listitem>
+ <listitem>
+  <para>RexxContext method <xref linkend="mthRexxContextDigits" xrefstyle="template:digits"/>, and</para>
+ </listitem>
+ <listitem>
+  <para>built-in function <xref linkend="bifDigits" xrefstyle="template:DIGITS"/>.</para>
+ </listitem>
+</itemizedlist>
+</para>
+<para><example>
+<title>Class RexxInfo &mdash; digits method</title>
+<programlisting><![CDATA[say .RexxInfo~digits    --> 9
+]]></programlisting></example></para>
+</section>
+
+<!-- Class RexxInfo - method directorySeparator ==================== --> 
+<section id="mthRexxInfoDirectorySeparator"><title>directorySeparator</title>
+<para>
+<indexterm><primary>directorySeparator method</primary><secondary>of RexxInfo class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>directorySeparator method</secondary><tertiary>of RexxInfo class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/rexxinfo_directorySeparator.svg" scale="50" />
+</imageobject></mediaobject>
+</para>
+<para>Returns the platform-specific directory separator used by the file system,
+"\" on Windows, and "/" on Unix platforms.
+</para>
+<para>See also File class method <xref linkend="clsmthFileSeparator" xrefstyle="template:separator"/>,
+which provides the same information.
+</para>
+<para><example>
+<title>Class RexxInfo &mdash; directorySeparator method</title>
+<programlisting><![CDATA[say .RexxInfo~directorySeparator    --> "\" /* Windows */
+say .RexxInfo~directorySeparator    --> "/" /* Unix */
+]]></programlisting></example></para>
+</section>
+
+<!-- Class RexxInfo - method endofline ============================= --> 
+<section id="mthRexxInfoEndofline"><title>endofline</title>
+<para>
+<indexterm><primary>endofline method</primary><secondary>of RexxInfo class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>endofline method</secondary><tertiary>of RexxInfo class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/rexxinfo_endofline.svg" scale="50" />
+</imageobject></mediaobject>
+</para>
+<para>Returns a platform-specific string representing the line terminator
+used for file line end markers, "0d 0a"x (carriage return/linefeed) on
+Windows and "0a"x (linefeed) on Unix platforms.
+</para>
+<para>See also the environment symbol <xref linkend="ENDOFLINE" xrefstyle="template:.ENDOFLINE"/>,
+which provides the same information.
+</para>
+<para><example>
+<title>Class RexxInfo &mdash; endofline method</title>
+<programlisting><![CDATA[say .RexxInfo~endofline    --> "0d 0a"x /* Windows */ 
+say .RexxInfo~endofline    --> "0a"x /* Unix */
+]]></programlisting></example></para>
+</section>
+
+<!-- Class RexxInfo - method form ================================== --> 
+<section id="mthRexxInfoForm"><title>form</title>
+<para>
+<indexterm><primary>form method</primary><secondary>of RexxInfo class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>form method</secondary><tertiary>of RexxInfo class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/rexxinfo_form.svg" scale="50" />
+</imageobject></mediaobject>
+</para>
+<para>Returns the language processor default for the NUMERIC FORM setting.
+</para>
+<para>See also
+<itemizedlist spacing="compact">
+ <listitem>
+  <para>Package method <xref linkend="mthPackageForm" xrefstyle="template:form"/>,</para>
+ </listitem>
+ <listitem>
+  <para>RexxContext method <xref linkend="mthRexxContextForm" xrefstyle="template:form"/>, and</para>
+ </listitem>
+ <listitem>
+  <para>built-in function <xref linkend="bifForm" xrefstyle="template:FORM"/>.</para>
+ </listitem>
+</itemizedlist>
+</para>
+<para><example>
+<title>Class RexxInfo &mdash; form method</title>
+<programlisting><![CDATA[say .RexxInfo~form    --> SCIENTIFIC
+]]></programlisting></example></para>
+</section>
+
+<!-- Class RexxInfo - method fuzz ================================== --> 
+<section id="mthRexxInfoFuzz"><title>fuzz</title>
+<para>
+<indexterm><primary>fuzz method</primary><secondary>of RexxInfo class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>fuzz method</secondary><tertiary>of RexxInfo class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/rexxinfo_fuzz.svg" scale="50" />
+</imageobject></mediaobject>
+</para>
+<para>Returns the language processor default for the NUMERIC FUZZ setting.
+</para>
+<para>See also
+<itemizedlist spacing="compact">
+ <listitem>
+  <para>Package method <xref linkend="mthPackageFuzz" xrefstyle="template:fuzz"/>,</para>
+ </listitem>
+ <listitem>
+  <para>RexxContext method <xref linkend="mthRexxContextFuzz" xrefstyle="template:fuzz"/>, and</para>
+ </listitem>
+ <listitem>
+  <para>built-in function <xref linkend="bifFuzz" xrefstyle="template:FUZZ"/>.</para>
+ </listitem>
+</itemizedlist>
+</para>
+<para><example>
+<title>Class RexxInfo &mdash; fuzz method</title>
+<programlisting><![CDATA[say .RexxInfo~fuzz    --> 0
+say .RexxInfo~fuzz    --> 0
+]]></programlisting></example></para>
+</section>
+
+<!-- Class RexxInfo - method internalDigits ======================== --> 
+<section id="mthRexxInfoInternalDigits"><title>internalDigits</title>
+<para>
+<indexterm><primary>internalDigits method</primary><secondary>of RexxInfo class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>internalDigits method</secondary><tertiary>of RexxInfo class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/rexxinfo_internalDigits.svg" scale="50" />
+</imageobject></mediaobject>
+</para>
+<para>Returns the NUMERIC DIGITS setting that the built-in functions use
+internally, which is 9 digits, when running in 32-bt addressing mode,
+and 18 digits, when running in a 64-bt addressing mode.
+</para>
+<para>See also method <xref linkend="mthRexxInfoName" xrefstyle="template:name"/>.
+</para>
+<para><example>
+<title>Class RexxInfo &mdash; internalDigits method</title>
+<programlisting><![CDATA[say .RexxInfo~internalDigits    --> 9  /* for 32-bit addressing mode */
+say .RexxInfo~internalDigits    --> 18 /* for 64-bit addressing mode */
+]]></programlisting></example></para>
+</section>
+
+<!-- Class RexxInfo - method languageLevel ========================= --> 
+<section id="mthRexxInfoLanguageLevel"><title>languageLevel</title>
+<para>
+<indexterm><primary>languageLevel method</primary><secondary>of RexxInfo class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>languageLevel method</secondary><tertiary>of RexxInfo class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/rexxinfo_languageLevel.svg" scale="50" />
+</imageobject></mediaobject>
+</para>
+<para>Returns the language processor's language level as a decimal number.
+</para>
+<para>See also
+<itemizedlist spacing="compact">
+ <listitem>
+  <para>RexxInfo method <xref linkend="mthRexxInfoName" xrefstyle="template:name"/> and</para>
+ </listitem>
+ <listitem>
+  <para>keyword instruction <xref linkend="keyParse" xrefstyle="template:PARSE VERSION"/>,</para>
+ </listitem>
+</itemizedlist>
+which both also return the language level as the second token of their result.
+</para>
+<para><example>
+<title>Class RexxInfo &mdash; languageLevel method</title>
+<programlisting><![CDATA[say .RexxInfo~languageLevel    --> 6.05
+]]></programlisting></example></para>
+</section>
+
+<!-- Class RexxInfo - method majorVersion ========================== --> 
+<section id="mthRexxInfoMajorVersion"><title>majorVersion</title>
+<para>
+<indexterm><primary>majorVersion method</primary><secondary>of RexxInfo class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>majorVersion method</secondary><tertiary>of RexxInfo class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/rexxinfo_majorVersion.svg" scale="50" />
+</imageobject></mediaobject>
+</para>
+<para>Returns the major version number of the language processor.
+The major version number is the integer part of the language processor
+<xref linkend="mthRexxInfoVersion" xrefstyle="template:version"/>.
+</para>
+<para>See also
+<itemizedlist spacing="compact">
+ <listitem>
+  <para>RexxInfo method <xref linkend="mthRexxInfoVersion" xrefstyle="template:version"/>,</para>
+ </listitem>
+ <listitem>
+  <para>RexxInfo method <xref linkend="mthRexxInfoName" xrefstyle="template:name"/> and</para>
+ </listitem>
+ <listitem>
+  <para>keyword instruction <xref linkend="keyParse" xrefstyle="template:PARSE VERSION"/>,</para>
+ </listitem>
+</itemizedlist>
+which also return the major version number as part of their result.
+</para>
+<para><example>
+<title>Class RexxInfo &mdash; majorVersion method</title>
+<programlisting><![CDATA[say .RexxInfo~majorVersion    --> 5
+]]></programlisting></example></para>
+</section>
+
+<!-- Class RexxInfo - method name ================================== --> 
+<section id="mthRexxInfoName"><title>name</title>
+<para>
+<indexterm><primary>name method</primary><secondary>of RexxInfo class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>name method</secondary><tertiary>of RexxInfo class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/rexxinfo_name.svg" scale="50" />
+</imageobject></mediaobject>
+</para>
+<para>Returns the language processor's descriptive name in the format
+that is also returned by 
+<xref linkend="keyParse" xrefstyle="template:PARSE VERSION"/>, which is
+<itemizedlist spacing="compact">
+ <listitem><para>
+  an interpreter identification string (that includes
+  <xref linkend="mthRexxInfoVersion" xrefstyle="template:version"/> and
+  <xref linkend="mthRexxInfoArchitecture" xrefstyle="template:architecture"/>),
+ </para></listitem>
+ <listitem><para>
+  the interpreter <xref linkend="mthRexxInfoLanguageLevel" xrefstyle="template:languageLevel"/> and
+ </para></listitem>
+ <listitem><para>
+  the interpreter build <xref linkend="mthRexxInfoDate" xrefstyle="template:date"/>.
+ </para></listitem>
+</itemizedlist>
+</para>
+<para>See also
+<itemizedlist spacing="compact">
+ <listitem>
+  <para>RexxInfo method <xref linkend="mthRexxInfoVersion" xrefstyle="template:version"/>,</para>
+ </listitem>
+ <listitem>
+  <para>RexxInfo method <xref linkend="mthRexxInfoLanguageLevel" xrefstyle="template:languageLevel"/> and</para>
+ </listitem>
+ <listitem>
+  <para>keyword instruction <xref linkend="keyParse" xrefstyle="template:PARSE VERSION"/>.</para>
+ </listitem>
+</itemizedlist>
+</para>
+<para><example>
+<title>Class RexxInfo &mdash; name method</title>
+<programlisting><![CDATA[say .RexxInfo~name    --> REXX-ooRexx_5.0.0(MT)_64-bit 6.05 9 Dec 2014 /* e. g. */
+]]></programlisting></example></para>
+</section>
+
+<!-- Class RexxInfo - method package =============================== --> 
+<section id="mthRexxInfoPackage"><title>package</title>
+<para>
+<indexterm><primary>package method</primary><secondary>of RexxInfo class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>package method</secondary><tertiary>of RexxInfo class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/rexxinfo_package.svg" scale="50" />
+</imageobject></mediaobject>
+</para>
+<para>Returns a Package instance of all REXX-defined (namespace "REXX") classes.
+</para>
+<para>See <xref linkend="clsPackage"/>.
+</para>
+<para><example>
+<title>Class RexxInfo &mdash; package method</title>
+<programlisting><![CDATA[
+say "ooRexx pre-defines" -
+  .RexxInfo~package~publicClasses~items -
+  "public classes"   --> ooRexx pre-defines 56 public classes
+]]></programlisting></example></para>
+</section>
+
+<!-- Class RexxInfo - method pathSeparator ========================= --> 
+<section id="mthRexxInfoPathSeparator"><title>pathSeparator</title>
+<para>
+<indexterm><primary>pathSeparator method</primary><secondary>of RexxInfo class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>pathSeparator method</secondary><tertiary>of RexxInfo class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/rexxinfo_pathSeparator.svg" scale="50" />
+</imageobject></mediaobject>
+</para>
+<para>Returns the platform-specific path separator used used for file search paths,
+";" on Windows, and ":" on Unix platforms.
+</para>
+<para>See also File class method <xref linkend="clsmthFilePathSeparator" xrefstyle="template:pathSeparator"/>.
+</para>
+<para><example>
+<title>Class RexxInfo &mdash; pathSeparator method</title>
+<programlisting><![CDATA[say .RexxInfo~pathSeparator    --> ; /* Windows */
+say .RexxInfo~pathSeparator    --> ":" /* Unix */
+]]></programlisting></example></para>
+</section>
+
+<!-- Class RexxInfo - method platform ============================== --> 
+<section id="mthRexxInfoPlatform"><title>platform</title>
+<para>
+<indexterm><primary>platform method</primary><secondary>of RexxInfo class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>platform method</secondary><tertiary>of RexxInfo class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/rexxinfo_platform.svg" scale="50" />
+</imageobject></mediaobject>
+</para>
+<para>Returns the name of the interpreter operating system as a string,
+"WindowsNT" for a Windows, and "LINUX" for a Unix system.
+</para>
+<para>See also keyword instruction <xref linkend="keyParse" xrefstyle="template:PARSE SOURCE"/>,
+which returns the same information as its first token.
+</para>
+<para><example>
+<title>Class RexxInfo &mdash; platform method</title>
+<programlisting><![CDATA[say .RexxInfo~platform    --> WindowsNT
+say .RexxInfo~platform    --> LINUX
+]]></programlisting></example></para>
+</section>
+
+<!-- Class RexxInfo - method release =============================== --> 
+<section id="mthRexxInfoRelease"><title>release</title>
+<para>
+<indexterm><primary>release method</primary><secondary>of RexxInfo class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>release method</secondary><tertiary>of RexxInfo class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/rexxinfo_release.svg" scale="50" />
+</imageobject></mediaobject>
+</para>
+<para>Returns the release number of the language processor.
+The release number is the first decimal digit following the decimal point of the language processor
+<xref linkend="mthRexxInfoVersion" xrefstyle="template:version"/>.
+</para>
+<para>See also
+<itemizedlist spacing="compact">
+ <listitem>
+  <para>RexxInfo method <xref linkend="mthRexxInfoVersion" xrefstyle="template:version"/>,</para>
+ </listitem>
+ <listitem>
+  <para>RexxInfo method <xref linkend="mthRexxInfoName" xrefstyle="template:name"/> and</para>
+ </listitem>
+ <listitem>
+  <para>keyword instruction <xref linkend="keyParse" xrefstyle="template:PARSE VERSION"/>,</para>
+ </listitem>
+</itemizedlist>
+which also return the release number as part of their result.
+</para>
+<para><example>
+<title>Class RexxInfo &mdash; release method</title>
+<programlisting><![CDATA[say .RexxInfo~release    --> 0
+]]></programlisting></example></para>
+</section>
+
+<!-- Class RexxInfo - method revision ============================== --> 
+<section id="mthRexxInfoRevision"><title>revision</title>
+<para>
+<indexterm><primary>revision method</primary><secondary>of RexxInfo class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>revision method</secondary><tertiary>of RexxInfo class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/rexxinfo_revision.svg" scale="50" />
+</imageobject></mediaobject>
+</para>
+<para>Returns the revision number of the language processor.
+The revision number is the second decimal digit following the decimal point of the language processor
+<xref linkend="mthRexxInfoVersion" xrefstyle="template:version"/>.
+</para>
+<para>See also
+<itemizedlist spacing="compact">
+ <listitem>
+  <para>RexxInfo method <xref linkend="mthRexxInfoVersion" xrefstyle="template:version"/>,</para>
+ </listitem>
+ <listitem>
+  <para>RexxInfo method <xref linkend="mthRexxInfoName" xrefstyle="template:name"/> and</para>
+ </listitem>
+ <listitem>
+  <para>keyword instruction <xref linkend="keyParse" xrefstyle="template:PARSE VERSION"/>,</para>
+ </listitem>
+</itemizedlist>
+which also return the revision number as part of their result.
+</para>
+<para><example>
+<title>Class RexxInfo &mdash; revision method</title>
+<programlisting><![CDATA[say .RexxInfo~revision    --> 0
+]]></programlisting></example></para>
+</section>
+
+<!-- Class RexxInfo - method version =============================== --> 
+<section id="mthRexxInfoVersion"><title>version</title>
+<para>
+<indexterm><primary>version method</primary><secondary>of RexxInfo class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>version method</secondary><tertiary>of RexxInfo class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/rexxinfo_version.svg" scale="50" />
+</imageobject></mediaobject>
+</para>
+<para>Returns the version number of the language processor as a decimal number.
+The version number consists of the
+<xref linkend="mthRexxInfoMajorVersion" xrefstyle="template:majorVersion"/>,
+followed by a decimal point,
+the <xref linkend="mthRexxInfoRelease" xrefstyle="template:release"/> and
+the <xref linkend="mthRexxInfoRevision" xrefstyle="template:revision"/>.
+</para>
+<para>See also
+<itemizedlist spacing="compact">
+ <listitem>
+  <para>RexxInfo method <xref linkend="mthRexxInfoMajorVersion" xrefstyle="template:majorVersion"/>,</para>
+ </listitem>
+ <listitem>
+  <para>RexxInfo method <xref linkend="mthRexxInfoRelease" xrefstyle="template:release"/>,</para>
+ </listitem>
+ <listitem>
+  <para>RexxInfo method <xref linkend="mthRexxInfoRevision" xrefstyle="template:revision"/> and</para>
+ </listitem>
+ <listitem>
+  <para>keyword instruction <xref linkend="keyParse" xrefstyle="template:PARSE VERSION"/>.</para>
+ </listitem>
+</itemizedlist>
+</para>
+<para><example>
+<title>Class RexxInfo &mdash; version method</title>
+<programlisting><![CDATA[say .RexxInfo~version    --> 5.0.0
+]]></programlisting></example></para>
+</section>
+
+</section>
+
 
 <section id="clsStackFrame"><title>The StackFrame Class</title>
 <indexterm><primary>StackFrame class</primary></indexterm>
