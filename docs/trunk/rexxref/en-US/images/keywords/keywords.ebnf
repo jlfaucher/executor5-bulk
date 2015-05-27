@@ -17,8 +17,8 @@ do ::= ('DO' | 'LOOP') ( 'LABEL' name )? ( REPETITOR - fragment )? ( CONDITIONAL
            ( instruction ';' )* 'END' ( name )? ';'
 
 do_repetitor ::= ( control1 '=' expri ( 'TO' exprt )? ( 'BY' exprb )? ( 'FOR' exprf )? |
-                   control2 'OVER' collection |
-/* New in 5.0 */   'WITH' ('INDEX' index)? ('ITEM' item)? 'OVER' supplier |
+/* Chg in 5.0 */   control2 'OVER' collection ( 'FOR' exprf )? |
+/* New in 5.0 */   'WITH' ('INDEX' index)? ('ITEM' item)? 'OVER' supplier ( 'FOR' exprf )? |
                    'FOREVER' |
                    exprr )
 
