@@ -168,13 +168,13 @@ processed in this way are trapped or traced.</para>
 <secondary>ADDRESS instruction</secondary></indexterm>
 <indexterm><primary>CMD command environment</primary></indexterm>
 <example>
-<title>Instructions - ADDRESS (Windows)</title>
+<title>Instructions &mdash; ADDRESS (Windows)</title>
 <programlisting>
 ADDRESS CMD "DIR C:\CONFIG.SYS"
 </programlisting>
 </example>
 <example>
-<title>Instructions - ADDRESS (Linux)</title>
+<title>Instructions &mdash; ADDRESS (Linux)</title>
 <indexterm><primary>bash command environment</primary></indexterm>
 <programlisting>
 ADDRESS "bash" "ls /usr/lib"
@@ -188,7 +188,7 @@ processed. The previously selected environment is saved.</para>
 <para>Assume that the environment for a Windows text editor is
 registered by the name <computeroutput>EDIT</computeroutput>:</para>
 <example>
-<title>Instructions - ADDRESS environments</title>
+<title>Instructions &mdash; ADDRESS environments</title>
 <programlisting>
 address CMD
 "DIR C:\AUTOEXEC.BAT"
@@ -207,7 +207,7 @@ does not begin with
 a literal string or symbol, that is, if it starts with a special character
 such as an operator character or parenthesis.</para>
 <example>
-<title>Instructions - ADDRESS environments</title>
+<title>Instructions &mdash; ADDRESS environments</title>
 <programlisting>
 ADDRESS ("ENVIR"||number)  /* Same as ADDRESS VALUE "ENVIR"||number */
 </programlisting>
@@ -301,7 +301,7 @@ objects (typically with different templates). The source objects do not change.
 <indexterm><primary>examples</primary>
 <secondary>ARG instruction</secondary></indexterm>
 <example>
-<title>Instructions - ARG</title>
+<title>Instructions &mdash; ARG</title>
 <programlisting>
 /* String passed is "Easy Rider"  */
 Arg adjective noun .
@@ -319,7 +319,7 @@ routine, you can use a comma
 in the parsing <emphasis role="italic">template_list</emphasis> so each template
 is selected in turn.</para>
 <example>
-<title>Instructions - ARG</title>
+<title>Instructions &mdash; ARG</title>
 <programlisting>
 /* Function is called by  FRED("data X",1,5)    */
 Fred:  Arg string, num1, num2
@@ -500,7 +500,7 @@ as a subroutine. Any result is stored in RESULT. Simply specify
 <emphasis>no parenthesis</emphasis>)
 and any arguments:</para></note>
 <example>
-<title>Instructions - CALL</title>
+<title>Instructions &mdash; CALL</title>
 <programlisting>
 call length "string"   /* Same as length("string") */
 say result             /* Produces: 6              */
@@ -566,7 +566,7 @@ as well as recursive calls to itself.
 <indexterm><primary>examples</primary>
 <secondary>CALL instruction</secondary></indexterm>
 <example>
-<title>Instructions - CALL</title>
+<title>Instructions &mdash; CALL</title>
 <programlisting>
 /* Recursive subroutine execution... */
 arg z
@@ -772,7 +772,7 @@ FOREVER is also reserved, but only if it immediately
 follows the keyword DO or LOOP and is not followed by an equal sign.
 However, parentheses around or within an expression can prevent these keywords from terminating an expression. For example,
 </para>
-<example><title>Instructions - DO variable without parenthesis</title>
+<example><title>Instructions &mdash; DO variable without parenthesis</title>
 <programlisting>
 do i = 1 while i &lt; until
    say i
@@ -781,7 +781,7 @@ end
 </example>
 <para>is considered a syntax error because of the variable named UNTIL.  Using parentheses
 around the expression allows the variable UNTIL to be used:</para>
-<example><title>Instructions - DO variable with parenthesis</title>
+<example><title>Instructions &mdash; DO variable with parenthesis</title>
 <programlisting>
 do i = 1 while (i &lt; until)
    say i
@@ -850,7 +850,7 @@ the original variable is dropped.</para>
 <indexterm><primary>examples</primary>
 <secondary>DROP instruction</secondary></indexterm>
 <example>
-<title>Instructions - DROP</title>
+<title>Instructions &mdash; DROP</title>
 <programlisting>
 j=4
 Drop  a z.3 z.j
@@ -860,7 +860,7 @@ Drop  a z.3 z.j
 </example>
 <para>Here, a variable name in parentheses is used as a subsidiary list.</para>
 <example>
-<title>Instructions - DROP</title>
+<title>Instructions &mdash; DROP</title>
 <programlisting>
 mylist="c d e"
 drop (mylist) f
@@ -914,7 +914,7 @@ to the caller when the program stops.</para>
 <indexterm><primary>examples</primary>
 <secondary>EXIT instruction</secondary></indexterm>
 <example>
-<title>Instructions - EXIT</title>
+<title>Instructions &mdash; EXIT</title>
 <programlisting>
 j=3
 Exit j*4
@@ -997,7 +997,7 @@ as a variable.</para>
 <indexterm><primary>examples</primary>
 <secondary>EXPOSE instruction</secondary></indexterm>
 <example>
-<title>Instructions - EXPOSE</title>
+<title>Instructions &mdash; EXPOSE</title>
 <programlisting>
 /* Example of exposing object variables */
 myobj = .myclass~new
@@ -1024,7 +1024,7 @@ myobj~d         /* Would display "Z is: 120"                 */
 by specifying their stem in the variable list or a subsidiary list.
 The variables are exposed for all operations.</para>
 <example>
-<title>Instructions - EXPOSE</title>
+<title>Instructions &mdash; EXPOSE</title>
 <programlisting>
 expose j k  c. d.
 /*  This exposes "J", "K", and all variables whose            */
@@ -1124,7 +1124,7 @@ to a different target object, using the same message name and arguments.</para>
 <indexterm><primary>examples</primary>
 <secondary>FORWARD instruction</secondary></indexterm>
 <example>
-<title>Instructions - FORWARD</title>
+<title>Instructions &mdash; FORWARD</title>
 <programlisting>
 ::method substr
   forward to (self~string)       /* Forward to the string value */
@@ -1133,7 +1133,7 @@ to a different target object, using the same message name and arguments.</para>
 <para>You can use FORWARD in an UNKNOWN method to reissue to another object the
 message that the UNKNOWN method traps.</para>
 <example>
-<title>Instructions - FORWARD</title>
+<title>Instructions &mdash; FORWARD</title>
 <programlisting>
 ::method unknown
   use arg msg, args
@@ -1146,7 +1146,7 @@ message that the UNKNOWN method traps.</para>
 methods, passing the same arguments. This is very common usage in object INIT
 methods.</para>
 <example>
-<title>Instructions - FORWARD</title>
+<title>Instructions &mdash; FORWARD</title>
 <programlisting>
 ::class  savings subclass account
 ::method init
@@ -1210,7 +1210,7 @@ GUARD resumes waiting.</para>
 <indexterm><primary>examples</primary>
 <secondary>GUARD instruction</secondary></indexterm>
 <example>
-<title>Instructions - GUARD</title>
+<title>Instructions &mdash; GUARD</title>
 <programlisting>
 <![CDATA[
 ::method c
@@ -1292,7 +1292,7 @@ if answer="YES" then say "OK!";  else say "Why not?"
 instruction to eliminate errors and possible confusion when IF constructs
 are nested, as in the following example.</para>
 <example>
-<title>Instructions - IF</title>
+<title>Instructions &mdash; IF</title>
 <programlisting>
 If answer = "YES" Then
   If name = "FRED" Then
@@ -1315,7 +1315,7 @@ will be returned as the condition result.  If all of the subexpressions evaluate
 to <computeroutput>1</computeroutput>, then the condition result is also
 <computeroutput>1</computeroutput>.</para>
 <example>
-<title>Instructions - IF</title>
+<title>Instructions &mdash; IF</title>
 <programlisting>
 If answer~datatype('w'), answer//2 = 0 Then
   say answer "is even"
@@ -1327,7 +1327,7 @@ Else
 <para>The example above is not the same as using the following</para>
 
 <example>
-<title>Instructions - IF</title>
+<title>Instructions &mdash; IF</title>
 <programlisting>
 If answer~datatype('w') &amp; answer//2 = 0 Then
   say answer "is even"
@@ -1395,7 +1395,7 @@ one was not supplied.</para>
 <indexterm><primary>examples</primary>
 <secondary>INTERPRET instruction</secondary></indexterm>
 <example>
-<title>Instructions - INTERPRET</title>
+<title>Instructions &mdash; INTERPRET</title>
 <programlisting>
 /* INTERPRET example */
 data="FRED"
@@ -1429,7 +1429,7 @@ can be helpful in interpreting the results you get.</para>
 <indexterm><primary>examples</primary>
 <secondary>INTERPRET instruction</secondary></indexterm>
 <example>
-<title>Instructions - INTERPRET</title>
+<title>Instructions &mdash; INTERPRET</title>
 <programlisting>
 /* Here is a small Rexx program. */
 Trace Int
@@ -1480,7 +1480,7 @@ displayed.</para></listitem>
 instead of the INTERPRET instruction. The following line could, therefore,
 have replaced line 5 in the previous example: </para>
 <example>
-<title>Instructions - INTERPRET</title>
+<title>Instructions &mdash; INTERPRET</title>
 <programlisting>
 say "Hello" value(indirect)"!"
 </programlisting>
@@ -1530,7 +1530,7 @@ by a LEAVE instruction).</para>
 <indexterm><primary>examples</primary>
 <secondary>ITERATE instruction</secondary></indexterm>
 <example>
-<title>Instructions - ITERATE</title>
+<title>Instructions &mdash; ITERATE</title>
 <programlisting>
 loop label MyLabelName i=1 to 4 /* label set to 'MYLABELNAME' */
   if i=2 then iterate
@@ -1605,7 +1605,7 @@ instruction of the selected block.</para>
 <indexterm><primary>examples</primary>
 <secondary>LEAVE instruction</secondary></indexterm>
 <example>
-<title>Instructions - LEAVE</title>
+<title>Instructions &mdash; LEAVE</title>
 <programlisting>
 max=5
 do label myDoBlock /* define a label 'MYDOBLOCK' */
@@ -1720,7 +1720,7 @@ target of a THEN or ELSE clause.</para>
 <indexterm><primary>examples</primary>
 <secondary>NOP instruction</secondary></indexterm>
 <example>
-<title>Instructions - NOP</title>
+<title>Instructions &mdash; NOP</title>
 <programlisting>
 Select
   when a=c then nop           /* Do nothing */
@@ -2196,7 +2196,7 @@ to the caller upon RETURN from the routine.</para>
 <indexterm><primary>examples</primary>
 <secondary>PROCEDURE instruction</secondary></indexterm>
 <example>
-<title>Instructions - PROCEDURE</title>
+<title>Instructions &mdash; PROCEDURE</title>
 <programlisting>
 /* This is the main Rexx program */
 j=1; z.1="a"
@@ -2218,7 +2218,7 @@ so <computeroutput>Z.1</computeroutput> is not exposed.</para>
 <para>The variables in a subsidiary list are also exposed from left to right.
 </para>
 <example>
-<title>Instructions - PROCEDURE</title>
+<title>Instructions &mdash; PROCEDURE</title>
 <programlisting>
 /* This is the main Rexx program */
 j=1;k=6;m=9
@@ -2236,7 +2236,7 @@ test: procedure expose (a)   /* Exposes A, J, K, and M     */
 at a time or, with the VALUE built-in function, to manipulate dynamically
 named variables.</para>
 <example>
-<title>Instructions - PROCEDURE</title>
+<title>Instructions &mdash; PROCEDURE</title>
 <programlisting>
 /* This is the main Rexx program */
 c=11; d=12; e=13
@@ -2261,7 +2261,7 @@ Playvars: procedure expose (showlist) f
 exposes this stem and all possible compound
 variables whose names begin with that stem. (See .)</para>
 <example>
-<title>Instructions - PROCEDURE</title>
+<title>Instructions &mdash; PROCEDURE</title>
 <programlisting>
 /* This is the main Rexx program */
 a.=11; i=13; j=15
@@ -2410,7 +2410,7 @@ a null string is stacked.</para>
 <indexterm><primary>examples</primary>
 <secondary>PUSH instruction</secondary></indexterm>
 <example>
-<title>Instructions - PUSH</title>
+<title>Instructions &mdash; PUSH</title>
 <programlisting>
 a="Fred"
 push       /* Puts a null line onto the queue */
@@ -2451,7 +2451,7 @@ a null string is queued.</para>
 <indexterm><primary>examples</primary>
 <secondary>QUEUE instruction</secondary></indexterm>
 <example>
-<title>Instructions - QUEUE</title>
+<title>Instructions &mdash; QUEUE</title>
 <programlisting>
 a="Toft"
 queue a 2  /* Enqueues "Toft 2" */
@@ -2596,7 +2596,7 @@ condition object.</para>
 <indexterm><primary>examples</primary>
 <secondary>RAISE instruction</secondary></indexterm>
 <example>
-<title>Instructions - RAISE</title>
+<title>Instructions &mdash; RAISE</title>
 <programlisting>
 raise syntax 40                      /* Raises syntax error 40                */
 raise syntax 40.12 array (1, number) /* Raises syntax error 40, subcode 12    */
@@ -2613,7 +2613,7 @@ on the RAISE instruction replaces the corresponding values for the currently
 trapped condition. A SYNTAX error occurs if no condition is currently trapped.
 </para>
 <example>
-<title>Instructions - RAISE</title>
+<title>Instructions &mdash; RAISE</title>
 <programlisting>
 signal on syntax
 a = "xyz"
@@ -2657,7 +2657,7 @@ must not specify a result expression.</para>
 <indexterm><primary>examples</primary>
 <secondary>REPLY instruction</secondary></indexterm>
 <example>
-<title>Instructions - REPLY</title>
+<title>Instructions &mdash; REPLY</title>
 <programlisting>
 reply 42           /* Returns control and a result    */
 call tidyup        /* Can run in parallel with sender */
@@ -2807,7 +2807,7 @@ for details of the LINEOUT function.</para>
 <indexterm><primary>examples</primary>
 <secondary>SAY instruction</secondary></indexterm>
 <example>
-<title>Instructions - SAY</title>
+<title>Instructions &mdash; SAY</title>
 <programlisting>
 <![CDATA[
 data=100
@@ -2829,7 +2829,8 @@ the output data remains a single logical line.</para></listitem>
 </orderedlist>
 </section>
 
-<section id="keySelect"><title>SELECT</title>
+<section id="keySelect" revisionflag="changed"><title>SELECT</title>
+<para>
 <indexterm><primary>SELECT instruction</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>flow of control</primary>
@@ -2838,6 +2839,8 @@ the output data remains a single logical line.</para></listitem>
 <secondary>SELECT</secondary></indexterm>
 <indexterm><primary>THEN</primary>
 <secondary>following WHEN clause</secondary></indexterm>
+<indexterm><primary>CASE subkeyword</primary>
+<secondary>in a SELECT instruction</secondary></indexterm>
 <indexterm><primary>WHEN subkeyword</primary>
 <secondary>in a SELECT instruction</secondary></indexterm>
 <indexterm><primary>THEN subkeyword</primary>
@@ -2867,30 +2870,65 @@ the output data remains a single logical line.</para></listitem>
 <imagedata fileref="images/keywords/select4.svg" scale="50" />
 </imageobject>
 </mediaobject>
+</para>
 
 <para>SELECT conditionally calls one of several alternative instructions.</para>
-<para>Each <emphasis role="italic">expression</emphasis>
-after a WHEN is evaluated in turn and must result
-in <computeroutput>0</computeroutput> or <computeroutput>1</computeroutput>.
-If the result is <computeroutput>1</computeroutput>, the instruction
-following the associated THEN (which can be a complex instruction such as
-IF, DO, LOOP, or SELECT) is processed and control is then passed to the END. If
-the result is <computeroutput>0</computeroutput>, control is passed to the
-next WHEN clause.</para>
-<para>If none of the WHEN expressions evaluates to
-<computeroutput>1</computeroutput>, control is passed
-to the instructions, if any, after OTHERWISE. In this situation, the absence
-of an OTHERWISE produces an error, however, you can omit the instruction list
-that follows OTHERWISE.</para>
-<indexterm><primary>SELECT instruction</primary>
-<secondary>example</secondary></indexterm>
-<indexterm><primary>examples</primary>
-<secondary>SELECT instruction</secondary></indexterm>
+<para>
+Evaluation of the <emphasis role="italic">expression</emphasis> list 
+after a WHEN is as follows:
+<variablelist>
+ <varlistentry>
+  <term><emphasis role="bold">SELECT without CASE</emphasis></term>
+  <listitem>
+   <para>The list of <emphasis role="italic">expression</emphasis>s
+   after a WHEN is evaluated left-to-right.
+   Each <emphasis role="italic">expression</emphasis> must evaluate to either
+   <computeroutput>.false</computeroutput> or <computeroutput>.true</computeroutput>.
+   Evaluation will stop with the first <computeroutput>.false</computeroutput>
+   result and <computeroutput>.false</computeroutput> will be returned as the
+   condition result.</para>
+   <para>
+   If all of the <emphasis role="italic">expression</emphasis>s evaluate
+   to <computeroutput>.true</computeroutput>, then the condition result is also
+   <computeroutput>.true</computeroutput>.</para>
+  </listitem>
+ </varlistentry>
+ <varlistentry>
+  <term><emphasis role="bold">SELECT CASE</emphasis></term>
+  <listitem>
+   <para>The list of <emphasis role="italic">expression</emphasis>s
+   after a WHEN is evaluated left-to-right.
+   Each <emphasis role="italic">expression</emphasis> is compared to
+   <emphasis role="italic">case_expression</emphasis>.
+   Evaluation will stop with the first <computeroutput>.true</computeroutput>
+   result and <computeroutput>.true</computeroutput> will be returned as the
+   condition result.</para>
+   <para>
+   If all comparisons evaluate to <computeroutput>.false</computeroutput>,
+   then the condition result is also <computeroutput>.false</computeroutput>.
+   </para>
+  </listitem>
+ </varlistentry>
+</variablelist>
+If the result from above is <computeroutput>.true</computeroutput>,
+the instruction following the associated THEN (which can be a complex
+instruction such as IF, DO, LOOP, or SELECT) is processed and control is
+then passed to the END.
+If the result is <computeroutput>.false</computeroutput>, control is
+passed to the next WHEN clause.
+</para>
+<para>If none of the WHEN results are <computeroutput>.true</computeroutput>,
+control is passed to the instructions, if any, after OTHERWISE.
+In this situation, the absence of an OTHERWISE produces an error, however,
+you can omit the instruction list that follows OTHERWISE.
+</para>
+
+<para>
 <example>
-<title>Instructions - SELECT</title>
-<programlisting>
-<![CDATA[
-balance=100
+<title>Instructions &mdash; SELECT</title>
+<indexterm><primary>SELECT instruction</primary><secondary>example</secondary></indexterm>
+<indexterm><primary>examples</primary><secondary>SELECT instruction</secondary></indexterm>
+<programlisting><![CDATA[balance=100
 check=50
 balance = balance - check
 Select
@@ -2907,24 +2945,12 @@ Select
     say "Oops!  Hope the bank does not close your account."
     end
 end  /* Select */
-]]>
-/</programlisting>
-</example>
+]]></programlisting></example>
+</para>
 
-<para>The <emphasis role="italic">expression</emphasis> may also be
-a list of expressions separated by ",".
-The list of expressions is evaluated left-to-right.
-Each subexpression must evaluate to
-either <computeroutput>0</computeroutput> or <computeroutput>1</computeroutput>.
-Evaluation will stop with
-the first <computeroutput>0</computeroutput> result and <computeroutput>0</computeroutput>
-will be returned as the condition result.  If all of the subexpressions evaluate
-to <computeroutput>1</computeroutput>, then the condition result is also
-<computeroutput>1</computeroutput>.</para>
 <example>
-<title>Instructions - SELECT</title>
-<programlisting>
-select
+<title>Instructions &mdash; SELECT</title>
+<programlisting><![CDATA[select
   when answer~datatype('w'), answer//2 = 0 Then
      say answer "is even"
   when answer~datatype('w'), answer//2 = 1 Then
@@ -2932,27 +2958,33 @@ select
   otherwise
      say answer "is not a number"
 end
-</programlisting>
+]]></programlisting>
 
 <para>The example above is not the same as using the following</para>
-
-<programlisting>
-select
-  when answer~datatype('w') &amp; answer//2 = 0 Then
+<programlisting><![CDATA[select
+  when answer~datatype('w') & answer//2 = 0 Then
      say answer "is even"
-  when answer~datatype('w') &amp; answer//2 = 1 Then
+  when answer~datatype('w') & answer//2 = 1 Then
      say answer "is odd"
   otherwise
      say answer "is not a number"
 end
-</programlisting>
-</example>
-<para>The logical &amp; operator will evaluate both terms of the operation, so the
+]]></programlisting></example>
+<para>The logical "&amp;" operator will evaluate both terms of the operation, so the
 term "answer//2" will result in a syntax error if answer is a non-numeric value.  With the
 list conditional form, evaluation will stop with the first false result, so the
 "answer//2" term will not be evaluated if the datatype test returns
-<computeroutput>0</computeroutput> (.false).
+<computeroutput>.false</computeroutput>.
 </para>
+
+<example>
+<title>Instructions &mdash; SELECT CASE</title>
+<programlisting><![CDATA[select case random(6)
+  when 1 then say "bad luck!"
+  when 5, 6 then say "great!"
+  otherwise say "try again"
+end
+]]></programlisting></example>
 
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
@@ -3067,7 +3099,7 @@ string or symbol taken as a constant.</para>
 <indexterm><primary>examples</primary>
 <secondary>SIGNAL instruction</secondary></indexterm>
 <example>
-<title>Instructions - SIGNAL</title>
+<title>Instructions &mdash; SIGNAL</title>
 <programlisting>
 Signal fred;  /* Transfer control to label FRED below */
 ....
@@ -3306,7 +3338,7 @@ function, and method calls. See
 <secondary>TRACE instruction</secondary></indexterm>
 <para>One of the most common traces you will use is: </para>
 <example>
-<title>Instructions - TRACE</title>
+<title>Instructions &mdash; TRACE</title>
 <programlisting>
 TRACE ?R
 /* Interactive debugging is switched on if it was off, */
@@ -3579,7 +3611,7 @@ additional arguments.</para>
 <indexterm><primary>examples</primary>
 <secondary>USE instruction</secondary></indexterm>
 <example>
-<title>Instructions - USE</title>
+<title>Instructions &mdash; USE</title>
 <programlisting>
 /* USE Example                       */
 /* FRED("Ogof X",1,5) calls function */
@@ -3619,7 +3651,7 @@ Fred: use strict arg string, num1, num2=4
 STRICT keyword on the USE instruction will raise a syntax error for any other combination of
 arguments.</para>
 <example>
-<title>Instructions - USE</title>
+<title>Instructions &mdash; USE</title>
 <programlisting>
 call test "one"
 call test "one", "two"
@@ -3655,7 +3687,7 @@ There are [5] argument(s); v1,v2=[one,zwei]
 <para>The assignment targets may be any term that can be on the left side of
 an assignment statement.</para>
 <example>
-<title>Instructions - USE</title>
+<title>Instructions &mdash; USE</title>
 <programlisting>
 expose myArray myDirectory
 use arg myArray[1], myDirectory~name
@@ -3693,7 +3725,7 @@ will become object variables.
 <indexterm><primary>examples</primary><secondary>USE LOCAL instruction</secondary></indexterm>
 </para>
 <example>
-<title>Instructions - USE LOCAL</title>
+<title>Instructions &mdash; USE LOCAL</title>
 <programlisting>::method init
 USE LOCAL x y z   - - only x, y, and z are local
                   - - all other become object variables

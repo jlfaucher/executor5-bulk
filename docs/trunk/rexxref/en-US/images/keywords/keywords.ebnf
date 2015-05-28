@@ -82,7 +82,7 @@ say ::= 'SAY' expression? ';'
 
 call_lineout ::= 'CALL' 'LINEOUT' ',' expression? ';'
 
-select ::= 'SELECT' ( 'LABEL' name )? ';'
+select ::= 'SELECT' ( 'LABEL' name )? ( 'CASE' case_expression )? ';'
 select2 ::= ( 'WHEN' expression (',' expression)* ';'? 'THEN' ';'? instruction ';' )+
 select3 ::= ( 'OTHERWISE' ';'? ( instruction ';' )* )?
 select4 ::= 'END' name? ';'
