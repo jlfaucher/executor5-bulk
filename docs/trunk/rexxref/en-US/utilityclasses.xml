@@ -668,7 +668,7 @@ instance.  The receiver DateTime object is not changed.  The TimeSpan may be eit
 <indexterm><primary>examples</primary>
 <secondary>arithmetic methods of DateTime class</secondary></indexterm>
 <example>
-<title>Class DATETIME - arithmetic</title>
+<title>Class DateTime &mdash; arithmetic</title>
 <programlisting>
 <![CDATA[
 t = .dateTime~new~timeOfDay  -- returns TimeSpan for current time.
@@ -924,7 +924,7 @@ result in years being subtracted from the DateTime value.
 a non-leap year, the day will be rolled back to the 28th.
 </para>
 <example>
-<title>Class DATETIME - addYears method</title>
+<title>Class DateTime &mdash; addYears method</title>
 <programlisting>
 <![CDATA[
 date = .DateTime~new(2008, 2, 29)
@@ -978,7 +978,7 @@ Negative values
 result in days being subtracted from the DateTime value.
 </para>
 <example>
-<title>Class DATETIME - addDays method</title>
+<title>Class DateTime &mdash; addDays method</title>
 <programlisting>
 <![CDATA[
 date = .DateTime~new(2008, 2, 29)
@@ -3864,81 +3864,79 @@ longer string objects because it creates fewer intermediate objects.
 </para>
 
 <table id="ooRexxMutableBufferClass" frame="all" pgwide="0">
-<title>ooRexx MutableBuffer Class</title>
-<tgroup cols="3" align="left" colsep="1" rowsep="1">
-<colspec colname="c1" />
-<colspec colname="c2" />
-<colspec colname="c3" />
+<title>MutableBuffer Class</title>
+<tgroup cols="1">
 <tbody>
-   <row>
-      <entry namest="c1" nameend="c3" align="center"><emphasis role="bold">Object</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c3" align="center">&#x2193;</entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c3" align="center"><emphasis role="bold">MutableBuffer</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c3" align="left">
-<screen>new
-</screen>
-      </entry>
-   </row>
-   <row>
-      <entry>
-<screen>append
-caselessChangeStr
-caselessCountStr
-caselessLastPos
-caselessMatch
-caselessMatchChar
-caselessPos
-caselessWordPos
-changeStr
-countStr
-delete
-delStr
-delWord
-</screen>
-      </entry>
-      <entry>
-<screen>getBufferSize
-insert
-lastPos
-length
-lower
-makeArray
-match
-matchChar
-overlay
-pos
-replaceAt
-setBufferSize
-space
-</screen>
-      </entry>
-      <entry>
-<screen>string
-subChar
-subStr
-subWord
-subWords
-translate
-upper
-verify
-word
-wordIndex
-wordLength
-wordPos
-words
-</screen>
-      </entry>
-   </row>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+ <row><entry align="center">Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">MutableBuffer</emphasis></entry>
+ </row>
+ <row><entry>
+  <simplelist>
+   <member><xref linkend="mthMutableBufferNew" xrefstyle="template:new (class method)"/></member>
+  </simplelist>
+ </entry></row>
+ <row><entry>
+  <simplelist columns="3">
+   <member><xref linkend="mthMutableBufferBrackets" xrefstyle="template:[]"/></member>
+   <member><xref linkend="mthMutableBufferBracketsEqual" xrefstyle="template:[]="/></member>
+   <member><xref linkend="mthMutableBufferAppend" xrefstyle="template:append"/></member>
+   <member><xref linkend="mthMutableBufferCaselessChangeStr" xrefstyle="template:caselessChangeStr"/></member>
+   <member><xref linkend="mthMutableBufferCaselessContains" xrefstyle="template:caselessContains"/></member>
+   <member><xref linkend="mthMutableBufferCaselessContainsWord" xrefstyle="template:caselessContainsWord"/></member>
+   <member><xref linkend="mthMutableBufferCaselessCountStr" xrefstyle="template:caselessCountStr"/></member>
+   <member><xref linkend="mthMutableBufferCaselessEndsWith" xrefstyle="template:caselessEndsWith"/></member>
+   <member><xref linkend="mthMutableBufferCaselessLastPos" xrefstyle="template:caselessLastPos"/></member>
+   <member><xref linkend="mthMutableBufferCaselessMatch" xrefstyle="template:caselessMatch"/></member>
+   <member><xref linkend="mthMutableBufferCaselessMatchChar" xrefstyle="template:caselessMatchChar"/></member>
+   <member><xref linkend="mthMutableBufferCaselessPos" xrefstyle="template:caselessPos"/></member>
+   <member><xref linkend="mthMutableBufferCaselessStartsWith" xrefstyle="template:caselessStartsWith"/></member>
+   <member><xref linkend="mthMutableBufferCaselessWordPos" xrefstyle="template:caselessWordPos"/></member>
+   <member><xref linkend="mthMutableBufferChangeStr" xrefstyle="template:changeStr"/></member>
+   <member><xref linkend="mthMutableBufferContains" xrefstyle="template:contains"/></member>
+   <member><xref linkend="mthMutableBufferContainsWord" xrefstyle="template:containsWord"/></member>
+   <member><xref linkend="mthMutableBufferCountStr" xrefstyle="template:countStr"/></member>
+   <member><xref linkend="mthMutableBufferDelete" xrefstyle="template:delete"/></member>
+   <member><xref linkend="mthMutableBufferDelStr" xrefstyle="template:delStr"/></member>
+   <member><xref linkend="mthMutableBufferDelWord" xrefstyle="template:delWord"/></member>
+   <member><xref linkend="mthMutableBufferEndsWith" xrefstyle="template:endsWith"/></member>
+   <member><xref linkend="mthMutableBufferGetBufferSize" xrefstyle="template:getBufferSize"/></member>
+   <member><xref linkend="mthMutableBufferInsert" xrefstyle="template:insert"/></member>
+   <member><xref linkend="mthMutableBufferLastPos" xrefstyle="template:lastPos"/></member>
+   <member><xref linkend="mthMutableBufferLength" xrefstyle="template:length"/></member>
+   <member><xref linkend="mthMutableBufferLower" xrefstyle="template:lower"/></member>
+   <member><xref linkend="mthMutableBufferMakeArray" xrefstyle="template:makeArray"/></member>
+   <member><xref linkend="mthMutableBufferMatch" xrefstyle="template:match"/></member>
+   <member><xref linkend="mthMutableBufferMatchChar" xrefstyle="template:matchChar"/></member>
+   <member><xref linkend="mthMutableBufferOverlay" xrefstyle="template:overlay"/></member>
+   <member><xref linkend="mthMutableBufferPos" xrefstyle="template:pos"/></member>
+   <member><xref linkend="mthMutableBufferReplaceAt" xrefstyle="template:replaceAt"/></member>
+   <member><xref linkend="mthMutableBufferSetBufferSize" xrefstyle="template:setBufferSize"/></member>
+   <member><xref linkend="mthMutableBufferSetText" xrefstyle="template:setText"/></member>
+   <member><xref linkend="mthMutableBufferSpace" xrefstyle="template:space"/></member>
+   <member><xref linkend="mthMutableBufferStartsWith" xrefstyle="template:startsWith"/></member>
+   <member><xref linkend="mthMutableBufferString" xrefstyle="template:string"/></member>
+   <member><xref linkend="mthMutableBufferSubChar" xrefstyle="template:subChar"/></member>
+   <member><xref linkend="mthMutableBufferSubstr" xrefstyle="template:substr"/></member>
+   <member><xref linkend="mthMutableBufferSubWord" xrefstyle="template:subWord"/></member>
+   <member><xref linkend="mthMutableBufferSubWords" xrefstyle="template:subWords"/></member>
+   <member><xref linkend="mthMutableBufferTranslate" xrefstyle="template:translate"/></member>
+   <member><xref linkend="mthMutableBufferUpper" xrefstyle="template:upper"/></member>
+   <member><xref linkend="mthMutableBufferVerify" xrefstyle="template:verify"/></member>
+   <member><xref linkend="mthMutableBufferWord" xrefstyle="template:word"/></member>
+   <member><xref linkend="mthMutableBufferWordIndex" xrefstyle="template:wordIndex"/></member>
+   <member><xref linkend="mthMutableBufferWordLength" xrefstyle="template:wordLength"/></member>
+   <member><xref linkend="mthMutableBufferWordPos" xrefstyle="template:wordPos"/></member>
+   <member><xref linkend="mthMutableBufferWords" xrefstyle="template:words"/></member>
+  </simplelist>
+ </entry></row>
 </tbody>
 </tgroup>
 </table>
 
+<!-- @@ remove, just put link into table above
 <note><title>Note</title>
 <para>The MutableBuffer class also has available class methods that its
 metaclass, the Class class (<xref linkend="clsClass" />), defines.</para></note>
@@ -3950,6 +3948,7 @@ Object class (<xref linkend="clsObject" />).</para>
 <xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 
 </section>
+-->
 
 <section id="mthMutableBufferNew"><title>new</title>
 <indexterm><primary>new method</primary>
@@ -3970,7 +3969,85 @@ size increases to the length of <emphasis>string</emphasis> if the string
 does not fit into the buffer.</para>
 </section>
 
-<section id="mthMutableBufferAppend"><title>append</title>
+<!-- Class MutableBuffer - method [] ======================== --> 
+<section id="mthMutableBufferBrackets" revisionflag="added"><title>[]</title>
+<para>
+<indexterm><primary>[] method</primary><secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>[] method</secondary><tertiary>of MutableBuffer class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/mutablebuffer_brackets.svg" scale="50" />
+</imageobject></mediaobject>
+</para>
+<para>Returns a substring of the receiving buffer that begins at the
+<emphasis role="italic">n</emphasis>'th character and is of length
+<emphasis role="italic">length</emphasis>.
+The <emphasis role="italic">n</emphasis> must be a positive whole number.
+If <emphasis role="italic">length</emphasis> is omitted, it defaults to
+<computeroutput>1</computeroutput>.
+If <emphasis role="italic">n</emphasis> is greater than the length of the
+receiving string, a null string is returned.
+</para>
+<para>See also
+<itemizedlist spacing="compact">
+ <listitem>
+  <para>MutableBuffer method <xref linkend="mthMutableBufferSubstr" xrefstyle="template:substr"/> and</para>
+ </listitem>
+ <listitem>
+  <para>MutableBuffer method <xref linkend="mthMutableBufferSubChar" xrefstyle="template:subChar"/>.</para>
+ </listitem>
+</itemizedlist>
+</para>
+<para><example>
+<title>Class MutableBuffer &mdash; [] method</title>
+<programlisting><![CDATA[s = .MutableBuffer~new(xrange("a", "z"))
+say s[5]             --> "e"
+say s[18, 3]         --> "rst"
+say s[25,10]         --> "yz"
+say s[30]            --> ""
+]]></programlisting></example></para>
+</section>
+
+<!-- Class MutableBuffer - method []= ======================== --> 
+<section id="mthMutableBufferBracketsEqual" revisionflag="added"><title>[]=</title>
+<para>
+<indexterm><primary>[]= method</primary><secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>[]= method</secondary><tertiary>of MutableBuffer class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/mutablebuffer_bracketsequal.svg" scale="50" />
+</imageobject></mediaobject>
+</para>
+<para>Returns the receiving buffer with the characters from the
+<emphasis role="italic">n</emphasis>th character for <emphasis role="italic">length</emphasis>
+characters replaced with
+<emphasis role="italic">new</emphasis>. The replacement position and length can
+extend beyond the end of the receiving string.
+The starting position, <emphasis role="italic">n</emphasis>, is required and must be a positive whole number. The
+<emphasis role="italic">length</emphasis> is optional and must be a positive whole number or zero. If <emphasis
+role="italic">length</emphasis> is omitted, it defaults to the length of <emphasis role="italic">new</emphasis>.
+</para>
+<para>
+If <emphasis role="italic">n</emphasis> is greater than the length of the receiving string, padding is added
+before
+the <emphasis role="italic">new</emphasis> string. The default <emphasis role="italic">pad</emphasis> character is a
+blank.
+</para>
+<para>See also the equivalent MutableBuffer method
+<xref linkend="mthMutableBufferReplaceAt" xrefstyle="template:replaceAt"/>.
+</para>
+<para><example>
+<title>Class MutableBuffer &mdash; []= method</title>
+<programlisting><![CDATA[s = .MutableBuffer~new(xrange("a", "z"))
+s[5] = "E"            --> s = "abcdEfghijklmnopqrstuvwxyz"
+s[5] = "XXXX"         --> s = "abcdXXXXijklmnopqrstuvwxyz"
+s[5] = ""             --> s = "abcdXXXXijklmnopqrstuvwxyz"
+s[5, 1] = "="         --> s = "abcd=XXXijklmnopqrstuvwxyz"
+s[5, 4] = "="         --> s = "abcd=ijklmnopqrstuvwxyz"
+s[10, 2] = "REPLACE"  --> s = "abcd=ijklREPLACEopqrstuvwxyz"
+s[4, 99] = ""         --> s = "abc"  
+]]></programlisting></example></para>
+</section>
+
+<section id="mthMutableBufferAppend" revisionflag="changed"><title>append</title>
 <indexterm><primary>append method</primary>
 <secondary>of MutableBuffer class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -3983,8 +4060,9 @@ does not fit into the buffer.</para>
 </imageobject>
 </mediaobject>
 
-<para>Appends <emphasis role="italic">string</emphasis> to the buffer content. The buffer size
-is increased if necessary.</para>
+<para>Returns the receiving buffer with all <emphasis role="italic">string</emphasis>s
+appended to the buffer content.
+The buffer size is increased if necessary.</para>
 </section>
 
 
@@ -4013,6 +4091,102 @@ using caseless comparisons.
 </para>
 </section>
 
+<!-- Class MutableBuffer - method caselessContains ======================== --> 
+<section id="mthMutableBufferCaselessContains" revisionflag="added"><title>caselessContains</title>
+<para>
+<indexterm><primary>caselessContains method</primary><secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>caselessContains method</secondary><tertiary>of MutableBuffer class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/mutablebuffer_caselesscontains.svg" scale="50" />
+</imageobject></mediaobject>
+</para>
+<para>Returns .true ("1") if the receiving buffer contains the
+<emphasis role="italic">other</emphasis> string.
+It returns .false ("0") if <emphasis role="italic">other</emphasis> is
+the null string or is not found within the receiving buffer.
+The search is performed using caseless comparisons.
+</para>
+<para>By default, the search starts at the first character of the
+receiving buffer and continues to the end of the buffer.
+You can override this by specifying <emphasis role="italic">start</emphasis>,
+the point at which the search starts, and <emphasis role="italic">length</emphasis>,
+the bounding limit for the search.
+If specified, <emphasis role="italic">start</emphasis> must be a positive
+whole number and <emphasis role="italic">length</emphasis> must be
+a non-negative whole number.
+</para>
+<para>See also
+<itemizedlist spacing="compact">
+ <listitem>
+  <para>MutableBuffer method <xref linkend="mthMutableBufferContains" xrefstyle="template:contains"/>,</para>
+ </listitem>
+ <listitem>
+  <para>MutableBuffer method <xref linkend="mthMutableBufferCaselessStartsWith" xrefstyle="template:caselessStartsWith"/>,</para>
+ </listitem>
+ <listitem>
+  <para>MutableBuffer method <xref linkend="mthMutableBufferCaselessEndsWith" xrefstyle="template:caselessEndsWith"/>, and</para>
+ </listitem>
+ <listitem>
+  <para>MutableBuffer method <xref linkend="mthMutableBufferCaselessPos" xrefstyle="template:caselessPos"/>.</para>
+ </listitem>
+</itemizedlist>
+</para>
+<para><example>
+<title>Class MutableBuffer &mdash; caselessContains method</title>
+<programlisting><![CDATA[say .mutablebuffer~new('-abcdef-')~caselessContains('EF')       --> 1
+say .mutablebuffer~new('-abcdef-')~caselessContains('-', 2, 6)  --> 0
+]]></programlisting></example></para>
+</section>
+
+<!-- Class MutableBuffer - method caselessContainsWord ======================== --> 
+<section id="mthMutableBufferCaselessContainsWord" revisionflag="added"><title>caselessContainsWord</title>
+<para>
+<indexterm><primary>caselessContainsWord method</primary><secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>caselessContainsWord method</secondary><tertiary>of MutableBuffer class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/mutablebuffer_caselesscontainsword.svg" scale="50" />
+</imageobject></mediaobject>
+</para>
+<para>Returns .true ("1") if <emphasis role="italic">phrase</emphasis>
+is found in the receiving buffer.
+Returns .false ("0") if <emphasis role="italic">phrase</emphasis>
+contains no words or if <emphasis role="italic">phrase</emphasis>
+is not found.
+Word matches are made independent of case.
+Multiple whitespace characters between words in either
+<emphasis role="italic">phrase</emphasis> or the receiving buffer are
+treated as a single blank for the comparison, but, otherwise, the words
+must match, except for case.</para>
+<para>By default the search starts at the first word in the receiving
+buffer.
+You can override this by specifying <emphasis role="italic">start</emphasis>
+(which must be positive whole number),
+the word at which the search is to be started.</para>
+<para>See also
+<itemizedlist spacing="compact">
+ <listitem>
+  <para>MutableBuffer method <xref linkend="mthMutableBufferContainsWord" xrefstyle="template:containsWord"/> and</para>
+ </listitem>
+ <listitem>
+  <para>MutableBuffer method <xref linkend="mthMutableBufferCaselessWordPos" xrefstyle="template:caselessWordPos"/>
+  (caselessContainsWord returns .false ("0") exactly if caselessWordPos would have returned
+  <computeroutput>"0"</computeroutput>.)</para>
+ </listitem>
+</itemizedlist>
+</para>
+<para><example>
+<title>Class MutableBuffer &mdash; caselessContainsWord method</title>
+<programlisting><![CDATA[good = .MutableBuffer~new("Now is the time for all good men")
+say good~caselessContainsWord("the")              --> .true
+say good~caselessContainsWord("The")              --> .true
+say good~caselessContainsWord("is the")           --> .true
+say good~caselessContainsWord("is   the ")        --> .true
+say good~caselessContainsWord("is time")          --> .false
+say good~caselessContainsWord("time")             --> .true
+say good~caselessContainsWord("time", 5)          --> .false
+]]></programlisting></example></para>
+</section>
+
 <section id="mthMutableBufferCaselessCountStr"><title>caselessCountStr</title>
 <indexterm><primary>caselessCountStr method</primary>
 <secondary>of MutableBuffer class</secondary></indexterm>
@@ -4037,6 +4211,38 @@ do not overlap. All matches are made using caseless comparisons.
 </para>
 </section>
 
+<!-- Class MutableBuffer - method caselessEndsWith ======================== --> 
+<section id="mthMutableBufferCaselessEndsWith" revisionflag="added"><title>caselessEndsWith</title>
+<para>
+<indexterm><primary>caselessEndsWith method</primary><secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>caselessEndsWith method</secondary><tertiary>of MutableBuffer class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/mutablebuffer_caselessendswith.svg" scale="50" />
+</imageobject></mediaobject>
+</para>
+<para>Returns .true ("1") if the characters of the <emphasis role="italic">other</emphasis> match the
+characters at the end of the target buffer.
+Returns .false ("0") if the characters are not a match, or if
+<emphasis role="italic">other</emphasis> is the null string.
+The match is made using caseless comparisons.
+</para>
+<para>The caselessEndsWith method is useful for efficient string parsing as it does not
+require new string objects be extracted from the target buffer.
+</para>
+<para>See also
+<itemizedlist spacing="compact">
+ <listitem>
+  <para>MutableBuffer method <xref linkend="mthMutableBufferCaselessStartsWith" xrefstyle="template:caselessStartsWith"/>,</para>
+ </listitem>
+ <listitem>
+  <para>MutableBuffer method <xref linkend="mthMutableBufferEndsWith" xrefstyle="template:endsWith"/>, and</para>
+ </listitem>
+ <listitem>
+  <para>MutableBuffer method <xref linkend="mthMutableBufferCaselessMatch" xrefstyle="template:caselessMatch"/>.</para>
+ </listitem>
+</itemizedlist>
+</para>
+</section>
 
 <section id="mthMutableBufferCaselessLastPos"><title>caselessLastPos</title>
 <indexterm><primary>caselessLastPos method</primary>
@@ -4058,7 +4264,7 @@ do not overlap. All matches are made using caseless comparisons.
 
 <para>Returns the position of the last occurrence of a string,
 <emphasis role="italic">needle</emphasis>,
-in the receiving buffer. (See also <xref linkend="mthMutableBufferPos" />.)
+in the receiving buffer.
 It returns <computeroutput>0</computeroutput> if
 <emphasis role="italic">needle</emphasis> is the null string or not found.
 By default, the search starts at the last character of the receiving buffer and
@@ -4073,6 +4279,16 @@ than that value or omitted. The <emphasis role="italic">length</emphasis> must b
 non-negative whole number and defaults to <emphasis
 role="italic">start</emphasis>.  The search is performed using caseless
 comparisons.
+</para>
+<para>See also
+<itemizedlist spacing="compact">
+ <listitem>
+  <para>MutableBuffer method <xref linkend="mthMutableBufferLastPos" xrefstyle="template:lastPos"/> and</para>
+ </listitem>
+ <listitem>
+  <para>MutableBuffer method <xref linkend="mthMutableBufferCaselessPos" xrefstyle="template:caselessPos"/>.</para>
+ </listitem>
+</itemizedlist>
 </para>
 </section>
 
@@ -4096,10 +4312,9 @@ comparisons.
 </mediaobject>
 
 <para>Returns .true ("1") if the characters of the <emphasis role="italic">other</emphasis> match the
-characters of the target buffer beginning at position <emphasis role="italic">start</emphasis>.  Return .false
+characters of the target buffer beginning at position <emphasis role="italic">start</emphasis>.  Returns .false
 ("0") if the characters are not a match.  The matching is performed using caseless comparisons.
-<emphasis role="italic">start</emphasis> must be a positive whole number less than or equal to the length of
-the target buffer.
+<emphasis role="italic">start</emphasis> must be a positive whole number.
 </para>
 <para>If <emphasis role="italic">n</emphasis> is specified, the match will be performed starting with character
 <emphasis role="italic">n</emphasis> of <emphasis role="italic">other</emphasis>.  The default value for
@@ -4138,7 +4353,7 @@ not require new string objects be extracted from the target string.
 character of the string <emphasis role="italic">chars</emphasis>.  Returns .false ("0") if the character does not
 match any of the characters in the reference set.  The match is made using caseless comparisons.
 The argument <emphasis role="italic">n</emphasis> must be
-a positive whole number less than or equal to the length of the target MutableBuffer.</para>
+a positive whole number.</para>
 </section>
 
 <section id="mthMutableBufferCaselessPos"><title>caselessPos</title>
@@ -4177,6 +4392,39 @@ and continues to the end of the buffer.  You can override this by specifying
 If specified, <emphasis role="italic">start</emphasis> must be a positive
 whole number and <emphasis role="italic">length</emphasis> must be
 a non-negative whole number.
+</para>
+</section>
+
+<!-- Class MutableBuffer - method caselessStartsWith ======================== --> 
+<section id="mthMutableBufferCaselessStartsWith" revisionflag="added"><title>caselessStartsWith</title>
+<para>
+<indexterm><primary>caselessStartsWith method</primary><secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>caselessStartsWith method</secondary><tertiary>of MutableBuffer class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/mutablebuffer_caselessstartswith.svg" scale="50" />
+</imageobject></mediaobject>
+</para>
+<para>Returns .true ("1") if the characters of the <emphasis role="italic">other</emphasis> match the
+characters at the start of the target buffer.
+Returns .false ("0") if the characters are not a match, or if
+<emphasis role="italic">other</emphasis> is the null string.
+The match is made using caseless comparisons.
+</para>
+<para>The caselessStartsWith method is useful for efficient string parsing as it does not
+require new string objects be extracted from the target buffer.
+</para>
+<para>See also
+<itemizedlist spacing="compact">
+ <listitem>
+  <para>MutableBuffer method <xref linkend="mthMutableBufferStartsWith" xrefstyle="template:startsWith"/>,</para>
+ </listitem>
+ <listitem>
+  <para>MutableBuffer method <xref linkend="mthMutableBufferCaselessEndsWith" xrefstyle="template:caselessEndsWith"/>, and</para>
+ </listitem>
+ <listitem>
+  <para>MutableBuffer method <xref linkend="mthMutableBufferCaselessMatch" xrefstyle="template:caselessMatch"/>.</para>
+ </listitem>
+</itemizedlist>
 </para>
 </section>
 
@@ -4235,6 +4483,103 @@ is specified, it must be a positive, whole number that gives the maximum number 
 occurrences to be replaced.</para>
 </section>
 
+
+<!-- Class MutableBuffer - method contains ======================== --> 
+<section id="mthMutableBufferContains" revisionflag="added"><title>contains</title>
+<para>
+<indexterm><primary>contains method</primary><secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>contains method</secondary><tertiary>of MutableBuffer class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/mutablebuffer_contains.svg" scale="50" />
+</imageobject></mediaobject>
+</para>
+<para>Returns .true ("1") if the receiving buffer contains the
+<emphasis role="italic">other</emphasis> string.
+It returns .false ("0") if <emphasis role="italic">other</emphasis> is
+the null string or is not found within the receiving buffer.
+</para>
+<para>By default, the search starts at the first character of the
+receiving buffer and continues to the end of the buffer.
+You can override this by specifying <emphasis role="italic">start</emphasis>,
+the point at which the search starts, and <emphasis role="italic">length</emphasis>,
+the bounding limit for the search.
+If specified, <emphasis role="italic">start</emphasis> must be a positive
+whole number and <emphasis role="italic">length</emphasis> must be
+a non-negative whole number.
+</para>
+<para>See also
+<itemizedlist spacing="compact">
+ <listitem>
+  <para>MutableBuffer method <xref linkend="mthMutableBufferCaselessContains" xrefstyle="template:caselessContains"/>,</para>
+ </listitem>
+ <listitem>
+  <para>MutableBuffer method <xref linkend="mthMutableBufferStartsWith" xrefstyle="template:startsWith"/>,</para>
+ </listitem>
+ <listitem>
+  <para>MutableBuffer method <xref linkend="mthMutableBufferEndsWith" xrefstyle="template:endsWith"/>, and</para>
+ </listitem>
+ <listitem>
+  <para>MutableBuffer method <xref linkend="mthMutableBufferPos" xrefstyle="template:pos"/>.</para>
+ </listitem>
+</itemizedlist>
+</para>
+<para><example>
+<title>Class MutableBuffer &mdash; caselessContains method</title>
+<programlisting><![CDATA[say .mutablebuffer~new('-abcdef-')~contains('ef')       --> 1
+say .mutablebuffer~new('-abcdef-')~contains('-', 2, 6)  --> 0
+]]></programlisting></example></para>
+</section>
+
+
+<!-- Class MutableBuffer - method containsWord ======================== --> 
+<section id="mthMutableBufferContainsWord" revisionflag="added"><title>containsWord</title>
+<para>
+<indexterm><primary>containsWord method</primary><secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>containsWord method</secondary><tertiary>of MutableBuffer class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/mutablebuffer_containsword.svg" scale="50" />
+</imageobject></mediaobject>
+</para>
+<para>Returns .true ("1") if <emphasis role="italic">phrase</emphasis>
+is found in the receiving buffer.
+Returns .false ("0") if <emphasis role="italic">phrase</emphasis>
+contains no words or if <emphasis role="italic">phrase</emphasis>
+is not found.
+Multiple whitespace characters between words in either
+<emphasis role="italic">phrase</emphasis> or the receiving buffer are
+treated as a single blank for the comparison, but, otherwise, the words
+must match exactly.</para>
+<para>By default the search starts at the first word in the receiving
+buffer.
+You can override this by specifying <emphasis role="italic">start</emphasis>
+(which must be positive whole number),
+the word at which the search is to be started.</para>
+<para>See also
+<itemizedlist spacing="compact">
+ <listitem>
+  <para>MutableBuffer method <xref linkend="mthMutableBufferCaselessContainsWord" xrefstyle="template:caselessContainsWord"/> and</para>
+ </listitem>
+ <listitem>
+  <para>MutableBuffer method <xref linkend="mthMutableBufferWordPos" xrefstyle="template:wordPos"/>
+  (containsWord returns .false ("0") exactly if wordPos would have returned
+  <computeroutput>"0"</computeroutput>.)</para>
+ </listitem>
+</itemizedlist>
+</para>
+<para><example>
+<title>Class MutableBuffer &mdash; containsWord method</title>
+<programlisting><![CDATA[good = .MutableBuffer~new("Now is the time for all good men")
+say good~containsWord("the")              --> .true
+say good~containsWord("The")              --> .false
+say good~containsWord("is the")           --> .true
+say good~containsWord("is   the ")        --> .true
+say good~containsWord("is time")          --> .false
+say good~containsWord("time")             --> .true
+say good~containsWord("time", 5)          --> .false
+]]></programlisting></example></para>
+</section>
+
+
 <section id="mthMutableBufferCountStr"><title>countStr</title>
 <indexterm><primary>countStr method</primary>
 <secondary>of MutableBuffer class</secondary></indexterm>
@@ -4277,11 +4622,11 @@ the length of the buffer or zero, the method does not modify the
 buffer content.</para>
 </section>
 
-<section id="mthMutableBufferDelstr"><title>delstr</title>
-<indexterm><primary>delstr method</primary>
+<section id="mthMutableBufferDelStr"><title>delStr</title>
+<indexterm><primary>delStr method</primary>
 <secondary>of MutableBuffer class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>delstr method</secondary>
+<secondary>delStr method</secondary>
 <tertiary>of MutableBuffer class</tertiary></indexterm>
 
 <mediaobject>
@@ -4298,7 +4643,7 @@ the <emphasis>n</emphasis>'th character). The length must be a positive integer
 or zero. The <emphasis>n</emphasis> must be a positive integer. If
 <emphasis>n</emphasis> is greater than
 the length of the buffer or zero, the method does not modify the
-buffer content.  The delstr() method is the same as the delete() method.  It
+buffer content.  The delStr() method is the same as the delete() method.  It
 is provided for polymorphism with the String class.
 </para>
 </section>
@@ -4321,7 +4666,7 @@ is provided for polymorphism with the String class.
 </imageobject>
 </mediaobject>
 
-<para>Deletes a substring from the MutableBuffer the substring that starts at the
+<para>Deletes a substring from the MutableBuffer that starts at the
 <emphasis role="italic">n</emphasis>th word and is of
 <emphasis role="italic">length</emphasis> whitespace-delimited words. If you
 omit
@@ -4341,11 +4686,43 @@ preceding the first word involved.
 </para>
 </section>
 
+<!-- Class MutableBuffer - method endsWith ======================== --> 
+<section id="mthMutableBufferEndsWith" revisionflag="added"><title>endsWith</title>
+<para>
+<indexterm><primary>endsWith method</primary><secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>endsWith method</secondary><tertiary>of MutableBuffer class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/mutablebuffer_endswith.svg" scale="50" />
+</imageobject></mediaobject>
+</para>
+<para>Returns .true ("1") if the characters of the <emphasis role="italic">other</emphasis> match the
+characters at the end of the target buffer.
+Returns .false ("0") if the characters are not a match, or if
+<emphasis role="italic">other</emphasis> is the null string.
+</para>
+<para>The endsWith method is useful for efficient string parsing as it does not
+require new string objects be extracted from the target buffer.
+</para>
+<para>See also
+<itemizedlist spacing="compact">
+ <listitem>
+  <para>MutableBuffer method <xref linkend="mthMutableBufferStartsWith" xrefstyle="template:startsWith"/>,</para>
+ </listitem>
+ <listitem>
+  <para>MutableBuffer method <xref linkend="mthMutableBufferCaselessEndsWith" xrefstyle="template:caselessEndsWith"/>, and</para>
+ </listitem>
+ <listitem>
+  <para>MutableBuffer method <xref linkend="mthMutableBufferMatch" xrefstyle="template:match"/>.</para>
+ </listitem>
+</itemizedlist>
+</para>
+</section>
+
 <section id="mthMutableBufferGetBufferSize"><title>getBufferSize</title>
 <indexterm><primary>getBufferSize method</primary>
 <secondary>of MutableBuffer class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>getBufferSizemethod</secondary>
+<secondary>getBufferSize method</secondary>
 <tertiary>of MutableBuffer class</tertiary></indexterm>
 
 <mediaobject>
@@ -4403,28 +4780,43 @@ to length <emphasis role="italic">length</emphasis>. The default
 
 <para>Returns the position of the last occurrence of a string,
 <emphasis role="italic">needle</emphasis>,
-in the receiving buffer. (See also <xref linkend="mthMutableBufferPos" />.) It
-returns <computeroutput>0</computeroutput> if
+in the receiving buffer.
+It returns <computeroutput>0</computeroutput> if
 <emphasis role="italic">needle</emphasis> is the null string or not found.
-By default, the search starts at the last character of the receiving buffer
-and scans backward. You can override this by specifying
-<emphasis role="italic">start</emphasis>, the point at which the
-backward scan starts. The <emphasis role="italic">start</emphasis> must be a
-positive whole number and defaults to
-<computeroutput>receiving_buffer~length</computeroutput> if larger than that
-value or omitted.</para>
+By default, the search starts at the last character of the receiving buffer and
+scans backward to the beginning of the string. You can override this by
+specifying
+<emphasis role="italic">start</emphasis>, the point at which the backward scan
+starts and <emphasis role="italic">length</emphasis>, the range of characters to
+scan.  The
+<emphasis role="italic">start</emphasis> must be a positive whole number and
+defaults to <computeroutput>receiving_buffer~length</computeroutput> if larger
+than that value or omitted. The <emphasis role="italic">length</emphasis> must be a
+non-negative whole number and defaults to <emphasis
+role="italic">start</emphasis>.
+</para>
+<para>See also
+<itemizedlist spacing="compact">
+ <listitem>
+  <para>MutableBuffer method <xref linkend="mthMutableBufferCaselessLastPos" xrefstyle="template:caselessLastPos"/> and</para>
+ </listitem>
+ <listitem>
+  <para>MutableBuffer method <xref linkend="mthMutableBufferPos" xrefstyle="template:pos"/>.</para>
+ </listitem>
+</itemizedlist>
+</para>
 <indexterm><primary>examples</primary>
 <secondary>lastPos method</secondary></indexterm>
 <example>
-<title>Class MUTABLEBUFFER - lastPos method</title>
+<title>Class MutableBuffer &mdash; lastPos method</title>
 <programlisting>
-x1 - .mutablebuffer~new("abc def ghi")
+x1 = .mutablebuffer~new("abc def ghi")
 x1~lastPos(" ")      ->    8
-x1 - .mutablebuffer~new("abcdefghi")
+x1 = .mutablebuffer~new("abcdefghi")
 x1~lastPos(" ") -> 0
-x1 - .mutablebuffer~new("efgxyz")
+x1 = .mutablebuffer~new("efgxyz")
 x1~lastPos("xy")     ->    4
-x1 - .mutablebuffer~new("abc def ghi")
+x1 = .mutablebuffer~new("abc def ghi")
 x1~lastPos(" ",7) -> 4
 </programlisting>
 </example>
@@ -4501,10 +4893,9 @@ default separator is the newline character.</para>
 </mediaobject>
 
 <para>Returns .true ("1") if the characters of the <emphasis role="italic">other</emphasis> match the
-characters of the target buffer beginning at position <emphasis role="italic">start</emphasis>.  Return .false
+characters of the target buffer beginning at position <emphasis role="italic">start</emphasis>.  Returns .false
 ("0") if the characters are not a match.
-<emphasis role="italic">start</emphasis> must be a positive whole number less than or equal to the length of
-the target buffer.
+<emphasis role="italic">start</emphasis> must be a positive whole number.
 </para>
 <para>If <emphasis role="italic">n</emphasis> is specified, the match will be performed starting with character
 <emphasis role="italic">n</emphasis> of <emphasis role="italic">other</emphasis>.  The default value for
@@ -4537,8 +4928,7 @@ require new string objects be extracted from the target buffer.
 <para>Returns .true ("1") if the character at position <emphasis role="italic">n</emphasis> matches any
 character of the string <emphasis role="italic">chars</emphasis>.  Returns .false ("0") if the character does not
 match any of the characters in the reference set.  The argument <emphasis role="italic">n</emphasis> must be
-a positive whole number less than or equal to the length of the target
-buffer.</para>
+a positive whole number.</para>
 </section>
 
 <section id="mthMutableBufferOverlay"><title>overlay</title>
@@ -4590,16 +4980,22 @@ a blank, and the default value for <emphasis>n</emphasis> is 1. If you specify
 <computeroutput>0</computeroutput> if
 <emphasis role="italic">needle</emphasis> is the null string or is not found
 or if <emphasis role="italic">start</emphasis> is greater than
-the length of the receiving buffer. By default, the search starts at the first
+the length of the receiving buffer.
+By default, the search starts at the first
 character of the receiving buffer (that is, the value of
-<emphasis role="italic">start</emphasis> is <computeroutput>1</computeroutput>).
-You can override this by specifying <emphasis role="italic">start</emphasis>
-(which must be
-a positive whole number), the point at which the search starts.</para>
+<emphasis role="italic">start</emphasis> is <computeroutput>1</computeroutput>),
+and continues to the end of the string.  You can override this by specifying
+<emphasis role="italic">start</emphasis>,
+the point at which the search starts, and
+<emphasis role="italic">length</emphasis>, the bounding limit for the search.
+If specified, <emphasis role="italic">start</emphasis> must be a positive
+whole number and <emphasis role="italic">length</emphasis> must be
+a non-negative whole number.
+</para>
 <indexterm><primary>examples</primary>
 <secondary>pos method</secondary></indexterm>
 <example>
-<title>Class MUTABLEBUFFER - pos method</title>
+<title>Class MUTABLEBUFFER &mdash; pos method</title>
 <programlisting>
 x1 = .mutablebuffer~new("Saturday")
 x1~pos("day")       ->    6
@@ -4640,13 +5036,16 @@ before
 the <emphasis role="italic">new</emphasis> string. The default <emphasis role="italic">pad</emphasis> character is a
 blank.
 </para>
+<para>See also the equivalent MutableBuffer method
+<xref linkend="mthMutableBufferBracketsEqual" xrefstyle="template:[]="/>.
+</para>
 </section>
 
 <section id="mthMutableBufferSetBufferSize"><title>setBufferSize</title>
 <indexterm><primary>setBufferSize method</primary>
 <secondary>of MutableBuffer class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>setBufferSizemethod</secondary>
+<secondary>setBufferSize method</secondary>
 <tertiary>of MutableBuffer class</tertiary></indexterm>
 
 <mediaobject>
@@ -4660,6 +5059,20 @@ is less than the length of buffer
 content, the content is truncated. If <emphasis>n</emphasis> is 0, the entire
 contents is erased and the new buffer size is the value given
 in the <emphasis role="bold">init</emphasis> method.</para>
+</section>
+
+<!-- Class MutableBuffer - method setText ======================== --> 
+<section id="mthMutableBufferSetText" revisionflag="added"><title>setText</title>
+<para>
+<indexterm><primary>setText method</primary><secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>setText method</secondary><tertiary>of MutableBuffer class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/mutablebuffer_settext.svg" scale="50" />
+</imageobject></mediaobject>
+</para>
+<para>Returns the receiving buffer, with the buffer contents set to
+<emphasis role="italic">string</emphasis>.
+</para>
 </section>
 
 <section id="mthMutableBufferSpace"><title>space</title>
@@ -4687,6 +5100,38 @@ be a positive whole number or zero. If it is
 Leading and trailing whitespace characters are always removed. The default for
 <emphasis role="italic">n</emphasis> is <computeroutput>1</computeroutput>,
 and the default <emphasis role="italic">pad</emphasis> character is a blank.
+</para>
+</section>
+
+<!-- Class MutableBuffer - method startsWith ======================== --> 
+<section id="mthMutableBufferStartsWith" revisionflag="added"><title>startsWith</title>
+<para>
+<indexterm><primary>startsWith method</primary><secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>startsWith method</secondary><tertiary>of MutableBuffer class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/mutablebuffer_startswith.svg" scale="50" />
+</imageobject></mediaobject>
+</para>
+<para>Returns .true ("1") if the characters of the <emphasis role="italic">other</emphasis> match the
+characters at the start of the target buffer.
+Returns .false ("0") if the characters are not a match, or if
+<emphasis role="italic">other</emphasis> is the null string.
+</para>
+<para>The startsWith method is useful for efficient string parsing as it does not
+require new string objects be extracted from the target buffer.
+</para>
+<para>See also
+<itemizedlist spacing="compact">
+ <listitem>
+  <para>MutableBuffer method <xref linkend="mthMutableBufferCaselessStartsWith" xrefstyle="template:caselessStartsWith"/>,</para>
+ </listitem>
+ <listitem>
+  <para>MutableBuffer method <xref linkend="mthMutableBufferEndsWith" xrefstyle="template:endsWith"/>, and</para>
+ </listitem>
+ <listitem>
+  <para>MutableBuffer method <xref linkend="mthMutableBufferMatch" xrefstyle="template:match"/>.</para>
+ </listitem>
+</itemizedlist>
 </para>
 </section>
 
@@ -4941,7 +5386,7 @@ returns the <emphasis role="italic">start</emphasis> value.</para>
 <indexterm><primary>examples</primary>
 <secondary>verify method</secondary></indexterm>
 <example>
-<title>Class MUTABLEBUFFER - verify method</title>
+<title>Class MutableBuffer &mdash; verify method</title>
 <programlisting>
 .mutablebuffer~new('123')~verify('1234567890')             ->    0
 .mutablebuffer~new('1Z3')~verify('1234567890')             ->    2
@@ -5295,7 +5740,7 @@ apply "greedy" matching (a maximum-length match) or "non-greedy"
 matching (a minimum-length match).</para>
 
 <example>
-<title>Class REGULAREXPRESSION - new method</title>
+<title>Class RegularExpression &mdash; new method</title>
 <programlisting>
 <![CDATA[
 myRE1 = .RegularExpression~new
@@ -5374,7 +5819,7 @@ matching behavior.</para>
 <indexterm><primary>examples</primary>
 <secondary>RegularExpression class</secondary></indexterm>
 <example>
-<title>Class REGULAREXPRESSION - parse method</title>
+<title>Class RegularExpression &mdash; parse method</title>
 <programlisting>
 <![CDATA[
 a.0 = "does not match regular expression"
@@ -5415,7 +5860,7 @@ Hi there!                >> Does not match regular expression
 <indexterm><primary>examples</primary>
 <secondary>RegularExpression class</secondary></indexterm>
 <example>
-<title>Class REGULAREXPRESSION - parse method</title>
+<title>Class RegularExpression &mdash; parse method</title>
 <programlisting>
 <![CDATA[
 a.0 = "an invalid number!"
@@ -5448,7 +5893,7 @@ exit
 <indexterm><primary>examples</primary>
 <secondary>RegularExpression class</secondary></indexterm>
 <example>
-<title>Class REGULAREXPRESSION - parse method</title>
+<title>Class RegularExpression &mdash; parse method</title>
 <programlisting>
 <![CDATA[
 str = "<p>Paragraph 1</p><p>Paragraph 2</p>"
@@ -5496,7 +5941,7 @@ on a successful match. The end position of the match can be
 retrieved with the position method (<xref linkend="mthRegularExpressionPosition" />).</para>
 
 <example>
-<title>Class REGULAREXPRESSION - haystack method</title>
+<title>Class RegularExpression &mdash; haystack method</title>
 <programlisting>
 <![CDATA[
 str = "It is the year 2002!"
@@ -5538,7 +5983,7 @@ Found the number 2002 in this sentence.
 method ended.</para>
 
 <example>
-<title>Class REGULAREXPRESSION - position method</title>
+<title>Class RegularExpression &mdash; position method</title>
 <programlisting>
 <![CDATA[
 myRE = .RegularExpression~new
@@ -8090,7 +8535,7 @@ R:\
 <para>This query method is available as both an instance and class method.
 </para>
 <example>
-<title>Class FILE - separator method</title>
+<title>Class File &mdash; separator method</title>
 <programlisting>
 <![CDATA[
 file = .File~new("dir1" || .File~separator || "dir2" || .File~separator || "file")
@@ -8116,7 +8561,7 @@ file = .File~new("dir1" || .File~separator || "dir2" || .File~separator || "file
 <para>Returns the fully qualified path as a new instance of File.
 </para>
 <example>
-<title>Class FILE - absoluteFile method</title>
+<title>Class File &mdash; absoluteFile method</title>
 <programlisting>
 <![CDATA[
 /* On Windows */
@@ -8152,7 +8597,7 @@ say .File~new("../my file")~absoluteFile           -- /opt/my file
 <para>Returns the fully qualified path as a string.
 </para>
 <example>
-<title>Class FILE - absolutePath method</title>
+<title>Class File &mdash; absolutePath method</title>
 <programlisting>
 <![CDATA[
 /* On Windows */
@@ -8226,7 +8671,7 @@ If the two paths are equal, 0 is returned. If the target path is larger, 1 is re
 <emphasis role="italic">other</emphasis> argument is the larger path.
 </para>
 <example>
-<title>Class FILE - conpareTo method</title>
+<title>Class File &mdash; conpareTo method</title>
 <programlisting>
 <![CDATA[
 file1 = .File~new("file", "dir")
@@ -8319,7 +8764,7 @@ The normalization consists in adjusting the separators to the platform's convent
 the final separator (if any).
 </para>
 <example>
-<title>Class FILE - init method</title>
+<title>Class File &mdash; init method</title>
 <programlisting>
 <![CDATA[
 /* Windows */
@@ -8419,7 +8864,7 @@ directory which is hidden. Otherwise returns .false ("0").
 directories has a name starting with a period character.
 </para>
 <example>
-<title>Class FILE - isHidden method</title>
+<title>Class File &mdash; isHidden method</title>
 <programlisting>
 <![CDATA[
 /* Unix, when file exists */
@@ -8466,7 +8911,7 @@ say .File~new("/tmp/.dir/file")~isHidden        -- 1
   <varlistentry><term><emphasis role="bold">Examples:</emphasis></term>
   <listitem>
 <example>
-<title>Class FILE - lastModified method</title>
+<title>Class File &mdash; lastModified method</title>
     <programlisting>
     <![CDATA[
     /* On Windows */
@@ -8534,7 +8979,7 @@ The special names "." and ".." are not returned.
 If the receiver object is not a directory then the result is .nil.
 </para>
 <example>
-<title>Class FILE - list method</title>
+<title>Class File &mdash; list method</title>
 <programlisting>
 <![CDATA[
 names = .File~new("c:\program files\oorexx\samples")~list
@@ -8574,7 +9019,7 @@ The special names "." and ".." are not returned.
 If the receiver object is not a directory then the result is .nil.
 </para>
 <example>
-<title>Class FILE - listFiles method</title>
+<title>Class File &mdash; listFiles method</title>
 <programlisting>
 <![CDATA[
 do file over deepListFiles("c:\program files\oorexx\samples")
@@ -8669,7 +9114,7 @@ This is everything after the last path separator. On Windows, the file's
 extension is part of the name.
 </para>
 <example>
-<title>Class FILE - name method</title>
+<title>Class File &mdash; name method</title>
 <programlisting>
 <![CDATA[
 /* On Windows */
@@ -8703,7 +9148,7 @@ If no separator is found or the absolute path ends with a separator
 (which means this is a root path) then returns .nil.
 </para>
 <example>
-<title>Class FILE - parent method</title>
+<title>Class File &mdash; parent method</title>
 <programlisting>
 <![CDATA[
 /* On Windows */

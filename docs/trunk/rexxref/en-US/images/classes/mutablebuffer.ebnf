@@ -1,0 +1,98 @@
+mutablebuffer_new ::= 'new(' ( string )? ( ',' buffersize )? ')'
+
+/* New in 5.0 - start */
+mutablebuffer_brackets      ::= '[' n ( ',' length )? ']'
+mutablebuffer_bracketsequal ::= '[' n ( ',' ( length )? ( ',' pad )? )? ']' '=' new
+
+mutablebuffer_startswith           ::= 'startsWith(' other ')'
+mutablebuffer_endswith             ::= 'endsWith(' other ')'
+mutablebuffer_caselessstartswith   ::= 'caselessStartsWith(' other ')'
+mutablebuffer_caselessendswith     ::= 'caselessEndsWith(' other ')'
+
+mutablebuffer_contains             ::= 'contains(' other ( ',' ( start )? ( ',' length )? )? ')'
+mutablebuffer_caselesscontains     ::= 'caselessContains(' other ( ',' ( start )? ( ',' length )? )? ')'
+mutablebuffer_containsword         ::= 'containsWord(' phrase ( ',' start )? ')'
+mutablebuffer_caselesscontainsword ::= 'caselessContainsWord(' phrase ( ',' start )? ')'
+
+mutablebuffer_settext              ::= 'setText(' string ')'
+/* New in 5.0 - end */
+
+/* Chg in 5.0 */
+mutablebuffer_append ::= 'append(' string (',' string)* ')'
+
+mutablebuffer_caselesschangestr ::= 'caselessChangeStr(' needle ',' newneedle ( ',' count )? ')'
+
+mutablebuffer_caselesscountstr ::= 'caselessCountStr(' needle ')'
+
+mutablebuffer_caselesslastpos ::= 'caselessLastPos(' needle ( ',' ( start )? ( ',' length )? )? ')'
+
+mutablebuffer_caselessmatch ::= 'caselessMatch(' start ',' other ( ',' ( n )? ( ',' length )? )? ')'
+
+mutablebuffer_caselessmatchchar ::= 'caselessMatchChar(' n ',' chars ')'
+
+mutablebuffer_caselesspos ::= 'caselessPos(' needle ( ',' ( start )? ( ',' length )? )? ')'
+
+mutablebuffer_caselesswordpos ::= 'caselessWordPos(' phrase ( ',' start )? ')'
+
+mutablebuffer_changestr ::= 'changeStr(' needle ',' newneedle ( ',' count )? ')'
+
+mutablebuffer_countstr ::= 'countStr(' needle ')'
+
+mutablebuffer_delete ::= 'delete(' n ( ',' length )? ')'
+
+mutablebuffer_delstr ::= 'delStr(' n ( ',' length )? ')'
+
+mutablebuffer_delword ::= 'delWord(' n ( ',' length )? ')'
+
+mutablebuffer_getbuffersize ::= 'getBufferSize'
+
+mutablebuffer_insert ::= 'insert(' new ( ',' ( n )? ( ',' ( length )? ( ',' pad )? )? )? ')'
+
+mutablebuffer_lastpos ::= 'lastpos(' needle ( ',' ( start )? ( ',' length )? )? ')'
+
+mutablebuffer_length ::= 'length'
+
+mutablebuffer_lower ::= 'lower(' ( n )? ( ',' length )? ')'
+
+mutablebuffer_makearray ::= 'makeArray(' ( separator )? ')'
+
+mutablebuffer_match ::= 'match(' start ',' other ( ',' ( n )? ( ',' length )? )? ')'
+
+mutablebuffer_matchchar ::= 'matchChar(' n ',' chars ')'
+
+mutablebuffer_overlay ::= 'overlay(' new ( ',' ( n )? ( ',' ( length )? ( ',' pad )? )? )? ')'
+
+mutablebuffer_pos ::= 'pos(' needle ( ',' ( start )? ( ',' length )? )? ')'
+
+mutablebuffer_replaceat ::= 'replaceAt(' new ',' n ( ',' ( length )? ( ',' pad )? )? ')'
+
+mutablebuffer_setbuffersize ::= 'setBufferSize(' n ')'
+
+mutablebuffer_space ::= 'space' ( '(' n ( ',' pad )? ')' )?
+
+mutablebuffer_string ::= 'string'
+
+mutablebuffer_subchar ::= 'subChar(' n ')'
+
+mutablebuffer_substr ::= 'substr(' n ( ',' ( length )? ( ',' pad )? )? ')'
+
+mutablebuffer_subword ::= 'subWord(' n ( ',' length )? ')'
+
+mutablebuffer_subwords ::= 'subWords(' ( n )? ( ',' length )? ')'
+
+mutablebuffer_translate ::= 'translate(' tableo? ',' tablei? ',' pad? ',' pos? ',' length? ')'
+
+mutablebuffer_upper ::= 'upper(' ( n )? ( ',' length )? ')'
+
+mutablebuffer_verify ::= 'verify(' reference ( ',' ( option )? ( ',' ( start )? ( ',' length )? )? )? ')'
+
+mutablebuffer_word ::= 'word(' n ')'
+
+mutablebuffer_wordindex ::= 'wordIndex(' n ')'
+
+mutablebuffer_wordlength ::= 'wordLength(' n ')'
+
+mutablebuffer_wordpos ::= 'wordPos(' phrase ( ',' start )? ')'
+
+mutablebuffer_words ::= 'words'
+
