@@ -592,12 +592,12 @@ number. The default <emphasis role="italic">offset</emphasis> is the current sys
 <programlisting>
 <![CDATA[
 today = .DateTime~new    -- initializes to current date and time
-                         -- initializes to 9 Sep 2007 at 00:00:00.000000
-day = .DateTime~new(date('F', "20070930", "S"))
-                         -- also initializes to 9 Sep 2007 at 00:00:00.000000
-day = .DateTime~new(2007, 9, 30)
-                         -- initializes to 9 Sep 2007 at 10:33:00.000000
-day = .DateTime~new(2007, 9, 30, 10, 33, 00)
+                         -- initializes to 30 Sep 2014 at 00:00:00.000000
+day = .DateTime~new(date('F', "20140930", "S"))
+                         -- also initializes to 30 Sep 2014 at 00:00:00.000000
+day = .DateTime~new(2014, 9, 30)
+                         -- initializes to 30 Sep 2014 at 10:33:00.000000
+day = .DateTime~new(2014, 9, 30, 10, 33, 00)
 ]]>
 </programlisting>
 </example>
@@ -1687,36 +1687,30 @@ notification capability by supplying a facility to send any message to any
 object at a given time. You can cancel an alarm before it sends its message.
 </para>
 <table id="ooRexxAlarmClass" frame="all" pgwide="0">
-<title>ooRexx Alarm Class</title>
-<tgroup cols="1" align="left" colsep="1" rowsep="1">
-<colspec colname="c1" />
+<title>Alarm Class</title>
+<tgroup cols="1">
 <tbody>
-   <row>
-      <entry align="center"><emphasis role="bold">Object</emphasis></entry>
-   </row>
-   <row>
-      <entry align="center">&#x2193;</entry>
-   </row>
-   <row>
-      <entry align="center"><emphasis role="bold">Alarm</emphasis></entry>
-   </row>
-   <row>
-      <entry>
-<screen>&nbsp;
-</screen>
-      </entry>
-   </row>
-   <row>
-      <entry>
-<screen>cancel
-init
-</screen>
-      </entry>
-   </row>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+ <row><entry align="center">Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Alarm</emphasis></entry>
+ </row>
+ <row><entry>
+  <simplelist columns="2">
+   <member><xref linkend="mthAlarmAttachment" xrefstyle="template:attachment"/></member>
+   <member><xref linkend="mthAlarmCancel" xrefstyle="template:cancel"/></member>
+   <member><xref linkend="mthAlarmCanceled" xrefstyle="template:canceled/cancelled"/></member>
+   <member><xref linkend="mthAlarmInit" xrefstyle="template:init"/></member>
+   <member><xref linkend="mthAlarmScheduledTime" xrefstyle="template:scheduledTime"/></member>
+   <member><xref linkend="mthAlarmTriggered" xrefstyle="template:triggered"/></member>
+  </simplelist>
+ </entry></row>
 </tbody>
 </tgroup>
 </table>
 
+<!-- @@ remove, just put link into table above
 <note><title>Note</title>
 <para>The Alarm class also has available class methods that its
 metaclass, the Class class (<xref linkend="clsClass" />), defines.</para></note>
@@ -1727,6 +1721,28 @@ metaclass, the Class class (<xref linkend="clsClass" />), defines.</para></note>
 Object class (<xref linkend="clsObject" />).</para>
 <xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 
+</section>
+-->
+
+<!-- Class Alarm - method attachment =============================== --> 
+<section id="mthAlarmAttachment" revisionflag="added"><title>attachment</title>
+<para>
+<indexterm><primary>attachment method</primary><secondary>of Alarm class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>attachment method</secondary><tertiary>of Alarm class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/alarm_attachment.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns the object that has been attached to the Alarm instance upon creation.
+Returns .nil if no object is attached.
+</para>
+<para>See also method <xref linkend="mthAlarmInit" xrefstyle="template:init"/>.
+</para>
+<!-- para><example>
+<title>Class Alarm &mdash; attachment method</title>
+<programlisting><![CDATA[
+@@need an example where ~attachment is called in the event handler
+]]></programlisting></example></para -->
 </section>
 
 <section id="mthAlarmCancel"><title>cancel</title>
@@ -1746,7 +1762,30 @@ Object class (<xref linkend="clsObject" />).</para>
 takes no action if the specified time has already been reached.</para>
 </section>
 
-<section id="mthAlarmInit"><title>init</title>
+<!-- Class Alarm - method canceled/cancelled ======================= --> 
+<section id="mthAlarmCanceled" revisionflag="added"><title>canceled/cancelled</title>
+<para>
+<indexterm><primary>canceled/cancelled method</primary><secondary>of Alarm class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>canceled/cancelled method</secondary><tertiary>of Alarm class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/alarm_canceled.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns .true if the alarm was cancelled before triggering.
+Returns .false otherwise.
+</para>
+<para>See also method <xref linkend="mthAlarmCancel" xrefstyle="template:cancel"/>.
+</para>
+<para><example>
+<title>Class Alarm &mdash; canceled/cancelled method</title>
+<programlisting><![CDATA[alarm = .Alarm~new(1 ,.message~new(.stdout, "SAY", "I", "Alarm went off"))
+call SysSleep 0.5
+alarm~cancel
+say "Alarm" alarm~cancelled~?("cancelled", "not cancelled") --> Alarm cancelled
+]]></programlisting></example></para>
+</section>
+
+<section id="mthAlarmInit" revisionflag="changed"><title>init</title>
 <indexterm><primary>init method</primary>
 <secondary>of Alarm class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -1763,7 +1802,7 @@ takes no action if the specified time has already been reached.</para>
 <emphasis role="italic">atime</emphasis>. At this time, the alarm
 object sends the message that <emphasis role="italic">message</emphasis>,
 a message object, specifies. (See <xref linkend="clsMessage" />.)
-The <emphasis role="italic">atime</emphasis> can a String, DateTime object, or TimeSpan object.
+The <emphasis role="italic">atime</emphasis> can be a String, DateTime, or TimeSpan object.
 </para>
 <para>If <emphasis role="italic">atime</emphasis> is a DateTime object, the DateTime specifies a
 time when the alarm will be triggered.  The DateTime must be greater than the current time.</para>
@@ -1779,12 +1818,18 @@ after the time with a single blank separating the time and date. Leading and
 trailing whitespace characters are not allowed in the
 <emphasis role="italic">atime</emphasis>. If you do not
 specify a date, the Alarm uses the first future occurrence of the
-specified time. You can use the cancel()
-method to cancel a pending alarm. See
-<xref linkend="creo" /> for more information.</para>
+specified time.
+</para>
+<para>If specified, <emphasis role="italic">attachment</emphasis> can be an arbitrary object
+that will be attached to the alarm instance, and can later be retrieved in the event handler.
+See method <xref linkend="mthAlarmAttachment" xrefstyle="template:attachment"/>.
+</para>
+<para>You can use the <xref linkend="mthAlarmCancel" xrefstyle="template:cancel"/>
+method to cancel a pending alarm.
+</para>
 
-<para>The following code sets up an alarm at 5:10 p.m. on December 15, 2007.
-(Assume today's date/time is prior to December 15, 2007.)  </para>
+<para>The following code sets up an alarm at 5:10 p.m. on December 15, 2014.
+(Assume today's date/time is prior to December 15, 2014.)  </para>
 <indexterm><primary>examples</primary>
 <secondary>of Alarm class</secondary></indexterm>
 <example>
@@ -1795,7 +1840,7 @@ method to cancel a pending alarm. See
 PersonalMessage=.MyMessageClass~new("Call the Bank")
 msg=.message~new(PersonalMessage,"RemindMe")
 
-time = .DateTime~fromIsoDate("2007-12-15T17:10:00.000000")
+time = .DateTime~fromIsoDate("2014-12-15T17:10:00.000000")
 
 a=.alarm~new(time, msg)
 exit
@@ -1805,7 +1850,7 @@ expose inmsg
 use arg inmsg
 ::method RemindMe
 expose inmsg
-say "It is now" "TIME"("C")".Please "inmsg
+say "It is now" time("C")". Please" inmsg
 /* On the specified data and time, displays the following message: */
 /* "It is now 5:10pm. Please Call the Bank" */
 </programlisting>
@@ -1822,6 +1867,37 @@ a=.alarm~new(30,msg)
 </programlisting>
 </example>
 </section>
+
+<!-- Class Alarm - method scheduledTime ============================ --> 
+<section id="mthAlarmScheduledTime" revisionflag="added"><title>scheduledTime</title>
+<para>
+<indexterm><primary>scheduledTime method</primary><secondary>of Alarm class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>scheduledTime method</secondary><tertiary>of Alarm class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/alarm_scheduledtime.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns a <xref linkend="clsDateTime" xrefstyle="template:DateTime"/>
+object representing the time for which the
+alarm has initially been scheduled.
+</para>
+</section>
+
+
+<!-- Class Alarm - method triggered ================================ --> 
+<section id="mthAlarmTriggered" revisionflag="added"><title>triggered</title>
+<para>
+<indexterm><primary>triggered method</primary><secondary>of Alarm class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>triggered method</secondary><tertiary>of Alarm class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/alarm_triggered.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns .true if the alarm has triggered.
+Returns .false if the alarm has been cancelled or hasn't yet triggered.
+</para>
+</section>
+
 </section>
 
 <section id="clsTimeSpan"><title>The TimeSpan Class</title>
@@ -3969,7 +4045,7 @@ size increases to the length of <emphasis>string</emphasis> if the string
 does not fit into the buffer.</para>
 </section>
 
-<!-- Class MutableBuffer - method [] ======================== --> 
+<!-- Class MutableBuffer - method [] =============================== --> 
 <section id="mthMutableBufferBrackets" revisionflag="added"><title>[]</title>
 <para>
 <indexterm><primary>[] method</primary><secondary>of MutableBuffer class</secondary></indexterm>
@@ -4007,7 +4083,7 @@ say s[30]            --> ""
 ]]></programlisting></example></para>
 </section>
 
-<!-- Class MutableBuffer - method []= ======================== --> 
+<!-- Class MutableBuffer - method []= ============================== --> 
 <section id="mthMutableBufferBracketsEqual" revisionflag="added"><title>[]=</title>
 <para>
 <indexterm><primary>[]= method</primary><secondary>of MutableBuffer class</secondary></indexterm>
@@ -4091,7 +4167,7 @@ using caseless comparisons.
 </para>
 </section>
 
-<!-- Class MutableBuffer - method caselessContains ======================== --> 
+<!-- Class MutableBuffer - method caselessContains ================= --> 
 <section id="mthMutableBufferCaselessContains" revisionflag="added"><title>caselessContains</title>
 <para>
 <indexterm><primary>caselessContains method</primary><secondary>of MutableBuffer class</secondary></indexterm>
@@ -4138,7 +4214,7 @@ say .mutablebuffer~new('-abcdef-')~caselessContains('-', 2, 6)  --> 0
 ]]></programlisting></example></para>
 </section>
 
-<!-- Class MutableBuffer - method caselessContainsWord ======================== --> 
+<!-- Class MutableBuffer - method caselessContainsWord ============= --> 
 <section id="mthMutableBufferCaselessContainsWord" revisionflag="added"><title>caselessContainsWord</title>
 <para>
 <indexterm><primary>caselessContainsWord method</primary><secondary>of MutableBuffer class</secondary></indexterm>
@@ -4211,7 +4287,7 @@ do not overlap. All matches are made using caseless comparisons.
 </para>
 </section>
 
-<!-- Class MutableBuffer - method caselessEndsWith ======================== --> 
+<!-- Class MutableBuffer - method caselessEndsWith ================= --> 
 <section id="mthMutableBufferCaselessEndsWith" revisionflag="added"><title>caselessEndsWith</title>
 <para>
 <indexterm><primary>caselessEndsWith method</primary><secondary>of MutableBuffer class</secondary></indexterm>
@@ -4395,7 +4471,7 @@ a non-negative whole number.
 </para>
 </section>
 
-<!-- Class MutableBuffer - method caselessStartsWith ======================== --> 
+<!-- Class MutableBuffer - method caselessStartsWith =============== --> 
 <section id="mthMutableBufferCaselessStartsWith" revisionflag="added"><title>caselessStartsWith</title>
 <para>
 <indexterm><primary>caselessStartsWith method</primary><secondary>of MutableBuffer class</secondary></indexterm>
@@ -4484,7 +4560,7 @@ occurrences to be replaced.</para>
 </section>
 
 
-<!-- Class MutableBuffer - method contains ======================== --> 
+<!-- Class MutableBuffer - method contains ========================= --> 
 <section id="mthMutableBufferContains" revisionflag="added"><title>contains</title>
 <para>
 <indexterm><primary>contains method</primary><secondary>of MutableBuffer class</secondary></indexterm>
@@ -4531,7 +4607,7 @@ say .mutablebuffer~new('-abcdef-')~contains('-', 2, 6)  --> 0
 </section>
 
 
-<!-- Class MutableBuffer - method containsWord ======================== --> 
+<!-- Class MutableBuffer - method containsWord ===================== --> 
 <section id="mthMutableBufferContainsWord" revisionflag="added"><title>containsWord</title>
 <para>
 <indexterm><primary>containsWord method</primary><secondary>of MutableBuffer class</secondary></indexterm>
@@ -4686,7 +4762,7 @@ preceding the first word involved.
 </para>
 </section>
 
-<!-- Class MutableBuffer - method endsWith ======================== --> 
+<!-- Class MutableBuffer - method endsWith ========================= --> 
 <section id="mthMutableBufferEndsWith" revisionflag="added"><title>endsWith</title>
 <para>
 <indexterm><primary>endsWith method</primary><secondary>of MutableBuffer class</secondary></indexterm>
@@ -5061,7 +5137,7 @@ contents is erased and the new buffer size is the value given
 in the <emphasis role="bold">init</emphasis> method.</para>
 </section>
 
-<!-- Class MutableBuffer - method setText ======================== --> 
+<!-- Class MutableBuffer - method setText ========================== --> 
 <section id="mthMutableBufferSetText" revisionflag="added"><title>setText</title>
 <para>
 <indexterm><primary>setText method</primary><secondary>of MutableBuffer class</secondary></indexterm>
@@ -5103,7 +5179,7 @@ and the default <emphasis role="italic">pad</emphasis> character is a blank.
 </para>
 </section>
 
-<!-- Class MutableBuffer - method startsWith ======================== --> 
+<!-- Class MutableBuffer - method startsWith ======================= --> 
 <section id="mthMutableBufferStartsWith" revisionflag="added"><title>startsWith</title>
 <para>
 <indexterm><primary>startsWith method</primary><secondary>of MutableBuffer class</secondary></indexterm>
@@ -8673,10 +8749,9 @@ If the two paths are equal, 0 is returned. If the target path is larger, 1 is re
 <example>
 <title>Class File &mdash; conpareTo method</title>
 <programlisting>
-<![CDATA[
+<![CDATA[call directory .File~listRoots[1]
 file1 = .File~new("file", "dir")
 file2 = .File~new("FILE", "DIR")
-'cd' .File~listRoots[1]
 file1~compareTo(file2)    -- 0 on Windows (both Files denote the same path)
 file1~compareTo(file2)    -- 1 on Unix ("/dir/file" is greater than "/DIR/FILE")
 ]]>
