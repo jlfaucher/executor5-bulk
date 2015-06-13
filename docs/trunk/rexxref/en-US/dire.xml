@@ -250,10 +250,12 @@ equivalent to the following code sequences: </para>
 <programlisting>
 ::method "NAME="  /* attribute set method                                   */
   expose name     /* establish direct access to object variable (attribute) */
+  use strict arg  /* enforce zero parameters                                */
   use arg name    /* retrieve argument and assign it to the object variable */
 
 ::method name     /* attribute get method */
   expose name     /* establish direct access to object variable (attribute) */
+  use strict arg  /* enforce zero parameters                                */
   return name     /* return object&apos;s current value                          */
 </programlisting>
 </example>
