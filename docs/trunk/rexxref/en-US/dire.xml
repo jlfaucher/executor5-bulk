@@ -549,33 +549,43 @@ of a program through the .METHODS built-in object. Only one ::CONSTANT directive
 can appear for any method name not associated with a class. See
 <xref linkend="methe" />  for more details.</para>
 <para>The methods created by a ::CONSTANT directive are UNGUARDED and will have
-a return result that is specified by
-<emphasis role="italic">value</emphasis>.  The constant value must be a single
+a return result that is specified by <emphasis role="italic">value</emphasis>.
+If specified, the constant <emphasis role="italic">value</emphasis> must be a single
 literal string or symbol that is taken as a constant. Also permitted is the
 single character "-" or "+" followed by a literal string or symbol that is a
-valid number.  Here are some examples of valid constants:</para>
+valid number.
+If <emphasis role="italic">value</emphasis> is omitted, the constant
+<emphasis role="italic">name</emphasis> will return its value in uppercase.
+</para>
+<para>Here are some examples of valid constants:</para>
 <example id="ex.constant">
 <title>CONSTANT examples</title>
-<programlisting>
-::class MathConstants public
-::constant pi 3.1415926
+<programlisting><![CDATA[::class MathConstants public
+::constant pi 3.14159265
 ::constant author "Isaac Asimov"
 ::constant absolute_zero -273.15
-</programlisting>
+
+::class Search
+::constant caseless
+]]></programlisting>
 </example>
 <para>A ::CONSTANT directive is a shorthand syntax for creating constants
 associated with a class.  The created name constant can be accessed using either
 the class object or an instance of the class itself.</para>
 <example id="ex.constant-access">
 <title>CONSTANT access examples</title>
-<programlisting>
-say "Pi is" .MathConstants~pi    -- displays "Pi is 3.1415926"
+<programlisting><![CDATA[say "Pi is" .MathConstants~pi    -- displays "Pi is 3.14159265"
 instance = .MathConstants~new
-say "Pi is" instance~pi          -- also displays "Pi is 3.1415926"
+say "Pi is" instance~pi          -- also displays "Pi is 3.14159265"
+
+say .Search~caseless             -- "CASELESS"
 
 ::class MathConstants public
-::constant pi 3.1415926
-</programlisting>
+::constant pi 3.14159265
+
+::class Search
+::constant caseless
+]]></programlisting>
 </example>
 </section>
 
