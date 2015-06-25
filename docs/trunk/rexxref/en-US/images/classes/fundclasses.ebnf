@@ -310,11 +310,12 @@ routine_setsecuritymanager ::= 'setSecurityManager' ( '(' security_manager_objec
 routine_source ::= 'source'
 
 /*-- Package class ---------------------------------------------------*/
-package_new ::= 'new(' name ',' source ( ',' methodobject )? ')'
+package_new ::= 'new(' name ( ',' source ( ',' methodobject )? )? ')'
 
 package_addclass ::= 'addClass(' name ',' class ')'
 
-package_addpackage ::= 'addPackage(' package ')'
+/* chg in 5.0 */
+package_addpackage ::= 'addPackage(' package (',' namespace)? ')'
 
 package_addpublicclass ::= 'addPublicClass(' name ',' class ')'
 
@@ -329,6 +330,13 @@ package_definedmethods ::= 'definedMethods'
 package_digits ::= 'digits'
 
 package_findclass ::= 'findClass(' name ')'
+
+/* New in 5.0 - start */
+package_findnamespace ::= 'findNamespace(' name ')'
+package_findprogram ::= 'findProgram(' name ')'
+package_findpublicclass ::= 'findPublicClass(' name ')'
+package_findpublicroutine ::= 'findPublicRoutine(' name ')'
+/* New in 5.0 - end */
 
 package_findroutine ::= 'findRoutine(' name ')'
 
@@ -348,9 +356,19 @@ package_loadpackage ::= 'loadPackage(' name ( ',' source )? ')'
 
 package_name ::= 'name'
 
+/* New in 5.0 - start */
+package_namespaces ::= 'namespaces'
+package_prolog ::= 'prolog'
+/* New in 5.0 - end */
+
 package_publicclasses ::= 'publicClasses'
 
 package_publicroutines ::= 'publicRoutines'
+
+/* New in 5.0 - start */
+package_resource ::= 'resource(' name ')'
+package_resources ::= 'resources'
+/* New in 5.0 - end */
 
 package_routines ::= 'routines'
 
