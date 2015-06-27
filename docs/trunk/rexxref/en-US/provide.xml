@@ -140,12 +140,15 @@ is also an object class and can create instances of the class.</para>
 methods and class methods
 but are not intended to create instances. Abstract classes often define the
 message interfaces that subclasses should implement.</para>
-<para>You create an abstract class like object or mixin classes. No extra
-messages or keywords on the ::CLASS directive are necessary. Rexx does not
-prevent users from creating instances of abstract classes.
-It is possible to create abstract methods on a class.  An abstract method is a
-placeholder that subclasses are expected to override.  Failing to provide a real
-method implementation will result in an error when the abstract version is called.
+<para>You create an abstract class
+by specifying the ABSTRACT subkeyword on the ::CLASS directive.
+Trying to create an instance from an abstract class will result in an error.
+</para>
+<para>
+It is possible to create abstract methods or attributes on a class.
+Abstract methods or attributes are
+placeholders that subclasses are expected to override.  Failing to provide a real
+method or attribute implementation will result in an error when the abstract version is called.
 </para>
 </section>
 
