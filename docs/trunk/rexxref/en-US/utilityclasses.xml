@@ -591,13 +591,10 @@ number. The default <emphasis role="italic">offset</emphasis> is the current sys
 <title>Class DATETIME</title>
 <programlisting>
 <![CDATA[
-today = .DateTime~new    -- initializes to current date and time
-                         -- initializes to 30 Sep 2014 at 00:00:00.000000
-day = .DateTime~new(date('F', "20140930", "S"))
-                         -- also initializes to 30 Sep 2014 at 00:00:00.000000
-day = .DateTime~new(2014, 9, 30)
-                         -- initializes to 30 Sep 2014 at 10:33:00.000000
-day = .DateTime~new(2014, 9, 30, 10, 33, 00)
+today = .DateTime~new                            -- current date and time
+day = .DateTime~new(date('F', "20150630", "S"))  -- 2015-06-30T00:00:00.000000
+day = .DateTime~new(2015, 6, 30)                 -- 2015-06-30T00:00:00.000000
+day = .DateTime~new(2015, 6, 30, 11, 8, 50)      -- 2015-06-30T11:08:50.000000
 ]]>
 </programlisting>
 </example>
@@ -671,15 +668,15 @@ instance.  The receiver DateTime object is not changed.  The TimeSpan may be eit
 <title>Class DateTime &mdash; arithmetic</title>
 <programlisting>
 <![CDATA[
-t = .dateTime~new~timeOfDay  -- returns TimeSpan for current time.
-say t                        -- displays "11:27:12.437000", perhaps
-d = .dateTime~new(2010, 4, 11)  -- creates new date
+t = .dateTime~new~timeOfDay       -- returns TimeSpan for current time
+say t                             -- displays "11:09:30.152000", perhaps
+d = .dateTime~new(2015, 6, 30)    -- creates new date
 
-future = d + t               -- adds timespan to d
-say future                   -- displays "2010-04-11T11:27:12.437000"
-                             -- "real" start of next century
+future = d + t                    -- adds timespan to d
+say future                        -- displays "2015-06-30T11:09:30.152000"
+                                  -- "real" start of next century
 nextCentury = .dateTime~new(2101, 1, 1)
-                             -- displays "34060.12:25:49.922000", perhaps
+                                  -- displays "31230.12:50:29.846000", perhaps
 say "The next century starts in" (nextCentury - .dateTime~new)
 ]]>
 </programlisting>
@@ -927,9 +924,9 @@ a non-leap year, the day will be rolled back to the 28th.
 <title>Class DateTime &mdash; addYears method</title>
 <programlisting>
 <![CDATA[
-date = .DateTime~new(2008, 2, 29)
-say date              -- Displays "2008-02-29T00:00:00.000000"
-say date~addYears(1)  -- Displays "2009-02-29T00:00:00.000000"
+date = .DateTime~new(2015, 6, 30)
+say date              -- displays "2015-06-30T00:00:00.000000"
+say date~addYears(1)  -- displays "2016-06-30T00:00:00.000000"
 ]]>
 </programlisting>
 </example>
@@ -981,9 +978,9 @@ result in days being subtracted from the DateTime value.
 <title>Class DateTime &mdash; addDays method</title>
 <programlisting>
 <![CDATA[
-date = .DateTime~new(2008, 2, 29)
-say date              -- Displays "2008-02-29T00:00:00.000000"
-say date~addDays(1.5) -- Displays "2008-03-01T12:00:00.000000"
+date = .DateTime~new(2015, 6, 30)
+say date              -- displays "2015-06-30T00:00:00.000000"
+say date~addDays(1.5) -- displays "2015-07-01T12:00:00.000000"
 ]]>
 </programlisting>
 </example>
@@ -1781,7 +1778,7 @@ Returns .false otherwise.
 <programlisting><![CDATA[alarm = .Alarm~new(1 ,.message~new(.stdout, "SAY", "I", "Alarm went off"))
 call SysSleep 0.5
 alarm~cancel
-say "Alarm" alarm~cancelled~?("cancelled", "not cancelled") --> Alarm cancelled
+say "Alarm" alarm~cancelled~?("cancelled", "not cancelled")    -- Alarm cancelled
 ]]></programlisting></example></para>
 </section>
 
@@ -1828,8 +1825,8 @@ See method <xref linkend="mthAlarmAttachment" xrefstyle="template:attachment"/>.
 method to cancel a pending alarm.
 </para>
 
-<para>The following code sets up an alarm at 5:10 p.m. on December 15, 2014.
-(Assume today's date/time is prior to December 15, 2014.)  </para>
+<para>The following code sets up an alarm at 5:10 p.m. on December 15, 2015.
+(Assume today's date/time is prior to December 15, 2015.)  </para>
 <indexterm><primary>examples</primary>
 <secondary>of Alarm class</secondary></indexterm>
 <example>
@@ -1840,7 +1837,7 @@ method to cancel a pending alarm.
 PersonalMessage=.MyMessageClass~new("Call the Bank")
 msg=.message~new(PersonalMessage,"RemindMe")
 
-time = .DateTime~fromIsoDate("2014-12-15T17:10:00.000000")
+time = .DateTime~fromIsoDate("2015-12-15T17:10:00.000000")
 
 a=.alarm~new(time, msg)
 exit
@@ -4076,10 +4073,10 @@ receiving string, a null string is returned.
 <para><example>
 <title>Class MutableBuffer &mdash; [] method</title>
 <programlisting><![CDATA[s = .MutableBuffer~new(xrange("a", "z"))
-say s[5]             --> "e"
-say s[18, 3]         --> "rst"
-say s[25,10]         --> "yz"
-say s[30]            --> ""
+say s[5]        -- "e"
+say s[18, 3]    -- "rst"
+say s[25,10]    -- "yz"
+say s[30]       -- ""
 ]]></programlisting></example></para>
 </section>
 
@@ -4113,13 +4110,13 @@ blank.
 <para><example>
 <title>Class MutableBuffer &mdash; []= method</title>
 <programlisting><![CDATA[s = .MutableBuffer~new(xrange("a", "z"))
-s[5] = "E"            --> s = "abcdEfghijklmnopqrstuvwxyz"
-s[5] = "XXXX"         --> s = "abcdXXXXijklmnopqrstuvwxyz"
-s[5] = ""             --> s = "abcdXXXXijklmnopqrstuvwxyz"
-s[5, 1] = "="         --> s = "abcd=XXXijklmnopqrstuvwxyz"
-s[5, 4] = "="         --> s = "abcd=ijklmnopqrstuvwxyz"
-s[10, 2] = "REPLACE"  --> s = "abcd=ijklREPLACEopqrstuvwxyz"
-s[4, 99] = ""         --> s = "abc"  
+s[5] = "E"              -- "abcdEfghijklmnopqrstuvwxyz"
+s[5] = "XXXX"           -- "abcdXXXXijklmnopqrstuvwxyz"
+s[5] = ""               -- "abcdXXXXijklmnopqrstuvwxyz"
+s[5, 1] = "="           -- "abcd=XXXijklmnopqrstuvwxyz"
+s[5, 4] = "="           -- "abcd=ijklmnopqrstuvwxyz"
+s[10, 2] = "REPLACE"    -- "abcd=ijklREPLACEopqrstuvwxyz"
+s[4, 99] = ""           -- "abc"  
 ]]></programlisting></example></para>
 </section>
 
@@ -4209,8 +4206,8 @@ a non-negative whole number.
 </para>
 <para><example>
 <title>Class MutableBuffer &mdash; caselessContains method</title>
-<programlisting><![CDATA[say .mutablebuffer~new('-abcdef-')~caselessContains('EF')       --> 1
-say .mutablebuffer~new('-abcdef-')~caselessContains('-', 2, 6)  --> 0
+<programlisting><![CDATA[say .mutablebuffer~new('-abcdef-')~caselessContains('EF')         -- 1
+say .mutablebuffer~new('-abcdef-')~caselessContains('-', 2, 6)    -- 0
 ]]></programlisting></example></para>
 </section>
 
@@ -4236,7 +4233,7 @@ must match, except for case.</para>
 <para>By default the search starts at the first word in the receiving
 buffer.
 You can override this by specifying <emphasis role="italic">start</emphasis>
-(which must be positive whole number),
+(which must be a positive whole number),
 the word at which the search is to be started.</para>
 <para>See also
 <itemizedlist spacing="compact">
@@ -4253,13 +4250,13 @@ the word at which the search is to be started.</para>
 <para><example>
 <title>Class MutableBuffer &mdash; caselessContainsWord method</title>
 <programlisting><![CDATA[good = .MutableBuffer~new("Now is the time for all good men")
-say good~caselessContainsWord("the")              --> .true
-say good~caselessContainsWord("The")              --> .true
-say good~caselessContainsWord("is the")           --> .true
-say good~caselessContainsWord("is   the ")        --> .true
-say good~caselessContainsWord("is time")          --> .false
-say good~caselessContainsWord("time")             --> .true
-say good~caselessContainsWord("time", 5)          --> .false
+say good~caselessContainsWord("the")          -- .true
+say good~caselessContainsWord("The")          -- .true
+say good~caselessContainsWord("is the")       -- .true
+say good~caselessContainsWord("is   the ")    -- .true
+say good~caselessContainsWord("is time")      -- .false
+say good~caselessContainsWord("time")         -- .true
+say good~caselessContainsWord("time", 5)      -- .false
 ]]></programlisting></example></para>
 </section>
 
@@ -4601,8 +4598,8 @@ a non-negative whole number.
 </para>
 <para><example>
 <title>Class MutableBuffer &mdash; caselessContains method</title>
-<programlisting><![CDATA[say .mutablebuffer~new('-abcdef-')~contains('ef')       --> 1
-say .mutablebuffer~new('-abcdef-')~contains('-', 2, 6)  --> 0
+<programlisting><![CDATA[say .mutablebuffer~new('-abcdef-')~contains('ef')         -- 1
+say .mutablebuffer~new('-abcdef-')~contains('-', 2, 6)    -- 0
 ]]></programlisting></example></para>
 </section>
 
@@ -4645,13 +4642,13 @@ the word at which the search is to be started.</para>
 <para><example>
 <title>Class MutableBuffer &mdash; containsWord method</title>
 <programlisting><![CDATA[good = .MutableBuffer~new("Now is the time for all good men")
-say good~containsWord("the")              --> .true
-say good~containsWord("The")              --> .false
-say good~containsWord("is the")           --> .true
-say good~containsWord("is   the ")        --> .true
-say good~containsWord("is time")          --> .false
-say good~containsWord("time")             --> .true
-say good~containsWord("time", 5)          --> .false
+say good~containsWord("the")          -- .true
+say good~containsWord("The")          -- .false
+say good~containsWord("is the")       -- .true
+say good~containsWord("is   the ")    -- .true
+say good~containsWord("is time")      -- .false
+say good~containsWord("time")         -- .true
+say good~containsWord("time", 5)      -- .false
 ]]></programlisting></example></para>
 </section>
 
@@ -6020,7 +6017,7 @@ retrieved with the position method (<xref linkend="mthRegularExpressionPosition"
 <title>Class RegularExpression &mdash; haystack method</title>
 <programlisting>
 <![CDATA[
-str = "It is the year 2002!"
+str = "It is the year 2015!"
 myRE = .RegularExpression~new("[1-9][0-9]*")
 begin = myRE~pos(str)
 if begin > 0 then do
@@ -6037,7 +6034,7 @@ end
 
 <programlisting>
 <![CDATA[
-Found the number 2002 in this sentence.
+Found the number 2015 in this sentence.
 ]]>
 </programlisting>
 </section>
@@ -7324,8 +7321,8 @@ RexxInfo provides read-only attribute methods to get
 </para>
 <para><example>
 <title>Class RexxInfo &mdash; architecture method</title>
-<programlisting><![CDATA[say .rexxinfo~architecture    --> 32 /* ooRexx 32-bit */
-say .rexxinfo~architecture    --> 64 /* ooRexx 64-bit */
+<programlisting><![CDATA[say .rexxinfo~architecture    -- 32 /* ooRexx 32-bit */
+say .rexxinfo~architecture    -- 64 /* ooRexx 64-bit */
 ]]></programlisting></example></para>
 </section>
 
@@ -7348,8 +7345,8 @@ which returns the same information.
 </para>
 <para><example>
 <title>Class RexxInfo &mdash; caseSensitiveFiles method</title>
-<programlisting><![CDATA[say .RexxInfo~caseSensitiveFiles    --> 0 /* e. g. Windows */
-say .RexxInfo~caseSensitiveFiles    --> 1 /* e. g. Unix */
+<programlisting><![CDATA[say .RexxInfo~caseSensitiveFiles    -- 0 /* e. g. Windows */
+say .RexxInfo~caseSensitiveFiles    -- 1 /* e. g. Unix */
 ]]></programlisting></example></para>
 </section>
 
@@ -7379,7 +7376,7 @@ which both also return this date as the third to fifth token of their result.
 </para>
 <para><example>
 <title>Class RexxInfo &mdash; date method</title>
-<programlisting><![CDATA[say .RexxInfo~date    --> 9 Dec 2014 /* e. g. */
+<programlisting><![CDATA[say .RexxInfo~date    -- 9 Dec 2014 /* e. g. */
 ]]></programlisting></example></para>
 </section>
 
@@ -7409,7 +7406,7 @@ which both also return this date as the third to fifth token of their result.
 </para>
 <para><example>
 <title>Class RexxInfo &mdash; digits method</title>
-<programlisting><![CDATA[say .RexxInfo~digits    --> 9
+<programlisting><![CDATA[say .RexxInfo~digits    -- 9
 ]]></programlisting></example></para>
 </section>
 
@@ -7430,8 +7427,8 @@ which provides the same information.
 </para>
 <para><example>
 <title>Class RexxInfo &mdash; directorySeparator method</title>
-<programlisting><![CDATA[say .RexxInfo~directorySeparator    --> "\" /* Windows */
-say .RexxInfo~directorySeparator    --> "/" /* Unix */
+<programlisting><![CDATA[say .RexxInfo~directorySeparator    -- "\" /* Windows */
+say .RexxInfo~directorySeparator    -- "/" /* Unix */
 ]]></programlisting></example></para>
 </section>
 
@@ -7453,8 +7450,8 @@ which provides the same information.
 </para>
 <para><example>
 <title>Class RexxInfo &mdash; endofline method</title>
-<programlisting><![CDATA[say .RexxInfo~endofline    --> "0d 0a"x /* Windows */ 
-say .RexxInfo~endofline    --> "0a"x /* Unix */
+<programlisting><![CDATA[say .RexxInfo~endofline    -- "0d 0a"x /* Windows */ 
+say .RexxInfo~endofline    -- "0a"x /* Unix */
 ]]></programlisting></example></para>
 </section>
 
@@ -7484,7 +7481,7 @@ say .RexxInfo~endofline    --> "0a"x /* Unix */
 </para>
 <para><example>
 <title>Class RexxInfo &mdash; form method</title>
-<programlisting><![CDATA[say .RexxInfo~form    --> SCIENTIFIC
+<programlisting><![CDATA[say .RexxInfo~form    -- SCIENTIFIC
 ]]></programlisting></example></para>
 </section>
 
@@ -7514,8 +7511,7 @@ say .RexxInfo~endofline    --> "0a"x /* Unix */
 </para>
 <para><example>
 <title>Class RexxInfo &mdash; fuzz method</title>
-<programlisting><![CDATA[say .RexxInfo~fuzz    --> 0
-say .RexxInfo~fuzz    --> 0
+<programlisting><![CDATA[say .RexxInfo~fuzz    -- 0
 ]]></programlisting></example></para>
 </section>
 
@@ -7536,8 +7532,8 @@ and 18 digits, when running in a 64-bt addressing mode.
 </para>
 <para><example>
 <title>Class RexxInfo &mdash; internalDigits method</title>
-<programlisting><![CDATA[say .RexxInfo~internalDigits    --> 9  /* for 32-bit addressing mode */
-say .RexxInfo~internalDigits    --> 18 /* for 64-bit addressing mode */
+<programlisting><![CDATA[say .RexxInfo~internalDigits    -- 9  /* for 32-bit addressing mode */
+say .RexxInfo~internalDigits    -- 18 /* for 64-bit addressing mode */
 ]]></programlisting></example></para>
 </section>
 
@@ -7565,7 +7561,7 @@ which both also return the language level as the second token of their result.
 </para>
 <para><example>
 <title>Class RexxInfo &mdash; languageLevel method</title>
-<programlisting><![CDATA[say .RexxInfo~languageLevel    --> 6.05
+<programlisting><![CDATA[say .RexxInfo~languageLevel    -- 6.05
 ]]></programlisting></example></para>
 </section>
 
@@ -7598,7 +7594,7 @@ which also return the major version number as part of their result.
 </para>
 <para><example>
 <title>Class RexxInfo &mdash; majorVersion method</title>
-<programlisting><![CDATA[say .RexxInfo~majorVersion    --> 5
+<programlisting><![CDATA[say .RexxInfo~majorVersion    -- 5
 ]]></programlisting></example></para>
 </section>
 
@@ -7643,7 +7639,7 @@ that is also returned by
 </para>
 <para><example>
 <title>Class RexxInfo &mdash; name method</title>
-<programlisting><![CDATA[say .RexxInfo~name    --> REXX-ooRexx_5.0.0(MT)_64-bit 6.05 9 Dec 2014 /* e. g. */
+<programlisting><![CDATA[say .RexxInfo~name    -- REXX-ooRexx_5.0.0(MT)_64-bit 6.05 9 Dec 2014 /* e. g. */
 ]]></programlisting></example></para>
 </section>
 
@@ -7662,10 +7658,9 @@ that is also returned by
 </para>
 <para><example>
 <title>Class RexxInfo &mdash; package method</title>
-<programlisting><![CDATA[
-say "ooRexx pre-defines" -
+<programlisting><![CDATA[say "ooRexx pre-defines" -
   .RexxInfo~package~publicClasses~items -
-  "public classes"   --> ooRexx pre-defines 56 public classes
+  "public classes"          -- ooRexx pre-defines 56 public classes
 ]]></programlisting></example></para>
 </section>
 
@@ -7685,8 +7680,8 @@ say "ooRexx pre-defines" -
 </para>
 <para><example>
 <title>Class RexxInfo &mdash; pathSeparator method</title>
-<programlisting><![CDATA[say .RexxInfo~pathSeparator    --> ; /* Windows */
-say .RexxInfo~pathSeparator    --> ":" /* Unix */
+<programlisting><![CDATA[say .RexxInfo~pathSeparator    -- ; /* Windows */
+say .RexxInfo~pathSeparator    -- ":" /* Unix */
 ]]></programlisting></example></para>
 </section>
 
@@ -7707,8 +7702,8 @@ which returns the same information as its first token.
 </para>
 <para><example>
 <title>Class RexxInfo &mdash; platform method</title>
-<programlisting><![CDATA[say .RexxInfo~platform    --> WindowsNT
-say .RexxInfo~platform    --> LINUX
+<programlisting><![CDATA[say .RexxInfo~platform    -- WindowsNT
+say .RexxInfo~platform    -- LINUX
 ]]></programlisting></example></para>
 </section>
 
@@ -7741,7 +7736,7 @@ which also return the release number as part of their result.
 </para>
 <para><example>
 <title>Class RexxInfo &mdash; release method</title>
-<programlisting><![CDATA[say .RexxInfo~release    --> 0
+<programlisting><![CDATA[say .RexxInfo~release    -- 0
 ]]></programlisting></example></para>
 </section>
 
@@ -7774,7 +7769,7 @@ which also return the revision number as part of their result.
 </para>
 <para><example>
 <title>Class RexxInfo &mdash; revision method</title>
-<programlisting><![CDATA[say .RexxInfo~revision    --> 0
+<programlisting><![CDATA[say .RexxInfo~revision    -- 0
 ]]></programlisting></example></para>
 </section>
 
@@ -7812,7 +7807,7 @@ the <xref linkend="mthRexxInfoRevision" xrefstyle="template:revision"/>.
 </para>
 <para><example>
 <title>Class RexxInfo &mdash; version method</title>
-<programlisting><![CDATA[say .RexxInfo~version    --> 5.0.0
+<programlisting><![CDATA[say .RexxInfo~version    -- 5.0.0
 ]]></programlisting></example></para>
 </section>
 
@@ -8992,7 +8987,7 @@ say .File~new("/tmp/.dir/file")~isHidden        -- 1
     <![CDATA[
     /* On Windows */
     say .File~new("C:\Program Files")~lastModified~class    -- The DateTime class
-    say .File~new("C:\Program Files")~lastModified          -- 2010-11-01T19:14:49.000000
+    say .File~new("C:\Program Files")~lastModified          -- 2015-06-18T11:20:17.000000
     say .File~new("dummy")~lastModified                     -- The NIL object
 
     /* A possible implementation of : touch -c -m -r referenceFile file

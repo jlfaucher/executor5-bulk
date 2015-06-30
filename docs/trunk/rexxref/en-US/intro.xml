@@ -2815,18 +2815,18 @@ allow to always access the ooRexx-provided classes.
 <para>Examples:</para>
 <example><title>Namespaces</title>
 <programlisting>-- disambiguate between two classes with same name
-say .number~id                         --> The Real Number class
-say natural:number~id                  --> The Natural Number class
+say .number~id                          -- The Real Number class
+say natural:number~id                   -- The Natural Number class
 
 -- use reserved namespace "REXX" to get ooRexx-predefined .Array
 -- not :class array as defined below
-say rexx:array~of(2, 3, 5, 7)~items    --> 4
+say rexx:array~of(2, 3, 5, 7)~items     -- 4
 
 -- call ::routine verify, not built-in function
 call natural:verify(17)
 
 -- use natural:number as a message target
-say natural:number~subclass("Integer") --> The Integer class
+say natural:number~subclass("Integer")  -- The Integer class
 
 
 -- subclass natural:number, not ::class number as defined below

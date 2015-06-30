@@ -3518,11 +3518,11 @@ argument. This
 <example id="ex.bif-random">
 <title>Builtin function RANDOM</title>
 <programlisting>
-RANDOM()          -->   305  /* 0 to 999     */
-RANDOM(5, 8)      -->     7  /* 5 to 8       */
-RANDOM(2)         -->     0  /* 0 to 2       */
-RANDOM(, , 3257)  -->   123  /* reproducible */
-RANDOM(-5, 5)     -->    -3
+RANDOM()            -- 305  /* 0 to 999     */
+RANDOM(5, 8)        --   7  /* 5 to 8       */
+RANDOM(2)           --   0  /* 0 to 2       */
+RANDOM(, , 3257)    -- 123  /* reproducible */
+RANDOM(-5, 5)       --  -3
 </programlisting>
 </example>
 
@@ -3539,7 +3539,7 @@ For example, to simulate 40 throws of a 6-sided, unbiased die:
 sequence = RANDOM(1,6,12345)  /* any number would */
                               /* do for a seed    */
 do 39
-sequence = sequence RANDOM(1,6)
+  sequence = sequence RANDOM(1,6)
 end
 say sequence
 </programlisting>
