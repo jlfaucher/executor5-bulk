@@ -1,94 +1,97 @@
-coll_atget ::= '[' index ( ( ',' index )+ )? ']'
+collection_atget ::= '[' index (',' index )* ']'
 
-coll_putset ::= '[' index ( ( ',' index )+ )? ']' '=' value
+collection_putset ::= '[' index (',' index )* ']' '=' value
 
-coll_allindexes ::= 'allindexes'
+collection_allindexes ::= 'allIndexes'
 
-coll_allitems ::= 'allitems'
+collection_allitems ::= 'allItems'
 
-coll_at ::= 'at(' index ( ( ',' index )+ )? ')'
+collection_at ::= 'at(' index (',' index )* ')'
 
-coll_difference ::= 'difference(' argument ')'
+collection_difference ::= 'difference(' argument ')'
 
-coll_disjoint ::= 'disjoint(' argument ')'
+collection_disjoint ::= 'disjoint(' argument ')'
 
-coll_equivalent ::= 'equivalent(' argument ')'
+collection_equivalent ::= 'equivalent(' argument ')'
 
-coll_hasindex ::= 'hasIndex(' index ( ( ',' index )+ )? ')'
+collection_hasindex ::= 'hasIndex(' index (',' index )* ')'
 
-coll_hasitem ::= 'hasItem(' item ')'
+collection_hasitem ::= 'hasItem(' item ')'
 
-coll_index ::= 'index(' item ')'
+collection_index ::= 'index(' item ')'
 
-coll_intersection ::= 'intersection(' argument ')'
+collection_intersection ::= 'intersection(' argument ')'
 
-coll_items ::= 'items'
+collection_items ::= 'items'
 
-coll_makearray ::= 'makearray'
+collection_makearray ::= 'makeArray'
 
-coll_put ::= 'put(' item ',' ( index ( ( ',' index )+ )? ) ')'
+collection_put ::= 'put(' item ',' index (',' index )* ')'
 
-coll_subset ::= 'subset(' argument ')'
+collection_subset ::= 'subset(' argument ')'
 
-coll_supplier ::= 'supplier'
+collection_supplier ::= 'supplier'
 
-coll_union ::= 'union(' argument ')'
+collection_union ::= 'union(' argument ')'
 
-coll_xor ::= 'xor(' argument ')'
+collection_xor ::= 'xor(' argument ')'
 
-map_makearray ::= 'makearray'
+/* New in 5.0 */
+mapcollection_of ::= 'of(' pair (',' pair)* ')'
 
-map_putall ::= 'putAll(' collection ')'
+mapcollection_makearray ::= 'makeArray'
 
-ordered_append ::= 'append(' item ')'
+mapcollection_putall ::= 'putAll(' collection ')'
 
-ordered_appendall ::= 'appendAll(' collection ')'
+orderedcollection_append ::= 'append(' item ')'
 
-ordered_delete ::= 'delete(' index ( ( ',' index )+ )? ')'
+orderedcollection_appendall ::= 'appendAll(' collection ')'
 
-ordered_difference ::= 'difference(' argument ')'
+orderedcollection_delete ::= 'delete(' index (',' index )* ')'
 
-ordered_first ::= 'first'
+orderedcollection_difference ::= 'difference(' argument ')'
 
-ordered_firstitem ::= 'firstItem'
+orderedcollection_first ::= 'first'
 
-ordered_insert ::= 'insert(' item ( ',' index )? ')'
+orderedcollection_firstitem ::= 'firstItem'
 
-ordered_intersection ::= 'intersection(' argument ')'
+orderedcollection_insert ::= 'insert(' item ( ',' index )? ')'
 
-ordered_last ::= 'last'
+orderedcollection_intersection ::= 'intersection(' argument ')'
 
-ordered_lastitem ::= 'lastItem'
+orderedcollection_last ::= 'last'
 
-ordered_next ::= 'next'
+orderedcollection_lastitem ::= 'lastItem'
 
-ordered_previous ::= 'previous(' index ')'
+orderedcollection_next ::= 'next'
 
-ordered_section ::= 'section(' start ( ',' items )? ')'
+orderedcollection_previous ::= 'previous(' index ')'
 
-ordered_sort ::= 'sort'
+orderedcollection_section ::= 'section(' start ( ',' items )? ')'
 
-ordered_sortwith ::= 'sortWith(' comparator ')'
+orderedcollection_sort ::= 'sort'
 
-ordered_stablesort ::= 'stableSort'
+orderedcollection_sortwith ::= 'sortWith(' comparator ')'
 
-ordered_stablesortwith ::= 'stableSortWith(' comparator ')'
+orderedcollection_stablesort ::= 'stableSort'
 
-ordered_subset ::= 'subset(' argument ')'
+orderedcollection_stablesortwith ::= 'stableSortWith(' comparator ')'
 
-ordered_union ::= 'union(' argument ')'
+orderedcollection_subset ::= 'subset(' argument ')'
 
-ordered_xor ::= 'xor(' argument ')'
+orderedcollection_union ::= 'union(' argument ')'
+
+orderedcollection_xor ::= 'xor(' argument ')'
 
 array_insert ::= 'insert(' item ( ',' index )? ')'
 
-array_new ::= 'new' ( '(' size ( ( ',' size )+ )? ')' )?
+array_new ::= 'new(' ( size ( ',' size )* )? ')'
 
-array_of ::= 'of' ( '(' item ( ( ',' item )+ )? ')' )?
+array_of ::= 'of(' ( item ( ',' item )*) ?')'
 
-array_atget ::= '[' index ( ( ',' index )+ )? ']'
+array_atget ::= '[' index (',' index )* ']'
 
-array_putset ::= '[' index ( ( ',' index )+ )? ']' '=' value
+array_putset ::= '[' index (',' index )* ']' '=' value
 
 array_allindexes ::= 'allIndexes'
 
@@ -96,9 +99,9 @@ array_allitems ::= 'allItems'
 
 array_append ::= 'append(' item ')'
 
-array_at ::= 'at(' index ( ( ',' index )+ )? ')'
+array_at ::= 'at(' index (',' index )* ')'
 
-array_delete ::= 'delete(' index ( ( ',' index )+ )? ')'
+array_delete ::= 'delete(' index (',' index )* ')'
 
 array_dimension ::= 'dimension(' n ')'
 
@@ -112,7 +115,7 @@ array_first ::= 'first'
 
 array_firstitem ::= 'firstItem'
 
-array_hasindex ::= 'hasIndex(' index ( ( ',' index )+ )? ')'
+array_hasindex ::= 'hasIndex(' index (',' index )* ')'
 
 array_hasitem ::= 'hasItem(' item ')'
 
@@ -120,7 +123,7 @@ array_index ::= 'index(' item ')'
 
 array_isempty ::= 'isEmpty'
 
-attay_items ::= 'items'
+array_items ::= 'items'
 
 array_last ::= 'last'
 
@@ -128,15 +131,15 @@ array_lastitem ::= 'lastItem'
 
 array_makearray ::= 'makeArray'
 
-array_makestring ::= 'makeString(' ( 'Line' ( ',' seperator )? | 'Char' )? ')'
+array_makestring ::= 'makeString(' ( 'Line' ( ',' separator )? | 'Char' )? ')'
 
-array_next ::= 'next(' index ')'
+array_next ::= 'next(' index (',' index )* ')'
 
-array_previous ::= 'previous(' index ')'
+array_previous ::= 'previous(' index (',' index )* ')'
 
-array_put ::= 'put(' item ( index ( ( ',' index )+ )? ) ')'
+array_put ::= 'put(' item ( index (',' index )* ) ')'
 
-array_remove ::= 'remove(' index ( ( ',' index )+ )? ')'
+array_remove ::= 'remove(' index (',' index )* ')'
 
 array_removeitem ::= 'removeItem(' item ')'
 
@@ -158,7 +161,7 @@ array_tostring ::= 'toString(' ( 'Line' ( ',' separator )? | 'Char' )? ')'
 
 bag_new ::= 'new'
 
-bag_of ::= 'of' ( '(' item ( ( ',' item )+ )? ')' )?
+bag_of ::= 'of(' ( item ( ',' item )* )? ')'
 
 bag_atget ::= '[' index ']'
 
@@ -196,8 +199,6 @@ bag_put ::= 'put(' item ',' index ')'
 
 bag_putall ::= 'putAll(' collection ')'
 
-bag_putset ::= '[' index ']' '=' item
-
 bag_remove ::= 'remove(' index ')'
 
 bag_removeall ::= 'removeAll(' index ')'
@@ -206,45 +207,45 @@ bag_removeitem ::= 'removeItem(' item ( ',' index )? ')'
 
 bag_subset ::= 'subset(' argument ')'
 
-bag_supplier ::= 'supplier' ( '(' index ')' )?
+bag_supplier ::= 'supplier(' index? ')'
 
-bag_union ::= 'union' '(' index ')'
+bag_union ::= 'union(' index ')'
 
 bag_uniqueindexes ::= 'uniqueIndexes'
 
 bag_xor ::= 'xor(' argument ')'
 
-cqueue_of ::= 'of' ( '(' item ( ( ',' item )+ )? ')' )?
+circularqueue_of ::= 'of(' ( item ( ',' item )* )? ')'
 
-cqueue_init ::= 'init(' size ')'
+circularqueue_init ::= 'init(' size ')'
 
-cqueue_append ::= 'append(' item ')'
+circularqueue_append ::= 'append(' item ')'
 
-cqueue_insert ::= 'insert(' item ( ',' index )? ')'
+circularqueue_insert ::= 'insert(' item ( ',' index )? ')'
 
-cqueue_intersection ::= 'intersection(' argument ')'
+circularqueue_intersection ::= 'intersection(' argument ')'
 
-cqueue_makearray ::= 'makeArray(' ( order )? ')'
+circularqueue_makearray ::= 'makeArray(' ( order )? ')'
 
-cqueue_push ::= 'push(' item ( ',' option )? ')'
+circularqueue_push ::= 'push(' item ( ',' option )? ')'
 
-cqueue_queue ::= 'queue(' item ( ',' 'Normal' | ',' 'Unique' )? ')'
+circularqueue_queue ::= 'queue(' item ( ',' 'Normal' | ',' 'Unique' )? ')'
 
-cqueue_resize ::= 'resize(' newsize ( ',' order )? ')'
+circularqueue_resize ::= 'resize(' newsize ( ',' order )? ')'
 
-cqueue_section ::= 'section(' start ( ',' items )? ')'
+circularqueue_section ::= 'section(' start ( ',' items )? ')'
 
-cqueue_size ::= 'size'
+circularqueue_size ::= 'size'
 
-cqueue_string ::= 'string(' ( '","' | delimiter )? ( ',' 'Fifo' | ',' order )? ')'
+circularqueue_string ::= 'string(' delimiter? ( ',' order )? ')'
 
-cqueue_supplier ::= 'supplier(' ( order )? ')'
+circularqueue_supplier ::= 'supplier(' ( order )? ')'
 
-cqueue_union ::= 'union(' argument ')'
+circularqueue_union ::= 'union(' argument ')'
 
-cqueue_xor ::= 'xor(' argument ')'
+circularqueue_xor ::= 'xor(' argument ')'
 
-directory_new ::= 'new'
+directory_new ::= 'new(' size? ')'
 
 directory_atget ::= '[' name ']'
 
@@ -277,6 +278,9 @@ directory_makearray ::= 'makeArray'
 directory_put ::= 'put(' item ',' name ')'
 
 directory_remove ::= 'remove(' name ')'
+
+/* New in 5.0 */
+directory_removeentry ::= 'removeEntry(' name ')'
 
 directory_removeitem ::= 'removeItem(' item ')'
 
@@ -326,6 +330,9 @@ stringtable_put ::= 'put(' item ',' name ')'
 
 stringtable_remove ::= 'remove(' name ')'
 
+/* New in 5.0 */
+stringtable_removeentry ::= 'removeEntry(' name ')'
+
 stringtable_removeitem ::= 'removeItem(' item ')'
 
 stringtable_setentry ::= 'setEntry(' name ( ',' entry )? ')'
@@ -340,13 +347,13 @@ stringtable_unsetmethod ::= 'unsetMethod(' name ')'
 
 stringtable_xor ::= 'xor(' argument ')'
 
-list_new ::= 'new'
+list_new ::= 'new(' size? ')'
 
-list_of ::= 'of' ( '(' item ( ( ',' item )+ )? ')' )?
+list_of ::= 'of(' ( item ( ',' item )* )? ')'
 
 list_atget ::= '[' index ']'
 
-list_putsett ::= '[' index ']' '=' item
+list_putset ::= '[' index ']' '=' item
 
 list_allindexes ::= 'allIndexes'
 
@@ -398,9 +405,9 @@ list_supplier ::= 'supplier'
 
 properties_load ::= 'load(' source ')'
 
-properties_new ::= 'new'
+properties_new ::= 'new(' size? ')'
 
-properties_putset ::= '{' name ']' '=' item
+properties_putset ::= '[' name ']' '=' item
 
 properties_getlogical ::= 'getLogical(' name ( ',' default )? ')'
 
@@ -418,9 +425,9 @@ properties_setproperty ::= 'setProperty(' name ',' value ')'
 
 properties_setwhole ::= 'setWhole(' name ',' value ')'
 
-queue_new ::= 'new'
+queue_new ::= 'new(' size? ')'
 
-queue_of ::= 'of' ( '(' item ( ( ',' item )+ )? ')' )?
+queue_of ::= 'of(' ( item ( ',' item )* )? ')'
 
 queue_atget ::= '[' index ']'
 
@@ -526,63 +533,39 @@ relation_removeitem ::= 'removeItem(' item ( ',' index )? ')'
 
 relation_subset ::= 'subset(' argument ')'
 
-relation_supplier ::= 'supplier' ( '(' index ')' )?
+relation_supplier ::= 'supplier(' index? ')'
 
-relation_union ::= 'union' '(' index ')'
+relation_union ::= 'union(' index ')'
 
 relation_uniqueindexes ::= 'uniqueIndexes'
 
 relation_xor ::= 'xor(' argument ')'
 
-set_of ::= 'of' ( '(' item ( ( ',' item )+ )? ')' )?
-
-table_new ::= 'new'
-
-table_atget ::= '[' index ']'
-
-table_putset ::= '[' index ']' '=' item
-
-table_allindexes ::= 'allIndexes'
-
-table_allitems ::= 'allItems'
-
-table_at ::= 'at(' index ')'
-
-table_empty ::= 'empty'
-
-table_hasindex ::= 'hasIndex(' index ')'
-
-table_hasitem ::= 'hasItem(' value ')'
-
-table_index ::= 'index(' item ')'
-
+set_of ::= 'of(' ( item ( ',' item )* )? ')'
+set_new ::= 'new'
+set_allindexes ::= 'allIndexes'
+set_allitems ::= 'allItems'
+set_at ::= 'at(' index ')'
+set_atget ::= '[' index ']'
+set_empty ::= 'empty'
+set_hasindex ::= 'hasIndex(' index ')'
+set_hasitem ::= 'hasItem(' value ')'
+set_index ::= 'index(' item ')'
 set_intersection ::= 'intersection(' argument ')'
-
-table_isempty ::= 'isEmpty'
-
-table_items ::= 'items'
-
-table_makearray ::= 'makeArray'
-
-table_put ::= 'put(' item ',' index ')'
-
+set_isempty ::= 'isEmpty'
+set_items ::= 'items'
+set_makearray ::= 'makeArray'
+set_put ::= 'put(' item ',' index ')'
 set_putall ::= 'putAll(' collection ')'
-
 set_putset ::= '[' index ']' '=' item
-
-set_union ::= 'union' '(' argument ')'
-
+set_remove ::= 'remove(' index ')'
+set_removeitem ::= 'removeItem(' item ')'
+set_subset ::= 'subset(' argument ')'
+set_supplier ::= 'supplier'
+set_union ::= 'union(' argument ')'
 set_xor ::= 'xor(' argument ')'
 
-table_remove ::= 'remove(' index ')'
-
-table_removeitem ::= 'removeItem(' item ')'
-
-set_subset ::= 'subset(' argument ')'
-
-table_supplier ::= 'supplier'
-
-stem_new ::= 'new' ( '(' name ')' )?
+stem_new ::= 'new(' name? ')'
 
 stem_atget ::= '[' index ']'
 
@@ -656,44 +639,34 @@ table_removeitem ::= 'removeItem(' item ')'
 
 table_supplier ::= 'supplier'
 
-idtable_new ::= 'new'
+identitytable_new ::= 'new(' size? ')'
 
-idtable_atget ::= '[' index ']'
+identitytable_atget ::= '[' index ']'
 
-idtable_putset ::= '[' index ']' '=' item
+identitytable_putset ::= '[' index ']' '=' item
 
-idtable_allindexes ::= 'allIndexes'
+identitytable_allindexes ::= 'allIndexes'
 
-idtable_allitems ::= 'allItems'
+identitytable_allitems ::= 'allItems'
 
-idtable_empty ::= 'empty'
+identitytable_empty ::= 'empty'
 
-idtable_hasindex ::= 'hasIndex(' index ')'
+identitytable_hasindex ::= 'hasIndex(' index ')'
 
-idtable_hasitem ::= 'hasItem(' item ')'
+identitytable_hasitem ::= 'hasItem(' item ')'
 
-idtable_index ::= 'index(' item ')'
+identitytable_index ::= 'index(' item ')'
 
-idtable_isempty ::= 'isEmpty'
+identitytable_isempty ::= 'isEmpty'
 
-idtable_items ::= 'items'
+identitytable_items ::= 'items'
 
-idtable_makearray ::= 'makeArray'
+identitytable_makearray ::= 'makeArray'
 
-idtable_put ::= 'put(' item ',' index ')'
+identitytable_put ::= 'put(' item ',' index ')'
 
-idtable_remove ::= 'remove(' index ')'
+identitytable_remove ::= 'remove(' index ')'
 
-idtable_removeitem ::= 'removeItem(' item ')'
+identitytable_removeitem ::= 'removeItem(' item ')'
 
-idtable_supplier ::= 'supplier'
-
-
-
-
-
-
-
-
-
-
+identitytable_supplier ::= 'supplier'

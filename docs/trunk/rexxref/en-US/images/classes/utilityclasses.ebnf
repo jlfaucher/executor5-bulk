@@ -207,6 +207,7 @@ timespan_string ::= 'string'
 comparable_compareto ::= 'compareTo(' other ')'
 
 orderable_comparisonoperator ::= 'comparison_operator(' argument ')'
+orderable_compareto ::= 'compareTo(' other ')'
 
 comparator_compare ::= 'compare(' first ',' second ')'
 
@@ -240,86 +241,7 @@ monitor_init ::= 'init' ( '(' destination ')' )?
 
 monitor_unknown ::= 'unknown(' messagename ',' messageargs ')'
 
-mutablrbuffer_new ::= 'new(' ( string )? ( ',' buffersize )? ')'
-
-mutablrbuffer_append ::= 'append(' string ')'
-
-mutablrbuffer_caselesschangestr ::= 'caselessChangeStr(' needle ',' newneedle ( ',' count )? ')'
-
-mutablrbuffer_caselesscountstr ::= 'caselessCountStr(' needle ')'
-
-mutablrbuffer_caselesslastpos ::= 'caselessLastPos(' needle ( ',' ( start )? ( ',' length )? )? ')'
-
-mutablrbuffer_caselessmatch ::= 'caselessMatch(' start ',' other ( ',' ( n )? ( ',' length )? )? ')'
-
-mutablrbuffer_caselessmatchchar ::= 'caselessMatchChar(' n ',' chars ')'
-
-mutablrbuffer_caselesspos ::= 'caselessPos(' needle ( ',' ( start )? ( ',' length )? )? ')'
-
-mutablrbuffer_caselesswordpos ::= 'caselessWordPos(' phrase ( ',' start )? ')'
-
-mutablrbuffer_changestr ::= 'changeStr(' needle ',' newneedle ( ',' count )? ')'
-
-mutablrbuffer_countstr ::= 'countStr(' needle ')'
-
-mutablrbuffer_delete ::= 'delete(' n ( ',' length )? ')'
-
-mutablrbuffer_delstr ::= 'delStr(' n ( ',' length )? ')'
-
-mutablrbuffer_delword ::= 'delWord(' n ( ',' length )? ')'
-
-mutablrbuffer_getbuffersize ::= 'getBufferSize'
-
-mutablrbuffer_insert ::= 'insert(' new ( ',' ( n )? ( ',' ( length )? ( ',' pad )? )? )? ')'
-
-mutablrbuffer_lastpos ::= 'lastPos(' needle ( ',' start )? ')'
-
-mutablrbuffer_length ::= 'length'
-
-mutablrbuffer_lower ::= 'lower(' ( n )? ( ',' length )? ')'
-
-mutablrbuffer_makearray ::= 'makeArray(' ( separator )? ')'
-
-mutablrbuffer_match ::= 'match(' start ',' other ( ',' ( n )? ( ',' length )? )? ')'
-
-mutablrbuffer_matchchar ::= 'matchChar(' n ',' chars ')'
-
-mutablrbuffer_overlay ::= 'overlay(' new ( ',' ( n )? ( ',' ( length )? ( ',' pad )? )? )? ')'
-
-mutablrbuffer_pos ::= 'pos(' needle ( ',' start )? ')'
-
-mutablrbuffer_replaceat ::= 'replaceAt(' new ',' n ( ',' ( length )? ( ',' pad )? )? ')'
-
-mutablrbuffer_setbuffersize ::= 'setBufferSize(' n ')'
-
-mutablrbuffer_space ::= 'space' ( '(' n ( ',' pad )? ')' )?
-
-mutablrbuffer_string ::= 'string'
-
-mutablrbuffer_subchar ::= 'subChar(' n ')'
-
-mutablrbuffer_substr ::= 'substr(' n ( ',' ( length )? ( ',' pad )? )? ')'
-
-mutablrbuffer_subword ::= 'subWord(' n ( ',' length )? ')'
-
-mutablrbuffer_subwords ::= 'subWords(' ( n )? ( ',' length )? ')'
-
-mutablebuffer_translate ::= 'translate(' ( ( tableo ( ',' ( tablei ( ',' pad )? )? )? | 
-                                          n ( ',' length )? ) )? ')'
-
-mutablrbuffer_upper ::= 'upper(' ( n )? ( ',' length )? ')'
-
-mutablrbuffer_verify ::= 'verify(' reference ( ',' ( option )? ( ',' ( start )? ( ',' length )? )? )? ')'
-
-mutablrbuffer_word ::= 'word(' n ')'
-
-mutablrbuffer_wordindex ::= 'wordIndex(' n ')'
-
-mutablrbuffer_wordlength ::= 'wordLength(' n ')'
-
-mutablrbuffer_wordpos ::= 'wordPos(' phrase ( ',' start )? ')'
-
-mutablrbuffer_words ::= 'words'
+/* MutableBuffer: see mutablebuffer.ebnf */
 
 regexp_init ::= 'init(' pattern ( ',' ( '"Maximal"' | '"Minimal"' ) )? ')'
 

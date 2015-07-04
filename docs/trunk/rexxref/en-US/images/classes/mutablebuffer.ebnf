@@ -1,8 +1,8 @@
 mutablebuffer_new ::= 'new(' ( string )? ( ',' buffersize )? ')'
 
 /* New in 5.0 - start */
-mutablebuffer_brackets      ::= '[' n ( ',' length )? ']'
-mutablebuffer_bracketsequal ::= '[' n ( ',' ( length )? ( ',' pad )? )? ']' '=' new
+mutablebuffer_atget  ::= '[' n ( ',' length )? ']'
+mutablebuffer_putset ::= '[' n ( ',' ( length )? ( ',' pad )? )? ']' '=' new
 
 mutablebuffer_startswith           ::= 'startsWith(' other ')'
 mutablebuffer_endswith             ::= 'endsWith(' other ')'

@@ -134,7 +134,7 @@ Collection (<xref linkend="clsCollection" />)
       Directory (<xref linkend="clsDirectory" />)
       StringTable (<xref linkend="clsStringTable" />)
       Properties (<xref linkend="clsProperties" />)
-      Releation (<xref linkend="clsRelation" />)
+      Relation (<xref linkend="clsRelation" />)
       Stem (<xref linkend="clsStem" />)
       Table (<xref linkend="clsTable" />)
       IdentityTable (<xref linkend="clsIdentityTable" />)
@@ -156,58 +156,46 @@ methods implemented by all Collections.  Many of the Collection class methods
 are abstract and must be implemented the inheriting subclasses.
 </para>
 
+<!-- $GENERATED-20150704-START rexxrefClassTable(Collection) -->
 <table id="ooRexxCollectionClass" frame="all" pgwide="0">
-<title>ooRexx Collection Class</title>
-<tgroup cols="2" align="left" colsep="1" rowsep="1">
-<colspec colname="c1" />
-<colspec colname="c2" />
+<title>Collection Class</title>
+<tgroup cols="1">
 <tbody>
-   <row>
-      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Collection</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2">
-<screen>&nbsp;
-</screen>
-      </entry>
-   </row>
-   <row>
-      <entry>
-<screen>allIndexes
-allItems
-at, []
-difference
-disjoint
-equivalent
-hasIndex
-hasItem
-index
-</screen>
-      </entry>
-      <entry>
-<screen>intersection
-items
-makeArray
-put, []=
-subset
-supplier
-toString
-union
-xor
-</screen>
-      </entry>
-   </row>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Collection (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  <simplelist columns="3">
+   <member><xref linkend="mthCollectionAtGet" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthCollectionPutSet" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthCollectionAllIndexes" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthCollectionAllItems" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthCollectionAt" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthCollectionDifference" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthCollectionDisjoint" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthCollectionEquivalent" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthCollectionHasIndex" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthCollectionHasItem" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthCollectionIndex" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthCollectionIntersection" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthCollectionItems" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthCollectionMakeArray" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthCollectionPut" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthCollectionSubset" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthCollectionSupplier" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthCollectionUnion" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthCollectionXor" xrefstyle="select:title"/></member>
+  </simplelist>
+ </entry></row>
 </tbody>
 </tgroup>
 </table>
+<!-- $GENERATED-20150704-END rexxrefClassTable(Collection) -->
 
-<section id="mthCollectionAtGet"><title>[]</title>
+<section id="mthCollectionAtGet"><title>[] (Abstract Method)</title>
 <indexterm><primary>[] method</primary>
 <secondary>of Collection class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -216,7 +204,7 @@ xor
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/coll_atget.svg" scale="50" />
+<imagedata fileref="images/classes/collection_atget.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -230,7 +218,7 @@ subclasses.
 </para>
 </section>
 
-<section id="mthCollectionPutSet"><title>[]=</title>
+<section id="mthCollectionPutSet"><title>[]= (Abstract Method)</title>
 <indexterm><primary>[]= method</primary>
 <secondary>of Collection class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -239,7 +227,7 @@ subclasses.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/coll_putset.svg" scale="50" />
+<imagedata fileref="images/classes/collection_putset.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -248,7 +236,7 @@ method that must be implemented by subclasses.
 </para>
 </section>
 
-<section id="mthCollectionAllIndexes"><title>allIndexes</title>
+<section id="mthCollectionAllIndexes"><title>allIndexes (Abstract Method)</title>
 <indexterm><primary>allIndexes method</primary>
 <secondary>of Collection class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -257,7 +245,7 @@ method that must be implemented by subclasses.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/coll_allindexes.svg" scale="50" />
+<imagedata fileref="images/classes/collection_allindexes.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -266,7 +254,7 @@ abstract method that must be implemented by subclasses.
 </para>
 </section>
 
-<section id="mthCollectionAllItems"><title>allItems</title>
+<section id="mthCollectionAllItems"><title>allItems (Abstract Method)</title>
 <indexterm><primary>allItems method</primary>
 <secondary>of Collection class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -275,7 +263,7 @@ abstract method that must be implemented by subclasses.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/coll_allitems.svg" scale="50" />
+<imagedata fileref="images/classes/collection_allitems.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -283,7 +271,7 @@ abstract method that must be implemented by subclasses.
 This is an abstract method that must be implemented by subclasses.</para>
 </section>
 
-<section id="mthCollectionAt"><title>at</title>
+<section id="mthCollectionAt"><title>at (Abstract Method)</title>
 <indexterm><primary>at method</primary>
 <secondary>of Collection class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -292,7 +280,7 @@ This is an abstract method that must be implemented by subclasses.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/coll_at.svg" scale="50" />
+<imagedata fileref="images/classes/collection_at.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -314,7 +302,7 @@ This is an abstract method that must be implemented by subclasses.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/coll_difference.svg" scale="50" />
+<imagedata fileref="images/classes/collection_difference.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -336,7 +324,7 @@ allow all of the index values in the receiver collection.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/coll_disjoint.svg" scale="50" />
+<imagedata fileref="images/classes/collection_disjoint.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -359,7 +347,7 @@ index values in the receiver collection.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/coll_equivalent.svg" scale="50" />
+<imagedata fileref="images/classes/collection_equivalent.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -382,7 +370,7 @@ index values in the receiver collection.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/coll_hasindex.svg" scale="50" />
+<imagedata fileref="images/classes/collection_hasindex.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -400,7 +388,7 @@ an item associated with the specified index or indexes. Returns
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/coll_hasitem.svg" scale="50" />
+<imagedata fileref="images/classes/collection_hasitem.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -409,7 +397,7 @@ the specified item at any index location.  Returns
 <computeroutput>0</computeroutput> (false) otherwise.</para>
 </section>
 
-<section id="mthCollectionIndex"><title>index</title>
+<section id="mthCollectionIndex"><title>index (Abstract Method)</title>
 <indexterm><primary>index method</primary>
 <secondary>of Collection class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -418,7 +406,7 @@ the specified item at any index location.  Returns
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/coll_index.svg" scale="50" />
+<imagedata fileref="images/classes/collection_index.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -438,7 +426,7 @@ subclass of this class.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/coll_intersection.svg" scale="50" />
+<imagedata fileref="images/classes/collection_intersection.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -460,7 +448,7 @@ index values in the receiver collection.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/coll_items.svg" scale="50" />
+<imagedata fileref="images/classes/collection_items.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -476,7 +464,7 @@ index values in the receiver collection.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/coll_makearray.svg" scale="50" />
+<imagedata fileref="images/classes/collection_makearray.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -486,7 +474,7 @@ Items in the new array will have the same order as the source array.
 </para>
 </section>
 
-<section id="mthCollectionPut"><title>put</title>
+<section id="mthCollectionPut"><title>put (Abstract Method)</title>
 <indexterm><primary>put method</primary>
 <secondary>of Collection class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -495,7 +483,7 @@ Items in the new array will have the same order as the source array.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/coll_put.svg" scale="50" />
+<imagedata fileref="images/classes/collection_put.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -513,7 +501,7 @@ method that must be implemented by a subclass if this class.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/coll_subset.svg" scale="50" />
+<imagedata fileref="images/classes/collection_subset.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -536,7 +524,7 @@ index values in the receiver collection.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/coll_supplier.svg" scale="50" />
+<imagedata fileref="images/classes/collection_supplier.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -556,7 +544,7 @@ and is unaffected by subsequent changes to the collection's contents.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/coll_union.svg" scale="50" />
+<imagedata fileref="images/classes/collection_union.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -584,7 +572,7 @@ index values in the receiver collection.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/coll_xor.svg" scale="50" />
+<imagedata fileref="images/classes/collection_xor.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -606,54 +594,65 @@ methods implemented by all collections that create a mapping from an index
 object to a value.
 </para>
 
+<!-- $GENERATED-20150704-START rexxrefClassTable(MapCollection) -->
 <table id="ooRexxMapCollectionClass" frame="all" pgwide="0">
-<title>ooRexx MapCollection Class</title>
-<tgroup cols="1" align="left" colsep="1" rowsep="1">
+<title>MapCollection Class</title>
+<tgroup cols="1">
 <tbody>
-   <row>
-      <entry align="center"><emphasis role="bold">Object</emphasis></entry>
-   </row>
-   <row>
-      <entry align="center">&#x2193;</entry>
-   </row>
-   <row>
-      <entry align="center"><emphasis role="bold">Collection</emphasis></entry>
-   </row>
-   <row>
-      <entry align="center">&#x2193;</entry>
-   </row>
-   <row>
-      <entry align="center"><emphasis role="bold">MapCollection</emphasis></entry>
-   </row>
-   <row>
-      <entry>
-<screen>&nbsp;
-</screen>
-      </entry>
-   </row>
-   <row>
-      <entry>
-<screen>makeArray
-putAll
-</screen>
-      </entry>
-   </row>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">+ Collection (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  Methods inherited from the <xref linkend="clsCollection" xrefstyle="template:Collection class"/>
+  <xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+ </entry></row>
+ <row><entry align="center"><emphasis role="bold">MapCollection (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  <simplelist>
+   <member><xref linkend="mthMapCollectionOf" xrefstyle="select:title"/></member>
+  </simplelist>
+  <simplelist>
+   <member><xref linkend="mthMapCollectionMakeArray" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMapCollectionPutAll" xrefstyle="select:title"/></member>
+  </simplelist>
+ </entry></row>
 </tbody>
 </tgroup>
 </table>
+<!-- $GENERATED-20150704-END rexxrefClassTable(MapCollection) -->
 
 <para>This class is defined as a mixin class.</para>
 
-<section><title>Inherited Methods</title>
+<!-- Class MapCollection - method of =============================== --> 
+<section id="mthMapCollectionOf" revisionflag="added"><title>of (Class Method)</title>
+<para>
+<indexterm><primary>of method</primary><secondary>of MapCollection class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>of method</secondary><tertiary>of MapCollection class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/mapcollection_of.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns a newly created MapCollection object containing the specified
+index/value <emphasis role="italic">pair</emphasis>s.
+Each <emphasis role="italic">pair</emphasis> must be a single-dimensional
+array with exactly two items: the index as the first array item, and the value
+as the second item.
+</para>
+<para><example>
+<title>Class MapCollection &mdash; of method</title>
+<programlisting><![CDATA[iso639 = .Directory~of(.Array~of("de", "Deutsch"), .Array~of("en", "English"), .Array~of("fr", "fran&ccedil;ais"))
+say iso639~allIndexes~makeString(, ", ")           -- de, en, fr
+say iso639~allItems~makeString(, ", ")             -- Deutsch, English, fran&ccedil;ais
 
-<para>Methods inherited from the
-Object class (<xref linkend="clsObject" />).</para>
-<xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-<para>Methods inherited from the
-Collection class (<xref linkend="clsCollection" />).</para>
-<xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-
+-- using array notation
+iso639 = .Directory~of(("de", "Deutsch"), ("en", "English"), ("fr", "fran&ccedil;ais"))
+]]></programlisting></example></para>
 </section>
+
 
 <section id="mthMapCollectionMakeArray"><title>makeArray</title>
 <indexterm><primary>makeArray method</primary>
@@ -664,7 +663,7 @@ Collection class (<xref linkend="clsCollection" />).</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/map_makearray.svg" scale="50" />
+<imagedata fileref="images/classes/mapcollection_makearray.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -682,7 +681,7 @@ The index objects will not be ordered in any predictable order.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/map_putall.svg" scale="50" />
+<imagedata fileref="images/classes/mapcollection_putall.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -705,70 +704,55 @@ methods implemented by all collections that have an inherent index ordering,
 such as an array or a list.
 </para>
 
+<!-- $GENERATED-20150704-START rexxrefClassTable(OrderedCollection) -->
 <table id="ooRexxOrderedCollectionClass" frame="all" pgwide="0">
-<title>ooRexx OrderedCollection Class</title>
-<tgroup cols="2" align="left" colsep="1" rowsep="1">
-<colspec colname="c1" />
-<colspec colname="c2" />
+<title>OrderedCollection Class</title>
+<tgroup cols="1">
 <tbody>
-   <row>
-      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Collection</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">OrderedCollection</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2">
-<screen>&nbsp;
-</screen>
-      </entry>
-   </row>
-   <row>
-      <entry>
-<screen>append
-appendAll
-delete
-difference
-first
-firstItem
-insert
-intersection
-last
-lastItem
-next
-</screen>
-      </entry>
-      <entry>
-<screen>
-previous
-section
-subset
-sort
-sortWith
-stableSort
-stableSortWith
-subset
-union
-xor
-</screen>
-      </entry>
-   </row>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">+ Collection (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  Methods inherited from the <xref linkend="clsCollection" xrefstyle="template:Collection class"/>
+  <xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+ </entry></row>
+ <row><entry align="center"><emphasis role="bold">OrderedCollection (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  <simplelist columns="3">
+   <member><xref linkend="mthOrderedCollectionAppend" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthOrderedCollectionAppendAll" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthOrderedCollectionDelete" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthOrderedCollectionDifference" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthOrderedCollectionFirst" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthOrderedCollectionFirstItem" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthOrderedCollectionInsert" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthOrderedCollectionIntersection" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthOrderedCollectionLast" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthOrderedCollectionLastItem" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthOrderedCollectionNext" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthOrderedCollectionPrevious" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthOrderedCollectionSection" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthOrderedCollectionSort" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthOrderedCollectionSortWith" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthOrderedCollectionStableSort" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthOrderedCollectionStableSortWith" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthOrderedCollectionSubset" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthOrderedCollectionUnion" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthOrderedCollectionXor" xrefstyle="select:title"/></member>
+  </simplelist>
+ </entry></row>
 </tbody>
 </tgroup>
 </table>
+<!-- $GENERATED-20150704-END rexxrefClassTable(OrderedCollection) -->
 
 <para>This class is defined as a mixin class.</para>
 
-<section id="mthOrderedCollectionAppend"><title>append</title>
+<section id="mthOrderedCollectionAppend"><title>append (Abstract Method)</title>
 <indexterm><primary>append method</primary>
 <secondary>of OrderedCollection class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -777,7 +761,7 @@ xor
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/ordered_append.svg" scale="50" />
+<imagedata fileref="images/classes/orderedcollection_append.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -795,7 +779,7 @@ of this class.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/ordered_appendall.svg" scale="50" />
+<imagedata fileref="images/classes/orderedcollection_appendall.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -804,7 +788,7 @@ of this class.</para>
 allItems() method.</para>
 </section>
 
-<section id="mthOrderedCollectionDelete"><title>delete</title>
+<section id="mthOrderedCollectionDelete"><title>delete (Abstract Method)</title>
 <indexterm><primary>delete method</primary>
 <secondary>of OrderedCollection class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -813,7 +797,7 @@ allItems() method.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/ordered_delete.svg" scale="50" />
+<imagedata fileref="images/classes/orderedcollection_delete.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -839,7 +823,7 @@ the indexes of the moved items may be modified by the deletion.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/ordered_difference.svg" scale="50" />
+<imagedata fileref="images/classes/orderedcollection_difference.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -850,7 +834,7 @@ only those items from the receiver that are not also contained in the
 </para>
 </section>
 
-<section id="mthOrderedCollectionFirst"><title>first</title>
+<section id="mthOrderedCollectionFirst"><title>first (Abstract Method)</title>
 <indexterm><primary>first method</primary>
 <secondary>of OrderedCollection class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -859,7 +843,7 @@ only those items from the receiver that are not also contained in the
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/ordered_first.svg" scale="50" />
+<imagedata fileref="images/classes/orderedcollection_first.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -867,7 +851,7 @@ only those items from the receiver that are not also contained in the
 </para>
 </section>
 
-<section id="mthOrderedCollectionFirstItem"><title>firstItem</title>
+<section id="mthOrderedCollectionFirstItem"><title>firstItem (Abstract Method)</title>
 <indexterm><primary>firstItem method</primary>
 <secondary>of OrderedCollection class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -876,7 +860,7 @@ only those items from the receiver that are not also contained in the
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/ordered_firstitem.svg" scale="50" />
+<imagedata fileref="images/classes/orderedcollection_firstitem.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -884,7 +868,7 @@ only those items from the receiver that are not also contained in the
 </para>
 </section>
 
-<section id="mthOrderedCollectionInsert"><title>insert</title>
+<section id="mthOrderedCollectionInsert"><title>insert (Abstract Method)</title>
 <indexterm><primary>insert method</primary>
 <secondary>of OrderedCollection class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -893,7 +877,7 @@ only those items from the receiver that are not also contained in the
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/ordered_insert.svg" scale="50" />
+<imagedata fileref="images/classes/orderedcollection_insert.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -924,7 +908,7 @@ of this class.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/ordered_intersection.svg" scale="50" />
+<imagedata fileref="images/classes/orderedcollection_intersection.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -935,7 +919,7 @@ role="italic">argument</emphasis> can be any collection class object.
 </para>
 </section>
 
-<section id="mthOrderedCollectionLast"><title>last</title>
+<section id="mthOrderedCollectionLast"><title>last (Abstract Method)</title>
 <indexterm><primary>last method</primary>
 <secondary>of OrderedCollection class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -944,7 +928,7 @@ role="italic">argument</emphasis> can be any collection class object.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/ordered_last.svg" scale="50" />
+<imagedata fileref="images/classes/orderedcollection_last.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -953,7 +937,7 @@ collection is empty.
 </para>
 </section>
 
-<section id="mthOrderedCollectionLastItem"><title>lastItem</title>
+<section id="mthOrderedCollectionLastItem"><title>lastItem (Abstract Method)</title>
 <indexterm><primary>lastItem method</primary>
 <secondary>of OrderedCollection class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -962,7 +946,7 @@ collection is empty.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/ordered_lastitem.svg" scale="50" />
+<imagedata fileref="images/classes/orderedcollection_lastitem.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -970,7 +954,7 @@ collection is empty.
 </para>
 </section>
 
-<section id="mthOrderedCollectionNext"><title>next</title>
+<section id="mthOrderedCollectionNext"><title>next (Abstract Method)</title>
 <indexterm><primary>next method</primary>
 <secondary>of OrderedCollection class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -979,7 +963,7 @@ collection is empty.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/ordered_next.svg" scale="50" />
+<imagedata fileref="images/classes/orderedcollection_next.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -989,7 +973,7 @@ or returns the Nil object if the item having that index is last in the collectio
 </para>
 </section>
 
-<section id="mthOrderedCollectionPrevious"><title>previous</title>
+<section id="mthOrderedCollectionPrevious"><title>previous (Abstract Method)</title>
 <indexterm><primary>previous method</primary>
 <secondary>of OrderedCollection class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -998,7 +982,7 @@ or returns the Nil object if the item having that index is last in the collectio
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/ordered_previous.svg" scale="50" />
+<imagedata fileref="images/classes/orderedcollection_previous.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -1008,7 +992,7 @@ or returns the Nil object if the item having that index is first in the collecti
 </para>
 </section>
 
-<section id="mthOrderedCollectionSection"><title>section</title>
+<section id="mthOrderedCollectionSection"><title>section (Abstract Method)</title>
 <indexterm><primary>section method</primary>
 <secondary>of OrderedCollection class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -1017,7 +1001,7 @@ or returns the Nil object if the item having that index is first in the collecti
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/ordered_section.svg" scale="50" />
+<imagedata fileref="images/classes/orderedcollection_section.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -1044,7 +1028,7 @@ remains unchanged.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/ordered_sort.svg" scale="50" />
+<imagedata fileref="images/classes/orderedcollection_sort.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -1062,7 +1046,7 @@ See <xref linkend="sortarray" /> for details.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/ordered_sortwith.svg" scale="50" />
+<imagedata fileref="images/classes/orderedcollection_sortwith.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -1081,7 +1065,7 @@ See <xref linkend="sortarray" /> for details.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/ordered_stablesort.svg" scale="50" />
+<imagedata fileref="images/classes/orderedcollection_stablesort.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -1099,7 +1083,7 @@ See <xref linkend="sortarray" /> for details.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/ordered_stablesortwith.svg" scale="50" />
+<imagedata fileref="images/classes/orderedcollection_stablesortwith.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -1118,7 +1102,7 @@ See <xref linkend="sortarray" /> for details.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/ordered_subset.svg" scale="50" />
+<imagedata fileref="images/classes/orderedcollection_subset.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -1140,7 +1124,7 @@ collection class object.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/ordered_union.svg" scale="50" />
+<imagedata fileref="images/classes/orderedcollection_union.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -1167,7 +1151,7 @@ collection class object.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/ordered_xor.svg" scale="50" />
+<imagedata fileref="images/classes/orderedcollection_xor.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -3386,7 +3370,7 @@ Queue class (<xref linkend="clsQueue" />).</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/cqueue_of.svg" scale="50" />
+<imagedata fileref="images/classes/circularqueue_of.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -3410,7 +3394,7 @@ determines the <emphasis role="italic">size</emphasis> of the circular queue.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/cqueue_init.svg" scale="50" />
+<imagedata fileref="images/classes/circularqueue_init.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -3430,7 +3414,7 @@ the initial size of the queue.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/cqueue_append.svg" scale="50" />
+<imagedata fileref="images/classes/circularqueue_append.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -3450,7 +3434,7 @@ insertion takes place.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/cqueue_insert.svg" scale="50" />
+<imagedata fileref="images/classes/circularqueue_insert.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -3481,7 +3465,7 @@ the last item in the queue will be removed.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/cqueue_intersection.svg" scale="50" />
+<imagedata fileref="images/classes/circularqueue_intersection.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -3504,7 +3488,7 @@ resulting CircularQueue instance will be the same size as the receiver.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/cqueue_makearray.svg" scale="50" />
+<imagedata fileref="images/classes/circularqueue_makearray.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -3545,7 +3529,7 @@ the capitalized letter is needed; all characters following it are ignored.)
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/cqueue_push.svg" scale="50" />
+<imagedata fileref="images/classes/circularqueue_push.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -3586,7 +3570,7 @@ like the recent files list of an editor.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/cqueue_queue.svg" scale="50" />
+<imagedata fileref="images/classes/circularqueue_queue.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -3624,7 +3608,7 @@ like the recent files list of an editor.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/cqueue_resize.svg" scale="50" />
+<imagedata fileref="images/classes/circularqueue_resize.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -3674,7 +3658,7 @@ from the circular queue.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/cqueue_section.svg" scale="50" />
+<imagedata fileref="images/classes/circularqueue_section.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -3717,7 +3701,7 @@ effectively rotating the order of the contained items.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/cqueue_size.svg" scale="50" />
+<imagedata fileref="images/classes/circularqueue_size.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -3737,7 +3721,7 @@ Returns the maximum number of objects that can be stored in the circular queue.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/cqueue_string.svg" scale="50" />
+<imagedata fileref="images/classes/circularqueue_string.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -3785,7 +3769,7 @@ the capitalized letter is needed; all characters following it are ignored.)
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/cqueue_supplier.svg" scale="50" />
+<imagedata fileref="images/classes/circularqueue_supplier.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -3826,7 +3810,7 @@ letter is needed; all characters following it are ignored.)
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/cqueue_union.svg" scale="50" />
+<imagedata fileref="images/classes/circularqueue_union.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -3857,7 +3841,7 @@ collection class object.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/cqueue_xor.svg" scale="50" />
+<imagedata fileref="images/classes/circularqueue_xor.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -4053,6 +4037,11 @@ MapCollection (<xref linkend="clsMapCollection" />).</para>
 </mediaobject>
 
 <para>Returns an empty Directory object.</para>
+<para>
+If you specify <emphasis role="italic">size</emphasis>, a hint how large
+the new Directory object is expected to grow, this is used to optimize the
+initial allocation.
+</para>
 </section>
 
 <section id="mthDirectoryAtGet"><title>[]</title>
@@ -4368,6 +4357,30 @@ the method is removed and running the method is returned. If there is no item or
 method with index
 <emphasis role="italic">name</emphasis>, the Nil object is returned.</para>
 </section>
+
+
+<!-- Class Directory - method removeEntry ========================== --> 
+<section id="mthDirectoryRemoveEntry" revisionflag="added"><title>removeEntry</title>
+<para>
+<indexterm><primary>removeEntry method</primary><secondary>of Directory class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>removeEntry method</secondary><tertiary>of Directory class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/directory_removeentry.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+<para>Removes and returns the entry with index
+<emphasis role="italic">name</emphasis>.
+Returns .nil if there is no such entry.
+</para>
+<para>See also
+<itemizedlist spacing="compact">
+ <listitem><para>method <xref linkend="mthDirectorySetEntry" xrefstyle="select:title"/>,</para></listitem>
+ <listitem><para>method <xref linkend="mthDirectoryHasEntry" xrefstyle="select:title"/>, and</para></listitem>
+ <listitem><para>method <xref linkend="mthDirectoryEntry" xrefstyle="select:title"/>.</para></listitem>
+</itemizedlist>
+</para>
+</section>
+
 
 <section id="mthDirectoryRemoveItem"><title>removeItem</title>
 <indexterm><primary>removeItem method</primary>
@@ -5243,11 +5256,8 @@ Exit
 
 <section id="clsList"><title>The List Class</title>
 <indexterm><primary>List class</primary></indexterm>
-<indexterm><primary>class</primary>
-<secondary>List class</secondary></indexterm>
-<indexterm><primary>Ordered collection classes</primary>
-<secondary>List class</secondary></indexterm>
-
+<indexterm><primary>class</primary><secondary>List class</secondary></indexterm>
+<indexterm><primary>Ordered collection classes</primary><secondary>List class</secondary></indexterm>
 <para>A list is a non-sparse sequenced collection similar to the
 Array class (<xref linkend="clsArray" />) to which you can add new items at
 any position in the sequence. The List creates a new index value whenever an
@@ -5256,66 +5266,73 @@ for that item regardless of other additions or removals.
 Only indexes the list
 object generates are valid i.e. the list is never a sparse list and the list
 object will not modify indexes for items in the list.</para>
+
+<!-- $GENERATED-20150704-START rexxrefClassTable(List) -->
 <table id="ooRexxListClass" frame="all" pgwide="0">
-<title>ooRexx List Class</title>
-<tgroup cols="2" align="left" colsep="1" rowsep="1">
-<colspec colname="c1" />
-<colspec colname="c2" />
+<title>List Class</title>
+<tgroup cols="1">
 <tbody>
-   <row>
-      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">List</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ OrderedCollection</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2">
-<screen>new
-of
-</screen>
-      </entry>
-   </row>
-   <row>
-      <entry>
-<screen>allIndexes
-allItems
-append
-at, []
-delete
-empty
-first
-firstItem
-hasIndex
-hasItem
-index
-insert
-isEmpty
-</screen>
-      </entry>
-      <entry>
-<screen>items
-last
-lastItem
-makeArray
-previous
-put, []=
-remove
-removeItem
-section
-supplier
-</screen>
-      </entry>
-   </row>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">+ Collection (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  Methods inherited from the <xref linkend="clsCollection" xrefstyle="template:Collection class"/>
+  <xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+ </entry></row>
+ <row><entry align="center"><emphasis role="bold">+ OrderedCollection (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  Methods inherited from the <xref linkend="clsOrderedCollection" xrefstyle="template:OrderedCollection class"/>
+  <xi:include href="orderedcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+ </entry></row>
+ <row><entry align="center"><emphasis role="bold">List</emphasis></entry>
+ </row>
+ <row><entry>
+  <simplelist>
+   <member><xref linkend="mthListNew" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthListOf" xrefstyle="select:title"/></member>
+  </simplelist>
+  <simplelist columns="3">
+   <member><xref linkend="mthListAtGet" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthListPutSet" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthListAllIndexes" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthListAllItems" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthListAppend" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthListAt" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthListDelete" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthListEmpty" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthListFirst" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthListFirstItem" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthListHasIndex" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthListHasItem" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthListIndex" xrefstyle="select:title"/></member>
+   <!-- see new()
+   <member><xref linkend="mthListInit" xrefstyle="select:title"/></member>
+   -->
+   <member><xref linkend="mthListInsert" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthListIsEmpty" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthListItems" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthListLast" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthListLastItem" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthListMakeArray" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthListNext" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthListPrevious" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthListPut" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthListRemove" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthListRemoveItem" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthListSection" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthListSupplier" xrefstyle="select:title"/></member>
+  </simplelist>
+ </entry></row>
 </tbody>
 </tgroup>
 </table>
+<!-- $GENERATED-20150704-END rexxrefClassTable(List) -->
 
+<!-- @@ remove, moved to above table
 <note><title>Note</title>
 <para>The List class also has available class methods that its metaclass,
 the Class class (<xref linkend="clsClass" />), defines.
@@ -5336,13 +5353,10 @@ OrderedCollection (<xref linkend="clsOrderedCollection" />).</para>
 <xi:include href="orderedcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 
 </section>
-
+-->
 <section id="mthListNew"><title>new (Class Method)</title>
-<indexterm><primary>new method</primary>
-<secondary>of List class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>new method</secondary>
-<tertiary>of List class</tertiary></indexterm>
+<indexterm><primary>new method</primary><secondary>of List class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>new method</secondary><tertiary>of List class</tertiary></indexterm>
 
 <mediaobject>
 <imageobject>
@@ -5351,6 +5365,14 @@ OrderedCollection (<xref linkend="clsOrderedCollection" />).</para>
 </mediaobject>
 
 <para>Returns a new empty List object.</para>
+<para>
+If you specify <emphasis role="italic">size</emphasis>, a hint how large
+the new List object is expected to grow, this is used to optimize the
+initial allocation.
+</para>
+<para>
+<emphasis role="italic">size</emphasis> must be a non-negative whole number.
+</para>
 </section>
 
 <section id="mthListOf"><title>of (Class Method)</title>
@@ -5385,7 +5407,7 @@ OrderedCollection (<xref linkend="clsOrderedCollection" />).</para>
 
 <para>Returns the item located at <emphasis role="italic">index</emphasis>.
 This is the same as the
-at() (<xref linkend="mthListAt" />) method.</para>
+<xref linkend="mthListAt" xrefstyle="template:at method:title"/>.</para>
 </section>
 
 <section id="mthListPutSet"><title>[]=</title>
@@ -5403,7 +5425,7 @@ at() (<xref linkend="mthListAt" />) method.</para>
 
 <para>Replaces the item at <emphasis role="italic">index</emphasis> with
 <emphasis role="italic">item</emphasis>.  This method is the same as the
-put() (<xref linkend="mthListPut" />) method.</para>
+<xref linkend="mthListPut" xrefstyle="template:put method:title"/>.</para>
 </section>
 
 <section id="mthListAllIndexes"><title>allIndexes</title>
@@ -5927,101 +5949,58 @@ indexes that are character strings representing names and items that
 are also restricted to character string values.  Properties objects
 are useful for processing bundles of application option values.
 </para>
+
+<!-- Modified: "Load" to "LoadClsMth" -->
+<!-- $GENERATED-20150704-START rexxrefClassTable(Properties) -->
 <table id="ooRexxPropertiesClass" frame="all" pgwide="0">
-<title>ooRexx Properties Class</title>
-<tgroup cols="2" align="left" colsep="1" rowsep="1">
-<colspec colname="c1" />
-<colspec colname="c2" />
+<title>Properties Class</title>
+<tgroup cols="1">
 <tbody>
-   <row>
-      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Directory</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ MapCollection</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Properties</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2">
-<screen>load
-new
-</screen>
-      </entry>
-   </row>
-   <row>
-      <entry>
-<screen>getLogical
-getProperty
-getWhole
-load
-put, []=
-</screen>
-      </entry>
-      <entry>
-<screen>save
-setLogical
-setProperty
-setWhole
-</screen>
-      </entry>
-   </row>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">+ Collection (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  Methods inherited from the <xref linkend="clsCollection" xrefstyle="template:Collection class"/>
+  <xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+ </entry></row>
+ <row><entry align="center"><emphasis role="bold">+ MapCollection (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  Methods inherited from the <xref linkend="clsMapCollection" xrefstyle="template:MapCollection class"/>
+  <xi:include href="mapcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+ </entry></row>
+ <row><entry align="center"><emphasis role="bold">Directory</emphasis></entry>
+ </row>
+ <row><entry>
+  Methods inherited from the <xref linkend="clsDirectory" xrefstyle="template:Directory class"/>
+  <xi:include href="directoryclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+ </entry></row>
+ <row><entry align="center"><emphasis role="bold">Properties</emphasis></entry>
+ </row>
+ <row><entry>
+  <simplelist>
+   <member><xref linkend="mthPropertiesLoadClsMth" xrefstyle="select:title"/></member>
+  </simplelist>
+  <simplelist columns="3">
+   <member><xref linkend="mthPropertiesPutSet" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthPropertiesGetLogical" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthPropertiesGetProperty" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthPropertiesGetWhole" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthPropertiesLoad" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthPropertiesPut" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthPropertiesSave" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthPropertiesSetLogical" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthPropertiesSetProperty" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthPropertiesSetWhole" xrefstyle="select:title"/></member>
+  </simplelist>
+ </entry></row>
 </tbody>
 </tgroup>
 </table>
-
-<note><title>Note</title>
-<para>The Properties class also has available class methods that
-its metaclass, the Class class (<xref linkend="clsClass" />), defines.</para></note>
-
-<section><title>Inherited Methods</title>
-
-<para>Methods inherited from the
-Object class (<xref linkend="clsObject" />).</para>
-<xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-<para>Methods inherited from the
-Collection class (<xref linkend="clsCollection" />).</para>
-<xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-<para>Methods inherited from the
-MapCollection (<xref linkend="clsMapCollection" />).</para>
-<xi:include href="mapcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-
-<para>Methods inherited from the
-Directory class (<xref linkend="clsDirectory" />).</para>
-<simplelist type="vert" columns="3">
-<member><xref linkend="mthDirectoryAllIndexes" xrefstyle="select: title"/></member>
-<member><xref linkend="mthDirectoryAllItems" xrefstyle="select: title"/></member>
-<member><xref linkend="mthDirectoryAt" xrefstyle="select: title"/></member>
-<member><xref linkend="mthDirectoryAtGet" xrefstyle="select: title"/></member>
-<member><xref linkend="mthDirectoryEmpty" xrefstyle="select: title"/></member>
-<member><xref linkend="mthDirectoryEntry" xrefstyle="select: title"/></member>
-<member><xref linkend="mthDirectoryHasEntry" xrefstyle="select: title"/></member>
-<member><xref linkend="mthDirectoryHasIndex" xrefstyle="select: title"/></member>
-<member><xref linkend="mthDirectoryHasItem" xrefstyle="select: title"/></member>
-<member><xref linkend="mthDirectoryIndex" xrefstyle="select: title"/></member>
-<member><xref linkend="mthDirectoryIsEmpty" xrefstyle="select: title"/></member>
-<member><xref linkend="mthDirectoryItems" xrefstyle="select: title"/></member>
-<member><xref linkend="mthDirectoryMakeArray" xrefstyle="select: title"/></member>
-<member><xref linkend="mthDirectoryPut" xrefstyle="select: title"/></member>
-<member><xref linkend="mthDirectoryPutSet" xrefstyle="select: title"/></member>
-<member><xref linkend="mthDirectoryRemove" xrefstyle="select: title"/></member>
-<member><xref linkend="mthDirectoryRemoveItem" xrefstyle="select: title"/></member>
-<member><xref linkend="mthDirectorySetEntry" xrefstyle="select: title"/></member>
-<member><xref linkend="mthDirectorySetMethod" xrefstyle="select: title"/></member>
-<member><xref linkend="mthDirectorySupplier" xrefstyle="select: title"/></member>
-<member><xref linkend="mthDirectoryUnsetMethod" xrefstyle="select: title"/></member>
-</simplelist>
-
-</section>
+<!-- $GENERATED-20150704-END rexxrefClassTable(Properties) -->
 
 <section id="mthPropertiesLoadClsMth"><title>load (Class method)</title>
 <indexterm><primary>load method</primary>
@@ -6058,6 +6037,11 @@ are added to the receiver Properties value using name as the index for the value
 </mediaobject>
 
 <para>Returns an empty Properties object.</para>
+<para>
+If you specify <emphasis role="italic">size</emphasis>, a hint how large
+the new Properties object is expected to grow, this is used to optimize the
+initial allocation.
+</para>
 </section>
 
 <section id="mthPropertiesPutSet"><title>[]=</title>
@@ -6369,6 +6353,11 @@ OrderedCollection (<xref linkend="clsOrderedCollection" />).</para>
 </mediaobject>
 
 <para>Returns a new empty Queue object.</para>
+<para>
+If you specify <emphasis role="italic">size</emphasis>, a hint how large
+the new Queue object is expected to grow, this is used to optimize the
+initial allocation.
+</para>
 </section>
 
 <section id="mthQueueOf"><title>of (Class Method)</title>
@@ -7636,7 +7625,7 @@ collection class object.</para>
 <section id="relex"><title>Examples</title>
 <indexterm><primary>examples</primary>
 <secondary>of Relation class</secondary></indexterm>
-<example id="ex.Releation-examples">
+<example id="ex.Relation-examples">
 <title>Relation class - examples</title>
 <programlisting>
 /* Use a relation to express parent-child relationships */
@@ -9136,76 +9125,60 @@ matches in an identity table are made using an object
 identity comparison.  That is, an index will only match if the same instance is
 used in the collection.
 </para>
+
+<!-- $GENERATED-20150704-START rexxrefClassTable(IdentityTable) -->
 <table id="ooRexxIdentityTableClass" frame="all" pgwide="0">
-<title>ooRexx IdentityTable Class</title>
-<tgroup cols="2" align="left" colsep="1" rowsep="1">
-<colspec colname="c1" />
-<colspec colname="c2" />
+<title>IdentityTable Class</title>
+<tgroup cols="1">
 <tbody>
-   <row>
-      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">IdentityTable</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ MapCollection</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2">
-<screen>new
-</screen>
-      </entry>
-   </row>
-   <row>
-      <entry>
-<screen>allIndexes
-allItems
-at, []
-empty
-hasIndex
-hasItem
-index
-</screen>
-      </entry>
-      <entry>
-<screen>isEmpty
-items
-makeArray
-put, []=
-remove
-removeItem
-supplier
-</screen>
-      </entry>
-   </row>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">+ Collection (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  Methods inherited from the <xref linkend="clsCollection" xrefstyle="template:Collection class"/>
+  <xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+ </entry></row>
+ <row><entry align="center"><emphasis role="bold">+ MapCollection (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  Methods inherited from the <xref linkend="clsMapCollection" xrefstyle="template:MapCollection class"/>
+  <xi:include href="mapcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+ </entry></row>
+ <row><entry align="center"><emphasis role="bold">IdentityTable</emphasis></entry>
+ </row>
+ <row><entry>
+  <simplelist>
+   <member><xref linkend="mthIdentityTableNew" xrefstyle="select:title"/></member>
+  </simplelist>
+  <simplelist columns="3">
+   <member><xref linkend="mthIdentityTableAtGet" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthIdentityTablePutSet" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthIdentityTableAllIndexes" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthIdentityTableAllItems" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthIdentityTableAt" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthIdentityTableEmpty" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthIdentityTableHasIndex" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthIdentityTableHasItem" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthIdentityTableIndex" xrefstyle="select:title"/></member>
+   <!-- see new()
+   <member><xref linkend="mthIdentityTableInit" xrefstyle="select:title"/></member>
+   -->
+   <member><xref linkend="mthIdentityTableIsEmpty" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthIdentityTableItems" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthIdentityTableMakeArray" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthIdentityTablePut" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthIdentityTableRemove" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthIdentityTableRemoveItem" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthIdentityTableSupplier" xrefstyle="select:title"/></member>
+  </simplelist>
+ </entry></row>
 </tbody>
 </tgroup>
 </table>
-
-<note><title>Note</title>
-<para>The IdentityTable class also has available class methods that its
-metaclass, the Class class (<xref linkend="clsClass" />), defines.
-It also inherits methods from the MapCollection (<xref linkend="clsMapCollection" />
-class.
-</para></note>
-
-<section><title>Inherited Methods</title>
-
-<para>Methods inherited from the
-Object class (<xref linkend="clsObject" />).</para>
-<xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-<para>Methods inherited from the
-Collection class (<xref linkend="clsCollection" />).</para>
-<xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-<para>Methods inherited from the
-MapCollection class (<xref linkend="clsMapCollection" />).</para>
-<xi:include href="mapcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-
-</section>
+<!-- $GENERATED-20150704-END rexxrefClassTable(IdentityTable) -->
 
 <section id="mthIdentityTableNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
@@ -9216,11 +9189,16 @@ MapCollection class (<xref linkend="clsMapCollection" />).</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/idtable_new.svg" scale="50" />
+<imagedata fileref="images/classes/identitytable_new.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
 <para>Returns an empty IdentityTable object.</para>
+<para>
+If you specify <emphasis role="italic">size</emphasis>, a hint how large
+the new IdentityTable object is expected to grow, this is used to optimize the
+initial allocation.
+</para>
 </section>
 
 <section id="mthIdentityTableAtGet"><title>[]</title>
@@ -9232,7 +9210,7 @@ MapCollection class (<xref linkend="clsMapCollection" />).</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/idtable_atget.svg" scale="50" />
+<imagedata fileref="images/classes/identitytable_atget.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -9251,7 +9229,7 @@ at() (<xref linkend="mthIdentityTableAt" />) method.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/idtable_putset.svg" scale="50" />
+<imagedata fileref="images/classes/identitytable_putset.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -9271,7 +9249,7 @@ put() (<xref linkend="mthIdentityTablePut" />) method.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/idtable_allindexes.svg" scale="50" />
+<imagedata fileref="images/classes/identitytable_allindexes.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -9287,7 +9265,7 @@ put() (<xref linkend="mthIdentityTablePut" />) method.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/idtable_allitems.svg" scale="50" />
+<imagedata fileref="images/classes/identitytable_allitems.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -9303,7 +9281,7 @@ put() (<xref linkend="mthIdentityTablePut" />) method.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/idtable_at.svg" scale="50" />
+<imagedata fileref="images/classes/identitytable_at.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -9322,7 +9300,7 @@ has no item associated with <emphasis role="italic">index</emphasis>.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/idtable_empty.svg" scale="50" />
+<imagedata fileref="images/classes/identitytable_empty.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -9338,7 +9316,7 @@ has no item associated with <emphasis role="italic">index</emphasis>.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/idtable_hasindex.svg" scale="50" />
+<imagedata fileref="images/classes/identitytable_hasindex.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -9356,7 +9334,7 @@ or <computeroutput>0</computeroutput> (false).</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/idtable_hasitem.svg" scale="50" />
+<imagedata fileref="images/classes/identitytable_hasitem.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -9374,7 +9352,7 @@ otherwise returns <computeroutput>0</computeroutput> (false).</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/idtable_index.svg" scale="50" />
+<imagedata fileref="images/classes/identitytable_index.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -9393,7 +9371,7 @@ be returned.  Returns the Nil object if the table does not contain the specified
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/idtable_isempty.svg" scale="50" />
+<imagedata fileref="images/classes/identitytable_isempty.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -9411,7 +9389,7 @@ is empty.  Returns
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/idtable_items.svg" scale="50" />
+<imagedata fileref="images/classes/identitytable_items.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -9427,7 +9405,7 @@ is empty.  Returns
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/idtable_makearray.svg" scale="50" />
+<imagedata fileref="images/classes/identitytable_makearray.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -9446,7 +9424,7 @@ The collection items appear in the array in an unspecified order.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/idtable_put.svg" scale="50" />
+<imagedata fileref="images/classes/identitytable_put.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -9465,7 +9443,7 @@ item associated with index <emphasis role="italic">index</emphasis>.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/idtable_remove.svg" scale="50" />
+<imagedata fileref="images/classes/identitytable_remove.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -9484,7 +9462,7 @@ item associated with index <emphasis role="italic">index</emphasis>.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/idtable_removeitem.svg" scale="50" />
+<imagedata fileref="images/classes/identitytable_removeitem.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -9503,7 +9481,7 @@ removed item.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/idtable_supplier.svg" scale="50" />
+<imagedata fileref="images/classes/identitytable_supplier.svg" scale="50" />
 </imageobject>
 </mediaobject>
 

@@ -1683,43 +1683,36 @@ For non-leap years, this returns 365.
 notification capability by supplying a facility to send any message to any
 object at a given time. You can cancel an alarm before it sends its message.
 </para>
+
+<!-- Modified: remove separate alias "cancelled" -->
+<!-- $GENERATED-20150704-START rexxrefClassTable(Alarm) -->
 <table id="ooRexxAlarmClass" frame="all" pgwide="0">
 <title>Alarm Class</title>
 <tgroup cols="1">
 <tbody>
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
- <row><entry align="center">Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">Alarm</emphasis></entry>
  </row>
  <row><entry>
-  <simplelist columns="2">
-   <member><xref linkend="mthAlarmAttachment" xrefstyle="template:attachment"/></member>
-   <member><xref linkend="mthAlarmCancel" xrefstyle="template:cancel"/></member>
-   <member><xref linkend="mthAlarmCanceled" xrefstyle="template:canceled/cancelled"/></member>
-   <member><xref linkend="mthAlarmInit" xrefstyle="template:init"/></member>
-   <member><xref linkend="mthAlarmScheduledTime" xrefstyle="template:scheduledTime"/></member>
-   <member><xref linkend="mthAlarmTriggered" xrefstyle="template:triggered"/></member>
+  <simplelist columns="3">
+   <member><xref linkend="mthAlarmAttachment" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthAlarmCancel" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthAlarmCanceled" xrefstyle="select:title"/></member>
+<!-- already covered by "mthAlarmCanceled" 
+   <member><xref linkend="mthAlarmCancelled" xrefstyle="select:title"/></member>
+-->
+   <member><xref linkend="mthAlarmInit" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthAlarmScheduledTime" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthAlarmTriggered" xrefstyle="select:title"/></member>
   </simplelist>
  </entry></row>
 </tbody>
 </tgroup>
 </table>
-
-<!-- @@ remove, just put link into table above
-<note><title>Note</title>
-<para>The Alarm class also has available class methods that its
-metaclass, the Class class (<xref linkend="clsClass" />), defines.</para></note>
-
-<section><title>Inherited Methods</title>
-
-<para>Methods inherited from the
-Object class (<xref linkend="clsObject" />).</para>
-<xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-
-</section>
--->
+<!-- $GENERATED-20150704-END rexxrefClassTable(Alarm) -->
 
 <!-- Class Alarm - method attachment =============================== --> 
 <section id="mthAlarmAttachment" revisionflag="added"><title>attachment</title>
@@ -2799,7 +2792,7 @@ Object class (<xref linkend="clsObject" />).</para>
 
 </section>
 
-<section id="mthComparableCompareTo"><title>compareTo</title>
+<section id="mthComparableCompareTo"><title>compareTo (Abstract Method</title>
 <indexterm><primary>compareTo method</primary>
 <secondary>of Comparable class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -2807,7 +2800,9 @@ Object class (<xref linkend="clsObject" />).</para>
 <tertiary>of Comparable class</tertiary></indexterm>
 
 <para>This method compares the receiving object to the object supplied in the
-<emphasis role="itakic">comparable</emphasis> argument.</para>
+<emphasis role="italic">comparable</emphasis> argument.
+It is an abstract method and must be implemented in a subclass.
+</para>
 
 <mediaobject>
 <imageobject>
@@ -2872,6 +2867,29 @@ smaller than the receiving object.</para>
 Object class (<xref linkend="clsObject" />).</para>
 <xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 
+</section>
+
+<section id="mthOrderableCompareTo"><title>compareTo (Abstract Method</title>
+<indexterm><primary>compareTo method</primary>
+<secondary>of Orderable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>compareTo method</secondary>
+<tertiary>of Orderable class</tertiary></indexterm>
+
+<para>This method compares the receiving object to the object supplied in the
+<emphasis role="italic">comparable</emphasis> argument.
+It is an abstract method and must be implemented in a subclass.
+</para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/orderable_compareto.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>This method returns "-1" if the <emphasis role="italic">other</emphasis> is larger than the receiving
+object, "0" if the two objects are equal, and "1" if <emphasis role="italic">other</emphasis> is
+smaller than the receiving object.</para>
 </section>
 
 <section id="mthOrderableComparisonMethods"><title>Comparison Methods</title>
@@ -3936,92 +3954,78 @@ performance for algorithms that involve frequent concatenations to build up
 longer string objects because it creates fewer intermediate objects.
 </para>
 
+<!-- $GENERATED-20150704-START rexxrefClassTable(MutableBuffer) -->
 <table id="ooRexxMutableBufferClass" frame="all" pgwide="0">
 <title>MutableBuffer Class</title>
 <tgroup cols="1">
 <tbody>
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
- <row><entry align="center">Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">MutableBuffer</emphasis></entry>
  </row>
  <row><entry>
   <simplelist>
-   <member><xref linkend="mthMutableBufferNew" xrefstyle="template:new (class method)"/></member>
+   <member><xref linkend="mthMutableBufferNew" xrefstyle="select:title"/></member>
   </simplelist>
- </entry></row>
- <row><entry>
   <simplelist columns="3">
-   <member><xref linkend="mthMutableBufferBrackets" xrefstyle="template:[]"/></member>
-   <member><xref linkend="mthMutableBufferBracketsEqual" xrefstyle="template:[]="/></member>
-   <member><xref linkend="mthMutableBufferAppend" xrefstyle="template:append"/></member>
-   <member><xref linkend="mthMutableBufferCaselessChangeStr" xrefstyle="template:caselessChangeStr"/></member>
-   <member><xref linkend="mthMutableBufferCaselessContains" xrefstyle="template:caselessContains"/></member>
-   <member><xref linkend="mthMutableBufferCaselessContainsWord" xrefstyle="template:caselessContainsWord"/></member>
-   <member><xref linkend="mthMutableBufferCaselessCountStr" xrefstyle="template:caselessCountStr"/></member>
-   <member><xref linkend="mthMutableBufferCaselessEndsWith" xrefstyle="template:caselessEndsWith"/></member>
-   <member><xref linkend="mthMutableBufferCaselessLastPos" xrefstyle="template:caselessLastPos"/></member>
-   <member><xref linkend="mthMutableBufferCaselessMatch" xrefstyle="template:caselessMatch"/></member>
-   <member><xref linkend="mthMutableBufferCaselessMatchChar" xrefstyle="template:caselessMatchChar"/></member>
-   <member><xref linkend="mthMutableBufferCaselessPos" xrefstyle="template:caselessPos"/></member>
-   <member><xref linkend="mthMutableBufferCaselessStartsWith" xrefstyle="template:caselessStartsWith"/></member>
-   <member><xref linkend="mthMutableBufferCaselessWordPos" xrefstyle="template:caselessWordPos"/></member>
-   <member><xref linkend="mthMutableBufferChangeStr" xrefstyle="template:changeStr"/></member>
-   <member><xref linkend="mthMutableBufferContains" xrefstyle="template:contains"/></member>
-   <member><xref linkend="mthMutableBufferContainsWord" xrefstyle="template:containsWord"/></member>
-   <member><xref linkend="mthMutableBufferCountStr" xrefstyle="template:countStr"/></member>
-   <member><xref linkend="mthMutableBufferDelete" xrefstyle="template:delete"/></member>
-   <member><xref linkend="mthMutableBufferDelStr" xrefstyle="template:delStr"/></member>
-   <member><xref linkend="mthMutableBufferDelWord" xrefstyle="template:delWord"/></member>
-   <member><xref linkend="mthMutableBufferEndsWith" xrefstyle="template:endsWith"/></member>
-   <member><xref linkend="mthMutableBufferGetBufferSize" xrefstyle="template:getBufferSize"/></member>
-   <member><xref linkend="mthMutableBufferInsert" xrefstyle="template:insert"/></member>
-   <member><xref linkend="mthMutableBufferLastPos" xrefstyle="template:lastPos"/></member>
-   <member><xref linkend="mthMutableBufferLength" xrefstyle="template:length"/></member>
-   <member><xref linkend="mthMutableBufferLower" xrefstyle="template:lower"/></member>
-   <member><xref linkend="mthMutableBufferMakeArray" xrefstyle="template:makeArray"/></member>
-   <member><xref linkend="mthMutableBufferMatch" xrefstyle="template:match"/></member>
-   <member><xref linkend="mthMutableBufferMatchChar" xrefstyle="template:matchChar"/></member>
-   <member><xref linkend="mthMutableBufferOverlay" xrefstyle="template:overlay"/></member>
-   <member><xref linkend="mthMutableBufferPos" xrefstyle="template:pos"/></member>
-   <member><xref linkend="mthMutableBufferReplaceAt" xrefstyle="template:replaceAt"/></member>
-   <member><xref linkend="mthMutableBufferSetBufferSize" xrefstyle="template:setBufferSize"/></member>
-   <member><xref linkend="mthMutableBufferSetText" xrefstyle="template:setText"/></member>
-   <member><xref linkend="mthMutableBufferSpace" xrefstyle="template:space"/></member>
-   <member><xref linkend="mthMutableBufferStartsWith" xrefstyle="template:startsWith"/></member>
-   <member><xref linkend="mthMutableBufferString" xrefstyle="template:string"/></member>
-   <member><xref linkend="mthMutableBufferSubChar" xrefstyle="template:subChar"/></member>
-   <member><xref linkend="mthMutableBufferSubstr" xrefstyle="template:substr"/></member>
-   <member><xref linkend="mthMutableBufferSubWord" xrefstyle="template:subWord"/></member>
-   <member><xref linkend="mthMutableBufferSubWords" xrefstyle="template:subWords"/></member>
-   <member><xref linkend="mthMutableBufferTranslate" xrefstyle="template:translate"/></member>
-   <member><xref linkend="mthMutableBufferUpper" xrefstyle="template:upper"/></member>
-   <member><xref linkend="mthMutableBufferVerify" xrefstyle="template:verify"/></member>
-   <member><xref linkend="mthMutableBufferWord" xrefstyle="template:word"/></member>
-   <member><xref linkend="mthMutableBufferWordIndex" xrefstyle="template:wordIndex"/></member>
-   <member><xref linkend="mthMutableBufferWordLength" xrefstyle="template:wordLength"/></member>
-   <member><xref linkend="mthMutableBufferWordPos" xrefstyle="template:wordPos"/></member>
-   <member><xref linkend="mthMutableBufferWords" xrefstyle="template:words"/></member>
+   <member><xref linkend="mthMutableBufferAtGet" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferPutSet" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferAppend" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferCaselessChangeStr" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferCaselessContains" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferCaselessContainsWord" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferCaselessCountStr" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferCaselessEndsWith" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferCaselessLastPos" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferCaselessMatch" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferCaselessMatchChar" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferCaselessPos" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferCaselessStartsWith" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferCaselessWordPos" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferChangeStr" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferContains" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferContainsWord" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferCountStr" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferDelete" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferDelStr" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferDelWord" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferEndsWith" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferGetBufferSize" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferInsert" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferLastPos" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferLength" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferLower" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferMakeArray" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferMatch" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferMatchChar" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferOverlay" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferPos" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferReplaceAt" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferSetBufferSize" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferSetText" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferSpace" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferStartsWith" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferString" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferSubChar" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferSubstr" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferSubWord" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferSubwords" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferTranslate" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferUpper" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferVerify" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferWord" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferWordIndex" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferWordLength" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferWordPos" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferWords" xrefstyle="select:title"/></member>
   </simplelist>
  </entry></row>
 </tbody>
 </tgroup>
 </table>
-
-<!-- @@ remove, just put link into table above
-<note><title>Note</title>
-<para>The MutableBuffer class also has available class methods that its
-metaclass, the Class class (<xref linkend="clsClass" />), defines.</para></note>
-
-<section><title>Inherited Methods</title>
-
-<para>Methods inherited from the
-Object class (<xref linkend="clsObject" />).</para>
-<xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-
-</section>
--->
+<!-- $GENERATED-20150704-END rexxrefClassTable(MutableBuffer) -->
 
 <section id="mthMutableBufferNew"><title>new</title>
 <indexterm><primary>new method</primary>
@@ -4043,12 +4047,12 @@ does not fit into the buffer.</para>
 </section>
 
 <!-- Class MutableBuffer - method [] =============================== --> 
-<section id="mthMutableBufferBrackets" revisionflag="added"><title>[]</title>
+<section id="mthMutableBufferAtGet" revisionflag="added"><title>[]</title>
 <para>
 <indexterm><primary>[] method</primary><secondary>of MutableBuffer class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>[] method</secondary><tertiary>of MutableBuffer class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/mutablebuffer_brackets.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_atget.svg" scale="50" />
 </imageobject></mediaobject>
 </para>
 <para>Returns a substring of the receiving buffer that begins at the
@@ -4081,12 +4085,12 @@ say s[30]       -- ""
 </section>
 
 <!-- Class MutableBuffer - method []= ============================== --> 
-<section id="mthMutableBufferBracketsEqual" revisionflag="added"><title>[]=</title>
+<section id="mthMutableBufferPutSet" revisionflag="added"><title>[]=</title>
 <para>
 <indexterm><primary>[]= method</primary><secondary>of MutableBuffer class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>[]= method</secondary><tertiary>of MutableBuffer class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/mutablebuffer_bracketsequal.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_putset.svg" scale="50" />
 </imageobject></mediaobject>
 </para>
 <para>Returns the receiving buffer with the characters from the
@@ -5110,7 +5114,7 @@ the <emphasis role="italic">new</emphasis> string. The default <emphasis role="i
 blank.
 </para>
 <para>See also the equivalent MutableBuffer method
-<xref linkend="mthMutableBufferBracketsEqual" xrefstyle="template:[]="/>.
+<xref linkend="mthMutableBufferPutSet" xrefstyle="template:[]="/>.
 </para>
 </section>
 
@@ -5294,7 +5298,7 @@ characters between the selected words.
 </para>
 </section>
 
-<section id="mthMutableBufferSubWords"><title>subWords</title>
+<section id="mthMutableBufferSubwords"><title>subWords</title>
 <indexterm><primary>subWords method</primary>
 <secondary>of MutableBuffer class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -7261,50 +7265,52 @@ RexxInfo provides read-only attribute methods to get
 </itemizedlist>
 </para>
 
+<!-- Modified: remove forbidden "mthRexxInfoNew" and "mthRexxInfoCopy" -->
+<!-- $GENERATED-20150704-START rexxrefClassTable(RexxInfo) -->
 <table id="ooRexxRexxInfoClass" frame="all" pgwide="0">
-<title>ooRexx RexxInfo Class</title>
+<title>RexxInfo Class</title>
 <tgroup cols="1">
 <tbody>
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
- <row><entry align="center">Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">RexxInfo</emphasis></entry>
  </row>
  <row><entry>
-  <simplelist columns="3">
-   <member><xref linkend="mthRexxInfoArchitecture" xrefstyle="template:architecture"/></member>
-   <member><xref linkend="mthRexxInfoCaseSensitiveFiles" xrefstyle="template:caseSensitiveFiles"/></member>
-   <member><xref linkend="mthRexxInfoDate" xrefstyle="template:date"/></member>
-   <member><xref linkend="mthRexxInfoDigits" xrefstyle="template:digits"/></member>
-   <member><xref linkend="mthRexxInfoDirectorySeparator" xrefstyle="template:directorySeparator"/></member>
-   <member><xref linkend="mthRexxInfoEndofline" xrefstyle="template:endofline"/></member>
-   <member><xref linkend="mthRexxInfoForm" xrefstyle="template:form"/></member>
-   <member><xref linkend="mthRexxInfoFuzz" xrefstyle="template:fuzz"/></member>
-   <member><xref linkend="mthRexxInfoInternalDigits" xrefstyle="template:internalDigits"/></member>
-   <member><xref linkend="mthRexxInfoLanguageLevel" xrefstyle="template:languageLevel"/></member>
-   <member><xref linkend="mthRexxInfoMajorVersion" xrefstyle="template:majorVersion"/></member>
-   <member><xref linkend="mthRexxInfoName" xrefstyle="template:name"/></member>
-   <member><xref linkend="mthRexxInfoPackage" xrefstyle="template:package"/></member>
-   <member><xref linkend="mthRexxInfoPathSeparator" xrefstyle="template:pathSeparator"/></member>
-   <member><xref linkend="mthRexxInfoPlatform" xrefstyle="template:platform"/></member>
-   <member><xref linkend="mthRexxInfoRelease" xrefstyle="template:release"/></member>
-   <member><xref linkend="mthRexxInfoRevision" xrefstyle="template:revision"/></member>
-   <member><xref linkend="mthRexxInfoVersion" xrefstyle="template:version"/></member>
+<!-- "new is forbidden
+  <simplelist>
+   <member><xref linkend="mthRexxInfoNew" xrefstyle="select:title"/></member>
   </simplelist>
-  </entry>
- </row>
+-->
+  <simplelist columns="3">
+   <member><xref linkend="mthRexxInfoArchitecture" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRexxInfoCaseSensitiveFiles" xrefstyle="select:title"/></member>
+<!-- "copy" is forbidden
+   <member><xref linkend="mthRexxInfoCopy" xrefstyle="select:title"/></member>
+-->
+   <member><xref linkend="mthRexxInfoDate" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRexxInfoDigits" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRexxInfoDirectorySeparator" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRexxInfoEndofline" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRexxInfoForm" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRexxInfoFuzz" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRexxInfoInternalDigits" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRexxInfoLanguageLevel" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRexxInfoMajorVersion" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRexxInfoName" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRexxInfoPackage" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRexxInfoPathSeparator" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRexxInfoPlatform" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRexxInfoRelease" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRexxInfoRevision" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRexxInfoVersion" xrefstyle="select:title"/></member>
+  </simplelist>
+ </entry></row>
 </tbody>
 </tgroup>
 </table>
-
-<!-- @@ remove, just put link into table above
-<section><title>Inherited Methods</title>
-<para>Methods inherited from the
-<xref linkend="clsObject" xrefstyle="template:Object class"/>.</para>
-<xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-</section>
--->
+<!-- $GENERATED-20150704-END rexxrefClassTable(RexxInfo) -->
 
 <!-- Class RexxInfo - method architecture ========================== --> 
 <section id="mthRexxInfoArchitecture"><title>architecture</title>
