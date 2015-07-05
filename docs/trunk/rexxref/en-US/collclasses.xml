@@ -4350,8 +4350,8 @@ associated with index <emphasis role="italic">name</emphasis>.</para>
 </imageobject>
 </mediaobject>
 
-<para>Returns and removes the member item with index
-<emphasis role="italic">name</emphasis> from a collection.
+<para>Removes and returns the member item with index
+<emphasis role="italic">name</emphasis> from the directory.
 If a method is associated with
 setMethod (<xref linkend="mthDirectorySetMethod" />) for index
 <emphasis role="italic">name</emphasis>,
@@ -4370,13 +4370,19 @@ method with index
 <imagedata fileref="images/classes/directory_removeentry.svg" scale="50"/>
 </imageobject></mediaobject>
 </para>
-<para>Removes and returns the entry with index
-<emphasis role="italic">name</emphasis>.
-Returns .nil if there is no such entry.
+<para>Removes and returns the member item with index
+<emphasis role="italic">name</emphasis> (translated to uppercase) from the directory.
+If a method is associated with
+<xref linkend="mthDirectorySetMethod" xrefstyle="select:title"/> for index
+<emphasis role="italic">name</emphasis>,
+the method is removed and the result of running the method is returned.
+If there is no item or method with index
+<emphasis role="italic">name</emphasis>, .nil is returned.
 </para>
 <para>See also
 <itemizedlist spacing="compact">
  <listitem><para>method <xref linkend="mthDirectorySetEntry" xrefstyle="select:title"/>,</para></listitem>
+ <listitem><para>method <xref linkend="mthDirectorySetMethod" xrefstyle="select:title"/>,</para></listitem>
  <listitem><para>method <xref linkend="mthDirectoryHasEntry" xrefstyle="select:title"/>, and</para></listitem>
  <listitem><para>method <xref linkend="mthDirectoryEntry" xrefstyle="select:title"/>.</para></listitem>
 </itemizedlist>
@@ -5023,15 +5029,45 @@ associated with index <emphasis role="italic">name</emphasis>.</para>
 </imageobject>
 </mediaobject>
 
-<para>Returns and removes the member item with index
-<emphasis role="italic">name</emphasis> from a collection.
+<para>Removes and returns the member item with index
+<emphasis role="italic">name</emphasis> from the StringTable.
 If a method is associated with
 setMethod (<xref linkend="mthStringTableSetMethod" />) for index
 <emphasis role="italic">name</emphasis>,
 the method is removed and running the method is returned. If there is no item or
 method with index
-<emphasis role="italic">name</emphasis>, the Nil object is returned.</para>
+<emphasis role="italic">name</emphasis>, .nil is returned.</para>
 </section>
+
+
+<!-- Class StringTable - method removeEntry ========================== --> 
+<section id="mthStringTableRemoveEntry" revisionflag="added"><title>removeEntry</title>
+<para>
+<indexterm><primary>removeEntry method</primary><secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>removeEntry method</secondary><tertiary>of StringTable class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/stringtable_removeentry.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+<para>Removes and returns the member item with index
+<emphasis role="italic">name</emphasis> (translated to uppercase) from the StringTable.
+If a method is associated with
+<xref linkend="mthStringTableSetMethod" xrefstyle="select:title"/> for index
+<emphasis role="italic">name</emphasis>,
+the method is removed and the result of running the method is returned.
+If there is no item or method with index
+<emphasis role="italic">name</emphasis>, .nil is returned.
+</para>
+<para>See also
+<itemizedlist spacing="compact">
+ <listitem><para>method <xref linkend="mthStringTableSetEntry" xrefstyle="select:title"/>,</para></listitem>
+ <listitem><para>method <xref linkend="mthStringTableSetMethod" xrefstyle="select:title"/>,</para></listitem>
+ <listitem><para>method <xref linkend="mthStringTableHasEntry" xrefstyle="select:title"/>, and</para></listitem>
+ <listitem><para>method <xref linkend="mthStringTableEntry" xrefstyle="select:title"/>.</para></listitem>
+</itemizedlist>
+</para>
+</section>
+
 
 <section id="mthStringTableRemoveItem"><title>removeItem</title>
 <indexterm><primary>removeItem method</primary>
