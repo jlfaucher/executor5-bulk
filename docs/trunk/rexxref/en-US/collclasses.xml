@@ -593,6 +593,7 @@ index values in the receiver collection.</para>
 methods implemented by all collections that create a mapping from an index
 object to a value.
 </para>
+<para>This class is defined as a mixin class.</para>
 
 <!-- $GENERATED-20150704-START rexxrefClassTable(MapCollection) -->
 <table id="ooRexxMapCollectionClass" frame="all" pgwide="0">
@@ -625,10 +626,8 @@ object to a value.
 </table>
 <!-- $GENERATED-20150704-END rexxrefClassTable(MapCollection) -->
 
-<para>This class is defined as a mixin class.</para>
-
 <!-- Class MapCollection - method of =============================== --> 
-<section id="mthMapCollectionOf" revisionflag="added"><title>of (Class Method)</title>
+<section id="mthMapCollectionOf" revisionflag="added"><title>*NEW* of (Class Method)</title>
 <para>
 <indexterm><primary>of method</primary><secondary>of MapCollection class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>of method</secondary><tertiary>of MapCollection class</tertiary></indexterm>
@@ -705,6 +704,7 @@ supplier will overwrite previous items with the same index.
 methods implemented by all collections that have an inherent index ordering,
 such as an array or a list.
 </para>
+<para>This class is defined as a mixin class.</para>
 
 <!-- $GENERATED-20150704-START rexxrefClassTable(OrderedCollection) -->
 <table id="ooRexxOrderedCollectionClass" frame="all" pgwide="0">
@@ -751,8 +751,6 @@ such as an array or a list.
 </tgroup>
 </table>
 <!-- $GENERATED-20150704-END rexxrefClassTable(OrderedCollection) -->
-
-<para>This class is defined as a mixin class.</para>
 
 <section id="mthOrderedCollectionAppend"><title>append (Abstract Method)</title>
 <indexterm><primary>append method</primary>
@@ -1172,53 +1170,33 @@ collection class object.
 <para>This is a tagging mixin class only and does not define any methods of
 its own.  Collections that implement SetCollection are MapCollections that
 constrain the index and item to be be the same object.</para>
+<para>This class is defined as a mixin class.</para>
+
+<!-- $GENERATED-20150924-START rexxrefClassTable(SetCollection) -->
 <table id="ooRexxSetCollectionClass" frame="all" pgwide="0">
-<title>ooRexx SetCollection Class</title>
-<tgroup cols="1" align="left" colsep="1" rowsep="1">
+<title>SetCollection Class</title>
+<tgroup cols="1">
 <tbody>
-   <row>
-      <entry align="center"><emphasis role="bold">Object</emphasis></entry>
-   </row>
-   <row>
-      <entry align="center">&#x2193;</entry>
-   </row>
-   <row>
-      <entry align="center"><emphasis role="bold">Collection</emphasis></entry>
-   </row>
-   <row>
-      <entry align="center">&#x2193;</entry>
-   </row>
-   <row>
-      <entry align="center"><emphasis role="bold">SetCollection</emphasis></entry>
-   </row>
-   <row>
-      <entry>
-<screen>&nbsp;
-</screen>
-      </entry>
-   </row>
-   <row>
-      <entry>
-<screen>&nbsp;
-</screen>
-      </entry>
-   </row>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">+ Collection (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  Methods inherited from the <xref linkend="clsCollection" xrefstyle="template:Collection class"/>
+  <xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+ </entry></row>
+ <row><entry align="center"><emphasis role="bold">SetCollection (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  (no class or instance methods)
+ </entry></row>
 </tbody>
 </tgroup>
 </table>
+<!-- $GENERATED-20150924-END rexxrefClassTable(SetCollection) -->
 
-<para>This class is defined as a mixin class.</para>
-
-<section><title>Inherited Methods</title>
-
-<para>Methods inherited from the
-Object class (<xref linkend="clsObject" />).</para>
-<xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-<para>Methods inherited from the
-Collection class (<xref linkend="clsCollection" />).</para>
-<xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-
-</section>
 </section>
 
 <section id="clsArray"><title>The Array Class</title>
@@ -1236,83 +1214,79 @@ of the array. This number is called the dimensionality of the array.</para>
 assigned to an array index then that index is considered to contain the NIL
 object.
 </para>
+
+<!-- $GENERATED-20150924-START rexxrefClassTable(Array) -->
 <table id="ooRexxArrayClass" frame="all" pgwide="0">
-<title>ooRexx Array Class</title>
-<tgroup cols="2" align="left" colsep="1" rowsep="1">
-<colspec colname="c1" />
-<colspec colname="c2" />
+<title>Array Class</title>
+<tgroup cols="1">
 <tbody>
-   <row>
-      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Array</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ OrderedCollection</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2">
-<screen>new
-of
-</screen>
-      </entry>
-   </row>
-   <row>
-      <entry>
-<screen>
-allIndexes
-allItems
-append
-at, []
-delete
-dimension
-dimensions
-empty
-fill
-first
-firstItem
-hasIndex
-hasItem
-index
-insert
-isEmpty
-</screen>
-      </entry>
-      <entry>
-<screen>items
-last
-lastItem
-makeArray
-makeString
-next
-previous
-put, []=
-remove
-removeItem
-section
-size
-sort
-sortWith
-stableSort
-stableSortWith
-supplier
-toString
-</screen>
-      </entry>
-   </row>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">+ Collection (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  Methods inherited from the <xref linkend="clsCollection" xrefstyle="template:Collection class"/>
+  <xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+ </entry></row>
+ <row><entry align="center"><emphasis role="bold">+ OrderedCollection (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  Methods inherited from the <xref linkend="clsOrderedCollection" xrefstyle="template:OrderedCollection class"/>
+  <xi:include href="orderedcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+ </entry></row>
+ <row><entry align="center"><emphasis role="bold">Array</emphasis></entry>
+ </row>
+ <row><entry>
+  <simplelist>
+   <member><xref linkend="mthArrayNew" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthArrayOf" xrefstyle="select:title"/></member>
+  </simplelist>
+  <simplelist columns="3">
+   <member><xref linkend="mthArrayAtGet" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthArrayPutSet" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthArrayAllIndexes" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthArrayAllItems" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthArrayAppend" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthArrayAt" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthArrayDelete" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthArrayDimension" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthArrayDimensions" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthArrayEmpty" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthArrayFill" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthArrayFirst" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthArrayFirstItem" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthArrayHasIndex" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthArrayHasItem" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthArrayIndex" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthArrayInsert" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthArrayIsEmpty" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthArrayItems" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthArrayLast" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthArrayLastItem" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthArrayMakeArray" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthArrayMakeString" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthArrayNext" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthArrayPrevious" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthArrayPut" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthArrayRemove" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthArrayRemoveItem" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthArraySection" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthArraySize" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthArraySort" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthArraySortWith" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthArrayStableSort" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthArrayStableSortWith" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthArraySupplier" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthArrayToString" xrefstyle="select:title"/></member>
+  </simplelist>
+ </entry></row>
 </tbody>
 </tgroup>
 </table>
+<!-- $GENERATED-20150924-END rexxrefClassTable(Array) -->
 
-<note><title>Note</title>
-<para>The Array class also has available class methods that its
-metaclass, the Class class (<xref linkend="clsClass" />), defines.
-It also inherits methods from the OrderedCollection class (<xref linkend="clsOrderedCollection" />).
-</para></note>
 <para>Array objects are variable-sized. The dimensionality of an array is fixed,
 but the size of each dimension is variable. When you create an array, you
 can specify a hint about how many elements you expect to put into the array
@@ -1335,77 +1309,6 @@ whole-number indexes to reference items in an array.</para>
 index items will return a single numeric value for single-dimension arrays and
 an array of indexes for multi-dimension arrays.</para>
 
-<section><title>Inherited Methods</title>
-
-<para>Methods inherited from the
-Object class (<xref linkend="clsObject" />).</para>
-<xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-<para>Methods inherited from the
-Collection class (<xref linkend="clsCollection" />).</para>
-<xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-<para>Methods inherited from the
-OrderedCollection class (<xref linkend="clsOrderedCollection" />).</para>
-<xi:include href="orderedcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-
-</section>
-
-<section id="mthArrayInsert"><title>insert</title>
-<indexterm><primary>insert method</primary>
-<secondary>of Array class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>insert method</secondary>
-<tertiary>of Array class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/classes/array_insert.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-<para>Returns an Array-supplied index for item
-<emphasis role="italic">item</emphasis>, which is added to the Array. The inserted
-item follows an existing item with index
-<emphasis role="italic">index</emphasis> in the Array ordering.
-If <emphasis role="italic">index</emphasis> is the Nil object, <emphasis role="italic">item</emphasis>
-becomes the first item in the Array. If you omit
-<emphasis role="italic">index</emphasis>, the <emphasis role="italic">item</emphasis> becomes the last item in
-the Array.</para>
-<para>Inserting an item in the Array at position
-<emphasis role="italic">index</emphasis> will cause the items in the Array after
-position <emphasis role="italic">index</emphasis> to have their indexes
-shifted by the Array object.
-The index values for any items in the Array are incremented by the insertion.</para>
-<indexterm><primary>examples</primary>
-<secondary>insert method</secondary>
-<tertiary>of Array class</tertiary></indexterm>
-<example id="ex.Array-insert">
-<title>Array class - insert method</title>
-<programlisting>
-musketeers=.Array~of("Porthos","Athos","Aramis") /* Creates Array MUSKETEERS        */
-                                                 /* consisting of: Porthos         */
-                                                 /*                Athos           */
-                                                 /*                Aramis          */
-musketeers~insert("D&apos;Artagnan",1)    /* Adds D&apos;Artagnan after Porthos  */
-                                          /* Array is now: Porthos           */
-                                          /*              D&apos;Artagnan   */
-                                          /*              Athos             */
-                                          /*              Aramis            */
-/* Alternately, you could use */
-musketeers~insert("D&apos;Artagnan",.nil) /* Adds D&apos;Artagnan before Porthos */
-                                          /* Array is now:  D&apos;Artagnan  */
-                                          /*               Porthos          */
-                                          /*               Athos            */
-                                          /*               Aramis           */
-/* Alternately, you could use */
-musketeers~insert("D&apos;Artagnan")      /* Adds D&apos;Artagnan after Aramis   */
-                                          /* Array is now:  Porthos          */
-                                          /*               Athos            */
-                                          /*               Aramis           */
-                                          /*               D&apos;Artagnan  */
-</programlisting>
-</example>
-</section>
-
 <section id="mthArrayNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
 <secondary>of Array class</secondary></indexterm>
@@ -1419,7 +1322,7 @@ musketeers~insert("D&apos;Artagnan")      /* Adds D&apos;Artagnan after Aramis  
 </imageobject>
 </mediaobject>
 
-<para> Returns a new empty array. If you specify
+<para>Returns a new empty array. If you specify
 any <emphasis role="italic">size</emphasis> arguments,
 the size is taken as a hint about how big each dimension
 should be. The Array class uses this only to allocate the initial array
@@ -1955,6 +1858,63 @@ returned. Item equality is determined by using the == method of <emphasis role="
 <programlisting>
 a = .array~of("Mike", "Rick", "Fred", "Rick")
 say a~index("Rick")  -- says: 2
+</programlisting>
+</example>
+</section>
+
+<section id="mthArrayInsert"><title>insert</title>
+<indexterm><primary>insert method</primary>
+<secondary>of Array class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>insert method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/array_insert.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns an Array-supplied index for item
+<emphasis role="italic">item</emphasis>, which is added to the Array. The inserted
+item follows an existing item with index
+<emphasis role="italic">index</emphasis> in the Array ordering.
+If <emphasis role="italic">index</emphasis> is the Nil object, <emphasis role="italic">item</emphasis>
+becomes the first item in the Array. If you omit
+<emphasis role="italic">index</emphasis>, the <emphasis role="italic">item</emphasis> becomes the last item in
+the Array.</para>
+<para>Inserting an item in the Array at position
+<emphasis role="italic">index</emphasis> will cause the items in the Array after
+position <emphasis role="italic">index</emphasis> to have their indexes
+shifted by the Array object.
+The index values for any items in the Array are incremented by the insertion.</para>
+<indexterm><primary>examples</primary>
+<secondary>insert method</secondary>
+<tertiary>of Array class</tertiary></indexterm>
+<example id="ex.Array-insert">
+<title>Array class - insert method</title>
+<programlisting>
+musketeers=.Array~of("Porthos","Athos","Aramis") /* Creates Array MUSKETEERS        */
+                                                 /* consisting of: Porthos         */
+                                                 /*                Athos           */
+                                                 /*                Aramis          */
+musketeers~insert("D&apos;Artagnan",1)    /* Adds D&apos;Artagnan after Porthos  */
+                                          /* Array is now: Porthos           */
+                                          /*              D&apos;Artagnan   */
+                                          /*              Athos             */
+                                          /*              Aramis            */
+/* Alternately, you could use */
+musketeers~insert("D&apos;Artagnan",.nil) /* Adds D&apos;Artagnan before Porthos */
+                                          /* Array is now:  D&apos;Artagnan  */
+                                          /*               Porthos          */
+                                          /*               Athos            */
+                                          /*               Aramis           */
+/* Alternately, you could use */
+musketeers~insert("D&apos;Artagnan")      /* Adds D&apos;Artagnan after Aramis   */
+                                          /* Array is now:  Porthos          */
+                                          /*               Athos            */
+                                          /*               Aramis           */
+                                          /*               D&apos;Artagnan  */
 </programlisting>
 </example>
 </section>
@@ -2573,86 +2533,71 @@ end
 to having an item that is the same as the index. Any object can be placed
 in a bag, and the same object can be placed in a bag several times.
 </para>
+
+<!-- Modified: new() may be a 5.0 bug -->
+<!-- $GENERATED-20150924-START rexxrefClassTable(Bag) -->
 <table id="ooRexxBagClass" frame="all" pgwide="0">
-<title>ooRexx Bag Class</title>
-<tgroup cols="2" align="left" colsep="1" rowsep="1">
-<colspec colname="c1" />
-<colspec colname="c2" />
+<title>Bag Class</title>
+<tgroup cols="1">
 <tbody>
-   <row>
-      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Bag</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ SetCollection</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2">
-<screen>of
-</screen>
-      </entry>
-   </row>
-   <row>
-      <entry>
-<screen>allAt
-allIndex
-allIndexes
-allItems
-at, []
-difference
-empty
-hasIndex
-hasItem
-index
-intersection
-isEmpty
-</screen>
-      </entry>
-      <entry>
-<screen>items
-makeArray
-put, []=
-putAll
-remove
-removeAll
-removeItem
-subset
-supplier
-union
-uniqueIndexes
-xor
-</screen>
-      </entry>
-   </row>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">+ SetCollection (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  Methods inherited from the <xref linkend="clsSetCollection" xrefstyle="template:SetCollection class"/>
+  <xi:include href="setcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+ </entry></row>
+ <row><entry align="center"><emphasis role="bold">+ Collection (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  Methods inherited from the <xref linkend="clsCollection" xrefstyle="template:Collection class"/>
+  <xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+ </entry></row>
+ <row><entry align="center"><emphasis role="bold">+ MapCollection (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  Methods inherited from the <xref linkend="clsMapCollection" xrefstyle="template:MapCollection class"/>
+  <xi:include href="mapcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+ </entry></row>
+ <row><entry align="center"><emphasis role="bold">Bag</emphasis></entry>
+ </row>
+ <row><entry>
+  <simplelist>
+<!-- new() may be a 5.0 bug
+   <member><xref linkend="mthBagNew" xrefstyle="select:title"/></member>
+-->
+   <member><xref linkend="mthBagOf" xrefstyle="select:title"/></member>
+  </simplelist>
+  <simplelist columns="3">
+   <member><xref linkend="mthBagAtGet" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthBagPutSet" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthBagAllAt" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthBagAllIndex" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthBagAllIndexes" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthBagAllItems" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthBagAt" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthBagEmpty" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthBagHasIndex" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthBagHasItem" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthBagIndex" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthBagIsEmpty" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthBagItems" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthBagMakeArray" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthBagPut" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthBagRemove" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthBagRemoveAll" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthBagRemoveItem" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthBagSupplier" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthBagUniqueIndexes" xrefstyle="select:title"/></member>
+  </simplelist>
+ </entry></row>
 </tbody>
 </tgroup>
 </table>
-
-<note><title>Note</title>
-<para>The Bag class also has available class methods that its metaclass,
-the Class class (<xref linkend="clsClass" />), defines.
-It also inherits methods from the Set Collection (<xref linkend="clsSetCollection" />)
-class, although there are not currently any methods defined in that class.
-</para></note>
-
-<section><title>Inherited Methods</title>
-
-<para>Methods inherited from the
-Object class (<xref linkend="clsObject" />).</para>
-<xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-<para>Methods inherited from the
-Collection class (<xref linkend="clsCollection" />).</para>
-<xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-<para>Methods inherited from the
-MapCollection class (<xref linkend="clsMapCollection" />).</para>
-<xi:include href="mapcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-
-</section>
+<!-- $GENERATED-20150924-END rexxrefClassTable(Bag) -->
 
 <section id="mthBagOf"><title>of (Class Method)</title>
 <indexterm><primary>of method</primary>
@@ -3247,121 +3192,76 @@ objects are inserted from the beginning, replacing earlier entries. Any object
 can be placed in the queue and the same object can occupy more than one position
 in the queue.
 </para>
-<table id="ooRexxCircularQueueClass" frame="all" pgwide="0">
-<title>ooRexx CircularQueue Class</title>
-<tgroup cols="2" align="left" colsep="1" rowsep="1">
-<colspec colname="c1" />
-<colspec colname="c2" />
-<tbody>
-   <row>
-      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Queue</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ OrderedCollection</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">CircularQueue</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2">
-<screen>of
-</screen>
-      </entry>
-   </row>
-   <row>
-      <entry>
-<screen>init
-append
-insert
-intersection
-makeArray
-push
-queue
-</screen>
-      </entry>
-      <entry>
-<screen>resize
-section
-size
-string
-supplier
-union
-xor
-</screen>
-      </entry>
-   </row>
-</tbody>
-</tgroup>
-</table>
-
-<note><title>Note</title>
-<para>
-The CircularQueue class also has available class methods that its
-metaclass, the Class class (<xref linkend="clsClass" />), defines.</para>
-</note>
 <para>
 The collected objects can be processed in FIFO (first in, first out) or in a
 stack-like LIFO (last in, first out) order.
 </para>
 
-<section><title>Inherited Methods</title>
-
-<para>Methods inherited from the
-Object class (<xref linkend="clsObject" />).</para>
-<xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-<para>Methods inherited from the
-Collection class (<xref linkend="clsCollection" />).</para>
-<xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-<para>Methods inherited from the
-orderedCollection (<xref linkend="clsOrderedCollection" />).</para>
-<xi:include href="orderedcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-
-<para>Methods inherited from the
-Queue class (<xref linkend="clsQueue" />).</para>
-<simplelist type="vert" columns="3">
-<member><xref linkend="mthQueueNew" xrefstyle="select: title"/></member>
-<member><xref linkend="mthQueueOf" xrefstyle="select: title"/></member>
-<member><xref linkend="mthQueueAllIndexes" xrefstyle="select: title"/></member>
-<member><xref linkend="mthQueueAllItems" xrefstyle="select: title"/></member>
-<member><xref linkend="mthQueueAppend" xrefstyle="select: title"/></member>
-<member><xref linkend="mthQueueAt" xrefstyle="select: title"/></member>
-<member><xref linkend="mthQueueAtGet" xrefstyle="select: title"/></member>
-<member><xref linkend="mthQueueDelete" xrefstyle="select: title"/></member>
-<member><xref linkend="mthQueueEmpty" xrefstyle="select: title"/></member>
-<member><xref linkend="mthQueueFirst" xrefstyle="select: title"/></member>
-<member><xref linkend="mthQueueFirstItem" xrefstyle="select: title"/></member>
-<member><xref linkend="mthQueueHasIndex" xrefstyle="select: title"/></member>
-<member><xref linkend="mthQueueHasItem" xrefstyle="select: title"/></member>
-<member><xref linkend="mthQueueIndex" xrefstyle="select: title"/></member>
-<member><xref linkend="mthQueueInsert" xrefstyle="select: title"/></member>
-<member><xref linkend="mthQueueIsEmpty" xrefstyle="select: title"/></member>
-<member><xref linkend="mthQueueItems" xrefstyle="select: title"/></member>
-<member><xref linkend="mthQueueLast" xrefstyle="select: title"/></member>
-<member><xref linkend="mthQueueMakeArray" xrefstyle="select: title"/></member>
-<member><xref linkend="mthQueueNext" xrefstyle="select: title"/></member>
-<member><xref linkend="mthQueuePeek" xrefstyle="select: title"/></member>
-<member><xref linkend="mthQueuePrevious" xrefstyle="select: title"/></member>
-<member><xref linkend="mthQueuePull" xrefstyle="select: title"/></member>
-<member><xref linkend="mthQueuePush" xrefstyle="select: title"/></member>
-<member><xref linkend="mthQueuePut" xrefstyle="select: title"/></member>
-<member><xref linkend="mthQueuePutSet" xrefstyle="select: title"/></member>
-<member><xref linkend="mthQueueQueue" xrefstyle="select: title"/></member>
-<member><xref linkend="mthQueueRemove" xrefstyle="select: title"/></member>
-<member><xref linkend="mthQueueRemoveItem" xrefstyle="select: title"/></member>
-<member><xref linkend="mthQueueSection" xrefstyle="select: title"/></member>
-<member><xref linkend="mthQueueSupplier" xrefstyle="select: title"/></member>
-</simplelist>
-
-</section>
+<!-- Modified: readObject/writeObject not fully implemented -->
+<!-- Modified: makeString() may be a 5.0 bug -->
+<!-- $GENERATED-20150924-START rexxrefClassTable(CircularQueue) -->
+<table id="ooRexxCircularQueueClass" frame="all" pgwide="0">
+<title>CircularQueue Class</title>
+<tgroup cols="1">
+<tbody>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">+ Collection (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  Methods inherited from the <xref linkend="clsCollection" xrefstyle="template:Collection class"/>
+  <xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+ </entry></row>
+ <row><entry align="center"><emphasis role="bold">+ OrderedCollection (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  Methods inherited from the <xref linkend="clsOrderedCollection" xrefstyle="template:OrderedCollection class"/>
+  <xi:include href="orderedcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+ </entry></row>
+ <row><entry align="center"><emphasis role="bold">Queue</emphasis></entry>
+ </row>
+ <row><entry>
+  Methods inherited from the <xref linkend="clsQueue" xrefstyle="template:Queue class"/>
+  <xi:include href="queueclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+ </entry></row>
+ <row><entry align="center"><emphasis role="bold">CircularQueue</emphasis></entry>
+ </row>
+ <row><entry>
+  <simplelist>
+   <member><xref linkend="mthCircularQueueOf" xrefstyle="select:title"/></member>
+<!-- not fully implemented 
+   <member><xref linkend="mthCircularQueueReadObject" xrefstyle="select:title"/></member>
+-->
+  </simplelist>
+  <simplelist columns="3">
+   <member><xref linkend="mthCircularQueueAppend" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthCircularQueueInit" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthCircularQueueInsert" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthCircularQueueIntersection" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthCircularQueueMakeArray" xrefstyle="select:title"/></member>
+<!-- makeString() may be a 5.0 bug
+   <member><xref linkend="mthCircularQueueMakeString" xrefstyle="select:title"/></member>
+-->
+   <member><xref linkend="mthCircularQueuePush" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthCircularQueueQueue" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthCircularQueueResize" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthCircularQueueSection" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthCircularQueueSize" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthCircularQueueString" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthCircularQueueSupplier" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthCircularQueueUnion" xrefstyle="select:title"/></member>
+<!-- not fully implemented
+   <member><xref linkend="mthCircularQueueWriteObject" xrefstyle="select:title"/></member>
+-->
+   <member><xref linkend="mthCircularQueueXor" xrefstyle="select:title"/></member>
+  </simplelist>
+ </entry></row>
+</tbody>
+</tgroup>
+</table>
+<!-- $GENERATED-20150924-END rexxrefClassTable(CircularQueue) -->
 
 <section id="mthCircularQueueOf"><title>of (Class Method)</title>
 <indexterm><primary>of method</primary>
@@ -3939,69 +3839,63 @@ content: [3,2], content (LIFO): [2->3]
 <para>A Directory is a MapCollection using unique character string indexes.  The
 items of the collection can be any valid Rexx object.
 </para>
+
+<!-- $GENERATED-20150924-START rexxrefClassTable(Directory) -->
 <table id="ooRexxDirectoryClass" frame="all" pgwide="0">
-<title>ooRexx Directory Class</title>
-<tgroup cols="2" align="left" colsep="1" rowsep="1">
-<colspec colname="c1" />
-<colspec colname="c2" />
+<title>Directory Class</title>
+<tgroup cols="1">
 <tbody>
-   <row>
-      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Directory</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ MapCollection</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2">
-<screen>new
-</screen>
-      </entry>
-   </row>
-   <row>
-      <entry>
-<screen>allIndexes
-allItems
-at, []
-empty
-entry
-hasEntry
-hasIndex
-hasItem
-index
-isEmpty
-items
-</screen>
-      </entry>
-      <entry>
-<screen>makeArray
-put, []=
-remove
-removeItem
-setEntry
-setMethod
-supplier
-unknown
-unSetMethod
-xor
-</screen>
-      </entry>
-   </row>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">+ Collection (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  Methods inherited from the <xref linkend="clsCollection" xrefstyle="template:Collection class"/>
+  <xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+ </entry></row>
+ <row><entry align="center"><emphasis role="bold">+ MapCollection (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  Methods inherited from the <xref linkend="clsMapCollection" xrefstyle="template:MapCollection class"/>
+  <xi:include href="mapcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+ </entry></row>
+ <row><entry align="center"><emphasis role="bold">Directory</emphasis></entry>
+ </row>
+ <row><entry>
+  <simplelist>
+   <member><xref linkend="mthDirectoryNew" xrefstyle="select:title"/></member>
+  </simplelist>
+  <simplelist columns="3">
+   <member><xref linkend="mthDirectoryAtGet" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthDirectoryPutSet" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthDirectoryAllIndexes" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthDirectoryAllItems" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthDirectoryAt" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthDirectoryEmpty" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthDirectoryEntry" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthDirectoryHasEntry" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthDirectoryHasIndex" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthDirectoryHasItem" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthDirectoryIndex" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthDirectoryIsEmpty" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthDirectoryItems" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthDirectoryMakeArray" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthDirectoryPut" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthDirectoryRemove" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthDirectoryRemoveEntry" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthDirectoryRemoveItem" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthDirectorySetEntry" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthDirectorySupplier" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthDirectoryUnknown" xrefstyle="select:title"/></member>
+  </simplelist>
+ </entry></row>
 </tbody>
 </tgroup>
 </table>
+<!-- $GENERATED-20150924-END rexxrefClassTable(Directory) -->
 
-<note><title>Note</title>
-<para>The Directory class also has available class methods that
-metaclass, the Class class (<xref linkend="clsClass" />), defines.
-It also inherits methods from the Map (<xref linkend="clsMapCollection" />) class,
-although there are not currently any methods defined in that class.
-</para></note>
 <para>In addition to the standard put() and at() methods defined for
 Collections, Directories provide access to objects using methods.  For
 example:</para>
@@ -4011,19 +3905,6 @@ mydir = .directory~new
 mydir~name = "Mike"   -- same as mydir~put("Mike", "NAME")
 say mydir~name        -- same as say mydir['NAME']
 </programlisting>
-<section><title>Inherited Methods</title>
-
-<para>Methods inherited from the
-Object class (<xref linkend="clsObject" />).</para>
-<xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-<para>Methods inherited from the
-Collection class (<xref linkend="clsCollection" />).</para>
-<xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-<para>Methods inherited from the
-MapCollection (<xref linkend="clsMapCollection" />).</para>
-<xi:include href="mapcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-
-</section>
 
 <section id="mthDirectoryNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
@@ -4362,7 +4243,7 @@ method with index
 
 
 <!-- Class Directory - method removeEntry ========================== --> 
-<section id="mthDirectoryRemoveEntry" revisionflag="added"><title>removeEntry</title>
+<section id="mthDirectoryRemoveEntry" revisionflag="added"><title>*NEW* removeEntry</title>
 <para>
 <indexterm><primary>removeEntry method</primary><secondary>of Directory class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>removeEntry method</secondary><tertiary>of Directory class</tertiary></indexterm>
@@ -5041,7 +4922,7 @@ method with index
 
 
 <!-- Class StringTable - method removeEntry ========================== --> 
-<section id="mthStringTableRemoveEntry" revisionflag="added"><title>removeEntry</title>
+<section id="mthStringTableRemoveEntry" revisionflag="added"><title>*NEW* removeEntry</title>
 <para>
 <indexterm><primary>removeEntry method</primary><secondary>of StringTable class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>removeEntry method</secondary><tertiary>of StringTable class</tertiary></indexterm>

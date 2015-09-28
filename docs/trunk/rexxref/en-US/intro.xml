@@ -1327,9 +1327,9 @@ is changed to a <computeroutput>\</computeroutput>. That is, the operators
 prefix&nbsp;- and prefix&nbsp;+ operators), Rexx sends a message to the term,
 with no arguments. This means <computeroutput>-z</computeroutput> has the
 same effect as <computeroutput>z~"-"</computeroutput>.</para>
-<para>See <xref linkend="mthObjectOperators" /> for operator methods of
+<para>See <xref linkend="mthObjectComparisonMethods" /> for comparison operator methods of
 the Object class and  <xref linkend="mthStringArithmeticMethods" />
-for operator methods of the String class.</para>
+for arithmetic operator methods of the String class.</para>
 <para>There are four types of operators:
 <itemizedlist>
 <listitem><para>Concatenation</para></listitem>
@@ -2075,6 +2075,65 @@ say "Last on the team is:" team~lastitem       /* Steve */
 receiver of the next message in the sequence.
 </para>
 </section>
+
+<!-- Array Term ================================================ -->
+<section id="arrayterm" revisionflag="added"><title>*NEW* Array Term</title>
+<indexterm><primary>array term</primary></indexterm>
+<para>As a convenience, ooRexx allows a shortened syntax for creating arrays,
+called <emphasis role="italic">Array term</emphasis>, of the following form:
+</para>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/xmpsyntax_array.svg" scale="50" />
+</imageobject>
+</mediaobject>
+<para>
+Except for trailing commas, an Array term returns a newly created array,
+as if it had been created with the message term
+<computeroutput>rexx:Array~of(&hellip;)</computeroutput>.
+(An Array term will always return an instance of ooRexx' builtin Array
+class, even if a user-defined class named "Array" exists.)
+</para><para>
+Here are some examples:
+<programlisting>week = "mon", "tue", "wed", "thu", "fri", "sat", "sun"
+say week~items "days"                           -- 7 days
+
+say ("here", "we", "go")~makeString(, " ")      -- here we go
+
+iso639 = .Directory~of(("de", "Deutsch"), ("en", "English"), ("fr", "fran&ccedil;ais"))
+
+do list over .environment, .local 
+  say list~items                                -- 65
+end                                             -- 10
+
+say 0~sendWith("MAX", (2, 3, 5, 7, 11, 13))     -- 13
+
+sparse = ,,,0
+say "size" sparse~size"," sparse~items "items"  -- size 4, 1 items
+</programlisting>
+</para><para>
+If the array term has trailing commas, the returned array has a 
+bigger size than what <computeroutput>.Array~of(&hellip;)</computeroutput> 
+would have returned:
+<programlisting>say (1, , 3, ,)~size .Array~of(1, , 3, ,)~size  -- 5 3
+say (,)~size .Array~of(,)~size                  -- 2 0
+</programlisting>
+</para>
+<para>In a context, where commas already have a different meaning,
+it may be necessary to put an Array term between brackets.
+For example:
+<programlisting>call func "uno", 2, "tre"      -- no Array term: three parms
+call func ("uno", 2, "tre")    -- Array term: one Array as parm
+</programlisting>
+</para>
+<para>An Array term cannot return an array of size zero or one, although
+it can return an array with zero or one items (but still of at least size two).
+<programlisting>say (,)~items      -- 0
+say (,)~size       -- 2
+</programlisting>
+</para>
+</section>
+
 </section>
 
 <section id="clausin"><title>Clauses and Instructions</title>
@@ -2796,7 +2855,7 @@ in either directory include at least one period in the entry name.</para>
 </section>
 
 
-<section id="namespacesym"><title>Namespaces</title>
+<section id="namespacesym" revisionflag="added"><title>*NEW* Namespaces</title>
 <indexterm><primary>namespace</primary></indexterm>
 <indexterm><primary>symbols</primary>
 <secondary>namespace</secondary></indexterm>
