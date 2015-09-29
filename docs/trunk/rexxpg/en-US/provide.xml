@@ -186,9 +186,6 @@ in the system). The classes indented are subclasses:</para>
 <secondary>Routine class</secondary></indexterm>
 
 <indexterm><primary>classes</primary>
-<secondary>Stream class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
 <secondary>String class</secondary></indexterm>
 
 <indexterm><primary>classes</primary>
@@ -253,7 +250,6 @@ Object
     RexxContext
     RexxQueue
     Routine
-    Stream
     String
     Supplier
         StreamSupplier
@@ -533,7 +529,7 @@ the results of that processing to the sender or to some other object.
 <indexterm><primary>classes</primary>
 <secondary>Monitor class</secondary></indexterm>
 <para>The Monitor class provides a way to forward messages to a specified destination.
-The Monitor creates a proxy that can route dynamically route messages to different destinations.
+The Monitor creates a proxy that can dynamically route messages to different destinations.
 Monitor methods change or restore a destination object.
 </para>
 </section>
@@ -560,7 +556,7 @@ throw a syntax error when invoked.
 <section id="numericcomparatorcl"><title>The NumericComparator Class</title>
 <indexterm><primary>classes</primary>
 <secondary>NumericComparator class</secondary></indexterm>
-<para>The NumericComparator class compares string using numeric comparison rules to
+<para>The NumericComparator class compares strings using numeric comparison rules to
 determine sort order.
 </para>
 </section>
@@ -665,13 +661,13 @@ manipulation (see <xref linkend="rexio" /> for examples).</para>
 <section id="streamsuppliercl"><title>The StreamSupplier Class</title>
 <indexterm><primary>classes</primary>
 <secondary>StreamSupplier class</secondary></indexterm>
-<para>A subclass of the Supplier class that will provided stream lines using
+<para>A subclass of the Supplier class that will provide stream lines using
 supplier semantics. This allows the programmer to iterate over the remaining
 lines in a stream. A StreamSupplier object provides a snapshot of the stream
 at the point in time it is created, including the current line read position.
-In general, the iteration is not effected by later changes to the read and
+In general, the iteration is not affected by later changes to the read and
 write positioning of the stream. However, forces external to the iteration may
-change the content of the remaining lines as the itertion progresses.
+change the content of the remaining lines as the iteration progresses.
 </para>
 </section>
 
@@ -691,10 +687,8 @@ can be accomplished using the String class of objects.</para>
 <section id="supplcl"><title>The Supplier Class</title>
 <indexterm><primary>classes</primary>
 <secondary>Supplier class</secondary></indexterm>
-<para>All collections
-have suppliers
-The  Supplier class is used to enumerate
-items that a collection contained when the supplier was created.  The supplier
+<para>All collections have suppliers. The Supplier class is used to enumerate
+items that a collection contained when the supplier was created. The supplier
 gives access to each index/value pair stored in the collection as a sequence.
 </para>
 </section>
@@ -727,7 +721,7 @@ preventing the objects from being reclaimed by the garbage collector when needed
 hierarchies.</para>
 
 <section id="objcl"><title>The Object Class</title>
-<para>Because the root class in the hierarchy,
+<para>Because the root class in the hierarchy
 is the Object class, everything below it is an object.
 To interact with each other, objects require their own actions, called methods.
 These methods, which encode actions that are needed by all objects, belong
@@ -876,7 +870,7 @@ can determine what classes need to be created.  You can create a class using
 messages or directives. Directives are a new kind of Rexx clause, and they
 are preferred over messages because the code is easier to read and understand,
 especially in large programs. They also provide an easy way for you to
-your class definitions with others using the PUBLIC option.</para>
+share your class definitions with others using the PUBLIC option.</para>
 
 <section id="whatdir"><title>What Are Directives?</title>
 <indexterm><primary>directives</primary>
@@ -1000,7 +994,8 @@ a particular class type.
 </para>
 <para>The ::ROUTINE directive includes a PUBLIC option for making the routine
 available to programs outside its containing Rexx program. The outside program
-must reference the routine by using a ::REQUIRES directive.</para>
+must reference the routine by using a ::REQUIRES directive
+for the program that contains the routine.</para>
 </section>
 
 <section id="requdir"><title>The ::REQUIRES Directive</title>
@@ -1019,7 +1014,7 @@ and objects of another program. This directive has the following form: </para>
 of the ::REQUIRES directives determines the search order for the classes and
 routines defined in the named programs.</para>
 <para>Local routine or class definitions within a program override routines or
-classes of imported through ::REQUIRES
+classes imported through ::REQUIRES
 directives.
 </para>
 </section>
