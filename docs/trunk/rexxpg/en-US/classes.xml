@@ -65,7 +65,7 @@ in the hierarchy belongs to the Object class and is therefore an object. As
 a result, all classes are objects.</para>
 <para>In a class hierarchy, classes, superclasses, and subclasses are relative
 to one another. Unless designated otherwise, any class directly above a class
-in the hierarchy is a superclass. And any class below is a subclass.</para>
+in the hierarchy is a superclass, and any class below is a subclass.</para>
 <para>From a class you can create instances of the class. Instances
 are merely similar objects that fit the template
 of the class; they are "of" the class, but are not classes themselves.
@@ -214,12 +214,12 @@ INIT method to set a particular starting value or initiate some startup processi
 Rexx looks for an INIT method whenever a new object is created and runs it.</para>
 <para>The purpose of initialization is to ensure that the
 instance variables are initialized correctly
-before using it in an operation. If an INIT method is defined, Rexx runs it
+before being used in an operation. If an INIT method is defined, Rexx runs it
 after creating the instance. Any initialization arguments specified in the
 NEW message are passed to the
 <indexterm><primary>INIT method</primary></indexterm>
 INIT method, which can use them
-to set the initial state of object variables.</para>
+to set the initial states of object variables.</para>
 <para>If a class overrides the INIT method it inherits from a superclass,
 the new INIT method must forward the INIT message up the
 hierarchy, to properly initialize the
@@ -273,7 +273,7 @@ return "Part name:" name
 keyword PUBLIC indicates that the class can be shared with other programs.
 The two ::METHOD directives define
 INIT and STRING. Whenever Rexx creates
-a new instance of a class, it calls the INIT method the new instance.. The sample
+a new instance of a class, it calls the INIT method of the new instance. The sample
 INIT method uses an EXPOSE instruction to make the name, description, and
 number variables available to other methods. These exposed variables are object
 variables, and are associated with a single instance of a class:</para>
@@ -295,7 +295,7 @@ and number variables, respectively. Because those variables are exposed, the
 values are available to other methods.</para>
 <para>The STRING method returns the string
 <computeroutput>Part name:</computeroutput>, followed
-by the name of a part. The STRING method does not expect any arguments. It uses
+by the name of a part. The STRING method (of the Part class) does not expect any arguments. It uses
 <indexterm><primary>EXPOSE instruction</primary></indexterm>
 <indexterm><primary>Rexx</primary>
 <secondary>EXPOSE instruction</secondary></indexterm>
@@ -306,7 +306,7 @@ returns the result string.</para>
 <para>The following
 example shows how to use the Part class: </para>
 <example>
-<title>The PART class</title>
+<title>How to use the PART class</title>
 <programlisting>
 <![CDATA[
 /* USEPART.CMD  - use the Part class */
@@ -401,7 +401,7 @@ resources such as open network connections or database connections, an UNINIT me
 might be required to release those resources.
 If an object requires uninitialization, define an UNINIT
 method to perform the cleanup processing you require.</para>
-<para>If an object has UNINIT an method, Rexx runs it before reclaiming the object's storage.
+<para>If an object has an UNINIT method, Rexx runs it before reclaiming the object's storage.
 If an instance overrides an UNINIT method of a superclass,
 each UNINIT method is responsible for sending the UNINIT
 message up the hierarchy, using the SUPERCLASS overrides, so that each inherited UNINIT method
@@ -816,20 +816,20 @@ than one method with the same name, Rexx begins its search at the object specifi
 in the message. If the sought method is not found there, the search continues
 up the hierarchy. Rexx searches in the following order: </para>
 <orderedlist>
-<listitem><para> A method the object defines itself
+<listitem><para>A method the object defines itself
 (with SETMETHOD or ENHANCED).</para></listitem>
-<listitem><para>A method the object's class defines. </para>
+<listitem><para>A method the object's class defines.</para>
 <para>An object acquires the methods
-of its parent class; that is, the class for which the object was created.
+of its parent class (that is, the class for which the object was created).
 If the class subsequently receives new methods, objects predating the new
-methods do not acquire them.</para></listitem>
-<listitem><para>A method an object's superclasses define. </para>
+methods <emphasis role="italic">do not</emphasis> acquire them.</para></listitem>
+<listitem><para>A method an object's superclass(es) define.</para>
 <para>As with the object's
 class, only methods that existed in the superclass when the object was created
 are valid. Rexx searches the superclass method definitions in the order that
 INHERIT messages were sent to an object's class.</para></listitem></orderedlist>
 <para>If Rexx does not find a match
-for the message name, Rexx checks the object for method name UNKNOWN. If it
+for the message name, Rexx checks the object for a method named UNKNOWN. If it
 <indexterm><primary>UNKNOWN method</primary></indexterm>
 exists, Rexx calls the UNKNOWN method, and returns whatever the UNKNOWN method
 returns. For more information on the UNKNOWN method, see
@@ -917,11 +917,11 @@ a TYPE method for the Savings subclass, as follows: </para>
 the search order so Rexx searches for TYPE in the Account rather than Savings
 subclass, enter this instead: </para>
 <example>
-<title>SUBCLASS method search order</title>
+<title>Changing the subclass method search order</title>
 <programlisting>
 <![CDATA[
   ::method "TYPE"
-    return self~type:super "(savings)"
+    return self~type:super -- returns the result of invoking the TYPE method of the superclass
 ]]>
 </programlisting>
 </example>
@@ -957,9 +957,10 @@ a savings account
 <indexterm><primary>private methods</primary></indexterm>
 <indexterm><primary>methods</primary>
 <secondary>private</secondary></indexterm>
-<para>A method can be public or private.
-Any object can send a message that runs a public method.
-A private method can only be invoked from specific calling contexts.  These contexts are:</para>
+<para>A method can be either public or private.
+Any object can send a message that runs a <emphasis role="italic">public</emphasis> method.
+A <emphasis role="italic">private</emphasis> method can only be invoked from specific calling contexts.
+These contexts are:</para>
 <orderedlist>
 <listitem><para>From within a method owned by the same class as the target.  This is frequently
 the same object, accessed via the special variable SELF.  Private methods of an object can also
@@ -1021,9 +1022,9 @@ objects to share information with each other and their defining classes.
 
 <section id="unknown"><title>Defining an UNKNOWN Method</title>
 <indexterm><primary>UNKNOWN method</primary></indexterm>
-<para>When an object that receives
-a message has no matching message name, Rexx checks if the object has a method
-named UNKNOWN. If it does, Rexx calls UNKNOWN, passing two arguments. The
+<para>When an object receives
+a message that has no matching message name, Rexx checks to see if the object has a method
+named UNKNOWN. If it does, Rexx calls the UNKNOWN method, passing two arguments. The
 first is the name of the method that was not located. The second is an array
 containing the arguments passed with the original message.</para>
 </section>
@@ -1036,17 +1037,17 @@ programming, as in the real world, objects interact with each other. Assume,
 for example, throngs of people interacting at rush hour in the business district
 of a big city. A program that aspires to simulate the real world would have
 to enable many objects to interact at any given time. That could mean thousands
-of objects sending messages to each other, thousands of methods running at
-once. In Rexx, this simultaneous activity is called concurrency.
-To be precise, the concurrency is object-oriented concurrency because
-it involves objects, as opposed to, for example, processes or threads.</para>
+of objects running simultaneously, all of them sending messages to each other.
+In Rexx, the term for this simultaneous activity is called concurrency.
+To be precise, the concurrency is <emphasis role="italic">object-oriented</emphasis>
+concurrency because it involves objects, as opposed to, for example, processes or threads.</para>
 <para>Rexx objects are inherently concurrent, and this concurrency takes the
 following forms: </para>
 <itemizedlist>
-<listitem><para>Inter-object concurrency, where several objects
-are active&mdash;exchanging messages, synchronizing, running their methods&mdash;at
+<listitem><para><emphasis role="italic">Inter-object concurrency</emphasis>, where several objects
+are active (exchanging messages, synchronizing, running their methods, etc.) at
 the same time</para></listitem>
-<listitem><para>Intra-object concurrency, where several methods
+<listitem><para><emphasis role="italic">Intra-object concurrency</emphasis>, where several methods
 are able to run on the same object at the same time</para></listitem>
 </itemizedlist>
 <para>The default settings in Rexx allow full inter-object concurrency but limited
@@ -1114,18 +1115,18 @@ called a variable pool.</para></listitem>
 The methods of each class share variables in a pool scoped to just that class.</para></listitem>
 </itemizedlist>
 <para>A class's variable pool, together with the methods that expose them,
-are called a class scope. Rexx exploits this class
-scope to achieve concurrency. To explain, the object's instance variables are contained in a collection
-of variable pools. Each pool is at a different scope in the object's
-inheritance chain. Methods defined at different class scopes do not directly share data and
-can run simultaneously.</para>
+is called a class scope. Rexx exploits this class
+scope to achieve concurrency. To explain in more detail, the object's instance variables are contained
+in a collection of variable pools. Each variable pool is at a different scope in the object's
+inheritance chain. Methods defined at different class scopes do not directly share data,
+and can therefore run simultaneously.</para>
 <para>Scopes, like objects, hide and protect data from outside manipulation.
 Methods of the same scope share the variable pool of that scope. The scope
-shields the variable pool from methods operating at other scopes. Thus,
+shields the variable pool from methods operating at other scopes. This is why
 you can reuse variable names from class to class, without the variables being
 accessed and possibly corrupted by a method outside their own class. So class
-scopes divide an object's instance variables into pools that can operate
-independently of one another. Several methods can use the same object instance variables
+scopes serve to divide an object's instance variables into pools that can operate
+independently of each another. Several methods can use the same object instance variables
 concurrently, as long as they confine themselves to variables in their own
 scope.</para>
 </section>
@@ -1206,16 +1207,16 @@ pool and prevents unexpected results. Rexx manages queues for incoming requests
 that result in messages being sent to the same object.</para>
 <para>Some methods can run concurrently without affecting variable pool integrity
 or yielding unexpected results. When a method does not need exclusive use
-of its object variable pool, the UNGUARDED
+of its object variable pool, use the UNGUARDED
 option of the ::METHOD directive to provide unconditional intra-object concurrency.
 These mechanisms control the locking of an object's scope when a method
 is invoked.</para>
-<para>Many methods cannot UNGUARDED
+<para>Many methods cannot use the UNGUARDED option
 because they sometimes require exclusive use of their variable pool. At other
 times, they must perform some action that involves the concurrent use of the
 same pool by a method on another activity. In this case, you can use the GUARD
 built-in function. When the method reaches the point in its processing where
-it no longer requires exclusive use of the variable pool it can use the GUARD OFF instruction
+it no longer requires exclusive use of the variable pool, it can use the GUARD OFF instruction
 to allow methods running on different activities to become active on the same scope.
 If the method needs to regain exclusive
 use, it calls GUARD ON.</para>
@@ -1227,10 +1228,10 @@ conditional. When processing reaches this point, Rexx evaluates
 <emphasis role="italic">expression</emphasis> to determine if it is true
 or false.</para>
 <para>For example, if you specify &quot;GUARD OFF WHEN
-<emphasis role="italic">expression</emphasis>,&quot; the
+<emphasis role="italic">expression</emphasis>&quot;, the
 active method keeps running until <emphasis role="italic">expression</emphasis>
 becomes true. To become true, another method must assign or drop an object
-variable that is named in <emphasis role="italic">expression.</emphasis>
+variable that is named in <emphasis role="italic">expression</emphasis>.
 Whenever an object variable changes, Rexx reevaluates
 <emphasis role="italic">expression.</emphasis> If
 <emphasis role="italic">expression</emphasis> becomes true, GUARD is turned off,
