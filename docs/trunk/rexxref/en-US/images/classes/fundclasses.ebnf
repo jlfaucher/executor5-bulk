@@ -273,6 +273,11 @@ method_newfile ::= 'newFile(' filename ')'
 
 method_loadexternalmethod ::= 'loadExternalMethod(' name ',' descriptor ')'
 
+/* new in 5.0 */
+method_isabstract ::= 'isAbstract'
+method_isattribute ::= 'isAttribute'
+method_isconstant ::= 'isConstantt'
+
 method_isguarded ::= 'isGuarded'
 
 method_isprivate ::= 'isPrivate'
@@ -280,6 +285,9 @@ method_isprivate ::= 'isPrivate'
 method_isprotected ::= 'isProtected'
 
 method_package ::= 'package'
+
+/* new in 5.0 */
+method_scope ::= 'scope'
 
 method_setguarded ::= 'setGuarded'
 
@@ -299,7 +307,9 @@ routine_newfile ::= 'newFile(' filename ')'
 
 routine_loadexternalroutine ::= 'loadExternalRoutine(' name ',' descriptor ')'
 
-routine_call ::= 'call' ( '(' ( argument ( ( ',' argument )+ )? )? ')' )?
+routine_call ::= 'call' ( '(' ( argument ( ',' argument )* )? ')' )?
+/* new in 5.0 */
+routine_callbrackets ::= '[' ( argument ( ',' argument )* )? ']'
 
 routine_callwith ::= 'callWith(' array ')'
 

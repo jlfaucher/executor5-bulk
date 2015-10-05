@@ -1133,13 +1133,13 @@ The activate method is the preferred method for initializing a class object.
 </imageobject>
 </mediaobject>
 
-<para>Returns the value of Class annotation metadata <emphasis role="italic">name</emphasis>.
-If no annotation named <emphasis role="italic">name</emphasis> exists, .nil is returned.
+<para>Returns the value of the annotation named <emphasis role="italic">name</emphasis> for this class.
+If no such annotation exists, .nil is returned.
 </para>
 <para>See also
 <itemizedlist spacing="compact">
   <listitem><para><xref linkend="mthClassAnnotations" xrefstyle="select:title"/> and</para></listitem>
-  <listitem><para><xref linkend="annotd" xrefstyle="select:title"/>.</para></listitem>
+  <listitem><para><xref linkend="annotd" xrefstyle="select:title"/> directive.</para></listitem>
 </itemizedlist>
 </para>
 </section>
@@ -1157,12 +1157,12 @@ If no annotation named <emphasis role="italic">name</emphasis> exists, .nil is r
 </imageobject>
 </mediaobject>
 
-<para>Returns a StringTable of all Class annotation metadata name/value pairs.
+<para>Returns a StringTable of all annotation name/value pairs for this class.
 </para>
 <para>See also
 <itemizedlist spacing="compact">
-  <listitem><para><xref linkend="mthClassAnnotation" xrefstyle="select:title"/> and</para></listitem>
-  <listitem><para><xref linkend="annotd" xrefstyle="select:title"/>.</para></listitem>
+  <listitem><para>method <xref linkend="mthClassAnnotation" xrefstyle="select:title"/> and</para></listitem>
+  <listitem><para><xref linkend="annotd" xrefstyle="select:title"/> directive.</para></listitem>
 </itemizedlist>
 </para>
 </section>
@@ -5896,6 +5896,7 @@ the method returns <computeroutput>0</computeroutput>.</para>
 </section>
 </section>
 
+
 <section id="clsMethod"><title>The Method Class</title>
 <indexterm><primary>Method class</primary></indexterm>
 <indexterm><primary>class</primary>
@@ -5904,65 +5905,46 @@ the method returns <computeroutput>0</computeroutput>.</para>
 <para>The Method class creates method objects from Rexx source code.
 It is a subclass of the Object class (<xref linkend="clsObject" />).</para>
 
-
+<!-- $GENERATED-20151005-START rexxrefClassTable(Method) -->
 <table id="ooRexxMethodClass" frame="all" pgwide="0">
-<title>ooRexx Method Class</title>
-<tgroup cols="2" align="left" colsep="1" rowsep="1">
-<colspec colname="c1" />
-<colspec colname="c2" />
+<title>Method Class</title>
+<tgroup cols="1">
 <tbody>
-   <row>
-      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Method</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="left">
-<screen>new
-newFile
-loadExternalMethod
-</screen>
-      </entry>
-   </row>
-   <row>
-      <entry>
-<screen>annotation
-annotations
-isGuarded
-isPrivate
-isProtected
-package
-</screen>
-      </entry>
-      <entry>
-<screen>setGuarded
-setPrivate
-setProtected
-setSecurityManager
-setUnguarded
-source
-</screen>
-      </entry>
-   </row>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Method</emphasis></entry>
+ </row>
+ <row><entry>
+  <simplelist>
+   <member><xref linkend="mthMethodLoadExternalMethod" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMethodNew" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMethodNewFile" xrefstyle="select:title"/></member>
+  </simplelist>
+  <simplelist columns="3">
+   <member><xref linkend="mthMethodAnnotation" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMethodAnnotations" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMethodIsAbstract" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMethodIsAttribute" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMethodIsConstant" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMethodIsGuarded" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMethodIsPrivate" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMethodIsProtected" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMethodPackage" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMethodScope" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMethodSetGuarded" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMethodSetPrivate" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMethodSetProtected" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMethodSetSecurityManager" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMethodSetUnguarded" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMethodSource" xrefstyle="select:title"/></member>
+  </simplelist>
+ </entry></row>
 </tbody>
 </tgroup>
 </table>
-
-<note><title>Note</title>
-<para>The Method class also has available class methods that its
-metaclass, the Class class, defines.</para></note>
-
-<section><title>Inherited Methods</title>
-
-<para>Methods inherited from the
-Object class (<xref linkend="clsObject" />).</para>
-<xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-
-</section>
+<!-- $GENERATED-20151005-END rexxrefClassTable(Method) -->
 
 <section id="mthMethodNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
@@ -6007,9 +5989,9 @@ routine search scope from the caller of new method.
 </imageobject>
 </mediaobject>
 
-<para>Returns a new instance of method class, which is an executable
-representation of the code contained in the file filename. The filename is a
-string.</para>
+<para>Returns a new instance of the Method class, which is an executable
+representation of the code contained in the file <emphasis role="italic">filename</emphasis>.
+The <emphasis role="italic">filename</emphasis> is a string.</para>
 </section>
 
 <section id="mthMethodLoadExternalMethod"><title>loadExternalMethod (Class Method)</title>
@@ -6062,13 +6044,13 @@ method = .Method~loadExternalMethod("homeAddress=", 'LIBRARY mylib setHomeAddres
 </imageobject>
 </mediaobject>
 
-<para>Returns the value of Method annotation metadata <emphasis role="italic">name</emphasis>.
-If no annotation named <emphasis role="italic">name</emphasis> exists, .nil is returned.
+<para>Returns the value of the annotation named <emphasis role="italic">name</emphasis> for this method.
+If no such annotation exists, .nil is returned.
 </para>
 <para>See also
 <itemizedlist spacing="compact">
   <listitem><para><xref linkend="mthMethodAnnotations" xrefstyle="select:title"/> and</para></listitem>
-  <listitem><para><xref linkend="annotd" xrefstyle="select:title"/>.</para></listitem>
+  <listitem><para><xref linkend="annotd" xrefstyle="select:title"/> directive.</para></listitem>
 </itemizedlist>
 </para>
 </section>
@@ -6088,16 +6070,88 @@ If no annotation named <emphasis role="italic">name</emphasis> exists, .nil is r
 </imageobject>
 </mediaobject>
 
-<para>Returns a StringTable of all Method annotation metadata name/value pairs.
+<para>Returns a StringTable of all annotation name/value pairs for this method.
 </para>
 <para>See also
 <itemizedlist spacing="compact">
-  <listitem><para><xref linkend="mthMethodAnnotation" xrefstyle="select:title"/> and</para></listitem>
-  <listitem><para><xref linkend="annotd" xrefstyle="select:title"/>.</para></listitem>
+  <listitem><para>method <xref linkend="mthMethodAnnotation" xrefstyle="select:title"/> and</para></listitem>
+  <listitem><para><xref linkend="annotd" xrefstyle="select:title"/> directive.</para></listitem>
 </itemizedlist>
 </para>
 </section>
 
+
+<!-- Class Method - method isAbstract ======================== --> 
+<section id="mthMethodIsAbstract" revisionflag="added"><title>*NEW* isAbstract</title>
+<para>
+<indexterm><primary>isAbstract method</primary><secondary>of Method class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>isAbstract method</secondary><tertiary>of Method class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/method_isabstract.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns true ("1") if the method is an Abstract method,
+otherwise returns false ("0").
+</para>
+<para>See also
+<itemizedlist spacing="compact">
+  <listitem><para>ABSTRACT option of the <xref linkend="methd" xrefstyle="select:title"/> directive and</para></listitem>
+  <listitem><para>ABSTRACT option of the <xref linkend="attrd" xrefstyle="select:title"/> directive.</para></listitem>
+</itemizedlist>
+</para>
+<para><example>
+<title>Class Method &mdash; isAbstract method</title>
+<programlisting><![CDATA[say .Orderable~method("CompareTo")~isAbstract    -- 1
+say .Comparable~method("CompareTo")~isAbstract   -- 1
+say .TimeSpan~method("CompareTo")~isAbstract     -- 0
+]]></programlisting></example></para>
+</section>
+
+
+<!-- Class Method - method isAttribute ======================== --> 
+<section id="mthMethodIsAttribute" revisionflag="added"><title>*NEW* isAttribute</title>
+<para>
+<indexterm><primary>isAttribute method</primary><secondary>of Method class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>isAttribute method</secondary><tertiary>of Method class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/method_isattribute.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns true ("1") if the method is an Attribute method,
+otherwise returns false ("0").
+</para>
+<para>See also <xref linkend="attrd" xrefstyle="select:title"/> directive.
+</para>
+<para><example>
+<title>Class Method &mdash; isAttribute method</title>
+<programlisting><![CDATA[say .File~method("lastModified")~isAttribute     -- 1
+say .File~method("lastModified=")~isAttribute    -- 1
+]]></programlisting></example></para>
+</section>
+
+
+<!-- Class Method - method isConstant ======================== --> 
+<section id="mthMethodIsConstant" revisionflag="added"><title>*NEW* isConstant</title>
+<para>
+<indexterm><primary>isConstant method</primary><secondary>of Method class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>isConstant method</secondary><tertiary>of Method class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/method_isconstant.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns true ("1") if the method is a Constant method,
+otherwise returns false ("0").
+</para>
+<para>See also <xref linkend="constantd" xrefstyle="select:title"/> directive.
+</para>
+<para><example>
+<title>Class Method &mdash; isConstant method</title>
+<programlisting><![CDATA[say .physics~method("c")~isConstant              -- 1
+
+::class physics
+::constant c 299792458
+]]></programlisting></example></para>
+</section>
 
 
 <section id="mthMethodIsGuarded"><title>isGuarded</title>
@@ -6172,6 +6226,38 @@ for details on private method restrictions.
 package instance controls and defines the search order for classes and routines
 referenced by the method code.</para>
 </section>
+
+
+<!-- Class Method - method scope ======================== --> 
+<section id="mthMethodScope" revisionflag="added"><title>*NEW* scope</title>
+<para>
+<indexterm><primary>scope method</primary><secondary>of Method class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>scope method</secondary><tertiary>of Method class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/method_scope.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns the defining class scope for a method.
+Returns .nil for any method not defined by a class scope.
+</para>
+<para><example>
+<title>Class Method &mdash; scope method</title>
+<programlisting><![CDATA[scopes = .Stem~new
+scopes[] = 0
+loop with item method over .List~methods
+  scopes[method~scope] += 1                 -- possible output:
+end                                         -- 27 methods from The List class
+loop scope over scopes                      -- 19 methods from The Collection class
+  say scopes[scope] "methods from" scope    -- 20 methods from The OrderedCollection class
+end                                         -- 31 methods from The Object class
+
+say .Method~new("any", "nop")~scope         -- .nil
+
+say .methods["FLOAT"]~scope                 -- .nil
+::method float
+]]></programlisting></example></para>
+</section>
+
 
 <section id="mthMethodSetGuarded"><title>setGuarded</title>
 <indexterm><primary>setGuarded method</primary>
@@ -6308,55 +6394,40 @@ items.</para>
 <para>The Routine class creates routine objects from Rexx source code.
 It is a
 subclass of the Object class (<xref linkend="clsObject" />).</para>
+
+<!-- modified: mthRoutineAtGet -> mthRoutineCallBrackets -->
+<!-- $GENERATED-20151005-START rexxrefClassTable(Routine) -->
 <table id="ooRexxRoutineClass" frame="all" pgwide="0">
-<title>ooRexx Routine Class</title>
-<tgroup cols="1" align="left" colsep="1" rowsep="1">
-<colspec colname="c1" />
+<title>Routine Class</title>
+<tgroup cols="1">
 <tbody>
-   <row>
-      <entry align="center"><emphasis role="bold">Object</emphasis></entry>
-   </row>
-   <row>
-      <entry align="center">&#x2193;</entry>
-   </row>
-   <row>
-      <entry align="center"><emphasis role="bold">Routine</emphasis></entry>
-   </row>
-   <row>
-      <entry align="left">
-<screen>new
-newFile
-loadExternalRoutine
-</screen>
-      </entry>
-   </row>
-   <row>
-      <entry>
-<screen>annotation
-annotations
-call
-callWith
-package
-setSecurityManager
-source
-</screen>
-      </entry>
-   </row>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Routine</emphasis></entry>
+ </row>
+ <row><entry>
+  <simplelist>
+   <member><xref linkend="mthRoutineLoadExternalRoutine" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRoutineNew" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRoutineNewFile" xrefstyle="select:title"/></member>
+  </simplelist>
+  <simplelist columns="3">
+   <member><xref linkend="mthRoutineCallBrackets" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRoutineAnnotation" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRoutineAnnotations" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRoutineCall" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRoutineCallWith" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRoutinePackage" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRoutineSetSecurityManager" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRoutineSource" xrefstyle="select:title"/></member>
+  </simplelist>
+ </entry></row>
 </tbody>
 </tgroup>
 </table>
-
-<note><title>Note</title>
-<para>The Routine class also has available class methods that its
-metaclass, the Class class, defines.</para></note>
-
-<section><title>Inherited Methods</title>
-
-<para>Methods inherited from the
-Object class (<xref linkend="clsObject" />).</para>
-<xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-
-</section>
+<!-- $GENERATED-20151005-END rexxrefClassTable(Routine) -->
 
 <section id="mthRoutineNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
@@ -6441,6 +6512,22 @@ routine = .Routine~loadExternalRoutine("Pi", "LIBRARY rxmath RxCalcPi")
 </example>
 </section>
 
+<!-- Class Routine - method [] ======================== --> 
+<section id="mthRoutineCallBrackets" revisionflag="added"><title>*NEW* []</title>
+<para>
+<indexterm><primary>[] method</primary><secondary>of Routine class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>[] method</secondary><tertiary>of Routine class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/routine_callbrackets.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+<para>Calls the routine object using the provided <emphasis role="italic">argument</emphasis>s.  The code in the
+routine object is called as if it was an external routine call.  The return
+value will be any value returned by the executed routine.</para>
+<para>See also method <xref linkend="mthRoutineCall" xrefstyle="select:title"/> for which this method is a synonym.
+</para>
+</section>
+
 
 <!-- Class Routine - method annotation ============================= -->
 <section id="mthRoutineAnnotation" revisionflag="added"><title>*NEW* annotation</title>
@@ -6456,16 +6543,17 @@ routine = .Routine~loadExternalRoutine("Pi", "LIBRARY rxmath RxCalcPi")
 </imageobject>
 </mediaobject>
 
-<para>Returns the value of Routine annotation metadata <emphasis role="italic">name</emphasis>.
-If no annotation named <emphasis role="italic">name</emphasis> exists, .nil is returned.
+<para>Returns the value of the annotation named <emphasis role="italic">name</emphasis> for this routine.
+If no such annotation exists, .nil is returned.
 </para>
 <para>See also
 <itemizedlist spacing="compact">
   <listitem><para><xref linkend="mthRoutineAnnotations" xrefstyle="select:title"/> and</para></listitem>
-  <listitem><para><xref linkend="annotd" xrefstyle="select:title"/>.</para></listitem>
+  <listitem><para><xref linkend="annotd" xrefstyle="select:title"/> directive.</para></listitem>
 </itemizedlist>
 </para>
 </section>
+
 
 <!-- Class Routine - method annotations ============================ -->
 <section id="mthRoutineAnnotations" revisionflag="added"><title>*NEW* annotations</title>
@@ -6481,12 +6569,12 @@ If no annotation named <emphasis role="italic">name</emphasis> exists, .nil is r
 </imageobject>
 </mediaobject>
 
-<para>Returns a StringTable of all Routine annotation metadata name/value pairs.
+<para>Returns a StringTable of all annotation name/value pairs for this routine.
 </para>
 <para>See also
 <itemizedlist spacing="compact">
-  <listitem><para><xref linkend="mthRoutineAnnotation" xrefstyle="select:title"/> and</para></listitem>
-  <listitem><para><xref linkend="annotd" xrefstyle="select:title"/>.</para></listitem>
+  <listitem><para>method <xref linkend="mthRoutineAnnotation" xrefstyle="select:title"/> and</para></listitem>
+  <listitem><para><xref linkend="annotd" xrefstyle="select:title"/> directive.</para></listitem>
 </itemizedlist>
 </para>
 </section>
@@ -6505,9 +6593,11 @@ If no annotation named <emphasis role="italic">name</emphasis> exists, .nil is r
 </imageobject>
 </mediaobject>
 
-<para>Calls the routine object using the provided arguments.  The code in the
+<para>Calls the routine object using the provided <emphasis role="italic">argument</emphasis>s.  The code in the
 routine object is called as if it was an external routine call.  The return
 value will be any value returned by the executed routine.</para>
+<para>See also method <xref linkend="mthRoutineCallBrackets" xrefstyle="select:title"/> for which this method is a synonym.
+</para>
 </section>
 
 <section id="mthRoutineCallWith"><title>callWith</title>
@@ -6524,7 +6614,7 @@ value will be any value returned by the executed routine.</para>
 </mediaobject>
 
 <para>Calls the routine object using the arguments provided in
-<emphasis role="italic">array</emphasis>. Each element of array will be mapped
+<emphasis role="italic">array</emphasis>. Each element of <emphasis role="italic">array</emphasis> will be mapped
 to its corresponding call argument.  The code in the routine object is called as
 if it was an external routine call. The return value will be any value returned
 by the executed routine.
@@ -6599,13 +6689,15 @@ source code unit and also manages external dependencies referenced by ::REQUIRES
 directives.  The files loaded by ::REQUIRES are also contained in Package class
 instances.  It is a subclass of the <xref linkend="clsObject" xrefstyle="template:Object class"/>.
 </para>
+
+<!-- $GENERATED-20151005-START rexxrefClassTable(Package) -->
 <table id="ooRexxPackageClass" frame="all" pgwide="0">
 <title>Package Class</title>
 <tgroup cols="1">
 <tbody>
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
- <row><entry align="center">Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">Package</emphasis></entry>
  </row>
@@ -6613,8 +6705,6 @@ instances.  It is a subclass of the <xref linkend="clsObject" xrefstyle="templat
   <simplelist>
    <member><xref linkend="mthPackageNew" xrefstyle="select:title"/></member>
   </simplelist>
- </entry></row>
- <row><entry>
   <simplelist columns="3">
    <member><xref linkend="mthPackageAddClass" xrefstyle="select:title"/></member>
    <member><xref linkend="mthPackageAddPackage" xrefstyle="select:title"/></member>
@@ -6657,20 +6747,8 @@ instances.  It is a subclass of the <xref linkend="clsObject" xrefstyle="templat
 </tbody>
 </tgroup>
 </table>
-<!-- @@ remove, just put link into table above
-<note><title>Note</title>
-<para>The Package class also has available class methods that its metaclass, the
-Class class, defines.
-</para></note>
+<!-- $GENERATED-20151005-END rexxrefClassTable(Package) -->
 
-<section><title>Inherited Methods</title>
-
-<para>Methods inherited from the
-Object class (<xref linkend="clsObject" />).</para>
-<xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-
-</section>
--->
 
 <section id="mthPackageNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
@@ -6820,8 +6898,8 @@ non-public routine.</para>
 </imageobject>
 </mediaobject>
 
-<para>Returns the value of Package annotation metadata <emphasis role="italic">name</emphasis>.
-If no annotation named <emphasis role="italic">name</emphasis> exists, .nil is returned.
+<para>Returns the value of the annotation named <emphasis role="italic">name</emphasis> for this package.
+If no such annotation exists, .nil is returned.
 </para>
 <para>See also
 <itemizedlist spacing="compact">
@@ -6845,7 +6923,7 @@ If no annotation named <emphasis role="italic">name</emphasis> exists, .nil is r
 </imageobject>
 </mediaobject>
 
-<para>Returns a StringTable of all Package annotation metadata name/value pairs.
+<para>Returns a StringTable of all annotation name/value pairs for this package.
 </para>
 <para>See also
 <itemizedlist spacing="compact">

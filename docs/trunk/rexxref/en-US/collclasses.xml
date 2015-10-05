@@ -2535,6 +2535,7 @@ in a bag, and the same object can be placed in a bag several times.
 </para>
 
 <!-- Modified: new() may be a 5.0 bug -->
+<!-- Modified: added from BagMixin class: difference, intersection, putAll, subset, union, xor (see interpreter\RexxClasses\CoreClasses.orx) -->
 <!-- $GENERATED-20150924-START rexxrefClassTable(Bag) -->
 <table id="ooRexxBagClass" frame="all" pgwide="0">
 <title>Bag Class</title>
@@ -2579,19 +2580,25 @@ in a bag, and the same object can be placed in a bag several times.
    <member><xref linkend="mthBagAllIndexes" xrefstyle="select:title"/></member>
    <member><xref linkend="mthBagAllItems" xrefstyle="select:title"/></member>
    <member><xref linkend="mthBagAt" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthBagDifference" xrefstyle="select:title"/></member>
    <member><xref linkend="mthBagEmpty" xrefstyle="select:title"/></member>
    <member><xref linkend="mthBagHasIndex" xrefstyle="select:title"/></member>
    <member><xref linkend="mthBagHasItem" xrefstyle="select:title"/></member>
    <member><xref linkend="mthBagIndex" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthBagIntersection" xrefstyle="select:title"/></member>
    <member><xref linkend="mthBagIsEmpty" xrefstyle="select:title"/></member>
    <member><xref linkend="mthBagItems" xrefstyle="select:title"/></member>
    <member><xref linkend="mthBagMakeArray" xrefstyle="select:title"/></member>
    <member><xref linkend="mthBagPut" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthBagPutAll" xrefstyle="select:title"/></member>
    <member><xref linkend="mthBagRemove" xrefstyle="select:title"/></member>
    <member><xref linkend="mthBagRemoveAll" xrefstyle="select:title"/></member>
    <member><xref linkend="mthBagRemoveItem" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthBagSubset" xrefstyle="select:title"/></member>
    <member><xref linkend="mthBagSupplier" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthBagUnion" xrefstyle="select:title"/></member>
    <member><xref linkend="mthBagUniqueIndexes" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthBagXor" xrefstyle="select:title"/></member>
   </simplelist>
  </entry></row>
 </tbody>
@@ -4494,7 +4501,7 @@ Exit
 </section>
 </section>
 
-<section id="clsStringTable"><title>The StringTable Class</title>
+<section id="clsStringTable" revisionflag="added"><title>*NEW* The StringTable Class</title>
 <indexterm><primary>StringTable class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>StringTable class</secondary></indexterm>
@@ -5935,7 +5942,8 @@ are useful for processing bundles of application option values.
 </mediaobject>
 
 <para>Loads a set of properties from <emphasis role="italic">source</emphasis> and returns them as a new Properties object.
-The load source can be either the string name of a file or a stream object.  Properties are read from the source as
+The load <emphasis role="italic">source</emphasis> can be either the string name of a file, a File object, or a Stream object.
+Properties are read from <emphasis role="italic">source</emphasis> as
 individual lines using linein() (<xref linkend="mthStreamLineIn" />).  Blank lines and lines with a Rexx line comment ("--")
 as the first non-blank characters are ignored.  Otherwise, the lines are assumed to be of the form "name=value" and
 are added to the receiver Properties value using name as the index for the value.
@@ -6055,10 +6063,13 @@ been specified, a syntax error is raised for missing values.</para>
 </mediaobject>
 
 <para>Loads a set of properties into the receiving Properties object from <emphasis role="italic">source</emphasis>.
-The load source can be either the string name of a file or a stream object.  Properties are read from the source as
+The load <emphasis role="italic">source</emphasis> can be either the string name of a file, a File object, or a Stream object.
+Properties are read from the source as
 individual lines using linein() (<xref linkend="mthStreamLineIn" />).  Blank lines and lines with a Rexx line comment ("--")
 as the first non-blank characters are ignored.  Otherwise, the lines are assumed to be of the form "name=value" and
 are added to the receiver Properties value using name as the index for the value.
+</para>
+<para>
 Properties loaded from <emphasis role="italic">source</emphasis> that have the
 same names as existing items will replace the current entries.
 </para>
@@ -6099,7 +6110,8 @@ associated with index <emphasis role="italic">name</emphasis>.</para>
 </mediaobject>
 
 <para>Saves a set of properties into <emphasis role="italic">target</emphasis>.
-The save target can be either the string name of a file or a stream object.  Properties are stored as
+The save <emphasis role="italic">target</emphasis> can be either the string name of a file, a File object, or a Stream object.
+Properties are stored as
 individual lines using lineout() (<xref linkend="mthStreamLineOut" />).
 The lines are written in the form "name=value".  A saved Properties file can be reloaded using the Properties
 load() (<xref linkend="mthPropertiesLoad" />) method.
@@ -6922,85 +6934,67 @@ the queue first.</para>
 be any object.  In a relation, each item is associated with
 a single index, but there can be more than one item with the same index (unlike
 a table, which can contain only one item for any index).</para>
+
+<!-- Modified: added from ManyItemsMixin class: difference, intersection, subset, union, xor (see interpreter\RexxClasses\CoreClasses.orx) -->
+<!-- $GENERATED-20151005-START rexxrefClassTable(Relation) -->
 <table id="ooRexxRelationClass" frame="all" pgwide="0">
-<title>ooRexx Relation Class</title>
-<tgroup cols="2" align="left" colsep="1" rowsep="1">
-<colspec colname="c1" />
-<colspec colname="c2" />
+<title>Relation Class</title>
+<tgroup cols="1">
 <tbody>
-   <row>
-      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Relation</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ MapCollection</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2">
-<screen>new
-</screen>
-      </entry>
-   </row>
-   <row>
-      <entry>
-<screen>allAt
-allIndex
-allIndexes
-allItems
-at, []
-difference
-empty
-hasIndex
-hasItem
-index
-intersection
-isEmpty
-</screen>
-      </entry>
-      <entry>
-<screen>items
-makeArray
-put, []=
-remove
-removeAll
-removeItem
-subset
-supplier
-union
-uniqueIndexes
-xor
-</screen>
-      </entry>
-   </row>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">+ Collection (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  Methods inherited from the <xref linkend="clsCollection" xrefstyle="template:Collection class"/>
+  <xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+ </entry></row>
+ <row><entry align="center"><emphasis role="bold">+ MapCollection (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  Methods inherited from the <xref linkend="clsMapCollection" xrefstyle="template:MapCollection class"/>
+  <xi:include href="mapcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+ </entry></row>
+ <row><entry align="center"><emphasis role="bold">Relation</emphasis></entry>
+ </row>
+ <row><entry>
+  <simplelist>
+   <member><xref linkend="mthRelationNew" xrefstyle="select:title"/></member>
+  </simplelist>
+  <simplelist columns="3">
+   <member><xref linkend="mthRelationAtGet" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRelationPutSet" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRelationAllAt" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRelationAllIndex" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRelationAllIndexes" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRelationAllItems" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRelationAt" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRelationDifference" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRelationEmpty" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRelationHasIndex" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRelationHasItem" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRelationIndex" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRelationIntersection" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRelationIsEmpty" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRelationItems" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRelationMakeArray" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRelationPut" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRelationRemove" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRelationRemoveAll" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRelationRemoveItem" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRelationSupplier" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRelationSubset" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRelationUniqueIndexes" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRelationUnion" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRelationXor" xrefstyle="select:title"/></member>
+  </simplelist>
+ </entry></row>
 </tbody>
 </tgroup>
 </table>
-
-<note><title>Note</title>
-<para>The Relation class also has available class methods that its
-metaclass, the Class class (<xref linkend="clsClass" />), defines.
-It also inherits methods from the MapCollection (<xref linkend="clsMapCollection" />)
-class.
-</para></note>
-
-<section><title>Inherited Methods</title>
-
-<para>Methods inherited from the
-Object class (<xref linkend="clsObject" />).</para>
-<xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-<para>Methods inherited from the
-Collection class (<xref linkend="clsCollection" />).</para>
-<xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-<para>Methods inherited from the
-MapCollection (<xref linkend="clsMapCollection" />).</para>
-<xi:include href="mapcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-
-</section>
+<!-- $GENERATED-20151005-END rexxrefClassTable(Relation) -->
 
 <section id="mthRelationNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
@@ -7600,81 +7594,70 @@ a set (unlike a Bag collection).
 Item equality is determined by
 using the == method.
 </para>
+
+<!-- Modified: added from SetMixin class: intersection, putAll, subset, union, xor (see interpreter\RexxClasses\CoreClasses.orx) -->
+<!-- $GENERATED-20151005-START rexxrefClassTable(Set) -->
 <table id="ooRexxSetClass" frame="all" pgwide="0">
-<title>ooRexx Set Class</title>
-<tgroup cols="2" align="left" colsep="1" rowsep="1">
-<colspec colname="c1" />
-<colspec colname="c2" />
+<title>Set Class</title>
+<tgroup cols="1">
 <tbody>
-   <row>
-      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Set</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ SetCollection</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2">
-<screen>of
-new
-</screen>
-      </entry>
-   </row>
-   <row>
-      <entry>
-<screen>allIndexes
-allItems
-at, []
-empty
-hasIndex
-hasItem
-index
-intersection
-isEmpty
-items
-</screen>
-      </entry>
-      <entry>
-<screen>makeArray
-put, []=
-putAll
-remove
-removeItem
-subset
-supplier
-union
-xor
-</screen>
-      </entry>
-   </row>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">+ SetCollection (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  Methods inherited from the <xref linkend="clsSetCollection" xrefstyle="template:SetCollection class"/>
+  <xi:include href="setcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+ </entry></row>
+ <row><entry align="center"><emphasis role="bold">+ Collection (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  Methods inherited from the <xref linkend="clsCollection" xrefstyle="template:Collection class"/>
+  <xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+ </entry></row>
+ <row><entry align="center"><emphasis role="bold">+ MapCollection (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  Methods inherited from the <xref linkend="clsMapCollection" xrefstyle="template:MapCollection class"/>
+  <xi:include href="mapcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+ </entry></row>
+ <row><entry align="center"><emphasis role="bold">Set</emphasis></entry>
+ </row>
+ <row><entry>
+  <simplelist>
+   <member><xref linkend="mthSetNew" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSetOf" xrefstyle="select:title"/></member>
+  </simplelist>
+  <simplelist columns="3">
+   <member><xref linkend="mthSetAtGet" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSetPutSet" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSetAllIndexes" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSetAllItems" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSetAt" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSetEmpty" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSetHasIndex" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSetHasItem" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSetIndex" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSetIntersection" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSetIsEmpty" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSetItems" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSetMakeArray" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSetPut" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSetPutAll" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSetRemove" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSetRemoveItem" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSetSubset" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSetSupplier" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSetUnion" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSetXor" xrefstyle="select:title"/></member>
+  </simplelist>
+ </entry></row>
 </tbody>
 </tgroup>
 </table>
-
-<note><title>Note</title>
-<para>The Set class also has available class methods that its metaclass,
-the Class class (<xref linkend="clsClass" />), defines.
-</para></note>
-<para>The Set class
-inherits methods from the Set Collection (<xref linkend="clsSetCollection" />)
-class.
-</para>
-
-<section><title>Inherited Methods</title>
-
-<para>Methods inherited from the
-Object class (<xref linkend="clsObject" />).</para>
-<xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-<para>Methods inherited from the
-Collection class (<xref linkend="clsCollection" />).</para>
-<xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-
-</section>
+<!-- $GENERATED-20151005-END rexxrefClassTable(Set) -->
 
 <section id="mthSetOf"><title>of (Class Method)</title>
 <indexterm><primary>of method</primary>
@@ -7724,7 +7707,25 @@ Collection class (<xref linkend="clsCollection" />).</para>
 
 <para>Returns the item associated with <emphasis role="italic">index</emphasis>.
 This is the same as the
-at () (<xref linkend="mthTableAt" />) method.</para>
+at() (<xref linkend="mthSetAt" />) method.</para>
+</section>
+
+<section id="mthSetPutSet"><title>[]=</title>
+<indexterm><primary>[]= method</primary>
+<secondary>of Set class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>[]= method</secondary>
+<tertiary>of Set class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/set_putset.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Add an item to the Set.
+This method is the same as the
+put() (<xref linkend="mthSetPut" />) method.</para>
 </section>
 
 <section id="mthSetAllIndexes"><title>allIndexes</title>
@@ -7810,24 +7811,6 @@ has no item associated with <emphasis role="italic">index</emphasis>.
 <para>Returns <computeroutput>1</computeroutput> (true) if the collection
 contains any item associated with index <emphasis role="italic">index</emphasis>,
 or <computeroutput>0</computeroutput> (false).</para>
-</section>
-
-<section id="mthSetPutSet"><title>[]=</title>
-<indexterm><primary>[]= method</primary>
-<secondary>of Set class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>[]= method</secondary>
-<tertiary>of Set class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/classes/set_putset.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-<para>Add an item to the Set.
-This method is the same as the
-put() (<xref linkend="mthSetPut" />) method.</para>
 </section>
 
 <section id="mthSetHasItem"><title>hasItem</title>
@@ -8121,6 +8104,7 @@ index values in the receiver collection.</para>
 </section>
 </section>
 
+
 <section id="clsStem"><title>The Stem Class</title>
 <indexterm><primary>Stem class</primary></indexterm>
 <indexterm><primary>class</primary>
@@ -8130,66 +8114,61 @@ index values in the receiver collection.</para>
 
 <para>A stem object is a collection with unique indexes
 that are character strings.</para>
+
+<!-- $GENERATED-20151005-START rexxrefClassTable(Stem) -->
 <table id="ooRexxStemClass" frame="all" pgwide="0">
-<title>ooRexx Stem Class</title>
-<tgroup cols="2" align="left" colsep="1" rowsep="1">
-<colspec colname="c1" />
-<colspec colname="c2" />
+<title>Stem Class</title>
+<tgroup cols="1">
 <tbody>
-   <row>
-      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Stem</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ MapCollection</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2">
-<screen>&nbsp;
-</screen>
-      </entry>
-   </row>
-   <row>
-      <entry>
-<screen>= \= == \== &lt;&gt; &gt;&lt;
-allIndexes
-allItems
-at, []
-empty
-hasIndex
-hasItem
-index
-isEmpty
-</screen>
-      </entry>
-      <entry>
-<screen>items
-makeArray
-put, []=
-remove
-removeItem
-request
-supplier
-toDirectory
-unknown
-</screen>
-      </entry>
-   </row>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">+ Collection (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  Methods inherited from the <xref linkend="clsCollection" xrefstyle="template:Collection class"/>
+  <xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+ </entry></row>
+ <row><entry align="center"><emphasis role="bold">+ MapCollection (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  Methods inherited from the <xref linkend="clsMapCollection" xrefstyle="template:MapCollection class"/>
+  <xi:include href="mapcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+ </entry></row>
+ <row><entry align="center"><emphasis role="bold">Stem</emphasis></entry>
+ </row>
+ <row><entry>
+  <simplelist>
+   <member><xref linkend="mthStemNew" xrefstyle="select:title"/></member>
+  </simplelist>
+  <simplelist columns="3">
+   <member><xref linkend="mthStemAtGet" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStemPutSet" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStemAllIndexes" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStemAllItems" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStemAt" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStemEmpty" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStemHasIndex" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStemHasItem" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStemIndex" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStemIsEmpty" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStemItems" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStemMakeArray" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStemPut" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStemRemove" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStemRemoveItem" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStemRequest" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStemSupplier" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStemToDirectory" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStemUnknown" xrefstyle="select:title"/></member>
+  </simplelist>
+ </entry></row>
 </tbody>
 </tgroup>
 </table>
+<!-- $GENERATED-20151005-END rexxrefClassTable(Stem) -->
 
-<note><title>Note</title>
-<para>The Stem class also has available class methods that its metaclass,
-the Class class (<xref linkend="clsClass" />), defines.
-It also inherits methods from the Map Collection (<xref linkend="clsMapCollection" />
-class.
-</para></note>
 <para>Stems are automatically created whenever a Rexx stem variable or Rexx
 compound variable is used. For example: </para>
 <example id="ex.Stem-examples1">
@@ -8225,20 +8204,6 @@ globally assigned value.  By default, this
 returns the stem NAME value.</para>
 <para>In addition to the methods defined in the following, the Stem class removes
 the methods =, ==, \=, \==, &lt;>, and >&lt; using the DEFINE method.</para>
-
-<section><title>Inherited Methods</title>
-
-<para>Methods inherited from the
-Object class (<xref linkend="clsObject" />).</para>
-<xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-<para>Methods inherited from the
-Collection class (<xref linkend="clsCollection" />).</para>
-<xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-<para>Methods inherited from the
-MapCollection class (<xref linkend="clsMapCollection" />).</para>
-<xi:include href="mapcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-
-</section>
 
 <section id="mthStemNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
@@ -8649,76 +8614,57 @@ a relation, which can contain more than one item with the same index).
 Index equality is determined by
 using the == method.
 </para>
+
+<!-- $GENERATED-20151005-START rexxrefClassTable(Table) -->
 <table id="ooRexxTableClass" frame="all" pgwide="0">
-<title>ooRexx Table Class</title>
-<tgroup cols="2" align="left" colsep="1" rowsep="1">
-<colspec colname="c1" />
-<colspec colname="c2" />
+<title>Table Class</title>
+<tgroup cols="1">
 <tbody>
-   <row>
-      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Table</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ MapCollection</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2">
-<screen>new
-</screen>
-      </entry>
-   </row>
-   <row>
-      <entry>
-<screen>allIndexes
-allItems
-at, []
-empty
-hasIndex
-hasItem
-index
-</screen>
-      </entry>
-      <entry>
-<screen>isEmpty
-items
-makeArray
-put, []=
-remove
-removeItem
-supplier
-</screen>
-      </entry>
-   </row>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">+ Collection (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  Methods inherited from the <xref linkend="clsCollection" xrefstyle="template:Collection class"/>
+  <xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+ </entry></row>
+ <row><entry align="center"><emphasis role="bold">+ MapCollection (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  Methods inherited from the <xref linkend="clsMapCollection" xrefstyle="template:MapCollection class"/>
+  <xi:include href="mapcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+ </entry></row>
+ <row><entry align="center"><emphasis role="bold">Table</emphasis></entry>
+ </row>
+ <row><entry>
+  <simplelist>
+   <member><xref linkend="mthTableNew" xrefstyle="select:title"/></member>
+  </simplelist>
+  <simplelist columns="3">
+   <member><xref linkend="mthTableAtGet" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthTablePutSet" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthTableAllIndexes" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthTableAllItems" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthTableAt" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthTableEmpty" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthTableHasIndex" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthTableHasItem" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthTableIndex" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthTableIsEmpty" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthTableItems" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthTableMakeArray" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthTablePut" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthTableRemove" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthTableRemoveItem" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthTableSupplier" xrefstyle="select:title"/></member>
+  </simplelist>
+ </entry></row>
 </tbody>
 </tgroup>
 </table>
-
-<note><title>Note</title>
-<para>The Table class also has available class methods that its
-metaclass, the Class class (<xref linkend="clsClass" />), defines.
-It also inherits methods from the MapCollection (<xref linkend="clsMapCollection" />)
-class.
-</para></note>
-
-<section><title>Inherited Methods</title>
-
-<para>Methods inherited from the
-Object class (<xref linkend="clsObject" />).</para>
-<xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-<para>Methods inherited from the
-Collextion class (<xref linkend="clsCollection" />).</para>
-<xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-<para>Methods inherited from the
-MapCollection class (<xref linkend="clsMapCollection" />).</para>
-<xi:include href="mapcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-
-</section>
+<!-- $GENERATED-20151005-END rexxrefClassTable(Table) -->
 
 <section id="mthTableNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
@@ -8751,7 +8697,7 @@ MapCollection class (<xref linkend="clsMapCollection" />).</para>
 
 <para>Returns the item associated with <emphasis role="italic">index</emphasis>.
 This is the same as the
-at () (<xref linkend="mthTableAt" />) method.</para>
+at() (<xref linkend="mthTableAt" />) method.</para>
 </section>
 
 <section id="mthTablePutSet"><title>[]=</title>
