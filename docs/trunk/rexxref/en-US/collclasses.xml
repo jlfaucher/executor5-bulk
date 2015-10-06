@@ -2534,8 +2534,8 @@ to having an item that is the same as the index. Any object can be placed
 in a bag, and the same object can be placed in a bag several times.
 </para>
 
-<!-- Modified: new() may be a 5.0 bug -->
-<!-- Modified: added from BagMixin class: difference, intersection, putAll, subset, union, xor (see interpreter\RexxClasses\CoreClasses.orx) -->
+<!-- modified: new() may be a 5.0 bug -->
+<!-- modified: added from BagMixin class: difference, intersection, putAll, subset, union, xor (see interpreter\RexxClasses\CoreClasses.orx) -->
 <!-- $GENERATED-20150924-START rexxrefClassTable(Bag) -->
 <table id="ooRexxBagClass" frame="all" pgwide="0">
 <title>Bag Class</title>
@@ -3204,8 +3204,8 @@ The collected objects can be processed in FIFO (first in, first out) or in a
 stack-like LIFO (last in, first out) order.
 </para>
 
-<!-- Modified: readObject/writeObject not fully implemented -->
-<!-- Modified: makeString() may be a 5.0 bug -->
+<!-- modified: readObject/writeObject not fully implemented -->
+<!-- modified: makeString() may be a 5.0 bug -->
 <!-- $GENERATED-20150924-START rexxrefClassTable(CircularQueue) -->
 <table id="ooRexxCircularQueueClass" frame="all" pgwide="0">
 <title>CircularQueue Class</title>
@@ -3844,7 +3844,11 @@ content: [3,2], content (LIFO): [2->3]
 <secondary>Directory class</secondary></indexterm>
 
 <para>A Directory is a MapCollection using unique character string indexes.  The
-items of the collection can be any valid Rexx object.
+items of a Directory can be any valid Rexx object.
+</para>
+<para>For a MapCollection similar to Directory, but without methods
+<methodname>setMethod</methodname> and <methodname>unsetMethod</methodname>, see
+<xref linkend="clsStringTable" xrefstyle="template:class StringTable"/>.
 </para>
 
 <!-- $GENERATED-20150924-START rexxrefClassTable(Directory) -->
@@ -3903,8 +3907,8 @@ items of the collection can be any valid Rexx object.
 </table>
 <!-- $GENERATED-20150924-END rexxrefClassTable(Directory) -->
 
-<para>In addition to the standard put() and at() methods defined for
-Collections, Directories provide access to objects using methods.  For
+<para>In addition to the standard put(), []=, at(), and [] methods defined for
+Collections, Directory provides access to items using methods.  For
 example:</para>
 
 <programlisting>
@@ -3912,6 +3916,7 @@ mydir = .directory~new
 mydir~name = "Mike"   -- same as mydir~put("Mike", "NAME")
 say mydir~name        -- same as say mydir['NAME']
 </programlisting>
+
 
 <section id="mthDirectoryNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
@@ -4065,7 +4070,7 @@ all methods added using setMethod (<xref linkend="mthDirectorySetMethod" />).
 </imageobject>
 </mediaobject>
 
-<para>Returns the directory entry with name
+<para>Returns the directory entry with index
 <emphasis role="italic">name</emphasis> (translated to uppercase).
 If there is no such entry, <emphasis role="italic">name</emphasis>
 returns the item for any method that
@@ -4088,7 +4093,7 @@ Nil object is returned.</para>
 </mediaobject>
 
 <para>Returns <computeroutput>1</computeroutput> (true) if the directory has
-an entry or a method for name <emphasis role="italic">name</emphasis>
+an entry or a method for index <emphasis role="italic">name</emphasis>
 (translated to uppercase), or <computeroutput>0</computeroutput> (false).</para>
 </section>
 
@@ -4311,7 +4316,7 @@ Item equality is determined by using the == method of <emphasis role="italic">it
 </imageobject>
 </mediaobject>
 
-<para>Sets the directory entry with name
+<para>Sets the directory entry with index
 <emphasis role="italic">name</emphasis> (translated to uppercase)
 to the object <emphasis role="italic">entry</emphasis>, replacing any existing
 entry or method for <emphasis role="italic">name</emphasis>. If you omit
@@ -4332,7 +4337,7 @@ method with this <emphasis role="italic">name</emphasis>.</para>
 </imageobject>
 </mediaobject>
 
-<para>Associates entry name <emphasis role="italic">name</emphasis>
+<para>Associates index <emphasis role="italic">name</emphasis>
 (translated to uppercase) with method <emphasis role="italic">method</emphasis>.
 Thus, the object returns the result of running
 <emphasis role="italic">method</emphasis> when you access this entry.
@@ -4419,31 +4424,8 @@ case, unknown() returns no result.</para>
 </imageobject>
 </mediaobject>
 
-<para>Removes the association between entry name <emphasis role="italic">name</emphasis>
+<para>Removes the association between index <emphasis role="italic">name</emphasis>
 (translated to uppercase) and a method.</para>
-</section>
-
-<section id="mthDirectoryXor"><title>xor</title>
-<indexterm><primary>xor method</primary>
-<secondary>of Directory class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>xor method</secondary>
-<tertiary>of Directory class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/classes/directory_xor.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-<para>Returns a new Directory object containing all items from the receiver
-collection and the
-<emphasis role="italic">argument</emphasis> collection;
-all indexes that appear in both collections are removed. The
-<emphasis role="italic">argument</emphasis> can be any
-collection class object.
-The <emphasis role="italic">argument</emphasis> must also allow all of the
-index values in the receiver collection.</para>
 </section>
 
 <section id="direx"><title>Examples</title>
@@ -4509,93 +4491,84 @@ Exit
 <secondary>StringTable class</secondary></indexterm>
 
 <para>A StringTable is a MapCollection using unique character string indexes.  The
-items of the collection can be any valid Rexx object.
+items of a StringTable can be any valid Rexx object.
 </para>
+<para>For a MapCollection similar to StringTable, but with additional methods
+<methodname>setMethod</methodname> and <methodname>unsetMethod</methodname>, see
+<xref linkend="clsDirectory" xrefstyle="template:class Directory"/>.
+</para>
+
+<!-- $GENERATED-20151006-START rexxrefClassTable(StringTable) -->
 <table id="ooRexxStringTableClass" frame="all" pgwide="0">
-<title>ooRexx StringTable Class</title>
-<tgroup cols="2" align="left" colsep="1" rowsep="1">
-<colspec colname="c1" />
-<colspec colname="c2" />
+<title>StringTable Class</title>
+<tgroup cols="1">
 <tbody>
-   <row>
-      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">StringTable</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ MapCollection</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2">
-<screen>new
-</screen>
-      </entry>
-   </row>
-   <row>
-      <entry>
-<screen>allIndexes
-allItems
-at, []
-empty
-entry
-hasEntry
-hasIndex
-hasItem
-index
-isEmpty
-items
-</screen>
-      </entry>
-      <entry>
-<screen>makeArray
-put, []=
-remove
-removeItem
-setEntry
-setMethod
-supplier
-unknown
-unSetMethod
-xor
-</screen>
-      </entry>
-   </row>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">+ Collection (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  Methods inherited from the <xref linkend="clsCollection" xrefstyle="template:Collection class"/>
+  <xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+ </entry></row>
+ <row><entry align="center"><emphasis role="bold">+ MapCollection (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  Methods inherited from the <xref linkend="clsMapCollection" xrefstyle="template:MapCollection class"/>
+  <xi:include href="mapcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+ </entry></row>
+ <row><entry align="center"><emphasis role="bold">StringTable</emphasis></entry>
+ </row>
+ <row><entry>
+  <simplelist>
+   <member><xref linkend="mthStringTableNew" xrefstyle="select:title"/></member>
+  </simplelist>
+  <simplelist columns="3">
+   <member><xref linkend="mthStringTableAtGet" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringTablePutSet" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringTableAllIndexes" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringTableAllItems" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringTableAt" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringTableEmpty" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringTableEntry" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringTableHasEntry" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringTableHasIndex" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringTableHasItem" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringTableIndex" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringTableIsEmpty" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringTableItems" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringTableMakeArray" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringTablePut" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringTableRemove" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringTableRemoveEntry" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringTableRemoveItem" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringTableSetEntry" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringTableSupplier" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringTableUnknown" xrefstyle="select:title"/></member>
+  </simplelist>
+ </entry></row>
 </tbody>
 </tgroup>
 </table>
+<!-- $GENERATED-20151006-END rexxrefClassTable(StringTable) -->
 
-<note><title>Note</title>
-<para>The StringTable class also has available class methods that
-metaclass, the Class class (<xref linkend="clsClass" />), defines.
-It also inherits methods from the Map (<xref linkend="clsMapCollection" />) class,
-although there are not currently any methods defined in that class.
-</para></note>
-<para>In addition to the standard put() and at() methods defined for
-Collections, Directories provide access to objects using methods.  For
+<para>In addition to the standard put(), []=, at(), and [] methods defined for
+Collections, StringTable provides access to items using methods.  For
 example:</para>
 
 <programlisting>
-mydir = .StringTable~new
-mydir~name = "Mike"   -- same as mydir~put("Mike", "NAME")
-say mydir~name        -- same as say mydir['NAME']
+sTable = .StringTable~new
+sTable~name = "Mike"   -- same as sTable~put("Mike", "NAME")
+say sTable~name        -- same as say sTable["NAME"]
 </programlisting>
-<section><title>Inherited Methods</title>
 
-<para>Methods inherited from the
-Object class (<xref linkend="clsObject" />).</para>
-<xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-<para>Methods inherited from the
-Collection class (<xref linkend="clsCollection" />).</para>
-<xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-<para>Methods inherited from the
-MapCollection (<xref linkend="clsMapCollection" />).</para>
-<xi:include href="mapcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+<para>Note that StringTable does not provide methods
+<methodname>setMethod</methodname> and <methodname>unsetMethod</methodname>
+as <xref linkend="clsDirectory" xrefstyle="template:class Directory"/> does.
+</para>
 
-</section>
 
 <section id="mthStringTableNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
@@ -4663,8 +4636,7 @@ method.
 </imageobject>
 </mediaobject>
 
-<para>Returns an array of all the StringTable indexes, including those of all
-the setMethods (<xref linkend="mthStringTableSetMethod" />) methods.</para>
+<para>Returns an array of all the StringTable indexes.</para>
 </section>
 
 <section id="mthStringTableAllItems"><title>allItems</title>
@@ -4680,9 +4652,7 @@ the setMethods (<xref linkend="mthStringTableSetMethod" />) methods.</para>
 </imageobject>
 </mediaobject>
 
-<para>Returns an array of all items contained in the StringTable, including those
-returned by all setMethod (<xref linkend="mthStringTableSetMethod" />)
-methods.</para>
+<para>Returns an array of all items contained in the StringTable.</para>
 </section>
 
 <section id="mthStringTableAt"><title>at</title>
@@ -4699,10 +4669,8 @@ methods.</para>
 </mediaobject>
 
 <para>Returns the item associated with index
-<emphasis role="italic">name</emphasis>. If a method defined using setMethod (<xref
-linkend="mthStringTableSetMethod" />) is associated with index
-<emphasis role="italic">name</emphasis>, the result of running this method is
-returned. If the collection has no item or method associated with index
+<emphasis role="italic">name</emphasis>.
+If the collection has no item associated with index
 <emphasis role="italic">name</emphasis>, the Nil object is returned.
 </para>
 <example id="ex.stringtable-at">
@@ -4726,8 +4694,7 @@ say .environment~at("OBJECT")   /* Produces: "The Object class" */
 </imageobject>
 </mediaobject>
 
-<para>Removes all items from the StringTable.  Empty also removes
-all methods added using setMethod (<xref linkend="mthStringTableSetMethod" />).
+<para>Removes all items from the StringTable.
 </para>
 </section>
 
@@ -4744,12 +4711,9 @@ all methods added using setMethod (<xref linkend="mthStringTableSetMethod" />).
 </imageobject>
 </mediaobject>
 
-<para>Returns the StringTable entry with name
+<para>Returns the StringTable entry with index
 <emphasis role="italic">name</emphasis> (translated to uppercase).
-If there is no such entry, <emphasis role="italic">name</emphasis>
-returns the item for any method that
-setMethod (<xref linkend="mthStringTableSetMethod" />) supplied. If there is
-neither an entry nor a method for <emphasis role="italic">name</emphasis> the
+If there is no entry for <emphasis role="italic">name</emphasis> the
 Nil object is returned.</para>
 </section>
 
@@ -4767,7 +4731,7 @@ Nil object is returned.</para>
 </mediaobject>
 
 <para>Returns <computeroutput>1</computeroutput> (true) if the StringTable has
-an entry or a method for name <emphasis role="italic">name</emphasis>
+an entry for index <emphasis role="italic">name</emphasis>
 (translated to uppercase), or <computeroutput>0</computeroutput> (false).</para>
 </section>
 
@@ -4919,11 +4883,8 @@ associated with index <emphasis role="italic">name</emphasis>.</para>
 
 <para>Removes and returns the member item with index
 <emphasis role="italic">name</emphasis> from the StringTable.
-If a method is associated with
-setMethod (<xref linkend="mthStringTableSetMethod" />) for index
-<emphasis role="italic">name</emphasis>,
-the method is removed and running the method is returned. If there is no item or
-method with index
+If there is no item
+with index
 <emphasis role="italic">name</emphasis>, .nil is returned.</para>
 </section>
 
@@ -4939,17 +4900,12 @@ method with index
 </para>
 <para>Removes and returns the member item with index
 <emphasis role="italic">name</emphasis> (translated to uppercase) from the StringTable.
-If a method is associated with
-<xref linkend="mthStringTableSetMethod" xrefstyle="select:title"/> for index
-<emphasis role="italic">name</emphasis>,
-the method is removed and the result of running the method is returned.
-If there is no item or method with index
+If there is no item with index
 <emphasis role="italic">name</emphasis>, .nil is returned.
 </para>
 <para>See also
 <itemizedlist spacing="compact">
  <listitem><para>method <xref linkend="mthStringTableSetEntry" xrefstyle="select:title"/>,</para></listitem>
- <listitem><para>method <xref linkend="mthStringTableSetMethod" xrefstyle="select:title"/>,</para></listitem>
  <listitem><para>method <xref linkend="mthStringTableHasEntry" xrefstyle="select:title"/>, and</para></listitem>
  <listitem><para>method <xref linkend="mthStringTableEntry" xrefstyle="select:title"/>.</para></listitem>
 </itemizedlist>
@@ -4990,49 +4946,12 @@ Item equality is determined by using the == method of <emphasis role="italic">it
 </imageobject>
 </mediaobject>
 
-<para>Sets the StringTable entry with name
+<para>Sets the StringTable entry with index
 <emphasis role="italic">name</emphasis> (translated to uppercase)
 to the object <emphasis role="italic">entry</emphasis>, replacing any existing
 entry or method for <emphasis role="italic">name</emphasis>. If you omit
 <emphasis role="italic">entry</emphasis>, this method removes any entry or
 method with this <emphasis role="italic">name</emphasis>.</para>
-</section>
-
-<section id="mthStringTableSetMethod"><title>setMethod</title>
-<indexterm><primary>setMethod method</primary>
-<secondary>of StringTable class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>setMethod method</secondary>
-<tertiary>of StringTable class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/classes/stringtable_setmethod.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-<para>Associates entry name <emphasis role="italic">name</emphasis>
-(translated to uppercase) with method <emphasis role="italic">method</emphasis>.
-Thus, the object returns the result of running
-<emphasis role="italic">method</emphasis> when you access this entry.
-This occurs when you specify <emphasis role="italic">name</emphasis> on the at,
-entry, or remove method. This method replaces any existing item or method for
-<emphasis role="italic">name</emphasis>.</para>
-<para>You can specify the name "UNKNOWN" as
-<emphasis role="italic">name</emphasis>. Doing so supplies a
-method that is run whenever an at() or entry() message specifies a name for
-which no item or method exists in the collection. This method's first argument
-is the specified StringTable index. This method has no effect on the action of any
-hasEntry, hasIndex, items, remove, or supplier message sent to the collection.
-</para>
-<para>The <emphasis role="italic">method</emphasis> can be a
-string containing a method source line instead
-of a method object. Alternatively, an array of strings containing individual
-method lines can be passed. In either case, an equivalent method object is
-created. </para>
-<para>If you omit <emphasis role="italic">method</emphasis>, setMethod() removes
-the entry with the specified
-<emphasis role="italic">name</emphasis>.</para>
 </section>
 
 <section id="mthStringTableSupplier"><title>supplier</title>
@@ -5085,100 +5004,8 @@ final equal sign) as its first argument, and the first item in the array
 case, unknown() returns no result.</para>
 </section>
 
-<section id="mthStringTableUnsetMethod"><title>unsetMethod</title>
-<indexterm><primary>unsetMethod method</primary>
-<secondary>of StringTable class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>unsetMethod method</secondary>
-<tertiary>of StringTable class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/classes/stringtable_unsetmethod.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-<para>Removes the association between entry name <emphasis role="italic">name</emphasis>
-(translated to uppercase) and a method.</para>
 </section>
 
-<section id="mthStringTableXor"><title>xor</title>
-<indexterm><primary>xor method</primary>
-<secondary>of StringTable class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>xor method</secondary>
-<tertiary>of StringTable class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/classes/stringtable_xor.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-<para>Returns a new StringTable object containing all items from the receiver
-collection and the
-<emphasis role="italic">argument</emphasis> collection;
-all indexes that appear in both collections are removed. The
-<emphasis role="italic">argument</emphasis> can be any
-collection class object.
-The <emphasis role="italic">argument</emphasis> must also allow all of the
-index values in the receiver collection.</para>
-</section>
-
-<section id="stringtableex"><title>Examples</title>
-<indexterm><primary>examples</primary>
-<secondary>of StringTable class</secondary></indexterm>
-<example id="ex.StringTable-examples">
-<title>StringTable class - examples</title>
-<programlisting>
-/******************************************************************************/
-/*  A Phone Book Directory program                                            */
-/*  This program demonstrates use of the directory class.                     */
-/******************************************************************************/
-
-/* Define an UNKNOWN method that adds an abbreviation lookup feature.         */
-/* Directories do not have to have an UNKNOWN method.                         */
-book = .stringtable~new~~setMethod("UNKNOWN", .methods["UNKNOWN"])
-
-book["ANN" ] = "Ann B. ....... 555-6220"
-book["ann" ] = "Little annie . 555-1234"
-book["JEFF"] = "Jeff G. ...... 555-5115"
-book["MARK"] = "Mark C. ...... 555-5017"
-book["MIKE"] = "Mike H. ...... 555-6123"
-book~Rick    = "Rick M. ...... 555-5110"  /* Same as book["RICK"] = ...       */
-
-Do i over book                 /* Iterate over the collection                 */
-  Say book[i]
-end i
-
-Say ""                         /* Index lookup is case sensitive...           */
-Say book~entry("Mike")         /* ENTRY method uppercases before lookup       */
-Say book["ANN"]                /* Exact match                                 */
-Say book~ann                   /* Message sends uppercase before lookup       */
-Say book["ann"]                /* Exact match with lowercase index            */
-
-Say ""
-Say book["M"]                  /* Uses UNKNOWN method for lookup              */
-Say book["Z"]
-Exit
-
-/* Define an unknown method to handle indexes not found.                      */
-/* Check for abbreviations or indicate listing not found                      */
-::Method unknown
-  Parse arg at_index
-  value = ""
-  Do i over self
-    If abbrev(i, at_index) then do
-      If value &lt;> "" then value = value", "
-      value = value || self~at(i)
-    end
-  end i
-  If value = "" then value = "No listing found for" at_index
-  Return value
-</programlisting>
-</example>
-</section>
-</section>
 
 <section id="clsList"><title>The List Class</title>
 <indexterm><primary>List class</primary></indexterm>
@@ -5258,28 +5085,6 @@ object will not modify indexes for items in the list.</para>
 </table>
 <!-- $GENERATED-20150704-END rexxrefClassTable(List) -->
 
-<!-- @@ remove, moved to above table
-<note><title>Note</title>
-<para>The List class also has available class methods that its metaclass,
-the Class class (<xref linkend="clsClass" />), defines.
-It also inherits methods from the OrderedCollection (<xref linkend="clsOrderedCollection" />)
-class.
-</para></note>
-
-<section><title>Inherited Methods</title>
-
-<para>Methods inherited from the
-Object class (<xref linkend="clsObject" />).</para>
-<xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-<para>Methods inherited from the
-Collection class (<xref linkend="clsCollection" />).</para>
-<xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-<para>Methods inherited from the
-OrderedCollection (<xref linkend="clsOrderedCollection" />).</para>
-<xi:include href="orderedcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-
-</section>
--->
 <section id="mthListNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary><secondary>of List class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>new method</secondary><tertiary>of List class</tertiary></indexterm>
@@ -5876,8 +5681,7 @@ are also restricted to character string values.  Properties objects
 are useful for processing bundles of application option values.
 </para>
 
-<!-- Modified: "Load" to "LoadClsMth" -->
-<!-- $GENERATED-20150704-START rexxrefClassTable(Properties) -->
+<!-- $GENERATED-20151006-START rexxrefClassTable(Properties) -->
 <table id="ooRexxPropertiesClass" frame="all" pgwide="0">
 <title>Properties Class</title>
 <tgroup cols="1">
@@ -5926,7 +5730,7 @@ are useful for processing bundles of application option values.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20150704-END rexxrefClassTable(Properties) -->
+<!-- $GENERATED-20151006-END rexxrefClassTable(Properties) -->
 
 <section id="mthPropertiesLoadClsMth"><title>load (Class method)</title>
 <indexterm><primary>load method</primary>
@@ -6184,91 +5988,72 @@ indexes. The indexes specify the position of an item relative to the head
 (first item) of the queue. Adding or removing an item changes the association
 of an index to its queue item. You can add items at either the tail or the
 head of the queue.</para>
+
+<!-- $GENERATED-20151006-START rexxrefClassTable(Queue) -->
 <table id="ooRexxQueueClass" frame="all" pgwide="0">
-<title>ooRexx Queue Class</title>
-<tgroup cols="2" align="left" colsep="1" rowsep="1">
-<colspec colname="c1" />
-<colspec colname="c2" />
+<title>Queue Class</title>
+<tgroup cols="1">
 <tbody>
-   <row>
-      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Queue</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="left"><emphasis role="bold">+ OrderedCollection</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2">
-<screen>new
-of
-</screen>
-      </entry>
-   </row>
-   <row>
-      <entry>
-<screen>allIndexes
-allItems
-append
-at, []
-delete
-empty
-first
-firstItem
-hasIndex
-hasItem
-index
-insert
-isEmpty
-items
-</screen>
-      </entry>
-      <entry>
-<screen>last
-lastItem
-makeArray
-next
-peek
-previous
-pull
-push
-put
-queue
-remove
-removeItem
-section
-supplier
-</screen>
-      </entry>
-   </row>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">+ Collection (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  Methods inherited from the <xref linkend="clsCollection" xrefstyle="template:Collection class"/>
+  <xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+ </entry></row>
+ <row><entry align="center"><emphasis role="bold">+ OrderedCollection (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  Methods inherited from the <xref linkend="clsOrderedCollection" xrefstyle="template:OrderedCollection class"/>
+  <xi:include href="orderedcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+ </entry></row>
+ <row><entry align="center"><emphasis role="bold">Queue</emphasis></entry>
+ </row>
+ <row><entry>
+  <simplelist>
+   <member><xref linkend="mthQueueNew" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthQueueOf" xrefstyle="select:title"/></member>
+  </simplelist>
+  <simplelist columns="3">
+   <member><xref linkend="mthQueueAtGet" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthQueuePutSet" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthQueueAllIndexes" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthQueueAllItems" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthQueueAppend" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthQueueAt" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthQueueDelete" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthQueueEmpty" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthQueueFirst" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthQueueFirstItem" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthQueueHasIndex" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthQueueHasItem" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthQueueIndex" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthQueueInsert" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthQueueIsEmpty" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthQueueItems" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthQueueLast" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthQueueLastItem" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthQueueMakeArray" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthQueueNext" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthQueuePeek" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthQueuePrevious" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthQueuePull" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthQueuePush" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthQueuePut" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthQueueQueue" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthQueueRemove" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthQueueRemoveItem" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthQueueSection" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthQueueSupplier" xrefstyle="select:title"/></member>
+  </simplelist>
+ </entry></row>
 </tbody>
 </tgroup>
 </table>
-
-<note><title>Note</title>
-<para>The Queue class also has available class methods that its
-metaclass, the Class class (<xref linkend="clsClass" />), defines.
-It also inherits methods from the OrederedCollection (<xref linkend="clsOrderedCollection" />)
-class.
-</para></note>
-
-<section><title>Inherited Methods</title>
-
-<para>Methods inherited from the
-Object class (<xref linkend="clsObject" />).</para>
-<xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-<para>Methods inherited from the
-Collection class (<xref linkend="clsCollection" />).</para>
-<xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-<para>Methods inherited from the
-OrderedCollection (<xref linkend="clsOrderedCollection" />).</para>
-<xi:include href="orderedcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-
-</section>
+<!-- $GENERATED-20151006-END rexxrefClassTable(Queue) -->
 
 <section id="mthQueueNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
@@ -6935,7 +6720,7 @@ be any object.  In a relation, each item is associated with
 a single index, but there can be more than one item with the same index (unlike
 a table, which can contain only one item for any index).</para>
 
-<!-- Modified: added from ManyItemsMixin class: difference, intersection, subset, union, xor (see interpreter\RexxClasses\CoreClasses.orx) -->
+<!-- modified: added from ManyItemsMixin class: difference, intersection, subset, union, xor (see interpreter\RexxClasses\CoreClasses.orx) -->
 <!-- $GENERATED-20151005-START rexxrefClassTable(Relation) -->
 <table id="ooRexxRelationClass" frame="all" pgwide="0">
 <title>Relation Class</title>
@@ -7595,7 +7380,7 @@ Item equality is determined by
 using the == method.
 </para>
 
-<!-- Modified: added from SetMixin class: intersection, putAll, subset, union, xor (see interpreter\RexxClasses\CoreClasses.orx) -->
+<!-- modified: added from SetMixin class: intersection, putAll, subset, union, xor (see interpreter\RexxClasses\CoreClasses.orx) -->
 <!-- $GENERATED-20151005-START rexxrefClassTable(Set) -->
 <table id="ooRexxSetClass" frame="all" pgwide="0">
 <title>Set Class</title>
