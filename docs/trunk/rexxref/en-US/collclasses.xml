@@ -3205,7 +3205,6 @@ stack-like LIFO (last in, first out) order.
 </para>
 
 <!-- modified: readObject/writeObject not fully implemented -->
-<!-- modified: makeString() may be a 5.0 bug -->
 <!-- $GENERATED-20150924-START rexxrefClassTable(CircularQueue) -->
 <table id="ooRexxCircularQueueClass" frame="all" pgwide="0">
 <title>CircularQueue Class</title>
@@ -3248,9 +3247,7 @@ stack-like LIFO (last in, first out) order.
    <member><xref linkend="mthCircularQueueInsert" xrefstyle="select:title"/></member>
    <member><xref linkend="mthCircularQueueIntersection" xrefstyle="select:title"/></member>
    <member><xref linkend="mthCircularQueueMakeArray" xrefstyle="select:title"/></member>
-<!-- makeString() may be a 5.0 bug
    <member><xref linkend="mthCircularQueueMakeString" xrefstyle="select:title"/></member>
--->
    <member><xref linkend="mthCircularQueuePush" xrefstyle="select:title"/></member>
    <member><xref linkend="mthCircularQueueQueue" xrefstyle="select:title"/></member>
    <member><xref linkend="mthCircularQueueResize" xrefstyle="select:title"/></member>
@@ -3426,6 +3423,46 @@ the capitalized letter is needed; all characters following it are ignored.)
 </varlistentry>
 </variablelist>
 </section>
+
+
+<!-- Class CircularQueue - method makeString ======================== --> 
+<section id="mthCircularQueueMakeString" revisionflag="added"><title>*NEW* makeString</title>
+<para>
+<indexterm><primary>makeString method</primary><secondary>of CircularQueue class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>makeString method</secondary><tertiary>of CircularQueue class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/circularqueue_makestring.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+<para>
+Returns a string object that concatenates the string values of the collected
+item objects, using the <emphasis role="italic">delimiter</emphasis> string
+to delimit them, in the specified <emphasis role="italic">order</emphasis>.
+If the <emphasis role="italic">delimiter</emphasis> is omitted, the comma character
+(<computeroutput>","</computeroutput>) is used as the default delimiter string.
+</para>
+
+<para>
+The following <emphasis role="italic">order</emphasis> can be used. (Only
+the capitalized letter is needed; all characters following it are ignored.)
+</para>
+
+<variablelist>
+<varlistentry><term>Fifo</term>
+<listitem>
+<para>First-in, first-out.  This is the default
+</para>
+</listitem>
+</varlistentry>
+<varlistentry><term>Lifo</term>
+<listitem>
+<para>Last-in, first-out (stack-like)
+</para>
+</listitem>
+</varlistentry>
+</variablelist>
+</section>
+
 
 <section id="mthCircularQueuePush"><title>push</title>
 <indexterm><primary>push method</primary>
@@ -3638,11 +3675,7 @@ Returns the maximum number of objects that can be stored in the circular queue.
 Returns a string object that concatenates the string values of the collected
 item objects, using the <emphasis role="italic">delimiter</emphasis> string
 to delimit them, in the specified <emphasis role="italic">order</emphasis>.
-The default <emphasis role="italic">delimiter</emphasis> is a single comma.
-</para>
-
-<para>
-If the delimiter string argument is omitted the comma character
+If the <emphasis role="italic">delimiter</emphasis> is omitted, the comma character
 (<computeroutput>","</computeroutput>) is used as the default delimiter string.
 </para>
 
@@ -3666,6 +3699,7 @@ the capitalized letter is needed; all characters following it are ignored.)
 </varlistentry>
 </variablelist>
 </section>
+
 
 <section id="mthCircularQueueSupplier"><title>supplier</title>
 <indexterm><primary>supplier method</primary>
