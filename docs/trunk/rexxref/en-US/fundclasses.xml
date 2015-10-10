@@ -126,6 +126,7 @@ metaclass, the Class class (<xref linkend="clsClass" />), defines.</para></note>
 </section>
 
 <section id="mthObjectComparisonMethods"><title>Comparison Methods</title>
+<indexterm><primary>method</primary><secondary>comparison methods</secondary><tertiary>of Object class</tertiary></indexterm>
 
 <mediaobject>
 <imageobject>
@@ -1030,69 +1031,133 @@ method is a protected method.</para></listitem>
 produce objects. It is a subclass of the
 Object class (<xref linkend="clsObject" />). The instance methods of the
 Class class are also the class methods of all classes.</para>
+<para>Note that the <methodname>copy</methodname> method is forbidden for
+Class and all other class objects, and will result in an error.
+</para>
+
+<!-- modified: removed all class methods, added new(), commented copy() -->
+<!-- modified: removed defineClassMethod, inheritInstanceMethods -->
+<!-- modified: we won't document Class class hashCode  -->
+<!-- $GENERATED-20151009-START rexxrefClassTable(Class) -->
 <table id="ooRexxClassClass" frame="all" pgwide="0">
-<title>ooRexx Class Class</title>
-<tgroup cols="2" align="left" colsep="1" rowsep="1">
-<colspec colname="c1" />
-<colspec colname="c2" />
+<title>Class Class</title>
+<tgroup cols="1">
 <tbody>
-   <row>
-      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Class</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2">
-<screen>&nbsp;
-</screen>
-      </entry>
-   </row>
-   <row>
-      <entry>
-<screen>= \= == \== &lt;&gt; &gt;&lt;
-activate
-annotation
-annotations
-baseClass
-defaultName
-define
-delete
-enhanced
-id
-inherit
-isSubclassOf
-</screen>
-      </entry>
-      <entry>
-<screen>metaClass
-method
-methods
-mixinClass
-new
-queryMixinClass
-subClass
-subClasses
-superClass
-superClasses
-unInherit
-</screen>
-      </entry>
-   </row>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class</emphasis></entry>
+ </row>
+ <row><entry>
+  <simplelist columns="3">
+   <member><xref linkend="mthClassComparisonMethods" xrefstyle="select:title"/> = == &lt;&gt; &gt;&lt; \= \==</member>
+   <member><xref linkend="mthClassActivate" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthClassAnnotation" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthClassAnnotations" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthClassBaseClass" xrefstyle="select:title"/></member>
+<!-- copy() forbidden, see paragraph above
+   <member><xref linkend="mthClassCopy" xrefstyle="select:title"/></member>
+-->
+   <member><xref linkend="mthClassDefaultName" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthClassDefine" xrefstyle="select:title"/></member>
+<!-- setup.cpp: these two are special and will be removed at the end of the image build
+   <member><xref linkend="mthClassDefineClassMethod" xrefstyle="select:title"/></member>
+-->
+   <member><xref linkend="mthClassDefineMethods" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthClassDelete" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthClassEnhanced" xrefstyle="select:title"/></member>
+<!-- won't document hashCode
+   <member><xref linkend="mthClassHashCode" xrefstyle="select:title"/></member>
+-->
+   <member><xref linkend="mthClassId" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthClassInherit" xrefstyle="select:title"/></member>
+<!-- setup.cpp: these two are special and will be removed at the end of the image build
+   <member><xref linkend="mthClassInheritInstanceMethods" xrefstyle="select:title"/></member>
+-->
+   <member><xref linkend="mthClassIsAbstract" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthClassIsMetaclass" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthClassIsSubclassOf" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthClassMetaclass" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthClassMethod" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthClassMethods" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthClassMixinClass" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthClassNew" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthClassPackage" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthClassQueryMixinClass" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthClassSubclass" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthClassSubclasses" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthClassSuperclass" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthClassSuperclasses" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthClassUninherit" xrefstyle="select:title"/></member>
+  </simplelist>
+ </entry></row>
 </tbody>
 </tgroup>
 </table>
+<!-- $GENERATED-20151009-END rexxrefClassTable(Class) -->
 
-<section><title>Inherited Methods</title>
 
-<para>Methods inherited from the
-Object class (<xref linkend="clsObject" />).</para>
-<xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-
+<!-- Class Class - Comparison Methods ============================== --> 
+<section id="mthClassComparisonMethods" revisionflag="added"><title>*NEW* Comparison Methods</title>
+<para>
+<indexterm><primary>method</primary><secondary>comparison methods</secondary><tertiary>of Class class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/class_comparison_operator.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns <computeroutput>1</computeroutput> (true) or
+<computeroutput>0</computeroutput> (false), the result of performing
+a specified comparison operation.
+</para>
+<para>For the Class class, if <emphasis role="italic">argument</emphasis>
+is the same class as the receiver
+class, the result is <computeroutput>1</computeroutput> (true), otherwise
+<computeroutput>0</computeroutput> (false) is returned.
+</para>
+<para>The comparison operators you can use in a message are: </para>
+<variablelist>
+<varlistentry><term>=, ==
+<indexterm><primary>= method</primary>
+<secondary>of Class class</secondary></indexterm>
+<indexterm><primary>== method</primary>
+<secondary>of Class class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>=</secondary>
+<tertiary>of Class class</tertiary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>==</secondary>
+<tertiary>of Class class</tertiary></indexterm>
+</term>
+<listitem><para>True if the terms are the same class.
+</para></listitem></varlistentry>
+<varlistentry><term>\=, >&lt;, &lt;>, \==
+<indexterm><primary>\= method</primary>
+<secondary>of Class class</secondary></indexterm>
+<indexterm><primary>>&lt; method</primary>
+<secondary>of Class class</secondary></indexterm>
+<indexterm><primary>&lt;> method</primary>
+<secondary>of Class class</secondary></indexterm>
+<indexterm><primary>\== method</primary>
+<secondary>of Class class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>\=</secondary>
+<tertiary>of Class class</tertiary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>>&lt;</secondary>
+<tertiary>of Class class</tertiary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>&lt;></secondary>
+<tertiary>of Class class</tertiary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>\==</secondary>
+<tertiary>of Class class</tertiary></indexterm>
+</term>
+<listitem><para>True if the terms are not the same class (inverse of =).
+</para></listitem></varlistentry>
+</variablelist>
 </section>
+
 
 <section id="mthClassActivate"><title>activate</title>
 <indexterm><primary>activate method</primary>
@@ -1270,6 +1335,53 @@ bank_account~define("TYPE",&apos;return "a bank account"&apos;)
 </example>
 </section>
 
+
+<!-- Class Class - method defineMethods ======================== --> 
+<section id="mthClassDefineMethods" revisionflag="added"><title>*NEW* defineMethods</title>
+<para>
+<indexterm><primary>defineMethods method</primary><secondary>of Class class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>defineMethods method</secondary><tertiary>of Class class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/class_definemethods.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+
+<para>Incorporates all methods <emphasis role="italic">methods</emphasis>
+in the receiver class's collection of instance methods.
+</para>
+<para>The <emphasis role="italic">methods</emphasis> is a collection whose
+indexes are the names of methods and whose items are method objects
+(or strings or arrays of strings containing method code).
+The method names are translated to uppercase.
+Any existing methods with the same method name in the receiver class 
+are replaced.</para>
+<para>If, for any item in <emphasis role="italic">methods</emphasis>,
+the method name is .nil, then a method of this name in the receiver class
+is made unavailable.
+</para>
+<para>See also method <xref linkend="mthClassDefine" xrefstyle="select:title"/>.
+</para>
+<para><example>
+<title>Class Class &mdash; defineMethods method</title>
+<programlisting><![CDATA[before = .c~new
+say before~a                           -- a-original
+
+.c~defineMethods(.methods)
+after = .c~new
+say after~a after~b                    -- a-define b-define
+
+::method a
+return "a-define"
+::method b
+return "b-define"
+
+::class c
+::method a
+return "a-original"   
+]]></programlisting></example></para>
+</section>
+
+
 <section id="mthClassDelete"><title>delete</title>
 <indexterm><primary>delete method</primary>
 <secondary>of Class class</secondary></indexterm>
@@ -1446,6 +1558,59 @@ room~inherit(.location)
 </programlisting>
 </example>
 </section>
+
+
+<!-- Class Class - method isAbstract ======================== --> 
+<section id="mthClassIsAbstract" revisionflag="added"><title>*NEW* isAbstract</title>
+<para>
+<indexterm><primary>isAbstract method</primary><secondary>of Class class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>isAbstract method</secondary><tertiary>of Class class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/class_isabstract.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns true ("1") if the receiving class is an abstract class,
+otherwise returns false ("0").
+</para>
+<para>See also ABSTRACT option of the
+<xref linkend="clasdi" xrefstyle="select:title"/> directive.
+</para>
+<para><example>
+<title>Class Class &mdash; isAbstract method</title>
+<programlisting><![CDATA[say .abs~isAbstract                    -- 1
+
+::class abs abstract 
+]]></programlisting></example></para>
+</section>
+
+
+<!-- Class Class - method isMetaclass ======================== --> 
+<section id="mthClassIsMetaclass" revisionflag="added"><title>*NEW* isMetaclass</title>
+<para>
+<indexterm><primary>isMetaclass method</primary><secondary>of Class class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>isMetaclass method</secondary><tertiary>of Class class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/class_ismetaclass.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns true ("1") if the receiving class is a metaclass,
+otherwise returns false ("0").
+The <classname>Class</classname> class is the only metaclass that Rexx
+provides; any subclasses of the Class class are also metaclasses.
+</para>
+<para><example>
+<title>Class Class &mdash; isMetaclass method</title>
+<programlisting><![CDATA[do class over .RexxInfo~package~classes~allItems~~appendAll(.context~package~classes~allItems)
+  if class~isMetaclass then
+    say class~string": metaclass"      -- The Class class: metaclass
+                                       -- The META class: metaclass
+end
+
+::class meta subclass class
+::class other
+]]></programlisting></example></para>
+</section>
+
 
 <section id="mthClassIsSubclassOf"><title>isSubClassOf</title>
 <indexterm><primary>isSubclassOf method</primary>
@@ -1684,6 +1849,31 @@ If balance > 100 then Say "  You win a free toaster oven"
 </example>
 </section>
 
+
+<!-- Class Class - method package ======================== --> 
+<section id="mthClassPackage" revisionflag="added"><title>*NEW* package</title>
+<para>
+<indexterm><primary>package method</primary><secondary>of Class class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>package method</secondary><tertiary>of Class class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/class_package.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns the Package class instance that defined the receiving class.
+The package instance controls and defines the search order for classes and
+routines referenced by the receiving class.
+</para>
+<para>See also <xref linkend="clsPackage" xrefstyle="template:Package class"/>.
+</para>
+<para><example>
+<title>Class Class &mdash; package method</title>
+<programlisting><![CDATA[say .Class~package~name                -- REXX
+say .other~package~name                -- C:\ExampleClassPackage.rex
+
+::class other
+]]></programlisting></example></para>
+</section>
+
 <section id="mthClassQueryMixinClass"><title>queryMixinClass</title>
 <indexterm><primary>queryMixinClass method</primary>
 <secondary>of Class class</secondary></indexterm>
@@ -1772,7 +1962,7 @@ unspecified order. (The program should not rely on any order.)
 </para>
 </section>
 
-<section id="mthClassSuperClass"><title>superClass</title>
+<section id="mthClassSuperclass"><title>superClass</title>
 <indexterm><primary>superClass method</primary>
 <secondary>of Class class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -1803,7 +1993,7 @@ say .set~superclass       -- displays "The Table class"
 </example>
 </section>
 
-<section id="mthClassSuperClasses"><title>superClasses</title>
+<section id="mthClassSuperclasses"><title>superClasses</title>
 <indexterm><primary>superClasses method</primary>
 <secondary>of Class class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -4610,13 +4800,13 @@ is not specified, the default is to convert the remainder of the string.</para>
 </mediaobject>
 
 <para>This method returns an array of strings containing the single
-lines that were separated using the <emphasis role="bold">separator</emphasis> string.
+lines that were separated using the <emphasis role="italic">separator</emphasis> string.
 The separator may be any string, including the null string.  If the null string
 is used, an array containing each character of the string is returned.
 If the target string starts with the separator, the first array item will be a null
 string.  If the string ends with a separator, no extra null string item will be added.
-The
-default separator is the newline character.
+The default separator is both the newline character and
+the carriage return/newline character pair.
 </para>
 
 <example id="ex.string-makeArray">
@@ -7311,6 +7501,21 @@ will be added to the receiving package object's dependent packages.</para>
 </mediaobject>
 
 <para>Returns the string name of the package.</para>
+<para>The package name may be
+<itemizedlist spacing="compact">
+<listitem><para>the absolute path of the executing program,</para></listitem>
+<listitem><para>any name that was specified when creating an instance of a Package or Routine class,</para></listitem>
+<listitem><para>"REXX" for classes defined by ooRexx, or</para></listitem>
+<listitem><para>"INSTORE" for code executed through the <command>rexx -e</command> command.</para></listitem>
+</itemizedlist>
+</para>
+<para><example>
+<title>Class Package &mdash; name method</title>
+<programlisting><![CDATA[say .context~package~name              -- e. g. C:\ExamplePackageName.rex
+say .Class~package~name                -- REXX
+say .Routine~new("rtn", "return .context~package~name")[]  -- rtn
+say .Package~new("pkg", "")~name       -- pkg
+]]></programlisting></example></para>
 </section>
 
 <!-- Class Package - method namespaces ============================= --> 

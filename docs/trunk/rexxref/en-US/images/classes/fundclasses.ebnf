@@ -58,6 +58,9 @@ object_string ::= 'string'
 
 object_unsetmethod ::= 'unsetMethod(' methodname ')'
 
+/* new in 5.0 */
+class_comparison_operator ::= 'comparison_operator(' argument ')'
+
 class_activate ::= 'activate'
 
 class_baseclass ::= 'baseClass'
@@ -66,6 +69,9 @@ class_defaultname ::= 'defaultName'
 
 class_define ::= 'define(' methodname ( ',' method )? ')'
 
+/* new in 5.0 */
+class_definemethods ::= 'defineMethods(' methods ')'
+
 class_delete ::= 'delete(' methodname ')'
 
 class_enhanced ::= 'enhanced(' methods ( ',' argument )? ')'
@@ -73,6 +79,10 @@ class_enhanced ::= 'enhanced(' methods ( ',' argument )? ')'
 class_id ::= 'id'
 
 class_inherit ::= 'inherit(' classobj ( ',' classpos )? ')'
+
+/* new in 5.0 */
+class_isabstract ::= 'isAbstract'
+class_ismetaclass ::= 'isMetaclass'
 
 class_issubclassof ::= 'isSubclassOf(' class ')'
 
@@ -85,6 +95,9 @@ class_methods ::= 'methods(' class_object ')'
 class_mixinclass ::= 'mixinClass(' classid ( ',' metaclass ( ',' methods )? )? ')'
 
 class_new ::= 'new(' ( arg (',' arg)* )? ')'
+
+/* new in 5.0 */
+class_package ::= 'package'
 
 class_querymixinclass ::= 'queryMixinClass'
 
@@ -122,11 +135,11 @@ string_abs ::= 'abs'
 
 string_b2x ::= 'b2x'
 
-string_bitand ::= 'bitAnd' ( '(' string ( ',' pad )? ')' )?
+string_bitand ::= 'bitAnd(' string? ',' pad? ')'
 
-string_bitor ::= 'bitOr' ( '(' string ( ',' pad )? ')' )?
+string_bitor ::= 'bitOr(' string? ',' pad? ')'
 
-string_bitxor ::= 'bitXOr' ( '(' string ( ',' pad )? ')' )?
+string_bitxor ::= 'bitXOr(' string? ',' pad? ')'
 
 string_c2d ::= 'c2d' ( '(' n ')' )?
 
@@ -168,9 +181,9 @@ string_copies ::= 'copies(' n ')'
 
 string_countstr ::= 'countStr(' needle ')'
 
-string_d2c ::= 'd2c(' n ')'
+string_d2c ::= 'd2c' ( '(' n ')' )?
 
-string_d2x ::= 'd2x(' n ')'
+string_d2x ::= 'd2x' ( '(' n ')' )?
 
 string_datatype ::= 'dataType' ( '(' type ')' )?
 
@@ -186,12 +199,11 @@ string_equals ::= 'equals(' other ')'
 
 string_floor ::= 'floor'
 
-string_format ::= 'format{' ( ( before )? ( ',' ( after )? ( ','
-                            ( expp )? ( ',' expt  )? )? )? )? ')'
+string_format ::= 'format(' before? ',' after? ',' expp? ',' expt? ')'
 
 string_hashcode ::= 'hashCode'
 
-string_insert ::= 'insert(' new ( ',' n ( ',' ( length ( ',' pad )? )? )? )? ')'
+string_insert ::= 'insert(' new ',' n? ',' length? ',' pad? ')'
 
 string_lastpos ::= 'lastPos(' needle ( ',' ( start )? ( ',' length )? )? ')'
 
@@ -201,7 +213,7 @@ string_left_xmp ::= 'substr(' '1' ',' length ( ',' pad )? ')'
 
 string_length ::= 'length'
 
-string_lower ::= 'lower(' ( ( n )? ( ',' length )? )? ')'
+string_lower ::= 'lower(' n? (',' length)? ')'
 
 string_makearray ::= 'makeArray(' ( separator )? ')'
 
@@ -215,8 +227,7 @@ string_max ::= 'max' ( '(' number ( ',' number )* ')' )?
 
 string_min ::= 'min' ( '(' number ( ',' number )* ')' )?
 
-string_overlay ::= 'overlay(' new ( ',' ( ( n )? ( ',' ( ( length )?
-                              ( ',' pad )? )? )? )? )? ')'
+string_overlay ::= 'overlay(' new ',' n? ',' length? ',' pad? ')'
 
 string_pos ::= 'pos(' needle ( ',' ( start )? ( ',' length )? )? ')'
 
@@ -230,26 +241,25 @@ string_round ::= 'round'
 
 string_sign ::= 'sign'
 
-string_space ::= 'space' ( '(' n ( ',' pad )? ')' )?
+string_space ::= 'space' ('(' n? ',' pad? ')')?
 
-string_strip ::= 'strip' ( '(' option ( ',' chars )? ')' )?
+string_strip ::= 'strip' ('(' option? ',' chars? ')')?
 
 string_subchar ::= 'subChar(' n ')'
 
-string_substr ::= 'substr(' n ( ',' ( ( length )? ( ',' pad )? )? )? ')'
+string_substr ::= 'substr(' n (',' length? (',' pad)? )? ')'
 
 string_subword ::= 'subword(' n ( ',' length )? ')'
 
-string_subwords ::= 'subwords(' ( ( n )? ( ',' length )? )? ')'
+string_subwords ::= 'subwords(' n? (',' length)? ')'
 
-string_translate ::= 'translate' ( '(' ( ( tableo ( ',' ( tablei ( ',' pad )? )? )? | 
-                                          n ( ',' length )? ) )? ')' )?
+string_translate ::= 'translate(' tableo? ',' tablei? ',' pad? ',' n? ',' length? ')' 
 
 string_trunc ::= 'trunc' ( '(' n ')' )?
 
 string_upper ::= 'upper(' ( n )? ( ',' length )? ')'
 
-string_verify ::= 'verify{' reference ( ',' ( option )? ( ',' ( start )? ( ',' length )? )? )? ')'  
+string_verify ::= 'verify(' reference ',' ( 'N' | option | ) ',' start? ',' length? ')'
 
 string_word ::= 'word(' n ')'
 

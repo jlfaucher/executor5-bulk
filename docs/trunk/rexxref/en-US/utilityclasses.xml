@@ -4651,8 +4651,10 @@ is not specified, the default is to convert the remainder of the buffer.</para>
 </mediaobject>
 
 <para>This method returns an array of strings containing the substrings
-that were separated using the separator character. The
-default separator is the newline character.</para>
+that were separated using the <emphasis role="italic">separator</emphasis>.
+The default separator is both the newline character and
+the carriage return/newline character pair.
+</para>
 </section>
 
 <section id="mthMutableBufferMatch"><title>match</title>
@@ -6800,10 +6802,54 @@ elements are earlier elements in the call stack.
 <para>Returns a directory object containing all of the variables in the current
 execution context.  The directory keys will be the variable names and the
 mapped values are the values of the variables.  The directory will only
-contain simple variables and stem variables.  Compound variable values may
+contain simple variables and stem variables, but no compound variables.  Compound variable values may
 be accessed by using the stem objects that are returned for the stem
 variable names.
 </para>
+<para>See also Rexx Utility Function
+<xref linkend="utlSysdumpvariables" xrefstyle="select:title"/>.
+</para>
+<para><example>
+<title>Class RexxContext &mdash; variables method</title>
+<programlisting><![CDATA[a = 2
+b.1 = a
+c. = .stem~new
+c.[] = 1
+c.["one"] = 11
+dir = .Directory~new
+dir["item"] = "index"
+array = .Array~of("a", "e", "i")
+
+say "SysDumpVariables:"
+call SysDumpVariables
+drop result
+
+say ".context~variables:"
+variables = .context~variables
+do name over variables
+  say "Name="name"," "Value='"variables[name]"'"
+  if name~right(1) = ".", variables[name]~isA(.Stem) then
+    do tail over variables[name]
+      say "Name="name||tail"," "Value='"variables[name][tail]"'"
+    end
+end
+]]></programlisting></example></para>
+<para>will output
+<programlisting>SysDumpVariables:
+Name=C.one, Value='11'
+Name=DIR, Value='a Directory'
+Name=B.1, Value='2'
+Name=ARRAY, Value='an Array'
+Name=A, Value='2'
+.context~variables:
+Name=ARRAY, Value='an Array'
+Name=B., Value='B.'
+Name=B.1, Value='2'
+Name=A, Value='2'
+Name=DIR, Value='a Directory'
+Name=C., Value='1'
+Name=C.one, Value='11'
+</programlisting></para>
 </section>
 </section>
 
