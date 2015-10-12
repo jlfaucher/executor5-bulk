@@ -129,7 +129,23 @@ string_logical_operator ::= 'logical_operator(' argument ')'
 
 string_concatenation_operator ::= 'concatentation_operator(' argument ')'
 
-string_abbrev ::= 'abbev(' info ( ',' length )? ')'
+/* new in 5.0 - start */
+string_atget                ::= '[' n ( ',' length )? ']'
+string_iif                  ::= '?(' first ',' second ')'
+string_append               ::= 'append(' string ')'
+
+string_startswith           ::= 'startsWith(' other ')'
+string_endswith             ::= 'endsWith(' other ')'
+string_caselessstartswith   ::= 'caselessStartsWith(' other ')'
+string_caselessendswith     ::= 'caselessEndsWith(' other ')'
+
+string_contains             ::= 'contains(' other ( ',' ( start )? ( ',' length )? )? ')'
+string_caselesscontains     ::= 'caselessContains(' other ( ',' ( start )? ( ',' length )? )? ')'
+string_containsword         ::= 'containsWord(' phrase ( ',' start )? ')'
+string_caselesscontainsword ::= 'caselessContainsWord(' phrase ( ',' start )? ')'
+/* new in 5.0 - end */
+
+string_abbrev ::= 'abbrev(' info ( ',' length )? ')'
 
 string_abs ::= 'abs'
 
@@ -145,7 +161,7 @@ string_c2d ::= 'c2d' ( '(' n ')' )?
 
 string_c2x ::= 'c2x'
 
-string_caselessabbrev ::= 'caselessAbbev(' info ( ',' length )? ')'
+string_caselessabbrev ::= 'caselessAbbrev(' info ( ',' length )? ')'
 
 string_caselesschangestr ::= 'caselessChangeStr(' needle ',' newneedle ( ',' count )? ')'
 
@@ -249,9 +265,9 @@ string_subchar ::= 'subChar(' n ')'
 
 string_substr ::= 'substr(' n (',' length? (',' pad)? )? ')'
 
-string_subword ::= 'subword(' n ( ',' length )? ')'
+string_subword ::= 'subWord(' n ( ',' length )? ')'
 
-string_subwords ::= 'subwords(' n? (',' length)? ')'
+string_subwords ::= 'subWords(' n? (',' length)? ')'
 
 string_translate ::= 'translate(' tableo? ',' tablei? ',' pad? ',' n? ',' length? ')' 
 

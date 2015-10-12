@@ -13,14 +13,15 @@ call ::= 'CALL' ( ( name | '(' expr ')' ) (expression ( ',' expression )* )? |
 
 funct_call ::= 'result' '=' name '(' expression ( ( ',' expression)+ )? ')' ';'
 
-do ::= ('DO' | 'LOOP') ( 'LABEL' name )? ( REPETITOR - fragment )? ( CONDITIONAL - fragment )? ';' 
-           ( instruction ';' )* 'END' ( name )? ';'
+do_start       ::= ('DO' | 'LOOP') ( 'LABEL' name )? ( REPETITOR - fragment )? ( CONDITIONAL - fragment )? ';'
+do_instruction ::= ( instruction ';' )*
+do_end         ::= 'END' ( name )? ';'
 
-do_repetitor ::= ( control1 '=' expri ( 'TO' exprt )? ( 'BY' exprb )? ( 'FOR' exprf )? |
-/* Chg in 5.0 */   control2 'OVER' collection ( 'FOR' exprf )? |
-/* New in 5.0 */   'WITH' ('INDEX' index)? ('ITEM' item)? 'OVER' supplier ( 'FOR' exprf )? |
+do_repetitor   ::= (control1 '=' expri ( 'TO' exprt )? ( 'BY' exprb )? ( 'FOR' exprf )? |
+/* chg in 5.0 */    control2 'OVER' collection ( 'FOR' exprf )? |
+/* new in 5.0 */   'WITH' ('INDEX' index)? ('ITEM' item)? 'OVER' supplier ( 'FOR' exprf )? |
                    'FOREVER' |
-                   exprr )
+                    exprr )
 
 do_conditional ::= ( 'WHILE' exprw (',' exprw)* | 'UNTIL' expru (',' expru)* )
 

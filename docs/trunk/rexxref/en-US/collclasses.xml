@@ -2534,7 +2534,6 @@ to having an item that is the same as the index. Any object can be placed
 in a bag, and the same object can be placed in a bag several times.
 </para>
 
-<!-- modified: new() may be a 5.0 bug -->
 <!-- modified: added from BagMixin class: difference, intersection, putAll, subset, union, xor (see interpreter\RexxClasses\CoreClasses.orx) -->
 <!-- $GENERATED-20150924-START rexxrefClassTable(Bag) -->
 <table id="ooRexxBagClass" frame="all" pgwide="0">
@@ -2567,9 +2566,7 @@ in a bag, and the same object can be placed in a bag several times.
  </row>
  <row><entry>
   <simplelist>
-<!-- new() may be a 5.0 bug
    <member><xref linkend="mthBagNew" xrefstyle="select:title"/></member>
--->
    <member><xref linkend="mthBagOf" xrefstyle="select:title"/></member>
   </simplelist>
   <simplelist columns="3">
@@ -2605,6 +2602,21 @@ in a bag, and the same object can be placed in a bag several times.
 </tgroup>
 </table>
 <!-- $GENERATED-20150924-END rexxrefClassTable(Bag) -->
+
+
+<!-- Class Bag - method new ======================== -->
+<section id="mthBagNew" revisionflag="added"><title>*NEW* new (Class Method)</title>
+<para>
+<indexterm><primary>new method</primary><secondary>of Bag class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>new method</secondary><tertiary>of Bag class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/bag_new.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns a new empty Bag object.
+</para>
+</section>
+
 
 <section id="mthBagOf"><title>of (Class Method)</title>
 <indexterm><primary>of method</primary>
@@ -4604,7 +4616,7 @@ as <xref linkend="clsDirectory" xrefstyle="template:class Directory"/> does.
 </para>
 
 
-<section id="mthStringTableNew"><title>new (Class Method)</title>
+<section id="mthStringTableNew" revisionflag="added"><title>*NEW* new (Class Method)</title>
 <indexterm><primary>new method</primary>
 <secondary>of StringTable class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -4620,7 +4632,7 @@ as <xref linkend="clsDirectory" xrefstyle="template:class Directory"/> does.
 <para>Returns an empty StringTable object.</para>
 </section>
 
-<section id="mthStringTableAtGet"><title>[]</title>
+<section id="mthStringTableAtGet" revisionflag="added"><title>*NEW* []</title>
 <indexterm><primary>[] method</primary>
 <secondary>of StringTable class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -4638,7 +4650,7 @@ This method is the same as the at() (<xref linkend="mthStringTablePut" />)
 method.</para>
 </section>
 
-<section id="mthStringTablePutSet"><title>[]=</title>
+<section id="mthStringTablePutSet" revisionflag="added"><title>*NEW* []=</title>
 <indexterm><primary>[]= method</primary>
 <secondary>of StringTable class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -4657,7 +4669,7 @@ method.
 </para>
 </section>
 
-<section id="mthStringTableAllIndexes"><title>allIndexes</title>
+<section id="mthStringTableAllIndexes" revisionflag="added"><title>*NEW* allIndexes</title>
 <indexterm><primary>allIndexes method</primary>
 <secondary>of StringTable class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -4673,7 +4685,7 @@ method.
 <para>Returns an array of all the StringTable indexes.</para>
 </section>
 
-<section id="mthStringTableAllItems"><title>allItems</title>
+<section id="mthStringTableAllItems" revisionflag="added"><title>*NEW* allItems</title>
 <indexterm><primary>allItems method</primary>
 <secondary>of StringTable class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -4689,7 +4701,7 @@ method.
 <para>Returns an array of all items contained in the StringTable.</para>
 </section>
 
-<section id="mthStringTableAt"><title>at</title>
+<section id="mthStringTableAt" revisionflag="added"><title>*NEW* at</title>
 <indexterm><primary>at method</primary>
 <secondary>of StringTable class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -4715,7 +4727,7 @@ say .environment~at("OBJECT")   /* Produces: "The Object class" */
 </example>
 </section>
 
-<section id="mthStringTableEmpty"><title>empty</title>
+<section id="mthStringTableEmpty" revisionflag="added"><title>*NEW* empty</title>
 <indexterm><primary>empty method</primary>
 <secondary>of StringTable class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -4732,7 +4744,7 @@ say .environment~at("OBJECT")   /* Produces: "The Object class" */
 </para>
 </section>
 
-<section id="mthStringTableEntry"><title>entry</title>
+<section id="mthStringTableEntry" revisionflag="added"><title>*NEW* entry</title>
 <indexterm><primary>entry method</primary>
 <secondary>of StringTable class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -4751,7 +4763,7 @@ If there is no entry for <emphasis role="italic">name</emphasis> the
 Nil object is returned.</para>
 </section>
 
-<section id="mthStringTableHasEntry"><title>hasEntry</title>
+<section id="mthStringTableHasEntry" revisionflag="added"><title>*NEW* hasEntry</title>
 <indexterm><primary>hasEntry method</primary>
 <secondary>of StringTable class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -4769,7 +4781,7 @@ an entry for index <emphasis role="italic">name</emphasis>
 (translated to uppercase), or <computeroutput>0</computeroutput> (false).</para>
 </section>
 
-<section id="mthStringTableHasIndex"><title>hasIndex</title>
+<section id="mthStringTableHasIndex" revisionflag="added"><title>*NEW* hasIndex</title>
 <indexterm><primary>hasIndex method</primary>
 <secondary>of StringTable class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -4788,7 +4800,7 @@ contains any item associated with index
 (false).</para>
 </section>
 
-<section id="mthStringTableHasItem"><title>hasItem</title>
+<section id="mthStringTableHasItem" revisionflag="added"><title>*NEW* hasItem</title>
 <indexterm><primary>hasItem method</primary>
 <secondary>of StringTable class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -4808,7 +4820,7 @@ Item equality is determined by using the == method of <emphasis role="italic">it
 </para>
 </section>
 
-<section id="mthStringTableIndex"><title>index</title>
+<section id="mthStringTableIndex" revisionflag="added"><title>*NEW* index</title>
 <indexterm><primary>index method</primary>
 <secondary>of StringTable class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -4829,7 +4841,7 @@ Item equality is determined by using the == method of <emphasis role="italic">it
 </para>
 </section>
 
-<section id="mthStringTableIsEmpty"><title>isEmpty</title>
+<section id="mthStringTableIsEmpty" revisionflag="added"><title>*NEW* isEmpty</title>
 <indexterm><primary>isEmpty method</primary>
 <secondary>of StringTable class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -4847,7 +4859,7 @@ is empty.  Returns
 <computeroutput>0</computeroutput> (false) otherwise.</para>
 </section>
 
-<section id="mthStringTableItems"><title>items</title>
+<section id="mthStringTableItems" revisionflag="added"><title>*NEW* items</title>
 <indexterm><primary>items method</primary>
 <secondary>of StringTable class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -4863,7 +4875,7 @@ is empty.  Returns
 <para>Returns the number of items in the collection.</para>
 </section>
 
-<section id="mthStringTableMakeArray"><title>makeArray</title>
+<section id="mthStringTableMakeArray" revisionflag="added"><title>*NEW* makeArray</title>
 <indexterm><primary>makeArray method</primary>
 <secondary>of StringTable class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -4882,7 +4894,7 @@ The collection items appear in the array in an unspecified order.
 (The program should not rely on any order.)</para>
 </section>
 
-<section id="mthStringTablePut"><title>put</title>
+<section id="mthStringTablePut" revisionflag="added"><title>*NEW* put</title>
 <indexterm><primary>put method</primary>
 <secondary>of StringTable class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -4902,7 +4914,7 @@ The new item replaces any existing item or method
 associated with index <emphasis role="italic">name</emphasis>.</para>
 </section>
 
-<section id="mthStringTableRemove"><title>remove</title>
+<section id="mthStringTableRemove" revisionflag="added"><title>*NEW* remove</title>
 <indexterm><primary>remove method</primary>
 <secondary>of StringTable class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -4947,7 +4959,7 @@ If there is no item with index
 </section>
 
 
-<section id="mthStringTableRemoveItem"><title>removeItem</title>
+<section id="mthStringTableRemoveItem" revisionflag="added"><title>*NEW* removeItem</title>
 <indexterm><primary>removeItem method</primary>
 <secondary>of StringTable class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -4967,7 +4979,7 @@ Item equality is determined by using the == method of <emphasis role="italic">it
 </para>
 </section>
 
-<section id="mthStringTableSetEntry"><title>setEntry</title>
+<section id="mthStringTableSetEntry" revisionflag="added"><title>*NEW* setEntry</title>
 <indexterm><primary>setEntry method</primary>
 <secondary>of StringTable class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -4988,7 +5000,7 @@ entry or method for <emphasis role="italic">name</emphasis>. If you omit
 method with this <emphasis role="italic">name</emphasis>.</para>
 </section>
 
-<section id="mthStringTableSupplier"><title>supplier</title>
+<section id="mthStringTableSupplier" revisionflag="added"><title>*NEW* supplier</title>
 <indexterm><primary>supplier method</primary>
 <secondary>of StringTable class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -5008,7 +5020,7 @@ The supplier iterates the items in an unspecified order.
 </para>
 </section>
 
-<section id="mthStringTableUnknown"><title>unknown</title>
+<section id="mthStringTableUnknown" revisionflag="added"><title>*NEW* unknown</title>
 <indexterm><primary>unknown method</primary>
 <secondary>of StringTable class</secondary></indexterm>
 <indexterm><primary>method</primary>

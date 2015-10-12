@@ -2075,146 +2075,132 @@ room~uninherit(location)
 <para>String objects represent character-string data values. A character
 string value can have any length and contain any characters.
 </para>
+
+<!-- modified: move new() to top; re-add hashCode() -->
+<!-- $GENERATED-20151011-START rexxrefClassTable(String) -->
 <table id="ooRexxStringClass" frame="all" pgwide="0">
-<title>ooRexx String Class</title>
-<tgroup cols="3" align="left" colsep="1" rowsep="1">
-<colspec colname="c1" />
-<colspec colname="c2" />
-<colspec colname="c3" />
+<title>String Class</title>
+<tgroup cols="1">
 <tbody>
-   <row>
-      <entry namest="c1" nameend="c3" align="center"><emphasis role="bold">Object</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c3" align="center">&#x2193;</entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c3" align="center"><emphasis role="bold">String</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c3" align="left">+ Comparable</entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c3" align="left">
-<screen>new
-cr
-nl
-null
-tab
-</screen>
-      </entry>
-   </row>
-   <row>
-      <entry>
-<screen>+ - * ** / // %
-\ = \= &lt;&gt; &gt;&lt; == \==
-&gt; &gt;= \&gt; &lt; &lt;= \&lt;
-&gt;&gt; &gt;&gt;= &lt;&lt; &lt;&lt;=
-\&lt;&lt; \&gt;&gt; &amp; &amp;&amp; | ||
-'' (abuttal)
-' ' (blank)
-abbrev
-abs
-b2x
-bitAnd
-bitOr
-bitXor
-c2d
-c2x
-caselessAbbrev
-caselessChangeStr
-caselessCompare
-caselessCompareTo
-caselessCountStr
-caselessEquals
-caselessLastPos
-caselessMatch
-caselessMatchChar
-caselessPos
-caselessWordPos
-ceiling
-</screen>
-      </entry>
-      <entry>
-<screen>center/centre
-changeStr
-compare
-compareTo
-copies
-countStr
-d2c
-d2x
-dataType
-decodeBase64
-delStr
-delWord
-encodeBase64
-equals
-floor
-format
-hashCode
-insert
-lastPos
-left
-length
-lower
-makeArray
-makeString
-match
-matchChar
-max
-min
-</screen>
-      </entry>
-      <entry>
-<screen>overlay
-pos
-replaceAt
-reverse
-right
-round
-sign
-space
-strip
-subChar
-subStr
-subWord
-subWords
-translate
-trunc
-upper
-verify
-word
-wordIndex
-wordLength
-wordPos
-words
-x2b
-x2c
-x2d
-</screen>
-      </entry>
-   </row>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">+ Comparable (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  Methods inherited from the <xref linkend="clsComparable" xrefstyle="template:Comparable class"/>
+  <xi:include href="comparableclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+ </entry></row>
+ <row><entry align="center"><emphasis role="bold">String</emphasis></entry>
+ </row>
+ <row><entry>
+  <simplelist columns="3">
+   <member><xref linkend="mthStringNew" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringCr" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringNl" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringNull" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringTab" xrefstyle="select:title"/></member>
+  </simplelist>
+  <simplelist columns="3">
+   <member><xref linkend="mthStringConcatenationMethods" xrefstyle="select:title"/> (abuttal) || (blank)</member>
+   <member><xref linkend="mthStringArithmeticMethods" xrefstyle="select:title"/> + - * ** / // %</member>
+   <member><xref linkend="mthStringComparisonMethods" xrefstyle="select:title"/> = == &lt; &lt;= &lt;&lt; &lt;&lt;= &lt;> > >= >&lt; >> >>= \= \== \&lt; \&lt;&lt; \> \>></member>
+   <member><xref linkend="mthStringLogicalMethods" xrefstyle="select:title"/> \ &amp; &amp;&amp; |</member>
+   <member><xref linkend="mthStringAtGet" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringIif" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringAbbrev" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringAbs" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringAppend" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringB2x" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringBitAnd" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringBitOr" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringBitXor" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringC2d" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringC2x" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringCaselessAbbrev" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringCaselessChangeStr" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringCaselessCompare" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringCaselessCompareTo" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringCaselessContains" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringCaselessContainsWord" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringCaselessCountStr" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringCaselessEndsWith" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringCaselessEquals" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringCaselessLastPos" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringCaselessMatch" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringCaselessMatchChar" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringCaselessPos" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringCaselessStartsWith" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringCaselessWordPos" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringCeiling" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringCenter" xrefstyle="select:title"/></member>
+<!-- see center()
+   <member><xref linkend="mthStringCentre" xrefstyle="select:title"/></member>
+-->
+   <member><xref linkend="mthStringChangeStr" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringCompare" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringCompareTo" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringContains" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringContainsWord" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringCopies" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringCountStr" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringD2c" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringD2x" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringDataType" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringDecodeBase64" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringDelStr" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringDelWord" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringEncodeBase64" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringEndsWith" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringEquals" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringFloor" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringFormat" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringHashCode" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringInsert" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringLastPos" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringLeft" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringLength" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringLower" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringMakeArray" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringMakeString" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringMatch" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringMatchChar" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringMax" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringMin" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringOverlay" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringPos" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringReplaceAt" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringReverse" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringRight" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringRound" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringSign" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringSpace" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringStartsWith" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringStrip" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringSubChar" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringSubstr" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringSubWord" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringSubWords" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringTranslate" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringTrunc" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringUpper" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringVerify" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringWord" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringWordIndex" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringWordLength" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringWordPos" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringWords" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringX2b" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringX2c" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringX2d" xrefstyle="select:title"/></member>
+  </simplelist>
+ </entry></row>
 </tbody>
 </tgroup>
 </table>
+<!-- $GENERATED-20151011-END rexxrefClassTable(String) -->
 
-<note><title>Note</title>
-<para>The String class also has available class methods that its
-metaclass, the Class class (<xref linkend="clsClass" />, defines.
-</para></note>
-
-<section><title>Inherited Methods</title>
-
-<para>Methods inherited from the
-Object class (<xref linkend="clsObject" />.</para>
-<xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-
-<para>Methods inherited from the
-Comparable class (<xref linkend="clsComparable" />.</para>
-<xi:include href="comparableclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-
-</section>
 
 <section id="mthStringNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
@@ -2802,6 +2788,64 @@ f "def"     ->   "abc def"
 </example>
 </section>
 
+<!-- Class String - method [] ======================== --> 
+<section id="mthStringAtGet" revisionflag="added"><title>*NEW* []</title>
+<para>
+<indexterm><primary>[] method</primary><secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>[] method</secondary><tertiary>of String class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/string_atget.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+<para>If <emphasis role="italic">length</emphasis> is omitted,
+returns the character at position <emphasis role="italic">n</emphasis>
+of the receiving string.
+If <emphasis role="italic">n</emphasis> is larger than the length of the
+receiving string, a null string is returned.
+</para>
+<para>If <emphasis role="italic">length</emphasis> is specified,
+returns the substring of the receiving string starting at position
+<emphasis role="italic">n</emphasis> and of length <emphasis role="italic">length</emphasis>.
+No padding occurs for any portion of the returned string not within the
+boundaries of the receiving string.
+</para>
+<para>The <emphasis role="italic">n</emphasis> must be a positive whole number,
+and, if specified, <emphasis role="italic">length</emphasis> must be a
+a non-negative whole number.
+</para>
+<para>See also methods <xref linkend="mthStringSubChar" xrefstyle="select:title"/>
+and <xref linkend="mthStringSubstr" xrefstyle="select:title"/>.
+</para>
+<para><example>
+<title>Class String &mdash; [] method</title>
+<programlisting><![CDATA["abc"[2]       -- "b"
+"abc"[2,4]     -- "bc"
+]]></programlisting></example></para>
+</section>
+
+
+<!-- Class String - method ? ======================== --> 
+<section id="mthStringIif" revisionflag="added"><title>*NEW* ? (inline if)</title>
+<para>
+<indexterm><primary>? method</primary><secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>? method</secondary><tertiary>of String class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/string_iif.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns <emphasis role="italic">first</emphasis> if the receiving string is
+true ("1"),
+returns <emphasis role="italic">second</emphasis> if it is false ("0").
+</para>
+<para><example>
+<title>Class String &mdash; ? method</title>
+<programlisting><![CDATA[do apples = 0 to 2
+  say apples (apples = 1)~?("apple", "apples")
+end
+]]></programlisting></example></para>
+</section>
+
+
 <section id="mthStringAbbrev"><title>abbrev</title>
 <indexterm><primary>abbrev method</primary>
 <secondary>of String class</secondary></indexterm>
@@ -2892,6 +2936,22 @@ sign and is formatted according to the current NUMERIC settings.</para>
 </programlisting>
 </example>
 </section>
+
+
+<!-- Class String - method append ======================== --> 
+<section id="mthStringAppend" revisionflag="added"><title>*NEW* append</title>
+<para>
+<indexterm><primary>append method</primary><secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>append method</secondary><tertiary>of String class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/string_append.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns a string consisting of <emphasis role="italic">string</emphasis>
+appended to the receiving string.
+</para>
+</section>
+
 
 <section id="mthStringB2x"><title>b2x</title>
 <indexterm><primary>b2x method</primary>
@@ -3406,6 +3466,107 @@ place to the end of the target string.
 </example>
 </section>
 
+
+<!-- Class String - method caselessContains ======================== --> 
+<section id="mthStringCaselessContains" revisionflag="added"><title>*NEW* caselessContains</title>
+<para>
+<indexterm><primary>caselessContains method</primary><secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>caselessContains method</secondary><tertiary>of String class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/string_caselesscontains.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns .true ("1") if the receiving string contains the
+<emphasis role="italic">other</emphasis> string.
+It returns .false ("0") if <emphasis role="italic">other</emphasis> is
+the null string or is not found within the receiving string.
+The search is performed using caseless comparisons.
+</para>
+<para>By default, the search starts at the first character of the
+receiving string and continues to the end.
+You can override this by specifying <emphasis role="italic">start</emphasis>,
+the point at which the search starts, and <emphasis role="italic">length</emphasis>,
+the bounding limit for the search.
+</para>
+<para>If specified, <emphasis role="italic">start</emphasis> must be a positive
+whole number and <emphasis role="italic">length</emphasis> must be
+a non-negative whole number.
+</para>
+<para>See also
+<itemizedlist spacing="compact">
+ <listitem>
+  <para>method <xref linkend="mthStringContains" xrefstyle="select:title"/>,</para>
+ </listitem>
+ <listitem>
+  <para>method <xref linkend="mthStringCaselessStartsWith" xrefstyle="select:title"/>,</para>
+ </listitem>
+ <listitem>
+  <para>method <xref linkend="mthStringCaselessEndsWith" xrefstyle="select:title"/>, and</para>
+ </listitem>
+ <listitem>
+  <para>method <xref linkend="mthStringCaselessPos" xrefstyle="select:title"/>.</para>
+ </listitem>
+</itemizedlist>
+</para>
+<para><example>
+<title>Class String &mdash; caselessContains method</title>
+<programlisting><![CDATA[say "-abcdef-"~caselessContains("EF")         -- 1
+say "-abcdef-"~caselessContains("-", 2, 6)    -- 0
+]]></programlisting></example></para>
+</section>
+
+
+<!-- Class String - method caselessContainsWord ======================== --> 
+<section id="mthStringCaselessContainsWord" revisionflag="added"><title>*NEW* caselessContainsWord</title>
+<para>
+<indexterm><primary>caselessContainsWord method</primary><secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>caselessContainsWord method</secondary><tertiary>of String class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/string_caselesscontainsword.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns .true ("1") if <emphasis role="italic">phrase</emphasis>
+is found in the receiving string.
+Returns .false ("0") if <emphasis role="italic">phrase</emphasis>
+contains no words or if <emphasis role="italic">phrase</emphasis>
+is not found.
+Word matches are made independent of case.
+Multiple whitespace characters between words in either
+<emphasis role="italic">phrase</emphasis> or the receiving string are
+treated as a single blank for the comparison, but, otherwise, the words
+must match, except for case.</para>
+<para>By default the search starts at the first word in the receiving
+string.
+You can override this by specifying <emphasis role="italic">start</emphasis>
+(which must be a positive whole number),
+the word at which the search is to be started.</para>
+<para>See also
+<itemizedlist spacing="compact">
+ <listitem>
+  <para>method <xref linkend="mthStringContainsWord" xrefstyle="select:title"/> and</para>
+ </listitem>
+ <listitem>
+  <para>method <xref linkend="mthStringCaselessWordPos" xrefstyle="select:title"/>
+  (<methodname>caselessContainsWord</methodname> returns .false ("0") exactly if
+  <methodname>caselessWordPos</methodname> would have returned
+  <computeroutput>"0"</computeroutput>.)</para>
+ </listitem>
+</itemizedlist>
+</para>
+<para><example>
+<title>Class String &mdash; caselessContainsWord method</title>
+<programlisting><![CDATA[good = "Now is the time for all good men"
+say good~caselessContainsWord("the")          -- .true
+say good~caselessContainsWord("The")          -- .true
+say good~caselessContainsWord("is the")       -- .true
+say good~caselessContainsWord("is   the ")    -- .true
+say good~caselessContainsWord("is time")      -- .false
+say good~caselessContainsWord("time")         -- .true
+say good~caselessContainsWord("time", 5)      -- .false
+]]></programlisting></example></para>
+</section>
+
+
 <section id="mthStringCaselessCountStr"><title>caselessCountStr</title>
 <indexterm><primary>caselessCountStr method</primary>
 <secondary>of String class</secondary></indexterm>
@@ -3440,6 +3601,41 @@ string that do not overlap.  All matches are made using caseless comparisons.</p
 </programlisting>
 </example>
 </section>
+
+
+<!-- Class String - method caselessEndsWith ======================== --> 
+<section id="mthStringCaselessEndsWith" revisionflag="added"><title>*NEW* caselessEndsWith</title>
+<para>
+<indexterm><primary>caselessEndsWith method</primary><secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>caselessEndsWith method</secondary><tertiary>of String class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/string_caselessendswith.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns .true ("1") if the characters of the <emphasis role="italic">other</emphasis> match the
+characters at the end of the target string.
+Returns .false ("0") if the characters are not a match, or if
+<emphasis role="italic">other</emphasis> is the null string.
+The match is made using caseless comparisons.
+</para>
+<para>The caselessEndsWith method is useful for efficient string parsing as it does not
+require new string objects be extracted from the target string.
+</para>
+<para>See also
+<itemizedlist spacing="compact">
+ <listitem>
+  <para>method <xref linkend="mthStringCaselessStartsWith" xrefstyle="select:title"/>,</para>
+ </listitem>
+ <listitem>
+  <para>method <xref linkend="mthStringEndsWith" xrefstyle="select:title"/>, and</para>
+ </listitem>
+ <listitem>
+  <para>method <xref linkend="mthStringCaselessMatch" xrefstyle="select:title"/>.</para>
+ </listitem>
+</itemizedlist>
+</para>
+</section>
+
 
 <section id="mthStringCaselessEquals"><title>caselessEquals</title>
 <indexterm><primary>caselessEquals method</primary>
@@ -3660,6 +3856,41 @@ a non-negative whole number.
 </programlisting>
 </example>
 </section>
+
+
+<!-- Class String - method caselessStartsWith ======================== --> 
+<section id="mthStringCaselessStartsWith" revisionflag="added"><title>*NEW* caselessStartsWith</title>
+<para>
+<indexterm><primary>caselessStartsWith method</primary><secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>caselessStartsWith method</secondary><tertiary>of String class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/string_caselessstartswith.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns .true ("1") if the characters of the <emphasis role="italic">other</emphasis> match the
+characters at the start of the target string.
+Returns .false ("0") if the characters are not a match, or if
+<emphasis role="italic">other</emphasis> is the null string.
+The match is made using caseless comparisons.
+</para>
+<para>The caselessStartsWith method is useful for efficient string parsing as it does not
+require new string objects be extracted from the target string.
+</para>
+<para>See also
+<itemizedlist spacing="compact">
+ <listitem>
+  <para>method <xref linkend="mthStringStartsWith" xrefstyle="select:title"/>,</para>
+ </listitem>
+ <listitem>
+  <para>method <xref linkend="mthStringCaselessEndsWith" xrefstyle="select:title"/>, and</para>
+ </listitem>
+ <listitem>
+  <para>method <xref linkend="mthStringCaselessMatch" xrefstyle="select:title"/>.</para>
+ </listitem>
+</itemizedlist>
+</para>
+</section>
+
 
 <section id="mthStringCaselessWordPos"><title>caselessWordPos</title>
 <indexterm><primary>caselessWordPos method</primary>
@@ -3931,6 +4162,103 @@ place to the end of the target string.
 </programlisting>
 </example>
 </section>
+
+
+<!-- Class String - method contains ======================== --> 
+<section id="mthStringContains" revisionflag="added"><title>*NEW* contains</title>
+<para>
+<indexterm><primary>contains method</primary><secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>contains method</secondary><tertiary>of String class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/string_contains.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns .true ("1") if the receiving string contains the
+<emphasis role="italic">other</emphasis> string.
+It returns .false ("0") if <emphasis role="italic">other</emphasis> is
+the null string or is not found within the receiving string.
+</para>
+<para>By default, the search starts at the first character of the
+receiving string and continues to the end.
+You can override this by specifying <emphasis role="italic">start</emphasis>,
+the point at which the search starts, and <emphasis role="italic">length</emphasis>,
+the bounding limit for the search.
+If specified, <emphasis role="italic">start</emphasis> must be a positive
+whole number and <emphasis role="italic">length</emphasis> must be
+a non-negative whole number.
+</para>
+<para>See also
+<itemizedlist spacing="compact">
+ <listitem>
+  <para>method <xref linkend="mthStringCaselessContains" xrefstyle="select:title"/>,</para>
+ </listitem>
+ <listitem>
+  <para>method <xref linkend="mthStringStartsWith" xrefstyle="select:title"/>,</para>
+ </listitem>
+ <listitem>
+  <para>method <xref linkend="mthStringEndsWith" xrefstyle="select:title"/>, and</para>
+ </listitem>
+ <listitem>
+  <para>method <xref linkend="mthStringPos" xrefstyle="select:title"/>.</para>
+ </listitem>
+</itemizedlist>
+</para>
+<para><example>
+<title>Class String &mdash; caselessContains method</title>
+<programlisting><![CDATA[say "-abcdef-"~contains("ef")         -- 1
+say "-abcdef-"~contains("-", 2, 6)    -- 0
+]]></programlisting></example></para>
+</section>
+
+
+<!-- Class String - method containsWord ======================== --> 
+<section id="mthStringContainsWord" revisionflag="added"><title>*NEW* containsWord</title>
+<para>
+<indexterm><primary>containsWord method</primary><secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>containsWord method</secondary><tertiary>of String class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/string_containsword.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns .true ("1") if <emphasis role="italic">phrase</emphasis>
+is found in the receiving string.
+Returns .false ("0") if <emphasis role="italic">phrase</emphasis>
+contains no words or if <emphasis role="italic">phrase</emphasis>
+is not found.
+Multiple whitespace characters between words in either
+<emphasis role="italic">phrase</emphasis> or the receiving string are
+treated as a single blank for the comparison, but, otherwise, the words
+must match exactly.</para>
+<para>By default the search starts at the first word in the receiving
+string.
+You can override this by specifying <emphasis role="italic">start</emphasis>
+(which must be positive whole number),
+the word at which the search is to be started.</para>
+<para>See also
+<itemizedlist spacing="compact">
+ <listitem>
+  <para>method <xref linkend="mthStringCaselessContainsWord" xrefstyle="template:caselessContainsWord"/> and</para>
+ </listitem>
+ <listitem>
+  <para>method <xref linkend="mthStringWordPos" xrefstyle="template:wordPos"/>
+  (containsWord returns .false ("0") exactly if wordPos would have returned
+  <computeroutput>"0"</computeroutput>.)</para>
+ </listitem>
+</itemizedlist>
+</para>
+<para><example>
+<title>Class String &mdash; containsWord method</title>
+<programlisting><![CDATA[good = "Now is the time for all good men"
+say good~containsWord("the")          -- .true
+say good~containsWord("The")          -- .false
+say good~containsWord("is the")       -- .true
+say good~containsWord("is   the ")    -- .true
+say good~containsWord("is time")      -- .false
+say good~containsWord("time")         -- .true
+say good~containsWord("time", 5)      -- .false
+]]></programlisting></example></para>
+</section>
+
 
 <section id="mthStringCopies"><title>copies</title>
 <indexterm><primary>copies method</primary>
@@ -4401,6 +4729,40 @@ string.</para>
 </programlisting>
 </example>
 </section>
+
+
+<!-- Class String - method endsWith ======================== --> 
+<section id="mthStringEndsWith" revisionflag="added"><title>*NEW* endsWith</title>
+<para>
+<indexterm><primary>endsWith method</primary><secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>endsWith method</secondary><tertiary>of String class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/string_endswith.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns .true ("1") if the characters of the <emphasis role="italic">other</emphasis> match the
+characters at the end of the target string.
+Returns .false ("0") if the characters are not a match, or if
+<emphasis role="italic">other</emphasis> is the null string.
+</para>
+<para>The endsWith method is useful for efficient string parsing as it does not
+require new string objects be extracted from the target string.
+</para>
+<para>See also
+<itemizedlist spacing="compact">
+ <listitem>
+  <para>method <xref linkend="mthStringStartsWith" xrefstyle="select:title"/>,</para>
+ </listitem>
+ <listitem>
+  <para>method <xref linkend="mthStringCaselessEndsWith" xrefstyle="select:title"/>, and</para>
+ </listitem>
+ <listitem>
+  <para>method <xref linkend="mthStringMatch" xrefstyle="select:title"/>.</para>
+ </listitem>
+</itemizedlist>
+</para>
+</section>
+
 
 <section id="mthStringEquals"><title>equals</title>
 <indexterm><primary>equals method</primary>
@@ -5304,6 +5666,40 @@ and the default <emphasis role="italic">pad</emphasis> character is a blank.
 </example>
 </section>
 
+
+<!-- Class String - method startsWith ======================== --> 
+<section id="mthStringStartsWith" revisionflag="added"><title>*NEW* startsWith</title>
+<para>
+<indexterm><primary>startsWith method</primary><secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>startsWith method</secondary><tertiary>of String class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/string_startswith.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns .true ("1") if the characters of the <emphasis role="italic">other</emphasis> match the
+characters at the start of the target string.
+Returns .false ("0") if the characters are not a match, or if
+<emphasis role="italic">other</emphasis> is the null string.
+</para>
+<para>The startsWith method is useful for efficient string parsing as it does not
+require new string objects be extracted from the target string.
+</para>
+<para>See also
+<itemizedlist spacing="compact">
+ <listitem>
+  <para>method <xref linkend="mthStringCaselessStartsWith" xrefstyle="select:title"/>,</para>
+ </listitem>
+ <listitem>
+  <para>method <xref linkend="mthStringEndsWith" xrefstyle="select:title"/>, and</para>
+ </listitem>
+ <listitem>
+  <para>method <xref linkend="mthStringMatch" xrefstyle="select:title"/>.</para>
+ </listitem>
+</itemizedlist>
+</para>
+</section>
+
+
 <section id="mthStringStrip"><title>strip</title>
 <indexterm><primary>strip method</primary>
 <secondary>of String class</secondary></indexterm>
@@ -5370,7 +5766,7 @@ will be removed.</para>
 </example>
 </section>
 
-<section id="mthStringsubChar"><title>subchar</title>
+<section id="mthStringSubChar"><title>subChar</title>
 <indexterm><primary>subchar method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -5387,6 +5783,9 @@ will be removed.</para>
 string. <emphasis>n</emphasis> must be a positive whole number. If
 <emphasis>n</emphasis> is greater that the length of the receiving string
 then a zero-length string is returned.</para>
+<para>See also methods <xref linkend="mthStringAtGet" xrefstyle="select:title"/>
+and <xref linkend="mthStringSubstr" xrefstyle="select:title"/>.
+</para>
 </section>
 
 <section id="mthStringSubstr"><title>substr</title>
@@ -5417,6 +5816,19 @@ only pad characters are returned.</para>
 <para>If you omit <emphasis role="italic">length</emphasis>, the rest of the
 string is returned. The default <emphasis role="italic">pad</emphasis>
 character is a blank.</para>
+<para>See also
+<itemizedlist spacing="compact">
+<listitem><para>method <xref linkend="mthStringAtGet" xrefstyle="select:title"/>,</para></listitem>
+<listitem><para>method <xref linkend="mthStringSubChar" xrefstyle="select:title"/>,</para></listitem>
+<listitem><para>method <xref linkend="mthStringLeft" xrefstyle="select:title"/>,</para></listitem>
+<listitem><para>method <xref linkend="mthStringRight" xrefstyle="select:title"/>.</para></listitem>
+<listitem><para>
+In some situations the positional (numeric) patterns of
+<xref linkend="parsingch" xrefstyle="select:title"/> templates are more
+convenient for selecting substrings, in particular if you need to
+extract more than one substring from a string.
+</para></listitem>
+</itemizedlist></para>
 <indexterm><primary>examples</primary>
 <secondary>subStr method</secondary></indexterm>
 <example id="ex.string-substr">
@@ -5427,13 +5839,6 @@ character is a blank.</para>
 "abc"~substr(2,6,".")    ->    "bc...."
 </programlisting>
 </example>
-
-<note><title>Note</title>
-<para>In some situations the positional (numeric) patterns
-of parsing templates are more convenient for selecting substrings, in particular
-if you need to extract more than one substring from a string. See also
-<xref linkend="mthStringLeft" /> and <xref linkend="mthStringRight" />.
-</para></note>
 </section>
 
 <section id="mthStringSubWord"><title>subWord</title>
@@ -6989,7 +7394,7 @@ available classes under the name <emphasis role="italic">name</emphasis>.  This
 is added to the package as a non-public class.</para>
 </section>
 
-<section id="mthPackageAddPackage" revisionflag="changed"><title>addPackage</title>
+<section id="mthPackageAddPackage" revisionflag="changed"><title>*CHG* addPackage</title>
 <indexterm><primary>addPackage method</primary>
 <secondary>of Package class</secondary></indexterm>
 <indexterm><primary>method</primary>
