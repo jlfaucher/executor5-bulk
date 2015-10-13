@@ -268,7 +268,7 @@ handler routine.
 <varlistentry><term><emphasis role="italic">envname</emphasis></term>
 <listitem><para>The name of the subcommand handler.
 </para></listitem></varlistentry>
-<varlistentry><term><emphasis role="italic">libname</emphasis></term>
+<varlistentry><term><emphasis role="italic">dllname</emphasis></term>
 <listitem><para>The name of the dynamic-link file containing the subcommand
 handler routine.
 </para></listitem></varlistentry>
@@ -304,14 +304,18 @@ is used for the queue name.</para>
 see <xref linkend="xtlque" />.</para>
 <para><emphasis role="bold">Parameters:</emphasis></para>
 <variablelist>
-<varlistentry><term><emphasis role="italic">queuename</emphasis>/LIFO</term>
-<listitem><para>stacks items from STDIN last in, first out (LIFO) on a Rexx
+<varlistentry><term><emphasis role="italic">queuename</emphasis></term>
+<listitem><para>The name of the neamed Rexx queue to stack or queue items to.
+If no <emphasis role="italic">queuename</emphasis> is given, 'SESSION' is used.
+</para></listitem></varlistentry>
+<varlistentry><term>/LIFO</term>
+<listitem><para>stacks items from STDIN last in, first out (LIFO) on the Rexx
+queue.  This is the default.</para></listitem></varlistentry>
+<varlistentry><term>/FIFO</term>
+<listitem><para>queues items from STDIN first in, first out (FIFO) on the Rexx
 queue.</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="italic">queuename</emphasis>/FIFO</term>
-<listitem><para>queues items from STDIN first in, first out (FIFO) on a Rexx
-queue.</para></listitem></varlistentry>
-<varlistentry><term><emphasis role="italic">queuename</emphasis>/CLEAR</term>
-<listitem><para>removes all lines from a Rexx queue.
+<varlistentry><term>/CLEAR</term>
+<listitem><para>removes all lines from the Rexx queue.
 </para></listitem></varlistentry>
 </variablelist>
 <para>

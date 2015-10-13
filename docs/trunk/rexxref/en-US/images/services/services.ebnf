@@ -1,13 +1,10 @@
-register ::= '"rxsubcom register"' envname dllname procname
+register ::=  'RXSUBCOM' 'REGISTER' envname dllname procname
+drop ::=      'RXSUBCOM' 'DROP' envname dllname?
+query ::=     'RXSUBCOM' 'QUERY' envname dllname?
+load ::=      'RXSUBCOM' 'LOAD' envname dllname?
 
-drop ::= '"rxsubcom drop"' envname dllname
+rxqueue ::=   'RXQUEUE' ( | 'SESSION' | queuename ) ( | '/FIFO' | '/LIFO' | '/CLEAR' )
 
-query ::= '"rxsubcom query"' envname ( dllname )?
+rexxc ::=     'REXXC' inputfile outputfile? '/S'?
 
-load ::= '"rxsubcom load"' envname ( dllname )?
-
-rzqueue ::= '"rxqueue"' ( queryname )? ( '/fifo' | '/lifo' | '/clear' )?
-
-rexc ::= '"rexxc"' inputfile ( outputfile )? ( '/s' )?
-
-rxmigrate ::= '"rxmigrate"' inputfile outputfile
+rxmigrate ::= 'RXMIGRATE' inputfile outputfile
