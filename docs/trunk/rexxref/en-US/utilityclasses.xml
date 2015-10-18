@@ -892,7 +892,7 @@ result in years being subtracted from the DateTime value.
 a non-leap year, the day will be rolled back to the 28th.
 </para>
 <example>
-<title>Class DateTime &mdash; addYears method</title>
+<title>DateTime class &mdash; addYears method</title>
 <programlisting>
 <![CDATA[
 date = .DateTime~new(2015, 6, 30)
@@ -946,7 +946,7 @@ Negative values
 result in days being subtracted from the DateTime value.
 </para>
 <example>
-<title>Class DateTime &mdash; addDays method</title>
+<title>DateTime class &mdash; addDays method</title>
 <programlisting>
 <![CDATA[
 date = .DateTime~new(2015, 6, 30)
@@ -1651,8 +1651,12 @@ For non-leap years, this returns 365.
 <secondary>Alarm class</secondary></indexterm>
 
 <para>An alarm object provides timing and
-notification capability by supplying a facility to send any message to any
-object at a given time. You can cancel an alarm before it sends its message.
+notification capability by sending a notification message to a
+notification target at the trigger time.
+</para>
+<para>An alarm can be cancelled before it triggers.
+If cancelled, an alarm will also send a notification message to the
+notification target.
 </para>
 
 <!-- Modified: remove separate alias "cancelled" -->
@@ -1700,7 +1704,7 @@ Returns .nil if no object is attached.
 <para>See also method <xref linkend="mthAlarmInit" xrefstyle="select:title"/>.
 </para>
 <!-- para><example>
-<title>Class Alarm &mdash; attachment method</title>
+<title>Alarm class &mdash; attachment method</title>
 <programlisting><![CDATA[
 @@need an example where ~attachment is called in the event handler
 ]]></programlisting></example></para -->
@@ -1738,7 +1742,7 @@ Returns .false otherwise.
 <para>See also method <xref linkend="mthAlarmCancel" xrefstyle="select:title"/>.
 </para>
 <para><example>
-<title>Class Alarm &mdash; canceled/cancelled method</title>
+<title>Alarm class &mdash; canceled/cancelled method</title>
 <programlisting><![CDATA[alarm = .Alarm~new(1 ,.message~new(.stdout, "SAY", "I", "Alarm went off"))
 call SysSleep 0.5
 alarm~cancel
@@ -1761,25 +1765,41 @@ say "Alarm" alarm~cancelled~?("cancelled", "not cancelled")    -- Alarm cancelle
 
 <para>Sets up an alarm for a future time
 <emphasis role="italic">atime</emphasis>. At this time, the alarm
-object sends the message that <emphasis role="italic">message</emphasis>,
-a message object, specifies. (See <xref linkend="clsMessage" />.)
-The <emphasis role="italic">atime</emphasis> can be a String, DateTime, or TimeSpan object.
+sends message <methodname>triggered</methodname> to the specified
+notification <emphasis role="italic">target</emphasis>.
 </para>
-<para>If <emphasis role="italic">atime</emphasis> is a DateTime object, the DateTime specifies a
-time when the alarm will be triggered.  The DateTime must be greater than the current time.</para>
-<para>If <emphasis role="italic">atime</emphasis> is a TimeSpan, the Alarm will be set to the current
-time plus the TimeSpan.  The TimeSpan must not be a negative interval.</para>
-<para>If <emphasis role="italic">atime</emphasis> is a String,
-you can specify
-this as a date and time (<computeroutput>&apos;hh:mm:ss&apos;</computeroutput>) or as
-a number of seconds
-starting at the present time. If you use the date and time format, you can specify
-a date in the default format (<computeroutput>&apos;dd Mmm yyyy&apos;</computeroutput>)
-after the time with a single blank separating the time and date. Leading and
-trailing whitespace characters are not allowed in the
-<emphasis role="italic">atime</emphasis>. If you do not
-specify a date, the Alarm uses the first future occurrence of the
-specified time.
+<para>The <emphasis role="italic">target</emphasis> must be an object
+that implements the
+<xref linkend="clsAlarmNotification" xrefstyle="template:AlarmNotification interface"/>.
+It may be a subclass of the AlarmNotification class, or a message object
+(as the Message class inherits from AlarmNotification).
+If it is a message object, the <xref linkend="mthMessageTriggered" xrefstyle="select:title"/>
+method of the Message Class will respond by simply sending the specified message. 
+</para>
+<para>The <emphasis role="italic">atime</emphasis> can be a String, DateTime, or TimeSpan object.
+If it is
+<itemizedlist spacing="compact">
+ <listitem>
+  <para>a DateTime object, the DateTime specifies a time when the alarm will be triggered.
+  The DateTime must be greater than the current time.
+  </para>
+ </listitem>
+ <listitem>
+  <para>a TimeSpan, the Alarm will be set to the current time plus the TimeSpan.
+  The TimeSpan must not be a negative interval.
+  </para>
+ </listitem>
+ <listitem>
+  <para>a String, you can specify this as a date and time (<computeroutput>&apos;hh:mm:ss&apos;</computeroutput>)
+  or as a number of seconds starting at the present time.
+  If you use the date and time format, you can specify
+  a date in the default format (<computeroutput>&apos;dd Mmm yyyy&apos;</computeroutput>)
+  after the time with a single blank separating the time and date.
+  Leading and trailing whitespace characters are not allowed in the <emphasis role="italic">atime</emphasis>.
+  If you do not specify a date, the Alarm uses the first future occurrence of the specified time.
+  </para>
+ </listitem>
+</itemizedlist>
 </para>
 <para>If specified, <emphasis role="italic">attachment</emphasis> can be an arbitrary object
 that will be attached to the alarm instance, and can later be retrieved in the event handler.
@@ -1787,6 +1807,8 @@ See method <xref linkend="mthAlarmAttachment" xrefstyle="select:title"/>.
 </para>
 <para>You can use the <xref linkend="mthAlarmCancel" xrefstyle="select:title"/>
 method to cancel a pending alarm.
+If cancelled, the alarm sends message <methodname>cancel</methodname> to
+the specified notification <emphasis role="italic">target</emphasis>.
 </para>
 
 <para>The following code sets up an alarm at 5:10 p.m. on December 15, 2015.
@@ -1860,6 +1882,160 @@ Returns .false if the alarm has been cancelled or hasn't yet triggered.
 </section>
 
 </section>
+
+
+<!-- =============================================================== --> 
+<!-- Class AlarmNotification ======================================= -->
+<section id="clsAlarmNotification" revisionflag="added"><title>*NEW* AlarmNotification Class
+<indexterm><primary>AlarmNotification class</primary></indexterm>
+<indexterm><primary>class</primary><secondary>AlarmNotification class</secondary></indexterm>
+</title>
+
+<para>The AlarmNotification class implements the notification interface
+for the Alarm class.
+</para>
+<para>For any Alarm, notifications of alarm triggering and alarm cancellation
+will be sent to the notification target specified when creating the Alarm instance.
+The notification target must implement this alarm notification interface.
+Upon alarm triggering a <methodname>triggered</methodname>
+message is sent to the notification target, and
+upon alarm cancellation a <methodname>cancel</methodname>
+message is sent to the notification target.
+</para>
+<para>This class is defined as a mixin class.
+</para>
+
+<!-- $GENERATED-20151016-START rexxrefClassTable(AlarmNotification) -->
+<table id="ooRexxAlarmNotificationClass" frame="all" pgwide="0">
+<title>AlarmNotification Class</title>
+<tgroup cols="1">
+<tbody>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">AlarmNotification (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  <simplelist>
+   <member><xref linkend="mthAlarmNotificationCancel" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthAlarmNotificationTriggered" xrefstyle="select:title"/></member>
+  </simplelist>
+ </entry></row>
+</tbody>
+</tgroup>
+</table>
+<!-- $GENERATED-20151016-END rexxrefClassTable(AlarmNotification) -->
+
+
+<!-- Class AlarmNotification - method cancel ======================= -->
+<section id="mthAlarmNotificationCancel" revisionflag="added"><title>*NEW* cancel
+<indexterm><primary>cancel method</primary><secondary>of AlarmNotification class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>cancel method</secondary><tertiary>of AlarmNotification class</tertiary></indexterm>
+</title>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/alarmnotification_cancel.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+<para>Whenever an Alarm is cancelled, this method of the alarm notification
+target will be called.
+The Alarm object that was cancelled will be provided as argument
+<emphasis role="italic">source</emphasis>.
+</para>
+<para>It is defined as a no-op and doesn't necessarily have to
+be implemented in a subclass.
+</para>
+</section>
+
+
+<!-- Class AlarmNotification - method triggered ==================== -->
+<section id="mthAlarmNotificationTriggered" revisionflag="added"><title>*NEW* triggered (Abstract method)
+<indexterm><primary>triggered method</primary><secondary>of AlarmNotification class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>triggered method</secondary><tertiary>of AlarmNotification class</tertiary></indexterm>
+</title>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/alarmnotification_triggered.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+<para>Whenever an Alarm triggers, this method of the alarm notification
+target will be called.
+The Alarm object which triggered will be provided as argument
+<emphasis role="italic">source</emphasis>.
+</para>
+<para>It is an abstract method and must be implemented in a subclass.
+</para>
+</section>
+
+</section>
+
+
+<!-- =============================================================== --> 
+<!-- Class MessageNotification ===================================== -->
+<section id="clsMessageNotification" revisionflag="added"><title>*NEW* MessageNotification Class
+<indexterm><primary>MessageNotification class</primary></indexterm>
+<indexterm><primary>class</primary><secondary>MessageNotification class</secondary></indexterm>
+</title>
+
+<para>The MessageNotification class implements the notification interface
+for the Message class.
+</para>
+<para>For any message, notification of completion of the message can be
+requested by using the <xref linkend="mthMessageNotify" xrefstyle="select:title"/>
+method of the Message class.
+This method requires as its argument a notification target, that
+implements this message notification interface.
+If notification was requested, upon message completion a <methodname>messageComplete</methodname>
+message is sent to the notification target.
+</para>
+<para>This class is defined as a mixin class.
+</para>
+
+<!-- $GENERATED-20151016-START rexxrefClassTable(MessageNotification) -->
+<table id="ooRexxMessageNotificationClass" frame="all" pgwide="0">
+<title>MessageNotification Class</title>
+<tgroup cols="1">
+<tbody>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">MessageNotification (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  <simplelist>
+   <member><xref linkend="mthMessageNotificationMessageComplete" xrefstyle="select:title"/></member>
+  </simplelist>
+ </entry></row>
+</tbody>
+</tgroup>
+</table>
+<!-- $GENERATED-20151016-END rexxrefClassTable(MessageNotification) -->
+
+
+<!-- Class MessageNotification - method messageComplete ============ -->
+<section id="mthMessageNotificationMessageComplete" revisionflag="added"><title>*NEW* messageComplete (Abstract Method)
+<indexterm><primary>messageComplete method</primary><secondary>of MessageNotification class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>messageComplete method</secondary><tertiary>of MessageNotification class</tertiary></indexterm>
+</title>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/messagenotification_messagecomplete.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+<para>Whenever a message completes processing, for which notification was
+requested by using the <xref linkend="mthMessageNotify" xrefstyle="select:title"/>
+method of the Message class, this method of the message notification target will be called.
+The Message object which completed processing will be provided as argument
+<emphasis role="italic">source</emphasis>.
+</para>
+<para>It is an abstract method and must be implemented in a subclass.
+</para>
+</section>
+
+</section>
+
 
 <section id="clsTimeSpan"><title>The TimeSpan Class</title>
 <indexterm><primary>TimeSpan class</primary></indexterm>
@@ -3774,7 +3950,7 @@ receiving string, a null string is returned.
 </itemizedlist>
 </para>
 <para><example>
-<title>Class MutableBuffer &mdash; [] method</title>
+<title>MutableBuffer class &mdash; [] method</title>
 <programlisting><![CDATA[s = .MutableBuffer~new(xrange("a", "z"))
 say s[5]        -- "e"
 say s[18, 3]    -- "rst"
@@ -3811,7 +3987,7 @@ blank.
 <xref linkend="mthMutableBufferReplaceAt" xrefstyle="select:title"/>.
 </para>
 <para><example>
-<title>Class MutableBuffer &mdash; []= method</title>
+<title>MutableBuffer class &mdash; []= method</title>
 <programlisting><![CDATA[s = .MutableBuffer~new(xrange("a", "z"))
 s[5] = "E"              -- "abcdEfghijklmnopqrstuvwxyz"
 s[5] = "XXXX"           -- "abcdXXXXijklmnopqrstuvwxyz"
@@ -3908,7 +4084,7 @@ a non-negative whole number.
 </itemizedlist>
 </para>
 <para><example>
-<title>Class MutableBuffer &mdash; caselessContains method</title>
+<title>MutableBuffer class &mdash; caselessContains method</title>
 <programlisting><![CDATA[say .mutablebuffer~new('-abcdef-')~caselessContains('EF')         -- 1
 say .mutablebuffer~new('-abcdef-')~caselessContains('-', 2, 6)    -- 0
 ]]></programlisting></example></para>
@@ -3951,7 +4127,7 @@ the word at which the search is to be started.</para>
 </itemizedlist>
 </para>
 <para><example>
-<title>Class MutableBuffer &mdash; caselessContainsWord method</title>
+<title>MutableBuffer class &mdash; caselessContainsWord method</title>
 <programlisting><![CDATA[good = .MutableBuffer~new("Now is the time for all good men")
 say good~caselessContainsWord("the")          -- .true
 say good~caselessContainsWord("The")          -- .true
@@ -4162,8 +4338,7 @@ By default, the search starts at the first
 character of the receiving buffer (that is, the value of
 <emphasis role="italic">start</emphasis> is <computeroutput>1</computeroutput>),
 and continues to the end of the buffer.  You can override this by specifying
-<emphasis role="italic">start
-</emphasis>, the point at which the search starts, and
+<emphasis role="italic">start</emphasis>, the point at which the search starts, and
 <emphasis role="italic">length</emphasis>, the bounding limit for the search.
 If specified, <emphasis role="italic">start</emphasis> must be a positive
 whole number and <emphasis role="italic">length</emphasis> must be
@@ -4300,7 +4475,7 @@ a non-negative whole number.
 </itemizedlist>
 </para>
 <para><example>
-<title>Class MutableBuffer &mdash; caselessContains method</title>
+<title>MutableBuffer class &mdash; caselessContains method</title>
 <programlisting><![CDATA[say .mutablebuffer~new('-abcdef-')~contains('ef')         -- 1
 say .mutablebuffer~new('-abcdef-')~contains('-', 2, 6)    -- 0
 ]]></programlisting></example></para>
@@ -4343,7 +4518,7 @@ the word at which the search is to be started.</para>
 </itemizedlist>
 </para>
 <para><example>
-<title>Class MutableBuffer &mdash; containsWord method</title>
+<title>MutableBuffer class &mdash; containsWord method</title>
 <programlisting><![CDATA[good = .MutableBuffer~new("Now is the time for all good men")
 say good~containsWord("the")          -- .true
 say good~containsWord("The")          -- .false
@@ -4584,7 +4759,7 @@ role="italic">start</emphasis>.
 <indexterm><primary>examples</primary>
 <secondary>lastPos method</secondary></indexterm>
 <example>
-<title>Class MutableBuffer &mdash; lastPos method</title>
+<title>MutableBuffer class &mdash; lastPos method</title>
 <programlisting>
 x1 = .mutablebuffer~new("abc def ghi")
 x1~lastPos(" ")      ->    8
@@ -4773,7 +4948,7 @@ a non-negative whole number.
 <indexterm><primary>examples</primary>
 <secondary>pos method</secondary></indexterm>
 <example>
-<title>Class MUTABLEBUFFER &mdash; pos method</title>
+<title>MutableBuffer class &mdash; pos method</title>
 <programlisting>
 x1 = .mutablebuffer~new("Saturday")
 x1~pos("day")       ->    6
@@ -5164,7 +5339,7 @@ returns the <emphasis role="italic">start</emphasis> value.</para>
 <indexterm><primary>examples</primary>
 <secondary>verify method</secondary></indexterm>
 <example>
-<title>Class MutableBuffer &mdash; verify method</title>
+<title>MutableBuffer class &mdash; verify method</title>
 <programlisting>
 .mutablebuffer~new('123')~verify('1234567890')             ->    0
 .mutablebuffer~new('1Z3')~verify('1234567890')             ->    2
@@ -5504,7 +5679,7 @@ apply "greedy" matching (a maximum-length match) or "non-greedy"
 matching (a minimum-length match).</para>
 
 <example>
-<title>Class RegularExpression &mdash; new method</title>
+<title>RegularExpression class &mdash; new method</title>
 <programlisting>
 <![CDATA[
 myRE1 = .RegularExpression~new
@@ -5583,7 +5758,7 @@ matching behavior.</para>
 <indexterm><primary>examples</primary>
 <secondary>RegularExpression class</secondary></indexterm>
 <example>
-<title>Class RegularExpression &mdash; parse method</title>
+<title>RegularExpression class &mdash; parse method</title>
 <programlisting>
 <![CDATA[
 a.0 = "does not match regular expression"
@@ -5624,7 +5799,7 @@ Hi there!                >> Does not match regular expression
 <indexterm><primary>examples</primary>
 <secondary>RegularExpression class</secondary></indexterm>
 <example>
-<title>Class RegularExpression &mdash; parse method</title>
+<title>RegularExpression class &mdash; parse method</title>
 <programlisting>
 <![CDATA[
 a.0 = "an invalid number!"
@@ -5657,7 +5832,7 @@ exit
 <indexterm><primary>examples</primary>
 <secondary>RegularExpression class</secondary></indexterm>
 <example>
-<title>Class RegularExpression &mdash; parse method</title>
+<title>RegularExpression class &mdash; parse method</title>
 <programlisting>
 <![CDATA[
 str = "<p>Paragraph 1</p><p>Paragraph 2</p>"
@@ -5705,7 +5880,7 @@ on a successful match. The end position of the match can be
 retrieved with the position method (<xref linkend="mthRegularExpressionPosition" />).</para>
 
 <example>
-<title>Class RegularExpression &mdash; haystack method</title>
+<title>RegularExpression class &mdash; haystack method</title>
 <programlisting>
 <![CDATA[
 str = "It is the year 2015!"
@@ -5747,7 +5922,7 @@ Found the number 2015 in this sentence.
 method ended.</para>
 
 <example>
-<title>Class RegularExpression &mdash; position method</title>
+<title>RegularExpression class &mdash; position method</title>
 <programlisting>
 <![CDATA[
 myRE = .RegularExpression~new
@@ -6810,7 +6985,7 @@ variable names.
 <xref linkend="utlSysdumpvariables" xrefstyle="select:title"/>.
 </para>
 <para><example>
-<title>Class RexxContext &mdash; variables method</title>
+<title>RexxContext class &mdash; variables method</title>
 <programlisting><![CDATA[a = 2
 b.1 = a
 c. = .stem~new
@@ -6970,7 +7145,7 @@ RexxInfo provides read-only attribute methods to get
 <para>See also method <xref linkend="mthRexxInfoName" xrefstyle="select:title"/>.
 </para>
 <para><example>
-<title>Class RexxInfo &mdash; architecture method</title>
+<title>RexxInfo class &mdash; architecture method</title>
 <programlisting><![CDATA[say .rexxinfo~architecture    -- 32 /* ooRexx 32-bit */
 say .rexxinfo~architecture    -- 64 /* ooRexx 64-bit */
 ]]></programlisting></example></para>
@@ -6994,7 +7169,7 @@ Otherwise returns .false, e. g. for a Windows file system.
 which returns the same information.
 </para>
 <para><example>
-<title>Class RexxInfo &mdash; caseSensitiveFiles method</title>
+<title>RexxInfo class &mdash; caseSensitiveFiles method</title>
 <programlisting><![CDATA[say .RexxInfo~caseSensitiveFiles    -- 0 /* e. g. Windows */
 say .RexxInfo~caseSensitiveFiles    -- 1 /* e. g. Unix */
 ]]></programlisting></example></para>
@@ -7025,7 +7200,7 @@ default format of the
 which both also return this date as the third to fifth token of their result.
 </para>
 <para><example>
-<title>Class RexxInfo &mdash; date method</title>
+<title>RexxInfo class &mdash; date method</title>
 <programlisting><![CDATA[say .RexxInfo~date    -- 9 Dec 2014 /* e. g. */
 ]]></programlisting></example></para>
 </section>
@@ -7055,7 +7230,7 @@ which both also return this date as the third to fifth token of their result.
 </itemizedlist>
 </para>
 <para><example>
-<title>Class RexxInfo &mdash; digits method</title>
+<title>RexxInfo class &mdash; digits method</title>
 <programlisting><![CDATA[say .RexxInfo~digits    -- 9
 ]]></programlisting></example></para>
 </section>
@@ -7076,7 +7251,7 @@ which both also return this date as the third to fifth token of their result.
 which provides the same information.
 </para>
 <para><example>
-<title>Class RexxInfo &mdash; directorySeparator method</title>
+<title>RexxInfo class &mdash; directorySeparator method</title>
 <programlisting><![CDATA[say .RexxInfo~directorySeparator    -- "\" /* Windows */
 say .RexxInfo~directorySeparator    -- "/" /* Unix */
 ]]></programlisting></example></para>
@@ -7099,7 +7274,7 @@ Windows and "0a"x (linefeed) on Unix platforms.
 which provides the same information.
 </para>
 <para><example>
-<title>Class RexxInfo &mdash; endofline method</title>
+<title>RexxInfo class &mdash; endofline method</title>
 <programlisting><![CDATA[say .RexxInfo~endofline    -- "0d 0a"x /* Windows */ 
 say .RexxInfo~endofline    -- "0a"x /* Unix */
 ]]></programlisting></example></para>
@@ -7130,7 +7305,7 @@ say .RexxInfo~endofline    -- "0a"x /* Unix */
 </itemizedlist>
 </para>
 <para><example>
-<title>Class RexxInfo &mdash; form method</title>
+<title>RexxInfo class &mdash; form method</title>
 <programlisting><![CDATA[say .RexxInfo~form    -- SCIENTIFIC
 ]]></programlisting></example></para>
 </section>
@@ -7160,7 +7335,7 @@ say .RexxInfo~endofline    -- "0a"x /* Unix */
 </itemizedlist>
 </para>
 <para><example>
-<title>Class RexxInfo &mdash; fuzz method</title>
+<title>RexxInfo class &mdash; fuzz method</title>
 <programlisting><![CDATA[say .RexxInfo~fuzz    -- 0
 ]]></programlisting></example></para>
 </section>
@@ -7181,7 +7356,7 @@ and 18 digits, when running in a 64-bt addressing mode.
 <para>See also method <xref linkend="mthRexxInfoName" xrefstyle="select:title"/>.
 </para>
 <para><example>
-<title>Class RexxInfo &mdash; internalDigits method</title>
+<title>RexxInfo class &mdash; internalDigits method</title>
 <programlisting><![CDATA[say .RexxInfo~internalDigits    -- 9  /* for 32-bit addressing mode */
 say .RexxInfo~internalDigits    -- 18 /* for 64-bit addressing mode */
 ]]></programlisting></example></para>
@@ -7210,7 +7385,7 @@ say .RexxInfo~internalDigits    -- 18 /* for 64-bit addressing mode */
 which both also return the language level as the second token of their result.
 </para>
 <para><example>
-<title>Class RexxInfo &mdash; languageLevel method</title>
+<title>RexxInfo class &mdash; languageLevel method</title>
 <programlisting><![CDATA[say .RexxInfo~languageLevel    -- 6.05
 ]]></programlisting></example></para>
 </section>
@@ -7243,7 +7418,7 @@ The major version number is the integer part of the language processor
 which also return the major version number as part of their result.
 </para>
 <para><example>
-<title>Class RexxInfo &mdash; majorVersion method</title>
+<title>RexxInfo class &mdash; majorVersion method</title>
 <programlisting><![CDATA[say .RexxInfo~majorVersion    -- 5
 ]]></programlisting></example></para>
 </section>
@@ -7288,7 +7463,7 @@ that is also returned by
 </itemizedlist>
 </para>
 <para><example>
-<title>Class RexxInfo &mdash; name method</title>
+<title>RexxInfo class &mdash; name method</title>
 <programlisting><![CDATA[say .RexxInfo~name    -- REXX-ooRexx_5.0.0(MT)_64-bit 6.05 9 Dec 2014 /* e. g. */
 ]]></programlisting></example></para>
 </section>
@@ -7307,7 +7482,7 @@ that is also returned by
 <para>See <xref linkend="clsPackage"/>.
 </para>
 <para><example>
-<title>Class RexxInfo &mdash; package method</title>
+<title>RexxInfo class &mdash; package method</title>
 <programlisting><![CDATA[say "ooRexx pre-defines" -
   .RexxInfo~package~publicClasses~items -
   "public classes"          -- ooRexx pre-defines 56 public classes
@@ -7329,7 +7504,7 @@ that is also returned by
 <para>See also File class method <xref linkend="mthFilePathSeparatorClsMth" xrefstyle="template:pathSeparator"/>.
 </para>
 <para><example>
-<title>Class RexxInfo &mdash; pathSeparator method</title>
+<title>RexxInfo class &mdash; pathSeparator method</title>
 <programlisting><![CDATA[say .RexxInfo~pathSeparator    -- ; /* Windows */
 say .RexxInfo~pathSeparator    -- ":" /* Unix */
 ]]></programlisting></example></para>
@@ -7351,7 +7526,7 @@ say .RexxInfo~pathSeparator    -- ":" /* Unix */
 which returns the same information as its first token.
 </para>
 <para><example>
-<title>Class RexxInfo &mdash; platform method</title>
+<title>RexxInfo class &mdash; platform method</title>
 <programlisting><![CDATA[say .RexxInfo~platform    -- WindowsNT
 say .RexxInfo~platform    -- LINUX
 ]]></programlisting></example></para>
@@ -7385,7 +7560,7 @@ The release number is the first decimal digit following the decimal point of the
 which also return the release number as part of their result.
 </para>
 <para><example>
-<title>Class RexxInfo &mdash; release method</title>
+<title>RexxInfo class &mdash; release method</title>
 <programlisting><![CDATA[say .RexxInfo~release    -- 0
 ]]></programlisting></example></para>
 </section>
@@ -7418,7 +7593,7 @@ The revision number is the second decimal digit following the decimal point of t
 which also return the revision number as part of their result.
 </para>
 <para><example>
-<title>Class RexxInfo &mdash; revision method</title>
+<title>RexxInfo class &mdash; revision method</title>
 <programlisting><![CDATA[say .RexxInfo~revision    -- 0
 ]]></programlisting></example></para>
 </section>
@@ -7456,7 +7631,7 @@ the <xref linkend="mthRexxInfoRevision" xrefstyle="select:title"/>.
 </itemizedlist>
 </para>
 <para><example>
-<title>Class RexxInfo &mdash; version method</title>
+<title>RexxInfo class &mdash; version method</title>
 <programlisting><![CDATA[say .RexxInfo~version    -- 5.0.0
 ]]></programlisting></example></para>
 </section>
@@ -8168,7 +8343,7 @@ R:\
 <para>This query method is available as both an instance and class method.
 </para>
 <example>
-<title>Class File &mdash; separator method</title>
+<title>File class &mdash; separator method</title>
 <programlisting>
 <![CDATA[
 file = .File~new("dir1" || .File~separator || "dir2" || .File~separator || "file")
@@ -8194,7 +8369,7 @@ file = .File~new("dir1" || .File~separator || "dir2" || .File~separator || "file
 <para>Returns the fully qualified path as a new instance of File.
 </para>
 <example>
-<title>Class File &mdash; absoluteFile method</title>
+<title>File class &mdash; absoluteFile method</title>
 <programlisting>
 <![CDATA[
 /* On Windows */
@@ -8230,7 +8405,7 @@ say .File~new("../my file")~absoluteFile           -- /opt/my file
 <para>Returns the fully qualified path as a string.
 </para>
 <example>
-<title>Class File &mdash; absolutePath method</title>
+<title>File class &mdash; absolutePath method</title>
 <programlisting>
 <![CDATA[
 /* On Windows */
@@ -8304,7 +8479,7 @@ If the two paths are equal, 0 is returned. If the target path is larger, 1 is re
 <emphasis role="italic">other</emphasis> argument is the larger path.
 </para>
 <example>
-<title>Class File &mdash; conpareTo method</title>
+<title>File class &mdash; conpareTo method</title>
 <programlisting>
 <![CDATA[call directory .File~listRoots[1]
 file1 = .File~new("file", "dir")
@@ -8396,7 +8571,7 @@ The normalization consists in adjusting the separators to the platform's convent
 the final separator (if any).
 </para>
 <example>
-<title>Class File &mdash; init method</title>
+<title>File class &mdash; init method</title>
 <programlisting>
 <![CDATA[
 /* Windows */
@@ -8496,7 +8671,7 @@ directory which is hidden. Otherwise returns .false ("0").
 directories has a name starting with a period character.
 </para>
 <example>
-<title>Class File &mdash; isHidden method</title>
+<title>File class &mdash; isHidden method</title>
 <programlisting>
 <![CDATA[
 /* Unix, when file exists */
@@ -8543,7 +8718,7 @@ say .File~new("/tmp/.dir/file")~isHidden        -- 1
   <varlistentry><term><emphasis role="bold">Examples:</emphasis></term>
   <listitem>
 <example>
-<title>Class File &mdash; lastModified method</title>
+<title>File class &mdash; lastModified method</title>
     <programlisting>
     <![CDATA[
     /* On Windows */
@@ -8611,7 +8786,7 @@ The special names "." and ".." are not returned.
 If the receiver object is not a directory then the result is .nil.
 </para>
 <example>
-<title>Class File &mdash; list method</title>
+<title>File class &mdash; list method</title>
 <programlisting>
 <![CDATA[
 names = .File~new("c:\program files\oorexx\samples")~list
@@ -8651,7 +8826,7 @@ The special names "." and ".." are not returned.
 If the receiver object is not a directory then the result is .nil.
 </para>
 <example>
-<title>Class File &mdash; listFiles method</title>
+<title>File class &mdash; listFiles method</title>
 <programlisting>
 <![CDATA[
 do file over deepListFiles("c:\program files\oorexx\samples")
@@ -8746,7 +8921,7 @@ This is everything after the last path separator. On Windows, the file's
 extension is part of the name.
 </para>
 <example>
-<title>Class File &mdash; name method</title>
+<title>File class &mdash; name method</title>
 <programlisting>
 <![CDATA[
 /* On Windows */
@@ -8780,7 +8955,7 @@ If no separator is found or the absolute path ends with a separator
 (which means this is a root path) then returns .nil.
 </para>
 <example>
-<title>Class File &mdash; parent method</title>
+<title>File class &mdash; parent method</title>
 <programlisting>
 <![CDATA[
 /* On Windows */

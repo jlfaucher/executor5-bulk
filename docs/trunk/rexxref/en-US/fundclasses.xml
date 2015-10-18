@@ -649,8 +649,8 @@ all characters following the first character are ignored.) </para>
 to the method as arguments in the order you specify them.
 </para></listitem></varlistentry>
 <varlistentry><term>Array</term>
-<listitem><para>Requires <emphasis role="italic">argument</emphasis>,
-which is an Array object. (See <xref linkend="clsArray" />.)
+<listitem><para>Requires <emphasis role="italic">arguments</emphasis>,
+which is an Array object.
 The member items of the array are passed to the method
 as arguments. The first argument is at index 1, the second argument at index
 2, and so on. If you omitted any indexes when creating the array, the
@@ -1336,7 +1336,7 @@ bank_account~define("TYPE",&apos;return "a bank account"&apos;)
 </section>
 
 
-<!-- Class Class - method defineMethods ======================== --> 
+<!-- Class Class - method defineMethods ============================ --> 
 <section id="mthClassDefineMethods" revisionflag="added"><title>*NEW* defineMethods</title>
 <para>
 <indexterm><primary>defineMethods method</primary><secondary>of Class class</secondary></indexterm>
@@ -1362,7 +1362,7 @@ is made unavailable.
 <para>See also method <xref linkend="mthClassDefine" xrefstyle="select:title"/>.
 </para>
 <para><example>
-<title>Class Class &mdash; defineMethods method</title>
+<title>Class class &mdash; defineMethods method</title>
 <programlisting><![CDATA[before = .c~new
 say before~a                           -- a-original
 
@@ -1560,7 +1560,7 @@ room~inherit(.location)
 </section>
 
 
-<!-- Class Class - method isAbstract ======================== --> 
+<!-- Class Class - method isAbstract =============================== --> 
 <section id="mthClassIsAbstract" revisionflag="added"><title>*NEW* isAbstract</title>
 <para>
 <indexterm><primary>isAbstract method</primary><secondary>of Class class</secondary></indexterm>
@@ -1576,7 +1576,7 @@ otherwise returns false ("0").
 <xref linkend="clasdi" xrefstyle="select:title"/> directive.
 </para>
 <para><example>
-<title>Class Class &mdash; isAbstract method</title>
+<title>Class class &mdash; isAbstract method</title>
 <programlisting><![CDATA[say .abs~isAbstract                    -- 1
 
 ::class abs abstract 
@@ -1584,7 +1584,7 @@ otherwise returns false ("0").
 </section>
 
 
-<!-- Class Class - method isMetaclass ======================== --> 
+<!-- Class Class - method isMetaclass ============================== --> 
 <section id="mthClassIsMetaclass" revisionflag="added"><title>*NEW* isMetaclass</title>
 <para>
 <indexterm><primary>isMetaclass method</primary><secondary>of Class class</secondary></indexterm>
@@ -1599,7 +1599,7 @@ The <classname>Class</classname> class is the only metaclass that Rexx
 provides; any subclasses of the Class class are also metaclasses.
 </para>
 <para><example>
-<title>Class Class &mdash; isMetaclass method</title>
+<title>Class class &mdash; isMetaclass method</title>
 <programlisting><![CDATA[do class over .RexxInfo~package~classes~allItems~~appendAll(.context~package~classes~allItems)
   if class~isMetaclass then
     say class~string": metaclass"      -- The Class class: metaclass
@@ -1850,7 +1850,7 @@ If balance > 100 then Say "  You win a free toaster oven"
 </section>
 
 
-<!-- Class Class - method package ======================== --> 
+<!-- Class Class - method package ================================== --> 
 <section id="mthClassPackage" revisionflag="added"><title>*NEW* package</title>
 <para>
 <indexterm><primary>package method</primary><secondary>of Class class</secondary></indexterm>
@@ -1866,7 +1866,7 @@ routines referenced by the receiving class.
 <para>See also <xref linkend="clsPackage" xrefstyle="template:Package class"/>.
 </para>
 <para><example>
-<title>Class Class &mdash; package method</title>
+<title>Class class &mdash; package method</title>
 <programlisting><![CDATA[say .Class~package~name                -- REXX
 say .other~package~name                -- C:\ExampleClassPackage.rex
 
@@ -2788,7 +2788,7 @@ f "def"     ->   "abc def"
 </example>
 </section>
 
-<!-- Class String - method [] ======================== --> 
+<!-- Class String - method [] ====================================== --> 
 <section id="mthStringAtGet" revisionflag="added"><title>*NEW* []</title>
 <para>
 <indexterm><primary>[] method</primary><secondary>of String class</secondary></indexterm>
@@ -2817,14 +2817,14 @@ a non-negative whole number.
 and <xref linkend="mthStringSubstr" xrefstyle="select:title"/>.
 </para>
 <para><example>
-<title>Class String &mdash; [] method</title>
+<title>String class &mdash; [] method</title>
 <programlisting><![CDATA["abc"[2]       -- "b"
 "abc"[2,4]     -- "bc"
 ]]></programlisting></example></para>
 </section>
 
 
-<!-- Class String - method ? ======================== --> 
+<!-- Class String - method ? ======================================= --> 
 <section id="mthStringIif" revisionflag="added"><title>*NEW* ? (inline if)</title>
 <para>
 <indexterm><primary>? method</primary><secondary>of String class</secondary></indexterm>
@@ -2838,7 +2838,7 @@ true ("1"),
 returns <emphasis role="italic">second</emphasis> if it is false ("0").
 </para>
 <para><example>
-<title>Class String &mdash; ? method</title>
+<title>String class &mdash; ? method</title>
 <programlisting><![CDATA[do apples = 0 to 2
   say apples (apples = 1)~?("apple", "apples")
 end
@@ -2938,7 +2938,7 @@ sign and is formatted according to the current NUMERIC settings.</para>
 </section>
 
 
-<!-- Class String - method append ======================== --> 
+<!-- Class String - method append ================================== --> 
 <section id="mthStringAppend" revisionflag="added"><title>*NEW* append</title>
 <para>
 <indexterm><primary>append method</primary><secondary>of String class</secondary></indexterm>
@@ -3509,14 +3509,14 @@ a non-negative whole number.
 </itemizedlist>
 </para>
 <para><example>
-<title>Class String &mdash; caselessContains method</title>
+<title>String class &mdash; caselessContains method</title>
 <programlisting><![CDATA[say "-abcdef-"~caselessContains("EF")         -- 1
 say "-abcdef-"~caselessContains("-", 2, 6)    -- 0
 ]]></programlisting></example></para>
 </section>
 
 
-<!-- Class String - method caselessContainsWord ======================== --> 
+<!-- Class String - method caselessContainsWord ==================== --> 
 <section id="mthStringCaselessContainsWord" revisionflag="added"><title>*NEW* caselessContainsWord</title>
 <para>
 <indexterm><primary>caselessContainsWord method</primary><secondary>of String class</secondary></indexterm>
@@ -3554,7 +3554,7 @@ the word at which the search is to be started.</para>
 </itemizedlist>
 </para>
 <para><example>
-<title>Class String &mdash; caselessContainsWord method</title>
+<title>String class &mdash; caselessContainsWord method</title>
 <programlisting><![CDATA[good = "Now is the time for all good men"
 say good~caselessContainsWord("the")          -- .true
 say good~caselessContainsWord("The")          -- .true
@@ -3835,8 +3835,7 @@ By default, the search starts at the first
 character of the receiving string (that is, the value of
 <emphasis role="italic">start</emphasis> is <computeroutput>1</computeroutput>),
 and continues to the end of the string.  You can override this by specifying
-<emphasis role="italic">start
-</emphasis>, the point at which the search starts, and
+<emphasis role="italic">start</emphasis>, the point at which the search starts, and
 <emphasis role="italic">length</emphasis>, the bounding limit for the search.
 If specified, <emphasis role="italic">start</emphasis> must be a positive
 whole number and <emphasis role="italic">length</emphasis> must be
@@ -3857,7 +3856,7 @@ a non-negative whole number.
 </section>
 
 
-<!-- Class String - method caselessStartsWith ======================== --> 
+<!-- Class String - method caselessStartsWith ====================== --> 
 <section id="mthStringCaselessStartsWith" revisionflag="added"><title>*NEW* caselessStartsWith</title>
 <para>
 <indexterm><primary>caselessStartsWith method</primary><secondary>of String class</secondary></indexterm>
@@ -4163,7 +4162,7 @@ place to the end of the target string.
 </section>
 
 
-<!-- Class String - method contains ======================== --> 
+<!-- Class String - method contains ================================ --> 
 <section id="mthStringContains" revisionflag="added"><title>*NEW* contains</title>
 <para>
 <indexterm><primary>contains method</primary><secondary>of String class</secondary></indexterm>
@@ -4203,14 +4202,14 @@ a non-negative whole number.
 </itemizedlist>
 </para>
 <para><example>
-<title>Class String &mdash; caselessContains method</title>
+<title>String class &mdash; caselessContains method</title>
 <programlisting><![CDATA[say "-abcdef-"~contains("ef")         -- 1
 say "-abcdef-"~contains("-", 2, 6)    -- 0
 ]]></programlisting></example></para>
 </section>
 
 
-<!-- Class String - method containsWord ======================== --> 
+<!-- Class String - method containsWord ============================ --> 
 <section id="mthStringContainsWord" revisionflag="added"><title>*NEW* containsWord</title>
 <para>
 <indexterm><primary>containsWord method</primary><secondary>of String class</secondary></indexterm>
@@ -4246,7 +4245,7 @@ the word at which the search is to be started.</para>
 </itemizedlist>
 </para>
 <para><example>
-<title>Class String &mdash; containsWord method</title>
+<title>String class &mdash; containsWord method</title>
 <programlisting><![CDATA[good = "Now is the time for all good men"
 say good~containsWord("the")          -- .true
 say good~containsWord("The")          -- .false
@@ -4730,7 +4729,7 @@ string.</para>
 </section>
 
 
-<!-- Class String - method endsWith ======================== --> 
+<!-- Class String - method endsWith ================================ --> 
 <section id="mthStringEndsWith" revisionflag="added"><title>*NEW* endsWith</title>
 <para>
 <indexterm><primary>endsWith method</primary><secondary>of String class</secondary></indexterm>
@@ -5665,7 +5664,7 @@ and the default <emphasis role="italic">pad</emphasis> character is a blank.
 </section>
 
 
-<!-- Class String - method startsWith ======================== --> 
+<!-- Class String - method startsWith ============================== --> 
 <section id="mthStringStartsWith" revisionflag="added"><title>*NEW* startsWith</title>
 <para>
 <indexterm><primary>startsWith method</primary><secondary>of String class</secondary></indexterm>
@@ -6674,7 +6673,7 @@ If no such annotation exists, .nil is returned.
 </section>
 
 
-<!-- Class Method - method isAbstract ======================== --> 
+<!-- Class Method - method isAbstract ============================== --> 
 <section id="mthMethodIsAbstract" revisionflag="added"><title>*NEW* isAbstract</title>
 <para>
 <indexterm><primary>isAbstract method</primary><secondary>of Method class</secondary></indexterm>
@@ -6693,7 +6692,7 @@ otherwise returns false ("0").
 </itemizedlist>
 </para>
 <para><example>
-<title>Class Method &mdash; isAbstract method</title>
+<title>Method class &mdash; isAbstract method</title>
 <programlisting><![CDATA[say .Orderable~method("CompareTo")~isAbstract    -- 1
 say .Comparable~method("CompareTo")~isAbstract   -- 1
 say .TimeSpan~method("CompareTo")~isAbstract     -- 0
@@ -6701,7 +6700,7 @@ say .TimeSpan~method("CompareTo")~isAbstract     -- 0
 </section>
 
 
-<!-- Class Method - method isAttribute ======================== --> 
+<!-- Class Method - method isAttribute ============================= --> 
 <section id="mthMethodIsAttribute" revisionflag="added"><title>*NEW* isAttribute</title>
 <para>
 <indexterm><primary>isAttribute method</primary><secondary>of Method class</secondary></indexterm>
@@ -6716,14 +6715,14 @@ otherwise returns false ("0").
 <para>See also <xref linkend="attrd" xrefstyle="select:title"/> directive.
 </para>
 <para><example>
-<title>Class Method &mdash; isAttribute method</title>
+<title>Method class &mdash; isAttribute method</title>
 <programlisting><![CDATA[say .File~method("lastModified")~isAttribute     -- 1
 say .File~method("lastModified=")~isAttribute    -- 1
 ]]></programlisting></example></para>
 </section>
 
 
-<!-- Class Method - method isConstant ======================== --> 
+<!-- Class Method - method isConstant ============================== --> 
 <section id="mthMethodIsConstant" revisionflag="added"><title>*NEW* isConstant</title>
 <para>
 <indexterm><primary>isConstant method</primary><secondary>of Method class</secondary></indexterm>
@@ -6738,7 +6737,7 @@ otherwise returns false ("0").
 <para>See also <xref linkend="constantd" xrefstyle="select:title"/> directive.
 </para>
 <para><example>
-<title>Class Method &mdash; isConstant method</title>
+<title>Method class &mdash; isConstant method</title>
 <programlisting><![CDATA[say .physics~method("c")~isConstant              -- 1
 
 ::class physics
@@ -6821,7 +6820,7 @@ referenced by the method code.</para>
 </section>
 
 
-<!-- Class Method - method scope ======================== --> 
+<!-- Class Method - method scope =================================== --> 
 <section id="mthMethodScope" revisionflag="added"><title>*NEW* scope</title>
 <para>
 <indexterm><primary>scope method</primary><secondary>of Method class</secondary></indexterm>
@@ -6834,7 +6833,7 @@ referenced by the method code.</para>
 Returns .nil for any method not defined by a class scope.
 </para>
 <para><example>
-<title>Class Method &mdash; scope method</title>
+<title>Method class &mdash; scope method</title>
 <programlisting><![CDATA[scopes = .Stem~new
 scopes[] = 0
 loop with item method over .List~methods
@@ -7045,9 +7044,9 @@ array of strings containing individual method lines.</para>
 <para>The <emphasis role="italic">context</emphasis> allows the created routine
 to inherit class and routine lookup scope from another source.  If specified,
 <emphasis role="italic">context</emphasis> can be a Method object, a Routine
-object, or a Package object.  If not specified,
-the newly created method will inherit the class and routine search scope from
-the caller of new method.
+object, a Package object, or the string "PROGRAMSCOPE".  PROGRAMSCOPE is the
+default, and specifies that the newly created routine will inherit the class and
+routine search scope from the caller of new method.
 </para>
 </section>
 
@@ -7105,7 +7104,7 @@ routine = .Routine~loadExternalRoutine("Pi", "LIBRARY rxmath RxCalcPi")
 </example>
 </section>
 
-<!-- Class Routine - method [] ======================== --> 
+<!-- Class Routine - method [] ===================================== --> 
 <section id="mthRoutineCallBrackets" revisionflag="added"><title>*NEW* []</title>
 <para>
 <indexterm><primary>[] method</primary><secondary>of Routine class</secondary></indexterm>
@@ -7363,15 +7362,19 @@ the code contained in the
 The <emphasis role="italic">source</emphasis> can be a single string or an
 array of strings containing individual method lines.
 If <emphasis role="italic">source</emphasis> isn't specified, 
-If only <emphasis role="italic">name</emphasis> is specified,
 <emphasis role="italic">name</emphasis> identifies a file that will be
 used as the package source.
 </para>
 
-<para>The third parameter influences the scope of the routine. If none is given,
-the program scope is used. If another method or routine object is specified, the
-scope of the provided method or routine is used.
+<warning><title>Untested/unavailable &ndash; see [feature-requests:#633]</title>
+<para>The <emphasis role="italic">context</emphasis> allows the created package
+to inherit class and routine lookup scope from another source.  If specified,
+<emphasis role="italic">context</emphasis> can be a Method object, a Routine
+object, or a Package object.
+If not specified, the newly created package will inherit the class and
+routine search scope from the caller of new method.
 </para>
+</warning>
 </section>
 
 <section id="mthPackageAddClass"><title>addClass</title>
@@ -7414,7 +7417,7 @@ within <emphasis role="italic">package</emphasis>.
 <para>The added package is processed as if it had been added using a ::REQUIRES
 directive in the original package source.</para>
 <para><example>
-<title>Class Package &mdash; addPackage method</title>
+<title>Package class &mdash; addPackage method</title>
 <programlisting><![CDATA[.context~package~addPackage(.Package~new('winsystm.cls'), 'windows')
 say windows:virtualkeycodes~new~keyName(36)   -- HOME
 ]]></programlisting></example></para>
@@ -7527,7 +7530,7 @@ If no such annotation exists, .nil is returned.
 </section>
 
 
-<section id="mthPackageClasses"><title>classes</title>
+<section id="mthPackageClasses" revisionflag="changed"><title>*CHG* classes</title>
 <indexterm><primary>classes method</primary>
 <secondary>of Package class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -7546,8 +7549,8 @@ or imported as public classes from another package. -->
 </para>
 <para>See also
 <itemizedlist spacing="compact">
-  <listitem><para><xref linkend="mthPackagePublicClasses" xrefstyle="select:title"/> and</para></listitem>
-  <listitem><para><xref linkend="mthPackageImportedClasses" xrefstyle="select:title"/>.</para></listitem>
+  <listitem><para>method <xref linkend="mthPackagePublicClasses" xrefstyle="select:title"/> and</para></listitem>
+  <listitem><para>method <xref linkend="mthPackageImportedClasses" xrefstyle="select:title"/>.</para></listitem>
 </itemizedlist>
 </para>
 </section>
@@ -7616,7 +7619,7 @@ object instance (and not a class) when searching e. g. for "nil", "true",
 <para>See also method <xref linkend="mthPackageFindPublicClass" xrefstyle="select:title"/>.
 </para>
 <para><example>
-<title>Class Package &mdash; findClass method</title>
+<title>Package class &mdash; findClass method</title>
 <programlisting><![CDATA[say .RexxInfo~package~findClass("Dummy")  -- The NIL object
 say .context~package~findClass("Dummy")   -- The DUMMY class
 
@@ -7639,7 +7642,7 @@ Returns .nil if namespace <emphasis role="italic">name</emphasis> does not exist
 <para>See also method <xref linkend="mthPackageAddPackage" xrefstyle="select:title"/>.
 </para>
 <para><example>
-<title>Class Package &mdash; findNamespace method</title>
+<title>Package class &mdash; findNamespace method</title>
 <programlisting><![CDATA[say .context~package~findNamespace("rexx")      -- The REXX Package
 say .context~package~findNamespace("windows")   -- a Package
 
@@ -7666,7 +7669,7 @@ The program is searched for using normal external program search order.
 <para>Returns .nil if <emphasis role="italic">name</emphasis> cannot be located.
 </para>
 <para><example>
-<title>Class Package &mdash; findProgram method</title>
+<title>Package class &mdash; findProgram method</title>
 <programlisting><![CDATA[say .context~package~findProgram("mime.cls")  -- e. g. C:\Program Files\ooRexx\mime.cls
 ]]></programlisting></example></para>
 </section>
@@ -7688,7 +7691,7 @@ scope of the receiving package.
 <para>See also method <xref linkend="mthPackageFindClass" xrefstyle="select:title"/>.
 </para>
 <para><example>
-<title>Class Package &mdash; findPublicClass method</title>
+<title>Package class &mdash; findPublicClass method</title>
 <programlisting><![CDATA[say .context~package~findPublicClass("String")   -- The String class
 say .context~package~findPublicClass("Dummy")    -- The NIL object
 say .context~package~findPublicClass("RexxInfo") -- The NIL object
@@ -7713,12 +7716,12 @@ scope of the receiving package.
 </para>
 <para>See also
 <itemizedlist spacing="compact">
-  <listitem><para><xref linkend="mthPackagePublicRoutines" xrefstyle="select:title"/> and</para></listitem>
-  <listitem><para><xref linkend="mthPackageFindRoutine" xrefstyle="select:title"/>.</para></listitem>
+  <listitem><para>method <xref linkend="mthPackagePublicRoutines" xrefstyle="select:title"/> and</para></listitem>
+  <listitem><para>method <xref linkend="mthPackageFindRoutine" xrefstyle="select:title"/>.</para></listitem>
 </itemizedlist>
 </para>
 <para><example>
-<title>Class Package &mdash; findPublicRoutine method</title>
+<title>Package class &mdash; findPublicRoutine method</title>
 <programlisting><![CDATA[say .context~package~findPublicRoutine("Dummy")~source    -- "nop"
 
 ::routine Dummy public
@@ -7806,8 +7809,8 @@ value.
 packages.</para>
 <para>See also
 <itemizedlist spacing="compact">
-  <listitem><para><xref linkend="mthPackageClasses" xrefstyle="select:title"/> and</para></listitem>
-  <listitem><para><xref linkend="mthPackagePublicClasses" xrefstyle="select:title"/>.</para></listitem>
+  <listitem><para>method <xref linkend="mthPackageClasses" xrefstyle="select:title"/> and</para></listitem>
+  <listitem><para>method <xref linkend="mthPackagePublicClasses" xrefstyle="select:title"/>.</para></listitem>
 </itemizedlist>
 </para>
 </section>
@@ -7913,7 +7916,7 @@ will be added to the receiving package object's dependent packages.</para>
 </itemizedlist>
 </para>
 <para><example>
-<title>Class Package &mdash; name method</title>
+<title>Package class &mdash; name method</title>
 <programlisting><![CDATA[say .context~package~name              -- e. g. C:\ExamplePackageName.rex
 say .Class~package~name                -- REXX
 say .Routine~new("rtn", "return .context~package~name")[]  -- rtn
@@ -7935,7 +7938,7 @@ say .Package~new("pkg", "")~name       -- pkg
 <para>See also method <xref linkend="mthPackageFindNamespace" xrefstyle="select:title"/>.
 </para>
 <para><example>
-<title>Class Package &mdash; namespaces method</title>
+<title>Package class &mdash; namespaces method</title>
 <programlisting><![CDATA[say .context~package~namespaces~allIndexes      -- WINDOWS
 
 ::requires "winsystm.cls" namespace windows
@@ -7956,7 +7959,7 @@ say .Package~new("pkg", "")~name       -- pkg
 that precedes any directives.
 </para>
 <para><example>
-<title>Class Package &mdash; prolog method</title>
+<title>Package class &mdash; prolog method</title>
 <programlisting><![CDATA[say .context~package~prolog~source  -- "say .context~package~prolog~source"
 
 ::options noprolog
@@ -7984,7 +7987,7 @@ that precedes any directives.
 </itemizedlist>
 </para>
 <para><example>
-<title>Class Package &mdash; publicClasses method</title>
+<title>Package class &mdash; publicClasses method</title>
 <programlisting><![CDATA[say .package~new("csvstream.cls")~publicClasses~allIndexes -- CSVSTREAM
 say .context~package~publicClasses~allIndexes              -- DUMMY
 say .rexxinfo~package~publicClasses~items                  -- 56
@@ -8014,7 +8017,7 @@ routine objects.
 <para>See also method <xref linkend="mthPackageFindPublicRoutine" xrefstyle="select:title"/>.
 </para>
 <para><example>
-<title>Class Package &mdash; publicRoutines method</title>
+<title>Package class &mdash; publicRoutines method</title>
 <programlisting><![CDATA[say .package~new("csvstream.cls")~publicRoutines~items  -- 0
 say .context~package~publicRoutines~allIndexes          -- DUMMY
 say .rexxinfo~package~publicRoutines~items              -- 0
@@ -8043,7 +8046,7 @@ Returns .nil, if no resource <emphasis role="italic">name</emphasis> exists.
 </itemizedlist>
 </para>
 <para><example>
-<title>Class Package &mdash; resource method</title>
+<title>Package class &mdash; resource method</title>
 <programlisting><![CDATA[say .context~package~resource("GREYCAT")~makeString  -- La nuit, tous les chats sont gris
 
 ::resource greyCat
@@ -8074,7 +8077,7 @@ the StringTable values are arrays of individual resource data lines.
 </itemizedlist>
 </para>
 <para><example>
-<title>Class Package &mdash; resources method</title>
+<title>Package class &mdash; resources method</title>
 <programlisting><![CDATA[say .context~package~resources~allIndexes  -- "BROWN FOX"
                                            -- "GREYCAT" 
 ::resource greyCat
@@ -8213,60 +8216,61 @@ method of the Message class or the
 <emphasis role="bold">start</emphasis> (<xref linkend="mthObjectStart" />) method of the
 Object class.
 </para>
+
+<!-- $GENERATED-20151014-START rexxrefClassTable(Message) -->
 <table id="ooRexxMessageClass" frame="all" pgwide="0">
-<title>ooRexx Message Class</title>
-<tgroup cols="2" align="left" colsep="1" rowsep="1">
-<colspec colname="c1" />
-<colspec colname="c2" />
+<title>Message Class</title>
+<tgroup cols="1">
 <tbody>
-   <row>
-      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="center">&#x2193;</entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Message</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="left">
-<screen>new
-</screen>
-      </entry>
-   </row>
-   <row>
-      <entry>
-<screen>arguments
-completed
-errorCondition
-hasError
-messageName
-</screen>
-      </entry>
-      <entry>
-<screen>notify
-result
-send
-start
-target
-</screen>
-      </entry>
-   </row>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">+ AlarmNotification (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  Methods inherited from the <xref linkend="clsAlarmNotification" xrefstyle="template:AlarmNotification class"/>
+  <xi:include href="alarmnotificationclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+ </entry></row>
+ <row><entry align="center"><emphasis role="bold">+ MessageNotification (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  Methods inherited from the <xref linkend="clsMessageNotification" xrefstyle="template:MessageNotification class"/>
+  <xi:include href="messagenotificationclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+ </entry></row>
+ <row><entry align="center"><emphasis role="bold">Message</emphasis></entry>
+ </row>
+ <row><entry>
+  <simplelist>
+   <member><xref linkend="mthMessageNew" xrefstyle="select:title"/></member>
+  </simplelist>
+  <simplelist columns="3">
+   <member><xref linkend="mthMessageArguments" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMessageCompleted" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMessageErrorCondition" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMessageHalt" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMessageHasError" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMessageHasResult" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMessageMessageComplete" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMessageMessageName" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMessageNotify" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMessageReply" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMessageReplyWith" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMessageResult" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMessageSend" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMessageSendWith" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMessageStart" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMessageStartWith" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMessageTarget" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMessageTriggered" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMessageWait" xrefstyle="select:title"/></member>
+  </simplelist>
+ </entry></row>
 </tbody>
 </tgroup>
 </table>
+<!-- $GENERATED-20151014-END rexxrefClassTable(Message) -->
 
-<note><title>Note</title>
-<para>The Message class also has available class methods that its
-metaclass, the Class class (<xref linkend="clsClass" />), defines.</para></note>
-
-<section><title>Inherited Methods</title>
-
-<para>Methods inherited from the
-Object class (<xref linkend="clsObject" />).</para>
-<xi:include href="objectclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
-
-</section>
 
 <section id="mthMessageNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
@@ -8304,9 +8308,9 @@ are passed as message arguments
 to <emphasis role="italic">target</emphasis> in the order you specify them.
 </para></listitem></varlistentry>
 <varlistentry><term>Array</term>
-<listitem><para>If you specify this option, you must specify an
-<emphasis role="italic">argument</emphasis>, which
-is an Array object. (See <xref linkend="clsArray" />.)
+<listitem><para>If you specify this option, you must specify
+<emphasis role="italic">arguments</emphasis>, which
+is an Array object.
 The member items of the array are passed to
 <emphasis role="italic">target</emphasis> as arguments.
 The first argument is
@@ -8319,8 +8323,11 @@ corresponding message arguments are also omitted.
 <note><title>Note</title>
 <para>This method does not send the message
 <emphasis role="italic">messagename</emphasis> to object
-<emphasis role="italic">target</emphasis>. The SEND or START method
-(described later) sends the message.
+<emphasis role="italic">target</emphasis>.
+See methods
+<xref linkend="mthMessageStart" xrefstyle="select:title"/>/<xref linkend="mthMessageStartWith" xrefstyle="select:title"/>,
+<xref linkend="mthMessageSend" xrefstyle="select:title"/>/<xref linkend="mthMessageSendWith" xrefstyle="select:title"/>, and
+<xref linkend="mthMessageReply" xrefstyle="select:title"/>/<xref linkend="mthMessageReplyWith" xrefstyle="select:title"/>.
 </para></note>
 </section>
 
@@ -8378,6 +8385,68 @@ object's message invocation. If the message completed normally, or is still exec
 <emphasis role="bold">errorCondition</emphasis> returns the Nil object.</para>
 </section>
 
+
+<!-- Class Message - method halt =================================== -->
+<section id="mthMessageHalt" revisionflag="added"><title>*NEW* halt
+<indexterm><primary>halt method</primary><secondary>of Message class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>halt method</secondary><tertiary>of Message class</tertiary></indexterm>
+</title>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/message_halt.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns true ("1") if it could raise the halt condition for the
+message the receiving message object is currently executing.
+Returns false ("0") if there is no message executing.
+</para>
+<para>An optional string <emphasis role="italic">description</emphasis>
+can be supplied, which the halted message can retrieve by requesting the
+"DESCRIPTION" item of the
+<xref linkend="bifCondition" xrefstyle="select:title"/> built-in function
+or the <xref linkend="conobj" xrefstyle="select:title"/>.
+</para>
+<para><example id="ex.message-halt">
+<title>Message class &mdash; halt method
+<indexterm><primary>examples</primary><secondary>halt method</secondary></indexterm>
+</title>
+<programlisting><![CDATA[dog = .watchDog~new(1.0)               -- watchdog with 1 sec time limit
+say dog~watchTask(.task~new~start("runsLong", 0.5))
+say dog~watchTask(.task~new~start("runsLong", 1.5))
+
+::class task
+
+-- a long-running task that we may want to terminate early
+::method runsLong
+  use strict arg seconds
+  signal on halt
+  do s = 0 to seconds by 0.1           -- split SysSleep to enable halting
+    call SysSleep 0.1                  -- do "hard work"
+  end
+  return "task finished"
+
+  halt:
+  return condition("DESCRIPTION")      -- return description from halt()
+
+::class watchdog
+
+-- sets a time limit, above which running tasks are halted
+::method init
+  expose limit
+  use strict arg limit = 1.0
+
+-- watches over a task, halting it if it runs too long
+::method watchTask
+  expose limit
+  use strict arg message
+  call SysSleep limit                  -- wait maximum time allowed
+  if \message~completed then           -- kill task if still not finished
+    message~halt("task took longer than" limit "sec")
+  return message~result
+]]></programlisting></example></para>
+</section>
+
+
 <section id="mthMessageHasError"><title>hasError</title>
 <indexterm><primary>hasError method</primary>
 <secondary>of Message class</secondary></indexterm>
@@ -8397,6 +8466,75 @@ message was terminated with an error condition. Returns
 completed without error.</para>
 </section>
 
+
+<!-- Class Message - method hasResult ============================== -->
+<section id="mthMessageHasResult" revisionflag="added"><title>*NEW* hasResult
+<indexterm><primary>hasResult method</primary><secondary>of Message class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>hasResult method</secondary><tertiary>of Message class</tertiary></indexterm>
+</title>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/message_hasresult.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns true ("1") if the message object has completed executing
+its message, and the message has returned a result.
+Returns false ("0") if the message object has not yet completed
+executing its message, or the message hasn't returned a result.
+</para>
+<para>See also method <xref linkend="mthMessageResult" xrefstyle="select:title"/>.
+</para>
+<para>For an example see
+<xref linkend="ex.message-halt" xrefstyle="template:halt method example"/>.
+</para>
+</section>
+
+
+<!-- Class Message - method messageComplete ======================== -->
+<section id="mthMessageMessageComplete" revisionflag="added"><title>*NEW* messageComplete
+<indexterm><primary>messageComplete method</primary><secondary>of Message class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>messageComplete method</secondary><tertiary>of Message class</tertiary></indexterm>
+</title>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/message_messagecomplete.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+<para>This method implements the <xref linkend="clsAlarmNotification" xrefstyle="template:MessageNotification interface"/>.
+It will be called whenever a message completes processing, for which
+notification was requested by using the
+<xref linkend="mthMessageNotify" xrefstyle="select:title"/> method with
+a message object as the notification target.
+</para>
+<para>As a result of receiving such a notification,
+<methodname>messageComplete</methodname> will send the receiving message to 
+start processing.
+Any <emphasis role="italic">source</emphasis> argument will be ignored.
+</para>
+<para>See also class <xref linkend="clsMessageNotification" xrefstyle="template:MessageNotification"/>.
+</para>
+<para><example id="ex.message-messagecomplete">
+<title>Message class &mdash; messageComplete method
+<indexterm><primary>examples</primary><secondary>messageComplete method</secondary></indexterm>
+</title>
+<programlisting><![CDATA[msg = .Message~new(.Array~new(1000)~~fill(0)~allIndexes, "sort")
+msg~notify(.Message~new(.stdout, "say", "I", "sorting complete"))
+msg~notify(.Message~new(.r~new, "items", "I", msg))
+msg~start
+say "processing continues"
+
+::class r  
+::method items
+use strict arg m
+say m~target~items "items sorted"
+]]></programlisting></example>
+will output
+<programlisting>processing continues
+sorting complete
+1000 items sorted</programlisting></para>
+</section>
+
+
 <section id="mthMessageMessageName"><title>messageName</title>
 <indexterm><primary>messageName method</primary>
 <secondary>of Message class</secondary></indexterm>
@@ -8410,10 +8548,10 @@ completed without error.</para>
 </imageobject>
 </mediaobject>
 
-<para>Returns the string message name used to invoke a method.</para>
+<para>Returns the message name of the receiving message object.</para>
 </section>
 
-<section id="mthMessageNotify"><title>notify</title>
+<section id="mthMessageNotify" revisionflag="changed"><title>*CHG* notify</title>
 <indexterm><primary>notify method</primary>
 <secondary>of Message class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -8426,21 +8564,44 @@ completed without error.</para>
 </imageobject>
 </mediaobject>
 
-<para>Requests notification about the completion of processing of the message
-<emphasis role="bold">send</emphasis> or <emphasis role="bold">start</emphasis>.
-The message object <emphasis role="italic">message</emphasis>
-is sent as the notification. You can use
-<emphasis role="bold">notify</emphasis> to request any number of
-notifications. After the notification
-message, you can use the <emphasis role="bold">result</emphasis>
-method to obtain any result from the messages
-<emphasis role="bold">send</emphasis> or
-<emphasis role="bold">start</emphasis>.</para>
-<indexterm><primary>examples</primary>
-<secondary>notify method</secondary></indexterm>
-<example id="ex.message-notify">
-<title>Message class - notify method</title>
-<programlisting>
+<para>Requests notification about the completion of processing of the message.
+</para>
+<para>The notification <emphasis role="italic">target</emphasis> must be an
+object that implements the <xref linkend="clsMessageNotification" xrefstyle="template:MessageNotification interface"/>.
+Upon completion of message processing, <emphasis role="italic">target</emphasis>
+will be sent a <methodname>messageComplete</methodname> message, with 
+the completed Message object as argument <emphasis role="italic">source</emphasis>. 
+</para>
+<para>Any number of notifications can be requested for a message.
+</para>
+<para>To retrieve the result of the completed message, use method
+<xref linkend="mthMessageResult" xrefstyle="select:title"/>.
+</para>
+<para>See also class <xref linkend="clsMessageNotification" xrefstyle="template:MessageNotification"/>.
+</para>
+
+<para><example id="ex.message-notify">
+<title>Message class &mdash; notify method
+<indexterm><primary>examples</primary><secondary>notify method</secondary></indexterm>
+</title>
+<programlisting><![CDATA[msg = .Message~new(.Array~new(1000)~~fill(0)~allIndexes, "sort")
+msg~notify(.Sorter~new)
+msg~start
+say "processing continues"
+
+::class Sorter inherit MessageNotification
+::method messageComplete
+  use strict arg message
+
+  say message~target~items "items sorted"
+]]></programlisting></example></para>
+
+<para>will output
+<programlisting>processing continues
+1000 items sorted
+</programlisting></para>
+
+<!-- @@ example temporarily removed
 /* Event-driven greetings */
 
 .prompter~new~prompt(.nil)
@@ -8467,9 +8628,62 @@ method to obtain any result from the messages
 
   /* Don&apos;t leave until user has entered "quit"    */
   guard on when name="quit"
-</programlisting>
-</example>
+-->
 </section>
+
+
+<!-- Class Message - method reply ================================== -->
+<section id="mthMessageReply" revisionflag="added"><title>*NEW* reply
+<indexterm><primary>reply method</primary><secondary>of Message class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>reply method</secondary><tertiary>of Message class</tertiary></indexterm>
+</title>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/message_reply.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+<warning><title>More detail needed</title>
+<para>This method is eqivalent to 
+<xref linkend="mthMessageStart" xrefstyle="select:title"/>
+except that it returns a copy of the started message.
+</para>
+</warning>
+<para>See also
+<itemizedlist spacing="compact">
+  <listitem><para>method <xref linkend="mthMessageReplyWith" xrefstyle="select:title"/>,</para></listitem>
+  <listitem><para>methods <xref linkend="mthMessageStart" xrefstyle="select:title"/> and <xref linkend="mthMessageStartWith" xrefstyle="select:title"/>, and</para></listitem>
+  <listitem><para>methods <xref linkend="mthMessageSend" xrefstyle="select:title"/> and <xref linkend="mthMessageSendWith" xrefstyle="select:title"/>.</para></listitem>
+</itemizedlist>
+</para>
+</section>
+
+
+<!-- Class Message - method replyWith ============================== -->
+<section id="mthMessageReplyWith" revisionflag="added"><title>*NEW* replyWith
+<indexterm><primary>replyWith method</primary><secondary>of Message class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>replyWith method</secondary><tertiary>of Message class</tertiary></indexterm>
+</title>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/message_replywith.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+<warning><title>More detail needed</title>
+<para>This method is eqivalent to 
+<xref linkend="mthMessageStartWith" xrefstyle="select:title"/>
+except that it returns a copy of the started message.
+</para>
+</warning>
+<para>See also
+<itemizedlist spacing="compact">
+  <listitem><para>method <xref linkend="mthMessageReply" xrefstyle="select:title"/>,</para></listitem>
+  <listitem><para>methods <xref linkend="mthMessageStart" xrefstyle="select:title"/> and <xref linkend="mthMessageStartWith" xrefstyle="select:title"/>, and</para></listitem>
+  <listitem><para>methods <xref linkend="mthMessageSend" xrefstyle="select:title"/> and <xref linkend="mthMessageSendWith" xrefstyle="select:title"/>.</para></listitem>
+</itemizedlist>
+</para>
+</section>
+
+
 
 <section id="mthMessageResult"><title>result</title>
 <indexterm><primary>result method</primary>
@@ -8506,75 +8720,138 @@ say "The result of message was" bond~result     /* Result is 007     */
 </example>
 </section>
 
-<section id="mthMessageSend"><title>send</title>
-<indexterm><primary>send method</primary>
-<secondary>of Message class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>send method</secondary>
-<tertiary>of Message class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
+<section id="mthMessageSend" revisionflag="changed"><title>*CHG* send
+<indexterm><primary>send method</primary><secondary>of Message class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>send method</secondary><tertiary>of Message class</tertiary></indexterm>
+</title>
+<para>
+<mediaobject><imageobject>
 <imagedata fileref="images/classes/message_send.svg" scale="50" />
-</imageobject>
-</mediaobject>
+</imageobject></mediaobject>
+</para>
+<para>Returns the result (if any) of sending the message.
+</para>
+<para>If <emphasis role="italic">target</emphasis> is specified,
+the message is sent to <emphasis role="italic">target</emphasis>
+and the receiving message object is changed to use the new
+<emphasis role="italic">target</emphasis>.
+Otherwise the message is sent to the target the message object provides.
+</para>
+<para>If any <emphasis role="italic">argument</emphasis>s are specified,
+the message is sent with these <emphasis role="italic">argument</emphasis>s
+and the receiving message object is changed to use the new
+<emphasis role="italic">argument</emphasis>s.
+Otherwise the message is sent with any arguments the message object provides.
+</para>
+<para>This method does not return until message processing is complete.
+</para>
+<para>The <emphasis role="bold">notify</emphasis> method can be used to
+request notification that message processing is complete.
+When message processing is complete, the message object retains any result
+and holds it until requested via the <emphasis role="bold">result</emphasis>
+method.
+</para>
+<para>See also
+<itemizedlist spacing="compact">
+  <listitem><para>method <xref linkend="mthMessageSendWith" xrefstyle="select:title"/>,</para></listitem>
+  <listitem><para>methods <xref linkend="mthMessageStart" xrefstyle="select:title"/> and <xref linkend="mthMessageStartWith" xrefstyle="select:title"/>, and</para></listitem>
+  <listitem><para>methods <xref linkend="mthMessageReply" xrefstyle="select:title"/> and <xref linkend="mthMessageReplyWith" xrefstyle="select:title"/>.</para></listitem>
+</itemizedlist>
+</para>
 
-<para>Returns the result (if any) of sending the message. If you specify
-<emphasis role="italic">target</emphasis>, this method sends the message to
-<emphasis role="italic">target</emphasis>. Otherwise,
-this method sends the message to the <emphasis role="italic">target</emphasis>
-you specified when the message object was created.
-<emphasis role="bold">send</emphasis> does
-not return until message processing is complete.</para>
-<para>You can use the <emphasis role="bold">notify</emphasis>
-method to request notification that message
-processing is complete. You can use the
-<emphasis role="bold">result</emphasis> method to obtain any result
-from the message.</para>
 </section>
 
-<section id="mthMessageStart"><title>start</title>
-<indexterm><primary>start method</primary>
-<secondary>of Message class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>start method</secondary>
-<tertiary>of Message class</tertiary></indexterm>
 
-<mediaobject>
-<imageobject>
+<!-- Class Message - method sendWith =============================== -->
+<section id="mthMessageSendWith" revisionflag="added"><title>*NEW* sendWith
+<indexterm><primary>sendWith method</primary><secondary>of Message class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>sendWith method</secondary><tertiary>of Message class</tertiary></indexterm>
+</title>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/message_sendwith.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns the result (if any) of sending the message with the specified
+<emphasis role="italic">arguments</emphasis>.
+</para>
+<para>If <emphasis role="italic">target</emphasis> is specified,
+the message is sent to <emphasis role="italic">target</emphasis>
+and the receiving message object is changed to use the new
+<emphasis role="italic">target</emphasis>.
+Otherwise the message is sent to the target the message object provides.
+</para>
+<para>The <emphasis role="italic">arguments</emphasis> array items are used as
+message arguments and the receiving message object is changed to use these
+new <emphasis role="italic">arguments</emphasis>.
+</para>
+<para>This method does not return until message processing is complete.
+</para>
+<para>The <emphasis role="bold">notify</emphasis> method can be used to
+request notification that message processing is complete.
+When message processing is complete, the message object retains any result
+and holds it until requested via the <emphasis role="bold">result</emphasis>
+method.
+</para>
+<para>See also
+<itemizedlist spacing="compact">
+  <listitem><para>method <xref linkend="mthMessageSend" xrefstyle="select:title"/>,</para></listitem>
+  <listitem><para>methods <xref linkend="mthMessageStart" xrefstyle="select:title"/> and <xref linkend="mthMessageStartWith" xrefstyle="select:title"/>, and</para></listitem>
+  <listitem><para>methods <xref linkend="mthMessageReply" xrefstyle="select:title"/> and <xref linkend="mthMessageReplyWith" xrefstyle="select:title"/>.</para></listitem>
+</itemizedlist>
+</para>
+</section>
+
+
+<section id="mthMessageStart" revisionflag="changed"><title>*CHG* start
+<indexterm><primary>start method</primary><secondary>of Message class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>start method</secondary><tertiary>of Message class</tertiary></indexterm>
+</title>
+<para>
+<mediaobject><imageobject>
 <imagedata fileref="images/classes/message_start.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-
-<para>Sends the message to start processing at a specific target whereas
-the sender continues processing. If you specify
-<emphasis role="italic">target</emphasis>, this method
-sends the message to <emphasis role="italic">target</emphasis>. Otherwise, this
-method sends the message to the <emphasis role="italic">target</emphasis>
-that you specified when the message object was created.
-This method returns as soon as possible and does not wait until
-message processing is complete. When message processing is complete, the
-message object retains any result and holds it until requested via
-the <emphasis role="bold">result</emphasis>
-method. You can use the <emphasis role="bold">notify</emphasis> method to request
-notification when message processing completes.</para>
-
-<indexterm><primary>examples</primary>
-<secondary>start method</secondary></indexterm>
-<indexterm><primary>examples</primary>
-<secondary>of Message class</secondary></indexterm>
-<example id="ex.message-start">
-<title>Message class - start method</title>
+</imageobject></mediaobject>
+</para>
+<para>Sends the message to start processing, while 
+the sender also continues processing.
+</para>
+<para>If <emphasis role="italic">target</emphasis> is specified,
+the message is sent to <emphasis role="italic">target</emphasis>
+and the receiving message object is changed to use the new
+<emphasis role="italic">target</emphasis>.
+Otherwise the message is sent to the target the message object provides.
+</para>
+<para>If any <emphasis role="italic">argument</emphasis>s are specified,
+the message is sent with these <emphasis role="italic">argument</emphasis>s
+and the receiving message object is changed to use the new
+<emphasis role="italic">argument</emphasis>s.
+Otherwise the message is sent with any arguments the message object provides.
+</para>
+<para>This method returns as soon as possible and does not wait until
+message processing is complete.
+</para>
+<para>The <emphasis role="bold">notify</emphasis> method can be used to
+request notification that message processing is complete.
+When message processing is complete, the message object retains any result
+and holds it until requested via the <emphasis role="bold">result</emphasis>
+method.
+</para>
+<para>See also
+<itemizedlist spacing="compact">
+  <listitem><para>method <xref linkend="mthMessageStartWith" xrefstyle="select:title"/>,</para></listitem>
+  <listitem><para>methods <xref linkend="mthMessageSend" xrefstyle="select:title"/> and <xref linkend="mthMessageSendWith" xrefstyle="select:title"/>, and</para></listitem>
+  <listitem><para>methods <xref linkend="mthMessageReply" xrefstyle="select:title"/> and <xref linkend="mthMessageReplyWith" xrefstyle="select:title"/>.</para></listitem>
+</itemizedlist>
+</para>
+<example id="ex.message-start"><title>Message class - start method
+<indexterm><primary>examples</primary><secondary>start method</secondary></indexterm>
+<indexterm><primary>examples</primary><secondary>of Message class</secondary></indexterm>
+</title>
 <programlisting>
-/* Using Message class methods */
-/* Note: In the following example, ::METHOD directives define class Testclass */
-                                                 /* with method SHOWMSG       */
-
 ez=.testclass~new                  /* Creates a new instance of Testclass     */
-mymsg=ez~start("SHOWMSG","Hello, Ollie!",5)      /* Creates and starts        */
-                                                 /* message mymsg to send     */
-                                                 /* SHOWMSG to ez             */
+
+/* Creates and starts message mymsg to send SHOWMSG to ez                     */
+mymsg=ez~start("SHOWMSG","Hello, Ollie!",5)      
 
 /* Continue with main processing while SHOWMSG runs concurrently              */
 do 5
@@ -8597,6 +8874,7 @@ reply "Bye Bye, Ollie..."
 return
 </programlisting>
 </example>
+
 <para>The following output is possible: </para>
 <programlisting>
 Hello, Ollie!
@@ -8614,6 +8892,49 @@ Goodbye, Stan...
 </programlisting>
 </section>
 
+
+<!-- Class Message - method startWith ============================== -->
+<section id="mthMessageStartWith" revisionflag="added"><title>*NEW* startWith
+<indexterm><primary>startWith method</primary><secondary>of Message class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>startWith method</secondary><tertiary>of Message class</tertiary></indexterm>
+</title>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/message_startwith.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+<para>Sends the message with the specified <emphasis role="italic">arguments</emphasis>
+to start processing, while the sender also continues processing.
+</para>
+<para>If <emphasis role="italic">target</emphasis> is specified,
+the message is sent to <emphasis role="italic">target</emphasis>
+and the receiving message object is changed to use the new
+<emphasis role="italic">target</emphasis>.
+Otherwise the message is sent to the target the message object provides.
+</para>
+<para>The <emphasis role="italic">arguments</emphasis> array items are used as
+message arguments and the receiving message object is changed to use these
+new <emphasis role="italic">arguments</emphasis>.
+</para>
+<para>This method returns as soon as possible and does not wait until
+message processing is complete.
+</para>
+<para>The <emphasis role="bold">notify</emphasis> method can be used to
+request notification that message processing is complete.
+When message processing is complete, the message object retains any result
+and holds it until requested via the <emphasis role="bold">result</emphasis>
+method.
+</para>
+<para>See also
+<itemizedlist spacing="compact">
+  <listitem><para>method <xref linkend="mthMessageStart" xrefstyle="select:title"/>,</para></listitem>
+  <listitem><para>methods <xref linkend="mthMessageSend" xrefstyle="select:title"/> and <xref linkend="mthMessageSendWith" xrefstyle="select:title"/>, and</para></listitem>
+  <listitem><para>methods <xref linkend="mthMessageReply" xrefstyle="select:title"/> and <xref linkend="mthMessageReplyWith" xrefstyle="select:title"/>.</para></listitem>
+</itemizedlist>
+</para>
+</section>
+
+
 <section id="mthMessageTarget"><title>target</title>
 <indexterm><primary>target method</primary>
 <secondary>of Message class</secondary></indexterm>
@@ -8629,8 +8950,71 @@ Goodbye, Stan...
 
 <para>Returns the object that is the target of the invoked message.</para>
 </section>
+
+
+<!-- Class Message - method triggered ============================== -->
+<section id="mthMessageTriggered" revisionflag="added"><title>*NEW* triggered
+<indexterm><primary>triggered method</primary><secondary>of Message class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>triggered method</secondary><tertiary>of Message class</tertiary></indexterm>
+</title>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/message_triggered.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+<para>This method implements the <xref linkend="clsAlarmNotification" xrefstyle="template:AlarmNotification interface"/>.
+It will be called whenever an <xref linkend="clsAlarm" xrefstyle="template:Alarm"/>
+triggers, for which a message object was set as notification target.
+</para>
+<para>As a result of receiving such a notification,
+<methodname>triggered</methodname> will send the receiving message to
+start processing.
+Any <emphasis role="italic">source</emphasis> argument will be ignored.
+</para>
+<para>See also class <xref linkend="clsAlarmNotification" xrefstyle="template:AlarmNotification"/>.
+</para>
+<para><example id="ex.message-triggered">
+<title>Message class &mdash; triggered method
+<indexterm><primary>examples</primary><secondary>triggered method</secondary></indexterm>
+</title>
+<programlisting><![CDATA[arg = .Array~new(1)
+msg = .Message~new(.a~new, "ring", "A", arg)
+oneSecond = .Alarm~new(1, msg, arg)
+arg~append(oneSecond)
+-- oneSecond = .Alarm~new(1, .Message~new(.a~new, "ring", "I", alarm))
+say "processing continues"
+
+::class a  
+::method ring
+use strict arg alarm
+say "alarm went off at" .DateTime~new
+say "was scheduled for" alarm~scheduledTime
+]]></programlisting></example>
+may output
+<programlisting>
+processing continues
+alarm went off at 2015-12-18T16:54:15.550000
+was scheduled for 2015-12-18T16:54:15.545000
+</programlisting></para>
+</section>
+
+
+<!-- Class Message - method wait =================================== -->
+<section id="mthMessageWait" revisionflag="added"><title>*NEW* wait
+<indexterm><primary>wait method</primary><secondary>of Message class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>wait method</secondary><tertiary>of Message class</tertiary></indexterm>
+</title>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/message_wait.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+<para>Waits until the message object has completed executing its message.
+</para>
+<para>See also method <xref linkend="mthMessageCompleted" xrefstyle="select:title"/>.
+</para>
 </section>
 
 </section>
 
-
+</section>

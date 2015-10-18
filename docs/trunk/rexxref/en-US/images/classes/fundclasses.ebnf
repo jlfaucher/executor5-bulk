@@ -38,10 +38,10 @@ object_objectnameequals ::= 'objectName=(' newname ')'
 
 object_request ::= 'request(' classid ')'
 
-object_run ::= 'run(' method ( '"Individual"' ( ',' argument )* |
-                               '"Array"' ',' argument )? ')'
+object_run ::= 'run(' method ( ',' '"Individual"' ( ',' argument )* |
+                               ',' '"Array"' ',' arguments )? ')'
 
-object_send ::= 'send(' messagename ( ( ',' argument )+ )? ')'
+object_send ::= 'send(' messagename ( ',' argument )* ')'
 
 object_sendwith ::= 'sendWith(' messagename ',' arguments ')'
 
@@ -346,7 +346,7 @@ routine_setsecuritymanager ::= 'setSecurityManager' ( '(' security_manager_objec
 routine_source ::= 'source'
 
 /*-- Package class ---------------------------------------------------*/
-package_new ::= 'new(' name ( ',' source ( ',' methodobject )? )? ')'
+package_new ::= 'new(' name ',' source? ( ',' context )? ')'
 
 package_addclass ::= 'addClass(' name ',' class ')'
 
@@ -418,8 +418,21 @@ package_sourcesize ::= 'sourceSize'
 
 package_trace ::= 'trace'
 
-message_new ::= 'new(' target ',' messagename ( '"Individual"' ( ',' argument )* |
-                                                '"Array"' ',' argument )? ')'
+/* new in 5.0 - start */
+message_halt      ::= 'halt' ('('description')')?
+message_hasresult ::= 'hasResult'
+message_messagecomplete ::= 'messageComplete(' source? ')'
+message_reply     ::= 'reply(' target? ( ',' argument )* ')'
+message_replywith ::= 'replyWith(' target? ',' arguments ')'
+message_sendwith  ::= 'sendWith(' target? ',' arguments ')'
+message_startwith ::= 'startWith(' target? ',' arguments ')'
+message_triggered ::= 'triggered(' source? ')'
+message_wait      ::= 'wait'
+/* new in 5.0 - end */
+
+
+message_new ::= 'new(' target ',' messagename ( ',' '"Individual"' ( ',' argument )* |
+                                                ',' '"Array"' ',' arguments )? ')'
 
 message_arguments ::= 'arguments'
 
@@ -431,12 +444,15 @@ message_haserror ::= 'hasError'
 
 message_messagename ::= 'messageName'
 
-message_notify ::= 'notify(' message ')'
+/* chg in 5.0: changed "message" to (notification) "target" */
+message_notify ::= 'notify(' target ')'
 
 message_result ::= 'result'
 
-message_send ::= 'send' ( '(' target ')' )?
+/* chg in 5.0 */
+message_send ::= 'send(' target? ( ',' argument )* ')'
 
-message_start ::= 'start' ( '(' target ')' )?
+/* chg in 5.0 */
+message_start ::= 'start(' target? ( ',' argument )* ')'
 
 message_target ::= 'target'

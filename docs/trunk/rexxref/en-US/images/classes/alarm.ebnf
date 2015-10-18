@@ -1,11 +1,24 @@
+/* new in 5.0 - start */
+alarmnotification_cancel    ::= 'cancel(' source ')'
+alarmnotification_triggered ::= 'triggered(' source ')'
+
+messagenotification_messagecomplete ::= 'messageComplete(' source ')'
+/* new in 5.0 - end */
+
+
+/* new in 5.0 */
 alarm_attachment ::= 'attachment'
 
 alarm_cancel ::= 'cancel'
 
+/* new in 5.0 */
 alarm_canceled ::= 'canceled' | 'cancelled'
 
-alarm_init ::= 'init(' atime ',' message (',' attachment)? ')'
+/* chg in 5.0: changed "message" to (notification) "target" */
+alarm_init ::= 'init(' atime ',' target (',' attachment)? ')'
 
+/* new in 5.0 */
 alarm_scheduledtime ::= 'scheduledTime'
 
+/* new in 5.0 */
 alarm_triggered ::= 'triggered'
