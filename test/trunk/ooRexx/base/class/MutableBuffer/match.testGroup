@@ -55,11 +55,80 @@ return testResult
 
 ::method "test_Match"
 
-    str=.mutablebuffer~new("abcDEFghi")
-    self~assertSame(1, str~match(2, "bc")~string)
-    self~assertSame(1, str~match(2, "bcD")~string)
-    self~assertSame(0, str~match(2, "bcd")~string)
-    self~assertSame(0, str~match(2, "ab")~string)
-    self~assertSame(0, str~match(2, "cD")~string)
+  str = .MutableBuffer~new("abcDEFghi")
+  null = .MutableBuffer~new("")
+  abc = .MutableBuffer~new("abc")
+  self~assertTrue(str~match(2, "bc"))
+  self~assertTrue(str~match(2, "bcD"))
+  self~assertFalse(str~match(2, "bcd"))
+  self~assertFalse(str~match(2, "ab"))
+  self~assertFalse(str~match(2, "cD"))
 
+  self~assertFalse(null~match(1, "Abc"))
+  self~assertFalse(abc~match(4, "abc"))
+  self~assertFalse(abc~match(1, "abcd"))
 
+  self~assertTrue(str~match(2, "dbc", 2))
+  self~assertTrue(str~match(2, "dbce", 2, 2))
+  self~assertFalse(abc~match(1, ""))
+  self~assertFalse(abc~match(1, "abc", 1, 0))
+
+  -- out of bounds should all be false
+  self~assertFalse(str~match(str~length + 1, "i"))
+  self~assertFalse(str~match(1, "abc", 4))
+  self~assertFalse(str~match(1, "abc", 1, 4))
+
+::method testZeroPos
+  abc = .MutableBuffer~new("abc")
+  self~expectSyntax(93.924)
+  x = abc~match(0, "abc")
+
+::method testNegativePos
+  abc = .MutableBuffer~new("abc")
+  self~expectSyntax(93.924)
+  x = abc~match(-1, "abc")
+
+::method testNonIntegerPos
+  abc = .MutableBuffer~new("abc")
+  self~expectSyntax(93.924)
+  x = abc~match(1.1, "abc")
+
+::method testNonNumericPos
+  abc = .MutableBuffer~new("abc")
+  self~expectSyntax(93.924)
+  x = abc~match('a', "abc")
+
+::method testZeroN
+  abc = .MutableBuffer~new("abc")
+  self~expectSyntax(93.924)
+  x = abc~match(1, "abc", 0)
+
+::method testNegativeN
+  abc = .MutableBuffer~new("abc")
+  self~expectSyntax(93.924)
+  x = abc~match(1, "abc", -1)
+
+::method testNonIntegerN
+  abc = .MutableBuffer~new("abc")
+  self~expectSyntax(93.924)
+  x = abc~match(1, "abc", 1.1)
+
+::method testNonNumericN
+  abc = .MutableBuffer~new("abc")
+  self~expectSyntax(93.924)
+  x = abc~match(1, "abc", 'a')
+
+::method testNegativeLength
+  abc = .MutableBuffer~new("abc")
+  self~expectSyntax(93.923)
+  x = abc~match(1, "abc", 1, -1)
+
+::method testNonIntegerLength
+  abc = .MutableBuffer~new("abc")
+  self~expectSyntax(93.923)
+  x = abc~match(1, "abc", 1, 1.1)
+
+::method testNonNumericLength
+  abc = .MutableBuffer~new("abc")
+  self~expectSyntax(93.923)
+  x = abc~match(1, "abc", 1, 'a')

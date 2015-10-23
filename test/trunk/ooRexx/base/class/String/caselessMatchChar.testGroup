@@ -55,8 +55,40 @@ return testResult
 
 ::method "test_MatchChar_caseless"
 
-    str="abcDEFghi"
-    self~assertSame(1, str~CaselessMatchChar(2, "b"))
-    self~assertSame(1, str~CaselessMatchChar(2, "B"))
-    self~assertSame(0, str~CaselessMatchChar(2, "c"))
+  str = .String~new("abcDEFghi")
+  null = .String~new("")
+  abc = .String~new("abc")
+  self~assertTrue(str~caselessMatchChar(2, "b"))
+  self~assertTrue(str~caselessMatchChar(2, "B"))
+  self~assertFalse(str~caselessMatchChar(2, "c"))
+  self~assertTrue(str~caselessMatchChar(2, "bc"))
+  self~assertTrue(str~caselessMatchChar(2, "Bc"))
+  self~assertFalse(str~caselessMatchChar(2, "cD"))
+  self~assertFalse(null~caselessMatchChar(1, "Abc"))
+  self~assertFalse(abc~caselessMatchChar(1, ""))
+  self~assertTrue(abc~caselessMatchChar(1, xrange('00'x, 'ff'x)))
 
+  -- out of bounds should all be false
+  self~assertFalse(abc~caselessMatchChar(4, "abc"))
+  self~assertFalse(str~caselessMatchChar(str~length + 1, ""))
+
+::method testZeroPos
+
+  abc = .String~new("abc")
+  self~expectSyntax(93.924)
+  x = abc~caselessMatchChar(0, "abc")
+
+::method testNegativePos
+  abc = .String~new("abc")
+  self~expectSyntax(93.924)
+  x = abc~caselessMatchChar(-1, "abc")
+
+::method testNonIntegerPos
+  abc = .String~new("abc")
+  self~expectSyntax(93.924)
+  x = abc~caselessMatchChar(1.1, "abc")
+
+::method testNonNumericPos
+  abc = .String~new("abc")
+  self~expectSyntax(93.924)
+  x = abc~caselessMatchChar('a', "abc")

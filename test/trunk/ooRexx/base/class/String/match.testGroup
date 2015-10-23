@@ -55,72 +55,80 @@ return testResult
 
 ::method "test_Match"
 
-  str="abcDEFghi"
+  str = .String~new("abcDEFghi")
+  null = .String~new("")
+  abc = .String~new("abc")
   self~assertTrue(str~match(2, "bc"))
   self~assertTrue(str~match(2, "bcD"))
   self~assertFalse(str~match(2, "bcd"))
   self~assertFalse(str~match(2, "ab"))
   self~assertFalse(str~match(2, "cD"))
 
-  self~assertFalse(""~match(1, "Abc"))
-  self~assertFalse("abc"~match(4, "abc"))
-  self~assertFalse("abc"~match(1, "abcd"))
+  self~assertFalse(null~match(1, "Abc"))
+  self~assertFalse(abc~match(4, "abc"))
+  self~assertFalse(abc~match(1, "abcd"))
 
   self~assertTrue(str~match(2, "dbc", 2))
   self~assertTrue(str~match(2, "dbce", 2, 2))
-  self~assertFalse("abc"~match(1, ""))
-  self~assertFalse("abc"~match(1, "abc", 1, 0))
+  self~assertFalse(abc~match(1, ""))
+  self~assertFalse(abc~match(1, "abc", 1, 0))
+
+  -- out of bounds should all be false
+  self~assertFalse(str~match(str~length + 1, "i"))
+  self~assertFalse(str~match(1, "abc", 4))
+  self~assertFalse(str~match(1, "abc", 1, 4))
 
 ::method testZeroPos
+  abc = .String~new("abc")
   self~expectSyntax(93.924)
-  x = "abc"~match(0, "abc")
+  x = abc~match(0, "abc")
 
 ::method testNegativePos
+  abc = .String~new("abc")
   self~expectSyntax(93.924)
-  x = "abc"~match(-1, "abc")
+  x = abc~match(-1, "abc")
 
 ::method testNonIntegerPos
+  abc = .String~new("abc")
   self~expectSyntax(93.924)
-  x = "abc"~match(1.1, "abc")
+  x = abc~match(1.1, "abc")
 
 ::method testNonNumericPos
+  abc = .String~new("abc")
   self~expectSyntax(93.924)
-  x = "abc"~match('a', "abc")
+  x = abc~match('a', "abc")
 
 ::method testZeroN
+  abc = .String~new("abc")
   self~expectSyntax(93.924)
-  x = "abc"~match(1, "abc", 0)
+  x = abc~match(1, "abc", 0)
 
 ::method testNegativeN
+  abc = .String~new("abc")
   self~expectSyntax(93.924)
-  x = "abc"~match(1, "abc", -1)
+  x = abc~match(1, "abc", -1)
 
 ::method testNonIntegerN
+  abc = .String~new("abc")
   self~expectSyntax(93.924)
-  x = "abc"~match(1, "abc", 1.1)
+  x = abc~match(1, "abc", 1.1)
 
 ::method testNonNumericN
+  abc = .String~new("abc")
   self~expectSyntax(93.924)
-  x = "abc"~match(1, "abc", 'a')
+  x = abc~match(1, "abc", 'a')
 
 ::method testNegativeLength
+  abc = .String~new("abc")
   self~expectSyntax(93.923)
-  x = "abc"~match(1, "abc", 1, -1)
+  x = abc~match(1, "abc", 1, -1)
 
 ::method testNonIntegerLength
+  abc = .String~new("abc")
   self~expectSyntax(93.923)
-  x = "abc"~match(1, "abc", 1, 1.1)
+  x = abc~match(1, "abc", 1, 1.1)
 
 ::method testNonNumericLength
+  abc = .String~new("abc")
   self~expectSyntax(93.923)
-  x = "abc"~match(1, "abc", 1, 'a')
-
-::method testNOutOfBounds
-  self~expectSyntax(93.924)
-  x = "abc"~match(1, "abc", 4, 1)
-
-::method testLengthOutOfBounds
-  self~expectSyntax(93.923)
-  x = "abc"~match(1, "abc", 1, 4)
-
-
+  x = abc~match(1, "abc", 1, 'a')

@@ -55,12 +55,80 @@ return testResult
 
 ::method "test_Match_caseless"
 
-    str=.mutableBuffer~new("abcDEFghi")
-    self~assertSame(1, str~caselessMatch(2, "bc"))
-    self~assertSame(1, str~caselessMatch(2, "bcD"))
-    self~assertSame(1, str~caselessMatch(2, "bcd"))
-    self~assertSame(0, str~caselessMatch(2, "ab"))
-    self~assertSame(0, str~caselessMatch(2, "cD"))
+  str = .MutableBuffer~new("abcDEFghi")
+  null = .MutableBuffer~new("")
+  abc = .MutableBuffer~new("abc")
+  self~assertTrue(str~caselessMatch(2, "bc"))
+  self~assertTrue(str~caselessMatch(2, "bcD"))
+  self~assertTrue(str~caselessMatch(2, "bcd"))
+  self~assertFalse(str~caselessMatch(2, "ab"))
+  self~assertFalse(str~caselessMatch(2, "cD"))
 
+  self~assertFalse(null~caselessMatch(1, "Abc"))
+  self~assertFalse(abc~caselessMatch(4, "abc"))
+  self~assertFalse(abc~caselessMatch(1, "abcd"))
 
+  self~assertTrue(str~caselessMatch(2, "dbc", 2))
+  self~assertTrue(str~caselessMatch(2, "dbce", 2, 2))
+  self~assertFalse(abc~caselessMatch(1, ""))
+  self~assertFalse(abc~caselessMatch(1, "abc", 1, 0))
 
+  -- out of bounds should all be false
+  self~assertFalse(str~caselessMatch(str~length + 1, "i"))
+  self~assertFalse(str~caselessMatch(1, "abc", 4))
+  self~assertFalse(str~caselessMatch(1, "abc", 1, 4))
+
+::method testZeroPos
+  abc = .MutableBuffer~new("abc")
+  self~expectSyntax(93.924)
+  x = abc~caselessMatch(0, "abc")
+
+::method testNegativePos
+  abc = .MutableBuffer~new("abc")
+  self~expectSyntax(93.924)
+  x = abc~caselessMatch(-1, "abc")
+
+::method testNonIntegerPos
+  abc = .MutableBuffer~new("abc")
+  self~expectSyntax(93.924)
+  x = abc~caselessMatch(1.1, "abc")
+
+::method testNonNumericPos
+  abc = .MutableBuffer~new("abc")
+  self~expectSyntax(93.924)
+  x = abc~caselessMatch('a', "abc")
+
+::method testZeroN
+  abc = .MutableBuffer~new("abc")
+  self~expectSyntax(93.924)
+  x = abc~caselessMatch(1, "abc", 0)
+
+::method testNegativeN
+  abc = .MutableBuffer~new("abc")
+  self~expectSyntax(93.924)
+  x = abc~caselessMatch(1, "abc", -1)
+
+::method testNonIntegerN
+  abc = .MutableBuffer~new("abc")
+  self~expectSyntax(93.924)
+  x = abc~caselessMatch(1, "abc", 1.1)
+
+::method testNonNumericN
+  abc = .MutableBuffer~new("abc")
+  self~expectSyntax(93.924)
+  x = abc~caselessMatch(1, "abc", 'a')
+
+::method testNegativeLength
+  abc = .MutableBuffer~new("abc")
+  self~expectSyntax(93.923)
+  x = abc~caselessMatch(1, "abc", 1, -1)
+
+::method testNonIntegerLength
+  abc = .MutableBuffer~new("abc")
+  self~expectSyntax(93.923)
+  x = abc~caselessMatch(1, "abc", 1, 1.1)
+
+::method testNonNumericLength
+  abc = .MutableBuffer~new("abc")
+  self~expectSyntax(93.923)
+  x = abc~caselessMatch(1, "abc", 1, 'a')
