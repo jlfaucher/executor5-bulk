@@ -53,61 +53,54 @@
 
 <para>The Object class is the root of the class hierarchy. The instance methods
 of the Object class are, therefore, available on all objects.</para>
+
+<!-- modified: removed all class methods except new(), uncommented init(), added private methods run(), setMethod(), unsetMethod() -->
+<!-- $GENERATED-20151019-START rexxrefClassTable(Object) -->
 <table id="ooRexxObjectClass" frame="all" pgwide="0">
-<title>ooRexx Object Class</title>
-<tgroup cols="2" align="left" colsep="1" rowsep="1">
-<colspec colname="c1" />
-<colspec colname="c2" />
+<title>Object Class</title>
+<tgroup cols="1">
 <tbody>
-   <row>
-      <entry namest="c1" nameend="c2" align="center"><emphasis role="bold">Object</emphasis></entry>
-   </row>
-   <row>
-      <entry namest="c1" nameend="c2" align="left">
-<screen>new
-</screen>
-      </entry>
-   </row>
-   <row>
-      <entry>
-<screen>= \= == \== &lt;&gt; &lt;&gt; ||
-'' (abuttal)
-' ' (blank)
-class
-copy
-defaultName
-hashCode
-hasMethod
-identityHash
-init
-instanceMethod
-instanceMethods
-isA
-</screen>
-      </entry>
-      <entry>
-<screen>isinstanceOf
-objectName
-objectName=
-request
-run
-send
-sendWith
-setMethod
-start
-startWith
-string
-unsetMethod
-</screen>
-      </entry>
-   </row>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+ <row><entry>
+  <simplelist columns="3">
+   <member><xref linkend="mthObjectNew" xrefstyle="select:title"/></member>
+  </simplelist>
+  <simplelist columns="3">
+   <member><xref linkend="mthObjectConcatenationMethods" xrefstyle="select:title"/> (abuttal) || (blank)</member>
+   <member><xref linkend="mthObjectComparisonMethods" xrefstyle="select:title"/> = == &lt;> >&lt; \= \==</member>
+   <member><xref linkend="mthObjectClass" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthObjectCopy" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthObjectDefaultName" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthObjectHashCode" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthObjectHasMethod" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthObjectIdentityHash" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthObjectInit" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthObjectInstanceMethod" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthObjectInstanceMethods" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthObjectIsA" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthObjectIsInstanceOf" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthObjectObjectName" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthObjectObjectNameEquals" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthObjectRequest" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthObjectRun" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthObjectSend" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthObjectSendWith" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthObjectSetMethod" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthObjectStart" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthObjectStartWith" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthObjectString" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthObjectUnsetMethod" xrefstyle="select:title"/></member>
+  </simplelist>
+ </entry></row>
 </tbody>
 </tgroup>
 </table>
-
-<note><title>Note</title>
-<para>The Object class also has available class methods that its
-metaclass, the Class class (<xref linkend="clsClass" />), defines.</para></note>
+<!-- $GENERATED-20151019-END rexxrefClassTable(Object) -->
 
 <section id="mthObjectNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
@@ -612,7 +605,7 @@ method to obtain string values in certain contexts;
 see <xref linkend="reqstr" />.</para>
 </section>
 
-<section id="mthObjectRun"><title>run</title>
+<section id="mthObjectRun"><title>run (Private Method)</title>
 <indexterm><primary>run method</primary>
 <secondary>of Object class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -775,7 +768,7 @@ say msg3~result           /* Produces Hello Fred 21:04:25.101000  */
 </example>
 </section>
 
-<section id="mthObjectSetMethod"><title>setMethod</title>
+<section id="mthObjectSetMethod"><title>setMethod (Private Method)</title>
 <indexterm><primary>setMethod method</primary>
 <secondary>of Object class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -986,7 +979,7 @@ so these subclasses also have string values. Any other class can also provide
 a string value by defining a <emphasis role="bold">makeString</emphasis> method.</para>
 </section>
 
-<section id="mthObjectUnsetMethod"><title>unsetMethod</title>
+<section id="mthObjectUnsetMethod"><title>unsetMethod (Private Method)</title>
 <indexterm><primary>unsetMethod method</primary>
 <secondary>of Object class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -5562,6 +5555,7 @@ whole number or zero.</para>
 </mediaobject>
 
 <para>Returns the nearest integer to the receiving string value.
+Half is always rounded away from zero.
 The receiving string is first rounded according
 to standard Rexx rules, as though the operation
 <computeroutput>receiving_string+0</computeroutput> had been carried out.
@@ -5582,11 +5576,6 @@ the result, any minus sign is removed.</para>
 '-0.1'~round          ->    0
 </programlisting>
 </example>
-
-<note><title>Note</title>
-<para>The <emphasis role="italic">number</emphasis> is rounded according to the
-current setting of NUMERIC DIGITS if necessary, before the method processes it.
-</para></note>
 </section>
 
 <section id="mthStringSign"><title>sign</title>
@@ -8211,9 +8200,10 @@ value.
 
 <para>A message object provides for the deferred or
 asynchronous sending of a message. You can create a message object by using
-the <emphasis role="bold">new</emphasis>
+the <xref linkend="mthMessageNew" xrefstyle="select:title"/>
 method of the Message class or the
-<emphasis role="bold">start</emphasis> (<xref linkend="mthObjectStart" />) method of the
+<xref linkend="mthObjectStart" xrefstyle="select:title"/> and
+<xref linkend="mthObjectStartWith" xrefstyle="select:title"/> methods of the
 Object class.
 </para>
 
@@ -8642,12 +8632,35 @@ say "processing continues"
 <imagedata fileref="images/classes/message_reply.svg" scale="50"/>
 </imageobject></mediaobject>
 </para>
-<warning><title>More detail needed</title>
-<para>This method is eqivalent to 
-<xref linkend="mthMessageStart" xrefstyle="select:title"/>
-except that it returns a copy of the started message.
+<para>Returns and sends a copy of the message to start processing, while 
+the sender also continues processing.
 </para>
-</warning>
+<para>As this method, other than the similar method
+<xref linkend="mthMessageStart" xrefstyle="select:title"/>,
+starts a copy of the message, it can be called mutiple times with the
+same receiving message.
+</para>
+<para>If <emphasis role="italic">target</emphasis> is specified,
+the message is sent to <emphasis role="italic">target</emphasis>
+and both the receiving message and the message copy are changed to use
+the new <emphasis role="italic">target</emphasis>.
+Otherwise the message is sent to the target the message object provides.
+</para>
+<para>If any <emphasis role="italic">argument</emphasis>s are specified,
+the message is sent with these <emphasis role="italic">argument</emphasis>s
+and both the receiving message and the message copy are changed to use
+the new <emphasis role="italic">argument</emphasis>s.
+Otherwise the message is sent with any arguments the message object provides.
+</para>
+<para>This method returns as soon as possible and does not wait until
+message processing is complete.
+</para>
+<para>The <xref linkend="mthMessageNotify" xrefstyle="select:title"/>
+method can be used to request notification that message processing is complete.
+When message processing is complete, the message object retains any
+result and holds it until requested via the
+<xref linkend="mthMessageResult" xrefstyle="select:title"/> method.
+</para>
 <para>See also
 <itemizedlist spacing="compact">
   <listitem><para>method <xref linkend="mthMessageReplyWith" xrefstyle="select:title"/>,</para></listitem>
@@ -8668,12 +8681,33 @@ except that it returns a copy of the started message.
 <imagedata fileref="images/classes/message_replywith.svg" scale="50"/>
 </imageobject></mediaobject>
 </para>
-<warning><title>More detail needed</title>
-<para>This method is eqivalent to 
-<xref linkend="mthMessageStartWith" xrefstyle="select:title"/>
-except that it returns a copy of the started message.
+<para>Returns and sends a copy of the message with the specified <emphasis role="italic">arguments</emphasis>
+to start processing, while the sender also continues processing.
 </para>
-</warning>
+<para>As this method, other than the similar method
+<xref linkend="mthMessageStartWith" xrefstyle="select:title"/>,
+starts a copy of the message, it can be called mutiple times with the
+same receiving message.
+</para>
+<para>If <emphasis role="italic">target</emphasis> is specified,
+the message is sent to <emphasis role="italic">target</emphasis>
+and both the receiving message and the message copy are changed to use
+the new <emphasis role="italic">target</emphasis>.
+Otherwise the message is sent to the target the message object provides.
+</para>
+<para>The <emphasis role="italic">arguments</emphasis> array items are used as
+message arguments and both the receiving message and the message copy
+are changed to use these new <emphasis role="italic">arguments</emphasis>.
+</para>
+<para>This method returns as soon as possible and does not wait until
+message processing is complete.
+</para>
+<para>The <xref linkend="mthMessageNotify" xrefstyle="select:title"/>
+method can be used to request notification that message processing is complete.
+When message processing is complete, the message object retains any
+result and holds it until requested via the
+<xref linkend="mthMessageResult" xrefstyle="select:title"/> method.
+</para>
 <para>See also
 <itemizedlist spacing="compact">
   <listitem><para>method <xref linkend="mthMessageReply" xrefstyle="select:title"/>,</para></listitem>
@@ -8682,7 +8716,6 @@ except that it returns a copy of the started message.
 </itemizedlist>
 </para>
 </section>
-
 
 
 <section id="mthMessageResult"><title>result</title>
@@ -8745,11 +8778,11 @@ Otherwise the message is sent with any arguments the message object provides.
 </para>
 <para>This method does not return until message processing is complete.
 </para>
-<para>The <emphasis role="bold">notify</emphasis> method can be used to
-request notification that message processing is complete.
-When message processing is complete, the message object retains any result
-and holds it until requested via the <emphasis role="bold">result</emphasis>
-method.
+<para>The <xref linkend="mthMessageNotify" xrefstyle="select:title"/>
+method can be used to request notification that message processing is complete.
+When message processing is complete, the message object retains any
+result and holds it until requested via the
+<xref linkend="mthMessageResult" xrefstyle="select:title"/> method.
 </para>
 <para>See also
 <itemizedlist spacing="compact">
@@ -8787,11 +8820,11 @@ new <emphasis role="italic">arguments</emphasis>.
 </para>
 <para>This method does not return until message processing is complete.
 </para>
-<para>The <emphasis role="bold">notify</emphasis> method can be used to
-request notification that message processing is complete.
-When message processing is complete, the message object retains any result
-and holds it until requested via the <emphasis role="bold">result</emphasis>
-method.
+<para>The <xref linkend="mthMessageNotify" xrefstyle="select:title"/>
+method can be used to request notification that message processing is complete.
+When message processing is complete, the message object retains any
+result and holds it until requested via the
+<xref linkend="mthMessageResult" xrefstyle="select:title"/> method.
 </para>
 <para>See also
 <itemizedlist spacing="compact">
@@ -8803,10 +8836,10 @@ method.
 </section>
 
 
-<section id="mthMessageStart" revisionflag="changed"><title>*CHG* start
-<indexterm><primary>start method</primary><secondary>of Message class</secondary></indexterm>
-<indexterm><primary>method</primary><secondary>start method</secondary><tertiary>of Message class</tertiary></indexterm>
-</title>
+<section id="mthMessageStart" revisionflag="changed"><title>*CHG* start<indexterm>
+<primary>start method</primary><secondary>of Message class</secondary></indexterm><indexterm>
+<primary>method</primary><secondary>start method</secondary><tertiary>of Message class</tertiary>
+</indexterm></title>
 <para>
 <mediaobject><imageobject>
 <imagedata fileref="images/classes/message_start.svg" scale="50" />
@@ -8830,11 +8863,23 @@ Otherwise the message is sent with any arguments the message object provides.
 <para>This method returns as soon as possible and does not wait until
 message processing is complete.
 </para>
-<para>The <emphasis role="bold">notify</emphasis> method can be used to
-request notification that message processing is complete.
-When message processing is complete, the message object retains any result
-and holds it until requested via the <emphasis role="bold">result</emphasis>
-method.
+<para>Note that once a message object has been started with either the
+<methodname>start</methodname> or the <methodname>startWith</methodname>
+method, it can not be run with any of the 
+<methodname>send</methodname>/<methodname>sendWith</methodname>,
+<methodname>start</methodname>/<methodname>startWith</methodname>,
+<methodname>reply</methodname>/<methodname>replyWith</methodname>
+methods again.
+A message object <emphasis role="bold">can</emphasis> be run multiple
+times with methods
+<methodname>send</methodname>/<methodname>sendWith</methodname> and
+<methodname>reply</methodname>/<methodname>replyWith</methodname>.
+</para>
+<para>The <xref linkend="mthMessageNotify" xrefstyle="select:title"/>
+method can be used to request notification that message processing is complete.
+When message processing is complete, the message object retains any
+result and holds it until requested via the
+<xref linkend="mthMessageResult" xrefstyle="select:title"/> method.
 </para>
 <para>See also
 <itemizedlist spacing="compact">
@@ -8919,11 +8964,23 @@ new <emphasis role="italic">arguments</emphasis>.
 <para>This method returns as soon as possible and does not wait until
 message processing is complete.
 </para>
-<para>The <emphasis role="bold">notify</emphasis> method can be used to
-request notification that message processing is complete.
-When message processing is complete, the message object retains any result
-and holds it until requested via the <emphasis role="bold">result</emphasis>
-method.
+<para>Note that once a message object has been started with either the
+<methodname>start</methodname> or the <methodname>startWith</methodname>
+method, it can not be run with any of the 
+<methodname>send</methodname>/<methodname>sendWith</methodname>,
+<methodname>start</methodname>/<methodname>startWith</methodname>,
+<methodname>reply</methodname>/<methodname>replyWith</methodname>
+methods again.
+A message object <emphasis role="bold">can</emphasis> be run multiple
+times with methods
+<methodname>send</methodname>/<methodname>sendWith</methodname> and
+<methodname>reply</methodname>/<methodname>replyWith</methodname>.
+</para>
+<para>The <xref linkend="mthMessageNotify" xrefstyle="select:title"/>
+method can be used to request notification that message processing is complete.
+When message processing is complete, the message object retains any
+result and holds it until requested via the
+<xref linkend="mthMessageResult" xrefstyle="select:title"/> method.
 </para>
 <para>See also
 <itemizedlist spacing="compact">
@@ -8964,7 +9021,8 @@ method.
 </para>
 <para>This method implements the <xref linkend="clsAlarmNotification" xrefstyle="template:AlarmNotification interface"/>.
 It will be called whenever an <xref linkend="clsAlarm" xrefstyle="template:Alarm"/>
-triggers, for which a message object was set as notification target.
+or a <xref linkend="clsTicker" xrefstyle="template:Ticker"/>
+triggers, for which a Message object was set as notification target.
 </para>
 <para>As a result of receiving such a notification,
 <methodname>triggered</methodname> will send the receiving message to

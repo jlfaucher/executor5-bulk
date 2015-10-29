@@ -1703,11 +1703,17 @@ Returns .nil if no object is attached.
 </para>
 <para>See also method <xref linkend="mthAlarmInit" xrefstyle="select:title"/>.
 </para>
-<!-- para><example>
+<para><example>
 <title>Alarm class &mdash; attachment method</title>
-<programlisting><![CDATA[
-@@need an example where ~attachment is called in the event handler
-]]></programlisting></example></para -->
+<programlisting><![CDATA[oneSecond = .Alarm~new(1 ,.Target~new, "a second has passed")
+call SysSleep 1.5                      -- give Alarm time to trigger
+oneSecond~cancel
+
+::class Target inherit AlarmNotification
+::method triggered                     -- called when Alarm triggers
+  use arg alarm
+  say alarm~attachment                 -- displays "once each second"
+]]></programlisting></example></para>
 </section>
 
 <section id="mthAlarmCancel"><title>cancel</title>
@@ -1771,12 +1777,13 @@ notification <emphasis role="italic">target</emphasis>.
 <para>The <emphasis role="italic">target</emphasis> must be an object
 that implements the
 <xref linkend="clsAlarmNotification" xrefstyle="template:AlarmNotification interface"/>.
-It may be a subclass of the AlarmNotification class, or a message object
+It must inherit from or be a subclass of the AlarmNotification class, or a Message object
 (as the Message class inherits from AlarmNotification).
-If it is a message object, the <xref linkend="mthMessageTriggered" xrefstyle="select:title"/>
-method of the Message Class will respond by simply sending the specified message. 
+If <emphasis role="italic">target</emphasis> is a Message object, the
+<xref linkend="mthMessageTriggered" xrefstyle="select:title"/> method
+of the Message class will respond by simply sending the specified message.
 </para>
-<para>The <emphasis role="italic">atime</emphasis> can be a String, DateTime, or TimeSpan object.
+<para>The <emphasis role="italic">atime</emphasis> can be a DateTime, a TimeSpan, or a String object.
 If it is
 <itemizedlist spacing="compact">
  <listitem>
@@ -7913,8 +7920,307 @@ are:
 </varlistentry>
 </variablelist>
 </para>
+<para><example id="ex.stackframe-type">
+<title>StackFrame class &mdash; type method
+<indexterm><primary>examples</primary><secondary>type method</secondary></indexterm>
+</title>
+<programlisting><![CDATA[interpret "call Level2" 21
+
+::routine Level2
+call Level3 31, 32
+return
+
+Level3: procedure
+.Level4~new~Level5(51, 52, 53)
+return
+
+::class Level4
+::method Level5
+forward message (Level6)
+
+::method Level6
+do f over .context~stackFrames
+  say (f~type f~name"("f~arguments~makeString(, ",")")")~left(27) f~line":" f~traceLine~strip
+end
+]]></programlisting></example>
+may output
+<programlisting>
+METHOD LEVEL6(51,52,53)     16: 16 *-*   do f over .context~stackFrames
+METHOD LEVEL5(51,52,53)     13: 13 *-* forward message (Level6)
+INTERNALCALL LEVEL3(31,32)  8: 8 *-*   .Level4~new~Level5(51, 52, 53)
+ROUTINE LEVEL2(21)          4: 4 *-* call Level3 31, 32
+INTERPRET ()                1: 1 *-*   call Level2 21
+PROGRAM C:\stackFrame.rex() 1: 1 *-* interpret 'call Level2' 21
+</programlisting></para>
 </section>
 </section>
+
+
+<!-- =============================================================== --> 
+<!-- Class Ticker ================================================== -->
+<section id="clsTicker" revisionflag="added"><title>*NEW* Ticker Class
+<indexterm><primary>Ticker class</primary></indexterm>
+<indexterm><primary>class</primary><secondary>Ticker class</secondary></indexterm>
+</title>
+
+<para>The Ticker class provides a repeating notification capability by
+sending a notification message to a notification target each trigger
+interval.
+</para>
+<para>A Ticker object can be cancelled any time.
+If cancelled, a cancel notification message will be sent to the
+notification target.
+</para>
+
+<!-- Modified: remove separate alias "cancelled" -->
+<!-- $GENERATED-20151026-START rexxrefClassTable(Ticker) -->
+<table id="ooRexxTickerClass" frame="all" pgwide="0">
+<title>Ticker Class</title>
+<tgroup cols="1">
+<tbody>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Ticker</emphasis></entry>
+ </row>
+ <row><entry>
+  <simplelist columns="3">
+   <member><xref linkend="mthTickerAttachment" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthTickerCancel" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthTickerCanceled" xrefstyle="select:title"/></member>
+<!-- already covered by "mthTickerCanceled"
+   <member><xref linkend="mthTickerCancelled" xrefstyle="select:title"/></member>
+-->
+   <member><xref linkend="mthTickerInit" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthTickerInterval" xrefstyle="select:title"/></member>
+  </simplelist>
+ </entry></row>
+</tbody>
+</tgroup>
+</table>
+<!-- $GENERATED-20151026-END rexxrefClassTable(Ticker) -->
+
+
+<!-- Class Ticker - method attachment ============================== -->
+<section id="mthTickerAttachment" revisionflag="added"><title>*NEW* attachment
+<indexterm><primary>attachment method</primary><secondary>of Ticker class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>attachment method</secondary><tertiary>of Ticker class</tertiary></indexterm>
+</title>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/ticker_attachment.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+
+<para>Returns the object that has been attached to the Ticker instance upon creation.
+Returns .nil if no object is attached.
+</para>
+<para>See method <xref linkend="mthTickerInit" xrefstyle="select:title"/>.
+</para>
+<para><example id="ex.ticker-attachment">
+<title>Ticker class &mdash; attachment method
+<indexterm><primary>examples</primary><secondary>attachment method</secondary></indexterm>
+</title>
+<programlisting><![CDATA[eachSecond = .Ticker~new(1, .Target~new, "once each second")
+call SysSleep 1.5                      -- will trigger once
+eachSecond~cancel
+
+::class Target inherit AlarmNotification
+::method triggered                     -- called each interval
+  use arg ticker
+  say ticker~attachment                -- displays "once each second" 
+]]></programlisting></example></para>
+</section>
+
+
+<!-- Class Ticker - method cancel ================================== -->
+<section id="mthTickerCancel" revisionflag="added"><title>*NEW* cancel
+<indexterm><primary>cancel method</primary><secondary>of Ticker class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>cancel method</secondary><tertiary>of Ticker class</tertiary></indexterm>
+</title>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/ticker_cancel.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+<para>Cancels the Ticker represented by the receiver.
+</para>
+<para>See also method <xref linkend="mthTickerCanceled" xrefstyle="select:title"/>.
+</para>
+<para><example id="ex.ticker-cancel">
+<title>Ticker class &mdash; cancel method
+<indexterm><primary>examples</primary><secondary>cancel method</secondary></indexterm>
+</title>
+<programlisting><![CDATA[twiceASecond = .Ticker~new(0.5, .Target~new)
+call SysSleep 0.25                     -- too short for Ticker
+twiceASecond~cancel                    -- "ticker cancelled"
+
+::class Target inherit AlarmNotification
+::method triggered                     -- called each interval
+  say "ticker triggered"                 
+::method cancel                        -- called when cancelled
+  say "ticker cancelled"
+]]></programlisting></example></para>
+</section>
+
+
+<!-- Class Ticker - method canceled/cancelled ====================== -->
+<section id="mthTickerCanceled" revisionflag="added"><title>*NEW* canceled/cancelled
+<indexterm><primary>canceled/cancelled method</primary><secondary>of Ticker class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>canceled/cancelled method</secondary><tertiary>of Ticker class</tertiary></indexterm>
+</title>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/ticker_canceled.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns .true if the ticker has been cancelled.
+Returns .false otherwise.
+</para>
+<para>See also method <xref linkend="mthTickerCancel" xrefstyle="select:title"/>.
+</para>
+<para><example>
+<title>Ticker class &mdash; canceled/cancelled method
+<indexterm><primary>examples</primary><secondary>canceled/cancelled method</secondary></indexterm>
+</title>
+<programlisting><![CDATA[tick = .Ticker~new(0.5 ,.message~new(.stdout, "SAY", "I", "knock, knock"))
+call SysSleep 0.75                                           -- knock, knock
+say "Ticker" tick~cancelled~?("cancelled", "not cancelled")  -- Ticker not cancelled
+call SysSleep 0.5                                            -- knock, knock
+tick~cancel
+say "Ticker" tick~cancelled~?("cancelled", "not cancelled")  -- Ticker cancelled
+]]></programlisting></example></para>
+</section>
+
+
+<!-- Class Ticker - method init ==================================== -->
+<section id="mthTickerInit" revisionflag="added"><title>*NEW* init
+<indexterm><primary>init method</primary><secondary>of Ticker class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>init method</secondary><tertiary>of Ticker class</tertiary></indexterm>
+</title>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/ticker_init.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+
+<para>Sets up a Ticker with a specified <emphasis role="italic">interval</emphasis>.
+After each <emphasis role="italic">interval</emphasis>, the Ticker sends
+a message <methodname>triggered</methodname> to the specified notification
+<emphasis role="italic">target</emphasis>.
+</para>
+<para>The <emphasis role="italic">target</emphasis> must be an object
+that implements the
+<xref linkend="clsAlarmNotification" xrefstyle="template:AlarmNotification interface"/>.
+It must inherit from or be a subclass of the AlarmNotification class, or a Message object
+(as the Message class inherits from AlarmNotification).
+If <emphasis role="italic">target</emphasis> is a Message object, the
+<xref linkend="mthMessageTriggered" xrefstyle="select:title"/> method
+of the Message class will respond by simply sending the specified message.
+</para>
+<para>The <emphasis role="italic">interval</emphasis> can be a TimeSpan or a String object.
+If it is
+<itemizedlist spacing="compact">
+ <listitem>
+  <para>a TimeSpan, it must be of a non-negative length, which specifies the
+  interval time length.
+  </para>
+ </listitem>
+ <listitem>
+  <para>a String, it must be a non-negative number which specifies the
+  interval time length in seconds.
+  </para>
+ </listitem>
+</itemizedlist>
+</para>
+<para>If specified, <emphasis role="italic">attachment</emphasis> can be an arbitrary object
+that will be attached to the Ticker instance, and can later be retrieved in the event handler.
+See method <xref linkend="mthTickerAttachment" xrefstyle="select:title"/>.
+</para>
+<para>You can use the <xref linkend="mthTickerCancel" xrefstyle="select:title"/>
+method at any time to cancel a Ticker.
+If cancelled, the Ticker sends message <methodname>cancel</methodname> to
+the specified notification <emphasis role="italic">target</emphasis>.
+</para>
+<para>The following code uses a Ticker to display progress information
+during a long-running task.
+<example id="ex.ticker-init">
+<title>Ticker class &mdash; init method
+<indexterm><primary>examples</primary><secondary>init method</secondary></indexterm>
+</title>
+<programlisting><![CDATA[.Progress~new(0.5)~monitor(.Task~new, "tenSeconds")
+
+-- defines tasks together with their "progress" methods
+::class Task
+
+-- long-running task
+::method tenSeconds unguarded
+  expose m n
+  n = 1000
+  do m = 1 to n                        -- long-running task
+    call SysSleep 0.01
+  end
+  return
+
+-- returns running value to be displayed as progress
+::method "tenSeconds-progress" unguarded
+  expose m n
+  return m"/"n "steps done"
+
+
+-- runs task while displaying progress text at each interval
+::class Progress inherit AlarmNotification
+
+-- set progress interval
+::method init unguarded
+  expose interval
+  use strict arg interval = 1
+
+-- starts ticker, runs task, and returns task result
+-- (requires names of task and progress methods)
+::method monitor
+  expose interval object progress
+  use strict arg object, task, progress = (task"-progress")
+  tick = .Ticker~new(interval, self)
+  object~send(task)
+  tick~cancel
+
+-- displays progress text at each ticker interval
+::method triggered unguarded
+  expose object progress
+  .stdout~charOut(object~send(progress) '0d'x)
+]]></programlisting></example></para>
+</section>
+
+
+<!-- Class Ticker - method interval ================================ -->
+<section id="mthTickerInterval" revisionflag="added"><title>*NEW* interval
+<indexterm><primary>interval method</primary><secondary>of Ticker class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>interval method</secondary><tertiary>of Ticker class</tertiary></indexterm>
+</title>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/ticker_interval.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns a <xref linkend="clsTimeSpan" xrefstyle="template:TimeSpan"/>
+object representing the interval to which the Ticker has been set.
+</para>
+<para>See also method <xref linkend="mthTickerInit" xrefstyle="select:title"/>.
+</para>
+<para><example id="ex.ticker-interval">
+<title>Ticker class &mdash; interval method
+<indexterm><primary>examples</primary><secondary>interval method</secondary></indexterm>
+</title>
+<programlisting><![CDATA[say .Ticker~new(.TimeSpan~fromSeconds(60), -
+ .Message~new(.stdout, "say", "i", -
+ "another minute has passed"))~interval      -- 00:01:00.000000
+]]></programlisting></example></para>
+</section>
+
+</section>
+
 
 <section id="clsWeakReference"><title>The WeakReference Class</title>
 <indexterm><primary>WeakReference class</primary></indexterm>
