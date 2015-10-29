@@ -472,7 +472,7 @@ return testResult
     q1 = .rexxQueue~new('Q1')
     q2 = .rexxQueue~new('Q2')
     q1~push('Q1Item1')
-    q2~set(q1)
+    q2~set('Q1')
     self~assertEquals('Q1Item1', q2~pull, 'subtest 35: Set changes external queue')
     q1~delete
     q2~delete
