@@ -936,6 +936,92 @@ method.
 </informaltable>
 </section>
 
+<section id="requ"><title>::REQUIRES</title>
+<indexterm><primary>::REQUIRES directive</primary></indexterm>
+<indexterm><primary>directives</primary>
+<secondary>::REQUIRES</secondary></indexterm>
+<indexterm><primary>LIBRARY subkeyword</primary>
+<secondary>in a REQUIRES directive</secondary></indexterm>
+
+<para>The ::REQUIRES directive specifies that the program requires access to
+the classes and objects of the Rexx program
+<emphasis role="italic">programname</emphasis>.</para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/directives/requires.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>If the LIBRARY option is not specified, all public classes and routines
+defined in the named program are made available to the executing program. The
+<emphasis role="italic">programname</emphasis> is a literal string or a symbol that is
+taken as a constant. The string or symbol
+<emphasis role="italic">programname</emphasis> can be any string or symbol that is valid
+as the target of a CALL instruction. The program <emphasis
+role="italic">programname</emphasis> is called as an external routine with no
+arguments.  The program is searched for using normal external program search
+order.  See <xref linkend="xsearcho" /> for details.
+</para>
+<para>If any Rexx code precedes the first directive in
+<emphasis role="italic">programname</emphasis> then that code is executed at the
+time the <emphasis role="italic">::REQUIRES</emphasis> is processed by the
+interpreter. This will be executed prior to executing the main Rexx program in
+the file that specifies the ::REQUIRES statement.
+</para>
+<para>If the LIBRARY option is specified, <emphasis role="italic">programname</emphasis>
+is the name of an external native library that is required by this program. The
+library will be loaded using platform-specific mechanisms, which generally means
+the library name is case sensitive.  Any routines defined in the library will be
+made available to all programs running in the process. If the native library
+cannot be loaded, the program will not be permitted to run.  All LIBRARY
+::REQUIRES directives will be processed before ::REQUIRES for Rexx programs,
+which will ensure that the native libraries are available to the initialization
+code of the Rexx packages.
+</para>
+
+<para revisionflag="added">*NEW* If the NAMESPACE option is specified,
+<emphasis role="italic">namespace</emphasis> must be a symbol that is
+taken as a constant; a literal string is not allowed. 
+</para>
+<para>
+The NAMESPACE option will attach the name <emphasis role="italic">namespace</emphasis>
+to the file loaded by the ::REQUIRES directive.
+This will make it possible to use e. g.
+<emphasis role="italic">namespace</emphasis>:<emphasis role="italic">class</emphasis>
+to differentiate between classes (or routines) of the same name in
+different ::REQUIRES files or the main program.
+For details see <xref linkend="namespacesym" />.
+</para>
+
+<para>::REQUIRES directives can be placed anywhere after the main section of
+code in the package.  The order of ::REQUIRES directives determines the search
+order for classes and routines defined in the named programs and also the load
+order of the referenced files.  Once a program is loaded by a ::REQUIRES
+statement in a program, other references to that same program by ::REQUIRES
+statements in other programs will resolve to the previously loaded program.  The
+initialization code for the ::REQUIRES file will only be executed on the first
+reference.
+</para>
+<para>The following example illustrates that two programs, ProgramA and ProgramB,
+can both access classes and routines that another program, ProgramC, contains.
+(The code at the beginning of ProgramC runs prior to the start of the main
+Rexx program.)</para>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/MultipleRequires.png" scale="70" />
+</imageobject>
+</mediaobject>
+
+<para>The language processor uses local routine definitions within a program
+in preference to routines of the same name accessed through ::REQUIRES directives.
+Local class definitions within a program override classes of the same name
+in other programs accessed through ::REQUIRES directives.</para>
+<para>Another directive, or the end of the program, must follow a ::REQUIRES
+directive. Only null clauses can appear between them.</para>
+</section>
+
 <section id="resourced" revisionflag="added"><title>*NEW* ::RESOURCE</title>
 <indexterm><primary>::RESOURCE directive</primary></indexterm>
 <indexterm><primary>directives</primary>
@@ -1022,92 +1108,6 @@ ANONYMOUS TYPESETTER
   </para></listitem>
 </orderedlist>
 
-</section>
-
-<section id="requ"><title>::REQUIRES</title>
-<indexterm><primary>::REQUIRES directive</primary></indexterm>
-<indexterm><primary>directives</primary>
-<secondary>::REQUIRES</secondary></indexterm>
-<indexterm><primary>LIBRARY subkeyword</primary>
-<secondary>in a REQUIRES directive</secondary></indexterm>
-
-<para>The ::REQUIRES directive specifies that the program requires access to
-the classes and objects of the Rexx program
-<emphasis role="italic">programname</emphasis>.</para>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/directives/requires.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-<para>If the LIBRARY option is not specified, all public classes and routines
-defined in the named program are made available to the executing program. The
-<emphasis role="italic">programname</emphasis> is a literal string or a symbol that is
-taken as a constant. The string or symbol
-<emphasis role="italic">programname</emphasis> can be any string or symbol that is valid
-as the target of a CALL instruction. The program <emphasis
-role="italic">programname</emphasis> is called as an external routine with no
-arguments.  The program is searched for using normal external program search
-order.  See <xref linkend="xsearcho" /> for details.
-</para>
-<para>If any Rexx code precedes the first directive in
-<emphasis role="italic">programname</emphasis> then that code is executed at the
-time the <emphasis role="italic">::REQUIRES</emphasis> is processed by the
-interpreter. This will be executed prior to executing the main Rexx program in
-the file that specifies the ::REQUIRES statement.
-</para>
-<para>If the LIBRARY option is specified, <emphasis role="italic">programname</emphasis>
-is the name of an external native library that is required by this program. The
-library will be loaded using platform-specific mechanisms, which generally means
-the library name is case sensitive.  Any routines defined in the library will be
-made available to all programs running in the process. If the native library
-cannot be loaded, the program will not be permitted to run.  All LIBRARY
-::REQUIRES directives will be processed before ::REQUIRES for Rexx programs,
-which will ensure that the native libraries are available to the initialization
-code of the Rexx packages.
-</para>
-
-<para revisionflag="added">*NEW* If the NAMESPACE option is specified,
-<emphasis role="italic">namespace</emphasis> must be a symbol that is
-taken as a constant; a literal string is not allowed. 
-</para>
-<para>
-The NAMESPACE option will attach the name <emphasis role="italic">namespace</emphasis>
-to the file loaded by the ::REQUIRES directive.
-This will make it possible to use e. g.
-<emphasis role="italic">namespace</emphasis>:<emphasis role="italic">class</emphasis>
-to differentiate between classes (or routines) of the same name in
-different ::REQUIRES files or the main program.
-For details see <xref linkend="namespacesym" />.
-</para>
-
-<para>::REQUIRES directives can be placed anywhere after the main section of
-code in the package.  The order of ::REQUIRES directives determines the search
-order for classes and routines defined in the named programs and also the load
-order of the referenced files.  Once a program is loaded by a ::REQUIRES
-statement in a program, other references to that same program by ::REQUIRES
-statements in other programs will resolve to the previously loaded program.  The
-initialization code for the ::REQUIRES file will only be executed on the first
-reference.
-</para>
-<para>The following example illustrates that two programs, ProgramA and ProgramB,
-can both access classes and routines that another program, ProgramC, contains.
-(The code at the beginning of ProgramC runs prior to the start of the main
-Rexx program.)</para>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/MultipleRequires.png" scale="70" />
-</imageobject>
-</mediaobject>
-
-<para>The language processor uses local routine definitions within a program
-in preference to routines of the same name accessed through ::REQUIRES directives.
-Local class definitions within a program override classes of the same name
-in other programs accessed through ::REQUIRES directives.</para>
-<para>Another directive, or the end of the program, must follow a ::REQUIRES
-directive. Only null clauses can appear between them.</para>
 </section>
 
 <section id="routd"><title>::ROUTINE</title>

@@ -43,64 +43,107 @@
     #
     #########################################################################
 -->
-<chapter id="classes"><title>The Builtin Classes</title>
+<chapter id="classes"><title>Builtin Classes</title>
 <para>This chapter describes all of the Rexx built-in classes.</para>
 
 <variablelist>
-<varlistentry><term>
-Fundamental Classes (<xref linkend="fundclasses" />)</term>
-<listitem><para>This set of classes are the fundamental building blocks for all
-other classes. It includes the Object class (<xref linkend="clsObject" />),
-the Class class (<xref linkend="clsClass" />),
-the String class (<xref linkend="clsString" />),
-the Method class (<xref linkend="clsMethod" />),
-the Routine class (<xref linkend="clsRoutine" />),
-the Package class (<xref linkend="clsPackage" />), and
-the Message class (<xref linkend="clsMessage" />.</para>
-</listitem></varlistentry>
-<varlistentry><term>
-Stream Classes (<xref linkend="streamclasses" />)</term>
-<listitem><para>This set of classes implement the classic Rexx streams.
-It includes the Stream class (<xref linkend="clsStream" />),
-the InputStream class (<xref linkend="clsInputStream" />),
-the OutputStream class (<xref linkend="clsOutputStream" />), and
-the InputOutputStream class (<xref linkend="clsInputOutputStream" />).</para>
-</listitem></varlistentry>
-<varlistentry><term>
-Collection Classes (<xref linkend="CollectionClasses" />)</term>
-<listitem><para>This set of classes implement object collections.
-It includes the Directory class (<xref linkend="clsDirectory" />),
-the Properties class (<xref linkend="clsProperties" />),
-the Relation class (<xref linkend="clsRelation" />),
-the Stem class (<xref linkend="clsStem" />),
-the Table Class (<xref linkend="clsTable" />),
-the IdentityTable class (<xref linkend="clsIdentityTable" />),
-the Array class (<xref linkend="clsArray" />),
-the List class (<xref linkend="clsList" />),
-the Queue class (<xref linkend="clsQueue" />),
-the CircularQueue class (<xref linkend="clsCircularQueue" />),
-the Bag class (<xref linkend="clsBag" />), and
-the Set class (<xref linkend="clsSet" />).</para>
-</listitem></varlistentry>
-<varlistentry><term>
-Utility Classes (<xref linkend="miscclasses" />)</term>
-<listitem><para>This set of classes are utility in nature and hard to classify.
-It includes the Alarm class (<xref linkend="clsAlarm" />),
-the Comparable class (<xref linkend="clsComparable" />,
-the Comparator class (<xref linkend="clsComparator" />),
-the Orderable class (<xref linkend="clsOrderable" />),
-the DateTime class (<xref linkend="clsDateTime" />),
-the File class (<xref linkend="clsFile" />),
-the MutableBuffer class (<xref linkend="clsMutableBuffer" />),
-the RegularExpression class (<xref linkend="clsRegularExpression" />),
-the RexxContext class (<xref linkend="clsRexxContext" />),
-the RexxQueue class (<xref linkend="clsRexxQueue" />),
-the StackFrame class (<xref linkend="clsStackFrame" />),
-the StreamSupplier class (<xref linkend="clsStreamSupplier" />),
-the Supplier class (<xref linkend="clsSupplier" />),
-the TimeSpan class (<xref linkend="clsTimeSpan" />),
-and the WeakReference class (<xref linkend="clsWeakReference" />).</para>
-</listitem></varlistentry>
+ <varlistentry>
+  <term><xref linkend="fundclasses" xrefstyle="select:title"/></term>
+  <listitem><para>This set of classes are the fundamental building blocks for all
+   other classes.
+   It consists of
+  <!-- NOTE: copy any changes to fundclasses.xml, section "fundclasses" -->
+   <itemizedlist spacing="compact">
+    <listitem><para><xref linkend="clsObject" xrefstyle="template:Object"/> and
+     <xref linkend="clsClass" xrefstyle="template:Class"/> class,</para></listitem>
+    <listitem><para><xref linkend="clsString" xrefstyle="select:title"/>,</para></listitem>
+    <listitem><para><xref linkend="clsMethod" xrefstyle="template:Method"/>,
+     <xref linkend="clsRoutine" xrefstyle="template:Routine"/>, and
+     <xref linkend="clsPackage" xrefstyle="template:Package"/> class, and</para></listitem>
+    <listitem><para><xref linkend="clsMessage" xrefstyle="template:Message"/> class.</para></listitem>
+   </itemizedlist>
+  <!-- NOTE: see note above -->
+  </para></listitem>
+ </varlistentry>
+
+<varlistentry>
+  <term><xref linkend="streamclasses" xrefstyle="select:title"/></term>
+  <!-- NOTE: copy any changes to streamclasses.xml, section "streamclasses" -->
+  <listitem><para>This set of classes implements Rexx data streams.
+  They consist of <xref linkend="clsInputStream" xrefstyle="template:InputStream"/>,
+  <xref linkend="clsOutputStream" xrefstyle="template:OutputStream"/>,
+  <xref linkend="clsInputOutputStream" xrefstyle="template:InputOutputStream"/>, and
+  <xref linkend="clsStream" xrefstyle="template:Stream"/> class.</para>
+  </listitem>
+  <!-- NOTE: see note above -->
+ </varlistentry>
+
+ <varlistentry><term><xref linkend="CollectionClasses" xrefstyle="select:title"/></term>
+  <listitem><para>This set of classes implements object collections.
+  It includes
+  <itemizedlist spacing="compact">
+   <listitem><para>Ordered collections
+    <xref linkend="clsArray" xrefstyle="template:Array"/>,
+    <xref linkend="clsList" xrefstyle="template:List"/>,
+    <xref linkend="clsQueue" xrefstyle="template:Queue"/>, and
+    <xref linkend="clsCircularQueue" xrefstyle="template:CircularQueue"/> class,
+   </para></listitem>
+   <listitem><para>Map collections
+    <xref linkend="clsDirectory" xrefstyle="template:Directory"/>,
+    <xref linkend="clsStringTable" xrefstyle="template:StringTable"/>,
+    <xref linkend="clsStem" xrefstyle="template:Stem"/>,
+    <xref linkend="clsTable" xrefstyle="template:Table"/>,
+    <xref linkend="clsIdentityTable" xrefstyle="template:IdentityTable"/>,
+    <xref linkend="clsRelation" xrefstyle="template:Relation"/>, and
+    <xref linkend="clsProperties" xrefstyle="template:Properties"/> class, and
+   </para></listitem>
+   <listitem><para>Map/Set collections
+    <xref linkend="clsBag" xrefstyle="template:Bag"/> and
+    <xref linkend="clsSet" xrefstyle="template:Set"/> class.
+   </para></listitem>
+  </itemizedlist>
+  </para></listitem>
+ </varlistentry>
+
+ <varlistentry><term><xref linkend="miscclasses" xrefstyle="select:title"/></term>
+ <listitem><para>This set of classes consists of
+  <!-- NOTE: copy any changes to utilityclasses.xml, section "miscclasses" -->
+  <itemizedlist spacing="compact">
+   <listitem><para><xref linkend="clsMutableBuffer" xrefstyle="select:title"/>,</para></listitem>
+   <listitem><para><xref linkend="clsFile" xrefstyle="select:title"/>,</para></listitem>
+   <listitem><para>Date-, time-, and timing-related classes
+    <xref linkend="clsDateTime" xrefstyle="template:DateTime"/>,
+    <xref linkend="clsTimeSpan" xrefstyle="template:TimeSpan"/>,
+    <xref linkend="clsAlarm" xrefstyle="template:Alarm"/>,
+    <xref linkend="clsTicker" xrefstyle="template:Ticker"/>,
+    and the notification classes
+    <xref linkend="clsAlarmNotification" xrefstyle="template:AlarmNotification"/>, and
+    <xref linkend="clsMessageNotification" xrefstyle="template:MessageNotification"/>,
+   </para></listitem>
+   <listitem><para><xref linkend="clsComparable" xrefstyle="template:Comparable"/> and
+    <xref linkend="clsOrderable" xrefstyle="template:Orderable"/> class,
+   </para></listitem>
+   <listitem><para>eight Comparator classes used for sorting
+    <xref linkend="clsCaselessComparator" xrefstyle="template:(Caseless)"/><xref linkend="clsComparator" xrefstyle="template:Comparator"/>,
+    <xref linkend="clsCaselessColumnComparator" xrefstyle="template:(Caseless)"/><xref linkend="clsColumnComparator" xrefstyle="template:ColumnComparator"/>,
+    <xref linkend="clsCaselessDescendingComparator" xrefstyle="template:(Caseless)"/><xref linkend="clsDescendingComparator" xrefstyle="template:DescendingComparator"/>,
+    <xref linkend="clsInvertingComparator" xrefstyle="template:InvertingComparator"/>, and
+    <xref linkend="clsNumericComparator" xrefstyle="template:NumericComparator"/>, and
+   </para></listitem>
+   <listitem><para>other miscellaneous classes
+    <xref linkend="clsMonitor" xrefstyle="template:Monitor"/>,   
+    <xref linkend="clsPointer" xrefstyle="template:Pointer"/>,
+    <xref linkend="clsRegularExpression" xrefstyle="template:RegularExpression"/>,
+    <xref linkend="clsRexxContext" xrefstyle="template:RexxContext"/>,
+    <xref linkend="clsRexxQueue" xrefstyle="template:RexxQueue"/>,
+    <xref linkend="clsStackFrame" xrefstyle="template:StackFrame"/>,
+    <xref linkend="clsStreamSupplier" xrefstyle="template:StreamSupplier"/>,
+    <xref linkend="clsSupplier" xrefstyle="template:Supplier"/>, and
+    <xref linkend="clsWeakReference" xrefstyle="template:WeakReference"/>.
+   </para></listitem>
+  </itemizedlist></para>
+  <!-- NOTE: see note above -->
+ </listitem></varlistentry>
 </variablelist>
 
 <xi:include href="fundclasses.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />

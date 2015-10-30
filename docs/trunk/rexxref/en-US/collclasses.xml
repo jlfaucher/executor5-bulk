@@ -43,7 +43,7 @@
     #
     #########################################################################
 -->
-<section id="CollectionClasses"><title>The Collection Classes</title>
+<section id="CollectionClasses"><title>Collection Classes</title>
 <indexterm><primary>Collection classes</primary></indexterm>
 <para>A collection is an object that contains a number of
 <emphasis role="italic">items</emphasis>, which can be any objects. Every item
@@ -149,7 +149,7 @@ Collection (<xref linkend="clsCollection" />)
 </programlisting>
 </section>
 
-<section id="clsCollection"><title>The Collection Class</title>
+<section id="clsCollection"><title>Collection Class</title>
 <indexterm><primary>Collection class</primary></indexterm>
 <para>The Collection class is a MIXIN class that defines the basic set of
 methods implemented by all Collections.  Many of the Collection class methods
@@ -587,7 +587,7 @@ index values in the receiver collection.</para>
 </section>
 </section>
 
-<section id="clsMapCollection"><title>The MapCollection Class</title>
+<section id="clsMapCollection"><title>MapCollection Class</title>
 <indexterm><primary>MapCollection class</primary></indexterm>
 <para>The MapCollection class is a MIXIN class that defines the basic set of
 methods implemented by all collections that create a mapping from an index
@@ -698,7 +698,7 @@ supplier will overwrite previous items with the same index.
 </section>
 </section>
 
-<section id="clsOrderedCollection"><title>The OrderedCollection Class</title>
+<section id="clsOrderedCollection"><title>OrderedCollection Class</title>
 <indexterm><primary>OrderedCollection class</primary></indexterm>
 <para>The OrderedCollection class is a MIXIN class that defines the basic set of
 methods implemented by all collections that have an inherent index ordering,
@@ -1165,7 +1165,7 @@ collection class object.
 </section>
 </section>
 
-<section id="clsSetCollection"><title>The SetCollection Class</title>
+<section id="clsSetCollection"><title>SetCollection Class</title>
 <indexterm><primary>SetCollection class</primary></indexterm>
 <para>This is a tagging mixin class only and does not define any methods of
 its own.  Collections that implement SetCollection are MapCollections that
@@ -1199,7 +1199,7 @@ constrain the index and item to be be the same object.</para>
 
 </section>
 
-<section id="clsArray"><title>The Array Class</title>
+<section id="clsArray"><title>Array Class</title>
 <indexterm><primary>Array class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Array class</secondary></indexterm>
@@ -2522,7 +2522,7 @@ end
 </section>
 </section>
 
-<section id="clsBag"><title>The Bag Class</title>
+<section id="clsBag"><title>Bag Class</title>
 <indexterm><primary>Bag class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Bag class</secondary></indexterm>
@@ -3197,7 +3197,7 @@ say fruit~items          /* How many pieces? (5)      */
 </section>
 </section>
 
-<section id="clsCircularQueue"><title>The CircularQueue Class</title>
+<section id="clsCircularQueue"><title>CircularQueue Class</title>
 <indexterm><primary>class</primary>
 <secondary>CircularQueue class</secondary></indexterm>
 <indexterm><primary>CircularQueue class</primary></indexterm>
@@ -3882,7 +3882,7 @@ content: [3,2], content (LIFO): [2->3]
 </section>
 </section>
 
-<section id="clsDirectory"><title>The Directory Class</title>
+<section id="clsDirectory"><title>Directory Class</title>
 <indexterm><primary>Directory class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Directory class</secondary></indexterm>
@@ -4529,24 +4529,24 @@ Exit
 </section>
 </section>
 
-<section id="clsStringTable" revisionflag="added"><title>*NEW* The StringTable Class</title>
-<indexterm><primary>StringTable class</primary></indexterm>
+<section id="clsIdentityTable"><title>IdentityTable Class</title>
+<indexterm><primary>IdentityTable class</primary></indexterm>
 <indexterm><primary>class</primary>
-<secondary>StringTable class</secondary></indexterm>
+<secondary>IdentityTable class</secondary></indexterm>
 <indexterm><primary>Map Collection classes</primary>
-<secondary>StringTable class</secondary></indexterm>
+<secondary>IdentityTable class</secondary></indexterm>
 
-<para>A StringTable is a MapCollection using unique character string indexes.  The
-items of a StringTable can be any valid Rexx object.
-</para>
-<para>For a MapCollection similar to StringTable, but with additional methods
-<methodname>setMethod</methodname> and <methodname>unsetMethod</methodname>, see
-<xref linkend="clsDirectory" xrefstyle="template:class Directory"/>.
+<para>An identity table is a collection with indexes
+that can be any object. In an identity table, each item is associated with a
+single index, and there can be only one item for each index. Index and item
+matches in an identity table are made using an object
+identity comparison.  That is, an index will only match if the same instance is
+used in the collection.
 </para>
 
-<!-- $GENERATED-20151006-START rexxrefClassTable(StringTable) -->
-<table id="ooRexxStringTableClass" frame="all" pgwide="0">
-<title>StringTable Class</title>
+<!-- $GENERATED-20150704-START rexxrefClassTable(IdentityTable) -->
+<table id="ooRexxIdentityTableClass" frame="all" pgwide="0">
+<title>IdentityTable Class</title>
 <tgroup cols="1">
 <tbody>
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
@@ -4565,495 +4565,354 @@ items of a StringTable can be any valid Rexx object.
   Methods inherited from the <xref linkend="clsMapCollection" xrefstyle="template:MapCollection class"/>
   <xi:include href="mapcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
  </entry></row>
- <row><entry align="center"><emphasis role="bold">StringTable</emphasis></entry>
+ <row><entry align="center"><emphasis role="bold">IdentityTable</emphasis></entry>
  </row>
  <row><entry>
   <simplelist>
-   <member><xref linkend="mthStringTableNew" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthIdentityTableNew" xrefstyle="select:title"/></member>
   </simplelist>
   <simplelist columns="3">
-   <member><xref linkend="mthStringTableAtGet" xrefstyle="select:title"/></member>
-   <member><xref linkend="mthStringTablePutSet" xrefstyle="select:title"/></member>
-   <member><xref linkend="mthStringTableAllIndexes" xrefstyle="select:title"/></member>
-   <member><xref linkend="mthStringTableAllItems" xrefstyle="select:title"/></member>
-   <member><xref linkend="mthStringTableAt" xrefstyle="select:title"/></member>
-   <member><xref linkend="mthStringTableEmpty" xrefstyle="select:title"/></member>
-   <member><xref linkend="mthStringTableEntry" xrefstyle="select:title"/></member>
-   <member><xref linkend="mthStringTableHasEntry" xrefstyle="select:title"/></member>
-   <member><xref linkend="mthStringTableHasIndex" xrefstyle="select:title"/></member>
-   <member><xref linkend="mthStringTableHasItem" xrefstyle="select:title"/></member>
-   <member><xref linkend="mthStringTableIndex" xrefstyle="select:title"/></member>
-   <member><xref linkend="mthStringTableIsEmpty" xrefstyle="select:title"/></member>
-   <member><xref linkend="mthStringTableItems" xrefstyle="select:title"/></member>
-   <member><xref linkend="mthStringTableMakeArray" xrefstyle="select:title"/></member>
-   <member><xref linkend="mthStringTablePut" xrefstyle="select:title"/></member>
-   <member><xref linkend="mthStringTableRemove" xrefstyle="select:title"/></member>
-   <member><xref linkend="mthStringTableRemoveEntry" xrefstyle="select:title"/></member>
-   <member><xref linkend="mthStringTableRemoveItem" xrefstyle="select:title"/></member>
-   <member><xref linkend="mthStringTableSetEntry" xrefstyle="select:title"/></member>
-   <member><xref linkend="mthStringTableSupplier" xrefstyle="select:title"/></member>
-   <member><xref linkend="mthStringTableUnknown" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthIdentityTableAtGet" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthIdentityTablePutSet" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthIdentityTableAllIndexes" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthIdentityTableAllItems" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthIdentityTableAt" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthIdentityTableEmpty" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthIdentityTableHasIndex" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthIdentityTableHasItem" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthIdentityTableIndex" xrefstyle="select:title"/></member>
+   <!-- see new()
+   <member><xref linkend="mthIdentityTableInit" xrefstyle="select:title"/></member>
+   -->
+   <member><xref linkend="mthIdentityTableIsEmpty" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthIdentityTableItems" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthIdentityTableMakeArray" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthIdentityTablePut" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthIdentityTableRemove" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthIdentityTableRemoveItem" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthIdentityTableSupplier" xrefstyle="select:title"/></member>
   </simplelist>
  </entry></row>
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20151006-END rexxrefClassTable(StringTable) -->
+<!-- $GENERATED-20150704-END rexxrefClassTable(IdentityTable) -->
 
-<para>In addition to the standard put(), []=, at(), and [] methods defined for
-Collections, StringTable provides access to items using methods.  For
-example:</para>
-
-<programlisting>
-sTable = .StringTable~new
-sTable~name = "Mike"   -- same as sTable~put("Mike", "NAME")
-say sTable~name        -- same as say sTable["NAME"]
-</programlisting>
-
-<para>Note that StringTable does not provide methods
-<methodname>setMethod</methodname> and <methodname>unsetMethod</methodname>
-as <xref linkend="clsDirectory" xrefstyle="template:class Directory"/> does.
-</para>
-
-
-<section id="mthStringTableNew" revisionflag="added"><title>*NEW* new (Class Method)</title>
+<section id="mthIdentityTableNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
-<secondary>of StringTable class</secondary></indexterm>
+<secondary>of IdentityTable class</secondary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>new method</secondary>
-<tertiary>of StringTable class</tertiary></indexterm>
+<tertiary>of IdentityTable class</tertiary></indexterm>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/stringtable_new.svg" scale="50" />
+<imagedata fileref="images/classes/identitytable_new.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
-<para>Returns an empty StringTable object.</para>
-</section>
-
-<section id="mthStringTableAtGet" revisionflag="added"><title>*NEW* []</title>
-<indexterm><primary>[] method</primary>
-<secondary>of StringTable class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>[] method</secondary>
-<tertiary>of StringTable class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/classes/stringtable_atget.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-<para>Returns the item corresponding to <emphasis role="italic">name</emphasis>.
-This method is the same as the at() (<xref linkend="mthStringTablePut" />)
-method.</para>
-</section>
-
-<section id="mthStringTablePutSet" revisionflag="added"><title>*NEW* []=</title>
-<indexterm><primary>[]= method</primary>
-<secondary>of StringTable class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>[]= method</secondary>
-<tertiary>of StringTable class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/classes/stringtable_putset.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-<para>Adds or replaces the entry at index <emphasis role="italic">name</emphasis>.
-This method is the same as the put() (<xref linkend="mthStringTablePut" />)
-method.
+<para>Returns an empty IdentityTable object.</para>
+<para>
+If you specify <emphasis role="italic">size</emphasis>, a hint how large
+the new IdentityTable object is expected to grow, this is used to optimize the
+initial allocation.
 </para>
 </section>
 
-<section id="mthStringTableAllIndexes" revisionflag="added"><title>*NEW* allIndexes</title>
+<section id="mthIdentityTableAtGet"><title>[]</title>
+<indexterm><primary>[] method</primary>
+<secondary>of IdentityTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>[] method</secondary>
+<tertiary>of IdentityTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/identitytable_atget.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+
+<para>Returns the item associated with <emphasis role="italic">index</emphasis>.
+This is the same as the
+at() (<xref linkend="mthIdentityTableAt" />) method.</para>
+</section>
+
+<section id="mthIdentityTablePutSet"><title>[]=</title>
+<indexterm><primary>[]= method</primary>
+<secondary>of IdentityTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>[]= method</secondary>
+<tertiary>of IdentityTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/identitytable_putset.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+
+<para>Adds <emphasis role="italic">item</emphasis> to the table at index
+<emphasis role="italic">index</emphasis>.
+This method is the same as the
+put() (<xref linkend="mthIdentityTablePut" />) method.</para>
+</section>
+
+<section id="mthIdentityTableAllIndexes"><title>allIndexes</title>
 <indexterm><primary>allIndexes method</primary>
-<secondary>of StringTable class</secondary></indexterm>
+<secondary>of IdentityTable class</secondary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>allIndexes method</secondary>
-<tertiary>of StringTable class</tertiary></indexterm>
+<tertiary>of IdentityTable class</tertiary></indexterm>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/stringtable_allindexes.svg" scale="50" />
+<imagedata fileref="images/classes/identitytable_allindexes.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
-<para>Returns an array of all the StringTable indexes.</para>
+<para>Returns an array of all indices contained in the table.</para>
 </section>
 
-<section id="mthStringTableAllItems" revisionflag="added"><title>*NEW* allItems</title>
+<section id="mthIdentityTableAllItems"><title>allItems</title>
 <indexterm><primary>allItems method</primary>
-<secondary>of StringTable class</secondary></indexterm>
+<secondary>of IdentityTable class</secondary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>allItems method</secondary>
-<tertiary>of StringTable class</tertiary></indexterm>
+<tertiary>of IdentityTable class</tertiary></indexterm>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/stringtable_allitems.svg" scale="50" />
+<imagedata fileref="images/classes/identitytable_allitems.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
-<para>Returns an array of all items contained in the StringTable.</para>
+<para>Returns an array of all items contained in the table.</para>
 </section>
 
-<section id="mthStringTableAt" revisionflag="added"><title>*NEW* at</title>
+<section id="mthIdentityTableAt"><title>at</title>
 <indexterm><primary>at method</primary>
-<secondary>of StringTable class</secondary></indexterm>
+<secondary>of IdentityTable class</secondary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>at method</secondary>
-<tertiary>of StringTable class</tertiary></indexterm>
+<tertiary>of IdentityTable class</tertiary></indexterm>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/stringtable_at.svg" scale="50" />
+<imagedata fileref="images/classes/identitytable_at.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
 <para>Returns the item associated with index
-<emphasis role="italic">name</emphasis>.
-If the collection has no item associated with index
-<emphasis role="italic">name</emphasis>, the Nil object is returned.
+<emphasis role="italic">index</emphasis>. Returns the Nil object if the collection
+has no item associated with <emphasis role="italic">index</emphasis>.
 </para>
-<example id="ex.stringtable-at">
-<title>StringTable class - at method</title>
-<programlisting>
-say .environment~at("OBJECT")   /* Produces: "The Object class" */
-</programlisting>
-</example>
 </section>
 
-<section id="mthStringTableEmpty" revisionflag="added"><title>*NEW* empty</title>
-<indexterm><primary>empty method</primary>
-<secondary>of StringTable class</secondary></indexterm>
+<section id="mthIdentityTableEmpty"><title>empty</title>
+<indexterm><primary>difference method</primary>
+<secondary>of IdentityTable class</secondary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>empty method</secondary>
-<tertiary>of StringTable class</tertiary></indexterm>
+<tertiary>of IdentityTable class</tertiary></indexterm>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/stringtable_empty.svg" scale="50" />
+<imagedata fileref="images/classes/identitytable_empty.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
-<para>Removes all items from the StringTable.
-</para>
+<para>Removes all items from the table.</para>
 </section>
 
-<section id="mthStringTableEntry" revisionflag="added"><title>*NEW* entry</title>
-<indexterm><primary>entry method</primary>
-<secondary>of StringTable class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>entry method</secondary>
-<tertiary>of StringTable class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/classes/stringtable_entry.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-<para>Returns the StringTable entry with index
-<emphasis role="italic">name</emphasis> (translated to uppercase).
-If there is no entry for <emphasis role="italic">name</emphasis> the
-Nil object is returned.</para>
-</section>
-
-<section id="mthStringTableHasEntry" revisionflag="added"><title>*NEW* hasEntry</title>
-<indexterm><primary>hasEntry method</primary>
-<secondary>of StringTable class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>hasEntry method</secondary>
-<tertiary>of StringTable class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/classes/stringtable_hasentry.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-<para>Returns <computeroutput>1</computeroutput> (true) if the StringTable has
-an entry for index <emphasis role="italic">name</emphasis>
-(translated to uppercase), or <computeroutput>0</computeroutput> (false).</para>
-</section>
-
-<section id="mthStringTableHasIndex" revisionflag="added"><title>*NEW* hasIndex</title>
+<section id="mthIdentityTableHasIndex"><title>hasIndex</title>
 <indexterm><primary>hasIndex method</primary>
-<secondary>of StringTable class</secondary></indexterm>
+<secondary>of IdentityTable class</secondary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>hasIndex method</secondary>
-<tertiary>of StringTable class</tertiary></indexterm>
+<tertiary>of IdentityTable class</tertiary></indexterm>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/stringtable_hasindex.svg" scale="50" />
+<imagedata fileref="images/classes/identitytable_hasindex.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
 <para>Returns <computeroutput>1</computeroutput> (true) if the collection
-contains any item associated with index
-<emphasis role="italic">name</emphasis>, or <computeroutput>0</computeroutput>
-(false).</para>
+contains any item associated with index <emphasis role="italic">index</emphasis>,
+or <computeroutput>0</computeroutput> (false).</para>
 </section>
 
-<section id="mthStringTableHasItem" revisionflag="added"><title>*NEW* hasItem</title>
+<section id="mthIdentityTableHasItem"><title>hasItem</title>
 <indexterm><primary>hasItem method</primary>
-<secondary>of StringTable class</secondary></indexterm>
+<secondary>of IdentityTable class</secondary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>hasItem method</secondary>
-<tertiary>of StringTable class</tertiary></indexterm>
+<tertiary>of IdentityTable class</tertiary></indexterm>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/stringtable_hasitem.svg" scale="50" />
+<imagedata fileref="images/classes/identitytable_hasitem.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
 <para>Returns <computeroutput>1</computeroutput> (true) if the collection
 contains the <emphasis role="italic">item</emphasis> at any index position or
-otherwise returns <computeroutput>0</computeroutput> (false).
-Item equality is determined by using the == method of <emphasis role="italic">item</emphasis>.
-</para>
+otherwise returns <computeroutput>0</computeroutput> (false).</para>
 </section>
 
-<section id="mthStringTableIndex" revisionflag="added"><title>*NEW* index</title>
+<section id="mthIdentityTableIndex"><title>index</title>
 <indexterm><primary>index method</primary>
-<secondary>of StringTable class</secondary></indexterm>
+<secondary>of IdentityTable class</secondary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>index method</secondary>
-<tertiary>of StringTable class</tertiary></indexterm>
+<tertiary>of IdentityTable class</tertiary></indexterm>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/stringtable_index.svg" scale="50" />
+<imagedata fileref="images/classes/identitytable_index.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
-<para>Returns the index of the specified item within the StringTable.  If the
+<para>Returns the index of the specified item within the table.  If the
 target item appears at more than one index, the first located index will
-be returned.  If the StringTable does not contain the specified item, the Nil
-object is returned.
-Item equality is determined by using the == method of <emphasis role="italic">item</emphasis>.
+be returned.  Returns the Nil object if the table does not contain the specified item.
 </para>
 </section>
 
-<section id="mthStringTableIsEmpty" revisionflag="added"><title>*NEW* isEmpty</title>
+<section id="mthIdentityTableIsEmpty"><title>isEmpty</title>
 <indexterm><primary>isEmpty method</primary>
-<secondary>of StringTable class</secondary></indexterm>
+<secondary>of IdentityTable class</secondary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>isEmpty method</secondary>
-<tertiary>of StringTable class</tertiary></indexterm>
+<tertiary>of IdentityTable class</tertiary></indexterm>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/stringtable_isempty.svg" scale="50" />
+<imagedata fileref="images/classes/identitytable_isempty.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
-<para>Returns <computeroutput>1</computeroutput> (true) if the StringTable
+<para>Returns <computeroutput>1</computeroutput> (true) if the table
 is empty.  Returns
 <computeroutput>0</computeroutput> (false) otherwise.</para>
 </section>
 
-<section id="mthStringTableItems" revisionflag="added"><title>*NEW* items</title>
+<section id="mthIdentityTableItems"><title>items</title>
 <indexterm><primary>items method</primary>
-<secondary>of StringTable class</secondary></indexterm>
+<secondary>of IdentityTable class</secondary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>items method</secondary>
-<tertiary>of StringTable class</tertiary></indexterm>
+<tertiary>of IdentityTable class</tertiary></indexterm>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/stringtable_items.svg" scale="50" />
+<imagedata fileref="images/classes/identitytable_items.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
 <para>Returns the number of items in the collection.</para>
 </section>
 
-<section id="mthStringTableMakeArray" revisionflag="added"><title>*NEW* makeArray</title>
+<section id="mthIdentityTableMakeArray"><title>makeArray</title>
 <indexterm><primary>makeArray method</primary>
-<secondary>of StringTable class</secondary></indexterm>
+<secondary>of IdentityTable class</secondary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>makeArray method</secondary>
-<tertiary>of StringTable class</tertiary></indexterm>
+<tertiary>of IdentityTable class</tertiary></indexterm>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/stringtable_makearray.svg" scale="50" />
+<imagedata fileref="images/classes/identitytable_makearray.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
 <para>Returns a single-index array containing the index objects. The array
 indexes range from <computeroutput>1</computeroutput> to the number of items.
 The collection items appear in the array in an unspecified order.
-(The program should not rely on any order.)</para>
+</para>
 </section>
 
-<section id="mthStringTablePut" revisionflag="added"><title>*NEW* put</title>
+<section id="mthIdentityTablePut"><title>put</title>
 <indexterm><primary>put method</primary>
-<secondary>of StringTable class</secondary></indexterm>
+<secondary>of IdentityTable class</secondary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>put method</secondary>
-<tertiary>of StringTable class</tertiary></indexterm>
+<tertiary>of IdentityTable class</tertiary></indexterm>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/stringtable_put.svg" scale="50" />
+<imagedata fileref="images/classes/identitytable_put.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
 <para>Makes the object <emphasis role="italic">item</emphasis>
-a member item of the collection and associates
-it with index <emphasis role="italic">name</emphasis>.
-The new item replaces any existing item or method
-associated with index <emphasis role="italic">name</emphasis>.</para>
+a member item of the collection and associates it with index
+<emphasis role="italic">index</emphasis>. The new item replaces any existing
+item associated with index <emphasis role="italic">index</emphasis>.</para>
 </section>
 
-<section id="mthStringTableRemove" revisionflag="added"><title>*NEW* remove</title>
+<section id="mthIdentityTableRemove"><title>remove</title>
 <indexterm><primary>remove method</primary>
-<secondary>of StringTable class</secondary></indexterm>
+<secondary>of IdentityTable class</secondary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>remove method</secondary>
-<tertiary>of StringTable class</tertiary></indexterm>
+<tertiary>of IdentityTable class</tertiary></indexterm>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/stringtable_remove.svg" scale="50" />
+<imagedata fileref="images/classes/identitytable_remove.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
-<para>Removes and returns the member item with index
-<emphasis role="italic">name</emphasis> from the StringTable.
-If there is no item
-with index
-<emphasis role="italic">name</emphasis>, .nil is returned.</para>
-</section>
-
-
-<!-- Class StringTable - method removeEntry ========================== --> 
-<section id="mthStringTableRemoveEntry" revisionflag="added"><title>*NEW* removeEntry</title>
-<para>
-<indexterm><primary>removeEntry method</primary><secondary>of StringTable class</secondary></indexterm>
-<indexterm><primary>method</primary><secondary>removeEntry method</secondary><tertiary>of StringTable class</tertiary></indexterm>
-<mediaobject><imageobject>
-<imagedata fileref="images/classes/stringtable_removeentry.svg" scale="50"/>
-</imageobject></mediaobject>
-</para>
-<para>Removes and returns the member item with index
-<emphasis role="italic">name</emphasis> (translated to uppercase) from the StringTable.
-If there is no item with index
-<emphasis role="italic">name</emphasis>, .nil is returned.
-</para>
-<para>See also
-<itemizedlist spacing="compact">
- <listitem><para>method <xref linkend="mthStringTableSetEntry" xrefstyle="select:title"/>,</para></listitem>
- <listitem><para>method <xref linkend="mthStringTableHasEntry" xrefstyle="select:title"/>, and</para></listitem>
- <listitem><para>method <xref linkend="mthStringTableEntry" xrefstyle="select:title"/>.</para></listitem>
-</itemizedlist>
+<para>Returns and removes from a collection the member item with index
+<emphasis role="italic">index</emphasis>. Returns the Nil object if no item has index
+<emphasis role="italic">index</emphasis>.
 </para>
 </section>
 
-
-<section id="mthStringTableRemoveItem" revisionflag="added"><title>*NEW* removeItem</title>
+<section id="mthIdentityTableRemoveItem"><title>removeItem</title>
 <indexterm><primary>removeItem method</primary>
-<secondary>of StringTable class</secondary></indexterm>
+<secondary>of IdentityTable class</secondary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>removeItem method</secondary>
-<tertiary>of StringTable class</tertiary></indexterm>
+<tertiary>of IdentityTable class</tertiary></indexterm>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/stringtable_removeitem.svg" scale="50" />
+<imagedata fileref="images/classes/identitytable_removeitem.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
-<para>Removes an item from the StringTable. If the target item exists at more than
+<para>Removes an item from the table. If the target item exists at more than
 one index, the first located item is removed.  The return value is the
 removed item.
-Item equality is determined by using the == method of <emphasis role="italic">item</emphasis>.
 </para>
 </section>
 
-<section id="mthStringTableSetEntry" revisionflag="added"><title>*NEW* setEntry</title>
-<indexterm><primary>setEntry method</primary>
-<secondary>of StringTable class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>setEntry method</secondary>
-<tertiary>of StringTable class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/classes/stringtable_setentry.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-<para>Sets the StringTable entry with index
-<emphasis role="italic">name</emphasis> (translated to uppercase)
-to the object <emphasis role="italic">entry</emphasis>, replacing any existing
-entry or method for <emphasis role="italic">name</emphasis>. If you omit
-<emphasis role="italic">entry</emphasis>, this method removes any entry or
-method with this <emphasis role="italic">name</emphasis>.</para>
-</section>
-
-<section id="mthStringTableSupplier" revisionflag="added"><title>*NEW* supplier</title>
+<section id="mthIdentityTableSupplier"><title>supplier</title>
 <indexterm><primary>supplier method</primary>
-<secondary>of StringTable class</secondary></indexterm>
+<secondary>of IdentityTable class</secondary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>supplier method</secondary>
-<tertiary>of StringTable class</tertiary></indexterm>
+<tertiary>of IdentityTable class</tertiary></indexterm>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/stringtable_supplier.svg" scale="50" />
+<imagedata fileref="images/classes/identitytable_supplier.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
-<para>Returns a Supplier (<xref linkend="clsSupplier" />)
-object for the collection.  The supplier allows you to iterate over
-the index/item pairs in the StringTable at the time the supplier was created.
-The supplier iterates the items in an unspecified order.
+
+<para>Returns a Supplier (<xref linkend="clsSupplier" />) object for the collection.
+The supplier allows you iterate over the index/item pairs contained in the table at the
+time the supplier was created.
+The supplier iterates over the items in an unspecified order.
 </para>
 </section>
-
-<section id="mthStringTableUnknown" revisionflag="added"><title>*NEW* unknown</title>
-<indexterm><primary>unknown method</primary>
-<secondary>of StringTable class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>unknown method</secondary>
-<tertiary>of StringTable class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/classes/stringtable_unknown.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-<para>Runs either the entry (<xref linkend="mthStringTableEntry" />) or
-setEntry (<xref linkend="mthStringTableSetEntry" />) method, depending on
-whether
-<emphasis role="italic">messagename</emphasis> ends with an equal sign. If
-<emphasis role="italic">messagename</emphasis> does not end with an
-equal sign, this method runs the entry() method, passing
-<emphasis role="italic">messagename</emphasis> as its argument. The <emphasis
-role="italic">messageargs</emphasis> argument is ignored. The entry() method is
-the return result.</para>
-<para>If <emphasis role="italic">messagename</emphasis> does end with an equal
-sign, this method runs the setEntry() method, passing the first part of
-<emphasis role="italic">messagename</emphasis> (up to, but not including, the
-final equal sign) as its first argument, and the first item in the array
-<emphasis role="italic">messageargs</emphasis> as its second argument. In this
-case, unknown() returns no result.</para>
 </section>
 
-</section>
-
-
-<section id="clsList"><title>The List Class</title>
+<section id="clsList"><title>List Class</title>
 <indexterm><primary>List class</primary></indexterm>
 <indexterm><primary>class</primary><secondary>List class</secondary></indexterm>
 <indexterm><primary>Ordered collection classes</primary><secondary>List class</secondary></indexterm>
@@ -5715,7 +5574,7 @@ order as the list sequence order.</para>
 </section>
 </section>
 
-<section id="clsProperties"><title>The Properties Class</title>
+<section id="clsProperties"><title>Properties Class</title>
 <indexterm><primary>Properties class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Properties class</secondary></indexterm>
@@ -6022,7 +5881,7 @@ argument must be a valid Rexx whole number.</para>
 </section>
 </section>
 
-<section id="clsQueue"><title>The Queue Class</title>
+<section id="clsQueue"><title>Queue Class</title>
 <indexterm><primary>class</primary>
 <secondary>Queue class</secondary></indexterm>
 <indexterm><primary>Queue class</primary></indexterm>
@@ -6754,7 +6613,7 @@ the queue first.</para>
 </section>
 </section>
 
-<section id="clsRelation"><title>The Relation Class</title>
+<section id="clsRelation"><title>Relation Class</title>
 <indexterm><primary>Relation class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Relation class</secondary></indexterm>
@@ -7411,7 +7270,7 @@ End
 </section>
 </section>
 
-<section id="clsSet"><title>The Set Class</title>
+<section id="clsSet"><title>Set Class</title>
 <indexterm><primary>Set class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Set class</secondary></indexterm>
@@ -7936,7 +7795,7 @@ index values in the receiver collection.</para>
 </section>
 
 
-<section id="clsStem"><title>The Stem Class</title>
+<section id="clsStem"><title>Stem Class</title>
 <indexterm><primary>Stem class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Stem class</secondary></indexterm>
@@ -8431,7 +8290,531 @@ messages to the stem's current default value.  For additional information, see
 </section>
 </section>
 
-<section id="clsTable"><title>The Table Class</title>
+<section id="clsStringTable" revisionflag="added"><title>*NEW* The StringTable Class</title>
+<indexterm><primary>StringTable class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>StringTable class</secondary></indexterm>
+<indexterm><primary>Map Collection classes</primary>
+<secondary>StringTable class</secondary></indexterm>
+
+<para>A StringTable is a MapCollection using unique character string indexes.  The
+items of a StringTable can be any valid Rexx object.
+</para>
+<para>For a MapCollection similar to StringTable, but with additional methods
+<methodname>setMethod</methodname> and <methodname>unsetMethod</methodname>, see
+<xref linkend="clsDirectory" xrefstyle="template:class Directory"/>.
+</para>
+
+<!-- $GENERATED-20151006-START rexxrefClassTable(StringTable) -->
+<table id="ooRexxStringTableClass" frame="all" pgwide="0">
+<title>StringTable Class</title>
+<tgroup cols="1">
+<tbody>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">+ Collection (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  Methods inherited from the <xref linkend="clsCollection" xrefstyle="template:Collection class"/>
+  <xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+ </entry></row>
+ <row><entry align="center"><emphasis role="bold">+ MapCollection (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  Methods inherited from the <xref linkend="clsMapCollection" xrefstyle="template:MapCollection class"/>
+  <xi:include href="mapcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+ </entry></row>
+ <row><entry align="center"><emphasis role="bold">StringTable</emphasis></entry>
+ </row>
+ <row><entry>
+  <simplelist>
+   <member><xref linkend="mthStringTableNew" xrefstyle="select:title"/></member>
+  </simplelist>
+  <simplelist columns="3">
+   <member><xref linkend="mthStringTableAtGet" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringTablePutSet" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringTableAllIndexes" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringTableAllItems" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringTableAt" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringTableEmpty" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringTableEntry" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringTableHasEntry" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringTableHasIndex" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringTableHasItem" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringTableIndex" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringTableIsEmpty" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringTableItems" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringTableMakeArray" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringTablePut" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringTableRemove" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringTableRemoveEntry" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringTableRemoveItem" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringTableSetEntry" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringTableSupplier" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringTableUnknown" xrefstyle="select:title"/></member>
+  </simplelist>
+ </entry></row>
+</tbody>
+</tgroup>
+</table>
+<!-- $GENERATED-20151006-END rexxrefClassTable(StringTable) -->
+
+<para>In addition to the standard put(), []=, at(), and [] methods defined for
+Collections, StringTable provides access to items using methods.  For
+example:</para>
+
+<programlisting>
+sTable = .StringTable~new
+sTable~name = "Mike"   -- same as sTable~put("Mike", "NAME")
+say sTable~name        -- same as say sTable["NAME"]
+</programlisting>
+
+<para>Note that StringTable does not provide methods
+<methodname>setMethod</methodname> and <methodname>unsetMethod</methodname>
+as <xref linkend="clsDirectory" xrefstyle="template:class Directory"/> does.
+</para>
+
+
+<section id="mthStringTableNew" revisionflag="added"><title>*NEW* new (Class Method)</title>
+<indexterm><primary>new method</primary>
+<secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>new method</secondary>
+<tertiary>of StringTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stringtable_new.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns an empty StringTable object.</para>
+</section>
+
+<section id="mthStringTableAtGet" revisionflag="added"><title>*NEW* []</title>
+<indexterm><primary>[] method</primary>
+<secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>[] method</secondary>
+<tertiary>of StringTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stringtable_atget.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the item corresponding to <emphasis role="italic">name</emphasis>.
+This method is the same as the at() (<xref linkend="mthStringTablePut" />)
+method.</para>
+</section>
+
+<section id="mthStringTablePutSet" revisionflag="added"><title>*NEW* []=</title>
+<indexterm><primary>[]= method</primary>
+<secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>[]= method</secondary>
+<tertiary>of StringTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stringtable_putset.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Adds or replaces the entry at index <emphasis role="italic">name</emphasis>.
+This method is the same as the put() (<xref linkend="mthStringTablePut" />)
+method.
+</para>
+</section>
+
+<section id="mthStringTableAllIndexes" revisionflag="added"><title>*NEW* allIndexes</title>
+<indexterm><primary>allIndexes method</primary>
+<secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>allIndexes method</secondary>
+<tertiary>of StringTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stringtable_allindexes.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns an array of all the StringTable indexes.</para>
+</section>
+
+<section id="mthStringTableAllItems" revisionflag="added"><title>*NEW* allItems</title>
+<indexterm><primary>allItems method</primary>
+<secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>allItems method</secondary>
+<tertiary>of StringTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stringtable_allitems.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns an array of all items contained in the StringTable.</para>
+</section>
+
+<section id="mthStringTableAt" revisionflag="added"><title>*NEW* at</title>
+<indexterm><primary>at method</primary>
+<secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>at method</secondary>
+<tertiary>of StringTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stringtable_at.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the item associated with index
+<emphasis role="italic">name</emphasis>.
+If the collection has no item associated with index
+<emphasis role="italic">name</emphasis>, the Nil object is returned.
+</para>
+<example id="ex.stringtable-at">
+<title>StringTable class - at method</title>
+<programlisting>
+say .environment~at("OBJECT")   /* Produces: "The Object class" */
+</programlisting>
+</example>
+</section>
+
+<section id="mthStringTableEmpty" revisionflag="added"><title>*NEW* empty</title>
+<indexterm><primary>empty method</primary>
+<secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>empty method</secondary>
+<tertiary>of StringTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stringtable_empty.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Removes all items from the StringTable.
+</para>
+</section>
+
+<section id="mthStringTableEntry" revisionflag="added"><title>*NEW* entry</title>
+<indexterm><primary>entry method</primary>
+<secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>entry method</secondary>
+<tertiary>of StringTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stringtable_entry.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the StringTable entry with index
+<emphasis role="italic">name</emphasis> (translated to uppercase).
+If there is no entry for <emphasis role="italic">name</emphasis> the
+Nil object is returned.</para>
+</section>
+
+<section id="mthStringTableHasEntry" revisionflag="added"><title>*NEW* hasEntry</title>
+<indexterm><primary>hasEntry method</primary>
+<secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>hasEntry method</secondary>
+<tertiary>of StringTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stringtable_hasentry.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if the StringTable has
+an entry for index <emphasis role="italic">name</emphasis>
+(translated to uppercase), or <computeroutput>0</computeroutput> (false).</para>
+</section>
+
+<section id="mthStringTableHasIndex" revisionflag="added"><title>*NEW* hasIndex</title>
+<indexterm><primary>hasIndex method</primary>
+<secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>hasIndex method</secondary>
+<tertiary>of StringTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stringtable_hasindex.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if the collection
+contains any item associated with index
+<emphasis role="italic">name</emphasis>, or <computeroutput>0</computeroutput>
+(false).</para>
+</section>
+
+<section id="mthStringTableHasItem" revisionflag="added"><title>*NEW* hasItem</title>
+<indexterm><primary>hasItem method</primary>
+<secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>hasItem method</secondary>
+<tertiary>of StringTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stringtable_hasitem.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if the collection
+contains the <emphasis role="italic">item</emphasis> at any index position or
+otherwise returns <computeroutput>0</computeroutput> (false).
+Item equality is determined by using the == method of <emphasis role="italic">item</emphasis>.
+</para>
+</section>
+
+<section id="mthStringTableIndex" revisionflag="added"><title>*NEW* index</title>
+<indexterm><primary>index method</primary>
+<secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>index method</secondary>
+<tertiary>of StringTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stringtable_index.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the index of the specified item within the StringTable.  If the
+target item appears at more than one index, the first located index will
+be returned.  If the StringTable does not contain the specified item, the Nil
+object is returned.
+Item equality is determined by using the == method of <emphasis role="italic">item</emphasis>.
+</para>
+</section>
+
+<section id="mthStringTableIsEmpty" revisionflag="added"><title>*NEW* isEmpty</title>
+<indexterm><primary>isEmpty method</primary>
+<secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>isEmpty method</secondary>
+<tertiary>of StringTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stringtable_isempty.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns <computeroutput>1</computeroutput> (true) if the StringTable
+is empty.  Returns
+<computeroutput>0</computeroutput> (false) otherwise.</para>
+</section>
+
+<section id="mthStringTableItems" revisionflag="added"><title>*NEW* items</title>
+<indexterm><primary>items method</primary>
+<secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>items method</secondary>
+<tertiary>of StringTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stringtable_items.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the number of items in the collection.</para>
+</section>
+
+<section id="mthStringTableMakeArray" revisionflag="added"><title>*NEW* makeArray</title>
+<indexterm><primary>makeArray method</primary>
+<secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>makeArray method</secondary>
+<tertiary>of StringTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stringtable_makearray.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns a single-index array containing the index objects. The array
+indexes range from <computeroutput>1</computeroutput> to the number of items.
+The collection items appear in the array in an unspecified order.
+(The program should not rely on any order.)</para>
+</section>
+
+<section id="mthStringTablePut" revisionflag="added"><title>*NEW* put</title>
+<indexterm><primary>put method</primary>
+<secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>put method</secondary>
+<tertiary>of StringTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stringtable_put.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Makes the object <emphasis role="italic">item</emphasis>
+a member item of the collection and associates
+it with index <emphasis role="italic">name</emphasis>.
+The new item replaces any existing item or method
+associated with index <emphasis role="italic">name</emphasis>.</para>
+</section>
+
+<section id="mthStringTableRemove" revisionflag="added"><title>*NEW* remove</title>
+<indexterm><primary>remove method</primary>
+<secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>remove method</secondary>
+<tertiary>of StringTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stringtable_remove.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Removes and returns the member item with index
+<emphasis role="italic">name</emphasis> from the StringTable.
+If there is no item
+with index
+<emphasis role="italic">name</emphasis>, .nil is returned.</para>
+</section>
+
+
+<!-- Class StringTable - method removeEntry ========================== --> 
+<section id="mthStringTableRemoveEntry" revisionflag="added"><title>*NEW* removeEntry</title>
+<para>
+<indexterm><primary>removeEntry method</primary><secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>removeEntry method</secondary><tertiary>of StringTable class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/stringtable_removeentry.svg" scale="50"/>
+</imageobject></mediaobject>
+</para>
+<para>Removes and returns the member item with index
+<emphasis role="italic">name</emphasis> (translated to uppercase) from the StringTable.
+If there is no item with index
+<emphasis role="italic">name</emphasis>, .nil is returned.
+</para>
+<para>See also
+<itemizedlist spacing="compact">
+ <listitem><para>method <xref linkend="mthStringTableSetEntry" xrefstyle="select:title"/>,</para></listitem>
+ <listitem><para>method <xref linkend="mthStringTableHasEntry" xrefstyle="select:title"/>, and</para></listitem>
+ <listitem><para>method <xref linkend="mthStringTableEntry" xrefstyle="select:title"/>.</para></listitem>
+</itemizedlist>
+</para>
+</section>
+
+
+<section id="mthStringTableRemoveItem" revisionflag="added"><title>*NEW* removeItem</title>
+<indexterm><primary>removeItem method</primary>
+<secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>removeItem method</secondary>
+<tertiary>of StringTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stringtable_removeitem.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Removes an item from the StringTable. If the target item exists at more than
+one index, the first located item is removed.  The return value is the
+removed item.
+Item equality is determined by using the == method of <emphasis role="italic">item</emphasis>.
+</para>
+</section>
+
+<section id="mthStringTableSetEntry" revisionflag="added"><title>*NEW* setEntry</title>
+<indexterm><primary>setEntry method</primary>
+<secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>setEntry method</secondary>
+<tertiary>of StringTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stringtable_setentry.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Sets the StringTable entry with index
+<emphasis role="italic">name</emphasis> (translated to uppercase)
+to the object <emphasis role="italic">entry</emphasis>, replacing any existing
+entry or method for <emphasis role="italic">name</emphasis>. If you omit
+<emphasis role="italic">entry</emphasis>, this method removes any entry or
+method with this <emphasis role="italic">name</emphasis>.</para>
+</section>
+
+<section id="mthStringTableSupplier" revisionflag="added"><title>*NEW* supplier</title>
+<indexterm><primary>supplier method</primary>
+<secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>supplier method</secondary>
+<tertiary>of StringTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stringtable_supplier.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Returns a Supplier (<xref linkend="clsSupplier" />)
+object for the collection.  The supplier allows you to iterate over
+the index/item pairs in the StringTable at the time the supplier was created.
+The supplier iterates the items in an unspecified order.
+</para>
+</section>
+
+<section id="mthStringTableUnknown" revisionflag="added"><title>*NEW* unknown</title>
+<indexterm><primary>unknown method</primary>
+<secondary>of StringTable class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>unknown method</secondary>
+<tertiary>of StringTable class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/stringtable_unknown.svg" scale="50" />
+</imageobject>
+</mediaobject>
+
+<para>Runs either the entry (<xref linkend="mthStringTableEntry" />) or
+setEntry (<xref linkend="mthStringTableSetEntry" />) method, depending on
+whether
+<emphasis role="italic">messagename</emphasis> ends with an equal sign. If
+<emphasis role="italic">messagename</emphasis> does not end with an
+equal sign, this method runs the entry() method, passing
+<emphasis role="italic">messagename</emphasis> as its argument. The <emphasis
+role="italic">messageargs</emphasis> argument is ignored. The entry() method is
+the return result.</para>
+<para>If <emphasis role="italic">messagename</emphasis> does end with an equal
+sign, this method runs the setEntry() method, passing the first part of
+<emphasis role="italic">messagename</emphasis> (up to, but not including, the
+final equal sign) as its first argument, and the first item in the array
+<emphasis role="italic">messageargs</emphasis> as its second argument. In this
+case, unknown() returns no result.</para>
+</section>
+
+</section>
+
+
+<section id="clsTable"><title>Table Class</title>
 <indexterm><primary>Table class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Table class</secondary></indexterm>
@@ -8807,389 +9190,6 @@ The supplier iterates over the items in an unspecified order.
 </section>
 </section>
 
-<section id="clsIdentityTable"><title>The IdentityTable Class</title>
-<indexterm><primary>IdentityTable class</primary></indexterm>
-<indexterm><primary>class</primary>
-<secondary>IdentityTable class</secondary></indexterm>
-<indexterm><primary>Map Collection classes</primary>
-<secondary>IdentityTable class</secondary></indexterm>
-
-<para>An identity table is a collection with indexes
-that can be any object. In an identity table, each item is associated with a
-single index, and there can be only one item for each index. Index and item
-matches in an identity table are made using an object
-identity comparison.  That is, an index will only match if the same instance is
-used in the collection.
-</para>
-
-<!-- $GENERATED-20150704-START rexxrefClassTable(IdentityTable) -->
-<table id="ooRexxIdentityTableClass" frame="all" pgwide="0">
-<title>IdentityTable Class</title>
-<tgroup cols="1">
-<tbody>
- <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
- </row>
- <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
- </row>
- <row><entry align="center"><emphasis role="bold">+ Collection (Mixin Class)</emphasis></entry>
- </row>
- <row><entry>
-  Methods inherited from the <xref linkend="clsCollection" xrefstyle="template:Collection class"/>
-  <xi:include href="collectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
- </entry></row>
- <row><entry align="center"><emphasis role="bold">+ MapCollection (Mixin Class)</emphasis></entry>
- </row>
- <row><entry>
-  Methods inherited from the <xref linkend="clsMapCollection" xrefstyle="template:MapCollection class"/>
-  <xi:include href="mapcollectionclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
- </entry></row>
- <row><entry align="center"><emphasis role="bold">IdentityTable</emphasis></entry>
- </row>
- <row><entry>
-  <simplelist>
-   <member><xref linkend="mthIdentityTableNew" xrefstyle="select:title"/></member>
-  </simplelist>
-  <simplelist columns="3">
-   <member><xref linkend="mthIdentityTableAtGet" xrefstyle="select:title"/></member>
-   <member><xref linkend="mthIdentityTablePutSet" xrefstyle="select:title"/></member>
-   <member><xref linkend="mthIdentityTableAllIndexes" xrefstyle="select:title"/></member>
-   <member><xref linkend="mthIdentityTableAllItems" xrefstyle="select:title"/></member>
-   <member><xref linkend="mthIdentityTableAt" xrefstyle="select:title"/></member>
-   <member><xref linkend="mthIdentityTableEmpty" xrefstyle="select:title"/></member>
-   <member><xref linkend="mthIdentityTableHasIndex" xrefstyle="select:title"/></member>
-   <member><xref linkend="mthIdentityTableHasItem" xrefstyle="select:title"/></member>
-   <member><xref linkend="mthIdentityTableIndex" xrefstyle="select:title"/></member>
-   <!-- see new()
-   <member><xref linkend="mthIdentityTableInit" xrefstyle="select:title"/></member>
-   -->
-   <member><xref linkend="mthIdentityTableIsEmpty" xrefstyle="select:title"/></member>
-   <member><xref linkend="mthIdentityTableItems" xrefstyle="select:title"/></member>
-   <member><xref linkend="mthIdentityTableMakeArray" xrefstyle="select:title"/></member>
-   <member><xref linkend="mthIdentityTablePut" xrefstyle="select:title"/></member>
-   <member><xref linkend="mthIdentityTableRemove" xrefstyle="select:title"/></member>
-   <member><xref linkend="mthIdentityTableRemoveItem" xrefstyle="select:title"/></member>
-   <member><xref linkend="mthIdentityTableSupplier" xrefstyle="select:title"/></member>
-  </simplelist>
- </entry></row>
-</tbody>
-</tgroup>
-</table>
-<!-- $GENERATED-20150704-END rexxrefClassTable(IdentityTable) -->
-
-<section id="mthIdentityTableNew"><title>new (Class Method)</title>
-<indexterm><primary>new method</primary>
-<secondary>of IdentityTable class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>new method</secondary>
-<tertiary>of IdentityTable class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/classes/identitytable_new.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-<para>Returns an empty IdentityTable object.</para>
-<para>
-If you specify <emphasis role="italic">size</emphasis>, a hint how large
-the new IdentityTable object is expected to grow, this is used to optimize the
-initial allocation.
-</para>
-</section>
-
-<section id="mthIdentityTableAtGet"><title>[]</title>
-<indexterm><primary>[] method</primary>
-<secondary>of IdentityTable class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>[] method</secondary>
-<tertiary>of IdentityTable class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/classes/identitytable_atget.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-
-<para>Returns the item associated with <emphasis role="italic">index</emphasis>.
-This is the same as the
-at() (<xref linkend="mthIdentityTableAt" />) method.</para>
-</section>
-
-<section id="mthIdentityTablePutSet"><title>[]=</title>
-<indexterm><primary>[]= method</primary>
-<secondary>of IdentityTable class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>[]= method</secondary>
-<tertiary>of IdentityTable class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/classes/identitytable_putset.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-
-<para>Adds <emphasis role="italic">item</emphasis> to the table at index
-<emphasis role="italic">index</emphasis>.
-This method is the same as the
-put() (<xref linkend="mthIdentityTablePut" />) method.</para>
-</section>
-
-<section id="mthIdentityTableAllIndexes"><title>allIndexes</title>
-<indexterm><primary>allIndexes method</primary>
-<secondary>of IdentityTable class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>allIndexes method</secondary>
-<tertiary>of IdentityTable class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/classes/identitytable_allindexes.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-<para>Returns an array of all indices contained in the table.</para>
-</section>
-
-<section id="mthIdentityTableAllItems"><title>allItems</title>
-<indexterm><primary>allItems method</primary>
-<secondary>of IdentityTable class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>allItems method</secondary>
-<tertiary>of IdentityTable class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/classes/identitytable_allitems.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-<para>Returns an array of all items contained in the table.</para>
-</section>
-
-<section id="mthIdentityTableAt"><title>at</title>
-<indexterm><primary>at method</primary>
-<secondary>of IdentityTable class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>at method</secondary>
-<tertiary>of IdentityTable class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/classes/identitytable_at.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-<para>Returns the item associated with index
-<emphasis role="italic">index</emphasis>. Returns the Nil object if the collection
-has no item associated with <emphasis role="italic">index</emphasis>.
-</para>
-</section>
-
-<section id="mthIdentityTableEmpty"><title>empty</title>
-<indexterm><primary>difference method</primary>
-<secondary>of IdentityTable class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>empty method</secondary>
-<tertiary>of IdentityTable class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/classes/identitytable_empty.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-<para>Removes all items from the table.</para>
-</section>
-
-<section id="mthIdentityTableHasIndex"><title>hasIndex</title>
-<indexterm><primary>hasIndex method</primary>
-<secondary>of IdentityTable class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>hasIndex method</secondary>
-<tertiary>of IdentityTable class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/classes/identitytable_hasindex.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-<para>Returns <computeroutput>1</computeroutput> (true) if the collection
-contains any item associated with index <emphasis role="italic">index</emphasis>,
-or <computeroutput>0</computeroutput> (false).</para>
-</section>
-
-<section id="mthIdentityTableHasItem"><title>hasItem</title>
-<indexterm><primary>hasItem method</primary>
-<secondary>of IdentityTable class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>hasItem method</secondary>
-<tertiary>of IdentityTable class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/classes/identitytable_hasitem.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-<para>Returns <computeroutput>1</computeroutput> (true) if the collection
-contains the <emphasis role="italic">item</emphasis> at any index position or
-otherwise returns <computeroutput>0</computeroutput> (false).</para>
-</section>
-
-<section id="mthIdentityTableIndex"><title>index</title>
-<indexterm><primary>index method</primary>
-<secondary>of IdentityTable class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>index method</secondary>
-<tertiary>of IdentityTable class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/classes/identitytable_index.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-<para>Returns the index of the specified item within the table.  If the
-target item appears at more than one index, the first located index will
-be returned.  Returns the Nil object if the table does not contain the specified item.
-</para>
-</section>
-
-<section id="mthIdentityTableIsEmpty"><title>isEmpty</title>
-<indexterm><primary>isEmpty method</primary>
-<secondary>of IdentityTable class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>isEmpty method</secondary>
-<tertiary>of IdentityTable class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/classes/identitytable_isempty.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-<para>Returns <computeroutput>1</computeroutput> (true) if the table
-is empty.  Returns
-<computeroutput>0</computeroutput> (false) otherwise.</para>
-</section>
-
-<section id="mthIdentityTableItems"><title>items</title>
-<indexterm><primary>items method</primary>
-<secondary>of IdentityTable class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>items method</secondary>
-<tertiary>of IdentityTable class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/classes/identitytable_items.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-<para>Returns the number of items in the collection.</para>
-</section>
-
-<section id="mthIdentityTableMakeArray"><title>makeArray</title>
-<indexterm><primary>makeArray method</primary>
-<secondary>of IdentityTable class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>makeArray method</secondary>
-<tertiary>of IdentityTable class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/classes/identitytable_makearray.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-<para>Returns a single-index array containing the index objects. The array
-indexes range from <computeroutput>1</computeroutput> to the number of items.
-The collection items appear in the array in an unspecified order.
-</para>
-</section>
-
-<section id="mthIdentityTablePut"><title>put</title>
-<indexterm><primary>put method</primary>
-<secondary>of IdentityTable class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>put method</secondary>
-<tertiary>of IdentityTable class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/classes/identitytable_put.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-<para>Makes the object <emphasis role="italic">item</emphasis>
-a member item of the collection and associates it with index
-<emphasis role="italic">index</emphasis>. The new item replaces any existing
-item associated with index <emphasis role="italic">index</emphasis>.</para>
-</section>
-
-<section id="mthIdentityTableRemove"><title>remove</title>
-<indexterm><primary>remove method</primary>
-<secondary>of IdentityTable class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>remove method</secondary>
-<tertiary>of IdentityTable class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/classes/identitytable_remove.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-<para>Returns and removes from a collection the member item with index
-<emphasis role="italic">index</emphasis>. Returns the Nil object if no item has index
-<emphasis role="italic">index</emphasis>.
-</para>
-</section>
-
-<section id="mthIdentityTableRemoveItem"><title>removeItem</title>
-<indexterm><primary>removeItem method</primary>
-<secondary>of IdentityTable class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>removeItem method</secondary>
-<tertiary>of IdentityTable class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/classes/identitytable_removeitem.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-<para>Removes an item from the table. If the target item exists at more than
-one index, the first located item is removed.  The return value is the
-removed item.
-</para>
-</section>
-
-<section id="mthIdentityTableSupplier"><title>supplier</title>
-<indexterm><primary>supplier method</primary>
-<secondary>of IdentityTable class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>supplier method</secondary>
-<tertiary>of IdentityTable class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/classes/identitytable_supplier.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-
-<para>Returns a Supplier (<xref linkend="clsSupplier" />) object for the collection.
-The supplier allows you iterate over the index/item pairs contained in the table at the
-time the supplier was created.
-The supplier iterates over the items in an unspecified order.
-</para>
-</section>
-</section>
-
 <section id="sortarray"><title>Sorting Ordered Collections</title>
 <para>Any ordered collection, such as non-sparse Arrays or Lists can have its elements placed into sorted order using the
 <emphasis role="bold">sort</emphasis> method.  The simplest sort is
@@ -9391,7 +9391,7 @@ would display "Fred", "FRED", "fred".</para>
 </section>
 </section>
 
-<section id="setop"><title>The Concept of Set Operations</title>
+<section id="setop"><title>Concept of Set Operations</title>
 <indexterm><primary>examples</primary>
 <secondary>set operations</secondary>
 <tertiary>concepts</tertiary></indexterm>
@@ -9434,7 +9434,7 @@ depending on class of <emphasis role="italic">receiver</emphasis>.
 <para>The result object is of the same class as the <emphasis role="italic">receiver</emphasis> collection object.
 </para>
 
-<section id="princoper"><title>The Principles of Operation</title>
+<section id="princoper"><title>Principles of Operation</title>
 <indexterm><primary>examples</primary>
 <secondary>set operations</secondary>
 <tertiary>principals</tertiary></indexterm>
