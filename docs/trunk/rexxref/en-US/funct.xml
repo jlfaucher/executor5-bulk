@@ -3743,7 +3743,7 @@ rxfuncquery("SysLoadFuncs")        -> 0 /* if registered             */
 </section>
 
 
-<section id="bifRxqueue"><title>RXQUEUE</title>
+<section id="bifRxqueue" revisionflag="changed"><title>*CHG* RXQUEUE</title>
 <indexterm><primary>RXQUEUE function</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>functions</primary>
@@ -3784,7 +3784,7 @@ exists already. You must not use SESSION as a
 the language processor provides a name.  The name of the queue is returned
 in either case.</para>
 <para>The maximum length of <emphasis role="italic">queuename</emphasis>
-can be 1024 characters.</para>
+can be 250 characters.</para>
 <para>Many queues can exist at the same time, and most systems have sufficient
 resources available to support several hundred queues at a time. If a queue
 with the specified name exists already, a queue is still created with a name
@@ -3818,6 +3818,19 @@ nonzero number if an error occurs. Possible return values are:
 <varlistentry><term>&quot;Get&quot;</term>
 <listitem><para>returns the name of the queue currently in use.
 </para></listitem></varlistentry>
+
+<varlistentry><term>&quot;Exist&quot;</term>
+<listitem><para>returns 1 (true) if the specified
+<emphasis role="italic">queuename</emphasis> exists.
+Returns 0 (false) otherwise.
+</para></listitem></varlistentry>
+
+<varlistentry><term>&quot;Open&quot;</term>
+<listitem><para>tests if if the specified
+<emphasis role="italic">queuename</emphasis> exists and
+creates if it does not.
+</para></listitem></varlistentry>
+
 <varlistentry><term>&quot;Set&quot;</term>
 <listitem><para>sets the name of the current queue to
 <emphasis role="italic">newqueuename</emphasis> and returns
