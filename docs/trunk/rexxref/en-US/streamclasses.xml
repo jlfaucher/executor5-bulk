@@ -54,6 +54,48 @@ Rexx data streams:
   <!-- NOTE: see note above -->
 </para>
 
+<section id="clsInputOutputStream"><title>InputOutputStream Class</title>
+<indexterm><primary>InputOutputStream class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>InputOutputStream class</secondary></indexterm>
+
+<para>This class is defined as an abstract mixin class. It must be implemented
+by subclassing it or inheriting from it as a mixin. Many of the methods in this
+class are abstract and must be overridden or they will throw a syntax error when invoked.</para>
+
+<!-- $GENERATED-20150924-START rexxrefClassTable(InputOutputStream) -->
+<table id="ooRexxInputOutputStreamClass" frame="all" pgwide="0">
+<title>InputOutputStream Class</title>
+<tgroup cols="1">
+<tbody>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">+ OutputStream (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  Methods inherited from the <xref linkend="clsOutputStream" xrefstyle="template:OutputStream class"/>
+  <xi:include href="outputstreamclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+ </entry></row>
+ <row><entry align="center"><emphasis role="bold">+ InputStream (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  Methods inherited from the <xref linkend="clsInputStream" xrefstyle="template:InputStream class"/>
+  <xi:include href="inputstreamclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+ </entry></row>
+ <row><entry align="center"><emphasis role="bold">InputOutputStream (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  (no class or instance methods)
+ </entry></row>
+</tbody>
+</tgroup>
+</table>
+<!-- $GENERATED-20150924-END rexxrefClassTable(InputOutputStream) -->
+
+</section><!-- clsInputOutputStream -->
+
 <section id="clsInputStream"><title>InputStream Class</title>
 <indexterm><primary>InputStream class</primary></indexterm>
 <indexterm><primary>class</primary>
@@ -190,7 +232,7 @@ syntax error 93.965 to be raised.</para>
 <para>This method is an optionally supported operation.  By default, it will cause
 syntax error 93.963 to be raised.</para>
 </section>
-</section>
+</section><!-- clsInputStream -->
 
 <section id="clsOutputStream"><title>OutputStream Class</title>
 <indexterm><primary>OutputStream class</primary></indexterm>
@@ -330,49 +372,7 @@ syntax error 93.963 to be raised.</para>
 <para>This method is an optionally supported operation.  By default, it will cause
 syntax error 93.963 to be raised.</para>
 </section>
-</section>
-
-<section id="clsInputOutputStream"><title>InputOutputStream Class</title>
-<indexterm><primary>InputOutputStream class</primary></indexterm>
-<indexterm><primary>class</primary>
-<secondary>InputOutputStream class</secondary></indexterm>
-
-<para>This class is defined as an abstract mixin class. It must be implemented
-by subclassing it or inheriting from it as a mixin. Many of the methods in this
-class are abstract and must be overridden or they will throw a syntax error when invoked.</para>
-
-<!-- $GENERATED-20150924-START rexxrefClassTable(InputOutputStream) -->
-<table id="ooRexxInputOutputStreamClass" frame="all" pgwide="0">
-<title>InputOutputStream Class</title>
-<tgroup cols="1">
-<tbody>
- <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
- </row>
- <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
- </row>
- <row><entry align="center"><emphasis role="bold">+ OutputStream (Mixin Class)</emphasis></entry>
- </row>
- <row><entry>
-  Methods inherited from the <xref linkend="clsOutputStream" xrefstyle="template:OutputStream class"/>
-  <xi:include href="outputstreamclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
- </entry></row>
- <row><entry align="center"><emphasis role="bold">+ InputStream (Mixin Class)</emphasis></entry>
- </row>
- <row><entry>
-  Methods inherited from the <xref linkend="clsInputStream" xrefstyle="template:InputStream class"/>
-  <xi:include href="inputstreamclassmethods.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
- </entry></row>
- <row><entry align="center"><emphasis role="bold">InputOutputStream (Mixin Class)</emphasis></entry>
- </row>
- <row><entry>
-  (no class or instance methods)
- </entry></row>
-</tbody>
-</tgroup>
-</table>
-<!-- $GENERATED-20150924-END rexxrefClassTable(InputOutputStream) -->
-
-</section>
+</section><!-- clsOutputStream -->
 
 <section id="clsStream"><title>Stream Class</title>
 <indexterm><primary>Stream class</primary></indexterm>
@@ -896,7 +896,7 @@ stream_name~command("query datetime")
 </example>
 </para><para>A sample output might be: </para>
 <programlisting>
-11-12-95 03:29:12
+11-12-15 03:29:12
 </programlisting>
 </listitem></varlistentry>
 <varlistentry><term>QUERY EXISTS</term>
@@ -1012,7 +1012,7 @@ stream_name~command("query timestamp")
 </example>
 <para>A sample output might be: </para>
 <programlisting>
-1995-11-12 03:29:12
+2015-11-12 03:29:12
 </programlisting>
 </listitem></varlistentry>
 </variablelist>
@@ -1395,7 +1395,7 @@ stream_name~query("datetime")
 <para>A sample output might
 be: </para>
 <programlisting>
-11-12-98 03:29:12
+11-12-15 03:29:12
 </programlisting>
 </listitem></varlistentry>
 <varlistentry><term>EXISTS</term>
@@ -1504,7 +1504,7 @@ time because it provides the full 4-digit year.</para>
 </example>
 <para>A sample output might be: </para>
 <programlisting>
-1998-11-12 03:29:12
+2015-11-12 03:29:12
 </programlisting>
 </listitem></varlistentry>
 </variablelist>
@@ -1744,7 +1744,7 @@ return
 </programlisting>
 </example>
 </section>
-</section>
+</section><!-- clsStream -->
 
 </section>
 

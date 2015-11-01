@@ -142,7 +142,7 @@ Returns .nil if no object is attached.
 </para>
 <para><example>
 <title>Alarm class &mdash; attachment method</title>
-<programlisting><![CDATA[oneSecond = .Alarm~new(1 ,.Target~new, "a second has passed")
+<programlisting><![CDATA[oneSecond = .Alarm~new(1, .Target~new, "a second has passed")
 call SysSleep 1.5                      -- give Alarm time to trigger
 oneSecond~cancel
 
@@ -260,7 +260,7 @@ the specified notification <emphasis role="italic">target</emphasis>.
 <indexterm><primary>examples</primary>
 <secondary>of Alarm class</secondary></indexterm>
 <example>
-<title>Class ALARM</title>
+<title>Alarm class</title>
 <programlisting>
 /* Alarm Examples */
 
@@ -288,7 +288,7 @@ a message object to run at the specified time. The following code sets up
 an alarm to run the <computeroutput>msg</computeroutput> message
 object in 30 seconds from the current time: </para>
 <example>
-<title>Class ALARM</title>
+<title>Alarm class</title>
 <programlisting>
 a=.alarm~new(30,msg)
 </programlisting>
@@ -583,6 +583,13 @@ smaller than <emphasis role="italic">first</emphasis> .</para>
 is an object that implements the Comparable compareTo method (<xref linkend="mthComparableCompareTo" />.
 Subclasses may override this to implement more specific comparisons.
 </para>
+<para><example id="ex.comparator-compare">
+<title>Comparator class
+<indexterm><primary>examples</primary><secondary>Comparator class</secondary></indexterm>
+</title>
+<programlisting><![CDATA[wine = .Array~of("Strawberries", "cherries", "angel's kiss")
+wine~sortWith(.Comparator~new)         -- Strawberries, angel's kiss, cherries
+]]></programlisting></example></para>
 </section>
 </section>
 
@@ -638,6 +645,13 @@ Subclasses may override this to implement more specific comparisons.
 object, "0" if the two objects are equal, and "1" <emphasis role="italic">second</emphasis> is
 smaller than <emphasis role="italic">first</emphasis>.  The two strings are compared using a caseless comparison.
 </para>
+<para><example id="ex.caselesscomparator-compare">
+<title>CaselessComparator class
+<indexterm><primary>examples</primary><secondary>CaselessComparator class</secondary></indexterm>
+</title>
+<programlisting><![CDATA[wine = .Array~of("Strawberries", "cherries", "angel's kiss")
+wine~sortWith(.CaselessComparator~new) -- angel's kiss, cherries, Strawberries
+]]></programlisting></example></para>
 </section>
 </section>
 
@@ -713,6 +727,14 @@ smaller than <emphasis role="italic">first</emphasis>.  Only the defined columns
 <para>Initializes a comparator to sort strings starting at position <emphasis role="italic">start</emphasis> for
 <emphasis role="italic">length</emphasis> characters.
 </para>
+<para><example id="ex.columncomparator-init">
+<title>ColumnComparator class
+<indexterm><primary>examples</primary><secondary>ColumnComparator class</secondary></indexterm>
+</title>
+<programlisting><![CDATA[wine = .Array~of("1. Strawberries", "2. cherries", "3. angel's kiss")
+wine~sortWith(.ColumnComparator~new(3, 100))
+                                       -- 1. Strawberries, 3. angel's kiss, 2. cherries
+]]></programlisting></example></para>
 </section>
 </section>
 
@@ -788,6 +810,15 @@ using a caseless comparison.</para>
 <para>Initializes a comparator to sort strings starting at position <emphasis role="italic">start</emphasis> for
 <emphasis role="italic">length</emphasis> characters.
 </para>
+<para><example id="ex.caselesscolumncomparator-init">
+<title>CaselessColumnComparator class
+<indexterm><primary>examples</primary><secondary>CaselessColumnComparator class</secondary></indexterm>
+</title>
+<programlisting><![CDATA[
+wine = .Array~of("1. Strawberries", "2. cherries", "3. angel's kiss")
+wine~sortWith(.CaselessColumnComparator~new(3, 100))
+                                       -- 1. Strawberries, 3. angel's kiss, 2. cherries
+]]></programlisting></example></para>
 </section>
 </section>
 
@@ -851,6 +882,13 @@ smaller than <emphasis role="italic">first</emphasis>, resulting in a descending
 The DescendingComparator assumes the <emphasis role="italic">first</emphasis> object implements
 the Comparable compareTo method (<xref linkend="mthComparableCompareTo" />.
 </para>
+<para><example id="ex.descendingcomparator-compare">
+<title>DescendingComparator class
+<indexterm><primary>examples</primary><secondary>DescendingComparator class</secondary></indexterm>
+</title>
+<programlisting><![CDATA[wine = .Array~of("Strawberries", "cherries", "angel's kiss")
+wine~sortWith(.DescendingComparator~new)    -- cherries, angel's kiss, Strawberries 
+]]></programlisting></example></para>
 </section>
 </section>
 
@@ -910,6 +948,13 @@ a CaselessComparator (<xref linkend="clsCaselessComparator" />) sort order.
 object, "0" if the two objects are equal, and "-1" <emphasis role="italic">second</emphasis> is
 smaller than <emphasis role="italic">first</emphasis>.  The two strings are compared using a caseless comparison.
 </para>
+<para><example id="ex.caselessdescendingcomparator-compare">
+<title>CaselessDescendingComparator class
+<indexterm><primary>examples</primary><secondary>CaselessDescendingComparator class</secondary></indexterm>
+</title>
+<programlisting><![CDATA[wine = .Array~of("Strawberries", "cherries", "angel's kiss")
+wine~sortWith(.CaselessDescendingComparator~new) -- Strawberries, cherries, angel's kiss
+]]></programlisting></example></para>
 </section>
 </section>
 
@@ -987,6 +1032,25 @@ The InvertingComparator will invert the ordering returned by the provided Compar
 <para>Initializes an inverting comparator to sort strings using an inversion of the result from the
 <emphasis role="italic">comparator</emphasis> compare() method.
 </para>
+<para><example id="ex.invertingcomparator-init">
+<title>InvertingComparator class
+<indexterm><primary>examples</primary><secondary>InvertingComparator class</secondary></indexterm>
+</title>
+<programlisting><![CDATA[wine = .Array~of("1. Strawberries", "2. cherries", "3. angel's kiss")
+wine~sortWith(.InvertingComparator~new(.LengthComparator~new))
+                                       -- 3. angel's kiss, 1. Strawberries, 2. cherries
+
+-- compare 1. by length, 2. by standard comparison
+::class LengthComparator mixinclass Comparator public
+::method compare
+  use strict arg left, right
+
+  lengthDelta = left~length - right~length
+  if lengthDelta = 0 then
+    return left~compareTo(right)
+  else
+    return lengthDelta~sign
+]]></programlisting></example></para>
 </section>
 </section>
 
@@ -1066,6 +1130,13 @@ comparison rules, so the collection strings must be valid numeric values.
 is specified, the comparisons will be performed using the provided precision.  The
 default precision is <emphasis role="italic">9</emphasis>.
 </para>
+<para><example id="ex.numericcomparator-init">
+<title>NumericComparator class
+<indexterm><primary>examples</primary><secondary>NumericComparator class</secondary></indexterm>
+</title>
+<programlisting><![CDATA[primes = .Array~of(23, 19, 17, 13, 11, 7, 5, 3, 2)
+primes~sortWith(.NumericComparator~new)  -- 2, 3, 5, 7, 11, 13, 17, 19, 23
+]]></programlisting></example></para>
 </section>
 </section>
 
@@ -1584,7 +1655,7 @@ in minutes.  The <emphasis role="italic">offset</emphasis> must be a valid whole
 number. The default <emphasis role="italic">offset</emphasis> is the current system timezone offset.
 </para>
 <example>
-<title>Class DATETIME</title>
+<title>DateTime class</title>
 <programlisting>
 <![CDATA[
 today = .DateTime~new                            -- current date and time
@@ -1661,7 +1732,7 @@ instance.  The receiver DateTime object is not changed.  The TimeSpan may be eit
 <indexterm><primary>examples</primary>
 <secondary>arithmetic methods of DateTime class</secondary></indexterm>
 <example>
-<title>Class DateTime &mdash; arithmetic</title>
+<title>DateTime class &mdash; arithmetic</title>
 <programlisting>
 <![CDATA[
 t = .dateTime~new~timeOfDay       -- returns TimeSpan for current time
@@ -2790,7 +2861,7 @@ On Windows, each of the drives is a root element (Ex : "C:\").
 On Unix, there is just one root ("/").
 </para>
 <example>
-<title>Class FILE</title>
+<title>File class</title>
 <programlisting>
 <![CDATA[
 say .File~listRoots~toString
@@ -3288,7 +3359,6 @@ If the receiver object is not a directory then the result is .nil.
 <programlisting>
 <![CDATA[
 names = .File~new("c:\program files\oorexx\samples")~list
-say names -- an Array
 say names~toString
 /* Possible output */
 api
@@ -5972,7 +6042,7 @@ be used to abbreviate common sets:</para>
 <indexterm><primary>examples</primary>
 <secondary>RegularExpression class</secondary></indexterm>
 <example>
-<title>Class RegularExpression</title>
+<title>RegularExpression class</title>
 <programlisting>
 <![CDATA[
 ::requires "rxregexp.cls"
@@ -8250,7 +8320,7 @@ would return false, the supplier raises an error.
 <indexterm><primary>examples</primary>
 <secondary>of Supplier class</secondary></indexterm>
 <example>
-<title>Class Supplier</title>
+<title>Supplier class</title>
 <programlisting>
 desserts=.array~of(apples, peaches, pumpkins, 3.14159) /* Creates array */
 say "The desserts we have are:"
@@ -8841,7 +8911,7 @@ component.  For example, <emphasis role="italic">hours</emphasis> must be in the
 <emphasis role="italic">minutes</emphasis> must be in the range 0-59.
 </para>
 <example>
-<title>Class TIMESPAN</title>
+<title>TimeSpan class</title>
 <programlisting>
 <![CDATA[
                          -- initializes to 15 hours, 37 minutes and 30 seconds
@@ -8982,7 +9052,7 @@ is not altered by this operation.
 <indexterm><primary>examples</primary>
 <secondary>arithmetic methods of DateTime class</secondary></indexterm>
 <example>
-<title>Class TIMESPAN</title>
+<title>TimeSpan class</title>
 <programlisting>
 <![CDATA[
 t1 = .timespan~fromHours(1)

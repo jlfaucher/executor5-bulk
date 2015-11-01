@@ -47,21 +47,21 @@
 <indexterm><primary>Collection classes</primary></indexterm>
 <para>A collection is an object that contains a number of
 <emphasis role="italic">items</emphasis>, which can be any objects. Every item
-stored in a Rexx collection has an associated index that you can use to
-retrieve the item from the collection with the AT or [] methods.</para>
-<para>Each collection defines its own acceptable index types. Rexx provides the
+stored in a ooRexx collection has an associated <emphasis role="italic">index</emphasis> that you can use to
+retrieve the item from the collection with the <methodname>at</methodname> or <methodname>[]</methodname> methods.</para>
+<para>Each collection defines its own acceptable index types.  ooRexx provides the
 following collection classes:</para>
 
 <variablelist>
-<varlistentry><term>Array (<xref linkend="clsArray" />)</term>
+<varlistentry><term><xref linkend="clsArray" xrefstyle="select:title"/></term>
 <listitem><para>A sequenced collection of objects ordered by whole-number
 indexes.
 </para></listitem></varlistentry>
-<varlistentry><term>Bag (<xref linkend="clsBag" />)</term>
+<varlistentry><term><xref linkend="clsBag" xrefstyle="select:title"/></term>
 <listitem><para>A collection where the index and the item are the same object. Bag indexes
 can be any object and each index can appear more than once.
 </para></listitem></varlistentry>
-<varlistentry><term>CircularQueue (<xref linkend="clsCircularQueue" />)</term>
+<varlistentry><term><xref linkend="clsCircularQueue" xrefstyle="select:title"/></term>
 <listitem><para>
 The CircularQueue class allows for storing objects in a circular queue
 of a predefined size. Once the end of the queue has been reached, new item
@@ -70,53 +70,53 @@ The collected objects can be processed in FIFO (first in, first out) or in a
 stack-like LIFO (last in, first out) order.
 </para></listitem>
 </varlistentry>
-<varlistentry><term>Directory (<xref linkend="clsDirectory" />)</term>
+<varlistentry><term><xref linkend="clsDirectory" xrefstyle="select:title"/></term>
 <listitem><para>A collection with character string indexes. Index comparisons are performed
 using the string == comparison method.
 </para></listitem></varlistentry>
-<varlistentry><term>StringTable (<xref linkend="clsStringTable" />)</term>
-<listitem><para>A collection with character string indexes. Index comparisons are performed
-using the string == comparison method.
+<varlistentry><term><xref linkend="clsIdentityTable" xrefstyle="select:title"/></term>
+<listitem><para>A collection with indexes that can be any object. The
+IdentityTable class determines index item matches by using an object identity
+comparison. With object identity matches, an index will only match the same
+object instance.  An identity table contains no duplicate indexes.
 </para></listitem></varlistentry>
-<varlistentry><term>List (<xref linkend="clsList" />)</term>
+<varlistentry><term><xref linkend="clsList" xrefstyle="select:title"/></term>
 <listitem><para>A sequenced collection that lets you add new items at any position in
 the sequence. A list generates and returns an index value for each item placed
 in the list. The returned index remains valid until the item is removed from
 the list.
 </para></listitem></varlistentry>
-<varlistentry><term>Properties (<xref linkend="clsProperties" /></term>
+<varlistentry><term><xref linkend="clsProperties" xrefstyle="select:title"/></term>
 <listitem><para>A collection with character string indexes and values.
 Properties collections include support for saving and loading from disk files.
 </para></listitem></varlistentry>
-<varlistentry><term>Queue (<xref linkend="clsQueue" />)</term>
+<varlistentry><term><xref linkend="clsQueue" xrefstyle="select:title"/></term>
 <listitem><para>A sequenced collection with the items ordered as a queue. You can remove
 items from the head of the queue and add items at either its tail or its head.
 Queues index the items with whole-number indexes, in the order in which the
 items would be removed. The current head of the queue has index 1, the item
 after the head item has index 2, up to the number of items in the queue.
 </para></listitem></varlistentry>
-<varlistentry><term>Relation (<xref linkend="clsRelation" />)</term>
+<varlistentry><term><xref linkend="clsRelation" xrefstyle="select:title"/></term>
 <listitem><para>A collection with indexes that can be any object.  A relation
 can contain duplicate indexes.
 </para></listitem></varlistentry>
-<varlistentry><term>Set (<xref linkend="clsSet" />)</term>
+<varlistentry><term><xref linkend="clsSet" xrefstyle="select:title"/></term>
 <listitem><para>A collection where the index and the item are the same object. Set indexes
 can be any object and each index is unique.
 </para></listitem></varlistentry>
-<varlistentry><term>Stem (<xref linkend="clsStem" />)</term>
+<varlistentry><term><xref linkend="clsStem" xrefstyle="select:title"/></term>
 <listitem><para>A collection with character string indexes constructed from one
 or more string segments.  Index comparisons are performed using the string ==
 comparison method.
 </para></listitem></varlistentry>
-<varlistentry><term>Table (<xref linkend="clsTable" />)</term>
+<varlistentry><term><xref linkend="clsStringTable" xrefstyle="select:title"/></term>
+<listitem><para>A collection with character string indexes. Index comparisons are performed
+using the string == comparison method.
+</para></listitem></varlistentry>
+<varlistentry><term><xref linkend="clsTable" xrefstyle="select:title"/></term>
 <listitem><para>A collection with indexes that can be any object.
 A table contains no duplicate indexes.
-</para></listitem></varlistentry>
-<varlistentry><term>IdentityTable (<xref linkend="clsIdentityTable" />)</term>
-<listitem><para>A collection with indexes that can be any object. The
-IdentityTable class determines index item matches by using an object identity
-comparison. With object identity matches, an index will only match the same
-object instance.  An identity table contains no duplicate indexes.
 </para></listitem></varlistentry>
 </variablelist>
 
@@ -125,28 +125,44 @@ Organization of the Collection Classes</title>
 <indexterm><primary>Collection class</primary>
 <secondary>organization</secondary></indexterm>
 <para>The following shows the logical organization of the Collection Classes.
-This does NOT represent the order that methods are inherited but rather
+This does <emphasis role="italic">not</emphasis> represent the order that methods are inherited but rather
 the organization of the classes.</para>
 
-<programlisting>
-Collection (<xref linkend="clsCollection" />)
-   MapCollection (<xref linkend="clsMapCollection" />)
-      Directory (<xref linkend="clsDirectory" />)
-      StringTable (<xref linkend="clsStringTable" />)
-      Properties (<xref linkend="clsProperties" />)
-      Relation (<xref linkend="clsRelation" />)
-      Stem (<xref linkend="clsStem" />)
-      Table (<xref linkend="clsTable" />)
-      IdentityTable (<xref linkend="clsIdentityTable" />)
-   OrderedCollection (<xref linkend="clsOrderedCollection" />)
-      Array (<xref linkend="clsArray" />)
-      List (<xref linkend="clsList" />)
-      Queue (<xref linkend="clsQueue" />)
-      CircularQueue (<xref linkend="clsCircularQueue" />)
-   SetCollection (<xref linkend="clsSetCollection" />)
-      Bag (<xref linkend="clsBag" />)
-      Set (<xref linkend="clsSet" />)
-</programlisting>
+<para>
+<xref linkend="clsCollection" xrefstyle="select:title"/>
+<itemizedlist>
+
+ <listitem><para><xref linkend="clsMapCollection" xrefstyle="select:title"/>
+  <simplelist>
+   <member><xref linkend="clsDirectory" xrefstyle="select:title"/></member>
+   <member><xref linkend="clsIdentityTable" xrefstyle="select:title"/></member>
+   <member><xref linkend="clsProperties" xrefstyle="select:title"/></member>
+   <member><xref linkend="clsRelation" xrefstyle="select:title"/></member>
+   <member><xref linkend="clsStem" xrefstyle="select:title"/></member>
+   <member><xref linkend="clsStringTable" xrefstyle="select:title"/></member>
+   <member><xref linkend="clsTable" xrefstyle="select:title"/></member>
+  </simplelist>
+ </para></listitem>
+
+ <listitem><para><xref linkend="clsOrderedCollection" xrefstyle="select:title"/>
+  <simplelist>
+   <member><xref linkend="clsArray" xrefstyle="select:title"/></member>
+   <member><xref linkend="clsCircularQueue" xrefstyle="select:title"/></member>
+   <member><xref linkend="clsList" xrefstyle="select:title"/></member>
+   <member><xref linkend="clsQueue" xrefstyle="select:title"/></member>
+  </simplelist>
+ </para></listitem>
+
+ <listitem><para><xref linkend="clsSetCollection" xrefstyle="select:title"/>
+  <simplelist>
+   <member><xref linkend="clsBag" xrefstyle="select:title"/></member>
+   <member><xref linkend="clsSet" xrefstyle="select:title"/></member>
+  </simplelist>
+ </para></listitem>
+
+</itemizedlist>
+</para>
+
 </section>
 
 <section id="clsCollection"><title>Collection Class</title>
@@ -488,7 +504,7 @@ Items in the new array will have the same order as the source array.
 </mediaobject>
 
 <para>Add an item to the collection at the specified index.  This is an abstract
-method that must be implemented by a subclass if this class.
+method that must be implemented by a subclass of this class.
 </para>
 </section>
 
@@ -2604,7 +2620,7 @@ in a bag, and the same object can be placed in a bag several times.
 <!-- $GENERATED-20150924-END rexxrefClassTable(Bag) -->
 
 
-<!-- Class Bag - method new ======================== -->
+<!-- Class Bag - method new ======================================== -->
 <section id="mthBagNew" revisionflag="added"><title>*NEW* new (Class Method)</title>
 <para>
 <indexterm><primary>new method</primary><secondary>of Bag class</secondary></indexterm>
@@ -2987,7 +3003,7 @@ the same index, without removing any existing member items.</para>
 </imageobject>
 </mediaobject>
 
-<para>Adds all items <emphasis role="italic">collection</emphasis> to the target bag.  The
+<para>Adds all items in <emphasis role="italic">collection</emphasis> to the target bag.  The
 <emphasis role="italic">collection</emphasis> argument can be any object that supports a supplier
 method.  Items from <emphasis role="italic">collection</emphasis> are added
 using the item values returned by the supplier.
@@ -3437,7 +3453,7 @@ the capitalized letter is needed; all characters following it are ignored.)
 </section>
 
 
-<!-- Class CircularQueue - method makeString ======================== --> 
+<!-- Class CircularQueue - method makeString ======================= --> 
 <section id="mthCircularQueueMakeString" revisionflag="added"><title>*NEW* makeString</title>
 <para>
 <indexterm><primary>makeString method</primary><secondary>of CircularQueue class</secondary></indexterm>
@@ -3473,6 +3489,15 @@ the capitalized letter is needed; all characters following it are ignored.)
 </listitem>
 </varlistentry>
 </variablelist>
+<para><example id="ex.circularqueue-makearray">
+<title>CircularQueue class &mdash; makeArray method
+<indexterm><primary>examples</primary><secondary>makeArray method</secondary></indexterm>
+</title>
+<programlisting><![CDATA[-- reverse an array
+a = .Array~of("one", "two", "three", "four", "five")
+say .CircularQueue~new(a~size)~~appendAll(a)~makeArray("Lifo") -
+ ~makeString(, ", ")                   -- five, four, three, two, one
+]]></programlisting></example></para>
 </section>
 
 
@@ -7651,7 +7676,7 @@ as <emphasis role="italic">item</emphasis>.
 </imageobject>
 </mediaobject>
 
-<para>Adds all items <emphasis role="italic">collection</emphasis> to the target set.  The
+<para>Adds all items in <emphasis role="italic">collection</emphasis> to the target set.  The
 <emphasis role="italic">collection</emphasis> argument can be any object that supports a supplier
 method.  Items from <emphasis role="italic">collection</emphasis> are added using the item values
 returned by the supplier.
@@ -8696,7 +8721,7 @@ with index
 </section>
 
 
-<!-- Class StringTable - method removeEntry ========================== --> 
+<!-- Class StringTable - method removeEntry ======================== --> 
 <section id="mthStringTableRemoveEntry" revisionflag="added"><title>*NEW* removeEntry</title>
 <para>
 <indexterm><primary>removeEntry method</primary><secondary>of StringTable class</secondary></indexterm>
@@ -9318,54 +9343,75 @@ simple comparator class:</para>
 <para>Rexx includes a number of built-in Comparators for common sorting operations.</para>
 <variablelist>
     <varlistentry>
-        <term>Comparator</term>
-        <listitem><para>Base comparator.  The Comparator class just uses the <emphasis role="bold">compareTo</emphasis>
-        method of the first argument to generate the result.  Using <emphasis role="bold">sortWith</emphasis>
-        and a Comparator instance is equivalent to using the <emphasis role="bold">sort</emphasis> method and
+        <term><xref linkend="clsComparator" xrefstyle="select:title"/></term>
+        <listitem><para>Base comparator.  The Comparator class just uses the <methodname>compareTo</methodname>
+        method of the first argument to generate the result.  Using <methodname>sortWith</methodname>
+        and a Comparator instance is equivalent to using the <methodname>sort</methodname> method and
         no comparator.
         </para></listitem>
     </varlistentry>
     <varlistentry>
-        <term>DescendingComparator</term>
+        <term><xref linkend="clsCaselessComparator" xrefstyle="select:title"/></term>
+        <listitem><para>Like the base comparator, but uses the <methodname>caselessCompareTo</methodname>
+        method to determine order.  The String class implements <methodname>caselessCompareTo</methodname>,
+        so the CaselessComparator can be used to sort arrays of strings independent of case.
+        </para></listitem>
+    </varlistentry>
+    <varlistentry>
+        <term><xref linkend="clsColumnComparator" xrefstyle="select:title"/></term>
+        <listitem><para>The ColumnComparator will sort string items using specific substrings within each string item.
+        If sorting is performed on multiple column positions, the
+        <methodname>stableSortWith</methodname> method is recommended to ensure the results of
+        previous sort operations are retained.
+        </para></listitem>
+    </varlistentry>
+    <varlistentry>
+        <term><xref linkend="clsCaselessColumnComparator" xrefstyle="select:title"/></term>
+        <listitem><para>Like the ColumnComparator, but the substring comparisons are done independently of case.
+        </para></listitem>
+    </varlistentry>
+    <varlistentry>
+        <term><xref linkend="clsDescendingComparator" xrefstyle="select:title"/></term>
         <listitem><para>The reverse of the Comparator class.
         The DescendingComparator can be used to sort items in descending order.
         </para></listitem>
     </varlistentry>
     <varlistentry>
-        <term>InvertingComparator</term>
+        <term><xref linkend="clsCaselessDescendingComparator" xrefstyle="select:title"/></term>
+        <listitem><para>The reverse of the CaselessComparator class.
+        The CaselessDescendingComparator can be used to sort items in descending order
+        with comparisons done independently of case.
+        </para></listitem>
+    </varlistentry>
+    <varlistentry>
+        <term><xref linkend="clsInvertingComparator" xrefstyle="select:title"/></term>
         <listitem><para>The InvertingComparator will invert the result returned by another Comparator instance.
         This comparator can be combined with another comparator instance to reverse the sort order.
         </para></listitem>
     </varlistentry>
     <varlistentry>
-        <term>CaselessComparator</term>
-        <listitem><para>Like the base comparator, but uses the <emphasis role="bold">caselessCompareTo</emphasis>
-        method to determine order.  The String class implements <emphasis role="bold">caselessCompareTo</emphasis>,
-        so the CaselessComparator can be used to sort arrays of strings independent of case.
-        </para></listitem>
-    </varlistentry>
-    <varlistentry>
-        <term>ColumnComparator</term>
-        <listitem><para>The ColumnComparator will sort string items using specific substrings within each string item.
-        If sorting is performed on multiple column positions, the
-        <emphasis role="bold">stableSortWith</emphasis> method is recommended to ensure the results of
-        previous sort operations are retained.
-        </para></listitem>
-    </varlistentry>
-    <varlistentry>
-        <term>CaselessColumnComparator</term>
-        <listitem><para>Like the ColumnComparator, but the substring comparisons are done independently of case.
-        </para></listitem>
-    </varlistentry>
-    <varlistentry>
-        <term>NumericComparator</term>
+        <term><xref linkend="clsNumericComparator" xrefstyle="select:title"/></term>
         <listitem><para>Performs comparisons of strings using numeric comparison rules.  Use the NumericComparator to sort
         collections of numbers.
         </para></listitem>
     </varlistentry>
 </variablelist>
 </section>
+
+
 <section id="stablesort"><title>Stable and Unstable Sorts</title>
+
+<note><title>Note</title>
+<para>The current ooRexx implementation is using the same stable sort
+algorithm for both the
+<xref linkend="mthArraySort" xrefstyle="select:title"/> and the
+<xref linkend="mthArrayStableSort" xrefstyle="select:title"/> method of
+the <classname>Array</classname> class.
+</para>
+<para>As such, below discussion of the difference between a stable and
+an unstable sort does not apply currently.
+</para></note>
+
 <para>The default sorting algorithm is an
 <emphasis role="italic">unstable</emphasis> sort.
 In an unstable sort, items are not guaranteed to maintain their original positions if they
