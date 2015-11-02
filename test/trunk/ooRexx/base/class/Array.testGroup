@@ -1928,6 +1928,10 @@ makeColl: procedure
   target = .array~of(1,2,3)
   self~assertEquals(3, target~delete(.array~of(2,3)))
 
+::method test_array_delete_no_arg
+  self~expectSyntax("93.903")
+  .Array~new~delete
+
 
 ::method "test_equivalent"
   -- empty arrays of two different sizes...still equivalent

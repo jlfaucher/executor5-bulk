@@ -197,7 +197,7 @@ return testResult
     */
 
     holder = .set~new
-    count  = 100000
+    count  = 10000
     do count
       q = .queue~new
       q~~queue( 'one' )~~queue( 'two' )~~queue( 'three' )
@@ -396,7 +396,7 @@ return testResult
     self~assertTrue(q~items == 0, 'Queue should be empty')
 
     -- Try a relatively large number of items.
-    do 1000
+    do 100
       do n over self~class~arrayOf100numbers
         q~queue( n )
       end
@@ -404,15 +404,15 @@ return testResult
         q~push( o )
       end
     end
-    self~assertEquals(200000, q~items, 'Queue should have 200,000 items')
+    self~assertEquals(20000, q~items, 'Queue should have 20,000 items')
 
     -- Remove a couple of miscellaneous items from the queue, (which forces
     -- the queue to readjust a lot of indexes,) and check the item count.
     q~~remove( 3  )~~remove( 11 )~~remove( 19 )
-    self~assertEquals(199997, q~items, 'Queue should have 199,997 items')
+    self~assertEquals(19997, q~items, 'Queue should have 19,997 items')
 
     -- Remove all but 1 item and check count.
-    do 199996
+    do 19996
       q~pull
     end
     self~assertEquals(1, q~items, 'Queue should have 1 item')
@@ -580,7 +580,7 @@ return testResult
 
     -- Test that we can queue a relatively large number of times.
     q = .queue~new
-    do 1000
+    do 100
       do n over self~class~arrayOf100numbers
         q~queue( n )
       end
@@ -588,7 +588,7 @@ return testResult
         q~queue( o )
       end
     end
-    self~assertEquals(200000, q~items, 'Queue should have 200,000 items')
+    self~assertEquals(20000, q~items, 'Queue should have 20,000 items')
 
   -- End test_queue( )
 
@@ -1508,3 +1508,65 @@ return testResult
   end
 
   return (tmp~items=0)                    -- if the same, then no items left
+
+
+::method test_queue_delete
+  target = .Queue~of("A","B","C")
+  self~assertEquals("B", target~delete(2))
+  self~assertEquals(2, target~size)
+  self~assertEquals(2, target~items)
+  self~assertEquals(.Queue~of("A", "C"), target)
+
+  target = .Queue~of("A","B","C")
+  self~assertEquals("B", target~delete(.Queue~of(2)))
+  self~assertEquals(2, target~size)
+  self~assertEquals(2, target~items)
+  self~assertEquals(.Queue~of("A", "C"), target)
+
+  target = .Queue~of("A","B","C")
+  self~assertEquals("A", target~delete(1))
+  self~assertEquals(2, target~size)
+  self~assertEquals(2, target~items)
+  self~assertEquals(.Queue~of("B", "C"), target)
+
+  target = .Queue~of("A","B","C")
+  self~assertEquals("C", target~delete(3))
+  self~assertEquals(2, target~size)
+  self~assertEquals(2, target~items)
+  self~assertEquals(.Queue~of("A", "B"), target)
+
+::method test_queue_delete_no_arg
+  q = .Queue~of(1, "two", 3)
+  self~expectSyntax("93.903")
+  q~delete
+
+::method test_queue_delete_negative_arg
+  q = .Queue~of(1, "two", 3)
+  self~expectSyntax("93.907")
+  q~delete(-1)
+
+::method test_queue_delete_zero_arg
+  q = .Queue~of(1, "two", 3)
+  self~expectSyntax("93.907")
+  q~delete(0)
+
+::method test_queue_delete_high_arg
+  q = .Queue~of(1, "two", 3)
+  self~expectSyntax("93.966")
+  q~delete(4)
+
+::method test_queue_delete_nonnumeric_arg
+  q = .Queue~of(1, "two", 3)
+  self~expectSyntax("93.907")
+  q~delete("")
+
+::method test_queue_delete_no_string_arg
+  q = .Queue~of(1, "two", 3)
+  self~expectSyntax("93.907")
+  q~delete(.nil)
+
+::method test_queue_delete_two_args
+  q = .Queue~of(1, "two", 3)
+  self~expectSyntax("93.902")
+  q~delete(1, 1)
+

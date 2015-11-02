@@ -178,6 +178,10 @@ return testResult
   self~expectSyntax('99.917')
   .routine~loadExternalRoutine("FOO","PACKAGE rxmath RxCalcSqrt AndExtra")
 
+::method TestLoadExternalRoutine09
+  self~expectSyntax('99.917')
+  .routine~loadExternalRoutine("", "")
+
 ::method test_sparse_array_source
   self~expectSyntax(93.952)
   r = .routine~new("test", ("x = something",,"return 123"))

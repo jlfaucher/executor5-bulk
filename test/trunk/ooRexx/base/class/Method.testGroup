@@ -152,6 +152,10 @@ return testResult
   self~expectSyntax('99.917')
   .method~loadExternalMethod("FOO","LIBRARY")
 
+::method TestLoadExternalMethod08
+  self~expectSyntax('99.917')
+  .method~loadExternalMethod("", "")
+
 ::class RunTester
 ::method setMethod
   forward class(super)
