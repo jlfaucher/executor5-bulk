@@ -87,7 +87,7 @@ array_insert ::= 'insert(' item ( ',' index )? ')'
 
 array_new ::= 'new(' ( size ( ',' size )* )? ')'
 
-array_of ::= 'of(' ( item ( ',' item )*) ?')'
+array_of ::=         'of(' item? ( ',' item? )* ')'     /* sparse allowed */
 
 array_atget ::= '[' index (',' index )* ']'
 
@@ -161,7 +161,7 @@ array_tostring ::= 'toString(' ( 'Line' ( ',' separator )? | 'Char' )? ')'
 
 bag_new ::= 'new'
 
-bag_of ::= 'of(' ( item ( ',' item )* )? ')'
+bag_of ::=           'of(' ( item ( ',' item )* )? ')'  /* sparse not allowed */
 
 bag_atget ::= '[' index ']'
 
@@ -215,7 +215,7 @@ bag_uniqueindexes ::= 'uniqueIndexes'
 
 bag_xor ::= 'xor(' argument ')'
 
-circularqueue_of ::= 'of(' ( item ( ',' item )* )? ')'
+circularqueue_of ::= 'of(' item? ( ',' item? )* ')'     /* sparse allowed */
 
 circularqueue_init ::= 'init(' size ')'
 
@@ -343,7 +343,7 @@ stringtable_unknown ::= 'unknown(' messagename ',' messageargs ')'
 
 list_new ::= 'new(' size? ')'
 
-list_of ::= 'of(' ( item ( ',' item )* )? ')'
+list_of ::=          'of(' ( item ( ',' item )* )? ')'  /* sparse not allowed */
 
 list_atget ::= '[' index ']'
 
@@ -421,7 +421,7 @@ properties_setwhole ::= 'setWhole(' name ',' value ')'
 
 queue_new ::= 'new(' size? ')'
 
-queue_of ::= 'of(' ( item ( ',' item )* )? ')'
+queue_of ::=         'of(' ( item ( ',' item )* )? ')'  /* sparse not allowed */
 
 queue_atget ::= '[' index ']'
 
@@ -535,7 +535,7 @@ relation_uniqueindexes ::= 'uniqueIndexes'
 
 relation_xor ::= 'xor(' argument ')'
 
-set_of ::= 'of(' ( item ( ',' item )* )? ')'
+set_of ::=           'of(' ( item ( ',' item )* )? ')'  /* sparse not allowed */
 set_new ::= 'new'
 set_allindexes ::= 'allIndexes'
 set_allitems ::= 'allItems'
