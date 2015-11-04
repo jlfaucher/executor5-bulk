@@ -702,7 +702,8 @@ The index objects will not be ordered in any predictable order.
 </imageobject>
 </mediaobject>
 
-<para>Adds all items in <emphasis role="italic">collection</emphasis> to the target directory.  The
+<para>Adds all items in <emphasis role="italic">collection</emphasis> to
+the target collection and returns the modified collection.  The
 <emphasis role="italic">collection</emphasis> argument can be any object that supports a supplier
 method.  Items from <emphasis role="italic">collection</emphasis> are added using the index values returned by the supplier.  The item
 indexes from the source <emphasis role="italic">collection</emphasis> must be strings.  The items are
@@ -799,9 +800,10 @@ of this class.</para>
 </imageobject>
 </mediaobject>
 
-<para>Appends all items in collection to the end of the target collection. The
-<emphasis role="italic">collection</emphasis> may be any object that implements an
-allItems() method.</para>
+<para>Appends all items in <emphasis role="italic">collection</emphasis>
+to the end of the target collection and returns the modified collection. 
+The <emphasis role="italic">collection</emphasis> may be any object that
+implements an <methodname>allItems</methodname> method.</para>
 </section>
 
 <section id="mthOrderedCollectionDelete"><title>delete (Abstract Method)</title>
@@ -1048,7 +1050,8 @@ remains unchanged.
 </imageobject>
 </mediaobject>
 
-<para>Sorts a collection of Comparable items into ascending order using an algorithm that is not guaranteed to be stable.
+<para>Sorts the collection of Comparable items into ascending order using an
+algorithm that is not guaranteed to be stable, and returns the sorted collection.
 See <xref linkend="sortarray" /> for details.
 </para>
 </section>
@@ -1066,7 +1069,8 @@ See <xref linkend="sortarray" /> for details.
 </imageobject>
 </mediaobject>
 
-<para>Sorts a collection of items into ascending order using an algorithm that is not guaranteed to be stable.
+<para>Sorts the collection of items into ascending order using an algorithm
+that is not guaranteed to be stable, and returns the sorted collection.
 Ordering of elements is determined using the <emphasis role="italic">comparator</emphasis> argument.
 See <xref linkend="sortarray" /> for details.
 </para>
@@ -1085,7 +1089,8 @@ See <xref linkend="sortarray" /> for details.
 </imageobject>
 </mediaobject>
 
-<para>Sorts a collection of Comparable items into ascending order using a stable Mergesort algorithm.
+<para>Sorts the collection of Comparable items into ascending order using
+a stable Mergesort algorithm, and returns the sorted collection.
 See <xref linkend="sortarray" /> for details.
 </para>
 </section>
@@ -1103,7 +1108,8 @@ See <xref linkend="sortarray" /> for details.
 </imageobject>
 </mediaobject>
 
-<para>Sorts a collection of items into ascending order using a stable Mergesort algorithm.
+<para>Sorts the collection of items into ascending order using a stable
+Mergesort algorithm, and returns the sorted collection.
 Ordering of elements is determined using the <emphasis role="italic">comparator</emphasis> argument.
 See <xref linkend="sortarray" /> for details.
 </para>
@@ -1678,7 +1684,7 @@ single-dimension array will return an array with a single size element.
 </imageobject>
 </mediaobject>
 
-<para>Removes all items from the array.</para>
+<para>Removes all items and returns the modified Array.</para>
 <indexterm><primary>examples</primary>
 <secondary>empty method</secondary></indexterm>
 <example id="ex.Array-empty">
@@ -1703,7 +1709,8 @@ a~empty    -- a~items now returns "0"
 </imageobject>
 </mediaobject>
 
-<para>Sets all index locations of the array to <emphasis role="italic">value</emphasis>.
+<para>Sets all index locations of the Array to
+<emphasis role="italic">value</emphasis> and returns the modified Array.
 </para>
 <indexterm><primary>examples</primary>
 <secondary>fill method</secondary></indexterm>
@@ -2354,7 +2361,8 @@ dimensions in the array.</para>
 </imageobject>
 </mediaobject>
 
-<para>Sorts an array of Comparable items into ascending order using an unstable Quicksort algorithm.
+<para>Sorts the Array of Comparable items into ascending order using an
+algorithm that is not guaranteed to be stable, and returns the sorted Array.
 See <xref linkend="sortarray" /> for details.
 </para>
 </section>
@@ -2372,7 +2380,8 @@ See <xref linkend="sortarray" /> for details.
 </imageobject>
 </mediaobject>
 
-<para>Sorts an array of items into ascending order using an unstable Quicksort algorithm.
+<para>Sorts the Array of items into ascending order using an
+algorithm that is not guaranteed to be stable, and returns the sorted Array.
 Ordering of elements is determined using the <emphasis role="italic">comparator</emphasis> argument.
 See <xref linkend="sortarray" /> for details.
 </para>
@@ -2391,7 +2400,8 @@ See <xref linkend="sortarray" /> for details.
 </imageobject>
 </mediaobject>
 
-<para>Sorts an array of Comparable items into ascending order using a stable Mergesort algorithm.
+<para>Sorts the Array of Comparable items into ascending order using a
+stable Mergesort algorithm, and returns the sorted Array.
 See <xref linkend="sortarray" /> for details.
 </para>
 </section>
@@ -2408,7 +2418,8 @@ See <xref linkend="sortarray" /> for details.
 </imageobject>
 </mediaobject>
 
-<para>Sorts an array of items into ascending order using a stable Mergesort algorithm.
+<para>Sorts the Array of items into ascending order using a stable
+Mergesort algorithm, and returns the sorted Array.
 Ordering of elements is determined using the <emphasis role="italic">comparator</emphasis> argument.
 See <xref linkend="sortarray" /> for details.
 </para>
@@ -2821,7 +2832,7 @@ collection class object.
 </imageobject>
 </mediaobject>
 
-<para>Removes all items from the bag.</para>
+<para>Removes all items and returns the modified Bag.</para>
 </section>
 
 <section id="mthBagHasIndex"><title>hasIndex</title>
@@ -3003,7 +3014,8 @@ the same index, without removing any existing member items.</para>
 </imageobject>
 </mediaobject>
 
-<para>Adds all items in <emphasis role="italic">collection</emphasis> to the target bag.  The
+<para>Adds all items in <emphasis role="italic">collection</emphasis> to
+the target Bag and returns the modified Bag.  The
 <emphasis role="italic">collection</emphasis> argument can be any object that supports a supplier
 method.  Items from <emphasis role="italic">collection</emphasis> are added
 using the item values returned by the supplier.
@@ -3232,8 +3244,7 @@ The collected objects can be processed in FIFO (first in, first out) or in a
 stack-like LIFO (last in, first out) order.
 </para>
 
-<!-- modified: readObject/writeObject not fully implemented -->
-<!-- $GENERATED-20150924-START rexxrefClassTable(CircularQueue) -->
+<!-- $GENERATED-20151104-START rexxrefClassTable(CircularQueue) -->
 <table id="ooRexxCircularQueueClass" frame="all" pgwide="0">
 <title>CircularQueue Class</title>
 <tgroup cols="1">
@@ -3265,9 +3276,6 @@ stack-like LIFO (last in, first out) order.
  <row><entry>
   <simplelist>
    <member><xref linkend="mthCircularQueueOf" xrefstyle="select:title"/></member>
-<!-- not fully implemented 
-   <member><xref linkend="mthCircularQueueReadObject" xrefstyle="select:title"/></member>
--->
   </simplelist>
   <simplelist columns="3">
    <member><xref linkend="mthCircularQueueAppend" xrefstyle="select:title"/></member>
@@ -3284,16 +3292,13 @@ stack-like LIFO (last in, first out) order.
    <member><xref linkend="mthCircularQueueString" xrefstyle="select:title"/></member>
    <member><xref linkend="mthCircularQueueSupplier" xrefstyle="select:title"/></member>
    <member><xref linkend="mthCircularQueueUnion" xrefstyle="select:title"/></member>
-<!-- not fully implemented
-   <member><xref linkend="mthCircularQueueWriteObject" xrefstyle="select:title"/></member>
--->
    <member><xref linkend="mthCircularQueueXor" xrefstyle="select:title"/></member>
   </simplelist>
  </entry></row>
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20150924-END rexxrefClassTable(CircularQueue) -->
+<!-- $GENERATED-20151104-END rexxrefClassTable(CircularQueue) -->
 
 <section id="mthCircularQueueOf"><title>of (Class Method)</title>
 <indexterm><primary>of method</primary>
@@ -4125,8 +4130,9 @@ say .environment~at("OBJECT")   /* Produces: "The Object class" */
 </imageobject>
 </mediaobject>
 
-<para>Removes all items from the directory.  Empty also removes
-all methods added using setMethod (<xref linkend="mthDirectorySetMethod" />).
+<para>Removes all items and returns the modified Directory.
+<methodname>Empty</methodname> also removes all methods added using
+<xref linkend="mthDirectorySetMethod" xrefstyle="select:title"/>).
 </para>
 </section>
 
@@ -4749,7 +4755,7 @@ has no item associated with <emphasis role="italic">index</emphasis>.
 </imageobject>
 </mediaobject>
 
-<para>Removes all items from the table.</para>
+<para>Removes all items and returns the modified IdentityTable.</para>
 </section>
 
 <section id="mthIdentityTableHasIndex"><title>hasIndex</title>
@@ -5201,7 +5207,7 @@ The delete method and the remove method produce the same result for the list cla
 </imageobject>
 </mediaobject>
 
-<para>Removes all items from the list.</para>
+<para>Removes all items and returns the modified List.</para>
 </section>
 
 <section id="mthListFirst"><title>first</title>
@@ -6180,7 +6186,7 @@ The delete method and the remove method produce the same result for the list cla
 </imageobject>
 </mediaobject>
 
-<para>Removes all items from the queue.</para>
+<para>Removes all items and returns the modified Queue.</para>
 </section>
 
 <section id="mthQueueFirst"><title>first</title>
@@ -6900,7 +6906,7 @@ collection class object.</para>
 </imageobject>
 </mediaobject>
 
-<para>Removes all items from the relation.</para>
+<para>Removes all items and returns the modified Relation.</para>
 </section>
 
 <section id="mthRelationHasIndex"><title>hasIndex</title>
@@ -7509,7 +7515,7 @@ has no item associated with <emphasis role="italic">index</emphasis>.
 </imageobject>
 </mediaobject>
 
-<para>Removes all items from the set.</para>
+<para>Removes all items and returns the modified Set.</para>
 </section>
 
 <section id="mthSetHasIndex"><title>hasIndex</title>
@@ -7678,7 +7684,8 @@ as <emphasis role="italic">item</emphasis>.
 </imageobject>
 </mediaobject>
 
-<para>Adds all items in <emphasis role="italic">collection</emphasis> to the target set.  The
+<para>Adds all items in <emphasis role="italic">collection</emphasis> to
+the target Set and returns the modified Set.  The
 <emphasis role="italic">collection</emphasis> argument can be any object that supports a supplier
 method.  Items from <emphasis role="italic">collection</emphasis> are added using the item values
 returned by the supplier.
@@ -8063,7 +8070,7 @@ with the specified <emphasis role="italic">tail</emphasis>.
 </imageobject>
 </mediaobject>
 
-<para>Removes all items from the stem.</para>
+<para>Removes all items and returns the modified Stem object.</para>
 </section>
 
 <section id="mthStemHasIndex"><title>hasIndex</title>
@@ -8398,9 +8405,9 @@ sTable~name = "Mike"   -- same as sTable~put("Mike", "NAME")
 say sTable~name        -- same as say sTable["NAME"]
 </programlisting>
 
-<para>Note that StringTable does not provide methods
+<para>Note that <classname>StringTable</classname> does not provide methods
 <methodname>setMethod</methodname> and <methodname>unsetMethod</methodname>
-as <xref linkend="clsDirectory" xrefstyle="template:class Directory"/> does.
+as the <xref linkend="clsDirectory" xrefstyle="template:Directory"/> class does.
 </para>
 
 
@@ -8528,7 +8535,7 @@ say .environment~at("OBJECT")   /* Produces: "The Object class" */
 </imageobject>
 </mediaobject>
 
-<para>Removes all items from the StringTable.
+<para>Removes all items and returns the modified StringTable.
 </para>
 </section>
 
@@ -9024,7 +9031,7 @@ has no item associated with <emphasis role="italic">index</emphasis>.
 </imageobject>
 </mediaobject>
 
-<para>Removes all items from the table.</para>
+<para>Removes all items and returns the modified Table.</para>
 </section>
 
 <section id="mthTableHasIndex"><title>hasIndex</title>
@@ -9261,7 +9268,7 @@ following simple class:</para>
 
   ::method compareTo
     expose id
-  	use arg other
+    use arg other
     return id~compareTo(other~id) -- comparison performed using employee id
 
   ::method string
