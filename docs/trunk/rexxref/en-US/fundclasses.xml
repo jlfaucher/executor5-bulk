@@ -312,7 +312,7 @@ to the class when it was created.</para>
 <indexterm><primary>examples</primary>
 <secondary>defaultName method</secondary></indexterm>
 <example id="ex.class-defaultName">
-<title>Class class - defaultName method</title>
+<title>Class class &mdash; defaultName method</title>
 <programlisting>
 say .array~defaultName     /* Displays "The Array class"   */
 say .account~defaultName   /* Displays "The ACCOUNT class" */
@@ -364,7 +364,7 @@ method is a protected method.</para></listitem>
 <indexterm><primary>examples</primary>
 <secondary>define method</secondary></indexterm>
 <example id="ex.class-define">
-<title>Class class - define method</title>
+<title>Class class &mdash; define method</title>
 <programlisting>
 bank_account=.object~subclass("Account")
 bank_account~define("TYPE",&apos;return "a bank account"&apos;)
@@ -454,7 +454,7 @@ method is a protected method.</para></listitem>
 <indexterm><primary>examples</primary>
 <secondary>delete method</secondary></indexterm>
 <example id="ex.class-delete">
-<title>Class class - delete method</title>
+<title>Class class &mdash; delete method</title>
 <programlisting>
 myclass=.object~subclass("Myclass")        /* After creating a class  */
 myclass~define("TYPE",&apos;return "my class"&apos;) /* and defining a method   */
@@ -493,7 +493,7 @@ You can use any collection that supports a
 <indexterm><primary>examples</primary>
 <secondary>enhanced method</secondary></indexterm>
 <example id="ex.class-enhanced">
-<title>Class class - enhanced method</title>
+<title>Class class &mdash; enhanced method</title>
 <programlisting>
 /* Set up rclass with class method or methods you want in your */
 /* remote class */
@@ -527,7 +527,7 @@ representations of the class and its instances contain the class identity.</para
 <indexterm><primary>examples</primary>
 <secondary>id method</secondary></indexterm>
 <example id="ex.class-id">
-<title>Class class - id method</title>
+<title>Class class &mdash; id method</title>
 <programlisting>
 myobject=.object~subClass("my object")  /* Creates a subclass    */
 say myobject~id                         /* Produces: "my object" */
@@ -589,7 +589,7 @@ method is a protected method.</para></listitem>
 <indexterm><primary>examples</primary>
 <secondary>inherit method</secondary></indexterm>
 <example id="ex.class-inherit">
-<title>Class class - inherit method</title>
+<title>Class class &mdash; inherit method</title>
 <programlisting>
 room~inherit(.location)
 </programlisting>
@@ -671,7 +671,7 @@ A class is a subclass of a class if the target class is the same as
 <emphasis role="italic">class</emphasis> is in the object's direct or mixin
 class inheritance chain. For example:
 <example id="ex.class-issubclassof">
-<title>Class class - isSubclassOf method</title>
+<title>Class class &mdash; isSubclassOf method</title>
 <programlisting>
 <![CDATA[
 .String~isSubclassOf(.object)             ->  1
@@ -729,7 +729,7 @@ error is raised.</para>
 <indexterm><primary>examples</primary>
 <secondary>method method</secondary></indexterm>
 <example id="ex.class-method">
-<title>Class class - method method</title>
+<title>Class class &mdash; method method</title>
 <programlisting>
 /* Create and retrieve the method definition of a class */
 myclass=.object~subClass("My class")   /* Create a class         */
@@ -779,7 +779,7 @@ have the Nil object for the associated method.</para></note>
 <indexterm><primary>examples</primary>
 <secondary>methods method</secondary></indexterm>
 <example id="ex.class-methods">
-<title>Class class - methods method</title>
+<title>Class class &mdash; methods method</title>
 <programlisting>
 objsupp=.object~methods
 do while objsupp~available
@@ -833,7 +833,7 @@ order.</para>
 <indexterm><primary>examples</primary>
 <secondary>mixinClass method</secondary></indexterm>
 <example id="ex.class-mixinclass">
-<title>Class class - mixinClass method</title>
+<title>Class class &mdash; mixinClass method</title>
 <programlisting>
 buyable=.object~mixinClass("Buyable")  /* New subclass is buyable    */
                                        /* Superclass is Object class */
@@ -865,7 +865,7 @@ arguments on the <emphasis role="bold">init</emphasis> message.</para>
 <indexterm><primary>examples</primary>
 <secondary>new method</secondary></indexterm>
 <example id="ex.class-new">
-<title>Class class - new method</title>
+<title>Class class &mdash; new method</title>
 <programlisting>
 <![CDATA[
 /* new method example */
@@ -971,7 +971,7 @@ order.</para>
 <indexterm><primary>examples</primary>
 <secondary>subClass method</secondary></indexterm>
 <example id="ex.class-subclass">
-<title>Class class - subclass method</title>
+<title>Class class &mdash; subclass method</title>
 <programlisting>
 room=.object~subclass("Room")   /* Superclass is .object     */
                                 /* Subclass is room          */
@@ -1021,7 +1021,7 @@ the original class used on a <emphasis role="bold">subClass</emphasis> or a
 <indexterm><primary>examples</primary>
 <secondary>superClass method</secondary></indexterm>
 <example id="ex.class-superclass">
-<title>Class class - superClass method</title>
+<title>Class class &mdash; superClass method</title>
 <programlisting>
 say .object~superclass    -- displays "The NIL object"
 say .class~superclass     -- displays "The Object class"
@@ -1057,7 +1057,7 @@ array.
 <indexterm><primary>examples</primary>
 <secondary>superClasses method</secondary></indexterm>
 <example id="ex.class-superclasses">
-<title>Class class - superClasses method</title>
+<title>Class class &mdash; superClasses method</title>
 <programlisting>
 z=.class~superClasses
 /* To obtain the information this returns, you could use:     */
@@ -1093,7 +1093,7 @@ sent to the receiver for the class <emphasis role="italic">classobj</emphasis>.
 <indexterm><primary>examples</primary>
 <secondary>uninherit method</secondary></indexterm>
 <example id="ex.class-uninherit">
-<title>Class class - uninherut method</title>
+<title>Class class &mdash; uninherut method</title>
 <programlisting>
 location=.object~mixinClass("Location")
 room=.object~subclass("Room")~~inherit(location) /* Creates subclass */
@@ -1649,7 +1649,7 @@ If the message <emphasis role="bold">send</emphasis> or
 <emphasis role="bold">start</emphasis> raises an error condition, this method
 also raises an error condition.</para>
 <example id="ex.message-result">
-<title>Message class - result method</title>
+<title>Message class &mdash; result method</title>
 <programlisting>
 /* Example using result method */
 string="700"                 /* Create a new string object, string   */
@@ -2111,7 +2111,7 @@ The method name is not case sensitive.
 If the target method cannot be resolved, .nil is returned.
 </para>
 <example id="ex.method-loadexternalmethod">
-<title>Method class - loadExternalMethod method</title>
+<title>Method class &mdash; loadExternalMethod method</title>
 <programlisting>
 method = .Method~loadExternalMethod("homeAddress=", 'LIBRARY mylib setHomeAddress')
 </programlisting>
@@ -2693,7 +2693,7 @@ variables, with the same values.</para>
 <indexterm><primary>examples</primary>
 <secondary><emphasis role="bold">copy</emphasis> method</secondary></indexterm>
 <example id="ex.object-copy">
-<title>Object class - copy method</title>
+<title>Object class &mdash; copy method</title>
 <programlisting>
 myarray=.array~of("N","S","E","W")
 /* Copies array myarray to array directions */
@@ -2920,7 +2920,7 @@ specified <emphasis role="italic">class</emphasis> or if
 <emphasis role="italic">class</emphasis> is in the object's direct or mixin
 class inheritance chain. For example:
 <example id="ex.object-isinstanceof">
-<title>Object class - isInstanceOf method</title>
+<title>Object class &mdash; isInstanceOf method</title>
 <programlisting>
 <![CDATA[
 "abc"~isInstanceOf(.string)             ->  1
@@ -2972,7 +2972,7 @@ method for an example using <emphasis role="bold">objectName</emphasis>.</para>
 <indexterm><primary>examples</primary>
 <secondary><emphasis role="bold">objectName=</emphasis> method</secondary></indexterm>
 <example id="ex.object-objectnameequals">
-<title>Object class - objectName= method</title>
+<title>Object class &mdash; objectName= method</title>
 <programlisting>
 points=.array~of("N","S","E","W")
 say points~objectName         /* (no change yet) Says: "an Array"    */
@@ -3120,7 +3120,7 @@ search. For more information, see
 arguments for <emphasis role="italic">messagename</emphasis> in the order you
 specify them.</para>
 <example id="ex.object-send">
-<title>Object class - send method</title>
+<title>Object class &mdash; send method</title>
 <programlisting>
 world=.WorldObject~new
 -- the following 3 calls are equivalent
@@ -3174,7 +3174,7 @@ The values contained in
 arguments for <emphasis role="italic">messagename</emphasis> in the order you
 specify them.</para>
 <example id="ex.object-sendwith">
-<title>Object class - sendWith method</title>
+<title>Object class &mdash; sendWith method</title>
 <programlisting>
 world=.WorldObject~new
 // the following 3 calls are equivalent
@@ -3289,7 +3289,7 @@ a <emphasis role="bold">result</emphasis> message. For further details,
 see <xref linkend="mthMessageStart" />.
 </para>
 <example id="ex.object-start">
-<title>Object class - start method</title>
+<title>Object class &mdash; start method</title>
 <programlisting>
 world=.WorldObject~new
 msg1=world~start("HELLO")                /* same as next line     */
@@ -3344,7 +3344,7 @@ a <emphasis role="bold">result</emphasis> message. For further details,
 see <xref linkend="mthMessageStart" />.
 </para>
 <example id="ex.object-startWith">
-<title>Object class - startWith method</title>
+<title>Object class &mdash; startWith method</title>
 <programlisting>
 world=.WorldObject~new
 msg1=world~startWith("HELLO", .array~of("Fred")                /* same as next line     */
@@ -4497,7 +4497,7 @@ The routine name is not case sensitive. If the target routine cannot be
 resolved, .nil is returned.
 </para>
 <example id="ex.routine-loadexternalroutine">
-<title>Routine class - loadExternalRoutine method</title>
+<title>Routine class &mdash; loadExternalRoutine method</title>
 <programlisting>
 routine = .Routine~loadExternalRoutine("Pi", "LIBRARY rxmath RxCalcPi")
 </programlisting>
@@ -4990,7 +4990,7 @@ result is shown in exponential notation, it might have been rounded.</para>
 <indexterm><primary>examples</primary>
 <secondary>arithmetic methods of String class</secondary></indexterm>
 <example id="ex.string-arithmetic">
-<title>String class - arithmetic methods</title>
+<title>String class &mdash; arithmetic methods</title>
 <programlisting>
 <![CDATA[
 5+5     ->    10
@@ -5118,7 +5118,7 @@ padded). False if <emphasis role="italic">argument</emphasis> is the Nil object.
 <indexterm><primary>examples</primary>
 <secondary>comparison methods of String class</secondary></indexterm>
 <example id="ex.string-comparison">
-<title>String class - comparison methods</title>
+<title>String class &mdash; comparison methods</title>
 <programlisting>
 <![CDATA[
 5=5        ->     1          /* equal            */
@@ -5232,7 +5232,7 @@ characters.</para>
 </tgroup>
 </informaltable>
 <example id="ex.string-comparison-1">
-<title>String class - comparison methods</title>
+<title>String class &mdash; comparison methods</title>
 <programlisting>
 <![CDATA[
 "space"=="space"     ->     1         /* Strictly equal     */
@@ -5320,7 +5320,7 @@ becomes <computeroutput>0</computeroutput>, and
 <indexterm><primary>examples</primary>
 <secondary>logical methods of String class</secondary></indexterm>
 <example id="ex.string-logical">
-<title>String class - logical methods</title>
+<title>String class &mdash; logical methods</title>
 <programlisting>
 <![CDATA[
 1&0     ->     0
@@ -5379,7 +5379,7 @@ object and the <emphasis role="italic">argument</emphasis>.
 <indexterm><primary>prefix - method</primary></indexterm>
 <indexterm><primary>prefix + method</primary></indexterm>
 <example id="ex.string-concatenation">
-<title>String class - concatenation methods</title>
+<title>String class &mdash; concatenation methods</title>
 <programlisting>
 <![CDATA[
 f = "abc"
@@ -5481,7 +5481,7 @@ positive whole number or zero. The default for
 <indexterm><primary>examples</primary>
 <secondary>abbrev method</secondary></indexterm>
 <example id="ex.string-abbrev">
-<title>String class - abbrev method</title>
+<title>String class &mdash; abbrev method</title>
 <programlisting>
 <![CDATA[
 "Print"~abbrev("Pri")      ->    1
@@ -5499,7 +5499,7 @@ positive whole number or zero. The default for
 default, is used. This allows a default keyword to be selected automatically
 if desired.</para></note>
 <example id="ex.string-abbrev-1">
-<title>String class - abbrev method</title>
+<title>String class &mdash; abbrev method</title>
 <programlisting>
 say "Enter option:";   pull option .
 select  /* keyword1 is to be the default */
@@ -5532,7 +5532,7 @@ sign and is formatted according to the current NUMERIC settings.</para>
 <indexterm><primary>examples</primary>
 <secondary>abs method</secondary></indexterm>
 <example id="ex.string-abs">
-<title>String class - abs method</title>
+<title>String class &mdash; abs method</title>
 <programlisting>
 12.3~abs      ->     12.3
 "-0.307"~abs  ->     0.307
@@ -5595,7 +5595,7 @@ before the conversion to make a total that is a multiple of four.</para>
 <indexterm><primary>examples</primary>
 <secondary>b2x method</secondary></indexterm>
 <example id="ex.string-b2x">
-<title>String class - b2x method</title>
+<title>String class &mdash; b2x method</title>
 <programlisting>
 <![CDATA[
 "11000011"~b2x     ->   "C3"
@@ -5610,7 +5610,7 @@ with the methods <emphasis role="bold">x2d</emphasis> and
 <emphasis role="bold">x2c</emphasis> to convert a binary
 number into other forms.</para>
 <example id="ex.string-b2x-1">
-<title>String class - b2x method with x2d</title>
+<title>String class &mdash; b2x method with x2d</title>
 <programlisting>"10111"~b2x~x2d  ->   "23"   /* decimal 23 */</programlisting>
 </example>
 </section>
@@ -5647,7 +5647,7 @@ the zero-length (null) string.</para>
 <indexterm><primary>examples</primary>
 <secondary>bitAnd method</secondary></indexterm>
 <example id="ex.string-bitand">
-<title>String class - bitand method</title>
+<title>String class &mdash; bitand method</title>
 <programlisting>
 <![CDATA[
 "12"x~bitAnd                   ->    "12"x
@@ -5691,7 +5691,7 @@ the zero-length (null) string.</para>
 <indexterm><primary>examples</primary>
 <secondary>bitOr method</secondary></indexterm>
 <example id="ex.string-bitor">
-<title>String class - bitor method</title>
+<title>String class &mdash; bitor method</title>
 <programlisting>
 <![CDATA[
 "12"x~bitOr                   ->    "12"x
@@ -5739,7 +5739,7 @@ on the right before carrying out the logical operation. The default for
 <indexterm><primary>examples</primary>
 <secondary>bitXor method</secondary></indexterm>
 <example id="ex.string-bitxor">
-<title>String class - bitxor method</title>
+<title>String class &mdash; bitxor method</title>
 <programlisting>
 <![CDATA[
 "12"x~bitXor                      ->  "12"x
@@ -5782,7 +5782,7 @@ as an unsigned binary number. If the receiving string is null, C2D returns
 <indexterm><primary>examples</primary>
 <secondary>c2d method</secondary></indexterm>
 <example id="ex.string-c2d">
-<title>String class - c2d method</title>
+<title>String class &mdash; c2d method</title>
 <programlisting>
 <![CDATA[
 "09"X~c2d       ->        9
@@ -5807,7 +5807,7 @@ been processed. If <emphasis role="italic">n</emphasis> is
 <emphasis role="bold">c2d</emphasis> always returns
 <computeroutput>0</computeroutput>.</para>
 <example id="ex.string-c2d-1">
-<title>String class - c2d method</title>
+<title>String class &mdash; c2d method</title>
 <programlisting>
 <![CDATA[
 "81"X~c2d(1)      ->     -127
@@ -5857,7 +5857,7 @@ receiving string is null,
 <indexterm><primary>examples</primary>
 <secondary>c2x method</secondary></indexterm>
 <example id="ex.string-c2x">
-<title>String class - c2x method</title>
+<title>String class &mdash; c2x method</title>
 <programlisting>
 <![CDATA[
 "0123"X~c2x    ->    "0123"   /* "30313233"X     in ASCII */
@@ -5905,7 +5905,7 @@ positive whole number or zero. The default for
 <indexterm><primary>examples</primary>
 <secondary>abbrev method</secondary></indexterm>
 <example id="ex.string-caselessabbrev">
-<title>String class - caselessAbbrev method</title>
+<title>String class &mdash; caselessAbbrev method</title>
 <programlisting>
 <![CDATA[
 "Print"~caselessAbbrev("Pri")      ->    1
@@ -5924,7 +5924,7 @@ default, is used. This allows a default keyword to be selected
 automatically
 if desired.</para></note>
 <example id="ex.string-caselessabbrev-1">
-<title>String class - caselessAbbrev method</title>
+<title>String class &mdash; caselessAbbrev method</title>
 <programlisting>
 say "Enter option:";   parse pull option .
 select  /* keyword1 is to be the default */
@@ -5964,7 +5964,7 @@ using caseless comparisons.
 <indexterm><primary>examples</primary>
 <secondary>caselessChangeStr method</secondary></indexterm>
 <example id="ex.string-caselesschangestr">
-<title>String class - caselessChangeStr method</title>
+<title>String class &mdash; caselessChangeStr method</title>
 <programlisting>
 <![CDATA[
 "AbaAbb"~caselessChangeStr("A","")     ->    "bbb"
@@ -6004,7 +6004,7 @@ blank.</para>
 <indexterm><primary>examples</primary>
 <secondary>compare method</secondary></indexterm>
 <example id="ex.string-caselesscompare">
-<title>String class - caselessCompare method</title>
+<title>String class &mdash; caselessCompare method</title>
 <programlisting>
 <![CDATA[
 "abc"~caselessCompare("ABC")         ->    0
@@ -6054,7 +6054,7 @@ place to the end of the target string.
 <indexterm><primary>examples</primary>
 <secondary>caselessCompareTo method</secondary></indexterm>
 <example id="ex.string-caselesscompareto">
-<title>String class - caselessCompareTo method</title>
+<title>String class &mdash; caselessCompareTo method</title>
 <programlisting>
 <![CDATA[
 
@@ -6195,7 +6195,7 @@ string that do not overlap.  All matches are made using caseless comparisons.</p
 <indexterm><primary>examples</primary>
 <secondary>countStr method</secondary></indexterm>
 <example id="ex.string-caselesscountstr">
-<title>String class - caselessCountStr method</title>
+<title>String class &mdash; caselessCountStr method</title>
 <programlisting>
 <![CDATA[
 "a0Aa0A"~caselessCountStr("a")        ->    4
@@ -6264,7 +6264,7 @@ Returns .false ("0") if the two strings are not strictly equal.</para>
 <indexterm><primary>examples</primary>
 <secondary>caselessEquals method</secondary></indexterm>
 <example id="ex.string-caselessequals">
-<title>String class - caselessEquals method</title>
+<title>String class &mdash; caselessEquals method</title>
 <programlisting>
 "a"~caselessEquals("A")          ->    1
 "aa"~caselessEquals("A")         ->    0
@@ -6312,7 +6312,7 @@ performed using caseless comparisons.
 <indexterm><primary>examples</primary>
 <secondary>caselessLastPos method</secondary></indexterm>
 <example id="ex.string-caselesslastpos">
-<title>String class - caselessLastPos method</title>
+<title>String class &mdash; caselessLastPos method</title>
 <programlisting>
 "abc def ghi"~caselessLastPos(" ")      ->    8
 "abcdefghi"~caselessLastPos(" ")        ->    0
@@ -6362,7 +6362,7 @@ not require new string objects be extracted from the target string.
 <indexterm><primary>examples</primary>
 <secondary>caselessMatch method</secondary></indexterm>
 <example id="ex.string-caselessmatch">
-<title>String class - caselessMatch method</title>
+<title>String class &mdash; caselessMatch method</title>
 <programlisting>
 "Saturday"~caselessMatch(6, "day")           ->    1
 "Saturday"~caselessMatch(6, "DAY")           ->    1
@@ -6398,7 +6398,7 @@ a positive whole number.</para>
 <indexterm><primary>examples</primary>
 <secondary>caselessMatchChar method</secondary></indexterm>
 <example id="ex.string-caselessmatchchar">
-<title>String class - caselessMatchChar method</title>
+<title>String class &mdash; caselessMatchChar method</title>
 <programlisting>
 "a+b"~caselessMatchChar(2, "+-*/")           ->    1
 "a+b"~caselessMatchChar(1, "+-*/")           ->    0
@@ -6447,7 +6447,7 @@ a non-negative whole number.
 <indexterm><primary>examples</primary>
 <secondary>caselessPos method</secondary></indexterm>
 <example id="ex.string-caselesspos">
-<title>String class - caselessPos method</title>
+<title>String class &mdash; caselessPos method</title>
 <programlisting>
 "Saturday"~caselessPos("DAY")       ->    6
 "abc def ghi"~caselessPos("x")      ->    0
@@ -6527,7 +6527,7 @@ the word at which the search is to be started.</para>
 <indexterm><primary>examples</primary>
 <secondary>wordPos method</secondary></indexterm>
 <example id="ex.string-caselesswordpos">
-<title>String class - caselessWordPos method</title>
+<title>String class &mdash; caselessWordPos method</title>
 <programlisting>
 "now is the time"~caselessWordPos("the")              ->  3
 "now is the time"~caselessWordPos("The")              ->  3
@@ -6565,7 +6565,7 @@ the result, any minus sign is removed.  </para>
 <indexterm><primary>examples</primary>
 <secondary>ceiling method</secondary></indexterm>
 <example id="ex.string-ceiling">
-<title>String class - ceiling method</title>
+<title>String class &mdash; ceiling method</title>
 <programlisting>
 2~ceiling             ->    2
 '-2'~ceiling          ->    -2
@@ -6626,7 +6626,7 @@ be called either <emphasis role="bold">center</emphasis> or
 <indexterm><primary>examples</primary>
 <secondary>centre method</secondary></indexterm>
 <example id="ex.string-center">
-<title>String class - center method</title>
+<title>String class &mdash; center method</title>
 <programlisting>
 <![CDATA[
 abc~center(7)               ->    "  ABC  "
@@ -6662,7 +6662,7 @@ occurrences to be replaced.</para>
 <indexterm><primary>examples</primary>
 <secondary>changeStr method</secondary></indexterm>
 <example id="ex.string-changeStr">
-<title>String class - changeStr method</title>
+<title>String class &mdash; changeStr method</title>
 <programlisting>
 <![CDATA[
 101100~changeStr("1","")     ->    "000"
@@ -6700,7 +6700,7 @@ blank.</para>
 <indexterm><primary>examples</primary>
 <secondary>compare method</secondary></indexterm>
 <example id="ex.string-compare">
-<title>String class - compare method</title>
+<title>String class &mdash; compare method</title>
 <programlisting>
 <![CDATA[
 "abc"~compare("abc")         ->    0
@@ -6749,7 +6749,7 @@ place to the end of the target string.
 <indexterm><primary>examples</primary>
 <secondary>compareTo method</secondary></indexterm>
 <example id="ex.string-compareto">
-<title>String class - compareTo method</title>
+<title>String class &mdash; compareTo method</title>
 <programlisting>
 <![CDATA[
 
@@ -6886,7 +6886,7 @@ whole number or zero.</para>
 <indexterm><primary>examples</primary>
 <secondary>copies method</secondary></indexterm>
 <example id="ex.string-copies">
-<title>String class - copies method</title>
+<title>String class &mdash; copies method</title>
 <programlisting>
 <![CDATA[
 "abc"~copies(3)    ->    "abcabcabc"
@@ -6916,7 +6916,7 @@ string that do not overlap.</para>
 <indexterm><primary>examples</primary>
 <secondary>countStr method</secondary></indexterm>
 <example id="ex.string-countstr">
-<title>String class - countStr method</title>
+<title>String class &mdash; countStr method</title>
 <programlisting>
 <![CDATA[
 "101101"~countStr("1")        ->    4
@@ -6958,7 +6958,7 @@ has no leading "00"x characters.</para>
 <indexterm><primary>examples</primary>
 <secondary>d2c method</secondary></indexterm>
 <example id="ex.string-d2c">
-<title>String class - d2c method</title>
+<title>String class &mdash; d2c method</title>
 <programlisting>
 "65"~d2c       ->   "A"      /* "41"x is an ASCII "A"    */
 "65"~d2c(1)    ->   "A"
@@ -7009,7 +7009,7 @@ or zero, and the returned result has no leading zeros.</para>
 <indexterm><primary>examples</primary>
 <secondary>d2x method</secondary></indexterm>
 <example id="ex.string-d2x">
-<title>String class - d2x method</title>
+<title>String class &mdash; d2x method</title>
 <programlisting>
 "9"~d2x        ->    "9"
 "129"~d2x      ->    "81"
@@ -7144,7 +7144,7 @@ the receiving string is a null string.
 <indexterm><primary>examples</primary>
 <secondary>dataType method</secondary></indexterm>
 <example id="ex.string-datatype">
-<title>String class - datatype method</title>
+<title>String class &mdash; datatype method</title>
 <programlisting>
 <![CDATA[
 " 12 "~dataType          ->   "NUM"
@@ -7195,7 +7195,7 @@ an error results.
 <indexterm><primary>examples</primary>
 <secondary>decodeBase64 method</secondary></indexterm>
 <example id="ex.string-decodeBase64">
-<title>String class - decodeBase64 method</title>
+<title>String class &mdash; decodeBase64 method</title>
 <programlisting>
 <![CDATA[
 "YWJjZGVm"~decodeBase64       ->    "abcdef"
@@ -7238,7 +7238,7 @@ string, the method returns the receiving string unchanged.</para>
 <indexterm><primary>examples</primary>
 <secondary>delStr method</secondary></indexterm>
 <example id="ex.string-delStr">
-<title>String class - delStr method</title>
+<title>String class &mdash; delStr method</title>
 <programlisting>
 <![CDATA[
 "abcd"~delStr(3)       ->    "ab"
@@ -7288,7 +7288,7 @@ preceding the first word involved.
 <indexterm><primary>examples</primary>
 <secondary>delWord method</secondary></indexterm>
 <example id="ex.string-delWord">
-<title>String class - delWord method</title>
+<title>String class &mdash; delWord method</title>
 <programlisting>
 <![CDATA[
 "Now is the  time"~delWord(2,2)  ->  "Now time"
@@ -7322,7 +7322,7 @@ string.</para>
 <indexterm><primary>examples</primary>
 <secondary>encodeBase64 method</secondary></indexterm>
 <example id="ex.string-encodeBase64">
-<title>String class - encodeBase64 method</title>
+<title>String class &mdash; encodeBase64 method</title>
 <programlisting>
 <![CDATA[
 "abcdef"~encodeBase64       ->    "YWJjZGVm"
@@ -7385,7 +7385,7 @@ the same comparison performed by the "==" comparison method.</para>
 <indexterm><primary>examples</primary>
 <secondary>equals method</secondary></indexterm>
 <example id="ex.string-equals">
-<title>String class - equals method</title>
+<title>String class &mdash; equals method</title>
 <programlisting>
 "3"~equals("3")          ->    1
 "33"~equals("3")         ->    0
@@ -7419,7 +7419,7 @@ the result, any minus sign is removed.  </para>
 <indexterm><primary>examples</primary>
 <secondary>floor method</secondary></indexterm>
 <example id="ex.string-floor">
-<title>String class - floor method</title>
+<title>String class &mdash; floor method</title>
 <programlisting>
 2~floor               ->    2
 '-2'~floor            ->    -2
@@ -7478,7 +7478,7 @@ to an integer.</para>
 <indexterm><primary>examples</primary>
 <secondary>format method</secondary></indexterm>
 <example id="ex.string-format">
-<title>String class - format method</title>
+<title>String class &mdash; format method</title>
 <programlisting>
 "3"~format(4)            ->    "   3"
 "1.73"~format(4,0)       ->    "   2"
@@ -7520,7 +7520,7 @@ are supplied for the exponent part of the result. If the exponent would be
 is not specified, the number is not an exponential
 expression.</para>
 <example id="ex.string-format-1">
-<title>String class - format method</title>
+<title>String class &mdash; format method</title>
 <programlisting>
 "12345.73"~format(, ,2,2)   ->    "1.234573E+04"
 "12345.73"~format(,3, ,0)   ->    "1.235E+4"
@@ -7588,7 +7588,7 @@ truncates <emphasis role="italic">new</emphasis> to length
 <secondary>insert method</secondary>
 <tertiary>of String class</tertiary></indexterm>
 <example id="ex.string-insert">
-<title>String class - insert method</title>
+<title>String class &mdash; insert method</title>
 <programlisting>
 "abc"~insert("123")            ->    "123abc"
 "abcdef"~insert(" ",3)         ->    "abc def"
@@ -7634,7 +7634,7 @@ number and defaults to <emphasis role="italic">start</emphasis>.
 <indexterm><primary>examples</primary>
 <secondary>lastPos method</secondary></indexterm>
 <example id="ex.string-lastpos">
-<title>String class - lastPos method</title>
+<title>String class &mdash; lastPos method</title>
 <programlisting>
 "abc def ghi"~lastPos(" ")      ->    8
 "abcdefghi"~lastPos(" ")        ->    0
@@ -7678,7 +7678,7 @@ method is exactly equivalent to:</para>
 <indexterm><primary>examples</primary>
 <secondary>left method</secondary></indexterm>
 <example id="ex.string-left">
-<title>String class - left method</title>
+<title>String class &mdash; left method</title>
 <programlisting>
 "abc d"~left(8)        ->    "abc d   "
 "abc d"~left(8,".")    ->    "abc d..."
@@ -7708,7 +7708,7 @@ method is exactly equivalent to:</para>
 <indexterm><primary>examples</primary>
 <secondary>length method</secondary></indexterm>
 <example id="ex.string-length">
-<title>String class - length method</title>
+<title>String class &mdash; length method</title>
 <programlisting>
 "abcdefgh"~length     ->    8
 "abc defg"~length     ->    8
@@ -7740,7 +7740,7 @@ is not specified, the default is to convert the remainder of the string.</para>
 <indexterm><primary>examples</primary>
 <secondary>lower method</secondary></indexterm>
 <example id="ex.string-lower">
-<title>String class - lower method</title>
+<title>String class &mdash; lower method</title>
 <programlisting>
 "Albert Einstein"~lower      ->    "albert einstein"
 "ABCDEF"~lower(4)            ->    "ABCdef"
@@ -7773,7 +7773,7 @@ the carriage return/newline character pair.
 </para>
 
 <example id="ex.string-makeArray">
-<title>String class - makeArray method</title>
+<title>String class &mdash; makeArray method</title>
 <programlisting>
 <![CDATA[
 string = "hello".endofline"world".endofline"this is an array."
@@ -7845,7 +7845,7 @@ require new string objects be extracted from the target string.
 <indexterm><primary>examples</primary>
 <secondary>match method</secondary></indexterm>
 <example id="ex.string-match">
-<title>String class - match method</title>
+<title>String class &mdash; match method</title>
 <programlisting>
 "Saturday"~match(6, "day")           ->    1
 "Saturday"~match(6, "DAY")           ->    0
@@ -7875,7 +7875,7 @@ a positive whole number.</para>
 <indexterm><primary>examples</primary>
 <secondary>matchChar method</secondary></indexterm>
 <example id="ex.string-matchchar">
-<title>String class - matchChar method</title>
+<title>String class &mdash; matchChar method</title>
 <programlisting>
 "a+b"~matchChar(2, "+-*/")           ->    1
 "a+b"~matchChar(1, "+-*/")           ->    0
@@ -7905,7 +7905,7 @@ You can specify any number of <emphasis role="italic">number</emphasis>s.</para>
 <indexterm><primary>examples</primary>
 <secondary>max method</secondary></indexterm>
 <example id="ex.string-max">
-<title>String class - max method</title>
+<title>String class &mdash; max method</title>
 <programlisting>
 12~max(6,7,9)                                                ->    12
 17.3~max(19,17.03)                                           ->    19
@@ -7936,7 +7936,7 @@ settings. You can specify any number of
 <indexterm><primary>examples</primary>
 <secondary>min method</secondary></indexterm>
 <example id="ex.string-min">
-<title>String class - min method</title>
+<title>String class &mdash; min method</title>
 <programlisting>
 12~min(6,7,9)                                                ->     6
 17.3~min(19,17.03)                                           ->    17.03
@@ -7979,7 +7979,7 @@ and the default value for <emphasis role="italic">n</emphasis> is
 <indexterm><primary>examples</primary>
 <secondary>overlay method</secondary></indexterm>
 <example id="ex.string-overlay">
-<title>String class - overlay method</title>
+<title>String class &mdash; overlay method</title>
 <programlisting>
 "abcdef"~overlay(" ",3)         ->    "ab def"
 "abcdef"~overlay(".",3,2)       ->    "ab. ef"
@@ -8028,7 +8028,7 @@ a non-negative whole number.
 <indexterm><primary>examples</primary>
 <secondary>pos method</secondary></indexterm>
 <example id="ex.string-pos">
-<title>String class - pos method</title>
+<title>String class &mdash; pos method</title>
 <programlisting>
 "Saturday"~pos("day")       ->    6
 "abc def ghi"~pos("x")      ->    0
@@ -8073,7 +8073,7 @@ role="italic">new</emphasis> string. The default <emphasis role="italic">pad</em
 <indexterm><primary>examples</primary>
 <secondary>replaceAt method</secondary></indexterm>
 <example id="ex.string-replaceAt">
-<title>String class - replaceAt method</title>
+<title>String class &mdash; replaceAt method</title>
 <programlisting>
 "abcdef"~replaceAt(" ",3, 1)      ->    "ab def"
 "abcdef"~replaceAt(" ",3, 3)      ->    "ab f"
@@ -8100,7 +8100,7 @@ role="italic">new</emphasis> string. The default <emphasis role="italic">pad</em
 <indexterm><primary>examples</primary>
 <secondary>reverse method</secondary></indexterm>
 <example id="ex.string-reverse">
-<title>String class - reverse method</title>
+<title>String class &mdash; reverse method</title>
 <programlisting>
 "ABc."~reverse    ->    ".cBA"
 "XYZ "~reverse    ->    " ZYX"
@@ -8140,7 +8140,7 @@ whole number or zero.</para>
 <indexterm><primary>examples</primary>
 <secondary>right method</secondary></indexterm>
 <example id="ex.string-right">
-<title>String class - right method</title>
+<title>String class &mdash; right method</title>
 <programlisting>
 "abc  d"~right(8)     ->    "  abc  d"
 "abc def"~right(5)    ->    "c def"
@@ -8175,7 +8175,7 @@ the result, any minus sign is removed.</para>
 <indexterm><primary>examples</primary>
 <secondary>round method</secondary></indexterm>
 <example id="ex.string-round">
-<title>String class - round method</title>
+<title>String class &mdash; round method</title>
 <programlisting>
 2~round               ->    2
 '-2'~round            ->    -2
@@ -8213,7 +8213,7 @@ if it is greater than <computeroutput>0</computeroutput>.</para>
 <indexterm><primary>examples</primary>
 <secondary>sign method</secondary></indexterm>
 <example id="ex.string-sign">
-<title>String class - sign method</title>
+<title>String class &mdash; sign method</title>
 <programlisting>
 "12.3"~sign       ->     1
 " -0.307"~sign    ->    -1
@@ -8251,7 +8251,7 @@ and the default <emphasis role="italic">pad</emphasis> character is a blank.
 <indexterm><primary>examples</primary>
 <secondary>space method</secondary></indexterm>
 <example id="ex.string-space">
-<title>String class - space method</title>
+<title>String class &mdash; space method</title>
 <programlisting>
 "abc  def  "~space           ->    "abc def"
 "  abc def"~space(3)         ->    "abc   def"
@@ -8350,7 +8350,7 @@ will be removed.</para>
 <indexterm><primary>examples</primary>
 <secondary>strip method</secondary></indexterm>
 <example id="ex.string-strip">
-<title>String class - strip method</title>
+<title>String class &mdash; strip method</title>
 <programlisting>
 "  ab c  "~strip         ->    "ab c"
 "  ab c  "~strip("L")    ->    "ab c  "
@@ -8428,7 +8428,7 @@ extract more than one substring from a string.
 <indexterm><primary>examples</primary>
 <secondary>subStr method</secondary></indexterm>
 <example id="ex.string-substr">
-<title>String class - substr method</title>
+<title>String class &mdash; substr method</title>
 <programlisting>
 "abc"~substr(2)          ->    "bc"
 "abc"~substr(2,4)        ->    "bc  "
@@ -8465,7 +8465,7 @@ between the selected words.
 <indexterm><primary>examples</primary>
 <secondary>subWord method</secondary></indexterm>
 <example id="ex.string-subword">
-<title>String class - subWord method</title>
+<title>String class &mdash; subWord method</title>
 <programlisting>
 "Now is the  time"~subWord(2,2)    ->    "is the"
 "Now is the  time"~subWord(3)      ->    "the  time"
@@ -8503,7 +8503,7 @@ in the returned array never have leading or trailing whitespace.
 <indexterm><primary>examples</primary>
 <secondary>subWords method</secondary></indexterm>
 <example id="ex.string-subwords">
-<title>String class - subWords method</title>
+<title>String class &mdash; subWords method</title>
 <programlisting>
 "Now is the  time"~subWords         ->    .array~of("Now", "is", "the", "time")
 "Now is the  time"~subWords(2,2)    ->    .array~of("is", "the")
@@ -8513,7 +8513,7 @@ in the returned array never have leading or trailing whitespace.
 </example>
 <para>The subWords method is useful for iterating over the individual words in a string.</para>
 <example id="ex.string-subwords-1">
-<title>String class - subWords method</title>
+<title>String class &mdash; subWords method</title>
 <programlisting>
     do word over source~subWords    -- extract all of the words to loop over
        say word
@@ -8575,7 +8575,7 @@ the string from the starting position to the end is used. </para>
 <indexterm><primary>examples</primary>
 <secondary>translate method</secondary></indexterm>
 <example id="ex.string-translate">
-<title>String class - translate method</title>
+<title>String class &mdash; translate method</title>
 <programlisting>
 "abcdef"~translate                         ->    "ABCDEF"
 "abcdef"~translate(, , , 3, 2)             ->    "abCDef"
@@ -8630,7 +8630,7 @@ the result, any minus sign is removed.</para>
 <indexterm><primary>examples</primary>
 <secondary>trunc method</secondary></indexterm>
 <example id="ex.string-trunc">
-<title>String class - trunc method</title>
+<title>String class &mdash; trunc method</title>
 <programlisting>
 12.3~trunc            ->    12
 127.09782~trunc(3)    ->    127.097
@@ -8668,7 +8668,7 @@ is not specified, the default is to convert the remainder of the string.</para>
 <indexterm><primary>examples</primary>
 <secondary>upper method</secondary></indexterm>
 <example id="ex.string-upper">
-<title>String class - upper method</title>
+<title>String class &mdash; upper method</title>
 <programlisting>
 "Albert Einstein"~upper      ->    "ALBERT EINSTEIN"
 "abcdef"~upper(4)            ->    "abcDEF"
@@ -8735,7 +8735,7 @@ returns the <emphasis role="italic">start</emphasis> value.</para>
 <indexterm><primary>examples</primary>
 <secondary>verify method</secondary></indexterm>
 <example id="ex.string-verify">
-<title>String class - verify method</title>
+<title>String class &mdash; verify method</title>
 <programlisting>
 "123"~verify("1234567890")             ->    0
 "1Z3"~verify("1234567890")             ->    2
@@ -8779,7 +8779,7 @@ to <computeroutput>receiving_string~subWord(n,1)</computeroutput>.</para>
 <indexterm><primary>examples</primary>
 <secondary>word method</secondary></indexterm>
 <example id="ex.string-word">
-<title>String class - word method</title>
+<title>String class &mdash; word method</title>
 <programlisting>
 "Now is the time"~word(3)    ->    "the"
 "Now is the time"~word(5)    ->    ""
@@ -8810,7 +8810,7 @@ role="italic">n</emphasis> must be a positive whole number.
 <indexterm><primary>examples</primary>
 <secondary>wordIndex method</secondary></indexterm>
 <example id="ex.string-wordindex">
-<title>String class - wordIndex method</title>
+<title>String class &mdash; wordIndex method</title>
 <programlisting>
 "Now is the time"~wordIndex(3)    ->    8
 "Now is the time"~wordIndex(6)    ->    0
@@ -8841,7 +8841,7 @@ The <emphasis role="italic">n</emphasis> must be a positive whole number.</para>
 <indexterm><primary>examples</primary>
 <secondary>wordLength method</secondary></indexterm>
 <example id="ex.string-wordlength">
-<title>String class - wordLength method</title>
+<title>String class &mdash; wordLength method</title>
 <programlisting>
 "Now is the time"~wordLength(2)       ->    2
 "Now comes the time"~wordLength(2)    ->    5
@@ -8881,7 +8881,7 @@ the word at which the search is to be started.</para>
 <indexterm><primary>examples</primary>
 <secondary>wordPos method</secondary></indexterm>
 <example id="ex.string-wordPos">
-<title>String class - wordPos method</title>
+<title>String class &mdash; wordPos method</title>
 <programlisting>
 "now is the time"~wordPos("the")              ->  3
 "now is the time"~wordPos("The")              ->  0
@@ -8920,7 +8920,7 @@ the word at which the search is to be started.</para>
 <indexterm><primary>examples</primary>
 <secondary>words method</secondary></indexterm>
 <example id="ex.string-words">
-<title>String class - words method</title>
+<title>String class &mdash; words method</title>
 <programlisting>
 "Now is the time"~words      ->    4
 " "~words                    ->    0
@@ -8958,7 +8958,7 @@ include any whitespace.</para>
 <indexterm><primary>examples</primary>
 <secondary>x2b method</secondary></indexterm>
 <example id="ex.string-x2b">
-<title>String class - x2b method</title>
+<title>String class &mdash; x2b method</title>
 <programlisting>
 "C3"~x2b        ->  "11000011"
 "7"~x2b         ->  "0111"
@@ -8970,7 +8970,7 @@ with the methods <emphasis role="bold">d2x</emphasis> and
 <emphasis role="bold">c2x</emphasis> to convert numbers or
 character strings into binary form.</para>
 <example id="ex.string-x2b-1">
-<title>String class - x2b method with c2x</title>
+<title>String class &mdash; x2b method with c2x</title>
 <programlisting>
 "C3"x~c2x~x2b  ->  "11000011"
 "129"~d2x~x2b  ->  "10000001"
@@ -9010,7 +9010,7 @@ ignored.
 <indexterm><primary>examples</primary>
 <secondary>x2c method</secondary></indexterm>
 <example id="ex.string-x2c">
-<title>String class - x2c method</title>
+<title>String class &mdash; x2c method</title>
 <programlisting>
 "4865 6c6c 6f"~x2c ->  "Hello"     /*  ASCII             */
 "3732 73"~x2c      ->  "72s"       /*  ASCII             */
@@ -9051,7 +9051,7 @@ an unsigned binary number.</para>
 <indexterm><primary>examples</primary>
 <secondary>x2d method</secondary></indexterm>
 <example id="ex.string-x2d">
-<title>String class - x2d method</title>
+<title>String class &mdash; x2d method</title>
 <programlisting>
 "0E"~x2d        ->    14
 "81"~x2d        ->    129
@@ -9073,7 +9073,7 @@ the method returns <computeroutput>0</computeroutput>.</para>
 (note, not &quot;sign-extended&quot;), or truncated on the left to
 <emphasis role="italic">n</emphasis> characters.</para>
 <example id="ex.string-x2d-1">
-<title>String class - x2d method</title>
+<title>String class &mdash; x2d method</title>
 <programlisting>
 "81"~x2d(2)      ->    -127
 "81"~x2d(4)      ->    129

@@ -1304,6 +1304,11 @@ dates.
 
 <para>Returns a DateTime instance for the current day, with a time value of 00:00:00.000000.
 </para>
+<para>
+If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
+in minutes.  The <emphasis role="italic">offset</emphasis> must be a valid whole
+number. The default <emphasis role="italic">offset</emphasis> is the current system timezone offset.
+</para>
 </section>
 
 <section id="mthDateTimeFromNormalDate"><title>fromNormalDate (Class Method)</title>
@@ -3261,12 +3266,7 @@ say .File~new("/tmp/.dir/file")~isHidden        -- 1
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/file_lastmodified1.svg" scale="50" />
-</imageobject>
-</mediaobject>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/classes/file_lastmodified2.svg" scale="50" />
+<imagedata fileref="images/classes/file_lastmodified.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -4613,7 +4613,8 @@ overlap.</para>
 </imageobject>
 </mediaobject>
 
-<para>Deletes <emphasis>length</emphasis> characters from the buffer beginning
+<para>Returns the receiver MutableBuffer with <emphasis>length</emphasis>
+characters deleted from the buffer beginning
 at the <emphasis>n</emphasis>'th character. If length is omitted, or if length
 is greater than the number of characters from <emphasis>n</emphasis> to the end
 of the buffer, the method deletes the remaining buffer contents (including
@@ -4637,7 +4638,8 @@ buffer content.</para>
 </imageobject>
 </mediaobject>
 
-<para>Deletes <emphasis>length</emphasis> characters from the buffer beginning
+<para>Returns the receiver MutableBuffer with <emphasis>length</emphasis>
+characters deleted from the buffer beginning
 at the <emphasis>n</emphasis>'th character. If length is omitted, or if length
 is greater than the number of characters from <emphasis>n</emphasis> to the end
 of the buffer, the method deletes the remaining buffer contents (including
@@ -4645,8 +4647,11 @@ the <emphasis>n</emphasis>'th character). The length must be a positive integer
 or zero. The <emphasis>n</emphasis> must be a positive integer. If
 <emphasis>n</emphasis> is greater than
 the length of the buffer or zero, the method does not modify the
-buffer content.  The delStr() method is the same as the delete() method.  It
-is provided for polymorphism with the String class.
+buffer content.
+</para>
+<para>The <methodname>delStr</methodname> method is the same as the
+<xref linkend="mthMutableBufferDelete" xrefstyle="select:title"/> method.
+It is provided for polymorphism with the String class.
 </para>
 </section>
 
@@ -4734,6 +4739,9 @@ require new string objects be extracted from the target buffer.
 </mediaobject>
 
 <para>Retrieves the current buffer size.</para>
+<para>See also <xref linkend="mthMutableBufferGetBufferSize" xrefstyle="select:title"/>
+method.
+</para>
 </section>
 
 <section id="mthMutableBufferInsert"><title>insert</title>
@@ -4749,8 +4757,9 @@ require new string objects be extracted from the target buffer.
 </imageobject>
 </mediaobject>
 
-<para>Inserts the string <emphasis role="italic">new</emphasis>, padded or truncated to
-length <emphasis role="italic">length</emphasis>, into the mutable buffer after the
+<para>Returns the receiving buffer with the string <emphasis role="italic">new</emphasis>,
+padded or truncated to length <emphasis role="italic">length</emphasis>,
+inserted into the MutableBuffer after the
 <emphasis>n</emphasis>'th character. The default
 value for <emphasis role="italic">n</emphasis> is 0, which means insertion at the beginning
 of the string. If specified, <emphasis role="italic">n</emphasis> and length must be
@@ -4948,7 +4957,7 @@ a positive whole number.</para>
 </imageobject>
 </mediaobject>
 
-<para>Modifies the buffer content by overlaying it, starting at the
+<para>Returns the receiving buffer after overlaying it, starting at the
 <emphasis>n</emphasis>'th character, with the string <emphasis>new</emphasis>,
 padded or truncated to length <emphasis>length</emphasis>. The overlay can extend
 beyond the end of the buffer. In this case the buffer size will be increased.
@@ -5058,11 +5067,14 @@ blank.
 </imageobject>
 </mediaobject>
 
-<para>Sets the buffer size. If <emphasis>n</emphasis>
-is less than the length of buffer
+<para>Returns the receiving buffer with buffer size set to <emphasis>n</emphasis>.
+If <emphasis>n</emphasis> is less than the length of buffer
 content, the content is truncated. If <emphasis>n</emphasis> is 0, the entire
-contents is erased and the new buffer size is the value given
+content is erased and the new buffer size is the value given
 in the <emphasis role="bold">init</emphasis> method.</para>
+<para>See also <xref linkend="mthMutableBufferSetBufferSize" xrefstyle="select:title"/>
+method.
+</para>
 </section>
 
 <!-- Class MutableBuffer - method setText ========================== --> 
@@ -5095,7 +5107,7 @@ in the <emphasis role="bold">init</emphasis> method.</para>
 </imageobject>
 </mediaobject>
 
-<para>Returns the target mutablebuffer, with
+<para>Returns the target MutableBuffer, with
 <emphasis role="italic">n</emphasis>&nbsp;<emphasis role="italic">pad</emphasis>
 characters between each whitespace-delimited word. If you specify
 <emphasis role="italic">n</emphasis>, it must
@@ -6417,7 +6429,7 @@ subclass of the Object class (<xref linkend="clsObject" />).</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rxcontext_args.svg" scale="50" />
+<imagedata fileref="images/classes/rexxcontext_args.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -6435,7 +6447,7 @@ This is equivalent to using the Arg(1, 'A') (<xref linkend="bifArg" />) built-in
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rxcontext_condition.svg" scale="50" />
+<imagedata fileref="images/classes/rexxcontext_condition.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -6454,7 +6466,7 @@ Condition('O') (<xref linkend="bifCondition" />) built-in function.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rxcontext_digits.svg" scale="50" />
+<imagedata fileref="images/classes/rexxcontext_digits.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -6472,7 +6484,7 @@ the digits() (<xref linkend="bifDigits" />) built-in function.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rxcontext_executable.svg" scale="50" />
+<imagedata fileref="images/classes/rexxcontext_executable.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -6492,7 +6504,7 @@ the active context.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rxcontext_form.svg" scale="50" />
+<imagedata fileref="images/classes/rexxcontext_form.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -6510,7 +6522,7 @@ form() (<xref linkend="bifForm" />) built-in function.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rxcontext_fuzz.svg" scale="50" />
+<imagedata fileref="images/classes/rexxcontext_fuzz.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -6528,7 +6540,7 @@ fuzz() (<xref linkend="bifFuzz" />) built-in function.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rxcontext_line.svg" scale="50" />
+<imagedata fileref="images/classes/rexxcontext_line.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -6546,7 +6558,7 @@ fuzz() (<xref linkend="bifFuzz" />) built-in function.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rxcontext_name.svg" scale="50" />
+<imagedata fileref="images/classes/rexxcontext_name.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -6569,7 +6581,7 @@ is the name of the label used to invoke the call.  If the context is the main pa
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rxcontext_package.svg" scale="50" />
+<imagedata fileref="images/classes/rexxcontext_package.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -6587,7 +6599,7 @@ associated with the current executable object.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rxcontext_rs.svg" scale="50" />
+<imagedata fileref="images/classes/rexxcontext_rs.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -6606,7 +6618,7 @@ the .RS (<xref linkend="rs" />) environment symbol.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rxcontext_stackframes.svg" scale="50" />
+<imagedata fileref="images/classes/rexxcontext_stackframes.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -6625,7 +6637,7 @@ elements are earlier elements in the call stack.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rxcontext_variables.svg" scale="50" />
+<imagedata fileref="images/classes/rexxcontext_variables.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -7349,7 +7361,7 @@ the <xref linkend="mthRexxInfoRevision" xrefstyle="select:title"/>.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rxqueue_create.svg" scale="50" />
+<imagedata fileref="images/classes/rexxqueue_create.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -7369,7 +7381,7 @@ created.  This method returns the name of the created queue, which will be eithe
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rxqueue_delete_class.svg" scale="50" />
+<imagedata fileref="images/classes/rexxqueue_delete_class.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -7389,7 +7401,7 @@ programming interface.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rxqueue_exists.svg" scale="50" />
+<imagedata fileref="images/classes/rexxqueue_exists.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -7407,7 +7419,7 @@ programming interface.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rxqueue_open.svg" scale="50" />
+<imagedata fileref="images/classes/rexxqueue_open.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -7425,7 +7437,7 @@ creates the queue if it does not.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rxqueue_delete.svg" scale="50" />
+<imagedata fileref="images/classes/rexxqueue_delete.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -7443,7 +7455,7 @@ creates the queue if it does not.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rxqueue_empty.svg" scale="50" />
+<imagedata fileref="images/classes/rexxqueue_empty.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -7460,7 +7472,7 @@ creates the queue if it does not.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rxqueue_get.svg" scale="50" />
+<imagedata fileref="images/classes/rexxqueue_get.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -7478,7 +7490,7 @@ creates the queue if it does not.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rxqueue_init.svg" scale="50" />
+<imagedata fileref="images/classes/rexxqueue_init.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -7498,7 +7510,7 @@ queue does not exist, one will be created.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rxqueue_linein.svg" scale="50" />
+<imagedata fileref="images/classes/rexxqueue_linein.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -7516,7 +7528,7 @@ queue does not exist, one will be created.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rxqueue_lineout.svg" scale="50" />
+<imagedata fileref="images/classes/rexxqueue_lineout.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -7534,7 +7546,7 @@ queue does not exist, one will be created.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rxqueue_makearray.svg" scale="50" />
+<imagedata fileref="images/classes/rexxqueue_makearray.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -7553,7 +7565,7 @@ The external queue is emptied.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rxqueue_pull.svg" scale="50" />
+<imagedata fileref="images/classes/rexxqueue_pull.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -7571,7 +7583,7 @@ this method will immediately return the Nil Object without waiting for lines to 
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rxqueue_push.svg" scale="50" />
+<imagedata fileref="images/classes/rexxqueue_push.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -7589,7 +7601,7 @@ this method will immediately return the Nil Object without waiting for lines to 
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rxqueue_queue.svg" scale="50" />
+<imagedata fileref="images/classes/rexxqueue_queue.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -7607,7 +7619,7 @@ this method will immediately return the Nil Object without waiting for lines to 
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rxqueue_queued.svg" scale="50" />
+<imagedata fileref="images/classes/rexxqueue_queued.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -7624,7 +7636,7 @@ this method will immediately return the Nil Object without waiting for lines to 
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rxqueue_say.svg" scale="50" />
+<imagedata fileref="images/classes/rexxqueue_say.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -7642,7 +7654,7 @@ this method will immediately return the Nil Object without waiting for lines to 
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rxqueue_set.svg" scale="50" />
+<imagedata fileref="images/classes/rexxqueue_set.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -8882,17 +8894,7 @@ The TimeSpan will contain an interval equal to the time of day represented by th
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/timespan_init1.svg" scale="50" />
-</imageobject>
-</mediaobject>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/classes/timespan_init2.svg" scale="50" />
-</imageobject>
-</mediaobject>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/classes/timespan_init3.svg" scale="50" />
+<imagedata fileref="images/classes/timespan_init.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -9509,7 +9511,7 @@ the objects from being reclaimed by the garbage collector when needed.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/weakref_new.svg" scale="50" />
+<imagedata fileref="images/classes/weakreference_new.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -9526,7 +9528,7 @@ the objects from being reclaimed by the garbage collector when needed.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/weakref_value.svg" scale="50" />
+<imagedata fileref="images/classes/weakreference_value.svg" scale="50" />
 </imageobject>
 </mediaobject>
 

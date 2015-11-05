@@ -1,8 +1,43 @@
+/* new in 5.0 - start */
+alarmnotification_cancel    ::= 'cancel(' source ')'
+alarmnotification_triggered ::= 'triggered(' source ')'
+
+messagenotification_messagecomplete ::= 'messageComplete(' source ')'
+/* new in 5.0 - end */
+
+
+/* new in 5.0 */
+alarm_attachment ::= 'attachment'
+
+alarm_cancel ::= 'cancel'
+
+/* new in 5.0 */
+alarm_canceled ::= 'canceled' | 'cancelled'
+
+/* chg in 5.0: changed "message" to (notification) "target" */
+alarm_init ::= 'init(' atime ',' target (',' attachment)? ')'
+
+/* new in 5.0 */
+alarm_scheduledtime ::= 'scheduledTime'
+
+/* new in 5.0 */
+alarm_triggered ::= 'triggered'
+
+
+/* new in 5.0 - start */
+ticker_attachment ::= 'attachment'
+ticker_cancel     ::= 'cancel'
+ticker_canceled   ::= 'canceled' | 'cancelled'
+ticker_init       ::= 'init(' interval ',' target (',' attachment)? ')'
+ticker_interval   ::= 'interval'
+/* new in 5.0 - end */
+
+
 datetime_mindate ::= 'minDate'
 
 datetime_maxdate ::= 'maxDate'
 
-datetime_today ::= 'today'
+datetime_today ::= 'today(' offset? ')'
 
 datetime_fromnormaldate ::= 'fromNormalDate(' date ( ',' ( separator )? ( ',' offset )? )? ')'
 
@@ -28,14 +63,13 @@ datetime_fromisodate ::= 'fromIsoDate(' date ( ',' offset )? ')'
 
 datetime_fromutcisodate ::= 'fromUtcIsoDate(' date ')'
 
-datetime_init ::= 'init'
-
+/* keep four separate diagrams, so that the fourth can get split into two lines */
+datetime_init1 ::= 'init'
 datetime_init2 ::= 'init(' fulldate ( ',' offset )? ')'
-
 datetime_init3 ::= 'init(' year ',' month ',' day ( ',' offset )? ')'
-
 datetime_init4 ::= 'init(' year ',' month ',' day ',' hours ',' minutes ',' seconds
                           ( ',' ( microseconds )? ( ',' offset )? )? ')'
+
 datetime_arithmeticoperator ::= arithmetic_operator '(' argument ')'
 
 datetime_compareto ::= 'compareTo(' other ')'
@@ -130,7 +164,7 @@ datetime_elapsed ::= 'elapsed'
 
 datetime_isleapyear ::= 'isLeapYear'
 
-datetime_dayinmonth ::= 'dayInMonth'
+datetime_daysinmonth ::= 'daysInMonth'
 
 datetime_daysinyear ::= 'daysInYear'
 
@@ -154,11 +188,9 @@ timespan_fromlongtime ::= 'fromLongTime(' time ')'
 
 timespan_fromstringformat ::= 'fromStringFormat(' time ')'
 
-timespan_init1 ::= 'init(' fullDate ')'
-
-timespan_init2 ::= 'init(' hours ',' minutes ',' seconds ')'
-
-timespan_init3 ::= 'init(' days ',' hours ',' minutes ',' seconds ',' microseconds ')'
+timespan_init ::= 'init(' fullDate ')'
+timespan_init ::= 'init(' hours ',' minutes ',' seconds ')'
+timespan_init ::= 'init(' days ',' hours ',' minutes ',' seconds ',' microseconds ')'
 
 timespan_arithmeticoperator ::= 'arithmetic_operator(' argument ')'
 
@@ -176,7 +208,7 @@ timespan_seconds ::= 'seconds'
 
 timespan_microseconds ::= 'microseconds'
 
-timespan_toyaldays ::= 'totalDays'
+timespan_totaldays ::= 'totalDays'
 
 timespan_totalhours ::= 'totalHours'
 
@@ -253,39 +285,39 @@ regexp_pos ::= 'pos(' haystack ')'
 
 regexp_position ::= 'position'
 
-rxqueue_create ::= 'create(' name ')'
+rexxqueue_create ::= 'create(' name ')'
 
-rxqueue_delete_class ::= 'delete(' name ')'
+rexxqueue_delete_class ::= 'delete(' name ')'
 
-rxqueue_exists ::= 'exists(' name ')'
+rexxqueue_exists ::= 'exists(' name ')'
 
-rxqueue_open ::= 'open(' name ')'
+rexxqueue_open ::= 'open(' name ')'
 
-rxqueue_delete ::= 'delete'
+rexxqueue_delete ::= 'delete'
 
-rxqueue_empty ::= 'empty'
+rexxqueue_empty ::= 'empty'
 
-rxqueue_get ::= 'get'
+rexxqueue_get ::= 'get'
 
-rxqueue_init ::= 'init(' ( name )? ')'
+rexxqueue_init ::= 'init(' ( name )? ')'
 
-rxqueue_linein ::= 'linein'
+rexxqueue_linein ::= 'linein'
 
-rxqueue_lineout ::= 'lineout(' ( line )? ')'
+rexxqueue_lineout ::= 'lineout(' ( line )? ')'
 
-rxqueue_makearray ::= 'makearray'
+rexxqueue_makearray ::= 'makearray'
 
-rxqueue_pull ::= 'pull'
+rexxqueue_pull ::= 'pull'
 
-rxqueue_push ::= 'push(' ( line )? ')'
+rexxqueue_push ::= 'push(' ( line )? ')'
 
-rxqueue_queue ::= 'queue(' ( line )? ')'
+rexxqueue_queue ::= 'queue(' ( line )? ')'
 
-rxqueue_queued ::= 'queued'
+rexxqueue_queued ::= 'queued'
 
-rxqueue_say ::= 'say(' ( line )? ')'
+rexxqueue_say ::= 'say(' ( line )? ')'
 
-rxqueue_set ::= 'set(' name ')'
+rexxqueue_set ::= 'set(' name ')'
 
 supplier_new ::= 'new(' items ',' indexes ')'
 
@@ -315,29 +347,29 @@ streamsupplier_item ::= 'item'
 
 streamsupplier_next ::= 'next'
 
-rxcontext_args ::= 'args'
+rexxcontext_args ::= 'args'
 
-rxcontext_condition ::= 'condition'
+rexxcontext_condition ::= 'condition'
 
-rxcontext_digits ::= 'digits'
+rexxcontext_digits ::= 'digits'
 
-rxcontext_executable ::= 'executable'
+rexxcontext_executable ::= 'executable'
 
-rxcontext_form ::= 'form'
+rexxcontext_form ::= 'form'
 
-rxcontext_fuzz ::= 'fuzz'
+rexxcontext_fuzz ::= 'fuzz'
 
-rxcontext_line ::= 'line'
+rexxcontext_line ::= 'line'
 
-rxcontext_name ::= 'name'
+rexxcontext_name ::= 'name'
 
-rxcontext_package ::= 'package'
+rexxcontext_package ::= 'package'
 
-rxcontext_rs ::= 'rs'
+rexxcontext_rs ::= 'rs'
 
-rxcontext_stackframes ::= 'stackFrames'
+rexxcontext_stackframes ::= 'stackFrames'
 
-rxcontext_variables ::= 'variables'
+rexxcontext_variables ::= 'variables'
 
 stackframe_arguments ::= 'arguments'
 
@@ -357,9 +389,9 @@ stackframe_traceline ::= 'traceLine'
 
 stackframe_type ::= 'type'
 
-weakref_new ::= 'new(' object ')'
+weakreference_new ::= 'new(' object ')'
 
-weakref_value ::= 'value'
+weakreference_value ::= 'value'
 
 pointer_new ::= 'new'
 
@@ -367,9 +399,9 @@ pointer_comparisonoperator ::= 'comparison_operator(' argument ')'
 
 pointer_isnull ::= 'isNull'
 
-rxbuffer_new ::= 'new'
+buffer_new ::= 'new'
 
-file_iscasesensitive_class ::= 'isCaseSensitive'
+file_iscasesensitive ::= 'isCaseSensitive'
 
 file_listroots ::= 'listRoots'
 
@@ -401,9 +433,8 @@ file_isfile ::= 'isFile'
 
 file_ishidden ::= 'isHidden'
 
-file_lastmodified1 ::= 'lastModified'
-
-file_lastmodified2 ::= 'lastModified' '=' date
+file_lastmodified ::= 'lastModified'
+file_lastmodified ::= 'lastModified' '=' date
 
 file_length ::= 'length'
 
@@ -429,3 +460,24 @@ file_setreadonly ::= 'setReadOnly'
 
 file_string ::= 'string'
 
+
+/* new in 5.0 - start */
+rexxinfo_architecture       ::= 'architecture'
+rexxinfo_casesensitivefiles ::= 'caseSensitiveFiles' 
+rexxinfo_date               ::= 'date' 
+rexxinfo_digits             ::= 'digits'
+rexxinfo_directoryseparator ::= 'directorySeparator'
+rexxinfo_endofline          ::= 'endofline'
+rexxinfo_form               ::= 'form' 
+rexxinfo_fuzz               ::= 'fuzz'
+rexxinfo_internaldigits     ::= 'internalDigits'
+rexxinfo_languagelevel      ::= 'languageLevel'
+rexxinfo_majorversion       ::= 'majorVersion' 
+rexxinfo_name               ::= 'name' 
+rexxinfo_package            ::= 'package'
+rexxinfo_pathseparator      ::= 'pathSeparator' 
+rexxinfo_platform           ::= 'platform' 
+rexxinfo_release            ::= 'release' 
+rexxinfo_revision           ::= 'revision' 
+rexxinfo_version            ::= 'version'
+/* new in 5.0 - start */

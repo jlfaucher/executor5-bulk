@@ -702,8 +702,9 @@ The index objects will not be ordered in any predictable order.
 </imageobject>
 </mediaobject>
 
-<para>Adds all items in <emphasis role="italic">collection</emphasis> to
-the target collection and returns the modified collection.  The
+<para>Returns the receiving collection with all items in
+<emphasis role="italic">collection</emphasis> added to it.
+The
 <emphasis role="italic">collection</emphasis> argument can be any object that supports a supplier
 method.  Items from <emphasis role="italic">collection</emphasis> are added using the index values returned by the supplier.  The item
 indexes from the source <emphasis role="italic">collection</emphasis> must be strings.  The items are
@@ -800,8 +801,8 @@ of this class.</para>
 </imageobject>
 </mediaobject>
 
-<para>Appends all items in <emphasis role="italic">collection</emphasis>
-to the end of the target collection and returns the modified collection. 
+<para>Returns the receiving collection with all items in
+<emphasis role="italic">collection</emphasis> appended to the end of it.
 The <emphasis role="italic">collection</emphasis> may be any object that
 implements an <methodname>allItems</methodname> method.</para>
 </section>
@@ -1320,7 +1321,7 @@ whole-number indexes to reference items in an array.</para>
   as an array of indexes.  For example, the following are equivalent:
 </para>
 <example id="ex.Array-indexes">
-<title>Array class - [] method</title>
+<title>Array class &mdash; [] method</title>
 <programlisting>
     x = myarray[1,2,3]   -- retrieves an item from a multi-dimension array
     index = .array~of(1,2,3)  -- create an index list
@@ -1360,7 +1361,7 @@ of sizes.
 <indexterm><primary>examples</primary>
 <secondary>of method</secondary></indexterm>
 <example id="ex.Array-of">
-<title>Array class - of method</title>
+<title>Array class &mdash; of method</title>
 <programlisting>
    a = .array~new()        -- create a new, empty array
    a = .array~new(3,3)     -- create a new 3x3 array
@@ -1393,7 +1394,7 @@ does not include the indexes corresponding to the omitted arguments.</para>
 <indexterm><primary>examples</primary>
 <secondary>of method</secondary></indexterm>
 <example id="ex.Array-of2">
-<title>Array class - of method</title>
+<title>Array class &mdash; of method</title>
 <programlisting>
 a = .array~of("Fred", "Mike", "David")
 
@@ -1466,7 +1467,7 @@ values.
 <indexterm><primary>examples</primary>
 <secondary>allIndexes method</secondary></indexterm>
 <example id="ex.Array-allIndexes">
-<title>Array class - allIndexes method</title>
+<title>Array class &mdash; allIndexes method</title>
 <programlisting>
 a = .array~of("Fred", "Mike", "David")
 
@@ -1500,7 +1501,7 @@ end
 <indexterm><primary>examples</primary>
 <secondary>allItems method</secondary></indexterm>
 <example id="ex.Array-allItems">
-<title>Array class - allItems method</title>
+<title>Array class &mdash; allItems method</title>
 <programlisting>
 a = .array~of("Fred", "Mike", "David")
 
@@ -1537,7 +1538,7 @@ arrays.
 <indexterm><primary>examples</primary>
 <secondary>append method</secondary></indexterm>
 <example id="ex.Array-append">
-<title>Array class - append method</title>
+<title>Array class &mdash; append method</title>
 <programlisting>
    a = .array~of("Mike", "Rick")
    a~append("Fred")  -- a = .array~of("Mike", "Rick", "Fred")
@@ -1571,7 +1572,7 @@ Nil object.</para>
 <indexterm><primary>examples</primary>
 <secondary>at method</secondary></indexterm>
 <example id="ex.Array-at">
-<title>Array class - at method</title>
+<title>Array class &mdash; at method</title>
 <programlisting>
    a = .array~of("Mike", "Rick")
    say a~at(2)  -- says: "Rick"
@@ -1608,7 +1609,7 @@ indexes.
 <indexterm><primary>examples</primary>
 <secondary>delete method</secondary></indexterm>
 <example id="ex.Array-delete">
-<title>Array class - delete method</title>
+<title>Array class &mdash; delete method</title>
 <programlisting>
    a = .array~of("Fred", "Mike", "Rick", "David")
    a~delete(2)  -- removes "Mike", resulting in the array
@@ -1639,7 +1640,7 @@ determined, <computeroutput>0</computeroutput> is returned.</para>
 <indexterm><primary>examples</primary>
 <secondary>dimension method</secondary></indexterm>
 <example id="ex.Array-dimension">
-<title>Array class - dimension method</title>
+<title>Array class &mdash; dimension method</title>
 <programlisting>
 a = .array~of(,"Mike", "Rick")
 say a~dimension     -- says: 1 (number of dimensions in the array)
@@ -1684,11 +1685,11 @@ single-dimension array will return an array with a single size element.
 </imageobject>
 </mediaobject>
 
-<para>Removes all items and returns the modified Array.</para>
+<para>Returns the receiving Array with all items removed.</para>
 <indexterm><primary>examples</primary>
 <secondary>empty method</secondary></indexterm>
 <example id="ex.Array-empty">
-<title>Array class - empty method</title>
+<title>Array class &mdash; empty method</title>
 <programlisting>
 a = .array~of("Mike", "Rick", "Fred", "Rick")
 a~empty    -- a~items now returns "0"
@@ -1709,13 +1710,13 @@ a~empty    -- a~items now returns "0"
 </imageobject>
 </mediaobject>
 
-<para>Sets all index locations of the Array to
-<emphasis role="italic">value</emphasis> and returns the modified Array.
+<para>Returns the receiving Array with all index locations set to
+<emphasis role="italic">value</emphasis>.
 </para>
 <indexterm><primary>examples</primary>
 <secondary>fill method</secondary></indexterm>
 <example id="ex.Array-fill">
-<title>Array class - fill method</title>
+<title>Array class &mdash; fill method</title>
 <programlisting>
 a = .array~new(3,3)
 a~fill(0)    -- initialize the matrix to all zeroes.
@@ -1742,7 +1743,7 @@ array is empty.  For multi-dimension arrays, the index is returned as an array o
 <indexterm><primary>examples</primary>
 <secondary>first method</secondary></indexterm>
 <example id="ex.Array-first">
-<title>Array class - first method</title>
+<title>Array class &mdash; first method</title>
 <programlisting>
 a = .array~of("Mike", "Rick", "Fred", "Rick")
 say a~first  -- says: 1
@@ -1769,7 +1770,7 @@ say a~first  -- says: 2
 <para>Returns the first item in the array or the Nil object if the array is
 empty.</para>
 <example id="ex.Array-firstItem-1">
-<title>Array class - firstItem method</title>
+<title>Array class &mdash; firstItem method</title>
 <programlisting>
 musketeers=.array~of("Porthos","Athos","Aramis"") /* Creates array MUSKETEERS      */
 item=musketeers~firstItem                         /* Gives first item in array     */
@@ -1783,7 +1784,7 @@ array is empty.  For multi-dimension arrays, the index is returned as an array o
 <indexterm><primary>examples</primary>
 <secondary>first method</secondary></indexterm>
 <example id="ex.Array-firstItem-2">
-<title>Array class - firstItem method</title>
+<title>Array class &mdash; firstItem method</title>
 <programlisting>
 a = .array~of("Mike", "Rick", "Fred", "Rick")
 say a~first  -- says: 1
@@ -1816,7 +1817,7 @@ an item associated with the specified index or indexes. Returns
 <indexterm><primary>examples</primary>
 <secondary>hasIndex method</secondary></indexterm>
 <example id="ex.Array-hasIndex">
-<title>Array class - hasIndex method</title>
+<title>Array class &mdash; hasIndex method</title>
 <programlisting>
 a = .array~of("Mike", "Rick", "Fred", "Rick")
 say a~hasIndex(2)  -- says: 1
@@ -1846,7 +1847,7 @@ Item equality is determined by using the == method of <emphasis role="italic">it
 <indexterm><primary>examples</primary>
 <secondary>hasItem method</secondary></indexterm>
 <example id="ex.Array-hasItem">
-<title>Array class - hasItem method</title>
+<title>Array class &mdash; hasItem method</title>
 <programlisting>
 a = .array~of("Mike", "Rick", "Fred", "Rick")
 say a~hasItem("Rick")  -- says: 1
@@ -1877,7 +1878,7 @@ returned. Item equality is determined by using the == method of <emphasis role="
 <indexterm><primary>examples</primary>
 <secondary>index method</secondary></indexterm>
 <example id="ex.Array-index">
-<title>Array class - index method</title>
+<title>Array class &mdash; index method</title>
 <programlisting>
 a = .array~of("Mike", "Rick", "Fred", "Rick")
 say a~index("Rick")  -- says: 2
@@ -1915,7 +1916,7 @@ The index values for any items in the Array are incremented by the insertion.</p
 <secondary>insert method</secondary>
 <tertiary>of Array class</tertiary></indexterm>
 <example id="ex.Array-insert">
-<title>Array class - insert method</title>
+<title>Array class &mdash; insert method</title>
 <programlisting>
 musketeers=.Array~of("Porthos","Athos","Aramis") /* Creates Array MUSKETEERS        */
                                                  /* consisting of: Porthos         */
@@ -1961,7 +1962,7 @@ empty.  Returns
 <indexterm><primary>examples</primary>
 <secondary>isEmpty method</secondary></indexterm>
 <example id="ex.Array-isEmpty">
-<title>Array class - isEmpty method</title>
+<title>Array class &mdash; isEmpty method</title>
 <programlisting>
 a = .array~new
 say a~isEmpty  -- says: 1
@@ -1988,7 +1989,7 @@ say a~isEmpty  -- says: 0
 <indexterm><primary>examples</primary>
 <secondary>items method</secondary></indexterm>
 <example id="ex.Array-items">
-<title>Array class - items method</title>
+<title>Array class &mdash; items method</title>
 <programlisting>
 a = .array~of("Fred", , "Mike", , "David")
 say a~items  -- says: 3
@@ -2016,7 +2017,7 @@ index items.
 <indexterm><primary>examples</primary>
 <secondary>last method</secondary></indexterm>
 <example id="ex.Array-last">
-<title>Array class - last method</title>
+<title>Array class &mdash; last method</title>
 <programlisting>
 a = .array~of("Fred", , "Mike", , "David")
 say a~last  -- says: 5
@@ -2040,7 +2041,7 @@ say a~last  -- says: 5
 <para>Returns the last item in the array or the Nil object if the array is
 empty.</para>
 <example id="ex.Array-lastItem">
-<title>Array class - lastItem method</title>
+<title>Array class &mdash; lastItem method</title>
 <programlisting>
 musketeers=.array~of("Porthos","Athos","Aramis"") /* Creates array MUSKETEERS      */
 item=musketeers~lastItem                          /* Gives last item in array      */
@@ -2071,7 +2072,7 @@ dimension array.
 <indexterm><primary>examples</primary>
 <secondary>makeArray method</secondary></indexterm>
 <example id="ex.Array-makeArray">
-<title>Array class - makeArray method</title>
+<title>Array class &mdash; makeArray method</title>
 <programlisting>
 a = .array~of("Fred", , "Mike", , "David")
 b = a~makeArray  -- b = .array~of("Fred", "Mike", "David")
@@ -2128,7 +2129,7 @@ determine the next position and the index is returned as an array of index value
 <indexterm><primary>examples</primary>
 <secondary>next method</secondary></indexterm>
 <example id="ex.Array-next">
-<title>Array class - next method</title>
+<title>Array class &mdash; next method</title>
 <programlisting>
 a = .array~of("Fred", , "Mike", , "David")
 say a~next(3)  -- says: 5
@@ -2162,7 +2163,7 @@ determine the previous position and the index is returned as an array of index v
 <indexterm><primary>examples</primary>
 <secondary>previous method</secondary></indexterm>
 <example id="ex.Array-previous">
-<title>Array class - previous method</title>
+<title>Array class &mdash; previous method</title>
 <programlisting>
 a = .array~of("Fred", , "Mike", , "David")
 say a~previous(3)  -- says: 1
@@ -2201,7 +2202,7 @@ that dimension, the array is expanded to the new dimension size.</para>
 <indexterm><primary>examples</primary>
 <secondary>put method</secondary></indexterm>
 <example id="ex.Array-put">
-<title>Array class - put method</title>
+<title>Array class &mdash; put method</title>
 <programlisting>
 a = .array~new
 a~put("Fred", 1) -- a = .array~of("Fred")
@@ -2250,7 +2251,7 @@ indexes.
 <indexterm><primary>examples</primary>
 <secondary>remove method</secondary></indexterm>
 <example id="ex.Array-remove">
-<title>Array class - remove method</title>
+<title>Array class &mdash; remove method</title>
 <programlisting>
 a = .array~of("Fred", "Mike", "Mike", "David")
 a~remove(2)  -- removes "Mike"
@@ -2279,7 +2280,7 @@ removed item.</para>
 <indexterm><primary>examples</primary>
 <secondary>removeItem method</secondary></indexterm>
 <example id="ex.Array-removeItem">
-<title>Array class - removeItem method</title>
+<title>Array class &mdash; removeItem method</title>
 <programlisting>
 a = .array~of("Fred", "Mike", "Mike", "David")
 a~removeItem("Mike")  -- removes the item at index "2"
@@ -2319,7 +2320,7 @@ arrays.</para>
 <indexterm><primary>examples</primary>
 <secondary>section method</secondary></indexterm>
 <example id="ex.Array-section">
-<title>Array class - section method</title>
+<title>Array class &mdash; section method</title>
 <programlisting>
 a = .array~of(1,2,3,4)  -- Loads the array
 
@@ -2448,7 +2449,7 @@ index values as an array of index numbers.
 <indexterm><primary>examples</primary>
 <secondary>supplier method</secondary></indexterm>
 <example id="ex.Array-supplier">
-<title>Array class - supplier method</title>
+<title>Array class &mdash; supplier method</title>
 <programlisting>
 a = .array~of("Fred", "Mike", "David")
 sup = a~supplier
@@ -2484,7 +2485,7 @@ default line end separator.
 <indexterm><primary>examples</primary>
 <secondary>toString method</secondary></indexterm>
 <example id="ex.Array-toString">
-<title>Array class - toString method</title>
+<title>Array class &mdash; toString method</title>
 <programlisting>
 a = .array~of(1,2,3,4)  -- Loads the array
 
@@ -2504,7 +2505,7 @@ say a~toString(, ", ")  -- Produces: 1, 2, 3, 4
 <indexterm><primary>examples</primary>
 <secondary>of Array class</secondary></indexterm>
 <example id="ex.Array-examples1">
-<title>Array class - examples</title>
+<title>Array class &mdash; examples</title>
 <programlisting>
 array1=.array~of(1,2,3,4)  /* Loads the array */
 
@@ -2517,7 +2518,7 @@ end
 </example>
 <para>You can produce the elements loaded into an array, for example: </para>
 <example id="ex.Array-examples2">
-<title>Array class - examples</title>
+<title>Array class &mdash; examples</title>
 <programlisting>
 do i=1 to 4
   say array1[i]
@@ -2527,7 +2528,7 @@ end
 <para>If you omit any argument values before arguments you supply, the corresponding
 indexes are skipped in the returned array: </para>
 <example id="ex.Array-examples3">
-<title>Array class - examples</title>
+<title>Array class &mdash; examples</title>
 <programlisting>
 directions=.array~of("North","South", ,"West")
 do i=1 to 4                                  /* Produces: North          */
@@ -2538,7 +2539,7 @@ end                                          /*           West           */
 </example>
 <para>Here is an example using the ~~: </para>
 <example id="ex.Array-examples4">
-<title>Array class - examples</title>
+<title>Array class &mdash; examples</title>
 <programlisting>
 z=.array~of(1,2,3)~~put(4,4)
 do i = 1 to z~size
@@ -2832,7 +2833,7 @@ collection class object.
 </imageobject>
 </mediaobject>
 
-<para>Removes all items and returns the modified Bag.</para>
+<para>Returns the receiving Bag with all items removed.</para>
 </section>
 
 <section id="mthBagHasIndex"><title>hasIndex</title>
@@ -3014,8 +3015,9 @@ the same index, without removing any existing member items.</para>
 </imageobject>
 </mediaobject>
 
-<para>Adds all items in <emphasis role="italic">collection</emphasis> to
-the target Bag and returns the modified Bag.  The
+<para>Returns the receiving Bag with all items in
+<emphasis role="italic">collection</emphasis> added to it.
+The
 <emphasis role="italic">collection</emphasis> argument can be any object that supports a supplier
 method.  Items from <emphasis role="italic">collection</emphasis> are added
 using the item values returned by the supplier.
@@ -3211,7 +3213,7 @@ collection class object.</para>
 <indexterm><primary>examples</primary>
 <secondary>of Bag class</secondary></indexterm>
 <example id="ex.Bag-examples">
-<title>Bag class - examples</title>
+<title>Bag class &mdash; examples</title>
 <programlisting>
 /* Create a bag of fruit */
 fruit = .bag~of("Apple", "Orange", "Apple", "Pear")
@@ -3852,7 +3854,7 @@ collection class object.
 </indexterm>
 
 <example id="ex.CircularQueue-examples">
-<title>CircularQueue class - examples</title>
+<title>CircularQueue class &mdash; examples</title>
 <programlisting>
   -- create a circular buffer with five items
 u=.circularQueue~of("a", "b", "c", "d", "e")
@@ -4110,7 +4112,7 @@ returned. If the collection has no item or method associated with index
 <emphasis role="italic">name</emphasis>, the Nil object is returned.
 </para>
 <example id="ex.Directory-at">
-<title>Directory class - at method</title>
+<title>Directory class &mdash; at method</title>
 <programlisting>
 say .environment~at("OBJECT")   /* Produces: "The Object class" */
 </programlisting>
@@ -4130,9 +4132,9 @@ say .environment~at("OBJECT")   /* Produces: "The Object class" */
 </imageobject>
 </mediaobject>
 
-<para>Removes all items and returns the modified Directory.
+<para>Returns the receiving Directory with all items removed.
 <methodname>Empty</methodname> also removes all methods added using
-<xref linkend="mthDirectorySetMethod" xrefstyle="select:title"/>).
+<xref linkend="mthDirectorySetMethod" xrefstyle="select:title"/>.
 </para>
 </section>
 
@@ -4511,7 +4513,7 @@ case, unknown() returns no result.</para>
 <indexterm><primary>examples</primary>
 <secondary>of Directory class</secondary></indexterm>
 <example id="ex.Directory-examples">
-<title>Directory class - examples</title>
+<title>Directory class &mdash; examples</title>
 <programlisting>
 /******************************************************************************/
 /*  A Phone Book Directory program                                            */
@@ -4755,7 +4757,7 @@ has no item associated with <emphasis role="italic">index</emphasis>.
 </imageobject>
 </mediaobject>
 
-<para>Removes all items and returns the modified IdentityTable.</para>
+<para>Returns the receiving IdentityTable with all items removed.</para>
 </section>
 
 <section id="mthIdentityTableHasIndex"><title>hasIndex</title>
@@ -5207,7 +5209,7 @@ The delete method and the remove method produce the same result for the list cla
 </imageobject>
 </mediaobject>
 
-<para>Removes all items and returns the modified List.</para>
+<para>Returns the receiving List with all items removed.</para>
 </section>
 
 <section id="mthListFirst"><title>first</title>
@@ -5245,7 +5247,7 @@ list is empty.
 <para>Returns the first item in the list or the Nil object if the list is
 empty.</para>
 <example id="ex.List-firstItem">
-<title>List class - firstItem method</title>
+<title>List class &mdash; firstItem method</title>
 <programlisting>
 musketeers=.list~of("Porthos","Athos","Aramis") /* Creates list MUSKETEERS      */
 item=musketeers~firstItem                       /* Gives first item in list     */
@@ -5343,7 +5345,7 @@ The index values for any items in the list are not modified by the insertion.</p
 <secondary>insert method</secondary>
 <tertiary>of List class</tertiary></indexterm>
 <example id="ex.List-insert">
-<title>List class - insert method</title>
+<title>List class &mdash; insert method</title>
 <programlisting>
 musketeers=.list~of("Porthos","Athos","Aramis") /* Creates list MUSKETEERS        */
                                                 /* consisting of: Porthos         */
@@ -6164,7 +6166,7 @@ The delete method and the remove method produce the same result for the list cla
 <indexterm><primary>examples</primary>
 <secondary>delete method</secondary></indexterm>
 <example id="ex.Queue-delete">
-<title>Queue class - delete method</title>
+<title>Queue class &mdash; delete method</title>
 <programlisting>
    a = .queue~of("Fred", "Mike", "Rick", "David")
    a~delete(2)  -- removes "Mike", resulting in the queue
@@ -6186,7 +6188,7 @@ The delete method and the remove method produce the same result for the list cla
 </imageobject>
 </mediaobject>
 
-<para>Removes all items and returns the modified Queue.</para>
+<para>Returns the receiving Queue with all items removed.</para>
 </section>
 
 <section id="mthQueueFirst"><title>first</title>
@@ -6313,7 +6315,7 @@ by the queue object.</para>
 <secondary>insert method</secondary>
 <tertiary>of Queue class</tertiary></indexterm>
 <example id="ex.Queue-insert">
-<title>Queue class - insert method</title>
+<title>Queue class &mdash; insert method</title>
 <programlisting>
 musketeers=.queue~of("Porthos","Athos","Aramis) /* Creates queue MUSKETEERS       */
                                                 /* consisting of: Porthos         */
@@ -6409,7 +6411,7 @@ queue is empty.</para>
 <para>Returns the last item in the array or the Nil object if the array is
 empty.</para>
 <example id="ex.Queue-lastItem">
-<title>Queue class - lastItem method</title>
+<title>Queue class &mdash; lastItem method</title>
 <programlisting>
 musketeers=.array~of("Porthos","Athos","Aramis"") /* Creates array MUSKETEERS      */
 item=musketeers~lastItem                          /* Gives last item in array      */
@@ -6906,7 +6908,7 @@ collection class object.</para>
 </imageobject>
 </mediaobject>
 
-<para>Removes all items and returns the modified Relation.</para>
+<para>Returns the receiving Relation with all items removed.</para>
 </section>
 
 <section id="mthRelationHasIndex"><title>hasIndex</title>
@@ -7262,7 +7264,7 @@ collection class object.</para>
 <indexterm><primary>examples</primary>
 <secondary>of Relation class</secondary></indexterm>
 <example id="ex.Relation-examples">
-<title>Relation class - examples</title>
+<title>Relation class &mdash; examples</title>
 <programlisting>
 /* Use a relation to express parent-child relationships */
 family = .relation~new
@@ -7515,7 +7517,7 @@ has no item associated with <emphasis role="italic">index</emphasis>.
 </imageobject>
 </mediaobject>
 
-<para>Removes all items and returns the modified Set.</para>
+<para>Returns the receiving Set with all items removed.</para>
 </section>
 
 <section id="mthSetHasIndex"><title>hasIndex</title>
@@ -7684,8 +7686,9 @@ as <emphasis role="italic">item</emphasis>.
 </imageobject>
 </mediaobject>
 
-<para>Adds all items in <emphasis role="italic">collection</emphasis> to
-the target Set and returns the modified Set.  The
+<para>Returns the receiving Set with all items in
+<emphasis role="italic">collection</emphasis> added to it.
+The
 <emphasis role="italic">collection</emphasis> argument can be any object that supports a supplier
 method.  Items from <emphasis role="italic">collection</emphasis> are added using the item values
 returned by the supplier.
@@ -7896,7 +7899,7 @@ that are character strings.</para>
 <para>Stems are automatically created whenever a Rexx stem variable or Rexx
 compound variable is used. For example: </para>
 <example id="ex.Stem-examples1">
-<title>Stem class - examples</title>
+<title>Stem class &mdash; examples</title>
 <programlisting>
 a.1 = 2
 </programlisting>
@@ -7907,7 +7910,7 @@ the value 2 to entry 1 in the collection.</para>
 <para>The value of an uninitialized stem index is the stem object NAME
 concatenated with the derived stem index.</para>
 <example id="ex.Stem-examples2">
-<title>Stem class - examples</title>
+<title>Stem class &mdash; examples</title>
 <programlisting>
 say a.[1,2]  -- implicitly creates stem object with name "A."
 -- displays "A.1.2"
@@ -8070,7 +8073,7 @@ with the specified <emphasis role="italic">tail</emphasis>.
 </imageobject>
 </mediaobject>
 
-<para>Removes all items and returns the modified Stem object.</para>
+<para>Returns the receiving Stem object with all items removed.</para>
 </section>
 
 <section id="mthStemHasIndex"><title>hasIndex</title>
@@ -8515,7 +8518,7 @@ If the collection has no item associated with index
 <emphasis role="italic">name</emphasis>, the Nil object is returned.
 </para>
 <example id="ex.stringtable-at">
-<title>StringTable class - at method</title>
+<title>StringTable class &mdash; at method</title>
 <programlisting>
 say .environment~at("OBJECT")   /* Produces: "The Object class" */
 </programlisting>
@@ -8535,7 +8538,7 @@ say .environment~at("OBJECT")   /* Produces: "The Object class" */
 </imageobject>
 </mediaobject>
 
-<para>Removes all items and returns the modified StringTable.
+<para>Returns the receiving StringTable with all items removed.
 </para>
 </section>
 
@@ -9031,7 +9034,7 @@ has no item associated with <emphasis role="italic">index</emphasis>.
 </imageobject>
 </mediaobject>
 
-<para>Removes all items and returns the modified Table.</para>
+<para>Returns the receiving Table with all items removed.</para>
 </section>
 
 <section id="mthTableHasIndex"><title>hasIndex</title>
@@ -9229,7 +9232,7 @@ The supplier iterates over the items in an unspecified order.
 <emphasis role="bold">sort</emphasis> method.  The simplest sort is
 sorting an array of strings.</para>
 <example id="ex.Array-sorting">
-<title>Array class - sorting</title>
+<title>Array class &mdash; sorting</title>
 <programlisting>
 myArray = .array~of("Zoe", "Fred", "Xavier", "Andy")
 myArray~sort

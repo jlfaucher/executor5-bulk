@@ -440,10 +440,6 @@ platforms on which they are available.</para>
 <entry></entry>
 </row>
 <row>
-<entry><xref linkend="utlSyswinver" xrefstyle="select:title"/></entry><entry>YES</entry><entry>NO</entry>
-<entry></entry>
-</row>
-<row>
 <entry><xref linkend="utlSyswingetprinters" xrefstyle="select:title"/></entry><entry>YES</entry><entry>NO</entry>
 <entry></entry>
 </row>
@@ -453,6 +449,10 @@ platforms on which they are available.</para>
 </row>
 <row>
 <entry><xref linkend="utlSyswinsetdefaultprinter" xrefstyle="select:title"/></entry><entry>YES</entry><entry>NO</entry>
+<entry></entry>
+</row>
+<row>
+<entry><xref linkend="utlSyswinver" xrefstyle="select:title"/></entry><entry>YES</entry><entry>NO</entry>
 <entry></entry>
 </row>
 </tbody>
@@ -577,7 +577,7 @@ The default push button style is OK.</para>
 <indexterm><primary>examples</primary>
 <secondary>RxMessageBox</secondary></indexterm>
 <example id="ex.rxmessagebox">
-<title>RexxUtil - RxMessageBox</title>
+<title>RexxUtil &mdash; RxMessageBox</title>
 <programlisting>
 /* Give option to quit        */
 if RxMessageBox("Shall we continue", , "YesNo", "Question") = 7
@@ -824,7 +824,7 @@ is returned.  This may be one of the following, but could be others.
 
 <para>Clears the screen.</para>
 <example id="ex.syscls">
-<title>RexxUtil - SysCls</title>
+<title>RexxUtil &mdash; SysCls</title>
 <programlisting>
 /* Code */
 call SysCls
@@ -947,7 +947,7 @@ cursor position without moving the cursor.</para>
 <indexterm><primary>examples</primary>
 <secondary>SysCurPos</secondary></indexterm>
 <example id="ex.syscurpos">
-<title>RexxUtil - SysCurpos</title>
+<title>RexxUtil &mdash; SysCurpos</title>
 <programlisting>
 /* Code */
 call SysCls
@@ -1030,7 +1030,7 @@ Cursor position is 0, 0
 <indexterm><primary>examples</primary>
 <secondary>SysDriveInfo</secondary></indexterm>
 <example id="ex.sysdriveinfo">
-<title>RexxUtil - SysDriveinfo</title>
+<title>RexxUtil &mdash; SysDriveinfo</title>
 <programlisting>
 /* Code */
 say "Disk="SysDriveInfo("C:")
@@ -1095,7 +1095,7 @@ or installable file system (IFS) attached drives.
 <indexterm><primary>examples</primary>
 <secondary>SysDriveMap</secondary></indexterm>
 <example id="ex.sysdrivemap">
-<title>RexxUtil - SysDrivemap</title>
+<title>RexxUtil &mdash; SysDrivemap</title>
 <programlisting>
 /* Code */
 say "Used drives include:"
@@ -1189,7 +1189,7 @@ written to STDOUT if you omit this parameter.
 <indexterm><primary>examples</primary>
 <secondary>SysDumpVariables</secondary></indexterm>
 <example id="ex.sysdumpvariables">
-<title>RexxUtil - SysDumpvariables</title>
+<title>RexxUtil &mdash; SysDumpvariables</title>
 <programlisting>
 Call SysDumpVariables "MyVars.Lst" /* append vars to file */
 Call SysDumpVariables              /* list vars on STDOUT */
@@ -1236,7 +1236,7 @@ copied.</para></listitem></varlistentry>
 <indexterm><primary>examples</primary>
 <secondary>SysFileCopy</secondary></indexterm>
 <example id="ex.sysfilecopy">
-<title>RexxUtil - SysFilecopy</title>
+<title>RexxUtil &mdash; SysFilecopy</title>
 <programlisting>
 /* Code */
 call SysFileCopy "c:\temp\myfile.txt", "d:\myfolder\myCopy.txt"
@@ -1305,7 +1305,7 @@ is returned.  This may be one of the following, but could be others.
 <indexterm><primary>examples</primary>
 <secondary>SysFileDelete</secondary></indexterm>
 <example id="ex.sysfiledelete">
-<title>RexxUtil - SysFiledelete</title>
+<title>RexxUtil &mdash; SysFiledelete</title>
 <programlisting>
 /* Code */
 parse arg InputFile OutputFile
@@ -1345,7 +1345,7 @@ files and directories.</para>
 </para></listitem></varlistentry>
 </variablelist>
 <example id="ex.sysfileexists">
-<title>RexxUtil - SysFileexists</title>
+<title>RexxUtil &mdash; SysFileexists</title>
 <programlisting>
 if SysFileExists(InputFile) then say "File Exists!"
 else say "File does not exist."
@@ -1394,7 +1394,7 @@ is returned.
 <indexterm><primary>examples</primary>
 <secondary>SysFileMove</secondary></indexterm>
 <example id="ex.sysfilemove">
-<title>RexxUtil - SysFilemove</title>
+<title>RexxUtil &mdash; SysFilemove</title>
 <programlisting>
 /* Code */
 call SysFileMove "c:\temp\myfile.txt", "d:\myfolder"
@@ -1463,7 +1463,7 @@ The default is a case-insensitive search without line numbers.</para>
 <indexterm><primary>examples</primary>
 <secondary>SysFileSearch</secondary></indexterm>
 <example id="ex.sysfilesearch">
-<title>RexxUtil - SysFilesearch</title>
+<title>RexxUtil &mdash; SysFilesearch</title>
 <programlisting>
 /* Find DEVICE statements in CONFIG.SYS */
 call SysFileSearch "DEVICE", "C:\CONFIG.SYS", "file."
@@ -1535,7 +1535,7 @@ accessible, it returns a null string (&quot;&quot;).</para>
 <indexterm><primary>examples</primary>
 <secondary>SysFileSystemType</secondary></indexterm>
 <example id="ex.sysfilesystemtype">
-<title>RexxUtil - SysFilesystemtype</title>
+<title>RexxUtil &mdash; SysFilesystemtype</title>
 <programlisting>
 /* Code */
 say "File System="SysFileSystemType("C:")
@@ -1722,7 +1722,7 @@ applied.</para></note>
 <indexterm><primary>examples</primary>
 <secondary>SysFileTree</secondary></indexterm>
 <example id="ex.sysfiletree">
-<title>RexxUtil - SysFiletree</title>
+<title>RexxUtil &mdash; SysFiletree</title>
 <programlisting>
 /* Find all subdirectories on C: */
 call SysFileTree "c:\*.*", "file", "SD"
@@ -1769,7 +1769,7 @@ end
 This is a complete working example. It can be cut and pasted into a file and executed on a Unix system.
 </para>
 <example id="ex.sysfork">
-<title>RexxUtil - SysFork</title>
+<title>RexxUtil &mdash; SysFork</title>
 <programlisting>
 <![CDATA[
 
@@ -1987,7 +1987,7 @@ if no description is available.</para>
 <indexterm><primary>examples</primary>
 <secondary>SysGetErrortext</secondary></indexterm>
 <example id="ex.sysgeterrortext-1">
-<title>RexxUtil - SysGeterrortext (Windows)</title>
+<title>RexxUtil &mdash; SysGeterrortext (Windows)</title>
 <programlisting>
 err=SysMkDir("c:\temp")
 if err \= 0 then
@@ -1995,7 +1995,7 @@ say "Error" err":"SysGetErrortext(err)
 </programlisting>
 </example>
 <example id="ex.sysgeterrortext-2">
-<title>RexxUtil - SysGeterrortext (Unix)</title>
+<title>RexxUtil &mdash; SysGeterrortext (Unix)</title>
 <programlisting>
 err=SysMkDir("/home/NotKnown/temp")
 if err \= 0 then
@@ -2045,7 +2045,7 @@ that the file date and time query failed</para>
 <indexterm><primary>examples</primary>
 <secondary>SysGetFileDateTime</secondary></indexterm>
 <example id="ex.sysgetfiledatetime">
-<title>RexxUtil - SysGetfiledatetime</title>
+<title>RexxUtil &mdash; SysGetfiledatetime</title>
 <programlisting>
 Say "File creation time:" SysGetFileDateTime("MyFile.Log", "C")
 Say "File last access time:" SysGetFileDateTime("MyFile.Log", "A")
@@ -2128,7 +2128,7 @@ placeholders in the message.
 <indexterm><primary>examples</primary>
 <secondary>SysGetMessage</secondary></indexterm>
 <example id="ex.sysgetmessage">
-<title>RexxUtil - SysGetmessage</title>
+<title>RexxUtil &mdash; SysGetmessage</title>
 <programlisting>
 <![CDATA[
 /* sample code segment using SysGetMessage */
@@ -2186,7 +2186,7 @@ placeholders in the message.
 <indexterm><primary>examples</primary>
 <secondary>SysGetMessageX</secondary></indexterm>
 <example id="ex.sysgetmessagex">
-<title>RexxUtil - SysGetmessagex</title>
+<title>RexxUtil &mdash; SysGetmessagex</title>
 <programlisting>
 <![CDATA[
 /* sample code segment using SysGetMessage */
@@ -2323,7 +2323,7 @@ returned and stores these elements in
 <indexterm><primary>examples</primary>
 <secondary>SysIni</secondary></indexterm>
 <example id="ex.sysini-1">
-<title>RexxUtil - SysIni</title>
+<title>RexxUtil &mdash; SysIni</title>
 <programlisting>
 /***  Save the user entered name under the key "NAME" of *****
 ****  the application "MYAPP".                           ****/
@@ -2335,7 +2335,7 @@ exit
 </programlisting>
 </example>
 <example id="ex.sysini-2">
-<title>RexxUtil - SysIni</title>
+<title>RexxUtil &mdash; SysIni</title>
 <programlisting>
 /****  Type all WIN.INI file information to the screen  *****/
 call SysIni "WIN.INI", "All:", "Apps."
@@ -2385,7 +2385,7 @@ by this function.</para>
 </para></listitem></varlistentry>
 </variablelist>
 <example id="ex.sysisfile">
-<title>RexxUtil - SysIsfile</title>
+<title>RexxUtil &mdash; SysIsfile</title>
 <programlisting>
 if SysIsFile(InputFile) then say "File Exists!"
 else say "File does not exist."
@@ -2422,7 +2422,7 @@ wildcard specifications.</para>
 </para></listitem></varlistentry>
 </variablelist>
 <example id="ex.sysisfilecompressed">
-<title>RexxUtil - SysIsfilecompressed</title>
+<title>RexxUtil &mdash; SysIsfilecompressed</title>
 <programlisting>
 if SysIsFileCompressed(InputFile) then say "File is compressed!"
 else say "File is not compressed or does not exist."
@@ -2459,7 +2459,7 @@ wildcard specifications.</para>
 </para></listitem></varlistentry>
 </variablelist>
 <example id="ex.sysisfiledirectory">
-<title>RexxUtil - SysIsfiledirectory</title>
+<title>RexxUtil &mdash; SysIsfiledirectory</title>
 <programlisting>
 if SysIsFileDirectory(InputFile) then say "Subdirectory Exists!"
 else say "Subdirectory does not exist."
@@ -2496,7 +2496,7 @@ wildcard specifications.</para>
 </para></listitem></varlistentry>
 </variablelist>
 <example id="ex.sysisfileencrypted">
-<title>RexxUtil - SysIsfileencrypted</title>
+<title>RexxUtil &mdash; SysIsfileencrypted</title>
 <programlisting>
 if SysIsFileEncrypted(InputFile) then say "File is encrypted!"
 else say "File is not encrypted or does not exist."
@@ -2533,7 +2533,7 @@ wildcard specifications.</para>
 </para></listitem></varlistentry>
 </variablelist>
 <example id="ex.sysisfilelink">
-<title>RexxUtil - SysIsfilelink</title>
+<title>RexxUtil &mdash; SysIsfilelink</title>
 <programlisting>
 if SysIsFileLink(InputFile) then say "Link Exists!"
 else say "Link does not exist."
@@ -2571,7 +2571,7 @@ This function does not support wildcard specifications.</para>
 </para></listitem></varlistentry>
 </variablelist>
 <example id="ex.sysisfilenotcontentindexed">
-<title>RexxUtil - SysIsfilenotcontentindexed</title>
+<title>RexxUtil &mdash; SysIsfilenotcontentindexed</title>
 <programlisting>
 if SysIsFileNotContentIndexed(InputFile) then say "File is flagged to be Indexed!"
 else say "File is not flagged to be Indexed."
@@ -2608,7 +2608,7 @@ This function does not support wildcard specifications.</para>
 </para></listitem></varlistentry>
 </variablelist>
 <example id="ex.sysisfileoffline">
-<title>RexxUtil - SysIsfileoffline</title>
+<title>RexxUtil &mdash; SysIsfileoffline</title>
 <programlisting>
 if SysIsFileOffline(InputFile) then say "File is flagged as Offline!"
 else say "File is not flagged as Offline."
@@ -2645,7 +2645,7 @@ This function does not support wildcard specifications.</para>
 </para></listitem></varlistentry>
 </variablelist>
 <example id="ex.sysisfilesparse">
-<title>RexxUtil - SysIsfilesparse</title>
+<title>RexxUtil &mdash; SysIsfilesparse</title>
 <programlisting>
 if SysIsFileSparse(InputFile) then say "File is Sparse!"
 else say "File is not Sparse."
@@ -2682,7 +2682,7 @@ This function does not support wildcard specifications.</para>
 </para></listitem></varlistentry>
 </variablelist>
 <example id="ex.sysisfiletemporary">
-<title>RexxUtil - SysIsfiletemporary</title>
+<title>RexxUtil &mdash; SysIsfiletemporary</title>
 <programlisting>
 if SysIsFileTemporary(InputFile) then say "File is Temporary!"
 else say "File is not Temporary."
@@ -2707,7 +2707,7 @@ else say "File is not Temporary."
   might be:
 </para>
 <example id="ex.syslinver">
-<title>RexxUtil - SysLinver</title>
+<title>RexxUtil &mdash; SysLinver</title>
 <programlisting>
 Say SysLinVer()   ->  "Linux 3.8.13.4-desktop-1.mga3"
 </programlisting>
@@ -2813,7 +2813,7 @@ is returned.  This may be one of the following, but could be others.
 <indexterm><primary>examples</primary>
 <secondary>SysMkDir</secondary></indexterm>
 <example id="ex.sysmkdir">
-<title>RexxUtil - SysMkdir</title>
+<title>RexxUtil &mdash; SysMkdir</title>
 <programlisting>
 /* Code */
 call SysMkDir "rexx"
@@ -3243,7 +3243,7 @@ is returned.  This may be one of the following, but could be others.
 <indexterm><primary>examples</primary>
 <secondary>SysRmDir</secondary></indexterm>
 <example id="ex.sysrmkdir">
-<title>RexxUtil - SysRmdir</title>
+<title>RexxUtil &mdash; SysRmdir</title>
 <programlisting>
 /* Code */
 call SysRmDir "c:\rexx"
@@ -3317,7 +3317,7 @@ specified path. This is the default.
 <indexterm><primary>examples</primary>
 <secondary>SysSearchPath</secondary></indexterm>
 <example id="ex.syssearchpath">
-<title>RexxUtil - SysSearchpath</title>
+<title>RexxUtil &mdash; SysSearchpath</title>
 <programlisting>
 /* Code */
 fspec = SysSearchPath("PATH", "CMD.EXE")
@@ -3381,7 +3381,7 @@ HH:MM:SS (24-hour format).
 <indexterm><primary>examples</primary>
 <secondary>SysSetFileDateTime</secondary></indexterm>
 <example id="ex.syssetfiledatetime">
-<title>RexxUtil - SysSetfiledatetime</title>
+<title>RexxUtil &mdash; SysSetfiledatetime</title>
 <programlisting>
 Call SysSetFileDateTime "MyFile.Log"  /* touch file */
  Call SysSetFileDateTime "MyFile.Log", "1998-12-17"
@@ -3584,7 +3584,7 @@ You can specify up to seven decimal places in the number.
 <indexterm><primary>examples</primary>
 <secondary>SysSleep</secondary></indexterm>
 <example id="ex.syssleep">
-<title>RexxUtil - SysSleep</title>
+<title>RexxUtil &mdash; SysSleep</title>
 <programlisting>
 Say "Now paused for 2 seconds ..."
 Call SysSleep 2
@@ -3665,7 +3665,7 @@ target stem.</para></listitem></varlistentry>
 <indexterm><primary>examples</primary>
 <secondary>SysStemCopy</secondary></indexterm>
 <example id="ex.sysstemcopy">
-<title>RexxUtil - SysStemcopy</title>
+<title>RexxUtil &mdash; SysStemcopy</title>
 <programlisting>
 Source.0 = 3
 Source.1 = "Hello"
@@ -3727,7 +3727,7 @@ an index.</para>
 <indexterm><primary>examples</primary>
 <secondary>SysStemDelete</secondary></indexterm>
 <example id="ex.sysstemdelete">
-<title>RexxUtil - SysStemdelete</title>
+<title>RexxUtil &mdash; SysStemdelete</title>
 <programlisting>
 Call SysStemDelete "MyStem.", 5
 Call SysStemDelete "MyStem.", 5, 4
@@ -3774,7 +3774,7 @@ an index.</para>
 </para></listitem></varlistentry>
 </variablelist>
 <example id="ex.syssteminsert">
-<title>RexxUtil - SysSteminsert</title>
+<title>RexxUtil &mdash; SysSteminsert</title>
 <programlisting>
 Call SysStemInsert "MyStem.", 5, "New value for item 5"
 </programlisting>
@@ -3844,7 +3844,7 @@ last column.</para></listitem></varlistentry>
 <indexterm><primary>examples</primary>
 <secondary>SysStemSort</secondary></indexterm>
 <example id="ex.sysstemdort">
-<title>RexxUtil - SysStemsort</title>
+<title>RexxUtil &mdash; SysStemsort</title>
 <programlisting>
 /* sort all elements descending, use cols 5 to 10 as key */
 Call SysStemSort "MyStem.", "D", , , ,5, 10
@@ -3970,7 +3970,7 @@ does not exist. The default filter character is ?.
 <indexterm><primary>examples</primary>
 <secondary>SysTempFileName</secondary></indexterm>
 <example id="ex.systempfilename">
-<title>RexxUtil - SysTempfilename</title>
+<title>RexxUtil &mdash; SysTempfilename</title>
 <programlisting>
 /* Windows Code */
 say SysTempFileName("C:\TEMP\MYEXEC.???")
@@ -4044,7 +4044,7 @@ function, the previous color settings are lost.</para>
 <indexterm><primary>examples</primary>
 <secondary>SysTextScreenRead</secondary></indexterm>
 <example id="ex.systextscreenread">
-<title>RexxUtil - SysTextscreenread</title>
+<title>RexxUtil &mdash; SysTextscreenread</title>
 <programlisting>
 /* Reading the entire screen */
 screen = SysTextScreenRead(0, 0)
@@ -4079,7 +4079,7 @@ line = SysTextScreenRead(2, 0, 80)
 <indexterm><primary>examples</primary>
 <secondary>SysTextScreenSize</secondary></indexterm>
 <example id="ex.systextscreensize">
-<title>RexxUtil - SysTextscreensize</title>
+<title>RexxUtil &mdash; SysTextscreensize</title>
 <programlisting>
 /* Code */
 call RxFuncAdd "SysTextScreenSize", "RexxUtil", "SysTextScreenSize"
@@ -4228,7 +4228,7 @@ functions.</para>
 <para>Because this function was not part of the original packaging, a sample
 logic to check for a certain level of RexxUTIL can look as follows:</para>
 <example id="ex.sysutilversion">
-<title>RexxUtil - SysUtilVersion</title>
+<title>RexxUtil &mdash; SysUtilVersion</title>
 <programlisting>
 If RxFuncQuery("SysUtilVersion") = 1 |,
    SysUtilVersion() &lt; "2.00" Then
@@ -4239,7 +4239,7 @@ If RxFuncQuery("SysUtilVersion") = 1 |,
 level a similar check can be performed by querying this function as follows:
 </para>
 <example id="ex.rxfuncquery-1">
-<title>RexxUtil - RxFuncquery</title>
+<title>RexxUtil &mdash; RxFuncquery</title>
 <programlisting>
 If RxFuncQuery("SysSetFileDateTime") = 1 Then
   Say "Your REXXUTIL.DLL is not at the current level"
@@ -4268,7 +4268,7 @@ If RxFuncQuery("SysSetFileDateTime") = 1 Then
   Some possible output for operating systems supported by ooRexx might be:
 </para>
 <example id="ex.sysversion">
-<title>RexxUtil - SysVersion</title>
+<title>RexxUtil &mdash; SysVersion</title>
 <programlisting>
 Say SysVersion()   ->  "Linux #67~precise1-Ubuntu SMP Wed Nov 13 16:16:57 UTC 2013.3.5.0-44-generic"
 Say SysVersion()   ->  "WindowsNT 6.01"             /* Windows 7 */
@@ -4607,7 +4607,7 @@ You can use SysGetErrortext() to get a description of the error.
 <indexterm><primary>examples</primary>
 <secondary>SysWinGetPrinters</secondary></indexterm>
 <example id="ex.syswingetprinters">
-<title>RexxUtil - SysWinGetPrinters and SysWinGetDefaultPrinter</title>
+<title>RexxUtil &mdash; SysWinGetPrinters and SysWinGetDefaultPrinter</title>
 <programlisting>
 <![CDATA[
 /* set default printer */
@@ -4679,7 +4679,7 @@ information in the form <computeroutput>WindowsNT x.xx</computeroutput>.</para>
 Some possible output might be:
 </para>
 <example id="ex.syswinver">
-<title>RexxUtil - SysWinVer</title>
+<title>RexxUtil &mdash; SysWinVer</title>
 <programlisting>
 Say SysWinVer()   ->  "WindowsNT 6.01"    /* Windows 7 */
 </programlisting>
