@@ -197,12 +197,15 @@ self~assertSame(date('O', date, format), "07/09/22", "ordered           / subtes
 self~assertSame(date('O', date, format, ''), "070922", "ordered_no_sep    / subtest # 12")
 self~assertSame(date('O', date, format, '-'), "07-09-22", "ordered_dash_sep  / subtest # 13")
 self~assertSame(date('S', date, format), "20070922", "standard          / subtest # 14")
-self~assertSame(date('S', date, format, ''), "20070922", "stardard_no_sep   / subtest # 15")
+self~assertSame(date('S', date, format, ''), "20070922", "standard_no_sep   / subtest # 15")
 self~assertSame(date('S', date, format, '-'), "2007-09-22", "standard_dash_sep / subtest # 16")
 self~assertSame(date('U', date, format), "09/22/07", "usa               / subtest # 17")
 self~assertSame(date('U', date, format, ''), "092207", "usa_no_sep        / subtest # 18")
 self~assertSame(date('U', date, format, '-'), "09-22-07", "usa_dash_sep      / subtest # 19")
 self~assertSame(date('W', date, format), "Saturday", "weekday           / subtest # 20")
+self~assertSame(date('I', date, format), "2007-09-22", "iso               / subtest # 21")
+self~assertSame(date('I', date, format, ''), "20070922", "iso_no_sep        / subtest # 22")
+self~assertSame(date('I', date, format, '/'), "2007/09/22", "iso_slash_sep     / subtest # 23")
 
 ::METHOD 'test_standard_dash'
 date = '2007-09-22'
@@ -228,6 +231,9 @@ self~assertSame(date('U', date, format,, sep), "09/22/07", "usa               / 
 self~assertSame(date('U', date, format, '', sep), "092207", "usa_no_sep        / subtest # 18")
 self~assertSame(date('U', date, format, '-', sep), "09-22-07", "usa_dash_sep      / subtest # 19")
 self~assertSame(date('W', date, format,, sep), "Saturday", "weekday           / subtest # 20")
+self~assertSame(date('I', date, format,, sep), "2007-09-22", "iso               / subtest # 21")
+self~assertSame(date('I', date, format, '', sep), "20070922", "iso_no_sep        / subtest # 22")
+self~assertSame(date('I', date, format, '/', sep), "2007/09/22", "iso_slash_sep     / subtest # 23")
 
 ::METHOD 'test_standard_null'
 date = '20070922'
@@ -253,6 +259,9 @@ self~assertSame(date('U', date, format,, sep), "09/22/07", "usa               / 
 self~assertSame(date('U', date, format, '', sep), "092207", "usa_no_sep        / subtest # 18")
 self~assertSame(date('U', date, format, '-', sep), "09-22-07", "usa_dash_sep      / subtest # 19")
 self~assertSame(date('W', date, format,, sep), "Saturday", "weekday           / subtest # 20")
+self~assertSame(date('I', date, format,, sep), "2007-09-22", "iso               / subtest # 21")
+self~assertSame(date('I', date, format, '', sep), "20070922", "iso_no_sep        / subtest # 22")
+self~assertSame(date('I', date, format, '/', sep), "2007/09/22", "iso_slash_sep     / subtest # 23")
 
 ::METHOD 'test_normal'
 date = '22 Sep 2007'
@@ -271,12 +280,15 @@ self~assertSame(date('O', date, format), "07/09/22", "ordered           / subtes
 self~assertSame(date('O', date, format, ''), "070922", "ordered_no_sep    / subtest # 12")
 self~assertSame(date('O', date, format, '-'), "07-09-22", "ordered_dash_sep  / subtest # 13")
 self~assertSame(date('S', date, format), "20070922", "standard          / subtest # 14")
-self~assertSame(date('S', date, format, ''), "20070922", "stardard_no_sep   / subtest # 15")
+self~assertSame(date('S', date, format, ''), "20070922", "standard_no_sep   / subtest # 15")
 self~assertSame(date('S', date, format, '-'), "2007-09-22", "standard_dash_sep / subtest # 16")
 self~assertSame(date('U', date, format), "09/22/07", "usa               / subtest # 17")
 self~assertSame(date('U', date, format, ''), "092207", "usa_no_sep        / subtest # 18")
 self~assertSame(date('U', date, format, '-'), "09-22-07", "usa_dash_sep      / subtest # 19")
 self~assertSame(date('W', date, format), "Saturday", "weekday           / subtest # 20")
+self~assertSame(date('I', date, format), "2007-09-22", "iso               / subtest # 21")
+self~assertSame(date('I', date, format, ''), "20070922", "iso_no_sep        / subtest # 22")
+self~assertSame(date('I', date, format, '/'), "2007/09/22", "iso_slash_sep     / subtest # 23")
 
 ::METHOD 'test_normal_dash'
 date = '22-Sep-2007'
@@ -302,6 +314,9 @@ self~assertSame(date('U', date, format,, sep), "09/22/07", "usa               / 
 self~assertSame(date('U', date, format, '', sep), "092207", "usa_no_sep        / subtest # 18")
 self~assertSame(date('U', date, format, '-', sep), "09-22-07", "usa_dash_sep      / subtest # 19")
 self~assertSame(date('W', date, format,, sep), "Saturday", "weekday           / subtest # 20")
+self~assertSame(date('I', date, format,, sep), "2007-09-22", "iso               / subtest # 21")
+self~assertSame(date('I', date, format, '', sep), "20070922", "iso_no_sep        / subtest # 22")
+self~assertSame(date('I', date, format, '/', sep), "2007/09/22", "iso_slash_sep     / subtest # 23")
 
 ::METHOD 'test_normal_null'
 date = '22Sep2007'
@@ -327,6 +342,9 @@ self~assertSame(date('U', date, format,, sep), "09/22/07", "usa               / 
 self~assertSame(date('U', date, format, '', sep), "092207", "usa_no_sep        / subtest # 18")
 self~assertSame(date('U', date, format, '-', sep), "09-22-07", "usa_dash_sep      / subtest # 19")
 self~assertSame(date('W', date, format,, sep), "Saturday", "weekday           / subtest # 20")
+self~assertSame(date('I', date, format,, sep), "2007-09-22", "iso               / subtest # 21")
+self~assertSame(date('I', date, format, '', sep), "20070922", "iso_no_sep        / subtest # 22")
+self~assertSame(date('I', date, format, '/', sep), "2007/09/22", "iso_slash_sep     / subtest # 23")
 
 ::METHOD 'test_base'
 date = '732940'
@@ -345,12 +363,15 @@ self~assertSame(date('O', date, format), "07/09/22", "ordered           / subtes
 self~assertSame(date('O', date, format, ''), "070922", "ordered_no_sep    / subtest # 12")
 self~assertSame(date('O', date, format, '-'), "07-09-22", "ordered_dash_sep  / subtest # 13")
 self~assertSame(date('S', date, format), "20070922", "standard          / subtest # 14")
-self~assertSame(date('S', date, format, ''), "20070922", "stardard_no_sep   / subtest # 15")
+self~assertSame(date('S', date, format, ''), "20070922", "standard_no_sep   / subtest # 15")
 self~assertSame(date('S', date, format, '-'), "2007-09-22", "standard_dash_sep / subtest # 16")
 self~assertSame(date('U', date, format), "09/22/07", "usa               / subtest # 17")
 self~assertSame(date('U', date, format, ''), "092207", "usa_no_sep        / subtest # 18")
 self~assertSame(date('U', date, format, '-'), "09-22-07", "usa_dash_sep      / subtest # 19")
 self~assertSame(date('W', date, format), "Saturday", "weekday           / subtest # 20")
+self~assertSame(date('I', date, format), "2007-09-22", "iso               / subtest # 21")
+self~assertSame(date('I', date, format, ''), "20070922", "iso_no_sep        / subtest # 22")
+self~assertSame(date('I', date, format, '/'), "2007/09/22", "iso_slash_sep     / subtest # 23")
 
 ::METHOD 'test_european'
 date = '22/09/07'
@@ -369,12 +390,15 @@ self~assertSame(date('O', date, format), "07/09/22", "ordered           / subtes
 self~assertSame(date('O', date, format, ''), "070922", "ordered_no_sep    / subtest # 12")
 self~assertSame(date('O', date, format, '-'), "07-09-22", "ordered_dash_sep  / subtest # 13")
 self~assertSame(date('S', date, format), "20070922", "standard          / subtest # 14")
-self~assertSame(date('S', date, format, ''), "20070922", "stardard_no_sep   / subtest # 15")
+self~assertSame(date('S', date, format, ''), "20070922", "standard_no_sep   / subtest # 15")
 self~assertSame(date('S', date, format, '-'), "2007-09-22", "standard_dash_sep / subtest # 16")
 self~assertSame(date('U', date, format), "09/22/07", "usa               / subtest # 17")
 self~assertSame(date('U', date, format, ''), "092207", "usa_no_sep        / subtest # 18")
 self~assertSame(date('U', date, format, '-'), "09-22-07", "usa_dash_sep      / subtest # 19")
 self~assertSame(date('W', date, format), "Saturday", "weekday           / subtest # 20")
+self~assertSame(date('I', date, format), "2007-09-22", "iso               / subtest # 21")
+self~assertSame(date('I', date, format, ''), "20070922", "iso_no_sep        / subtest # 22")
+self~assertSame(date('I', date, format, '/'), "2007/09/22", "iso_slash_sep     / subtest # 23")
 
 ::METHOD 'test_european_dash'
 date = '22-09-07'
@@ -400,6 +424,9 @@ self~assertSame(date('U', date, format,, sep), "09/22/07", "usa               / 
 self~assertSame(date('U', date, format, '', sep), "092207", "usa_no_sep        / subtest # 18")
 self~assertSame(date('U', date, format, '-', sep), "09-22-07", "usa_dash_sep      / subtest # 19")
 self~assertSame(date('W', date, format,, sep), "Saturday", "weekday           / subtest # 20")
+self~assertSame(date('I', date, format,, sep), "2007-09-22", "iso               / subtest # 21")
+self~assertSame(date('I', date, format, '', sep), "20070922", "iso_no_sep        / subtest # 22")
+self~assertSame(date('I', date, format, '/', sep), "2007/09/22", "iso_slash_sep     / subtest # 23")
 
 ::METHOD 'test_european_null'
 date = '220907'
@@ -425,6 +452,9 @@ self~assertSame(date('U', date, format,, sep), "09/22/07", "usa               / 
 self~assertSame(date('U', date, format, '', sep), "092207", "usa_no_sep        / subtest # 18")
 self~assertSame(date('U', date, format, '-', sep), "09-22-07", "usa_dash_sep      / subtest # 19")
 self~assertSame(date('W', date, format,, sep), "Saturday", "weekday           / subtest # 20")
+self~assertSame(date('I', date, format,, sep), "2007-09-22", "iso               / subtest # 21")
+self~assertSame(date('I', date, format, '', sep), "20070922", "iso_no_sep        / subtest # 22")
+self~assertSame(date('I', date, format, '/', sep), "2007/09/22", "iso_slash_sep     / subtest # 23")
 
 ::METHOD 'test_ordered'
 date = '07/09/22'
@@ -443,12 +473,15 @@ self~assertSame(date('O', date, format), "07/09/22", "ordered           / subtes
 self~assertSame(date('O', date, format, ''), "070922", "ordered_no_sep    / subtest # 12")
 self~assertSame(date('O', date, format, '-'), "07-09-22", "ordered_dash_sep  / subtest # 13")
 self~assertSame(date('S', date, format), "20070922", "standard          / subtest # 14")
-self~assertSame(date('S', date, format, ''), "20070922", "stardard_no_sep   / subtest # 15")
+self~assertSame(date('S', date, format, ''), "20070922", "standard_no_sep   / subtest # 15")
 self~assertSame(date('S', date, format, '-'), "2007-09-22", "standard_dash_sep / subtest # 16")
 self~assertSame(date('U', date, format), "09/22/07", "usa               / subtest # 17")
 self~assertSame(date('U', date, format, ''), "092207", "usa_no_sep        / subtest # 18")
 self~assertSame(date('U', date, format, '-'), "09-22-07", "usa_dash_sep      / subtest # 19")
 self~assertSame(date('W', date, format), "Saturday", "weekday           / subtest # 20")
+self~assertSame(date('I', date, format), "2007-09-22", "iso               / subtest # 21")
+self~assertSame(date('I', date, format, ''), "20070922", "iso_no_sep        / subtest # 22")
+self~assertSame(date('I', date, format, '/'), "2007/09/22", "iso_slash_sep     / subtest # 23")
 
 ::METHOD 'test_ordered_dash'
 date = '07-09-22'
@@ -474,6 +507,9 @@ self~assertSame(date('U', date, format,, sep), "09/22/07", "usa               / 
 self~assertSame(date('U', date, format, '', sep), "092207", "usa_no_sep        / subtest # 18")
 self~assertSame(date('U', date, format, '-', sep), "09-22-07", "usa_dash_sep      / subtest # 19")
 self~assertSame(date('W', date, format,, sep), "Saturday", "weekday           / subtest # 20")
+self~assertSame(date('I', date, format,, sep), "2007-09-22", "iso               / subtest # 21")
+self~assertSame(date('I', date, format, '', sep), "20070922", "iso_no_sep        / subtest # 22")
+self~assertSame(date('I', date, format, '/', sep), "2007/09/22", "iso_slash_sep     / subtest # 23")
 
 ::METHOD 'test_ordered_null'
 date = '070922'
@@ -499,6 +535,9 @@ self~assertSame(date('U', date, format,, sep), "09/22/07", "usa               / 
 self~assertSame(date('U', date, format, '', sep), "092207", "usa_no_sep        / subtest # 18")
 self~assertSame(date('U', date, format, '-', sep), "09-22-07", "usa_dash_sep      / subtest # 19")
 self~assertSame(date('W', date, format,, sep), "Saturday", "weekday           / subtest # 20")
+self~assertSame(date('I', date, format,, sep), "2007-09-22", "iso               / subtest # 21")
+self~assertSame(date('I', date, format, '', sep), "20070922", "iso_no_sep        / subtest # 22")
+self~assertSame(date('I', date, format, '/', sep), "2007/09/22", "iso_slash_sep     / subtest # 23")
 
 ::METHOD 'test_usa'
 date = '09/22/07'
@@ -517,12 +556,15 @@ self~assertSame(date('O', date, format), "07/09/22", "ordered           / subtes
 self~assertSame(date('O', date, format, ''), "070922", "ordered_no_sep    / subtest # 12")
 self~assertSame(date('O', date, format, '-'), "07-09-22", "ordered_dash_sep  / subtest # 13")
 self~assertSame(date('S', date, format), "20070922", "standard          / subtest # 14")
-self~assertSame(date('S', date, format, ''), "20070922", "stardard_no_sep   / subtest # 15")
+self~assertSame(date('S', date, format, ''), "20070922", "standard_no_sep   / subtest # 15")
 self~assertSame(date('S', date, format, '-'), "2007-09-22", "standard_dash_sep / subtest # 16")
 self~assertSame(date('U', date, format), "09/22/07", "usa               / subtest # 17")
 self~assertSame(date('U', date, format, ''), "092207", "usa_no_sep        / subtest # 18")
 self~assertSame(date('U', date, format, '-'), "09-22-07", "usa_dash_sep      / subtest # 19")
 self~assertSame(date('W', date, format), "Saturday", "weekday           / subtest # 20")
+self~assertSame(date('I', date, format), "2007-09-22", "iso               / subtest # 21")
+self~assertSame(date('I', date, format, ''), "20070922", "iso_no_sep        / subtest # 22")
+self~assertSame(date('I', date, format, '/'), "2007/09/22", "iso_slash_sep     / subtest # 23")
 
 ::METHOD 'test_usa_dash'
 date = '09-22-07'
@@ -548,6 +590,9 @@ self~assertSame(date('U', date, format,, sep), "09/22/07", "usa               / 
 self~assertSame(date('U', date, format, '', sep), "092207", "usa_no_sep        / subtest # 18")
 self~assertSame(date('U', date, format, '-', sep), "09-22-07", "usa_dash_sep      / subtest # 19")
 self~assertSame(date('W', date, format,, sep), "Saturday", "weekday           / subtest # 20")
+self~assertSame(date('I', date, format,, sep), "2007-09-22", "iso               / subtest # 21")
+self~assertSame(date('I', date, format, '', sep), "20070922", "iso_no_sep        / subtest # 22")
+self~assertSame(date('I', date, format, '/', sep), "2007/09/22", "iso_slash_sep     / subtest # 23")
 
 ::METHOD 'test_usa_null'
 date = '092207'
@@ -573,6 +618,92 @@ self~assertSame(date('U', date, format,, sep), "09/22/07", "usa               / 
 self~assertSame(date('U', date, format, '', sep), "092207", "usa_no_sep        / subtest # 18")
 self~assertSame(date('U', date, format, '-', sep), "09-22-07", "usa_dash_sep      / subtest # 19")
 self~assertSame(date('W', date, format,, sep), "Saturday", "weekday           / subtest # 20")
+self~assertSame(date('I', date, format,, sep), "2007-09-22", "iso               / subtest # 21")
+self~assertSame(date('I', date, format, '', sep), "20070922", "iso_no_sep        / subtest # 22")
+self~assertSame(date('I', date, format, '/', sep), "2007/09/22", "iso_slash_sep     / subtest # 23")
+
+::METHOD 'test_iso'
+date = '2015-11-07'
+format = 'I'
+self~assertSame(date('B', date, format), "735908", "base              / subtest # 1")
+self~assertSame(date('D', date, format), "311", "days              / subtest # 2")
+self~assertSame(date('E', date, format), "07/11/15", "european          / subtest # 3")
+self~assertSame(date('E', date, format, ''), "071115", "european_no_sep   / subtest # 4")
+self~assertSame(date('E', date, format, '-'), "07-11-15", "european_dash_sep / subtest # 5")
+self~assertSame(date('L', date, format), "7 November 2015", "language          / subtest # 6")
+self~assertSame(date('M', date, format), "November", "month             / subtest # 7")
+self~assertSame(date('N', date, format), "7 Nov 2015", "normal            / subtest # 8")
+self~assertSame(date('N', date, format, ''), "7Nov2015", "normal_no_sep     / subtest # 9")
+self~assertSame(date('N', date, format,'-'), "7-Nov-2015", "normal_dash_sep   / subtest # 10")
+self~assertSame(date('O', date, format), "15/11/07", "ordered           / subtest # 11")
+self~assertSame(date('O', date, format, ''), "151107", "ordered_no_sep    / subtest # 12")
+self~assertSame(date('O', date, format, '-'), "15-11-07", "ordered_dash_sep  / subtest # 13")
+self~assertSame(date('S', date, format), "20151107", "standard          / subtest # 14")
+self~assertSame(date('S', date, format, ''), "20151107", "standard_no_sep   / subtest # 15")
+self~assertSame(date('S', date, format, '-'), "2015-11-07", "standard_dash_sep / subtest # 16")
+self~assertSame(date('U', date, format), "11/07/15", "usa               / subtest # 17")
+self~assertSame(date('U', date, format, ''), "110715", "usa_no_sep        / subtest # 18")
+self~assertSame(date('U', date, format, '-'), "11-07-15", "usa_dash_sep      / subtest # 19")
+self~assertSame(date('W', date, format), "Saturday", "weekday           / subtest # 20")
+self~assertSame(date('I', date, format), "2015-11-07", "iso               / subtest # 21")
+self~assertSame(date('I', date, format, ''), "20151107", "iso_no_sep        / subtest # 22")
+self~assertSame(date('I', date, format, '/'), "2015/11/07", "iso_slash_sep     / subtest # 23")
+
+::METHOD 'test_iso_slash'
+date = '2015/09/22'
+format = 'I'
+sep = '/'
+self~assertSame(date('B', date, format,, sep), "735862", "base              / subtest # 1")
+self~assertSame(date('D', date, format,, sep), "265", "days              / subtest # 2")
+self~assertSame(date('E', date, format,, sep), "22/09/15", "european          / subtest # 3")
+self~assertSame(date('E', date, format, '', sep), "220915", "european_no_sep   / subtest # 4")
+self~assertSame(date('E', date, format, '-', sep), "22-09-15", "european_dash_sep / subtest # 5")
+self~assertSame(date('L', date, format,, sep), "22 September 2015", "language          / subtest # 6")
+self~assertSame(date('M', date, format,, sep), "September", "month             / subtest # 7")
+self~assertSame(date('N', date, format,, sep), "22 Sep 2015", "normal            / subtest # 8")
+self~assertSame(date('N', date, format, '', sep), "22Sep2015", "normal_no_sep     / subtest # 9")
+self~assertSame(date('N', date, format,'-', sep), "22-Sep-2015", "normal_dash_sep   / subtest # 10")
+self~assertSame(date('O', date, format,, sep), "15/09/22", "ordered           / subtest # 11")
+self~assertSame(date('O', date, format, '', sep), "150922", "ordered_no_sep    / subtest # 12")
+self~assertSame(date('O', date, format, '-', sep), "15-09-22", "ordered_dash_sep  / subtest # 13")
+self~assertSame(date('S', date, format,, sep), "20150922", "standard          / subtest # 14")
+self~assertSame(date('S', date, format, '', sep), "20150922", "stardard_no_sep   / subtest # 15")
+self~assertSame(date('S', date, format, '-', sep), "2015-09-22", "standard_dash_sep / subtest # 16")
+self~assertSame(date('U', date, format,, sep), "09/22/15", "usa               / subtest # 17")
+self~assertSame(date('U', date, format, '', sep), "092215", "usa_no_sep        / subtest # 18")
+self~assertSame(date('U', date, format, '-', sep), "09-22-15", "usa_dash_sep      / subtest # 19")
+self~assertSame(date('W', date, format,, sep), "Tuesday", "weekday           / subtest # 20")
+self~assertSame(date('I', date, format,, sep), "2015-09-22", "iso               / subtest # 21")
+self~assertSame(date('I', date, format, '', sep), "20150922", "iso_no_sep        / subtest # 22")
+self~assertSame(date('I', date, format, '/', sep), "2015/09/22", "iso_slash_sep     / subtest # 23")
+
+::METHOD 'test_iso_null'
+date = '20150922'
+format = 'I'
+sep = ''
+self~assertSame(date('B', date, format,, sep), "735862", "base              / subtest # 1")
+self~assertSame(date('D', date, format,, sep), "265", "days              / subtest # 2")
+self~assertSame(date('E', date, format,, sep), "22/09/15", "european          / subtest # 3")
+self~assertSame(date('E', date, format, '', sep), "220915", "european_no_sep   / subtest # 4")
+self~assertSame(date('E', date, format, '-', sep), "22-09-15", "european_dash_sep / subtest # 5")
+self~assertSame(date('L', date, format,, sep), "22 September 2015", "language          / subtest # 6")
+self~assertSame(date('M', date, format,, sep), "September", "month             / subtest # 7")
+self~assertSame(date('N', date, format,, sep), "22 Sep 2015", "normal            / subtest # 8")
+self~assertSame(date('N', date, format, '', sep), "22Sep2015", "normal_no_sep     / subtest # 9")
+self~assertSame(date('N', date, format,'-', sep), "22-Sep-2015", "normal_dash_sep   / subtest # 10")
+self~assertSame(date('O', date, format,, sep), "15/09/22", "ordered           / subtest # 11")
+self~assertSame(date('O', date, format, '', sep), "150922", "ordered_no_sep    / subtest # 12")
+self~assertSame(date('O', date, format, '-', sep), "15-09-22", "ordered_dash_sep  / subtest # 13")
+self~assertSame(date('S', date, format,, sep), "20150922", "standard          / subtest # 14")
+self~assertSame(date('S', date, format, '', sep), "20150922", "stardard_no_sep   / subtest # 15")
+self~assertSame(date('S', date, format, '-', sep), "2015-09-22", "standard_dash_sep / subtest # 16")
+self~assertSame(date('U', date, format,, sep), "09/22/15", "usa               / subtest # 17")
+self~assertSame(date('U', date, format, '', sep), "092215", "usa_no_sep        / subtest # 18")
+self~assertSame(date('U', date, format, '-', sep), "09-22-15", "usa_dash_sep      / subtest # 19")
+self~assertSame(date('W', date, format,, sep), "Tuesday", "weekday           / subtest # 20")
+self~assertSame(date('I', date, format,, sep), "2015-09-22", "iso               / subtest # 21")
+self~assertSame(date('I', date, format, '', sep), "20150922", "iso_no_sep        / subtest # 22")
+self~assertSame(date('I', date, format, '/', sep), "2015/09/22", "iso_slash_sep     / subtest # 23")
 
 ::METHOD 'test_first_day'
 date = '00010101'
@@ -591,12 +722,15 @@ self~assertSame(date('O', date, format), "01/01/01", "ordered           / subtes
 self~assertSame(date('O', date, format, ''), "010101", "ordered_no_sep    / subtest # 12")
 self~assertSame(date('O', date, format, '-'), "01-01-01", "ordered_dash_sep  / subtest # 13")
 self~assertSame(date('S', date, format), "00010101", "standard          / subtest # 14")
-self~assertSame(date('S', date, format, ''), "00010101", "stardard_no_sep   / subtest # 15")
+self~assertSame(date('S', date, format, ''), "00010101", "standard_no_sep   / subtest # 15")
 self~assertSame(date('S', date, format, '-'), "0001-01-01", "standard_dash_sep / subtest # 16")
 self~assertSame(date('U', date, format), "01/01/01", "usa               / subtest # 17")
 self~assertSame(date('U', date, format, ''), "010101", "usa_no_sep        / subtest # 18")
 self~assertSame(date('U', date, format, '-'), "01-01-01", "usa_dash_sep      / subtest # 19")
 self~assertSame(date('W', date, format), "Monday", "weekday           / subtest # 20")
+self~assertSame(date('I', date, format), "0001-01-01", "iso               / subtest # 21")
+self~assertSame(date('I', date, format, ''), "00010101", "iso_no_sep        / subtest # 22")
+self~assertSame(date('I', date, format, '/'), "0001/01/01", "iso_slash_sep     / subtest # 23")
 
 ::METHOD 'test_lastday'
 date = '99991231'
@@ -615,12 +749,15 @@ self~assertSame(date('O', date, format), "99/12/31", "ordered           / subtes
 self~assertSame(date('O', date, format, ''), "991231", "ordered_no_sep    / subtest # 12")
 self~assertSame(date('O', date, format, '-'), "99-12-31", "ordered_dash_sep  / subtest # 13")
 self~assertSame(date('S', date, format), "99991231", "standard          / subtest # 14")
-self~assertSame(date('S', date, format, ''), "99991231", "stardard_no_sep   / subtest # 15")
+self~assertSame(date('S', date, format, ''), "99991231", "standard_no_sep   / subtest # 15")
 self~assertSame(date('S', date, format, '-'), "9999-12-31", "standard_dash_sep / subtest # 16")
 self~assertSame(date('U', date, format), "12/31/99", "usa               / subtest # 17")
 self~assertSame(date('U', date, format, ''), "123199", "usa_no_sep        / subtest # 18")
 self~assertSame(date('U', date, format, '-'), "12-31-99", "usa_dash_sep      / subtest # 19")
 self~assertSame(date('W', date, format), "Friday", "weekday           / subtest # 20")
+self~assertSame(date('I', date, format), "9999-12-31", "iso               / subtest # 21")
+self~assertSame(date('I', date, format, ''), "99991231", "iso_no_sep        / subtest # 22")
+self~assertSame(date('I', date, format, '/'), "9999/12/31", "iso_slash_sep     / subtest # 23")
 
 ::METHOD 'test_early_leap_year'
 date = '20040228'
@@ -639,12 +776,15 @@ self~assertSame(date('O', date, format), "04/02/28", "ordered           / subtes
 self~assertSame(date('O', date, format, ''), "040228", "ordered_no_sep    / subtest # 12")
 self~assertSame(date('O', date, format, '-'), "04-02-28", "ordered_dash_sep  / subtest # 13")
 self~assertSame(date('S', date, format), "20040228", "standard          / subtest # 14")
-self~assertSame(date('S', date, format, ''), "20040228", "stardard_no_sep   / subtest # 15")
+self~assertSame(date('S', date, format, ''), "20040228", "standard_no_sep   / subtest # 15")
 self~assertSame(date('S', date, format, '-'), "2004-02-28", "standard_dash_sep / subtest # 16")
 self~assertSame(date('U', date, format), "02/28/04", "usa               / subtest # 17")
 self~assertSame(date('U', date, format, ''), "022804", "usa_no_sep        / subtest # 18")
 self~assertSame(date('U', date, format, '-'), "02-28-04", "usa_dash_sep      / subtest # 19")
 self~assertSame(date('W', date, format), "Saturday", "weekday           / subtest # 20")
+self~assertSame(date('I', date, format), "2004-02-28", "iso               / subtest # 21")
+self~assertSame(date('I', date, format, ''), "20040228", "iso_no_sep        / subtest # 22")
+self~assertSame(date('I', date, format, '/'), "2004/02/28", "iso_slash_sep     / subtest # 23")
 
 ::METHOD 'test_late_leap_year'
 date = '20040301'
@@ -663,12 +803,15 @@ self~assertSame(date('O', date, format), "04/03/01", "ordered           / subtes
 self~assertSame(date('O', date, format, ''), "040301", "ordered_no_sep    / subtest # 12")
 self~assertSame(date('O', date, format, '-'), "04-03-01", "ordered_dash_sep  / subtest # 13")
 self~assertSame(date('S', date, format), "20040301", "standard          / subtest # 14")
-self~assertSame(date('S', date, format, ''), "20040301", "stardard_no_sep   / subtest # 15")
+self~assertSame(date('S', date, format, ''), "20040301", "standard_no_sep   / subtest # 15")
 self~assertSame(date('S', date, format, '-'), "2004-03-01", "standard_dash_sep / subtest # 16")
 self~assertSame(date('U', date, format), "03/01/04", "usa               / subtest # 17")
 self~assertSame(date('U', date, format, ''), "030104", "usa_no_sep        / subtest # 18")
 self~assertSame(date('U', date, format, '-'), "03-01-04", "usa_dash_sep      / subtest # 19")
 self~assertSame(date('W', date, format), "Monday", "weekday           / subtest # 20")
+self~assertSame(date('I', date, format), "2004-03-01", "iso               / subtest # 21")
+self~assertSame(date('I', date, format, ''), "20040301", "iso_no_sep        / subtest # 22")
+self~assertSame(date('I', date, format, '/'), "2004/03/01", "iso_slash_sep     / subtest # 23")
 
 ::METHOD 'test_end_leap_year'
 date = '20041231'
@@ -687,12 +830,15 @@ self~assertSame(date('O', date, format), "04/12/31", "ordered           / subtes
 self~assertSame(date('O', date, format, ''), "041231", "ordered_no_sep    / subtest # 12")
 self~assertSame(date('O', date, format, '-'), "04-12-31", "ordered_dash_sep  / subtest # 13")
 self~assertSame(date('S', date, format), "20041231", "standard          / subtest # 14")
-self~assertSame(date('S', date, format, ''), "20041231", "stardard_no_sep   / subtest # 15")
+self~assertSame(date('S', date, format, ''), "20041231", "standard_no_sep   / subtest # 15")
 self~assertSame(date('S', date, format, '-'), "2004-12-31", "standard_dash_sep / subtest # 16")
 self~assertSame(date('U', date, format), "12/31/04", "usa               / subtest # 17")
 self~assertSame(date('U', date, format, ''), "123104", "usa_no_sep        / subtest # 18")
 self~assertSame(date('U', date, format, '-'), "12-31-04", "usa_dash_sep      / subtest # 19")
 self~assertSame(date('W', date, format), "Friday", "weekday           / subtest # 20")
+self~assertSame(date('I', date, format), "2004-12-31", "iso               / subtest # 21")
+self~assertSame(date('I', date, format, ''), "20041231", "iso_no_sep        / subtest # 22")
+self~assertSame(date('I', date, format, '/'), "2004/12/31", "iso_slash_sep     / subtest # 23")
 
 ::METHOD 'test_early_non_leap_year'
 date = '20070228'
@@ -711,12 +857,15 @@ self~assertSame(date('O', date, format), "07/02/28", "ordered           / subtes
 self~assertSame(date('O', date, format, ''), "070228", "ordered_no_sep    / subtest # 12")
 self~assertSame(date('O', date, format, '-'), "07-02-28", "ordered_dash_sep  / subtest # 13")
 self~assertSame(date('S', date, format), "20070228", "standard          / subtest # 14")
-self~assertSame(date('S', date, format, ''), "20070228", "stardard_no_sep   / subtest # 15")
+self~assertSame(date('S', date, format, ''), "20070228", "standard_no_sep   / subtest # 15")
 self~assertSame(date('S', date, format, '-'), "2007-02-28", "standard_dash_sep / subtest # 16")
 self~assertSame(date('U', date, format), "02/28/07", "usa               / subtest # 17")
 self~assertSame(date('U', date, format, ''), "022807", "usa_no_sep        / subtest # 18")
 self~assertSame(date('U', date, format, '-'), "02-28-07", "usa_dash_sep      / subtest # 19")
 self~assertSame(date('W', date, format), "Wednesday", "weekday           / subtest # 20")
+self~assertSame(date('I', date, format), "2007-02-28", "iso               / subtest # 21")
+self~assertSame(date('I', date, format, ''), "20070228", "iso_no_sep        / subtest # 22")
+self~assertSame(date('I', date, format, '/'), "2007/02/28", "iso_slash_sep     / subtest # 23")
 
 ::METHOD 'test_late_non_leap_year'
 date = '20070301'
@@ -735,12 +884,15 @@ self~assertSame(date('O', date, format), "07/03/01", "ordered           / subtes
 self~assertSame(date('O', date, format, ''), "070301", "ordered_no_sep    / subtest # 12")
 self~assertSame(date('O', date, format, '-'), "07-03-01", "ordered_dash_sep  / subtest # 13")
 self~assertSame(date('S', date, format), "20070301", "standard          / subtest # 14")
-self~assertSame(date('S', date, format, ''), "20070301", "stardard_no_sep   / subtest # 15")
+self~assertSame(date('S', date, format, ''), "20070301", "standard_no_sep   / subtest # 15")
 self~assertSame(date('S', date, format, '-'), "2007-03-01", "standard_dash_sep / subtest # 16")
 self~assertSame(date('U', date, format), "03/01/07", "usa               / subtest # 17")
 self~assertSame(date('U', date, format, ''), "030107", "usa_no_sep        / subtest # 18")
 self~assertSame(date('U', date, format, '-'), "03-01-07", "usa_dash_sep      / subtest # 19")
 self~assertSame(date('W', date, format), "Thursday", "weekday           / subtest # 20")
+self~assertSame(date('I', date, format), "2007-03-01", "iso               / subtest # 21")
+self~assertSame(date('I', date, format, ''), "20070301", "iso_no_sep        / subtest # 22")
+self~assertSame(date('I', date, format, '/'), "2007/03/01", "iso_slash_sep     / subtest # 23")
 
 ::METHOD 'test_end_non_leap_year'
 date = '20071231'
@@ -759,12 +911,15 @@ self~assertSame(date('O', date, format), "07/12/31", "ordered           / subtes
 self~assertSame(date('O', date, format, ''), "071231", "ordered_no_sep    / subtest # 12")
 self~assertSame(date('O', date, format, '-'), "07-12-31", "ordered_dash_sep  / subtest # 13")
 self~assertSame(date('S', date, format), "20071231", "standard          / subtest # 14")
-self~assertSame(date('S', date, format, ''), "20071231", "stardard_no_sep   / subtest # 15")
+self~assertSame(date('S', date, format, ''), "20071231", "standard_no_sep   / subtest # 15")
 self~assertSame(date('S', date, format, '-'), "2007-12-31", "standard_dash_sep / subtest # 16")
 self~assertSame(date('U', date, format), "12/31/07", "usa               / subtest # 17")
 self~assertSame(date('U', date, format, ''), "123107", "usa_no_sep        / subtest # 18")
 self~assertSame(date('U', date, format, '-'), "12-31-07", "usa_dash_sep      / subtest # 19")
 self~assertSame(date('W', date, format), "Monday", "weekday           / subtest # 20")
+self~assertSame(date('I', date, format), "2007-12-31", "iso               / subtest # 21")
+self~assertSame(date('I', date, format, ''), "20071231", "iso_no_sep        / subtest # 22")
+self~assertSame(date('I', date, format, '/'), "2007/12/31", "iso_slash_sep     / subtest # 23")
 
 ::METHOD 'test_leap_day'
 date = '20040229'
@@ -783,12 +938,15 @@ self~assertSame(date('O', date, format), "04/02/29", "ordered           / subtes
 self~assertSame(date('O', date, format, ''), "040229", "ordered_no_sep    / subtest # 12")
 self~assertSame(date('O', date, format, '-'), "04-02-29", "ordered_dash_sep  / subtest # 13")
 self~assertSame(date('S', date, format), "20040229", "standard          / subtest # 14")
-self~assertSame(date('S', date, format, ''), "20040229", "stardard_no_sep   / subtest # 15")
+self~assertSame(date('S', date, format, ''), "20040229", "standard_no_sep   / subtest # 15")
 self~assertSame(date('S', date, format, '-'), "2004-02-29", "standard_dash_sep / subtest # 16")
 self~assertSame(date('U', date, format), "02/29/04", "usa               / subtest # 17")
 self~assertSame(date('U', date, format, ''), "022904", "usa_no_sep        / subtest # 18")
 self~assertSame(date('U', date, format, '-'), "02-29-04", "usa_dash_sep      / subtest # 19")
 self~assertSame(date('W', date, format), "Sunday", "weekday           / subtest # 20")
+self~assertSame(date('I', date, format), "2004-02-29", "iso               / subtest # 21")
+self~assertSame(date('I', date, format, ''), "20040229", "iso_no_sep        / subtest # 22")
+self~assertSame(date('I', date, format, '/'), "2004/02/29", "iso_slash_sep     / subtest # 23")
 
 ::METHOD 'test_century'
 date = '19000301'
@@ -807,12 +965,15 @@ self~assertSame(date('O', date, format), "00/03/01", "ordered           / subtes
 self~assertSame(date('O', date, format, ''), "000301", "ordered_no_sep    / subtest # 12")
 self~assertSame(date('O', date, format, '-'), "00-03-01", "ordered_dash_sep  / subtest # 13")
 self~assertSame(date('S', date, format), "19000301", "standard          / subtest # 14")
-self~assertSame(date('S', date, format, ''), "19000301", "stardard_no_sep   / subtest # 15")
+self~assertSame(date('S', date, format, ''), "19000301", "standard_no_sep   / subtest # 15")
 self~assertSame(date('S', date, format, '-'), "1900-03-01", "standard_dash_sep / subtest # 16")
 self~assertSame(date('U', date, format), "03/01/00", "usa               / subtest # 17")
 self~assertSame(date('U', date, format, ''), "030100", "usa_no_sep        / subtest # 18")
 self~assertSame(date('U', date, format, '-'), "03-01-00", "usa_dash_sep      / subtest # 19")
 self~assertSame(date('W', date, format), "Thursday", "weekday           / subtest # 20")
+self~assertSame(date('I', date, format), "1900-03-01", "iso               / subtest # 21")
+self~assertSame(date('I', date, format, ''), "19000301", "iso_no_sep        / subtest # 22")
+self~assertSame(date('I', date, format, '/'), "1900/03/01", "iso_slash_sep     / subtest # 23")
 
 ::METHOD 'test_olympiad'
 date = '20000229'
@@ -831,12 +992,15 @@ self~assertSame(date('O', date, format), "00/02/29", "ordered           / subtes
 self~assertSame(date('O', date, format, ''), "000229", "ordered_no_sep    / subtest # 12")
 self~assertSame(date('O', date, format, '-'), "00-02-29", "ordered_dash_sep  / subtest # 13")
 self~assertSame(date('S', date, format), "20000229", "standard          / subtest # 14")
-self~assertSame(date('S', date, format, ''), "20000229", "stardard_no_sep   / subtest # 15")
+self~assertSame(date('S', date, format, ''), "20000229", "standard_no_sep   / subtest # 15")
 self~assertSame(date('S', date, format, '-'), "2000-02-29", "standard_dash_sep / subtest # 16")
 self~assertSame(date('U', date, format), "02/29/00", "usa               / subtest # 17")
 self~assertSame(date('U', date, format, ''), "022900", "usa_no_sep        / subtest # 18")
 self~assertSame(date('U', date, format, '-'), "02-29-00", "usa_dash_sep      / subtest # 19")
 self~assertSame(date('W', date, format), "Tuesday", "weekday           / subtest # 20")
+self~assertSame(date('I', date, format), "2000-02-29", "iso               / subtest # 21")
+self~assertSame(date('I', date, format, ''), "20000229", "iso_no_sep        / subtest # 22")
+self~assertSame(date('I', date, format, '/'), "2000/02/29", "iso_slash_sep     / subtest # 23")
 
 ::routine leapyear
     return((arg(1)//4=0)&(0=(arg(1)//100=0)))|(arg(1)//400=0)

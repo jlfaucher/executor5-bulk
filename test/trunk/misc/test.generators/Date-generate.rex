@@ -89,6 +89,9 @@ g~generateTest("ordered_null", "070922", "O", "")
 g~generateTest("usa", "09/22/07", "U")
 g~generateTest("usa_dash", "09-22-07", "U", "-")
 g~generateTest("usa_null", "092207", "U", "")
+g~generateTest("iso", "2015-11-07", "I")
+g~generateTest("iso_slash", "2015/09/22", "I", "/")
+g~generateTest("iso_null", "20150922", "I", "")
 
 -- now test some fringe dates
 
@@ -118,7 +121,7 @@ g~generateTest("olympiad", "20000229", "S")
 ::method assert
   use arg label, test, value
 
-  self~lineout('self~assertSame("'label'", 'test', "'value'")')
+  self~lineout('self~assertSame('test', "'value'", "'label'")')
 
 
 ::method generateTest
@@ -147,12 +150,15 @@ if arg() == 3 then do
     self~assert("ordered_no_sep   " l 12, "date('O', date, format, '')"  , date('O', date, format, ""))
     self~assert("ordered_dash_sep " l 13, "date('O', date, format, '-')" , date('O', date, format, "-"))
     self~assert("standard         " l 14, "date('S', date, format)"      , date('S', date, format))
-    self~assert("stardard_no_sep  " l 15, "date('S', date, format, '')"  , date('S', date, format, ""))
+    self~assert("standard_no_sep  " l 15, "date('S', date, format, '')"  , date('S', date, format, ""))
     self~assert("standard_dash_sep" l 16, "date('S', date, format, '-')" , date('S', date, format, "-"))
     self~assert("usa              " l 17, "date('U', date, format)"      , date('U', date, format))
     self~assert("usa_no_sep       " l 18, "date('U', date, format, '')"  , date('U', date, format, ""))
     self~assert("usa_dash_sep     " l 19, "date('U', date, format, '-')" , date('U', date, format, "-"))
     self~assert("weekday          " l 20, "date('W', date, format)"      , date('W', date, format))
+    self~assert("iso              " l 21, "date('I', date, format)"      , date('I', date, format))
+    self~assert("iso_no_sep       " l 22, "date('I', date, format, '')"  , date('I', date, format, ""))
+    self~assert("iso_slash_sep    " l 23, "date('I', date, format, '/')" , date('I', date, format, "/"))
 end
 -- explicit input format
 else do
@@ -178,6 +184,9 @@ else do
     self~assert("usa_no_sep       " l 18, "date('U', date, format, '', sep)"  , date('U', date, format, "", sep))
     self~assert("usa_dash_sep     " l 19, "date('U', date, format, '-', sep)" , date('U', date, format, "-", sep))
     self~assert("weekday          " l 20, "date('W', date, format,, sep)"     , date('W', date, format,, sep))
+    self~assert("iso              " l 21, "date('I', date, format,, sep)"     , date('I', date, format,, sep))
+    self~assert("iso_no_sep       " l 22, "date('I', date, format, '', sep)"  , date('I', date, format, "", sep))
+    self~assert("iso_slash_sep    " l 23, "date('I', date, format, '/', sep)" , date('I', date, format, "/", sep))
 end
 
 
