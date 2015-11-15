@@ -64,13 +64,23 @@ CALL instructions (see
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/keywords/call.svg" scale="50" />
+<imagedata fileref="images/keywords/call_on.svg" scale="55" />
+</imageobject>
+</mediaobject>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/call_off.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/keywords/signal.svg" scale="50" />
+<imagedata fileref="images/keywords/signal_on.svg" scale="55" />
+</imageobject>
+</mediaobject>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/signal_off.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -654,7 +664,7 @@ let you inspect the values of the variables used at the line in error.</para>
 <para>A condition object is a directory returned by the
 Object option of the CONDITION built-in function. This directory contains
 all information currently available on a trapped condition. The information
-varies with the trapped condition. The Nil object is returned for any entry
+varies with the trapped condition. &nil; is returned for any entry
 not available to the condition. The following entries can be found in a condition
 object: </para>
 <variablelist>
@@ -723,10 +733,9 @@ was raised.
 <listitem><para>A single-index list of formatted traceback lines.
 </para></listitem></varlistentry>
 <varlistentry><term>PROPAGATED</term>
-<listitem><para>The value <computeroutput>0</computeroutput> (false) if the
+<listitem><para>&false; if the
 condition was raised at the same level as the condition trap or the value
-<computeroutput>1</computeroutput>
-(true) if the condition was reraised with RAISE PROPAGATE.
+&true; if the condition was reraised with RAISE PROPAGATE.
 </para></listitem></varlistentry>
 </variablelist>
 <para></para>

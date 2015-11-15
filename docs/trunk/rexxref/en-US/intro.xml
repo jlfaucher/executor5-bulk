@@ -1257,7 +1257,7 @@ are of the following form:
 </para>
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/xmpsyntax08.svg" scale="50" />
+<imagedata fileref="images/xmpsyntax08.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -1351,7 +1351,7 @@ operators are: </para>
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1">
 <tgroup cols="2">
 <colspec colnum="1" colwidth="1*" />
-<colspec colnum="2" colwidth="4*" />
+<colspec colnum="2" colwidth="5*" />
 <tbody>
 <row>
 <entry>(blank)</entry>
@@ -1434,7 +1434,7 @@ using the following arithmetic operators: </para>
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1">
 <tgroup cols="2">
 <colspec colnum="1" colwidth="1*" />
-<colspec colnum="2" colwidth="4*" />
+<colspec colnum="2" colwidth="5*" />
 <tbody>
 <row>
 <entry>+</entry>
@@ -1595,7 +1595,7 @@ alphabetic characters.</para>
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1">
 <tgroup cols="2">
 <colspec colnum="1" colwidth="1*" />
-<colspec colnum="2" colwidth="4*" />
+<colspec colnum="2" colwidth="5*" />
 <tbody>
 <row>
 <entry>=</entry>
@@ -1762,7 +1762,7 @@ two such values and return
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1">
 <tgroup cols="2">
 <colspec colnum="1" colwidth="1*" />
-<colspec colnum="2" colwidth="4*" />
+<colspec colnum="2" colwidth="5*" />
 <tbody>
 <row><entry>&amp;</entry>
 <entry><para>AND &mdash; returns <computeroutput>1</computeroutput> if both
@@ -1850,7 +1850,7 @@ has a higher priority than the power operator.</para>
 <colspec colnum="1" colwidth="1*" />
 <colspec colnum="2" colwidth="3*" />
 <tbody>
-<row><entry>~&nbsp;&nbsp;&nbsp;~~\</entry><entry>(message send)</entry></row>
+<row><entry>~&nbsp;&nbsp;&nbsp;~~</entry><entry>(message send)</entry></row>
 <row><entry>+&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;&not;&nbsp;&nbsp;&nbsp;\</entry><entry>(prefix operators)</entry></row>
 <row><entry>**</entry><entry>(power)</entry></row>
 <row><entry>*&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;%&nbsp;&nbsp;&nbsp;//</entry><entry>(multiply and divide)</entry></row>
@@ -1889,17 +1889,17 @@ A+5                  ->    "8"
 A-4*2                ->    "-5"
 A/2                  ->    "1.5"
 0.5**2               ->    "0.25"
-(A+1)>7              ->    "0"         /* that is, False */
-" "=""               ->    "1"         /* that is, True  */
-" "==""              ->    "0"         /* that is, False */
+(A+1)>7              ->    "0"         /* that is, .false */
+" "=""               ->    "1"         /* that is, .true  */
+" "==""              ->    "0"         /* that is, .false */
 " "\==""             ->    "1"
-/* that is, True  */
-(A+1)*3=12           ->    "1"         /* that is, True  */
-"077">"11"           ->    "1"         /* that is, True  */
-"077" >> "11"        ->    "0"         /* that is, False */
-"abc" >> "ab"        ->    "1"         /* that is, True  */
-"abc" << "abd"       ->    "1"         /* that is, True  */
-"ab " << "abd"       ->    "1"         /* that is, True  */
+/* that is, .true  */
+(A+1)*3=12           ->    "1"         /* that is, .true  */
+"077">"11"           ->    "1"         /* that is, .true  */
+"077" >> "11"        ->    "0"         /* that is, .false */
+"abc" >> "ab"        ->    "1"         /* that is, .true  */
+"abc" << "abd"       ->    "1"         /* that is, .true  */
+"ab " << "abd"       ->    "1"         /* that is, .true  */
 Today is Day         ->    "TODAY IS Monday"
 "If it is" day       ->    "If it is Monday"
 Substr(Day,2,3)      ->    "ond"    /* Substr is a function */
@@ -1938,13 +1938,13 @@ to an object to perform an action, obtain a result, or both.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/xmpsyntax09.svg" scale="50" />
+<imagedata fileref="images/xmpsyntax09.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/xmpsyntax10.svg" scale="50" />
+<imagedata fileref="images/xmpsyntax10.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2029,9 +2029,9 @@ only those required. For example,
 <computeroutput>"ESCAPE"~POS("E")</computeroutput> returns
 <computeroutput>1</computeroutput>.</para>
 <para>A colon (:) and symbol can follow the message name. In this case, the
-symbol must be the name of a variable (usually the special variable SUPER--see
-page <xref linkend="xsuper" />) or an environment symbol
-(see <xref linkend="ensym" />).
+symbol must be the name of a variable (usually the special variable
+<xref linkend="xsuper" xrefstyle="template:SUPER"/>) or an
+<xref linkend="ensym" xrefstyle="template:environment symbol"/>.
 The resulting value changes the usual method selection. For more information,
 see <xref linkend="chsrod" />.</para>
 </section>
@@ -2084,7 +2084,7 @@ called <emphasis role="italic">Array term</emphasis>, of the following form:
 </para>
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/xmpsyntax_array.svg" scale="50" />
+<imagedata fileref="images/xmpsyntax_array.svg" scale="55" />
 </imageobject>
 </mediaobject>
 <para>
@@ -2819,7 +2819,7 @@ local environment directory by using the <xref linkend="locenv" xrefstyle="templ
 <listitem><para>The global environment directory.  The global environment
 includes all
 permanent Rexx objects such as the Rexx supplied classes (.Array and so on)
-and constants such as .TRUE and .FALSE. You can directly access the global
+and constants such as &true; and &false;. You can directly access the global
 environment by using the <xref linkend="envo" xrefstyle="template:.ENVIRONMENT environment symbol"/>.
 Entries in the global environment directory can also be accessed via the
 <xref linkend="bifValue" xrefstyle="template:VALUE built-in function"/>
@@ -2929,7 +2929,7 @@ if the main purpose of the message is to obtain a result.</para>
 </para>
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/xmpsyntax11.svg" scale="50" />
+<imagedata fileref="images/xmpsyntax11.svg" scale="55" />
 </imageobject>
 </mediaobject>
 

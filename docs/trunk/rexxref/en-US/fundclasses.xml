@@ -140,17 +140,17 @@ Class and all other class objects, and will result in an error.
 <para>
 <indexterm><primary>method</primary><secondary>comparison methods</secondary><tertiary>of Class class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/class_comparison_operator.svg" scale="50"/>
+<imagedata fileref="images/classes/class_comparison_operator.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
-<para>Returns <computeroutput>1</computeroutput> (true) or
-<computeroutput>0</computeroutput> (false), the result of performing
+<para>Returns &true; or
+&false;, the result of performing
 a specified comparison operation.
 </para>
 <para>For the Class class, if <emphasis role="italic">argument</emphasis>
 is the same class as the receiver
-class, the result is <computeroutput>1</computeroutput> (true), otherwise
-<computeroutput>0</computeroutput> (false) is returned.
+class, the result is &true;, otherwise
+&false; is returned.
 </para>
 <para>The comparison operators you can use in a message are: </para>
 <variablelist>
@@ -166,7 +166,7 @@ class, the result is <computeroutput>1</computeroutput> (true), otherwise
 <secondary>==</secondary>
 <tertiary>of Class class</tertiary></indexterm>
 </term>
-<listitem><para>True if the terms are the same class.
+<listitem><para>&true; if the terms are the same class.
 </para></listitem></varlistentry>
 <varlistentry><term>\=, >&lt;, &lt;>, \==
 <indexterm><primary>\= method</primary>
@@ -190,7 +190,7 @@ class, the result is <computeroutput>1</computeroutput> (true), otherwise
 <secondary>\==</secondary>
 <tertiary>of Class class</tertiary></indexterm>
 </term>
-<listitem><para>True if the terms are not the same class (inverse of =).
+<listitem><para>&true; if the terms are not the same class (inverse of =).
 </para></listitem></varlistentry>
 </variablelist>
 </section>
@@ -205,7 +205,7 @@ class, the result is <computeroutput>1</computeroutput> (true), otherwise
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/class_activate.svg" scale="50" />
+<imagedata fileref="images/classes/class_activate.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -231,12 +231,12 @@ The activate method is the preferred method for initializing a class object.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/all_annotation.svg" scale="50" />
+<imagedata fileref="images/classes/all_annotation.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Returns the value of the annotation named <emphasis role="italic">name</emphasis> for this class.
-If no such annotation exists, .nil is returned.
+If no such annotation exists, &nil; is returned.
 </para>
 <para>See also
 <itemizedlist spacing="compact">
@@ -255,7 +255,7 @@ If no such annotation exists, .nil is returned.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/all_annotations.svg" scale="50" />
+<imagedata fileref="images/classes/all_annotations.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -279,7 +279,7 @@ If no such annotation exists, .nil is returned.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/class_baseclass.svg" scale="50" />
+<imagedata fileref="images/classes/class_baseclass.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -298,7 +298,7 @@ If the class is not a mixin class, the base class is the class receiving the
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/class_defaultname.svg" scale="50" />
+<imagedata fileref="images/classes/class_defaultname.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -333,7 +333,7 @@ say .savings~defaultName   /* Displays "The Savings class" */
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/class_define.svg" scale="50" />
+<imagedata fileref="images/classes/class_define.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -379,7 +379,7 @@ bank_account~define("TYPE",&apos;return "a bank account"&apos;)
 <indexterm><primary>defineMethods method</primary><secondary>of Class class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>defineMethods method</secondary><tertiary>of Class class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/class_definemethods.svg" scale="50"/>
+<imagedata fileref="images/classes/class_definemethods.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
 
@@ -393,7 +393,7 @@ The method names are translated to uppercase.
 Any existing methods with the same method name in the receiver class 
 are replaced.</para>
 <para>If, for any item in <emphasis role="italic">methods</emphasis>,
-the method name is .nil, then a method of this name in the receiver class
+the method name is &nil;, then a method of this name in the receiver class
 is made unavailable.
 </para>
 <para>See also method <xref linkend="mthClassDefine" xrefstyle="select:title"/>.
@@ -428,7 +428,7 @@ return "a-original"
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/class_delete.svg" scale="50" />
+<imagedata fileref="images/classes/class_delete.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -472,7 +472,7 @@ myclass~delete("TYPE")                     /* this deletes the method */
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/class_enhanced.svg" scale="50" />
+<imagedata fileref="images/classes/class_enhanced.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -516,7 +516,7 @@ rclass=.class~enhanced(rclassmeths,"Remote Class")
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/class_id.svg" scale="50" />
+<imagedata fileref="images/classes/class_id.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -544,7 +544,7 @@ say myobject~id                         /* Produces: "my object" */
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/class_inherit.svg" scale="50" />
+<imagedata fileref="images/classes/class_inherit.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -603,11 +603,11 @@ room~inherit(.location)
 <indexterm><primary>isAbstract method</primary><secondary>of Class class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>isAbstract method</secondary><tertiary>of Class class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/class_isabstract.svg" scale="50"/>
+<imagedata fileref="images/classes/class_isabstract.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
-<para>Returns true ("1") if the receiving class is an abstract class,
-otherwise returns false ("0").
+<para>Returns &true; if the receiving class is an abstract class,
+otherwise returns &false;.
 </para>
 <para>See also ABSTRACT option of the
 <xref linkend="clasdi" xrefstyle="select:title"/> directive.
@@ -627,11 +627,11 @@ otherwise returns false ("0").
 <indexterm><primary>isMetaclass method</primary><secondary>of Class class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>isMetaclass method</secondary><tertiary>of Class class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/class_ismetaclass.svg" scale="50"/>
+<imagedata fileref="images/classes/class_ismetaclass.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
-<para>Returns true ("1") if the receiving class is a metaclass,
-otherwise returns false ("0").
+<para>Returns &true; if the receiving class is a metaclass,
+otherwise returns &false;.
 The <classname>Class</classname> class is the only metaclass that Rexx
 provides; any subclasses of the Class class are also metaclasses.
 </para>
@@ -658,13 +658,13 @@ end
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/class_issubclassof.svg" scale="50" />
+<imagedata fileref="images/classes/class_issubclassof.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>Returns .true ("1") if the object is a subclass of the specified
+<para>Returns &true; if the object is a subclass of the specified
 <emphasis role="italic">class</emphasis>.
-Returns .false ("0") if the object is not a subclass of the specified
+Returns &false; if the object is not a subclass of the specified
 <emphasis role="italic">class</emphasis>.
 A class is a subclass of a class if the target class is the same as
 <emphasis role="italic">class</emphasis> or if
@@ -691,7 +691,7 @@ class inheritance chain. For example:
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/class_metaclass.svg" scale="50" />
+<imagedata fileref="images/classes/class_metaclass.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -716,14 +716,14 @@ method in <xref linkend="mthClassSubclass" />.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/class_method.svg" scale="50" />
+<imagedata fileref="images/classes/class_method.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Returns the method object for the receiver class's definition for the
 method name <emphasis role="italic">methodname</emphasis>. If the receiver
 class defined <emphasis role="italic">methodname</emphasis> as unavailable,
-this method returns the Nil object. If the receiver
+this method returns &nil;. If the receiver
 class did not define <emphasis role="italic">methodname</emphasis>, an
 error is raised.</para>
 <indexterm><primary>examples</primary>
@@ -751,14 +751,14 @@ say method_source[1]              /* Shows the method source code */
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/class_methods.svg" scale="50" />
+<imagedata fileref="images/classes/class_methods.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Returns a Supplier object (<xref linkend="clsSupplier" />)
 for all the instance methods of the receiver
 class and its superclasses, if you specify no argument. If
-<emphasis role="italic">class_object</emphasis> is the Nil object,
+<emphasis role="italic">class_object</emphasis> is &nil;,
 <emphasis role="bold">methods</emphasis>
 returns a supplier object for only the instance
 methods of the receiver class. If you specify a
@@ -775,7 +775,7 @@ at the time of the supplier's creation.
 <emphasis role="bold">define</emphasis> method
 are included with the other methods that
 <emphasis role="bold">methods</emphasis> returns. The hidden methods
-have the Nil object for the associated method.</para></note>
+have &nil; for the associated method.</para></note>
 <indexterm><primary>examples</primary>
 <secondary>methods method</secondary></indexterm>
 <example id="ex.class-methods">
@@ -799,7 +799,7 @@ end
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/class_mixinclass.svg" scale="50" />
+<imagedata fileref="images/classes/class_mixinclass.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -850,7 +850,7 @@ buyable=.object~mixinClass("Buyable")  /* New subclass is buyable    */
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/class_new.svg" scale="50" />
+<imagedata fileref="images/classes/class_new.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -893,7 +893,7 @@ If balance > 100 then Say "  You win a free toaster oven"
 <indexterm><primary>package method</primary><secondary>of Class class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>package method</secondary><tertiary>of Class class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/class_package.svg" scale="50"/>
+<imagedata fileref="images/classes/class_package.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
 <para>Returns the Package class instance that defined the receiving class.
@@ -920,12 +920,12 @@ say .other~package~name                -- C:\ExampleClassPackage.rex
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/class_querymixinclass.svg" scale="50" />
+<imagedata fileref="images/classes/class_querymixinclass.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>Returns <computeroutput>1</computeroutput> (true) if the class is a
-mixin class, or <computeroutput>0</computeroutput> (false).</para>
+<para>Returns &true; if the class is a
+mixin class, or &false;.</para>
 </section>
 
 <section id="mthClassSubclass"><title>subclass</title>
@@ -937,7 +937,7 @@ mixin class, or <computeroutput>0</computeroutput> (false).</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/class_subclass.svg" scale="50" />
+<imagedata fileref="images/classes/class_subclass.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -989,7 +989,7 @@ room=.object~subclass("Room")   /* Superclass is .object     */
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/class_subclasses.svg" scale="50" />
+<imagedata fileref="images/classes/class_subclasses.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -1008,7 +1008,7 @@ unspecified order. (The program should not rely on any order.)
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/class_superclass.svg" scale="50" />
+<imagedata fileref="images/classes/class_superclass.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -1016,7 +1016,7 @@ unspecified order. (The program should not rely on any order.)
 immediate superclass is
 the original class used on a <emphasis role="bold">subClass</emphasis> or a
 <emphasis role="bold">mixinClass</emphasis> method. For the Object Class,
-<emphasis role="bold">superClass</emphasis> returns .Nil.</para>
+<emphasis role="bold">superClass</emphasis> returns &nil;.</para>
 
 <indexterm><primary>examples</primary>
 <secondary>superClass method</secondary></indexterm>
@@ -1039,7 +1039,7 @@ say .set~superclass       -- displays "The Table class"
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/class_superclasses.svg" scale="50" />
+<imagedata fileref="images/classes/class_superclasses.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -1077,7 +1077,7 @@ end
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/class_uninherit.svg" scale="50" />
+<imagedata fileref="images/classes/class_uninherit.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -1182,7 +1182,7 @@ Object class.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/message_new.svg" scale="50" />
+<imagedata fileref="images/classes/message_new.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -1241,7 +1241,7 @@ See methods
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/message_arguments.svg" scale="50" />
+<imagedata fileref="images/classes/message_arguments.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -1257,7 +1257,7 @@ See methods
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/message_completed.svg" scale="50" />
+<imagedata fileref="images/classes/message_completed.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -1277,13 +1277,13 @@ the message to complete.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/message_errorcondition.svg" scale="50" />
+<imagedata fileref="images/classes/message_errorcondition.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Returns an error condition object from any execution error with the message
 object's message invocation. If the message completed normally, or is still executing,
-<emphasis role="bold">errorCondition</emphasis> returns the Nil object.</para>
+<emphasis role="bold">errorCondition</emphasis> returns &nil;.</para>
 </section>
 
 
@@ -1294,12 +1294,12 @@ object's message invocation. If the message completed normally, or is still exec
 </title>
 <para>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/message_halt.svg" scale="50"/>
+<imagedata fileref="images/classes/message_halt.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
-<para>Returns true ("1") if it could raise the halt condition for the
+<para>Returns &true; if it could raise the halt condition for the
 message the receiving message object is currently executing.
-Returns false ("0") if there is no message executing.
+Returns &false; if there is no message executing.
 </para>
 <para>An optional string <emphasis role="italic">description</emphasis>
 can be supplied, which the halted message can retrieve by requesting the
@@ -1357,7 +1357,7 @@ say dog~watchTask(.task~new~start("runsLong", 1.5))
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/message_haserror.svg" scale="50" />
+<imagedata fileref="images/classes/message_haserror.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -1375,12 +1375,12 @@ completed without error.</para>
 </title>
 <para>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/message_hasresult.svg" scale="50"/>
+<imagedata fileref="images/classes/message_hasresult.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
-<para>Returns true ("1") if the message object has completed executing
+<para>Returns &true; if the message object has completed executing
 its message, and the message has returned a result.
-Returns false ("0") if the message object has not yet completed
+Returns &false; if the message object has not yet completed
 executing its message, or the message hasn't returned a result.
 </para>
 <para>See also method <xref linkend="mthMessageResult" xrefstyle="select:title"/>.
@@ -1398,7 +1398,7 @@ executing its message, or the message hasn't returned a result.
 </title>
 <para>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/message_messagecomplete.svg" scale="50"/>
+<imagedata fileref="images/classes/message_messagecomplete.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
 <para>This method implements the <xref linkend="clsAlarmNotification" xrefstyle="template:MessageNotification interface"/>.
@@ -1445,7 +1445,7 @@ sorting complete
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/message_messagename.svg" scale="50" />
+<imagedata fileref="images/classes/message_messagename.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -1461,7 +1461,7 @@ sorting complete
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/message_notify.svg" scale="50" />
+<imagedata fileref="images/classes/message_notify.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -1540,7 +1540,7 @@ say "processing continues"
 </title>
 <para>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/message_reply.svg" scale="50"/>
+<imagedata fileref="images/classes/message_reply.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
 <para>Returns and sends a copy of the message to start processing, while 
@@ -1589,7 +1589,7 @@ result and holds it until requested via the
 </title>
 <para>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/message_replywith.svg" scale="50"/>
+<imagedata fileref="images/classes/message_replywith.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
 <para>Returns and sends a copy of the message with the specified <emphasis role="italic">arguments</emphasis>
@@ -1638,7 +1638,7 @@ result and holds it until requested via the
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/message_result.svg" scale="50" />
+<imagedata fileref="images/classes/message_result.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -1670,7 +1670,7 @@ say "The result of message was" bond~result     /* Result is 007     */
 </title>
 <para>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/message_send.svg" scale="50" />
+<imagedata fileref="images/classes/message_send.svg" scale="55" />
 </imageobject></mediaobject>
 </para>
 <para>Returns the result (if any) of sending the message.
@@ -1713,7 +1713,7 @@ result and holds it until requested via the
 </title>
 <para>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/message_sendwith.svg" scale="50"/>
+<imagedata fileref="images/classes/message_sendwith.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
 <para>Returns the result (if any) of sending the message with the specified
@@ -1753,7 +1753,7 @@ result and holds it until requested via the
 </indexterm></title>
 <para>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/message_start.svg" scale="50" />
+<imagedata fileref="images/classes/message_start.svg" scale="55" />
 </imageobject></mediaobject>
 </para>
 <para>Sends the message to start processing, while 
@@ -1856,7 +1856,7 @@ Goodbye, Stan...
 </title>
 <para>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/message_startwith.svg" scale="50"/>
+<imagedata fileref="images/classes/message_startwith.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
 <para>Sends the message with the specified <emphasis role="italic">arguments</emphasis>
@@ -1912,7 +1912,7 @@ result and holds it until requested via the
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/message_target.svg" scale="50" />
+<imagedata fileref="images/classes/message_target.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -1927,7 +1927,7 @@ result and holds it until requested via the
 </title>
 <para>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/message_triggered.svg" scale="50"/>
+<imagedata fileref="images/classes/message_triggered.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
 <para>This method implements the <xref linkend="clsAlarmNotification" xrefstyle="template:AlarmNotification interface"/>.
@@ -1975,7 +1975,7 @@ was scheduled for 2015-12-18T16:54:15.545000
 </title>
 <para>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/message_wait.svg" scale="50"/>
+<imagedata fileref="images/classes/message_wait.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
 <para>Waits until the message object has completed executing its message.
@@ -2044,7 +2044,7 @@ It is a subclass of the Object class (<xref linkend="clsObject" />).</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/method_new.svg" scale="50" />
+<imagedata fileref="images/classes/method_new.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2074,7 +2074,7 @@ routine search scope from the caller of new method.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/method_newfile.svg" scale="50" />
+<imagedata fileref="images/classes/method_newfile.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2092,7 +2092,7 @@ The <emphasis role="italic">filename</emphasis> is a string.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/method_loadexternalmethod.svg" scale="50" />
+<imagedata fileref="images/classes/method_loadexternalmethod.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2108,7 +2108,7 @@ library name is case-sensitive.  The third token is optional and specifies the
 name of the method within the library package.  If not specified,
 <emphasis role="italic">name</emphasis> is used.
 The method name is not case sensitive.
-If the target method cannot be resolved, .nil is returned.
+If the target method cannot be resolved, &nil; is returned.
 </para>
 <example id="ex.method-loadexternalmethod">
 <title>Method class &mdash; loadExternalMethod method</title>
@@ -2129,12 +2129,12 @@ method = .Method~loadExternalMethod("homeAddress=", 'LIBRARY mylib setHomeAddres
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/all_annotation.svg" scale="50" />
+<imagedata fileref="images/classes/all_annotation.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Returns the value of the annotation named <emphasis role="italic">name</emphasis> for this method.
-If no such annotation exists, .nil is returned.
+If no such annotation exists, &nil; is returned.
 </para>
 <para>See also
 <itemizedlist spacing="compact">
@@ -2155,7 +2155,7 @@ If no such annotation exists, .nil is returned.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/all_annotations.svg" scale="50" />
+<imagedata fileref="images/classes/all_annotations.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2176,11 +2176,11 @@ If no such annotation exists, .nil is returned.
 <indexterm><primary>isAbstract method</primary><secondary>of Method class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>isAbstract method</secondary><tertiary>of Method class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/method_isabstract.svg" scale="50"/>
+<imagedata fileref="images/classes/method_isabstract.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
-<para>Returns true ("1") if the method is an Abstract method,
-otherwise returns false ("0").
+<para>Returns &true; if the method is an Abstract method,
+otherwise returns &false;.
 </para>
 <para>See also
 <itemizedlist spacing="compact">
@@ -2203,11 +2203,11 @@ say .TimeSpan~method("CompareTo")~isAbstract     -- 0
 <indexterm><primary>isAttribute method</primary><secondary>of Method class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>isAttribute method</secondary><tertiary>of Method class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/method_isattribute.svg" scale="50"/>
+<imagedata fileref="images/classes/method_isattribute.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
-<para>Returns true ("1") if the method is an Attribute method,
-otherwise returns false ("0").
+<para>Returns &true; if the method is an Attribute method,
+otherwise returns &false;.
 </para>
 <para>See also <xref linkend="attrd" xrefstyle="select:title"/> directive.
 </para>
@@ -2225,11 +2225,11 @@ say .File~method("lastModified=")~isAttribute    -- 1
 <indexterm><primary>isConstant method</primary><secondary>of Method class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>isConstant method</secondary><tertiary>of Method class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/method_isconstant.svg" scale="50"/>
+<imagedata fileref="images/classes/method_isconstant.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
-<para>Returns true ("1") if the method is a Constant method,
-otherwise returns false ("0").
+<para>Returns &true; if the method is a Constant method,
+otherwise returns &false;.
 </para>
 <para>See also <xref linkend="constantd" xrefstyle="select:title"/> directive.
 </para>
@@ -2254,11 +2254,11 @@ otherwise returns false ("0").
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/method_isguarded.svg" scale="50" />
+<imagedata fileref="images/classes/method_isguarded.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>Returns true ("1") if the method is a Guarded method.  Returns false ("0") for Unguarded methods.
+<para>Returns &true; if the method is a Guarded method.  Returns &false; for Unguarded methods.
 </para>
 </section>
 
@@ -2271,11 +2271,11 @@ otherwise returns false ("0").
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/method_isprivate.svg" scale="50" />
+<imagedata fileref="images/classes/method_isprivate.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>Returns true ("1") if the method is a Private method.  Returns false ("0") for Public methods.
+<para>Returns &true; if the method is a Private method.  Returns &false; for Public methods.
 See <xref linkend="pubpri" />
 for details on private method restrictions.
 </para>
@@ -2290,11 +2290,11 @@ for details on private method restrictions.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/method_isprotected.svg" scale="50" />
+<imagedata fileref="images/classes/method_isprotected.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>Returns true ("1") if the method is a Protected method.  Returns false ("0") for unprotected methods.
+<para>Returns &true; if the method is a Protected method.  Returns &false; for unprotected methods.
 </para>
 </section>
 
@@ -2307,7 +2307,7 @@ for details on private method restrictions.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/method_package.svg" scale="50" />
+<imagedata fileref="images/classes/method_package.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2323,11 +2323,11 @@ referenced by the method code.</para>
 <indexterm><primary>scope method</primary><secondary>of Method class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>scope method</secondary><tertiary>of Method class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/method_scope.svg" scale="50"/>
+<imagedata fileref="images/classes/method_scope.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
 <para>Returns the defining class scope for a method.
-Returns .nil for any method not defined by a class scope.
+Returns &nil; for any method not defined by a class scope.
 </para>
 <para><example>
 <title>Method class &mdash; scope method</title>
@@ -2340,9 +2340,9 @@ loop scope over scopes                      -- 19 methods from The Collection cl
   say scopes[scope] "methods from" scope    -- 20 methods from The OrderedCollection class
 end                                         -- 31 methods from The Object class
 
-say .Method~new("any", "nop")~scope         -- .nil
+.Method~new("any", "nop")~scope             -- .nil
 
-say .methods["FLOAT"]~scope                 -- .nil
+.methods["FLOAT"]~scope                     -- .nil
 ::method float
 ]]></programlisting></example></para>
 </section>
@@ -2359,7 +2359,7 @@ say .methods["FLOAT"]~scope                 -- .nil
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/method_setguarded.svg" scale="50" />
+<imagedata fileref="images/classes/method_setguarded.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2380,7 +2380,7 @@ Guarded is the default state for method objects.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/method_setprivate.svg" scale="50" />
+<imagedata fileref="images/classes/method_setprivate.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2400,7 +2400,7 @@ for details on private method restrictions.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/method_setprotected.svg" scale="50" />
+<imagedata fileref="images/classes/method_setprotected.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2418,7 +2418,7 @@ protected by default.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/method_setsecuritymanager.svg" scale="50" />
+<imagedata fileref="images/classes/method_setsecuritymanager.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2439,7 +2439,7 @@ existing security manager is removed.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/method_setunguarded.svg" scale="50" />
+<imagedata fileref="images/classes/method_setunguarded.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2464,7 +2464,7 @@ case, the method runs immediately regardless of its guarded state.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/method_source.svg" scale="50" />
+<imagedata fileref="images/classes/method_source.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2540,7 +2540,7 @@ of the Object class are, therefore, available on all objects.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/object_new.svg" scale="50" />
+<imagedata fileref="images/classes/object_new.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2552,18 +2552,18 @@ of the Object class are, therefore, available on all objects.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/object_comparison_operator.svg" scale="50" />
+<imagedata fileref="images/classes/object_comparison_operator.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>Returns <computeroutput>1</computeroutput> (true) or
-<computeroutput>0</computeroutput> (false), the result of performing
+<para>Returns &true; or
+&false;, the result of performing
 a specified comparison operation.
 </para>
 <para>For the Object class, if <emphasis role="italic">argument</emphasis>
 is the same object as the receiver
-object, the result is <computeroutput>1</computeroutput> (true), otherwise
-<computeroutput>0</computeroutput> (false) is returned.  Subclasses may override
+object, the result is &true;, otherwise
+&false; is returned.  Subclasses may override
 this method to define equality using different criteria.  For example, the String
 class determines equality based on the value of the string data.
 </para>
@@ -2590,7 +2590,7 @@ See <xref linkend="mthObjectHashCode" /> for details on the contract.
 <secondary>==</secondary>
 <tertiary>of Object class</tertiary></indexterm>
 </term>
-<listitem><para>True if the terms are the same object.
+<listitem><para>&true; if the terms are the same object.
 </para></listitem></varlistentry>
 <varlistentry><term>\=, >&lt;, &lt;>, \==
 <indexterm><primary>\= method</primary>
@@ -2614,7 +2614,7 @@ See <xref linkend="mthObjectHashCode" /> for details on the contract.
 <secondary>\==</secondary>
 <tertiary>of Object class</tertiary></indexterm>
 </term>
-<listitem><para>True if the terms are not the same object (inverse of =).
+<listitem><para>&true; if the terms are not the same object (inverse of =).
 </para></listitem></varlistentry>
 </variablelist>
 </section>
@@ -2626,7 +2626,7 @@ See <xref linkend="mthObjectHashCode" /> for details on the contract.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/object_concatenation_operator.svg" scale="50" />
+<imagedata fileref="images/classes/object_concatenation_operator.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2666,7 +2666,7 @@ object and the <emphasis role="italic">argument</emphasis>.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/object_class.svg" scale="50" />
+<imagedata fileref="images/classes/object_class.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2683,7 +2683,7 @@ object and the <emphasis role="italic">argument</emphasis>.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/object_copy.svg" scale="50" />
+<imagedata fileref="images/classes/object_copy.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2716,7 +2716,7 @@ only copies the array, it does not copy any of the objects stored in the array.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/object_defaultname.svg" scale="50" />
+<imagedata fileref="images/classes/object_defaultname.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2744,7 +2744,7 @@ example using <emphasis role="bold">defaultName</emphasis>.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/object_hashcode.svg" scale="50" />
+<imagedata fileref="images/classes/object_hashcode.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2790,17 +2790,17 @@ characters from '00'x to 'ff'x, inclusive.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/object_hasmethod.svg" scale="50" />
+<imagedata fileref="images/classes/object_hasmethod.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>Returns <computeroutput>1</computeroutput> (true) if the receiver object
+<para>Returns &true; if the receiver object
 has a method named <emphasis role="italic">methodname</emphasis>
 (translated to uppercase).
-Otherwise, it returns <computeroutput>0</computeroutput> (false). </para>
+Otherwise, it returns &false;. </para>
 
 <note><title>Note</title>
-<para>The hasMethod object will return true even if the target method is defined
+<para>The hasMethod object will return &true; even if the target method is defined
 as private.  A private method has restricted access rules, so its possible to
 receive an unknown method error (error 97) when invoking <emphasis role="italic">methodname</emphasis>
 even if hasMethod indicates the method exists.
@@ -2818,7 +2818,7 @@ for private method restrictions.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/object_identityhash.svg" scale="50" />
+<imagedata fileref="images/classes/object_identityhash.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2835,7 +2835,7 @@ to be unique for the receiver object until the object is garbage collected.</par
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/object_init.svg" scale="50" />
+<imagedata fileref="images/classes/object_init.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2852,13 +2852,13 @@ class can override this method to provide more specific initialization.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/object_instancemethod.svg" scale="50" />
+<imagedata fileref="images/classes/object_instancemethod.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Returns the corresponding Method class instance if the
 <emphasis role="italic">methodname</emphasis> is a valid method of the class.
-Otherwise it returns the Nil object.</para>
+Otherwise it returns &nil;.</para>
 </section>
 
 <section id="mthObjectInstanceMethods"><title>instanceMethods</title>
@@ -2870,14 +2870,14 @@ Otherwise it returns the Nil object.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/object_instancemethods.svg" scale="50" />
+<imagedata fileref="images/classes/object_instancemethods.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Returns a Supplier instance containing the names and corresponding method objects
 defined by
 <emphasis role="italic">class</emphasis>.  If the receiver object is not an
-instance of <emphasis role="italic">class</emphasis>, the Nil object is returned.
+instance of <emphasis role="italic">class</emphasis>, &nil; is returned.
 </para>
 </section>
 
@@ -2890,7 +2890,7 @@ instance of <emphasis role="italic">class</emphasis>, the Nil object is returned
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/object_isa.svg" scale="50" />
+<imagedata fileref="images/classes/object_isa.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2908,13 +2908,13 @@ isInstance (<xref linkend="mthObjectIsInstanceOf" />) method.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/object_isinstanceof.svg" scale="50" />
+<imagedata fileref="images/classes/object_isinstanceof.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>Returns .true ("1") if the object is an instance of the specified
+<para>Returns &true; if the object is an instance of the specified
 <emphasis role="italic">class</emphasis>, otherwise it
-returns .false ("0"),
+returns &false;,
 An object is an instance of a class if the object is directly an instance of the
 specified <emphasis role="italic">class</emphasis> or if
 <emphasis role="italic">class</emphasis> is in the object's direct or mixin
@@ -2941,7 +2941,7 @@ class inheritance chain. For example:
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/object_objectname.svg" scale="50" />
+<imagedata fileref="images/classes/object_objectname.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2963,7 +2963,7 @@ method for an example using <emphasis role="bold">objectName</emphasis>.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/object_objectnameequals.svg" scale="50" />
+<imagedata fileref="images/classes/object_objectnameequals.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2997,12 +2997,12 @@ say points[3]                 /* Says: "E"  Points is still an array */
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/object_request.svg" scale="50" />
+<imagedata fileref="images/classes/object_request.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Returns an object of the <emphasis role="italic">classid</emphasis>
-class, or the Nil object if the request cannot be satisfied.</para>
+class, or &nil; if the request cannot be satisfied.</para>
 <para>This method first compares the identity of the object's class (see
 the <emphasis role="italic">id</emphasis>
 method of the Class class in <xref linkend="mthClassId" />) to
@@ -3018,7 +3018,7 @@ a <computeroutput>request("string")</computeroutput> message causes a
 <emphasis role="bold">makeString</emphasis> message to be sent.
 If the object does not have the required conversion method,
 <emphasis role="bold">request</emphasis> returns
-the Nil object.</para>
+&nil;.</para>
 <para>The conversion methods cause objects to produce different representations
 of themselves. The presence or absence of a conversion method defines an object's
 capability to produce the corresponding representations. For example, lists
@@ -3043,7 +3043,7 @@ see <xref linkend="reqstr" />.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/object_run.svg" scale="50" />
+<imagedata fileref="images/classes/object_run.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -3100,7 +3100,7 @@ for information about private method restrictions.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/object_send.svg" scale="50" />
+<imagedata fileref="images/classes/object_send.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -3152,7 +3152,7 @@ say msg3~result           /* Produces Hello Fred 21:04:25.101000  */
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/object_sendwith.svg" scale="50" />
+<imagedata fileref="images/classes/object_sendwith.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -3206,7 +3206,7 @@ say msg3~result           /* Produces Hello Fred 21:04:25.101000  */
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/object_setmethod.svg" scale="50" />
+<imagedata fileref="images/classes/object_setmethod.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -3263,7 +3263,7 @@ method is a protected method.</para></listitem>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/object_start.svg" scale="50" />
+<imagedata fileref="images/classes/object_start.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -3316,7 +3316,7 @@ say msg2~result           /* Produces Hello world 21:04:25.081000 */
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/object_startwith.svg" scale="50" />
+<imagedata fileref="images/classes/object_startwith.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -3372,7 +3372,7 @@ say msg2~result           /* Produces Hello Fred 21:04:25.081000  */
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/object_string.svg" scale="50" />
+<imagedata fileref="images/classes/object_string.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -3417,7 +3417,7 @@ a string value by defining a <emphasis role="bold">makeString</emphasis> method.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/object_unsetmethod.svg" scale="50" />
+<imagedata fileref="images/classes/object_unsetmethod.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -3525,7 +3525,7 @@ instances.  It is a subclass of the <xref linkend="clsObject" xrefstyle="templat
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/package_new.svg" scale="50" />
+<imagedata fileref="images/classes/package_new.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -3560,7 +3560,7 @@ routine search scope from the caller of new method.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/package_addclass.svg" scale="50" />
+<imagedata fileref="images/classes/package_addclass.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -3578,7 +3578,7 @@ is added to the package as a non-public class.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/package_addpackage.svg" scale="50" />
+<imagedata fileref="images/classes/package_addpackage.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -3606,7 +3606,7 @@ say windows:virtualkeycodes~new~keyName(36)   -- HOME
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/package_addpublicclass.svg" scale="50" />
+<imagedata fileref="images/classes/package_addpublicclass.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -3624,7 +3624,7 @@ This is added to the package as a public class.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/package_addpublicroutine.svg" scale="50" />
+<imagedata fileref="images/classes/package_addpublicroutine.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -3643,7 +3643,7 @@ public routine.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/package_addroutine.svg" scale="50" />
+<imagedata fileref="images/classes/package_addroutine.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -3664,12 +3664,12 @@ non-public routine.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/all_annotation.svg" scale="50" />
+<imagedata fileref="images/classes/all_annotation.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Returns the value of the annotation named <emphasis role="italic">name</emphasis> for this package.
-If no such annotation exists, .nil is returned.
+If no such annotation exists, &nil; is returned.
 </para>
 <para>See also
 <itemizedlist spacing="compact">
@@ -3689,7 +3689,7 @@ If no such annotation exists, .nil is returned.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/all_annotations.svg" scale="50" />
+<imagedata fileref="images/classes/all_annotations.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -3713,7 +3713,7 @@ If no such annotation exists, .nil is returned.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/package_classes.svg" scale="50" />
+<imagedata fileref="images/classes/package_classes.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -3738,7 +3738,7 @@ or imported as public classes from another package. -->
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/package_definedmethods.svg" scale="50" />
+<imagedata fileref="images/classes/package_definedmethods.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -3756,7 +3756,7 @@ the .METHODS environment symbol.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/package_digits.svg" scale="50" />
+<imagedata fileref="images/classes/package_digits.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -3776,7 +3776,7 @@ override the default value.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/package_findclass.svg" scale="50" />
+<imagedata fileref="images/classes/package_findclass.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -3785,7 +3785,7 @@ override the default value.
 The search is performed using the same search mechanism used for environment
 symbols or class names specified on ::CLASS directives.
 If the name is not
-found, .nil will be returned.</para>
+found, &nil; will be returned.</para>
 <para>Note that the standard environment symbol search will return an
 object instance (and not a class) when searching e. g. for "nil", "true",
 "false", "endofline", "RexxInfo", or objects in the .LOCAL directory.
@@ -3807,11 +3807,11 @@ say .context~package~findClass("Dummy")   -- The DUMMY class
 <indexterm><primary>findNamespace method</primary><secondary>of Package class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>findNamespace method</secondary><tertiary>of Package class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/package_findnamespace.svg" scale="50"/>
+<imagedata fileref="images/classes/package_findnamespace.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
 <para>Returns the Package object that has been tagged with namespace <emphasis role="italic">name</emphasis>.
-Returns .nil if namespace <emphasis role="italic">name</emphasis> does not exist.
+Returns &nil; if namespace <emphasis role="italic">name</emphasis> does not exist.
 </para>
 <para>See also method <xref linkend="mthPackageAddPackage" xrefstyle="select:title"/>.
 </para>
@@ -3831,7 +3831,7 @@ say .context~package~findNamespace("windows")   -- a Package
 <indexterm><primary>findProgram method</primary><secondary>of Package class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>findProgram method</secondary><tertiary>of Package class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/package_findprogram.svg" scale="50"/>
+<imagedata fileref="images/classes/package_findprogram.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
 <para>Locates program <emphasis role="italic">name</emphasis> using the
@@ -3840,7 +3840,7 @@ target package context and returns the fully resolved filename.
 filename or path to an external program.
 The program is searched for using normal external program search order.
 </para>
-<para>Returns .nil if <emphasis role="italic">name</emphasis> cannot be located.
+<para>Returns &nil; if <emphasis role="italic">name</emphasis> cannot be located.
 </para>
 <para><example>
 <title>Package class &mdash; findProgram method</title>
@@ -3855,11 +3855,11 @@ The program is searched for using normal external program search order.
 <indexterm><primary>findPublicClass method</primary><secondary>of Package class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>findPublicClass method</secondary><tertiary>of Package class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/package_findpublicclass.svg" scale="50"/>
+<imagedata fileref="images/classes/package_findpublicclass.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
 <para>Returns the public class named <emphasis role="italic">name</emphasis>.
-Returns .nil if no public class of the specified name exists within the
+Returns &nil; if no public class of the specified name exists within the
 scope of the receiving package.
 </para>
 <para>See also method <xref linkend="mthPackageFindClass" xrefstyle="select:title"/>.
@@ -3881,11 +3881,11 @@ say .context~package~findPublicClass("RexxInfo") -- The NIL object
 <indexterm><primary>findPublicRoutine method</primary><secondary>of Package class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>findPublicRoutine method</secondary><tertiary>of Package class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/package_findpublicroutine.svg" scale="50"/>
+<imagedata fileref="images/classes/package_findpublicroutine.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
 <para>Returns the public routine named <emphasis role="italic">name</emphasis>.
-Returns .nil if no public routine of the specified name exists within the
+Returns &nil; if no public routine of the specified name exists within the
 scope of the receiving package.
 </para>
 <para>See also
@@ -3913,7 +3913,7 @@ nop
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/package_findroutine.svg" scale="50" />
+<imagedata fileref="images/classes/package_findroutine.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -3921,7 +3921,7 @@ nop
 ::ROUTINE directives within the package, public routines imported from other
 packages, or routines added using the addRoutine method. The argument
 <emphasis role="italic">name</emphasis> must be a string object. If the name is
-not found, .nil will be returned.</para>
+not found, &nil; will be returned.</para>
 </section>
 
 <section id="mthPackageForm"><title>form</title>
@@ -3933,7 +3933,7 @@ not found, .nil will be returned.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/package_form.svg" scale="50" />
+<imagedata fileref="images/classes/package_form.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -3954,7 +3954,7 @@ value.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/package_fuzz.svg" scale="50" />
+<imagedata fileref="images/classes/package_fuzz.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -3975,7 +3975,7 @@ value.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/package_importedclasses.svg" scale="50" />
+<imagedata fileref="images/classes/package_importedclasses.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -3998,7 +3998,7 @@ packages.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/package_importedpackages.svg" scale="50" />
+<imagedata fileref="images/classes/package_importedpackages.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -4015,7 +4015,7 @@ packages.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/package_importedroutines.svg" scale="50" />
+<imagedata fileref="images/classes/package_importedroutines.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -4032,7 +4032,7 @@ packages.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/package_loadlibrary.svg" scale="50" />
+<imagedata fileref="images/classes/package_loadlibrary.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -4040,7 +4040,7 @@ packages.</para>
 by the interpreter. The <emphasis role="italic">name</emphasis> identifies a
 native external library file that will be located and loaded as if it had been
 named on a ::REQUIRES LIBRARY directive.  If the library is successfully loaded,
-loadLibrary will return 1 (true), otherwise it returns 0 (false).</para>
+loadLibrary will return &true;, otherwise it returns &false;.</para>
 </section>
 
 <section id="mthPackageLoadPackage"><title>loadPackage</title>
@@ -4052,7 +4052,7 @@ loadLibrary will return 1 (true), otherwise it returns 0 (false).</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/package_loadpackage.svg" scale="50" />
+<imagedata fileref="images/classes/package_loadpackage.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -4076,7 +4076,7 @@ will be added to the receiving package object's dependent packages.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/package_name.svg" scale="50" />
+<imagedata fileref="images/classes/package_name.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -4104,7 +4104,7 @@ say .Package~new("pkg", "")~name       -- pkg
 <indexterm><primary>namespaces method</primary><secondary>of Package class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>namespaces method</secondary><tertiary>of Package class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/package_namespaces.svg" scale="50"/>
+<imagedata fileref="images/classes/package_namespaces.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
 <para>Returns a StringTable of all namespaces defined in the target package.
@@ -4126,7 +4126,7 @@ say .Package~new("pkg", "")~name       -- pkg
 <indexterm><primary>prolog method</primary><secondary>of Package class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>prolog method</secondary><tertiary>of Package class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/package_prolog.svg" scale="50"/>
+<imagedata fileref="images/classes/package_prolog.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
 <para>Returns a routine object that represents the code of the the target package
@@ -4149,7 +4149,7 @@ that precedes any directives.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/package_publicclasses.svg" scale="50" />
+<imagedata fileref="images/classes/package_publicclasses.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -4179,7 +4179,7 @@ say .rexxinfo~package~publicClasses~items                  -- 56
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/package_publicroutines.svg" scale="50" />
+<imagedata fileref="images/classes/package_publicroutines.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -4206,12 +4206,12 @@ say .rexxinfo~package~publicRoutines~items              -- 0
 <indexterm><primary>resource method</primary><secondary>of Package class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>resource method</secondary><tertiary>of Package class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/package_resource.svg" scale="50"/>
+<imagedata fileref="images/classes/package_resource.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
 <para>Returns an Array of resources data lines a ::RESOURCE <emphasis role="italic">name</emphasis>
 directive in the target package defines.
-Returns .nil, if no resource <emphasis role="italic">name</emphasis> exists. 
+Returns &nil;, if no resource <emphasis role="italic">name</emphasis> exists. 
 </para>
 <para>See also
 <itemizedlist spacing="compact">
@@ -4236,7 +4236,7 @@ La nuit, tous les chats sont gris
 <indexterm><primary>resources method</primary><secondary>of Package class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>resources method</secondary><tertiary>of Package class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/package_resources.svg" scale="50"/>
+<imagedata fileref="images/classes/package_resources.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
 <para>Returns a StringTable of all data resources that ::RESOURCE directives
@@ -4273,7 +4273,7 @@ The quick brown fox jumps over the lazy dog
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/package_routines.svg" scale="50" />
+<imagedata fileref="images/classes/package_routines.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -4293,7 +4293,7 @@ routine objects.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/package_setsecuritymanager.svg" scale="50" />
+<imagedata fileref="images/classes/package_setsecuritymanager.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -4312,7 +4312,7 @@ existing security manager is removed.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/package_source.svg" scale="50" />
+<imagedata fileref="images/classes/package_source.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -4331,7 +4331,7 @@ items.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/package_sourceline.svg" scale="50" />
+<imagedata fileref="images/classes/package_sourceline.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -4349,7 +4349,7 @@ not exist, a null string is returned.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/package_sourcesize.svg" scale="50" />
+<imagedata fileref="images/classes/package_sourcesize.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -4366,7 +4366,7 @@ code is not available, 0 is returned.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/package_trace.svg" scale="50" />
+<imagedata fileref="images/classes/package_trace.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -4430,7 +4430,7 @@ subclass of the Object class (<xref linkend="clsObject" />).</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/routine_new.svg" scale="50" />
+<imagedata fileref="images/classes/routine_new.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -4459,7 +4459,7 @@ routine search scope from the caller of new method.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/routine_newfile.svg" scale="50" />
+<imagedata fileref="images/classes/routine_newfile.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -4478,7 +4478,7 @@ string.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/routine_loadexternalroutine.svg" scale="50" />
+<imagedata fileref="images/classes/routine_loadexternalroutine.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -4494,7 +4494,7 @@ library name is case-sensitive.  The third token is optional and specifies the
 name of the routine within the library package.  If not specified,
 <emphasis role="italic">name</emphasis> is used.
 The routine name is not case sensitive. If the target routine cannot be
-resolved, .nil is returned.
+resolved, &nil; is returned.
 </para>
 <example id="ex.routine-loadexternalroutine">
 <title>Routine class &mdash; loadExternalRoutine method</title>
@@ -4510,7 +4510,7 @@ routine = .Routine~loadExternalRoutine("Pi", "LIBRARY rxmath RxCalcPi")
 <indexterm><primary>[] method</primary><secondary>of Routine class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>[] method</secondary><tertiary>of Routine class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/routine_callbrackets.svg" scale="50"/>
+<imagedata fileref="images/classes/routine_callbrackets.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
 <para>Calls the routine object using the provided <emphasis role="italic">argument</emphasis>s.  The code in the
@@ -4531,12 +4531,12 @@ value will be any value returned by the executed routine.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/all_annotation.svg" scale="50" />
+<imagedata fileref="images/classes/all_annotation.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Returns the value of the annotation named <emphasis role="italic">name</emphasis> for this routine.
-If no such annotation exists, .nil is returned.
+If no such annotation exists, &nil; is returned.
 </para>
 <para>See also
 <itemizedlist spacing="compact">
@@ -4557,7 +4557,7 @@ If no such annotation exists, .nil is returned.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/all_annotations.svg" scale="50" />
+<imagedata fileref="images/classes/all_annotations.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -4581,7 +4581,7 @@ If no such annotation exists, .nil is returned.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/routine_call.svg" scale="50" />
+<imagedata fileref="images/classes/routine_call.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -4601,7 +4601,7 @@ value will be any value returned by the executed routine.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/routine_callwith.svg" scale="50" />
+<imagedata fileref="images/classes/routine_callwith.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -4622,7 +4622,7 @@ by the executed routine.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/routine_package.svg" scale="50" />
+<imagedata fileref="images/classes/routine_package.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -4640,7 +4640,7 @@ referenced by the routine code.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/routine_setsecuritymanager.svg" scale="50" />
+<imagedata fileref="images/classes/routine_setsecuritymanager.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -4659,7 +4659,7 @@ existing security manager is removed.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/routine_source.svg" scale="50" />
+<imagedata fileref="images/classes/routine_source.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -4814,7 +4814,7 @@ string value can have any length and contain any characters.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_new.svg" scale="50" />
+<imagedata fileref="images/classes/string_new.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -4831,7 +4831,7 @@ string value can have any length and contain any characters.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_nl.svg" scale="50" />
+<imagedata fileref="images/classes/string_nl.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -4848,7 +4848,7 @@ has the value '0a'x.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_cr.svg" scale="50" />
+<imagedata fileref="images/classes/string_cr.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -4865,7 +4865,7 @@ has the value '0d'x.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_null.svg" scale="50" />
+<imagedata fileref="images/classes/string_null.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -4882,7 +4882,7 @@ has the value '00'x.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_tab.svg" scale="50" />
+<imagedata fileref="images/classes/string_tab.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -4897,7 +4897,7 @@ has the value '09'x.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_arithmetic_operator.svg" scale="50" />
+<imagedata fileref="images/classes/string_arithmetic_operator.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -4914,7 +4914,7 @@ valid numbers (see <xref linkend="numbrs" />). The
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1">
 <tgroup cols="2">
 <colspec colnum="1" colwidth="1*" />
-<colspec colnum="2" colwidth="4*" />
+<colspec colnum="2" colwidth="5*" />
 <tbody>
 <row><entry>+
 <indexterm><primary>+ method</primary></indexterm>
@@ -5014,32 +5014,32 @@ result is shown in exponential notation, it might have been rounded.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_comparison_operator.svg" scale="50" />
+<imagedata fileref="images/classes/string_comparison_operator.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>Returns <computeroutput>1</computeroutput> (true) or
-<computeroutput>0</computeroutput> (false), the result of performing
+<para>Returns &true; or
+&false;, the result of performing
 the specified comparison operation. The receiver object and the
 <emphasis role="italic">argument</emphasis> are the terms compared. Both must
 be string objects.
 If <emphasis role="italic">argument</emphasis> is not a string object, it is converted
 to its string representation for the comparison.
-The one exception is when <emphasis role="italic">argument</emphasis> is the Nil object
+The one exception is when <emphasis role="italic">argument</emphasis> is &nil;
 for the ==, \==, =, \=, &gt;&lt;, and &lt;&gt; operators.
-A string object will never compare equal to the Nil object, even when the
-string matches the string value of the Nil object ("The NIL object").
+A string object will never compare equal to &nil;, even when the
+string matches the string value of &nil; ("The NIL object").
 As a result, == will always return
-0 (false) when compared to the Nil object and \== will always return 1
-(true). All of the relational comparisions (for example, &lt;, &gt;,
-&lt;=, etc.) will always return .false when compared to the Nil object.
+&false; when compared to &nil; and \== will always return &true;.
+All of the relational comparisions (for example, &lt;, &gt;,
+&lt;=, etc.) will always return &false; when compared to &nil;.
 </para>
 
 <para>The comparison operators you can use in a message are: </para>
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1">
 <tgroup cols="2">
 <colspec colnum="1" colwidth="1*" />
-<colspec colnum="2" colwidth="4*" />
+<colspec colnum="2" colwidth="5*" />
 <tbody>
 <row><entry>=
 <indexterm><primary>= method</primary>
@@ -5048,8 +5048,8 @@ As a result, == will always return
 <secondary>=</secondary>
 <tertiary>of String class</tertiary></indexterm>
 </entry>
-<entry><para>True if the terms are equal (for example, numerically or when
-padded). False if <emphasis role="italic">argument</emphasis> is the Nil object.
+<entry><para>&true; if the terms are equal (for example, numerically or when
+padded). &false; if <emphasis role="italic">argument</emphasis> is &nil;.
 </para></entry></row>
 <row><entry>\=, &gt;&lt;, &lt;&gt;
 <indexterm><primary>>&lt; method</primary>
@@ -5068,49 +5068,49 @@ padded). False if <emphasis role="italic">argument</emphasis> is the Nil object.
 <secondary>&lt;&gt;</secondary>
 <tertiary>of String class</tertiary></indexterm>
 </entry>
-<entry><para>True if the terms are not equal (inverse of =). True if <emphasis role="italic">argument</emphasis> is the Nil object.
+<entry><para>&true; if the terms are not equal (inverse of =). &true; if <emphasis role="italic">argument</emphasis> is &nil;.
 </para></entry></row>
 <row><entry>&gt;
 <indexterm><primary>&gt; method</primary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>></secondary></indexterm>
 </entry>
-<entry><para>Greater than. False if <emphasis role="italic">argument</emphasis> is the Nil object.
+<entry><para>Greater than. &false; if <emphasis role="italic">argument</emphasis> is &nil;.
 </para></entry></row>
 <row><entry>&lt;
 <indexterm><primary>&lt; method</primary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>&lt;</secondary></indexterm>
 </entry>
-<entry><para>Less than. False if <emphasis role="italic">argument</emphasis> is the Nil object.
+<entry><para>Less than. &false; if <emphasis role="italic">argument</emphasis> is &nil;.
 </para></entry></row>
 <row><entry>&gt;=
 <indexterm><primary>&gt;= method</primary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>&gt;=</secondary></indexterm>
 </entry>
-<entry><para>Greater than or equal to. False if <emphasis role="italic">argument</emphasis> is the Nil object.
+<entry><para>Greater than or equal to. &false; if <emphasis role="italic">argument</emphasis> is &nil;.
 </para></entry></row>
 <row><entry>\&lt;
 <indexterm><primary>\&lt; method</primary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>\&lt;</secondary></indexterm>
 </entry>
-<entry><para>Not less than. False if <emphasis role="italic">argument</emphasis> is the Nil object.
+<entry><para>Not less than. &false; if <emphasis role="italic">argument</emphasis> is &nil;.
 </para></entry></row>
 <row><entry>&lt;=
 <indexterm><primary>&lt;= method</primary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>&lt;=</secondary></indexterm>
 </entry>
-<entry><para>Less than or equal to. False if <emphasis role="italic">argument</emphasis> is the Nil object.
+<entry><para>Less than or equal to. &false; if <emphasis role="italic">argument</emphasis> is &nil;.
 </para></entry></row>
 <row><entry>\&gt;
 <indexterm><primary>\&gt; method</primary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>\&gt;</secondary></indexterm>
 </entry>
-<entry><para>Not greater than. False if <emphasis role="italic">argument</emphasis> is the Nil object.
+<entry><para>Not greater than. &false; if <emphasis role="italic">argument</emphasis> is &nil;.
 </para></entry></row>
 </tbody>
 </tgroup>
@@ -5167,7 +5167,7 @@ characters.</para>
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1">
 <tgroup cols="2">
 <colspec colnum="1" colwidth="1*" />
-<colspec colnum="2" colwidth="4*" />
+<colspec colnum="2" colwidth="5*" />
 <tbody>
 <row><entry>==
 <indexterm><primary>== method</primary>
@@ -5176,7 +5176,7 @@ characters.</para>
 <secondary>==</secondary>
 <tertiary>of String class</tertiary></indexterm>
 </entry>
-<entry><para>True if terms are strictly equal (identical)
+<entry><para>&true; if terms are strictly equal (identical)
 </para></entry></row>
 <row><entry>\==
 <indexterm><primary>\== method</primary></indexterm>
@@ -5184,7 +5184,7 @@ characters.</para>
 <secondary>\==</secondary>
 <tertiary>of String class</tertiary></indexterm>
 </entry>
-<entry><para>True if the terms are NOT strictly equal (inverse of ==)
+<entry><para>&true; if the terms are NOT strictly equal (inverse of ==)
 </para></entry></row>
 <row><entry>&gt;&gt;
 <indexterm><primary>&gt;&gt; method</primary></indexterm>
@@ -5257,7 +5257,7 @@ characters.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_logical_operator.svg" scale="50" />
+<imagedata fileref="images/classes/string_logical_operator.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -5266,8 +5266,8 @@ characters.</para>
 <para>For NOT (prefix \),
 <indexterm><primary>\ method</primary></indexterm>
 omit the parentheses and <emphasis role="italic">argument</emphasis>.</para>
-<para>Returns <computeroutput>1</computeroutput> (true) or
-<computeroutput>0</computeroutput> (false), the result of performing
+<para>Returns &true; or
+&false;, the result of performing
 the specified logical operation. The receiver object and the
 <emphasis role="italic">argument</emphasis> are character strings that
 evaluate to <computeroutput>1</computeroutput> or
@@ -5278,7 +5278,7 @@ evaluate to <computeroutput>1</computeroutput> or
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1">
 <tgroup cols="2">
 <colspec colnum="1" colwidth="1*" />
-<colspec colnum="2" colwidth="4*" />
+<colspec colnum="2" colwidth="5*" />
 <tbody>
 <row><entry>&amp;
 <indexterm><primary>&amp; method</primary></indexterm>
@@ -5286,7 +5286,7 @@ evaluate to <computeroutput>1</computeroutput> or
 <secondary>&amp;</secondary></indexterm>
 </entry>
 <entry><para>AND (Returns <computeroutput>1</computeroutput>
-if both terms are true.)
+if both terms are &true;.)
 </para></entry></row>
 <row><entry>|
 <indexterm><primary>| method</primary></indexterm>
@@ -5304,7 +5304,7 @@ true.)
 </entry>
 <entry><para>Exclusive OR (Returns <computeroutput>1</computeroutput>
 if either term, but not both terms,
-is true.)
+is &true;.)
 </para></entry></row>
 <row><entry>Prefix \
 <indexterm><primary>method</primary>
@@ -5339,7 +5339,7 @@ becomes <computeroutput>0</computeroutput>, and
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_concatenation_operator.svg" scale="50" />
+<imagedata fileref="images/classes/string_concatenation_operator.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -5350,7 +5350,7 @@ The <emphasis role="italic">concatenation_operator</emphasis> can be: </para>
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1">
 <tgroup cols="2">
 <colspec colnum="1" colwidth="1*" />
-<colspec colnum="2" colwidth="4*" />
+<colspec colnum="2" colwidth="5*" />
 <tbody>
 <row><entry>&quot;&quot;</entry>
 <entry><para>concatenates without an intervening blank. The abuttal operator
@@ -5397,7 +5397,7 @@ f "def"     ->   "abc def"
 <indexterm><primary>[] method</primary><secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>[] method</secondary><tertiary>of String class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/string_atget.svg" scale="50"/>
+<imagedata fileref="images/classes/string_atget.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
 <para>If <emphasis role="italic">length</emphasis> is omitted,
@@ -5433,12 +5433,12 @@ and <xref linkend="mthStringSubstr" xrefstyle="select:title"/>.
 <indexterm><primary>? method</primary><secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>? method</secondary><tertiary>of String class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/string_iif.svg" scale="50"/>
+<imagedata fileref="images/classes/string_iif.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
 <para>Returns <emphasis role="italic">first</emphasis> if the receiving string is
 true ("1"),
-returns <emphasis role="italic">second</emphasis> if it is false ("0").
+returns <emphasis role="italic">second</emphasis> if it is &false;.
 </para>
 <para><example>
 <title>String class &mdash; ? method</title>
@@ -5463,7 +5463,7 @@ end                                              -- 2 apples
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_abbrev.svg" scale="50" />
+<imagedata fileref="images/classes/string_abbrev.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -5523,7 +5523,7 @@ end;
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_abs.svg" scale="50" />
+<imagedata fileref="images/classes/string_abs.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -5547,7 +5547,7 @@ sign and is formatted according to the current NUMERIC settings.</para>
 <indexterm><primary>append method</primary><secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>append method</secondary><tertiary>of String class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/string_append.svg" scale="50"/>
+<imagedata fileref="images/classes/string_append.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
 <para>Returns a string consisting of <emphasis role="italic">string</emphasis>
@@ -5571,7 +5571,7 @@ appended to the receiving string.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_b2x.svg" scale="50" />
+<imagedata fileref="images/classes/string_b2x.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -5627,7 +5627,7 @@ number into other forms.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_bitand.svg" scale="50" />
+<imagedata fileref="images/classes/string_bitand.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -5672,7 +5672,7 @@ the zero-length (null) string.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_bitor.svg" scale="50" />
+<imagedata fileref="images/classes/string_bitor.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -5719,7 +5719,7 @@ the zero-length (null) string.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_bitxor.svg" scale="50" />
+<imagedata fileref="images/classes/string_bitxor.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -5767,7 +5767,7 @@ on the right before carrying out the logical operation. The default for
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_c2d.svg" scale="50" />
+<imagedata fileref="images/classes/string_c2d.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -5838,7 +5838,7 @@ been processed. If <emphasis role="italic">n</emphasis> is
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_c2x.svg" scale="50" />
+<imagedata fileref="images/classes/string_c2x.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -5883,7 +5883,7 @@ method</secondary></indexterm>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_caselessabbrev.svg" scale="50" />
+<imagedata fileref="images/classes/string_caselessabbrev.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -5946,7 +5946,7 @@ end;
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_caselesschangestr.svg" scale="50" />
+<imagedata fileref="images/classes/string_caselesschangestr.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -5988,7 +5988,7 @@ AbaBabAB~changeStr("ab","xy",1)        ->    "xyaBabAB"
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_caselesscompare.svg" scale="50" />
+<imagedata fileref="images/classes/string_caselesscompare.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -6032,7 +6032,7 @@ blank.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_caselesscompareto.svg" scale="50" />
+<imagedata fileref="images/classes/string_caselesscompareto.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -6076,12 +6076,12 @@ place to the end of the target string.
 <indexterm><primary>caselessContains method</primary><secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>caselessContains method</secondary><tertiary>of String class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/string_caselesscontains.svg" scale="50"/>
+<imagedata fileref="images/classes/string_caselesscontains.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
-<para>Returns .true ("1") if the receiving string contains the
+<para>Returns &true; if the receiving string contains the
 <emphasis role="italic">other</emphasis> string.
-It returns .false ("0") if <emphasis role="italic">other</emphasis> is
+It returns &false; if <emphasis role="italic">other</emphasis> is
 the null string or is not found within the receiving string.
 The search is performed using caseless comparisons.
 </para>
@@ -6125,12 +6125,12 @@ say "-abcdef-"~caselessContains("-", 2, 6)    -- 0
 <indexterm><primary>caselessContainsWord method</primary><secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>caselessContainsWord method</secondary><tertiary>of String class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/string_caselesscontainsword.svg" scale="50"/>
+<imagedata fileref="images/classes/string_caselesscontainsword.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
-<para>Returns .true ("1") if <emphasis role="italic">phrase</emphasis>
+<para>Returns &true; if <emphasis role="italic">phrase</emphasis>
 is found in the receiving string.
-Returns .false ("0") if <emphasis role="italic">phrase</emphasis>
+Returns &false; if <emphasis role="italic">phrase</emphasis>
 contains no words or if <emphasis role="italic">phrase</emphasis>
 is not found.
 Word matches are made independent of case.
@@ -6150,7 +6150,7 @@ the word at which the search is to be started.</para>
  </listitem>
  <listitem>
   <para>method <xref linkend="mthStringCaselessWordPos" xrefstyle="select:title"/>
-  (<methodname>caselessContainsWord</methodname> returns .false ("0") exactly if
+  (<methodname>caselessContainsWord</methodname> returns &false; exactly if
   <methodname>caselessWordPos</methodname> would have returned
   <computeroutput>"0"</computeroutput>.)</para>
  </listitem>
@@ -6159,13 +6159,13 @@ the word at which the search is to be started.</para>
 <para><example>
 <title>String class &mdash; caselessContainsWord method</title>
 <programlisting><![CDATA[good = "Now is the time for all good men"
-say good~caselessContainsWord("the")          -- .true
-say good~caselessContainsWord("The")          -- .true
-say good~caselessContainsWord("is the")       -- .true
-say good~caselessContainsWord("is   the ")    -- .true
-say good~caselessContainsWord("is time")      -- .false
-say good~caselessContainsWord("time")         -- .true
-say good~caselessContainsWord("time", 5)      -- .false
+good~caselessContainsWord("the")          -- .true
+good~caselessContainsWord("The")          -- .true
+good~caselessContainsWord("is the")       -- .true
+good~caselessContainsWord("is   the ")    -- .true
+good~caselessContainsWord("is time")      -- .false
+good~caselessContainsWord("time")         -- .true
+good~caselessContainsWord("time", 5)      -- .false
 ]]></programlisting></example></para>
 </section>
 
@@ -6184,7 +6184,7 @@ say good~caselessContainsWord("time", 5)      -- .false
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_caselesscountstr.svg" scale="50" />
+<imagedata fileref="images/classes/string_caselesscountstr.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -6212,12 +6212,12 @@ string that do not overlap.  All matches are made using caseless comparisons.</p
 <indexterm><primary>caselessEndsWith method</primary><secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>caselessEndsWith method</secondary><tertiary>of String class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/string_caselessendswith.svg" scale="50"/>
+<imagedata fileref="images/classes/string_caselessendswith.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
-<para>Returns .true ("1") if the characters of the <emphasis role="italic">other</emphasis> match the
+<para>Returns &true; if the characters of the <emphasis role="italic">other</emphasis> match the
 characters at the end of the target string.
-Returns .false ("0") if the characters are not a match, or if
+Returns &false; if the characters are not a match, or if
 <emphasis role="italic">other</emphasis> is the null string.
 The match is made using caseless comparisons.
 </para>
@@ -6254,13 +6254,13 @@ require new string objects be extracted from the target string.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_caselessequals.svg" scale="50" />
+<imagedata fileref="images/classes/string_caselessequals.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>Returns .true ("1") if the target string is strictly equal to the
+<para>Returns &true; if the target string is strictly equal to the
 <emphasis role="italic">other</emphasis> string, using a caseless comparison.
-Returns .false ("0") if the two strings are not strictly equal.</para>
+Returns &false; if the two strings are not strictly equal.</para>
 <indexterm><primary>examples</primary>
 <secondary>caselessEquals method</secondary></indexterm>
 <example id="ex.string-caselessequals">
@@ -6287,7 +6287,7 @@ Returns .false ("0") if the two strings are not strictly equal.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_caselesslastpos.svg" scale="50" />
+<imagedata fileref="images/classes/string_caselesslastpos.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -6337,12 +6337,12 @@ performed using caseless comparisons.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_caselessmatch.svg" scale="50" />
+<imagedata fileref="images/classes/string_caselessmatch.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>Returns .true ("1") if the characters of the <emphasis role="italic">other</emphasis> match the
-characters of the target string beginning at position <emphasis role="italic">start</emphasis>.  Return .false
+<para>Returns &true; if the characters of the <emphasis role="italic">other</emphasis> match the
+characters of the target string beginning at position <emphasis role="italic">start</emphasis>.  Returns &false;
 ("0") if the characters are not a match.  The matching is performed using caseless comparisons.
 <emphasis role="italic">start</emphasis> must be a positive whole number.
 </para>
@@ -6386,12 +6386,12 @@ not require new string objects be extracted from the target string.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_caselessmatchchar.svg" scale="50" />
+<imagedata fileref="images/classes/string_caselessmatchchar.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>Returns .true ("1") if the character at position <emphasis role="italic">n</emphasis> matches any
-character of the string <emphasis role="italic">chars</emphasis>.  Returns .false ("0") if the character does not
+<para>Returns &true; if the character at position <emphasis role="italic">n</emphasis> matches any
+character of the string <emphasis role="italic">chars</emphasis>.  Returns &false; if the character does not
 match any of the characters in the reference set.  The match is made using caseless comparisons.
 The argument <emphasis role="italic">n</emphasis> must be
 a positive whole number.</para>
@@ -6422,7 +6422,7 @@ a positive whole number.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_caselesspos.svg" scale="50" />
+<imagedata fileref="images/classes/string_caselesspos.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -6465,12 +6465,12 @@ a non-negative whole number.
 <indexterm><primary>caselessStartsWith method</primary><secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>caselessStartsWith method</secondary><tertiary>of String class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/string_caselessstartswith.svg" scale="50"/>
+<imagedata fileref="images/classes/string_caselessstartswith.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
-<para>Returns .true ("1") if the characters of the <emphasis role="italic">other</emphasis> match the
+<para>Returns &true; if the characters of the <emphasis role="italic">other</emphasis> match the
 characters at the start of the target string.
-Returns .false ("0") if the characters are not a match, or if
+Returns &false; if the characters are not a match, or if
 <emphasis role="italic">other</emphasis> is the null string.
 The match is made using caseless comparisons.
 </para>
@@ -6504,7 +6504,7 @@ require new string objects be extracted from the target string.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_caselesswordpos.svg" scale="50" />
+<imagedata fileref="images/classes/string_caselesswordpos.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -6551,7 +6551,7 @@ the word at which the search is to be started.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_ceiling.svg" scale="50" />
+<imagedata fileref="images/classes/string_ceiling.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -6601,7 +6601,7 @@ current setting of NUMERIC DIGITS if necessary, before the method processes it.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_center.svg" scale="50" />
+<imagedata fileref="images/classes/string_center.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -6647,7 +6647,7 @@ abc~CENTER(8,"-")           ->    "--ABC---"
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_changestr.svg" scale="50" />
+<imagedata fileref="images/classes/string_changestr.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -6686,7 +6686,7 @@ occurrences to be replaced.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_compare.svg" scale="50" />
+<imagedata fileref="images/classes/string_compare.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -6727,7 +6727,7 @@ blank.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_compareto.svg" scale="50" />
+<imagedata fileref="images/classes/string_compareto.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -6771,12 +6771,12 @@ place to the end of the target string.
 <indexterm><primary>contains method</primary><secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>contains method</secondary><tertiary>of String class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/string_contains.svg" scale="50"/>
+<imagedata fileref="images/classes/string_contains.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
-<para>Returns .true ("1") if the receiving string contains the
+<para>Returns &true; if the receiving string contains the
 <emphasis role="italic">other</emphasis> string.
-It returns .false ("0") if <emphasis role="italic">other</emphasis> is
+It returns &false; if <emphasis role="italic">other</emphasis> is
 the null string or is not found within the receiving string.
 </para>
 <para>By default, the search starts at the first character of the
@@ -6818,12 +6818,12 @@ say "-abcdef-"~contains("-", 2, 6)    -- 0
 <indexterm><primary>containsWord method</primary><secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>containsWord method</secondary><tertiary>of String class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/string_containsword.svg" scale="50"/>
+<imagedata fileref="images/classes/string_containsword.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
-<para>Returns .true ("1") if <emphasis role="italic">phrase</emphasis>
+<para>Returns &true; if <emphasis role="italic">phrase</emphasis>
 is found in the receiving string.
-Returns .false ("0") if <emphasis role="italic">phrase</emphasis>
+Returns &false; if <emphasis role="italic">phrase</emphasis>
 contains no words or if <emphasis role="italic">phrase</emphasis>
 is not found.
 Multiple whitespace characters between words in either
@@ -6842,7 +6842,7 @@ the word at which the search is to be started.</para>
  </listitem>
  <listitem>
   <para>method <xref linkend="mthStringWordPos" xrefstyle="template:wordPos"/>
-  (containsWord returns .false ("0") exactly if wordPos would have returned
+  (containsWord returns &false; exactly if wordPos would have returned
   <computeroutput>"0"</computeroutput>.)</para>
  </listitem>
 </itemizedlist>
@@ -6876,7 +6876,7 @@ say good~containsWord("time", 5)      -- .false
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_copies.svg" scale="50" />
+<imagedata fileref="images/classes/string_copies.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -6905,7 +6905,7 @@ whole number or zero.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_countstr.svg" scale="50" />
+<imagedata fileref="images/classes/string_countstr.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -6939,7 +6939,7 @@ string that do not overlap.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_d2c.svg" scale="50" />
+<imagedata fileref="images/classes/string_d2c.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -6985,7 +6985,7 @@ has no leading "00"x characters.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_d2x.svg" scale="50" />
+<imagedata fileref="images/classes/string_d2x.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -7045,7 +7045,7 @@ or zero, and the returned result has no leading zeros.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_datatype.svg" scale="50" />
+<imagedata fileref="images/classes/string_datatype.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -7184,7 +7184,7 @@ or EBCDIC).</para></note>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_decodebase64.svg" scale="50" />
+<imagedata fileref="images/classes/string_decodebase64.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -7217,7 +7217,7 @@ an error results.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_delstr.svg" scale="50" />
+<imagedata fileref="images/classes/string_delstr.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -7262,7 +7262,7 @@ string, the method returns the receiving string unchanged.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_delword.svg" scale="50" />
+<imagedata fileref="images/classes/string_delword.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -7313,7 +7313,7 @@ preceding the first word involved.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_encodebase64.svg" scale="50" />
+<imagedata fileref="images/classes/string_encodebase64.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -7338,12 +7338,12 @@ string.</para>
 <indexterm><primary>endsWith method</primary><secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>endsWith method</secondary><tertiary>of String class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/string_endswith.svg" scale="50"/>
+<imagedata fileref="images/classes/string_endswith.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
-<para>Returns .true ("1") if the characters of the <emphasis role="italic">other</emphasis> match the
+<para>Returns &true; if the characters of the <emphasis role="italic">other</emphasis> match the
 characters at the end of the target string.
-Returns .false ("0") if the characters are not a match, or if
+Returns &false; if the characters are not a match, or if
 <emphasis role="italic">other</emphasis> is the null string.
 </para>
 <para>The endsWith method is useful for efficient string parsing as it does not
@@ -7374,13 +7374,13 @@ require new string objects be extracted from the target string.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_equals.svg" scale="50" />
+<imagedata fileref="images/classes/string_equals.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>Returns .true ("1") if the target string is strictly equal to the
+<para>Returns &true; if the target string is strictly equal to the
 <emphasis role="italic">other</emphasis> string.
-Returns .false ("0") if the two strings are not strictly equal.  This is
+Returns &false; if the two strings are not strictly equal.  This is
 the same comparison performed by the "==" comparison method.</para>
 <indexterm><primary>examples</primary>
 <secondary>equals method</secondary></indexterm>
@@ -7405,7 +7405,7 @@ the same comparison performed by the "==" comparison method.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_floor.svg" scale="50" />
+<imagedata fileref="images/classes/string_floor.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -7450,7 +7450,7 @@ current setting of NUMERIC DIGITS if necessary, before the method processes it.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_format.svg" scale="50" />
+<imagedata fileref="images/classes/string_format.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -7540,13 +7540,13 @@ expression.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_hashcode.svg" scale="50" />
+<imagedata fileref="images/classes/string_hashcode.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Returns a string value that is used as a hash value for MapCollection
 such as Table, Relation, Set, Bag, and Directory.  The String hash code method will return
-the same hash value for all pairs of string instances for which the == operator is true.
+the same hash value for all pairs of string instances for which the == operator is &true;.
 See <xref linkend="mthObjectHashCode" /> for details.
 </para>
 </section>
@@ -7561,7 +7561,7 @@ See <xref linkend="mthObjectHashCode" /> for details.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_insert.svg" scale="50" />
+<imagedata fileref="images/classes/string_insert.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -7610,7 +7610,7 @@ truncates <emphasis role="italic">new</emphasis> to length
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_lastpos.svg" scale="50" />
+<imagedata fileref="images/classes/string_lastpos.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -7656,7 +7656,7 @@ number and defaults to <emphasis role="italic">start</emphasis>.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_left.svg" scale="50" />
+<imagedata fileref="images/classes/string_left.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -7671,7 +7671,7 @@ method is exactly equivalent to:</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_left_xmp.svg" scale="50" />
+<imagedata fileref="images/classes/string_left_xmp.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -7700,7 +7700,7 @@ method is exactly equivalent to:</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_length.svg" scale="50" />
+<imagedata fileref="images/classes/string_length.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -7726,7 +7726,7 @@ method is exactly equivalent to:</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_lower.svg" scale="50" />
+<imagedata fileref="images/classes/string_lower.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -7758,7 +7758,7 @@ is not specified, the default is to convert the remainder of the string.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_makearray.svg" scale="50" />
+<imagedata fileref="images/classes/string_makearray.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -7800,7 +7800,7 @@ array = string~makeArray("*")     /* contains 3 items */
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_makestring.svg" scale="50" />
+<imagedata fileref="images/classes/string_makestring.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -7820,12 +7820,12 @@ object. See <xref linkend="reqstr" />.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_match.svg" scale="50" />
+<imagedata fileref="images/classes/string_match.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>Returns .true ("1") if the characters of the <emphasis role="italic">other</emphasis> match the
-characters of the target string beginning at position <emphasis role="italic">start</emphasis>.  Return .false
+<para>Returns &true; if the characters of the <emphasis role="italic">other</emphasis> match the
+characters of the target string beginning at position <emphasis role="italic">start</emphasis>.  Returns &false;
 ("0") if the characters are not a match.
 <emphasis role="italic">start</emphasis> must be a positive whole number.
 </para>
@@ -7864,12 +7864,12 @@ require new string objects be extracted from the target string.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_matchchar.svg" scale="50" />
+<imagedata fileref="images/classes/string_matchchar.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>Returns .true ("1") if the character at position <emphasis role="italic">n</emphasis> matches any
-character of the string <emphasis role="italic">chars</emphasis>.  Returns .false ("0") if the character does not
+<para>Returns &true; if the character at position <emphasis role="italic">n</emphasis> matches any
+character of the string <emphasis role="italic">chars</emphasis>.  Returns &false; if the character does not
 match any of the characters in the reference set.  The argument <emphasis role="italic">n</emphasis> must be
 a positive whole number.</para>
 <indexterm><primary>examples</primary>
@@ -7894,7 +7894,7 @@ a positive whole number.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_max.svg" scale="50" />
+<imagedata fileref="images/classes/string_max.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -7924,7 +7924,7 @@ You can specify any number of <emphasis role="italic">number</emphasis>s.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_min.svg" scale="50" />
+<imagedata fileref="images/classes/string_min.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -7956,7 +7956,7 @@ settings. You can specify any number of
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_overlay.svg" scale="50" />
+<imagedata fileref="images/classes/string_overlay.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -8003,7 +8003,7 @@ and the default value for <emphasis role="italic">n</emphasis> is
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_pos.svg" scale="50" />
+<imagedata fileref="images/classes/string_pos.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -8049,7 +8049,7 @@ a non-negative whole number.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_replaceat.svg" scale="50" />
+<imagedata fileref="images/classes/string_replaceat.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -8092,7 +8092,7 @@ role="italic">new</emphasis> string. The default <emphasis role="italic">pad</em
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_reverse.svg" scale="50" />
+<imagedata fileref="images/classes/string_reverse.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -8126,7 +8126,7 @@ role="italic">new</emphasis> string. The default <emphasis role="italic">pad</em
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_right.svg" scale="50" />
+<imagedata fileref="images/classes/string_right.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -8160,7 +8160,7 @@ whole number or zero.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_round.svg" scale="50" />
+<imagedata fileref="images/classes/string_round.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -8197,7 +8197,7 @@ the result, any minus sign is removed.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_sign.svg" scale="50" />
+<imagedata fileref="images/classes/string_sign.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -8234,7 +8234,7 @@ if it is greater than <computeroutput>0</computeroutput>.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_space.svg" scale="50" />
+<imagedata fileref="images/classes/string_space.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -8269,12 +8269,12 @@ and the default <emphasis role="italic">pad</emphasis> character is a blank.
 <indexterm><primary>startsWith method</primary><secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>startsWith method</secondary><tertiary>of String class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/string_startswith.svg" scale="50"/>
+<imagedata fileref="images/classes/string_startswith.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
-<para>Returns .true ("1") if the characters of the <emphasis role="italic">other</emphasis> match the
+<para>Returns &true; if the characters of the <emphasis role="italic">other</emphasis> match the
 characters at the start of the target string.
-Returns .false ("0") if the characters are not a match, or if
+Returns &false; if the characters are not a match, or if
 <emphasis role="italic">other</emphasis> is the null string.
 </para>
 <para>The startsWith method is useful for efficient string parsing as it does not
@@ -8320,7 +8320,7 @@ require new string objects be extracted from the target string.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_strip.svg" scale="50" />
+<imagedata fileref="images/classes/string_strip.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -8371,7 +8371,7 @@ will be removed.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_subchar.svg" scale="50" />
+<imagedata fileref="images/classes/string_subchar.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -8397,7 +8397,7 @@ and <xref linkend="mthStringSubstr" xrefstyle="select:title"/>.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_substr.svg" scale="50" />
+<imagedata fileref="images/classes/string_substr.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -8449,7 +8449,7 @@ extract more than one substring from a string.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_subword.svg" scale="50" />
+<imagedata fileref="images/classes/string_subword.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -8486,7 +8486,7 @@ between the selected words.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_subwords.svg" scale="50" />
+<imagedata fileref="images/classes/string_subwords.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -8536,7 +8536,7 @@ in the returned array never have leading or trailing whitespace.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_translate.svg" scale="50" />
+<imagedata fileref="images/classes/string_translate.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -8611,7 +8611,7 @@ the beginning of the string.</para></note>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_trunc.svg" scale="50" />
+<imagedata fileref="images/classes/string_trunc.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -8654,7 +8654,7 @@ current setting of NUMERIC DIGITS if necessary, before the method processes it.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_upper.svg" scale="50" />
+<imagedata fileref="images/classes/string_upper.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -8689,7 +8689,7 @@ is not specified, the default is to convert the remainder of the string.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_verify.svg" scale="50" />
+<imagedata fileref="images/classes/string_verify.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -8765,7 +8765,7 @@ returns the <emphasis role="italic">start</emphasis> value.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_word.svg" scale="50" />
+<imagedata fileref="images/classes/string_word.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -8796,7 +8796,7 @@ to <computeroutput>receiving_string~subWord(n,1)</computeroutput>.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_wordindex.svg" scale="50" />
+<imagedata fileref="images/classes/string_wordindex.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -8829,7 +8829,7 @@ role="italic">n</emphasis> must be a positive whole number.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_wordlength.svg" scale="50" />
+<imagedata fileref="images/classes/string_wordlength.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -8861,7 +8861,7 @@ The <emphasis role="italic">n</emphasis> must be a positive whole number.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_wordpos.svg" scale="50" />
+<imagedata fileref="images/classes/string_wordpos.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -8911,7 +8911,7 @@ the word at which the search is to be started.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_words.svg" scale="50" />
+<imagedata fileref="images/classes/string_words.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -8941,7 +8941,7 @@ the word at which the search is to be started.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_x2b.svg" scale="50" />
+<imagedata fileref="images/classes/string_x2b.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -8993,7 +8993,7 @@ character strings into binary form.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_x2c.svg" scale="50" />
+<imagedata fileref="images/classes/string_x2c.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -9031,7 +9031,7 @@ ignored.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/string_x2d.svg" scale="50" />
+<imagedata fileref="images/classes/string_x2d.svg" scale="55" />
 </imageobject>
 </mediaobject>
 

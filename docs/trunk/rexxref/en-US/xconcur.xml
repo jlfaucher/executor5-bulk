@@ -456,10 +456,10 @@ concurrency conditional:</para>
 GUARD ON WHEN <emphasis role="italic">expression</emphasis>
 </programlisting>
 <para>If the <emphasis role="italic">expression</emphasis> on the GUARD
-instruction evaluates to <computeroutput>1</computeroutput> (true), the
+instruction evaluates to &true;, the
 method continues to run. If the <emphasis role="italic">expression</emphasis>
 on the GUARD instruction evaluates to
-<computeroutput>0</computeroutput> (false), the method does not
+&false;, the method does not
 continue running. GUARD reevaluates the
 <emphasis role="italic">expression</emphasis> whenever the value
 of an exposed object variable changes. When the expression evaluates to
@@ -644,7 +644,7 @@ return sem
 
 ::method shared
 expose shared
-return shared                               /* Return true 1 or false 0         */
+return shared                               /* Return .true or .false           */
 
 ::method named
 expose name

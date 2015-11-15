@@ -1,5 +1,24 @@
-/* all xmpsyntaxNN.svg should also be added here */
+/* 2. How to Read the Syntax Diagrams */
+xmpsyntax_dummy ::= 'use this dummy diagram to cut out the diagrams needed for'
+                    'beginning of statement' 'statement continuation' 'and end of statement'  
 
+xmpsyntax01 ::= 'STATEMENT' required_item
+xmpsyntax02 ::= 'STATEMENT' optional_item?
+xmpsyntax03 ::= 'STATEMENT' (required_choice1 | required_choice2)
+xmpsyntax04 ::= 'STATEMENT' ( | optional_choice1 | optional_choice2)
+xmpsyntax05 ::= 'STATEMENT' (default_choice | alternate_choice1 | alternate_choice2)
+xmpsyntax06 ::= 'STATEMENT' repeatable_item (',' repeatable_item)*
+xmpsyntax07 ::= 'STATEMENT' (DETAIL - fragment)
+
+/* 1.11.1. Terms and Expressions et. al. */
 xmpsyntax08 ::= 'symbolorstring(' expression? (',' expression?)* ')'
 
+/* 1.11.4. Message Terms */
+xmpsyntax09 ::= receiver ('~' | '~~') messagename (':' symbol)? ('(' expression? (',' expression?)*  ')')?
+xmpsyntax10 ::= receiver '[' expression? (',' expression?)*  ']'
+
+/* 1.11.6. Array Term */
 xmpsyntax_array ::= expression? ',' expression? (',' expression?)*
+
+/* 1.15. Message Instructions */
+xmpsyntax11 ::= messageterm ('=' expression)?

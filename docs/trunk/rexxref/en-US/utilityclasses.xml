@@ -61,7 +61,7 @@
    <listitem><para><xref linkend="clsComparable" xrefstyle="template:Comparable"/> and
     <xref linkend="clsOrderable" xrefstyle="template:Orderable"/> class,
    </para></listitem>
-   <listitem><para>eight Comparator classes used for sorting
+   <listitem><para>eight <xref linkend="clsComparator" xrefstyle="template:Comparator"/> classes used for sorting
     <xref linkend="clsCaselessComparator" xrefstyle="template:(Caseless)"/><xref linkend="clsComparator" xrefstyle="template:Comparator"/>,
     <xref linkend="clsCaselessColumnComparator" xrefstyle="template:(Caseless)"/><xref linkend="clsColumnComparator" xrefstyle="template:ColumnComparator"/>,
     <xref linkend="clsCaselessDescendingComparator" xrefstyle="template:(Caseless)"/><xref linkend="clsDescendingComparator" xrefstyle="template:DescendingComparator"/>,
@@ -69,10 +69,12 @@
     <xref linkend="clsNumericComparator" xrefstyle="template:NumericComparator"/>, and
    </para></listitem>
    <listitem><para>other miscellaneous classes
+    <xref linkend="clsBuffer" xrefstyle="template:Buffer"/>,   
     <xref linkend="clsMonitor" xrefstyle="template:Monitor"/>,   
     <xref linkend="clsPointer" xrefstyle="template:Pointer"/>,
     <xref linkend="clsRegularExpression" xrefstyle="template:RegularExpression"/>,
     <xref linkend="clsRexxContext" xrefstyle="template:RexxContext"/>,
+    <xref linkend="clsRexxInfo" xrefstyle="template:RexxInfo"/>,
     <xref linkend="clsRexxQueue" xrefstyle="template:RexxQueue"/>,
     <xref linkend="clsStackFrame" xrefstyle="template:StackFrame"/>,
     <xref linkend="clsStreamSupplier" xrefstyle="template:StreamSupplier"/>,
@@ -132,24 +134,24 @@ notification target.
 <indexterm><primary>attachment method</primary><secondary>of Alarm class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>attachment method</secondary><tertiary>of Alarm class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/alarm_attachment.svg" scale="50"/>
+<imagedata fileref="images/classes/alarm_attachment.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
 <para>Returns the object that has been attached to the Alarm instance upon creation.
-Returns .nil if no object is attached.
+Returns &nil; if no object is attached.
 </para>
 <para>See also method <xref linkend="mthAlarmInit" xrefstyle="select:title"/>.
 </para>
 <para><example>
 <title>Alarm class &mdash; attachment method</title>
-<programlisting><![CDATA[oneSecond = .Alarm~new(1, .Target~new, "a second has passed")
+<programlisting><![CDATA[oneSecond = .Alarm~new(1 ,.Target~new, "a second has passed")
 call SysSleep 1.5                      -- give Alarm time to trigger
 oneSecond~cancel
 
 ::class Target inherit AlarmNotification
 ::method triggered                     -- called when Alarm triggers
   use arg alarm
-  say alarm~attachment                 -- displays "once each second"
+  say alarm~attachment                 -- displays "a second has passed"
 ]]></programlisting></example></para>
 </section>
 
@@ -162,7 +164,7 @@ oneSecond~cancel
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/alarm_cancel.svg" scale="50" />
+<imagedata fileref="images/classes/alarm_cancel.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -176,11 +178,11 @@ takes no action if the specified time has already been reached.</para>
 <indexterm><primary>canceled/cancelled method</primary><secondary>of Alarm class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>canceled/cancelled method</secondary><tertiary>of Alarm class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/alarm_canceled.svg" scale="50"/>
+<imagedata fileref="images/classes/alarm_canceled.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
-<para>Returns .true if the alarm was cancelled before triggering.
-Returns .false otherwise.
+<para>Returns &true; if the alarm was cancelled before triggering.
+Returns &false; otherwise.
 </para>
 <para>See also method <xref linkend="mthAlarmCancel" xrefstyle="select:title"/>.
 </para>
@@ -202,7 +204,7 @@ say "Alarm" alarm~cancelled~?("cancelled", "not cancelled")    -- Alarm cancelle
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/alarm_init.svg" scale="50" />
+<imagedata fileref="images/classes/alarm_init.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -301,7 +303,7 @@ a=.alarm~new(30,msg)
 <indexterm><primary>scheduledTime method</primary><secondary>of Alarm class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>scheduledTime method</secondary><tertiary>of Alarm class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/alarm_scheduledtime.svg" scale="50"/>
+<imagedata fileref="images/classes/alarm_scheduledtime.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
 <para>Returns a <xref linkend="clsDateTime" xrefstyle="template:DateTime"/>
@@ -317,11 +319,11 @@ alarm has initially been scheduled.
 <indexterm><primary>triggered method</primary><secondary>of Alarm class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>triggered method</secondary><tertiary>of Alarm class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/alarm_triggered.svg" scale="50"/>
+<imagedata fileref="images/classes/alarm_triggered.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
-<para>Returns .true if the alarm has triggered.
-Returns .false if the alarm has been cancelled or hasn't yet triggered.
+<para>Returns &true; if the alarm has triggered.
+Returns &false; if the alarm has been cancelled or hasn't yet triggered.
 </para>
 </section>
 
@@ -379,7 +381,7 @@ message is sent to the notification target.
 </title>
 <para>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/alarmnotification_cancel.svg" scale="50"/>
+<imagedata fileref="images/classes/alarmnotification_cancel.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
 <para>Whenever an Alarm is cancelled, this method of the alarm notification
@@ -400,7 +402,7 @@ be implemented in a subclass.
 </title>
 <para>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/alarmnotification_triggered.svg" scale="50"/>
+<imagedata fileref="images/classes/alarmnotification_triggered.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
 <para>Whenever an Alarm triggers, this method of the alarm notification
@@ -455,7 +457,7 @@ class new method will raise an error if invoked.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/buffer_new.svg" scale="50" />
+<imagedata fileref="images/classes/buffer_new.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -508,7 +510,7 @@ It is an abstract method and must be implemented in a subclass.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/comparable_compareto.svg" scale="50" />
+<imagedata fileref="images/classes/comparable_compareto.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -571,7 +573,7 @@ smaller than the receiving object.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/comparator_compare.svg" scale="50" />
+<imagedata fileref="images/classes/comparator_compare.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -636,7 +638,7 @@ wine~sortWith(.Comparator~new)         -- Strawberries, angel's kiss, cherries
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/caselesscomparator_compare.svg" scale="50" />
+<imagedata fileref="images/classes/caselesscomparator_compare.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -700,7 +702,7 @@ wine~sortWith(.CaselessComparator~new) -- angel's kiss, cherries, Strawberries
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/columncomparator_compare.svg" scale="50" />
+<imagedata fileref="images/classes/columncomparator_compare.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -720,7 +722,7 @@ smaller than <emphasis role="italic">first</emphasis>.  Only the defined columns
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/columncomparator_init.svg" scale="50" />
+<imagedata fileref="images/classes/columncomparator_init.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -783,7 +785,7 @@ wine~sortWith(.ColumnComparator~new(3, 100))
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/caselesscolumncomparator_compare.svg" scale="50" />
+<imagedata fileref="images/classes/caselesscolumncomparator_compare.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -803,7 +805,7 @@ using a caseless comparison.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/caselesscolumncomparator_init.svg" scale="50" />
+<imagedata fileref="images/classes/caselesscolumncomparator_init.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -871,7 +873,7 @@ by inheriting from it as a mixin.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/descendingcomparator_compare.svg" scale="50" />
+<imagedata fileref="images/classes/descendingcomparator_compare.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -939,7 +941,7 @@ a CaselessComparator (<xref linkend="clsCaselessComparator" />) sort order.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/caselessdescendingcomparator_compare.svg" scale="50" />
+<imagedata fileref="images/classes/caselessdescendingcomparator_compare.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -1004,7 +1006,7 @@ another Comparator object to reverse the resulting sort order.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/invertingcomparator_compare.svg" scale="50" />
+<imagedata fileref="images/classes/invertingcomparator_compare.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -1025,7 +1027,7 @@ The InvertingComparator will invert the ordering returned by the provided Compar
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/invertingcomparator_init.svg" scale="50" />
+<imagedata fileref="images/classes/invertingcomparator_init.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -1100,7 +1102,7 @@ rather than string comparison rules.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/numericcomparator_compare.svg" scale="50" />
+<imagedata fileref="images/classes/numericcomparator_compare.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -1121,7 +1123,7 @@ comparison rules, so the collection strings must be valid numeric values.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/numericcomparator_init.svg" scale="50" />
+<imagedata fileref="images/classes/numericcomparator_init.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -1152,6 +1154,9 @@ and 31 December 9999 at 23:59:59.999999.  A DateTime object has methods to allow
 formatting a date or time in various formats, as well as allowing arithmetic operations between
 dates.
 </para>
+<note>
+<para>DateTime does not support leap seconds like June 30, 2015 at 23:59:60 UTC.
+</para></note> 
 
 <!-- $GENERATED-20150923-START rexxrefClassTable(DateTime) -->
 <table id="ooRexxDateTimeClass" frame="all" pgwide="0">
@@ -1262,7 +1267,7 @@ dates.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_mindate.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_mindate.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -1280,7 +1285,7 @@ dates.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_maxdate.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_maxdate.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -1298,7 +1303,7 @@ dates.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_today.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_today.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -1320,12 +1325,12 @@ number. The default <emphasis role="italic">offset</emphasis> is the current sys
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_fromnormaldate.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_fromnormaldate.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Creates a DateTime object from a string returned by the Normal option
-of the Date() (<xref linkend="bifDate" />) built-in function.
+of the <xref linkend="bifDate" xrefstyle="select:title"/> built-in function.
 The time component will be set to the beginning of the input day (00:00:00.000000).</para>
 <para>
 If specified, <emphasis role="italic">separator</emphasis>
@@ -1347,12 +1352,12 @@ number. The default <emphasis role="italic">offset</emphasis> is the current sys
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_fromeuropeandate.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_fromeuropeandate.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Creates a DateTime object from a string returned by the European option
-of the Date() (<xref linkend="bifDate" />) built-in function.
+of the <xref linkend="bifDate" xrefstyle="select:title"/> built-in function.
 The time component will be set to the beginning of the input day (00:00:00.000000).</para>
 <para>
 If specified, <emphasis role="italic">separator</emphasis>
@@ -1376,12 +1381,12 @@ number. The default <emphasis role="italic">offset</emphasis> is the current sys
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_fromordereddate.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_fromordereddate.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Creates a DateTime object from a string returned by the Ordered option
-of the Date() (<xref linkend="bifDate" />) built-in function.
+of the <xref linkend="bifDate" xrefstyle="select:title"/> built-in function.
 The time component will be set to the beginning of the input day (00:00:00.000000).</para>
 <para>
 If specified, <emphasis role="italic">separator</emphasis>
@@ -1404,12 +1409,12 @@ number. The default <emphasis role="italic">offset</emphasis> is the current sys
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_fromstandarddate.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_fromstandarddate.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Creates a DateTime object from a string returned by the Standard option
-of the Date() (<xref linkend="bifDate" />) built-in function.
+of the <xref linkend="bifDate" xrefstyle="select:title"/> built-in function.
 The time component will be set to the beginning of the input day (00:00:00.000000).</para>
 <para>
 If specified, <emphasis role="italic">separator</emphasis>
@@ -1431,12 +1436,12 @@ number. The default <emphasis role="italic">offset</emphasis> is the current sys
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_fromusadate.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_fromusadate.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Creates a DateTime object from a string returned by the Usa option
-of the Date() (<xref linkend="bifDate" />) built-in function.
+of the <xref linkend="bifDate" xrefstyle="select:title"/> built-in function.
 The time component will be set to the beginning of the input day (00:00:00.000000).</para>
 <para>
 If specified, <emphasis role="italic">separator</emphasis>
@@ -1458,12 +1463,12 @@ number. The default <emphasis role="italic">offset</emphasis> is the current sys
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_fromnormaltime.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_fromnormaltime.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Creates a DateTime object from a string returned by the Normal option
-of the Time() (<xref linkend="bifTime" />) built-in function.
+of the <xref linkend="bifTime" xrefstyle="select:title"/> built-in function.
 The date component will be set to 1 January 0001.</para>
 <para>
 If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
@@ -1481,12 +1486,12 @@ number. The default <emphasis role="italic">offset</emphasis> is the current sys
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_fromciviltime.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_fromciviltime.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Creates a DateTime object from a string returned by the Civil option
-of the Time() (<xref linkend="bifTime" />) built-in function.
+of the <xref linkend="bifTime" xrefstyle="select:title"/> built-in function.
 The date component will be set to 1 January 0001.</para>
 <para>
 If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
@@ -1504,12 +1509,12 @@ number. The default <emphasis role="italic">offset</emphasis> is the current sys
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_fromlongtime.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_fromlongtime.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Creates a DateTime object from a string returned by the Long option
-of the Time() (<xref linkend="bifTime" />) built-in function.
+of the <xref linkend="bifTime" xrefstyle="select:title"/> built-in function.
 The date component will be set to 1 January 0001.</para>
 <para>
 If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
@@ -1527,12 +1532,12 @@ number. The default <emphasis role="italic">offset</emphasis> is the current sys
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_frombasedate.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_frombasedate.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Creates a DateTime object from a string returned by the Basedate option
-of the Date() (<xref linkend="bifDate" />) built-in function.
+of the <xref linkend="bifDate" xrefstyle="select:title"/> built-in function.
 The time component will be set to the beginning of the input day (00:00:00.000000).</para>
 <para>
 If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
@@ -1550,13 +1555,13 @@ number. The default <emphasis role="italic">offset</emphasis> is the current sys
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_fromticks.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_fromticks.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Creates a DateTime object from a string returned by the Ticks option
-of the Date() (<xref linkend="bifDate" />) or
-Time() (<xref linkend="bifTime" />) built-in functions.
+of the <xref linkend="bifDate" xrefstyle="select:title"/> or
+<xref linkend="bifTime" xrefstyle="select:title"/> built-in functions.
 </para>
 <para>
 If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
@@ -1574,7 +1579,7 @@ number. The default <emphasis role="italic">offset</emphasis> is the current sys
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_fromisodate.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_fromisodate.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -1589,16 +1594,16 @@ number. The default <emphasis role="italic">offset</emphasis> is the current sys
 </para>
 </section>
 
-<section id="mthDateTimeFromUtcIsoDate"><title>fromUTCIsoDate (Class Method)</title>
+<section id="mthDateTimeFromUtcIsoDate"><title>fromUtcIsoDate (Class Method)</title>
 <indexterm><primary>fromUtcIsoDate method</primary>
 <secondary>of DateTime class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>fromUTCIsoDate method</secondary>
+<secondary>fromUtcIsoDate method</secondary>
 <tertiary>of DateTime class</tertiary></indexterm>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_fromutcisodate.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_fromutcisodate.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -1617,22 +1622,22 @@ the ISO format as the string form of a DateTime object.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_init1.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_init1.svg" scale="55" />
 </imageobject>
 </mediaobject>
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_init2.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_init2.svg" scale="55" />
 </imageobject>
 </mediaobject>
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_init3.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_init3.svg" scale="55" />
 </imageobject>
 </mediaobject>
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_init4.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_init4.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -1679,7 +1684,7 @@ day = .DateTime~new(2015, 6, 30, 11, 8, 50)      -- 2015-06-30T11:08:50.000000
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_arithmeticoperator.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_arithmeticoperator.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -1696,7 +1701,7 @@ The
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1">
 <tgroup cols="2">
 <colspec colnum="1" colwidth="1*" />
-<colspec colnum="2" colwidth="4*" />
+<colspec colnum="2" colwidth="5*" />
 <tbody>
 <row><entry>+
 <indexterm><primary>+ method</primary></indexterm>
@@ -1734,24 +1739,29 @@ instance.  The receiver DateTime object is not changed.  The TimeSpan may be eit
 </tbody>
 </tgroup>
 </informaltable>
-<indexterm><primary>examples</primary>
-<secondary>arithmetic methods of DateTime class</secondary></indexterm>
+<note>
+<para>When adding or subtracting DateTime and TimeSpan objects, leap seconds
+(like the one which happened on June 30, 2015 at 23:59:60 UTC) are not taken into account.
+</para></note>
 <example>
-<title>DateTime class &mdash; arithmetic</title>
-<programlisting>
-<![CDATA[
-t = .dateTime~new~timeOfDay       -- returns TimeSpan for current time
+<title>DateTime class &mdash; arithmetic
+<indexterm><primary>examples</primary><secondary>arithmetic methods of DateTime class</secondary></indexterm>
+</title>
+<programlisting><![CDATA[t = .dateTime~new~timeOfDay       -- returns TimeSpan for current time
 say t                             -- displays "11:09:30.152000", perhaps
 d = .dateTime~new(2015, 6, 30)    -- creates new date
 
 future = d + t                    -- adds timespan to d
 say future                        -- displays "2015-06-30T11:09:30.152000"
+
+-- does not take leap second into account
+say d + .TimeSpan~new(24, 0, 1)   -- 2015-07-01T00:00:01.000000
+
                                   -- "real" start of next century
 nextCentury = .dateTime~new(2101, 1, 1)
                                   -- displays "31230.12:50:29.846000", perhaps
 say "The next century starts in" (nextCentury - .dateTime~new)
-]]>
-</programlisting>
+]]></programlisting>
 </example>
 </section>
 
@@ -1764,7 +1774,7 @@ say "The next century starts in" (nextCentury - .dateTime~new)
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_compareto.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_compareto.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -1782,7 +1792,7 @@ smaller than the receiving object.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_year.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_year.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -1800,7 +1810,7 @@ Returns the year represented by this DateTime instance.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_month.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_month.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -1818,7 +1828,7 @@ Returns the month represented by this DateTime instance.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_day.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_day.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -1836,7 +1846,7 @@ Returns the day represented by this DateTime instance.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_hours.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_hours.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -1854,7 +1864,7 @@ Returns number of whole hours since midnight.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_minutes.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_minutes.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -1872,7 +1882,7 @@ Returns minutes portion of the timestamp time-of-day.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_seconds.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_seconds.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -1890,7 +1900,7 @@ Returns seconds portion of the timestamp time-of-day.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_microseconds.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_microseconds.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -1908,7 +1918,7 @@ Returns microseconds portion of the timestamp time-of-day.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_dayminutes.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_dayminutes.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -1926,7 +1936,7 @@ Returns the number of minutes since midnight in the time-of-day.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_dayseconds.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_dayseconds.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -1944,7 +1954,7 @@ Returns the number of seconds since midnight in the time-of-day.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_daymicroseconds.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_daymicroseconds.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -1962,7 +1972,7 @@ Returns the number of microseconds since midnight in the time-of-day.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_hashcode.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_hashcode.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -1980,7 +1990,7 @@ such as Table, Relation, Set, Bag, and Directory.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_addyears.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_addyears.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2013,7 +2023,7 @@ say date~addYears(1)  -- displays "2016-06-30T00:00:00.000000"
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_addweeks.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_addweeks.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2035,7 +2045,7 @@ result in week being subtracted from the DateTime value.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_adddays.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_adddays.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2067,7 +2077,7 @@ say date~addDays(1.5) -- displays "2015-07-01T12:00:00.000000"
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_addhours.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_addhours.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2089,7 +2099,7 @@ result in hours being subtracted from the DateTime value.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_addminutes.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_addminutes.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2111,7 +2121,7 @@ result in minutes being subtracted from the DateTime value.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_addseconds.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_addseconds.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2133,7 +2143,7 @@ result in seconds being subtracted from the DateTime value.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_addmicroseconds.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_addmicroseconds.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2154,7 +2164,7 @@ result in microseconds being subtracted from the DateTime value.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_isodate.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_isodate.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2171,7 +2181,7 @@ result in microseconds being subtracted from the DateTime value.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_utcisodate.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_utcisodate.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2192,7 +2202,7 @@ yyyy-mm-ddThh:mm:ss.uuuuuu-hhmm.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_basedate.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_basedate.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2218,7 +2228,7 @@ system that created the Gregorian calendar originally.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_yearday.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_yearday.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2237,7 +2247,7 @@ in the DateTime year in the format <emphasis role="italic">ddd</emphasis>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_weekday.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_weekday.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2256,7 +2266,7 @@ through "7" for Sunday.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_europeandate.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_europeandate.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2277,7 +2287,7 @@ or the null string ("").  A slash ("/") is the default separator.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_languagedate.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_languagedate.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2302,7 +2312,7 @@ assumptions about the form or content of the returned string.</para></note>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_monthname.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_monthname.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2320,7 +2330,7 @@ Returns the name of the DateTime month, in English.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_dayname.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_dayname.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2338,7 +2348,7 @@ Returns the name of the DateTime day, in English.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_normaldate.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_normaldate.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2359,7 +2369,7 @@ or the null string ("").  A blank (" ") is the default separator.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_ordereddate.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_ordereddate.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2380,7 +2390,7 @@ or the null string ("").  A slash ("/") is the default separator.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_standarddate.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_standarddate.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2401,7 +2411,7 @@ or the null string ("").  A null string ("") is the default separator.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_usadate.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_usadate.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2422,7 +2432,7 @@ or the null string ("").  A slash ("/") is the default separator.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_civiltime.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_civiltime.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2452,7 +2462,7 @@ minute) for consistency with other TIME results.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_normaltime.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_normaltime.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2475,7 +2485,7 @@ of seconds are ignored (times are never rounded). This is the default.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_longtime.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_longtime.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2493,7 +2503,7 @@ of seconds are ignored (times are never rounded). This is the default.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_fulldate.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_fulldate.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2512,7 +2522,7 @@ since 00:00:00.000000 on 1 January 0001, in the format:
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_utcdate.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_utcdate.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2531,7 +2541,7 @@ since 00:00:00.000000 on 1 January 0001, in the format:
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_tolocaltime.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_tolocaltime.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2548,7 +2558,7 @@ since 00:00:00.000000 on 1 January 0001, in the format:
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_toutctime.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_toutctime.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2565,7 +2575,7 @@ since 00:00:00.000000 on 1 January 0001, in the format:
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_totimezone.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_totimezone.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2573,7 +2583,7 @@ since 00:00:00.000000 on 1 January 0001, in the format:
 indicated by <emphasis role="italic">offset</emphasis>.
 If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
 in minutes.  The <emphasis role="italic">offset</emphasis> must be a valid whole
-number. The default <emphasis role="italic">offset</emphasis> 0, which
+number. The default <emphasis role="italic">offset</emphasis> is 0, which
 creates a DateTime object for UTC.
 </para>
 </section>
@@ -2587,7 +2597,7 @@ creates a DateTime object for UTC.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_ticks.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_ticks.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2607,7 +2617,7 @@ Times prior to 1 January 1970 are returned as a negative value.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_offset.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_offset.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2626,7 +2636,7 @@ of UTC will return a negative offset.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_date.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_date.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2644,7 +2654,7 @@ the time component set to 00:00:00.000000.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_timeofday.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_timeofday.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2662,7 +2672,7 @@ as a TimeSpan object.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_elapsed.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_elapsed.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2681,11 +2691,11 @@ represents a time in the future.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_isleapyear.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_isleapyear.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>Returns true ("1") if the current year is leap year.  Returns false
+<para>Returns &true; if the current year is a leap year.  Returns &false;
 ("0") if the current year is not a leap year.
 </para>
 </section>
@@ -2699,7 +2709,7 @@ represents a time in the future.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_daysinmonth.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_daysinmonth.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2718,7 +2728,7 @@ January, 31 is returned.  The daysInMonth method takes leap years into account, 
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_daysinyear.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_daysinyear.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2736,7 +2746,7 @@ For non-leap years, this returns 365.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/datetime_string.svg" scale="50" />
+<imagedata fileref="images/classes/datetime_string.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2838,11 +2848,11 @@ This absolute path is memorized on the File object, and will not change if you c
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/file_iscasesensitive.svg" scale="50" />
+<imagedata fileref="images/classes/file_iscasesensitive.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>Returns .true ("1") if the file system is case-sensitive. Otherwise returns .false ("0").
+<para>Returns &true; if the file system is case-sensitive. Otherwise returns &false;.
 </para>
 <para>This query method is available as both an instance and class method.
 </para>
@@ -2857,7 +2867,7 @@ This absolute path is memorized on the File object, and will not change if you c
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/file_listroots.svg" scale="50" />
+<imagedata fileref="images/classes/file_listroots.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2889,7 +2899,7 @@ R:\
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/file_pathseparator.svg" scale="50" />
+<imagedata fileref="images/classes/file_pathseparator.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2908,7 +2918,7 @@ R:\
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/file_separator.svg" scale="50" />
+<imagedata fileref="images/classes/file_separator.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2936,7 +2946,7 @@ file = .File~new("dir1" || .File~separator || "dir2" || .File~separator || "file
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/file_absolutefile.svg" scale="50" />
+<imagedata fileref="images/classes/file_absolutefile.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2972,7 +2982,7 @@ say .File~new("../my file")~absoluteFile           -- /opt/my file
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/file_absolutepath.svg" scale="50" />
+<imagedata fileref="images/classes/file_absolutepath.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -3008,11 +3018,11 @@ say .File~new("../my file")~absolutePath           -- /opt/my file
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/file_canread.svg" scale="50" />
+<imagedata fileref="images/classes/file_canread.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>Returns .true ("1") if the file exists and is readable. Otherwise returns .false ("0").
+<para>Returns &true; if the file exists and is readable. Otherwise returns &false;.
 </para>
 </section>
 
@@ -3025,11 +3035,11 @@ say .File~new("../my file")~absolutePath           -- /opt/my file
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/file_canwrite.svg" scale="50" />
+<imagedata fileref="images/classes/file_canwrite.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>Returns .true ("1") if the file exists and is writable. Otherwise returns .false ("0").
+<para>Returns &true; if the file exists and is writable. Otherwise returns &false;.
 </para>
 </section>
 
@@ -3042,7 +3052,7 @@ say .File~new("../my file")~absolutePath           -- /opt/my file
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/file_compareto.svg" scale="50" />
+<imagedata fileref="images/classes/file_compareto.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -3074,14 +3084,14 @@ file1~compareTo(file2)    -- 1 on Unix ("/dir/file" is greater than "/DIR/FILE")
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/file_delete.svg" scale="50" />
+<imagedata fileref="images/classes/file_delete.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Deletes the file or directory denoted by the absolute path of the target File object.
 Only empty directories can be deleted.
 </para>
-<para>Returns .true ("1") if the deletion was successful, otherwise returns .false ("0").
+<para>Returns &true; if the deletion was successful, otherwise returns &false;.
 </para>
 </section>
 
@@ -3094,12 +3104,12 @@ Only empty directories can be deleted.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/file_exists.svg" scale="50" />
+<imagedata fileref="images/classes/file_exists.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>Returns .true ("1") if the file or directory (denoted by the absolute path of the target File object) exists.
-Otherwise returns .false ("0").
+<para>Returns &true; if the file or directory (denoted by the absolute path of the target File object) exists.
+Otherwise returns &false;.
 </para>
 </section>
 
@@ -3112,7 +3122,7 @@ Otherwise returns .false ("0").
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/file_hashcode.svg" scale="50" />
+<imagedata fileref="images/classes/file_hashcode.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -3130,7 +3140,7 @@ and Directory.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/file_init.svg" scale="50" />
+<imagedata fileref="images/classes/file_init.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -3177,11 +3187,11 @@ file = .File~new("file", samples)            -- /opt/ooRexx/samples/file
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/file_iscasesensitive.svg" scale="50" />
+<imagedata fileref="images/classes/file_iscasesensitive.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>Returns .true ("1") if the file system is case-sensitive. Otherwise returns .false ("0").
+<para>Returns &true; if the file system is case-sensitive. Otherwise returns &false;.
 </para>
 <para>This query method is available as both an instance and class method.
 </para>
@@ -3196,12 +3206,12 @@ file = .File~new("file", samples)            -- /opt/ooRexx/samples/file
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/file_isdirectory.svg" scale="50" />
+<imagedata fileref="images/classes/file_isdirectory.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>Returns .true ("1") if the absolute path of the target File object references a directory.
-Otherwise returns .false ("0").
+<para>Returns &true; if the absolute path of the target File object references a directory.
+Otherwise returns &false;.
 </para>
 </section>
 
@@ -3214,12 +3224,12 @@ Otherwise returns .false ("0").
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/file_isfile.svg" scale="50" />
+<imagedata fileref="images/classes/file_isfile.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>Returns .true ("1") if the absolute path of the target File object references a file.
-Otherwise returns .false ("0").
+<para>Returns &true; if the absolute path of the target File object references a file.
+Otherwise returns &false;.
 </para>
 </section>
 
@@ -3232,12 +3242,12 @@ Otherwise returns .false ("0").
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/file_ishidden.svg" scale="50" />
+<imagedata fileref="images/classes/file_ishidden.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>Returns .true ("1") if the absolute path of the target File object references an existing file or
-directory which is hidden. Otherwise returns .false ("0").
+<para>Returns &true; if the absolute path of the target File object references an existing file or
+directory which is hidden. Otherwise returns &false;.
 </para>
 <para>On Windows, a file or directory is hidden when its attribute FILE_ATTRIBUTE_HIDDEN is set.
 </para>
@@ -3266,7 +3276,7 @@ say .File~new("/tmp/.dir/file")~isHidden        -- 1
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/file_lastmodified.svg" scale="50" />
+<imagedata fileref="images/classes/file_lastmodified.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -3274,7 +3284,7 @@ say .File~new("/tmp/.dir/file")~isHidden        -- 1
   <varlistentry><term><emphasis role="bold">lastModified get:</emphasis></term>
   <listitem>
     <para>Returns the last modified date of the file/directory denoted by the absolute
-    path of the receiver object. The result is a DateTime object, or .nil in case of error.
+    path of the receiver object. The result is a DateTime object, or &nil; in case of error.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">lastModified set:</emphasis></term>
@@ -3324,7 +3334,7 @@ say .File~new("/tmp/.dir/file")~isHidden        -- 1
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/file_length.svg" scale="50" />
+<imagedata fileref="images/classes/file_length.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -3342,7 +3352,7 @@ path of the receiver object.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/file_list.svg" scale="50" />
+<imagedata fileref="images/classes/file_list.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -3352,7 +3362,7 @@ The order in which the names are returned is dependent on the file system (not n
 The special names "." and ".." are not returned.
 </para>
 <para>The result is an array of strings.
-If the receiver object is not a directory then the result is .nil.
+If the receiver object is not a directory then the result is &nil;.
 </para>
 <example>
 <title>File class &mdash; list method</title>
@@ -3381,7 +3391,7 @@ factor.rex
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/file_listfiles.svg" scale="50" />
+<imagedata fileref="images/classes/file_listfiles.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -3391,7 +3401,7 @@ The order in which the names are returned is dependent on the file system (not n
 The special names "." and ".." are not returned.
 </para>
 <para>The result is an array of File objects.
-If the receiver object is not a directory then the result is .nil.
+If the receiver object is not a directory then the result is &nil;.
 </para>
 <example>
 <title>File class &mdash; listFiles method</title>
@@ -3437,16 +3447,16 @@ c:\program files\oorexx\samples\api\callrxwn\backward.fnc
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/file_makedir.svg" scale="50" />
+<imagedata fileref="images/classes/file_makedir.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>Makes just the directory represented by the last name (<xref linkend="mthFileName" />)
+<para>Makes just the directory represented by the last <xref linkend="mthFileName" xrefstyle="select:title"/>
 portion of the receiver object's absolute path. Does not create any parent directories,
 which must all exist for a successful creation of the leaf directory.
 </para>
-<para>Returns .true ("1") if the creation was successful, otherwise returns .false ("0").
-If the directory already exists then the result is .false.
+<para>Returns &true; if the creation was successful, otherwise returns &false;.
+If the directory already exists then the result is &false;.
 </para>
 </section>
 
@@ -3459,15 +3469,15 @@ If the directory already exists then the result is .false.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/file_makedirs.svg" scale="50" />
+<imagedata fileref="images/classes/file_makedirs.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Creates the entire directory hierarchy represented by the absolute path
 of the receiver object.
 </para>
-<para>Returns .true ("1") if the creation was successful, otherwise returns .false ("0").
-If the directory already exists then the result is .false.
+<para>Returns &true; if the creation was successful, otherwise returns &false;.
+If the directory already exists then the result is &false;.
 </para>
 </section>
 
@@ -3480,7 +3490,7 @@ If the directory already exists then the result is .false.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/file_name.svg" scale="50" />
+<imagedata fileref="images/classes/file_name.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -3514,13 +3524,13 @@ say .File~new("/")~name                                  -- empty string
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/file_parent.svg" scale="50" />
+<imagedata fileref="images/classes/file_parent.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Returns the parent directory portion of the receiver object's absolute path.
 If no separator is found or the absolute path ends with a separator
-(which means this is a root path) then returns .nil.
+(which means this is a root path) then returns &nil;.
 </para>
 <example>
 <title>File class &mdash; parent method</title>
@@ -3548,14 +3558,14 @@ say .File~new("/")~parent                                  -- The NIL object
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/file_parentfile.svg" scale="50" />
+<imagedata fileref="images/classes/file_parentfile.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>Returns the parent (<xref linkend="mthFileParent" /> directory
+<para>Returns the <xref linkend="mthFileParent" xrefstyle="select:title"/> directory
 portion as a File object.
 If no separator is found or the absolute path ends with a separator
-(which means this is a root path) then returns .nil.
+(which means this is a root path) then returns &nil;.
 </para>
 </section>
 
@@ -3568,7 +3578,7 @@ If no separator is found or the absolute path ends with a separator
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/file_path.svg" scale="50" />
+<imagedata fileref="images/classes/file_path.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -3587,7 +3597,7 @@ the final separator (if any).
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/file_pathseparator.svg" scale="50" />
+<imagedata fileref="images/classes/file_pathseparator.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -3606,14 +3616,14 @@ the final separator (if any).
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/file_renameto.svg" scale="50" />
+<imagedata fileref="images/classes/file_renameto.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Changes the name of the file/directory denoted by the absolute path of the target object.
 The new name is <emphasis role="italic">dest</emphasis>.
 </para>
-<para>Returns .true ("1") if the renaming was successful, otherwise returns .false ("0").
+<para>Returns &true; if the renaming was successful, otherwise returns &false;.
 </para>
 <para>On Windows, this method calls <function>MoveFile</function> to perform the action.
 </para>
@@ -3630,7 +3640,7 @@ The new name is <emphasis role="italic">dest</emphasis>.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/file_separator.svg" scale="50" />
+<imagedata fileref="images/classes/file_separator.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -3649,13 +3659,13 @@ The new name is <emphasis role="italic">dest</emphasis>.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/file_setreadonly.svg" scale="50" />
+<imagedata fileref="images/classes/file_setreadonly.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Sets the read-only flag of the file/directory denoted by the absolute path of the target object.
 </para>
-<para>Returns .true ("1") if the attribute was set, otherwise returns .false ("0").
+<para>Returns &true; if the attribute was set, otherwise returns &false;.
 </para>
 </section>
 
@@ -3668,7 +3678,7 @@ The new name is <emphasis role="italic">dest</emphasis>.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/file_string.svg" scale="50" />
+<imagedata fileref="images/classes/file_string.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -3727,7 +3737,7 @@ message is sent to the notification target.
 </title>
 <para>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/messagenotification_messagecomplete.svg" scale="50"/>
+<imagedata fileref="images/classes/messagenotification_messagecomplete.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
 <para>Whenever a message completes processing, for which notification was
@@ -3786,7 +3796,7 @@ changed dynamically.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/monitor_current.svg" scale="50" />
+<imagedata fileref="images/classes/monitor_current.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -3802,7 +3812,7 @@ changed dynamically.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/monitor_destination.svg" scale="50" />
+<imagedata fileref="images/classes/monitor_destination.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -3822,7 +3832,7 @@ object becomes the new destination for any forwarded messages.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/monitor_init.svg" scale="50" />
+<imagedata fileref="images/classes/monitor_init.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -3838,7 +3848,7 @@ object becomes the new destination for any forwarded messages.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/monitor_unknown.svg" scale="50" />
+<imagedata fileref="images/classes/monitor_unknown.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -3962,7 +3972,7 @@ longer string objects because it creates fewer intermediate objects.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/mutablebuffer_new.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_new.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -3978,7 +3988,7 @@ does not fit into the buffer.</para>
 <indexterm><primary>[] method</primary><secondary>of MutableBuffer class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>[] method</secondary><tertiary>of MutableBuffer class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/mutablebuffer_atget.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_atget.svg" scale="55" />
 </imageobject></mediaobject>
 </para>
 <para>Returns a substring of the receiving buffer that begins at the
@@ -3990,15 +4000,9 @@ If <emphasis role="italic">length</emphasis> is omitted, it defaults to
 If <emphasis role="italic">n</emphasis> is greater than the length of the
 receiving string, a null string is returned.
 </para>
-<para>See also
-<itemizedlist spacing="compact">
- <listitem>
-  <para>MutableBuffer method <xref linkend="mthMutableBufferSubstr" xrefstyle="select:title"/> and</para>
- </listitem>
- <listitem>
-  <para>MutableBuffer method <xref linkend="mthMutableBufferSubChar" xrefstyle="select:title"/>.</para>
- </listitem>
-</itemizedlist>
+<para>See also methods
+<xref linkend="mthMutableBufferSubstr" xrefstyle="select:title"/> and
+<xref linkend="mthMutableBufferSubChar" xrefstyle="select:title"/>.
 </para>
 <para><example>
 <title>MutableBuffer class &mdash; [] method</title>
@@ -4016,7 +4020,7 @@ say s[30]       -- ""
 <indexterm><primary>[]= method</primary><secondary>of MutableBuffer class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>[]= method</secondary><tertiary>of MutableBuffer class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/mutablebuffer_putset.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_putset.svg" scale="55" />
 </imageobject></mediaobject>
 </para>
 <para>Returns the receiving buffer with the characters from the
@@ -4059,7 +4063,7 @@ s[4, 99] = ""           -- "abc"
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/mutablebuffer_append.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_append.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -4078,7 +4082,7 @@ The buffer size is increased if necessary.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/mutablebuffer_caselesschangestr.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_caselesschangestr.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -4100,12 +4104,12 @@ using caseless comparisons.
 <indexterm><primary>caselessContains method</primary><secondary>of MutableBuffer class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>caselessContains method</secondary><tertiary>of MutableBuffer class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/mutablebuffer_caselesscontains.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_caselesscontains.svg" scale="55" />
 </imageobject></mediaobject>
 </para>
-<para>Returns .true ("1") if the receiving buffer contains the
+<para>Returns &true; if the receiving buffer contains the
 <emphasis role="italic">other</emphasis> string.
-It returns .false ("0") if <emphasis role="italic">other</emphasis> is
+It returns &false; if <emphasis role="italic">other</emphasis> is
 the null string or is not found within the receiving buffer.
 The search is performed using caseless comparisons.
 </para>
@@ -4118,21 +4122,11 @@ If specified, <emphasis role="italic">start</emphasis> must be a positive
 whole number and <emphasis role="italic">length</emphasis> must be
 a non-negative whole number.
 </para>
-<para>See also
-<itemizedlist spacing="compact">
- <listitem>
-  <para>MutableBuffer method <xref linkend="mthMutableBufferContains" xrefstyle="select:title"/>,</para>
- </listitem>
- <listitem>
-  <para>MutableBuffer method <xref linkend="mthMutableBufferCaselessStartsWith" xrefstyle="select:title"/>,</para>
- </listitem>
- <listitem>
-  <para>MutableBuffer method <xref linkend="mthMutableBufferCaselessEndsWith" xrefstyle="select:title"/>, and</para>
- </listitem>
- <listitem>
-  <para>MutableBuffer method <xref linkend="mthMutableBufferCaselessPos" xrefstyle="select:title"/>.</para>
- </listitem>
-</itemizedlist>
+<para>See also methods
+<xref linkend="mthMutableBufferContains" xrefstyle="select:title"/>,
+<xref linkend="mthMutableBufferCaselessStartsWith" xrefstyle="select:title"/>,
+<xref linkend="mthMutableBufferCaselessEndsWith" xrefstyle="select:title"/>, and
+<xref linkend="mthMutableBufferCaselessPos" xrefstyle="select:title"/>.
 </para>
 <para><example>
 <title>MutableBuffer class &mdash; caselessContains method</title>
@@ -4147,12 +4141,12 @@ say .mutablebuffer~new('-abcdef-')~caselessContains('-', 2, 6)    -- 0
 <indexterm><primary>caselessContainsWord method</primary><secondary>of MutableBuffer class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>caselessContainsWord method</secondary><tertiary>of MutableBuffer class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/mutablebuffer_caselesscontainsword.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_caselesscontainsword.svg" scale="55" />
 </imageobject></mediaobject>
 </para>
-<para>Returns .true ("1") if <emphasis role="italic">phrase</emphasis>
+<para>Returns &true; if <emphasis role="italic">phrase</emphasis>
 is found in the receiving buffer.
-Returns .false ("0") if <emphasis role="italic">phrase</emphasis>
+Returns &false; if <emphasis role="italic">phrase</emphasis>
 contains no words or if <emphasis role="italic">phrase</emphasis>
 is not found.
 Word matches are made independent of case.
@@ -4165,28 +4159,22 @@ buffer.
 You can override this by specifying <emphasis role="italic">start</emphasis>
 (which must be a positive whole number),
 the word at which the search is to be started.</para>
-<para>See also
-<itemizedlist spacing="compact">
- <listitem>
-  <para>MutableBuffer method <xref linkend="mthMutableBufferContainsWord" xrefstyle="select:title"/> and</para>
- </listitem>
- <listitem>
-  <para>MutableBuffer method <xref linkend="mthMutableBufferCaselessWordPos" xrefstyle="select:title"/>
-  (caselessContainsWord returns .false ("0") exactly if caselessWordPos would have returned
-  <computeroutput>"0"</computeroutput>.)</para>
- </listitem>
-</itemizedlist>
+<para>See also methods
+ <xref linkend="mthMutableBufferContainsWord" xrefstyle="select:title"/> and
+ <xref linkend="mthMutableBufferCaselessWordPos" xrefstyle="select:title"/>
+ (<methodname>caselessContainsWord</methodname> returns &false; exactly if
+ <methodname>caselessWordPos</methodname> would have returned <literal>0</literal>.)
 </para>
 <para><example>
 <title>MutableBuffer class &mdash; caselessContainsWord method</title>
 <programlisting><![CDATA[good = .MutableBuffer~new("Now is the time for all good men")
-say good~caselessContainsWord("the")          -- .true
-say good~caselessContainsWord("The")          -- .true
-say good~caselessContainsWord("is the")       -- .true
-say good~caselessContainsWord("is   the ")    -- .true
-say good~caselessContainsWord("is time")      -- .false
-say good~caselessContainsWord("time")         -- .true
-say good~caselessContainsWord("time", 5)      -- .false
+good~caselessContainsWord("the")          -- .true
+good~caselessContainsWord("The")          -- .true
+good~caselessContainsWord("is the")       -- .true
+good~caselessContainsWord("is   the ")    -- .true
+good~caselessContainsWord("is time")      -- .false
+good~caselessContainsWord("time")         -- .true
+good~caselessContainsWord("time", 5)      -- .false
 ]]></programlisting></example></para>
 </section>
 
@@ -4204,7 +4192,7 @@ say good~caselessContainsWord("time", 5)      -- .false
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/mutablebuffer_caselesscountstr.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_caselesscountstr.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -4220,30 +4208,22 @@ do not overlap. All matches are made using caseless comparisons.
 <indexterm><primary>caselessEndsWith method</primary><secondary>of MutableBuffer class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>caselessEndsWith method</secondary><tertiary>of MutableBuffer class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/mutablebuffer_caselessendswith.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_caselessendswith.svg" scale="55" />
 </imageobject></mediaobject>
 </para>
-<para>Returns .true ("1") if the characters of the <emphasis role="italic">other</emphasis> match the
+<para>Returns &true; if the characters of the <emphasis role="italic">other</emphasis> match the
 characters at the end of the target buffer.
-Returns .false ("0") if the characters are not a match, or if
+Returns &false; if the characters are not a match, or if
 <emphasis role="italic">other</emphasis> is the null string.
 The match is made using caseless comparisons.
 </para>
 <para>The caselessEndsWith method is useful for efficient string parsing as it does not
 require new string objects be extracted from the target buffer.
 </para>
-<para>See also
-<itemizedlist spacing="compact">
- <listitem>
-  <para>MutableBuffer method <xref linkend="mthMutableBufferCaselessStartsWith" xrefstyle="select:title"/>,</para>
- </listitem>
- <listitem>
-  <para>MutableBuffer method <xref linkend="mthMutableBufferEndsWith" xrefstyle="select:title"/>, and</para>
- </listitem>
- <listitem>
-  <para>MutableBuffer method <xref linkend="mthMutableBufferCaselessMatch" xrefstyle="select:title"/>.</para>
- </listitem>
-</itemizedlist>
+<para>See also methods
+ <xref linkend="mthMutableBufferCaselessStartsWith" xrefstyle="select:title"/>,
+ <xref linkend="mthMutableBufferEndsWith" xrefstyle="select:title"/>, and
+ <xref linkend="mthMutableBufferCaselessMatch" xrefstyle="select:title"/>.
 </para>
 </section>
 
@@ -4261,7 +4241,7 @@ require new string objects be extracted from the target buffer.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/mutablebuffer_caselesslastpos.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_caselesslastpos.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -4283,15 +4263,9 @@ non-negative whole number and defaults to <emphasis
 role="italic">start</emphasis>.  The search is performed using caseless
 comparisons.
 </para>
-<para>See also
-<itemizedlist spacing="compact">
- <listitem>
-  <para>MutableBuffer method <xref linkend="mthMutableBufferLastPos" xrefstyle="select:title"/> and</para>
- </listitem>
- <listitem>
-  <para>MutableBuffer method <xref linkend="mthMutableBufferCaselessPos" xrefstyle="select:title"/>.</para>
- </listitem>
-</itemizedlist>
+<para>See also methods
+ <xref linkend="mthMutableBufferLastPos" xrefstyle="select:title"/> and
+ <xref linkend="mthMutableBufferCaselessPos" xrefstyle="select:title"/>.
 </para>
 </section>
 
@@ -4310,12 +4284,12 @@ comparisons.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/mutablebuffer_caselessmatch.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_caselessmatch.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>Returns .true ("1") if the characters of the <emphasis role="italic">other</emphasis> match the
-characters of the target buffer beginning at position <emphasis role="italic">start</emphasis>.  Returns .false
+<para>Returns &true; if the characters of the <emphasis role="italic">other</emphasis> match the
+characters of the target buffer beginning at position <emphasis role="italic">start</emphasis>.  Returns &false;
 ("0") if the characters are not a match.  The matching is performed using caseless comparisons.
 <emphasis role="italic">start</emphasis> must be a positive whole number.
 </para>
@@ -4348,12 +4322,12 @@ not require new string objects be extracted from the target string.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/mutablebuffer_caselessmatchchar.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_caselessmatchchar.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>Returns .true ("1") if the character at position <emphasis role="italic">n</emphasis> matches any
-character of the string <emphasis role="italic">chars</emphasis>.  Returns .false ("0") if the character does not
+<para>Returns &true; if the character at position <emphasis role="italic">n</emphasis> matches any
+character of the string <emphasis role="italic">chars</emphasis>.  Returns &false; if the character does not
 match any of the characters in the reference set.  The match is made using caseless comparisons.
 The argument <emphasis role="italic">n</emphasis> must be
 a positive whole number.</para>
@@ -4373,14 +4347,13 @@ a positive whole number.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/mutablebuffer_caselesspos.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_caselesspos.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Returns the position in the receiving buffer of a
-<emphasis role="italic">needle</emphasis> string. (See also
-<xref linkend="mthMutableBufferLastPos" />.) It returns
-<computeroutput>0</computeroutput> if
+<emphasis role="italic">needle</emphasis> string.
+It returns <literal>0</literal> if
 <emphasis role="italic">needle</emphasis> is the null string or is not found
 or if <emphasis role="italic">start</emphasis> is greater than
 the length of the receiving buffer.  The search is performed using caseless
@@ -4395,6 +4368,8 @@ If specified, <emphasis role="italic">start</emphasis> must be a positive
 whole number and <emphasis role="italic">length</emphasis> must be
 a non-negative whole number.
 </para>
+<para>See also method <xref linkend="mthMutableBufferLastPos" xrefstyle="select:title"/>.
+</para>
 </section>
 
 <!-- Class MutableBuffer - method caselessStartsWith =============== --> 
@@ -4403,30 +4378,22 @@ a non-negative whole number.
 <indexterm><primary>caselessStartsWith method</primary><secondary>of MutableBuffer class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>caselessStartsWith method</secondary><tertiary>of MutableBuffer class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/mutablebuffer_caselessstartswith.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_caselessstartswith.svg" scale="55" />
 </imageobject></mediaobject>
 </para>
-<para>Returns .true ("1") if the characters of the <emphasis role="italic">other</emphasis> match the
+<para>Returns &true; if the characters of the <emphasis role="italic">other</emphasis> match the
 characters at the start of the target buffer.
-Returns .false ("0") if the characters are not a match, or if
+Returns &false; if the characters are not a match, or if
 <emphasis role="italic">other</emphasis> is the null string.
 The match is made using caseless comparisons.
 </para>
 <para>The caselessStartsWith method is useful for efficient string parsing as it does not
 require new string objects be extracted from the target buffer.
 </para>
-<para>See also
-<itemizedlist spacing="compact">
- <listitem>
-  <para>MutableBuffer method <xref linkend="mthMutableBufferStartsWith" xrefstyle="select:title"/>,</para>
- </listitem>
- <listitem>
-  <para>MutableBuffer method <xref linkend="mthMutableBufferCaselessEndsWith" xrefstyle="select:title"/>, and</para>
- </listitem>
- <listitem>
-  <para>MutableBuffer method <xref linkend="mthMutableBufferCaselessMatch" xrefstyle="select:title"/>.</para>
- </listitem>
-</itemizedlist>
+<para>See also methods
+ <xref linkend="mthMutableBufferStartsWith" xrefstyle="select:title"/>,
+ <xref linkend="mthMutableBufferCaselessEndsWith" xrefstyle="select:title"/>, and
+ <xref linkend="mthMutableBufferCaselessMatch" xrefstyle="select:title"/>.
 </para>
 </section>
 
@@ -4441,7 +4408,7 @@ require new string objects be extracted from the target buffer.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/mutablebuffer_caselesswordpos.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_caselesswordpos.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -4472,7 +4439,7 @@ the word at which the search is to be started.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/mutablebuffer_changestr.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_changestr.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -4492,12 +4459,12 @@ occurrences to be replaced.</para>
 <indexterm><primary>contains method</primary><secondary>of MutableBuffer class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>contains method</secondary><tertiary>of MutableBuffer class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/mutablebuffer_contains.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_contains.svg" scale="55" />
 </imageobject></mediaobject>
 </para>
-<para>Returns .true ("1") if the receiving buffer contains the
+<para>Returns &true; if the receiving buffer contains the
 <emphasis role="italic">other</emphasis> string.
-It returns .false ("0") if <emphasis role="italic">other</emphasis> is
+It returns &false; if <emphasis role="italic">other</emphasis> is
 the null string or is not found within the receiving buffer.
 </para>
 <para>By default, the search starts at the first character of the
@@ -4509,21 +4476,11 @@ If specified, <emphasis role="italic">start</emphasis> must be a positive
 whole number and <emphasis role="italic">length</emphasis> must be
 a non-negative whole number.
 </para>
-<para>See also
-<itemizedlist spacing="compact">
- <listitem>
-  <para>MutableBuffer method <xref linkend="mthMutableBufferCaselessContains" xrefstyle="select:title"/>,</para>
- </listitem>
- <listitem>
-  <para>MutableBuffer method <xref linkend="mthMutableBufferStartsWith" xrefstyle="select:title"/>,</para>
- </listitem>
- <listitem>
-  <para>MutableBuffer method <xref linkend="mthMutableBufferEndsWith" xrefstyle="select:title"/>, and</para>
- </listitem>
- <listitem>
-  <para>MutableBuffer method <xref linkend="mthMutableBufferPos" xrefstyle="select:title"/>.</para>
- </listitem>
-</itemizedlist>
+<para>See also methods
+ <xref linkend="mthMutableBufferCaselessContains" xrefstyle="select:title"/>,
+ <xref linkend="mthMutableBufferStartsWith" xrefstyle="select:title"/>,
+ <xref linkend="mthMutableBufferEndsWith" xrefstyle="select:title"/>, and
+ <xref linkend="mthMutableBufferPos" xrefstyle="select:title"/>.
 </para>
 <para><example>
 <title>MutableBuffer class &mdash; caselessContains method</title>
@@ -4539,12 +4496,12 @@ say .mutablebuffer~new('-abcdef-')~contains('-', 2, 6)    -- 0
 <indexterm><primary>containsWord method</primary><secondary>of MutableBuffer class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>containsWord method</secondary><tertiary>of MutableBuffer class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/mutablebuffer_containsword.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_containsword.svg" scale="55" />
 </imageobject></mediaobject>
 </para>
-<para>Returns .true ("1") if <emphasis role="italic">phrase</emphasis>
+<para>Returns &true; if <emphasis role="italic">phrase</emphasis>
 is found in the receiving buffer.
-Returns .false ("0") if <emphasis role="italic">phrase</emphasis>
+Returns &false; if <emphasis role="italic">phrase</emphasis>
 contains no words or if <emphasis role="italic">phrase</emphasis>
 is not found.
 Multiple whitespace characters between words in either
@@ -4556,28 +4513,23 @@ buffer.
 You can override this by specifying <emphasis role="italic">start</emphasis>
 (which must be positive whole number),
 the word at which the search is to be started.</para>
-<para>See also
-<itemizedlist spacing="compact">
- <listitem>
-  <para>MutableBuffer method <xref linkend="mthMutableBufferCaselessContainsWord" xrefstyle="select:title"/> and</para>
- </listitem>
- <listitem>
-  <para>MutableBuffer method <xref linkend="mthMutableBufferWordPos" xrefstyle="select:title"/>
-  (containsWord returns .false ("0") exactly if wordPos would have returned
-  <computeroutput>"0"</computeroutput>.)</para>
- </listitem>
-</itemizedlist>
+<para>See also methods
+ <xref linkend="mthMutableBufferCaselessContainsWord" xrefstyle="select:title"/> and
+ <xref linkend="mthMutableBufferWordPos" xrefstyle="select:title"/>
+ (<methodname>containsWord</methodname> returns &false; exactly if
+ <methodname>wordPos</methodname> would have returned <literal>0</literal>.)
+
 </para>
 <para><example>
 <title>MutableBuffer class &mdash; containsWord method</title>
 <programlisting><![CDATA[good = .MutableBuffer~new("Now is the time for all good men")
-say good~containsWord("the")          -- .true
-say good~containsWord("The")          -- .false
-say good~containsWord("is the")       -- .true
-say good~containsWord("is   the ")    -- .true
-say good~containsWord("is time")      -- .false
-say good~containsWord("time")         -- .true
-say good~containsWord("time", 5)      -- .false
+good~containsWord("the")          -- .true
+good~containsWord("The")          -- .false
+good~containsWord("is the")       -- .true
+good~containsWord("is   the ")    -- .true
+good~containsWord("is time")      -- .false
+good~containsWord("time")         -- .true
+good~containsWord("time", 5)      -- .false
 ]]></programlisting></example></para>
 </section>
 
@@ -4591,7 +4543,7 @@ say good~containsWord("time", 5)      -- .false
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/mutablebuffer_countstr.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_countstr.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -4609,7 +4561,7 @@ overlap.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/mutablebuffer_delete.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_delete.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -4634,7 +4586,7 @@ buffer content.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/mutablebuffer_delstr.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_delstr.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -4669,7 +4621,7 @@ It is provided for polymorphism with the String class.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/mutablebuffer_delword.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_delword.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -4699,29 +4651,21 @@ preceding the first word involved.
 <indexterm><primary>endsWith method</primary><secondary>of MutableBuffer class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>endsWith method</secondary><tertiary>of MutableBuffer class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/mutablebuffer_endswith.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_endswith.svg" scale="55" />
 </imageobject></mediaobject>
 </para>
-<para>Returns .true ("1") if the characters of the <emphasis role="italic">other</emphasis> match the
+<para>Returns &true; if the characters of the <emphasis role="italic">other</emphasis> match the
 characters at the end of the target buffer.
-Returns .false ("0") if the characters are not a match, or if
+Returns &false; if the characters are not a match, or if
 <emphasis role="italic">other</emphasis> is the null string.
 </para>
 <para>The endsWith method is useful for efficient string parsing as it does not
 require new string objects be extracted from the target buffer.
 </para>
-<para>See also
-<itemizedlist spacing="compact">
- <listitem>
-  <para>MutableBuffer method <xref linkend="mthMutableBufferStartsWith" xrefstyle="select:title"/>,</para>
- </listitem>
- <listitem>
-  <para>MutableBuffer method <xref linkend="mthMutableBufferCaselessEndsWith" xrefstyle="select:title"/>, and</para>
- </listitem>
- <listitem>
-  <para>MutableBuffer method <xref linkend="mthMutableBufferMatch" xrefstyle="select:title"/>.</para>
- </listitem>
-</itemizedlist>
+<para>See also methods
+ <xref linkend="mthMutableBufferStartsWith" xrefstyle="select:title"/>,
+ <xref linkend="mthMutableBufferCaselessEndsWith" xrefstyle="select:title"/>, and
+ <xref linkend="mthMutableBufferMatch" xrefstyle="select:title"/>.
 </para>
 </section>
 
@@ -4734,13 +4678,12 @@ require new string objects be extracted from the target buffer.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/mutablebuffer_getbuffersize.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_getbuffersize.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Retrieves the current buffer size.</para>
-<para>See also <xref linkend="mthMutableBufferGetBufferSize" xrefstyle="select:title"/>
-method.
+<para>See also method <xref linkend="mthMutableBufferGetBufferSize" xrefstyle="select:title"/>.
 </para>
 </section>
 
@@ -4753,7 +4696,7 @@ method.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/mutablebuffer_insert.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_insert.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -4785,7 +4728,7 @@ to length <emphasis role="italic">length</emphasis>. The default
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/mutablebuffer_lastpos.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_lastpos.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -4806,15 +4749,9 @@ than that value or omitted. The <emphasis role="italic">length</emphasis> must b
 non-negative whole number and defaults to <emphasis
 role="italic">start</emphasis>.
 </para>
-<para>See also
-<itemizedlist spacing="compact">
- <listitem>
-  <para>MutableBuffer method <xref linkend="mthMutableBufferCaselessLastPos" xrefstyle="select:title"/> and</para>
- </listitem>
- <listitem>
-  <para>MutableBuffer method <xref linkend="mthMutableBufferPos" xrefstyle="select:title"/>.</para>
- </listitem>
-</itemizedlist>
+<para>See also methods
+ <xref linkend="mthMutableBufferCaselessLastPos" xrefstyle="select:title"/> and
+ <xref linkend="mthMutableBufferPos" xrefstyle="select:title"/>.
 </para>
 <indexterm><primary>examples</primary>
 <secondary>lastPos method</secondary></indexterm>
@@ -4842,7 +4779,7 @@ x1~lastPos(" ",7) -> 4
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/mutablebuffer_length.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_length.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -4858,7 +4795,7 @@ x1~lastPos(" ",7) -> 4
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/mutablebuffer_lower.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_lower.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -4881,7 +4818,7 @@ is not specified, the default is to convert the remainder of the buffer.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/mutablebuffer_makearray.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_makearray.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -4901,12 +4838,12 @@ the carriage return/newline character pair.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/mutablebuffer_match.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_match.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>Returns .true ("1") if the characters of the <emphasis role="italic">other</emphasis> match the
-characters of the target buffer beginning at position <emphasis role="italic">start</emphasis>.  Returns .false
+<para>Returns &true; if the characters of the <emphasis role="italic">other</emphasis> match the
+characters of the target buffer beginning at position <emphasis role="italic">start</emphasis>.  Returns &false;
 ("0") if the characters are not a match.
 <emphasis role="italic">start</emphasis> must be a positive whole number.
 </para>
@@ -4934,12 +4871,12 @@ require new string objects be extracted from the target buffer.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/mutablebuffer_matchchar.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_matchchar.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>Returns .true ("1") if the character at position <emphasis role="italic">n</emphasis> matches any
-character of the string <emphasis role="italic">chars</emphasis>.  Returns .false ("0") if the character does not
+<para>Returns &true; if the character at position <emphasis role="italic">n</emphasis> matches any
+character of the string <emphasis role="italic">chars</emphasis>.  Returns &false; if the character does not
 match any of the characters in the reference set.  The argument <emphasis role="italic">n</emphasis> must be
 a positive whole number.</para>
 </section>
@@ -4953,7 +4890,7 @@ a positive whole number.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/mutablebuffer_overlay.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_overlay.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -4983,14 +4920,13 @@ a blank, and the default value for <emphasis>n</emphasis> is 1. If you specify
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/mutablebuffer_pos.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_pos.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Returns the position in the receiving buffer of another string,
-<emphasis role="italic">needle</emphasis>. (See also
-<xref linkend="mthMutableBufferLastPos" />.) It returns
-<computeroutput>0</computeroutput> if
+<emphasis role="italic">needle</emphasis>.
+It returns <literal>0</literal> if
 <emphasis role="italic">needle</emphasis> is the null string or is not found
 or if <emphasis role="italic">start</emphasis> is greater than
 the length of the receiving buffer.
@@ -5005,6 +4941,9 @@ If specified, <emphasis role="italic">start</emphasis> must be a positive
 whole number and <emphasis role="italic">length</emphasis> must be
 a non-negative whole number.
 </para>
+<para>See also method <xref linkend="mthMutableBufferLastPos" xrefstyle="select:title"/>.
+</para>
+
 <indexterm><primary>examples</primary>
 <secondary>pos method</secondary></indexterm>
 <example>
@@ -5030,7 +4969,7 @@ x1~pos(" ",5)       ->    8
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/mutablebuffer_replaceat.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_replaceat.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -5063,7 +5002,7 @@ blank.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/mutablebuffer_setbuffersize.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_setbuffersize.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -5072,8 +5011,7 @@ If <emphasis>n</emphasis> is less than the length of buffer
 content, the content is truncated. If <emphasis>n</emphasis> is 0, the entire
 content is erased and the new buffer size is the value given
 in the <emphasis role="bold">init</emphasis> method.</para>
-<para>See also <xref linkend="mthMutableBufferSetBufferSize" xrefstyle="select:title"/>
-method.
+<para>See also method <xref linkend="mthMutableBufferSetBufferSize" xrefstyle="select:title"/>.
 </para>
 </section>
 
@@ -5083,7 +5021,7 @@ method.
 <indexterm><primary>setText method</primary><secondary>of MutableBuffer class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>setText method</secondary><tertiary>of MutableBuffer class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/mutablebuffer_settext.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_settext.svg" scale="55" />
 </imageobject></mediaobject>
 </para>
 <para>Returns the receiving buffer, with the buffer contents set to
@@ -5103,7 +5041,7 @@ method.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/mutablebuffer_space.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_space.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -5125,29 +5063,21 @@ and the default <emphasis role="italic">pad</emphasis> character is a blank.
 <indexterm><primary>startsWith method</primary><secondary>of MutableBuffer class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>startsWith method</secondary><tertiary>of MutableBuffer class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/mutablebuffer_startswith.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_startswith.svg" scale="55" />
 </imageobject></mediaobject>
 </para>
-<para>Returns .true ("1") if the characters of the <emphasis role="italic">other</emphasis> match the
+<para>Returns &true; if the characters of the <emphasis role="italic">other</emphasis> match the
 characters at the start of the target buffer.
-Returns .false ("0") if the characters are not a match, or if
+Returns &false; if the characters are not a match, or if
 <emphasis role="italic">other</emphasis> is the null string.
 </para>
 <para>The startsWith method is useful for efficient string parsing as it does not
 require new string objects be extracted from the target buffer.
 </para>
-<para>See also
-<itemizedlist spacing="compact">
- <listitem>
-  <para>MutableBuffer method <xref linkend="mthMutableBufferCaselessStartsWith" xrefstyle="select:title"/>,</para>
- </listitem>
- <listitem>
-  <para>MutableBuffer method <xref linkend="mthMutableBufferEndsWith" xrefstyle="select:title"/>, and</para>
- </listitem>
- <listitem>
-  <para>MutableBuffer method <xref linkend="mthMutableBufferMatch" xrefstyle="select:title"/>.</para>
- </listitem>
-</itemizedlist>
+<para>See also methods
+ <xref linkend="mthMutableBufferCaselessStartsWith" xrefstyle="select:title"/>,
+ <xref linkend="mthMutableBufferEndsWith" xrefstyle="select:title"/>, and
+ <xref linkend="mthMutableBufferMatch" xrefstyle="select:title"/>.
 </para>
 </section>
 
@@ -5160,7 +5090,7 @@ require new string objects be extracted from the target buffer.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/mutablebuffer_string.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_string.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -5176,7 +5106,7 @@ require new string objects be extracted from the target buffer.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/mutablebuffer_subchar.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_subchar.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -5195,7 +5125,7 @@ then a zero-length string is returned.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/mutablebuffer_substr.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_substr.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -5222,7 +5152,7 @@ The default <emphasis>pad</emphasis> character is a blank.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/mutablebuffer_subword.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_subword.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -5249,7 +5179,7 @@ characters between the selected words.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/mutablebuffer_subwords.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_subwords.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -5279,7 +5209,7 @@ in the returned array never have leading or trailing whitespace.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/mutablebuffer_translate.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_translate.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -5327,7 +5257,7 @@ the buffer from the starting position to the end is used. </para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/mutablebuffer_upper.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_upper.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -5352,7 +5282,7 @@ is not specified, the default is to convert the remainder of the buffer.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/mutablebuffer_verify.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_verify.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -5432,7 +5362,7 @@ returns the <emphasis role="italic">start</emphasis> value.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/mutablebuffer_word.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_word.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -5454,7 +5384,7 @@ to <computeroutput>receiving_buffer~subWord(n,1)</computeroutput>.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/mutablebuffer_wordindex.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_wordindex.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -5479,7 +5409,7 @@ than
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/mutablebuffer_wordlength.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_wordlength.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -5501,7 +5431,7 @@ role="italic">n</emphasis> must be a positive whole number.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/mutablebuffer_wordpos.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_wordpos.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -5537,7 +5467,7 @@ which the search is to be started.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/mutablebuffer_words.svg" scale="50" />
+<imagedata fileref="images/classes/mutablebuffer_words.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -5554,8 +5484,10 @@ which the search is to be started.</para>
 <para>The Orderable class can be inherited by classes which wish to provide
     each of the comparison operator methods without needing to implement each of
     the individual methods.  The inheriting class need only implement the
-    Comparable compareTo() method (<xref linkend="mthComparableCompareTo" />).
-    This class is defined as a mixin class.
+    <classname>Comparable</classname>
+    <xref linkend="mthComparableCompareTo" xrefstyle="template:compareTo"/> method.
+</para>
+<para>The <classname>Orderable</classname> class is defined as a mixin class.
 </para>
 
 <!-- $GENERATED-20150923-START rexxrefClassTable(Orderable) -->
@@ -5594,7 +5526,7 @@ It is an abstract method and must be implemented in a subclass.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/orderable_compareto.svg" scale="50" />
+<imagedata fileref="images/classes/orderable_compareto.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -5610,12 +5542,12 @@ smaller than the receiving object.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/orderable_comparisonoperator.svg" scale="50" />
+<imagedata fileref="images/classes/orderable_comparisonoperator.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>Returns <computeroutput>1</computeroutput> (true) or
-<computeroutput>0</computeroutput> (false), the result of performing
+<para>Returns &true; or
+&false;, the result of performing
 the specified comparison operation. The receiver object and the
 <emphasis role="italic">argument</emphasis> are the terms compared.
 </para>
@@ -5624,7 +5556,7 @@ the specified comparison operation. The receiver object and the
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1">
 <tgroup cols="2">
 <colspec colnum="1" colwidth="1*" />
-<colspec colnum="2" colwidth="4*" />
+<colspec colnum="2" colwidth="5*" />
 <tbody>
 <row><entry>=
 <indexterm><primary>= method</primary>
@@ -5633,7 +5565,7 @@ the specified comparison operation. The receiver object and the
 <secondary>=</secondary>
 <tertiary>of Orderable class</tertiary></indexterm>
 </entry>
-<entry><para>True if the terms are equal
+<entry><para>&true; if the terms are equal
 </para></entry></row>
 <row><entry>\=, &gt;&lt;, &lt;&gt;
 <indexterm><primary>>&lt; method</primary>
@@ -5652,7 +5584,7 @@ the specified comparison operation. The receiver object and the
 <secondary>&lt;&gt;</secondary>
 <tertiary>of Orderable class</tertiary></indexterm>
 </entry>
-<entry><para>True if the terms are not equal (inverse of =)
+<entry><para>&true; if the terms are not equal (inverse of =)
 </para></entry></row>
 <row><entry>&gt;
 <indexterm><primary>&gt; method</primary></indexterm>
@@ -5707,7 +5639,7 @@ results as the non-strict comparisons.
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1">
 <tgroup cols="2">
 <colspec colnum="1" colwidth="1*" />
-<colspec colnum="2" colwidth="4*" />
+<colspec colnum="2" colwidth="5*" />
 <tbody>
 <row><entry>==
 <indexterm><primary>== method</primary>
@@ -5716,7 +5648,7 @@ results as the non-strict comparisons.
 <secondary>==</secondary>
 <tertiary>of Orderable class</tertiary></indexterm>
 </entry>
-<entry><para>True if terms are strictly equal
+<entry><para>&true; if terms are strictly equal
 </para></entry></row>
 <row><entry>\==
 <indexterm><primary>\== method</primary></indexterm>
@@ -5724,7 +5656,7 @@ results as the non-strict comparisons.
 <secondary>\==</secondary>
 <tertiary>of Orderable class</tertiary></indexterm>
 </entry>
-<entry><para>True if the terms are NOT strictly equal (inverse of ==)
+<entry><para>&true; if the terms are NOT strictly equal (inverse of ==)
 </para></entry></row>
 <row><entry>&gt;&gt;
 <indexterm><primary>&gt;&gt; method</primary></indexterm>
@@ -5818,7 +5750,7 @@ class new method will raise an error if invoked.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/pointer_new.svg" scale="50" />
+<imagedata fileref="images/classes/pointer_new.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -5830,12 +5762,12 @@ The Pointer class new method will raise an error if invoked.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/pointer_comparisonoperator.svg" scale="50" />
+<imagedata fileref="images/classes/pointer_comparisonoperator.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>Returns <computeroutput>1</computeroutput> (true) or
-<computeroutput>0</computeroutput> (false), the result of performing
+<para>Returns &true; or
+&false;, the result of performing
 a specified comparison operation.
 </para>
 <para>For the Pointer class, the argument object must be a pointer object instance and
@@ -5844,7 +5776,7 @@ the wrappered pointer value must be the same.</para>
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1">
 <tgroup cols="2">
 <colspec colnum="1" colwidth="1*" />
-<colspec colnum="2" colwidth="4*" />
+<colspec colnum="2" colwidth="5*" />
 <tbody>
 <row><entry>=, ==
 <indexterm><primary>= method</primary>
@@ -5858,7 +5790,7 @@ the wrappered pointer value must be the same.</para>
 <secondary>==</secondary>
 <tertiary>of Pointer class</tertiary></indexterm>
 </entry>
-<entry><para>True if the wrappered pointer values are the same.
+<entry><para>&true; if the wrappered pointer values are the same.
 </para></entry></row>
 <row><entry>\=, >&lt;, &lt;>, \==
 <indexterm><primary>\= method</primary>
@@ -5882,7 +5814,7 @@ the wrappered pointer value must be the same.</para>
 <secondary>\==</secondary>
 <tertiary>of Pointer class</tertiary></indexterm>
 </entry>
-<entry><para>True if the wrappered pointer values are not the same.
+<entry><para>&true; if the wrappered pointer values are not the same.
 </para></entry></row>
 </tbody>
 </tgroup>
@@ -5898,12 +5830,12 @@ the wrappered pointer value must be the same.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/pointer_isnull.svg" scale="50" />
+<imagedata fileref="images/classes/pointer_isnull.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>Returns 1 (true) if the wrappered pointer value is a NULL pointer (0) value.
-Returns 0 (false) if the pointer value is non-zero.
+<para>Returns &true; if the wrappered pointer value is a NULL pointer (0) value.
+Returns &false; if the pointer value is non-zero.
 </para>
 </section>
 </section>
@@ -5967,7 +5899,7 @@ statement to activate its functionality, as follows:</para></note>
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1">
 <tgroup cols="2">
 <colspec colnum="1" colwidth="1*" />
-<colspec colnum="2" colwidth="4*" />
+<colspec colnum="2" colwidth="5*" />
 <tbody>
 <row><entry>|</entry>
 <entry><para>OR operator between the left and right expression
@@ -6009,7 +5941,7 @@ be used to abbreviate common sets:</para>
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1">
 <tgroup cols="2">
 <colspec colnum="1" colwidth="1*" />
-<colspec colnum="2" colwidth="4*" />
+<colspec colnum="2" colwidth="5*" />
 <tbody>
 <row><entry>:ALPHA:</entry>
 <entry><para>Characters in the range A-Z and a-z
@@ -6092,7 +6024,7 @@ be used to abbreviate common sets:</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/regexp_init.svg" scale="50" />
+<imagedata fileref="images/classes/regexp_init.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -6123,7 +6055,7 @@ myRE2 = .RegularExpression~new("Hello?*")
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/regexp_match.svg" scale="50" />
+<imagedata fileref="images/classes/regexp_match.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -6144,7 +6076,7 @@ on a successful match. For an example see
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/regexp_parse.svg" scale="50" />
+<imagedata fileref="images/classes/regexp_parse.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -6293,7 +6225,7 @@ myRE2 (maximal) matched <p>Paragraph 1</p><p>Paragraph 2</p>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/regexp_pos.svg" scale="50" />
+<imagedata fileref="images/classes/regexp_pos.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -6339,7 +6271,7 @@ Found the number 2015 in this sentence.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/regexp_position.svg" scale="50" />
+<imagedata fileref="images/classes/regexp_position.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -6429,7 +6361,7 @@ subclass of the Object class (<xref linkend="clsObject" />).</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rexxcontext_args.svg" scale="50" />
+<imagedata fileref="images/classes/rexxcontext_args.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -6447,11 +6379,11 @@ This is equivalent to using the Arg(1, 'A') (<xref linkend="bifArg" />) built-in
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rexxcontext_condition.svg" scale="50" />
+<imagedata fileref="images/classes/rexxcontext_condition.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>Returns the current context condition object, or the Nil object if the context does
+<para>Returns the current context condition object, or &nil; if the context does
 not currently have a trapped condition.  This is equivalent to using the
 Condition('O') (<xref linkend="bifCondition" />) built-in function.
 </para>
@@ -6466,12 +6398,12 @@ Condition('O') (<xref linkend="bifCondition" />) built-in function.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rexxcontext_digits.svg" scale="50" />
+<imagedata fileref="images/classes/rexxcontext_digits.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Returns the current context digits setting. This is equivalent to using
-the digits() (<xref linkend="bifDigits" />) built-in function.
+the <xref linkend="bifDigits" xrefstyle="select:title"/> built-in function.
 </para>
 </section>
 
@@ -6484,7 +6416,7 @@ the digits() (<xref linkend="bifDigits" />) built-in function.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rexxcontext_executable.svg" scale="50" />
+<imagedata fileref="images/classes/rexxcontext_executable.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -6504,12 +6436,12 @@ the active context.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rexxcontext_form.svg" scale="50" />
+<imagedata fileref="images/classes/rexxcontext_form.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Returns the current context form setting. This is equivalent to using the
-form() (<xref linkend="bifForm" />) built-in function.
+<xref linkend="bifForm" xrefstyle="select:title"/> built-in function.
 </para>
 </section>
 
@@ -6522,12 +6454,12 @@ form() (<xref linkend="bifForm" />) built-in function.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rexxcontext_fuzz.svg" scale="50" />
+<imagedata fileref="images/classes/rexxcontext_fuzz.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Returns the current context fuzz setting. This is equivalent to using the
-fuzz() (<xref linkend="bifFuzz" />) built-in function.
+<xref linkend="bifFuzz" xrefstyle="select:title"/> built-in function.
 </para>
 </section>
 
@@ -6540,7 +6472,7 @@ fuzz() (<xref linkend="bifFuzz" />) built-in function.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rexxcontext_line.svg" scale="50" />
+<imagedata fileref="images/classes/rexxcontext_line.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -6558,7 +6490,7 @@ fuzz() (<xref linkend="bifFuzz" />) built-in function.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rexxcontext_name.svg" scale="50" />
+<imagedata fileref="images/classes/rexxcontext_name.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -6581,7 +6513,7 @@ is the name of the label used to invoke the call.  If the context is the main pa
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rexxcontext_package.svg" scale="50" />
+<imagedata fileref="images/classes/rexxcontext_package.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -6599,12 +6531,12 @@ associated with the current executable object.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rexxcontext_rs.svg" scale="50" />
+<imagedata fileref="images/classes/rexxcontext_rs.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Returns the context current return status value.  If no host commands have
-been issued in the current context, the Nil object is returned.  This is equivalent to using
+been issued in the current context, &nil; is returned.  This is equivalent to using
 the .RS (<xref linkend="rs" />) environment symbol.
 </para>
 </section>
@@ -6618,7 +6550,7 @@ the .RS (<xref linkend="rs" />) environment symbol.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rexxcontext_stackframes.svg" scale="50" />
+<imagedata fileref="images/classes/rexxcontext_stackframes.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -6637,7 +6569,7 @@ elements are earlier elements in the call stack.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rexxcontext_variables.svg" scale="50" />
+<imagedata fileref="images/classes/rexxcontext_variables.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -6648,7 +6580,7 @@ contain simple variables and stem variables, but no compound variables.  Compoun
 be accessed by using the stem objects that are returned for the stem
 variable names.
 </para>
-<para>See also Rexx Utility Function
+<para>See also Rexx Utility function
 <xref linkend="utlSysdumpvariables" xrefstyle="select:title"/>.
 </para>
 <para><example>
@@ -6804,7 +6736,7 @@ RexxInfo provides read-only attribute methods to get
 <indexterm><primary>architecture method</primary><secondary>of RexxInfo class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>architecture method</secondary><tertiary>of RexxInfo class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/rexxinfo_architecture.svg" scale="50" />
+<imagedata fileref="images/classes/rexxinfo_architecture.svg" scale="55" />
 </imageobject></mediaobject>
 </para>
 <para>Returns the interpreter's addressing mode, specified as a number in bits.
@@ -6824,14 +6756,14 @@ say .rexxinfo~architecture    -- 64 /* ooRexx 64-bit */
 <indexterm><primary>caseSensitiveFiles method</primary><secondary>of RexxInfo class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>caseSensitiveFiles method</secondary><tertiary>of RexxInfo class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/rexxinfo_casesensitivefiles.svg" scale="50" />
+<imagedata fileref="images/classes/rexxinfo_casesensitivefiles.svg" scale="55" />
 </imageobject></mediaobject>
 </para>
-<para>Returns .true if the file system is case-sensitive,
+<para>Returns &true; if the file system is case-sensitive,
 e. g. on a Unix platform.
-Otherwise returns .false, e. g. for a Windows file system.
+Otherwise returns &false;, e. g. for a Windows file system.
 </para>
-<para>See also File class method
+<para>See also <classname>File</classname> class method
 <xref linkend="mthFileIsCaseSensitiveClsMth" xrefstyle="template:isCaseSensitive"/>
 which returns the same information.
 </para>
@@ -6848,7 +6780,7 @@ say .RexxInfo~caseSensitiveFiles    -- 1 /* e. g. Unix */
 <indexterm><primary>date method</primary><secondary>of RexxInfo class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>date method</secondary><tertiary>of RexxInfo class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/rexxinfo_date.svg" scale="50" />
+<imagedata fileref="images/classes/rexxinfo_date.svg" scale="55" />
 </imageobject></mediaobject>
 </para>
 <para>Returns the language processor release date as a string in the 
@@ -6878,7 +6810,7 @@ which both also return this date as the third to fifth token of their result.
 <indexterm><primary>digits method</primary><secondary>of RexxInfo class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>digits method</secondary><tertiary>of RexxInfo class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/rexxinfo_digits.svg" scale="50" />
+<imagedata fileref="images/classes/rexxinfo_digits.svg" scale="55" />
 </imageobject></mediaobject>
 </para>
 <para>Returns the language processor default for the NUMERIC DIGITS setting.
@@ -6908,7 +6840,7 @@ which both also return this date as the third to fifth token of their result.
 <indexterm><primary>directorySeparator method</primary><secondary>of RexxInfo class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>directorySeparator method</secondary><tertiary>of RexxInfo class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/rexxinfo_directoryseparator.svg" scale="50" />
+<imagedata fileref="images/classes/rexxinfo_directoryseparator.svg" scale="55" />
 </imageobject></mediaobject>
 </para>
 <para>Returns the platform-specific directory separator used by the file system,
@@ -6930,7 +6862,7 @@ say .RexxInfo~directorySeparator    -- "/" /* Unix */
 <indexterm><primary>endofline method</primary><secondary>of RexxInfo class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>endofline method</secondary><tertiary>of RexxInfo class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/rexxinfo_endofline.svg" scale="50" />
+<imagedata fileref="images/classes/rexxinfo_endofline.svg" scale="55" />
 </imageobject></mediaobject>
 </para>
 <para>Returns a platform-specific string representing the line terminator
@@ -6953,7 +6885,7 @@ say .RexxInfo~endofline    -- "0a"x /* Unix */
 <indexterm><primary>form method</primary><secondary>of RexxInfo class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>form method</secondary><tertiary>of RexxInfo class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/rexxinfo_form.svg" scale="50" />
+<imagedata fileref="images/classes/rexxinfo_form.svg" scale="55" />
 </imageobject></mediaobject>
 </para>
 <para>Returns the language processor default for the NUMERIC FORM setting.
@@ -6983,7 +6915,7 @@ say .RexxInfo~endofline    -- "0a"x /* Unix */
 <indexterm><primary>fuzz method</primary><secondary>of RexxInfo class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>fuzz method</secondary><tertiary>of RexxInfo class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/rexxinfo_fuzz.svg" scale="50" />
+<imagedata fileref="images/classes/rexxinfo_fuzz.svg" scale="55" />
 </imageobject></mediaobject>
 </para>
 <para>Returns the language processor default for the NUMERIC FUZZ setting.
@@ -7013,7 +6945,7 @@ say .RexxInfo~endofline    -- "0a"x /* Unix */
 <indexterm><primary>internalDigits method</primary><secondary>of RexxInfo class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>internalDigits method</secondary><tertiary>of RexxInfo class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/rexxinfo_internaldigits.svg" scale="50" />
+<imagedata fileref="images/classes/rexxinfo_internaldigits.svg" scale="55" />
 </imageobject></mediaobject>
 </para>
 <para>Returns the NUMERIC DIGITS setting that the built-in functions use
@@ -7035,7 +6967,7 @@ say .RexxInfo~internalDigits    -- 18 /* for 64-bit addressing mode */
 <indexterm><primary>languageLevel method</primary><secondary>of RexxInfo class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>languageLevel method</secondary><tertiary>of RexxInfo class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/rexxinfo_languagelevel.svg" scale="50" />
+<imagedata fileref="images/classes/rexxinfo_languagelevel.svg" scale="55" />
 </imageobject></mediaobject>
 </para>
 <para>Returns the language processor's language level as a decimal number.
@@ -7063,7 +6995,7 @@ which both also return the language level as the second token of their result.
 <indexterm><primary>majorVersion method</primary><secondary>of RexxInfo class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>majorVersion method</secondary><tertiary>of RexxInfo class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/rexxinfo_majorversion.svg" scale="50" />
+<imagedata fileref="images/classes/rexxinfo_majorversion.svg" scale="55" />
 </imageobject></mediaobject>
 </para>
 <para>Returns the major version number of the language processor.
@@ -7096,7 +7028,7 @@ which also return the major version number as part of their result.
 <indexterm><primary>name method</primary><secondary>of RexxInfo class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>name method</secondary><tertiary>of RexxInfo class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/rexxinfo_name.svg" scale="50" />
+<imagedata fileref="images/classes/rexxinfo_name.svg" scale="55" />
 </imageobject></mediaobject>
 </para>
 <para>Returns the language processor's descriptive name in the format
@@ -7141,7 +7073,7 @@ that is also returned by
 <indexterm><primary>package method</primary><secondary>of RexxInfo class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>package method</secondary><tertiary>of RexxInfo class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/rexxinfo_package.svg" scale="50" />
+<imagedata fileref="images/classes/rexxinfo_package.svg" scale="55" />
 </imageobject></mediaobject>
 </para>
 <para>Returns a Package instance of all REXX-defined (namespace "REXX") classes.
@@ -7162,7 +7094,7 @@ that is also returned by
 <indexterm><primary>pathSeparator method</primary><secondary>of RexxInfo class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>pathSeparator method</secondary><tertiary>of RexxInfo class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/rexxinfo_pathseparator.svg" scale="50" />
+<imagedata fileref="images/classes/rexxinfo_pathseparator.svg" scale="55" />
 </imageobject></mediaobject>
 </para>
 <para>Returns the platform-specific path separator used used for file search paths,
@@ -7183,7 +7115,7 @@ say .RexxInfo~pathSeparator    -- ":" /* Unix */
 <indexterm><primary>platform method</primary><secondary>of RexxInfo class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>platform method</secondary><tertiary>of RexxInfo class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/rexxinfo_platform.svg" scale="50" />
+<imagedata fileref="images/classes/rexxinfo_platform.svg" scale="55" />
 </imageobject></mediaobject>
 </para>
 <para>Returns the name of the interpreter operating system as a string,
@@ -7205,7 +7137,7 @@ say .RexxInfo~platform    -- LINUX
 <indexterm><primary>release method</primary><secondary>of RexxInfo class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>release method</secondary><tertiary>of RexxInfo class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/rexxinfo_release.svg" scale="50" />
+<imagedata fileref="images/classes/rexxinfo_release.svg" scale="55" />
 </imageobject></mediaobject>
 </para>
 <para>Returns the release number of the language processor.
@@ -7238,7 +7170,7 @@ which also return the release number as part of their result.
 <indexterm><primary>revision method</primary><secondary>of RexxInfo class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>revision method</secondary><tertiary>of RexxInfo class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/rexxinfo_revision.svg" scale="50" />
+<imagedata fileref="images/classes/rexxinfo_revision.svg" scale="55" />
 </imageobject></mediaobject>
 </para>
 <para>Returns the revision number of the language processor.
@@ -7271,7 +7203,7 @@ which also return the revision number as part of their result.
 <indexterm><primary>version method</primary><secondary>of RexxInfo class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>version method</secondary><tertiary>of RexxInfo class</tertiary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/rexxinfo_version.svg" scale="50" />
+<imagedata fileref="images/classes/rexxinfo_version.svg" scale="55" />
 </imageobject></mediaobject>
 </para>
 <para>Returns the version number of the language processor as a decimal number.
@@ -7361,7 +7293,7 @@ the <xref linkend="mthRexxInfoRevision" xrefstyle="select:title"/>.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rexxqueue_create.svg" scale="50" />
+<imagedata fileref="images/classes/rexxqueue_create.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -7381,7 +7313,7 @@ created.  This method returns the name of the created queue, which will be eithe
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rexxqueue_delete_class.svg" scale="50" />
+<imagedata fileref="images/classes/rexxqueue_delete_class.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -7401,12 +7333,12 @@ programming interface.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rexxqueue_exists.svg" scale="50" />
+<imagedata fileref="images/classes/rexxqueue_exists.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Tests if an external Rexx queue <emphasis role="italic">name</emphasis> currently exists, returning
-1 (true) if it does and 0 (false) otherwise.
+&true; if it does and &false; otherwise.
 </para>
 </section>
 
@@ -7419,7 +7351,7 @@ programming interface.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rexxqueue_open.svg" scale="50" />
+<imagedata fileref="images/classes/rexxqueue_open.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -7437,7 +7369,7 @@ creates the queue if it does not.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rexxqueue_delete.svg" scale="50" />
+<imagedata fileref="images/classes/rexxqueue_delete.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -7455,7 +7387,7 @@ creates the queue if it does not.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rexxqueue_empty.svg" scale="50" />
+<imagedata fileref="images/classes/rexxqueue_empty.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -7472,7 +7404,7 @@ creates the queue if it does not.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rexxqueue_get.svg" scale="50" />
+<imagedata fileref="images/classes/rexxqueue_get.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -7490,7 +7422,7 @@ creates the queue if it does not.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rexxqueue_init.svg" scale="50" />
+<imagedata fileref="images/classes/rexxqueue_init.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -7510,7 +7442,7 @@ queue does not exist, one will be created.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rexxqueue_linein.svg" scale="50" />
+<imagedata fileref="images/classes/rexxqueue_linein.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -7528,7 +7460,7 @@ queue does not exist, one will be created.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rexxqueue_lineout.svg" scale="50" />
+<imagedata fileref="images/classes/rexxqueue_lineout.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -7546,7 +7478,7 @@ queue does not exist, one will be created.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rexxqueue_makearray.svg" scale="50" />
+<imagedata fileref="images/classes/rexxqueue_makearray.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -7565,12 +7497,12 @@ The external queue is emptied.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rexxqueue_pull.svg" scale="50" />
+<imagedata fileref="images/classes/rexxqueue_pull.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Reads a line from the Rexx external queue.  If the queue is currently empty,
-this method will immediately return the Nil Object without waiting for lines to be added to the queue.
+this method will immediately return &nil; without waiting for lines to be added to the queue.
 </para>
 </section>
 
@@ -7583,7 +7515,7 @@ this method will immediately return the Nil Object without waiting for lines to 
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rexxqueue_push.svg" scale="50" />
+<imagedata fileref="images/classes/rexxqueue_push.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -7601,7 +7533,7 @@ this method will immediately return the Nil Object without waiting for lines to 
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rexxqueue_queue.svg" scale="50" />
+<imagedata fileref="images/classes/rexxqueue_queue.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -7619,7 +7551,7 @@ this method will immediately return the Nil Object without waiting for lines to 
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rexxqueue_queued.svg" scale="50" />
+<imagedata fileref="images/classes/rexxqueue_queued.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -7636,7 +7568,7 @@ this method will immediately return the Nil Object without waiting for lines to 
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rexxqueue_say.svg" scale="50" />
+<imagedata fileref="images/classes/rexxqueue_say.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -7654,7 +7586,7 @@ this method will immediately return the Nil Object without waiting for lines to 
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/rexxqueue_set.svg" scale="50" />
+<imagedata fileref="images/classes/rexxqueue_set.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -7723,7 +7655,7 @@ StackFrame instances cannot be directly created by the user.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/stackframe_arguments.svg" scale="50" />
+<imagedata fileref="images/classes/stackframe_arguments.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -7740,7 +7672,7 @@ StackFrame instances cannot be directly created by the user.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/stackframe_executable.svg" scale="50" />
+<imagedata fileref="images/classes/stackframe_executable.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -7760,13 +7692,13 @@ the StackFrame element.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/stackframe_line.svg" scale="50" />
+<imagedata fileref="images/classes/stackframe_line.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Returns the current line number of the StackFrame context.  If the
-frame instance is not Rexx code (e.g., compiled native code), the
-nil object (.nil) is returned.
+frame instance is not Rexx code (e.g. compiled native code),
+&nil; is returned.
 </para>
 </section>
 
@@ -7779,7 +7711,7 @@ nil object (.nil) is returned.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/stackframe_makestring.svg" scale="50" />
+<imagedata fileref="images/classes/stackframe_makestring.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -7796,7 +7728,7 @@ nil object (.nil) is returned.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/stackframe_name.svg" scale="50" />
+<imagedata fileref="images/classes/stackframe_name.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -7840,7 +7772,7 @@ is the name of the file containing the program.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/stackframe_string.svg" scale="50" />
+<imagedata fileref="images/classes/stackframe_string.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -7857,12 +7789,15 @@ is the name of the file containing the program.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/stackframe_target.svg" scale="50" />
+<imagedata fileref="images/classes/stackframe_target.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>If the StackFrame instance is a method invocation, target returns the object that the method was
-invoked against.  Return the nil object (.nil) for all other StackFrame types.
+<para>Returns the object the method was invoked against, if the
+StackFrame type is <option>METHOD</option>.
+Returns &nil; for all other StackFrame types.
+</para>
+<para>See also <xref linkend="mthStackFrameType" xrefstyle="select:title"/>.
 </para>
 </section>
 
@@ -7875,7 +7810,7 @@ invoked against.  Return the nil object (.nil) for all other StackFrame types.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/stackframe_traceline.svg" scale="50" />
+<imagedata fileref="images/classes/stackframe_traceline.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -7894,7 +7829,7 @@ the trace back will identify the method or routine belonging to the stack frame.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/stackframe_type.svg" scale="50" />
+<imagedata fileref="images/classes/stackframe_type.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -7943,33 +7878,32 @@ are:
 <title>StackFrame class &mdash; type method
 <indexterm><primary>examples</primary><secondary>type method</secondary></indexterm>
 </title>
-<programlisting><![CDATA[interpret "call Level2" 21
+<programlisting><![CDATA[interpret "call level2" 21
 
-::routine Level2
-call Level3 31, 32
-return
+::routine level2
+  call level3 31, 32
+  return
 
-Level3: procedure
-.Level4~new~Level5(51, 52, 53)
-return
+  level3: procedure
+    signal on syntax
+    .Method~new("", "~~")
+    return
 
-::class Level4
-::method Level5
-forward message (Level6)
-
-::method Level6
-do f over .context~stackFrames
-  say (f~type f~name"("f~arguments~makeString(, ",")")")~left(27) f~line":" f~traceLine~strip
-end
+    syntax:
+    say condition("o")~class~id
+    do f over condition("o")["STACKFRAMES"]
+      say (f~type f~name"("f~arguments~makeString(, ",")")")~left(27) f~line":" -
+       f~traceLine~strip
+    end
 ]]></programlisting></example>
 may output
 <programlisting>
-METHOD LEVEL6(51,52,53)     16: 16 *-*   do f over .context~stackFrames
-METHOD LEVEL5(51,52,53)     13: 13 *-* forward message (Level6)
-INTERNALCALL LEVEL3(31,32)  8: 8 *-*   .Level4~new~Level5(51, 52, 53)
-ROUTINE LEVEL2(21)          4: 4 *-* call Level3 31, 32
-INTERPRET ()                1: 1 *-*   call Level2 21
-PROGRAM C:\stackFrame.rex() 1: 1 *-* interpret 'call Level2' 21
+COMPILE ()                  1: 1 *-* ~~
+METHOD NEW(,~~)             The NIL object: *-* Compiled method "NEW" with scope "Method".
+INTERNALCALL LEVEL3(31,32)  9: 9 *-*   .Method~new("", "~~")
+ROUTINE LEVEL2(21)          4: 4 *-* call level3 31, 32
+INTERPRET ()                1: 1 *-*   call level2 21
+PROGRAM C:\stackFrame.rex() 1: 1 *-* interpret "call level2" 21
 </programlisting></para>
 </section>
 </section>
@@ -8030,14 +7964,14 @@ PROGRAM C:\stackFrame.rex() 1: 1 *-* interpret 'call Level2' 21
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/streamsupplier_available.svg" scale="50" />
+<imagedata fileref="images/classes/streamsupplier_available.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>Returns <computeroutput>1</computeroutput> (true) if an item is available
+<para>Returns &true; if an item is available
 from the supplier (that is, if the
 <emphasis role="bold">item</emphasis> method would return a value). It returns
-<computeroutput>0</computeroutput> (false) if the collection is empty or the
+&false; if the collection is empty or the
 supplier has already enumerated the entire collection.</para>
 </section>
 
@@ -8050,14 +7984,14 @@ supplier has already enumerated the entire collection.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/streamsupplier_index.svg" scale="50" />
+<imagedata fileref="images/classes/streamsupplier_index.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Returns the index of the current
 item in the collection. If no item is available, that is, if
 <emphasis role="bold">available</emphasis> would
-return false, the supplier raises an error.</para>
+return &false;, the supplier raises an error.</para>
 </section>
 
 <section id="mthStreamSupplierInit"><title>init</title>
@@ -8069,7 +8003,7 @@ return false, the supplier raises an error.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/streamsupplier_init.svg" scale="50" />
+<imagedata fileref="images/classes/streamsupplier_init.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -8085,13 +8019,13 @@ return false, the supplier raises an error.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/streamsupplier_item.svg" scale="50" />
+<imagedata fileref="images/classes/streamsupplier_item.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Returns the current item in the collection. If no item is available, that
 is, if <emphasis role="bold">available</emphasis>
-would return false, the supplier raises an error.
+would return &false;, the supplier raises an error.
 </para>
 </section>
 
@@ -8104,17 +8038,17 @@ would return false, the supplier raises an error.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/streamsupplier_next.svg" scale="50" />
+<imagedata fileref="images/classes/streamsupplier_next.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Moves to the next item in the collection.
 By repeatedly sending <emphasis role="bold">next</emphasis>
 to the supplier (as long as <emphasis role="bold">available</emphasis>
-returns true),
+returns &true;),
 you can enumerate all items in the collection. If no item is available, that
 is, if <emphasis role="bold">available</emphasis>
-would return false, the supplier raises an error.
+would return &false;, the supplier raises an error.
 </para>
 </section>
 </section>
@@ -8172,7 +8106,7 @@ results are not affected by later changes to the source collection object.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/supplier_new.svg" scale="50" />
+<imagedata fileref="images/classes/supplier_new.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -8188,7 +8122,7 @@ returning elements of the values array in response to
 elements of the indexes array in response to
 <emphasis role="bold">index</emphasis> messages. The supplier
 iterates for the number of items contained in the values array, returning
-the Nil object for any nonexistent items in either array.</para>
+&nil; for any nonexistent items in either array.</para>
 </section>
 
 <section id="mthSupplierAllIndexes"><title>allIndexes</title>
@@ -8200,14 +8134,14 @@ the Nil object for any nonexistent items in either array.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/supplier_allindexes.svg" scale="50" />
+<imagedata fileref="images/classes/supplier_allindexes.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Returns an array of all index values from the current supplier position to the end of the
 supplier.  Once <emphasis role="bold">allIndexes</emphasis> is called, no
 additional items can be retrieved from the supplier.  Calls to <emphasis role="bold">available</emphasis>
-will return "0" (false).</para>
+will return &false;.</para>
 </section>
 
 <section id="mthSupplierAllItems"><title>allItems</title>
@@ -8219,14 +8153,14 @@ will return "0" (false).</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/supplier_allitems.svg" scale="50" />
+<imagedata fileref="images/classes/supplier_allitems.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Returns an array of all items from the current supplier position to the end of the
 supplier.  Once <emphasis role="bold">allItems</emphasis> is called, no
 additional items can be retrieved from the supplier.  Calls to <emphasis role="bold">available</emphasis>
-will return "0" (false).</para>
+will return &false;.</para>
 </section>
 
 <section id="mthSupplierAvailable"><title>available</title>
@@ -8238,14 +8172,14 @@ will return "0" (false).</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/supplier_available.svg" scale="50" />
+<imagedata fileref="images/classes/supplier_available.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>Returns <computeroutput>1</computeroutput> (true) if an item is available
+<para>Returns &true; if an item is available
 from the supplier (that is, if the
 <emphasis role="bold">item</emphasis> method would return a value). It returns
-<computeroutput>0</computeroutput> (false) if the collection is empty or the
+&false; if the collection is empty or the
 supplier has already enumerated the entire collection.</para>
 </section>
 
@@ -8258,14 +8192,14 @@ supplier has already enumerated the entire collection.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/supplier_index.svg" scale="50" />
+<imagedata fileref="images/classes/supplier_index.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Returns the index of the current
 item in the collection. If no item is available, that is, if
 <emphasis role="bold">available</emphasis> would
-return false, the supplier raises an error.</para>
+return &false;, the supplier raises an error.</para>
 </section>
 
 <!-- see new()
@@ -8278,7 +8212,7 @@ return false, the supplier raises an error.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/supplier_init.svg" scale="50" />
+<imagedata fileref="images/classes/supplier_init.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -8295,13 +8229,13 @@ return false, the supplier raises an error.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/supplier_item.svg" scale="50" />
+<imagedata fileref="images/classes/supplier_item.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Returns the current item in the collection. If no item is available, that
 is, if <emphasis role="bold">available</emphasis>
-would return false, the supplier raises an error.
+would return &false;, the supplier raises an error.
 </para>
 </section>
 
@@ -8314,17 +8248,17 @@ would return false, the supplier raises an error.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/supplier_next.svg" scale="50" />
+<imagedata fileref="images/classes/supplier_next.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Moves to the next item in the collection.
 By repeatedly sending <emphasis role="bold">next</emphasis>
 to the supplier (as long as <emphasis role="bold">available</emphasis>
-returns true),
+returns &true;),
 you can enumerate all items in the collection. If no item is available, that
 is, if <emphasis role="bold">available</emphasis>
-would return false, the supplier raises an error.
+would return &false;, the supplier raises an error.
 </para>
 </section>
 
@@ -8363,7 +8297,7 @@ end
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/supplier_supplier.svg" scale="50" />
+<imagedata fileref="images/classes/supplier_supplier.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -8427,12 +8361,12 @@ notification target.
 </title>
 <para>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/ticker_attachment.svg" scale="50"/>
+<imagedata fileref="images/classes/ticker_attachment.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
 
 <para>Returns the object that has been attached to the Ticker instance upon creation.
-Returns .nil if no object is attached.
+Returns &nil; if no object is attached.
 </para>
 <para>See method <xref linkend="mthTickerInit" xrefstyle="select:title"/>.
 </para>
@@ -8459,7 +8393,7 @@ eachSecond~cancel
 </title>
 <para>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/ticker_cancel.svg" scale="50"/>
+<imagedata fileref="images/classes/ticker_cancel.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
 <para>Cancels the Ticker represented by the receiver.
@@ -8490,11 +8424,11 @@ twiceASecond~cancel                    -- "ticker cancelled"
 </title>
 <para>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/ticker_canceled.svg" scale="50"/>
+<imagedata fileref="images/classes/ticker_canceled.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
-<para>Returns .true if the ticker has been cancelled.
-Returns .false otherwise.
+<para>Returns &true; if the ticker has been cancelled.
+Returns &false; otherwise.
 </para>
 <para>See also method <xref linkend="mthTickerCancel" xrefstyle="select:title"/>.
 </para>
@@ -8519,7 +8453,7 @@ say "Ticker" tick~cancelled~?("cancelled", "not cancelled")  -- Ticker cancelled
 </title>
 <para>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/ticker_init.svg" scale="50"/>
+<imagedata fileref="images/classes/ticker_init.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
 
@@ -8619,7 +8553,7 @@ during a long-running task.
 </title>
 <para>
 <mediaobject><imageobject>
-<imagedata fileref="images/classes/ticker_interval.svg" scale="50"/>
+<imagedata fileref="images/classes/ticker_interval.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
 <para>Returns a <xref linkend="clsTimeSpan" xrefstyle="template:TimeSpan"/>
@@ -8730,7 +8664,7 @@ operations between TimeSpan objects.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/timespan_fromdays.svg" scale="50" />
+<imagedata fileref="images/classes/timespan_fromdays.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -8748,7 +8682,7 @@ The <emphasis role="italic">days</emphasis> argument must be a valid Rexx number
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/timespan_fromhours.svg" scale="50" />
+<imagedata fileref="images/classes/timespan_fromhours.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -8766,7 +8700,7 @@ The <emphasis role="italic">hours</emphasis> argument must be a valid Rexx numbe
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/timespan_fromminutes.svg" scale="50" />
+<imagedata fileref="images/classes/timespan_fromminutes.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -8784,7 +8718,7 @@ The <emphasis role="italic">minutes</emphasis> argument must be a valid Rexx num
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/timespan_fromseconds.svg" scale="50" />
+<imagedata fileref="images/classes/timespan_fromseconds.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -8802,7 +8736,7 @@ The <emphasis role="italic">seconds</emphasis> argument must be a valid Rexx num
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/timespan_frommicroseconds.svg" scale="50" />
+<imagedata fileref="images/classes/timespan_frommicroseconds.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -8820,12 +8754,12 @@ The <emphasis role="italic">microseconds</emphasis> argument must be a valid Rex
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/timespan_fromnormaltime.svg" scale="50" />
+<imagedata fileref="images/classes/timespan_fromnormaltime.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Creates a TimeSpan object from a string returned by the Normal option
-of the Time() (<xref linkend="bifTime" />) built-in function.
+of the <xref linkend="bifTime" xrefstyle="select:title"/> built-in function.
 The TimeSpan will contain an interval equal to the time of day represented by the string.
 </para>
 </section>
@@ -8839,12 +8773,12 @@ The TimeSpan will contain an interval equal to the time of day represented by th
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/timespan_fromciviltime.svg" scale="50" />
+<imagedata fileref="images/classes/timespan_fromciviltime.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Creates a TimeSpan object from a string returned by the Civil option
-of the Time() (<xref linkend="bifTime" />) built-in function.
+of the <xref linkend="bifTime" xrefstyle="select:title"/> built-in function.
 The TimeSpan will contain an interval equal to the time of day represented by the string.
 </para>
 </section>
@@ -8858,12 +8792,12 @@ The TimeSpan will contain an interval equal to the time of day represented by th
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/timespan_fromlongtime.svg" scale="50" />
+<imagedata fileref="images/classes/timespan_fromlongtime.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Creates a TimeSpan object from a string returned by the Long option
-of the Time() (<xref linkend="bifTime" />) built-in function.
+of the <xref linkend="bifTime" xrefstyle="select:title"/> built-in function.
 The TimeSpan will contain an interval equal to the time of day represented by the string.
 </para>
 </section>
@@ -8877,7 +8811,7 @@ The TimeSpan will contain an interval equal to the time of day represented by th
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/timespan_fromstringformat.svg" scale="50" />
+<imagedata fileref="images/classes/timespan_fromstringformat.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -8894,7 +8828,7 @@ The TimeSpan will contain an interval equal to the time of day represented by th
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/timespan_init.svg" scale="50" />
+<imagedata fileref="images/classes/timespan_init.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -8914,17 +8848,10 @@ component.  For example, <emphasis role="italic">hours</emphasis> must be in the
 </para>
 <example>
 <title>TimeSpan class</title>
-<programlisting>
-<![CDATA[
-                         -- initializes to 15 hours, 37 minutes and 30 seconds
-                         -- (15:37:30.000000)
-span = .TimeSpan~new(time('F', "15:37:30", "N))
-                         -- also initializes to 15:37:30.000000
-span = .TimeSpan~new(15, 37, 30)
-                         -- initializes to 6.04:33:15.000100
-span = .TimeSpan~new(6, 4, 33, 15, 100)
-]]>
-</programlisting>
+<programlisting><![CDATA[span = .TimeSpan~new(time('F', "15:37:30", "N"))  -- 15:37:30.000000                    
+span = .TimeSpan~new(15, 37, 30)                  -- 15:37:30.000000                        
+span = .TimeSpan~new(6, 4, 33, 15, 100)           -- 6.04:33:15.000100
+]]></programlisting>
 </example>
 </section>
 
@@ -8935,7 +8862,7 @@ span = .TimeSpan~new(6, 4, 33, 15, 100)
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/timespan_arithmeticoperator.svg" scale="50" />
+<imagedata fileref="images/classes/timespan_arithmeticoperator.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -8952,7 +8879,7 @@ The
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1">
 <tgroup cols="2">
 <colspec colnum="1" colwidth="1*" />
-<colspec colnum="2" colwidth="4*" />
+<colspec colnum="2" colwidth="5*" />
 <tbody>
 <row><entry>+
 <indexterm><primary>+ method</primary></indexterm>
@@ -9075,7 +9002,7 @@ say t1 t2 (t1 + t2)
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/timespan_compareto.svg" scale="50" />
+<imagedata fileref="images/classes/timespan_compareto.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -9093,7 +9020,7 @@ smaller than the receiving object.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/timespan_duration.svg" scale="50" />
+<imagedata fileref="images/classes/timespan_duration.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -9110,7 +9037,7 @@ smaller than the receiving object.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/timespan_days.svg" scale="50" />
+<imagedata fileref="images/classes/timespan_days.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -9127,7 +9054,7 @@ smaller than the receiving object.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/timespan_hours.svg" scale="50" />
+<imagedata fileref="images/classes/timespan_hours.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -9144,7 +9071,7 @@ smaller than the receiving object.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/timespan_minutes.svg" scale="50" />
+<imagedata fileref="images/classes/timespan_minutes.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -9161,7 +9088,7 @@ smaller than the receiving object.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/timespan_seconds.svg" scale="50" />
+<imagedata fileref="images/classes/timespan_seconds.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -9178,7 +9105,7 @@ smaller than the receiving object.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/timespan_microseconds.svg" scale="50" />
+<imagedata fileref="images/classes/timespan_microseconds.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -9195,7 +9122,7 @@ smaller than the receiving object.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/timespan_totaldays.svg" scale="50" />
+<imagedata fileref="images/classes/timespan_totaldays.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -9213,7 +9140,7 @@ fractional part and retains the sign of the receiver TimeSpan.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/timespan_totalhours.svg" scale="50" />
+<imagedata fileref="images/classes/timespan_totalhours.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -9231,7 +9158,7 @@ fractional part and retains the sign of the receiver TimeSpan.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/timespan_totalminutes.svg" scale="50" />
+<imagedata fileref="images/classes/timespan_totalminutes.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -9249,7 +9176,7 @@ fractional part and retains the sign of the receiver TimeSpan.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/timespan_totalseconds.svg" scale="50" />
+<imagedata fileref="images/classes/timespan_totalseconds.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -9267,7 +9194,7 @@ fractional part and retains the sign of the receiver TimeSpan.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/timespan_totalmicroseconds.svg" scale="50" />
+<imagedata fileref="images/classes/timespan_totalmicroseconds.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -9285,7 +9212,7 @@ retains the sign of the receiver TimeSpan.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/timespan_hashcode.svg" scale="50" />
+<imagedata fileref="images/classes/timespan_hashcode.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -9303,7 +9230,7 @@ such as Table, Relation, Set, Bag, and Directory.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/timespan_addweeks.svg" scale="50" />
+<imagedata fileref="images/classes/timespan_addweeks.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -9325,7 +9252,7 @@ result in week being subtracted from the TimeSpan value.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/timespan_adddays.svg" scale="50" />
+<imagedata fileref="images/classes/timespan_adddays.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -9347,7 +9274,7 @@ result in days being subtracted from the TimeSpan value.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/timespan_addhours.svg" scale="50" />
+<imagedata fileref="images/classes/timespan_addhours.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -9369,7 +9296,7 @@ result in hours being subtracted from the TimeSpan value.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/timespan_addminutes.svg" scale="50" />
+<imagedata fileref="images/classes/timespan_addminutes.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -9391,7 +9318,7 @@ result in minutes being subtracted from the TimeSpan value.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/timespan_addseconds.svg" scale="50" />
+<imagedata fileref="images/classes/timespan_addseconds.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -9413,7 +9340,7 @@ result in seconds being subtracted from the TimeSpan value.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/timespan_addmicroseconds.svg" scale="50" />
+<imagedata fileref="images/classes/timespan_addmicroseconds.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -9434,7 +9361,7 @@ result in microseconds being subtracted from the TimeSpan value.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/timespan_sign.svg" scale="50" />
+<imagedata fileref="images/classes/timespan_sign.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -9452,7 +9379,7 @@ TimeSpan duration is zero.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/timespan_string.svg" scale="50" />
+<imagedata fileref="images/classes/timespan_string.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -9474,7 +9401,7 @@ object.  A non-pinning reference does not prevent an object from getting garbage
 collected or having its uninit method run when there are no longer normal
 references maintained to the object.  Once the referenced object is eligible for
 garbage collection, the reference inside the WeakReference instance will be
-cleared and the VALUE method will return .nil on all subsequent calls.
+cleared and the VALUE method will return &nil; on all subsequent calls.
 WeakReferences are useful for maintaining caches of objects without preventing
 the objects from being reclaimed by the garbage collector when needed.</para>
 
@@ -9511,7 +9438,7 @@ the objects from being reclaimed by the garbage collector when needed.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/weakreference_new.svg" scale="50" />
+<imagedata fileref="images/classes/weakreference_new.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -9528,12 +9455,12 @@ the objects from being reclaimed by the garbage collector when needed.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/weakreference_value.svg" scale="50" />
+<imagedata fileref="images/classes/weakreference_value.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>This method returns the referenced object.  If the object has been garbage
-collected, then the Nil object is returned.
+collected, then &nil; is returned.
 </para>
 </section>
 </section>

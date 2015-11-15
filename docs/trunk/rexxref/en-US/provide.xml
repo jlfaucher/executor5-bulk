@@ -562,16 +562,19 @@ forward to(target) message(name) arguments(arguments)
 <para>You can change the usual search order for methods by: </para>
 <orderedlist>
 <listitem><para>Ensuring that the receiver object is the sender object.
-(You usually do this by specifying the special variable SELF, see <xref linkend="xself" />).
+(You usually do this by specifying the special variable
+<xref linkend="xself" xrefstyle="template:SELF"/>).
 </para></listitem>
 <listitem><para>Specifying a colon and a class symbol after the message name.
 The class symbol can be a variable name or an environment symbol. It identifies
 the class object to be used as the starting point for the method search.</para>
 <para>The class object must be a superclass of the class defining the active
-method, or, if you used SETMETHOD to define the active method, the object's own
-class. The class symbol is usually the special variable SUPER
-(see <xref linkend="xsuper" />) but it can be any environment
-symbol or variable name whose value is a valid class.</para></listitem>
+method, or, if you used <methodname>setMethod</methodname> to define the
+active method, the object's own class.
+The class symbol is usually the special variable
+<xref linkend="xsuper" xrefstyle="template:SUPER"/>) or an
+but it can be any <xref linkend="ensym" xrefstyle="template:environment symbol"/>
+or variable name whose value is a valid class.</para></listitem>
 </orderedlist>
 <para>Suppose you create an Account class that is a subclass of the Object
 class, define a TYPE method for the Account class, and create the Savings class
@@ -784,7 +787,7 @@ is not being trapped, the language processor sends a STRING message to the
 object to obtain its readable string representation (see the STRING method
 of the Object class STRING <xref linkend="mthObjectString" />) and uses this string.
 </para>
-<para>When comparing a string object with the Nil object, if
+<para>When comparing a string object with &nil;, if
 the NOSTRING condition is being trapped, then</para>
 <programlisting>
 if string = .nil
@@ -793,10 +796,10 @@ if string = .nil
 <programlisting>
 if .nil = string
 </programlisting>
-<para>will not as the Nil object's "=" method does not expect
+<para>will not as the NIL object's "=" method does not expect
 a string as an argument.</para>
 <example>
-<title>Comparing to the .NIL object</title>
+<title>Comparing to the .nil object</title>
 <programlisting>
 d = .directory~new
 say substr(d,5,7)         /* Produces "rectory" from "a Directory" */
@@ -807,7 +810,7 @@ say substr(d~string,3,6)  /* Displays "Direct" */
 </example>
 <para>For arguments to Rexx object methods, different rules apply. When a
 method expects a string as an argument, the argument object is sent the
-REQUEST("STRING") message. If REQUEST returns the Nil object, then the
+REQUEST("STRING") message. If REQUEST returns &nil;, then the
 method raises an error.</para>
 </section>
 
