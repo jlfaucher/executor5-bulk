@@ -47,9 +47,9 @@
 <indexterm><primary>Collection classes</primary></indexterm>
 <para>A collection is an object that contains a number of
 <emphasis role="italic">items</emphasis>, which can be any objects. Every item
-stored in a ooRexx collection has an associated <emphasis role="italic">index</emphasis> that you can use to
+stored in a Rexx collection has an associated <emphasis role="italic">index</emphasis> that you can use to
 retrieve the item from the collection with the <methodname>at</methodname> or <methodname>[]</methodname> methods.</para>
-<para>Each collection defines its own acceptable index types.  ooRexx provides the
+<para>Each collection defines its own acceptable index types.  Rexx provides the
 following collection classes:</para>
 
 <variablelist>
@@ -169,11 +169,11 @@ the organization of the classes.</para>
 <indexterm><primary>Collection class</primary></indexterm>
 <para>The Collection class is a MIXIN class that defines the basic set of
 methods implemented by all Collections.  Many of the Collection class methods
-are abstract and must be implemented the inheriting subclasses.
+are abstract and must be implemented by the inheriting subclasses.
 </para>
 
 <!-- $GENERATED-20150704-START rexxrefClassTable(Collection) -->
-<table id="ooRexxCollectionClass" frame="all" pgwide="0">
+<table id="ooRexxCollectionClass" frame="all" pgwide="1">
 <title>Collection Class</title>
 <tgroup cols="1">
 <tbody>
@@ -228,8 +228,8 @@ are abstract and must be implemented the inheriting subclasses.
 <emphasis role="italic">index</emphasis> or
 <emphasis role="italic">index</emphasis>es. If the collection has no item associated
 with the specified <emphasis role="italic">index</emphasis> or
-<emphasis role="italic">index</emphasis>es, this method returns the
-Nil object.  This is an abstract method that must be implemented by a
+<emphasis role="italic">index</emphasis>es, this method returns &nil;.
+This is an abstract method that must be implemented by a
 subclasses.
 </para>
 </section>
@@ -304,8 +304,7 @@ This is an abstract method that must be implemented by subclasses.</para>
 <emphasis role="italic">index</emphasis> or
 <emphasis role="italic">index</emphasis>es. If the collection has no item associated
 with the specified <emphasis role="italic">index</emphasis> or
-<emphasis role="italic">index</emphasis>es, this method returns the
-Nil object.
+<emphasis role="italic">index</emphasis>es, this method returns &nil;.
 This is an abstract method that must be implemented by subclasses.</para>
 </section>
 
@@ -544,8 +543,8 @@ index values in the receiver collection.</para>
 </imageobject>
 </mediaobject>
 
-<para>Returns a Supplier object (<xref linkend="clsSupplier" />) for the
-collection. The supplier allows you to enumerate through the index/item pairs
+<para>Returns a <xref linkend="clsSupplier" xrefstyle="template:Supplier"/> object for the collection.
+The supplier allows you to enumerate through the index/item pairs
 for the collection.  The supplier is created from a snapshot of the collection
 and is unaffected by subsequent changes to the collection's contents.
 </para>
@@ -612,7 +611,7 @@ object to a value.
 <para>This class is defined as a mixin class.</para>
 
 <!-- $GENERATED-20150704-START rexxrefClassTable(MapCollection) -->
-<table id="ooRexxMapCollectionClass" frame="all" pgwide="0">
+<table id="ooRexxMapCollectionClass" frame="all" pgwide="1">
 <title>MapCollection Class</title>
 <tgroup cols="1">
 <tbody>
@@ -725,7 +724,7 @@ such as an array or a list.
 <para>This class is defined as a mixin class.</para>
 
 <!-- $GENERATED-20150704-START rexxrefClassTable(OrderedCollection) -->
-<table id="ooRexxOrderedCollectionClass" frame="all" pgwide="0">
+<table id="ooRexxOrderedCollectionClass" frame="all" pgwide="1">
 <title>OrderedCollection Class</title>
 <tgroup cols="1">
 <tbody>
@@ -1196,7 +1195,7 @@ constrain the index and item to be be the same object.</para>
 <para>This class is defined as a mixin class.</para>
 
 <!-- $GENERATED-20150924-START rexxrefClassTable(SetCollection) -->
-<table id="ooRexxSetCollectionClass" frame="all" pgwide="0">
+<table id="ooRexxSetCollectionClass" frame="all" pgwide="1">
 <title>SetCollection Class</title>
 <tgroup cols="1">
 <tbody>
@@ -1234,12 +1233,11 @@ that are positive whole numbers. You can reference array items by using one
 or more indexes. The number of indexes is the same as the number of dimensions
 of the array. This number is called the dimensionality of the array.</para>
 <para>Array items can be any valid Rexx object. If an object has not been
-assigned to an array index then that index is considered to contain the NIL
-object.
+assigned to an array index then that index is considered to contain &nil;.
 </para>
 
 <!-- $GENERATED-20150924-START rexxrefClassTable(Array) -->
-<table id="ooRexxArrayClass" frame="all" pgwide="0">
+<table id="ooRexxArrayClass" frame="all" pgwide="1">
 <title>Array Class</title>
 <tgroup cols="1">
 <tbody>
@@ -1319,7 +1317,6 @@ whole-number indexes to reference items in an array.</para>
 <para id="paraArrayIndex">
   For any array method that takes an index, the index may be specified as either individual arguments or
   as an array of indexes.  For example, the following are equivalent:
-</para>
 <example id="ex.Array-indexes">
 <title>Array class &mdash; [] method</title>
 <programlisting>
@@ -1328,7 +1325,8 @@ whole-number indexes to reference items in an array.</para>
     x = myarray[index]   -- also retrieves from "1,2,3"
 </programlisting>
 </example>
-<para>Methods such as index() (<xref linkend="mthArrayIndex" />) that return
+</para>
+<para>Methods such as <xref linkend="mthArrayIndex" xrefstyle="select:title"/> that return
 index items will return a single numeric value for single-dimension arrays and
 an array of indexes for multi-dimension arrays.</para>
 
@@ -1418,11 +1416,11 @@ end
 </imageobject>
 </mediaobject>
 
-<para>Returns the same value as the at() (<xref linkend="mthArrayAt" />)
+<para>Returns the same value as the <xref linkend="mthArrayAt" xrefstyle="select:title"/>
 method.</para>
 <para>
-  Note that the index (<xref linkend="paraArrayIndex" /> argument may also be specified as an array of
-  indexes.
+  Note that the <emphasis role="italic">index</emphasis> argument may
+  also be specified as an array of indexes.
 </para>
 </section>
 
@@ -1439,11 +1437,11 @@ method.</para>
 </imageobject>
 </mediaobject>
 
-<para>This method is the same as the put() (<xref linkend="mthArrayPut" />)
+<para>This method is the same as the <xref linkend="mthArrayPut" xrefstyle="select:title"/>
 method.</para>
 <para>
-  Note that the index argument may also be specified as an array of
-  indexes.
+  Note that the <emphasis role="italic">index</emphasis> argument may
+  also be specified as an array of indexes.
 </para>
 </section>
 
@@ -1563,11 +1561,11 @@ arrays.
 <emphasis role="italic">index</emphasis> or
 <emphasis role="italic">index</emphasis>es. If the array has no item associated
 with the specified <emphasis role="italic">index</emphasis> or
-<emphasis role="italic">index</emphasis>es, this method returns the
-Nil object.</para>
+<emphasis role="italic">index</emphasis>es, this method returns &nil;.
+</para>
 <para>
-  Note that the index argument may also be specified as an array of
-  indexes.
+  Note that the <emphasis role="italic">index</emphasis> argument may
+  also be specified as an array of indexes.
 </para>
 <indexterm><primary>examples</primary>
 <secondary>at method</secondary></indexterm>
@@ -1811,8 +1809,8 @@ say a~first  -- says: 2
 an item associated with the specified index or indexes. Returns
 &false; otherwise.</para>
 <para>
-  Note that the index argument may also be specified as an array of
-  indexes.
+  Note that the <emphasis role="italic">index</emphasis> argument may
+  also be specified as an array of indexes.
 </para>
 <indexterm><primary>examples</primary>
 <secondary>hasIndex method</secondary></indexterm>
@@ -2099,8 +2097,9 @@ element in the array. The line format is the default. If the line format is use,
 a <emphasis role="italic">separator</emphasis> string can be specified. The
 separator will be used between concatenated elements instead of the default line
 end separator.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
-<para>See <xref linkend="mthArrayToString" /> for examples.</para>
+<para>See method
+<xref linkend="mthArrayToString" xrefstyle="select:title"/> for examples.
+</para>
 </section>
 
 <section id="mthArrayNext"><title>next</title>
@@ -2119,12 +2118,12 @@ end separator.</para>
 <para>Returns the index of the item that
 follows the array item having index <emphasis role="italic">index</emphasis>
 or returns &nil; if the item having that index is last in the array.
-For multi-dimension arrays, the same ordering used by the allitems() (<xref linkend="mthArrayAllItems" />) method is used to
+For multi-dimension arrays, the same ordering used by the <xref linkend="mthArrayAllItems" xrefstyle="select:title"/> method is used to
 determine the next position and the index is returned as an array of index values.
 </para>
 <para>
-  Note that the index argument may also be specified as an array of
-  indexes.
+  Note that the <emphasis role="italic">index</emphasis> argument may
+  also be specified as an array of indexes.
 </para>
 <indexterm><primary>examples</primary>
 <secondary>next method</secondary></indexterm>
@@ -2154,11 +2153,11 @@ say a~next(3)  -- says: 5
 <emphasis role="italic">index</emphasis> or &nil; if the
 item having that index is first in the
 array.
-For multi-dimension arrays, the same ordering used by the allitems() (<xref linkend="mthArrayAllItems" />) method is used to
+For multi-dimension arrays, the same ordering used by the <xref linkend="mthArrayAllItems" xrefstyle="select:title"/> method is used to
 determine the previous position and the index is returned as an array of index values.</para>
 <para>
-  Note that the index argument may also be specified as an array of
-  indexes.
+  Note that the <emphasis role="italic">index</emphasis> argument may
+  also be specified as an array of indexes.
 </para>
 <indexterm><primary>examples</primary>
 <secondary>previous method</secondary></indexterm>
@@ -2195,10 +2194,9 @@ with the new item. If the <emphasis role="italic">index</emphasis> for a
 particular dimension is greater than the current size of
 that dimension, the array is expanded to the new dimension size.</para>
 <para>
-  Note that the index argument may also be specified as an array of
-  indexes.
+  Note that the <emphasis role="italic">index</emphasis> argument may
+  also be specified as an array of indexes.
 </para>
-<para><emphasis role="bold">Examples:</emphasis></para>
 <indexterm><primary>examples</primary>
 <secondary>put method</secondary></indexterm>
 <example id="ex.Array-put">
@@ -2245,8 +2243,8 @@ the array is unchanged and no other indexes of the array are modified with the
 removal.
 </para>
 <para>
-Note that the index argument may also be specified as an array of
-indexes.
+  Note that the <emphasis role="italic">index</emphasis> argument may
+  also be specified as an array of indexes.
 </para>
 <indexterm><primary>examples</primary>
 <secondary>remove method</secondary></indexterm>
@@ -2311,11 +2309,11 @@ this number of items (or the number of subsequent items in the receiver array,
 if this is less than <emphasis role="italic">items</emphasis>).
 If you do not specify <emphasis role="italic">items</emphasis>,
 the new array contains all subsequent items of the receiver array. The receiver
-array remains unchanged. The section() method is valid only for single-index
+array remains unchanged. The <methodname>section</methodname> method is valid only for single-index
 arrays.</para>
 <para>
-  Note that the <emphasis role="italic">start</emphasis> argument, (the
-  index argument,) may also be specified as an array of indexes.
+  Note that the index argument <emphasis role="italic">start</emphasis> may
+  also be specified as an array of indexes.
 </para>
 <indexterm><primary>examples</primary>
 <secondary>section method</secondary></indexterm>
@@ -2439,8 +2437,8 @@ See <xref linkend="sortarray" /> for details.
 </imageobject>
 </mediaobject>
 
-<para>Returns a Supplier (<xref linkend="clsSupplier" />) object for the
-collection. The supplier allows you to iterate over the index/item pairs
+<para>Returns a <xref linkend="clsSupplier" xrefstyle="template:Supplier"/> object for the collection.
+The supplier allows you to iterate over the index/item pairs
 for the collection.
 The supplier enumerates the array items in their sequenced order.
 For multi-dimensional arrays, the supplier index method will return the
@@ -2516,7 +2514,7 @@ do i=1 to 4                   /* Loads the array */
 end
 </programlisting>
 </example>
-<para>You can produce the elements loaded into an array, for example: </para>
+<para>You can produce the elements loaded into an array, for example:
 <example id="ex.Array-examples2">
 <title>Array class &mdash; examples</title>
 <programlisting>
@@ -2525,6 +2523,7 @@ do i=1 to 4
 end
 </programlisting>
 </example>
+</para>
 <para>If you omit any argument values before arguments you supply, the corresponding
 indexes are skipped in the returned array: </para>
 <example id="ex.Array-examples3">
@@ -2537,7 +2536,7 @@ do i=1 to 4                                  /* Produces: North          */
 end                                          /*           West           */
 </programlisting>
 </example>
-<para>Here is an example using the ~~: </para>
+<para>Here is an example using the ~~:
 <example id="ex.Array-examples4">
 <title>Array class &mdash; examples</title>
 <programlisting>
@@ -2547,6 +2546,7 @@ do i = 1 to z~size
 end
 </programlisting>
 </example>
+</para>
 </section>
 </section>
 
@@ -2564,7 +2564,7 @@ in a bag, and the same object can be placed in a bag several times.
 
 <!-- modified: added from BagMixin class: difference, intersection, putAll, subset, union, xor (see interpreter\RexxClasses\CoreClasses.orx) -->
 <!-- $GENERATED-20150924-START rexxrefClassTable(Bag) -->
-<table id="ooRexxBagClass" frame="all" pgwide="0">
+<table id="ooRexxBagClass" frame="all" pgwide="1">
 <title>Bag Class</title>
 <tgroup cols="1">
 <tbody>
@@ -2678,7 +2678,7 @@ in a bag, and the same object can be placed in a bag several times.
 
 <para>Returns an item associated with <emphasis role="italic">index</emphasis>.
 This is the same as the
-at() (<xref linkend="mthBagAt" />) method.</para>
+<xref linkend="mthBagAt" xrefstyle="select:title"/> method.</para>
 </section>
 
 <section id="mthBagAllAt"><title>allAt</title>
@@ -2738,7 +2738,8 @@ using the == method of <emphasis role="italic">item</emphasis>.
 
 <para>Returns an array of all indexes contained in the Bag. The returned
 array will have one index for every item stored in the bag, including
-duplicates.  To retrieve the indexes without duplicates, use the uniqueIndexes (<xref linkend="mthBagUniqueIndexes" />) method.
+duplicates.  To retrieve the indexes without duplicates, use the
+<xref linkend="mthBagUniqueIndexes" xrefstyle="select:title"/> method.
 </para>
 </section>
 
@@ -2797,7 +2798,7 @@ using the == method of <emphasis role="italic">index</emphasis>.
 </mediaobject>
 
 <para>Adds an item to the Bag.  This method is the same as the
-put() (<xref linkend="mthBagPut" />) method.</para>
+<xref linkend="mthBagPut" xrefstyle="select:title"/> method.</para>
 </section>
 
 <section id="mthBagDifference"><title>difference</title>
@@ -2873,7 +2874,7 @@ using the == method of <emphasis role="italic">index</emphasis>.
 <para>Returns &true; if the bag
 contains the member item <emphasis role="italic">item</emphasis>,
 &false;.
-If <emphasis role="italic">index</emphasis> is specified, hasItem()
+If <emphasis role="italic">index</emphasis> is specified, <methodname>hasItem</methodname>
 will only return &true; if the bag contains the pairing of
 <emphasis role="italic">item</emphasis> associated with index
 <emphasis role="italic">index</emphasis>.
@@ -3138,7 +3139,7 @@ collection class object.</para>
 </imageobject>
 </mediaobject>
 
-<para>Returns a Supplier (<xref linkend="clsSupplier" />) object for the bag.
+<para>Returns a <xref linkend="clsSupplier" xrefstyle="template:Supplier"/> object for the bag.
 The supplier allows you to iterate over all index/item pairs in the bag at the time
 the supplier was created.
 The supplier enumerates the items in an unspecified order.
@@ -3247,7 +3248,7 @@ stack-like LIFO (last in, first out) order.
 </para>
 
 <!-- $GENERATED-20151104-START rexxrefClassTable(CircularQueue) -->
-<table id="ooRexxCircularQueueClass" frame="all" pgwide="0">
+<table id="ooRexxCircularQueueClass" frame="all" pgwide="1">
 <title>CircularQueue Class</title>
 <tgroup cols="1">
 <tbody>
@@ -3762,8 +3763,7 @@ the capitalized letter is needed; all characters following it are ignored.)
 </imageobject>
 </mediaobject>
 
-<para>
-Returns a Supplier (<xref linkend="clsSupplier" />) object for the collection.
+<para>Returns a <xref linkend="clsSupplier" xrefstyle="template:Supplier"/> object for the collection.
 The supplier allows you to iterate over the items that were in the queue at the
 time of the supplier's creation.
 </para>
@@ -3932,7 +3932,7 @@ items of a Directory can be any valid Rexx object.
 </para>
 
 <!-- $GENERATED-20150924-START rexxrefClassTable(Directory) -->
-<table id="ooRexxDirectoryClass" frame="all" pgwide="0">
+<table id="ooRexxDirectoryClass" frame="all" pgwide="1">
 <title>Directory Class</title>
 <tgroup cols="1">
 <tbody>
@@ -3987,15 +3987,17 @@ items of a Directory can be any valid Rexx object.
 </table>
 <!-- $GENERATED-20150924-END rexxrefClassTable(Directory) -->
 
-<para>In addition to the standard put(), []=, at(), and [] methods defined for
+<para>In addition to the standard <methodname>put</methodname>,
+<methodname>[]=</methodname>, <methodname>at</methodname>, and
+<methodname>[]</methodname> methods defined for
 Collections, Directory provides access to items using methods.  For
-example:</para>
-
+example:
 <programlisting>
 mydir = .directory~new
 mydir~name = "Mike"   -- same as mydir~put("Mike", "NAME")
 say mydir~name        -- same as say mydir['NAME']
 </programlisting>
+</para>
 
 
 <section id="mthDirectoryNew"><title>new (Class Method)</title>
@@ -4033,7 +4035,7 @@ initial allocation.
 </mediaobject>
 
 <para>Returns the item corresponding to <emphasis role="italic">name</emphasis>.
-This method is the same as the at() (<xref linkend="mthDirectoryPut" />)
+This method is the same as the <xref linkend="mthDirectoryPut" xrefstyle="select:title"/>
 method.</para>
 </section>
 
@@ -4051,7 +4053,7 @@ method.</para>
 </mediaobject>
 
 <para>Adds or replaces the entry at index <emphasis role="italic">name</emphasis>.
-This method is the same as the put() (<xref linkend="mthDirectoryPut" />)
+This method is the same as the <xref linkend="mthDirectoryPut" xrefstyle="select:title"/>
 method.
 </para>
 </section>
@@ -4070,7 +4072,7 @@ method.
 </mediaobject>
 
 <para>Returns an array of all the directory indexes, including those of all
-the setMethods (<xref linkend="mthDirectorySetMethod" />) methods.</para>
+the <xref linkend="mthDirectorySetMethod" xrefstyle="select:title"/> methods.</para>
 </section>
 
 <section id="mthDirectoryAllItems"><title>allItems</title>
@@ -4087,7 +4089,7 @@ the setMethods (<xref linkend="mthDirectorySetMethod" />) methods.</para>
 </mediaobject>
 
 <para>Returns an array of all items contained in the directory, including those
-returned by all setMethod (<xref linkend="mthDirectorySetMethod" />)
+returned by all <xref linkend="mthDirectorySetMethod" xrefstyle="select:title"/>
 methods.</para>
 </section>
 
@@ -4105,8 +4107,8 @@ methods.</para>
 </mediaobject>
 
 <para>Returns the item associated with index
-<emphasis role="italic">name</emphasis>. If a method defined using setMethod (<xref
-linkend="mthDirectorySetMethod" />) is associated with index
+<emphasis role="italic">name</emphasis>. If a method defined using
+<xref linkend="mthDirectorySetMethod" xrefstyle="select:title"/> is associated with index
 <emphasis role="italic">name</emphasis>, the result of running this method is
 returned. If the collection has no item or method associated with index
 <emphasis role="italic">name</emphasis>, &nil; is returned.
@@ -4133,7 +4135,7 @@ say .environment~at("OBJECT")   /* Produces: "The Object class" */
 </mediaobject>
 
 <para>Returns the receiving Directory with all items removed.
-<methodname>Empty</methodname> also removes all methods added using
+<methodname>empty</methodname> also removes all methods added using
 <xref linkend="mthDirectorySetMethod" xrefstyle="select:title"/>.
 </para>
 </section>
@@ -4155,9 +4157,9 @@ say .environment~at("OBJECT")   /* Produces: "The Object class" */
 <emphasis role="italic">name</emphasis> (translated to uppercase).
 If there is no such entry, <emphasis role="italic">name</emphasis>
 returns the item for any method that
-setMethod (<xref linkend="mthDirectorySetMethod" />) supplied. If there is
-neither an entry nor a method for <emphasis role="italic">name</emphasis> the
-Nil object is returned.</para>
+<xref linkend="mthDirectorySetMethod" xrefstyle="select:title"/> supplied.
+If there is neither an entry nor a method for
+<emphasis role="italic">name</emphasis>, &nil; is returned.</para>
 </section>
 
 <section id="mthDirectoryHasEntry"><title>hasEntry</title>
@@ -4232,8 +4234,8 @@ Item equality is determined by using the == method of <emphasis role="italic">it
 
 <para>Returns the index of the specified item within the directory.  If the
 target item appears at more than one index, the first located index will
-be returned.  If the directory does not contain the specified item, the Nil
-object is returned.
+be returned.  If the directory does not contain the specified item, &nil;
+is returned.
 Item equality is determined by using the == method of <emphasis role="italic">item</emphasis>.
 </para>
 </section>
@@ -4327,7 +4329,7 @@ associated with index <emphasis role="italic">name</emphasis>.</para>
 <para>Removes and returns the member item with index
 <emphasis role="italic">name</emphasis> from the directory.
 If a method is associated with
-setMethod (<xref linkend="mthDirectorySetMethod" />) for index
+<xref linkend="mthDirectorySetMethod" xrefstyle="select:title"/> for index
 <emphasis role="italic">name</emphasis>,
 the method is removed and running the method is returned. If there is no item or
 method with index
@@ -4354,12 +4356,10 @@ If there is no item or method with index
 <emphasis role="italic">name</emphasis>, &nil; is returned.
 </para>
 <para>See also
-<itemizedlist spacing="compact">
- <listitem><para>method <xref linkend="mthDirectorySetEntry" xrefstyle="select:title"/>,</para></listitem>
- <listitem><para>method <xref linkend="mthDirectorySetMethod" xrefstyle="select:title"/>,</para></listitem>
- <listitem><para>method <xref linkend="mthDirectoryHasEntry" xrefstyle="select:title"/>, and</para></listitem>
- <listitem><para>method <xref linkend="mthDirectoryEntry" xrefstyle="select:title"/>.</para></listitem>
-</itemizedlist>
+<xref linkend="mthDirectorySetEntry" xrefstyle="select:title"/>,
+<xref linkend="mthDirectorySetMethod" xrefstyle="select:title"/>,
+<xref linkend="mthDirectoryHasEntry" xrefstyle="select:title"/>, and
+<xref linkend="mthDirectoryEntry" xrefstyle="select:title"/>.
 </para>
 </section>
 
@@ -4425,19 +4425,21 @@ Thus, the object returns the result of running
 This occurs when you specify <emphasis role="italic">name</emphasis> on the at,
 entry, or remove method. This method replaces any existing item or method for
 <emphasis role="italic">name</emphasis>.</para>
-<para>You can specify the name "UNKNOWN" as
+<para>You can specify <literal>"UNKNOWN"</literal> as
 <emphasis role="italic">name</emphasis>. Doing so supplies a
-method that is run whenever an at() or entry() message specifies a name for
+method that is run whenever an <methodname>at</methodname> or <methodname>entry</methodname> message specifies a name for
 which no item or method exists in the collection. This method's first argument
 is the specified directory index. This method has no effect on the action of any
-hasEntry, hasIndex, items, remove, or supplier message sent to the collection.
+<methodname>hasEntry</methodname>, <methodname>hasIndex</methodname>,
+<methodname>items</methodname>, <methodname>remove</methodname>, or
+<methodname>supplier</methodname> message sent to the collection.
 </para>
 <para>The <emphasis role="italic">method</emphasis> can be a
 string containing a method source line instead
 of a method object. Alternatively, an array of strings containing individual
 method lines can be passed. In either case, an equivalent method object is
 created. </para>
-<para>If you omit <emphasis role="italic">method</emphasis>, setMethod() removes
+<para>If you omit <emphasis role="italic">method</emphasis>, <methodname>setMethod</methodname> removes
 the entry with the specified
 <emphasis role="italic">name</emphasis>.</para>
 </section>
@@ -4455,8 +4457,8 @@ the entry with the specified
 </imageobject>
 </mediaobject>
 
-<para>Returns a Supplier (<xref linkend="clsSupplier" />)
-object for the collection.  The supplier allows you to iterate over
+<para>Returns a <xref linkend="clsSupplier" xrefstyle="template:Supplier"/> object for the collection.
+The supplier allows you to iterate over
 the index/item pairs in the directory at the time the supplier was created.
 The supplier iterates the items in an unspecified order.
 </para>
@@ -4475,21 +4477,23 @@ The supplier iterates the items in an unspecified order.
 </imageobject>
 </mediaobject>
 
-<para>Runs either the entry (<xref linkend="mthDirectoryEntry" />) or
-setEntry (<xref linkend="mthDirectorySetEntry" />) method, depending on
-whether
-<emphasis role="italic">messagename</emphasis> ends with an equal sign. If
-<emphasis role="italic">messagename</emphasis> does not end with an
-equal sign, this method runs the entry() method, passing
+<para>Runs either the
+<xref linkend="mthDirectoryEntry" xrefstyle="select:title"/> or
+<xref linkend="mthDirectorySetEntry" xrefstyle="select:title"/> method, depending on
+whether <emphasis role="italic">messagename</emphasis> ends with an equal sign.
+</para>
+<para>If <emphasis role="italic">messagename</emphasis> does not end with an
+equal sign, this method runs the <methodname>entry</methodname> method, passing
 <emphasis role="italic">messagename</emphasis> as its argument. The <emphasis
-role="italic">messageargs</emphasis> argument is ignored. The entry() method is
-the return result.</para>
+role="italic">messageargs</emphasis> argument is ignored. The <methodname>entry</methodname> method is
+the return result.
+</para>
 <para>If <emphasis role="italic">messagename</emphasis> does end with an equal
-sign, this method runs the setEntry() method, passing the first part of
+sign, this method runs the <methodname>setEntry</methodname> method, passing the first part of
 <emphasis role="italic">messagename</emphasis> (up to, but not including, the
 final equal sign) as its first argument, and the first item in the array
 <emphasis role="italic">messageargs</emphasis> as its second argument. In this
-case, unknown() returns no result.</para>
+case, <methodname>unknown</methodname> returns no result.</para>
 </section>
 
 <section id="mthDirectoryUnsetMethod"><title>unsetMethod</title>
@@ -4580,7 +4584,7 @@ used in the collection.
 </para>
 
 <!-- $GENERATED-20150704-START rexxrefClassTable(IdentityTable) -->
-<table id="ooRexxIdentityTableClass" frame="all" pgwide="0">
+<table id="ooRexxIdentityTableClass" frame="all" pgwide="1">
 <title>IdentityTable Class</title>
 <tgroup cols="1">
 <tbody>
@@ -4670,7 +4674,7 @@ initial allocation.
 
 <para>Returns the item associated with <emphasis role="italic">index</emphasis>.
 This is the same as the
-at() (<xref linkend="mthIdentityTableAt" />) method.</para>
+<xref linkend="mthIdentityTableAt" xrefstyle="select:title"/> method.</para>
 </section>
 
 <section id="mthIdentityTablePutSet"><title>[]=</title>
@@ -4690,7 +4694,7 @@ at() (<xref linkend="mthIdentityTableAt" />) method.</para>
 <para>Adds <emphasis role="italic">item</emphasis> to the table at index
 <emphasis role="italic">index</emphasis>.
 This method is the same as the
-put() (<xref linkend="mthIdentityTablePut" />) method.</para>
+<xref linkend="mthIdentityTablePut" xrefstyle="select:title"/> method.</para>
 </section>
 
 <section id="mthIdentityTableAllIndexes"><title>allIndexes</title>
@@ -4939,7 +4943,7 @@ removed item.
 </mediaobject>
 
 
-<para>Returns a Supplier (<xref linkend="clsSupplier" />) object for the collection.
+<para>Returns a <xref linkend="clsSupplier" xrefstyle="template:Supplier"/> object for the collection.
 The supplier allows you iterate over the index/item pairs contained in the table at the
 time the supplier was created.
 The supplier iterates over the items in an unspecified order.
@@ -4952,7 +4956,7 @@ The supplier iterates over the items in an unspecified order.
 <indexterm><primary>class</primary><secondary>List class</secondary></indexterm>
 <indexterm><primary>Ordered collection classes</primary><secondary>List class</secondary></indexterm>
 <para>A list is a non-sparse sequenced collection similar to the
-Array class (<xref linkend="clsArray" />) to which you can add new items at
+<xref linkend="clsArray" xrefstyle="template:Array class"/> to which you can add new items at
 any position in the sequence. The List creates a new index value whenever an
 item is added to the list and the associated index value remains valid
 for that item regardless of other additions or removals.
@@ -4961,7 +4965,7 @@ object generates are valid i.e. the list is never a sparse list and the list
 object will not modify indexes for items in the list.</para>
 
 <!-- $GENERATED-20150704-START rexxrefClassTable(List) -->
-<table id="ooRexxListClass" frame="all" pgwide="0">
+<table id="ooRexxListClass" frame="all" pgwide="1">
 <title>List Class</title>
 <tgroup cols="1">
 <tbody>
@@ -5602,7 +5606,7 @@ remains unchanged.</para>
 </imageobject>
 </mediaobject>
 
-<para>Returns a Supplier (<xref linkend="clsSupplier" />) object for the list.
+<para>Returns a <xref linkend="clsSupplier" xrefstyle="template:Supplier"/> object for the list.
 The supplier allows you to iterate over the index/item pairs stored in the list at the
 time the supplier is created.  The iteration is in the same
 order as the list sequence order.</para>
@@ -5622,7 +5626,7 @@ are useful for processing bundles of application option values.
 </para>
 
 <!-- $GENERATED-20151006-START rexxrefClassTable(Properties) -->
-<table id="ooRexxPropertiesClass" frame="all" pgwide="0">
+<table id="ooRexxPropertiesClass" frame="all" pgwide="1">
 <title>Properties Class</title>
 <tgroup cols="1">
 <tbody>
@@ -5688,7 +5692,7 @@ are useful for processing bundles of application option values.
 <para>Loads a set of properties from <emphasis role="italic">source</emphasis> and returns them as a new Properties object.
 The load <emphasis role="italic">source</emphasis> can be either the string name of a file, a File object, or a Stream object.
 Properties are read from <emphasis role="italic">source</emphasis> as
-individual lines using linein() (<xref linkend="mthStreamLineIn" />).  Blank lines and lines with a Rexx line comment ("--")
+individual lines using <xref linkend="mthStreamLineIn" xrefstyle="select:title"/>.  Blank lines and lines with a Rexx line comment ("--")
 as the first non-blank characters are ignored.  Otherwise, the lines are assumed to be of the form "name=value" and
 are added to the receiver Properties value using name as the index for the value.
 </para>
@@ -5728,10 +5732,10 @@ initial allocation.
 </imageobject>
 </mediaobject>
 
-<para>Adds <emphasis role="bold">item</emphasis> using the index
-<emphasis role="bold">index</emphasis>.
+<para>Adds <emphasis role="italic">item</emphasis> using the index
+<emphasis role="italic">index</emphasis>.
 This method is the same as the
-put() (<xref linkend="mthPropertiesPut" />) method.</para>
+<xref linkend="mthPropertiesPut" xrefstyle="select:title"/> method.</para>
 </section>
 
 <section id="mthPropertiesGetLogical"><title>getLogical</title>
@@ -5809,7 +5813,7 @@ been specified, a syntax error is raised for missing values.</para>
 <para>Loads a set of properties into the receiving Properties object from <emphasis role="italic">source</emphasis>.
 The load <emphasis role="italic">source</emphasis> can be either the string name of a file, a File object, or a Stream object.
 Properties are read from the source as
-individual lines using linein() (<xref linkend="mthStreamLineIn" />).  Blank lines and lines with a Rexx line comment ("--")
+individual lines using <xref linkend="mthStreamLineIn" xrefstyle="select:title"/>.  Blank lines and lines with a Rexx line comment ("--")
 as the first non-blank characters are ignored.  Otherwise, the lines are assumed to be of the form "name=value" and
 are added to the receiver Properties value using name as the index for the value.
 </para>
@@ -5856,9 +5860,9 @@ associated with index <emphasis role="italic">name</emphasis>.</para>
 <para>Saves a set of properties into <emphasis role="italic">target</emphasis>.
 The save <emphasis role="italic">target</emphasis> can be either the string name of a file, a File object, or a Stream object.
 Properties are stored as
-individual lines using lineout() (<xref linkend="mthStreamLineOut" />).
+individual lines using <xref linkend="mthStreamLineOut" xrefstyle="select:title"/>.
 The lines are written in the form "name=value".  A saved Properties file can be reloaded using the Properties
-load() (<xref linkend="mthPropertiesLoad" />) method.
+<xref linkend="mthPropertiesLoad" xrefstyle="select:title"/> method.
 </para>
 </section>
 
@@ -5930,7 +5934,7 @@ of an index to its queue item. You can add items at either the tail or the
 head of the queue.</para>
 
 <!-- $GENERATED-20151006-START rexxrefClassTable(Queue) -->
-<table id="ooRexxQueueClass" frame="all" pgwide="0">
+<table id="ooRexxQueueClass" frame="all" pgwide="1">
 <title>Queue Class</title>
 <tgroup cols="1">
 <tbody>
@@ -6048,7 +6052,7 @@ initial allocation.
 
 <para>Returns the item located at index <emphasis role="italic">index</emphasis>.
 This is the same as the
-at() (<xref linkend="mthQueueAt" />) method.</para>
+<xref linkend="mthQueueAt" xrefstyle="select:title"/> method.</para>
 </section>
 
 <section id="mthQueuePutSet"><title>[]=</title>
@@ -6067,7 +6071,7 @@ at() (<xref linkend="mthQueueAt" />) method.</para>
 <para>Replaces item at <emphasis role="italic">index</emphasis> with
 <emphasis role="italic">item</emphasis>.
 This method is the same as the
-put() (<xref linkend="mthQueuePut" />) method.
+<xref linkend="mthQueuePut" xrefstyle="select:title"/> method.
 </para>
 </section>
 
@@ -6085,8 +6089,10 @@ put() (<xref linkend="mthQueuePut" />) method.
 </mediaobject>
 
 <para>Returns an array of all index values for the
-queue. For the Queue class, the indices are integers 1 -
-items (<xref linkend="mthQueueItems" />).</para>
+queue.
+</para>
+<para>For the <classname>Queue</classname> class, the indices are integers 1 - items.
+</para>
 </section>
 
 <section id="mthQueueAllItems"><title>allItems</title>
@@ -6640,7 +6646,7 @@ remains unchanged.</para>
 </imageobject>
 </mediaobject>
 
-<para>Returns a Supplier (<xref linkend="clsSupplier" />) object for the queue.
+<para>Returns a <xref linkend="clsSupplier" xrefstyle="template:Supplier"/> object for the queue.
 The supplier allows you to iterate over the index/item pair contained in the queue
 at the time the supplier was created.
 The supplier iterates the items in their queuing order, with the head of
@@ -6662,7 +6668,7 @@ a table, which can contain only one item for any index).</para>
 
 <!-- modified: added from ManyItemsMixin class: difference, intersection, subset, union, xor (see interpreter\RexxClasses\CoreClasses.orx) -->
 <!-- $GENERATED-20151005-START rexxrefClassTable(Relation) -->
-<table id="ooRexxRelationClass" frame="all" pgwide="0">
+<table id="ooRexxRelationClass" frame="all" pgwide="1">
 <title>Relation Class</title>
 <tgroup cols="1">
 <tbody>
@@ -6752,7 +6758,7 @@ a table, which can contain only one item for any index).</para>
 
 <para>Returns an item associated with <emphasis role="italic">index</emphasis>.
 This is the same as the
-at() (<xref linkend="mthRelationAt" />) method.</para>
+<xref linkend="mthRelationAt" xrefstyle="select:title"/> method.</para>
 </section>
 
 <section id="mthRelationPutSet"><title>[]=</title>
@@ -6770,7 +6776,7 @@ at() (<xref linkend="mthRelationAt" />) method.</para>
 
 <para>Adds <emphasis role="italic">item</emphasis> to the relation associated with index
 <emphasis role="italic">index</emphasis>.  This is the same as the
-put() (<xref linkend="mthRelationPut" />) method.</para>
+<xref linkend="mthRelationPut" xrefstyle="select:title"/> method.</para>
 </section>
 
 <section id="mthRelationAllAt"><title>allAt</title>
@@ -6830,7 +6836,9 @@ using the == method of <emphasis role="italic">item</emphasis>.
 
 <para>Returns an array of all indexes contained in the Relation. The returned
 array will have one index for every item stored in the relation, including
-duplicates.  To retrieve the indexes without duplicates, use the uniqueIndexes (<xref linkend="mthRelationUniqueIndexes" />) method.
+duplicates.
+To retrieve the indexes without duplicates, use the
+<xref linkend="mthRelationUniqueIndexes" xrefstyle="select:title"/> method.
 </para>
 </section>
 
@@ -6948,7 +6956,7 @@ using the == method of <emphasis role="italic">index</emphasis>.
 <para>Returns &true; if the relation
 contains the member item <emphasis role="italic">item</emphasis>,
 &false;.
-If <emphasis role="italic">index</emphasis> is specified, hasItem()
+If <emphasis role="italic">index</emphasis> is specified, <methodname>hasItem</methodname>
 will only return &true; if the relation contains the pairing of
 <emphasis role="italic">item</emphasis> associated with index
 <emphasis role="italic">index</emphasis>.
@@ -7192,7 +7200,7 @@ collection class object.</para>
 </imageobject>
 </mediaobject>
 
-<para>Returns a Supplier (<xref linkend="clsSupplier" />) object for the relation.
+<para>Returns a <xref linkend="clsSupplier" xrefstyle="template:Supplier"/> object for the relation.
 The supplier allows you to iterate over all index/item pairs in the relation at the time
 the supplier was created.
 The supplier enumerates the items in an unspecified order.
@@ -7321,7 +7329,7 @@ using the == method.
 
 <!-- modified: added from SetMixin class: intersection, putAll, subset, union, xor (see interpreter\RexxClasses\CoreClasses.orx) -->
 <!-- $GENERATED-20151005-START rexxrefClassTable(Set) -->
-<table id="ooRexxSetClass" frame="all" pgwide="0">
+<table id="ooRexxSetClass" frame="all" pgwide="1">
 <title>Set Class</title>
 <tgroup cols="1">
 <tbody>
@@ -7431,7 +7439,7 @@ using the == method.
 
 <para>Returns the item associated with <emphasis role="italic">index</emphasis>.
 This is the same as the
-at() (<xref linkend="mthSetAt" />) method.</para>
+<xref linkend="mthSetAt" xrefstyle="select:title"/> method.</para>
 </section>
 
 <section id="mthSetPutSet"><title>[]=</title>
@@ -7449,7 +7457,7 @@ at() (<xref linkend="mthSetAt" />) method.</para>
 
 <para>Add an item to the Set.
 This method is the same as the
-put() (<xref linkend="mthSetPut" />) method.</para>
+<xref linkend="mthSetPut" xrefstyle="select:title"/> method.</para>
 </section>
 
 <section id="mthSetAllIndexes"><title>allIndexes</title>
@@ -7772,7 +7780,7 @@ index values in the receiver collection.</para>
 </imageobject>
 </mediaobject>
 
-<para>Returns a Supplier (<xref linkend="clsSupplier" />) object for the collection.
+<para>Returns a <xref linkend="clsSupplier" xrefstyle="template:Supplier"/> object for the collection.
 The supplier allows you iterate over the index/item pairs contained in the table at the
 time the supplier was created.
 The supplier iterates over the items in an unspecified order.
@@ -7842,7 +7850,7 @@ index values in the receiver collection.</para>
 that are character strings.</para>
 
 <!-- $GENERATED-20151005-START rexxrefClassTable(Stem) -->
-<table id="ooRexxStemClass" frame="all" pgwide="0">
+<table id="ooRexxStemClass" frame="all" pgwide="1">
 <title>Stem Class</title>
 <tgroup cols="1">
 <tbody>
@@ -7896,13 +7904,14 @@ that are character strings.</para>
 <!-- $GENERATED-20151005-END rexxrefClassTable(Stem) -->
 
 <para>Stems are automatically created whenever a Rexx stem variable or Rexx
-compound variable is used. For example: </para>
+compound variable is used. For example:
 <example id="ex.Stem-examples1">
 <title>Stem class &mdash; examples</title>
 <programlisting>
 a.1 = 2
 </programlisting>
 </example>
+</para>
 <para>creates a new stem collection with the name <computeroutput>A.</computeroutput>
 and assigns it to the Rexx variable <computeroutput>A.</computeroutput>; it also assigns
 the value 2 to entry 1 in the collection.</para>
@@ -7921,11 +7930,11 @@ say a[1,2]     -- displays "B.1.2"
 <para>In addition to the items explicitly assigned to the
 collection indexes,
 a value may be assigned to all possible stem indexes.  The
-<computeroutput>[]=</computeroutput> method (with no index argument)
+<methodname>[]=</methodname> method (with no index argument)
 will assign the target value to all possible stem indexes.
 Following assignment, a reference to any index will return the new value until
 another value is assigned or the index is dropped.</para>
-<para>The <computeroutput>[]</computeroutput> method (with no index specified) will retrieve any
+<para>The <methodname>[]</methodname> method (with no index specified) will retrieve any
 globally assigned value.  By default, this
 returns the stem NAME value.</para>
 <para>In addition to the methods defined in the following, the Stem class removes
@@ -7979,7 +7988,7 @@ default value is returned.
 If no default value has been assigned, the stem name is returned. </para>
 
 <note><title>Note</title>
-<para>You cannot use the [] method in a DROP or PROCEDURE instruction.
+<para>You cannot use the <methodname>[]</methodname> method in a DROP or PROCEDURE instruction.
 </para></note>
 </section>
 
@@ -8262,9 +8271,9 @@ This method requests
 conversion to a specific class. All conversion requests except Array are
 forwarded to the stem's current stem default value.
 Returns the result of the Stem class
-<emphasis role="bold">makeArray</emphasis> method, if the requested
+<methodname>makeArray</methodname> method, if the requested
 class is Array. For all other classes,
-<emphasis role="bold">request</emphasis> forwards the message to the
+<methodname>request</methodname> forwards the message to the
 stem object's default value.
 </para>
 </section>
@@ -8282,7 +8291,7 @@ stem object's default value.
 </imageobject>
 </mediaobject>
 
-<para>Returns a Supplier (<xref linkend="clsSupplier" />) object for the stem.
+<para>Returns a <xref linkend="clsSupplier" xrefstyle="template:Supplier"/> object for the stem.
 The supplier allows you to iterate though the index/item pairs contained in the Stem
 object at the time the supplier was created.
 The supplier iterates the items in an unspecified order.
@@ -8302,7 +8311,7 @@ The supplier iterates the items in an unspecified order.
 </imageobject>
 </mediaobject>
 
-<para>Returns a Directory (<xref linkend="clsDirectory" />) object for the stem.
+<para>Returns a <xref linkend="clsDirectory" xrefstyle="template:Directory"/> object for the stem.
 The directory will contain a
 name/value pair for each stem index with a directly assigned value.</para>
 </section>
@@ -8342,7 +8351,7 @@ items of a StringTable can be any valid Rexx object.
 </para>
 
 <!-- $GENERATED-20151006-START rexxrefClassTable(StringTable) -->
-<table id="ooRexxStringTableClass" frame="all" pgwide="0">
+<table id="ooRexxStringTableClass" frame="all" pgwide="1">
 <title>StringTable Class</title>
 <tgroup cols="1">
 <tbody>
@@ -8397,15 +8406,17 @@ items of a StringTable can be any valid Rexx object.
 </table>
 <!-- $GENERATED-20151006-END rexxrefClassTable(StringTable) -->
 
-<para>In addition to the standard put(), []=, at(), and [] methods defined for
+<para>In addition to the standard <methodname>put</methodname>,
+<methodname>[]=</methodname>, <methodname>at</methodname>, and
+<methodname>[]</methodname> methods defined for
 Collections, StringTable provides access to items using methods.  For
-example:</para>
-
+example:
 <programlisting>
 sTable = .StringTable~new
 sTable~name = "Mike"   -- same as sTable~put("Mike", "NAME")
 say sTable~name        -- same as say sTable["NAME"]
 </programlisting>
+</para>
 
 <para>Note that <classname>StringTable</classname> does not provide methods
 <methodname>setMethod</methodname> and <methodname>unsetMethod</methodname>
@@ -8443,7 +8454,7 @@ as the <xref linkend="clsDirectory" xrefstyle="template:Directory"/> class does.
 </mediaobject>
 
 <para>Returns the item corresponding to <emphasis role="italic">name</emphasis>.
-This method is the same as the at() (<xref linkend="mthStringTablePut" />)
+This method is the same as the <xref linkend="mthStringTablePut" xrefstyle="select:title"/>
 method.</para>
 </section>
 
@@ -8461,7 +8472,7 @@ method.</para>
 </mediaobject>
 
 <para>Adds or replaces the entry at index <emphasis role="italic">name</emphasis>.
-This method is the same as the put() (<xref linkend="mthStringTablePut" />)
+This method is the same as the <xref linkend="mthStringTablePut" xrefstyle="select:title"/>
 method.
 </para>
 </section>
@@ -8556,8 +8567,8 @@ say .environment~at("OBJECT")   /* Produces: "The Object class" */
 
 <para>Returns the StringTable entry with index
 <emphasis role="italic">name</emphasis> (translated to uppercase).
-If there is no entry for <emphasis role="italic">name</emphasis> the
-Nil object is returned.</para>
+If there is no entry for <emphasis role="italic">name</emphasis>, &nil;
+is returned.</para>
 </section>
 
 <section id="mthStringTableHasEntry" revisionflag="added"><title>*NEW* hasEntry</title>
@@ -8632,8 +8643,8 @@ Item equality is determined by using the == method of <emphasis role="italic">it
 
 <para>Returns the index of the specified item within the StringTable.  If the
 target item appears at more than one index, the first located index will
-be returned.  If the StringTable does not contain the specified item, the Nil
-object is returned.
+be returned.  If the StringTable does not contain the specified item, &nil;
+is returned.
 Item equality is determined by using the == method of <emphasis role="italic">item</emphasis>.
 </para>
 </section>
@@ -8810,8 +8821,8 @@ method with this <emphasis role="italic">name</emphasis>.</para>
 </imageobject>
 </mediaobject>
 
-<para>Returns a Supplier (<xref linkend="clsSupplier" />)
-object for the collection.  The supplier allows you to iterate over
+<para>Returns a <xref linkend="clsSupplier" xrefstyle="template:Supplier"/> object for the collection.
+The supplier allows you to iterate over
 the index/item pairs in the StringTable at the time the supplier was created.
 The supplier iterates the items in an unspecified order.
 </para>
@@ -8830,21 +8841,23 @@ The supplier iterates the items in an unspecified order.
 </imageobject>
 </mediaobject>
 
-<para>Runs either the entry (<xref linkend="mthStringTableEntry" />) or
-setEntry (<xref linkend="mthStringTableSetEntry" />) method, depending on
-whether
-<emphasis role="italic">messagename</emphasis> ends with an equal sign. If
-<emphasis role="italic">messagename</emphasis> does not end with an
-equal sign, this method runs the entry() method, passing
+<para>Runs either the
+<xref linkend="mthStringTableEntry" xrefstyle="select:title"/> or
+<xref linkend="mthStringTableSetEntry" xrefstyle="select:title"/> method, depending on
+whether <emphasis role="italic">messagename</emphasis> ends with an equal sign.
+</para>
+<para>If <emphasis role="italic">messagename</emphasis> does not end with an
+equal sign, this method runs the <methodname>entry</methodname> method, passing
 <emphasis role="italic">messagename</emphasis> as its argument. The <emphasis
-role="italic">messageargs</emphasis> argument is ignored. The entry() method is
-the return result.</para>
+role="italic">messageargs</emphasis> argument is ignored. The <methodname>entry</methodname> method is
+the return result.
+</para>
 <para>If <emphasis role="italic">messagename</emphasis> does end with an equal
-sign, this method runs the setEntry() method, passing the first part of
+sign, this method runs the <methodname>setEntry</methodname> method, passing the first part of
 <emphasis role="italic">messagename</emphasis> (up to, but not including, the
 final equal sign) as its first argument, and the first item in the array
 <emphasis role="italic">messageargs</emphasis> as its second argument. In this
-case, unknown() returns no result.</para>
+case, <methodname>unknown</methodname> returns no result.</para>
 </section>
 
 </section>
@@ -8866,7 +8879,7 @@ using the == method.
 </para>
 
 <!-- $GENERATED-20151005-START rexxrefClassTable(Table) -->
-<table id="ooRexxTableClass" frame="all" pgwide="0">
+<table id="ooRexxTableClass" frame="all" pgwide="1">
 <title>Table Class</title>
 <tgroup cols="1">
 <tbody>
@@ -8947,7 +8960,7 @@ using the == method.
 
 <para>Returns the item associated with <emphasis role="italic">index</emphasis>.
 This is the same as the
-at() (<xref linkend="mthTableAt" />) method.</para>
+<xref linkend="mthTableAt" xrefstyle="select:title"/> method.</para>
 </section>
 
 <section id="mthTablePutSet"><title>[]=</title>
@@ -8966,7 +8979,7 @@ at() (<xref linkend="mthTableAt" />) method.</para>
 <para>Adds <emphasis role="italic">item</emphasis> to the table at index
 <emphasis role="italic">index</emphasis>.
 This method is the same as the
-put() (<xref linkend="mthTablePut" />) method.</para>
+<xref linkend="mthTablePut" xrefstyle="select:title"/> method.</para>
 </section>
 
 <section id="mthTableAllIndexes"><title>allIndexes</title>
@@ -9218,7 +9231,7 @@ Item equality is determined by using the == method of <emphasis role="italic">it
 </imageobject>
 </mediaobject>
 
-<para>Returns a Supplier (<xref linkend="clsSupplier" />) object for the collection.
+<para>Returns a <xref linkend="clsSupplier" xrefstyle="template:Supplier"/> object for the collection.
 The supplier allows you iterate over the index/item pairs contained in the table at the
 time the supplier was created.
 The supplier iterates over the items in an unspecified order.
@@ -9228,7 +9241,7 @@ The supplier iterates over the items in an unspecified order.
 
 <section id="sortarray"><title>Sorting Ordered Collections</title>
 <para>Any ordered collection, such as non-sparse Arrays or Lists can have its elements placed into sorted order using the
-<emphasis role="bold">sort</emphasis> method.  The simplest sort is
+<methodname>sort</methodname> method.  The simplest sort is
 sorting an array of strings.</para>
 <example id="ex.Array-sorting">
 <title>Array class &mdash; sorting</title>
@@ -9242,49 +9255,48 @@ end
 </programlisting>
 </example>
 <para>will display the names in the order "Andy", "Fred", "Xavier", "Zoe".</para>
-<para>The <emphasis role="bold">sort</emphasis> method orders the strings by using the
-<emphasis role="bold">compareTo</emphasis> method of the String class.  The
-<emphasis role="bold">compareTo</emphasis> method knows how to compare one string to another, and
+<para>The <methodname>sort</methodname> method orders the strings by using the
+<methodname>compareTo</methodname> method of the String class.  The
+<methodname>compareTo</methodname> method knows how to compare one string to another, and
 returns the values -1 (less than), 0 (equal), or 1 (greater than) to indicate the relative ordering
 of the two strings.</para>
 <section id="sortcomparable"><title>Sorting non-strings</title>
-<para>Sorting is not limited to string values.  Any object that inherits the Comparable mixin class and
-implements a <emphasis role="bold">compareTo</emphasis> method can be sorted.  The
-DateTime class (<xref linkend="clsDateTime" />) and TimeSpan class (<xref linkend="clsTimeSpan" />)
-are examples of built-in Rexx classes that can be sorted.  Any user created class may also
-implement a compareTo() method to enable sorting.
-For example, consider the
-following simple class:</para>
+<para>Sorting is not limited to string values.
+Any object that inherits the <classname>Comparable</classname> mixin class and
+implements a <methodname>compareTo</methodname> method can be sorted.
+The <xref linkend="clsDateTime" xrefstyle="template:DateTime class"/> and
+<xref linkend="clsTimeSpan" xrefstyle="template:TimeSpan class"/>
+are examples of built-in Rexx classes that can be sorted.
+Any user-created class may also implement a <methodname>compareTo</methodname>
+method to enable sorting.
+For example, consider the following simple class:
 <example id="ex.Sorting">
 <title>Non-string sorting</title>
-<programlisting>
-<![CDATA[
-  ::class Employee inherit Comparable
+<programlisting><![CDATA[
+::class Employee inherit Comparable
 
-  ::attribute id
-  ::attribute name
+::attribute id
+::attribute name
 
-  ::method init
-    expose id name
-    use arg id, name
+::method init
+  expose id name
+  use arg id, name
 
-  ::method compareTo
-    expose id
-    use arg other
-    return id~compareTo(other~id) -- comparison performed using employee id
+::method compareTo
+  expose id
+  use arg other
+  return id~compareTo(other~id) -- comparison performed using employee id
 
-  ::method string
-    expose name
-    return "Employee" name
-
-
-]]>
-</programlisting>
+::method string
+  expose name
+  return "Employee" name
+]]></programlisting>
 </example>
+</para>
 <para>The Employee class implements its sort order using the employee identification number.  When the
-<emphasis role="bold">sort</emphasis> method needs to compare two Employee instances, it will call the
-<emphasis role="bold">compareTo</emphasis> method on one of the instances, passing the second instance as an argument.
-The <emphasis role="bold">compareTo</emphasis> method tells the <emphasis role="bold">sort</emphasis> method
+<methodname>sort</methodname> method needs to compare two Employee instances, it will call the
+<methodname>compareTo</methodname> method on one of the instances, passing the second instance as an argument.
+The <methodname>compareTo</methodname> method tells the <methodname>sort</methodname> method
 which of the two instances should be first.</para>
 <example id="ex.Sorting-compare">
 <title>Comparison during sorting</title>
@@ -9305,12 +9317,12 @@ which of the two instances should be first.</para>
 </example>
 </section>
 <section id="sortcomparator"><title>Sorting with more than one order</title>
-<para>The String class <emphasis role="bold">compareTo</emphasis> method only implements a sort ordering for an ascending
+<para>The String class <methodname>compareTo</methodname> method only implements a sort ordering for an ascending
 sort using a strict comparison.  Frequently it is desirable to override a class-defined sort order or even to sort
-items that do not implement a <emphasis role="bold">compareTo</emphasis> method.  To change the sorting criteria,
-use the <emphasis role="bold">sortWith</emphasis> method.  The <emphasis role="bold">sortWith</emphasis>
-method takes a single argument, which is a Comparator object that implements a <emphasis role="bold">compare</emphasis>
-method.  The <emphasis role="bold">compare</emphasis> method performs comparisons between pairs of items.  Different
+items that do not implement a <methodname>compareTo</methodname> method.  To change the sorting criteria,
+use the <methodname>sortWith</methodname> method.  The <methodname>sortWith</methodname>
+method takes a single argument, which is a Comparator object that implements a <methodname>compare</methodname>
+method.  The <methodname>compare</methodname> method performs comparisons between pairs of items.  Different
 comparators can be customized for different comparison purposes.  For example, the Rexx language provides a
 DescendingComparator class that will sort items into descending order:</para>
 <example id="ex.Sorting-multi-order">
@@ -9323,7 +9335,7 @@ return -left~compareTo(right)
 </programlisting>
 </example>
 <para>The DescendingComparator merely inverts the result returned by the item
-<emphasis role="bold">compareTo</emphasis> method.  Our previous example</para>
+<methodname>compareTo</methodname> method.  Our previous example</para>
 <example id="ex.Sorting-descendingcompare">
 <title>Descending compare sorting</title>
 <programlisting>
@@ -9337,7 +9349,7 @@ end
 </example>
 <para>now displays in the order "Zoe", "Xavier", "Fred", "Andy".</para>
 <para>Custom Comparators are simple to create for any sorting purpose.  The only requirement is implementing a
-<emphasis role="bold">compare</emphasis> method that knows how to compare pairs of items in some particular
+<methodname>compare</methodname> method that knows how to compare pairs of items in some particular
 manner.  For example, to sort our Employee class by name instead of the default employee id, we can use the following
 simple comparator class:</para>
 <example id="ex.Sorting-customcompare">
@@ -9413,7 +9425,7 @@ simple comparator class:</para>
 <section id="stablesort"><title>Stable and Unstable Sorts</title>
 
 <note><title>Note</title>
-<para>The current ooRexx implementation is using the same stable sort
+<para>The current implementation is using the same stable sort
 algorithm for both the
 <xref linkend="mthArraySort" xrefstyle="select:title"/> and the
 <xref linkend="mthArrayStableSort" xrefstyle="select:title"/> method of
@@ -9426,7 +9438,7 @@ an unstable sort does not apply currently.
 <para>The default sorting algorithm is an
 <emphasis role="italic">unstable</emphasis> sort.
 In an unstable sort, items are not guaranteed to maintain their original positions if they
-compare equal during the sort.  Consider the following simple example:</para>
+compare equal during the sort.  Consider the following simple example:
 <example id="ex.Sorting-unstablesort">
 <title>Unstable sort</title>
 <programlisting>
@@ -9437,13 +9449,14 @@ do name over a
 end
 </programlisting>
 </example>
+</para>
 <para>This example displays the 3 occurrences of Fred in the order "Fred", "fred", "FRED", even though they compare
 equal using a caseless comparison.</para>
 <para>The Array class implements a second sort algorithm that is available using the
-<emphasis role="bold">stableSort</emphasis> and <emphasis role="bold">stableSortWith</emphasis> methods.
+<methodname>stableSort</methodname> and <methodname>stableSortWith</methodname> methods.
 These methods use a Mergesort algorithm, which is less efficient than the default Quicksort and requires
 additional memory.  The Mergesort is a stable  algorithm that maintains the original
-relative ordering of equivalent items.  Our example above, sorted with <emphasis role="bold">stableSortWith</emphasis>,
+relative ordering of equivalent items.  Our example above, sorted with <methodname>stableSortWith</methodname>,
 would display "Fred", "FRED", "fred".</para>
 </section>
 </section>
@@ -9484,7 +9497,7 @@ result = receiver~setoperator(argument)
 <varlistentry><term><emphasis role="italic">argument</emphasis></term>
 <listitem><para>is the argument collection supplier supplied to the method. It can be an
 instance of one of the Rexx collection classes or any object that implements a
-<emphasis role="bold">makearray</emphasis> method or <emphasis role="bold">supplier</emphasis> method,
+<methodname>makearray</methodname> method or <methodname>supplier</methodname> method,
 depending on class of <emphasis role="italic">receiver</emphasis>.
 </para></listitem></varlistentry>
 </variablelist>
@@ -9497,9 +9510,9 @@ depending on class of <emphasis role="italic">receiver</emphasis>.
 <tertiary>principals</tertiary></indexterm>
 <para>A set operation is performed by iterating over the elements of the <emphasis role="italic">receiver</emphasis>
 collection to compare each element of the <emphasis role="italic">receiver</emphasis> with each element
-of the <emphasis role="italic">argument</emphasis> collection. The element is defined as the tuple &lt;
-<emphasis role="italic">index,item</emphasis>> (see
-<xref linkend="idit" />).
+of the <emphasis role="italic">argument</emphasis> collection.
+The element is defined as the tuple (<emphasis role="italic">index, item</emphasis>)
+(see <xref linkend="idit" />).
 Depending on the set-operator method and
 the result of the comparison, an element of the receiver collection is, or
 is not, included in the resulting collection. A receiver collection that allows
@@ -9660,9 +9673,9 @@ B DISJOINT A = .false
 
 <section id="idit"><title>Determining the Identity of an Item</title>
 <para>Set operations require the definition of the identity of an element to
-determine whether a certain element exists in the receiver collection. The
-element of a collection is conceived as the tuple
-&lt;<emphasis role="italic">index,item</emphasis>>.
+determine whether a certain element exists in the receiver collection.
+The element of a collection is conceived as
+the tuple (<emphasis role="italic">index, item</emphasis>).
 The <emphasis role="italic">index</emphasis> is used as the identification
 tag associated with the item.
 Depending on the collection class, the index is an instance of a particular
@@ -9703,15 +9716,15 @@ collection items as both index and item values.  Since the argument collection m
 duplicate items, the converted collection is effectively a Relation instance.
 </para>
 <para>For all other <emphasis role="italic">argument</emphasis> objects, the
-<emphasis role="bold">makearray</emphasis> method is used to obtain a set of values which are
+<methodname>makearray</methodname> method is used to obtain a set of values which are
 used as if <emphasis role="italic">argument</emphasis> was an OrderedCollection.</para>
 </listitem></varlistentry>
 <varlistentry><term>Ordered Collection and Set Collection</term>
 <listitem>
 <para>If <emphasis role="italic">argument</emphasis> is an instance of Collection, the
-matching set is obtained from the <emphasis role="bold">allItems</emphasis> method.  For
-any other class of object, the <emphasis role="bold">makearray</emphasis> method is used.
-The <emphasis role="bold">hasItem</emphasis> method is used to perform the matching operations
+matching set is obtained from the <methodname>allItems</methodname> method.  For
+any other class of object, the <methodname>makearray</methodname> method is used.
+The <methodname>hasItem</methodname> method is used to perform the matching operations
 between the two collections.</para>
 </listitem></varlistentry>
 <varlistentry><term>Relation</term>
@@ -9725,7 +9738,7 @@ collection items as both index and item values.  Since the argument collection m
 duplicate items, the converted collection is effectively a Relation instance.
 </para>
 <para>For all other <emphasis role="italic">argument</emphasis> objects, the
-<emphasis role="bold">makearray</emphasis> method is used to obtain a set of values which are
+<methodname>makearray</methodname> method is used to obtain a set of values which are
 used as if <emphasis role="italic">argument</emphasis> was an OrderedCollection.
 All tests for result membership are made using both the index and item values.
 </para>

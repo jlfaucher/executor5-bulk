@@ -45,7 +45,7 @@
 -->
 <chapter id="oneof"><title>Rexx Runtime Objects</title>
 <para>In addition to the class objects described in the previous chapter, the Rexx runtime environment
-also provides objects that are accessible via environment symbols (see <xref linkend="ensym" />).
+also provides objects that are accessible via <xref linkend="ensym" xrefstyle="template:environment symbols"/>.
 </para>
 
 <section id="envo"><title>The Environment Directory (.ENVIRONMENT)</title>
@@ -123,10 +123,8 @@ of the <xref linkend="clsRexxInfo" xrefstyle="template:RexxInfo class"/>
 and gives access to Rexx language information and other platform-specific
 information in a single place.
 </para>
-<para>See <xref linkend="clsRexxInfo"/>.</para> 
-<para>
 <programlisting><![CDATA[say .RexxInfo~name    -- REXX-ooRexx_5.0.0(MT)_64-bit 6.05 9 Dec 2014 /* e. g. */
-]]></programlisting></para>
+]]></programlisting>
 </section>
 
 <section id="TRUE"><title>The TRUE Constant (.TRUE)</title>
@@ -168,10 +166,12 @@ The Local object contains
     array of program command line options.</para></listitem>
 </itemizedlist>
 </para>
-<para>Because both .ENVIRONMENT and .LOCAL are directory objects, you can
-place objects into, or retrieve objects from, these environments by using
-any of the directory methods ([],[]=, PUT, AT, SETENTRY, ENTRY,
-or SETMETHOD). To avoid potential name clashes with built-in objects and public
+<para>Because both .ENVIRONMENT and .LOCAL are <classname>Directory</classname>
+objects, you can place objects into, or retrieve objects from, these environments
+by using any of the <classname>Directory</classname> methods <methodname>[]</methodname>,
+<methodname>[]=</methodname>, <methodname>put</methodname>, <methodname>at</methodname>,
+<methodname>setEntry</methodname>, <methodname>entry</methodname>, 
+or <methodname>setMethod</methodname>). To avoid potential name clashes with built-in objects and public
 objects that Rexx provides, each object that your programs add to these
 environments should have a period in its index.</para>
 <example>
@@ -219,8 +219,8 @@ end
 <secondary>.DEBUGINPUT object</secondary></indexterm>
 <indexterm><primary>public object</primary>
 <secondary>.DEBUGINPUT object</secondary></indexterm>
-<para>This monitor object (see
-<xref linkend="clsMonitor" />) holds the default interactive debug input stream
+<para>This <xref linkend="clsMonitor" xrefstyle="template:Monitor"/> object
+holds the default interactive debug input stream
 object (see <xref linkend="iostrms" />).
 This input stream is the source for all input for interactive debug mode.
 </para>
@@ -234,8 +234,8 @@ monitor.</para>
 <secondary>.ERROR object</secondary></indexterm>
 <indexterm><primary>public object</primary>
 <secondary>.ERROR object</secondary></indexterm>
-<para>This monitor object (see
-<xref linkend="clsMonitor" />) holds the error stream
+<para>This <xref linkend="clsMonitor" xrefstyle="template:Monitor"/> object
+holds the error stream
 object. You can redirect the trace output in the same way as with the output
 object in the Monitor class example.</para>
 <para>The default for this object's initial destination is the .STDERR
@@ -249,8 +249,8 @@ stream.</para>
 <secondary>.INPUT object</secondary></indexterm>
 <indexterm><primary>public object</primary>
 <secondary>.INPUT object</secondary></indexterm>
-<para>This monitor object (see
-<xref linkend="clsMonitor" />) holds the default input stream
+<para>This <xref linkend="clsMonitor" xrefstyle="template:Monitor"/> object
+holds the default input stream
 object (see <xref linkend="iostrms" />).
 This input stream is the source for the PARSE LINEIN instruction, the LINEIN
 method of the Stream class, and, if you specify no stream name, the LINEIN
@@ -268,7 +268,7 @@ stream.</para>
 <secondary>object</secondary></indexterm>
 <indexterm><primary>public object</primary>
 <secondary>.OUTPUT object</secondary></indexterm>
-<para>This monitor object (see <xref linkend="clsMonitor" />)
+<para>This <xref linkend="clsMonitor" xrefstyle="template:Monitor"/> object
 holds the default output stream object (see
 <xref linkend="iostrms" />). This
 is the destination for output from the SAY instruction, the LINEOUT method
@@ -285,8 +285,8 @@ stream.</para>
 <secondary>.TRACEOUTPUT object</secondary></indexterm>
 <indexterm><primary>public object</primary>
 <secondary>.TRACEOUPUT object</secondary></indexterm>
-<para>This monitor object (see
-<xref linkend="clsMonitor" />) holds the trace output target
+<para>This <xref linkend="clsMonitor" xrefstyle="template:Monitor"/> object 
+holds the trace output target
 object. You can redirect the trace output in the same way as with the output
 object in the Monitor class example.</para>
 <para>The default for this object's initial destination is the .OUTPUT
@@ -299,8 +299,8 @@ monitor.</para>
 <secondary>.STDERR object</secondary></indexterm>
 <indexterm><primary>public object</primary>
 <secondary>.STDERR object</secondary></indexterm>
-<para>This stream object (see
-<xref linkend="clsStream" />) is the default stream
+<para>This <xref linkend="clsStream" xrefstyle="template:Stream"/> object
+is the default stream
 used for trace and error message output.
 </para>
 </section>
@@ -311,9 +311,8 @@ used for trace and error message output.
 <secondary>.STDIN object</secondary></indexterm>
 <indexterm><primary>public object</primary>
 <secondary>.STDIN object</secondary></indexterm>
-<para>This is the stream object (see
-<xref linkend="clsStream" />) representing the
-representing the standard input file of a process. It is the startup default
+<para>This <xref linkend="clsStream" xrefstyle="template:Stream"/> object
+is representing the standard input file of a process. It is the startup default
 stream for the .INPUT object.
 </para>
 </section>
@@ -324,9 +323,8 @@ stream for the .INPUT object.
 <secondary>.STDOUT object</secondary></indexterm>
 <indexterm><primary>public object</primary>
 <secondary>.STDOUT object</secondary></indexterm>
-<para>This is the stream object (see
-<xref linkend="clsStream" />) representing the
-representing the standard output file of a process. It is the startup default
+<para>This <xref linkend="clsStream" xrefstyle="template:Stream"/> object
+is representing the standard output file of a process. It is the startup default
 stream for the .OUTPUT object.
 </para>
 </section>
@@ -337,8 +335,7 @@ stream for the .OUTPUT object.
 <secondary>.STDQUE object</secondary></indexterm>
 <indexterm><primary>public object</primary>
 <secondary>.STDQUE object</secondary></indexterm>
-<para>This RexxQueue object (see
-<xref linkend="clsRexxQueue" />)
+<para>This <xref linkend="clsRexxQueue" xrefstyle="template:RexxQueue"/> object
 is the destination for the PUSH and QUEUE instruction, and the source for
 queue lines for the PULL and PARSE PULL instructions.
 </para>
@@ -351,10 +348,11 @@ queue lines for the PULL and PARSE PULL instructions.
 <indexterm><primary>public object</primary>
 <secondary>.SYSCARGS object</secondary></indexterm>
 
-<para>The .SYSCARGS object is an Array of all the command line options
-supplied to the program.  Normally all the command line objects are
-combined into a single string and passed to the script as an argument
-retrievable via the BIF ARG(1).  .SYSCARGS is a direct collection of the
+<para>The .SysCArgs object is an Array of all command-line arguments
+supplied to the program.  Normally all command-line arguments are
+combined into a single string and passed to the Rexx program as an argument
+retrievable via the <xref linkend="bifArg" xrefstyle="select:title"/> built-in function.
+.SYSCARGS is a direct collection of the
 individual C arguments passed to the program.</para>
 
 <indexterm><primary>examples</primary>
@@ -385,10 +383,10 @@ code that gets run via "rexx -e".
 <secondary>.CONTEXT object</secondary></indexterm>
 <indexterm><primary>public object</primary>
 <secondary>.CONTEXT object</secondary></indexterm>
-<para>The .CONTEXT environment symbol accesses a RexxContext instance for the
-currently active Rexx execution environment.  See
-<xref linkend="clsRexxContext" /> for details on the
-RexxContext object.  The returned context object is only active until the
+<para>The .CONTEXT environment symbol accesses a
+<xref linkend="clsRexxContext" xrefstyle="template:RexxContext"/> instance for the
+currently active Rexx execution environment.
+The returned context object is only active until the
 current method call, routine call, or program terminates.  Once the context
 object is deactivated, an error will be raised if any of the RexxContext methods
 are called.</para>
@@ -411,17 +409,18 @@ instruction, the line number of INTERPRET instruction is returned.</para>
 <secondary>.METHODS object</secondary></indexterm>
 <indexterm><primary>public object</primary>
 <secondary>.METHODS object</secondary></indexterm>
-<para>The .METHODS environment symbol identifies a StringTable (see
-<xref linkend="clsStringTable" />) of methods
-that ::METHOD directives in the currently running program define.  The
-StringTable indexes are the method names. The StringTable
-values are the method objects. See
-<xref linkend="clsMethod" />.</para>
-<para>Only methods and/or attributes that are not preceded by
-a ::CLASS directive are in
-the .METHODS StringTable. These are known as <emphasis role="italic">floating
-methods</emphasis>. If there are no such methods,
-the .METHODS symbol has the default value of
+<para>The .METHODS environment symbol identifies a
+<xref linkend="clsStringTable" xrefstyle="template:StringTable"/> of methods that
+<xref linkend="methd" xrefstyle="select:title"/> or
+<xref linkend="attrd" xrefstyle="select:title"/>
+directives in the currently running program define.
+The StringTable indexes are the <xref linkend="clsMethod" xrefstyle="template:method"/> names.
+The StringTable values are the method objects.
+</para>
+<para>Only methods or attributes that are not preceded by
+a ::CLASS directive are in the .METHODS StringTable.
+These are known as <emphasis role="italic">floating methods</emphasis>.
+If there are no such methods, the .METHODS symbol has the default value of
 <computeroutput>.METHODS</computeroutput>.</para>
 <example>
 <title>.METHODS</title>
@@ -442,14 +441,14 @@ o~talk("echo this text")  /* test "TALK" method */
 <secondary>.ROUTINES object</secondary></indexterm>
 <indexterm><primary>public object</primary>
 <secondary>.ROUTINES object</secondary></indexterm>
-<para>The .ROUTINES environment symbol identifies a StringTable (see
-<xref linkend="clsStringTable" />) of routines
-that ::ROUTINE directives in the currently running program define.  The
-StringTable indexes are the routine names. The StringTable
-values are the routine objects. See
-<xref linkend="clsRoutine" />.</para>
-<para>
-If there are no ::ROUTINE directives,
+<para>The .ROUTINES environment symbol identifies a
+<xref linkend="clsStringTable" xrefstyle="template:StringTable"/>
+of routines that
+<xref linkend="routd" xrefstyle="select:title"/> directives in the currently running program define.
+The StringTable indexes are the <xref linkend="clsRoutine" xrefstyle="template:routine"/> names.
+The StringTable values are the routine objects.
+</para>
+<para>If there are no ::ROUTINE directives,
 the .ROUTINES symbol has the default value of
 <computeroutput>.ROUTINES</computeroutput>.</para>
 <example>
@@ -470,12 +469,14 @@ the .ROUTINES symbol has the default value of
 <secondary>.RESOURCES object</secondary></indexterm>
 <indexterm><primary>public object</primary>
 <secondary>.RESOURCES object</secondary></indexterm>
-<para>The .RESOURCES environment symbol identifies a StringTable (see
-<xref linkend="clsStringTable" />) of data resources 
-that ::RESOURCE directives in the currently running program define.  The
-StringTable indexes are the resource names, the StringTable
-values are arrays of individual resource data lines. See
-<xref linkend="resourced" />.</para>
+<para>The .RESOURCES environment symbol identifies a
+<xref linkend="clsStringTable" xrefstyle="template:StringTable"/>
+of data resources that
+<xref linkend="resourced" xrefstyle="select:title"/>
+directives in the currently running program define.
+The StringTable indexes are the resource names,
+the StringTable values are arrays of individual resource data lines.
+</para>
 <para>
 If there are no ::RESOURCE directives,
 the .RESOURCES symbol has the default value of

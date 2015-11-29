@@ -134,12 +134,12 @@ stream objects might be static or synchronous.</para>
 <listitem><para>CHARIN
 <indexterm><primary>CHARIN method</primary>
 <secondary>role in input and output</secondary></indexterm>
-method--reads input stream objects as characters.</para></listitem>
+method&mdash;reads input stream objects as characters.</para></listitem>
 <listitem><para>LINEIN
 <indexterm><primary>LINEIN method</primary>
 <secondary>role in input and output</secondary></indexterm>
-method--reads input stream objects as lines.</para></listitem>
-<listitem><para>PARSE PULL and PULL instructions--read the default input stream
+method&mdash;reads input stream objects as lines.</para></listitem>
+<listitem><para>PARSE PULL and PULL instructions&mdash;read the default input stream
 object
 <indexterm><primary>PARSE PULL method</primary>
 <secondary>role in input and output</secondary></indexterm>
@@ -148,7 +148,7 @@ object
 (<computeroutput>.INPUT</computeroutput>), if the external data queue is empty.
 PULL is the same as PARSE UPPER PULL except that uppercase translation
 takes place for PULL.</para></listitem>
-<listitem><para>PARSE LINEIN instruction--reads lines from the default input
+<listitem><para>PARSE LINEIN instruction&mdash;reads lines from the default input
 stream
 <indexterm><primary>PARSE LINEIN method</primary>
 <secondary>role in input and output</secondary></indexterm>
@@ -207,7 +207,7 @@ transient streams.</para></listitem>
 <para>Output stream methods provide for output from a Rexx program. Output
 stream methods are: </para>
 <itemizedlist>
-<listitem><para>SAY instruction--writes
+<listitem><para>SAY instruction&mdash;writes
 <indexterm><primary>SAY instruction</primary>
 <secondary>role in output</secondary></indexterm>
 to the default output stream object (<computeroutput>.OUTPUT</computeroutput>).
@@ -215,12 +215,12 @@ to the default output stream object (<computeroutput>.OUTPUT</computeroutput>).
 <listitem><para>CHAROUT
 <indexterm><primary>CHAROUT method</primary>
 <secondary>role in input and output</secondary></indexterm>
-method--writes in character form to either the default or a specified
+method&mdash;writes in character form to either the default or a specified
 output stream object.</para></listitem>
 <listitem><para>LINEOUT
 <indexterm><primary>LINEOUT method</primary>
 <secondary>role in input and output</secondary></indexterm>
-method--writes in lines to either the default or a specified output stream
+method&mdash;writes in lines to either the default or a specified output stream
 object.</para></listitem></itemizedlist>
 <para>LINEOUT and SAY write the new-line character at the end of each line.
 Depending
@@ -298,12 +298,12 @@ previous_queue=rxqueue("set",newqueuename)
 </para>
 <para>The following Rexx instructions manipulate the queue: </para>
 <itemizedlist>
-<listitem><para>PULL or PARSE PULL--reads a string from the head of the queue.
+<listitem><para>PULL or PARSE PULL&mdash;reads a string from the head of the queue.
 If the queue is empty, these instructions take input from .INPUT.</para>
 </listitem>
-<listitem><para>PUSH--stacks a line on top of the queue (LIFO).</para>
+<listitem><para>PUSH&mdash;stacks a line on top of the queue (LIFO).</para>
 </listitem>
-<listitem><para>QUEUE--adds a string to the tail of the queue (FIFO).</para>
+<listitem><para>QUEUE&mdash;adds a string to the tail of the queue (FIFO).</para>
 </listitem>
 </itemizedlist>
 <para>Rexx functions that manipulate QUEUE: as a device name are:</para>
@@ -313,7 +313,7 @@ If the queue is empty the program waits for an entry to be placed on the
 queue.</para></listitem>
 <listitem><para>LINEOUT("QUEUE:","string")--adds a string to the
 tail of the queue (FIFO).</para></listitem>
-<listitem><para>QUEUED--returns
+<listitem><para>QUEUED&mdash;returns
 <indexterm><primary>QUEUED function</primary>
 <secondary>role in input and output</secondary></indexterm>
 the number of items remaining in the queue.</para></listitem>
@@ -373,7 +373,7 @@ newqueue = RXQUEUE("Create", "ANYQUE")
 <para>The top-level Rexx program in a process tree
 owns an unnamed queue. However,
 any child process can modify the queue at any time. No specific process or
-user owns a named queue. The operations that affect the queue are atomic--the
+user owns a named queue. The operations that affect the queue are atomic&mdash;the
 subsystem serializes the resource so that no data integrity problems can occur.
 However, you are responsible for the synchronization of requests so that two
 processes accessing the same queue get the data in the order it was placed
@@ -695,49 +695,31 @@ However, the STATE and DESCRIPTION methods can return NOTREADY.</para></note>
 
 <section id="sumrexx"><title>Summary of Rexx I/O Instructions and Methods</title>
 <para>The following lists Rexx I/O instructions and methods: </para>
-<itemizedlist>
-<listitem><para>CHARIN (see <xref linkend="mthStreamCharIn" />)</para>
-</listitem>
-<listitem><para>CHAROUT (see <xref linkend="mthStreamCharOut" />)</para>
-</listitem>
-<listitem><para>CHARS (see <xref linkend="mthStreamChars" />)</para>
-</listitem>
-<listitem><para>CLOSE (see <xref linkend="mthStreamClose" />)</para>
-</listitem>
-<listitem><para>COMMAND (see <xref linkend="mthStreamCommand" />)</para>
-</listitem>
-<listitem><para>DESCRIPTION (see <xref linkend="mthStreamDescription" />)
-</para></listitem>
-<listitem><para>FLUSH (see <xref linkend="mthStreamFlush" />)</para>
-</listitem>
-<listitem><para>LINEIN (see <xref linkend="mthStreamLineIn" />)</para>
-</listitem>
-<listitem><para>LINEOUT (see <xref linkend="mthStreamLineOut" />)</para>
-</listitem>
-<listitem><para>LINES (see <xref linkend="mthStreamLines" />)</para>
-</listitem>
-<listitem><para>MAKEARRAY (see <xref linkend="mthStreamMakeArray" />)</para>
-</listitem>
-<listitem><para>OPEN (see <xref linkend="mthStreamOpen" />)</para></listitem>
-<listitem><para>PARSE LINEIN (see <xref linkend="keyParse" />)</para>
-</listitem>
-<listitem><para>PARSE PULL (see <xref linkend="keyParse" />)</para>
-</listitem>
-<listitem><para>POSITION (see <xref linkend="mthStreamPosition" />)</para>
-</listitem>
-<listitem><para>PULL (see <xref linkend="keyPull" />)</para></listitem>
-<listitem><para>PUSH (see <xref linkend="keyPush" />)</para></listitem>
-<listitem><para>QUALIFY (see <xref linkend="mthStreamQualify" />)</para>
-</listitem>
-<listitem><para>QUERY (see <xref linkend="mthStreamQuery" />)</para>
-</listitem>
-<listitem><para>QUEUE (see <xref linkend="keyQueue" />)</para>
-</listitem>
-<listitem><para>QUEUED (see <xref linkend="bifQueued" />)</para>
-</listitem>
-<listitem><para>SAY (see <xref linkend="keySay" />)</para></listitem>
-<listitem><para>SEEK (see <xref linkend="mthStreamSeek" />)</para></listitem>
-<listitem><para>STATE (see <xref linkend="mthStreamState" />)</para>
-</listitem></itemizedlist>
+<itemizedlist spacing="compact">
+<listitem><para><classname>Stream</classname> method <xref linkend="mthStreamCharIn" xrefstyle="select:title"/></para></listitem>
+<listitem><para><classname>Stream</classname> method <xref linkend="mthStreamCharOut" xrefstyle="select:title"/></para></listitem>
+<listitem><para><classname>Stream</classname> method <xref linkend="mthStreamChars" xrefstyle="select:title"/></para></listitem>
+<listitem><para><classname>Stream</classname> method <xref linkend="mthStreamClose" xrefstyle="select:title"/></para></listitem>
+<listitem><para><classname>Stream</classname> method <xref linkend="mthStreamCommand" xrefstyle="select:title"/></para></listitem>
+<listitem><para><classname>Stream</classname> method <xref linkend="mthStreamDescription" xrefstyle="select:title"/></para></listitem>
+<listitem><para><classname>Stream</classname> method <xref linkend="mthStreamFlush" xrefstyle="select:title"/></para></listitem>
+<listitem><para><classname>Stream</classname> method <xref linkend="mthStreamLineIn" xrefstyle="select:title"/></para></listitem>
+<listitem><para><classname>Stream</classname> method <xref linkend="mthStreamLineOut" xrefstyle="select:title"/></para></listitem>
+<listitem><para><classname>Stream</classname> method <xref linkend="mthStreamLines" xrefstyle="select:title"/></para></listitem>
+<listitem><para><classname>Stream</classname> method <xref linkend="mthStreamMakeArray" xrefstyle="select:title"/></para></listitem>
+<listitem><para><classname>Stream</classname> method <xref linkend="mthStreamOpen" xrefstyle="select:title"/></para></listitem>
+<listitem><para>instruction <xref linkend="keyParseLinein"/><!-- @@xreflabel --></para></listitem>
+<listitem><para>instruction <xref linkend="keyParsePull"/><!-- @@xreflabel --></para></listitem>
+<listitem><para><classname>Stream</classname> method <xref linkend="mthStreamPosition" xrefstyle="select:title"/></para></listitem>
+<listitem><para>instruction <xref linkend="keyPull" xrefstyle="select:title"/></para></listitem>
+<listitem><para>instruction <xref linkend="keyPush" xrefstyle="select:title"/></para></listitem>
+<listitem><para><classname>Stream</classname> method <xref linkend="mthStreamQualify" xrefstyle="select:title"/></para></listitem>
+<listitem><para><classname>Stream</classname> method <xref linkend="mthStreamQuery" xrefstyle="select:title"/></para></listitem>
+<listitem><para>instruction <xref linkend="keyQueue" xrefstyle="select:title"/></para></listitem>
+<listitem><para>built-in function <xref linkend="bifQueued" xrefstyle="select:title"/></para></listitem>
+<listitem><para>instruction <xref linkend="keySay" xrefstyle="select:title"/></para></listitem>
+<listitem><para><classname>Stream</classname> method <xref linkend="mthStreamSeek" xrefstyle="select:title"/></para></listitem>
+<listitem><para><classname>Stream</classname> method <xref linkend="mthStreamState" xrefstyle="select:title"/></para></listitem>
+</itemizedlist>
 </section>
 </chapter>

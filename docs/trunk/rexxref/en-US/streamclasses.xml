@@ -64,7 +64,7 @@ by subclassing it or inheriting from it as a mixin. Many of the methods in this
 class are abstract and must be overridden or they will throw a syntax error when invoked.</para>
 
 <!-- $GENERATED-20150924-START rexxrefClassTable(InputOutputStream) -->
-<table id="ooRexxInputOutputStreamClass" frame="all" pgwide="0">
+<table id="ooRexxInputOutputStreamClass" frame="all" pgwide="1">
 <title>InputOutputStream Class</title>
 <tgroup cols="1">
 <tbody>
@@ -105,7 +105,7 @@ by subclassing it or inheriting from it as a mixin. Many of the methods in this
 class are abstract and must be overridden or they will throw a syntax error when invoked.</para>
 
 <!-- $GENERATED-20150924-START rexxrefClassTable(InputStream) -->
-<table id="ooRexxInputStreamClass" frame="all" pgwide="0">
+<table id="ooRexxInputStreamClass" frame="all" pgwide="1">
 <title>InputStream Class</title>
 <tgroup cols="1">
 <tbody>
@@ -244,7 +244,7 @@ by subclassing it or inheriting from it as a mixin. Many of the methods in this
 class are abstract and must be overridden or they will throw a syntax error when invoked.</para>
 
 <!-- $GENERATED-20150924-START rexxrefClassTable(OutputStream) -->
-<table id="ooRexxOutputStreamClass" frame="all" pgwide="0">
+<table id="ooRexxOutputStreamClass" frame="all" pgwide="1">
 <title>OutputStream Class</title>
 <tgroup cols="1">
 <tbody>
@@ -379,15 +379,16 @@ syntax error 93.963 to be raised.</para>
 <indexterm><primary>class</primary>
 <secondary>Stream class</secondary></indexterm>
 
-<para>A stream object allows external communication from
-Rexx. (See <xref linkend="iostrms" /> for a
-discussion of Rexx input and output.)</para>
+<para>A stream object allows external communication from Rexx.
+(See <xref linkend="iostrms" /> for a discussion of Rexx input and output.)
+</para>
 <para>The Stream class is a subclass of the
-InputOutputStream class (<xref linkend="clsInputOutputStream" />).</para>
+<xref linkend="clsInputOutputStream" xrefstyle="template:InputOutputStream class"/>.
+</para>
 
 <!-- Modified: commented undocumented !xxx_xxx() methods -->
 <!-- $GENERATED-20150924-START rexxrefClassTable(Stream) -->
-<table id="ooRexxStreamClass" frame="all" pgwide="0">
+<table id="ooRexxStreamClass" frame="all" pgwide="1">
 <title>Stream Class</title>
 <tgroup cols="1">
 <tbody>
@@ -495,7 +496,7 @@ a <xref linkend="clsFile" xrefstyle="template:File object"/>.</para>
 <para>Returns a fixed array that contains the data of the stream in line or
 character format, starting from the current read position. The line format is
 the default.</para>
-<para>If you have used the <emphasis role="bold">charIn</emphasis>
+<para>If you have used the <methodname>charIn</methodname>
 method, the first line can be a partial line.
 </para>
 </section>
@@ -515,9 +516,11 @@ method, the first line can be a partial line.
 
 <para>Writes the data in array
 <emphasis role="italic">array</emphasis> to the stream.
-If LINES is specified, each element of the array is written using
-lineout().  If CHARS is specified, each element is written using charout().  The
-default method is LINES.
+If <option>LINES</option> is specified, each element of the array is written using
+<xref linkend="mthStreamLineOut" xrefstyle="select:title"/>.
+If <option>CHARS</option> is specified, each element is written using
+<xref linkend="mthStreamCharOut" xrefstyle="select:title"/>.
+The default method is <option>LINES</option>.
 </para>
 </section>
 
@@ -566,10 +569,10 @@ fails, the stream opens for input only.
 The stream also
 advances the write pointer.</para>
 <para>The <emphasis role="italic">string</emphasis> can be the null string.
-In this case, <emphasis role="bold">charOut</emphasis> writes
+In this case, <methodname>charOut</methodname> writes
 no characters to the stream and returns <computeroutput>0</computeroutput>.
 If you omit <emphasis role="italic">string</emphasis>,
-<emphasis role="bold">charOut</emphasis> writes no
+<methodname>charOut</methodname> writes no
 characters to the stream and returns <computeroutput>0</computeroutput>.
 The stream is also closed.</para>
 <para>If you specify <emphasis role="italic">start</emphasis>, this positions
@@ -622,11 +625,11 @@ CHARS always returns <computeroutput>1</computeroutput>.
 </mediaobject>
 
 <para>Closes the stream.
-<emphasis role="bold">close</emphasis> returns
+<methodname>close</methodname> returns
 <computeroutput>READY:</computeroutput> if closing the stream is successful,
 or an appropriate error message.
 If you have tried to close an unopened file, then the
-<emphasis role="bold">close</emphasis> method returns
+<methodname>close</methodname> method returns
 a null string (&quot;&quot;).</para>
 </section>
 
@@ -646,18 +649,20 @@ a null string (&quot;&quot;).</para>
 <para>Returns a string after performing the specified
 <emphasis role="italic">stream_command</emphasis>. The returned string depends
 on the <emphasis role="italic">stream_command</emphasis> performed
-and can be the null string. The following
-<emphasis role="italic">stream_command</emphasis>s: </para>
+and can be the null string. Commands aree available to:
 <itemizedlist>
-<listitem><para>Open a stream for reading, writing, or both</para></listitem>
-<listitem><para>Close a stream at the end of an operation</para></listitem>
-<listitem><para>Move the line read or write position within a persistent stream
-(for example, a file)</para></listitem>
-<listitem><para>Get information about a stream</para></listitem></itemizedlist>
+ <listitem><para>Open a stream for reading, writing, or both</para></listitem>
+ <listitem><para>Close a stream at the end of an operation</para></listitem>
+ <listitem><para>Move the line read or write position within a persistent stream
+ (for example, a file)</para></listitem>
+ <listitem><para>Get information about a stream</para></listitem>
+</itemizedlist>
+</para>
 
 <para>If the method is unsuccessful, it returns an error message
 string in the same form that the
-<emphasis role="bold">description</emphasis> method uses.</para>
+<xref linkend="mthStreamDescription" xrefstyle="select:title"/> method uses.
+</para>
 <para>For most error conditions, the additional information is in the form of
 a numeric return code. This return code is the value of
 <computeroutput>ERRNO</computeroutput> that
@@ -666,33 +671,34 @@ is set whenever one of the file system primitives returns with a
 
 <section id="StreamCommandStrings"><title>Command Strings</title>
 <para>The argument <emphasis role="italic">stream_command</emphasis>
-can be any expression that to one of the following command strings:
-</para>
-
+can be any expression that evaluates to one of the following command strings:
 <mediaobject>
 <imageobject>
 <imagedata fileref="images/bif/stream_command.svg" scale="55" />
 </imageobject>
 </mediaobject>
+</para>
 
-<para><emphasis role="bold">WRITE-OPTIONS:</emphasis></para>
+<para><emphasis role="bold">WRITE-OPTIONS:</emphasis>
 <mediaobject>
 <imageobject>
 <imagedata fileref="images/bif/stream_write_options.svg" scale="55" />
 </imageobject>
 </mediaobject>
+</para>
 
-<para><emphasis role="bold">OPEN-OPTIONS:</emphasis></para>
+<para><emphasis role="bold">OPEN-OPTIONS:</emphasis>
 <mediaobject>
 <imageobject>
 <imagedata fileref="images/bif/stream_open_options.svg" scale="55" />
 </imageobject>
 </mediaobject>
+</para>
 
 <variablelist>
 <varlistentry><term>OPEN</term>
 <listitem><para>Opens the stream object and returns
-<computeroutput>READY:</computeroutput>. (If unsuccessful, the previous
+<literal>READY:</literal>. (If unsuccessful, the previous
 information about return codes applies.)
 The default for OPEN is to open the stream for both reading and writing data,
 for example: <computeroutput>&apos;OPEN BOTH&apos;</computeroutput>. To specify that the
@@ -824,7 +830,7 @@ forward from the current read or write position.
 backward from the current read or write position.
 </para></listitem></varlistentry>
 </variablelist>
-<para>The <emphasis role="bold">command</emphasis>
+<para>The <methodname>command</methodname>
 method with the SEEK option returns the new position
 in the stream if the read or write position is successfully located, or an
 appropriate error message.</para>
@@ -1034,9 +1040,9 @@ stream_name~command("query timestamp")
 
 <para>Returns any descriptive string associated with the
 current state of the stream or &nil; if no descriptive string is
-available. The <emphasis role="bold">description</emphasis>
+available. The <methodname>description</methodname>
 method is identical with the STATE method except
-that the string that <emphasis role="bold">description</emphasis>
+that the string that <methodname>description</methodname>
 returns is followed by a colon and, if
 available, additional information about ERROR or NOTREADY states.</para>
 </section>
@@ -1147,34 +1153,32 @@ opened for output only.
 
 <para>Returns the number of completed lines that available for input.
 If the stream has already been read with
-<emphasis role="bold">charIn</emphasis>
+<xref linkend="mthStreamCharIn" xrefstyle="select:title"/>
 this can include an initial partial line. For persistent streams the count
 starts at the current read position. In effect,
-<emphasis role="bold">lines</emphasis> reports whether a read
-action of charIn (see <xref linkend="mthStreamCharIn" />) or lineIn (see
-<xref linkend="mthStreamLineIn" />) will succeed. (For an explanation of
-input and output, see
+<methodname>lines</methodname> reports whether a read
+action of <methodname>charIn</methodname> or
+<xref linkend="mthStreamLineIn" xrefstyle="select:title"/> will succeed.
+For an explanation of input and output, see
 <xref linkend="iostrms" />.)</para>
-<para>For a Queue, <emphasis role="bold">lines</emphasis>
+<para>For a <classname>Queue</classname>, <methodname>lines</methodname>
 returns the actual number of lines.
 </para>
-<para> </para>
 
 <note><title>Note</title>
-<para>The <emphasis role="bold">chars</emphasis>
+<para>The <xref linkend="mthStreamChars" xrefstyle="select:title"/>
 method returns the number of characters in a
 persistent stream or the presence of data in a transient stream. The
-<emphasis role="bold">lines</emphasis>
+<methodname>lines</methodname>
 method determines the actual number of lines by scanning the stream starting
 at the current position and counting the lines. For large streams, this can
-be a time-consuming operation.  Therefore, avoid the use of the LINES method
+be a time-consuming operation.  Therefore, avoid the use of the <methodname>lines</methodname> method
 in the  condition of a loop reading a stream. It is recommended that you use
-the <emphasis role="bold">chars</emphasis>
-method (<xref linkend="mthStreamChars" />).
+the <methodname>chars</methodname> method instead.
 </para></note>
 
 <para>The ANSI Standard has extended this function to allow an option: "Count".
-If this option is used, <emphasis role="bold">lines</emphasis>
+If this option is used, <methodname>lines</methodname>
 returns the actual number of complete
 lines remaining in the stream, irrespective of how long this operation takes.
 </para>
@@ -1201,7 +1205,7 @@ remaining in the file or 0 if no lines remain.</para>
 <para>Returns a fixed array that contains
 the data of the stream in line or character format, starting from the current
 read position. The line format is the default.</para>
-<para>If you have used the <emphasis role="bold">charIn</emphasis>
+<para>If you have used the <methodname>charIn</methodname>
 method, the first line can be a partial line.
 </para>
 </section>
@@ -1219,38 +1223,38 @@ method, the first line can be a partial line.
 </imageobject>
 </mediaobject>
 
-<para><emphasis role="bold">WRITE-OPTIONS:</emphasis></para>
-
+<para><emphasis role="bold">WRITE-OPTIONS:</emphasis>
 <mediaobject>
 <imageobject>
 <imagedata fileref="images/bif/stream_write_options.svg" scale="55" />
 </imageobject>
 </mediaobject>
+</para>
 
-<para><emphasis role="bold">OPEN-OPTIONS:</emphasis></para>
-
+<para><emphasis role="bold">OPEN-OPTIONS:</emphasis>
 <mediaobject>
 <imageobject>
 <imagedata fileref="images/bif/stream_open_options.svg" scale="55" />
 </imageobject>
 </mediaobject>
+</para>
 
 <para>Opens the stream and returns
-<computeroutput>READY:</computeroutput>. If the method is unsuccessful, it
+<literal>READY:</literal>. If the method is unsuccessful, it
 returns an error message string in the same form that the
-<emphasis role="bold">description</emphasis> method uses.</para>
+<methodname>description</methodname> method uses.</para>
 <para>For most error conditions, the additional information is in the form of
 a numeric return code. This return code is the value of
 <computeroutput>ERRNO</computeroutput>,
 which is set whenever one of the file system primitives returns with a
 <computeroutput>-1</computeroutput>.</para>
-<para>By default, <emphasis role="bold">open</emphasis>
+<para>By default, <methodname>open</methodname>
 opens the stream for both reading and writing data, for
 example: <computeroutput>&apos;open BOTH&apos;</computeroutput>. To specify that the
 stream be only opened for input or output,
 specify READ or WRITE.</para>
 <para>The options for the
-<emphasis role="bold">open</emphasis> method are: </para>
+<methodname>open</methodname> method are: </para>
 <variablelist>
 <varlistentry><term>READ</term>
 <listitem><para>Opens the stream for input only.
@@ -1340,9 +1344,9 @@ stream_name~open("read")
 </imageobject>
 </mediaobject>
 
-<para><emphasis role="bold">position</emphasis> is a synonym for
-<emphasis role="bold">seek</emphasis>. (See
-<xref linkend="mthStreamSeek" /> .)</para>
+<para><methodname>position</methodname> is a synonym for
+<xref linkend="mthStreamSeek" xrefstyle="select:title"/>.
+</para>
 </section>
 
 <section id="mthStreamQualify"><title>qualify</title>
@@ -1375,13 +1379,12 @@ not be open.</para>
 </imageobject>
 </mediaobject>
 
-<para>Used with these options, the <emphasis role="bold">query</emphasis>
-method returns specific information about a stream. Except for
-<emphasis role="bold">query</emphasis> HANDLE and
-<emphasis role="bold">query</emphasis> POSITION, the
-stream
-returns the query information even if the stream is not open. A null string
-is returned for nonexistent streams. </para>
+<para>Used with these options, <methodname>query</methodname>
+returns specific information about a stream.
+Except for <option>HANDLE</option> and <option>POSITION</option>,
+the stream returns the query information even if the stream is not open.
+A null string is returned for nonexistent streams.
+</para>
 <variablelist>
 <varlistentry><term>DATETIME</term>
 <listitem><para>returns the date and time stamps of a persistent stream
@@ -1577,11 +1580,11 @@ forward from the current read or write position.
 backward from the current read or write position.
 </para></listitem></varlistentry>
 </variablelist>
-<para>The <emphasis role="bold">seek</emphasis>
+<para>The <methodname>seek</methodname>
 method returns the new position in the stream if the read or
 write position is successfully located, or an appropriate error message.</para>
 <para>The following is a description of the options for
-<emphasis role="bold">seek</emphasis>: </para>
+<methodname>seek</methodname>: </para>
 <variablelist>
 <varlistentry><term>READ</term>
 <listitem><para>specifies that the read position be set.
@@ -1644,7 +1647,7 @@ fromend  = 125
 (possibly during input, output, or through the STREAM function). See
 <xref linkend="stmerr" />.
 You might be able to obtain additional information about the error with the
-<emphasis role="bold">description</emphasis>
+<methodname>description</methodname>
 method or by calling the STREAM function with a request for the
 description.
 </para></listitem></varlistentry>
@@ -1700,7 +1703,8 @@ represents i.e. the name of the file.
 </imageobject>
 </mediaobject>
 
-<para>Returns a StreamSupplier object (<xref linkend="clsStreamSupplier" />) for the stream containing
+<para>Returns a <xref linkend="clsStreamSupplier" xrefstyle="template:StreamSupplier"/>
+object for the stream containing
 the remaining stream lines and linenumber positions for the stream.
 </para>
 </section>
@@ -1720,13 +1724,13 @@ the remaining stream lines and linenumber positions for the stream.
 
 <para>This method cleans up the object when it is garbage collected. It should
 not be invoked directly except via an
-<emphasis role="bold">uninit</emphasis> method of a subclass of the Stream
+<methodname>uninit</methodname> method of a subclass of the Stream
 class.
 </para>
 <para>If the Stream class is subclassed and the subclass provides an
-<emphasis role="bold">uninit</emphasis>
+<methodname>uninit</methodname>
 method then that method must invoke the superclass
-<emphasis role="bold">uninit</emphasis> method.
+<methodname>uninit</methodname> method.
 </para>
 <example>
 <title>Stream object &mdash; UNINIT method</title>

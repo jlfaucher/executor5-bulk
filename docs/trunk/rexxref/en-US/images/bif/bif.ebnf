@@ -125,9 +125,12 @@ sourceline ::= 'SOURCELINE(' n? ')'
 
 space ::= 'SPACE(' string ',' n? ',' pad? ')'
 
-stream ::= 'STREAM(' name ( ',' ( 'State' |                    
-                                  'Command' ',' stream_command |
-                                  'Description' ) )? ')'
+stream ::= 'STREAM(' name ',' ( |
+                                'State' |                    
+                                'Command' ',' stream_command |
+                                'Description' ) ')'
+
+stream_command_syntax ::= 'STREAM(' name ',' 'Command' ',' stream_command ')'
 
 stream_command ::= ( ( 'Open' ( 'BOth' (WRITE-OPTIONS - fragment) | 'REAd' | 'Write' (WRITE-OPTIONS - fragment) )? (OPEN-OPTIONS - fragment) ) |
                      ( 'Close' ) |

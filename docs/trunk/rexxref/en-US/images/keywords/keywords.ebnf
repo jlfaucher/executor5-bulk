@@ -1,6 +1,6 @@
 address ::= 'ADDRESS' (  |
                       environment expression? |
-                      'VALUE'? expression ) ';'
+                      'VALUE'? env_expression ) ';'
 
 arg ::= 'ARG' ( template_list )? ';'
 
@@ -68,8 +68,10 @@ push ::= 'PUSH' (expression )? ';'
 
 queue ::= 'QUEUE' (expression )? ';'
 
-raise ::= 'RAISE' ( condition | 'ERROR' errorcode | 'FAILURE' failurecode | 'SYNTAX' number |
-                  'USER' usercondition | 'PRPOAGATE' ) (OPTIONS - fragment) ';'
+raise ::= 'RAISE' ( 'ERROR' errorcode | 'FAILURE' failurecode |
+                    'HALT' | 'LOSTDIGITS' | 'NOMETHOD' | 'NOSTRING' | 'NOTREADY' | 'NOVALUE' |  
+                    'SYNTAX' number | 'USER' usercondition | 'PROPAGATE' )
+                  (OPTIONS - fragment) ';'
 
 raise_options ::= ( 'ADDITIONAL' expra | 'ARRAY' '(' (expri ( ',' expri )* )? ')' )?
                   ( 'DESCRIPTION' exprd )?
@@ -91,9 +93,9 @@ select4 ::= 'END' name? ';'
 /* Split into parts, because it's too large to nicely fit on a page */
 signal ::= 'SIGNAL' ( labelname |
                     ( 'VALUE' )? expression ) ';'
-signal_off ::= 'SIGNAL' 'OFF' ( 'ANY' | 'ERROR' | 'FAILURE' | 'HALT' | 'LOSTDOGITS' | 'NOMETHOD' |
+signal_off ::= 'SIGNAL' 'OFF' ( 'ANY' | 'ERROR' | 'FAILURE' | 'HALT' | 'LOSTDIGITS' | 'NOMETHOD' |
                               'NOSTRING' | 'NOTREADY' | 'NOVALUE' | 'SYNTAX' | 'USER' usercondition ) ';'
-signal_on ::= 'SIGNAL' 'ON' ( 'ANY' | 'ERROR' | 'FAILURE' | 'HALT' | 'LOSTDOGITS' | 'NOMETHOD' |
+signal_on ::= 'SIGNAL' 'ON' ( 'ANY' | 'ERROR' | 'FAILURE' | 'HALT' | 'LOSTDIGITS' | 'NOMETHOD' |
                             'NOSTRING' | 'NOTREADY' | 'NOVALUE' | 'SYNTAX' | 'USER' usercondition ) 
                        ( 'NAME' trapname )? ';'
 

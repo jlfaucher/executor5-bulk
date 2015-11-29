@@ -100,7 +100,7 @@ notification target.
 
 <!-- Modified: remove separate alias "cancelled" -->
 <!-- $GENERATED-20150704-START rexxrefClassTable(Alarm) -->
-<table id="ooRexxAlarmClass" frame="all" pgwide="0">
+<table id="ooRexxAlarmClass" frame="all" pgwide="1">
 <title>Alarm Class</title>
 <tgroup cols="1">
 <tbody>
@@ -352,7 +352,7 @@ message is sent to the notification target.
 </para>
 
 <!-- $GENERATED-20151016-START rexxrefClassTable(AlarmNotification) -->
-<table id="ooRexxAlarmNotificationClass" frame="all" pgwide="0">
+<table id="ooRexxAlarmNotificationClass" frame="all" pgwide="1">
 <title>AlarmNotification Class</title>
 <tgroup cols="1">
 <tbody>
@@ -428,7 +428,7 @@ only be created using the native code application programming interfaces.  The B
 class new method will raise an error if invoked.</para>
 
 <!-- $GENERATED-20150924-START rexxrefClassTable(Buffer) -->
-<table id="ooRexxBufferClass" frame="all" pgwide="0">
+<table id="ooRexxBufferClass" frame="all" pgwide="1">
 <title>Buffer Class</title>
 <tgroup cols="1">
 <tbody>
@@ -476,7 +476,7 @@ The Buffer class new method will raise an error if invoked.</para>
 <para>This class is defined as a mixin class.</para>
 
 <!-- $GENERATED-20150923-START rexxrefClassTable(Comparable) -->
-<table id="ooRexxComparableClass" frame="all" pgwide="0">
+<table id="ooRexxComparableClass" frame="all" pgwide="1">
 <title>Comparable Class</title>
 <tgroup cols="1">
 <tbody>
@@ -544,7 +544,7 @@ smaller than the receiving object.</para>
 <para>It is defined as a mixin class.</para>
 
 <!-- $GENERATED-20150923-START rexxrefClassTable(Comparator) -->
-<table id="ooRexxComparatorClass" frame="all" pgwide="0">
+<table id="ooRexxComparatorClass" frame="all" pgwide="1">
 <title>Comparator Class</title>
 <tgroup cols="1">
 <tbody>
@@ -580,9 +580,9 @@ smaller than the receiving object.</para>
 <para>This method returns "-1" if the <emphasis role="italic">second</emphasis> is larger than
 <emphasis role="italic">first</emphasis>
 object, "0" if the two objects are equal, and "1" <emphasis role="italic">second</emphasis> is
-smaller than <emphasis role="italic">first</emphasis> .</para>
-<para>The default Comparator compare() method assumes that <emphasis role="italic">first</emphasis>
-is an object that implements the Comparable compareTo method (<xref linkend="mthComparableCompareTo" />.
+smaller than <emphasis role="italic">first</emphasis>.</para>
+<para>The default Comparator <methodname>compare</methodname> method assumes that <emphasis role="italic">first</emphasis>
+is an object that implements the <classname>Comparable</classname> <xref linkend="mthComparableCompareTo" xrefstyle="template:compareTo"/> method.
 Subclasses may override this to implement more specific comparisons.
 </para>
 <para><example id="ex.comparator-compare">
@@ -603,7 +603,7 @@ wine~sortWith(.Comparator~new)         -- Strawberries, angel's kiss, cherries
 <para>It is defined as a mixin class.</para>
 
 <!-- $GENERATED-20150923-START rexxrefClassTable(CaselessComparator) -->
-<table id="ooRexxCaselessComparatorClass" frame="all" pgwide="0">
+<table id="ooRexxCaselessComparatorClass" frame="all" pgwide="1">
 <title>CaselessComparator Class</title>
 <tgroup cols="1">
 <tbody>
@@ -666,7 +666,7 @@ wine~sortWith(.CaselessComparator~new) -- angel's kiss, cherries, Strawberries
 <para>It is defined as a mixin class.</para>
 
 <!-- $GENERATED-20150923-START rexxrefClassTable(ColumnComparator) -->
-<table id="ooRexxColumnComparatorClass" frame="all" pgwide="0">
+<table id="ooRexxColumnComparatorClass" frame="all" pgwide="1">
 <title>ColumnComparator Class</title>
 <tgroup cols="1">
 <tbody>
@@ -749,7 +749,7 @@ wine~sortWith(.ColumnComparator~new(3, 100))
 <para>It is defined as a mixin class.</para>
 
 <!-- $GENERATED-20150923-START rexxrefClassTable(CaselessColumnComparator) -->
-<table id="ooRexxCaselessColumnComparatorClass" frame="all" pgwide="0">
+<table id="ooRexxCaselessColumnComparatorClass" frame="all" pgwide="1">
 <title>CaselessColumnComparator Class</title>
 <tgroup cols="1">
 <tbody>
@@ -830,15 +830,15 @@ wine~sortWith(.CaselessColumnComparator~new(3, 100))
 <indexterm><primary>class</primary>
 <secondary>DescendingComparator class</secondary></indexterm>
 
-<para>The DescendingComparator class performs sort orderings in descending order.  This is the inverse of
-a Comparator (<xref linkend="clsComparator" />) sort order.
+<para>The DescendingComparator class performs sort orderings in descending order.
+This is the inverse of a <xref linkend="clsComparator" xrefstyle="template:Comparator"/> sort order.
 </para>
 
 <para>This class is defined as a mixin class. It must be used
 by inheriting from it as a mixin.</para>
 
 <!-- $GENERATED-20150923-START rexxrefClassTable(DescendingComparator) -->
-<table id="ooRexxDescendingComparatorClass" frame="all" pgwide="0">
+<table id="ooRexxDescendingComparatorClass" frame="all" pgwide="1">
 <title>DescendingComparator Class</title>
 <tgroup cols="1">
 <tbody>
@@ -882,7 +882,7 @@ by inheriting from it as a mixin.</para>
 object, "0" if the two objects are equal, and "-1" <emphasis role="italic">second</emphasis> is
 smaller than <emphasis role="italic">first</emphasis>, resulting in a descending sort sequence.
 The DescendingComparator assumes the <emphasis role="italic">first</emphasis> object implements
-the Comparable compareTo method (<xref linkend="mthComparableCompareTo" />.
+the <classname>Comparable</classname> <xref linkend="mthComparableCompareTo" xrefstyle="template:compareTo"/> method.
 </para>
 <para><example id="ex.descendingcomparator-compare">
 <title>DescendingComparator class
@@ -900,13 +900,14 @@ wine~sortWith(.DescendingComparator~new)    -- cherries, angel's kiss, Strawberr
 <indexterm><primary>class</primary>
 <secondary>CaselessDescendingComparator class</secondary></indexterm>
 
-<para>The CaselessDescendingComparator class performs caseless string sort orderings in descending order.  This is the inverse of
-a CaselessComparator (<xref linkend="clsCaselessComparator" />) sort order.
+<para>The CaselessDescendingComparator class performs caseless string sort orderings in descending order.
+This is the inverse of a
+<xref linkend="clsCaselessComparator" xrefstyle="template:CaselessComparator"/> sort order.
 </para>
 <para>This class is defined as a mixin class.</para>
 
 <!-- $GENERATED-20150923-START rexxrefClassTable(CaselessDescendingComparator) -->
-<table id="ooRexxCaselessDescendingComparatorClass" frame="all" pgwide="0">
+<table id="ooRexxCaselessDescendingComparatorClass" frame="all" pgwide="1">
 <title>CaselessDescendingComparator Class</title>
 <tgroup cols="1">
 <tbody>
@@ -970,7 +971,7 @@ another Comparator object to reverse the resulting sort order.</para>
 <para>This class is defined as a mixin class.</para>
 
 <!-- $GENERATED-20150923-START rexxrefClassTable(InvertingComparator) -->
-<table id="ooRexxInvertingComparatorClass" frame="all" pgwide="0">
+<table id="ooRexxInvertingComparatorClass" frame="all" pgwide="1">
 <title>InvertingComparator Class</title>
 <tgroup cols="1">
 <tbody>
@@ -1066,7 +1067,7 @@ rather than string comparison rules.</para>
 <para>It is defined as a mixin class.</para>
 
 <!-- $GENERATED-20150923-START rexxrefClassTable(NumericComparator) -->
-<table id="ooRexxNumericComparatorClass" frame="all" pgwide="0">
+<table id="ooRexxNumericComparatorClass" frame="all" pgwide="1">
 <title>NumericComparator Class</title>
 <tgroup cols="1">
 <tbody>
@@ -1159,7 +1160,7 @@ dates.
 </para></note> 
 
 <!-- $GENERATED-20150923-START rexxrefClassTable(DateTime) -->
-<table id="ooRexxDateTimeClass" frame="all" pgwide="0">
+<table id="ooRexxDateTimeClass" frame="all" pgwide="1">
 <title>DateTime Class</title>
 <tgroup cols="1">
 <tbody>
@@ -2761,7 +2762,7 @@ For non-leap years, this returns 365.
 <indexterm><primary>class</primary>
 <secondary>File class</secondary></indexterm>
 
-<para>The File class provides services which are common to all the filesystems supported by ooRexx.
+<para>The File class provides services which are common to all Rexx-supported filesystems.
 A File object represents a path to a file or directory. The path can be relative or absolute.
 </para>
 <para>
@@ -2771,7 +2772,7 @@ This absolute path is memorized on the File object, and will not change if you c
 
 <!-- Modified: lastModified= combined into attribute -->
 <!-- $GENERATED-20150924-START rexxrefClassTable(File) -->
-<table id="ooRexxFileClass" frame="all" pgwide="0">
+<table id="ooRexxFileClass" frame="all" pgwide="1">
 <title>File Class</title>
 <tgroup cols="1">
 <tbody>
@@ -3709,7 +3710,7 @@ message is sent to the notification target.
 </para>
 
 <!-- $GENERATED-20151016-START rexxrefClassTable(MessageNotification) -->
-<table id="ooRexxMessageNotificationClass" frame="all" pgwide="0">
+<table id="ooRexxMessageNotificationClass" frame="all" pgwide="1">
 <title>MessageNotification Class</title>
 <tgroup cols="1">
 <tbody>
@@ -3764,7 +3765,7 @@ changed dynamically.
 </para>
 
 <!-- $GENERATED-20150923-START rexxrefClassTable(Monitor) -->
-<table id="ooRexxMonitorClass" frame="all" pgwide="0">
+<table id="ooRexxMonitorClass" frame="all" pgwide="1">
 <title>Monitor Class</title>
 <tgroup cols="1">
 <tbody>
@@ -3891,7 +3892,7 @@ longer string objects because it creates fewer intermediate objects.
 </para>
 
 <!-- $GENERATED-20150704-START rexxrefClassTable(MutableBuffer) -->
-<table id="ooRexxMutableBufferClass" frame="all" pgwide="0">
+<table id="ooRexxMutableBufferClass" frame="all" pgwide="1">
 <title>MutableBuffer Class</title>
 <tgroup cols="1">
 <tbody>
@@ -4683,7 +4684,7 @@ require new string objects be extracted from the target buffer.
 </mediaobject>
 
 <para>Retrieves the current buffer size.</para>
-<para>See also method <xref linkend="mthMutableBufferGetBufferSize" xrefstyle="select:title"/>.
+<para>See also method <xref linkend="mthMutableBufferSetBufferSize" xrefstyle="select:title"/>.
 </para>
 </section>
 
@@ -5010,8 +5011,8 @@ blank.
 If <emphasis>n</emphasis> is less than the length of buffer
 content, the content is truncated. If <emphasis>n</emphasis> is 0, the entire
 content is erased and the new buffer size is the value given
-in the <emphasis role="bold">init</emphasis> method.</para>
-<para>See also method <xref linkend="mthMutableBufferSetBufferSize" xrefstyle="select:title"/>.
+in the <methodname>init</methodname> method.</para>
+<para>See also method <xref linkend="mthMutableBufferGetBufferSize" xrefstyle="select:title"/>.
 </para>
 </section>
 
@@ -5218,7 +5219,7 @@ character or unchanged.
 </para>
 <para>The output table is <emphasis role="italic">tableo</emphasis>
 and the input translation table is <emphasis role="italic">tablei</emphasis>.
-<emphasis role="bold">translate</emphasis> searches
+<methodname>translate</methodname> searches
 <emphasis role="italic">tablei</emphasis> for each character
 in the receiving buffer.  If the character is found, the corresponding character
 in
@@ -5491,7 +5492,7 @@ which the search is to be started.</para>
 </para>
 
 <!-- $GENERATED-20150923-START rexxrefClassTable(Orderable) -->
-<table id="ooRexxOrderableClass" frame="all" pgwide="0">
+<table id="ooRexxOrderableClass" frame="all" pgwide="1">
 <title>Orderable Class</title>
 <tgroup cols="1">
 <tbody>
@@ -5717,7 +5718,7 @@ only be created using the native code application programming interfaces.  The P
 class new method will raise an error if invoked.</para>
 
 <!-- $GENERATED-20150924-START rexxrefClassTable(Pointer) -->
-<table id="ooRexxPointerClass" frame="all" pgwide="0">
+<table id="ooRexxPointerClass" frame="all" pgwide="1">
 <title>Pointer Class</title>
 <tgroup cols="1">
 <tbody>
@@ -5862,7 +5863,7 @@ statement to activate its functionality, as follows:</para></note>
 
 <!-- modified: commented undocumented method uninit() -->
 <!-- $GENERATED-20150923-START rexxrefClassTable(RegularExpression) -->
-<table id="ooRexxRegularExpressionClass" frame="all" pgwide="0">
+<table id="ooRexxRegularExpressionClass" frame="all" pgwide="1">
 <title>RegularExpression Class</title>
 <tgroup cols="1">
 <tbody>
@@ -6060,10 +6061,14 @@ myRE2 = .RegularExpression~new("Hello?*")
 </mediaobject>
 
 <para>This method tries to match <emphasis role="italic">string</emphasis> to the regular
-expression that was defined on the "new" invocation or on the
-"parse" invocation. It returns 0 on an unsuccessful match and 1
-on a successful match. For an example see
-<xref linkend="mthRegularExpressionParse" />.
+expression that was defined on the
+<xref linkend="mthRegularExpressionNew" xrefstyle="select:title"/> invocation or on the
+<xref linkend="mthRegularExpressionParse" xrefstyle="select:title"/> invocation.
+It returns 0 on an unsuccessful match and 1
+on a successful match.
+</para>
+<para>For an example see method
+<xref linkend="mthRegularExpressionParse" xrefstyle="select:title"/>.
 </para>
 </section>
 
@@ -6234,7 +6239,9 @@ expression on the "new" invocation or on the "parse" invocation
 in the given <emphasis role="italic">haystack</emphasis> string.
 It returns 0 on an unsuccessful match or the starting position
 on a successful match. The end position of the match can be
-retrieved with the position method (<xref linkend="mthRegularExpressionPosition" />).</para>
+retrieved with the
+<xref linkend="mthRegularExpressionPosition" xrefstyle="select:title"/> method.
+</para>
 
 <example>
 <title>RegularExpression class &mdash; haystack method</title>
@@ -6253,13 +6260,14 @@ end
 </programlisting>
 </example>
 
-<para>Output:</para>
-
+<para>Output:
 <programlisting>
 <![CDATA[
 Found the number 2015 in this sentence.
 ]]>
 </programlisting>
+</para>
+
 </section>
 
 <section id="mthRegularExpressionPosition"><title>position</title>
@@ -6275,7 +6283,10 @@ Found the number 2015 in this sentence.
 </imageobject>
 </mediaobject>
 
-<para>Returns the character position at which the last parse(), pos(), or match()
+<para>Returns the character position at which the last
+<xref linkend="mthRegularExpressionParse" xrefstyle="select:title"/>,
+<xref linkend="mthRegularExpressionPos" xrefstyle="select:title"/>, or
+<xref linkend="mthRegularExpressionMatch" xrefstyle="select:title"/>
 method ended.</para>
 
 <example>
@@ -6306,14 +6317,16 @@ say myRE~position                     -- will be 2 (failure to match)
 <secondary>RexxContext class</secondary></indexterm>
 
 <para>The RexxContext class gives access to context information about the
-currently executing Rexx code.  Instances of the RexxContext class can only be
-obtained via the <xref linkend="contexte" xrefstyle="template:.CONTEXT environment symbol"/>.  They cannot be directly created
-by the user. It is a
-subclass of the Object class (<xref linkend="clsObject" />).</para>
+currently executing Rexx code.
+Instances of the RexxContext class can only be obtained via the
+<xref linkend="contexte" xrefstyle="template:.CONTEXT environment symbol"/>.
+They cannot be directly created by the user.
+It is a subclass of the <xref linkend="clsObject" xrefstyle="template:Object class"/>.
+</para>
 
 <!-- Modified: new() and copy() are forbidden -->
 <!-- $GENERATED-20150924-START rexxrefClassTable(RexxContext) -->
-<table id="ooRexxRexxContextClass" frame="all" pgwide="0">
+<table id="ooRexxRexxContextClass" frame="all" pgwide="1">
 <title>RexxContext Class</title>
 <tgroup cols="1">
 <tbody>
@@ -6366,7 +6379,8 @@ subclass of the Object class (<xref linkend="clsObject" />).</para>
 </mediaobject>
 
 <para>Returns the arguments used to invoke the current context as an array.
-This is equivalent to using the Arg(1, 'A') (<xref linkend="bifArg" />) built-in function.
+This is equivalent to using the
+<xref linkend="bifArg" xrefstyle="select:title"/><code>(1, 'A')</code> built-in function.
 </para>
 </section>
 
@@ -6385,7 +6399,7 @@ This is equivalent to using the Arg(1, 'A') (<xref linkend="bifArg" />) built-in
 
 <para>Returns the current context condition object, or &nil; if the context does
 not currently have a trapped condition.  This is equivalent to using the
-Condition('O') (<xref linkend="bifCondition" />) built-in function.
+<xref linkend="bifCondition" xrefstyle="select:title"/><code>('O')</code> built-in function.
 </para>
 </section>
 
@@ -6420,10 +6434,11 @@ the <xref linkend="bifDigits" xrefstyle="select:title"/> built-in function.
 </imageobject>
 </mediaobject>
 
-<para>Returns the current executable object for the current context.  The
-executable will be either a Routine (<xref linkend="clsRoutine" />) or
-Method object (<xref linkend="clsMethod" />), depending on the type of
-the active context.
+<para>Returns the current executable object for the current context.
+The executable will be either a
+<xref linkend="clsRoutine" xrefstyle="template:Routine object"/> or a
+<xref linkend="clsMethod" xrefstyle="template:Method object"/>,
+depending on the type of the active context.
 </para>
 </section>
 
@@ -6477,7 +6492,7 @@ the active context.
 </mediaobject>
 
 <para>Returns the context current execution line.  This is equivalent to using the
-.LINE (<xref linkend="linee" />) environment symbol.
+<xref linkend="linee" xrefstyle="template:.LINE"/> environment symbol.
 </para>
 </section>
 
@@ -6517,7 +6532,7 @@ is the name of the label used to invoke the call.  If the context is the main pa
 </imageobject>
 </mediaobject>
 
-<para>Returns the Package (<xref linkend="clsPackage" />) object
+<para>Returns the <xref linkend="clsPackage" xrefstyle="template:Package"/> object
 associated with the current executable object.
 </para>
 </section>
@@ -6537,7 +6552,7 @@ associated with the current executable object.
 
 <para>Returns the context current return status value.  If no host commands have
 been issued in the current context, &nil; is returned.  This is equivalent to using
-the .RS (<xref linkend="rs" />) environment symbol.
+the <xref linkend="rs" xrefstyle="template:.RS"/> environment symbol.
 </para>
 </section>
 
@@ -6639,7 +6654,7 @@ information in a single place.
 Only one instance of the RexxInfo class can be obtained via the
 <xref linkend="rexxinfoEnv" xrefstyle="template:.REXXINFO environment symbol"/>,
 other instances cannot be created or copied.
-RexxInfo is a subclass of the
+<classname>RexxInfo</classname> is a subclass of the
 <xref linkend="clsObject" xrefstyle="template:Object class"/>.
 </para>
 <para>
@@ -6685,7 +6700,7 @@ RexxInfo provides read-only attribute methods to get
 
 <!-- Modified: remove forbidden "mthRexxInfoNew" and "mthRexxInfoCopy" -->
 <!-- $GENERATED-20150704-START rexxrefClassTable(RexxInfo) -->
-<table id="ooRexxRexxInfoClass" frame="all" pgwide="0">
+<table id="ooRexxRexxInfoClass" frame="all" pgwide="1">
 <title>RexxInfo Class</title>
 <tgroup cols="1">
 <tbody>
@@ -6793,7 +6808,7 @@ default format of the
   <para>RexxInfo method <xref linkend="mthRexxInfoName" xrefstyle="select:title"/> and</para>
  </listitem>
  <listitem>
-  <para>keyword instruction <xref linkend="keyParse" xrefstyle="template:PARSE VERSION"/>,</para>
+  <para>keyword instruction <xref linkend="keyParseVersion"/><!-- @@xreflabel -->,</para>
  </listitem>
 </itemizedlist>
 which both also return this date as the third to fifth token of their result.
@@ -6978,14 +6993,14 @@ say .RexxInfo~internalDigits    -- 18 /* for 64-bit addressing mode */
   <para>RexxInfo method <xref linkend="mthRexxInfoName" xrefstyle="select:title"/> and</para>
  </listitem>
  <listitem>
-  <para>keyword instruction <xref linkend="keyParse" xrefstyle="template:PARSE VERSION"/>,</para>
+  <para>keyword instruction <xref linkend="keyParseVersion"/><!-- @@xreflabel -->,</para>
  </listitem>
 </itemizedlist>
 which both also return the language level as the second token of their result.
 </para>
 <para><example>
 <title>RexxInfo class &mdash; languageLevel method</title>
-<programlisting><![CDATA[say .RexxInfo~languageLevel    -- 6.05
+<programlisting><![CDATA[say .RexxInfo~languageLevel    -- 6.05 /* e. g. ooRexx 5.0 */
 ]]></programlisting></example></para>
 </section>
 
@@ -7005,20 +7020,19 @@ The major version number is the integer part of the language processor
 <para>See also
 <itemizedlist spacing="compact">
  <listitem>
-  <para>RexxInfo method <xref linkend="mthRexxInfoVersion" xrefstyle="select:title"/>,</para>
+  <para>RexxInfo methods
+   <xref linkend="mthRexxInfoVersion" xrefstyle="select:title"/> and
+   <xref linkend="mthRexxInfoName" xrefstyle="select:title"/>, and</para>
  </listitem>
  <listitem>
-  <para>RexxInfo method <xref linkend="mthRexxInfoName" xrefstyle="select:title"/> and</para>
- </listitem>
- <listitem>
-  <para>keyword instruction <xref linkend="keyParse" xrefstyle="template:PARSE VERSION"/>,</para>
+  <para>keyword instruction <xref linkend="keyParseVersion"/><!-- @@xreflabel -->,</para>
  </listitem>
 </itemizedlist>
 which also return the major version number as part of their result.
 </para>
 <para><example>
 <title>RexxInfo class &mdash; majorVersion method</title>
-<programlisting><![CDATA[say .RexxInfo~majorVersion    -- 5
+<programlisting><![CDATA[say .RexxInfo~majorVersion    -- 5 /* e. g. ooRexx 5.0 */
 ]]></programlisting></example></para>
 </section>
 
@@ -7033,7 +7047,7 @@ which also return the major version number as part of their result.
 </para>
 <para>Returns the language processor's descriptive name in the format
 that is also returned by 
-<xref linkend="keyParse" xrefstyle="template:PARSE VERSION"/>, which is
+<xref linkend="keyParseVersion"/><!-- @@xreflabel -->, which is
 <itemizedlist spacing="compact">
  <listitem><para>
   an interpreter identification string (that includes
@@ -7048,18 +7062,10 @@ that is also returned by
  </para></listitem>
 </itemizedlist>
 </para>
-<para>See also
-<itemizedlist spacing="compact">
- <listitem>
-  <para>RexxInfo method <xref linkend="mthRexxInfoVersion" xrefstyle="select:title"/>,</para>
- </listitem>
- <listitem>
-  <para>RexxInfo method <xref linkend="mthRexxInfoLanguageLevel" xrefstyle="select:title"/> and</para>
- </listitem>
- <listitem>
-  <para>keyword instruction <xref linkend="keyParse" xrefstyle="template:PARSE VERSION"/>.</para>
- </listitem>
-</itemizedlist>
+<para>See also methods
+<xref linkend="mthRexxInfoVersion" xrefstyle="select:title"/> and
+<xref linkend="mthRexxInfoLanguageLevel" xrefstyle="select:title"/>, and
+keyword instruction <xref linkend="keyParseVersion"/><!-- @@xreflabel -->.
 </para>
 <para><example>
 <title>RexxInfo class &mdash; name method</title>
@@ -7076,15 +7082,14 @@ that is also returned by
 <imagedata fileref="images/classes/rexxinfo_package.svg" scale="55" />
 </imageobject></mediaobject>
 </para>
-<para>Returns a Package instance of all REXX-defined (namespace "REXX") classes.
+<para>Returns a Package instance of all Rexx-defined (namespace "REXX") classes.
 </para>
-<para>See <xref linkend="clsPackage"/>.
+<para>See <xref linkend="clsPackage" xrefstyle="template:Package class"/>.
 </para>
 <para><example>
 <title>RexxInfo class &mdash; package method</title>
-<programlisting><![CDATA[say "ooRexx pre-defines" -
-  .RexxInfo~package~publicClasses~items -
-  "public classes"          -- ooRexx pre-defines 56 public classes
+<programlisting><![CDATA[say .RexxInfo~package~publicClasses~items -
+ "Rexx-defined public classes"   -- 56 Rexx-defined public classes /* e. g. */
 ]]></programlisting></example></para>
 </section>
 
@@ -7104,7 +7109,7 @@ that is also returned by
 </para>
 <para><example>
 <title>RexxInfo class &mdash; pathSeparator method</title>
-<programlisting><![CDATA[say .RexxInfo~pathSeparator    -- ; /* Windows */
+<programlisting><![CDATA[say .RexxInfo~pathSeparator    -- ";" /* Windows */
 say .RexxInfo~pathSeparator    -- ":" /* Unix */
 ]]></programlisting></example></para>
 </section>
@@ -7119,9 +7124,10 @@ say .RexxInfo~pathSeparator    -- ":" /* Unix */
 </imageobject></mediaobject>
 </para>
 <para>Returns the name of the interpreter operating system as a string,
-"WindowsNT" for a Windows, and "LINUX" for a Unix system.
+<literal>WindowsNT</literal> for a Windows, or
+<literal>LINUX</literal> for a Unix system.
 </para>
-<para>See also keyword instruction <xref linkend="keyParse" xrefstyle="template:PARSE SOURCE"/>,
+<para>See also keyword instruction <xref linkend="keyParseSource"/><!-- @@xreflabel -->,
 which returns the same information as its first token.
 </para>
 <para><example>
@@ -7147,20 +7153,19 @@ The release number is the first decimal digit following the decimal point of the
 <para>See also
 <itemizedlist spacing="compact">
  <listitem>
-  <para>RexxInfo method <xref linkend="mthRexxInfoVersion" xrefstyle="select:title"/>,</para>
+  <para>RexxInfo methods
+   <xref linkend="mthRexxInfoVersion" xrefstyle="select:title"/> and
+   <xref linkend="mthRexxInfoName" xrefstyle="select:title"/>, and</para>
  </listitem>
  <listitem>
-  <para>RexxInfo method <xref linkend="mthRexxInfoName" xrefstyle="select:title"/> and</para>
- </listitem>
- <listitem>
-  <para>keyword instruction <xref linkend="keyParse" xrefstyle="template:PARSE VERSION"/>,</para>
+  <para>keyword instruction <xref linkend="keyParseVersion"/><!-- @@xreflabel -->,</para>
  </listitem>
 </itemizedlist>
 which also return the release number as part of their result.
 </para>
 <para><example>
 <title>RexxInfo class &mdash; release method</title>
-<programlisting><![CDATA[say .RexxInfo~release    -- 0
+<programlisting><![CDATA[say .RexxInfo~release    -- 0 /* e. g. ooRexx 5.0 */
 ]]></programlisting></example></para>
 </section>
 
@@ -7180,20 +7185,19 @@ The revision number is the second decimal digit following the decimal point of t
 <para>See also
 <itemizedlist spacing="compact">
  <listitem>
-  <para>RexxInfo method <xref linkend="mthRexxInfoVersion" xrefstyle="select:title"/>,</para>
+  <para>RexxInfo methods
+   <xref linkend="mthRexxInfoVersion" xrefstyle="select:title"/> and
+   <xref linkend="mthRexxInfoName" xrefstyle="select:title"/>, and</para>
  </listitem>
  <listitem>
-  <para>RexxInfo method <xref linkend="mthRexxInfoName" xrefstyle="select:title"/> and</para>
- </listitem>
- <listitem>
-  <para>keyword instruction <xref linkend="keyParse" xrefstyle="template:PARSE VERSION"/>,</para>
+  <para>keyword instruction <xref linkend="keyParseVersion"/><!-- @@xreflabel -->,</para>
  </listitem>
 </itemizedlist>
 which also return the revision number as part of their result.
 </para>
 <para><example>
 <title>RexxInfo class &mdash; revision method</title>
-<programlisting><![CDATA[say .RexxInfo~revision    -- 0
+<programlisting><![CDATA[say .RexxInfo~revision    -- 0 /* e. g. ooRexx 5.0.0 */
 ]]></programlisting></example></para>
 </section>
 
@@ -7216,22 +7220,19 @@ the <xref linkend="mthRexxInfoRevision" xrefstyle="select:title"/>.
 <para>See also
 <itemizedlist spacing="compact">
  <listitem>
-  <para>RexxInfo method <xref linkend="mthRexxInfoMajorVersion" xrefstyle="select:title"/>,</para>
+  <para>RexxInfo methods
+   <xref linkend="mthRexxInfoMajorVersion" xrefstyle="select:title"/>,
+   <xref linkend="mthRexxInfoRelease" xrefstyle="select:title"/> and
+   <xref linkend="mthRexxInfoRevision" xrefstyle="select:title"/>, and</para>
  </listitem>
  <listitem>
-  <para>RexxInfo method <xref linkend="mthRexxInfoRelease" xrefstyle="select:title"/>,</para>
- </listitem>
- <listitem>
-  <para>RexxInfo method <xref linkend="mthRexxInfoRevision" xrefstyle="select:title"/> and</para>
- </listitem>
- <listitem>
-  <para>keyword instruction <xref linkend="keyParse" xrefstyle="template:PARSE VERSION"/>.</para>
+  <para>keyword instruction <xref linkend="keyParseVersion"/><!-- @@xreflabel -->.</para>
  </listitem>
 </itemizedlist>
 </para>
 <para><example>
 <title>RexxInfo class &mdash; version method</title>
-<programlisting><![CDATA[say .RexxInfo~version    -- 5.0.0
+<programlisting><![CDATA[say .RexxInfo~version    -- 5.0.0 /* e. g. */
 ]]></programlisting></example></para>
 </section>
 
@@ -7246,7 +7247,7 @@ the <xref linkend="mthRexxInfoRevision" xrefstyle="select:title"/>.
 <para>The RexxQueue class provides object-style access to Rexx external data queues.</para>
 
 <!-- $GENERATED-20150923-START rexxrefClassTable(RexxQueue) -->
-<table id="ooRexxRexxQueueClass" frame="all" pgwide="0">
+<table id="ooRexxRexxQueueClass" frame="all" pgwide="1">
 <title>RexxQueue Class</title>
 <tgroup cols="1">
 <tbody>
@@ -7447,7 +7448,7 @@ queue does not exist, one will be created.
 </mediaobject>
 
 <para>Reads a single line from the Rexx external queue.  If the queue is empty,
-<emphasis role="bold">lineIn</emphasis> will wait until a line is added to the queue.
+<methodname>lineIn</methodname> will wait until a line is added to the queue.
 </para>
 </section>
 
@@ -7613,7 +7614,7 @@ StackFrame instances cannot be directly created by the user.
 
 <!-- Modified: "new" forbidden -->
 <!-- $GENERATED-20150924-START rexxrefClassTable(StackFrame) -->
-<table id="ooRexxStackFrameClass" frame="all" pgwide="0">
+<table id="ooRexxStackFrameClass" frame="all" pgwide="1">
 <title>StackFrame Class</title>
 <tgroup cols="1">
 <tbody>
@@ -7676,10 +7677,11 @@ StackFrame instances cannot be directly created by the user.
 </imageobject>
 </mediaobject>
 
-<para>Returns the executable object for the StackFrame context.  The
-executable will be either a Routine (<xref linkend="clsRoutine" />) or
-Method object (<xref linkend="clsMethod" />), depending on the type of
-the StackFrame element.
+<para>Returns the executable object for the StackFrame context.
+The executable will be either a
+<xref linkend="clsRoutine" xrefstyle="template:Routine object"/> or a
+<xref linkend="clsMethod" xrefstyle="template:Methodobject"/>,
+depending on the type of the StackFrame element.
 </para>
 </section>
 
@@ -7925,7 +7927,7 @@ PROGRAM C:\stackFrame.rex() 1: 1 *-* interpret "call level2" 21
 </para>
 
 <!-- $GENERATED-20150924-START rexxrefClassTable(StreamSupplier) -->
-<table id="ooRexxStreamSupplierClass" frame="all" pgwide="0">
+<table id="ooRexxStreamSupplierClass" frame="all" pgwide="1">
 <title>StreamSupplier Class</title>
 <tgroup cols="1">
 <tbody>
@@ -7970,7 +7972,7 @@ PROGRAM C:\stackFrame.rex() 1: 1 *-* interpret "call level2" 21
 
 <para>Returns &true; if an item is available
 from the supplier (that is, if the
-<emphasis role="bold">item</emphasis> method would return a value). It returns
+<methodname>item</methodname> method would return a value). It returns
 &false; if the collection is empty or the
 supplier has already enumerated the entire collection.</para>
 </section>
@@ -7990,7 +7992,7 @@ supplier has already enumerated the entire collection.</para>
 
 <para>Returns the index of the current
 item in the collection. If no item is available, that is, if
-<emphasis role="bold">available</emphasis> would
+<methodname>available</methodname> would
 return &false;, the supplier raises an error.</para>
 </section>
 
@@ -8024,7 +8026,7 @@ return &false;, the supplier raises an error.</para>
 </mediaobject>
 
 <para>Returns the current item in the collection. If no item is available, that
-is, if <emphasis role="bold">available</emphasis>
+is, if <methodname>available</methodname>
 would return &false;, the supplier raises an error.
 </para>
 </section>
@@ -8043,11 +8045,11 @@ would return &false;, the supplier raises an error.
 </mediaobject>
 
 <para>Moves to the next item in the collection.
-By repeatedly sending <emphasis role="bold">next</emphasis>
-to the supplier (as long as <emphasis role="bold">available</emphasis>
+By repeatedly sending <methodname>next</methodname>
+to the supplier (as long as <methodname>available</methodname>
 returns &true;),
 you can enumerate all items in the collection. If no item is available, that
-is, if <emphasis role="bold">available</emphasis>
+is, if <methodname>available</methodname>
 would return &false;, the supplier raises an error.
 </para>
 </section>
@@ -8065,7 +8067,7 @@ results are not affected by later changes to the source collection object.
 </para>
 
 <!-- $GENERATED-20150924-START rexxrefClassTable(Supplier) -->
-<table id="ooRexxSupplierClass" frame="all" pgwide="0">
+<table id="ooRexxSupplierClass" frame="all" pgwide="1">
 <title>Supplier Class</title>
 <tgroup cols="1">
 <tbody>
@@ -8118,9 +8120,9 @@ is an array of index values with a one-to-one correspondence to the objects
 contained in the <emphasis role="italic">items</emphasis> array.
 The created supplier iterates over the arrays,
 returning elements of the values array in response to
-<emphasis role="bold">items</emphasis> messages, and
+<methodname>items</methodname> messages, and
 elements of the indexes array in response to
-<emphasis role="bold">index</emphasis> messages. The supplier
+<methodname>index</methodname> messages. The supplier
 iterates for the number of items contained in the values array, returning
 &nil; for any nonexistent items in either array.</para>
 </section>
@@ -8139,8 +8141,8 @@ iterates for the number of items contained in the values array, returning
 </mediaobject>
 
 <para>Returns an array of all index values from the current supplier position to the end of the
-supplier.  Once <emphasis role="bold">allIndexes</emphasis> is called, no
-additional items can be retrieved from the supplier.  Calls to <emphasis role="bold">available</emphasis>
+supplier.  Once <methodname>allIndexes</methodname> is called, no
+additional items can be retrieved from the supplier.  Calls to <methodname>available</methodname>
 will return &false;.</para>
 </section>
 
@@ -8158,8 +8160,8 @@ will return &false;.</para>
 </mediaobject>
 
 <para>Returns an array of all items from the current supplier position to the end of the
-supplier.  Once <emphasis role="bold">allItems</emphasis> is called, no
-additional items can be retrieved from the supplier.  Calls to <emphasis role="bold">available</emphasis>
+supplier.  Once <methodname>allItems</methodname> is called, no
+additional items can be retrieved from the supplier.  Calls to <methodname>available</methodname>
 will return &false;.</para>
 </section>
 
@@ -8178,7 +8180,7 @@ will return &false;.</para>
 
 <para>Returns &true; if an item is available
 from the supplier (that is, if the
-<emphasis role="bold">item</emphasis> method would return a value). It returns
+<methodname>item</methodname> method would return a value). It returns
 &false; if the collection is empty or the
 supplier has already enumerated the entire collection.</para>
 </section>
@@ -8198,7 +8200,7 @@ supplier has already enumerated the entire collection.</para>
 
 <para>Returns the index of the current
 item in the collection. If no item is available, that is, if
-<emphasis role="bold">available</emphasis> would
+<methodname>available</methodname> would
 return &false;, the supplier raises an error.</para>
 </section>
 
@@ -8234,7 +8236,7 @@ return &false;, the supplier raises an error.</para>
 </mediaobject>
 
 <para>Returns the current item in the collection. If no item is available, that
-is, if <emphasis role="bold">available</emphasis>
+is, if <methodname>available</methodname>
 would return &false;, the supplier raises an error.
 </para>
 </section>
@@ -8253,11 +8255,11 @@ would return &false;, the supplier raises an error.
 </mediaobject>
 
 <para>Moves to the next item in the collection.
-By repeatedly sending <emphasis role="bold">next</emphasis>
-to the supplier (as long as <emphasis role="bold">available</emphasis>
+By repeatedly sending <methodname>next</methodname>
+to the supplier (as long as <methodname>available</methodname>
 returns &true;),
 you can enumerate all items in the collection. If no item is available, that
-is, if <emphasis role="bold">available</emphasis>
+is, if <methodname>available</methodname>
 would return &false;, the supplier raises an error.
 </para>
 </section>
@@ -8303,7 +8305,7 @@ end
 
 <para>Returns the target supplier as a result.  This method allows an existing
 supplier to be passed to methods that expect an object that implements a
-<emphasis role="bold">supplier</emphasis> method as an argument.
+<methodname>supplier</methodname> method as an argument.
 </para>
 </section>
 </section>
@@ -8326,7 +8328,7 @@ notification target.
 
 <!-- Modified: remove separate alias "cancelled" -->
 <!-- $GENERATED-20151026-START rexxrefClassTable(Ticker) -->
-<table id="ooRexxTickerClass" frame="all" pgwide="0">
+<table id="ooRexxTickerClass" frame="all" pgwide="1">
 <title>Ticker Class</title>
 <tgroup cols="1">
 <tbody>
@@ -8590,7 +8592,7 @@ operations between TimeSpan objects.
 </para>
 
 <!-- $GENERATED-20150923-START rexxrefClassTable(TimeSpan) -->
-<table id="ooRexxTimeSpanClass" frame="all" pgwide="0">
+<table id="ooRexxTimeSpanClass" frame="all" pgwide="1">
 <title>TimeSpan Class</title>
 <tgroup cols="1">
 <tbody>
@@ -9406,7 +9408,7 @@ WeakReferences are useful for maintaining caches of objects without preventing
 the objects from being reclaimed by the garbage collector when needed.</para>
 
 <!-- $GENERATED-20150924-START rexxrefClassTable(WeakReference) -->
-<table id="ooRexxWeakReferenceClass" frame="all" pgwide="0">
+<table id="ooRexxWeakReferenceClass" frame="all" pgwide="1">
 <title>WeakReference Class</title>
 <tgroup cols="1">
 <tbody>

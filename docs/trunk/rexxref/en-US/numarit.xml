@@ -73,21 +73,15 @@ are, for example:
 0.73e-7        /* exponential notation                */
 </programlisting>
 </example>
-<para>Ignoring exponential notation (<xref linkend="expnot" />), a number in Rexx is defined as follows:</para>
-<programlisting>
-<![CDATA[
->>-+------------+--+----------------------+--+-digits--------+---------->
-   +-whitespace-+  +-sign--+------------+-+  +-digits.digits-+
-                           +-whitespace-+    +-.digits-------+
-                                             +-digits.-------+
-
->--+------------+--------------------------------------------------><
-   +-whitespace-+
-]]>
-</programlisting>
+<para>Ignoring <xref linkend="expnot" xrefstyle="select:title"/>,
+a number in Rexx is defined as follows:
+<mediaobject><imageobject>
+<imagedata fileref="images/number_no_exponential.svg" scale="55" />
+</imageobject></mediaobject>
+</para>
 
 <variablelist>
-<varlistentry><term>whitespace</term>
+<varlistentry><term><emphasis role="italic">whitespace</emphasis></term>
 <listitem><para>are one or more blanks or horizontal tab characters.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="italic">sign</emphasis></term>
@@ -128,7 +122,7 @@ according to specific rules. The most important rules are: </para>
 <itemizedlist>
 <listitem><para>Results are calculated up to a maximum number of significant
 digits. The default is <computeroutput>9</computeroutput>, but can be overridden
-on a source-file basis with the ::OPTIONS directive (<xref linkend="optionsd" />).
+on a source-file basis with the <xref linkend="optionsd" xrefstyle="select:title"/> directive.
 The default setting can be altered with the NUMERIC DIGITS instruction.
 <indexterm><primary>DIGITS option of NUMERIC instruction</primary></indexterm>
 Thus, with NUMERIC DIGITS 9, if a result requires more than 9 digits, it is rounded to 9 digits.
@@ -144,10 +138,11 @@ For example:
 2.40 / 2    ->    1.2
 </programlisting>
 </example>
-If necessary, you can
-remove trailing zeros with the STRIP method (see
-<xref linkend="mthStringStrip" />), the
-STRIP function (see <xref linkend="bifStrip" />), or by division by 1.
+If necessary, you can remove trailing zeros with the
+<classname>String</classname> <xref linkend="mthStringStrip" xrefstyle="select:title"/>
+method, the
+<xref linkend="bifStrip" xrefstyle="select:title"/> built-in function,
+or by division by 1.
 </para></listitem>
 <listitem><para>A zero result is always expressed as the single digit
 <computeroutput>0</computeroutput>.</para></listitem>
@@ -174,13 +169,10 @@ is expressed in exponential notation:
 <secondary>in a NUMERIC instruction</secondary></indexterm>
 <para>Precision is the maximum number of significant digits that can result
 from an operation. This is controlled by the instruction:
+<mediaobject><imageobject>
+<imagedata fileref="images/number_digits.svg" scale="55" />
+</imageobject></mediaobject>
 </para>
-<programlisting>
-<![CDATA[
->>-NUMERIC DIGITS--+------------+--;---------------------------><
-                   +-expression-+
-]]>
-</programlisting>
 <para>
 The <emphasis role="italic">expression</emphasis> is evaluated and must result in a positive
 whole number. This defines the precision (number of significant digits) of
@@ -190,7 +182,7 @@ in this instruction, or if no
 NUMERIC DIGITS instruction has been processed since the start of a program,
 the default precision is used. The Rexx standard for the default precision
 is <computeroutput>9</computeroutput>.  The default may be overridden on a
-source-file basis using the ::OPTIONS directive (<xref linkend="optionsd" />).
+source-file basis using the <xref linkend="optionsd" xrefstyle="select:title"/> directive.
 </para>
 <para>NUMERIC DIGITS can set values smaller than nine. However, use small
 values with care because the loss of precision and rounding affects all Rexx
@@ -262,7 +254,7 @@ larger than the divisor. During this subtraction, the absolute values of both
 the dividend and the divisor are used: the sign of the final result is the same
 as that which would result from regular division.</para>
 <para>If the result cannot be expressed as a whole number, the operation is in
-error and fails--that is, the result must not have more digits than the
+error and fails&mdash;that is, the result must not have more digits than the
 current setting of NUMERIC DIGITS. For example,
 <computeroutput>10000000000%3</computeroutput> requires
 10 digits for the result (3333333333) and would, therefore, fail if
@@ -345,19 +337,11 @@ say 54321*54321
 <para>would display <computeroutput>2950800000</computeroutput> in the long
 form. Because this is misleading, the result is expressed as
 <computeroutput>2.9508E+9</computeroutput> instead.</para>
-<para>The definition of numbers is, therefore, extended as follows:</para>
-<programlisting>
-<![CDATA[
->>-+------------+--+----------------------+--+-digits--------+---------->
-   +-whitespace-+  +-sign--+------------+-+  +-digits.digits-+
-                           +-whitespace-+    +-.digits-------+
-                                             +-digits.-------+
-
->--+---------------------+--+------------+-------------------------><
-   +-E--+------+--digits-+  +-whitespace-+
-        +-sign-+
-]]>
-</programlisting>
+<para>The definition of numbers is, therefore, extended as follows:
+<mediaobject><imageobject>
+<imagedata fileref="images/number_exponential.svg" scale="55" />
+</imageobject></mediaobject>
+</para>
 
 <para>The integer following the <computeroutput>E</computeroutput>
 represents a power of ten that is to be applied to the number. The
@@ -402,13 +386,14 @@ the point exceeds twice DIGITS, the exponential form is used. The exponential
 form the language processor generates always has a sign following the
 <computeroutput>E</computeroutput> to improve readability. If the exponent is
 <computeroutput>0</computeroutput>, the exponential
-part is omitted--that is, an exponential part of
+part is omitted&mdash;that is, an exponential part of
 <computeroutput>E+0</computeroutput> is not
 generated.</para>
 <para>You can explicitly convert numbers to exponential form, or force them to
-be displayed in the long form, by using the FORMAT built-in function (see
-<xref linkend="bifFormat" />).</para>
-<para>  Scientific
+be displayed in the long form, by using the
+<xref linkend="bifFormat" xrefstyle="select:title"/> built-in function.
+</para>
+<para>Scientific
 notation is a form of exponential notation that adjusts the power of
 ten so that the number contains only one nonzero digit before the decimal
 point. Engineering notation is a form of exponential
@@ -418,18 +403,13 @@ range from <computeroutput>1</computeroutput> through
 <computeroutput>999</computeroutput>. You can control whether scientific
 or engineering notation
 <indexterm><primary>engineering notation</primary></indexterm>
-is used with the following instruction:</para>
+is used with the following instruction:
 <indexterm><primary>FORM subkeyword</primary>
 <secondary>in a NUMERIC instruction</secondary></indexterm>
-<programlisting>
-<![CDATA[
-                 +-SCIENTIFIC------------+
->>-NUMERIC FORM--+-----------------------+--;------------------><
-                 +-ENGINEERING-----------+
-                 +-+-------+--expression-+
-                   +-VALUE-+
-]]>
-</programlisting>
+<mediaobject><imageobject>
+<imagedata fileref="images/number_form.svg" scale="55" />
+</imageobject></mediaobject>
+</para>
 
 <para> Scientific notation is the default. </para>
 <example>
@@ -500,13 +480,10 @@ when subtracted under Rexx subtraction rules, that determines their equality.
 <para>  Fuzz affects the comparison of two numbers. It controls how much two
 numbers can differ and still be considered equal in a comparison. The FUZZ
 value is set by the following instruction:
+<mediaobject><imageobject>
+<imagedata fileref="images/number_fuzz.svg" scale="55" />
+</imageobject></mediaobject>
 </para>
-<programlisting>
-<![CDATA[
->>-NUMERIC FUZZ--+------------+--;-----------------------------><
-                 +-expression-+
-]]>
-</programlisting>
 
 <para><emphasis role="italic">expression</emphasis> must result in a positive
 whole number or zero. The default is <computeroutput>0</computeroutput>.</para>
@@ -592,13 +569,14 @@ instruction</entry>
 <para>When Rexx uses numbers directly, the following types of errors can occur:
 </para>
 <itemizedlist>
-<listitem><para>Overflow or underflow.</para>
+<listitem><para>Overflow or underflow.
 <indexterm><primary>arithmetic</primary>
 <secondary>overflow</secondary></indexterm>
 <indexterm><primary>arithmetic</primary>
 <secondary>underflow</secondary></indexterm>
 <indexterm><primary>overflow, arithmetic</primary></indexterm>
 <indexterm><primary>underflow, arithmetic</primary></indexterm>
+</para>
 <para>This error occurs if the exponential part of
 a result exceeds the range that the language processor can handle, when the
 result is formatted according to the current settings of NUMERIC DIGITS and

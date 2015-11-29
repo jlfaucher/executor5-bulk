@@ -2004,14 +2004,14 @@ account = .object~subclass("Account")~~inherit(.persistent)
 /* would set ACCOUNT to the object returned by SUBCLASS, */
 /* after sending that object the message INHERIT */
 </programlisting>
-<para>If the message term uses brackets, the message [] is sent to
+<para>If the message term uses brackets, the message <methodname>[]</methodname> is sent to
 the receiver object. (The <emphasis role="italic">expression</emphasis>s
 within the brackets are available to the receiver object as arguments.)
 The effect is the same as for the corresponding ~
 form of the message term. Thus, <computeroutput>a[b]</computeroutput>
-is the same as <computeroutput>a~"[]"(b)</computeroutput>.</para>
+is the same as <code>a~"[]"(b)</code>.</para>
 
-<para>For example, the message [] is valid for arrays
+<para>For example, the message <methodname>[]</methodname> is valid for arrays
 (see <xref linkend="clsArray" />) and you could code:</para>
 <example>
 <title>Arrays</title>
@@ -2079,7 +2079,7 @@ receiver of the next message in the sequence.
 <!-- Array Term ================================================ -->
 <section id="arrayterm" revisionflag="added"><title>*NEW* Array Term</title>
 <indexterm><primary>array term</primary></indexterm>
-<para>As a convenience, ooRexx allows a shortened syntax for creating arrays,
+<para>As a convenience, Rexx allows a shortened syntax for creating arrays,
 called <emphasis role="italic">Array term</emphasis>, of the following form:
 </para>
 <mediaobject>
@@ -2091,8 +2091,9 @@ called <emphasis role="italic">Array term</emphasis>, of the following form:
 Except for trailing commas, an Array term returns a newly created array,
 as if it had been created with the message term
 <computeroutput>rexx:Array~of(&hellip;)</computeroutput>.
-(An Array term will always return an instance of ooRexx' builtin Array
-class, even if a user-defined class named "Array" exists.)
+(An Array term will always return an instance the Rexx-defined
+<classname>Array</classname> class, even if a user-defined class named
+<literal>Array</literal> exists.)
 </para><para>
 Here are some examples:
 <programlisting>week = "mon", "tue", "wed", "thu", "fri", "sat", "sun"
@@ -2476,8 +2477,8 @@ FRED.
 A.
 </programlisting>
 </example>
-<para>The value of a stem is always a Stem object. (See
-<xref linkend="clsStem" />.)
+<para>The value of a stem is always a Stem object (see
+<xref linkend="clsStem" /> for details).
 The stem variable's Stem object is automatically created the first time
 you use the stem variable or a
 compound variable (<xref linkend="compsym" />)
@@ -2582,7 +2583,7 @@ total. = 0
 say total.                         /* says "0" */
 </programlisting>
 </example>
-<para>The [] method with no arguments will return the currently associated
+<para>The <methodname>[]</methodname> method with no arguments will return the currently associated
 default value.
  variables can always be obtained by using the stem. However,
 this is not the same as using a compound variable whose derived name is the
@@ -2596,24 +2597,27 @@ total.null = total.null + 5
 say total.[] total.null              /* says "0 5" */
 </programlisting>
 </example>
-<para>You can use the DROP, EXPOSE, and PROCEDURE instructions to manipulate
-collections of variables, referred to by their stems.
+<para>You can use the
+<xref linkend="keyDrop" xrefstyle="select:title"/>,
+<xref linkend="keyExpose" xrefstyle="select:title"/>, and
+<xref linkend="keyProcedure" xrefstyle="select:title"/>
+instructions to manipulate collections of variables, referred to by their stems.
 <computeroutput>DROP FRED.</computeroutput> assigns
-a new Stem object to the specified stem. (See
-<xref linkend="keyDrop" />.) <computeroutput>EXPOSE FRED.</computeroutput>
+a new Stem object to the specified stem.
+<computeroutput>EXPOSE FRED.</computeroutput>
 and <computeroutput>PROCEDURE EXPOSE FRED.</computeroutput> expose all possible
-variables with that stem (see <xref linkend="keyExpose" /> and
-<xref linkend="keyProcedure" />).</para>
+variables with that stem.</para>
 
-<para>The DO instruction can also iterate over all of the values
-assigned to a stem variable. See <xref linkend="keyDo" /> for more details.
+<para>The <xref linkend="keyDo" xrefstyle="select:title"/>
+instruction can also iterate over all of the values
+assigned to a stem variable.
 </para>
 
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
 <listitem><para>When the ARG, PARSE, PULL, or USE instruction, the VALUE
 built-in function, or the variable pool interface changes a variable, the
-effect is identical with an assignment.
+effect is identical to an assignment.
 </para></listitem>
 <listitem><para>Any clause that starts with a symbol and whose second token is
 (or starts with) an equal sign (<computeroutput>=</computeroutput>)
@@ -2629,10 +2633,10 @@ following clause is an assignment, not an ADDRESS instruction:</para>
 Address="10 Downing Street";
 </programlisting>
 </listitem>
-<listitem><para>You can use the VAR function (see
-<xref linkend="bifVar" />) to test whether
-a symbol has been assigned a value. In addition, you can set
-SIGNAL ON NOVALUE (<xref linkend="uninit" />)
+<listitem><para>You can use the <xref linkend="bifVar" xrefstyle="select:title"/>
+function to test whether a symbol has been assigned a value.
+In addition, you can set
+<xref linkend="uninit" xrefstyle="template:SIGNAL ON NOVALUE"/>)
 to trap the use of any uninitialized variables (except when they are tails
 in compound variables or stem variables, which are always initialized with a Stem object
 when first used.)
@@ -2750,8 +2754,9 @@ producing a form of associative memory (content-addressable).</para>
 <section id="evcoms"><title>Evaluated Compound Variables</title>
 <para>The value of a stem variable is always a Stem object (see
 <xref linkend="clsStem" /> for
-details). A Stem object is a type of collection that supports the []
-and []= methods used by other collection classes. The [] method
+details). A Stem object is a type of collection that supports the
+<methodname>[]</methodname> and <methodname>[]=</methodname> methods
+used by other collection classes. The <methodname>[]</methodname> method
 provides an alternate means of accessing compound variables that also allows
 embedded subexpressions.</para>
 <para>Tails for compound variables are normally specified by symbols separated by periods.
@@ -2868,7 +2873,7 @@ Using ::REQUIRES with the NAMESPACE option allows to tag a loaded file
 with a namespace name, which in turn can be used to qualify references
 to classes or routines within that namespace to explicitly identify a
 specific class or routine.  A special reserved namespace "REXX" will
-allow to always access the ooRexx-provided classes.
+allow to always access the Rexx-provided classes.
 </para>
 <para>Examples:</para>
 <example><title>Namespaces</title>
@@ -2876,7 +2881,7 @@ allow to always access the ooRexx-provided classes.
 say .number~id                          -- The Real Number class
 say natural:number~id                   -- The Natural Number class
 
--- use reserved namespace "REXX" to get ooRexx-predefined .Array
+-- use reserved namespace "REXX" to get Rexx-defined .Array
 -- not :class array as defined below
 say rexx:array~of(2, 3, 5, 7)~items     -- 4
 
@@ -2895,7 +2900,7 @@ say natural:number~subclass("Integer")  -- The Integer class
 ::method id class
 return "The Real Number class"
 
--- class "Array"; same name as ooRexx-defined
+-- class "Array"; same name as Rexx-defined
 ::class array
 
 ::requires 'number.cls' namespace natural
@@ -2922,8 +2927,8 @@ return arg(1) >= 0 &amp; arg(1)~dataType("W")
 <secondary>message</secondary></indexterm>
 <para>You can send a message to an object to perform an action, obtain a result,
 or both. You use a message instruction if the main purpose of the message
-is to perform an action. You use a message term (see
-<xref linkend="mssg" />)
+is to perform an action. You use a
+<xref linkend="mssg" xrefstyle="template:message term"/>
 if the main purpose of the message is to obtain a result.</para>
 <para>A <emphasis>message instruction</emphasis> is a clause of the form:
 </para>
@@ -2934,8 +2939,8 @@ if the main purpose of the message is to obtain a result.</para>
 </mediaobject>
 
 <para>If there is only a <emphasis role="italic">messageterm</emphasis>,
-the message is sent in exactly the same way as for a message term (see
-<xref linkend="mssg" />). If the message
+the message is sent in exactly the same way as for a
+<xref linkend="mssg" xrefstyle="template:message term"/>. If the message
 yields a result object, it is assigned to the sender's special variable RESULT.
 If you use the ~~ form of message term, the receiver object
 is used as the result. If there is no result object, the variable RESULT is
@@ -3028,8 +3033,8 @@ of the form:</para>
 <programlisting>
 expression;
 </programlisting>
-<para>The expression (which must not be an expression that forms a valid message
-instruction&mdash; see <xref linkend="msgi" />)
+<para>The expression (which must not be an expression that forms a valid 
+<xref linkend="msgi" xrefstyle="template:message instruction"/>)
 is evaluated, resulting in a character string value
 (which can be the null string), which is then prepared as appropriate
 and submitted to the environment specified by the current ADDRESS setting.
@@ -3040,7 +3045,7 @@ to the language processor after setting a return code. A
 that returns some information
 about the command processed. A return code usually indicates if a command
 was successful but can also represent other information. The language processor
-places this return code in the Rexx special variable RC.
+places this return code in the
 <indexterm><primary>return</primary>
 <secondary>code</secondary>
 <tertiary>as set by commands</tertiary></indexterm>
@@ -3051,7 +3056,8 @@ places this return code in the Rexx special variable RC.
 <indexterm><primary>variable</primary>
 <secondary>special</secondary>
 <tertiary>RC</tertiary></indexterm>
-See <xref linkend="spvard" />.</para>
+Rexx <xref linkend="spvard" xrefstyle="template:special variable RC"/>.
+</para>
 
 <para>In addition to setting a return code, the underlying system can also
 indicate to the language processor if an error or failure occurred. An
@@ -3074,7 +3080,7 @@ cause the command to be traced if <computeroutput>TRACE E</computeroutput>
 or <computeroutput>TRACE F</computeroutput> is
 set. <computeroutput>TRACE Normal</computeroutput> is the same as
 <computeroutput>TRACE F</computeroutput> and is the
-default&mdash; see <xref linkend="keyTrace" />.</para>
+default&mdash;see <xref linkend="keyTrace" />.</para>
 <para>The .RS environment symbol can also be used to detect command failures
 and errors. When the command environment indicates that a command failure
 has occurred, the Rexx environment symbol .RS has the value
@@ -3156,9 +3162,9 @@ environment.</para>
 <para></para>
 <para>Rexx programs can call other Rexx programs as external
 functions or subroutines with the
-CALL (<xref linkend="keyCall" />) instruction.</para>
+<xref linkend="keyCall" xrefstyle="select:title"/> instruction.</para>
 <para>If a program is called with the 
-CALL (<xref linkend="keyCall" />) instruction, the program runs in the same
+CALL instruction, the program runs in the same
 process as the calling program.
 If you call another program by a Rexx command, the program is executed in
 a new process and therefore does not share .environment, .local,

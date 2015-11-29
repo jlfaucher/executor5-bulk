@@ -140,17 +140,18 @@ end
 <section id="mesobj"><title>Message Objects</title>
 <indexterm><primary>concurrency</primary>
 <secondary>message objects</secondary></indexterm>
-<para>A message object
-(see <xref linkend="clsMessage" />) is an
-intermediary between two objects that enables
-concurrent processing. All objects inherit the START method (see the
-<xref linkend="clsMessage" />)
-from the object class. To obtain a message object, an object sends a START
+<para>A <xref linkend="clsMessage" xrefstyle="template:Message"/> object
+is an intermediary between two objects that enables
+concurrent processing. All objects inherit the
+<xref linkend="mthObjectStart" xrefstyle="select:title"/> method
+from the <classname>Object</classname> class.
+To obtain a message object, an object sends a <methodname>start</methodname>
 message to the object to which the message object will convey a message. The
-message is an argument to the START message as in the following example:</para>
+message is an argument to the <methodname>start</methodname> message as in the following example:
 <programlisting>
 a=p~start("REVERSE")
 </programlisting>
+</para>
 <para>This line of code creates a message object,
 <computeroutput>A</computeroutput>, and sends it
 a start message. The message object then sends the REVERSE message to object

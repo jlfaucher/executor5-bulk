@@ -44,7 +44,7 @@
     #########################################################################
 -->
 <chapter id="dire"><title>Directives</title>
-<para>An ooRexx program contains one or more executable code units.
+<para>A Rexx program contains one or more executable code units.
 <emphasis role="italic">Directive instructions</emphasis> separate these executable units. A
 directive begins
 with a double colon (::) and is a nonexecutable instruction. For example,
@@ -164,10 +164,10 @@ self~address = address
 
   <listitem><para>The ::ANNOTATE directive cannot be used to annotate
   packages, classes, methods, attributes, constants, and routines
-  which are provided by ooRexx or have been made available through a
+  which are provided by Rexx or have been made available through a
   ::REQUIRES directive.</para></listitem>
 
-  <listitem><para>Currently ooRexx does not use or predefine any
+  <listitem><para>Currently Rexx does not use or predefine any
   specific annotation <emphasis role="italic">names</emphasis>.</para>
   </listitem>
 
@@ -224,9 +224,9 @@ a valid Rexx variable name. The ::ATTRIBUTE directive creates methods
 in the class specified in the most recent ::CLASS directive.  If no ::CLASS
 directive precedes an ::ATTRIBUTE directive, the attribute methods are not
 associated with a class but are accessible to the main (executable) part of a
-program through the .METHODS built-in object. Only one ::ATTRIBUTE directive can
-appear for any method name not associated with a class. See
-<xref linkend="methe" />  for more details.</para>
+program through the <xref linkend="methe" xrefstyle="template:.METHODS built-in object"/>.
+Only one ::ATTRIBUTE directive can appear for any method name not associated with a class.
+</para>
 <para>If you do not specify either SET or GET, ::ATTRIBUTE will create two attribute methods with the
 names <emphasis role="italic">name</emphasis> and <emphasis role="italic">name=</emphasis>.
 These are the methods for getting and setting an attribute.  These generated methods are
@@ -417,7 +417,7 @@ end of the program. Only one ::CLASS directive can appear for
 <para>If you specify the METACLASS option, the instance methods of the
 <emphasis role="italic">metaclass</emphasis> class become class methods of the
 <emphasis role="italic">classname</emphasis> class.
-(See <xref linkend="provide" /> .) The
+(See <xref linkend="provide" />.) The
 <emphasis role="italic">metaclass</emphasis> and
 <emphasis role="italic">classname</emphasis> are literal
 strings or symbols that are taken as constants. In the search order for methods,
@@ -450,17 +450,19 @@ Only subclasses of abstract classes will allow to create instances from.
 <para>If you specify the INHERIT option, the class inherits instance methods
 and class methods from the classes <emphasis role="italic">iclasses</emphasis>
 in their order of appearance
-(leftmost first). This is equivalent to sending a series of INHERIT messages
-to the class object, with each INHERIT message (except the first) specifying
+(leftmost first). This is equivalent to sending a series of
+<xref linkend="mthClassInherit" xrefstyle="select:title"/> messages 
+to the class object, with each <methodname>inherit</methodname> message
+(except the first) specifying
 the preceding class in <emphasis role="italic">iclasses</emphasis>
 as the <emphasis role="italic">classpos</emphasis> argument.
-(See  <xref linkend="mthClassInherit" /> .) As with the INHERIT message,
+As with the <methodname>inherit</methodname> message,
 each of the classes in <emphasis role="italic">iclasses</emphasis>
 must be a mixin class. The <emphasis role="italic">iclasses</emphasis>
 is a whitespace-separated list of literal strings or symbols that are taken as
 constants. If you omit the INHERIT option, the class inherits only from
 <emphasis role="italic">sclass</emphasis>.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<para><emphasis role="bold">Example:</emphasis>
 <indexterm><primary>examples</primary>
 <secondary>::CLASS directive</secondary></indexterm>
 <example id="ex.directives-class">
@@ -477,6 +479,7 @@ constants. If you omit the INHERIT option, the class inherits only from
   return width*height/2
 </programlisting>
 </example>
+</para>
 <para>The ::CLASS directives in a program are processed in the order in which
 they appear. If a ::CLASS directive has a dependency on ::CLASS directives
 that appear later in the program, processing of the directive is deferred
@@ -529,9 +532,9 @@ both an instance method and a class method of the most recent ::CLASS directive.
 A ::CLASS directive is not required before a ::CONSTANT directive. If no ::CLASS
 directive precedes ::CONSTANT, a single constant method is created that
 is not associated with a class but is accessible to the main (executable) part
-of a program through the .METHODS built-in object. Only one ::CONSTANT directive
-can appear for any method name not associated with a class. See
-<xref linkend="methe" />  for more details.</para>
+of a program through the <xref linkend="methe" xrefstyle="template:.METHODS built-in object"/>.
+Only one ::CONSTANT directive can appear for any method name not associated with a class.
+</para>
 <para>The methods created by a ::CONSTANT directive are UNGUARDED and will have
 a return result that is specified by <emphasis role="italic">value</emphasis>.
 If specified, the constant <emphasis role="italic">value</emphasis> must be a single
@@ -541,7 +544,7 @@ valid number.
 If <emphasis role="italic">value</emphasis> is omitted, the constant
 <emphasis role="italic">name</emphasis> will return its value in uppercase.
 </para>
-<para>Here are some examples of valid constants:</para>
+<para>Here are some examples of valid constants:
 <example id="ex.constant">
 <title>CONSTANT examples</title>
 <programlisting><![CDATA[::class MathConstants public
@@ -553,6 +556,7 @@ If <emphasis role="italic">value</emphasis> is omitted, the constant
 ::constant caseless
 ]]></programlisting>
 </example>
+</para>
 <para>A ::CONSTANT directive is a shorthand syntax for creating constants
 associated with a class.  The created name constant can be accessed using either
 the class object or an instance of the class itself.</para>
@@ -607,10 +611,10 @@ in the most recent ::CLASS directive. Only one ::METHOD directive can appear
 for any <emphasis role="italic">methodname</emphasis> in a class.</para>
 <para>A ::CLASS directive is not required before a ::METHOD directive. If no
 ::CLASS directive precedes ::METHOD, the method is not associated with a class
-but is accessible to the main (executable) part of a program through the .METHODS
-built-in object. Only one ::METHOD directive can appear for any method name
-not associated with a class. See
-<xref linkend="methe" />  for more details.</para>
+but is accessible to the main (executable) part of a program through the
+<xref linkend="methe" xrefstyle="template:.METHODS built-in object"/>.
+Only one ::METHOD directive can appear for any method name not associated with a class.
+</para>
 <para>If you specify the CLASS option, the method is a class
 method. See <xref linkend="provide" />. The method is
 associated with the class specified on the most recent ::CLASS directive. The
@@ -804,12 +808,10 @@ accumulative. If a given option type is specified on more than directive, the
 last specified will be the value used.
 </para>
 <para>The specified options will override the normal default settings for all Rexx
-code contained in the source file.  For example, </para>
-<programlisting>
-::OPTIONS DIGITS 20
-</programlisting>
-<para>would direct that all method and routine code defined in this source package
-execute with an initial NUMERIC DIGITS (<xref linkend="keyNumeric" />) setting of
+code contained in the source file.  For example, 
+<programlisting>::OPTIONS DIGITS 20</programlisting>
+would direct that all method and routine code defined in this source package
+execute with an initial <xref linkend="keyNumeric" xrefstyle="select:title"/> DIGITS setting of
 20 digits.  The ::OPTIONS directive controls only the initial setting.  A method
 or routine may change the current setting with the NUMERIC DIGITS instruction as normal.
 The values specified with ::OPTIONS only apply to code that appears in the same source file.
@@ -834,7 +836,7 @@ The value <emphasis role="italic">digits</emphasis> must be a symbol or string
 that is a valid positive whole number value and must be larger than the
 current FUZZ ::OPTIONS setting.
 The package value can be retrieved using the Package class
-digits (<xref linkend="mthPackageDigits" /> method.
+<xref linkend="mthPackageDigits" xrefstyle="select:title"/> method.
 </para>
 <para>There is no limit to the value for DIGITS
 (except the amount of storage available), but high precisions are likely to
@@ -854,7 +856,7 @@ case only one, nonzero digit appears before the decimal point) or ENGINEERING
 SCIENTIFIC. The subkeywords SCIENTIFIC or ENGINEERING must be specified as
 symbols.
 The package value can be retrieved using the Package class
-form (<xref linkend="mthPackageForm" />) method.
+<xref linkend="mthPackageForm" xrefstyle="select:title"/> method.
 </para>
 </entry></row>
 <row><entry>FUZZ
@@ -863,13 +865,12 @@ form (<xref linkend="mthPackageForm" />) method.
 </entry>
 <entry>
 <para>controls how many digits, at full precision, are ignored during
-a numeric
-comparison operation. (See <xref linkend="numcom" />.)
+a <xref linkend="numcom" xrefstyle="template:numeric comparison"/> operation.
 The value <emphasis role="italic">fuzz</emphasis> must be a symbol or string
 that is a valid positive whole number value and must be smaller than the
 current DIGIT ::OPTIONS setting.
 The package value can be retrieved using the Package class
-fuzz (<xref linkend="mthPackageFuzz" />) method.
+<xref linkend="mthPackageFuzz" xrefstyle="select:title"/> method.
 </para>
 <para>NUMERIC FUZZ temporarily
 reduces the value of NUMERIC DIGITS by the NUMERIC FUZZ value during every
@@ -906,7 +907,7 @@ The default is ::OPTIONS NOVALUE CONDITION.
 <para>
 controls whether prolog code (any code in the source program that comes
 before the first directive) is run when another program requires it
-through a <xref linkend="requ" xrefstyle="template:::REQUIRES directive"/>.
+through a <xref linkend="requ" xrefstyle="select:title"/> directive.
 </para>
 <para>
 If ::OPTIONS PROLOG is in effect, any prolog code is run as usual when
@@ -926,9 +927,9 @@ The default is ::OPTIONS PROLOG.
 all Rexx code contained in the package. Tracing describes some or all of the clauses in a program,
 producing descriptions of clauses as they are processed. TRACE is mainly used for debugging. The value
 <emphasis role="italic">trace</emphasis> must be one of the Trace Alphabetic (<xref linkend="alphaco" />)
-valid for the Trace instruction (<xref linkend="keyTrace" />). The
-package value can be retrieved using the Package class trace (<xref linkend="mthPackageTrace" />)
-method.
+valid for the <xref linkend="keyTrace" xrefstyle="select:title"/> instruction.
+The package value can be retrieved using the Package class
+<xref linkend="mthPackageTrace" xrefstyle="select:title"/> method.
 </para>
 </entry></row>
 </tbody>
@@ -1095,7 +1096,7 @@ ANONYMOUS TYPESETTER
   </para></listitem>
 
   <listitem><para>Although <emphasis role="italic">resource_data</emphasis>
-  may include almost arbitrary data (including any ooRexx code), it is
+  may include almost arbitrary data (including any Rexx code), it is
   not well-suited for inclusion of binary data.
   Including special characters like carriage return ('0d'x), line-feed
   ('0a'x), or Windows end-of-file ('1a'x) may cause unwanted results.
@@ -1191,9 +1192,8 @@ For Unix-based systems, the library name is case-sensitive. The third token is
 optional and specifies the name of the function within the library package.  If
 not specified, the ::ROUTINE name is used.  Loading of the function will be
 attempted using the name as given and as all uppercase.  Using REGISTERED is the
-equivalent of loading an external function using the RXFUNCADD() built-in
-function.  See
-<xref linkend="bifRxfuncadd" /> for more details.
+equivalent of loading an external function using the
+<xref linkend="bifRxfuncadd" xrefstyle="select:title"/> built-in function.
 </para></listitem></varlistentry>
 </variablelist>
 <indexterm><primary>examples</primary>

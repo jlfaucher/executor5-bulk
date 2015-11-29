@@ -66,7 +66,8 @@
 
 <para>The Class class is like a factory that produces the factories that
 produce objects. It is a subclass of the
-Object class (<xref linkend="clsObject" />). The instance methods of the
+<xref linkend="clsObject" xrefstyle="template:Object class"/>.
+The instance methods of the
 Class class are also the class methods of all classes.</para>
 <para>Note that the <methodname>copy</methodname> method is forbidden for
 Class and all other class objects, and will result in an error.
@@ -76,7 +77,7 @@ Class and all other class objects, and will result in an error.
 <!-- modified: removed defineClassMethod, inheritInstanceMethods -->
 <!-- modified: we won't document Class class hashCode  -->
 <!-- $GENERATED-20151009-START rexxrefClassTable(Class) -->
-<table id="ooRexxClassClass" frame="all" pgwide="0">
+<table id="ooRexxClassClass" frame="all" pgwide="1">
 <title>Class Class</title>
 <tgroup cols="1">
 <tbody>
@@ -286,7 +287,7 @@ If no such annotation exists, &nil; is returned.
 <para>Returns the base class associated with the class. If the class is a mixin
 class, the base class is the first superclass that is not also a mixin class.
 If the class is not a mixin class, the base class is the class receiving the
-<emphasis role="bold">baseClass</emphasis> message.</para>
+<methodname>baseClass</methodname> message.</para>
 </section>
 
 <section id="mthClassDefaultName"><title>defaultName</title>
@@ -340,25 +341,25 @@ say .savings~defaultName   /* Displays "The Savings class" */
 <para>Incorporates the method object <emphasis role="italic">method</emphasis>
 in the receiver class's collection of instance methods. The
 method name <emphasis role="italic">methodname</emphasis> is translated
-to uppercase. Using the <emphasis role="bold">define</emphasis>
+to uppercase. Using the <methodname>define</methodname>
 method replaces any existing definition for
 <emphasis role="italic">methodname</emphasis> in the receiver class.</para>
 <para>If you omit <emphasis role="italic">method</emphasis>, the method name
 <emphasis role="italic">methodname</emphasis> is made
 unavailable for the receiver class. Sending a message of that name
 to an instance of the class causes the
-<emphasis role="bold">unknown</emphasis> method (if any) to be run.</para>
+<methodname>unknown</methodname> method (if any) to be run.</para>
 <para>The <emphasis role="italic">method</emphasis> argument can be a string
 containing a method source line instead of a method object. Alternatively, you
 can pass an array of strings containing individual method lines. Either way,
-<emphasis role="bold">define</emphasis> creates an equivalent method object.
+<methodname>define</methodname> creates an equivalent method object.
 </para>
 
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
 <listitem><para>The classes Rexx provides do not permit changes or additions to
 their method definitions.</para></listitem>
-<listitem><para>The <emphasis role="bold">define</emphasis>
+<listitem><para>The <methodname>define</methodname>
 method is a protected method.</para></listitem>
 </orderedlist>
 <indexterm><primary>examples</primary>
@@ -435,7 +436,7 @@ return "a-original"
 <para>Removes the receiver class's definition
 for the method name <emphasis role="italic">methodname</emphasis>. If the
 receiver class defined <emphasis role="italic">methodname</emphasis> as
-unavailable with the <emphasis role="bold">define</emphasis>
+unavailable with the <methodname>define</methodname>
 method, this definition is
 nullified. If the receiver class had no definition for
 <emphasis role="italic">methodname</emphasis>, no action is taken. </para>
@@ -444,11 +445,11 @@ nullified. If the receiver class had no definition for
 <orderedlist>
 <listitem><para>The classes Rexx provides do not permit changes or additions
 to their method definitions.</para></listitem>
-<listitem><para><emphasis role="bold">delete</emphasis>
+<listitem><para><methodname>delete</methodname>
 deletes only methods the target class defines. You
 cannot delete inherited methods the target's superclasses define.</para>
 </listitem>
-<listitem><para>The <emphasis role="bold">delete</emphasis>
+<listitem><para>The <methodname>delete</methodname>
 method is a protected method.</para></listitem>
 </orderedlist>
 <indexterm><primary>examples</primary>
@@ -481,14 +482,15 @@ methods that are the instance methods of the class, enhanced by the methods in
 the collection <emphasis role="italic">methods</emphasis>. The collection
 indexes are the names of the enhancing
 methods, and the items are the method objects (or strings or arrays of strings
-containing method code). (See the description of
-define (<xref linkend="mthClassDefine" />.)
+containing method code).
 You can use any collection that supports a
-<emphasis role="bold">supplier</emphasis> method.</para>
-<para><emphasis role="bold">enhanced</emphasis> sends an
-<emphasis role="bold">init</emphasis> message to the created object, passing the
+<methodname>supplier</methodname> method.</para>
+<para><methodname>enhanced</methodname> sends an
+<methodname>init</methodname> message to the created object, passing the
 <emphasis role="italic">argument</emphasis>s specified on the
-<emphasis role="bold">enhanced</emphasis> method.
+<methodname>enhanced</methodname> method.
+</para>
+<para>See also method <xref linkend="mthClassDefine" xrefstyle="select:title"/>.
 </para>
 <indexterm><primary>examples</primary>
 <secondary>enhanced method</secondary></indexterm>
@@ -521,8 +523,8 @@ rclass=.class~enhanced(rclassmeths,"Remote Class")
 </mediaobject>
 
 <para>Returns the class identity (instance) string. (This is the string that
-is an argument on the <emphasis role="bold">subClass</emphasis> and
-<emphasis role="bold">mixinClass</emphasis> methods.) The string
+is an argument on the <methodname>subClass</methodname> and
+<methodname>mixinClass</methodname> methods.) The string
 representations of the class and its instances contain the class identity.</para>
 <indexterm><primary>examples</primary>
 <secondary>id method</secondary></indexterm>
@@ -552,7 +554,7 @@ say myobject~id                         /* Produces: "my object" */
 the class object <emphasis role="italic">classobj</emphasis>. The
 <emphasis role="italic">classpos</emphasis> is a class object
 that specifies the position of the new superclass in the list of superclasses.
-(You can use the <emphasis role="bold">superClasses</emphasis>
+(You can use the <methodname>superClasses</methodname>
 method to return the immediate superclasses.)
 </para>
 <para>The new superclass is inserted in the search order after the specified
@@ -566,24 +568,24 @@ class hierarchy. Any subsequent change to the instance methods of
 <emphasis role="italic">classobj</emphasis> takes immediate effect
 for all the classes that inherit from it.</para>
 <para>The new superclass <emphasis role="italic">classobj</emphasis> must be
-created with the <emphasis role="bold">mixinClass</emphasis>
+created with the <methodname>mixinClass</methodname>
 option of the ::CLASS directive or the
-<emphasis role="bold">mixinClass</emphasis> method and the base class
+<methodname>mixinClass</methodname> method and the base class
 of the <emphasis role="italic">classobj</emphasis> must be a direct superclass
 of the receiver object. The receiver must not already descend from
 <emphasis role="italic">classobj</emphasis> in the class
 hierarchy and vice versa.</para>
 <para>The method search order of the receiver class after
-<emphasis role="bold">inherit</emphasis> is the same
-as before <emphasis role="bold">inherit</emphasis>, with the addition of
+<methodname>inherit</methodname> is the same
+as before <methodname>inherit</methodname>, with the addition of
 <emphasis role="italic">classobj</emphasis> and its superclasses
 (if not already present). </para>
 
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
 <listitem><para>You cannot change the classes that Rexx provides by sending
-<emphasis role="bold">inherit</emphasis> messages.</para></listitem>
-<listitem><para>The <emphasis role="bold">inherit</emphasis>
+<methodname>inherit</methodname> messages.</para></listitem>
+<listitem><para>The <methodname>inherit</methodname>
 method is a protected method.</para></listitem>
 </orderedlist>
 <indexterm><primary>examples</primary>
@@ -697,14 +699,15 @@ class inheritance chain. For example:
 
 <para>Returns the receiver class's default metaclass. This is the class used
 to create subclasses of this class when you send
-<emphasis role="bold">subClass</emphasis> or
-<emphasis role="bold">mixinClass</emphasis> messages
+<xref linkend="mthClassSubclass" xrefstyle="select:title"/> or
+<xref linkend="mthClassMixinClass" xrefstyle="select:title"/> messages
 (with no metaclass arguments).
 The instance methods of the default metaclass are the class methods of the
-receiver class. For more information about class methods, see
-<xref linkend="objcla" />.
-See also the description of the <emphasis role="bold">subClass</emphasis>
-method in <xref linkend="mthClassSubclass" />.</para>
+receiver class.
+</para>
+<para>For more information about class methods, see <xref linkend="objcla" />.
+See also the description of method <xref linkend="mthClassSubclass" xrefstyle="select:title"/>.
+</para>
 </section>
 
 <section id="mthClassMethod"><title>method</title>
@@ -755,11 +758,11 @@ say method_source[1]              /* Shows the method source code */
 </imageobject>
 </mediaobject>
 
-<para>Returns a Supplier object (<xref linkend="clsSupplier" />)
+<para>Returns a <xref linkend="clsSupplier" xrefstyle="template:Supplier"/> object
 for all the instance methods of the receiver
 class and its superclasses, if you specify no argument. If
 <emphasis role="italic">class_object</emphasis> is &nil;,
-<emphasis role="bold">methods</emphasis>
+<methodname>methods</methodname>
 returns a supplier object for only the instance
 methods of the receiver class. If you specify a
 <emphasis role="italic">class_object</emphasis>,
@@ -771,10 +774,10 @@ at the time of the supplier's creation.
 
 <note><title>Note</title>
 <para>Methods that have been hidden with a
-<emphasis role="bold">setMethod</emphasis> or
-<emphasis role="bold">define</emphasis> method
+<methodname>setMethod</methodname> or
+<methodname>define</methodname> method
 are included with the other methods that
-<emphasis role="bold">methods</emphasis> returns. The hidden methods
+<methodname>methods</methodname> returns. The hidden methods
 have &nil; for the associated method.</para></note>
 <indexterm><primary>examples</primary>
 <secondary>methods method</secondary></indexterm>
@@ -807,7 +810,7 @@ end
 method to create a new mixin class that is a subclass of the superclass to
 which you send the message. The <emphasis role="italic">classid</emphasis>
 is a string that identifies the new mixin subclass. You can use the
-<emphasis role="bold">id</emphasis> method
+<methodname>id</methodname> method
 to retrieve this string.</para>
 <para>The <emphasis role="italic">metaclass</emphasis> is a class object. If
 you specify <emphasis role="italic">metaclass</emphasis>, the new subclass is
@@ -825,7 +828,7 @@ and whose items are method objects (or strings or arrays of strings containing
 method code). If you specify <emphasis role="italic">methods</emphasis>, the new
 class is enhanced with class methods from this collection. (The metaclass of
 the new class is not affected.)</para>
-<para>The <emphasis role="bold">metaClass</emphasis>
+<para>The <methodname>metaClass</methodname>
 method returns the metaclass of a class.</para>
 <para>The method search order of the new subclass is the same as that of the
 receiver class, with the addition of the new subclass at the start of the
@@ -856,12 +859,11 @@ buyable=.object~mixinClass("Buyable")  /* New subclass is buyable    */
 
 <para>Returns a new instance of the receiver class, whose object methods are
 the instance methods of the class. This method initializes a new instance
-by running its <emphasis role="bold">init</emphasis> methods. (See
-<xref linkend="creo" />.)
-<emphasis role="bold">new</emphasis> also sends an
-<emphasis role="bold">init</emphasis> message. If you specify args,
-<emphasis role="bold">new</emphasis> passes these
-arguments on the <emphasis role="bold">init</emphasis> message.</para>
+by running its <methodname>init</methodname> methods (see <xref linkend="creo" />).
+<methodname>new</methodname> also sends an
+<methodname>init</methodname> message. If you specify args,
+<methodname>new</methodname> passes these
+arguments on the <methodname>init</methodname> message.</para>
 <indexterm><primary>examples</primary>
 <secondary>new method</secondary></indexterm>
 <example id="ex.class-new">
@@ -945,7 +947,7 @@ mixin class, or &false;.</para>
 create a new class that is a subclass of the superclass to which you send
 the message. The <emphasis role="italic">classid</emphasis> is a string that
 identifies the subclass. (You can use the
-<emphasis role="bold">id</emphasis> method to retrieve this string.)
+<methodname>id</methodname> method to retrieve this string.)
 </para>
 <para>The <emphasis role="italic">metaclass</emphasis> is a class object. If
 you specify <emphasis role="italic">metaclass</emphasis>, the new subclass is
@@ -963,7 +965,7 @@ and whose items are method objects (or strings or arrays of strings containing
 method code). If you specify <emphasis role="italic">methods</emphasis>,
 the new class is enhanced with class methods from this collection.
 (The metaclass of the new class is not affected.)</para>
-<para>The <emphasis role="bold">metaclass</emphasis> method returns the
+<para>The <methodname>metaclass</methodname> method returns the
 metaclass of a class.</para>
 <para>The method search order of the new subclass is the same as that of the
 receiver class, with the addition of the new subclass at the start of the
@@ -1014,9 +1016,9 @@ unspecified order. (The program should not rely on any order.)
 
 <para>Returns the immediate superclass of the receiver class. The
 immediate superclass is
-the original class used on a <emphasis role="bold">subClass</emphasis> or a
-<emphasis role="bold">mixinClass</emphasis> method. For the Object Class,
-<emphasis role="bold">superClass</emphasis> returns &nil;.</para>
+the original class used on a <methodname>subClass</methodname> or a
+<methodname>mixinClass</methodname> method. For the Object Class,
+<methodname>superClass</methodname> returns &nil;.</para>
 
 <indexterm><primary>examples</primary>
 <secondary>superClass method</secondary></indexterm>
@@ -1045,13 +1047,13 @@ say .set~superclass       -- displays "The Table class"
 
 <para>Returns the immediate superclasses of the receiver class in the form of
 a single-index array of the required size. The immediate superclasses are
-the original class used on a <emphasis role="bold">subClass</emphasis> or a
-<emphasis role="bold">mixinClass</emphasis> method, plus any additional
-superclasses defined with the <emphasis role="bold">inherit</emphasis>
+the original class used on a <methodname>subClass</methodname> or a
+<methodname>mixinClass</methodname> method, plus any additional
+superclasses defined with the <methodname>inherit</methodname>
 method. The array is in the order in
 which the class has inherited the classes. The original class used on a
-<emphasis role="bold">subClass</emphasis> or
-<emphasis role="bold">mixinClass</emphasis> method is the first item of the
+<methodname>subClass</methodname> or
+<methodname>mixinClass</methodname> method is the first item of the
 array.
 </para>
 <indexterm><primary>examples</primary>
@@ -1082,13 +1084,13 @@ end
 </mediaobject>
 
 <para>Nullifies the effect of any previous
-<emphasis role="bold">inherit</emphasis> message
+<methodname>inherit</methodname> message
 sent to the receiver for the class <emphasis role="italic">classobj</emphasis>.
 </para>
 
 <note><title>Note</title>
 <para>You cannot change the classes that Rexx provides by sending
-<emphasis role="bold">uninherit</emphasis> messages.
+<methodname>uninherit</methodname> messages.
 </para></note>
 <indexterm><primary>examples</primary>
 <secondary>uninherit method</secondary></indexterm>
@@ -1119,7 +1121,7 @@ Object class.
 </para>
 
 <!-- $GENERATED-20151014-START rexxrefClassTable(Message) -->
-<table id="ooRexxMessageClass" frame="all" pgwide="0">
+<table id="ooRexxMessageClass" frame="all" pgwide="1">
 <title>Message Class</title>
 <tgroup cols="1">
 <tbody>
@@ -1264,7 +1266,7 @@ See methods
 <para>Returns <computeroutput>1</computeroutput> if the message object has
 completed executing its message, or <computeroutput>0</computeroutput>. You can use this
 method to test for completion as an alternative to calling
-<emphasis role="bold">result</emphasis> and waiting for
+<methodname>result</methodname> and waiting for
 the message to complete.</para>
 </section>
 
@@ -1283,7 +1285,7 @@ the message to complete.</para>
 
 <para>Returns an error condition object from any execution error with the message
 object's message invocation. If the message completed normally, or is still executing,
-<emphasis role="bold">errorCondition</emphasis> returns &nil;.</para>
+<methodname>errorCondition</methodname> returns &nil;.</para>
 </section>
 
 
@@ -1401,7 +1403,7 @@ executing its message, or the message hasn't returned a result.
 <imagedata fileref="images/classes/message_messagecomplete.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
-<para>This method implements the <xref linkend="clsAlarmNotification" xrefstyle="template:MessageNotification interface"/>.
+<para>This method implements the <xref linkend="clsMessageNotification" xrefstyle="template:MessageNotification interface"/>.
 It will be called whenever a message completes processing, for which
 notification was requested by using the
 <xref linkend="mthMessageNotify" xrefstyle="select:title"/> method with
@@ -1642,11 +1644,11 @@ result and holds it until requested via the
 </imageobject>
 </mediaobject>
 
-<para>Returns the result of the message <emphasis role="bold">send</emphasis> or
-<emphasis role="bold">start</emphasis>.
+<para>Returns the result of the message <methodname>send</methodname> or
+<methodname>start</methodname>.
 If message processing is not yet complete, this method waits until it completes.
-If the message <emphasis role="bold">send</emphasis> or
-<emphasis role="bold">start</emphasis> raises an error condition, this method
+If the message <methodname>send</methodname> or
+<methodname>start</methodname> raises an error condition, this method
 also raises an error condition.</para>
 <example id="ex.message-result">
 <title>Message class &mdash; result method</title>
@@ -1781,7 +1783,7 @@ method, it can not be run with any of the
 <methodname>start</methodname>/<methodname>startWith</methodname>,
 <methodname>reply</methodname>/<methodname>replyWith</methodname>
 methods again.
-A message object <emphasis role="bold">can</emphasis> be run multiple
+A message object <methodname>can</methodname> be run multiple
 times with methods
 <methodname>send</methodname>/<methodname>sendWith</methodname> and
 <methodname>reply</methodname>/<methodname>replyWith</methodname>.
@@ -1882,7 +1884,7 @@ method, it can not be run with any of the
 <methodname>start</methodname>/<methodname>startWith</methodname>,
 <methodname>reply</methodname>/<methodname>replyWith</methodname>
 methods again.
-A message object <emphasis role="bold">can</emphasis> be run multiple
+A message object <methodname>can</methodname> be run multiple
 times with methods
 <methodname>send</methodname>/<methodname>sendWith</methodname> and
 <methodname>reply</methodname>/<methodname>replyWith</methodname>.
@@ -1992,10 +1994,11 @@ was scheduled for 2015-12-18T16:54:15.545000
 <secondary>Method class</secondary></indexterm>
 
 <para>The Method class creates method objects from Rexx source code.
-It is a subclass of the Object class (<xref linkend="clsObject" />).</para>
+It is a subclass of the <xref linkend="clsObject" xrefstyle="template:Object class"/>.
+</para>
 
 <!-- $GENERATED-20151005-START rexxrefClassTable(Method) -->
-<table id="ooRexxMethodClass" frame="all" pgwide="0">
+<table id="ooRexxMethodClass" frame="all" pgwide="1">
 <title>Method Class</title>
 <tgroup cols="1">
 <tbody>
@@ -2366,7 +2369,7 @@ end                                         -- 31 methods from The Object class
 <para>Specifies that the method is a guarded method that requires
 exclusive access to its scope variable pool to run.
 If the receiver is already guarded, a
-<emphasis role="bold">setGuarded</emphasis> message has no effect.
+<methodname>setGuarded</methodname> message has no effect.
 Guarded is the default state for method objects.
 </para>
 </section>
@@ -2470,7 +2473,7 @@ case, the method runs immediately regardless of its guarded state.
 
 <para>Returns the method source code as a single-index array of source
 lines. If the source code is not available,
-<emphasis role="bold">source</emphasis> returns an array of zero
+<methodname>source</methodname> returns an array of zero
 items.</para>
 </section>
 </section><!-- clsMethod -->
@@ -2485,7 +2488,7 @@ of the Object class are, therefore, available on all objects.</para>
 
 <!-- modified: removed all class methods except new(), uncommented init(), added private methods run(), setMethod(), unsetMethod() -->
 <!-- $GENERATED-20151019-START rexxrefClassTable(Object) -->
-<table id="ooRexxObjectClass" frame="all" pgwide="0">
+<table id="ooRexxObjectClass" frame="all" pgwide="1">
 <title>Object Class</title>
 <tgroup cols="1">
 <tbody>
@@ -2568,13 +2571,13 @@ this method to define equality using different criteria.  For example, the Strin
 class determines equality based on the value of the string data.
 </para>
 <note><title>Note</title>
-<para>The MapCollection classes such as Table and Relation use the == operator
-combined with the hashCode method (<xref linkend="mthObjectHashCode" />) to determine index and
-item equivalence.
+<para>The MapCollection classes such as <classname>Table</classname> and
+<classname>Relation</classname> use the == operator
+combined with the <xref linkend="mthObjectHashCode" xrefstyle="select:title"/> method
+to determine index and item equivalence.
 It is generally necessary
 for a class to override both the hashCode method and the == operator method to maintain
 the contract specified for the hashCode method.
-See <xref linkend="mthObjectHashCode" /> for details on the contract.
 </para></note>
 <para>The comparison operators you can use in a message are: </para>
 <variablelist>
@@ -2691,7 +2694,7 @@ object and the <emphasis role="italic">argument</emphasis>.
 the same methods as the receiver object and an equivalent set of object
 variables, with the same values.</para>
 <indexterm><primary>examples</primary>
-<secondary><emphasis role="bold">copy</emphasis> method</secondary></indexterm>
+<secondary><methodname>copy</methodname> method</secondary></indexterm>
 <example id="ex.object-copy">
 <title>Object class &mdash; copy method</title>
 <programlisting>
@@ -2726,13 +2729,16 @@ be sufficient to reconstruct the object. All objects must be able to produce
 a short string representation of themselves in this way, even if the object
 does not have a string value. See
 <xref linkend="reqstr" /> for more information.
-The <emphasis role="bold">defaultName</emphasis>
-method of the Object class returns a string that identifies
-the class of the object, for example, an Array or a Directory. See also
-<xref linkend="mthObjectObjectName" /> and
-<xref linkend="mthObjectString" />. See
-<xref linkend="mthObjectObjectNameEquals" /> for an
-example using <emphasis role="bold">defaultName</emphasis>.</para>
+<methodname>defaultName</methodname> returns a string that identifies the class of
+the object, for example, <literal>an Array</literal> or <literal>a Directory</literal>.
+</para>
+<para>See also methods
+<xref linkend="mthObjectObjectName" xrefstyle="select:title"/> and
+<xref linkend="mthObjectString" xrefstyle="select:title"/>.
+</para>
+<para>See <xref linkend="mthObjectObjectNameEquals" xrefstyle="select:title"/>
+for an example using <methodname>defaultName</methodname>.
+</para>
 </section>
 
 <section id="mthObjectHashCode"><title>hashCode</title>
@@ -2801,7 +2807,7 @@ Otherwise, it returns &false;. </para>
 
 <note><title>Note</title>
 <para>The hasMethod object will return &true; even if the target method is defined
-as private.  A private method has restricted access rules, so its possible to
+as private.  A private method has restricted access rules, so it's possible to
 receive an unknown method error (error 97) when invoking <emphasis role="italic">methodname</emphasis>
 even if hasMethod indicates the method exists.
 See <xref linkend="pubpri" />
@@ -2895,7 +2901,7 @@ instance of <emphasis role="italic">class</emphasis>, &nil; is returned.
 </mediaobject>
 
 <note><para>This method is an alias of the
-isInstance (<xref linkend="mthObjectIsInstanceOf" />) method.</para>
+<xref linkend="mthObjectIsInstanceOf" xrefstyle="select:title"/> method.</para>
 </note>
 </section>
 
@@ -2948,10 +2954,10 @@ class inheritance chain. For example:
 <para>Returns any name set on the receiver object using the
 <emphasis role="bold">objectName=</emphasis> method. If
 the receiver object does not have a name, this method returns the result of
-the <emphasis role="bold">defaultName</emphasis> method. See
+the <methodname>defaultName</methodname> method. See
 <xref linkend="reqstr" /> for more information. See
 the <emphasis role="bold">objectName=</emphasis>
-method for an example using <emphasis role="bold">objectName</emphasis>.</para>
+method for an example using <methodname>objectName</methodname>.</para>
 </section>
 
 <section id="mthObjectObjectNameEquals"><title>objectName=</title>
@@ -3004,32 +3010,32 @@ say points[3]                 /* Says: "E"  Points is still an array */
 <para>Returns an object of the <emphasis role="italic">classid</emphasis>
 class, or &nil; if the request cannot be satisfied.</para>
 <para>This method first compares the identity of the object's class (see
-the <emphasis role="italic">id</emphasis>
-method of the Class class in <xref linkend="mthClassId" />) to
+the <xref linkend="mthClassId" xrefstyle="select:title"/>
+method of the Class class) to
 <emphasis role="italic">classid</emphasis>. If they are the same, the
 receiver object is returned as the result.
-Otherwise, <emphasis role="bold">request</emphasis>
+Otherwise, <methodname>request</methodname>
 tries to obtain and return an object satisfying
 <emphasis role="italic">classid</emphasis> by sending the receiver object the
 conversion message <computeroutput>make</computeroutput> with
 the string <emphasis role="italic">classid</emphasis> appended (converted to
 uppercase). For example,
 a <computeroutput>request("string")</computeroutput> message causes a
-<emphasis role="bold">makeString</emphasis> message to be sent.
+<methodname>makeString</methodname> message to be sent.
 If the object does not have the required conversion method,
-<emphasis role="bold">request</emphasis> returns
+<methodname>request</methodname> returns
 &nil;.</para>
 <para>The conversion methods cause objects to produce different representations
 of themselves. The presence or absence of a conversion method defines an object's
 capability to produce the corresponding representations. For example, lists
 can represent themselves as arrays, because they have a
-<emphasis role="bold">makeArray</emphasis> method,
+<methodname>makeArray</methodname> method,
 but they cannot represent themselves as directories, because they do not have
-a <emphasis role="bold">makeDirectory</emphasis>
+a <methodname>makeDirectory</methodname>
 method. Any conversion method must return an object of the
-requested class. For example, <emphasis role="bold">makeArray</emphasis>
+requested class. For example, <methodname>makeArray</methodname>
 must return an array. The language
-processor uses the <emphasis role="bold">makeString</emphasis>
+processor uses the <methodname>makeString</methodname>
 method to obtain string values in certain contexts;
 see <xref linkend="reqstr" />.</para>
 </section>
@@ -3049,7 +3055,7 @@ see <xref linkend="reqstr" />.</para>
 
 <para>Runs <emphasis role="italic">method</emphasis>, which can be either
 <itemizedlist spacing="compact">
-  <listitem><para>a method object (see <xref linkend="clsMethod" />), or</para></listitem>
+  <listitem><para>a <xref linkend="clsMethod" xrefstyle="template:method"/> object, or</para></listitem>
   <listitem><para>a string containing a method source line, or an Array
    of strings containing individual method source lines (for these cases an 
    equivalent method object is created).</para></listitem>
@@ -3058,7 +3064,7 @@ see <xref linkend="reqstr" />.</para>
 <para>The <emphasis role="italic">method</emphasis> has access to the object variables
 of the receiver object, as
 if the receiver object had defined the method by using
-<emphasis role="bold">setMethod</emphasis>.</para>
+<methodname>setMethod</methodname>.</para>
 <para>If you specify neither Individual nor Array, the method runs without
 arguments.</para>
 <para>If you specify the Individual or Array option, any remaining
@@ -3106,7 +3112,7 @@ for information about private method restrictions.
 
 <para>Returns a result of invoking a method on the target object
 using the specified message name and arguments.
-The send() method allows methods to be invoked using dynamically
+The <methodname>send</methodname> method allows methods to be invoked using dynamically
 constructed method names.
 </para>
 <para>The <emphasis role="italic">messagename</emphasis> can be a string or
@@ -3158,7 +3164,7 @@ say msg3~result           /* Produces Hello Fred 21:04:25.101000  */
 
 <para>Returns a result of invoking a method on the target object
 using the specified message name and arguments.
-The send() method allows methods to be invoked using dynamically
+The <methodname>send</methodname> method allows methods to be invoked using dynamically
 constructed method names and arguments.
 </para>
 <para>The <emphasis role="italic">messagename</emphasis> can be a string or
@@ -3216,18 +3222,18 @@ collection of object methods.</para>
 is the name of the new
 method. This name is translated to uppercase.  If you
 previously defined a method with the same name using
-<emphasis role="bold">setMethod</emphasis>, the new method
+<methodname>setMethod</methodname>, the new method
 replaces the earlier one. If you omit <emphasis role="italic">method</emphasis>,
-<emphasis role="bold">setMethod</emphasis> makes the
+<methodname>setMethod</methodname> makes the
 method name <emphasis role="italic">methodname</emphasis> unavailable for the
 receiver object. In this
 case, sending a message of that name to the receiver object runs the
-<emphasis role="bold">unknown</emphasis>
+<methodname>unknown</methodname>
 method (if any).</para>
 
 <para>The <emphasis role="italic">method</emphasis> can be either
 <itemizedlist spacing="compact">
-  <listitem><para>a method object (see <xref linkend="clsMethod" />), or</para></listitem>
+  <listitem><para>a <xref linkend="clsMethod" xrefstyle="template:method"/> object, or</para></listitem>
   <listitem><para>a string containing a method source line, or an Array
    of strings containing individual method source lines (for these cases an 
    equivalent method object is created).</para></listitem>
@@ -3243,13 +3249,13 @@ attached to.</para>
 
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
-<listitem><para>The <emphasis role="bold">setMethod</emphasis>
+<listitem><para>The <methodname>setMethod</methodname>
 method is a private method.
-See the <emphasis role="bold">setPrivate</emphasis> method
-in <xref linkend="mthMethodSetPrivate" /> for details.
+See the <xref linkend="mthMethodSetPrivate" xrefstyle="select:title"/> method
+for details.
 </para>
 </listitem>
-<listitem><para>The <emphasis role="bold">setMethod</emphasis>
+<listitem><para>The <methodname>setMethod</methodname>
 method is a protected method.</para></listitem>
 </orderedlist>
 </section>
@@ -3267,9 +3273,9 @@ method is a protected method.</para></listitem>
 </imageobject>
 </mediaobject>
 
-<para>Returns a message object (see
-<xref linkend="clsMessage" />) and sends it a
-<emphasis role="bold">start</emphasis> message
+<para>Returns a <xref linkend="clsMessage" xrefstyle="template:message"/> object
+and sends it a
+<methodname>start</methodname> message
 to start concurrent processing. The object receiving the message
 <emphasis role="italic">messagename</emphasis> processes this message
 concurrently with the sender's continued processing.</para>
@@ -3285,8 +3291,9 @@ arguments for <emphasis role="italic">messagename</emphasis> in the order you
 specify them.</para>
 <para>When the receiver object has finished processing the message, the message
 object retains its result and holds it until the sender requests it by sending
-a <emphasis role="bold">result</emphasis> message. For further details,
-see <xref linkend="mthMessageStart" />.
+a <methodname>result</methodname> message. For further details,
+see <classname>Message</classname> class method
+<xref linkend="mthMessageStart" xrefstyle="select:title"/>.
 </para>
 <example id="ex.object-start">
 <title>Object class &mdash; start method</title>
@@ -3320,9 +3327,8 @@ say msg2~result           /* Produces Hello world 21:04:25.081000 */
 </imageobject>
 </mediaobject>
 
-<para>Returns a message object (see
-<xref linkend="clsMessage" />) and sends it a
-<emphasis role="bold">start</emphasis> message
+<para>Returns a <xref linkend="clsMessage" xrefstyle="template:message"/> object
+and sends it a <methodname>start</methodname> message
 to start concurrent processing. The object receiving the message
 <emphasis role="italic">messagename</emphasis> processes this message
 concurrently with the sender's continued processing.</para>
@@ -3340,8 +3346,9 @@ arguments for <emphasis role="italic">messagename</emphasis> in the order you
 specify them.</para>
 <para>When the receiver object has finished processing the message, the message
 object retains its result and holds it until the sender requests it by sending
-a <emphasis role="bold">result</emphasis> message. For further details,
-see <xref linkend="mthMessageStart" />.
+a <methodname>result</methodname> message. For further details,
+see <classname>Message</classname> class method
+<xref linkend="mthMessageStart" xrefstyle="select:title"/>.
 </para>
 <example id="ex.object-startWith">
 <title>Object class &mdash; startWith method</title>
@@ -3381,31 +3388,28 @@ form of this representation depends on the object and might not alone be
 sufficient to reconstruct the object. All objects must be able to produce a
 string representation of themselves in this way.</para>
 <para>The object's string representation is obtained from the
-<emphasis role="bold">objectName</emphasis>
+<xref linkend="mthObjectObjectName" xrefstyle="select:title"/>
 method (which can in turn use the
-<emphasis role="bold">defaultName</emphasis> method). See also the
-<emphasis role="bold">objectName</emphasis>
-method (<xref linkend="mthObjectObjectName" />) and the
-<emphasis role="bold">defaultName</emphasis> method
-(<xref linkend="mthObjectDefaultName" />).</para>
+<xref linkend="mthObjectDefaultName" xrefstyle="select:title"/> method).
+</para>
 <para>The distinction between this method, the
-<emphasis role="bold">makeString</emphasis> method (which obtains
-string values&mdash;see <xref linkend="mthStringMakeString" />) and the
-<emphasis role="bold">request</emphasis>
-method (see <xref linkend="mthObjectRequest" />) is important. All objects
-have a <emphasis role="bold">string</emphasis> method, which returns
+<xref linkend="mthStringMakeString" xrefstyle="select:title"/> method
+(which obtains string values) and the
+<xref linkend="mthObjectRequest" xrefstyle="select:title"/>
+method is important. All objects
+have a <methodname>string</methodname> method, which returns
 a string representation (human-readable form) of the
 object. This form is useful in tracing and debugging. Only those objects that
 have information with a meaningful string form have a
-<emphasis role="bold">makeString</emphasis> method to
+<methodname>makeString</methodname> method to
 return this value. For example, directory objects have a readable string
 representation (a Directory), but no string value, and, therefore, no
-<emphasis role="bold">makeString</emphasis> method.</para>
+<methodname>makeString</methodname> method.</para>
 <para>Of the classes that Rexx provides, only the String class has a
-<emphasis role="bold">makeString</emphasis>
+<methodname>makeString</methodname>
 method. Any subclasses of the String class inherit this method by default,
 so these subclasses also have string values. Any other class can also provide
-a string value by defining a <emphasis role="bold">makeString</emphasis> method.</para>
+a string value by defining a <methodname>makeString</methodname> method.</para>
 </section>
 
 <section id="mthObjectUnsetMethod"><title>unsetMethod (Private Method)</title>
@@ -3422,23 +3426,23 @@ a string value by defining a <emphasis role="bold">makeString</emphasis> method.
 </mediaobject>
 
 <para>Cancels the effect of all previous
-<emphasis role="bold">setMethod</emphasis>s for method
+<methodname>setMethod</methodname>s for method
 <emphasis role="italic">methodname</emphasis>. It also removes any method
 <emphasis role="italic">methodname</emphasis> introduced with
 <emphasis role="italic">enhanced</emphasis>
 when the object was created. If the object has received no
-<emphasis role="bold">setMethod</emphasis> method,
+<methodname>setMethod</methodname> method,
 no action is taken. </para>
 
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
-<listitem><para>The <emphasis role="bold">unsetMethod</emphasis>
+<listitem><para>The <methodname>unsetMethod</methodname>
 method is a private method.
-See the <emphasis role="bold">setPrivate</emphasis> method
-in <xref linkend="mthMethodSetPrivate" /> for details.
+See the <xref linkend="mthMethodSetPrivate" xrefstyle="select:title"/> method
+for details.
 </para>
 </listitem>
-<listitem><para>The <emphasis role="bold">unsetMethod</emphasis>
+<listitem><para>The <methodname>unsetMethod</methodname>
 method is a protected method.</para></listitem>
 </orderedlist>
 </section>
@@ -3457,7 +3461,7 @@ instances.  It is a subclass of the <xref linkend="clsObject" xrefstyle="templat
 </para>
 
 <!-- $GENERATED-20151005-START rexxrefClassTable(Package) -->
-<table id="ooRexxPackageClass" frame="all" pgwide="0">
+<table id="ooRexxPackageClass" frame="all" pgwide="1">
 <title>Package Class</title>
 <tgroup cols="1">
 <tbody>
@@ -3721,11 +3725,9 @@ If no such annotation exists, &nil; is returned.
 <!-- @@@ wrong, either doc bug or method bug:
 or imported as public classes from another package. -->
 </para>
-<para>See also
-<itemizedlist spacing="compact">
-  <listitem><para>method <xref linkend="mthPackagePublicClasses" xrefstyle="select:title"/> and</para></listitem>
-  <listitem><para>method <xref linkend="mthPackageImportedClasses" xrefstyle="select:title"/>.</para></listitem>
-</itemizedlist>
+<para>See also methods
+<xref linkend="mthPackagePublicClasses" xrefstyle="select:title"/> and
+<xref linkend="mthPackageImportedClasses" xrefstyle="select:title"/>.
 </para>
 </section>
 
@@ -3760,9 +3762,9 @@ the .METHODS environment symbol.</para>
 </imageobject>
 </mediaobject>
 
-<para>Returns the initial NUMERIC DIGITS (<xref linkend="keyNumeric" />)
+<para>Returns the initial <xref linkend="keyNumeric" xrefstyle="select:title"/> DIGITS
 setting used for all Rexx code contained within the package.  The default
-value is 9.  The ::OPTIONS directive (<xref linkend="optionsd" />) can
+value is 9.  The <xref linkend="optionsd" xrefstyle="select:title"/> directive can
 override the default value.
 </para>
 </section>
@@ -3888,11 +3890,9 @@ say .context~package~findPublicClass("RexxInfo") -- The NIL object
 Returns &nil; if no public routine of the specified name exists within the
 scope of the receiving package.
 </para>
-<para>See also
-<itemizedlist spacing="compact">
-  <listitem><para>method <xref linkend="mthPackagePublicRoutines" xrefstyle="select:title"/> and</para></listitem>
-  <listitem><para>method <xref linkend="mthPackageFindRoutine" xrefstyle="select:title"/>.</para></listitem>
-</itemizedlist>
+<para>See also methods
+<xref linkend="mthPackagePublicRoutines" xrefstyle="select:title"/> and
+<xref linkend="mthPackageFindRoutine" xrefstyle="select:title"/>.
 </para>
 <para><example>
 <title>Package class &mdash; findPublicRoutine method</title>
@@ -3937,10 +3937,10 @@ not found, &nil; will be returned.</para>
 </imageobject>
 </mediaobject>
 
-<para>Returns the initial NUMERIC FORM (<xref linkend="keyNumeric" />) setting
+<para>Returns the initial <xref linkend="keyNumeric" xrefstyle="select:title"/> FORM setting
 used for all Rexx code contained within the package.  The default value is
-SCIENTIFIC.  The ::OPTIONS directive
-(<xref linkend="optionsd" />) can override the default
+SCIENTIFIC.  The <xref linkend="optionsd" xrefstyle="select:title"/> directive
+can override the default
 value.
 </para>
 </section>
@@ -3958,10 +3958,10 @@ value.
 </imageobject>
 </mediaobject>
 
-<para>Returns the initial NUMERIC FUZZ (<xref linkend="keyNumeric" />) setting
+<para>Returns the initial <xref linkend="keyNumeric" xrefstyle="select:title"/> FUZZ setting
 used for all Rexx code contained within the package.  The default value is 0.
-The ::OPTIONS directive
-(<xref linkend="optionsd" />) can override the default
+The <xref linkend="optionsd" xrefstyle="select:title"/> directive
+can override the default
 value.
 </para>
 </section>
@@ -3981,11 +3981,9 @@ value.
 
 <para>Returns a StringTable containing all public classes imported from other
 packages.</para>
-<para>See also
-<itemizedlist spacing="compact">
-  <listitem><para>method <xref linkend="mthPackageClasses" xrefstyle="select:title"/> and</para></listitem>
-  <listitem><para>method <xref linkend="mthPackagePublicClasses" xrefstyle="select:title"/>.</para></listitem>
-</itemizedlist>
+<para>See also methods
+<xref linkend="mthPackageClasses" xrefstyle="select:title"/> and
+<xref linkend="mthPackagePublicClasses" xrefstyle="select:title"/>.
 </para>
 </section>
 
@@ -4085,7 +4083,7 @@ will be added to the receiving package object's dependent packages.</para>
 <itemizedlist spacing="compact">
 <listitem><para>the absolute path of the executing program,</para></listitem>
 <listitem><para>any name that was specified when creating an instance of a Package or Routine class,</para></listitem>
-<listitem><para>"REXX" for classes defined by ooRexx, or</para></listitem>
+<listitem><para>"REXX" for classes defined by Rexx, or</para></listitem>
 <listitem><para>"INSTORE" for code executed through the <command>rexx -e</command> command.</para></listitem>
 </itemizedlist>
 </para>
@@ -4129,7 +4127,7 @@ say .Package~new("pkg", "")~name       -- pkg
 <imagedata fileref="images/classes/package_prolog.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
-<para>Returns a routine object that represents the code of the the target package
+<para>Returns a routine object that represents the code of the target package
 that precedes any directives.
 </para>
 <para><example>
@@ -4154,11 +4152,9 @@ that precedes any directives.
 </mediaobject>
 
 <para>Returns a StringTable containing all public classes defined in this package.</para>
-<para>See also
-<itemizedlist spacing="compact">
-  <listitem><para>method <xref linkend="mthPackageFindPublicClass" xrefstyle="select:title"/> and</para></listitem>
-  <listitem><para>method <xref linkend="mthPackageClasses" xrefstyle="select:title"/>.</para></listitem>
-</itemizedlist>
+<para>See also methods
+<xref linkend="mthPackageFindPublicClass" xrefstyle="select:title"/> and
+<xref linkend="mthPackageClasses" xrefstyle="select:title"/>.
 </para>
 <para><example>
 <title>Package class &mdash; publicClasses method</title>
@@ -4318,7 +4314,7 @@ existing security manager is removed.</para>
 
 <para>Returns the package source code as a single-index array of source lines.
 If the source code is not available,
-<emphasis role="bold">source</emphasis> returns an array of zero
+<methodname>source</methodname> returns an array of zero
 items.</para>
 </section>
 
@@ -4370,9 +4366,9 @@ code is not available, 0 is returned.</para>
 </imageobject>
 </mediaobject>
 
-<para>Returns the initial TRACE (<xref linkend="keyTrace" />) setting used for
-all Rexx code contained within the package.  The default value is Normal. The
-::OPTIONS directive (<xref linkend="optionsd" />) can override the default
+<para>Returns the initial <xref linkend="keyTrace" xrefstyle="select:title"/> setting used for
+all Rexx code contained within the package.  The default value is Normal.
+The <xref linkend="optionsd" xrefstyle="select:title"/> directive can override the default
 value.
 </para>
 </section>
@@ -4384,12 +4380,12 @@ value.
 <secondary>Routine class</secondary></indexterm>
 
 <para>The Routine class creates routine objects from Rexx source code.
-It is a
-subclass of the Object class (<xref linkend="clsObject" />).</para>
+It is a subclass of the
+<xref linkend="clsObject" xrefstyle="template:Object class"/>.</para>
 
 <!-- modified: mthRoutineAtGet -> mthRoutineCallBrackets -->
 <!-- $GENERATED-20151005-START rexxrefClassTable(Routine) -->
-<table id="ooRexxRoutineClass" frame="all" pgwide="0">
+<table id="ooRexxRoutineClass" frame="all" pgwide="1">
 <title>Routine Class</title>
 <tgroup cols="1">
 <tbody>
@@ -4665,7 +4661,7 @@ existing security manager is removed.</para>
 
 <para>Returns the routine source code as a single-index array of source lines.
 If the source code is not available,
-<emphasis role="bold">source</emphasis> returns an array of zero
+<methodname>source</methodname> returns an array of zero
 items.</para>
 </section>
 </section><!-- clsRoutine -->
@@ -4681,7 +4677,7 @@ string value can have any length and contain any characters.
 
 <!-- modified: move new() to top; re-add hashCode() -->
 <!-- $GENERATED-20151011-START rexxrefClassTable(String) -->
-<table id="ooRexxStringClass" frame="all" pgwide="0">
+<table id="ooRexxStringClass" frame="all" pgwide="1">
 <title>String Class</title>
 <tgroup cols="1">
 <tbody>
@@ -4908,8 +4904,8 @@ has the value '09'x.</para>
 <para>Returns the result of performing the specified arithmetic operation on
 the receiver object. The receiver object and the
 <emphasis role="italic">argument</emphasis> must be
-valid numbers (see <xref linkend="numbrs" />). The
-<emphasis role="italic">arithmetic_operator</emphasis> can be:
+valid <xref linkend="numbrs" xrefstyle="template:numbers"/>.
+The <emphasis role="italic">arithmetic_operator</emphasis> can be:
 </para>
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1">
 <tgroup cols="2">
@@ -5152,7 +5148,7 @@ comparison operators do not attempt to perform a numeric comparison on the
 two operands.</para>
 <para>For all the other comparison operators, if both terms
 are numeric, the String class does a numeric comparison (ignoring, for
-example, leading zeros&mdash; see <xref linkend="numcom" />).
+example, leading zeros&mdash;see <xref linkend="numcom" />).
 Otherwise, it treats
 both terms as character strings, ignoring leading and trailing whitespace
 characters and padding the shorter string on the right with blanks.
@@ -5587,7 +5583,7 @@ readability and are ignored.
 <computeroutput>A</computeroutput>-<computeroutput>F</computeroutput> and does
 not include whitespace.</para>
 <para>If the receiving binary string is a null string,
-<emphasis role="bold">b2x</emphasis> returns a null string.
+<methodname>b2x</methodname> returns a null string.
 If the number of binary digits in the receiving string is not a multiple of
 four, up to three <computeroutput>0</computeroutput>
 digits are added on the left
@@ -5605,9 +5601,9 @@ before the conversion to make a total that is a multiple of four.</para>
 ]]>
 </programlisting>
 </example>
-<para>You can combine <emphasis role="bold">b2x</emphasis>
-with the methods <emphasis role="bold">x2d</emphasis> and
-<emphasis role="bold">x2c</emphasis> to convert a binary
+<para>You can combine <methodname>b2x</methodname>
+with the methods <methodname>x2d</methodname> and
+<methodname>x2c</methodname> to convert a binary
 number into other forms.</para>
 <example id="ex.string-b2x-1">
 <title>String class &mdash; b2x method with x2d</title>
@@ -5804,7 +5800,7 @@ This padding or truncation is as though
 <computeroutput>receiving_string~right(n,&apos;00&apos;x)</computeroutput> had
 been processed. If <emphasis role="italic">n</emphasis> is
 <computeroutput>0</computeroutput>,
-<emphasis role="bold">c2d</emphasis> always returns
+<methodname>c2d</methodname> always returns
 <computeroutput>0</computeroutput>.</para>
 <example id="ex.string-c2d-1">
 <title>String class &mdash; c2d method</title>
@@ -5845,7 +5841,7 @@ been processed. If <emphasis role="italic">n</emphasis> is
 <para>Returns a string, in character format, that represents the receiving
 string converted to hexadecimal. The returned string contains twice as many
 bytes as the receiving string. On an ASCII system, sending a
-<emphasis role="bold">c2x</emphasis> message to the
+<methodname>c2x</methodname> message to the
 receiving string <computeroutput>1</computeroutput> returns
 <computeroutput>31</computeroutput> because "31"X
 is the ASCII representation of <computeroutput>1</computeroutput>.</para>
@@ -5853,7 +5849,7 @@ is the ASCII representation of <computeroutput>1</computeroutput>.</para>
 <computeroutput>A</computeroutput>-<computeroutput>F</computeroutput> and does
 not include whitespace. The receiving string can be of any length. If the
 receiving string is null,
-<emphasis role="bold">c2x</emphasis> returns a null string.</para>
+<methodname>c2x</methodname> returns a null string.</para>
 <indexterm><primary>examples</primary>
 <secondary>c2x method</secondary></indexterm>
 <example id="ex.string-c2x">
@@ -6095,21 +6091,11 @@ the bounding limit for the search.
 whole number and <emphasis role="italic">length</emphasis> must be
 a non-negative whole number.
 </para>
-<para>See also
-<itemizedlist spacing="compact">
- <listitem>
-  <para>method <xref linkend="mthStringContains" xrefstyle="select:title"/>,</para>
- </listitem>
- <listitem>
-  <para>method <xref linkend="mthStringCaselessStartsWith" xrefstyle="select:title"/>,</para>
- </listitem>
- <listitem>
-  <para>method <xref linkend="mthStringCaselessEndsWith" xrefstyle="select:title"/>, and</para>
- </listitem>
- <listitem>
-  <para>method <xref linkend="mthStringCaselessPos" xrefstyle="select:title"/>.</para>
- </listitem>
-</itemizedlist>
+<para>See also methods
+<xref linkend="mthStringContains" xrefstyle="select:title"/>,
+<xref linkend="mthStringCaselessStartsWith" xrefstyle="select:title"/>,
+<xref linkend="mthStringCaselessEndsWith" xrefstyle="select:title"/>, and
+<xref linkend="mthStringCaselessPos" xrefstyle="select:title"/>.
 </para>
 <para><example>
 <title>String class &mdash; caselessContains method</title>
@@ -6143,18 +6129,12 @@ string.
 You can override this by specifying <emphasis role="italic">start</emphasis>
 (which must be a positive whole number),
 the word at which the search is to be started.</para>
-<para>See also
-<itemizedlist spacing="compact">
- <listitem>
-  <para>method <xref linkend="mthStringContainsWord" xrefstyle="select:title"/> and</para>
- </listitem>
- <listitem>
-  <para>method <xref linkend="mthStringCaselessWordPos" xrefstyle="select:title"/>
-  (<methodname>caselessContainsWord</methodname> returns &false; exactly if
-  <methodname>caselessWordPos</methodname> would have returned
-  <computeroutput>"0"</computeroutput>.)</para>
- </listitem>
-</itemizedlist>
+<para>See also methods
+<xref linkend="mthStringContainsWord" xrefstyle="select:title"/> and
+<xref linkend="mthStringCaselessWordPos" xrefstyle="select:title"/>
+(<methodname>caselessContainsWord</methodname> returns &false; exactly if
+<methodname>caselessWordPos</methodname> would have returned
+<computeroutput>"0"</computeroutput>.)
 </para>
 <para><example>
 <title>String class &mdash; caselessContainsWord method</title>
@@ -6224,18 +6204,10 @@ The match is made using caseless comparisons.
 <para>The caselessEndsWith method is useful for efficient string parsing as it does not
 require new string objects be extracted from the target string.
 </para>
-<para>See also
-<itemizedlist spacing="compact">
- <listitem>
-  <para>method <xref linkend="mthStringCaselessStartsWith" xrefstyle="select:title"/>,</para>
- </listitem>
- <listitem>
-  <para>method <xref linkend="mthStringEndsWith" xrefstyle="select:title"/>, and</para>
- </listitem>
- <listitem>
-  <para>method <xref linkend="mthStringCaselessMatch" xrefstyle="select:title"/>.</para>
- </listitem>
-</itemizedlist>
+<para>See also methods
+<xref linkend="mthStringCaselessStartsWith" xrefstyle="select:title"/>,
+<xref linkend="mthStringEndsWith" xrefstyle="select:title"/>, and
+<xref linkend="mthStringCaselessMatch" xrefstyle="select:title"/>.
 </para>
 </section>
 
@@ -6293,8 +6265,8 @@ Returns &false; if the two strings are not strictly equal.</para>
 
 <para>Returns the position of the last occurrence of a string,
 <emphasis role="italic">needle</emphasis>,
-in the receiving string. (See also <xref linkend="mthStringPos" />.) It
-returns <computeroutput>0</computeroutput> if
+in the receiving string.
+It returns <computeroutput>0</computeroutput> if
 <emphasis role="italic">needle</emphasis> is the null string or not found.
 By default, the search starts at the last character of the receiving string
 and scans backward to the beginning of the string. You can override this by
@@ -6308,6 +6280,11 @@ value or omitted.
 The <emphasis role="italic">length</emphasis> must be a non-negative whole
 number and defaults to <emphasis role="italic">start</emphasis>.  The search is
 performed using caseless comparisons.
+</para>
+<para>See also methods
+<xref linkend="mthStringLastPos" xrefstyle="select:title"/>,
+<xref linkend="mthStringCaselessPos" xrefstyle="select:title"/>, and
+<xref linkend="mthStringPos" xrefstyle="select:title"/>.
 </para>
 <indexterm><primary>examples</primary>
 <secondary>caselessLastPos method</secondary></indexterm>
@@ -6427,9 +6404,8 @@ a positive whole number.</para>
 </mediaobject>
 
 <para>Returns the position in the receiving string of another string,
-<emphasis role="italic">needle</emphasis>. (See also
-<xref linkend="mthStringLastPos" />.) It returns
-<computeroutput>0</computeroutput> if
+<emphasis role="italic">needle</emphasis>.
+It returns <computeroutput>0</computeroutput> if
 <emphasis role="italic">needle</emphasis> is the null string or is not found
 or if <emphasis role="italic">start</emphasis> is greater than
 the length of the receiving string.  The search is performed using caseless
@@ -6443,6 +6419,10 @@ and continues to the end of the string.  You can override this by specifying
 If specified, <emphasis role="italic">start</emphasis> must be a positive
 whole number and <emphasis role="italic">length</emphasis> must be
 a non-negative whole number.
+</para>
+<para>See also methods
+<xref linkend="mthStringPos" xrefstyle="select:title"/> and
+<xref linkend="mthStringCaselessLastPos" xrefstyle="select:title"/>.
 </para>
 <indexterm><primary>examples</primary>
 <secondary>caselessPos method</secondary></indexterm>
@@ -6619,8 +6599,8 @@ more character than the left-hand end. </para>
 <note><title>Note</title>
 <para>To avoid errors because
 of the difference between British and American spellings, this method can
-be called either <emphasis role="bold">center</emphasis> or
-<emphasis role="bold">centre</emphasis>.</para></note>
+be called either <methodname>center</methodname> or
+<methodname>centre</methodname>.</para></note>
 <indexterm><primary>examples</primary>
 <secondary>center method</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -7061,7 +7041,7 @@ string matches the type. Otherwise, it returns
 string is null, the method returns <computeroutput>0</computeroutput>
 (except when the <emphasis role="italic">type</emphasis> is
 <computeroutput>X</computeroutput> or <computeroutput>B</computeroutput>,
-for which <emphasis role="bold">dataType</emphasis>
+for which <methodname>dataType</methodname>
 returns <computeroutput>1</computeroutput> for
 a null string). The following are valid
 <emphasis role="italic">type</emphasis>s. You need to specify
@@ -7105,9 +7085,10 @@ the receiving string is exactly "0" or "1". Otherwise it returns
 </para></listitem></varlistentry>
 <varlistentry><term>Symbol</term>
 <listitem><para>returns <computeroutput>1</computeroutput> if the receiving
-string is a valid symbol, that is, if SYMBOL(string) does not return
-<computeroutput>BAD</computeroutput>. (See
-<xref linkend="xsymbol" />.)
+string is a valid symbol, that is, if
+<xref linkend="bifSymbol" xrefstyle="select:title"/>(<emphasis role="italic">receiving_string</emphasis>)
+does not return <literal>BAD</literal>.
+See also <xref linkend="xsymbol" />.
 Note that both uppercase and lowercase alphabetic characters are permitted.
 </para></listitem></varlistentry>
 <varlistentry><term>Uppercase</term>
@@ -7165,7 +7146,7 @@ the receiving string is a null string.
 </example>
 
 <note><title>Note</title>
-<para>The <emphasis role="bold">dataType</emphasis>
+<para>The <methodname>dataType</methodname>
 method tests the meaning or type of characters in a
 string, independent of the encoding of those characters (for example, ASCII
 or EBCDIC).</para></note>
@@ -7547,7 +7528,9 @@ expression.</para>
 <para>Returns a string value that is used as a hash value for MapCollection
 such as Table, Relation, Set, Bag, and Directory.  The String hash code method will return
 the same hash value for all pairs of string instances for which the == operator is &true;.
-See <xref linkend="mthObjectHashCode" /> for details.
+</para>
+<para>See also <classname>Object</classname> method
+<xref linkend="mthObjectHashCode" xrefstyle="select:title"/> for details.
 </para>
 </section>
 
@@ -7580,7 +7563,7 @@ value for <emphasis role="italic">length</emphasis> is the length of
 <emphasis role="italic">new</emphasis>. If
 <emphasis role="italic">length</emphasis> is less
 than the length of the string <emphasis role="italic">new</emphasis>,
-then <emphasis role="bold">insert</emphasis>
+then <methodname>insert</methodname>
 truncates <emphasis role="italic">new</emphasis> to length
 <emphasis role="italic">length</emphasis>. The default
 <emphasis role="italic">pad</emphasis> character is a blank.</para>
@@ -7616,8 +7599,8 @@ truncates <emphasis role="italic">new</emphasis> to length
 
 <para>Returns the position of the last occurrence of a string,
 <emphasis role="italic">needle</emphasis>,
-in the receiving string. (See also <xref linkend="mthStringPos" />.) It
-returns <computeroutput>0</computeroutput> if
+in the receiving string.
+It returns <computeroutput>0</computeroutput> if
 <emphasis role="italic">needle</emphasis> is the null string or not found.
 By default, the search starts at the last character of the receiving string
 and scans backward to the beginning of the string. You can override this by
@@ -7630,6 +7613,10 @@ defaults to <computeroutput>receiving_string~length</computeroutput> if larger t
 value or omitted.
 The <emphasis role="italic">length</emphasis> must be a non-negative whole
 number and defaults to <emphasis role="italic">start</emphasis>.
+</para>
+<para>See also methods
+<xref linkend="mthStringPos" xrefstyle="select:title"/> and
+<xref linkend="mthStringCaselessPos" xrefstyle="select:title"/>.
 </para>
 <indexterm><primary>examples</primary>
 <secondary>lastPos method</secondary></indexterm>
@@ -7666,7 +7653,7 @@ of the receiving string. The string returned is padded
 with <emphasis role="italic">pad</emphasis> characters (or truncated) on the
 right as needed. The default <emphasis role="italic">pad</emphasis> character
 is a blank. The <emphasis role="italic">length</emphasis> must be a positive
-whole number or zero. The <emphasis role="bold">left</emphasis>
+whole number or zero. The <methodname>left</methodname>
 method is exactly equivalent to:</para>
 
 <mediaobject>
@@ -7899,7 +7886,7 @@ a positive whole number.</para>
 </mediaobject>
 
 <para>Returns the largest number from among the receiver and any arguments. The
-number that <emphasis role="bold">max</emphasis>
+number that <methodname>max</methodname>
 returns is formatted according to the current NUMERIC settings.
 You can specify any number of <emphasis role="italic">number</emphasis>s.</para>
 <indexterm><primary>examples</primary>
@@ -7929,7 +7916,7 @@ You can specify any number of <emphasis role="italic">number</emphasis>s.</para>
 </mediaobject>
 
 <para>Returns the smallest number from among the receiver and any arguments.
-The number that <emphasis role="bold">min</emphasis>
+The number that <methodname>min</methodname>
 returns is formatted according to the current NUMERIC
 settings. You can specify any number of
 <emphasis role="italic">number</emphasis>s.</para>
@@ -8008,9 +7995,8 @@ and the default value for <emphasis role="italic">n</emphasis> is
 </mediaobject>
 
 <para>Returns the position in the receiving string of another string,
-<emphasis role="italic">needle</emphasis>. (See also
-<xref linkend="mthStringLastPos" />.) It returns
-<computeroutput>0</computeroutput> if
+<emphasis role="italic">needle</emphasis>.
+It returns <computeroutput>0</computeroutput> if
 <emphasis role="italic">needle</emphasis> is the null string or is not found
 or if <emphasis role="italic">start</emphasis> is greater than
 the length of the receiving string.
@@ -8024,6 +8010,10 @@ the point at which the search starts, and
 If specified, <emphasis role="italic">start</emphasis> must be a positive
 whole number and <emphasis role="italic">length</emphasis> must be
 a non-negative whole number.
+</para>
+<para>See also methods
+<xref linkend="mthStringLastPos" xrefstyle="select:title"/> and
+<xref linkend="mthStringCaselessPos" xrefstyle="select:title"/>.
 </para>
 <indexterm><primary>examples</primary>
 <secondary>pos method</secondary></indexterm>
@@ -8545,7 +8535,7 @@ another character or unchanged. You can also use this method to reorder the
 characters in the output table. (See last example)</para>
 <para>The output table is <emphasis role="italic">tableo</emphasis>
 and the input translation table is <emphasis role="italic">tablei</emphasis>.
-<emphasis role="bold">translate</emphasis> searches
+<methodname>translate</methodname> searches
 <emphasis role="italic">tablei</emphasis> for each character
 in the receiving string. If the character is found, the corresponding character
 in <emphasis role="italic">tableo</emphasis> is used in the result string. If
@@ -8590,7 +8580,7 @@ the string from the starting position to the end is used. </para>
 
 <note><title>Note</title>
 <para>The last example shows how to use the
-<emphasis role="bold">translate</emphasis> method
+<methodname>translate</methodname> method
 to reorder the characters in a string. In the example, the last character
 of any 4-character string specified as the first argument would be moved to
 the beginning of the string.</para></note>
@@ -8965,9 +8955,9 @@ include any whitespace.</para>
 "1 C1"~x2b      ->  "000111000001"
 </programlisting>
 </example>
-<para>You can combine <emphasis role="bold">x2b</emphasis>
-with the methods <emphasis role="bold">d2x</emphasis> and
-<emphasis role="bold">c2x</emphasis> to convert numbers or
+<para>You can combine <methodname>x2b</methodname>
+with the methods <methodname>d2x</methodname> and
+<methodname>c2x</methodname> to convert numbers or
 character strings into binary form.</para>
 <example id="ex.string-x2b-1">
 <title>String class &mdash; x2b method with c2x</title>

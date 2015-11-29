@@ -58,9 +58,10 @@
 <indexterm><primary>unusual change in flow of control</primary></indexterm>
 <para>A condition is an event or state that CALL ON or SIGNAL ON can trap. A
 condition trap can modify the flow of execution in a Rexx program. Condition
-traps are turned on or off using the ON or OFF subkeywords of the SIGNAL and
-CALL instructions (see
-<xref linkend="keyCall" /> and <xref linkend="keySignal" />).</para>
+traps are turned on or off using the ON or OFF subkeywords of the
+<xref linkend="keySignal" xrefstyle="select:title"/> and
+<xref linkend="keyCall" xrefstyle="select:title"/> instructions.
+</para>
 
 <mediaobject>
 <imageobject>
@@ -382,17 +383,17 @@ failure.</para>
 on whether a SIGNAL or CALL is processed: </para>
 <itemizedlist>
 <listitem><para>If the action taken is a SIGNAL, execution of the current instruction
-ceases immediately, the condition is disabled (set to OFF), and SIGNAL proceeds
-as usually (see <xref linkend="keySignal" />). </para>
+ceases immediately, the condition is disabled (set to OFF), and
+<xref linkend="keySignal" xrefstyle="select:title"/> proceeds as usually.
+</para>
 <para>If any new occurrence of the condition
 is to be trapped, a new CALL ON or SIGNAL ON instruction for the condition
 is required to re-enable it when the label is reached. For example, if SIGNAL
 ON SYNTAX is enabled when a SYNTAX condition occurs, a usual syntax error
 termination occurs if the SIGNAL ON SYNTAX label name is not found.</para></listitem>
 <listitem><para>If the action taken is a CALL, the
-<computeroutput>CALL</computeroutput>
-<emphasis role="italic">trapname</emphasis> proceeds
-in the usual way (see  <xref linkend="keyCall" />) when the instruction completes.
+<xref linkend="keyCall" xrefstyle="select:title"/> <emphasis role="italic">trapname</emphasis>
+proceeds in the usual way when the instruction completes.
 The call does not affect the special variable RESULT. If the routine should
 RETURN any data, that data is ignored. </para>
 <para>When the condition is raised, and
@@ -436,13 +437,13 @@ The state (ON, OFF, or DELAY, and any
 of each condition trap is saved on entry to a subroutine and is then restored
 on RETURN.  This means that CALL ON, CALL OFF, SIGNAL ON, and SIGNAL OFF can
 be used in a subroutine without affecting the conditions set up by the caller.
- See Call (<xref linkend="keyCall" />) for details of other information that is saved during
+See <xref linkend="keyCall" /> for details of other information that is saved during
 a subroutine call.</para></listitem>
 <listitem><para>The state of condition traps is not affected when an external routine
 is called by a CALL, even if the external routine is a Rexx program.  On entry
 to any Rexx program, all condition traps have an initial setting of OFF.</para></listitem>
 <listitem><para>While user input is processed during interactive tracing, all condition
-traps are temporarily set OFF. This prevents any unexpected transfer of control--for
+traps are temporarily set OFF. This prevents any unexpected transfer of control&mdash;for
 example, should the user accidentally use an uninitialized variable while
 SIGNAL ON NOVALUE is active. For the same reason, a syntax error during interactive
 tracing does not cause the exit from the program but is trapped specially
@@ -464,8 +465,9 @@ be labels; therefore, several labels are allowed before another type of clause.
 <tertiary>described</tertiary></indexterm>
 <para>When a condition is trapped and causes a SIGNAL or CALL, this becomes the
 current trapped condition, and certain condition information associated with
-it is recorded. You can inspect this information by using the CONDITION built-in
-function (see <xref linkend="bifCondition" />).</para>
+it is recorded. You can inspect this information by using the
+<xref linkend="bifCondition" xrefstyle="select:title"/> built-in function.
+</para>
 
 <para>The condition information includes: </para>
 <itemizedlist>
@@ -726,7 +728,7 @@ was raised.
 <listitem><para>The name of the program where a condition was raised.
 </para></listitem></varlistentry>
 <varlistentry><term>STACKFRAMES</term>
-<listitem><para>A single-index list of StackFrame instances (see <xref linkend="clsStackFrame"/>).
+<listitem><para>A single-index list of <xref linkend="clsStackFrame" xrefstyle="template:StackFrame"/> instances.
 </para></listitem></varlistentry>
 <varlistentry><term>TRACEBACK
 </term>

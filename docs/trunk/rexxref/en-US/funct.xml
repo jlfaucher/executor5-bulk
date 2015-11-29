@@ -138,8 +138,9 @@ the current processing status is saved for a later return to the point of
 invocation to resume execution.
 Control is then passed to the first label in the program that matches the
 name. As with a routine called by the CALL instruction, status information,
-such as TRACE and NUMERIC settings, is saved too. See the CALL instruction
-(<xref linkend="keyCall" />) for details. </para>
+such as TRACE and NUMERIC settings, is saved too.
+See the <xref linkend="keyCall" xrefstyle="select:title"/> instruction for details.
+</para>
 <para>If you call an internal routine as a
 function, you must specify an expression in any RETURN
 instruction so that the routine can return.  This is not necessary if it is
@@ -485,14 +486,15 @@ default values apply.</para></listitem>
 <listitem><para>If you specify a <emphasis role="italic">pad</emphasis>
 <indexterm><primary>pad character, definition</primary></indexterm>
 character, it must be exactly one character long. A pad character
-extends a string, usually on the right. For an example, see the LEFT built-in
-function LEFT (<xref linkend="bifLeft" />).</para></listitem>
+extends a string, usually on the right. For an example, see the
+<xref linkend="bifLeft" xrefstyle="select:title"/> built-in function.
+</para></listitem>
 <listitem><para>If a function has an
 <emphasis role="italic">option</emphasis> that you can select by specifying
 the first character of a string, that character can be in uppercase or
 lowercase.</para></listitem>
 <listitem><para>Many of the built-in functions invoke methods of the
-String (<xref linkend="clsString" /> class.
+<xref linkend="clsString" xrefstyle="template:String"/> class.
 For the functions ABBREV, ABS, BITAND, BITOR, BITXOR,
 B2X, CENTER, CENTRE, CHANGESTR, COMPARE, COPIES, COUNTSTR, C2D, C2X, DATATYPE,
 DELSTR, DELWORD, D2C, D2X, FORMAT, LEFT, LENGTH, LOWER, MAX, MIN, REVERSE, RIGHT,
@@ -690,7 +692,7 @@ returned depends on the value of <emphasis role="italic">option</emphasis>.
 The following are valid <emphasis role="italic">option</emphasis>s. (Only the
 capitalized letter is needed; all characters following it are ignored.)</para>
 <variablelist>
-<varlistentry><term>Array</term>
+<varlistentry><term><option>Array</option></term>
 <listitem><para>returns a single-index array containing the arguments, starting
 with the <emphasis role="italic">n</emphasis>th argument. The array indexes
 correspond to the argument positions, so that the
@@ -698,17 +700,17 @@ correspond to the argument positions, so that the
 argument at index 2, and so on. If any arguments are omitted, their
 corresponding indexes are absent.
 </para></listitem></varlistentry>
-<varlistentry><term>Exists</term>
+<varlistentry><term><option>Exists</option></term>
 <listitem><para>returns <computeroutput>1</computeroutput> if the
 <emphasis role="italic">n</emphasis>th argument exists; that is, if
 it was explicitly specified when the routine was called. Otherwise, it returns
 <computeroutput>0</computeroutput>.
 </para></listitem></varlistentry>
-<varlistentry><term>Normal</term>
+<varlistentry><term><option>Normal</option></term>
 <listitem><para>returns the <emphasis role="italic">n</emphasis>th argument,
 if it exists, or a null string.
 </para></listitem></varlistentry>
-<varlistentry><term>Omitted</term>
+<varlistentry><term><option>Omitted</option></term>
 <listitem><para>returns <computeroutput>1</computeroutput> if the
 <emphasis role="italic">n</emphasis>th argument was omitted; that
 is, if it was not explicitly specified when the routine
@@ -763,8 +765,8 @@ in the command.</para></listitem>
 strings. (See the
 <citetitle pubwork="book">Open Object Rexx: Programming Guide</citetitle>
 for information about RexxStart.)</para></listitem>
-<listitem><para>You can access the argument objects of a program with the USE instruction.
-See <xref linkend="keyUse" /> for more information.</para></listitem>
+<listitem><para>You can access the argument objects of a program with the
+<xref linkend="keyUse" xrefstyle="select:title"/> instruction.</para></listitem>
 <listitem><para>You can retrieve and directly parse the argument strings of a program
 or internal routine with the ARG or PARSE ARG instructions.</para></listitem>
 </orderedlist>
@@ -1433,6 +1435,7 @@ Call CHAROUT myfile
 
 
 <section id="bifChars"><title>CHARS (Characters Remaining)</title>
+<para>
 <indexterm><primary>CHARS function</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>functions</primary>
@@ -1442,13 +1445,12 @@ Call CHAROUT myfile
 <indexterm><primary>input and output</primary>
 <secondary>functions</secondary>
 <tertiary>CHARS</tertiary></indexterm>
-
 <mediaobject>
 <imageobject>
 <imagedata fileref="images/bif/chars.svg" scale="55" />
 </imageobject>
 </mediaobject>
-
+</para>
 <para>Returns the total number of characters remaining in the character input
 stream <emphasis role="italic">name</emphasis>. The count includes any
 line separator characters, if
@@ -1462,24 +1464,26 @@ of characters available in the default input stream (STDIN) is returned.</para>
 streams (for example, STDIN). For these streams, the CHARS function returns
 <computeroutput>1</computeroutput> to indicate that data is present, or
 <computeroutput>0</computeroutput> if no data is present. For windows devices,
-CHARS always returns <computeroutput>1</computeroutput>.</para>
-<para>Here are some examples:</para>
+CHARS always returns <computeroutput>1</computeroutput>.
 <indexterm><primary>CHARS function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>CHARS function</secondary></indexterm>
+</para>
+<para>
 <example id="ex.bif-chars">
 <title>Builtin function CHARS</title>
-<programlisting>
-CHARS(myfile)     ->   42   /* perhaps */
+<programlisting>CHARS(myfile)     ->   42   /* perhaps */
 CHARS(nonfile)    ->   0
 CHARS()           ->   1    /* perhaps */
 </programlisting>
 </example>
+</para>
 </section>
 
 
 <section id="bifCompare"><title>COMPARE</title>
+<para>
 <indexterm><primary>COMPARE function</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>functions</primary>
@@ -1490,29 +1494,28 @@ CHARS()           ->   1    /* perhaps */
 <secondary>of strings</secondary></indexterm>
 <indexterm><primary>finding</primary>
 <secondary>mismatch using COMPARE</secondary></indexterm>
-
 <mediaobject>
 <imageobject>
 <imagedata fileref="images/bif/compare.svg" scale="55" />
 </imageobject>
 </mediaobject>
-
+</para>
 <para>Returns <computeroutput>0</computeroutput> if the strings
 <emphasis role="italic">string1</emphasis> and
 <emphasis role="italic">string2</emphasis> are
 identical. Otherwise, it returns the position of the first character that
 does not match. The shorter string is padded on the right with
 <emphasis role="italic">pad</emphasis> if necessary.  The default
-<emphasis role="italic">pad</emphasis> character is a blank.</para>
-<para>Here are some examples:</para>
+<emphasis role="italic">pad</emphasis> character is a blank.
 <indexterm><primary>COMPARE function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>COMPARE function</secondary></indexterm>
+</para>
+<para>
 <example id="ex.bif-compare">
 <title>Builtin function COMPARE</title>
-<programlisting>
-COMPARE("abc","abc")         ->    0
+<programlisting>COMPARE("abc","abc")         ->    0
 COMPARE("abc","ak")          ->    2
 COMPARE("ab ","ab")          ->    0
 COMPARE("ab ","ab"," ")      ->    0
@@ -1520,10 +1523,12 @@ COMPARE("ab ","ab","x")      ->    3
 COMPARE("ab-- ","ab","-")    ->    5
 </programlisting>
 </example>
+</para>
 </section>
 
 
 <section id="bifCondition"><title>CONDITION</title>
+<para>
 <indexterm><primary>CONDITION function</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>functions</primary>
@@ -1536,18 +1541,18 @@ COMPARE("ab-- ","ab","-")    ->    5
 <secondary>using CONDITION function</secondary></indexterm>
 <indexterm><primary>trap conditions</primary>
 <secondary>information about trapped conditions</secondary></indexterm>
-
 <mediaobject>
 <imageobject>
 <imagedata fileref="images/bif/condition.svg" scale="55" />
 </imageobject>
 </mediaobject>
-
+</para>
 <para>Returns the condition information associated with the current trapped
 condition. (See <xref linkend="condtra" />
 for a description of condition traps.) You can
-request the following pieces of information: </para>
-<itemizedlist>
+request the following pieces of information:
+</para>
+<para><itemizedlist>
 <listitem><para>The name of the current trapped condition</para></listitem>
 <listitem><para>Any descriptive string associated with that condition</para></listitem>
 <listitem><para>Any condition-specific information associated with the current trapped
@@ -1556,45 +1561,46 @@ condition</para></listitem>
 (CALL or SIGNAL)</para></listitem>
 <listitem><para>The status of the trapped condition</para></listitem>
 </itemizedlist>
+</para>
 <para> In addition, you can request a condition object containing all of the
 preceding information.</para>
 <para>To select the information to be returned, use the following
 <emphasis role="italic">option</emphasis>s. (Only the capitalized letter is
-needed; all characters following it are ignored.) </para>
+needed; all characters following it are ignored.)
 <variablelist>
-<varlistentry><term>Additional</term>
+<varlistentry><term><option>Additional</option></term>
 <listitem><para>returns any additional object information associated with the
 current trapped condition. See
 <xref linkend="addinf" /> for a list of
 possible values. If no additional object information is available or no
 condition has been trapped, the language processor returns &nil;.
 </para></listitem></varlistentry>
-<varlistentry><term>Condition name</term>
+<varlistentry><term><option>Condition name</option></term>
 <listitem><para>returns the name of the current trapped condition.
 For user conditions, the returned string is a concatenation of the word
 <computeroutput>USER</computeroutput> and the
 user condition name, separated by a whitespace character.
 </para></listitem></varlistentry>
-<varlistentry><term>Description</term>
+<varlistentry><term><option>Description</option></term>
 <listitem><para>returns any descriptive string associated with the current
 trapped condition. See <xref linkend="dstring" />
 for the list of possible values. If no description
 is available or no condition has been trapped, it returns a null string.
 </para></listitem></varlistentry>
-<varlistentry><term>Instruction</term>
+<varlistentry><term><option>Instruction</option></term>
 <listitem><para>returns either <computeroutput>CALL</computeroutput> or
 <computeroutput>SIGNAL</computeroutput>, the keyword for
 the instruction processed when the current condition was trapped. This is
 the default if you omit <emphasis role="italic">option</emphasis>. If no
 condition has been trapped, it returns a null string.
 </para></listitem></varlistentry>
-<varlistentry><term>Object</term>
+<varlistentry><term><option>Object</option></term>
 <listitem><para>returns an object that contains all the information about the
 current trapped condition. See
 <xref linkend="condtra" /> for more
 information. If no condition has been trapped, it returns &nil;.
 </para></listitem></varlistentry>
-<varlistentry><term>Status</term>
+<varlistentry><term><option>Status</option></term>
 <listitem><para>returns the status of the current trapped condition.  This can
 change during processing, and is one of the following: </para>
 <itemizedlist>
@@ -1604,24 +1610,26 @@ change during processing, and is one of the following: </para>
 </para></listitem>
 <listitem><para><computeroutput>DELAY</computeroutput> - any new occurrence of
 the condition is delayed or ignored</para></listitem></itemizedlist>
-<para>If no condition has been trapped, a null string is returned.</para>
-</listitem></varlistentry>
-</variablelist>
-<para>Here are some examples:</para>
+<para>If no condition has been trapped, a null string is returned.
 <indexterm><primary>CONDITION function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>CONDITION function</secondary></indexterm>
+</para>
+</listitem></varlistentry>
+</variablelist>
+</para>
+<para>
 <example id="ex.bif-condition">
 <title>Builtin function CONDITION</title>
-<programlisting>
-CONDITION()            ->    "CALL"        /* perhaps */
+<programlisting>CONDITION()            ->    "CALL"        /* perhaps */
 CONDITION("C")         ->    "FAILURE"
 CONDITION("I")         ->    "CALL"
 CONDITION("D")         ->    "FailureTest"
 CONDITION("S")         ->    "OFF"        /* perhaps */
 </programlisting>
 </example>
+</para>
 
 <note><title>Note</title>
 <para>The CONDITION function returns condition information that
@@ -1635,6 +1643,7 @@ returns the values it returned before the condition was trapped.</para></note>
 
 
 <section id="bifCopies"><title>COPIES</title>
+<para>
 <indexterm><primary>COPIES function</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>functions</primary>
@@ -1647,66 +1656,68 @@ returns the values it returned before the condition was trapped.</para></note>
 <secondary>copying using COPIES</secondary></indexterm>
 <indexterm><primary>string</primary>
 <secondary>reapting using COPIES</secondary></indexterm>
-
 <mediaobject>
 <imageobject>
 <imagedata fileref="images/bif/copies.svg" scale="55" />
 </imageobject>
 </mediaobject>
-
+</para>
 <para>Returns <emphasis role="italic">n</emphasis> concatenated copies of
 <emphasis role="italic">string</emphasis>. The
 <emphasis role="italic">n</emphasis> must
-be a positive whole number or zero.</para>
-<para>Here are some examples:</para>
+be a positive whole number or zero.
 <indexterm><primary>COPIES function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>COPIES function</secondary></indexterm>
+</para>
+<para>
 <example id="ex.bif-copies">
 <title>Builtin function COPIES</title>
-<programlisting>
-COPIES("abc",3)    ->    "abcabcabc"
+<programlisting>COPIES("abc",3)    ->    "abcabcabc"
 COPIES("abc",0)    ->    ""
 </programlisting>
 </example>
+</para>
 </section>
 
 
 <section id="bifCountstr"><title>COUNTSTR</title>
+<para>
 <indexterm><primary>COUNTSTR function</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>functions</primary>
 <secondary>COUNTSTR</secondary></indexterm>
 <indexterm><primary>built-in functions</primary>
 <secondary>COUNTSTR</secondary></indexterm>
-
 <mediaobject>
 <imageobject>
 <imagedata fileref="images/bif/countstr.svg" scale="55" />
 </imageobject>
 </mediaobject>
-
+</para>
 <para>Returns a count of the occurrences of
 <emphasis role="italic">needle</emphasis> in
 <emphasis role="italic">haystack</emphasis> that
-do not overlap.</para>
-<para>Here are some examples: </para>
+do not overlap.
 <indexterm><primary>COUNTSTR function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>COUNTSTR function</secondary></indexterm>
+</para>
+<para>
 <example id="ex.bif-countstr">
 <title>Builtin function COUNTSTR</title>
-<programlisting>
-COUNTSTR("1","101101")        ->    4
+<programlisting>COUNTSTR("1","101101")        ->    4
 COUNTSTR("KK","J0KKK0")       ->    1
 </programlisting>
 </example>
+</para>
 </section>
 
 
 <section id="bifD2c"><title>D2C (Decimal to Character)</title>
+<para>
 <indexterm><primary>D2C function</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>functions</primary>
@@ -1717,13 +1728,12 @@ COUNTSTR("KK","J0KKK0")       ->    1
 <secondary>decimal to character</secondary></indexterm>
 <indexterm><primary>decimal</primary>
 <secondary>to character conversion</secondary></indexterm>
-
 <mediaobject>
 <imageobject>
 <imagedata fileref="images/bif/d2c.svg" scale="55" />
 </imageobject>
 </mediaobject>
-
+</para>
 <para>Returns a string, in character format, that is the ASCII representation
 of the decimal number. If you specify <emphasis role="italic">n</emphasis>,
 it is the length of the final result in characters;
@@ -1736,16 +1746,16 @@ than the current setting of NUMERIC DIGITS.</para>
 <para>If you omit <emphasis role="italic">n</emphasis>,
 <emphasis role="italic">wholenumber</emphasis> must be a positive whole number
 or zero, and the result length is as needed. Therefore, the returned result
-has no leading "00"x characters.</para>
-<para>Here are some examples:</para>
+has no leading "00"x characters.
 <indexterm><primary>D2C function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>D2C function</secondary></indexterm>
+</para>
+<para>
 <example id="ex.bif-d2c">
 <title>Builtin function D2C</title>
-<programlisting>
-D2C(65)      ->   "A"      /* "41"x is an ASCII "A"               */
+<programlisting>D2C(65)      ->   "A"      /* "41"x is an ASCII "A"               */
 D2C(65,1)    ->   "A"
 D2C(65,2)    ->   " A"     /* the leading character is a "00"x    */
 D2C(65,5)    ->   "    A"  /* the leading characters are "00"x    */
@@ -1755,10 +1765,12 @@ D2C(76,2)    ->   " L"     /* "4C"x  is an ASCII "L"              */
 D2C(-180,2)  ->   " L"     /* the leading character is a "FF"x    */
 </programlisting>
 </example>
+</para>
 </section>
 
 
 <section id="bifD2x"><title>D2X (Decimal to Hexadecimal)</title>
+<para>
 <indexterm><primary>D2X function</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>functions</primary>
@@ -1769,13 +1781,12 @@ D2C(-180,2)  ->   " L"     /* the leading character is a "FF"x    */
 <secondary>decimal to hexadecimal</secondary></indexterm>
 <indexterm><primary>decimal</primary>
 <secondary>to hexadecimal conversion</secondary></indexterm>
-
 <mediaobject>
 <imageobject>
 <imagedata fileref="images/bif/d2x.svg" scale="55" />
 </imageobject>
 </mediaobject>
-
+</para>
 <para>Returns a string, in character format, that represents
 <emphasis role="italic">wholenumber</emphasis>, a decimal number, converted to
 hexadecimal. The returned string uses uppercase alphabetics for the values
@@ -1791,16 +1802,16 @@ characters, it is truncated on the left. <emphasis role="italic">n</emphasis>
 must be a positive whole number or zero.</para>
 <para>If you omit <emphasis role="italic">n</emphasis>,
 <emphasis role="italic">wholenumber</emphasis> must be a positive whole number
-or zero, and the returned result has no leading zeros.</para>
-<para>Here are some examples:</para>
+or zero, and the returned result has no leading zeros.
 <indexterm><primary>D2X function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>D2X function</secondary></indexterm>
+</para>
+<para>
 <example id="ex.bif-d2x">
 <title>Builtin function D2X</title>
-<programlisting>
-D2X(9)         ->    "9"
+<programlisting>D2X(9)         ->    "9"
 D2X(129)       ->    "81"
 D2X(129,1)     ->    "1"
 D2X(129,2)     ->    "81"
@@ -1811,10 +1822,12 @@ D2X(-127,4)    ->    "FF81"
 D2X(12,0)      ->    ""
 </programlisting>
 </example>
+</para>
 </section>
 
 
 <section id="bifDatatype"><title>DATATYPE</title>
+<para>
 <indexterm><primary>DATATYPE function</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>functions</primary>
@@ -1833,13 +1846,12 @@ D2X(12,0)      ->    ""
 <secondary>checking with DATATYPE</secondary></indexterm>
 <indexterm><primary>numbers</primary>
 <secondary>checking with DATATYPE</secondary></indexterm>
-
 <mediaobject>
 <imageobject>
 <imagedata fileref="images/bif/datatype.svg" scale="55" />
 </imageobject>
 </mediaobject>
-
+</para>
 <para>Returns <computeroutput>NUM</computeroutput> if you specify only
 <emphasis role="italic">string</emphasis> and if
 <emphasis role="italic">string</emphasis> is a valid Rexx number that can be
@@ -1861,14 +1873,14 @@ option, you must start your string specifying the name of the option with
 <computeroutput>x</computeroutput> rather
 than <computeroutput>h</computeroutput>.)</para>
 <variablelist>
-<varlistentry><term>Alphanumeric</term>
+<varlistentry><term><option>Alphanumeric</option></term>
 <listitem><para>returns <computeroutput>1</computeroutput> if
 <emphasis role="italic">string</emphasis> contains only characters from
 the ranges <computeroutput>a</computeroutput>-<computeroutput>z</computeroutput>,
 <computeroutput>A</computeroutput>-<computeroutput>Z</computeroutput>,
 and <computeroutput>0</computeroutput>-<computeroutput>9</computeroutput>.
 </para></listitem></varlistentry>
-<varlistentry><term>Binary</term>
+<varlistentry><term><option>Binary</option></term>
 <listitem><para>returns <computeroutput>1</computeroutput> if
 <emphasis role="italic">string</emphasis> contains only the characters
 <computeroutput>0</computeroutput> or <computeroutput>1</computeroutput>, or
@@ -1878,28 +1890,28 @@ characters. It also returns
 <emphasis role="italic">string</emphasis> is
 a null string, which is a valid binary string.
 </para></listitem></varlistentry>
-<varlistentry><term>Lowercase</term>
+<varlistentry><term><option>Lowercase</option></term>
 <listitem><para>returns <computeroutput>1</computeroutput> if
 <emphasis role="italic">string</emphasis> contains only characters from
 the range <computeroutput>a</computeroutput>-<computeroutput>z</computeroutput>.
 </para></listitem></varlistentry>
-<varlistentry><term>Mixed case</term>
+<varlistentry><term><option>Mixed case</option></term>
 <listitem><para>returns <computeroutput>1</computeroutput> if
 <emphasis role="italic">string</emphasis> contains only characters from
 the ranges <computeroutput>a</computeroutput>-<computeroutput>z</computeroutput>
 and <computeroutput>A</computeroutput>-<computeroutput>Z</computeroutput>.
 </para></listitem></varlistentry>
-<varlistentry><term>Number</term>
+<varlistentry><term><option>Number</option></term>
 <listitem><para>returns <computeroutput>1</computeroutput> if
 <computeroutput>DATATYPE(string)</computeroutput> returns
 <computeroutput>NUM</computeroutput>.
 </para></listitem></varlistentry>
-<varlistentry><term>lOgical</term>
+<varlistentry><term><option>lOgical</option></term>
 <listitem><para>returns <computeroutput>1</computeroutput> if
 the string is exactly "0" or "1". Otherwise it returns
 <computeroutput>0</computeroutput>.
 </para></listitem></varlistentry>
-<varlistentry><term>Symbol</term>
+<varlistentry><term><option>Symbol</option></term>
 <listitem><para>returns <computeroutput>1</computeroutput> if
 <emphasis role="italic">string</emphasis> is a valid symbol, that is,
 if <computeroutput>SYMBOL(string)</computeroutput> does not return
@@ -1908,22 +1920,22 @@ if <computeroutput>SYMBOL(string)</computeroutput> does not return
 Note that both uppercase and lowercase alphabetics are
 permitted.
 </para></listitem></varlistentry>
-<varlistentry><term>Uppercase</term>
+<varlistentry><term><option>Uppercase</option></term>
 <listitem><para>returns <computeroutput>1</computeroutput> if
 <emphasis role="italic">string</emphasis> contains only characters from
 the range <computeroutput>A</computeroutput>-<computeroutput>Z</computeroutput>.
 </para></listitem></varlistentry>
-<varlistentry><term>Variable</term>
+<varlistentry><term><option>Variable</option></term>
 <listitem><para>returns <computeroutput>1</computeroutput> if
 <emphasis role="italic">string</emphasis> could appear on the left-hand
 side of an assignment without causing a SYNTAX condition.
 </para></listitem></varlistentry>
-<varlistentry><term>Whole number</term>
+<varlistentry><term><option>Whole number</option></term>
 <listitem><para>returns <computeroutput>1</computeroutput> if
 <emphasis role="italic">string</emphasis> is a Rexx whole number under
 the current setting of NUMERIC DIGITS.
 </para></listitem></varlistentry>
-<varlistentry><term>heXadecimal</term>
+<varlistentry><term><option>heXadecimal</option></term>
 <listitem><para>returns <computeroutput>1</computeroutput> if
 <emphasis role="italic">string</emphasis> contains only characters from
 the ranges <computeroutput>a</computeroutput>-<computeroutput>f</computeroutput>,
@@ -1934,22 +1946,21 @@ hexadecimal characters). It also returns
 <computeroutput>1</computeroutput> if <emphasis role="italic">string</emphasis>
 is a null string, which is a valid hexadecimal string.
 </para></listitem></varlistentry>
-<varlistentry><term>9 digits</term>
+<varlistentry><term><option>9 digits</option></term>
 <listitem><para>returns <computeroutput>1</computeroutput> if
 <computeroutput>DATATYPE(string,"W")</computeroutput> returns
 <computeroutput>1</computeroutput> when NUMERIC DIGITS is set to
 <computeroutput>9</computeroutput>.
 </para></listitem></varlistentry>
 </variablelist>
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>DATATYPE function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>DATATYPE function</secondary></indexterm>
 <example id="ex.bif-datatype">
 <title>Builtin function DATATYPE</title>
-<programlisting>
-DATATYPE(" 12 ")         ->   "NUM"
+<programlisting>DATATYPE(" 12 ")         ->   "NUM"
 DATATYPE("")             ->   "CHAR"
 DATATYPE("123*")         ->   "CHAR"
 DATATYPE("12.3","N")     ->    1
@@ -1964,6 +1975,7 @@ DATATYPE("1","O")        ->    1
 DATATYPE("11,"O")        ->    0
 </programlisting>
 </example>
+</para>
 
 <note><title>Note</title>
 <para>The DATATYPE function tests the meaning or type of characters in a string,
@@ -1973,23 +1985,22 @@ independent of the encoding of those characters (for example, ASCII or EBCDIC).
 
 
 <section id="bifDate" revisionflag="changed"><title>*CHG* DATE</title>
+<para>
 <indexterm><primary>DATE function</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>functions</primary>
 <secondary>DATE</secondary></indexterm>
 <indexterm><primary>built-in functions</primary>
 <secondary>DATE</secondary></indexterm>
-
 <mediaobject>
 <imageobject>
 <imagedata fileref="images/bif/date.svg" scale="55" />
 </imageobject>
 </mediaobject>
-<para>
- </para>
+</para>
 <para>Returns, by default, the local date in the format:
 <emphasis role="italic">dd mon yyyy</emphasis> (day
-month year--for example, <computeroutput>13 Nov 1998</computeroutput>),
+month year&mdash;for example, <computeroutput>13 Nov 1998</computeroutput>),
 with no leading zero or blank on the day. The first three characters of the
 English name of the month are used.</para>
 <para>You can use the following
@@ -1997,7 +2008,7 @@ English name of the month are used.</para>
 (Only the capitalized letter is needed; all characters following it are ignored.)
 </para>
 <variablelist>
-<varlistentry><term>Base
+<varlistentry><term><option>Base</option>
 <indexterm><primary>Base option of DATE function</primary></indexterm>
 </term>
 <listitem><para>returns the number of complete days (that is, not including the
@@ -2018,19 +2029,19 @@ with an extra day every year that is divisible by 4 except century years that
 are not divisible by 400). It does not take into account any errors in the calendar
 system that created the Gregorian calendar originally.</para></note>
 </listitem></varlistentry>
-<varlistentry><term>Days
+<varlistentry><term><option>Days</option>
 <indexterm><primary>Days option of DATE function</primary></indexterm>
 </term>
 <listitem><para>returns the number of days, including the current day, that have passed
 this year in the format <emphasis role="italic">ddd</emphasis>
 (no leading zeros or whitespace).
 </para></listitem></varlistentry>
-<varlistentry><term>European
+<varlistentry><term><option>European</option>
 <indexterm><primary>European option of DATE function</primary></indexterm>
 </term>
 <listitem><para>returns the date in the format dd/mm/yy.
 </para></listitem></varlistentry>
-<varlistentry><term>Full
+<varlistentry><term><option>Full</option>
 <indexterm><primary>Full option of DATE function</primary></indexterm>
 </term>
 <listitem><para>returns the number of microseconds
@@ -2044,14 +2055,14 @@ by extending the current Gregorian calendar backward (365 days each year,
 with an extra day every year that is divisible by 4 except century years that
 are not divisible by 400). It does not take into account any errors in the calendar
 system that created the Gregorian calendar originally.</para>
+</note>
 <para>The value returned by Date('F') can be used to calculate the interval between
 any two dates.  Note, however, that values returned generally contain more digits
 than the default NUMERIC DIGITS setting.  The NUMERIC DIGITS setting should be increased
 to a minimum value of 18 when performing timestamp arithmetic.</para>
-</note>
 </listitem></varlistentry>
 
-<varlistentry><term>ISO
+<varlistentry><term><option>ISO</option>
 <indexterm><primary>ISO option of DATE function</primary></indexterm>
 </term>
 <listitem><para>Returns the date according to the format specified by ISO 8601.
@@ -2059,7 +2070,7 @@ The format is <emphasis role="italic">yyyy-mm-dd</emphasis> with leading zeroes
 if required.
 </para></listitem></varlistentry>
 
-<varlistentry><term>Language
+<varlistentry><term><option>Language</option>
 <indexterm><primary>Language (local) option of DATE function</primary></indexterm>
 </term>
 <listitem><para>returns the date in an implementation- and language-dependent, or local,
@@ -2072,33 +2083,33 @@ system. If no local date format is available, the default format is returned.
 format is intended to be used as a whole; Rexx programs must not make any
 assumptions about the form or content of the returned string.</para></note>
 </para></listitem></varlistentry>
-<varlistentry><term>Month
+<varlistentry><term><option>Month</option>
 <indexterm><primary>Month option of DATE function</primary></indexterm>
 </term>
 <listitem><para>returns the full English name of the current month, for example,
 <computeroutput>August</computeroutput>.
 </para></listitem></varlistentry>
-<varlistentry><term>Normal
+<varlistentry><term><option>Normal</option>
 <indexterm><primary>Normal option of DATE function</primary></indexterm>
 </term>
 <listitem><para>returns the date in the format
 <emphasis role="italic">dd mon yyyy</emphasis>. This is the default.
 </para></listitem></varlistentry>
-<varlistentry><term>Ordered
+<varlistentry><term><option>Ordered</option>
 <indexterm><primary>Ordered option of DATE function</primary></indexterm>
 </term>
 <listitem><para>returns the date in the format
 <emphasis role="italic">yy/mm/dd</emphasis> (suitable for sorting,
 for example).
 </para></listitem></varlistentry>
-<varlistentry><term>Standard
+<varlistentry><term><option>Standard</option>
 <indexterm><primary>Standard option of DATE function</primary></indexterm>
 </term>
 <listitem><para>returns the date in the format
 <emphasis role="italic">yyyymmdd</emphasis> (suitable for sorting,
 for example).
 </para></listitem></varlistentry>
-<varlistentry><term>Ticks
+<varlistentry><term><option>Ticks</option>
 <indexterm><primary>Ticks option of DATE function</primary></indexterm>
 </term>
 <listitem><para>returns the number of seconds
@@ -2106,53 +2117,49 @@ since 00:00:00.000000 on 1 January 1970, in the format:
 <emphasis role="italic">dddddddddddd</emphasis> (no leading zeros or
 whitespace).
 </para>
-<note><title>Notes</title>
-<para>The base date of 1 January 1970 is determined
-by extending the current Gregorian calendar backward (365 days each year,
-with an extra day every year that is divisible by 4 except century years that
-are not divisible by 400). It does not take into account any errors in the calendar
-system that created the Gregorian calendar originally.</para>
 <para>The value returned by Date('T') can be used to calculate the interval between
 any two dates.  Note, however, that values returned generally contain more digits
 than the default NUMERIC DIGITS setting.  The NUMERIC DIGITS setting should be increased
 to a minimum value of 12 when performing timestamp arithmetic.</para>
 <para>Date('T') will return a negative number for dates prior to 1 January 1970.</para>
-</note>
 </listitem></varlistentry>
-<varlistentry><term>Usa
+<varlistentry><term><option>Usa</option>
 <indexterm><primary>Usa option of DATE function</primary></indexterm>
 </term>
 <listitem><para>returns the date in the format
 <emphasis role="italic">mm/dd/yy</emphasis>.
 </para></listitem></varlistentry>
-<varlistentry><term>Weekday
+<varlistentry><term><option>Weekday</option>
 <indexterm><primary>Weekday option of DATE function</primary></indexterm>
 </term>
 <listitem><para>returns the English name for the day of the week, in mixed case, for
 example, <computeroutput>Tuesday</computeroutput>.
 </para></listitem></varlistentry>
 </variablelist>
-<para>Here are some examples, assuming today is 13 November 1996:</para>
+<para>Here are some examples, assuming today is 24 Nov 2015:
 <indexterm><primary>DATE function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>DATE function</secondary></indexterm>
 <example id="ex.bif-date">
 <title>Builtin function DATE</title>
-<programlisting>
-DATE()         ->    "13 Nov 1996"
-DATE("B")      ->    728975
-DATE("D")      ->    318
-DATE("E")      ->    "13/11/96"
-DATE("L")      ->    "13 November 1996"
-DATE("M")      ->    "November"
-DATE("N")      ->    "13 Nov 1996"
-DATE("O")      ->    "96/11/13"
-DATE("S")      ->    "19961113"
-DATE("U")      ->    "11/13/96"
-DATE("W")      ->    "Wednesday"
+<programlisting>DATE()       -- 24 Nov 2015
+DATE("B")    -- 735925
+DATE("D")    -- 328
+DATE("E")    -- 24/11/15
+DATE("F")    -- 63583996241962000
+DATE("I")    -- 2015-11-24
+DATE("L")    -- 24 November 2015
+DATE("M")    -- November
+DATE("N")    -- 24 Nov 2015
+DATE("O")    -- 15/11/24
+DATE("S")    -- 20151124
+DATE("T")    -- 1448399441
+DATE("U")    -- 11/24/15
+DATE("W")    -- Tuesday
 </programlisting>
 </example>
+</para>
 
 <note><title>Note</title>
 <para>The first call to DATE or TIME in one clause causes a time
@@ -2173,8 +2180,7 @@ to specify <emphasis role="italic">option2</emphasis> if
 format. Here are some examples: </para>
 <example id="ex.bif-date-1">
 <title>Builtin function DATE set</title>
-<programlisting>
-DATE("O","13 Feb 1923")     ->    "23/02/13"
+<programlisting>DATE("O","13 Feb 1923")     ->    "23/02/13"
 DATE("O","06/01/50","U")    ->    "50/06/01"
 DATE("N", "63326132161828000", "f")   -> "23 Sep 2007"
 </programlisting>
@@ -2183,12 +2189,11 @@ DATE("N", "63326132161828000", "f")   -> "23 Sep 2007"
 <emphasis role="italic">osep</emphasis>, the
 days, month, and year returned are separated by this character. Any nonalphanumeric
 character or an empty string can be used. A separator character is only valid
-for the formats "E", "N", "O", "S", and "U".
+for the formats "E", "I", "N", "O", "S", and "U".
 Here are some examples:</para>
 <example id="ex.bif-date-2">
 <title>Builtin function DATE set</title>
-<programlisting>
-DATE("S","13 Feb 1996","N","-")     ->    "1996-02-13"
+<programlisting>DATE("S","13 Feb 1996","N","-")     ->    "1996-02-13"
 DATE("N","13 Feb 1996","N","")      ->    "13Feb1996"
 DATE("N","13 Feb 1996","N","-")     ->    "13-Feb-1996"
 DATE("O","06/01/50","U","")         ->    "500601"
@@ -2200,15 +2205,26 @@ DATE("N", , ,"_")                   ->    "26_Mar_1998"  (today)
 respective default format, which is the format associated with
 <emphasis role="italic">option</emphasis> using its default separator character.
 The default separator character for each of these formats is:</para>
-<programlisting>
-Option       Default separator
-
-European     "/"
-Normal       " "
-Ordered      "/"
-Standard     ""  (empty string)
-Usa          "/"
-</programlisting>
+<informaltable frame="bottom" colsep="0" rowsep="1" pgwide="0">
+<!-- http://www.sagehill.net/docbookxsl/Tables.html -->
+<?dbhtml table-width="50%" ?>
+<?dbfo table-width="50%" ?>
+<tgroup cols="2">
+<colspec colnum="1" colwidth="2*"/>
+<colspec colnum="2" colwidth="3*"/>
+<thead>
+<row><entry>Option</entry><entry>Default separator</entry></row>
+</thead>
+<tbody>
+<row><entry><option>European</option></entry><entry>"<literal>/</literal>"</entry></row>
+<row><entry><option>ISO</option></entry><entry>"<literal>-</literal>"</entry></row>
+<row><entry><option>Normal</option></entry><entry>"<literal> </literal>"</entry></row>
+<row><entry><option>Ordered</option></entry><entry>"<literal>/</literal>"</entry></row>
+<row><entry><option>Standard</option></entry><entry>"" (empty string)</entry></row>
+<row><entry><option>Usa</option></entry><entry>"<literal>/</literal>"</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
 <para>If you specify a <emphasis role="italic">string</emphasis>
 containing a separator that is different from the default separator character of
 <emphasis role="italic">option2</emphasis>, you must also specify
@@ -2224,8 +2240,7 @@ its separator character matches the character specified by
 <para>Here are some examples:</para>
 <example id="ex.bif-date-3">
 <title>Builtin function DATE set</title>
-<programlisting>
-DATE("S","1996-11-13","S","","-")      ->    "19961113"
+<programlisting>DATE("S","1996-11-13","S","","-")      ->    "19961113"
 DATE("S","13-Nov-1996","N","","-")     ->    "19961113"
 DATE("O","06*01*50","U","","*")        ->    "500601"
 DATE("U","13.Feb.1996","N", ,".")      ->    "02/13/96"
@@ -2234,8 +2249,7 @@ DATE("U","13.Feb.1996","N", ,".")      ->    "02/13/96"
 <para>You can determine the number of days between two dates; for example:</para>
 <example id="ex.bif-date-4">
 <title>Builtin function DATE days</title>
-<programlisting>
-say date("B","12/25/96","U")-date("B") " shopping days till Christmas!"
+<programlisting>say date("B", "12/25/15", "USA") - date("B") "shopping days till Christmas!"
 </programlisting>
 </example>
 <para>If <emphasis role="italic">string</emphasis> does not include the
@@ -2257,14 +2271,14 @@ A time stamp for a time and date combination can be created by
 combining a value from Time() for the time of day.</para>
 <example id="ex.bif-date-5">
 <title>Builtin function DATE timestamp</title>
-<programlisting>
-    numeric digits 18  -- needed to add the timestamps
-    timestamp = date('f, '20072301', 'S') + time('f', '08:14:22', 'N')
+<programlisting>numeric digits 18  -- needed to add the timestamps
+timestamp = date('f, '20072301', 'S') + time('f', '08:14:22', 'N')
 </programlisting>
 </example>
 </section>
 
 <section id="bifDelstr"><title>DELSTR (Delete String)</title>
+<para>
 <indexterm><primary>DELSTR function</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>functions</primary>
@@ -2275,13 +2289,12 @@ combining a value from Time() for the time of day.</para>
 <secondary>part of a string</secondary></indexterm>
 <indexterm><primary>string</primary>
 <secondary>deleting part, DELSTR function</secondary></indexterm>
-
 <mediaobject>
 <imageobject>
 <imagedata fileref="images/bif/delstr.svg" scale="55" />
 </imageobject>
 </mediaobject>
-
+</para>
 <para>Returns <emphasis role="italic">string</emphasis> after deleting the
 substring that begins at the <emphasis role="italic">n</emphasis>th character
 and is of <emphasis role="italic">length</emphasis> characters. If you omit
@@ -2295,24 +2308,26 @@ of <emphasis role="italic">string</emphasis> (including the
 zero. <emphasis role="italic">n</emphasis> must be a positive
 whole number. If <emphasis role="italic">n</emphasis> is greater than the
 length of <emphasis role="italic">string</emphasis>,
-the function returns <emphasis role="italic">string</emphasis> unchanged.</para>
-<para>Here are some examples:</para>
+the function returns <emphasis role="italic">string</emphasis> unchanged.
 <indexterm><primary>DELSTR function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>DELSTR function</secondary></indexterm>
+</para>
+<para>
 <example id="ex.bif-delstr">
 <title>Builtin function DELSTR</title>
-<programlisting>
-DELSTR("abcd",3)       ->    "ab"
+<programlisting>DELSTR("abcd",3)       ->    "ab"
 DELSTR("abcde",3,2)    ->    "abe"
 DELSTR("abcde",6)      ->    "abcde"
 </programlisting>
 </example>
+</para>
 </section>
 
 
 <section id="bifDelword"><title>DELWORD (Delete Word)</title>
+<para>
 <indexterm><primary>DELWORD function</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>functions</primary>
@@ -2323,13 +2338,12 @@ DELSTR("abcde",6)      ->    "abcde"
 <secondary>words from a string</secondary></indexterm>
 <indexterm><primary>word</primary>
 <secondary>deleting from a string</secondary></indexterm>
-
 <mediaobject>
 <imageobject>
 <imagedata fileref="images/bif/delword.svg" scale="55" />
 </imageobject>
 </mediaobject>
-
+</para>
 <para>Returns <emphasis role="italic">string</emphasis> after deleting the
 substring that starts at the <emphasis role="italic">n</emphasis>th word and
 is of <emphasis role="italic">length</emphasis> whitespace-delimited words. If
@@ -2348,70 +2362,70 @@ If <emphasis role="italic">n</emphasis> is greater than the number of words in
 <emphasis role="italic">string</emphasis> unchanged. The string deleted includes any
 whitespace characters following the final word involved but none of the
 whitespace preceding the first word involved.
-</para>
-<para>Here are some examples:</para>
 <indexterm><primary>DELWORD function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>DELWORD function</secondary></indexterm>
+</para>
+<para>
 <example id="ex.bif-delword">
 <title>Builtin function DELWORD</title>
-<programlisting>
-DELWORD("Now is the  time",2,2)  ->  "Now time"
+<programlisting>DELWORD("Now is the  time",2,2)  ->  "Now time"
 DELWORD("Now is the time ",3)    ->  "Now is "
 DELWORD("Now is the  time",5)    ->  "Now is the  time"
 DELWORD("Now is   the time",3,1) ->  "Now is   time"
 DELWORD("Now is the  time",2,2)  ->  "Now time"
 </programlisting>
 </example>
+</para>
 </section>
 
 
 <section id="bifDigits"><title>DIGITS</title>
+<para>
 <indexterm><primary>DIGITS function</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>functions</primary>
 <secondary>DIGITS</secondary></indexterm>
 <indexterm><primary>built-in functions</primary>
 <secondary>DIGITS</secondary></indexterm>
-
 <mediaobject>
 <imageobject>
 <imagedata fileref="images/bif/digits.svg" scale="55" />
 </imageobject>
 </mediaobject>
+</para>
 <para>
-Returns the current setting
-of NUMERIC DIGITS. See <xref linkend="keyNumeric" /> for more
-information.</para>
-<para>Here is an example:</para>
+Returns the current setting of <xref linkend="keyNumericDigits"/>.<!-- xreflabel -->
 <indexterm><primary>DIGITS function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>DIGITS function</secondary></indexterm>
+</para>
+<para>
 <example id="ex.bif-digits">
 <title>Builtin function DIGITS</title>
-<programlisting>
-DIGITS()    ->    9      /* by default */
+<programlisting>DIGITS()    ->    9      /* by default */
 </programlisting>
 </example>
+</para>
 </section>
 
 
 <section id="bifDirectory"><title>DIRECTORY</title>
+<para>
 <indexterm><primary>DIRECTORY function</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>functions</primary>
 <secondary>DIRECTORY</secondary></indexterm>
 <indexterm><primary>built-in functions</primary>
 <secondary>DIRECTORY</secondary></indexterm>
-
 <mediaobject>
 <imageobject>
 <imagedata fileref="images/bif/directory.svg" scale="55" />
 </imageobject>
 </mediaobject>
-
+</para>
 <para>Returns the current directory, changing it to
 <emphasis role="italic">newdirectory</emphasis> if
 an argument is supplied and the named directory exists. If
@@ -2422,15 +2436,16 @@ the name of the <emphasis role="italic">newdirectory</emphasis> is returned;
 if an error occurred, null is returned.</para>
 <para>For example, the following program fragment saves the current directory
 and switches to a new directory; it performs an operation there, and then
-returns to the former directory. </para>
+returns to the former directory.
 <indexterm><primary>DIRECTORY function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>DIRECTORY function</secondary></indexterm>
+</para>
+<para>
 <example id="ex.bif-directory">
 <title>Builtin function DIRECTORY</title>
-<programlisting>
-/* get current directory      */
+<programlisting>/* get current directory      */
 curdir = directory()
 /* go play a game             */
 newdir = directory("/usr/games")    /* Linux type subdirectory */
@@ -2444,40 +2459,41 @@ else
   say "Can&apos;t find /usr/games"
 </programlisting>
 </example>
+</para>
 </section>
 
 
 <section id="bifEndlocal"><title>ENDLOCAL (Linux only)</title>
+<para>
 <indexterm><primary>ENDLOCAL function</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>functions</primary>
 <secondary>ENDLOCAL</secondary></indexterm>
 <indexterm><primary>built-in functions</primary>
 <secondary>ENDLOCAL</secondary></indexterm>
-
 <mediaobject>
 <imageobject>
 <imagedata fileref="images/bif/endlocal.svg" scale="55" />
 </imageobject>
 </mediaobject>
-
+</para>
 <para>Restores the directory and environment variables in effect before the last
-SETLOCAL (<xref linkend="bifSetlocal" />
+<xref linkend="bifSetlocal" xrefstyle="template:SETLOCAL"/>
 function was run. If ENDLOCAL is not
 included in a procedure, the initial environment saved by SETLOCAL is restored
 upon exiting the procedure.</para>
 <para>ENDLOCAL returns a value of 1 if the initial environment is successfully
 restored and a value of 0 if no SETLOCAL was issued or the action is otherwise
-unsuccessful.</para>
-<para>Here is an example:</para>
+unsuccessful.
 <indexterm><primary>ENDLOCAL function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>ENDLOCAL function</secondary></indexterm>
+</para>
+<para>
 <example id="ex.bif-endlocal">
 <title>Builtin function ENDLOCAL</title>
-<programlisting>
-n = SETLOCAL()                   /* saves the current environment */
+<programlisting>n = SETLOCAL()                   /* saves the current environment */
           /*
           The program can now change environment variables
           (with the VALUE function) and then work in the
@@ -2486,25 +2502,26 @@ n = SETLOCAL()                   /* saves the current environment */
 n = ENDLOCAL()                   /* restores the initial environment */
 </programlisting>
 </example>
+</para>
 <para>For additional examples, see
 <xref linkend="bifSetlocal" />.</para>
 </section>
 
 
 <section id="bifErrortext"><title>ERRORTEXT</title>
+<para>
 <indexterm><primary>ERRORTEXT function</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>functions</primary>
 <secondary>ERRORTEXT</secondary></indexterm>
 <indexterm><primary>built-in functions</primary>
 <secondary>ERRORTEXT</secondary></indexterm>
-
 <mediaobject>
 <imageobject>
 <imagedata fileref="images/bif/errortext.svg" scale="55" />
 </imageobject>
 </mediaobject>
-
+</para>
 <para>Returns the Rexx error message associated with error number
 <emphasis role="italic">n</emphasis>.
 <emphasis role="italic">n</emphasis> must be in the range
@@ -2512,78 +2529,78 @@ n = ENDLOCAL()                   /* restores the initial environment */
 It returns the null string if <emphasis role="italic">n</emphasis>
 is in the allowed range but is not a defined Rexx error
 number. See <xref linkend="errnum" /> for a
-complete description of error numbers and messages.</para>
-<para>Here are some examples:</para>
+complete description of error numbers and messages.
 <indexterm><primary>ERRORTEXT function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>ERRORTEXT function</secondary></indexterm>
+</para>
+<para>
 <example id="ex.bif-errortext">
 <title>Builtin function ERRORTEXT</title>
-<programlisting>
-ERRORTEXT(16)    ->    "Label not found"
+<programlisting>ERRORTEXT(16)    ->    "Label not found"
 ERRORTEXT(60)    ->    ""
 </programlisting>
 </example>
+</para>
 </section>
 
 
 <section id="bifFilespec"><title>FILESPEC</title>
+<para>
 <indexterm><primary>FILESPEC function</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>functions</primary>
 <secondary>FILESPEC</secondary></indexterm>
 <indexterm><primary>built-in functions</primary>
 <secondary>FILESPEC</secondary></indexterm>
-
 <mediaobject>
 <imageobject>
 <imagedata fileref="images/bif/filespec.svg" scale="55" />
 </imageobject>
 </mediaobject>
-
+</para>
 <para>Returns a selected element of <emphasis role="italic">filespec</emphasis>,
-given file specification, identified by one of the following <emphasis role="italic">option</emphasis> strings:
+given file specification, identified by one of the following <emphasis role="italic">option</emphasis> strings.
+Only the capitalized <emphasis role="italic">option</emphasis> letter is needed;
+all characters following it are ignored.
 </para>
 <variablelist>
-<varlistentry><term>Drive</term>
-<listitem><para>The drive letter of the given filespec.  Only available on
-Windows. On Unix, it returns a null string (&quot;&quot;).
+<varlistentry><term><option>Drive</option></term>
+<listitem><para>On Windows, returns the drive letter of the given
+<emphasis role="italic">filespec</emphasis>.
+On Unix, returns a null string (&quot;&quot;).
 </para></listitem></varlistentry>
-<varlistentry><term>Path</term>
-<listitem><para>The directory path of the given
+<varlistentry><term><option>Path</option></term>
+<listitem><para>Returns the directory path of the given
 <emphasis role="italic">filespec</emphasis>.
 </para></listitem></varlistentry>
-<varlistentry><term>Location</term>
-<listitem><para>The full location portion of the given
+<varlistentry><term><option>Location</option></term>
+<listitem><para>Retruns the full location portion of the given
 <emphasis role="italic">filespec</emphasis>.  On Windows, this
 will include both the Drive and Path information.  On other platforms,
 this returns the same result as the Path option.
 </para></listitem></varlistentry>
-<varlistentry><term>Name</term>
-<listitem><para>The file name of the given
+<varlistentry><term><option>Name</option></term>
+<listitem><para>Returns the file name of the given
 <emphasis role="italic">filespec</emphasis>.
 </para></listitem></varlistentry>
-<varlistentry><term>Extension</term>
-<listitem><para>The extension portion of the
+<varlistentry><term><option>Extension</option></term>
+<listitem><para>Returns the extension portion of the
 <emphasis role="italic">filespec</emphasis> file name.
 </para></listitem></varlistentry>
 </variablelist>
-<para>If <emphasis role="italic">filespec</emphasis> cannot find the requested
-information, then the FILESPEC function returns a null string (&quot;&quot;).
-</para>
-
-<note><title>Note</title>
-<para>Only the initial letter of option is needed.</para></note>
-<para>Here are some Windows examples: </para>
+<para>If <emphasis role="italic">filespec</emphasis> does not contain the requested
+information, FILESPEC returns a null string (&quot;&quot;).
 <indexterm><primary>FILESPEC function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>FILESPEC function</secondary></indexterm>
+</para>
+<para>
 <example id="ex.bif-filespec">
 <title>Builtin function FILESPEC</title>
-<programlisting>
-thisfile = "C:\WINDOWS\UTIL\SYSTEM.INI"
+<programlisting>thisfile = "C:\WINDOWS\UTIL\SYSTEM.INI"
 say FILESPEC("drive",thisfile)     /* says "C:"              */
 say FILESPEC("path",thisfile)      /* says "\WINDOWS\UTIL\"  */
 say FILESPEC("location",thisfile)  /* says "C:\WINDOWS\UTIL\"  */
@@ -2593,40 +2610,42 @@ part = "name"
 say FILESPEC(part,thisfile)        /* says "SYSTEM.INI"      */
 </programlisting>
 </example>
+</para>
 </section>
 
 
 <section id="bifForm"><title>FORM</title>
+<para>
 <indexterm><primary>FORM function</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>functions</primary>
 <secondary>FORM</secondary></indexterm>
 <indexterm><primary>built-in functions</primary>
 <secondary>FORM</secondary></indexterm>
-
 <mediaobject>
 <imageobject>
 <imagedata fileref="images/bif/form.svg" scale="55" />
 </imageobject>
 </mediaobject>
-<para>
-Returns the current setting of NUMERIC
-FORM. See <xref linkend="keyNumeric" /> for more information.</para>
-<para>Here is an example:</para>
+</para>
+<para>Returns the current setting of <xref linkend="keyNumericForm"/>.<!-- xreflabel -->
 <indexterm><primary>FORM function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>FORM function</secondary></indexterm>
+</para>
+<para>
 <example id="ex.bif-form">
 <title>Builtin function FORM</title>
-<programlisting>
-FORM()    ->    "SCIENTIFIC"  /* by default */
+<programlisting>FORM()    ->    "SCIENTIFIC"  /* by default */
 </programlisting>
 </example>
+</para>
 </section>
 
 
 <section id="bifFormat"><title>FORMAT</title>
+<para>
 <indexterm><primary>FORMAT function</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>functions</primary>
@@ -2640,13 +2659,12 @@ FORM()    ->    "SCIENTIFIC"  /* by default */
 <indexterm><primary>numbers</primary>
 <secondary>formatting for display</secondary></indexterm>
 <indexterm><primary>numbers for display</primary></indexterm>
-
 <mediaobject>
 <imageobject>
 <imagedata fileref="images/bif/format.svg" scale="55" />
 </imageobject>
 </mediaobject>
-
+</para>
 <para>Returns <emphasis role="italic">number</emphasis>, rounded and formatted.
 </para>
 <para>The <emphasis role="italic">number</emphasis> is first rounded according
@@ -2668,16 +2686,16 @@ needed for that part, the number is padded on the left with blanks. If
 <emphasis role="italic">after</emphasis> is not the same size as the decimal
 part of the number, the number is rounded (or extended with zeros) to fit.
 Specifying <computeroutput>0</computeroutput> causes the number to be rounded
-to an integer.</para>
-<para>Here are some examples:</para>
+to an integer.
 <indexterm><primary>FORMAT function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>FORMAT function</secondary></indexterm>
+</para>
+<para>
 <example id="ex.bif-format">
 <title>Builtin function FORMAT</title>
-<programlisting>
-FORMAT("3",4)            ->    "   3"
+<programlisting>FORMAT("3",4)            ->    "   3"
 FORMAT("1.73",4,0)       ->    "   2"
 FORMAT("1.73",4,3)       ->    "   1.730"
 FORMAT("-.76",4,1)       ->    "  -0.8"
@@ -2687,6 +2705,7 @@ FORMAT(" - 12.73")       ->    "-12.73"
 FORMAT("0.000")          ->    "0"
 </programlisting>
 </example>
+</para>
 <para>The first three arguments are as described previously.  In addition,
 <emphasis role="italic">expp</emphasis> and
 <emphasis role="italic">expt</emphasis> control the exponent part of the result, which,
@@ -2715,47 +2734,48 @@ would be <computeroutput>0</computeroutput> when a nonzero
 part of the result. If the exponent would be
 <computeroutput>0</computeroutput> and <emphasis role="italic">expp</emphasis>
 is not specified, the number is not an exponential expression.</para>
-<para>Here are some examples: </para>
+<para>
 <example id="ex.bif-format-1">
 <title>Builtin function FORMAT</title>
-<programlisting>
-FORMAT("12345.73", , ,2,2)  ->    "1.234573E+04"
+<programlisting>FORMAT("12345.73", , ,2,2)  ->    "1.234573E+04"
 FORMAT("12345.73", ,3, ,0)  ->    "1.235E+4"
 FORMAT("1.234573", ,3, ,0)  ->    "1.235"
 FORMAT("12345.73", , ,3,6)  ->    "12345.73"
 FORMAT("1234567e5", ,3,0)   ->    "123456700000.000"
 </programlisting>
 </example>
+</para>
 </section>
 
 
 <section id="bifFuzz"><title>FUZZ</title>
+<para>
 <indexterm><primary>FUZZ function</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>functions</primary>
 <secondary>FUZZ</secondary></indexterm>
 <indexterm><primary>built-in functions</primary>
 <secondary>FUZZ</secondary></indexterm>
-
 <mediaobject>
 <imageobject>
 <imagedata fileref="images/bif/fuzz.svg" scale="55" />
 </imageobject>
 </mediaobject>
+</para>
 <para>
-Returns the current setting of NUMERIC
-FUZZ. See <xref linkend="keyNumeric" /> for more information.</para>
-<para>Here is an example:</para>
+Returns the current setting of <xref linkend="keyNumericFuzz"/>.<!-- xreflabel -->
 <indexterm><primary>FUZZ function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>FUZZ function</secondary></indexterm>
+</para>
+<para>
 <example id="ex.bif-fuzz">
 <title>Builtin function FUZZ</title>
-<programlisting>
-FUZZ()    ->    0     /* by default */
+<programlisting>FUZZ()    ->    0     /* by default */
 </programlisting>
 </example>
+</para>
 </section>
 
 
@@ -2828,8 +2848,8 @@ INSERT("123","abc", ,5,"-")    ->    "123--abc"
 
 <para>Returns the position of the last occurrence of one string,
 <emphasis role="italic">needle</emphasis>,
-in another, <emphasis role="italic">haystack</emphasis>. (See also
-<xref linkend="bifPos" />.) It returns
+in another, <emphasis role="italic">haystack</emphasis>.
+It returns
 <computeroutput>0</computeroutput> if <emphasis role="italic">needle</emphasis>
 is a null string or not found. By default, the
 search starts at the last character of
@@ -2844,6 +2864,8 @@ defaults to the length of <emphasis role="italic">haystack</emphasis> if larger 
 value or omitted.
 The <emphasis role="italic">length</emphasis> must be a non-negative whole
 number and defaults to <emphasis role="italic">start</emphasis>.
+</para>
+<para>See also <xref linkend="bifPos" xrefstyle="template:POS"/> built-in function.
 </para>
 <para>Here are some examples:</para>
 <indexterm><primary>LASTPOS function</primary>
@@ -3037,10 +3059,13 @@ LINEIN("QUEUE:")   ->  "Queue line" /* Read a line from the queue. */
 
 <note><title>Note</title>
 <para>If you want to read complete lines from the default input
-stream, as in a dialog with a user, use the PULL or PARSE PULL instruction.
+stream, as in a dialog with a user, use the
+<xref linkend="keyPull" xrefstyle="select:title"/> or
+<xref linkend="keyParsePull"/><!-- @@xreflabel --> instruction.
 </para></note>
-<para>The PARSE LINEIN instruction is also useful in certain cases. <!-- @@ doesn't work (See
-<xref linkend="parlini" />.) --></para>
+<para>The <xref linkend="keyParseLinein"/><!-- @@xreflabel -->
+instruction is also useful in certain cases.
+</para>
 </section>
 
 
@@ -3184,9 +3209,9 @@ instruction instead.</para></note>
 the current read position and the end of the character input stream
 <emphasis role="italic">name</emphasis>. It returns
 <computeroutput>0</computeroutput> if no data remains. In effect, LINES reports
-whether a read action that CHARIN (see
-<xref linkend="bifCharin" />) or LINEIN (see
-<xref linkend="bifLinein" />)
+whether a read action that
+<xref linkend="bifCharin" xrefstyle="template:CHARIN"/> or
+<xref linkend="bifLinein" xrefstyle="template:LINEIN"/> 
 performs will succeed. (To understand the input and output functions, see
 <xref linkend="iostrms" />.)</para>
 
@@ -3397,8 +3422,8 @@ OVERLAY("123","abc",5,6,"+")    ->    "abc+123+++"
 
 <para>Returns the position of one string,
 <emphasis role="italic">needle</emphasis>, in another,
-<emphasis role="italic">haystack</emphasis>. (See also
-<xref linkend="bifLastpos" />.) It returns
+<emphasis role="italic">haystack</emphasis>.
+It returns
 <computeroutput>0</computeroutput> if <emphasis role="italic">needle</emphasis>
 is a null string or not found or if <emphasis role="italic">start</emphasis>
 is greater than the length of <emphasis role="italic">haystack</emphasis>.
@@ -3411,6 +3436,8 @@ and continues to the end of the string.  You can override this by specifying
 If specified, <emphasis role="italic">start</emphasis> must be a positive
 whole number and <emphasis role="italic">length</emphasis> must be
 a non-negative whole number.
+</para>
+<para>See also <xref linkend="bifLastpos" xrefstyle="template:LASTPOS"/> built-in function.
 </para>
 <para>Here are some examples:</para>
 <indexterm><primary>POS function</primary>
@@ -3779,7 +3806,7 @@ rxfuncquery("SysLoadFuncs")        -> 0 /* if registered             */
 <para>Creates and deletes external data queues. It also sets and queries their
 names.</para>
 <variablelist>
-<varlistentry><term>&quot;Create&quot;</term>
+<varlistentry><term><option>Create</option></term>
 <listitem><para>creates a queue with the name
 <emphasis role="italic">queuename</emphasis> if you specify
 <emphasis role="italic">queuename</emphasis> and if no queue of that name
@@ -3796,7 +3823,7 @@ with the specified name exists already, a queue is still created with a name
 assigned by the language processor. The assigned name is then returned to
 you.</para>
 </listitem></varlistentry>
-<varlistentry><term>&quot;Delete&quot;</term>
+<varlistentry><term><option>Delete</option></term>
 <listitem><para>deletes the named queue. It returns 0 if successful or a
 nonzero number if an error occurs. Possible return values are:
 <variablelist>
@@ -3820,23 +3847,23 @@ nonzero number if an error occurs. Possible return values are:
 </para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
-<varlistentry><term>&quot;Get&quot;</term>
+<varlistentry><term><option>Get</option></term>
 <listitem><para>returns the name of the queue currently in use.
 </para></listitem></varlistentry>
 
-<varlistentry><term>&quot;Exist&quot;</term>
+<varlistentry><term><option>Exist</option></term>
 <listitem><para>returns &true; if the specified
 <emphasis role="italic">queuename</emphasis> exists.
 Returns &false; otherwise.
 </para></listitem></varlistentry>
 
-<varlistentry><term>&quot;Open&quot;</term>
+<varlistentry><term><option>Open</option></term>
 <listitem><para>tests if the specified
 <emphasis role="italic">queuename</emphasis> exists and
 creates if it does not.
 </para></listitem></varlistentry>
 
-<varlistentry><term>&quot;Set&quot;</term>
+<varlistentry><term><option>Set</option></term>
 <listitem><para>sets the name of the current queue to
 <emphasis role="italic">newqueuename</emphasis> and returns
 the previously active queue name.
@@ -3892,10 +3919,11 @@ rxqueue("delete", "Fred")  -> "0"
 <para>Saves the current working directory and the current values of the environment
 variables that are local to the current process.</para>
 <para>For example, SETLOCAL can be used to save the current environment before
-changing selected settings with the VALUE function (see
-<xref linkend="bifValue" />).
-To restore the directory and environment, use the ENDLOCAL function (see
-<xref linkend="bifEndlocal" />.</para>
+changing selected settings with the
+<xref linkend="bifValue" xrefstyle="select:title"/> function.
+To restore the directory and environment, use the
+<xref linkend="bifEndlocal" xrefstyle="template:ENDLOCAL"/> function.
+</para>
 <para>SETLOCAL returns a value of 1 if the initial directory and environment are
 successfully saved and a value of 0 if unsuccessful. If SETLOCAL is not followed
 by an ENDLOCAL function in a procedure, the initial environment saved by
@@ -4082,7 +4110,7 @@ The second argument can be one of the following strings that describe the
 action to be carried out. (Only the capitalized letter is needed; all
 characters following it are ignored.) </para>
 <variablelist>
-<varlistentry><term>Command</term>
+<varlistentry><term><option>Command</option></term>
 <listitem><para>an operation (specified by the
 <emphasis role="italic">stream_command</emphasis> given as the
 third argument) is applied to the selected input or output stream. The string
@@ -4090,17 +4118,17 @@ that is returned depends on the command performed and can be a null string.
 The possible input strings for the
 <emphasis role="italic">stream_command</emphasis> argument are described later.
 </para></listitem></varlistentry>
-<varlistentry><term>Description</term>
+<varlistentry><term><option>Description</option></term>
 <listitem><para>returns any descriptive string associated with the current
 state of the specified stream. It is identical to the State operation, except
 that the returned string is followed by a colon and, if available, additional
 information about the ERROR or NOTREADY states.
 </para></listitem></varlistentry>
-<varlistentry><term>State</term>
+<varlistentry><term><option>State</option></term>
 <listitem><para>returns a string that indicates the current state of the
 specified stream. This is the default operation.</para>
-<para>The returned strings are as described in
-<xref linkend="mthStreamState" />.</para>
+<para>The returned strings are as described in <classname>Stream</classname>
+class method <xref linkend="mthStreamState" xrefstyle="select:title"/>.</para>
 </listitem></varlistentry>
 </variablelist>
 
@@ -4121,15 +4149,16 @@ calls that a CALL ON condition trap causes).</para></note>
 (for example, a file).</para></listitem>
 <listitem><para>Get information about a stream (its existence, size, and last
 edit date).</para></listitem></itemizedlist>
-<para>The <emphasis role="italic">streamcommand</emphasis> argument must be
-used when--and only when--you
-select the operation C (command). The syntax is:</para>
-<programlisting>
-&gt;&gt;-STREAM(name,"C",streamcommand)------------------------------&gt;&lt;
-</programlisting>
+<para>The <emphasis role="italic">stream_command</emphasis> argument must be
+used when&mdash;and only when--you
+select the operation C (command). The syntax is:
+<mediaobject><imageobject>
+<imagedata fileref="images/bif/stream_command_syntax.svg" scale="55" />
+</imageobject></mediaobject>
+</para>
 
 <para>In this form, the STREAM function itself returns a string corresponding
-to the given <emphasis role="italic">streamcommand</emphasis>
+to the given <emphasis role="italic">stream_command</emphasis>
 if the command is successful. If the command
 is unsuccessful, STREAM returns an error message string in the same form as
 the <computeroutput>D</computeroutput> (Description) operation supplies.</para>
@@ -4141,15 +4170,15 @@ is set whenever one of the file system primitives returns with a -1.</para>
 <section id="commandstrings"><title>Command Strings</title>
 <indexterm><primary>STREAM function</primary>
 <secondary>command strings</secondary></indexterm>
-<para>The argument <emphasis role="italic">streamcommand</emphasis>
+<para>The argument <emphasis role="italic">stream_command</emphasis>
 can be any expression that the language processor evaluates to a command
-string that corresponds to the following diagram:</para>
-
+string that corresponds to the following diagram:
 <mediaobject>
 <imageobject>
 <imagedata fileref="images/bif/stream_command.svg" scale="55" />
 </imageobject>
 </mediaobject>
+</para>
 
 <para><emphasis role="bold">WRITE-OPTIONS:</emphasis>
 <indexterm><primary>STREAM function</primary>
@@ -4168,7 +4197,7 @@ string that corresponds to the following diagram:</para>
 </para>
 
 <variablelist>
-<varlistentry><term>OPEN</term>
+<varlistentry><term><option>OPEN</option></term>
 <listitem><para>opens the named stream. The default for OPEN is to open the
 stream for both reading and writing data, for example,
 <computeroutput>"OPEN BOTH"</computeroutput>.</para>
@@ -4179,45 +4208,45 @@ stream is not found.</para>
 <para>The following
 is a description of the options for OPEN: </para>
 <variablelist>
-<varlistentry><term>READ</term>
+<varlistentry><term><option>READ</option></term>
 <listitem><para>opens the stream for reading only.
 </para></listitem></varlistentry>
-<varlistentry><term>WRITE</term>
+<varlistentry><term><option>WRITE</option></term>
 <listitem><para>opens the stream for writing only.
 </para></listitem></varlistentry>
-<varlistentry><term>BOTH</term>
+<varlistentry><term><option>BOTH</option></term>
 <listitem><para>opens the stream for both reading and writing. (This is the default.)
 Separate read and write pointers are maintained.
 </para></listitem></varlistentry>
-<varlistentry><term>APPEND</term>
+<varlistentry><term><option>APPEND</option></term>
 <listitem><para>positions the write pointer at the end of the stream. The write pointer
 cannot be moved anywhere within the extent of the file as it existed when
 the file was opened.
 </para></listitem></varlistentry>
-<varlistentry><term>REPLACE</term>
+<varlistentry><term><option>REPLACE</option></term>
 <listitem><para>sets the write pointer to the beginning of the stream and truncates
 the file. In other words, this option deletes all data that was in the stream
 when opened.
 </para></listitem></varlistentry>
-<varlistentry><term>SHARED</term>
+<varlistentry><term><option>SHARED</option></term>
 <listitem><para>Enables another process to work with the stream in a shared mode. This
 mode must be compatible with the shared mode (SHARED, SHAREREAD, or SHAREWRITE)
 used by the process that opened the stream.
 </para></listitem></varlistentry>
-<varlistentry><term>SHAREREAD</term>
+<varlistentry><term><option>SHAREREAD</option></term>
 <listitem><para>Enables another process to read the stream in a shared mode.
 </para></listitem></varlistentry>
-<varlistentry><term>SHAREWRITE</term>
+<varlistentry><term><option>SHAREWRITE</option></term>
 <listitem><para>Enables another process to write the stream in a shared mode.
 </para></listitem></varlistentry>
-<varlistentry><term>NOBUFFER</term>
+<varlistentry><term><option>NOBUFFER</option></term>
 <listitem><para>turns off buffering of the stream. Thus, all data written to the stream
 is flushed immediately to the operating system for writing. This option can
 severely affect output performance.  Therefore, use it only when data integrity
 is a concern, or to force interleaved output to a stream to appear in the
 exact order in which it was written.
 </para></listitem></varlistentry>
-<varlistentry><term>BINARY</term>
+<varlistentry><term><option>BINARY</option></term>
 <listitem><para>causes the stream to be opened in binary mode.  This means that line
 end characters are ignored and treated as another byte of data. This is intended
 to force file operations that are compatible with other Rexx language processors
@@ -4230,7 +4259,7 @@ does not exist but is opened for writing also requires the RECLENGTH option
 to be specified. Omitting the RECLENGTH option in this case raises an error
 condition.</para></note>
 </para></listitem></varlistentry>
-<varlistentry><term>RECLENGTH <emphasis role="italic">length</emphasis></term>
+<varlistentry><term><option>RECLENGTH</option> <emphasis role="italic">length</emphasis></term>
 <listitem><para>allows the specification of an exact length for each line in a stream.
  This allows line operations on binary-mode streams to operate on individual
 fixed-length records.  Without this option, line operations on binary-mode
@@ -4255,7 +4284,7 @@ stream(strinp,"c","open read shared")
 </programlisting>
 </example>
 </listitem></varlistentry>
-<varlistentry><term>CLOSE</term>
+<varlistentry><term><option>CLOSE</option></term>
 <listitem><para>closes the named stream. The STREAM function itself returns
 <computeroutput>READY:</computeroutput> if the named stream is
 successfully closed, or an appropriate error
@@ -4268,11 +4297,11 @@ stream("STRM.TXT","c","close")
 </programlisting>
 </example>
 </listitem></varlistentry>
-<varlistentry><term>FLUSH</term>
+<varlistentry><term><option>FLUSH</option></term>
 <listitem><para>forces any data currently buffered for writing to be written
 to this stream.
 </para></listitem></varlistentry>
-<varlistentry><term>SEEK <emphasis role="italic">offset</emphasis></term>
+<varlistentry><term><option>SEEK</option> <emphasis role="italic">offset</emphasis></term>
 <listitem><para>sets the read or write position within a persistent stream.
  If the stream is opened for both reading and writing and no SEEK option is
 specified, both the read and write positions are set. </para>
@@ -4312,17 +4341,17 @@ message otherwise.</para>
 <para>The following is a description of the options for
 SEEK: </para>
 <variablelist>
-<varlistentry><term>READ</term>
+<varlistentry><term><option>READ</option></term>
 <listitem><para>specifies that the read position is to be set by this command.
 </para></listitem></varlistentry>
-<varlistentry><term>WRITE</term>
+<varlistentry><term><option>WRITE</option></term>
 <listitem><para>specifies that the write position is to be set by this command.
 </para></listitem></varlistentry>
-<varlistentry><term>CHAR</term>
+<varlistentry><term><option>CHAR</option></term>
 <listitem><para>specifies that the positioning is to be done in terms of
 characters. This is the default.
 </para></listitem></varlistentry>
-<varlistentry><term>LINE</term>
+<varlistentry><term><option>LINE</option></term>
 <listitem><para>specifies that the positioning is to be done in terms of lines.
 For non-binary streams, this is an operation that can take a long time to
 complete, because, in most cases, the file must be scanned from the top to
@@ -4352,7 +4381,7 @@ stream(name,"c","seek &lt;"fromend read)
 </programlisting>
 </example>
 </listitem></varlistentry>
-<varlistentry><term>POSITION</term>
+<varlistentry><term><option>POSITION</option></term>
 <listitem><para>is a synonym for SEEK.
 </para></listitem></varlistentry>
 </variablelist>
@@ -4373,10 +4402,8 @@ streams.
   STREAMTYPE returns UNKNOWN. The other commands return the null string.
 </para>
 <variablelist>
-<varlistentry><term>QUERY DATETIME</term>
+<varlistentry><term><option>QUERY DATETIME</option></term>
 <listitem><para>returns the date and time stamps of a stream in US format.
-This is included for compatibility with
-<trademark class="registered">OS/2</trademark>.
 <example id="ex.bif-stream-3">
 <title>Builtin function STREAM QUERY examples</title>
 <programlisting>
@@ -4389,7 +4416,7 @@ stream("..\file.txt","c","query datetime")
 11-12-98 03:29:12
 </programlisting>
 </listitem></varlistentry>
-<varlistentry><term>QUERY EXISTS</term>
+<varlistentry><term><option>QUERY EXISTS</option></term>
 <listitem><para>returns the full path specification of the named stream, if it
 exists, or a null string.</para>
 <example id="ex.bif-stream-4">
@@ -4403,7 +4430,7 @@ stream("..\file.txt","c","query exists")
 c:\data\file.txt
 </programlisting>
 </listitem></varlistentry>
-<varlistentry><term>QUERY HANDLE</term>
+<varlistentry><term><option>QUERY HANDLE</option></term>
 <listitem><para>returns the handle associated with the open stream. </para>
 <example id="ex.bif-stream-5">
 <title>Builtin function STREAM QUERY HANDLE examples</title>
@@ -4416,14 +4443,14 @@ stream("..\file.txt","c","query handle")
 3
 </programlisting>
 </listitem></varlistentry>
-<varlistentry><term>QUERY POSITION</term>
+<varlistentry><term><option>QUERY POSITION</option></term>
 <listitem><para>returns the current read or write position for the stream, as
 qualified by the following options:
 <variablelist>
-<varlistentry><term>READ</term>
+<varlistentry><term><option>READ</option></term>
 <listitem><para>returns the current read position.
 </para></listitem></varlistentry>
-<varlistentry><term>WRITE</term>
+<varlistentry><term><option>WRITE</option></term>
 <listitem><para>returns the current write position.
 
 <note><title>Note</title>
@@ -4431,10 +4458,10 @@ qualified by the following options:
 open for both reading and writing, the default is to return the read position.
 Otherwise, it returns the appropriate position by default.</para></note>
 </para></listitem></varlistentry>
-<varlistentry><term>CHAR</term>
+<varlistentry><term><option>CHAR</option></term>
 <listitem><para>returns the position in terms of characters. This is the
 default.</para></listitem></varlistentry>
-<varlistentry><term>LINE</term>
+<varlistentry><term><option>LINE</option></term>
 <listitem><para>returns the position in terms of lines. For non-binary streams,
 this operation can take a long time to complete, because the language processor
 starts tracking the current line number if not already doing so. Thus, it
@@ -4453,12 +4480,12 @@ be: </para>
 247
 </programlisting>
 </listitem></varlistentry>
-<varlistentry><term>SYS</term>
+<varlistentry><term><option>SYS</option></term>
 <listitem><para>returns the operating-system stream position in terms of
 characters.</para></listitem></varlistentry>
 </variablelist>
 </para></listitem></varlistentry>
-<varlistentry><term>QUERY SIZE</term>
+<varlistentry><term><option>QUERY SIZE</option></term>
 <listitem><para>returns the size, in bytes, of a persistent stream. </para>
 <example id="ex.bif-stream-7">
 <title>Builtin function STREAM QUERY SIZE examples</title>
@@ -4471,13 +4498,13 @@ stream("..\file.txt","c","query size")
 1305
 </programlisting>
 </listitem></varlistentry>
-<varlistentry><term>QUERY STREAMTYPE</term>
+<varlistentry><term><option>QUERY STREAMTYPE</option></term>
 <listitem><para>returns a string indicating whether the stream is
 <computeroutput>PERSISTENT</computeroutput>,
 <computeroutput>TRANSIENT</computeroutput>, or
 <computeroutput>UNKNOWN</computeroutput>.
 </para></listitem></varlistentry>
-<varlistentry><term>QUERY TIMESTAMP</term>
+<varlistentry><term><option>QUERY TIMESTAMP</option></term>
 <listitem><para>returns the date and time stamps of a stream in an international format.
 This is the preferred method of getting the date and time because it provides
 the full 4-digit year.</para>
@@ -4530,16 +4557,16 @@ characters, trailing characters, or both, removed, based on the
 valid <emphasis role="italic">option</emphasis>s. (Only the capitalized letter
 is needed; all characters following it are ignored.)</para>
 <variablelist>
-<varlistentry><term>Both</term>
+<varlistentry><term><option>Both</option></term>
 <listitem><para>removes both leading and trailing characters from
 <emphasis role="italic">string</emphasis>. This
 is the default.
 </para></listitem></varlistentry>
-<varlistentry><term>Leading</term>
+<varlistentry><term><option>Leading</option></term>
 <listitem><para>removes leading characters from
 <emphasis role="italic">string</emphasis>.
 </para></listitem></varlistentry>
-<varlistentry><term>Trailing</term>
+<varlistentry><term><option>Trailing</option></term>
 <listitem><para>removes trailing characters from
 <emphasis role="italic">string</emphasis>.
 </para></listitem></varlistentry>
@@ -4597,9 +4624,15 @@ with <emphasis role="italic">pad</emphasis> if necessary.
 If <emphasis role="italic">n</emphasis> is greater than
 <computeroutput>LENGTH(string)</computeroutput>, only pad characters are
 returned.</para>
+<para>See also
+<xref linkend="bifLeft" xrefstyle="select:title"/> and
+<xref linkend="bifRight" xrefstyle="select:title"/> builtin-functions.
+</para>
 <para>If you omit <emphasis role="italic">length</emphasis>, the rest of the
 string is returned.  The default <emphasis role="italic">pad</emphasis>
 character is a blank.</para>
+
+
 <para>Here are some examples:</para>
 <indexterm><primary>SUBSTR function</primary>
 <secondary>example</secondary></indexterm>
@@ -4617,8 +4650,7 @@ SUBSTR("abc",2,6,".")    ->    "bc...."
 <note><title>Note</title>
 <para>In some situations the positional (numeric) patterns of parsing
 templates are more convenient for selecting substrings, especially if more
-than one substring is to be extracted from a string. See also
-<xref linkend="bifLeft" /> and <xref linkend="bifRight" />.
+than one substring is to be extracted from a string.
 </para></note>
 </section>
 
@@ -4747,7 +4779,7 @@ to obtain alternative formats, or to gain access to the elapsed-time clock.
 (Only the capitalized letter
 is needed; all characters following it are ignored.) </para>
 <variablelist>
-<varlistentry><term>Civil</term>
+<varlistentry><term><option>Civil</option></term>
 <listitem><para>returns the time in Civil format hh:mmxx. The hours can take
 the values <computeroutput>1</computeroutput> through
 <computeroutput>12</computeroutput>, and the minutes the values
@@ -4762,7 +4794,7 @@ through <computeroutput>11:59pm</computeroutput>). The hour has no leading
 zero.  The minute field shows the current minute (rather than the nearest
 minute) for consistency with other TIME results.
 </para></listitem></varlistentry>
-<varlistentry><term>Elapsed</term>
+<varlistentry><term><option>Elapsed</option></term>
 <listitem><para>returns sssssssss.uuuuuu, the number of seconds and microseconds
 since the elapsed-time clock (described later) was started or reset. The returned
 number has no leading zeros or whitespace, and the setting of NUMERIC DIGITS
@@ -4782,7 +4814,7 @@ LAN-attached programs synchronize the system time clock with the system time
 clock of the server during startup.  This causes the Rexx elapsed time function
 to be unreliable during LAN initialization.</para>
 </listitem></varlistentry>
-<varlistentry><term>Full
+<varlistentry><term><option>Full</option>
 <indexterm><primary>Full option of Time function</primary></indexterm>
 </term>
 <listitem><para>returns the number of microseconds
@@ -4802,7 +4834,7 @@ than the default NUMERIC DIGITS setting.  The NUMERIC DIGITS setting should be i
 to a minimum value of 18 when performing timestamp arithmetic.</para>
 </note>
 </listitem></varlistentry>
-<varlistentry><term>Hours
+<varlistentry><term><option>Hours</option>
 <indexterm><primary>hours calculated from midnight</primary></indexterm>
 </term>
 <listitem><para>returns up to two characters giving the number of hours
@@ -4810,11 +4842,11 @@ since midnight in the format hh (no leading zeros or whitespace, except for a
 result of
 <computeroutput>0</computeroutput>).
 </para></listitem></varlistentry>
-<varlistentry><term>Long</term>
+<varlistentry><term><option>Long</option></term>
 <listitem><para>returns time in the format hh:mm:ss.uuuuuu (where uuuuuu are
 microseconds).
 </para></listitem></varlistentry>
-<varlistentry><term>Minutes
+<varlistentry><term><option>Minutes</option>
 <indexterm><primary>minutes calculated from midnight</primary></indexterm>
 </term>
 <listitem><para>returns up to four characters giving the number of minutes
@@ -4822,7 +4854,7 @@ since midnight in the format mmmm (no leading zeros or whitespace, except for a
 result of
 <computeroutput>0</computeroutput>).
 </para></listitem></varlistentry>
-<varlistentry><term>Normal</term>
+<varlistentry><term><option>Normal</option></term>
 <listitem><para>returns the time in the default format hh:mm:ss. The hours
 can have the values <computeroutput>00</computeroutput> through
 <computeroutput>23</computeroutput>, and minutes and seconds,
@@ -4830,13 +4862,13 @@ can have the values <computeroutput>00</computeroutput> through
 There are always two digits. Any fractions
 of seconds are ignored (times are never rounded). This is the default.
 </para></listitem></varlistentry>
-<varlistentry><term>Offset</term>
+<varlistentry><term><option>Offset</option></term>
 <listitem><para>returns the offset of the local time from UTC in microseconds.
 The offset value will be negative for timezones west of the Prime Meridian
 and positive for timezones east of Prime Meridian.  The local time('F') value
 can be converted to UTC by subtracting the time('O') value.
 </para></listitem></varlistentry>
-<varlistentry><term>Reset</term>
+<varlistentry><term><option>Reset</option></term>
 <listitem><para>returns sssssssss.uuuuuu, the number of seconds and microseconds
 since the elapsed-time clock (described later) was started or reset and also
 resets the elapsed-time clock to zero. The returned number has no leading
@@ -4846,7 +4878,7 @@ number always has four trailing zeros in the decimal portion.
 <para>See the Elapsed option for more information on resetting the system
 time clock.</para>
 </listitem></varlistentry>
-<varlistentry><term>Seconds
+<varlistentry><term><option>Seconds</option>
 <indexterm><primary>seconds calculated from midnight</primary></indexterm>
 </term>
 <listitem><para>returns up to five characters giving the number of seconds
@@ -4854,7 +4886,7 @@ since midnight in the format sssss (no leading zeros or whitespace, except for a
 result of
 <computeroutput>0</computeroutput>).
 </para></listitem></varlistentry>
-<varlistentry><term>Ticks
+<varlistentry><term><option>Ticks</option>
 <indexterm><primary>Ticks option of Time function</primary></indexterm>
 </term>
 <listitem><para>returns the number of seconds
