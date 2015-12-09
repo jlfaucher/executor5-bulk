@@ -2,12 +2,10 @@ number_no_exponential ::= whitespace? (sign whitespace?)?
                           (digits | digits '.' digits | '.' digits | digits '.')
                           whitespace?
 
-number_exponential2   ::= whitespace? (sign whitespace?)?
+number_exponential    ::= whitespace? (sign whitespace?)?
                           (digits | digits '.' digits | '.' digits | digits '.')
-                          '@force-linebreak' /* need to manually edit */
                           ('E' sign? digits)?
                           whitespace?
-                          '@force-linebreak' /* need to manually edit */
 
 number_digits         ::= 'NUMERIC DIGITS' expression? ';'
 

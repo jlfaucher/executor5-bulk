@@ -1,12 +1,12 @@
 stream_new ::= 'new(' name ')'
 
-stream_arrayin ::= 'arrayIn' ( '(' ( 'Lines' | 'Chars' ) ')' )?
+stream_arrayin ::= 'arrayIn(' ( | 'Lines' | 'Chars' ) ')'
 
 stream_arrayout ::= 'arrayOut(' array ( ',' ( 'Lines' | 'Chars' ) )? ')'
 
-stream_charin ::= 'charIn' ( '(' ( start ( ',' length )? )? ')' )?
+stream_charin ::= 'charIn(' start? ',' length? ')'
 
-stream_charout ::= 'charOut' ( '(' ( string ( ',' start )? )? ')' )?
+stream_charout ::= 'charOut(' string? ',' start? ')'
 
 stream_chars ::= 'chars'
 
@@ -21,13 +21,13 @@ stream_flush ::= 'flush'
 
 stream_init ::= 'init(' name ')'
 
-stream_linein ::= 'lineIn' ( '(' ( line ( ',' count )? )? ')' )?
+stream_linein ::= 'lineIn(' line? ',' count? ')'
 
-stream_lineout ::= 'lineOut' ( '(' ( string ( ',' line )? )? ')' )?
+stream_lineout ::= 'lineOut(' string? ',' line? ')'
 
-stream_lines ::= 'lines' ( '(' ( 'Count' | 'Normal' )? ')' )?
+stream_lines ::= 'lines(' ( | 'Count' | 'Normal' ) ')'
 
-stream_makearray ::= 'makeArray' ( '(' ( 'Line' | 'Char' )? ')' )?
+stream_makearray ::= 'makeArray(' ( | 'Line' | 'Char' ) ')'
 
 stream_open ::= 'open(' ( 'BOth' (WRITE-OPTIONS - fragment) | 'REAd' | 'Write' (WRITE-OPTIONS - fragment) )? (OPEN-OPTIONS - fragment) ')'
 
@@ -44,7 +44,7 @@ stream_query ::= 'query(' ( 'Datetime' | 'Exists' | 'Handle' | ( 'Seek' | 'Posit
                               'Write' ( 'Char' | 'Line' )? | 'Sys' ) |
                              'Size' | 'Streamtype' | 'Timestamp' ) ')'
 
-stream_say ::= 'say' ( '(' ( string )? ')' )?
+stream_say ::= 'say(' string? ')'
 
 stream_seek ::= 'seek(' ( '=' | '<' | '+' | '-' )? 'Offset'
                         ( 'Read' | 'Write' ) ( 'Char' | 'Line' )? ')'

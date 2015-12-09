@@ -76,11 +76,9 @@ sysini4 ::= 'SysIni(' ( inifile )? ',' app ',' key ',' '"DELETE:"' ')'
 
 sysini5 ::= 'SysIni(' ( inifile )? ',' app ',' '"DELETE:"' ')'
 
-sysini6 ::= 'SysIni(' ( inifile )? ',' app ',' '"DELETE:"' ')'
+sysini6 ::= 'SysIni(' ( inifile )? ',' app ',' '"ALL:"' ',' '"stem"' ')'
 
-sysini7 ::= 'SysIni(' ( inifile )? ',' app ',' '"ALL:"' ',' '"stem"' ')'
-
-sysini8 ::= 'SysIni(' ( inifile )? ',' '"ALL:"' ',' '"stem"' ')'
+sysini7 ::= 'SysIni(' ( inifile )? ',' '"ALL:"' ',' '"stem"' ')'
 
 sysisfile ::= 'SysIsFile(' filename ')'
 
@@ -98,7 +96,7 @@ sysisfileoffline ::= 'SysIsFileOffline(' filename ')'
 
 sysisfilesparse ::= 'SysIsFileSparse(' filename ')'
 
-sysisfilestemporary ::= 'SysIsFileTemporary(' filename ')'
+sysisfiletemporary ::= 'SysIsFileTemporary(' filename ')'
 
 syslinver ::= 'SysLinVer' ( '()' )?
 
@@ -119,7 +117,7 @@ syspulseeventsem ::= 'SysPulseEventSem(' handle ')'
 sysqueryprocess1 ::= 'SysQueryProcess(' ( '"PID"' | '"TID"' | '"PPRIO"' | '"TPRIO"' |
                                          '"PTIME"' | '"TTIME"' )? ')'
 
-sysqueryprocess3 ::= 'SysQueryProcess(' ( '"PID"' | '"PPID"' | '"PPRIO"' | '"RTIME"' |
+sysqueryprocess2 ::= 'SysQueryProcess(' ( '"PID"' | '"PPID"' | '"PPRIO"' | '"RTIME"' |
                                          '"PMEM"' | '"PSWAPS"' | '"PRCVDSIG"' )? ')'
 
 sysqueryrexxmacro ::= 'SysQueryRexxMacro(' name ')'
@@ -171,7 +169,9 @@ systounicode ::= 'SysToUnicode(' string ',' codepage ',' translateflags ',' outs
 
 sysutilversion ::= 'SysUtilVersion()'
 
-sysvolumnlabel ::= 'SysVolumnLabel(' ( driveletter )? ')'
+sysversion ::= 'SysVersion()'
+
+sysvolumelabel ::= 'SysVolumeLabel(' ( driveletter )? ')'
 
 syswait ::= 'SysWait()'
 

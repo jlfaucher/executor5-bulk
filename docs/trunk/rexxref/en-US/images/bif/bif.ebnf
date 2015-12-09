@@ -135,7 +135,7 @@ stream_command_syntax ::= 'STREAM(' name ',' 'Command' ',' stream_command ')'
 stream_command ::= ( ( 'Open' ( 'BOth' (WRITE-OPTIONS - fragment) | 'REAd' | 'Write' (WRITE-OPTIONS - fragment) )? (OPEN-OPTIONS - fragment) ) |
                      ( 'Close' ) |
                      ( 'Flush' ) |
-                     ( ( 'Seek' | 'Position' ) ( '=' | '<' | '+' | ';' | () ) offset ( 'Read' | 'Write' | ) ( 'Char' | 'Line') ) |
+                     ( ( 'Seek' | 'Position' ) ( '=' | '<' | '+' | ';' | () ) offset ( | 'Read' | 'Write' ) ( | 'Char' | 'Line') ) |
                      ( 'Query' ( 'Datetime' |
                                  'Exists' |
                                  'Handle' |
