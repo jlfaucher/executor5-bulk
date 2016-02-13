@@ -45,7 +45,7 @@ typedef struct MPZ
 
 // this library version
 // used in method version() and in STANDARD_PACKAGE_HEADER
-#define MPZ_VERSION             "0.0.4.20160112"
+#define MPZ_VERSION             "0.0.4.20160113"
 
 
 

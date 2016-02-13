@@ -203,8 +203,8 @@ RexxMethod2(RexxObjectPtr, z_init,     // method init()
     // we check 'base' for the range 0, 2-62
     if (base < 0 || base == 1 || base > 62)
     {
-      // Argument &1 must be 0 or in the range 2-62; found "&3"
-      return notValidBaseException(context, "base", "", base);
+      // Argument &1 must be &2in the range 2-62; found "&3"
+      return notValidBaseException(context, "base", "0 or ", base);
     }
 
     // z := str (in base); returns 0 if OK, -1 if str not a number in base
@@ -279,8 +279,8 @@ RexxMethod3(RexxObjectPtr, z_set,      // method set()
     // we check 'base' for the range 0, 2-62
     if (base < 0 || base == 1 || base > 62)
     {
-      // Argument &1 must be 0 or in the range 2-62; found "&3"
-      return notValidBaseException(context, "base", "", base);
+      // Argument &1 must be &2in the range 2-62; found "&3"
+      return notValidBaseException(context, "base", "0 or ", base);
     }
 
     // z := str (in base); returns 0 if OK, -1 if str not a number in base
@@ -316,8 +316,8 @@ RexxMethod2(RexxStringObject, z_get,   // method get(), string()
   // we check 'base' for the range 0, 2-62
   if (base < 0 || base == 1 || base > 62)
   {
-    // Argument &1 must be 0 or in the range 2-62; found "&3"
-    notValidBaseException(context, "base", "", base);
+    // Argument &1 must be &2in the range 2-62; found "&3"
+    notValidBaseException(context, "base", "0 or ", base);
     return context->NullString();
   }
   return context->String(mpz_get_str(NULL, base, SELF_Z(rop)));
@@ -1276,7 +1276,7 @@ RexxMethod2(size_t, z_sizeInBase,      // method sizeInBase( [base] )
   // we check 'base' for the range 2-62 (0 isn't allowed)
   if (base < 2 || base > 62)
   {
-    // Argument &1 must be in the range 2-62; found "&3"
+    // Argument &1 must be &2in the range 2-62; found "&3"
     notValidBaseException(context, "base", "", base);
     return 0;                          // cannot return NULLOBJECT
   }
