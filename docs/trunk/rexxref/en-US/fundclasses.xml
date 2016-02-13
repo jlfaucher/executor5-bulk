@@ -136,7 +136,7 @@ Class and all other class objects, and will result in an error.
 <!-- $GENERATED-20151009-END rexxrefClassTable(Class) -->
 
 
-<!-- Class Class - Comparison Methods ============================== --> 
+<!-- Class Class - Comparison Methods ============================== -->
 <section id="mthClassComparisonMethods" revisionflag="added"><title>*NEW* Comparison Methods</title>
 <para>
 <indexterm><primary>method</primary><secondary>comparison methods</secondary><tertiary>of Class class</tertiary></indexterm>
@@ -374,7 +374,7 @@ bank_account~define("TYPE",&apos;return "a bank account"&apos;)
 </section>
 
 
-<!-- Class Class - method defineMethods ============================ --> 
+<!-- Class Class - method defineMethods ============================ -->
 <section id="mthClassDefineMethods" revisionflag="added"><title>*NEW* defineMethods</title>
 <para>
 <indexterm><primary>defineMethods method</primary><secondary>of Class class</secondary></indexterm>
@@ -391,7 +391,7 @@ in the receiver class's collection of instance methods.
 indexes are the names of methods and whose items are method objects
 (or strings or arrays of strings containing method code).
 The method names are translated to uppercase.
-Any existing methods with the same method name in the receiver class 
+Any existing methods with the same method name in the receiver class
 are replaced.</para>
 <para>If, for any item in <emphasis role="italic">methods</emphasis>,
 the method name is &nil;, then a method of this name in the receiver class
@@ -415,7 +415,7 @@ return "b-define"
 
 ::class c
 ::method a
-return "a-original"   
+return "a-original"
 ]]></programlisting></example></para>
 </section>
 
@@ -599,7 +599,7 @@ room~inherit(.location)
 </section>
 
 
-<!-- Class Class - method isAbstract =============================== --> 
+<!-- Class Class - method isAbstract =============================== -->
 <section id="mthClassIsAbstract" revisionflag="added"><title>*NEW* isAbstract</title>
 <para>
 <indexterm><primary>isAbstract method</primary><secondary>of Class class</secondary></indexterm>
@@ -618,12 +618,12 @@ otherwise returns &false;.
 <title>Class class &mdash; isAbstract method</title>
 <programlisting><![CDATA[say .abs~isAbstract                    -- 1
 
-::class abs abstract 
+::class abs abstract
 ]]></programlisting></example></para>
 </section>
 
 
-<!-- Class Class - method isMetaclass ============================== --> 
+<!-- Class Class - method isMetaclass ============================== -->
 <section id="mthClassIsMetaclass" revisionflag="added"><title>*NEW* isMetaclass</title>
 <para>
 <indexterm><primary>isMetaclass method</primary><secondary>of Class class</secondary></indexterm>
@@ -889,7 +889,7 @@ If balance > 100 then Say "  You win a free toaster oven"
 </section>
 
 
-<!-- Class Class - method package ================================== --> 
+<!-- Class Class - method package ================================== -->
 <section id="mthClassPackage" revisionflag="added"><title>*NEW* package</title>
 <para>
 <indexterm><primary>package method</primary><secondary>of Class class</secondary></indexterm>
@@ -1410,7 +1410,7 @@ notification was requested by using the
 a message object as the notification target.
 </para>
 <para>As a result of receiving such a notification,
-<methodname>messageComplete</methodname> will send the receiving message to 
+<methodname>messageComplete</methodname> will send the receiving message to
 start processing.
 Any <emphasis role="italic">source</emphasis> argument will be ignored.
 </para>
@@ -1426,7 +1426,7 @@ msg~notify(.Message~new(.r~new, "items", "I", msg))
 msg~start
 say "processing continues"
 
-::class r  
+::class r
 ::method items
 use strict arg m
 say m~target~items "items sorted"
@@ -1472,8 +1472,8 @@ sorting complete
 <para>The notification <emphasis role="italic">target</emphasis> must be an
 object that implements the <xref linkend="clsMessageNotification" xrefstyle="template:MessageNotification interface"/>.
 Upon completion of message processing, <emphasis role="italic">target</emphasis>
-will be sent a <methodname>messageComplete</methodname> message, with 
-the completed Message object as argument <emphasis role="italic">source</emphasis>. 
+will be sent a <methodname>messageComplete</methodname> message, with
+the completed Message object as argument <emphasis role="italic">source</emphasis>.
 </para>
 <para>Any number of notifications can be requested for a message.
 </para>
@@ -1545,7 +1545,7 @@ say "processing continues"
 <imagedata fileref="images/classes/message_reply.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
-<para>Returns and sends a copy of the message to start processing, while 
+<para>Returns and sends a copy of the message to start processing, while
 the sender also continues processing.
 </para>
 <para>As this method, other than the similar method
@@ -1758,7 +1758,7 @@ result and holds it until requested via the
 <imagedata fileref="images/classes/message_start.svg" scale="55" />
 </imageobject></mediaobject>
 </para>
-<para>Sends the message to start processing, while 
+<para>Sends the message to start processing, while
 the sender also continues processing.
 </para>
 <para>If <emphasis role="italic">target</emphasis> is specified,
@@ -1778,7 +1778,7 @@ message processing is complete.
 </para>
 <para>Note that once a message object has been started with either the
 <methodname>start</methodname> or the <methodname>startWith</methodname>
-method, it can not be run with any of the 
+method, it can not be run with any of the
 <methodname>send</methodname>/<methodname>sendWith</methodname>,
 <methodname>start</methodname>/<methodname>startWith</methodname>,
 <methodname>reply</methodname>/<methodname>replyWith</methodname>
@@ -1809,7 +1809,7 @@ result and holds it until requested via the
 ez=.testclass~new                  /* Creates a new instance of Testclass     */
 
 /* Creates and starts message mymsg to send SHOWMSG to ez                     */
-mymsg=ez~start("SHOWMSG","Hello, Ollie!",5)      
+mymsg=ez~start("SHOWMSG","Hello, Ollie!",5)
 
 /* Continue with main processing while SHOWMSG runs concurrently              */
 do 5
@@ -1879,7 +1879,7 @@ message processing is complete.
 </para>
 <para>Note that once a message object has been started with either the
 <methodname>start</methodname> or the <methodname>startWith</methodname>
-method, it can not be run with any of the 
+method, it can not be run with any of the
 <methodname>send</methodname>/<methodname>sendWith</methodname>,
 <methodname>start</methodname>/<methodname>startWith</methodname>,
 <methodname>reply</methodname>/<methodname>replyWith</methodname>
@@ -1955,7 +1955,7 @@ arg~append(oneSecond)
 -- oneSecond = .Alarm~new(1, .Message~new(.a~new, "ring", "I", alarm))
 say "processing continues"
 
-::class a  
+::class a
 ::method ring
 use strict arg alarm
 say "alarm went off at" .DateTime~new
@@ -2173,7 +2173,7 @@ If no such annotation exists, &nil; is returned.
 </section>
 
 
-<!-- Class Method - method isAbstract ============================== --> 
+<!-- Class Method - method isAbstract ============================== -->
 <section id="mthMethodIsAbstract" revisionflag="added"><title>*NEW* isAbstract</title>
 <para>
 <indexterm><primary>isAbstract method</primary><secondary>of Method class</secondary></indexterm>
@@ -2200,7 +2200,7 @@ say .TimeSpan~method("CompareTo")~isAbstract     -- 0
 </section>
 
 
-<!-- Class Method - method isAttribute ============================= --> 
+<!-- Class Method - method isAttribute ============================= -->
 <section id="mthMethodIsAttribute" revisionflag="added"><title>*NEW* isAttribute</title>
 <para>
 <indexterm><primary>isAttribute method</primary><secondary>of Method class</secondary></indexterm>
@@ -2222,7 +2222,7 @@ say .File~method("lastModified=")~isAttribute    -- 1
 </section>
 
 
-<!-- Class Method - method isConstant ============================== --> 
+<!-- Class Method - method isConstant ============================== -->
 <section id="mthMethodIsConstant" revisionflag="added"><title>*NEW* isConstant</title>
 <para>
 <indexterm><primary>isConstant method</primary><secondary>of Method class</secondary></indexterm>
@@ -2320,7 +2320,7 @@ referenced by the method code.</para>
 </section>
 
 
-<!-- Class Method - method scope =================================== --> 
+<!-- Class Method - method scope =================================== -->
 <section id="mthMethodScope" revisionflag="added"><title>*NEW* scope</title>
 <para>
 <indexterm><primary>scope method</primary><secondary>of Method class</secondary></indexterm>
@@ -3057,7 +3057,7 @@ see <xref linkend="reqstr" />.</para>
 <itemizedlist spacing="compact">
   <listitem><para>a <xref linkend="clsMethod" xrefstyle="template:method"/> object, or</para></listitem>
   <listitem><para>a string containing a method source line, or an Array
-   of strings containing individual method source lines (for these cases an 
+   of strings containing individual method source lines (for these cases an
    equivalent method object is created).</para></listitem>
 </itemizedlist>
 </para>
@@ -3235,7 +3235,7 @@ method (if any).</para>
 <itemizedlist spacing="compact">
   <listitem><para>a <xref linkend="clsMethod" xrefstyle="template:method"/> object, or</para></listitem>
   <listitem><para>a string containing a method source line, or an Array
-   of strings containing individual method source lines (for these cases an 
+   of strings containing individual method source lines (for these cases an
    equivalent method object is created).</para></listitem>
 </itemizedlist>
 </para>
@@ -3539,7 +3539,7 @@ the code contained in the
 <emphasis role="italic">name</emphasis> is a string.
 The <emphasis role="italic">source</emphasis> can be a single string or an
 array of strings containing individual method lines.
-If <emphasis role="italic">source</emphasis> isn't specified, 
+If <emphasis role="italic">source</emphasis> isn't specified,
 <emphasis role="italic">name</emphasis> identifies a file that will be
 used as the package source.
 </para>
@@ -3588,7 +3588,7 @@ is added to the package as a non-public class.</para>
 
 <para>Adds the package object <emphasis role="italic">package</emphasis> to the
 dependent packages.
-An optional string <emphasis role="italic">namespace</emphasis> may be 
+An optional string <emphasis role="italic">namespace</emphasis> may be
 specified, which will allow to qualify references to classes or routines
 within <emphasis role="italic">package</emphasis>.
 </para>
@@ -3658,7 +3658,7 @@ non-public routine.</para>
 </section>
 
 
-<!-- Class Package - method annotation ============================= --> 
+<!-- Class Package - method annotation ============================= -->
 <section id="mthPackageAnnotation" revisionflag="added"><title>*NEW* annotation</title>
 <indexterm><primary>annotation method</primary>
 <secondary>of Package class</secondary></indexterm>
@@ -3683,7 +3683,7 @@ If no such annotation exists, &nil; is returned.
 </para>
 </section>
 
-<!-- Class Package - method annotations ============================ --> 
+<!-- Class Package - method annotations ============================ -->
 <section id="mthPackageAnnotations" revisionflag="added"><title>*NEW* annotations</title>
 <indexterm><primary>annotations method</primary>
 <secondary>of Package class</secondary></indexterm>
@@ -3803,7 +3803,7 @@ say .context~package~findClass("Dummy")   -- The DUMMY class
 ]]></programlisting></example></para>
 </section>
 
-<!-- Class Package - method findNamespace ========================== --> 
+<!-- Class Package - method findNamespace ========================== -->
 <section id="mthPackageFindNamespace" revisionflag="added"><title>*NEW* findNamespace</title>
 <para>
 <indexterm><primary>findNamespace method</primary><secondary>of Package class</secondary></indexterm>
@@ -3827,7 +3827,7 @@ say .context~package~findNamespace("windows")   -- a Package
 </section>
 
 
-<!-- Class Package - method findProgram ============================ --> 
+<!-- Class Package - method findProgram ============================ -->
 <section id="mthPackageFindProgram" revisionflag="added"><title>*NEW* findProgram</title>
 <para>
 <indexterm><primary>findProgram method</primary><secondary>of Package class</secondary></indexterm>
@@ -3851,7 +3851,7 @@ The program is searched for using normal external program search order.
 </section>
 
 
-<!-- Class Package - method findPublicClass ======================== --> 
+<!-- Class Package - method findPublicClass ======================== -->
 <section id="mthPackageFindPublicClass" revisionflag="added"><title>*NEW* findPublicClass</title>
 <para>
 <indexterm><primary>findPublicClass method</primary><secondary>of Package class</secondary></indexterm>
@@ -3872,12 +3872,12 @@ scope of the receiving package.
 say .context~package~findPublicClass("Dummy")    -- The NIL object
 say .context~package~findPublicClass("RexxInfo") -- The NIL object
 
-::class Dummy   -- private class          
+::class Dummy   -- private class
 ]]></programlisting></example></para>
 </section>
 
 
-<!-- Class Package - method findPublicRoutine ====================== --> 
+<!-- Class Package - method findPublicRoutine ====================== -->
 <section id="mthPackageFindPublicRoutine" revisionflag="added"><title>*NEW* findPublicRoutine</title>
 <para>
 <indexterm><primary>findPublicRoutine method</primary><secondary>of Package class</secondary></indexterm>
@@ -3899,7 +3899,7 @@ scope of the receiving package.
 <programlisting><![CDATA[say .context~package~findPublicRoutine("Dummy")~source    -- "nop"
 
 ::routine Dummy public
-nop 
+nop
 ]]></programlisting></example></para>
 </section>
 
@@ -4096,7 +4096,7 @@ say .Package~new("pkg", "")~name       -- pkg
 ]]></programlisting></example></para>
 </section>
 
-<!-- Class Package - method namespaces ============================= --> 
+<!-- Class Package - method namespaces ============================= -->
 <section id="mthPackageNamespaces" revisionflag="added"><title>*NEW* namespaces</title>
 <para>
 <indexterm><primary>namespaces method</primary><secondary>of Package class</secondary></indexterm>
@@ -4118,7 +4118,7 @@ say .Package~new("pkg", "")~name       -- pkg
 </section>
 
 
-<!-- Class Package - method prolog ================================= --> 
+<!-- Class Package - method prolog ================================= -->
 <section id="mthPackageProlog" revisionflag="added"><title>*NEW* prolog</title>
 <para>
 <indexterm><primary>prolog method</primary><secondary>of Package class</secondary></indexterm>
@@ -4196,7 +4196,7 @@ say .rexxinfo~package~publicRoutines~items              -- 0
 ]]></programlisting></example></para>
 </section>
 
-<!-- Class Package - method resource =============================== --> 
+<!-- Class Package - method resource =============================== -->
 <section id="mthPackageResource" revisionflag="added"><title>*NEW* resource</title>
 <para>
 <indexterm><primary>resource method</primary><secondary>of Package class</secondary></indexterm>
@@ -4207,7 +4207,7 @@ say .rexxinfo~package~publicRoutines~items              -- 0
 </para>
 <para>Returns an Array of resources data lines a ::RESOURCE <emphasis role="italic">name</emphasis>
 directive in the target package defines.
-Returns &nil;, if no resource <emphasis role="italic">name</emphasis> exists. 
+Returns &nil;, if no resource <emphasis role="italic">name</emphasis> exists.
 </para>
 <para>See also
 <itemizedlist spacing="compact">
@@ -4226,7 +4226,7 @@ La nuit, tous les chats sont gris
 </section>
 
 
-<!-- Class Package - method resources ============================== --> 
+<!-- Class Package - method resources ============================== -->
 <section id="mthPackageResources" revisionflag="added"><title>*NEW* resources</title>
 <para>
 <indexterm><primary>resources method</primary><secondary>of Package class</secondary></indexterm>
@@ -4249,7 +4249,7 @@ the StringTable values are arrays of individual resource data lines.
 <para><example>
 <title>Package class &mdash; resources method</title>
 <programlisting><![CDATA[say .context~package~resources~allIndexes  -- "BROWN FOX"
-                                           -- "GREYCAT" 
+                                           -- "GREYCAT"
 ::resource greyCat
 La nuit, tous les chats sont gris
 ::END
@@ -4500,7 +4500,7 @@ routine = .Routine~loadExternalRoutine("Pi", "LIBRARY rxmath RxCalcPi")
 </example>
 </section>
 
-<!-- Class Routine - method [] ===================================== --> 
+<!-- Class Routine - method [] ===================================== -->
 <section id="mthRoutineCallBrackets" revisionflag="added"><title>*NEW* []</title>
 <para>
 <indexterm><primary>[] method</primary><secondary>of Routine class</secondary></indexterm>
@@ -5387,7 +5387,7 @@ f "def"     ->   "abc def"
 </example>
 </section>
 
-<!-- Class String - method [] ====================================== --> 
+<!-- Class String - method [] ====================================== -->
 <section id="mthStringAtGet" revisionflag="added"><title>*NEW* []</title>
 <para>
 <indexterm><primary>[] method</primary><secondary>of String class</secondary></indexterm>
@@ -5423,7 +5423,7 @@ and <xref linkend="mthStringSubstr" xrefstyle="select:title"/>.
 </section>
 
 
-<!-- Class String - method ? ======================================= --> 
+<!-- Class String - method ? ======================================= -->
 <section id="mthStringIif" revisionflag="added"><title>*NEW* ? (inline if)</title>
 <para>
 <indexterm><primary>? method</primary><secondary>of String class</secondary></indexterm>
@@ -5439,7 +5439,7 @@ returns <emphasis role="italic">second</emphasis> if it is &false;.
 <para><example>
 <title>String class &mdash; ? method</title>
 <programlisting><![CDATA[do apples = 0 to 2                               -- 0 apples
-  say apples (apples = 1)~?("apple", "apples")   -- 1 apple 
+  say apples (apples = 1)~?("apple", "apples")   -- 1 apple
 end                                              -- 2 apples
 ]]></programlisting></example></para>
 </section>
@@ -5537,7 +5537,7 @@ sign and is formatted according to the current NUMERIC settings.</para>
 </section>
 
 
-<!-- Class String - method append ================================== --> 
+<!-- Class String - method append ================================== -->
 <section id="mthStringAppend" revisionflag="added"><title>*NEW* append</title>
 <para>
 <indexterm><primary>append method</primary><secondary>of String class</secondary></indexterm>
@@ -6066,7 +6066,7 @@ place to the end of the target string.
 </section>
 
 
-<!-- Class String - method caselessContains ======================== --> 
+<!-- Class String - method caselessContains ======================== -->
 <section id="mthStringCaselessContains" revisionflag="added"><title>*NEW* caselessContains</title>
 <para>
 <indexterm><primary>caselessContains method</primary><secondary>of String class</secondary></indexterm>
@@ -6105,7 +6105,7 @@ say "-abcdef-"~caselessContains("-", 2, 6)    -- 0
 </section>
 
 
-<!-- Class String - method caselessContainsWord ==================== --> 
+<!-- Class String - method caselessContainsWord ==================== -->
 <section id="mthStringCaselessContainsWord" revisionflag="added"><title>*NEW* caselessContainsWord</title>
 <para>
 <indexterm><primary>caselessContainsWord method</primary><secondary>of String class</secondary></indexterm>
@@ -6186,7 +6186,7 @@ string that do not overlap.  All matches are made using caseless comparisons.</p
 </section>
 
 
-<!-- Class String - method caselessEndsWith ======================== --> 
+<!-- Class String - method caselessEndsWith ======================== -->
 <section id="mthStringCaselessEndsWith" revisionflag="added"><title>*NEW* caselessEndsWith</title>
 <para>
 <indexterm><primary>caselessEndsWith method</primary><secondary>of String class</secondary></indexterm>
@@ -6320,7 +6320,7 @@ performed using caseless comparisons.
 
 <para>Returns &true; if the characters of the <emphasis role="italic">other</emphasis> match the
 characters of the target string beginning at position <emphasis role="italic">start</emphasis>.  Returns &false;
-("0") if the characters are not a match.  The matching is performed using caseless comparisons.
+if the characters are not a match.  The matching is performed using caseless comparisons.
 <emphasis role="italic">start</emphasis> must be a positive whole number.
 </para>
 <para>If <emphasis role="italic">n</emphasis> is specified, the match will be performed starting with character
@@ -6439,7 +6439,7 @@ a non-negative whole number.
 </section>
 
 
-<!-- Class String - method caselessStartsWith ====================== --> 
+<!-- Class String - method caselessStartsWith ====================== -->
 <section id="mthStringCaselessStartsWith" revisionflag="added"><title>*NEW* caselessStartsWith</title>
 <para>
 <indexterm><primary>caselessStartsWith method</primary><secondary>of String class</secondary></indexterm>
@@ -6745,7 +6745,7 @@ place to the end of the target string.
 </section>
 
 
-<!-- Class String - method contains ================================ --> 
+<!-- Class String - method contains ================================ -->
 <section id="mthStringContains" revisionflag="added"><title>*NEW* contains</title>
 <para>
 <indexterm><primary>contains method</primary><secondary>of String class</secondary></indexterm>
@@ -6792,7 +6792,7 @@ say "-abcdef-"~contains("-", 2, 6)    -- 0
 </section>
 
 
-<!-- Class String - method containsWord ============================ --> 
+<!-- Class String - method containsWord ============================ -->
 <section id="mthStringContainsWord" revisionflag="added"><title>*NEW* containsWord</title>
 <para>
 <indexterm><primary>containsWord method</primary><secondary>of String class</secondary></indexterm>
@@ -7313,7 +7313,7 @@ string.</para>
 </section>
 
 
-<!-- Class String - method endsWith ================================ --> 
+<!-- Class String - method endsWith ================================ -->
 <section id="mthStringEndsWith" revisionflag="added"><title>*NEW* endsWith</title>
 <para>
 <indexterm><primary>endsWith method</primary><secondary>of String class</secondary></indexterm>
@@ -7813,7 +7813,7 @@ object. See <xref linkend="reqstr" />.</para>
 
 <para>Returns &true; if the characters of the <emphasis role="italic">other</emphasis> match the
 characters of the target string beginning at position <emphasis role="italic">start</emphasis>.  Returns &false;
-("0") if the characters are not a match.
+if the characters are not a match.
 <emphasis role="italic">start</emphasis> must be a positive whole number.
 </para>
 <para>If <emphasis role="italic">n</emphasis> is specified, the match will be performed starting with character
@@ -8253,7 +8253,7 @@ and the default <emphasis role="italic">pad</emphasis> character is a blank.
 </section>
 
 
-<!-- Class String - method startsWith ============================== --> 
+<!-- Class String - method startsWith ============================== -->
 <section id="mthStringStartsWith" revisionflag="added"><title>*NEW* startsWith</title>
 <para>
 <indexterm><primary>startsWith method</primary><secondary>of String class</secondary></indexterm>

@@ -4,9 +4,9 @@ stream_arrayin ::= 'arrayIn(' ( | 'Lines' | 'Chars' ) ')'
 
 stream_arrayout ::= 'arrayOut(' array ( ',' ( 'Lines' | 'Chars' ) )? ')'
 
-stream_charin ::= 'charIn(' start? ',' length? ')'
+stream_charin ::= 'charIn(' start? (',' length)? ')'
 
-stream_charout ::= 'charOut(' string? ',' start? ')'
+stream_charout ::= 'charOut(' string? (',' start)? ')'
 
 stream_chars ::= 'chars'
 
@@ -21,9 +21,9 @@ stream_flush ::= 'flush'
 
 stream_init ::= 'init(' name ')'
 
-stream_linein ::= 'lineIn(' line? ',' count? ')'
+stream_linein ::= 'lineIn(' line? (',' count)? ')'
 
-stream_lineout ::= 'lineOut(' string? ',' line? ')'
+stream_lineout ::= 'lineOut(' string? (',' line)? ')'
 
 stream_lines ::= 'lines(' ( | 'Count' | 'Normal' ) ')'
 
@@ -34,20 +34,21 @@ stream_open ::= 'open(' ( 'BOth' (WRITE-OPTIONS - fragment) | 'REAd' | 'Write' (
 /* stream_write_options -- see images/bif/stream_write_options */
 /* stream_options       -- see images/bif/stream_options */
 
-stream_position ::= 'position(' ( '=' | '<' | '+' | '-' )? 'Offset'
-                                ( 'Read' | 'Write' ) ( 'Char' | 'Line' )? ')'
+stream_position ::= 'position(' ( | '=' | '<' | '+' | '-' ) offset ( | 'Read' | 'Write' ) ( | 'Char' | 'Line') ')'
 
 stream_qualify ::= 'qualify'
 
-stream_query ::= 'query(' ( 'Datetime' | 'Exists' | 'Handle' | ( 'Seek' | 'Position' )
-                            ( 'Read' ( 'Char' | 'Line' )? |
-                              'Write' ( 'Char' | 'Line' )? | 'Sys' ) |
-                             'Size' | 'Streamtype' | 'Timestamp' ) ')'
+stream_query ::= 'query(' ( 'Datetime' |
+                            'Exists' |
+                            'Handle' |
+                          ( 'Seek' | 'Position' ) ( ( | 'Read' | 'Write' ) ( | 'Char' | 'Line') | 'Sys' ) |
+                            'SIze' |
+                            'STreamtype' |
+                            'Timestamp' ) ')'
 
 stream_say ::= 'say(' string? ')'
 
-stream_seek ::= 'seek(' ( '=' | '<' | '+' | '-' )? 'Offset'
-                        ( 'Read' | 'Write' ) ( 'Char' | 'Line' )? ')'
+stream_seek ::= 'seek(' ( | '=' | '<' | '+' | '-' ) offset ( | 'Read' | 'Write' ) ( | 'Char' | 'Line') ')'
 
 stream_state ::= 'state'
 

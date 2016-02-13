@@ -14,11 +14,11 @@ b2x ::= 'B2X(' binary_string ')'
 
 beep ::= 'BEEP(' frequency ',' duration ')'
 
-bitand ::= 'BITAND(' string1 ',' string2? ',' pad? ')'
+bitand ::= 'BITAND(' string1 ',' string2? (',' pad)? ')'
 
-bitor ::= 'BITOR(' string1 ',' string2? ',' pad? ')'
+bitor ::= 'BITOR(' string1 ',' string2? (',' pad)? ')'
 
-bitxor ::= 'BITXOR(' string1 ',' string2? ',' pad? ')'
+bitxor ::= 'BITXOR(' string1 ',' string2? (',' pad)? ')'
 
 c2d ::= 'C2D(' string ( ',' n )? ')'
 
@@ -82,7 +82,7 @@ linein ::= 'LINEIN('name? ',' line? ',' count? ')'
 
 lineout ::= 'LINEOUT(' name? ',' string? ',' line? ')'
 
-lines ::= 'LINES(' ( name )? ( ( ', Normal' | ', Count' )? )? ')'
+lines ::= 'LINES(' name? ( | ',' 'Normal' | ',' 'Count' ) ')'
 
 lower ::= 'LOWER(' string ( ',' ( n )? ( ',' length )? )? ')'
 
@@ -123,7 +123,7 @@ sign ::= 'SIGN(' number ')'
 
 sourceline ::= 'SOURCELINE(' n? ')'
 
-space ::= 'SPACE(' string ',' n? ',' pad? ')'
+space ::= 'SPACE(' string ',' n? (',' pad)? ')'
 
 stream ::= 'STREAM(' name ',' ( |
                                 'State' |                    
@@ -132,29 +132,27 @@ stream ::= 'STREAM(' name ',' ( |
 
 stream_command_syntax ::= 'STREAM(' name ',' 'Command' ',' stream_command ')'
 
-stream_command ::= ( ( 'Open' ( 'BOth' (WRITE-OPTIONS - fragment) | 'REAd' | 'Write' (WRITE-OPTIONS - fragment) )? (OPEN-OPTIONS - fragment) ) |
-                     ( 'Close' ) |
-                     ( 'Flush' ) |
-                     ( ( 'Seek' | 'Position' ) ( '=' | '<' | '+' | ';' | () ) offset ( | 'Read' | 'Write' ) ( | 'Char' | 'Line') ) |
-                     ( 'Query' ( 'Datetime' |
-                                 'Exists' |
-                                 'Handle' |
-                                 ( 'Seek' | 'Position' ) ( ('Read' | 'Write' ) ( 'Char' |
-                                                                                 'Line')? |
-                                                         'Sys' ) |
-                      ( 'SIze' ) |
-                      ( 'STreamtype' ) |
-                      ( 'Timestamp' ) ) )
+stream_command ::= ( 'Open' ( 'BOth' (WRITE-OPTIONS - fragment) | 'REAd' | 'Write' (WRITE-OPTIONS - fragment) )? (OPEN-OPTIONS - fragment) |
+                     'Close' |
+                     'Flush' |
+                   ( 'Seek' | 'Position' ) ( | '=' | '<' | '+' | '-' ) offset ( | 'Read' | 'Write' ) ( | 'Char' | 'Line') |
+                     'Query' ( 'Datetime' |
+                               'Exists' |
+                               'Handle' |
+                             ( 'Seek' | 'Position' ) ( ( | 'Read' | 'Write' ) ( | 'Char' | 'Line') | 'Sys' ) |
+                               'SIze' |
+                               'STreamtype' |
+                               'Timestamp' )
                    ) ')' 
 
-stream_write_options ::= ( () | 'APpend' | 'REPlace' )
+stream_write_options ::= ( | 'APpend' | 'REPlace' )
 
 stream_open_options ::= ( 'SHARED' | 'SHARERead' | 'SHAREWrite' )?
                         ( 'NOBuffer' | 'BInary' ( 'REClength' length )? )*
 
-strip ::= 'STRIP(' string ',' ( 'B' | option | ) ',' chars? ')'
+strip ::= 'STRIP(' string ',' ( | 'B' | option ) (',' chars)? ')'
 
-substr ::= 'SUBSTR(' string ',' n ',' length? ',' pad? ')'
+substr ::= 'SUBSTR(' string ',' n ',' length? (',' pad)? ')'
 
 subword ::= 'SUBWORD(' string ',' n ( ',' length )? ')'
 
@@ -168,11 +166,11 @@ translate ::= 'TRANSLATE(' string ',' tableo? ',' tablei? ',' pad? ',' pos? ',' 
 
 trunc ::= 'TRUNC(' number ( ',' n )? ')'
 
-upper ::= 'UPPER(' string ',' n? ',' length? ')'
+upper ::= 'UPPER(' string ',' n? (',' length)? ')'
 
 userid ::= 'USERID()'
 
-value ::= 'VALUE(' name ',' newvalue? ',' selector? ')'
+value ::= 'VALUE(' name ',' newvalue? (',' selector)? ')'
 
 var ::= 'VAR(' name ')'
 

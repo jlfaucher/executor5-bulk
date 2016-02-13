@@ -69,8 +69,8 @@
     <xref linkend="clsNumericComparator" xrefstyle="template:NumericComparator"/>, and
    </para></listitem>
    <listitem><para>other miscellaneous classes
-    <xref linkend="clsBuffer" xrefstyle="template:Buffer"/>,   
-    <xref linkend="clsMonitor" xrefstyle="template:Monitor"/>,   
+    <xref linkend="clsBuffer" xrefstyle="template:Buffer"/>,
+    <xref linkend="clsMonitor" xrefstyle="template:Monitor"/>,
     <xref linkend="clsPointer" xrefstyle="template:Pointer"/>,
     <xref linkend="clsRegularExpression" xrefstyle="template:RegularExpression"/>,
     <xref linkend="clsRexxContext" xrefstyle="template:RexxContext"/>,
@@ -115,7 +115,7 @@ notification target.
    <member><xref linkend="mthAlarmAttachment" xrefstyle="select:title"/></member>
    <member><xref linkend="mthAlarmCancel" xrefstyle="select:title"/></member>
    <member><xref linkend="mthAlarmCanceled" xrefstyle="select:title"/></member>
-<!-- already covered by "mthAlarmCanceled" 
+<!-- already covered by "mthAlarmCanceled"
    <member><xref linkend="mthAlarmCancelled" xrefstyle="select:title"/></member>
 -->
    <member><xref linkend="mthAlarmInit" xrefstyle="select:title"/></member>
@@ -128,7 +128,7 @@ notification target.
 </table>
 <!-- $GENERATED-20150704-END rexxrefClassTable(Alarm) -->
 
-<!-- Class Alarm - method attachment =============================== --> 
+<!-- Class Alarm - method attachment =============================== -->
 <section id="mthAlarmAttachment" revisionflag="added"><title>*NEW* attachment</title>
 <para>
 <indexterm><primary>attachment method</primary><secondary>of Alarm class</secondary></indexterm>
@@ -172,7 +172,7 @@ oneSecond~cancel
 takes no action if the specified time has already been reached.</para>
 </section>
 
-<!-- Class Alarm - method canceled/cancelled ======================= --> 
+<!-- Class Alarm - method canceled/cancelled ======================= -->
 <section id="mthAlarmCanceled" revisionflag="added"><title>*NEW* canceled/cancelled</title>
 <para>
 <indexterm><primary>canceled/cancelled method</primary><secondary>of Alarm class</secondary></indexterm>
@@ -297,7 +297,7 @@ a=.alarm~new(30,msg)
 </example>
 </section>
 
-<!-- Class Alarm - method scheduledTime ============================ --> 
+<!-- Class Alarm - method scheduledTime ============================ -->
 <section id="mthAlarmScheduledTime" revisionflag="added"><title>*NEW* scheduledTime</title>
 <para>
 <indexterm><primary>scheduledTime method</primary><secondary>of Alarm class</secondary></indexterm>
@@ -313,7 +313,7 @@ alarm has initially been scheduled.
 </section>
 
 
-<!-- Class Alarm - method triggered ================================ --> 
+<!-- Class Alarm - method triggered ================================ -->
 <section id="mthAlarmTriggered" revisionflag="added"><title>*NEW* triggered</title>
 <para>
 <indexterm><primary>triggered method</primary><secondary>of Alarm class</secondary></indexterm>
@@ -330,7 +330,7 @@ Returns &false; if the alarm has been cancelled or hasn't yet triggered.
 </section>
 
 
-<!-- =============================================================== --> 
+<!-- =============================================================== -->
 <!-- Class AlarmNotification ======================================= -->
 <section id="clsAlarmNotification" revisionflag="added"><title>*NEW* AlarmNotification Class
 <indexterm><primary>AlarmNotification class</primary></indexterm>
@@ -466,7 +466,7 @@ The Buffer class new method will raise an error if invoked.</para>
 </section>
 </section>
 
-<!-- =============================================================== --> 
+<!-- =============================================================== -->
 <!-- Class MessageNotification ===================================== -->
 <section id="clsComparable"><title>Comparable Class</title>
 <indexterm><primary>Comparable class</primary></indexterm>
@@ -889,7 +889,7 @@ the <classname>Comparable</classname> <xref linkend="mthComparableCompareTo" xre
 <indexterm><primary>examples</primary><secondary>DescendingComparator class</secondary></indexterm>
 </title>
 <programlisting><![CDATA[wine = .Array~of("Strawberries", "cherries", "angel's kiss")
-wine~sortWith(.DescendingComparator~new)    -- cherries, angel's kiss, Strawberries 
+wine~sortWith(.DescendingComparator~new)    -- cherries, angel's kiss, Strawberries
 ]]></programlisting></example></para>
 </section>
 </section>
@@ -1157,7 +1157,7 @@ dates.
 </para>
 <note>
 <para>DateTime does not support leap seconds like June 30, 2015 at 23:59:60 UTC.
-</para></note> 
+</para></note>
 
 <!-- $GENERATED-20150923-START rexxrefClassTable(DateTime) -->
 <table id="ooRexxDateTimeClass" frame="all" pgwide="1">
@@ -2697,7 +2697,7 @@ represents a time in the future.
 </mediaobject>
 
 <para>Returns &true; if the current year is a leap year.  Returns &false;
-("0") if the current year is not a leap year.
+if the current year is not a leap year.
 </para>
 </section>
 
@@ -3983,7 +3983,7 @@ size increases to the length of <emphasis>string</emphasis> if the string
 does not fit into the buffer.</para>
 </section>
 
-<!-- Class MutableBuffer - method [] =============================== --> 
+<!-- Class MutableBuffer - method [] =============================== -->
 <section id="mthMutableBufferAtGet" revisionflag="added"><title>*NEW* []</title>
 <para>
 <indexterm><primary>[] method</primary><secondary>of MutableBuffer class</secondary></indexterm>
@@ -4015,7 +4015,7 @@ say s[30]       -- ""
 ]]></programlisting></example></para>
 </section>
 
-<!-- Class MutableBuffer - method []= ============================== --> 
+<!-- Class MutableBuffer - method []= ============================== -->
 <section id="mthMutableBufferPutSet" revisionflag="added"><title>*NEW* []=</title>
 <para>
 <indexterm><primary>[]= method</primary><secondary>of MutableBuffer class</secondary></indexterm>
@@ -4051,7 +4051,7 @@ s[5] = ""               -- "abcdXXXXijklmnopqrstuvwxyz"
 s[5, 1] = "="           -- "abcd=XXXijklmnopqrstuvwxyz"
 s[5, 4] = "="           -- "abcd=ijklmnopqrstuvwxyz"
 s[10, 2] = "REPLACE"    -- "abcd=ijklREPLACEopqrstuvwxyz"
-s[4, 99] = ""           -- "abc"  
+s[4, 99] = ""           -- "abc"
 ]]></programlisting></example></para>
 </section>
 
@@ -4099,7 +4099,7 @@ using caseless comparisons.
 </para>
 </section>
 
-<!-- Class MutableBuffer - method caselessContains ================= --> 
+<!-- Class MutableBuffer - method caselessContains ================= -->
 <section id="mthMutableBufferCaselessContains" revisionflag="added"><title>*NEW* caselessContains</title>
 <para>
 <indexterm><primary>caselessContains method</primary><secondary>of MutableBuffer class</secondary></indexterm>
@@ -4136,7 +4136,7 @@ say .mutablebuffer~new('-abcdef-')~caselessContains('-', 2, 6)    -- 0
 ]]></programlisting></example></para>
 </section>
 
-<!-- Class MutableBuffer - method caselessContainsWord ============= --> 
+<!-- Class MutableBuffer - method caselessContainsWord ============= -->
 <section id="mthMutableBufferCaselessContainsWord" revisionflag="added"><title>*NEW* caselessContainsWord</title>
 <para>
 <indexterm><primary>caselessContainsWord method</primary><secondary>of MutableBuffer class</secondary></indexterm>
@@ -4203,7 +4203,7 @@ do not overlap. All matches are made using caseless comparisons.
 </para>
 </section>
 
-<!-- Class MutableBuffer - method caselessEndsWith ================= --> 
+<!-- Class MutableBuffer - method caselessEndsWith ================= -->
 <section id="mthMutableBufferCaselessEndsWith" revisionflag="added"><title>*NEW* caselessEndsWith</title>
 <para>
 <indexterm><primary>caselessEndsWith method</primary><secondary>of MutableBuffer class</secondary></indexterm>
@@ -4291,7 +4291,7 @@ comparisons.
 
 <para>Returns &true; if the characters of the <emphasis role="italic">other</emphasis> match the
 characters of the target buffer beginning at position <emphasis role="italic">start</emphasis>.  Returns &false;
-("0") if the characters are not a match.  The matching is performed using caseless comparisons.
+if the characters are not a match.  The matching is performed using caseless comparisons.
 <emphasis role="italic">start</emphasis> must be a positive whole number.
 </para>
 <para>If <emphasis role="italic">n</emphasis> is specified, the match will be performed starting with character
@@ -4373,7 +4373,7 @@ a non-negative whole number.
 </para>
 </section>
 
-<!-- Class MutableBuffer - method caselessStartsWith =============== --> 
+<!-- Class MutableBuffer - method caselessStartsWith =============== -->
 <section id="mthMutableBufferCaselessStartsWith" revisionflag="added"><title>*NEW* caselessStartsWith</title>
 <para>
 <indexterm><primary>caselessStartsWith method</primary><secondary>of MutableBuffer class</secondary></indexterm>
@@ -4454,7 +4454,7 @@ occurrences to be replaced.</para>
 </section>
 
 
-<!-- Class MutableBuffer - method contains ========================= --> 
+<!-- Class MutableBuffer - method contains ========================= -->
 <section id="mthMutableBufferContains" revisionflag="added"><title>*NEW* contains</title>
 <para>
 <indexterm><primary>contains method</primary><secondary>of MutableBuffer class</secondary></indexterm>
@@ -4491,7 +4491,7 @@ say .mutablebuffer~new('-abcdef-')~contains('-', 2, 6)    -- 0
 </section>
 
 
-<!-- Class MutableBuffer - method containsWord ===================== --> 
+<!-- Class MutableBuffer - method containsWord ===================== -->
 <section id="mthMutableBufferContainsWord" revisionflag="added"><title>*NEW* containsWord</title>
 <para>
 <indexterm><primary>containsWord method</primary><secondary>of MutableBuffer class</secondary></indexterm>
@@ -4646,7 +4646,7 @@ preceding the first word involved.
 </para>
 </section>
 
-<!-- Class MutableBuffer - method endsWith ========================= --> 
+<!-- Class MutableBuffer - method endsWith ========================= -->
 <section id="mthMutableBufferEndsWith" revisionflag="added"><title>*NEW* endsWith</title>
 <para>
 <indexterm><primary>endsWith method</primary><secondary>of MutableBuffer class</secondary></indexterm>
@@ -4845,7 +4845,7 @@ the carriage return/newline character pair.
 
 <para>Returns &true; if the characters of the <emphasis role="italic">other</emphasis> match the
 characters of the target buffer beginning at position <emphasis role="italic">start</emphasis>.  Returns &false;
-("0") if the characters are not a match.
+if the characters are not a match.
 <emphasis role="italic">start</emphasis> must be a positive whole number.
 </para>
 <para>If <emphasis role="italic">n</emphasis> is specified, the match will be performed starting with character
@@ -5016,7 +5016,7 @@ in the <methodname>init</methodname> method.</para>
 </para>
 </section>
 
-<!-- Class MutableBuffer - method setText ========================== --> 
+<!-- Class MutableBuffer - method setText ========================== -->
 <section id="mthMutableBufferSetText" revisionflag="added"><title>*NEW* setText</title>
 <para>
 <indexterm><primary>setText method</primary><secondary>of MutableBuffer class</secondary></indexterm>
@@ -5058,7 +5058,7 @@ and the default <emphasis role="italic">pad</emphasis> character is a blank.
 </para>
 </section>
 
-<!-- Class MutableBuffer - method startsWith ======================= --> 
+<!-- Class MutableBuffer - method startsWith ======================= -->
 <section id="mthMutableBufferStartsWith" revisionflag="added"><title>*NEW* startsWith</title>
 <para>
 <indexterm><primary>startsWith method</primary><secondary>of MutableBuffer class</secondary></indexterm>
@@ -6643,8 +6643,8 @@ Name=C.one, Value='11'
 </section>
 
 
-<!-- =============================================================== --> 
-<!-- Class RexxInfo ================================================ --> 
+<!-- =============================================================== -->
+<!-- Class RexxInfo ================================================ -->
 <section id="clsRexxInfo" revisionflag="added"><title>*NEW* RexxInfo Class</title>
 <para>The RexxInfo class
 <indexterm><primary>RexxInfo class</primary></indexterm>
@@ -6745,7 +6745,7 @@ RexxInfo provides read-only attribute methods to get
 </table>
 <!-- $GENERATED-20150704-END rexxrefClassTable(RexxInfo) -->
 
-<!-- Class RexxInfo - method architecture ========================== --> 
+<!-- Class RexxInfo - method architecture ========================== -->
 <section id="mthRexxInfoArchitecture" revisionflag="added"><title>*NEW* architecture</title>
 <para>
 <indexterm><primary>architecture method</primary><secondary>of RexxInfo class</secondary></indexterm>
@@ -6765,7 +6765,7 @@ say .rexxinfo~architecture    -- 64 /* ooRexx 64-bit */
 ]]></programlisting></example></para>
 </section>
 
-<!-- Class RexxInfo - method caseSensitiveFiles ==================== --> 
+<!-- Class RexxInfo - method caseSensitiveFiles ==================== -->
 <section id="mthRexxInfoCaseSensitiveFiles" revisionflag="added"><title>*NEW* caseSensitiveFiles</title>
 <para>
 <indexterm><primary>caseSensitiveFiles method</primary><secondary>of RexxInfo class</secondary></indexterm>
@@ -6789,7 +6789,7 @@ say .RexxInfo~caseSensitiveFiles    -- 1 /* e. g. Unix */
 ]]></programlisting></example></para>
 </section>
 
-<!-- Class RexxInfo - method date ================================== --> 
+<!-- Class RexxInfo - method date ================================== -->
 <section id="mthRexxInfoDate" revisionflag="added"><title>*NEW* date</title>
 <para>
 <indexterm><primary>date method</primary><secondary>of RexxInfo class</secondary></indexterm>
@@ -6798,7 +6798,7 @@ say .RexxInfo~caseSensitiveFiles    -- 1 /* e. g. Unix */
 <imagedata fileref="images/classes/rexxinfo_date.svg" scale="55" />
 </imageobject></mediaobject>
 </para>
-<para>Returns the language processor release date as a string in the 
+<para>Returns the language processor release date as a string in the
 default format of the
 <xref linkend="bifDate" xrefstyle="template:DATE built-in function"/>.
 </para>
@@ -6819,7 +6819,7 @@ which both also return this date as the third to fifth token of their result.
 ]]></programlisting></example></para>
 </section>
 
-<!-- Class RexxInfo - method digits ================================ --> 
+<!-- Class RexxInfo - method digits ================================ -->
 <section id="mthRexxInfoDigits" revisionflag="added"><title>*NEW* digits</title>
 <para>
 <indexterm><primary>digits method</primary><secondary>of RexxInfo class</secondary></indexterm>
@@ -6849,7 +6849,7 @@ which both also return this date as the third to fifth token of their result.
 ]]></programlisting></example></para>
 </section>
 
-<!-- Class RexxInfo - method directorySeparator ==================== --> 
+<!-- Class RexxInfo - method directorySeparator ==================== -->
 <section id="mthRexxInfoDirectorySeparator" revisionflag="added"><title>*NEW* directorySeparator</title>
 <para>
 <indexterm><primary>directorySeparator method</primary><secondary>of RexxInfo class</secondary></indexterm>
@@ -6871,7 +6871,7 @@ say .RexxInfo~directorySeparator    -- "/" /* Unix */
 ]]></programlisting></example></para>
 </section>
 
-<!-- Class RexxInfo - method endofline ============================= --> 
+<!-- Class RexxInfo - method endofline ============================= -->
 <section id="mthRexxInfoEndofline" revisionflag="added"><title>*NEW* endofline</title>
 <para>
 <indexterm><primary>endofline method</primary><secondary>of RexxInfo class</secondary></indexterm>
@@ -6889,12 +6889,12 @@ which provides the same information.
 </para>
 <para><example>
 <title>RexxInfo class &mdash; endofline method</title>
-<programlisting><![CDATA[say .RexxInfo~endofline    -- "0d 0a"x /* Windows */ 
+<programlisting><![CDATA[say .RexxInfo~endofline    -- "0d 0a"x /* Windows */
 say .RexxInfo~endofline    -- "0a"x /* Unix */
 ]]></programlisting></example></para>
 </section>
 
-<!-- Class RexxInfo - method form ================================== --> 
+<!-- Class RexxInfo - method form ================================== -->
 <section id="mthRexxInfoForm" revisionflag="added"><title>*NEW* form</title>
 <para>
 <indexterm><primary>form method</primary><secondary>of RexxInfo class</secondary></indexterm>
@@ -6924,7 +6924,7 @@ say .RexxInfo~endofline    -- "0a"x /* Unix */
 ]]></programlisting></example></para>
 </section>
 
-<!-- Class RexxInfo - method fuzz ================================== --> 
+<!-- Class RexxInfo - method fuzz ================================== -->
 <section id="mthRexxInfoFuzz" revisionflag="added"><title>*NEW* fuzz</title>
 <para>
 <indexterm><primary>fuzz method</primary><secondary>of RexxInfo class</secondary></indexterm>
@@ -6954,7 +6954,7 @@ say .RexxInfo~endofline    -- "0a"x /* Unix */
 ]]></programlisting></example></para>
 </section>
 
-<!-- Class RexxInfo - method internalDigits ======================== --> 
+<!-- Class RexxInfo - method internalDigits ======================== -->
 <section id="mthRexxInfoInternalDigits" revisionflag="added"><title>*NEW* internalDigits</title>
 <para>
 <indexterm><primary>internalDigits method</primary><secondary>of RexxInfo class</secondary></indexterm>
@@ -6976,7 +6976,7 @@ say .RexxInfo~internalDigits    -- 18 /* for 64-bit addressing mode */
 ]]></programlisting></example></para>
 </section>
 
-<!-- Class RexxInfo - method languageLevel ========================= --> 
+<!-- Class RexxInfo - method languageLevel ========================= -->
 <section id="mthRexxInfoLanguageLevel" revisionflag="added"><title>*NEW* languageLevel</title>
 <para>
 <indexterm><primary>languageLevel method</primary><secondary>of RexxInfo class</secondary></indexterm>
@@ -7004,7 +7004,7 @@ which both also return the language level as the second token of their result.
 ]]></programlisting></example></para>
 </section>
 
-<!-- Class RexxInfo - method majorVersion ========================== --> 
+<!-- Class RexxInfo - method majorVersion ========================== -->
 <section id="mthRexxInfoMajorVersion" revisionflag="added"><title>*NEW* majorVersion</title>
 <para>
 <indexterm><primary>majorVersion method</primary><secondary>of RexxInfo class</secondary></indexterm>
@@ -7036,7 +7036,7 @@ which also return the major version number as part of their result.
 ]]></programlisting></example></para>
 </section>
 
-<!-- Class RexxInfo - method name ================================== --> 
+<!-- Class RexxInfo - method name ================================== -->
 <section id="mthRexxInfoName" revisionflag="added"><title>*NEW* name</title>
 <para>
 <indexterm><primary>name method</primary><secondary>of RexxInfo class</secondary></indexterm>
@@ -7046,7 +7046,7 @@ which also return the major version number as part of their result.
 </imageobject></mediaobject>
 </para>
 <para>Returns the language processor's descriptive name in the format
-that is also returned by 
+that is also returned by
 <xref linkend="keyParseVersion"/><!-- @@xreflabel -->, which is
 <itemizedlist spacing="compact">
  <listitem><para>
@@ -7073,7 +7073,7 @@ keyword instruction <xref linkend="keyParseVersion"/><!-- @@xreflabel -->.
 ]]></programlisting></example></para>
 </section>
 
-<!-- Class RexxInfo - method package =============================== --> 
+<!-- Class RexxInfo - method package =============================== -->
 <section id="mthRexxInfoPackage" revisionflag="added"><title>*NEW* package</title>
 <para>
 <indexterm><primary>package method</primary><secondary>of RexxInfo class</secondary></indexterm>
@@ -7093,7 +7093,7 @@ keyword instruction <xref linkend="keyParseVersion"/><!-- @@xreflabel -->.
 ]]></programlisting></example></para>
 </section>
 
-<!-- Class RexxInfo - method pathSeparator ========================= --> 
+<!-- Class RexxInfo - method pathSeparator ========================= -->
 <section id="mthRexxInfoPathSeparator" revisionflag="added"><title>*NEW* pathSeparator</title>
 <para>
 <indexterm><primary>pathSeparator method</primary><secondary>of RexxInfo class</secondary></indexterm>
@@ -7114,7 +7114,7 @@ say .RexxInfo~pathSeparator    -- ":" /* Unix */
 ]]></programlisting></example></para>
 </section>
 
-<!-- Class RexxInfo - method platform ============================== --> 
+<!-- Class RexxInfo - method platform ============================== -->
 <section id="mthRexxInfoPlatform" revisionflag="added"><title>*NEW* platform</title>
 <para>
 <indexterm><primary>platform method</primary><secondary>of RexxInfo class</secondary></indexterm>
@@ -7137,7 +7137,7 @@ say .RexxInfo~platform    -- LINUX
 ]]></programlisting></example></para>
 </section>
 
-<!-- Class RexxInfo - method release =============================== --> 
+<!-- Class RexxInfo - method release =============================== -->
 <section id="mthRexxInfoRelease" revisionflag="added"><title>*NEW* release</title>
 <para>
 <indexterm><primary>release method</primary><secondary>of RexxInfo class</secondary></indexterm>
@@ -7169,7 +7169,7 @@ which also return the release number as part of their result.
 ]]></programlisting></example></para>
 </section>
 
-<!-- Class RexxInfo - method revision ============================== --> 
+<!-- Class RexxInfo - method revision ============================== -->
 <section id="mthRexxInfoRevision" revisionflag="added"><title>*NEW* revision</title>
 <para>
 <indexterm><primary>revision method</primary><secondary>of RexxInfo class</secondary></indexterm>
@@ -7201,7 +7201,7 @@ which also return the revision number as part of their result.
 ]]></programlisting></example></para>
 </section>
 
-<!-- Class RexxInfo - method version =============================== --> 
+<!-- Class RexxInfo - method version =============================== -->
 <section id="mthRexxInfoVersion" revisionflag="added"><title>*NEW* version</title>
 <para>
 <indexterm><primary>version method</primary><secondary>of RexxInfo class</secondary></indexterm>
@@ -8310,7 +8310,7 @@ supplier to be passed to methods that expect an object that implements a
 </section>
 </section>
 
-<!-- =============================================================== --> 
+<!-- =============================================================== -->
 <!-- Class Ticker ================================================== -->
 <section id="clsTicker" revisionflag="added"><title>*NEW* Ticker Class
 <indexterm><primary>Ticker class</primary></indexterm>
@@ -8383,7 +8383,7 @@ eachSecond~cancel
 ::class Target inherit AlarmNotification
 ::method triggered                     -- called each interval
   use arg ticker
-  say ticker~attachment                -- displays "once each second" 
+  say ticker~attachment                -- displays "once each second"
 ]]></programlisting></example></para>
 </section>
 
@@ -8412,7 +8412,7 @@ twiceASecond~cancel                    -- "ticker cancelled"
 
 ::class Target inherit AlarmNotification
 ::method triggered                     -- called each interval
-  say "ticker triggered"                 
+  say "ticker triggered"
 ::method cancel                        -- called when cancelled
   say "ticker cancelled"
 ]]></programlisting></example></para>
@@ -8588,7 +8588,7 @@ The interval may be positive or negative, with a maximum duration of
 less one microsecond).
 A TimeSpan object has methods to allow retrieving components like days
 or seconds, adding to components, as well as allowing arithmetic
-operations between TimeSpan objects. 
+operations between TimeSpan objects.
 </para>
 
 <!-- $GENERATED-20150923-START rexxrefClassTable(TimeSpan) -->
@@ -8850,8 +8850,8 @@ component.  For example, <emphasis role="italic">hours</emphasis> must be in the
 </para>
 <example>
 <title>TimeSpan class</title>
-<programlisting><![CDATA[span = .TimeSpan~new(time('F', "15:37:30", "N"))  -- 15:37:30.000000                    
-span = .TimeSpan~new(15, 37, 30)                  -- 15:37:30.000000                        
+<programlisting><![CDATA[span = .TimeSpan~new(time('F', "15:37:30", "N"))  -- 15:37:30.000000
+span = .TimeSpan~new(15, 37, 30)                  -- 15:37:30.000000
 span = .TimeSpan~new(6, 4, 33, 15, 100)           -- 6.04:33:15.000100
 ]]></programlisting>
 </example>
