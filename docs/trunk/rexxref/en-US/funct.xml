@@ -2434,6 +2434,12 @@ the current directory is returned.  Otherwise, an attempt is made to change to
 the specified <emphasis role="italic">newdirectory</emphasis>. If successful,
 the name of the <emphasis role="italic">newdirectory</emphasis> is returned;
 if an error occurred, null is returned.</para>
+<para>On Windows the returned string includes a drive letter prefix as the
+first two characters of the directory name.
+Specifying a drive letter prefix as part of newdirectory causes the specified
+drive to become the current drive.
+If a drive letter is not specified, the current drive remains unchanged
+</para>
 <para>For example, the following program fragment saves the current directory
 and switches to a new directory; it performs an operation there, and then
 returns to the former directory.
