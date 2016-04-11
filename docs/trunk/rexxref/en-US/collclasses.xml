@@ -826,7 +826,7 @@ item with the specified <emphasis role="italic">index</emphasis>,
 &nil; is returned and
 no item is deleted.  All elements following the deleted item will be
 moved up in the collection ordering and the size of the collection will be
-reduced by 1 element.
+reduced by one element.
 Depending on the nature of the collection,
 the indexes of the moved items may be modified by the deletion.
 </para>
@@ -1387,7 +1387,7 @@ single-index array containing the specified
 <emphasis role="italic">item</emphasis> objects. The first
 <emphasis role="italic">item</emphasis> has index 1, the second has index 2,
 and so on.</para>
-<para>If you use the OF method and omit any argument items, the returned array
+<para>If you use the <methodname>of</methodname> method and omit any argument items, the returned array
 does not include the indexes corresponding to the omitted arguments.</para>
 <indexterm><primary>examples</primary>
 <secondary>of method</secondary></indexterm>
@@ -1530,7 +1530,7 @@ end
 </mediaobject>
 
 <para>Appends an item to the array after the last item (the item with the
-highest index). The return value is the index of newly added item. The append method is only valid with single-dimension
+highest index). The return value is the index of newly added item. The <methodname>append</methodname> method is only valid with single-dimension
 arrays.
 </para>
 <indexterm><primary>examples</primary>
@@ -1597,12 +1597,12 @@ If there is no
 item with the specified <emphasis role="italic">index</emphasis>,
 &nil; is returned and
 no item is deleted.  All elements following the deleted item will be
-moved up in the array ordering and the item indexes will adjusted for the deletion.  The size of the collection will be
-reduced by 1 element.
+moved up in the array ordering and the item indexes will be adjusted for the deletion.  The size of the array will be
+reduced by one element.
 </para>
 <para>
-The delete method is only valid with single-dimension arrays.  The index argument may also be specified as an array of
-indexes.
+The <methodname>delete</methodname> method is only valid with single-dimension arrays.
+The <emphasis role="italic">index</emphasis> argument may also be specified as an array of a single index.
 </para>
 <indexterm><primary>examples</primary>
 <secondary>delete method</secondary></indexterm>
@@ -1840,7 +1840,7 @@ say a~hasIndex(5)  -- says: 0
 <para>Returns &true; if the array contains
 the specified item at any index location.  Returns
 &false; otherwise.
-Item equality is determined by using the == method of <emphasis role="italic">item</emphasis>.
+Item equality is determined by using the <methodname>==</methodname> method of <emphasis role="italic">item</emphasis>.
 </para>
 <indexterm><primary>examples</primary>
 <secondary>hasItem method</secondary></indexterm>
@@ -1871,7 +1871,7 @@ say a~hasItem("Mark")  -- says: 0
 target item appears at more than one index, the first located index will
 be returned.  For multi-dimension arrays, the index is returned as an array of
 index values.  If the array does not contain the specified item, &nil; is
-returned. Item equality is determined by using the == method of <emphasis role="italic">item</emphasis>.
+returned. Item equality is determined by using the <methodname>==</methodname> method of <emphasis role="italic">item</emphasis>.
 </para>
 <indexterm><primary>examples</primary>
 <secondary>index method</secondary></indexterm>
@@ -1983,7 +1983,7 @@ say a~isEmpty  -- says: 0
 </imageobject>
 </mediaobject>
 
-<para>Returns the number of items in the collection.</para>
+<para>Returns the number of items in the array.</para>
 <indexterm><primary>examples</primary>
 <secondary>items method</secondary></indexterm>
 <example id="ex.Array-items">
@@ -2238,7 +2238,7 @@ Mike
 item with the specified <emphasis role="italic">index</emphasis> or
 <emphasis role="italic">index</emphasis>es, &nil; is returned and
 no item is removed.  The index of the removed item becomes unused and
-the hasIndex method for the given index will now return &false;.  The size of
+the <methodname>hasIndex</methodname> method for the given index will now return &false;.  The size of
 the array is unchanged and no other indexes of the array are modified with the
 removal.
 </para>
@@ -2272,7 +2272,7 @@ a~remove(2)  -- removes "Mike"
 
 <para>Removes an item from the array.  If the target item exists at more than
 one index, the first located item is removed.
-Item equality is determined by using the == method of <emphasis role="italic">item</emphasis>.
+Item equality is determined by using the <methodname>==</methodname> method of <emphasis role="italic">item</emphasis>.
 The return value is the
 removed item.</para>
 <indexterm><primary>examples</primary>
@@ -2437,11 +2437,11 @@ See <xref linkend="sortarray" /> for details.
 </imageobject>
 </mediaobject>
 
-<para>Returns a <xref linkend="clsSupplier" xrefstyle="template:Supplier"/> object for the collection.
+<para>Returns a <xref linkend="clsSupplier" xrefstyle="template:Supplier"/> object for the array.
 The supplier allows you to iterate over the index/item pairs
-for the collection.
+of the array.
 The supplier enumerates the array items in their sequenced order.
-For multi-dimensional arrays, the supplier index method will return the
+For multi-dimensional arrays, the supplier <methodname>index</methodname> method will return the
 index values as an array of index numbers.
 </para>
 <indexterm><primary>examples</primary>
@@ -2698,7 +2698,7 @@ This is the same as the
 index <emphasis role="italic">index</emphasis>.
 Items in the array appear in an unspecified order.
 Index equality is determined by
-using the == method of <emphasis role="italic">index</emphasis>.
+using the <methodname>==</methodname> method of <emphasis role="italic">index</emphasis>.
 </para>
 </section>
 
@@ -2719,7 +2719,7 @@ using the == method of <emphasis role="italic">index</emphasis>.
 <emphasis role="italic">item</emphasis>,
 in an unspecified order.
 Item equality is determined by
-using the == method of <emphasis role="italic">item</emphasis>.
+using the <methodname>==</methodname> method of <emphasis role="italic">item</emphasis>.
 </para>
 </section>
 
@@ -2780,7 +2780,7 @@ returned is unspecified. (The program should not rely on any particular item
 being returned.) Returns &nil; if the bag has no item associated with index
 <emphasis role="italic">index</emphasis>.
 Index equality is determined by
-using the == method of <emphasis role="italic">index</emphasis>.
+using the <methodname>==</methodname> method of <emphasis role="italic">index</emphasis>.
 </para>
 </section>
 
@@ -2850,11 +2850,11 @@ collection class object.
 </imageobject>
 </mediaobject>
 
-<para>Returns &true; if the collection
+<para>Returns &true; if the Bag
 contains any item associated with index <emphasis role="italic">index</emphasis>,
 or &false;.
 Index equality is determined by
-using the == method of <emphasis role="italic">index</emphasis>.
+using the <methodname>==</methodname> method of <emphasis role="italic">index</emphasis>.
 </para>
 </section>
 
@@ -2900,7 +2900,7 @@ If there is more than one index associated with item
 <emphasis role="italic">item</emphasis>, the one returned is not
 defined.
 Item equality is determined by
-using the == method of <emphasis role="italic">item</emphasis>.
+using the <methodname>==</methodname> method of <emphasis role="italic">item</emphasis>.
 </para>
 </section>
 
@@ -2959,7 +2959,7 @@ is empty.  Returns
 specify no <emphasis role="italic">index</emphasis>, this method returns the
 total number of items associated with all indexes in the bag.
 Index equality is determined by
-using the == method of <emphasis role="italic">index</emphasis>.
+using the <methodname>==</methodname> method of <emphasis role="italic">index</emphasis>.
 </para>
 </section>
 
@@ -3044,7 +3044,7 @@ one item associated with index <emphasis role="italic">index</emphasis>,
 the item returned and removed is unspecified. Returns &nil; if no item has index
 <emphasis role="italic">index</emphasis>.
 Index equality is determined by
-using the == method of <emphasis role="italic">index</emphasis>.
+using the <methodname>==</methodname> method of <emphasis role="italic">index</emphasis>.
 </para>
 </section>
 
@@ -3066,7 +3066,7 @@ using the == method of <emphasis role="italic">index</emphasis>.
 in an array containing each of the removed items.  The order of the returned items
 is unspecified.  If no items have the specified index, an empty array is returned.
 Index equality is determined by
-using the == method of <emphasis role="italic">index</emphasis>.
+using the <methodname>==</methodname> method of <emphasis role="italic">index</emphasis>.
 </para>
 </section>
 
@@ -4110,7 +4110,7 @@ methods.</para>
 <emphasis role="italic">name</emphasis>. If a method defined using
 <xref linkend="mthDirectorySetMethod" xrefstyle="select:title"/> is associated with index
 <emphasis role="italic">name</emphasis>, the result of running this method is
-returned. If the collection has no item or method associated with index
+returned. If the Directory has no item or method associated with index
 <emphasis role="italic">name</emphasis>, &nil; is returned.
 </para>
 <example id="ex.Directory-at">
@@ -4193,7 +4193,7 @@ an entry or a method for index <emphasis role="italic">name</emphasis>
 </imageobject>
 </mediaobject>
 
-<para>Returns &true; if the collection
+<para>Returns &true; if the Directory
 contains any item associated with index
 <emphasis role="italic">name</emphasis>, or &false;.
 </para>
@@ -4212,10 +4212,10 @@ contains any item associated with index
 </imageobject>
 </mediaobject>
 
-<para>Returns &true; if the collection
+<para>Returns &true; if the Directory
 contains the <emphasis role="italic">item</emphasis> at any index position or
 otherwise returns &false;.
-Item equality is determined by using the == method of <emphasis role="italic">item</emphasis>.
+Item equality is determined by using the <methodname>==</methodname> method of <emphasis role="italic">item</emphasis>.
 </para>
 </section>
 
@@ -4236,7 +4236,7 @@ Item equality is determined by using the == method of <emphasis role="italic">it
 target item appears at more than one index, the first located index will
 be returned.  If the directory does not contain the specified item, &nil;
 is returned.
-Item equality is determined by using the == method of <emphasis role="italic">item</emphasis>.
+Item equality is determined by using the <methodname>==</methodname> method of <emphasis role="italic">item</emphasis>.
 </para>
 </section>
 
@@ -4331,7 +4331,7 @@ associated with index <emphasis role="italic">name</emphasis>.</para>
 If a method is associated with
 <xref linkend="mthDirectorySetMethod" xrefstyle="select:title"/> for index
 <emphasis role="italic">name</emphasis>,
-the method is removed and running the method is returned. If there is no item or
+the method is removed and the result of running the method is returned. If there is no item or
 method with index
 <emphasis role="italic">name</emphasis>, &nil; is returned.</para>
 </section>
@@ -4380,7 +4380,7 @@ If there is no item or method with index
 <para>Removes an item from the directory. If the target item exists at more than
 one index, the first located item is removed.  The return value is the
 removed item.
-Item equality is determined by using the == method of <emphasis role="italic">item</emphasis>.
+Item equality is determined by using the <methodname>==</methodname> method of <emphasis role="italic">item</emphasis>.
 </para>
 </section>
 
@@ -4743,7 +4743,7 @@ This method is the same as the
 </mediaobject>
 
 <para>Returns the item associated with index
-<emphasis role="italic">index</emphasis>. Returns &nil; if the collection
+<emphasis role="italic">index</emphasis>. Returns &nil; if the IdentityTable
 has no item associated with <emphasis role="italic">index</emphasis>.
 </para>
 </section>
@@ -4777,7 +4777,7 @@ has no item associated with <emphasis role="italic">index</emphasis>.
 </imageobject>
 </mediaobject>
 
-<para>Returns &true; if the collection
+<para>Returns &true; if the IdentityTable
 contains any item associated with index <emphasis role="italic">index</emphasis>,
 or &false;.</para>
 </section>
@@ -4795,7 +4795,7 @@ or &false;.</para>
 </imageobject>
 </mediaobject>
 
-<para>Returns &true; if the collection
+<para>Returns &true; if the IdentityTable
 contains the <emphasis role="italic">item</emphasis> at any index position or
 otherwise returns &false;.</para>
 </section>
@@ -5195,8 +5195,8 @@ item with the specified <emphasis role="italic">index</emphasis>,
 no item is deleted.  All elements following the deleted item will be
 moved up in the list ordering, but the indexes associated with the moved items will not change.
 The size of the list will be
-reduced by 1 element.
-The delete method and the remove method produce the same result for the list class.
+reduced by one element.
+The <methodname>delete</methodname> method and the <methodname>remove</methodname> method produce the same result for the list class.
 </para>
 </section>
 
@@ -5295,7 +5295,7 @@ contains any item associated with index
 <para>Returns &true; if the list
 contains the <emphasis role="italic">item</emphasis> at any index position or
 otherwise returns &false;.
-Item equality is determined by using the == method of <emphasis role="italic">item</emphasis>.
+Item equality is determined by using the <methodname>==</methodname> method of <emphasis role="italic">item</emphasis>.
 </para>
 </section>
 
@@ -5315,7 +5315,7 @@ Item equality is determined by using the == method of <emphasis role="italic">it
 <para>Returns the index of the specified item within the list.  If the
 target item appears at more than one index, the first located index will
 be returned.  Returns &nil; if the list does not contain the specified item.
-Item equality is determined by using the == method of <emphasis role="italic">item</emphasis>.
+Item equality is determined by using the <methodname>==</methodname> method of <emphasis role="italic">item</emphasis>.
 </para>
 </section>
 
@@ -5562,7 +5562,7 @@ not change.
 <para>Removes an item from the list. If the target item exists at more than
 one index, the first located item is removed.  The return value is the
 removed item.
-Item equality is determined by using the == method
+Item equality is determined by using the <methodname>==</methodname> method
 of <emphasis role="italic">item</emphasis>.
 </para>
 </section>
@@ -6142,7 +6142,7 @@ returning the index of the inserted item.</para>
 </mediaobject>
 
 <para>Returns the item associated with index
-<emphasis role="italic">index</emphasis>. Returns &nil; if the collection has no item associated with
+<emphasis role="italic">index</emphasis>. Returns &nil; if the Queue has no item associated with
 <emphasis role="italic">index</emphasis>.</para>
 </section>
 
@@ -6165,9 +6165,9 @@ If there is no
 item with the specified <emphasis role="italic">index</emphasis>,
 &nil; is returned and
 no item is deleted.  All elements following the deleted item will be
-moved up in the queue ordering and the item indexes will adjusted for the deletion.  The size of the collection will be
-reduced by 1 element.
-The delete method and the remove method produce the same result for the list class.
+moved up in the queue ordering and the item indexes will be adjusted for the deletion.  The size of the queue will be
+reduced by one element.
+The <methodname>delete</methodname> method and the <methodname>remove</methodname> method produce the same result for the queue class.
 </para>
 <indexterm><primary>examples</primary>
 <secondary>delete method</secondary></indexterm>
@@ -6266,7 +6266,7 @@ or &false;.</para>
 <para>Returns &true; if the queue
 contains the <emphasis role="italic">item</emphasis> at any index position or
 otherwise returns &false;.
-Item equality is determined by using the == method of <emphasis role="italic">item</emphasis>.
+Item equality is determined by using the <methodname>==</methodname> method of <emphasis role="italic">item</emphasis>.
 </para>
 </section>
 
@@ -6286,7 +6286,7 @@ Item equality is determined by using the == method of <emphasis role="italic">it
 <para>Returns the index of the specified item within the queue.  If the
 target item appears at more than one index, the first located index will
 be returned.  Returns &nil; if the queue does not contain the specified item.
-Item equality is determined by using the == method of <emphasis role="italic">item</emphasis>.
+Item equality is determined by using the <methodname>==</methodname> method of <emphasis role="italic">item</emphasis>.
 </para>
 </section>
 
@@ -6603,7 +6603,7 @@ the queue.</para>
 <para>Removes an item from the queue. If the target item exists at more than
 one index, the first located item is removed.  The return value is the
 removed item.
-Item equality is determined by using the == method of <emphasis role="italic">item</emphasis>.
+Item equality is determined by using the <methodname>==</methodname> method of <emphasis role="italic">item</emphasis>.
 </para>
 </section>
 
@@ -6796,7 +6796,7 @@ This is the same as the
 index <emphasis role="italic">index</emphasis>.
 Items in the array appear in an unspecified order.
 Index equality is determined by
-using the == method of <emphasis role="italic">index</emphasis>.
+using the <methodname>==</methodname> method of <emphasis role="italic">index</emphasis>.
 </para>
 </section>
 
@@ -6817,7 +6817,7 @@ using the == method of <emphasis role="italic">index</emphasis>.
 <emphasis role="italic">item</emphasis>,
 in an unspecified order.
 Item equality is determined by
-using the == method of <emphasis role="italic">item</emphasis>.
+using the <methodname>==</methodname> method of <emphasis role="italic">item</emphasis>.
 </para>
 </section>
 
@@ -6879,7 +6879,7 @@ returned is unspecified. (The program should not rely on any particular item
 being returned.) Returns &nil; if the relation has no item associated with index
 <emphasis role="italic">index</emphasis>.
 Index equality is determined by
-using the == method of <emphasis role="italic">index</emphasis>.
+using the <methodname>==</methodname> method of <emphasis role="italic">index</emphasis>.
 </para>
 </section>
 
@@ -6932,11 +6932,11 @@ collection class object.</para>
 </imageobject>
 </mediaobject>
 
-<para>Returns &true; if the collection
+<para>Returns &true; if the Relation
 contains any item associated with index
 <emphasis role="italic">index</emphasis>, or &false;.
 Index equality is determined by
-using the == method of <emphasis role="italic">index</emphasis>.
+using the <methodname>==</methodname> method of <emphasis role="italic">index</emphasis>.
 </para>
 </section>
 
@@ -6982,7 +6982,7 @@ If there is more than one index associated with item
 <emphasis role="italic">item</emphasis>, the one returned is not
 defined.
 Item equality is determined by
-using the == method of <emphasis role="italic">item</emphasis>.
+using the <methodname>==</methodname> method of <emphasis role="italic">item</emphasis>.
 </para>
 </section>
 
@@ -7042,7 +7042,7 @@ is empty.  Returns
 specify no <emphasis role="italic">index</emphasis>, this method returns the
 total number of items associated with all indexes in the relation.
 Index equality is determined by
-using the == method of <emphasis role="italic">index</emphasis>.
+using the <methodname>==</methodname> method of <emphasis role="italic">index</emphasis>.
 </para>
 </section>
 
@@ -7105,7 +7105,7 @@ one item associated with index <emphasis role="italic">index</emphasis>,
 the item returned and removed is unspecified. Returns &nil; if no item has index
 <emphasis role="italic">index</emphasis>.
 Index equality is determined by
-using the == method of <emphasis role="italic">index</emphasis>.
+using the <methodname>==</methodname> method of <emphasis role="italic">index</emphasis>.
 </para>
 </section>
 
@@ -7127,7 +7127,7 @@ using the == method of <emphasis role="italic">index</emphasis>.
 in an array containing each of the removed items.  The order of the returned items
 is unspecified.  If no items have the specified index, an empty array is returned.
 Index equality is determined by
-using the == method of <emphasis role="italic">index</emphasis>.
+using the <methodname>==</methodname> method of <emphasis role="italic">index</emphasis>.
 </para>
 </section>
 
@@ -7506,7 +7506,7 @@ This method is the same as the
 </mediaobject>
 
 <para>Returns the item associated with index
-<emphasis role="italic">index</emphasis>. Returns &nil; if the collection
+<emphasis role="italic">index</emphasis>. Returns &nil; if the Set
 has no item associated with <emphasis role="italic">index</emphasis>.
 </para>
 </section>
@@ -7540,7 +7540,7 @@ has no item associated with <emphasis role="italic">index</emphasis>.
 </imageobject>
 </mediaobject>
 
-<para>Returns &true; if the collection
+<para>Returns &true; if the Relation
 contains any item associated with index <emphasis role="italic">index</emphasis>,
 or &false;.</para>
 </section>
@@ -7558,7 +7558,7 @@ or &false;.</para>
 </imageobject>
 </mediaobject>
 
-<para>Returns &true; if the collection contains
+<para>Returns &true; if the Relation contains
 the specified item at any index location.  Returns
 &false; otherwise.</para>
 </section>
@@ -7579,7 +7579,7 @@ the specified item at any index location.  Returns
 <para>Returns the index of the specified item within the set.  If the
 target item appears at more than one index, the first located index will
 be returned.  Returns &nil; if the set does not contain the specified item.
-Item equality is determined by using the == method of <emphasis role="italic">item</emphasis>.
+Item equality is determined by using the <methodname>==</methodname> method of <emphasis role="italic">item</emphasis>.
 </para>
 </section>
 
@@ -7674,7 +7674,7 @@ The collection items appear in the array in an unspecified order.
 <para>Adds <emphasis role="italic">item</emphasis> to the Set.
 If there is an equivalent item in the Set, the exiting item will
 be replaced by the new instance.
-Item equality is determined by using the == method of <emphasis role="italic">item</emphasis>.
+Item equality is determined by using the <methodname>==</methodname> method of <emphasis role="italic">item</emphasis>.
 If <emphasis role="italic">index</emphasis> is specified, it must be the same
 as <emphasis role="italic">item</emphasis>.
 </para>
@@ -7740,7 +7740,7 @@ supplier will overwrite previous items with the same index.
 <para>Removes an item from the set. If the target item exists at more than
 one index, the first located item is removed.  The return value is the
 removed item.
-Item equality is determined by using the == method of <emphasis role="italic">item</emphasis>.
+Item equality is determined by using the <methodname>==</methodname> method of <emphasis role="italic">item</emphasis>.
 </para>
 </section>
 
@@ -7938,7 +7938,9 @@ another value is assigned or the index is dropped.</para>
 globally assigned value.  By default, this
 returns the stem NAME value.</para>
 <para>In addition to the methods defined in the following, the Stem class removes
-the methods =, ==, \=, \==, &lt;>, and >&lt; using the DEFINE method.</para>
+the methods <methodname>=</methodname>, <methodname>==</methodname>,
+<methodname>\=</methodname>, <methodname>\==</methodname>, <methodname>&lt;</methodname>>,
+and <methodname>>&lt;</methodname> using the DEFINE method.</para>
 
 <section id="mthStemNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
@@ -8097,7 +8099,7 @@ with the specified <emphasis role="italic">tail</emphasis>.
 </imageobject>
 </mediaobject>
 
-<para>Returns &true; if the collection
+<para>Returns &true; if the Stem
 contains any item associated with a stem tail
 <emphasis role="italic">tail</emphasis>,
 or &false;.</para>
@@ -8116,10 +8118,10 @@ or &false;.</para>
 </imageobject>
 </mediaobject>
 
-<para>Returns &true; if the collection
+<para>Returns &true; if the Stem
 contains the <emphasis role="italic">value</emphasis> at any tail position or
 otherwise returns &false;.
-Item equality is determined by using the == method of <emphasis role="italic">item</emphasis>.
+Item equality is determined by using the <methodname>==</methodname> method of <emphasis role="italic">item</emphasis>.
 </para>
 </section>
 
@@ -8138,7 +8140,7 @@ Item equality is determined by using the == method of <emphasis role="italic">it
 
 <para>Returns the index of the specified item within the stem.
 Returns &nil; if the stem does not contain the specified item.
-Item equality is determined by using the == method of <emphasis role="italic">item</emphasis>.
+Item equality is determined by using the <methodname>==</methodname> method of <emphasis role="italic">item</emphasis>.
 </para>
 </section>
 
@@ -8247,7 +8249,7 @@ the new item <emphasis role="italic">item</emphasis>.
 
 <para>Removes an item from the stem. If the target item exists at more than
 one tail, the first located item is removed.
-Item equality is determined by using the == method of <emphasis role="italic">item</emphasis>.
+Item equality is determined by using the <methodname>==</methodname> method of <emphasis role="italic">item</emphasis>.
 The return value is the
 removed item.
 </para>
@@ -8524,7 +8526,7 @@ method.
 
 <para>Returns the item associated with index
 <emphasis role="italic">name</emphasis>.
-If the collection has no item associated with index
+If the StringTable has no item associated with index
 <emphasis role="italic">name</emphasis>, &nil; is returned.
 </para>
 <example id="ex.stringtable-at">
@@ -8602,7 +8604,7 @@ an entry for index <emphasis role="italic">name</emphasis>
 </imageobject>
 </mediaobject>
 
-<para>Returns &true; if the collection
+<para>Returns &true; if the StringTable
 contains any item associated with index
 <emphasis role="italic">name</emphasis>, or &false;.
 </para>
@@ -8621,10 +8623,10 @@ contains any item associated with index
 </imageobject>
 </mediaobject>
 
-<para>Returns &true; if the collection
+<para>Returns &true; if the StringTable
 contains the <emphasis role="italic">item</emphasis> at any index position or
 otherwise returns &false;.
-Item equality is determined by using the == method of <emphasis role="italic">item</emphasis>.
+Item equality is determined by using the <methodname>==</methodname> method of <emphasis role="italic">item</emphasis>.
 </para>
 </section>
 
@@ -8645,7 +8647,7 @@ Item equality is determined by using the == method of <emphasis role="italic">it
 target item appears at more than one index, the first located index will
 be returned.  If the StringTable does not contain the specified item, &nil;
 is returned.
-Item equality is determined by using the == method of <emphasis role="italic">item</emphasis>.
+Item equality is determined by using the <methodname>==</methodname> method of <emphasis role="italic">item</emphasis>.
 </para>
 </section>
 
@@ -8783,7 +8785,7 @@ If there is no item with index
 <para>Removes an item from the StringTable. If the target item exists at more than
 one index, the first located item is removed.  The return value is the
 removed item.
-Item equality is determined by using the == method of <emphasis role="italic">item</emphasis>.
+Item equality is determined by using the <methodname>==</methodname> method of <emphasis role="italic">item</emphasis>.
 </para>
 </section>
 
@@ -9028,7 +9030,7 @@ This method is the same as the
 </mediaobject>
 
 <para>Returns the item associated with index
-<emphasis role="italic">index</emphasis>. Returns &nil; if the collection
+<emphasis role="italic">index</emphasis>. Returns &nil; if the Table
 has no item associated with <emphasis role="italic">index</emphasis>.
 </para>
 </section>
@@ -9062,7 +9064,7 @@ has no item associated with <emphasis role="italic">index</emphasis>.
 </imageobject>
 </mediaobject>
 
-<para>Returns &true; if the collection
+<para>Returns &true; if the Table
 contains any item associated with index <emphasis role="italic">index</emphasis>,
 or &false;.</para>
 </section>
@@ -9080,10 +9082,10 @@ or &false;.</para>
 </imageobject>
 </mediaobject>
 
-<para>Returns &true; if the collection
+<para>Returns &true; if the Table
 contains the <emphasis role="italic">value</emphasis> at any index position or
 otherwise returns &false;.
-Item equality is determined by using the == method of <emphasis role="italic">item</emphasis>.
+Item equality is determined by using the <methodname>==</methodname> method of <emphasis role="italic">item</emphasis>.
 </para>
 </section>
 
@@ -9103,7 +9105,7 @@ Item equality is determined by using the == method of <emphasis role="italic">it
 <para>Returns the index of the specified item within the table.  If the
 target item appears at more than one index, the first located index will
 be returned.  Returns &nil; if the table does not contain the specified item.
-Item equality is determined by using the == method of <emphasis role="italic">item</emphasis>.
+Item equality is determined by using the <methodname>==</methodname> method of <emphasis role="italic">item</emphasis>.
 </para>
 </section>
 
@@ -9214,7 +9216,7 @@ items associated with index <emphasis role="italic">index</emphasis>.</para>
 <para>Removes an item from the table. If the target item exists at more than
 one index, the first located item is removed.  The return value is the
 removed item.
-Item equality is determined by using the == method of <emphasis role="italic">item</emphasis>.
+Item equality is determined by using the <methodname>==</methodname> method of <emphasis role="italic">item</emphasis>.
 </para>
 </section>
 
@@ -9530,7 +9532,8 @@ in curly brackets. The list elements are separated by a comma.</para>
 <tertiary>eliminating duplicates</tertiary></indexterm>
 <para>Assume that the example sets are <computeroutput>A={a,b}</computeroutput>
 and <computeroutput>B={b,c,d}</computeroutput>.
-Except for SUBSET, EQUIVALENT, and DISJOINT, the result of a set operation is another set.
+Except for <methodname>subset</methodname>, <methodname>equivalent</methodname>,
+and <methodname>disjoint</methodname>, the result of a set operation is another set.
 Using the collection <computeroutput>A</computeroutput> and
 <computeroutput>B</computeroutput>, the different set operators produce the
 following:</para>
@@ -9603,7 +9606,8 @@ B DISJOINT A = .false
 <para>Assume that the example bags are
 <computeroutput>A={a,b,b}</computeroutput> and
 <computeroutput>B={b,b,c,c,d}</computeroutput>.
-Except for SUBSET, EQUIVALENT, and DISJOINT, the result of any set-like
+Except for <methodname>subset</methodname>, <methodname>equivalent</methodname>,
+and <methodname>disjoint</methodname>, the result of any set-like
 operation is a collection, in this case a bag.
 Using the collections <computeroutput>A</computeroutput> and
 <computeroutput>B</computeroutput>, the different set-like
