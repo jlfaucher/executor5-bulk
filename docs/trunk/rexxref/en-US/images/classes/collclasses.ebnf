@@ -159,7 +159,7 @@ array_supplier ::= 'supplier'
 
 array_tostring ::= 'toString(' ( 'Line' ( ',' separator )? | 'Char' )? ')'
 
-bag_new ::= 'new'
+bag_new ::= 'new(' size? ')'
 
 bag_of ::=           'of(' ( item ( ',' item )* )? ')'  /* sparse not allowed */
 
@@ -296,7 +296,7 @@ directory_unknown ::= 'unknown(' messagename ',' messageargs ')'
 
 directory_unsetmethod ::= 'unsetMethod(' name ')'
 
-stringtable_new ::= 'new'
+stringtable_new ::= 'new(' size? ')'
 
 stringtable_atget ::= '[' name ']'
 
@@ -483,7 +483,7 @@ queue_section ::= 'section(' start ',' items ')'
 
 queue_supplier ::= 'supplier'
 
-relation_new ::= 'new'
+relation_new ::= 'new(' size? ')'
 
 relation_atget ::= '[' index ']'
 
@@ -536,7 +536,7 @@ relation_uniqueindexes ::= 'uniqueIndexes'
 relation_xor ::= 'xor(' argument ')'
 
 set_of ::=           'of(' ( item ( ',' item )* )? ')'  /* sparse not allowed */
-set_new ::= 'new'
+set_new ::= 'new(' size? ')'
 set_allindexes ::= 'allIndexes'
 set_allitems ::= 'allItems'
 set_at ::= 'at(' index ')'
@@ -599,7 +599,7 @@ stem_todirectory ::= 'toDirextory'
 
 stem_unknown ::= 'unknown(' messagename ',' messageargs ')'
 
-table_new ::= 'new'
+table_new ::= 'new(' size? ')'
 
 table_atget ::= '[' index ']'
 

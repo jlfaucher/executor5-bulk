@@ -2633,7 +2633,7 @@ in a bag, and the same object can be placed in a bag several times.
 
 
 <!-- Class Bag - method new ======================================== -->
-<section id="mthBagNew" revisionflag="added"><title>*NEW* new (Class Method)</title>
+<section id="mthBagNew" revisionflag="changed"><title>*CHG* new (Class Method)</title>
 <para>
 <indexterm><primary>new method</primary><secondary>of Bag class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>new method</secondary><tertiary>of Bag class</tertiary></indexterm>
@@ -2642,6 +2642,14 @@ in a bag, and the same object can be placed in a bag several times.
 </imageobject></mediaobject>
 </para>
 <para>Returns a new empty Bag object.
+</para>
+<para>
+If you specify <emphasis role="italic">size</emphasis>, a hint how large
+the new Bag object is expected to grow, this is used to optimize the
+initial allocation.
+</para>
+<para>
+<emphasis role="italic">size</emphasis> must be a non-negative whole number.
 </para>
 </section>
 
@@ -4000,7 +4008,7 @@ say mydir~name        -- same as say mydir['NAME']
 </para>
 
 
-<section id="mthDirectoryNew"><title>new (Class Method)</title>
+<section id="mthDirectoryNew" revisionflag="changed"><title>*CHG* new (Class Method)</title>
 <indexterm><primary>new method</primary>
 <secondary>of Directory class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -4018,6 +4026,9 @@ say mydir~name        -- same as say mydir['NAME']
 If you specify <emphasis role="italic">size</emphasis>, a hint how large
 the new Directory object is expected to grow, this is used to optimize the
 initial allocation.
+</para>
+<para>
+<emphasis role="italic">size</emphasis> must be a non-negative whole number.
 </para>
 </section>
 
@@ -4637,7 +4648,7 @@ used in the collection.
 </table>
 <!-- $GENERATED-20150704-END rexxrefClassTable(IdentityTable) -->
 
-<section id="mthIdentityTableNew"><title>new (Class Method)</title>
+<section id="mthIdentityTableNew" revisionflag="changed"><title>*CHG* new (Class Method)</title>
 <indexterm><primary>new method</primary>
 <secondary>of IdentityTable class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -4655,6 +4666,9 @@ used in the collection.
 If you specify <emphasis role="italic">size</emphasis>, a hint how large
 the new IdentityTable object is expected to grow, this is used to optimize the
 initial allocation.
+</para>
+<para>
+<emphasis role="italic">size</emphasis> must be a non-negative whole number.
 </para>
 </section>
 
@@ -5029,7 +5043,7 @@ object will not modify indexes for items in the list.</para>
 </table>
 <!-- $GENERATED-20150704-END rexxrefClassTable(List) -->
 
-<section id="mthListNew"><title>new (Class Method)</title>
+<section id="mthListNew" revisionflag="changed"><title>*CHG* new (Class Method)</title>
 <indexterm><primary>new method</primary><secondary>of List class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>new method</secondary><tertiary>of List class</tertiary></indexterm>
 
@@ -5698,7 +5712,7 @@ are added to the receiver Properties value using name as the index for the value
 </para>
 </section>
 
-<section id="mthPropertiesNew"><title>new (Class method)</title>
+<section id="mthPropertiesNew" revisionflag="changed"><title>*CHG* new (Class method)</title>
 <indexterm><primary>new method</primary>
 <secondary>of Properties class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -5716,6 +5730,9 @@ are added to the receiver Properties value using name as the index for the value
 If you specify <emphasis role="italic">size</emphasis>, a hint how large
 the new Properties object is expected to grow, this is used to optimize the
 initial allocation.
+</para>
+<para>
+<emphasis role="italic">size</emphasis> must be a non-negative whole number.
 </para>
 </section>
 
@@ -5999,7 +6016,7 @@ head of the queue.</para>
 </table>
 <!-- $GENERATED-20151006-END rexxrefClassTable(Queue) -->
 
-<section id="mthQueueNew"><title>new (Class Method)</title>
+<section id="mthQueueNew" revisionflag="changed"><title>*CHG* new (Class Method)</title>
 <indexterm><primary>new method</primary>
 <secondary>of Queue class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -6017,6 +6034,9 @@ head of the queue.</para>
 If you specify <emphasis role="italic">size</emphasis>, a hint how large
 the new Queue object is expected to grow, this is used to optimize the
 initial allocation.
+</para>
+<para>
+<emphasis role="italic">size</emphasis> must be a non-negative whole number.
 </para>
 </section>
 
@@ -6727,7 +6747,7 @@ a table, which can contain only one item for any index).</para>
 </table>
 <!-- $GENERATED-20151005-END rexxrefClassTable(Relation) -->
 
-<section id="mthRelationNew"><title>new (Class Method)</title>
+<section id="mthRelationNew" revisionflag="changed"><title>*CHG* new (Class Method)</title>
 <indexterm><primary>new method</primary>
 <secondary>of Relation class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -6741,6 +6761,14 @@ a table, which can contain only one item for any index).</para>
 </mediaobject>
 
 <para>Returns an empty Relation object.</para>
+<para>
+If you specify <emphasis role="italic">size</emphasis>, a hint how large
+the new Relation object is expected to grow, this is used to optimize the
+initial allocation.
+</para>
+<para>
+<emphasis role="italic">size</emphasis> must be a non-negative whole number.
+</para>
 </section>
 
 <section id="mthRelationAtGet"><title>[]</title>
@@ -7408,12 +7436,12 @@ using the == method.
 <emphasis role="italic">item</emphasis> objects.</para>
 </section>
 
-<section id="mthSetNew"><title>new (Class Method)</title>
+<section id="mthSetNew" revisionflag="changed"><title>*CHG* new (Class Method)</title>
 <indexterm><primary>new method</primary>
 <secondary>of Set class</secondary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>new method</secondary>
-<tertiary>of Sey class</tertiary></indexterm>
+<tertiary>of Set class</tertiary></indexterm>
 
 <mediaobject>
 <imageobject>
@@ -7422,6 +7450,14 @@ using the == method.
 </mediaobject>
 
 <para>Returns an empty Set object.</para>
+<para>
+If you specify <emphasis role="italic">size</emphasis>, a hint how large
+the new Set object is expected to grow, this is used to optimize the
+initial allocation.
+</para>
+<para>
+<emphasis role="italic">size</emphasis> must be a non-negative whole number.
+</para>
 </section>
 
 <section id="mthSetAtGet"><title>[]</title>
@@ -8440,6 +8476,14 @@ as the <xref linkend="clsDirectory" xrefstyle="template:Directory"/> class does.
 </mediaobject>
 
 <para>Returns an empty StringTable object.</para>
+<para>
+If you specify <emphasis role="italic">size</emphasis>, a hint how large
+the new StringTable object is expected to grow, this is used to optimize the
+initial allocation.
+</para>
+<para>
+<emphasis role="italic">size</emphasis> must be a non-negative whole number.
+</para>
 </section>
 
 <section id="mthStringTableAtGet" revisionflag="added"><title>*NEW* []</title>
@@ -8931,7 +8975,7 @@ using the == method.
 </table>
 <!-- $GENERATED-20151005-END rexxrefClassTable(Table) -->
 
-<section id="mthTableNew"><title>new (Class Method)</title>
+<section id="mthTableNew" revisionflag="added"><title>*NEW* new (Class Method)</title>
 <indexterm><primary>new method</primary>
 <secondary>of Table class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -8945,6 +8989,14 @@ using the == method.
 </mediaobject>
 
 <para>Returns an empty Table object.</para>
+<para>
+If you specify <emphasis role="italic">size</emphasis>, a hint how large
+the new Table object is expected to grow, this is used to optimize the
+initial allocation.
+</para>
+<para>
+<emphasis role="italic">size</emphasis> must be a non-negative whole number.
+</para>
 </section>
 
 <section id="mthTableAtGet"><title>[]</title>
