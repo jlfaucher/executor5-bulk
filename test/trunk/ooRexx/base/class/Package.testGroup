@@ -693,32 +693,32 @@ return testResult
   self~assertEquals("ClassPublic RoutinePublic Class Routine", p~Routines~tstDefined~call)
 
 -- context is a method of a public class in this package
--- NOTE: we cannot currently run this test as it crashes the interpreter
-::method disabled_test_new_context_methodpublic
+::method test_new_context_methodpublic
   -- within the scope of a method local public/private classes/routines are visible
   p = .Package~new("", .resources~tstDefined, .TstClassPublic~method("TSTMETHOD"))
   self~assertEquals("ClassPublic RoutinePublic Class Routine", p~Routines~tstDefined~call)
 
 -- context is an inherited method of a public class in this package
--- NOTE: we cannot currently run this test as it crashes the interpreter
-::method disabled_test_new_context_methodpublicinherited
-  -- within the scope of a method local public/private classes/routines are visible
-  p = .Package~new("", .resources~tstDefined, .TstClassPublic~methods(.nil)~item) -- (most probably) any inherited method
-  self~assertEquals("ClassPublic RoutinePublic Class Routine", p~Routines~tstDefined~call)
+::method test_new_context_methodpublicinherited
+  -- within the scope of an inherited method no local public/private classes/routines are visible
+  do with index name item method over .TstClassPublic~methods until name = "CLASS"
+  end
+  p = .Package~new("", .resources~tstDefined, method)
+  self~assertEquals("", p~Routines~tstDefined~call)
 
 -- context is a method in this package
--- NOTE: we cannot currently run this test as it crashes the interpreter
-::method disabled_test_new_context_method
+::method test_new_context_method
   -- within the scope of a method local public/private classes/routines are visible
   p = .Package~new("", .resources~tstDefined, .TstClass~method("TSTMETHOD"))
   self~assertEquals("ClassPublic RoutinePublic Class Routine", p~Routines~tstDefined~call)
 
 -- context is an inherited method in this package
--- NOTE: we cannot currently run this test as it crashes the interpreter
-::method disabled_test_new_context_methodinherited
-  -- within the scope of a method local public/private classes/routines are visible
-  p = .Package~new("", .resources~tstDefined, .TstClass~methods(.nil)~item) -- (most probably) any inherited method
-  self~assertEquals("ClassPublic RoutinePublic Class Routine", p~Routines~tstDefined~call)
+::method test_new_context_methodinherited
+  -- within the scope of an inherited method local no public/private classes/routines are visible
+  do with index name item method over .TstClassPublic~methods until name = "CLASS"
+  end
+  p = .Package~new("", .resources~tstDefined, method)
+  self~assertEquals("", p~Routines~tstDefined~call)
 
 -- context is a floating method in this package
 ::method test_new_context_floatingmethod
@@ -761,3 +761,6 @@ return testResult
 
 ::routine TstRoutine
   return "Routine"
+
+
+::options novalue error
