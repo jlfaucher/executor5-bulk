@@ -54,6 +54,7 @@ return testResult
 ::requires 'ooTest.frm' -- load the ooRexxUnit classes
 ::requires "FileUtils.cls"
 
+::method TstFloatMethod -- test method, used with test_new_context_floatingmethod
 
 ::class "Package.testGroup" subclass ooTestCase public
 
@@ -635,3 +636,128 @@ return testResult
   package = .routine~new("test", "return 123")~package
   self~assertSame(.nil, package~prolog)
 
+-- we don't allow .endofline in a source line
+::method test_new_source_no_endofline
+  self~expectSyntax(13.1)              -- Incorrect character in program
+  .Package~new("", "nop" .endofline "nop")
+
+-- as above, but array version
+::method test_new_source_no_endofline_array
+  self~expectSyntax(13.1)              -- Incorrect character in program
+  .Package~new("", ("nop", "nop" .endofline))
+
+-- but we do allow semicolons separating clauses
+::method test_new_source_semicolon
+  s = "nop; nop"
+  p = .Package~new("", s)
+  self~assertSame(s, p~source~makeString(, " "))
+
+-- as above, but array version
+::method test_new_source_semicolon_array
+  s = ("nop;", ";nop")
+  p = .Package~new("", s)
+  self~assertSame(s~makeString(, " "), p~source~makeString(, " "))
+
+-- context .nil not allowed
+::method test_new_context_nil
+  self~expectSyntax(93.953)            -- Method argument 3 could not be converted
+  .Package~new("", "nop", .nil)
+
+-- context null string not allowed
+::method test_new_context_null
+  self~expectSyntax(93.953)            -- Method argument 3 could not be converted
+  .Package~new("", "nop", "")
+
+-- context "PROGRAMSCOPE" not allowed
+::method test_new_context_PROGRAMSCOPE
+  self~expectSyntax(93.953)            -- Method argument 3 could not be converted
+  .Package~new("", "nop", "PROGRAMSCOPE")
+
+-- context is REXX package
+::method test_new_context_rexxpackage
+  -- within scope "REXX" no local classes/routines are visible
+  p = .Package~new("", .resources~tstDefined, .rexxcontext~package)
+  self~assertEquals("", p~routines~tstDefined~call)
+
+-- context is an imported package
+::method test_new_context_importedpackage
+  -- within the scope of an imported package (here 'ooTest.frm' or 'FileUtils.cls')
+  --  no local classes/routines are visible
+  p = .Package~new("", .resources~tstDefined, .context~package~importedPackages[1])
+  self~assertEquals("", p~Routines~tstDefined~call)
+
+-- context is this package
+::method test_new_context_thispackage
+  -- within scope .context~package local public/private classes/routines are visible
+  p = .Package~new("", .resources~tstDefined, .context~package)
+  self~assertEquals("ClassPublic RoutinePublic Class Routine", p~Routines~tstDefined~call)
+
+-- context is a method of a public class in this package
+-- NOTE: we cannot currently run this test as it crashes the interpreter
+::method disabled_test_new_context_methodpublic
+  -- within the scope of a method local public/private classes/routines are visible
+  p = .Package~new("", .resources~tstDefined, .TstClassPublic~method("TSTMETHOD"))
+  self~assertEquals("ClassPublic RoutinePublic Class Routine", p~Routines~tstDefined~call)
+
+-- context is an inherited method of a public class in this package
+-- NOTE: we cannot currently run this test as it crashes the interpreter
+::method disabled_test_new_context_methodpublicinherited
+  -- within the scope of a method local public/private classes/routines are visible
+  p = .Package~new("", .resources~tstDefined, .TstClassPublic~methods(.nil)~item) -- (most probably) any inherited method
+  self~assertEquals("ClassPublic RoutinePublic Class Routine", p~Routines~tstDefined~call)
+
+-- context is a method in this package
+-- NOTE: we cannot currently run this test as it crashes the interpreter
+::method disabled_test_new_context_method
+  -- within the scope of a method local public/private classes/routines are visible
+  p = .Package~new("", .resources~tstDefined, .TstClass~method("TSTMETHOD"))
+  self~assertEquals("ClassPublic RoutinePublic Class Routine", p~Routines~tstDefined~call)
+
+-- context is an inherited method in this package
+-- NOTE: we cannot currently run this test as it crashes the interpreter
+::method disabled_test_new_context_methodinherited
+  -- within the scope of a method local public/private classes/routines are visible
+  p = .Package~new("", .resources~tstDefined, .TstClass~methods(.nil)~item) -- (most probably) any inherited method
+  self~assertEquals("ClassPublic RoutinePublic Class Routine", p~Routines~tstDefined~call)
+
+-- context is a floating method in this package
+::method test_new_context_floatingmethod
+  -- within the scope of a floating method local public/private classes/routines are visible
+  p = .Package~new("", .resources~tstDefined, .methods["TSTFLOATMETHOD"])
+  self~assertEquals("ClassPublic RoutinePublic Class Routine", p~Routines~tstDefined~call)
+
+-- context is  a routine in this package
+::method test_new_context_routine
+  -- within the scope of a local routine our local public/private classes/routines are visible
+  p = .Package~new("", .resources~tstDefined, .routines["TSTROUTINE"])
+  self~assertEquals("ClassPublic RoutinePublic Class Routine", p~Routines~tstDefined~call)
+
+
+-- source code of our context test routine
+::resource "tstDefined"
+
+::routine tstDefined public
+  defined = ""
+  if .context~package~findPublicClass("TSTCLASSPUBLIC") \= .nil then
+    defined = defined .TstClassPublic~TstMethod
+  if .context~package~findPublicRoutine("TSTROUTINEPUBLIC") \= .nil then
+    defined = defined TstRoutinePublic()
+  if .context~package~findClass("TSTCLASS") \= .nil then
+    defined = defined .TstClass~TstMethod
+  if .context~package~findRoutine("TSTROUTINE") \= .nil then
+    defined = defined TstRoutine()
+  return defined~strip("L")
+
+::END
+
+::class TstClassPublic public
+  ::constant TstMethod "ClassPublic"
+
+::routine TstRoutinePublic public
+  return "RoutinePublic"
+
+::class TstClass
+  ::constant TstMethod "Class"
+
+::routine TstRoutine
+  return "Routine"

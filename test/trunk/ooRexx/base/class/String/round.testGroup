@@ -122,3 +122,12 @@ return testResult
     self~expectSyntax(93.902)
     xre=nov~round(2)
 
+-- [bugs:#1265] round() Method Returns Incorrect Result
+::method test_bug1265
+  do n = -0.95 to 0.95 by 0.1
+    if n~abs < 0.5 then
+      self~assertSame(0, n~round, "("n")~round) =" n~round", should be 0")
+    else
+      self~assertSame(n~sign, n~round, "("n")~round) =" n~round", should be" n~sign)
+  end
+
