@@ -454,7 +454,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~expectSyntax('88.907')
   TestUint64Arg(1.23456789E+28)
 
--- test 1.23456789E+29, which should fail
+-- test 1.23456789E+29, which should always fail, with or without bug 1369
 ::method test_uint64_bug1369_fail_e29
   self~expectSyntax('88.907')
   TestUint64Arg(1.23456789E+29)
