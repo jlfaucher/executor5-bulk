@@ -477,6 +477,78 @@ return .ooTestResult~new(5)~~addException(err)
   self~expectSyntax('88.907')
   tester~TestUint64Arg('-1')
 
+-- tests for [bugs:#1369] API RexxRoutine uint64_t issue 
+
+-- test 123456789, 1.23456789E+9, .. 1.23456789E+19, which should all pass
+::method test_uint64_bug1369_pass
+  tester = .METHODtester~new
+  val = 123456789
+  do exponent = 8 to 19
+    -- we need to compare in exponential form
+    self~assertEquals(val, 0 + tester~TestUint64Arg(val))
+    val *= 10
+  end
+
+-- test 1.23456789E+20, which should fail
+::method test_uint64_bug1369_fail_e20
+  tester = .METHODtester~new
+  self~expectSyntax('88.907')
+  tester~TestUint64Arg(1.23456789E+20)
+
+-- test 1.23456789E+21, which should fail
+::method test_uint64_bug1369_fail_e21
+  tester = .METHODtester~new
+  self~expectSyntax('88.907')
+  tester~TestUint64Arg(1.23456789E+21)
+
+-- test 1.23456789E+22, which should fail
+::method test_uint64_bug1369_fail_e22
+  tester = .METHODtester~new
+  self~expectSyntax('88.907')
+  tester~TestUint64Arg(1.23456789E+22)
+
+-- test 1.23456789E+23, which should fail
+::method test_uint64_bug1369_fail_e23
+  tester = .METHODtester~new
+  self~expectSyntax('88.907')
+  tester~TestUint64Arg(1.23456789E+23)
+
+-- test 1.23456789E+24, which should fail
+::method test_uint64_bug1369_fail_e24
+  tester = .METHODtester~new
+  self~expectSyntax('88.907')
+  tester~TestUint64Arg(1.23456789E+24)
+
+-- test 1.23456789E+25, which should fail
+::method test_uint64_bug1369_fail_e25
+  tester = .METHODtester~new
+  self~expectSyntax('88.907')
+  tester~TestUint64Arg(1.23456789E+25)
+
+-- test 1.23456789E+26, which should fail
+::method test_uint64_bug1369_fail_e26
+  tester = .METHODtester~new
+  self~expectSyntax('88.907')
+  tester~TestUint64Arg(1.23456789E+26)
+
+-- test 1.23456789E+27, which should fail
+::method test_uint64_bug1369_fail_e27
+  tester = .METHODtester~new
+  self~expectSyntax('88.907')
+  tester~TestUint64Arg(1.23456789E+27)
+
+-- test 1.23456789E+28, which should fail
+::method test_uint64_bug1369_fail_e28
+  tester = .METHODtester~new
+  self~expectSyntax('88.907')
+  tester~TestUint64Arg(1.23456789E+28)
+
+-- test 1.23456789E+29, which should always fail, with or without bug 1369
+::method test_uint64_bug1369_fail_e29
+  tester = .METHODtester~new
+  self~expectSyntax('88.907')
+  tester~TestUint64Arg(1.23456789E+29)
+
 -- test wholenumber_t
 ::method 'testWholeNumber01'
   tester = .METHODtester~new
