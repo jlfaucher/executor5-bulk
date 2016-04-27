@@ -553,7 +553,7 @@ makeColl: procedure
 ::method "test_of_04"
   d=.identitytable~new
   d2=.identitytable~of((d,1))
-  Say d2[d]
+  self~assertSame(1, d2[d])
 
 ::method "test_of_05"          -- ok
   d3=.identitytable~of((a,b),(c,d),(e,f))
@@ -590,7 +590,7 @@ makeColl: procedure
 ::method "test_of_08"
   a=.array~of(.nil,u)
   d=.identitytable~of(a)
-  Say d[.nil]
+  self~assertSame("U", d[.nil])
 
 ::method "test_of_09"
   a=.array~of(v,.nil)

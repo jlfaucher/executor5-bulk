@@ -116,7 +116,7 @@ return prgRet
 
   -- Setting the variable in the environment will be next in the order of
   -- precedence.  TODO change the REXX_BUILD_HOME var in the make files.
-  dir = value("OOREXX_BUILD_HOME", , 'ENVIRONMENT'); say 'dir:' dir
+  dir = value("OOREXX_BUILD_HOME", , 'ENVIRONMENT'); -- say 'dir:' dir
   if dir \== "" then return dir
 
   -- Change directory to the directory the test suite was started from.  If we
@@ -199,7 +199,7 @@ return dir
     when currentOS == "WINDOWS" then do
       -- On Windows, the install package sets REXX_HOME.
       home = value("REXX_HOME", , 'ENVIRONMENT')
-      say 'home:' home
+--    say 'home:' home
 
       -- Verify (to some degree) that this is the correct install directory.
       if home \== "" then do

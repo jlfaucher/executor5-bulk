@@ -139,10 +139,10 @@ return testResult
 ::method 'test014'
   m=.mutablebuffer~new('mutablebuffer')
   mx=m~string~copies(2)
-  Say mx
+--Say mx
   m14=m
   m14[m14~length+1]=m14
-  Say m14~string
+--Say m14~string
   self~assertSame(mx,m14~string)
 
 ::method 'test015'

@@ -2148,9 +2148,9 @@ makeColl: procedure
   self~assertSameList(a, .Array~new(10000)~~fill(1))
 
 -- "string", Array
-::method test_arrayterm_string_array
-  a = "string", (1, "two", 3)
-  self~assertSameList(a, .Array~of("string", .Array~of(1, "two", 3)))
+::method test_arrayterm_append
+  a = (1, "two", 3)~~append("string")
+  self~assertSameList(a, .Array~of(1, "two", 3, "string"))
 
 
 /* Test whether both collections contain the same entries.

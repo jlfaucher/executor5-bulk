@@ -1208,17 +1208,11 @@ return str
 
   self~assertTrue(target~isa(class), msg)
 
--- compare an array of items.  each item must be the same, and in the same
--- order.
+-- compare two Collections 
 ::method assertSameList
   use strict arg expected, actual, msg = "assertSameList"
 
-  self~assertTrue(actual~isa(.array), msg': actual must be an array')
-  self~assertEquals(expected~items, actual~items, msg': expected and actual lists are different sizes')
-
-  loop i = 1 to expected~last
-      self~assertEquals(expected[i], actual[i], msg': mismatch on element' i)
-  end
+  self~assertTrue(actual~equivalent(expected), msg': actual~equivalent(expected)')
 
 ::method assertSame
   use strict arg expected, actual, msg = ""
