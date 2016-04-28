@@ -38,9 +38,9 @@ mutablebuffer_changestr ::= 'changeStr(' needle ',' newneedle ( ',' count )? ')'
 
 mutablebuffer_countstr ::= 'countStr(' needle ')'
 
-mutablebuffer_delete ::= 'delete(' n ( ',' length )? ')'
-
-mutablebuffer_delstr ::= 'delStr(' n ( ',' length )? ')'
+/* Chg in 5.0 */
+mutablebuffer_delete ::= 'delete(' n? ',' length? ')'
+mutablebuffer_delstr ::= 'delStr(' n? ',' length? ')'
 
 mutablebuffer_delword ::= 'delWord(' n ( ',' length )? ')'
 
