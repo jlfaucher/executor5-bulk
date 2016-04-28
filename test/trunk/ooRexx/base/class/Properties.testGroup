@@ -280,6 +280,52 @@ return testResult
   self~internal_tearDown
 
 
+-- 'load' class method loading .File instance
+::method "test_properties_loadclass_file"
+  self~internal_setup
+  p = .Properties~load(.File~new(.testData~files[1]))
+  self~assertEquals(2, p~items)
+  do with index index item item over .testData~dirData
+    self~assertTrue(p~hasIndex(index))
+    self~assertSame(item, p[index])
+  end
+  self~internal_tearDown
+
+-- 'load' instance method loading .File instance
+::method "test_properties_load_file"
+  self~internal_setup
+  p = .Properties~new
+  p~load(.File~new(.testData~files[1]))
+  self~assertEquals(2, p~items)
+  do with index index item item over .testData~dirData
+    self~assertTrue(p~hasIndex(index))
+    self~assertSame(item, p[index])
+  end
+  self~internal_tearDown
+
+-- 'save' instance method saving to .File instance
+::method "test_properties_save_file"
+
+  self~internal_setup
+
+  -- build Property and Array instance from test data, save Property instance
+  f = .File~new(.testData~files[2])
+  p = .Properties~new
+  a = .Array~new
+  do with index name item value over .testData~dirData
+    p[name] = value
+    a~append(name"="value)
+  end
+  p~save(f)
+
+  -- manually read saved file, and compare with Array
+  s = .Stream~new(f)
+  s~open("read shared")
+  self~assertSameList(a, s~arrayIn)
+  s~close
+
+  self~internal_tearDown
+
 
 ::method "test_load_and_save_via_instanceMethod_using_Stream_Objects"
   self~internal_setup
