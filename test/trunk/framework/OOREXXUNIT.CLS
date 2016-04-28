@@ -1212,7 +1212,12 @@ return str
 ::method assertSameList
   use strict arg expected, actual, msg = "assertSameList"
 
-  self~assertTrue(actual~equivalent(expected), msg': actual~equivalent(expected)')
+  -- shallow comparison, no recursive testing
+  self~assertTrue( -
+    expected~items == actual~items & -
+    expected~allIndexes~makeString == actual~allIndexes~makeString & -
+    expected~allItems~makeString == actual~allItems~makeString -
+  )
 
 ::method assertSame
   use strict arg expected, actual, msg = ""
