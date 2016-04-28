@@ -1,7 +1,7 @@
 #!/usr/bin/rexx
 /*
-  SVN Revision: $Rev$
-  Change Date:  $Date$
+  SVN Revision: $Rev: 3371 $
+  Change Date:  $Date: 2008-09-21 06:33:29 +0200 (So, 21 Sep 2008) $
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
@@ -41,7 +41,7 @@
 /*----------------------------------------------------------------------------*/
   parse source . . s
   group = .TestGroup~new(s)
-  group~add(.delete.testGroup)
+  group~add(.delStr.testGroup)
 
   if group~isAutomatedTest then return group
 
@@ -51,61 +51,61 @@ return testResult
 
 ::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "delete.testGroup" subclass ooTestCase public
+::class "delStr.testGroup" subclass ooTestCase public
 
-::METHOD "testDelete"
+::METHOD "testdelStr"
    b = .mutableBuffer~new("1234567890")
-   b~delete(11)
-   self~AssertEquals("1234567890", b~string, "Delete failed 1")
-   b~delete(1,2)
-   self~AssertEquals("34567890", b~string, "Delete failed 2")
+   b~delStr(11)
+   self~AssertEquals("1234567890", b~string, "delStr failed 1")
+   b~delStr(1,2)
+   self~AssertEquals("34567890", b~string, "delStr failed 2")
 
-::method test_mutablebuffer_delete_arg_0
+::method test_mutablebuffer_delStr_arg_0
   b = .mutableBuffer~new("1234567890")
-  b~delete
+  b~delStr
   self~AssertEquals("", b~string)
 
-::method test_mutablebuffer_delete_arg_1
+::method test_mutablebuffer_delStr_arg_1
   b = .mutableBuffer~new("1234567890")
-  b~delete(1)
+  b~delStr(1)
   self~AssertEquals("", b~string)
 
-::method test_mutablebuffer_delete_arg_2_none_0
+::method test_mutablebuffer_delStr_arg_2_none_0
   b = .mutableBuffer~new("1234567890")
-  b~delete(, 0)
+  b~delStr(, 0)
   self~AssertEquals("1234567890", b~string)
 
-::method test_mutablebuffer_delete_arg_3
+::method test_mutablebuffer_delStr_arg_3
   b = .mutableBuffer~new("1234567890")
   self~expectSyntax(93.902) -- Too many arguments in invocation of method; 2 expected
-  b~delete(1, 1, 1)
+  b~delStr(1, 1, 1)
 
-::method test_mutablebuffer_delete_arg_2_none_nil
+::method test_mutablebuffer_delStr_arg_2_none_nil
   b = .mutableBuffer~new("1234567890")
   self~expectSyntax(93.923) -- Invalid length argument specified
-  b~delete(, .nil)
+  b~delStr(, .nil)
 
-::method test_mutablebuffer_delete_arg_2_none_negative
+::method test_mutablebuffer_delStr_arg_2_none_negative
   b = .mutableBuffer~new("1234567890")
   self~expectSyntax(93.923) -- Invalid length argument specified
-  b~delete(, -1)
+  b~delStr(, -1)
 
 
-::METHOD "testDeleteSyntax2"
+::METHOD "testdelStrSyntax2"
    b = .mutableBuffer~new("1234567890")
    self~expectSyntax(93.924)
-   b~delete(.nil)
-::METHOD "testDeleteSyntax3"
+   b~delStr(.nil)
+::METHOD "testdelStrSyntax3"
    b = .mutableBuffer~new("1234567890")
    self~expectSyntax(93.924)
-   b~delete(0)
-::METHOD "testDeleteSyntax4"
+   b~delStr(0)
+::METHOD "testdelStrSyntax4"
    b = .mutableBuffer~new("1234567890")
    self~expectSyntax(93.923)
-   b~delete(1,.nil)
-::METHOD "testDeleteSyntax5"
+   b~delStr(1,.nil)
+::METHOD "testdelStrSyntax5"
    b = .mutableBuffer~new("1234567890")
    self~expectSyntax(93.923)
-   b~delete(1,-1)
+   b~delStr(1,-1)
 
 
