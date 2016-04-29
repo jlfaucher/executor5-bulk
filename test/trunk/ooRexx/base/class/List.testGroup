@@ -162,8 +162,9 @@ return testResult
 
   self~assertEquals(c1, clz~new~~appendAll(c1))
   self~assertEquals(c2, clz~new~~appendAll(c2))
-  self~assertEquals(collDir~unionColl1, c1~copy~~appendAll(c2))
-  self~assertEquals(collDir~unionColl2, c2~copy~~appendAll(c1))
+
+  self~assertEquivalentList(collDir~unionColl1, c1~copy~~appendAll(c2))
+  self~assertEquivalentList(collDir~unionColl2, c2~copy~~appendAll(c1))
 
 
 
@@ -200,8 +201,8 @@ return testResult
   self~assertEquals(c1, c1~difference(ce))
   self~assertEquals(c2, c2~difference(ce))
 
-  self~assertEquals(collDir~difference1, c1~difference(c2))
-  self~assertEquals(collDir~difference2, c2~difference(c1))
+  self~assertEquivalentList(collDir~difference1, c1~difference(c2))
+  self~assertEquivalentList(collDir~difference2, c2~difference(c1))
 
   self~assertEquals(ce, c1~difference(c1))
   self~assertEquals(ce, c2~difference(c2))
@@ -723,8 +724,8 @@ makeColl: procedure
   self~assertEquals(c1, ce~union(c1))
   self~assertEquals(c2, ce~union(c2))
 
-  self~assertEquals(collDir~unionColl1, c1~union(c2))
-  self~assertEquals(collDir~unionColl2, c2~union(c1))
+  self~assertEquivalentList(collDir~unionColl1, c1~union(c2))
+  self~assertEquivalentList(collDir~unionColl2, c2~union(c1))
 
    -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
   o1=.object~new
@@ -763,8 +764,8 @@ makeColl: procedure
   self~assertEquals(c1, c1~xor(ce))
   self~assertEquals(c2, c2~xor(ce))
 
-  self~assertEquals(collDir~xorColl1, c1~xor(c2))
-  self~assertEquals(collDir~xorColl2, c2~xor(c1))
+  self~assertEquivalentList(collDir~xorColl1, c1~xor(c2))
+  self~assertEquivalentList(collDir~xorColl2, c2~xor(c1))
 
   self~assertEquals(ce, c1~xor(c1))
   self~assertEquals(ce, c2~xor(c2))

@@ -1379,8 +1379,8 @@ return testResult
   self~assertEquals(c1, ce~union(c1))
   self~assertEquals(c2, ce~union(c2))
 
-  self~assertEquals(collDir~unionColl1, c1~union(c2))
-  self~assertEquals(collDir~unionColl2, c2~union(c1))
+  self~assertEquivalentList(collDir~unionColl1, c1~union(c2))
+  self~assertEquivalentList(collDir~unionColl2, c2~union(c1))
 
    -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
   o1=.object~new

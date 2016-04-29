@@ -590,7 +590,7 @@ return testResult
     call syssleep 1
     duration = a_dt~elapsed
     expected = 1
-    self~assertSame(expected, duration~seconds)
+    self~assertSame(expected, (duration~seconds + duration~microseconds / 1e6)~round)
 
 ::method 'test_FractionalAdds'
 -- need additional tests for fractional add values - adding one now for an example

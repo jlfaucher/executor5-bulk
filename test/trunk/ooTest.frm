@@ -542,7 +542,7 @@ return 0
     self~setUp(testResult)
 
     do test over tests while \ testResult~shouldStop
-       if show then say "Executing tests from" pathCompact(test~definedInFile, 58)
+       if show then say "Executing tests from" pathCompact(test~definedInFile, 57)
        test~execute(testResult, verbose)
     end
 

@@ -1134,17 +1134,17 @@ return str
 
 
 /** assertEquals()
- * Checks if two objects are equal, or, if not, checks that the two objects are
- * equal collection objects.
+ * Checks if two collection objects are equal, or, if two objects are equal
  */
 ::method assertEquals
   use strict arg expected, actual, msg = ""
 
-  if \ (expected = actual) then do
-    if \ isCollEqual(expected, actual) then do
+  if expected~isA(.Collection), actual~isA(.Collection) then do
+    if \isCollectionEqual(expected, actual) then
       self~fail(self~makeFailure(expected, actual, msg, "assertEquals"))
-    end
   end
+  else if expected \= actual then
+    self~fail(self~makeFailure(expected, actual, msg, "assertEquals"))
 
   -- Assertion holds
   self~fAssertions += 1
@@ -1166,20 +1166,21 @@ return str
   -- Assertion holds
   self~fAssertions += 1
 
+/** assertNotEquals()
+ * Checks if two collection objects are not equal, or, if two objects are not equal
+ */
 ::method assertNotEquals
   use strict arg expected, actual, msg = ""
 
-  -- If the 2 objects are not equal AND they are not 2 equal collections ...
-  if \ (expected = actual), \ isCollEqual(expected, actual) then do
-    -- ... the assertion holds
-    self~fAssertions += 1
-    return
+  if expected~isA(.Collection), actual~isA(.Collection) then do
+    if isCollectionEqual(expected, actual) then
+      self~fail(self~makeFailure(expected, actual, msg, "assertEquals"))
   end
+  else if expected = actual then
+    self~fail(self~makeFailure(expected, actual, msg, "assertEquals"))
 
-  expected = self~formatObjectInfo(expected)
-  actual   = self~formatObjectInfo(actual)
-
-  self~fail(self~makeFailure(expected '\=' actual, expected ' =' actual, msg, "assertNotEquals"))
+  -- Assertion holds
+  self~fAssertions += 1
 
 
 ::method assertNull
@@ -1208,16 +1209,24 @@ return str
 
   self~assertTrue(target~isa(class), msg)
 
--- compare two Collections 
+-- compare two Collections for equality
 ::method assertSameList
   use strict arg expected, actual, msg = "assertSameList"
 
-  -- shallow comparison, no recursive testing
-  self~assertTrue( -
-    expected~items == actual~items & -
-    expected~allIndexes~makeString == actual~allIndexes~makeString & -
-    expected~allItems~makeString == actual~allItems~makeString -
-  )
+  if expected~isA(.Collection), actual~isA(.Collection) then do
+    if \isCollectionEqual(expected, actual) then
+      self~fail(self~makeFailure(expected, actual, msg, "assertEquals"))
+  end
+
+-- compare two Collections for equivalence
+::method assertEquivalentList
+  use strict arg expected, actual, msg = "assertEquivalentList"
+
+  if expected~isA(.Collection), actual~isA(.Collection) then do
+    if \isCollectionEquivalent(expected, actual) then
+      self~fail(self~makeFailure(expected, actual, msg, "assertEquivalentList"))
+  end
+
 
 ::method assertSame
   use strict arg expected, actual, msg = ""
@@ -1892,9 +1901,27 @@ exceptionHandler:
 
 
 
+-- shallow comparison of two Collections, no recursive testing
+::routine isCollectionEqual
+  use arg expected, actual
+
+  if -
+    expected~items == actual~items, -
+    expected~allIndexes~makeString == actual~allIndexes~makeString, -
+    expected~allItems~makeString == actual~allItems~makeString
+    then return .true
+    else return .false
+
+-- check if both Collections have the same items, but in a potentially different order
+::routine isCollectionEquivalent
+  use arg expected, actual
+
+  return actual~equivalent(expected)
+
 
    /* function returning .true, if both collections can be regarded to be equal (i.e.,
       each can be regarded to be a subset of the other), .false else
+      CAUTION: .true is returned for e. g. isCollEqual((1,2,3), (3,2,1))
    */
 ::routine IsCollEqual public
   use arg expected, received
