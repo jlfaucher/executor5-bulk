@@ -735,6 +735,35 @@ return testResult
   p = .Package~new("", .resources~tstDefined, .routines["TSTROUTINE"])
   self~assertEquals("ClassPublic RoutinePublic Class Routine", p~Routines~tstDefined~call)
 
+-- method 'findProgram' with no args
+::method test_package_findProgram_no_arg
+  self~expectSyntax(88.901) -- Missing argument; the name argument is required
+  .rexxcontext~package~findprogram
+
+-- method 'findProgram' with non-string arg
+::method test_package_findProgram_arg_nostring
+  self~expectSyntax(88.909) -- Argument name must have a string value
+  .rexxcontext~package~findprogram(.nil)
+
+-- method 'findProgram' with two args
+::method test_package_findProgram_two_args
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  .rexxcontext~package~findprogram(1, 1)
+
+-- method 'findProgram' with null string
+::method test_package_findProgram_nullstring
+  self~assertSame(.nil, .rexxcontext~package~findprogram(""))
+  self~assertSame(.nil, .context~package~findprogram(""))
+
+-- method 'findProgram' "rexxtry"
+::method test_package_findProgram_rexxtry
+  -- on a typical system with oRexx installed, 'rexxtry.rex' should be available
+  -- on Windows we most probably could also search for 'rexxtry' without extension
+  program = "rexxtry.rex"
+  p = .rexxcontext~package~findprogram(program)
+  self~assertNotSame(.nil, p, "findProgram() cannot locate '"program"'")
+  self~assertSame(program, .File~new(p)~name, "findProgram() located" .File~new(p)~name)
+
 
 -- source code of our context test routine
 ::resource "tstDefined"
