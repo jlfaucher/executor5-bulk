@@ -95,25 +95,35 @@ return testResult
   a~append("::routine testRoutine")
   a~append("  return .test1")
   routine = .routine~new("Testing", a)
+  self~assertTrue(routine[]~isA(.class))
   self~assertTrue(routine~call~isA(.class))
   package = routine~package
 
+  self~assertSame(package~classes["TEST1"], routine[])
   self~assertSame(package~classes["TEST1"], routine~call)
 
 ::method testCall
   routine = .routine~new("Test", "return .context~args")
+  a = routine[]
+  self~assertEquals(a, .array~new(0))
   a = routine~call
   self~assertEquals(a, .array~new(0))
 
+  a = routine["abc"]
+  self~assertEquals(a, .array~of("abc"))
   a = routine~call("abc")
   self~assertEquals(a, .array~of("abc"))
 
+  a = routine[1,2,3,4,5]
+  self~assertEquals(a, .array~of(1,2,3,4,5))
   a = routine~call(1,2,3,4,5)
   self~assertEquals(a, .array~of(1,2,3,4,5))
 
   test = .array~new(3)
   test[1] = "Fred"
   test[3] = "Mike"
+  a = routine["Fred",,"Mike"]
+  self~assertEquals(a, test)
   a = routine~call("Fred",,"Mike")
   self~assertEquals(a, test)
 
