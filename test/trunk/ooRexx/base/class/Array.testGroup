@@ -1933,6 +1933,12 @@ makeColl: procedure
   self~expectSyntax("93.903")
   .Array~new~delete
 
+-- [bugs:#1374] Array delete() method with out-of-bounds index gives exception
+::method test_array_delete_outofbounds
+  a = .Array~new
+  do i = 50 to 1 by -1
+    self~assertSame(.nil, a~delete(i))
+  end
 
 ::method "test_equivalent"
   -- empty arrays of two different sizes...still equivalent
