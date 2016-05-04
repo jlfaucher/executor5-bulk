@@ -259,7 +259,7 @@ on <emphasis role="italic">control2</emphasis>, see
 <xref linkend="keyDo" />.) These different values are
 taken from successive values of <emphasis role="italic">collection</emphasis>.
 The <emphasis role="italic">collection</emphasis>
-is any expression that evaluates to an object that provides a MAKEARRAY method,
+is any expression that evaluates to an object that provides a <methodname>makeArray</methodname> method,
 including stem variables. The collection returned determines the set of values
 and their order.
 Array, List, and Queue items return an array with the items in the appropriate order,
@@ -268,7 +268,7 @@ get placed in the array in no particular order.</para>
 <para>If the collection is a stem variable, the values are the tail names that
 have been explicitly assigned to the given stem. The order of the tail names
 is unspecified, and a program should not rely on any order.</para>
-<para>For other collection objects, the MAKEARRAY method of the specific collection
+<para>For other collection objects, the <methodname>makeArray</methodname> method of the specific collection
 class determines the values assigned to the control variable.</para>
 <para>All values for the loop iteration are obtained at the beginning of the
 loop. Therefore, changes to the target collection object do not affect the

@@ -131,7 +131,7 @@ array_lastitem ::= 'lastItem'
 
 array_makearray ::= 'makeArray'
 
-array_makestring ::= 'makeString(' ( 'Line' ( ',' separator )? | 'Char' )? ')'
+array_makestring ::= 'makeString(' ( | '"Line"'? ',' separator? | '"Char"' ) ')'
 
 array_next ::= 'next(' index (',' index )* ')'
 
@@ -157,7 +157,7 @@ array_stablesortwith ::= 'stableSortWith(' comparator ')'
 
 array_supplier ::= 'supplier'
 
-array_tostring ::= 'toString(' ( 'Line' ( ',' separator )? | 'Char' )? ')'
+array_tostring ::= 'makeString(' ( | '"Line"'? ',' separator? | '"Char"' ) ')'
 
 bag_new ::= 'new(' size? ')'
 
@@ -191,7 +191,7 @@ bag_intersection ::= 'intersection(' argument ')'
 
 bag_isempty ::= 'isEmpty'
 
-bag_items ::= 'items'
+bag_items ::= 'items(' index? ')'
 
 bag_makearray ::= 'makeArray'
 
@@ -209,7 +209,7 @@ bag_subset ::= 'subset(' argument ')'
 
 bag_supplier ::= 'supplier(' index? ')'
 
-bag_union ::= 'union(' index ')'
+bag_union ::= 'union(' argument ')'
 
 bag_uniqueindexes ::= 'uniqueIndexes'
 
@@ -529,7 +529,7 @@ relation_subset ::= 'subset(' argument ')'
 
 relation_supplier ::= 'supplier(' index? ')'
 
-relation_union ::= 'union(' index ')'
+relation_union ::= 'union(' argument ')'
 
 relation_uniqueindexes ::= 'uniqueIndexes'
 

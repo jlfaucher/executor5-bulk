@@ -324,8 +324,8 @@ This is an abstract method that must be implemented by subclasses.</para>
 <para>Returns a new collection (of the same class as the receiver) containing
 only those items from the receiver whose indexes the
 <emphasis role="italic">argument</emphasis> collection
-does not contain. The <emphasis role="italic">argument</emphasis> can be any
-collection class object. The
+does not contain. The <emphasis role="italic">argument</emphasis> can be
+&collection_or_makearray;. The
 <emphasis role="italic">argument</emphasis> must also
 allow all of the index values in the receiver collection.</para>
 </section>
@@ -347,8 +347,8 @@ allow all of the index values in the receiver collection.</para>
 and
 <emphasis role="italic">argument</emphasis> collection do not have any items in common.
 &false; otherwise. The
-<emphasis role="italic">argument</emphasis> can be any
-collection class object.
+<emphasis role="italic">argument</emphasis> can be
+&collection_or_makearray;.
 The <emphasis role="italic">argument</emphasis> must also allow all of the
 index values in the receiver collection.</para>
 </section>
@@ -370,8 +370,8 @@ index values in the receiver collection.</para>
 receiver collection are also contained in the
 <emphasis role="italic">argument</emphasis> collection and both collections contain the same number of items; returns
 &false; otherwise. The
-<emphasis role="italic">argument</emphasis> can be any
-collection class object.
+<emphasis role="italic">argument</emphasis> can be
+&collection_or_makearray;.
 The <emphasis role="italic">argument</emphasis> must also allow all of the
 index values in the receiver collection.</para>
 </section>
@@ -448,8 +448,8 @@ subclass of this class.
 <para>Returns a new collection (of the same class as the receiver) containing
 only those items from the receiver whose indexes are in both the receiver
 collection and the <emphasis role="italic">argument</emphasis> collection.
-The <emphasis role="italic">argument</emphasis> can be any
-collection class object.
+The <emphasis role="italic">argument</emphasis> can be
+&collection_or_makearray;.
 The <emphasis role="italic">argument</emphasis> must also allow all of the
 index values in the receiver collection.</para>
 </section>
@@ -524,8 +524,8 @@ method that must be implemented by a subclass of this class.
 receiver collection are also contained in the
 <emphasis role="italic">argument</emphasis> collection; returns
 &false; otherwise. The
-<emphasis role="italic">argument</emphasis> can be any
-collection class object.
+<emphasis role="italic">argument</emphasis> can be
+&collection_or_makearray;.
 The <emphasis role="italic">argument</emphasis> must also allow all of the
 index values in the receiver collection.</para>
 </section>
@@ -572,8 +572,8 @@ in the receiver collection and the method has not already included an item
 with the same index. The order in which this method selects items in
 <emphasis role="italic">argument</emphasis> is unspecified (the program
 should not rely on any order). The
-<emphasis role="italic">argument</emphasis> can be any
-collection class object. The
+<emphasis role="italic">argument</emphasis> can be
+&collection_or_makearray;. The
 <emphasis role="italic">argument</emphasis> must also allow all of the
 index values in the receiver collection.</para>
 </section>
@@ -595,8 +595,8 @@ index values in the receiver collection.</para>
 all items from the receiver collection and the
 <emphasis role="italic">argument</emphasis> collection;
 all indexes that appear in both collections are removed. The
-<emphasis role="italic">argument</emphasis> can be any
-collection class object.
+<emphasis role="italic">argument</emphasis> can be
+&collection_or_makearray;.
 The <emphasis role="italic">argument</emphasis> must also allow all of the
 index values in the receiver collection.</para>
 </section>
@@ -704,7 +704,7 @@ The index objects will not be ordered in any predictable order.
 <para>Returns the receiving collection with all items in
 <emphasis role="italic">collection</emphasis> added to it.
 The
-<emphasis role="italic">collection</emphasis> argument can be any object that supports a supplier
+<emphasis role="italic">collection</emphasis> argument can be any object that supports a <methodname>supplier</methodname>
 method.  Items from <emphasis role="italic">collection</emphasis> are added using the index values returned by the supplier.  The item
 indexes from the source <emphasis role="italic">collection</emphasis> must be strings.  The items are
 added in the order provided by the supplier object.
@@ -848,7 +848,7 @@ the indexes of the moved items may be modified by the deletion.
 <para>Returns a new collection (of the same class as the receiver) containing
 only those items from the receiver that are not also contained in the
 <emphasis role="italic">argument</emphasis> collection.  The
-<emphasis role="italic">argument</emphasis> can be any collection class object.
+<emphasis role="italic">argument</emphasis> can be &collection_or_makearray;.
 </para>
 </section>
 
@@ -933,7 +933,7 @@ of this class.</para>
 <para>Returns a new collection (of the same class as the receiver) containing
 only those items from the receiver that are in both the receiver collection and
 the <emphasis role="italic">argument</emphasis> collection. The <emphasis
-role="italic">argument</emphasis> can be any collection class object.
+role="italic">argument</emphasis> can be &collection_or_makearray;.
 </para>
 </section>
 
@@ -1132,8 +1132,8 @@ See <xref linkend="sortarray" /> for details.
 receiver collection are also contained in the
 <emphasis role="italic">argument</emphasis> collection; returns
 &false; otherwise. The
-<emphasis role="italic">argument</emphasis> can be any
-collection class object.
+<emphasis role="italic">argument</emphasis> can be
+&collection_or_makearray;.
 </para>
 </section>
 
@@ -1159,8 +1159,8 @@ in the receiver collection and the method has not already included. The order in
 which this method selects items in
 <emphasis role="italic">argument</emphasis> is unspecified (the program
 should not rely on any order). The
-<emphasis role="italic">argument</emphasis> can be any
-collection class object.
+<emphasis role="italic">argument</emphasis> can be
+&collection_or_makearray;.
 </para>
 </section>
 
@@ -1180,9 +1180,8 @@ collection class object.
 <para>Returns a new collection of the same class as the receiver that contains
 all items from the receiver collection and the
 <emphasis role="italic">argument</emphasis> collection;
-all items that appear in both collections are removed. The
-<emphasis role="italic">argument</emphasis> can be any
-collection class object.
+all items that appear in both collections are removed.
+The <emphasis role="italic">argument</emphasis> can be &collection_or_makearray;.
 </para>
 </section>
 </section>
@@ -2091,14 +2090,15 @@ b = a~makeArray  -- b = .array~of("Fred", "Mike", "David")
 </imageobject>
 </mediaobject>
 
-<para>Returns a string that contains the data of an array. The elements of the
-array are treated either in line or character format, starting at the first
-element in the array. The line format is the default. If the line format is use,
-a <emphasis role="italic">separator</emphasis> string can be specified. The
-separator will be used between concatenated elements instead of the default line
-end separator.</para>
-<para>See method
-<xref linkend="mthArrayToString" xrefstyle="select:title"/> for examples.
+<para>Returns a string that contains the data of an array (one to n dimensional).
+The elements of the array are treated either in line or character format,
+starting at the first element in the array. The line format is the default.
+If the line format is used, a <emphasis role="italic">separator</emphasis> string
+can be specified.  The separator will be used between concatenated elements instead of the
+default line end separator.
+</para>
+<para>See method <xref linkend="mthArrayToString" xrefstyle="select:title"/>
+(which is a synonym for this method) for examples.
 </para>
 </section>
 
@@ -2476,9 +2476,12 @@ end
 <para>Returns a string that contains the data of an array (one to n dimensional).
 The elements of the array are treated either in line or character format,
 starting at the first element in the array. The line format is the default.
-If the line format is use, a <emphasis role="italic">separator</emphasis> string
+If the line format is used, a <emphasis role="italic">separator</emphasis> string
 can be specified.  The separator will be used between concatenated elements instead of the
 default line end separator.
+</para>
+<para>See also method <xref linkend="mthArrayMakeString" xrefstyle="select:title"/>
+for which this method is a synonym.
 </para>
 <indexterm><primary>examples</primary>
 <secondary>toString method</secondary></indexterm>
@@ -2557,9 +2560,9 @@ end
 <indexterm><primary>Set Collection classes</primary>
 <secondary>Bag class</secondary></indexterm>
 
-<para>A bag is a non-sparse collection that restricts the elements
+<para>A Bag is a non-sparse collection that restricts the elements
 to having an item that is the same as the index. Any object can be placed
-in a bag, and the same object can be placed in a bag several times.
+in a Bag, and the same object can be placed in a Bag several times.
 </para>
 
 <!-- modified: added from BagMixin class: difference, intersection, putAll, subset, union, xor (see interpreter\RexxClasses\CoreClasses.orx) -->
@@ -2667,7 +2670,7 @@ initial allocation.
 </imageobject>
 </mediaobject>
 
-<para>Returns a newly created bag containing the specified
+<para>Returns a newly created Bag containing the specified
 <emphasis role="italic">item</emphasis> objects.</para>
 </section>
 
@@ -2684,8 +2687,14 @@ initial allocation.
 </imageobject>
 </mediaobject>
 
-<para>Returns an item associated with <emphasis role="italic">index</emphasis>.
-This is the same as the
+<para>Returns the item associated with index
+<emphasis role="italic">index</emphasis>.
+Returns &nil; if the Bag has no item associated with <emphasis role="italic">index</emphasis>.
+</para>
+<para>Index equality is determined by
+using the <methodname>==</methodname> method of <emphasis role="italic">index</emphasis>.
+</para>
+<para>This method is the same as the
 <xref linkend="mthBagAt" xrefstyle="select:title"/> method.</para>
 </section>
 
@@ -2702,11 +2711,13 @@ This is the same as the
 </imageobject>
 </mediaobject>
 
-<para>Returns a single-index array containing all the items associated with
+<para>Returns a single-index Array containing all the items associated with
 index <emphasis role="italic">index</emphasis>.
-Items in the array appear in an unspecified order.
-Index equality is determined by
+</para>
+<para>Index equality is determined by
 using the <methodname>==</methodname> method of <emphasis role="italic">index</emphasis>.
+</para>
+<para>This method has the same result as the <xref linkend="mthBagAllIndex" xrefstyle="select:title"/> method.
 </para>
 </section>
 
@@ -2723,11 +2734,13 @@ using the <methodname>==</methodname> method of <emphasis role="italic">index</e
 </imageobject>
 </mediaobject>
 
-<para>Returns a single-index array containing all indexes for item
-<emphasis role="italic">item</emphasis>,
-in an unspecified order.
-Item equality is determined by
+<para>Returns a single-index Array containing all indexes for item
+<emphasis role="italic">item</emphasis>.
+</para>
+<para>Item equality is determined by
 using the <methodname>==</methodname> method of <emphasis role="italic">item</emphasis>.
+</para>
+<para>This method has the same result as the <xref linkend="mthBagAllAt" xrefstyle="select:title"/> method.
 </para>
 </section>
 
@@ -2744,9 +2757,10 @@ using the <methodname>==</methodname> method of <emphasis role="italic">item</em
 </imageobject>
 </mediaobject>
 
-<para>Returns an array of all indexes contained in the Bag. The returned
-array will have one index for every item stored in the bag, including
-duplicates.  To retrieve the indexes without duplicates, use the
+<para>Returns an Array of all indexes contained in the Bag, in an unspecified order.
+The returned Array will have one index for every item stored in the Bag, including duplicates.
+</para>
+<para>To retrieve the indexes without duplicates, use the
 <xref linkend="mthBagUniqueIndexes" xrefstyle="select:title"/> method.
 </para>
 </section>
@@ -2764,7 +2778,7 @@ duplicates.  To retrieve the indexes without duplicates, use the
 </imageobject>
 </mediaobject>
 
-<para>Returns an array of all items contained in the bag.</para>
+<para>Returns an Array of all items contained in the Bag, in an unspecified order.</para>
 </section>
 
 <section id="mthBagAt"><title>at</title>
@@ -2780,16 +2794,14 @@ duplicates.  To retrieve the indexes without duplicates, use the
 </imageobject>
 </mediaobject>
 
-<para>Returns the item associated with index
-<emphasis role="italic">index</emphasis>. If the bag
-contains more than one item associated with index
-<emphasis role="italic">index</emphasis>, the item
-returned is unspecified. (The program should not rely on any particular item
-being returned.) Returns &nil; if the bag has no item associated with index
-<emphasis role="italic">index</emphasis>.
-Index equality is determined by
+<para>Returns the item associated with index <emphasis role="italic">index</emphasis>.
+Returns &nil; if the Bag does not contain <emphasis role="italic">index</emphasis>.
+</para>
+<para>Index equality is determined by
 using the <methodname>==</methodname> method of <emphasis role="italic">index</emphasis>.
 </para>
+<para>This method is the same as the
+<xref linkend="mthBagAtGet" xrefstyle="select:title"/> method.</para>
 </section>
 
 <section id="mthBagPutSet"><title>[]=</title>
@@ -2805,7 +2817,10 @@ using the <methodname>==</methodname> method of <emphasis role="italic">index</e
 </imageobject>
 </mediaobject>
 
-<para>Adds an item to the Bag.  This method is the same as the
+<para>Adds an item to the Bag.
+<emphasis role="italic">index</emphasis> and <emphasis role="italic">item</emphasis> must be the same object.
+</para>
+<para>This method is the same as the
 <xref linkend="mthBagPut" xrefstyle="select:title"/> method.</para>
 </section>
 
@@ -2823,9 +2838,8 @@ using the <methodname>==</methodname> method of <emphasis role="italic">index</e
 </mediaobject>
 
 <para>Returns a new Bag containing only those items from the receiver that the
-<emphasis role="italic">argument</emphasis> collection
-does not contain. The <emphasis role="italic">argument</emphasis> can be any
-collection class object.
+<emphasis role="italic">argument</emphasis> collection does not contain.
+The <emphasis role="italic">argument</emphasis> can be &collection_or_makearray;.
 </para>
 </section>
 
@@ -2860,8 +2874,9 @@ collection class object.
 
 <para>Returns &true; if the Bag
 contains any item associated with index <emphasis role="italic">index</emphasis>,
-or &false;.
-Index equality is determined by
+otherwise returns &false;.
+</para>
+<para>Index equality is determined by
 using the <methodname>==</methodname> method of <emphasis role="italic">index</emphasis>.
 </para>
 </section>
@@ -2879,14 +2894,14 @@ using the <methodname>==</methodname> method of <emphasis role="italic">index</e
 </imageobject>
 </mediaobject>
 
-<para>Returns &true; if the bag
+<para>Returns &true; if the Bag
 contains the member item <emphasis role="italic">item</emphasis>,
-&false;.
-If <emphasis role="italic">index</emphasis> is specified, <methodname>hasItem</methodname>
-will only return &true; if the bag contains the pairing of
-<emphasis role="italic">item</emphasis> associated with index
-<emphasis role="italic">index</emphasis>.
-Item and index equality is determined by using the == method.
+otherwise returns &false;.
+If <emphasis role="italic">index</emphasis> is specified, it should be
+the same object as <emphasis role="italic">index</emphasis>,
+otherwise <methodname>hasItem</methodname> will always return &false;.
+</para>
+<para>Item and index equality is determined by using the == method.
 </para>
 </section>
 
@@ -2903,11 +2918,10 @@ Item and index equality is determined by using the == method.
 </imageobject>
 </mediaobject>
 
-<para>Returns the index for item <emphasis role="italic">item</emphasis>.
-If there is more than one index associated with item
-<emphasis role="italic">item</emphasis>, the one returned is not
-defined.
-Item equality is determined by
+<para>Returns the index for item <emphasis role="italic">item</emphasis> if
+the Bag contains <emphasis role="italic">item</emphasis>, otherwise returns &false;.
+</para>
+<para>Item equality is determined by
 using the <methodname>==</methodname> method of <emphasis role="italic">item</emphasis>.
 </para>
 </section>
@@ -2926,9 +2940,9 @@ using the <methodname>==</methodname> method of <emphasis role="italic">item</em
 </mediaobject>
 
 <para>Returns a new Bag containing only those items from the receiver that are
-also in the
-<emphasis role="italic">argument</emphasis> collection. The <emphasis
-role="italic">argument</emphasis> can be any collection class object.</para>
+also in the <emphasis role="italic">argument</emphasis> collection.
+The <emphasis role="italic">argument</emphasis> can be &collection_or_makearray;.
+</para>
 </section>
 
 <section id="mthBagIsEmpty"><title>isEmpty</title>
@@ -2944,7 +2958,7 @@ role="italic">argument</emphasis> can be any collection class object.</para>
 </imageobject>
 </mediaobject>
 
-<para>Returns &true; if the bag
+<para>Returns &true; if the Bag
 is empty.  Returns
 &false; otherwise.</para>
 </section>
@@ -2962,11 +2976,12 @@ is empty.  Returns
 </imageobject>
 </mediaobject>
 
-<para>Returns the number of bag items with index
+<para>Returns the number of Bag items with index
 <emphasis role="italic">index</emphasis>. If you
 specify no <emphasis role="italic">index</emphasis>, this method returns the
-total number of items associated with all indexes in the bag.
-Index equality is determined by
+total number of items in the Bag.
+</para>
+<para>Index equality is determined by
 using the <methodname>==</methodname> method of <emphasis role="italic">index</emphasis>.
 </para>
 </section>
@@ -2984,8 +2999,8 @@ using the <methodname>==</methodname> method of <emphasis role="italic">index</e
 </imageobject>
 </mediaobject>
 
-<para>Returns a single-index array containing the index objects.
-The collection items appear in the array in an unspecified order.
+<para>Returns a single-index Array containing all Bag items,
+in an unspecified order.
 </para>
 </section>
 
@@ -3002,13 +3017,12 @@ The collection items appear in the array in an unspecified order.
 </imageobject>
 </mediaobject>
 
-<para>Makes the object <emphasis role="italic">item</emphasis>
-a member item of the bag and associates it with index
-<emphasis role="italic">index</emphasis>. If the bag already contains
-any items with index
-<emphasis role="italic">index</emphasis>, this method adds a new member item
-<emphasis role="italic">item</emphasis> with
-the same index, without removing any existing member items.</para>
+<para>Adds an item to the Bag.
+If specified, <emphasis role="italic">index</emphasis> must be the same
+object as <emphasis role="italic">item</emphasis>.
+</para>
+<para>This method is the same as the
+<xref linkend="mthBagPutSet" xrefstyle="select:title"/> method.</para>
 </section>
 
 <section id="mthBagPutAll"><title>putAll</title>
@@ -3026,9 +3040,9 @@ the same index, without removing any existing member items.</para>
 
 <para>Returns the receiving Bag with all items in
 <emphasis role="italic">collection</emphasis> added to it.
-The
-<emphasis role="italic">collection</emphasis> argument can be any object that supports a supplier
-method.  Items from <emphasis role="italic">collection</emphasis> are added
+The <emphasis role="italic">collection</emphasis> argument can be any
+object that supports a <methodname>supplier</methodname> method.
+Items from <emphasis role="italic">collection</emphasis> are added
 using the item values returned by the supplier.
 </para>
 </section>
@@ -3046,12 +3060,11 @@ using the item values returned by the supplier.
 </imageobject>
 </mediaobject>
 
-<para>Returns and removes from a bag the member item with index
-<emphasis role="italic">index</emphasis>. If the bag contains more than
-one item associated with index <emphasis role="italic">index</emphasis>,
-the item returned and removed is unspecified. Returns &nil; if no item has index
+<para>Returns and removes from the Bag one member item with index
 <emphasis role="italic">index</emphasis>.
-Index equality is determined by
+Returns &nil; if the Bag does not contain <emphasis role="italic">index</emphasis>.
+</para>
+<para>Index equality is determined by
 using the <methodname>==</methodname> method of <emphasis role="italic">index</emphasis>.
 </para>
 </section>
@@ -3069,11 +3082,13 @@ using the <methodname>==</methodname> method of <emphasis role="italic">index</e
 </imageobject>
 </mediaobject>
 
-<para>Returns and removes from a bag all member items with index
+<para>Returns and removes from the Bag all member items with index
 <emphasis role="italic">index</emphasis>.  All removed items are returned
-in an array containing each of the removed items.  The order of the returned items
-is unspecified.  If no items have the specified index, an empty array is returned.
-Index equality is determined by
+in an Array containing each of the removed items.
+If the Bag does not contain <emphasis role="italic">index</emphasis>,
+an empty Array is returned.
+</para>
+<para>Index equality is determined by
 using the <methodname>==</methodname> method of <emphasis role="italic">index</emphasis>.
 </para>
 </section>
@@ -3092,24 +3107,12 @@ using the <methodname>==</methodname> method of <emphasis role="italic">index</e
 </mediaobject>
 
 <para>
-If <emphasis role="italic">index</emphasis> is not specified, returns and
-removes from a bag the member item <emphasis role="italic">item</emphasis>.
-If the bag contains <emphasis role="italic">item</emphasis> associated
-with more than one index, the item returned and removed is unspecified.
+Returns and removes from a Bag one member item <emphasis role="italic">item</emphasis>.
+Returns &nil; if <emphasis role="italic">item</emphasis> is not a member of the Bag.
 </para>
-<para>
-If <emphasis role="italic">index</emphasis> is specified, returns and
-removes the member item <emphasis role="italic">item</emphasis> associated
-with index <emphasis role="italic">index</emphasis>.
-If
-<emphasis role="italic">item</emphasis> is the only member with
-<emphasis role="italic">index</emphasis>, then the
-<emphasis role="italic">index</emphasis> is also removed from the Bag.
-</para>
-<para>
-Returns &nil; if
-<emphasis role="italic">item</emphasis> is not a member item (associated
-with index <emphasis role="italic">index</emphasis>, if specified).
+<para>If <emphasis role="italic">index</emphasis> is specified, it should be
+the same object as <emphasis role="italic">index</emphasis>,
+otherwise <methodname>removeItem</methodname> will always return &nil;.
 </para>
 </section>
 
@@ -3126,12 +3129,10 @@ with index <emphasis role="italic">index</emphasis>, if specified).
 </imageobject>
 </mediaobject>
 
-<para>Returns &true; if all indexes in the
-receiver collection are also contained in the
-<emphasis role="italic">argument</emphasis> collection; returns
-&false; otherwise. The
-<emphasis role="italic">argument</emphasis> can be any
-collection class object.</para>
+<para>Returns &true; if all indexes in the receiver Bag are also contained in the
+<emphasis role="italic">argument</emphasis> collection; returns &false; otherwise.
+The <emphasis role="italic">argument</emphasis> can be &collection_or_makearray;.
+</para>
 </section>
 
 <section id="mthBagSupplier"><title>supplier</title>
@@ -3147,8 +3148,8 @@ collection class object.</para>
 </imageobject>
 </mediaobject>
 
-<para>Returns a <xref linkend="clsSupplier" xrefstyle="template:Supplier"/> object for the bag.
-The supplier allows you to iterate over all index/item pairs in the bag at the time
+<para>Returns a <xref linkend="clsSupplier" xrefstyle="template:Supplier"/> object for the Bag.
+The supplier allows you to iterate over all index/item pairs in the Bag at the time
 the supplier was created.
 The supplier enumerates the items in an unspecified order.
 If you specify
@@ -3170,14 +3171,10 @@ supplier contains all of the items with the specified index.
 </imageobject>
 </mediaobject>
 
-<para>Returns a new Bag that contains all the items from the receiver collection
-and selected items from the
-<emphasis role="italic">argument</emphasis> collection. The order in which this
-method selects items in
-<emphasis role="italic">argument</emphasis> is unspecified.
-The
-<emphasis role="italic">argument</emphasis> can be any
-collection class object.</para>
+<para>Returns a new Bag that contains all the items from the receiver Bag
+and selected items from the <emphasis role="italic">argument</emphasis> collection.
+The <emphasis role="italic">argument</emphasis> can be &collection_or_makearray;.
+</para>
 </section>
 
 <section id="mthBagUniqueIndexes"><title>uniqueIndexes</title>
@@ -3193,7 +3190,7 @@ collection class object.</para>
 </imageobject>
 </mediaobject>
 
-<para>Returns an array of all indexes contained in the Bag, with no duplicates.
+<para>Returns an Array of all indexes contained in the Bag, with no duplicates.
 </para>
 </section>
 
@@ -3210,12 +3207,11 @@ collection class object.</para>
 </imageobject>
 </mediaobject>
 
-<para>Returns a new Bag that contains all items from the receiver collection and
-the
+<para>Returns a new Bag that contains all items from the receiver Bag and the
 <emphasis role="italic">argument</emphasis> collection; items that appear in
-both collections are removed. The
-<emphasis role="italic">argument</emphasis> can be any
-collection class object.</para>
+both collections are removed.
+The <emphasis role="italic">argument</emphasis> can be &collection_or_makearray;.
+</para>
 </section>
 
 <section id="bagex"><title>Examples</title>
@@ -3424,7 +3420,7 @@ the last item in the queue will be removed.
 <para>Returns a new collection (of the same class as the receiver) containing
 only those items from the receiver that are in both the receiver collection and
 the <emphasis role="italic">argument</emphasis> collection. The <emphasis
-role="italic">argument</emphasis> can be any collection class object.  The
+role="italic">argument</emphasis> can be &collection_or_makearray;.  The
 resulting CircularQueue instance will be the same size as the receiver.
 </para>
 </section>
@@ -3824,8 +3820,8 @@ in the receiver collection and the method has not already included. The order in
 which this method selects items in
 <emphasis role="italic">argument</emphasis> is unspecified (the program
 should not rely on any order.). The
-<emphasis role="italic">argument</emphasis> can be any
-collection class object.
+<emphasis role="italic">argument</emphasis> can be
+&collection_or_makearray;.
 </para>
 </section>
 
@@ -3850,8 +3846,8 @@ The resulting
 CircularQueue object will have a size that is the larger of the receiver's size
 or the xor size of the two collections.
 The
-<emphasis role="italic">argument</emphasis> can be any
-collection class object.
+<emphasis role="italic">argument</emphasis> can be
+&collection_or_makearray;.
 </para>
 </section>
 
@@ -4687,7 +4683,7 @@ initial allocation.
 
 
 <para>Returns the item associated with <emphasis role="italic">index</emphasis>.
-This is the same as the
+This method is the same as the
 <xref linkend="mthIdentityTableAt" xrefstyle="select:title"/> method.</para>
 </section>
 
@@ -5095,7 +5091,7 @@ initial allocation.
 </mediaobject>
 
 <para>Returns the item located at <emphasis role="italic">index</emphasis>.
-This is the same as the
+This method is the same as the
 <xref linkend="mthListAt" xrefstyle="template:at method:title"/>.</para>
 </section>
 
@@ -6071,7 +6067,7 @@ initial allocation.
 </mediaobject>
 
 <para>Returns the item located at index <emphasis role="italic">index</emphasis>.
-This is the same as the
+This method is the same as the
 <xref linkend="mthQueueAt" xrefstyle="select:title"/> method.</para>
 </section>
 
@@ -6785,7 +6781,7 @@ initial allocation.
 </mediaobject>
 
 <para>Returns an item associated with <emphasis role="italic">index</emphasis>.
-This is the same as the
+This method is the same as the
 <xref linkend="mthRelationAt" xrefstyle="select:title"/> method.</para>
 </section>
 
@@ -6803,7 +6799,7 @@ This is the same as the
 </mediaobject>
 
 <para>Adds <emphasis role="italic">item</emphasis> to the relation associated with index
-<emphasis role="italic">index</emphasis>.  This is the same as the
+<emphasis role="italic">index</emphasis>.  This method is the same as the
 <xref linkend="mthRelationPut" xrefstyle="select:title"/> method.</para>
 </section>
 
@@ -6927,8 +6923,8 @@ using the <methodname>==</methodname> method of <emphasis role="italic">index</e
 <para>Returns a new Relation containing
 only those items that the <emphasis role="italic">argument</emphasis>
 collection does not contain (with the same associated index). The
-<emphasis role="italic">argument</emphasis> can be any
-collection class object.</para>
+<emphasis role="italic">argument</emphasis> can be
+&collection_or_makearray;.</para>
 </section>
 
 <section id="mthRelationEmpty"><title>empty</title>
@@ -7031,7 +7027,7 @@ using the <methodname>==</methodname> method of <emphasis role="italic">item</em
 only those items that are in both the receiver collection
 and the <emphasis role="italic">argument</emphasis> collection with the
 same associated index. The <emphasis role="italic">argument</emphasis>
-can be any collection class object.</para>
+can be &collection_or_makearray;.</para>
 </section>
 
 <section id="mthRelationIsEmpty"><title>isEmpty</title>
@@ -7211,8 +7207,8 @@ with index <emphasis role="italic">index</emphasis>, if specified).
 receiver Relation are also contained in the
 <emphasis role="italic">argument</emphasis> collection with the same associated
 index; returns &false; otherwise. The
-<emphasis role="italic">argument</emphasis> can be any
-collection class object.</para>
+<emphasis role="italic">argument</emphasis> can be
+&collection_or_makearray;.</para>
 </section>
 
 <section id="mthRelationSupplier"><title>supplier</title>
@@ -7253,8 +7249,8 @@ supplier contains all of the items with the specified index.
 
 <para>Returns a new collection containing all items from the receiver collection
 and the <emphasis role="italic">argument</emphasis> collection. The
-<emphasis role="italic">argument</emphasis> can be any
-collection class object.</para>
+<emphasis role="italic">argument</emphasis> can be
+&collection_or_makearray;.</para>
 </section>
 
 <section id="mthRelationUniqueIndexes"><title>uniqueIndexes</title>
@@ -7291,8 +7287,8 @@ collection class object.</para>
 all items from the receiver collection and the
 <emphasis role="italic">argument</emphasis> collection.
 All index-item pairs that appear in both collections are removed. The
-<emphasis role="italic">argument</emphasis> can be any
-collection class object.</para>
+<emphasis role="italic">argument</emphasis> can be
+&collection_or_makearray;.</para>
 </section>
 
 <section id="relex"><title>Examples</title>
@@ -7474,7 +7470,7 @@ initial allocation.
 </mediaobject>
 
 <para>Returns the item associated with <emphasis role="italic">index</emphasis>.
-This is the same as the
+This method is the same as the
 <xref linkend="mthSetAt" xrefstyle="select:title"/> method.</para>
 </section>
 
@@ -7635,8 +7631,8 @@ Item equality is determined by using the <methodname>==</methodname> method of <
 <para>Returns a new collection (of the same class as the receiver) containing
 only those items from the receiver whose indexes are in both the receiver
 collection and the <emphasis role="italic">argument</emphasis> collection.
-The <emphasis role="italic">argument</emphasis> can be any
-collection class object.
+The <emphasis role="italic">argument</emphasis> can be
+&collection_or_makearray;.
 The <emphasis role="italic">argument</emphasis> must also allow all of the
 index values in the receiver collection.</para>
 </section>
@@ -7732,7 +7728,7 @@ as <emphasis role="italic">item</emphasis>.
 <para>Returns the receiving Set with all items in
 <emphasis role="italic">collection</emphasis> added to it.
 The
-<emphasis role="italic">collection</emphasis> argument can be any object that supports a supplier
+<emphasis role="italic">collection</emphasis> argument can be any object that supports a <methodname>supplier</methodname>
 method.  Items from <emphasis role="italic">collection</emphasis> are added using the item values
 returned by the supplier.
 If duplicate
@@ -7797,8 +7793,8 @@ Item equality is determined by using the <methodname>==</methodname> method of <
 receiver collection are also contained in the
 <emphasis role="italic">argument</emphasis> collection; returns
 &false; otherwise. The
-<emphasis role="italic">argument</emphasis> can be any
-collection class object.
+<emphasis role="italic">argument</emphasis> can be
+&collection_or_makearray;.
 The <emphasis role="italic">argument</emphasis> must also allow all of the
 index values in the receiver collection.</para>
 </section>
@@ -7844,8 +7840,8 @@ the new collection only if there is no item already in the
 in the receiver collection and the method has not already included a matching item.
 The order in which this method selects items in
 <emphasis role="italic">argument</emphasis> is unspecified.
-The <emphasis role="italic">argument</emphasis> can be any
-collection class object. The
+The <emphasis role="italic">argument</emphasis> can be
+&collection_or_makearray;. The
 <emphasis role="italic">argument</emphasis> must also allow all of the
 index values in the receiver collection.</para>
 </section>
@@ -7867,8 +7863,8 @@ index values in the receiver collection.</para>
 all items from the receiver collection and the
 <emphasis role="italic">argument</emphasis> collection;
 all items that appear in both collections are removed. The
-<emphasis role="italic">argument</emphasis> can be any
-collection class object.
+<emphasis role="italic">argument</emphasis> can be
+&collection_or_makearray;.
 The <emphasis role="italic">argument</emphasis> must also allow all of the
 index values in the receiver collection.</para>
 </section>
@@ -9013,7 +9009,7 @@ initial allocation.
 </mediaobject>
 
 <para>Returns the item associated with <emphasis role="italic">index</emphasis>.
-This is the same as the
+This method is the same as the
 <xref linkend="mthTableAt" xrefstyle="select:title"/> method.</para>
 </section>
 
