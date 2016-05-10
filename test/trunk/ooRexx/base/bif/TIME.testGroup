@@ -1544,6 +1544,61 @@ return testResult
    self~expectSyntax(40.904)
    z = time(a)
 
+-- test civil hours range
+::method test_time_civil_hour13am
+  self~expectSyntax(40.19)
+  a = time(, "13:00am", 'c')
+
+-- test civil hours range
+::method test_time_civil_hour13pm
+  self~expectSyntax(40.19)
+  a = time(, "13:00pm", 'c')
+
+-- test civil minutes range
+::method test_time_civil_min60am
+  self~expectSyntax(40.19)
+  a = time(, "00:60am", 'c')
+
+-- test civil minutes range
+::method test_time_civil_min60pm
+  self~expectSyntax(40.19)
+  a = time(, "00:60pm", 'c')
+
+-- test 'hour' hour range
+::method test_time_hour_hour24
+  self~expectSyntax(40.19)
+  a = time(, "24", 'h')
+
+-- test 'long' hour range
+::method test_time_long_hour24
+  self~expectSyntax(40.19)
+  a = time(, "24:00:00.000000", 'l')
+
+-- test 'long' minutes range
+::method test_time_long_min60
+  self~expectSyntax(40.19)
+  a = time(, "00:60:00.000000", 'l')
+
+-- test 'long' seconds range
+::method test_time_long_sec60
+  self~expectSyntax(40.19)
+  a = time(, "00:00:60.000000", 'l')
+
+-- test 'normal' hour range
+::method test_time_normal_hour24
+  self~expectSyntax(40.19)
+  a = time(, "24:00:00", 'n')
+
+-- test 'normal' minutes range
+::method test_time_normal_min60
+  self~expectSyntax(40.19)
+  a = time(, "00:60:00", 'n')
+
+-- test 'normal' seconds range
+::method test_time_normal_sec60
+  self~expectSyntax(40.19)
+  a = time(, "00:00:60", 'n')
+
 -- from time.testgroup 12/18/07 Lee Peedin
 ::METHOD 'test_civil_morning'
 time = '4:47am'
