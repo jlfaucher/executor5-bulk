@@ -936,18 +936,39 @@ return testResult
   self~expectSyntax(93.902)
   .setTester~new~testUnset("foo", "bar")
 
+-- test uninit *class* method
+::method test_uninit_class
+  -- base test with no uninit class method
+  ref = .weakReference~new(.UninitTester~subclass("C"))
+  hash = ref~value~identityHash
+  self~assertFalse(.UninitTracker~forceUninit(ref, hash))
+
+  -- base test with uninit class method
+  ref = .weakReference~new(.ClassWithUninitClassMethod~subclass("C"))
+  hash = ref~value~identityHash
+  self~assertTrue(.UninitTracker~forceUninit(ref, hash))
+
+  -- base test with uninit class method inherited from mixin
+  ref = .weakReference~new(.UninitFromMixin~subclass("C"))
+  hash = ref~value~identityHash
+  self~assertTrue(.UninitTracker~forceUninit(ref, hash))
+
+  -- TO DO: all those advanced uninit *instance* method tests below
+  --        could most probaby also be done for uninit *class* method tests
+
+-- test uninit *instance* method
 ::method test_uninit
   -- base test with no uninit method
   ref = .weakReference~new(.UninitTester~new)
   hash = ref~value~identityHash
   self~assertFalse(.UninitTracker~forceUninit(ref, hash))
 
-  -- base test with no uninit method
+  -- base test with uninit method
   ref = .weakReference~new(.ClassWithUninitMethod~new)
   hash = ref~value~identityHash
   self~assertTrue(.UninitTracker~forceUninit(ref, hash))
 
-  -- base test with no uninit method
+  -- base test with uninit method inherited from mixin
   ref = .weakReference~new(.UninitFromMixin~new)
   hash = ref~value~identityHash
   self~assertTrue(.UninitTracker~forceUninit(ref, hash))
@@ -1307,6 +1328,12 @@ return testResult
 
   if name == "UNINIT" then .UninitTracker~recordUninit(self)
 
+-- same as above, but to test unknown *class* method
+::method unknown class
+  use strict arg name, args
+
+  if name == "UNINIT" then .UninitTracker~recordUninit(self)
+
 ::method testSet
   forward message('SETMETHOD')
 
@@ -1321,8 +1348,15 @@ return testResult
 ::method uninit
   .UninitTracker~recordUninit(self)
 
+::method uninit class
+  .UninitTracker~recordUninit(self)
+
+
 ::class UninitFromMixin inherit MixinWithUninitMethod
 
+::class ClassWithUninitClassMethod subclass UninitTester
+::method uninit class
+  .UninitTracker~recordUninit(self)
 
 
 
