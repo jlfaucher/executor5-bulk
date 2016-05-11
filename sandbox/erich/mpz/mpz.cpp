@@ -5,11 +5,15 @@ An ooRexx interface library to the GNU Multiple Precision Arithmetic Library
 (GMP, https://gmplib.org/), more specifically to the high-level signed integer
 arithmetic functions (mpz).
 
-We implement both a method and a routine(*) interface.  The method interface is
-more ooRexx-like and easier to convert to from existing ooRexx code.  But, as
-the method interface creates intermediate return instances, performance of the
-routine interface should be superior.  (Example needed).  (*)to be done
-
+We implement both a method and a routine interface.  The method interface
+is more ooRexx-like and easier to convert to from existing ooRexx code,
+whereas the routine interface features the typical C-style which makes it
+easy to convert from existing C code.  As the method interface creates
+intermediate return instances, performance of the routine interface is
+generally superior.  For comparison, on some arbitrary hardware, you might
+see the following elapsed-time measurements:
+  "n += 1":      11 microseconds    "mpz_add_ui n, n, 1":   3 microseconds
+  "n~nextPrime": 21 microseconds    "mpz_next_prime n, n": 13 microseconds
 
 For Windows, instead of GMP, we're using MPIR, a GMP drop-in replacement.
 (on http://mpir.org/ download and unpack "Source zip file", download "Documentation"
@@ -34,8 +38,10 @@ GENERAL NOTES:
 
     .z[1] + 1~copies(21)
 
-  will raise "argument op2 must be zero or a positive whole number", as no attempt
-  is made to create an intermediate Z instance for the 'op2' argument.  This works:
+  which is internally handled by mpz_add_ui, will raise "argument op2 must be
+  zero or a positive whole number", as no attempt is made to convert 'op2'
+  (which is too long even for uint64) to Z by creating an intermediate Z instance.
+  We can of course manually create a Z instance to make this work:
 
     .z[1] + .z[1~copies(21)]
 
@@ -46,7 +52,9 @@ TO DO:
   5.11 Logical and Bit Manipulation Functions
   5.12 Input and Output Functions
 - add function result(), which returns "lost" results from e. g. mod(), root(), remove()
-- compile 32 bit
+- it seems that the isInstanceOf() teest is relatively expensive (1 microsec each?):
+  instead we might a) mark our 'MPZ' struct with (e. g.) "mpz"mpz' and use
+  CSELF (or CselfToObject) to see if we can access such a struct, or NULL is returned
 - add additional non-GMP convenience methods startsWith, endsWith(), contains()
 - test cases
 - multi-core chudnovsky
@@ -57,15 +65,25 @@ TO DO:
       return ((RexxInteger *)argument)->abs();
     else if (isNumberString(argument
       return((NumberString *)argument)->abs();
-- catch exceptions? we currently explicitly check args instead
+- can we catch exceptions? we currently explicitly check args instead, because
+  there seems to be no portable way of cathing zero-divide
 - add public method to return shortened Z string representation
 - we generally create new result Z instance before checking for valid argmuments; we meight want to defer this (low prio)
+- find out why we can't use the dynamic MPZ version, instead of the static one
+- check how to supprt mpz_xxx_d functions
 
 
 KNOWN BUGS:
 
 - ooRexx issue with comparisons like .z[17] = 17, which doesn't call compareTo()
+  (TO DO: report / fix bug, or circumvent with explicit "=" method)
 - endsWith() doesn't work with negative numbers
+- if we just make a single mpz function available by e. g. using
+  ::routine mpz_add_ui public external 'library mpz z_rtn_add_ui'
+  then the Z class hasn't initialized and calls fail with an exception
+  z = .z[1]; call mpz_add_ui z, z, 3
+  (the fact that .z[1] works without a ::class z defined, is a quirk here)
+  (TO DO: detect NULL message insert)
 
 */
 
@@ -89,23 +107,278 @@ gmp_randstate_t RandomState;
 
 
 // ---------------------------------------------------------------------
-// Routines
+// Routine interface
 
-// void mpz_nextprime (mpz_t rop, const mpz_t op)
-RexxRoutine1(RexxObjectPtr, rtn_z_nextPrime, // routine nextPrime(z)
-             RexxObjectPtr, op)
+// void mpz_add_ui (mpz_t rop, const mpz_t op1, unsigned long int op2)
+RexxRoutine3(RexxObjectPtr, z_rtn_add2_ui, // routine mpz_add2_ui
+             RexxObjectPtr, rop,
+             RexxObjectPtr, op1,
+             MPZ_unsigned_long_int, op2)
 {
-  mpz_nextprime(OBJ_SELF_Z(op), OBJ_SELF_Z(op));
+  MPZ *ropSelf = (MPZ *)context->ObjectToCSelf(rop);
+  MPZ *op1Self = (MPZ *)context->ObjectToCSelf(op1);
+  if (ropSelf == NULL || ropSelf->id != ID_MPZ)
+    return wrongArgClassException(context, "rop", TheZClass);
+  if (op1Self == NULL || op1Self->id != ID_MPZ)
+    return wrongArgClassException(context, "op1", TheZClass);
+
+  mpz_add_ui(ropSelf->z, op1Self->z, op2); // rop := op1 + op2
   return NULLOBJECT;                   // no return value
 }
 
-// void mpz_nextprime (mpz_t rop, const mpz_t op)
-RexxRoutine1(RexxObjectPtr, rtn_self_z_nextPrime, // routine selfNextPrime(z)
-             RexxObjectPtr, op)
+RexxRoutine3(RexxObjectPtr, z_rtn_add2, // routine mpz_add2
+             RexxObjectPtr, rop,
+             RexxObjectPtr, op1,
+             RexxObjectPtr, op2)
 {
-  mpz_nextprime(OBJ_SELF_Z(op), OBJ_SELF_Z(op));
-  return op;                           // return self
+  MPZ *ropSelf = (MPZ *)context->ObjectToCSelf(rop);
+  MPZ *op1Self = (MPZ *)context->ObjectToCSelf(op1);
+  MPZ *op2Self = (MPZ *)context->ObjectToCSelf(op2);
+  if (ropSelf == NULL || ropSelf->id != ID_MPZ)
+    return wrongArgClassException(context, "rop", TheZClass);
+  if (op1Self == NULL || op1Self->id != ID_MPZ)
+    return wrongArgClassException(context, "op1", TheZClass);
+  if (op2Self == NULL || op2Self->id != ID_MPZ)
+    return wrongArgClassException(context, "op2", TheZClass);
+
+  mpz_add(ropSelf->z, op1Self->z, op2Self->z); // rop := op1 + op2
+  return NULLOBJECT;                   // no return value
 }
+
+
+
+/*
+// void mpz_add_ui (mpz_t rop, const mpz_t op1, unsigned long int op2)
+RexxRoutine3(RexxObjectPtr, z_rtn_add_ui, // routine mpz_add_ui
+             RexxObjectPtr, rop,
+             RexxObjectPtr, op1,
+             MPZ_unsigned_long_int, op2)
+{
+  if (!context->IsInstanceOf(rop, TheZClass)) return wrongArgClassException(context, "rop", TheZClass);
+
+  mpz_add_ui(OBJ_SELF_Z(rop), OBJ_SELF_Z(op1), op2); // rop := op1 + op2
+  return NULLOBJECT;                   // no return value
+}
+*/
+
+// 5.5 Arithmetic Functions
+// void mpz_add (mpz_t rop, const mpz_t op1, const mpz_t op2)
+// void mpz_add_ui (mpz_t rop, const mpz_t op1, unsigned long int op2)
+// void mpz_sub (mpz_t rop, const mpz_t op1, const mpz_t op2)
+// void mpz_sub_ui (mpz_t rop, const mpz_t op1, unsigned long int op2)
+// void mpz_ui_sub (mpz_t rop, unsigned long int op1, const mpz_t op2)
+// void mpz_mul (mpz_t rop, const mpz_t op1, const mpz_t op2)
+// void mpz_mul_si (mpz_t rop, const mpz_t op1, long int op2)
+// void mpz_mul_ui (mpz_t rop, const mpz_t op1, unsigned long int op2)
+// void mpz_addmul (mpz_t rop, const mpz_t op1, const mpz_t op2)
+// void mpz_addmul_ui (mpz_t rop, const mpz_t op1, unsigned long int op2)
+// void mpz_submul (mpz_t rop, const mpz_t op1, const mpz_t op2)
+// void mpz_submul_ui (mpz_t rop, const mpz_t op1, unsigned long int op2)
+// void mpz_mul_2exp (mpz_t rop, const mpz_t op1, mp_bitcnt_t op2)
+// void mpz_neg (mpz_t rop, const mpz_t op)
+// void mpz_abs (mpz_t rop, const mpz_t op)
+REXX_ROUTINE_3(RXO, add,       RXO, rop, RXO, op1, RXO,     op2)
+REXX_ROUTINE_3(RXO, add_ui,    RXO, rop, RXO, op1, RXULONG, op2)
+REXX_ROUTINE_3(RXO, sub,       RXO, rop, RXO, op1, RXO,     op2)
+REXX_ROUTINE_3(RXO, sub_ui,    RXO, rop, RXO, op1, RXULONG, op2)
+REXX_ROUTINE_3(RXO, ui_sub,    RXO, rop, RXULONG, op1, RXO, op2)
+REXX_ROUTINE_3(RXO, mul,       RXO, rop, RXO, op1, RXO,     op2)
+REXX_ROUTINE_3(RXO, mul_si,    RXO, rop, RXO, op1, RXLONG,  op2)
+REXX_ROUTINE_3(RXO, mul_ui,    RXO, rop, RXO, op1, RXULONG, op2)
+REXX_ROUTINE_3(RXO, addmul,    RXO, rop, RXO, op1, RXO,     op2)
+REXX_ROUTINE_3(RXO, addmul_ui, RXO, rop, RXO, op1, RXULONG, op2)
+REXX_ROUTINE_3(RXO, submul,    RXO, rop, RXO, op1, RXO,     op2)
+REXX_ROUTINE_3(RXO, submul_ui, RXO, rop, RXO, op1, RXULONG, op2)
+REXX_ROUTINE_3(RXO, mul_2exp,  RXO, rop, RXO, op1, RXULONG, op2)
+REXX_ROUTINE_2(RXO, neg,       RXO, rop, RXO, op)
+REXX_ROUTINE_2(RXO, abs,       RXO, rop, RXO, op)
+
+// 5.6 Division Functions
+// void mpz_cdiv_q (mpz_t q, const mpz_t n, const mpz_t d)
+// void mpz_cdiv_r (mpz_t r, const mpz_t n, const mpz_t d)
+// void mpz_cdiv_qr (mpz_t q, mpz_t r, const mpz_t n, const mpz_t d)
+// unsigned long int mpz_cdiv_q_ui (mpz_t q, const mpz_t n, unsigned long int d)
+// unsigned long int mpz_cdiv_r_ui (mpz_t r, const mpz_t n, unsigned long int d)
+// unsigned long int mpz_cdiv_qr_ui (mpz_t q, mpz_t r, const mpz_t n, unsigned long int d)
+// unsigned long int mpz_cdiv_ui (const mpz_t n, unsigned long int d)
+// void mpz_cdiv_q_2exp (mpz_t q, const mpz_t n, mp_bitcnt_t b)
+// void mpz_cdiv_r_2exp (mpz_t r, const mpz_t n, mp_bitcnt_t b)
+REXX_ROUTINE_3(RXO, cdiv_q,     RXO, q,         RXO, n, RXO, d)
+REXX_ROUTINE_3(RXO, cdiv_r,     RXO, q,         RXO, n, RXO, d)
+REXX_ROUTINE_4(RXO, cdiv_qr,    RXO, q, RXO, r, RXO, n, RXO, d)
+
+// void mpz_fdiv_q (mpz_t q, const mpz_t n, const mpz_t d)
+// void mpz_fdiv_r (mpz_t r, const mpz_t n, const mpz_t d)
+// void mpz_fdiv_qr (mpz_t q, mpz_t r, const mpz_t n, const mpz_t d)
+// unsigned long int mpz_fdiv_q_ui (mpz_t q, const mpz_t n, unsigned long int d)
+// unsigned long int mpz_fdiv_r_ui (mpz_t r, const mpz_t n, unsigned long int d)
+// unsigned long int mpz_fdiv_qr_ui (mpz_t q, mpz_t r, const mpz_t n, unsigned long int d)
+// unsigned long int mpz_fdiv_ui (const mpz_t n, unsigned long int d)
+// void mpz_fdiv_q_2exp (mpz_t q, const mpz_t n, mp_bitcnt_t b)
+// void mpz_fdiv_r_2exp (mpz_t r, const mpz_t n, mp_bitcnt_t b)
+
+// void mpz_tdiv_q (mpz_t q, const mpz_t n, const mpz_t d)
+// void mpz_tdiv_r (mpz_t r, const mpz_t n, const mpz_t d)
+// void mpz_tdiv_qr (mpz_t q, mpz_t r, const mpz_t n, const mpz_t d)
+// unsigned long int mpz_tdiv_q_ui (mpz_t q, const mpz_t n, unsigned long int d)
+// unsigned long int mpz_tdiv_r_ui (mpz_t r, const mpz_t n, unsigned long int d)
+// unsigned long int mpz_tdiv_qr_ui (mpz_t q, mpz_t r, const mpz_t n, unsigned long int d)
+// unsigned long int mpz_tdiv_ui (const mpz_t n, unsigned long int d)
+// void mpz_tdiv_q_2exp (mpz_t q, const mpz_t n, mp_bitcnt_t b)
+// void mpz_tdiv_r_2exp (mpz_t r, const mpz_t n, mp_bitcnt_t b)
+REXX_ROUTINE_3(RXO, tdiv_q,     RXO, q,         RXO, n, RXO, d)
+REXX_ROUTINE_3(RXO, tdiv_r,     RXO, q,         RXO, n, RXO, d)
+REXX_ROUTINE_4(RXO, tdiv_qr,    RXO, q, RXO, r, RXO, n, RXO, d)
+
+// void mpz_mod (mpz_t r, const mpz_t n, const mpz_t d)
+// unsigned long int mpz_mod_ui (mpz_t r, const mpz_t n, unsigned long int d)
+REXX_ROUTINE_3(RXO,     mod,    RXO, r, RXO, n, RXO,     d)
+REXX_ROUTINE_3(RXULONG, mod_ui, RXO, r, RXO, n, RXULONG, d)
+
+// void mpz_divexact (mpz_t q, const mpz_t n, const mpz_t d)
+// void mpz_divexact_ui (mpz_t q, const mpz_t n, unsigned long d)
+REXX_ROUTINE_3(RXO, divexact,    RXO, q, RXO, n, RXO,     d)
+REXX_ROUTINE_3(RXO, divexact_ui, RXO, q, RXO, n, RXULONG, d)
+
+// int mpz_divisible_p (const mpz_t n, const mpz_t d)
+// int mpz_divisible_ui_p (const mpz_t n, unsigned long int d)
+// int mpz_divisible_2exp_p (const mpz_t n, mp_bitcnt_t b)
+REXX_ROUTINE_2(RXINT, divisible_p,      RXO, n, RXO,     d)
+REXX_ROUTINE_2(RXINT, divisible_ui_p,   RXO, n, RXULONG, d)
+REXX_ROUTINE_2(RXINT, divisible_2exp_p, RXO, n, RXULONG, b) // RXBIT
+
+// int mpz_congruent_p (const mpz_t n, const mpz_t c, const mpz_t d)
+// int mpz_congruent_ui_p (const mpz_t n, unsigned long int c, unsigned long int d)
+// int mpz_congruent_2exp_p (const mpz_t n, const mpz_t c, mp_bitcnt_t b)
+REXX_ROUTINE_3(RXINT, congruent_p,      RXO, n, RXO,     c, RXO,     d)
+REXX_ROUTINE_3(RXINT, congruent_ui_p,   RXO, n, RXULONG, c, RXULONG, d)
+REXX_ROUTINE_3(RXINT, congruent_2exp_p, RXO, n, RXO,     c, RXULONG, b) // RXBIT
+
+
+// 5.7 Exponentiation Functions
+// void mpz_powm (mpz_t rop, const mpz_t base, const mpz_t exp, const mpz_t mod)
+// void mpz_powm_ui (mpz_t rop, const mpz_t base, unsigned long int exp, const mpz_t mod)
+// void mpz_pow_ui (mpz_t rop, const mpz_t base, unsigned long int exp)
+// void mpz_ui_pow_ui (mpz_t rop, unsigned long int base, unsigned long int exp)
+REXX_ROUTINE_4(RXO, powm,      RXO, rop, RXO, base,     RXO, exp,     RXO, mod)
+REXX_ROUTINE_4(RXO, powm_ui,   RXO, rop, RXO, base,     RXULONG, exp, RXO, mod)
+REXX_ROUTINE_3(RXO, pow_ui,    RXO, rop, RXO, base,     RXULONG, exp)
+REXX_ROUTINE_3(RXO, ui_pow_ui, RXO, rop, RXULONG, base, RXULONG, exp)
+
+
+// 5.8 Root Extraction Functions
+// int mpz_root (mpz_t rop, const mpz_t op, unsigned long int n)
+// void mpz_rootrem (mpz_t root, mpz_t rem, const mpz_t u, unsigned long int n)
+// void mpz_sqrt (mpz_t rop, const mpz_t op)
+// void mpz_sqrtrem (mpz_t rop1, mpz_t rop2, const mpz_t op)
+// int mpz_perfect_power_p (const mpz_t op)
+// int mpz_perfect_square_p (const mpz_t op)
+REXX_ROUTINE_3(RXINT, root,             RXO, rop,   RXO, op,           RXULONG, n)
+REXX_ROUTINE_4(RXO,   rootrem,          RXO, root,  RXO, rem,  RXO, u, RXULONG, n)
+REXX_ROUTINE_2(RXO,   sqrt,             RXO, rop,   RXO, op)
+REXX_ROUTINE_3(RXO,   sqrtrem,          RXO, rop1,  RXO, rop2, RXO, op)
+REXX_ROUTINE_1(RXINT, perfect_power_p,  RXO, op)
+REXX_ROUTINE_1(RXINT, perfect_square_p, RXO, op)
+
+
+// 5.9 Number Theoretic Functions
+// int mpz_probab_prime_p (const mpz_t n, int reps)
+// void mpz_nextprime (mpz_t rop, const mpz_t op)
+// void mpz_gcd (mpz_t rop, const mpz_t op1, const mpz_t op2)
+// unsigned long int mpz_gcd_ui (mpz_t rop, const mpz_t op1, unsigned long int op2)
+// void mpz_gcdext (mpz_t g, mpz_t s, mpz_t t, const mpz_t a, const mpz_t b)
+// void mpz_lcm (mpz_t rop, const mpz_t op1, const mpz_t op2)
+// void mpz_lcm_ui (mpz_t rop, const mpz_t op1, unsigned long op2)
+// int mpz_invert (mpz_t rop, const mpz_t op1, const mpz_t op2)
+// int mpz_jacobi (const mpz_t a, const mpz_t b)
+// int mpz_legendre (const mpz_t a, const mpz_t p)
+// int mpz_kronecker (const mpz_t a, const mpz_t b)
+// int mpz_kronecker_si (const mpz_t a, long b)
+// int mpz_kronecker_ui (const mpz_t a, unsigned long b)
+// int mpz_si_kronecker (long a, const mpz_t b)
+// int mpz_ui_kronecker (unsigned long a, const mpz_t b)
+// mp_bitcnt_t mpz_remove (mpz_t rop, const mpz_t op, const mpz_t f)
+// void mpz_fac_ui (mpz_t rop, unsigned long int n)
+// void mpz_2fac_ui (mpz_t rop, unsigned long int n)
+// void mpz_mfac_uiui (mpz_t rop, unsigned long int n, unsigned long int m)
+// void mpz_primorial_ui (mpz_t rop, unsigned long int n)
+// void mpz_bin_ui (mpz_t rop, const mpz_t n, unsigned long int k)
+// void mpz_bin_uiui (mpz_t rop, unsigned long int n, unsigned long int k)
+// void mpz_fib_ui (mpz_t fn, unsigned long int n)
+// void mpz_fib2_ui (mpz_t fn, mpz_t fnsub1, unsigned long int n)
+// void mpz_lucnum_ui (mpz_t ln, unsigned long int n)
+// void mpz_lucnum2_ui (mpz_t ln, mpz_t lnsub1, unsigned long int n)
+REXX_ROUTINE_2(RXINT,   probab_prime_p, RXO, n,   RXINT,   reps)
+REXX_ROUTINE_2(RXO,     nextprime,      RXO, rop, RXO,     op)
+REXX_ROUTINE_3(RXO,     gcd,            RXO, rop, RXO,     op1, RXO,     op2)
+REXX_ROUTINE_3(RXULONG, gcd_ui,         RXO, rop, RXO,     op1, RXULONG, op2)
+REXX_ROUTINE_5(RXO,     gcdext,         RXO, g, RXO, s, RXO, t, RXO, a, RXO, b)
+REXX_ROUTINE_3(RXO,     lcm,            RXO, rop, RXO,     op1, RXO,     op2)
+REXX_ROUTINE_3(RXO,     lcm_ui,         RXO, rop, RXO,     op1, RXULONG, op2)
+REXX_ROUTINE_3(RXINT,   invert,         RXO, rop, RXO,     op1, RXO,     op2)
+REXX_ROUTINE_2(RXINT,   jacobi,         RXO, a,   RXO,     b)
+REXX_ROUTINE_2(RXINT,   legendre,       RXO, a,   RXO,     p)
+REXX_ROUTINE_2(RXINT,   kronecker,      RXO, a,   RXO,     b)
+REXX_ROUTINE_2(RXINT,   kronecker_si,   RXO, a,   RXLONG,  b)
+REXX_ROUTINE_2(RXINT,   kronecker_ui,   RXO, a,   RXULONG, b)
+REXX_ROUTINE_2(RXINT,   si_kronecker,   RXLONG, a,  RXO, b)
+REXX_ROUTINE_2(RXINT,   ui_kronecker,   RXULONG, a, RXO, b)
+REXX_ROUTINE_3(RXULONG, remove,         RXO, rop, RXO,     op,  RXO,     f)
+REXX_ROUTINE_2(RXO,     fac_ui,         RXO, rop, RXULONG, n) // RXBIT
+REXX_ROUTINE_2(RXO,     2fac_ui,        RXO, rop, RXULONG, n)
+REXX_ROUTINE_3(RXO,     mfac_uiui,      RXO, rop, RXULONG, n, RXULONG, m)
+REXX_ROUTINE_2(RXO,     primorial_ui,   RXO, rop, RXULONG, n)
+REXX_ROUTINE_3(RXO,     bin_ui,         RXO, rop, RXO,     n, RXULONG, k)
+REXX_ROUTINE_3(RXO,     bin_uiui,       RXO, rop, RXULONG, n, RXULONG, k)
+REXX_ROUTINE_2(RXO,     fib_ui,         RXO, fn,  RXULONG, n)
+REXX_ROUTINE_3(RXO,     fib2_ui,        RXO, fn,  RXO, fnsub1, RXULONG, n)
+REXX_ROUTINE_2(RXO,     lucnum_ui,      RXO, ln,  RXULONG, n)
+REXX_ROUTINE_3(RXO,     lucnum2_ui,     RXO, ln,  RXO, lnsub1, RXULONG, n)
+
+// 5.10 Comparison Functions
+// int mpz_cmp (const mpz_t op1, const mpz_t op2)
+// int mpz_cmp_d (const mpz_t op1, double op2)
+// int mpz_cmp_si (const mpz_t op1, signed long int op2)
+// int mpz_cmp_ui (const mpz_t op1, unsigned long int op2)
+// int mpz_cmpabs (const mpz_t op1, const mpz_t op2)
+// int mpz_cmpabs_d (const mpz_t op1, double op2)
+// int mpz_cmpabs_ui (const mpz_t op1, unsigned long int op2)
+// int mpz_sgn (const mpz_t op)
+REXX_ROUTINE_2(RXINT, cmp,       RXO, op1, RXO,     op2)
+//REXX_ROUTINE_2(RXINT, cmp_d,     RXO, op1, RXLONG,  op2) // RXLONG instead of double
+REXX_ROUTINE_2(RXINT, cmp_si,    RXO, op1, RXLONG,  op2)
+REXX_ROUTINE_2(RXINT, cmp_ui,    RXO, op1, RXULONG, op2)
+REXX_ROUTINE_2(RXINT, cmpabs,    RXO, op1, RXO,     op2)
+//REXX_ROUTINE_2(RXINT, cmpabs_d,  RXO, op1, RXO,     op2) // RXLONG instead of double
+REXX_ROUTINE_2(RXINT, cmpabs_ui, RXO, op1, RXULONG, op2)
+REXX_ROUTINE_1(RXINT, sgn,       RXO, op)
+
+// 5.11 Logical and Bit Manipulation Functions
+// void mpz_and (mpz_t rop, const mpz_t op1, const mpz_t op2)
+// void mpz_ior (mpz_t rop, const mpz_t op1, const mpz_t op2)
+// void mpz_xor (mpz_t rop, const mpz_t op1, const mpz_t op2)
+// void mpz_com (mpz_t rop, const mpz_t op)
+// mp_bitcnt_t mpz_popcount (const mpz_t op)
+// mp_bitcnt_t mpz_hamdist (const mpz_t op1, const mpz_t op2)
+// mp_bitcnt_t mpz_scan0 (const mpz_t op, mp_bitcnt_t starting_bit)
+// mp_bitcnt_t mpz_scan1 (const mpz_t op, mp_bitcnt_t starting_bit)
+// void mpz_setbit (mpz_t rop, mp_bitcnt_t bit_index)
+// void mpz_clrbit (mpz_t rop, mp_bitcnt_t bit_index)
+// void mpz_combit (mpz_t rop, mp_bitcnt_t bit_index)
+// int mpz_tstbit (const mpz_t op, mp_bitcnt_t bit_index)
+REXX_ROUTINE_3(RXO,     and,      RXO, rop, RXO, op1, RXO, op2)
+REXX_ROUTINE_3(RXO,     ior,      RXO, rop, RXO, op1, RXO, op2)
+REXX_ROUTINE_3(RXO,     xor,      RXO, rop, RXO, op1, RXO, op2)
+REXX_ROUTINE_2(RXO,     com,      RXO, rop, RXO, op)
+REXX_ROUTINE_1(RXULONG, popcount, RXO, op) // RXBIT
+REXX_ROUTINE_2(RXULONG, hamdist,  RXO, op1, RXO, op2)
+REXX_ROUTINE_2(RXULONG, scan0,    RXO, op1, RXULONG, starting_bit) // RXBIT
+REXX_ROUTINE_2(RXULONG, scan1,    RXO, op1, RXULONG, starting_bit) // RXBIT
+REXX_ROUTINE_2(RXO,     setbit,   RXO, rop, RXULONG, bit_index) // RXBIT
+REXX_ROUTINE_2(RXO,     clrbit,   RXO, rop, RXULONG, bit_index) // RXBIT
+REXX_ROUTINE_2(RXO,     combit,   RXO, rop, RXULONG, bit_index) // RXBIT
+REXX_ROUTINE_2(RXO,     tstbit,   RXO, rop, RXULONG, bit_index) // RXBIT
+
 
 
 
@@ -160,14 +433,16 @@ RexxMethod2(RexxObjectPtr, z_init,     // method init()
             OPTIONAL_RexxObjectPtr, op,
             OPTIONAL_MPZ_int, base)
 {
-  // we're using the CSELF concept discussed in rexxpg 8.13.3.4. "The CSELF method type"
-  // three steps are needed:
+  // we're using the CSELF concept discussed in rexxpg 8.13.3.4. "The
+  // CSELF method type".  Three steps are needed:
   // 1. create a buffer the size of our C++ object variables 'MPZ'
   // 2. set this buffer as object variable CSELF
   // 3. overlay the buffer with our 'MPZ' struct
   RexxBufferObject rop = context->NewBuffer(sizeof(MPZ));
   context->SetObjectVariable("CSELF", rop);
   MPZ *ropSelf = (MPZ *)context->BufferData(rop);
+
+  ropSelf->id = ID_MPZ;                // mark as 'MPZ' data
 
   // we support three init() forms:
   //   init(), handled by mpz_init()
@@ -195,8 +470,8 @@ RexxMethod2(RexxObjectPtr, z_init,     // method init()
     {
       // instead of 10, we might assume 0, thus adding support for 0x/0d/0
       // (see mpz_set_str(): if base is 0, then the leading characters are used:
-      //  0x and 0X for hexadecimal, 0b and 0B for binary, 0 for octal, or decimal otherwise.) 
-      base = 10;                       
+      //  0x and 0X for hexadecimal, 0b and 0B for binary, 0 for octal, or decimal otherwise.)
+      base = 10;
     }
 
     // instead of trying to catch any invalid-base exception thrown by GMP,
@@ -222,8 +497,10 @@ RexxMethod2(RexxObjectPtr, z_init,     // method init()
 RexxMethod1(RexxObjectPtr, z_uninit,   // method uninit()
             CSELF, rop)
 {
+//printf("z_uninit: entry\n");
 //printf("z_uninit: freeing %zu bytes\n", mpz_sizeinbase(SELF_Z(rop), 2)/8);
   mpz_clear(SELF_Z(rop));              // free MPZ memory
+//printf("z_uninit: return\n");
   return NULLOBJECT;                   // no return value
 }
 
@@ -330,6 +607,47 @@ RexxMethod2(RexxStringObject, z_get,   // method get(), string()
 // https://gmplib.org/manual/Integer-Arithmetic.html
 
 
+// development test: w/o isInstance()
+RexxMethod2(RexxObjectPtr, z_add2,      // method add2()
+            OPTIONAL_RexxObjectPtr, op2,
+            OSELF, op1)
+{
+  // we support three add() forms:
+  //   add(), might appear as "+z", handled as a nop
+  //   add(z), handled by mpz_add()
+  //   add(unsigned), handled by mpz_add_ui()
+  if (argumentOmitted(1))              // no op2 given?  handle as a nop
+  {
+    // add() or "+z" form
+    return op1;                        // just return receiver
+  }
+
+  // create new result Z instance
+  RexxObjectPtr rop = context->SendMessage0(TheZClass, "NEW");
+
+  MPZ *op1Self = (MPZ *)context->ObjectToCSelf(op1);
+  MPZ *op2Self = (MPZ *)context->ObjectToCSelf(op2);
+  if (op2Self != NULL && op2Self->id == ID_MPZ)
+  {
+    // add(z) form
+    mpz_add(OBJ_SELF_Z(rop), op1Self->z, op2Self->z); // rop := op1 + op2
+  }
+  else
+  {
+    // add(unsigned) form
+    // note that 'unsigned' means, z~add(-1) won't work
+    MPZ_unsigned_long_int op2_int;
+    if (!context->OBJ_unsigned_long_int(op2, &op2_int))
+    {
+      // Method argument &1 must be zero or a positive whole number; found "&2".
+      return notZeroOrPositiveException(context, "op2", op2);
+    }
+    mpz_add_ui(OBJ_SELF_Z(rop), op1Self->z, op2_int); // rop := op1 + op2
+  }
+  return rop;                          // return result instance
+}
+
+
 // void mpz_add (mpz_t rop, const mpz_t op1, const mpz_t op2)
 // void mpz_add_ui (mpz_t rop, const mpz_t op1, unsigned long int op2)
 RexxMethod2(RexxObjectPtr, z_add,      // method add()
@@ -401,7 +719,7 @@ RexxMethod2(RexxObjectPtr, z_sub,      // method sub()
     // sub(unsigned) form
     // note that 'unsigned' means, z~sub(-1) won't work
     MPZ_unsigned_long_int op2_int;
-    if (!context->OBJ_unsigned_long_int(op2, &op2_int)) 
+    if (!context->OBJ_unsigned_long_int(op2, &op2_int))
     {
       // Method argument &1 must be zero or a positive whole number; found "&2".
       return notZeroOrPositiveException(context, "op2", op2);
@@ -615,9 +933,9 @@ RexxMethod3(RexxObjectPtr, z_div,      // method div()
     }
     switch (round[0])                  // check only first character of 'round'
     {
-      case 'c', 'C': { mpz_cdiv_q_ui(OBJ_SELF_Z(q), SELF_Z(n), d_int); break; } // ceil     
-      case 'f', 'F': { mpz_fdiv_q_ui(OBJ_SELF_Z(q), SELF_Z(n), d_int); break; } // floor    
-      case 't', 'T': { mpz_tdiv_q_ui(OBJ_SELF_Z(q), SELF_Z(n), d_int); break; } // truncate 
+      case 'c', 'C': { mpz_cdiv_q_ui(OBJ_SELF_Z(q), SELF_Z(n), d_int); break; } // ceil
+      case 'f', 'F': { mpz_fdiv_q_ui(OBJ_SELF_Z(q), SELF_Z(n), d_int); break; } // floor
+      case 't', 'T': { mpz_tdiv_q_ui(OBJ_SELF_Z(q), SELF_Z(n), d_int); break; } // truncate
       // Method argument &1 must be one of &2; found "&3".
       default: return wrongArgValueException(context, "round", "CFT", round);
     }
@@ -752,6 +1070,14 @@ RexxMethod2(RexxObjectPtr, z_mod,      // method mod()
   //   mod(unsigned), handled by mpz_mod_ui()
   if (context->IsInstanceOf(d, TheZClass))
   {
+    // instead of trying to catch any divide-by-zero exception thrown by GMP,
+    // we check 'd' for zero
+    if (mpz_cmp_ui(OBJ_SELF_Z(d), 0) == 0)
+    {
+      // Method argument %s must not be zero.
+      return mustNotBeZeroException(context, "d");
+    }
+
     // mod(z) form
     mpz_mod(OBJ_SELF_Z(r), SELF_Z(n), OBJ_SELF_Z(d)); // returned remainder will be lost
   }
@@ -764,6 +1090,15 @@ RexxMethod2(RexxObjectPtr, z_mod,      // method mod()
       // Method argument &1 must be a whole number; found "&2".
       return invalidWholeNumberException(context, "d", d);
     }
+
+    // instead of trying to catch any divide-by-zero exception thrown by GMP,
+    // we check 'd' for zero
+    if (d_int == 0)
+    {
+      // Method argument %s must not be zero.
+      return mustNotBeZeroException(context, "d");
+    }
+
     mpz_mod_ui(OBJ_SELF_Z(r), SELF_Z(n), d_int);
   }
   return r;                            // return result instance
@@ -779,7 +1114,7 @@ RexxMethod2(RexxObjectPtr, z_mod,      // method mod()
 // void mpz_powm (mpz_t rop, const mpz_t base, const mpz_t exp, const mpz_t mod)
 // void mpz_powm_ui (mpz_t rop, const mpz_t base, unsigned long int exp, const mpz_t mod)
 // Negative exp is supported if an inverse base^-1 mod mod exists
-// If an inverse doesn’t exist then a divide by zero is raised. 
+// If an inverse doesn’t exist then a divide by zero is raised.
 RexxMethod3(RexxObjectPtr, z_powm,     // method powm()
             RexxObjectPtr, exp,
             RexxObjectPtr, mod,
@@ -819,14 +1154,14 @@ RexxMethod3(RexxObjectPtr, z_powm,     // method powm()
       //  If an inverse doesn’t exist then a divide by zero is raised."
       // instead of trying to catch any divide-by-zero exception thrown by GMP,
       // we use mpz_invert(rop, base, mod) to test
-      // If the inverse exists, the return value is non-zero 
+      // If the inverse exists, the return value is non-zero
       if (mpz_invert(OBJ_SELF_Z(rop), SELF_Z(base), OBJ_SELF_Z(mod)) == 0)
       {
         // Negative exponent only allowed if inverse exists; found "&1"
         return negativeExponentException(context, OBJ_SELF_Z(exp));
       }
     }
-    mpz_powm(OBJ_SELF_Z(rop), SELF_Z(base), OBJ_SELF_Z(exp), OBJ_SELF_Z(mod)); // rop := base ^ exp modulo mod 
+    mpz_powm(OBJ_SELF_Z(rop), SELF_Z(base), OBJ_SELF_Z(exp), OBJ_SELF_Z(mod)); // rop := base ^ exp modulo mod
   }
   else
   {
@@ -838,7 +1173,7 @@ RexxMethod3(RexxObjectPtr, z_powm,     // method powm()
       // Method argument &1 must be zero or a positive whole number; found "&2".
       return notZeroOrPositiveException(context, "exp", exp);
     }
-    mpz_powm_ui(OBJ_SELF_Z(rop), SELF_Z(base), exp_int, OBJ_SELF_Z(mod)); // rop := base ^ exp modulo mod 
+    mpz_powm_ui(OBJ_SELF_Z(rop), SELF_Z(base), exp_int, OBJ_SELF_Z(mod)); // rop := base ^ exp modulo mod
   }
 
   return rop;                          // return result instance
@@ -998,7 +1333,7 @@ RexxMethod2(RexxObjectPtr, z_gcd,      // method gcd()
 // void mpz_lcm_ui (mpz_t rop, const mpz_t op1, unsigned long op2)
 // Set rop to the least common multiple of op1 and op2. rop is always positive,
 // irrespective of the signs of op1 and op2.
-// rop will be zero if either op1 or op2 is zero. 
+// rop will be zero if either op1 or op2 is zero.
 RexxMethod2(RexxObjectPtr, z_lcm,      // method lcm()
             RexxObjectPtr, op2,
             CSELF, op1)
@@ -1018,7 +1353,7 @@ RexxMethod2(RexxObjectPtr, z_lcm,      // method lcm()
   {
     // lcm(unsigned) form
     MPZ_unsigned_long_int op2_int;
-    if (!context->OBJ_unsigned_long_int(op2, &op2_int)) 
+    if (!context->OBJ_unsigned_long_int(op2, &op2_int))
     {
       // Method argument &1 must be zero or a positive whole number; found "&2".
       return notZeroOrPositiveException(context, "op2", op2);
@@ -1215,6 +1550,79 @@ RexxMethod1(int, z_sgn,                // method sgn()
 }
 
 
+
+// ---------------------------------------------------------------------
+// 5.11 Logical and Bit Manipulation Functions
+// https://gmplib.org/manual/Integer-Logic-and-Bit-Fiddling.html
+// void mpz_and (mpz_t rop, const mpz_t op1, const mpz_t op2)
+// void mpz_ior (mpz_t rop, const mpz_t op1, const mpz_t op2)
+// void mpz_xor (mpz_t rop, const mpz_t op1, const mpz_t op2)
+// void mpz_com (mpz_t rop, const mpz_t op)
+// mp_bitcnt_t mpz_popcount (const mpz_t op)
+// mp_bitcnt_t mpz_hamdist (const mpz_t op1, const mpz_t op2)
+// mp_bitcnt_t mpz_scan0 (const mpz_t op, mp_bitcnt_t starting_bit)
+// mp_bitcnt_t mpz_scan1 (const mpz_t op, mp_bitcnt_t starting_bit)
+// void mpz_setbit (mpz_t rop, mp_bitcnt_t bit_index)
+// void mpz_clrbit (mpz_t rop, mp_bitcnt_t bit_index)
+// void mpz_combit (mpz_t rop, mp_bitcnt_t bit_index)
+// int mpz_tstbit (const mpz_t op, mp_bitcnt_t bit_index)
+
+
+// void mpz_and (mpz_t rop, const mpz_t op1, const mpz_t op2)
+RexxMethod2(RexxObjectPtr, z_and,      // method and()
+            RexxObjectPtr, op2,
+            CSELF, op1)
+{
+  CHECK_IF_Z_RXORXO(op2)               // op2 must be a Z instance
+  // create new result Z instance
+  RexxObjectPtr rop = context->SendMessage0(TheZClass, "NEW");
+
+  mpz_and(OBJ_SELF_Z(rop), SELF_Z(op1), OBJ_SELF_Z(op2));
+  return rop;                          // return result instance
+}
+
+
+// void mpz_ior (mpz_t rop, const mpz_t op1, const mpz_t op2)
+RexxMethod2(RexxObjectPtr, z_ior,      // method ior()
+            RexxObjectPtr, op2,
+            CSELF, op1)
+{
+  CHECK_IF_Z_RXORXO(op2)               // op2 must be a Z instance
+  // create new result Z instance
+  RexxObjectPtr rop = context->SendMessage0(TheZClass, "NEW");
+
+  mpz_ior(OBJ_SELF_Z(rop), SELF_Z(op1), OBJ_SELF_Z(op2));
+  return rop;                          // return result instance
+}
+
+
+// void mpz_xor (mpz_t rop, const mpz_t op1, const mpz_t op2)
+RexxMethod2(RexxObjectPtr, z_xor,      // method xor()
+            RexxObjectPtr, op2,
+            CSELF, op1)
+{
+  CHECK_IF_Z_RXORXO(op2)               // op2 must be a Z instance
+  // create new result Z instance
+  RexxObjectPtr rop = context->SendMessage0(TheZClass, "NEW");
+
+  mpz_xor(OBJ_SELF_Z(rop), SELF_Z(op1), OBJ_SELF_Z(op2));
+  return rop;                          // return result instance
+}
+
+
+// void mpz_com (mpz_t rop, const mpz_t op)
+RexxMethod1(RexxObjectPtr, z_com,      // method com()
+            CSELF, op)
+{
+  // create new result Z instance
+  RexxObjectPtr rop = context->SendMessage0(TheZClass, "NEW");
+
+  mpz_com(OBJ_SELF_Z(rop), SELF_Z(op));
+  return rop;                          // return result instance
+}
+
+
+
 // ---------------------------------------------------------------------
 // 5.13 Random Number Functions
 // https://gmplib.org/manual/Integer-Random-Numbers.html
@@ -1383,17 +1791,25 @@ RexxMethod2(logical_t, z_endsWith,     // method endsWith()
 // ---------------------------------------------------------------------
 // Test
 
-RexxMethod4(RexxObjectPtr, z_test_cls, // class method test()
+RexxMethod3(RexxObjectPtr, z_test_cls, // class method test()
             RexxObjectPtr, op,
             OPTIONAL_int64_t, i64,
-            OPTIONAL_int32_t, i32,
-            MPZ_unsigned_long_int, ilong
+            OPTIONAL_int32_t, i32
+//          MPZ_unsigned_long_int, ilong
            )
 {
+
+  MPZ *opSelf = (MPZ *)context->ObjectToCSelf(op);
+  if (opSelf == NULL)
+    printf("z_test_cls: opSelf == NULL\n");
+  else if (opSelf->id = ID_MPZ)
+    printf("z_test_cls: id = 'mpz'\n");
+  else
+    printf("z_test_cls: id <> 'mpz', but %d\n", opSelf->id);
+
   if (context->IsInstanceOf(op, TheZClass))
   {
-    MPZ *opSelf = (MPZ *)context->ObjectToCSelf(op);
-    printf("z_test_cls: op IsInstanceOf MPZ: %s\n", mpz_get_str(NULL, 10, SELF_Z(op)));
+    printf("z_test_cls: op IsInstanceOf MPZ: %s\n", mpz_get_str(NULL, 10, opSelf->z)); // OBJ_SELF_Z(op)
   }
   else
   {
@@ -1403,20 +1819,144 @@ RexxMethod4(RexxObjectPtr, z_test_cls, // class method test()
     printf("z_test_cls: i64 is: %lld\n", i64);
   if (argumentExists(3))
     printf("z_test_cls: i32 is: %ld\n", i32);
-  if (argumentExists(4))
-    printf("z_test_cls: ilong is: %Id\n", ilong); // %Id required for clean x86 and x64 compile
+//if (argumentExists(4))
+//  printf("z_test_cls: ilong is: %Id\n", ilong); // %Id required for clean x86 and x64 compile
 
   return NULLOBJECT;                   // no return value
 }
 
 
 
+
+// routine naming is somewhat confusing. let's take 'add_ui' as an example:
+// C GMP name              mpz_add_ui
+// C RexxRoutine(n) name   z_rtn_add_ui
+// REXX_TYPED_ROUTINE name rtn_add_ui (*)
+// ooRexx ::routine name   mpz_add_ui
+//
+// (*) it would be nice, if the REXX_TYPED_ROUTINE name was also called 'mpz_add_ui'
+// but that won't work as it collides with the original C GMP name 'mpz_add_ui'
+// so we call it 'rtn_add_ui' and let the ooRexx directive
+// ::routine mpz_add_ui public external 'library mpz rtn_add_ui'
+// do the renaming
 RexxRoutineEntry mpz_routines[] = {
-  REXX_TYPED_ROUTINE(rtnNextPrime,  rtn_z_nextPrime),
-  REXX_TYPED_ROUTINE(selfNextPrime, rtn_self_z_nextPrime),
+  TYPED_ROUTINE(add2           ),  // development only
+  TYPED_ROUTINE(add2_ui        ),  // development only
+
+  TYPED_ROUTINE(add            ),
+  TYPED_ROUTINE(add_ui         ),
+  TYPED_ROUTINE(sub            ),
+  TYPED_ROUTINE(sub_ui         ),
+  TYPED_ROUTINE(ui_sub         ),
+  TYPED_ROUTINE(mul            ),
+  TYPED_ROUTINE(mul_si         ),
+  TYPED_ROUTINE(mul_ui         ),
+  TYPED_ROUTINE(addmul         ),
+  TYPED_ROUTINE(addmul_ui      ),
+  TYPED_ROUTINE(submul         ),
+  TYPED_ROUTINE(submul_ui      ),
+  TYPED_ROUTINE(mul_2exp       ),
+  TYPED_ROUTINE(neg            ),
+  TYPED_ROUTINE(abs            ),
+
+  // 5.6 Division Functions
+  TYPED_ROUTINE(cdiv_q         ),
+  TYPED_ROUTINE(cdiv_r         ),
+  TYPED_ROUTINE(cdiv_qr        ),
+  TYPED_ROUTINE(tdiv_q         ),
+  TYPED_ROUTINE(tdiv_r         ),
+  TYPED_ROUTINE(tdiv_qr        ),
+  TYPED_ROUTINE(mod            ),
+  TYPED_ROUTINE(mod_ui         ),
+  TYPED_ROUTINE(divexact       ),
+  TYPED_ROUTINE(divexact_ui    ),
+  TYPED_ROUTINE(divisible_p    ),
+  TYPED_ROUTINE(divisible_ui_p ),
+  TYPED_ROUTINE(divisible_2exp_p ),
+  TYPED_ROUTINE(congruent_p    ),
+  TYPED_ROUTINE(congruent_ui_p ),
+  TYPED_ROUTINE(congruent_2exp_p ),
+
+  // 5.7 Exponentiation Functions
+  TYPED_ROUTINE(powm           ),
+  TYPED_ROUTINE(powm_ui        ),
+  TYPED_ROUTINE(pow_ui         ),
+  TYPED_ROUTINE(ui_pow_ui      ),
+
+  // 5.8 Root Extraction Functions
+  TYPED_ROUTINE(root           ),
+  TYPED_ROUTINE(rootrem        ),
+  TYPED_ROUTINE(sqrt           ),
+  TYPED_ROUTINE(sqrtrem        ),
+  TYPED_ROUTINE(perfect_power_p ),
+  TYPED_ROUTINE(perfect_square_p ),
+
+  // 5.9 Number Theoretic Functions
+  TYPED_ROUTINE(probab_prime_p ),
+  TYPED_ROUTINE(nextprime      ),
+  TYPED_ROUTINE(gcd            ),
+  TYPED_ROUTINE(gcd_ui         ),
+  TYPED_ROUTINE(gcdext         ),
+  TYPED_ROUTINE(lcm            ),
+  TYPED_ROUTINE(lcm_ui         ),
+  TYPED_ROUTINE(invert         ),
+  TYPED_ROUTINE(jacobi         ),
+  TYPED_ROUTINE(legendre       ),
+  TYPED_ROUTINE(kronecker      ),
+  TYPED_ROUTINE(kronecker_si   ),
+  TYPED_ROUTINE(kronecker_ui   ),
+  TYPED_ROUTINE(si_kronecker   ),
+  TYPED_ROUTINE(ui_kronecker   ),
+  TYPED_ROUTINE(remove         ),
+  TYPED_ROUTINE(fac_ui         ),
+  TYPED_ROUTINE(fac_ui         ),
+  TYPED_ROUTINE(2fac_ui        ),
+  TYPED_ROUTINE(mfac_uiui      ),
+  TYPED_ROUTINE(primorial_ui   ),
+  TYPED_ROUTINE(bin_ui         ),
+  TYPED_ROUTINE(bin_uiui       ),
+  TYPED_ROUTINE(fib_ui         ),
+  TYPED_ROUTINE(fib2_ui        ),
+  TYPED_ROUTINE(lucnum_ui      ),
+  TYPED_ROUTINE(lucnum2_ui     ),
+
+  // 5.10 Comparison Functions
+  TYPED_ROUTINE(cmp            ),
+  //PED_ROUTINE(cmp_d          ),
+  TYPED_ROUTINE(cmp_si         ),
+  TYPED_ROUTINE(cmp_ui         ),
+  TYPED_ROUTINE(cmpabs         ),
+  //PED_ROUTINE(cmpabs_d       ),
+  TYPED_ROUTINE(cmpabs_ui      ),
+  TYPED_ROUTINE(sgn            ),
+
+  // 5.11 Logical and Bit Manipulation Functions
+  TYPED_ROUTINE(and            ),
+  TYPED_ROUTINE(ior            ),
+  TYPED_ROUTINE(xor            ),
+  TYPED_ROUTINE(com            ),
+  TYPED_ROUTINE(popcount       ),
+  TYPED_ROUTINE(hamdist        ),
+  TYPED_ROUTINE(scan0          ),
+  TYPED_ROUTINE(scan1          ),
+  TYPED_ROUTINE(setbit         ),
+  TYPED_ROUTINE(clrbit         ),
+  TYPED_ROUTINE(combit         ),
+  TYPED_ROUTINE(tstbit         ),
+
+
   REXX_LAST_ROUTINE()
 };
 
+
+// method naming is different from above routine naming.  let's take 'add' as an example:
+// C GMP names             mpz_add, mpz_add_ui
+// C RexxMethod(n) name    z_add
+// REXX_METHOD name        add (*)
+// ooRexx ::routine names  '+', add
+//
+// (*) by naming the REXX_METHOD 'add' we can use the ooRexx directive
+// ::routine add public external 'library mpz'
 RexxMethodEntry mpz_methods[] = {
   // class methods
   REXX_METHOD(init_cls,      z_init_cls),
@@ -1438,6 +1978,8 @@ RexxMethodEntry mpz_methods[] = {
   REXX_METHOD(get,           z_get),
 
   // 5.5 Arithmetic Functions
+  REXX_METHOD(add2,          z_add2), // development only
+
   REXX_METHOD(add,           z_add),
   REXX_METHOD(sub,           z_sub),
   REXX_METHOD(mul,           z_mul),
@@ -1479,6 +2021,12 @@ RexxMethodEntry mpz_methods[] = {
   // 5.10 Comparison Functions
   REXX_METHOD(compareTo,     z_compareTo),
   REXX_METHOD(sgn,           z_sgn),
+
+  // 5.11 Logical and Bit Manipulation Functions
+  REXX_METHOD(and,           z_and),
+  REXX_METHOD(ior,           z_ior),
+  REXX_METHOD(xor,           z_xor),
+  REXX_METHOD(com,           z_com),
 
   // 5.13 Random Number Functions
   REXX_METHOD(random,        z_random_cls),

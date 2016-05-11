@@ -1,16 +1,16 @@
--- GMP MPZ class
+-- GMP MPZ class interface
 
-::routine nextPrime          public external 'library mpz rtnNextPrime'
-::routine selfNextPrime      public external 'library mpz selfNextPrime'
+------------------------------------------------------------------------
+-- MPZ method interface
 
 ::class z public inherit Orderable Comparable
   -- class methods
   ::method init         class external 'library mpz init_cls' -- cannot be private
   ::method "[]"         class external 'library mpz of_cls'
   ::method version      class external 'library mpz'
-  ::method test         class external 'library mpz'
+  ::method test         class external 'library mpz' -- development dummy
 
-  -- instance methods
+  -- instance methods (plus class methods like fac() or primorial() )
 
   -- 5.1 Initialization Functions
   -- https://gmplib.org/manual/Initializing-Integers.html
@@ -29,6 +29,8 @@
 
   -- 5.5 Arithmetic Functions
   -- https://gmplib.org/manual/Integer-Arithmetic.html
+  ::method "addx"         external 'library mpz' -- development test
+
   ::method "+"          external 'library mpz add'
   ::method "-"          external 'library mpz sub'
   ::method "*"          external 'library mpz mul'
@@ -92,4 +94,31 @@
 
   -- Non-GMP convenience 'String'-like functions
   ::method endsWith     external 'library mpz'
+
+
+------------------------------------------------------------------------
+-- MPZ routine interface
+
+::routine add       public external 'library mpz rtn_add' 
+::routine add_ui    public external 'library mpz rtn_add_ui'
+::routine sub       public external 'library mpz rtn_sub' 
+::routine sub_ui    public external 'library mpz rtn_sub_ui'
+::routine mul       public external 'library mpz rtn_mul' 
+::routine mul_si    public external 'library mpz rtn_mul_si'
+::routine mul_ui    public external 'library mpz rtn_mul_ui'
+::routine addmul    public external 'library mpz rtn_addmul'
+::routine addmul_ui public external 'library mpz rtn_addmul_ui'
+::routine submul    public external 'library mpz rtn_submul'
+::routine submul_ui public external 'library mpz rtn_submul_ui'
+::routine cdiv_q    public external 'library mpz rtn_cdiv_q'
+::routine cdiv_r    public external 'library mpz rtn_cdiv_r'
+::routine cdiv_qr   public external 'library mpz rtn_cdiv_qr'
+::routine powm      public external 'library mpz rtn_powm'
+::routine powm_ui   public external 'library mpz rtn_powm_ui'
+::routine pow_ui    public external 'library mpz rtn_pow_ui'
+::routine ui_pow_ui public external 'library mpz rtn_ui_pow_ui'
+
+::routine nextprime public external 'library mpz rtn_nextprime'
+::routine gcd       public external 'library mpz rtn_gcd'
+::routine fac_ui    public external 'library mpz rtn_fac_ui'
 
