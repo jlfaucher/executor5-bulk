@@ -215,4 +215,63 @@ return testResult
   f4 = .file~new("XXXXXXXX", f~parentFile)   -- this should be the same file
   self~assertEquals(f, f4)
 
+
+-- additional timestamp tests
+::method test_file_lastmodified
+  f = .file~new("test_file_lastmodified")
+  self~addTempfile(f)                  -- schedule for automatic deletion
+
+  -- create the test file
+  s = .Stream~new(f)
+  self~assertEquals("READY:", s~open("write replace"), "couldn't create test file '"f~name"'")
+  s~lineOut("File.testGroup: test_file_lastmodified")
+  s~close
+ 
+  -- ooRexx provides various interfaces to retrieve file time stamps:
+  --   File~lastModified,
+  --   Stream~query("timestamp") (we'll ignore Stream~query("datetime") as it doesn't provide a 4-digit year),
+  --   SysGetFileDateTime(, "write"), and
+  --   SysFileTree(dir, , "FL")
+  -- check them all for consistency
+  do 2 -- we'll run two iterations: first w/o, and then with a read/write lock
+
+    -- file time from File~lastModified
+    tLastModified = f~lastModified     -- e. g. 2015-06-06 15:12:08.000000
+    self~assertTrue(tLastModified~isA(.DateTime))
+    self~assertTrue(tLastModified <= .DateTime~new, "test timestamp" tLastModified" should be before" .DateTime~new)
+    tLastModified = tLastModified~string~left(19) -- we'll ignore fractions of seconds
+
+    -- file time from Stream~query("timestamp")
+    -- a. query a closed stream
+    q = .Stream~new(f)
+    t = q~query("timestamp")           -- e. g. 2015-06-06 15:12:08
+    tQuery = t~word(1)"T"t~word(2) 
+    self~assertEquals(tLastModified, tQuery, "~lastModified timestamp" tLastModified" should be equal to ~query('timestamp')" tQuery)
+    -- b. query an opened stream (will only work if no read/write lock is applied)
+    -- (we want to test both SysFile::getTimeStamp code paths)
+    q~open("read shared")              -- will silently fail if locked
+    t = q~query("timestamp")           -- e. g. 2015-06-06 15:12:08
+    tQuery = t~word(1)"T"t~word(2) 
+    self~assertEquals(tLastModified, tQuery, "~lastModified timestamp" tLastModified" should be equal to ~query('timestamp')" tQuery)
+    q~close
+
+    -- file time from SysGetFileDateTime(, "write")
+    t = SysGetFileDateTime(f~absolutePath, "write") -- e. g. 2015-06-06 15:12:08
+    tSysGet = t~word(1)"T"t~word(2)
+    self~assertEquals(tLastModified, tSysGet, "~lastModified timestamp" tLastModified" should be equal to SysGetFileDateTime() timestamp" tSysGet)
+
+    -- file time from SysFileTree(dir, , "FL")
+    call SysFileTree f~absolutePath, "FILE.", "FL" -- list files only; use long timestamps
+    tTree = file.1~word(1)"T"file.1~word(2) -- e. g. 2015-06-06 15:12:08
+    self~assertEquals(tLastModified, tTree, "~lastModified timestamp" tLastModified" should be equal to SysFileTree() timestamp" tTree)
+
+    -- now let's start a second iteration with:
+    -- a. an exclusive read/write lock on the test file, and
+    -- b. the test time stamp moved 180 days into the past
+    self~assertEquals("READY:", s~open("both"), "couldn't get read/write lock for test file '"f~name"'")
+    f~lastModified = f~lastModified - .TimeSpan~fromDays(180)
+  end
+  s~close
+  f~delete
+
 -- End of class: File.testGroup
