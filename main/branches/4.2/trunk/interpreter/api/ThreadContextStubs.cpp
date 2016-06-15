@@ -576,7 +576,7 @@ RexxPackageObject RexxEntry GetRoutinePackage(RexxThreadContext *c, RexxRoutineO
     catch (RexxNativeActivation *)
     {
     }
-    return nullptr;
+    return NULLOBJECT;
 }
 
 RexxPackageObject RexxEntry GetMethodPackage(RexxThreadContext *c, RexxMethodObject o)
@@ -590,7 +590,7 @@ RexxPackageObject RexxEntry GetMethodPackage(RexxThreadContext *c, RexxMethodObj
     catch (RexxNativeActivation *)
     {
     }
-    return nullptr;
+    return NULLOBJECT;
 }
 
 POINTER RexxEntry ObjectToCSelf(RexxThreadContext *c, RexxObjectPtr o)
