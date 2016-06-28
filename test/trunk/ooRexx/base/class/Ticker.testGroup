@@ -70,7 +70,7 @@ return testResult
   ticker = .Ticker~new(0.5, t1)
   self~assertTrue(t1~triggerCount = 0) -- shouldn't have triggered yet
   call syssleep 0.75                   -- let Ticker trigger once
-  self~assertTrue(t1~triggerCount = 1) -- should have triggered once
+  self~assertTrue(t1~triggerCount = 1, "should have triggered once, but triggered" t1~triggerCount "times")
   self~assertSame(ticker, t1~triggerTicker)
   self~assertSame(.nil, t1~triggerAttached)
   ticker~cancel
@@ -94,7 +94,7 @@ return testResult
   ticker = .Ticker~new(.TimeSpan~fromSeconds(0.5), t1)
   self~assertTrue(t1~triggerCount = 0) -- shouldn't have triggered yet
   call syssleep 0.75                   -- let Ticker trigger once
-  self~assertTrue(t1~triggerCount = 1) -- should have triggered once
+  self~assertTrue(t1~triggerCount = 1, "should have triggered once, but triggered" t1~triggerCount "times")
   self~assertSame(ticker, t1~triggerTicker)
   self~assertSame(.nil, t1~triggerAttached)
   ticker~cancel
@@ -118,7 +118,7 @@ return testResult
   ticker = .Ticker~new(0.5, t1, "attachment")
   self~assertTrue(t1~triggerCount = 0) -- shouldn't have triggered yet
   call syssleep 0.75                   -- let Ticker trigger once
-  self~assertTrue(t1~triggerCount = 1) -- should have triggered once
+  self~assertTrue(t1~triggerCount = 1, "should have triggered once, but triggered" t1~triggerCount "times")
   self~assertSame(ticker, t1~triggerTicker)
   self~assertSame("attachment", t1~triggerAttached)
   ticker~cancel
@@ -141,7 +141,7 @@ return testResult
   ticker = .Ticker~new(.TimeSpan~fromSeconds(0.5), t1, "attachment")
   self~assertTrue(t1~triggerCount = 0) -- shouldn't have triggered yet
   call syssleep 0.75                   -- let Ticker trigger once
-  self~assertTrue(t1~triggerCount = 1) -- should have triggered once
+  self~assertTrue(t1~triggerCount = 1, "should have triggered once, but triggered" t1~triggerCount "times")
   self~assertSame(ticker, t1~triggerTicker)
   self~assertSame("attachment", t1~triggerAttached)
   ticker~cancel
@@ -155,7 +155,7 @@ return testResult
   ticker = .Ticker~new(.TimeSpan~fromMicroseconds(270000), t1, "attachment")
   self~assertTrue(t1~triggerCount = 0) -- shouldn't have triggered yet
   call syssleep 1                      -- let Ticker trigger multiple times
-  self~assertTrue(t1~triggerCount = 3) -- should have triggered three times
+  self~assertTrue(t1~triggerCount = 3, "should have triggered three times, but triggered" t1~triggerCount "times")
   self~assertSame(ticker, t1~triggerTicker)
   self~assertSame("attachment", t1~triggerAttached)
   ticker~cancel
@@ -171,7 +171,7 @@ return testResult
   ticker = .Ticker~new(0.5, m1, "attachment")
   self~assertTrue(t1~triggerCount = 0) -- shouldn't have triggered yet
   call syssleep 0.75                   -- let Ticker trigger once
-  self~assertTrue(t1~triggerCount = 1) -- should have triggered once
+  self~assertTrue(t1~triggerCount = 1, "should have triggered once, but triggered" t1~triggerCount "times")
   self~assertSame(.nil, t1~triggerTicker)   -- .Message doesn't pass
   self~assertSame(.nil, t1~triggerAttached) -- no ticker, so no attachment
   ticker~cancel
