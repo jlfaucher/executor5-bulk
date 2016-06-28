@@ -55,10 +55,10 @@ case "${UNAME_SYSTEM}" in
       ;;
 
     Darwin)
-      echo "Setting env for Linux"
+      echo "Setting env for MacOS"
       frameworkPath=`pwd`:`pwd`/framework:
       export PATH=$frameworkPath$PATH
-      export LD_LIBRARY_PATH=`pwd`/bin/MACOS:$LD_LIBRARY_PATH
+      export LD_LIBRARY_PATH=`pwd`/bin/DARWIN:$LD_LIBRARY_PATH
       ;;
 
     *)
