@@ -1,0 +1,146 @@
+#!/usr/bin/rexx
+/*
+  SVN Revision: $Rev: 11081 $
+  Change Date:  $Date: 2016-07-01 09:00:00 +0200 $
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2016 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
+
+  group = .TestGroup~new(fileSpec)
+--group~add(.ArrayNewSize.testGroup)           we assume Array already tests this
+  group~add(.BagNewSize.testGroup)
+--group~add(.CircularQueueNewSize.testGroup)   we assume CircularQueue already tests this
+  group~add(.DirectoryNewSize.testGroup)
+  group~add(.IdentityTableNewSize.testGroup)
+  group~add(.ListNewSize.testGroup)
+  group~add(.PropertiesNewSize.testGroup)
+  group~add(.QueueNewSize.testGroup)
+  group~add(.RelationNewSize.testGroup)
+  group~add(.SetNewSize.testGroup)
+--group~add(.StemNewSize.testGroup)            we assume Stem already tests this
+  group~add(.StringTableNewSize.testGroup)
+  group~add(.TableNewSize.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires 'ooTest.frm'     -- load the ooRexxUnit classes
+
+::class BagNewSize.testGroup subclass CollectionNewSize.testGroup public
+::method collection
+  return .Bag
+
+::class DirectoryNewSize.testGroup subclass CollectionNewSize.testGroup public
+::method collection
+  return .Directory
+
+::class IdentityTableNewSize.testGroup subclass CollectionNewSize.testGroup public
+::method collection
+  return .IdentityTable
+
+::class ListNewSize.testGroup subclass CollectionNewSize.testGroup public
+::method collection
+  return .List
+
+::class PropertiesNewSize.testGroup subclass CollectionNewSize.testGroup public
+::method collection
+  return .Properties
+
+::class QueueNewSize.testGroup subclass CollectionNewSize.testGroup public
+::method collection
+  return .Queue
+
+::class RelationNewSize.testGroup subclass CollectionNewSize.testGroup public
+::method collection
+  return .Relation
+
+::class SetNewSize.testGroup subclass CollectionNewSize.testGroup public
+::method collection
+  return .Set
+
+::class StringTableNewSize.testGroup subclass CollectionNewSize.testGroup public
+::method collection
+  return .StringTable
+
+::class TableNewSize.testGroup subclass CollectionNewSize.testGroup public
+::method collection
+  return .Table
+
+
+::class CollectionNewSize.testGroup subclass ooTestCase public
+
+-- tests for [feature-requests:#604] Allow collections other than array to accept an initial size 
+
+::method test_collection_new_2_args
+  self~expectSyntax(93.902)
+  self~collection~new(.nil, .nil)
+
+::method test_collection_new_arg_1_nil
+  self~expectSyntax(93.923)
+  self~collection~new(.nil)
+
+::method test_collection_new_arg_1_notnumeric
+  self~expectSyntax(93.923)
+  self~collection~new("string")
+
+::method test_collection_new_arg_1_notwhole
+  self~expectSyntax(93.923)
+  self~collection~new(1.0001)
+
+::method test_collection_new_arg_1_negative
+  self~expectSyntax(93.923)
+  self~collection~new(-1)
+
+::method test_collection_new
+  -- we'll test initial size values of 0 .. 25, 100, 1000, 10000, and 100000
+  -- we cannot really check the allocated size (only Array and CircularQueue
+  -- provide a 'size' method), so we only test for 'isEmtpy' and 'items' = 0 
+  do size = 0 to 25
+    c = self~collection~new(size)
+    self~assertTrue(c~isEmpty)
+    self~assertEquals(0, c~items)
+  end
+  do power = 2 to 5
+    c = self~collection~new(10 ** power)
+    self~assertTrue(c~isEmpty)
+    self~assertEquals(0, c~items)
+  end
