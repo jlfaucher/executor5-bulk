@@ -39,12 +39,9 @@
     parse source . . fileSpec;
 
     group = .TestGroup~new(fileSpec)
-    group~markNoTests("The rxunixsys extension has not been integrated in the ooRexx distribution at this time")
 
-    /* TODO uncomment the below, add code to only load package on Unixes
     group~add(.SysUnix.testGroup)
     group~restrictOS("LINUX")
-    */
 
     if group~isAutomatedTest then return group
 
@@ -152,17 +149,47 @@ return testResult
 
 ::method 'testSysSetxattr'
     parse source . . file
+    if rxfuncquery("SysSetxattr") then -- may be unavailable on some systems
+      return
     self~assertEquals("NUM", SysSetxattr(file, 'user.mime_type', 'rexx/exec')~datatype())
 
 ::method 'testSysGetxattr'
     parse source . . file
+    if rxfuncquery("SysGetxattr") then -- may be unavailable on some systems
+      return
     self~assertNotEquals("", SysGetxattr(file, 'user.mime_type'))
 
 ::method 'testSysListxattr'
     parse source . . file
+    if rxfuncquery("SysListxattr") then -- may be unavailable on some systems
+      return
     self~assertTrue(SysListxattr(file)~isa(.array))
 
 ::method 'testSysRemovexattr'
     parse source . . file
+    if rxfuncquery("SysRemovexattr") then -- may be unavailable on some systems
+      return
     self~assertEquals("NUM", SysRemovexattr(file, 'user.mime_type')~datatype())
 
+::method test_SysGetservbyname
+  -- we assume the following line exists in /etc/services
+  -- http            80/tcp          www 
+  port = SysGetservbyname("http", "tcp", "port")
+  self~assertEquals(80, port, "http port assumed to be 80, not" port);
+
+  name = SysGetservbyname("http", "tcp", "name")
+  self~assertEquals(80, port, "http name assumed to be 'http', not" name);
+  name = SysGetservbyname("www", "tcp", "n")
+  self~assertEquals(80, port, "www name assumed to be 'http', not" name);
+
+::method test_SysGetservbyport
+  -- we assume the following line exists in /etc/services
+  -- http            80/tcp          www
+  port = SysGetservbyport(80, "tcp", "port")
+  self~assertEquals(80, port, "port 80 assumed to be 80, not" port);
+
+  name = SysGetservbyport(80, "tcp", "name")
+  self~assertEquals(80, port, "port 80 assumed to be 'http', not" name);
+
+
+::requires "rxunixsys" LIBRARY
