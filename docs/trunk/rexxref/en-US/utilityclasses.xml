@@ -1331,7 +1331,7 @@ number. The default <emphasis role="italic">offset</emphasis> is the current sys
 </mediaobject>
 
 <para>Creates a DateTime object from a string returned by the Normal option
-of the <xref linkend="bifDate" xrefstyle="select:title"/> built-in function.
+of the <xref linkend="bifDate" xrefstyle="select:title"/> built-in function (dd mon yyyy).
 The time component will be set to the beginning of the input day (00:00:00.000000).</para>
 <para>
 If specified, <emphasis role="italic">separator</emphasis>
@@ -1358,7 +1358,7 @@ number. The default <emphasis role="italic">offset</emphasis> is the current sys
 </mediaobject>
 
 <para>Creates a DateTime object from a string returned by the European option
-of the <xref linkend="bifDate" xrefstyle="select:title"/> built-in function.
+of the <xref linkend="bifDate" xrefstyle="select:title"/> built-in function (dd/mm/yy).
 The time component will be set to the beginning of the input day (00:00:00.000000).</para>
 <para>
 If specified, <emphasis role="italic">separator</emphasis>
@@ -1387,7 +1387,7 @@ number. The default <emphasis role="italic">offset</emphasis> is the current sys
 </mediaobject>
 
 <para>Creates a DateTime object from a string returned by the Ordered option
-of the <xref linkend="bifDate" xrefstyle="select:title"/> built-in function.
+of the <xref linkend="bifDate" xrefstyle="select:title"/> built-in function (yy/mm/dd).
 The time component will be set to the beginning of the input day (00:00:00.000000).</para>
 <para>
 If specified, <emphasis role="italic">separator</emphasis>
@@ -1415,7 +1415,7 @@ number. The default <emphasis role="italic">offset</emphasis> is the current sys
 </mediaobject>
 
 <para>Creates a DateTime object from a string returned by the Standard option
-of the <xref linkend="bifDate" xrefstyle="select:title"/> built-in function.
+of the <xref linkend="bifDate" xrefstyle="select:title"/> built-in function (yyyymmdd).
 The time component will be set to the beginning of the input day (00:00:00.000000).</para>
 <para>
 If specified, <emphasis role="italic">separator</emphasis>
@@ -1442,7 +1442,7 @@ number. The default <emphasis role="italic">offset</emphasis> is the current sys
 </mediaobject>
 
 <para>Creates a DateTime object from a string returned by the Usa option
-of the <xref linkend="bifDate" xrefstyle="select:title"/> built-in function.
+of the <xref linkend="bifDate" xrefstyle="select:title"/> built-in function (mm/dd/yy).
 The time component will be set to the beginning of the input day (00:00:00.000000).</para>
 <para>
 If specified, <emphasis role="italic">separator</emphasis>
@@ -1469,7 +1469,7 @@ number. The default <emphasis role="italic">offset</emphasis> is the current sys
 </mediaobject>
 
 <para>Creates a DateTime object from a string returned by the Normal option
-of the <xref linkend="bifTime" xrefstyle="select:title"/> built-in function.
+of the <xref linkend="bifTime" xrefstyle="select:title"/> built-in function (hh:mm:ss).
 The date component will be set to 1 January 0001.</para>
 <para>
 If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
@@ -1492,7 +1492,7 @@ number. The default <emphasis role="italic">offset</emphasis> is the current sys
 </mediaobject>
 
 <para>Creates a DateTime object from a string returned by the Civil option
-of the <xref linkend="bifTime" xrefstyle="select:title"/> built-in function.
+of the <xref linkend="bifTime" xrefstyle="select:title"/> built-in function (hh:mmxx).
 The date component will be set to 1 January 0001.</para>
 <para>
 If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
@@ -1515,7 +1515,7 @@ number. The default <emphasis role="italic">offset</emphasis> is the current sys
 </mediaobject>
 
 <para>Creates a DateTime object from a string returned by the Long option
-of the <xref linkend="bifTime" xrefstyle="select:title"/> built-in function.
+of the <xref linkend="bifTime" xrefstyle="select:title"/> built-in function (hh:mm:ss.uuuuuu).
 The date component will be set to 1 January 0001.</para>
 <para>
 If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
@@ -1537,8 +1537,8 @@ number. The default <emphasis role="italic">offset</emphasis> is the current sys
 </imageobject>
 </mediaobject>
 
-<para>Creates a DateTime object from a string returned by the Basedate option
-of the <xref linkend="bifDate" xrefstyle="select:title"/> built-in function.
+<para>Creates a DateTime object from a string returned by the Base option
+of the <xref linkend="bifDate" xrefstyle="select:title"/> built-in function (dddddd).
 The time component will be set to the beginning of the input day (00:00:00.000000).</para>
 <para>
 If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
@@ -1562,7 +1562,7 @@ number. The default <emphasis role="italic">offset</emphasis> is the current sys
 
 <para>Creates a DateTime object from a string returned by the Ticks option
 of the <xref linkend="bifDate" xrefstyle="select:title"/> or
-<xref linkend="bifTime" xrefstyle="select:title"/> built-in functions.
+<xref linkend="bifTime" xrefstyle="select:title"/> built-in functions (dddddddddddd).
 </para>
 <para>
 If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
@@ -1585,7 +1585,7 @@ number. The default <emphasis role="italic">offset</emphasis> is the current sys
 </mediaobject>
 
 <para>Creates a DateTime object from a string in ISO date format
-(yyyy-mm-ddThh:mm:ss.uuuuuu).  The DateTime string method returns
+(yyyy-mm-ddThh:mm:ss.uuuuuu).  The DateTime <methodname>string</methodname> method returns
 the ISO format as the string form of a DateTime object.
 </para>
 <para>
@@ -1609,7 +1609,7 @@ number. The default <emphasis role="italic">offset</emphasis> is the current sys
 </mediaobject>
 
 <para>Creates a DateTime object from a string in ISO timezone qualified date
-format (yyyy-mm-ddThh:mm:ss.uuuuuu+hhmm).  The DateTime string method returns
+format (yyyy-mm-ddThh:mm:ss.uuuuuu+hhmm).  The DateTime <methodname>string</methodname> method returns
 the ISO format as the string form of a DateTime object.
 </para>
 </section>
@@ -8768,7 +8768,7 @@ The <emphasis role="italic">microseconds</emphasis> argument must be a valid Rex
 </mediaobject>
 
 <para>Creates a TimeSpan object from a string returned by the Normal option
-of the <xref linkend="bifTime" xrefstyle="select:title"/> built-in function.
+of the <xref linkend="bifTime" xrefstyle="select:title"/> built-in function (hh:mm:ss).
 The TimeSpan will contain an interval equal to the time of day represented by the string.
 </para>
 </section>
@@ -8787,7 +8787,7 @@ The TimeSpan will contain an interval equal to the time of day represented by th
 </mediaobject>
 
 <para>Creates a TimeSpan object from a string returned by the Civil option
-of the <xref linkend="bifTime" xrefstyle="select:title"/> built-in function.
+of the <xref linkend="bifTime" xrefstyle="select:title"/> built-in function (hh:mmxx).
 The TimeSpan will contain an interval equal to the time of day represented by the string.
 </para>
 </section>
@@ -8806,7 +8806,7 @@ The TimeSpan will contain an interval equal to the time of day represented by th
 </mediaobject>
 
 <para>Creates a TimeSpan object from a string returned by the Long option
-of the <xref linkend="bifTime" xrefstyle="select:title"/> built-in function.
+of the <xref linkend="bifTime" xrefstyle="select:title"/> built-in function (hh:mm:ss.uuuuuu).
 The TimeSpan will contain an interval equal to the time of day represented by the string.
 </para>
 </section>
@@ -8824,7 +8824,7 @@ The TimeSpan will contain an interval equal to the time of day represented by th
 </imageobject>
 </mediaobject>
 
-<para>Creates a TimeSpan object from a string in the format returned by the TimeSpan string method.
+<para>Creates a TimeSpan object from a string in the format returned by the TimeSpan <methodname>string</methodname> method.
 </para>
 </section>
 

@@ -523,7 +523,7 @@ rclass=.class~enhanced(rclassmeths,"Remote Class")
 </mediaobject>
 
 <para>Returns the class identity (instance) string. (This is the string that
-is an argument on the <methodname>subClass</methodname> and
+is an argument on the <methodname>subclass</methodname> and
 <methodname>mixinClass</methodname> methods.) The string
 representations of the class and its instances contain the class identity.</para>
 <indexterm><primary>examples</primary>
@@ -531,7 +531,7 @@ representations of the class and its instances contain the class identity.</para
 <example id="ex.class-id">
 <title>Class class &mdash; id method</title>
 <programlisting>
-myobject=.object~subClass("my object")  /* Creates a subclass    */
+myobject=.object~subclass("my object")  /* Creates a subclass    */
 say myobject~id                         /* Produces: "my object" */
 </programlisting>
 </example>
@@ -651,7 +651,7 @@ end
 </section>
 
 
-<section id="mthClassIsSubclassOf"><title>isSubClassOf</title>
+<section id="mthClassIsSubclassOf"><title>isSubclassOf</title>
 <indexterm><primary>isSubclassOf method</primary>
 <secondary>of Class class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -735,7 +735,7 @@ error is raised.</para>
 <title>Class class &mdash; method method</title>
 <programlisting>
 /* Create and retrieve the method definition of a class */
-myclass=.object~subClass("My class")   /* Create a class         */
+myclass=.object~subclass("My class")   /* Create a class         */
 mymethod=.method~new(" ","Say arg(1)") /* Create a method object */
 myclass~define("ECHO",mymethod)        /* Define it in the class */
 method_source = myclass~method("ECHO")~source     /* Extract it  */
@@ -971,7 +971,7 @@ metaclass of a class.</para>
 receiver class, with the addition of the new subclass at the start of the
 order.</para>
 <indexterm><primary>examples</primary>
-<secondary>subClass method</secondary></indexterm>
+<secondary>subclass method</secondary></indexterm>
 <example id="ex.class-subclass">
 <title>Class class &mdash; subclass method</title>
 <programlisting>
@@ -1016,7 +1016,7 @@ unspecified order. (The program should not rely on any order.)
 
 <para>Returns the immediate superclass of the receiver class. The
 immediate superclass is
-the original class used on a <methodname>subClass</methodname> or a
+the original class used on a <methodname>subclass</methodname> or a
 <methodname>mixinClass</methodname> method. For the Object Class,
 <methodname>superClass</methodname> returns &nil;.</para>
 
@@ -1047,12 +1047,12 @@ say .set~superclass       -- displays "The Table class"
 
 <para>Returns the immediate superclasses of the receiver class in the form of
 a single-index array of the required size. The immediate superclasses are
-the original class used on a <methodname>subClass</methodname> or a
+the original class used on a <methodname>subclass</methodname> or a
 <methodname>mixinClass</methodname> method, plus any additional
 superclasses defined with the <methodname>inherit</methodname>
 method. The array is in the order in
 which the class has inherited the classes. The original class used on a
-<methodname>subClass</methodname> or
+<methodname>subclass</methodname> or
 <methodname>mixinClass</methodname> method is the first item of the
 array.
 </para>
