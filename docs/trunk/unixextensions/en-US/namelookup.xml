@@ -94,14 +94,15 @@ C API to perform the action.</para>
 <para><emphasis role="bold">Parameter:</emphasis></para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">name</emphasis></term>
-<listitem><para>The service name.
+<listitem><para>The service name (case-sensitive).
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="italic">proto</emphasis></term>
-<listitem><para>The protocol name, usually TCP or UDP.
+<listitem><para>The protocol name, usually "tcp" or "udp" (case-sensitive).
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="italic">option</emphasis></term>
 <listitem><para>An option specifying the information to return.
-The values are all case insensitive and only the first letter of the option value is checked.
+The <emphasis role="italic">option</emphasis> values are all case insensitive
+and only the first letter is significant.
 Allowed values are:
 <variablelist>
 <varlistentry><term>"NAME"</term>
@@ -122,10 +123,8 @@ Allowed values are:
 <title>SysGetservbyname</title>
 <programlisting>
 <![CDATA[
-/* the following examples came from a Linux laptop running Fedora */
-
-SysGetservbyname("HTTP", "TCP", "n")      -->  HTTP
-SysGetservbyname("HTTP", "TCP", "p")      -->  80
+SysGetservbyname("http", "tcp", "n")      -->  http
+SysGetservbyname("http", "tcp", "p")      -->  80
 ]]>
 </programlisting>
 </example>
@@ -150,11 +149,12 @@ C API to perform the action.</para>
 <listitem><para>The service port number.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="italic">proto</emphasis></term>
-<listitem><para>The protocol name, usually TCP or UDP.
+<listitem><para>The protocol name, usually "tcp" or "udp" (case-sensitive).
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="italic">option</emphasis></term>
 <listitem><para>An option specifying the information to return.
-The values are all case insensitive and only the first letter of the option value is checked.
+The <emphasis role="italic">option</emphasis> values are all case insensitive
+and only the first letter is significant.
 Allowed values are:
 <variablelist>
 <varlistentry><term>"NAME"</term>
@@ -163,7 +163,7 @@ Allowed values are:
 <varlistentry><term>"PORT"</term>
 <listitem><para>The service port number.
 </para></listitem></varlistentry>
-<varlistentry><term>"ALAISES"</term>
+<varlistentry><term>"ALIASES"</term>
 <listitem><para>The services alias names are returned in an array.
 </para></listitem></varlistentry>
 </variablelist>
@@ -175,10 +175,8 @@ Allowed values are:
 <title>SysGetservbyport</title>
 <programlisting>
 <![CDATA[
-/* the following examples came from a Linux laptop running Fedora */
-
-SysGetservbyport(80, "TCP", "n")      -->  HTTP
-SysGetservbyport(80, "TCP", "p")      -->  80
+SysGetservbyport(80, "tcp", "n")      -->  http
+SysGetservbyport(80, "tcp", "p")      -->  80
 ]]>
 </programlisting>
 </example>
