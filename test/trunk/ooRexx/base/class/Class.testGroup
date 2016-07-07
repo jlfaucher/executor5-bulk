@@ -85,6 +85,60 @@ return testResult
 
 ::class "Class.testGroup" subclass ooTestCase public
 
+::method test_class_package
+  -- pre-defined classes have package name "REXX"
+  self~assertEquals("REXX", .Class~package~name)
+
+  -- dynamically compiled routine
+  self~assertEquals("tst_rtn", -
+   .Routine~new("tst_rtn", (("return .tst_cls~package~name", "::class tst_cls")))~call)
+
+  -- the current package should have the source file name as its package name
+  parse source . . sourceFile
+  self~assertEquals(sourceFile, .Context~package~name)
+
+  -- all classes within the current package should have the current package as their package
+  do class over .Context~package~classes~allItems
+    self~assertEquals(.Context~package, class~package) 
+  end
+
+::method test_class_package_one_arg
+  self~expectSyntax(93.902)
+  .Class~package(.nil)
+
+
+::method test_class_isAbstract
+  self~assertTrue(.acbase~isAbstract)
+  self~assertFalse(.ac1~isAbstract)
+  self~assertFalse(.ac2~isAbstract)
+
+  self~assertFalse(.Class~isAbstract)
+  self~assertFalse(.Object~isAbstract)
+  self~assertFalse(.vehicle~isAbstract)
+  self~assertFalse(.roadvehicle~isAbstract)
+  self~assertFalse(.Amphibianvehicle~isAbstract)
+
+::method test_class_isAbstract_one_arg
+  self~expectSyntax(93.902)
+  .Class~isAbstract(.nil)
+
+
+::method test_class_isMetaclass
+  self~assertTrue(.Class~isMetaclass)
+  self~assertTrue(.mcbase~isMetaclass)
+  self~assertTrue(.mc1~isMetaclass)
+  self~assertTrue(.mc2~isMetaclass)
+  self~assertTrue(.mc3~isMetaclass)
+
+  self~assertFalse(.Object~isMetaclass)
+  self~assertFalse(.vehicle~isMetaclass)
+  self~assertFalse(.roadvehicle~isMetaclass)
+  self~assertFalse(.Amphibianvehicle~isMetaclass)
+
+::method test_class_isMetaclass_one_arg
+  self~expectSyntax(93.902)
+  .Class~isMetaclass(.nil)
+
 
 ::method test_issubclassof
   self~assertTrue(.vehicle~issubclassof(.object))
@@ -1351,6 +1405,12 @@ getBags: procedure         -- return indices in an index bag, and method items i
 ::method info
   parse arg string
   forward class (super) array (string"3") -- append '3'
+
+
+::class acbase abstract
+::class ac1 mixinclass acbase
+::class ac2 subclass acbase
+
 
 -- a couple of classes for testing define/delete
 ::class testDefine1
