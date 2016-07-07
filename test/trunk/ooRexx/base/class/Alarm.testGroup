@@ -60,9 +60,16 @@ return testResult
   delay = .timespan~fromSeconds(2.0001)
   alarm = .alarm~new(delay, t1, "My Label")
 
+  self~assertFalse(alarm~triggered)    -- shouldn't have triggered yet
+  self~assertFalse(alarm~canceled)     -- wasn't yet cancelled
+  self~assertFalse(alarm~cancelled)    -- wasn't yet cancelled
+
   -- wait at most 3 seconds
   t1~wait(3)
 
+  self~assertTrue(alarm~triggered)     -- should have triggered by now
+  self~assertFalse(alarm~canceled)     -- wasn't cancelled
+  self~assertFalse(alarm~cancelled)    -- wasn't cancelled
   self~assertTrue(t1~istriggered)
   self~assertSame(alarm, t1~alarm)
   self~assertSame("My Label", alarm~attachment)
@@ -77,9 +84,16 @@ return testResult
   delay = 1.9
   alarm = .alarm~new(delay, t1)
 
+  self~assertFalse(alarm~triggered)    -- shouldn't have triggered yet
+  self~assertFalse(alarm~canceled)     -- wasn't yet cancelled
+  self~assertFalse(alarm~cancelled)    -- wasn't yet cancelled
+
   -- wait at most 3 seconds
   t1~wait(3)
 
+  self~assertTrue(alarm~triggered)     -- should have triggered by now
+  self~assertFalse(alarm~canceled)     -- wasn't cancelled
+  self~assertFalse(alarm~cancelled)    -- wasn't cancelled
   self~assertTrue(t1~istriggered)
   self~assertSame(alarm, t1~alarm)
 
@@ -88,34 +102,55 @@ return testResult
   delay = .datetime~new~addSeconds(2)
   alarm = .alarm~new(delay, t1)
 
+  self~assertFalse(alarm~triggered)    -- shouldn't have triggered yet
+  self~assertFalse(alarm~canceled)     -- wasn't yet cancelled
+  self~assertFalse(alarm~cancelled)    -- wasn't yet cancelled
+
   -- wait at most 3 seconds
   t1~wait(3)
 
+  self~assertTrue(alarm~triggered)     -- should have triggered by now
+  self~assertFalse(alarm~canceled)     -- wasn't cancelled
+  self~assertFalse(alarm~cancelled)    -- wasn't cancelled
   self~assertTrue(t1~istriggered)
   self~assertSame(alarm, t1~alarm)
   -- these should be the same
   self~assertEquals(delay, alarm~scheduledTime)
 
   t1 = .alarmWaiter~new
-  -- just use now use a date time object.
+  -- just use now use a time string
   delay = .datetime~new~addSeconds(2)~normalTime
   alarm = .alarm~new(delay, t1)
+
+  self~assertFalse(alarm~triggered)    -- shouldn't have triggered yet
+  self~assertFalse(alarm~canceled)     -- wasn't yet cancelled
+  self~assertFalse(alarm~cancelled)    -- wasn't yet cancelled
 
   -- wait at most 3 seconds
   t1~wait(3)
 
+  self~assertTrue(alarm~triggered)     -- should have triggered by now
+  self~assertFalse(alarm~canceled)     -- wasn't cancelled
+  self~assertFalse(alarm~cancelled)    -- wasn't cancelled
   self~assertTrue(t1~istriggered)
   self~assertSame(alarm, t1~alarm)
 
   t1 = .alarmWaiter~new
-  -- just use now use a date time object.
+  -- just use now use a time + date string
   date = .datetime~new~addSeconds(2)
   delay = date~normalTime date~normalDate
   alarm = .alarm~new(delay, t1)
 
+  self~assertFalse(alarm~triggered)    -- shouldn't have triggered yet
+  self~assertFalse(alarm~canceled)     -- wasn't yet cancelled
+  self~assertFalse(alarm~cancelled)    -- wasn't yet cancelled
+
   -- wait at most 3 seconds
   t1~wait(3)
 
+  self~assertTrue(alarm~triggered)     -- should have triggered by now
+  self~assertFalse(alarm~canceled)     -- wasn't cancelled
+  self~assertFalse(alarm~cancelled)    -- wasn't cancelled
   self~assertTrue(t1~istriggered)
   self~assertSame(alarm, t1~alarm)
 
@@ -127,9 +162,16 @@ return testResult
   -- cancel after 2 seconds
   t1~cancelAlarm(alarm, 2)
 
+  self~assertFalse(alarm~triggered)    -- shouldn't have triggered yet
+  self~assertFalse(alarm~canceled)     -- wasn't yet cancelled
+  self~assertFalse(alarm~cancelled)    -- wasn't yet cancelled
+
   -- wait at most 3 seconds
   t1~wait(3)
 
+  self~assertFalse(alarm~triggered)    -- was cancelled, hasn't triggered
+  self~assertTrue(alarm~canceled)      -- should have been cancelled
+  self~assertTrue(alarm~cancelled)     -- should have been cancelled
   self~assertFalse(t1~istriggered)
   self~assertTrue(t1~stopped)
   self~assertSame(alarm, t1~alarm)
@@ -142,9 +184,16 @@ return testResult
   delay = .timespan~fromSeconds(2)
   alarm = .alarm~new(delay, m)
 
+  self~assertFalse(alarm~triggered)    -- shouldn't have triggered yet
+  self~assertFalse(alarm~canceled)     -- wasn't yet cancelled
+  self~assertFalse(alarm~cancelled)    -- wasn't yet cancelled
+
   -- wait at most 3 seconds
   t1~wait(3)
 
+  self~assertTrue(alarm~triggered)     -- should have triggered by now
+  self~assertFalse(alarm~canceled)     -- wasn't cancelled
+  self~assertFalse(alarm~cancelled)    -- wasn't cancelled
   self~assertTrue(t1~istriggered)
   self~assertSame(.nil, t1~alarm)
 
