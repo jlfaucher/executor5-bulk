@@ -532,7 +532,7 @@ These types are:</para>
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1">
 <tgroup cols="2">
 <colspec colnum="1" colwidth="1*" />
-<colspec colnum="2" colwidth="4*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row><entry>wholenumber_t</entry>
 <entry><para>conversions involving the wholenumber_t conform to the Rexx whole number
@@ -540,6 +540,16 @@ rules.  Values are converted using the same internal digits value used by the bu
 For 32-bit versions, this is numeric digits 9, giving a range of 999,999,999 to -999,999,999.
 On 64-bit systems, numeric digits 18 is used, giving a range of 999,999,999,999,999,999 to
 -999,999,999,999,999,999.
+</para></entry></row>
+<row><entry>positive_wholenumber_t</entry>
+<entry><para>very similar to above wholenumber_t, but with the added restriction that the value must be equal to or larger than one.
+For 32-bit versions, this gives a range of 999,999,999 to 1.
+On 64-bit systems, the range is 999,999,999,999,999,999 to 1.
+</para></entry></row>
+<row><entry>nonnegative_wholenumber_t</entry>
+<entry><para>very similar to above wholenumber_t, but with the added restriction that the value must be equal to or larger than zero.
+For 32-bit versions, this gives a range of 999,999,999 to 0.
+On 64-bit systems, the range is 999,999,999,999,999,999 to 0.
 </para></entry></row>
 <row><entry>stringsize_t</entry>
 <entry><para>stringsize_t conversions also conform to the Rexx whole number
