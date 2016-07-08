@@ -69,11 +69,11 @@ return .ooTestResult~new(5)~~addException(err)
 ::class 'SysUnix.testgroup' subclass ooTestCase public
 
 ::method 'testSysUname_1'
-    self~assertNotEquals("", SysUname("S"))
-    self~assertNotEquals("", SysUname("N"))
-    self~assertNotEquals("", SysUname("R"))
-    self~assertNotEquals("", SysUname("V"))
-    self~assertNotEquals("", SysUname("M"))
+    self~assertNotEquals("", SysUname("SYSTEM"))
+    self~assertNotEquals("", SysUname("NODE"))
+    self~assertNotEquals("", SysUname("RELEASE"))
+    self~assertNotEquals("", SysUname("VERSION"))
+    self~assertNotEquals("", SysUname("MACHINE"))
     self~assertNotEquals("", SysUname())
 
 ::method 'testSysGetpid_1'
@@ -103,53 +103,53 @@ return .ooTestResult~new(5)~~addException(err)
 
 ::method 'testSysGetpwuid_1'
     uid = SysGetuid()
-    self~assertNotEquals("", SysGetpwuid(uid, "N"))
-    self~assertNotEquals("", SysGetpwuid(uid, "U"))
-    self~assertNotEquals("", SysGetpwuid(uid, "G"))
-    self~assertNotEquals("", SysGetpwuid(uid, "R"))
-    self~assertNotEquals("", SysGetpwuid(uid, "D"))
-    self~assertNotEquals("", SysGetpwuid(uid, "D"))
-    self~assertNotEquals("", SysGetpwuid(uid, "S"))
-    self~assertEquals("", SysGetpwuid(uid, "P"))
+    self~assertNotEquals("", SysGetpwuid(uid, "NAME"))
+    self~assertNotEquals("", SysGetpwuid(uid, "user"))
+    self~assertNotEquals("", SysGetpwuid(uid, "Group"))
+    -- at least on zLinux "realname" may be empty, so we just test for String 
+    self~assertIsA(SysGetpwuid(uid, "real name"), .String)
+    self~assertNotEquals("", SysGetpwuid(uid, "dir"))
+    self~assertNotEquals("", SysGetpwuid(uid, "shell"))
+    self~assertEquals("", SysGetpwuid(uid, "PASSSWORD"))
 
 ::method 'testSysGetpwnam_1'
-    uid = SysGetuid()
-    self~assertNotEquals("", SysGetpwnam(SysGetpwuid(uid, 'N'), 'N'))
-    self~assertNotEquals("", SysGetpwnam(SysGetpwuid(uid, 'N'), 'U'))
-    self~assertNotEquals("", SysGetpwnam(SysGetpwuid(uid, 'N'), 'G'))
-    self~assertNotEquals("", SysGetpwnam(SysGetpwuid(uid, 'N'), 'R'))
-    self~assertNotEquals("", SysGetpwnam(SysGetpwuid(uid, 'N'), 'S'))
-    self~assertNotEquals("", SysGetpwnam(SysGetpwuid(uid, 'N'), 'D'))
-    self~assertEquals("", SysGetpwnam(SysGetpwuid(uid, 'N'), 'P'))
+    nam = SysGetpwuid(SysGetuid(), 'name')
+    self~assertNotEquals("", SysGetpwnam(nam, 'nam'))
+    self~assertNotEquals("", SysGetpwnam(nam, 'usr'))
+    self~assertNotEquals("", SysGetpwnam(nam, 'grp'))
+    -- at least on zLinux "realname" may be empty, so we just test for String 
+    self~assertIsA(SysGetpwnam(nam, 'real'), .String)
+    self~assertNotEquals("", SysGetpwnam(nam, 'shell'))
+    self~assertNotEquals("", SysGetpwnam(nam, 'dir'))
+    self~assertEquals("", SysGetpwnam(nam, 'pw'))
 
 ::method 'testSysGetgrgid_1'
     gid = SysGetgid()
-    self~assertNotEquals("", SysGetgrgid(gid, 'N'))
-    self~assertNotEquals("", SysGetgrgid(gid, 'G'))
-    self~assertEquals("", SysGetgrgid(gid, 'P'))
-    self~assertTrue(SysGetgrgid(gid, 'M')~isa(.array))
+    self~assertNotEquals("", SysGetgrgid(gid, 'name'))
+    self~assertNotEquals("", SysGetgrgid(gid, 'group'))
+    self~assertEquals("", SysGetgrgid(gid, 'password'))
+    self~assertIsA(SysGetgrgid(gid, 'members'), .Array)
 
 ::method 'testSysGetgrnam_1'
     gid = SysGetgid()
-    self~assertNotEquals("", SysGetgrnam(SysGetgrgid(gid, 'N'), 'N'))
-    self~assertNotEquals("", SysGetgrnam(SysGetgrgid(gid, 'N'), 'G'))
-    self~assertEquals("", SysGetgrnam(SysGetgrgid(gid, 'N'), 'P'))
-    self~assertTrue(SysGetgrnam(SysGetgrgid(gid, 'N'), 'M')~isa(.array))
+    self~assertNotEquals("", SysGetgrnam(SysGetgrgid(gid, 'N'), 'NAME'))
+    self~assertNotEquals("", SysGetgrnam(SysGetgrgid(gid, 'N'), 'GROUP'))
+    self~assertEquals("", SysGetgrnam(SysGetgrgid(gid, 'N'), 'PW'))
+    self~assertTrue(SysGetgrnam(SysGetgrgid(gid, 'N'), 'MEMBER')~isa(.array))
 
 ::method 'testSysStat_1'
     parse source . . file
-    self~assertNotEquals("", SysStat(file, 'D'))
-    self~assertNotEquals("", SysStat(file, 'I'))
-    self~assertNotEquals("", SysStat(file, 'P'))
-    self~assertNotEquals("", SysStat(file, 'N'))
-    self~assertNotEquals("", SysStat(file, 'U'))
-    self~assertNotEquals("", SysStat(file, 'G'))
-    self~assertNotEquals("", SysStat(file, 'N'))
-    self~assertNotEquals("", SysStat(file, 'R'))
-    self~assertNotEquals("", SysStat(file, 'S'))
-    self~assertNotEquals("", SysStat(file, 'A'))
-    self~assertNotEquals("", SysStat(file, 'M'))
-    self~assertNotEquals("", SysStat(file, 'C'))
+    self~assertNotEquals("", SysStat(file, 'device'))
+    self~assertNotEquals("", SysStat(file, 'inode'))
+    self~assertNotEquals("", SysStat(file, 'permissions'))
+    self~assertNotEquals("", SysStat(file, 'numberlinks'))
+    self~assertNotEquals("", SysStat(file, 'UID'))
+    self~assertNotEquals("", SysStat(file, 'GID'))
+    self~assertNotEquals("", SysStat(file, 'realdev'))
+    self~assertNotEquals("", SysStat(file, 'size'))
+    self~assertNotEquals("", SysStat(file, 'access'))
+    self~assertNotEquals("", SysStat(file, 'modified'))
+    self~assertNotEquals("", SysStat(file, 'changed'))
 
 ::method 'testSysAccess_1'
     parse source . . file
