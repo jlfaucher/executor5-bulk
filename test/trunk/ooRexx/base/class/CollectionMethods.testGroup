@@ -42,19 +42,19 @@
   parse source . . fileSpec
 
   group = .TestGroup~new(fileSpec)
---group~add(.ArrayNewSize.testGroup)           we assume Array already tests this
-  group~add(.BagNewSize.testGroup)
---group~add(.CircularQueueNewSize.testGroup)   we assume CircularQueue already tests this
-  group~add(.DirectoryNewSize.testGroup)
-  group~add(.IdentityTableNewSize.testGroup)
-  group~add(.ListNewSize.testGroup)
-  group~add(.PropertiesNewSize.testGroup)
-  group~add(.QueueNewSize.testGroup)
-  group~add(.RelationNewSize.testGroup)
-  group~add(.SetNewSize.testGroup)
---group~add(.StemNewSize.testGroup)            we assume Stem already tests this
-  group~add(.StringTableNewSize.testGroup)
-  group~add(.TableNewSize.testGroup)
+--group~add(.ArrayMethods.testGroup)           we assume Array already tests this
+  group~add(.BagMethods.testGroup)
+--group~add(.CircularQueueMethods.testGroup)   we assume CircularQueue already tests this
+  group~add(.DirectoryMethods.testGroup)
+  group~add(.IdentityTableMethods.testGroup)
+  group~add(.ListMethods.testGroup)
+  group~add(.PropertiesMethods.testGroup)
+  group~add(.QueueMethods.testGroup)
+  group~add(.RelationMethods.testGroup)
+  group~add(.SetMethods.testGroup)
+--group~add(.StemMethods.testGroup)            we assume Stem already tests this
+  group~add(.StringTableMethods.testGroup)
+  group~add(.TableMethods.testGroup)
 
   if group~isAutomatedTest then return group
 
@@ -65,48 +65,48 @@ return testResult
 
 ::requires 'ooTest.frm'     -- load the ooRexxUnit classes
 
-::class BagNewSize.testGroup subclass CollectionNewSize.testGroup public
+::class BagMethods.testGroup subclass CollectionMethods.testGroup public
 ::method collection
   return .Bag
 
-::class DirectoryNewSize.testGroup subclass CollectionNewSize.testGroup public
+::class DirectoryMethods.testGroup subclass CollectionMethods.testGroup public
 ::method collection
   return .Directory
 
-::class IdentityTableNewSize.testGroup subclass CollectionNewSize.testGroup public
+::class IdentityTableMethods.testGroup subclass CollectionMethods.testGroup public
 ::method collection
   return .IdentityTable
 
-::class ListNewSize.testGroup subclass CollectionNewSize.testGroup public
+::class ListMethods.testGroup subclass CollectionMethods.testGroup public
 ::method collection
   return .List
 
-::class PropertiesNewSize.testGroup subclass CollectionNewSize.testGroup public
+::class PropertiesMethods.testGroup subclass CollectionMethods.testGroup public
 ::method collection
   return .Properties
 
-::class QueueNewSize.testGroup subclass CollectionNewSize.testGroup public
+::class QueueMethods.testGroup subclass CollectionMethods.testGroup public
 ::method collection
   return .Queue
 
-::class RelationNewSize.testGroup subclass CollectionNewSize.testGroup public
+::class RelationMethods.testGroup subclass CollectionMethods.testGroup public
 ::method collection
   return .Relation
 
-::class SetNewSize.testGroup subclass CollectionNewSize.testGroup public
+::class SetMethods.testGroup subclass CollectionMethods.testGroup public
 ::method collection
   return .Set
 
-::class StringTableNewSize.testGroup subclass CollectionNewSize.testGroup public
+::class StringTableMethods.testGroup subclass CollectionMethods.testGroup public
 ::method collection
   return .StringTable
 
-::class TableNewSize.testGroup subclass CollectionNewSize.testGroup public
+::class TableMethods.testGroup subclass CollectionMethods.testGroup public
 ::method collection
   return .Table
 
 
-::class CollectionNewSize.testGroup subclass ooTestCase public
+::class CollectionMethods.testGroup subclass ooTestCase public
 
 -- tests for [feature-requests:#604] Allow collections other than array to accept an initial size 
 
@@ -144,3 +144,36 @@ return testResult
     self~assertTrue(c~isEmpty)
     self~assertEquals(0, c~items)
   end
+
+
+-- tests for [feature-requests:##670]
+
+-- appendAll() to return target collection as result
+::method test_orderedcollection_appendAll
+  c = self~collection~new
+  if c~isA(.OrderedCollection) then do                     -- only OrderedCollections have appendAl()
+    self~assertSame(c, c~~appendAll(.Array~of(1, 2, 3)))   -- classic style
+    self~assertSame(c, c~appendAll(.Array~of(4, 5, 6)))    -- new style
+  end
+
+-- putAll() to return target collection as result
+::method test_mapcollection_putAll
+  c = self~collection~new
+  if c~isA(.MapCollection) then do                         -- only MapCollections have putAll()
+    self~assertSame(c, c~~putAll(.Array~of(1, 2, 3)))      -- classic style
+    self~assertSame(c, c~putAll(.Array~of(4, 5, 6)))       -- new style
+  end
+
+-- fill() to return target collection as result
+-- this doesn't really fit in here, as we don't test Array, but just add it for now
+::method test_array_fill
+  c = .Array~new(3)                                        -- just Array has fill()
+  self~assertSame(c, c~~fill(1))                           -- classic style
+  self~assertSame(c, c~fill(2))                            -- new style
+
+-- empty() to return target collection as result
+::method test_collection_empty
+  c = self~collection~new                                  -- all Collections have empty()
+    self~assertSame(c, c~~empty)                           -- classic style
+    self~assertSame(c, c~empty)                            -- new style
+
