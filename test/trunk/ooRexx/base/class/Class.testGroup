@@ -89,9 +89,16 @@ return testResult
   -- pre-defined classes have package name "REXX"
   self~assertEquals("REXX", .Class~package~name)
 
-  -- dynamically compiled routine
-  self~assertEquals("tst_rtn", -
-   .Routine~new("tst_rtn", (("return .tst_cls~package~name", "::class tst_cls")))~call)
+  -- subclasses created via subclass() method have package .nil
+  self~assertEquals(.nil, .Class~subclass("tst_subcls")~package)
+
+  -- dynamically compiled routine, static class
+  self~assertEquals("tst_rtn_cls", -
+   .Routine~new("tst_rtn_cls", (("return .tst_cls~package~name", "::class tst_cls")))~call)
+
+  -- dynamically compiled routine, subclass
+  self~assertEquals(.nil, -
+   .Routine~new("tst_rtn_subcls", (("return .Class~subclass('tst_subcls')~package")))~call)
 
   -- the current package should have the source file name as its package name
   parse source . . sourceFile
