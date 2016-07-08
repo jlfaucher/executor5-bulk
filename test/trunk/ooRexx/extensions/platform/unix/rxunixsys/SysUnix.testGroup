@@ -43,11 +43,26 @@
     group~add(.SysUnix.testGroup)
     group~restrictOS("LINUX")
 
+    signal on syntax name packageErr
+    .context~package~loadLibrary("rxunixsys")
+
     if group~isAutomatedTest then return group
 
     testResult = group~suite~execute~~print
 
 return testResult
+
+packageErr:
+  err = .ExceptionData~new(timeStamp(), s, .ExceptionData~TRAP)
+  err~setLine(sigl)
+  err~conditionObject = condition('O')
+  err~msg = "Failed to load external library 'rxunixsys' needed for this test group."
+
+  if group~isAutomatedTest then return err
+
+  err~print("Test group exception", .false)
+return .ooTestResult~new(5)~~addException(err)
+
 -- End of entry point.
 
 ::requires 'ooTest.frm'
@@ -192,4 +207,3 @@ return testResult
   self~assertEquals(80, port, "port 80 assumed to be 'http', not" name);
 
 
-::requires "rxunixsys" LIBRARY
