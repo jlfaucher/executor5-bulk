@@ -56,7 +56,6 @@ return testResult
 
 ::class "RexxInfo.testGroup" subclass ooTestCase public
 
-::method Test_RexxInfo
   /*
   .RexxInfo:
   architecture: 64
@@ -83,53 +82,70 @@ return testResult
   WindowsNT COMMAND ...
   */
 
-  self~assertTrue(.nil\==.environment['REXXINFO'],'.environment must contain "REXXINFO"')
+::method test_rexxInfo_exists
+  self~assertNotNull(.environment["REXXINFO"], ".environment should contain 'REXXINFO'")
 
-  MethodsShouldBe=.array~of(,            -- Should "NAME" also be included?
-  'ARCHITECTURE','CASESENSITIVEFILES','DATE','DIGITS','DIRECTORYSEPARATOR','ENDOFLINE',,
-  'FORM','FUZZ','INTERNALDIGITS','LANGUAGELEVEL','MAJORVERSION','NAME','PACKAGE',,
-  'PATHSEPARATOR','PLATFORM','RELEASE','REVISION','VERSION')
-  MethodsAre=.RexxInfo~instanceMethods(.RexxInfo~class)~allIndexes
-  self~assertTrue(MethodsShouldBe~subset(MethodsAre),'.RexxInfo must provide at least' MethodsShouldBe~items 'instance methods; missing is' MethodsShouldBe~difference(MethodsAre)~sort~makeString(,','))
+::method test_rexxInfo_methods
+  MethodsShouldBe = .Array~of(,
+  "ARCHITECTURE", "CASESENSITIVEFILES", "DATE", "DIGITS", "DIRECTORYSEPARATOR", "ENDOFLINE", -
+  "FORM", "FUZZ", "INTERNALDIGITS", "LANGUAGELEVEL", "MAJORVERSION", "NAME", "PACKAGE", - 
+  "PATHSEPARATOR", "PLATFORM", "RELEASE", "REVISION", "VERSION")
+  MethodsAre = .RexxInfo~instanceMethods(.RexxInfo~class)~allIndexes
+  self~assertTrue(MethodsShouldBe~subset(MethodsAre), ".RexxInfo should provide at least" MethodsShouldBe~items "instance methods; missing is" MethodsShouldBe~difference(MethodsAre)~sort~makeString(,", "))
 
-  self~assertTrue(.RexxInfo~package~isA(.Package),'.RexxInfo~package must return a .Package instance')
+::method test_rexxInfo_package
+  self~assertTrue(.RexxInfo~package~isA(.Package), ".RexxInfo~package should return a .Package instance")
 
-  self~assertTrue(.RexxInfo~digits~dataType=='NUM','.RexxInfo~digits must return a numeric value')
-  self~assertTrue(.RexxInfo~digits==digits(),'.RexxInfo~digits is expected to be current digits()')
+::method test_rexxInfo_digits
+  self~assertEquals("NUM", .RexxInfo~digits~dataType, ".RexxInfo~digits should return a numeric value")
+  self~assertEquals(digits(), .RexxInfo~digits, ".RexxInfo~digits should be current digits()")
 
-  self~assertTrue(.RexxInfo~fuzz~dataType=='NUM','.RexxInfo~fuzz must return a numeric value')
-  self~assertTrue(.RexxInfo~fuzz==fuzz(),'.RexxInfo~fuzz is expected to be current fuzz()')
+::method test_rexxInfo_fuzz
+  self~assertEquals("NUM", .RexxInfo~fuzz~dataType, ".RexxInfo~fuzz should return a numeric value")
+  self~assertEquals(fuzz(), .RexxInfo~fuzz, ".RexxInfo~fuzz should be current fuzz()")
 
-  self~assertTrue('ENGINEERING SCIENTIFIC'~wordPos(.RexxInfo~form)>0,'.RexxInfo~form must return either "ENGINEERING" or "SCIENTIFIC"')
-  self~assertTrue(.RexxInfo~form==form(),'.RexxInfo~form is expected to be current form()')
+::method test_rexxInfo_form
+  self~assertTrue('ENGINEERING SCIENTIFIC'~wordPos(.RexxInfo~form) > 0, ".RexxInfo~form should return either 'ENGINEERING' or 'SCIENTIFIC'")
+  self~assertEquals(form(), .RexxInfo~form, ".RexxInfo~form should be current form()")
 
-  self~assertTrue(.RexxInfo~internalDigits~dataType=='NUM','.RexxInfo~internalDigits must return a numeric value')
-  self~assertTrue(.RexxInfo~internalDigits>=digits(),'.RexxInfo~internalDigits is expected to be equal to or larger than digits()')
+::method test_rexxInfo_internalDigits
+  self~assertEquals("NUM", .RexxInfo~internalDigits~dataType, ".RexxInfo~internalDigits should return a numeric value")
+  self~assertTrue(.RexxInfo~internalDigits >= digits(), ".RexxInfo~internalDigits should be equal to or larger than digits()")
 
-  self~assertTrue(.RexxInfo~name~length>0,'.RexxInfo~name is expected to return a non-null string')
-  parse version Version
-  self~assertTrue(.RexxInfo~name==Version,'.RexxInfo~name is expected to be equal to parse version')
+::method test_rexxInfo_name
+  self~assertTrue(.RexxInfo~name~length > 0, ".RexxInfo~name should return a non-null string")
+  parse version version
+  self~assertEquals(version, .RexxInfo~name, ".RexxInfo~name should be equal to parse version")
 
-  self~assertTrue(.RexxInfo~languageLevel~length>0,'.RexxInfo~languageLevel is expected to return a non-null string')
+::method test_rexxInfo_langaugeLevel
+  self~assertTrue(.RexxInfo~languageLevel~length > 0, ".RexxInfo~languageLevel should return a non-null string")
 
-  self~assertTrue(.RexxInfo~version==.RexxInfo~majorVersion||'.'||.RexxInfo~release||'.'||.RexxInfo~revision,'.RexxInfo~version expected to be equal to .RexxInfo~majorVersion . .RexxInfo~release . .RexxInfo~revision')
+::method test_rexxInfo_majorVersion_release_revision_version
+  self~assertEquals(.RexxInfo~majorVersion||"."||.RexxInfo~release||"."||.RexxInfo~revision, .RexxInfo~version, ".RexxInfo~version should be equal to .RexxInfo~majorVersion . .RexxInfo~release . .RexxInfo~revision")
 
-  self~assertTrue(.RexxInfo~date~length>0,'.RexxInfo~date is expected to return a non-null string')
-  self~assertTrue(.RexxInfo~date==.RexxInfo~name~right(.RexxInfo~date~length),'.RexxInfo~date is expected to be equal to the last tokens of .RexxInfo~name')
+::method test_rexxInfo_date
+  self~assertTrue(.RexxInfo~date~length > 0, ".RexxInfo~date should return a non-null string")
+  self~assertEquals(.RexxInfo~name~right(.RexxInfo~date~length), .RexxInfo~date, ".RexxInfo~date should be equal to the last tokens of .RexxInfo~name")
 
-  self~assertTrue(.RexxInfo~platform~length>0,'.RexxInfo~platform is expected to return a non-null string')
-  parse source Platform .
-  self~assertTrue(.RexxInfo~platform==Platform,'.RexxInfo~platform is expected to be equal to parse source first token')
+::method test_rexxInfo_platform
+  self~assertTrue(.RexxInfo~platform~length > 0, ".RexxInfo~platform should return a non-null string")
+  parse source platform .
+  self~assertEquals(platform, .RexxInfo~platform, ".RexxInfo~platform should be equal to parse source first token")
   parse value SysVersion() with Platform .
-  self~assertTrue(.RexxInfo~platform==Platform,'.RexxInfo~platform is expected to be equal to SysVersion() first token')
+  self~assertEquals(platform, .RexxInfo~platform, ".RexxInfo~platform should be equal to SysVersion() first token")
 
-  self~assertTrue(.RexxInfo~architecture~length>0,'.RexxInfo~architecture is expected to return a non-null string')
+::method test_rexxInfo_architecture
+  self~assertTrue(.RexxInfo~architecture~length > 0, ".RexxInfo~architecture should return a non-null string")
 
-  self~assertTrue(.RexxInfo~endofline==.endofline,'.RexxInfo~endofline must be equal to .endofline')
+::method test_rexxInfo_endofline
+  self~assertEquals(.endofline, .RexxInfo~endofline, ".RexxInfo~endofline should be equal to .endofline")
 
-  self~assertTrue(.rexxinfo~pathSeparator==.File~pathSeparator,'.RexxInfo~pathSeparator expected to be equal to .File~pathSeparator')
+::method test_rexxInfo_pathSeparator
+  self~assertEquals(.File~pathSeparator, .rexxinfo~pathSeparator, ".RexxInfo~pathSeparator should be equal to .File~pathSeparator")
 
-  self~assertTrue(.rexxinfo~directorySeparator==.File~separator,'.RexxInfo~directorySeparator expected to equal to be .File~separator')
+::method test_rexxInfo_directorySeparator
+  self~assertEquals(.File~separator, .rexxinfo~directorySeparator, ".RexxInfo~directorySeparator should be equal to be .File~separator")
 
-  self~assertTrue('0 1'~wordPos(.RexxInfo~caseSensitiveFiles)>0,'.RexxInfo~caseSensitiveFiles must return .true or .false')
-  self~assertTrue(.RexxInfo~caseSensitiveFiles==.File~isCaseSensitive,'.RexxInfo~caseSensitiveFiles must be equal to .File~isCaseSensitive')
+::method test_rexxInfo_caseSensitiveFiles
+  self~assertTrue("0 1"~wordPos(.RexxInfo~caseSensitiveFiles) > 0, ".RexxInfo~caseSensitiveFiles should return .true or .false")
+  self~assertEquals(.File~isCaseSensitive, .RexxInfo~caseSensitiveFiles, ".RexxInfo~caseSensitiveFiles should be equal to .File~isCaseSensitive")
