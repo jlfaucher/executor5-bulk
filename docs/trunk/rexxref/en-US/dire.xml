@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Reference XML File
     #
-    # Copyright (c) 2005-2014, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2016, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -68,7 +68,7 @@ can use any classes, methods, and routines that the directives established.</par
 <xref linkend="routd" xrefstyle="select:title"/>.
 </para>
 
-<section id="annotd" revisionflag="added"><title>*NEW* ::ANNOTATE</title>
+<section id="annotd" revisionflag="added"><title>&added50;::ANNOTATE</title>
 <indexterm><primary>::ANNOTATE directive</primary></indexterm>
 <indexterm><primary>directives</primary>
 <secondary>::ANNOTATE</secondary></indexterm>
@@ -116,7 +116,6 @@ The annotation <emphasis role="italic">value</emphasis> must be a
 single literal string, a symbol, or a valid number, optionally preceded
 by a plus or minus sign, that is taken as a constant.</para>
 
-<para><emphasis role="bold">Example:</emphasis></para>
 <example id="ex.directives-annotate">
 <title>ANNOTATE directive</title>
 <indexterm><primary>examples</primary>
@@ -227,7 +226,7 @@ associated with a class but are accessible to the main (executable) part of a
 program through the <xref linkend="methe" xrefstyle="template:.METHODS built-in object"/>.
 Only one ::ATTRIBUTE directive can appear for any method name not associated with a class.
 </para>
-<para>If you do not specify either SET or GET, ::ATTRIBUTE will create two attribute methods with the
+<para>If you do not specify either <option>SET</option> or <option>GET</option>, ::ATTRIBUTE will create two attribute methods with the
 names <emphasis role="italic">name</emphasis> and <emphasis role="italic">name=</emphasis>.
 These are the methods for getting and setting an attribute.  These generated methods are
 equivalent to the following code sequences: </para>
@@ -245,22 +244,22 @@ equivalent to the following code sequences: </para>
 </programlisting>
 </example>
 <para>Both methods will be created with the same method properties (for example, PRIVATE, GUARDED, etc.).
-If GET or SET are not specified, the pair of methods will be automatically
+If <option>GET</option> or <option>SET</option> are not specified, the pair of methods will be automatically
 generated.  In that case, there is no method code body following the directive,
 so another directive (or the end of the program) must follow the
 ::ATTRIBUTE directive.
 </para>
-<para>If GET or SET is specified, only the single get or set attribute method is generated.
+<para>If <option>GET</option> or <option>SET</option> is specified, only the single get or set attribute method is generated.
 Specifying separate
-GET or SET ::ATTRIBUTE directives allows the methods to be created with different properties.
+<option>GET</option> or <option>SET</option> ::ATTRIBUTE directives allows the methods to be created with different properties.
 For example, the
 sequence:</para>
 <programlisting>
 ::attribute name get
 ::attribute name set private
 </programlisting>
-<para>will create a NAME method with PUBLIC access and a NAME= method with PRIVATE access.</para>
-<para>The GET and SET options may also be used to override the default method body generated for the attribute.  This
+<para>will create a <methodname>NAME</methodname> method with PUBLIC access and a <methodname>NAME=</methodname> method with PRIVATE access.</para>
+<para>The <option>GET</option> and <option>SET</option> options may also be used to override the default method body generated for the attribute.  This
 is frequently used so the SET attribute method can perform new value validation.</para>
 <example id="ex.directives-attribute-getset">
 <title>ATTRIBUTE directive &mdash; get and set methods</title>
@@ -274,21 +273,21 @@ is frequently used so the SET attribute method can perform new value validation.
   size=value
 </programlisting>
 </example>
-<para>If you specify the CLASS option, the created methods are class
+<para>If you specify the <option>CLASS</option> option, the created methods are class
 methods. See <xref linkend="provide" />. The attribute methods are
 associated with the class specified on the most recent ::CLASS directive. The
-::ATTRIBUTE must be preceded by a ::CLASS directive if CLASS is
+::ATTRIBUTE must be preceded by a ::CLASS directive if <option>CLASS</option> is
 specified.</para>
-<para>If ABSTRACT is specified, then all created methods will be marked as ABSTRACT and will
+<para>If <option>ABSTRACT</option> is specified, then all created methods will be marked as ABSTRACT and will
 raise an error if directly invoked.
 For ABSTRACT methods there is no method code body following the directive,
 so another directive (or the end of the program) must follow the
 ::ATTRIBUTE directive.</para>
 
-<para revisionflag="added">*NEW* If DELEGATE is specified, execution of get method
+<para revisionflag="added">&added50;If <option>DELEGATE</option> is specified, execution of get method
 <emphasis role="italic">name</emphasis>
 and set method
-<emphasis role="italic">name=</emphasis> (depending on whether SET or GET
+<emphasis role="italic">name=</emphasis> (depending on whether <option>SET</option> or <option>GET</option>
 or none of these two is specified on the ::ATTRIBUTE directive)
 is delegated to object
 <emphasis role="italic">delegatename</emphasis>.
@@ -313,7 +312,7 @@ forward to(delegateName)
 </example>
 </para>
 
-<para>If the EXTERNAL option is specified, then <emphasis role="italic">spec</emphasis>
+<para>If the <option>EXTERNAL</option> option is specified, then <emphasis role="italic">spec</emphasis>
 identifies a method in an external native library that will be invoked as the
 named method.  The
 <emphasis role="italic">spec</emphasis> is a literal string containing a series
@@ -325,15 +324,15 @@ platform-specific mechanisms for loading libraries. For Unix-based systems, the
 library name is case-sensitive.  The third token is optional and specifies the
 name of the method within the library package.  If not specified, the ::METHOD
 name is used.  The target package method name is case insensitive.</para>
-<para>If the SET or GET option is not specified with the EXTERNAL option, then
+<para>If the <option>SET</option> or <option>GET</option> option is not specified with the <option>EXTERNAL</option> option, then
 two method objects need to be created.  The target method name is appended to
 the string "GET" to derive the name of the getter attribute method.  To generate
 the setter attribute method, the name is appended to the string "SET".
-If GET or SET is specified and the method name is not specified within
+If <option>GET</option> or <option>SET</option> is specified and the method name is not specified within
 <emphasis role="italic">spec</emphasis>, then the target library method name
 is generated by concatenating <emphasis role="italic">name</emphasis>
 with "GET" or "SET" as appropriate.  If the method name is specified in
-<emphasis role="italic">spec</emphasis> and GET or SET is specified, the spec
+<emphasis role="italic">spec</emphasis> and <option>GET</option> or <option>SET</option> is specified, the spec
 name will be used unchanged.
 </para>
 <indexterm><primary>examples</primary>
@@ -355,25 +354,25 @@ name will be used unchanged.
 <orderedlist>
 <listitem><para>You can specify all options in any order.
 </para></listitem>
-<listitem><para>If you specify the PRIVATE option, the created methods are
+<listitem><para>If you specify the <option>PRIVATE</option> option, the created methods are
 private methods.  Private methods have restricted access rules on how they can
 be invoked.
 See <xref linkend="pubpri" />
 for details of how private methods can be used.
-If you omit the PRIVATE option or specify PUBLIC, the method is a public method
+If you omit the <option>PRIVATE</option> option or specify <option>PUBLIC</option>, the method is a public method
 that any sender can activate.
 </para></listitem>
 <listitem><para>If you
 <indexterm><primary>UNGUARDED option of ::ATTRIBUTE</primary></indexterm>
-specify the UNGUARDED option, the methods can be called while other methods are
-active on the same object. If you do not specify UNGUARDED, the method requires
+specify the <option>UNGUARDED</option> option, the methods can be called while other methods are
+active on the same object. If you do not specify <option>UNGUARDED</option>, the method requires
 exclusive use of the object variable pool; it can run only if no other method
 that requires exclusive use of the object variable pool is active on the same
 object.</para></listitem>
-<listitem><para>If you specify the PROTECTED option, the methods are
+<listitem><para>If you specify the <option>PROTECTED</option> option, the methods are
 protected methods. (See
 <xref linkend="secman" /> for more information.)
-If you omit the PROTECTED option or specify UNPROTECTED, the methods are not
+If you omit the <option>PROTECTED</option> option or specify <option>UNPROTECTED</option>, the methods are not
 protected.
 </para></listitem>
 <listitem><para>It is an error to specify ::ATTRIBUTE more than once within a
@@ -414,7 +413,7 @@ directive is found. Only null clauses (comments or blank lines) can appear
 between a ::CLASS directive and any following directive instruction or the
 end of the program. Only one ::CLASS directive can appear for
 <emphasis role="italic">classname</emphasis> in a program.</para>
-<para>If you specify the METACLASS option, the instance methods of the
+<para>If you specify the <option>METACLASS</option> option, the instance methods of the
 <emphasis role="italic">metaclass</emphasis> class become class methods of the
 <emphasis role="italic">classname</emphasis> class.
 (See <xref linkend="provide" />.) The
@@ -422,32 +421,32 @@ end of the program. Only one ::CLASS directive can appear for
 <emphasis role="italic">classname</emphasis> are literal
 strings or symbols that are taken as constants. In the search order for methods,
 the metaclass methods precede inherited class methods and follow any class
-methods defined by ::METHOD directives with the CLASS option.</para>
-<para>If you specify the PUBLIC option, the class is visible beyond its containing
+methods defined by ::METHOD directives with the <option>CLASS</option> option.</para>
+<para>If you specify the <option>PUBLIC</option> option, the class is visible beyond its containing
 Rexx program to any other program that references this program with a
 <xref linkend="requ" xrefstyle="template:::REQUIRES directive"/>.
-If you do not specify the PUBLIC option,
+If you do not specify the <option>PUBLIC</option> option,
 the class is visible only within its containing Rexx program. All public classes
 defined within a program are used before PUBLIC classes created with the same
 name.</para>
-<para>If you specify the SUBCLASS option, the class becomes a subclass of the
+<para>If you specify the <option>SUBCLASS</option> option, the class becomes a subclass of the
 class <emphasis role="italic">sclass</emphasis> for inheritance of instance and
 class methods. The <emphasis role="italic">sclass</emphasis>
 is a literal string or symbol that is taken as a constant.</para>
-<para>If you specify the MIXINCLASS option, the class becomes a subclass of the
+<para>If you specify the <option>MIXINCLASS</option> option, the class becomes a subclass of the
 class <emphasis role="italic">mclass</emphasis>
 for inheritance of instance and class methods. You can
 add the new class instance and class methods to existing classes by using
-the INHERIT option on a ::CLASS directive or by sending an INHERIT message
-to an existing class. If you specify neither the SUBCLASS nor the MIXINCLASS
+the <option>INHERIT</option> option on a ::CLASS directive or by sending an <methodname>INHERIT</methodname> message
+to an existing class. If you specify neither the <option>SUBCLASS</option> nor the <option>MIXINCLASS</option>
 option, the class becomes a non-mixin subclass of the Object class.
 </para>
-<para>If you specify the ABSTRACT option, the class will be marked as an
+<para>If you specify the <option>ABSTRACT</option> option, the class will be marked as an
 abstract class.
 Trying to create an instance of an abstract class will raise an error. 
 Only subclasses of abstract classes will allow to create instances from.
 </para>
-<para>If you specify the INHERIT option, the class inherits instance methods
+<para>If you specify the <option>INHERIT</option> option, the class inherits instance methods
 and class methods from the classes <emphasis role="italic">iclasses</emphasis>
 in their order of appearance
 (leftmost first). This is equivalent to sending a series of
@@ -460,9 +459,9 @@ As with the <methodname>inherit</methodname> message,
 each of the classes in <emphasis role="italic">iclasses</emphasis>
 must be a mixin class. The <emphasis role="italic">iclasses</emphasis>
 is a whitespace-separated list of literal strings or symbols that are taken as
-constants. If you omit the INHERIT option, the class inherits only from
+constants. If you omit the <option>INHERIT</option> option, the class inherits only from
 <emphasis role="italic">sclass</emphasis>.</para>
-<para><emphasis role="bold">Example:</emphasis>
+<para>
 <indexterm><primary>examples</primary>
 <secondary>::CLASS directive</secondary></indexterm>
 <example id="ex.directives-class">
@@ -501,13 +500,13 @@ class that appears later in the program has been created. </para>
 
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
-<listitem><para>You can specify the options METACLASS, MIXINCLASS, SUBCLASS, and
+<listitem><para>You can specify the options <option>METACLASS</option>, <option>MIXINCLASS</option>, <option>SUBCLASS</option>, and
 PUBLIC in any order. </para></listitem>
-<listitem><para>If you specify INHERIT, it must be the last option.</para></listitem>
+<listitem><para>If you specify <option>INHERIT</option>, it must be the last option.</para></listitem>
 </orderedlist>
 </section>
 
-<section id="constantd" revisionflag="changed"><title>*CHG* ::CONSTANT</title>
+<section id="constantd" revisionflag="changed"><title>&changed50;::CONSTANT</title>
 <indexterm><primary>::CONSTANT directive</primary></indexterm>
 <indexterm><primary>directives</primary>
 <secondary>::CONSTANT</secondary></indexterm>
@@ -615,19 +614,19 @@ but is accessible to the main (executable) part of a program through the
 <xref linkend="methe" xrefstyle="template:.METHODS built-in object"/>.
 Only one ::METHOD directive can appear for any method name not associated with a class.
 </para>
-<para>If you specify the CLASS option, the method is a class
+<para>If you specify the <option>CLASS</option> option, the method is a class
 method. See <xref linkend="provide" />. The method is
 associated with the class specified on the most recent ::CLASS directive. The
-::METHOD directive must follow a ::CLASS directive when the CLASS option is
+::METHOD directive must follow a ::CLASS directive when the <option>CLASS</option> option is
 used.
 </para>
-<para>If ABSTRACT is specified, then the created method will be marked as
+<para>If <option>ABSTRACT</option> is specified, then the created method will be marked as
 an abstract method and will raise an error if directly invoked.
 For abstract methods there is no method code body following the directive,
 so another directive (or the end of the program) must follow the
 ::METHOD directive.
 </para>
-<para>If ABSTRACT, ATTRIBUTE, or EXTERNAL is not specified, the ::METHOD
+<para>If <option>ABSTRACT</option>, <option>ATTRIBUTE</option>, or <option>EXTERNAL</option> is not specified, the ::METHOD
 directive starts a section of method code which is ended by another directive or
 the end of the program. The ::METHOD is not included in the source of the
 created METHOD object.
@@ -653,27 +652,22 @@ say "Area is" r~area       /* Produces "Area is 200" */
   return (width+height)*2
 </programlisting>
 </example>
-<para>If you specify the ATTRIBUTE option, method variable accessor methods are
+<para>If you specify the <option>ATTRIBUTE</option> option, method variable accessor methods are
 created.  In addition to generating a method named
 <emphasis role="italic">methodname</emphasis>, another method named
 <emphasis role="italic">methodname=</emphasis> is created.  The first method
 returns the value of object instance variable that matches the method name.
- The second method assigns a new value to the object instance variable.</para>
-<para>For example, the directive </para>
-<indexterm><primary>examples</primary>
-<secondary>::METHOD directive</secondary></indexterm>
-<example id="ex.method-2">
-<title>METHOD ATTRIBUTE examples</title>
-<programlisting>
-::method name attribute
+The second method assigns a new value to the object instance variable.</para>
+<para>For example, the directive
+<informalexample id="ex.method-2">
+<programlisting>::method name attribute
 </programlisting>
-</example>
-<para>creates two methods, NAME and NAME=. The NAME and NAME= methods are
-equivalent to the following code sequences: </para>
-<example id="ex.method-3">
-<title>METHOD ATTRIBUTE code expansion</title>
-<programlisting>
-::method "NAME="
+</informalexample>
+creates two methods, <methodname>NAME</methodname> and <methodname>NAME=</methodname>.
+The <methodname>NAME</methodname> and <methodname>NAME=</methodname> methods are
+equivalent to the following code sequences:
+<informalexample id="ex.method-3">
+<programlisting>::method "NAME="
   expose name
   use arg name
 
@@ -681,13 +675,14 @@ equivalent to the following code sequences: </para>
   expose name
   return name
 </programlisting>
-</example>
-<para>If you specify the ABSTRACT option, the method creates an ABSTRACT method placeholder.
+</informalexample>
+</para>
+<para>If you specify the <option>ABSTRACT</option> option, the method creates an ABSTRACT method placeholder.
 ABSTRACT methods define a method that an implementing subclass is expected to provide a concrete
 implementation for.  Any attempt to invoke an ABSTRACT method directly will raise a SYNTAX condition.
 </para>
 
-<para revisionflag="added">*NEW* If DELEGATE is specified, execution of method
+<para revisionflag="added">&added50;If <option>DELEGATE</option> is specified, execution of method
 <emphasis role="italic">name</emphasis> is delegated to object
 <emphasis role="italic">delegatename</emphasis>.
 It is a common design pattern to delegate method execution to an
@@ -707,7 +702,7 @@ forward to(delegateName)
 </example>
 </para>
 
-<para>If the EXTERNAL option is specified, then <emphasis role="italic">spec</emphasis>
+<para>If the <option>EXTERNAL</option> option is specified, then <emphasis role="italic">spec</emphasis>
 identifies a method in an external native library that will be invoked as the
 named method.  The
 <emphasis role="italic">spec</emphasis> is a literal string containing a series
@@ -736,7 +731,7 @@ name is used.  The target package method name is case insensitive.</para>
 </programlisting>
 </example>
 
-<para>If the ATTRIBUTE option is specified with the EXTERNAL option, then two
+<para>If the <option>ATTRIBUTE</option> option is specified with the <option>EXTERNAL</option> option, then two
 method objects need to be created.  The target method name is appended to the
 string "GET" to derive the name of the getter attribute method.  To generate the
 setter attribute method, the name is appended to the string "SET".</para>
@@ -756,26 +751,26 @@ setter attribute method, the name is appended to the string "SET".</para>
 <orderedlist>
 <listitem><para>You can specify all options in any order.
 </para></listitem>
-<listitem><para>If you specify the PRIVATE option, the created methods are
+<listitem><para>If you specify the <option>PRIVATE</option> option, the created methods are
 private methods.  Private methods have restricted access rules on how they can
 be invoked.
 See <xref linkend="pubpri" />
 for details of how private methods can be used.
-If you omit the PRIVATE option or specify PUBLIC, the method is a public method
+If you omit the <option>PRIVATE</option> option or specify <option>PUBLIC</option>, the method is a public method
 that any sender can activate.
 </para></listitem>
 <listitem><para>If you
 <indexterm><primary>UNGUARDED option of ::METHOD</primary></indexterm> specify
-the UNGUARDED option, the method can be called while other methods are active on
-the same object. If you do not specify UNGUARDED, the method requires exclusive
+the <option>UNGUARDED</option> option, the method can be called while other methods are active on
+the same object. If you do not specify <option>UNGUARDED</option>, the method requires exclusive
 use of the object variable pool; it can run only if no other method that
 requires exclusive use of the object variable pool is active on the same
 object.</para></listitem>
-<listitem><para>If you specify the PROTECTED option, the method is a protected
+<listitem><para>If you specify the <option>PROTECTED</option> option, the method is a protected
 method. (See <xref linkend="secman" /> for more information.)
-If you omit the PROTECTED option or specify UNPROTECTED, the method is
+If you omit the <option>PROTECTED</option> option or specify <option>UNPROTECTED</option>, the method is
 not protected.</para></listitem>
-<listitem><para>If you specify ATTRIBUTE, ABSTRACT, or EXTERNAL, another
+<listitem><para>If you specify <option>ATTRIBUTE</option>, <option>ABSTRACT</option>, or <option>EXTERNAL</option>, another
 directive (or the end of the program) must follow the ::METHOD directive.
 </para></listitem>
 <listitem><para>It is an error to specify ::METHOD more than once within the same
@@ -785,7 +780,7 @@ class and use the same <emphasis role="italic">methodname</emphasis>.
 
 </section>
 
-<section id="optionsd" revisionflag="changed"><title>*CHG* ::OPTIONS</title>
+<section id="optionsd" revisionflag="changed"><title>&changed50;::OPTIONS</title>
 <indexterm><primary>::OPTIONS directive</primary></indexterm>
 <indexterm><primary>directives</primary>
 <secondary>::OPTIONS</secondary></indexterm>
@@ -825,7 +820,7 @@ For example, a subclass of a class defined in this source package will not inher
 <colspec colnum="1" colwidth="1*" />
 <colspec colnum="2" colwidth="5*" />
 <tbody>
-<row><entry>DIGITS
+<row><entry><option>DIGITS</option>
 <indexterm><primary>::OPTIONS directive</primary>
 <secondary>DIGITS option</secondary></indexterm>
 </entry>
@@ -843,23 +838,23 @@ The package value can be retrieved using the Package class
 require a great amount of processing time. It is recommended that you use
 the default value whenever possible.</para>
 </entry></row>
-<row><entry>FORM
+<row><entry><option>FORM</option>
 <indexterm><primary>::OPTIONS directive</primary>
 <secondary>FORM option</secondary></indexterm>
 </entry>
 <entry>
 <para>controls the form of exponential notation
 for the result of arithmetic
-operations and built-in functions. This can be either SCIENTIFIC (in which
-case only one, nonzero digit appears before the decimal point) or ENGINEERING
+operations and built-in functions. This can be either <option>SCIENTIFIC</option> (in which
+case only one, nonzero digit appears before the decimal point) or <option>ENGINEERING</option>
 (in which case the power of 10 is always a multiple of 3). The default is
-SCIENTIFIC. The subkeywords SCIENTIFIC or ENGINEERING must be specified as
+<option>SCIENTIFIC</option>. The subkeywords <option>SCIENTIFIC</option> or <option>ENGINEERING</option> must be specified as
 symbols.
 The package value can be retrieved using the Package class
 <xref linkend="mthPackageForm" xrefstyle="select:title"/> method.
 </para>
 </entry></row>
-<row><entry>FUZZ
+<row><entry><option>FUZZ</option>
 <indexterm><primary>::OPTIONS directive</primary>
 <secondary>FUZZ option</secondary></indexterm>
 </entry>
@@ -879,7 +874,7 @@ minus FUZZ digits during the comparison and are then compared with 0.
 </para>
 </entry></row>
 
-<row revisionflag="added"><entry>*NEW* NOVALUE
+<row revisionflag="added"><entry>&added50;<option>NOVALUE</option>
 <indexterm><primary>::OPTIONS directive</primary>
 <secondary>NOVALUE option</secondary></indexterm>
 </entry>
@@ -899,7 +894,7 @@ The default is ::OPTIONS NOVALUE CONDITION.
 </para>
 </entry></row>
 
-<row revisionflag="added"><entry>*NEW* PROLOG
+<row revisionflag="added"><entry>&added50;<option>PROLOG</option>
 <indexterm><primary>::OPTIONS directive</primary>
 <secondary>PROLOG option</secondary></indexterm>
 </entry>
@@ -918,7 +913,7 @@ The default is ::OPTIONS PROLOG.
 </para>
 </entry></row>
 
-<row><entry>TRACE
+<row><entry><option>TRACE</option>
 <indexterm><primary>::OPTIONS directive</primary>
 <secondary>TRACE option</secondary></indexterm>
 </entry>
@@ -954,7 +949,7 @@ the classes and objects of the Rexx program
 </imageobject>
 </mediaobject>
 
-<para>If the LIBRARY option is not specified, all public classes and routines
+<para>If the <option>LIBRARY</option> option is not specified, all public classes and routines
 defined in the named program are made available to the executing program. The
 <emphasis role="italic">programname</emphasis> is a literal string or a symbol that is
 taken as a constant. The string or symbol
@@ -970,7 +965,7 @@ time the <emphasis role="italic">::REQUIRES</emphasis> is processed by the
 interpreter. This will be executed prior to executing the main Rexx program in
 the file that specifies the ::REQUIRES statement.
 </para>
-<para>If the LIBRARY option is specified, <emphasis role="italic">programname</emphasis>
+<para>If the <option>LIBRARY</option> option is specified, <emphasis role="italic">programname</emphasis>
 is the name of an external native library that is required by this program. The
 library will be loaded using platform-specific mechanisms, which generally means
 the library name is case sensitive.  Any routines defined in the library will be
@@ -981,12 +976,12 @@ which will ensure that the native libraries are available to the initialization
 code of the Rexx packages.
 </para>
 
-<para revisionflag="added">*NEW* If the NAMESPACE option is specified,
+<para revisionflag="added">&added50;If the <option>NAMESPACE</option> option is specified,
 <emphasis role="italic">namespace</emphasis> must be a symbol that is
 taken as a constant; a literal string is not allowed. 
 </para>
 <para>
-The NAMESPACE option will attach the name <emphasis role="italic">namespace</emphasis>
+The <option>NAMESPACE</option> option will attach the name <emphasis role="italic">namespace</emphasis>
 to the file loaded by the ::REQUIRES directive.
 This will make it possible to use e. g.
 <emphasis role="italic">namespace</emphasis>:<emphasis role="italic">class</emphasis>
@@ -1023,7 +1018,7 @@ in other programs accessed through ::REQUIRES directives.</para>
 directive. Only null clauses can appear between them.</para>
 </section>
 
-<section id="resourced" revisionflag="added"><title>*NEW* ::RESOURCE</title>
+<section id="resourced" revisionflag="added"><title>&added50;::RESOURCE</title>
 <indexterm><primary>::RESOURCE directive</primary></indexterm>
 <indexterm><primary>directives</primary>
 <secondary>::RESOURCE</secondary></indexterm>
@@ -1062,7 +1057,6 @@ defaults to the string "::END".</para>
 
 <indexterm><primary>examples</primary>
 <secondary>::RESOURCE directive</secondary></indexterm>
-<para><emphasis role="bold">Example:</emphasis></para>
 <example id="ex.directives-resource">
 <title>RESOURCE directive</title>
 <programlisting>
@@ -1084,7 +1078,7 @@ ANONYMOUS TYPESETTER
 
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
-  <listitem><para>Specifiying more than one ::RESOURCE directive with
+  <listitem><para>Specifying more than one ::RESOURCE directive with
   the same resource <emphasis role="italic">name</emphasis> is an error.
   </para></listitem>
 
@@ -1140,12 +1134,12 @@ ANONYMOUS TYPESETTER
 is a literal string or a symbol that is taken as a constant.
 Only one ::ROUTINE directive can appear for any
 <emphasis role="italic">routinename</emphasis> in a program.</para>
-<para>If the EXTERNAL option is not specified, the ::ROUTINE directive starts a
+<para>If the <option>EXTERNAL</option> option is not specified, the ::ROUTINE directive starts a
 routine, which is ended by another directive or the end of the program.
 </para>
-<para>If you specify the PUBLIC option, the routine is visible beyond its containing
+<para>If you specify the <option>PUBLIC</option> option, the routine is visible beyond its containing
 Rexx program to any other program that references this program with a ::REQUIRES
-directive. If you do not specify the PUBLIC option, or specify the PRIVATE option, the routine is visible
+directive. If you do not specify the <option>PUBLIC</option> option, or specify the <option>PRIVATE</option> option, the routine is visible
 only within its containing Rexx program.</para>
 <para>Routines you define with the ::ROUTINE directive behave like external routines.
 In the search order for routines, they follow internal routines and built-in
@@ -1168,7 +1162,7 @@ use arg name
 say "In method" name
 </programlisting>
 </example>
-<para>If the EXTERNAL option is specified, then <emphasis role="italic">spec</emphasis>
+<para>If the <option>EXTERNAL</option> option is specified, then <emphasis role="italic">spec</emphasis>
 identifies a routine in an external native library that will be defined as the
 named routine for this program.  The <emphasis role="italic">spec</emphasis> is
 a literal string containing a series of whitespace delimited tokens defining the

@@ -27,20 +27,20 @@ class ::= '::CLASS' classname ( 'METACLASS' metaclass )?
 constant ::= '::CONSTANT' name value?
 
 /*-- LanguageParser::methodDirective() -------------------------------*/
-method ::= '::METHOD' methodname ( 'ATTRIBUTE' )? ( 'CLASS' )?
-                      ( 'PUBLIC' | 'PRIVATE')? ( 'GUARDED' | 'UNGUARDED' )?
+method ::= '::METHOD' methodname 'ATTRIBUTE'? 'CLASS'?
+                      ( 'PUBLIC' | 'PRIVATE' )? ( 'GUARDED' | 'UNGUARDED' )?
                       ( 'UNPROTECTED' | 'PROTECTED' )?
-                      ( 'ABSTRACT' |           /* doesn't show that delegate+abstract is not allowed */
+                      ( 'ABSTRACT' |
 /* new in 5.0 */        'DELEGATE' delegatename |
                         'EXTERNAL' spec )?
 
 /*-- LanguageParser::optionsDirective() ------------------------------*/
-options ::= '::OPTIONS' ( ( 'DIGITS' digits ) |
-                          ( 'FORM' ('ENGINEERING' | 'SCIENTIFIC') ) |
-                          ( 'FUZZ' fuzz ) |
-/* new in 5.0 */          ( 'NOVALUE' ('CONDITION' | 'ERROR') ) | 
-/* new in 5.0 */          ( ( 'PROLOG' | 'NOPROLOG' ) ) |             
-                          ( 'TRACE' trace ) 
+options ::= '::OPTIONS' ( 'DIGITS' digits |
+                          'FORM' ('ENGINEERING' | 'SCIENTIFIC') |
+                          'FUZZ' fuzz |
+/* new in 5.0 */          'NOVALUE' ('CONDITION' | 'ERROR') | 
+/* new in 5.0 */          ( 'PROLOG' | 'NOPROLOG' ) |             
+                          'TRACE' trace 
                         )*
 
 /*-- LanguageParser::requiresDirective() -----------------------------*/
@@ -52,8 +52,7 @@ requires ::= '::REQUIRES' programname ( 'LIBRARY' |
 /* new in 5.0 */
 resource ::= '::RESOURCE' name ( 'END' delimiter )?/* new in 5.0 */
 resourcedata ::= resource_data*
-resourceend ::= ( '::END' ignored_data? |
-                delimiter ignored_data? )
+resourceend ::= ( '::END' | delimiter ) ignored_data?
 
 /*-- LanguageParser::routineDirective() ------------------------------*/
 routine ::= '::ROUTINE' routinename ( 'PRIVATE' | 'PUBLIC' )? ( 'EXTERNAL' spec )?
