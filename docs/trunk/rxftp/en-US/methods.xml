@@ -87,14 +87,14 @@ Otherewise no action is performed.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/methods_ftpannotatelog.svg" scale="50" />
+<imagedata fileref="images/methods/methods_ftpannotatelog.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
-      <term>line</term>
+      <term><parameter>line</parameter></term>
       <listitem><para>The line to be added to the log.
       </para></listitem>
    </varlistentry>
@@ -115,20 +115,20 @@ If the target file on the server does not exist it is created.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/methods_ftpappend.svg" scale="50" />
+<imagedata fileref="images/methods/methods_ftpappend.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
-      <term>localfilename</term>
+      <term><parameter>localfilename</parameter></term>
       <listitem><para>The filename and optional path where the source file
                       is stored.
       </para></listitem>
    </varlistentry>
    <varlistentry>
-      <term>remotefilename</term>
+      <term><parameter>remotefilename</parameter></term>
       <listitem><para>The filename and optional path of the target file for
                       the append operation on the FTP server.
                       If the path is not given the
@@ -137,7 +137,7 @@ If the target file on the server does not exist it is created.
       </para></listitem>
    </varlistentry>
    <varlistentry>
-      <term>mode</term>
+      <term><parameter>mode</parameter></term>
       <listitem><para>The file transfer mode, either &apos;ASCII&apos; or &apos;BINARY&apos;. If the
                       argument is not given the current mode will be used.
       </para></listitem>
@@ -149,7 +149,7 @@ error. You can get the specific error code by inspection of the method
 FtpErrno. Possible values:</para>
 <variablelist>
    <varlistentry>
-      <term>FTPCOMMAND</term>
+      <term><option>FTPCOMMAND</option></term>
       <listitem><para>The internal FTP command
                       or the arguments to the method are in error.
       </para></listitem>
@@ -169,14 +169,14 @@ If this command fails the directory on the server remains unchanged.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/methods_ftpchdir.svg" scale="50" />
+<imagedata fileref="images/methods/methods_ftpchdir.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
-      <term>newdir</term>
+      <term><parameter>newdir</parameter></term>
       <listitem><para>The directory name and optional path to the directory
                       to be made the current directory.
       </para></listitem>
@@ -188,7 +188,7 @@ error. You can get the specific error code by inspection of the method
 FtpErrno. Possible values:</para>
 <variablelist>
    <varlistentry>
-      <term>FTPCOMMAND</term>
+      <term><option>FTPCOMMAND</option></term>
       <listitem><para>The internal FTP command
                       or the arguments to the method are in error.
       </para></listitem>
@@ -209,14 +209,14 @@ FTP server.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/methods_ftpdelete.svg" scale="50" />
+<imagedata fileref="images/methods/methods_ftpdelete.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
-      <term>filename</term>
+      <term><parameter>filename</parameter></term>
       <listitem><para>The filename and optional path to the file to be deleted.
                       If the path is not given the file will be deleted from the
                       current directory on the ftp server.
@@ -229,7 +229,7 @@ error. You can get the specific error code by inspection of the method
 FtpErrno. Possible values:</para>
 <variablelist>
    <varlistentry>
-      <term>FTPCOMMAND</term>
+      <term><option>FTPCOMMAND</option></term>
       <listitem><para>The internal FTP command
                       or the arguments to the method are in error.
       </para></listitem>
@@ -255,14 +255,14 @@ system running on the FTP server machine.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/methods_ftpdir.svg" scale="50" />
+<imagedata fileref="images/methods/methods_ftpdir.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
-      <term>pattern</term>
+      <term><parameter>pattern</parameter></term>
       <listitem><para>The filename pattern to use to filter the directory
                       listing. You can use the standard &apos;*&apos; and &apos;?&apos; wildcard
                       characters in the pattern. This argument is optional.
@@ -277,7 +277,7 @@ error. You can get the specific error code by inspection of the method
 FtpErrno. Possible values:</para>
 <variablelist>
    <varlistentry>
-      <term>FTPCOMMAND</term>
+      <term><option>FTPCOMMAND</option></term>
       <listitem><para>The internal FTP command
                       or the arguments to the method are in error.
       </para></listitem>
@@ -297,14 +297,14 @@ FtpErrno. Possible values:</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/methods_ftpget.svg" scale="50" />
+<imagedata fileref="images/methods/methods_ftpget.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
-      <term>localfilename</term>
+      <term><parameter>localfilename</parameter></term>
       <listitem><para>The filename and optional path where the retrieved file
                       will be stored.
                       If the path is not given the file will be placed in the
@@ -312,14 +312,14 @@ FtpErrno. Possible values:</para>
       </para></listitem>
    </varlistentry>
    <varlistentry>
-      <term>remotefilename</term>
+      <term><parameter>remotefilename</parameter></term>
       <listitem><para>The filename and optional path to the file to be retrieved.
                       If the path is not given the file will be retrieved from the
                       current directory on the ftp server.
       </para></listitem>
    </varlistentry>
    <varlistentry>
-      <term>mode</term>
+      <term><parameter>mode</parameter></term>
       <listitem><para>The file transfer mode, either &apos;ASCII&apos; or &apos;BINARY&apos;. If the
                       argument is not given the current mode will be used.
       </para></listitem>
@@ -331,7 +331,7 @@ error. You can get the specific error code by inspection of the method
 FtpErrno. Possible values:</para>
 <variablelist>
    <varlistentry>
-      <term>FTPCOMMAND</term>
+      <term><option>FTPCOMMAND</option></term>
       <listitem><para>The internal FTP command
                       or the arguments to the method are in error.
       </para></listitem>
@@ -354,7 +354,7 @@ FtpErrno. Possible values:</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/methods_ftpgetmode.svg" scale="50" />
+<imagedata fileref="images/methods/methods_ftpgetmode.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -364,12 +364,12 @@ FtpErrno. Possible values:</para>
 <para>Returns one of the following strings.</para>
 <variablelist>
    <varlistentry>
-      <term>&apos;ACTIVE&apos;</term>
+      <term><option>ACTIVE</option></term>
       <listitem><para>The current transfer mode is active.
       </para></listitem>
    </varlistentry>
    <varlistentry>
-      <term>&apos;PASSIVE&apos;</term>
+      <term><option>PASSIVE</option></term>
       <listitem><para>The current transfer mode is passive.
       </para></listitem>
    </varlistentry>
@@ -391,7 +391,7 @@ FtpErrno. Possible values:</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/methods_ftpgettype.svg" scale="50" />
+<imagedata fileref="images/methods/methods_ftpgettype.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -401,12 +401,12 @@ FtpErrno. Possible values:</para>
 <para>Returns one of the following strings.</para>
 <variablelist>
    <varlistentry>
-      <term>&apos;ASCII&apos;</term>
+      <term><option>ASCII</option></term>
       <listitem><para>The current type is ASCII.
       </para></listitem>
    </varlistentry>
    <varlistentry>
-      <term>&apos;BINARY&apos;</term>
+      <term><option>BINARY</option></term>
       <listitem><para>The current type is binary.
       </para></listitem>
    </varlistentry>
@@ -426,7 +426,7 @@ It also reinitializes the instance of the class so it can be used again.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/methods_ftplogoff.svg" scale="50" />
+<imagedata fileref="images/methods/methods_ftplogoff.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -438,7 +438,7 @@ error. You can get the specific error code by inspection of the method
 FtpErrno. Possible values:</para>
 <variablelist>
    <varlistentry>
-      <term>FTPCOMMAND</term>
+      <term><option>FTPCOMMAND</option></term>
       <listitem><para>The internal FTP command
                       or the arguments to the method are in error.
       </para></listitem>
@@ -464,14 +464,14 @@ But the format may be different in some cases.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/methods_ftpls.svg" scale="50" />
+<imagedata fileref="images/methods/methods_ftpls.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
-      <term>pattern</term>
+      <term><parameter>pattern</parameter></term>
       <listitem><para>The filename pattern to use to filter the directory
                       listing. You can use the standard &apos;*&apos; and &apos;?&apos; wildcard
                       characters in the pattern. This argument is optional.
@@ -486,7 +486,7 @@ error. You can get the specific error code by inspection of the method
 FtpErrno. Possible values:</para>
 <variablelist>
    <varlistentry>
-      <term>FTPCOMMAND</term>
+      <term><option>FTPCOMMAND</option></term>
       <listitem><para>The internal FTP command
                       or the arguments to the method are in error.
       </para></listitem>
@@ -506,14 +506,14 @@ FtpErrno. Possible values:</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/methods_ftpmkdir.svg" scale="50" />
+<imagedata fileref="images/methods/methods_ftpmkdir.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
-      <term>newdir</term>
+      <term><parameter>newdir</parameter></term>
       <listitem><para>The name and optional path to the new directory.
       </para></listitem>
    </varlistentry>
@@ -524,7 +524,7 @@ error. You can get the specific error code by inspection of the method
 FtpErrno. Possible values:</para>
 <variablelist>
    <varlistentry>
-      <term>FTPCOMMAND</term>
+      <term><option>FTPCOMMAND</option></term>
       <listitem><para>The internal FTP command
                       or the arguments to the method are in error.
       </para></listitem>
@@ -544,27 +544,27 @@ FtpErrno. Possible values:</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/methods_ftpput.svg" scale="50" />
+<imagedata fileref="images/methods/methods_ftpput.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
-      <term>localfilename</term>
+      <term><parameter>localfilename</parameter></term>
       <listitem><para>The filename and optional path where the source file
                       is stored.
       </para></listitem>
    </varlistentry>
    <varlistentry>
-      <term>remotefilename</term>
+      <term><parameter>remotefilename</parameter></term>
       <listitem><para>The filename and optional path used to store the file on the FTP server.
                       If the path is not given the file will be stored in the
                       current directory on the ftp server.
       </para></listitem>
    </varlistentry>
    <varlistentry>
-      <term>mode</term>
+      <term><parameter>mode</parameter></term>
       <listitem><para>The file transfer mode, either &apos;ASCII&apos; or &apos;BINARY&apos;. If the
                       argument is not given the current mode will be used.
       </para></listitem>
@@ -576,7 +576,7 @@ error. You can get the specific error code by inspection of the method
 FtpErrno. Possible values:</para>
 <variablelist>
    <varlistentry>
-      <term>FTPCOMMAND</term>
+      <term><option>FTPCOMMAND</option></term>
       <listitem><para>The internal FTP command
                       or the arguments to the method are in error.
       </para></listitem>
@@ -598,20 +598,20 @@ to the file sent from the client.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/methods_ftpputunique.svg" scale="50" />
+<imagedata fileref="images/methods/methods_ftpputunique.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
-      <term>localfilename</term>
+      <term><parameter>localfilename</parameter></term>
       <listitem><para>The filename and optional path where the source file
                       is stored.
       </para></listitem>
    </varlistentry>
    <varlistentry>
-      <term>remotefilename</term>
+      <term><parameter>remotefilename</parameter></term>
       <listitem><para>The filename and optional path used to store the file on the FTP server.
                       If the filename exists then a new filename is used.
                       If the path is not given the file will be stored in the
@@ -619,7 +619,7 @@ to the file sent from the client.
       </para></listitem>
    </varlistentry>
    <varlistentry>
-      <term>mode</term>
+      <term><parameter>mode</parameter></term>
       <listitem><para>The file transfer mode, either &apos;ASCII&apos; or &apos;BINARY&apos;. If the
                       argument is not given the current mode will be used.
       </para></listitem>
@@ -631,7 +631,7 @@ error. You can get the specific error code by inspection of the method
 FtpErrno. Possible values:</para>
 <variablelist>
    <varlistentry>
-      <term>FTPCOMMAND</term>
+      <term><option>FTPCOMMAND</option></term>
       <listitem><para>The internal FTP command
                       or the arguments to the method are in error.
       </para></listitem>
@@ -656,7 +656,7 @@ The array will be empty if this method encounters an error.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/methods_ftppwd.svg" scale="50" />
+<imagedata fileref="images/methods/methods_ftppwd.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -668,7 +668,7 @@ error. You can get the specific error code by inspection of the method
 FtpErrno. Possible values:</para>
 <variablelist>
    <varlistentry>
-      <term>FTPCOMMAND</term>
+      <term><option>FTPCOMMAND</option></term>
       <listitem><para>The internal FTP command
                       or the arguments to the method are in error.
       </para></listitem>
@@ -689,14 +689,14 @@ FtpErrno. Possible values:</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/methods_ftpquote.svg" scale="50" />
+<imagedata fileref="images/methods/methods_ftpquote.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
-      <term>cmd</term>
+      <term><parameter>cmd</parameter></term>
       <listitem><para>The command to be executed on the server.
       </para></listitem>
    </varlistentry>
@@ -707,7 +707,7 @@ error. You can get the specific error code by inspection of the method
 FtpErrno. Possible values:</para>
 <variablelist>
    <varlistentry>
-      <term>FTPCOMMAND</term>
+      <term><option>FTPCOMMAND</option></term>
       <listitem><para>The internal FTP command
                       or the arguments to the method are in error.
       </para></listitem>
@@ -729,19 +729,19 @@ to another with either a new or its old name.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/methods_ftprename.svg" scale="50" />
+<imagedata fileref="images/methods/methods_ftprename.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
-      <term>oldfile</term>
+      <term><parameter>oldfile</parameter></term>
       <listitem><para>The name and optional path of the file to be renamed.
       </para></listitem>
    </varlistentry>
    <varlistentry>
-      <term>newfile</term>
+      <term><parameter>newfile</parameter></term>
       <listitem><para>The new name and optional path of the file.
       </para></listitem>
    </varlistentry>
@@ -752,7 +752,7 @@ error. You can get the specific error code by inspection of the method
 FtpErrno. Possible values:</para>
 <variablelist>
    <varlistentry>
-      <term>FTPCOMMAND</term>
+      <term><option>FTPCOMMAND</option></term>
       <listitem><para>The internal FTP command
                       or the arguments to the method are in error.
       </para></listitem>
@@ -771,14 +771,14 @@ FtpErrno. Possible values:</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/methods_ftprmdir.svg" scale="50" />
+<imagedata fileref="images/methods/methods_ftprmdir.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
-      <term>newdir</term>
+      <term><parameter>newdir</parameter></term>
       <listitem><para>The name and optional path to the directory to be removed.
       </para></listitem>
    </varlistentry>
@@ -789,7 +789,7 @@ error. You can get the specific error code by inspection of the method
 FtpErrno. Possible values:</para>
 <variablelist>
    <varlistentry>
-      <term>FTPCOMMAND</term>
+      <term><option>FTPCOMMAND</option></term>
       <listitem><para>The internal FTP command
                       or the arguments to the method are in error.
       </para></listitem>
@@ -812,21 +812,21 @@ tranfers to/from the FTP server.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/methods_ftpsetmode.svg" scale="50" />
+<imagedata fileref="images/methods/methods_ftpsetmode.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
-      <term>&apos;PASSIVE&apos;</term>
+      <term><option>PASSIVE</option></term>
       <listitem><para>Sets passive mode for file transfers.
                       Only the first letter of the argument is significant and
                       it is not case-sensitive.
       </para></listitem>
    </varlistentry>
    <varlistentry>
-      <term>&apos;ACTIVE&apos;</term>
+      <term><option>ACTIVE</option></term>
       <listitem><para>Sets active mode for file transfers.
                       Only the first letter of the argument is significant and
                       it is not case-sensitive.
@@ -839,7 +839,7 @@ error. You can get the specific error code by inspection of the method
 FtpErrno. Possible values:</para>
 <variablelist>
    <varlistentry>
-      <term>FTPCOMMAND</term>
+      <term><option>FTPCOMMAND</option></term>
       <listitem><para>The internal FTP command
                       or the arguments to the method are in error.
       </para></listitem>
@@ -863,21 +863,21 @@ FTP server.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/methods_ftpsettype.svg" scale="50" />
+<imagedata fileref="images/methods/methods_ftpsettype.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
-      <term>&apos;ASCII&apos;</term>
+      <term><option>ASCII</option></term>
       <listitem><para>Changes the file transfer type on the FTP server to ASCII.
                       Only the first letter of the argument is significant and
                       it is not case-sensitive.
       </para></listitem>
    </varlistentry>
    <varlistentry>
-      <term>&apos;BINARY&apos;</term>
+      <term><option>BINARY</option></term>
       <listitem><para>Changes the file transfer mode on the FTP server to binary.
                       Only the first letter of the argument is significant and
                       it is not case-sensitive.
@@ -890,7 +890,7 @@ error. You can get the specific error code by inspection of the method
 FtpErrno. Possible values:</para>
 <variablelist>
    <varlistentry>
-      <term>FTPCOMMAND</term>
+      <term><option>FTPCOMMAND</option></term>
       <listitem><para>The internal FTP command
                       or the arguments to the method are in error.
       </para></listitem>
@@ -914,29 +914,29 @@ the user on.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/methods_ftpsetuser.svg" scale="50" />
+<imagedata fileref="images/methods/methods_ftpsetuser.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
-      <term>host</term>
+      <term><parameter>host</parameter></term>
       <listitem><para>The host name or TCP/IP address of the FTP server.
       </para></listitem>
    </varlistentry>
    <varlistentry>
-      <term>user</term>
+      <term><parameter>user</parameter></term>
       <listitem><para>The user name for the server.
       </para></listitem>
    </varlistentry>
    <varlistentry>
-      <term>password</term>
+      <term><parameter>password</parameter></term>
       <listitem><para>(optional) The user password.
       </para></listitem>
    </varlistentry>
    <varlistentry>
-      <term>acct</term>
+      <term><parameter>acct</parameter></term>
       <listitem><para>(optional) The accounting information for the user.
       </para></listitem>
    </varlistentry>
@@ -947,29 +947,29 @@ error. You can get the specific error code by inspection of the method
 FtpErrno. Possible values:</para>
 <variablelist>
    <varlistentry>
-      <term>FTPCOMMAND</term>
+      <term><option>FTPCOMMAND</option></term>
       <listitem><para>The internal FTP command
                       or the arguments to the method are in error.
       </para></listitem>
    </varlistentry>
    <varlistentry>
-      <term>FTPHOST</term>
+      <term><option>FTPHOST</option></term>
       <listitem><para>Unknown <emphasis role="italic">host</emphasis>
                       name or server not responding.
       </para></listitem>
    </varlistentry>
    <varlistentry>
-      <term>FTPSOCKET</term>
+      <term><option>FTPSOCKET</option></term>
       <listitem><para>RxSock function error.
       </para></listitem>
    </varlistentry>
    <varlistentry>
-      <term>FTPCONNECT</term>
+      <term><option>FTPCONNECT</option></term>
       <listitem><para>Server not responding or not available.
       </para></listitem>
    </varlistentry>
    <varlistentry>
-      <term>FTPLOGIN</term>
+      <term><option>FTPLOGIN</option></term>
        <listitem><para><emphasis role="italic">user</emphasis>,
                        <emphasis role="italic">password</emphasis> or
                        <emphasis role="italic">acct</emphasis> information is invalid.
@@ -990,14 +990,14 @@ FtpErrno. Possible values:</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/methods_ftpsite.svg" scale="50" />
+<imagedata fileref="images/methods/methods_ftpsite.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
-      <term>cmd</term>
+      <term><parameter>cmd</parameter></term>
       <listitem><para>The Site command to be executed on the server.
       </para></listitem>
    </varlistentry>
@@ -1008,7 +1008,7 @@ error. You can get the specific error code by inspection of the method
 FtpErrno. Possible values:</para>
 <variablelist>
    <varlistentry>
-      <term>FTPCOMMAND</term>
+      <term><option>FTPCOMMAND</option></term>
       <listitem><para>The internal FTP command
                       or the arguments to the method are in error.
       </para></listitem>
@@ -1033,7 +1033,7 @@ The array will be empty if this method encounters an error.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/methods_ftpsys.svg" scale="50" />
+<imagedata fileref="images/methods/methods_ftpsys.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -1045,7 +1045,7 @@ error. You can get the specific error code by inspection of the method
 FtpErrno. Possible values:</para>
 <variablelist>
    <varlistentry>
-      <term>FTPCOMMAND</term>
+      <term><option>FTPCOMMAND</option></term>
       <listitem><para>The internal FTP command
                       or the arguments to the method are in error.
       </para></listitem>
@@ -1067,7 +1067,7 @@ responses will be displayed.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/methods_ftptrace.svg" scale="50" />
+<imagedata fileref="images/methods/methods_ftptrace.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -1079,7 +1079,7 @@ error. You can get the specific error code by inspection of the method
 FtpErrno. Possible values:</para>
 <variablelist>
    <varlistentry>
-      <term>FTPCOMMAND</term>
+      <term><option>FTPCOMMAND</option></term>
       <listitem><para>The internal FTP command
                       or the arguments to the method are in error.
       </para></listitem>
@@ -1102,19 +1102,19 @@ buffer to be written to a log file.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/methods_ftptracelog.svg" scale="50" />
+<imagedata fileref="images/methods/methods_ftptracelog.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para><emphasis role="bold">Arguments:</emphasis></para>
 <variablelist>
    <varlistentry>
-      <term>filename</term>
+      <term><parameter>filename</parameter></term>
       <listitem><para>The filename and optional path to the log file.
       </para></listitem>
    </varlistentry>
    <varlistentry>
-      <term>&apos;REPLACE&apos;</term>
+      <term><option>REPLACE</option></term>
       <listitem><para>If this argument is given then if the log file exists
                       it will be replaced. The default is to append the trace
                       output to the log file. Only the first letter of the
@@ -1128,7 +1128,7 @@ error. You can get the specific error code by inspection of the method
 FtpErrno. Possible values:</para>
 <variablelist>
    <varlistentry>
-      <term>FTPCOMMAND</term>
+      <term><option>FTPCOMMAND</option></term>
       <listitem><para>The internal FTP command
                       or the arguments to the method are in error.
       </para></listitem>
@@ -1148,7 +1148,7 @@ FtpErrno. Possible values:</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/methods_ftptracelogoff.svg" scale="50" />
+<imagedata fileref="images/methods/methods_ftptracelogoff.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -1160,7 +1160,7 @@ error. You can get the specific error code by inspection of the method
 FtpErrno. Possible values:</para>
 <variablelist>
    <varlistentry>
-      <term>FTPCOMMAND</term>
+      <term><option>FTPCOMMAND</option></term>
       <listitem><para>The internal FTP command
                       or the arguments to the method are in error.
       </para></listitem>
@@ -1181,7 +1181,7 @@ in the form of <emphasis role="italic">x.x.x</emphasis>.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/methods_ftpversion.svg" scale="50" />
+<imagedata fileref="images/methods/methods_ftpversion.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
