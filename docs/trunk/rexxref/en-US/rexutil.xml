@@ -2758,9 +2758,17 @@ SysSaveRexxMacroSpace must have created the file.
 <indexterm><primary>rexxutil functions</primary>
 <secondary>SysMkDir</secondary></indexterm>
 
+<para><emphasis role="bold">Windows:</emphasis></para>
 <mediaobject>
 <imageobject>
 <imagedata fileref="images/rexxutil/sysmkdir.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para><emphasis role="bold">Linux:</emphasis></para>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/rexxutil/sysmkdir_unix.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -2769,6 +2777,11 @@ SysSaveRexxMacroSpace must have created the file.
 <variablelist>
 <varlistentry><term><emphasis role="italic">dirspec</emphasis></term>
 <listitem><para>The directory to be created.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis role="italic">mode</emphasis> (Linux only)</term>
+<listitem><para>The file permission bits of the new directory.
+If not specified, <emphasis role="italic">mode</emphasis> defaults to the current
+<command>umask</command> setting. 
 </para></listitem></varlistentry>
 </variablelist>
 <para><emphasis role="bold">Return codes:</emphasis></para>
