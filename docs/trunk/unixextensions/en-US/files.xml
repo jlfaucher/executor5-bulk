@@ -384,15 +384,20 @@ call SysLink "/pub", "/home/username/myownpublink"
 </section>
 
 
-<section id="utlSysMkdir"><title>SysMkdir</title>
+<section id="utlSysMkdirUnix"><title>SysMkdirUnix</title>
 <indexterm><primary>SysMkdir</primary></indexterm>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/funcs/files_sysmkdir.svg" scale="50" />
+<imagedata fileref="images/funcs/files_sysmkdirunix.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
+<note>
+<para>This function has been renamed from <literal>SysMkdir</literal> to <literal>SysMkdirUnix</literal>
+due to a name collision with the <literal>rexxutil</literal> function <literal>SysMkDir</literal>.
+</para>
+</note>
 <para>Create a subdirectory.</para>
 <para>This function uses the <filename>mkdir()</filename>
 C API to perform the action.</para>
@@ -409,26 +414,30 @@ C API to perform the action.</para>
 <para>Returns zero on success and -1 on an error.</para>
 <example id="sysmkdir">
 <title>SysMkdir</title>
-<programlisting>
-<![CDATA[
+<programlisting><![CDATA[
 /* create a new subdir */
 
-retc = SysMkdir("./pub", b2d("111111101")) 
+retc = SysMkdirUnix("./pub", b2d("111111101")) 
 ]]>
 </programlisting>
 </example>
 </section>
 
 
-<section id="utlSysRmdir"><title>SysRmdir</title>
+<section id="utlSysRmdirUnix"><title>SysRmdirUnix</title>
 <indexterm><primary>SysRmdir</primary></indexterm>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/funcs/files_sysrmdir.svg" scale="50" />
+<imagedata fileref="images/funcs/files_sysrmdirunix.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
+<note>
+<para>This function has been renamed from <literal>SysRmdir</literal> to <literal>SysRmdirUnix</literal>
+due to a name collision with the <literal>rexxutil</literal> function <literal>SysRmDir</literal>.
+</para>
+</note>
 <para>Remove a subdirectory.</para>
 <para>This function uses the <filename>rmdir()</filename>
 C API to perform the action.</para>
@@ -442,11 +451,10 @@ C API to perform the action.</para>
 <para>Returns zero on success and -1 on an error.</para>
 <example id="sysRmdir">
 <title>SysRmdir</title>
-<programlisting>
-<![CDATA[
+<programlisting><![CDATA[
 /* remove a subdir */
 
-retc = SysRmdir("./pub") 
+retc = SysRmdirUnix("./pub") 
 ]]>
 </programlisting>
 </example>
