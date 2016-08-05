@@ -1,43 +1,43 @@
 oleobj_new ::= 'new(' classID ( ',' ( events )? ( ',' getObject )? )? ')'
 
-oleobj_dispatch ::= ole '~' 'dispatch(' methodname ( ( ',' arg )+ )? ')'
+oleobj_dispatch ::= 'dispatch(' methodname ( ( ',' arg )+ )? ')'
 
-oleobj_getconstant ::= ole '~' 'getConstant(' ( ConstantName )? ')'
+oleobj_getconstant ::= 'getConstant(' ( ConstantName )? ')'
 
-oleobj_getknownevents ::= ole '~' getKnownEvents
+oleobj_getknownevents ::= 'getKnownEvents'
 
-oleobj_conectevents ::= ole '~' connectEvents
+oleobj_conectevents ::= 'connectEvents'
 
-oleobj_isconnected ::= ole '~' isConnected
+oleobj_isconnected ::= 'isConnected'
 
-oleobj_isconectable ::= ole '~' isConnectable
+oleobj_isconectable ::= 'isConnectable'
 
-oleobj_disconectevents ::= ole '~' disconnectEvents
+oleobj_disconectevents ::= 'disconnectEvents'
 
-oleobj_removeeventhandler ::= ole '~' removeEventHandler
+oleobj_removeeventhandler ::= 'removeEventHandler'
 
-oleobj_addeventmethod ::= ole '~' 'addEventMethod(' name ',' methodObject ')'
+oleobj_addeventmethod ::= 'addEventMethod(' name ',' methodObject ')'
 
-oleobj_removeeventmethod ::= ole '~' 'removeEventMethod(' name ')'
+oleobj_removeeventmethod ::= 'removeEventMethod(' name ')'
 
-oleobj_getknownmethods ::= ole '~' getKnownMethods
+oleobj_getknownmethods ::= 'getKnownMethods'
 
-oleobj_getobject ::= ole '~' 'getObject(' moniker ',' class ')'
+oleobj_getobject ::= 'getObject(' moniker ',' class ')'
 
-oleobj_getoutparameters ::= ole '~' getOutParameters
+oleobj_getoutparameters ::= 'getOutParameters'
 
-oleobj_unknown ::= ole '~' 'unknown(' messageName ( ',' messageArgs )? ')'
+oleobj_unknown ::= 'unknown(' messageName ( ',' messageArgs )? ')'
 
-olevar_varvalue ::= 'new(' valueObject ( ',' ( varType )? ( ',' paramFlags )? )? ')'
+olevar_new ::= 'new(' valueObject ( ',' ( varType )? ( ',' paramFlags )? )? ')'
 
-olevar_varvalue ::= olevar '~' '!VARVALUE_()'
+olevar_varvalue ::= '!VARVALUE_()'
 
-olevar_varvalue_equal ::= olevar '~' !VARVALUE_ '=' newvalue
+olevar_varvalue_equal ::= '!VARVALUE_' '=' newvalue
 
-olevar_vartype ::= olevar '~' '!VARTYPE_()'
+olevar_vartype ::= '!VARTYPE_()'
 
-olevar_vartype_equal ::= olevar '~' !VARTYPE_ '=' newtype
+olevar_vartype_equal ::= '!VARTYPE_' '=' newtype
 
-olevar_paramflags ::= olevar '~' '!PARAMFLAGS_()'
+olevar_paramflags ::= '!PARAMFLAGS_()'
 
-olevar_paramflags_equal ::= olevar '~' !PARAMFLAGS_ '=' newparamglags
+olevar_paramflags_equal ::= '!PARAMFLAGS_' '=' newparamflags
