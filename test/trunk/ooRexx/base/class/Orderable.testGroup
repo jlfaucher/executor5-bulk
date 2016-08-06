@@ -383,6 +383,64 @@ return testResult
     self~assertTrue(a[i - 1] <= a[i], "array of Sortable instances must be sorted in ascending order")
   end
 
+-- .nil equal/not equal comparisons should work
+::method test_orderable_nil
+  self~assertFalse(.TestOrderable~new(0) == .nil)
+  self~assertFalse(.TestOrderable~new(0) = .nil)
+  self~assertTrue(.TestOrderable~new(0) \== .nil)
+  self~assertTrue(.TestOrderable~new(0) \= .nil)
+  self~assertTrue(.TestOrderable~new(0) <> .nil)
+  self~assertTrue(.TestOrderable~new(0) >< .nil)
+
+-- other .nil comparisons shouldn't work
+::method test_orderable_nil_less_than
+  self~expectSyntax(93.973)
+  r = .TestOrderable~new(0) < .nil
+
+::method test_orderable_nil_less_than_or_equal
+  self~expectSyntax(93.973)
+  r = .TestOrderable~new(0) <= .nil
+
+::method test_orderable_nil_strictly_less_than
+  self~expectSyntax(93.973)
+  r = .TestOrderable~new(0) << .nil
+
+::method test_orderable_nil_strictly_less_than_or_equal
+  self~expectSyntax(93.973)
+  r = .TestOrderable~new(0) <<= .nil
+
+::method test_orderable_nil_greater_than
+  self~expectSyntax(93.973)
+  r = .TestOrderable~new(0) > .nil
+
+::method test_orderable_nil_greater_than_or_equal
+  self~expectSyntax(93.973)
+  r = .TestOrderable~new(0) >= .nil
+
+::method test_orderable_nil_strictly_greater_than
+  self~expectSyntax(93.973)
+  r = .TestOrderable~new(0) >> .nil
+
+::method test_orderable_nil_strictly_greater_than_or_equal
+  self~expectSyntax(93.973)
+  r = .TestOrderable~new(0) >>= .nil
+
+::method test_orderable_nil_not_greater_than
+  self~expectSyntax(93.973)
+  r = .TestOrderable~new(0) \> .nil
+
+::method test_orderable_nil_not_less_than
+  self~expectSyntax(93.973)
+  r = .TestOrderable~new(0) \< .nil
+
+::method test_orderable_nil_not_strictly_greater_than
+  self~expectSyntax(93.973)
+  r = .TestOrderable~new(0) \>> .nil
+
+::method test_orderable_nil_not_strictly_less_than
+  self~expectSyntax(93.973)
+  r = .TestOrderable~new(0) \<< .nil
+
 
 ::class TestOrderable inherit Orderable Comparable
 ::method init
