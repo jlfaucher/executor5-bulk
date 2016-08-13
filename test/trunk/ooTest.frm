@@ -52,7 +52,7 @@
  */
 
 if \ .local~hasEntry('OOTEST_FRAMEWORK_VERSION') then do
-  .local~ooTest_Framework_version = 1.0.0_4.0.0
+  .local~ooTest_Framework_version = 1.0.1_4.0.0
 
   -- Replace the default test result class in the environment with the ooRexx
   -- project's default class.
@@ -708,29 +708,42 @@ return 0
     use arg stats
 
     verbose = self~getVerbosity
+    width = 14
+    parse source osname .
 
     say
-    say "Interpreter:    " self~rexxVersion
-    say 'Addressing Mode:' .ooRexxUnit.architecture
-    say "ooRexxUnit:     " self~unitVersion  '09'x || "ooTest:" self~ooTestVersion
+    say "Interpreter:"~left(width) self~rexxVersion
+--  say 'Addressing Mode:' .ooRexxUnit.architecture
+    say "OS Name:"~left(width) osname
+    if osname~upper~abbrev("WINDOWS") then do
+      say "SysWinVer:"~left(width) SysWinVer()
+      if SysWinVer() \= SysVersion() then 
+        say "SysVersion:"~left(width) SysVersion()
+    end
+    else do
+      say "SysLinVer:"~left(width) SysLinVer()
+      if SysLinVer() \= SysVersion() then 
+        say "SysVersion:"~left(width) SysVersion()
+    end
+--  say "ooRexxUnit:     " self~unitVersion  '09'x || "ooTest:" self~ooTestVersion
     say
-    say "Tests ran:"~left(20)  stats~tests
-    say "Assertions:"~left(20) stats~asserts
+    say "Tests ran:"~left(width)  stats~tests
+    say "Assertions:"~left(width) stats~asserts
 
     select
-      when verbose < 3 then say "Failures:"~left(20) stats~newFails
+      when verbose < 3 then say "Failures:"~left(width) stats~newFails
       when verbose < 7 then do
-        say "Failures:"~left(20) stats~newFails
-        say "  (Known failures:)"~left(20) stats~knownFails
+        say "Failures:"~left(width) stats~newFails
+        say "  (Known failures:)"~left(width) stats~knownFails
       end
-      otherwise say "Failures:"~left(20) stats~totalFails
+      otherwise say "Failures:"~left(width) stats~totalFails
     end
     -- End select
 
-    if verbose < 3 then say "Errors:"~left(20) stats~totalErrs
+    if verbose < 3 then say "Errors:"~left(width) stats~totalErrs
     else do
-      say "Errors:"~left(20)     stats~errs
-      say "Exceptions:"~left(20) stats~exceptions
+      say "Errors:"~left(width)     stats~errs
+      say "Exceptions:"~left(width) stats~exceptions
     end
 
     if vebose < 3 then do
@@ -738,15 +751,15 @@ return 0
       return
     end
 
-    say "Skipped files:"~left(20) stats~skippedFiles
+    say "Skipped files:"~left(width) stats~skippedFiles
 
     if verbose < 4 then do
       say
       return
     end
 
-    say "Messages:"~left(20) stats~messages
-    say "Logs:"~left(20) stats~logs
+    say "Messages:"~left(width) stats~messages
+    say "Logs:"~left(width) stats~logs
     say
 
 

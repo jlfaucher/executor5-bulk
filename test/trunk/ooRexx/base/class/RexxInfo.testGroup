@@ -131,8 +131,9 @@ return testResult
   self~assertTrue(.RexxInfo~platform~length > 0, ".RexxInfo~platform should return a non-null string")
   parse source platform .
   self~assertEquals(platform, .RexxInfo~platform, ".RexxInfo~platform should be equal to parse source first token")
+  -- on Linux, .RexxInfo~platform returns "LINUX", but SysVersion returns "Linux .."
   parse value SysVersion() with Platform .
-  self~assertEquals(platform, .RexxInfo~platform, ".RexxInfo~platform should be equal to SysVersion() first token")
+  self~assertEquals(platform~upper, .RexxInfo~platform~upper, ".RexxInfo~platform should be equal to SysVersion() first token")
 
 ::method test_rexxInfo_architecture
   self~assertTrue(.RexxInfo~architecture~length > 0, ".RexxInfo~architecture should return a non-null string")

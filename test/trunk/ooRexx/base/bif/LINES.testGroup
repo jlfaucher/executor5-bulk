@@ -65,6 +65,7 @@ return testResult
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class "LINES.testGroup" public subclass ooTestCase
 
+/* disable test, as it fails if there's anything in the type-ahead buffer
   ::method test_stdin_normal
 
     -- Default stream is stdin, default for omitted second arg should be Normal
@@ -85,7 +86,9 @@ return testResult
 
     opt = 'N' || 'uncool'~copies(5000)
     self~assertSame(0, lines( , opt), 'stdin empty extremely long string is valid')
+*/
 
+/* disable test, as it fails if there's anything in the type-ahead buffer
   ::method  test_stdin_count
     self~assertSame(0, lines(, "Count"), 'stdin empty "Count" is valid')
     self~assertSame(0, lines(, "count"), 'stdin empty "count" is valid')
@@ -101,6 +104,7 @@ return testResult
 
     opt = 'C' || "comedian"~copies(1000)
     self~assertSame(0, lines(, opt), 'stdin empty use of a long string for "Count" is valid')
+*/
 
     ::method test_fileStream_normal
 
@@ -177,7 +181,9 @@ return testResult
       self~assertSame(0, lines('b0sokdogusZ2ls', 'N'), "Non-existent stream, 'N' 2nd arg should return 0")
       self~assertSame(0, lines('bklwerj4ogusZ2ls', "NORMAL"), "Non-existent stream, 'NORMAL' 2nd arg should return 0")
 
+/* disable assertion, as it fails if there's anything in the type-ahead buffer
       self~assertSame(0, lines('', "NORMAL"), "Non-existent stream, 'NORMAL' 2nd arg should return 0")
+*/
 
     ::method test_count_negativeTest1
 
@@ -185,7 +191,9 @@ return testResult
       self~assertSame(0, lines('b0sokdogusZ2ls', 'C'), "Non-existent stream, 'C' 2nd arg should return 0")
       self~assertSame(0, lines('bklwerj4ogusZ2ls', "cOUn"), "Non-existent stream, 'cOUn' 2nd arg should return 0")
 
+/* disable assertion, as it fails if there's anything in the type-ahead buffer
       self~assertSame(0, lines('', "CCC"), "Non-existent stream, 'CCC' 2nd arg should return 0")
+*/
 
     ::method test_normal_bytes
 

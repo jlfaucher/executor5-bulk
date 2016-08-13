@@ -103,12 +103,14 @@ return testResult
 
   self~assertSame(0, chars(fileName))
 
+/* disable test, as it fails if there's anything in the type-ahead buffer
 -- Tests chars() for stdin
 ::method 'test_3'
 
   -- There should not be anything in stdin while the test suite is  running,
   -- (I don't think.)
   self~assertSame(0, chars())
+*/
 
 -- Tests using an extra argument with stdin
 ::method test_stdin_wrong_synatx
