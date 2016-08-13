@@ -1461,10 +1461,9 @@ a discussion of Rexx input and output.) If you omit
 <emphasis role="italic">name</emphasis>, the number
 of characters available in the default input stream (STDIN) is returned.</para>
 <para>The total number of characters remaining cannot be determined for some
-streams (for example, STDIN). For these streams, the CHARS function returns
+streams (for example, STDIN or Windows/Unix devices). For these streams, the CHARS function returns
 <computeroutput>1</computeroutput> to indicate that data is present, or
-<computeroutput>0</computeroutput> if no data is present. For windows devices,
-CHARS always returns <computeroutput>1</computeroutput>.
+<computeroutput>0</computeroutput> if no data is present.
 <indexterm><primary>CHARS function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -3102,9 +3101,9 @@ If you omit <emphasis role="italic">string</emphasis> but include
 <emphasis role="italic">line</emphasis>, only the write position
 is repositioned. If <emphasis role="italic">string</emphasis> is a null string,
 LINEOUT repositions the write position (if you include
-<emphasis role="italic">line</emphasis>) and does a carriage return.
-Otherwise, the stream is closed. LINEOUT adds a line-feed and a carriage-return
-character to the end of <emphasis role="italic">string</emphasis>.</para>
+<emphasis role="italic">line</emphasis>).
+Otherwise, the stream is closed. LINEOUT adds platform-dependent end-of-line
+characters to the end of <emphasis role="italic">string</emphasis>.</para>
 <para>If you omit <emphasis role="italic">name</emphasis>, the line is written
 to the default output stream STDOUT (usually the display).</para>
 <para>For persistent streams, a write position is maintained for each stream.

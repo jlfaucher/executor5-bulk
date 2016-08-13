@@ -759,35 +759,42 @@ say method_source[1]              /* Shows the method source code */
 </mediaobject>
 
 <para>Returns a <xref linkend="clsSupplier" xrefstyle="template:Supplier"/> object
-for all the instance methods of the receiver
-class and its superclasses, if you specify no argument. If
-<emphasis role="italic">class_object</emphasis> is &nil;,
-<methodname>methods</methodname>
-returns a supplier object for only the instance
-methods of the receiver class. If you specify a
-<emphasis role="italic">class_object</emphasis>,
-this method returns a supplier object containing only the instance methods
+for all the instance methods of the receiving class and its superclasses,
+if no argument is specified.
+In this case, the supplier's indexes may contain duplicate entries,
+if classes override methods in superclasses. 
+</para>
+<para>If <emphasis role="italic">class_object</emphasis> is &nil;,
+<methodname>methods</methodname> returns a Supplier object
+for only the instance methods of the receiving class.
+If a <emphasis role="italic">class_object</emphasis> is specified,
+this method returns a Supplier object containing only the instance methods
 that <emphasis role="italic">class_object</emphasis> defines.
-The supplier enumerates all the names and methods existing
+</para>
+<para>
+The returned supplier's indexes are the method names and the supplier's items
+are their associated <xref linkend="clsSupplier" xrefstyle="template:Method"/> objects.
+The Supplier enumerates all the names and methods existing
 at the time of the supplier's creation.
 </para>
 
-<note><title>Note</title>
+<note>
 <para>Methods that have been hidden with a
 <methodname>setMethod</methodname> or
 <methodname>define</methodname> method
 are included with the other methods that
 <methodname>methods</methodname> returns. The hidden methods
-have &nil; for the associated method.</para></note>
+have &nil; for their associated method.</para></note>
+
 <indexterm><primary>examples</primary>
 <secondary>methods method</secondary></indexterm>
 <example id="ex.class-methods">
 <title>Class class &mdash; methods method</title>
 <programlisting>
-objsupp=.object~methods
+objsupp = .object~methods
 do while objsupp~available
-say objsupp~index           -- displays all instance method
-objsupp~next                -- names of the Object class
+  say objsupp~index           -- displays all instance method
+  objsupp~next                -- names of the Object class
 end
 </programlisting>
 </example>
@@ -2487,15 +2494,12 @@ items.</para>
 of the Object class are, therefore, available on all objects.</para>
 
 <!-- modified: removed all class methods except new(), uncommented init(), added private methods run(), setMethod(), unsetMethod() -->
+<!-- modified: removed "Methods inherited from the Object class" -->
 <!-- $GENERATED-20151019-START rexxrefClassTable(Object) -->
 <table id="ooRexxObjectClass" frame="all" pgwide="1">
 <title>Object Class</title>
 <tgroup cols="1">
 <tbody>
- <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
- </row>
- <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
- </row>
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>
@@ -2880,11 +2884,53 @@ Otherwise it returns &nil;.</para>
 </imageobject>
 </mediaobject>
 
-<para>Returns a Supplier instance containing the names and corresponding method objects
-defined by
-<emphasis role="italic">class</emphasis>.  If the receiver object is not an
-instance of <emphasis role="italic">class</emphasis>, &nil; is returned.
+<para>Returns a <xref linkend="clsSupplier" xrefstyle="template:Supplier"/> object
+for all the object methods of the receiving object and its superclasses,
+if no argument is specified.
+In this case, the supplier's indexes may contain duplicate entries,
+if classes override methods in superclasses. 
 </para>
+<para>If a <emphasis role="italic">class_object</emphasis> is specified,
+<methodname>instanceMethods</methodname> returns a Supplier object
+for only the object methods of the receiving object.
+If the receiving object object is not an instance of
+<emphasis role="italic">class_object</emphasis>, an empty Supplier is returned.
+</para>
+<para>
+The returned supplier's indexes are the method names and the supplier's items
+are their associated <xref linkend="clsSupplier" xrefstyle="template:Method"/> objects.
+The Supplier enumerates all the names and methods existing
+at the time of the supplier's creation.
+</para>
+
+<note>
+<para>Methods that have been hidden with a
+<methodname>setMethod</methodname> or
+<methodname>define</methodname> method
+are included with the other methods that
+<methodname>instanceMethods</methodname> returns. The hidden methods
+have &nil; for their associated method.</para></note>
+
+<indexterm><primary>examples</primary>
+<secondary>instanceMethods method</secondary></indexterm>
+<example id="ex.object-instancemethods">
+<title>Object class &mdash; instanceMethods method</title>
+<programlisting>
+-- list all class methods of .String only
+say .String~instanceMethods(.String)~allIndexes   --> CR,NEW,NL,NULL,TAB
+
+-- count all class methods of .String and its superclasses 
+-- 4 .String class methods, 32 .Object class methods, 34 .Class class methods
+say .String~instanceMethods~allIndexes~items      --> 70
+
+
+-- count all instance methods of .String only
+say ''~instancemethods(.String)~allindexes~items  --> 116
+
+-- count all instance methods of .String and its superclasses
+say ''~instancemethods~allindexes~items           --> 148
+</programlisting>
+</example>
 </section>
 
 <section id="mthObjectIsA"><title>isA</title>
