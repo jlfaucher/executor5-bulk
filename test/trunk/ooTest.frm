@@ -148,6 +148,10 @@ return value(name, , 'ENVIRONMENT')
 
   libDir = .ooTest.dir || sl || 'bin' || sl || os
 
+  -- if libdir doesn't exist or is empty, don't bother adding it to PATH, LIBPATH, etc.
+  if .nil == .File~new(libdir)~list then
+    return
+
   -- libDir may / will also contain executables.  So add it to the path for all
   -- OSes.
   j = addToPath(libDir)
@@ -162,7 +166,7 @@ return value(name, , 'ENVIRONMENT')
       libDir = libDir || sep || curLibPath
       j = replaceEnvValue("LIBPATH", libDir)
     end
-    when os == 'LINUX' then do
+    when os == 'LINUX' | os == 'DARWIN' then do
       curLDPath = getEnvValue("LD_LIBRARY_PATH")
       libDir = libDir || sep || curLDPath
       j = replaceEnvValue("LD_LIBRARY_PATH", libDir)
@@ -711,20 +715,25 @@ return 0
     width = 14
     parse source osname .
 
-    say
     say "Interpreter:"~left(width) self~rexxVersion
 --  say 'Addressing Mode:' .ooRexxUnit.architecture
     say "OS Name:"~left(width) osname
-    if osname~upper~abbrev("WINDOWS") then do
-      say "SysWinVer:"~left(width) SysWinVer()
-      if SysWinVer() \= SysVersion() then 
-        say "SysVersion:"~left(width) SysVersion()
+
+    versions = .StringTable~new
+    -- if we've got SysWinVer() and it's result is unique, use it
+    if rxfuncquery("SysWinVer") = 0, \versions~hasItem(SysWinVer()) then
+      versions["SysWinVer"] = SysWinVer()
+    -- if we've got SysLinVer() and it's result is unique, use it
+    if rxfuncquery("SysLinVer") = 0, \versions~hasItem(SysLinVer()) then
+      versions["SysLinVer"] = SysLinVer()
+    -- if SysVersion() result is unique, use it
+    if \versions~hasItem(SysVersion()) then
+      versions["SysVersion"] = SysVersion()
+    do version over "SysWinVer", "SysLinVer", "SysVersion"
+      if versions~hasIndex(version) then
+        say version~left(width) versions[version]
     end
-    else do
-      say "SysLinVer:"~left(width) SysLinVer()
-      if SysLinVer() \= SysVersion() then 
-        say "SysVersion:"~left(width) SysVersion()
-    end
+
 --  say "ooRexxUnit:     " self~unitVersion  '09'x || "ooTest:" self~ooTestVersion
     say
     say "Tests ran:"~left(width)  stats~tests
@@ -1259,7 +1268,7 @@ return 0
 
     -- All possible OS words are put into the allowed OSes set, although it is
     -- doubtful that ooRexx is compiled on the last 3.
-    self~knownOSes = .set~of('WINDOWS', 'LINUX', 'SUNOS', 'AIX', 'MACOSX', 'CYGNUS', 'FREEBSD', 'NETBSD')
+    self~knownOSes = .set~of('WINDOWS', 'LINUX', 'DARWIN', 'AIX', 'SUNOS', 'MACOSX', 'CYGNUS', 'FREEBSD', 'NETBSD')
     self~allowedOSes = self~knownOSes~copy
     self~machineOS = .ooRexxUnit.OSName
 
