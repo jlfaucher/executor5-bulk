@@ -561,9 +561,9 @@ set_xor ::= 'xor(' argument ')'
 
 stem_new ::= 'new(' name? ')'
 
-stem_atget ::= '[' index ']'
+stem_atget ::= '[' index? (',' index?)* ']'
 
-stem_putset ::= '[' index ']' '=' item
+stem_putset ::= '[' index? (',' index?)* ']' '=' value
 
 stem_allindexes ::= 'allIndexes'
 

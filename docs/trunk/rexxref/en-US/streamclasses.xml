@@ -783,11 +783,11 @@ stream_name~command("open read shared")
 </example>
 </listitem></varlistentry>
 <varlistentry><term>CLOSE</term>
-<listitem><para>closes the stream object. The COMMAND
+<listitem><para>closes the stream object. The <methodname>command</methodname>
 method with the CLOSE option returns <computeroutput>READY:</computeroutput>
 if the stream
 is successfully closed or an appropriate error message otherwise. If an attempt
-to close an unopened file occurs, then the COMMAND method with the CLOSE option
+to close an unopened file occurs, then the <methodname>command</methodname> method with the CLOSE option
 returns a null string (&quot;&quot;).
 </para></listitem></varlistentry>
 <varlistentry><term>FLUSH</term>
@@ -1040,7 +1040,7 @@ stream_name~command("query timestamp")
 <para>Returns any descriptive string associated with the
 current state of the stream or &nil; if no descriptive string is
 available. The <methodname>description</methodname>
-method is identical with the STATE method except
+method is identical to the <methodname>state</methodname> method except
 that the string that <methodname>description</methodname>
 returns is followed by a colon and, if
 available, additional information about ERROR or NOTREADY states.</para>
@@ -1555,7 +1555,7 @@ positions are set. </para>
 for a discussion
 of read and write positions in a persistent stream.</para></note>
 <para>To use this method, you must first open the stream object (with
-the OPEN method described previously or implicitly with an input or output
+the <methodname>open</methodname> method described previously or implicitly with an input or output
 operation). One of the following characters can precede the
 <emphasis role="italic">offset</emphasis> number:</para>
 <variablelist>
