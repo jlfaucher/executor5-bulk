@@ -1,0 +1,291 @@
+#!/usr/bin/rexx
+/*
+  SVN Revision: $Rev: 11141 $
+  Change Date:  $Date: 2016-08-17 00:00:00 +0200 $
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2016-2016 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+    parse source . . fileSpec;
+
+    group = .TestGroup~new(fileSpec)
+
+    group~add(.hostemu.testGroup)
+
+    signal on syntax name packageErr
+    .context~package~loadLibrary("hostemu")
+
+    if group~isAutomatedTest then return group
+
+    testResult = group~suite~execute~~print
+
+return testResult
+
+packageErr:
+  err = .ExceptionData~new(timeStamp(), s, .ExceptionData~TRAP)
+  err~setLine(sigl)
+  err~conditionObject = condition('O')
+  c = err~conditionObject 
+  err~msg = "Failed to load external library 'hostemu' needed for this test group."
+
+  if group~isAutomatedTest then return err
+
+  err~print("Test group exception", .false)
+return .ooTestResult~new(5)~~addException(err)
+
+-- End of entry point.
+
+::requires 'ooTest.frm'
+::class 'hostemu.testgroup' subclass ooTestCase public
+
+::method activate class
+  expose session diskwTmp
+  -- get access to SESSION queue
+  session = .RexxQueue~new
+  -- define DISKW test file name
+  parse source . . path
+  diskwTmp = filespec('path', path) || "diskw.tmp"
+
+::attribute session get class
+::attribute diskwTmp get class
+
+::method emptySessionQueue
+  -- empty SESSION queue
+  self~class~session~empty
+
+::attribute diskwTmp get
+  return self~class~diskwTmp
+
+
+-- EXECIO "immediate command" tests
+
+::method test_hi
+  address "hostemu"
+  self~expectCondition("HALT")
+  signal on halt
+  "hi"
+  self~assertFail("address 'hostemu' 'hi' should trigger halt")
+
+  halt:
+  self~assertEquals(0, rc)
+  raise propagate
+
+::method test_te
+  address "hostemu"
+  "te"
+  self~assertEquals(0, rc)
+
+
+-- EXECIO DISKR tests
+
+-- read file into SESSION queue, fifo is default
+::method test_execio_diskr_default
+  address "hostemu"
+  parse source . . file
+  self~emptySessionQueue
+  "execio * diskr" file "(finis"
+  self~assertEquals(0, rc)
+  self~assertEquals(sourceline(), queued())
+  do queued() 
+    parse pull line
+  end
+  self~assertEquals(sourceline(sourceline()), line, "last line should be last line in queue")
+
+-- read file into SESSION queue, fifo
+::method test_execio_diskr_fifo
+  address "hostemu"
+  parse source . . file
+  self~emptySessionQueue
+  "EXECIO * DISKR" file "(FINIS FIFO"
+  self~assertEquals(0, rc)
+  self~assertEquals(sourceline(), queued())
+  do queued() 
+    parse pull line
+  end
+  self~assertEquals(sourceline(sourceline()), line, "last line should be last line in queue")
+
+-- read file into SESSION queue, lifo
+::method test_execio_diskr_lifo
+  address "hostemu"
+  parse source . . file
+  self~emptySessionQueue
+  "execio * diskr" file "(finis lifo"
+  self~assertEquals(0, rc)
+  self~assertEquals(sourceline(), queued())
+  parse pull line
+  self~assertEquals(sourceline(sourceline()), line, "last line should be first line in a LIFO queue")
+  self~emptySessionQueue
+
+-- read file into stem
+::method test_execio_diskr_stem
+  address "hostemu"
+  parse source . . file
+  "execio * diskr" file "(finis stem STEM."
+  self~assertEquals(0, rc)
+  self~assertEquals(sourceline(), stem.0)
+  self~assertEquals(sourceline(sourceline()), stem.[stem.0], "last line should be last line in stem")
+
+-- read first two lines of file into queue
+::method test_execio_diskr_two_lines_fifo
+  address "hostemu"
+  parse source . . file
+  self~emptySessionQueue
+  "execio 2 diskr" file "(fifo finis"
+  self~assertEquals(0, rc)
+  self~assertEquals(2, queued())
+  parse pull line
+  parse pull line
+  self~assertEquals(sourceline(2), line, "second line should be last line in queue")
+
+-- read first line of file into queue
+::method test_execio_diskr_two_lines_stem
+  address "hostemu"
+  parse source . . file
+  "execio 2 diskr" file "(stem STEM. finis"
+  self~assertEquals(0, rc)
+  self~assertEquals(2, stem.0)
+  self~assertEquals(sourceline(2), stem.2, "second line should be in second stem")
+
+-- read file, starting with second line, into queue
+::method test_execio_diskr_start_at_two_fifo
+  address "hostemu"
+  parse source . . file
+  self~emptySessionQueue
+  "execio * diskr" file 2 "(fifo finis"
+  self~assertEquals(0, rc)
+  self~assertEquals(sourceline() - 1, queued())
+  parse pull line
+  self~assertEquals(sourceline(2), line, "second line should be first line in queue")
+  self~emptySessionQueue
+
+-- read file, starting with second line, into stem
+::method test_execio_diskr_start_at_two_stem
+  address "hostemu"
+  parse source . . file
+  self~emptySessionQueue
+  "execio * diskr" file 2 "(stem stem. finis"
+  self~assertEquals(0, rc)
+  self~assertEquals(sourceline() - 1, stem.0)
+  self~assertEquals(sourceline(2), stem.1, "second line should be first line in queue")
+
+-- read four lines of file, starting with third line, into queue
+::method test_execio_diskr_start_at_three_read_four_fifo
+  address "hostemu"
+  parse source . . file
+  self~emptySessionQueue
+  "execio 4 diskr" file 3 "(fifo finis"
+  self~assertEquals(0, rc)
+  self~assertEquals(4, queued())
+  parse pull line
+  self~assertEquals(sourceline(3), line, "third line should be first line in queue")
+  self~emptySessionQueue
+
+-- read four lines of file, starting with third line, into stem
+::method test_execio_diskr_start_at_three_read_four_stem
+  address "hostemu"
+  parse source . . file
+  self~emptySessionQueue
+  "execio 4 diskr" file 3 "(stem stem. finis"
+  self~assertEquals(0, rc)
+  self~assertEquals(4, stem.0)
+  self~assertEquals(sourceline(3), stem.1, "third line should be first line in stem")
+
+-- EXECIO SKIP should ignore STEM
+::method test_execio_diskr_stem_skip
+  address "hostemu"
+  parse source . . file
+  "execio * diskr" file "(finis skip stem STEM."
+  self~assertEquals(0, rc)
+  self~assertFalse(var('stem.0'), "with EXECIO option SKIP, stem.0 shouldn't have been set")
+
+-- skip lines, then read remaining file into stem
+::method test_execio_diskr_skip_then_stem
+  address "hostemu"
+  parse source . . file
+  skip = 5
+  "execio" skip "diskr" file "(skip"
+  self~assertEquals(0, rc)
+  "execio * diskr" file "(finis stem STEM."
+  self~assertEquals(0, rc)
+  self~assertEquals(sourceline() - skip, stem.0)
+
+
+-- EXECIO DISKW tests
+
+-- write file from SESSION queue, read in again and compare
+::method test_execio_diskw_default
+  address "hostemu"
+  self~emptySessionQueue
+  lines = 4
+  do i = 1 to lines
+    queue "queued line" i              -- need to QUEUE, not PUSH
+  end
+  -- EXECIO DISKW will append, so remove temporary file
+  .File~new(self~diskwTmp)~delete
+  "execio * diskw" self~diskwTmp "(finis"
+  self~assertEquals(0, rc)
+  "execio * diskr" self~diskwTmp "(finis stem diskr."
+  self~assertEquals(0, rc)
+  self~assertEquals(lines, diskr.0)
+  do i = 1 to lines
+    self~assertEquals("queued line" i, diskr.i)
+  end
+  .File~new(self~diskwTmp)~delete
+
+-- write file from stem, read in again and compare
+::method test_execio_diskw_stem
+  address "hostemu"
+  lines = 5
+  -- create stem with more items than what we'll write out
+  diskw.0 = lines * 2
+  do i = 1 to diskw.0
+    diskw.i = "stem line" i
+  end
+  -- EXECIO DISKW will append, so remove temporary file
+  .File~new(self~diskwTmp)~delete
+  "execio" lines "diskw" self~diskwTmp "(finis stem diskw."
+  self~assertEquals(0, rc)
+  "execio * diskr" self~diskwTmp "(finis stem diskr."
+  self~assertEquals(0, rc)
+  self~assertEquals(lines, diskr.0)
+  do i = 1 to lines
+    self~assertEquals(diskw.i, diskr.i)
+  end
+  .File~new(self~diskwTmp)~delete
+
+
+-- tests in here check against this last source line, as sourceline() will show first line as "" instead of hashbang
