@@ -67,9 +67,19 @@ easier. The following subcommands are available:</para>
     </varlistentry>
 </variablelist>
 <para>The HostEmu HI, TS, TE commands have no arguments that are acceptable in the HostEmu
-environment. Thus their syntax is very simple. The EXECIO subcommand is more complicated
-and requires some explanation. It is a simplified version of the mainframe command but
-will provide most of the functionality you will need on a daily basis.</para>
+environment.
+</para>
+<note>
+<para>The HI, TS, and TE commands can not be issued directly from a Linux/Windows command prompt.
+The only way to issue these commands is from within the currently running Rexx program
+(e. g. <code>address 'hostemu' 'hi'</code>) and they will only affect this Rexx program.
+Other running Rexx programs will be unaffected.
+As such, these command are only a very limited, much less useful substitute of the
+original TSO and CMS immediate commands.
+</para></note>
+<para>
+The EXECIO subcommand is a simplified version of the mainframe command with only
+a small subset of the original EXECIO functionality supported.</para>
 <para>To include and use the HostEmu subcommand environment you must place a ooRexx directive
 in your script. The following shows how to accomplish this.</para>
 <programlisting>
@@ -97,7 +107,13 @@ environment the default environment.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/hostemu_execio.svg" scale="50" />
+<imagedata fileref="images/hostemu_execio_diskr.svg" scale="50" />
+</imageobject>
+</mediaobject>
+<para></para>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/hostemu_execio_diskw.svg" scale="50" />
 </imageobject>
 </mediaobject>
 
@@ -105,7 +121,7 @@ environment the default environment.</para>
 <title>Command Options</title>
 <variablelist>
     <varlistentry>
-        <term>num</term>
+        <term>lines</term>
         <listitem><para>Specifies the number of records (text lines) to read or write.</para></listitem>
     </varlistentry>
     <varlistentry>
@@ -118,31 +134,43 @@ environment the default environment.</para>
     </varlistentry>
     <varlistentry>
         <term>DISKW</term>
-        <listitem><para>The operation os a disk write operation.</para></listitem>
+        <listitem><para>The operation is a disk write operation.</para></listitem>
     </varlistentry>
     <varlistentry>
         <term>filename</term>
-        <listitem><para>The name of the file for the disk operation. This option MUST be enclosed in double quotes.
+        <listitem><para>The name of the file for the disk operation.
+        If <emphasis role="italic">filename</emphasis> contains special characters, it will have to be enclosed in double quotes.
+        </para></listitem>
+    </varlistentry>
+    <varlistentry>
+        <term>linenum</term>
+        <listitem><para>The relative line number within the specified file where a DISKR operation is to begin.
+        If <emphasis role="italic">linenum</emphasis> is not specified reading begins at the current position.
         </para></listitem>
     </varlistentry>
     <varlistentry>
         <term>FINIS</term>
-        <listitem><para>The file will be closed at the end of the operation.</para></listitem>
+        <listitem><para>The file will be closed at the end of the operation.
+        The default is to leave the file open.</para></listitem>
     </varlistentry>
     <varlistentry>
         <term>STEM stemname.</term>
-        <listitem><para>The operation is works against the specified stem. A trailing period is required or
-       the name will be used as the root of a standard Rexx variable name.</para></listitem>
-    </varlistentry>
-    <varlistentry>
-        <term>LIFO</term>
-        <listitem><para>Specifies that instead of a Rexx stem The Rexx SESSION queue should be used. The queue
-        will be read or written to using LIFO.</para></listitem>
+        <listitem><para>Specifies to read from or write to the specified stem. A trailing period is required or
+       the name will be used as the root of a standard Rexx variable name.
+       If <emphasis role="italic">stemname</emphasis> contains special characters, it will have to be enclosed in double quotes.
+       </para>
+       <para>For DISKW operation, if STEM isn't specified, data is taken from the Rexx SESSION queue.
+       </para></listitem>
     </varlistentry>
     <varlistentry>
         <term>FIFO</term>
-        <listitem><para>Specifies that instead of a Rexx stem The Rexx SESSION queue should be used. The queue
-        will be read or written to using FIFO.</para></listitem>
+        <listitem><para>Specifies to write to the Rexx SESSION queue
+        in a first-in first-out order.  This is the default.</para></listitem>
+    </varlistentry>
+    <varlistentry>
+        <term>LIFO</term>
+        <listitem><para>Specifies to write to the Rexx SESSION queue
+        in a last-in first-out order.</para></listitem>
     </varlistentry>
     <varlistentry>
         <term>SKIP</term>
@@ -150,10 +178,37 @@ environment the default environment.</para>
         operations will be performed in this case.</para></listitem>
     </varlistentry>
 </variablelist>
-<para>Note that the LIFO, FIFO and SKIP options are not valid for DISKW operations.</para>
-<para>These options should provide almost all of the EXECIO operations you will need in the
-non-mainframe operating system environment.</para>
+<para>Note that the options between the brackets can be specified in any order.</para>
 </section>
+
+<section>
+<title>Return codes</title>
+<variablelist>
+  <varlistentry>
+    <term>2</term>
+    <listitem><para>End-of-file was reached before the specified number of lines were read.
+    </para></listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>24</term>
+    <listitem><para>Bad parameter list, a wrong option, a non-numeric line number,
+    or an invalid file name was specified.
+    </para></listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>41</term>
+    <listitem><para>Out-of-memory
+    </para></listitem>
+  </varlistentry>
+  <varlistentry>
+    <term>2008</term>
+    <listitem><para>The variable name specified with the STEM option was invalid,
+    or could not be read, or written to.
+    </para></listitem>
+  </varlistentry>
+</variablelist>
+</section>
+
 </section>
 
 <section id="hi">
