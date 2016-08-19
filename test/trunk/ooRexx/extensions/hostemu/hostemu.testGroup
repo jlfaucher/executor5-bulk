@@ -73,22 +73,46 @@ return .ooTestResult~new(5)~~addException(err)
 ::class 'hostemu.testgroup' subclass ooTestCase public
 
 ::method activate class
-  expose session diskwTmp
+  expose session diskrFile diskrFileLine diskrFileLines diskrFileLastLine diskwFile
   -- get access to SESSION queue
   session = .RexxQueue~new
   -- define DISKW test file name
-  parse source . . path
-  diskwTmp = filespec('path', path) || "diskw.tmp"
+  parse source . . sourcefile
+  -- we need to quote file names containing slashes, so let's always quote
+  diskrFile = '"'sourcefile'"'
+  diskrFileLines = sourceline()
+  diskrFileLastLine = sourceline(sourceline())
+  diskrFileLine = .context~package~source
+  diskwFile = '"'filespec("location", sourcefile) || "diskw.tmp" || '"'
 
 ::attribute session get class
-::attribute diskwTmp get class
+::attribute diskrFile get class
+::attribute diskrFileLines get class
+::attribute diskrFileLine get class
+::attribute diskrFileLastLine get class
+::attribute diskwFile get class
 
 ::method emptySessionQueue
   -- empty SESSION queue
   self~class~session~empty
 
-::attribute diskwTmp get
-  return self~class~diskwTmp
+::attribute diskrFile get
+  return self~class~diskrFile
+
+::attribute diskrFileLines get
+  return self~class~diskrFileLines
+
+::attribute diskrFileLine get
+  return self~class~diskrFileLine
+
+::attribute diskrFileLastLine get
+  return self~class~diskrFileLastLine
+
+::attribute diskwFile get
+  return self~class~diskwFile
+
+::method diskwFileDelete
+  .File~new(self~class~diskwFile~strip(, '"'))~delete
 
 
 -- EXECIO "immediate command" tests
@@ -115,133 +139,121 @@ return .ooTestResult~new(5)~~addException(err)
 -- read file into SESSION queue, fifo is default
 ::method test_execio_diskr_default
   address "hostemu"
-  parse source . . file
   self~emptySessionQueue
-  "execio * diskr" file "(finis"
+  "execio * diskr" self~diskrFile "(finis"
   self~assertEquals(0, rc)
-  self~assertEquals(sourceline(), queued())
+  self~assertEquals(self~diskrFileLines, queued())
   do queued() 
     parse pull line
   end
-  self~assertEquals(sourceline(sourceline()), line, "last line should be last line in queue")
+  self~assertEquals(self~diskrFileLastLine, line, "last line should be last line in queue")
 
 -- read file into SESSION queue, fifo
 ::method test_execio_diskr_fifo
   address "hostemu"
-  parse source . . file
   self~emptySessionQueue
-  "EXECIO * DISKR" file "(FINIS FIFO"
+  "EXECIO * DISKR" self~diskrFile "(FINIS FIFO"
   self~assertEquals(0, rc)
-  self~assertEquals(sourceline(), queued())
+  self~assertEquals(self~diskrFileLines, queued())
   do queued() 
     parse pull line
   end
-  self~assertEquals(sourceline(sourceline()), line, "last line should be last line in queue")
+  self~assertEquals(self~diskrFileLastLine, line, "last line should be last line in queue")
 
 -- read file into SESSION queue, lifo
 ::method test_execio_diskr_lifo
   address "hostemu"
-  parse source . . file
   self~emptySessionQueue
-  "execio * diskr" file "(finis lifo"
+  "execio * diskr" self~diskrFile "(finis lifo"
   self~assertEquals(0, rc)
-  self~assertEquals(sourceline(), queued())
+  self~assertEquals(self~diskrFileLines, queued())
   parse pull line
-  self~assertEquals(sourceline(sourceline()), line, "last line should be first line in a LIFO queue")
+  self~assertEquals(self~diskrFileLastLine, line, "last line should be first line in a LIFO queue")
   self~emptySessionQueue
 
 -- read file into stem
 ::method test_execio_diskr_stem
   address "hostemu"
-  parse source . . file
-  "execio * diskr" file "(finis stem STEM."
+  "execio * diskr" self~diskrFile "(finis stem STEM."
   self~assertEquals(0, rc)
-  self~assertEquals(sourceline(), stem.0)
-  self~assertEquals(sourceline(sourceline()), stem.[stem.0], "last line should be last line in stem")
+  self~assertEquals(self~diskrFileLines, stem.0)
+  self~assertEquals(self~diskrFileLastLine, stem.[stem.0], "last line should be last line in stem")
 
 -- read first two lines of file into queue
 ::method test_execio_diskr_two_lines_fifo
   address "hostemu"
-  parse source . . file
   self~emptySessionQueue
-  "execio 2 diskr" file "(fifo finis"
+  "execio 2 diskr" self~diskrFile "(fifo finis"
   self~assertEquals(0, rc)
   self~assertEquals(2, queued())
   parse pull line
   parse pull line
-  self~assertEquals(sourceline(2), line, "second line should be last line in queue")
+  self~assertEquals(self~diskrFileLine[2], line, "second line should be last line in queue")
 
 -- read first line of file into queue
 ::method test_execio_diskr_two_lines_stem
   address "hostemu"
-  parse source . . file
-  "execio 2 diskr" file "(stem STEM. finis"
+  "execio 2 diskr" self~diskrFile "(stem STEM. finis"
   self~assertEquals(0, rc)
   self~assertEquals(2, stem.0)
-  self~assertEquals(sourceline(2), stem.2, "second line should be in second stem")
+  self~assertEquals(self~diskrFileLine[2], stem.2, "second line should be in second stem")
 
 -- read file, starting with second line, into queue
 ::method test_execio_diskr_start_at_two_fifo
   address "hostemu"
-  parse source . . file
   self~emptySessionQueue
-  "execio * diskr" file 2 "(fifo finis"
+  "execio * diskr" self~diskrFile 2 "(fifo finis"
   self~assertEquals(0, rc)
-  self~assertEquals(sourceline() - 1, queued())
+  self~assertEquals(self~diskrFileLines - 1, queued())
   parse pull line
-  self~assertEquals(sourceline(2), line, "second line should be first line in queue")
+  self~assertEquals(self~diskrFileLine[2], line, "second line should be first line in queue")
   self~emptySessionQueue
 
 -- read file, starting with second line, into stem
 ::method test_execio_diskr_start_at_two_stem
   address "hostemu"
-  parse source . . file
   self~emptySessionQueue
-  "execio * diskr" file 2 "(stem stem. finis"
+  "execio * diskr" self~diskrFile 2 "(stem stem. finis"
   self~assertEquals(0, rc)
-  self~assertEquals(sourceline() - 1, stem.0)
-  self~assertEquals(sourceline(2), stem.1, "second line should be first line in queue")
+  self~assertEquals(self~diskrFileLines - 1, stem.0)
+  self~assertEquals(self~diskrFileLine[2], stem.1, "second line should be first line in queue")
 
 -- read four lines of file, starting with third line, into queue
 ::method test_execio_diskr_start_at_three_read_four_fifo
   address "hostemu"
-  parse source . . file
   self~emptySessionQueue
-  "execio 4 diskr" file 3 "(fifo finis"
+  "execio 4 diskr" self~diskrFile 3 "(fifo finis"
   self~assertEquals(0, rc)
   self~assertEquals(4, queued())
   parse pull line
-  self~assertEquals(sourceline(3), line, "third line should be first line in queue")
+  self~assertEquals(self~diskrFileLine[3], line, "third line should be first line in queue")
   self~emptySessionQueue
 
 -- read four lines of file, starting with third line, into stem
 ::method test_execio_diskr_start_at_three_read_four_stem
   address "hostemu"
-  parse source . . file
   self~emptySessionQueue
-  "execio 4 diskr" file 3 "(stem stem. finis"
+  "execio 4 diskr" self~diskrFile 3 "(stem stem. finis"
   self~assertEquals(0, rc)
   self~assertEquals(4, stem.0)
-  self~assertEquals(sourceline(3), stem.1, "third line should be first line in stem")
+  self~assertEquals(self~diskrFileLine[3], stem.1, "third line should be first line in stem")
 
 -- EXECIO SKIP should ignore STEM
 ::method test_execio_diskr_stem_skip
   address "hostemu"
-  parse source . . file
-  "execio * diskr" file "(finis skip stem STEM."
+  "execio * diskr" self~diskrFile "(finis skip stem STEM."
   self~assertEquals(0, rc)
   self~assertFalse(var('stem.0'), "with EXECIO option SKIP, stem.0 shouldn't have been set")
 
 -- skip lines, then read remaining file into stem
 ::method test_execio_diskr_skip_then_stem
   address "hostemu"
-  parse source . . file
   skip = 5
-  "execio" skip "diskr" file "(skip"
+  "execio" skip "diskr" self~diskrFile "(skip"
   self~assertEquals(0, rc)
-  "execio * diskr" file "(finis stem STEM."
+  "execio * diskr" self~diskrFile "(finis stem STEM."
   self~assertEquals(0, rc)
-  self~assertEquals(sourceline() - skip, stem.0)
+  self~assertEquals(self~diskrFileLines - skip, stem.0)
 
 
 -- EXECIO DISKW tests
@@ -255,16 +267,16 @@ return .ooTestResult~new(5)~~addException(err)
     queue "queued line" i              -- need to QUEUE, not PUSH
   end
   -- EXECIO DISKW will append, so remove temporary file
-  .File~new(self~diskwTmp)~delete
-  "execio * diskw" self~diskwTmp "(finis"
+  self~diskwFileDelete
+  "execio * diskw" self~diskwFile "(finis"
   self~assertEquals(0, rc)
-  "execio * diskr" self~diskwTmp "(finis stem diskr."
+  "execio * diskr" self~diskwFile "(finis stem diskr."
   self~assertEquals(0, rc)
   self~assertEquals(lines, diskr.0)
   do i = 1 to lines
     self~assertEquals("queued line" i, diskr.i)
   end
-  .File~new(self~diskwTmp)~delete
+  self~diskwFileDelete
 
 -- write file from stem, read in again and compare
 ::method test_execio_diskw_stem
@@ -276,16 +288,16 @@ return .ooTestResult~new(5)~~addException(err)
     diskw.i = "stem line" i
   end
   -- EXECIO DISKW will append, so remove temporary file
-  .File~new(self~diskwTmp)~delete
-  "execio" lines "diskw" self~diskwTmp "(finis stem diskw."
+  self~diskwFileDelete
+  "execio" lines "diskw" self~diskwFile "(finis stem diskw."
   self~assertEquals(0, rc)
-  "execio * diskr" self~diskwTmp "(finis stem diskr."
+  "execio * diskr" self~diskwFile "(finis stem diskr."
   self~assertEquals(0, rc)
   self~assertEquals(lines, diskr.0)
   do i = 1 to lines
     self~assertEquals(diskw.i, diskr.i)
   end
-  .File~new(self~diskwTmp)~delete
+  self~diskwFileDelete
 
-
--- tests in here check against this last source line, as sourceline() will show first line as "" instead of hashbang
+::options novalue error
+-- tests in here check against this last source line, as self~diskrFileLines will show first line as "" instead of hashbang

@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2008 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2016 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -731,7 +731,7 @@ return 0
       versions["SysVersion"] = SysVersion()
     do version over "SysWinVer", "SysLinVer", "SysVersion"
       if versions~hasIndex(version) then
-        say version~left(width) versions[version]
+        say (version":")~left(width) versions[version]
     end
 
 --  say "ooRexxUnit:     " self~unitVersion  '09'x || "ooTest:" self~ooTestVersion
