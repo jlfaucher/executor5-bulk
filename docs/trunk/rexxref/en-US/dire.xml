@@ -659,14 +659,11 @@ created.  In addition to generating a method named
 returns the value of object instance variable that matches the method name.
 The second method assigns a new value to the object instance variable.</para>
 <para>For example, the directive
-<informalexample id="ex.method-2">
 <programlisting>::method name attribute
 </programlisting>
-</informalexample>
 creates two methods, <methodname>NAME</methodname> and <methodname>NAME=</methodname>.
 The <methodname>NAME</methodname> and <methodname>NAME=</methodname> methods are
 equivalent to the following code sequences:
-<informalexample id="ex.method-3">
 <programlisting>::method "NAME="
   expose name
   use arg name
@@ -675,7 +672,6 @@ equivalent to the following code sequences:
   expose name
   return name
 </programlisting>
-</informalexample>
 </para>
 <para>If you specify the <option>ABSTRACT</option> option, the method creates an ABSTRACT method placeholder.
 ABSTRACT methods define a method that an implementing subclass is expected to provide a concrete

@@ -3157,7 +3157,9 @@ environment.</para>
 </section>
 </section>
 
-<section id="linux"><title>Using Rexx on Windows and Unix</title>
+<section id="windows-unix"><title>Using Rexx on Windows and Unix</title>
+
+<section id="windows-unix-calling"><title>Calling other Rexx scripts</title>
 <para></para>
 <para>Rexx programs can call other Rexx programs as external
 functions or subroutines with the
@@ -3181,4 +3183,59 @@ of the command is the exit value of the called program provided that this
 value is a whole number in the range -32768 to 32767.  Otherwise, the exit
 value is ignored and the called program is given a return code of 0.</para>
 </section>
+
+<section id="shebang"><title>Shebang support</title>
+<indexterm><primary>shebang</primary></indexterm>
+<indexterm><primary>hashbang</primary></indexterm>
+<para>Rexx supports
+<emphasis role="italic">shebang</emphasis>s, also called
+<emphasis role="italic">hashbang</emphasis>s, as the first line of a
+Rexx program on both Unix-like and Windows systems.
+</para>
+<para>Typically, shebangs are found on Unix-like systems to identify the
+script language with which to run a script.
+On these systems, to run a script as a Rexx program, depending on where the
+interpreter is installed, the shebang would be something like
+<literal>#!/usr/bin/rexx</literal>.
+</para>
+<para>On a Windows system, Rexx will simply ignore the first line of a
+Rexx program, if it starts with the character sequence "<literal>#!</literal>".
+</para>
+</section>
+
+<section id="line-end"><title>Line-end characters</title>
+<para>Windows and Unix-like systems use different characters to indicate
+a line-break (ending one line and starting a new one) in a text file.
+While Windows uses the two-character sequence <literal>'0d 0a'x</literal>
+(carriage-return, line-feed), Unix-like systems typically use the character
+<literal>'0a'x</literal> (line-feed) as a line-end indicator. 
+</para>
+<para>Rexx supports both line-end indicators on each platform, both for the
+Rexx program itself, and for any data that is being read with built-in functions
+like LINES or LINEIN, or <xref linkend="clsStream" xrefstyle="template:Stream"/>
+methods like <methodname>lines</methodname>, <methodname>lineIn</methodname>,
+or <methodname>arrayIn</methodname>.
+This means, when moving from one platform to another, typically there should be
+no line-end conversions necessary for Rexx programs or data read by these programs.
+</para>
+</section>
+
+<section id="end-of-file"><title>End-of-file character</title>
+<para>Traditionally Windows used a special character <literal>'1a'x</literal>
+(end-of-file) to signify the end of a text file.
+Although today use of this special end-of-file character has become less common,
+some editors may still append it to the end of a text file.
+Unix-like systems do not use a special end-of-file character in text files.
+</para>
+<para>Rexx will honor the end-of-file character <literal>'1a'x</literal>
+within a Rexx program source file on both Windows and Unix-like platforms.
+It will not scan the source file beyond any end-of-file character it finds.
+This means, that a character <literal>'1a'x</literal> cannot be directly used
+within a Rexx program source file, for example within a literal string or a
+comment.
+</para>
+</section>
+
+</section>
+
 </chapter>
