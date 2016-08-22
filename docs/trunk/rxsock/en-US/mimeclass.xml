@@ -43,18 +43,19 @@
     #
     #########################################################################
 -->
-<chapter><title>Mime Classes Reference</title>
-<indexterm><primary>class, mime</primary></indexterm>
-<indexterm><primary>mime class</primary></indexterm>
-<para>The following sections describe the mime classes supplied with ooRexx.
-These classes encapsulates a mime object. This is most useful for sending complicated
-email messages vie the
-<xref linkend="clsSMTP" />.</para>
+<chapter><title>MIME Classes Reference</title>
+<indexterm><primary>class, MIME</primary></indexterm>
+<indexterm><primary>MIME class</primary></indexterm>
+<para>The following sections describe the Multipurpose Internet Mail Extensions
+(MIME) classes supplied with ooRexx.
+These classes encapsulate MIME objects. This is most useful for sending complicated
+email messages via the
+<xref linkend="clsSMTP" xrefstyle="template:SMTP"/> class.</para>
 
 <section><title>Installation</title>
-<indexterm><primary>installation, mime class</primary></indexterm>
-<indexterm><primary>mime class installation</primary></indexterm>
-<para>The Mime class package is contained in the file mime.cls. This file
+<indexterm><primary>installation, MIME class</primary></indexterm>
+<indexterm><primary>MIME class installation</primary></indexterm>
+<para>The MIME class package is contained in the file mime.cls. This file
 must be placed in a directory listed in your PATH. To get access to the class
 and methods in the Mime class, include the following statement in your Rexx
 program:
@@ -64,19 +65,42 @@ program:
 </section>
 
 <section id="clsMimePart"><title>The MimePart Class</title>
-<figure><title>The MimePart class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/MimePart.png" />
-</imageobject>
-</mediaobject>
-</figure>
-<note><title>Note</title>
-<para>The MimePart class also has available class methods that its
-metaclass, the Class class, defines.
-</para></note>
+<!-- $GENERATED-20160822-START rexxrefClassTable(MimePart) -->
+<table id="ooRexxMimePartClass" frame="all" pgwide="1">
+<title>MimePart Class</title>
+<tgroup cols="1">
+<tbody>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+<!-- should we link to rexxref here?
+ <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+-->
+ <row><entry align="center"><emphasis role="bold">MimePart</emphasis></entry>
+ </row>
+ <row><entry>
+  <simplelist>
+   <member><xref linkend="mthMimePartNew" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMimePartCrlfClsMth" xrefstyle="select:title"/></member>
+  </simplelist>
+  <simplelist columns="3">
+   <member><xref linkend="mthMimePartAddContent" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMimePartContent" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMimePartCrlf" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMimePartDescription" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMimePartDisposition" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMimePartEncoding" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMimePartId" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMimePartString" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMimePartType" xrefstyle="select:title"/></member>
+  </simplelist>
+ </entry></row>
+</tbody>
+</tgroup>
+</table>
+<!-- $GENERATED-20160822-END rexxrefClassTable(MimePart) -->
 
-<section id="mthMimePartNew"><title>New (class) method</title>
+<section id="mthMimePartNew"><title>new (Inherited Class Method)</title>
 <indexterm><primary>New class method</primary>
 <secondary>of MimePart class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -85,22 +109,35 @@ metaclass, the Class class, defines.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/mime_new.svg" scale="50" />
+<imagedata fileref="images/methods/mimepart_new.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>This is a class method. It returns an instance of the
-<xref linkend="clsMimePart" /> class.
+<xref linkend="clsMimePart" xrefstyle="template:MimePart" /> class.
 </para>
 <variablelist>
 <varlistentry><term>type</term>
-<listitem><para>(Optional) The mime type string. The default if not given is
-"text/plain".
+<listitem><para>(Optional) The MIME type string. The default if not given is
+"<literal>text/plain</literal>".
 </para></listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="mthMimePartAddContent"><title>addContent method</title>
+<!-- Class MimePart - method crlf ======================== -->
+<section id="mthMimePartCrlfClsMth"><title>crlf (Class Method)</title>
+<indexterm><primary>crlf method</primary><secondary>of MimePart class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>crlf method</secondary><tertiary>of MimePart class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/methods/mimepart_crlf.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns the carriage return/line feed characters <literal>'0d 0a'x</literal>.
+</para>
+</section>
+
+<section id="mthMimePartAddContent"><title>addContent</title>
 <indexterm><primary>addContent method</primary>
 <secondary>of MimePart class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -109,11 +146,11 @@ metaclass, the Class class, defines.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/mime_addcontent.svg" scale="50" />
+<imagedata fileref="images/methods/mimepart_addcontent.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>This method adds content to the mime-content field. This filed may only contain
+<para>This method adds content to the MIME-content field. This filed may only contain
 ASCII strings.
 </para>
 <variablelist>
@@ -123,7 +160,7 @@ ASCII strings.
 </variablelist>
 </section>
 
-<section id="mthMimePartContent"><title>content method</title>
+<section id="mthMimePartContent"><title>content</title>
 <indexterm><primary>content method</primary>
 <secondary>of MimePart class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -132,15 +169,28 @@ ASCII strings.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/mime_content.svg" scale="50" />
+<imagedata fileref="images/methods/mimepart_content.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>This method returns the mime-content string.
+<para>This method returns the MIME-content string.
 </para>
 </section>
 
-<section id="mthMimePartDescription"><title>description method</title>
+<!-- Class MimePart - method crlf ======================== -->
+<section id="mthMimePartCrlf"><title>crlf</title>
+<indexterm><primary>crlf method</primary><secondary>of MimePart class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>crlf method</secondary><tertiary>of MimePart class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/methods/mimepart_crlf.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns the carriage return/line feed characters <literal>'0d 0a'x</literal>.
+</para>
+</section>
+
+<section id="mthMimePartDescription"><title>description/=</title>
 <indexterm><primary>description method</primary>
 <secondary>of MimePart class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -149,20 +199,20 @@ ASCII strings.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/mime_description.svg" scale="50" />
+<imagedata fileref="images/methods/mimepart_description.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>This method sets or returns the mime-description string.
+<para>This method sets or returns the MIME-description string.
 </para>
 <variablelist>
 <varlistentry><term>newdescription</term>
-<listitem><para>The mime-description string.
+<listitem><para>The MIME-description string.
 </para></listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="mthMimePartDisposition"><title>disposition method</title>
+<section id="mthMimePartDisposition"><title>disposition/=</title>
 <indexterm><primary>disposition method</primary>
 <secondary>of MimePart class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -171,20 +221,20 @@ ASCII strings.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/mime_disposition.svg" scale="50" />
+<imagedata fileref="images/methods/mimepart_disposition.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>This method sets or returns the mime-disposition string.
+<para>This method sets or returns the MIME-disposition string.
 </para>
 <variablelist>
 <varlistentry><term>newdisposition</term>
-<listitem><para>The mime-disposition string.
+<listitem><para>The MIME-disposition string.
 </para></listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="mthMimePartEncoding"><title>encoding method</title>
+<section id="mthMimePartEncoding"><title>encoding/=</title>
 <indexterm><primary>encoding method</primary>
 <secondary>of MimePart class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -193,20 +243,20 @@ ASCII strings.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/mime_encoding.svg" scale="50" />
+<imagedata fileref="images/methods/mimepart_encoding.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>This method sets or returns the mime-encoding string.
+<para>This method sets or returns the MIME-encoding string.
 </para>
 <variablelist>
 <varlistentry><term>newencoding</term>
-<listitem><para>The mime-encoding string.
+<listitem><para>The MIME-encoding string.
 </para></listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="mthMimePartId"><title>id method</title>
+<section id="mthMimePartId"><title>id/=</title>
 <indexterm><primary>id method</primary>
 <secondary>of MimePart class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -215,20 +265,20 @@ ASCII strings.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/mime_id.svg" scale="50" />
+<imagedata fileref="images/methods/mimepart_id.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>This method sets or returns the mime-id string.
+<para>This method sets or returns the MIME-id string.
 </para>
 <variablelist>
 <varlistentry><term>newid</term>
-<listitem><para>The mime-id string.
+<listitem><para>The MIME-id string.
 </para></listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="mthMimePartString"><title>string method</title>
+<section id="mthMimePartString"><title>string</title>
 <indexterm><primary>string method</primary>
 <secondary>of MimePart class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -237,15 +287,15 @@ ASCII strings.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/mime_string.svg" scale="50" />
+<imagedata fileref="images/methods/mimepart_string.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>This method returns the formatted mime part string.
+<para>This method returns the formatted MIME part string.
 </para>
 </section>
 
-<section id="mthMimePartType"><title>type method</title>
+<section id="mthMimePartType"><title>type/=</title>
 <indexterm><primary>type method</primary>
 <secondary>of MimePart class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -254,34 +304,56 @@ ASCII strings.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/mime_type.svg" scale="50" />
+<imagedata fileref="images/methods/mimepart_type.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>This method sets or returns the mime-type string.
+<para>This method sets or returns the MIME-type string.
 </para>
 <variablelist>
 <varlistentry><term>newtype</term>
-<listitem><para>The mime-type string.
+<listitem><para>The MIME-type string.
 </para></listitem></varlistentry>
 </variablelist>
 </section>
 </section>
 
 <section id="clsMimeMultiPart"><title>The MimeMultiPart Class</title>
-<figure><title>The MimeMultiPart class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/MimeMultiPart.png" />
-</imageobject>
-</mediaobject>
-</figure>
-<note><title>Note</title>
-<para>The MimeMultiPart class also has available class methods that its
-metaclass, the Class class, defines.
-</para></note>
+<!-- $GENERATED-20160822-START rexxrefClassTable(MimeMultiPart) -->
+<table id="ooRexxMimeMultiPartClass" frame="all" pgwide="1">
+<title>MimeMultiPart Class</title>
+<tgroup cols="1">
+<tbody>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+<!-- should we link to rexxref here?
+ <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+-->
+ <row><entry align="center"><emphasis role="bold">MimeMultiPart</emphasis></entry>
+ </row>
+ <row><entry>
+  <simplelist>
+   <member><xref linkend="mthMimeMultiPartNew" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMimeMultiPartCrlfClsMth" xrefstyle="select:title"/></member>
+  </simplelist>
+  <simplelist columns="3">
+   <member><xref linkend="mthMimeMultiPartAddPart" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMimeMultiPartCrlf" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMimeMultiPartDescription" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMimeMultiPartDisposition" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMimeMultiPartEncoding" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMimeMultiPartId" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMimeMultiPartString" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMimeMultiPartType" xrefstyle="select:title"/></member>
+  </simplelist>
+ </entry></row>
+</tbody>
+</tgroup>
+</table>
+<!-- $GENERATED-20160822-END rexxrefClassTable(MimeMultiPart) -->
 
-<section id="mthMimePartMultiNew"><title>New (class) method</title>
+<section id="mthMimeMultiPartNew"><title>new (Inherited Class Method)</title>
 <indexterm><primary>New class method</primary>
 <secondary>of MimeMultiPart class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -290,22 +362,35 @@ metaclass, the Class class, defines.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/mimemulti_new.svg" scale="50" />
+<imagedata fileref="images/methods/mimemultipart_new.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>This is a class method. It returns an instance of the
-<xref linkend="clsMimeMultiPart" /> class.
+<xref linkend="clsMimeMultiPart" xrefstyle="template:MimeMultiPart" /> class.
 </para>
 <variablelist>
 <varlistentry><term>type</term>
-<listitem><para>(Optional) The mime type string. The default if not given is
+<listitem><para>(Optional) The MIME type string. The default if not given is
 "multipart/mixed".
 </para></listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="mthMimeMultiPartAddPart"><title>addPart method</title>
+<!-- Class MimeMultiPart - method crlf ======================== -->
+<section id="mthMimeMultiPartCrlfClsMth"><title>crlf</title>
+<indexterm><primary>crlf method</primary><secondary>of MimeMultiPart class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>crlf method</secondary><tertiary>of MimeMultiPart class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/methods/mimemultipart_crlf.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns the carriage return/line feed characters <literal>'0d 0a'x</literal>.
+</para>
+</section>
+
+<section id="mthMimeMultiPartAddPart"><title>addPart</title>
 <indexterm><primary>addPart method</primary>
 <secondary>of MimeMultiPart class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -314,23 +399,35 @@ metaclass, the Class class, defines.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/mimemulti_addpart.svg" scale="50" />
+<imagedata fileref="images/methods/mimemultipart_addpart.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>This method adds a new part to the mime object.
-<emphasis role="italic">part</emphasis> must be a
+<para>This method adds a new part to the MIME object.
 </para>
 <variablelist>
 <varlistentry><term>part</term>
 <listitem><para>The part to be added. The 
 <emphasis role="italic">part</emphasis> must be an instance of the
-<xref linkend="clsMimePart" />.
+<xref linkend="clsMimePart" xrefstyle="template:MimePart" /> class.
 </para></listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="mthMimeMultiPartDescription"><title>description method</title>
+<!-- Class MimeMultiPart - method crlf ======================== -->
+<section id="mthMimeMultiPartCrlf"><title>crlf</title>
+<indexterm><primary>crlf method</primary><secondary>of MimeMultiPart class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>crlf method</secondary><tertiary>of MimeMultiPart class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/methods/mimemultipart_crlf.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns the carriage return/line feed characters <literal>'0d 0a'x</literal>.
+</para>
+</section>
+
+<section id="mthMimeMultiPartDescription"><title>description/=</title>
 <indexterm><primary>description method</primary>
 <secondary>of MimeMultiPart class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -339,20 +436,20 @@ metaclass, the Class class, defines.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/mimemulti_description.svg" scale="50" />
+<imagedata fileref="images/methods/mimemultipart_description.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>This method sets or returns the mime-description string.
+<para>This method sets or returns the MIME-description string.
 </para>
 <variablelist>
 <varlistentry><term>newdescription</term>
-<listitem><para>The mime-description string.
+<listitem><para>The MIME-description string.
 </para></listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="mthMimeMultiPartDisposition"><title>disposition method</title>
+<section id="mthMimeMultiPartDisposition"><title>disposition/=</title>
 <indexterm><primary>disposition method</primary>
 <secondary>of MimeMultiPart class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -361,20 +458,20 @@ metaclass, the Class class, defines.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/mimemulti_disposition.svg" scale="50" />
+<imagedata fileref="images/methods/mimemultipart_disposition.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>This method sets or returns the mime-disposition string.
+<para>This method sets or returns the MIME-disposition string.
 </para>
 <variablelist>
 <varlistentry><term>newdisposition</term>
-<listitem><para>The mime-disposition string.
+<listitem><para>The MIME-disposition string.
 </para></listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="mthMimeMultiPartEncoding"><title>encoding method</title>
+<section id="mthMimeMultiPartEncoding"><title>encoding/=</title>
 <indexterm><primary>encoding method</primary>
 <secondary>of MimeMultiPart class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -383,20 +480,20 @@ metaclass, the Class class, defines.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/mimemulti_encoding.svg" scale="50" />
+<imagedata fileref="images/methods/mimemultipart_encoding.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>This method sets or returns the mime-encoding string.
+<para>This method sets or returns the MIME-encoding string.
 </para>
 <variablelist>
 <varlistentry><term>newencoding</term>
-<listitem><para>The mime-encoding string.
+<listitem><para>The MIME-encoding string.
 </para></listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="mthMimeMultiPartId"><title>id method</title>
+<section id="mthMimeMultiPartId"><title>id</title>
 <indexterm><primary>id method</primary>
 <secondary>of MimeMultiPart class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -405,20 +502,20 @@ metaclass, the Class class, defines.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/mimemulti_id.svg" scale="50" />
+<imagedata fileref="images/methods/mimemultipart_id.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>This method sets or returns the mime-id string.
+<para>This method sets or returns the MIME-id string.
 </para>
 <variablelist>
 <varlistentry><term>newid</term>
-<listitem><para>The mime-id string.
+<listitem><para>The MIME-id string.
 </para></listitem></varlistentry>
 </variablelist>
 </section>
 
-<section id="mthMimeMultiPartString"><title>string method</title>
+<section id="mthMimeMultiPartString"><title>string</title>
 <indexterm><primary>string method</primary>
 <secondary>of MimeMultiPart class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -427,15 +524,15 @@ metaclass, the Class class, defines.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/mimemulti_string.svg" scale="50" />
+<imagedata fileref="images/methods/mimemultipart_string.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>This method returns the formatted mime part string.
+<para>This method returns the formatted MIME part string.
 </para>
 </section>
 
-<section id="mthMimeMultiPartType"><title>type method</title>
+<section id="mthMimeMultiPartType"><title>type/=</title>
 <indexterm><primary>type method</primary>
 <secondary>of MimeMultiPart class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -444,15 +541,15 @@ metaclass, the Class class, defines.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/mimemulti_type.svg" scale="50" />
+<imagedata fileref="images/methods/mimemultipart_type.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>This method sets or returns the mime-type string.
+<para>This method sets or returns the MIME-type string.
 </para>
 <variablelist>
 <varlistentry><term>newtype</term>
-<listitem><para>The mime-type string.
+<listitem><para>The MIME-type string.
 </para></listitem></varlistentry>
 </variablelist>
 </section>

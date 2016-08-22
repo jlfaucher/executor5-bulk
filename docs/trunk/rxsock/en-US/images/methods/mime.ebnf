@@ -1,34 +1,48 @@
-mime_new ::= 'new(' ( type )? ')'
+mimepart_new ::= 'new(' type? ')'
 
-mime_addcontent ::= 'addContent(' string ')'
+mimepart_addcontent ::= 'addContent(' string ')'
 
-mime_content ::= 'content()'
+mimepart_crlf ::= 'crlf'
 
-mime_description ::= 'description(' ( newdescription )? ')'
+mimepart_content ::= 'content'
 
-mime_disposition ::= 'disposition(' ( newdisposition )? ')'
+mimepart_description ::= 'description'
+mimepart_description ::= 'description' '=' newdescription
 
-mime_encoding ::= 'encoding(' ( newencoding )? ')'
+mimepart_disposition ::= 'disposition'
+mimepart_disposition ::= 'disposition' '=' newdisposition
 
-mime_id ::= 'id(' ( newid )? ')'
+mimepart_encoding ::= 'encoding'
+mimepart_encoding ::= 'encoding' '=' newencoding
 
-mime_string ::= 'string()'
+mimepart_id ::= 'id'
+mimepart_id ::= 'id' '=' newid
 
-mime_type ::= 'type(' ( newtype )? ')'
+mimepart_string ::= 'string'
 
-mimemulti_new ::= 'new(' ( type )? ')'
+mimepart_type ::= 'type'
+mimepart_type ::= 'type' '=' newtype
 
-mimemulti_addpart ::= 'addPart(' part ')'
+mimemultipart_new ::= 'new(' type? ')'
 
-mimemulti_description ::= 'description(' ( newdescription )? ')'
+mimemultipart_addpart ::= 'addPart(' part ')'
 
-mimemulti_disposition ::= 'disposition(' ( newdisposition )? ')'
+mimemultipart_crlf ::= 'crlf'
 
-mimemulti_encoding ::= 'encoding(' ( newencoding )? ')'
+mimemultipart_description ::= 'description'
+mimemultipart_description ::= 'description' '=' newdescription
 
-mimemulti_id ::= 'id(' ( newid )? ')'
+mimemultipart_disposition ::= 'disposition'
+mimemultipart_disposition ::= 'disposition' '=' newdisposition
 
-mimemulti_string ::= 'string()'
+mimemultipart_encoding ::= 'encoding'
+mimemultipart_encoding ::= 'encoding' '=' newencoding
 
-mimemulti_type ::= 'type(' ( newtype )? ')'
+mimemultipart_id ::= 'id'
+mimemultipart_id ::= 'id' '=' newid
+
+mimemultipart_string ::= 'string'
+
+mimemultipart_type ::= 'type'
+mimemultipart_type ::= 'type' '=' newtype   
 

@@ -1,8 +1,12 @@
+socket_new ::= 'new(' domain? ',' type? ',' protocol? ')'
+
 socket_gethostbyaddr ::= 'getHostByAddr(' ipaddr ')'
 
 socket_gethostbyname ::= 'getHostByName(' hostname ')'
 
 socket_gethostid ::= 'getHostId()'
+
+socket_gethostname ::= 'getHostName()'
 
 socket_accept ::= 'accept()'
 
@@ -12,13 +16,13 @@ socket_close ::= 'close()'
 
 socket_connect ::= 'connect(' address ')'
 
+socket_errno ::= 'errno()'
+
 socket_getoption ::= 'getOption(' option ')'
 
 socket_getpeername ::= 'getPeerName()'
 
 socket_getsockname ::= 'getSockName()'
-
-socket_new ::= 'new(' ( domain ( ',' type ( ',' protocol )? )? )? ')'
 
 socket_ioctl ::= 'ioctl(' cmd ',' data ')'
 
@@ -36,21 +40,23 @@ socket_setoption ::= 'setOption(' name ',' value ')'
 
 socket_string ::= 'string()'
 
+inetaddr_new ::= 'new(' hostname ',' port ( ',' family )? ')'
+
 inetaddr_address ::= 'address()'
 
-inetaddr_address_equal ::= 'address(' ipaddress ')'
+inetaddr_address_equals ::= 'address' '=' ipaddress
 
 inetaddr_family ::= 'family()'
 
-inetaddr_family_equal ::= 'family(' newfamily ')'
+inetaddr_family_equals ::= 'family' '=' newfamily
 
-inetaddr_init ::= 'init(' hostname ',' port ( ',' family )? ')'
-
-inetaddr_makestem ::= 'makestem()'
+inetaddr_makestem ::= 'makeStem()'
 
 inetaddr_port ::= 'port()'
 
-inetaddr_port_equal ::= 'port(' newport ')'
+inetaddr_port_equals ::= 'port' '=' newport
+
+hostinfo_new ::= 'new(' hostname ')'
 
 hostinfo_addr ::= 'addr()'
 
@@ -60,7 +66,5 @@ hostinfo_alias ::= 'alias()'
 
 hostinfo_name ::= 'name()'
 
-hostinfo_init ::= 'init(' hostname ')'
-
-hostinfo_makestem ::= 'makestem()'
+hostinfo_makestem ::= 'makeStem()'
 

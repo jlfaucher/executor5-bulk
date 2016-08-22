@@ -64,16 +64,92 @@ program:
 </programlisting></para>
 </section>
 
-<section id="clsSocket"><title>The Socket Class</title>
-<figure><title>The Socket Class</title>
+<section id="clsSocket"><title>Socket Class</title>
+<!-- modified: removed init() / added new(), removed uninit() -->
+<!-- $GENERATED-20160822-START rexxrefClassTable(Socket) -->
+<table id="ooRexxSocketClass" frame="all" pgwide="1">
+<title>Socket Class</title>
+<tgroup cols="1">
+<tbody>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+<!-- should we link to rexxref here?
+ <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+-->
+ <row><entry align="center"><emphasis role="bold">Socket</emphasis></entry>
+ </row>
+ <row><entry>
+  <simplelist>
+   <member><xref linkend="mthSocketNew" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSocketGetHostByAddr" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSocketGetHostByName" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSocketGetHostId" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSocketGetHostName" xrefstyle="select:title"/></member>
+  </simplelist>
+  <simplelist columns="3">
+   <member><xref linkend="mthSocketAccept" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSocketBind" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSocketClose" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSocketConnect" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSocketErrno" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSocketGetOption" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSocketGetPeerName" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSocketGetSockName" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSocketIoctl" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSocketListen" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSocketRecv" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSocketRecvFrom" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSocketSelect" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSocketSend" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSocketSetOption" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSocketString" xrefstyle="select:title"/></member>
+<!-- <member><xref linkend="mthSocketUninit" xrefstyle="select:title"/></member> -->
+  </simplelist>
+ </entry></row>
+</tbody>
+</tgroup>
+</table>
+<!-- $GENERATED-20160822-END rexxrefClassTable(Socket) -->
+
+<section id="mthSocketNew"><title>new (Inherited Class Method)</title>
+<indexterm><primary>new</primary>
+<secondary>of Socket class</secondary></indexterm>
+<indexterm><primary>class method</primary>
+<secondary>new</secondary>
+<tertiary>of Socket class</tertiary></indexterm>
+
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/SocketClass.png" />
+<imagedata fileref="images/methods/socket_new.svg" scale="55" />
 </imageobject>
 </mediaobject>
-</figure>
 
-<section id="mthSocketGetHostByAddr"><title>getHostByAddr (class) method</title>
+<para>This method returns a new instance of the
+<xref linkend="clsSocket" xrefstyle="template:Socket" /> class.
+</para>
+<variablelist>
+   <varlistentry>
+      <term><emphasis role="bold">domain</emphasis></term>
+      <listitem><para>If specified, this argument must be AF_INET.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term><emphasis role="bold">type</emphasis></term>
+      <listitem><para>If specified, this argument must be SOCK_STREAM,
+                    SOCK_DGRAM or SOCK_RAW. SOCK_STREAM is the default.
+      </para></listitem>
+   </varlistentry>
+   <varlistentry>
+      <term><emphasis role="bold">protocol</emphasis></term>
+      <listitem><para>If specified, this argument must be 0,
+                    IPPROTO_UDP or IPPROTO_TCP. 0 is the default.
+      </para></listitem>
+   </varlistentry>
+</variablelist>
+</section>
+
+<section id="mthSocketGetHostByAddr"><title>getHostByAddr (Class Method)</title>
 <indexterm><primary>getHostByAddr class method</primary>
 <secondary>of Socket class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -82,16 +158,16 @@ program:
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/socket_gethostbyaddr.svg" scale="50" />
+<imagedata fileref="images/methods/socket_gethostbyaddr.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>This is a class method. It returns an instance of the
-<xref linkend="clsHostInfo" /> class.
+<xref linkend="clsHostInfo" xrefstyle="template:HostInfo" /> class.
 </para>
 </section>
 
-<section id="mthSocketGetHostByName"><title>getHostByName (class) method</title>
+<section id="mthSocketGetHostByName"><title>getHostByName (Class Method)</title>
 <indexterm><primary>getHostByName class method</primary>
 <secondary>of Socket class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -100,16 +176,16 @@ program:
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/socket_gethostbyname.svg" scale="50" />
+<imagedata fileref="images/methods/socket_gethostbyname.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>This is a class method. It returns an instance of the
-<xref linkend="clsHostInfo" /> class.
+<xref linkend="clsHostInfo" xrefstyle="template:HostInfo" /> class.
 </para>
 </section>
 
-<section id="mthSocketGetHostId"><title>getHostId (class) method</title>
+<section id="mthSocketGetHostId"><title>getHostId (Class Method)</title>
 <indexterm><primary>getHostId class method</primary>
 <secondary>of Socket class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -118,7 +194,7 @@ program:
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/socket_gethostid.svg" scale="50" />
+<imagedata fileref="images/methods/socket_gethostid.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -127,7 +203,27 @@ machine.
 </para>
 </section>
 
-<section id="mthSocketAccept"><title>accept method</title>
+
+<!-- Class Socket - method getHostName ======================== -->
+<section id="mthSocketGetHostName"><title>getHostName (Class Method)</title>
+<indexterm><primary>getHostName class method</primary><secondary>of Socket class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>getHostName class method</secondary><tertiary>of Socket class</tertiary></indexterm>
+<indexterm><primary>lookup local host name</primary></indexterm>
+<indexterm><primary>local host name, lookup</primary></indexterm>
+
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/methods/socket_gethostname.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+
+<para>This is a class method. Returns the name of the local host.
+</para>
+<note><para>SockGetHostName() interfaces with the C function gethostname().
+</para></note>
+</section>
+
+<section id="mthSocketAccept"><title>accept</title>
 <indexterm><primary>accept method</primary>
 <secondary>of Socket class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -136,7 +232,7 @@ machine.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/socket_accept.svg" scale="50" />
+<imagedata fileref="images/methods/socket_accept.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -145,7 +241,7 @@ remote host that has requested a connection from a server socket.
 </para>
 </section>
 
-<section id="mthSocketBind"><title>bind method</title>
+<section id="mthSocketBind"><title>bind</title>
 <indexterm><primary>bind method</primary>
 <secondary>of Socket class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -154,17 +250,17 @@ remote host that has requested a connection from a server socket.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/socket_bind.svg" scale="50" />
+<imagedata fileref="images/methods/socket_bind.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>This method binds a socket to a particular local ip address specified by
-an instance of the <xref linkend="clsInetAddress" /> class
+<para>This method binds a socket to a particular local IP address specified by
+an instance of the <xref linkend="clsInetAddress" xrefstyle="template:InetAddress" /> class
 contained in the <emphasis role="italic">address</emphasis> argument.
 </para>
 </section>
 
-<section id="mthSocketClose"><title>close method</title>
+<section id="mthSocketClose"><title>close</title>
 <indexterm><primary>close method</primary>
 <secondary>of Socket class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -173,7 +269,7 @@ contained in the <emphasis role="italic">address</emphasis> argument.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/socket_close.svg" scale="50" />
+<imagedata fileref="images/methods/socket_close.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -181,7 +277,7 @@ contained in the <emphasis role="italic">address</emphasis> argument.
 </para>
 </section>
 
-<section id="mthSocketConnect"><title>connect method</title>
+<section id="mthSocketConnect"><title>connect</title>
 <indexterm><primary>connect</primary>
 <secondary>of Socket class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -190,17 +286,32 @@ contained in the <emphasis role="italic">address</emphasis> argument.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/socket_connect.svg" scale="50" />
+<imagedata fileref="images/methods/socket_connect.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>This method connect the socket to a remote address specified by an
-instance of the <xref linkend="clsInetAddress" /> class
+instance of the <xref linkend="clsInetAddress" xrefstyle="template:InetAddress" /> class
 contained in the <emphasis role="italic">address</emphasis> argument.
 </para>
 </section>
 
-<section id="mthSocketGetOption"><title>getOption method</title>
+<!-- Class Socket - method errno ======================== -->
+<section id="mthSocketErrno"><title>errno</title>
+<indexterm><primary>errno method</primary><secondary>of Socket class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>errno method</secondary><tertiary>of Socket class</tertiary></indexterm>
+
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/methods/socket_errno.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+
+<para>Returns a string describing the last error occured.
+</para>
+</section>
+
+<section id="mthSocketGetOption"><title>getOption</title>
 <indexterm><primary>getOption</primary>
 <secondary>of Socket class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -209,7 +320,7 @@ contained in the <emphasis role="italic">address</emphasis> argument.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/socket_getoption.svg" scale="50" />
+<imagedata fileref="images/methods/socket_getoption.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -239,7 +350,7 @@ following:
 </para>
 </section>
 
-<section id="mthSocketgetPeerName"><title>getPeerName method</title>
+<section id="mthSocketGetPeerName"><title>getPeerName</title>
 <indexterm><primary>getPeerName</primary>
 <secondary>of Socket class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -248,7 +359,7 @@ following:
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/socket_getpeername.svg" scale="50" />
+<imagedata fileref="images/methods/socket_getpeername.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -256,7 +367,7 @@ following:
 </para>
 </section>
 
-<section id="mthSocketGetSockName"><title>getSockName method</title>
+<section id="mthSocketGetSockName"><title>getSockName</title>
 <indexterm><primary>getSockName</primary>
 <secondary>of Socket class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -265,54 +376,17 @@ following:
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/socket_getsockname.svg" scale="50" />
+<imagedata fileref="images/methods/socket_getsockname.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>This method returns an instance of the
-<xref linkend="clsInetAddress" /> class than is the name
+<xref linkend="clsInetAddress" xrefstyle="template:InetAddress" /> class that is the name
 information of the remote machine.
 </para>
 </section>
 
-<section id="mthSocketNew"><title>new (class) method</title>
-<indexterm><primary>new</primary>
-<secondary>of Socket class</secondary></indexterm>
-<indexterm><primary>class method</primary>
-<secondary>new</secondary>
-<tertiary>of Socket class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/methods/socket_new.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-<para>This method returns a new instance of the
-<xref linkend="clsSocket" />.
-</para>
-<variablelist>
-   <varlistentry>
-      <term><emphasis role="bold">domain</emphasis></term>
-      <listitem><para>If specified, this argument must be AF_INET.
-      </para></listitem>
-   </varlistentry>
-   <varlistentry>
-      <term><emphasis role="bold">type</emphasis></term>
-      <listitem><para>If specified, this argument must be SOCK_STREAM,
-                    SOCK_DGRAM or SOCK_RAW. SOCK_STREAM is the default.
-      </para></listitem>
-   </varlistentry>
-   <varlistentry>
-      <term><emphasis role="bold">protocol</emphasis></term>
-      <listitem><para>If specified, this argument must be 0,
-                    IPPROTO_UDP or IPPROTO_TCP. 0 is the default.
-      </para></listitem>
-   </varlistentry>
-</variablelist>
-</section>
-
-<section id="mthSocketIoctl"><title>ioctl method</title>
+<section id="mthSocketIoctl"><title>ioctl</title>
 <indexterm><primary>ioctl</primary>
 <secondary>of Socket class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -321,7 +395,7 @@ information of the remote machine.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/socket_ioctl.svg" scale="50" />
+<imagedata fileref="images/methods/socket_ioctl.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -331,7 +405,7 @@ for valid values.
 </para>
 </section>
 
-<section id="mthSocketListen"><title>listen method</title>
+<section id="mthSocketListen"><title>listen</title>
 <indexterm><primary>listen</primary>
 <secondary>of Socket class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -340,7 +414,7 @@ for valid values.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/socket_listen.svg" scale="50" />
+<imagedata fileref="images/methods/socket_listen.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -350,7 +424,7 @@ requests the socket should cache.
 </para>
 </section>
 
-<section id="mthSocketRecv"><title>recv method</title>
+<section id="mthSocketRecv"><title>recv</title>
 <indexterm><primary>recv</primary>
 <secondary>of Socket class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -359,7 +433,7 @@ requests the socket should cache.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/socket_recv.svg" scale="50" />
+<imagedata fileref="images/methods/socket_recv.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -370,7 +444,7 @@ less than the maximum length specified.
 </para>
 </section>
 
-<section id="mthSocketRecvFrom"><title>recvFrom method</title>
+<section id="mthSocketRecvFrom"><title>recvFrom</title>
 <indexterm><primary>recvFrom</primary>
 <secondary>of Socket class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -379,20 +453,20 @@ less than the maximum length specified.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/socket_recvfrom.svg" scale="50" />
+<imagedata fileref="images/methods/socket_recvfrom.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>This method recieves data on a socket connection from the specified
 <emphasis role="italic">address</emphasis>. The <emphasis role="italic">
-address</emphasis> must be an instance of the <xref linkend="clsInetAddress" />
+address</emphasis> must be an instance of the <xref linkend="clsInetAddress" xrefstyle="template:InetAddress" />
 class. The <emphasis role="italic">length</emphasis> is the maximum
 number of bytes the socket should receive. This method returns the data
 received, which could be less than the maximum length specified.
 </para>
 </section>
 
-<section id="mthSocketSelect"><title>select method</title>
+<section id="mthSocketSelect"><title>select</title>
 <indexterm><primary>select</primary>
 <secondary>of Socket class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -401,7 +475,7 @@ received, which could be less than the maximum length specified.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/socket_select.svg" scale="50" />
+<imagedata fileref="images/methods/socket_select.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -436,7 +510,7 @@ reset to only the sockets that are ready.
 </variablelist>
 </section>
 
-<section id="mthSocketSend"><title>Send method</title>
+<section id="mthSocketSend"><title>Send</title>
 <indexterm><primary>send</primary>
 <secondary>of Socket class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -445,7 +519,7 @@ reset to only the sockets that are ready.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/socket_send.svg" scale="50" />
+<imagedata fileref="images/methods/socket_send.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -455,7 +529,7 @@ of <emphasis role="italic">data</emphasis>.
 </para>
 </section>
 
-<section id="mthSocketSetOption"><title>setOption method</title>
+<section id="mthSocketSetOption"><title>setOption</title>
 <indexterm><primary>setOption</primary>
 <secondary>of Socket class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -464,18 +538,18 @@ of <emphasis role="italic">data</emphasis>.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/socket_setoption.svg" scale="50" />
+<imagedata fileref="images/methods/socket_setoption.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>This method sets the option given by <emphasis role="italic">name</emphasis>
 with the data in <emphasis role="italic">value</emphasis>. See the method
-<xref linkend="mthSocketGetOption" /> for the list of valid
+<xref linkend="mthSocketGetOption" xrefstyle="select:title" /> for the list of valid
 <emphasis role="italic">name</emphasis>s.
 </para>
 </section>
 
-<section id="mthSocketString"><title>string method</title>
+<section id="mthSocketString"><title>string</title>
 <indexterm><primary>string</primary>
 <secondary>of Socket class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -484,7 +558,7 @@ with the data in <emphasis role="italic">value</emphasis>. See the method
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/socket_string.svg" scale="50" />
+<imagedata fileref="images/methods/socket_string.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -494,89 +568,50 @@ with the data in <emphasis role="italic">value</emphasis>. See the method
 
 </section>
 
-<section id="clsInetAddress"><title>The InetAddress Class</title>
-<figure><title>The InetAddress Class</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/InetAddress.png" />
-</imageobject>
-</mediaobject>
-</figure>
+<section id="clsInetAddress"><title>InetAddress Class</title>
+<!-- modified: renamed init() to new() -->
+<!-- $GENERATED-20160822-START rexxrefClassTable(InetAddress) -->
+<table id="ooRexxInetAddressClass" frame="all" pgwide="1">
+<title>InetAddress Class</title>
+<tgroup cols="1">
+<tbody>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+<!-- should we link to rexxref here?
+ <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+-->
+ <row><entry align="center"><emphasis role="bold">InetAddress</emphasis></entry>
+ </row>
+ <row><entry>
+  <simplelist>
+   <member><xref linkend="mthInetAddressNew" xrefstyle="select:title"/></member>
+  </simplelist>
+  <simplelist columns="3">
+   <member><xref linkend="mthInetAddressAddress" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthInetAddressAddressEquals" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthInetAddressFamily" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthInetAddressFamilyEquals" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthInetAddressMakeStem" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthInetAddressPort" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthInetAddressPortEquals" xrefstyle="select:title"/></member>
+  </simplelist>
+ </entry></row>
+</tbody>
+</tgroup>
+</table>
+<!-- $GENERATED-20160822-END rexxrefClassTable(InetAddress) -->
 
-<section id="mthSocketAddress"><title>address method</title>
-<indexterm><primary>address method</primary>
+<section id="mthInetAddressNew"><title>new (Inherited Class Method)</title>
+<indexterm><primary>new method</primary>
 <secondary>of InetAddress class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>address method</secondary>
+<secondary>new method</secondary>
 <tertiary>of InetAddress class</tertiary></indexterm>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/inetaddr_address.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-<para>This method returns the ip address of the original hostname.
-</para>
-</section>
-
-<section id="mthInetAddressAddressEqual"><title>address= method</title>
-<indexterm><primary>address= method</primary>
-<secondary>of InetAddress class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>address= method</secondary>
-<tertiary>of InetAddress class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/methods/inetaddr_address_equal.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-<section id="mthInetAddressFamily"><title>family method)</title>
-<indexterm><primary>family method</primary>
-<secondary>of InetAddress class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>family method</secondary>
-<tertiary>of InetAddress class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/methods/inetaddr_family.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-<para>This method returns the ip address family of the original hostname.
-</para>
-</section>
-
-<section id="mthInetAddressFamilyEqual"><title>family= method</title>
-<indexterm><primary>family= method</primary>
-<secondary>of InetAddress class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>family= method</secondary>
-<tertiary>of InetAddress class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/methods/inetaddr_family_equal.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-<para>This method sets the ip address family of the original hostname.
-</para>
-</section>
-
-<section id="mthInetAddressInit"><title>init method</title>
-<indexterm><primary>init method</primary>
-<secondary>of InetAddress class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>init method</secondary>
-<tertiary>of InetAddress class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/methods/inetaddr_init.svg" scale="50" />
+<imagedata fileref="images/methods/inetaddr_new.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -585,7 +620,7 @@ with the data in <emphasis role="italic">value</emphasis>. See the method
 <variablelist>
    <varlistentry>
       <term><emphasis role="bold">hostname</emphasis></term>
-      <listitem><para>The ip address or host name of the host machine.
+      <listitem><para>The IP address or host name of the host machine.
       </para></listitem>
    </varlistentry>
    <varlistentry>
@@ -601,7 +636,75 @@ with the data in <emphasis role="italic">value</emphasis>. See the method
 </variablelist>
 </section>
 
-<section id="mthInetAddressMakeStem"><title>makeStem method</title>
+<section id="mthInetAddressAddress"><title>address</title>
+<indexterm><primary>address method</primary>
+<secondary>of InetAddress class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>address method</secondary>
+<tertiary>of InetAddress class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/inetaddr_address.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>This method returns the IP address of the original hostname.
+</para>
+</section>
+
+<section id="mthInetAddressAddressEquals"><title>address=</title>
+<indexterm><primary>address= method</primary>
+<secondary>of InetAddress class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>address= method</secondary>
+<tertiary>of InetAddress class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/inetaddr_address_equals.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Sets the IP address of the original hostname.
+</para>
+</section>
+
+<section id="mthInetAddressFamily"><title>family</title>
+<indexterm><primary>family method</primary>
+<secondary>of InetAddress class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>family method</secondary>
+<tertiary>of InetAddress class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/inetaddr_family.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>This method returns the IP address family of the original hostname.
+</para>
+</section>
+
+<section id="mthInetAddressFamilyEquals"><title>family=</title>
+<indexterm><primary>family= method</primary>
+<secondary>of InetAddress class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>family= method</secondary>
+<tertiary>of InetAddress class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/inetaddr_family_equals.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>This method sets the IP address family of the original hostname.
+</para>
+</section>
+
+<section id="mthInetAddressMakeStem"><title>makeStem</title>
 <indexterm><primary>makeStem method</primary>
 <secondary>of InetAddress class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -610,7 +713,7 @@ with the data in <emphasis role="italic">value</emphasis>. See the method
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/inetaddr_makestem.svg" scale="50" />
+<imagedata fileref="images/methods/inetaddr_makestem.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -619,7 +722,7 @@ instance. This method has limited usefulness to the programmer.
 </para>
 </section>
 
-<section id="mthInetAddressPort"><title>port method</title>
+<section id="mthInetAddressPort"><title>port</title>
 <indexterm><primary>port method</primary>
 <secondary>of InetAddress class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -628,7 +731,7 @@ instance. This method has limited usefulness to the programmer.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/inetaddr_port.svg" scale="50" />
+<imagedata fileref="images/methods/inetaddr_port.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -636,7 +739,7 @@ instance. This method has limited usefulness to the programmer.
 </para>
 </section>
 
-<section id="mthInetAddressPortEqual"><title>port= method</title>
+<section id="mthInetAddressPortEquals"><title>port=</title>
 <indexterm><primary>port= method</primary>
 <secondary>of InetAddress class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -645,7 +748,7 @@ instance. This method has limited usefulness to the programmer.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/inetaddr_port_equal.svg" scale="50" />
+<imagedata fileref="images/methods/inetaddr_port_equals.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -655,16 +758,58 @@ instance. This method has limited usefulness to the programmer.
 
 </section>
 
-<section id="clsHostInfo"><title>The HostInfo Class</title>
-<figure><title>The HostInfo Class</title>
+<section id="clsHostInfo"><title>HostInfo Class</title>
+<!-- modified: renamed init() to new() -->
+<!-- $GENERATED-20160822-START rexxrefClassTable(HostInfo) -->
+<table id="ooRexxHostInfoClass" frame="all" pgwide="1">
+<title>HostInfo Class</title>
+<tgroup cols="1">
+<tbody>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+<!-- should we link to rexxref here?
+ <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+-->
+ <row><entry align="center"><emphasis role="bold">HostInfo</emphasis></entry>
+ </row>
+ <row><entry>
+  <simplelist>
+   <member><xref linkend="mthHostInfoNew" xrefstyle="select:title"/></member>
+  </simplelist>
+  <simplelist columns="3">
+   <member><xref linkend="mthHostInfoAddr" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthHostInfoAddress" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthHostInfoAlias" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthHostInfoMakeStem" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthHostInfoName" xrefstyle="select:title"/></member>
+  </simplelist>
+ </entry></row>
+</tbody>
+</tgroup>
+</table>
+<!-- $GENERATED-20160822-END rexxrefClassTable(HostInfo) -->
+
+<section id="mthHostInfoNew"><title>new (Inherited Class Method)</title>
+<indexterm><primary>new method</primary>
+<secondary>of HostInfo class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>new method</secondary>
+<tertiary>of HostInfo class</tertiary></indexterm>
+
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/HostInfo.png" />
+<imagedata fileref="images/methods/hostinfo_new.svg" scale="55" />
 </imageobject>
 </mediaobject>
-</figure>
 
-<section id="mthHostInfoAddr"><title>addr method</title>
+<para>This method create an instance of the HostInfo class and sets all the
+attribute methods of the instance. The <emphasis role="italic">hostname</emphasis>
+can be either a valid DNS host name or an IP address.
+</para>
+</section>
+
+<section id="mthHostInfoAddr"><title>addr</title>
 <indexterm><primary>addr method</primary>
 <secondary>of HostInfo class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -673,15 +818,15 @@ instance. This method has limited usefulness to the programmer.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/hostinfo_addr.svg" scale="50" />
+<imagedata fileref="images/methods/hostinfo_addr.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>This method returns an array of ip addresses of the host.
+<para>This method returns an array of IP addresses of the host.
 </para>
 </section>
 
-<section id="mthHostInfoAddress"><title>address method</title>
+<section id="mthHostInfoAddress"><title>address</title>
 <indexterm><primary>address method</primary>
 <secondary>of HostInfo class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -690,15 +835,15 @@ instance. This method has limited usefulness to the programmer.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/hostinfo_address.svg" scale="50" />
+<imagedata fileref="images/methods/hostinfo_address.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>This method returns the main ip address of the host.
+<para>This method returns the main IP address of the host.
 </para>
 </section>
 
-<section id="mthHostInfoAlias"><title>alias method</title>
+<section id="mthHostInfoAlias"><title>alias</title>
 <indexterm><primary>alias method</primary>
 <secondary>of HostInfo class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -707,7 +852,7 @@ instance. This method has limited usefulness to the programmer.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/hostinfo_alias.svg" scale="50" />
+<imagedata fileref="images/methods/hostinfo_alias.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -715,43 +860,7 @@ instance. This method has limited usefulness to the programmer.
 </para>
 </section>
 
-<section id="mthHostInfoName"><title>name method</title>
-<indexterm><primary>name method</primary>
-<secondary>of HostInfo class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>name method</secondary>
-<tertiary>of HostInfo class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/methods/hostinfo_name.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-<para>This method returns the main host name of the host.
-</para>
-</section>
-
-<section id="mthHostInfoInit"><title>init method</title>
-<indexterm><primary>init method</primary>
-<secondary>of HostInfo class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>init method</secondary>
-<tertiary>of HostInfo class</tertiary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/methods/hostinfo_init.svg" scale="50" />
-</imageobject>
-</mediaobject>
-
-<para>This method create an instance of the HostInfo class and sets all the
-attribute methods of the instance. The <emphasis role="italic">hostname</emphasis>
-can be either a valid DNS host name or an ip address.
-</para>
-</section>
-
-<section id="mthHostInfoMakeStem"><title>makeStem method</title>
+<section id="mthHostInfoMakeStem"><title>makeStem</title>
 <indexterm><primary>makeStem method</primary>
 <secondary>of HostInfo class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -760,7 +869,7 @@ can be either a valid DNS host name or an ip address.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/hostinfo_makestem.svg" scale="50" />
+<imagedata fileref="images/methods/hostinfo_makestem.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -769,7 +878,23 @@ instance. This method has limited usefulness to the programmer.
 </para>
 </section>
 
+<section id="mthHostInfoName"><title>name</title>
+<indexterm><primary>name method</primary>
+<secondary>of HostInfo class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>name method</secondary>
+<tertiary>of HostInfo class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/methods/hostinfo_name.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>This method returns the main host name of the host.
+</para>
 </section>
+
 </section>
 
 <section id="exampleSocketClass"><title>Socket Class Example</title>

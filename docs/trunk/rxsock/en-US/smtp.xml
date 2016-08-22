@@ -46,7 +46,7 @@
 <chapter><title>SMTP Class Reference</title>
 <indexterm><primary>class, SMTP</primary></indexterm>
 <indexterm><primary>SMTP class</primary></indexterm>
-<para>The following sections describe the smtp class supplied with ooRexx.
+<para>The following sections describe the SMTP class supplied with ooRexx.
 This class can send SMTP messages to an SMTP server. It utilizes the
 <xref linkend="clsStreamSocket" />
 to perform the communications with the server.
@@ -70,20 +70,45 @@ program:
 <secondary>SMTP class</secondary></indexterm>
 
 <para>This class encapsulates all the communications necessary to send mail via an
-SMTP server.</para>
-<figure><title>The SMTP class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/SMTPClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
-<note><title>Note</title>
-<para>The SMTP class also has available class methods that its
-metaclass, the Class class, defines.
-</para></note>
+SMTP server.
+</para>
 
-<section id="mthSMTPNew"><title>new (Class Method)</title>
+<!-- $GENERATED-20160822-START rexxrefClassTable(Smtp) -->
+<table id="ooRexxSmtpClass" frame="all" pgwide="1">
+<title>Smtp Class</title>
+<tgroup cols="1">
+<tbody>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+<!-- should we link to rexxref here?
+ <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+-->
+ <row><entry align="center"><emphasis role="bold">Smtp</emphasis></entry>
+ </row>
+ <row><entry>
+  <simplelist columns="3">
+   <member><xref linkend="mthSmtpNew" xrefstyle="select:title"/></member>
+  </simplelist>
+  <simplelist columns="3">
+   <member><xref linkend="mthSmtpAuthId" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSmtpCmdResponse" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSmtpConnect" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSmtpDebug" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSmtpLocalhost" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSmtpLogoff" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSmtpPassword" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSmtpResponse" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSmtpSend" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSmtpSmtpErrno" xrefstyle="select:title"/></member>
+  </simplelist>
+ </entry></row>
+</tbody>
+</tgroup>
+</table>
+<!-- $GENERATED-20160822-END rexxrefClassTable(Smtp) -->
+
+<section id="mthSmtpNew"><title>new (Inherited Class Method)</title>
 <indexterm><primary>new method</primary>
 <secondary>of SMTP class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -92,15 +117,15 @@ metaclass, the Class class, defines.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/smtp_new.svg" scale="50" />
+<imagedata fileref="images/methods/smtp_new.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Initializes the object.
-Returns the new smtp object.</para>
+Returns the new SMTP object.</para>
 </section>
 
-<section id="mthSMTPauthid"><title>authid</title>
+<section id="mthSmtpAuthId"><title>authid/=</title>
 <indexterm><primary>authid method</primary>
 <secondary>of SMTP class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -109,7 +134,7 @@ Returns the new smtp object.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/smtp_authid.svg" scale="50" />
+<imagedata fileref="images/methods/smtp_authid.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -117,7 +142,7 @@ Returns the new smtp object.</para>
 The default value for the authid is a zero-length string.</para>
 </section>
 
-<section id="mthSMTPcmdresponse"><title>cmdrespomse</title>
+<section id="mthSmtpCmdResponse"><title>cmdresponse</title>
 <indexterm><primary>cmdresponse method</primary>
 <secondary>of SMTP class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -126,7 +151,7 @@ The default value for the authid is a zero-length string.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/smtp_cmdresponse.svg" scale="50" />
+<imagedata fileref="images/methods/smtp_cmdresponse.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -134,7 +159,7 @@ The default value for the authid is a zero-length string.</para>
 and the responses from that server.</para>
 </section>
 
-<section id="mthSMTPconnect"><title>connect</title>
+<section id="mthSmtpConnect"><title>connect</title>
 <indexterm><primary>connect method</primary>
 <secondary>of SMTP class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -143,7 +168,7 @@ and the responses from that server.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/smtp_connect.svg" scale="50" />
+<imagedata fileref="images/methods/smtp_connect.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -162,7 +187,7 @@ This string can contain a port designation.
 </variablelist>
 </section>
 
-<section id="mthSMTPdebug"><title>debug</title>
+<section id="mthSmtpDebug"><title>debug/=</title>
 <indexterm><primary>debug method</primary>
 <secondary>of SMTP class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -171,7 +196,7 @@ This string can contain a port designation.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/smtp_debug.svg" scale="50" />
+<imagedata fileref="images/methods/smtp_debug.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -179,7 +204,7 @@ This string can contain a port designation.
 The default value for the flag is 0 (false) which suppresses debug messages.</para>
 </section>
 
-<section id="mthSMTPlocalhost"><title>localhost</title>
+<section id="mthSmtpLocalhost"><title>localhost</title>
 <indexterm><primary>localhost method</primary>
 <secondary>of SMTP class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -188,14 +213,14 @@ The default value for the flag is 0 (false) which suppresses debug messages.</pa
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/smtp_localhost.svg" scale="50" />
+<imagedata fileref="images/methods/smtp_localhost.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>This method returns the local host name.</para>
 </section>
 
-<section id="mthSMTPlogoff"><title>logoff</title>
+<section id="mthSmtpLogoff"><title>logoff</title>
 <indexterm><primary>logoff method</primary>
 <secondary>of SMTP class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -204,14 +229,14 @@ The default value for the flag is 0 (false) which suppresses debug messages.</pa
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/smtp_logoff.svg" scale="50" />
+<imagedata fileref="images/methods/smtp_logoff.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>This method logs off the session to the SMTP host.</para>
 </section>
 
-<section id="mthSMTPpassword"><title>password</title>
+<section id="mthSmtpPassword"><title>password/=</title>
 <indexterm><primary>password method</primary>
 <secondary>of SMTP class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -220,15 +245,15 @@ The default value for the flag is 0 (false) which suppresses debug messages.</pa
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/smtp_password.svg" scale="50" />
+<imagedata fileref="images/methods/smtp_password.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>This method either sets the smtp server account passwordor returns the password value.
+<para>This method either sets the SMTP server account password, or returns the password value.
 The default value for the password is a zero-length string.</para>
 </section>
 
-<section id="mthSMTPresponse"><title>response</title>
+<section id="mthSmtpResponse"><title>response</title>
 <indexterm><primary>response method</primary>
 <secondary>of SMTP class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -237,15 +262,15 @@ The default value for the password is a zero-length string.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/smtp_response.svg" scale="50" />
+<imagedata fileref="images/methods/smtp_response.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>This method returns the parsed response to the last command sent to the SMTP server.
-The initial value for the repsonse is a zero-length string.</para>
+The initial value for the response is a zero-length string.</para>
 </section>
 
-<section id="mthSMTPsend"><title>send</title>
+<section id="mthSmtpSend"><title>send</title>
 <indexterm><primary>send method</primary>
 <secondary>of SMTP class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -254,30 +279,31 @@ The initial value for the repsonse is a zero-length string.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/smtp_send.svg" scale="50" />
+<imagedata fileref="images/methods/smtp_send.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>This method sends an SMTP message to the SMTP server. The 
 <emphasis role="italic">msg</emphasis> must be an instance of the
-<xref linkend="clsSMTPMsg" />.</para>
+<xref linkend="clsSMTPMsg" xrefstyle="template:SMTPMsg" /> class.
+</para>
 </section>
 
-<section id="mthSMTPsmtperrno"><title>smtperrno</title>
-<indexterm><primary>smtperrno method</primary>
+<section id="mthSmtpSmtpErrno"><title>smtpErrno</title>
+<indexterm><primary>smtpErrno method</primary>
 <secondary>of SMTP class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>smtperrno method</secondary>
+<secondary>smtpErrno method</secondary>
 <tertiary>of SMTP class</tertiary></indexterm>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/smtp_smtperrno.svg" scale="50" />
+<imagedata fileref="images/methods/smtp_smtperrno.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>This method returns the return code of the last command sent to the SMTP server.
-The initial value for the repsonse is a zero-length string.</para>
+The initial value for the response is a zero-length string.</para>
 </section>
 </section>
 
@@ -288,19 +314,38 @@ The initial value for the repsonse is a zero-length string.</para>
 
 <para>This class encapsulates all information needed to communicate a complete message
 to the SMTP server.</para>
-<figure><title>The SMTPMsg class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/SMTPMsgClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
-<note><title>Note</title>
-<para>The SMTPMsg class also has available class methods that its
-metaclass, the Class class, defines.
-</para></note>
 
-<section id="mthSMTPMsgNew"><title>new (Class Method)</title>
+<!-- $GENERATED-20160822-START rexxrefClassTable(SmtpMsg) -->
+<table id="ooRexxSmtpMsgClass" frame="all" pgwide="1">
+<title>SmtpMsg Class</title>
+<tgroup cols="1">
+<tbody>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+<!-- should we link to rexxref here?
+ <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+-->
+ <row><entry align="center"><emphasis role="bold">SmtpMsg</emphasis></entry>
+ </row>
+ <row><entry>
+  <simplelist>
+   <member><xref linkend="mthSmtpMsgNew" xrefstyle="select:title"/></member>
+  </simplelist>
+  <simplelist columns="3">
+   <member><xref linkend="mthSmtpMsgAddRecipient" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSmtpMsgContent" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSmtpMsgFrom" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSmtpMsgRecipients" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthSmtpMsgSubject" xrefstyle="select:title"/></member>
+  </simplelist>
+ </entry></row>
+</tbody>
+</tgroup>
+</table>
+<!-- $GENERATED-20160822-END rexxrefClassTable(SmtpMsg) -->
+
+<section id="mthSmtpMsgNew"><title>new (Inherited Class Method)</title>
 <indexterm><primary>new method</primary>
 <secondary>of SMTPMsg class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -309,15 +354,15 @@ metaclass, the Class class, defines.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/smtpmsg_new.svg" scale="50" />
+<imagedata fileref="images/methods/smtpmsg_new.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Initializes the object.
-Returns the new smtpmsg object.</para>
+Returns the new SMTPMsg object.</para>
 </section>
 
-<section id="mthSMTPMsgAddRecipient"><title>addRecipient</title>
+<section id="mthSmtpMsgAddRecipient"><title>addRecipient</title>
 <indexterm><primary>addRecipient method</primary>
 <secondary>of SMTPMsg class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -326,7 +371,7 @@ Returns the new smtpmsg object.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/smtpmsg_addrecipient.svg" scale="50" />
+<imagedata fileref="images/methods/smtpmsg_addrecipient.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -334,7 +379,7 @@ Returns the new smtpmsg object.</para>
 </para>
 </section>
 
-<section id="mthSMTPMsgContent"><title>content</title>
+<section id="mthSmtpMsgContent"><title>content/=</title>
 <indexterm><primary>content method</primary>
 <secondary>of SMTPMsg class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -343,18 +388,18 @@ Returns the new smtpmsg object.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/smtpmsg_content.svg" scale="50" />
+<imagedata fileref="images/methods/smtpmsg_content.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>This method sets a piece of the SMTP message. The 
+<para>This method returns or sets a piece of the SMTP message. The 
 <emphasis role="italic">part</emphasis> must be an instance of the
-<xref linkend="clsMimePart" />,
-<xref linkend="clsMimeMultiPart" /> or
+<xref linkend="clsMimePart" xrefstyle="template:MimePart" /> or
+<xref linkend="clsMimeMultiPart" xrefstyle="template:MimeMultiPart" /> class, or
 a plain string.</para>
 </section>
 
-<section id="mthSMTPMsgFrom"><title>from</title>
+<section id="mthSmtpMsgFrom"><title>from/=</title>
 <indexterm><primary>from method</primary>
 <secondary>of SMTPMsg class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -363,7 +408,7 @@ a plain string.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/smtpmsg_from.svg" scale="50" />
+<imagedata fileref="images/methods/smtpmsg_from.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -371,7 +416,7 @@ a plain string.</para>
 </para>
 </section>
 
-<section id="mthSMTPMsgRecipients"><title>recipients</title>
+<section id="mthSmtpMsgRecipients"><title>recipients</title>
 <indexterm><primary>recipients method</primary>
 <secondary>of SMTPMsg class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -380,7 +425,7 @@ a plain string.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/smtpmsg_recipients.svg" scale="50" />
+<imagedata fileref="images/methods/smtpmsg_recipients.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -388,7 +433,7 @@ a plain string.</para>
 </para>
 </section>
 
-<section id="mthSMTPMsgSubject"><title>subject</title>
+<section id="mthSmtpMsgSubject"><title>subject/=</title>
 <indexterm><primary>subject method</primary>
 <secondary>of SMTPMsg class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -397,7 +442,7 @@ a plain string.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/smtpmsg_subject.svg" scale="50" />
+<imagedata fileref="images/methods/smtpmsg_subject.svg" scale="55" />
 </imageobject>
 </mediaobject>
 

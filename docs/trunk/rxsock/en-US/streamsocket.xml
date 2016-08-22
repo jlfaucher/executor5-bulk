@@ -46,7 +46,7 @@
 <chapter><title>StreamSocket Class Reference</title>
 <indexterm><primary>class, StreamSocket</primary></indexterm>
 <indexterm><primary>StreamSocket class</primary></indexterm>
-<para>The following sections describe the streamsocket class supplied with ooRexx.
+<para>The following sections describe the <classname>StreamSocket</classname> class supplied with ooRexx.
 This class encapsulates the rxsock external functions into a class that
 treats the socket as a standard ooRexx input/output stream. It improves
 error checking and reduces the amount of code needed in an average rxsock
@@ -69,59 +69,97 @@ program:
 <indexterm><primary>class</primary>
 <secondary>StreamSocket class</secondary></indexterm>
 
-<para>A streamsocket object allows external communication from
+<para>A <classname>StreamSocket</classname> object allows external communication from
 Rexx to a socket.</para>
-<para>The StreamSocket class is a subclass of the
-InputOutputStream class.</para>
-<figure><title>The StreamSocket class and methods</title>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/StreamSocketClass.png" />
-</imageobject>
-</mediaobject>
-</figure>
-<note><title>Note</title>
-<para>The StreamSocket class also has available class methods that its
-metaclass, the Class class, defines. It also inherits methods from the
-InputOutputStream class.
-</para></note>
+<para>The <classname>StreamSocket</classname> class is a subclass of the
+<classname>InputOutputStream</classname> class.</para>
 
-<section><title>Inherited Methods</title>
-<para>Methods inherited from the
-InputStream class.</para>
-<note><para>This class is searched second for inherited methods.
-</para></note>
-<simplelist type="vert" columns="3">
-<member>arrayIn</member>
-<member>charIn</member>
-<member>charOut</member>
-<member>chars</member>
-<member>close</member>
-<member>lineIn</member>
-<member>lineOut</member>
-<member>lines</member>
-<member>open</member>
-<member>position</member>
-</simplelist>
-
-<para>Methods inherited from the
-OutputStream class.</para>
-<note><para>This class is searched first for inherited methods.
-</para></note>
-<simplelist type="vert" columns="3">
-<member>arrayOut</member>
-<member>charIn</member>
-<member>charOut</member>
-<member>chars</member>
-<member>close</member>
-<member>lineIn</member>
-<member>lineOut</member>
-<member>lines</member>
-<member>open</member>
-<member>position</member>
-</simplelist>
-
-</section>
+<!-- modified: renamed init() to new() -->
+<!-- $GENERATED-20160822-START rexxrefClassTable(StreamSocket) -->
+<table id="ooRexxStreamSocketClass" frame="all" pgwide="1">
+<title>StreamSocket Class</title>
+<tgroup cols="1">
+<tbody>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+<!-- should we link to rexxref here?
+ <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+-->
+ <row><entry align="center"><emphasis role="bold">+ OutputStream (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  Methods inherited from the <classname>OutputStream</classname> class
+  <para>
+  <simplelist columns="3">
+   <member>arrayOut</member>
+   <member>charIn</member>
+   <member>charOut</member>
+   <member>chars</member>
+   <member>close</member>
+   <member>lineIn</member>
+   <member>lineOut</member>
+   <member>lines</member>
+   <member>open</member>
+   <member>position</member>
+  </simplelist>
+  </para>
+ </entry></row>
+ <row><entry align="center"><emphasis role="bold">+ InputStream (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  Methods inherited from the <classname>InputStream</classname> class
+  <para>
+  <simplelist columns="3">
+   <member>arrayIn</member>
+   <member>charIn</member>
+   <member>charOut</member>
+   <member>chars</member>
+   <member>close</member>
+   <member>lineIn</member>
+   <member>lineOut</member>
+   <member>lines</member>
+   <member>open</member>
+   <member>position</member>
+  </simplelist>
+  </para>
+ </entry></row>
+ <row><entry align="center"><emphasis role="bold">+ InputOutputStream (Mixin Class)</emphasis></entry>
+ </row>
+ <row><entry>
+  Methods inherited from the <classname>InputOutputStream</classname> class
+  <para>
+   (no class or instance methods)
+  </para>
+ </entry></row>
+ <row><entry align="center"><emphasis role="bold">StreamSocket</emphasis></entry>
+ </row>
+ <row><entry>
+  <simplelist>
+   <member><xref linkend="mthStreamSocketNew" xrefstyle="select:title"/></member>
+  </simplelist>
+  <simplelist columns="3">
+   <member><xref linkend="mthStreamSocketArrayIn" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStreamSocketArrayOut" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStreamSocketCharIn" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStreamSocketCharOut" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStreamSocketChars" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStreamSocketClose" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStreamSocketDescription" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStreamSocketLineIn" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStreamSocketLineOut" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStreamSocketLines" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStreamSocketOpen" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStreamSocketPosition" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStreamSocketSay" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStreamSocketState" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStreamSocketString" xrefstyle="select:title"/></member>
+  </simplelist>
+ </entry></row>
+</tbody>
+</tgroup>
+</table>
+<!-- $GENERATED-20160822-END rexxrefClassTable(StreamSocket) -->
 
 <section id="mthStreamSocketNew"><title>new (Inherited Class Method)</title>
 <indexterm><primary>new method</primary>
@@ -132,7 +170,7 @@ OutputStream class.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/streamsock_new.svg" scale="50" />
+<imagedata fileref="images/methods/streamsocket_new.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -182,7 +220,7 @@ Returns the new stream object.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/streamsock_charin.svg" scale="50" />
+<imagedata fileref="images/methods/streamsocket_charin.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -206,17 +244,17 @@ fails, the stream opens for input only.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/streamsock_charout.svg" scale="50" />
+<imagedata fileref="images/methods/streamsocket_charout.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Returns the count of characters remaining after trying to write
 <emphasis role="italic">string</emphasis> to the output stream.</para>
 <para>The <emphasis role="italic">string</emphasis> can be the null string.
-In this case, <emphasis role="bold">charOut</emphasis> writes
+In this case, <methodname>charOut</methodname> writes
 no characters to the stream and returns <computeroutput>0</computeroutput>.
 If you omit <emphasis role="italic">string</emphasis>,
-<emphasis role="bold">charOut</emphasis> writes no
+<methodname>charOut</methodname> writes no
 characters to the stream and returns <computeroutput>0</computeroutput>.</para>
 <para>If you specify <emphasis role="italic">start</emphasis> it will be ignored since
 socket streams are not considered persistent.
@@ -232,7 +270,7 @@ socket streams are not considered persistent.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/streamsock_chars.svg" scale="50" />
+<imagedata fileref="images/methods/streamsocket_chars.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -250,16 +288,16 @@ Otherwise returns<computeroutput>0</computeroutput>.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/streamsock_close.svg" scale="50" />
+<imagedata fileref="images/methods/streamsocket_close.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Closes the stream.
-<emphasis role="bold">close</emphasis> returns
+<methodname>close</methodname> returns
 <computeroutput>READY:</computeroutput> if closing the stream is successful,
 or an appropriate error message.
 If you have tried to close an unopened socket, then the
-<emphasis role="bold">close</emphasis> method returns
+<methodname>close</methodname> method returns
 a null string (&quot;&quot;).</para>
 </section>
 
@@ -272,18 +310,18 @@ a null string (&quot;&quot;).</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/streamsock_description.svg" scale="50" />
+<imagedata fileref="images/methods/streamsocket_description.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Returns any descriptive string associated with the
 current state of the stream or the Nil object if no descriptive string is
-available. The <emphasis role="bold">description</emphasis>
-method is identical with the STATE method except
-that the string that <emphasis role="bold">description</emphasis>
+available. The <methodname>description</methodname>
+method is identical with the <methodname>state</methodname> method except
+that the string that <methodname>description</methodname>
 returns is followed by a colon and, if
 available, additional information about ERROR or NOTREADY states. (The
-<xref linkend="mthStreamSocketState" /> method describes these states.)</para>
+<xref linkend="mthStreamSocketState" xrefstyle="select:title" /> method describes these states.)</para>
 </section>
 
 <section id="mthStreamSocketLineIn"><title>lineIn</title>
@@ -295,7 +333,7 @@ available, additional information about ERROR or NOTREADY states. (The
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/streamsock_linein.svg" scale="50" />
+<imagedata fileref="images/methods/streamsocket_linein.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -320,7 +358,7 @@ open, the it tries to open the stream for reading and writing.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/streamsock_lineout.svg" scale="50" />
+<imagedata fileref="images/methods/streamsocket_lineout.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -343,7 +381,7 @@ to be a persistent stream.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/streamsock_lines.svg" scale="50" />
+<imagedata fileref="images/methods/streamsocket_lines.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -361,14 +399,14 @@ Otherwise returns<computeroutput>0</computeroutput>.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/streamsock_open.svg" scale="50" />
+<imagedata fileref="images/methods/streamsocket_open.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
 <para>Opens the stream for input and output and returns
 <computeroutput>READY:</computeroutput>. If the method is unsuccessful, it
 returns an error message string in the same form that the
-<emphasis role="bold">description</emphasis> method uses.</para>
+<methodname>description</methodname> method uses.</para>
 <para>For most error conditions, the additional information is in the form of
 a numeric return code. This return code is the value of
 <computeroutput>ERRNO</computeroutput>,
@@ -385,7 +423,7 @@ which is set whenever one of the file system primitives returns with a
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/streamsock_position.svg" scale="50" />
+<imagedata fileref="images/methods/streamsocket_position.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -401,7 +439,7 @@ which is set whenever one of the file system primitives returns with a
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/streamsock_say.svg" scale="50" />
+<imagedata fileref="images/methods/streamsocket_say.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -420,7 +458,7 @@ an error occurs while writing the line.</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/streamsock_state.svg" scale="50" />
+<imagedata fileref="images/methods/streamsocket_state.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
@@ -432,7 +470,7 @@ an error occurs while writing the line.</para>
 <listitem><para>The stream has been subject to an erroneous operation
 (possibly during input or output.
 You might be able to obtain additional information about the error with the
-<emphasis role="bold">description</emphasis> method.
+<methodname>description</methodname> method.
 </para></listitem></varlistentry>
 <varlistentry><term>NOTREADY</term>
 <listitem><para>The stream is known to be in such a state that the usual input
@@ -459,7 +497,7 @@ the stream is closed or has not yet been opened.
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/methods/streamsock_string.svg" scale="50" />
+<imagedata fileref="images/methods/streamsocket_string.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
