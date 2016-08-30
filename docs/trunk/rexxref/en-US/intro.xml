@@ -3198,6 +3198,16 @@ On these systems, to run a script as a Rexx program, depending on where the
 interpreter is installed, the shebang would be something like
 <literal>#!/usr/bin/rexx</literal>.
 </para>
+<para>With several Unix-like systems changing the standard
+installation location away from <literal>/usr/bin</literal> (including
+macOS), a new convention is used for the sample programs, which works
+if the ooRexx
+interpreter is anywhere on the path. This conventions uses the
+<literal>env</literal> command in the shebang, like this: 
+<literal>#!/usr/bin/env rexx</literal>. This has the advantage that it
+is portable, and will use the first occurrence of
+<literal>rexx</literal> that is found on <literal>$PATH</literal>.
+</para>
 <para>On a Windows system, Rexx will simply ignore the first line of a
 Rexx program, if it starts with the character sequence "<literal>#!</literal>".
 </para>
