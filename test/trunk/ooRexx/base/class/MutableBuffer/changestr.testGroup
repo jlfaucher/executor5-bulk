@@ -68,10 +68,6 @@ return testResult
 ::method "test_6"
    self~assertSame('ha--o', .mutablebuffer~new('hallo')~CHANGESTR('l','-',3)~string)
 
-::method "test_7"
-   self~expectSyntax(93.907)
-   a=.mutablebuffer~new('aha')~changestr('a','A',0)
-
 -- rexxref documentation tests
 
 ::method "test_101"
@@ -90,9 +86,10 @@ return testResult
     self~assertSame('ha--o', .mutablebuffer~new('hallo')~changeStr('l','-',2)~string)
     self~assertSame('ha--o', .mutablebuffer~new('hallo')~changestr('l','-',3)~string)
 
-::method "test_changeStr_error_93.907"
-    self~expectSyntax(93.907)
-    .mutablebuffer~new('aha')~changeStr('a','A',0)
+::method test_count_zero
+   self~assertSame("Test", .MutableBuffer~new("Test")~changeStr("t", "-", 0))
 
-
+::method test_count_negative
+   self~expectSyntax(93.906) -- Method argument .. must be zero or a positive whole number
+   .MutableBuffer~new("Test")~changeStr("t", "-", -1)
 

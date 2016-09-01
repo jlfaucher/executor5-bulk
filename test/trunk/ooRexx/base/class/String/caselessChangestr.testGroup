@@ -78,10 +78,6 @@ return testResult
     self~assertSame('ha--o', 'haLlo'~caselessChangeStr('l','-',3))
     self~assertSame('ha--o', 'haLLo'~caselessChangeStr('l','-',3))
 
-::method "test_changeStr_caseless_error_93.907"
-    self~expectSyntax(93.907)
-    'aha'~caselessChangeStr('a','A',0)
-
 ::method "test_1"
    self~assertSame('101100', '101100'~caselessChangeStr('','X'))
 
@@ -97,10 +93,10 @@ return testResult
 ::method "test_6"
    self~assertSame('ha--o', 'hallo'~caselessChangeStr('l','-',3))
 
-::method "test_7"
-   self~expectSyntax(93.907)
-   a='aha'~caselessChangeStr('a','A',0)
+::method test_count_zero
+   self~assertSame("Test", "Test"~caselessChangeStr("t", "-", 0))
 
-
-
+::method test_count_negative
+   self~expectSyntax(93.906) -- Method argument .. must be zero or a positive whole number
+   "Test"~caselessChangeStr("t", "-", -1)
 

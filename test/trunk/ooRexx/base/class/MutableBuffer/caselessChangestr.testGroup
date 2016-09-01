@@ -95,11 +95,6 @@ return testResult
    b = .mutableBuffer~new('haLLo')
     self~assertSame('ha--o', b~caselessChangeStr('l','-',3)~string)
 
-::method "test_changeStr_caseless_error_93.907"
-    self~expectSyntax(93.907)
-    b = .mutableBuffer~new('haLLo')
-    b~caselessChangeStr('a','A',0)
-
 ::method "test_1"
     b = .mutableBuffer~new('101100')
     self~assertSame('101100', b~caselessChangeStr('','X')~string)
@@ -120,8 +115,10 @@ return testResult
     b = .mutableBuffer~new("hallo")
     self~assertSame('ha--o', b~caselessChangeStr('l','-',3)~string)
 
-::method "test_7"
-   self~expectSyntax(93.907)
-   b = .mutableBuffer~new("hallo")
-   b~caselessChangeStr('a','A',0)
+::method test_count_zero
+   self~assertSame("Test", .MutableBuffer~new("Test")~caselessChangeStr("t", "-", 0))
+
+::method test_count_negative
+   self~expectSyntax(93.906) -- Method argument .. must be zero or a positive whole number
+   .MutableBuffer~new("Test")~caselessChangeStr("t", "-", -1)
 

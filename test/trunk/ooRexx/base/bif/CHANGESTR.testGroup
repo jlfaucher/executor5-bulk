@@ -69,9 +69,12 @@ return testResult
 ::method "test_6"
    self~assertSame('ha--o', CHANGESTR('l','hallo','-',3))
 
-::method "test_7"
-   self~expectSyntax(93.907)
-   a=changestr('a','aha','A',0)
+::method test_count_zero
+   self~assertSame("Test", changestr("t", "Test", "-", 0))
+
+::method test_count_negative
+   self~expectSyntax(93.906) -- Method argument .. must be zero or a positive whole number
+   call changeStr "t", "Test", "-", -1
 
 
 -- rexxref documentation tests
