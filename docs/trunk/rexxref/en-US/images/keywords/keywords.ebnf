@@ -1,21 +1,21 @@
 address ::= 'ADDRESS' (  |
                       environment expression? |
-                      'VALUE'? env_expression ) ';'
+                      'VALUE'? env_expression )
 
-arg ::= 'ARG' ( template_list )? ';'
+arg ::= 'ARG' ( template_list )?
 
-parse_upper_arg ::= 'PARSE' 'UPPER' 'ARG' ( template_list )? ';'
+parse_upper_arg ::= 'PARSE' 'UPPER' 'ARG' ( template_list )?
 
 /* Split into parts, because it's too large to nicely fit on a page */
-call     ::= 'CALL' ( name | '(' expr ')' ) (expression ( ',' expression )* )? ';'
-call_off ::= 'CALL' 'OFF' ( 'ANY' | 'ERROR' | 'FAILURE' | 'HALT' | 'NOTREADY' | 'USER' usercondition ) ';'
-call_on  ::= 'CALL'  'ON' ( 'ANY' | 'ERROR' | 'FAILURE' | 'HALT' | 'NOTREADY' | 'USER' usercondition ) ('NAME' trapname)? ';'
+call     ::= 'CALL' ( name | '(' expr ')' ) (expression ( ',' expression )* )?
+call_off ::= 'CALL' 'OFF' ( 'ANY' | 'ERROR' | 'FAILURE' | 'HALT' | 'NOTREADY' | 'USER' usercondition )
+call_on  ::= 'CALL'  'ON' ( 'ANY' | 'ERROR' | 'FAILURE' | 'HALT' | 'NOTREADY' | 'USER' usercondition ) ('NAME' trapname)?
 
-funct_call ::= 'result' '=' name '(' expression ( ( ',' expression)+ )? ')' ';'
+funct_call ::= 'result' '=' name '(' expression ( ( ',' expression)+ )? ')'
 
-do_start       ::= ('DO' | 'LOOP') ( 'LABEL' name )? ( REPETITOR - fragment )? ( CONDITIONAL - fragment )? ';'
-do_instruction ::= ( instruction ';' )*
-do_end         ::= 'END' ( name )? ';'
+do_start       ::= ('DO' | 'LOOP') ( 'LABEL' name )? ( REPETITOR - fragment )? ( CONDITIONAL - fragment )?
+do_instruction ::= ( instruction )*
+do_end         ::= 'END' ( name )?
 
 do_repetitor   ::= (control1 '=' expri ( 'TO' exprt )? ( 'BY' exprb )? ( 'FOR' exprf )? |
 /* chg in 5.0 */    control2 'OVER' collection ( 'FOR' exprf )? |
@@ -25,86 +25,89 @@ do_repetitor   ::= (control1 '=' expri ( 'TO' exprt )? ( 'BY' exprb )? ( 'FOR' e
 
 do_conditional ::= ( 'WHILE' exprw (',' exprw)* | 'UNTIL' expru (',' expru)* )
 
-drop ::= 'DROP' ( name | '(' name ')' )+ ';'
+drop ::= 'DROP' ( name | '(' name ')' )+
 
-exit ::= 'EXIT' ( expression )? ';'
+exit ::= 'EXIT' ( expression )?
 
-expose ::= 'EXPOSE' ( name | '(' name ')' )+ ';'
+expose ::= 'EXPOSE' ( name | '(' name ')' )+
 
 forward ::= 'FORWARD' 'CONTINUE'? ( 'ARGUMENTS' expra | 'ARRAY' '(' (expri ( ',' expri )* )? ')' )?
-            ( 'MESSAGE' exprm )? ( 'CLASS' exprs )? ( 'TO' exprt )? ';'
+            ( 'MESSAGE' exprm )? ( 'CLASS' exprs )? ( 'TO' exprt )?
 
 guard ::= 'GUARD' ( 'ON' ( 'WHEN' expression )? |
-                  'OFF' ( 'WHEN' expression )? ) ';'
+                  'OFF' ( 'WHEN' expression )? )
 
 if ::= 'IF' expression (',' expression)* ';'? 'THEN' ';'? instruction ( 'ELSE' ';'? instruction )?
 
-interpret ::= 'INTERPRET' expression ';'
+interpret ::= 'INTERPRET' expression
 
-iterate ::= 'ITERATE' ( name )? ';'
+iterate ::= 'ITERATE' ( name )?
 
-leave ::= 'LEAVE' ( name )? ';'
+leave ::= 'LEAVE' ( name )?
 
-nop ::= 'NOP' ';'
+nop ::= 'NOP'
 
 numeric ::= 'NUMERIC' ( 'DIGITS' expression1? |
                       'FORM' ( 'SCIENTIFIC' | 'ENGINEERING' | 'VALUE'? expression2 )? |
-                      'FUZZ' expression3? ) ';'
+                      'FUZZ' expression3? )
 
-options ::= 'OPTIONS' expression ';'
+options ::= 'OPTIONS' expression
 
 parse ::= 'PARSE' ( 'UPPER' | 'LOWER' )? ( 'CASELESS' )? ( 'ARG' | 'LINEIN' | 'PULL' | 'SOURCE' |
-                'VALUE' ( expression )? 'WITH' | 'VAR' name | 'VERSION' ) ( template_list )? ';'
+                'VALUE' ( expression )? 'WITH' | 'VAR' name | 'VERSION' ) ( template_list )?
 
-parse_value ::= 'PARSE' 'VALUE' 'LINEIN()' 'WITH' ( template_list )? ';'
+parse_value ::= 'PARSE' 'VALUE' 'LINEIN()' 'WITH' ( template_list )?
 
-procedure ::= 'PROCEDURE' ( 'EXPOSE' ( name | '(' name ')' )+ )? ';'
+procedure ::= 'PROCEDURE' ( 'EXPOSE' ( name | '(' name ')' )+ )?
 
-pull ::= 'PULL' ( template_list )? ';'
+pull ::= 'PULL' ( template_list )?
 
-parse_upper_pull ::= 'PARSE' 'UPPER' 'PULL' ( template_list )? ';'
+parse_upper_pull ::= 'PARSE' 'UPPER' 'PULL' ( template_list )?
 
-push ::= 'PUSH' (expression )? ';'
+push ::= 'PUSH' (expression )?
 
-queue ::= 'QUEUE' (expression )? ';'
+queue ::= 'QUEUE' (expression )?
 
 raise ::= 'RAISE' ( 'ERROR' errorcode | 'FAILURE' failurecode |
                     'HALT' | 'LOSTDIGITS' | 'NOMETHOD' | 'NOSTRING' | 'NOTREADY' | 'NOVALUE' |  
                     'SYNTAX' number | 'USER' usercondition | 'PROPAGATE' )
-                  (OPTIONS - fragment) ';'
+                  (OPTIONS - fragment)
 
 raise_options ::= ( 'ADDITIONAL' expra | 'ARRAY' '(' (expri ( ',' expri )* )? ')' )?
                   ( 'DESCRIPTION' exprd )?
                   ( 'EXIT' expre? | 'RETURN' exprr? )?
 
-reply ::= 'REPLY' expression? ';'
+reply ::= 'REPLY' expression?
 
-return ::= 'RETURN' expression? ';'
+return ::= 'RETURN' expression?
 
-say ::= 'SAY' expression? ';'
+say ::= 'SAY' expression?
 
-call_lineout ::= 'CALL' 'LINEOUT' ',' expression? ';'
+call_lineout ::= 'CALL' 'LINEOUT' ',' expression?
 
-select ::= 'SELECT' ( 'LABEL' name )? ( 'CASE' case_expression )? ';'
-select2 ::= ( 'WHEN' expression (',' expression)* ';'? 'THEN' ';'? instruction ';' )+
-select3 ::= ( 'OTHERWISE' ';'? ( instruction ';' )* )?
-select4 ::= 'END' name? ';'
+select ::= 'SELECT' ( 'LABEL' name )? ( 'CASE' case_expression )?
+select2 ::= ( 'WHEN' expression (',' expression)* ';'? 'THEN' ';'? instruction )+
+select3 ::= ( 'OTHERWISE' ';'? ( instruction )* )?
+select4 ::= 'END' name?
 
 /* Split into parts, because it's too large to nicely fit on a page */
 signal ::= 'SIGNAL' ( labelname |
-                    ( 'VALUE' )? expression ) ';'
+                    ( 'VALUE' )? expression )
 signal_off ::= 'SIGNAL' 'OFF' ( 'ANY' | 'ERROR' | 'FAILURE' | 'HALT' | 'LOSTDIGITS' | 'NOMETHOD' |
-                              'NOSTRING' | 'NOTREADY' | 'NOVALUE' | 'SYNTAX' | 'USER' usercondition ) ';'
+                              'NOSTRING' | 'NOTREADY' | 'NOVALUE' | 'SYNTAX' | 'USER' usercondition )
 signal_on ::= 'SIGNAL' 'ON' ( 'ANY' | 'ERROR' | 'FAILURE' | 'HALT' | 'LOSTDIGITS' | 'NOMETHOD' |
                             'NOSTRING' | 'NOTREADY' | 'NOVALUE' | 'SYNTAX' | 'USER' usercondition ) 
-                       ( 'NAME' trapname )? ';'
+                       ( 'NAME' trapname )?
 
 trace ::= 'TRACE' ( number |
                   '?'* ( 'Normal' | 'All' | 'Commands' | 'Error' | 'Failure' |
                          'Intermediates' | 'Labels' | 'Off' | 'Results' )? |
                   string |
                   symbol |
-                ( 'VALUE' )? expression )? ';'
+                ( 'VALUE' )? expression )?
 
-use ::= 'USE' ( 'STRICT'? 'ARG' ( name ('=' expr)? ( ',' ( name ('=' expr)?) )* )? (',' '...')? |
-              'LOCAL' name* ) ';'
+use ::= 'USE' ( 'STRICT'? 'ARG' ( name ('=' expr)? ( ',' name ('=' expr)? )* (',' '...')?
+                                | '...'?
+                                )
+              | 'LOCAL' name*
+              )

@@ -694,13 +694,15 @@ The classes of tokens are:
 <indexterm><primary>string</primary>
 <secondary>quotations marks in</secondary></indexterm>
 <para>A literal string is a sequence including <emphasis>any</emphasis>
-characters except line feed (X"10") and delimited by a single quotation mark
+characters except <xref linkend="line-end" xrefstyle="template:line-end"/>
+and <xref linkend="end-of-file" xrefstyle="template:end-of-file"/> characters,
+and delimited by a single quotation mark
 (<computeroutput>&apos;</computeroutput>) or a double quotation mark
 (<computeroutput>&quot;</computeroutput>). You use
 two consecutive double quotation marks
 (<computeroutput>&quot;&quot;</computeroutput>) to represent
 one double quotation mark (<computeroutput>"</computeroutput>)
-within a string delimited by double
+within a literal string delimited by double
 quotation marks. Similarly, you use two consecutive single quotation marks
 (<computeroutput>&apos;&apos;</computeroutput>) to represent one single quotation mark
 (<computeroutput>&apos;</computeroutput>) within a string delimited by single
@@ -3201,8 +3203,8 @@ interpreter is installed, the shebang would be something like
 <para>With several Unix-like systems changing the standard
 installation location away from <literal>/usr/bin</literal> (including
 macOS), a new convention is used for the sample programs, which works
-if the ooRexx
-interpreter is anywhere on the path. This conventions uses the
+if the Rexx
+interpreter is anywhere on the path. This convention uses the
 <literal>env</literal> command in the shebang, like this: 
 <literal>#!/usr/bin/env rexx</literal>. This has the advantage that it
 is portable, and will use the first occurrence of
@@ -3217,16 +3219,24 @@ Rexx program, if it starts with the character sequence "<literal>#!</literal>".
 <para>Windows and Unix-like systems use different characters to indicate
 a line-break (ending one line and starting a new one) in a text file.
 While Windows uses the two-character sequence <literal>'0d 0a'x</literal>
-(carriage-return, line-feed), Unix-like systems typically use the character
+(carriage-return, line-feed), Unix-like systems use the character
 <literal>'0a'x</literal> (line-feed) as a line-end indicator. 
 </para>
 <para>Rexx supports both line-end indicators on each platform, both for the
-Rexx program itself, and for any data that is being read with built-in functions
-like LINES or LINEIN, or <xref linkend="clsStream" xrefstyle="template:Stream"/>
-methods like <methodname>lines</methodname>, <methodname>lineIn</methodname>,
-or <methodname>arrayIn</methodname>.
+Rexx program itself, and for data manipulated with e. g. built-in functions
+<xref linkend="bifLines" xrefstyle="template:LINES"/>,
+<xref linkend="bifLinein" xrefstyle="template:LINEIN"/>,
+<classname>Stream</classname> methods <xref linkend="mthStreamLines" xrefstyle="select:title"/>,
+<xref linkend="mthStreamLineIn" xrefstyle="select:title"/>,
+<xref linkend="mthStreamArrayIn" xrefstyle="select:title"/>,
+<classname>String</classname> method <xref linkend="mthStringMakeArray" xrefstyle="select:title"/>, or
+<classname>MutableBuffer</classname> method <xref linkend="mthMutableBufferMakeArray" xrefstyle="select:title"/>.
 This means, when moving from one platform to another, typically there should be
 no line-end conversions necessary for Rexx programs or data read by these programs.
+</para>
+<para>Note that you cannot include line-end characters 
+<literal>'0d'x</literal> or <literal>'0a'x</literal> in a
+<xref linkend="litstrings" xrefstyle="template:literal string"/>.
 </para>
 </section>
 
@@ -3241,8 +3251,8 @@ Unix-like systems do not use a special end-of-file character in text files.
 within a Rexx program source file on both Windows and Unix-like platforms.
 It will not scan the source file beyond any end-of-file character it finds.
 This means, that a character <literal>'1a'x</literal> cannot be directly used
-within a Rexx program source file, for example within a literal string or a
-comment.
+within a Rexx program source file, for example within a
+<xref linkend="litstrings" xrefstyle="template:literal string"/> or a comment.
 </para>
 </section>
 

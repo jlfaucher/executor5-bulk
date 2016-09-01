@@ -493,10 +493,16 @@ a <xref linkend="clsFile" xrefstyle="template:File object"/>.</para>
 </imageobject>
 </mediaobject>
 
-<para>Returns a fixed array that contains the data of the stream in line or
-character format, starting from the current read position. The line format is
-the default.</para>
-<para>If you have used the <methodname>charIn</methodname>
+<para>Returns an Array that contains the data of the receiving Stream,
+starting from the current read position.
+If <option>LINES</option> is specified, the Array items returned are the
+Stream's lines, that were separated with any
+<xref linkend="line-end" xrefstyle="template:line-end"/> indicator.
+<option>LINES</option> is the default.
+If <option>CHARS</option> is specified, the Array items returned are the
+Stream's characters.
+</para>
+<para>If you have used the <xref linkend="mthStreamCharIn" xrefstyle="select:title"/>
 method, the first line can be a partial line.
 </para>
 </section>
@@ -603,10 +609,10 @@ for the stream. For persistent streams the count is the count of characters
 from the current read position. (See
 <xref linkend="iostrms" /> for a discussion
 of Rexx input and output.) The total number of characters remaining cannot
-be determined for some streams (for example, STDIN or Windows/Unix devices). For these streams. the
-CHARS method returns <computeroutput>1</computeroutput>
-to indicate that data is present, or <computeroutput>0</computeroutput>
-if no data is present.
+be determined for some streams (for example, STDIN or Windows/Unix devices).
+For these streams, the <methodname>chars</methodname> method
+returns <literal>1</literal> to indicate that data is present,
+or <literal>0</literal> if no data is present.
 </para>
 </section>
 
@@ -678,18 +684,10 @@ can be any expression that evaluates to one of the following command strings:
 </mediaobject>
 </para>
 
-<para><emphasis role="bold">WRITE-OPTIONS:</emphasis>
+<para><emphasis role="bold">OPTIONS:</emphasis>
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/bif/stream_write_options.svg" scale="55" />
-</imageobject>
-</mediaobject>
-</para>
-
-<para><emphasis role="bold">OPEN-OPTIONS:</emphasis>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/bif/stream_open_options.svg" scale="55" />
+<imagedata fileref="images/bif/stream_options.svg" scale="55" />
 </imageobject>
 </mediaobject>
 </para>
@@ -747,7 +745,7 @@ order in which it was written.
 </para></listitem></varlistentry>
 <varlistentry><term>BINARY</term>
 <listitem><para>Opens the stream in binary mode.
-This means that line end characters
+This means that <xref linkend="line-end" xrefstyle="template:line-end"/> characters
 are ignored; they are treated like any other byte of data. This is intended
 to process
 binary data using the line operations.</para>
@@ -879,9 +877,13 @@ stream_name~command("seek <"fromend "read")
 </listitem></varlistentry>
 <varlistentry><term>POSITION</term>
 <listitem><para>is a synonym for SEEK.</para>
-<para>Used with these <emphasis role="italic">stream_command</emphasis>s, the
-COMMAND method returns
-specific information about a stream. Except for QUERY HANDLE and QUERY POSITION,
+</listitem>
+</varlistentry>
+<varlistentry><term>QUERY</term>
+<listitem>
+<para>Used with these QUERY <emphasis role="italic">stream_command</emphasis>s, the
+<methodname>command</methodname> method returns
+specific information about a stream. Except for QUERY HANDLE and QUERY SEEK/POSITION,
 the stream returns the query information even if the stream is
 not open. The stream returns the null string for nonexistent streams.
 </para>
@@ -1037,10 +1039,10 @@ stream_name~command("query timestamp")
 </imageobject>
 </mediaobject>
 
-<para>Returns any descriptive string associated with the
-current state of the stream or &nil; if no descriptive string is
-available. The <methodname>description</methodname>
-method is identical to the <methodname>state</methodname> method except
+<para>Returns a descriptive string associated with the
+current state of the stream.
+The <methodname>description</methodname> method is identical to the
+<xref linkend="mthStreamState" xrefstyle="select:title"/> method except
 that the string that <methodname>description</methodname>
 returns is followed by a colon and, if
 available, additional information about ERROR or NOTREADY states.</para>
@@ -1150,18 +1152,18 @@ opened for output only.
 </imageobject>
 </mediaobject>
 
-<para>Returns the number of completed lines that available for input.
+<para>Returns the number of completed lines that are available for input.
 If the stream has already been read with
 <xref linkend="mthStreamCharIn" xrefstyle="select:title"/>
 this can include an initial partial line. For persistent streams the count
 starts at the current read position. In effect,
 <methodname>lines</methodname> reports whether a read
-action of <methodname>charIn</methodname> or
+action of <xref linkend="mthStreamCharIn" xrefstyle="select:title"/> or
 <xref linkend="mthStreamLineIn" xrefstyle="select:title"/> will succeed.
 For an explanation of input and output, see
 <xref linkend="iostrms" />.)</para>
-<para>For a <classname>Queue</classname>, <methodname>lines</methodname>
-returns the actual number of lines.
+<para>For a <xref linkend="clsQueue" xrefstyle="template:Queue" /> instance,
+<methodname>lines</methodname> returns the actual number of lines.
 </para>
 
 <note><title>Note</title>
@@ -1173,7 +1175,7 @@ method determines the actual number of lines by scanning the stream starting
 at the current position and counting the lines. For large streams, this can
 be a time-consuming operation.  Therefore, avoid the use of the <methodname>lines</methodname> method
 in the  condition of a loop reading a stream. It is recommended that you use
-the <methodname>chars</methodname> method instead.
+the <xref linkend="mthStreamChars" xrefstyle="select:title"/> method instead.
 </para></note>
 
 <para>The ANSI Standard has extended this function to allow an option: "Count".
@@ -1201,10 +1203,10 @@ remaining in the file or 0 if no lines remain.</para>
 </imageobject>
 </mediaobject>
 
-<para>Returns a fixed array that contains
+<para>Returns an Array that contains
 the data of the stream in line or character format, starting from the current
 read position. The line format is the default.</para>
-<para>If you have used the <methodname>charIn</methodname>
+<para>If you have used the <xref linkend="mthStreamCharIn" xrefstyle="select:title"/>
 method, the first line can be a partial line.
 </para>
 </section>
@@ -1222,18 +1224,10 @@ method, the first line can be a partial line.
 </imageobject>
 </mediaobject>
 
-<para><emphasis role="bold">WRITE-OPTIONS:</emphasis>
+<para><emphasis role="bold">OPTIONS:</emphasis>
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/bif/stream_write_options.svg" scale="55" />
-</imageobject>
-</mediaobject>
-</para>
-
-<para><emphasis role="bold">OPEN-OPTIONS:</emphasis>
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/bif/stream_open_options.svg" scale="55" />
+<imagedata fileref="images/bif/stream_options.svg" scale="55" />
 </imageobject>
 </mediaobject>
 </para>
@@ -1241,7 +1235,7 @@ method, the first line can be a partial line.
 <para>Opens the stream and returns
 <literal>READY:</literal>. If the method is unsuccessful, it
 returns an error message string in the same form that the
-<methodname>description</methodname> method uses.</para>
+<xref linkend="mthStreamDescription" xrefstyle="select:title"/> method uses.</para>
 <para>For most error conditions, the additional information is in the form of
 a numeric return code. This return code is the value of
 <computeroutput>ERRNO</computeroutput>,
@@ -1380,7 +1374,7 @@ not be open.</para>
 
 <para>Used with these options, <methodname>query</methodname>
 returns specific information about a stream.
-Except for <option>HANDLE</option> and <option>POSITION</option>,
+Except for <option>HANDLE</option> and <option>SEEK</option>/<option>POSITION</option>,
 the stream returns the query information even if the stream is not open.
 A null string is returned for nonexistent streams.
 </para>
@@ -1555,7 +1549,7 @@ positions are set. </para>
 for a discussion
 of read and write positions in a persistent stream.</para></note>
 <para>To use this method, you must first open the stream object (with
-the <methodname>open</methodname> method described previously or implicitly with an input or output
+the <xref linkend="mthStreamOpen" xrefstyle="select:title"/> method or implicitly with an input or output
 operation). One of the following characters can precede the
 <emphasis role="italic">offset</emphasis> number:</para>
 <variablelist>
@@ -1643,21 +1637,21 @@ fromend  = 125
 <variablelist>
 <varlistentry><term>ERROR</term>
 <listitem><para>The stream has been subject to an erroneous operation
-(possibly during input, output, or through the STREAM function). See
+(possibly during input, output, or through the various Stream methods). See
 <xref linkend="stmerr" />.
 You might be able to obtain additional information about the error with the
-<methodname>description</methodname>
-method or by calling the STREAM function with a request for the
-description.
+<xref linkend="mthStreamDescription" xrefstyle="select:title"/>
+method.
 </para></listitem></varlistentry>
 <varlistentry><term>NOTREADY</term>
 <listitem><para>The stream is known to be in such a state that the usual input
 or output operations attempted upon would raise the NOTREADY condition. (See
 <xref linkend="stmerr" />.)
  For example, a simple input stream can have a defined length. An attempt
-to read that stream (with CHARIN or LINEIN, perhaps) beyond that limit can
+to read that stream (with <xref linkend="mthStreamCharIn" xrefstyle="select:title"/>
+or <xref linkend="mthStreamLineIn" xrefstyle="select:title"/>, perhaps) beyond that limit can
 make the stream unavailable until the stream has been closed (for example,
-with LINEOUT(<emphasis role="italic">name</emphasis>)) and then reopened.
+with the <xref linkend="mthStreamClose" xrefstyle="select:title"/> method) and then reopened.
 </para></listitem></varlistentry>
 <varlistentry><term>READY</term>
 <listitem><para>The stream is known to be in such a state that the usual input

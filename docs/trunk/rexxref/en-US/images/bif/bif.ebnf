@@ -132,7 +132,9 @@ stream ::= 'STREAM(' name ',' ( |
 
 stream_command_syntax ::= 'STREAM(' name ',' 'Command' ',' stream_command ')'
 
-stream_command ::= ( 'Open' ( 'BOth' (WRITE-OPTIONS - fragment) | 'REAd' | 'Write' (WRITE-OPTIONS - fragment) )? (OPEN-OPTIONS - fragment) |
+stream_command ::= ( 'Open' ( ( ( ( | 'BOth' | 'Write') ( | 'APpend' | 'REPlace' ) )
+                            | 'REAd' )
+                            (OPTIONS - fragment) ) |
                      'Close' |
                      'Flush' |
                    ( 'Seek' | 'Position' ) ( | '=' | '<' | '+' | '-' ) offset ( | 'Read' | 'Write' ) ( | 'Char' | 'Line') |
@@ -145,10 +147,7 @@ stream_command ::= ( 'Open' ( 'BOth' (WRITE-OPTIONS - fragment) | 'REAd' | 'Writ
                                'Timestamp' )
                    ) ')' 
 
-stream_write_options ::= ( | 'APpend' | 'REPlace' )
-
-stream_open_options ::= ( 'SHARED' | 'SHARERead' | 'SHAREWrite' )?
-                        ( 'NOBuffer' | 'BInary' ( 'REClength' length )? )*
+stream_options ::= ( | 'SHARED' | 'SHARERead' | 'SHAREWrite' ) 'NOBuffer'? ('BInary' ('REClength' length)? )?
 
 strip ::= 'STRIP(' string ',' ( | 'B' | option ) (',' chars)? ')'
 

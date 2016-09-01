@@ -222,7 +222,7 @@ output stream object.</para></listitem>
 <secondary>role in input and output</secondary></indexterm>
 method&mdash;writes in lines to either the default or a specified output stream
 object.</para></listitem></itemizedlist>
-<para>LINEOUT and SAY write the new-line character at the end of each line.
+<para>LINEOUT and SAY write <xref linkend="line-end" xrefstyle="template:line-end"/> characters at the end of each line.
 Depending
 on the operating system or hardware, other modifications or formatting can
 be applied; however, the output data remains a single logical line.</para>
@@ -482,12 +482,13 @@ MyStream~command(position 321 read char)
 </programlisting>
 <para>Remember that streams and other Rexx objects are indexed starting with
 one rather than zero.</para>
-<para>The second way of positioning by lines is for non-binary streams. New-line
+<para>The second way of positioning by lines is for non-binary streams.
+<xref linkend="line-end" xrefstyle="template:Line-end"/>
 characters separate lines in non-binary streams. Because the line separator
 is contained within the stream, ensure accurate line positioning. For example,
 it is possible to change the line number of the current read position by writing
-extra new-line characters ahead of the read position or by overwriting existing
-new-line characters. Thus, line positioning in a non-binary stream object
+extra line-end characters ahead of the read position or by overwriting existing
+line-end characters. Thus, line positioning in a non-binary stream object
 has the following characteristics: </para>
 <itemizedlist>
 <listitem><para>To do line positioning, it is necessary to read the stream in

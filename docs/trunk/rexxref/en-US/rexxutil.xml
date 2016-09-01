@@ -3479,6 +3479,11 @@ could be others.
 </imageobject>
 </mediaobject>
 
+<warning>
+<para>Once this function has been called, the initiated shutdown cannot be aborted&mdash;data loss may occur!
+</para>
+</warning>
+
 <para>
   Provides an interface to the <computeroutput>InitiateSystemShutdown()</computeroutput> API on Windows.
   If the user has sufficient privileges, this function can be used to shut down the local machine or a
@@ -4029,8 +4034,8 @@ only)</title>
 </mediaobject>
 
 <para>Reads characters from a specified screen location. These include any
-carriage return and linefeed characters if the number of character reads spans
-multiple lines.</para>
+<xref linkend="line-end" xrefstyle="template:line-end"/> characters
+if the number of character reads spans multiple lines.</para>
 <para><emphasis role="bold">Parameters:</emphasis></para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">row</emphasis></term>

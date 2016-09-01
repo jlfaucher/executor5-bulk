@@ -1338,7 +1338,9 @@ CHARIN(, ,5)         ->   "bcd e"
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
 <listitem><para>CHARIN returns all characters that appear in the stream, including control
-characters such as line feed, carriage return, and end of file.</para></listitem>
+characters such as <xref linkend="line-end" xrefstyle="template:line-end"/>
+and <xref linkend="end-of-file" xrefstyle="template:end-of-file"/>.
+</para></listitem>
 <listitem><para>When CHARIN reads from the keyboard, program execution stops until you
 press the Enter key.</para></listitem>
 </orderedlist>
@@ -4185,19 +4187,11 @@ string that corresponds to the following diagram:
 </mediaobject>
 </para>
 
-<para><emphasis role="bold">WRITE-OPTIONS:</emphasis>
-<indexterm><primary>STREAM function</primary>
-<secondary>write options</secondary></indexterm>
-<mediaobject><imageobject>
-<imagedata fileref="images/bif/stream_write_options.svg" scale="55" />
-</imageobject></mediaobject>
-</para>
-
-<para><emphasis role="bold">OPEN-OPTIONS:</emphasis>
+<para><emphasis role="bold">OPTIONS:</emphasis>
 <indexterm><primary>STREAM function</primary>
 <secondary>options</secondary></indexterm>
 <mediaobject><imageobject>
-<imagedata fileref="images/bif/stream_open_options.svg" scale="55" />
+<imagedata fileref="images/bif/stream_options.svg" scale="55" />
 </imageobject></mediaobject>
 </para>
 
@@ -4252,8 +4246,9 @@ is a concern, or to force interleaved output to a stream to appear in the
 exact order in which it was written.
 </para></listitem></varlistentry>
 <varlistentry><term><option>BINARY</option></term>
-<listitem><para>causes the stream to be opened in binary mode.  This means that line
-end characters are ignored and treated as another byte of data. This is intended
+<listitem><para>causes the stream to be opened in binary mode.  This means that
+<xref linkend="line-end" xrefstyle="template:line-end"/> characters
+are ignored and treated as data. This is intended
 to force file operations that are compatible with other Rexx language processors
 that run on record-based systems, or to process binary data using the line
 operations.
@@ -4396,7 +4391,7 @@ stream(name,"c","seek &lt;"fromend read)
 <indexterm><primary>STREAM function</primary>
 <secondary>query options</secondary></indexterm>
 <para>Used with these stream commands, the STREAM function returns specific
-information about a stream. Except for QUERY HANDLE and QUERY POSITION, the
+information about a stream. Except for QUERY HANDLE and QUERY SEEK/POSITION, the
 language processor returns the query information even if the stream is not
 open. The language processor returns UNKNOWN for QUERY STREAMTYPE and the null string for nonexistent
 streams.

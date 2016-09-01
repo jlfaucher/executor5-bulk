@@ -67,6 +67,8 @@ can use any classes, methods, and routines that the directives established.</par
 <xref linkend="resourced" xrefstyle="select:title"/>, and
 <xref linkend="routd" xrefstyle="select:title"/>.
 </para>
+<para>A directive requires a semicolon (<computeroutput>;</computeroutput>) as a terminating delimiter
+unless the end of a line implies it.</para>
 
 <section id="annotd" revisionflag="added"><title>&added50;::ANNOTATE</title>
 <indexterm><primary>::ANNOTATE directive</primary></indexterm>
@@ -1088,8 +1090,10 @@ ANONYMOUS TYPESETTER
   <listitem><para>Although <emphasis role="italic">resource_data</emphasis>
   may include almost arbitrary data (including any Rexx code), it is
   not well-suited for inclusion of binary data.
-  Including special characters like carriage return ('0d'x), line-feed
-  ('0a'x), or Windows end-of-file ('1a'x) may cause unwanted results.
+  Including special characters like
+  <xref linkend="line-end" xrefstyle="template:line-end"/>
+  or <xref linkend="end-of-file" xrefstyle="template:end-of-file"/>
+  may cause unwanted results.
   </para></listitem>
 
   <listitem><para>Resource data is accessible through the

@@ -76,6 +76,7 @@ Class and all other class objects, and will result in an error.
 <!-- modified: removed all class methods, added new(), commented copy() -->
 <!-- modified: removed defineClassMethod, inheritInstanceMethods -->
 <!-- modified: we won't document Class class hashCode  -->
+<!-- modified: made ComparisonMethods a separate single-column list for a better fit -->
 <!-- $GENERATED-20151009-START rexxrefClassTable(Class) -->
 <table id="ooRexxClassClass" frame="all" pgwide="1">
 <title>Class Class</title>
@@ -88,8 +89,10 @@ Class and all other class objects, and will result in an error.
  <row><entry align="center"><emphasis role="bold">Class</emphasis></entry>
  </row>
  <row><entry>
-  <simplelist columns="3">
+  <simplelist>
    <member><xref linkend="mthClassComparisonMethods" xrefstyle="select:title"/> = == &lt;&gt; &gt;&lt; \= \==</member>
+  </simplelist>
+  <simplelist columns="3">
    <member><xref linkend="mthClassActivate" xrefstyle="select:title"/></member>
    <member><xref linkend="mthClassAnnotation" xrefstyle="select:title"/></member>
    <member><xref linkend="mthClassAnnotations" xrefstyle="select:title"/></member>
@@ -1003,7 +1006,7 @@ room=.object~subclass("Room")   /* Superclass is .object     */
 </mediaobject>
 
 <para>Returns the immediate subclasses of the receiver
-class in the form of a single-index array of the required size, in an
+class in the form of a &singledimarray; of the required size, in an
 unspecified order. (The program should not rely on any order.)
 </para>
 </section>
@@ -1053,7 +1056,7 @@ say .set~superclass       -- displays "The Table class"
 </mediaobject>
 
 <para>Returns the immediate superclasses of the receiver class in the form of
-a single-index array of the required size. The immediate superclasses are
+a &singledimarray; of the required size. The immediate superclasses are
 the original class used on a <methodname>subclass</methodname> or a
 <methodname>mixinClass</methodname> method, plus any additional
 superclasses defined with the <methodname>inherit</methodname>
@@ -2478,7 +2481,7 @@ case, the method runs immediately regardless of its guarded state.
 </imageobject>
 </mediaobject>
 
-<para>Returns the method source code as a single-index array of source
+<para>Returns the method source code as a &singledimarray; of source
 lines. If the source code is not available,
 <methodname>source</methodname> returns an array of zero
 items.</para>
@@ -2495,6 +2498,7 @@ of the Object class are, therefore, available on all objects.</para>
 
 <!-- modified: removed all class methods except new(), uncommented init(), added private methods run(), setMethod(), unsetMethod() -->
 <!-- modified: removed "Methods inherited from the Object class" -->
+<!-- modified: made Concat/Comparision single-column -->
 <!-- $GENERATED-20151019-START rexxrefClassTable(Object) -->
 <table id="ooRexxObjectClass" frame="all" pgwide="1">
 <title>Object Class</title>
@@ -2503,12 +2507,14 @@ of the Object class are, therefore, available on all objects.</para>
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>
-  <simplelist columns="3">
+  <simplelist>
    <member><xref linkend="mthObjectNew" xrefstyle="select:title"/></member>
   </simplelist>
-  <simplelist columns="3">
-   <member><xref linkend="mthObjectConcatenationMethods" xrefstyle="select:title"/> (abuttal) || (blank)</member>
+  <simplelist>
    <member><xref linkend="mthObjectComparisonMethods" xrefstyle="select:title"/> = == &lt;> >&lt; \= \==</member>
+   <member><xref linkend="mthObjectConcatenationMethods" xrefstyle="select:title"/> (abuttal) || (blank)</member>
+  </simplelist>
+  <simplelist columns="3">
    <member><xref linkend="mthObjectClass" xrefstyle="select:title"/></member>
    <member><xref linkend="mthObjectCopy" xrefstyle="select:title"/></member>
    <member><xref linkend="mthObjectDefaultName" xrefstyle="select:title"/></member>
@@ -2785,7 +2791,7 @@ values.
 <para>
 Returning a wide range of hash values will produce better performance when an object is used as an index for a
 MapCollection.  A return value of 4 string characters is recommended.  The characters in the hash value may be any
-characters from '00'x to 'ff'x, inclusive.
+characters from <literal>'00'x</literal> to <literal>'ff'x</literal>, inclusive.
 </para>
 </listitem>
 </itemizedlist>
@@ -3220,7 +3226,7 @@ second item is a class object to use as the starting point for the method
 search.
 </para>
 <para>The <emphasis role="italic">arguments</emphasis> argument must be
-a single-dimension array instance.
+a &singledimarray; instance.
 The values contained in
 <emphasis role="italic">arguments</emphasis> are passed to the receiver as
 arguments for <emphasis role="italic">messagename</emphasis> in the order you
@@ -3385,7 +3391,7 @@ second item is a class object to use as the starting point for the method
 search.
 </para>
 <para>The <emphasis role="italic">arguments</emphasis> argument must be
-a single-dimension array instance.
+a &singledimarray; instance.
 Any values contained in
 <emphasis role="italic">arguments</emphasis> are passed to the receiver as
 arguments for <emphasis role="italic">messagename</emphasis> in the order you
@@ -4356,7 +4362,7 @@ existing security manager is removed.</para>
 </imageobject>
 </mediaobject>
 
-<para>Returns the package source code as a single-index array of source lines.
+<para>Returns the package source code as a &singledimarray; of source lines.
 If the source code is not available,
 <methodname>source</methodname> returns an array of zero
 items.</para>
@@ -4703,7 +4709,7 @@ existing security manager is removed.</para>
 </imageobject>
 </mediaobject>
 
-<para>Returns the routine source code as a single-index array of source lines.
+<para>Returns the routine source code as a &singledimarray; of source lines.
 If the source code is not available,
 <methodname>source</methodname> returns an array of zero
 items.</para>
@@ -4719,7 +4725,7 @@ items.</para>
 string value can have any length and contain any characters.
 </para>
 
-<!-- modified: move new() to top; re-add hashCode() -->
+<!-- modified: move new() to top; re-add hashCode(); made Arith/Compare/ConcatMethods single-column -->
 <!-- $GENERATED-20151011-START rexxrefClassTable(String) -->
 <table id="ooRexxStringClass" frame="all" pgwide="1">
 <title>String Class</title>
@@ -4745,11 +4751,13 @@ string value can have any length and contain any characters.
    <member><xref linkend="mthStringNull" xrefstyle="select:title"/></member>
    <member><xref linkend="mthStringTab" xrefstyle="select:title"/></member>
   </simplelist>
-  <simplelist columns="3">
-   <member><xref linkend="mthStringConcatenationMethods" xrefstyle="select:title"/> (abuttal) || (blank)</member>
+  <simplelist>
    <member><xref linkend="mthStringArithmeticMethods" xrefstyle="select:title"/> + - * ** / // %</member>
    <member><xref linkend="mthStringComparisonMethods" xrefstyle="select:title"/> = == &lt; &lt;= &lt;&lt; &lt;&lt;= &lt;> > >= >&lt; >> >>= \= \== \&lt; \&lt;&lt; \> \>></member>
+   <member><xref linkend="mthStringConcatenationMethods" xrefstyle="select:title"/> (abuttal) || (blank)</member>
    <member><xref linkend="mthStringLogicalMethods" xrefstyle="select:title"/> \ &amp; &amp;&amp; |</member>
+  </simplelist>
+  <simplelist columns="3">
    <member><xref linkend="mthStringAtGet" xrefstyle="select:title"/></member>
    <member><xref linkend="mthStringIif" xrefstyle="select:title"/></member>
    <member><xref linkend="mthStringAbbrev" xrefstyle="select:title"/></member>
@@ -4875,8 +4883,8 @@ string value can have any length and contain any characters.
 </imageobject>
 </mediaobject>
 
-<para>Returns the single character string for the new line character, which
-has the value '0a'x.</para>
+<para>Returns the single character string for the line-feed character, which
+has the value <literal>'0a'x</literal>.</para>
 </section>
 
 <section id="mthStringCr"><title>cr (Class Method)</title>
@@ -4892,8 +4900,8 @@ has the value '0a'x.</para>
 </imageobject>
 </mediaobject>
 
-<para>Returns the single character string for the carriage return character, which
-has the value '0d'x.</para>
+<para>Returns the single character string for the carriage-return character, which
+has the value <literal>'0d'x</literal>.</para>
 </section>
 
 <section id="mthStringNull"><title>null (Class Method)</title>
@@ -4910,7 +4918,7 @@ has the value '0d'x.</para>
 </mediaobject>
 
 <para>Returns the single character string for the null character, which
-has the value '00'x.</para>
+has the value <literal>'00'x</literal>.</para>
 </section>
 
 <section id="mthStringTab"><title>tab (Class Method)</title>
@@ -4927,7 +4935,7 @@ has the value '00'x.</para>
 </mediaobject>
 
 <para>Returns the single character string for the tab character, which
-has the value '09'x.</para>
+has the value <literal>'09'x</literal>.</para>
 </section>
 
 <section id="mthStringArithmeticMethods"><title>Arithmetic Methods</title>
@@ -5477,7 +5485,7 @@ and <xref linkend="mthStringSubstr" xrefstyle="select:title"/>.
 </imageobject></mediaobject>
 </para>
 <para>Returns <emphasis role="italic">first</emphasis> if the receiving string is
-true ("1"),
+&true;,
 returns <emphasis role="italic">second</emphasis> if it is &false;.
 </para>
 <para><example>
@@ -7793,14 +7801,14 @@ is not specified, the default is to convert the remainder of the string.</para>
 </imageobject>
 </mediaobject>
 
-<para>This method returns an array of strings containing the single
-lines that were separated using the <emphasis role="italic">separator</emphasis> string.
-The separator may be any string, including the null string.  If the null string
-is used, an array containing each character of the string is returned.
-If the target string starts with the separator, the first array item will be a null
+<para>This method returns an Array of the receiving string's strings substrings
+that were separated by the <emphasis role="italic">separator</emphasis> string.
+<emphasis role="italic">separator</emphasis> may be any string, including the null string.
+If the null string is used, an Array containing each character of the string is returned.
+If the target string starts with the separator, the first Array item will be a null
 string.  If the string ends with a separator, no extra null string item will be added.
-The default separator is both the newline character and
-the carriage return/newline character pair.
+If <emphasis role="italic">separator</emphasis> isn't specified, any
+<xref linkend="line-end" xrefstyle="template:line-end"/> indicator is honored.
 </para>
 
 <example id="ex.string-makeArray">

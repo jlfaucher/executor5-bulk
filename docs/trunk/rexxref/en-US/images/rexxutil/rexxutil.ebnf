@@ -1,4 +1,4 @@
-rxmessagebox ::= 'RxMessageBox(' text ( ',' ( title )? ( ',' ( button )? ( ',' icon )? )? )? ')'
+rxmessagebox ::= 'RxMessageBox(' text ',' title? ',' button? ',' icon? ')'
 
 rxwinexec ::= 'RxWinExec(' cmdline ( ',' cmdshow )? ')'
 
@@ -28,11 +28,11 @@ sysdriveinfo ::= 'SysDriveInfo(' drive ')'
 
 sysdrivemap ::= 'SysDriveInfo(' ( drive )? ( ',' opt )? ')'
 
-sysdropfuncs ::= 'SysDropFuncs' ( '()' )?
+sysdropfuncs ::= 'SysDropFuncs()'
 
 sysdroprexxmacro ::= 'SysDropRexxMacro(' name ')'
 
-sysdumpvariables ::= 'SysDumpVariables' ( '(' name ')' )?
+sysdumpvariables ::= 'SysDumpVariables(' name? ')'
 
 sysfilecopy ::= 'SysFileCopy(' source ',' target ')'
 
@@ -46,13 +46,11 @@ sysfilesearch ::= 'SysFileSearch(' target ',' file ',' stem ( ',' options )? ')'
 
 sysfilesystemtype ::= 'SysFileSystemType(' drive ')'
 
-sysfiletree ::= 'SysFileTree(' filespec ',' stem ( ',' ( options )?
-                               ( ',' ( tattrib )? ( ',' nattrib )? )? )? ')'
+sysfiletree ::= 'SysFileTree(' filespec ',' stem ',' options? ',' tattrib? ',' nattrib? ')'
 
 sysfork ::= 'SysFork()'
 
-sysfromunicode ::= 'SysFromUnicode(' string ',' codepage ',' mappingflags ','
-                                     defaultchar ',' outstem ')'
+sysfromunicode ::= 'SysFromUnicode(' string ',' codepage? ',' mappingflags? ',' defaultchar? ',' outstem ')'
 
 sysgeterrortext ::= 'SysGetErrorText(' errornumber ')'
 
@@ -98,9 +96,9 @@ sysisfilesparse ::= 'SysIsFileSparse(' filename ')'
 
 sysisfiletemporary ::= 'SysIsFileTemporary(' filename ')'
 
-syslinver ::= 'SysLinVer' ( '()' )?
+syslinver ::= 'SysLinVer()'
 
-sysloadfuncs ::= 'SysLoadFuncs' ( '()' )?
+sysloadfuncs ::= 'SysLoadFuncs()'
 
 sysloadrexxmacrospace ::= 'SysLoadRexxMacroSpace(' file ')'
 
@@ -141,8 +139,7 @@ syssetfiledatetime ::= 'SysSetFileDateTime(' filename ( ',' ( newdate )? ( ',' n
 
 syssetpriority ::= 'SysSetPriority(' class ',' delta ')'
 
-sysshutdownsystem ::= 'SysShutdownSystem(' ( computer ( ',' ( message )? ( ',' ( timeout )?
-                                             ( ',' ( force )? ( ',' reboot )? )? )? )? )? ')'
+sysshutdownsystem ::= 'SysShutdownSystem(' computer? ',' message? ',' timeout? ',' force? ',' reboot? ')'
 
 syssleep ::= 'SysSleep(' secs ')'
 
@@ -166,7 +163,7 @@ systextscreenread ::= 'SysTextScreenRead(' row ',' column ( ',' len )? ')'
 
 systextscreensize ::= 'SysTextScreenSize()'
 
-systounicode ::= 'SysToUnicode(' string ',' codepage ',' translateflags ',' outstem ')'
+systounicode ::= 'SysToUnicode(' string ',' codepage? ',' translateflags? ',' outstem ')'
 
 sysutilversion ::= 'SysUtilVersion()'
 
@@ -184,22 +181,11 @@ syswindecryptfile ::= 'SysWinDecryptFile(' filename ')'
 
 syswinencryptfile ::= 'SysWinEncryptFile(' filename ')'
 
-syswingetdefaultprinter ::= 'SysWinGetDefaultPrinter' ( '()' )?
+syswingetdefaultprinter ::= 'SysWinGetDefaultPrinter()'
 
 syswingetprinters ::= 'SysWinGetPrinters(' stem ')'
 
 syswinsetdefaultprinter ::= 'SysWinSetDefaultPrinter(' description ')'
 
-syswinver ::= 'SysWinVer' ( '()' )?
-
-
-
-
-
-
-
-
-
-
-
+syswinver ::= 'SysWinVer()'
 

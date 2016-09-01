@@ -483,7 +483,7 @@ index values in the receiver collection.</para>
 </imageobject>
 </mediaobject>
 
-<para>Returns a single-index array with the same number of items as the receiver
+<para>Returns a &singledimarray; with the same number of items as the receiver
 object. Any index with no associated item is omitted from the new array.
 Items in the new array will have the same order as the source array.
 </para>
@@ -652,8 +652,8 @@ object to a value.
 </para>
 <para>Returns a newly created MapCollection object containing the specified
 index/value <emphasis role="italic">pair</emphasis>s.
-Each <emphasis role="italic">pair</emphasis> must be a single-dimensional
-array with exactly two items: the index as the first array item, and the value
+Each <emphasis role="italic">pair</emphasis> must be a &singledimarray;
+with exactly two items: the index as the first array item, and the value
 as the second item.
 The <emphasis role="italic">pair</emphasis>s are processed left-to-right and
 added to the MapCollection object.
@@ -683,7 +683,7 @@ iso639 = .Directory~of(("de", "Deutsch"), ("en", "English"), ("fr", "fran&ccedil
 </imageobject>
 </mediaobject>
 
-<para>Returns a single-index array of the index values used by the receiver object.
+<para>Returns a &singledimarray; of the index values used by the receiver object.
 The index objects will not be ordered in any predictable order.
 </para>
 </section>
@@ -1319,15 +1319,15 @@ whole-number indexes to reference items in an array.</para>
 <example id="ex.Array-indexes">
 <title>Array class &mdash; [] method</title>
 <programlisting>
-    x = myarray[1,2,3]   -- retrieves an item from a multi-dimension array
+    x = myarray[1,2,3]   -- retrieves an item from a &multidimarray;
     index = .array~of(1,2,3)  -- create an index list
     x = myarray[index]   -- also retrieves from "1,2,3"
 </programlisting>
 </example>
 </para>
 <para>Methods such as <xref linkend="mthArrayIndex" xrefstyle="select:title"/> that return
-index items will return a single numeric value for single-dimension arrays and
-an array of indexes for multi-dimension arrays.</para>
+index items will return a single numeric value for &singledimarray;s and
+an array of indexes for &multidimarray;s.</para>
 
 <section id="mthArrayNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
@@ -1346,13 +1346,13 @@ an array of indexes for multi-dimension arrays.</para>
 any <emphasis role="italic">size</emphasis> arguments,
 the size is taken as a hint about how big each dimension
 should be. The Array class uses this only to allocate the initial array
-object.  For multiple dimension arrays, you can also specify how much
+object.  For &multidimarray;s, you can also specify how much
 space is to be allocated initially for each dimension of the array.
 </para>
 <para>Each <emphasis role="italic">size</emphasis> argument must a non-negative
 whole number.
 If it is <computeroutput>0</computeroutput>, the corresponding dimension is
-initially empty.  The dimensions may also be specified with one single-dimension array
+initially empty.  The dimensions may also be specified with one &singledimarray;
 of sizes.
 </para>
 <indexterm><primary>examples</primary>
@@ -1382,7 +1382,7 @@ of sizes.
 </mediaobject>
 
 <para>Returns a newly created
-single-index array containing the specified
+&singledimarray; containing the specified
 <emphasis role="italic">item</emphasis> objects. The first
 <emphasis role="italic">item</emphasis> has index 1, the second has index 2,
 and so on.</para>
@@ -1458,7 +1458,7 @@ method.</para>
 </mediaobject>
 
 <para>Returns an array of all index positions in the array containing items.
-For multi-dimension arrays, each returned index will be an array of index
+For &multidimarray;s, each returned index will be an array of index
 values.
 </para>
 <indexterm><primary>examples</primary>
@@ -1529,8 +1529,7 @@ end
 </mediaobject>
 
 <para>Appends an item to the array after the last item (the item with the
-highest index). The return value is the index of newly added item. The <methodname>append</methodname> method is only valid with single-dimension
-arrays.
+highest index). The return value is the index of newly added item. The <methodname>append</methodname> method is only valid with &singledimarray;s.
 </para>
 <indexterm><primary>examples</primary>
 <secondary>append method</secondary></indexterm>
@@ -1600,7 +1599,7 @@ moved up in the array ordering and the item indexes will be adjusted for the del
 reduced by one element.
 </para>
 <para>
-The <methodname>delete</methodname> method is only valid with single-dimension arrays.
+The <methodname>delete</methodname> method is only valid with &singledimarray;s.
 The <emphasis role="italic">index</emphasis> argument may also be specified as an array of a single index.
 </para>
 <indexterm><primary>examples</primary>
@@ -1665,7 +1664,7 @@ say a~dimension(2)  -- says: 2 (upper bound of dimension two)
 </mediaobject>
 
 <para>Returns an array containing each of the array dimension sizes.  A
-single-dimension array will return an array with a single size element.
+&singledimarray; will return an array with a single size element.
 </para>
 </section>
 
@@ -1735,7 +1734,7 @@ a~fill(0)    -- initialize the matrix to all zeroes.
 </mediaobject>
 
 <para>Returns the index of the first item in the array or &nil; if the
-array is empty.  For multi-dimension arrays, the index is returned as an array of index values.
+array is empty.  For &multidimarray;s, the index is returned as an array of index values.
 </para>
 <indexterm><primary>examples</primary>
 <secondary>first method</secondary></indexterm>
@@ -1776,7 +1775,7 @@ item=musketeers~firstItem                         /* Gives first item in array  
 </example>
 
 <para>Returns the index of the first item in the array or &nil; if the
-array is empty.  For multi-dimension arrays, the index is returned as an array of index values.
+array is empty.  For &multidimarray;s, the index is returned as an array of index values.
 </para>
 <indexterm><primary>examples</primary>
 <secondary>first method</secondary></indexterm>
@@ -1868,7 +1867,7 @@ say a~hasItem("Mark")  -- says: 0
 
 <para>Returns the index of the specified item within the array.  If the
 target item appears at more than one index, the first located index will
-be returned.  For multi-dimension arrays, the index is returned as an array of
+be returned.  For &multidimarray;s, the index is returned as an array of
 index values.  If the array does not contain the specified item, &nil; is
 returned. Item equality is determined by using the <methodname>==</methodname> method of <emphasis role="italic">item</emphasis>.
 </para>
@@ -2008,7 +2007,7 @@ say a~items  -- says: 3
 </mediaobject>
 
 <para>Returns the index of the last item in the array or &nil; if the
-array is empty.  For multi-dimension arrays, index is returned as an array of
+array is empty.  For &multidimarray;s, index is returned as an array of
 index items.
 </para>
 <indexterm><primary>examples</primary>
@@ -2060,11 +2059,10 @@ item=musketeers~lastItem                          /* Gives last item in array   
 </imageobject>
 </mediaobject>
 
-<para>Returns a single-dimension array with the same number of items as the receiver
+<para>Returns a &singledimarray; with the same number of items as the receiver
 object. Any index with no associated item is omitted from the new array.
 Items in the new array will have the same order as the source array.
-Multi-dimension arrays will be converted into a non-sparse single
-dimension array.
+A &multidimarray; will be converted into a non-sparse &singledimarray;.
 </para>
 <indexterm><primary>examples</primary>
 <secondary>makeArray method</secondary></indexterm>
@@ -2118,7 +2116,7 @@ default line end separator.
 <para>Returns the index of the item that
 follows the array item having index <emphasis role="italic">index</emphasis>
 or returns &nil; if the item having that index is last in the array.
-For multi-dimension arrays, the same ordering used by the <xref linkend="mthArrayAllItems" xrefstyle="select:title"/> method is used to
+For &multidimarray;s, the same ordering as used by the <xref linkend="mthArrayAllItems" xrefstyle="select:title"/> method is used to
 determine the next position and the index is returned as an array of index values.
 </para>
 <para>
@@ -2153,7 +2151,7 @@ say a~next(3)  -- says: 5
 <emphasis role="italic">index</emphasis> or &nil; if the
 item having that index is first in the
 array.
-For multi-dimension arrays, the same ordering used by the <xref linkend="mthArrayAllItems" xrefstyle="select:title"/> method is used to
+For &multidimarray;s, the same ordering used by the <xref linkend="mthArrayAllItems" xrefstyle="select:title"/> method is used to
 determine the previous position and the index is returned as an array of index values.</para>
 <para>
   Note that the <emphasis role="italic">index</emphasis> argument may
@@ -2309,8 +2307,8 @@ this number of items (or the number of subsequent items in the receiver array,
 if this is less than <emphasis role="italic">items</emphasis>).
 If you do not specify <emphasis role="italic">items</emphasis>,
 the new array contains all subsequent items of the receiver array. The receiver
-array remains unchanged. The <methodname>section</methodname> method is valid only for single-index
-arrays.</para>
+array remains unchanged. The <methodname>section</methodname> method is valid only for &singledimarray;s.
+</para>
 <para>
   Note that the index argument <emphasis role="italic">start</emphasis> may
   also be specified as an array of indexes.
@@ -2441,7 +2439,7 @@ See <xref linkend="sortarray" /> for details.
 The supplier allows you to iterate over the index/item pairs
 of the array.
 The supplier enumerates the array items in their sequenced order.
-For multi-dimensional arrays, the supplier <methodname>index</methodname> method will return the
+For &multidimarray;s, the supplier <methodname>index</methodname> method will return the
 index values as an array of index numbers.
 </para>
 <indexterm><primary>examples</primary>
@@ -2711,7 +2709,7 @@ using the <methodname>==</methodname> method of <emphasis role="italic">index</e
 </imageobject>
 </mediaobject>
 
-<para>Returns a single-index Array containing all the items associated with
+<para>Returns a &singledimarray; containing all the items associated with
 index <emphasis role="italic">index</emphasis>.
 </para>
 <para>Index equality is determined by
@@ -2734,7 +2732,7 @@ using the <methodname>==</methodname> method of <emphasis role="italic">index</e
 </imageobject>
 </mediaobject>
 
-<para>Returns a single-index Array containing all indexes for item
+<para>Returns a &singledimarray; containing all indexes for item
 <emphasis role="italic">item</emphasis>.
 </para>
 <para>Item equality is determined by
@@ -2999,7 +2997,7 @@ using the <methodname>==</methodname> method of <emphasis role="italic">index</e
 </imageobject>
 </mediaobject>
 
-<para>Returns a single-index Array containing all Bag items,
+<para>Returns a &singledimarray; containing all Bag items,
 in an unspecified order.
 </para>
 </section>
@@ -3441,7 +3439,7 @@ resulting CircularQueue instance will be the same size as the receiver.
 </mediaobject>
 
 <para>
-Returns a single-index array containing the items of the circular queue in the
+Returns a &singledimarray; containing the items of the circular queue in the
 specified <emphasis role="italic">order</emphasis>.
 </para>
 
@@ -4294,7 +4292,7 @@ is empty.  Returns
 </imageobject>
 </mediaobject>
 
-<para>Returns a single-index array containing the index objects. The array
+<para>Returns a &singledimarray; containing the index objects. The array
 indexes range from <computeroutput>1</computeroutput> to the number of items.
 The collection items appear in the array in an unspecified order.
 (The program should not rely on any order.)</para>
@@ -4876,7 +4874,7 @@ is empty.  Returns
 </imageobject>
 </mediaobject>
 
-<para>Returns a single-index array containing the index objects. The array
+<para>Returns a &singledimarray; containing the index objects. The array
 indexes range from <computeroutput>1</computeroutput> to the number of items.
 The collection items appear in the array in an unspecified order.
 </para>
@@ -5468,7 +5466,7 @@ list is empty.</para>
 </imageobject>
 </mediaobject>
 
-<para>Returns a single-index array containing the list collection items.
+<para>Returns a &singledimarray; containing the list collection items.
 The array indexes range from <computeroutput>1</computeroutput> to the number
 of items. The order in which the collection items appear in the array is the
 same as their sequence in the list collection.</para>
@@ -6455,7 +6453,7 @@ item=musketeers~lastItem                          /* Gives last item in array   
 </imageobject>
 </mediaobject>
 
-<para>Returns a single-index array containing the receiver queue items. The array
+<para>Returns a &singledimarray; containing the receiver queue items. The array
 indexes range from <computeroutput>1</computeroutput> to the number of items.
 The order in which the queue items appear in the array is the same as their
 queuing order, with the head of the queue as index 1.</para>
@@ -6816,7 +6814,7 @@ This method is the same as the
 </imageobject>
 </mediaobject>
 
-<para>Returns a single-index array containing all the items associated with
+<para>Returns a &singledimarray; containing all the items associated with
 index <emphasis role="italic">index</emphasis>.
 Items in the array appear in an unspecified order.
 Index equality is determined by
@@ -6837,7 +6835,7 @@ using the <methodname>==</methodname> method of <emphasis role="italic">index</e
 </imageobject>
 </mediaobject>
 
-<para>Returns a single-index array containing all indexes for item
+<para>Returns a &singledimarray; containing all indexes for item
 <emphasis role="italic">item</emphasis>,
 in an unspecified order.
 Item equality is determined by
@@ -7083,7 +7081,7 @@ using the <methodname>==</methodname> method of <emphasis role="italic">index</e
 </imageobject>
 </mediaobject>
 
-<para>Returns a single-index array containing the index objects.
+<para>Returns a &singledimarray; containing the index objects.
 The collection items appear in the array in an unspecified order.
 </para>
 </section>
@@ -7684,7 +7682,7 @@ is empty.  Returns
 </imageobject>
 </mediaobject>
 
-<para>Returns a single-index array containing the index objects. The array
+<para>Returns a &singledimarray; containing the index objects. The array
 indexes range from <computeroutput>1</computeroutput> to the number of items.
 The collection items appear in the array in an unspecified order.
 </para>
@@ -8738,7 +8736,7 @@ is empty.  Returns
 </imageobject>
 </mediaobject>
 
-<para>Returns a single-index array containing the index objects. The array
+<para>Returns a &singledimarray; containing the index objects. The array
 indexes range from <computeroutput>1</computeroutput> to the number of items.
 The collection items appear in the array in an unspecified order.
 (The program should not rely on any order.)</para>
@@ -9204,7 +9202,7 @@ is empty.  Returns
 </imageobject>
 </mediaobject>
 
-<para>Returns a single-index array containing the index objects. The array
+<para>Returns a &singledimarray; containing the index objects. The array
 indexes range from <computeroutput>1</computeroutput> to the number of items.
 The collection items appear in the array in an unspecified order.
 </para>
@@ -9733,7 +9731,7 @@ tag associated with the item.
 Depending on the collection class, the index is an instance of a particular
 class, for example, the string class for a directory element, an integer for
 an array, or any arbitrary class for a relation. The Array class is an exception
-because it can be multidimensional having more than one index. However, as
+because it can be multi-dimensional having more than one index. However, as
 a collection, it is conceptionally linearized by the set operator.</para>
 <para>For collection classes that require unique indexes, namely
 the Set, IdentityTable, Table, Directory, and Stem, an item is identified by its

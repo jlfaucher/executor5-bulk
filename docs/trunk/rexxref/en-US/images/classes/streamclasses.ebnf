@@ -29,9 +29,10 @@ stream_lines ::= 'lines(' ( | 'Count' | 'Normal' ) ')'
 
 stream_makearray ::= 'makeArray(' ( | 'Line' | 'Char' ) ')'
 
-stream_open ::= 'open(' ( 'BOth' (WRITE-OPTIONS - fragment) | 'REAd' | 'Write' (WRITE-OPTIONS - fragment) )? (OPEN-OPTIONS - fragment) ')'
+stream_open ::= 'open(' ( ( ( | 'BOth' | 'Write') ( | 'APpend' | 'REPlace' ) )
+                        | 'REAd' )
+                        (OPTIONS - fragment) ')'
 
-/* stream_write_options -- see images/bif/stream_write_options */
 /* stream_options       -- see images/bif/stream_options */
 
 stream_position ::= 'position(' ( | '=' | '<' | '+' | '-' ) offset ( | 'Read' | 'Write' ) ( | 'Char' | 'Line') ')'
