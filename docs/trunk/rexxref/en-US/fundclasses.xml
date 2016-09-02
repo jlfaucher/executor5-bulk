@@ -52,8 +52,8 @@
      <xref linkend="clsClass" xrefstyle="template:Class"/> class,</para></listitem>
     <listitem><para><xref linkend="clsString" xrefstyle="select:title"/>,</para></listitem>
     <listitem><para><xref linkend="clsMethod" xrefstyle="template:Method"/>,
-     <xref linkend="clsRoutine" xrefstyle="template:Routine"/>, and
-     <xref linkend="clsPackage" xrefstyle="template:Package"/> class, and</para></listitem>
+     <xref linkend="clsPackage" xrefstyle="template:Package"/>, and
+     <xref linkend="clsRoutine" xrefstyle="template:Routine"/> class, and</para></listitem>
     <listitem><para><xref linkend="clsMessage" xrefstyle="template:Message"/> class.</para></listitem>
    </itemizedlist>
    <!-- NOTE: see note above -->
@@ -4951,8 +4951,9 @@ has the value <literal>'09'x</literal>.</para>
 
 
 <note><title>Note</title>
-<para>The syntax diagram above is for the non-prefix operators.  The prefix + and
-<emphasis role="italic">argument</emphasis>.</para></note>
+<para>The syntax diagram above is for the non-prefix operators.
+For the prefix operators, omit the parentheses and <emphasis role="italic">argument</emphasis>.
+</para></note>
 <para>Returns the result of performing the specified arithmetic operation on
 the receiver object. The receiver object and the
 <emphasis role="italic">argument</emphasis> must be
@@ -6695,13 +6696,15 @@ occurrences to be replaced.</para>
 <secondary>changeStr method</secondary></indexterm>
 <example id="ex.string-changeStr">
 <title>String class &mdash; changeStr method</title>
-<programlisting>
-<![CDATA[
-101100~changeStr("1","")     ->    "000"
-101100~changeStr("1","X")    ->    "X0XX00"
-101100~changeStr("1","X",1)  ->    "X01100"
-]]>
-</programlisting>
+<programlisting><![CDATA[
+101100~changeStr("1","")     --    "000"
+101100~changeStr("1","X")    --    "X0XX00"
+101100~changeStr("1","X",1)  --    "X01100"
+
+-- a Quine: will print an exact copy of itself
+-- (see https://en.wikipedia.org/wiki/Quine_%28computing%29)
+r=";say'r=.'r'.'r~changeStr(.,'22'x,2)";say'r="'r'"'r~changeStr(.,'22'x,2)
+]]></programlisting>
 </example>
 </section>
 
@@ -7706,13 +7709,9 @@ with <emphasis role="italic">pad</emphasis> characters (or truncated) on the
 right as needed. The default <emphasis role="italic">pad</emphasis> character
 is a blank. The <emphasis role="italic">length</emphasis> must be a positive
 whole number or zero. The <methodname>left</methodname>
-method is exactly equivalent to:</para>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/classes/string_left_xmp.svg" scale="55" />
-</imageobject>
-</mediaobject>
+method is exactly equivalent to
+<code>substr(1,</code> <emphasis role="italic">length</emphasis><code>, </code><emphasis role="italic">pad</emphasis><code>)</code>.
+</para>
 
 <indexterm><primary>examples</primary>
 <secondary>left method</secondary></indexterm>
@@ -8817,7 +8816,7 @@ fewer than
 <emphasis role="italic">n</emphasis> words. The
 <emphasis role="italic">n</emphasis> must be a positive whole number. This
 method is exactly equivalent
-to <computeroutput>receiving_string~subWord(n,1)</computeroutput>.</para>
+to <code>subWord(</code><emphasis role="italic">n</emphasis><code>, 1)</code>.</para>
 <indexterm><primary>examples</primary>
 <secondary>word method</secondary></indexterm>
 <example id="ex.string-word">

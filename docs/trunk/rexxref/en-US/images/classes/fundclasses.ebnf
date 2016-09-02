@@ -38,10 +38,10 @@ object_objectnameequals ::= 'objectName=(' newname ')'
 
 object_request ::= 'request(' classid ')'
 
-object_run ::= 'run(' method ( ',' '"Individual"' ( ',' argument )* |
+object_run ::= 'run(' method ( ',' '"Individual"' ( ',' argument? )* |
                                ',' '"Array"' ',' arguments )? ')'
 
-object_send ::= 'send(' messagename ( ',' argument )* ')'
+object_send ::= 'send(' messagename ( ',' argument? )* ')'
 
 object_sendwith ::= 'sendWith(' messagename ',' arguments ')'
 
@@ -50,7 +50,7 @@ object_sendwith ::= 'sendWith(' messagename ',' arguments ')'
 object_setmethod ::= 'setMethod(' ( methodname |
                                     methodname ',' method ( | ',' '"FLOAT"' | ',' '"OBJECT"' ) ) ')'
 
-object_start ::= 'start(' messagename ( ( ',' argument )+ )? ')'
+object_start ::= 'start(' messagename ( ',' argument? )* ')'
 
 object_startwith ::= 'startWith(' messagename ',' arguments ')'
 
@@ -74,7 +74,7 @@ class_definemethods ::= 'defineMethods(' methods ')'
 
 class_delete ::= 'delete(' methodname ')'
 
-class_enhanced ::= 'enhanced(' methods ( ',' argument )* ')'
+class_enhanced ::= 'enhanced(' methods ( ',' argument? )* ')'
 
 class_id ::= 'id'
 
@@ -92,16 +92,16 @@ class_method ::= 'method(' methodname ')'
 
 class_methods ::= 'methods(' class_object? ')'
 
-class_mixinclass ::= 'mixinClass(' classid ',' metaclass? ',' methods? ')'
+class_mixinclass ::= 'mixinClass(' classid ',' metaclass? (',' methods)? ')'
 
-class_new ::= 'new(' ( arg (',' arg)* )? ')'
+class_new ::= 'new(' arg? (',' arg?)* ')'
 
 /* new in 5.0 */
 class_package ::= 'package'
 
 class_querymixinclass ::= 'queryMixinClass'
 
-class_subclass ::= 'subclass(' classid ( ',' metaclass ( ',' methods )? )? ')'
+class_subclass ::= 'subclass(' classid ',' metaclass? (',' methods)? ')'
 
 class_subclasses ::= 'subclasses'
 
@@ -121,7 +121,7 @@ string_null ::= 'null'
 
 string_tab ::= 'tab'
 
-string_arithmetic_operator ::= 'arithmetic_operator(' argument ')'
+string_arithmetic_operator ::= arithmetic_operator '(' argument ')'
 
 string_comparison_operator ::= 'comparison_operator(' argument ')'
 
@@ -139,8 +139,8 @@ string_endswith             ::= 'endsWith(' other ')'
 string_caselessstartswith   ::= 'caselessStartsWith(' other ')'
 string_caselessendswith     ::= 'caselessEndsWith(' other ')'
 
-string_contains             ::= 'contains(' other ( ',' ( start )? ( ',' length )? )? ')'
-string_caselesscontains     ::= 'caselessContains(' other ( ',' ( start )? ( ',' length )? )? ')'
+string_contains             ::= 'contains(' other ',' start? ( ',' length )? ')'
+string_caselesscontains     ::= 'caselessContains(' other ',' start? ( ',' length )? ')'
 string_containsword         ::= 'containsWord(' phrase ( ',' start )? ')'
 string_caselesscontainsword ::= 'caselessContainsWord(' phrase ( ',' start )? ')'
 /* new in 5.0 - end */
@@ -151,13 +151,13 @@ string_abs ::= 'abs'
 
 string_b2x ::= 'b2x'
 
-string_bitand ::= 'bitAnd(' string? ',' pad? ')'
+string_bitand ::= 'bitAnd(' string? (',' pad)? ')'
 
-string_bitor ::= 'bitOr(' string? ',' pad? ')'
+string_bitor ::= 'bitOr(' string? (',' pad)? ')'
 
-string_bitxor ::= 'bitXOr(' string? ',' pad? ')'
+string_bitxor ::= 'bitXor(' string? (',' pad)? ')'
 
-string_c2d ::= 'c2d' ( '(' n ')' )?
+string_c2d ::= 'c2d(' n? ')'
 
 string_c2x ::= 'c2x'
 
@@ -167,17 +167,17 @@ string_caselesschangestr ::= 'caselessChangeStr(' needle ',' newneedle ( ',' cou
 
 string_caselesscompare ::= 'caselessCompare(' string ( ',' pad )? ')'
 
-string_caselesscompareto ::= 'caselessCompareTo(' string ( ',' ( n )? ( ',' length )? )? ')'
+string_caselesscompareto ::= 'caselessCompareTo(' string ',' n? (',' length)? ')'
 
 string_caselesscountstr ::= 'caselessCountStr(' needle ')'
 
 string_caselessequals ::= 'caselessEquals(' other ')'
 
-string_caselesslastpos ::= 'caselessLastPos(' needle ( ',' ( start )? ( ',' length )? )? ')'
+string_caselesslastpos ::= 'caselessLastPos(' needle ',' start? (',' length)? ')'
 
-string_caselesspos ::= 'pos(' needle ( ',' ( start )? ( ',' length )? )? ')'
+string_caselesspos ::= 'caselessPos(' needle ',' start? (',' length)? ')'
 
-string_caselessmatch ::= 'caselessMatch(' start ',' other ( ',' ( n )? ( ',' length )? )? ')'
+string_caselessmatch ::= 'caselessMatch(' start ',' other ',' n? (',' length)? ')'
 
 string_caselessmatchchar ::= 'caselessMatchChar(' n ',' chars ')'
 
@@ -191,17 +191,17 @@ string_changestr ::= 'changeStr(' needle ',' newneedle ( ',' count )? ')'
 
 string_compare ::= 'compare(' string ( ',' pad )? ')'
 
-string_compareto ::= 'compareTo(' string ( ',' ( n )? ( ',' length )? )? ')'
+string_compareto ::= 'compareTo(' string ',' n? (',' length)? ')'
 
 string_copies ::= 'copies(' n ')'
 
 string_countstr ::= 'countStr(' needle ')'
 
-string_d2c ::= 'd2c' ( '(' n ')' )?
+string_d2c ::= 'd2c(' n? ')'
 
-string_d2x ::= 'd2x' ( '(' n ')' )?
+string_d2x ::= 'd2x(' n? ')'
 
-string_datatype ::= 'dataType' ( '(' type ')' )?
+string_datatype ::= 'dataType(' type? ')'
 
 string_decodebase64 ::= 'decodeBase64'
 
@@ -215,17 +215,15 @@ string_equals ::= 'equals(' other ')'
 
 string_floor ::= 'floor'
 
-string_format ::= 'format(' before? ',' after? ',' expp? ',' expt? ')'
+string_format ::= 'format(' before? ',' after? ',' expp? (',' expt)? ')'
 
 string_hashcode ::= 'hashCode'
 
-string_insert ::= 'insert(' new ',' n? ',' length? ',' pad? ')'
+string_insert ::= 'insert(' new ',' n? ',' length? (',' pad)? ')'
 
-string_lastpos ::= 'lastPos(' needle ( ',' ( start )? ( ',' length )? )? ')'
+string_lastpos ::= 'lastPos(' needle ',' start? (',' length)? ')'
 
 string_left ::= 'left(' length ( ',' pad )? ')'
-
-string_left_xmp ::= 'substr(' '1' ',' length ( ',' pad )? ')'
 
 string_length ::= 'length'
 
@@ -235,19 +233,19 @@ string_makearray ::= 'makeArray(' ( separator )? ')'
 
 string_makestring ::= 'makeString'
 
-string_match ::= 'match(' start ',' other ( ',' ( n )? ( ',' length )? )? ')'
+string_match ::= 'match(' start ',' other ',' n? (',' length)? ')'
 
 string_matchchar ::= 'matchChar(' n ',' chars ')'
 
-string_max ::= 'max' ( '(' number ( ',' number )* ')' )?
+string_max ::= 'max(' (number ( ',' number )*)? ')'
 
-string_min ::= 'min' ( '(' number ( ',' number )* ')' )?
+string_min ::= 'min(' (number ( ',' number )*)? ')'
 
-string_overlay ::= 'overlay(' new ',' n? ',' length? ',' pad? ')'
+string_overlay ::= 'overlay(' new ',' n? ',' length? (',' pad)? ')'
 
-string_pos ::= 'pos(' needle ( ',' ( start )? ( ',' length )? )? ')'
+string_pos ::= 'pos(' needle ',' start? (',' length)? ')'
 
-string_replaceat ::= 'replaceAt(' new ',' n ( ',' ( length )? ( ',' pad )? )? ')'
+string_replaceat ::= 'replaceAt(' new ',' n ',' length? (',' pad)? ')'
 
 string_reverse ::= 'reverse'
 
@@ -257,29 +255,29 @@ string_round ::= 'round'
 
 string_sign ::= 'sign'
 
-string_space ::= 'space' ('(' n? ',' pad? ')')?
+string_space ::= 'space(' n? (',' pad)? ')'
 
-string_strip ::= 'strip' ('(' option? ',' chars? ')')?
+string_strip ::= 'strip(' option? (',' chars)? ')'
 
 string_subchar ::= 'subChar(' n ')'
 
-string_substr ::= 'substr(' n (',' length? (',' pad)? )? ')'
+string_substr ::= 'substr(' n ',' length? (',' pad)? ')'
 
 string_subword ::= 'subWord(' n ( ',' length )? ')'
 
 string_subwords ::= 'subWords(' n? (',' length)? ')'
 
-string_translate ::= 'translate(' tableo? ',' tablei? ',' pad? ',' n? ',' length? ')' 
+string_translate ::= 'translate(' tableo? ',' tablei? ',' pad? ',' n? (',' length)? ')' 
 
-string_trunc ::= 'trunc' ( '(' n ')' )?
+string_trunc ::= 'trunc(' n? ')'
 
 string_upper ::= 'upper(' ( n )? ( ',' length )? ')'
 
-string_verify ::= 'verify(' reference ',' ( 'N' | option | ) ',' start? ',' length? ')'
+string_verify ::= 'verify(' reference ',' ( '"N"' | option | ) ',' start? (',' length)? ')'
 
 string_word ::= 'word(' n ')'
 
-string_wordindex ::= 'wordindex(' n ')'
+string_wordindex ::= 'wordIndex(' n ')'
 
 string_wordlength ::= 'wordLength(' n ')'
 
@@ -291,7 +289,32 @@ string_x2b ::= 'x2b'
 
 string_x2c ::= 'x2c'
 
-string_x2d ::= 'x2d' ( '(' n ')' )?
+string_x2d ::= 'x2d(' n? ')'
+
+
+/* in order to reduce the amount of needed changes, and keep them consistent,
+   we don't duplicate identical syntax diagrams from String to MutableBuffer
+   only below MutableBuffer syntax diagrams are different from their String versions
+   for all others, see respective String version above
+*/
+mutablebuffer_append        ::= 'append(' string (',' string)* ')'
+
+mutablebuffer_delstr        ::= ( 'delete(' | 'delStr(' ) n? (',' length)? ')'
+
+mutablebuffer_getbuffersize ::= 'getBufferSize'
+
+mutablebuffer_new           ::= 'new(' ( string )? ( ',' buffersize )? ')'
+
+mutablebuffer_putset        ::= '[' n ',' length? (',' pad)? ']' '=' new
+
+mutablebuffer_setbuffersize ::= 'setBufferSize(' n ')'
+
+mutablebuffer_settext       ::= 'setText(' string ')'
+
+mutablebuffer_string        ::= 'string'
+
+mutablebuffer_translate     ::= 'translate(' tableo? ',' tablei? ',' pad? ',' pos? (',' length)? ')'
+
 
 method_new ::= 'new(' name ',' source ( ',' context )? ')'
 
@@ -321,7 +344,7 @@ method_setprivate ::= 'setPrivate'
 
 method_setprotected ::= 'setProtected'
 
-method_setsecuritymanager ::= 'setSecurityManager' ( '(' security_manager_object ')' )?
+method_setsecuritymanager ::= 'setSecurityManager(' security_manager_object? ')'
 
 method_setunguarded ::= 'setUnguarded'
 
@@ -333,15 +356,15 @@ routine_newfile ::= 'newFile(' filename ')'
 
 routine_loadexternalroutine ::= 'loadExternalRoutine(' name ',' descriptor ')'
 
-routine_call ::= 'call' ( '(' ( argument ( ',' argument )* )? ')' )?
+routine_call ::= 'call(' argument? ( ',' argument? )* ')'
 /* new in 5.0 */
-routine_callbrackets ::= '[' ( argument ( ',' argument )* )? ']'
+routine_callbrackets ::= '[' argument? ( ',' argument? )* ']'
 
 routine_callwith ::= 'callWith(' array ')'
 
 routine_package ::= 'package'
 
-routine_setsecuritymanager ::= 'setSecurityManager' ( '(' security_manager_object ')' )?
+routine_setsecuritymanager ::= 'setSecurityManager(' security_manager_object? ')'
 
 routine_source ::= 'source'
 
@@ -408,7 +431,7 @@ package_resources ::= 'resources'
 
 package_routines ::= 'routines'
 
-package_setsecuritymanager ::= 'setSecurityManager' ( '(' security_manager_object ')' )?
+package_setsecuritymanager ::= 'setSecurityManager(' security_manager_object? ')'
 
 package_source ::= 'source'
 
@@ -419,10 +442,10 @@ package_sourcesize ::= 'sourceSize'
 package_trace ::= 'trace'
 
 /* new in 5.0 - start */
-message_halt      ::= 'halt' ('('description')')?
+message_halt      ::= 'halt(' description? ')'
 message_hasresult ::= 'hasResult'
 message_messagecomplete ::= 'messageComplete(' source? ')'
-message_reply     ::= 'reply(' target? ( ',' argument )* ')'
+message_reply     ::= 'reply(' target? ( ',' argument? )* ')'
 message_replywith ::= 'replyWith(' target? ',' arguments ')'
 message_sendwith  ::= 'sendWith(' target? ',' arguments ')'
 message_startwith ::= 'startWith(' target? ',' arguments ')'
@@ -431,7 +454,7 @@ message_wait      ::= 'wait'
 /* new in 5.0 - end */
 
 
-message_new ::= 'new(' target ',' messagename ( ',' '"Individual"' ( ',' argument )* |
+message_new ::= 'new(' target ',' messagename ( ',' '"Individual"' ( ',' argument? )* |
                                                 ',' '"Array"' ',' arguments )? ')'
 
 message_arguments ::= 'arguments'
@@ -450,9 +473,9 @@ message_notify ::= 'notify(' target ')'
 message_result ::= 'result'
 
 /* chg in 5.0 */
-message_send ::= 'send(' target? ( ',' argument )* ')'
+message_send ::= 'send(' target? ( ',' argument? )* ')'
 
 /* chg in 5.0 */
-message_start ::= 'start(' target? ( ',' argument )* ')'
+message_start ::= 'start(' target? ( ',' argument? )* ')'
 
 message_target ::= 'target'

@@ -39,15 +39,15 @@ datetime_maxdate ::= 'maxDate'
 
 datetime_today ::= 'today(' offset? ')'
 
-datetime_fromnormaldate ::= 'fromNormalDate(' date ( ',' ( separator )? ( ',' offset )? )? ')'
+datetime_fromnormaldate ::= 'fromNormalDate(' date ',' separator? (',' offset)? ')'
 
-datetime_fromeuropeandate ::= 'fromEuropeanDate(' date ( ',' ( separator )? ( ',' offset )? )? ')'
+datetime_fromeuropeandate ::= 'fromEuropeanDate(' date ',' separator? (',' offset)? ')'
 
-datetime_fromordereddate ::= 'fromOrderedDate(' date ( ',' ( separator )? ( ',' offset )? )? ')'
+datetime_fromordereddate ::= 'fromOrderedDate(' date ',' separator? (',' offset)? ')'
 
-datetime_fromstandarddate ::= 'fromStandardDate(' date ( ',' ( separator )? ( ',' offset )? )? ')'
+datetime_fromstandarddate ::= 'fromStandardDate(' date ',' separator? (',' offset)? ')'
 
-datetime_fromusadate ::= 'fromUsaDate(' date ( ',' ( separator )? ( ',' offset )? )? ')'
+datetime_fromusadate ::= 'fromUsaDate(' date ',' separator? (',' offset)? ')'
 
 datetime_fromnormaltime ::= 'fromNormalTime(' time ( ',' offset )? ')'
 
@@ -68,7 +68,7 @@ datetime_init1 ::= 'init'
 datetime_init2 ::= 'init(' fulldate ( ',' offset )? ')'
 datetime_init3 ::= 'init(' year ',' month ',' day ( ',' offset )? ')'
 datetime_init4 ::= 'init(' year ',' month ',' day ',' hours ',' minutes ',' seconds
-                          ( ',' ( microseconds )? ( ',' offset )? )? ')'
+                          ',' microseconds? (',' offset)? ')'
 
 datetime_arithmeticoperator ::= arithmetic_operator '(' argument ')'
 
@@ -192,7 +192,7 @@ timespan_init ::= 'init(' fullDate ')'
 timespan_init ::= 'init(' hours ',' minutes ',' seconds ')'
 timespan_init ::= 'init(' days ',' hours ',' minutes ',' seconds ',' microseconds ')'
 
-timespan_arithmeticoperator ::= 'arithmetic_operator(' argument ')'
+timespan_arithmeticoperator ::= arithmetic_operator '(' argument ')'
 
 timespan_compareto ::= 'compareTo(' other ')'
 
@@ -267,9 +267,9 @@ numericcomparator_init ::= 'init(' ( digits )? ')'
 
 monitor_current ::= 'current'
 
-monitor_destination ::= 'destination' ( '(' destination ')' )?
+monitor_destination ::= 'destination(' destination? ')'
 
-monitor_init ::= 'init' ( '(' destination ')' )?
+monitor_init ::= 'init(' destination? ')'
 
 monitor_unknown ::= 'unknown(' messagename ',' messageargs ')'
 

@@ -1,4 +1,4 @@
-funct_xmp ::= 'function_name(' expression ( ',' expression )* ')'
+funct_xmp ::= function_name '(' expression? (',' expression?)* ')'
 
 
 abbrev ::= 'ABBREV(' information ',' info (',' length)? ')'
@@ -72,7 +72,7 @@ fuzz ::= 'FUZZ()'
 
 insert ::= 'INSERT(' new ',' target ',' n? ',' length? ',' pad? ')'
 
-lastpos ::= 'LASTPOS(' needle ',' haystack ( ',' ( start )? ( ',' count )? )? ')'
+lastpos ::= 'LASTPOS(' needle ',' haystack ',' start? (',' count)? ')'
 
 left ::= 'LEFT(' string ',' length ( ',' pad )? ')'
 
@@ -84,7 +84,7 @@ lineout ::= 'LINEOUT(' name? ',' string? ',' line? ')'
 
 lines ::= 'LINES(' name? ( | ',' 'Normal' | ',' 'Count' ) ')'
 
-lower ::= 'LOWER(' string ( ',' ( n )? ( ',' length )? )? ')'
+lower ::= 'LOWER(' string ',' n? (',' length)? ')'
 
 max ::= 'MAX(' number ( ( ',' number )+ )? ')'
 
@@ -92,7 +92,7 @@ min ::= 'MIN(' number ( ( ',' number )+ )? ')'
 
 overlay ::= 'OVERLAY(' new ',' target ',' n? ',' length? ',' pad? ')'
 
-pos ::= 'POS(' needle ',' haystack ( ',' ( start )? ( ',' length )? )? ')'
+pos ::= 'POS(' needle ',' haystack ',' start? (',' length)? ')'
 
 qualify ::= 'QUALIFY(' name ')'
 
