@@ -387,6 +387,7 @@ syntax error 93.963 to be raised.</para>
 </para>
 
 <!-- Modified: commented undocumented !xxx_xxx() methods -->
+<!-- modified: added link to "new (Inherited Class Method)" -->
 <!-- $GENERATED-20150924-START rexxrefClassTable(Stream) -->
 <table id="ooRexxStreamClass" frame="all" pgwide="1">
 <title>Stream Class</title>
@@ -417,6 +418,9 @@ syntax error 93.963 to be raised.</para>
  <row><entry align="center"><emphasis role="bold">Stream (Mixin Class)</emphasis></entry>
  </row>
  <row><entry>
+  <simplelist>
+   <member><xref linkend="mthStreamNew" xrefstyle="select:title"/></member>
+  </simplelist>
   <simplelist columns="3">
 <!-- undocumented !xxx_xxx() methods
    <member><xref linkend="mthStream!c_stream_init" xrefstyle="select:title"/></member>
@@ -1152,42 +1156,40 @@ opened for output only.
 </imageobject>
 </mediaobject>
 
-<para>Returns the number of completed lines that are available for input.
+<para>Returns the number of lines that are available for input if
+no option or option <option>Count</option> is specified.
 If the stream has already been read with
 <xref linkend="mthStreamCharIn" xrefstyle="select:title"/>
-this can include an initial partial line. For persistent streams the count
-starts at the current read position. In effect,
-<methodname>lines</methodname> reports whether a read
+this can include an initial partial line.
+If no data remains, <methodname>lines</methodname> returns <literal>0</literal>.
+For persistent streams the count starts at the current read position.
+As such, <methodname>lines</methodname> reports whether a read
 action of <xref linkend="mthStreamCharIn" xrefstyle="select:title"/> or
 <xref linkend="mthStreamLineIn" xrefstyle="select:title"/> will succeed.
-For an explanation of input and output, see
-<xref linkend="iostrms" />.)</para>
-<para>For a <xref linkend="clsQueue" xrefstyle="template:Queue" /> instance,
-<methodname>lines</methodname> returns the actual number of lines.
+Option <option>Count</option> is the default.
+</para>
+<para>If option <option>Normal</option> is specified, <methodname>lines</methodname>
+returns &true; if at least one line remains in the stream, or &false; if no lines remain.
 </para>
 
 <note><title>Note</title>
-<para>The <xref linkend="mthStreamChars" xrefstyle="select:title"/>
-method returns the number of characters in a
-persistent stream or the presence of data in a transient stream. The
-<methodname>lines</methodname>
-method determines the actual number of lines by scanning the stream starting
-at the current position and counting the lines. For large streams, this can
-be a time-consuming operation.  Therefore, avoid the use of the <methodname>lines</methodname> method
-in the  condition of a loop reading a stream. It is recommended that you use
-the <xref linkend="mthStreamChars" xrefstyle="select:title"/> method instead.
+<para><code>lines("Count")</code> determines the actual number of lines by
+scanning the stream starting at the current position and counting the lines.
+For large streams, this can be a time-consuming operation.
+Therefore, avoid the use of <code>lines()</code> or <code>lines("Count")</code>
+in the condition of a loop reading a stream.
+It is recommended that you use <code>lines("Normal")</code> or the 
+<xref linkend="mthStreamChars" xrefstyle="select:title"/> method instead.
 </para></note>
 
-<para>The ANSI Standard has extended this function to allow an option: "Count".
-If this option is used, <methodname>lines</methodname>
-returns the actual number of complete
-lines remaining in the stream, irrespective of how long this operation takes.
+<para>For an explanation of input and output, see <xref linkend="iostrms" />.
 </para>
 
-<para>The option "Normal" returns 1 if there is at least one complete line
-remaining in the file or 0 if no lines remain.</para>
+<para>For a <xref linkend="clsQueue" xrefstyle="template:Queue" /> instance, the
+inherited method <methodname>lines</methodname> returns the actual number of lines
+in the queue.
+</para>
 
-<para>The default is "Count".</para>
 </section>
 
 <section id="mthStreamMakeArray"><title>makeArray</title>

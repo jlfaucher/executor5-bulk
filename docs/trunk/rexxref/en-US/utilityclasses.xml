@@ -1160,6 +1160,7 @@ dates.
 </para></note>
 
 <!-- modified: change class methods list to 2-column format for better fit -->
+<!-- modified: added link to "new (Inherited Class Method)" pointing to init() -->
 <!-- $GENERATED-20150923-START rexxrefClassTable(DateTime) -->
 <table id="ooRexxDateTimeClass" frame="all" pgwide="1">
 <title>DateTime Class</title>
@@ -1185,6 +1186,7 @@ dates.
  </row>
  <row><entry>
   <simplelist columns="2">
+   <member><xref linkend="mthDateTimeInit" xrefstyle="template:new (Inherited Class Method)"/></member>
    <member><xref linkend="mthDateTimeFromBaseDate" xrefstyle="select:title"/></member>
    <member><xref linkend="mthDateTimeFromCivilTime" xrefstyle="select:title"/></member>
    <member><xref linkend="mthDateTimeFromEuropeanDate" xrefstyle="select:title"/></member>
@@ -4556,7 +4558,7 @@ good~containsWord("time", 5)      -- .false
 overlap.</para>
 </section>
 
-<section id="mthMutableBufferDelStr"><title>delete/delStr</title>
+<section id="mthMutableBufferDelStr"><title>delete / delStr</title>
 <indexterm><primary>delete method</primary>
 <secondary>of MutableBuffer class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -7229,6 +7231,7 @@ the <xref linkend="mthRexxInfoRevision" xrefstyle="select:title"/>.
 
 <para>The RexxQueue class provides object-style access to Rexx external data queues.</para>
 
+<!-- modified: added link to "new (Inherited Class Method)" pointing to init() -->
 <!-- $GENERATED-20150923-START rexxrefClassTable(RexxQueue) -->
 <table id="ooRexxRexxQueueClass" frame="all" pgwide="1">
 <title>RexxQueue Class</title>
@@ -7242,6 +7245,7 @@ the <xref linkend="mthRexxInfoRevision" xrefstyle="select:title"/>.
  </row>
  <row><entry>
   <simplelist>
+   <member><xref linkend="mthRexxQueueInit" xrefstyle="template:new (Inherited Class Method)"/></member>
    <member><xref linkend="mthRexxQueueCreate" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRexxQueueDeleteClsMth" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRexxQueueExists" xrefstyle="select:title"/></member>
@@ -7902,7 +7906,7 @@ PROGRAM C:\stackFrame.rex() 1: 1 *-* interpret "call level2" 21
 <para>
   A subclass of the <xref linkend="clsSupplier" xrefstyle="select:title"/> that provides stream lines
   using supplier semantics. This allows the programmer to iterate over the remaining lines in a stream. A
-  <emphasis role="italic">StreamSupplier</emphasis> object provides a snapshot of the stream at the point
+  <classname>StreamSupplier</classname> object provides a snapshot of the stream at the point
   in time it is created, including the current line read position. In general, the iteration is not
   affected by later changes to the read and write positioning of the stream. However, forces external to
   the iteration may change the <emphasis role="italic">content</emphasis> of the remaining lines as the
@@ -8044,9 +8048,15 @@ would return &false;, the supplier raises an error.
 <indexterm><primary>class</primary>
 <secondary>Supplier class</secondary></indexterm>
 
-<para>You can use a supplier object to iterate over items of a collection.
-Supplier objects are created from a snapshot of a collection.  The iteration
-results are not affected by later changes to the source collection object.
+<para>A <classname>Supplier</classname> object is an iterator that allows the 
+enumeration of an <emphasis role="italic">items</emphasis> Collection together with
+an <emphasis role="italic">indexes</emphasis> Collection. 
+All objects inheriting from <xref linkend="clsCollection" xrefstyle="select:title"/>
+provide a <xref linkend="mthCollectionSupplier" xrefstyle="select:title"/> method,
+that returns a snapshot of the Collection as a Supplier object, which allows iteration
+using the <xref linkend="reploopSupplier" xrefstyle="template:DO/LOOP WITH"/>
+instruction. 
+The iteration results are not affected by later changes to the source Collection object.
 </para>
 
 <!-- $GENERATED-20150924-START rexxrefClassTable(Supplier) -->
@@ -8575,6 +8585,7 @@ operations between TimeSpan objects.
 </para>
 
 <!-- modified: chaged class method list from 3- to 2-column for a better fit -->
+<!-- modified: added link to "new (Inherited Class Method)" pointing to init() -->
 <!-- $GENERATED-20150923-START rexxrefClassTable(TimeSpan) -->
 <table id="ooRexxTimeSpanClass" frame="all" pgwide="1">
 <title>TimeSpan Class</title>
@@ -8600,6 +8611,7 @@ operations between TimeSpan objects.
  </row>
  <row><entry>
   <simplelist columns="2">
+   <member><xref linkend="mthTimeSpanInit" xrefstyle="template:new (Inherited Class Method)"/></member>
    <member><xref linkend="mthTimeSpanFromCivilTime" xrefstyle="select:title"/></member>
    <member><xref linkend="mthTimeSpanFromDays" xrefstyle="select:title"/></member>
    <member><xref linkend="mthTimeSpanFromHours" xrefstyle="select:title"/></member>

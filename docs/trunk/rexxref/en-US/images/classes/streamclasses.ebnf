@@ -1,8 +1,8 @@
 stream_new ::= 'new(' name ')'
 
-stream_arrayin ::= 'arrayIn(' ( | 'Lines' | 'Chars' ) ')'
+stream_arrayin ::= 'arrayIn(' ( | '"Lines"' | '"Chars"' ) ')'
 
-stream_arrayout ::= 'arrayOut(' array ( ',' ( 'Lines' | 'Chars' ) )? ')'
+stream_arrayout ::= 'arrayOut(' array ( ',' ( '"Lines"' | '"Chars"' ) )? ')'
 
 stream_charin ::= 'charIn(' start? (',' length)? ')'
 
@@ -25,9 +25,9 @@ stream_linein ::= 'lineIn(' line? (',' count)? ')'
 
 stream_lineout ::= 'lineOut(' string? (',' line)? ')'
 
-stream_lines ::= 'lines(' ( | 'Count' | 'Normal' ) ')'
+stream_lines ::= 'lines(' ( | '"Count"' | '"Normal"' ) ')'
 
-stream_makearray ::= 'makeArray(' ( | 'Line' | 'Char' ) ')'
+stream_makearray ::= 'makeArray(' ( | '"Line"' | '"Char"' ) ')'
 
 stream_open ::= 'open(' ( ( ( | 'BOth' | 'Write') ( | 'APpend' | 'REPlace' ) )
                         | 'REAd' )

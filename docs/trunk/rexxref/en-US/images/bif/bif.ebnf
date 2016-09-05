@@ -28,9 +28,9 @@ center ::= ( 'CENTER(' | 'CENTRE(' ) string ',' length ( ',' pad )? ')'
 
 changestr ::= 'CHANGESTR(' needle ',' haystack ',' newneedle ( ',' count )? ')'
 
-charin ::= 'CHARIN(' name? ',' start? ',' length? ')'
+charin ::= 'CHARIN(' name? ',' start? (',' length)? ')'
 
-charout ::= 'CHAROUT(' name? ',' string? ',' start? ')'
+charout ::= 'CHAROUT(' name? ',' string? (',' start)? ')'
 
 chars ::= 'CHARS(' ( name )? ')'
 
@@ -48,7 +48,7 @@ d2x ::= 'D2X(' wholenumber ( ',' n )? ')'
 
 datatype ::= 'DATATYPE(' string ( ',' type )? ')'
 
-date ::= 'DATE(' ( 'N' | option | ) ',' ( string ',' ( 'N' | option2 | ) | ',' ) ',' osep? ',' isep? ')'
+date ::= 'DATE(' ( '"N"' | option | ) ',' ( ',' | string ',' ( '"N"' | option2 | ) ) ',' osep? (',' isep)? ')'
 
 delstr ::= 'DELSTR(' string ',' n ( ',' length )? ')'
 
@@ -66,11 +66,11 @@ filespec ::= 'FILESPEC(' option ',' filespec ')'
 
 form ::= 'FORM()'
 
-format ::= 'FORMAT(' number ',' before? ',' after? ',' expp? ',' expt? ')'
+format ::= 'FORMAT(' number ',' before? ',' after? ',' expp? (',' expt)? ')'
 
 fuzz ::= 'FUZZ()'
 
-insert ::= 'INSERT(' new ',' target ',' n? ',' length? ',' pad? ')'
+insert ::= 'INSERT(' new ',' target ',' n? ',' length? (',' pad)? ')'
 
 lastpos ::= 'LASTPOS(' needle ',' haystack ',' start? (',' count)? ')'
 
@@ -78,19 +78,19 @@ left ::= 'LEFT(' string ',' length ( ',' pad )? ')'
 
 length ::= 'LENGTH(' string ')'
 
-linein ::= 'LINEIN('name? ',' line? ',' count? ')'
+linein ::= 'LINEIN('name? ',' line? (',' count)? ')'
 
-lineout ::= 'LINEOUT(' name? ',' string? ',' line? ')'
+lineout ::= 'LINEOUT(' name? ',' string? (',' line)? ')'
 
-lines ::= 'LINES(' name? ( | ',' 'Normal' | ',' 'Count' ) ')'
+lines ::= 'LINES(' name? ( | ',' '"Normal"' | ',' '"Count"' ) ')'
 
 lower ::= 'LOWER(' string ',' n? (',' length)? ')'
 
-max ::= 'MAX(' number ( ( ',' number )+ )? ')'
+max ::= 'MAX(' number ( ',' number )* ')'
 
-min ::= 'MIN(' number ( ( ',' number )+ )? ')'
+min ::= 'MIN(' number ( ',' number )* ')'
 
-overlay ::= 'OVERLAY(' new ',' target ',' n? ',' length? ',' pad? ')'
+overlay ::= 'OVERLAY(' new ',' target ',' n? ',' length? (',' pad)? ')'
 
 pos ::= 'POS(' needle ',' haystack ',' start? (',' length)? ')'
 
@@ -98,7 +98,7 @@ qualify ::= 'QUALIFY(' name ')'
 
 queued ::= 'QUEUED()'
 
-random ::= 'RANDOM(' ( max | min? ',' max? ',' seed? ) ')'
+random ::= 'RANDOM(' ( max | min? ',' max? (',' seed)? ) ')'
 
 reverse ::= 'REVERSE(' string ')'
 
@@ -110,12 +110,12 @@ rxfuncdrop ::= 'RxFuncDrop(' name ')'
 
 rxfuncquery ::= 'RxFuncQuery(' name ')'
 
-rxqueue ::= 'RXQUEUE(' ( 'Create' ( ',' queuename )? |
-                         'Delete' ',' queuename |
-                         'Exist' ',' queuename |
-                         'Get' |
-                         'Open' ',' queuename |
-                         'Set' ',' newqueuename ) ')'
+rxqueue ::= 'RXQUEUE(' ( '"Create"' ( ',' queuename )? |
+                         '"Delete"' ',' queuename |
+                         '"Exist"' ',' queuename |
+                         '"Get"' |
+                         '"Open"' ',' queuename |
+                         '"Set"' ',' newqueuename ) ')'
 
 setlocal ::= 'SETLOCAL()'
 
@@ -126,11 +126,11 @@ sourceline ::= 'SOURCELINE(' n? ')'
 space ::= 'SPACE(' string ',' n? (',' pad)? ')'
 
 stream ::= 'STREAM(' name ',' ( |
-                                'State' |                    
-                                'Command' ',' stream_command |
-                                'Description' ) ')'
+                                '"State"' |                    
+                                '"Command"' ',' stream_command |
+                                '"Description"' ) ')'
 
-stream_command_syntax ::= 'STREAM(' name ',' 'Command' ',' stream_command ')'
+stream_command_syntax ::= 'STREAM(' name ',' '"Command"' ',' stream_command ')'
 
 stream_command ::= ( 'Open' ( ( ( ( | 'BOth' | 'Write') ( | 'APpend' | 'REPlace' ) )
                             | 'REAd' )
@@ -149,7 +149,7 @@ stream_command ::= ( 'Open' ( ( ( ( | 'BOth' | 'Write') ( | 'APpend' | 'REPlace'
 
 stream_options ::= ( | 'SHARED' | 'SHARERead' | 'SHAREWrite' ) 'NOBuffer'? ('BInary' ('REClength' length)? )?
 
-strip ::= 'STRIP(' string ',' ( | 'B' | option ) (',' chars)? ')'
+strip ::= 'STRIP(' string ',' ( | '"B"' | option ) (',' chars)? ')'
 
 substr ::= 'SUBSTR(' string ',' n ',' length? (',' pad)? ')'
 
@@ -157,11 +157,11 @@ subword ::= 'SUBWORD(' string ',' n ( ',' length )? ')'
 
 symbol ::= 'SYMBOL(' name ')'
 
-time ::= 'TIME(' ( 'N' | option | )? ( | ',' string ',' ( 'N' | option2 | )? ) ')' 
+time ::= 'TIME(' ( '"N"' | option | )? ( | ',' string ',' ( '"N"' | option2 | )? ) ')' 
 
-trace ::= 'TRACE(' ( option )? ')'
+trace ::= 'TRACE(' option? ')'
 
-translate ::= 'TRANSLATE(' string ',' tableo? ',' tablei? ',' pad? ',' pos? ',' length? ')'
+translate ::= 'TRANSLATE(' string ',' tableo? ',' tablei? ',' pad? ',' pos? (',' length)? ')'
 
 trunc ::= 'TRUNC(' number ( ',' n )? ')'
 
@@ -173,7 +173,7 @@ value ::= 'VALUE(' name ',' newvalue? (',' selector)? ')'
 
 var ::= 'VAR(' name ')'
 
-verify ::= 'VERIFY(' string ',' reference ',' ( 'N' | option | ) ',' start? ',' length? ')'
+verify ::= 'VERIFY(' string ',' reference ',' ( '"N"' | option | ) ',' start? (',' length)? ')'
 
 word ::= 'WORD(' string ',' n ')'
 

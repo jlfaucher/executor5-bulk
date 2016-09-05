@@ -833,81 +833,99 @@ description of concurrency.</para>
 Rexx defines.</para>
 
 <section id="chi"><title>The Class Hierarchy</title>
-<para>Rexx provides the following classes belonging to the object class:</para>
-<itemizedlist>
-<listitem><para>Alarm class</para></listitem>
-<listitem><para>Array class</para></listitem>
-<listitem><para>Class class</para></listitem>
-<listitem><para>Collection class</para>
-<itemizedlist>
-<listitem><para>MapCollection class</para></listitem>
-<listitem><para>OrderedCollection class</para></listitem>
-<listitem><para>SetCollection class</para></listitem>
-</itemizedlist></listitem>
-<listitem><para>Comparable class</para></listitem>
-<listitem><para>Orderable class</para></listitem>
-<listitem><para>Comparator class</para>
-<itemizedlist>
-<listitem><para>CaselessColumnComparator class</para></listitem>
-<listitem><para>CaselessComparator class</para></listitem>
-<listitem><para>CaselessDescendingComparator class</para></listitem>
-<listitem><para>ColumnComparator class</para></listitem>
-<listitem><para>DescendingComparator class</para></listitem>
-<listitem><para>InvertingComparator class</para></listitem>
-<listitem><para>NumericComparator class</para></listitem>
-</itemizedlist></listitem>
-<listitem><para>DateTime class</para></listitem>
-<listitem><para>Directory class</para>
-<itemizedlist>
-<listitem><para>Properties class</para></listitem>
-</itemizedlist></listitem>
-<listitem><para>File class</para></listitem>
-<listitem><para>InputOutputStream class</para>
-<itemizedlist>
-<listitem><para>Stream class</para></listitem>
-</itemizedlist></listitem>
-<listitem><para>InputStream class</para></listitem>
-<listitem><para>List class</para></listitem>
-<listitem><para>Message class</para></listitem>
-<listitem><para>Method class</para></listitem>
-<listitem><para>Monitor class</para></listitem>
-<listitem><para>Routine class</para></listitem>
-<listitem><para>MutableBuffer class</para></listitem>
-<listitem><para>OutputStream class</para></listitem>
-<listitem><para>Package class</para></listitem>
-<listitem><para>Queue class</para>
-<itemizedlist>
-<listitem><para>CircularQueue class</para></listitem>
-</itemizedlist></listitem>
-<listitem><para>RegularExpression class</para></listitem>
-<listitem><para>Relation class</para>
-<itemizedlist>
-<listitem><para>Bag class</para></listitem>
-</itemizedlist></listitem>
-<listitem><para>RexxQueue class</para></listitem>
-<listitem><para>Stem class</para></listitem>
-<listitem><para>String class</para></listitem>
-<listitem><para>Supplier class</para>
-<itemizedlist>
-<listitem><para>StreamSupplier class</para></listitem>
-</itemizedlist></listitem>
-<listitem><para>Table class</para>
-<itemizedlist>
-<listitem><para>Set class</para></listitem>
-</itemizedlist></listitem>
-<listitem><para>IdentityTable class</para></listitem>
-<listitem><para>TimeSpan class</para></listitem>
-<listitem><para>WeakReference class</para></listitem>
-<listitem><para>RexxContext class</para></listitem>
-<listitem><para>Buffer class</para></listitem>
-<listitem><para>Pointer class</para></listitem>
-<listitem><para>StackFrame class</para></listitem>
-</itemizedlist>
-<para>(The classes are in a class hierarchy with subclasses indented below their
-superclasses.)</para>
+<para>Rexx provides the following classes belonging to the <classname>Object</classname> class.
+</para>
+<para>The classes are in a class hierarchy with an inheriting class indented below its
+superclass or mixin class.
+Classes inheriting from multiple mixin classes are only listed below one of these mixin classes.
+</para>
+
+<para>
+  <!-- created with rexxrefClassHierarchy.rex -->
+  <itemizedlist spacing="compact">
+    <listitem><para><xref linkend="clsAlarm" xrefstyle="template:Alarm class"/></para></listitem>
+    <listitem><para><xref linkend="clsAlarmNotification" xrefstyle="template:AlarmNotification class"/></para></listitem>
+    <listitem><para><xref linkend="clsBuffer" xrefstyle="template:Buffer class"/></para></listitem>
+    <listitem><para><xref linkend="clsClass" xrefstyle="template:Class class"/></para></listitem>
+    <listitem><para><xref linkend="clsCollection" xrefstyle="template:Collection class"/></para>
+    <itemizedlist spacing="compact">
+      <listitem><para><xref linkend="clsMapCollection" xrefstyle="template:MapCollection class"/></para>
+      <itemizedlist spacing="compact">
+        <listitem><para><xref linkend="clsBag" xrefstyle="template:Bag class"/></para></listitem>
+        <listitem><para><xref linkend="clsDirectory" xrefstyle="template:Directory class"/></para>
+        <itemizedlist spacing="compact">
+          <listitem><para><xref linkend="clsProperties" xrefstyle="template:Properties class"/></para></listitem>
+        </itemizedlist></listitem>
+        <listitem><para><xref linkend="clsIdentityTable" xrefstyle="template:IdentityTable class"/></para></listitem>
+        <listitem><para><xref linkend="clsRelation" xrefstyle="template:Relation class"/></para></listitem>
+        <listitem><para><xref linkend="clsSet" xrefstyle="template:Set class"/></para></listitem>
+        <listitem><para><xref linkend="clsStem" xrefstyle="template:Stem class"/></para></listitem>
+        <listitem><para><xref linkend="clsStringTable" xrefstyle="template:StringTable class"/></para></listitem>
+        <listitem><para><xref linkend="clsTable" xrefstyle="template:Table class"/></para></listitem>
+      </itemizedlist></listitem>
+      <listitem><para><xref linkend="clsOrderedCollection" xrefstyle="template:OrderedCollection class"/></para>
+      <itemizedlist spacing="compact">
+        <listitem><para><xref linkend="clsArray" xrefstyle="template:Array class"/></para></listitem>
+        <listitem><para><xref linkend="clsList" xrefstyle="template:List class"/></para></listitem>
+        <listitem><para><xref linkend="clsQueue" xrefstyle="template:Queue class"/></para>
+        <itemizedlist spacing="compact">
+          <listitem><para><xref linkend="clsCircularQueue" xrefstyle="template:CircularQueue class"/></para></listitem>
+        </itemizedlist></listitem>
+      </itemizedlist></listitem>
+      <listitem><para><xref linkend="clsSetCollection" xrefstyle="template:SetCollection class"/></para></listitem>
+    </itemizedlist></listitem>
+    <listitem><para><xref linkend="clsComparable" xrefstyle="template:Comparable class"/></para>
+    <itemizedlist spacing="compact">
+      <listitem><para><xref linkend="clsDateTime" xrefstyle="template:DateTime class"/></para></listitem>
+      <listitem><para><xref linkend="clsFile" xrefstyle="template:File class"/></para></listitem>
+      <listitem><para><xref linkend="clsString" xrefstyle="template:String class"/></para></listitem>
+      <listitem><para><xref linkend="clsTimeSpan" xrefstyle="template:TimeSpan class"/></para></listitem>
+    </itemizedlist></listitem>
+    <listitem><para><xref linkend="clsComparator" xrefstyle="template:Comparator class"/></para>
+    <itemizedlist spacing="compact">
+      <listitem><para><xref linkend="clsCaselessColumnComparator" xrefstyle="template:CaselessColumnComparator class"/></para></listitem>
+      <listitem><para><xref linkend="clsCaselessComparator" xrefstyle="template:CaselessComparator class"/></para></listitem>
+      <listitem><para><xref linkend="clsCaselessDescendingComparator" xrefstyle="template:CaselessDescendingComparator class"/></para></listitem>
+      <listitem><para><xref linkend="clsColumnComparator" xrefstyle="template:ColumnComparator class"/></para></listitem>
+      <listitem><para><xref linkend="clsDescendingComparator" xrefstyle="template:DescendingComparator class"/></para></listitem>
+      <listitem><para><xref linkend="clsInvertingComparator" xrefstyle="template:InvertingComparator class"/></para></listitem>
+      <listitem><para><xref linkend="clsNumericComparator" xrefstyle="template:NumericComparator class"/></para></listitem>
+    </itemizedlist></listitem>
+    <listitem><para><xref linkend="clsInputStream" xrefstyle="template:InputStream class"/></para>
+    <itemizedlist spacing="compact">
+      <listitem><para><xref linkend="clsInputOutputStream" xrefstyle="template:InputOutputStream class"/></para>
+      <itemizedlist spacing="compact">
+        <listitem><para><xref linkend="clsStream" xrefstyle="template:Stream class"/></para></listitem>
+      </itemizedlist></listitem>
+    </itemizedlist></listitem>
+    <listitem><para><xref linkend="clsMessageNotification" xrefstyle="template:MessageNotification class"/></para>
+    <itemizedlist spacing="compact">
+      <listitem><para><xref linkend="clsMessage" xrefstyle="template:Message class"/></para></listitem>
+    </itemizedlist></listitem>
+    <listitem><para><xref linkend="clsMethod" xrefstyle="template:Method class"/></para></listitem>
+    <listitem><para><xref linkend="clsMonitor" xrefstyle="template:Monitor class"/></para></listitem>
+    <listitem><para><xref linkend="clsMutableBuffer" xrefstyle="template:MutableBuffer class"/></para></listitem>
+    <listitem><para><xref linkend="clsOrderable" xrefstyle="template:Orderable class"/></para></listitem>
+    <listitem><para><xref linkend="clsOutputStream" xrefstyle="template:OutputStream class"/></para></listitem>
+    <listitem><para><xref linkend="clsPackage" xrefstyle="template:Package class"/></para></listitem>
+    <listitem><para><xref linkend="clsPointer" xrefstyle="template:Pointer class"/></para></listitem>
+    <listitem><para><xref linkend="clsRexxContext" xrefstyle="template:RexxContext class"/></para></listitem>
+    <listitem><para><xref linkend="clsRexxInfo" xrefstyle="template:RexxInfo class"/></para></listitem>
+    <listitem><para><xref linkend="clsRexxQueue" xrefstyle="template:RexxQueue class"/></para></listitem>
+    <listitem><para><xref linkend="clsRoutine" xrefstyle="template:Routine class"/></para></listitem>
+    <listitem><para><xref linkend="clsStackFrame" xrefstyle="template:StackFrame class"/></para></listitem>
+    <listitem><para><xref linkend="clsSupplier" xrefstyle="template:Supplier class"/></para>
+    <itemizedlist spacing="compact">
+      <listitem><para><xref linkend="clsStreamSupplier" xrefstyle="template:StreamSupplier class"/></para></listitem>
+    </itemizedlist></listitem>
+    <listitem><para><xref linkend="clsTicker" xrefstyle="template:Ticker class"/></para></listitem>
+    <listitem><para><xref linkend="clsWeakReference" xrefstyle="template:WeakReference class"/></para></listitem>
+  </itemizedlist>
+</para>
+
 <para>Note that there might also be other classes in the system, depending
 on the operating system.  Additional classes may be accessed by using an
-appropriate ::requires directive to load the class definitions.</para>
+appropriate <code>::requires</code> directive to load the class definitions.</para>
 
 <!-- @@ these figures were already broken in 4.2; completely removing them for now
 <para>The following figures show Rexx built-in classes.</para>

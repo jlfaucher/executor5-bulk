@@ -2545,7 +2545,7 @@ complete description of error numbers and messages.
 <para>
 <example id="ex.bif-errortext">
 <title>Builtin function ERRORTEXT</title>
-<programlisting>ERRORTEXT(16)    ->    "Label not found"
+<programlisting>ERRORTEXT(16)    ->    "Label not found."
 ERRORTEXT(60)    ->    ""
 </programlisting>
 </example>
@@ -3214,22 +3214,20 @@ instruction instead.</para></note>
 
 <para>Returns <computeroutput>1</computeroutput> if any data remains between
 the current read position and the end of the character input stream
-<emphasis role="italic">name</emphasis>. It returns
-<computeroutput>0</computeroutput> if no data remains. In effect, LINES reports
-whether a read action that
+<emphasis role="italic">name</emphasis>, and no option or option
+<option>Normal</option> is specified.
+It returns <computeroutput>0</computeroutput> if no data remains.
+As such, LINES reports whether a read action that
 <xref linkend="bifCharin" xrefstyle="template:CHARIN"/> or
 <xref linkend="bifLinein" xrefstyle="template:LINEIN"/> 
-performs will succeed. (To understand the input and output functions, see
-<xref linkend="iostrms" />.)</para>
-
-<para>The ANSI Standard has extended this function to allow an option: "Count".
-If this option is used, LINES returns the actual number of complete
-lines remaining in the stream, irrespective of how long this operation takes.</para>
-
-<para>The option "Normal" returns 1 if there is at least one complete line
-remaining in the file or 0 if no lines remain.</para>
-
-<para>The default is "Normal".</para>
+performs will succeed.
+Option <option>Normal</option> is the default.
+</para>
+<para>If option <option>Count</option> is specified, LINES returns the actual number
+of lines remaining in the stream, irrespective of how long this operation takes.
+</para>
+<para>For an explanation of input and output, see <xref linkend="iostrms" />.
+</para>
 
 <para>Here are some examples:</para>
 <indexterm><primary>LINES function</primary>
