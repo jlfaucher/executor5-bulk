@@ -275,11 +275,11 @@ monitor_unknown ::= 'unknown(' messagename ',' messageargs ')'
 
 /* MutableBuffer: see fundclasses.ebnf together with String */
 
-regexp_init ::= 'init(' pattern ( ',' ( '"Maximal"' | '"Minimal"' ) )? ')'
+regexp_new ::= 'new(' pattern? ',' ( | '"MAXIMAL"' | '"MINIMAL"' ) ')'
 
 regexp_match ::= 'match(' string ')'
 
-regexp_parse ::= 'parse(' pattern ( ',' ( '"Current"' | '"Maximal"' | '"Minimal"' ) )? ')'
+regexp_parse ::= 'parse(' pattern ',' ( | '"CURRENT"' | '"MAXIMAL"' | '"MINIMAL"' ) ')'
 
 regexp_pos ::= 'pos(' haystack ')'
 

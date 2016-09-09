@@ -5886,41 +5886,41 @@ Use <code>::requires "rxregexp.cls"</code> to activate its functionality.
 <colspec colnum="1" colwidth="1*" />
 <colspec colnum="2" colwidth="5*" />
 <tbody>
-<row><entry>|</entry>
+<row><entry><literal>|</literal></entry>
 <entry><para>OR operator between the left and right expression
 </para></entry></row>
-<row><entry>?</entry>
+<row><entry><literal>?</literal></entry>
 <entry><para>Matches any single character
 </para></entry></row>
-<row><entry>*</entry>
+<row><entry><literal>*</literal></entry>
 <entry><para>Matches the previous expression zero or more times
 </para></entry></row>
-<row><entry>+</entry>
+<row><entry><literal>+</literal></entry>
 <entry><para>Matches the previous expression one or more times
 </para></entry></row>
-<row><entry>\</entry>
+<row><entry><literal>\</literal></entry>
 <entry><para>"Escape" symbol: use the next character literally
 </para></entry></row>
-<row><entry>()</entry>
+<row><entry><literal>(</literal>&hellip;<literal>)</literal></entry>
 <entry><para>Expression in parenthesis (use where needed)
 </para></entry></row>
-<row><entry>{n}</entry>
-<entry><para>Matches previous expression n times (n>1)
+<row><entry><literal>{</literal><emphasis role="italic">n</emphasis><literal>}</literal> </entry>
+<entry><para>Matches previous expression <emphasis role="italic">n</emphasis> times (<emphasis role="italic">n</emphasis> > 1)
 </para></entry></row>
-<row><entry>[]</entry>
+<row><entry><literal>[</literal>&hellip;<literal>]</literal></entry>
 <entry><para>Set definition: matches any single character out of the defined
 set.</para>
-<para>A &apos;^&apos; right after the opening bracket means that none of the
+<para>A "<literal>^</literal>" right after the opening bracket means that none of the
 following characters should be matched.</para>
-<para>A &apos;-&apos; (if not used with &apos;\&apos;) defines a range between the last
-specified character and the one following &apos;-&apos;. If it is the
+<para>A "<literal>-</literal>" (if not used with "<literal>\</literal>") defines a range between the last
+specified character and the one following "<literal>-</literal>". If it is the
 first character in the set definition, it is used literally.
 </para></entry></row>
 </tbody>
 </tgroup>
 </informaltable>
 
-<para>The following symbolic names (they must start and end with &apos;:&apos;) can
+<para>The following symbolic names (they must start and end with "<literal>:</literal>") can
 be used to abbreviate common sets:</para>
 
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1">
@@ -5928,41 +5928,41 @@ be used to abbreviate common sets:</para>
 <colspec colnum="1" colwidth="1*" />
 <colspec colnum="2" colwidth="5*" />
 <tbody>
-<row><entry>:ALPHA:</entry>
-<entry><para>Characters in the range A-Z and a-z
+<row><entry><literal>:alpha:</literal></entry>
+<entry><para>Characters in the range <literal>A</literal>-<literal>Z</literal> and <literal>a</literal>-<literal>z</literal>
 </para></entry></row>
-<row><entry>:LOWER:</entry>
-<entry><para>Characters in the range a-z
+<row><entry><literal>:lower:</literal></entry>
+<entry><para>Characters in the range <literal>a</literal>-<literal>z</literal>
 </para></entry></row>
-<row><entry>:UPPER:</entry>
-<entry><para>Characters in the range A-Z
+<row><entry><literal>:upper:</literal></entry>
+<entry><para>Characters in the range <literal>A</literal>-<literal>Z</literal>
 </para></entry></row>
-<row><entry>:DIGIT:</entry>
-<entry><para>Characters in the range 0-9
+<row><entry><literal>:digit:</literal></entry>
+<entry><para>Characters in the range <literal>0</literal>-<literal>9</literal>
 </para></entry></row>
-<row><entry>:ALNUM:</entry>
-<entry><para>Characters in :DIGIT: and :ALPHA:
+<row><entry><literal>:alnum:</literal></entry>
+<entry><para>Characters in <literal>:digit:</literal> and <literal>:alpha:</literal>
 </para></entry></row>
-<row><entry>:XDIGIT:</entry>
-<entry><para>Characters in :DIGIT:, A-F and a-f
+<row><entry><literal>:xdigit:</literal></entry>
+<entry><para>Characters in <literal>:digit:</literal>, <literal>A</literal>-<literal>F</literal> and <literal>a</literal>-<literal>f</literal>
 </para></entry></row>
-<row><entry>:BLANK:</entry>
+<row><entry><literal>:blank:</literal></entry>
 <entry><para>Space and tab characters
 </para></entry></row>
-<row><entry>:SPACE:</entry>
-<entry><para>Characters "09"x to "0D"x and space
+<row><entry><literal>:space:</literal></entry>
+<entry><para>Characters <literal>'09'x</literal> to <literal>'0d'x</literal> and space
 </para></entry></row>
-<row><entry>:CNTRL:</entry>
-<entry><para>Characters "00"x to "1F"x and "7F"x
+<row><entry><literal>:cntrl:</literal></entry>
+<entry><para>Characters <literal>'00'x</literal> to <literal>'1f'x</literal> and <literal>'7f'x</literal>
 </para></entry></row>
-<row><entry>:PRINT:</entry>
-<entry><para>Characters in the range "20"x to "7E"x
+<row><entry><literal>:print:</literal></entry>
+<entry><para>Characters in the range <literal>'20'x</literal> to <literal>'7e'x</literal>
 </para></entry></row>
-<row><entry>:GRAPH:</entry>
-<entry><para>Characters in :PRINT: without space
+<row><entry><literal>:graph:</literal></entry>
+<entry><para>Characters in <literal>:print:</literal> without space
 </para></entry></row>
-<row><entry>:PUNCT:</entry>
-<entry><para>All :PRINT: characters without space and not in :ALNUM:
+<row><entry><literal>:punct:</literal></entry>
+<entry><para>All <literal>:print:</literal> characters without space and not in <literal>:alnum:</literal>
 </para></entry></row>
 </tbody>
 </tgroup>
@@ -5972,8 +5972,7 @@ be used to abbreviate common sets:</para>
 <secondary>RegularExpression class</secondary></indexterm>
 <example>
 <title>RegularExpression class</title>
-<programlisting>
-<![CDATA[
+<programlisting><![CDATA[
 ::requires "rxregexp.cls"
 
      "(Hi|Hello) World"      Matches "Hi World" and
@@ -5990,16 +5989,15 @@ be used to abbreviate common sets:</para>
      "file.[bd]at"           Matches "file.bat" and "file.dat".
      "[A-Za-z]+"             Matches any string containing only
                              letters.
-     "[:ALPHA:]+"            Same as above, using symbolic names.
+     "[:alpha:]+"            Same as above, using symbolic names.
      "[^0-9]*"               Matches any string containing no
                              numbers, including the empty string.
-     "[:DIGIT::LOWER:]"      A single character, either a digit or
+     "[:digit::lower:]"      A single character, either a digit or
                              a lower case character.
      "This is (very )+nice." Matches all strings with one or more
                              occurrences of "very " between
                              "This is " and "nice.".
-]]>
-</programlisting>
+]]></programlisting>
 </example>
 
 
@@ -6009,25 +6007,36 @@ be used to abbreviate common sets:</para>
 
 <mediaobject>
 <imageobject>
-<imagedata fileref="images/classes/regexp_init.svg" scale="55" />
+<imagedata fileref="images/classes/regexp_new.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>Instantiates a RegularExpression object. Use the optional parameter
-<emphasis>Pattern</emphasis> to define a pattern that is used to match
-strings. See the introductory text below for a description of the
-syntax. If the strings match, you can decide whether you want to
-apply "greedy" matching (a maximum-length match) or "non-greedy"
-matching (a minimum-length match).</para>
+<para>Instantiates a <classname>RegularExpression</classname> object.
+Use the optional parameter <emphasis role="italic">pattern</emphasis> to
+define a regular expression pattern that will be used to match strings.
+You can select the type of regular expression matching to be
+&ldquo;greedy&rdquo; by specifying option <option>MAXIMAL</option>, or to be
+&ldquo;lazy&rdquo; by specifying option <option>MINIMAL</option>.
+Option <option>MAXIMAL</option> is the default.
+</para>
+<para>Both <emphasis>pattern</emphasis> and match type can be changed with
+the <xref linkend="mthRegularExpressionParse" xrefstyle="select:title"/>
+method.
+</para>
+
+<important><para><classname>RegularExpression</classname> defines its own
+<methodname>init</methodname> method.
+Any subclass which also defines its own <methodname>init</methodname>
+method, must forward to its superclass to complete object initialization.
+For details see <xref linkend="creo" />.
+</para></important>
 
 <example>
 <title>RegularExpression class &mdash; new method</title>
-<programlisting>
-<![CDATA[
-myRE1 = .RegularExpression~new
-myRE2 = .RegularExpression~new("Hello?*")
-]]>
-</programlisting>
+<programlisting><![CDATA[
+re1 = .RegularExpression~new
+re2 = .RegularExpression~new("Hello?*")
+]]></programlisting>
 </example>
 </section>
 
@@ -6044,16 +6053,46 @@ myRE2 = .RegularExpression~new("Hello?*")
 </imageobject>
 </mediaobject>
 
-<para>This method tries to match <emphasis role="italic">string</emphasis> to the regular
-expression that was defined on the
-<xref linkend="mthRegularExpressionNew" xrefstyle="select:title"/> invocation or on the
-<xref linkend="mthRegularExpressionParse" xrefstyle="select:title"/> invocation.
-It returns 0 on an unsuccessful match and 1
-on a successful match.
+<para>This method tries to match <emphasis role="italic">string</emphasis>
+to the regular expression set by calls to the
+<xref linkend="mthRegularExpressionNew" xrefstyle="template:new"/> or
+<xref linkend="mthRegularExpressionParse" xrefstyle="select:title"/> method.
 </para>
-<para>For an example see method
-<xref linkend="mthRegularExpressionParse" xrefstyle="select:title"/>.
+<para>With option <option>MAXIMAL</option> in effect, it will successfully match
+only if the whole <emphasis role="italic">string</emphasis> matches.
+With option <option>MINIMAL</option> in effect, any successful match will
+always start at the first character of <emphasis role="italic">string</emphasis>,
+but doesn't necessarily have to cover the full <emphasis role="italic">string</emphasis>.
+Thus a match will always be a leading part of <emphasis role="italic">string</emphasis>.
 </para>
+<para>Method <methodname>match</methodname> returns <literal>0</literal> for an
+unsuccessful match and <literal>1</literal> for a successful match.
+</para>
+
+<indexterm><primary>examples</primary>
+<secondary>RegularExpression class</secondary></indexterm>
+<example>
+<title>RegularExpression class &mdash; match method</title>
+<programlisting><![CDATA[
+str = "<p>Paragraph 1</p><p>Paragraph 2</p>"
+re1 = .RegularExpression~new("<p>?*</p>", "MINIMAL")
+re1~match(str)
+re2 = .RegularExpression~new("<p>?*</p>", "MAXIMAL")
+re2~match(str)
+
+say "re1 (minimal) matched" str~substr(1, re1~position)
+say "re2 (maximal) matched" str~substr(1, re2~position)
+
+::requires "rxregexp.cls"
+]]></programlisting>
+</example>
+
+<para>Output:</para>
+
+<programlisting><![CDATA[
+re1 (minimal) matched <p>Paragraph 1</p>
+re2 (maximal) matched <p>Paragraph 1</p><p>Paragraph 2</p>
+]]></programlisting>
 </section>
 
 <section id="mthRegularExpressionParse"><title>parse</title>
@@ -6069,16 +6108,21 @@ on a successful match.
 </imageobject>
 </mediaobject>
 
-<para>This method creates the matcher used to match a string from the
-regular expression specified with
-<emphasis>Pattern</emphasis>. The RegularExpression
-object uses this regular expression until a new invocation of Parse
-takes place. The second (optional) parameter specifies whether to
-use minimal or maximal matching. The default is to use the current
-matching behavior.</para>
+<para>Returns <literal>0</literal> after setting and succesfully
+parsing the regular expression <emphasis role="italic">pattern</emphasis>.
+The new <emphasis role="italic">pattern</emphasis> will be used to
+match strings specified with methods
+<xref linkend="mthRegularExpressionMatch" xrefstyle="select:title"/> or
+<xref linkend="mthRegularExpressionPos" xrefstyle="select:title"/>.
+Returns an error code otherwise.
+</para>
+<para>The type of regular expression matching can be set to
+&ldquo;greedy&rdquo; by specifying option <option>MAXIMAL</option>, or to
+&ldquo;lazy&rdquo; by specifying option <option>MINIMAL</option>.
+The default is to use the current matching type.
+</para>
 
 <para><emphasis role="bold">Return values:</emphasis></para>
-
 <variablelist>
 <varlistentry><term>0</term>
 <listitem><para>Regular expression was parsed successfully.
@@ -6105,104 +6149,83 @@ matching behavior.</para>
 <secondary>RegularExpression class</secondary></indexterm>
 <example>
 <title>RegularExpression class &mdash; parse method</title>
-<programlisting>
-<![CDATA[
-a.0 = "does not match regular expression"
-a.1 = "matches regular expression"
-b = .array~of("This is a nice flower.",
-              "This is a yellow flower.", ,
-              "This is a blue flower.",
-              "Hi there!")
+<programlisting><![CDATA[
+patterns = "A [:alpha:]{4} fl?*.", -
+           "?*[l|e]?*e?*[r|g]?*", -
+           "[invalid"
+texts = "A nice flower.", -
+        "A yellow flower.", -
+        "A blue flag."
 
-myRE = .RegularExpression~new
-e = myRE~parse("This is a ???? flower.")
-if e == 0 then do
-  do i over b
-    j = myRE~match(i)
-    say i~left(24) ">>" a.j
-  end
+re = .RegularExpression~new
+do pattern over patterns
+  code = re~parse(pattern)
+  if code  == 0 then
+    do text over texts
+      say text~left(16) -
+       re~match(text)~?("matches", "doesn't match") "regex" pattern
+    end
+  else
+    say "error" code "parsing pattern" pattern
+  say
 end
-else
-  say "Error" e "occurred!"
-exit
 
-::requires "rxregexp.cls"
-]]>
-</programlisting>
+::requires rxregexp.cls
+]]></programlisting>
 </example>
 
 <para>Output:</para>
+<programlisting><![CDATA[
+A nice flower.   matches regex A [:alpha:]{4} fl?*.
+A yellow flower. doesn't match regex A [:alpha:]{4} fl?*.
+A blue flag.     matches regex A [:alpha:]{4} fl?*.
 
-<programlisting>
-<![CDATA[
-This is a nice flower.   >> Does match regular expression
-This is a yellow flower. >> Does not match regular expression
-This is a blue flower.   >> Does match regular expression
-Hi there!                >> Does not match regular expression
-]]>
-</programlisting>
+A nice flower.   matches regex ?*[l|e]?*e?*[r|g]?*
+A yellow flower. matches regex ?*[l|e]?*e?*[r|g]?*
+A blue flag.     matches regex ?*[l|e]?*e?*[r|g]?*
+
+error 3 parsing pattern [invalid
+]]></programlisting>
 
 <indexterm><primary>examples</primary>
 <secondary>RegularExpression class</secondary></indexterm>
 <example>
 <title>RegularExpression class &mdash; parse method</title>
-<programlisting>
-<![CDATA[
-a.0 = "an invalid number!"
-a.1 = "a valid number."
-b = .array~of("1","42","0","5436412","1a","f43g")
-myRE = .RegularExpression~new("[1-9][0-9]*")
-do i over b
-  j = myRE~match(i)
-  say i "is" a.j
+<programlisting><![CDATA[
+nrs = 1, 42, 0, 5436412, "1A", "f43g"
+re = .RegularExpression~new("[1-9][0-9]*")
+do nr over nrs
+  say nr "is" re~match(nr)~?("a valid", "an invalid") "number"
 end
 say
 
-/* Now allow "hex" numbers and a single 0 */
-if myRE~parse("0|([1-9a-f][0-9a-f]*)") == 0 then do
-  do i over b
-    j = myRE~match(i)
-    say i "is" a.j
-  end
+-- allow hexadecimal numbers and a single 0
+re~parse("0|([1-9a-fA-F][:xdigit:]*)")
+do nr over nrs
+  say nr "is" re~match(nr)~?("a valid", "an invalid") "number"
 end
-else
-  say "invalid regular expression!"
 
-exit
-
-::requires "rxregexp.cls"
-]]>
-</programlisting>
-</example>
-
-<indexterm><primary>examples</primary>
-<secondary>RegularExpression class</secondary></indexterm>
-<example>
-<title>RegularExpression class &mdash; parse method</title>
-<programlisting>
-<![CDATA[
-str = "<p>Paragraph 1</p><p>Paragraph 2</p>"
-myRE1 = .RegularExpression~new("<p>?*</p>","MINIMAL")
-myRE1~match(str)
-myRE2 = .RegularExpression~new("<p>?*</p>","MAXIMAL")
-myRE2~match(str)
-
-say "myRE1 (minimal) matched" str~substr(1,myRE1~position)
-say "myRE2 (maximal) matched" str~substr(1,myRE2~position)
-
-::requires "rxregexp.cls"
-]]>
-</programlisting>
+::requires rxregexp.cls
+]]></programlisting>
 </example>
 
 <para>Output:</para>
+<programlisting><![CDATA[
+1 is a valid number
+42 is a valid number
+0 is an invalid number
+5436412 is a valid number
+1A is an invalid number
+f43g is an invalid number
 
-<programlisting>
-<![CDATA[
-myRE1 (minimal) matched <p>Paragraph 1</p>
-myRE2 (maximal) matched <p>Paragraph 1</p><p>Paragraph 2</p>
-]]>
-</programlisting>
+1 is a valid number
+42 is a valid number
+0 is a valid number
+5436412 is a valid number
+1A is a valid number
+f43g is an invalid number
+]]></programlisting>
+
 </section>
 
 <section id="mthRegularExpressionPos"><title>pos</title>
@@ -6218,37 +6241,35 @@ myRE2 (maximal) matched <p>Paragraph 1</p><p>Paragraph 2</p>
 </imageobject>
 </mediaobject>
 
-<para>This method tries to locate a string defined by the regular
-expression on the "new" invocation or on the "parse" invocation
+<para>This method tries to locate the regular expression set by calls to the
+<xref linkend="mthRegularExpressionNew" xrefstyle="template:new"/> or
+<xref linkend="mthRegularExpressionParse" xrefstyle="select:title"/> method
 in the given <emphasis role="italic">haystack</emphasis> string.
-It returns 0 on an unsuccessful match or the starting position
-on a successful match. The end position of the match can be
-retrieved with the
+</para>
+<para>Method <methodname>pos</methodname> returns <literal>0</literal> for an
+unsuccessful match, or the starting position for a successful match.
+The end position of the match can be retrieved with the
 <xref linkend="mthRegularExpressionPosition" xrefstyle="select:title"/> method.
 </para>
 
 <example>
 <title>RegularExpression class &mdash; haystack method</title>
-<programlisting>
-<![CDATA[
-str = "It is the year 2015!"
-myRE = .RegularExpression~new("[1-9][0-9]*")
-begin = myRE~pos(str)
-if begin > 0 then do
-  year = str~substr(begin, myRE~position - begin + 1)
-  say "Found the number" year "in this sentence."
-end
+<programlisting><![CDATA[
+text = "It's the year 2016!"
+re = .RegularExpression~new("[1-9][0-9]*")
+begin = re~pos(text)
+if begin > 0 then
+  do
+    year = text~substr(begin, re~position - begin + 1)
+    say "Found the number" year "in this sentence."
+  end
 
-::requires "rxregexp.cls"
-]]>
-</programlisting>
+::requires rxregexp.cls
+]]></programlisting>
 </example>
-
 <para>Output:
 <programlisting>
-<![CDATA[
-Found the number 2015 in this sentence.
-]]>
+Found the number 2016 in this sentence.
 </programlisting>
 </para>
 
@@ -6275,22 +6296,20 @@ method ended.</para>
 
 <example>
 <title>RegularExpression class &mdash; position method</title>
-<programlisting>
-<![CDATA[
-myRE = .RegularExpression~new
-myRE~parse("[abc")                    -- illegal set definition
-say myRE~position                     -- will be 4
+<programlisting><![CDATA[
+re = .RegularExpression~new
+re~parse("[abc")                    -- illegal set definition
+say re~position                     -- will be 4
 
-myRE = .RegularExpression~new("[abc]12")
-myRE~match("c12")
-say myRE~position                     -- will be 3
+re = .RegularExpression~new("[abc]12")
+re~match("c12")
+say re~position                     -- will be 3
 
-myRE~match("a13")
-say myRE~position                     -- will be 2 (failure to match)
+re~match("a13")                     -- unsuccessful match
+say re~position                     -- will be 2 (failure to match)
 
 ::requires "rxregexp.cls"
-]]>
-</programlisting>
+]]></programlisting>
 </example>
 </section>
 </section>
@@ -7419,6 +7438,14 @@ creates the queue if it does not.
 <emphasis role="italic">name</emphasis> is not specified, the SESSION queue is used.  If the named
 queue does not exist, one will be created.
 </para>
+
+<important><para><classname>RexxQueue</classname> defines its own
+<methodname>init</methodname> method.
+Any subclass which also defines its own <methodname>init</methodname>
+method, must forward to its superclass to complete object initialization.
+For details see <xref linkend="creo" />.
+</para></important>
+
 </section>
 
 <section id="mthRexxQueueLineIn"><title>lineIn</title>
