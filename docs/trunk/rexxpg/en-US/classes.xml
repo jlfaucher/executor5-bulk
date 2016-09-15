@@ -1202,7 +1202,7 @@ for the same object variables.</para>
 <para>By default, Rexx assumes that an active method requires exclusive use of
 its scope variable pool. If another method attempts access at that time,
 it is locked out until the first method finishes.
-This default intra-object concurrency maintains the integrity of the variable
+This default intra-object serialization maintains the integrity of the variable
 pool and prevents unexpected results. Rexx manages queues for incoming requests
 that result in messages being sent to the same object.</para>
 <para>Some methods can run concurrently without affecting variable pool integrity
@@ -1215,11 +1215,11 @@ is invoked.</para>
 because they sometimes require exclusive use of their variable pool. At other
 times, they must perform some action that involves the concurrent use of the
 same pool by a method on another activity. In this case, you can use the GUARD
-built-in function. When the method reaches the point in its processing where
+keyword instruction. When the method reaches the point in its processing where
 it no longer requires exclusive use of the variable pool, it can use the GUARD OFF instruction
 to allow methods running on different activities to become active on the same scope.
 If the method needs to regain exclusive
-use, it calls GUARD ON.</para>
+use, it uses the GUARD ON instruction.</para>
 <para>For more flexibility when activating methods, you can use GUARD ON/OFF
 with the &quot;WHEN <emphasis role="italic">expression</emphasis>&quot;
 option. Add this instruction to the

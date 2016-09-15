@@ -409,8 +409,8 @@ Call rxqueue "DELETE", queue_name
 <section id="xnosorc"><title>Distributing Programs without Source</title>
 <indexterm><primary>programs without source</primary></indexterm>
 <indexterm><primary>sourceless programs</primary></indexterm>
-<para>Open Object Rexx comes with
-a utility called RexxC. You can use this utility to produce versions of
+<para>Open Object Rexx comes with a utility called <literal>REXXC</literal>.
+You can use this utility to produce versions of
 your programs that do not include the original program source. You can use
 these programs to replace any Rexx program file that includes the source,
 with the following restrictions: </para>
@@ -423,7 +423,7 @@ lines in the program and raises an error for all attempts to retrieve a line.
 runs without error, but no tracing of instruction lines, expression results,
 or intermediate expression values occurs.</para></listitem>
 </orderedlist>
-<para>The syntax of the RexxC utility is:</para>
+<para>The syntax of the <literal>REXXC</literal> utility is:</para>
 
 <mediaobject>
 <imageobject>
@@ -444,26 +444,15 @@ it reports the error and stops processing without creating a new output file.
 If you omit the <emphasis role="italic">outputfile</emphasis>, the language
 processor performs a syntax
 check on the program without writing the executable version to a file.</para>
-<para>You can use the <emphasis role="italic">/s</emphasis> option to suppress
+<para>You can use the <emphasis role="italic">/s</emphasis> or
+<emphasis role="italic">-s</emphasis> option to suppress
 the display of the information about the interpreter used.</para>
 
 <note><title>Note</title>
 <para>You can use the in-storage capabilities of the RexxStart programming
 interface to process the file image of the output file.</para>
 </note>
-<para>With version 2.1, the tokenized form has changed. All Open Object
-Rexx editions contain a utility called RxMigrate that
-can be used to change old tokenized forms to the new one. The recommended
-procedure is to create a new tokenized file from the original source with
-the new version of Open Object Rexx. However, if the source code is no longer
-available, RxMigrate can be used to convert the old tokenized file. The syntax
-of the RxMigrate utility is:</para>
 
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/services/rxmigrate.svg" scale="55" />
-</imageobject>
-</mediaobject>
 </section>
 
 </chapter>

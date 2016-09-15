@@ -1119,7 +1119,7 @@ Registered External Functions are an older style of routine that is only capable
 of dealing with String data.  These routines do not have access to any of the
 object-oriented features of the language.  The registered external functions
 are described here, but should be considered only if compatibility with older
-versions of Object Rexx or other Rexx interpreters is a consideration.</para>
+versions of Open Object Rexx or other Rexx interpreters is a consideration.</para>
 <para>The newer style functions have access to Rexx objects and a fuller set of
 APIs for interfacing with the interpreter runtime.  These functions are the
 preferred method for writing Open Object Rexx extensions are defined in
@@ -3176,8 +3176,8 @@ int SetRexxVariable(
 <secondary>system memory interface</secondary></indexterm>
 <para>For several functions of the Rexx-API it is necessary or possible to
 dynamically allocate or free memory. Depending on the operating system,
-compiler and REXX interpreter, the method for these allocations and de-
-allocations vary. To write system independent code, Object REXX comes with
+compiler and Rexx interpreter, the method for these allocations and de-
+allocations vary. To write system independent code, Open Object Rexx comes with
 two API function calls called RexxAllocateMemory() and RexxFreeMemory().
 These functions are wrapper for the corresponding compiler or operating
 system memory functions.</para>
@@ -3223,7 +3223,7 @@ RexxReturnCode REXXENTRY RexxFreeMemory( void *MemoryBlock );
 <varlistentry>
 <term><emphasis role="italic">MemoryBlock</emphasis></term>
 <listitem>
-<para>is a void pointer to the block of memory allocated by the Object REXX
+<para>is a void pointer to the block of memory allocated by the ooRexx
 interpreter, or allocated by a previous call to RexxAllocateMemory().</para>
 </listitem>
 </varlistentry>

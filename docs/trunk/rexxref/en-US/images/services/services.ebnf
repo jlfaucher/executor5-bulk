@@ -5,6 +5,5 @@ load ::=      'RXSUBCOM' 'LOAD' envname dllname?
 
 rxqueue ::=   'RXQUEUE' ( | 'SESSION' | queuename ) ( | '/FIFO' | '/LIFO' | '/CLEAR' )
 
-rexxc ::=     'REXXC' inputfile outputfile? '/S'?
+rexxc ::=     'REXXC' inputfile outputfile? ('/S' | '-S')?
 
-rxmigrate ::= 'RXMIGRATE' inputfile outputfile
