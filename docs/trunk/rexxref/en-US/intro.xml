@@ -286,7 +286,7 @@ the methods you create.</para>
 <indexterm><primary>variables</primary>
 <secondary>aquiring</secondary></indexterm>
 <indexterm><primary>polymorphism</primary></indexterm>
-<para>Rexx lets you send the same message to objects that are different:</para>
+<para>Rexx lets you send the same message to objects that are different:
 <example>
 <title>Polymorphism</title>
 <programlisting>
@@ -295,6 +295,7 @@ pen~reverse     /* Reverses the direction of a plotter pen      */
 ball~reverse    /* Reverses the direction of a moving ball      */
 </programlisting>
 </example>
+</para>
 
 <para>As long as each object has its own REVERSE method, REVERSE runs
 even if the programming implementation is different for each object. This
@@ -583,7 +584,7 @@ of any length.</para>
 <para>Take special care when commenting out lines of code containing
 <computeroutput>/*</computeroutput> or <computeroutput>*/</computeroutput>
 as part of a literal string. Consider the following
-program segment: </para>
+program segment:
 <example>
 <title>Comments</title>
 <programlisting>
@@ -601,6 +602,7 @@ program segment: </para>
 04 */ dept = substr(input,32,5)
 </programlisting>
 </example>
+</para>
 <para>This is incorrect because the language processor would interpret the
 <computeroutput>/*</computeroutput> that is part of the literal string
 <computeroutput>/*123</computeroutput> as the start
@@ -609,11 +611,12 @@ because it would be looking for a matching standard comment end
 (<computeroutput>*/</computeroutput>).</para>
 <para>You can avoid this type of problem by using concatenation for literal
 strings containing <computeroutput>/*</computeroutput> or
-<computeroutput>*/</computeroutput>; line 2 would be: </para>
+<computeroutput>*/</computeroutput>; line 2 would be:
 <programlisting>
 if substr(input,1,5) = "/" || "*123"
 </programlisting>
-<para>You could comment out lines 2 and 3 correctly as follows: </para>
+</para>
+<para>You could comment out lines 2 and 3 correctly as follows:
 <example>
 <title>Comments</title>
 <programlisting>
@@ -623,9 +626,10 @@ if substr(input,1,5) = "/" || "*123"
 04 */ dept = substr(input,32,5)
 </programlisting>
 </example>
+</para>
 <para>Both types of comments can be mixed and nested. However, when
 you nest the two types, the type of comment that comes first takes precedence
-over the one nested. Here is an example:</para>
+over the one nested. Here is an example:
 <example>
 <title>Comments</title>
 <programlisting>
@@ -635,13 +639,14 @@ over the one nested. Here is an example:</para>
 ""                      -- The null string         */
 </programlisting>
 </example>
+</para>
 <para>In this example, the language processor ignores everything after
 <computeroutput>&apos;You shouldn&apos;&apos;t&apos;</computeroutput> up to the end of the last
 line. In this case, the standard comment has precedence over the line comment.
 </para>
 <para>When nesting the two comment types, make sure that the start
 delimiter of the standard comment <computeroutput>/*</computeroutput> is not
-in the line commented out with the line comment signs.</para>
+in the line commented out with the line comment signs.
 <example>
 <title>Comments</title>
 <programlisting>
@@ -651,6 +656,7 @@ in the line commented out with the line comment signs.</para>
 ""                      The null string         */
 </programlisting>
 </example>
+</para>
 <para>This example produces an error because the language processor
 ignores the start delimiter of the standard comment, which is commented out
 using the line comment.</para>
@@ -711,7 +717,7 @@ marks can be detected on the line where they occur.</para>
 <para>A literal string with no characters (that is, a string of length
 <computeroutput>0</computeroutput>) is called a
 <emphasis>null string</emphasis>.</para>
-<para>These are valid strings: </para>
+<para>These are valid strings:
 <example>
 <title>Valid strings</title>
 <programlisting>
@@ -721,6 +727,7 @@ marks can be detected on the line where they occur.</para>
 ""                      /* The null string         */
 </programlisting>
 </example>
+</para>
 <para>
 <indexterm><primary>implementation maximum</primary>
 <secondary>literal strings</secondary></indexterm>
@@ -771,8 +778,7 @@ each pair of hexadecimal digits into its equivalent character, for example,
 </para>
 <para>Hexadecimal strings let you include characters in a program even if you
 cannot directly enter the characters themselves. These are valid hexadecimal
-strings: </para>
-
+strings:
 <example>
 <title>Valid hexadecimal strings</title>
 <programlisting>
@@ -781,6 +787,7 @@ strings: </para>
 "1 d8"x
 </programlisting>
 </example>
+</para>
 
 <note><title>Note</title>
 <para>A hexadecimal string is <emphasis>not</emphasis> a representation
@@ -835,8 +842,7 @@ processor ignores them.
 given. If the number of binary digits is not a multiple of 8, leading zeros
 are added on the left to make a multiple of 8 before packing. Binary strings
 allow you to specify characters explicitly, bit by bit. These are valid binary
-strings: </para>
-
+strings:
 <example>
 <title>Valid binary strings</title>
 <programlisting>
@@ -847,6 +853,8 @@ strings: </para>
 ""b                /* == ""                     */
 </programlisting>
 </example>
+</para>
+
 <para>
 <indexterm><primary>binary</primary>
 <secondary>strings</secondary>
@@ -892,7 +900,7 @@ and underscore (<computeroutput>_</computeroutput>).
 to uppercase
 <computeroutput>A</computeroutput>-<computeroutput>Z</computeroutput>) before
 use.</para>
-<para>These are valid symbols: </para>
+<para>These are valid symbols:
 <example>
 <title>Valid symbols</title>
 <programlisting>
@@ -901,6 +909,8 @@ Albert.Hall
 WHERE?
 </programlisting>
 </example>
+</para>
+
 <para>If a symbol does not begin with a digit or a period, you can use it as
 a variable and can assign it a value. If you have not assigned a value to
 it, its value is the characters of the symbol itself, translated to uppercase
@@ -923,7 +933,7 @@ by any other symbol characters). The character sequence to the left of the "E" o
 There must be at least one digit and at most one '.'.
 The sign in this context is part of the symbol
 and is not an operator.</para>
-<para>These are valid numbers in exponential notation: </para>
+<para>These are valid numbers in exponential notation:
 <indexterm><primary>exponential notation</primary>
 <secondary>example</secondary></indexterm>
 <example>
@@ -933,7 +943,9 @@ and is not an operator.</para>
 .03e+9
 </programlisting>
 </example>
-<para>These are not valid numbers in exponential notation, but rather multiple tokens with an operator between:</para>
+</para>
+<para>These are not valid numbers in exponential notation,
+but rather multiple tokens with an operator between:
 <example>
 <title>Invalid exponential numbers</title>
 <programlisting>
@@ -942,6 +954,7 @@ and is not an operator.</para>
 3..0e+9   -- more than one '.'
 </programlisting>
 </example>
+</para>
 </section>
 
 <section id="numbrs"><title>Numbers</title>
@@ -972,7 +985,7 @@ Whitespace characters cannot be embedded among the digits of a number or in the
 exponential part. Note that a symbol or a literal string can be a number. A
 number cannot be the name of a variable.
 </para>
-<para>These are valid numbers: </para>
+<para>These are valid numbers:
 <example>
 <title>Valid numbers</title>
 <programlisting>
@@ -983,6 +996,7 @@ number cannot be the name of a variable.
 " + 7.9E5 "
 </programlisting>
 </example>
+</para>
 <para>You can specify numbers with or without quotation marks around them. Note
 that the sequence <computeroutput>-17.9</computeroutput>
 (without quotation marks) in an expression
@@ -1033,7 +1047,6 @@ and the sequences <computeroutput>+=, -=, *= /=, %=, //=, ||=, &amp;=, |=, and &
 are also
 used to indicate assignment. Whitespace characters adjacent to operator
 characters are removed. Therefore, the following are identical in meaning:
-</para>
 <example>
 <title>White space and numbers</title>
 <programlisting>
@@ -1043,6 +1056,7 @@ characters are removed. Therefore, the following are identical in meaning:
 345 > = 123
 </programlisting>
 </example>
+</para>
 <para>Some of these characters (and some special characters&mdash;see the next
 section) might not be available in all character sets. In this case,
 appropriate translations can be used.
@@ -1114,7 +1128,7 @@ to <computeroutput>(A)+(Z)</computeroutput>.</para>
 
 <section id="speccharexmp"><title>Example</title>
 <para>The following
-example shows how a clause is composed of tokens:</para>
+example shows how a clause is composed of tokens:
 <indexterm><primary>examples</primary>
 <secondary>special characters</secondary></indexterm>
 <example>
@@ -1123,6 +1137,7 @@ example shows how a clause is composed of tokens:</para>
 "REPEAT"   A + 3;
 </programlisting>
 </example>
+</para>
 <para>This example is composed of six tokens&mdash;a literal string
 (<computeroutput>"REPEAT"</computeroutput>), a blank operator, a symbol
 (<computeroutput>A</computeroutput>, which can have an assigned
@@ -1196,7 +1211,7 @@ functionally replaced by a blank, and, thus, no semicolon is implied.
 One or more comments can follow
 the continuation character before the end of the line.</para>
 <para>The following example shows how to use the continuation character to
-continue a clause:</para>
+continue a clause:
 <indexterm><primary>continuation</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -1212,6 +1227,7 @@ say "You can use a minus"-       -- this line is continued
 "to continue this clause."
 </programlisting>
 </example>
+</para>
 </section>
 </section>
 
@@ -1876,7 +1892,7 @@ has a higher priority than the power operator.</para>
 whose value is <computeroutput>3</computeroutput>,
 <computeroutput>DAY</computeroutput> is a variable whose value is
 <computeroutput>Monday</computeroutput>, and other variables are
-uninitialized. Then:</para>
+uninitialized. Then:
 <indexterm><primary>examples</primary>
 <secondary>expressions</secondary></indexterm>
 <indexterm><primary>expressions</primary>
@@ -1907,6 +1923,7 @@ Substr(Day,2,3)      ->    "ond"    /* Substr is a function */
 ]]>
 </programlisting>
 </example>
+</para>
 
 <note><title>Note</title>
 <para>The Rexx order of precedence usually causes no difficulty because it is the
@@ -1917,7 +1934,7 @@ differences from common notations:
 power operator.</para></listitem>
 <listitem><para>Power operators (like other operators) are evaluated from
 left to right.</para></listitem></itemizedlist></para>
-<para>For example: </para>
+<para>For example:
 <example>
 <title>Arithmetic</title>
 <programlisting>
@@ -1926,6 +1943,7 @@ left to right.</para></listitem></itemizedlist></para>
 2**2**3   == 64  /* not 256 */
 </programlisting>
 </example>
+</para>
 </note>
 </section>
 
@@ -2011,7 +2029,9 @@ form of the message term. Thus, <computeroutput>a[b]</computeroutput>
 is the same as <code>a~"[]"(b)</code>.</para>
 
 <para>For example, the message <methodname>[]</methodname> is valid for arrays
-(see <xref linkend="clsArray" />) and you could code:</para>
+(see <xref linkend="clsArray" />) and you could code:
+<indexterm><primary>arguments</primary>
+<secondary>passing in messages</secondary></indexterm>
 <example>
 <title>Arrays</title>
 <programlisting>
@@ -2021,8 +2041,7 @@ say "Second item is" a[2]   /* Same as: a~at(2)              */
 /* Produces: "Second item is 20" */
 </programlisting>
 </example>
-<indexterm><primary>arguments</primary>
-<secondary>passing in messages</secondary></indexterm>
+</para>
 <para>A message can have a variable number of arguments. You need to specify
 only those required. For example,
 <computeroutput>"ESCAPE"~POS("E")</computeroutput> returns
@@ -2048,7 +2067,7 @@ forms of message terms
 differ only in their treatment of the result object. Using
 <computeroutput>~</computeroutput> returns the result of the method.
 Using <computeroutput>~~</computeroutput> returns
-the object that received the message. Here is an example: </para>
+the object that received the message. Here is an example:
 <example>
 <title>Messages</title>
 <programlisting>
@@ -2070,8 +2089,9 @@ say "First on the team is:" team~firstitem     /* Bob   */
 say "Last on the team is:" team~lastitem       /* Steve */
 </programlisting>
 </example>
-<para>Thus, you would use ~ when you want the returned result to be the
-receiver of the next message in the sequence.
+</para>
+<para>Thus, you would use <literal>~</literal> when you want the returned
+result to be the receiver of the next message in the sequence.
 </para>
 </section>
 
@@ -2355,7 +2375,11 @@ to uppercase
 <computeroutput>A</computeroutput>-<computeroutput>Z</computeroutput>).
 However, if it is a compound symbol (described in
 <xref linkend="compsym" />), its value is the
-derived name of the symbol.</para>
+derived name of the symbol.
+<indexterm><primary>symbol</primary>
+<secondary>classifying</secondary></indexterm>
+<indexterm><primary>symbol</primary>
+<secondary>constant</secondary></indexterm>
 <example>
 <title>Derived symbol names</title>
 <programlisting>
@@ -2364,10 +2388,7 @@ derived name of the symbol.</para>
 Fred=Freda
 </programlisting>
 </example>
-<indexterm><primary>symbol</primary>
-<secondary>classifying</secondary></indexterm>
-<indexterm><primary>symbol</primary>
-<secondary>constant</secondary></indexterm>
+</para>
 <para>The meaning of a symbol
 in Rexx varies according to its context. As a term in an expression, a symbol
 belongs to one of the following groups: constant symbols, simple symbols,
@@ -2418,7 +2439,7 @@ or a period.</para>
 <para>You cannot change the value of a constant symbol.  It is simply the string
 consisting of the characters of the symbol (that is, with any lowercase
 alphabetic characters translated to uppercase).</para>
-<para>These are constant symbols: </para>
+<para>These are constant symbols:
 <example>
 <title>Constants</title>
 <programlisting>
@@ -2430,6 +2451,7 @@ alphabetic characters translated to uppercase).</para>
 17E-3
 </programlisting>
 </example>
+</para>
 <para>Symbols, where the first character is a period and the second character
 is alphabetic, are environment symbols
 (<xref linkend="ensym" />) and
@@ -2449,7 +2471,7 @@ any periods and does not start with a digit
 <para>By default, its value is the characters of the symbol (that is, translated
 to uppercase). If the symbol has been assigned a value, it names a variable
 and its value is the value of that variable.</para>
-<para>These are simple symbols: </para>
+<para>These are simple symbols:
 <example>
 <title>Simple symbols</title>
 <programlisting>
@@ -2458,6 +2480,7 @@ Whatagoodidea?    /* Same as WHATAGOODIDEA? */
 ?12
 </programlisting>
 </example>
+</para>
 </section>
 
 <section id="stems"><title>Stems</title>
@@ -2468,7 +2491,7 @@ Whatagoodidea?    /* Same as WHATAGOODIDEA? */
 <para>A <emphasis role="italic">stem</emphasis> is
 a symbol that contains a single period as the last character of the name. It cannot start with
 a digit.</para>
-<para>These are stems: </para>
+<para>These are stems:
 <example>
 <title>Stems</title>
 <programlisting>
@@ -2476,6 +2499,7 @@ FRED.
 A.
 </programlisting>
 </example>
+</para>
 <para>The value of a stem is always a Stem object (see
 <xref linkend="clsStem" /> for details).
 The stem variable's Stem object is automatically created the first time
@@ -2497,7 +2521,7 @@ A reference to a stem variable will return the associate Stem object.
 depends on the value being assigned.  If the new value is a Stem object,
 the new Stem object will replace the Stem object that is currently associated
 with the stem variable.  This can result in multiple stem variables referring to
-the same Stem object, effectively creating a variable alias.</para>
+the same Stem object, effectively creating a variable alias.
 <example>
 <title>Stems</title>
 <programlisting>
@@ -2513,6 +2537,7 @@ say  hole2.1  hole2.mouse  hole2.19
 /* Also says "empty empty full" */
 </programlisting>
 </example>
+</para>
 <para>If the new value is not a Stem object,
 a new Stem object is created and assigned to the stem variable, replacing the
 Stem object currently associated with the stem variable.</para>
@@ -2521,7 +2546,11 @@ The new value assigned to the
 stem variable is given to the new Stem object as a default value. Following
 the assignment, a reference to any compound symbol with that stem variable
 returns the new value until another value is assigned to the stem, the Stem
-object, or the individual compound variable.</para>
+object, or the individual compound variable.
+<indexterm><primary>initialization</primary>
+<secondary>of arrays</secondary></indexterm>
+<indexterm><primary>initialization</primary>
+<secondary>of compound variables</secondary></indexterm>
 <example>
 <title>Stems</title>
 <programlisting>
@@ -2531,13 +2560,10 @@ say  hole.1  hole.mouse  hole.19
 /* says "empty empty full" */
 </programlisting>
 </example>
-<indexterm><primary>initialization</primary>
-<secondary>of arrays</secondary></indexterm>
-<indexterm><primary>initialization</primary>
-<secondary>of compound variables</secondary></indexterm>
+</para>
 <para>Thus, you can initialize an entire collection of compound variables to the same value.</para>
 <para>You can pass stem collections as function, subroutine, or method
-arguments.</para>
+arguments.
 <example>
 <title>Stems</title>
 <programlisting>
@@ -2549,6 +2575,7 @@ end
 return
 </programlisting>
 </example>
+</para>
 <para>The USE ARG instruction functions as an assignment instruction.  The variable
 STEM. in the example above is functionally equivalent to:</para>
 <programlisting>
@@ -2559,7 +2586,6 @@ stem. = arg(2)
 PARSE and PARSE ARG will force the stem to be a string value.</para></note>
 <para>Stems can also be returned as function, subroutine, or method results.
 The resulting return value is the Stem object associated with the stem variable.
-</para>
 <example>
 <title>Stems</title>
 <programlisting>
@@ -2571,10 +2597,11 @@ end
 return stem.
 </programlisting>
 </example>
+</para>
 <para>When a stem. variable is used in an expression context, the stem variable
 reference returns the associated Stem object.  The Stem object will forward
 many object messages to it's default value.  For example, the STRING method
-will return the Stem object's default value's string representation:</para>
+will return the Stem object's default value's string representation:
 <example>
 <title>Stems</title>
 <programlisting>
@@ -2582,11 +2609,12 @@ total. = 0
 say total.                         /* says "0" */
 </programlisting>
 </example>
+</para>
 <para>The <methodname>[]</methodname> method with no arguments will return the currently associated
 default value.
  variables can always be obtained by using the stem. However,
 this is not the same as using a compound variable whose derived name is the
-null string.</para>
+null string.
 <example>
 <title>Stems</title>
 <programlisting>
@@ -2596,6 +2624,7 @@ total.null = total.null + 5
 say total.[] total.null              /* says "0 5" */
 </programlisting>
 </example>
+</para>
 <para>You can use the
 <xref linkend="keyDrop" xrefstyle="select:title"/>,
 <xref linkend="keyExpose" xrefstyle="select:title"/>, and
@@ -2680,7 +2709,7 @@ that are constant
 symbols, simple symbols, or null. Note that you cannot use constant symbols
 with embedded signs (for example, 12.3E+5) after a stem; in this case the
 whole symbol would not be valid.</para>
-<para>These are compound symbols: </para>
+<para>These are compound symbols:
 <example>
 <title>Compound symbols</title>
 <programlisting>
@@ -2689,6 +2718,7 @@ Array.I.J
 AMESSY..One.2.
 </programlisting>
 </example>
+</para>
 <para>Before the
 symbol is used, that is, at the time of reference, the language processor
 substitutes in the compound symbol the character string values of any simple
@@ -2727,7 +2757,7 @@ Lowercase characters are not translated to uppercase,
 blanks are not removed, and periods have no special significance. There is
 no limit on the length of the evaluated name.</para>
 <para>Some examples of simple and compound symbols follow in the form of a small
-extract from a Rexx program: </para>
+extract from a Rexx program:
 <example>
 <title>Compound symbols</title>
 <programlisting>
@@ -2744,6 +2774,7 @@ say  a  z  c  a.a  a.z  a.c  c.a  a.fred y.a.4
 /*    "3 4 Fred A.3 Fred Bill C.3 5 Annie"  */
 </programlisting>
 </example>
+</para>
 <para>You can use compound symbols to set up arrays and lists of variables in
 which the subscript is not necessarily numeric, thus offering a great scope
 for the creative programmer. A useful application is to set up an array in
@@ -2763,7 +2794,7 @@ An alternative is to specify the tail as a bracketed list of expressions separat
 The expressions are evaluated to character strings.
 These are concatenated with intervening periods and the resulting string is used as tail.
 This notation can be used in assignments to compound variables as well as when referencing them.
-Examples:</para>
+Examples:
 <example>
 <title>Evaluated compound variables</title>
 <programlisting>
@@ -2777,6 +2808,7 @@ Parse Value '1 2 3' With . a.[1,1+1] .
 Say a.1.2           -- => 2
 </programlisting>
 </example>
+</para>
 </section>
 </section>
 
@@ -2788,7 +2820,7 @@ The symbol may not be a valid Rexx number.  By default the value of an environme
 symbol is the string consisting of the characters of the symbol (translated
 to uppercase). If the symbol identifies an object in the current environment,
 its value is the mapped object.</para>
-<para>These are environment symbols: </para>
+<para>These are environment symbols:
 <example>
 <title>Environment symbols</title>
 <programlisting>
@@ -2801,6 +2833,7 @@ its value is the mapped object.</para>
 .3DGlasses // Normally the value .3DGLASSES
 </programlisting>
 </example>
+</para>
 <para>When you use an environment symbol, the language processor performs a
 series of searches to see if the environment symbol has an assigned value. The
 search locations and their ordering are:
@@ -2874,7 +2907,7 @@ to classes or routines within that namespace to explicitly identify a
 specific class or routine.  A special reserved namespace "REXX" will
 allow to always access the Rexx-provided classes.
 </para>
-<para>Examples:</para>
+<para>Examples:
 <example><title>Namespaces</title>
 <programlisting>-- disambiguate between two classes with same name
 say .number~id                          -- The Real Number class
@@ -2915,6 +2948,7 @@ return "The Natural Number class"
 return arg(1) >= 0 &amp; arg(1)~dataType("W")
 </programlisting>
 </example>
+</para>
 
 </section>
 
@@ -2946,7 +2980,6 @@ is used as the result. If there is no result object, the variable RESULT is
 dropped (becomes uninitialized).
 A message term using ~~ is sometimes referred to as a
 <emphasis role="italic">cascading message</emphasis>.
-</para>
 <indexterm><primary>examples</primary>
 <secondary>message instructions</secondary></indexterm>
 <example>
@@ -2955,6 +2988,7 @@ A message term using ~~ is sometimes referred to as a
 mytable~add("John",123)
 </programlisting>
 </example>
+</para>
 <para>This sends the message ADD to the object MYTABLE. The ADD method need not
 return a result. If ADD returns a result, the result is assigned to the variable
 RESULT.</para>
@@ -2963,7 +2997,7 @@ RESULT.</para>
 the message term, a message is sent to the receiver object with an
 <computeroutput>=</computeroutput> concatenated to the end of the
 message name. The result of evaluating
-the expression is passed as the first argument of the message.</para>
+the expression is passed as the first argument of the message.
 
 <example>
 <title>Message instructions</title>
@@ -2972,11 +3006,12 @@ person~age = 39                   /* Same as person~"AGE="(39) */
 table[i] = 5                      /* Same as table~"[]="(5,i)  */
 </programlisting>
 </example>
+</para>
 <para>The expressions are evaluated in the order in which the arguments are
 passed to the method. That is, the language processor evaluates the
 <computeroutput>=expression</computeroutput> first. Then it evaluates
 the argument expressions within any [] pairs from left to right.</para>
-<para>The extended assignment form may also be used with messaging terms.</para>
+<para>The extended assignment form may also be used with messaging terms.
 
 <example>
 <title>Message instructions</title>
@@ -2984,6 +3019,7 @@ the argument expressions within any [] pairs from left to right.</para>
    table[i] += 1        -- Same as table[i] = table[i] + 1
 </programlisting>
 </example>
+</para>
 <para>See <xref linkend="extassign" /> for more details</para>
 </section>
 
@@ -3089,7 +3125,7 @@ When a command error occurs, .RS has a value of
 did not have a FAILURE or ERROR condition, .RS is
 <computeroutput>0</computeroutput>.</para>
 <para>Here is an example of submitting a command. Where the default
-environment is Windows, the sequence:</para>
+environment is Windows, the sequence:
 <example>
 <title>Commands</title>
 <programlisting>
@@ -3098,16 +3134,18 @@ exten = "CAT"
 "TYPE" fname"."exten
 </programlisting>
 </example>
+</para>
 <para>would result in passing the string
 <computeroutput>TYPE CHESHIRE.CAT</computeroutput> to
 the command processor, CMD.EXE.
-The simpler expression:</para>
+The simpler expression:
 <example>
 <title>Commands</title>
 <programlisting>
 "TYPE CHESHIRE.CAT"
 </programlisting>
 </example>
+</para>
 <para>has the same effect.</para>
 <para>On return, the return code placed in RC will have the value
 0 if the file CHESHIRE.CAT were typed, or a nonzero value if the file could
@@ -3169,7 +3207,7 @@ CALL instruction, the program runs in the same
 process as the calling program.
 If you call another program by a Rexx command, the program is executed in
 a new process and therefore does not share .environment, .local,
-or the Windows/Unix shell environment.</para>
+or the Windows/Unix shell environment.
 <example>
 <title>Calling other Rexx scripts</title>
 <programlisting>
@@ -3178,6 +3216,7 @@ call "other.REX"         /* runs in the same process */
 "start rexx other.REX"   /* runs in a new detached process */
 </programlisting>
 </example>
+</para>
 <para>When Rexx programs call other Rexx programs as commands, the return code
 of the command is the exit value of the called program provided that this
 value is a whole number in the range -32768 to 32767.  Otherwise, the exit

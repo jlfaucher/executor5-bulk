@@ -45,12 +45,14 @@
 -->
 <section id="CollectionClasses"><title>Collection Classes</title>
 <indexterm><primary>Collection classes</primary></indexterm>
-<para>A collection is an object that contains a number of
-<emphasis role="italic">items</emphasis>, which can be any objects. Every item
-stored in a Rexx collection has an associated <emphasis role="italic">index</emphasis> that you can use to
-retrieve the item from the collection with the <methodname>at</methodname> or <methodname>[]</methodname> methods.</para>
-<para>Each collection defines its own acceptable index types.  Rexx provides the
-following collection classes:</para>
+<para>A <classname>Collection</classname> is an object that contains a number of
+<emphasis role="italic">items</emphasis>, which can be any objects.
+Every item stored in a <classname>Collection</classname> has an associated
+<emphasis role="italic">index</emphasis> that you can use to retrieve the item from the
+collection with the <methodname>at</methodname> or <methodname>[]</methodname> methods.
+</para>
+<para>Each <classname>Collection</classname> defines its own acceptable index types.
+Rexx provides the following <classname>Collection</classname> classes:</para>
 
 <variablelist>
 <varlistentry><term><xref linkend="clsArray" xrefstyle="select:title"/></term>
@@ -66,13 +68,13 @@ can be any object and each index can appear more than once.
 The CircularQueue class allows for storing objects in a circular queue
 of a predefined size. Once the end of the queue has been reached, new item
 objects are inserted from the beginning, replacing earlier entries.
-The collected objects can be processed in FIFO (first in, first out) or in a
-stack-like LIFO (last in, first out) order.
+The collected objects can be processed in FIFO (first-in, first-out) or in a
+stack-like LIFO (last-in, first-out) order.
 </para></listitem>
 </varlistentry>
 <varlistentry><term><xref linkend="clsDirectory" xrefstyle="select:title"/></term>
 <listitem><para>A collection with character string indexes. Index comparisons are performed
-using the string == comparison method.
+using the string <methodname>==</methodname> comparison method.
 </para></listitem></varlistentry>
 <varlistentry><term><xref linkend="clsIdentityTable" xrefstyle="select:title"/></term>
 <listitem><para>A collection with indexes that can be any object. The
@@ -107,12 +109,12 @@ can be any object and each index is unique.
 </para></listitem></varlistentry>
 <varlistentry><term><xref linkend="clsStem" xrefstyle="select:title"/></term>
 <listitem><para>A collection with character string indexes constructed from one
-or more string segments.  Index comparisons are performed using the string ==
+or more string segments.  Index comparisons are performed using the string <methodname>==</methodname>
 comparison method.
 </para></listitem></varlistentry>
 <varlistentry><term><xref linkend="clsStringTable" xrefstyle="select:title"/></term>
 <listitem><para>A collection with character string indexes. Index comparisons are performed
-using the string == comparison method.
+using the string <methodname>==</methodname> comparison method.
 </para></listitem></varlistentry>
 <varlistentry><term><xref linkend="clsTable" xrefstyle="select:title"/></term>
 <listitem><para>A collection with indexes that can be any object.
@@ -132,7 +134,7 @@ the organization of the classes.</para>
 <xref linkend="clsCollection" xrefstyle="select:title"/>
 <itemizedlist>
 
- <listitem><para><xref linkend="clsMapCollection" xrefstyle="select:title"/>
+ <listitem><para><xref linkend="clsMapCollection" xrefstyle="template:MapCollection"/> classes
   <simplelist>
    <member><xref linkend="clsDirectory" xrefstyle="select:title"/></member>
    <member><xref linkend="clsIdentityTable" xrefstyle="select:title"/></member>
@@ -144,7 +146,7 @@ the organization of the classes.</para>
   </simplelist>
  </para></listitem>
 
- <listitem><para><xref linkend="clsOrderedCollection" xrefstyle="select:title"/>
+ <listitem><para><xref linkend="clsOrderedCollection" xrefstyle="template:OrderedCollection"/> classes
   <simplelist>
    <member><xref linkend="clsArray" xrefstyle="select:title"/></member>
    <member><xref linkend="clsCircularQueue" xrefstyle="select:title"/></member>
@@ -153,7 +155,7 @@ the organization of the classes.</para>
   </simplelist>
  </para></listitem>
 
- <listitem><para><xref linkend="clsSetCollection" xrefstyle="select:title"/>
+ <listitem><para><xref linkend="clsSetCollection" xrefstyle="template:SetCollection"/> classes
   <simplelist>
    <member><xref linkend="clsBag" xrefstyle="select:title"/></member>
    <member><xref linkend="clsSet" xrefstyle="select:title"/></member>
@@ -167,9 +169,10 @@ the organization of the classes.</para>
 
 <section id="clsCollection"><title>Collection Class</title>
 <indexterm><primary>Collection class</primary></indexterm>
-<para>The Collection class is a MIXIN class that defines the basic set of
-methods implemented by all Collections.  Many of the Collection class methods
-are abstract and must be implemented by the inheriting subclasses.
+<para>The <classname>Collection</classname> class is a MIXIN class that
+defines the basic set of methods implemented by all Collections.
+Many of the Collection class methods are abstract and must be implemented
+by the inheriting subclasses.
 </para>
 
 <!-- $GENERATED-20150704-START rexxrefClassTable(Collection) -->
@@ -604,11 +607,23 @@ index values in the receiver collection.</para>
 
 <section id="clsMapCollection"><title>MapCollection Class</title>
 <indexterm><primary>MapCollection class</primary></indexterm>
-<para>The MapCollection class is a MIXIN class that defines the basic set of
-methods implemented by all collections that create a mapping from an index
-object to a value.
+<para>The <classname>MapCollection</classname> class is a MIXIN class that
+defines the basic set of methods implemented by all collections that create
+a mapping from an index object to a value.
 </para>
-<para>This class is defined as a mixin class.</para>
+<para>This class is defined as a <classname>MIXIN</classname> class.
+The following classes inherit from <classname>MapCollection</classname>:
+<xref linkend="clsDirectory" xrefstyle="template:Directory"/>,
+<xref linkend="clsIdentityTable" xrefstyle="template:IdentityTable"/>,
+<xref linkend="clsProperties" xrefstyle="template:Properties"/>,
+<xref linkend="clsRelation" xrefstyle="template:Relation"/>,
+<xref linkend="clsStem" xrefstyle="template:Stem"/>,
+<xref linkend="clsStringTable" xrefstyle="template:StringTable"/>,
+<xref linkend="clsTable" xrefstyle="template:Table"/>, and
+<classname>SetCollection</classname> classes
+<xref linkend="clsBag" xrefstyle="template:Bag"/> and
+<xref linkend="clsSet" xrefstyle="template:Set"/>.
+</para>
 
 <!-- $GENERATED-20150704-START rexxrefClassTable(MapCollection) -->
 <table id="ooRexxMapCollectionClass" frame="all" pgwide="1">
@@ -650,13 +665,13 @@ object to a value.
 <imagedata fileref="images/classes/mapcollection_of.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
-<para>Returns a newly created MapCollection object containing the specified
-index/value <emphasis role="italic">pair</emphasis>s.
+<para>Returns a newly created <classname>MapCollection</classname> object
+containing the specified index/item <emphasis role="italic">pair</emphasis>s.
 Each <emphasis role="italic">pair</emphasis> must be a &singledimarray;
-with exactly two items: the index as the first array item, and the value
+with exactly two items: the index as the first Array item, and the value
 as the second item.
 The <emphasis role="italic">pair</emphasis>s are processed left-to-right and
-added to the MapCollection object.
+added to the <classname>MapCollection</classname> object.
 </para>
 <para><example>
 <title>MapCollection class &mdash; of method</title>
@@ -717,11 +732,17 @@ supplier will overwrite previous items with the same index.
 
 <section id="clsOrderedCollection"><title>OrderedCollection Class</title>
 <indexterm><primary>OrderedCollection class</primary></indexterm>
-<para>The OrderedCollection class is a MIXIN class that defines the basic set of
-methods implemented by all collections that have an inherent index ordering,
-such as an array or a list.
+<para>The <classname>OrderedCollection</classname> class is a MIXIN class
+that defines the basic set of methods implemented by all collections that
+have an inherent index ordering.
 </para>
-<para>This class is defined as a mixin class.</para>
+<para>This class is defined as a MIXIN class.
+The following classes inherit from <classname>OrderedCollection</classname>:
+<xref linkend="clsArray" xrefstyle="template:Array"/>,
+<xref linkend="clsCircularQueue" xrefstyle="template:CircularQueue"/>,
+<xref linkend="clsList" xrefstyle="template:List"/>, and
+<xref linkend="clsQueue" xrefstyle="template:Queue"/>.
+</para>
 
 <!-- $GENERATED-20150704-START rexxrefClassTable(OrderedCollection) -->
 <table id="ooRexxOrderedCollectionClass" frame="all" pgwide="1">
@@ -1188,10 +1209,17 @@ The <emphasis role="italic">argument</emphasis> can be &collection_or_makearray;
 
 <section id="clsSetCollection"><title>SetCollection Class</title>
 <indexterm><primary>SetCollection class</primary></indexterm>
-<para>This is a tagging mixin class only and does not define any methods of
-its own.  Collections that implement SetCollection are MapCollections that
-constrain the index and item to be be the same object.</para>
-<para>This class is defined as a mixin class.</para>
+<para>This is a tagging MIXIN class only and does not define any methods
+of its own.
+Collections that implement <classname>SetCollection</classname> are
+<xref linkend="clsMapCollection" xrefstyle="template:MapCollections"/>
+that constrain the index and item to be be the same object.
+</para>
+<para>This class is defined as a MIXIN class.
+The following classes inherit from <classname>SetCollection</classname>:
+<xref linkend="clsBag" xrefstyle="template:Bag"/> and
+<xref linkend="clsSet" xrefstyle="template:Set"/>.
+</para>
 
 <!-- $GENERATED-20150924-START rexxrefClassTable(SetCollection) -->
 <table id="ooRexxSetCollectionClass" frame="all" pgwide="1">
@@ -1227,12 +1255,14 @@ constrain the index and item to be be the same object.</para>
 <indexterm><primary>Ordered collection classes</primary>
 <secondary>Array class</secondary></indexterm>
 
-<para> An array is a possibly sparse collection with indexes
-that are positive whole numbers. You can reference array items by using one
-or more indexes. The number of indexes is the same as the number of dimensions
-of the array. This number is called the dimensionality of the array.</para>
-<para>Array items can be any valid Rexx object. If an object has not been
-assigned to an array index then that index is considered to contain &nil;.
+<para> An <classname>Array</classname> is a possibly sparse collection
+with indexes that are positive whole numbers.
+You can reference <classname>Array</classname> items by using one or more indexes.
+The number of indexes is the same as the number of dimensions of the
+<classname>Array</classname>.
+This number is called the dimensionality of the <classname>Array</classname>.
+</para>
+<para><classname>Array</classname> items can be any valid Rexx object.
 </para>
 
 <!-- $GENERATED-20150924-START rexxrefClassTable(Array) -->
@@ -2558,9 +2588,10 @@ end
 <indexterm><primary>Set Collection classes</primary>
 <secondary>Bag class</secondary></indexterm>
 
-<para>A Bag is a non-sparse collection that restricts the elements
-to having an item that is the same as the index. Any object can be placed
-in a Bag, and the same object can be placed in a Bag several times.
+<para>A <classname>Bag</classname> is a non-sparse collection that
+restricts the elements to having an item that is the same as the index.
+Any object can be placed in a <classname>Bag</classname>, and the same
+object can be placed in a <classname>Bag</classname> several times.
 </para>
 
 <!-- modified: added from BagMixin class: difference, intersection, putAll, subset, union, xor (see interpreter\RexxClasses\CoreClasses.orx) -->
@@ -2899,7 +2930,7 @@ If <emphasis role="italic">index</emphasis> is specified, it should be
 the same object as <emphasis role="italic">index</emphasis>,
 otherwise <methodname>hasItem</methodname> will always return &false;.
 </para>
-<para>Item and index equality is determined by using the == method.
+<para>Item and index equality is determined by using the <methodname>==</methodname> method.
 </para>
 </section>
 
@@ -3238,15 +3269,16 @@ say fruit~items          /* How many pieces? (5)      */
 <secondary>CircularQueue class</secondary></indexterm>
 
 <para>
-The CircularQueue class allows for storing objects in a circular queue
-of a predefined size. Once the end of the queue has been reached, new item
-objects are inserted from the beginning, replacing earlier entries. Any object
-can be placed in the queue and the same object can occupy more than one position
-in the queue.
+The <classname>CircularQueue</classname> class allows for storing objects
+in a circular queue of a predefined size.
+Once the end of the queue has been reached, new item objects are inserted
+from the beginning, replacing earlier entries.
+Any object can be placed in the queue and the same object can occupy more
+than one position in the queue.
 </para>
 <para>
-The collected objects can be processed in FIFO (first in, first out) or in a
-stack-like LIFO (last in, first out) order.
+The collected objects can be processed in FIFO (first-in, first-out) or in a
+stack-like LIFO (last-in, first-out) order.
 </para>
 
 <!-- $GENERATED-20151104-START rexxrefClassTable(CircularQueue) -->
@@ -3925,12 +3957,15 @@ content: [3,2], content (LIFO): [2->3]
 <indexterm><primary>Map Collection classes</primary>
 <secondary>Directory class</secondary></indexterm>
 
-<para>A Directory is a MapCollection using unique character string indexes.  The
-items of a Directory can be any valid Rexx object.
+<para>A <classname>Directory</classname> is a
+<xref linkend="clsMapCollection" xrefstyle="template:MapCollection"/>
+using unique character string indexes.
+The items of a <classname>Directory</classname> can be any valid Rexx object.
 </para>
-<para>For a MapCollection similar to Directory, but without methods
-<methodname>setMethod</methodname> and <methodname>unsetMethod</methodname>, see
-<xref linkend="clsStringTable" xrefstyle="template:class StringTable"/>.
+<para>See also <xref linkend="clsStringTable" xrefstyle="select:title"/>, a
+<classname>MapCollection</classname> similar to <classname>Directory</classname>,
+but without methods <methodname>setMethod</methodname> and
+<methodname>unsetMethod</methodname>.
 </para>
 
 <!-- $GENERATED-20150924-START rexxrefClassTable(Directory) -->
@@ -4040,7 +4075,7 @@ initial allocation.
 </mediaobject>
 
 <para>Returns the item corresponding to <emphasis role="italic">name</emphasis>.
-This method is the same as the <xref linkend="mthDirectoryPut" xrefstyle="select:title"/>
+This method is the same as the <xref linkend="mthDirectoryAt" xrefstyle="select:title"/>
 method.</para>
 </section>
 
@@ -4580,12 +4615,12 @@ Exit
 <indexterm><primary>Map Collection classes</primary>
 <secondary>IdentityTable class</secondary></indexterm>
 
-<para>An identity table is a collection with indexes
-that can be any object. In an identity table, each item is associated with a
-single index, and there can be only one item for each index. Index and item
-matches in an identity table are made using an object
-identity comparison.  That is, an index will only match if the same instance is
-used in the collection.
+<para>An <classname>IdentityTable</classname> is a collection with indexes
+that can be any object.
+In an <classname>IdentityTable</classname>, each item is associated with a
+single index, and there can be only one item for each index.
+Index and item matches are made using an object identity comparison.
+That is, an index will only match if the same instance is used in the collection.
 </para>
 
 <!-- $GENERATED-20150704-START rexxrefClassTable(IdentityTable) -->
@@ -4963,14 +4998,16 @@ The supplier iterates over the items in an unspecified order.
 <indexterm><primary>List class</primary></indexterm>
 <indexterm><primary>class</primary><secondary>List class</secondary></indexterm>
 <indexterm><primary>Ordered collection classes</primary><secondary>List class</secondary></indexterm>
-<para>A list is a non-sparse sequenced collection similar to the
-<xref linkend="clsArray" xrefstyle="template:Array class"/> to which you can add new items at
-any position in the sequence. The List creates a new index value whenever an
-item is added to the list and the associated index value remains valid
-for that item regardless of other additions or removals.
-Only indexes the list
-object generates are valid i.e. the list is never a sparse list and the list
-object will not modify indexes for items in the list.</para>
+<para>A <classname>List</classname> is a non-sparse sequenced collection similar
+to the <xref linkend="clsArray" xrefstyle="template:Array class"/> to which you
+can add new items at any position in the sequence.
+The <classname>List</classname> creates a new index value whenever an item is
+added to the <classname>List</classname> and the associated index value remains
+valid for that item regardless of other additions or removals.
+Only indexes the <classname>List</classname> object generates are valid, i.e.
+the <classname>List</classname> is never a sparse list and the
+<classname>List</classname> object will not modify indexes for items in the list.
+</para>
 
 <!-- $GENERATED-20150704-START rexxrefClassTable(List) -->
 <table id="ooRexxListClass" frame="all" pgwide="1">
@@ -5627,10 +5664,11 @@ order as the list sequence order.</para>
 <secondary>Properties class</secondary></indexterm>
 <indexterm><primary>Map Collection classes</primary>
 <secondary>Properties class</secondary></indexterm>
-<para>A properties object is a collection with unique
+<para>A <classname>Properties</classname> object is a collection with unique
 indexes that are character strings representing names and items that
-are also restricted to character string values.  Properties objects
-are useful for processing bundles of application option values.
+are also restricted to character string values.
+<classname>Properties</classname> objects are useful for processing bundles
+of application option values.
 </para>
 
 <!-- $GENERATED-20151006-START rexxrefClassTable(Properties) -->
@@ -5938,11 +5976,13 @@ argument must be a valid Rexx whole number.</para>
 <indexterm><primary>Ordered collection classes</primary>
 <secondary>Queue class</secondary></indexterm>
 
-<para>A queue is a non-sparse sequenced collection with whole-number
-indexes. The indexes specify the position of an item relative to the head
-(first item) of the queue. Adding or removing an item changes the association
-of an index to its queue item. You can add items at either the tail or the
-head of the queue.</para>
+<para>A <classname>Queue</classname> is a non-sparse sequenced collection
+with whole-number indexes.
+The indexes specify the position of an item relative to the head (first item)
+of the queue.
+Adding or removing an item changes the association of an index to its queue item.
+You can add items at either the tail or the head of the queue.
+</para>
 
 <!-- $GENERATED-20151006-START rexxrefClassTable(Queue) -->
 <table id="ooRexxQueueClass" frame="all" pgwide="1">
@@ -6675,10 +6715,13 @@ the queue first.</para>
 <indexterm><primary>Map Collection classes</primary>
 <secondary>Relation class</secondary></indexterm>
 
-<para>A relation is a collection with indexes that can
-be any object.  In a relation, each item is associated with
-a single index, but there can be more than one item with the same index (unlike
-a table, which can contain only one item for any index).</para>
+<para>A <classname>Relation</classname> is a collection with indexes that can
+be any object.
+In a <classname>Relation,</classname> each item is associated with a single
+index, but there can be more than one item with the same index (unlike a
+<xref linkend="clsTable" xrefstyle="template:Table"/>, which can contain only
+one item for any index).
+</para>
 
 <!-- modified: added from ManyItemsMixin class: difference, intersection, subset, union, xor (see interpreter\RexxClasses\CoreClasses.orx) -->
 <!-- $GENERATED-20151005-START rexxrefClassTable(Relation) -->
@@ -6982,7 +7025,7 @@ If <emphasis role="italic">index</emphasis> is specified, <methodname>hasItem</m
 will only return &true; if the relation contains the pairing of
 <emphasis role="italic">item</emphasis> associated with index
 <emphasis role="italic">index</emphasis>.
-Item and index equality is determined by using the == method.
+Item and index equality is determined by using the <methodname>==</methodname> method.
 </para>
 </section>
 
@@ -7341,12 +7384,13 @@ End
 <indexterm><primary>Set Collection classes</primary>
 <secondary>Set class</secondary></indexterm>
 
-<para>A Set is a collection containing member items
-where the index is the same as the item (similar to a Bag collection). Any
-object can be placed in a set. There can be only one occurrence of any object in
-a set (unlike a Bag collection).
-Item equality is determined by
-using the == method.
+<para>A <classname>Set</classname> is a collection containing member items
+where the index is the same as the item (similar to a
+<xref linkend="clsBag" xrefstyle="template:Bag"/> collection).
+Any object can be placed in a <classname>Set</classname>.
+There can be only one occurrence of any object in a <classname>Set</classname>
+(unlike a <classname>Bag</classname> collection).
+Item equality is determined by using the <methodname>==</methodname> method.
 </para>
 
 <!-- modified: added from SetMixin class: intersection, putAll, subset, union, xor (see interpreter\RexxClasses\CoreClasses.orx) -->
@@ -7876,7 +7920,7 @@ index values in the receiver collection.</para>
 <indexterm><primary>Map Collection classes</primary>
 <secondary>Stem class</secondary></indexterm>
 
-<para>A stem object is a collection with unique indexes
+<para>A <classname>Stem</classname> object is a collection with unique indexes
 that are character strings.</para>
 
 <!-- $GENERATED-20151005-START rexxrefClassTable(Stem) -->
@@ -8367,19 +8411,22 @@ messages to the stem's current default value.  For additional information, see
 </section>
 </section>
 
-<section id="clsStringTable" revisionflag="added"><title>&added50;The StringTable Class</title>
+<section id="clsStringTable" revisionflag="added"><title>&added50;StringTable Class</title>
 <indexterm><primary>StringTable class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>StringTable class</secondary></indexterm>
 <indexterm><primary>Map Collection classes</primary>
 <secondary>StringTable class</secondary></indexterm>
 
-<para>A StringTable is a MapCollection using unique character string indexes.  The
-items of a StringTable can be any valid Rexx object.
+<para>A <classname>StringTable</classname> is a
+<xref linkend="clsMapCollection" xrefstyle="template:MapCollection"/>
+using unique character string indexes.
+The items of a <classname>StringTable</classname> can be any valid Rexx object.
 </para>
-<para>For a MapCollection similar to StringTable, but with additional methods
-<methodname>setMethod</methodname> and <methodname>unsetMethod</methodname>, see
-<xref linkend="clsDirectory" xrefstyle="template:class Directory"/>.
+<para>See also <xref linkend="clsDirectory" xrefstyle="select:title"/>, a
+<classname>MapCollection</classname> similar to <classname>StringTable</classname>,
+but with additional methods <methodname>setMethod</methodname> and
+<methodname>unsetMethod</methodname>.
 </para>
 
 <!-- $GENERATED-20151006-START rexxrefClassTable(StringTable) -->
@@ -8910,12 +8957,13 @@ case, <methodname>unknown</methodname> returns no result.</para>
 <indexterm><primary>Map Collection classes</primary>
 <secondary>Table class</secondary></indexterm>
 
-<para>A table is a collection with indexes
-that can be any object. In a table, each item is associated
-with a single index, and there can be only one item for each index (unlike
-a relation, which can contain more than one item with the same index).
-Index equality is determined by
-using the == method.
+<para>A <classname>Table</classname> is a collection with indexes
+that can be any object.
+In a <classname>Table</classname>, each item is associated with a single
+index, and there can be only one item for each index (unlike a
+<xref linkend="clsRelation" xrefstyle="template:Relation"/>,
+which can contain more than one item with the same index).
+Index equality is determined by using the <methodname>==</methodname> method.
 </para>
 
 <!-- $GENERATED-20151005-START rexxrefClassTable(Table) -->
@@ -9310,7 +9358,7 @@ returns the values -1 (less than), 0 (equal), or 1 (greater than) to indicate th
 of the two strings.</para>
 <section id="sortcomparable"><title>Sorting non-strings</title>
 <para>Sorting is not limited to string values.
-Any object that inherits the <classname>Comparable</classname> mixin class and
+Any object that inherits the <classname>Comparable</classname> MIXIN class and
 implements a <methodname>compareTo</methodname> method can be sorted.
 The <xref linkend="clsDateTime" xrefstyle="template:DateTime class"/> and
 <xref linkend="clsTimeSpan" xrefstyle="template:TimeSpan class"/>

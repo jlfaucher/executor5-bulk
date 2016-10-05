@@ -159,7 +159,7 @@ of the command, <emphasis role="italic">environment</emphasis>
 is set back to its original state, thus
 temporarily changing the destination for a single command. The special variable
 RC and the environment symbol .RS are set and errors and failures in commands
-processed in this way are trapped or traced.</para>
+processed in this way are trapped or traced.
 <indexterm><primary>ADDRESS instruction</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -178,13 +178,14 @@ ADDRESS CMD "DIR C:\CONFIG.SYS"
 ADDRESS "bash" "ls /usr/lib"
 </programlisting>
 </example>
+</para>
 <para>If you specify only <emphasis role="italic">environment</emphasis>, a
 lasting change of destination occurs: all commands (see
 <xref linkend="commnds" />) that follow are routed to
 the specified command environment, until the next ADDRESS instruction is
 processed. The previously selected environment is saved.</para>
 <para>Assume that the environment for a Windows text editor is
-registered by the name <computeroutput>EDIT</computeroutput>:</para>
+registered by the name <computeroutput>EDIT</computeroutput>:
 <example>
 <title>Instructions &mdash; ADDRESS environments</title>
 <programlisting>
@@ -194,6 +195,7 @@ if rc=0 then "COPY C:\AUTOEXEC.BAT C:\*.TMP"
 address EDIT
 </programlisting>
 </example>
+</para>
 <para>Subsequent commands are passed to the editor until the next ADDRESS
 instruction.</para>
 <para>Similarly, you can use the VALUE form to make a lasting change to the
@@ -203,13 +205,14 @@ the resulting character string value forms the name of the environment. You
 can omit the subkeyword VALUE if <emphasis role="italic">env_expression</emphasis>
 does not begin with
 a literal string or symbol, that is, if it starts with a special character
-such as an operator character or parenthesis.</para>
+such as an operator character or parenthesis.
 <example>
 <title>Instructions &mdash; ADDRESS environments</title>
 <programlisting>
 ADDRESS ("ENVIR"||number)  /* Same as ADDRESS VALUE "ENVIR"||number */
 </programlisting>
 </example>
+</para>
 <para>With no arguments, commands are routed back to the environment that was
 selected before the previous change of the environment, and the current environment
 name is saved. After changing the environment, repeated execution of ADDRESS
@@ -293,7 +296,6 @@ before processing them. Use the
 PARSE ARG instruction if you do not want uppercase translation.</para>
 <para>You can use the ARG and PARSE ARG instructions repeatedly on the same source
 objects (typically with different templates). The source objects do not change.
-</para>
 <indexterm><primary>ARG instruction</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -308,6 +310,7 @@ Arg adjective noun .
 /*       NOUN       contains "RIDER"          */
 </programlisting>
 </example>
+</para>
 <para>If you expect more than one object to be available to the program or
 routine, you can use a comma
 <indexterm><primary>, (comma)</primary>
@@ -315,7 +318,7 @@ routine, you can use a comma
 <indexterm><primary>comma</primary>
 <secondary>in parsing template list</secondary></indexterm>
 in the parsing <emphasis role="italic">template_list</emphasis> so each template
-is selected in turn.</para>
+is selected in turn.
 <example>
 <title>Instructions &mdash; ARG</title>
 <programlisting>
@@ -327,6 +330,7 @@ Fred:  Arg string, num1, num2
 /*        NUM2    contains "5"                  */
 </programlisting>
 </example>
+</para>
 
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
@@ -506,7 +510,7 @@ of the routine. See <xref linkend="xbuiltin" />.</para>
 as a subroutine. Any result is stored in RESULT. Simply specify
 <computeroutput>CALL</computeroutput>, the function name (with
 <emphasis>no parenthesis</emphasis>)
-and any arguments:</para></note>
+and any arguments:
 <example>
 <title>Instructions &mdash; CALL</title>
 <programlisting>
@@ -514,6 +518,7 @@ call length "string"   /* Same as length("string") */
 say result             /* Produces: 6              */
 </programlisting>
 </example>
+</para></note>
 </listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">External routines</emphasis></term>
 <listitem><para>Users can write or use routines that are external to the
@@ -568,7 +573,6 @@ dropped (becomes uninitialized).</para>
 as well as recursive calls to itself.
 <indexterm><primary>recursive call</primary></indexterm>
 <indexterm><primary>call, recursive</primary></indexterm>
-</para>
 <indexterm><primary>CALL instruction</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -588,14 +592,16 @@ factorial: procedure     /* Calculate factorial by  */
   return  result * n
 </programlisting>
 </example>
-<indexterm><primary>tracing</primary>
-<secondary>action saved during subroutine calls</secondary></indexterm>
+</para>
 <para>During
 internal subroutine (and function) execution, all important pieces of
 information are automatically saved and then restored upon return from the
-routine. These are: </para>
+routine. These are:
+<indexterm><primary>tracing</primary>
+<secondary>action saved during subroutine calls</secondary></indexterm>
 <indexterm><primary>exception conditions saved during subroutine calls
 </primary></indexterm>
+</para>
 <itemizedlist>
 <listitem><para><emphasis role="bold">The status of loops and other
 structures:</emphasis>  Executing
@@ -776,7 +782,6 @@ Similarly, TO, BY, and FOR cannot be used in
 FOREVER is also reserved, but only if it immediately
 follows the keyword DO or LOOP and is not followed by an equal sign.
 However, parentheses around or within an expression can prevent these keywords from terminating an expression. For example,
-</para>
 <example><title>Instructions &mdash; DO variable without parenthesis</title>
 <programlisting>
 do i = 1 while i &lt; until
@@ -784,8 +789,9 @@ do i = 1 while i &lt; until
 end
 </programlisting>
 </example>
+</para>
 <para>is considered a syntax error because of the variable named UNTIL.  Using parentheses
-around the expression allows the variable UNTIL to be used:</para>
+around the expression allows the variable UNTIL to be used:
 <example><title>Instructions &mdash; DO variable with parenthesis</title>
 <programlisting>
 do i = 1 while (i &lt; until)
@@ -793,6 +799,7 @@ do i = 1 while (i &lt; until)
 end
 </programlisting>
 </example>
+</para>
 </listitem>
 <listitem><para>The <emphasis role="italic">exprb</emphasis>
 option defaults to <computeroutput>1</computeroutput>,
@@ -849,7 +856,7 @@ allowed. The list need not contain any names&mdash;that is, it can be empty.
 a name more than once or to drop a variable that is not known. If an exposed
 variable is named (see <xref linkend="keyExpose" />
 and <xref linkend="keyProcedure" />), then
-the original variable is dropped.</para>
+the original variable is dropped.
 <indexterm><primary>DROP instruction</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -863,7 +870,8 @@ Drop  a z.3 z.j
 /* so that reference to them returns their names.    */
 </programlisting>
 </example>
-<para>Here, a variable name in parentheses is used as a subsidiary list.</para>
+</para>
+<para>Here, a variable name in parentheses is used as a subsidiary list.
 <example>
 <title>Instructions &mdash; DROP</title>
 <programlisting>
@@ -873,16 +881,18 @@ drop (mylist) f
 /* Does not drop MYLIST                        */
 </programlisting>
 </example>
+</para>
+<para>Specifying a stem
 <indexterm><primary>stem of a variable</primary>
 <secondary>used in DROP instruction</secondary></indexterm>
-<para> Specifying a stem
 (that is, a symbol that contains only one period as the last character) assigns
 the stem variable to a new, empty stem object.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<para><emphasis role="bold">Example:</emphasis>
 <programlisting>
 Drop  z.
 /* Assigns stem variable z. to a new empty stem object */
 </programlisting>
+</para>
 </section>
 
 <section id="keyExit"><title>EXIT</title>
@@ -913,7 +923,7 @@ if an internal routine is being run.  If no internal routine is active,
 effect on the program running.</para>
 <para>If you specify <emphasis role="italic">expression</emphasis>,
 it is evaluated and the object resulting from the evaluation is passed back
-to the caller when the program stops.</para>
+to the caller when the program stops.
 <indexterm><primary>EXIT instruction</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -926,6 +936,7 @@ Exit j*4
 /* Would exit with the string "12" */
 </programlisting>
 </example>
+</para>
 <para>If you do not specify <emphasis role="italic">expression</emphasis>,
 no data is passed back to the
 caller. If the program was called as a function, this is detected
@@ -995,7 +1006,7 @@ separated by whitespace characters, except that no parentheses are
 allowed.</para>
 <para>Variables are exposed in sequence from left to right. It is not an error
 to specify a name more than once, or to specify a name that has not been used
-as a variable.</para>
+as a variable.
 <indexterm><primary>EXPOSE instruction</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -1021,10 +1032,11 @@ myobj~d         /* Would display "Z is: 120"                 */
   return
 </programlisting>
 </example>
+</para>
 <para>You can expose an entire collection of
 <xref linkend="compsym" xrefstyle="template:compound variables"/>
 by specifying their stem in the variable list or a subsidiary list.
-The variables are exposed for all operations.</para>
+The variables are exposed for all operations.
 <example>
 <title>Instructions &mdash; EXPOSE</title>
 <programlisting>
@@ -1036,6 +1048,7 @@ c.1="7."        /*  This sets "C.1" in the object             */
                 /*  previously exist.                         */
 </programlisting>
 </example>
+</para>
 </section>
 
 <section id="keyForward"><title>FORWARD</title>
@@ -1120,7 +1133,7 @@ the language processor drops (uninitializes) the variable RESULT.</para>
 <para>The FORWARD instruction passes all or part
 of an existing message invocation
 to another method. For example, the FORWARD instruction can forward a message
-to a different target object, using the same message name and arguments.</para>
+to a different target object, using the same message name and arguments.
 <indexterm><primary>FORWARD instruction</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -1132,8 +1145,9 @@ to a different target object, using the same message name and arguments.</para>
   forward to (self~string)       /* Forward to the string value */
 </programlisting>
 </example>
+</para>
 <para>You can use FORWARD in an UNKNOWN method to reissue to another object the
-message that the UNKNOWN method traps.</para>
+message that the UNKNOWN method traps.
 <example>
 <title>Instructions &mdash; FORWARD</title>
 <programlisting>
@@ -1144,9 +1158,10 @@ message that the UNKNOWN method traps.</para>
   forward to (self~string) message (msg) arguments (args)
 </programlisting>
 </example>
+</para>
 <para>You can use FORWARD in a method to forward a message to a superclass's
 methods, passing the same arguments. This is very common usage in object INIT
-methods.</para>
+methods.
 <example>
 <title>Instructions &mdash; FORWARD</title>
 <programlisting>
@@ -1158,6 +1173,7 @@ methods.</para>
   penalty = "1% for balance under 500"
 </programlisting>
 </example>
+</para>
 <para>In the preceding example, the CONTINUE option causes the FORWARD message
 to continue with the next instruction, rather than exiting the Savings class
 INIT method.</para>
@@ -1206,7 +1222,7 @@ the WHEN <emphasis role="italic">expression</emphasis>. If the
 <emphasis role="italic">expression</emphasis> evaluates to &true;,
 the method resumes running. If the
 <emphasis role="italic">expression</emphasis> evaluates to &false;,
-GUARD resumes waiting.</para>
+GUARD resumes waiting.
 <indexterm><primary>GUARD instruction</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -1229,6 +1245,7 @@ GUARD resumes waiting.</para>
 ]]>
 </programlisting>
 </example>
+</para>
 <para>If you specify WHEN and the method has exclusive access to the object's
 variable pool, then the exclusive access is released while GUARD is waiting
 for an object variable to change. Exclusive access is reacquired before the
@@ -1275,7 +1292,7 @@ and must result in <computeroutput>0</computeroutput> or
 &true;. If you specify an ELSE, the
 instruction after ELSE is processed only if the result of the evaluation is
 &false;.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<para><emphasis role="bold">Example:</emphasis>
 <indexterm><primary>IF instruction</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -1284,15 +1301,17 @@ instruction after ELSE is processed only if the result of the evaluation is
 if answer="YES" then say "OK!"
 else say "Why not?"
 </programlisting>
+</para>
 <para>Remember that if the ELSE clause is on the same line as the last clause
 of the THEN part, you need a semicolon before ELSE.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<para><emphasis role="bold">Example:</emphasis>
 <programlisting>
 if answer="YES" then say "OK!";  else say "Why not?"
 </programlisting>
+</para>
 <para>ELSE binds to the nearest IF at the same level. You can use the NOP
 instruction to eliminate errors and possible confusion when IF constructs
-are nested, as in the following example.</para>
+are nested, as in the following example.
 <example>
 <title>Instructions &mdash; IF</title>
 <programlisting>
@@ -1305,6 +1324,7 @@ Else
   say "Why not?"
 </programlisting>
 </example>
+</para>
 
 <para>The <emphasis role="italic">expression</emphasis> may also be
 a list of expressions separated by ",".
@@ -1315,7 +1335,7 @@ Evaluation will stop with
 the first <computeroutput>0</computeroutput> result and <computeroutput>0</computeroutput>
 will be returned as the condition result.  If all of the subexpressions evaluate
 to <computeroutput>1</computeroutput>, then the condition result is also
-<computeroutput>1</computeroutput>.</para>
+<computeroutput>1</computeroutput>.
 <example>
 <title>Instructions &mdash; IF</title>
 <programlisting>
@@ -1325,8 +1345,9 @@ Else
   say answer "is odd"
 </programlisting>
 </example>
+</para>
 
-<para>The example above is not the same as using the following</para>
+<para>The example above is not the same as using the following
 
 <example>
 <title>Instructions &mdash; IF</title>
@@ -1337,6 +1358,7 @@ Else
   say answer "is odd"
 </programlisting>
 </example>
+</para>
 <para>The logical &amp; operator will evaluate both terms of the operation, so the
 term "answer//2" will result in a syntax error if answer is a non-numeric value.  With the
 list conditional form, evaluation will stop with the first &false; result, so the
@@ -1391,7 +1413,7 @@ For example, a string of instructions being interpreted cannot contain a LEAVE
 or ITERATE instruction (valid only within a repetitive loop) unless it
 also contains the whole repetitive DO...END or LOOP...END construct.</para>
 <para>A semicolon is implied at the end of the expression during execution, if
-one was not supplied.</para>
+one was not supplied.
 <indexterm><primary>INTERPRET instruction</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -1415,6 +1437,7 @@ interpret data        /* Displays:          */
                       /*  Hello there!      */
 </programlisting>
 </example>
+</para>
 
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
@@ -1424,7 +1447,7 @@ are, therefore, an error.</para></listitem>
 <listitem><para>Executing the INTERPRET instruction with
 <computeroutput>TRACE R</computeroutput> or
 <computeroutput>TRACE I</computeroutput>
-can be helpful in interpreting the results you get.</para>
+can be helpful in interpreting the results you get.
 
 <indexterm><primary>INTERPRET instruction</primary>
 <secondary>example</secondary></indexterm>
@@ -1465,6 +1488,7 @@ run, you get the following trace: </para>
 Hello Kitty!
 </programlisting>
 </example>
+</para>
 <para>Lines 3 and 4 set the variables used in line 5. Execution
 of line 5 then proceeds in two stages. First the string to be interpreted
 is built up, using a literal string, a variable
@@ -1480,13 +1504,14 @@ displayed.</para></listitem>
 <listitem><para>For many purposes, you can use the 
 <xref linkend="bifValue" xrefstyle="select:title"/> function
 instead of the INTERPRET instruction. The following line could, therefore,
-have replaced line 5 in the previous example: </para>
+have replaced line 5 in the previous example:
 <example>
 <title>Instructions &mdash; INTERPRET</title>
 <programlisting>
 say "Hello" value(indirect)"!"
 </programlisting>
 </example>
+</para>
 <para>INTERPRET is usually required only in special cases, such as when
 two or more statements are to be interpreted together, or when an expression
 is to be evaluated dynamically.</para></listitem>
@@ -1526,7 +1551,7 @@ If <emphasis role="italic">name</emphasis> is specified, it must be the
 name of the control variable or the LABEL name of a currently
 active loop, which can be the innermost, and this is the loop that is stepped.
 Any active loops inside the one selected for iteration are ended (as though
-by a LEAVE instruction).</para>
+by a LEAVE instruction).
 <indexterm><primary>ITERATE instruction</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -1545,6 +1570,7 @@ end myLabelName
 */
 </programlisting>
 </example>
+</para>
 
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
@@ -1601,7 +1627,7 @@ be the innermost, and that block, and any active block
 <indexterm><primary>active blocks</primary></indexterm>
 inside it, are then
 ended. Control then passes to the clause following the END that matches the
-instruction of the selected block.</para>
+instruction of the selected block.
 <indexterm><primary>LEAVE instruction</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -1625,6 +1651,7 @@ say 'after looping' i 'times'
 */
 </programlisting>
 </example>
+</para>
 
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
@@ -1714,7 +1741,7 @@ case, which is equivalent to DO FOREVER ... END.</para>
 </mediaobject>
 
 <para>NOP is a dummy instruction that has no effect.  It can be useful as the
-target of a THEN or ELSE clause.</para>
+target of a THEN or ELSE clause.
 <indexterm><primary>NOP instruction</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -1729,6 +1756,7 @@ Select
 end
 </programlisting>
 </example>
+</para>
 
 <note><title>Note</title>
 <para>Putting an extra semicolon instead of the NOP would
@@ -2117,7 +2145,7 @@ compiled for 64-bit addressing mode.
 <listitem><para>
   Three tokens that describe the language processor release date in the same format as the default for the
   <xref linkend="bifDate" xrefstyle="select:title"/> built-in function,
-  for example, <literal>"9 Dec 2015"</literal>.
+  for example, <literal>"1 Sep 2016"</literal>.
 </para></listitem>
 </itemizedlist>
 </para>
@@ -2198,7 +2226,7 @@ a variable.</para>
 <para>Any variables in the main program that are not exposed are still protected.
 Therefore, some of the caller's variables can be made accessible and can
 be changed, or new variables can be created.  All these changes are visible
-to the caller upon RETURN from the routine.</para>
+to the caller upon RETURN from the routine.
 <indexterm><primary>PROCEDURE instruction</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -2219,12 +2247,12 @@ toft: procedure expose j k z.j
   return
 </programlisting>
 </example>
+</para>
 <para>Note that if <computeroutput>Z.J</computeroutput> in the
 EXPOSE list is placed before <computeroutput>J</computeroutput>,
 the caller's value of <computeroutput>J</computeroutput> is not visible,
 so <computeroutput>Z.1</computeroutput> is not exposed.</para>
 <para>The variables in a subsidiary list are also exposed from left to right.
-</para>
 <example>
 <title>Instructions &mdash; PROCEDURE</title>
 <programlisting>
@@ -2240,9 +2268,10 @@ test: procedure expose (a)   /* Exposes A, J, K, and M     */
   return
 </programlisting>
 </example>
+</para>
 <para>You can use subsidiary lists to more easily expose a number of variables
 at a time or, with the VALUE built-in function, to manipulate dynamically
-named variables.</para>
+named variables.
 <example>
 <title>Instructions &mdash; PROCEDURE</title>
 <programlisting>
@@ -2263,11 +2292,12 @@ Playvars: procedure expose (showlist) f
   return
 </programlisting>
 </example>
-<indexterm><primary>stem of a variable</primary>
-<secondary>used in PROCEDURE instruction</secondary></indexterm>
+</para>
 <para>Specifying a stem as <emphasis role="italic">name</emphasis>
 exposes this stem and all possible compound
-variables whose names begin with that stem. (See .)</para>
+variables whose names begin with that stem.
+<indexterm><primary>stem of a variable</primary>
+<secondary>used in PROCEDURE instruction</secondary></indexterm>
 <example>
 <title>Instructions &mdash; PROCEDURE</title>
 <programlisting>
@@ -2289,6 +2319,7 @@ lucky7:Procedure Expose i j a. c.
   return
 </programlisting>
 </example>
+</para>
 
 <note><title>Note</title>
 <para>Variables can be exposed through several generations
@@ -2413,7 +2444,7 @@ into the external data queue. (See
 <xref linkend="iostrms" /> for
 a discussion of Rexx input and output.)</para>
 <para>If you do not specify <emphasis role="italic">expression</emphasis>,
-a null string is stacked.</para>
+a null string is stacked.
 <indexterm><primary>PUSH instruction</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -2426,6 +2457,7 @@ push       /* Puts a null line onto the queue */
 push a 2   /* Puts "Fred 2"    onto the queue */
 </programlisting>
 </example>
+</para>
 <para>The
 <xref linkend="bifQueued" xrefstyle="select:title"/> built-in function
 returns the number of lines currently in the external data queue.
@@ -2455,7 +2487,7 @@ of the external data queue. That is, it is added FIFO (First In, First Out).
 (See <xref linkend="iostrms" />
 for a discussion of Rexx input and output.)</para>
 <para>If you do not specify <emphasis role="italic">expression</emphasis>,
-a null string is queued.</para>
+a null string is queued.
 <indexterm><primary>QUEUE instruction</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -2468,6 +2500,7 @@ queue a 2  /* Enqueues "Toft 2" */
 queue      /* Enqueues a null line behind the last */
 </programlisting>
 </example>
+</para>
 <para>The <xref linkend="bifQueued" xrefstyle="select:title"/> built-in
 function returns the number
 of lines currently in the external data queue.</para>
@@ -2599,7 +2632,7 @@ Following the return or exit, the appropriate action is taken in the caller
 or sender (see
 <xref linkend="atwcnt" />).
 If specified, the result value can be obtained from the RESULT entry of the
-condition object.</para>
+condition object.
 <indexterm><primary>RAISE instruction</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -2615,12 +2648,12 @@ raise syntax (errnum)                /* Uses the value of the variable ERRNUM */
 raise user badvalue                  /* Raises user condition BADVALUE        */
 </programlisting>
 </example>
+</para>
 <para>If you specify PROPAGATE, and there is a currently trapped condition, this
 condition is raised again in the caller (for a routine) or sender (for a method).
 Any ADDITIONAL, DESCRIPTION, ARRAY, RETURN, or EXIT information specified
 on the RAISE instruction replaces the corresponding values for the currently
 trapped condition. A SYNTAX error occurs if no condition is currently trapped.
-</para>
 <example>
 <title>Instructions &mdash; RAISE</title>
 <programlisting>
@@ -2635,6 +2668,7 @@ syntax:
   raise propagate      /* Propagates SYNTAX information to caller */
 </programlisting>
 </example>
+</para>
 </section>
 
 <section id="keyReply"><title>REPLY</title>
@@ -2660,7 +2694,7 @@ If you omit <emphasis role="italic">expression</emphasis>, no object
 is passed back.</para>
 <para>Unlike RETURN or EXIT, the method issuing REPLY continues to run after
 the REPLY until it issues an EXIT or RETURN instruction. The EXIT or RETURN
-must not specify a result expression.</para>
+must not specify a result expression.
 <indexterm><primary>REPLY instruction</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -2673,6 +2707,7 @@ call tidyup        /* Can run in parallel with sender */
 return
 </programlisting>
 </example>
+</para>
 
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
@@ -2989,7 +3024,6 @@ term "answer//2" will result in a syntax error if answer is a non-numeric value.
 list conditional form, evaluation will stop with the first &false; result, so the
 "answer//2" term will not be evaluated if the datatype test returns
 &false;.
-</para>
 
 <example>
 <title>Instructions &mdash; SELECT CASE</title>
@@ -2999,6 +3033,7 @@ list conditional form, evaluation will stop with the first &false; result, so th
   otherwise say "try again"
 end
 ]]></programlisting></example>
+</para>
 
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
@@ -3107,7 +3142,7 @@ of the program.</para>
 <secondary>duplicate</secondary></indexterm>
 and <emphasis role="italic">usercondition</emphasis> are single symbols, which
 are taken as constants. The <emphasis role="italic">trapname</emphasis> is a
-string or symbol taken as a constant.</para>
+string or symbol taken as a constant.
 <indexterm><primary>SIGNAL instruction</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -3121,6 +3156,7 @@ Signal fred;  /* Transfer control to label FRED below */
 Fred: say "Hi!"
 </programlisting>
 </example>
+</para>
 <para>If there are duplicates,
 control is always passed to the first occurrence of the label in the program.
 </para>
@@ -3350,7 +3386,7 @@ function, and method calls. See
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>TRACE instruction</secondary></indexterm>
-<para>One of the most common traces you will use is: </para>
+<para>One of the most common traces you will use is:
 <example>
 <title>Instructions &mdash; TRACE</title>
 <programlisting>
@@ -3359,6 +3395,7 @@ TRACE ?R
 /* and tracing results of expressions begins.          */
 </programlisting>
 </example>
+</para>
 </section>
 
 <section id="tracfor"><title>The Format of Trace Output</title>
@@ -3628,7 +3665,7 @@ specified for the argument.</para>
 STRICT ARG statement and indicates that more arguments may follow. It allows
 defining a minimum amount of arguments that must be supplied or for which
 there are default values defined and that may be followed optionally by any
-additional arguments.</para>
+additional arguments.
 <indexterm><primary>USE instruction</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -3670,9 +3707,10 @@ Fred: use strict arg string, num1, num2=4
 /*      NUM2 contains "4"            */
 </programlisting>
 </example>
+</para>
 <para>In the above example, a call to the function FRED may have either 2 or 3 arguments.  The
 STRICT keyword on the USE instruction will raise a syntax error for any other combination of
-arguments.</para>
+arguments.
 <example>
 <title>Instructions &mdash; USE</title>
 <programlisting>
@@ -3691,7 +3729,9 @@ test: procedure /* a minimum of one argument must be supplied */
   say "--"
   return
 </programlisting>
-<para><emphasis role="bold">Output:</emphasis></para>
+</example>
+</para>
+<para><emphasis role="bold">Output:</emphasis>
 <programlisting>
 There are [1] argument(s); v1,v2=[one,zwei]
 --
@@ -3706,21 +3746,23 @@ There are [5] argument(s); v1,v2=[one,zwei]
  arg # 5=[five]
 --
 </programlisting>
-</example>
+</para>
 <para>The assignment targets may be any term that can be on the left side of
-an assignment statement.</para>
+an assignment statement.
 <example>
 <title>Instructions &mdash; USE</title>
 <programlisting>
 expose myArray myDirectory
 use arg myArray[1], myDirectory~name
 </programlisting>
-<para>would be equivalent to</para>
+</example>
+</para>
+<para>would be equivalent to
 <programlisting>
 myArray[1] = arg(1)
 myDirectory~name = arg(2)
 </programlisting>
-</example>
+</para>
 <para>You can retrieve or check the arguments by using the
 <xref linkend="bifArg" xrefstyle="template:ARG"/> built-in function.
 The ARG and PARSE ARG instructions are alternative
@@ -3746,7 +3788,6 @@ if no <emphasis role="italic">name</emphasis> is specified, all variables
 will become object variables.
 <indexterm><primary>USE LOCAL instruction</primary><secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary><secondary>USE LOCAL instruction</secondary></indexterm>
-</para>
 <example>
 <title>Instructions &mdash; USE LOCAL</title>
 <programlisting>::method init
@@ -3757,6 +3798,7 @@ USE LOCAL x y z   -- only x, y, and z are local
 use local         -- any variable is an object variable
 </programlisting>
 </example>
+</para>
 </section>
 </section>
 

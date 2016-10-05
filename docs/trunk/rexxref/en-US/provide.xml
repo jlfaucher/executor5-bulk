@@ -775,14 +775,14 @@ the language processor converts it to some string representation and uses
 this. However, the programmer can cause the language processor to raise the
 NOSTRING condition when the supplied object does not have an equivalent string
 value.</para>
-<para>To obtain a string value, the language processor sends a REQUEST("STRING")
+<para>To obtain a string value, the language processor sends a <code>request("STRING")</code>
 message to the object. Strings and other objects that have string values return
 the appropriate string value for Rexx to use. (This happens automatically
 for strings and for subclasses of the String class because they inherit a
-suitable MAKESTRING method from the String class.) For this mechanism to work
-correctly, you must provide a MAKESTRING method for any other objects with
-string values.</para>
-<para>For other objects without string values (that is, without a MAKESTRING
+suitable <methodname>makeString</methodname> method from the String class.)
+For this mechanism to work correctly, you must provide a <methodname>makeString</methodname>
+method for any other objects with string values.</para>
+<para>For other objects without string values (that is, without a <methodname>makeString</methodname>
 method), the action taken depends on the setting of the NOSTRING condition
 trap. If the NOSTRING condition is being trapped (see
 <xref linkend="condtra" />),
@@ -814,10 +814,11 @@ say substr(d,5,7)         /* Raises the NOSTRING condition */
 say substr(d~string,3,6)  /* Displays "Direct" */
 </programlisting>
 </example>
-<para>For arguments to Rexx object methods, different rules apply. When a
-method expects a string as an argument, the argument object is sent the
-REQUEST("STRING") message. If REQUEST returns &nil;, then the
-method raises an error.</para>
+<para>For arguments to Rexx object methods, different rules apply.
+When a method expects a string as an argument, the argument object is sent the
+<code>request("STRING")</code> message.
+If <methodname>request</methodname> returns &nil;, then the method raises an error.
+</para>
 </section>
 
 <section id="concurr"><title>Concurrency</title>

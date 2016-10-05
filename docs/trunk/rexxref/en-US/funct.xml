@@ -502,13 +502,14 @@ SIGN, SPACE, STRIP, SUBSTR, SUBWORD, TRANSLATE, TRUNC, UPPER, VERIFY, WORD, WORD
 WORDLENGTH, WORDS, X2B, X2C, and X2D, the first argument to the built-in function
 is used as the receiver object for the message sent, and the remaining arguments
 are used in the same order as the message arguments. For example,
-SUBSTR("abcde",3,2) is equivalent to "abcde"~SUBSTR(3,2).</para>
+<code>SUBSTR("abcde", 3, 2)</code> is equivalent to <code>"abcde"~substr(3, 2)</code>.
+</para>
 <para>For the functions INSERT, LASTPOS, OVERLAY, POS, and WORDPOS, the
 second argument to the built-in functions is used as the receiver object for
 the message sent, and the other arguments are used in the same order as the
 message arguments. For example,
-<computeroutput>POS("a","Haystack",3)</computeroutput> is equivalent
-to <computeroutput>"Haystack"~POS("a",3)</computeroutput>.</para></listitem>
+<code>POS("a", "Haystack",3)</code> is equivalent
+to <code>"Haystack"~pos("a", 3)</code>.</para></listitem>
 <listitem><para>The language processor evaluates all built-in function
 arguments to produce character strings.</para></listitem>
 </itemizedlist>
@@ -546,7 +547,7 @@ met.</para>
 it must be a positive whole number or zero. The default for
 <emphasis role="italic">length</emphasis> is the number of characters in
 <emphasis role="italic">info</emphasis>.</para>
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>ABBREV function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -562,6 +563,7 @@ ABBREV("PRINT","")         ->    1
 ABBREV("PRINT","",1)       ->    0
 </programlisting>
 </example>
+</para>
 
 <note><title>Note</title>
 <indexterm><primary>ABBREV function</primary>
@@ -605,7 +607,7 @@ end;
 <para>Returns the absolute value of <emphasis role="italic">number</emphasis>.
 The result has no sign and
 is formatted according to the current NUMERIC settings.</para>
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>ABS function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -617,6 +619,7 @@ ABS("12.3")       ->    12.3
 ABS(" -0.307")    ->    0.307
 </programlisting>
 </example>
+</para>
 </section>
 
 
@@ -642,7 +645,7 @@ ABS(" -0.307")    ->    0.307
 to which commands are currently submitted. Trailing whitespace characters are
 removed from the result.
 </para>
-<para>Here is an example:</para>
+<para>Here is an example:
 <indexterm><primary>ADDRESS function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -655,6 +658,7 @@ ADDRESS()    ->    "CMD"        /* default under Windows */
 ADDRESS()    ->    "bash"       /* default under Linux   */
 </programlisting>
 </example>
+</para>
 </section>
 
 
@@ -717,7 +721,7 @@ is, if it was not explicitly specified when the routine
 was called. Otherwise, it returns <computeroutput>0</computeroutput>.
 </para></listitem></varlistentry>
 </variablelist>
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>ARG function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -748,6 +752,7 @@ ARG(1,"A")    ->    .array~of(a, ,b)
 ARG(3,"a")    ->    .array~of(b)
 </programlisting>
 </example>
+</para>
 
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
@@ -811,7 +816,7 @@ B2X returns a null string. If the number of binary digits in
 of 4, then up to three <computeroutput>0</computeroutput>
 digits are added on the left before the
 conversion to make a total that is a multiple of 4.</para>
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>B2X function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -825,14 +830,16 @@ B2X("101")         ->   "5"
 B2X("1 1111 0000") ->   "1F0"
 </programlisting>
 </example>
+</para>
 <para>You can combine B2X with the functions X2D and X2C to convert a binary
-number into other forms. For example: </para>
+number into other forms. For example:
 <example id="ex.bif-b2x-1">
 <title>Builtin function B2X combined with X2D function</title>
 <programlisting>
 X2D(B2X("10111"))  ->   "23"   /* decimal 23 */
 </programlisting>
 </example>
+</para>
 </section>
 
 
@@ -864,7 +871,8 @@ is returned.</para>
 On computers with multimedia support the function plays the default sound
 event. On computers without soundcard, the function plays the standard system
 beep (if activated).</para></note>
-<para>Here is an example for Windows NT: </para>
+
+<para>Here is an example for Windows: 
 <indexterm><primary>BEEP function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -888,6 +896,7 @@ call beep note.i,250    /* hold each note for */
 end
 </programlisting>
 </example>
+</para>
 </section>
 
 
@@ -922,7 +931,7 @@ unprocessed portion of the longer string is appended to the partial result. If
 extends the shorter of the two strings on the right before carrying out the
 logical operation. The default for <emphasis role="italic">string2</emphasis>
 is the zero-length (null) string.</para>
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>BITAND function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -937,6 +946,7 @@ BITAND("13"x,"5555"x,"74"x)    ->    "1154"x
 BITAND("pQrS", ,"DF"x)         ->    "PQRS"      /* ASCII   */
 </programlisting>
 </example>
+</para>
 </section>
 
 
@@ -971,7 +981,7 @@ unprocessed portion of the longer string is appended to the partial result. If
 extends the shorter of the two strings on the right before carrying out the
 logical operation. The default for <emphasis role="italic">string2</emphasis>
 is the zero-length (null) string.</para>
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>BITOR function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -987,6 +997,7 @@ BITOR("1111"x, ,"4D"x)        ->    "5D5D"x
 BITOR("pQrS", ,"20"x)         ->    "pqrs" /* ASCII   */
 </programlisting>
 </example>
+</para>
 </section>
 
 
@@ -1022,7 +1033,7 @@ unprocessed portion of the longer string is appended to the partial result. If
 extends the shorter of the two strings on the right before carrying out the
 logical operation. The default for <emphasis role="italic">string2</emphasis>
 is the zero-length (null) string.</para>
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>BITXOR function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -1039,6 +1050,7 @@ BITXOR("1111"x, ,"4D"x)           ->  "5C5C"x
 BITXOR("C711"x,"222222"x," ")     ->  "E53302"x  /* ASCII  */
 </programlisting>
 </example>
+</para>
 </section>
 
 
@@ -1070,7 +1082,7 @@ result. If you do not specify <emphasis role="italic">n</emphasis>,
 an unsigned binary number.</para>
 <para>If <emphasis role="italic">string</emphasis> is null,
 <computeroutput>0</computeroutput> is returned.</para>
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>C2D function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -1085,6 +1097,7 @@ C2D("")         ->        0
 C2D("a")        ->       97     /*  ASCII   */
 </programlisting>
 </example>
+</para>
 <para>If you specify <emphasis role="italic">n</emphasis>,
 the string is taken as a signed number expressed
 in <emphasis role="italic">n</emphasis> characters. The number is positive if
@@ -1099,7 +1112,7 @@ This padding or truncation is as though
 had been processed. If <emphasis role="italic">n</emphasis> is
 <computeroutput>0</computeroutput>, C2D always returns
 <computeroutput>0</computeroutput>.</para>
-<para>Here are some examples: </para>
+<para>Here are some examples:
 <example id="ex.bif-c2d-1">
 <title>Builtin function C2D</title>
 <programlisting>
@@ -1113,6 +1126,7 @@ C2D("F081"X,1)    ->     -127
 C2D("0031"X,0)    ->        0
 </programlisting>
 </example>
+</para>
 </section>
 
 
@@ -1146,7 +1160,7 @@ and does not include whitespace characters. The <emphasis role="italic">string</
 can be of any length. If
 <emphasis role="italic">string</emphasis> is null, a null string is
 returned.</para>
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>C2X function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -1158,6 +1172,7 @@ C2X("0123"X)    ->    "0123"   /* "30313233"X     in ASCII */
 C2X("ZD8")      ->    "5A4438" /* "354134343338"X in ASCII */
 </programlisting>
 </example>
+</para>
 </section>
 
 
@@ -1200,7 +1215,7 @@ is blank. If the string is longer than <emphasis role="italic">length</emphasis>
 it is truncated at both ends to fit. If an odd number of characters is truncated
 or added, the right-hand end loses or gains one more character than the left-hand
 end.</para>
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>CENTER function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -1218,6 +1233,7 @@ CENTRE("The blue sky",8)    ->    "e blue s"
 CENTRE("The blue sky",7)    ->    "e blue "
 </programlisting>
 </example>
+</para>
 
 <note><title>Note</title>
 <para>To avoid errors because of the difference between British and American
@@ -1247,7 +1263,7 @@ If <emphasis role="italic">count</emphasis> is not specified, all occurrences of
 is specified, it must be a non-negative, whole number that gives the maximum number of
 occurrences to be replaced.
 </para>
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>CHANGESTR function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -1260,6 +1276,7 @@ CHANGESTR("1","101100","X")    ->    "X0XX00"
 CHANGESTR("1","101100","X", 1) ->    "X01100"
 </programlisting>
 </example>
+</para>
 </section>
 
 
@@ -1313,7 +1330,7 @@ become available.  If, however, it is impossible for those characters to become
 available because of an error or another problem, the NOTREADY condition is
 raised (see <xref linkend="stmerr" />)
 and CHARIN returns with fewer than the requested number of characters.</para>
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>CHARIN function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -1334,6 +1351,7 @@ CHARIN()             ->   "a"      /* default is         */
 CHARIN(, ,5)         ->   "bcd e"
 </programlisting>
 </example>
+</para>
 
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
@@ -1404,7 +1422,7 @@ been printed. If, however, it is impossible for all the characters to be written
 the NOTREADY condition is raised (see
 <xref linkend="stmerr" />) and CHAROUT returns
 with the number of characters that could not be written (the residual count).</para>
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>CHAROUT function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -1420,6 +1438,7 @@ CHAROUT(,"Hi")           ->   0   /* typically        */
 CHAROUT(,"Hello")        ->   2   /* maybe            */
 </programlisting>
 </example>
+</para>
 
 <note><title>Note</title>
 <para>This routine is often best called as a subroutine. The residual
@@ -2819,7 +2838,7 @@ string <emphasis role="italic">new</emphasis>, then INSERT truncates
 <emphasis role="italic">new</emphasis> to length
 <emphasis role="italic">length</emphasis>. The default
 <emphasis role="italic">pad</emphasis> character is a blank.</para>
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>INSERT function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -2834,6 +2853,7 @@ INSERT("123","abc")            ->    "123abc"
 INSERT("123","abc", ,5,"-")    ->    "123--abc"
 </programlisting>
 </example>
+</para>
 </section>
 
 
@@ -2874,7 +2894,7 @@ number and defaults to <emphasis role="italic">start</emphasis>.
 </para>
 <para>See also <xref linkend="bifPos" xrefstyle="template:POS"/> built-in function.
 </para>
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>LASTPOS function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -2889,6 +2909,7 @@ LASTPOS(" ","abc def ghi",7)    ->    4
 LASTPOS(" ","abc def ghi",7,3)  ->    0
 </programlisting>
 </example>
+</para>
 </section>
 
 
@@ -2915,11 +2936,12 @@ with <emphasis role="italic">pad</emphasis> characters, or truncated, on the
 right as needed. The default <emphasis role="italic">pad</emphasis> character
 is a blank. <emphasis role="italic">length</emphasis> must be a positive
 whole number or zero. The LEFT function is equivalent to
-SUBSTR(<emphasis role="italic">string</emphasis>, 1,
-<emphasis role="italic">length[, pad]</emphasis>)
+<code>SUBSTR(</code><emphasis role="italic">string</emphasis><code>, 1, </code>
+<emphasis role="italic">length</emphasis> <code>[, </code>
+<emphasis role="italic">pad</emphasis><code>])</code>.
 </para>
 
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>LEFT function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -2932,6 +2954,7 @@ LEFT("abc d",8,".")    ->    "abc d..."
 LEFT("abc  def",7)     ->    "abc  de"
 </programlisting>
 </example>
+</para>
 </section>
 
 
@@ -2954,7 +2977,7 @@ LEFT("abc  def",7)     ->    "abc  de"
 </mediaobject>
 <para>
 Returns the length of <emphasis role="italic">string</emphasis>.</para>
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>LENGTH function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -2967,6 +2990,7 @@ LENGTH("abc defg")    ->    8
 LENGTH("")            ->    0
 </programlisting>
 </example>
+</para>
 </section>
 
 
@@ -3021,7 +3045,7 @@ however, it is impossible for a line to be completed because of an error or
 another problem, the NOTREADY condition is raised (see
 <xref linkend="stmerr" />)
 and LINEIN returns whatever characters are available.</para>
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>LINEIN function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -3063,6 +3087,7 @@ LINEIN("QUEUE:")   ->  "Queue line" /* Read a line from the queue. */
                                     /* is put on the queue.        */
 </programlisting>
 </example>
+</para>
 
 <note><title>Note</title>
 <para>If you want to read complete lines from the default input
@@ -3143,7 +3168,7 @@ the NOTREADY condition is raised (see
 <xref linkend="stmerr" />), and LINEOUT
 returns a result of <computeroutput>1</computeroutput>, that is, the residual
 count of lines written.</para>
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>LINEOUT function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -3176,6 +3201,7 @@ LINEOUT(myfile, ,1)               /* Opens the file (if not already */
 LINEOUT(myfile)                   /* Closes ANYFILE.TXT             */
 </programlisting>
 </example>
+</para>
 <para> LINEOUT is often most useful when called as a subroutine. The return
 value is then available in the variable RESULT. For example: </para>
 <example id="ex.bif-lineout-1">
@@ -3229,7 +3255,7 @@ of lines remaining in the stream, irrespective of how long this operation takes.
 <para>For an explanation of input and output, see <xref linkend="iostrms" />.
 </para>
 
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>LINES function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -3243,6 +3269,7 @@ LINES()          ->    1    /* data remains in the  */
                             /* STDIN:               */
 </programlisting>
 </example>
+</para>
 
 <note><title>Note</title>
 <para>The CHARS function returns the number of characters in a persistent stream
@@ -3275,7 +3302,7 @@ be a positive whole number.  If <emphasis role="italic">n</emphasis> is not spec
 conversion will start with the first character.  If <emphasis role="italic">length</emphasis>
 is specified, it must be a non-negative whole number.  If <emphasis role="italic">length</emphasis>
 is not specified, the default is to convert the remainder of the string.</para>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<para>Here are some examples:
 <indexterm><primary>examples</primary>
 <secondary>lower function</secondary></indexterm>
 <example id="ex.bif-lower">
@@ -3286,6 +3313,7 @@ lower("ABCDEF", 4)            ->    "ABCdef"
 lower("ABCDEF", 3, 2)         ->    "ABcdEF"
 </programlisting>
 </example>
+</para>
 </section>
 
 
@@ -3306,7 +3334,7 @@ lower("ABCDEF", 3, 2)         ->    "ABcdEF"
 <para>Returns the largest number of the list specified, formatted according to
 the current NUMERIC settings. You can specify any number of
 <emphasis role="italic">number</emphasis>s.</para>
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>MAX function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -3320,6 +3348,7 @@ MAX(-7,-3,-4.3)                                              ->    -3
 MAX(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21)   ->    21
 </programlisting>
 </example>
+</para>
 </section>
 
 
@@ -3340,7 +3369,7 @@ MAX(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21)   ->    21
 <para>Returns the smallest number of the list specified, formatted according
 to the current NUMERIC settings. You can specify any number of
 <emphasis role="italic">number</emphasis>s.</para>
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>MIN function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -3354,6 +3383,7 @@ MIN(-7,-3,-4.3)                                              ->  -7
 MIN(21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1)   ->   1
 </programlisting>
 </example>
+</para>
 </section>
 
 
@@ -3389,7 +3419,7 @@ the default value for <emphasis role="italic">n</emphasis> is
 <computeroutput>1</computeroutput>. If you specify
 <emphasis role="italic">n</emphasis>, it must be a positive whole
 number.</para>
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>OVERLAY function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -3404,6 +3434,7 @@ OVERLAY("qq","abcd",4)          ->    "abcqq"
 OVERLAY("123","abc",5,6,"+")    ->    "abc+123+++"
 </programlisting>
 </example>
+</para>
 </section>
 
 
@@ -3444,7 +3475,7 @@ a non-negative whole number.
 </para>
 <para>See also <xref linkend="bifLastpos" xrefstyle="template:LASTPOS"/> built-in function.
 </para>
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>POS function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -3459,6 +3490,7 @@ POS(" ","abc def ghi",5)    ->    8
 POS(" ","abc def ghi",5,3)  ->    0
 </programlisting>
 </example>
+</para>
 </section>
 
 
@@ -3501,7 +3533,7 @@ The file does not need to exist to generate the full name.
 <para>Returns the number of lines remaining in the external data queue when the
 function is called. (See <xref linkend="iostrms" />
 for a discussion of Rexx input and output.)</para>
-<para>Here is an example:</para>
+<para>Here is an example:
 <indexterm><primary>QUEUED function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -3512,6 +3544,7 @@ for a discussion of Rexx input and output.)</para>
 QUEUED()    ->    5    /* Perhaps */
 </programlisting>
 </example>
+</para>
 </section>
 
 
@@ -3546,7 +3579,7 @@ respectively. To start a repeatable sequence of results, use a specific
 argument. This
 <emphasis role="italic">seed</emphasis> must be a whole number from
 0 to 999999999.</para>
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>RANDOM function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -3561,6 +3594,7 @@ RANDOM(, , 3257)    -- 123  /* reproducible */
 RANDOM(-5, 5)       --  -3
 </programlisting>
 </example>
+</para>
 
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
@@ -3609,7 +3643,7 @@ seed is not saved across internal routine calls.</para></listitem>
 </mediaobject>
 
 <para>Returns <emphasis role="italic">string</emphasis> reversed.</para>
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>REVERSE function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -3621,6 +3655,7 @@ REVERSE("ABc.")    ->    ".cBA"
 REVERSE("XYZ ")    ->    " ZYX"
 </programlisting>
 </example>
+</para>
 </section>
 
 
@@ -3654,7 +3689,7 @@ REVERSE("XYZ ")    ->    " ZYX"
 as needed. The default <emphasis role="italic">pad</emphasis> character is a
 blank. The <emphasis role="italic">length</emphasis> must be a positive whole
 number or zero.</para>
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>RIGHT function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -3667,6 +3702,7 @@ RIGHT("abc def",5)    ->    "c def"
 RIGHT("12",5,"0")     ->    "00012"
 </programlisting>
 </example>
+</para>
 </section>
 
 <section id="bifRxfuncadd"><title>RXFUNCADD</title>
@@ -3734,7 +3770,7 @@ rxfuncadd("SysCls","rexxutil", "SysCls") -> 0 /* if SysCls can be located */
 
 <para>Removes (deregisters) the function
 <emphasis role="italic">name</emphasis> from the list of available
-functions. A zero return value signifies successful removal. </para>
+functions. A zero return value signifies successful removal.
 <indexterm><primary>RXFUNCDROP function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -3745,6 +3781,7 @@ functions. A zero return value signifies successful removal. </para>
 rxfuncdrop("SysLoadFuncs")         -> 0 /* if successfully removed   */
 </programlisting>
 </example>
+</para>
 </section>
 
 
@@ -3766,7 +3803,7 @@ rxfuncdrop("SysLoadFuncs")         -> 0 /* if successfully removed   */
 <para>Queries the list of available functions for the function
 <emphasis role="italic">name</emphasis>. It returns a value of
 <computeroutput>0</computeroutput> if the function is registered, and a value
-of <computeroutput>1</computeroutput> if it is not. </para>
+of <computeroutput>1</computeroutput> if it is not.
 <indexterm><primary>RXFUNCQUERY function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -3777,6 +3814,7 @@ of <computeroutput>1</computeroutput> if it is not. </para>
 rxfuncquery("SysLoadFuncs")        -> 0 /* if registered             */
 </programlisting>
 </example>
+</para>
 </section>
 
 
@@ -3886,7 +3924,7 @@ value of the name requested.</para>
 session from interfering with each other. They allow Rexx programs running
 in different sessions to synchronize execution and pass data. LINEIN("QUEUE:")
 is especially useful because the calling program stops running until another
-program places a line on the queue.</para>
+program places a line on the queue.
 <indexterm><primary>RXFUNCQUEUE function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -3904,6 +3942,7 @@ rxqueue("Set", "Fred")     -> "SESSION"
 rxqueue("delete", "Fred")  -> "0"
 </programlisting>
 </example>
+</para>
 </section>
 
 
@@ -3933,7 +3972,7 @@ To restore the directory and environment, use the
 successfully saved and a value of 0 if unsuccessful. If SETLOCAL is not followed
 by an ENDLOCAL function in a procedure, the initial environment saved by
 SETLOCAL is restored upon exiting the procedure.</para>
-<para>Here is an example:</para>
+<para>Here is an example:
 <indexterm><primary>SETLOCAL function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -3951,6 +3990,7 @@ n = ENDLOCAL()           /* restores initial environment including */
                          /* "user/bin"                             */
 </programlisting>
 </example>
+</para>
 </section>
 
 
@@ -3978,7 +4018,7 @@ standard Rexx rules, as though the operation
 <computeroutput>0</computeroutput>, <computeroutput>0</computeroutput> if it
 is <computeroutput>0</computeroutput>, and <computeroutput>1</computeroutput>
 if it is greater than <computeroutput>0</computeroutput>.</para>
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>SIGN function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -3991,6 +4031,7 @@ SIGN(" -0.307")    ->    -1
 SIGN(0.0)          ->     0
 </programlisting>
 </example>
+</para>
 </section>
 
 
@@ -4024,7 +4065,7 @@ whole number and must not exceed
 the number that a call to SOURCELINE with no arguments returns.</para>
 <para>If the Rexx program is in tokenized form the this function raises an error
 for all attempts to retrieve a line of the program.</para>
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>SOURCELINE function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -4036,6 +4077,7 @@ SOURCELINE()    ->   10
 SOURCELINE(1)   ->   "/* This is a 10-line Rexx program */"
 </programlisting>
 </example>
+</para>
 </section>
 
 
@@ -4066,7 +4108,7 @@ Leading and trailing whitespace characters are always removed. The default for
 <emphasis role="italic">n</emphasis> is <computeroutput>1</computeroutput>,
 and the default <emphasis role="italic">pad</emphasis> character is a blank.
 </para>
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>SPACE function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -4081,6 +4123,7 @@ SPACE("abc  def  ",0)        ->    "abcdef"
 SPACE("abc  def  ",2,"+")    ->    "abc++def"
 </programlisting>
 </example>
+</para>
 </section>
 
 
@@ -4267,7 +4310,7 @@ were specified with a length equal to that of the file).
 <emphasis role="italic">length</emphasis> must be 1 or greater.
 </para></listitem></varlistentry>
 </variablelist>
-<para><emphasis role="bold">Examples:</emphasis></para>
+<para>Here are some examples:
 <indexterm><primary>STREAM function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -4281,19 +4324,21 @@ stream(strinp,"c","open read")
 stream(strinp,"c","open read shared")
 </programlisting>
 </example>
+</para>
 </listitem></varlistentry>
 <varlistentry><term><option>CLOSE</option></term>
 <listitem><para>closes the named stream. The STREAM function itself returns
 <computeroutput>READY:</computeroutput> if the named stream is
 successfully closed, or an appropriate error
 message. If an attempt is made to close an unopened file, STREAM returns a
-null string (&quot;&quot;). </para>
+null string (&quot;&quot;).
 <example id="ex.bif-stream-1">
 <title>Builtin function STREAM on unopened file</title>
 <programlisting>
 stream("STRM.TXT","c","close")
 </programlisting>
 </example>
+</para>
 </listitem></varlistentry>
 <varlistentry><term><option>FLUSH</option></term>
 <listitem><para>forces any data currently buffered for writing to be written
@@ -4575,7 +4620,7 @@ characters (spaces and horizontal tabs). If
 <emphasis role="italic">chars</emphasis> is a null string, then no characters are
 removed.  Otherwise, any occurrences of the characters in <emphasis role="italic">chars</emphasis>
 will be removed.</para>
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>STRIP function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -4591,6 +4636,7 @@ STRIP("0012.700", ,0)    ->    "12.7"
 STRIP("12.0000", "T", '.0') -> "12"
 </programlisting>
 </example>
+</para>
 </section>
 
 
@@ -4620,8 +4666,9 @@ character and is of length <emphasis role="italic">length</emphasis>, padded
 with <emphasis role="italic">pad</emphasis> if necessary.
 <emphasis role="italic">n</emphasis> must be a positive whole number.
 If <emphasis role="italic">n</emphasis> is greater than
-<computeroutput>LENGTH(string)</computeroutput>, only pad characters are
-returned.</para>
+<code>LENGTH(</code><emphasis role="italic">string</emphasis><code>)</code>,
+only pad characters are returned.
+</para>
 <para>See also
 <xref linkend="bifLeft" xrefstyle="select:title"/> and
 <xref linkend="bifRight" xrefstyle="select:title"/> builtin-functions.
@@ -4631,7 +4678,7 @@ string is returned.  The default <emphasis role="italic">pad</emphasis>
 character is a blank.</para>
 
 
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>SUBSTR function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -4644,6 +4691,7 @@ SUBSTR("abc",2,4)        ->    "bc  "
 SUBSTR("abc",2,6,".")    ->    "bc...."
 </programlisting>
 </example>
+</para>
 
 <note><title>Note</title>
 <para>In some situations the positional (numeric) patterns of parsing
@@ -4683,7 +4731,7 @@ The returned string never has
 leading or trailing whitespace, but includes all whitespace characters between
 the selected words.
 </para>
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>SUBWORD function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -4696,6 +4744,7 @@ SUBWORD("Now is the  time",3)      ->    "the  time"
 SUBWORD("Now is the  time",5)      ->    ""
 </programlisting>
 </example>
+</para>
 </section>
 
 
@@ -4734,7 +4783,7 @@ substitution in a compound name occurs if possible. </para>
 <para>You should specify <emphasis role="italic">name</emphasis> as a literal
 string, or it should be derived from an expression, to prevent substitution
 before it is passed to the function.</para></note>
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>SYMBOL function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -4750,6 +4799,7 @@ SYMBOL(2)        ->   "LIT" /* a constant symbol  */
 SYMBOL("*")      ->   "BAD" /* not a valid symbol */
 </programlisting>
 </example>
+</para>
 </section>
 
 
@@ -4906,7 +4956,7 @@ to a minimum value of 12 when performing timestamp arithmetic.</para>
 </note>
 </listitem></varlistentry>
 </variablelist>
-<para>Here are some examples, assuming that the time is 4:54 p.m.:</para>
+<para>Here are some examples, assuming that the time is 4:54 p.m.:
 <indexterm><primary>TIME function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -4923,6 +4973,7 @@ TIME("N")    ->   "16:54:22"
 TIME("S")    ->   "60862"  /* 22 + 60*(54+60*16) */
 </programlisting>
 </example>
+</para>
 <para><emphasis role="bold">The elapsed-time clock:</emphasis></para>
 <para>You can use the TIME function to measure real (elapsed) time intervals.
 On the first call in a program to <computeroutput>TIME("E")</computeroutput>
@@ -4935,7 +4986,7 @@ elapsed time since that first call or since the last call to
 <para>The clock is saved across internal routine calls, which means that an internal
 routine inherits the time clock that its caller started. Any timing the caller
 is doing is not affected, even if an internal routine resets the clock. An
-example of the elapsed-time clock: </para>
+example of the elapsed-time clock:
 <indexterm><primary>TIME function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -4952,6 +5003,7 @@ time("R")    ->    2.030000   /* or thereabouts */
 time("R")    ->    1.050000   /* or thereabouts */
 </programlisting>
 </example>
+</para>
 
 <note><title>Note</title>
 <para>The elapsed-time clock is synchronized with the other calls
@@ -4968,7 +5020,7 @@ in the format <emphasis role="italic">option2</emphasis>. The default for
 So you need to specify <emphasis role="italic">option2</emphasis> only if
 <emphasis role="italic">string</emphasis> is not in
 the Normal format. <emphasis role="italic">option2</emphasis> must specify the
-current time, for example, not "E" or "R". Here are some examples: </para>
+current time, for example, not "E" or "R". Here are some examples:
 <example id="ex.bif-time-2">
 <title>Builtin function TIME formating</title>
 <programlisting>
@@ -4977,6 +5029,7 @@ time("N","11:27am","C") ->    11:27:00
 time("N", "63326132161828000", "F")   ->   08:16:01
 </programlisting>
 </example>
+</para>
 <para>You can determine the difference between two times; for example:</para>
 <example id="ex.bif-time-3">
 <title>Builtin function TIME difference</title>
@@ -5049,7 +5102,7 @@ full details.)</para>
 <para>Unlike the TRACE instruction, the TRACE function alters the trace action
 even if interactive debugging is active. Also unlike the TRACE instruction,
 <emphasis role="italic">option</emphasis> cannot be a number.</para>
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>TRACE function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -5062,6 +5115,7 @@ TRACE("O")    ->   "?R" /* also sets tracing off */
 TRACE("?I")   ->   "O"  /* now in interactive debugging */
 </programlisting>
 </example>
+</para>
 </section>
 
 
@@ -5117,7 +5171,7 @@ character of the translated range.  The default starting position is 1.
 <emphasis role="italic">length</emphasis> is the range of characters to be
 translated.  If <emphasis role="italic">length</emphasis> is omitted, the remainder of
 the string from the starting position to the end is used. </para>
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>TRANSLATE function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -5135,6 +5189,7 @@ TRANSLATE("4123", "abcd", "1234", , 2, 2)  ->    "4ab3"
 TRANSLATE("4123", "abcd", "1234")          ->    "dabc"
 </programlisting>
 </example>
+</para>
 
 <note><title>Note</title>
 <para>The last example shows how to use the TRANSLATE function
@@ -5175,7 +5230,7 @@ truncated to <emphasis role="italic">n</emphasis> decimal places or trailing
 zeros are added to reach the specified
 length. The result is never in exponential form. If there are no nonzero digits
 in the result, any minus sign is removed.</para>
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>TRUNC function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -5189,6 +5244,7 @@ TRUNC(127.1,3)        ->    127.100
 TRUNC(127,2)          ->    127.00
 </programlisting>
 </example>
+</para>
 
 <note><title>Note</title>
 <para>The <emphasis role="italic">number</emphasis> is rounded according to the
@@ -5222,7 +5278,7 @@ characters converted to uppercase.  If <emphasis role="italic">n</emphasis> is s
 be a positive whole number.  If <emphasis role="italic">n</emphasis> is not specified, the case
 conversion will start with the first character.  If <emphasis role="italic">length</emphasis>
 is specified, it must be a non-negative whole number.  If <emphasis role="italic">length</emphasis>
-is not specified, the default is to convert the remainder of the string.</para>
+is not specified, the default is to convert the remainder of the string.
 <indexterm><primary>examples</primary>
 <secondary>upper function</secondary></indexterm>
 <example id="ex.bif-upper">
@@ -5233,6 +5289,7 @@ upper("abcdef", 4)            ->    "abcDEF"
 upper("abcdef", 3, 2)         ->    "abCDef"
 </programlisting>
 </example>
+</para>
 </section>
 
 
@@ -5292,7 +5349,7 @@ the named variable is assigned this new
 value. This does not affect the result returned; that is, the function returns
 the value of <emphasis role="italic">name</emphasis> as it was before the new
 assignment.</para>
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>VALUE function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -5311,6 +5368,7 @@ VALUE(fred)     ->  "5"  /* looks up K                 */
 VALUE("LIST."k) ->  "Hi" /* looks up LIST.5            */
 </programlisting>
 </example>
+</para>
 
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
@@ -5355,7 +5413,7 @@ Call VALUE "MYVAR", "FIRST" || "00"X || "SECOND", "ENVIRONMENT"
 </programlisting>
 <para>sets MYVAR to &quot;FIRST&quot;, truncating "00"x and "SECOND".</para>
 </note>
-<para>Here are some more examples: </para>
+<para>Here are some more examples:
 <example id="ex.bif-value-1">
 <title>Builtin function VALUE</title>
 <programlisting>
@@ -5376,6 +5434,7 @@ say value("PATH",new,env)   /* says "C:\WINDOWS" (perhaps)       */
 say value("PATH", ,env)     /* says "C:\EDIT\DOCS;"              */
 </programlisting>
 </example>
+</para>
 
 <para>To delete an environment variable use &nil; as the
 <emphasis role="italic">newvalue</emphasis>. To delete the environment
@@ -5406,7 +5465,7 @@ no such object, it returns, by default, the string
 (an environment symbol - see <xref linkend="ensym" />).
 </para>
 
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>VALUE function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -5423,6 +5482,7 @@ name = value("NONAME", ,"") /* Sends NONAME message to the environment */
 say "Hello," name           /* Produces:  "Hello, .NONAME"             */
 </programlisting>
 </example>
+</para>
 <para>You can use the VALUE function to change a value in the global environment directory.
 Include a <emphasis role="italic">newvalue</emphasis> and specify
 <emphasis role="italic">selector</emphasis> as the
@@ -5433,7 +5493,7 @@ to the current
 environment object. After receiving this message, the environment identifies
 the object <emphasis role="italic">newvalue</emphasis> by the name
 <emphasis role="italic">name</emphasis>.</para>
-<para>Here is an example:</para>
+<para>Here is an example:
 <example id="ex.bif-value-4">
 <title>Builtin function VALUE</title>
 <programlisting>
@@ -5444,6 +5504,7 @@ name = value("MYNAME","David","") /* Sends "MYNAME=("David") message  */
 say "Hello," .myname              /* Produces:  "Hello, David"        */
 </programlisting>
 </example>
+</para>
 </section>
 </section>
 
@@ -5468,7 +5529,7 @@ say "Hello," .myname              /* Produces:  "Hello, David"        */
 <emphasis role="italic">name</emphasis> is the name of a variable (that is,
 a symbol that has been assigned a value), or
 <computeroutput>0</computeroutput>.</para>
-<para>Here are some examples: </para>
+<para>Here are some examples:
 <indexterm><primary>VAR function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -5484,6 +5545,7 @@ VAR(2)         -> 0  /* a constant symbol */
 VAR("*")       -> 0  /* an invalid symbol */
 </programlisting>
 </example>
+</para>
 </section>
 
 
@@ -5545,7 +5607,7 @@ than <computeroutput>LENGTH(string)</computeroutput>, the function returns
 <computeroutput>0</computeroutput> if you specify
 <computeroutput>Match</computeroutput>; otherwise, the function returns the
 <emphasis role="italic">start</emphasis> value.</para>
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>VERIFY function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -5566,6 +5628,7 @@ VERIFY("ABCDEF","ABC","N",2,3)         ->    4
 VERIFY("ABCDEF","ADEF","M",2,3)        ->    4
 </programlisting>
 </example>
+</para>
 </section>
 
 
@@ -5593,9 +5656,9 @@ word in
 than <emphasis role="italic">n</emphasis> words are in
 <emphasis role="italic">string</emphasis>. <emphasis role="italic">n</emphasis>
 must be a positive whole number. This function is equivalent to
-SUBWORD(<emphasis role="italic">string</emphasis>,
-<emphasis role="italic">n</emphasis>, 1).</para>
-<para>Here are some examples:</para>
+<code>SUBWORD(</code><emphasis role="italic">string</emphasis><code>, </code>
+<emphasis role="italic">n</emphasis><code>, 1)</code>.</para>
+<para>Here are some examples:
 <indexterm><primary>WORD function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -5607,6 +5670,7 @@ WORD("Now is the time",3)    ->    "the"
 WORD("Now is the time",5)    ->    ""
 </programlisting>
 </example>
+</para>
 </section>
 
 
@@ -5631,7 +5695,7 @@ role="italic">string</emphasis> or returns
 <emphasis role="italic">n</emphasis> words
 are in <emphasis role="italic">string</emphasis>.
 <emphasis role="italic">n</emphasis> must be a positive whole number.</para>
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>WORDINDEX function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -5643,6 +5707,7 @@ WORDINDEX("Now is the time",3)    ->    8
 WORDINDEX("Now is the time",6)    ->    0
 </programlisting>
 </example>
+</para>
 </section>
 
 
@@ -5668,7 +5733,7 @@ returns <computeroutput>0</computeroutput> if less than
 <emphasis role="italic">n</emphasis> words are in the
 <emphasis role="italic">string</emphasis>.
 <emphasis role="italic">n</emphasis> must be a positive whole number.</para>
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>WORDLENGTH function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -5681,6 +5746,7 @@ WORDLENGTH("Now comes the time",2)    ->    5
 WORDLENGTH("Now is the time",6)       ->    0
 </programlisting>
 </example>
+</para>
 </section>
 
 
@@ -5714,7 +5780,7 @@ the comparison, but otherwise the words must match exactly.</para>
 can override this by specifying <emphasis role="italic">start</emphasis>
 (which must be positive), the
 word at which to start the search.</para>
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>WORDPOS function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -5731,6 +5797,7 @@ WORDPOS("be","To be or not to be")            ->  2
 WORDPOS("be","To be or not to be",3)          ->  6
 </programlisting>
 </example>
+</para>
 </section>
 
 
@@ -5758,7 +5825,7 @@ WORDPOS("be","To be or not to be",3)          ->  6
 
 <para>Returns the number of whitespace-delimited words in
 <emphasis role="italic">string</emphasis>.</para>
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>WORDS function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -5770,6 +5837,7 @@ WORDS("Now is the time")    ->    4
 WORDS(" ")                  ->    0
 </programlisting>
 </example>
+</para>
 </section>
 
 
@@ -5804,7 +5872,7 @@ are ignored.</para>
 include any whitespace.</para>
 <para>If <emphasis role="italic">hexstring</emphasis> is null, the function
 returns a null string.</para>
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>X2B function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -5817,9 +5885,10 @@ X2B("7")         ->  "0111"
 X2B("1 C1")      ->  "000111000001"
 </programlisting>
 </example>
+</para>
 <para>You can combine X2B with the functions D2X and C2X to convert numbers or
 character strings into binary form.</para>
-<para>Here are some examples: </para>
+<para>Here are some examples:
 <example id="ex.bif-x2b-1">
 <title>Builtin function X2B</title>
 <programlisting>
@@ -5828,6 +5897,7 @@ X2B(D2X("129"))  ->  "10000001"
 X2B(D2X("12"))   ->  "1100"
 </programlisting>
 </example>
+</para>
 </section>
 
 
@@ -5862,7 +5932,7 @@ of hexadecimal digits.</para>
 only, not leading or trailing) to improve readability; they are ignored.</para>
 <para>If <emphasis role="italic">hexstring</emphasis> is null, the function
 returns a null string.</para>
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>X2C function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -5874,6 +5944,7 @@ X2C("4865 6c6c 6f") ->  "Hello"     /*  ASCII             */
 X2C("3732 73")      ->  "72s"       /*  ASCII             */
 </programlisting>
 </example>
+</para>
 </section>
 
 
@@ -5909,7 +5980,7 @@ returns <computeroutput>0</computeroutput>.</para>
 <para>If you do not specify <emphasis role="italic">n</emphasis>, the
 <emphasis role="italic">hexstring</emphasis> is processed as
 an unsigned binary number.</para>
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>X2D function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -5925,6 +5996,7 @@ X2D("46 30"X)    ->    240          /*  ASCII   */
 X2D("66 30"X)    ->    240          /*  ASCII   */
 </programlisting>
 </example>
+</para>
 <para>If you specify <emphasis role="italic">n</emphasis>, the string is
 taken as a signed number expressed in <emphasis role="italic">n</emphasis>
 hexadecimal digits. If the leftmost bit is off, then the number
@@ -5936,7 +6008,7 @@ the function returns <computeroutput>0</computeroutput>.</para>
 on the left with <computeroutput>0</computeroutput> characters
 (not &quot;sign-extended&quot;), or truncated on the left to
 <emphasis role="italic">n</emphasis> characters.</para>
-<para>Here are some examples: </para>
+<para>Here are some examples:
 <indexterm><primary>X2D function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -5953,6 +6025,7 @@ X2D("F081",1)    ->    1
 X2D("0031",0)    ->    0
 </programlisting>
 </example>
+</para>
 </section>
 
 
@@ -5985,7 +6058,7 @@ for <emphasis role="italic">start</emphasis> is
 <computeroutput>"00"x</computeroutput>. If specified,
 <emphasis role="italic">start</emphasis> and
 <emphasis role="italic">end</emphasis> must be single characters.</para>
-<para>Here are some examples:</para>
+<para>Here are some examples:
 <indexterm><primary>XRANGE function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -6000,6 +6073,7 @@ XRANGE("FE"x,"02"x)  ->   "FEFF000102"x
 XRANGE("i","j")      ->   "ij"                   /* ASCII  */
 </programlisting>
 </example>
+</para>
 </section>
 </section>
 </chapter>

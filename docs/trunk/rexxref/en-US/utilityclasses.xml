@@ -89,13 +89,13 @@
 <indexterm><primary>class</primary>
 <secondary>Alarm class</secondary></indexterm>
 
-<para>An alarm object provides timing and
+<para>An <classname>Alarm</classname> object provides timing and
 notification capability by sending a notification message to a
 notification target at the trigger time.
 </para>
-<para>An alarm can be cancelled before it triggers.
-If cancelled, an alarm will also send a notification message to the
-notification target.
+<para>An <classname>Alarm</classname> can be cancelled before it triggers.
+If cancelled, an <classname>Alarm</classname> will also send a notification
+message to the notification target.
 </para>
 
 <!-- Modified: remove separate alias "cancelled" -->
@@ -137,14 +137,16 @@ notification target.
 <imagedata fileref="images/classes/alarm_attachment.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
-<para>Returns the object that has been attached to the Alarm instance upon creation.
+<para>Returns the object that has been attached to the
+<classname>Alarm</classname> instance upon creation.
 Returns &nil; if no object is attached.
 </para>
 <para>See also method <xref linkend="mthAlarmInit" xrefstyle="select:title"/>.
 </para>
-<para><example>
+<para><example id="ex.alarm-attachment">
 <title>Alarm class &mdash; attachment method</title>
-<programlisting><![CDATA[oneSecond = .Alarm~new(1 ,.Target~new, "a second has passed")
+<programlisting><![CDATA[
+oneSecond = .Alarm~new(1, .Target~new, "a second has passed")
 call SysSleep 1.5                      -- give Alarm time to trigger
 oneSecond~cancel
 
@@ -168,8 +170,9 @@ oneSecond~cancel
 </imageobject>
 </mediaobject>
 
-<para>Cancels the pending alarm request represented by the receiver. This method
-takes no action if the specified time has already been reached.</para>
+<para>Cancels the pending <classname>Alarm</classname> request represented by
+the receiver.
+Takes no action if the specified time has already been reached.</para>
 </section>
 
 <!-- Class Alarm - method canceled/cancelled ======================= -->
@@ -208,41 +211,54 @@ say "Alarm" alarm~cancelled~?("cancelled", "not cancelled")    -- Alarm cancelle
 </imageobject>
 </mediaobject>
 
-<para>Sets up an alarm for a future time
-<emphasis role="italic">atime</emphasis>. At this time, the alarm
-sends message <methodname>triggered</methodname> to the specified
+<para>Sets up an <classname>Alarm</classname> for a future time
+<emphasis role="italic">atime</emphasis>.
+At this time, the <classname>Alarm</classname> sends message
+<methodname>triggered</methodname> to the specified
 notification <emphasis role="italic">target</emphasis>.
 </para>
 <para>The <emphasis role="italic">target</emphasis> must be an object
 that implements the
 <xref linkend="clsAlarmNotification" xrefstyle="template:AlarmNotification interface"/>.
-It must inherit from or be a subclass of the AlarmNotification class, or a Message object
-(as the Message class inherits from AlarmNotification).
-If <emphasis role="italic">target</emphasis> is a Message object, the
+It must inherit from or be a subclass of the
+<classname>AlarmNotification</classname> class, or a
+<xref linkend="clsMessage" xrefstyle="template:Message"/> object
+(as the <classname>Message</classname> class inherits from
+<classname>AlarmNotification</classname>).
+If <emphasis role="italic">target</emphasis> is a
+<classname>Message</classname> object, the
 <xref linkend="mthMessageTriggered" xrefstyle="select:title"/> method
-of the Message class will respond by simply sending the specified message.
+of the <classname>Message</classname> class will respond by simply sending the
+specified message.
 </para>
-<para>The <emphasis role="italic">atime</emphasis> can be a DateTime, a TimeSpan, or a String object.
+<para>The <emphasis role="italic">atime</emphasis> can be a
+<xref linkend="clsDateTime" xrefstyle="template:DateTime"/>, a
+<xref linkend="clsTimeSpan" xrefstyle="template:TimeSpan"/>, or a
+<xref linkend="clsString" xrefstyle="template:String"/> object.
 If it is
 <itemizedlist spacing="compact">
  <listitem>
-  <para>a DateTime object, the DateTime specifies a time when the alarm will be triggered.
-  The DateTime must be greater than the current time.
+  <para>a <classname>DateTime</classname> object, it specifies the time when the
+  alarm will be triggered.
+  The specified time must be in future.
   </para>
  </listitem>
  <listitem>
-  <para>a TimeSpan, the Alarm will be set to the current time plus the TimeSpan.
-  The TimeSpan must not be a negative interval.
+  <para>a <classname>TimeSpan,</classname> the <classname>Alarm</classname>
+  will be set to the current time plus the specified time span.
+  The time span must not be a negative interval.
   </para>
  </listitem>
  <listitem>
-  <para>a String, you can specify this as a date and time (<computeroutput>&apos;hh:mm:ss&apos;</computeroutput>)
+  <para>a <classname>String</classname>, you can specify this as a date and
+  time (<computeroutput>&apos;hh:mm:ss&apos;</computeroutput>)
   or as a number of seconds starting at the present time.
   If you use the date and time format, you can specify
   a date in the default format (<computeroutput>&apos;dd Mmm yyyy&apos;</computeroutput>)
   after the time with a single blank separating the time and date.
   Leading and trailing whitespace characters are not allowed in the <emphasis role="italic">atime</emphasis>.
-  If you do not specify a date, the Alarm uses the first future occurrence of the specified time.
+  If you do not specify a date, the <classname>Alarm</classname> uses the first
+  future occurrence of the specified time.
   </para>
  </listitem>
 </itemizedlist>
@@ -257,8 +273,8 @@ If cancelled, the alarm sends message <methodname>cancel</methodname> to
 the specified notification <emphasis role="italic">target</emphasis>.
 </para>
 
-<para>The following code sets up an alarm at 5:10 p.m. on December 15, 2015.
-(Assume today's date/time is prior to December 15, 2015.)  </para>
+<para>The following code sets up an alarm at 5:10 p.m. on December 15, 2016.
+(Assume today's date/time is prior to December 15, 2016.)  </para>
 <indexterm><primary>examples</primary>
 <secondary>of Alarm class</secondary></indexterm>
 <example>
@@ -269,7 +285,7 @@ the specified notification <emphasis role="italic">target</emphasis>.
 PersonalMessage=.MyMessageClass~new("Call the Bank")
 msg=.message~new(PersonalMessage,"RemindMe")
 
-time = .DateTime~fromIsoDate("2015-12-15T17:10:00.000000")
+time = .DateTime~fromIsoDate("2016-12-15T17:10:00.000000")
 
 a=.alarm~new(time, msg)
 exit
@@ -337,18 +353,20 @@ Returns &false; if the alarm has been cancelled or hasn't yet triggered.
 <indexterm><primary>class</primary><secondary>AlarmNotification class</secondary></indexterm>
 </title>
 
-<para>The AlarmNotification class implements the notification interface
-for the Alarm class.
+<para>The <classname>AlarmNotification</classname> class implements the
+notification interface for the
+<xref linkend="clsAlarm" xrefstyle="template:Alarm"/> class.
 </para>
-<para>For any Alarm, notifications of alarm triggering and alarm cancellation
-will be sent to the notification target specified when creating the Alarm instance.
+<para>For any <classname>Alarm</classname>, notifications of alarm triggering
+and alarm cancellation will be sent to the notification target specified when
+creating the <classname>Alarm</classname> instance.
 The notification target must implement this alarm notification interface.
 Upon alarm triggering a <methodname>triggered</methodname>
 message is sent to the notification target, and
 upon alarm cancellation a <methodname>cancel</methodname>
 message is sent to the notification target.
 </para>
-<para>This class is defined as a mixin class.
+<para>This class is defined as a MIXIN class.
 </para>
 
 <!-- $GENERATED-20151016-START rexxrefClassTable(AlarmNotification) -->
@@ -384,13 +402,13 @@ message is sent to the notification target.
 <imagedata fileref="images/classes/alarmnotification_cancel.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
-<para>Whenever an Alarm is cancelled, this method of the alarm notification
-target will be called.
-The Alarm object that was cancelled will be provided as argument
-<emphasis role="italic">source</emphasis>.
+<para>Whenever an <classname>Alarm</classname> is cancelled, this method of the
+alarm notification target will be called.
+The <classname>Alarm</classname> object that was cancelled will be provided as
+argument <emphasis role="italic">source</emphasis>.
 </para>
-<para>It is defined as a no-op and doesn't necessarily have to
-be implemented in a subclass.
+<para>It is defined as a no-op and doesn't necessarily have to be implemented
+by an inheriting class.
 </para>
 </section>
 
@@ -405,12 +423,16 @@ be implemented in a subclass.
 <imagedata fileref="images/classes/alarmnotification_triggered.svg" scale="55"/>
 </imageobject></mediaobject>
 </para>
-<para>Whenever an Alarm triggers, this method of the alarm notification
-target will be called.
-The Alarm object which triggered will be provided as argument
-<emphasis role="italic">source</emphasis>.
+<para>Whenever an <classname>Alarm</classname> triggers, this method of the
+alarm notification target will be called.
+The <classname>Alarm</classname> object which triggered will be provided as
+argument <emphasis role="italic">source</emphasis>.
 </para>
-<para>It is an abstract method and must be implemented in a subclass.
+<para>It is an abstract method and must be implemented by an inheriting class.
+</para>
+<para>For an example see
+<classname>Alarm</classname> class
+<xref linkend="ex.alarm-attachment" xrefstyle="template:attachment method example"/>.
 </para>
 </section>
 
@@ -422,10 +444,13 @@ The Alarm object which triggered will be provided as argument
 <indexterm><primary>class</primary>
 <secondary>Buffer class</secondary></indexterm>
 
-<para>A Buffer instance is a Rexx interpreter managed block of storage.  This class
-is designed primarily for writing methods and functions in native code and can
-only be created using the native code application programming interfaces.  The Buffer
-class new method will raise an error if invoked.</para>
+<para>A <classname>Buffer</classname> instance is a Rexx interpreter managed
+block of storage.
+This class is designed primarily for writing methods and functions in native
+code and can only be created using the native code application programming interfaces.
+The <xref linkend="mthBufferNew" xrefstyle="select:title"/> method will raise
+an error if invoked.
+</para>
 
 <!-- $GENERATED-20150924-START rexxrefClassTable(Buffer) -->
 <table id="ooRexxBufferClass" frame="all" pgwide="1">
@@ -461,8 +486,10 @@ class new method will raise an error if invoked.</para>
 </imageobject>
 </mediaobject>
 
-<para>Creating Buffer object instances directly from Rexx code is not supported.
-The Buffer class new method will raise an error if invoked.</para>
+<para>Creating <classname>Buffer</classname> object instances directly from
+Rexx code is not supported.
+Method <methodname>new</methodname> will raise an error if invoked.
+</para>
 </section>
 </section>
 
@@ -473,7 +500,7 @@ The Buffer class new method will raise an error if invoked.</para>
 <indexterm><primary>class</primary>
 <secondary>Comparable class</secondary></indexterm>
 
-<para>This class is defined as a mixin class.</para>
+<para>This class is defined as a MIXIN class.</para>
 
 <!-- $GENERATED-20150923-START rexxrefClassTable(Comparable) -->
 <table id="ooRexxComparableClass" frame="all" pgwide="1">
@@ -514,9 +541,12 @@ It is an abstract method and must be implemented in a subclass.
 </imageobject>
 </mediaobject>
 
-<para>This method returns "-1" if the <emphasis role="italic">other</emphasis> is larger than the receiving
-object, "0" if the two objects are equal, and "1" if <emphasis role="italic">other</emphasis> is
-smaller than the receiving object.</para>
+<para>This method returns <literal>-1</literal> if the
+<emphasis role="italic">other</emphasis> is larger than the receiving object,
+<literal>0</literal> if the two objects are equal, and
+<literal>1</literal> if <emphasis role="italic">other</emphasis> is smaller
+than the receiving object.
+</para>
 </section>
 </section>
 
@@ -534,14 +564,17 @@ smaller than the receiving object.</para>
 <indexterm><primary>Comparator class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Comparator class</secondary></indexterm>
-<para>The Comparator class is the base class for implementing Comparator objects
-    that can be used with the <classname>Array</classname>
-    <xref linkend="mthArraySortWith" xrefstyle="select:title"/> or
-    <xref linkend="mthArrayStableSortWith" xrefstyle="select:title"/> methods.
-    The <methodname>compare</methodname> method implements some form of comparison that determines the relative ordering
-    of two objects.   Many Comparator implementations are specific to particular object types.
+<para>The <classname>Comparator</classname> class is the base class for
+implementing <classname>Comparator</classname> objects
+that can be used with the
+<xref linkend="mthOrderedCollectionSortWith" xrefstyle="select:title"/> or
+<xref linkend="mthOrderedCollectionStableSortWith" xrefstyle="select:title"/> methods.
+The <methodname>compare</methodname> method implements some form of comparison
+that determines the relative ordering of two objects.
+Many <classname>Comparator</classname> implementations are specific to
+particular object types.
 </para>
-<para>It is defined as a mixin class.</para>
+<para>It is defined as a MIXIN class.</para>
 
 <!-- $GENERATED-20150923-START rexxrefClassTable(Comparator) -->
 <table id="ooRexxComparatorClass" frame="all" pgwide="1">
@@ -577,12 +610,12 @@ smaller than the receiving object.</para>
 </imageobject>
 </mediaobject>
 
-<para>This method returns "-1" if the <emphasis role="italic">second</emphasis> is larger than
-<emphasis role="italic">first</emphasis>
-object, "0" if the two objects are equal, and "1" <emphasis role="italic">second</emphasis> is
-smaller than <emphasis role="italic">first</emphasis>.</para>
-<para>The default Comparator <methodname>compare</methodname> method assumes that <emphasis role="italic">first</emphasis>
-is an object that implements the <classname>Comparable</classname> <xref linkend="mthComparableCompareTo" xrefstyle="template:compareTo"/> method.
+<para>&returns_minus_one_zero_or_one;.
+</para>
+<para>The default <classname>Comparator</classname> <methodname>compare</methodname>
+method assumes that <emphasis role="italic">first</emphasis> is an object that
+implements the <classname>Comparable</classname> <xref linkend="mthComparableCompareTo" xrefstyle="template:compareTo"/>
+method.
 Subclasses may override this to implement more specific comparisons.
 </para>
 <para><example id="ex.comparator-compare">
@@ -599,8 +632,10 @@ wine~sortWith(.Comparator~new)         -- Strawberries, angel's kiss, cherries
 <indexterm><primary>CaselessComparator class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>CaselessComparator class</secondary></indexterm>
-<para>The CaselessComparator class performs caseless orderings of String objects.</para>
-<para>It is defined as a mixin class.</para>
+<para>The <classname>CaselessComparator</classname> class performs
+caseless orderings of string objects.
+</para>
+<para>It is defined as a MIXIN class.</para>
 
 <!-- $GENERATED-20150923-START rexxrefClassTable(CaselessComparator) -->
 <table id="ooRexxCaselessComparatorClass" frame="all" pgwide="1">
@@ -642,10 +677,9 @@ wine~sortWith(.Comparator~new)         -- Strawberries, angel's kiss, cherries
 </imageobject>
 </mediaobject>
 
-<para>This method returns "-1" if the <emphasis role="italic">second</emphasis> is larger than
-<emphasis role="italic">first</emphasis>
-object, "0" if the two objects are equal, and "1" <emphasis role="italic">second</emphasis> is
-smaller than <emphasis role="italic">first</emphasis>.  The two strings are compared using a caseless comparison.
+<para>&returns_minus_one_zero_or_one;.
+</para>
+<para>The two strings are compared using a caseless comparison.
 </para>
 <para><example id="ex.caselesscomparator-compare">
 <title>CaselessComparator class
@@ -662,8 +696,10 @@ wine~sortWith(.CaselessComparator~new) -- angel's kiss, cherries, Strawberries
 <indexterm><primary>ColumnComparator class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>ColumnComparator class</secondary></indexterm>
-<para>The ColumnComparator class performs orderings based on specific substrings of String objects.</para>
-<para>It is defined as a mixin class.</para>
+<para>The <classname>ColumnComparator</classname> class performs
+orderings based on specific substrings of string objects.
+</para>
+<para>It is defined as a MIXIN class.</para>
 
 <!-- $GENERATED-20150923-START rexxrefClassTable(ColumnComparator) -->
 <table id="ooRexxColumnComparatorClass" frame="all" pgwide="1">
@@ -706,10 +742,9 @@ wine~sortWith(.CaselessComparator~new) -- angel's kiss, cherries, Strawberries
 </imageobject>
 </mediaobject>
 
-<para>This method returns "-1" if the <emphasis role="italic">second</emphasis> is larger than
-<emphasis role="italic">first</emphasis>
-object, "0" if the two objects are equal, and "1" <emphasis role="italic">second</emphasis> is
-smaller than <emphasis role="italic">first</emphasis>.  Only the defined columns of the strings are compared.
+<para>&returns_minus_one_zero_or_one;.
+</para>
+<para>Only the defined columns of the strings are compared.
 </para>
 </section>
 
@@ -726,7 +761,8 @@ smaller than <emphasis role="italic">first</emphasis>.  Only the defined columns
 </imageobject>
 </mediaobject>
 
-<para>Initializes a comparator to sort strings starting at position <emphasis role="italic">start</emphasis> for
+<para>Initializes a <classname>ColumnComparator</classname> to sort strings
+starting at position <emphasis role="italic">start</emphasis> for
 <emphasis role="italic">length</emphasis> characters.
 </para>
 <para><example id="ex.columncomparator-init">
@@ -745,8 +781,10 @@ wine~sortWith(.ColumnComparator~new(3, 100))
 <indexterm><primary>CaselessColumnComparator class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>CaselessColumnComparator class</secondary></indexterm>
-<para>The CaselessColumnComparator class performs caseless orderings of specific substrings of String objects.</para>
-<para>It is defined as a mixin class.</para>
+<para>The <classname>CaselessColumnComparator</classname> class performs
+caseless orderings of specific substrings of string objects.
+</para>
+<para>It is defined as a MIXIN class.</para>
 
 <!-- $GENERATED-20150923-START rexxrefClassTable(CaselessColumnComparator) -->
 <table id="ooRexxCaselessColumnComparatorClass" frame="all" pgwide="1">
@@ -789,10 +827,9 @@ wine~sortWith(.ColumnComparator~new(3, 100))
 </imageobject>
 </mediaobject>
 
-<para>This method returns "-1" if the <emphasis role="italic">second</emphasis> is larger than
-<emphasis role="italic">first</emphasis>
-object, "0" if the two objects are equal, and "1" <emphasis role="italic">second</emphasis> is
-smaller than <emphasis role="italic">first</emphasis>.  Only the defined columns of the strings are compared,
+<para>&returns_minus_one_zero_or_one;.
+</para>
+<para>Only the defined columns of the strings are compared,
 using a caseless comparison.</para>
 </section>
 
@@ -809,7 +846,8 @@ using a caseless comparison.</para>
 </imageobject>
 </mediaobject>
 
-<para>Initializes a comparator to sort strings starting at position <emphasis role="italic">start</emphasis> for
+<para>Initializes a <classname>CaselessColumnComparator</classname> to sort strings
+starting at position <emphasis role="italic">start</emphasis> for
 <emphasis role="italic">length</emphasis> characters.
 </para>
 <para><example id="ex.caselesscolumncomparator-init">
@@ -830,12 +868,13 @@ wine~sortWith(.CaselessColumnComparator~new(3, 100))
 <indexterm><primary>class</primary>
 <secondary>DescendingComparator class</secondary></indexterm>
 
-<para>The DescendingComparator class performs sort orderings in descending order.
-This is the inverse of a <xref linkend="clsComparator" xrefstyle="template:Comparator"/> sort order.
+<para>The <classname>DescendingComparator</classname> class performs
+string sort orderings in descending order.
+This is the inverse of a
+<xref linkend="clsComparator" xrefstyle="template:Comparator"/>
+sort order.
 </para>
-
-<para>This class is defined as a mixin class. It must be used
-by inheriting from it as a mixin.</para>
+<para>This class is defined as a MIXIN class.</para>
 
 <!-- $GENERATED-20150923-START rexxrefClassTable(DescendingComparator) -->
 <table id="ooRexxDescendingComparatorClass" frame="all" pgwide="1">
@@ -877,12 +916,13 @@ by inheriting from it as a mixin.</para>
 </imageobject>
 </mediaobject>
 
-<para>This method returns "1" if the <emphasis role="italic">second</emphasis> is larger than
-<emphasis role="italic">first</emphasis>
-object, "0" if the two objects are equal, and "-1" <emphasis role="italic">second</emphasis> is
-smaller than <emphasis role="italic">first</emphasis>, resulting in a descending sort sequence.
-The DescendingComparator assumes the <emphasis role="italic">first</emphasis> object implements
-the <classname>Comparable</classname> <xref linkend="mthComparableCompareTo" xrefstyle="template:compareTo"/> method.
+<para>&returns_one_zero_or_minus_one;,
+resulting in a descending sort sequence.
+</para>
+<para>The <classname>DescendingComparator</classname> assumes the
+<emphasis role="italic">first</emphasis> object implements the
+<classname>Comparable</classname> <xref linkend="mthComparableCompareTo" xrefstyle="template:compareTo"/>
+method.
 </para>
 <para><example id="ex.descendingcomparator-compare">
 <title>DescendingComparator class
@@ -900,11 +940,13 @@ wine~sortWith(.DescendingComparator~new)    -- cherries, angel's kiss, Strawberr
 <indexterm><primary>class</primary>
 <secondary>CaselessDescendingComparator class</secondary></indexterm>
 
-<para>The CaselessDescendingComparator class performs caseless string sort orderings in descending order.
+<para>The <classname>CaselessDescendingComparator</classname> class performs
+caseless string sort orderings in descending order.
 This is the inverse of a
-<xref linkend="clsCaselessComparator" xrefstyle="template:CaselessComparator"/> sort order.
+<xref linkend="clsCaselessComparator" xrefstyle="template:CaselessComparator"/>
+sort order.
 </para>
-<para>This class is defined as a mixin class.</para>
+<para>This class is defined as a MIXIN class.</para>
 
 <!-- $GENERATED-20150923-START rexxrefClassTable(CaselessDescendingComparator) -->
 <table id="ooRexxCaselessDescendingComparatorClass" frame="all" pgwide="1">
@@ -946,10 +988,10 @@ This is the inverse of a
 </imageobject>
 </mediaobject>
 
-<para>This method returns "1" if the <emphasis role="italic">second</emphasis> is larger than
-<emphasis role="italic">first</emphasis>
-object, "0" if the two objects are equal, and "-1" <emphasis role="italic">second</emphasis> is
-smaller than <emphasis role="italic">first</emphasis>.  The two strings are compared using a caseless comparison.
+<para>&returns_one_zero_or_minus_one;,
+resulting in a descending sort sequence.
+</para>
+<para>The two strings are compared using a caseless comparison.
 </para>
 <para><example id="ex.caselessdescendingcomparator-compare">
 <title>CaselessDescendingComparator class
@@ -966,9 +1008,10 @@ wine~sortWith(.CaselessDescendingComparator~new) -- Strawberries, cherries, ange
 <indexterm><primary>class</primary>
 <secondary>InvertingComparator class</secondary></indexterm>
 
-<para>The InvertingComparator class inverts the comparison results of
-another Comparator object to reverse the resulting sort order.</para>
-<para>This class is defined as a mixin class.</para>
+<para>The <classname>InvertingComparator</classname> class inverts the comparison
+results of another Comparator object to reverse the resulting sort order.
+</para>
+<para>This class is defined as a MIXIN class.</para>
 
 <!-- $GENERATED-20150923-START rexxrefClassTable(InvertingComparator) -->
 <table id="ooRexxInvertingComparatorClass" frame="all" pgwide="1">
@@ -1011,11 +1054,9 @@ another Comparator object to reverse the resulting sort order.</para>
 </imageobject>
 </mediaobject>
 
-<para>This method returns "1" if the <emphasis role="italic">second</emphasis> is larger than
-<emphasis role="italic">first</emphasis>
-object, "0" if the two objects are equal, and "-1" <emphasis role="italic">second</emphasis> is
-smaller than <emphasis role="italic">first</emphasis>, resulting in a descending sort sequence.
-The InvertingComparator will invert the ordering returned by the provided Comparator.
+<para>The <classname>InvertingComparator</classname> will invert the ordering
+returned by the <emphasis role="italic">comparator</emphasis> it was initialized
+with.
 </para>
 </section>
 
@@ -1032,8 +1073,9 @@ The InvertingComparator will invert the ordering returned by the provided Compar
 </imageobject>
 </mediaobject>
 
-<para>Initializes an inverting comparator to sort strings using an inversion of the result from the
-<emphasis role="italic">comparator</emphasis> compare() method.
+<para>Initializes an <classname>InvertingComparator</classname> to sort
+strings using an inversion of the result from the
+<emphasis role="italic">comparator</emphasis> <methodname>compare</methodname> method.
 </para>
 <para><example id="ex.invertingcomparator-init">
 <title>InvertingComparator class
@@ -1064,7 +1106,7 @@ wine~sortWith(.InvertingComparator~new(.LengthComparator~new))
 
 <para>The NumericComparator class compares strings using numeric comparison rules
 rather than string comparison rules.</para>
-<para>It is defined as a mixin class.</para>
+<para>It is defined as a MIXIN class.</para>
 
 <!-- $GENERATED-20150923-START rexxrefClassTable(NumericComparator) -->
 <table id="ooRexxNumericComparatorClass" frame="all" pgwide="1">
@@ -1107,10 +1149,9 @@ rather than string comparison rules.</para>
 </imageobject>
 </mediaobject>
 
-<para>This method returns "1" if <emphasis role="italic">first</emphasis> is larger than the
-<emphasis role="italic">second</emphasis>
-object, "0" if the two objects are equal, and "-1" if <emphasis role="italic">first</emphasis> is
-smaller than <emphasis role="italic">second</emphasis>.  Comparisons are performed using numeric
+<para>&returns_minus_one_zero_or_one;.
+</para>
+<para>Comparisons are performed using numeric
 comparison rules, so the collection strings must be valid numeric values.
 </para>
 </section>
@@ -1128,10 +1169,13 @@ comparison rules, so the collection strings must be valid numeric values.
 </imageobject>
 </mediaobject>
 
-<para>Initializes a Numeric comparator to sort strings using numeric comparison rules using the
-<emphasis role="italic">comparator</emphasis> compare() method.  If <emphasis role="italic">digits</emphasis>
-is specified, the comparisons will be performed using the provided precision.  The
-default precision is <emphasis role="italic">9</emphasis>.
+<para>Initializes a <classname>NumericComparator</classname> to sort strings
+using numeric comparison rules using the
+<classname>Comparator</classname> <xref linkend="mthComparatorCompare" xrefstyle="select:title"/>
+method.
+If <emphasis role="italic">digits</emphasis> is specified, the comparisons
+will be performed using the provided precision.
+The default precision is <literal>9</literal>.
 </para>
 <para><example id="ex.numericcomparator-init">
 <title>NumericComparator class
@@ -1150,13 +1194,14 @@ primes~sortWith(.NumericComparator~new)  -- 2, 3, 5, 7, 11, 13, 17, 19, 23
 <indexterm><primary>class</primary>
 <secondary>DateTime class</secondary></indexterm>
 
-<para>A DateTime object represents a point in between 1 January 0001 at 00:00.000000
-and 31 December 9999 at 23:59:59.999999.  A DateTime object has methods to allow
-formatting a date or time in various formats, as well as allowing arithmetic operations between
-dates.
+<para>A <classname>DateTime</classname> instance represents a timestamp between
+1 January 0001 at 00:00.000000 and 31 December 9999 at 23:59:59.999999.
+It has methods to allow formatting a date or time in various formats, as well
+as allowing arithmetic operations between timestamps.
 </para>
 <note>
-<para>DateTime does not support leap seconds like June 30, 2015 at 23:59:60 UTC.
+<para><classname>DateTime</classname> does not support leap seconds like
+June 30, 2015 at 23:59:60 UTC.
 </para></note>
 
 <!-- modified: change class methods list to 2-column format for better fit -->
@@ -1275,8 +1320,8 @@ dates.
 </imageobject>
 </mediaobject>
 
-<para>Returns a DateTime instance representing the minimum supported Rexx date,
-1 January 0001 at 00:00:00.000000.
+<para>Returns a <classname>DateTime</classname> instance representing the
+minimum supported Rexx date, 1 January 0001 at 00:00:00.000000.
 </para>
 </section>
 
@@ -1293,8 +1338,8 @@ dates.
 </imageobject>
 </mediaobject>
 
-<para>Returns a DateTime instance representing the maximum supported Rexx date,
-31 December 9999 at 23:59:59.999999.
+<para>Returns a <classname>DateTime</classname> instance representing the
+maximum supported Rexx date, 31 December 9999 at 23:59:59.999999.
 </para>
 </section>
 
@@ -1311,7 +1356,8 @@ dates.
 </imageobject>
 </mediaobject>
 
-<para>Returns a DateTime instance for the current day, with a time value of 00:00:00.000000.
+<para>Returns a <classname>DateTime</classname> instance for the current day,
+with a time value of 00:00:00.000000.
 </para>
 <para>
 If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
@@ -1333,9 +1379,11 @@ number. The default <emphasis role="italic">offset</emphasis> is the current sys
 </imageobject>
 </mediaobject>
 
-<para>Creates a DateTime object from a string returned by the Normal option
-of the <xref linkend="bifDate" xrefstyle="select:title"/> built-in function (dd mon yyyy).
-The time component will be set to the beginning of the input day (00:00:00.000000).</para>
+<para>Returns a new <classname>DateTime</classname> object, created from
+a string in the format returned by the <option>Normal</option> option
+of the <xref linkend="bifDate" xrefstyle="select:title"/> built-in function
+(<literal>dd mon yyyy</literal>).
+The time component will be set to 00:00:00.000000.</para>
 <para>
 If specified, <emphasis role="italic">separator</emphasis>
 identifies the field separator character used in the string.  The separator must be a single character
@@ -1360,15 +1408,16 @@ number. The default <emphasis role="italic">offset</emphasis> is the current sys
 </imageobject>
 </mediaobject>
 
-<para>Creates a DateTime object from a string returned by the European option
-of the <xref linkend="bifDate" xrefstyle="select:title"/> built-in function (dd/mm/yy).
-The time component will be set to the beginning of the input day (00:00:00.000000).</para>
+<para>Returns a new <classname>DateTime</classname> object, created from
+a string in the format returned by the <option>European</option> option
+of the <xref linkend="bifDate" xrefstyle="select:title"/> built-in function
+(<literal>dd/mm/yy</literal>).
+The time component will be set to 00:00:00.000000.</para>
 <para>
 If specified, <emphasis role="italic">separator</emphasis>
 identifies the field separator character used in the string.  The separator must be a single character
 or the null string ("").  A slash ("/") is the default separator.
-The time component will be set to the beginning of the input day (00:00:00.000000).
-</para>
+The time component will be set to 00:00:00.000000.</para>
 <para>
 If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
 in minutes.  The <emphasis role="italic">offset</emphasis> must be a valid whole
@@ -1389,14 +1438,16 @@ number. The default <emphasis role="italic">offset</emphasis> is the current sys
 </imageobject>
 </mediaobject>
 
-<para>Creates a DateTime object from a string returned by the Ordered option
-of the <xref linkend="bifDate" xrefstyle="select:title"/> built-in function (yy/mm/dd).
-The time component will be set to the beginning of the input day (00:00:00.000000).</para>
+<para>Returns a new <classname>DateTime</classname> object, created from
+a string in the format returned by the <option>Ordered</option> option
+of the <xref linkend="bifDate" xrefstyle="select:title"/> built-in function
+(<literal>yy/mm/dd</literal>).
+The time component will be set to 00:00:00.000000.</para>
 <para>
 If specified, <emphasis role="italic">separator</emphasis>
 identifies the field separator character used in the string.  The separator must be a single character
 or the null string ("").  A slash ("/") is the default separator.
-The time component will be set to the beginning of the input day (00:00:00.000000).</para>
+The time component will be set to 00:00:00.000000.</para>
 <para>
 If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
 in minutes.  The <emphasis role="italic">offset</emphasis> must be a valid whole
@@ -1417,9 +1468,11 @@ number. The default <emphasis role="italic">offset</emphasis> is the current sys
 </imageobject>
 </mediaobject>
 
-<para>Creates a DateTime object from a string returned by the Standard option
-of the <xref linkend="bifDate" xrefstyle="select:title"/> built-in function (yyyymmdd).
-The time component will be set to the beginning of the input day (00:00:00.000000).</para>
+<para>Returns a new <classname>DateTime</classname> object, created from
+a string in the format returned by the <option>Standard</option> option
+of the <xref linkend="bifDate" xrefstyle="select:title"/> built-in function
+(<literal>yyyymmdd</literal>).
+The time component will be set to 00:00:00.000000.</para>
 <para>
 If specified, <emphasis role="italic">separator</emphasis>
 identifies the field separator character used in the string.  The separator must be a single character
@@ -1444,9 +1497,11 @@ number. The default <emphasis role="italic">offset</emphasis> is the current sys
 </imageobject>
 </mediaobject>
 
-<para>Creates a DateTime object from a string returned by the Usa option
-of the <xref linkend="bifDate" xrefstyle="select:title"/> built-in function (mm/dd/yy).
-The time component will be set to the beginning of the input day (00:00:00.000000).</para>
+<para>Returns a new <classname>DateTime</classname> object, created from
+a string in the format returned by the <option>Usa</option> option
+of the <xref linkend="bifDate" xrefstyle="select:title"/> built-in function
+(<literal>mm/dd/yy</literal>).
+The time component will be set to 00:00:00.000000.</para>
 <para>
 If specified, <emphasis role="italic">separator</emphasis>
 identifies the field separator character used in the string.  The separator must be a single character
@@ -1471,8 +1526,10 @@ number. The default <emphasis role="italic">offset</emphasis> is the current sys
 </imageobject>
 </mediaobject>
 
-<para>Creates a DateTime object from a string returned by the Normal option
-of the <xref linkend="bifTime" xrefstyle="select:title"/> built-in function (hh:mm:ss).
+<para>Returns a new <classname>DateTime</classname> object, created from
+a string in the format returned by the <option>Normal</option> option
+of the <xref linkend="bifTime" xrefstyle="select:title"/> built-in function
+(<literal>hh:mm:ss</literal>).
 The date component will be set to 1 January 0001.</para>
 <para>
 If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
@@ -1494,8 +1551,10 @@ number. The default <emphasis role="italic">offset</emphasis> is the current sys
 </imageobject>
 </mediaobject>
 
-<para>Creates a DateTime object from a string returned by the Civil option
-of the <xref linkend="bifTime" xrefstyle="select:title"/> built-in function (hh:mmxx).
+<para>Returns a new <classname>DateTime</classname> object, created from
+a string in the format returned by the <option>Civil</option> option
+of the <xref linkend="bifTime" xrefstyle="select:title"/> built-in function
+(<literal>hh:mmxx</literal>).
 The date component will be set to 1 January 0001.</para>
 <para>
 If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
@@ -1517,8 +1576,10 @@ number. The default <emphasis role="italic">offset</emphasis> is the current sys
 </imageobject>
 </mediaobject>
 
-<para>Creates a DateTime object from a string returned by the Long option
-of the <xref linkend="bifTime" xrefstyle="select:title"/> built-in function (hh:mm:ss.uuuuuu).
+<para>Returns a new <classname>DateTime</classname> object, created from
+a string in the format returned by the <option>Long</option> option
+of the <xref linkend="bifTime" xrefstyle="select:title"/> built-in function
+(<literal>hh:mm:ss.uuuuuu</literal>).
 The date component will be set to 1 January 0001.</para>
 <para>
 If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
@@ -1540,9 +1601,11 @@ number. The default <emphasis role="italic">offset</emphasis> is the current sys
 </imageobject>
 </mediaobject>
 
-<para>Creates a DateTime object from a string returned by the Base option
-of the <xref linkend="bifDate" xrefstyle="select:title"/> built-in function (dddddd).
-The time component will be set to the beginning of the input day (00:00:00.000000).</para>
+<para>Returns a new <classname>DateTime</classname> object, created from
+a string in the format returned by the <option>Base</option> option
+of the <xref linkend="bifDate" xrefstyle="select:title"/> built-in function
+(<literal>dddddd</literal>).
+The time component will be set to 00:00:00.000000.</para>
 <para>
 If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
 in minutes.  The <emphasis role="italic">offset</emphasis> must be a valid whole
@@ -1563,9 +1626,11 @@ number. The default <emphasis role="italic">offset</emphasis> is the current sys
 </imageobject>
 </mediaobject>
 
-<para>Creates a DateTime object from a string returned by the Ticks option
+<para>Returns a new <classname>DateTime</classname> object, created from
+a string in the format returned by the <option>Ticks</option> option
 of the <xref linkend="bifDate" xrefstyle="select:title"/> or
-<xref linkend="bifTime" xrefstyle="select:title"/> built-in functions (dddddddddddd).
+<xref linkend="bifTime" xrefstyle="select:title"/> built-in functions
+(<literal>dddddddddddd</literal>).
 </para>
 <para>
 If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
@@ -1587,9 +1652,12 @@ number. The default <emphasis role="italic">offset</emphasis> is the current sys
 </imageobject>
 </mediaobject>
 
-<para>Creates a DateTime object from a string in ISO date format
-(yyyy-mm-ddThh:mm:ss.uuuuuu).  The DateTime <methodname>string</methodname> method returns
-the ISO format as the string form of a DateTime object.
+<para>Returns a new <classname>DateTime</classname> object, created from
+a string in ISO date format (<literal>yyyy-mm-ddThh:mm:ss.uuuuuu</literal>).
+</para>
+<para>The <xref linkend="mthDateTimeIsoDate" xrefstyle="select:title"/> and the
+<xref linkend="mthDateTimeString" xrefstyle="select:title"/> methods return
+a string in ISO date format as the string form of a <classname>DateTime</classname> instance.
 </para>
 <para>
 If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
@@ -1611,9 +1679,9 @@ number. The default <emphasis role="italic">offset</emphasis> is the current sys
 </imageobject>
 </mediaobject>
 
-<para>Creates a DateTime object from a string in ISO timezone qualified date
-format (yyyy-mm-ddThh:mm:ss.uuuuuu+hhmm).  The DateTime <methodname>string</methodname> method returns
-the ISO format as the string form of a DateTime object.
+<para>Returns a new <classname>DateTime</classname> object, created from
+a string in ISO timezone-qualified date format
+(<literal>yyyy-mm-ddThh:mm:ss.uuuuuu+hhmm</literal>).
 </para>
 </section>
 
@@ -1645,16 +1713,17 @@ the ISO format as the string form of a DateTime object.
 </imageobject>
 </mediaobject>
 
-<para>Initializes a new DateTime instance.  If no arguments are specified,
-the DateTime instance is set to the current date and time.  If the single
-<emphasis role="italic">fullDate</emphasis> argument is used, the DateTime
-argument is initialized to the date and time calculated by adding
+<para>Initializes a new <classname>DateTime</classname> instance.
+If no arguments are specified, the instance is set to the current date and time.
+If the single <emphasis role="italic">fullDate</emphasis> argument is used,
+the instance is initialized to the date and time calculated by adding
 <emphasis role="italic">fullDate</emphasis> microseconds to 0001-01-01T00:00:00.000000.
 If the
 <emphasis role="italic">year</emphasis>,
 <emphasis role="italic">month</emphasis>, <emphasis role="italic">day</emphasis>,
-form is used, the DateTime instance is initialized to 00:00:00.000000 on the
-indicated date. Otherwise, the DateTime instance is initialized to the
+form is used, the instance is initialized to 00:00:00.000000 on the
+indicated date.
+Otherwise, the instance is initialized to the
 <emphasis role="italic">year</emphasis>,
 <emphasis role="italic">month</emphasis>, <emphasis role="italic">day</emphasis>,
 <emphasis role="italic">hours</emphasis>, <emphasis role="italic">minutes</emphasis>,
@@ -1697,18 +1766,19 @@ day = .DateTime~new(2015, 6, 30, 11, 8, 50)      -- 2015-06-30T11:08:50.000000
 For the prefix operators, omit the parentheses and <emphasis role="italic">argument</emphasis>.
 </para></note>
 <para>Returns the result of performing the specified arithmetic operation on
-the receiver DateTime object. Depending on the operation, the
-<emphasis role="italic">argument</emphasis> be either a TimeSpan object or a DateTime
-object.  See the description of the individual operations for details.
-The
-<emphasis role="italic">arithmetic_operator</emphasis> can be:
+the receiver <classname>DateTime</classname> instance.
+Depending on the operation, the <emphasis role="italic">argument</emphasis> may
+be either a <xref linkend="clsTimeSpan" xrefstyle="template:TimeSpan"/> object
+or a <classname>DateTime</classname> instance.
+See the description of the individual operations for details.
+The <emphasis role="italic">arithmetic_operator</emphasis> can be:
 </para>
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1">
 <tgroup cols="2">
 <colspec colnum="1" colwidth="1*" />
 <colspec colnum="2" colwidth="5*" />
 <tbody>
-<row><entry>+
+<row><entry><literal>+</literal>
 <indexterm><primary>+ method</primary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>+</secondary></indexterm>
@@ -1716,7 +1786,7 @@ The
 <entry><para>Addition.  Adds a TimeSpan to the DateTime object, returning a new DateTime
 instance.  The receiver DateTime object is not changed.  The TimeSpan may be either positive or negative.
 </para></entry></row>
-<row><entry>-
+<row><entry><literal>-</literal>
 <indexterm><primary>- method</primary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>-</secondary></indexterm>
@@ -1729,24 +1799,25 @@ argument DateTime, a negative TimeSpan interval is returned.  The receiver DateT
 from the DateTime object, returning a new DateTime
 instance.  The receiver DateTime object is not changed.  The TimeSpan may be either positive or negative.
 </para></entry></row>
-<row><entry>Prefix -
+<row><entry>Prefix <literal>-</literal>
 <indexterm><primary>method</primary>
 <secondary>prefix -</secondary></indexterm>
 </entry>
 <entry><para>A prefix - operation on a DateTime object will raise a SYNTAX error condition.
 </para></entry></row>
-<row><entry>Prefix +
+<row><entry>Prefix <literal>+</literal>
 <indexterm><primary>method</primary>
 <secondary>prefix +</secondary></indexterm>
 </entry>
-<entry><para>Returns a new instance of the DateTime object with the same time value.
+<entry><para>Returns a new <classname>DateTime</classname> object with the same time value.
 </para></entry></row>
 </tbody>
 </tgroup>
 </informaltable>
 <note>
-<para>When adding or subtracting DateTime and TimeSpan objects, leap seconds
-(like the one which happened on June 30, 2015 at 23:59:60 UTC) are not taken into account.
+<para>When adding or subtracting <classname>DateTime</classname> and
+<classname>TimeSpan</classname> objects, leap seconds (like the one which
+happened on June 30, 2015 at 23:59:60 UTC) are not taken into account.
 </para></note>
 <example>
 <title>DateTime class &mdash; arithmetic
@@ -1783,8 +1854,10 @@ say "The next century starts in" (nextCentury - .dateTime~new)
 </imageobject>
 </mediaobject>
 
-<para>This method returns "-1" if the <emphasis role="italic">other</emphasis> is larger than the receiving
-object, "0" if the two objects are equal, and "1" if <emphasis role="italic">other</emphasis> is
+<para>Returns <literal>-1</literal> if the
+<emphasis role="italic">other</emphasis> is larger than the receiving object,
+<literal>0</literal> if the two objects are equal, and
+<literal>1</literal> if <emphasis role="italic">other</emphasis> is
 smaller than the receiving object.</para>
 </section>
 
@@ -1802,7 +1875,7 @@ smaller than the receiving object.</para>
 </mediaobject>
 
 <para>
-Returns the year represented by this DateTime instance.
+Returns the timestamp year.
 </para>
 </section>
 
@@ -1820,7 +1893,7 @@ Returns the year represented by this DateTime instance.
 </mediaobject>
 
 <para>
-Returns the month represented by this DateTime instance.
+Returns the timestamp month.
 </para>
 </section>
 
@@ -1838,7 +1911,7 @@ Returns the month represented by this DateTime instance.
 </mediaobject>
 
 <para>
-Returns the day represented by this DateTime instance.
+Returns the timestamp day.
 </para>
 </section>
 
@@ -1856,7 +1929,7 @@ Returns the day represented by this DateTime instance.
 </mediaobject>
 
 <para>
-Returns number of whole hours since midnight.
+Returns number of whole hours in the timestamp since midnight.
 </para>
 </section>
 
@@ -1874,7 +1947,7 @@ Returns number of whole hours since midnight.
 </mediaobject>
 
 <para>
-Returns minutes portion of the timestamp time-of-day.
+Returns the minutes portion of the timestamp time-of-day.
 </para>
 </section>
 
@@ -1892,7 +1965,7 @@ Returns minutes portion of the timestamp time-of-day.
 </mediaobject>
 
 <para>
-Returns seconds portion of the timestamp time-of-day.
+Returns the seconds portion of the timestamp time-of-day.
 </para>
 </section>
 
@@ -1910,7 +1983,7 @@ Returns seconds portion of the timestamp time-of-day.
 </mediaobject>
 
 <para>
-Returns microseconds portion of the timestamp time-of-day.
+Returns the microseconds portion of the timestamp time-of-day.
 </para>
 </section>
 
@@ -1928,7 +2001,7 @@ Returns microseconds portion of the timestamp time-of-day.
 </mediaobject>
 
 <para>
-Returns the number of minutes since midnight in the time-of-day.
+Returns the number of minutes since midnight in the timestamp time-of-day.
 </para>
 </section>
 
@@ -1946,7 +2019,7 @@ Returns the number of minutes since midnight in the time-of-day.
 </mediaobject>
 
 <para>
-Returns the number of seconds since midnight in the time-of-day.
+Returns the number of seconds since midnight in the timestamp time-of-day.
 </para>
 </section>
 
@@ -1964,7 +2037,7 @@ Returns the number of seconds since midnight in the time-of-day.
 </mediaobject>
 
 <para>
-Returns the number of microseconds since midnight in the time-of-day.
+Returns the number of microseconds since midnight in the timestamp time-of-day.
 </para>
 </section>
 
@@ -1981,8 +2054,8 @@ Returns the number of microseconds since midnight in the time-of-day.
 </imageobject>
 </mediaobject>
 
-<para>Returns a string value that is used as a hash value for a MapCollection
-such as Table, Relation, Set, Bag, and Directory.
+<para>Returns a string value for the timestamp that is used as a hash value for
+a <xref linkend="clsMapCollection" xrefstyle="template:MapCollection class"/>.
 </para>
 </section>
 
@@ -1999,13 +2072,16 @@ such as Table, Relation, Set, Bag, and Directory.
 </imageobject>
 </mediaobject>
 
-<para>Add a number of years to the DateTime object, returning a new DateTime instance.
-The receiver DateTime object is unchanged.
-The <emphasis role="italic">years</emphasis> value must be a valid whole number.  Negative values
-result in years being subtracted from the DateTime value.
+<para>Returns a new <classname>DateTime</classname> instance with a number of
+years added to the timestamp.
+The receiving instance is unchanged.
+The <emphasis role="italic">years</emphasis> value must be a valid whole number.
+Negative values result in <emphasis role="italic">years</emphasis> being
+subtracted.
 </para>
-<para>The addYears method will take leap years into account.  If the addition result would fall on February 29th of
-a non-leap year, the day will be rolled back to the 28th.
+<para>The <methodname>addYears</methodname> method will take leap years into account.
+If the addition result would fall on February 29th of a non-leap year,
+the day will be rolled back to the 28th.
 </para>
 <example>
 <title>DateTime class &mdash; addYears method</title>
@@ -2032,12 +2108,13 @@ say date~addYears(1)  -- displays "2016-06-30T00:00:00.000000"
 </imageobject>
 </mediaobject>
 
-<para>Adds weeks to the DateTime object, returning a new DateTime instance.
-The receiver DateTime object is unchanged.
-The <emphasis role="italic">weeks</emphasis> value must be a valid number, including
-fractional values.
-Negative values
-result in week being subtracted from the DateTime value.
+<para>Returns a new <classname>DateTime</classname> instance with a number of
+weeks added to the timestamp.
+The receiving instance is unchanged.
+The <emphasis role="italic">weeks</emphasis> value must be a valid number,
+including fractional values.
+Negative values result in <emphasis role="italic">weeks</emphasis> being
+subtracted.
 </para>
 </section>
 
@@ -2054,12 +2131,12 @@ result in week being subtracted from the DateTime value.
 </imageobject>
 </mediaobject>
 
-<para>Adds days to the DateTime object, returning a new DateTime instance.
-The receiver DateTime object is unchanged.
-The <emphasis role="italic">days</emphasis> value must be a valid number, including
-fractional values.
-Negative values
-result in days being subtracted from the DateTime value.
+<para>Returns a new <classname>DateTime</classname> instance with a number of
+days added to the timestamp.
+The receiving instance is unchanged.
+The <emphasis role="italic">days</emphasis> value must be a valid number,
+including fractional values.
+Negative values result in days being subtracted.
 </para>
 <example>
 <title>DateTime class &mdash; addDays method</title>
@@ -2086,12 +2163,12 @@ say date~addDays(1.5) -- displays "2015-07-01T12:00:00.000000"
 </imageobject>
 </mediaobject>
 
-<para>Adds hours to the DateTime object, returning a new DateTime instance.
-The receiver DateTime object is unchanged.
-The <emphasis role="italic">hours</emphasis> value must be a valid number, including
-fractional values.
-Negative values
-result in hours being subtracted from the DateTime value.
+<para>Returns a new <classname>DateTime</classname> instance with a number of
+hours added to the timestamp.
+The receiving instance is unchanged.
+The <emphasis role="italic">hours</emphasis> value must be a valid number,
+including fractional values.
+Negative values result in hours being subtracted.
 </para>
 </section>
 
@@ -2108,12 +2185,12 @@ result in hours being subtracted from the DateTime value.
 </imageobject>
 </mediaobject>
 
-<para>Adds minutes to the DateTime object, returning a new DateTime instance.
-The receiver DateTime object is unchanged.
-The <emphasis role="italic">minutes</emphasis> value must be a valid number, including
-fractional values.
-Negative values
-result in minutes being subtracted from the DateTime value.
+<para>Returns a new <classname>DateTime</classname> instance with a number of
+minutes added to the timestamp.
+The receiving instance is unchanged.
+The <emphasis role="italic">minutes</emphasis> value must be a valid number,
+including fractional values.
+Negative values result in minutes being subtracted.
 </para>
 </section>
 
@@ -2130,12 +2207,12 @@ result in minutes being subtracted from the DateTime value.
 </imageobject>
 </mediaobject>
 
-<para>Adds seconds to the DateTime object, returning a new DateTime instance.
-The receiver DateTime object is unchanged.
-The <emphasis role="italic">seconds</emphasis> value must be a valid number, including
-fractional values.
-Negative values
-result in seconds being subtracted from the DateTime value.
+<para>Returns a new <classname>DateTime</classname> instance with a number of
+seconds added to the timestamp.
+The receiving instance is unchanged.
+The <emphasis role="italic">seconds</emphasis> value must be a valid number,
+including fractional values.
+Negative values result in seconds being subtracted.
 </para>
 </section>
 
@@ -2152,11 +2229,12 @@ result in seconds being subtracted from the DateTime value.
 </imageobject>
 </mediaobject>
 
-<para>Adds microseconds to the DateTime object, returning a new DateTime instance.
-The receiver DateTime object is unchanged.
-The <emphasis role="italic">microseconds</emphasis> value must be a valid whole number.
-Negative values
-result in microseconds being subtracted from the DateTime value.
+<para>Returns a new <classname>DateTime</classname> instance with a number of
+microseconds added to the timestamp.
+The receiving instance is unchanged.
+The <emphasis role="italic">microseconds</emphasis> value must be a valid
+whole number.
+Negative values result in microseconds being subtracted.
 </para>
 </section>
 
@@ -2173,7 +2251,11 @@ result in microseconds being subtracted from the DateTime value.
 </imageobject>
 </mediaobject>
 
-<para>Returns a String formatted into ISO date format, yyyy-mm-ddThh:mm:ss.uuuuuu.
+<para>Returns the timestamp formatted as a string in ISO date format
+<literal>yyyy-mm-ddThh:mm:ss.uuuuuu</literal>.
+</para>
+<para>The <xref linkend="mthDateTimeString" xrefstyle="select:title"/> method
+will also return this value.
 </para>
 </section>
 
@@ -2190,11 +2272,13 @@ result in microseconds being subtracted from the DateTime value.
 </imageobject>
 </mediaobject>
 
-<para>Returns a String formatted into a fully qualified ISO date format.  If the
-timezone offiset is 0, the format is yyyy-mm-ddThh:mm:ss.uuuuuuZ.  If the offset
-is positive, the date is formatted as yyyy-mm-ddThh:mm:ss.uuuuuu+hhmm.  If the
-offset is negative, the result will be in the format
-yyyy-mm-ddThh:mm:ss.uuuuuu-hhmm.
+<para>Returns the timestamp formatted as a string in ISO timezone-qualified date format.
+If the timezone offiset is 0, the format is
+<literal>yyyy-mm-ddThh:mm:ss.uuuuuuZ</literal>.
+If the offset is positive, the string is formatted as
+<literal>yyyy-mm-ddThh:mm:ss.uuuuuu+hhmm</literal>.
+If the offset is negative, the result will be in the format
+<literal>yyyy-mm-ddThh:mm:ss.uuuuuu-hhmm</literal>.
 </para>
 </section>
 
@@ -2212,10 +2296,9 @@ yyyy-mm-ddThh:mm:ss.uuuuuu-hhmm.
 </mediaobject>
 
 <para>
-Returns the number of complete days (that is, not including the
-current day) since and including the base date, 1 January 0001, in the format:
-<emphasis role="italic">dddddd</emphasis> (no leading zeros or whitespace
-characters).
+Returns the number of complete days (that is, not including the timestamp day)
+since and including the base date, 1 January 0001, in the format
+<literal>dddddd</literal> (no leading zeros or whitespace characters).
 </para>
 <para>The base date of 1 January 0001 is determined
 by extending the current Gregorian calendar backward (365 days each year,
@@ -2237,8 +2320,8 @@ system that created the Gregorian calendar originally.</para>
 </imageobject>
 </mediaobject>
 
-<para>Returns the number of days, including the current day, that have passed
-in the DateTime year in the format <emphasis role="italic">ddd</emphasis>
+<para>Returns the number of days, including the timestamp day, that have passed
+in the year the timestamp represents in the format <literal>ddd</literal>
 (no leading zeros or blanks).
 </para>
 </section>
@@ -2256,9 +2339,10 @@ in the DateTime year in the format <emphasis role="italic">ddd</emphasis>
 </imageobject>
 </mediaobject>
 
-<para>Returns the day of the week, as an integer.  The values returned use the
-ISO convention for day numbering.  Monday is "1", Tuesday is "2", running
-through "7" for Sunday.
+<para>Returns the timestamp weekday as an integer.
+The values returned use the ISO convention for day numbering.
+Monday is <literal>1</literal>, Tuesday is <literal>2</literal>, running
+through <literal>7</literal> for Sunday.
 </para>
 </section>
 
@@ -2275,9 +2359,10 @@ through "7" for Sunday.
 </imageobject>
 </mediaobject>
 
-<para>Returns the date in the format <emphasis role="italic">dd/mm/yy</emphasis>.
+<para>Returns the timestamp date formatted as a string in the format
+<literal>dd/mm/yy</literal>.
 If specified, <emphasis role="italic">separator</emphasis>
-identifies the field separator character used in the returned date.
+identifies the field separator character used in the returned string.
 The separator must be a single character
 or the null string ("").  A slash ("/") is the default separator.
 </para>
@@ -2296,15 +2381,17 @@ or the null string ("").  A slash ("/") is the default separator.
 </imageobject>
 </mediaobject>
 
-<para>Returns the date in an implementation- and language-dependent, or local,
-date format. The format is <emphasis role="italic">dd month yyyy</emphasis>.
+<para>Returns the timestamp date formatted as a string in an implementation- and
+language-dependent, or local, date format.
+The format is <literal>dd month yyyy</literal>.
 The name of the month is according to the national language installed on the
 system. If no local date format is available, the default format is returned.
 
 <note><title>Note</title>
-<para>This
-format is intended to be used as a whole; Rexx programs must not make any
-assumptions about the form or content of the returned string.</para></note>
+<para>This format is intended to be used as a whole.
+Rexx programs must not make any assumptions about the form or content of the
+returned string.
+</para></note>
 </para>
 </section>
 
@@ -2322,7 +2409,7 @@ assumptions about the form or content of the returned string.</para></note>
 </mediaobject>
 
 <para>
-Returns the name of the DateTime month, in English.
+Returns the name of the timestamp month, in English.
 </para>
 </section>
 
@@ -2340,7 +2427,7 @@ Returns the name of the DateTime month, in English.
 </mediaobject>
 
 <para>
-Returns the name of the DateTime day, in English.
+Returns the name of the timestamp weekday, in English.
 </para>
 </section>
 
@@ -2357,7 +2444,8 @@ Returns the name of the DateTime day, in English.
 </imageobject>
 </mediaobject>
 
-<para>Returns the date in the format <emphasis role="italic">dd mon yyyy</emphasis>.
+<para>Returns the timestamp date formatted as a string in the format
+<literal>dd mon yyyy</literal>.
 If specified, <emphasis role="italic">separator</emphasis>
 identifies the field separator character used in the returned date.
 The separator must be a single character
@@ -2378,7 +2466,8 @@ or the null string ("").  A blank (" ") is the default separator.
 </imageobject>
 </mediaobject>
 
-<para>Returns the date in the format <emphasis role="italic">yy/mm/dd</emphasis>.
+<para>Returns the timestamp date formatted as a string in the format
+<literal>yy/mm/dd</literal>.
 If specified, <emphasis role="italic">separator</emphasis>
 identifies the field separator character used in the returned date.
 The separator must be a single character
@@ -2399,7 +2488,8 @@ or the null string ("").  A slash ("/") is the default separator.
 </imageobject>
 </mediaobject>
 
-<para>Returns the date in the format <emphasis role="italic">yyyymmdd</emphasis>.
+<para>Returns the timestamp date formatted as a string in the format
+<literal>yyyymmdd</literal>.
 If specified, <emphasis role="italic">separator</emphasis>
 identifies the field separator character used in the returned date.
 The separator must be a single character
@@ -2420,7 +2510,8 @@ or the null string ("").  A null string ("") is the default separator.
 </imageobject>
 </mediaobject>
 
-<para>Returns the date in the format <emphasis role="italic">mm/dd/yy</emphasis>.
+<para>Returns the timestamp date formatted as a string in the format
+<literal>mm/dd/yy</literal>.
 If specified, <emphasis role="italic">separator</emphasis>
 identifies the field separator character used in the returned date.
 The separator must be a single character
@@ -2441,7 +2532,8 @@ or the null string ("").  A slash ("/") is the default separator.
 </imageobject>
 </mediaobject>
 
-<para>Returns the time in Civil format <emphasis role="italic">hh:mmxx</emphasis>.
+<para>Returns the timestamp time formatted as a string in <option>Civil</option>
+format <literal>hh:mmxx</literal>.
 The hours can take
 the values <computeroutput>1</computeroutput> through
 <computeroutput>12</computeroutput>, and the minutes the values
@@ -2449,9 +2541,9 @@ the values <computeroutput>1</computeroutput> through
 The minutes are followed immediately by the letters
 <computeroutput>am</computeroutput> or <computeroutput>pm</computeroutput>.
 This distinguishes times in the morning (12 midnight through 11:59
-a.m.--appearing as <computeroutput>12:00am</computeroutput> through
+a.m.&mdash;appearing as <computeroutput>12:00am</computeroutput> through
 <computeroutput>11:59am</computeroutput>) from noon and afternoon (12 noon
-through 11:59 p.m.--appearing as <computeroutput>12:00pm</computeroutput>
+through 11:59 p.m.&mdash;appearing as <computeroutput>12:00pm</computeroutput>
 through <computeroutput>11:59pm</computeroutput>). The hour has no leading
 zero.  The minute field shows the current minute (rather than the nearest
 minute) for consistency with other TIME results.
@@ -2471,13 +2563,14 @@ minute) for consistency with other TIME results.
 </imageobject>
 </mediaobject>
 
-<para>Returns the time in the default format <emphasis role="italic">hh:mm:ss</emphasis>.
+<para>Returns the timestamp time formatted as a string in the default format
+<literal>hh:mm:ss</literal>.
 The hours
 can have the values <computeroutput>00</computeroutput> through
 <computeroutput>23</computeroutput>, and minutes and seconds,
 <computeroutput>00</computeroutput> through <computeroutput>59</computeroutput>.
 There are always two digits. Any fractions
-of seconds are ignored (times are never rounded). This is the default.
+of seconds are ignored (times are never rounded).
 </para>
 </section>
 
@@ -2494,8 +2587,9 @@ of seconds are ignored (times are never rounded). This is the default.
 </imageobject>
 </mediaobject>
 
-<para>Returns time in the format <emphasis role="italic">hh:mm:ss.uuuuuu</emphasis>
-(where <emphasis role="italic">uuuuuu</emphasis> are microseconds).
+<para>Returns the timestamp time formatted as a string in the format
+<literal>hh:mm:ss.uuuuuu</literal> 
+(where <literal>uuuuuu</literal> are microseconds).
 </para>
 </section>
 
@@ -2512,9 +2606,9 @@ of seconds are ignored (times are never rounded). This is the default.
 </imageobject>
 </mediaobject>
 
-<para>Returns the number of microseconds
-since 00:00:00.000000 on 1 January 0001, in the format:
-<emphasis role="italic">dddddddddddddddddd</emphasis> (no leading zeros or blanks).
+<para>Returns the timestamp's number of microseconds
+since 00:00:00.000000 on 1 January 0001, in the format
+<literal>dddddddddddddddddd</literal> (no leading zeros or blanks).
 </para>
 </section>
 
@@ -2531,9 +2625,9 @@ since 00:00:00.000000 on 1 January 0001, in the format:
 </imageobject>
 </mediaobject>
 
-<para>Returns the date converted to UTC time as the number of microseconds
-since 00:00:00.000000 on 1 January 0001, in the format:
-<emphasis role="italic">dddddddddddddddddd</emphasis> (no leading zeros or blanks).
+<para>Returns the timestamp converted to UTC time as the number of microseconds
+since 00:00:00.000000 on 1 January 0001, in the format
+<literal>dddddddddddddddddd</literal> (no leading zeros or blanks).
 </para>
 </section>
 
@@ -2550,7 +2644,8 @@ since 00:00:00.000000 on 1 January 0001, in the format:
 </imageobject>
 </mediaobject>
 
-<para>Returns a new DateTime object representing the time for the local timezone.
+<para>Returns a new <classname>DateTime</classname> instance representing the time
+for the local timezone.
 </para>
 </section>
 
@@ -2567,7 +2662,8 @@ since 00:00:00.000000 on 1 January 0001, in the format:
 </imageobject>
 </mediaobject>
 
-<para>Returns a new DateTime object representing the time for the UTC timezone (offset 0).
+<para>Returns a new <classname>DateTime</classname> instance representing the time
+for the UTC timezone (offset 0).
 </para>
 </section>
 
@@ -2584,12 +2680,12 @@ since 00:00:00.000000 on 1 January 0001, in the format:
 </imageobject>
 </mediaobject>
 
-<para>Returns a new DateTime object representing the time for the timezone
-indicated by <emphasis role="italic">offset</emphasis>.
+<para>Returns a new <classname>DateTime</classname> instance representing the time
+for the timezone indicated by <emphasis role="italic">offset</emphasis>.
 If specified, <emphasis role="italic">offset</emphasis> is the offset from UTC,
 in minutes.  The <emphasis role="italic">offset</emphasis> must be a valid whole
 number. The default <emphasis role="italic">offset</emphasis> is 0, which
-creates a DateTime object for UTC.
+is equivalent to UTC.
 </para>
 </section>
 
@@ -2606,9 +2702,9 @@ creates a DateTime object for UTC.
 </imageobject>
 </mediaobject>
 
-<para>returns the number of seconds
-since 00:00:00.000000 on 1 January 1970, in the format:
-<emphasis role="italic">dddddddddddd</emphasis> (no leading zeros or blanks).
+<para>Returns the timestamp's number of seconds
+since 00:00:00.000000 on 1 January 1970,
+in the format <literal>dddddddddddd</literal> (no leading zeros or blanks).
 Times prior to 1 January 1970 are returned as a negative value.
 </para>
 </section>
@@ -2626,7 +2722,7 @@ Times prior to 1 January 1970 are returned as a negative value.
 </imageobject>
 </mediaobject>
 
-<para>Returns the timezone for the DateTime instance as the offset in minutes
+<para>Returns the timestamp timezone as an offset in minutes
 from UTC.  Timezones east of UTC will return a positive offset.  Timezones west
 of UTC will return a negative offset.
 </para>
@@ -2645,8 +2741,8 @@ of UTC will return a negative offset.
 </imageobject>
 </mediaobject>
 
-<para>Returns a new DateTime object instance for the current date, with
-the time component set to 00:00:00.000000.
+<para>Returns a new <classname>DateTime</classname> instance for the
+timestamp date, with the time component set to 00:00:00.000000.
 </para>
 </section>
 
@@ -2663,8 +2759,8 @@ the time component set to 00:00:00.000000.
 </imageobject>
 </mediaobject>
 
-<para>Returns the interval since 00:00:00.000000 of the current day
-as a TimeSpan object.
+<para>Returns the interval since 00:00:00.000000 of the timestamp day as a
+<xref linkend="clsTimeSpan" xrefstyle="template:TimeSpan"/> object.
 </para>
 </section>
 
@@ -2681,8 +2777,10 @@ as a TimeSpan object.
 </imageobject>
 </mediaobject>
 
-<para>Returns the difference between current time and the receiver DateTime
-as a TimeSpan object.  The TimeSpan will be negative if the receiver DateTime
+<para>Returns the difference between the current date/time and the
+timestamp date/time as a
+<xref linkend="clsTimeSpan" xrefstyle="template:TimeSpan"/> object.
+The time span will be negative if the receiving instance
 represents a time in the future.
 </para>
 </section>
@@ -2700,8 +2798,8 @@ represents a time in the future.
 </imageobject>
 </mediaobject>
 
-<para>Returns &true; if the current year is a leap year.  Returns &false;
-if the current year is not a leap year.
+<para>Returns &true; if the timestamp year is a leap year.
+Returns &false; otherwise.
 </para>
 </section>
 
@@ -2718,9 +2816,11 @@ if the current year is not a leap year.
 </imageobject>
 </mediaobject>
 
-<para>Returns the number of days in the current month.  For example, for dates in
-January, 31 is returned.  The daysInMonth method takes leap years into account, returning
-28 days for February in non-leap years, and 29 days for leap years.
+<para>Returns the number of days in the timestamp month.
+For example, for dates in January, 31 is returned.
+The <methodname>daysInMonth</methodname> method takes leap years into account,
+returning <literal>28</literal> for February in non-leap years, and
+<literal>29</literal> for leap years.
 </para>
 </section>
 
@@ -2737,8 +2837,9 @@ January, 31 is returned.  The daysInMonth method takes leap years into account, 
 </imageobject>
 </mediaobject>
 
-<para>Returns the number of days in the current year.  For leap years, 366 is returned.
-For non-leap years, this returns 365.
+<para>Returns the number of days in the timestamp year.
+For leap years, <literal>366</literal> is returned, and
+<literal>365</literal> for non-leap years.
 </para>
 </section>
 
@@ -2755,7 +2856,11 @@ For non-leap years, this returns 365.
 </imageobject>
 </mediaobject>
 
-<para>Returns DateTime formatted as a string.  The string value is returned in ISO format.
+<para>Returns the timestamp formatted as a string in ISO date format
+<literal>yyyy-mm-ddThh:mm:ss.uuuuuu</literal>.
+</para>
+<para>The <xref linkend="mthDateTimeIsoDate" xrefstyle="select:title"/> method
+will also return this value.
 </para>
 </section>
 
@@ -2766,12 +2871,16 @@ For non-leap years, this returns 365.
 <indexterm><primary>class</primary>
 <secondary>File class</secondary></indexterm>
 
-<para>The File class provides services which are common to all Rexx-supported filesystems.
-A File object represents a path to a file or directory. The path can be relative or absolute.
+<para>The <classname>File</classname> class provides services which are common
+to all Rexx-supported filesystems.
+A <classname>File</classname> object represents a path to a file or directory.
+The path can be relative or absolute.
 </para>
 <para>
-If you create a File object with a relative path, the absolute path will be calculated using the current default directory.
-This absolute path is memorized on the File object, and will not change if you change the default directory.
+If you create a <classname>File</classname> object with a relative path,
+the absolute path will be calculated using the current default directory.
+This absolute path is memorized on the <classname>File</classname> object,
+and will not change if you change the default directory.
 </para>
 
 <!-- Modified: lastModified= combined into attribute -->
@@ -2876,9 +2985,10 @@ This absolute path is memorized on the File object, and will not change if you c
 </imageobject>
 </mediaobject>
 
-<para>Returns the file system root elements, as an array of string.
-On Windows, each of the drives is a root element (Ex : "C:\").
-On Unix, there is just one root ("/").
+<para>Returns the file system root elements, as an array of strings.
+On Windows, each of the drives is a root element in the format
+<literal>C:\</literal>.
+On Unix, there is just one root ( <literal>/</literal> ).
 </para>
 <example>
 <title>File class</title>
@@ -3303,28 +3413,29 @@ say .File~new("/tmp/.dir/file")~isHidden        -- 1
   <listitem>
 <example>
 <title>File class &mdash; lastModified method</title>
-    <programlisting>
-    <![CDATA[
-    /* On Windows */
-    say .File~new("C:\Program Files")~lastModified~class    -- The DateTime class
-    say .File~new("C:\Program Files")~lastModified          -- 2015-06-18T11:20:17.000000
-    say .File~new("dummy")~lastModified                     -- The NIL object
+<programlisting><![CDATA[
+/* On Windows */
+say .File~new("C:\Program Files")~lastModified~class  -- The DateTime class
+say .File~new("C:\Program Files")~lastModified        -- 2015-06-18T11:20:17.000000
+say .File~new("dummy")~lastModified                   -- The NIL object
 
-    /* A possible implementation of : touch -c -m -r referenceFile file
-       -c, --no-create             do not create any files
-       -m                          change only the modification time
-       -r, --reference=FILE        use this file's time instead of current time
-    */
-    parse arg referenceFilePath filePath .
-    file = .File~new(filePath)
-    if \ file~exists then return 0 -- OK, not an error
-    referenceFile = .File~new(referenceFilePath)
-    referenceDate = referenceFile~lastModified
-    if referenceDate == .nil then return 1 -- KO
-    file~lastModified = referenceDate
-    return 0 -- OK
-    ]]>
-    </programlisting>
+
+/* A possible implementation of : touch -c -m -r referenceFile file
+   -c, --no-create             do not create any files
+   -m                          change only the modification time
+   -r, --reference=FILE        use this file's time instead of current time
+*/
+parse arg referenceFilePath filePath .
+file = .File~new(filePath)
+if \file~exists then
+  return 0         -- OK, not an error
+referenceFile = .File~new(referenceFilePath)
+referenceDate = referenceFile~lastModified
+if referenceDate == .nil then
+  return 1         -- KO
+file~lastModified = referenceDate
+return 0           -- OK
+]]></programlisting>
 </example>
   </listitem></varlistentry>
 </variablelist>
@@ -3699,8 +3810,9 @@ The new name is <emphasis role="italic">dest</emphasis>.
 <indexterm><primary>class</primary><secondary>MessageNotification class</secondary></indexterm>
 </title>
 
-<para>The MessageNotification class implements the notification interface
-for the Message class.
+<para>The <classname>MessageNotification</classname> class implements the
+notification interface for the
+<xref linkend="clsMessage" xrefstyle="template:Message"/> class.
 </para>
 <para>For any message, notification of completion of the message can be
 requested by using the <xref linkend="mthMessageNotify" xrefstyle="select:title"/>
@@ -3710,7 +3822,7 @@ implements this message notification interface.
 If notification was requested, upon message completion a <methodname>messageComplete</methodname>
 message is sent to the notification target.
 </para>
-<para>This class is defined as a mixin class.
+<para>This class is defined as a MIXIN class.
 </para>
 
 <!-- $GENERATED-20151016-START rexxrefClassTable(MessageNotification) -->
@@ -3763,9 +3875,9 @@ The Message object which completed processing will be provided as argument
 <indexterm><primary>class</primary>
 <secondary>Monitor class</secondary></indexterm>
 
-<para>The Monitor class acts as a proxy for other objects.  Messages sent to the
-Monitor object are forwarded to a different target object.  The message target can be
-changed dynamically.
+<para>The <classname>Monitor</classname> class acts as a proxy for other objects.
+Messages sent to the Monitor object are forwarded to a different target object.
+The message target can be changed dynamically.
 </para>
 
 <!-- $GENERATED-20150923-START rexxrefClassTable(Monitor) -->
@@ -3887,7 +3999,7 @@ current_output_destination_stream_object=.output~current
 <indexterm><primary>class</primary>
 <secondary>MutableBuffer class</secondary></indexterm>
 
-<para>The MutableBuffer class is a buffer on which
+<para>The <classname>MutableBuffer</classname> class is a buffer on which
 certain string operations such as concatenation can be performed very
 efficiently.  Unlike String objects, MutableBuffers can be altered without
 requiring a new object allocation.  A MutableBuffer object can provide better
@@ -5474,13 +5586,13 @@ which the search is to be started.</para>
 <indexterm><primary>class</primary>
 <secondary>Orderable class</secondary></indexterm>
 
-<para>The Orderable class can be inherited by classes which wish to provide
+<para>The <classname>Orderable</classname> class can be inherited by classes which wish to provide
     each of the comparison operator methods without needing to implement each of
     the individual methods.  The inheriting class need only implement the
     <classname>Comparable</classname>
     <xref linkend="mthComparableCompareTo" xrefstyle="template:compareTo"/> method.
 </para>
-<para>The <classname>Orderable</classname> class is defined as a mixin class.
+<para>The <classname>Orderable</classname> class is defined as a MIXIN class.
 </para>
 
 <!-- $GENERATED-20150923-START rexxrefClassTable(Orderable) -->
@@ -5704,10 +5816,12 @@ results as the non-strict comparisons.
 <indexterm><primary>class</primary>
 <secondary>Pointer class</secondary></indexterm>
 
-<para>A Pointer instance is a wrapper around a native pointer value.  This class
-is designed primarily for writing methods and functions in native code and can
-only be created using the native code application programming interfaces.  The Pointer
-class new method will raise an error if invoked.</para>
+<para>A <classname>Pointer</classname> instance is a wrapper around a native
+pointer value.
+This class is designed primarily for writing methods and functions in native code
+and can only be created using the native code application programming interfaces.
+The Pointer class new method will raise an error if invoked.
+</para>
 
 <!-- $GENERATED-20150924-START rexxrefClassTable(Pointer) -->
 <table id="ooRexxPointerClass" frame="all" pgwide="1">
@@ -5841,7 +5955,8 @@ Returns &false; if the pointer value is non-zero.
 <para>This class provides support for regular expressions. A regular
 expression is a pattern you can use to match strings.</para>
 
-<note><para>The RegularExpression class is not a built-in class and is NOT preloaded.
+<note><para>The <classname>RegularExpression</classname> class is not a
+built-in class and is <emphasis role="bold">not</emphasis> preloaded.
 Use <code>::requires "rxregexp.cls"</code> to activate its functionality.
 </para></note>
 
@@ -6011,7 +6126,7 @@ be used to abbreviate common sets:</para>
 </imageobject>
 </mediaobject>
 
-<para>Instantiates a <classname>RegularExpression</classname> object.
+<para>Instantiates a <classname>RegularExpression</classname> instance.
 Use the optional parameter <emphasis role="italic">pattern</emphasis> to
 define a regular expression pattern that will be used to match strings.
 You can select the type of regular expression matching to be
@@ -6160,7 +6275,7 @@ texts = "A nice flower.", -
 re = .RegularExpression~new
 do pattern over patterns
   code = re~parse(pattern)
-  if code  == 0 then
+  if code == 0 then
     do text over texts
       say text~left(16) -
        re~match(text)~?("matches", "doesn't match") "regex" pattern
@@ -6319,8 +6434,8 @@ say re~position                     -- will be 2 (failure to match)
 <indexterm><primary>class</primary>
 <secondary>RexxContext class</secondary></indexterm>
 
-<para>The RexxContext class gives access to context information about the
-currently executing Rexx code.
+<para>The <classname>RexxContext</classname> class gives access to context
+information about the currently executing Rexx code.
 Instances of the RexxContext class can only be obtained via the
 <xref linkend="contexte" xrefstyle="template:.CONTEXT environment symbol"/>.
 They cannot be directly created by the user.
@@ -6649,7 +6764,7 @@ Name=C.one, Value='11'
 <!-- =============================================================== -->
 <!-- Class RexxInfo ================================================ -->
 <section id="clsRexxInfo" revisionflag="added"><title>&added50;RexxInfo Class</title>
-<para>The RexxInfo class
+<para>The <classname>RexxInfo</classname> class
 <indexterm><primary>RexxInfo class</primary></indexterm>
 <indexterm><primary>class</primary><secondary>RexxInfo class</secondary></indexterm>
 gives access to Rexx language information and other platform-specific
@@ -7073,7 +7188,7 @@ keyword instruction <xref linkend="keyParseVersion"/><!-- @@xreflabel -->.
 </para>
 <para><example>
 <title>RexxInfo class &mdash; name method</title>
-<programlisting><![CDATA[say .RexxInfo~name    -- REXX-ooRexx_5.0.0(MT)_64-bit 6.05 9 Dec 2014 /* e. g. */
+<programlisting><![CDATA[say .RexxInfo~name    -- REXX-ooRexx_5.0.0(MT)_64-bit 6.05 1 Sep 2016 /* e. g. */
 ]]></programlisting></example></para>
 </section>
 
@@ -7248,7 +7363,9 @@ the <xref linkend="mthRexxInfoRevision" xrefstyle="select:title"/>.
 <indexterm><primary>class</primary>
 <secondary>RexxQueue class</secondary></indexterm>
 
-<para>The RexxQueue class provides object-style access to Rexx external data queues.</para>
+<para>The <classname>RexxQueue</classname> class provides object-style access to
+Rexx external data queues.
+</para>
 
 <!-- modified: added link to "new (Inherited Class Method)" pointing to init() -->
 <!-- $GENERATED-20150923-START rexxrefClassTable(RexxQueue) -->
@@ -7617,7 +7734,7 @@ been previously created.  The method return value is the name of current queue b
 <indexterm><primary>class</primary>
 <secondary>StackFrame class</secondary></indexterm>
 
-<para>The StackFrame class gives access to execution information about the
+<para>The <classname>StackFrame</classname> class gives access to execution information about the
 currently executing Rexx activity.  Instances of the StackFrame class can be
 obtained via the <xref linkend="contexte" xrefstyle="template:.CONTEXT environment symbol"/> or from a <xref linkend="conobj" xrefstyle="template:condition object"/> created for a
 trapped condition.  A StackFrame instance represents an instance of an execution unit on the
@@ -8337,7 +8454,7 @@ supplier to be passed to methods that expect an object that implements a
 <indexterm><primary>class</primary><secondary>Ticker class</secondary></indexterm>
 </title>
 
-<para>The Ticker class provides a repeating notification capability by
+<para>The <classname>Ticker</classname> class provides a repeating notification capability by
 sending a notification message to a notification target each trigger
 interval.
 </para>
@@ -8601,8 +8718,8 @@ object representing the interval to which the Ticker has been set.
 <indexterm><primary>class</primary>
 <secondary>TimeSpan class</secondary></indexterm>
 
-<para>A TimeSpan object represents a time interval with microsecond
-resolution.
+<para>A <classname>TimeSpan</classname> object represents a time interval with
+microsecond resolution.
 The interval may be positive or negative, with a maximum duration of
 3652059 days less one microsecond (which approximately equals 9999 years
 less one microsecond).
@@ -8611,7 +8728,7 @@ or seconds, adding to components, as well as allowing arithmetic
 operations between TimeSpan objects.
 </para>
 
-<!-- modified: chaged class method list from 3- to 2-column for a better fit -->
+<!-- modified: changed class method list from 3- to 2-column for a better fit -->
 <!-- modified: added link to "new (Inherited Class Method)" pointing to init() -->
 <!-- $GENERATED-20150923-START rexxrefClassTable(TimeSpan) -->
 <table id="ooRexxTimeSpanClass" frame="all" pgwide="1">
@@ -9391,8 +9508,9 @@ result in microseconds being subtracted from the TimeSpan value.
 </imageobject>
 </mediaobject>
 
-<para>Returns "-1" if the TimeSpan is negative, "1" if the TimeSpan is positive, and "0" if the
-TimeSpan duration is zero.
+<para>Returns <literal>-1</literal> if the <classname>TimeSpan</classname>
+duration is negative, <literal>1</literal> if it is positive, and
+<literal>0</literal> if it is zero.
 </para>
 </section>
 

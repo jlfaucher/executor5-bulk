@@ -1323,11 +1323,13 @@ or the <xref linkend="conobj" xrefstyle="select:title"/>.
 <title>Message class &mdash; halt method
 <indexterm><primary>examples</primary><secondary>halt method</secondary></indexterm>
 </title>
-<programlisting><![CDATA[dog = .watchDog~new(1.0)               -- watchdog with 1 sec time limit
+<programlisting><![CDATA[
+dog = .WatchDog~new(1)                 -- watchdog with 1 sec time-out
 say dog~watchTask(.task~new~start("runsLong", 0.5))
 say dog~watchTask(.task~new~start("runsLong", 1.5))
 
-::class task
+
+::class Task
 
 -- a long-running task that we may want to terminate early
 ::method runsLong
@@ -1341,22 +1343,43 @@ say dog~watchTask(.task~new~start("runsLong", 1.5))
   halt:
   return condition("DESCRIPTION")      -- return description from halt()
 
-::class watchdog
 
--- sets a time limit, above which running tasks are halted
+::class Watchdog inherit AlarmNotification
+
+-- sets a time-out, after which a running task will be halted
 ::method init
-  expose limit
-  use strict arg limit = 1.0
+  expose timeOut
+  use strict arg timeOut
 
 -- watches over a task, halting it if it runs too long
 ::method watchTask
-  expose limit
+  expose timeOut
   use strict arg message
-  call SysSleep limit                  -- wait maximum time allowed
-  if \message~completed then           -- kill task if still not finished
-    message~halt("task took longer than" limit "sec")
-  return message~result
-]]></programlisting></example></para>
+  -- we set an Alarm for 'timeOut' seconds, which, upon triggering
+  -- will call method triggered(), passing this Alarm object as an argument
+  -- (this is why we inherit from AlarmNotification)
+  -- we also attach 'message' to enable triggered() to halt the task
+  alarm = .Alarm~new(timeOut, self, message)
+
+  -- now we just wait for 'message' to finish; either normally, or halted
+  msgResult = message~result
+  alarm~cancel                         -- cancel alarm; may still be active
+  return msgResult
+
+::method triggered unguarded
+  expose timeOut
+  -- our watchTask Alarm has triggered
+  -- this means that the task has run too long
+  use arg alarm
+  message = alarm~attachment           -- message is our attachment
+  message~halt("task took longer than" timeOut "sec")
+]]></programlisting></example>
+will output
+<programlisting>
+task finished
+task took longer than 1 sec
+</programlisting>
+</para>
 </section>
 
 
@@ -1396,9 +1419,6 @@ Returns &false; if the message object has not yet completed
 executing its message, or the message hasn't returned a result.
 </para>
 <para>See also method <xref linkend="mthMessageResult" xrefstyle="select:title"/>.
-</para>
-<para>For an example see
-<xref linkend="ex.message-halt" xrefstyle="template:halt method example"/>.
 </para>
 </section>
 
@@ -1660,20 +1680,9 @@ If message processing is not yet complete, this method waits until it completes.
 If the message <methodname>send</methodname> or
 <methodname>start</methodname> raises an error condition, this method
 also raises an error condition.</para>
-<example id="ex.message-result">
-<title>Message class &mdash; result method</title>
-<programlisting>
-/* Example using result method */
-string="700"                 /* Create a new string object, string   */
-bond=string~start("reverse") /* Create a message object, bond, and   */
-                             /* start it.  This sends a REVERSE      */
-                             /* message to string, giving bond       */
-                             /* the result.                          */
-
-/* Ask bond for the result of the message */
-say "The result of message was" bond~result     /* Result is 007     */
-</programlisting>
-</example>
+<para>For an example see
+<xref linkend="ex.message-halt" xrefstyle="template:halt method example"/>.
+</para>
 </section>
 
 <section id="mthMessageSend" revisionflag="changed"><title>&changed50;send
@@ -2020,8 +2029,8 @@ It is a subclass of the <xref linkend="clsObject" xrefstyle="template:Object cla
  </row>
  <row><entry>
   <simplelist>
-   <member><xref linkend="mthMethodLoadExternalMethod" xrefstyle="select:title"/></member>
    <member><xref linkend="mthMethodNew" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMethodLoadExternalMethod" xrefstyle="select:title"/></member>
    <member><xref linkend="mthMethodNewFile" xrefstyle="select:title"/></member>
   </simplelist>
   <simplelist columns="3">
@@ -2061,10 +2070,10 @@ It is a subclass of the <xref linkend="clsObject" xrefstyle="template:Object cla
 </imageobject>
 </mediaobject>
 
-<para>Returns a new instance of method class, which is an executable
-representation of the code contained in the
-<emphasis role="italic">source</emphasis>. The
-<emphasis role="italic">name</emphasis> is a string.
+<para>Returns a new instance of the <classname>Method</classname> class, which
+is an executable representation of the code contained in the
+<emphasis role="italic">source</emphasis>.
+The <emphasis role="italic">name</emphasis> is a string.
 The <emphasis role="italic">source</emphasis> can be a single string or an
 array of strings containing individual method lines.</para>
 
@@ -2091,8 +2100,10 @@ routine search scope from the caller of new method.
 </imageobject>
 </mediaobject>
 
-<para>Returns a new instance of the Method class, which is an executable
-representation of the code contained in the file <emphasis role="italic">filename</emphasis>.
+<para>Returns a new instance of the <classname>Method</classname> class, which
+is an executable representation of the code contained in the file
+<emphasis role="italic">filename</emphasis>.
+Raises an error if the file <emphasis role="italic">filename</emphasis> cannot be read.
 The <emphasis role="italic">filename</emphasis> is a string.</para>
 </section>
 
@@ -2110,16 +2121,16 @@ The <emphasis role="italic">filename</emphasis> is a string.</para>
 </mediaobject>
 
 <para>Resolves a native method in an external library package and returns a
-Method object instance that can be used to call the external method.  The
-<emphasis role="italic">descriptor</emphasis> is a string containing
+<classname>Method</classname> object instance that can be used to call the external method.
+The <emphasis role="italic">descriptor</emphasis> is a string containing
 blank-delimited tokens that identify the location of the native method.
 The first token identifies the type of native function and must be
-"LIBRARY" in uppercase.   The second token must identify
-the name of the external library.  The external library is located using
-platform-specific mechanisms for loading libraries.  For Unix-based systems, the
-library name is case-sensitive.  The third token is optional and specifies the
-name of the method within the library package.  If not specified,
-<emphasis role="italic">name</emphasis> is used.
+<literal>LIBRARY</literal> in uppercase.
+The second token must identify the name of the external library.
+The external library is located using platform-specific mechanisms for loading libraries.
+For Unix-based systems, the library name is case-sensitive.
+The third token is optional and specifies the name of the method within the library package.
+If not specified, <emphasis role="italic">name</emphasis> is used.
 The method name is not case sensitive.
 If the target method cannot be resolved, &nil; is returned.
 </para>
@@ -2582,11 +2593,11 @@ class determines equality based on the value of the string data.
 </para>
 <note><title>Note</title>
 <para>The MapCollection classes such as <classname>Table</classname> and
-<classname>Relation</classname> use the == operator
+<classname>Relation</classname> use the <methodname>==</methodname> operator
 combined with the <xref linkend="mthObjectHashCode" xrefstyle="select:title"/> method
 to determine index and item equivalence.
 It is generally necessary
-for a class to override both the hashCode method and the == operator method to maintain
+for a class to override both the hashCode method and the <methodname>==</methodname> operator method to maintain
 the contract specified for the hashCode method.
 </para></note>
 <para>The comparison operators you can use in a message are: </para>
@@ -2714,9 +2725,11 @@ directions=myarray~copy
 </programlisting>
 </example>
 <note><title>Note</title>
-<para>The copy method is a "shallow copy".  Only the target object is copied.  Additional
-objects referenced by the target object are not copied.  For example, copying an Array object instance
-only copies the array, it does not copy any of the objects stored in the array.
+<para>The <methodname>copy</methodname> method is a &ldquo;shallow copy&rdquo;.
+Only the target object is copied.
+Additional objects referenced by the target object are not copied.
+For example, copying an Array object instance only copies the Array,
+it does not copy any of the objects stored in the Array.
 </para></note>
 </section>
 
@@ -2816,10 +2829,10 @@ has a method named <emphasis role="italic">methodname</emphasis>
 Otherwise, it returns &false;. </para>
 
 <note><title>Note</title>
-<para>The hasMethod object will return &true; even if the target method is defined
+<para>The <methodname>hasMethod</methodname> method will return &true; even if the target method is defined
 as private.  A private method has restricted access rules, so it's possible to
 receive an unknown method error (error 97) when invoking <emphasis role="italic">methodname</emphasis>
-even if hasMethod indicates the method exists.
+even if <methodname>hasMethod</methodname> indicates the method exists.
 See <xref linkend="pubpri" />
 for private method restrictions.
 </para></note>
@@ -3454,12 +3467,16 @@ a string representation (human-readable form) of the
 object. This form is useful in tracing and debugging. Only those objects that
 have information with a meaningful string form have a
 <methodname>makeString</methodname> method to
-return this value. For example, directory objects have a readable string
-representation (a Directory), but no string value, and, therefore, no
-<methodname>makeString</methodname> method.</para>
-<para>Of the classes that Rexx provides, only the String class has a
-<methodname>makeString</methodname>
-method. Any subclasses of the String class inherit this method by default,
+return this value. For example, Directory objects have a readable string
+representation (<literal>"a Directory"</literal>), but no string value, and,
+therefore, no <methodname>makeString</methodname> method.</para>
+<para>Of the classes that Rexx provides, only the
+<xref linkend="clsArray" xrefstyle="select:title"/>, the
+<xref linkend="clsCircularQueue" xrefstyle="select:title"/>, the
+<xref linkend="clsStackFrame" xrefstyle="select:title"/>, and the
+<xref linkend="clsString" xrefstyle="select:title"/> have a
+<methodname>makeString</methodname> method.
+Any subclasses of these classes inherit this method by default,
 so these subclasses also have string values. Any other class can also provide
 a string value by defining a <methodname>makeString</methodname> method.</para>
 </section>
@@ -4434,7 +4451,7 @@ It is a subclass of the
 <xref linkend="clsObject" xrefstyle="template:Object class"/>.</para>
 
 <!-- modified: mthRoutineAtGet -> mthRoutineCallBrackets -->
-<!-- $GENERATED-20151005-START rexxrefClassTable(Routine) -->
+<!-- $GENERATED-20161003-START rexxrefClassTable(Routine) -->
 <table id="ooRexxRoutineClass" frame="all" pgwide="1">
 <title>Routine Class</title>
 <tgroup cols="1">
@@ -4447,8 +4464,8 @@ It is a subclass of the
  </row>
  <row><entry>
   <simplelist>
-   <member><xref linkend="mthRoutineLoadExternalRoutine" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRoutineNew" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRoutineLoadExternalRoutine" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRoutineNewFile" xrefstyle="select:title"/></member>
   </simplelist>
   <simplelist columns="3">
@@ -4465,7 +4482,7 @@ It is a subclass of the
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20151005-END rexxrefClassTable(Routine) -->
+<!-- $GENERATED-20161003-END rexxrefClassTable(Routine) -->
 
 <section id="mthRoutineNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
@@ -5075,11 +5092,13 @@ be string objects.
 If <emphasis role="italic">argument</emphasis> is not a string object, it is converted
 to its string representation for the comparison.
 The one exception is when <emphasis role="italic">argument</emphasis> is &nil;
-for the ==, \==, =, \=, &gt;&lt;, and &lt;&gt; operators.
+for the <methodname>==</methodname>, <methodname>\==</methodname>,
+<methodname>=</methodname>, <methodname>\=</methodname>,
+<methodname>&gt;&lt;</methodname>, and <methodname>&lt;&gt;</methodname> operators.
 A string object will never compare equal to &nil;, even when the
 string matches the string value of &nil; ("The NIL object").
-As a result, == will always return
-&false; when compared to &nil; and \== will always return &true;.
+As a result, <methodname>==</methodname> will always return
+&false; when compared to &nil; and <methodname>\==</methodname> will always return &true;.
 All of the relational comparisions (for example, &lt;, &gt;,
 &lt;=, etc.) will always return &false; when compared to &nil;.
 </para>
@@ -7582,7 +7601,7 @@ expression.</para>
 
 <para>Returns a string value that is used as a hash value for MapCollection
 such as Table, Relation, Set, Bag, and Directory.  The String hash code method will return
-the same hash value for all pairs of string instances for which the == operator is &true;.
+the same hash value for all pairs of string instances for which the <methodname>==</methodname> operator is &true;.
 </para>
 <para>See also <classname>Object</classname> method
 <xref linkend="mthObjectHashCode" xrefstyle="select:title"/> for details.
@@ -8398,7 +8417,7 @@ will be removed.</para>
 "  ab c  "~strip("t")    ->    "  ab c"
 "12.7000"~strip(,0)      ->    "12.7"
 "0012.700"~strip(,0)     ->    "12.7"
-"0012.000"~strip(,".0"") ->    "12"
+"0012.000"~strip(,".0")  ->    "12"
 </programlisting>
 </example>
 </section>
