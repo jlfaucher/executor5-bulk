@@ -1,0 +1,228 @@
+#!/usr/bin/rexx
+/*
+  SVN Revision: $Rev: 11165 $
+  Change Date:  $Date: 2016-10-05 18:00:00 +0200
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2016 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
+
+  group = .TestGroup~new(fileSpec)
+  group~add(.MethodArgs.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+
+-- tests for [bugs:#1404] Some method args don't honor REQUEST("STRING") 
+::class "MethodArgs.testGroup" subclass ooTestCase public
+
+-- set up a Table of instances of all Rexx built-in - classes
+-- index is the instance, value is .true if it supports makeString(), .false otherwise
+::method activate class
+
+  expose allInstances
+  -- using .Table instead of .IdentityTable surfaces bugs when adding .DateTime or .TimeSpan instances
+  allInstances = .IdentityTable~new(.RexxInfo~package~classes~items + 3)
+  do classname over .RexxInfo~package~classes
+    class = .RexxInfo~package~classes[classname]
+    if class~isAbstract then do
+      say class~id "isAbstract"
+      iterate
+    end
+    -- set up args to successfully create an instance with
+    select case class
+      when .Alarm, .Ticker then args = (1, .Message~new(.nil, "hashCode"))
+      when .Message then args = (.nil, "hashCode")
+      when .Package then args = ("rxregexp.cls")
+      when .StreamSupplier then args = .Array~of(.Stream~new(1))
+      when .Supplier then args = (.Array~new, .Array~new)
+      when .CaselessColumnComparator, .ColumnComparator, .Method, .Routine then args = (1, 1)
+      when .CircularQueue, .Class, .File, .InvertingComparator, .Stream, .String, .TimeSpan, .WeakReference then args = .Array~of(1)
+      -- StackFrame is handled as a special case below; we ignore other listed classes
+      when .ArgUtil, .Buffer, .Pointer, .RexxContext, .StackFrame then iterate
+      otherwise args = .Array~new
+    end
+    -- create instance and add to table
+    instance = class~sendWith("new", args)
+    -- -- we don't want Alarm or Ticker to actually tick
+    if class == .Alarm | class == .Ticker then
+      instance~cancel
+/*Dbg if instance~hasMethod("makeString") then say "activate:" class~id "has makeString"*/
+    allInstances[instance] = instance~hasMethod("makeString")
+  end
+  -- cover a few special cases: .nil, .RexxInfo, . StackFrame
+  allInstances[.nil] = .nil~hasMethod("makeString")
+  allInstances[.RexxInfo] = .RexxInfo~hasMethod("makeString")
+  allInstances[.Context~stackFrames[1]] = .Context~stackFrames[1]~hasMethod("makeString")
+/*Dbg say "activate:" allInstances~items "Rexx built-in classes"*/
+
+
+::attribute allInstances class get
+::method allInstances
+  use strict arg -- no args allowed
+  return self~class~allInstances
+
+
+-- run object's method and return .true upon success, .false for failure
+::method try
+  use strict arg object, method, args
+  signal on syntax
+/*Dbg say "try:" object~class~id"~sendWith("method~upper"," args~makeString(, ", ")")"*/
+  object~sendWith(method~upper, args)
+  return .true
+
+  syntax:
+/*Dbg say "try:" condition("o")~message*/
+  return .false
+
+
+-- for each instance of the built-in classes, assert that, when supplied as an argument
+-- to 'method', it will work if, and only if, the instance has a makeString() method
+::method checkRequestString
+  use strict arg object, method, trailing = (.Array~new(1)), exceptions = (.Array~new(0))
+
+  -- prepare text for assert message
+  select
+    when .nil == object then objectAndMethod = ".nil~"method
+    when object~isA(.Class) then objectAndMethod = "."object~id"~"method
+    otherwise objectAndMethod = object~class~id"~"method
+  end
+  do with index instance item hasMakeString over self~allInstances
+    -- assert that object~method(instance) fails <--> hasMakeString is .false
+    -- positive 'exception's are allowed
+    self~assertEquals(hasMakeString | exceptions~hasItem(instance~class), -
+     self~try(object, method, .Array~of(instance)~appendAll(trailing)), -
+     objectAndMethod"("instance~class~id")" hasMakeString~?("should", "shouldn't") "work")
+  end
+
+
+::method test_request_string_class
+
+  self~checkRequestString(.Class, "new")
+  self~checkRequestString(self~class, "annotation")
+  self~checkRequestString(self~class, "delete")
+
+::method test_request_string_object
+
+  object = .Object~new
+  self~checkRequestString(object, "hasMethod")
+  self~checkRequestString(object, "instanceMethod")
+  self~checkRequestString(object, "objectName=")
+
+::method test_request_string_string
+
+  self~checkRequestString(.String, "new")
+  self~checkRequestString(1, "abbrev")
+--self~checkRequestString(.String~new(1), "append") -- @@ BUG: accepts anything
+  self~checkRequestString(1, "bitAnd")
+--self~checkRequestString(1, "caselessEquals")      -- @@ BUG: accepts anything
+  self~checkRequestString(1, "contains")
+  self~checkRequestString(1, "endsWith")
+  self~checkRequestString(1, "insert")
+  self~checkRequestString(1, "overlay")
+  self~checkRequestString(1, "pos")
+  self~checkRequestString(1, "startsWith")
+  self~checkRequestString(1, "translate")
+  self~checkRequestString(1, "verify")
+
+::method test_request_string_method
+
+  self~checkRequestString(.Method, "new", .Array~of(""))
+  self~checkRequestString(.Method, "loadExternalMethod", .Array~of("LIBRARY dummy"))
+  method = .Method~new("", "")
+  self~checkRequestString(method, "annotation")
+
+::method test_request_string_routine
+
+  self~checkRequestString(.Routine, "new", .Array~of(""))
+  self~checkRequestString(.Routine, "loadExternalRoutine", .Array~of("LIBRARY dummy"))
+  routine = .Routine~new("", "")
+  self~checkRequestString(routine, "annotation")
+
+::method test_request_string_package
+
+  self~checkRequestString(.Package, "new", .Array~of(""))
+  package = .Package~new("", "")
+  self~checkRequestString(package, "annotation")
+  self~checkRequestString(package, "findProgram")
+  self~checkRequestString(package, "findPublicClass")
+  self~checkRequestString(package, "findPublicRoutine")
+  self~checkRequestString(package, "findRoutine")
+  self~checkRequestString(package, "loadLibrary")
+
+::method test_request_string_message
+
+  message = .Message~new(.nil, "hashCode")
+--self~checkRequestString(message, "halt") -- @@ m = .Message~new(.nil, 'hashCode'); m~halt; m~halt('msg') works, but m~sendWith('halt',.Array~of('msg')) doesn't
+
+::method test_request_string_stream
+
+  self~checkRequestString(.Stream, "new", , .Array~of(.File, .Stem)) -- .File is an exception, @@ but .Stem seems to be a bug
+
+  -- be quiet, if possible
+  s = .File~new("nul:")
+  if \s~exists then do
+    s = .File~new("/dev/null")
+    if \s~exists then
+      s = .stdout
+  end
+  s = .Stream~new(s)
+  self~checkRequestString(s, "say")
+  s~close
+
+::method test_request_string_mutablebuffer
+
+  self~checkRequestString(.MutableBuffer, "new")
+  buffer = .MutableBuffer~new 
+  self~checkRequestString(buffer, "append")
+
+::method test_request_string_file
+
+  self~checkRequestString(.File, "new")
+  buffer = .MutableBuffer~new 
+  self~checkRequestString(buffer, "append")
+
+
+
+::options novalue error
