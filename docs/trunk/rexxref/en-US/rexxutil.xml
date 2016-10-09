@@ -236,11 +236,19 @@ platforms on which they are available.</para>
 <entry></entry>
 </row>
 <row>
+<entry><xref linkend="utlSysgetlongpathname" xrefstyle="select:title"/></entry><entry>YES</entry><entry>NO</entry>
+<entry></entry>
+</row>
+<row>
 <entry><xref linkend="utlSysgetmessage" xrefstyle="select:title"/></entry><entry>NO</entry><entry>YES</entry>
 <entry></entry>
 </row>
 <row>
 <entry><xref linkend="utlSysgetmessagex" xrefstyle="select:title"/></entry><entry>NO</entry><entry>YES</entry>
+<entry></entry>
+</row>
+<row>
+<entry><xref linkend="utlSysgetshortpathname" xrefstyle="select:title"/></entry><entry>YES</entry><entry>NO</entry>
 <entry></entry>
 </row>
 <row>
@@ -2088,6 +2096,48 @@ built-in function, SysGetKey does not wait until the Enter key is pressed.
 </variablelist>
 </section>
 
+
+<section id="utlSysgetlongpathname"><title>&added50;SysGetLongPathName (Windows only)</title>
+<indexterm><primary>SysGetLongPathNamey</primary></indexterm>
+<indexterm><primary>rexxutil functions</primary>
+<secondary>SysGetLongPathName</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/rexxutil/sysgetlongpathname.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the long version of the specified <emphasis role="italic">path</emphasis>.
+</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">path</emphasis></term>
+<listitem><para>A relative or a fully qualified path of an existing file or directory.
+</para></listitem></varlistentry>
+</variablelist>
+
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>The long version of <emphasis role="italic">path</emphasis>, or
+the null string, if <emphasis role="italic">path</emphasis> doesn't exist or
+the call to the Windows API <methodname>GetLongPathName</methodname> fails for
+any other reason.  
+
+<indexterm><primary>rexxutil functions</primary><secondary>SysGetLongPathName</secondary><tertiary>example</tertiary></indexterm>
+<indexterm><primary>SysGetLongPathName</primary><secondary>example</secondary></indexterm>
+<indexterm><primary>examples</primary><secondary>SysGetLongPathName</secondary></indexterm>
+<example id="ex.sysgetlongpathname">
+<title>RexxUtil &mdash; SysGetLongPathName</title>
+<programlisting>
+say SysGetLongPathName("C:\progra~1")            -- C:\Program Files
+say SysGetLongPathName("\windows\explorer.exe")  -- \Windows\explorer.exe
+</programlisting>
+</example>
+</para>
+
+</section>
+
+
 <section id="utlSysgetmessage"><title>SysGetMessage (Unix only)</title>
 <indexterm><primary>SysGetMessage</primary></indexterm>
 <indexterm><primary>rexxutil functions</primary>
@@ -2198,6 +2248,48 @@ Class "foo" not found.
 </programlisting>
 </example>
 </section>
+
+
+<section id="utlSysgetshortpathname"><title>&added50;SysGetShortPathName (Windows only)</title>
+<indexterm><primary>SysGetShortPathNamey</primary></indexterm>
+<indexterm><primary>rexxutil functions</primary>
+<secondary>SysGetShortPathName</secondary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/rexxutil/sysgetshortpathname.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the short version of the specified <emphasis role="italic">path</emphasis>.
+</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">path</emphasis></term>
+<listitem><para>A relative or a fully qualified path of an existing file or directory.
+</para></listitem></varlistentry>
+</variablelist>
+
+<para><emphasis role="bold">Returns:</emphasis></para>
+<para>The short version of <emphasis role="italic">path</emphasis>, or
+the null string, if <emphasis role="italic">path</emphasis> doesn't exist or
+the call to the Windows API <methodname>GetShortPathName</methodname> fails for
+any other reason.  
+
+<indexterm><primary>rexxutil functions</primary><secondary>SysGetShortPathName</secondary><tertiary>example</tertiary></indexterm>
+<indexterm><primary>SysGetShortPathName</primary><secondary>example</secondary></indexterm>
+<indexterm><primary>examples</primary><secondary>SysGetShortPathName</secondary></indexterm>
+<example id="ex.sysgetshortpathname">
+<title>RexxUtil &mdash; SysGetShortPathName</title>
+<programlisting>
+say SysGetShortPathName("C:\Program Files")       -- C:\PROGRA~1
+say SysGetShortPathName("\windows\explorer.exe")  -- \windows\explorer.exe
+</programlisting>
+</example>
+</para>
+
+</section>
+
 
 <section id="utlSysini"><title>SysIni (Windows only)</title>
 <indexterm><primary>SysIni</primary></indexterm>

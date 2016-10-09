@@ -58,11 +58,15 @@ sysgetfiledatetime ::= 'SysGetFileDateTime(' filename ( ',' timesel )? ')'
 
 sysgetkey ::= 'SysGetKey(' ( opt )? ')'
 
+sysgetlongpathname ::= 'SysGetLongPathName(' path ')'
+
 sysgetmessage ::= 'SysGetMessage(' num ( ',' filename ( ',' str ( ( ',' str )+ )? )? |
                                          ',' str ( ( ',' str )+ )? )? ')'
 
 sysgetmessagex ::= 'SysGetMessageX(' set ',' num ( ',' filename ( ',' str ( ( ',' str )+ )? )? |
                                          ',' str ( ( ',' str )+ )? )? ')'
+
+sysgetshortpathname ::= 'SysGetShortPathName(' path ')'
 
 sysini1 ::= 'SysIni(' ( inifile )? ',' app ',' key ',' val ',' stem ')'
 
