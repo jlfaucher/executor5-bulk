@@ -222,4 +222,49 @@ return testResult
   ret = SysRmDir('testOne'sl'testTwo')
   ret = SysRmDir('testOne')
 
+
+::method test_qualify_no_args
+  self~expectSyntax(40.3) -- Not enough arguments in invocation of QUALIFY; minimum expected is 1
+  call qualify
+
+::method test_qualify_two_args
+  self~expectSyntax(40.4) -- Too many arguments in invocation of QUALIFY; maximum expected is 1
+  call qualify '', ''
+
+::method test_qualify_arg_null
+  self~assertSame(directory(), qualify(""))
+
+::method test_qualify_arg_short
+  name = "xxxxxxxx"
+  self~assertSame(directory() || .File~separator || name, qualify(name))
+
+::method test_qualify_arg_long
+  -- a name to make currentDirectory"/"name as long as allowed
+  name = "x"~copies(.RexxInfo~maxPathLength - directory()~length - 1)
+  self~assertSame(directory() || .File~separator || name, qualify(name))
+
+::method test_qualify_arg_device
+  select case .RexxInfo~platform~upper
+    when "WINDOWSNT"
+      then devices = "aux", "com1", "con", "lpt1", "nul", "prn"
+    when "LINUX", "DARWIN"
+      then devices = "/dev/console", "/dev/null", "/dev/random", "/dev/tty"
+    otherwise
+      devices = .Array~new(0)
+  end
+  do device over devices
+    -- devices and/or special files should return as-is, without any leading "\\.\" 
+    -- (see https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247%28v=vs.85%29.aspx#win32_device_namespaces)
+    self~assertSame(device, qualify(device), "qualify("device") should be '"device"'")
+  end
+
+::method test_qualify_arg_windows_drive
+  if .RexxInfo~platform~caselessAbbrev("WINDOWS") then do
+    -- qualify() should return the current directory for "d:"
+    drive = filespec("drive", directory())
+    self~assertSame(directory(), qualify(drive), "qualify("drive") should be" directory())
+  end
+
+
 -- End of class: qualify.testGroup
+::options novalue error

@@ -1934,6 +1934,45 @@ notready:
   self~assertSame(expected, fsObj~qualify)
 
 
+::method test_qualify_one_arg
+  self~expectSyntax(88.922) -- Too many arguments in invocation; 0 expected
+  .stdin~qualify("")
+
+::method test_qualify_arg_null
+  self~assertSame(directory(), .Stream~new("")~qualify)
+
+::method test_qualify_arg_short
+  name = "xxxxxxxx"
+  self~assertSame(directory() || .File~separator || name, .Stream~new(name)~qualify)
+
+::method test_qualify_arg_long
+  -- a name to make currentDirectory"/"name as long as allowed
+  name = "x"~copies(.RexxInfo~maxPathLength - directory()~length - 1)
+  self~assertSame(directory() || .File~separator || name, .Stream~new(name)~qualify)
+
+::method test_qualify_arg_device
+  select case .RexxInfo~platform~upper
+    when "WINDOWSNT"
+      then devices = "aux", "com1", "con", "lpt1", "nul", "prn"
+    when "LINUX", "DARWIN"
+      then devices = "/dev/console", "/dev/null", "/dev/random", "/dev/tty"
+    otherwise
+      devices = .Array~new(0)
+  end
+  do device over devices
+    -- devices and/or special files should return as-is, without any leading "\\.\" 
+    -- (see https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247%28v=vs.85%29.aspx#win32_device_namespaces)
+    self~assertSame(device, .Stream~new(device)~qualify, ".Stream~new('"device"')~qualify should be '"device"'")
+  end
+
+::method test_qualify_arg_windows_drive
+  if .RexxInfo~platform~caselessAbbrev("WINDOWS") then do
+    -- qualify() should return the current directory for "d:"
+    drive = filespec("drive", directory())
+    self~assertSame(directory(), .Stream~new(drive)~qualify, ".Stream~new('"drive"')~qualify should be" directory())
+  end
+
+
 ::method test_relative_exists
 
   sl = .ooRexxUnit.directory.separator

@@ -207,7 +207,8 @@ return testResult
     if \s~exists then
       s = .stdout
   end
-  s = .Stream~new(s)
+  if \s~isA(.Stream) then              -- .stdout already is a Stream 
+    s = .Stream~new(s)
   self~checkRequestString(s, "say")
   s~close
 
