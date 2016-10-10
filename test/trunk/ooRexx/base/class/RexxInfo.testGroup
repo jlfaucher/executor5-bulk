@@ -58,40 +58,37 @@ return testResult
 
   /*
   .RexxInfo:
-  architecture: 64
-  casesensitivefiles: 0
-  date: 4 Oct 2014
-  digits: 9
-  endofline:
-  form: SCIENTIFIC
-  fuzz: 0
-  internaldigits: 18
-  languagelevel: 6.05
-  majorversion: 5
-  name: REXX-ooRexx_5.0.0(MT)_64-bit 6.05 4 Oct 2014
-  pathseparator: ;
-  platform: WindowsNT
-  release: 0
-  revision: 0
-  version: 5.0.0
+  architecture              64
+  casesensitiveFiles        0
+  date                      10 Oct 2016
+  digits                    9
+  directorySeparator        \
+  endOfLine                 '0D0A'x
+  form                      SCIENTIFIC
+  fuzz                      0
+  internalDigits            18
+  internalMaxNumber         999999999999999999
+  internalMinNumber         -999999999999999999
+  languageLevel             6.05
+  majorVersion              5
+  maxArraySize              99999999999999999
+  maxExponent               999999999
+  maxPathLength             259
+  minExponent               -999999999
+  name                      REXX-ooRexx_5.0.0(MT)_64-bit 6.05 9 Oct 2016
+  package                   The REXX Package
+  pathSeparator             ;
+  platform                  WindowsNT
+  release                   0
+  revision                  0
+  version                   5.0.0
 
   parse version:
-  REXX-ooRexx_5.0.0(MT)_64-bit 6.05 10 Oct 2014
+  REXX-ooRexx_5.0.0(MT)_64-bit 6.05 9 Oct 2016
 
   parse source:
   WindowsNT COMMAND ...
   */
-
-::method test_rexxInfo_exists
-  self~assertNotNull(.environment["REXXINFO"], ".environment should contain 'REXXINFO'")
-
-::method test_rexxInfo_methods
-  MethodsShouldBe = .Array~of(,
-  "ARCHITECTURE", "CASESENSITIVEFILES", "DATE", "DIGITS", "DIRECTORYSEPARATOR", "ENDOFLINE", -
-  "FORM", "FUZZ", "INTERNALDIGITS", "LANGUAGELEVEL", "MAJORVERSION", "NAME", "PACKAGE", - 
-  "PATHSEPARATOR", "PLATFORM", "RELEASE", "REVISION", "VERSION")
-  MethodsAre = .RexxInfo~instanceMethods(.RexxInfo~class)~allIndexes
-  self~assertTrue(MethodsShouldBe~subset(MethodsAre), ".RexxInfo should provide at least" MethodsShouldBe~items "instance methods; missing is" MethodsShouldBe~difference(MethodsAre)~sort~makeString(,", "))
 
 ::method test_rexxInfo_package
   self~assertTrue(.RexxInfo~package~isA(.Package), ".RexxInfo~package should return a .Package instance")
@@ -111,6 +108,20 @@ return testResult
 ::method test_rexxInfo_internalDigits
   self~assertEquals("NUM", .RexxInfo~internalDigits~dataType, ".RexxInfo~internalDigits should return a numeric value")
   self~assertTrue(.RexxInfo~internalDigits >= digits(), ".RexxInfo~internalDigits should be equal to or larger than digits()")
+  digits = "9"~copies(.RexxInfo~internalDigits)
+  self~assertEquals(digits, .RexxInfo~internalMaxNumber)
+  self~assertEquals(-digits, .RexxInfo~internalMinNumber)
+
+::method test_rexxInfo_maxArraySize
+  self~assertEquals(.RexxInfo~internalMaxNumber % 10, .RexxInfo~maxArraySize) 
+
+::method test_rexxInfo_exponent
+  self~assertEquals("NUM", .RexxInfo~maxExponent~dataType)
+  self~assertEquals("NUM", .RexxInfo~minExponent~dataType)
+  self~assertTrue(.RexxInfo~minExponent < .RexxInfo~maxExponent, "minExponent should be smaller than maxExponent") 
+
+::method test_rexxInfo_maxPathLength
+  self~assertEquals("NUM", .RexxInfo~maxPathLength~dataType)
 
 ::method test_rexxInfo_name
   self~assertTrue(.RexxInfo~name~length > 0, ".RexxInfo~name should return a non-null string")
@@ -150,3 +161,4 @@ return testResult
 ::method test_rexxInfo_caseSensitiveFiles
   self~assertTrue("0 1"~wordPos(.RexxInfo~caseSensitiveFiles) > 0, ".RexxInfo~caseSensitiveFiles should return .true or .false")
   self~assertEquals(.File~isCaseSensitive, .RexxInfo~caseSensitiveFiles, ".RexxInfo~caseSensitiveFiles should be equal to .File~isCaseSensitive")
+
