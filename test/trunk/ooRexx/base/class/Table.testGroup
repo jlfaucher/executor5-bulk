@@ -813,6 +813,18 @@ makeColl: procedure
     End
   self~assertSame(3,a~items)
 
+
+-- tests for [bugs:1406], see https://sourceforge.net/p/oorexx/bugs/1406/
+::method test_bug_1406
+trace r
+  t = .Table~new
+  t[1] = 0
+  t[.TimeSpan~new(1)] = 0
+  t[.DateTime~new(1)] = 0
+  t[.File~new(1)] = 0
+  self~assertEquals(4, t~items)
+
+
 /* Test whether both collections contain the same entries.
    returns .true, if the same, .false else
 */
