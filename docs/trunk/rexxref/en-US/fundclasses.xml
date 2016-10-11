@@ -571,8 +571,8 @@ class hierarchy. Any subsequent change to the instance methods of
 <emphasis role="italic">classobj</emphasis> takes immediate effect
 for all the classes that inherit from it.</para>
 <para>The new superclass <emphasis role="italic">classobj</emphasis> must be
-created with the <methodname>mixinClass</methodname>
-option of the ::CLASS directive or the
+created with the <option>MIXINCLASS</option>
+option of the <literal>::CLASS</literal> directive or the
 <methodname>mixinClass</methodname> method and the base class
 of the <emphasis role="italic">classobj</emphasis> must be a direct superclass
 of the receiver object. The receiver must not already descend from
@@ -642,7 +642,7 @@ provides; any subclasses of the Class class are also metaclasses.
 </para>
 <para><example>
 <title>Class class &mdash; isMetaclass method</title>
-<programlisting><![CDATA[do class over .RexxInfo~package~classes~allItems~~appendAll(.context~package~classes~allItems)
+<programlisting><![CDATA[do class over .RexxInfo~package~classes~allItems~appendAll(.context~package~classes~allItems)
   if class~isMetaclass then
     say class~string": metaclass"      -- The Class class: metaclass
                                        -- The META class: metaclass
@@ -1450,7 +1450,7 @@ Any <emphasis role="italic">source</emphasis> argument will be ignored.
 <title>Message class &mdash; messageComplete method
 <indexterm><primary>examples</primary><secondary>messageComplete method</secondary></indexterm>
 </title>
-<programlisting><![CDATA[msg = .Message~new(.Array~new(1000)~~fill(0)~allIndexes, "sort")
+<programlisting><![CDATA[msg = .Message~new(.Array~new(1000)~fill(0)~allIndexes, "sort")
 msg~notify(.Message~new(.stdout, "say", "I", "sorting complete"))
 msg~notify(.Message~new(.r~new, "items", "I", msg))
 msg~start
@@ -1517,7 +1517,7 @@ the completed Message object as argument <emphasis role="italic">source</emphasi
 <title>Message class &mdash; notify method
 <indexterm><primary>examples</primary><secondary>notify method</secondary></indexterm>
 </title>
-<programlisting><![CDATA[msg = .Message~new(.Array~new(1000)~~fill(0)~allIndexes, "sort")
+<programlisting><![CDATA[msg = .Message~new(.Array~new(1000)~fill(0)~allIndexes, "sort")
 msg~notify(.Sorter~new)
 msg~start
 say "processing continues"
@@ -7216,7 +7216,7 @@ the receiving string is a null string.
 "1"~dataType("O")        ->    1
 "11"~dataType("O")        ->   0
 ]]>
-</programlisting><para> </para>
+</programlisting>
 </example>
 
 <note><title>Note</title>

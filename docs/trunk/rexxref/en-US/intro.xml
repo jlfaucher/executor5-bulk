@@ -759,22 +759,22 @@ hexadecimal digits
 (<computeroutput>0</computeroutput>-<computeroutput>9</computeroutput>,
 <computeroutput>a</computeroutput>-<computeroutput>f</computeroutput>,
 <computeroutput>A</computeroutput>-<computeroutput>F</computeroutput>),
-grouped in pairs. A single leading
-0 is assumed, if necessary, at the beginning of the string to make an even
+grouped in pairs. A single leading <literal>0</literal>
+is assumed, if necessary, at the beginning of the string to make an even
 number of hexadecimal digits. The groups of digits are optionally separated
 by one or more whitespace characters, and the whole sequence is delimited by
 single or double quotation marks and immediately followed by the symbol
-<computeroutput>X</computeroutput> or <computeroutput>x</computeroutput>.
-Neither <computeroutput>x</computeroutput> nor
-<computeroutput>X</computeroutput> can be part of a longer symbol. The
-whitespace characters, which can only be byte boundaries (and not at the
+<literal>x</literal> or <literal>X</literal>.
+Neither <literal>x</literal> nor <literal>X</literal> can be part of a
+longer symbol.
+The whitespace characters, which can only be on byte boundaries (and not at the
 beginning or end of the string), are to improve readability.  The language
 processor ignores them.
 </para>
 <para>A hexadecimal string is a literal string formed by packing the hexadecimal
 digits given. Packing the hexadecimal digits removes whitespace and converts
 each pair of hexadecimal digits into its equivalent character, for example,
-"41"X to A.
+<literal>'41'x</literal> to <literal>A</literal>.
 </para>
 <para>Hexadecimal strings let you include characters in a program even if you
 cannot directly enter the characters themselves. These are valid hexadecimal
@@ -784,18 +784,21 @@ strings:
 <programlisting>
 "ABCD"x
 "1d ec f8"X
-"1 d8"x
+'1 d8'x
 </programlisting>
 </example>
 </para>
 
 <note><title>Note</title>
-<para>A hexadecimal string is <emphasis>not</emphasis> a representation
-of a number. It is an escape mechanism that lets a user describe a character
-in terms of its encoding (and, therefore, is machine-dependent). In ASCII, "20"X
-is the encoding for a blank. In every case, a string of the form "....."x
-is an alternative to a straightforward string. In ASCII "41"x and "A"
-are identical, as are "20"x and a blank, and must be treated identically.
+<para>A hexadecimal string is <emphasis>not</emphasis> a representation of a
+number.
+It is an escape mechanism that lets a user describe a character
+in terms of its encoding (and, therefore, is machine-dependent).
+In ASCII, <literal>'20'x</literal> is the encoding for a blank.
+In every case, a string of the form <literal>'.....'x</literal>
+is an alternative to a straightforward string.
+In ASCII <literal>'41'x</literal> and <literal>"A"</literal>
+are identical, as are <literal>'20'x</literal> and a blank, and must be treated identically.
 </para></note>
 <para>
 <indexterm><primary>hexadecimal</primary>
@@ -848,7 +851,7 @@ strings:
 <programlisting>
 "11110000"b        /* == "f0"x                  */
 "101 1101"b        /* == "5d"x                  */
-"1"b               /* == "00000001"b and "01"x  */
+'1'b               /* == '00000001'b or '01'x  */
 "10000 10101010"b  /* == "0001 0000 1010 1010"b */
 ""b                /* == ""                     */
 </programlisting>
@@ -1067,25 +1070,25 @@ shown as a split vertical bar (&brvbar;).</para>
 <para>The Rexx interpreter uses ASCII character
 124 in the concatenation operator and as the logical OR operator. Depending
 on the code page or keyboard for your particular country, ASCII 124 can be
-shown as a solid vertical bar (|) or a split vertical bar (&brvbar;).
+shown as a solid vertical bar ( <literal>|</literal> ) or a split vertical bar ( <literal>&brvbar;</literal> ).
 The character on the screen might not match the character engraved on the
 key. If you receive error 13,
 <computeroutput>Invalid character in program</computeroutput>, on
 an instruction including a vertical bar character, make sure this character
 is ASCII 124.</para></note>
-<para>Throughout the language, the NOT (&not;)
+<para>Throughout the language, the NOT (<literal>&not;</literal>)
 <indexterm><primary>logical NOT character</primary></indexterm>
 <indexterm><primary>NOT operator</primary></indexterm>
 character is synonymous with the backslash
 <indexterm><primary>backslash, use of</primary></indexterm>
-(<computeroutput>\</computeroutput>). You can
+(<literal>\</literal>). You can
 use the two characters interchangeably according to availability and personal
 preference.</para>
 
-<para>The Rexx interpreter recognizes both ASCII character 170 ('AA'X) and ASCII
-character 172 ('AC'X) for the logical NOT operator. Depending on your country,
-the &not; might not appear on your keyboard. If the character is not available,
-you can use the backslash (\) in place of &not;.
+<para>The Rexx interpreter recognizes both ASCII character 170 (<literal>'AA'x</literal>) and ASCII
+character 172 (<literal>'AC'x</literal>) for the logical NOT operator. Depending on your country,
+the <literal>&not;</literal> might not appear on your keyboard. If the character is not available,
+you can use the backslash (<literal>\</literal>) in place of <literal>&not;</literal>.
 </para>
 </section>
 
@@ -1935,14 +1938,11 @@ power operator.</para></listitem>
 <listitem><para>Power operators (like other operators) are evaluated from
 left to right.</para></listitem></itemizedlist></para>
 <para>For example:
-<example>
-<title>Arithmetic</title>
 <programlisting>
 -3**2     ==  9  /* not -9  */
 -(2+1)**2 ==  9  /* not -9  */
 2**2**3   == 64  /* not 256 */
 </programlisting>
-</example>
 </para>
 </note>
 </section>
@@ -2877,15 +2877,16 @@ The currently defined built-in objects are
 character string value is used.</para>
 
 <note><title>Note</title>
-<para>You can place entries in both the .LOCAL
-and the .ENVIRONMENT directories for programs to use. To avoid conflicts with
-future Rexx defined entries, it is recommended that the entries that you place
-in either directory include at least one period in the entry name.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+<para>You can place entries in both the <literal>.LOCAL</literal>
+and the <literal>.ENVIRONMENT</literal> directories for programs to use.
+To avoid conflicts with future Rexx defined entries, it is recommended
+that the entries that you place in either directory include at least one
+period in the entry name, for example:
 <programlisting>
 /* establish settings directory */
 .local~setentry("MyProgram.settings", .directory~new)
 </programlisting>
+</para>
 </note>
 </section>
 </section>

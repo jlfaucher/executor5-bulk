@@ -1384,7 +1384,6 @@ whole number.
 If it is <computeroutput>0</computeroutput>, the corresponding dimension is
 initially empty.  The dimensions may also be specified with one &singledimarray;
 of sizes.
-</para>
 <indexterm><primary>examples</primary>
 <secondary>of method</secondary></indexterm>
 <example id="ex.Array-of">
@@ -1396,6 +1395,7 @@ of sizes.
    a = .array~new(sizes)   -- create new 4x4x4 array
 </programlisting>
 </example>
+</para>
 </section>
 
 <section id="mthArrayOf"><title>of (Class Method)</title>
@@ -1417,7 +1417,7 @@ of sizes.
 <emphasis role="italic">item</emphasis> has index 1, the second has index 2,
 and so on.</para>
 <para>If you use the <methodname>of</methodname> method and omit any argument items, the returned array
-does not include the indexes corresponding to the omitted arguments.</para>
+does not include the indexes corresponding to the omitted arguments.
 <indexterm><primary>examples</primary>
 <secondary>of method</secondary></indexterm>
 <example id="ex.Array-of2">
@@ -1430,6 +1430,7 @@ do name over a
 end
 </programlisting>
 </example>
+</para>
 </section>
 
 <section id="mthArrayAtGet"><title>[]</title>
@@ -1490,7 +1491,6 @@ method.</para>
 <para>Returns an array of all index positions in the array containing items.
 For &multidimarray;s, each returned index will be an array of index
 values.
-</para>
 <indexterm><primary>examples</primary>
 <secondary>allIndexes method</secondary></indexterm>
 <example id="ex.Array-allIndexes">
@@ -1509,6 +1509,7 @@ do name over a~allIndexes
 end
 </programlisting>
 </example>
+</para>
 </section>
 
 <section id="mthArrayAllItems"><title>allItems</title>
@@ -1524,7 +1525,7 @@ end
 </imageobject>
 </mediaobject>
 
-<para>Returns an array of all items contained in the array.</para>
+<para>Returns an array of all items contained in the array.
 <indexterm><primary>examples</primary>
 <secondary>allItems method</secondary></indexterm>
 <example id="ex.Array-allItems">
@@ -1543,6 +1544,7 @@ do name over a~allItems
 end
 </programlisting>
 </example>
+</para>
 </section>
 
 <section id="mthArrayAppend"><title>append</title>
@@ -1560,7 +1562,6 @@ end
 
 <para>Appends an item to the array after the last item (the item with the
 highest index). The return value is the index of newly added item. The <methodname>append</methodname> method is only valid with &singledimarray;s.
-</para>
 <indexterm><primary>examples</primary>
 <secondary>append method</secondary></indexterm>
 <example id="ex.Array-append">
@@ -1570,6 +1571,7 @@ highest index). The return value is the index of newly added item. The <methodna
    a~append("Fred")  -- a = .array~of("Mike", "Rick", "Fred")
 </programlisting>
 </example>
+</para>
 </section>
 
 <section id="mthArrayAt"><title>at</title>
@@ -1594,7 +1596,6 @@ with the specified <emphasis role="italic">index</emphasis> or
 <para>
   Note that the <emphasis role="italic">index</emphasis> argument may
   also be specified as an array of indexes.
-</para>
 <indexterm><primary>examples</primary>
 <secondary>at method</secondary></indexterm>
 <example id="ex.Array-at">
@@ -1604,6 +1605,7 @@ with the specified <emphasis role="italic">index</emphasis> or
    say a~at(2)  -- says: "Rick"
 </programlisting>
 </example>
+</para>
 </section>
 
 <section id="mthArrayDelete"><title>delete</title>
@@ -1631,7 +1633,6 @@ reduced by one element.
 <para>
 The <methodname>delete</methodname> method is only valid with &singledimarray;s.
 The <emphasis role="italic">index</emphasis> argument may also be specified as an array of a single index.
-</para>
 <indexterm><primary>examples</primary>
 <secondary>delete method</secondary></indexterm>
 <example id="ex.Array-delete">
@@ -1642,6 +1643,7 @@ The <emphasis role="italic">index</emphasis> argument may also be specified as a
                 -- ("Fred", "Rick", "David")
 </programlisting>
 </example>
+</para>
 </section>
 
 <section id="mthArrayDimension"><title>dimension</title>
@@ -1662,7 +1664,7 @@ The <emphasis role="italic">index</emphasis> argument may also be specified as a
 whole number). If you omit <emphasis role="italic">n</emphasis>,
 this method returns the dimensionality
 (number of dimensions) of the array. If the number of dimensions has not been
-determined, <computeroutput>0</computeroutput> is returned.</para>
+determined, <computeroutput>0</computeroutput> is returned.
 <indexterm><primary>examples</primary>
 <secondary>dimension method</secondary></indexterm>
 <example id="ex.Array-dimension">
@@ -1678,6 +1680,7 @@ say a~dimension(1)  -- says: 1 (upper bound of dimension one)
 say a~dimension(2)  -- says: 2 (upper bound of dimension two)
 </programlisting>
 </example>
+</para>
 </section>
 
 <section id="mthArrayDimensions"><title>dimensions</title>
@@ -1711,7 +1714,7 @@ say a~dimension(2)  -- says: 2 (upper bound of dimension two)
 </imageobject>
 </mediaobject>
 
-<para>Returns the receiving Array with all items removed.</para>
+<para>Returns the receiving Array with all items removed.
 <indexterm><primary>examples</primary>
 <secondary>empty method</secondary></indexterm>
 <example id="ex.Array-empty">
@@ -1721,6 +1724,7 @@ a = .array~of("Mike", "Rick", "Fred", "Rick")
 a~empty    -- a~items now returns "0"
 </programlisting>
 </example>
+</para>
 </section>
 
 <section id="mthArrayFill"><title>fill</title>
@@ -1738,7 +1742,6 @@ a~empty    -- a~items now returns "0"
 
 <para>Returns the receiving Array with all index locations set to
 <emphasis role="italic">value</emphasis>.
-</para>
 <indexterm><primary>examples</primary>
 <secondary>fill method</secondary></indexterm>
 <example id="ex.Array-fill">
@@ -1748,6 +1751,7 @@ a = .array~new(3,3)
 a~fill(0)    -- initialize the matrix to all zeroes.
 </programlisting>
 </example>
+</para>
 </section>
 
 <section id="mthArrayFirst"><title>first</title>
@@ -1765,7 +1769,6 @@ a~fill(0)    -- initialize the matrix to all zeroes.
 
 <para>Returns the index of the first item in the array or &nil; if the
 array is empty.  For &multidimarray;s, the index is returned as an array of index values.
-</para>
 <indexterm><primary>examples</primary>
 <secondary>first method</secondary></indexterm>
 <example id="ex.Array-first">
@@ -1777,6 +1780,7 @@ a = .array~of(,"Mike", "Rick")
 say a~first  -- says: 2
 </programlisting>
 </example>
+</para>
 </section>
 
 <section id="mthArrayFirstItem"><title>firstItem</title>
@@ -1792,9 +1796,8 @@ say a~first  -- says: 2
 </imageobject>
 </mediaobject>
 
-<para> </para>
 <para>Returns the first item in the array or &nil; if the array is
-empty.</para>
+empty.
 <example id="ex.Array-firstItem-1">
 <title>Array class &mdash; firstItem method</title>
 <programlisting>
@@ -1803,21 +1806,8 @@ item=musketeers~firstItem                         /* Gives first item in array  
                                                   /* (Assigns "Porthos" to item)   */
 </programlisting>
 </example>
-
-<para>Returns the index of the first item in the array or &nil; if the
-array is empty.  For &multidimarray;s, the index is returned as an array of index values.
 </para>
-<indexterm><primary>examples</primary>
-<secondary>first method</secondary></indexterm>
-<example id="ex.Array-firstItem-2">
-<title>Array class &mdash; firstItem method</title>
-<programlisting>
-a = .array~of("Mike", "Rick", "Fred", "Rick")
-say a~first  -- says: 1
-a = .array~of(,"Mike", "Rick")
-say a~first  -- says: 2
-</programlisting>
-</example>
+
 </section>
 
 <section id="mthArrayHasIndex"><title>hasIndex</title>
@@ -1839,7 +1829,6 @@ an item associated with the specified index or indexes. Returns
 <para>
   Note that the <emphasis role="italic">index</emphasis> argument may
   also be specified as an array of indexes.
-</para>
 <indexterm><primary>examples</primary>
 <secondary>hasIndex method</secondary></indexterm>
 <example id="ex.Array-hasIndex">
@@ -1850,6 +1839,7 @@ say a~hasIndex(2)  -- says: 1
 say a~hasIndex(5)  -- says: 0
 </programlisting>
 </example>
+</para>
 </section>
 
 <section id="mthArrayHasItem"><title>hasItem</title>
@@ -1869,7 +1859,6 @@ say a~hasIndex(5)  -- says: 0
 the specified item at any index location.  Returns
 &false; otherwise.
 Item equality is determined by using the <methodname>==</methodname> method of <emphasis role="italic">item</emphasis>.
-</para>
 <indexterm><primary>examples</primary>
 <secondary>hasItem method</secondary></indexterm>
 <example id="ex.Array-hasItem">
@@ -1880,6 +1869,7 @@ say a~hasItem("Rick")  -- says: 1
 say a~hasItem("Mark")  -- says: 0
 </programlisting>
 </example>
+</para>
 </section>
 
 <section id="mthArrayIndex"><title>index</title>
@@ -1900,7 +1890,6 @@ target item appears at more than one index, the first located index will
 be returned.  For &multidimarray;s, the index is returned as an array of
 index values.  If the array does not contain the specified item, &nil; is
 returned. Item equality is determined by using the <methodname>==</methodname> method of <emphasis role="italic">item</emphasis>.
-</para>
 <indexterm><primary>examples</primary>
 <secondary>index method</secondary></indexterm>
 <example id="ex.Array-index">
@@ -1910,6 +1899,7 @@ a = .array~of("Mike", "Rick", "Fred", "Rick")
 say a~index("Rick")  -- says: 2
 </programlisting>
 </example>
+</para>
 </section>
 
 <section id="mthArrayInsert"><title>insert</title>
@@ -1937,7 +1927,7 @@ the Array.</para>
 <emphasis role="italic">index</emphasis> will cause the items in the Array after
 position <emphasis role="italic">index</emphasis> to have their indexes
 shifted by the Array object.
-The index values for any items in the Array are incremented by the insertion.</para>
+The index values for any items in the Array are incremented by the insertion.
 <indexterm><primary>examples</primary>
 <secondary>insert method</secondary>
 <tertiary>of Array class</tertiary></indexterm>
@@ -1967,6 +1957,7 @@ musketeers~insert("D&apos;Artagnan")      /* Adds D&apos;Artagnan after Aramis  
                                           /*               D&apos;Artagnan  */
 </programlisting>
 </example>
+</para>
 </section>
 
 <section id="mthArrayIsEmpty"><title>isEmpty</title>
@@ -1984,7 +1975,7 @@ musketeers~insert("D&apos;Artagnan")      /* Adds D&apos;Artagnan after Aramis  
 
 <para>Returns &true; if the array is
 empty.  Returns
-&false; otherwise.</para>
+&false; otherwise.
 <indexterm><primary>examples</primary>
 <secondary>isEmpty method</secondary></indexterm>
 <example id="ex.Array-isEmpty">
@@ -1996,6 +1987,7 @@ a[1] = "1"
 say a~isEmpty  -- says: 0
 </programlisting>
 </example>
+</para>
 </section>
 
 <section id="mthArrayItems"><title>items</title>
@@ -2011,7 +2003,7 @@ say a~isEmpty  -- says: 0
 </imageobject>
 </mediaobject>
 
-<para>Returns the number of items in the array.</para>
+<para>Returns the number of items in the array.
 <indexterm><primary>examples</primary>
 <secondary>items method</secondary></indexterm>
 <example id="ex.Array-items">
@@ -2021,6 +2013,7 @@ a = .array~of("Fred", , "Mike", , "David")
 say a~items  -- says: 3
 </programlisting>
 </example>
+</para>
 </section>
 
 <section id="mthArrayLast"><title>last</title>
@@ -2039,7 +2032,6 @@ say a~items  -- says: 3
 <para>Returns the index of the last item in the array or &nil; if the
 array is empty.  For &multidimarray;s, index is returned as an array of
 index items.
-</para>
 <indexterm><primary>examples</primary>
 <secondary>last method</secondary></indexterm>
 <example id="ex.Array-last">
@@ -2049,6 +2041,7 @@ a = .array~of("Fred", , "Mike", , "David")
 say a~last  -- says: 5
 </programlisting>
 </example>
+</para>
 </section>
 
 <section id="mthArrayLastItem"><title>lastItem</title>
@@ -2065,7 +2058,7 @@ say a~last  -- says: 5
 </mediaobject>
 
 <para>Returns the last item in the array or &nil; if the array is
-empty.</para>
+empty.
 <example id="ex.Array-lastItem">
 <title>Array class &mdash; lastItem method</title>
 <programlisting>
@@ -2074,6 +2067,7 @@ item=musketeers~lastItem                          /* Gives last item in array   
                                                   /* (Assigns "Aramis" to item)    */
 </programlisting>
 </example>
+</para>
 </section>
 
 <section id="mthArrayMakeArray"><title>makeArray</title>
@@ -2093,7 +2087,6 @@ item=musketeers~lastItem                          /* Gives last item in array   
 object. Any index with no associated item is omitted from the new array.
 Items in the new array will have the same order as the source array.
 A &multidimarray; will be converted into a non-sparse &singledimarray;.
-</para>
 <indexterm><primary>examples</primary>
 <secondary>makeArray method</secondary></indexterm>
 <example id="ex.Array-makeArray">
@@ -2103,6 +2096,7 @@ a = .array~of("Fred", , "Mike", , "David")
 b = a~makeArray  -- b = .array~of("Fred", "Mike", "David")
 </programlisting>
 </example>
+</para>
 </section>
 
 <section id="mthArrayMakeString"><title>makeString</title>
@@ -2152,7 +2146,6 @@ determine the next position and the index is returned as an array of index value
 <para>
   Note that the <emphasis role="italic">index</emphasis> argument may
   also be specified as an array of indexes.
-</para>
 <indexterm><primary>examples</primary>
 <secondary>next method</secondary></indexterm>
 <example id="ex.Array-next">
@@ -2162,6 +2155,7 @@ a = .array~of("Fred", , "Mike", , "David")
 say a~next(3)  -- says: 5
 </programlisting>
 </example>
+</para>
 </section>
 
 <section id="mthArrayPrevious"><title>previous</title>
@@ -2186,7 +2180,6 @@ determine the previous position and the index is returned as an array of index v
 <para>
   Note that the <emphasis role="italic">index</emphasis> argument may
   also be specified as an array of indexes.
-</para>
 <indexterm><primary>examples</primary>
 <secondary>previous method</secondary></indexterm>
 <example id="ex.Array-previous">
@@ -2196,6 +2189,7 @@ a = .array~of("Fred", , "Mike", , "David")
 say a~previous(3)  -- says: 1
 </programlisting>
 </example>
+</para>
 </section>
 
 <section id="mthArrayPut"><title>put</title>
@@ -2224,7 +2218,6 @@ that dimension, the array is expanded to the new dimension size.</para>
 <para>
   Note that the <emphasis role="italic">index</emphasis> argument may
   also be specified as an array of indexes.
-</para>
 <indexterm><primary>examples</primary>
 <secondary>put method</secondary></indexterm>
 <example id="ex.Array-put">
@@ -2245,6 +2238,7 @@ Mike
 Mike
 </programlisting>
 </example>
+</para>
 </section>
 
 <section id="mthArrayRemove"><title>remove</title>
@@ -2273,7 +2267,6 @@ removal.
 <para>
   Note that the <emphasis role="italic">index</emphasis> argument may
   also be specified as an array of indexes.
-</para>
 <indexterm><primary>examples</primary>
 <secondary>remove method</secondary></indexterm>
 <example id="ex.Array-remove">
@@ -2283,6 +2276,7 @@ a = .array~of("Fred", "Mike", "Mike", "David")
 a~remove(2)  -- removes "Mike"
 </programlisting>
 </example>
+</para>
 </section>
 
 <section id="mthArrayRemoveItem"><title>removeItem</title>
@@ -2302,7 +2296,7 @@ a~remove(2)  -- removes "Mike"
 one index, the first located item is removed.
 Item equality is determined by using the <methodname>==</methodname> method of <emphasis role="italic">item</emphasis>.
 The return value is the
-removed item.</para>
+removed item.
 <indexterm><primary>examples</primary>
 <secondary>removeItem method</secondary></indexterm>
 <example id="ex.Array-removeItem">
@@ -2312,6 +2306,7 @@ a = .array~of("Fred", "Mike", "Mike", "David")
 a~removeItem("Mike")  -- removes the item at index "2"
 </programlisting>
 </example>
+</para>
 </section>
 
 <section id="mthArraySection"><title>section</title>
@@ -2342,7 +2337,6 @@ array remains unchanged. The <methodname>section</methodname> method is valid on
 <para>
   Note that the index argument <emphasis role="italic">start</emphasis> may
   also be specified as an array of indexes.
-</para>
 <indexterm><primary>examples</primary>
 <secondary>section method</secondary></indexterm>
 <example id="ex.Array-section">
@@ -2355,6 +2349,7 @@ c = a~section(2,2) -- c = .array~of(2,3)
 d = a~section(2,0) -- d = .array~new
 </programlisting>
 </example>
+</para>
 </section>
 
 <section id="mthArraySize"><title>size</title>
@@ -2471,7 +2466,6 @@ of the array.
 The supplier enumerates the array items in their sequenced order.
 For &multidimarray;s, the supplier <methodname>index</methodname> method will return the
 index values as an array of index numbers.
-</para>
 <indexterm><primary>examples</primary>
 <secondary>supplier method</secondary></indexterm>
 <example id="ex.Array-supplier">
@@ -2486,6 +2480,7 @@ do while sup~available
 end
 </programlisting>
 </example>
+</para>
 </section>
 
 <section id="mthArrayToString"><title>toString</title>
@@ -2510,7 +2505,6 @@ default line end separator.
 </para>
 <para>See also method <xref linkend="mthArrayMakeString" xrefstyle="select:title"/>
 for which this method is a synonym.
-</para>
 <indexterm><primary>examples</primary>
 <secondary>toString method</secondary></indexterm>
 <example id="ex.Array-toString">
@@ -2528,6 +2522,7 @@ say a~toString("c")  -- Produces: 1234
 say a~toString(, ", ")  -- Produces: 1, 2, 3, 4
 </programlisting>
 </example>
+</para>
 </section>
 
 <section id="arex"><title>Examples</title>
@@ -2556,7 +2551,7 @@ end
 </example>
 </para>
 <para>If you omit any argument values before arguments you supply, the corresponding
-indexes are skipped in the returned array: </para>
+indexes are skipped in the returned array:
 <example id="ex.Array-examples3">
 <title>Array class &mdash; examples</title>
 <programlisting>
@@ -2567,6 +2562,7 @@ do i=1 to 4                                  /* Produces: North          */
 end                                          /*           West           */
 </programlisting>
 </example>
+</para>
 <para>Here is an example using the ~~:
 <example id="ex.Array-examples4">
 <title>Array class &mdash; examples</title>
@@ -3537,11 +3533,12 @@ the capitalized letter is needed; all characters following it are ignored.)
 <title>CircularQueue class &mdash; makeArray method
 <indexterm><primary>examples</primary><secondary>makeArray method</secondary></indexterm>
 </title>
-<programlisting><![CDATA[-- reverse an array
+<programlisting>
+-- reverse an array
 a = .Array~of("one", "two", "three", "four", "five")
-say .CircularQueue~new(a~size)~~appendAll(a)~makeArray("Lifo") -
- ~makeString(, ", ")                   -- five, four, three, two, one
-]]></programlisting></example></para>
+say .CircularQueue~new(a~size)~appendAll(a)~makeArray("lifo")~makeString(, ", ")
+-- five, four, three, two, one
+</programlisting></example></para>
 </section>
 
 
@@ -4152,13 +4149,13 @@ methods.</para>
 <emphasis role="italic">name</emphasis>, the result of running this method is
 returned. If the Directory has no item or method associated with index
 <emphasis role="italic">name</emphasis>, &nil; is returned.
-</para>
 <example id="ex.Directory-at">
 <title>Directory class &mdash; at method</title>
 <programlisting>
 say .environment~at("OBJECT")   /* Produces: "The Object class" */
 </programlisting>
 </example>
+</para>
 </section>
 
 <section id="mthDirectoryEmpty"><title>empty</title>
@@ -5292,9 +5289,8 @@ list is empty.
 </imageobject>
 </mediaobject>
 
-<para> </para>
 <para>Returns the first item in the list or &nil; if the list is
-empty.</para>
+empty.
 <example id="ex.List-firstItem">
 <title>List class &mdash; firstItem method</title>
 <programlisting>
@@ -5303,6 +5299,7 @@ item=musketeers~firstItem                       /* Gives first item in list     
                                                 /* (Assigns "Porthos" to item)  */
 </programlisting>
 </example>
+</para>
 </section>
 
 <section id="mthListHasIndex"><title>hasIndex</title>
@@ -5389,7 +5386,7 @@ the list.</para>
 <emphasis role="italic">index</emphasis> will cause the items in the list after
 position <emphasis role="italic">index</emphasis> to have their relative positions
 shifted by the list object.
-The index values for any items in the list are not modified by the insertion.</para>
+The index values for any items in the list are not modified by the insertion.
 <indexterm><primary>examples</primary>
 <secondary>insert method</secondary>
 <tertiary>of List class</tertiary></indexterm>
@@ -5420,6 +5417,7 @@ musketeers~insert("D&apos;Artagnan")      /* Adds D&apos;Artagnan after Aramis  
                                           /*               D&apos;Artagnan  */
 </programlisting>
 </example>
+</para>
 </section>
 
 <section id="mthListIsEmpty"><title>isEmpty</title>
@@ -6222,7 +6220,6 @@ no item is deleted.  All elements following the deleted item will be
 moved up in the queue ordering and the item indexes will be adjusted for the deletion.  The size of the queue will be
 reduced by one element.
 The <methodname>delete</methodname> method and the <methodname>remove</methodname> method produce the same result for the queue class.
-</para>
 <indexterm><primary>examples</primary>
 <secondary>delete method</secondary></indexterm>
 <example id="ex.Queue-delete">
@@ -6233,6 +6230,7 @@ The <methodname>delete</methodname> method and the <methodname>remove</methodnam
                 -- ("Fred", "Rick", "David")
 </programlisting>
 </example>
+</para>
 </section>
 
 <section id="mthQueueEmpty"><title>empty</title>
@@ -6281,7 +6279,6 @@ queue is empty.  The index will always be 1 for non-empty queues.</para>
 </imageobject>
 </mediaobject>
 
-<para> </para>
 <para>Returns the first item in the queue or &nil; if the queue is
 empty.</para>
 </section>
@@ -6370,7 +6367,7 @@ the queue. </para>
 <para>Inserting an item in the queue at position
 <emphasis role="italic">index</emphasis> will cause the items in the queue after
 position <emphasis role="italic">index</emphasis> to have their indexes modified
-by the queue object.</para>
+by the queue object.
 <indexterm><primary>examples</primary>
 <secondary>insert method</secondary>
 <tertiary>of Queue class</tertiary></indexterm>
@@ -6401,6 +6398,7 @@ musketeers~insert("D&apos;Artagnan")       /* Adds D&apos;Artagnan after Aramis 
                                            /*               D&apos;Artagnan  */
 </programlisting>
 </example>
+</para>
 </section>
 
 <section id="mthQueueIsEmpty"><title>isEmpty</title>
@@ -6467,9 +6465,8 @@ queue is empty.</para>
 </imageobject>
 </mediaobject>
 
-<para> </para>
 <para>Returns the last item in the array or &nil; if the array is
-empty.</para>
+empty.
 <example id="ex.Queue-lastItem">
 <title>Queue class &mdash; lastItem method</title>
 <programlisting>
@@ -6478,6 +6475,7 @@ item=musketeers~lastItem                          /* Gives last item in array   
                                                   /* (Assigns "Aramis" to item)    */
 </programlisting>
 </example>
+</para>
 </section>
 
 <section id="mthQueueMakeArray"><title>makeArray</title>
@@ -8613,13 +8611,13 @@ method.
 <emphasis role="italic">name</emphasis>.
 If the StringTable has no item associated with index
 <emphasis role="italic">name</emphasis>, &nil; is returned.
-</para>
 <example id="ex.stringtable-at">
 <title>StringTable class &mdash; at method</title>
 <programlisting>
 say .environment~at("OBJECT")   /* Produces: "The Object class" */
 </programlisting>
 </example>
+</para>
 </section>
 
 <section id="mthStringTableEmpty" revisionflag="added"><title>&added50;empty</title>
@@ -9338,7 +9336,7 @@ The supplier iterates over the items in an unspecified order.
 <section id="sortarray"><title>Sorting Ordered Collections</title>
 <para>Any ordered collection, such as non-sparse Arrays or Lists can have its elements placed into sorted order using the
 <methodname>sort</methodname> method.  The simplest sort is
-sorting an array of strings.</para>
+sorting an array of strings.
 <example id="ex.Array-sorting">
 <title>Array class &mdash; sorting</title>
 <programlisting>
@@ -9350,6 +9348,7 @@ do name over myArray
 end
 </programlisting>
 </example>
+</para>
 <para>will display the names in the order "Andy", "Fred", "Xavier", "Zoe".</para>
 <para>The <methodname>sort</methodname> method orders the strings by using the
 <methodname>compareTo</methodname> method of the String class.  The
@@ -9393,7 +9392,7 @@ For example, consider the following simple class:
 <methodname>sort</methodname> method needs to compare two Employee instances, it will call the
 <methodname>compareTo</methodname> method on one of the instances, passing the second instance as an argument.
 The <methodname>compareTo</methodname> method tells the <methodname>sort</methodname> method
-which of the two instances should be first.</para>
+which of the two instances should be first.
 <example id="ex.Sorting-compare">
 <title>Comparison during sorting</title>
 <programlisting>
@@ -9411,7 +9410,9 @@ which of the two instances should be first.</para>
 ]]>
 </programlisting>
 </example>
+</para>
 </section>
+
 <section id="sortcomparator"><title>Sorting with more than one order</title>
 <para>The String class <methodname>compareTo</methodname> method only implements a sort ordering for an ascending
 sort using a strict comparison.  Frequently it is desirable to override a class-defined sort order or even to sort
@@ -9420,7 +9421,7 @@ use the <methodname>sortWith</methodname> method.  The <methodname>sortWith</met
 method takes a single argument, which is a Comparator object that implements a <methodname>compare</methodname>
 method.  The <methodname>compare</methodname> method performs comparisons between pairs of items.  Different
 comparators can be customized for different comparison purposes.  For example, the Rexx language provides a
-DescendingComparator class that will sort items into descending order:</para>
+DescendingComparator class that will sort items into descending order:
 <example id="ex.Sorting-multi-order">
 <title>Multi-order sorting</title>
 <programlisting>
@@ -9430,8 +9431,9 @@ use strict arg left, right
 return -left~compareTo(right)
 </programlisting>
 </example>
+</para>
 <para>The DescendingComparator merely inverts the result returned by the item
-<methodname>compareTo</methodname> method.  Our previous example</para>
+<methodname>compareTo</methodname> method.  Our previous example
 <example id="ex.Sorting-descendingcompare">
 <title>Descending compare sorting</title>
 <programlisting>
@@ -9443,11 +9445,12 @@ do name over myArray
 end
 </programlisting>
 </example>
+</para>
 <para>now displays in the order "Zoe", "Xavier", "Fred", "Andy".</para>
 <para>Custom Comparators are simple to create for any sorting purpose.  The only requirement is implementing a
 <methodname>compare</methodname> method that knows how to compare pairs of items in some particular
 manner.  For example, to sort our Employee class by name instead of the default employee id, we can use the following
-simple comparator class:</para>
+simple comparator class:
 <example id="ex.Sorting-customcompare">
 <title>Custom compare sorting</title>
 <programlisting>
@@ -9457,7 +9460,9 @@ simple comparator class:</para>
   return left~name~compareTo(right~name)  -- do the comparison using the names
 </programlisting>
 </example>
+</para>
 </section>
+
 <section id="ltcomparators"><title>Builtin Comparators</title>
 <para>Rexx includes a number of built-in Comparators for common sorting operations.</para>
 <variablelist>

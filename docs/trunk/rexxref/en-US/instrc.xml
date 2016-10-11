@@ -510,14 +510,11 @@ of the routine. See <xref linkend="xbuiltin" />.</para>
 as a subroutine. Any result is stored in RESULT. Simply specify
 <computeroutput>CALL</computeroutput>, the function name (with
 <emphasis>no parenthesis</emphasis>)
-and any arguments:
-<example>
-<title>Instructions &mdash; CALL</title>
+and any arguments, for example:
 <programlisting>
 call length "string"   /* Same as length("string") */
 say result             /* Produces: 6              */
 </programlisting>
-</example>
 </para></note>
 </listitem></varlistentry>
 <varlistentry><term><emphasis role="bold">External routines</emphasis></term>
@@ -1082,42 +1079,42 @@ c.1="7."        /*  This sets "C.1" in the object             */
 begin running. The FORWARD instruction can change parts of the forwarded
 message, such as the target object, the message name, the arguments, and the
 superclass override.</para>
-<para>If you specify the TO option, the language processor evaluates
+<para>If you specify the <option>TO</option> option, the language processor evaluates
 <emphasis role="italic">exprt</emphasis> to produce a new target object
 for the forwarded message. The <emphasis role="italic">exprt</emphasis>
 is a literal string, constant symbol, or expression enclosed in parentheses.
-If you do not specify the TO option, the initial value of the Rexx special
+If you do not specify the <option>TO</option> option, the initial value of the Rexx special
 variable SELF is used.</para>
-<para>If you specify the ARGUMENTS option, the language processor
+<para>If you specify the <option>ARGUMENTS</option> option, the language processor
 evaluates <emphasis role="italic">expra</emphasis> to produce an
 array object that supplies the set of arguments for
 the forwarded message. The <emphasis role="italic">expra</emphasis> can be a
 literal string, constant symbol, or expression enclosed in parentheses. The
 ARGUMENTS value must evaluate to a Rexx array object.</para>
-<para>If you specify the ARRAY option, each
+<para>If you specify the <option>ARRAY</option> option, each
 <emphasis role="italic">expri</emphasis> is an expression (use
 commas to separate the expressions). The language processor evaluates the
 expression list to produce a set of arguments for the forwarded message. It
-is an error to use both the ARRAY and the ARGUMENTS options on the same FORWARD
+is an error to use both the <option>ARRAY</option> and the <option>ARGUMENTS</option> options on the same FORWARD
 instruction.</para>
 <para>If you specify neither ARGUMENTS nor ARRAY, the language processor uses
 the same arguments specified on the original method call.</para>
-<para>If you specify the MESSAGE option, the
+<para>If you specify the <option>MESSAGE</option> option, the
 <emphasis role="italic">exprm</emphasis> is a literal string,
 a constant symbol, or an expression enclosed in parentheses. If you specify
 an expression enclosed in parentheses, the language processor evaluates the
 expression to obtain its value. The uppercase character string value of the
-MESSAGE option is the name of the message that the FORWARD instruction issues.
+<option>MESSAGE</option> option is the name of the message that the FORWARD instruction issues.
 </para>
 <para>If you do not specify MESSAGE, FORWARD uses the message name used to call
 the currently active method.</para>
-<para>If you specify the CLASS option, the
+<para>If you specify the <option>CLASS</option> option, the
 <emphasis role="italic">exprs</emphasis> is a literal string,
 a constant symbol, or an expression enclosed in parentheses. This is the class
 object used as a superclass specifier on the forwarded message.</para>
 <para>If you do not specify CLASS, the message is forwarded without a superclass
 override.</para>
-<para>If you do not specify the CONTINUE option,
+<para>If you do not specify the <option>CONTINUE</option> option,
 the language processor immediately
 exits the current method before forwarding the message. Results returned from
 the forwarded message are the return value from the original message that
@@ -1125,7 +1122,7 @@ called the active method (the caller of the method that issued the FORWARD
 instruction). Any conditions the forwarded message raises are raised in the
 calling program (without raising a condition in the method issuing the FORWARD
 instruction).</para>
-<para>If you specify the CONTINUE option, the current method does not exit and
+<para>If you specify the <option>CONTINUE</option> option, the current method does not exit and
 continues with the next instruction when the forwarded message completes.
 If the forwarded message returns a result, the language processor assigns
 it to the special variable RESULT. If the message does not return a result,
@@ -1174,7 +1171,7 @@ methods.
 </programlisting>
 </example>
 </para>
-<para>In the preceding example, the CONTINUE option causes the FORWARD message
+<para>In the preceding example, the <option>CONTINUE</option> option causes the FORWARD message
 to continue with the next instruction, rather than exiting the Savings class
 INIT method.</para>
 </section>
@@ -2549,9 +2546,9 @@ of lines currently in the external data queue.</para>
 </mediaobject>
 
 <note><title>Note</title>
-<para>You can specify the options ADDITIONAL, ARRAY, DESCRIPTION,
-RETURN, and EXIT in any order. However, if you specify EXIT without
-<emphasis role="italic">expre</emphasis> or RETURN without
+<para>You can specify the options <option>ADDITIONAL</option>, <option>ARRAY</option>, <option>DESCRIPTION</option>,
+<option>RETURN</option>, and <option>EXIT</option> in any order. However, if you specify <option>EXIT</option> without
+<emphasis role="italic">expre</emphasis> or <option>RETURN</option> without
 <emphasis role="italic">exprr</emphasis>, it must appear last.</para></note>
 <para>RAISE returns or exits from the currently running routine or method and
 raises a condition in the caller (for a routine) or sender (for a method).
@@ -2578,7 +2575,7 @@ expression to obtain its character string value.</para>
 <para>If a USER condition is raised, you must supply the associated user
 condition name as <emphasis role="italic">usercondition</emphasis>.
 This can be a literal string or a symbol that is taken as a constant.</para>
-<para>If you specify the ADDITIONAL option, the language processor evaluates
+<para>If you specify the <option>ADDITIONAL</option> option, the language processor evaluates
 <emphasis role="italic">expra</emphasis> to produce an object that supplies
 additional object information associated with the condition. The
 <emphasis role="italic">expra</emphasis> can be a literal string,
@@ -2587,7 +2584,7 @@ of the condition object and the
 <computeroutput>&quot;A&quot;</computeroutput> option of the CONDITION
 built-in function return this additional object information. For SYNTAX conditions,
 the ADDITIONAL value must evaluate to a &singledimarray;.</para>
-<para>If you specify the ARRAY option, each
+<para>If you specify the <option>ARRAY</option> option, each
 <emphasis role="italic">expri</emphasis> is an expression (use
 commas to separate the expressions). The language processor evaluates the
 expression list to produce an array object that supplies additional object
@@ -2595,7 +2592,7 @@ information associated with the condition. The ADDITIONAL entry of the condition
 object and the <computeroutput>&quot;A&quot;</computeroutput> option of
 the CONDITION built-in function
 return this additional object information as an array of values. It is an
-error to use both the ARRAY option and the ADDITIONAL option on the same RAISE
+error to use both the <option>ARRAY</option> option and the <option>ADDITIONAL</option> option on the same RAISE
 instruction.</para>
 <para>The content of <emphasis role="italic">expra</emphasis> or
 <emphasis role="italic">expri</emphasis> is used as the contents
@@ -2603,7 +2600,7 @@ of the secondary error message produced for a
 <emphasis role="italic">condition</emphasis>.</para>
 <para>If you specify neither ADDITIONAL nor ARRAY, there is no additional object
 information associated with the condition.</para>
-<para>If you specify the DESCRIPTION option, the
+<para>If you specify the <option>DESCRIPTION</option> option, the
 <emphasis role="italic">exprd</emphasis> can be a literal
 string, a constant symbol, or an expression enclosed in parentheses. If you
 specify an expression enclosed in parentheses, the language processor evaluates
@@ -2614,7 +2611,7 @@ built-in function and the DESCRIPTION entry of the condition object return
 this string.</para>
 <para>If you do not specify DESCRIPTION, the language processor uses a null
 string as the descriptive string.</para>
-<para>If you specify the RETURN or EXIT option, the language processor evaluates
+<para>If you specify the <option>RETURN</option> or <option>EXIT</option> option, the language processor evaluates
 the expression <emphasis role="italic">exprr</emphasis> or
 <emphasis role="italic">expre</emphasis>, respectively, to produce
 a result object that is passed back to the caller or sender as if it were
@@ -3656,7 +3653,7 @@ message term which
 can appear on the left side of an assignment statement (See
 <xref linkend="assinmt" />).
 </para>
-<para>The STRICT option imposes additional constraints on argument processing.
+<para>The <option>STRICT</option> option imposes additional constraints on argument processing.
 The number of arguments must match the number of
 <emphasis role="italic">name</emphasis>s, otherwise an error is raised.  An argument
 may be considered optional if <emphasis role="italic">expr</emphasis>  has been
