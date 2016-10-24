@@ -1090,14 +1090,14 @@ evaluates <emphasis role="italic">expra</emphasis> to produce an
 array object that supplies the set of arguments for
 the forwarded message. The <emphasis role="italic">expra</emphasis> can be a
 literal string, constant symbol, or expression enclosed in parentheses. The
-ARGUMENTS value must evaluate to a Rexx array object.</para>
+<option>ARGUMENTS</option> value must evaluate to a Rexx array object.</para>
 <para>If you specify the <option>ARRAY</option> option, each
 <emphasis role="italic">expri</emphasis> is an expression (use
 commas to separate the expressions). The language processor evaluates the
 expression list to produce a set of arguments for the forwarded message. It
 is an error to use both the <option>ARRAY</option> and the <option>ARGUMENTS</option> options on the same FORWARD
 instruction.</para>
-<para>If you specify neither ARGUMENTS nor ARRAY, the language processor uses
+<para>If you specify neither <option>ARGUMENTS</option> nor <option>ARRAY,</option> the language processor uses
 the same arguments specified on the original method call.</para>
 <para>If you specify the <option>MESSAGE</option> option, the
 <emphasis role="italic">exprm</emphasis> is a literal string,
@@ -1106,7 +1106,7 @@ an expression enclosed in parentheses, the language processor evaluates the
 expression to obtain its value. The uppercase character string value of the
 <option>MESSAGE</option> option is the name of the message that the FORWARD instruction issues.
 </para>
-<para>If you do not specify MESSAGE, FORWARD uses the message name used to call
+<para>If you do not specify <option>MESSAGE</option>, FORWARD uses the message name used to call
 the currently active method.</para>
 <para>If you specify the <option>CLASS</option> option, the
 <emphasis role="italic">exprs</emphasis> is a literal string,

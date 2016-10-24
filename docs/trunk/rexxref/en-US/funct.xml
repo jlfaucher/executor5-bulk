@@ -338,16 +338,17 @@ For example, an editor might define a preferred extension that should be
 used for editor macros.  This extension would be searched next.
 </para></listitem>
 <listitem><para>
-The default system extension (.REX).
+The default system extension (<literal>.REX</literal> on Windows,
+and both <literal>.rex</literal> and <literal>.REX</literal> on Unix-based systems)
 </para></listitem>
 <listitem><para>
 If the target file has not been located using any of the above extensions, the file name
 is tried without an added extension.
 </para></listitem>
 </orderedlist>
-<para>There are some system file system considerations involved when search for files.
-The Windows file system is case insensitive, so files can be located regardless of how
-the call is specified.  Unix-based systems have a case sensitive file system, so files must
+<para>There are some file system considerations involved when searching for files.
+Windows file systems typically are case insensitive, so files can be located regardless of how
+the call is specified.  Unix-based systems typically have a case sensitive file system, so files must
 be exact case matches in order to be located.  For these systems, each time a file name
 probe is attempted, the name will be tried in the case specified and also as a lower case
 name.  The check is not performed on the very last step that uses the file name without an extension to
