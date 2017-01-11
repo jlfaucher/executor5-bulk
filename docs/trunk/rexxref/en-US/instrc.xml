@@ -740,8 +740,8 @@ rounded according to the setting of NUMERIC DIGITS.</para></listitem>
 <listitem><para>The <emphasis role="italic">exprw</emphasis> or
 <emphasis role="italic">expru</emphasis> options, if present, can be any
 expression that evaluates to <computeroutput>1</computeroutput> or
-<computeroutput>0</computeroutput>.  This includes the list form of conditional
-expression supported by IF and WHEN, which is
+<computeroutput>0</computeroutput>.  This includes the list form of a conditional
+expression, which is
 a list of expressions separated by ",".
 The list of expressions is evaluated left-to-right. 
 Each subexpression must evaluate to
@@ -2625,6 +2625,7 @@ expression to obtain its character string value. If you do not specify
 caller or sender. In either case, the effect is the same as that of the
 <xref linkend="keyReturn" xrefstyle="select:title"/> or
 <xref linkend="keyExit" xrefstyle="select:title"/> instruction.
+The <option>EXIT</option> option is the default.
 Following the return or exit, the appropriate action is taken in the caller
 or sender (see
 <xref linkend="atwcnt" />).
@@ -2942,10 +2943,12 @@ after a WHEN is as follows:
  <varlistentry>
   <term><emphasis role="bold">SELECT CASE</emphasis></term>
   <listitem>
-   <para>The list of <emphasis role="italic">expression</emphasis>s
+   <para>The <emphasis role="italic">case_expression</emphasis> is
+   evaluated only once, before the first WHEN instruction is processed.
+   The list of <emphasis role="italic">expression</emphasis>s
    after a WHEN is evaluated left-to-right.
    Each <emphasis role="italic">expression</emphasis> is compared to
-   <emphasis role="italic">case_expression</emphasis> using "==".
+   the result of <emphasis role="italic">case_expression</emphasis> using "==".
    Evaluation will stop with the first &true;
    result and &true; will be returned as the
    condition result.</para>
