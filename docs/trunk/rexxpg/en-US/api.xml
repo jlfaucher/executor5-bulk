@@ -295,7 +295,7 @@ options[1].optionName = NULL;
 <varlistentry><term>LOAD_REQUIRED_LIBRARY</term>
 <listitem><para>Specifies the name of an external native library that will be loaded
 once the interpreter instance is created.  The library name is an ASCII-Z string
-with the library name in the same format used for ::REQUIRED LIBRARY.  Multiple libraries
+with the library name in the same format used for ::REQUIRES LIBRARY.  Multiple libraries
 can be loaded by specifying this option multiple times.
 </para>
 <example>
@@ -316,7 +316,7 @@ structure that gives the library name and a pointer to the associated
 RexxPackageEntry (<xref linkend="buildinglibs" />)
 table that describes the package contents.
 The library name is an ASCII-Z string
-with the library name in the same format used for ::REQUIRED LIBRARY.  Multiple libraries
+with the library name in the same format used for ::REQUIRES LIBRARY.  Multiple libraries
 can be registered by specifying this option multiple times.
 </para>
 <example>
@@ -3084,8 +3084,8 @@ return context->WholeNumber(rc);
 <secondary>Array</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -3149,8 +3149,8 @@ It create a new one-dimension Array with the specified objects.
 <secondary>ArrayAppend</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -3202,8 +3202,8 @@ n = context->ArrayAppend(arr, obj);
 <secondary>ArrayAppendString</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -3259,8 +3259,8 @@ a String object created from a pointer and length.
 <secondary>ArrayAt</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -3313,8 +3313,8 @@ Returns NULLOBJECT if there is no value at the specified index.</para>
 <secondary>ArrayDimension</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -3362,8 +3362,8 @@ sz = context->ArrayDimension(arr);
 <secondary>ArrayItems</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -3411,8 +3411,8 @@ sz = context->ArrayItems(arr);
 <secondary>ArrayOfFour</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -3469,8 +3469,8 @@ arr = context->ArrayOfFour(obj1, obj2, obj3, obj4);
 <secondary>ArrayOfOne</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -3524,8 +3524,8 @@ arr = context->ArrayOfThree(obj1, obj2, obj3);
 <secondary>ArrayOfOne</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -3576,8 +3576,8 @@ arr = context->ArrayOfTwo(obj1, obj2);
 <secondary>ArrayOfOne</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -3625,8 +3625,8 @@ arr = context->ArrayOfOne(obj);
 <secondary>ArrayPut</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -3681,8 +3681,8 @@ context->ArrayPut(arr, obj, idx);
 <secondary>ArraySize</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -3724,8 +3724,8 @@ sz = context->ArraySize(arr);
 <secondary>AttachThread</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -3776,8 +3776,8 @@ a RexxThreadContext object valid for the current context is returned via the
 <secondary>BufferData</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -3825,8 +3825,8 @@ str = context->BufferData(obj);
 <secondary>BufferLength</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -3874,8 +3874,8 @@ sz = context->BufferLength(obj);
 <secondary>BufferStringData</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -3927,8 +3927,8 @@ it can be used in any other context.
 <secondary>BufferStringLength</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -3976,8 +3976,8 @@ sz = context->BufferStringLength(obj);
 <secondary>CallProgram</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -4035,8 +4035,8 @@ can be used to check if any errors occurred during the call.
 <secondary>CallRoutine</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -4093,8 +4093,8 @@ can be used to check if any errors occurred during the call.
 <secondary>CheckCondition</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -4138,8 +4138,8 @@ flag = context->CheckCondition();
 <secondary>ClearCondition</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -4181,8 +4181,8 @@ context->ClearCondition();
 <secondary>CString</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -4239,8 +4239,8 @@ For the second form, a String object is created from the ASCII-Z string data..</
 <secondary>DecodeConditionInfo</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -4287,8 +4287,8 @@ context->DecodeConditionInfo(dir, &cond);
 <secondary>DetachThread</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -4298,7 +4298,7 @@ context->DecodeConditionInfo(dir, &cond);
 <row><entry>Method</entry><entry>No</entry></row>
 <row><entry>Function</entry><entry>No</entry></row>
 <row><entry>Exit</entry><entry>No</entry></row>
-<row><entry>Interpreter</entry><entry>Nos</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
 </tbody>
 </tgroup>
 </informaltable>
@@ -4331,8 +4331,8 @@ issuing the call is no longer a valid, active interface.
 <secondary>DirectoryAt</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -4385,8 +4385,8 @@ obj = context->DirectoryAt(dirobj, str);
 <secondary>DirectoryPut</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -4441,8 +4441,8 @@ context->DirectoryPut(dirobj, item, index);
 <secondary>DirectoryRemove</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -4496,8 +4496,8 @@ did not exist in the target Directory.
 <secondary>DisplayCondition</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -4543,8 +4543,8 @@ major error number for the syntax error.  Returns 0 if there is no current synta
 <secondary>Double</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -4604,8 +4604,8 @@ If successful, the converted value is placed in
 <secondary>DoubleToObject</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -4653,8 +4653,8 @@ obj = context->DoubleToObject(n);
 <secondary>DoubleToObjectWithPrecision</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -4702,8 +4702,8 @@ obj = context->DoubleToObject(n, p);
 <secondary>DropContextVariable</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -4744,8 +4744,8 @@ context->DropContextVariable(name);
 <secondary>DropObjectVariable</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -4792,8 +4792,8 @@ context->DropObjectVariable(str);
 <secondary>DropStemArrayElement</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -4844,8 +4844,8 @@ context->DropStemArrayElement(sobj, n);
 <secondary>DropStemElement</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -4896,8 +4896,8 @@ context->DropStemElement(sobj, name);
 <secondary>False</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -4940,8 +4940,8 @@ obj = context->False();
 <secondary>FindClass</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -4983,8 +4983,8 @@ class = context->FindClass(name);
 <secondary>FindContextClass</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -5023,7 +5023,7 @@ obj = context->FindContextClass(name);
 <section id="mthFindPackageClass"><title>FindPackageClass</title>
 <indexterm><primary>FindPackageClass</primary></indexterm>
 <indexterm><primary>Thread context methods</primary>
-<secondary>FindPClass</secondary></indexterm>
+<secondary>FindPackageClass</secondary></indexterm>
 <indexterm><primary>Method context methods</primary>
 <secondary>FindPackageClass</secondary></indexterm>
 <indexterm><primary>Function context methods</primary>
@@ -5032,8 +5032,8 @@ obj = context->FindContextClass(name);
 <secondary>FindPackageClass</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -5085,8 +5085,8 @@ class = context->FindPackageClass(pkg, name);
 <secondary>FinishBufferString</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -5133,8 +5133,8 @@ given length and returns a reference to the completed String object.
 <secondary>ForwardMessage</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -5199,8 +5199,8 @@ target method does not return a result.</para>
 <secondary>GetAllContextVariables</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -5246,8 +5246,8 @@ may be accessed via the Stem object values.
 <secondary>GetAllStemElements</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -5296,8 +5296,8 @@ Each assigned Stem tail element will be an entry in the Directory.
 <secondary>GetApplicationData</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -5335,8 +5335,8 @@ option when the intepreter instance was created.
 <secondary>GetArgument</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -5383,8 +5383,8 @@ NULLOBJECT if the argument was not specified.
 <secondary>GetArguments</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -5424,8 +5424,8 @@ This is the same argument Array returned by the ARGLIST argument type.
 <secondary>GetCallerContext</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -5469,8 +5469,8 @@ calling context.
 <secondary>GetConditionInfo</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -5510,8 +5510,8 @@ there are no pending conditions, NULLOBJECT is returned.
 <secondary>GetContextDigits</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -5548,8 +5548,8 @@ sz = context->GetContextDigits();
 <secondary>GetContextForm</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -5586,8 +5586,8 @@ sz = context->GetContextForm();
 <secondary>GetContextFuzz</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -5626,8 +5626,8 @@ sz = context->GetContextFuzz();
 <secondary>GetContextVariable</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -5679,8 +5679,8 @@ has not been assigned a value.</para>
 <secondary>GetGlobalEnvironment</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -5723,8 +5723,8 @@ dir = context->GetGlobalEnvironment();
 <secondary>GetLocalEnvironment</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -5761,8 +5761,8 @@ dir = context->GetLocalEnvironment();
 <secondary>GetMessageName</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -5799,8 +5799,8 @@ str = context->GetMessageName(obj);
 <secondary>GetMethod</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -5843,8 +5843,8 @@ obj = context->GetMethod();
 <secondary>GetMethodPackage</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -5886,8 +5886,8 @@ pkg = context->GetMethodPackage(obj);
 <secondary>GetObjectVariable</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -5939,8 +5939,8 @@ variable has not been assigned a value.</para>
 <secondary>GetPackageClasses</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -5988,8 +5988,8 @@ dir = context->GetPackageClasses(pkg);
 <secondary>GetPackageMethods</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -6039,8 +6039,8 @@ using the .methods environment symbol from Rexx code.
 <secondary>GetPackagePublicClasses</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -6088,8 +6088,8 @@ dir = context->GetPackagePublicClasses(pkg);
 <secondary>GetPackagePublicRoutines</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -6137,8 +6137,8 @@ dir = context->GetPackagePublicRoutines(pkg);
 <secondary>GetPackageRoutines</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -6180,8 +6180,8 @@ dir = context->GetPackageRoutines(pkg);
 <secondary>GetRoutine</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -6218,8 +6218,8 @@ obj = context->GetRoutine();
 <secondary>GetRoutineName</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -6262,8 +6262,8 @@ name = context->GetRoutineName();
 <secondary>GetRoutinePackage</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -6305,8 +6305,8 @@ pkg = context->GetRoutinePackage(obj);
 <secondary>GetScope</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -6343,8 +6343,8 @@ obj = context->GetScope();
 <secondary>GetSelf</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -6389,8 +6389,8 @@ argument using the OSELF type.
 <secondary>GetStemArrayElement</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -6443,8 +6443,8 @@ obj = context->GetStemArrayElement(sobj, n);
 <secondary>GetStemElement</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -6500,8 +6500,8 @@ has not been assigned a value.</para>
 <secondary>GetStemValue</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -6544,8 +6544,8 @@ obj = context->GetStemValue(sobj);
 <secondary>GetSuper</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -6584,8 +6584,8 @@ argument type.
 <secondary>Halt</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -6620,8 +6620,8 @@ context->Halt();
 <secondary>HaltThread</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -6631,7 +6631,7 @@ context->Halt();
 <row><entry>Method</entry><entry>No</entry></row>
 <row><entry>Function</entry><entry>No</entry></row>
 <row><entry>Exit</entry><entry>No</entry></row>
-<row><entry>Interpreter</entry><entry>Nos</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
 </tbody>
 </tgroup>
 </informaltable>
@@ -6663,8 +6663,8 @@ context->HaltThread();
 <secondary>HasMethod</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -6710,8 +6710,8 @@ flag = context->HasMethod(obj, name);
 <secondary>InvalidRoutine</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -6756,8 +6756,8 @@ returns.
 <secondary>Int32</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -6816,8 +6816,8 @@ placed in <emphasis role="italic">n</emphasis>.
 <secondary>Int32ToObject</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -6865,8 +6865,8 @@ obj = context->Int32ToObject(n);
 <secondary>Int64</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -6925,8 +6925,8 @@ placed in <emphasis role="italic">n</emphasis>.
 <secondary>Int64ToObject</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -6976,8 +6976,8 @@ obj = context->Int64ToObject(n);
 <secondary>InterpreterVersion</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -7027,8 +7027,8 @@ used to compile your code.
 <secondary>Intptr</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -7089,8 +7089,8 @@ placed in <emphasis role="italic">n</emphasis>.
 <secondary>IntptrToObject</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -7138,8 +7138,8 @@ obj = context->IntptrToObject(&n);
 <secondary>IsArray</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -7189,8 +7189,8 @@ the RexxObjectPtr value may be safely cast to a RexxArrayObject.
 <secondary>IsBuffer</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -7240,8 +7240,8 @@ the RexxObjectPtr value may be safely cast to a RexxBufferObject.
 <secondary>IsDirectory</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -7291,8 +7291,8 @@ the RexxObjectPtr value may be safely cast to a RexxDirectoryObject.
 <secondary>IsInstanceOf</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -7344,8 +7344,8 @@ flag = context->IsInstanceOf(obj, class);
 <secondary>IsMethod</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -7395,8 +7395,8 @@ the RexxObjectPtr value may be safely cast to a RexxMethodObject.
 <secondary>IsMutableBuffer</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -7446,8 +7446,8 @@ the RexxObjectPtr value may be safely cast to a RexxMutableBufferObject.
 <secondary>IsOfType</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -7502,8 +7502,8 @@ This method combines the operations of the FindClass() and IsInstanceOf() method
 <secondary>IsPointer</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -7553,8 +7553,8 @@ the RexxObjectPtr value may be safely cast to a RexxPointerObject.
 <secondary>IsRoutine</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -7604,8 +7604,8 @@ the RexxObjectPtr value may be safely cast to a RexxPointerObject.
 <secondary>IsStem</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -7655,8 +7655,8 @@ the RexxObjectPtr value may be safely cast to a RexxStemObject.
 <secondary>IsString</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -7708,8 +7708,8 @@ the RexxObjectPtr value may be safely cast to a RexxStringObject.
 <secondary>LanguageLevel</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -7760,8 +7760,8 @@ used to compile your code.
 <secondary>LoadLibrary</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -7812,8 +7812,8 @@ False is returned for any errors in loading the package.
 <secondary>LoadPackage</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -7865,8 +7865,8 @@ can be retrieved using GetConditionInfo() (<xref linkend="mthGetConditionInfo" /
 <secondary>LoadPackageFromData</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -7925,8 +7925,8 @@ can be retrieved using GetConditionInfo() (<xref linkend="mthGetConditionInfo" /
 <secondary>Logical</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -7985,8 +7985,8 @@ an Object version of the logical value.</para>
 <secondary>LogicalToObject</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -8034,8 +8034,8 @@ obj = context->LogicalToObject(n);
 <secondary>MutableBufferCapacity</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -8084,8 +8084,8 @@ size of the buffer.  The length value is the amount of data currently contained 
 <secondary>MutableBufferData</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -8133,8 +8133,8 @@ str = context->MutableBufferData(obj);
 <secondary>MutableBufferLength</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -8182,8 +8182,8 @@ sz = context->MutableBufferLength(obj);
 <secondary>NewArray</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -8231,8 +8231,8 @@ obj = context->NewArray(d);
 <secondary>NewBuffer</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -8280,8 +8280,8 @@ obj = context->NewBuffer(len);
 <secondary>NewBufferString</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -8332,8 +8332,8 @@ transform this into a completed String object.
 <secondary>NewDirectory</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -8376,8 +8376,8 @@ obj = context->NewDirectory();
 <secondary>NewMethod</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -8436,8 +8436,8 @@ can be retrieved using GetConditionInfo() (<xref linkend="mthGetConditionInfo" /
 <secondary>NewMutableBuffer</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -8486,8 +8486,8 @@ have an initial length of 0.
 <secondary>NewPointer</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -8535,8 +8535,8 @@ obj = context->NewPointer(p);
 <secondary>NewRoutine</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -8595,8 +8595,8 @@ can be retrieved using GetConditionInfo() (<xref linkend="mthGetConditionInfo" /
 <secondary>NewStem</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -8644,8 +8644,8 @@ obj = context->NewStem(str);
 <secondary>NewString</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -8701,8 +8701,8 @@ obj = context->NewString(str);
 <secondary>NewSupplier</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -8753,8 +8753,8 @@ obj = context->NewSupplier(arr1, arr2);
 <secondary>Nil</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -8797,8 +8797,8 @@ obj = context->Nil();
 <secondary>NullString</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -8841,8 +8841,8 @@ obj = context->NullString();
 <secondary>ObjectToCSelf</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -8895,8 +8895,8 @@ Objects that rely on CSELF values typically set the variable CSELF inside an INI
 <secondary>ObjectToCSelfScoped</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -8953,8 +8953,8 @@ Objects that rely on CSELF values typically set the variable CSELF inside an INI
 <secondary>ObjectToDouble</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -9008,8 +9008,8 @@ flag = context->ObjectToDouble(obj, &n);
 <secondary>ObjectToInt32</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -9063,8 +9063,8 @@ flag = context->ObjectToInt32(obj, &n);
 <secondary>ObjectToInt64</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -9118,8 +9118,8 @@ flag = context->ObjectToInt64(obj, &n);
 <secondary>ObjectToIntptr</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -9173,8 +9173,8 @@ flag = context->ObjectToIntptr(obj, &n);
 <secondary>ObjectToLogical</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -9227,8 +9227,8 @@ flag = context->ObjectToLogical(obj, &n);
 <secondary>ObjectToString</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -9276,8 +9276,8 @@ str = context->ObjectToString(obj);
 <secondary>ObjectToStringSize</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -9331,8 +9331,8 @@ flag = context->ObjectToStringSize(obj, &n);
 <secondary>ObjectToStringValue</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -9380,8 +9380,8 @@ str = context->ObjectToStringValue(obj);
 <secondary>ObjectToUintptr</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -9435,8 +9435,8 @@ flag = context->ObjectToUintptr(obj, &n);
 <secondary>ObjectToUnsignedInt32</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -9490,8 +9490,8 @@ flag = context->ObjectToUnsignedInt32(obj, &n);
 <secondary>ObjectToUnsignedInt64</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -9543,8 +9543,8 @@ flag = context->ObjectToUnsignedInt64(obj, &n);
 <secondary>ObjectToValue</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -9605,8 +9605,8 @@ value of the requested type.
 <secondary>ObjectToWholeNumber</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -9660,8 +9660,8 @@ flag = context->ObjectToWholeNumber(obj, &wn);
 <secondary>PointerValue</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -9709,8 +9709,8 @@ p = context->PointerValue(obj);
 <secondary>RaiseCondition</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -9772,8 +9772,8 @@ Rexx code.
 <secondary>RaiseException</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -9829,8 +9829,8 @@ Rexx code.
 <secondary>RaiseException0</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -9877,8 +9877,8 @@ context->RaiseException0(n);
 <secondary>RaiseException1</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -9929,8 +9929,8 @@ context->RaiseException1(n, obj);
 <secondary>RaiseException2</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -9984,8 +9984,8 @@ context->RaiseException2(n, obj1, obj2);
 <secondary>RegisterLibrary</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -10041,8 +10041,8 @@ False is returned if a package has already be loaded or registered with the give
 <secondary>ReleaseGlobalReference</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -10091,8 +10091,8 @@ garbage collection protection from the object reference.  Once released,
 <secondary>ReleaseLocalReference</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -10141,8 +10141,8 @@ Once released,
 <secondary>RequestGlobalReference</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -10188,8 +10188,8 @@ API context.</para>
 <secondary>ResolveStemVariable</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -10243,8 +10243,8 @@ stem variable is returned as a result.
 <secondary>SendMessage</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -10304,8 +10304,8 @@ can be used to check if an error occurred during the call.
 <secondary>SendMessage0</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -10362,8 +10362,8 @@ can be used to check if an error occurred during the call.
 <secondary>SendMessage1</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -10423,8 +10423,8 @@ can be used to check if an error occurred during the call.
 <secondary>SendMessage2</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -10483,8 +10483,8 @@ can be used to check if an error occurred during the call.
 <secondary>SetContextVariable</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -10533,8 +10533,8 @@ to set the associated compound variable.
 <secondary>SetGuardOff</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -10569,8 +10569,8 @@ context->SetGuardOff();
 <secondary>SetGuardOn</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -10611,8 +10611,8 @@ context->SetGuardOn();
 <secondary>SetMutableBufferCapacity</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -10670,8 +10670,8 @@ may reallocate the data area, the return value should replace any previous buffe
 <secondary>SetMutableBufferLength</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -10725,8 +10725,8 @@ is larger than the current data area, the new length will be capped at the lengt
 <secondary>SetObjectVariable</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -10778,8 +10778,8 @@ Only simple and stem variables may be set using this API.
 <secondary>SetStemArrayElement</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -10835,8 +10835,8 @@ This method uses a numeric index as the element name.
 <secondary>SetStemElement</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -10885,8 +10885,8 @@ context->SetStemElement(sobj, name, obj);
 <secondary>SetThreadTrace</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -10927,8 +10927,8 @@ context->SetThreadTrace(flag);
 <secondary>SetTrace</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -10976,8 +10976,8 @@ all active threads for the interpreter instance.
 <secondary>String</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -11031,8 +11031,8 @@ obj = context->String(str);
 <secondary>StringData</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -11080,8 +11080,8 @@ str = context->StringData(obj);
 <secondary>StringGet</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -11142,8 +11142,8 @@ c = context->StringGet(obj, len1, str, len2);
 <secondary>StringLength</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -11191,8 +11191,8 @@ sz = context->StringLength(obj);
 <secondary>StringLower</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -11239,8 +11239,8 @@ newobj = context->StringLower(srcobj);
 <secondary>StringSize</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -11301,8 +11301,8 @@ placed in <emphasis role="italic">n</emphasis>.
 <secondary>StringSizeToObject</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -11350,8 +11350,8 @@ obj = context->StringSizeToObject(sz);
 <secondary>StringUpper</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -11398,8 +11398,8 @@ newobj = context->StringUpper(srcobj);
 <secondary>SupplierAvailable</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -11447,8 +11447,8 @@ flag = context->SupplierAvailable(sobj);
 <secondary>SupplierIndex</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -11496,8 +11496,8 @@ obj = context->SupplierIndex(sobj);
 <secondary>SupplierItem</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -11545,8 +11545,8 @@ obj = context->SupplierItem(sobj);
 <secondary>SupplierNext</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -11587,8 +11587,8 @@ context->SupplierNext(sobj);
 <secondary>Terminate</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -11632,8 +11632,8 @@ returning.
 <secondary>True</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -11676,8 +11676,8 @@ obj = context->True();
 <secondary>Uintptr</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -11738,8 +11738,8 @@ If successful, the converted value is placed in
 <secondary>UintptrToObject</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -11787,8 +11787,8 @@ obj = context->UintptrToObject(&n);
 <secondary>UnsignedInt32</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -11849,8 +11849,8 @@ placed in <emphasis role="italic">n</emphasis>.
 <secondary>UnsignedInt32ToObject</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -11898,8 +11898,8 @@ obj = context->UnsignedInt32ToObject(n);
 <secondary>UnsignedInt64</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -11960,8 +11960,8 @@ placed in <emphasis role="italic">n</emphasis>.
 <secondary>UnsignedInt64ToObject</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -12007,8 +12007,8 @@ obj = context->UnsignedInt64ToObject(n);
 <secondary>ValuesToObject</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -12056,8 +12056,8 @@ obj = context->ValuesToObject(desc);
 <secondary>ValueToObject</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -12110,8 +12110,8 @@ there are no specific conversion APIs.
 <secondary>WholeNumber</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
@@ -12172,8 +12172,8 @@ placed in <emphasis role="italic">n</emphasis>.
 <secondary>WholeNumberToObject</secondary></indexterm>
 <informaltable frame="all">
 <tgroup cols="2">
-<colspec colnum="1" colwidth="72pc" />
-<colspec colnum="2" colwidth="45pc" />
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
 <tbody>
 <row>
 <entry><emphasis role="bold">Context</emphasis></entry>
