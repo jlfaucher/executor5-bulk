@@ -2689,5 +2689,15 @@ return testResult
     self~assertSame('12345.73', '12345.73'~format( , ,3,6))
     self~assertSame('123456700000.000', '1234567e5'~format( ,3,0))
 
+-- tests for the NumberString case digitsCount = -numberExponent
+-- with unspecified digits width
+-- e. g. 0.1~format(, 1) should be 0.1, not .1
+::method test_format_bug_1415
 
+  do d = 1 to 20
+    if d > digits() then
+      numeric digits d
+    v = "0." || 1~copies(d)
+    self~assertSame(v, v~format(, d))
+  end               
 
