@@ -113,12 +113,12 @@ return testResult
   self~assertEquals(-digits, .RexxInfo~internalMinNumber)
 
 ::method test_rexxInfo_maxArraySize
-  self~assertEquals(.RexxInfo~internalMaxNumber % 10, .RexxInfo~maxArraySize) 
+  self~assertEquals("NUM", .RexxInfo~internalMaxNumber~dataType, ".RexxInfo~internalMaxNumber should return a numeric value")
 
 ::method test_rexxInfo_exponent
   self~assertEquals("NUM", .RexxInfo~maxExponent~dataType)
   self~assertEquals("NUM", .RexxInfo~minExponent~dataType)
-  self~assertTrue(.RexxInfo~minExponent < .RexxInfo~maxExponent, "minExponent should be smaller than maxExponent") 
+  self~assertTrue(.RexxInfo~minExponent < .RexxInfo~maxExponent, "minExponent should be smaller than maxExponent")
 
 ::method test_rexxInfo_maxPathLength
   self~assertEquals("NUM", .RexxInfo~maxPathLength~dataType)

@@ -1,0 +1,402 @@
+#!/usr/bin/rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2017 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
+
+  group = .TestGroup~new(fileSpec)
+  group~add(.RexxInteger.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+
+::class "RexxInteger.testGroup" subclass ooTestCase public
+
+/*
+ooRexx math (arithmetic) isn't really done on Strings, but on two classes,
+NumberString and RexxInteger.  Both classes claim, that they are Strings,
+so to the end-user it looks like math is done on Strings.
+
+RexxInteger can handle whole numbers in the range -10^9+1 to +10^9-1 on 32-bit,
+and -10^18+1 to +10^18-1 on 64-bit.  It can do efficient hardware arithmetic.
+Any other numbers are handled through NumberString, using software-emulated
+arithmetic, whih is less efficient.
+
+if numeric digits 18 is in effect,
+  123 is a RexxInteger
+  123456789012345 is a RexxInteger on 64-bit, a NumberString on 32-bit
+  0123 or 123. or 0.3333 are all NumberStrings
+
+  123 * 123 will be calculated by RexxInteger using a hardware multiplication
+  0123 * 123 will be calculated by NumberString using software multiplication
+
+If the current numeric digits setting is less than the result size,
+calculation will be done by NumberString.
+
+Below tests verify that
+- RexxInteger arithmetic results typically are RexxIntegers (not NumberStrings)
+- RexxInteger arithmetic results are identical to the equivalent NumberString result
+- certain String/NumberString arithmetic functions return RexxIntegers
+- certain BIFs return RexxIntegers
+*/
+
+::method activate class
+  expose integers integersSmall integersLarge digits
+
+  -- set NUMERIC DIGITS to 9 on 32-bit, and to 18 on 64-bit
+  digits = .RexxInfo~internalDigits
+  numeric digits digits
+
+  -- build a list of integers within the valid RexxInteger range
+  integers = .Array~new(30);
+  integers~append(0);
+  do i = 1 to 10
+    integers~~append(i)~append(-i);
+  end
+  do i over 111, 5555, 29999
+    integersSmall = integers~~append(i)~append(-i);
+  end
+  -- all above integers will, even when squared, still fit in NUMERIC DIGITS 9
+  -- we mark this as 'integersSmall'
+
+  do i over 10000000, 999999999
+    integersLarge = integers~~append(i)~append(-i);
+  end
+  if digits > 9 then
+    do i over 1000000000, 999999999999, 10000000000000000, 999999999999999999
+      integersLarge = integers~~append(i)~append(-i);
+    end
+
+::attribute integers class
+::attribute integersSmall class
+::attribute integersLarge class
+::attribute digits class
+::method integers
+  use strict arg size = (self~class~integersLarge), exclude = .nil
+  if size = .nil & exclude = .nil then
+    return self~class~integers
+  integers = self~class~integers~section(1, size)
+  if exclude \= .nil then
+    do remove over exclude
+      integers~removeItem(remove)
+    end
+  return integers
+
+::method integersSmall
+  use strict arg -- no args allowed
+  return self~class~integersSmall
+::method integersLarge
+  use strict arg -- no args allowed
+  return self~class~integersLarge
+::method digits
+  use strict arg -- no args allowed
+  return self~class~digits
+
+
+-- all integer constans should be RexxIntegers, not NumberStrings
+::method test_integer_constant
+  do integer over self~integers
+    self~assertTrue(isInteger(integer), integer "should be a RexxInteger")
+  end
+  integer = 1000000000000000000
+  self~assertFalse(isInteger(integer), integer "shouldn't be a RexxInteger")
+
+
+-- unary plus result should be a RexxInteger
+::method test_integer_unary_plus
+  numeric digits self~digits
+  do integer over self~integers
+    self~assertTrue(isInteger(+integer), "+"integer "should be a RexxInteger")
+    self~assertSame(+(integer"."), +integer, +(integer".") "should be equal to" (+integer))
+  end
+
+
+-- unary minus (negation) result should be a RexxInteger
+::method test_integer_unary_minus
+  numeric digits self~digits
+  do integer over self~integers
+    self~assertTrue(isInteger(-integer), "-"integer "should be a RexxInteger")
+    self~assertSame(-(integer"."), -integer, -(integer".") "should be equal to" (-integer))
+  end
+
+
+-- addition result should be a RexxInteger
+::method test_integer_addition
+  numeric digits self~digits
+  do first over self~integers(self~integersSmall) -- small integers only
+    do second over self~integers(self~integersSmall) -- small integers only
+      self~assertTrue(isInteger(first + second), first "+" second)
+      self~assertSame((first".") + second, first + second, first"." "+" second "should be equal to" first "+" second)
+    end
+  end
+
+
+-- subtraction result should be a RexxInteger
+::method test_integer_subtraction
+  numeric digits self~digits
+  do first over self~integers(self~integersSmall) -- small integers only
+    do second over self~integers(self~integersSmall) -- small integers only
+      self~assertTrue(isInteger(first - second), first "-" second)
+      self~assertSame((first".") - second, first - second, first"." "-" second "should be equal to" first "-" second)
+    end
+  end
+
+
+-- multiplication result should be a RexxInteger when applicable
+::method test_integer_multiplication
+  numeric digits self~digits
+  do a over self~integers(self~integersSmall) -- small integers only
+    do b over self~integers(self~integersSmall) -- small integers only
+      self~assertTrue(isInteger(a * b), a "*" b "should be a RexxInteger")
+      self~assertSame((a".") * b, a * b, a "*" b "should be equal to" (a".") "*" b)
+    end
+  end
+
+
+-- division result should be a RexxInteger when applicable
+::method test_integer_division
+  numeric digits self~digits
+  do a over self~integers
+    do b over self~integers(, 0) -- no zero, please
+      if a // b = 0 then do
+        -- when no remainder, division should return RexxInteger
+        self~assertTrue(isInteger(a / b), a "/" b "should be a RexxInteger")
+        self~assertSame((a".") / b, a / b, (a".") "/" b "should be equal to" a "/" b)
+      end
+    end
+  end
+
+
+-- integer division should return RexxInteger
+::method test_integer_integerdivide
+  numeric digits self~digits
+  do a over self~integers
+    do b over self~integers(, 0) -- no zero, please
+      self~assertTrue(isInteger(a % b), a "%" b "should be a RexxInteger")
+      self~assertSame((a".") % b, a % b, (a".") "%" b "should be equal to" a "//" b)
+    end
+  end
+
+
+-- remainder result should be a RexxInteger
+::method test_integer_remainder
+  numeric digits self~digits
+  do a over self~integers
+    do b over self~integers(, 0) -- no zero, please
+      self~assertTrue(isInteger(a // b), a "//" b "should be a RexxInteger")
+      self~assertSame((a".") // b, a // b, (a".") "//" b "should be equal to" a "//" b)
+    end
+  end
+
+
+-- power result should be a RexxInteger
+::method test_integer_power
+  -- inrease numeric digits to make a comparison like 1000000000 > 999999999 work
+  numeric digits self~digits + 1
+  max = .RexxInfo~internalMaxNumber
+  do base = -1000 to 1000
+    do power = 0 to 100 until \isInteger(integer)
+      integer = base ** power
+      number = (base".") ** power
+      self~assertSame(number, integer, base "**" power "should be" base"." "**" power)
+    end
+    if base~abs > 1 then
+      self~assertTrue(integer~abs > max, base "**" power "NumberString should be >" max)
+  end
+
+
+-- d2c results for RexxInteger and NumberString should be the same
+::method test_integer_d2c
+  numeric digits self~digits
+  -- compare d2c results
+  do integer over self~integers
+    do length = 0 to self~digits + 1
+      number = integer"."
+      if integer >= 0 then -- d2c() requires 'length' for negative arguments
+        self~assertSame(number~d2c, integer~d2c, number"~d2c should be equal to" integer"~d2c")
+      self~assertSame(number~d2c(length), integer~d2c(length), number"~d2c("length") should be equal to" integer"~d2c("length")")
+    end
+  end
+
+
+-- d2x results for RexxInteger and NumberString should be the same
+::method test_integer_d2x
+  numeric digits self~digits
+  -- d2x result for range 0..9 should be a RexxInteger
+  do i = 0 to 9
+    self~assertTrue(isInteger(i~d2x), i"~d2x should be a RexxInteger")
+    self~assertTrue(isInteger(i~d2x(1)), i"~d2x(1) should be a RexxInteger")
+  end
+
+  -- compare d2x results
+  do integer over self~integers
+    do length = 0 to self~digits + 1
+      number = integer"."
+      if integer >= 0 then -- d2x() requires 'length' for negative arguments
+        self~assertSame(number~d2x, integer~d2x, number"~d2x should be equal to" integer"~d2x")
+      self~assertSame(number~d2x(length), integer~d2x(length), number"~d2x("length") should be equal to" integer"~d2x("length")")
+    end
+  end
+
+
+-- NumberString ceil/floor/round/trunc should return a RexxInteger
+::method test_numberstring_ceil_floor_round_trunc
+  numeric digits self~digits
+  do integer over self~integers
+    number = integer"."
+    self~assertTrue(isInteger(number~trunc)    , number"~trunc should be a RexxInteger")
+    self~assertTrue(isInteger(number~trunc(0)) , number"~trunc(0) should be a RexxInteger")
+    self~assertTrue(isInteger(number~ceiling)  , number"~ceiling should be a RexxInteger")
+    self~assertTrue(isInteger(number~floor)    , number"~floor should be a RexxInteger")
+    self~assertTrue(isInteger(number~round)    , number"~round should be a RexxInteger")
+    self~assertSame(number~trunc,   integer~trunc,    number"~trunc should be" integer"~trunc")
+    self~assertSame(number~trunc,   integer~trunc(0), number"~trunc(0) should be equal to" integer"~trunc")
+    self~assertSame(number~ceiling, integer~ceiling,  number"~ceiling should be equal to" integer"~ceiling")
+    self~assertSame(number~floor,   integer~floor,    number"~floor should be equal to" integer"~floor")
+    self~assertSame(number~round,   integer~round,    number"~round should be equal to" integer"~round")
+  end
+
+
+-- NumberString integer division should return a RexxInteger
+::method test_numberstring_integerdivide
+  numeric digits self~digits
+  do integer over self~integers
+    number = integer"."
+    do divisor over self~integers(, 0) -- no zero, please
+      self~assertTrue(isInteger(number % divisor), number "%" divisor "should be a RexxInteger")
+      self~assertSame(number % divisor, integer % divisor, number "%" divisor "should be equal to" integer "%" divisor)
+    end
+  end
+
+
+-- String c2d should return a RexxInteger
+::method test_string_c2d
+  numeric digits self~digits
+  do integer over self~integers
+    if integer < 0 then do
+      char = integer~d2c(9)
+      decimal = char~c2d(9)
+      self~assertTrue(isInteger(decimal), char"~c2d(9)" "should be a RexxInteger")
+      self~assertSame(integer, decimal, char"~c2d(9)" "should be equal to" decimal)
+    end
+    else do
+      char = integer~d2c
+      decimal = char~c2d
+      self~assertTrue(isInteger(decimal), char"~c2d" "should be a RexxInteger")
+      self~assertSame(integer, decimal, char"~c2d" "should be equal to" decimal)
+    end
+  end
+
+
+-- String x2d should return a RexxInteger
+::method test_string_x2d
+  numeric digits self~digits
+  do integer over self~integers
+    if integer < 0 then do
+      hex = integer~d2x(18)
+      decimal = hex~x2d(18)
+      self~assertTrue(isInteger(decimal), hex"~x2d(18)" "should be a RexxInteger")
+      self~assertSame(integer, decimal, hex"~x2d(18)" "should be equal to" decimal)
+    end
+    else do
+      hex = integer~d2x
+      decimal = hex~x2d
+      self~assertTrue(isInteger(decimal), hex"~x2d" "should be a RexxInteger")
+      self~assertSame(integer, decimal, hex"~x2d" "should be equal to" decimal)
+    end
+  end
+
+
+-- .RexxInfo should return RexxIntegers
+::method test_integer_rexxinfo
+  numeric digits self~digits
+  self~assertTrue(isInteger(.RexxInfo~internalMaxNumber), .RexxInfo~internalMaxNumber "should be a RexxInteger")
+  self~assertTrue(isInteger(.RexxInfo~internalMinNumber), .RexxInfo~internalMinNumber "should be a RexxInteger")
+  self~assertFalse(isInteger(.RexxInfo~internalMaxNumber + 1), .RexxInfo~internalMaxNumber "+ 1 shouldn't be a RexxInteger")
+  self~assertFalse(isInteger(.RexxInfo~internalMinNumber - 1), .RexxInfo~internalMinNumber "- 1 shouldn't be a RexxInteger")
+
+
+-- DATE() BIF with options B, D, F, T should return a RexxInteger
+::method test_integer_date
+  numeric digits self~digits
+  do option over "B", "D", "F", "T"
+    result = date(option)
+    if result~length <= self~digits then
+      self~assertTrue(isInteger(result), "date('"option"') should return a RexxInteger")
+    else
+      self~assertFalse(isInteger(result), "date('"option"') shouldn't return a RexxInteger")
+  end
+
+
+-- TIME() BIF with option F, H, M, O, S, T should return a RexxInteger
+::method test_integer_time
+  numeric digits self~digits
+  do option over "F", "H", "M", "O", "S", "T"
+    result = time(option)
+    if result~length <= self~digits then
+      self~assertTrue(isInteger(result), "time('"option"') should return a RexxInteger")
+    else
+      self~assertFalse(isInteger(result), "time('"option"') shouldn't return a RexxInteger")
+  end
+
+
+
+-- returns true if the argument is a RexxInteger instance
+::routine isInteger
+  -- RexxInteger will claim to be a String in every aspect, so we are
+  -- exploiting an (intentional) bug in the RexxInteger min() method,
+  -- which immediately returns the first arg without considering whether
+  -- it is valid within the current NUMERIC DIGITS setting
+  -- NumberString's min() method will adhere to NUMERIC DIGITS, so we
+  -- can distinguish between the two classes by inspecting the result
+  -- should this bug ever get fixed, we will have to find a different
+  -- method how to detect a RexxInteger, or deactivate this test group
+  use strict arg number
+  numeric digits 18
+  if number~abs < 10 then
+    number = number * 11 + 1
+  numeric digits 1
+  return \number~min~contains("E")
+
+
+::options novalue error
