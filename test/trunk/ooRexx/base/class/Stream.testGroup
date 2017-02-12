@@ -121,6 +121,69 @@ return testResult
   self~assertSame("line 1", line)
 
 
+::method test_say_two_args
+  -- say() won't accept a 'line' argument as lineOut() does
+  self~expectSyntax(93.902) -- Error 93.902:  Too many arguments in invocation of method; 1 expected.
+  .stdout~say(1, 2)
+
+
+::method test_say_no_arg
+
+  f = 'streamClassTest.delMe'
+  obj = .stream~new(f)
+  self~streamTestingFile = obj
+  self~assertTrue(obj~isA(.Stream))
+
+  -- Write a single line, close the file, read the file, and compare.
+  ret = obj~say
+  self~assertSame(0, ret)
+
+  ret = obj~close
+  self~assertSame("READY:", ret)
+
+  -- Linein should reopen the file for us.
+  line = obj~linein
+  self~assertSame("", line)
+
+
+::method test_say_one_arg_null
+
+  f = 'streamClassTest.delMe'
+  obj = .stream~new(f)
+  self~streamTestingFile = obj
+  self~assertTrue(obj~isA(.Stream))
+
+  -- Write a single line, close the file, read the file, and compare.
+  ret = obj~say("")
+  self~assertSame(0, ret)
+
+  ret = obj~close
+  self~assertSame("READY:", ret)
+
+  -- Linein should reopen the file for us.
+  line = obj~linein
+  self~assertSame("", line)
+
+
+::method test_say_one_arg
+
+  f = 'streamClassTest.delMe'
+  obj = .stream~new(f)
+  self~streamTestingFile = obj
+  self~assertTrue(obj~isA(.Stream))
+
+  -- Write a single line, close the file, read the file, and compare.
+  ret = obj~say("say() line")
+  self~assertSame(0, ret)
+
+  ret = obj~close
+  self~assertSame("READY:", ret)
+
+  -- Linein should reopen the file for us.
+  line = obj~linein
+  self~assertSame("say() line", line)
+
+
 ::method test_close_twice
 
   f = "streamCloseTest.delMe"
@@ -1960,7 +2023,7 @@ notready:
       devices = .Array~new(0)
   end
   do device over devices
-    -- devices and/or special files should return as-is, without any leading "\\.\" 
+    -- devices and/or special files should return as-is, without any leading "\\.\"
     -- (see https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247%28v=vs.85%29.aspx#win32_device_namespaces)
     self~assertSame(device, .Stream~new(device)~qualify, ".Stream~new('"device"')~qualify should be '"device"'")
   end
