@@ -388,4 +388,27 @@ return testResult
     self~assertEquals(0, X2D('',1))
     self~assertEquals(0, X2D('',17))
 
+-- tests for [bugs:#1424] X2D() returns incorrect result
+::method test_x2d_bug1424
+  self~assertSame(     0, x2d(8001, 0))
+  self~assertSame(     1, x2d(8001, 1))
+  self~assertSame(     1, x2d(8001, 2))
+  self~assertSame(     1, x2d(8001, 3))
+  self~assertSame(-32767, x2d(8001, 4))
+  self~assertSame( 32769, x2d(8001, 5))
+  self~assertSame( 32769, x2d(8001, 6))
+  self~assertSame( 32769, x2d(8001, 7))
+  self~assertSame( 32769, x2d(8001, 8))
+  self~assertSame( 32769, x2d(8001, 9))
+
+  self~assertSame(    0, x2d("ffff", 0))
+  self~assertSame(   -1, x2d("ffff", 1))
+  self~assertSame(   -1, x2d("ffff", 2))
+  self~assertSame(   -1, x2d("ffff", 3))
+  self~assertSame(   -1, x2d("ffff", 4))
+  self~assertSame(65535, x2d("ffff", 5))
+  self~assertSame(65535, x2d("ffff", 6))
+  self~assertSame(65535, x2d("ffff", 7))
+  self~assertSame(65535, x2d("ffff", 8))
+  self~assertSame(65535, x2d("ffff", 9))
 
