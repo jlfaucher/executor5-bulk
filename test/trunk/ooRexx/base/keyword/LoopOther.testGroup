@@ -235,7 +235,7 @@ return testResult
   self~assertSyntaxError(27.1, ("loop 3 while .true until .true", "end"))
 
 ::method test_count_until_while
-  self~assertSyntaxError(27.1, ("loop forever until .true while .true", "end"))
+  self~assertSyntaxError(27.1, ("loop 3 until .true while .true", "end"))
 
 ::method test_for_negative
   self~expectSyntax(26.3)
