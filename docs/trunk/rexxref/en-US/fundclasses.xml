@@ -765,7 +765,7 @@ say method_source[1]              /* Shows the method source code */
 for all the instance methods of the receiving class and its superclasses,
 if no argument is specified.
 In this case, the supplier's indexes may contain duplicate entries,
-if classes override methods in superclasses. 
+if classes override methods in superclasses.
 </para>
 <para>If <emphasis role="italic">class_object</emphasis> is &nil;,
 <methodname>methods</methodname> returns a Supplier object
@@ -2907,7 +2907,7 @@ Otherwise it returns &nil;.</para>
 for all the object methods of the receiving object and its superclasses,
 if no argument is specified.
 In this case, the supplier's indexes may contain duplicate entries,
-if classes override methods in superclasses. 
+if classes override methods in superclasses.
 </para>
 <para>If a <emphasis role="italic">class_object</emphasis> is specified,
 <methodname>instanceMethods</methodname> returns a Supplier object
@@ -2938,7 +2938,7 @@ have &nil; for their associated method.</para></note>
 -- list all class methods of .String only
 say .String~instanceMethods(.String)~allIndexes   --> CR,NEW,NL,NULL,TAB
 
--- count all class methods of .String and its superclasses 
+-- count all class methods of .String and its superclasses
 -- 4 .String class methods, 32 .Object class methods, 34 .Class class methods
 say .String~instanceMethods~allIndexes~items      --> 70
 
@@ -3348,7 +3348,7 @@ concurrently with the sender's continued processing.</para>
 an array. If <emphasis role="italic">messagename</emphasis> is an array object,
 its first item is the name of the message and its
 second item is a class object to use as the starting point for the method
-search. 
+search.
 </para>
 <para>Any
 <emphasis role="italic">argument</emphasis>s are passed to the receiver as
@@ -3473,6 +3473,7 @@ therefore, no <methodname>makeString</methodname> method.</para>
 <para>Of the classes that Rexx provides, only the
 <xref linkend="clsArray" xrefstyle="select:title"/>, the
 <xref linkend="clsCircularQueue" xrefstyle="select:title"/>, the
+<xref linkend="clsMutableBuffer" xrefstyle="select:title"/>, the
 <xref linkend="clsStackFrame" xrefstyle="select:title"/>, and the
 <xref linkend="clsString" xrefstyle="select:title"/> have a
 <methodname>makeString</methodname> method.

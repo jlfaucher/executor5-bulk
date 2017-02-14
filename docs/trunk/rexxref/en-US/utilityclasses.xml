@@ -1715,9 +1715,9 @@ a string in ISO timezone-qualified date format
 
 <para>Initializes a new <classname>DateTime</classname> instance.
 If no arguments are specified, the instance is set to the current date and time.
-If the single <emphasis role="italic">fullDate</emphasis> argument is used,
+If the single <emphasis role="italic">fulldate</emphasis> argument is used,
 the instance is initialized to the date and time calculated by adding
-<emphasis role="italic">fullDate</emphasis> microseconds to 0001-01-01T00:00:00.000000.
+<emphasis role="italic">fulldate</emphasis> microseconds to 0001-01-01T00:00:00.000000.
 If the
 <emphasis role="italic">year</emphasis>,
 <emphasis role="italic">month</emphasis>, <emphasis role="italic">day</emphasis>,
@@ -2588,7 +2588,7 @@ of seconds are ignored (times are never rounded).
 </mediaobject>
 
 <para>Returns the timestamp time formatted as a string in the format
-<literal>hh:mm:ss.uuuuuu</literal> 
+<literal>hh:mm:ss.uuuuuu</literal>
 (where <literal>uuuuuu</literal> are microseconds).
 </para>
 </section>
@@ -4008,7 +4008,7 @@ longer string objects because it creates fewer intermediate objects.
 </para>
 
 <!-- modified: combined delete()/delStr() -->
-<!-- $GENERATED-20150704-START rexxrefClassTable(MutableBuffer) -->
+<!-- $GENERATED-20170214-START rexxrefClassTable(MutableBuffer) -->
 <table id="ooRexxMutableBufferClass" frame="all" pgwide="1">
 <title>MutableBuffer Class</title>
 <tgroup cols="1">
@@ -4052,6 +4052,7 @@ longer string objects because it creates fewer intermediate objects.
    <member><xref linkend="mthMutableBufferLength" xrefstyle="select:title"/></member>
    <member><xref linkend="mthMutableBufferLower" xrefstyle="select:title"/></member>
    <member><xref linkend="mthMutableBufferMakeArray" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferMakeString" xrefstyle="select:title"/></member>
    <member><xref linkend="mthMutableBufferMatch" xrefstyle="select:title"/></member>
    <member><xref linkend="mthMutableBufferMatchChar" xrefstyle="select:title"/></member>
    <member><xref linkend="mthMutableBufferOverlay" xrefstyle="select:title"/></member>
@@ -4065,7 +4066,7 @@ longer string objects because it creates fewer intermediate objects.
    <member><xref linkend="mthMutableBufferSubChar" xrefstyle="select:title"/></member>
    <member><xref linkend="mthMutableBufferSubstr" xrefstyle="select:title"/></member>
    <member><xref linkend="mthMutableBufferSubWord" xrefstyle="select:title"/></member>
-   <member><xref linkend="mthMutableBufferSubwords" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMutableBufferSubWords" xrefstyle="select:title"/></member>
    <member><xref linkend="mthMutableBufferTranslate" xrefstyle="select:title"/></member>
    <member><xref linkend="mthMutableBufferUpper" xrefstyle="select:title"/></member>
    <member><xref linkend="mthMutableBufferVerify" xrefstyle="select:title"/></member>
@@ -4079,7 +4080,7 @@ longer string objects because it creates fewer intermediate objects.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20150704-END rexxrefClassTable(MutableBuffer) -->
+<!-- $GENERATED-20170214-END rexxrefClassTable(MutableBuffer) -->
 
 <section id="mthMutableBufferNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
@@ -4934,6 +4935,25 @@ If <emphasis role="italic">separator</emphasis> isn't specified, any
 </para>
 </section>
 
+
+<!-- Class MutableBuffer - method makeString ======================== -->
+<section id="mthMutableBufferMakeString" revisionflag="added"><title>*NEW* makeString
+<indexterm><primary>makeString method</primary><secondary>of MutableBuffer class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>makeString method</secondary><tertiary>of MutableBuffer class</tertiary></indexterm>
+</title>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/string_makestring.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns the content of the buffer as the string representation of
+the reveiving buffer.
+</para>
+<para>See also method <xref linkend="mthMutableBufferString" xrefstyle="select:title"/>.
+</para>
+</section>
+
+
 <section id="mthMutableBufferMatch"><title>match</title>
 <indexterm><primary>match method</primary>
 <secondary>of MutableBuffer class</secondary></indexterm>
@@ -5200,6 +5220,8 @@ require new string objects be extracted from the target buffer.
 </mediaobject>
 
 <para>Retrieves the content of the buffer as a string.</para>
+<para>See also method <xref linkend="mthMutableBufferMakeString" xrefstyle="select:title"/>.
+</para>
 </section>
 
 <section id="mthMutableBufferSubChar"><title>subChar</title>
@@ -5237,10 +5259,10 @@ then a zero-length string is returned.</para>
 <para>Returns a substring from the buffer content that begins at the
 <emphasis>n</emphasis>'th character and is of length
 <emphasis>length</emphasis>, padded with <emphasis>pad</emphasis> if
-necessary. The <emphasis>n</emphasis> must be a positive integer. If
-<emphasis>n</emphasis> is greater
-than receiving_string~length, only <emphasis>pad</emphasis> characters
-are returned. If you omit <emphasis>length</emphasis>, the remaining
+necessary. The <emphasis>n</emphasis> must be a positive integer.
+If <emphasis>n</emphasis> is greater than the length of the receiving
+buffer, only <emphasis>pad</emphasis> characters are returned.
+If you omit <emphasis>length</emphasis>, the remaining
 buffer content is returned.
 The default <emphasis>pad</emphasis> character is a blank.</para>
 </section>
@@ -5272,7 +5294,7 @@ characters between the selected words.
 </para>
 </section>
 
-<section id="mthMutableBufferSubwords"><title>subWords</title>
+<section id="mthMutableBufferSubWords"><title>subWords</title>
 <indexterm><primary>subWords method</primary>
 <secondary>of MutableBuffer class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -7976,8 +7998,8 @@ StackFrame instances cannot be directly created by the user.
 
 <para>Returns the executable object for the StackFrame context.
 The executable will be either a
-<xref linkend="clsRoutine" xrefstyle="template:Routine object"/> or a
-<xref linkend="clsMethod" xrefstyle="template:Methodobject"/>,
+<xref linkend="clsRoutine" xrefstyle="template:Routine"/> object or a
+<xref linkend="clsMethod" xrefstyle="template:Method"/> object,
 depending on the type of the StackFrame element.
 </para>
 </section>
@@ -7995,8 +8017,8 @@ depending on the type of the StackFrame element.
 </imageobject>
 </mediaobject>
 
-<para>Returns the current line number of the StackFrame context.  If the
-frame instance is not Rexx code (e.g. compiled native code),
+<para>Returns the current line number of the StackFrame context.
+If the frame instance is not Rexx code (e. g. compiled native code),
 &nil; is returned.
 </para>
 </section>
@@ -8358,14 +8380,14 @@ would return &false;, the supplier raises an error.
 <indexterm><primary>class</primary>
 <secondary>Supplier class</secondary></indexterm>
 
-<para>A <classname>Supplier</classname> object is an iterator that allows the 
+<para>A <classname>Supplier</classname> object is an iterator that allows the
 enumeration of an <emphasis role="italic">items</emphasis> Collection together with
-an <emphasis role="italic">indexes</emphasis> Collection. 
+an <emphasis role="italic">indexes</emphasis> Collection.
 All objects inheriting from <xref linkend="clsCollection" xrefstyle="select:title"/>
 provide a <xref linkend="mthCollectionSupplier" xrefstyle="select:title"/> method,
 that returns a snapshot of the Collection as a Supplier object, which allows iteration
 using the <xref linkend="reploopSupplier" xrefstyle="template:DO/LOOP WITH"/>
-instruction. 
+instruction.
 The iteration results are not affected by later changes to the source Collection object.
 </para>
 
@@ -9142,9 +9164,9 @@ The TimeSpan will contain an interval equal to the time of day represented by th
 
 <para>Initializes a new TimeSpan instance.
 If the single
-<emphasis role="italic">fullDate</emphasis> argument is used, the TimeSpan
+<emphasis role="italic">fulldate</emphasis> argument is used, the TimeSpan
 argument is initialized to the time span
-<emphasis role="italic">fullDate</emphasis> microseconds.
+<emphasis role="italic">fulldate</emphasis> microseconds.
 Otherwise, the TimeSpan instance is initialized to either the <emphasis role="italic">hours</emphasis>,
 <emphasis role="italic">minutes</emphasis>, and <emphasis role="italic">seconds</emphasis> or the
 <emphasis role="italic">days</emphasis>, <emphasis role="italic">hours</emphasis>,
