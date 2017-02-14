@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Release Notes XML File
     #
-    # Copyright (c) 2005-2016, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2017, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -73,7 +73,7 @@
 <para>
   On Windows, the ooRexx development team is committed to supporting all active versions of Windows. That is, versions of
   Windows that Microsoft has not declared end of life. For ooRexx version 5.0.0, the officially supported version of Window
-  are Windows XP through Windows 8.1. The team will not <emphasis role="italic">purposively</emphasis> make changes to
+  are Windows XP through Windows 10. The team will not <emphasis role="italic">purposively</emphasis> make changes to
   prevent ooRexx from running on versions of Windows that have reached end of life. However, the team is more interested in
   supporting newer versions of Windows than they are in supporting out of date operating systems. Versions of Windows that
   are no longer supported by Microsoft, are officially not supported by ooRexx.
@@ -82,8 +82,6 @@
   The following lists the versions of Windows that ooRexx 5.0.0 has been consistently tested on by the development team:
 </para>
 <itemizedlist>
-<listitem><para>Windows XP</para></listitem>
-<listitem><para>Windows Vista</para></listitem>
 <listitem><para>Windows 7</para></listitem>
 </itemizedlist>
 <para>
@@ -91,8 +89,8 @@
   works well on:
 </para>
 <itemizedlist>
-<listitem><para>Windows 2000</para></listitem>
-<listitem><para>Windows 2003</para></listitem>
+<listitem><para>Windows XP</para></listitem>
+<listitem><para>Windows Vista</para></listitem>
 </itemizedlist>
 <para>
   The following lists the version of Windows that the development team is committed to supporting. However, ooRexx 5.0.0 has
@@ -102,6 +100,7 @@
 <itemizedlist>
 <listitem><para>Windows 8</para></listitem>
 <listitem><para>Windows 8.1</para></listitem>
+<listitem><para>Windows 10</para></listitem>
 </itemizedlist>
 </section>
 
@@ -284,7 +283,7 @@ ooRexx-5.0.0.windows.x86_64.exe /S /D=C:\Program Files\Interpreters\ooRexx
   Interpreter error messages that begin with "Rexx:" indicate that another Rexx interpreter
   was called instead of ooRexx. You can verify which Rexx interpreter is running either by the form of
   the error messages, by running <computeroutput>rexxtry.rex</computeroutput> and executing SAY VERSION,
-  or by invoking <computeroutput>rexx /V</computeroutput>, which then should display information about
+  or by invoking <computeroutput>rexx -v</computeroutput>, which then should display information about
   the Rexx interpreter that is invoked. If no information is displayed, it is not ooRexx. If you don't
   want the other Rexx interpreter to be invoked, you should remove it from the PATH, delete it, or rename
   <computeroutput>rexx.exe</computeroutput> in the installation directory to
