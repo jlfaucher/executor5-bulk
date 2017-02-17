@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2016 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2016-2017 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -54,7 +54,7 @@ return testResult
 ::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
 
--- tests for [bugs:#1404] Some method args don't honor REQUEST("STRING") 
+-- tests for [bugs:#1404] Some method args don't honor REQUEST("STRING")
 ::class "MethodArgs.testGroup" subclass ooTestCase public
 
 -- set up a Table of instances of all Rexx built-in - classes
@@ -207,7 +207,7 @@ return testResult
     if \s~exists then
       s = .stdout
   end
-  if \s~isA(.Stream) then              -- .stdout already is a Stream 
+  if \s~isA(.Stream) then              -- .stdout already is a Stream
     s = .Stream~new(s)
   self~checkRequestString(s, "say")
   s~close
@@ -215,13 +215,13 @@ return testResult
 ::method test_request_string_mutablebuffer
 
   self~checkRequestString(.MutableBuffer, "new")
-  buffer = .MutableBuffer~new 
+  buffer = .MutableBuffer~new
   self~checkRequestString(buffer, "append")
 
 ::method test_request_string_file
 
   self~checkRequestString(.File, "new")
-  buffer = .MutableBuffer~new 
+  buffer = .MutableBuffer~new
   self~checkRequestString(buffer, "append")
 
 
