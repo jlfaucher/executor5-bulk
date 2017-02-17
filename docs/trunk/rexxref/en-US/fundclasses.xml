@@ -2082,7 +2082,7 @@ to inherit class and routine lookup scope from another source.  If specified,
 <emphasis role="italic">context</emphasis> can be a Method object, a Routine
 object, a Package object, or the string "PROGRAMSCOPE".  PROGRAMSCOPE is the
 default, and specifies that the newly created method will inherit the class and
-routine search scope from the caller of new method.
+routine search scope from the caller of the <methodname>new</methodname> method.
 </para>
 
 </section>
@@ -2105,6 +2105,15 @@ is an executable representation of the code contained in the file
 <emphasis role="italic">filename</emphasis>.
 Raises an error if the file <emphasis role="italic">filename</emphasis> cannot be read.
 The <emphasis role="italic">filename</emphasis> is a string.</para>
+
+<para>The <emphasis role="italic">context</emphasis> allows the created method
+to inherit class and routine lookup scope from another source.  If specified,
+<emphasis role="italic">context</emphasis> can be a Method object, a Routine
+object, a Package object, or the string "PROGRAMSCOPE".  PROGRAMSCOPE is the
+default, and specifies that the newly created method will inherit the class and
+routine search scope from the caller of the <methodname>newFile</methodname> method.
+</para>
+
 </section>
 
 <section id="mthMethodLoadExternalMethod"><title>loadExternalMethod (Class Method)</title>
@@ -4498,8 +4507,8 @@ It is a subclass of the
 </imageobject>
 </mediaobject>
 
-<para>Returns a new instance of the routine class, which is an executable
-representation of the code contained in the
+<para>Returns a new instance of the <classname>Routine</classname> class,
+which is an executable representation of the code contained in the
 <emphasis role="italic">source</emphasis>. The
 <emphasis role="italic">name</emphasis> is a string.
 The <emphasis role="italic">source</emphasis> can be a single string or an
@@ -4510,7 +4519,7 @@ to inherit class and routine lookup scope from another source.  If specified,
 <emphasis role="italic">context</emphasis> can be a Method object, a Routine
 object, a Package object, or the string "PROGRAMSCOPE".  PROGRAMSCOPE is the
 default, and specifies that the newly created routine will inherit the class and
-routine search scope from the caller of new method.
+routine search scope from the caller of the <methodname>new</methodname> method.
 </para>
 </section>
 
@@ -4527,9 +4536,17 @@ routine search scope from the caller of new method.
 </imageobject>
 </mediaobject>
 
-<para>Returns a new instance of the routine class, which is an executable
-representation of the code contained in the file filename. The filename is a
-string.
+<para>Returns a new instance of the <classname>Routine</classname> class,
+which is an executable representation of the code contained in the file
+<emphasis role="italic">filename</emphasis>.
+The <emphasis role="italic">filename</emphasis> is a string.
+</para>
+<para>The <emphasis role="italic">context</emphasis> allows the created routine
+to inherit class and routine lookup scope from another source.  If specified,
+<emphasis role="italic">context</emphasis> can be a Method object, a Routine
+object, a Package object, or the string "PROGRAMSCOPE".  PROGRAMSCOPE is the
+default, and specifies that the newly created routine will inherit the class and
+routine search scope from the caller of the <methodname>newFile</methodname> method.
 </para>
 </section>
 
