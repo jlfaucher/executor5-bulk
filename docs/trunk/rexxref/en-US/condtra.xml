@@ -267,7 +267,7 @@ instruction, a PROCEDURE instruction, or a DROP instruction</para></listitem>
 variables except tails in compound variables.
 </para></note>
 <example id="ex.signal-novalue">
-<title>NOVALUE no raised for stems</title>
+<title>NOVALUE not raised for stems</title>
 <programlisting>
 /* The following does not raise NOVALUE. */
 signal on novalue
@@ -663,8 +663,10 @@ let you inspect the values of the variables used at the line in error.</para>
 </section>
 
 <section id="conobj"><title>Condition Object</title>
-<para>A condition object is a directory returned by the
-Object option of the CONDITION built-in function. This directory contains
+<para>A condition object is a <classname>Directory</classname> returned by the
+<option>Object</option> option of the
+<xref linkend="bifCondition" xrefstyle="select:title"/> built-in function.
+This directory contains
 all information currently available on a trapped condition. The information
 varies with the trapped condition. &nil; is returned for any entry
 not available to the condition. The following entries can be found in a condition

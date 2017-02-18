@@ -1548,7 +1548,7 @@ COMPARE("ab-- ","ab","-")    ->    5
 </section>
 
 
-<section id="bifCondition"><title>CONDITION</title>
+<section id="bifCondition" revisionflag="changed"><title>&changed50;CONDITION</title>
 <para>
 <indexterm><primary>CONDITION function</primary>
 <secondary>description</secondary></indexterm>
@@ -1617,10 +1617,18 @@ condition has been trapped, it returns a null string.
 </para></listitem></varlistentry>
 <varlistentry><term><option>Object</option></term>
 <listitem><para>returns an object that contains all the information about the
-current trapped condition. See
-<xref linkend="condtra" /> for more
-information. If no condition has been trapped, it returns &nil;.
+current trapped condition.
+See <xref linkend="conobj" /> for more information.
+If no condition has been trapped, it returns &nil;.
 </para></listitem></varlistentry>
+
+<varlistentry revisionflag="added"><term><option>Reset</option></term>
+<listitem><para>resets any currently trapped condition and returns the null string.
+After a reset, all CONDITION options will return their default values,
+as if no condition has been trapped.
+</para></listitem>
+</varlistentry>
+
 <varlistentry><term><option>Status</option></term>
 <listitem><para>returns the status of the current trapped condition.  This can
 change during processing, and is one of the following: </para>
