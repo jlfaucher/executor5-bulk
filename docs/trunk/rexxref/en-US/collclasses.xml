@@ -5982,7 +5982,7 @@ Adding or removing an item changes the association of an index to its queue item
 You can add items at either the tail or the head of the queue.
 </para>
 
-<!-- $GENERATED-20151006-START rexxrefClassTable(Queue) -->
+<!-- $GENERATED-20170311-START rexxrefClassTable(Queue) -->
 <table id="ooRexxQueueClass" frame="all" pgwide="1">
 <title>Queue Class</title>
 <tgroup cols="1">
@@ -6024,6 +6024,9 @@ You can add items at either the tail or the head of the queue.
    <member><xref linkend="mthQueueHasIndex" xrefstyle="select:title"/></member>
    <member><xref linkend="mthQueueHasItem" xrefstyle="select:title"/></member>
    <member><xref linkend="mthQueueIndex" xrefstyle="select:title"/></member>
+   <!-- see new()
+   <member><xref linkend="mthQueueInit" xrefstyle="select:title"/></member>
+   -->
    <member><xref linkend="mthQueueInsert" xrefstyle="select:title"/></member>
    <member><xref linkend="mthQueueIsEmpty" xrefstyle="select:title"/></member>
    <member><xref linkend="mthQueueItems" xrefstyle="select:title"/></member>
@@ -6040,13 +6043,14 @@ You can add items at either the tail or the head of the queue.
    <member><xref linkend="mthQueueRemove" xrefstyle="select:title"/></member>
    <member><xref linkend="mthQueueRemoveItem" xrefstyle="select:title"/></member>
    <member><xref linkend="mthQueueSection" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthQueueSize" xrefstyle="select:title"/></member>
    <member><xref linkend="mthQueueSupplier" xrefstyle="select:title"/></member>
   </simplelist>
  </entry></row>
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20151006-END rexxrefClassTable(Queue) -->
+<!-- $GENERATED-20170311-END rexxrefClassTable(Queue) -->
 
 <section id="mthQueueNew" revisionflag="changed"><title>&changed50;new (Class Method)</title>
 <indexterm><primary>new method</primary>
@@ -6432,7 +6436,11 @@ is empty.  Returns
 </imageobject>
 </mediaobject>
 
-<para>Returns the number of items in the collection.</para>
+<para>Returns the number of items in the queue.
+</para>
+<para>See also method <xref linkend="mthQueueSize" xrefstyle="select:title"/>,
+which is a synonym for <methodname>items</methodname>.
+</para>
 </section>
 
 <section id="mthQueueLast"><title>last</title>
@@ -6465,16 +6473,8 @@ queue is empty.</para>
 </imageobject>
 </mediaobject>
 
-<para>Returns the last item in the array or &nil; if the array is
+<para>Returns the last item in the queue or &nil; if the queue is
 empty.
-<example id="ex.Queue-lastItem">
-<title>Queue class &mdash; lastItem method</title>
-<programlisting>
-musketeers=.array~of("Porthos","Athos","Aramis"") /* Creates array MUSKETEERS      */
-item=musketeers~lastItem                          /* Gives last item in array      */
-                                                  /* (Assigns "Aramis" to item)    */
-</programlisting>
-</example>
 </para>
 </section>
 
@@ -6684,6 +6684,25 @@ is less than <emphasis role="italic">items</emphasis>). If you do not specify
 queue contains all subsequent items from the receiver. The receiver queue
 remains unchanged.</para>
 </section>
+
+
+<!-- Class Queue - method size ======================== -->
+<section id="mthQueueSize" revisionflag="added"><title>*NEW* size
+<indexterm><primary>size method</primary><secondary>of Queue class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>size method</secondary><tertiary>of Queue class</tertiary></indexterm>
+</title>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/queue_size.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns the size, which is the number of items in the queue.
+</para>
+<para>See also method <xref linkend="mthQueueItems" xrefstyle="select:title"/>
+for which this method is a synonym.
+</para>
+</section>
+
 
 <section id="mthQueueSupplier"><title>supplier</title>
 <indexterm><primary>supplier method</primary>
