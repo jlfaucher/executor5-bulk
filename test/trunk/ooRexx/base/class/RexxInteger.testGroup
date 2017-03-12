@@ -393,8 +393,10 @@ Below tests verify that
   -- method how to detect a RexxInteger, or deactivate this test group
   use strict arg number
   numeric digits 18
+  if \number~dataType("W")
+    then return 0
   if number~abs < 10 then
-    number = number * 11 + 1
+    number = number + 20
   numeric digits 1
   return \number~min~contains("E")
 
