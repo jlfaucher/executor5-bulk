@@ -1207,20 +1207,23 @@ its first item is the name of the message and its
 second item is a class object to use as the starting point for the method
 search.
 </para>
-<para>If you specify neither Individual nor Array, the message sent has no
-arguments. </para>
-<para>If you specify the Individual or Array option, any remaining arguments
-are arguments for the message. (You need to specify only the first letter;
-all characters following the first are ignored.) </para>
+<para>If you specify neither <option>Individual</option> nor <option>Array</option>,
+the message sent has no arguments.
+</para>
+<para>If you specify the <option>Individual</option> or <option>Array</option> option,
+any remaining arguments are arguments for the message.
+(You need to specify only the first letter;
+all characters following the first are ignored.)
+</para>
 <variablelist>
-<varlistentry><term>Individual</term>
+<varlistentry><term><option>Individual</option></term>
 <listitem><para>If you specify this option, specifying
 <emphasis role="italic">argument</emphasis> is optional.
 Any <emphasis role="italic">argument</emphasis>s
 are passed as message arguments
 to <emphasis role="italic">target</emphasis> in the order you specify them.
 </para></listitem></varlistentry>
-<varlistentry><term>Array</term>
+<varlistentry><term><option>Array</option></term>
 <listitem><para>If you specify this option, you must specify
 <emphasis role="italic">arguments</emphasis>, which
 is an Array object.
@@ -2953,10 +2956,10 @@ say .String~instanceMethods~allIndexes~items      --> 70
 
 
 -- count all instance methods of .String only
-say ''~instancemethods(.String)~allindexes~items  --> 116
+say ''~instanceMethods(.String)~allIndexes~items  --> 116
 
 -- count all instance methods of .String and its superclasses
-say ''~instancemethods~allindexes~items           --> 148
+say ''~instanceMethods~allIndexes~items           --> 148
 </programlisting>
 </example>
 </section>
@@ -3139,18 +3142,20 @@ see <xref linkend="reqstr" />.</para>
 of the receiver object, as
 if the receiver object had defined the method by using
 <methodname>setMethod</methodname>.</para>
-<para>If you specify neither Individual nor Array, the method runs without
-arguments.</para>
-<para>If you specify the Individual or Array option, any remaining
-<emphasis role="italic">argument</emphasis>s are arguments for the method.
+<para>If you specify neither <option>Individual</option> nor <option>Array</option>,
+the method runs without arguments.
+</para>
+<para>If you specify the <option>Individual</option> or <option>Array</option> option,
+any remaining <emphasis role="italic">argument</emphasis>s are arguments for the method.
 (You need to specify only the first letter;
-all characters following the first character are ignored.) </para>
+all characters following the first character are ignored.)
+</para>
 <variablelist>
-<varlistentry><term>Individual</term>
+<varlistentry><term><option>Individual</option></term>
 <listitem><para>Passes any remaining <emphasis role="italic">arguments</emphasis>
 to the method as arguments in the order you specify them.
 </para></listitem></varlistentry>
-<varlistentry><term>Array</term>
+<varlistentry><term><option>Array</option></term>
 <listitem><para>Requires <emphasis role="italic">arguments</emphasis>,
 which is an Array object.
 The member items of the array are passed to the method
@@ -3162,12 +3167,15 @@ corresponding arguments are omitted when passing the arguments.
 
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
-<listitem><para>The RUN method is a
-private method.
-See <xref linkend="pubpri" />
-for information about private method restrictions.
+<listitem><para>The <methodname>run</methodname> method is a private method (see
+<xref linkend="pubpri" />) with the additional restriction that it can only be called
+<itemizedlist spacing="compact">
+  <listitem><para>from an instance method of the receiving object itself, or</para></listitem>
+  <listitem><para>from a class method in the receiving object's inheritance chain.</para></listitem>
+</itemizedlist>
 </para></listitem>
-<listitem><para>The RUN method is a protected method.</para></listitem>
+<listitem><para>The <methodname>run</methodname> method is a protected method.
+</para></listitem>
 </orderedlist>
 </section>
 
@@ -3315,20 +3323,22 @@ method (if any).</para>
 </para>
 
 <para>The third parameter is optional, and describes if the method that is attached to an
-object should have object or float scope. "FLOAT" scope, which is the default, means that
-it shares the same scope with methods that were defined outside of
-a class. "OBJECT" scope means it shares the scope with other,
-potentially statically defined, methods of the object it is
-attached to.</para>
+object should have <literal>OBJECT</literal> or <literal>FLOAT</literal> scope.
+<literal>FLOAT</literal> scope, which is the default, means that it shares
+the same scope with methods that were defined outside of a class.
+<literal>OBJECT</literal> scope means it shares the scope with other,
+potentially statically defined, methods of the object it is attached to.
+</para>
 
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
-<listitem><para>The <methodname>setMethod</methodname>
-method is a private method.
-See the <xref linkend="mthMethodSetPrivate" xrefstyle="select:title"/> method
-for details.
-</para>
-</listitem>
+<listitem><para>The <methodname>setMethod</methodname> method is a private method (see
+<xref linkend="pubpri" />) with the additional restriction that it can only be called
+<itemizedlist spacing="compact">
+  <listitem><para>from an instance method of the receiving object itself, or</para></listitem>
+  <listitem><para>from a class method in the receiving object's inheritance chain.</para></listitem>
+</itemizedlist>
+</para></listitem>
 <listitem><para>The <methodname>setMethod</methodname>
 method is a protected method.</para></listitem>
 </orderedlist>
@@ -3515,12 +3525,13 @@ no action is taken. </para>
 
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
-<listitem><para>The <methodname>unsetMethod</methodname>
-method is a private method.
-See the <xref linkend="mthMethodSetPrivate" xrefstyle="select:title"/> method
-for details.
-</para>
-</listitem>
+<listitem><para>The <methodname>unsetMethod</methodname> method is a private method (see
+<xref linkend="pubpri" />) with the additional restriction that it can only be called
+<itemizedlist spacing="compact">
+  <listitem><para>from an instance method of the receiving object itself, or</para></listitem>
+  <listitem><para>from a class method in the receiving object's inheritance chain.</para></listitem>
+</itemizedlist>
+</para></listitem>
 <listitem><para>The <methodname>unsetMethod</methodname>
 method is a protected method.</para></listitem>
 </orderedlist>
