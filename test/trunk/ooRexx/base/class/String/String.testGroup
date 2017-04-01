@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2005-2007 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2017 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -65,4 +65,18 @@ return testResult
    self~assertSame('0d'x, .String~cr)
    self~assertSame('0a'x, .String~nl)
    self~assertSame('09'x, .String~tab)
+
+   self~assertSame(xrange("alnum"), .String~alnum)
+   self~assertSame(xrange("alpha"), .String~alpha)
+   self~assertSame(xrange("blank"), .String~blank)
+   self~assertSame(xrange("cntrl"), .String~cntrl)
+   self~assertSame(xrange("digit"), .String~digit)
+   self~assertSame(xrange("graph"), .String~graph)
+   self~assertSame(xrange("lower"), .String~lower)
+   self~assertSame(xrange("print"), .String~print)
+   self~assertSame(xrange("punct"), .String~punct)
+   self~assertSame(xrange("space"), .String~space)
+   self~assertSame(xrange("upper"), .String~upper)
+   self~assertSame(xrange("xdigit"), .String~xdigit)
+
 

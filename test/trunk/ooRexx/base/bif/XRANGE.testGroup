@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2007-2017 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -102,7 +102,7 @@ return testResult
     self~assertSame(substr(.xs,53)||left(.xs,52), xRange(4,3))
 
 ::method 'test012'
-    self~expectSyntax(40.23)
+    self~expectSyntax(40.28)
     xre = xrange('c1')
 
 ::method 'test013'
@@ -110,7 +110,7 @@ return testResult
     xre = xrange(,'c1')
 
 ::method 'test014'
-    self~expectSyntax(40.23)
+    self~expectSyntax(40.28)
     xre = xrange('c1','c1')
 
 ::method 'test015'
@@ -214,4 +214,191 @@ myxrange:
     self~assertSame(chars, XRANGE("00"x, "ff"x))
 
 
+-- tests for RFE 639 xrange() to support more than one range
 
+::method test_xrange_invalid_arg_one_nil
+    self~expectSyntax(40.28) -- XRANGE argument 1 must be a character class name or a single character
+    call xrange .nil
+
+::method test_xrange_invalid_arg_one_null
+    self~expectSyntax(40.28) -- XRANGE argument 1 must be a character class name or a single character
+    call xrange ""
+
+::method test_xrange_invalid_arg_one_class_short
+    self~expectSyntax(40.28) -- XRANGE argument 1 must be a character class name or a single character
+    call xrange "alph"
+
+::method test_xrange_invalid_arg_one_class_long
+    self~expectSyntax(40.28) -- XRANGE argument 1 must be a character class name or a single character
+    call xrange "digits"
+
+::method test_xrange_invalid_arg_one_class_wrong
+    self~expectSyntax(40.28) -- XRANGE argument 1 must be a character class name or a single character
+    call xrange "wrong"
+
+::method test_xrange_invalid_arg_two_nil
+    self~expectSyntax(40.23) -- XRANGE argument 2 must be a single character
+    call xrange 1, .nil
+
+::method test_xrange_invalid_arg_two_null
+    self~expectSyntax(40.23) -- XRANGE argument 2 must be a single character
+    call xrange 1, ""
+
+::method test_xrange_invalid_arg_two_class
+    self~expectSyntax(40.23) -- XRANGE argument 2 must be a single character
+    call xrange 1, "upper"
+
+::method test_xrange_invalid_arg_one_one_nil
+    self~expectSyntax(40.28) -- XRANGE argument 2 must be a character class name or a single character
+    call xrange "upper", .nil
+
+::method test_xrange_invalid_arg_one_one_null
+    self~expectSyntax(40.28) -- XRANGE argument 2 must be a character class name or a single character
+    call xrange "upper", ""
+
+::method test_xrange_invalid_arg_one_one_class_short
+    self~expectSyntax(40.28) -- XRANGE argument 2 must be a character class name or a single character
+    call xrange "upper", "alph"
+
+::method test_xrange_invalid_arg_one_one_class_long
+    self~expectSyntax(40.28) -- XRANGE argument 2 must be a character class name or a single character
+    call xrange "upper", "digits"
+
+::method test_xrange_invalid_arg_one_one_class_wrong
+    self~expectSyntax(40.28) -- XRANGE argument 2 must be a character class name or a single character
+    call xrange "upper", "wrong"
+
+
+-- test one range: character class name
+::method test_xrange_class
+  do class over self~classNames
+    sequence = self~sequence(class)
+    self~assertSame(sequence, xrange(class))
+    self~assertSame(sequence, xrange(class~upper))
+    self~assertSame(sequence, xrange(class~upper(2)))
+    self~assertSame(sequence, xrange(class~upper(, 2)))
+  end
+
+
+-- test two ranges: character class, character class
+::method test_xrange_class_class
+    self~assertSame(self~sequence("alpha"), xrange("upper", "lower"))
+    self~assertSame(self~sequence("ALNUM"), xrange("digit", "Alpha"))
+    self~assertSame(self~sequence("Cntrl")~copies(2), xrange("CNTRL", "CNTRL"))
+
+
+-- test two ranges: hex range, character class
+::method test_xrange_hex_class
+    self~assertSame(self~sequence("alnum"), xrange(0, 9, "alpha"))
+    self~assertSame(self~sequence("print"), xrange(" ", " ", "graph"))
+    self~assertSame(1 || self~sequence("cntrl"), xrange(1, 1, "CNTRL"))
+    self~assertSame('00'x || self~sequence("cntrl"), xrange(     , '00'x, "CNTRL"))
+    self~assertSame('00'x || self~sequence("cntrl"), xrange('00'x, '00'x, "CNTRL"))
+    self~assertSame("abc" || self~sequence("digit"), xrange("a", "c", "Digit"))
+
+
+-- test two ranges: character class, hex range
+::method test_xrange_class_hex
+    self~assertSame(self~sequence("alpha"), xrange("upper", "a", "z"))
+    self~assertSame(self~sequence("UPPER") || " ", xrange("upper", " ", " "))
+
+
+-- test two ranges: hex range, hex range
+::method test_xrange_hex_hex
+    self~assertSame(self~sequence("space"), xrange('9'x, 'd'x, " ", " "))
+    self~assertSame(xrange()~copies(2), xrange('00'x, 'ff'x, '00'x, 'ff'x))
+    self~assertSame(xrange()~copies(2), xrange('00'x, 'ff'x, '00'x, 'ff'x))
+    self~assertSame(xrange()~copies(2), xrange(     , 'ff'x, '00'x, 'ff'x))
+    self~assertSame(xrange()~copies(2), xrange('00'x,      , '00'x, 'ff'x))
+    self~assertSame(xrange()~copies(2), xrange(     ,      , '00'x, 'ff'x))
+    self~assertSame(xrange()~copies(2), xrange('00'x, 'ff'x,      , 'ff'x))
+    self~assertSame(xrange()~copies(2), xrange(     , 'ff'x,      , 'ff'x))
+    self~assertSame(xrange()~copies(2), xrange('00'x,      ,      , 'ff'x))
+    self~assertSame(xrange()~copies(2), xrange(     ,      ,      , 'ff'x))
+    self~assertSame(xrange()~copies(2), xrange('00'x, 'ff'x, '00'x,      ))
+    self~assertSame(xrange()~copies(2), xrange(     , 'ff'x, '00'x,      ))
+    self~assertSame(xrange()~copies(2), xrange('00'x,      , '00'x,      ))
+    self~assertSame(xrange()~copies(2), xrange(     ,      , '00'x,      ))
+
+
+-- test three ranges
+::method test_xrange_three
+    self~assertSame(self~sequence("alnum"), xrange(0, 9,  "A", "Z", "a", "z"))
+    self~assertSame(self~sequence("alnum"), xrange(digit, "A", "Z", "a", "z"))
+    self~assertSame(self~sequence("alnum"), xrange(0, 9,  upper,    "a", "z"))
+    self~assertSame(self~sequence("alnum"), xrange(digit, upper,    "a", "z"))
+    self~assertSame(self~sequence("alnum"), xrange(0, 9,  "A", "Z", lower))
+    self~assertSame(self~sequence("alnum"), xrange(0, 9,  "A", "Z", lower))
+    self~assertSame(self~sequence("alnum"), xrange(digit, "A", "Z", lower))
+    self~assertSame(self~sequence("alnum"), xrange(0, 9,  upper,    lower))
+    self~assertSame(self~sequence("alnum"), xrange(digit, upper,    lower))
+    self~assertSame(self~sequence("xdigit"), xrange(0, 9,  "A", "F", "a", "f"))
+    self~assertSame(self~sequence("xdigit"), xrange(digit,  "A", "F", "a", "f"))
+    self~assertSame("thirst", xrange("t", "t", "h", "i", "r", "t"))
+    self~assertSame('00 00 00'x, xrange('0'x,'0'x, '0'x, '0'x, '0'x, '0'x))
+    self~assertSame(xrange()~copies(2), xrange('00'x, 'FE'x, 'ff'x, '00'x, '01'x, 'ff'x))
+    self~assertSame(xrange()~copies(2), xrange(     , 'FE'x, 'ff'x, '00'x, '01'x, 'ff'x))
+    self~assertSame(xrange()~copies(2), xrange('00'x, 'FE'x, 'ff'x, '00'x, '01'x,      ))
+    self~assertSame(xrange()~copies(2), xrange(     , 'FE'x, 'ff'x, '00'x, '01'x,      ))
+    self~assertSame(xrange()~copies(2), xrange('00'x, '80'x, '81'x, '80'x, '81'x, 'ff'x))
+    self~assertSame(xrange()~copies(2), xrange(     , '80'x, '81'x, '80'x, '81'x, 'ff'x))
+    self~assertSame(xrange()~copies(2), xrange('00'x, '80'x, '81'x, '80'x, '81'x,      ))
+    self~assertSame(xrange()~copies(2), xrange(     , '80'x, '81'x, '80'x, '81'x,      ))
+
+
+-- test many ranges
+::method test_xrange_ranges_many
+    expected = ""
+    do name over self~classNames
+      expected ||= name~contains("a")~"?"(" ", "") || self~sequence(name)
+    end
+    self~assertSame(expected, xrange(" ", " ", "alnum", " ", " ", "alpha", " ", " ", "blank", "cntrl", "digit", " ", " ", "graph", "lower", "print", "punct", " ", " ", "space", "upper", "xdigit"))
+
+
+
+-- return character sequence representing the given POSIX class name
+::method sequence
+  use strict arg name
+  /*
+  [:alnum:] [A-Za-z0-9]   Alphanumeric characters
+  [:alpha:] [A-Za-z]      Alphabetic characters
+  [:blank:] [ \t]         Space and tab
+  [:cntrl:] [\x00-\x1F\x7F]       Control characters
+  [:digit:] [0-9]         Digits
+  [:graph:] [\x21-\x7E]   Visible characters
+  [:lower:] [a-z]         Lowercase letters
+  [:print:] [\x20-\x7E]   Visible characters and the space character
+  [:punct:] [][!"#$%&'()*+,./:;<=>?@\^_`{|}~-]    Punctuation characters
+  [:space:] [ \t\r\n\v\f]         Whitespace characters
+  [:upper:] [A-Z]         Uppercase letters
+  [:xdigit:] [A-Fa-f0-9]  Hexadecimal digits
+  */
+  select case name~lower
+    when "alnum" then return self~sequence("digit") || self~sequence("alpha")
+    when "alpha" then return self~sequence("upper") || self~sequence("lower")
+    when "blank" then return '09 20'x
+    when "cntrl" then return self~range('00'x, '1f'x) || '7f'x
+    when "digit" then return 0123456789
+    when "graph" then return self~range('21'x, '7e'x)
+    when "lower" then return "abcdefghijklmnopqrstuvwxyz"
+    when "print" then return " " || self~sequence("graph")
+    when "punct" then return "!""#$%&'()*+,-./:;<=>?@[\]^_`{|}~"
+    when "space" then return '09 0a 0b 0c 0d 20'x
+    when "upper" then return self~sequence("lower")~upper
+    when "xdigit" then return self~sequence("digit") || "ABCDEFabcdef"
+  end
+
+
+-- return character range from start to end
+::method range
+  use strict arg start, end
+  range = ""
+  do n = start~c2d to end~c2d
+    range || = n~d2c
+  end
+  return range
+
+-- return Array of Posix character class names
+::method classNames
+  use strict arg -- no args allowed
+  return "alnum", "alpha", "blank", "cntrl", "digit", "graph", "lower", "print", "punct", "space", "upper", "xdigit"
