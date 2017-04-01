@@ -6059,17 +6059,101 @@ X2D("0031",0)    ->    0
 
 <para>Returns a string of all valid 1-byte encodings (in ascending order)
 between and including the values <emphasis role="italic">start</emphasis> and
-<emphasis role="italic">end</emphasis>. The default value
-for <emphasis role="italic">start</emphasis> is
-<computeroutput>"00"x</computeroutput>, and the default value for
-<emphasis role="italic">end</emphasis> is
-<computeroutput>"FF"x</computeroutput>. If
-<emphasis role="italic">start</emphasis> is greater than
+<emphasis role="italic">end</emphasis>,
+or a character sequence representing a POSIX character class name.
+Any number of
+<emphasis role="italic">start</emphasis> /
+<emphasis role="italic">end</emphasis>
+bytes and character class names can be specified, and all resulting sequences
+are returned as a concatenated string.
+</para>
+<para>The default value for <emphasis role="italic">start</emphasis> is
+<literal>'00'x</literal>, and the default value for
+<emphasis role="italic">end</emphasis> is <literal>'ff'x</literal>.
+If <emphasis role="italic">start</emphasis> is greater than
 <emphasis role="italic">end</emphasis>, the values wrap from
-<computeroutput>"FF"x</computeroutput> to
-<computeroutput>"00"x</computeroutput>. If specified,
-<emphasis role="italic">start</emphasis> and
-<emphasis role="italic">end</emphasis> must be single characters.</para>
+<literal>'ff'x</literal> to <literal>'00'x</literal>.
+If specified, <emphasis role="italic">start</emphasis> and
+<emphasis role="italic">end</emphasis> must be single characters.
+</para>
+<para>The characters in a sequence representing a POSIX character class name
+are returned in ascending order.
+The following POSIX character class names can be specified:
+<informaltable frame="bottom" colsep="0" rowsep="1" pgwide="0">
+<!-- http://www.sagehill.net/docbookxsl/Tables.html -->
+<tgroup cols="3">
+<colspec colnum="1" colwidth="1*"/>
+<colspec colnum="2" colwidth="3*"/>
+<colspec colnum="3" colwidth="6*"/>
+<thead>
+<row><entry>Name</entry><entry>Description</entry><entry>Returned sequence</entry></row>
+</thead>
+<tbody>
+<row>
+ <entry><option>ALNUM</option></entry>
+ <entry>Alphanumeric characters</entry>
+ <entry><literal>0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz</literal></entry>
+</row>
+<row>
+ <entry><option>ALPHA</option></entry>
+ <entry>Alphabetic characters</entry>
+ <entry><literal>ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz</literal></entry>
+</row>
+<row>
+ <entry><option>BLANK</option></entry>
+ <entry>Space and tab</entry>
+ <entry><literal>'09 20'x</literal></entry>
+</row>
+<row>
+ <entry><option>CNTRL</option></entry>
+ <entry>Control characters</entry>
+ <entry><literal>'00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10 11 12 13 14 15 16 17 18 19 1A 1B 1C 1D 1E 1F 7F'x</literal></entry>
+</row>
+<row>
+ <entry><option>DIGIT</option></entry>
+ <entry>Digits</entry>
+ <entry><literal>0123456789</literal></entry>
+</row>
+<row>
+ <entry><option>GRAPH</option></entry>
+ <entry>Visible characters</entry>
+ <entry><literal>!"#$%&amp;'()*+,-./0123456789:;&lt;=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_` abcdefghijklmnopqrstuvwxyz{|}~</literal></entry>
+</row>
+<row>
+ <entry><option>LOWER</option></entry>
+ <entry>Lowercase letters</entry>
+ <entry><literal>abcdefghijklmnopqrstuvwxyz</literal></entry>
+</row>
+<row>
+ <entry><option>PRINT</option></entry>
+ <entry>Visible characters and space character</entry>
+ <entry><literal>&nbsp;!"#$%&amp;'()*+,-./0123456789:;&lt;=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_` abcdefghijklmnopqrstuvwxyz{|}~</literal></entry>
+</row>
+<row>
+ <entry><option>PUNCT</option></entry>
+ <entry>Punctuation characters</entry>
+ <entry><literal>!"#$%&amp;'()*+,-./:;&lt;=>?@[\]^_`{|}~</literal></entry>
+</row>
+<row>
+ <entry><option>SPACE</option></entry>
+ <entry>Whitespace characters</entry>
+ <entry><literal>'09 0A 0B 0C 0D 20'x</literal></entry>
+</row>
+<row>
+ <entry><option>UPPER</option></entry>
+ <entry>Uppercase letters</entry>
+ <entry><literal>ABCDEFGHIJKLMNOPQRSTUVWXYZ</literal></entry>
+</row>
+<row>
+ <entry><option>XDIGIT</option></entry>
+ <entry>Hexadecimal digits</entry>
+ <entry><literal>0123456789ABCDEFabcdef</literal></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+</para>
+
 <para>Here are some examples:
 <indexterm><primary>XRANGE function</primary>
 <secondary>example</secondary></indexterm>
@@ -6078,11 +6162,13 @@ for <emphasis role="italic">start</emphasis> is
 <example id="ex.bif-xrange">
 <title>Builtin function XRANGE</title>
 <programlisting>
-XRANGE("a","f")      ->   "abcdef"
-XRANGE("03"x,"07"x)  ->   "0304050607"x
-XRANGE(,"04"x)       ->   "0001020304"x
-XRANGE("FE"x,"02"x)  ->   "FEFF000102"x
-XRANGE("i","j")      ->   "ij"                   /* ASCII  */
+XRANGE("a", "f")                     --> "abcdef"
+XRANGE('03'x, '07'x)                 --> '0304050607'x
+XRANGE(, '04'x)                      --> '0001020304'x
+XRANGE('FE'x, '02'x)                 --> 'FEFF000102'x
+XRANGE("t", "t", "h", "i", "r", "t") --> "thirst"
+XRANGE('xdigit')                     --> "0123456789ABCDEFabcdef"
+XRANGE("a", "f", "A", "F", "digit")  --> "abcdefABCDEF0123456789"
 </programlisting>
 </example>
 </para>

@@ -191,4 +191,8 @@ x2c ::= 'X2C(' hexstring ')'
 
 x2d ::= 'X2D(' hexstring ( ',' n )? ')'
 
-xrange ::= 'XRANGE(' start ( ',' end )? ')'
+xrange ::= 'XRANGE('
+                ( (start? ',' end? | 'ALNUM' | 'ALPHA' | 'BLANK' | 'CNTRL' | 'DIGIT' | 'GRAPH' | 'LOWER' | 'PRINT' | 'PUNCT' | 'SPACE' | 'UPPER' | 'XDIGIT' ) 
+             (',' (start? ',' end? | 'ALNUM' | 'ALPHA' | 'BLANK' | 'CNTRL' | 'DIGIT' | 'GRAPH' | 'LOWER' | 'PRINT' | 'PUNCT' | 'SPACE' | 'UPPER' | 'XDIGIT'))* )?
+           ')'
+

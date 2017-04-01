@@ -4771,8 +4771,8 @@ items.</para>
 string value can have any length and contain any characters.
 </para>
 
-<!-- modified: move new() to top; re-add hashCode(); made Arith/Compare/ConcatMethods single-column -->
-<!-- $GENERATED-20151011-START rexxrefClassTable(String) -->
+<!-- modified: add hashCode(); centre() removed/combined with center(); sort Arith/Compare/Concat/LOgicalMethods and make single-column -->
+<!-- $GENERATED-20170401-START rexxrefClassTable(String) -->
 <table id="ooRexxStringClass" frame="all" pgwide="1">
 <title>String Class</title>
 <tgroup cols="1">
@@ -4792,10 +4792,22 @@ string value can have any length and contain any characters.
  <row><entry>
   <simplelist columns="3">
    <member><xref linkend="mthStringNew" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringAlnum" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringAlpha" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringBlank" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringCntrl" xrefstyle="select:title"/></member>
    <member><xref linkend="mthStringCr" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringDigit" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringGraph" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringLowerClsMth" xrefstyle="select:title"/></member>
    <member><xref linkend="mthStringNl" xrefstyle="select:title"/></member>
    <member><xref linkend="mthStringNull" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringPrint" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringPunct" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringSpaceClsMth" xrefstyle="select:title"/></member>
    <member><xref linkend="mthStringTab" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringUpperClsMth" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringXdigit" xrefstyle="select:title"/></member>
   </simplelist>
   <simplelist>
    <member><xref linkend="mthStringArithmeticMethods" xrefstyle="select:title"/> + - * ** / // %</member>
@@ -4832,9 +4844,6 @@ string value can have any length and contain any characters.
    <member><xref linkend="mthStringCaselessWordPos" xrefstyle="select:title"/></member>
    <member><xref linkend="mthStringCeiling" xrefstyle="select:title"/></member>
    <member><xref linkend="mthStringCenter" xrefstyle="select:title"/></member>
-<!-- see center()
-   <member><xref linkend="mthStringCentre" xrefstyle="select:title"/></member>
--->
    <member><xref linkend="mthStringChangeStr" xrefstyle="select:title"/></member>
    <member><xref linkend="mthStringCompare" xrefstyle="select:title"/></member>
    <member><xref linkend="mthStringCompareTo" xrefstyle="select:title"/></member>
@@ -4853,7 +4862,6 @@ string value can have any length and contain any characters.
    <member><xref linkend="mthStringEquals" xrefstyle="select:title"/></member>
    <member><xref linkend="mthStringFloor" xrefstyle="select:title"/></member>
    <member><xref linkend="mthStringFormat" xrefstyle="select:title"/></member>
-   <member><xref linkend="mthStringHashCode" xrefstyle="select:title"/></member>
    <member><xref linkend="mthStringInsert" xrefstyle="select:title"/></member>
    <member><xref linkend="mthStringLastPos" xrefstyle="select:title"/></member>
    <member><xref linkend="mthStringLeft" xrefstyle="select:title"/></member>
@@ -4896,7 +4904,7 @@ string value can have any length and contain any characters.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20151011-END rexxrefClassTable(String) -->
+<!-- $GENERATED-20170401-END rexxrefClassTable(String) -->
 
 
 <section id="mthStringNew"><title>new (Class Method)</title>
@@ -4916,22 +4924,88 @@ string value can have any length and contain any characters.
 <emphasis role="italic">stringvalue</emphasis>.</para>
 </section>
 
-<section id="mthStringNl"><title>nl (Class Method)</title>
-<indexterm><primary>nl method</primary>
-<secondary>of String class</secondary></indexterm>
-<indexterm><primary>method</primary>
-<secondary>nl method</secondary>
-<tertiary>of String class</tertiary></indexterm>
 
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/classes/string_nl.svg" scale="55" />
-</imageobject>
-</mediaobject>
-
-<para>Returns the single character string for the line-feed character, which
-has the value <literal>'0a'x</literal>.</para>
+<!-- Class String - method alnum ======================== -->
+<section id="mthStringAlnum" revisionflag="added"><title>*NEW* alnum (Class Method)</title>
+<indexterm><primary>alnum method</primary><secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>alnum method</secondary><tertiary>of String class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/string_class_alnum.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns the string
+<literal>0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz</literal>,
+a character sequence representing the POSIX character class name <option>ALNUM</option>
+(alphanumeric characters).
+</para>
+<para>See also class methods
+<xref linkend="mthStringAlpha" xrefstyle="template:alpha"/> and
+<xref linkend="mthStringDigit" xrefstyle="template:digit"/>.
+</para>
 </section>
+
+
+<!-- Class String - method alpha ======================== -->
+<section id="mthStringAlpha" revisionflag="added"><title>*NEW* alpha (Class Method)</title>
+<indexterm><primary>alpha method</primary><secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>alpha method</secondary><tertiary>of String class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/string_class_alpha.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns the string
+<literal>ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz</literal>,
+a character sequence representing the POSIX character class name <option>ALPHA</option>
+(alphabetic characters).
+</para>
+<para>See also class methods
+<xref linkend="mthStringLowerClsMth" xrefstyle="template:lower"/> and
+<xref linkend="mthStringUpperClsMth" xrefstyle="template:upper"/>.
+</para>
+</section>
+
+
+<!-- Class String - method blank ======================== -->
+<section id="mthStringBlank" revisionflag="added"><title>*NEW* blank (Class Method)</title>
+<indexterm><primary>blank method</primary><secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>blank method</secondary><tertiary>of String class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/string_class_blank.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns the string
+<literal>'09 20'x</literal>,
+a character sequence representing the POSIX character class name <option>BLANK</option>
+(tab and space character).
+</para>
+<para>See also class method
+<xref linkend="mthStringSpaceClsMth" xrefstyle="template:space"/>.
+</para>
+</section>
+
+
+<!-- Class String - method cntrl ======================== -->
+<section id="mthStringCntrl" revisionflag="added"><title>*NEW* cntrl (Class Method)</title>
+<indexterm><primary>cntrl method</primary><secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>cntrl method</secondary><tertiary>of String class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/string_class_cntrl.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns the string
+<literal>'00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10 11 12 13 14 15 16 17 18 19 1A 1B 1C 1D 1E 1F 7F'x</literal>,
+a character sequence representing the POSIX character class name <option>CNTRL</option>
+(control characters).
+</para>
+<para>See also class method
+<xref linkend="mthStringPrint" xrefstyle="select:title"/>.
+</para>
+</section>
+
 
 <section id="mthStringCr"><title>cr (Class Method)</title>
 <indexterm><primary>cr method</primary>
@@ -4948,6 +5022,85 @@ has the value <literal>'0a'x</literal>.</para>
 
 <para>Returns the single character string for the carriage-return character, which
 has the value <literal>'0d'x</literal>.</para>
+</section>
+
+
+<!-- Class String - method digit ======================== -->
+<section id="mthStringDigit" revisionflag="added"><title>*NEW* digit (Class Method)</title>
+<indexterm><primary>digit method</primary><secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>digit method</secondary><tertiary>of String class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/string_class_digit.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns the string
+<literal>0123456789</literal>,
+a character sequence representing the POSIX character class name <option>DIGIT</option>
+(digits).
+</para>
+<para>See also class method
+<xref linkend="mthStringXdigit" xrefstyle="template:xdigit"/>.
+</para>
+</section>
+
+
+<!-- Class String - method graph ======================== -->
+<section id="mthStringGraph" revisionflag="added"><title>*NEW* graph (Class Method)</title>
+<indexterm><primary>graph method</primary><secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>graph method</secondary><tertiary>of String class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/string_class_graph.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns the string
+<literal>!"#$%&amp;'()*+,-./0123456789:;&lt;=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_` abcdefghijklmnopqrstuvwxyz{|}~</literal>,
+a character sequence representing the POSIX character class name <option>GRAPH</option>
+(visible characters).
+</para>
+<para>See also class method
+<xref linkend="mthStringPrint" xrefstyle="template:print"/>.
+</para>
+</section>
+
+
+<!-- Class String - method lower ======================== -->
+<section id="mthStringLowerClsMth" revisionflag="added"><title>*NEW* lower (Class Method)</title>
+<indexterm><primary>lower method</primary><secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>lower method</secondary><tertiary>of String class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/string_class_lower.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns the string
+<literal>abcdefghijklmnopqrstuvwxyz</literal>,
+a character sequence representing the POSIX character class name <option>LOWER</option>
+(lowercase letters).
+</para>
+<para>See also class methods
+<xref linkend="mthStringUpperClsMth" xrefstyle="template:upper"/> and
+<xref linkend="mthStringAlpha" xrefstyle="template:alpha"/>.
+</para>
+</section>
+
+
+<section id="mthStringNl"><title>nl (Class Method)</title>
+<indexterm><primary>nl method</primary>
+<secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>nl method</secondary>
+<tertiary>of String class</tertiary></indexterm>
+
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/classes/string_nl.svg" scale="55" />
+</imageobject>
+</mediaobject>
+
+<para>Returns the single character string for the line-feed character, which
+has the value <literal>'0a'x</literal>.</para>
 </section>
 
 <section id="mthStringNull"><title>null (Class Method)</title>
@@ -4967,6 +5120,68 @@ has the value <literal>'0d'x</literal>.</para>
 has the value <literal>'00'x</literal>.</para>
 </section>
 
+
+<!-- Class String - method print ======================== -->
+<section id="mthStringPrint" revisionflag="added"><title>*NEW* print (Class Method)</title>
+<indexterm><primary>print method</primary><secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>print method</secondary><tertiary>of String class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/string_class_print.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns the string
+<literal>&nbsp;!"#$%&amp;'()*+,-./0123456789:;&lt;=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_` abcdefghijklmnopqrstuvwxyz{|}~</literal>
+(with a leading space),
+a character sequence representing the POSIX character class name <option>PRINT</option>
+(visible characters and space character).
+</para>
+<para>See also class method
+<xref linkend="mthStringGraph" xrefstyle="template:graph"/>.
+</para>
+</section>
+
+
+<!-- Class String - method punct ======================== -->
+<section id="mthStringPunct" revisionflag="added"><title>*NEW* punct (Class Method)
+<indexterm><primary>punct method</primary><secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>punct method</secondary><tertiary>of String class</tertiary></indexterm>
+</title>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/string_class_punct.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns the string
+<literal>!"#$%&amp;'()*+,-./:;&lt;=>?@[\]^_`{|}~</literal>,
+a character sequence representing the POSIX character class name <option>PUNCT</option>
+(punctuation characters).
+</para>
+</section>
+
+
+<!-- Class String - method space ======================== -->
+<section id="mthStringSpaceClsMth" revisionflag="added"><title>*NEW* space (Class Method)</title>
+<indexterm><primary>space method</primary><secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>space method</secondary><tertiary>of String class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/string_class_space.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns the string
+<literal>'09 0A 0B 0C 0D 20'x</literal>,
+a character sequence representing the POSIX character class name <option>SPACE</option>
+(whitespace characters horizontal tab, line feed, vertical tab, form feed,
+carriage return, and space). 
+</para>
+<para>See also class method
+<xref linkend="mthStringBlank" xrefstyle="template:blank"/>.
+</para>
+</section>
+
+
+
 <section id="mthStringTab"><title>tab (Class Method)</title>
 <indexterm><primary>tab method</primary>
 <secondary>of String class</secondary></indexterm>
@@ -4983,6 +5198,47 @@ has the value <literal>'00'x</literal>.</para>
 <para>Returns the single character string for the tab character, which
 has the value <literal>'09'x</literal>.</para>
 </section>
+
+
+<!-- Class String - method upper ======================== -->
+<section id="mthStringUpperClsMth" revisionflag="added"><title>*NEW* upper (Class Method)</title>
+<indexterm><primary>upper method</primary><secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>upper method</secondary><tertiary>of String class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/string_class_upper.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns the string
+<literal>ABCDEFGHIJKLMNOPQRSTUVWXYZ</literal>,
+a character sequence representing the POSIX character class name <option>UPPER</option>
+(uppercase letters).
+</para>
+<para>See also class method
+<xref linkend="mthStringLowerClsMth" xrefstyle="template:lower"/>.
+</para>
+</section>
+
+
+<!-- Class String - method xdigit ======================== -->
+<section id="mthStringXdigit" revisionflag="added"><title>*NEW* xdigit (Class Method)</title>
+<indexterm><primary>xdigit method</primary><secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>xdigit method</secondary><tertiary>of String class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/string_class_xdigit.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns the string
+<literal>0123456789ABCDEFabcdef</literal>,
+a character sequence representing the POSIX character class name <option>XDIGIT</option>
+(hexadecimal digits).
+</para>
+<para>See also class method
+<xref linkend="mthStringDigit" xrefstyle="template:digit"/>.
+</para>
+</section>
+
 
 <section id="mthStringArithmeticMethods"><title>Arithmetic Methods</title>
 <indexterm><primary>method</primary>
