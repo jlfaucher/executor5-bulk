@@ -8668,21 +8668,69 @@ size_t len;
 // Method Syntax Form(s)
 
 obj = context->NewString(str, len);
-
-obj = context->NewString(str);
 ]]>
 </programlisting>
-<para>There are two forms of this method. Both create a new String object from program data.
+<para>Create a new String object from program data.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
     <row><entry><emphasis role="italic">str</emphasis></entry>
-    <entry><para>For the first form, a pointer to a null-terminated ASCII-Z string.
-    For the second form, a pointer to a data buffer containing the string data.
+    <entry><para>A pointer to a data buffer containing the string data.
     </para></entry>
     </row>
     <row><entry><emphasis role="italic">len</emphasis></entry>
-    <entry><para>Length of the <emphasis role="italic">str</emphasis> string.</para></entry>
+    <entry><para>Length of the <emphasis role="italic">str</emphasis> data buffer.</para></entry>
+    </row>
+</tbody></tgroup></informaltable>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>The new String object.</para>
+</section>
+
+
+<section id="mthNewStringFromAsciiz"><title>NewStringFromAsciiz</title>
+<indexterm><primary>NewStringFromAsciiz</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>NewStringFromAsciiz</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>NewStringFromAsciiz</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>NewStringFromAsciiz</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>NewStringFromAsciiz</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Exit</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting language="C++">
+<![CDATA[
+RexxStringObject obj;
+CSTRING str;
+
+// Method Syntax Form(s)
+
+obj = context->NewStringFromAsciiz(str);
+]]>
+</programlisting>
+<para>Create a new String object from a C string.
+</para>
+<para><emphasis role="bold">Arguments</emphasis></para>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
+    <row><entry><emphasis role="italic">str</emphasis></entry>
+    <entry><para>A pointer to a null-terminated ASCII-Z string.
+    </para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -11056,7 +11104,7 @@ CSTRING str;
 str = context->StringData(obj);
 ]]>
 </programlisting>
-<para>Returns a read-only pointer to the String object's string data.
+<para>Returns a pointer to the String object's string data (for read-only).
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
@@ -11066,6 +11114,12 @@ str = context->StringData(obj);
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>A pointer to the String object's string data.</para>
+<para>The data pointed to does have a trailing <literal>\0</literal> character,
+but note that also the data itself (like any Rexx string) may
+contain embedded <literal>\0</literal> characters.
+The program <emphasis role="bold">must not</emphasis> modify the data
+the returned pointer points to.
+</para>
 </section>
 
 <section id="mthStringGet"><title>StringGet</title>
