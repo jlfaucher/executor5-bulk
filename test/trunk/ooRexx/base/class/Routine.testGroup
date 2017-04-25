@@ -135,6 +135,18 @@ return testResult
   .Routine~new("test", "nop", "programscope", "")
 
 
+-- context is omitted
+::method test_new_context_omitted
+  -- "programscope" is default .. local public/private classes/routines are visible
+  r = .Routine~new("", .resources~tstDefined)
+  self~assertEquals("ClassPublic RoutinePublic Class Routine", r[])
+
+-- context is "programscope"
+::method test_new_context_programscope
+  -- within "programscope" local public/private classes/routines are visible
+  r = .Routine~new("", .resources~tstDefined, "programscope")
+  self~assertEquals("ClassPublic RoutinePublic Class Routine", r[])
+
 -- context is REXX package
 ::method test_new_context_rexxpackage
   -- within scope "REXX" no local classes/routines are visible
