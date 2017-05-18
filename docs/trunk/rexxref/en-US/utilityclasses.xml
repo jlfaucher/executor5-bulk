@@ -240,7 +240,7 @@ If it is
  <listitem>
   <para>a <classname>DateTime</classname> object, it specifies the time when the
   alarm will be triggered.
-  The specified time must be in future.
+  The specified time must be in the future.
   </para>
  </listitem>
  <listitem>
@@ -251,10 +251,10 @@ If it is
  </listitem>
  <listitem>
   <para>a <classname>String</classname>, you can specify this as a date and
-  time (<computeroutput>&apos;hh:mm:ss&apos;</computeroutput>)
+  time (<literal>hh:mm:ss</literal>)
   or as a number of seconds starting at the present time.
   If you use the date and time format, you can specify
-  a date in the default format (<computeroutput>&apos;dd Mmm yyyy&apos;</computeroutput>)
+  a date in the default format (<literal>dd Mmm yyyy</literal>)
   after the time with a single blank separating the time and date.
   Leading and trailing whitespace characters are not allowed in the <emphasis role="italic">atime</emphasis>.
   If you do not specify a date, the <classname>Alarm</classname> uses the first
@@ -273,8 +273,8 @@ If cancelled, the alarm sends message <methodname>cancel</methodname> to
 the specified notification <emphasis role="italic">target</emphasis>.
 </para>
 
-<para>The following code sets up an alarm at 5:10 p.m. on December 15, 2016.
-(Assume today's date/time is prior to December 15, 2016.)  </para>
+<para>The following code sets up an alarm at 5:10 p.m. on December 15, 2017.
+(Assume today's date/time is prior to December 15, 2017.)</para>
 <indexterm><primary>examples</primary>
 <secondary>of Alarm class</secondary></indexterm>
 <example>
@@ -282,33 +282,35 @@ the specified notification <emphasis role="italic">target</emphasis>.
 <programlisting>
 /* Alarm Examples */
 
-PersonalMessage=.MyMessageClass~new("Call the Bank")
-msg=.message~new(PersonalMessage,"RemindMe")
+PersonalMessage = .MyMessageClass~new("Call the Bank")
+msg = .Message~new(PersonalMessage, "RemindMe")
 
-time = .DateTime~fromIsoDate("2016-12-15T17:10:00.000000")
+time = .DateTime~fromIsoDate("2017-12-15T17:10:00.000000")
 
-a=.alarm~new(time, msg)
+a = .Alarm~new(time, msg)
 exit
+
 ::class MyMessageClass public
 ::method init
-expose inmsg
-use arg inmsg
+  expose inmsg
+  use arg inmsg
+
 ::method RemindMe
-expose inmsg
-say "It is now" time("C")". Please" inmsg
-/* On the specified data and time, displays the following message: */
-/* "It is now 5:10pm. Please Call the Bank" */
+  expose inmsg
+  say "It is now" time("C")". Please" inmsg
+  /* On the specified data and time, displays the following message: */
+  /* "It is now 5:10pm. Please Call the Bank" */
 </programlisting>
 </example>
 <para>For the following example, the user uses the same code as in the
-preceding example to define <computeroutput>msg</computeroutput>,
+preceding example to define <emphasis role="italic">msg</emphasis>,
 a message object to run at the specified time. The following code sets up
-an alarm to run the <computeroutput>msg</computeroutput> message
+an alarm to run the <emphasis role="italic">msg</emphasis> message
 object in 30 seconds from the current time: </para>
 <example>
 <title>Alarm class</title>
 <programlisting>
-a=.alarm~new(30,msg)
+a = .Alarm~new(30, msg)
 </programlisting>
 </example>
 </section>
@@ -1201,7 +1203,7 @@ as allowing arithmetic operations between timestamps.
 </para>
 <note>
 <para><classname>DateTime</classname> does not support leap seconds like
-June 30, 2015 at 23:59:60 UTC.
+December 31, 2016 at 23:59:60 UTC.
 </para></note>
 
 <!-- modified: change class methods list to 2-column format for better fit -->
@@ -1742,9 +1744,9 @@ number. The default <emphasis role="italic">offset</emphasis> is the current sys
 <programlisting>
 <![CDATA[
 today = .DateTime~new                            -- current date and time
-day = .DateTime~new(date('F', "20150630", "S"))  -- 2015-06-30T00:00:00.000000
-day = .DateTime~new(2015, 6, 30)                 -- 2015-06-30T00:00:00.000000
-day = .DateTime~new(2015, 6, 30, 11, 8, 50)      -- 2015-06-30T11:08:50.000000
+day = .DateTime~new(date('F', "20170630", "S"))  -- 2017-06-30T00:00:00.000000
+day = .DateTime~new(2017, 6, 30)                 -- 2017-06-30T00:00:00.000000
+day = .DateTime~new(2017, 6, 30, 11, 8, 50)      -- 2017-06-30T11:08:50.000000
 ]]>
 </programlisting>
 </example>
@@ -1817,26 +1819,27 @@ instance.  The receiver DateTime object is not changed.  The TimeSpan may be eit
 <note>
 <para>When adding or subtracting <classname>DateTime</classname> and
 <classname>TimeSpan</classname> objects, leap seconds (like the one which
-happened on June 30, 2015 at 23:59:60 UTC) are not taken into account.
+happened on December 31, 2016 at 23:59:60 UTC) are not taken into account.
 </para></note>
 <example>
 <title>DateTime class &mdash; arithmetic
 <indexterm><primary>examples</primary><secondary>arithmetic methods of DateTime class</secondary></indexterm>
 </title>
-<programlisting><![CDATA[t = .dateTime~new~timeOfDay       -- returns TimeSpan for current time
-say t                             -- displays "11:09:30.152000", perhaps
-d = .dateTime~new(2015, 6, 30)    -- creates new date
+<programlisting><![CDATA[
+t = .dateTime~new~timeOfDay       -- returns TimeSpan for current time
+say t                             -- displays "17:30:41.482000", perhaps
+d = .dateTime~new(2016, 12, 31)   -- creates new date
 
 future = d + t                    -- adds timespan to d
-say future                        -- displays "2015-06-30T11:09:30.152000"
+say future                        -- displays "2016-12-31T17:30:41.482000"
 
 -- does not take leap second into account
-say d + .TimeSpan~new(24, 0, 1)   -- 2015-07-01T00:00:01.000000
+say d + .TimeSpan~new(24, 0, 1)   -- 2017-01-01T00:00:01.000000
 
                                   -- "real" start of next century
 nextCentury = .dateTime~new(2101, 1, 1)
-                                  -- displays "31230.12:50:29.846000", perhaps
-say "The next century starts in" (nextCentury - .dateTime~new)
+-- "The next century starts in 30544.06:29:18.517000 days", perhaps
+say "The next century starts in" (nextCentury - .dateTime~new) "days"
 ]]></programlisting>
 </example>
 </section>
@@ -2087,9 +2090,9 @@ the day will be rolled back to the 28th.
 <title>DateTime class &mdash; addYears method</title>
 <programlisting>
 <![CDATA[
-date = .DateTime~new(2015, 6, 30)
-say date              -- displays "2015-06-30T00:00:00.000000"
-say date~addYears(1)  -- displays "2016-06-30T00:00:00.000000"
+date = .DateTime~new(2016, 6, 30)
+say date              -- displays "2016-06-30T00:00:00.000000"
+say date~addYears(1)  -- displays "2017-06-30T00:00:00.000000"
 ]]>
 </programlisting>
 </example>
@@ -2142,9 +2145,9 @@ Negative values result in days being subtracted.
 <title>DateTime class &mdash; addDays method</title>
 <programlisting>
 <![CDATA[
-date = .DateTime~new(2015, 6, 30)
-say date              -- displays "2015-06-30T00:00:00.000000"
-say date~addDays(1.5) -- displays "2015-07-01T12:00:00.000000"
+date = .DateTime~new(2016, 6, 30)
+say date              -- displays "2016-06-30T00:00:00.000000"
+say date~addDays(1.5) -- displays "2016-07-01T12:00:00.000000"
 ]]>
 </programlisting>
 </example>
@@ -2535,16 +2538,16 @@ or the null string ("").  A slash ("/") is the default separator.
 <para>Returns the timestamp time formatted as a string in <option>Civil</option>
 format <literal>hh:mmxx</literal>.
 The hours can take
-the values <computeroutput>1</computeroutput> through
-<computeroutput>12</computeroutput>, and the minutes the values
-<computeroutput>00</computeroutput> through <computeroutput>59</computeroutput>.
+the values <literal>1</literal> through
+<literal>12</literal>, and the minutes the values
+<literal>00</literal> through <literal>59</literal>.
 The minutes are followed immediately by the letters
-<computeroutput>am</computeroutput> or <computeroutput>pm</computeroutput>.
+<literal>am</literal> or <literal>pm</literal>.
 This distinguishes times in the morning (12 midnight through 11:59
-a.m.&mdash;appearing as <computeroutput>12:00am</computeroutput> through
-<computeroutput>11:59am</computeroutput>) from noon and afternoon (12 noon
-through 11:59 p.m.&mdash;appearing as <computeroutput>12:00pm</computeroutput>
-through <computeroutput>11:59pm</computeroutput>). The hour has no leading
+a.m.&mdash;appearing as <literal>12:00am</literal> through
+<literal>11:59am</literal>) from noon and afternoon (12 noon
+through 11:59 p.m.&mdash;appearing as <literal>12:00pm</literal>
+through <literal>11:59pm</literal>). The hour has no leading
 zero.  The minute field shows the current minute (rather than the nearest
 minute) for consistency with other TIME results.
 </para>
@@ -2566,9 +2569,9 @@ minute) for consistency with other TIME results.
 <para>Returns the timestamp time formatted as a string in the default format
 <literal>hh:mm:ss</literal>.
 The hours
-can have the values <computeroutput>00</computeroutput> through
-<computeroutput>23</computeroutput>, and minutes and seconds,
-<computeroutput>00</computeroutput> through <computeroutput>59</computeroutput>.
+can have the values <literal>00</literal> through
+<literal>23</literal>, and minutes and seconds,
+<literal>00</literal> through <literal>59</literal>.
 There are always two digits. Any fractions
 of seconds are ignored (times are never rounded).
 </para>
@@ -3416,7 +3419,7 @@ say .File~new("/tmp/.dir/file")~isHidden        -- 1
 <programlisting><![CDATA[
 /* On Windows */
 say .File~new("C:\Program Files")~lastModified~class  -- The DateTime class
-say .File~new("C:\Program Files")~lastModified        -- 2015-06-18T11:20:17.000000
+say .File~new("C:\Program Files")~lastModified        -- 2016-06-18T11:20:17.000000
 say .File~new("dummy")~lastModified                   -- The NIL object
 
 
@@ -4115,7 +4118,7 @@ does not fit into the buffer.</para>
 <emphasis role="italic">length</emphasis>.
 The <emphasis role="italic">n</emphasis> must be a positive whole number.
 If <emphasis role="italic">length</emphasis> is omitted, it defaults to
-<computeroutput>1</computeroutput>.
+<literal>1</literal>.
 If <emphasis role="italic">n</emphasis> is greater than the length of the
 receiving string, a null string is returned.
 </para>
@@ -4367,7 +4370,7 @@ require new string objects be extracted from the target buffer.
 <para>Returns the position of the last occurrence of a string,
 <emphasis role="italic">needle</emphasis>,
 in the receiving buffer.
-It returns <computeroutput>0</computeroutput> if
+It returns <literal>0</literal> if
 <emphasis role="italic">needle</emphasis> is the null string or not found.
 By default, the search starts at the last character of the receiving buffer and
 scans backward to the beginning of the string. You can override this by
@@ -4376,7 +4379,7 @@ specifying
 starts and <emphasis role="italic">length</emphasis>, the range of characters to
 scan.  The
 <emphasis role="italic">start</emphasis> must be a positive whole number and
-defaults to <computeroutput>receiving_buffer~length</computeroutput> if larger
+defaults to <code>receiving_buffer~length</code> if larger
 than that value or omitted. The <emphasis role="italic">length</emphasis> must be a
 non-negative whole number and defaults to <emphasis
 role="italic">start</emphasis>.  The search is performed using caseless
@@ -4479,7 +4482,7 @@ the length of the receiving buffer.  The search is performed using caseless
 comparisons.
 By default, the search starts at the first
 character of the receiving buffer (that is, the value of
-<emphasis role="italic">start</emphasis> is <computeroutput>1</computeroutput>),
+<emphasis role="italic">start</emphasis> is <literal>1</literal>),
 and continues to the end of the buffer.  You can override this by specifying
 <emphasis role="italic">start</emphasis>, the point at which the search starts, and
 <emphasis role="italic">length</emphasis>, the bounding limit for the search.
@@ -4533,7 +4536,7 @@ require new string objects be extracted from the target buffer.
 
 <para>Returns the word number of the first word of
 <emphasis role="italic">phrase</emphasis> found in the receiving buffer, or
-<computeroutput>0</computeroutput> if
+<literal>0</literal> if
 <emphasis role="italic">phrase</emphasis> contains no words or
 if <emphasis role="italic">phrase</emphasis> is not found.
 Word matches are made independent of case. Multiple whitespace characters
@@ -4837,7 +4840,7 @@ to length <emphasis role="italic">length</emphasis>. The default
 <para>Returns the position of the last occurrence of a string,
 <emphasis role="italic">needle</emphasis>,
 in the receiving buffer.
-It returns <computeroutput>0</computeroutput> if
+It returns <literal>0</literal> if
 <emphasis role="italic">needle</emphasis> is the null string or not found.
 By default, the search starts at the last character of the receiving buffer and
 scans backward to the beginning of the string. You can override this by
@@ -4846,7 +4849,7 @@ specifying
 starts and <emphasis role="italic">length</emphasis>, the range of characters to
 scan.  The
 <emphasis role="italic">start</emphasis> must be a positive whole number and
-defaults to <computeroutput>receiving_buffer~length</computeroutput> if larger
+defaults to <code>receiving_buffer~length</code> if larger
 than that value or omitted. The <emphasis role="italic">length</emphasis> must be a
 non-negative whole number and defaults to <emphasis
 role="italic">start</emphasis>.
@@ -5057,7 +5060,7 @@ or if <emphasis role="italic">start</emphasis> is greater than
 the length of the receiving buffer.
 By default, the search starts at the first
 character of the receiving buffer (that is, the value of
-<emphasis role="italic">start</emphasis> is <computeroutput>1</computeroutput>),
+<emphasis role="italic">start</emphasis> is <literal>1</literal>),
 and continues to the end of the string.  You can override this by specifying
 <emphasis role="italic">start</emphasis>,
 the point at which the search starts, and
@@ -5175,9 +5178,9 @@ in the <methodname>init</methodname> method.</para>
 characters between each whitespace-delimited word. If you specify
 <emphasis role="italic">n</emphasis>, it must
 be a positive whole number or zero. If it is
-<computeroutput>0</computeroutput>, all whitespace characters are removed.
+<literal>0</literal>, all whitespace characters are removed.
 Leading and trailing whitespace characters are always removed. The default for
-<emphasis role="italic">n</emphasis> is <computeroutput>1</computeroutput>,
+<emphasis role="italic">n</emphasis> is <literal>1</literal>,
 and the default <emphasis role="italic">pad</emphasis> character is a blank.
 </para>
 </section>
@@ -5357,14 +5360,14 @@ buffer is unchanged. </para>
 <para>The tables can be of any length. If you specify neither translation table and
 omit <emphasis role="italic">pad</emphasis>, the receiving string is
 translated to uppercase (that is, lowercase
-<computeroutput>a</computeroutput>-<computeroutput>z</computeroutput>
+<literal>a</literal>-<literal>z</literal>
 to uppercase
-<computeroutput>A</computeroutput>-<computeroutput>Z</computeroutput>),
+<literal>A</literal>-<literal>Z</literal>),
 but if you include <emphasis role="italic">pad</emphasis>
 the buffer translates the entire
 string to <emphasis role="italic">pad</emphasis> characters.
 <emphasis role="italic">tablei</emphasis> defaults to
-<computeroutput>XRANGE("00"x,"FF"x)</computeroutput>, and
+<code>XRANGE('00'x, 'ff'x)</code>, and
 <emphasis role="italic">tableo</emphasis> defaults to the null string and
 is padded with <emphasis role="italic">pad</emphasis> or truncated as necessary.
 The default <emphasis role="italic">pad</emphasis> is a blank.</para>
@@ -5416,24 +5419,24 @@ is not specified, the default is to convert the remainder of the buffer.</para>
 <para>Returns a number that, by default, indicates whether the receiving buffer
 is composed only of characters from
 <emphasis role="italic">reference</emphasis>. It returns
-<computeroutput>0</computeroutput> if all characters in the receiving buffer are
+<literal>0</literal> if all characters in the receiving buffer are
 in
 <emphasis role="italic">reference</emphasis> or returns the position of the
 first character in the receiving buffer not in
 <emphasis role="italic">reference</emphasis>.</para>
 <para>The <emphasis role="italic">option</emphasis> can be either
-<computeroutput>Nomatch</computeroutput> (the
-default) or <computeroutput>Match</computeroutput>. (You need to specify only
+<literal>Nomatch</literal> (the
+default) or <literal>Match</literal>. (You need to specify only
 the first capitalized and highlighted letter;
 all characters following the first character are ignored, which can be in uppercase or
 lowercase.)</para>
-<para>If you specify <computeroutput>Match</computeroutput>, the method returns
+<para>If you specify <literal>Match</literal>, the method returns
 the position of the first character in the receiving buffer that is in
 <emphasis role="italic">reference</emphasis>, or returns
-<computeroutput>0</computeroutput> if none of the characters
+<literal>0</literal> if none of the characters
 are found.</para>
 <para>The default for <emphasis role="italic">start</emphasis> is
-<computeroutput>1</computeroutput>. Thus, the search starts
+<literal>1</literal>. Thus, the search starts
 at the first character of the receiving buffer. You can override this by
 specifying a different
 <emphasis role="italic">start</emphasis> point, which must be a positive whole
@@ -5446,15 +5449,15 @@ override this by specifying a different
 number.
 </para>
 <para>If the receiving string is null, the method returns
-<computeroutput>0</computeroutput>, regardless
+<literal>0</literal>, regardless
 of the value of the <emphasis role="italic">option</emphasis>. Similarly, if
 <emphasis role="italic">start</emphasis> is greater
-than <computeroutput>receiving_buffer~length</computeroutput>, the method
+than <code>receiving_buffer~length</code>, the method
 returns
-<computeroutput>0</computeroutput>. If
+<literal>0</literal>. If
 <emphasis role="italic">reference</emphasis> is null, the method returns
-<computeroutput>0</computeroutput> if
-you specify <computeroutput>Match</computeroutput>. Otherwise, the method
+<literal>0</literal> if
+you specify <literal>Match</literal>. Otherwise, the method
 returns the <emphasis role="italic">start</emphasis> value.</para>
 <indexterm><primary>examples</primary>
 <secondary>verify method</secondary></indexterm>
@@ -5499,7 +5502,7 @@ fewer than
 <emphasis role="italic">n</emphasis> words. The
 <emphasis role="italic">n</emphasis> must be a positive whole number. This
 method is exactly equivalent
-to <computeroutput>receiving_buffer~subWord(n,1)</computeroutput>.</para>
+to <code>receiving_buffer~subWord(n, 1)</code>.</para>
 </section>
 
 <section id="mthMutableBufferWordIndex"><title>wordIndex</title>
@@ -5518,7 +5521,7 @@ to <computeroutput>receiving_buffer~subWord(n,1)</computeroutput>.</para>
 <para>Returns the position of the first character in the
 <emphasis role="italic">n</emphasis>th whitespace-delimited word in the
 receiving buffer. It returns
-<computeroutput>0</computeroutput> if the receiving buffer has fewer
+<literal>0</literal> if the receiving buffer has fewer
 than
 <emphasis role="italic">n</emphasis> words. The
 <emphasis role="italic">n</emphasis> must be a positive whole number.
@@ -5542,7 +5545,7 @@ than
 
 <para>Returns the length of the <emphasis role="italic">n</emphasis>th
 whitespace-delimited word in the receiving buffer or
-<computeroutput>0</computeroutput> if the receiving buffer has fewer than
+<literal>0</literal> if the receiving buffer has fewer than
 <emphasis role="italic">n</emphasis> words. The <emphasis
 role="italic">n</emphasis> must be a positive whole number.</para>
 </section>
@@ -5564,7 +5567,7 @@ role="italic">n</emphasis> must be a positive whole number.</para>
 
 <para>Returns the word number of the first word of
 <emphasis role="italic">phrase</emphasis> found in the receiving buffer, or
-<computeroutput>0</computeroutput> if
+<literal>0</literal> if
 <emphasis role="italic">phrase</emphasis> contains no words or
 if <emphasis role="italic">phrase</emphasis> is not found. Multiple whitespace
 characters between words in either
@@ -6965,7 +6968,7 @@ which both also return this date as the third to fifth token of their result.
 </para>
 <para><example>
 <title>RexxInfo class &mdash; date method</title>
-<programlisting><![CDATA[say .RexxInfo~date    -- 9 Dec 2014 /* e. g. */
+<programlisting><![CDATA[say .RexxInfo~date    -- 9 Dec 2016 /* e. g. */
 ]]></programlisting></example></para>
 </section>
 
@@ -7376,7 +7379,7 @@ keyword instruction <xref linkend="keyParseVersion"/><!-- @@xreflabel -->.
 </para>
 <para><example>
 <title>RexxInfo class &mdash; name method</title>
-<programlisting><![CDATA[say .RexxInfo~name    -- REXX-ooRexx_5.0.0(MT)_64-bit 6.05 9 Oct 2016 /* e. g. */
+<programlisting><![CDATA[say .RexxInfo~name    -- REXX-ooRexx_5.0.0(MT)_64-bit 6.05 9 Dec 2016 /* e. g. */
 ]]></programlisting></example></para>
 </section>
 

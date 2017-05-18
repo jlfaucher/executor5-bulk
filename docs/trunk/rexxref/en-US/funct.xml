@@ -2029,7 +2029,7 @@ independent of the encoding of those characters (for example, ASCII or EBCDIC).
 </para>
 <para>Returns, by default, the local date in the format:
 <emphasis role="italic">dd mon yyyy</emphasis> (day
-month year&mdash;for example, <computeroutput>13 Nov 1998</computeroutput>),
+month year&mdash;for example, <computeroutput>14 May 2017</computeroutput>),
 with no leading zero or blank on the day. The first three characters of the
 English name of the month are used.</para>
 <para>You can use the following
@@ -2165,27 +2165,28 @@ to a minimum value of 12 when performing timestamp arithmetic.</para>
 example, <computeroutput>Tuesday</computeroutput>.
 </para></listitem></varlistentry>
 </variablelist>
-<para>Here are some examples, assuming today is 24 Nov 2015:
+<para>Here are some examples, assuming today is 24 Nov 2016:
 <indexterm><primary>DATE function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>DATE function</secondary></indexterm>
 <example id="ex.bif-date">
 <title>Builtin function DATE</title>
-<programlisting>DATE()       -- 24 Nov 2015
-DATE("B")    -- 735925
-DATE("D")    -- 328
-DATE("E")    -- 24/11/15
-DATE("F")    -- 63583996241962000
-DATE("I")    -- 2015-11-24
-DATE("L")    -- 24 November 2015
+<programlisting>
+DATE()       -- 24 Nov 2016
+DATE("B")    -- 736291
+DATE("D")    -- 329
+DATE("E")    -- 24/11/16
+DATE("F")    -- 63615600688459000
+DATE("I")    -- 2016-11-24
+DATE("L")    -- 24 November 2016
 DATE("M")    -- November
-DATE("N")    -- 24 Nov 2015
-DATE("O")    -- 15/11/24
-DATE("S")    -- 20151124
-DATE("T")    -- 1448399441
-DATE("U")    -- 11/24/15
-DATE("W")    -- Tuesday
+DATE("N")    -- 24 Nov 2016
+DATE("O")    -- 16/11/24
+DATE("S")    -- 20161124
+DATE("T")    -- 1480003888
+DATE("U")    -- 11/24/16
+DATE("W")    -- Thursday
 </programlisting>
 </example>
 </para>
@@ -2209,9 +2210,10 @@ to specify <emphasis role="italic">option2</emphasis> if
 format. Here are some examples: </para>
 <example id="ex.bif-date-1">
 <title>Builtin function DATE set</title>
-<programlisting>DATE("O","13 Feb 1923")     ->    "23/02/13"
-DATE("O","06/01/50","U")    ->    "50/06/01"
-DATE("N", "63326132161828000", "f")   -> "23 Sep 2007"
+<programlisting>
+DATE("O", "13 Feb 1923")            -->    "23/02/13"
+DATE("O", "06/01/50", "U")          -->    "50/06/01"
+DATE("N", "63630372300000000", "f") -->    "14 May 2017"
 </programlisting>
 </example>
 <para>If you specify an output separator character
@@ -2222,12 +2224,13 @@ for the formats "E", "I", "N", "O", "S", and "U".
 Here are some examples:</para>
 <example id="ex.bif-date-2">
 <title>Builtin function DATE set</title>
-<programlisting>DATE("S","13 Feb 1996","N","-")     ->    "1996-02-13"
-DATE("N","13 Feb 1996","N","")      ->    "13Feb1996"
-DATE("N","13 Feb 1996","N","-")     ->    "13-Feb-1996"
-DATE("O","06/01/50","U","")         ->    "500601"
-DATE("E","02/13/96","U",".")        ->    "13.02.96"
-DATE("N", , ,"_")                   ->    "26_Mar_1998"  (today)
+<programlisting>
+DATE("S", "13 Feb 2017", "N", "-")  -->    "2017-02-13"
+DATE("N", "13 Feb 2017", "N", "")   -->    "13Feb2017"
+DATE("N", "13 Feb 2017", "N", "-")  -->    "13-Feb-2017"
+DATE("O", "06/01/50", "U","")       -->    "500601"
+DATE("E", "02/13/17", "U",".")      -->    "13.02.17"
+DATE("N", , ,"_")                   -->    "14_May_2017"  (today)
 </programlisting>
 </example>
 <para>In this way, formats can be created that are derived from their
@@ -2269,25 +2272,27 @@ its separator character matches the character specified by
 <para>Here are some examples:</para>
 <example id="ex.bif-date-3">
 <title>Builtin function DATE set</title>
-<programlisting>DATE("S","1996-11-13","S","","-")      ->    "19961113"
-DATE("S","13-Nov-1996","N","","-")     ->    "19961113"
-DATE("O","06*01*50","U","","*")        ->    "500601"
-DATE("U","13.Feb.1996","N", ,".")      ->    "02/13/96"
+<programlisting>
+DATE("S", "2017-11-13", "S", "", "-")  -->    "20171113"
+DATE("S", "13-Nov-2017", "N", "", "-") -->    "20171113"
+DATE("O", "06*01*50","U", "", "*")     -->    "500601"
+DATE("U", "13.Feb.2017", "N", , ".")   -->    "02/13/17"
 </programlisting>
 </example>
 <para>You can determine the number of days between two dates; for example:</para>
 <example id="ex.bif-date-4">
 <title>Builtin function DATE days</title>
-<programlisting>say date("B", "12/25/15", "USA") - date("B") "shopping days till Christmas!"
+<programlisting>
+say date("B", "12/25/17", "USA") - date("B") "shopping days till Christmas!"
 </programlisting>
 </example>
 <para>If <emphasis role="italic">string</emphasis> does not include the
 century but <emphasis role="italic">option</emphasis> defines that the
 century be returned as part of the date, the century
 is determined depending on whether the year to be returned is within the past
-50 years or the next 49 years. Assume, for example, that you specify 10/15/43
-for <emphasis role="italic">string</emphasis> and today's date is 10/27/1998. In this case, 1943
-would be 55 years ago and 2043 would be 45 years in the future. So, 10/15/2043
+50 years or the next 49 years. Assume, for example, that you specify 10/15/61
+for <emphasis role="italic">string</emphasis> and today's date is 10/27/2016. In this case, 1961
+would be 55 years ago and 2061 would be 45 years in the future. So, 10/15/2061
 would be the returned date.</para>
 
 <note><title>Note</title>
@@ -2300,8 +2305,9 @@ A time stamp for a time and date combination can be created by
 combining a value from Time() for the time of day.</para>
 <example id="ex.bif-date-5">
 <title>Builtin function DATE timestamp</title>
-<programlisting>numeric digits 18  -- needed to add the timestamps
-timestamp = date('f, '20072301', 'S') + time('f', '08:14:22', 'N')
+<programlisting>
+numeric digits 18  -- needed to add the timestamps
+timestamp = date("f", "20170123", "S") + time("f", "08:14:22", "N")
 </programlisting>
 </example>
 </section>
@@ -4571,7 +4577,7 @@ stream("..\file.txt","c","query timestamp")
 </example>
 <para>A sample output might be: </para>
 <programlisting>
-1998-11-12 03:29:12
+2016-11-12 03:29:12
 </programlisting>
 </listitem></varlistentry>
 </variablelist>
@@ -5064,8 +5070,8 @@ combining a value from Date('F') for the time of day.</para>
 <example id="ex.bif-time-4">
 <title>Builtin function TIME with F option</title>
 <programlisting>
-    numeric digits 18  -- needed to add the timestamps
-    timestamp = date('f, '20072301', 'S') + time('f', '08:14:22', 'N')
+numeric digits 18  -- needed to add the timestamps
+timestamp = date("f", "20170123", "S") + time("f", "08:14:22", "N")
 </programlisting>
 </example>
 <indexterm><primary>implementation maximum</primary>
