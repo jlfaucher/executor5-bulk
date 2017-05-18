@@ -310,7 +310,7 @@ options[1].optionName = NULL;
 </example>
 </listitem></varlistentry>
 <varlistentry><term>REGISTER_LIBRARY</term>
-<listitem><para>Specifies a package that will be registerd with the Rexx environment
+<listitem><para>Specifies a package that will be registered with the Rexx environment
 without loading an external library.  The library is specified with a RexxLibraryPackage
 structure that gives the library name and a pointer to the associated
 RexxPackageEntry (<xref linkend="buildinglibs" />)
@@ -782,14 +782,14 @@ These object references are only
 valid until the current context is destroyed.  They cannot be stored in native code
 control blocks and be used in other thread contexts.  If you wish to store object references so
 that they can be accessed by other thread contexts, you can create a globally valid object
-reference using the RequestClobalResource() (<xref linkend="mthRequestGlobalReference" />
+reference using the RequestGlobalReference() (<xref linkend="mthRequestGlobalReference" />
 API.  A global reference will protect the
 object from the garbage collector until the interpreter instance is terminated.  Protecting
 the object will also protect any objects referenced by the protected object.  For example,
 using RequestGlobalReference() to protect a Directory object will also protect all of the
 directory keys and values.
 The global reference can be used with any API context valid for the same interpreter instance. Once you
-are finished with a locked object, ReleaseGlobalResource() (<xref
+are finished with a locked object, ReleaseGlobalReference() (<xref
 linkend="mthReleaseGlobalReference" />) removes the object lock and makes
 the object eligible for garbage collection.
 </para>
@@ -846,7 +846,7 @@ a RexxInstance object.</para>
 
 <section id="methodcontext"><title>Rexx Method Context Interface</title>
 <para>A RexxMethodContext object is included as an argument
-to any native C++ methof (<xref linkend="methodapi" />)
+to any native C++ method (<xref linkend="methodapi" />)
 defined in external libraries.  The method context provides services that are specific to
 a method call, including:
 </para>
@@ -6484,7 +6484,7 @@ obj = context->GetStemElement(sobj, name);
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>The the object at the target index or NULLOBJECT if the target index
+<para>The object at the target index or NULLOBJECT if the target index
 has not been assigned a value.</para>
 </section>
 
