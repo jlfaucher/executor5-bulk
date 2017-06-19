@@ -4256,7 +4256,7 @@ For the second form, a String object is created from the ASCII-Z string data..</
 </informaltable>
 <programlisting language="C++">
 <![CDATA[
-RexxDirectoryObject dirj;
+RexxDirectoryObject dir;
 RexxCondition cond;
 
 // Method Syntax Form(s)
@@ -4264,7 +4264,24 @@ RexxCondition cond;
 context->DecodeConditionInfo(dir, &cond);
 ]]>
 </programlisting>
-<para>Decodes the condition information into a RexxCondition structure.
+<para>Decodes the condition information into a RexxCondition structure, which
+is defined as follows:
+<programlisting language="C++">
+<![CDATA[
+typedef struct
+{
+  wholenumber_t code;                // full condition code
+  wholenumber_t rc;                  // return code value
+  size_t           position;         // line number position
+  RexxStringObject conditionName;    // name of the condition
+  RexxStringObject message;          // fully filled in message
+  RexxStringObject errortext;        // major error text
+  RexxStringObject program;          // program name
+  RexxStringObject description;      // description text
+  RexxArrayObject  additional;       // additional information
+} RexxCondition;
+]]>
+</programlisting>
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
