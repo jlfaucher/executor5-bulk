@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007 - 2008 Rexx Language Association. All rights reserved.  */
+/* Copyright (c) 2007-2017 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -273,5 +273,86 @@ return testResult
   end
   s~close
   f~delete
+
+
+-- listRoot: too many arguments 
+::method test_listroots_one_arg
+  self~expectSyntax(88.922) -- Too many arguments in invocation
+  .File~listRoots(.nil)
+
+
+-- listRoot: too many arguments 
+::method test_listroots
+  roots = .File~listRoots
+  self~assertIsA(roots, .Array, ".File~listRoots should return an Array; found" roots~class~id)
+  if .File~separator = "/" then do
+    -- on Unix we expect a single-item Array of "/"
+    self~assertEquals(1, roots~items, ".File~listRoots should return a single-item Array; found" roots~items "items")
+    self~assertEquals("/", roots[1], ".File~listRoots should return '/'; found" roots[1])
+  end  
+  else do
+    -- on Windows we expect an Array of one or more uppercase "D:\" strings
+    self~assertTrue(roots~items >= 1, ".File~listRoots should return an Array with one or more items; found" roots~items "items")
+    do root over roots
+      self~assertEquals(3, root~length, ".File~listRoots should return roots of the form 'D:\'; found" root)
+      self~assertTrue(root~endsWith(":\"), ".File~listRoots should return roots of the form 'D:\'; found" root)
+      self~assertTrue(root[1]~dataType("UPPER"), ".File~listRoots should return roots of the form 'D:\'; found" root)
+    end
+  end
+
+
+-- absolutePath: too many arguments 
+::method test_absolutepath_one_arg
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  .File~new(".")~absolutePath(.nil)
+
+
+-- absolutePath: normalization
+::method test_absolutepath
+  -- normalization should remove trailing slashes
+  current = .File~new(".")~absolutePath
+  do path over ".", "./", ".//"
+    current = .File~new(path)~absolutePath
+    self~assertEquals(directory(), current, ".File~new('" || path || "')~absolutePath should return current directory" directory()"; found" current)
+  end
+
+  if .File~separator = "/" then do
+
+    -- Unix-only
+
+    -- normalization should remove trailing or duplicate slashes
+    expected = "/usr"
+    do path over "/usr", "/usr/", "/usr//", "//usr", "//usr/", "//usr//"
+      actual = .File~new(path)~absolutePath
+      self~assertEquals(expected, actual, ".File~new('" || path || "')~absolutePath should return" expected"; found" actual)
+    end
+
+  end
+  else do
+
+    -- Windows-only
+
+    -- normalization should remove trailing or duplicate backslashes and slashes
+    -- all slashes should be converted to backslashes
+    expected = "C:\Users"
+    do path over "C:\Users", "C:\\Users", "C:\Users\", "C:\Users\\", "C:/Users", "C://Users", "C:/Users/", "C:/Users/\", "C:\/Users/\"
+      actual = .File~new(path)~absolutePath
+      self~assertEquals(expected, actual, ".File~new('" || path || "')~absolutePath should return" expected"; found" actual)
+    end
+
+    -- normalization should NOT change a naked drive specification D:
+    drive = filespec("drive", directory())
+    current = .File~new(drive)~absolutePath
+    self~assertEquals(directory(), current, ".File~new('" || drive || "')~absolutePath should return current directory" directory()"; found" current)
+
+    -- normalization should NOT remove the last trailing slash for root D:\
+    expected = drive || "\"
+    do path over expected, expected || "/", expected || "//", expected || "\", expected || "\\"
+      actual = .File~new(path)~absolutePath
+      self~assertEquals(expected, actual, ".File~new('" || path || "')~absolutePath should return" expected"; found" actual)
+    end
+
+  end
+
 
 -- End of class: File.testGroup
