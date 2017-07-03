@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2007-2017 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -1802,6 +1802,23 @@ makeColl: procedure
   self~assertTrue(testSeq(a1, a2))
 
   return
+
+
+-- https://sourceforge.net/p/oorexx/bugs/1466/
+::method test_sortWith_bug1466
+
+  call random , , 42
+
+  n = 70000
+  a = .Array~new(n)
+  do n
+    a~append(random(1, n))
+  end
+  a~sortWith(.NumericComparator~new)
+  do i = 1 to n - 1
+    if a[i] > a[i + 1] then
+      assertFail("sortWith() elements" i "and" i + 1 "should be sorted ascending; found" a[i] "and" a[i + 1])
+  end
 
 
 ::method testInsert
