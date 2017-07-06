@@ -365,7 +365,7 @@ options[1].optionName = NULL;
 instance.  The handlers are a list of RexxContextEnvironment structs.  Each enabled handler is
 specified in a single RexxContextEnvironment struct identifying the handler name and
 entry point.
-The list is terminated by an instance using a
+The list is terminated by an instance using a handler entry point of NULL or a
 handler name of NULL.  The direct environment handlers are called using the calling convention
 described in <xref linkend="commandapi" />.
 </para>
@@ -378,6 +378,7 @@ RexxOption options[2];
 
 environments[0].handler = editorHandler;
 environments[0].name = "EDITOR";
+environments[1].handler = NULL;
 environments[1].name = NULL;
 
 options[0].optionName = DIRECT_ENVIRONMENTS;
