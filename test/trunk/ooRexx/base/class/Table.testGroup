@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2007-2017 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -822,6 +822,32 @@ makeColl: procedure
   t[.DateTime~new(1)] = 0
   t[.File~new(1)] = 0
   self~assertEquals(4, t~items)
+
+
+-- in contrast to an IdentityTable, a Table should see two object
+-- instances which compare true with == as the same index (or item)
+-- even though they are really different objects
+-- see https://sourceforge.net/p/oorexx/bugs/1468
+::method test_bug_1468
+  t = .Table~new
+  f1 = .File~new(1)
+  f2 = .File~new(1)
+  -- f1 and f2 compare true for = and == ..
+  self~assertTrue(f1 = f2)
+  self~assertTrue(f1 == f2)
+  -- .. but compare false for f1~identityHash == f2~identityHash
+  self~assertFalse(f1~identityHash == f2~identityHash)
+  -- a Table should see them as the same index
+  t[f1] = .true
+  t[f2] = f2
+  self~assertEquals(1, t~items)
+  self~assertTrue(t~hasIndex(f1))
+  self~assertTrue(t~hasIndex(f2))
+
+  -- same goes for item equality
+  self~assertTrue(t~hasItem(f1))
+  self~assertTrue(t~hasItem(f2))
+
 
 
 /* Test whether both collections contain the same entries.

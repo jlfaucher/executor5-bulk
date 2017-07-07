@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2007-2017 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -648,6 +648,32 @@ makeColl: procedure
     a~append(el)
     End
   self~assertSame(3,a~items)
+
+
+-- in contrast to a Table, an IdentityTable should see two object
+-- instances which compare true with == as different indexes (or items),
+-- because they are really different objects
+-- see https://sourceforge.net/p/oorexx/bugs/1468
+::method test_bug_1468
+  t = .IdentityTable~new
+  f1 = .File~new(1)
+  f2 = .File~new(1)
+  -- f1 and f2 compare true for = and == ..
+  self~assertTrue(f1 = f2)
+  self~assertTrue(f1 == f2)
+  -- .. but compare false for f1~identityHash == f2~identityHash
+  self~assertFalse(f1~identityHash == f2~identityHash)
+  -- an IdentityTable should see them as two different indexes
+  t[f1] = .true
+  t[f2] = f2
+  self~assertEquals(2, t~items)
+  self~assertTrue(t~hasIndex(f1))
+  self~assertTrue(t~hasIndex(f2))
+
+  -- same goes for item equality
+  self~assertFalse(t~hasItem(f1))
+  self~assertTrue(t~hasItem(f2))
+
 
 /* Test whether both collections contain the same entries.
    returns .true, if the same, .false else
