@@ -1194,7 +1194,7 @@ equivalent of loading an external function using the
 <secondary>::ROUTINE directive</secondary>
 <tertiary>EXTERNAL option</tertiary></indexterm>
 <example id="ex.directive-routine-registered">
-<title>ROUTINE REGISTERED examples</title>
+<title>ROUTINE EXTERNAL examples</title>
 <programlisting>
 
 -- load a function from rxmath library
@@ -1202,7 +1202,7 @@ equivalent of loading an external function using the
 -- same function, but a different internal name
 ::routine Pi EXTERNAL "LIBRARY rxmath RxCalcPi"
 -- same as call rxfuncadd "SQLLoadFuncs", "rexxsql", "SQLLoadFuncs"
-::routine SQLLoadFuncs "REGISTERED rexxsql SQLLoadFuncs"
+::routine SQLLoadFuncs EXTERNAL "REGISTERED rexxsql SQLLoadFuncs"
 
 </programlisting>
 </example>
