@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007 - 2008 Rexx Language Association. All rights reserved.  */
+/* Copyright (c) 2007-2017 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -176,5 +176,58 @@ return testResult
   self~assertSame("stderr line 3", line)
   parse pull line
   self~assertSame("stderr line 4", line)
+
+
+-- test maximum RXQUEUE line length allowed
+::method test_rxqueue_maximum_line_length
+
+  -- rexref says, 65472 chars allowed
+  a = .Array~new(2)~fill("x"~copies(65472))
+  long = createFile(a, "rxqueue_maximum_line_length")
+  .stdque~empty
+
+  -- test piping stdin
+  "type" long "| rxqueue"
+  self~assertEquals(2, queued())
+  self~assertEquals(a~makeString("c"), .stdque~makeArray~makeString("c"))
+  self~assertEquals(0, queued())
+
+  -- test redirecting stdin
+  "rxqueue <" long
+  self~assertEquals(2, queued())
+  self~assertEquals(a~makeString("c"), .stdque~makeArray~makeString("c"))
+  self~assertEquals(0, queued())
+
+  call deleteFile long
+
+
+-- test for [bugs:#1471] RXQUEUE loses lineends every 4096 chars
+::method test_rxqueue_bug_1471
+
+  -- a rather obscure bug, seen on Windows, maybe starting with MSVC 2015
+  -- when RXQUEUE reads piped(*) stdin, a Cr-Lf sequence that happens to be
+  -- exactly at position 8193 will simply get lost
+  -- (*) this only happens if stdin is *piped* to rxqueue,
+  --   e. g. "type abc.txt | rxqueue"
+  --   not when read directly, e. g. "rxqueue < abc.txt"
+
+  if .ooRexxUnit.OSName \== "WINDOWS" then
+    return
+
+  -- we create a file with 500 lines, 15 chars each
+  -- the Cr-Lf sequence of line 482 will be exactly at position 8193:
+  -- 481 lines of length 17 (including Cr-Lf), plus 15 chars = 8192
+  -- the Cr-Lf sequence following line 482 gets lost due to [bugs:#1471]
+  a = .Array~new(500)~fill("0123456789ABCDE")
+
+  bug1471 = createFile(a, "rxqueue_bug_1471")
+  .stdque~empty
+  "type" bug1471 "| rxqueue"
+  self~assertEquals(500, queued())
+  self~assertEquals(a~makeString("c"), .stdque~makeArray~makeString("c"))
+  self~assertEquals(0, queued())
+
+  call deleteFile bug1471
+
 
 -- End of class: rxQueue.testGroup

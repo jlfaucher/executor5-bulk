@@ -298,7 +298,7 @@ handler routine.
 </imageobject>
 </mediaobject>
 
-<para>The RXQUEUE filter usually operates on the default queue named SESSION.
+<para>The RXQUEUE filter usually operates on the default queue named <literal>SESSION</literal>.
 However, if an environment variable named RXQUEUE exists, the RXQUEUE value
 is used for the queue name.</para>
 <para>For a full description of Rexx queue services for applications programming,
@@ -307,13 +307,13 @@ see <xref linkend="xtlque" />.</para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">queuename</emphasis></term>
 <listitem><para>The name of the named Rexx queue to stack or queue items to.
-If no <emphasis role="italic">queuename</emphasis> is given, 'SESSION' is used.
+If no <emphasis role="italic">queuename</emphasis> is given, <literal>SESSION</literal> is used.
 </para></listitem></varlistentry>
+<varlistentry><term>/FIFO</term>
+<listitem><para>queues items from STDIN first in, first out (FIFO) on the Rexx queue.
+This is the default.</para></listitem></varlistentry>
 <varlistentry><term>/LIFO</term>
 <listitem><para>stacks items from STDIN last in, first out (LIFO) on the Rexx
-queue.  This is the default.</para></listitem></varlistentry>
-<varlistentry><term>/FIFO</term>
-<listitem><para>queues items from STDIN first in, first out (FIFO) on the Rexx
 queue.</para></listitem></varlistentry>
 <varlistentry><term>/CLEAR</term>
 <listitem><para>removes all lines from the Rexx queue.
@@ -328,7 +328,7 @@ queue.</para></listitem></varlistentry>
   direct output to any Rexx queue, either FIFO (first in, first out) or LIFO (last in, first out).
 </para>
 <para>RXQUEUE uses the environment variable RXQUEUE for the default queue name.
-When RXQUEUE does not have a value, RXQUEUE uses SESSION for the queue name.
+When RXQUEUE does not have a value, RXQUEUE uses <literal>SESSION</literal> for the queue name.
 </para>
 <para>The following example obtains the Windows version number with RXQUEUE:
 </para>
