@@ -95,17 +95,19 @@ contains the following entries:
 </para></listitem></varlistentry>
 <varlistentry><term>ARGUMENTS</term>
 <listitem><para>An array of the function arguments.</para>
-<para>When the CALL method returns <computeroutput>1</computeroutput>,
+</listitem></varlistentry>
+</variablelist>
+
+When the CALL method returns <computeroutput>1</computeroutput>,
 indicating that it handled the external call, the security manager
 places the function result in the information directory as the entry RESULT.
 </para>
 </listitem></varlistentry>
-</variablelist>
 
-</para></listitem></varlistentry>
 <varlistentry><term>COMMAND</term>
 <listitem><para>sent for all host command instructions. The information
 directory contains the following entries:
+
 <variablelist>
 <varlistentry><term>COMMAND</term>
 <listitem><para>The string that represents the host command.
@@ -113,7 +115,10 @@ directory contains the following entries:
 <varlistentry><term>ADDRESS</term>
 <listitem><para>The name of the target ADDRESS environment for the command.
 </para>
-<para>When the COMMAND method returns <computeroutput>1</computeroutput>,
+</listitem></varlistentry>
+</variablelist>
+
+When the COMMAND method returns <computeroutput>1</computeroutput>,
 indicating that it handled the command, the security manager uses the following
 information directory entries to return the command results:
 
@@ -134,8 +139,6 @@ FAILURE entry is not set.
 </variablelist>
 
 </para></listitem></varlistentry>
-</variablelist>
-</para></listitem></varlistentry>
 
 <varlistentry><term>REQUIRES</term>
 <listitem><para>sent whenever a ::REQUIRES directive in the file is processed.
@@ -151,8 +154,8 @@ When the REQUIRES method returns
 handled the request, the entry NAME in the information directory is replaced
 with the name of the actual file to load for the request. The REQUIRES method
 can also provide a security manager to be used for the program loaded by the
-::REQUIRES directive by setting the information direction entry SECURITYMANAGER
-into the desired security manager object.</para>
+::REQUIRES directive by setting the information directory entry SECURITYMANAGER
+to the desired security manager object.</para>
 </listitem></varlistentry>
 <varlistentry><term>LOCAL</term>
 <listitem><para>sent whenever Rexx is going to access an entry in the .LOCAL
