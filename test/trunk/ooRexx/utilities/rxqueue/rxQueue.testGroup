@@ -187,7 +187,12 @@ return testResult
   .stdque~empty
 
   -- test piping stdin
-  "type" long "| rxqueue"
+  select case .ooRexxUnit.OSName
+    when "WINDOWS" then
+      "type" long "| rxqueue"
+    otherwise
+      "cat" long "| rxqueue"
+  end
   self~assertEquals(2, queued())
   self~assertEquals(a~makeString("c"), .stdque~makeArray~makeString("c"))
   self~assertEquals(0, queued())
