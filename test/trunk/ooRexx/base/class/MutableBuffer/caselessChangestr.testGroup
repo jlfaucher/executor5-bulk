@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007 - 2008 Rexx Language Association. All rights reserved.  */
+/* Copyright (c) 2007-2017 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -41,7 +41,7 @@
 /*----------------------------------------------------------------------------*/
   parse source . . s
   group = .TestGroup~new(s)
-  group~add(.caselessChangestr.testGroup)
+  group~add(.MutableBuffer_caselessChangeStr.testGroup)
 
   if group~isAutomatedTest then return group
 
@@ -51,7 +51,7 @@ return testResult
 
 ::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
-::class "caselessChangestr.testGroup" subclass ooTestCase public
+::class "MutableBuffer_caselessChangeStr.testGroup" subclass ooTestCase public
 
 ::method "test_ChangeStr_caseless"
    b = .mutableBuffer~new('aAbBcC')
@@ -121,4 +121,46 @@ return testResult
 ::method test_count_negative
    self~expectSyntax(93.906) -- Method argument .. must be zero or a positive whole number
    .MutableBuffer~new("Test")~caselessChangeStr("t", "-", -1)
+
+::method test_caselesschangestr_no_args
+   self~expectSyntax(93.903) -- Missing argument in method; argument 1 is required
+   .MutableBuffer~new("")~caselessChangeStr
+
+::method test_caselesschangestr_one_arg
+   self~expectSyntax(93.903) -- Missing argument in method; argument 2 is required
+   .MutableBuffer~new("")~caselessChangeStr("")
+
+::method test_caselesschangestr_four_args
+   self~expectSyntax(93.902) -- Too many arguments in invocation of method; 3 expected
+   .MutableBuffer~new("")~caselessChangeStr("", "", 0, .nil)
+
+::method test_caselesschangestr_needle_nullstring
+  string = "string"
+  m = .MutableBuffer~new(string)
+  self~assertSame(string, m~caselessChangeStr("", ""))
+  self~assertSame(string, m~caselessChangeStr("", "", 0))
+  self~assertSame(string, m~caselessChangeStr("", "", 1))
+  self~assertSame(string, m~caselessChangeStr("", "newneedle"))
+  self~assertSame(string, m~caselessChangeStr("", "newneedle", 0))
+  self~assertSame(string, m~caselessChangeStr("", "newneedle", 1))
+
+-- caselessChangeStr() has three code paths which we test here:
+--   needle and newneedle are of the same length
+--   newneedle is shorter than needle: result string will get shorter
+--   newneedle is longer than needle: result string will get longer
+::method test_caselesschangestr_needles_three_paths
+  str = "birdbird1bird"
+  needle = "bird"
+  do newNeedle over "", "cat", "fish", "mouse", "Cat", "fISH", "MOUSE"
+    do string over str, str || "_", "_" || str, "_" || str || "_"
+      m = .MutableBuffer~new(string)
+      -- use .String's caselessChangeStr() method (with a very different implementation) as reference
+      self~assertSame(string~caselessChangeStr(needle, newNeedle), m~caselessChangeStr(needle, newNeedle))
+      do count = 0 to 4
+        m = .MutableBuffer~new(string)
+        self~assertSame(string~caselessChangeStr(needle, newNeedle, count), m~caselessChangeStr(needle, newNeedle, count))
+      end
+    end
+  end
+
 
