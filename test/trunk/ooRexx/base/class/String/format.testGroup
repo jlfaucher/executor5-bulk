@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007 - 2008 Rexx Language Association. All rights reserved.  */
+/* Copyright (c) 2007-2017 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -2699,5 +2699,57 @@ return testResult
       numeric digits d
     v = "0." || 1~copies(d)
     self~assertSame(v, v~format(, d))
-  end               
+  end
+
+
+-- tests for the [bugs:1474] "format bif crashes"
+
+::method test_format_bug_1474_as_reported
+  numeric digits 19
+  u = 2.0493692807285326668E-22
+  v = 0.295520207
+  self~assertSame("                   6.056300340603371E-23", (u * v)~format(20, 15))
+
+::method test_format_bug_1474_short
+  self~assertSame("1.12345678E-11", 1.12345678e-11~format(, 8)) -- had worked
+  self~assertSame("1.1234568E-11",  1.12345678e-11~format(, 7)) -- had bug
+
+-- full test of below generic form
+-- failed for 5.0 with bug
+-- ran w/o failure for 4.2, but still with the exponential-switch-to-non-exponential issue
+-- ooRexx 5.0 format() results should now be in line with REXX370 results
+/*
+n = 1234567891011                       
+do i = 1 to 30                          
+  say right(i, 2) left(n, 21) format(n, , 5)
+  n = n / 10                            
+end
+*/                                     
+::method test_format_bug_1474_full
+  do case = 1 to 3
+    select
+      when case = 1 then do
+        n = 12345678901234
+        reps = 30
+      end
+      when case = 2 then do
+        numeric digits 18
+        n = 1234567890123456789012345
+        reps = 60
+      end
+      when case = 3 then do
+        numeric digits 19
+        n = 1234567890123456789012345
+      end
+    end
+
+    do reps
+      f = n~format(, 5)
+      parse var f before "." after "E"
+      self~assertTrue(before~dataType("number"), "before must be all-numeric:" f)
+      self~assertTrue(after~dataType("number"), "after must be all-numeric:" f)
+      self~assertSame(5, after~length, "after must be length 5:" f)
+      n = n / 10
+    end
+  end
 
