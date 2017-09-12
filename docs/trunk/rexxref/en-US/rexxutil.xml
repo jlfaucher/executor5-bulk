@@ -1423,6 +1423,17 @@ call SysFileMove "c:\temp\myfile.txt", "d:\myfolder"
 
 <para>Finds all file lines containing the target string and returns the file
 lines in a Rexx stem variable collection.</para>
+
+<note><title>Restrictions</title>
+<para>The maximum supported file line length is 4095 characters.
+Any part of a line beyond 4095 characters is neither searched nor returned.
+</para>
+<para>For the purpose of searching, any <literal>'00'x</literal> character
+is replaced by a blank in both the <emphasis role="italic">target</emphasis>,
+and the <emphasis role="italic">file</emphasis> line.
+</para>
+</note>
+
 <para><emphasis role="bold">Parameters:</emphasis></para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">target</emphasis></term>
@@ -1445,7 +1456,7 @@ stores the individual lines in variables
 <listitem><para>Conducts a case-sensitive search.
 </para></listitem></varlistentry>
 <varlistentry><term>"N"</term>
-<listitem><para>Returns the file line numbers.
+<listitem><para>Prepends file line numbers to any returned lines.
 </para></listitem></varlistentry>
 </variablelist>
 The default is a case-insensitive search without line numbers.</para>
