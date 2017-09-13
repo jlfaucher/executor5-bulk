@@ -355,4 +355,26 @@ return testResult
   end
 
 
+-- a specified root parent path must not cause duplicate separators 
+::method test_root_parent_path
+  if .File~separator = "/" then do
+
+    -- Unix-only
+
+    expected = "/usr"
+    actual = .File~new("usr", "/")~absolutePath
+    self~assertEquals(expected, actual, ".File~new('usr', '/')~absolutePath should return" expected"; found" actual)
+
+  end
+  else do
+
+    -- Windows-only
+
+    expected = "C:\User"
+    actual = .File~new("User", "C:\")~absolutePath
+    self~assertEquals(expected, actual, ".File~new('User', 'C:\')~absolutePath should return" expected"; found" actual)
+
+  end
+
+
 -- End of class: File.testGroup
