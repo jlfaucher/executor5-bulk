@@ -3693,9 +3693,10 @@ could be others.
 <para>Pauses a Rexx program for a specified time interval.</para>
 <para><emphasis role="bold">Parameter:</emphasis></para>
 <variablelist>
-<varlistentry><term><emphasis role="italic">secs</emphasis></term>
-<listitem><para>The number of seconds for which the program is to be paused.
-You can specify up to seven decimal places in the number.
+<varlistentry><term><emphasis role="italic">delay</emphasis></term>
+<listitem><para>The number of seconds for which the program is to be paused,
+which must be in the range 0 to 2147483 for Windows,
+and 0 to 999999999 for Unix-like systems.
 </para></listitem></varlistentry>
 </variablelist>
 <indexterm><primary>rexxutil functions</primary>
@@ -3712,8 +3713,6 @@ Say "Now paused for 2 seconds ..."
 Call SysSleep 2
 Say "Now paused for 0.1234567 seconds ..."
 Call SysSleep 0.1234567
-
-Call SysSleep 0.12345678 -- Error 40: Incorrect call to routine
 </programlisting>
 </example>
 </section>
