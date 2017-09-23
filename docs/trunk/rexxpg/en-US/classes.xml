@@ -536,10 +536,12 @@ To retrieve your object, you use the form: </para>
 <programlisting>
 say .environment~<emphasis role="italic">your.object</emphasis>
 </programlisting>
-<para> The scope of <computeroutput>.environment</computeroutput> is
+<para>The scope of <literal>.environment</literal> is
 <indexterm><primary>symbols</primary>
 <secondary>.environment symbol</secondary></indexterm>
-the current process.</para>
+the current process, which means it is shared among all interpreter instances
+executing in this process.
+</para>
 <para>You use an environment symbol to access the entries of this
 directory. An environment symbol starts with a period and has at least one
 other character, and the symbol is not a valid numeric value. You have seen environment symbols
@@ -580,7 +582,7 @@ Rexx-defined entries.</para>
 <indexterm><primary>symbols</primary>
 <secondary>.local symbol</secondary></indexterm>
 <indexterm><primary>Local environment object</primary></indexterm>
-<para>The Local environment object is a directory of process-specific objects
+<para>The Local environment object is a directory of interpreter instance-specific objects
 that are always accessible. To place something in the Local environment directory,
 you use the form: </para>
 <programlisting>
@@ -591,8 +593,10 @@ with current or future Rexx entries to the Local directory. To retrieve your
 object, you use the form: </para>
 <programlisting>
 say .local~<emphasis role="italic">your.object</emphasis>
-</programlisting><para> The
-scope of <computeroutput>.local</computeroutput> is the current process.</para>
+</programlisting>
+<para>The scope of <literal>.local</literal> is the current interpreter instance.
+Each Rexx interpreter instance has its own copy of <literal>.local</literal>.
+</para>
 <para>You access objects in the Local environment object like in the Environment
 object. Rexx provides the following objects in the Local environment: </para>
 <variablelist>
@@ -673,7 +677,7 @@ are: </para>
 program file.</para></listitem>
 <listitem><para>The directory of PUBLIC classes declared on ::CLASS directives of other
 files included with a ::REQUIRES directive.</para></listitem>
-<listitem><para>The program local environment directory, which includes process-specific
+<listitem><para>The program local environment directory, which includes interpreter instance-specific
 objects such as the .INPUT and .OUTPUT objects. You can directly access the
 local environment directory by using the .Local environment symbol.</para></listitem>
 <listitem><para>The global environment directory, which includes all &quot;permanent&quot; Rexx
