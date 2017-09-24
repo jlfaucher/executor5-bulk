@@ -83,6 +83,8 @@ authorization failures.</para>
 </para>
 
 <variablelist>
+
+
 <varlistentry><term>CALL
 <indexterm><primary>calls to the Security Manager</primary></indexterm>
 </term>
@@ -99,10 +101,11 @@ contains the following entries:
 </variablelist>
 
 When the CALL method returns <computeroutput>1</computeroutput>,
-indicating that it handled the external call, the security manager
-places the function result in the information directory as the entry RESULT.
+indicating that it handled the external call, the entry RESULT (if any)
+in the information directory is used as the function call result.
 </para>
 </listitem></varlistentry>
+
 
 <varlistentry><term>COMMAND</term>
 <listitem><para>sent for all host command instructions. The information
@@ -140,23 +143,28 @@ FAILURE entry is not set.
 
 </para></listitem></varlistentry>
 
+
 <varlistentry><term>REQUIRES</term>
 <listitem><para>sent whenever a ::REQUIRES directive in the file is processed.
 The information directory contains the following entry:
+
 <variablelist>
 <varlistentry><term>NAME</term>
 <listitem><para>The name of the file specified on the ::REQUIRES directive.
 </para></listitem></varlistentry>
 </variablelist>
 
-When the REQUIRES method returns
-<computeroutput>1</computeroutput>, indicating that it
-handled the request, the entry NAME in the information directory is replaced
-with the name of the actual file to load for the request. The REQUIRES method
+When the REQUIRES method returns <computeroutput>1</computeroutput>,
+indicating that it handled the request, the entry NAME
+in the information directory is used as the actual file to load
+for the request.
+The REQUIRES method
 can also provide a security manager to be used for the program loaded by the
 ::REQUIRES directive by setting the information directory entry SECURITYMANAGER
 to the desired security manager object.</para>
 </listitem></varlistentry>
+
+
 <varlistentry><term>LOCAL</term>
 <listitem><para>sent whenever Rexx is going to access an entry in the .LOCAL
 directory as part of the resolution of the environment symbol name. The
@@ -167,6 +175,7 @@ information directory contains the following entry:
 <listitem><para>The name of the target directory entry.
 </para></listitem></varlistentry>
 </variablelist>
+
 When the LOCAL method returns
 <computeroutput>1</computeroutput>, indicating that it handled
 the request, the information directory entry RESULT contains the directory
@@ -175,10 +184,13 @@ entry. When RESULT is not set and the method returns
 the same as a failure to find an entry in the .LOCAL directory. Rexx continues
 with the next step in the name resolution.</para>
 </listitem></varlistentry>
+
+
 <varlistentry><term>ENVIRONMENT</term>
 <listitem><para>sent whenever Rexx is going to access an entry in
 the .ENVIRONMENT directory as part of the resolution of the environment symbol
 name. The information directory contains the following entry:
+
 <variablelist>
 <varlistentry><term>NAME</term>
 <listitem><para>The name of the target directory entry.
@@ -193,6 +205,8 @@ directory entry. When RESULT is not set and the method returns
 this is the same as a failure to find an entry in the .ENVIRONMENT directory.
 Rexx continues with the next step in the name resolution.</para>
 </listitem></varlistentry>
+
+
 <varlistentry><term>STREAM</term>
 <listitem><para>sent whenever one of the Rexx input and output built-in
 functions (CHARIN, CHAROUT, CHARS, LINEIN, LINEOUT, LINES, or STREAM) needs to
@@ -204,17 +218,21 @@ resolve a stream name. The information directory contains the following entry:
 </para></listitem></varlistentry>
 </variablelist>
 
-When the STREAM method returns
-<computeroutput>1</computeroutput>, the information directory
-STREAM must be set to an object to be used as the stream target. This should
-be a stream object or another object that supports the Stream class methods.
+When the STREAM method returns <computeroutput>1</computeroutput>,
+indicating that it handled the request, the information directory
+entry RESULT must be set to an object to be used as the stream target.
+This should be a stream object or another object that supports the Stream
+class methods.
 </para>
 </listitem></varlistentry>
+
+
 <varlistentry><term>METHOD</term>
 <listitem><para>sent whenever a secure program attempts to send a message for
 a protected method (see the ::METHOD directive
 <xref linkend="methd" />) to an object. The
 information directory contains the following entries:
+
 <variablelist>
 <varlistentry><term>OBJECT</term>
 <listitem><para>The object the protected method is issued against.
@@ -227,12 +245,13 @@ information directory contains the following entries:
 </para></listitem></varlistentry>
 </variablelist>
 
-When the METHOD method returns
-<computeroutput>1</computeroutput>, indicating that it handled
-the external call, the function result can be placed in the information
-directory as the method RESULT.</para>
+When the METHOD method returns <computeroutput>1</computeroutput>,
+indicating that it handled the request, the entry RESULT (if any)
+in the information directory is used as the method result.
+</para>
 </listitem></varlistentry>
 </variablelist>
+
 
 <section id="callsmexmp"><title>Example</title>
 <para>The following agent program includes all the actions for which the
