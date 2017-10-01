@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2007-2017 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -93,6 +93,49 @@ return testResult
   self~checkFrame("INTERPRET", .nil, frame, info)
   exit
 
+::method testCompileFrame
+
+  signal on syntax
+  .Method~new("", "~~")
+  -- we should never reach this
+  self~expectSyntax(35.1)              -- Incorrect expression detected at "~~"
+  return
+
+  syntax:
+  info = grabContextInfo(.Context, .line, condition("o")["STACKFRAMES"])
+
+  -- in contrast to .Context~stackFrames(), which returns an Array of stack frames,
+  -- the condition object's "STACKFRAMES" entry returns a List of stack frames
+  -- thus we have to use firstItem() here, using [1] won't work
+  frame = info~stackFrames~firstItem
+  -- COMPILE frames do not have arguments, nor name, executable, target, or context
+  -- here, line is 1
+  self~assertSame("COMPILE", frame~type)
+  self~assertSame(0, frame~arguments~items)
+  self~assertSame("", frame~name)
+  self~assertNull(frame~executable)
+  self~assertSame(1, frame~line)
+  self~assertNull(frame~target)
+  self~assertSame(frame~traceLine, frame~string)
+  self~assertSame(frame~traceLine, frame~makeString)
+  self~assertNull(frame~context)       -- no RexxContext for native code
+
+::method testProgramFrame
+
+  -- our top-most stack frame should be of type PROGRAM
+  frame = .Context~stackFrames~lastItem
+  -- we don't know much about our PROGRAM frame, so that's a pretty generic test
+  self~assertSame("PROGRAM", frame~type)
+  self~assertEquivalentList(frame~arguments, .SysCArgs)
+  parse source . . program
+  self~assertSame(frame~name, program)
+  self~assertIsA(frame~executable, .Routine)
+  self~assertTrue(frame~line~dataType("n"))
+  self~assertNull(frame~target)
+  self~assertSame(frame~traceLine, frame~string)
+  self~assertSame(frame~traceLine, frame~makeString)
+  self~assertIsA(frame~context, .RexxContext)
+
 ::method testNativeCodeFrame
   test = .array~of(1,2)
 
@@ -109,6 +152,7 @@ return testResult
   self~assertSame(test, frame~target)
   self~assertSame(frame~traceLine, frame~string)
   self~assertSame(frame~traceLine, frame~makestring)
+  self~assertNull(frame~context)       -- no RexxContext for native code
 
 ::method testExternalNativeCodeFrame
   signal on syntax
@@ -130,20 +174,77 @@ return testResult
   self~assertSame(s, frame~target)
   self~assertSame(frame~traceLine, frame~string)
   self~assertSame(frame~traceLine, frame~makestring)
+  self~assertNull(frame~context)       -- no RexxContext for native code
+
+
+-- any contexts available through the context() method acting on a condition
+-- object's STACKFRAMES entry, should be identical to .Contexts on each level
+::method test_context_rexx_condition_object
+  contextStack = .Queue~new
+
+  contextStack~push(.Context)
+  interpret "call level2 self, contextStack~~push(.Context)"
+
+  ::routine level2
+    use strict arg this, contextStack
+    contextStack~push(.Context)
+    call level3
+    return
+
+  level3:
+    contextStack~push(.Context)
+    contextStack~push(.nil)            -- push a dummy .Context for the new() method
+    contextStack~push(.nil)            -- push a dummy .Context for the COMPILE frame
+    signal on syntax
+    .Method~new("", "~~")
+    return
+
+    syntax:
+
+    -- we now have saved .Context objects from a bunch of call levels, and
+    -- the condition object provides us with (all) levels of stack frames
+    -- go compare each saved context with what the context() method
+    -- returns for each stack frame
+    do frame over condition("o")["STACKFRAMES"] while contextStack~items > 0 
+      expected = contextStack~pull
+      if expected == .nil then
+        -- for the COMPILE frame, and the (native code) new() METHOD frame
+        -- we should have a .nil context
+        this~assertNull(frame~context, frame~type frame~name "context should be .nil")
+      else do
+        -- for all other frames, we can check the full context
+        actual = frame~context
+        this~assertIsA(actual, .RexxContext, frame~type frame~name "context should be a .RexxContext")
+        this~assertSame(expected~digits, actual~digits, frame~type frame~name "context digits mismatch")
+        this~assertIdentical(expected~executable, actual~executable, frame~type frame~name "context executable mismatch")
+        this~assertSame(expected~form, actual~form, frame~type frame~name "context form mismatch")
+        this~assertSame(expected~fuzz, actual~fuzz, frame~type frame~name "context fuzz mismatch")
+        if frame~type == "INTERPRET" then
+          expectedName = .nil -- not sure why this is .nil, not ""; might be a bug
+        else
+          expectedName = expected~name
+        this~assertSame(expectedName, actual~name, frame~type frame~name "context name mismatch")
+        this~assertSame(expected~package, actual~package, frame~type frame~name "context package mismatch")
+        this~assertEquivalentList(expected~variables, actual~variables, frame~type frame~name "context variables mismatch")
+
+      end
+    end
 
 
 -- perform a series of validity checks on a frame
 ::method checkFrame
   use arg type, target, frame, info
 
-  self~assertSame(type, frame~type)
-  self~assertTrue(info~args~equivalent(frame~arguments))
-  self~assertSame(info~name, frame~name)
-  self~assertSame(info~executable, frame~executable)
-  self~assertSame(info~line, frame~line)
-  self~assertSame(target, frame~target)
-  self~assertSame(frame~traceLine, frame~string)
-  self~assertSame(frame~traceLine, frame~makestring)
+  self~assertSame(type, frame~type, "StackFrame type() mismatch")
+  self~assertTrue(info~args~equivalent(frame~arguments), "StackFrame araguments() mismatch")
+  self~assertSame(info~name, frame~name, "StackFrame name() mismatch")
+  self~assertIdentical(info~executable, frame~executable, "StackFrame executable() mismatch")
+  self~assertSame(info~line, frame~line, "StackFrame line() mismatch")
+  self~assertSame(target, frame~target, "StackFrame target() mismatch")
+  self~assertSame(frame~traceLine, frame~string, "StackFrame string() mismatch")
+  self~assertSame(frame~traceLine, frame~makestring, "StackFrame makeString() mismatch")
+  self~assertIsA(info~stackframeContext, .RexxContext, "StackFrame context() must not be .nil")
+  self~assertIdentical(info~executable, info~stackframeContextExecutable, "StackFrame context() executable mismatch")
 
 ::class ContextComparator subclass NumericComparator
 ::attribute stackframes
@@ -157,7 +258,7 @@ return testResult
   return grabContextInfo(.context, .line, .context~stackFrames)
 
 ::routine grabContextInfo
-  use arg context, line, stackframes
+  use strict arg context, line, stackframes
 
   info = .directory~new
   info~name = context~name
@@ -165,6 +266,9 @@ return testResult
   info~executable = context~executable
   info~line = line
   info~args = context~args
+  info~stackframeContext = stackframes[1]~context
+  if info~stackframeContext \== .nil then
+    info~stackframeContextExecutable = stackframes[1]~context~executable
 
   return info
 

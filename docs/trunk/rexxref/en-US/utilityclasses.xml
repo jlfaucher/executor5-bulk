@@ -859,7 +859,7 @@ starting at position <emphasis role="italic">start</emphasis> for
 <programlisting><![CDATA[
 wine = .Array~of("1. Strawberries", "2. cherries", "3. angel's kiss")
 wine~sortWith(.CaselessColumnComparator~new(3, 100))
-                                       -- 1. Strawberries, 3. angel's kiss, 2. cherries
+                                       -- 3. angel's kiss, 2. cherries, 1. Strawberries
 ]]></programlisting></example></para>
 </section>
 </section>
@@ -6523,7 +6523,7 @@ It is a subclass of the <xref linkend="clsObject" xrefstyle="template:Object cla
 
 <para>Returns the arguments used to invoke the current context as an array.
 This is equivalent to using the
-<xref linkend="bifArg" xrefstyle="select:title"/><code>(1, 'A')</code> built-in function.
+<xref linkend="bifArg" xrefstyle="template:ARG"/><code>(1, 'A')</code> built-in function.
 </para>
 </section>
 
@@ -7925,8 +7925,8 @@ been previously created.  The method return value is the name of current queue b
 <indexterm><primary>class</primary>
 <secondary>StackFrame class</secondary></indexterm>
 
-<para>The <classname>StackFrame</classname> class gives access to execution information about the
-currently executing Rexx activity.  Instances of the StackFrame class can be
+<para>The <classname>StackFrame</classname> class gives access to execution information about
+an executing Rexx activity.  Instances of the StackFrame class can be
 obtained via the <xref linkend="contexte" xrefstyle="template:.CONTEXT environment symbol"/> or from a <xref linkend="conobj" xrefstyle="template:condition object"/> created for a
 trapped condition.  A StackFrame instance represents an instance of an execution unit on the
 current activity's call stack.  It provides information on code location, arguments, etc. that
@@ -7935,7 +7935,7 @@ StackFrame instances cannot be directly created by the user.
 </para>
 
 <!-- Modified: "new" forbidden -->
-<!-- $GENERATED-20150924-START rexxrefClassTable(StackFrame) -->
+<!-- $GENERATED-20170929-START rexxrefClassTable(StackFrame) -->
 <table id="ooRexxStackFrameClass" frame="all" pgwide="1">
 <title>StackFrame Class</title>
 <tgroup cols="1">
@@ -7947,13 +7947,14 @@ StackFrame instances cannot be directly created by the user.
  <row><entry align="center"><emphasis role="bold">StackFrame</emphasis></entry>
  </row>
  <row><entry>
-<!-- new() forbidden
+<!-- "new" forbidden
   <simplelist>
    <member><xref linkend="mthStackFrameNew" xrefstyle="select:title"/></member>
   </simplelist>
 -->
   <simplelist columns="3">
    <member><xref linkend="mthStackFrameArguments" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStackFrameContext" xrefstyle="select:title"/></member>
    <member><xref linkend="mthStackFrameExecutable" xrefstyle="select:title"/></member>
    <member><xref linkend="mthStackFrameLine" xrefstyle="select:title"/></member>
    <member><xref linkend="mthStackFrameMakeString" xrefstyle="select:title"/></member>
@@ -7967,7 +7968,7 @@ StackFrame instances cannot be directly created by the user.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20150924-END rexxrefClassTable(StackFrame) -->
+<!-- $GENERATED-20170929-END rexxrefClassTable(StackFrame) -->
 
 <section id="mthStackFrameArguments"><title>arguments</title>
 <indexterm><primary>arguments method</primary>
@@ -7985,6 +7986,46 @@ StackFrame instances cannot be directly created by the user.
 <para>Returns the arguments used to invoke the execution frame represented by the StackFrame instance.
 </para>
 </section>
+
+
+<!-- Class StackFrame - method context ======================== -->
+<section id="mthStackFrameContext" revisionflag="added"><title>*NEW* context
+<indexterm><primary>context method</primary><secondary>of StackFrame class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>context method</secondary><tertiary>of StackFrame class</tertiary></indexterm>
+</title>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/stackframe_context.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns the <xref linkend="clsRexxContext" xrefstyle="template:RexxContext"/>
+instance associated with the receiving frame.
+If the frame instance is a
+<literal>COMPILE</literal> <xref linkend="mthStackFrameType" xrefstyle="select:title"/>
+frame, or is associated with native code, &nil; is returned.
+</para>
+<para>The returned context object is only active until the method call, routine call,
+or program terminates.
+Once the context object is deactivated, an error will be raised if any of the
+<classname>RexxContext</classname> methods are called.
+</para>
+<para>See also the
+<xref linkend="contexte" xrefstyle="template:.CONTEXT environment symbol"/>.
+</para>
+<para><example id="ex.stackframe-context">
+<title>StackFrame class &mdash; context method
+<indexterm><primary>examples</primary><secondary>context method</secondary></indexterm>
+</title>
+<programlisting><![CDATA[
+numeric digits 16
+call r
+
+::routine r
+  say "parent has" .Context~stackFrames[2]~context~digits "digits"
+  --> parent has 16 digits
+]]></programlisting></example></para>
+</section>
+
 
 <section id="mthStackFrameExecutable"><title>executable</title>
 <indexterm><primary>executable method</primary>
@@ -8039,7 +8080,8 @@ If the frame instance is not Rexx code (e. g. compiled native code),
 </imageobject>
 </mediaobject>
 
-<para>Returns the frame traceLine value as the object's string value.
+<para>Returns the frame <xref linkend="mthStackFrameTraceLine" xrefstyle="select:title"/>
+value as the object's string value.
 </para>
 </section>
 
@@ -8100,7 +8142,8 @@ is the name of the file containing the program.
 </imageobject>
 </mediaobject>
 
-<para>Returns the frame traceLine value as the object's string value.
+<para>Returns the frame <xref linkend="mthStackFrameTraceLine" xrefstyle="select:title"/>
+value as the object's string value.
 </para>
 </section>
 
@@ -8117,11 +8160,9 @@ is the name of the file containing the program.
 </imageobject>
 </mediaobject>
 
-<para>Returns the object the method was invoked against, if the
-StackFrame type is <option>METHOD</option>.
+<para>Returns the object the method was invoked against, if the StackFrame
+<xref linkend="mthStackFrameType" xrefstyle="select:title"/> is <literal>METHOD</literal>.
 Returns &nil; for all other StackFrame types.
-</para>
-<para>See also <xref linkend="mthStackFrameType" xrefstyle="select:title"/>.
 </para>
 </section>
 
@@ -8161,37 +8202,37 @@ the trace back will identify the method or routine belonging to the stack frame.
 are:
 <variablelist>
 <varlistentry>
-<term>PROGRAM</term>
+<term><literal>PROGRAM</literal></term>
 <listitem>
 <para>The stack frame is the top level of a program.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
-<term>METHOD</term>
+<term><literal>METHOD</literal></term>
 <listitem>
 <para>The stack frame is a method invocation.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
-<term>ROUTINE</term>
+<term><literal>ROUTINE</literal></term>
 <listitem>
 <para>The stack frame is a routine invocation.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
-<term>INTERPRET</term>
+<term><literal>INTERPRET</literal></term>
 <listitem>
 <para>The stack frame is code created by an INTERPRET instruction.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
-<term>INTERNALCALL</term>
+<term><literal>INTERNALCALL</literal></term>
 <listitem>
 <para>The stack frame is a subroutine or function call to an internal label.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
-<term>COMPILE</term>
+<term><literal>COMPILE</literal></term>
 <listitem>
 <para>The stack frame for compiling Rexx code for execution.  Many syntax errors will be reported by a COMPILE frame.</para>
 </listitem>
@@ -8214,7 +8255,6 @@ are:
     return
 
     syntax:
-    say condition("o")~class~id
     do f over condition("o")["STACKFRAMES"]
       say (f~type f~name"("f~arguments~makeString(, ",")")")~left(27) f~line":" -
        f~traceLine~strip
