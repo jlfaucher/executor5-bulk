@@ -859,7 +859,7 @@ return testResult
   self~assertTrue(c1~subset(c1))
   self~assertTrue(c2~subset(c2))
 
-  self~assertTrue(ce~subset(cu))
+  self~assertTrue(ce~subset(cu1))
 
   self~assertTrue(c1~subset(cu1))
   self~assertTrue(c1~subset(cu2))
@@ -974,10 +974,10 @@ makeColl: procedure
   receiverArray[15] = "Morning Glory"
 
   argumentTable = .table~new
-  argumentTable[a] = "School"
-  argumentTable[b] = "Office"
-  argumentTable[c] = "Church"
-  argumentTable[d] = "Apartment"
+  argumentTable["a"] = "School"
+  argumentTable["b"] = "Office"
+  argumentTable["c"] = "Church"
+  argumentTable["d"] = "Apartment"
 
   nl = '0d0a'x
   resultObj = receiverArray~union(argumentTable)
@@ -1031,10 +1031,10 @@ makeColl: procedure
   receiverArray[15] = "Morning Glory"
 
   argumentTable = .table~new
-  argumentTable[a] = "School"
-  argumentTable[b] = "Office"
-  argumentTable[c] = "Church"
-  argumentTable[d] = "Apartment"
+  argumentTable["a"] = "School"
+  argumentTable["b"] = "Office"
+  argumentTable["c"] = "Church"
+  argumentTable["d"] = "Apartment"
 
   nl = '0d0a'x
   resultObj = receiverArray~XOR(argumentTable)
@@ -1056,9 +1056,9 @@ makeColl: procedure
   receiverArray[15] = "Desert"
 
   argumentTable = .table~new
-  argumentTable[a] = "Elm"
-  argumentTable[b] = "Cadillac"
-  argumentTable[c] = "Desert"
+  argumentTable["a"] = "Elm"
+  argumentTable["b"] = "Cadillac"
+  argumentTable["c"] = "Desert"
 
   resultObj = receiverArray~XOR(argumentTable)
   self~assertSame(.array, resultObj~class, "(2.) result of XOR must be same class as receiver")
@@ -2231,3 +2231,4 @@ makeColl: procedure
   return .true
 
 
+::options novalue error

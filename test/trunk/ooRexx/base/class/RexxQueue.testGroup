@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2005-2009 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2017 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -386,11 +386,11 @@ return testResult
 ::method  test_get
 
       q = .rexxQueue~new
-      self~assertEquals(SESSION, q~get,  "subtest 27: default queue named session")
+      self~assertEquals("SESSION", q~get,  "subtest 27: default queue named session")
 --    self~assertEquals(q, q~get,     "subtest 28: get returns queue name")
 
       q = .rexxqueue~new('Rosebud')
-      self~assertEquals(Rosebud, q~get,   "subtest 29: queue named as in init")
+      self~assertEquals("ROSEBUD", q~get,   "subtest 29: queue named as in init")
 --    self~assertEquals(q, q~get,     "subtest 30: get returns queue name")
 
       q~delete
@@ -555,3 +555,5 @@ return testResult
 
 -- End of class: Queue.testGroup
 
+
+::options novalue error

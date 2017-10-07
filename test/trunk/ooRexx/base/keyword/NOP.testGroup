@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2008 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2017 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -61,14 +61,20 @@ return testResult
    Nop=Nop+1;
    self~assertSame(nop, 2)
 
-::method "test_2"
-   Nop=Nop;
-   self~assertTrue(1)
-
 ::method "test_3"
-   Call sub;
+   Call nop;
    self~assertSame(result, 'NOP')
    return
-   sub: nop; Return 'NOP'
+   nop: nop; Return 'NOP'
 
 
+::method test_extra
+  -- Data must not follow the NOP keyword
+  self~assertSyntaxError(21.901, "nop 2")
+
+::method test_extra_parentheses
+  -- Data must not follow the NOP keyword
+  self~assertSyntaxError(21.901, "nop()")
+
+
+::options novalue error

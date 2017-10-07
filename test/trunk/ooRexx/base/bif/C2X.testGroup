@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2005-2008 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2017 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -135,18 +135,6 @@ return testResult
    vn7=7
    self~assertSame(C2X((vn7*vn3)*vn2), '34452B31')
 
-::method "test_21"
-   self~assertSame(C2X(nv), '4E56')
-
-::method "test_22"
-   self~assertSame(C2X(nv.), '4E562E')
-
-::method "test_23"
-   self~assertSame(C2X(nv.10), '4E562E3130')
-
-::method "test_24"
-   self~assertSame(C2X(nv.10), '4E562E3130')
-
 ::method "test_25"
    self~assertSame(C2X(DATATYPE(6)), '4E554D')
 
@@ -192,3 +180,5 @@ return testResult
 ::method "test_103"
     self~assertSame('5A4438', C2X('ZD8')) /* '354134343338'X in ASCII */
 
+
+::options novalue error

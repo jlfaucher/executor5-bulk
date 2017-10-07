@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2007-2017 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -315,7 +315,7 @@ return testResult
 
 ::method "test_44"
    self~expectSyntax(26.5)
-   Numeric Digits 13 FORM ENGINEERING
+   Numeric Digits 13 "extra"
 
 ::method "test_45"
    self~expectSyntax(26.5)
@@ -431,12 +431,6 @@ return testResult
    return
    fuz: Return fuzz()
 
-::method "test_61"
-   self~expectSyntax(26.6)
-   Numeric Digits 1000
-   Numeric Fuzz 13 FORM ENGINEERING; Call err; R1021:
-   return
-
 ::method "test_62"
    sc='SCIENTIFIC'
    Numeric Form
@@ -493,10 +487,8 @@ return testResult
 
 ::method "test_72"
    en='ENGINEERING'
-   Numeric Form Value engineering
-   self~assertSame(for(), en)
-   return
-   for: Return form()
+   Numeric Form Value en
+   self~assertSame(en, form())
 
 ::method "test_73"
    self~expectSyntax(25.11)
@@ -533,10 +525,6 @@ return testResult
    return
    for: Return form()
 
-::method "test_78"
-   self~expectSyntax(25.11)
-   Numeric Form Value 13 FORM ENGINEERING
-
 ::method "test_79"
    self~expectSyntax(25.11)
    FORM='FORM'; ENGINEERING='ENGINEERING'
@@ -568,20 +556,6 @@ return testResult
    Numeric Fuzz 9
    Numeric Form Engineering
    Numeric Fuzz   999999998
-
-::method "test_84"
-   Numeric Form Value E||N||G||I||N||E||E||R||I||N||G
-   self~assertTrue(1)
-
-::method "test_85"
-   Numeric Form Value E||N||G||I||N||E||E||R||I||N||G
-   self~assertSame(case(), 'ENGINEERING')
-   Numeric Form Value S||C||I||E||N||T||I||F||I||C
-   self~assertSame(case(), 'SCIENTIFIC')
-   return
-   case:
-   case=form()
-   Return case
 
 ::method "test_86"
    self~expectSyntax(25.11)
@@ -640,3 +614,5 @@ return testResult
    case=form()
    Return case
 
+
+::options novalue error

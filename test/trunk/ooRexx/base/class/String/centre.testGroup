@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007 - 2008 Rexx Language Association. All rights reserved.  */
+/* Copyright (c) 2007-2017 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -84,10 +84,6 @@ return testResult
 ::method "test_10"
    self~assertSame('41'x~centre(3), ' A ')
 
-::method "test_11"
-   self~expectSyntax(93.923)
-   self~assertSame('abc'~centre('-123'), 'abc')
-
 ::method "test_12"
    self~assertSame('03bc'x~centre(3), '03bc20'x)
 
@@ -128,10 +124,6 @@ return testResult
 ::method "test_22"
    self~assertSame((12345/3)~centre(12345/3), COPIES(' ',2055)||'4115'||copies(' ',2056))
 
-::method "test_23"
-   self~expectSyntax(93.923)
-   self~assertSame((1E-122/7)~centre(1e+122/7), '')
-
 ::method "test_24"
    resa=copies(' ',59)||'ff'x||copies(' ',60)
    self~assertSame(SUBSTR('FFFFFF20FF'x,3,1)~centre(120), resa)
@@ -151,42 +143,6 @@ return testResult
 ::method "test_29"
    self~assertSame(copies('3'x,2)~centre(pos('o','nmopq')), '030320'x)
 
-::method "test_30"
-   self~expectSyntax(93.923)
-   self~assertSame('1'~centre(nv1), '1')
-
-::method "test_31"
-   self~expectSyntax(93.923)
-   self~assertSame('3'~centre(nv2.3), '1')
-
-::method "test_32"
-   self~expectSyntax(93.923)
-   self~assertSame('2'~centre(nv2.), '1')
-
-::method "test_33"
-   self~expectSyntax(93.923)
-   self~assertSame('3'~centre(nv2.3), '1')
-
-::method "test_34"
-   self~expectSyntax(93.923)
-   self~assertSame(nv2.3~centre(nv2.3), '1')
-
-::method "test_35"
-   self~expectSyntax(93.923)
-   self~assertSame(nv2.3~centre(nv2.3), '1')
-
-::method "test_36"
-   self~expectSyntax(93.923)
-   self~assertSame(nv1~centre(nv1), '1')
-
-::method "test_37"
-   self~expectSyntax(93.923)
-   self~assertSame(nv2.~centre(nv2.), '1')
-
-::method "test_38"
-   self~expectSyntax(93.923)
-   self~assertSame(nv2.3~centre(nv2.3), '1')
-
 ::method "test_39"
    self~assertSame('12345ZYXWV'~centre(15), '  12345ZYXWV   ')
 
@@ -196,28 +152,8 @@ return testResult
 ::method "test_41"
    self~assertSame('12345ZYXWV'~centre(0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000015), '  12345ZYXWV   ')
 
-::method "test_42"
-   self~expectSyntax(93.923)
-   self~assertSame('12345ZYXWV'~centre(.15), '  12345ZYXWV   ')
-
-::method "test_43"
-   self~expectSyntax(93.923)
-   self~assertSame('12345ZYXWV'~centre(-.315), '  12345ZYXWV   ')
-
 ::method "test_44"
    self~assertSame('12345ZYXWV'~centre('    15      '), '  12345ZYXWV   ')
-
-::method "test_45"
-   self~expectSyntax(93.923)
-   self~assertSame('12345ZYXWV'~centre('    -5      '), '')
-
-::method "test_46"
-   self~expectSyntax(93.923)
-   self~assertSame('12345ZYXWV'~centre('   - 5      '), '')
-
-::method "test_47"
-   self~expectSyntax(93.923)
-   self~assertSame('12345ZYXWV'~centre('   --5      '), '')
 
 ::method "test_48"
    self~assertSame('12345ZYXWV'~centre('2B30303135'x), '  12345ZYXWV   ')
@@ -309,21 +245,6 @@ return testResult
    b=2
    self~assertSame(AA~centre(a+b), ' A ')
 
-::method "test_71"
-   self~expectSyntax(93.923)
-   AA  ='A'
-   self~assertSame(AA~centre(-2), ' A ')
-
-::method "test_72"
-   self~expectSyntax(93.923)
-   AA  ='A'
-   self~assertSame(AA~centre(-0.03E2), ' A ')
-
-::method "test_73"
-   self~expectSyntax(93.923)
-   AA  ='A'
-   self~assertSame(AA~centre('  -3 '), ' A ')
-
 ::method "test_74"
    self~assertSame('abcde'~centre(3), 'bcd')
 
@@ -394,27 +315,13 @@ return testResult
    b=2
    self~assertSame(Z1~centre(a+b), ' A ')
 
-::method "test_91"
-   self~expectSyntax(93.923)
-   Z1  ='A'
-   self~assertSame(Z1~centre(-2), ' A ')
-
-::method "test_92"
-   self~expectSyntax(93.923)
-   Z1  ='A'
-   self~assertSame(Z1~centre(-0.03E2), ' A ')
-
-::method "test_93"
-   self~expectSyntax(93.923)
-   Z1  ='A'
-   self~assertSame(Z1~centre('  -3 '), ' A ')
 
 -- rexxref documentation tests
 ::method "test_201"
-    self~assertSame('  ABC  ', abc~centre(7))
+    self~assertSame('  ABC  ', "ABC"~centre(7))
 
 ::method "test_202"
-    self~assertSame('--ABC---', abc~centre(8,'-'))
+    self~assertSame('--ABC---', "ABC"~centre(8,'-'))
 
 ::method "test_203"
     self~assertSame('e blue s', 'The blue sky'~centre(8))
@@ -422,3 +329,46 @@ return testResult
 ::method "test_204"
     self~assertSame('e blue ', 'The blue sky'~centre(7))
 
+
+::method test_no_args
+   self~expectSyntax(93.903) -- Missing argument in method; argument 1 is required
+   ""~centre()
+
+::method test_one_arg_nil
+   self~expectSyntax(93.923) -- Invalid length argument specified
+   ""~centre(.nil)
+
+::method test_one_arg_negative
+   self~expectSyntax(93.923) -- Invalid length argument specified
+   ""~centre(-1)
+
+::method test_one_arg_fraction
+   self~expectSyntax(93.923) -- Invalid length argument specified
+   ""~centre(1.1)
+
+::method test_one_arg_too_large
+   self~expectSyntax(93.923) -- Invalid length argument specified
+   ""~centre(10 ** 20)
+
+::method test_two_args_length_omitted
+   self~expectSyntax(93.903) -- Missing argument in method; argument 1 is required
+   ""~centre(, "x")
+
+::method test_two_args_pad_nil
+   self~expectSyntax(93.938) -- Method argument 2 must have a string value
+   ""~centre(1, .nil)
+
+::method test_two_args_pad_null
+   self~expectSyntax(93.922) -- Incorrect pad or character argument specified
+   ""~centre(1, "")
+
+::method test_two_args_pad_too_long
+   self~expectSyntax(93.922) -- Incorrect pad or character argument specified
+   ""~centre(1, "xx")
+
+::method test_three_args
+   self~expectSyntax(93.902) -- Too many arguments in invocation of method; 2 expected
+   ""~centre(1, "x", .nil)
+
+
+::options novalue error

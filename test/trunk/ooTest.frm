@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2016 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2017 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -64,7 +64,7 @@ if \ .local~hasEntry('OOTEST_FRAMEWORK_VERSION') then do
   j = addToPath(.ooTest.dir)
 
   -- If not already in the environment, save the current working directory.
-  if \ .local~hasEntry(ooTest.originalWorkingDir) then
+  if \ .local~hasEntry("ooTest.originalWorkingDir"~upper) then
     .local~ooTest.originalWorkingDir = directory()
 
   -- Set up the external library path.  Although this is a bit of a misnomer,
@@ -712,14 +712,14 @@ return 0
     use arg stats
 
     verbose = self~getVerbosity
-    width = 14
+    width = 19
     parse source osname .
 
     say "Interpreter:"~left(width) self~rexxVersion
 --  say 'Addressing Mode:' .ooRexxUnit.architecture
     say "OS Name:"~left(width) osname
 
-    versions = .StringTable~new
+    versions = .Directory~new
     -- if we've got SysWinVer() and it's result is unique, use it
     if rxfuncquery("SysWinVer") = 0, \versions~hasItem(SysWinVer()) then
       versions["SysWinVer"] = SysWinVer()
@@ -729,7 +729,7 @@ return 0
     -- if SysVersion() result is unique, use it
     if \versions~hasItem(SysVersion()) then
       versions["SysVersion"] = SysVersion()
-    do version over "SysWinVer", "SysLinVer", "SysVersion"
+    do version over .Array~of("SysWinVer", "SysLinVer", "SysVersion")
       if versions~hasIndex(version) then
         say (version":")~left(width) versions[version]
     end
@@ -755,7 +755,7 @@ return 0
       say "Exceptions:"~left(width) stats~exceptions
     end
 
-    if vebose < 3 then do
+    if verbose < 3 then do
       say
       return
     end
@@ -2534,3 +2534,6 @@ return 0
     return self~message
 
 -- End of class: PhaseReport
+
+
+::options novalue error

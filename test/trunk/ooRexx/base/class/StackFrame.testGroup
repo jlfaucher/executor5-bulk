@@ -1,7 +1,7 @@
 #!/usr/bin/rexx
 /*
-  SVN Revision: $Rev: 8249 $
-  Change Date:  $Date: 2012-08-24 18:57:30 -0400 (Fri, 24 Aug 2012) $
+  SVN Revision: $Rev$
+  Change Date:  $Date$
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
@@ -126,9 +126,8 @@ return testResult
   frame = .Context~stackFrames~lastItem
   -- we don't know much about our PROGRAM frame, so that's a pretty generic test
   self~assertSame("PROGRAM", frame~type)
-  self~assertEquivalentList(frame~arguments, .SysCArgs)
-  parse source . . program
-  self~assertSame(frame~name, program)
+  self~assertIsA(frame~arguments, .Array)
+  self~assertIsA(frame~name, .String)
   self~assertIsA(frame~executable, .Routine)
   self~assertTrue(frame~line~dataType("n"))
   self~assertNull(frame~target)
@@ -273,5 +272,4 @@ return testResult
   return info
 
 
-
-
+::options novalue error

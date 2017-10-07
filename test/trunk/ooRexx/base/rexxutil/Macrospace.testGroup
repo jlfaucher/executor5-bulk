@@ -1,11 +1,11 @@
 #!/usr/bin/rexx
 /*
-  SVN Revision: $Rev: 11098 $
-  Change Date:  $Date: 2016-07-08 21:33:13 +0200 (Fr, 08 Jul 2016) $
+  SVN Revision: $Rev$
+  Change Date:  $Date$
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2012 - 2012 Rexx Language Association. All rights reserved.  */
+/* Copyright (c) 2012-2017 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -307,6 +307,10 @@ return testResult
 ::method test_load
   self~assertEquals(self~OK, SysClearRexxMacroSpace())
 
+  -- remove saved macrospace
+  macroSpace = .File~new(self~macroSpacePath)
+  macroSpace~delete
+
   -- add two macros, save, run, and clear
   self~assertEquals(self~OK, SysAddRexxMacro("test_load_def", self~macroPath))
   self~assertEquals(self~OK, SysAddRexxMacro("SysUtilVersion", self~macroPath, "b"))
@@ -319,6 +323,9 @@ return testResult
   self~assertEquals(self~OK, SysAddRexxMacro("test_load_after", self~macroPath, "a"))
 /*Dbg self~assertEquals(self~macroRc, test_load_after())*/
   self~assertEquals(self~OK, SysLoadRexxMacroSpace(self~macroSpacePath))
+
+  -- remove saved macrospace
+  macroSpace~delete
 
   -- assert that all three macros are there, and run
   self~assertEquals("A", SysQueryRexxMacro("test_load_after"), "macro 'test_load_after' should have survived load()")
@@ -339,12 +346,21 @@ return testResult
   call SysSaveRexxMacroSpace "", ""
 
 ::method test_save_file_null
-  self~assertEquals(self~fileError, SysSaveRexxMacroSpace(""))
+  -- known bug: SysSaveRexxMacroSpace() returns RXMACRO_OK for invalid file name
+  -- no bug report opened yet
+  self~assertEquals(self~fileError, SysSaveRexxMacroSpace(""), "tracker bug #....")
 
 ::method test_save_empty
-  -- save an empty macrospace, and re-load it
+  -- remove saved macrospace
+  macroSpace = .File~new(self~macroSpacePath)
+  macroSpace~delete
+
+  -- known bug: saving an empty macrospace will return RXMACRO_OK, but not write a file
+  -- no bug report opened yet
   self~assertEquals(self~OK, SysClearRexxMacroSpace())
   self~assertEquals(self~OK, SysSaveRexxMacroSpace(self~macroSpacePath))
-  self~assertEquals(self~OK, SysLoadRexxMacroSpace(self~macroSpacePath))
+  self~assertEquals(self~fileError, SysSaveRexxMacroSpace(self~macroSpacePath), "tracker bug #....")
+  self~assertFalse(macroSpace~exists)
 
 
+::options novalue error

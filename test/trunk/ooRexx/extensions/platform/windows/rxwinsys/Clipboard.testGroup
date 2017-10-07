@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2007-2017 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -147,7 +147,7 @@ loadErr:
     self~assertEquals("", text, "Empty clipboard should return the empty string")
 
     -- Remove it from the .local directory, asset that it was removed.
-    obj = .local~remove(cp)
+    obj = .local~remove("CP")
     self~assertNotNull(obj, 'Removed cp from .local, it should be an object')
     self~assertTrue(obj~isA(.WindowsClipboard), 'Removed cp should be a WindowsClipboard object')
 
@@ -168,4 +168,4 @@ empty
 */
 
 
-
+::options novalue error

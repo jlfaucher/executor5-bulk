@@ -60,7 +60,7 @@ return testResult
 
 ::method 'test002'
     self~expectSyntax(40.12)
-    xre = sourceLine(novalue)
+    xre = sourceLine("")
 
 ::method 'test003'
     self~expectSyntax(40.14)
@@ -83,7 +83,7 @@ return testResult
 
 ::method 'test009'
     v127 = 63
-    self~assertSame("    xre = sourceLine(novalue)", sourceLine(v127))
+    self~assertSame("    xre = sourceLine("""")", sourceLine(v127))
 
 ::method 'test_line_one'
     -- The intent of this test is to assert that sourceline(1) returns the

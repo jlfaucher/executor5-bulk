@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2007-2017 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -62,23 +62,100 @@ return testResult
    Address                           /* toggle back                    */
    self~assertSame(address(), defenv)
 
-::method "test_2"
-   amaxl=250
-   v=copies('A',amaxl)
-   Address Value v
-   self~assertSame(address(), v)
 
-::method "test_3"
-   self~expectSyntax(29.1)
-   amaxl=251
-   v=copies('A',amaxl)
-   Address Value v
-   self~assertSame(address(), v)
+-- "exit" should return 0 for both Linux and Windows shells
+::constant command_exists "exit"
+-- non-existing command (with shell messages suppressed for Windows and Unix)
+::attribute command_not_exists get
+  if .ooRexxUnit.OSName == "WINDOWS" then
+    return "command_not_exists 2>nul"
+  else
+    return "command_not_exists 2>/dev/null"
+::attribute rc_command_not_exists get
+  if .ooRexxUnit.OSName == "WINDOWS" then
+    return 1 -- CMD return code for an unknown command is 1
+  else
+    return 127 -- Linux shell return code for an unknown command is 127
 
-::method "test_4"
-   xrc = 30
-   signal off failure
-   trace off
-   call SysFileDelete "my.out"
-   self~assertNotSame(rc, xrc)
+::method test_environment_symbol
+   address not_exists
+   self~assertSame("NOT_EXISTS", address())
 
+::method test_environment_string
+   address "not_exists"
+   self~assertSame("not_exists", address())
+
+::method test_environment_string_value
+   address "value"
+   self~assertSame("value", address())
+
+::method test_environment_value_missing
+  -- Missing expression following VALUE keyword of an ADDRESS instruction
+  self~assertSyntaxError(35.914, "address value")
+
+::method test_environment_value
+   environment = "not_exists"
+   address value environment
+   self~assertSame(environment, address())
+
+-- ADDRESS VALUE expression "command" isn't allowed
+::method test_environment_value_extra
+   environment = "not_exists"
+   address value environment "extra"
+   self~assertSame(environment "extra", address())
+
+-- ADDRESS (expression) "command" isn't allowed
+::method test_environment_expression_extra
+   environment = "not_exists"
+   address (environment) "extra"
+   self~assertSame(environment "extra", address())
+
+::method test_environment_symbol_command_exists
+   defaultEnvironment = address()
+   address command self~command_exists
+   self~assertSame(0, rc)
+   self~assertSame(0, .rs)
+   self~assertSame(defaultEnvironment, address())
+
+::method test_environment_string_command_exists
+   defaultEnvironment = address()
+   address "command" self~command_exists
+   self~assertSame(0, rc)
+   self~assertSame(0, .rs)
+   self~assertSame(defaultEnvironment, address())
+
+::method test_environment_symbol_command_not_exists
+   defaultEnvironment = address()
+   address command self~command_not_exists
+   self~assertSame(self~rc_command_not_exists, rc)
+   self~assertSame(1, .rs)
+   self~assertSame(defaultEnvironment, address())
+
+::method test_environment_string_command_not_exists
+   defaultEnvironment = address()
+   address "command" self~command_not_exists
+   self~assertSame(self~rc_command_not_exists, rc)
+   self~assertSame(1, .rs)
+   self~assertSame(defaultEnvironment, address())
+
+-- rexxref says: "An attempt to enter a command in an unknown command environment
+-- also raises a FAILURE condition; in such a case, the variable RC is set to 30."
+::method test_environment_not_exists_command
+   trace off                           -- we don't want to see FAILURE trace output
+   defaultEnvironment = address()
+   address "environment_not_exists" self~command_exists
+   self~assertSame(30, rc)
+   self~assertSame(-1, .rs)
+   self~assertSame(defaultEnvironment, address())
+
+::method test_environment_max_length
+   environment = "x"~copies(250)
+   address value environment
+   self~assertSame(environment, address())
+
+::method environment_too_long
+   self~expectSyntax(29.1) -- Environment name exceeds 250 characters
+   address value x~copies(251)
+
+
+::options novalue error

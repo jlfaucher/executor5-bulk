@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2006-2007 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2006-2017 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -562,12 +562,12 @@ any:
 
 ::method "test_METHOD"
 
-   self~assertNotNull(m=.WaterVehicle~method("swim"))
+   self~assertNotNull(.WaterVehicle~method("swim"))
 
    -- testing for undefined method took place in "test_DEFINE" above
 
    self~expectSyntax(97.1)
-   self~assertNull(m=.WaterVehicle~method("swimmolilily"))
+   self~assertNull(.WaterVehicle~method("swimmolilily"))
 
 
 
@@ -649,7 +649,7 @@ getBags: procedure         -- return indices in an index bag, and method items i
 
 ::method "test_MIXINCLASS_01"
    self~expectSyntax(99.927)
-   cl=.object~mixinclass("subTest_01", not_an_existing_class)
+   cl=.object~mixinclass("subTest_01", "not_an_existing_class")
 
 
 ::method "test_MIXINCLASS_02"
@@ -758,7 +758,7 @@ getBags: procedure         -- return indices in an index bag, and method items i
 
 ::method "test_SUBCLASS_01"
    self~expectSyntax(99.927)
-   cl=.object~subclass("subtest_01", not_an_existing_class)
+   cl=.object~subclass("subtest_01", "not_an_existing_class")
 
 ::method "test_SUBCLASS_02"
    self~expectSyntax(99.927)
@@ -951,7 +951,7 @@ getBags: procedure         -- return indices in an index bag, and method items i
   self~assertTrue(.local~class.testgroup~class2 == .true)
   self~assertTrue(.local~class.testgroup~class3 == .true)
 
-  .local~remove(class.testgroup)
+  .local~remove("class.testgroup"~upper)
 
 ::method test_class_define
   t1 = .testDefine1~new
@@ -1136,17 +1136,18 @@ getBags: procedure         -- return indices in an index bag, and method items i
   .defineTesterBase~delete("somemethod", "huh?")
 
 ::method test_subclasses_gc
+signal off novalue
   cl = .DefineTester~subclass('aSubclass')
   ref = .weakreference~new(cl)
   -- make sure this shows up as a subclass
-  self~assertTrue(.DefineTester~subclasses~hasItem(cl))
+  self~assertSame(1, .DefineTester~subclasses~items)
 
   drop cl
   loop while ref~value \= .nil
      x = copies('abc', 100000)
   end
 
-  self~assertFalse(.DefineTester~subclasses~hasItem(cl))
+  self~assertSame(0, .DefineTester~subclasses~items)
 
 -- some classes to test the effects of define
 ::Class DefineTesterBase
@@ -1424,3 +1425,4 @@ getBags: procedure         -- return indices in an index bag, and method items i
 ::class testDefine2 subclass testDefine1
 
 
+::options novalue error

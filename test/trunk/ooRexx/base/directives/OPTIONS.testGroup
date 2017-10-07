@@ -1,11 +1,11 @@
 #!/usr/bin/rexx
 /*
-  SVN Revision: $Rev: 10579 $
-  Change Date:  $Date: 2014-09-29 12:57:30 -0400 (Mon, 29 Sep 2014) $
+  SVN Revision: $Rev$
+  Change Date:  $Date$
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2008 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2017 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -80,7 +80,7 @@ return testResult
   -- testing a few more valid options
   package = self~runDynamicSource(("x = b", "return .context~package", "::options digits '20' fuzz 10 form SCIENTIFIC trace 'N'"))
   self~assertEquals(20, package~digits)
-  self~assertEquals(SCIENTIFIC, package~form)
+  self~assertEquals("SCIENTIFIC", package~form)
   self~assertEquals(10, package~fuzz)
   self~assertEquals("N", package~trace)
 
@@ -173,10 +173,49 @@ return testResult
   value = self~runDynamicSource(("signal on novalue", "return abc.1.2", "novalue: return .true", "::options novalue condition"))
   self~assertEquals(1, value)
 
-::method test_bad_no_value
 ::method test_novalue_bad_value
   self~assertSyntaxError(25.927, ("return abc.1.2", "::options novalue syntax"))
 
 ::method test_novalue_missing_value
   self~assertSyntaxError(19.922, ("return abc.1.2", "::options novalue"))
 
+::method test_prolog_simple
+  -- we cannot test ::OPTIONS PROLOG with runDynamicSource()
+  .local~prolog_run = .false
+  .Package~new("test_prolog", (".local~prolog_run = .true", "::options prolog"))
+  self~assertSame(.true, .local~prolog_run)
+
+::method test_prolog_extra
+  -- Unknown keyword on ::OPTIONS directive
+  self~assertSyntaxError(25.924, "::options prolog on")
+
+::method test_noprolog_simple
+  -- we cannot test ::OPTIONS NOPROLOG with runDynamicSource()
+  .local~prolog_run = .false
+  p = .Package~new("test_prolog", (".local~prolog_run = .true", "::options noprolog"))
+  self~assertSame(.false, .local~prolog_run)
+  p~prolog~call
+  self~assertSame(.true, .local~prolog_run)
+
+::method test_noprolog_extra
+  -- Unknown keyword on ::OPTIONS directive
+  self~assertSyntaxError(25.924, "::options noprolog off")
+
+::method test_invalid_unknown
+  -- Unknown keyword on ::OPTIONS directive
+  self~assertSyntaxError(25.924, "::options unknown")
+
+::method test_invalid_nil
+  -- Unknown keyword on ::OPTIONS directive
+  self~assertSyntaxError(25.924, "::options .nil")
+
+::method test_invalid_null
+  -- Unknown keyword on ::OPTIONS directive
+  self~assertSyntaxError(25.924, "::options ''")
+
+::method test_invalid_string
+  -- Unknown keyword on ::OPTIONS directive
+  self~assertSyntaxError(25.924, "::OPTIONS 'PROLOG'")
+
+
+::options novalue error

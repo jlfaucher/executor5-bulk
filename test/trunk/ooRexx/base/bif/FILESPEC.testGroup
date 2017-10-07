@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2005-2008 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2017 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -182,7 +182,9 @@ return testResult
   x = filespec('x', 'a.b')
 
 ::method testSyntax07
-  if .ooRexxUnit.OSName != "WINDOWS" then do
-      self~expectSyntax(40.1)
-      x = filespec('d', 'a.b')
+  if .ooRexxUnit.OSName \== "WINDOWS" then do
+      self~assertSame("", filespec("d", "a.b"))
   end
+
+
+::options novalue error

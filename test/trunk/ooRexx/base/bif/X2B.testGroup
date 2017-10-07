@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2007-2017 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -235,18 +235,6 @@ return testResult
     self~expectSyntax(93.931)
     xre = x2b(long_iv_str.5)
 
-::method 'test052'
-    self~expectSyntax(93.933)
-    xre = x2b(no_val)
-
-::method 'test053'
-    self~expectSyntax(93.933)
-    xre = x2b(no_val.)
-
-::method 'test054'
-    self~expectSyntax(93.933)
-    xre = x2b(no_val.10)
-
 ::method 'test055'
     self~expectSyntax(40.4)
     xre = x2b('1a'x,'B')
@@ -316,3 +304,4 @@ return testResult
     self~assertEquals('', X2B(''))
 
 
+::options novalue error

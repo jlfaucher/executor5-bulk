@@ -124,7 +124,7 @@
 
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2005-2007 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2017 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -420,12 +420,12 @@ return curPath
 
   if .ooRexxUnit.OSName == "WINDOWS" then do
     if path~caseLessPos(dir || sep) <> 0 then return .true
-    if path~caseLessPos(dir || sl || pathSep) <> 0 then return .true
+    if path~caseLessPos(dir || sl || Sep) <> 0 then return .true
     if path~right(dir~length)~caselessCompare(dir) == 0 then return .true
   end
   else do
     if path~pos(dir || sep) <> 0 then return .true
-    if path~pos(dir || sl || pathSep) <> 0 then return .true
+    if path~pos(dir || sl || Sep) <> 0 then return .true
     if path~right(dir~length)~compare(dir) == 0 then return .true
   end
 
@@ -1256,7 +1256,7 @@ return str
 ::method assertIdentical
   use strict arg expected, actual, msg = ""
 
-  if (expected~identityHash != actual~identityHash) then do
+  if (expected~identityHash \== actual~identityHash) then do
     self~fail(self~makeFailure(expected, actual, msg, "assertIdentical"))
   end
 
@@ -1563,7 +1563,7 @@ return str
 ::method createResult      -- creates a default TestResult object
   -- Use the default class in the environment, if it exists, before using the
   -- self~class~defaultTestResultClass.
-  if .local~hasEntry(ooRexxUnit.default.TestResult.Class) then do
+  if .local~hasEntry("ooRexxUnit.default.TestResult.Class"~upper) then do
     if .ooRexxUnit.default.TestResult.Class~isA(.class) then
       return .ooRexxUnit.default.TestResult.Class~new
   end
@@ -2253,3 +2253,4 @@ return 0
   return 0
 
 
+::options novalue error

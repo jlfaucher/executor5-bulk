@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007 - 2008 Rexx Language Association. All rights reserved.  */
+/* Copyright (c) 2007-2017 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -63,12 +63,12 @@ return testResult
     .local~v100000 = right('z',100000)
 
 ::method tearDown
-    .local~remove(v1)
-    .local~remove(v30)
-    .local~remove(v255)
-    .local~remove(v256)
-    .local~remove(v32768)
-    .local~remove(v100000)
+    .local~remove("V1")
+    .local~remove("V30")
+    .local~remove("V255")
+    .local~remove("V256")
+    .local~remove("V32768")
+    .local~remove("V100000")
 
 
 ::class "length.testGroup" subclass ooTestCase public
@@ -205,26 +205,6 @@ return testResult
     self~assertSame('3', mb~length())
     self~assertSame(mb~length(),...~length())
 
-::method 'test026'
-    mb = .mutablebuffer~new(nv)
-    self~assertSame('2', mb~length())
-    self~assertSame(mb~length(),nv~length())
-
-::method 'test027'
-    mb = .mutablebuffer~new(nv.~string)
-    self~assertSame('3', mb~length())
-    self~assertSame(mb~length(),nv.~length())
-
-::method 'test028'
-    mb = .mutablebuffer~new(nv.i)
-    self~assertSame('4', mb~length())
-    self~assertSame(mb~length(),nv.i~length())
-
-::method 'test029'
-    mb = .mutablebuffer~new(nv.i)
-    self~assertSame('4', mb~length())
-    self~assertSame(mb~length(),nv.i~length())
-
 ::method 'test030'
     mb = .mutablebuffer~new('abcdefgh')
     self~assertSame(8, mb~length())
@@ -256,5 +236,4 @@ return testResult
    self~AssertEquals(8, b~length, "Length incorrect after")
 
 
-
-
+::options novalue error

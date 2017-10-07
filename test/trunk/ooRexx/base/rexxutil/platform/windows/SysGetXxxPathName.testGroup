@@ -1,11 +1,11 @@
 #!/usr/bin/rexx
 /*
-  SVN Revision: $Rev: 11163 $
+  SVN Revision: $Rev$
   Change Date:  $Date: 2016-10-09 00:00:00 +0200
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2016-2017 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -43,7 +43,7 @@
 parse source . . fileSpec;
 
 group = .TestGroup~new(fileSpec)
-group~add(.SysGetXxxxPathNamey.testGroup)
+group~add(.SysGetXxxxPathName.testGroup)
 group~restrictOS("WINDOWS")
 
 if group~isAutomatedTest then return group
@@ -54,7 +54,7 @@ return testResult
 -- End of entry point.
 
 ::requires 'ooTest.frm'
-::class 'SysGetXxxxPathNamey.testgroup' subclass ooTestCase public
+::class 'SysGetXxxxPathName.testgroup' subclass ooTestCase public
 
 ::method test_long_no_args
   self~expectSyntax(88.901) -- Error 88.901:  Missing argument; the 1 argument is required
@@ -125,5 +125,6 @@ return testResult
 
   -- remove temporary file
   longFile~delete
+
 
 ::options novalue error

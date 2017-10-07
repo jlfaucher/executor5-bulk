@@ -1,11 +1,11 @@
 #!/usr/bin/rexx
 /*
-  SVN Revision: $Rev: 3371 $
-  Change Date:  $Date: 2008-09-21 00:33:29 -0400 (Sun, 21 Sep 2008) $
+  SVN Revision: $Rev$
+  Change Date:  $Date$
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2012 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2012-2017 Rexx Language Association. All rights reserved.         */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -116,11 +116,11 @@ return testResult
 
 ::method 'testnumericerror'
     self~expectSyntax(93.943)
-    xre=nov~round
+    xre="nov"~round
 
 ::method 'testargerror'
     self~expectSyntax(93.902)
-    xre=nov~round(2)
+    xre="nov"~round(2)
 
 -- [bugs:#1265] round() Method Returns Incorrect Result
 ::method test_bug1265
@@ -131,3 +131,5 @@ return testResult
       self~assertSame(n~sign, n~round, "("n")~round) =" n~round", should be" n~sign)
   end
 
+
+::options novalue error

@@ -1,11 +1,11 @@
 #!/usr/bin/rexx
 /*
-  SVN Revision: $Rev: 8237 $
-  Change Date:  $Date: 2012-08-21 22:02:00 +0200 (Tue, 21 Aug 2012) $
+  SVN Revision: $Rev$
+  Change Date:  $Date$
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007 - 2012 Rexx Language Association. All rights reserved.  */
+/* Copyright (c) 2007-2017 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -775,7 +775,7 @@ return testResult
 
 ::method 'test0287'
     self~expectSyntax(93.922)
-    xre = .MutableBuffer~new('no.v1')~space(,no.v2)
+    xre = .MutableBuffer~new('no.v1')~space(,"no.v2")
 
 ::method 'test0288'
     self~expectSyntax(97.1)
@@ -784,3 +784,6 @@ return testResult
 ::method 'test0289'
     self~expectSyntax(97.1)
     xre = .MutableBuffer~new((020 020))~space(,'-')-0
+
+
+::options novalue error

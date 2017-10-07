@@ -1,11 +1,11 @@
 #!/usr/bin/rexx
 /*
-  SVN Revision: $Rev: 8237 $
-  Change Date:  $Date: 2012-08-21 22:02:00 +0200 (Tue, 21 Aug 2012) $
+  SVN Revision: $Rev$
+  Change Date:  $Date$
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007 - 2008 Rexx Language Association. All rights reserved.  */
+/* Copyright (c) 2007-2017 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -61,23 +61,6 @@ return testResult
 
 ::method 'test0003'
     self~assertSame('@@@@aaa@@@@', '@ @@aaa@@ @'~space(,'@'))
-
-::method 'test0004'
-    self~expectSyntax(93.922)
-    xre = '@ @@aaa@@ @'~space(,'')
-
-::method 'test0005'
-    -- § may be encoded in two bytes 'C2A7'x  (utf8 ?)
-    if length('§') > 1
-       then do
-            self~expectSyntax(93.922)
-            xre = '§ aaa §'~space(,'§')
-            end
-       else self~assertSame('§ aaa §', '§§aaa§§'~space(,'§'))
-
-::method 'test0006'
-    self~expectSyntax(93.922)
-    xre = '@@@aaa@@@'~space(,'@@')
 
 ::method 'test0007'
     self~assertSame('aaa@@@', '   aaa @@'~space(1 ,'@'))
@@ -765,21 +748,49 @@ return testResult
 ::method 'test0283'
     self~assertSame('abc++def++hij', ' abc   def   hij '~space(2,'+'))
 
-::method 'test0285'
-    self~expectSyntax(93.922)
-    xre = ' aaa '~space(,'  ')
-
-::method 'test0286'
-    self~expectSyntax(93.923)
-    xre=' aaa '~space('x',' ')
-
-::method 'test0287'
-    self~expectSyntax(93.922)
-    xre = 'no.v1'~space(,no.v2)
-
 ::method 'test0288'
     self~assertSame(200, (2 2)~space(,0)-2)
 
 ::method 'test0289'
     self~expectSyntax(41.1)
     xre = (020 020)~space(,'-')-0
+
+
+::method test_one_arg_nil
+   self~expectSyntax(93.923) -- Invalid length argument specified
+   ""~space(.nil)
+
+::method test_one_arg_null
+   self~expectSyntax(93.923) -- Invalid length argument specified
+   ""~space("")
+
+::method test_one_arg_negative
+   self~expectSyntax(93.923) -- Invalid length argument specified
+   ""~space(-1)
+
+::method test_one_arg_fraction
+   self~expectSyntax(93.923) -- Invalid length argument specified
+   ""~space(1.1)
+
+::method test_one_arg_too_large
+   self~expectSyntax(93.923) -- Invalid length argument specified
+   ""~space(10 ** 20)
+
+::method test_two_args_pad_nil
+   self~expectSyntax(93.938) -- Method argument 2 must have a string value
+   ""~space(, .nil)
+
+::method test_two_args_pad_null
+   self~expectSyntax(93.922) -- Incorrect pad or character argument specified
+   ""~space(, "")
+
+::method test_two_args_pad_too_long
+   self~expectSyntax(93.922) -- Incorrect pad or character argument specified
+   ""~space(, "xx")
+
+::method test_three_args
+   self~expectSyntax(93.902) -- Too many arguments in invocation of method; 2 expected
+   ""~space(, , .nil)
+
+
+::options novalue error

@@ -1,11 +1,11 @@
 #!/usr/bin/rexx
 /*
-  SVN Revision: $Rev: 4240 $
-  Change Date:  $Date: 2014-10-07 20:07:18 +0100 (So, 01 Mär 2009) $
+  SVN Revision: $Rev$
+  Change Date:  $Date$
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2014 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2014-2017 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -97,12 +97,12 @@ return testResult
 ::method 'test008'
   self~expectSyntax(88.912)
   m008=.mutablebuffer~new('mutablebuffer')
-  m008[a,1]='1234'
+  m008["a",1]='1234'
 
 ::method 'test009'
   self~expectSyntax(88.911)
   m009=.mutablebuffer~new('mutablebuffer')
-  m009[1,a]='1234'
+  m009[1,"a"]='1234'
 
 ::method 'test010'
   self~expectSyntax(88.901)
@@ -164,3 +164,6 @@ return testResult
     --Say i m16~string
     self~assertSame(m~substr(1,i-1,' ')||'x'||m~substr(i+1),m16~string)
     End
+
+
+::options novalue error

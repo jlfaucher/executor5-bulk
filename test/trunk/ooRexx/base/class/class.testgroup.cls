@@ -27,7 +27,7 @@ end
   if \.class3~isa(.class) then call setError ".class3 not available in class1~activate"
 
 ::method foo
-  return true
+  return .true
 
 -- this class will run first because this is the first class without a dependency
 ::class class2
@@ -65,3 +65,6 @@ end
 
   .local~class.testgroup~assertFail = .true
   .local~class.testgroup~assertFailReason = reason
+
+
+::options novalue error

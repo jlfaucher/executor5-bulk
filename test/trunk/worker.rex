@@ -1,7 +1,7 @@
 #!/usr/bin/rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2008 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2017 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -546,14 +546,14 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
     when word == '-e' then do
       value = self~getValueSegment(i)
 
-      if \ self~validateAndSetOpt(testContainerExt, value, "-e") then j = -1
+      if \ self~validateAndSetOpt("testContainerExt"~upper, value, "-e") then j = -1
       else j+=1
     end
 
     when word == '-f' then do
       value = self~getValueSegment(i)
 
-      if \ self~validateAndSetOpt(singleFile, value, "-f") then j = -1
+      if \ self~validateAndSetOpt("singleFile"~upper, value, "-f") then j = -1
       else j+=1
     end
 
@@ -568,7 +568,7 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
     when word == '-l' then do
       value = self~getValueSegment(i)
 
-      if \ self~validateAndSetOpt(logFile, value, "-l") then j = -1
+      if \ self~validateAndSetOpt("logFile"~upper, value, "-l") then j = -1
       else j+=1
     end
 
@@ -592,7 +592,7 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
     when word == '-R' then do
       value = self~getValueSegment(i)
 
-      if \ self~validateAndSetOpt(testCaseRoot, value, "-R") then j = -1
+      if \ self~validateAndSetOpt("testCaseRoot"~upper, value, "-R") then j = -1
       else j+=1
     end
 
@@ -619,7 +619,7 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
     when word == '-V' then do
       value = self~getValueSegment(i)
 
-      if \ self~validateAndSetOpt(verbosity, value, "-V") then j = -1
+      if \ self~validateAndSetOpt("verbosity"~upper, value, "-V") then j = -1
       else j+=1
     end
 
@@ -1154,37 +1154,37 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
   testOpts~verbosity = self~DEFAULT_VERBOSITY
   testOpts~waitAtCompletion = .false
 
-  optsTable = .table~new
-  optsTable[allTestTypes         ] = "boolean"
-  optsTable[buildFirst           ] = "boolean"
-  optsTable[debug                ] = "boolean"
-  optsTable[defaultTestTypes     ] = "testtypes"
-  optsTable[excludeFileList      ] = "filelist"
-  optsTable[fileList             ] = "filelist"
-  optsTable[filesWithPattern     ] = "fileswithpattern"
-  optsTable[forceBuild           ] = "boolean"
-  optsTable[logFile              ] = "string"
-  optsTable[logFileAppend        ] = "boolean"
-  optsTable[noOptionsFile        ] = "invalid"
-  optsTable[noTests              ] = "boolean"
-  optsTable[optionsFile          ] = "invalid"
-  optsTable[printOptions         ] = "boolean"
-  optsTable[showProgress         ] = "boolean"
-  optsTable[showTestcases        ] = "boolean"
-  optsTable[singleFile           ] = "string"
-  optsTable[suppressAllTicks     ] = "boolean"
-  optsTable[suppressTestcaseTicks] = "boolean"
-  optsTable[testCaseRoot         ] = "string"
-  optsTable[testCases            ] = "testcases"
-  optsTable[testContainerExt     ] = "string"
-  optsTable[testTypeIncludes     ] = "testtypes"
-  optsTable[testTypeExcludes     ] = "testtypes"
-  optsTable[verbosity            ] = "verbosity"
-  optsTable[waitAtCompletion     ] = "boolean"
+  optsTable = .Directory~new
+  optsTable~allTestTypes          = "boolean"
+  optsTable~buildFirst            = "boolean"
+  optsTable~debug                 = "boolean"
+  optsTable~defaultTestTypes      = "testtypes"
+  optsTable~excludeFileList       = "filelist"
+  optsTable~fileList              = "filelist"
+  optsTable~filesWithPattern      = "fileswithpattern"
+  optsTable~forceBuild            = "boolean"
+  optsTable~logFile               = "string"
+  optsTable~logFileAppend         = "boolean"
+  optsTable~noOptionsFile         = "invalid"
+  optsTable~noTests               = "boolean"
+  optsTable~optionsFile           = "invalid"
+  optsTable~printOptions          = "boolean"
+  optsTable~showProgress          = "boolean"
+  optsTable~showTestcases         = "boolean"
+  optsTable~singleFile            = "string"
+  optsTable~suppressAllTicks      = "boolean"
+  optsTable~suppressTestcaseTicks = "boolean"
+  optsTable~testCaseRoot          = "string"
+  optsTable~testCases             = "testcases"
+  optsTable~testContainerExt      = "string"
+  optsTable~testTypeIncludes      = "testtypes"
+  optsTable~testTypeExcludes      = "testtypes"
+  optsTable~verbosity             = "verbosity"
+  optsTable~waitAtCompletion      = "boolean"
 
-  optsTable[h   ] = "invalid"
-  optsTable[help] = "invalid"
-  optsTable[v   ] = "invalid"
+  optsTable~h    = "invalid"
+  optsTable~help = "invalid"
+  optsTable~v    = "invalid"
 
 
 ::method hasHelpArg private
@@ -1416,3 +1416,6 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
     when w == 0 then return '.false'
     otherwise return w
   end
+
+
+::options novalue error

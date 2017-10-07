@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007 - 2008 Rexx Language Association. All rights reserved.  */
+/* Copyright (c) 2007-2017 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -66,16 +66,16 @@ return testResult
     .local~v14 = '14'
 
 ::method 'tearDown'
-    .local~remove(vblank)
-    .local~remove(zeros1)
-    .local~remove(v26)
-    .local~remove(v125)
-    .local~remove(v8)
-    .local~remove(v10000)
-    .local~remove(vwbw)
-    .local~remove(vwbwwbw)
-    .local~remove(v19)
-    .local~remove(v14)
+    .local~remove("VBLANK")
+    .local~remove("ZEROS1")
+    .local~remove("V26")
+    .local~remove("V125")
+    .local~remove("V8")
+    .local~remove("V10000")
+    .local~remove("VWBW")
+    .local~remove("VWBWWBW")
+    .local~remove("V19")
+    .local~remove("V14")
 
 
 ::class "String_subwordMethod.testGroup" subclass ooTestCase public
@@ -177,50 +177,6 @@ return testResult
 
 ::method 'test026'
     self~assertSame('ZXCV', '61736466207a786376000000000041534446205a584356'x~subWord((3*3*3)/9))
-
-::method 'test027'
-    self~assertSame('NV', nv~subWord(1))
-
-::method 'test028'
-    self~assertSame('NV.', nv.~subWord(1))
-
-::method 'test029'
-    self~assertSame('NV.10', nv.10~subWord(1))
-
-::method 'test030'
-    self~expectSyntax(93.924)
-    xre = .v125~subWord(nv)
-
-::method 'test031'
-    self~expectSyntax(93.924)
-    xre = .v125~subWord(nv.)
-
-::method 'test032'
-    self~expectSyntax(93.924)
-    xre = .v125~subWord(nv.10)
-
-::method 'test033'
-    self~expectSyntax(93.924)
-    xre = novala~subWord(novalb)
-
-::method 'test034'
-    self~assertSame('NV.', nv.~subWord(1))
-
-::method 'test035'
-    self~expectSyntax(93.924)
-    xre = .v125~subWord(nv)
-
-::method 'test036'
-    self~expectSyntax(93.924)
-    xre = .v125~subWord(nv.10)
-
-::method 'test037'
-    self~expectSyntax(93.924)
-    xre = novala~subWord(novalb,)
-
-::method 'test038'
-    self~expectSyntax(93.924)
-    xre = .v125~subWord(nv.)
 
 ::method 'test039'
     self~assertSame('J K', .v10000~subWord(9999))
@@ -429,71 +385,6 @@ return testResult
 ::method 'test099'
     self~assertSame('ZXCV', '61736466207a786376000000000041534446205a584356'x~subWord((3*3*3)/9,2))
 
-::method 'test100'
-    self~assertSame('NV', nv~subWord(1,1))
-
-::method 'test101'
-    self~assertSame('NV.', nv.~subWord(1,1))
-
-::method 'test102'
-    self~assertSame('NV.10', nv.10~subWord(1,1))
-
-::method 'test103'
-    self~expectSyntax(93.924)
-    xre = .v125~subWord(nv,1)
-
-::method 'test104'
-    self~expectSyntax(93.924)
-    xre = .v125~subWord(nv.,1)
-
-::method 'test105'
-    self~expectSyntax(93.924)
-    xre = .v125~subWord(nv.10,1)
-
-::method 'test106'
-    self~expectSyntax(93.923)
-    xre = .v125~subWord(1,nv)
-
-::method 'test107'
-    self~expectSyntax(93.923)
-    xre = .v125~subWord(1,nv.)
-
-::method 'test108'
-    self~expectSyntax(93.923)
-    xre = .v125~subWord(1,nv.10)
-
-::method 'test109'
-    self~expectSyntax(93.924)
-    xre = novala~subWord(novalb,novalc)
-
-::method 'test110'
-    self~expectSyntax(93.924)
-    xre = .v125~subWord(nv,1)
-
-::method 'test111'
-    self~expectSyntax(93.924)
-    xre = .v125~subWord(nv.,1)
-
-::method 'test112'
-    self~expectSyntax(93.924)
-    xre = .v125~subWord(nv.10,1)
-
-::method 'test113'
-    self~expectSyntax(93.923)
-    xre = .v125~subWord(1,nv)
-
-::method 'test114'
-    self~expectSyntax(93.923)
-    xre = .v125~subWord(1,nv.)
-
-::method 'test115'
-    self~expectSyntax(93.923)
-    xre = .v125~subWord(1,nv.10)
-
-::method 'test116'
-    self~expectSyntax(93.924)
-    xre = novala~subWord(novalb,novalc)
-
 ::method 'test117'
     self~assertSame('J K', .v10000~subWord(9999,2))
 
@@ -630,3 +521,4 @@ return testResult
     self~assertSame("", 'Now  is  the  time  '~SUBWORD(5))
 
 
+::options novalue error

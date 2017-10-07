@@ -1,11 +1,11 @@
 #!/usr/bin/rexx
 /*
-  SVN Revision: $Rev: 4240 $
-  Change Date:  $Date: 2009-03-01 20:07:18 +0100 (So, 01 Mär 2009) $
+  SVN Revision: $Rev$
+  Change Date:  $Date$
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2007-2007 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -412,11 +412,11 @@ self~assertSame('C', word('ABCD BCDE CDEF DEFG',2)[left(subWord('10 20 30 40',2,
     self~assertSame(' EF', 'AB BC CD DE EF'[12,'123'[2,1]||'456'[2,1]])
 
 ::method 'test089'
-    .local~remove(vblank)
-    .local~remove(v1)
-    .local~remove(v30)
-    .local~remove(v256)
-    .local~remove(v10000)
+    .local~remove("VBLANK")
+    .local~remove("V1")
+    .local~remove("V30")
+    .local~remove("V256")
+    .local~remove("V10000")
 
 ::method 'test090'
     self~expectSyntax(93.903)

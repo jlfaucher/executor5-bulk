@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2005-2008 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2017 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -154,39 +154,39 @@ return testResult
 
 ::method "test_30"
    self~expectSyntax(40.12)
-   self~assertSame(CENTER('1',nv1), '1')
+   self~assertSame(CENTER('1', "nv1"), '1')
 
 ::method "test_31"
    self~expectSyntax(40.12)
-   self~assertSame(CENTER('3',nv2.3), '1')
+   self~assertSame(CENTER('3', "nv2.3"), '1')
 
 ::method "test_32"
    self~expectSyntax(40.12)
-   self~assertSame(CENTER('2',nv2.), '1')
+   self~assertSame(CENTER('2', "nv2."), '1')
 
 ::method "test_33"
    self~expectSyntax(40.12)
-   self~assertSame(CENTER('3',nv2.3), '1')
+   self~assertSame(CENTER('3', "nv2.3"), '1')
 
 ::method "test_34"
    self~expectSyntax(40.12)
-   self~assertSame(CENTER(nv2.3,nv2.3), '1')
+   self~assertSame(CENTER("nv2.3", "nv2.3"), '1')
 
 ::method "test_35"
    self~expectSyntax(40.12)
-   self~assertSame(CENTER(nv2.3,nv2.3), '1')
+   self~assertSame(CENTER("nv2.3", "nv2.3"), '1')
 
 ::method "test_36"
    self~expectSyntax(40.12)
-   self~assertSame(CENTER(nv1,nv1), '1')
+   self~assertSame(CENTER("nv1", "nv1"), '1')
 
 ::method "test_37"
    self~expectSyntax(40.12)
-   self~assertSame(CENTER(nv2.,nv2.), '1')
+   self~assertSame(CENTER("nv2.", "nv2."), '1')
 
 ::method "test_38"
    self~expectSyntax(40.12)
-   self~assertSame(CENTER(nv2.3,nv2.3), '1')
+   self~assertSame(CENTER("nv2.3", "nv2.3"), '1')
 
 ::method "test_39"
    self~assertSame(CENTER('12345ZYXWV',15), '  12345ZYXWV   ')
@@ -262,19 +262,19 @@ return testResult
 
 ::method "test_59"
    AA255="COPIES"('AAAAAAAAAA',25)'AAAAA'
-   self~assertSame("CENTRE"(AA255,255), AA255)
+   self~assertSame("CENTER"(AA255,255), AA255)
 
 ::method "test_60"
    AA256="COPIES"('AAAAAAAAAA',25)'AAAAAA'
-   self~assertSame("CENTRE"(AA256,3), 'AAA')
+   self~assertSame("CENTER"(AA256,3), 'AAA')
 
 ::method "test_61"
    AA256="COPIES"('AAAAAAAAAA',25)'AAAAAA'
    AAlon="COPIES"('AAAAAAAAAA',3815)
-   self~assertSame(CENTRE(AAlon,256), AA256)
+   self~assertSame(CENTER(AAlon,256), AA256)
 
 ::method "test_62"
-   self~assertSame(CENTRE('',32767), copies(' ',32767))
+   self~assertSame(CENTER('',32767), copies(' ',32767))
 
 ::method "test_63"
    self~assertSame(center('',32768), copies(' ',32768))
@@ -323,7 +323,7 @@ return testResult
 ::method "test_73"
    self~expectSyntax(93.923)
    AA  ='A'
-   self~assertSame(CENTRE(AA,'  -3 '), ' A ')
+   self~assertSame(CENTER(AA,'  -3 '), ' A ')
 
 ::method "test_74"
    self~assertSame("CENTER"('abcde',3), 'bcd')
@@ -341,19 +341,19 @@ return testResult
 
 ::method "test_78"
    Z255="COPIES"('AAAAAAAAAA',25)'AAAAA'
-   self~assertSame("CENTRE"(Z255,255), Z255)
+   self~assertSame("CENTER"(Z255,255), Z255)
 
 ::method "test_79"
    Z256="COPIES"('AAAAAAAAAA',25)'AAAAAA'
-   self~assertSame("CENTRE"(Z256,3), 'AAA')
+   self~assertSame("CENTER"(Z256,3), 'AAA')
 
 ::method "test_80"
    Z256="COPIES"('AAAAAAAAAA',25)'AAAAAA'
    Zlon="COPIES"('AAAAAAAAAA',3815)
-   self~assertSame(CENTRE(Zlon,256), Z256)
+   self~assertSame(CENTER(Zlon,256), Z256)
 
 ::method "test_81"
-   self~assertSame(CENTRE('',32767), copies(' ',32767))
+   self~assertSame(CENTER('',32767), copies(' ',32767))
 
 ::method "test_82"
    self~assertSame(center('',32768), copies(' ',32768))
@@ -361,7 +361,7 @@ return testResult
 ::method "test_83"
    Do i=0 To 255
       P=d2c(i)
-      self~assertSame(centre('S',3,p), p'S'p)
+      self~assertSame(center('S',3,p), p'S'p)
    End
 
 ::method "test_84"
@@ -413,14 +413,16 @@ return testResult
 -- rexxref documentation tests
 
 ::method "test_201"
-    self~assertSame('  ABC  ', CENTER(abc,7))
+    self~assertSame('  ABC  ', CENTER("ABC", 7))
 
 ::method "test_202"
-    self~assertSame('--ABC---', CENTER(abc,8,'-'))
+    self~assertSame('--ABC---', CENTER("ABC", 8,'-'))
 
 ::method "test_203"
-    self~assertSame('e blue s', CENTRE('The blue sky',8))
+    self~assertSame('e blue s', CENTER('The blue sky',8))
 
 ::method "test_204"
-    self~assertSame('e blue ', CENTRE('The blue sky',7))
+    self~assertSame('e blue ', CENTER('The blue sky',7))
 
+
+::options novalue error
