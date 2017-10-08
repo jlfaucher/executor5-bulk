@@ -65,17 +65,23 @@ return testResult
 
 -- "exit" should return 0 for both Linux and Windows shells
 ::constant command_exists "exit"
--- non-existing command (with shell messages suppressed for Windows and Unix)
+
+-- "exit 2" should return 2 for both Linux and Windows shells
+::constant command_exists_rc_2 "exit 2"
+
+-- non-existent command (with shell messages suppressed for Windows and Unix)
 ::attribute command_not_exists get
   if .ooRexxUnit.OSName == "WINDOWS" then
     return "command_not_exists 2>nul"
   else
     return "command_not_exists 2>/dev/null"
+
 ::attribute rc_command_not_exists get
   if .ooRexxUnit.OSName == "WINDOWS" then
     return 1 -- CMD return code for an unknown command is 1
   else
     return 127 -- Linux shell return code for an unknown command is 127
+
 
 ::method test_environment_symbol
    address not_exists
@@ -110,43 +116,89 @@ return testResult
    address (environment) "extra"
    self~assertSame(environment "extra", address())
 
-::method test_environment_symbol_command_exists
+-- commands with zero return code should raise neither ERROR nor FAILURE
+::method test_environment_command_exists
    defaultEnvironment = address()
+   signal on error
+   signal on failure
+
+   -- both the COMMAND and the "" environment should access
+   -- the default environment for Windows and Unix
    address command self~command_exists
    self~assertSame(0, rc)
    self~assertSame(0, .rs)
    self~assertSame(defaultEnvironment, address())
 
-::method test_environment_string_command_exists
-   defaultEnvironment = address()
-   address "command" self~command_exists
+   -- both the COMMAND and the "" environment should access
+   -- the default environment for Windows and Unix
+   address "" self~command_exists
    self~assertSame(0, rc)
    self~assertSame(0, .rs)
    self~assertSame(defaultEnvironment, address())
 
-::method test_environment_symbol_command_not_exists
+   return
+
+   error: failure:
+   self~assertFail("command '"self~command_exists"' shouldn't have raised" condition("condition"))
+
+-- commands with non-zero return code should raise ERROR (but not FAILURE)
+::method test_command_exists_rc_2
    defaultEnvironment = address()
-   address command self~command_not_exists
-   self~assertSame(self~rc_command_not_exists, rc)
+   signal on error
+   signal on failure
+   address "" self~command_exists_rc_2
+   self~assertFail("command '"self~command_exists_rc_2"' should have raised ERROR")
+
+   error:
+   self~assertSame(2, rc)
    self~assertSame(1, .rs)
    self~assertSame(defaultEnvironment, address())
+   return
 
-::method test_environment_string_command_not_exists
+   failure:
+   self~assertFail("command '"self~command_exists_rc_2"' shouldn't have raised FAILURE")
+
+-- invalid (non-existent) commands should raise FAILURE (not ERROR)
+-- on Windows, although rexxref says: "For the default Windows command processor,
+-- an attempt to enter an unknown command raises a FAILURE condition", this doesn't
+-- work.  See [bugs:#1490] Windows Command doesn't raise FAILURE 
+-- As this doesn't seem to be easily fixed, we'll run this as "known bug"
+::method test_command_not_exists
    defaultEnvironment = address()
-   address "command" self~command_not_exists
-   self~assertSame(self~rc_command_not_exists, rc)
-   self~assertSame(1, .rs)
-   self~assertSame(defaultEnvironment, address())
+   signal on error
+   signal on failure
+   trace off                           -- we don't want to see FAILURE trace output
+   address "" self~command_not_exists
+   self~assertFail("command '"self~command_not_exists"' should have raised FAILURE")
 
+   failure:
+   self~assertSame(self~rc_command_not_exists, rc)
+   self~assertSame(-1, .rs)
+   self~assertSame(defaultEnvironment, address())
+   return
+
+   error:
+   self~assertFail("tracker bug #1490 Windows Command doesn't raise FAILURE")
+
+-- an invalid environment should raise FAILURE
 -- rexxref says: "An attempt to enter a command in an unknown command environment
 -- also raises a FAILURE condition; in such a case, the variable RC is set to 30."
 ::method test_environment_not_exists_command
-   trace off                           -- we don't want to see FAILURE trace output
    defaultEnvironment = address()
+   signal on error
+   signal on failure
+   trace off                           -- we don't want to see FAILURE trace output
    address "environment_not_exists" self~command_exists
+   self~assertFail("an invalid anvironment should have raised FAILURE")
+
+   failure:
    self~assertSame(30, rc)
    self~assertSame(-1, .rs)
    self~assertSame(defaultEnvironment, address())
+   return
+
+   error:
+   self~assertFail("an invalid anvironment shouldn't raise ERROR")
 
 ::method test_environment_max_length
    environment = "x"~copies(250)
