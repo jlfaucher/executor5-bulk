@@ -3610,15 +3610,6 @@ in error is always traced.</para>
 <secondary>in a USE instruction</secondary></indexterm>
 <indexterm><primary>STRICT subkeyword</primary>
 <secondary>in a USE instruction</secondary></indexterm>
-
-<mediaobject>
-<imageobject>
-<imagedata fileref="images/keywords/use.svg" scale="55" />
-</imageobject>
-</mediaobject>
-</para>
-
-<para>
 The USE instruction can be used to
 <itemizedlist spacing="compact">
   <listitem>
@@ -3632,17 +3623,25 @@ The USE instruction can be used to
 </para>
 
 <section id="keyUseArg"><title>USE ARG, USE STRICT ARG</title>
+<para>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/use_arg.svg" scale="55" />
+</imageobject>
+</mediaobject>
+</para>
+
 <para>USE ARG retrieves the argument objects provided in a program, routine,
 function, or method and assigns them to variables or message term assignments.</para>
 <para>Each <emphasis role="italic">name</emphasis> must be a valid variable
-name. The <emphasis role="italic">name</emphasis>s are
+name or an assignment message term. The <emphasis role="italic">name</emphasis>s are
 assigned from left to right. For each <emphasis role="italic">name</emphasis>
 you specify, the language processor assigns it a corresponding argument from
 the program, routine, function, or method call. If there is no corresponding
 argument, <emphasis role="italic">name</emphasis> is assigned the value
 of <emphasis role="italic">expr</emphasis>.  If <emphasis role="italic">expr</emphasis>
 is not specified for the given argument, the variable <emphasis role="italic">name</emphasis>
-is dropped.  If the assignment target is a messaging term, no action is taken for omitted arguments.
+is dropped.  If the assignment target is a message term, no action is taken for omitted arguments.
 </para>
 <para>A USE ARG instruction can be processed repeatedly and it always accesses
 the same current argument data.</para>
@@ -3659,13 +3658,13 @@ can appear on the left side of an assignment statement (See
 <para>The <option>STRICT</option> option imposes additional constraints on argument processing.
 The number of arguments must match the number of
 <emphasis role="italic">name</emphasis>s, otherwise an error is raised.  An argument
-may be considered optional if <emphasis role="italic">expr</emphasis>  has been
+is considered optional if <emphasis role="italic">expr</emphasis> has been
 specified for the argument.</para>
-<para>The ellipsis ("...") can be given in place of the last variable in the USE
-STRICT ARG statement and indicates that more arguments may follow. It allows
-defining a minimum amount of arguments that must be supplied or for which
-there are default values defined and that may be followed optionally by any
-additional arguments.
+<para>An ellipsis (<literal>...</literal>) can be specified after the last
+variable in a USE STRICT ARG statement to indicate that more arguments may follow.
+This allows defining a minimum number of arguments that must be supplied or for which
+there are default values defined, which may optionally be followed by any additional
+arguments.
 <indexterm><primary>USE instruction</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -3770,12 +3769,21 @@ ways of retrieving arguments. ARG and PARSE ARG access the string values of
 arguments. USE ARG performs a direct, one-to-one assignment of arguments.
 This is preferable when you need direct access to an argument,
 without translation or parsing. USE ARG also allows access to both string
-and non-string argument objects; ARG and PARSE ARG convert the arguments to values
+and non-string argument objects; ARG and PARSE ARG convert the arguments to string values
 before parsing.</para>
 </section>
 
 <section id="keyUseLocal" revisionflag="added"><title>&added50;USE LOCAL</title>
 <indexterm><primary>LOCAL subkeyword</primary><secondary>in a USE instruction</secondary></indexterm>
+
+<para>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/use_local.svg" scale="55" />
+</imageobject>
+</mediaobject>
+</para>
+
 <para>USE LOCAL defines local variables in a method.</para>
 <para>Generally object variables must be specified in a method using EXPOSE,
 while all other variables used in the method will become local variables.

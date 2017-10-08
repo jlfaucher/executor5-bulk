@@ -105,9 +105,9 @@ trace ::= 'TRACE' ( number |
                   symbol |
                   'VALUE' expression )
 
-use ::= 'USE' ( 'STRICT'? 'ARG' ( ( name ('=' expr)? )? ( ',' ( name ('=' expr)? )? )* (',' '...')?
-                                | '...'
-                                )
-              | 'LOCAL' name*
-              )
+use_arg ::= 'USE' 'STRICT'? 'ARG' ( ( name ('=' expr)? )? ( ',' ( name ('=' expr)? )? )* (',' '...')?
+                                  | '...'
+                                  )
+
+use_local ::= 'USE' 'LOCAL' name*
 
