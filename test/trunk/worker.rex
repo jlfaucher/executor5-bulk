@@ -152,7 +152,7 @@ return finishTestRun(cl, testResult, overAllPhase, containers)
     pull
   end
 
-return max(testResult~failureCount > 0, 2 * (testResult~errorCount > 0))
+return max(testResult~newFailureCount > 0, 2 * (testResult~errorCount > 0))
 
 ::routine buildExternalBins
   use arg testResult, file, force
