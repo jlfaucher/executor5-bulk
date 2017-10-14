@@ -66,7 +66,10 @@ C API to perform the action.</para>
 <listitem><para>The string to be encrypted.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="italic">salt</emphasis></term>
-<listitem><para>The two character encryption salt.
+<listitem><para>The encryption salt must be two characters for the default
+DES encyption.
+Depending on the platform, other salt lengths may be required for encyptions
+like MD5, Blowfish, SHA-256, or SHA-512.
 </para></listitem></varlistentry>
 </variablelist>
 <para><emphasis role="bold">Returns</emphasis></para>
@@ -75,9 +78,9 @@ C API to perform the action.</para>
 <title>SysCrypt</title>
 <programlisting>
 <![CDATA[
-/* encrypt a string */
+/* encrypt a password */
 
-encstr = SysCrypt("String to encrypt.", "3A")
+encstr = SysCrypt("password", "3A")
 ]]>
 </programlisting>
 </example>

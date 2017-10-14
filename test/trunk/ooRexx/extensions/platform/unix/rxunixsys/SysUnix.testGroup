@@ -1,4 +1,8 @@
 #!/usr/bin/rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 2010-2017 Rexx Language Association. All rights reserved.    */
@@ -35,15 +39,14 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-
-    parse source . . fileSpec;
+    parse source . . fileSpec
 
     group = .TestGroup~new(fileSpec)
 
     group~add(.SysUnix.testGroup)
-    group~restrictOS("LINUX")
+    -- try to run on any Unix, which we translate to "anything except Windows"
+    group~restrictOS(group~knownOSes~~remove("WINDOWS"))
 
-    signal on syntax name packageErr
     .context~package~loadLibrary("rxunixsys")
 
     if group~isAutomatedTest then return group
@@ -51,17 +54,6 @@
     testResult = group~suite~execute~~print
 
 return testResult
-
-packageErr:
-  err = .ExceptionData~new(timeStamp(), s, .ExceptionData~TRAP)
-  err~setLine(sigl)
-  err~conditionObject = condition('O')
-  err~msg = "Failed to load external library 'rxunixsys' needed for this test group."
-
-  if group~isAutomatedTest then return err
-
-  err~print("Test group exception", .false)
-return .ooTestResult~new(5)~~addException(err)
 
 -- End of entry point.
 
@@ -205,6 +197,27 @@ return .ooTestResult~new(5)~~addException(err)
 
   name = SysGetservbyport(80, "tcp", "name")
   self~assertEquals(80, port, "port 80 assumed to be 'http', not" name);
+
+
+::method test_SysCrypt_DES
+  salt = "3a"
+  des = SysCrypt("passsw", salt)
+  self~assertEquals(13, des~length, "13 chars DES-encoded password expected")
+  self~assertTrue(des~startsWith(salt), "DES-encoded password should start with salt '3a'")
+  self~assertEquals(0, des~verify(self~allowedCryptChars), "DES-encoded chars expected from set [a-zA-Z0-9./]")
+
+::method test_SysCrypt_MD5
+  salt = "$1$salt"                     -- MD5 id is 1, salt may be up to 16 chars
+  md5 = SysCrypt("passsw", salt)
+  if md5~length \= 0 then do           -- MD5 might not be supported
+    self~assertEquals(salt~length + 1 + 22, md5~length, salt~length + 1 + 22 "chars MD5-encoded password expected")
+    self~assertTrue(md5~startsWith(salt), "MD5-encoded password should start with '"salt"'")
+    self~assertEquals(0, md5~verify(self~allowedCryptChars, , salt~length + 2), "MD5-encoded chars expected from set [a-zA-Z0-9./]")
+  end
+
+::method allowedCryptChars
+  -- set [a-zA-Z0-9./]
+  return .String~alnum || "./" 
 
 
 ::options novalue error
