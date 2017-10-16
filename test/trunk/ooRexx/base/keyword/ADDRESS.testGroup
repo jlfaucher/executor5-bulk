@@ -205,9 +205,100 @@ return testResult
    address value environment
    self~assertSame(environment, address())
 
-::method environment_too_long
+::method test_environment_too_long
    self~expectSyntax(29.1) -- Environment name exceeds 250 characters
-   address value x~copies(251)
+   address value "x"~copies(251)
+
+
+-- the initial environment should be in the list of Rexx-defined environments
+-- (but it shouldn't be the null string)
+::method test_environment_initial
+  if .ooRexxUnit.OSName == "WINDOWS" then
+    environments = ("CMD", "COMMAND")
+  else
+    environments = ("sh", "bsh", "bash", "csh", "ksh", "command", "noshell")
+  self~assertTrue(environments~hasItem(address()), "initial address() '" || address() || "' is not a Rexx-defined environment")
+
+::method test_environment_unix
+  if .ooRexxUnit.OSName == "WINDOWS" then
+    return
+
+  -- on a Unix platform Rexx defines a bunch of environments
+  -- we check if these environments call the appropriate shell (if installed)
+  -- if the shell for a given environment isn't installed, we expect a FAILURE
+  -- if the shell is available, we expect "echo $0" to return the shell name
+  -- (we don't test 'noshell' environment, as it doesn't support pipe redirection)
+  environments = ("1::" || address(), "1:sh", "0:bsh", "0:bash", "0:csh", "0:ksh", "1:command:sh")
+
+  cmd = .Command~new
+  do env over environments
+    parse var env required ":" shell ":" echo
+    if echo = "" then
+      echo = shell
+    if shell == address() then
+      required = .true
+    cmd~environment = shell            -- address (shell)
+    cmd~run("echo $0")                 -- "echo $0"
+
+    -- we do not expect all environments to find their shell actually installed
+    -- address(), "", "sh", "command" and "noshell" should work at all times,
+    -- all others (if not installed) will raise FAILURE, which is a valid outcome
+    if cmd~failed, \required then
+      iterate                          -- FAILURE is ok, shell not installed
+
+    -- environments deemed as required, should always work
+    if cmd~failed then
+      self~assertFalse(cmd~failed, "environment '"shell"' failed")
+
+    self~assertEquals(echo, cmd~stdOut[1], "environment '"shell"' expected to return" echo "for echo $0")  
+  end
+
+
+-- run an environment subcommand and capture its output
+::class Command
+
+::attribute environment
+::attribute returnCode get
+::attribute failed get
+
+::method init
+  use local
+  use strict arg environment = "" , rxqueue = "rxqueue"
+
+  queueName = .RexxQueue~create        -- a unique queue name, not a .RexxQueue object
+  queue = .RexxQueue~new(queueName)    -- the queue used to capture command output
+  returnCode = .nil
+  failed = .false
+
+-- run command in environment and pipe its output to queue
+::method run
+  use local
+  use strict arg command 
+
+  returnCode = .nil
+  failed = .false
+
+  signal on failure
+  address value environment
+  trace off                            -- don't trace command failures
+  command "|" rxqueue queueName
+  returnCode = rc
+  return
+
+  failure:
+  failed = .true
+
+-- Return output of any previous commands, and empty queue
+::method stdOut
+  expose queue
+  return queue~makeArray               -- also empties queue
+
+-- delete named queue upon instance destruction
+::method uninit
+  expose queue
+
+  queue~delete                         -- a named queue persists, need to delete it
+  forward class (super)
 
 
 ::options novalue error
