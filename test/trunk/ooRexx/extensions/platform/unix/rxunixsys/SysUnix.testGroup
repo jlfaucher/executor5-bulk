@@ -45,7 +45,7 @@
 
     group~add(.SysUnix.testGroup)
     -- try to run on any Unix, which we translate to "anything except Windows"
-    group~restrictOS(group~knownOSes~~remove("WINDOWS"))
+    group~restrictOS(group~knownOSes~~removeItem("WINDOWS"))
 
     .context~package~loadLibrary("rxunixsys")
 
@@ -207,6 +207,13 @@ return testResult
   self~assertEquals(0, des~verify(self~allowedCryptChars), "DES-encoded chars expected from set [a-zA-Z0-9./]")
 
 ::method test_SysCrypt_MD5
+
+  -- Darwin not only doesn't support MD5,
+  -- (https://en.wikipedia.org/wiki/Crypt_(C)#Support_in_operating_systems)
+  -- it will also just happily return a 13-chars DES-encrypted string instead
+  if .ooRexxUnit.OSName == "DARWIN" then
+    return
+
   salt = "$1$salt"                     -- MD5 id is 1, salt may be up to 16 chars
   md5 = SysCrypt("passsw", salt)
   if md5~length \= 0 then do           -- MD5 might not be supported
