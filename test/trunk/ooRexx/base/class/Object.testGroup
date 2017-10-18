@@ -637,6 +637,31 @@ return testResult
   self~expectSyntax(93.902)
   'abc'~isInstanceOf(.string, 1)
 
+::method test_isnil_one_arg
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method; 0 expected
+  ""~isNil(.true)
+
+::method test_isnil_null
+  self~assertFalse(""~isNil)
+
+::method test_isnil_string
+  self~assertFalse("string"~isNil)
+
+::method test_isnil_number
+  self~assertFalse(0~isNil)
+
+::method test_isnil_instance
+  self~assertFalse(.Array~of()~isNil)
+
+::method test_isnil_class
+  self~assertFalse(.File~isNil)
+
+::method test_isnil_nil
+  self~assertTrue(.nil~isNil)
+
+::method test_isnil_nil_result
+  self~assertTrue(.Array~new[1]~isNil)
+
 ::method test_instancemethod
   -- some tests of instancemethod, instancemethods, and method scope
   t = .test2~new

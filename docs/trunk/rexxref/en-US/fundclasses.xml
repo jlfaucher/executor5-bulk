@@ -2522,7 +2522,7 @@ of the Object class are, therefore, available on all objects.</para>
 <!-- modified: removed all class methods except new(), uncommented init(), added private methods run(), setMethod(), unsetMethod() -->
 <!-- modified: removed "Methods inherited from the Object class" -->
 <!-- modified: made Concat/Comparison single-column -->
-<!-- $GENERATED-20151019-START rexxrefClassTable(Object) -->
+<!-- $GENERATED-20171018-START rexxrefClassTable(Object) -->
 <table id="ooRexxObjectClass" frame="all" pgwide="1">
 <title>Object Class</title>
 <tgroup cols="1">
@@ -2549,6 +2549,7 @@ of the Object class are, therefore, available on all objects.</para>
    <member><xref linkend="mthObjectInstanceMethods" xrefstyle="select:title"/></member>
    <member><xref linkend="mthObjectIsA" xrefstyle="select:title"/></member>
    <member><xref linkend="mthObjectIsInstanceOf" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthObjectIsNil" xrefstyle="select:title"/></member>
    <member><xref linkend="mthObjectObjectName" xrefstyle="select:title"/></member>
    <member><xref linkend="mthObjectObjectNameEquals" xrefstyle="select:title"/></member>
    <member><xref linkend="mthObjectRequest" xrefstyle="select:title"/></member>
@@ -2565,7 +2566,7 @@ of the Object class are, therefore, available on all objects.</para>
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20151019-END rexxrefClassTable(Object) -->
+<!-- $GENERATED-20171018-END rexxrefClassTable(Object) -->
 
 <section id="mthObjectNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
@@ -3014,6 +3015,31 @@ class inheritance chain. For example:
 </example>
 </para>
 </section>
+
+
+<!-- Class Object - method isNil ======================== -->
+<section id="mthObjectIsNil" revisionflag="added"><title>*NEW* isNil
+<indexterm><primary>isNil method</primary><secondary>of Object class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>isNil method</secondary><tertiary>of Object class</tertiary></indexterm>
+</title>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/object_isnil.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns &true; if the receiving object is the &nil; object.
+Returns &false; otherwise.
+</para>
+<para><example id="ex.object-isnil">
+<title>Object class &mdash; isNil method
+<indexterm><primary>examples</primary><secondary>isNil method</secondary></indexterm>
+</title>
+<programlisting><![CDATA[
+say .Object~isNil    -- 0
+say .nil~isNil       -- 1
+]]></programlisting></example></para>
+</section>
+
 
 <section id="mthObjectObjectName"><title>objectName</title>
 <indexterm><primary>objectName method</primary>
@@ -8722,7 +8748,7 @@ will be removed.</para>
 
 <para>Returns the <emphasis>n</emphasis>'th character of the receiving
 string. <emphasis>n</emphasis> must be a positive whole number. If
-<emphasis>n</emphasis> is greater that the length of the receiving string
+<emphasis>n</emphasis> is greater than the length of the receiving string
 then a zero-length string is returned.</para>
 <para>See also methods <xref linkend="mthStringAtGet" xrefstyle="select:title"/>
 and <xref linkend="mthStringSubstr" xrefstyle="select:title"/>.
