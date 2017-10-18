@@ -165,7 +165,7 @@ bag_of ::=           'of(' ( item ( ',' item )* )? ')'  /* sparse not allowed */
 
 bag_atget ::= '[' index ']'
 
-bag_putset ::= '[' index ']' '=' item
+bag_putset ::= '[' index? ']' '=' item
 
 bag_allat ::= 'allAt(' index ')'
 
@@ -553,7 +553,7 @@ set_items ::= 'items'
 set_makearray ::= 'makeArray'
 set_put ::= 'put(' item (',' index)? ')'
 set_putall ::= 'putAll(' collection ')'
-set_putset ::= '[' index ']' '=' item
+set_putset ::= '[' index? ']' '=' item
 set_remove ::= 'remove(' index ')'
 set_removeitem ::= 'removeItem(' item ')'
 set_subset ::= 'subset(' argument ')'
