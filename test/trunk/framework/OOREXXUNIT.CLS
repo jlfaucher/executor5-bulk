@@ -1598,14 +1598,14 @@ return str
  -- make sure the output streams are in default state
  .output~destination(.stdout)
  .error~destination(.stderr)
- .traceoutput~destination(.stderr)
+ .traceoutput~destination(.error)
 
   self~doTheTest(fName, aTestResult)  -- carry out the testmethod
 
  -- make sure the output streams are in default state
  .output~destination(.stdout)
  .error~destination(.stderr)
- .traceoutput~destination(.stderr)
+ .traceoutput~destination(.error)
 
   self~tearDown                       -- make sure tearDown is invoked after test
   aTestResult~endTest(self)           -- remember test ended
