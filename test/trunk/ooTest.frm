@@ -61,7 +61,7 @@ if \ .local~hasEntry('OOTEST_FRAMEWORK_VERSION') then do
   -- Capture the ooTest framework directory and ensure it is in the path.
   parse source . . fileSpec
   .local~ooTest.dir = fileSpec~left(fileSpec~caseLessPos("ooTest.frm") - 2 )
-  j = addToPath(.ooTest.dir)
+  call addToPath .ooTest.dir
 
   -- If not already in the environment, save the current working directory.
   if \ .local~hasEntry("ooTest.originalWorkingDir"~upper) then
@@ -69,7 +69,7 @@ if \ .local~hasEntry('OOTEST_FRAMEWORK_VERSION') then do
 
   -- Set up the external library path.  Although this is a bit of a misnomer,
   -- the external directory may also have regular executables in it.
-  j = setExternalLibDir()
+  call setExternalLibDir
 
 end
 -- End of entry point.
@@ -149,12 +149,15 @@ return value(name, , 'ENVIRONMENT')
   libDir = .ooTest.dir || sl || 'bin' || sl || os
 
   -- if libdir doesn't exist or is empty, don't bother adding it to PATH, LIBPATH, etc.
-  if .nil == .File~new(libdir)~list then
+  libdirFiles = .File~new(libdir)~list
+  if .nil == libdirFiles then
+    return
+  if libdirFiles~items = 0 then
     return
 
   -- libDir may / will also contain executables.  So add it to the path for all
   -- OSes.
-  j = addToPath(libDir)
+  call addToPath libDir
 
   select
     when os == "WINDOWS" then do
@@ -164,12 +167,12 @@ return value(name, , 'ENVIRONMENT')
     when os == 'AIX' then do
       curLibPath = getEnvValue("LIBPATH")
       libDir = libDir || sep || curLibPath
-      j = replaceEnvValue("LIBPATH", libDir)
+      call replaceEnvValue "LIBPATH", libDir
     end
     when os == 'LINUX' | os == 'DARWIN' then do
       curLDPath = getEnvValue("LD_LIBRARY_PATH")
       libDir = libDir || sep || curLDPath
-      j = replaceEnvValue("LD_LIBRARY_PATH", libDir)
+      call replaceEnvValue "LD_LIBRARY_PATH", libDir
     end
     otherwise do
       say 'ooTest.frm::routine::setExternalDir() line:' .line
@@ -178,7 +181,7 @@ return value(name, , 'ENVIRONMENT')
   end
   -- End select
 
-return 0
+return
 
 /** class:  TestContainer
  * Defines an interface for a test container.  Objects containing tests that
