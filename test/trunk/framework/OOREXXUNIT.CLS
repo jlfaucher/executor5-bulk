@@ -1218,6 +1218,9 @@ return str
       self~fail(self~makeFailure(expected, actual, msg, "assertEquals"))
   end
 
+  -- Assertion holds.
+  self~fAssertions += 1
+
 -- compare two Collections for equivalence
 ::method assertEquivalentList
   use strict arg expected, actual, msg = "assertEquivalentList"
@@ -1226,6 +1229,9 @@ return str
     if \isCollectionEquivalent(expected, actual) then
       self~fail(self~makeFailure(expected, actual, msg, "assertEquivalentList"))
   end
+
+  -- Assertion holds.
+  self~fAssertions += 1
 
 
 ::method assertSame
