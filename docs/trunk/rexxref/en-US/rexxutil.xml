@@ -4176,7 +4176,7 @@ line = SysTextScreenRead(2, 0, 80)
 </example>
 </section>
 
-<section id="utlSystextscreensize"><title>SysTextScreenSize (Windows only)</title>
+<section id="utlSystextscreensize"><title>&changed50;SysTextScreenSize (Windows only)</title>
 <indexterm><primary>SysTextScreenSize</primary></indexterm>
 <indexterm><primary>rexxutil functions</primary>
 <secondary>SysTextScreenSize</secondary></indexterm>
@@ -4187,11 +4187,94 @@ line = SysTextScreenRead(2, 0, 80)
 </imageobject>
 </mediaobject>
 
-<para>
-  Returns the size of the console screen buffer, in character rows and columns. The size of the buffer is returned as a
-  string in the format: <computeroutput>row col</computeroutput>. On error, the string: <computeroutput>0 0</computeroutput>
-  is returned.
+<para>Returns or sets the size of the console screen buffer,
+returns or sets the position of the current console window rectangle, or
+returns the maximum possible console window size.
 </para>
+
+<para><emphasis role="bold">Parameters:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">option</emphasis></term>
+<listitem>
+<para>Specifies which size or position is to be returned or set.
+</para>
+
+  <variablelist>
+  <varlistentry><term><literal>BUFFERSIZE</literal></term>
+  <listitem><para>Returns or sets the size of the current console buffer.
+  This is the default.
+  </para>
+  <para>If a size is returned, it is a string of the form
+  <emphasis role="italic"><literal>rows columns</literal></emphasis>,
+  where <emphasis role="italic">rows</emphasis> is the height and
+  <emphasis role="italic">columns</emphasis> is the width in terms of character cells.
+  If no character-mode console is attached, the string <literal>0 0</literal> is returned.
+  </para>
+
+    <variablelist>
+    <varlistentry><term><emphasis role="italic">rows</emphasis>,
+      <emphasis role="italic">columns</emphasis></term>
+    <listitem><para>If both optional <emphasis role="italic">rows</emphasis> and
+    <emphasis role="italic">columns</emphasis> are specified, the console buffer
+    size is changed to the height and width given by
+    <emphasis role="italic">rows</emphasis> and
+    <emphasis role="italic">columns</emphasis>.
+    The buffer size cannot be smaller than the size of the current console window.
+    If the function succeeds, it returns <literal>0</literal>, otherwise a
+    Windows System Error code is returned.
+    </para></listitem></varlistentry>
+    </variablelist>
+
+  </listitem></varlistentry>
+
+  <varlistentry><term><literal>WINDOWRECT</literal></term>
+  <listitem><para>Returns or sets the position of the current console window rectangle.
+  </para>
+  <para>If a position is returned, it is a string of the form
+  <emphasis role="italic"><literal>top left bottom right</literal></emphasis>, where
+  (<emphasis role="italic">top</emphasis>, <emphasis role="italic">left</emphasis>) and
+  (<emphasis role="italic">bottom</emphasis>, <emphasis role="italic">right</emphasis>)
+  are absolute character-cell coordinates in the current console buffer, with the origin
+  (0, 0) at the upper-left corner.
+  If no character-mode console is attached, the string <literal>0 0 0 0</literal> is returned.
+  </para>
+
+    <variablelist>
+    <varlistentry><term><emphasis role="italic">top</emphasis>,
+      <emphasis role="italic">left</emphasis>,
+      <emphasis role="italic">bottom</emphasis>,
+      <emphasis role="italic">right</emphasis></term>
+    <listitem><para>If all optional arguments <emphasis role="italic">top</emphasis>,
+      <emphasis role="italic">left</emphasis>,
+      <emphasis role="italic">bottom</emphasis>, and
+      <emphasis role="italic">right</emphasis> are specified, the position of the current console window rectangle
+    is changed to the given 
+    (<emphasis role="italic">top</emphasis>, <emphasis role="italic">left</emphasis>) and
+    (<emphasis role="italic">bottom</emphasis>, <emphasis role="italic">right</emphasis>)
+    positions.
+    Both positions must be within the boundaries of the current console buffer.
+    If the function succeeds, it returns <literal>0</literal>, otherwise a
+    Windows System Error code is returned.
+    </para></listitem></varlistentry>
+    </variablelist>
+
+  </listitem></varlistentry>
+
+  <varlistentry><term><literal>MAXWINDOWSIZE</literal></term>
+  <listitem><para>Returns the maximum possible console window size, considering the size
+  of the current console screen buffer, the chosen window font, and the screen size.
+  </para>
+  <para>The size is returned as a string of the form
+  <emphasis role="italic"><literal>rows columns</literal></emphasis>,
+  where <emphasis role="italic">rows</emphasis> is the height and
+  <emphasis role="italic">columns</emphasis> is the width in terms of character cells.
+  If no character-mode console is attached, the string <literal>0 0</literal> is returned.
+  </para></listitem></varlistentry>
+  </variablelist>
+
+</listitem></varlistentry>
+</variablelist>
+
 <indexterm><primary>rexxutil functions</primary>
 <secondary>SysTextScreenSize</secondary>
 <tertiary>example</tertiary></indexterm>
@@ -4202,10 +4285,10 @@ line = SysTextScreenRead(2, 0, 80)
 <example id="ex.systextscreensize">
 <title>RexxUtil &mdash; SysTextscreensize</title>
 <programlisting>
-/* Code */
-call RxFuncAdd "SysTextScreenSize", "RexxUtil", "SysTextScreenSize"
-parse value SysTextScreenSize() with row col
-say "Rows="row", Columns="col
+parse value SysTextScreenSize() with rows columns
+parse value SysTextScreenSize("windowrect") with top left bottom right
+say "current console buffer is" rows "rows by" columns "columns"
+say "current window rectangle is ("top"," left") ("bottom"," right")"
 </programlisting>
 </example>
 </section>

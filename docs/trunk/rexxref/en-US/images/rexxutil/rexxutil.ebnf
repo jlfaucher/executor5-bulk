@@ -120,7 +120,7 @@ syspulseeventsem ::= 'SysPulseEventSem(' handle ')'
 sysqueryprocess1 ::= 'SysQueryProcess(' ( '"PID"' | '"TID"' | '"PPRIO"' | '"TPRIO"' |
                                          '"PTIME"' | '"TTIME"' )? ')'
 
-sysqueryprocess2 ::= 'SysQueryProcess(' ( '"PID"' | '"PPID"' | '"PPRIO"' | '"RTIME"' |
+sysqueryprocess2 ::= 'SysQueryProcess(' ( '"PID"' | '"PPID"' | '"PPRIO"' | '"PTIME"' |
                                          '"PMEM"' | '"PSWAPS"' | '"PRCVDSIG"' )? ')'
 
 sysqueryrexxmacro ::= 'SysQueryRexxMacro(' name ')'
@@ -165,7 +165,10 @@ systempfilename ::= 'SysTempFileName(' template ( ',' filter )? ')'
 
 systextscreenread ::= 'SysTextScreenRead(' row ',' column ( ',' len )? ')'
 
-systextscreensize ::= 'SysTextScreenSize()'
+systextscreensize ::= 'SysTextScreenSize(' ( ( ( | "BUFFERSIZE") ( ',' rows ',' columns )? ) |
+                                             ( "WINDOWRECT" ( ',' top ',' left ',' bottom ',' right)? ) |
+                                             "MAXWINDOWSIZE"
+                                           ) ')'
 
 systounicode ::= 'SysToUnicode(' string ',' codepage? ',' translateflags? ',' outstem ')'
 
