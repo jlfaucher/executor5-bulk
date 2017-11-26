@@ -65,13 +65,10 @@ return testResult
    parse source os .                  -- get name of operating system
    os1=os~left(1)~translate           -- get first character in uppercase
    if pos(os1, "O W") > 0 then do     -- OS2, Windows ?
-      self~assertSame("CMD", addr, "subTest3 - default address environment for" pp(os)"="pp(addr) "not" pp("CMD"))
+      self~assertSame("CMD", addr, "default address environment for" pp(os)"="pp(addr) "not" pp("CMD"))
       end
-   else if pos(os1, "A") > 0 then do  -- AIX
-      self~assertSame("ksh", addr, "subTest3 - default address environment for" pp(os)"="pp(addr) "not" pp("CMD"))
-      end
-   else if os1=="L" then do           -- Linux
-      self~assertSame("bash", addr, "subTest3 - default address environment for" pp(os)"="pp(addr) "not" pp("bash"))
+   else do                            -- all Unix platforms should default to "sh"
+      self~assertSame("sh", addr, "default address environment for" pp(os)"="pp(addr) "not" pp("sh"))
       end
 
 
