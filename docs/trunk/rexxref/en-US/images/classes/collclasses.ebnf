@@ -131,7 +131,7 @@ array_lastitem ::= 'lastItem'
 
 array_makearray ::= 'makeArray'
 
-array_makestring ::= 'makeString(' ( | '"Line"'? ',' separator? | '"Char"' ) ')'
+array_makestring ::= 'makeString(' ( '"Line"'? (',' separator)? | '"Char"' ) ')'
 
 array_next ::= 'next(' index (',' index )* ')'
 
@@ -157,7 +157,7 @@ array_stablesortwith ::= 'stableSortWith(' comparator ')'
 
 array_supplier ::= 'supplier'
 
-array_tostring ::= 'toString(' ( | '"Line"'? ',' separator? | '"Char"' ) ')'
+array_tostring ::= 'toString(' ( '"Line"'? (',' separator)? | '"Char"' ) ')'
 
 bag_new ::= 'new(' size? ')'
 
