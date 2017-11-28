@@ -175,28 +175,74 @@ test_01:
   self~assertSyntaxError(25.905, "use upper arg")
 
 ::method test_strict_invalid_option
-  -- USE must be followed by the keyword ARG or LOCAL
-  self~assertSyntaxError(25.905, "use strict upper arg")
+  -- USE STRICT must be followed by the keyword ARG
+  self~assertSyntaxError(25.929, "use strict upper arg")
 
 ::method test_none
   use arg
   use strict arg
 
+-- test with zero, one and two args
 ::method test_ellipsis_only
   use arg ...
-  use strict arg ...
+  select case arg()
+    when 0 then forward array (.nil)
+    when 1 then forward array (1, 2)
+    otherwise nop
+  end
 
+-- test with zero, one and two args
+::method test_strict_ellipsis_only
+  use strict arg ...
+  select case arg()
+    when 0 then forward array (.nil)
+    when 1 then forward array (1, 2)
+    otherwise nop
+  end
+
+-- test with zero, one and two args
 ::method test_comma_only
   use arg ,;                           -- requires explicit line-end semicolon
-  -- "use strict arg [,]+" doesn't really do what it suggests
-  -- might be regarded as a bug, as it should fail because we have zero args
-  use strict arg , ,;                  -- requires explicit line-end semicolon
 
+::method test_strict_comma_only
+  -- Not enough arguments for method; 1 expected
+  self~expectSyntax(93.901)
+  use strict arg ,;                    -- requires explicit line-end semicolon
+
+-- test with zero, one and two args
 ::method test_comma_ellipsis
   use arg , ...
-  -- "use strict arg [,]+ ..." doesn't really do what it suggests
-  -- might be regarded as a bug, as it should fail because we have zero args
-  use strict arg , , ...
+  select case arg()
+    when 0 then forward array (.nil)
+    when 1 then forward array (1, 2)
+    otherwise nop
+  end
+
+::method test_strict_comma_ellipsis
+  signal on syntax
+  use strict arg , ...
+  self~assertFail("syntax 93.901 not raised")
+
+  -- 93.901 Not enough arguments for method; 1 expected
+  syntax:
+  condition = condition("object")
+  self~assertSame(93.901, condition~code)
+  -- we expect one message insert "1"
+  self~assertSame(1, condition~additional~items)
+  self~assertSame(1, condition~additional)
+
+-- zero args should work, one arg should raise syntax
+::method test_strict_too_many_args
+  -- Too many arguments in invocation of method; 0 expected
+  self~expectSyntax(93.902)
+  use strict arg
+  if arg() = 0 then
+    forward array ("one")
+
+::method test_strict_too_few_args
+  -- Not enough arguments for method; 1 expected
+  self~expectSyntax(93.901)
+  use strict arg a
 
 -- no dot placeholder allowed
 ::method test_dot
@@ -241,12 +287,12 @@ test_01:
   self~assertSyntaxError(35.930, "use strict arg a =")
 
 ::method test_default_extra
-  -- Variable symbol must not start with a number
-  self~assertSyntaxError(31.2, "use arg a = .true 2")
+  -- Invalid or missing expression following "=" token
+  self~assertSyntaxError(35.930, "use arg a = .true b")
 
 ::method test_strict_default_extra
-  -- Variable symbol must not start with a number
-  self~assertSyntaxError(31.2, "use strict arg a = .true 2")
+  -- Invalid or missing expression following "=" token
+  self~assertSyntaxError(35.930, "use strict arg a = .true b")
 
 ::method test_ellipsis_extra
   -- The "..." argument marker can only appear at the end of the argument list
@@ -403,13 +449,6 @@ test_01:
   use strict arg a, , b, ...
 
 ::attribute assignmentTerm
-
-::method test_strict_default_extra_bug
-  -- should be invalid: missing comma
-  self~expectSyntax(31.2)
-  use arg a = .true b
-  self~assertFail("tracker bug #1489")
-
 
 
 ::options novalue error

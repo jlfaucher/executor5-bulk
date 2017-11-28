@@ -777,10 +777,10 @@ that of the file). The <emphasis role="italic">length</emphasis> must be
 <example>
 <title>Stream command &mdash; OPEN option</title>
 <programlisting>
-stream_name~command("open")
-stream_name~command("open write")
-stream_name~command("open read")
-stream_name~command("open read shared")
+stream~command("open")
+stream~command("open write")
+stream~command("open read")
+stream~command("open read shared")
 </programlisting>
 </example>
 </listitem></varlistentry>
@@ -870,11 +870,11 @@ for writing, you receive an error message.</para></note>
 <title>Stream command &mdash; SEEK option</title>
 <programlisting>
 <![CDATA[
-stream_name~command("seek =2 read")
-stream_name~command("seek +15 read")
-stream_name~command("seek -7 write line")
+stream~command("seek =2 read")
+stream~command("seek +15 read")
+stream~command("seek -7 write line")
 fromend  = 125
-stream_name~command("seek <"fromend "read")
+stream~command("seek <"fromend "read")
 ]]>
 </programlisting>
 </example>
@@ -902,7 +902,7 @@ example:
 <example>
 <title>Stream command &mdash; QUERY DATETIME option</title>
 <programlisting>
-stream_name~command("query datetime")
+stream~command("query datetime")
 </programlisting>
 </example>
 </para><para>A sample output might be: </para>
@@ -919,7 +919,7 @@ if it exists, or a null string. For example: </para>
 <example>
 <title>Stream command &mdash; QUERY EXISTS option</title>
 <programlisting>
-stream_name~command("query exists")
+stream~command("query exists")
 </programlisting>
 </example>
 <para>A sample output might be: </para>
@@ -936,7 +936,7 @@ c:\data\file.txt
 <example>
 <title>Stream command &mdash; QUERY HANDLE option</title>
 <programlisting>
-stream_name~command("query handle")
+stream~command("query handle")
 </programlisting>
 </example>
 <para>A sample output might be:
@@ -973,7 +973,7 @@ for a detailed discussion of this issue.</para>
 <example>
 <title>Stream command &mdash; QUERY POSITION WRITE option</title>
 <programlisting>
-stream_name~command("query position write")
+stream~command("query position write")
 </programlisting>
 </example>
 <para>A sample
@@ -997,7 +997,7 @@ characters.
 <example>
 <title>Stream command &mdash; QUERY SIZE option</title>
 <programlisting>
-stream_name~command("query size")
+stream~command("query size")
 </programlisting>
 </example>
 <para>A sample output might be: </para>
@@ -1018,7 +1018,7 @@ time because it provides the full 4-digit year</para>
 <example>
 <title>Stream command &mdash; QUERY TIMESTAMP option</title>
 <programlisting>
-stream_name~command("query timestamp")
+stream~command("query timestamp")
 </programlisting>
 </example>
 <para>A sample output might be: </para>
@@ -1319,9 +1319,9 @@ of the file). The <emphasis role="italic">length</emphasis> must be
 <example>
 <title>Stream object &mdash; OPEN method</title>
 <programlisting>
-stream_name~open
-stream_name~open("write")
-stream_name~open("read")
+stream~open
+stream~open("write")
+stream~open("read")
 </programlisting>
 </example>
 </section>
@@ -1387,7 +1387,7 @@ in US format.</para>
 <example>
 <title>Stream object &mdash; QUERY method</title>
 <programlisting>
-stream_name~query("datetime")
+stream~query("datetime")
 </programlisting>
 </example>
 <para>A sample output might
@@ -1404,7 +1404,7 @@ if it exists, or a null string. For example: </para>
 <example>
 <title>Stream object &mdash; QUERY method</title>
 <programlisting>
-<emphasis role="italic">stream_name</emphasis>~query("exists")
+stream~query("exists")
 </programlisting>
 </example>
 <para>A sample output might be: </para>
@@ -1418,7 +1418,7 @@ c:\data\file.txt
 <example>
 <title>Stream object &mdash; QUERY method</title>
 <programlisting>
-<emphasis role="italic">stream_name</emphasis>~query("handle")
+stream~query("handle")
 </programlisting>
 </example>
 <para>A sample output might be: </para>
@@ -1456,7 +1456,7 @@ for a detailed discussion of this issue.</para>
 <example>
 <title>Stream object &mdash; QUERY method</title>
 <programlisting>
-<emphasis role="italic">stream_name</emphasis>~query("position write")
+stream~query("position write")
 </programlisting>
 </example>
 <para>A sample output
@@ -1476,7 +1476,7 @@ characters. </para></listitem></varlistentry>
 <example>
 <title>Stream object &mdash; QUERY method</title>
 <programlisting>
-<emphasis role="italic">stream_name</emphasis>~query("size")
+stream~query("size")
 </programlisting>
 </example>
 <para>A sample output might be: </para>
@@ -1497,7 +1497,7 @@ time because it provides the full 4-digit year.</para>
 <example>
 <title>Stream object &mdash; QUERY method</title>
 <programlisting>
-<emphasis role="italic">stream_name</emphasis>~query("timestamp")
+stream~query("timestamp")
 </programlisting>
 </example>
 <para>A sample output might be: </para>
@@ -1611,11 +1611,11 @@ for writing, you receive an error message.</para></note>
 <example>
 <title>Stream object &mdash; SEEK method</title>
 <programlisting>
-<emphasis role="italic">stream_name</emphasis>~seek("=2 read")
-<emphasis role="italic">stream_name</emphasis>~seek("+15 read")
-<emphasis role="italic">stream_name</emphasis>~seek("-7 write line")
+stream~seek("=2 read")
+stream~seek("+15 read")
+stream~seek("-7 write line")
 fromend  = 125
-<emphasis role="italic">stream_name</emphasis>~seek("&lt;"fromend read)
+stream~seek("&lt;"fromend read)
 </programlisting>
 </example>
 </section>

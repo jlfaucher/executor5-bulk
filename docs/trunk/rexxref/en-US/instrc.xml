@@ -3639,17 +3639,19 @@ assigned from left to right. For each <emphasis role="italic">name</emphasis>
 you specify, the language processor assigns it a corresponding argument from
 the program, routine, function, or method call. If there is no corresponding
 argument, <emphasis role="italic">name</emphasis> is assigned the value
-of <emphasis role="italic">expr</emphasis>.  If <emphasis role="italic">expr</emphasis>
-is not specified for the given argument, the variable <emphasis role="italic">name</emphasis>
-is dropped.  If the assignment target is a message term, no action is taken for omitted arguments.
+of <emphasis role="italic">expr</emphasis>.
+If <literal>=</literal> <emphasis role="italic">expr</emphasis> is not specified for
+the given argument, the variable <emphasis role="italic">name</emphasis> is dropped.
+If the assignment target is a message term, no action is taken for omitted arguments.
 </para>
 <para>A USE ARG instruction can be processed repeatedly and it always accesses
 the same current argument data.</para>
-<para>If <emphasis role="italic">expr</emphasis> is specified for an argument, the
-expression is evaluated to provide a default value for an argument when the corresponding
-argument does not exist.  The default <emphasis role="italic">expr</emphasis>
-must be a literal string, a constant expression, or an expression enclosed in
-parentheses.</para>
+<para>If <literal>=</literal> <emphasis role="italic">expr</emphasis> is specified
+for an argument, the expression is evaluated to provide a default value for an
+argument when the corresponding argument does not exist.
+The default <emphasis role="italic">expr</emphasis> must be a literal string,
+a constant expression, or an expression enclosed in parentheses.
+</para>
 <para>The <emphasis role="italic">name</emphasis>s may be any valid symbol or
 message term which
 can appear on the left side of an assignment statement (See
