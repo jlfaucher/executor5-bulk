@@ -1,4 +1,8 @@
 #!/usr/bin/rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 2005-2017 Rexx Language Association. All rights reserved.    */
@@ -657,18 +661,84 @@ return testResult
 
 -- Named class families
 ::method testClassFamilies
-  self~verifyClassFamily("lower", xrange('a', 'z'))
-  self~verifyClassFamily("upper", xrange('A', 'Z'))
-  self~verifyClassFamily("alpha", xrange('a', 'z') || xrange('A', 'Z'))
-  self~verifyClassFamily("digit", xrange('0', '9'))
-  self~verifyClassFamily("alnum", xrange('a', 'z') || xrange('A', 'Z') || xrange('0', '9'))
-  self~verifyClassFamily("punct", "!""#$%&'()*+,-./:;<=>?@[\]^_`{|}~")
-  self~verifyClassFamily("graph", "!""#$%&'()*+,-./:;<=>?@[\]^_`{|}~"||xrange('a', 'z') || xrange('A', 'Z') || xrange('0', '9'))
-  self~verifyClassFamily("print", xrange('20'x, '7e'x))
-  self~verifyClassFamily("blank", '20 09'x)
-  self~verifyClassFamily("cntrl", xrange('00'x, '1f'x) || '7f'x)
-  self~verifyClassFamily("xdigit", "0123456789abcdefABCDEF")
-  self~verifyClassFamily("space", '20 09 0d 0a 0b 0c'x)
+  do name over "lower", "upper", "alpha", "digit", "alnum", "punct", "graph", "print", "blank", "cntrl", "xdigit", "space"
+    self~verifyClassFamily(name, xrange(name))
+  end
+
+
+::method test_named_class_plus_range
+  p = .RegularExpression~new
+  self~assertEquals(0, p~parse("[:digit:a-f]"))
+  self~checkIncludedCharacters(p, "0123456789abcdef")
+
+  self~assertEquals(0, p~parse("[^ :xdigit:]"))
+  self~checkExcludedCharacters(p, " " || xrange("xdigit"))
+
+
+-- enum RE_ERROR { E_UNEXPECTED_SYMBOL = 1, E_MISSING_PAREN_CLOSE, E_ILLEGAL_SET,
+--                 E_UNEXPECTED_EOP, E_ILLEGAL_NUMBER, E_ILLEGAL_SYMBOLIC_NAME };
+-- test pattern parse errors
+::method test_pattern_unexpected_symbol
+  p = .RegularExpression~new
+  self~assertEquals(1, p~parse("*"))
+  self~assertEquals(1, p~parse("(A|+)"))
+  self~assertEquals(1, p~parse("A({})"))
+
+::method deactivated_test_pattern_missing_paren_close
+  p = .RegularExpression~new
+  -- none of these actually return paren_close parse error
+  -- they all return unexpected_symbol
+  -- not sure how to create a paren_close
+  self~assertEquals(2, p~parse("("))
+  self~assertEquals(2, p~parse("(A|(+)"))
+  self~assertEquals(2, p~parse("A())"))
+
+::method test_pattern_illegal_set
+  p = .RegularExpression~new
+  self~assertEquals(3, p~parse("["))
+  self~assertEquals(3, p~parse("[]"))
+  self~assertEquals(3, p~parse("A[\"))
+
+::method test_pattern_unexpected_eop
+  p = .RegularExpression~new
+  self~assertEquals(4, p~parse("\"))
+  self~assertEquals(4, p~parse("A(?{2"))
+
+::method test_pattern_illegal_number
+  p = .RegularExpression~new
+  self~assertEquals(5, p~parse("!{0}"))
+  self~assertEquals(5, p~parse("!{1}"))
+  self~assertEquals(5, p~parse("!{-1}"))
+  self~assertEquals(5, p~parse("!{e3}"))
+
+::method test_pattern_illegal_symbolic_name
+  p = .RegularExpression~new
+  self~assertEquals(6, p~parse("[:]"))
+  self~assertEquals(6, p~parse("A[::]"))
+  self~assertEquals(6, p~parse("([: :])"))
+  self~assertEquals(6, p~parse("[:BLANKS:]"))
+
+
+::method test_bug_1045
+  p = .RegularExpression~new
+  self~assertEquals(0, p~parse("(BB|AA)[:SPACE:]*[:DIGIT:]"))
+  self~assertEquals(2, p~pos(" AA2012 "))
+  self~assertEquals(2, p~pos(" BB2012 "))
+
+  self~assertEquals(0, p~parse("(A|B)!*"))
+  self~assertEquals(1, p~match("A"))
+  self~assertEquals(1, p~match("B"))
+
+::method test_pattern_csv
+  p = .RegularExpression~new
+  self~assertEquals(0, p~parse('("[^"]*" *, *)*"[^"]*"'))
+  self~assertFalse(p~match(''))
+  self~assertTrue(p~match('""'))
+  self~assertTrue(p~match('"abc"'))
+  self~assertTrue(p~match('"", "abc"'))
+  self~assertTrue(p~match('"123" , "abc"'))
+  self~assertTrue(p~match('"123" , "abc" , ""'))
+  self~assertTrue(p~match(('" " ,')~copies(20) ' "final"'), "unmatched at" p~position)
 
 
 ::options novalue error
