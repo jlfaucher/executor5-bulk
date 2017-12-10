@@ -426,7 +426,7 @@ return testResult
 ::method test_stream_replace
   parse source . . this
   mgr = .Collector~new
-  mgr~actionPut("STREAM", "RESULT", .Stream~new(this))
+  mgr~actionPut("STREAM", "STREAM", .Stream~new(this))
   stream = self~runWithSecMgr("return chars('.')", mgr)
   self~assertSame("STREAM", mgr~allMessages, "Security manager STREAM event expected")
   self~assertSame("NAME", mgr~allEntries("STREAM"))

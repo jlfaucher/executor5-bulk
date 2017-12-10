@@ -56,6 +56,7 @@ called if an agent program tries to: </para>
 <listitem><para>Access the .ENVIRONMENT directory</para></listitem>
 <listitem><para>Use a stream name in the input and output built-in functions
 (CHARIN, CHAROUT, CHARS, LINEIN, LINEOUT, LINES, and STREAM)</para></listitem>
+<listitem><para>Send a message for a protected method to an object</para></listitem>
 </itemizedlist>
 
 <section id="callsm"><title>Calls to the Security Manager</title>
@@ -69,11 +70,11 @@ action instead of the language processor, the security manager uses the
 checkpoint information directory to pass information back to the language
 processor.</para>
 <para>Security manager methods must return a value of either
-<computeroutput>0</computeroutput> or <computeroutput>1</computeroutput>
-to the language processor. A value of <computeroutput>0</computeroutput>
+&true; or &false;
+to the language processor. A value of &true;
 indicates that the program is authorized to perform the indicated action.
 In this case, processing continues as usual. A value of
-<computeroutput>1</computeroutput> indicates that the security manager
+&false; indicates that the security manager
 performed the action itself. The security manager sets entries in the
 information directory to pass results for the action back to the language
 processor. The security manager can also use the RAISE instruction to raise a
@@ -85,7 +86,7 @@ authorization failures.</para>
 <variablelist>
 
 
-<varlistentry><term>CALL
+<varlistentry id="secmgr-call"><term><emphasis role="bold">CALL</emphasis>
 <indexterm><primary>calls to the Security Manager</primary></indexterm>
 </term>
 <listitem><para>sent for all external function calls. The information directory
@@ -100,14 +101,14 @@ contains the following entries:
 </listitem></varlistentry>
 </variablelist>
 
-When the CALL method returns <computeroutput>1</computeroutput>,
+When the CALL method returns &false;,
 indicating that it handled the external call, the entry RESULT (if any)
 in the information directory is used as the function call result.
 </para>
 </listitem></varlistentry>
 
 
-<varlistentry><term>COMMAND</term>
+<varlistentry id="secmgr-command"><term><emphasis role="bold">COMMAND</emphasis></term>
 <listitem><para>sent for all host command instructions. The information
 directory contains the following entries:
 
@@ -121,14 +122,14 @@ directory contains the following entries:
 </listitem></varlistentry>
 </variablelist>
 
-When the COMMAND method returns <computeroutput>1</computeroutput>,
+When the COMMAND method returns &false;,
 indicating that it handled the command, the security manager uses the following
 information directory entries to return the command results:
 
 <variablelist>
 <varlistentry><term>RC</term>
 <listitem><para>The command return code. If the entry is not set, a return code
-of <computeroutput>0</computeroutput> is used.
+of &true; is used.
 </para></listitem></varlistentry>
 <varlistentry><term>FAILURE</term>
 <listitem><para>If a FAILURE entry is added to the information directory, a
@@ -144,7 +145,7 @@ FAILURE entry is not set.
 </para></listitem></varlistentry>
 
 
-<varlistentry><term>REQUIRES</term>
+<varlistentry id="secmgr-requires"><term><emphasis role="bold">REQUIRES</emphasis></term>
 <listitem><para>sent whenever a ::REQUIRES directive in the file is processed.
 The information directory contains the following entry:
 
@@ -154,7 +155,7 @@ The information directory contains the following entry:
 </para></listitem></varlistentry>
 </variablelist>
 
-When the REQUIRES method returns <computeroutput>1</computeroutput>,
+When the REQUIRES method returns &false;,
 indicating that it handled the request, the entry NAME
 in the information directory is used as the actual file to load
 for the request.
@@ -165,7 +166,7 @@ to the desired security manager object.</para>
 </listitem></varlistentry>
 
 
-<varlistentry><term>LOCAL</term>
+<varlistentry id="secmgr-local"><term><emphasis role="bold">LOCAL</emphasis></term>
 <listitem><para>sent whenever Rexx is going to access an entry in the .LOCAL
 directory as part of the resolution of the environment symbol name. The
 information directory contains the following entry:
@@ -177,16 +178,16 @@ information directory contains the following entry:
 </variablelist>
 
 When the LOCAL method returns
-<computeroutput>1</computeroutput>, indicating that it handled
+&false;, indicating that it handled
 the request, the information directory entry RESULT contains the directory
 entry. When RESULT is not set and the method returns
-<computeroutput>1</computeroutput>, this is
+&false;, this is
 the same as a failure to find an entry in the .LOCAL directory. Rexx continues
 with the next step in the name resolution.</para>
 </listitem></varlistentry>
 
 
-<varlistentry><term>ENVIRONMENT</term>
+<varlistentry id="secmgr-environment"><term><emphasis role="bold">ENVIRONMENT</emphasis></term>
 <listitem><para>sent whenever Rexx is going to access an entry in
 the .ENVIRONMENT directory as part of the resolution of the environment symbol
 name. The information directory contains the following entry:
@@ -198,16 +199,16 @@ name. The information directory contains the following entry:
 </variablelist>
 
 When the ENVIRONMENT method returns
-<computeroutput>1</computeroutput>, indicating that
+&false;, indicating that
 it handled the request, the information directory entry RESULT contains the
 directory entry. When RESULT is not set and the method returns
-<computeroutput>1</computeroutput>,
+&false;,
 this is the same as a failure to find an entry in the .ENVIRONMENT directory.
 Rexx continues with the next step in the name resolution.</para>
 </listitem></varlistentry>
 
 
-<varlistentry><term>STREAM</term>
+<varlistentry id="secmgr-stream"><term><emphasis role="bold">STREAM</emphasis></term>
 <listitem><para>sent whenever one of the Rexx input and output built-in
 functions (CHARIN, CHAROUT, CHARS, LINEIN, LINEOUT, LINES, or STREAM) needs to
 resolve a stream name. The information directory contains the following entry:
@@ -218,16 +219,16 @@ resolve a stream name. The information directory contains the following entry:
 </para></listitem></varlistentry>
 </variablelist>
 
-When the STREAM method returns <computeroutput>1</computeroutput>,
+When the STREAM method returns &false;,
 indicating that it handled the request, the information directory
-entry RESULT must be set to an object to be used as the stream target.
+entry STREAM must be set to an object to be used as the stream target.
 This should be a stream object or another object that supports the Stream
 class methods.
 </para>
 </listitem></varlistentry>
 
 
-<varlistentry><term>METHOD</term>
+<varlistentry id="secmgr-term"><term><emphasis role="bold">METHOD</emphasis></term>
 <listitem><para>sent whenever a secure program attempts to send a message for
 a protected method (see the ::METHOD directive
 <xref linkend="methd" />) to an object. The
@@ -245,7 +246,7 @@ information directory contains the following entries:
 </para></listitem></varlistentry>
 </variablelist>
 
-When the METHOD method returns <computeroutput>1</computeroutput>,
+When the METHOD method returns &false;,
 indicating that it handled the request, the entry RESULT (if any)
 in the information directory is used as the method result.
 </para>
