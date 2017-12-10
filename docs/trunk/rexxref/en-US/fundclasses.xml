@@ -4797,8 +4797,8 @@ items.</para>
 string value can have any length and contain any characters.
 </para>
 
-<!-- modified: add hashCode(); centre() removed/combined with center(); sort Arith/Compare/Concat/LOgicalMethods and make single-column -->
-<!-- $GENERATED-20170401-START rexxrefClassTable(String) -->
+<!-- modified: add hashCode(); centre() removed/combined with center(); sort Arith/Compare/Concat/LogicalMethods and make single-column -->
+<!-- $GENERATED-20171210-START rexxrefClassTable(String) -->
 <table id="ooRexxStringClass" frame="all" pgwide="1">
 <title>String Class</title>
 <tgroup cols="1">
@@ -4888,6 +4888,7 @@ string value can have any length and contain any characters.
    <member><xref linkend="mthStringEquals" xrefstyle="select:title"/></member>
    <member><xref linkend="mthStringFloor" xrefstyle="select:title"/></member>
    <member><xref linkend="mthStringFormat" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringHashCode" xrefstyle="select:title"/></member>
    <member><xref linkend="mthStringInsert" xrefstyle="select:title"/></member>
    <member><xref linkend="mthStringLastPos" xrefstyle="select:title"/></member>
    <member><xref linkend="mthStringLeft" xrefstyle="select:title"/></member>
@@ -4899,6 +4900,7 @@ string value can have any length and contain any characters.
    <member><xref linkend="mthStringMatchChar" xrefstyle="select:title"/></member>
    <member><xref linkend="mthStringMax" xrefstyle="select:title"/></member>
    <member><xref linkend="mthStringMin" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthStringModulo" xrefstyle="select:title"/></member>
    <member><xref linkend="mthStringOverlay" xrefstyle="select:title"/></member>
    <member><xref linkend="mthStringPos" xrefstyle="select:title"/></member>
    <member><xref linkend="mthStringReplaceAt" xrefstyle="select:title"/></member>
@@ -4930,7 +4932,7 @@ string value can have any length and contain any characters.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20170401-END rexxrefClassTable(String) -->
+<!-- $GENERATED-20171210-END rexxrefClassTable(String) -->
 
 
 <section id="mthStringNew"><title>new (Class Method)</title>
@@ -5333,8 +5335,9 @@ result)</para></entry></row>
 <indexterm><primary>method</primary>
 <secondary>//</secondary></indexterm>
 </entry>
-<entry><para>Remainder (divide and return the remainder&mdash;not modulo, because
-the result can be negative)
+<entry><para>Remainder (divide and return the remainder&mdash;not
+<xref linkend="mthStringModulo" xrefstyle="select:title"/>,
+because the result can be negative)
 </para></entry></row>
 <row><entry>**
 <indexterm><primary>** method</primary></indexterm>
@@ -8313,6 +8316,39 @@ settings. You can specify any number of
 </programlisting>
 </example>
 </section>
+
+
+<!-- Class String - method modulo ======================== -->
+<section id="mthStringModulo" revisionflag="added"><title>*NEW* modulo</title>
+<indexterm><primary>modulo method</primary><secondary>of String class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>modulo method</secondary><tertiary>of String class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/string_modulo.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns the remainder after dividing the receiving string by
+<emphasis role="italic">n</emphasis>.
+The receiving string must be a whole number and
+<emphasis role="italic">n</emphasis> must be a positive whole number.
+The returned remainder is always in the range 0 through
+<emphasis role="italic">n</emphasis> minus one.
+</para>
+<para>If both the receiving string and <emphasis role="italic">n</emphasis>
+are non-negative whole numbers, the result is the same as the result of the
+<xref linkend="mthStringArithmeticMethods" xrefstyle="template:remainder"/>
+(<literal>//</literal>) operation.
+</para>
+<para><example id="ex.string-modulo">
+<title>String class &mdash; modulo method
+<indexterm><primary>examples</primary><secondary>modulo method</secondary></indexterm>
+</title>
+<programlisting><![CDATA[
+say 10~modulo(3)    -- 1 
+say (-10)~modulo(3) -- 2 
+]]></programlisting></example></para>
+</section>
+
 
 <section id="mthStringOverlay"><title>overlay</title>
 <indexterm><primary>overlay method</primary>

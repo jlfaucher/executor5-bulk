@@ -64,7 +64,7 @@ so to the end-user it looks like math is done on Strings.
 RexxInteger can handle whole numbers in the range -10^9+1 to +10^9-1 on 32-bit,
 and -10^18+1 to +10^18-1 on 64-bit.  It can do efficient hardware arithmetic.
 Any other numbers are handled through NumberString, using software-emulated
-arithmetic, whih is less efficient.
+arithmetic, which is less efficient.
 
 if numeric digits 18 is in effect,
   123 is a RexxInteger
@@ -92,23 +92,23 @@ Below tests verify that
   numeric digits digits
 
   -- build a list of integers within the valid RexxInteger range
-  integers = .Array~new(30);
-  integers~append(0);
+  integers = .Array~new(40)
+  integers~append(0)
   do i = 1 to 10
-    integers~~append(i)~append(-i);
+    integers~~append(i)~append(-i)
   end
   do i over 111, 5555, 29999
-    integersSmall = integers~~append(i)~append(-i);
+    integersSmall = integers~~append(i)~append(-i)
   end
   -- all above integers will, even when squared, still fit in NUMERIC DIGITS 9
   -- we mark this as 'integersSmall'
 
   do i over 10000000, 999999999
-    integersLarge = integers~~append(i)~append(-i);
+    integersLarge = integers~~append(i)~append(-i)
   end
   if digits > 9 then
     do i over 1000000000, 999999999999, 10000000000000000, 999999999999999999
-      integersLarge = integers~~append(i)~append(-i);
+      integersLarge = integers~~append(i)~append(-i)
     end
 
 ::attribute integers class
@@ -229,6 +229,20 @@ Below tests verify that
     do b over self~integers(, 0) -- no zero, please
       self~assertTrue(isInteger(a // b), a "//" b "should be a RexxInteger")
       self~assertSame((a".") // b, a // b, (a".") "//" b "should be equal to" a "//" b)
+    end
+  end
+
+
+-- modulo result should be a RexxInteger
+::method test_integer_modulo
+  numeric digits self~digits
+  do a over self~integers
+    do b over self~integers(, 0) -- no zero, please
+      -- divisor must be positive
+      if b < 1 then
+        iterate
+      self~assertTrue(isInteger(a~modulo(b)), a || "~modulo(" || b || ") should be a RexxInteger")
+      self~assertSame((a".")~modulo(b), a~modulo(b), (a".") || "~modulo(" || b || ") should be equal to" a || "~modulo(" || b ||")")
     end
   end
 
