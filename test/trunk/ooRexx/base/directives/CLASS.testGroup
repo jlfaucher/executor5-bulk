@@ -149,6 +149,14 @@ return testResult
 ::method test_subclass_bad_name
   self~assertSyntaxError(19.907, "::class test subclass *")
 
+::method test_subclass_no_class_local
+  -- "INPUT" is not a valid class
+  self~assertSyntaxError(99.949, "::class test subclass input")
+
+::method test_subclass_no_class_environment
+  -- "REXXINFO" is not a valid class
+  self~assertSyntaxError(99.949, "::class test subclass RexxInfo")
+
 ::method test_subclass_missing_namespace_class
   self~assertSyntaxError(20.921, "::class test subclass rexx:")
 
