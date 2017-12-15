@@ -80,9 +80,8 @@ return testResult
    self~assertSyntaxError(15.1, "s =" self~quoteHex(" "))
 
 ::method test_hexadecimal_tab
-   tab = .String~tab
    -- Incorrect location of whitespace character in position 1 in hexadecimal string
-   self~assertSyntaxError(15.1, "s =" self~quoteHex('09'x))
+   self~assertSyntaxError(15.1, "s =" self~quoteHex(.String~tab))
 
 ::method test_hexadecimal_invalid_dot
    -- Only 0-9, a-f, A-F, and whitespace characters are valid in a hexadecimal string
@@ -101,13 +100,12 @@ return testResult
    self~assertSyntaxError(15.1, "s =" self~quoteHex(.String~tab || "41"))
 
 ::method test_hexadecimal_trailing_blank
-   -- Incorrect location of whitespace character in position 1 in hexadecimal string
-   self~assertSyntaxError(15.1, "s =" self~quoteHex(" 41"))
+   -- Incorrect location of whitespace character in position 3 in hexadecimal string
+   self~assertSyntaxError(15.1, "s =" self~quoteHex("41 "))
 
 ::method test_hexadecimal_trailing_tab
-   tab = .String~tab
-   -- Incorrect location of whitespace character in position 1 in hexadecimal string
-   self~assertSyntaxError(15.1, "s =" self~quoteHex('09'x || "41"))
+   -- Incorrect location of whitespace character in position 3 in hexadecimal string
+   self~assertSyntaxError(15.1, "s =" self~quoteHex("41" || .String~tab))
 
 ::method test_hexadecimal_inner_blank_2_b_1
    -- Only 0-9, a-f, A-F, and whitespace characters are valid in a hexadecimal string
@@ -176,17 +174,16 @@ return testResult
    self~assertSyntaxError(15.2, "s =" self~quoteBin(" "))
 
 ::method test_binary_tab
-   tab = .String~tab
    -- Incorrect location of whitespace character in position 1 in binary string
-   self~assertSyntaxError(15.2, "s =" self~quoteBin('09'x))
+   self~assertSyntaxError(15.2, "s =" self~quoteBin(.String~tab))
 
 ::method test_binary_invalid_dot
-   -- Only 0-9, a-f, A-F, and whitespace characters are valid in a binary string
+   -- Only 0, 1, and whitespace characters are valid in a binary string
    self~assertSyntaxError(15.4, "s =" self~quoteBin("."))
 
 ::method test_binary_invalid_char
-   -- Only 0-9, a-f, A-F, and whitespace characters are valid in a binary string
-   self~assertSyntaxError(15.4, "s =" self~quoteBin("X"))
+   -- Only 0, 1, and whitespace characters are valid in a binary string
+   self~assertSyntaxError(15.4, "s =" self~quoteBin("2"))
 
 ::method test_binary_leading_blank
    -- Incorrect location of whitespace character in position 1 in binary string
@@ -197,34 +194,28 @@ return testResult
    self~assertSyntaxError(15.2, "s =" self~quoteBin(.String~tab || "0000"))
 
 ::method test_binary_trailing_blank
-   -- Incorrect location of whitespace character in position 1 in binary string
-   self~assertSyntaxError(15.2, "s =" self~quoteBin(" 0000"))
+   -- Incorrect location of whitespace character in position 5 in binary string
+   self~assertSyntaxError(15.2, "s =" self~quoteBin("0000 "))
 
 ::method test_binary_trailing_tab
-   tab = .String~tab
-   -- Incorrect location of whitespace character in position 1 in binary string
-   self~assertSyntaxError(15.2, "s =" self~quoteBin('09'x || "0000"))
+   -- Incorrect location of whitespace character in position 5 in binary string
+   self~assertSyntaxError(15.2, "s =" self~quoteBin("0000" || .String~tab))
 
--- @@ the following four tests really should fail
-::method disabled_test_binary_inner_blank_4_b_3
-   -- Only 0-9, a-f, A-F, and whitespace characters are valid in a binary string
-   -- this message really isn't appropriate
-   self~assertSyntaxError(15.4, "s =" self~quoteBin("0000 111"))
+::method test_binary_inner_blank_4_b_3
+   -- Incorrect location of whitespace character in position 5 in binary string
+   self~assertSyntaxError(15.2, "s =" self~quoteBin("0000 111"))
 
-::method disabled_test_binary_inner_tab_4_t_3
-   -- Only 0-9, a-f, A-F, and whitespace characters are valid in a binary string
-   -- this message really isn't appropriate
-   self~assertSyntaxError(15.4, "s =" self~quoteBin("0000" || .String~tab || "111"))
+::method test_binary_inner_tab_4_t_3
+   -- Incorrect location of whitespace character in position 5 in binary string
+   self~assertSyntaxError(15.2, "s =" self~quoteBin("0000" || .String~tab || "111"))
 
-::method disabled_test_binary_inner_blank_1_b_5
-   -- Only 0-9, a-f, A-F, and whitespace characters are valid in a binary string
-   -- this message really isn't appropriate
-   self~assertSyntaxError(15.4, "s =" self~quoteBin("0 11111"))
+::method test_binary_inner_blank_1_b_5
+   -- Incorrect location of whitespace character in position 2 in binary string
+   self~assertSyntaxError(15.2, "s =" self~quoteBin("0 11111"))
 
-::method disabled_test_binary_inner_tab_1_t_5
-   -- Only 0-9, a-f, A-F, and whitespace characters are valid in a binary string
-   -- this message really isn't appropriate
-   self~assertSyntaxError(15.4, "s =" self~quoteBin("0" || .String~tab || "11111"))
+::method test_binary_inner_tab_1_t_5
+   -- Incorrect location of whitespace character in position 2 in binary string
+   self~assertSyntaxError(15.2, "s =" self~quoteBin("0" || .String~tab || "11111"))
 
 ::method test_binary_single
    -- '0'b, '1'b
@@ -246,6 +237,13 @@ return testResult
      end
    end
 
+::method test_binary_ones
+  -- '1'b .. '111..(total of 64)..111'b
+  numeric digits 20
+  do power = 1 to 64
+    self~assertSame((2 ** power - 1)~d2c, self~runDynamicSource("return" self~quoteBin(1~copies(power))))
+  end
+
 ::method test_binary_whitespace
    tab = .String~tab
    self~assertSame("A", self~runDynamicSource("return" self~quoteBin("0100 0001")))
@@ -256,6 +254,14 @@ return testResult
    self~assertSame("A", self~runDynamicSource("return" self~quoteBin("0100" || tab || tab || tab || "0001")))
    self~assertSame("A", self~runDynamicSource("return" self~quoteBin("0100 " || tab || "0001")))
    self~assertSame("A", self~runDynamicSource("return" self~quoteBin("0100" || tab || " 0001")))
+
+   self~assertSame("AB", self~runDynamicSource("return" self~quoteBin("0100 0001 0100 0010")))
+   self~assertSame("AB", self~runDynamicSource("return" self~quoteBin("0100 0001  01000010")))
+   self~assertSame("AB", self~runDynamicSource("return" self~quoteBin("0100 00010100  0010")))
+   self~assertSame("AB", self~runDynamicSource("return" self~quoteBin("0100   000101000010")))
+   self~assertSame("AB", self~runDynamicSource("return" self~quoteBin("01000001 0100 0010")))
+   self~assertSame("AB", self~runDynamicSource("return" self~quoteBin("01000001  01000010")))
+   self~assertSame("AB", self~runDynamicSource("return" self~quoteBin("010000010100  0010")))
 
 
 ::options novalue error
