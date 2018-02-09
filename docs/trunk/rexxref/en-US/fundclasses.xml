@@ -1805,7 +1805,7 @@ method, it can not be run with any of the
 <methodname>start</methodname>/<methodname>startWith</methodname>,
 <methodname>reply</methodname>/<methodname>replyWith</methodname>
 methods again.
-A message object <methodname>can</methodname> be run multiple
+A message object <emphasis role="italic">can</emphasis> be run multiple
 times with methods
 <methodname>send</methodname>/<methodname>sendWith</methodname> and
 <methodname>reply</methodname>/<methodname>replyWith</methodname>.
@@ -2090,7 +2090,7 @@ routine search scope from the caller of the <methodname>new</methodname> method.
 
 </section>
 
-<section id="mthMethodNewFile"><title>newFile (Class Method)</title>
+<section id="mthMethodNewFile"><title>&changed50;newFile (Class Method)</title>
 <indexterm><primary>newFile method</primary>
 <secondary>of Method class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -3218,10 +3218,10 @@ corresponding arguments are omitted when passing the arguments.
 </imageobject>
 </mediaobject>
 
-<para>Returns a result of invoking a method on the target object
+<para>Returns the result of invoking a method on the target object
 using the specified message name and arguments.
-The <methodname>send</methodname> method allows methods to be invoked using dynamically
-constructed method names.
+The <methodname>send</methodname> method allows methods to be invoked using
+dynamically constructed method names.
 </para>
 <para>The <emphasis role="italic">messagename</emphasis> can be a string or
 an array. If <emphasis role="italic">messagename</emphasis> is an array object,
@@ -3236,23 +3236,15 @@ specify them.</para>
 <example id="ex.object-send">
 <title>Object class &mdash; send method</title>
 <programlisting>
-world=.WorldObject~new
--- the following 3 calls are equivalent
-msg1=world~hello("Fred")
-msg2=world~send("HELLO", "Fred")
-msg3=.message~new(world,"HELLO", "i", "Fred")~~send
+world = .WorldObject~new
+-- these calls are equivalent and produce "Hello World, I'm Fred!"
+say world~hello("World", "Fred")
+say world~send("HELLO", "World", "Fred")
 
-say msg1                  /* Produces Hello Fred 21:04:25.065000  */
-                          /* for example                          */
-say msg2                  /* Produces Hello Fred 21:04:25.081000  */
-                          /* for example                          */
-say msg3~result           /* Produces Hello Fred 21:04:25.101000  */
-                          /* for example                          */
-
-::class 'WorldObject' public
+::class WorldObject
 ::method hello
-  use arg name
-  return "Hello" name time('L')
+  use strict arg place, name
+  return "Hello" place", I'm"  name"!"
 </programlisting>
 </example>
 </section>
@@ -3270,10 +3262,10 @@ say msg3~result           /* Produces Hello Fred 21:04:25.101000  */
 </imageobject>
 </mediaobject>
 
-<para>Returns a result of invoking a method on the target object
+<para>Returns the result of invoking a method on the target object
 using the specified message name and arguments.
-The <methodname>send</methodname> method allows methods to be invoked using dynamically
-constructed method names and arguments.
+The <methodname>sendWith</methodname> method allows methods to be invoked using
+dynamically constructed method names and arguments.
 </para>
 <para>The <emphasis role="italic">messagename</emphasis> can be a string or
 an array. If <emphasis role="italic">messagename</emphasis> is an array object,
@@ -3290,23 +3282,15 @@ specify them.</para>
 <example id="ex.object-sendwith">
 <title>Object class &mdash; sendWith method</title>
 <programlisting>
-world=.WorldObject~new
-// the following 3 calls are equivalent
-msg1=world~hello("Fred")
-msg2=world~sendWith("HELLO", .array~of("Fred"))
-msg3=.message~new(world,"HELLO", "A", .array~of("Fred"))~~send
+world = .WorldObject~new
+-- these calls are equivalent and produce "Hello World, I'm Fred!"
+say world~hello("World", "Fred")
+say world~sendWith("HELLO", .Array~of("World", "Fred"))
 
-say msg1~result           /* Produces Hello Fred 21:04:25.065000  */
-                          /* for example                          */
-say msg2~result           /* Produces Hello Fred 21:04:25.081000  */
-                          /* for example                          */
-say msg3~result           /* Produces Hello Fred 21:04:25.101000  */
-                          /* for example                          */
-
-::class 'WorldObject' public
+::class WorldObject
 ::method hello
-  use arg name
-  return "Hello" name time('L')
+  use strict arg place, name
+  return "Hello" place", I'm"  name"!"
 </programlisting>
 </example>
 </section>
@@ -3408,18 +3392,17 @@ see <classname>Message</classname> class method
 <example id="ex.object-start">
 <title>Object class &mdash; start method</title>
 <programlisting>
-world=.WorldObject~new
-msg1=world~start("HELLO")                /* same as next line     */
-msg2=.message~new(world,"HELLO")~~start  /* same as previous line */
+world = .WorldObject~new
+-- these calls are equivalent and produce "Hello World, I'm Fred!"
+msg1 = world~start("HELLO", "World", "Fred")
+msg2 = .message~new(world, "HELLO", "i", "World", "Fred")~~start
+say msg1~result
+say msg2~result
 
-say msg1~result           /* Produces Hello world 21:04:25.065000 */
-                          /* for example                          */
-say msg2~result           /* Produces Hello world 21:04:25.081000 */
-                          /* for example                          */
-
-::class 'WorldObject' public
+::class WorldObject
 ::method hello
-  return "Hello world" time('L')
+  use strict arg place, name
+  return "Hello" place", I'm"  name"!"
 </programlisting>
 </example>
 </section>
@@ -3463,19 +3446,17 @@ see <classname>Message</classname> class method
 <example id="ex.object-startWith">
 <title>Object class &mdash; startWith method</title>
 <programlisting>
-world=.WorldObject~new
-msg1=world~startWith("HELLO", .array~of("Fred")                /* same as next line     */
-msg2=.message~new(world,"HELLO", 'i', .array~of("Fred"))~~start  /* same as previous line */
+world = .WorldObject~new
+-- these calls are equivalent and produce "Hello World, I'm Fred!"
+msg1 = world~startWith("HELLO", .Array~of("World", "Fred"))
+msg2 = .message~new(world,"HELLO", "a", .Array~of("World", "Fred"))~~start 
+say msg1~result
+say msg2~result
 
-say msg1~result           /* Produces Hello Fred 21:04:25.065000  */
-                          /* for example                          */
-say msg2~result           /* Produces Hello Fred 21:04:25.081000  */
-                          /* for example                          */
-
-::class 'WorldObject' public
+::class WorldObject
 ::method hello
-  use arg name
-  return "Hello" name time('L')
+  use strict arg place, name
+  return "Hello" place", I'm"  name"!"
 </programlisting>
 </example>
 </section>
@@ -4560,7 +4541,7 @@ routine search scope from the caller of the <methodname>new</methodname> method.
 </para>
 </section>
 
-<section id="mthRoutineNewFile"><title>newFile (Class Method)</title>
+<section id="mthRoutineNewFile"><title>&changed50;newFile (Class Method)</title>
 <indexterm><primary>newFile method</primary>
 <secondary>of Routine class</secondary></indexterm>
 <indexterm><primary>method</primary>
