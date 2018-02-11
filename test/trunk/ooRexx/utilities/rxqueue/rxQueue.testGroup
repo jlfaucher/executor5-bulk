@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2017 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -78,10 +78,7 @@ return testResult
   os = .ooRexxUnit.OSName
   select
     when os == 'WINDOWS' then cmd = 'cd'
-    when os == 'LINUX' then cmd = 'pwd'
-    when os == 'MACOS' then cmd = 'pwd'
-    when os == 'SUNOS' then cmd = 'pwd'
-    when os == 'AIX' then cmd = 'pwd'
+    -- other platforms are expected to be Unix-like and support "pwd"
     otherwise cmd = 'pwd'
   end
 
@@ -140,12 +137,9 @@ return testResult
 ::method test_stderr_to_rxqueue
 
   -- Note to someone investigating a failure here.  Add the code to get this
-  -- to work on your platform and, maybe, turn this into a select statement.
-  os = .ooRexxUnit.OSName
-  msg = "Please fix this test if OS is not Windows, Linux, Mac OS X, or AIX"
-  self~assertTrue(os == "WINDOWS" | os == "LINUX" | os = "AIX" | os == "DARWIN", msg)
+  -- to work on your platform.
 
-  -- This redirects stderr correctly on Windows, Linux (bash), and AIX (ksh).
+  -- This redirects stderr correctly on Windows, Linux (sh), and AIX (ksh).
   -- We may need to add a test for the proper shell in use.
   stdErrToStdOut = '2>&1'
 
