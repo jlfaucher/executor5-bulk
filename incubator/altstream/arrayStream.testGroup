@@ -1,0 +1,184 @@
+#!/usr/bin/rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2018 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . fileSpec;
+
+  group = .TestGroup~new(fileSpec)
+  group~add(.arrayStream.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires "ooTest.frm"     -- load the ooRexxUnit classes
+::requires "ArrayInputStream.cls"
+::requires "ArrayOutputStream.cls"
+
+::class "arrayStream.testGroup" subclass ooTestCase public
+
+::method testinput01
+  s = .ArrayInputStream~new(.array~new)
+  self~assertEquals(0, s~lines)
+  self~assertEquals("", s~linein)
+
+  signal on notready name bypass01
+  self~assertEquals("", s~linein)
+
+  self~fail("Notready condition not raised")
+bypass01:
+  signal off notready
+
+  -- set this up early so we can catch an expected raise
+  signal on notready name bypass02
+  signalExpected = .false
+
+  s = .ArrayInputStream~new(.array~of(1))
+  self~assertEquals(1, s~lines)
+  self~assertEquals(1, s~linein)
+  self~assertEquals(0, s~lines)
+
+  signalExpected = .true
+  self~assertEquals("", s~linein)
+
+  self~fail("Notready condition not raised")
+bypass02:
+  self~assertTrue(signalExpected, "Unexpected Notready condition")
+  signal off notready
+
+  s~close
+  self~assertEquals(1, s~lines)
+  self~assertEquals(1, s~linein)
+
+  s~open
+  self~assertEquals(1, s~lines)
+  self~assertEquals(1, s~linein)
+
+  s~open
+  array = s~arrayIn
+  self~assertEquals(1, array~items)
+  self~assertEquals(1, array[1])
+  self~assertEquals(0, s~lines)
+
+  s = .ArrayInputStream~new(.array~of(1,2,3))
+  self~assertEquals(3, s~lines)
+  self~assertEquals(1, s~linein)
+  self~assertEquals(2, s~lines)
+  self~assertEquals(2, s~linein)
+  self~assertEquals(1, s~linein(1))
+  self~assertEquals(2, s~lines)
+  self~assertEquals(2, s~linein)
+  self~assertEquals("", s~linein(4))
+
+  signal on notready name bypass03
+  signalExpected = .false
+
+  s~open
+  self~assertEquals(3, s~lines)
+  self~assertEquals(1, s~linein)
+
+  signalExpected = .true
+  self~assertEquals("", s~linein(4))
+
+  self~fail("Notready condition not raised")
+bypass03:
+  self~assertTrue(signalExpected, "Unexpected Notready condition")
+  signal off notready
+
+
+::method testNoCharin
+  self~expectSyntax("93.963")
+  .ArrayInputStream~new(.array~new)~charin
+
+
+::method testNoChars
+  self~expectSyntax("93.963")
+  .ArrayInputStream~new(.array~new)~chars
+
+
+::method testNoPosition
+  self~expectSyntax("93.963")
+  .ArrayInputStream~new(.array~new)~position(2)
+
+::method testOutput01
+
+  s = .ArrayOutputStream~new
+
+  self~assertEquals(0, s~lineout(1))
+  self~assertEquals(0, s~lineout(2))
+
+  array = s~array
+  self~assertEquals(2, array~items)
+  self~assertEquals(1, array[1])
+  self~assertEquals(2, array[2])
+
+  self~assertEquals(0, s~lineout(3))
+
+  -- still using the same array
+  self~assertEquals(3, array~items)
+  self~assertEquals(3, array[3])
+
+  -- use a provided array. Everything should be written to the same array
+  array = .array~new
+
+  s = .ArrayOutputStream~new(array)
+
+  self~assertEquals(0, s~lineout(1))
+  self~assertEquals(0, s~lineout(2))
+
+  self~assertEquals(2, array~items)
+  self~assertEquals(1, array[1])
+  self~assertEquals(2, array[2])
+
+  -- create a new stream using an existing array with items in it already
+
+  s = .ArrayOutputStream~new(array)
+
+  self~assertEquals(0, s~lineout(3))
+  self~assertEquals(0, s~lineout(4))
+
+  self~assertEquals(4, array~items)
+  self~assertEquals(1, array[1])
+  self~assertEquals(2, array[2])
+  self~assertEquals(3, array[3])
+  self~assertEquals(4, array[4])
+
+::method testNoCharout
+  self~expectSyntax("93.963")
+  .ArrayOutputStream~new~charout
