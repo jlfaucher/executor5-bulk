@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Reference XML File
     #
-    # Copyright (c) 2005-2017, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2018, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -3557,7 +3557,7 @@ directives.  The files loaded by ::REQUIRES are also contained in Package class
 instances.  It is a subclass of the <xref linkend="clsObject" xrefstyle="template:Object class"/>.
 </para>
 
-<!-- $GENERATED-20151005-START rexxrefClassTable(Package) -->
+<!-- $GENERATED-20180222-START rexxrefClassTable(Package) -->
 <table id="ooRexxPackageClass" frame="all" pgwide="1">
 <title>Package Class</title>
 <tgroup cols="1">
@@ -3596,6 +3596,7 @@ instances.  It is a subclass of the <xref linkend="clsObject" xrefstyle="templat
    <member><xref linkend="mthPackageImportedRoutines" xrefstyle="select:title"/></member>
    <member><xref linkend="mthPackageLoadLibrary" xrefstyle="select:title"/></member>
    <member><xref linkend="mthPackageLoadPackage" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthPackageLocal" xrefstyle="select:title"/></member>
    <member><xref linkend="mthPackageName" xrefstyle="select:title"/></member>
    <member><xref linkend="mthPackageNamespaces" xrefstyle="select:title"/></member>
    <member><xref linkend="mthPackageProlog" xrefstyle="select:title"/></member>
@@ -3614,8 +3615,7 @@ instances.  It is a subclass of the <xref linkend="clsObject" xrefstyle="templat
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20151005-END rexxrefClassTable(Package) -->
-
+<!-- $GENERATED-20180222-END rexxrefClassTable(Package) -->
 
 <section id="mthPackageNew" revisionflag="changed"><title>&changed50;new (Class Method)</title>
 <indexterm><primary>new method</primary>
@@ -4159,6 +4159,27 @@ strings that is the source for the loaded package.  If a package
 manager, the previously loaded version will be used.  The resolved package object
 will be added to the receiving package object's dependent packages.</para>
 </section>
+
+
+<!-- Class Package - method local ======================== -->
+<section id="mthPackageLocal" revisionflag="added"><title>*NEW* local
+<indexterm><primary>local method</primary><secondary>of Package class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>local method</secondary><tertiary>of Package class</tertiary></indexterm>
+</title>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/package_local.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns a <classname>Directory</classname> of objects local to the
+receiving package.
+</para>
+<para>See also
+<xref linkend="locenv" xrefstyle="template:.LOCAL"/> for a
+<classname>Directory</classname> of objects local the interpreter instance.
+</para>
+</section>
+
 
 <section id="mthPackageName"><title>name</title>
 <indexterm><primary>name method</primary>

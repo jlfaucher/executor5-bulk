@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2017 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -764,6 +764,24 @@ return testResult
   self~assertNotSame(.nil, p, "findProgram() cannot locate '"program"'")
   self~assertSame(program, .File~new(p)~name, "findProgram() located" .File~new(p)~name)
 
+::method test_package_local_one_arg
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  .context~package~local(1)
+
+::method test_package_local_get_empty
+  self~assertIsA(.context~package~local, .Directory)
+  self~assertSame(0, .context~package~local~items)
+
+::method test_package_local_set
+  .context~package~packageTest = "DEF"
+  self~assertSame("DEF", .context~package~packageTest)
+
+::method test_package_local
+  .local~packageTest = "ABC"
+  package = .package~new("TESTPACKAGELOCAL", (".context~package~local~packageTest = 'DEF'", "::routine routine1", "  return .packageTest"))
+
+  self~assertSame("DEF", package~routines["ROUTINE1"]~call)
+  self~assertSame("DEF", package~local~packageTest)
 
 -- source code of our context test routine
 ::resource "tstDefined"
