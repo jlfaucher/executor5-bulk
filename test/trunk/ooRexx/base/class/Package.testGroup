@@ -773,8 +773,8 @@ return testResult
   self~assertSame(0, .context~package~local~items)
 
 ::method test_package_local_set
-  .context~package~packageTest = "DEF"
-  self~assertSame("DEF", .context~package~packageTest)
+  .context~package~local~packageTest = "DEF"
+  self~assertSame("DEF", .context~package~local~packageTest)
 
 ::method test_package_local
   .local~packageTest = "ABC"
