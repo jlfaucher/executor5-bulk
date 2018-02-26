@@ -91,16 +91,44 @@ return testResult
 ::method verifyParserState
   use strict arg parser, matchStart, matchEnd, matchText, sectionStart, sectionEnd, section, remainder
 
-  self~assertSame(matchStart, parser~matchStart)
-  self~assertSame(matchEnd, parser~matchEnd)
-  self~assertSame(matchEnd - matchStart, parser~matchLength)
-  self~assertSame(matchText, parser~matchText)
-  self~assertSame(sectionStart, parser~sectionStart)
-  self~assertSame(sectionEnd, parser~sectionEnd)
-  self~assertSame(sectionEnd - sectionStart, parser~sectionLength)
-  self~assertSame(section, parser~section)
-  self~assertSameList(section~subWords, parser~sectionWords)
-  self~assertSame(remainder, parser~remainder)
+  self~assertSame(matchStart, parser~matchStart, "Incorrect matchStart")
+  self~assertSame(matchEnd, parser~matchEnd, "Incorrect matchEnd")
+  self~assertSame(matchEnd - matchStart, parser~matchLength, "Incorrect matchLength")
+  self~assertSame(matchText, parser~matchText, "Incorrect matchText")
+  self~assertSame(sectionStart, parser~sectionStart, "Incorrect sectionStart")
+  self~assertSame(sectionEnd, parser~sectionEnd, "Incorrect sectionEnd")
+  self~assertSame(sectionEnd - sectionStart, parser~sectionLength, "Incorrect sectionLength")
+  self~assertSame(section, parser~section, "Incorrect section text")
+  self~assertSameList(section~subWords, parser~sectionWords, "Incorrect section words")
+  self~assertSame(remainder, parser~remainder, "Incorrect remainder text")
+
+  self~assertTrue(self~verifyMatchResult(parser~matchResult, matchStart, matchEnd, matchText), "Incorrect match result information")
+
+-- utilty method to verify a match result
+::method verifyMatchResult
+  use arg r, start, end, text
+
+  res = r~matched & r~start == start & r~end == end & r~text == text & r~length == text~length
+  -- if this fails, redo the comparisons with trace on to help diagnose the failure
+  if \res then do
+      -- rerun the compare with tracing so we know what is off
+      trace i
+      return r~matched & r~start == start & r~end == end & r~text == text & r~length == text~length
+  end
+  return .true
+
+-- utilty method to verify a nomatch result
+::method verifyNoMatchResult
+  use arg r, text
+
+  res = \r~matched & r~start == 0 & r~end == 0 & r~text == "" & r~length == 0
+  -- if this fails, redo the comparisons with trace on to help diagnose the failure
+  if \res then do
+      -- rerun the compare with tracing so we know what is off
+      trace i
+      return \r~matched & r~start == 0 & r~end == 0 & r~text == "" & r~length == 0
+  end
+  return .true
 
 
 -- positive tests of the Parser class
@@ -111,12 +139,12 @@ return testResult
 
   -- check initial state, which is the entire string
   -- is ready to be chopped up
-  self~VerifyParserState(parser, 1, 1, "", 1, td~length + 1, td~string, td~string)
+  self~VerifyParserState(parser, 1, 1, "", 1, td~length + 1, td~string, "")
 
   self~assertFalse(parser~find('THE'))
 
   -- nothing should move
-  self~VerifyParserState(parser, 1, 1, "", 1, td~length + 1, td~string, td~string)
+  self~VerifyParserState(parser, 1, 1, "", 1, td~length + 1, td~string, "")
 
   -- get a match that actually creates movement
   self~assertTrue(parser~find('the'))
@@ -137,4 +165,44 @@ return testResult
   self~VerifyParserState(parser, 8, 11, "the", 1, 8, "Now is ", " time")
   self~assertTrue(parser~caselessFind('Im'))
   self~VerifyParserState(parser, 13, 15, "im", 11, 13, " t", "e")
+
+  -- equivalent to above but using the regex methods instead. This
+  -- uses just a simple search pattern that is equivalent to just a search,
+  -- performs the search using a compiled regex expression
+
+  parser = .Parser~new(td)
+
+  -- check initial state, which is the entire string
+  -- is ready to be chopped up
+  self~VerifyParserState(parser, 1, 1, "", 1, td~length + 1, td~string, "")
+
+  self~assertFalse(parser~findRegex('THE'))
+
+  -- nothing should move
+  self~VerifyParserState(parser, 1, 1, "", 1, td~length + 1, td~string, "")
+
+  -- get a match that actually creates movement
+  self~assertTrue(parser~findRegex('the'))
+  self~VerifyParserState(parser, 8, 11, "the", 1, 8, "Now is ", " time")
+
+  -- an unsuccessful move leaves everything the same
+  self~assertFalse(parser~findRegex('xyzzy'))
+  self~VerifyParserState(parser, 8, 11, "the", 1, 8, "Now is ", " time")
+
+  -- now a second match move
+  self~assertTrue(parser~findRegex('im'))
+  self~VerifyParserState(parser, 13, 15, "im", 11, 13, " t", "e")
+
+  -- now some relative movements
+  parser = .Parser~new(td)
+  parser~move(1)
+
+  self~VerifyParserState(parser, 2, 2, "", 1, 2, "N", td~string~substr(2))
+  -- step forward a little more
+  parser~move(4)
+  self~VerifyParserState(parser, 6, 6, "", 2, 6, "ow i", td~string~substr(6))
+  -- backwards movement...the section will be the portion in the back movement
+  parser~move(-2)
+  self~VerifyParserState(parser, 4, 4, "", 4, 6, " i", td~string~substr(6))
+
 

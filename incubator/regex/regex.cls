@@ -5806,8 +5806,18 @@ return string~substr(sectionstart, sectionEnd - sectionStart)
 -- used, the remainder will overlap with the last parsed
 -- section
 ::method remainder
-  expose string matchend
-  return string~substr(matchend)
+  expose string matchEnd sectionEnd
+
+  -- if we've moved backwards, then the remainder text is
+  -- actually the text following the end of the section
+  -- rather than the match position
+  if matchEnd >= sectionEnd then do
+     return string~substr(matchEnd)
+  end
+  else do
+     -- extract from the end of the section
+     return string~substr(sectionEnd)
+  end
 
 
 -- locate a needle in the current string, returning an
@@ -5840,7 +5850,7 @@ return string~substr(sectionstart, sectionEnd - sectionStart)
 -- indicator of whether the string was located.
 -- details of the match can be retrieved from the context.
 ::method caselessFind
-  expose string matchstart matchend sectionstart sectionEnd matchEnd matchResult
+  expose string matchStart matchEnd sectionStart sectionEnd matchEnd matchResult
   use strict arg needle
 
   temp = string~caselessPos(needle, matchend)
@@ -5904,68 +5914,71 @@ return string~substr(sectionstart, sectionEnd - sectionStart)
 -- regex find operation or one constructed from the current parser
 -- state that represents the prior operations
 ::attribute matchResult GET
-  expose methodResult string matchStart matchEnd matchText
+  expose matchResult string matchStart matchEnd matchText
 
   -- if the matchResult is not set, then construct a phony one for just
   -- a text match or movement
-  if methodResult == .nil then do
-      methodResult = .MatchResult~new(matchText, matchStart, matchEnd, .false, .nil)
+  if matchResult == .nil then do
+      matchResult = .MatchResult~new(matchText, matchStart, matchEnd, .nil)
   end
 
-  return methodResult
+  return matchResult
 
 
 -- relative postional movement of the pointer (can be either positive or negative)
 ::method move
   expose string matchstart matchend sectionstart sectionlength
   use strict arg delta
+  .validate~wholeNumber('position', delta)
 
-  -- the section begins at the start of the movement
-  sectionstart = matchstart
-  matchstart = matchstart + delta
-
-  self~validateposition
+  -- go adjust all of the positions
+  self~validateposition(matchStart + delta )
 
 
 -- absolute positional movement.  This an absolute position.
 ::method moveTo
   expose string matchstart matchend sectionstart sectionlength
+  use strict arg newMatch
+  .validate~wholeNumber('position', newMatch)
 
-  sectionStart = matchStart
-  use strict arg matchStart
-
-  self~validateposition
+  -- go adjust all of the positions
+  self~validateposition(newMatch)
 
 
 -- Validate and adjust the positional values after a non-search
 -- parse movement
 ::method validatePosition private
-  expose string matchstart matchend sectionstart sectionlength matchResult
+  expose string matchStart matchEnd sectionStart sectionEnd matchResult
+  use strict arg newMatch
 
   matchResult = .nil  -- clear the old match result
 
   -- keep the start within the bounds of the string
-  if matchstart < 1 then do
-      matchstart = 1
+  if newMatch < 1 then do
+      newMatch = 1
   end
-  else if matchstart > string~length then do
-      matchstart = string~length + 1
+  else if newMatch > string~length then do
+      newMatch = string~length + 1
   end
 
-  -- if this moved backwards from the previous, then the
-  -- section goes to the end of the string
-  if matchstart <= sectionstart then do
-      sectionEnd = string~length + 1
+  -- backward movement works like the < parse trigger.
+  -- The section start will be the new match position rather than the old one
+  -- and the second end will be the old match position
+  if newMatch <= matchStart then do
+     -- the new end is the old match start position
+     sectionEnd = matchStart
+     sectionStart = newMatch
   end
   else do
-      -- for forward movement, the sectionEnd is the same
-      -- as the matchStart position
-      sectionEnd = matchstart
+      -- for forward movement, the section start is the
+      -- old match start position and the end is the new one
+      sectionStart = matchStart
+      sectionEnd = newMatch
   end
 
-  -- for postional movement, the match string is always
-  -- zero-length, so these will be the same
-  matchend = matchstart
+  -- set the new match positions, which are all the same
+  matchStart = newMatch
+  matchEnd = newMatch
 
 
 
