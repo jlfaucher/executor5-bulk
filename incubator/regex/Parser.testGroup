@@ -1,0 +1,140 @@
+#!/usr/bin/rexx
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2018 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . fileSpec;
+
+  group = .TestGroup~new(fileSpec)
+  group~add(.parser.testGroup)
+  group~add(.parser.mutable.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires "ooTest.frm"     -- load the ooRexxUnit classes
+::requires "regex.cls"
+::class "parser.mutable.testGroup" subclass "parser.testGroup" public
+-- method used for test polymorphism.  Depending on the class of the
+-- test group, this will either return a string or a mutablebuffer instance
+-- for match, startswith, and find tests
+::method td
+  use arg d
+  return .mutablebuffer~new(d)   -- this is the mutable buffer form
+
+::class "parser.testGroup" subclass ooTestCase public
+
+-- method used for test polymorphism.  Depending on the class of the
+-- test group, this will either return a string or a mutablebuffer instance
+-- for match, startswith, and find tests
+::method td
+  use arg d
+  return d   -- this is the string form
+
+-- matching methods used to handle both string and mutablebuffer variations
+::method matches
+  use arg pattern, string
+  return pattern~matches(self~td(string))
+
+::method startsWith
+  use arg pattern, string
+  return pattern~startsWith(self~td(string))
+
+::method find
+  use arg pattern, string
+  return pattern~find(self~td(string))
+
+::method findStart
+  use arg pattern, string, start
+  return pattern~find(self~td(string), start)
+
+::method findStartLength
+  use arg pattern, string, start, length
+  return pattern~find(self~td(string), start, length)
+
+::method verifyParserState
+  use strict arg parser, matchStart, matchEnd, matchText, sectionStart, sectionEnd, section, remainder
+
+  self~assertSame(matchStart, parser~matchStart)
+  self~assertSame(matchEnd, parser~matchEnd)
+  self~assertSame(matchEnd - matchStart, parser~matchLength)
+  self~assertSame(matchText, parser~matchText)
+  self~assertSame(sectionStart, parser~sectionStart)
+  self~assertSame(sectionEnd, parser~sectionEnd)
+  self~assertSame(sectionEnd - sectionStart, parser~sectionLength)
+  self~assertSame(section, parser~section)
+  self~assertSameList(section~subWords, parser~sectionWords)
+  self~assertSame(remainder, parser~remainder)
+
+
+-- positive tests of the Parser class
+::method testParser
+
+  td = self~td("Now is the time")
+  parser = .Parser~new(td)
+
+  -- check initial state, which is the entire string
+  -- is ready to be chopped up
+  self~VerifyParserState(parser, 1, 1, "", 1, td~length + 1, td~string, td~string)
+
+  self~assertFalse(parser~find('THE'))
+
+  -- nothing should move
+  self~VerifyParserState(parser, 1, 1, "", 1, td~length + 1, td~string, td~string)
+
+  -- get a match that actually creates movement
+  self~assertTrue(parser~find('the'))
+  self~VerifyParserState(parser, 8, 11, "the", 1, 8, "Now is ", " time")
+
+  -- an unsuccessful move leaves everything the same
+  self~assertFalse(parser~find('xyzzy'))
+  self~VerifyParserState(parser, 8, 11, "the", 1, 8, "Now is ", " time")
+
+  -- now a second match move
+  self~assertTrue(parser~find('im'))
+  self~VerifyParserState(parser, 13, 15, "im", 11, 13, " t", "e")
+
+  -- now repeat using a caseless search
+  parser = .Parser~new(self~td("Now is the time"))
+
+  self~assertTrue(parser~caselessFind('THE'))
+  self~VerifyParserState(parser, 8, 11, "the", 1, 8, "Now is ", " time")
+  self~assertTrue(parser~caselessFind('Im'))
+  self~VerifyParserState(parser, 13, 15, "im", 11, 13, " t", "e")
+

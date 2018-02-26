@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2014 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2018 Rexx Language Association. All rights reserved.         */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -36,9 +36,9 @@
 /*----------------------------------------------------------------------------*/
 -- ::options trace commands
 
+
 -- a compiled pattern that can perform regex operations
 ::class "Pattern" public
-
 
 -- compile a string regex expression into a pattern
 ::method compile class
@@ -212,9 +212,6 @@
       return buffer~string
   end
 
-
-
-
 -- return a set of match metrics for this pattern instance
 ::method matchMetrics
   expose root
@@ -352,8 +349,8 @@
   pl~addFamily("DIGIT", self~digitCharacters)
   pl~addFamily("ALNUM", self~lowerCaseCharacters||self~upperCaseCharacters||self~digitCharacters)
   pl~addFamily("PUNCT", "!""#$%&'()*+,-./:;<=>?@[\]^_`{|}~")
-  pl~addFamily("GRAPH", pl~getFamily('ALNUM')||pl~getFamily('PUNCT'))
-  pl~addFamily("PRINT", pl~getFamily('GRAPH'))
+  pl~addFamily("GRAPH", pl~resolveFamily('ALNUM')||pl~resolveFamily('PUNCT'))
+  pl~addFamily("PRINT", pl~resolveFamily('GRAPH'))
   pl~addFamily("BLANK", " " || .String~tab)
   pl~addFamily("CNTRL",  xrange("00"x, "1F"x) || "7F"x)
   pl~addFamily("XDIGIT", "0123456789abcdefABCDEF")
@@ -361,14 +358,14 @@
   pl~addFamily("SPACE", self~whiteSpaceCharacters)
   pl~addFamily("WORD", self~wordCharacters)
 
-  pl~addFamily("REXXSYMBOL", pl~getFamily('ALNUM') || ".!?_" )
-  pl~addFamily("REXXVARIABLESTART", pl~getFamily("ALPHA") || "!?_")
+  pl~addFamily("REXXSYMBOL", pl~resolveFamily('ALNUM') || ".!?_" )
+  pl~addFamily("REXXVARIABLESTART", pl~resolveFamily("ALPHA") || "!?_")
   pl~addFamily("REXXOPERATOR", "+-\/%*|&=<>" || 'aaac'x)
   pl~addFamily("REXXSPECIAL", ",;:~()[]")
 
-  pl~addFamily("EMAILUSERNAME", pl~getFamily("ALNUM") || ".!#$%&'*+/=?^_`{|}~-")
-  pl~addFamily("URLUSERNAME", pl~getFamily("ALNUM") || "-._~%!$&'()*+,;=")
-  pl~addFamily("URLVALID]", pl~getFamily("ALNUM") || "-._~%!$&'()*+,;=:@/?")
+  pl~addFamily("EMAILUSERNAME", pl~resolveFamily("ALNUM") || ".!#$%&'*+/=?^_`{|}~-")
+  pl~addFamily("URLUSERNAME", pl~resolveFamily("ALNUM") || "-._~%!$&'()*+,;=")
+  pl~addFamily("URLVALID]", pl~resolveFamily("ALNUM") || "-._~%!$&'()*+,;=:@/?")
 
   pl~addPattern('TOPLEVELDOMAIN', "(?:\p{Alpha}{2}|com|org|net|edu|gov|mil|biz|info|mobi|name|aero|asia|jobs|museum|travel)\b")
   pl~addPattern('EMAILUSERNAME', "(?:\p{EmailUserName}+(?:\.\p{EmailUserName}+)*)")
@@ -390,7 +387,7 @@
 
 -- initialize a regex compiler instance
 ::method init
-  expose defaultLibrary patternLibrary addedLibraries
+  expose defaultLibrary patternContext addedLibraries
   use strict arg options = .nil
 
   -- default all of these settings before processing any explicit
@@ -405,9 +402,10 @@
 
   -- initialize the libraries
   defaultLibrary = self~class~defaultPatternLibrary
-  -- this is the library for patterns added directly to this compiler instance
-  -- we only create this the first time the library is requested
-  patternLibrary = .nil
+  -- this is a pattern library that we're attached to for compiling
+  -- patterns added to that library. If present, this is the first
+  -- library searched for resolving references.
+  patternContext = .nil
   -- these are additional libraries that can be attached to the compiler
   addedLibraries = .array~new
 
@@ -421,97 +419,81 @@
   parser = .RegexParser~new(self, pattern, options, compileLibrary)
   return parser~parse
 
--- retrieve the compiler's pattern library instance.  This is lazily created on
--- first request
-::attribute patternLibrary GET
-  expose patternLibrary
-
-  -- create this if this is the first request
-  if patternLibrary == .nil then do
-      patternLibrary = .PatternLibrary~new
-  end
-
-  return patternLibrary
-
-
 -- retrieve a named class family from the libraries this compile is working with.
--- Search order is 1) libraries added to the
--- compiler, 2) the default system library
+-- Search order is 1) the pattern library (if any) this compiler is attached to.
+-- 2) libraries added to the compiler, 3) the default system library
 ::method getFamily
-  expose defaultLibrary patternLibrary addedLibraries
+  expose defaultLibrary patternContext addedLibraries
   use strict arg name
   name = name~upper -- make sure we always use an uppercase name
 
   -- if we've had any patterns added, check that first
-  if patternLibrary \= .nil then do
-      family = patternLibrary~getFamily(name)
-      return family
+  if patternContext \= .nil then do
+      family = patternContext~resolveFamily(name)
+      if family \= .nil then return family
   end
 
   loop library over addedLibraries
-     family = library~getFamily(name)
-     if family \= nil then return family
+     family = library~resolveFamily(name)
+     if family \= .nil then return family
   end
 
-  return defaultLibrary~getFamily(name)
-
+  return defaultLibrary~resolveFamily(name)
 
 -- retrieve a named pattern from the libraries this compile is working with.
 -- Search order is 1) libraries added to the
 -- compiler, 2) the default system library
 ::method getPattern
-  expose patternLibrary defaultLibrary addedLibraries
+  expose patternContext defaultLibrary addedLibraries
   use strict arg name
   name = name~upper -- make sure we always use an uppercase name
 
   -- if we've had any patterns added, check that first
-  if patternLibrary \= .nil then do
-      pattern = patternLibrary~getPattern(name)
-      return pattern
+  if patternContext \= .nil then do
+      pattern = patternContext~resolvePattern(name)
+      if pattern \= .nil then return pattern
   end
 
   loop library over addedLibraries
-     pattern = library~getPattern(name)
-     if pattern \= nil then return pattern
+     pattern = library~resolvePattern(name)
+     if pattern \= .nil then return pattern
   end
 
-  return defaultLibrary~getPattern(name)
-
-
--- add a named character family to this compiler instance.  This will
--- override any other libraries this compiler searches (except for any
--- library provided on the compile method)
-::method addFamily
-  use strict arg name, characters
-
-  -- request the pattern library from this instance (which may
-  -- create it for the first time) and add the family
-  self~patternLibrary~addFamily(name, characters)
-
-
--- add a named pattern to this compiler instance.  This will
--- override any other libraries this compiler searches (except for any
--- library provided on the compile method)
-::method addPattern
-  use strict arg name, pattern
-
-  -- request the pattern library from this instance (which may
-  -- create it for the first time) and add the family
-  self~patternLibrary~addPattern(name, pattern)
-
+  return defaultLibrary~resolvePattern(name)
 
 -- add a library to the compiler instance
-::method addPatternLibrary
+::method addLibrary
   expose addedLibraries
   use strict arg library
 
   -- if not already a pattern library, assume this
-  -- is a source that a pattern library can be loaded from
+  -- is a source that a pattern library can be loaded from a stream
   if \library~isA(.PatternLibrary) then do
       library = .PatternLibrary~new(library)
   end
 
+  addedLibraries~append(library)
 
+-- create a new compiler instance for compiling entries for a
+-- specific pattern library
+::method newPatternCompiler
+  use strict arg patternLibrary
+
+  -- make a copy of the target library
+  newCompiler = self~copy
+  -- now finish the setup using the existing pattern library
+  -- as the first resource for resolving named dependencies
+  newCompiler~finishSetup(patternLibrary)
+
+  return newCompiler
+
+::method finishSetup private
+  expose addedLibraries patternContext
+  use strict arg patternContext
+
+  -- make a shallow copy of the added libraries array so that
+  -- we're decoupled from the orignal compiler instance.
+  addedLibraries = addedLibraries~copy
 
 -- internal class to manage the actual compiling process.  Since the compiler
 -- instance can be recursively invoked to handle named patterns, we need to
@@ -5748,7 +5730,7 @@
 
 -- a general purpose parsing context that includes support for
 -- regular expressions
-::class "Parser" public
+::class 'Parser' public
 ::method init
   expose string matchstart matchend sectionstart sectionend compiler matchResult matchText
   use strict arg string, compiler = (.RegexCompiler~new)
@@ -5756,7 +5738,7 @@
   matchstart = 1;    -- There is an implicit absolute trigger of 1 at the start
   matchend = 1;      -- All numeric movement triggers have a zero-length size
   sectionstart = 1;  -- The section also starts here
-  sectionEnd = string~length -- and is the length of the string
+  sectionEnd = string~length + 1 -- and is the length of the string
   matchResult = .nil -- no match result at the start
 
   matchText = .MatchText~new(string)
@@ -5816,7 +5798,7 @@ return string~substr(sectionstart, sectionEnd - sectionStart)
 -- return the current section parsed into blank delimited words
 ::method sectionWords
   -- word list does all of the work here
-  return self~section~wordList
+  return self~section~subWords
 
 
 -- return the remainder of the string after the last
@@ -6059,53 +6041,32 @@ return string~substr(sectionstart, sectionEnd - sectionStart)
   deterministic = deterministic & other~deterministic
   validMaximum = validMaximum & other~validMaximum
 
-
-
--- a class containing a library of Regex Patterns.  this includes
--- class families and named patterns that can be referenced in
--- other patterns.  Patterns in this library can contain other
--- patterns in the library, but they must not be circular.  Generally, patterns
--- from the library will be compiled on first use.
-::class "PatternLibrary" PUBLIC
+::class 'PatternLibrary' public
 ::method init
-  expose families patterns compiler libraries
+  expose patterns compiler families libraries
+  use strict arg
 
-  -- we can be given an optional source to load (as a property file) and an optional
-  -- compiler instance to compile the patterns.
-  use strict arg source = .nil, compiler = (.RegexCompiler~new)
-
-  -- were we given a property file/stream to load from?  Go do this.
-  if source \= .nil then do
-      self~load(source)
-  end
-
-  -- our mappings for the library elements
-  families = .directory~new
-  patterns = .directory~new
-
-  -- this is the set of pattern libraries required to compile patterns in
-  -- this library.  Patterns in the attached libraries will be returned
-  -- if they are not found in this.
+  patterns = .stringTable~new
+  families = .stringTable~new
+  -- this is not created until needed
+  compiler = .nil
+  -- there are no dependent libraries specified yet
   libraries = .array~new
 
-
--- load a set of patterns and/or class families from a properties file.  Also
--- allows for compile options to be specified, which will be used for compiling
--- any patterns loaded from the file.
+-- load a set of patterns from a properties file and add them to the
+-- pattern library
 ::method load
   use strict arg source
 
-  -- if not a property bundle already, try to load one from a file or stream
-  if \source~isA(.directory) then do
-     -- read the properties file
-     source = .Properties~load(source)
-  end
-  self~loadBundle(source)
+  props = .properties~new
+  props~load(source)
 
+  -- now load up from the bundle
+  self~loadBundle(props)
 
 -- load a library from a directory or property bundle
 ::method loadBundle PRIVATE
-  use strict arg
+  use strict arg bundle
 
   -- we handle patterns last, once we've located all options and classes.
   loop name over bundle
@@ -6152,6 +6113,136 @@ return string~substr(sectionstart, sectionEnd - sectionStart)
   bundle~save(target)
 
 
+-- set the pattern parser to be used by this library.
+::attribute compiler set
+  expose compiler
+  use strict arg compiler
+
+  -- this must be a RegexCompiler or a subclass
+  argUtil~validateClass(compiler, .RegexCompiler)
+
+  -- we use this compiler to compile in our own context, so we
+  -- create a copy of the provided compiler and place ourselves
+  -- at the head of the library list so our patterns are picked
+  -- up first
+  compiler = compiler~newPatternCompiler(self)
+
+-- retrieve the pattern parser in use by this library. If not, set,
+-- a default one will be created.
+::attribute compiler get
+  expose compiler
+  use strict arg
+
+  if compiler = .nil then do
+     compiler = .RegexCompiler~new
+     -- now alter the context to include this pattern library when compiling
+     compiler = compiler~newPatternCompiler(self)
+  end
+
+  return compiler
+
+
+-- remove a pattern from this library
+::method removePattern
+  expose patterns
+  use strict arg name
+
+  patterns~remove(name~upper)
+
+
+-- resolve a named pattern from a library, propagating the
+-- request to dependent libraries if needed.
+::method resolvePattern
+  use strict arg name
+
+  -- names are always uppercase
+  name = name~upper
+
+  -- send this along to the dependencies for resolution
+  -- this allows us to avoid dependency loops
+  context = .set~new
+
+  -- now search throught the library graph
+  return self~resolveDependentPattern(name, context)
+
+-- resolve a named pattern from a library, propagating the
+-- request to dependent libraries if needed.
+::method resolveDependentPattern private
+  expose patterns libraries
+  use strict arg name, context
+
+  -- if we've been visited before, then there is a dependency loop.
+  -- we're not going any further
+  if context~hasIndex(self) then return .nil
+
+  -- prevent calls back to
+  context~put(self)
+
+  -- check our contained patterns first
+  pattern = patterns[name]
+  if pattern \= .nil then do
+     -- return the actual pattern from the holder object, which
+     -- may force it to be compiled if this was the first
+     -- request
+     return pattern~pattern
+  end
+
+  -- now look in the dependent libraries
+  loop library over libraries
+     pattern = library~resolveDependentPattern(name, context)
+     if pattern \= .nil then do
+        return pattern
+     end
+  end
+
+  -- we got nothing
+  return .nil
+
+-- resolve a named character family from a library, propagating the
+-- request to dependent libraries if needed.
+::method resolveFamily
+  use strict arg name
+
+  -- names are always uppercase
+  name = name~upper
+
+  -- send this along to the dependencies for resolution
+  -- this allows us to avoid dependency loops
+  context = .set~new
+
+  -- now search throught the library graph
+  return self~resolveDependentFamily(name, context)
+
+-- resolve a named character family from a library, propagating the
+-- request to dependent libraries if needed.
+::method resolveDependentFamily private
+  expose families libraries
+  use strict arg name, context
+
+  -- if we've been visited before, then there is a dependency loop.
+  -- we're not going any further
+  if context~hasIndex(self) then return .nil
+
+  -- prevent calls back to
+  context~put(self)
+
+  -- check our contained patterns first
+  family = families[name]
+  if family \= .nil then do
+     return family
+  end
+
+  -- now look in the dependent libraries
+  loop library over libraries
+     family = library~resolveDependentFamily(name, context)
+     if family \= .nil then do
+        return family
+     end
+  end
+
+  -- we got nothing
+  return .nil
+
 -- add a library to the dependency list for this library.  The dependent
 -- libraries will be used for compiling patterns in this library
 ::method addLibrary
@@ -6193,14 +6284,12 @@ return string~substr(sectionstart, sectionEnd - sectionStart)
   patterns[name~upper] = .LibraryPattern~new(self, name, pattern)
 
 
--- compile a pattern in the current context, using the configures library
+-- compile a pattern in the current context, using the configure library
 ::method compile
-  expose compiler
   use strict arg pattern
 
   -- compile this pattern, making sure we are added to the pattern search order
-  return compiler~compile(pattern, ,self)
-
+  return self~compiler~compile(pattern, ,self)
 
 -- retrieve a character family from this library
 ::method getFamily
@@ -6284,4 +6373,5 @@ return string~substr(sectionstart, sectionEnd - sectionStart)
   expose name patternString
   use strict arg bundle
 
-  bundle["CLASS."name] = patternString
+  bundle["PATTERN."name] = patternString
+
