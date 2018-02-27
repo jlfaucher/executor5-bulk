@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Reference XML File
     #
-    # Copyright (c) 2005-2017, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2018, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -69,8 +69,8 @@
     <xref linkend="clsNumericComparator" xrefstyle="template:NumericComparator"/>, and
    </para></listitem>
    <listitem><para>other miscellaneous classes
-    <xref linkend="clsBuffer" xrefstyle="template:Buffer"/>,
-    <xref linkend="clsMonitor" xrefstyle="template:Monitor"/>,
+    <xref linkend="clsBuffer" xrefstyle="template:Buffer"/>,   
+    <xref linkend="clsMonitor" xrefstyle="template:Monitor"/>,   
     <xref linkend="clsPointer" xrefstyle="template:Pointer"/>,
     <xref linkend="clsRegularExpression" xrefstyle="template:RegularExpression"/>,
     <xref linkend="clsRexxContext" xrefstyle="template:RexxContext"/>,
@@ -78,7 +78,8 @@
     <xref linkend="clsRexxQueue" xrefstyle="template:RexxQueue"/>,
     <xref linkend="clsStackFrame" xrefstyle="template:StackFrame"/>,
     <xref linkend="clsStreamSupplier" xrefstyle="template:StreamSupplier"/>,
-    <xref linkend="clsSupplier" xrefstyle="template:Supplier"/>, and
+    <xref linkend="clsSupplier" xrefstyle="template:Supplier"/>,
+    <xref linkend="clsValidate" xrefstyle="template:Validate"/>, and
     <xref linkend="clsWeakReference" xrefstyle="template:WeakReference"/>.
    </para></listitem>
   </itemizedlist></para>
@@ -9742,7 +9743,7 @@ result in microseconds being subtracted from the TimeSpan value.
 </imageobject>
 </mediaobject>
 
-<para>Returns <literal>-1</literal> if the <classname>TimeSpan</classname>
+<para>Returns <literal>-1</literal> if the TimeSpan
 duration is negative, <literal>1</literal> if it is positive, and
 <literal>0</literal> if it is zero.
 </para>
@@ -9769,6 +9770,325 @@ is less than a day, the days field and the period separator will be omitted.
 </section>
 
 </section>
+
+
+<section id="clsValidate" revisionflag="added"><title>*NEW* Validate Class</title>
+<indexterm><primary>Validate class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>Validate class</secondary></indexterm>
+
+<para>The <classname>Validate</classname> class provides class methods helping
+with validating arguments being of correct class, logical or numeric type,
+or within a numeric range.
+</para>
+
+<!-- $GENERATED-20180226-START rexxrefClassTable(Validate) -->
+<table id="ooRexxValidateClass" frame="all" pgwide="1">
+<title>Validate Class</title>
+<tgroup cols="1">
+<tbody>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Validate</emphasis></entry>
+ </row>
+ <row><entry>
+  <simplelist columns="3">
+   <member><xref linkend="mthValidateClassType" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthValidateLength" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthValidateLogical" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthValidateNonNegativeNumber" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthValidateNonNegativeWholeNumber" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthValidateNumber" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthValidateNumberRange" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthValidatePosition" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthValidatePositiveNumber" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthValidatePositiveWholeNumber" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthValidateWholeNumber" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthValidateWholeNumberRange" xrefstyle="select:title"/></member>
+  </simplelist>
+ </entry></row>
+</tbody>
+</tgroup>
+</table>
+<!-- $GENERATED-20180226-END rexxrefClassTable(Validate) -->
+
+
+<!-- Class Validate - method classType ======================== -->
+<section id="mthValidateClassType" revisionflag="added"><title>*NEW* classType (Class Method)</title>
+<indexterm><primary>classType method</primary><secondary>of Validate class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>classType method</secondary><tertiary>of Validate class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/validate_classtype.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Validates that <emphasis role="italic">object</emphasis> is an instance of
+class <emphasis role="italic">class</emphasis>.
+</para>
+<para>Raises a syntax error for argument <emphasis role="italic">name</emphasis>
+if the validation fails, else returns with no result.
+</para>
+</section>
+
+
+<!-- Class Validate - method length ======================== -->
+<section id="mthValidateLength" revisionflag="added"><title>*NEW* length (Class Method)</title>
+<indexterm><primary>length method</primary><secondary>of Validate class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>length method</secondary><tertiary>of Validate class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/validate_length.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Validates that <emphasis role="italic">number</emphasis> is zero or a
+positive whole number under NUMERIC DIGITS <emphasis role="italic">digits</emphasis>.
+If <emphasis role="italic">digits</emphasis> is not specfied, it defaults to
+<xref linkend="mthRexxInfoInternalDigits" xrefstyle="select:title"/>. 
+</para>
+<para>Raises a syntax error for argument <emphasis role="italic">name</emphasis>
+if the validation fails, else returns with no result.
+</para>
+<para>See also methods
+<xref linkend="mthValidatePosition" xrefstyle="select:title"/> and
+<xref linkend="mthValidateNonNegativeWholeNumber" xrefstyle="select:title"/>.
+</para>
+</section>
+
+
+<!-- Class Validate - method logical ======================== -->
+<section id="mthValidateLogical" revisionflag="added"><title>*NEW* logical (Class Method)</title>
+<indexterm><primary>logical method</primary><secondary>of Validate class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>logical method</secondary><tertiary>of Validate class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/validate_logical.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Validates that <emphasis role="italic">number</emphasis> is either
+&true; or &false;.
+</para>
+<para>Raises a syntax error for argument <emphasis role="italic">name</emphasis>
+if the validation fails, else returns with no result.
+</para>
+</section>
+
+
+<!-- Class Validate - method nonNegativeNumber ======================== -->
+<section id="mthValidateNonNegativeNumber" revisionflag="added"><title>*NEW* nonNegativeNumber (Class Method)</title>
+<indexterm><primary>nonNegativeNumber method</primary><secondary>of Validate class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>nonNegativeNumber method</secondary><tertiary>of Validate class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/validate_nonnegativenumber.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Validates that <emphasis role="italic">number</emphasis> is zero or a
+positive Rexx number under NUMERIC DIGITS <emphasis role="italic">digits</emphasis>.
+If <emphasis role="italic">digits</emphasis> is not specfied, it defaults to
+<literal>9</literal>.
+</para>
+<para>Raises a syntax error for argument <emphasis role="italic">name</emphasis>
+if the validation fails, else returns with no result.
+</para>
+<para>See also methods
+<xref linkend="mthValidatePositiveNumber" xrefstyle="select:title"/> and
+<xref linkend="mthValidateNonNegativeWholeNumber" xrefstyle="select:title"/>.
+</para>
+</section>
+
+
+<!-- Class Validate - method nonNegativeWholeNumber ======================== -->
+<section id="mthValidateNonNegativeWholeNumber" revisionflag="added"><title>*NEW* nonNegativeWholeNumber (Class Method)</title>
+<indexterm><primary>nonNegativeWholeNumber method</primary><secondary>of Validate class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>nonNegativeWholeNumber method</secondary><tertiary>of Validate class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/validate_nonnegativewholenumber.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Validates that <emphasis role="italic">number</emphasis> is zero or a
+positive whole number under NUMERIC DIGITS <emphasis role="italic">digits</emphasis>.
+If <emphasis role="italic">digits</emphasis> is not specfied, it defaults to
+<literal>9</literal>.
+</para>
+<para>Raises a syntax error for argument <emphasis role="italic">name</emphasis>
+if the validation fails, else returns with no result.
+</para>
+<para>See also methods
+<xref linkend="mthValidatePositiveWholeNumber" xrefstyle="select:title"/> and
+<xref linkend="mthValidateNonNegativeNumber" xrefstyle="select:title"/>.
+</para>
+</section>
+
+
+<!-- Class Validate - method number ======================== -->
+<section id="mthValidateNumber" revisionflag="added"><title>*NEW* number (Class Method)</title>
+<indexterm><primary>number method</primary><secondary>of Validate class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>number method</secondary><tertiary>of Validate class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/validate_number.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Validates that <emphasis role="italic">number</emphasis> is a
+valid Rexx number.
+</para>
+<para>Raises a syntax error for argument <emphasis role="italic">name</emphasis>
+if the validation fails, else returns with no result.
+</para>
+<para>See also method <xref linkend="mthValidateWholeNumber" xrefstyle="select:title"/>.
+</para>
+</section>
+
+
+<!-- Class Validate - method numberRange ======================== -->
+<section id="mthValidateNumberRange" revisionflag="added"><title>*NEW* numberRange (Class Method)</title>
+<indexterm><primary>numberRange method</primary><secondary>of Validate class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>numberRange method</secondary><tertiary>of Validate class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/validate_numberrange.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Validates that <emphasis role="italic">number</emphasis> is a
+valid Rexx number in the range
+<emphasis role="italic">min</emphasis> to
+<emphasis role="italic">max</emphasis>, with comparisons done under
+NUMERIC DIGITS <emphasis role="italic">digits</emphasis>.
+If <emphasis role="italic">digits</emphasis> is not specfied, it defaults to
+<literal>9</literal>.
+</para>
+<para>Raises a syntax error for argument <emphasis role="italic">name</emphasis>
+if the validation fails, else returns with no result.
+</para>
+<para>See also method <xref linkend="mthValidateWholeNumberRange" xrefstyle="select:title"/>.
+</para>
+</section>
+
+
+<!-- Class Validate - method position ======================== -->
+<section id="mthValidatePosition" revisionflag="added"><title>*NEW* position (Class Method)</title>
+<indexterm><primary>position method</primary><secondary>of Validate class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>position method</secondary><tertiary>of Validate class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/validate_position.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Validates that <emphasis role="italic">number</emphasis> is a
+positive whole number under NUMERIC DIGITS <emphasis role="italic">digits</emphasis>.
+If <emphasis role="italic">digits</emphasis> is not specfied, it defaults to
+<xref linkend="mthRexxInfoInternalDigits" xrefstyle="select:title"/>. 
+</para>
+<para>Raises a syntax error for argument <emphasis role="italic">name</emphasis>
+if the validation fails, else returns with no result.
+</para>
+<para>See also methods
+<xref linkend="mthValidateLength" xrefstyle="select:title"/> and
+<xref linkend="mthValidatePositiveWholeNumber" xrefstyle="select:title"/>.
+</para>
+</section>
+
+
+<!-- Class Validate - method positiveNumber ======================== -->
+<section id="mthValidatePositiveNumber" revisionflag="added"><title>*NEW* positiveNumber (Class Method)</title>
+<indexterm><primary>positiveNumber method</primary><secondary>of Validate class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>positiveNumber method</secondary><tertiary>of Validate class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/validate_positivenumber.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Validates that <emphasis role="italic">number</emphasis> is a
+positive Rexx number under NUMERIC DIGITS <emphasis role="italic">digits</emphasis>.
+If <emphasis role="italic">digits</emphasis> is not specfied, it defaults to
+<literal>9</literal>.
+</para>
+<para>Raises a syntax error for argument <emphasis role="italic">name</emphasis>
+if the validation fails, else returns with no result.
+</para>
+<para>See also methods
+<xref linkend="mthValidateNonNegativeNumber" xrefstyle="select:title"/> and
+<xref linkend="mthValidatePositiveWholeNumber" xrefstyle="select:title"/>.
+</para>
+</section>
+
+
+<!-- Class Validate - method positiveWholeNumber ======================== -->
+<section id="mthValidatePositiveWholeNumber" revisionflag="added"><title>*NEW* positiveWholeNumber (Class Method)</title>
+<indexterm><primary>positiveWholeNumber method</primary><secondary>of Validate class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>positiveWholeNumber method</secondary><tertiary>of Validate class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/validate_positivewholenumber.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Validates that <emphasis role="italic">number</emphasis> is a
+positive whole number under NUMERIC DIGITS <emphasis role="italic">digits</emphasis>.
+If <emphasis role="italic">digits</emphasis> is not specfied, it defaults to
+<literal>9</literal>.
+</para>
+<para>Raises a syntax error for argument <emphasis role="italic">name</emphasis>
+if the validation fails, else returns with no result.
+</para>
+<para>See also methods
+<xref linkend="mthValidateNonNegativeWholeNumber" xrefstyle="select:title"/> and
+<xref linkend="mthValidatePositiveNumber" xrefstyle="select:title"/>.
+</para>
+</section>
+
+
+<!-- Class Validate - method wholeNumber ======================== -->
+<section id="mthValidateWholeNumber" revisionflag="added"><title>*NEW* wholeNumber (Class Method)</title>
+<indexterm><primary>wholeNumber method</primary><secondary>of Validate class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>wholeNumber method</secondary><tertiary>of Validate class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/validate_wholenumber.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Validates that <emphasis role="italic">number</emphasis> is a
+whole number under NUMERIC DIGITS <emphasis role="italic">digits</emphasis>.
+If <emphasis role="italic">digits</emphasis> is not specfied, it defaults to
+<literal>9</literal>.
+</para>
+<para>Raises a syntax error for argument <emphasis role="italic">name</emphasis>
+if the validation fails, else returns with no result.
+</para>
+<para>See also method <xref linkend="mthValidateNumber" xrefstyle="select:title"/>.
+</para>
+</section>
+
+
+<!-- Class Validate - method wholeNumberRange ======================== -->
+<section id="mthValidateWholeNumberRange" revisionflag="added"><title>*NEW* wholeNumberRange (Class Method)</title>
+<indexterm><primary>wholeNumberRange method</primary><secondary>of Validate class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>wholeNumberRange method</secondary><tertiary>of Validate class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/validate_wholenumberrange.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Validates that <emphasis role="italic">number</emphasis> is a
+valid whole number in the range
+<emphasis role="italic">min</emphasis> to
+<emphasis role="italic">max</emphasis>, with comparisons done under
+NUMERIC DIGITS <emphasis role="italic">digits</emphasis>.
+If <emphasis role="italic">digits</emphasis> is not specfied, it defaults to
+<literal>9</literal>.
+</para>
+<para>Raises a syntax error for argument <emphasis role="italic">name</emphasis>
+if the validation fails, else returns with no result.
+</para>
+<para>See also method <xref linkend="mthValidateNumberRange" xrefstyle="select:title"/>.
+</para>
+</section>
+
+</section>
+
+
 
 <section id="clsWeakReference"><title>WeakReference Class</title>
 <indexterm><primary>WeakReference class</primary></indexterm>
