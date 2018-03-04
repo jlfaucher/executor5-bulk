@@ -2971,8 +2971,11 @@ and will not change if you change the default directory.
 </mediaobject>
 
 <para>Returns &true; if the file system is case-sensitive. Otherwise returns &false;.
+If a Unix-like file system may have mounted both case-sensitive and case-insensitive
+file systems, this method returns &true; if the file system root "<literal>/</literal>"
+is case-sensitive, and otherwise &false;. 
 </para>
-<para>This query method is available as both an instance and class method.
+<para>See also instance method <xref linkend="mthFileIsCaseSensitive" xrefstyle="select:title"/>.
 </para>
 </section>
 
@@ -3310,9 +3313,10 @@ file = .File~new("file", samples)            -- /opt/ooRexx/samples/file
 </imageobject>
 </mediaobject>
 
-<para>Returns &true; if the file system is case-sensitive. Otherwise returns &false;.
+<para>Returns &true; if the target File object is case-sensitive,
+otherwise returns &false;.
 </para>
-<para>This query method is available as both an instance and class method.
+<para>See also class method <xref linkend="mthFileIsCaseSensitiveClsMth" xrefstyle="select:title"/>.
 </para>
 </section>
 
@@ -6931,9 +6935,10 @@ say .rexxinfo~architecture    -- 64 /* ooRexx 64-bit */
 <imagedata fileref="images/classes/rexxinfo_casesensitivefiles.svg" scale="55" />
 </imageobject></mediaobject>
 </para>
-<para>Returns &true; if the file system is case-sensitive,
-e. g. on a Unix platform.
-Otherwise returns &false;, e. g. for a Windows file system.
+<para>Returns &true; if the file system is case-sensitive. Otherwise returns &false;.
+If a Unix-like file system may have mounted both case-sensitive and case-insensitive
+file systems, this method returns &true; if the file system root "<literal>/</literal>"
+is case-sensitive, and otherwise &false;. 
 </para>
 <para>See also <classname>File</classname> class method
 <xref linkend="mthFileIsCaseSensitiveClsMth" xrefstyle="template:isCaseSensitive"/>

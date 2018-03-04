@@ -94,7 +94,12 @@ return testResult
   parse pull line
   trueCurrentDir = directory()
 
-  self~assertSame(trueCurrentDir, line)
+  -- on a case-insensitive file system, pwd and directory()
+  -- might actually return strings with different upper/lower-case
+  if .File~new(line)~isCaseSensitive then
+    self~assertSame(trueCurrentDir, line)
+  else
+    self~assertSame(trueCurrentDir~lower, line~lower)
 
 ::method  test_multi_lines
 
