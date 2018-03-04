@@ -59,21 +59,45 @@ return testResult
     expected = '1.12:00:00.000000'
     self~assertEquals(expected, .timespan~fromDays(1.5))
 
+    full = .TimeSpan~fromDays(1)
+    numeric digits 18
+    approximate = .TimeSpan~fromDays(1 / 7) * 7
+    -- we expect an accuracy of 7 microseconds or better
+    self~assertTrue((full - approximate)~duration~microSeconds <= 7)
+
 ::method 'test_fromHours'
     expected = '18:00:00.000000'
     self~assertEquals(expected, .timespan~fromHours(18))
+
+    full = .TimeSpan~fromHours(1)
+    numeric digits 18
+    approximate = .TimeSpan~fromHours(1 / 7) * 7
+    -- we expect an accuracy of 7 microseconds or better
+    self~assertTrue((full - approximate)~duration~microSeconds <= 7)
 
 ::method 'test_fromMinutes'
     expected = '00:25:00.000000'
     self~assertEquals(expected, .timespan~fromMinutes(25))
 
+    full = .TimeSpan~fromMinutes(1)
+    numeric digits 18
+    approximate = .TimeSpan~fromMinutes(1 / 7) * 7
+    -- we expect an accuracy of 7 microseconds or better
+    self~assertTrue((full - approximate)~duration~microSeconds <= 7)
+
 ::method 'test_fromSeconds'
     expected = '00:00:15.000000'
     self~assertEquals(expected, .timespan~fromSeconds(15))
 
+    full = .TimeSpan~fromSeconds(1)
+    numeric digits 18
+    approximate = .TimeSpan~fromSeconds(1 / 7) * 7
+    -- we expect an accuracy of 7 microseconds or better
+    self~assertTrue((full - approximate)~duration~microSeconds <= 7)
+
 ::method 'test_fromMicroSeconds'
     expected = '00:00:00.000012'
-    self~assertEquals(expected, .timespan~fromMicroSeconds(12))
+    self~assertEquals(expected, .timespan~fromMicroSeconds(12 + 1 / 7))
 
 ::method 'test_fromNormalTime'
     a_normalTime = '10:03:44'
