@@ -4945,7 +4945,7 @@ If <emphasis role="italic">separator</emphasis> isn't specified, any
 
 
 <!-- Class MutableBuffer - method makeString ======================== -->
-<section id="mthMutableBufferMakeString" revisionflag="added"><title>*NEW* makeString
+<section id="mthMutableBufferMakeString" revisionflag="added"><title>&added50;makeString
 <indexterm><primary>makeString method</primary><secondary>of MutableBuffer class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>makeString method</secondary><tertiary>of MutableBuffer class</tertiary></indexterm>
 </title>
@@ -7141,7 +7141,7 @@ say .RexxInfo~internalDigits    -- 18 /* 64-bit addressing mode */
 
 
 <!-- Class RexxInfo - method internalMaxNumber ======================== -->
-<section id="mthRexxInfoInternalMaxNumber" revisionflag="added"><title>*NEW* internalMaxNumber</title>
+<section id="mthRexxInfoInternalMaxNumber" revisionflag="added"><title>&added50;internalMaxNumber</title>
 <para>
 <indexterm><primary>internalMaxNumber method</primary><secondary>of RexxInfo class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>internalMaxNumber method</secondary><tertiary>of RexxInfo class</tertiary></indexterm>
@@ -7171,7 +7171,7 @@ say .RexxInfo~internalMaxNumber  -- 999999999999999999 /* 64-bit addressing mode
 
 
 <!-- Class RexxInfo - method internalMinNumber ======================== -->
-<section id="mthRexxInfoInternalMinNumber" revisionflag="added"><title>*NEW* internalMinNumber</title>
+<section id="mthRexxInfoInternalMinNumber" revisionflag="added"><title>&added50;internalMinNumber</title>
 <para>
 <indexterm><primary>internalMinNumber method</primary><secondary>of RexxInfo class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>internalMinNumber method</secondary><tertiary>of RexxInfo class</tertiary></indexterm>
@@ -7262,7 +7262,7 @@ which also return the major version number as part of their result.
 
 
 <!-- Class RexxInfo - method maxArraySize ======================== -->
-<section id="mthRexxInfoMaxArraySize" revisionflag="added"><title>*NEW* maxArraySize</title>
+<section id="mthRexxInfoMaxArraySize" revisionflag="added"><title>&added50;maxArraySize</title>
 <para>
 <indexterm><primary>maxArraySize method</primary><secondary>of RexxInfo class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>maxArraySize method</secondary><tertiary>of RexxInfo class</tertiary></indexterm>
@@ -7285,7 +7285,7 @@ say .RexxInfo~maxArraySize  -- 999999999999999999 /* 64-bit addressing mode */
 
 
 <!-- Class RexxInfo - method maxExponent ======================== -->
-<section id="mthRexxInfoMaxExponent" revisionflag="added"><title>*NEW* maxExponent</title>
+<section id="mthRexxInfoMaxExponent" revisionflag="added"><title>&added50;maxExponent</title>
 <para>
 <indexterm><primary>maxExponent method</primary><secondary>of RexxInfo class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>maxExponent method</secondary><tertiary>of RexxInfo class</tertiary></indexterm>
@@ -7309,7 +7309,7 @@ say .RexxInfo~maxExponent    -- 999999999
 
 
 <!-- Class RexxInfo - method maxPathLength ======================== -->
-<section id="mthRexxInfoMaxPathLength" revisionflag="added"><title>*NEW* maxPathLength</title>
+<section id="mthRexxInfoMaxPathLength" revisionflag="added"><title>&added50;maxPathLength</title>
 <para>
 <indexterm><primary>maxPathLength method</primary><secondary>of RexxInfo class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>maxPathLength method</secondary><tertiary>of RexxInfo class</tertiary></indexterm>
@@ -7332,7 +7332,7 @@ say .RexxInfo~maxPathLength    -- 4096 /* e. g. on Linux */
 
 
 <!-- Class RexxInfo - method minExponent ======================== -->
-<section id="mthRexxInfoMinExponent" revisionflag="added"><title>*NEW* minExponent</title>
+<section id="mthRexxInfoMinExponent" revisionflag="added"><title>&added50;minExponent</title>
 <para>
 <indexterm><primary>minExponent method</primary><secondary>of RexxInfo class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>minExponent method</secondary><tertiary>of RexxInfo class</tertiary></indexterm>
@@ -7998,7 +7998,7 @@ StackFrame instances cannot be directly created by the user.
 
 
 <!-- Class StackFrame - method context ======================== -->
-<section id="mthStackFrameContext" revisionflag="added"><title>*NEW* context
+<section id="mthStackFrameContext" revisionflag="added"><title>&added50;context
 <indexterm><primary>context method</primary><secondary>of StackFrame class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>context method</secondary><tertiary>of StackFrame class</tertiary></indexterm>
 </title>
@@ -9197,7 +9197,8 @@ The TimeSpan will contain an interval equal to the time of day represented by th
 </imageobject>
 </mediaobject>
 
-<para>Creates a TimeSpan object from a string in the format returned by the TimeSpan <methodname>string</methodname> method.
+<para>Creates a TimeSpan object from a string in the format returned by the TimeSpan
+<xref linkend="mthTimeSpanString" xrefstyle="select:title"/> method.
 </para>
 </section>
 
@@ -9752,6 +9753,8 @@ result in microseconds being subtracted from the TimeSpan value.
 duration is negative, <literal>1</literal> if it is positive, and
 <literal>0</literal> if it is zero.
 </para>
+<para>See also method <xref linkend="mthTimeSpanDuration" xrefstyle="select:title"/>.
+</para>
 </section>
 
 <section id="mthTimeSpanString"><title>string</title>
@@ -9767,8 +9770,9 @@ duration is negative, <literal>1</literal> if it is positive, and
 </imageobject>
 </mediaobject>
 
-<para>Returns TimeSpan formatted as a string.  The string value is in the format
-"-dddddddd.hh:mm:ss.uuuuuu".  If the TimeSpan is positive or zero, the sign is omitted.
+<para>Returns TimeSpan formatted as a string.
+The string value is in the format <literal>-dddddddd.hh:mm:ss.uuuuuu</literal>.
+If the TimeSpan is positive or zero, the sign is omitted.
 The days field will be formatted without leading zeros or blanks.  If the TimeSpan duration
 is less than a day, the days field and the period separator will be omitted.
 </para>
@@ -9777,7 +9781,7 @@ is less than a day, the days field and the period separator will be omitted.
 </section>
 
 
-<section id="clsValidate" revisionflag="added"><title>*NEW* Validate Class</title>
+<section id="clsValidate" revisionflag="added"><title>&added50;Validate Class</title>
 <indexterm><primary>Validate class</primary></indexterm>
 <indexterm><primary>class</primary>
 <secondary>Validate class</secondary></indexterm>
@@ -9787,6 +9791,7 @@ with validating arguments being of correct class, logical or numeric type,
 or within a numeric range.
 </para>
 
+<!-- modified: columns="2" -->
 <!-- $GENERATED-20180226-START rexxrefClassTable(Validate) -->
 <table id="ooRexxValidateClass" frame="all" pgwide="1">
 <title>Validate Class</title>
@@ -9799,7 +9804,7 @@ or within a numeric range.
  <row><entry align="center"><emphasis role="bold">Validate</emphasis></entry>
  </row>
  <row><entry>
-  <simplelist columns="3">
+  <simplelist columns="2">
    <member><xref linkend="mthValidateClassType" xrefstyle="select:title"/></member>
    <member><xref linkend="mthValidateLength" xrefstyle="select:title"/></member>
    <member><xref linkend="mthValidateLogical" xrefstyle="select:title"/></member>
@@ -9821,7 +9826,7 @@ or within a numeric range.
 
 
 <!-- Class Validate - method classType ======================== -->
-<section id="mthValidateClassType" revisionflag="added"><title>*NEW* classType (Class Method)</title>
+<section id="mthValidateClassType" revisionflag="added"><title>&added50;classType (Class Method)</title>
 <indexterm><primary>classType method</primary><secondary>of Validate class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>classType method</secondary><tertiary>of Validate class</tertiary></indexterm>
 <para>
@@ -9839,7 +9844,7 @@ if the validation fails, else returns with no result.
 
 
 <!-- Class Validate - method length ======================== -->
-<section id="mthValidateLength" revisionflag="added"><title>*NEW* length (Class Method)</title>
+<section id="mthValidateLength" revisionflag="added"><title>&added50;length (Class Method)</title>
 <indexterm><primary>length method</primary><secondary>of Validate class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>length method</secondary><tertiary>of Validate class</tertiary></indexterm>
 <para>
@@ -9856,14 +9861,14 @@ If <emphasis role="italic">digits</emphasis> is not specfied, it defaults to
 if the validation fails, else returns with no result.
 </para>
 <para>See also methods
-<xref linkend="mthValidatePosition" xrefstyle="select:title"/> and
-<xref linkend="mthValidateNonNegativeWholeNumber" xrefstyle="select:title"/>.
+<xref linkend="mthValidatePosition" xrefstyle="template:position"/> and
+<xref linkend="mthValidateNonNegativeWholeNumber" xrefstyle="template:nonNegativeWholeNumber"/>.
 </para>
 </section>
 
 
 <!-- Class Validate - method logical ======================== -->
-<section id="mthValidateLogical" revisionflag="added"><title>*NEW* logical (Class Method)</title>
+<section id="mthValidateLogical" revisionflag="added"><title>&added50;logical (Class Method)</title>
 <indexterm><primary>logical method</primary><secondary>of Validate class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>logical method</secondary><tertiary>of Validate class</tertiary></indexterm>
 <para>
@@ -9881,7 +9886,7 @@ if the validation fails, else returns with no result.
 
 
 <!-- Class Validate - method nonNegativeNumber ======================== -->
-<section id="mthValidateNonNegativeNumber" revisionflag="added"><title>*NEW* nonNegativeNumber (Class Method)</title>
+<section id="mthValidateNonNegativeNumber" revisionflag="added"><title>&added50;nonNegativeNumber (Class Method)</title>
 <indexterm><primary>nonNegativeNumber method</primary><secondary>of Validate class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>nonNegativeNumber method</secondary><tertiary>of Validate class</tertiary></indexterm>
 <para>
@@ -9898,14 +9903,14 @@ If <emphasis role="italic">digits</emphasis> is not specfied, it defaults to
 if the validation fails, else returns with no result.
 </para>
 <para>See also methods
-<xref linkend="mthValidatePositiveNumber" xrefstyle="select:title"/> and
-<xref linkend="mthValidateNonNegativeWholeNumber" xrefstyle="select:title"/>.
+<xref linkend="mthValidatePositiveNumber" xrefstyle="template:positiveNumber"/> and
+<xref linkend="mthValidateNonNegativeWholeNumber" xrefstyle="template:nonNegativeWholeNumber"/>.
 </para>
 </section>
 
 
 <!-- Class Validate - method nonNegativeWholeNumber ======================== -->
-<section id="mthValidateNonNegativeWholeNumber" revisionflag="added"><title>*NEW* nonNegativeWholeNumber (Class Method)</title>
+<section id="mthValidateNonNegativeWholeNumber" revisionflag="added"><title>&added50;nonNegativeWholeNumber (Class Method)</title>
 <indexterm><primary>nonNegativeWholeNumber method</primary><secondary>of Validate class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>nonNegativeWholeNumber method</secondary><tertiary>of Validate class</tertiary></indexterm>
 <para>
@@ -9922,14 +9927,14 @@ If <emphasis role="italic">digits</emphasis> is not specfied, it defaults to
 if the validation fails, else returns with no result.
 </para>
 <para>See also methods
-<xref linkend="mthValidatePositiveWholeNumber" xrefstyle="select:title"/> and
-<xref linkend="mthValidateNonNegativeNumber" xrefstyle="select:title"/>.
+<xref linkend="mthValidatePositiveWholeNumber" xrefstyle="template:positiveWholeNumber"/> and
+<xref linkend="mthValidateNonNegativeNumber" xrefstyle="template:nonNegativeNumber"/>.
 </para>
 </section>
 
 
 <!-- Class Validate - method number ======================== -->
-<section id="mthValidateNumber" revisionflag="added"><title>*NEW* number (Class Method)</title>
+<section id="mthValidateNumber" revisionflag="added"><title>&added50;number (Class Method)</title>
 <indexterm><primary>number method</primary><secondary>of Validate class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>number method</secondary><tertiary>of Validate class</tertiary></indexterm>
 <para>
@@ -9943,13 +9948,13 @@ valid Rexx number.
 <para>Raises a syntax error for argument <emphasis role="italic">name</emphasis>
 if the validation fails, else returns with no result.
 </para>
-<para>See also method <xref linkend="mthValidateWholeNumber" xrefstyle="select:title"/>.
+<para>See also method <xref linkend="mthValidateWholeNumber" xrefstyle="template:wholeNumber"/>.
 </para>
 </section>
 
 
 <!-- Class Validate - method numberRange ======================== -->
-<section id="mthValidateNumberRange" revisionflag="added"><title>*NEW* numberRange (Class Method)</title>
+<section id="mthValidateNumberRange" revisionflag="added"><title>&added50;numberRange (Class Method)</title>
 <indexterm><primary>numberRange method</primary><secondary>of Validate class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>numberRange method</secondary><tertiary>of Validate class</tertiary></indexterm>
 <para>
@@ -9968,13 +9973,13 @@ If <emphasis role="italic">digits</emphasis> is not specfied, it defaults to
 <para>Raises a syntax error for argument <emphasis role="italic">name</emphasis>
 if the validation fails, else returns with no result.
 </para>
-<para>See also method <xref linkend="mthValidateWholeNumberRange" xrefstyle="select:title"/>.
+<para>See also method <xref linkend="mthValidateWholeNumberRange" xrefstyle="template:wholeNumberRange"/>.
 </para>
 </section>
 
 
 <!-- Class Validate - method position ======================== -->
-<section id="mthValidatePosition" revisionflag="added"><title>*NEW* position (Class Method)</title>
+<section id="mthValidatePosition" revisionflag="added"><title>&added50;position (Class Method)</title>
 <indexterm><primary>position method</primary><secondary>of Validate class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>position method</secondary><tertiary>of Validate class</tertiary></indexterm>
 <para>
@@ -9991,14 +9996,14 @@ If <emphasis role="italic">digits</emphasis> is not specfied, it defaults to
 if the validation fails, else returns with no result.
 </para>
 <para>See also methods
-<xref linkend="mthValidateLength" xrefstyle="select:title"/> and
-<xref linkend="mthValidatePositiveWholeNumber" xrefstyle="select:title"/>.
+<xref linkend="mthValidateLength" xrefstyle="template:length"/> and
+<xref linkend="mthValidatePositiveWholeNumber" xrefstyle="template:positiveWholeNumber"/>.
 </para>
 </section>
 
 
 <!-- Class Validate - method positiveNumber ======================== -->
-<section id="mthValidatePositiveNumber" revisionflag="added"><title>*NEW* positiveNumber (Class Method)</title>
+<section id="mthValidatePositiveNumber" revisionflag="added"><title>&added50;positiveNumber (Class Method)</title>
 <indexterm><primary>positiveNumber method</primary><secondary>of Validate class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>positiveNumber method</secondary><tertiary>of Validate class</tertiary></indexterm>
 <para>
@@ -10015,14 +10020,14 @@ If <emphasis role="italic">digits</emphasis> is not specfied, it defaults to
 if the validation fails, else returns with no result.
 </para>
 <para>See also methods
-<xref linkend="mthValidateNonNegativeNumber" xrefstyle="select:title"/> and
-<xref linkend="mthValidatePositiveWholeNumber" xrefstyle="select:title"/>.
+<xref linkend="mthValidateNonNegativeNumber" xrefstyle="template:nonNegativeNumber"/> and
+<xref linkend="mthValidatePositiveWholeNumber" xrefstyle="template:positiveWholeNumber"/>.
 </para>
 </section>
 
 
 <!-- Class Validate - method positiveWholeNumber ======================== -->
-<section id="mthValidatePositiveWholeNumber" revisionflag="added"><title>*NEW* positiveWholeNumber (Class Method)</title>
+<section id="mthValidatePositiveWholeNumber" revisionflag="added"><title>&added50;positiveWholeNumber (Class Method)</title>
 <indexterm><primary>positiveWholeNumber method</primary><secondary>of Validate class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>positiveWholeNumber method</secondary><tertiary>of Validate class</tertiary></indexterm>
 <para>
@@ -10039,14 +10044,14 @@ If <emphasis role="italic">digits</emphasis> is not specfied, it defaults to
 if the validation fails, else returns with no result.
 </para>
 <para>See also methods
-<xref linkend="mthValidateNonNegativeWholeNumber" xrefstyle="select:title"/> and
-<xref linkend="mthValidatePositiveNumber" xrefstyle="select:title"/>.
+<xref linkend="mthValidateNonNegativeWholeNumber" xrefstyle="template:nonNegativeWholeNumber"/> and
+<xref linkend="mthValidatePositiveNumber" xrefstyle="template:positiveNumber"/>.
 </para>
 </section>
 
 
 <!-- Class Validate - method wholeNumber ======================== -->
-<section id="mthValidateWholeNumber" revisionflag="added"><title>*NEW* wholeNumber (Class Method)</title>
+<section id="mthValidateWholeNumber" revisionflag="added"><title>&added50;wholeNumber (Class Method)</title>
 <indexterm><primary>wholeNumber method</primary><secondary>of Validate class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>wholeNumber method</secondary><tertiary>of Validate class</tertiary></indexterm>
 <para>
@@ -10062,13 +10067,13 @@ If <emphasis role="italic">digits</emphasis> is not specfied, it defaults to
 <para>Raises a syntax error for argument <emphasis role="italic">name</emphasis>
 if the validation fails, else returns with no result.
 </para>
-<para>See also method <xref linkend="mthValidateNumber" xrefstyle="select:title"/>.
+<para>See also method <xref linkend="mthValidateNumber" xrefstyle="template:number"/>.
 </para>
 </section>
 
 
 <!-- Class Validate - method wholeNumberRange ======================== -->
-<section id="mthValidateWholeNumberRange" revisionflag="added"><title>*NEW* wholeNumberRange (Class Method)</title>
+<section id="mthValidateWholeNumberRange" revisionflag="added"><title>&added50;wholeNumberRange (Class Method)</title>
 <indexterm><primary>wholeNumberRange method</primary><secondary>of Validate class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>wholeNumberRange method</secondary><tertiary>of Validate class</tertiary></indexterm>
 <para>
@@ -10087,7 +10092,7 @@ If <emphasis role="italic">digits</emphasis> is not specfied, it defaults to
 <para>Raises a syntax error for argument <emphasis role="italic">name</emphasis>
 if the validation fails, else returns with no result.
 </para>
-<para>See also method <xref linkend="mthValidateNumberRange" xrefstyle="select:title"/>.
+<para>See also method <xref linkend="mthValidateNumberRange" xrefstyle="template:numberRange"/>.
 </para>
 </section>
 
