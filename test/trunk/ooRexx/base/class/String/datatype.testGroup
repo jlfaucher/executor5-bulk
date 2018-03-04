@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2017 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -392,6 +392,40 @@ return erg
 ::method "test_DATATYPE_9"
    self~assertTrue('12'~DATATYPE('9'))
    self~assertTrue('-12'~DATATYPE('9'))
+
+::method test_datatype_too_many_args
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  0~dataType("n", 1)
+
+::method test_datatype_option_invalid_letter
+  self~expectSyntax(93.915) -- Method option must be one of "ABILMNOSUVWX9"
+  0~dataType("q")
+
+::method test_datatype_option_null
+  self~expectSyntax(93.915) -- Method option must be one of "ABILMNOSUVWX9"
+  0~dataType("")
+
+::method test_datatype_option_nil
+  self~expectSyntax(93.938) -- Method argument 1 must have a string value
+  0~dataType(.nil)
+
+::method test_datatype_internal
+  -- numbers up to 9 digits on 32-bit resp. 18 digits on 64-bit must pass 
+  numeric digits .RexxInfo~internalDigits
+  do digits = 1 to .RexxInfo~internalDigits
+    number = 1~copies(digits)
+    self~assertTrue(number~dataType("i"))
+    self~assertTrue((number * 9)~dataType("i"))
+    self~assertTrue((-number)~dataType("i"))
+    self~assertTrue((-number * 9)~dataType("i"))
+  end
+
+  -- with a total of internalDigits + 1 digits, this number must fail
+  number = 1~copies(digits)
+  self~assertFalse(number~dataType("Internal whole"))
+  self~assertFalse((number * 9)~dataType("Internal whole"))
+  self~assertFalse((-number)~dataType("Internal whole"))
+  self~assertFalse((-number * 9)~dataType("Internal whole"))
 
 
 ::options novalue error

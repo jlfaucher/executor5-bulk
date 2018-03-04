@@ -7394,7 +7394,7 @@ or zero, and the returned result has no leading zeros.</para>
 </example>
 </section>
 
-<section id="mthStringDataType"><title>dataType</title>
+<section id="mthStringDataType"><title>&changed50;dataType</title>
 <indexterm><primary>dataType method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -7419,97 +7419,102 @@ or zero, and the returned result has no leading zeros.</para>
 </imageobject>
 </mediaobject>
 
-<para>Returns <computeroutput>NUM</computeroutput> if you specify no argument
-and the receiving string
-is a valid Rexx number that can be added to 0 without error. It returns
-<computeroutput>CHAR</computeroutput> if the receiving string is not a
-valid number.</para>
+<para>Returns <literal>NUM</literal> if you specify no argument and the
+receiving string is a valid Rexx number that can be added to 0 without error.
+It returns <literal>CHAR</literal> if the receiving string is not a valid number.
+</para>
 <para>If you specify <emphasis role="italic">type</emphasis>, it returns
-<computeroutput>1</computeroutput> if the receiving
-string matches the type. Otherwise, it returns
-<computeroutput>0</computeroutput>. If the receiving
-string is null, the method returns <computeroutput>0</computeroutput>
+&true; if the receiving string matches the type.
+Otherwise, it returns &false;.
+If the receiving string is null, the method returns &false;
 (except when the <emphasis role="italic">type</emphasis> is
-<computeroutput>X</computeroutput> or <computeroutput>B</computeroutput>,
-for which <methodname>dataType</methodname>
-returns <computeroutput>1</computeroutput> for
-a null string). The following are valid
-<emphasis role="italic">type</emphasis>s. You need to specify
-only the capitalized letter, or the number of the last type listed. The language
-processor ignores all characters following it.</para>
+<literal>X</literal> or <literal>B</literal>, for which
+<methodname>dataType</methodname> returns &true; for a null string).
+The following are valid <emphasis role="italic">type</emphasis>s.
+You need to specify only the capitalized letter, or <literal>9</literal> for
+the <option>9Digits</option> option.
+The language processor ignores all characters following it.</para>
 <variablelist>
-<varlistentry><term>Alphanumeric</term>
-<listitem><para>returns <computeroutput>1</computeroutput> if the receiving
+<varlistentry><term><option>Alphanumeric</option></term>
+<listitem><para>returns &true; if the receiving
 string contains only characters from the ranges
-<computeroutput>a</computeroutput>-<computeroutput>z</computeroutput>,
-<computeroutput>A</computeroutput>-<computeroutput>Z</computeroutput>, and
-<computeroutput>0</computeroutput>-<computeroutput>9</computeroutput>.
+<literal>a</literal>-<literal>z</literal>,
+<literal>A</literal>-<literal>Z</literal>, and
+<literal>0</literal>-<literal>9</literal>.
 </para></listitem></varlistentry>
-<varlistentry><term>Binary</term>
-<listitem><para>returns <computeroutput>1</computeroutput> if the receiving
-string contains only the characters <computeroutput>0</computeroutput> or
-<computeroutput>1</computeroutput>, or whitespace. Whitespace characters can
-appear only between groups of 4 binary characters. It also returns 1 if string
-is a null string, which is a valid binary string.
+<varlistentry><term><option>Binary</option></term>
+<listitem><para>returns &true; if the receiving string contains only the
+characters <literal>0</literal> or <literal>1</literal>,
+or whitespace.
+Whitespace characters can appear only between groups of 4 binary characters.
+It also returns &true; if string is a null string, which is a valid binary string.
 </para></listitem></varlistentry>
-<varlistentry><term>Lowercase</term>
-<listitem><para>returns <computeroutput>1</computeroutput> if the receiving
+
+<varlistentry><term>&added50;<option>Internal whole number</option></term>
+<listitem><para>returns &true; if the receiving string is a Rexx whole number that
+<xref linkend="xbuiltin" xrefstyle="template:built-in functions"/> will accept.
+Rexx built-in functions internally work with NUMERIC DIGITS 9 for 32-bit systems
+or NUMERIC DIGITS 18 for 64-bit systems.
+</para></listitem></varlistentry>
+
+<varlistentry><term><option>Lowercase</option></term>
+<listitem><para>returns &true; if the receiving
 string contains only characters from the range
-<computeroutput>a</computeroutput>-<computeroutput>z</computeroutput>.
+<literal>a</literal>-<literal>z</literal>.
 </para></listitem></varlistentry>
-<varlistentry><term>Mixed case</term>
-<listitem><para>returns <computeroutput>1</computeroutput> if the receiving
+<varlistentry><term><option>Mixed case</option></term>
+<listitem><para>returns &true; if the receiving
 string contains only characters from the ranges
-<computeroutput>a</computeroutput>-<computeroutput>z</computeroutput> and
-<computeroutput>A</computeroutput>-<computeroutput>Z</computeroutput>.
+<literal>a</literal>-<literal>z</literal> and
+<literal>A</literal>-<literal>Z</literal>.
 </para></listitem></varlistentry>
-<varlistentry><term>Number</term>
-<listitem><para>returns <computeroutput>1</computeroutput> if
-<computeroutput>receiving_string~dataType</computeroutput> returns
-<computeroutput>NUM</computeroutput>.
+<varlistentry><term><option>Number</option></term>
+<listitem><para>returns &true; if
+<literal>receiving_string~dataType</literal> returns
+<literal>NUM</literal>.
 </para></listitem></varlistentry>
-<varlistentry><term>lOgical</term>
-<listitem><para>returns <computeroutput>1</computeroutput> if
-the receiving string is exactly "0" or "1". Otherwise it returns
-<computeroutput>0</computeroutput>.
+<varlistentry><term><option>lOgical</option></term>
+<listitem><para>returns &true; if the receiving string is exactly
+<literal>0</literal> or <literal>1</literal>.
+Otherwise it returns &false;.
 </para></listitem></varlistentry>
-<varlistentry><term>Symbol</term>
-<listitem><para>returns <computeroutput>1</computeroutput> if the receiving
+<varlistentry><term><option>Symbol</option></term>
+<listitem><para>returns &true; if the receiving
 string is a valid symbol, that is, if
 <xref linkend="bifSymbol" xrefstyle="select:title"/>(<emphasis role="italic">receiving_string</emphasis>)
 does not return <literal>BAD</literal>.
 See also <xref linkend="xsymbol" />.
 Note that both uppercase and lowercase alphabetic characters are permitted.
 </para></listitem></varlistentry>
-<varlistentry><term>Uppercase</term>
-<listitem><para>returns <computeroutput>1</computeroutput> if the receiving
+<varlistentry><term><option>Uppercase</option></term>
+<listitem><para>returns &true; if the receiving
 string contains only characters from the range
-<computeroutput>A</computeroutput>-<computeroutput>Z</computeroutput>.
+<literal>A</literal>-<literal>Z</literal>.
 </para></listitem></varlistentry>
-<varlistentry><term>Variable</term>
-<listitem><para>returns <computeroutput>1</computeroutput> if the receiving
+<varlistentry><term><option>Variable</option></term>
+<listitem><para>returns &true; if the receiving
 string could appear on the left-hand
 side of an assignment without causing a SYNTAX condition.
 </para></listitem></varlistentry>
-<varlistentry><term>Whole number</term>
-<listitem><para>returns <computeroutput>1</computeroutput> if the receiving
+<varlistentry><term><option>Whole number</option></term>
+<listitem><para>returns &true; if the receiving
 string is a whole number under the current setting of NUMERIC DIGITS.
 </para></listitem></varlistentry>
-<varlistentry><term>heXadecimal</term>
-<listitem><para>returns <computeroutput>1</computeroutput> if the receiving
+<varlistentry><term><option>heXadecimal</option></term>
+<listitem><para>returns &true; if the receiving
 string contains only characters from the ranges
-<computeroutput>a</computeroutput>-<computeroutput>f</computeroutput>,
-<computeroutput>A</computeroutput>-<computeroutput>F</computeroutput>,
-<computeroutput>0</computeroutput>-<computeroutput>9</computeroutput>, and
+<literal>a</literal>-<literal>f</literal>,
+<literal>A</literal>-<literal>F</literal>,
+<literal>0</literal>-<literal>9</literal>, and
 whitespace characters (as long as whitespace characters appear only between
 pairs of hexadecimal characters). Also returns
-<computeroutput>1</computeroutput> if
+&true; if
 the receiving string is a null string.
 </para></listitem></varlistentry>
-<varlistentry><term>9 Digits</term>
-<listitem><para>returns <computeroutput>1</computeroutput> if
+<varlistentry><term><option>9 Digits</option></term>
+<listitem><para>returns &true; if
 <computeroutput>receiving_string~dataType("W")</computeroutput> returns
-<computeroutput>1</computeroutput> when NUMERIC DIGITS is set to 9.
+&true; when NUMERIC DIGITS is set to 9.
 </para></listitem></varlistentry>
 </variablelist>
 <indexterm><primary>examples</primary>
@@ -8739,14 +8744,14 @@ specify. The following are valid <emphasis role="italic">option</emphasis>s.
 (You need to specify only the first capitalized
 letter; all characters following it are ignored.) </para>
 <variablelist>
-<varlistentry><term>Both</term>
+<varlistentry><term><option>Both</option></term>
 <listitem><para>Removes both leading and trailing characters. This is the
 default.
 </para></listitem></varlistentry>
-<varlistentry><term>Leading</term>
+<varlistentry><term><option>Leading</option></term>
 <listitem><para>Removes leading characters.
 </para></listitem></varlistentry>
-<varlistentry><term>Trailing</term>
+<varlistentry><term><option>Trailing</option></term>
 <listitem><para>Removes trailing characters.
 </para></listitem></varlistentry>
 </variablelist>

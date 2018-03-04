@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2017 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -394,6 +394,41 @@ return erg
     else
         self~assertFalse(DATATYPE('1E18'  ,'9')) -- ?
     numeric digits a
+
+::method test_datatype_no_args
+  self~expectSyntax(40.3) -- Not enough arguments in invocation of DATATYPE
+  a = datatype()
+
+::method test_datatype_too_many_args
+  self~expectSyntax(40.4) -- Too many arguments in invocation of DATATYPE
+  a = datatype(0, "n", 1)
+
+::method test_datatype_option_invalid_letter
+  -- NOTE: "Method option" isn't really appropriate here
+  self~expectSyntax(93.915) -- Method option must be one of "ABILMNOSUVWX9"
+  a = datatype(0, "q")
+
+::method test_datatype_option_null
+  self~expectSyntax(93.915) -- Method option must be one of "ABILMNOSUVWX9"
+  a = datatype(0, "")
+
+::method test_datatype_internal
+  -- numbers up to 9 digits on 32-bit resp. 18 digits on 64-bit must pass 
+  numeric digits .RexxInfo~internalDigits
+  do digits = 1 to .RexxInfo~internalDigits
+    number = 1~copies(digits)
+    self~assertTrue(datatype(number, "i"))
+    self~assertTrue(datatype(number * 9, "i"))
+    self~assertTrue(datatype(-number, "i"))
+    self~assertTrue(datatype(-number * 9, "i"))
+  end
+
+  -- with a total of internalDigits + 1 digits, this number must fail
+  number = 1~copies(digits)
+  self~assertFalse(datatype(number, "Internal whole"))
+  self~assertFalse(datatype(number * 9, "Internal whole"))
+  self~assertFalse(datatype(-number, "Internal whole"))
+  self~assertFalse(datatype(-number * 9, "Internal whole"))
 
 
 ::options novalue error

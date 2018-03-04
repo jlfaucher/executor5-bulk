@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Reference XML File
     #
-    # Copyright (c) 2005-2017, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2018, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -1855,7 +1855,7 @@ D2X(12,0)      ->    ""
 </section>
 
 
-<section id="bifDatatype"><title>DATATYPE</title>
+<section id="bifDatatype"><title>&changed50;DATATYPE</title>
 <para>
 <indexterm><primary>DATATYPE function</primary>
 <secondary>description</secondary></indexterm>
@@ -1895,12 +1895,12 @@ If <emphasis role="italic">string</emphasis> is null, the function returns
 or <computeroutput>B</computeroutput>, for which DATATYPE returns
 <computeroutput>1</computeroutput> for a null
 string). The following are valid <emphasis role="italic">type</emphasis>s.
-(Only the capitalized letter,
-or the number of the last type listed, is needed; all characters following
-it are ignored. Note that for the <computeroutput>hexadecimal</computeroutput>
+(Only the capitalized letter, or <literal>9</literal> for the
+<option>9Digits</option> option, is needed; all characters following
+it are ignored. For example, for the <computeroutput>heXadecimal</computeroutput>
 option, you must start your string specifying the name of the option with
-<computeroutput>x</computeroutput> rather
-than <computeroutput>h</computeroutput>.)</para>
+<computeroutput>X</computeroutput> rather
+than <computeroutput>H</computeroutput>.)</para>
 <variablelist>
 <varlistentry><term><option>Alphanumeric</option></term>
 <listitem><para>returns <computeroutput>1</computeroutput> if
@@ -1919,6 +1919,15 @@ characters. It also returns
 <emphasis role="italic">string</emphasis> is
 a null string, which is a valid binary string.
 </para></listitem></varlistentry>
+
+<varlistentry><term>&added50;<option>Internal whole number</option></term>
+<listitem><para>returns <computeroutput>1</computeroutput> if
+<emphasis role="italic">string</emphasis> is a Rexx whole number that
+<xref linkend="xbuiltin" xrefstyle="template:built-in functions"/> will accept.
+Rexx built-in functions internally work with NUMERIC DIGITS 9 for 32-bit systems
+or NUMERIC DIGITS 18 for 64-bit systems.
+</para></listitem></varlistentry>
+
 <varlistentry><term><option>Lowercase</option></term>
 <listitem><para>returns <computeroutput>1</computeroutput> if
 <emphasis role="italic">string</emphasis> contains only characters from
