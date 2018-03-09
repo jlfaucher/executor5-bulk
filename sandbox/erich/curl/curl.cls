@@ -2,23 +2,22 @@
 -- requires Rexx/CURL from https://sourceforge.net/projects/rexxcurl/files/rexxcurl/
 -- see also Rexx/CURL docs http://rexxcurl.sourceforge.net/doc/index.html
 
--- usage example:
---  say .cUrl~version~rexxcurl         -- rexxcurl 2.0 25 Apr 2012 libcurl/7.23.1 ..
---  url = .cUrl~new("http://www.openstreetmap.org/api/0.6/way/163840840")
---  say url~insecureGet                -- short for url~get("SSLVERIFYPEER 0")
---  say url~code                       -- 200
+/*
+usage examples:
 
--- IMPORTANT:
--- any option, whether set through setOpt() or as an individual option on e.g. get()
--- will stay in effect until changed again
--- TODO: reset options to default
--- TODO: better: each instance to do its own CurlInit()
+  say .cUrl~version~rexxcurl           -- rexxcurl 2.0 25 Apr 2012 libcurl/7.23.1 ..
 
+  -- HTTP example
+  osm = .cUrl~new("http://www.openstreetmap.org/api/0.6/way/163840840")
+  say osm~get
+  say osm~getInsecure                  -- short for url~get("SSLVERIFYPEER 0")
+  say osm~code                         -- 200
 
-/* FTP example
-gb = .curl~new('ftp://gutenberg.pglaf.org/mirrors/gutenberg/')
-say gb~perform('DIRLISTONLY')
-::requires curl.cls"
+  -- FTP example
+  gb = .curl~new('ftp://gutenberg.pglaf.org/mirrors/gutenberg/')
+  say gb~perform('DIRLISTONLY')
+
+  ::requires curl.cls"
 */
 
 ::class cUrl public
@@ -103,7 +102,22 @@ say gb~perform('DIRLISTONLY')
   expose handle url
 
   use strict arg url
-  handle = self~class~handle
+
+  -- each Url instance gets its own cUrl handle
+  -- "CurlLoadFuncs" function has been made available at class init time
+  call CurlLoadFuncs
+  handle = CurlInit()
+  if handle = "" then
+    raise syntax 93.900 array("cURL failed to initialize") RETURN ("")
+
+::method uninit 
+  expose handle
+
+  -- remove cUrl handle
+  call CurlCleanup handle
+
+
+::attribute url
 
 
 -- set options through CurlSetopt()
@@ -118,7 +132,6 @@ say gb~perform('DIRLISTONLY')
     -- we don't support options which require a stem value 
     if option~words = 1 then
       option = option "1"
-say "setOpt" option
     call CurlSetopt handle, option~word(1), option~subWord(2)
     call testForFailure "Setopt", curlerror.
   end
@@ -137,7 +150,6 @@ say "setOpt" option
     field.nr = field
   end
   field.0 = nr
-say "setOptPostFields"; do i = 1 to field.0; say field.i; end
   call CurlSetopt handle, "HTTPPOSTFIELDS", "field."
   call testForFailure "Setopt", curlerror.
 
@@ -225,7 +237,7 @@ say "setOptPostFields"; do i = 1 to field.0; say field.i; end
 
   -- we don't yet support names which require a stem as the third arg
   value = CurlGetInfo(handle, name) 
-  call testForFailure "Setopt", curlerror.
+  call testForFailure "GetInfo", curlerror.
 
   return value
 
@@ -235,23 +247,6 @@ say "setOptPostFields"; do i = 1 to field.0; say field.i; end
   use strict arg
 
   forward message "GETINFO" ARRAY ("RESPONSE_CODE")
-
-
-
-/*
--- private routine to convert a MapCollection to a Stem
-::routine makeStem
-  use strict arg directory
-
-  stem = .Stem~new
-  nr = 0
-  do index over directory~allIndexes
-    nr += 1
-    stem[nr] = index"="directory[index]
-  end
-  stem[0] = nr
-  return stem
-*/
 
 
 -- private routine to test Rexx/Curl calls for failure return
@@ -269,16 +264,14 @@ say "setOptPostFields"; do i = 1 to field.0; say field.i; end
 
 
 
--- call interface (compatibility only)
+-- call interface
 
 -- usage example:
 --  html = Url("http://www.openstreetmap.org/api/0.6/way/163840840")
 
 ::routine Url public
-
   use arg url
+  return .cUrl~new(url)~get
 
-  return .curl~new(url)~get
 
-
-::options novalue error
+--::options novalue error
