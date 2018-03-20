@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2014 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2014-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -271,7 +271,7 @@ return testResult
     self~assertSame('0', .h~contains('.',1.e5))
 
 ::method 'test067'
-    .local~remove(.h)
+    .local~remove(h)
     .local~s0 = ''
     .local~s1 = 'a'
     .local~s30 = copies('6',30)||'...'
@@ -477,3 +477,12 @@ return testResult
 ::method "test1010"
   self~expectSyntax(93.923)
   xre=.x00ff~contains('a',1,a)
+
+::method 'test1011'
+    .local~remove(vblank)
+    .local~remove(v1)
+    .local~remove(v30)
+    .local~remove(v256)
+    .local~remove(v10000)
+    .local~remove(x00ff)
+

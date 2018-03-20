@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2017 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -184,6 +184,7 @@ return testResult
   .local~prolog_run = .false
   .Package~new("test_prolog", (".local~prolog_run = .true", "::options prolog"))
   self~assertSame(.true, .local~prolog_run)
+  .local~remove("PROLOG_RUN")
 
 ::method test_prolog_extra
   -- Unknown keyword on ::OPTIONS directive
@@ -196,6 +197,7 @@ return testResult
   self~assertSame(.false, .local~prolog_run)
   p~prolog~call
   self~assertSame(.true, .local~prolog_run)
+  .local~remove("PROLOG_RUN")
 
 ::method test_noprolog_extra
   -- Unknown keyword on ::OPTIONS directive
