@@ -2414,7 +2414,8 @@
 
 
 -- parse the group portion of a resolution path.  This will be
--- of the form <name{groupname/groupname/groupname/...}>
+-- of the form <name{groupname.groupname.groupname....}> , basically
+-- Rexx compound variable name syntax.
 ::method parseGroupName
   -- this is the path accumulator array
   path = .array~new
@@ -2437,7 +2438,7 @@
           return path
       end
       -- is this a fuller path specification?
-      else if ch == '/' then do
+      else if ch == '.' then do
           -- we allow a default here...going right to the
           -- result means use the 0 group.
           if referenceName == "" then do
@@ -2463,7 +2464,7 @@
 
 -- parse additions pieces of a resolution path after the first
 -- element.  These will be the names of nested named groups separated
--- by '/'.   Note:  After the  first level, all additional references
+-- by '.'.   Note:  After the  first level, all additional references
 -- must be to named groups.
 ::method parseSubgroupName
   -- this is the path accumulator array
@@ -2492,7 +2493,7 @@
           return
       end
       -- Next step in the path
-      else if ch == '/' then do
+      else if ch == '.' then do
           -- we must have something here
           if referenceName == "" then do
              raise syntax 93.900 array("Missing group name in path specification")
@@ -5170,14 +5171,14 @@
   end
 
   -- simple path, just return the match info
-  if \path~contains('/') then do
+  if \path~contains('.') then do
       return groups[path~upper]
   end
 
   -- we have a complex path to handle...parse out the first piece,
   -- resolve our group, then pass this along to resolve the rest of
   -- the pieces.
-  parse upper var path groupName '/' path
+  parse upper var path groupName '.' path
 
   -- get this level...if we can't handle this, this can't be resolved
   group = groups[groupName]
@@ -5217,7 +5218,7 @@
   -- make sure this is uppercase
   id = id~upper
 
-  group = groups[id]
+  group = self~group(id)
   -- unknown group, return the .nil default
   if group == .nil then do
       return .nil
@@ -5229,7 +5230,6 @@
       return ""
   end
   return text
-
 
 
 -- the class for a group result.  There's really not much difference
@@ -5807,6 +5807,7 @@ return string~substr(sectionstart, sectionEnd - sectionStart)
 -- section
 ::method remainder
   expose string matchEnd sectionEnd
+  use strict arg
 
   -- if we've moved backwards, then the remainder text is
   -- actually the text following the end of the section
@@ -5818,6 +5819,22 @@ return string~substr(sectionstart, sectionEnd - sectionStart)
      -- extract from the end of the section
      return string~substr(sectionEnd)
   end
+
+-- return the prefix of the string before the current
+-- match position.  This does not take into account any prior
+-- matches, but returns the entire string from the front
+::method prefix
+  expose string matchStart
+  use strict arg
+  -- extract everything from the front
+  return string~substr(1, matchStart - 1)
+
+-- return the current parser string, which may have
+-- been modified by the various replace methods.
+::method stringValue
+  expose string
+  use strict arg
+  return string
 
 
 -- locate a needle in the current string, returning an
@@ -5939,10 +5956,127 @@ return string~substr(sectionstart, sectionEnd - sectionStart)
 ::method moveTo
   expose string matchstart matchend sectionstart sectionlength
   use strict arg newMatch
-  .validate~wholeNumber('position', newMatch)
+  .validate~position('position', newMatch)
 
   -- go adjust all of the positions
   self~validateposition(newMatch)
+
+
+-- Replace the current match position with a new string
+::method replace
+  expose string matchStart matchEnd segmentStart segmentEnd
+  use strict arg replacement
+
+  -- this can be either a replacement string or a formatter
+  -- instance that will use group capture information from
+  -- the match result.
+  if replacement~isa(.Formatter) then do
+      replacement = replacement~substitute(self~matchResult)
+  end
+
+  -- calculate the adjustment amount for positions
+  delta = replacement~length - self~matchLength
+
+  -- if the match length is a null string, then we insert
+  -- at the current position
+  if self~matchLength == 0 then do
+     -- Note: this works for both a string version and a mutablebuffer
+     -- because the mutable buffer insert method returns itself.
+     string = string~insert(replacement, matchStart)
+  end
+  -- replace the string
+  else do
+     -- Note: this works for both a string version and a mutablebuffer
+     -- because the mutable buffer insert method returns itself.
+     string = string~replaceAt(replacement, matchStart, self~matchLength)
+  end
+
+  -- now we need to adjust everything for the change in size
+  matchEnd += delta
+  segmentStart += delta
+  segmentEnd += delta
+
+
+-- Insert a string before the current match position, with possible
+-- construction from the match data
+::method insertBefore
+  expose string matchStart matchEnd segmentStart segmentEnd
+  use strict arg insertion
+
+  -- this can be either a replacement string or a formatter
+  -- instance that will use group capture information from
+  -- the match result.
+  if insertion~isa(.Formatter) then do
+      insertion = insertion~substitute(self~matchResult)
+  end
+
+  -- calculate the adjustment amount for positions
+  delta = insertion~length
+
+  -- if the match length is a null string, then this is a nop
+  if self~matchLength == 0 then do
+      return
+  end
+  -- replace the string
+  else do
+     -- Note: this works for both a string version and a mutablebuffer
+     -- because the mutable buffer insert method returns itself.
+     string = string~insert(insertion, matchStart, delta)
+  end
+
+  -- if the segment is before the match position, then the
+  -- inserted string becomes part of the segment
+  if segmentStart < matchStart then do
+     segmentEnd += delta
+  end
+  -- segment is at or after the current match position, so it just gets shifted
+  else do
+     segmentStart += delta
+     segmentEnd += delta
+  end
+
+  -- We have inserted this before the match, so shift that always
+  matchStart += delta
+  matchEnd += delta
+
+
+-- Insert a string after the current match position, with possible
+-- construction from the match data
+::method insertAfter
+  expose string matchStart matchEnd segmentStart segmentEnd
+  use strict arg insertion
+
+  -- this can be either a replacement string or a formatter
+  -- instance that will use group capture information from
+  -- the match result.
+  if insertion~isa(.Formatter) then do
+      insertion = insertion~substitute(self~matchResult)
+  end
+
+  -- calculate the adjustment amount for positions
+  delta = insertion~length
+
+  -- if the match length is a null string, then this is a nop
+  if self~matchLength == 0 then do
+      return
+  end
+  -- replace the string
+  else do
+     -- Note: this works for both a string version and a mutablebuffer
+     -- because the mutable buffer insert method returns itself.
+     string = string~insert(insertion, matchEnd, delta)
+  end
+
+  -- if the segment is effected if it follows the match end. In that
+  -- case, we need to shift the start and add the inserted string to the
+  -- segment.
+  if segmentStart >= matchEnd then do
+     -- we're just adding the data to the segment. The start position
+     -- is the same, but the length is increased by the inserted amount
+     segmentEnd += delta
+  end
+
+  -- since this goes after the end, the match positions remain unchanged
 
 
 -- Validate and adjust the positional values after a non-search
@@ -5980,7 +6114,183 @@ return string~substr(sectionstart, sectionEnd - sectionStart)
   matchStart = newMatch
   matchEnd = newMatch
 
+-- retrieve a group.  This is either a numeric id
+-- or a symbolic name
+::method group
+  -- the match result contains the information
+  forward to(self~matchResult)
 
+-- retrieve the text for a given group item in a match result
+::method groupText
+  -- the match result contains the information
+  forward to(self~matchResult) message("[]")
+
+
+-- simple interface class for performing transformations
+-- on match group elements
+::class "GroupTransformer" public
+::method transform abstract
+
+-- simple group transformer for lowercasing group
+-- elements
+::class "LowerTransformer" subclass GroupTransformer public
+::method transform
+  use strict arg name, value
+  return value~lower
+
+-- simple group transformer for uppercasing group
+-- elements
+::class "UpperTransformer" subclass GroupTransformer public
+::method transform
+  use strict arg name, value
+  return value~upper
+
+
+-- a formatter used for string replacements that can take
+-- a match result and peform substitutions into a string using
+-- group references.
+::class "Formatter" public
+::method init
+  expose template transformers defaultTransformer
+  use strict arg template
+
+  -- no transformers by default
+  transformers = .nil
+  defaultTransformer = .nil
+
+-- a method intended for subclass overrides to allow
+-- values to be transformed before insertion into the
+-- formatted string
+::method transform
+  -- the default method just returns the value unchanged
+  use strict arg name, value
+  return value
+
+-- substitute information from the current match into a
+-- character string template
+::method substitute
+  expose template
+  use strict arg matchResult
+
+  builder = .mutableBuffer~new
+
+  index = 1
+  -- we need to build up the replacement string in segments.
+  -- substitutions are in form $n, where n is a single digit
+  -- from 0 to 9, or ${path}, where path is a back reference
+  -- to a named capture group. Individual elements of the path
+  -- lookup are done using compound variable notation (a.b.c.d)
+  -- A \ character is an escape and must be followed by either
+  -- $ or \
+  loop forever
+     hit = template~verify('\$', 'Match', index);
+     -- no more special characters, we're done substituting. Add
+     -- the tail piece to the builder and perform the replacement
+     if hit = 0 then leave
+     -- process the escape characters first
+     if template~matchChar('\', hit) then do
+        -- add the segment before the current location
+        -- to the builder
+        builder~append(template~substr(index, hit - index))
+        -- now check the valid escape characters, if good we
+        -- need to add that character
+        if template~matchChar('$\', hit + 1) then do
+           builder~append(template~subchar(hit + 1))
+        end
+        else do
+           raise syntax 13.900 array("Invalid character after \ escape character")
+        end
+        -- step past the escaped character
+        index = hit + 2
+     end
+     -- this is a '$', which indicates we're at a substitution
+     -- point
+     else do
+        -- add the segment before the current location
+        -- to the builder
+        builder~append(template~substr(index, hit - index))
+        -- this can be either $n or ${path}
+        -- do the numeric form first
+        if template~matchchar('0123456789', hit+1) then do
+            groupName = template~subchar(hit+1)
+            build~append(self~transform(groupName, matchResult[groupName]))
+            index = hit + 2
+        end
+        -- name form, extract the name
+        else if template~matchchar('{', hit+1) then do
+            pathend = template~verify('}', 'Match')
+            if pathend = 0 then do
+               raise syntax 93.900 array("Missing closing '}' for a group name")
+          end
+      end
+      -- a back reference test.  This is of the form (?(name)...
+      -- we're looking at the first character, so back up and
+      -- extract the name using the '(' and ')' delimiters
+      otherwise  do
+          -- potentially a compound back reference name?  This requires
+          -- more complicated parsing
+          if ch == '<' then do
+              -- parse out the group name (which might include nested group
+              -- references)
+              path = self~parseGroupName(path)
+              -- we can validate the first, the rest are very dynamic
+              if \self~haveGroup(path[1]) then do
+            end
+
+            pathname = template~substring(hit + 1, pathend - (hit +1))
+            build~append(self~transform(pathname, matchResult[pathname]))
+            index = pathend + 1
+        end
+     end
+  end
+
+  -- add on the tail section
+  builder~append(template~substr(index))
+  return builder~string
+
+
+-- a formatter used for string replacements that can take
+-- a match result and peform substitutions into a string using
+-- group references. This also allows elements to be transformed
+-- before insertion
+::class "TransformingFormatter" subclass Formatter public
+::method init
+  expose transformers defaultTransformer
+  forward class(super)
+
+  -- no transformers by default
+  transformers = .nil
+  defaultTransformer = .nil
+
+-- apply a potential transformation to this insertion element
+::method transform
+  expose transformers defaultTransformer
+  use strict arg name, value
+
+  -- we might have a transform specifically for this element
+  if transformers \= .nil then do
+      transform = transformers[name]
+      if transform \= .nil then do
+          return transform~transform(name, value)
+      end
+  end
+
+  -- we can have a default transform set as well
+  if defaultTransform \= .nil then do
+     return defaultTransform~transform(name, value)
+  end
+  -- nothing to do here, just return the value
+  return value
+
+-- set the result transform
+::attribute defaultTransform SET
+
+-- add a named tranform to the set
+::method addTransform
+  expose transformers
+  use strict arg name, transform
+
+  transformers[name] = transform
 
 -- simple class used to accumulate matching metrics
 ::class "MatchMetrics"

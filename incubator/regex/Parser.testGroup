@@ -193,6 +193,30 @@ return testResult
   self~assertTrue(parser~findRegex('im'))
   self~VerifyParserState(parser, 13, 15, "im", 11, 13, " t", "e")
 
+  -- repeat the regex using pre compiled patterns instead
+  parser = .Parser~new(td)
+
+  -- check initial state, which is the entire string
+  -- is ready to be chopped up
+  self~VerifyParserState(parser, 1, 1, "", 1, td~length + 1, td~string, "")
+
+  self~assertFalse(parser~findRegex(.pattern~compile('THE')))
+
+  -- nothing should move
+  self~VerifyParserState(parser, 1, 1, "", 1, td~length + 1, td~string, "")
+
+  -- get a match that actually creates movement
+  self~assertTrue(parser~findRegex(.pattern~compile('the')))
+  self~VerifyParserState(parser, 8, 11, "the", 1, 8, "Now is ", " time")
+
+  -- an unsuccessful move leaves everything the same
+  self~assertFalse(parser~findRegex(.pattern~compile('xyzzy')))
+  self~VerifyParserState(parser, 8, 11, "the", 1, 8, "Now is ", " time")
+
+  -- now a second match move
+  self~assertTrue(parser~findRegex(.pattern~compile('im')))
+  self~VerifyParserState(parser, 13, 15, "im", 11, 13, " t", "e")
+
   -- now some relative movements
   parser = .Parser~new(td)
   parser~move(1)
@@ -204,5 +228,55 @@ return testResult
   -- backwards movement...the section will be the portion in the back movement
   parser~move(-2)
   self~VerifyParserState(parser, 4, 4, "", 4, 6, " i", td~string~substr(6))
+  -- move negatively beyond the end just goes to the beginning
+  parser~move(-4)
+  self~VerifyParserState(parser, 1, 1, "", 1, 4, "Now", td~string~substr(4))
+  -- now move beyond the end of the string
+  parser~move(50)
+  self~VerifyParserState(parser, 16, 16, "", 1, 16, "Now is the time", "")
 
+  -- now the samething using absolute positioning
+  parser = .Parser~new(td)
+  parser~moveTo(2)
 
+  self~VerifyParserState(parser, 2, 2, "", 1, 2, "N", td~string~substr(2))
+  -- step forward a little more
+  parser~moveTo(6)
+  self~VerifyParserState(parser, 6, 6, "", 2, 6, "ow i", td~string~substr(6))
+  -- backwards movement...the section will be the portion in the back movement
+  parser~moveTo(4)
+  self~VerifyParserState(parser, 4, 4, "", 4, 6, " i", td~string~substr(6))
+  -- zero is not valid so we'll just reset to column 1
+  parser~moveTo(1)
+  self~VerifyParserState(parser, 1, 1, "", 1, 4, "Now", td~string~substr(4))
+  -- now move beyond the end of the string
+  parser~moveTo(50)
+  self~VerifyParserState(parser, 16, 16, "", 1, 16, "Now is the time", "")
+
+-- positive tests of the PatternLibrary class
+::method testPatternLibrary
+
+  l1 = .PatternLibrary~new
+  l1~addFamily("foo", "bar")
+  l1~addFamily("vowels", "aeiou")
+  l1~addPattern("foo", "xyzzy")
+
+  self~assertEquals("bar", l1~resolveFamily("foo"))
+  self~assertNull(l1~resolveFamily("FooBar"))
+
+  p1 = l1~resolvePattern("foo")
+  self~assertIsa(p1, .Pattern)
+
+-- tests of doing replacements with the parser
+::method testReplacement
+
+  td = self~td("Now is the time")
+  parser = .Parser~new(td)
+
+  -- get a match that actually creates movement
+  self~assertTrue(parser~find('the'))
+  self~VerifyParserState(parser, 8, 11, "the", 1, 8, "Now is ", " time")
+
+  -- replaces with a similar size string
+  self~replace("THE")
+  self~VerifyParserState(parser, 8, 11, "THE", 1, 8, "Now is ", " time")

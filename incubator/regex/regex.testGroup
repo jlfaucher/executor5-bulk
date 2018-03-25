@@ -2170,13 +2170,13 @@ return testResult
   self~assertTrue(self~verifyMatchResult(r, 1, 7, "barbar"))
 
   -- same, but the back reference path goes one level deeper
-  p = .Pattern~compile("\m{abc}\k<abc/foo>", compiler)
+  p = .Pattern~compile("\m{abc}\k<abc.foo>", compiler)
   -- should match everything
   r = self~find(p, "barbar")
   self~assertTrue(self~verifyMatchResult(r, 1, 7, "barbar"))
 
   -- and again, with an explicit name override
-  p = .Pattern~compile("\m{def:abc}\k<def/foo>", compiler)
+  p = .Pattern~compile("\m{def:abc}\k<def.foo>", compiler)
   -- should match everything
   r = self~find(p, "barbar")
   self~assertTrue(self~verifyMatchResult(r, 1, 7, "barbar"))
@@ -2206,12 +2206,6 @@ return testResult
   -- will fail because the boundaries are there
   r = self~find(p, "babcd")
   self~assertFalse(r~matched)
-
--- positive tests of the Parser class
-::method testParser
-  parser = .Parser~new("Now is the time")
-
-  self~assertTrue(parser~find('the'))
 
 
 
