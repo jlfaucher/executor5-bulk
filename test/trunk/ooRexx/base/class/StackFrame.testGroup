@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2017 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -118,7 +118,6 @@ return testResult
   self~assertNull(frame~target)
   self~assertSame(frame~traceLine, frame~string)
   self~assertSame(frame~traceLine, frame~makeString)
-  self~assertNull(frame~context)       -- no RexxContext for native code
 
 ::method testProgramFrame
 
@@ -133,7 +132,6 @@ return testResult
   self~assertNull(frame~target)
   self~assertSame(frame~traceLine, frame~string)
   self~assertSame(frame~traceLine, frame~makeString)
-  self~assertIsA(frame~context, .RexxContext)
 
 ::method testNativeCodeFrame
   test = .array~of(1,2)
@@ -151,7 +149,6 @@ return testResult
   self~assertSame(test, frame~target)
   self~assertSame(frame~traceLine, frame~string)
   self~assertSame(frame~traceLine, frame~makestring)
-  self~assertNull(frame~context)       -- no RexxContext for native code
 
 ::method testExternalNativeCodeFrame
   signal on syntax
@@ -173,61 +170,6 @@ return testResult
   self~assertSame(s, frame~target)
   self~assertSame(frame~traceLine, frame~string)
   self~assertSame(frame~traceLine, frame~makestring)
-  self~assertNull(frame~context)       -- no RexxContext for native code
-
-
--- any contexts available through the context() method acting on a condition
--- object's STACKFRAMES entry, should be identical to .Contexts on each level
-::method test_context_rexx_condition_object
-  contextStack = .Queue~new
-
-  contextStack~push(.Context)
-  interpret "call level2 self, contextStack~~push(.Context)"
-
-  ::routine level2
-    use strict arg this, contextStack
-    contextStack~push(.Context)
-    call level3
-    return
-
-  level3:
-    contextStack~push(.Context)
-    contextStack~push(.nil)            -- push a dummy .Context for the new() method
-    contextStack~push(.nil)            -- push a dummy .Context for the COMPILE frame
-    signal on syntax
-    .Method~new("", "~~")
-    return
-
-    syntax:
-
-    -- we now have saved .Context objects from a bunch of call levels, and
-    -- the condition object provides us with (all) levels of stack frames
-    -- go compare each saved context with what the context() method
-    -- returns for each stack frame
-    do frame over condition("o")["STACKFRAMES"] while contextStack~items > 0 
-      expected = contextStack~pull
-      if expected == .nil then
-        -- for the COMPILE frame, and the (native code) new() METHOD frame
-        -- we should have a .nil context
-        this~assertNull(frame~context, frame~type frame~name "context should be .nil")
-      else do
-        -- for all other frames, we can check the full context
-        actual = frame~context
-        this~assertIsA(actual, .RexxContext, frame~type frame~name "context should be a .RexxContext")
-        this~assertSame(expected~digits, actual~digits, frame~type frame~name "context digits mismatch")
-        this~assertIdentical(expected~executable, actual~executable, frame~type frame~name "context executable mismatch")
-        this~assertSame(expected~form, actual~form, frame~type frame~name "context form mismatch")
-        this~assertSame(expected~fuzz, actual~fuzz, frame~type frame~name "context fuzz mismatch")
-        if frame~type == "INTERPRET" then
-          expectedName = .nil -- not sure why this is .nil, not ""; might be a bug
-        else
-          expectedName = expected~name
-        this~assertSame(expectedName, actual~name, frame~type frame~name "context name mismatch")
-        this~assertSame(expected~package, actual~package, frame~type frame~name "context package mismatch")
-        this~assertEquivalentList(expected~variables, actual~variables, frame~type frame~name "context variables mismatch")
-
-      end
-    end
 
 
 -- perform a series of validity checks on a frame
@@ -242,8 +184,6 @@ return testResult
   self~assertSame(target, frame~target, "StackFrame target() mismatch")
   self~assertSame(frame~traceLine, frame~string, "StackFrame string() mismatch")
   self~assertSame(frame~traceLine, frame~makestring, "StackFrame makeString() mismatch")
-  self~assertIsA(info~stackframeContext, .RexxContext, "StackFrame context() must not be .nil")
-  self~assertIdentical(info~executable, info~stackframeContextExecutable, "StackFrame context() executable mismatch")
 
 ::class ContextComparator subclass NumericComparator
 ::attribute stackframes
@@ -265,9 +205,6 @@ return testResult
   info~executable = context~executable
   info~line = line
   info~args = context~args
-  info~stackframeContext = stackframes[1]~context
-  if info~stackframeContext \== .nil then
-    info~stackframeContextExecutable = stackframes[1]~context~executable
 
   return info
 
