@@ -228,7 +228,8 @@ return testResult
   -- if the shell for a given environment isn't installed, we expect a FAILURE
   -- if the shell is available, we expect "echo $0" to return the shell name
   -- (we don't test 'noshell' environment, as it doesn't support pipe redirection)
-  environments = ("1::" || address(), "1:sh", "0:bsh", "0:bash", "0:csh", "0:ksh", "1:command:sh")
+  -- (we also don't test 'csh' as it doesn't support echo $0)
+  environments = ("1::" || address(), "1:sh", "0:bsh", "0:bash", "0:ksh", "1:command:sh")
 
   cmd = .Command~new
   do env over environments
