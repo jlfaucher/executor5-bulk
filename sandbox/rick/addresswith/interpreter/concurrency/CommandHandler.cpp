@@ -94,7 +94,7 @@ void CommandHandler::resolve(const char *handlerName)
  * @param result     The returned RC value.
  * @param condition  A potential returned condition object.
  */
-void CommandHandler::call(Activity *activity, RexxActivation *activation, RexxString *address, RexxString *command, ProtectedObject &result, ProtectedObject &condition)
+void CommandHandler::call(Activity *activity, RexxActivation *activation, RexxString *address, RexxString *command, ProtectedObject &result, ProtectedObject &condition, CommandIOContext *io)
 {
     if (type == REGISTERED_NAME)
     {
@@ -104,9 +104,19 @@ void CommandHandler::call(Activity *activity, RexxActivation *activation, RexxSt
         activity->run(dispatcher);
         dispatcher.complete(command, result, condition);
     }
-    else
+    // new style command handler
+    else if (type == DIRECT)
     {
         ContextCommandHandlerDispatcher dispatcher(entryPoint, address, command, result, condition);
+
+        // run this and give back the return code
+        activity->run(dispatcher);
+    }
+    // a command handler that supports I/O redirection. This is
+    // the only one that uses the I/O context.
+    else if (type == REDIRECTED)
+    {
+        RedirectiongCommandHandlerDispatcher dispatcher(entryPoint, address, command, result, condition, io);
 
         // run this and give back the return code
         activity->run(dispatcher);
@@ -187,7 +197,6 @@ void CommandHandlerDispatcher::complete(RexxString *command, ProtectedObject &re
 }
 
 
-
 /**
  * Process a callout to a system exit function.
  */
@@ -234,4 +243,25 @@ void ContextCommandHandlerDispatcher::handleError(DirectoryClass *c)
             activation->checkConditions();
         }
     }
+}
+
+
+/**
+ * Process a callout to a system exit function.
+ */
+void RedirectingCommandHandlerDispatcher::run()
+{
+    RexxContextCommandHandler *handler_address = (RexxContextCommandHandler *)entryPoint;
+
+    // we create two different contexts for this call. Each manages its own locks on
+    // call backs
+    ExitContext context;
+    RedirectorContext redirectorContext;
+
+    // build a context pointer to pass out
+    activity->createExitContext(context, activation);
+    activity->createRedirectorContext(redirectorContext, activation);
+    redirectorContext.ioContext = ioContext;
+
+    result = (RexxObject *)(*handler_address)(&context.threadContext, (RexxStringObject)address, (RexxStringObject)command, &redirectorContext.threadContext);
 }

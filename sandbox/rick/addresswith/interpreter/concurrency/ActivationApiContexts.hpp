@@ -58,34 +58,41 @@ class InterpreterInstance;
 
 typedef struct
 {
-    RexxInstance instanceContext;           // externalized instance context
-    InterpreterInstance *instance;          // the instance this represents
+    RexxInstance instanceContext;       // externalized instance context
+    InterpreterInstance *instance;      // the instance this represents
 } InstanceContext;
 
 typedef struct
 {
-    RexxThreadContext threadContext;        // the thread context structure used for the API
+    RexxThreadContext threadContext;    // the thread context structure used for the API
     Activity *owningActivity;           // a pointer back to the owning activity
 } ActivityContext;
 
 // and similar structures for other API context structures
 typedef struct
 {
-    RexxMethodContext threadContext;        // the thread context structure used for the API
+    RexxMethodContext threadContext;    // the thread context structure used for the API
     NativeActivation *context;          // a pointer back to the owning activation
 } MethodContext;
 
 typedef struct
 {
-    RexxCallContext   threadContext;        // the thread context structure used for the API
+    RexxCallContext   threadContext;    // the thread context structure used for the API
     NativeActivation *context;          // a pointer back to the owning activation
 } CallContext;
 
 typedef struct
 {
-    RexxExitContext   threadContext;        // the thread context structure used for the API
+    RexxExitContext   threadContext;    // the thread context structure used for the API
     NativeActivation *context;          // a pointer back to the owning activation
 } ExitContext;
+
+typedef struct
+{
+    RexxIORedirector  threadContext;    // the redirector context structure used for the API
+    NativeActivation *context;          // a pointer back to the owning activation
+    CommandIOContext *ioContext         // a pointer to the address with data
+} RedirectorContext;
 
 
 /**
@@ -135,6 +142,19 @@ inline Activity *contextToActivity(RexxMethodContext *c)
  * @return The activity object the context is associated with.
  */
 inline Activity *contextToActivity(RexxExitContext *c)
+{
+    return ((ActivityContext *)(c->threadContext))->owningActivity;
+}
+
+
+/**
+ * Convert a context into the activity the context is associated with.
+ *
+ * @param c      The calling thread context.
+ *
+ * @return The activity object the context is associated with.
+ */
+inline Activity *contextToActivity(RexxIORedirector *c)
 {
     return ((ActivityContext *)(c->threadContext))->owningActivity;
 }

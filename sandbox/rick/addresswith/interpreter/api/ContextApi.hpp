@@ -112,12 +112,53 @@ public:
         activity->validateThread();
     }
 
+
     /**
      * Initialize an API context from an exit context.
      *
      * @param c      The source context.
      */
     inline ApiContext(RexxExitContext *c)
+    {
+        // we need to cleanup on exit
+        releaseLock = true;
+        activity = contextToActivity(c);
+        context = contextToActivation(c);
+        context->enableConditionTraps();
+        // go acquire the kernel lock and take care of nesting
+        activity->enterCurrentThread();
+        // we need to validate the thread call context to ensure this
+        // is the correct thread
+        activity->validateThread();
+    }
+
+
+    /**
+     * Initialize an API context from an exit context.
+     *
+     * @param c      The source context.
+     */
+    inline ApiContext(RexxRedirectionContext *c)
+    {
+        // we need to cleanup on exit
+        releaseLock = true;
+        activity = contextToActivity(c);
+        context = contextToActivation(c);
+        context->enableConditionTraps();
+        // go acquire the kernel lock and take care of nesting
+        activity->enterCurrentThread();
+        // we need to validate the thread call context to ensure this
+        // is the correct thread
+        activity->validateThread();
+    }
+
+
+    /**
+     * Initialize an API context from an I/O redirection context.
+     *
+     * @param c      The source context.
+     */
+    inline ApiContext(RexxIORedirector *c)
     {
         // we need to cleanup on exit
         releaseLock = true;

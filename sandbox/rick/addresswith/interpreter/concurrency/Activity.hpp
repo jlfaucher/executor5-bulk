@@ -371,6 +371,7 @@ class Activity : public RexxInternalObject
     static MethodContextInterface methodContextFunctions;
     static CallContextInterface callContextFunctions;
     static ExitContextInterface exitContextFunctions;
+    static IORedirectorInterface ioRedirectorContextFunctions;
 };
 
 

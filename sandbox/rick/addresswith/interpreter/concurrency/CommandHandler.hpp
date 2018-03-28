@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -48,6 +48,7 @@
 #include "CallbackDispatcher.hpp"
 
 class Activity;
+class CommandIOContext;
 
 class CommandHandler : public RexxInternalObject
 {
@@ -59,7 +60,7 @@ public:
     inline CommandHandler(REXXPFN e) : entryPoint(e) { type = DIRECT; }
     inline CommandHandler(const char *n) : entryPoint(NULL) { type = UNRESOLVED; resolve(n); }
 
-    void call(Activity *activity, RexxActivation *activation, RexxString *address, RexxString *command, ProtectedObject &rc, ProtectedObject &condition);
+    void call(Activity *activity, RexxActivation *activation, RexxString *address, RexxString *command, ProtectedObject &rc, ProtectedObject &condition, CommandIOContext *io;
     void resolve(const char *name);
     inline bool isResolved() { return type != UNRESOLVED; }
 
@@ -69,7 +70,8 @@ protected:
     {
         UNRESOLVED,
         REGISTERED_NAME,
-        DIRECT
+        DIRECT,
+        REDIRECTED
     } HandlerType;
 
     REXXPFN    entryPoint;             // resolved exit entry point
@@ -111,6 +113,19 @@ public:
     RexxString *command;                  // the command to invoke
     ProtectedObject &result;              // the handled result
     ProtectedObject &condition;           // any raised condition
+};
+
+
+class RedirectingCommandHandlerDispatcher : public ContextCommandHandlerDispatcher
+{
+public:
+    inline RedirectingCommandHandlerDispatcher(REXXPFN e, RexxString *a, RexxString *c, ProtectedObject &r, ProtectedObject &co, CommandIOContext *io) :
+        ioContext(io), ContextCommandHandlerDispatcher(o, a, c, r, co) { }
+    virtual ~RedirectingCommandHandlerDispatcher() { ; }
+
+    virtual void run();
+
+    CommandIOContext *ioContext;          // the context of the i/o traps (can be null)
 };
 
 #endif

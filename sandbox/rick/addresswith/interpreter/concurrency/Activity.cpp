@@ -3367,6 +3367,21 @@ void Activity::createExitContext(ExitContext &context, NativeActivation *owner)
 
 
 /**
+ * Set up an exit context for use with a I/O redirection command
+ *
+ * @param context The method context to initialize.
+ * @param owner   The native activation that owns this context.
+ */
+void Activity::createRedirectorContext(RedirectorContext &context, NativeActivation *owner)
+{
+    // This is handed out to the calling code rather than being
+    // a straight up context
+    context.threadContext.functions = &redirectorContextFunctions;
+    context.context = owner;
+}
+
+
+/**
  * Resolve a program using the activity context information.
  *
  * @param name   The name we're interested in.

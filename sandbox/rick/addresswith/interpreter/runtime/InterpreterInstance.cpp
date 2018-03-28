@@ -705,6 +705,20 @@ bool InterpreterInstance::processOptions(RexxOption *options)
                 }
             }
         }
+        // a direct call command handler
+        else if (strcmp(options->optionName, REDIRECTING_ENVIRONMENTS) == 0)
+        {
+            RexxContextEnvironment *handlers = (RexxContextEnvironment *)options->option.value.value_POINTER;
+            // if we have handlers, initialize the array
+            if (handlers != NULL)
+            {
+                for (int i = 0; handlers[i].name != NULL && handlers[i].handler != NULL; i++)
+                {
+                    // add the handler to this setup
+                    addCommandHandler(handlers[i].name, (REXXPFN)handlers[i].handler);
+                }
+            }
+        }
         // a package to load at startup
         else if (strcmp(options->optionName, LOAD_REQUIRED_LIBRARY) == 0)
         {

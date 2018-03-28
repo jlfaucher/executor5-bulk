@@ -398,12 +398,56 @@ typedef struct
 // The set of command environments to use.  These are direct call addresses using the
 // object-oriented calling convetion.
 #define DIRECT_ENVIRONMENTS         "DirectEnvironments"
+// Command environments that support Address With i/o redirection
+#define REDIRECTING_ENVIRONMENTS         "DirectEnvironments"
 // register a library for an in-process package
 #define REGISTER_LIBRARY            "RegisterLibrary"
 
 
 /* This typedef simplifies coding of an Exit handler.                */
 typedef RexxObjectPtr REXXENTRY RexxContextCommandHandler(RexxExitContext *, RexxStringObject, RexxStringObject);
+
+// the interface for I/O redirection
+#define REDIRECT_INTERFACE_VERSION 100
+
+class RexxIORedirector;
+
+struct
+{
+    wholenumber_t interfaceVersion;    // The interface version identifier
+
+    CSTRING (RexxEntry *getInput)(RexxIORedirector *);
+    void    (RexxEntry *writeOutput(RexxIORedirector *, CSTRING, size_t);
+    void    (RexxEntry *writeError(RexxIORedirector *, CSTRING, size_t);
+} IORedirectorInterface;
+
+
+// interface structure for I/O redirection
+class RexxIORedirector
+{
+public:
+    CSTRING GetInput()
+    {
+        return functions->getInput(this);
+    }
+    void WriteOutput(CSTRING data, size_t length)
+    {
+        this->writeOutput(this, data, length);
+    }
+    void WriteOutput(CSTRING data, size_t length)
+    {
+        this->writeOutput(this, data, length);
+    }
+
+
+
+    IORedirectorInterface *functions;
+};
+
+// This typedef is used for command environments that support i/o redirection
+typedef RexxObjectPtr REXXENTRY RexxRedirectingCommandHandler(RexxExitContext *, RexxStringObject, RexxStringObject, RexxIORedirector *);
+
+#define REDIRECT_INTERFACE_VERSION 100
 
 
 typedef struct

@@ -275,6 +275,7 @@ stringsize_t RexxEntry GetContextFuzz(RexxCallContext *c)
     return 0;
 
 }
+
 logical_t RexxEntry GetContextForm(RexxCallContext *c)
 {
     ApiContext context(c);
@@ -318,6 +319,32 @@ RexxClassObject RexxEntry FindCallContextClass(RexxCallContext *c, CSTRING n)
 }
 
 
+CSTRING RexxEntry GetInput(RexxRexxIORedirector *c)
+{
+    ApiContext context(c);
+    try
+    {
+        CommandIOContext *ioContext = ((RedirectorContext *)c)->ioContext;
+
+        // The command handler does not get passed an operable context if
+        // this is not an ADDRESS WITH variant. If that's the case, we return
+        // nothing if this is called.
+        if (ioContext == OREF_NULL)
+        {
+            return NULL;
+        }
+        // request the next input line. This will be NULL if we've reached the end.
+        // Note that the string object is anchored by the ioContext, so
+        // we don't need to add this to the context local reference table
+        (CSTRING)ioContext->getInput();
+    }
+    catch (NativeActivation *)
+    {
+    }
+    return NULL;
+}
+
+
 END_EXTERN_C()
 
 CallContextInterface Activity::callContextFunctions =
@@ -340,6 +367,7 @@ CallContextInterface Activity::callContextFunctions =
     FindCallContextClass
 };
 
+
 ExitContextInterface Activity::exitContextFunctions =
 {
     EXIT_INTERFACE_VERSION,
@@ -348,5 +376,14 @@ ExitContextInterface Activity::exitContextFunctions =
     DropExitContextVariable,
     GetAllExitContextVariables,
     GetExitCallerContext,
+};
+
+
+IORediectorInterface Activity::ioRedirectorContextFunctions =
+{
+    REDIRECT_INTERFACE_VERSION,
+    GetInput,
+    WriteOutput,
+    WriteError,
 };
 
