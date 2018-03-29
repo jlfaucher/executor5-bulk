@@ -1,6 +1,5 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
 /* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
@@ -36,50 +35,118 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                  AddressWithInstruction.hpp    */
+/* REXX Kernel                                                                */
 /*                                                                            */
-/* ADDRESS WITH instruction Class Definitions                                 */
+/* OutputRedirector implementations for the ADDRESS WITH instruction          */
 /*                                                                            */
 /******************************************************************************/
-#ifndef Included_InstructionAddressWith
-#define Included_InstructionAddressWith
 
-#include "RexxInstruction.hpp"
+#include "RexxCore.h"
+#include "OutputRedirectors.hpp"
 
-class RexxInstructionAddress : public RexxInstruction
+
+/**
+ * Allocate a new stem output target
+ *
+ * @param size   The size of the object.
+ *
+ * @return Storage for creating the object.
+ */
+void *StemOutputTarget::operator new(size_t size)
 {
- friend class LanguageParser;
- public:
-    inline void operator delete(void *) { }
+    return new_object(size, T_StemOutputTarget);
+}
 
-    // the different types for doing ADDRESS WITH
-    enum
+
+/**
+ * Construct a output target ogject
+ *
+ * @param stem      The stem oubect being used
+ */
+StemOutputTarget::StemOutputTarget(RexxObject *s)
+{
+    stem = s;
+}
+
+
+/**
+ * Perform garbage collection on a live object.
+ *
+ * @param liveMark The current live mark.
+ */
+void StemOutputTarget::live(size_t liveMark)
+{
+    memory_mark(stem);
+}
+
+
+/**
+ * Perform generalized live marking on an object.  This is
+ * used when mark-and-sweep processing is needed for purposes
+ * other than garbage collection.
+ *
+ * @param reason The reason for the marking call.
+ */
+void StemOutputTarget::liveGeneral(MarkReason reason)
+{
+    memory_mark_general(stem);
+}
+
+
+/**
+ * Initialize and validate the stem condition for updates.
+ *
+ * @param option The append/replace option for the redirect.
+ */
+void StemOutputTarget::init(OutputOption option)
+{
+    // replace is the easy way to handle we just reset everything
+    if (option == REPACE)
     {
-        STEM_VARIABLE,
-        STREAM_NAME,
-        DYNAMIC
-    } RedirectionType;
+        // empty everything out (could already be empty
+        stem->empty();
+        // set the stem.0 value to zero
+        stem->setElement((size_t)0, IntegerZero);
+        // our next element to write is 1
+        index = 1;
+    }
+    // asked to append...this is a little more work.
+    else
+    {
+        // get the stem.0 value
+        RexxObject *count = stem->getElement(size_t(0));
+        // if completely not there, then we'll just treat this like a replace
+        if (count == OREF_NULL)
+        {
+            // empty everything out (could already be empty
+            stem->empty();
+            // set the stem.0 value to zero
+            stem->setElement((size_t)0, IntegerZero);
+            // our next element to write is 1
+            index = 1;
+        }
+        // the stem.0 value must be an integer size. We'll start writing at the next position
+        else
+        {
+
+        }
+    }
+}
 
 
-    RexxInstructionAddressWith(RexxString *, RexxInternalObject *);
-    inline RexxInstructionAddressWith(RESTORETYPE restoreType) { ; };
-
-    virtual void live(size_t);
-    virtual void liveGeneral(MarkReason reason);
-    virtual void flatten(Envelope *);
-
-    virtual void execute(RexxActivation *, ExpressionStack *);
-
-    RexxString *environment;                 // An environment string (static form)
-    RexxInternalObject *command;             // A command expression
-    RexxObject *inputSource;                 // The input source expression
-    RexxObject *outputTarget;                // The output target expression
-    RexxObject *errorTarget;                 // The output target expression
-    RedirectionType inputType;               // The type of redirection target to evaluate
-    RedirectionType outputType;              // The output redirection type
-    RedirectionType errorType;               // The error redirection type
-    OutputOption outputOption;               // option for the output stream
-    OutputOption errorOption;                // the option for the error stream
-};
-#endif
-
+/**
+ * Write a value to the output redirector.
+ *
+ * @param value  The string value to write
+ */
+void StemOutputTarget::write(const char *value, size_t len)
+{
+    // add the string to the next position
+    Protected<RexxString> next = new_string(value, len);
+    stem->setElement(index, next);
+    // update stem.0
+    Protected<RexxInteger> newIndex = new_interger(index);
+    stem->setElement((size_t)0, newIndex);
+    // and step to the next position
+    index++;
+}

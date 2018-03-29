@@ -181,3 +181,189 @@ void RexxInstructionAddressWith::execute(RexxActivation *context, ExpressionStac
 }
 
 
+/**
+ * Create an input source redirector from an evaluated
+ * source object.
+ *
+ * @param inputObject
+ *               The evaluated source object
+ * @param type   The type specified on the ADDRESS WITH instruction. This
+ *               can specify that an explicit type of object is required
+ *               or we can dynamically determine appropriate source from
+ *               the type of object.
+ *
+ * @return An appropriate input source for the object.
+ */
+InputRedirector *RexxInstructionAddressWith::createInputSource(RexxObject *inputObject, RedirectionType type)
+{
+    // process based on the type of object we've been presented with.
+    switch (type)
+    {
+        // if STEM was specified, then the syntax checks requires a STEM variable
+        // symbol follow the option. Therefore, we know this will have evaluated
+        // to stem object. This is the easiest of the checks;
+        case STEM_VARIABLE:
+        {
+            Protected<InputRedirector> redirector = new StemInputSource((StemClass *)inputObject);
+            // initialize the source, which will confirm that the stem variable
+            // follows the stem.0 array convention
+            redirector->init();
+            return redirector;
+        }
+        // a stream specified by name. This must be convertable to string form and
+        // will be used to create a stream object.
+        case STREAM_NAME:
+        {
+            // this must be a string
+            Protected<RexxString> streamName = inputObject->requestString();
+
+            Protected<InputRedirector> redirector = new StreamInputSource(streamName);
+            // initialize the source, which will confirm that the stream exists
+            // and can be opened
+            redirector->init();
+            return redirector;
+        }
+
+        // this was ADDRESS .. WITH INPUT USING expr. We dynamically determine from
+        // the type what to do.
+        default:
+        {
+            // Checks proceed in the following order, with the result
+            // 1) string object. This will be a single line written to the input pipe
+            // (uses the array input source to produce).
+            // 2) stem object. This is handled like the explicit STEM option.
+            // 3) stream object. This is a stream input source.
+            // 4) a makearray is performed on the object. If convertible, we use
+            // an array source.
+
+            if (::isString(inputObject))
+            {
+                Protected<ArrayClass> source = new_array(inputObject);
+                Protected<InputRedirector> redirector = new ArrayInputSource(inputObject);
+                // initialize the source, which sets up initial positions
+                redirector->init();
+                return redirector;
+            }
+            // an evaluated stem object
+            if (::isStem(inputObject))
+            {
+                Protected<InputRedirector> redirector = new StemInputSource((StemClass *)inputObject);
+                // initialize the source, which will confirm that the stem variable
+                // follows the stem.0 array convention
+                redirector->init();
+                return redirector;
+            }
+
+            // Now we need to check for input streams
+            RexxClass *streamClass = TheRexxPackage->findClass(GlobalNames::INPUTSTREAM);
+            if (inputObject->instanceOf(streamClass))
+            {
+
+                Protected<InputRedirector> redirector = new StreamObjectInputSource(streamName);
+                // initialize the source, which will confirm that the stream exists
+                // and can be opened
+                redirector->init();
+                return redirector;
+            }
+
+            // this must be convertable to some sort of array past this point
+            Protected<ArrayClass> *array;
+            if (isArray(inputObject))
+            {
+                array = ((ArrayClass *)inputObject)->makeArray();
+            }
+            else
+            {
+                // some other type of collection, use the less direct means
+                // of requesting an array
+                array = inputObject->requestArray();
+                // raise an error if this did not convert ok, or we got
+                // back something other than a real Rexx array.
+                if (!isArray(array))
+                {
+                    reportException(Error_Execution_inputsource, inputObject);
+                }
+            }
+            Protected<InputRedirector> redirector = new ArrayInputSource(array);
+            // initialize the source, which sets up initial positions
+            redirector->init();
+            return redirector;
+        }
+    }
+    // nothing to create
+    return OREF_NULL;
+}
+
+
+/**
+ * Create an appropriate output target for an ADDRESS WITH
+ * instruction.
+ *
+ * @param outputObject
+ *               The resolved output target
+ * @param type   The specified type of target
+ *
+ * @return A resolved and constructed output target.
+ */
+OutputRedirector *RexxInstructionAddressWith::createOutputSource(RexxObject *outputObject, RedirectionType type, OutputOption, option)
+{
+    switch (type)
+    {
+        case STEM_VARIABLE:
+        {
+            Protected<OutputRedirector> redirector = new StemOutputTarget((StemClass *)outputObject);
+            // initialize the source, which will confirm that the stem variable
+            // follows the stem.0 array convention
+            redirector->init(option);
+            return redirector;
+        }
+        case STREAM_NAME:
+        {
+            // this must be a string
+            Protected<RexxString> streamName = outputObject->requestString();
+
+            Protected<OutputRedirector> redirector = new StreamOutputTarget(streamName);
+            // initialize the source, which will confirm that the stream exists
+            // and can be opened
+            redirector->init(option);
+            return redirector;
+        }
+        default:
+        {
+            // an evaluated stem object
+            if (::isStem(outputObject))
+            {
+                Protected<OutputRedirector> redirector = new StemOutputTarget((StemClass *)outputObject);
+                // initialize the source, which will confirm that the stem variable
+                // follows the stem.0 array convention
+                redirector->init(option);
+                return redirector;
+            }
+
+            // Now we need to check for output streams
+            RexxClass *streamClass = TheRexxPackage->findClass(GlobalNames::OUTPUTSTREAM);
+            if (outputObject->instanceOf(streamClass))
+            {
+                Protected<InputRedirector> redirector = new StreamObjectOutputTarget(outputObject);
+                // initialize the source, which will confirm that the stream exists
+                // and can be opened
+                redirector->init(option);
+                return redirector;
+            }
+
+            // Now some sort of ordered collection
+            RexxClass *orderedCollection = TheRexxPackage->findClass(GlobalNames::ORDEREDCOLLECTION);
+            if (outputObject->instanceOf(orderedCollection))
+            {
+                Protected<InputRedirector> redirector = new CollectionOutputTarget(outputObject);
+                // initialize the source, which will confirm that the stream exists
+                // and can be opened
+                redirector->init(option);
+                return redirector;
+            }
+            // an unknown type of target
+            reportException(Error_Execution_output_target, outputObject);
+        }
+    }
+    return OREF_NULL;
+}
