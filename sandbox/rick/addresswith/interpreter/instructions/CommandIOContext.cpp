@@ -84,3 +84,60 @@ void CommandIOContext::liveGeneral(MarkReason reason)
 }
 
 
+
+/**
+ * return the next line from the ADDRESS instruction
+ * context as a CSTRING.
+ *
+ * @return The CSTRING value for the next line or NULL if we've hit EOF.
+ */
+const char *CommandIOContext::getInput()
+{
+    // first make sure we have a source object
+    if (input == OREF_NULL)
+    {
+        return NULL;
+    }
+    RexxString *next = input->getInput();
+    // no string means no input
+    if (next == OREF_NULL)
+    {
+        return NULL;
+    }
+    // return a pointer to the string data. Note that
+    // the input source is responsible for ensuring the string
+    // does not get Garbage Collected.
+    return next->getStringData();
+}
+
+
+/**
+ * Write a line to the command output catcher
+ *
+ * @param data   Pointer to the output data
+ * @param len    Length of the output data
+ */
+void Command::IOContext::writeOutput(const char *data, size_t len)
+{
+    // this shouldn't happen, but if not redirected, don't crash!
+    if (output != OREF_NULL)
+    {
+        output->write(data, len);
+    }
+}
+
+
+/**
+ * Write a line to the command error catcher
+ *
+ * @param data   Pointer to the output data
+ * @param len    Length of the output data
+ */
+void Command::IOContext::writeError(const char *data, size_t len)
+{
+    // this shouldn't happen, but if not redirected, don't crash!
+    if (error != OREF_NULL)
+    {
+        error->write(data, len);
+    }
+}

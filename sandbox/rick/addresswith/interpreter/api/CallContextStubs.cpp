@@ -336,12 +336,120 @@ CSTRING RexxEntry GetInput(RexxRexxIORedirector *c)
         // request the next input line. This will be NULL if we've reached the end.
         // Note that the string object is anchored by the ioContext, so
         // we don't need to add this to the context local reference table
-        (CSTRING)ioContext->getInput();
+        return (CSTRING)ioContext->getInput();
     }
     catch (NativeActivation *)
     {
     }
     return NULL;
+}
+
+
+void RexxEntry WriteOutput(RexxRexxIORedirector *c, const char *data, size_t length)
+{
+    ApiContext context(c);
+    try
+    {
+        CommandIOContext *ioContext = ((RedirectorContext *)c)->ioContext;
+
+        // The command handler does not get passed an operable context if
+        // this is not an ADDRESS WITH variant. If that's the case, we return
+        // nothing if this is called.
+        if (ioContext != OREF_NULL)
+        {
+            ioContext->writeOutput(data, length);
+        }
+    }
+    catch (NativeActivation *)
+    {
+    }
+}
+
+
+void RexxEntry WriteError(RexxRexxIORedirector *c, const char *data, size_t length)
+{
+    ApiContext context(c);
+    try
+    {
+        CommandIOContext *ioContext = ((RedirectorContext *)c)->ioContext;
+
+        // The command handler does not get passed an operable context if
+        // this is not an ADDRESS WITH variant. If that's the case, we return
+        // nothing if this is called.
+        if (ioContext != OREF_NULL)
+        {
+            ioContext->writeError(data, length);
+        }
+    }
+    catch (NativeActivation *)
+    {
+    }
+}
+
+
+logical_t RexxEntry IsInputRedirected()
+{
+    ApiContext context(c);
+    try
+    {
+        CommandIOContext *ioContext = ((RedirectorContext *)c)->ioContext;
+
+        // The command handler does not get passed an operable context if
+        // this is not an ADDRESS WITH variant. If that's the case, we return
+        // nothing if this is called.
+        if (ioContext != OREF_NULL)
+        {
+            return ioContext->isInputRedirected();
+        }
+    }
+    catch (NativeActivation *)
+    {
+    }
+    return false;
+}
+
+
+logical_t RexxEntry IsOutputRedirected()
+{
+    ApiContext context(c);
+    try
+    {
+        CommandIOContext *ioContext = ((RedirectorContext *)c)->ioContext;
+
+        // The command handler does not get passed an operable context if
+        // this is not an ADDRESS WITH variant. If that's the case, we return
+        // nothing if this is called.
+        if (ioContext != OREF_NULL)
+        {
+            return ioContext->isOutputRedirected();
+        }
+    }
+    catch (NativeActivation *)
+    {
+    }
+    return false;
+}
+
+
+logical_t RexxEntry IsErrorRedirected()
+{
+    ApiContext context(c);
+    try
+    {
+        CommandIOContext *ioContext = ((RedirectorContext *)c)->ioContext;
+
+        // The command handler does not get passed an operable context if
+        // this is not an ADDRESS WITH variant. If that's the case, we return
+        // nothing if this is called.
+        if (ioContext != OREF_NULL)
+        {
+            return ioContext->isErrorRedirected();
+        }
+    }
+    catch (NativeActivation *)
+    {
+    }
+    return false;
 }
 
 

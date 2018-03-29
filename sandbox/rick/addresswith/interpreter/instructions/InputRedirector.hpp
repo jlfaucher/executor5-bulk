@@ -35,107 +35,103 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/*                                                       OutputRedirector.hpp */
+/*                                                        InputRedirector.hpp */
 /*                                                                            */
-/* Implementations of the different ADDRESS WITH Output redirectors           */
+/* Implementations of the different ADDRESS WITH Input redirectors            */
 /*                                                                            */
 /******************************************************************************/
-#ifndef Included_OutputRedirector
-#define Included_OutputRedirector
+#ifndef Included_InputRedirector
+#define Included_InputRedirector
 
 
 /**
  * Base class for I/O redirectors.
  */
-class OutputRedirector : public RexxInternalObject
+class InputRedirector : public RexxInternalObject
 {
  public:
-
-     // the options for how how output is handled
-     enum
-     {
-         DEFAULT,
-         APPEND,
-         REPLACE
-     } OutputOption;
-
     // Note, we never directly create instances of this
     // class so we don't need new, live, etc. These must
     // be implemented by the concrete classes
-    inline OutputRedirector() { ; }
-    inline OutputRedirector(RESTORETYPE restoreType) { ; };
+    inline InputRedirector() { ; }
+    inline InputRedirector(RESTORETYPE restoreType) { ; };
 
-    virtual void init (OutputOption option) { ; }
-    virtual void write(const char *data, size_t len)  { ; }
+    virtual void init () { ; }
+    virtual RexxString *read() { return OREF_NULL; }
     virtual void cleanup() { ; }
 };
 
 
 /**
- * Output handler for collecting lines in a stem object.
+ * Input handler for reading lines from a stem object
  */
-class StemOutputTarget : public OutputRedirector
+class StemInputSource : public InputRedirector
 {
  public:
     void        *operator new(size_t, size_t);
     inline void  operator delete(void *) { }
 
-    inline StemOutputTarget(StemClass *stem);
-    inline StemOutputTarget(RESTORETYPE restoreType) { ; };
+    inline StemInputSource(StemClass *stem);
+    inline StemInputSource(RESTORETYPE restoreType) { ; };
 
     virtual void live(size_t);
     virtual void liveGeneral(MarkReason reason);
 
-    virtual void init (OutputOption option);
-    virtual void write(const char *data, size_t len);
+    virtual void init ();
+    virtual RexxString *read();
 
 protected:
     StemClass *stem;      // the stem we're handling
-    size_t     index;     // current index we're writing to
+    size_t     index;     // the current read index
+    size_t     arraySize; // the limit to where we write
+    RexxString*lastValue; // last value returned for GC protection
 };
 
 
 /**
- * Output handler for collecting lines in an OutputStream object
+ * Inpout handler for reading lines from an InputStream object
+ *
  *
  */
-class StreamObjectOutputTarget : public OutputRedirector
+class StreamObjectInputSource : public InputRedirector
 {
  public:
     void        *operator new(size_t, size_t);
     inline void  operator delete(void *) { }
 
-    inline StreamObjectOutputTarget(RexxObject *s);
-    inline StreamObjectOutputTarget(RESTORETYPE restoreType) { ; };
+    inline StreamObjectInputTarget(RexxObject *s);
+    inline StreamObjectInputTarget(RESTORETYPE restoreType) { ; };
 
     virtual void live(size_t);
     virtual void liveGeneral(MarkReason reason);
 
-    virtual void write(const char *data, size_t len);
+    virtual void init() { hitEnd = false; }
+    virtual RexxString *read();
 
 protected:
     RexxObject *stream;   // the stream object
+    bool        hitEnd;   // indicator that we're done reading
 };
 
 
 /**
- * Output handler for collecting lines in a named stream
+ * Input handler for supplying lines from a named stream
  *
  */
-class StreamOutputTarget : public StreamObjectOutputTarget
+class StreamInputSource : public StreamInputSource
 {
  public:
     void        *operator new(size_t, size_t);
     inline void  operator delete(void *) { }
 
-    inline StreamOutputTarget(RexxString *n);
-    inline StreamOutputTarget(RESTORETYPE restoreType) { ; };
+    inline StreamInputSource(RexxString *n);
+    inline StreamInputSource(RESTORETYPE restoreType) { ; };
 
     virtual void live(size_t);
     virtual void liveGeneral(MarkReason reason);
 
-    virtual void init (OutputOption option);
-    virtual void write(const char *data, size_t len);
+    virtual void init ();
+    virtual RexxString *read();
     virtual void cleanup() { ; }
 
 protected:
@@ -147,22 +143,25 @@ protected:
  * Output handler for collecting lines in an ordered collection
  *
  */
-class CollectionOutputTarget : public OutputRedirector
+class ArrayInputSource : public InputRedirector
 {
  public:
     void        *operator new(size_t, size_t);
     inline void  operator delete(void *) { }
 
-    inline CollectionOutputTarget(RexxObject *c);
-    inline CollectionOutputTarget(RESTORETYPE restoreType) { ; };
+    inline ArrayInputSource(RexxArray *a);
+    inline ArrayInputSource(RESTORETYPE restoreType) { ; };
 
     virtual void live(size_t);
     virtual void liveGeneral(MarkReason reason);
 
-    virtual void write(const char *data);
+    virtual void init ();
+    virtual RexxString *read();
 
 protected:
-    RexxObject *collection;  // the target collection object
+    RexxArray *collection;     // the source array object
+    size_t     index;          // current read index
+    size_t     arraySize;      // read upper limit
 };
 #endif
 

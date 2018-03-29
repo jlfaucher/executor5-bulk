@@ -37,24 +37,24 @@
 /******************************************************************************/
 /* REXX Kernel                                                                */
 /*                                                                            */
-/* OutputRedirector implementations for the ADDRESS WITH instruction          */
+/* InputRedirector implementations for the ADDRESS WITH instruction           */
 /*                                                                            */
 /******************************************************************************/
 
 #include "RexxCore.h"
-#include "OutputRedirectors.hpp"
+#include "InputRedirectors.hpp"
 
 
 /**
- * Allocate a new stem output target
+ * Allocate a new stem input source
  *
  * @param size   The size of the object.
  *
  * @return Storage for creating the object.
  */
-void *StemOutputTarget::operator new(size_t size)
+void *StemInputSource::operator new(size_t size)
 {
-    return new_object(size, T_StemOutputTarget);
+    return new_object(size, T_StemInputSource);
 }
 
 
@@ -63,7 +63,7 @@ void *StemOutputTarget::operator new(size_t size)
  *
  * @param stem      The stem oubect being used
  */
-StemOutputTarget::StemOutputTarget(RexxObject *s)
+StemInputSource::StemInputSource(RexxObject *s)
 {
     stem = s;
 }
@@ -74,9 +74,10 @@ StemOutputTarget::StemOutputTarget(RexxObject *s)
  *
  * @param liveMark The current live mark.
  */
-void StemOutputTarget::live(size_t liveMark)
+void StemInputSource::live(size_t liveMark)
 {
     memory_mark(stem);
+    memory_mark(lastValue);
 }
 
 
@@ -87,96 +88,91 @@ void StemOutputTarget::live(size_t liveMark)
  *
  * @param reason The reason for the marking call.
  */
-void StemOutputTarget::liveGeneral(MarkReason reason)
+void StemInputSource::liveGeneral(MarkReason reason)
 {
     memory_mark_general(stem);
+    memory_mark_general(lastValue);
 }
 
 
 /**
- * Initialize and validate the stem condition for updates.
- *
- * @param option The append/replace option for the redirect.
+ * Perform initial setup on this input source.
  */
-void StemOutputTarget::init(OutputOption option)
+void StemInputSource::init()
 {
-    // replace is the easy way to handle we just reset everything
-    if (option == REPLACE)
+    // get the stem.0 value
+    RexxObject *count = stem->getElement(size_t(0));
+    // if completely not there, then we'll just treat this like a replace
+    if (count == OREF_NULL)
     {
-        // empty everything out (could already be empty
-        stem->empty();
-        // set the stem.0 value to zero
-        stem->setElement((size_t)0, IntegerZero);
-        // our next element to write is 1
-        index = 1;
+        // this is an error for input
+        reportException(Error_Invalid_missing_stem_array_index, stem);
     }
-    // asked to append...this is a little more work.
+    // the stem.0 value must be an integer size. We'll start writing at the next position
     else
     {
-        // get the stem.0 value
-        RexxObject *count = stem->getElement(size_t(0));
-        // if completely not there, then we'll just treat this like a replace
-        if (count == OREF_NULL)
+        // a valid whole number index
+        if (!count->unsignedNumberValue(array_size, Numerics::ARGUMENT_DIGITS))
         {
-            // empty everything out (could already be empty
-            stem->empty();
-            // set the stem.0 value to zero
-            stem->setElement((size_t)0, IntegerZero);
-            // our next element to write is 1
-            index = 1;
-        }
-        // the stem.0 value must be an integer size. We'll start writing at the next position
-        else
-        {
-            // a valid whole number index
-            if (!count->unsignedNumberValue(index, Numerics::ARGUMENT_DIGITS))
-            {
-                reportException(Error_Invalid_stem_array_ndex, stem, count);
-            }
-            // we write to the next position
-            index ++;
+            reportException(Error_Invalid_stem_array_index, stem, count);
         }
     }
+    // we always start at element 1
+    index = 1;
 }
 
 
 /**
- * Write a value to the output redirector.
- *
- * @param value  The string value to write
+ * Read the next line from the stem source
  */
-void StemOutputTarget::write(const char *value, size_t len)
+RexxString *StemInputSource::read()
 {
-    // add the string to the next position
-    Protected<RexxString> next = new_string(value, len);
-    stem->setElement(index, next);
-    // update stem.0
-    Protected<RexxInteger> newIndex = new_interger(index);
-    stem->setElement((size_t)0, newIndex);
-    // and step to the next position
-    index++;
+    // if we've reached the end, done reading, so return nothing.
+    if (index > arrayLength)
+    {
+        return OREF_NULL;
+    }
+    // get the next element
+    RexxObject *value = array->getElement(index++);
+    // this is not supposed to be a sparse array, but for safety,
+    // we'll turn this into a null string
+    if (value == OREF_NULL)
+    {
+        return GlobalNames::NULLSTRING;
+    }
+    // Conceptually, everything in here is supposed to be a string.
+    // However, if we unalaterally assume it is a string, they very bad things
+    // happen. Additionally, this value might be an integer or numberstring object
+    // pretending to be a string, so we need to force this to be a real string.
+
+    // Additionally, we keep a reference to this in case it is a newly
+    // allocated object that could be garbage collected unless we hold on
+    // to a reference
+    lastValue = value->requestString();
+
+    return lastValue;
 }
 
 
 /**
- * Allocate a new stem output target
+ * Allocate a new stream input source
  *
  * @param size   The size of the object.
  *
  * @return Storage for creating the object.
  */
-void *StreamObjectOutputTarget::operator new(size_t size)
+void *StreamObjectInputSource::operator new(size_t size)
 {
-    return new_object(size, T_StreamObjectOutputTarget);
+    return new_object(size, T_StreamObjectInputSource);
 }
 
 
 /**
  * Construct a output target ogject
  *
- * @param stem      The stem oubect being used
+ * @param stem      The supplied stream object
  */
-StreamObjectOutputTarget::StreamObjectOutputTarget(RexxObject *s)
+StreamObjectInputSource::StreamObjectInputSource(RexxObject *s)
 {
     stream = s;
 }
@@ -187,9 +183,10 @@ StreamObjectOutputTarget::StreamObjectOutputTarget(RexxObject *s)
  *
  * @param liveMark The current live mark.
  */
-void StreamObjectOutputTarget::live(size_t liveMark)
+void StreamObjectInputSource::live(size_t liveMark)
 {
     memory_mark(stream);
+    memory_mark(lastValue);
 }
 
 
@@ -200,46 +197,66 @@ void StreamObjectOutputTarget::live(size_t liveMark)
  *
  * @param reason The reason for the marking call.
  */
-void StreamObjectOutputTarget::liveGeneral(MarkReason reason)
+void StreamObjectInputSource::liveGeneral(MarkReason reason)
 {
     memory_mark_general(stream);
+    memory_mark_general(lastValue);
 }
 
 
 /**
- * Write a value to the output redirector.
- *
- * @param value  The string value to write
+ * Read the next line from the stem source
  */
-void StreamObjectOutputTarget::write(const char *value, size_t len)
+RexxString *StemInputSource::read()
 {
-    // add the string to the next position
-    Protected<RexxString> next = new_string(value, len);
+    // if we previously hit the end, then return nothing
+    if (hitEnd)
+    {
+        return OREF_NULL;
+    }
+
+    // read a line from the stream
     ProtectedObject result;
-    // this just uses lineout
-    stream->sendMessage(GlobalNames::LINEOUT, next, result);
+    lastValue = streamClass->sendMessage(GlobalNames::LINEIN, result);
+
+    // we can't trap a NOTREADY condition in this context, so if
+    // the read result was a null string, then we need to check the
+    // stream state to see if it is still in the ready state.
+    if (lastValue->length() == 0)
+    {
+        RexxString *state = streamClass->sendMessage(GlobalNames::STATE);
+        // anything other than READY means we've hit the end of the road.
+        // Note this and return NULL
+        if (!state->strCompare(GlobalNames::READY))
+        {
+            hitEnd = true;
+            return OREF_NULL;
+        }
+    }
+    // return the read string
+    return lastValue;
 }
 
 
 /**
- * Allocate a new output target
+ * Allocate a new stream input source
  *
  * @param size   The size of the object.
  *
  * @return Storage for creating the object.
  */
-void *StreamOutputTarget::operator new(size_t size)
+void *StreamInputSource::operator new(size_t size)
 {
-    return new_object(size, T_StreamOutputTarget);
+    return new_object(size, T_StreamInputSource);
 }
 
 
 /**
  * Construct a output target ogject
  *
- * @param n         The stream name
+ * @param n      The supplied stream name
  */
-StreamOutputTarget::StreamOutputTarget(RexxString *n)
+StreamInputSource::StreamInputSource(RexxString *n)
 {
     name = n;
 }
@@ -250,9 +267,10 @@ StreamOutputTarget::StreamOutputTarget(RexxString *n)
  *
  * @param liveMark The current live mark.
  */
-void StreamOutputTarget::live(size_t liveMark)
+void StreamInputSource::live(size_t liveMark)
 {
     memory_mark(stream);
+    memory_mark(lastValue);
     memory_mark(name);
 }
 
@@ -264,34 +282,18 @@ void StreamOutputTarget::live(size_t liveMark)
  *
  * @param reason The reason for the marking call.
  */
-void StreamOutputTarget::liveGeneral(MarkReason reason)
+void StreamInputSource::liveGeneral(MarkReason reason)
 {
     memory_mark_general(stream);
+    memory_mark_general(lastValue);
     memory_mark_general(name);
 }
 
 
 /**
- * Write a value to the output redirector.
- *
- * @param value  The string value to write
+ * Perform initialization of a stream input source
  */
-void StreamObjectOutputTarget::write(const char *value, size_t len)
-{
-    // add the string to the next position
-    Protected<RexxString> next = new_string(value, len);
-    ProtectedObject result;
-    // this just uses lineout
-    stream->sendMessage(GlobalNames::LINEOUT, next, result);
-}
-
-
-/**
- * Initialize and validate the stream condition for updates.
- *
- * @param option The append/replace option for the redirect.
- */
-void StreamOutputTarget::init(OutputOption option)
+void StreamInputSource::init()
 {
     // create an instance of the stream class for the given name
     RexxClass *streamClass = TheRexxPackage->findClass(GlobalNames::STREAM);
@@ -299,29 +301,20 @@ void StreamOutputTarget::init(OutputOption option)
     stream = streamClass->sendMessage(GlobalNames::NEW, name, result);
 
     RexxString *openResult = OREF_NULL;
-
-    // If replace is specified, we open this WRITE REPLACE
-    if (option == REPLACE)
-    {
-        openResult = stream->sendMessage(GlobalNames::OPEN, GlobalNames::WRITEREPLACE, result);
-    }
-    // asked to append...just a different open option
-    else
-    {
-        openResult = stream->sendMessage(GlobalNames::OPEN, GlobalNames::WRITEAPPEND, result);
-    }
+    // open for input only
+    openResult = stream->sendMessage(GlobalNames::OPEN, GlobalNames::READ, result);
     // the open should return ready
     if (!openResult->strCompare(GlobalNames::READY))
     {
-        reportException(Error_Execution_file_not_writable, name, openResult);
+        reportException(Error_Execution_file_not_readable, name, openResult);
     }
 }
 
 
 /**
- * Perform post-command housekeeping on this operation.
+ * Perform post-execution cleanup on the streams
  */
-void StreamOutputTarget::cleanup()
+void StreamInputSource::cleanup()
 {
     ProtectedObject result;
     stream->sendMessage(GlobalNames::CLOSE, result);
@@ -329,26 +322,26 @@ void StreamOutputTarget::cleanup()
 
 
 /**
- * Allocate a new output target
+ * Allocate a new array input source
  *
  * @param size   The size of the object.
  *
  * @return Storage for creating the object.
  */
-void *CollectionOutputTarget::operator new(size_t size)
+void *ArrayInputSource::operator new(size_t size)
 {
-    return new_object(size, T_CollectionOutputTarget);
+    return new_object(size, T_ArraytInputSource);
 }
 
 
 /**
  * Construct a output target ogject
  *
- * @param n         The stream name
+ * @param n      The supplied stream name
  */
-CollectionOutputTarget::CollectionOutputTarget(RexxObject *c)
+ArrayInputSource::ArrayInputSource(ArrayClass *a)
 {
-    collection = c;
+    array = a;
 }
 
 
@@ -357,9 +350,9 @@ CollectionOutputTarget::CollectionOutputTarget(RexxObject *c)
  *
  * @param liveMark The current live mark.
  */
-void CollectionOutputTarget::live(size_t liveMark)
+void ArrayInputSource::live(size_t liveMark)
 {
-    memory_mark(collection);
+    memory_mark(array);
 }
 
 
@@ -370,39 +363,37 @@ void CollectionOutputTarget::live(size_t liveMark)
  *
  * @param reason The reason for the marking call.
  */
-void CollectionOutputTarget::liveGeneral(MarkReason reason)
+void ArrayInputSource::liveGeneral(MarkReason reason)
 {
-    memory_mark_general(collection);
+    memory_mark_general(array);
 }
 
 
 /**
- * Write a value to the output redirector.
- *
- * @param value  The string value to write
+ * Perform initialization of an array input source
  */
-void CollectionObjectOutputTarget::write(const char *value, size_t len)
+void ArrayInputSource::init()
 {
-    // add the string to the next position
-    Protected<RexxString> next = new_string(value, len);
-    ProtectedObject result;
-    // this just uses lineout
-    collection->sendMessage(GlobalNames::APPEND, next, result);
+    // we always read from the beginning
+    index = 1;
+    // up to the end of the items
+    lastIndex = array->items();
 }
 
 
 /**
- * Initialize and validate the stream condition for updates.
+ * Read the next line from the array
  *
- * @param option The append/replace option for the redirect.
+ * @return The next line or OREF_NULL if we've reached the end
  */
-void CollectionOutputTarget::init(OutputOption option)
+RexxString *ArrayInputSource::read()
 {
-    // If replace is specified, then empty the collection
-    if (option == REPLACE)
+    // if we've already reached the end, return a null
+    if (index > lastIndex)
     {
-        ProtectedObject result;
-        // this just uses lineout
-        collection->sendMessage(GlobalNames::EMPTY, result);
+        return OREF_NULL;
     }
+    // return the current item
+    return array->get(index++);
 }
+

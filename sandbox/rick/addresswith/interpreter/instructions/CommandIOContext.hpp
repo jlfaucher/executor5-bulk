@@ -43,9 +43,13 @@
 #ifndef Included_CommandIOContext
 #define Included_CommandIOContext
 
+class InputRedirector;
+class OutputRedirector;
+
 
 class CommandIOContext : public RexxInternalObject
 {
+ friend class LanguageParser;
  public:
     void        *operator new(size_t, size_t);
     inline void  operator delete(void *) { }
@@ -56,11 +60,10 @@ class CommandIOContext : public RexxInternalObject
     virtual void live(size_t);
     virtual void liveGeneral(MarkReason reason);
 
-    void        init (InputRedirector *i, OutputRedirector *o, OutputRedirector *e);
-
     const char *getInput();
     void        writeOutput(const char *);
     void        writeError(const char *);
+    void        cleanup();
 
     inline bool isInputRedirected() { return input != OREF_NULL; }
     inline bool isOutputRedirected() { return output != OREF_NULL; }

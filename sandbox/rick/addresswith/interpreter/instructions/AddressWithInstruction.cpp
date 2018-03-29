@@ -178,6 +178,9 @@ void RexxInstructionAddressWith::execute(RexxActivation *context, ExpressionStac
 
     // and execute the command
     context->command(environment, _command, ioContext);
+
+    // perform any post command cleanup
+    ioContext->cleanup();
 }
 
 
