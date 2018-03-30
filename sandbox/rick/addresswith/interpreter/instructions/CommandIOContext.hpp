@@ -51,6 +51,8 @@ class CommandIOContext : public RexxInternalObject
 {
  friend class LanguageParser;
  public:
+
+
     void        *operator new(size_t, size_t);
     inline void  operator delete(void *) { }
 
@@ -61,8 +63,8 @@ class CommandIOContext : public RexxInternalObject
     virtual void liveGeneral(MarkReason reason);
 
     const char *getInput();
-    void        writeOutput(const char *);
-    void        writeError(const char *);
+    void        writeOutput(const char *v, size_t l);
+    void        writeError(const char *v, size_t l);
     void        cleanup();
 
     inline bool isInputRedirected() { return input != OREF_NULL; }
@@ -74,6 +76,49 @@ class CommandIOContext : public RexxInternalObject
     InputRedirector *input;              // the input source
     OutputRedirector *output;            // The standard output collector
     OutputRedirector *error;             // The error output collector
+};
+
+
+/**
+ * A stack-based IO context object used to ensure proper
+ * post-command cleanup .
+ */
+class IOContext
+{
+public:
+    /**
+     * Initialize a context smart pointer from an command context
+     *
+     * @param c      The source context.
+     */
+    inline IOContext(CommandIOContext *c)
+    {
+        context = c;
+    }
+
+    /**
+     * Destructor for an io context.  performs post-command cleanup
+     * on the context
+     */
+    inline ~IOContext()
+    {
+        cleanup();
+    }
+
+    /**
+     * Perform cleanup on our terms.
+     */
+    void cleanup()
+    {
+        // if we really have something clean it up
+        if (context != OREF_NULL)
+        {
+           context->cleanup();
+        }
+        context = OREF_NULL;
+    }
+
+    CommandIOContext *context;
 };
 #endif
 

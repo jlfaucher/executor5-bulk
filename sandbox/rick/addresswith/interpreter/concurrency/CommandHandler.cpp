@@ -116,7 +116,7 @@ void CommandHandler::call(Activity *activity, RexxActivation *activation, RexxSt
     // the only one that uses the I/O context.
     else if (type == REDIRECTED)
     {
-        RedirectiongCommandHandlerDispatcher dispatcher(entryPoint, address, command, result, condition, io);
+        RedirectingCommandHandlerDispatcher dispatcher(entryPoint, address, command, result, condition, io);
 
         // run this and give back the return code
         activity->run(dispatcher);
@@ -263,5 +263,5 @@ void RedirectingCommandHandlerDispatcher::run()
     activity->createRedirectorContext(redirectorContext, activation);
     redirectorContext.ioContext = ioContext;
 
-    result = (RexxObject *)(*handler_address)(&context.threadContext, (RexxStringObject)address, (RexxStringObject)command, &redirectorContext.threadContext);
+    result = (RexxObject *)(*handler_address)(&context.threadContext, (RexxStringObject)address, (RexxStringObject)command, (RexxIORedirector *)&redirectorContext.threadContext);
 }

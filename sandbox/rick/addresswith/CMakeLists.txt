@@ -369,7 +369,7 @@ if (NOT WIN32)
     endif (NOT NCURSES_H_)
   else ()
     check_include_file(ncurses.h HAVE_NCURSES_H)
-  endif ()  
+  endif ()
 endif ()
 set (PACKAGE ${PROJECT_NAME})
 set (PACKAGE_BUGREPORT "http://sourceforge.net/projects/oorexx/")
@@ -650,10 +650,15 @@ set (expression_sources ${build_expression_dir}/BuiltinFunctions.cpp
             ${build_expression_dir}/ExpressionLogical.cpp)
 set (instructions_sources  ${build_instructions_dir}/AddressInstruction.cpp
             ${build_instructions_dir}/AssignmentInstruction.cpp
+            ${build_instructions_dir}/AddressInstruction.cpp
             ${build_instructions_dir}/BaseDoInstruction.cpp
             ${build_instructions_dir}/CallInstruction.cpp
             ${build_instructions_dir}/ClassDirective.cpp
             ${build_instructions_dir}/CommandInstruction.cpp
+            ${build_instructions_dir}/CommandIOContext.cpp
+            ${build_instructions_dir}/CommandIOConfiguration.cpp
+            ${build_instructions_dir}/InputRedirector.cpp
+            ${build_instructions_dir}/OutputRedirector.cpp
             ${build_instructions_dir}/DoBlock.cpp
             ${build_instructions_dir}/DoBlockComponents.cpp
             ${build_instructions_dir}/DoCountInstruction.cpp

@@ -59,6 +59,8 @@ class InputRedirector : public RexxInternalObject
     virtual void init () { ; }
     virtual RexxString *read() { return OREF_NULL; }
     virtual void cleanup() { ; }
+    virtual RedirectorType type() { return CommandIOContext::NONE; }
+    virtual RexxObject *target() { return OREF_NULL; }
 };
 
 
@@ -79,6 +81,8 @@ class StemInputSource : public InputRedirector
 
     virtual void init ();
     virtual RexxString *read();
+    virtual RedirectorType type() { return CommandIOContext::STEM_VARIABLE; }
+    virtual RexxObject *target() { return stem; }
 
 protected:
     StemClass *stem;      // the stem we're handling
@@ -107,6 +111,8 @@ class StreamObjectInputSource : public InputRedirector
 
     virtual void init() { hitEnd = false; }
     virtual RexxString *read();
+    virtual RedirectorType type() { return CommandIOContext::STREAM_OBJECT; }
+    virtual RexxObject *target() { return stream; }
 
 protected:
     RexxObject *stream;   // the stream object
@@ -133,6 +139,8 @@ class StreamInputSource : public StreamInputSource
     virtual void init ();
     virtual RexxString *read();
     virtual void cleanup() { ; }
+    virtual RedirectorType type() { return CommandIOContext::STREAM_NAME; }
+    virtual RexxObject *target() { return name; }
 
 protected:
     RexxString *name;     // the stream name
@@ -157,6 +165,8 @@ class ArrayInputSource : public InputRedirector
 
     virtual void init ();
     virtual RexxString *read();
+    virtual RedirectorType type() { return CommandIOContext::ARRAY_OBJECT; }
+    virtual RexxObject *target() { return collection; }
 
 protected:
     RexxArray *collection;     // the source array object

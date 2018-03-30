@@ -72,6 +72,7 @@
 #include "SayInstruction.hpp"
 
 #include "AddressInstruction.hpp"             /* other instructions                */
+#include "AddressWithInstruction.hpp"         /* other instructions                */
 #include "DropInstruction.hpp"
 #include "ExposeInstruction.hpp"
 #include "ForwardInstruction.hpp"
@@ -597,7 +598,24 @@ RexxInstruction *LanguageParser::addressNew()
                 {
                     // back up and create the expression
                     previousToken();
-                    command = parseExpression(TERM_EOC);
+                    // the command expression could be terminated by a WITH keyword,
+                    // in which case, we need to worry about command redirection,
+                    // which is a much more complicated parsing process.
+                    command = parseExpression(TERM_EOC | TERM_WITH | TERM_KEYWORD);
+                    // This could have been ADDRESS env WITH (i.e., no expresson)
+                    // this is not allowed.
+                    if (command.isNull())
+                    {
+                        syntaxError(Error_Invalid_missing_command_expression);
+                    }
+                    // Now check to see if we ended with the WITH keyword, if so, .
+                    // we need to create an AddressWithInstruction rather than the
+                    // normal AddressInstruction object.
+                    token = nextToken();
+                    if (token->subKeyword() == SUBKEY_WITH)
+                    {
+                        return addressWithNew(environment, command);
+                    }
                 }
             }
         }
@@ -608,6 +626,133 @@ RexxInstruction *LanguageParser::addressNew()
     return newObject;
 }
 
+
+/**
+ * Complete processing of an ADDRESS instruction that
+ * has specified WITH I/O redirection.
+ *
+ * @param environment
+ *                The already parsed environment string
+ * @param command The expression for the command to issue
+ *
+ * @return A new instruction object.
+ */
+RexxInstruction *LanguageParser::addressWithNew(RexxString *environment, RexxInternalObject *command)
+{
+    // first create and initialize the instruction so we can fill things in as we parse
+    RexxInstruction *newObject = new_instruction(ADDRESS_LOOP, AddressWith);
+    Protected<RexxInstructionAddressWith> instruction = ::new ((void *)newObject) RexxInstructionAddressWith(environment, command);
+
+    // set everything to the defaults
+    instruction->inputType = DEFAULT;
+    instruction->outputType = DEFAULT;
+    instruction->errorType = DEFAULT;
+    instruction->outputOption = REPLACE;
+    instruction->errorOption = REPLACE;
+
+    // step to the next token and start processing
+    RexxToken *token = nextReal();
+
+    // and check options until we reach the end of the clause
+    while (!token->isEndOfClause())
+    {
+        // all options are symbol names,
+        if (!token->isSymbol())
+        {
+            syntaxError(Error_Invalid_subkeyword_address_with_option, token);
+        }
+
+        // map the keyword name to a symbolic identifier.
+        InstructionSubKeyword option = token->subKeyword();
+        switch (option)
+        {
+            // Address env cmd with INPUT
+            case SUBKEY_INPUT:
+            {
+                // not valid if we've had this before
+                if (instruction->inputType != DEFAULT)
+                {
+                    syntaxError(Error_Invalid_subkeyword_address_input);
+                }
+
+                // NB: the INPUT source does not have an option, but we need to
+                // pass a reference to the method, so we use the output one, which will
+                // not be filled in.
+                parseRedirectOptions(SUBKEY_INPUT, instruction->inputSource, instruction->inputType);
+            }
+
+    }
+}
+
+
+/**
+ * Parse the different redirection options on ADDRESS WITH
+ *
+ * @param ioType The type of I/O stream we're redirecting
+ * @param source A reference to the field for the evaluated target
+ *
+ * @param type   The type of redirection to apply
+ * @param option Any option associated with that redirection.
+ */
+void LanguageParser::parseRedirectOptions(InstructionSubKeyword ioType, RexxInternalObject *&source, RedirectionType &type)
+{
+    token = nextReal();
+
+    // all options are symbol names,
+    if (!token->isSymbol())
+    {
+        syntaxError(Error_Invalid_subkeyword_address_with_option, token);
+    }
+
+    // now handle the different I/O types.
+    switch (token->subKeyword())
+    {
+        case SUBKEY_STEM:
+        {
+            type = STEM_VARIABLE;
+            // there may an option between
+
+            // this must be followed by a stem variable
+            token = nextReal();
+            if (!token->isStem())
+            {
+                syntaxError(Error_Invalid_subkeyword_address_with_stem_expected, token);
+            }
+            // resolve this to a variable expression type.
+            source = addText(token);
+        }
+
+        case SUBKEY_STREAM:
+        {
+
+        }
+
+        case SUBKEY_USING:
+        {
+
+        }
+
+        case SUBKEY_NORMAL:
+        {
+
+        }
+
+        default:
+        {
+            syntaxError(Error_Invalid_subkeyword_address_with_option, token);
+        }
+    }
+
+    // this is constant expression form, and is required
+    description = parseConstantExpression();
+    if (description == OREF_NULL)
+    {
+        syntaxError(Error_Invalid_expression_raise_description);
+    }
+    // protect from GC.
+    pushSubTerm(description);
+    break;
+}
 
 
 /**
@@ -1992,7 +2137,7 @@ RexxInstruction *LanguageParser::exposeNew()
     // The EXPOSE must be the first instruction.
     // NOTE:  labels are not allowed preceding, as that will give a target
     // for SIGNAL or CALL that will result in an invalid EXPOSE execution.
- 
+
     // the last instruction in the chain must be our dummy
     // first instruction
     if (!lastInstruction->isType(KEYWORD_FIRST))

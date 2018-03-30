@@ -65,9 +65,17 @@ class OutputRedirector : public RexxInternalObject
     inline OutputRedirector() { ; }
     inline OutputRedirector(RESTORETYPE restoreType) { ; };
 
-    virtual void init (OutputOption option) { ; }
-    virtual void write(const char *data, size_t len)  { ; }
+    virtual void init () { ; }
+    virtual void write(RexxString *v)  { ; }
     virtual void cleanup() { ; }
+    virtual RedirectorType type() { return CommandIOContext::NONE; }
+    virtual RexxObject *target() { return OREF_NULL; }
+
+    bool needsBuffering(InputRedirector *d);
+    bool isSameTarget(OutputRedictor *e);
+
+    OutputOption option;        // REPLACE/APPEND option
+    logical_t    initialized;   // indicates this redirector has been initialized already
 };
 
 
@@ -80,14 +88,16 @@ class StemOutputTarget : public OutputRedirector
     void        *operator new(size_t, size_t);
     inline void  operator delete(void *) { }
 
-    inline StemOutputTarget(StemClass *stem);
+    inline StemOutputTarget(StemClass *stem, OutputOption o);
     inline StemOutputTarget(RESTORETYPE restoreType) { ; };
 
     virtual void live(size_t);
     virtual void liveGeneral(MarkReason reason);
 
-    virtual void init (OutputOption option);
-    virtual void write(const char *data, size_t len);
+    virtual void init ();
+    virtual void write(RexxString *v);
+    virtual RedirectorType type() { return CommandIOContext::STEM_VARIABLE; }
+    virtual RexxObject *target() { return stem; }
 
 protected:
     StemClass *stem;      // the stem we're handling
@@ -105,13 +115,15 @@ class StreamObjectOutputTarget : public OutputRedirector
     void        *operator new(size_t, size_t);
     inline void  operator delete(void *) { }
 
-    inline StreamObjectOutputTarget(RexxObject *s);
+    inline StreamObjectOutputTarget(RexxObject *s, OutputOption o);
     inline StreamObjectOutputTarget(RESTORETYPE restoreType) { ; };
 
     virtual void live(size_t);
-    virtual void liveGeneral(MarkReason reason);
+    virtual void liveGeneral();
 
-    virtual void write(const char *data, size_t len);
+    virtual void write(RexxString *v);
+    virtual RedirectorType type() { return CommandIOContext::STREAM_OBJECT; }
+    virtual RexxObject *target() { return stream; }
 
 protected:
     RexxObject *stream;   // the stream object
@@ -128,15 +140,17 @@ class StreamOutputTarget : public StreamObjectOutputTarget
     void        *operator new(size_t, size_t);
     inline void  operator delete(void *) { }
 
-    inline StreamOutputTarget(RexxString *n);
+    inline StreamOutputTarget(RexxString *n, OutputOption o);
     inline StreamOutputTarget(RESTORETYPE restoreType) { ; };
 
     virtual void live(size_t);
     virtual void liveGeneral(MarkReason reason);
 
-    virtual void init (OutputOption option);
-    virtual void write(const char *data, size_t len);
+    virtual void init();
+    virtual void write(RexxString *v);
     virtual void cleanup() { ; }
+    virtual RedirectorType type() { return CommandIOContext::STREAM_NAME; }
+    virtual RexxObject *target() { return name; }
 
 protected:
     RexxString *name;     // the stream name
@@ -153,16 +167,45 @@ class CollectionOutputTarget : public OutputRedirector
     void        *operator new(size_t, size_t);
     inline void  operator delete(void *) { }
 
-    inline CollectionOutputTarget(RexxObject *c);
+    inline CollectionOutputTarget(RexxObject *c, OutputOption o);
     inline CollectionOutputTarget(RESTORETYPE restoreType) { ; };
 
     virtual void live(size_t);
     virtual void liveGeneral(MarkReason reason);
 
-    virtual void write(const char *data);
+    virtual void write(RexxString *v);
+    virtual RedirectorType type() { return CommandIOContext::COLLECTION_OBJECT; }
+    virtual RexxObject *target() { return collection; }
 
 protected:
     RexxObject *collection;  // the target collection object
+};
+
+
+/**
+ * Output handler for buffering lines for delayed writing when
+ * the same object is used for both input and output
+ *
+ */
+class BufferingOutputTarget : public OutputRedirector
+{
+ public:
+    void        *operator new(size_t, size_t);
+    inline void  operator delete(void *) { }
+
+    inline BufferingOutputTarget(OutputRedirector *t);
+    inline BufferingOutputTarget(RESTORETYPE restoreType) { ; };
+
+    virtual void live(size_t);
+    virtual void liveGeneral(MarkReason reason);
+
+    virtual void init();
+    virtual void write(RexxString *v);
+    virtual void cleanup() { ; }
+
+protected:
+    RexxArray *collector;       // the buffer used for collection
+    OutputRedirector *target;   // the final output target
 };
 #endif
 

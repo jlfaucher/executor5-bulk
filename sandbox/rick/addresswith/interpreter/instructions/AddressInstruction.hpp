@@ -46,6 +46,8 @@
 
 #include "RexxInstruction.hpp"
 
+class CommandIOConfiguration;
+
 class RexxInstructionAddress : public RexxInstruction
 {
  public:
@@ -63,5 +65,6 @@ class RexxInstructionAddress : public RexxInstruction
     RexxInternalObject *dynamicAddress;      // ADDRESS VALUE expression
     RexxString *environment;                 // An environment string (static form)
     RexxInternalObject *command;             // A command expression
+    CommandIOConfiguration *ioConfig;         // a potential I/O configuration
 };
 #endif

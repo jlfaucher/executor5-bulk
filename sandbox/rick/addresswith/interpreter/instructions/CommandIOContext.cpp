@@ -84,6 +84,96 @@ void CommandIOContext::liveGeneral(MarkReason reason)
 }
 
 
+/**
+ * Now resolve conflicts between the input and output
+ * streams and check for duplicate output targets.
+ */
+void CommandIOContext::resolveConflicts()
+{
+    // not yet determined that we have dual output
+    bool dualOutput = false;
+
+    // first check if error and output streams are the same.
+    if (output != OREF_NULL)
+    {
+        // if these are the same, then use the same redirector for both streams
+        if (error != OREF_NULL && output->isSameTarget(error))
+        {
+            error = output;
+            // if we detect a conflict between the input and output, then
+            // we need to adjust both.
+            dualOutput = true;
+        }
+    }
+
+    // now check if we have an input conflict
+    if (input != OREF_NULL)
+    {
+        // now see if these are the same target
+        if (output != OREF_NULL && output->needsBuffering(input))
+        {
+            // make this buffered until the command returns
+            output = new BufferingOutputTarget(output);
+            // if we've already established that output and error
+            // are the same, then adjust error to point to the buffered
+            // input
+            if (dualOutput)
+            {
+                error = output;
+            }
+        }
+    }
+    // now we still could have a conflict beteen the input ane error, so check that too
+    if (!dualInput && error != OREF_NULL && error->needsBuffering(input))
+    {
+        // make this buffered until the command returns
+        output = new BufferingOutputTarget(output);
+    }
+}
+
+
+/**
+ * Initialize the various elements of the IO context.
+ */
+void CommandIOContext::init()
+{
+    // initialize each element. Input, if it exists should come first
+    if (input != OREF_NULL)
+    {
+        input->init();
+    }
+    if (output != OREF_NULL)
+    {
+        output->init();
+    }
+    if (error != OREF_NULL)
+    {
+        erre->init();
+    }
+}
+
+
+/**
+ * Perform post-command cleanup of the various elements of the
+ * IO context.
+ */
+void CommandIOContext::cleanup()
+{
+    // initialize each element. Input, if it exists should come first
+    if (input != OREF_NULL)
+    {
+        input->cleanup();
+    }
+    if (output != OREF_NULL)
+    {
+        output->cleanup();
+    }
+    if (error != OREF_NULL)
+    {
+        errer->cleanup();
+    }
+}
+
 
 /**
  * return the next line from the ADDRESS instruction
@@ -117,12 +207,13 @@ const char *CommandIOContext::getInput()
  * @param data   Pointer to the output data
  * @param len    Length of the output data
  */
-void Command::IOContext::writeOutput(const char *data, size_t len)
+void CommandIOContext::writeOutput(const char *data, size_t len)
 {
     // this shouldn't happen, but if not redirected, don't crash!
     if (output != OREF_NULL)
     {
-        output->write(data, len);
+        Protected<RexxString> value = new_string(data, length);
+        output->write(value);
     }
 }
 
@@ -133,11 +224,12 @@ void Command::IOContext::writeOutput(const char *data, size_t len)
  * @param data   Pointer to the output data
  * @param len    Length of the output data
  */
-void Command::IOContext::writeError(const char *data, size_t len)
+void CommandIOContext::writeError(const char *data, size_t len)
 {
     // this shouldn't happen, but if not redirected, don't crash!
     if (error != OREF_NULL)
     {
-        error->write(data, len);
+        Protected<RexxString> value = new_string(data, length);
+        error->write(value);
     }
 }

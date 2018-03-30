@@ -46,6 +46,36 @@
 
 
 /**
+ * Test if an output redirector is using the same source
+ * as the input redirector, and thus needs buffering.
+ *
+ * @param in     The input redirector
+ *
+ * @return True if the input redirector and the output redirector
+ *         are using the same target object.
+ */
+bool OutputRedirector::needsBuffering(InputRedictor *in)
+{
+    return type() == in->type() && target() == in->target();
+}
+
+
+/**
+ * Test if an output redirector is using the same target as the
+ * error redirector.
+ *
+ * @param e      The error redirector
+ *
+ * @return True if the error redirector and the output
+ *         redirector are using the same target object.
+ */
+bool OutputRedirector::isSameTarget(OutputRedictor *e)
+{
+    return type() == e->type() && target() == e->target();
+}
+
+
+/**
  * Allocate a new stem output target
  *
  * @param size   The size of the object.
@@ -62,10 +92,13 @@ void *StemOutputTarget::operator new(size_t size)
  * Construct a output target ogject
  *
  * @param stem      The stem oubect being used
+ * @param o         The append/replace option for the redirect.
  */
-StemOutputTarget::StemOutputTarget(RexxObject *s)
+StemOutputTarget::StemOutputTarget(RexxObject *s, OutputOption o)
 {
     stem = s;
+    option = o;
+    initialized = false;
 }
 
 
@@ -95,11 +128,15 @@ void StemOutputTarget::liveGeneral(MarkReason reason)
 
 /**
  * Initialize and validate the stem condition for updates.
- *
- * @param option The append/replace option for the redirect.
  */
-void StemOutputTarget::init(OutputOption option)
+void StemOutputTarget::init()
 {
+    // only one per customer!
+    if (initialized)
+    {
+        return;
+    }
+    initialized = true;
     // replace is the easy way to handle we just reset everything
     if (option == REPLACE)
     {
@@ -145,11 +182,9 @@ void StemOutputTarget::init(OutputOption option)
  *
  * @param value  The string value to write
  */
-void StemOutputTarget::write(const char *value, size_t len)
+void StemOutputTarget::write(RexxString *value)
 {
-    // add the string to the next position
-    Protected<RexxString> next = new_string(value, len);
-    stem->setElement(index, next);
+    stem->setElement(index, value);
     // update stem.0
     Protected<RexxInteger> newIndex = new_interger(index);
     stem->setElement((size_t)0, newIndex);
@@ -175,10 +210,13 @@ void *StreamObjectOutputTarget::operator new(size_t size)
  * Construct a output target ogject
  *
  * @param stem      The stem oubect being used
+ * @param o         The append/replace option for the redirect.
  */
-StreamObjectOutputTarget::StreamObjectOutputTarget(RexxObject *s)
+StreamObjectOutputTarget::StreamObjectOutputTarget(RexxObject *s, OutputOption o)
 {
     stream = s;
+    option = o;
+    initialized = false;
 }
 
 
@@ -211,13 +249,12 @@ void StreamObjectOutputTarget::liveGeneral(MarkReason reason)
  *
  * @param value  The string value to write
  */
-void StreamObjectOutputTarget::write(const char *value, size_t len)
+void StreamObjectOutputTarget::write(RexxString *value)
 {
     // add the string to the next position
-    Protected<RexxString> next = new_string(value, len);
     ProtectedObject result;
     // this just uses lineout
-    stream->sendMessage(GlobalNames::LINEOUT, next, result);
+    stream->sendMessage(GlobalNames::LINEOUT, value, result);
 }
 
 
@@ -238,10 +275,13 @@ void *StreamOutputTarget::operator new(size_t size)
  * Construct a output target ogject
  *
  * @param n         The stream name
+ * @param o         The append/replace option for the redirect.
  */
-StreamOutputTarget::StreamOutputTarget(RexxString *n)
+StreamOutputTarget::StreamOutputTarget(RexxString *n, OutputOption o)
 {
     name = n;
+    option = o;
+    initialized = false;
 }
 
 
@@ -272,27 +312,19 @@ void StreamOutputTarget::liveGeneral(MarkReason reason)
 
 
 /**
- * Write a value to the output redirector.
- *
- * @param value  The string value to write
- */
-void StreamObjectOutputTarget::write(const char *value, size_t len)
-{
-    // add the string to the next position
-    Protected<RexxString> next = new_string(value, len);
-    ProtectedObject result;
-    // this just uses lineout
-    stream->sendMessage(GlobalNames::LINEOUT, next, result);
-}
-
-
-/**
  * Initialize and validate the stream condition for updates.
  *
  * @param option The append/replace option for the redirect.
  */
-void StreamOutputTarget::init(OutputOption option)
+void StreamOutputTarget::init()
 {
+    // only one per customer!
+    if (initialized)
+    {
+        return;
+    }
+    initialized = true;
+
     // create an instance of the stream class for the given name
     RexxClass *streamClass = TheRexxPackage->findClass(GlobalNames::STREAM);
     ProtectedObject result;
@@ -345,10 +377,13 @@ void *CollectionOutputTarget::operator new(size_t size)
  * Construct a output target ogject
  *
  * @param n         The stream name
+ * @param o         The append/replace option for the redirect.
  */
-CollectionOutputTarget::CollectionOutputTarget(RexxObject *c)
+CollectionOutputTarget::CollectionOutputTarget(RexxObject *c, OutputOption o)
 {
     collection = c;
+    option = o;
+    initialized = false;
 }
 
 
@@ -381,13 +416,11 @@ void CollectionOutputTarget::liveGeneral(MarkReason reason)
  *
  * @param value  The string value to write
  */
-void CollectionObjectOutputTarget::write(const char *value, size_t len)
+void CollectionObjectOutputTarget::write(RexxString *value)
 {
-    // add the string to the next position
-    Protected<RexxString> next = new_string(value, len);
     ProtectedObject result;
     // this just uses lineout
-    collection->sendMessage(GlobalNames::APPEND, next, result);
+    collection->sendMessage(GlobalNames::APPEND, value, result);
 }
 
 
@@ -396,8 +429,15 @@ void CollectionObjectOutputTarget::write(const char *value, size_t len)
  *
  * @param option The append/replace option for the redirect.
  */
-void CollectionOutputTarget::init(OutputOption option)
+void CollectionOutputTarget::init()
 {
+    // only one per customer!
+    if (initialized)
+    {
+        return;
+    }
+    initialized = true;
+
     // If replace is specified, then empty the collection
     if (option == REPLACE)
     {
@@ -405,4 +445,105 @@ void CollectionOutputTarget::init(OutputOption option)
         // this just uses lineout
         collection->sendMessage(GlobalNames::EMPTY, result);
     }
+}
+
+
+/**
+ * Allocate a new output target
+ *
+ * @param size   The size of the object.
+ *
+ * @return Storage for creating the object.
+ */
+void *BufferingOutputTarget::operator new(size_t size)
+{
+    return new_object(size, T_BufferingOutputTarget);
+}
+
+
+/**
+ * Construct a output target ogject
+ *
+ * @param n         The stream name
+ * @param o         The append/replace option for the redirect.
+ */
+BufferingOutputTarget::BufferingOutputTarget(OutputRedirector *t)
+{
+    target = t;
+    initialized = false;
+}
+
+
+/**
+ * Perform garbage collection on a live object.
+ *
+ * @param liveMark The current live mark.
+ */
+void BufferingOutputTarget::live(size_t liveMark)
+{
+    memory_mark(collector);
+    memory_mark(target);
+}
+
+
+/**
+ * Perform generalized live marking on an object.  This is
+ * used when mark-and-sweep processing is needed for purposes
+ * other than garbage collection.
+ *
+ * @param reason The reason for the marking call.
+ */
+void BufferingOutputTarget::liveGeneral(MarkReason reason)
+{
+    memory_mark_general(collector);
+    memory_mark_general(target);
+}
+
+
+/**
+ * Initialize and validate the stream condition for updates.
+ *
+ * @param option The append/replace option for the redirect.
+ */
+void BufferingOutputTarget::init()
+{
+    // only one per customer!
+    if (initialized)
+    {
+        return;
+    }
+    initialized = true;
+    collector = new_array();
+}
+
+
+/**
+ * Add the output item to our buffer
+ *
+ * @param value  The string value to add.
+ */
+void BufferingOutputTarget::write(RexxString *value)
+{
+    collector~append(value);
+}
+
+
+/**
+ * Perform post-command housekeeping on this operation.
+ */
+void BufferingOutputTarget::cleanup()
+{
+    // we've hit the end of things, so now the target redirector
+    // gets activated and pumped full of data
+
+    target->init();
+    size_t count = collector->items();
+
+    for (size_t i = 1; i <= count; i::)
+    {
+        target->write(collector->get(i));
+    }
+
+    // and finally the cleanup
+    target->cleanup();
 }

@@ -1,6 +1,5 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
 /* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
@@ -36,30 +35,24 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Translator                               AddressWithInstruction.cpp   */
+/*                                                 CommandIOConfiguration.cpp */
 /*                                                                            */
-/* Implementation of the ADDRESS WITH instruction                             */
+/* A configuration for issuing commands with I/O redirection                  */
 /*                                                                            */
 /******************************************************************************/
-#include "RexxCore.h"
-#include "StringClass.hpp"
-#include "RexxActivation.hpp"
-#include "AddressWithInstruction.hpp"
-#include "SystemInterpreter.hpp"
-#include "MethodArguments.hpp"
+#include "CommandIOConfiguration.hpp"
+
 
 /**
- * Constructor for an Address instruction object.
+ * Allocate a CommandIOConfiguration object
  *
- * @param _environment
- *                 A static environment name.
- * @param _command A command expression to be issued.
+ * @param size   The base size of this object.
+ *
+ * @return A newly allocated Rexx object.
  */
-RexxInstructionAddressWith::RexxInstructionAddressWith(RexxInternalObject *_expression,
-    RexxString *_environment, RexxInternalObject *_command)
+void  *CommandIOConfiguration::operator new(size_t size)
 {
-    environment = _environment;
-    command = _command;
+    return new_object(size, T_CommandIOConfiguration);
 }
 
 
@@ -68,12 +61,8 @@ RexxInstructionAddressWith::RexxInstructionAddressWith(RexxInternalObject *_expr
  *
  * @param liveMark The current live mark.
  */
-void RexxInstructionAddressWith::live(size_t liveMark)
+void CommandIOConfiguration::live(size_t liveMark)
 {
-    // must be first one marked
-    memory_mark(nextInstruction);
-    memory_mark(environment);
-    memory_mark(command);
     memory_mark(inputSource);
     memory_mark(outputTarget);
     memory_mark(errorTarget);
@@ -87,100 +76,148 @@ void RexxInstructionAddressWith::live(size_t liveMark)
  *
  * @param reason The reason for the marking call.
  */
-void RexxInstructionAddressWith::liveGeneral(MarkReason reason)
+void CommandIOContext::liveGeneral(MarkReason reason)
 {
-    // must be first one marked
-    memory_mark_general(nextInstruction);
-    memory_mark_general(environment);
-    memory_mark_general(command);
+    memory_mark_general(inputSource);
     memory_mark_general(outputTarget);
     memory_mark_general(errorTarget);
 }
 
 
 /**
- * Perform generalized live marking on an object.  This is
- * used when mark-and-sweep processing is needed for purposes
- * other than garbage collection.
+ * Create an active IO redirection context for issuing
+ * a command.
  *
- * @param reason The reason for the marking call.
- */
-void RexxInstructionAddressWith::flatten(Envelope *envelope)
-{
-    setUpFlatten(RexxInstructionAddressWith)
-
-    flattenRef(nextInstruction);
-    flattenRef(environment);
-    flattenRef(command);
-    flattenRef(inputSource);
-    flattenRef(outputTarget);
-    flattenRef(outputTarget);
-
-    cleanUpFlatten
-}
-
-/**
- * Execute an addres instruction.
+ * @param context The current activation context the command is running under
+ * @param stack   The expression stack used for evaluations
+ * @param commandConfig
+ *                A configuration explicitly specified with this command
+ *                which can override the global configuration.
  *
- * @param context The current program execution context.
- * @param stack   The current evaluation stack.
+ * @return An instance of an I/O context for this configuration.
  */
-void RexxInstructionAddressWith::execute(RexxActivation *context, ExpressionStack *stack )
+CommandIOContext *CommandIOConfiguration::createIOContext(RexxActivation *context, ExpressionStack *stack, CommandIOConfiguration *commandConfig)
 {
-    // trace if necessary
-    context->traceInstruction(this);
-    // Address With always has a static name. We also have a command to issue, which
-    // is a general expression, as well as potential expressions for each of the
-    // redirect types
-    RexxObject *result = command->evaluate(context, stack);
-    // this must be a string
-    RexxString *_command = result->requestString();
-    // protect this
-    stack->push(_command);
-    // need to trace this if on
-    context->traceResult(_command);
-    // validate the address name using system rules
-    SystemInterpreter::validateAddressName(environment);
-
     // create the runtime I/O context object and fill in the needed sections
     Protected<CommandIOContext> ioContext = new ProtectedIOContext();
 
-    // we have an input source, so evaluate it and create
-    // an input object that handles that source type
-    if (inputSource != OREF_NULL)
-    {
-        RexxObject *inputObject = inputSource->evaluate();
-        // need to trace this if on
-        context->traceResult(inputObject);
-        ioContext->input = createInputSource(inputObject, inputType);
-    }
-    if (outputTarget != OREF_NULL)
-    {
-        RexxObject *outputObject = outputTarget->evaluate();
-        // need to trace this if on
-        context->traceResult(outputObject);
-        ioContext->output = createOutputTarget(outputObject, outputType);
-    }
+    // we use a chaining strategy here. If we have a configuration from the command, then we ask
+    // it to merge each item. Otherwise we create the item directly from us
 
-    if (errorTarget != OREF_NULL)
+    // the local configuration takes priority, so try that first.
+    if (commandConfig != OREF_NULL)
     {
-        RexxObject *errorObject = errorTarget->evaluate();
-        // need to trace this if on
-        context->traceResult(errorObject);
-        ioContext->error = createOutputTarget(errorObject, errorType);
+        ioContext->input = commandConfig->createInputSource(context, stack, this);
+        ioContext->output = commandConfig->createOutputSource(context, stack, this);
+        ioContext->error = commandConfig->createErrorSource(context, stack, this);
     }
+    // we just use what we already have
     else
     {
-        // if an error handler has not been specified, everything
-        // goes to the output handler (which might be null also)
-        ioContext->error = ioContext->output;
+        ioContext->input = createInputSource(context, stack);
+        ioContext->output = createOutputSource(context, stack);
+        ioContext->error = createErrorSource(context, stack);
     }
 
-    // and execute the command
-    context->command(environment, _command, ioContext);
+    // if the same objects are getting used for both input and output, then
+    // we need to insert a buffering layer in front of the output object.
+    ioContext->resolveConflicts();
+}
 
-    // perform any post command cleanup
-    ioContext->cleanup();
+
+/**
+ * Create a input source by resolving between a configuration
+ * on an individual ADDRESS command and the previous set
+ * global environment.
+ *
+ * @param context    The execution context
+ * @param stack      The current expression stack
+ * @param mainConfig The global configuration (if any) we use for the
+ *                   merge.
+ *
+ * @return An appropriate INPUT object from this configuration.
+ */
+InputRedirector *CommandIOConfiguration::createInputSource(RexxActivation *context, ExpressionStack *stack, CommandIOConfiguration *mainConfig)
+{
+    // if we're explicitly configured for NORMAL, this is
+    // a reset
+    if (inputType == NORMAL)
+    {
+        return OREF_NULL;
+    }
+
+    // if we have a configuration, return it
+    if (inputSource != OREF_NULL)
+    {
+        return createInputSource(context, stack);
+    }
+
+    // create from the main configuration
+    return mainConfig->createInputSource(context, stack);
+}
+
+
+/**
+ * Create an output source by resolving between a configuration
+ * on an individual ADDRESS command and the previous set global
+ * environment.
+ *
+ * @param context    The execution context
+ * @param stack      The current expression stack
+ * @param mainConfig The global configuration (if any) we use for the
+ *                   merge.
+ *
+ * @return An appropriate OUTPUT object from this configuration.
+ */
+OutputRedirector *CommandIOConfiguration::createOutputSource(RexxActivation *context, ExpressionStack *stack, CommandIOConfiguration *mainConfig)
+{
+    // if we're explicitly configured for NORMAL, this is
+    // a reset
+    if (outputType == NORMAL)
+    {
+        return OREF_NULL;
+    }
+
+    // if we have a configuration, return it
+    if (outputSource != OREF_NULL)
+    {
+        return createOutputSource(context, stack);
+    }
+
+    // create from the main configuration
+    return mainConfig->createOutputSource(context, stack);
+}
+
+
+/**
+ * Create an error source by resolving between a configuration
+ * on an individual ADDRESS command and the previous set global
+ * environment.
+ *
+ * @param context    The execution context
+ * @param stack      The current expression stack
+ * @param mainConfig The global configuration (if any) we use for the
+ *                   merge.
+ *
+ * @return An appropriate ERROR object from this configuration.
+ */
+OutputRedirector *CommandIOConfiguration::createErrorSource(RexxActivation *context, ExpressionStack *stack, CommandIOConfiguration *mainConfig)
+{
+    // if we're explicitly configured for NORMAL, this is
+    // a reset
+    if (outputType == NORMAL)
+    {
+        return OREF_NULL;
+    }
+
+    // if we have a configuration, return it
+    if (outputSource != OREF_NULL)
+    {
+        return createErrorSource(context, stack);
+    }
+
+    // create from the main configuration
+    return mainConfig->createErrorSource(context, stack);
 }
 
 
@@ -188,19 +225,25 @@ void RexxInstructionAddressWith::execute(RexxActivation *context, ExpressionStac
  * Create an input source redirector from an evaluated
  * source object.
  *
- * @param inputObject
- *               The evaluated source object
- * @param type   The type specified on the ADDRESS WITH instruction. This
- *               can specify that an explicit type of object is required
- *               or we can dynamically determine appropriate source from
- *               the type of object.
+ * @param context The current execution context.
+ * @param stack   The current context stack.
  *
  * @return An appropriate input source for the object.
  */
-InputRedirector *RexxInstructionAddressWith::createInputSource(RexxObject *inputObject, RedirectionType type)
+InputRedirector CommandIOConfiguration::createInputSource(RexxActivation *context, ExpressionStack *stack)
 {
+    // if there's nothing configured, just return null
+    if (inputSource == OREF_NULL)
+    {
+        return OREF_NULL;
+    }
+
+    RexxObject *inputObject = inputSource->evaluate(context, stack);
+    // need to trace this if on
+    context->traceResult(inputObject);
+
     // process based on the type of object we've been presented with.
-    switch (type)
+    switch (inputType)
     {
         // if STEM was specified, then the syntax checks requires a STEM variable
         // symbol follow the option. Therefore, we know this will have evaluated
@@ -299,17 +342,63 @@ InputRedirector *RexxInstructionAddressWith::createInputSource(RexxObject *input
 
 
 /**
+ * Create the output target for this configuration.
+ *
+ * @param context The current execution context.
+ * @param stack   The current context stack.
+ *
+ * @return a configured output redirection object
+ */
+OutputRedirector *CommandIOConfiguration::createOutputTarget(RexxActivation *context, ExpressionStack *stack)
+{
+    // if no target configured, return nothing
+    if (outputTarget == OREF_NULL)
+    {
+        return OREF_NULL;
+    }
+
+    return createOutputTarget(context, stack, outputTarget, outputType, outputOption);
+}
+
+
+/**
+ * Create the output target for this configuration.
+ *
+ * @param context The current execution context.
+ * @param stack   The current context stack.
+ *
+ * @return a configured output redirection object
+ */
+OutputRedirector *CommandIOConfiguration::createErrorTarget(RexxActivation *context, ExpressionStack *stack)
+{
+    // if no target configured, return nothing
+    if (errorTarget == OREF_NULL)
+    {
+        return OREF_NULL;
+    }
+
+    return createOutputTarget(context, stack, errorTarget, errorType, errorOption);
+}
+
+
+
+/**
  * Create an appropriate output target for an ADDRESS WITH
  * instruction.
  *
+ * @param context The current execution context.
+ * @param stack   The current context stack.
  * @param outputObject
  *               The resolved output target
  * @param type   The specified type of target
  *
  * @return A resolved and constructed output target.
  */
-OutputRedirector *RexxInstructionAddressWith::createOutputSource(RexxObject *outputObject, RedirectionType type, OutputOption, option)
+OutputRedirector *CommandIOConfiguration::createOutputSource(RexxActivation *context, ExpressionStack *stack, RexxInternalObject *outputTarget, RedirectionType type, OutputOption, option)
 {
+    RexxObject *outputObject = outputTarget->evaluate(context, stack);
+    // need to trace this if on
+    context->traceResult(outputObject);
     switch (type)
     {
         case STEM_VARIABLE:

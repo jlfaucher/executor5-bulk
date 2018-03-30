@@ -1,6 +1,5 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
 /* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
@@ -36,45 +35,43 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Kernel                                  AddressWithInstruction.hpp    */
+/*                                                 CommandIOConfiguration.hpp */
 /*                                                                            */
-/* ADDRESS WITH instruction Class Definitions                                 */
+/* The processing context for ADDRESS WITH I/O interaction                    */
 /*                                                                            */
 /******************************************************************************/
-#ifndef Included_InstructionAddressWith
-#define Included_InstructionAddressWith
+#ifndef Included_CommandIOConfiguration
+#define Included_CommandIOConfiguration
 
-#include "RexxInstruction.hpp"
-
-class RexxInstructionAddress : public RexxInstruction
+class CommandIOConfiguration : public RexxInternalObject
 {
  friend class LanguageParser;
  public:
-    inline void operator delete(void *) { }
+     enum
+     {
+         NONE,
+         NORMAL,
+         STEM_VARIABLE,
+         STEM_OBJECT,
+         STREAM_NAME,
+         STREAM_OBJECT,
+         ARRAY_OBJECT,
+         COLLECTION_OBJECT,
+     }  RedirectionType;
 
-    // the different types for doing ADDRESS WITH
-    enum
-    {
-        STEM_VARIABLE,
-        STREAM_NAME,
-        DYNAMIC
-    } RedirectionType;
+    void        *operator new(size_t, size_t);
+    inline void  operator delete(void *) { }
 
-
-    RexxInstructionAddressWith(RexxString *, RexxInternalObject *);
-    inline RexxInstructionAddressWith(RESTORETYPE restoreType) { ; };
+    inline CommandIOConfiguration() { ; }
+    inline CommandIOConfiguration(RESTORETYPE restoreType) { ; };
 
     virtual void live(size_t);
     virtual void liveGeneral(MarkReason reason);
-    virtual void flatten(Envelope *);
 
-    virtual void execute(RexxActivation *, ExpressionStack *);
-
-    RexxString *environment;                 // An environment string (static form)
-    RexxInternalObject *command;             // A command expression
-    RexxObject *inputSource;                 // The input source expression
-    RexxObject *outputTarget;                // The output target expression
-    RexxObject *errorTarget;                 // The output target expression
+ protected:
+    RexxInternalObject *inputSource;         // The input source expression
+    RexxInternalObject *outputTarget;        // The output target expression
+    RexxInternalObject *errorTarget;         // The output target expression
     RedirectionType inputType;               // The type of redirection target to evaluate
     RedirectionType outputType;              // The output redirection type
     RedirectionType errorType;               // The error redirection type
@@ -82,4 +79,5 @@ class RexxInstructionAddress : public RexxInstruction
     OutputOption errorOption;                // the option for the error stream
 };
 #endif
+
 

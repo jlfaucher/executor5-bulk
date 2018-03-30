@@ -416,9 +416,12 @@ struct
 {
     wholenumber_t interfaceVersion;    // The interface version identifier
 
-    CSTRING (RexxEntry *getInput)(RexxIORedirector *);
-    void    (RexxEntry *writeOutput(RexxIORedirector *, CSTRING, size_t);
-    void    (RexxEntry *writeError(RexxIORedirector *, CSTRING, size_t);
+    CSTRING (RexxEntry *GetInput)(RexxIORedirector *);
+    void    (RexxEntry *WriteOutput(RexxIORedirector *, CSTRING, size_t);
+    void    (RexxEntry *WriteError(RexxIORedirector *, CSTRING, size_t);
+    logical_t (RexxEntry *IsInputRedirected(RexxIORedirector *);
+    logical_t (RexxEntry *IsOutputRedirected(RexxIORedirector *);
+    logical_t (RexxEntry *IsErrorRedirected(RexxIORedirector *);
 } IORedirectorInterface;
 
 
@@ -428,18 +431,28 @@ class RexxIORedirector
 public:
     CSTRING GetInput()
     {
-        return functions->getInput(this);
+        return functions->GetInput(this);
     }
     void WriteOutput(CSTRING data, size_t length)
     {
-        this->writeOutput(this, data, length);
+        functions->WriteOutput(this, data, length);
     }
-    void WriteOutput(CSTRING data, size_t length)
+    void WriteError(CSTRING data, size_t length)
     {
-        this->writeOutput(this, data, length);
+        functions->WriteError(this, data, length);
     }
-
-
+    logical_t IsInputRedirected()
+    {
+        return functions->IsInputRedirected(this);
+    }
+    logical_t IsOutputRedirected()
+    {
+        return functions->IsOutputRedirected(this);
+    }
+    logical_t IsErrorRedirected()
+    {
+        return functions->IsErrorRedirected(this);
+    }
 
     IORedirectorInterface *functions;
 };
@@ -447,14 +460,18 @@ public:
 // This typedef is used for command environments that support i/o redirection
 typedef RexxObjectPtr REXXENTRY RexxRedirectingCommandHandler(RexxExitContext *, RexxStringObject, RexxStringObject, RexxIORedirector *);
 
-#define REDIRECT_INTERFACE_VERSION 100
-
 
 typedef struct
 {
    RexxContextCommandHandler *handler;    // the environment handler
    const char *name;                      // the handler name
 }  RexxContextEnvironment;
+
+typedef struct
+{
+   RexxRedirectingCommandHandler *handler;  // the environment handler
+   const char *name;                        // the handler name
+}  RexxRedirectingEnvironment;
 
 typedef struct
 {

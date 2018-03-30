@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -121,6 +121,7 @@ class ActivationSettings
         traceSuppress,           // tracing is currently suppressed
         elapsedReset,            // The elapsed time stamp was reset via time('r')
         guardedMethod,           // this is a guarded method
+        ioConfigCopied,          // We have made a copy of the config table
     } ActivationFlag;
 
 
@@ -145,6 +146,8 @@ class ActivationSettings
       inline void setReplyIssued(bool v = true) { stateFlags[replyIssued] = v; }
       inline bool areTrapsCopied() { return stateFlags[trapsCopied]; }
       inline void setTrapsCopied(bool v = true) { stateFlags[trapsCopied] = v; }
+      inline bool isIOConfigCopied() { return stateFlags[ioConfigCopied]; }
+      inline void setIOConfigCopied(bool v = true) { stateFlags[ioConfigCopied] = v; }
       inline bool haveClauseExits() { return stateFlags[clauseExits]; }
       inline void setHaveClauseExits(bool v = true) { stateFlags[clauseExits] = v; }
       inline bool hasTransferFailed() { return stateFlags[transferFailed]; }
@@ -163,12 +166,15 @@ class ActivationSettings
       inline void setHaltCondition(bool v = true) { stateFlags[haltCondition] = v; }
 
       StringTable    *traps;               // enabled condition traps
+      StringTable    *ioConfigs;           // address envronment io configurations
       DirectoryClass *conditionObj;        // current condition object
       RexxObject    **parentArgList;       // arguments to top level program
       size_t          parentArgCount;      // number of arguments to the top level program
       RexxCode       *parentCode;          // source of the parent method
       RexxString     *currentAddress;      // current address environment
+      CommandIOConfiguration currentIOConfig;  // the currently set I/O configuration
       RexxString     *alternateAddress;    // alternate address environment
+      CommandIOConfiguration alternateIOConfig;  // the alternate I/O configuration
       RexxString     *messageName;         // message sent to the receiver
                                            // object variable dictionary
       VariableDictionary *objectVariables;

@@ -708,7 +708,7 @@ bool InterpreterInstance::processOptions(RexxOption *options)
         // a direct call command handler
         else if (strcmp(options->optionName, REDIRECTING_ENVIRONMENTS) == 0)
         {
-            RexxContextEnvironment *handlers = (RexxContextEnvironment *)options->option.value.value_POINTER;
+            RexxRedirectingEnvironment *handlers = (RexxRedirectingEnvironment *)options->option.value.value_POINTER;
             // if we have handlers, initialize the array
             if (handlers != NULL)
             {
@@ -781,11 +781,12 @@ RexxObject *InterpreterInstance::getLocalEnvironment(RexxString *name)
  *
  * @param name       The name of the address environment this services.
  * @param entryPoint The entry point address of the handler.
+ * @param type       The category of handler to add.
  */
-void InterpreterInstance::addCommandHandler(const char *name, REXXPFN entryPoint)
+void InterpreterInstance::addCommandHandler(const char *name, REXXPFN entryPoint, HandlerType type)
 {
     RexxString *handlerName = new_upper_string(name);
-    commandHandlers->put(new CommandHandler(entryPoint), handlerName);
+    commandHandlers->put(new CommandHandler(entryPoint, type), handlerName);
 }
 
 /**

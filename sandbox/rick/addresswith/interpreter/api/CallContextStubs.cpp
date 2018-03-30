@@ -378,6 +378,7 @@ void RexxEntry WriteError(RexxRexxIORedirector *c, const char *data, size_t leng
         // nothing if this is called.
         if (ioContext != OREF_NULL)
         {
+            Protected<RexxString> value = new_string(data, length);
             ioContext->writeError(data, length);
         }
     }

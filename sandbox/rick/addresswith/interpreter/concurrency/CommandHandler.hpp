@@ -57,10 +57,10 @@ public:
     inline void  operator delete(void *) { ; }
 
     inline CommandHandler(RESTORETYPE restoreType) { ; };
-    inline CommandHandler(REXXPFN e) : entryPoint(e) { type = DIRECT; }
+    inline CommandHandler(REXXPFN e, HandlerType t) : entryPoint(e), type(t) { ; }
     inline CommandHandler(const char *n) : entryPoint(NULL) { type = UNRESOLVED; resolve(n); }
 
-    void call(Activity *activity, RexxActivation *activation, RexxString *address, RexxString *command, ProtectedObject &rc, ProtectedObject &condition, CommandIOContext *io;
+    void call(Activity *activity, RexxActivation *activation, RexxString *address, RexxString *command, ProtectedObject &rc, ProtectedObject &condition, CommandIOContext *io);
     void resolve(const char *name);
     inline bool isResolved() { return type != UNRESOLVED; }
 
