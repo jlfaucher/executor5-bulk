@@ -3377,6 +3377,9 @@ void Activity::createRedirectorContext(RedirectorContext &context, NativeActivat
     // This is handed out to the calling code rather than being
     // a straight up context
     context.threadContext.functions = &redirectorContextFunctions;
+    // The redirectory does not have an exposed thread context, so we need to
+    // make a direct hookup.
+    context.activity = this;
     context.context = owner;
 }
 

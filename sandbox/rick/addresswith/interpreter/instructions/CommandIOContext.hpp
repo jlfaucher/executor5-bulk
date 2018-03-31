@@ -65,7 +65,9 @@ class CommandIOContext : public RexxInternalObject
     const char *getInput();
     void        writeOutput(const char *v, size_t l);
     void        writeError(const char *v, size_t l);
+    void        init();
     void        cleanup();
+    void        resolveConflicts();
 
     inline bool isInputRedirected() { return input != OREF_NULL; }
     inline bool isOutputRedirected() { return output != OREF_NULL; }

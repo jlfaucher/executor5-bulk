@@ -172,9 +172,7 @@ class ActivationSettings
       size_t          parentArgCount;      // number of arguments to the top level program
       RexxCode       *parentCode;          // source of the parent method
       RexxString     *currentAddress;      // current address environment
-      CommandIOConfiguration currentIOConfig;  // the currently set I/O configuration
       RexxString     *alternateAddress;    // alternate address environment
-      CommandIOConfiguration alternateIOConfig;  // the alternate I/O configuration
       RexxString     *messageName;         // message sent to the receiver
                                            // object variable dictionary
       VariableDictionary *objectVariables;

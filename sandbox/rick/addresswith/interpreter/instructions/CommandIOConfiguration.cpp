@@ -57,6 +57,19 @@ void  *CommandIOConfiguration::operator new(size_t size)
 
 
 /**
+ * Initialize an IO configuration object.
+ */
+CommandIOConfiguration::CommandIOConfiguration()
+{
+    inputType = DEFAULT_PROCESSING;
+    outputType = DEFAULT_PROCESSING;
+    errorType = DEFAULT_PROCESSING;
+    outputOption = DEFAULT_REPLACE;
+    errorOption = DEFAULT_REPLACE;
+}
+
+
+/**
  * Perform garbage collection on a live object.
  *
  * @param liveMark The current live mark.
@@ -103,8 +116,6 @@ CommandIOContext *CommandIOConfiguration::createIOContext(RexxActivation *contex
 
     // we use a chaining strategy here. If we have a configuration from the command, then we ask
     // it to merge each item. Otherwise we create the item directly from us
-
-    // the local configuration takes priority, so try that first.
     if (commandConfig != OREF_NULL)
     {
         ioContext->input = commandConfig->createInputSource(context, stack, this);
@@ -230,7 +241,7 @@ OutputRedirector *CommandIOConfiguration::createErrorSource(RexxActivation *cont
  *
  * @return An appropriate input source for the object.
  */
-InputRedirector CommandIOConfiguration::createInputSource(RexxActivation *context, ExpressionStack *stack)
+InputRedirector *CommandIOConfiguration::createInputSource(RexxActivation *context, ExpressionStack *stack)
 {
     // if there's nothing configured, just return null
     if (inputSource == OREF_NULL)
@@ -251,9 +262,6 @@ InputRedirector CommandIOConfiguration::createInputSource(RexxActivation *contex
         case STEM_VARIABLE:
         {
             Protected<InputRedirector> redirector = new StemInputSource((StemClass *)inputObject);
-            // initialize the source, which will confirm that the stem variable
-            // follows the stem.0 array convention
-            redirector->init();
             return redirector;
         }
         // a stream specified by name. This must be convertable to string form and
@@ -263,10 +271,11 @@ InputRedirector CommandIOConfiguration::createInputSource(RexxActivation *contex
             // this must be a string
             Protected<RexxString> streamName = inputObject->requestString();
 
+            // because we need to detect conflicts between input and outputs,
+            // we need to use the fully qualified file name here.
+            streamName = SystemInterpreter::qualifyFileSystemName(streamName);
+
             Protected<InputRedirector> redirector = new StreamInputSource(streamName);
-            // initialize the source, which will confirm that the stream exists
-            // and can be opened
-            redirector->init();
             return redirector;
         }
 
@@ -286,29 +295,31 @@ InputRedirector CommandIOConfiguration::createInputSource(RexxActivation *contex
             {
                 Protected<ArrayClass> source = new_array(inputObject);
                 Protected<InputRedirector> redirector = new ArrayInputSource(inputObject);
-                // initialize the source, which sets up initial positions
-                redirector->init();
                 return redirector;
             }
             // an evaluated stem object
             if (::isStem(inputObject))
             {
                 Protected<InputRedirector> redirector = new StemInputSource((StemClass *)inputObject);
-                // initialize the source, which will confirm that the stem variable
-                // follows the stem.0 array convention
-                redirector->init();
-                return redirector;
             }
 
             // Now we need to check for input streams
             RexxClass *streamClass = TheRexxPackage->findClass(GlobalNames::INPUTSTREAM);
             if (inputObject->instanceOf(streamClass))
             {
+                Protected<InputRedirector> redirector = new StreamObjectInputSource(streamName);
+                return redirector;
+            }
+
+            // OK, now try for a FILE object
+            RexxClass *fileClass = TheRexxPackage->findClass(GlobalNames::FILE);
+            if (inputObject->instanceOf(fileClass))
+            {
+                ProtectedObject result;
+                // this just uses lineout
+                RexxString *streamName = inputObject->sendMessage(GlobalNames::ABSOLUTEPATH, result);
 
                 Protected<InputRedirector> redirector = new StreamObjectInputSource(streamName);
-                // initialize the source, which will confirm that the stream exists
-                // and can be opened
-                redirector->init();
                 return redirector;
             }
 
@@ -331,8 +342,6 @@ InputRedirector CommandIOConfiguration::createInputSource(RexxActivation *contex
                 }
             }
             Protected<InputRedirector> redirector = new ArrayInputSource(array);
-            // initialize the source, which sets up initial positions
-            redirector->init();
             return redirector;
         }
     }
@@ -394,7 +403,7 @@ OutputRedirector *CommandIOConfiguration::createErrorTarget(RexxActivation *cont
  *
  * @return A resolved and constructed output target.
  */
-OutputRedirector *CommandIOConfiguration::createOutputSource(RexxActivation *context, ExpressionStack *stack, RexxInternalObject *outputTarget, RedirectionType type, OutputOption, option)
+OutputRedirector *CommandIOConfiguration::createOutputSource(RexxActivation *context, ExpressionStack *stack, RexxInternalObject *outputTarget, RedirectionType::Enum type, OutputOption::Enum option)
 {
     RexxObject *outputObject = outputTarget->evaluate(context, stack);
     // need to trace this if on
@@ -403,21 +412,18 @@ OutputRedirector *CommandIOConfiguration::createOutputSource(RexxActivation *con
     {
         case STEM_VARIABLE:
         {
-            Protected<OutputRedirector> redirector = new StemOutputTarget((StemClass *)outputObject);
-            // initialize the source, which will confirm that the stem variable
-            // follows the stem.0 array convention
-            redirector->init(option);
+            Protected<OutputRedirector> redirector = new StemOutputTarget((StemClass *)outputObject, option);
             return redirector;
         }
         case STREAM_NAME:
         {
             // this must be a string
             Protected<RexxString> streamName = outputObject->requestString();
+            // because we need to detect conflicts between input and outputs,
+            // we need to use the fully qualified file name here.
+            streamName = SystemInterpreter::qualifyFileSystemName(streamName);
 
-            Protected<OutputRedirector> redirector = new StreamOutputTarget(streamName);
-            // initialize the source, which will confirm that the stream exists
-            // and can be opened
-            redirector->init(option);
+            Protected<OutputRedirector> redirector = new StreamOutputTarget(streamName, option);
             return redirector;
         }
         default:
@@ -425,10 +431,7 @@ OutputRedirector *CommandIOConfiguration::createOutputSource(RexxActivation *con
             // an evaluated stem object
             if (::isStem(outputObject))
             {
-                Protected<OutputRedirector> redirector = new StemOutputTarget((StemClass *)outputObject);
-                // initialize the source, which will confirm that the stem variable
-                // follows the stem.0 array convention
-                redirector->init(option);
+                Protected<OutputRedirector> redirector = new StemOutputTarget((StemClass *)outputObject, option);
                 return redirector;
             }
 
@@ -436,10 +439,27 @@ OutputRedirector *CommandIOConfiguration::createOutputSource(RexxActivation *con
             RexxClass *streamClass = TheRexxPackage->findClass(GlobalNames::OUTPUTSTREAM);
             if (outputObject->instanceOf(streamClass))
             {
-                Protected<InputRedirector> redirector = new StreamObjectOutputTarget(outputObject);
-                // initialize the source, which will confirm that the stream exists
-                // and can be opened
-                redirector->init(option);
+                // REPLACE or APPEND does not make sense for an arbitrary inputstream
+                // object that might not even be a file stream. raise an error for anything
+                // other than default
+                if (option != DEFAULT_REPLACE)
+                {
+                    reportException(Error_Execution_using_stream_option);
+                }
+
+                Protected<InputRedirector> redirector = new StreamObjectOutputTarget(outputObject, option);
+                return redirector;
+            }
+
+            // OK, now try for a FILE object
+            RexxClass *fileClass = TheRexxPackage->findClass(GlobalNames::FILE);
+            if (inputObject->instanceOf(fileClass))
+            {
+                ProtectedObject result;
+                // this just uses lineout
+                RexxString *streamName = inputObject->sendMessage(GlobalNames::ABSOLUTEPATH, result, option);
+
+                Protected<OutputRedirector> redirector = new StreamOutputTarget(streamName);
                 return redirector;
             }
 
@@ -447,10 +467,7 @@ OutputRedirector *CommandIOConfiguration::createOutputSource(RexxActivation *con
             RexxClass *orderedCollection = TheRexxPackage->findClass(GlobalNames::ORDEREDCOLLECTION);
             if (outputObject->instanceOf(orderedCollection))
             {
-                Protected<InputRedirector> redirector = new CollectionOutputTarget(outputObject);
-                // initialize the source, which will confirm that the stream exists
-                // and can be opened
-                redirector->init(option);
+                Protected<InputRedirector> redirector = new CollectionOutputTarget(outputObject, option);
                 return redirector;
             }
             // an unknown type of target

@@ -78,6 +78,8 @@
 #include "TrapHandler.hpp"
 #include "MethodArguments.hpp"
 #include "RequiresDirective.hpp"
+#include "CommandIOConfiguration.hpp"
+#include "CommandIOContext.hpp"
 
 
 // max instructions without a yield
@@ -1503,7 +1505,7 @@ CommandIOConfiguration *RexxActivation::getIOConfig(RexxString *environment)
     }
 
     // see if we have one for this environment name
-    return settings.ioConfigs->get(environment);
+    return (CommandIOConfiguration *)settings.ioConfigs->get(environment);
 }
 
 
@@ -1518,7 +1520,7 @@ void RexxActivation::addIOConfig(RexxString *environment, CommandIOConfiguration
 {
     // create or copy the config table as required
     checkIOConfigTable();
-    setting.ioConfigs->put(config, environment);
+    settings.ioConfigs->put(config, environment);
 }
 
 
@@ -1881,9 +1883,6 @@ void RexxActivation::toggleAddress()
     RexxString *temp = settings.currentAddress;
     settings.currentAddress = settings.alternateAddress;
     settings.alternateAddress = temp;
-    CommandIOConfiguration *tempConfig = settings.currentIOConfig;
-    settings.currentIOConfig = settings.alternateIOConfig;
-    settings.alternateIOConfig = tempConfig;
 }
 
 
@@ -1894,24 +1893,16 @@ void RexxActivation::toggleAddress()
  * @param address The new address setting.  The current setting becomes
  *                the alternate.
  */
-void RexxActivation::setAddress(RexxString *address, CommandIOConfig *config)
+void RexxActivation::setAddress(RexxString *address, CommandIOConfiguration *config)
 {
     settings.alternateAddress = settings.currentAddress;
-    settings.alternateIOConfig = settings.currentIOConfig;
     settings.currentAddress = address;
     // if a config was specified, then make it the current for this
     // environment
     if (config != OREF_NULL)
     {
-        settings.currentIOConfig = config;
         // keep this in the table
         addIOConfig(address, config);
-    }
-    // we might have a global configuration set for this environment. Use
-    // if if it exists
-    else
-    {
-        settings.currentIOConfig = getIOConfig(address);
     }
 }
 
@@ -3952,15 +3943,15 @@ CommandIOContext *RexxActivation::resolveAddressIOConfig(RexxString *address, Co
 {
     // see if we have something globally set, merge with any
     // local settings that have been specified
-    CommandIOContext *globalConfig = getIOConfig(address);
+    CommandIOConfiguration *globalConfig = getIOConfig(address);
     if (globalConfig != OREF_NULL)
     {
-        return globalConfig->createIOContext(this, &stack, localConfig)
+        return globalConfig->createIOContext(this, &stack, localConfig);
     }
     // no global, but might have a local one
     if (localConfig != OREF_NULL)
     {
-        return localConfig->createIOContext(this, &stack, OREF_NULL)
+        return localConfig->createIOContext(this, &stack, OREF_NULL);
     }
     // no configuration, nothing to do
     return OREF_NULL;
@@ -3970,11 +3961,10 @@ CommandIOContext *RexxActivation::resolveAddressIOConfig(RexxString *address, Co
 /**
  * Issue a command to a named host evironment
  *
+ * @param address  The target address
  * @param commandString
- *                The command to issue
- * @param address The target address
- *
- * @return The return code object
+ *                 The command to issue
+ * @param ioConfig A potential I/O redirection setup for this command.
  */
 void RexxActivation::command(RexxString *address, RexxString *commandString, CommandIOConfiguration *ioConfig)
 {
@@ -3986,12 +3976,12 @@ void RexxActivation::command(RexxString *address, RexxString *commandString, Com
     ProtectedObject commandResult;
 
     // we possibly have local or global IO configurations in place for
-    <Protected>CommandIOContext ioContext = resolveAddressIOConfig(address, ioConfig);
+    Protected<CommandIOContext> ioContext = resolveAddressIOConfig(address, ioConfig);
     // ensure we perform cleanup if any errors occur
     IOContext t(ioContext);
 
     // if we got an io context back, it is time to initialized everthing
-    if (ioContext != OREF_NULL)
+    if (ioContext.isNull() != OREF_NULL)
     {
         ioContext->init();
     }
@@ -4004,7 +3994,7 @@ void RexxActivation::command(RexxString *address, RexxString *commandString, Com
         CommandHandler *handler = activity->resolveCommandHandler(address);
         if (handler != OREF_NULL)
         {
-            handler->call(activity, this, address, commandString, commandResult, condition);
+            handler->call(activity, this, address, commandString, commandResult, condition, ioContext);
         }
         else
         {
@@ -4016,7 +4006,7 @@ void RexxActivation::command(RexxString *address, RexxString *commandString, Com
     }
 
     // perform the cleanup on the io configuration if it exists
-    t.cleanup()
+    t.cleanup();
 
     // now process the command result.
     RexxObject *rc = commandResult;

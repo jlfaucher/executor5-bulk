@@ -564,6 +564,7 @@ RexxInstruction *LanguageParser::addressNew()
     RexxString *environment = OREF_NULL;
     RexxInternalObject *command = OREF_NULL;
     RexxToken *token = nextReal();
+    Protected<CommandIOConfiguration> ioConfig;
 
     // have something to process?  Having nothing is not an error, it
     // just toggles the environment
@@ -577,7 +578,15 @@ RexxInstruction *LanguageParser::addressNew()
             // back up to include this token in the expression
             previousToken();
             // and get the expression
-            dynamicAddress = parseExpression(TERM_EOC);
+            dynamicAddress = parseExpression(TERM_EOC | TERM_WITH | TERM_KEYWORD);
+            // Now check to see if we ended with the WITH keyword, if so, .
+            // we need to create an AddressWithInstruction rather than the
+            // normal AddressInstruction object.
+            token = nextToken();
+            if (token->subKeyword() == SUBKEY_WITH)
+            {
+                ioConfig = parseAddressWith();
+            }
         }
         else
         {
@@ -586,7 +595,15 @@ RexxInstruction *LanguageParser::addressNew()
             if (token->subKeyword() == SUBKEY_VALUE)
             {
                 // get the value expression
-                dynamicAddress = requiredExpression(TERM_EOC, Error_Invalid_expression_address);
+                dynamicAddress = requiredExpression(TERM_EOC | TERM_WITH | TERM_KEYWORD, Error_Invalid_expression_address);
+                // Now check to see if we ended with the WITH keyword, if so, .
+                // we need to create an AddressWithInstruction rather than the
+                // normal AddressInstruction object.
+                token = nextToken();
+                if (token->subKeyword() == SUBKEY_WITH)
+                {
+                    ioConfig = parseAddressWith();
+                }
             }
             else
             {
@@ -603,18 +620,19 @@ RexxInstruction *LanguageParser::addressNew()
                     // which is a much more complicated parsing process.
                     command = parseExpression(TERM_EOC | TERM_WITH | TERM_KEYWORD);
                     // This could have been ADDRESS env WITH (i.e., no expresson)
-                    // this is not allowed.
-                    if (command.isNull())
-                    {
-                        syntaxError(Error_Invalid_missing_command_expression);
-                    }
+                    // which is set a configuration set, not a command .
+
+                    // the bit above will have terminated with either the WITH keyword
+                    // or the end of the clause. We know this will return something
+                    // for an expression if it started with anything other than WITH,
+                    // so the next token is either the symbol WITH or the end of cloase
                     // Now check to see if we ended with the WITH keyword, if so, .
-                    // we need to create an AddressWithInstruction rather than the
+                    // we end up attaching a configuration ruction rather than the
                     // normal AddressInstruction object.
                     token = nextToken();
                     if (token->subKeyword() == SUBKEY_WITH)
                     {
-                        return addressWithNew(environment, command);
+                        ioConfig = parseAddressWith();
                     }
                 }
             }
@@ -622,7 +640,7 @@ RexxInstruction *LanguageParser::addressNew()
     }
 
     RexxInstruction *newObject = new_instruction(ADDRESS, Address);
-    ::new ((void *)newObject) RexxInstructionAddress(dynamicAddress, environment, command);
+    ::new ((void *)newObject) RexxInstructionAddress(dynamicAddress, environment, command, ioConfig);
     return newObject;
 }
 
@@ -637,18 +655,9 @@ RexxInstruction *LanguageParser::addressNew()
  *
  * @return A new instruction object.
  */
-RexxInstruction *LanguageParser::addressWithNew(RexxString *environment, RexxInternalObject *command)
+CommandIOConfiguration *LanguageParser::parseAddressWith()
 {
-    // first create and initialize the instruction so we can fill things in as we parse
-    RexxInstruction *newObject = new_instruction(ADDRESS_LOOP, AddressWith);
-    Protected<RexxInstructionAddressWith> instruction = ::new ((void *)newObject) RexxInstructionAddressWith(environment, command);
-
-    // set everything to the defaults
-    instruction->inputType = DEFAULT;
-    instruction->outputType = DEFAULT;
-    instruction->errorType = DEFAULT;
-    instruction->outputOption = REPLACE;
-    instruction->errorOption = REPLACE;
+    Protected<CommandIOConfiguration> ioConfig = new CommandIOConfiguration();
 
     // step to the next token and start processing
     RexxToken *token = nextReal();
@@ -670,18 +679,123 @@ RexxInstruction *LanguageParser::addressWithNew(RexxString *environment, RexxInt
             case SUBKEY_INPUT:
             {
                 // not valid if we've had this before
-                if (instruction->inputType != DEFAULT)
+                if (ioConfig->inputType != DEFAULT_PROCESSING)
                 {
                     syntaxError(Error_Invalid_subkeyword_address_input);
                 }
-
-                // NB: the INPUT source does not have an option, but we need to
-                // pass a reference to the method, so we use the output one, which will
-                // not be filled in.
-                parseRedirectOptions(SUBKEY_INPUT, instruction->inputSource, instruction->inputType);
+                token = nextReal();
+                // is this specified as NORMAL? we don't parse any further.
+                if (checkRedirectNormal(token))
+                {
+                    inputType = NORMAL;
+                }
+                // need to parse further
+                else
+                {
+                    parseRedirectOptions(token, ioConfig->inputSource, ioConfig->inputType);
+                }
             }
-
+            case SUBKEY_OUTPUT:
+            {
+                // not valid if we've had this before
+                if (ioConfig->outputType != DEFAULT_PROCESSING)
+                {
+                    syntaxError(Error_Invalid_subkeyword_address_output);
+                }
+                token = nextReal();
+                // is this specified as NORMAL? we don't parse any further.
+                if (checkRedirectNormal(token))
+                {
+                    outputType = NORMAL;
+                }
+                else
+                {
+                    // backup and parse off the output options and targets
+                    previousToken();
+                    ioConfig->outputOption = parseRedirectOutputOptions();
+                    parseRedirectOptions(ioConfig->outoutTarget, ioConfig->outputType);
+                }
+            }
+            case SUBKEY_ERROR:
+            {
+                // not valid if we've had this before
+                if (ioConfig->errorType != DEFAULT_PROCESSING)
+                {
+                    syntaxError(Error_Invalid_subkeyword_address_error);
+                }
+                token = nextReal();
+                // is this specified as NORMAL? we don't parse any further.
+                if (checkRedirectNormal(token))
+                {
+                    outputType = NORMAL;
+                }
+                else
+                {
+                    // backup and parse off the output options and targets
+                    previousToken();
+                    ioConfig->errorOption = parseRedirectOutputOptions();
+                    parseRedirectOptions(ioConfig->errorTarget, ioConfig->errorType);
+                }
+            }
+            syntaxError(Error_Invalid_subkeyword_address_with_option, token);
+        }
+        // step to the next token position
+        token = nextReal();
     }
+}
+
+
+/**
+ * Check if this source or target is specified as NORMAL,
+ * which resets to default.
+ *
+ * @return true if the next keyword is NORMAL, false for anything else.
+ */
+bool LanguageParser::checkRedirectNormal(Token *token)
+{
+    return token->isSymbol() && token->subKeyword() == SUBKEY_NORMAL;
+}
+
+
+/**
+ * Check for potential APPEND/REPLACE options on an
+ * ADDRESS WITH OUTPUT or ERROR keyword.
+ *
+ * @return The output option (including DEFAULT_REPLACE if
+ *         nothing was specified)
+ */
+OutputOption::Enum LanguageParser::parseRedirectOutputOptions()
+{
+    // any option must be a symbol. The next token after the
+    // option must also be a symbol, but we'll handle that elsewhere.
+    Token *token = nextReal();
+    if (!token->isSymbol())
+    {
+        // back up and return the default
+        previousToken();
+        return DEFAULT_REPLACE;
+    }
+
+    // now see if this is one of our keyword values
+    switch (token->subKeyword())
+    {
+        case KEYWORD_REPLACE:
+            return REPLACE;
+
+        case KEYWORD_APPEND:
+            return APPEND;
+
+        // do the default usual thing for this.
+        case SUBKEY_NORMAL:
+            return NORMAL;
+
+        // probably one of the target type keywords
+        default:
+            // back up and return the default
+            previousToken();
+            return DEFAULT_REPLACE;
+    }
+    return DEFAULT_REPLACE;
 }
 
 
@@ -692,9 +806,8 @@ RexxInstruction *LanguageParser::addressWithNew(RexxString *environment, RexxInt
  * @param source A reference to the field for the evaluated target
  *
  * @param type   The type of redirection to apply
- * @param option Any option associated with that redirection.
  */
-void LanguageParser::parseRedirectOptions(InstructionSubKeyword ioType, RexxInternalObject *&source, RedirectionType &type)
+void LanguageParser::parseRedirectOptions(InstructionSubKeyword ioType, RexxInternalObject *&source, RedirectionType::Enum &type)
 {
     token = nextReal();
 
@@ -707,11 +820,10 @@ void LanguageParser::parseRedirectOptions(InstructionSubKeyword ioType, RexxInte
     // now handle the different I/O types.
     switch (token->subKeyword())
     {
+        // using a stem variable from the context
         case SUBKEY_STEM:
         {
             type = STEM_VARIABLE;
-            // there may an option between
-
             // this must be followed by a stem variable
             token = nextReal();
             if (!token->isStem())
@@ -722,19 +834,33 @@ void LanguageParser::parseRedirectOptions(InstructionSubKeyword ioType, RexxInte
             source = addText(token);
         }
 
+        // a string stream name. Can be a literal or an expression
         case SUBKEY_STREAM:
         {
+            type = STREAM_NAME;
 
+            // we use the constant expression syntax here like the
+            // RAISE instruction
+            source = parseConstantExpression();
+            if (source == OREF_NULL)
+            {
+                syntaxError(Error_Invalid_expression_address_with_stream);
+            }
         }
 
+        // determined by evaluating an expression to an object and figuring
+        // out what to do at run time.
         case SUBKEY_USING:
         {
+            type = USING_OBJECT;
 
-        }
-
-        case SUBKEY_NORMAL:
-        {
-
+            // we use the constant expression syntax here like the
+            // RAISE instruction
+            source = parseConstantExpression();
+            if (source == OREF_NULL)
+            {
+                syntaxError(Error_Invalid_expression_address_with_using);
+            }
         }
 
         default:
@@ -742,15 +868,6 @@ void LanguageParser::parseRedirectOptions(InstructionSubKeyword ioType, RexxInte
             syntaxError(Error_Invalid_subkeyword_address_with_option, token);
         }
     }
-
-    // this is constant expression form, and is required
-    description = parseConstantExpression();
-    if (description == OREF_NULL)
-    {
-        syntaxError(Error_Invalid_expression_raise_description);
-    }
-    // protect from GC.
-    pushSubTerm(description);
     break;
 }
 

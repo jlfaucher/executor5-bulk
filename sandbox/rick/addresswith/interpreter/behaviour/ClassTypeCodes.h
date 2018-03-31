@@ -3,7 +3,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -227,34 +227,45 @@ typedef enum
     T_PointerBucket = 165,
     T_PointerTable = 166,
     T_SpecialDotVariableTerm = 167,
+    T_CommandIOConfiguration = 168,
 
-    T_Last_Internal_Class = 167,
+    T_Last_Internal_Class = 168,
     
-    T_First_Transient_Class = 168,
+    T_First_Transient_Class = 169,
 
-    T_Memory = 168,
-    T_InternalStack = 169,
-    T_LiveStack = 170,
-    T_PushThroughStack = 171,
-    T_Activity = 172,
-    T_Activation = 173,
-    T_NativeActivation = 174,
-    T_ActivationFrameBuffer = 175,
-    T_Envelope = 176,
-    T_LanguageParser = 177,
-    T_Clause = 178,
-    T_Token = 179,
-    T_DoBlock = 180,
-    T_InterpreterInstance = 181,
-    T_SecurityManager = 182,
-    T_CommandHandler = 183,
-    T_MapBucket = 184,
-    T_MapTable = 185,
-    T_TrapHandler = 186,
+    T_Memory = 169,
+    T_InternalStack = 170,
+    T_LiveStack = 171,
+    T_PushThroughStack = 172,
+    T_Activity = 173,
+    T_Activation = 174,
+    T_NativeActivation = 175,
+    T_ActivationFrameBuffer = 176,
+    T_Envelope = 177,
+    T_LanguageParser = 178,
+    T_Clause = 179,
+    T_Token = 180,
+    T_DoBlock = 181,
+    T_InterpreterInstance = 182,
+    T_SecurityManager = 183,
+    T_CommandHandler = 184,
+    T_MapBucket = 185,
+    T_MapTable = 186,
+    T_TrapHandler = 187,
+    T_CommandIOContext = 188,
+    T_StemOutputTarget = 189,
+    T_StreamObjectOutputTarget = 190,
+    T_StreamOutputTarget = 191,
+    T_CollectionOutputTarget = 192,
+    T_BufferingOutputTarget = 193,
+    T_StemInputSource = 194,
+    T_StreamObjectInputSource = 195,
+    T_StreamInputSource = 196,
+    T_ArrayInputSource = 197,
 
-    T_Last_Transient_Class = 186,
-    T_Last_Primitive_Class = 186,
-    T_Last_Class_Type = 186,
+    T_Last_Transient_Class = 197,
+    T_Last_Primitive_Class = 197,
+    T_Last_Class_Type = 197,
     
 } ClassTypeCode;
 

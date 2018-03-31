@@ -1,7 +1,9 @@
+
+
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -225,6 +227,7 @@ RexxBehaviour RexxBehaviour::primitiveBehaviours[T_Last_Primitive_Class + 1] =
     RexxBehaviour(T_PointerBucket, (PCPPM *)RexxObject::operatorMethods),
     RexxBehaviour(T_PointerTable, (PCPPM *)RexxObject::operatorMethods),
     RexxBehaviour(T_SpecialDotVariableTerm, (PCPPM *)RexxObject::operatorMethods),
+    RexxBehaviour(T_CommandIOConfiguration, (PCPPM *)RexxObject::operatorMethods),
     RexxBehaviour(T_Memory, (PCPPM *)RexxObject::operatorMethods),
     RexxBehaviour(T_InternalStack, (PCPPM *)RexxObject::operatorMethods),
     RexxBehaviour(T_LiveStack, (PCPPM *)RexxObject::operatorMethods),
@@ -244,6 +247,16 @@ RexxBehaviour RexxBehaviour::primitiveBehaviours[T_Last_Primitive_Class + 1] =
     RexxBehaviour(T_MapBucket, (PCPPM *)RexxObject::operatorMethods),
     RexxBehaviour(T_MapTable, (PCPPM *)RexxObject::operatorMethods),
     RexxBehaviour(T_TrapHandler, (PCPPM *)RexxObject::operatorMethods),
+    RexxBehaviour(T_CommandIOContext, (PCPPM *)RexxObject::operatorMethods),
+    RexxBehaviour(T_StemOutputTarget, (PCPPM *)RexxObject::operatorMethods),
+    RexxBehaviour(T_StreamObjectOutputTarget, (PCPPM *)RexxObject::operatorMethods),
+    RexxBehaviour(T_StreamOutputTarget, (PCPPM *)RexxObject::operatorMethods),
+    RexxBehaviour(T_CollectionOutputTarget, (PCPPM *)RexxObject::operatorMethods),
+    RexxBehaviour(T_BufferingOutputTarget, (PCPPM *)RexxObject::operatorMethods),
+    RexxBehaviour(T_StemInputSource, (PCPPM *)RexxObject::operatorMethods),
+    RexxBehaviour(T_StreamObjectInputSource, (PCPPM *)RexxObject::operatorMethods),
+    RexxBehaviour(T_StreamInputSource, (PCPPM *)RexxObject::operatorMethods),
+    RexxBehaviour(T_ArrayInputSource, (PCPPM *)RexxObject::operatorMethods),
 };
 
 

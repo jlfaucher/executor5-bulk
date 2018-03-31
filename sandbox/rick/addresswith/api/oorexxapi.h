@@ -164,6 +164,13 @@ typedef RexxExitContext_ RexxExitContext;
 typedef const struct RexxExitContext_ *RexxExitContext;
 #endif
 
+struct RexxIORedirectorContext_;
+#ifdef __cplusplus
+typedef RexxIORedirectorContext_ RexxIORedirectorContext;
+#else
+typedef const struct RexxIORedirectorContext_ *RexxIORedirectorContext;
+#endif
+
 
 /* This typedef simplifies coding of an Exit handler.                */
 typedef int REXXENTRY RexxContextExitHandler(RexxExitContext *, int, int, PEXIT);
@@ -407,58 +414,8 @@ typedef struct
 /* This typedef simplifies coding of an Exit handler.                */
 typedef RexxObjectPtr REXXENTRY RexxContextCommandHandler(RexxExitContext *, RexxStringObject, RexxStringObject);
 
-// the interface for I/O redirection
-#define REDIRECT_INTERFACE_VERSION 100
-
-class RexxIORedirector;
-
-struct
-{
-    wholenumber_t interfaceVersion;    // The interface version identifier
-
-    CSTRING (RexxEntry *GetInput)(RexxIORedirector *);
-    void    (RexxEntry *WriteOutput(RexxIORedirector *, CSTRING, size_t);
-    void    (RexxEntry *WriteError(RexxIORedirector *, CSTRING, size_t);
-    logical_t (RexxEntry *IsInputRedirected(RexxIORedirector *);
-    logical_t (RexxEntry *IsOutputRedirected(RexxIORedirector *);
-    logical_t (RexxEntry *IsErrorRedirected(RexxIORedirector *);
-} IORedirectorInterface;
-
-
-// interface structure for I/O redirection
-class RexxIORedirector
-{
-public:
-    CSTRING GetInput()
-    {
-        return functions->GetInput(this);
-    }
-    void WriteOutput(CSTRING data, size_t length)
-    {
-        functions->WriteOutput(this, data, length);
-    }
-    void WriteError(CSTRING data, size_t length)
-    {
-        functions->WriteError(this, data, length);
-    }
-    logical_t IsInputRedirected()
-    {
-        return functions->IsInputRedirected(this);
-    }
-    logical_t IsOutputRedirected()
-    {
-        return functions->IsOutputRedirected(this);
-    }
-    logical_t IsErrorRedirected()
-    {
-        return functions->IsErrorRedirected(this);
-    }
-
-    IORedirectorInterface *functions;
-};
-
 // This typedef is used for command environments that support i/o redirection
-typedef RexxObjectPtr REXXENTRY RexxRedirectingCommandHandler(RexxExitContext *, RexxStringObject, RexxStringObject, RexxIORedirector *);
+typedef RexxObjectPtr REXXENTRY RexxRedirectingCommandHandler(RexxExitContext *, RexxStringObject, RexxStringObject, RexxIORedirectorContext *);
 
 
 typedef struct
@@ -748,6 +705,21 @@ typedef struct
     RexxDirectoryObject (RexxEntry *GetAllContextVariables)(RexxExitContext *);
     RexxObjectPtr    (RexxEntry *GetCallerContext)(RexxExitContext *);
 } ExitContextInterface;
+
+
+// the interface for I/O redirection
+#define REDIRECT_INTERFACE_VERSION 100
+typedef struct
+{
+    wholenumber_t interfaceVersion;    // The interface version identifier
+
+    CSTRING (RexxEntry *GetInput)(RexxIORedirectorContext *);
+    void    (RexxEntry *WriteOutput)(RexxIORedirectorContext *, CSTRING, size_t);
+    void    (RexxEntry *WriteError)(RexxIORedirectorContext *, CSTRING, size_t);
+    logical_t (RexxEntry *IsInputRedirected)(RexxIORedirectorContext *);
+    logical_t (RexxEntry *IsOutputRedirected)(RexxIORedirectorContext *);
+    logical_t (RexxEntry *IsErrorRedirected)(RexxIORedirectorContext *);
+} IORedirectorInterface;
 
 END_EXTERN_C()
 
@@ -3697,6 +3669,41 @@ struct RexxExitContext_
     RexxObjectPtr GetCallerContext()
     {
         return functions->GetCallerContext(this);
+    }
+
+#endif
+};
+
+
+// interface structure for I/O redirection
+struct RexxIORedirectorContext_
+{
+    IORedirectorInterface *functions;
+
+#ifdef __cplusplus
+    CSTRING GetInput()
+    {
+        return functions->GetInput(this);
+    }
+    void WriteOutput(CSTRING data, size_t length)
+    {
+        functions->WriteOutput(this, data, length);
+    }
+    void WriteError(CSTRING data, size_t length)
+    {
+        functions->WriteError(this, data, length);
+    }
+    logical_t IsInputRedirected()
+    {
+        return functions->IsInputRedirected(this);
+    }
+    logical_t IsOutputRedirected()
+    {
+        return functions->IsOutputRedirected(this);
+    }
+    logical_t IsErrorRedirected()
+    {
+        return functions->IsErrorRedirected(this);
     }
 #endif
 };

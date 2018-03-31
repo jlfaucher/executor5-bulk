@@ -43,6 +43,9 @@
 #ifndef Included_OutputRedirector
 #define Included_OutputRedirector
 
+#include "CommandIOConfiguration.hpp"
+
+class InputRedirector;
 
 /**
  * Base class for I/O redirectors.
@@ -50,14 +53,6 @@
 class OutputRedirector : public RexxInternalObject
 {
  public:
-
-     // the options for how how output is handled
-     enum
-     {
-         DEFAULT,
-         APPEND,
-         REPLACE
-     } OutputOption;
 
     // Note, we never directly create instances of this
     // class so we don't need new, live, etc. These must
@@ -68,14 +63,14 @@ class OutputRedirector : public RexxInternalObject
     virtual void init () { ; }
     virtual void write(RexxString *v)  { ; }
     virtual void cleanup() { ; }
-    virtual RedirectorType type() { return CommandIOContext::NONE; }
+    virtual RedirectionType::Enum type() { return RedirectionType::NONE; }
     virtual RexxObject *target() { return OREF_NULL; }
 
     bool needsBuffering(InputRedirector *d);
-    bool isSameTarget(OutputRedictor *e);
+    bool isSameTarget(OutputRedirector *e);
 
-    OutputOption option;        // REPLACE/APPEND option
-    logical_t    initialized;   // indicates this redirector has been initialized already
+    OutputOption::Enum option;    // REPLACE/APPEND option
+    logical_t    initialized;     // indicates this redirector has been initialized already
 };
 
 
@@ -88,7 +83,7 @@ class StemOutputTarget : public OutputRedirector
     void        *operator new(size_t, size_t);
     inline void  operator delete(void *) { }
 
-    inline StemOutputTarget(StemClass *stem, OutputOption o);
+    inline StemOutputTarget(StemClass *stem, OutputOption::Enum o);
     inline StemOutputTarget(RESTORETYPE restoreType) { ; };
 
     virtual void live(size_t);
@@ -96,7 +91,7 @@ class StemOutputTarget : public OutputRedirector
 
     virtual void init ();
     virtual void write(RexxString *v);
-    virtual RedirectorType type() { return CommandIOContext::STEM_VARIABLE; }
+    virtual RedirectionType::Enum type() { return RedirectionType::STEM_VARIABLE; }
     virtual RexxObject *target() { return stem; }
 
 protected:
@@ -115,14 +110,15 @@ class StreamObjectOutputTarget : public OutputRedirector
     void        *operator new(size_t, size_t);
     inline void  operator delete(void *) { }
 
-    inline StreamObjectOutputTarget(RexxObject *s, OutputOption o);
+    inline StreamObjectOutputTarget() { ; };
+    inline StreamObjectOutputTarget(RexxObject *s, OutputOption::Enum o);
     inline StreamObjectOutputTarget(RESTORETYPE restoreType) { ; };
 
     virtual void live(size_t);
     virtual void liveGeneral();
 
     virtual void write(RexxString *v);
-    virtual RedirectorType type() { return CommandIOContext::STREAM_OBJECT; }
+    virtual RedirectionType::Enum type() { return RedirectionType::STREAM_OBJECT; }
     virtual RexxObject *target() { return stream; }
 
 protected:
@@ -140,7 +136,7 @@ class StreamOutputTarget : public StreamObjectOutputTarget
     void        *operator new(size_t, size_t);
     inline void  operator delete(void *) { }
 
-    inline StreamOutputTarget(RexxString *n, OutputOption o);
+    inline StreamOutputTarget(RexxString *n, OutputOption::Enum o);
     inline StreamOutputTarget(RESTORETYPE restoreType) { ; };
 
     virtual void live(size_t);
@@ -149,7 +145,7 @@ class StreamOutputTarget : public StreamObjectOutputTarget
     virtual void init();
     virtual void write(RexxString *v);
     virtual void cleanup() { ; }
-    virtual RedirectorType type() { return CommandIOContext::STREAM_NAME; }
+    virtual RedirectionType::Enum type() { return RedirectionType::STREAM_NAME; }
     virtual RexxObject *target() { return name; }
 
 protected:
@@ -167,14 +163,14 @@ class CollectionOutputTarget : public OutputRedirector
     void        *operator new(size_t, size_t);
     inline void  operator delete(void *) { }
 
-    inline CollectionOutputTarget(RexxObject *c, OutputOption o);
+    inline CollectionOutputTarget(RexxObject *c, OutputOption::Enum o);
     inline CollectionOutputTarget(RESTORETYPE restoreType) { ; };
 
     virtual void live(size_t);
     virtual void liveGeneral(MarkReason reason);
 
     virtual void write(RexxString *v);
-    virtual RedirectorType type() { return CommandIOContext::COLLECTION_OBJECT; }
+    virtual RedirectionType::Enum type() { return RedirectionType::COLLECTION_OBJECT; }
     virtual RexxObject *target() { return collection; }
 
 protected:
@@ -204,8 +200,8 @@ class BufferingOutputTarget : public OutputRedirector
     virtual void cleanup() { ; }
 
 protected:
-    RexxArray *collector;       // the buffer used for collection
-    OutputRedirector *target;   // the final output target
+    ArrayClass *collector;       // the buffer used for collection
+    OutputRedirector *target;    // the final output target
 };
 #endif
 

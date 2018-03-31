@@ -94,7 +94,7 @@ void *StemOutputTarget::operator new(size_t size)
  * @param stem      The stem oubect being used
  * @param o         The append/replace option for the redirect.
  */
-StemOutputTarget::StemOutputTarget(RexxObject *s, OutputOption o)
+StemOutputTarget::StemOutputTarget(RexxObject *s, OutputOption::Enum o)
 {
     stem = s;
     option = o;
@@ -138,7 +138,7 @@ void StemOutputTarget::init()
     }
     initialized = true;
     // replace is the easy way to handle we just reset everything
-    if (option == REPLACE)
+    if (option == REPLACE || option == DEFAULT)
     {
         // empty everything out (could already be empty
         stem->empty();
@@ -212,7 +212,7 @@ void *StreamObjectOutputTarget::operator new(size_t size)
  * @param stem      The stem oubect being used
  * @param o         The append/replace option for the redirect.
  */
-StreamObjectOutputTarget::StreamObjectOutputTarget(RexxObject *s, OutputOption o)
+StreamObjectOutputTarget::StreamObjectOutputTarget(RexxObject *s, OutputOption::Enum o)
 {
     stream = s;
     option = o;
@@ -277,7 +277,7 @@ void *StreamOutputTarget::operator new(size_t size)
  * @param n         The stream name
  * @param o         The append/replace option for the redirect.
  */
-StreamOutputTarget::StreamOutputTarget(RexxString *n, OutputOption o)
+StreamOutputTarget::StreamOutputTarget(RexxString *n, OutputOption::Enum o)
 {
     name = n;
     option = o;
@@ -333,7 +333,7 @@ void StreamOutputTarget::init()
     RexxString *openResult = OREF_NULL;
 
     // If replace is specified, we open this WRITE REPLACE
-    if (option == REPLACE)
+    if (option == REPLACE || option == DEFAULT)
     {
         openResult = stream->sendMessage(GlobalNames::OPEN, GlobalNames::WRITEREPLACE, result);
     }
@@ -379,7 +379,7 @@ void *CollectionOutputTarget::operator new(size_t size)
  * @param n         The stream name
  * @param o         The append/replace option for the redirect.
  */
-CollectionOutputTarget::CollectionOutputTarget(RexxObject *c, OutputOption o)
+CollectionOutputTarget::CollectionOutputTarget(RexxObject *c, OutputOption::Enum o)
 {
     collection = c;
     option = o;

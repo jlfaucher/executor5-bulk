@@ -74,7 +74,6 @@ class ActivationBase;
 class NativeActivation;
 class RexxActivation;
 
-
 typedef enum
 {
     RecursiveStringError,              // a recursion problem in error handling
@@ -432,6 +431,21 @@ inline NativeActivation *contextToActivation(RexxExitContext *c)
 inline NativeActivation *contextToActivation(RexxMethodContext *c)
 {
     return ((MethodContext *)c)->context;
+}
+
+
+/**
+ * Convert an API context to into the top native activation
+ * context associated with the thread.
+ *
+ * @param c      The source API context.
+ *
+ * @return A Native activation context that is the anchor point for the
+ *         API activity.
+ */
+inline NativeActivation *contextToActivation(RexxIORedirectorContext *c)
+{
+    return ((RedirectorContext *)c)->context;
 }
 
 #endif

@@ -51,6 +51,7 @@
 #include "PackageClass.hpp"
 #include "DirectoryClass.hpp"
 #include "ActivityManager.hpp"
+#include "CommandIOContext.hpp"
 
 BEGIN_EXTERN_C()
 
@@ -319,7 +320,7 @@ RexxClassObject RexxEntry FindCallContextClass(RexxCallContext *c, CSTRING n)
 }
 
 
-CSTRING RexxEntry GetInput(RexxRexxIORedirector *c)
+CSTRING RexxEntry GetInput(RexxIORedirectorContext *c)
 {
     ApiContext context(c);
     try
@@ -345,7 +346,7 @@ CSTRING RexxEntry GetInput(RexxRexxIORedirector *c)
 }
 
 
-void RexxEntry WriteOutput(RexxRexxIORedirector *c, const char *data, size_t length)
+void RexxEntry WriteOutput(RexxIORedirectorContext *c, const char *data, size_t length)
 {
     ApiContext context(c);
     try
@@ -366,7 +367,7 @@ void RexxEntry WriteOutput(RexxRexxIORedirector *c, const char *data, size_t len
 }
 
 
-void RexxEntry WriteError(RexxRexxIORedirector *c, const char *data, size_t length)
+void RexxEntry WriteError(RexxIORedirectorContext *c, const char *data, size_t length)
 {
     ApiContext context(c);
     try
@@ -388,7 +389,7 @@ void RexxEntry WriteError(RexxRexxIORedirector *c, const char *data, size_t leng
 }
 
 
-logical_t RexxEntry IsInputRedirected()
+logical_t RexxEntry IsInputRedirected(RexxIORedirectorContext *c)
 {
     ApiContext context(c);
     try
@@ -410,7 +411,7 @@ logical_t RexxEntry IsInputRedirected()
 }
 
 
-logical_t RexxEntry IsOutputRedirected()
+logical_t RexxEntry IsOutputRedirected(RexxIORedirectorContext *c)
 {
     ApiContext context(c);
     try
@@ -432,7 +433,7 @@ logical_t RexxEntry IsOutputRedirected()
 }
 
 
-logical_t RexxEntry IsErrorRedirected()
+logical_t RexxEntry IsErrorRedirected(RexxIORedirectorContext *c)
 {
     ApiContext context(c);
     try
@@ -456,6 +457,9 @@ logical_t RexxEntry IsErrorRedirected()
 
 END_EXTERN_C()
 
+/**
+ * The interface vector for call context callbacks.
+ */
 CallContextInterface Activity::callContextFunctions =
 {
     CALL_INTERFACE_VERSION,
@@ -477,6 +481,9 @@ CallContextInterface Activity::callContextFunctions =
 };
 
 
+/**
+ * The interface vector for exit handler callbacks.
+ */
 ExitContextInterface Activity::exitContextFunctions =
 {
     EXIT_INTERFACE_VERSION,
@@ -488,7 +495,11 @@ ExitContextInterface Activity::exitContextFunctions =
 };
 
 
-IORediectorInterface Activity::ioRedirectorContextFunctions =
+/**
+ * The interface vector for command handler I/O redirection
+ * callbacks.
+ */
+IORedirectorInterface Activity::ioRedirectorContextFunctions =
 {
     REDIRECT_INTERFACE_VERSION,
     GetInput,

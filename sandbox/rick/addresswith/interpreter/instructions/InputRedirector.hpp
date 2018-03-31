@@ -43,6 +43,7 @@
 #ifndef Included_InputRedirector
 #define Included_InputRedirector
 
+#include "CommandIOConfiguration.hpp"
 
 /**
  * Base class for I/O redirectors.
@@ -59,7 +60,7 @@ class InputRedirector : public RexxInternalObject
     virtual void init () { ; }
     virtual RexxString *read() { return OREF_NULL; }
     virtual void cleanup() { ; }
-    virtual RedirectorType type() { return CommandIOContext::NONE; }
+    virtual RedirectionType::Enum type() { return RedirectionType::NONE; }
     virtual RexxObject *target() { return OREF_NULL; }
 };
 
@@ -81,7 +82,7 @@ class StemInputSource : public InputRedirector
 
     virtual void init ();
     virtual RexxString *read();
-    virtual RedirectorType type() { return CommandIOContext::STEM_VARIABLE; }
+    virtual RedirectionType::Enum type() { return RedirectionType::STEM_VARIABLE; }
     virtual RexxObject *target() { return stem; }
 
 protected:
@@ -103,15 +104,16 @@ class StreamObjectInputSource : public InputRedirector
     void        *operator new(size_t, size_t);
     inline void  operator delete(void *) { }
 
-    inline StreamObjectInputTarget(RexxObject *s);
-    inline StreamObjectInputTarget(RESTORETYPE restoreType) { ; };
+    inline StreamObjectInputSource() { ; }
+    inline StreamObjectInputSource(RexxObject *s);
+    inline StreamObjectInputSource(RESTORETYPE restoreType) { ; };
 
     virtual void live(size_t);
     virtual void liveGeneral(MarkReason reason);
 
     virtual void init() { hitEnd = false; }
     virtual RexxString *read();
-    virtual RedirectorType type() { return CommandIOContext::STREAM_OBJECT; }
+    virtual RedirectionType::Enum type() { return RedirectionType::STREAM_OBJECT; }
     virtual RexxObject *target() { return stream; }
 
 protected:
@@ -124,7 +126,7 @@ protected:
  * Input handler for supplying lines from a named stream
  *
  */
-class StreamInputSource : public StreamInputSource
+class StreamInputSource : public StreamObjectInputSource
 {
  public:
     void        *operator new(size_t, size_t);
@@ -139,7 +141,7 @@ class StreamInputSource : public StreamInputSource
     virtual void init ();
     virtual RexxString *read();
     virtual void cleanup() { ; }
-    virtual RedirectorType type() { return CommandIOContext::STREAM_NAME; }
+    virtual RedirectionType::Enum type() { return RedirectionType::STREAM_NAME; }
     virtual RexxObject *target() { return name; }
 
 protected:
@@ -157,7 +159,7 @@ class ArrayInputSource : public InputRedirector
     void        *operator new(size_t, size_t);
     inline void  operator delete(void *) { }
 
-    inline ArrayInputSource(RexxArray *a);
+    inline ArrayInputSource(ArrayClass *a);
     inline ArrayInputSource(RESTORETYPE restoreType) { ; };
 
     virtual void live(size_t);
@@ -165,13 +167,13 @@ class ArrayInputSource : public InputRedirector
 
     virtual void init ();
     virtual RexxString *read();
-    virtual RedirectorType type() { return CommandIOContext::ARRAY_OBJECT; }
+    virtual RedirectionType::Enum type() { return RedirectionType::ARRAY_OBJECT; }
     virtual RexxObject *target() { return collection; }
 
 protected:
-    RexxArray *collection;     // the source array object
-    size_t     index;          // current read index
-    size_t     arraySize;      // read upper limit
+    ArrayClass *collection;     // the source array object
+    size_t      index;          // current read index
+    size_t      arraySize;      // read upper limit
 };
 #endif
 

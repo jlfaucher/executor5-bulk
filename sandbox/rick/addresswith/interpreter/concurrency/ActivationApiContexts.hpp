@@ -45,10 +45,11 @@
 #define ActivationApiContexts_Included
 
 #include "RexxCore.h"
+#include "NativeActivation.hpp"
 
 class Activity;
-class NativeActivation;
 class InterpreterInstance;
+class CommandIOContext;
 
 // structure used to hand out a thread context structure for this
 // activity.  This stucture contains a RexxThreadContext structure
@@ -89,9 +90,10 @@ typedef struct
 
 typedef struct
 {
-    RexxIORedirector  threadContext;    // the redirector context structure used for the API
-    NativeActivation *context;          // a pointer back to the owning activation
-    CommandIOContext *ioContext         // a pointer to the address with data
+    RexxIORedirectorContext directorContext;  // the redirector context structure used for the API
+    Activity         *activity;               // The owning activation
+    NativeActivation *context;                // a pointer back to the owning activation
+    CommandIOContext *ioContext;              // a pointer to the address with data
 } RedirectorContext;
 
 
@@ -154,9 +156,9 @@ inline Activity *contextToActivity(RexxExitContext *c)
  *
  * @return The activity object the context is associated with.
  */
-inline Activity *contextToActivity(RexxIORedirector *c)
+inline Activity *contextToActivity(RexxIORedirectorContext *c)
 {
-    return ((ActivityContext *)(c->threadContext))->owningActivity;
+    return ((RedirectorContext *)c)->activity;;
 }
 
 #endif

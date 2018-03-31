@@ -1,7 +1,9 @@
+
+
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -150,6 +152,7 @@
 #include "PointerBucket.hpp"
 #include "PointerTable.hpp"
 #include "SpecialDotVariable.hpp"
+#include "CommandIOConfiguration.hpp"
 #include "RexxMemory.hpp"
 #include "InternalStack.hpp"
 #include "MemoryStack.hpp"
@@ -168,6 +171,9 @@
 #include "MapBucket.hpp"
 #include "MapTable.hpp"
 #include "TrapHandler.hpp"
+#include "CommandIOContext.hpp"
+#include "OutputRedirector.hpp"
+#include "InputRedirector.hpp"
 
 
 void *MemoryObject::virtualFunctionTable[T_Last_Class_Type + 1] = {NULL};
@@ -700,6 +706,9 @@ void MemoryObject::buildVirtualFunctionTable()
    objectPtr = ::new (objectLoc) SpecialDotVariable(RESTOREIMAGE);
    virtualFunctionTable[T_SpecialDotVariableTerm] = getVftPointer(objectLoc);
    
+   objectPtr = ::new (objectLoc) CommandIOConfiguration(RESTOREIMAGE);
+   virtualFunctionTable[T_CommandIOConfiguration] = getVftPointer(objectLoc);
+   
    objectPtr = ::new (objectLoc) RexxObject(RESTOREIMAGE);
    virtualFunctionTable[T_Memory] = getVftPointer(objectLoc);
    
@@ -756,6 +765,36 @@ void MemoryObject::buildVirtualFunctionTable()
    
    objectPtr = ::new (objectLoc) TrapHandler(RESTOREIMAGE);
    virtualFunctionTable[T_TrapHandler] = getVftPointer(objectLoc);
+   
+   objectPtr = ::new (objectLoc) CommandIOContext(RESTOREIMAGE);
+   virtualFunctionTable[T_CommandIOContext] = getVftPointer(objectLoc);
+   
+   objectPtr = ::new (objectLoc) StemOutputTarget(RESTOREIMAGE);
+   virtualFunctionTable[T_StemOutputTarget] = getVftPointer(objectLoc);
+   
+   objectPtr = ::new (objectLoc) StreamObjectOutputTarget(RESTOREIMAGE);
+   virtualFunctionTable[T_StreamObjectOutputTarget] = getVftPointer(objectLoc);
+   
+   objectPtr = ::new (objectLoc) StreamOutputTarget(RESTOREIMAGE);
+   virtualFunctionTable[T_StreamOutputTarget] = getVftPointer(objectLoc);
+   
+   objectPtr = ::new (objectLoc) CollectionOutputTarget(RESTOREIMAGE);
+   virtualFunctionTable[T_CollectionOutputTarget] = getVftPointer(objectLoc);
+   
+   objectPtr = ::new (objectLoc) BufferingOutputTarget(RESTOREIMAGE);
+   virtualFunctionTable[T_BufferingOutputTarget] = getVftPointer(objectLoc);
+   
+   objectPtr = ::new (objectLoc) StemInputSource(RESTOREIMAGE);
+   virtualFunctionTable[T_StemInputSource] = getVftPointer(objectLoc);
+   
+   objectPtr = ::new (objectLoc) StreamObjectInputSource(RESTOREIMAGE);
+   virtualFunctionTable[T_StreamObjectInputSource] = getVftPointer(objectLoc);
+   
+   objectPtr = ::new (objectLoc) StreamInputSource(RESTOREIMAGE);
+   virtualFunctionTable[T_StreamInputSource] = getVftPointer(objectLoc);
+   
+   objectPtr = ::new (objectLoc) ArrayInputSource(RESTOREIMAGE);
+   virtualFunctionTable[T_ArrayInputSource] = getVftPointer(objectLoc);
    
 };
 

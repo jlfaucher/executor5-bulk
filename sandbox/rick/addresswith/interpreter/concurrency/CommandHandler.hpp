@@ -53,6 +53,15 @@ class CommandIOContext;
 class CommandHandler : public RexxInternalObject
 {
 public:
+    // the different types of handlers we can have
+    typedef enum
+    {
+        UNRESOLVED,           // UNRESOLVED -- a handler that we cannot resolve from the registry
+        REGISTERED_NAME,      // a registered named environment
+        DIRECT,               // a direct, exit based call
+        REDIRECTED            // a handler that supports I/O redirection.
+    } HandlerType;
+
     void        *operator new(size_t size);
     inline void  operator delete(void *) { ; }
 
@@ -65,14 +74,6 @@ public:
     inline bool isResolved() { return type != UNRESOLVED; }
 
 protected:
-
-    typedef enum
-    {
-        UNRESOLVED,
-        REGISTERED_NAME,
-        DIRECT,
-        REDIRECTED
-    } HandlerType;
 
     REXXPFN    entryPoint;             // resolved exit entry point
     HandlerType   type;                // the type of call
@@ -120,7 +121,7 @@ class RedirectingCommandHandlerDispatcher : public ContextCommandHandlerDispatch
 {
 public:
     inline RedirectingCommandHandlerDispatcher(REXXPFN e, RexxString *a, RexxString *c, ProtectedObject &r, ProtectedObject &co, CommandIOContext *io) :
-        ioContext(io), ContextCommandHandlerDispatcher(o, a, c, r, co) { }
+        ioContext(io), ContextCommandHandlerDispatcher(e, a, c, r, co) { }
     virtual ~RedirectingCommandHandlerDispatcher() { ; }
 
     virtual void run();

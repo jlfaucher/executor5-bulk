@@ -43,40 +43,78 @@
 #ifndef Included_CommandIOConfiguration
 #define Included_CommandIOConfiguration
 
+class CommandIOContext;
+class InputRedirector;
+class OutputRedirector;
+
+/**
+ * The types of the output redirectors
+ */
+namespace RedirectionType
+{
+    enum Enum
+    {
+        NONE,
+        DEFAULT_PROCESSING,
+        NORMAL,
+        STEM_VARIABLE,
+        USING_OBJECT,
+        STEM_OBJECT,
+        STREAM_NAME,
+        STREAM_OBJECT,
+        ARRAY_OBJECT,
+        COLLECTION_OBJECT,
+    };
+};
+
+
+/**
+ * Type options used for ADDRESS WITH output operations.
+ */
+namespace OutputOption
+{
+    // the options for how how output is handled
+    enum Enum
+    {
+        DEFAULT_REPLACE,
+        APPEND,
+        REPLACE
+    };
+}
+
+
 class CommandIOConfiguration : public RexxInternalObject
 {
  friend class LanguageParser;
  public:
-     enum
-     {
-         NONE,
-         NORMAL,
-         STEM_VARIABLE,
-         STEM_OBJECT,
-         STREAM_NAME,
-         STREAM_OBJECT,
-         ARRAY_OBJECT,
-         COLLECTION_OBJECT,
-     }  RedirectionType;
 
     void        *operator new(size_t, size_t);
     inline void  operator delete(void *) { }
 
-    inline CommandIOConfiguration() { ; }
+    inline CommandIOConfiguration();
     inline CommandIOConfiguration(RESTORETYPE restoreType) { ; };
 
     virtual void live(size_t);
     virtual void liveGeneral(MarkReason reason);
 
+    CommandIOContext *createIOContext(RexxActivation *context, ExpressionStack *stack, CommandIOConfiguration *commandConfig);
+    InputRedirector  *createInputSource(RexxActivation *context, ExpressionStack *stack, CommandIOConfiguration *mainConfig);
+    OutputRedirector *createOutputSource(RexxActivation *context, ExpressionStack *stack, CommandIOConfiguration *mainConfig);
+    OutputRedirector *createErrorSource(RexxActivation *context, ExpressionStack *stack, CommandIOConfiguration *mainConfig);
+    InputRedirector  *createInputSource(RexxActivation *context, ExpressionStack *stack);
+    OutputRedirector *createOutputTarget(RexxActivation *context, ExpressionStack *stack);
+    OutputRedirector *createErrorTarget(RexxActivation *context, ExpressionStack *stack);
+    OutputRedirector *createOutputSource(RexxActivation *context, ExpressionStack *stack, RexxInternalObject *outputTarget, RedirectionType::Enum type, OutputOption::Enum option);
+
  protected:
     RexxInternalObject *inputSource;         // The input source expression
     RexxInternalObject *outputTarget;        // The output target expression
     RexxInternalObject *errorTarget;         // The output target expression
-    RedirectionType inputType;               // The type of redirection target to evaluate
-    RedirectionType outputType;              // The output redirection type
-    RedirectionType errorType;               // The error redirection type
-    OutputOption outputOption;               // option for the output stream
-    OutputOption errorOption;                // the option for the error stream
+    RedirectionType::Enum inputType;               // The type of redirection target to evaluate
+    RedirectionType::Enum outputType;              // The output redirection type
+    RedirectionType::Enum errorType;               // The error redirection type
+    OutputOption::Enum outputOption;               // option for the output stream
+    OutputOption::Enum errorOption;                // the option for the error stream
 };
 #endif
 

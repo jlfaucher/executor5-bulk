@@ -138,39 +138,22 @@ public:
      *
      * @param c      The source context.
      */
-    inline ApiContext(RexxRedirectionContext *c)
+    inline ApiContext(RexxIORedirectorContext *c)
     {
         // we need to cleanup on exit
         releaseLock = true;
         activity = contextToActivity(c);
         context = contextToActivation(c);
-        context->enableConditionTraps();
-        // go acquire the kernel lock and take care of nesting
+        // Processing here might cause a non-error condition to
+        // be raised. If our activation traps that, then it is
+        // propagated to the caller. We do not want that to
+        // happen, so we leave the condition trapping disabled.
         activity->enterCurrentThread();
         // we need to validate the thread call context to ensure this
         // is the correct thread
         activity->validateThread();
     }
 
-
-    /**
-     * Initialize an API context from an I/O redirection context.
-     *
-     * @param c      The source context.
-     */
-    inline ApiContext(RexxIORedirector *c)
-    {
-        // we need to cleanup on exit
-        releaseLock = true;
-        activity = contextToActivity(c);
-        context = contextToActivation(c);
-        context->enableConditionTraps();
-        // go acquire the kernel lock and take care of nesting
-        activity->enterCurrentThread();
-        // we need to validate the thread call context to ensure this
-        // is the correct thread
-        activity->validateThread();
-    }
 
     /**
      * Initialize an API context from a method context.

@@ -1,7 +1,9 @@
+
+
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -215,6 +217,7 @@
 #define ThePointerBucketBehaviour      (&RexxBehaviour::primitiveBehaviours[T_PointerBucket])
 #define ThePointerTableBehaviour      (&RexxBehaviour::primitiveBehaviours[T_PointerTable])
 #define TheSpecialDotVariableTermBehaviour      (&RexxBehaviour::primitiveBehaviours[T_SpecialDotVariableTerm])
+#define TheCommandIOConfigurationBehaviour      (&RexxBehaviour::primitiveBehaviours[T_CommandIOConfiguration])
 #define TheMemoryBehaviour      (&RexxBehaviour::primitiveBehaviours[T_Memory])
 #define TheInternalStackBehaviour      (&RexxBehaviour::primitiveBehaviours[T_InternalStack])
 #define TheLiveStackBehaviour      (&RexxBehaviour::primitiveBehaviours[T_LiveStack])
@@ -234,6 +237,16 @@
 #define TheMapBucketBehaviour      (&RexxBehaviour::primitiveBehaviours[T_MapBucket])
 #define TheMapTableBehaviour      (&RexxBehaviour::primitiveBehaviours[T_MapTable])
 #define TheTrapHandlerBehaviour      (&RexxBehaviour::primitiveBehaviours[T_TrapHandler])
+#define TheCommandIOContextBehaviour      (&RexxBehaviour::primitiveBehaviours[T_CommandIOContext])
+#define TheStemOutputTargetBehaviour      (&RexxBehaviour::primitiveBehaviours[T_StemOutputTarget])
+#define TheStreamObjectOutputTargetBehaviour      (&RexxBehaviour::primitiveBehaviours[T_StreamObjectOutputTarget])
+#define TheStreamOutputTargetBehaviour      (&RexxBehaviour::primitiveBehaviours[T_StreamOutputTarget])
+#define TheCollectionOutputTargetBehaviour      (&RexxBehaviour::primitiveBehaviours[T_CollectionOutputTarget])
+#define TheBufferingOutputTargetBehaviour      (&RexxBehaviour::primitiveBehaviours[T_BufferingOutputTarget])
+#define TheStemInputSourceBehaviour      (&RexxBehaviour::primitiveBehaviours[T_StemInputSource])
+#define TheStreamObjectInputSourceBehaviour      (&RexxBehaviour::primitiveBehaviours[T_StreamObjectInputSource])
+#define TheStreamInputSourceBehaviour      (&RexxBehaviour::primitiveBehaviours[T_StreamInputSource])
+#define TheArrayInputSourceBehaviour      (&RexxBehaviour::primitiveBehaviours[T_ArrayInputSource])
 
 
 /* -------------------------------------------------------------------------- */
