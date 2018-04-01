@@ -77,7 +77,7 @@ class StemInputSource : public InputRedirector
     void        *operator new(size_t);
     inline void  operator delete(void *) { }
 
-    inline StemInputSource(StemClass *stem);
+    StemInputSource(StemClass *stem);
     inline StemInputSource(RESTORETYPE restoreType) { ; };
 
     virtual void live(size_t);
@@ -108,7 +108,7 @@ class StreamObjectInputSource : public InputRedirector
     inline void  operator delete(void *) { }
 
     inline StreamObjectInputSource() { ; }
-    inline StreamObjectInputSource(RexxObject *s);
+    StreamObjectInputSource(RexxObject *s);
     inline StreamObjectInputSource(RESTORETYPE restoreType) { ; };
 
     virtual void live(size_t);
@@ -136,15 +136,14 @@ class StreamInputSource : public StreamObjectInputSource
     void        *operator new(size_t);
     inline void  operator delete(void *) { }
 
-    inline StreamInputSource(RexxString *n);
+    StreamInputSource(RexxString *n);
     inline StreamInputSource(RESTORETYPE restoreType) { ; };
 
     virtual void live(size_t);
     virtual void liveGeneral(MarkReason reason);
 
     virtual void init ();
-    virtual RexxString *read();
-    virtual void cleanup() { ; }
+    virtual void cleanup();
     virtual RedirectionType::Enum type() { return RedirectionType::STREAM_NAME; }
     virtual RexxObject *target() { return name; }
 
@@ -163,7 +162,7 @@ class ArrayInputSource : public InputRedirector
     void        *operator new(size_t);
     inline void  operator delete(void *) { }
 
-    inline ArrayInputSource(ArrayClass *a);
+    ArrayInputSource(ArrayClass *a);
     inline ArrayInputSource(RESTORETYPE restoreType) { ; };
 
     virtual void live(size_t);
@@ -172,11 +171,11 @@ class ArrayInputSource : public InputRedirector
     virtual void init ();
     virtual RexxString *read();
     virtual RedirectionType::Enum type() { return RedirectionType::ARRAY_OBJECT; }
-    virtual RexxObject *target() { return collection; }
+    virtual RexxObject *target() { return array; }
 
 protected:
-    ArrayClass *collection;     // the source array object
-    RexxObject *lastValue;      // string version of last value returned to protect from GC.
+    ArrayClass *array;          // the source array object
+    RexxString *lastValue;      // string version of last value returned to protect from GC.
     size_t      index;          // current read index
     size_t      arraySize;      // read upper limit
 };

@@ -177,6 +177,7 @@
 #define Rexx_Error_Symbol_expected_use_local                              20927
 #define Rexx_Error_Symbol_expected_indirect                               20928
 #define Rexx_Error_Symbol_expected_after_keyword                          20929
+#define Rexx_Error_Symbol_expected_after_stem_keyword                     20930
 #define Rexx_Error_Invalid_data                                           21000
 #define Rexx_Error_Invalid_data_user_defined                              21900
 #define Rexx_Error_Invalid_data_nop                                       21901
@@ -239,6 +240,11 @@
 #define Rexx_Error_Invalid_subkeyword_resource                            25926
 #define Rexx_Error_Invalid_subkeyword_following                           25927
 #define Rexx_Error_Invalid_subkeyword_annotation                          25928
+#define Rexx_Error_Invalid_subkeyword_address_input                       25930
+#define Rexx_Error_Invalid_subkeyword_address_output                      25931
+#define Rexx_Error_Invalid_subkeyword_address_error                       25932
+#define Rexx_Error_Invalid_subkeyword_address_with_io_option              25933
+#define Rexx_Error_Invalid_subkeyword_address_with_option                 25934
 #define Rexx_Error_Invalid_whole_number                                   26000
 #define Rexx_Error_Invalid_whole_number_power                             26008
 #define Rexx_Error_Invalid_whole_number_repeat                            26002
@@ -336,6 +342,7 @@
 #define Rexx_Error_Invalid_expression_call                                35932
 #define Rexx_Error_Invalid_expression_select_case                         35933
 #define Rexx_Error_Invalid_expression_case_when_list                      35934
+#define Rexx_Error_Invalid_expression_missing_general                     35935
 #define Rexx_Error_Unmatched_parenthesis                                  36000
 #define Rexx_Error_Unmatched_parenthesis_user_defined                     36900
 #define Rexx_Error_Unmatched_parenthesis_paren                            36901
@@ -612,6 +619,7 @@
 #define Rexx_Error_Execution_using_stream_option                          98997
 #define Rexx_Error_Execution_missing_stem_array_index                     98998
 #define Rexx_Error_Execution_file_not_readable                            98999
+#define Rexx_Error_Execution_file_not_writeable                           98899
 #define Rexx_Error_Translation                                            99000
 #define Rexx_Error_Translation_user_defined                               99900
 #define Rexx_Error_Translation_duplicate_class                            99901

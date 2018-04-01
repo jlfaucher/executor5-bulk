@@ -56,6 +56,7 @@
 #include "SystemInterpreter.hpp"
 #include "InterpreterInstance.hpp"
 #include "SysInterpreterInstance.hpp"
+#include "CommandHandler.hpp"
 
 #define CMDBUFSIZE 8092                // maximum commandline length
 #define CMDDEFNAME "CMD.EXE"           // default Windows cmomand handler
@@ -338,7 +339,7 @@ bool sysCommandNT(RexxExitContext *context, const char *command, const char *cmd
 /*             command handler with the command to be executed                */
 /*                                                                            */
 /******************************************************************************/
-RexxObjectPtr RexxEntry systemCommandHandler(RexxExitContext *context, RexxStringObject address, RexxStringObject command, RexxIORedirector *ioContext)
+RexxObjectPtr RexxEntry systemCommandHandler(RexxExitContext *context, RexxStringObject address, RexxStringObject command, RexxIORedirectorContext *ioContext)
 {
     // address the command information
     const char *cmd = context->StringData(command);
@@ -641,7 +642,7 @@ void SysInterpreterInstance::registerCommandHandlers(InterpreterInstance *instan
 {
     // Windows only has the single command environment, we also register this
     // under "" for the default handler
-    instance->addCommandHandler("CMD", (REXXPFN)systemCommandHandler, CommandHandler::REDIRECTING);
-    instance->addCommandHandler("COMMAND", (REXXPFN)systemCommandHandler, CommandHandler::REDIRECTING);
-    instance->addCommandHandler("", (REXXPFN)systemCommandHandler, CommandHandler::REDIRECTING);
+    instance->addCommandHandler("CMD", (REXXPFN)systemCommandHandler, HandlerType::REDIRECTING);
+    instance->addCommandHandler("COMMAND", (REXXPFN)systemCommandHandler, HandlerType::REDIRECTING);
+    instance->addCommandHandler("", (REXXPFN)systemCommandHandler, HandlerType::REDIRECTING);
 }

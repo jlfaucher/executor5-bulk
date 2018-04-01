@@ -223,14 +223,14 @@ RexxString *StreamObjectInputSource::read()
 
     // read a line from the stream
     ProtectedObject result;
-    lastValue = stream->sendMessage(GlobalNames::LINEIN, result);
+    lastValue = (RexxString *)stream->sendMessage(GlobalNames::LINEIN, result);
 
     // we can't trap a NOTREADY condition in this context, so if
     // the read result was a null string, then we need to check the
     // stream state to see if it is still in the ready state.
     if (lastValue->getLength() == 0)
     {
-        RexxString *state = stream->sendMessage(GlobalNames::STATE);
+        RexxString *state = (RexxString *)stream->sendMessage(GlobalNames::STATE, result);
         // anything other than READY means we've hit the end of the road.
         // Note this and return NULL
         if (!state->strCompare(GlobalNames::READY))
@@ -307,7 +307,7 @@ void StreamInputSource::init()
     stream = streamClass->sendMessage(GlobalNames::NEW, name, result);
 
     // open for input only
-    RexxString *openResult = stream->sendMessage(GlobalNames::OPEN, GlobalNames::READ, result);
+    RexxString *openResult = (RexxString *)stream->sendMessage(GlobalNames::OPEN, GlobalNames::READ, result);
     // the open should return ready
     if (!openResult->strCompare(GlobalNames::READY))
     {
@@ -335,7 +335,7 @@ void StreamInputSource::cleanup()
  */
 void *ArrayInputSource::operator new(size_t size)
 {
-    return new_object(size, T_ArraytInputSource);
+    return new_object(size, T_ArrayInputSource);
 }
 
 
@@ -358,7 +358,7 @@ ArrayInputSource::ArrayInputSource(ArrayClass *a)
 void ArrayInputSource::live(size_t liveMark)
 {
     memory_mark(array);
-memory_mark(lastValue);
+    memory_mark(lastValue);
 }
 
 
@@ -384,7 +384,7 @@ void ArrayInputSource::init()
     // we always read from the beginning
     index = 1;
     // up to the end of the items
-    lastIndex = array->items();
+    arraySize = array->items();
 }
 
 
@@ -396,7 +396,7 @@ void ArrayInputSource::init()
 RexxString *ArrayInputSource::read()
 {
     // if we've already reached the end, return a null
-    if (index > lastIndex)
+    if (index > arraySize)
     {
         lastValue = OREF_NULL;
         return OREF_NULL;
@@ -409,7 +409,7 @@ RexxString *ArrayInputSource::read()
     // Additionally, we keep a reference to this in case it is a newly
     // allocated object that could be garbage collected unless we hold on
     // to a reference
-    lastValue = array->get(index++)->requestString();
+    lastValue = (RexxString *)array->get(index++)->requestString();
 
     return lastValue;
 }

@@ -58,14 +58,15 @@
  * @param _environment
  *                 A static environment name.
  * @param _command A command expression to be issued.
+ * @param config   A potential I/O configuration for doing command redirects.
  */
 RexxInstructionAddress::RexxInstructionAddress(RexxInternalObject *_expression,
-    RexxString *_environment, RexxInternalObject *_command)
+    RexxString *_environment, RexxInternalObject *_command, CommandIOConfiguration *config)
 {
-
     dynamicAddress = _expression;
     environment = _environment;
     command = _command;
+    ioConfig = config;
 }
 
 

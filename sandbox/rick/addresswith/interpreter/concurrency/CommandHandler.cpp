@@ -1,12 +1,12 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2006 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.oorexx.org/license.html                          */
+/* http://www.oorexx.org/license.html                                         */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -79,7 +79,7 @@ void CommandHandler::resolve(const char *handlerName)
     // only resolved if we got something back
     if (entryPoint != NULL)
     {
-        type = REGISTERED_NAME;
+        type = HandlerType::REGISTERED_NAME;
     }
 }
 
@@ -96,7 +96,7 @@ void CommandHandler::resolve(const char *handlerName)
  */
 void CommandHandler::call(Activity *activity, RexxActivation *activation, RexxString *address, RexxString *command, ProtectedObject &result, ProtectedObject &condition, CommandIOContext *io)
 {
-    if (type == REGISTERED_NAME)
+    if (type == HandlerType::REGISTERED_NAME)
     {
         CommandHandlerDispatcher dispatcher(activity, entryPoint, command);
 
@@ -105,7 +105,7 @@ void CommandHandler::call(Activity *activity, RexxActivation *activation, RexxSt
         dispatcher.complete(command, result, condition);
     }
     // new style command handler
-    else if (type == DIRECT)
+    else if (type == HandlerType::DIRECT)
     {
         ContextCommandHandlerDispatcher dispatcher(entryPoint, address, command, result, condition);
 
@@ -114,7 +114,7 @@ void CommandHandler::call(Activity *activity, RexxActivation *activation, RexxSt
     }
     // a command handler that supports I/O redirection. This is
     // the only one that uses the I/O context.
-    else if (type == REDIRECTED)
+    else if (type == HandlerType::REDIRECTING)
     {
         RedirectingCommandHandlerDispatcher dispatcher(entryPoint, address, command, result, condition, io);
 

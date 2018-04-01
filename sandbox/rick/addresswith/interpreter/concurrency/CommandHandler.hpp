@@ -47,36 +47,40 @@
 #include "RexxCore.h"
 #include "CallbackDispatcher.hpp"
 
+namespace HandlerType
+{
+    // the different types of handlers we can have
+    enum Enum
+    {
+        UNRESOLVED,           // UNRESOLVED -- a handler that we cannot resolve from the registry
+        REGISTERED_NAME,      // a registered named environment
+        DIRECT,               // a direct, exit based call
+        REDIRECTING           // a handler that supports I/O redirection.
+    };
+};
+
 class Activity;
 class CommandIOContext;
 
 class CommandHandler : public RexxInternalObject
 {
 public:
-    // the different types of handlers we can have
-    typedef enum
-    {
-        UNRESOLVED,           // UNRESOLVED -- a handler that we cannot resolve from the registry
-        REGISTERED_NAME,      // a registered named environment
-        DIRECT,               // a direct, exit based call
-        REDIRECTED            // a handler that supports I/O redirection.
-    } HandlerType;
 
     void        *operator new(size_t size);
     inline void  operator delete(void *) { ; }
 
     inline CommandHandler(RESTORETYPE restoreType) { ; };
-    inline CommandHandler(REXXPFN e, HandlerType t) : entryPoint(e), type(t) { ; }
-    inline CommandHandler(const char *n) : entryPoint(NULL) { type = UNRESOLVED; resolve(n); }
+    inline CommandHandler(REXXPFN e, HandlerType::Enum t) : entryPoint(e), type(t) { ; }
+    inline CommandHandler(const char *n) : entryPoint(NULL) { type = HandlerType::UNRESOLVED; resolve(n); }
 
     void call(Activity *activity, RexxActivation *activation, RexxString *address, RexxString *command, ProtectedObject &rc, ProtectedObject &condition, CommandIOContext *io);
     void resolve(const char *name);
-    inline bool isResolved() { return type != UNRESOLVED; }
+    inline bool isResolved() { return type != HandlerType::UNRESOLVED; }
 
 protected:
 
     REXXPFN    entryPoint;             // resolved exit entry point
-    HandlerType   type;                // the type of call
+    HandlerType::Enum   type;          // the type of call
 };
 
 

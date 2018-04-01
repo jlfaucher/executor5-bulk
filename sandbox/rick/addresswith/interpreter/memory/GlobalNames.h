@@ -39,15 +39,7 @@
 /* REXX Kernel                                              GlobalNames.h     */
 /*                                                                            */
 /* Definitions of all name objects created at startup time.  All these        */
-/* Name objects are addressible via OREF_ global names.  Changes to this file */
-/* also require recompilation of GlobalNames.cpp and GlobalData.cpp for things*/
-/* to link correctly.                                                         */
-/*                                                                            */
-/* NOTE:  The string values of these constants do not need to be a symbolic   */
-/* CHAR_* name.  These values can be directly coded as a literal string.  If  */
-/* an existing CHAR_* constant is available for the value to be defined, use  */
-/* the symbol.  Otherwise, it is perfectly acceptable to just use a literal   */
-/* string value here.                                                         */
+/* Name objects are addressible via the GlobalNames::name namespace.          */
 /*                                                                            */
 /******************************************************************************/
 
@@ -56,6 +48,7 @@
   GLOBAL_NAME(ADDITIONAL, "ADDITIONAL")
   GLOBAL_NAME(ADDRESS, "ADDRESS")
   GLOBAL_NAME(AND, "&")
+  GLOBAL_NAME(APPEND, "APPEND")
   GLOBAL_NAME(ASSIGNMENT_AND, "&=")
   GLOBAL_NAME(ANY, "ANY")
   GLOBAL_NAME(ARGUMENTS, "ARGUMENTS")
@@ -89,6 +82,7 @@
   GLOBAL_NAME(DOTNIL, ".NIL")
   GLOBAL_NAME(DOTTRUE, ".TRUE")
   GLOBAL_NAME(ASSIGNMENT_DIVIDE, "/=")
+  GLOBAL_NAME(EMPTY, "EMPTY")
   GLOBAL_NAME(ENGINEERING, "ENGINEERING")
   GLOBAL_NAME(ENVIRONMENT, "ENVIRONMENT")
   GLOBAL_NAME(EQUAL, "=")
@@ -208,6 +202,9 @@
   GLOBAL_NAME(UNINIT, "UNINIT")
   GLOBAL_NAME(UNKNOWN, "UNKNOWN")
   GLOBAL_NAME(UNNAMED_METHOD, "*UNNAMED*")
+  GLOBAL_NAME(USING, "*USING")
+  GLOBAL_NAME(WRITE_REPLACE, "WRITE REPLACE")
+  GLOBAL_NAME(WRITE_APPEND, "WRITE APPEND")
   GLOBAL_NAME(XOR, "&&")
   GLOBAL_NAME(ASSIGNMENT_XOR, "&&=")
   GLOBAL_NAME(ZERO, "0")

@@ -91,7 +91,7 @@ class CommandIOConfiguration : public RexxInternalObject
     void        *operator new(size_t);
     inline void  operator delete(void *) { }
 
-    inline CommandIOConfiguration();
+    CommandIOConfiguration();
     inline CommandIOConfiguration(RESTORETYPE restoreType) { ; };
 
     virtual void live(size_t);

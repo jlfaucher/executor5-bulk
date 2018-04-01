@@ -45,13 +45,13 @@
 
 class InputRedirector;
 class OutputRedirector;
+class RexxString;
 
 
 class CommandIOContext : public RexxInternalObject
 {
  friend class CommandIOConfiguration;
  public:
-
 
     void        *operator new(size_t);
     inline void  operator delete(void *) { }
@@ -62,7 +62,7 @@ class CommandIOContext : public RexxInternalObject
     virtual void live(size_t);
     virtual void liveGeneral(MarkReason reason);
 
-    const char *readInput();
+    RexxString *readInput();
     void        writeOutput(const char *v, size_t l);
     void        writeError(const char *v, size_t l);
     void        init();

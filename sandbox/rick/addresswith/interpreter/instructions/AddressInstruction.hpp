@@ -53,7 +53,7 @@ class RexxInstructionAddress : public RexxInstruction
  public:
     inline void operator delete(void *) { }
 
-    RexxInstructionAddress(RexxInternalObject *, RexxString *, RexxInternalObject *);
+    RexxInstructionAddress(RexxInternalObject *, RexxString *, RexxInternalObject *, CommandIOConfiguration *);
     inline RexxInstructionAddress(RESTORETYPE restoreType) { ; };
 
     virtual void live(size_t);

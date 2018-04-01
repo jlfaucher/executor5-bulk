@@ -706,6 +706,14 @@
 #define Error_Invalid_whole_number_stem_array_index_msg              791
 #define Error_Execution_missing_stem_array_index_msg                 792
 #define Error_Execution_file_not_readable_msg                        793
+#define Error_Execution_file_not_writeable_msg                       794
+#define Error_Invalid_subkeyword_address_with_option_msg             795
+#define Error_Invalid_subkeyword_address_input_msg                   796
+#define Error_Invalid_subkeyword_address_output_msg                  797
+#define Error_Invalid_subkeyword_address_error_msg                   798
+#define Error_Invalid_subkeyword_address_with_io_option_msg          799
+#define Error_Symbol_expected_after_stem_keyword_msg                 800
+#define Error_Invalid_expression_missing_general_msg                 801
 
 
 #endif

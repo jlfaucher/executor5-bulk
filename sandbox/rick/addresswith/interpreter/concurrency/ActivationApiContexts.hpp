@@ -44,12 +44,10 @@
 #ifndef ActivationApiContexts_Included
 #define ActivationApiContexts_Included
 
-#include "RexxCore.h"
-#include "NativeActivation.hpp"
-
 class Activity;
 class InterpreterInstance;
 class CommandIOContext;
+class NativeActivation;
 
 // structure used to hand out a thread context structure for this
 // activity.  This stucture contains a RexxThreadContext structure

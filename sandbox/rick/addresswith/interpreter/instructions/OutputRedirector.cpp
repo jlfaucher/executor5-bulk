@@ -42,11 +42,13 @@
 /******************************************************************************/
 
 #include "RexxCore.h"
+#include "InputRedirector.hpp"
 #include "OutputRedirector.hpp"
 #include "Activity.hpp"
 #include "ActivityManager.hpp"
 #include "ProtectedObject.hpp"
 #include "PackageClass.hpp"
+#include "StemClass.hpp"
 
 
 /**
@@ -58,7 +60,7 @@
  * @return True if the input redirector and the output redirector
  *         are using the same target object.
  */
-bool OutputRedirector::needsBuffering(InputRedictor *in)
+bool OutputRedirector::needsBuffering(InputRedirector *in)
 {
     return type() == in->type() && target() == in->target();
 }
@@ -73,7 +75,7 @@ bool OutputRedirector::needsBuffering(InputRedictor *in)
  * @return True if the error redirector and the output
  *         redirector are using the same target object.
  */
-bool OutputRedirector::isSameTarget(OutputRedictor *e)
+bool OutputRedirector::isSameTarget(OutputRedirector *e)
 {
     return type() == e->type() && target() == e->target();
 }
@@ -98,7 +100,7 @@ void *StemOutputTarget::operator new(size_t size)
  * @param stem      The stem oubect being used
  * @param o         The append/replace option for the redirect.
  */
-StemOutputTarget::StemOutputTarget(RexxObject *s, OutputOption::Enum o)
+StemOutputTarget::StemOutputTarget(StemClass *s, OutputOption::Enum o)
 {
     stem = s;
     option = o;
@@ -142,7 +144,7 @@ void StemOutputTarget::init()
     }
     initialized = true;
     // replace is the easy way to handle we just reset everything
-    if (option == REPLACE || option == DEFAULT)
+    if (option == OutputOption::REPLACE || option == OutputOption::DEFAULT)
     {
         // empty everything out (could already be empty
         stem->empty();
@@ -172,7 +174,7 @@ void StemOutputTarget::init()
             // a valid whole number index
             if (!count->unsignedNumberValue(index, Numerics::ARGUMENT_DIGITS))
             {
-                reportException(Error_Invalid_stem_array_ndex, stem, count);
+                reportException(Error_Invalid_whole_number_stem_array_index, stem->getName(), count);
             }
             // we write to the next position
             index ++;
@@ -190,7 +192,7 @@ void StemOutputTarget::write(RexxString *value)
 {
     stem->setElement(index, value);
     // update stem.0
-    Protected<RexxInteger> newIndex = new_interger(index);
+    Protected<RexxInteger> newIndex = new_integer(index);
     stem->setElement((size_t)0, newIndex);
     // and step to the next position
     index++;
@@ -337,19 +339,19 @@ void StreamOutputTarget::init()
     RexxString *openResult = OREF_NULL;
 
     // If replace is specified, we open this WRITE REPLACE
-    if (option == REPLACE || option == DEFAULT)
+    if (option == OutputOption::REPLACE || option == OutputOption::DEFAULT)
     {
-        openResult = stream->sendMessage(GlobalNames::OPEN, GlobalNames::WRITEREPLACE, result);
+        openResult = (RexxString *)stream->sendMessage(GlobalNames::OPEN, GlobalNames::WRITE_REPLACE, result);
     }
     // asked to append...just a different open option
     else
     {
-        openResult = stream->sendMessage(GlobalNames::OPEN, GlobalNames::WRITEAPPEND, result);
+        openResult = (RexxString *)stream->sendMessage(GlobalNames::OPEN, GlobalNames::WRITE_APPEND, result);
     }
     // the open should return ready
     if (!openResult->strCompare(GlobalNames::READY))
     {
-        reportException(Error_Execution_file_not_writable, name, openResult);
+        reportException(Error_Execution_file_not_writeable, name, openResult);
     }
 }
 
@@ -420,7 +422,7 @@ void CollectionOutputTarget::liveGeneral(MarkReason reason)
  *
  * @param value  The string value to write
  */
-void CollectionObjectOutputTarget::write(RexxString *value)
+void CollectionOutputTarget::write(RexxString *value)
 {
     ProtectedObject result;
     // this just uses lineout
@@ -443,7 +445,7 @@ void CollectionOutputTarget::init()
     initialized = true;
 
     // If replace is specified, then empty the collection
-    if (option == REPLACE)
+    if (option == OutputOption::REPLACE)
     {
         ProtectedObject result;
         // this just uses lineout
@@ -528,7 +530,7 @@ void BufferingOutputTarget::init()
  */
 void BufferingOutputTarget::write(RexxString *value)
 {
-    collector~append(value);
+    collector->append(value);
 }
 
 
@@ -543,9 +545,9 @@ void BufferingOutputTarget::cleanup()
     target->init();
     size_t count = collector->items();
 
-    for (size_t i = 1; i <= count; i::)
+    for (size_t i = 1; i <= count; i++)
     {
-        target->write(collector->get(i));
+        target->write((RexxString *)collector->get(i));
     }
 
     // and finally the cleanup

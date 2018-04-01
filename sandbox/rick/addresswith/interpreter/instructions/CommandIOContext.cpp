@@ -186,23 +186,14 @@ void CommandIOContext::cleanup()
  *
  * @return The CSTRING value for the next line or NULL if we've hit EOF.
  */
-const char *CommandIOContext::readInput()
+RexxString *CommandIOContext::readInput()
 {
     // first make sure we have a source object
     if (input == OREF_NULL)
     {
-        return NULL;
+        return OREF_NULL;
     }
-    RexxString *next = input->read();
-    // no string means no input
-    if (next == OREF_NULL)
-    {
-        return NULL;
-    }
-    // return a pointer to the string data. Note that
-    // the input source is responsible for ensuring the string
-    // does not get Garbage Collected.
-    return next->getStringData();
+    return input->read();
 }
 
 

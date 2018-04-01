@@ -320,9 +320,13 @@ RexxClassObject RexxEntry FindCallContextClass(RexxCallContext *c, CSTRING n)
 }
 
 
-CSTRING RexxEntry ReadInput(RexxIORedirectorContext *c)
+void RexxEntry ReadInput(RexxIORedirectorContext *c, CSTRING *data, size_t *length)
 {
     ApiContext context(c);
+
+    // set the default
+    data = NULL;
+    length = 0;
     try
     {
         CommandIOContext *ioContext = ((RedirectorContext *)c)->ioContext;
@@ -332,17 +336,22 @@ CSTRING RexxEntry ReadInput(RexxIORedirectorContext *c)
         // nothing if this is called.
         if (ioContext == OREF_NULL)
         {
-            return NULL;
+            return;
         }
         // request the next input line. This will be NULL if we've reached the end.
         // Note that the string object is anchored by the ioContext, so
         // we don't need to add this to the context local reference table
-        return (CSTRING)ioContext->readInput();
+        RexxString *nextLine = ioContext->readInput();
+        if (nextLine != OREF_NULL)
+        {
+            *data = (CSTRING)nextLine->getStringData();
+            *length = nextLine->getLength();
+        }
     }
     catch (NativeActivation *)
     {
     }
-    return NULL;
+    return;
 }
 
 

@@ -701,11 +701,11 @@ bool InterpreterInstance::processOptions(RexxOption *options)
                 for (int i = 0; handlers[i].name != NULL && handlers[i].handler != NULL; i++)
                 {
                     // add the handler to this setup
-                    addCommandHandler(handlers[i].name, (REXXPFN)handlers[i].handler);
+                    addCommandHandler(handlers[i].name, (REXXPFN)handlers[i].handler, HandlerType::DIRECT);
                 }
             }
         }
-        // a direct call command handler
+        // a redirectiong command handler
         else if (strcmp(options->optionName, REDIRECTING_ENVIRONMENTS) == 0)
         {
             RexxRedirectingEnvironment *handlers = (RexxRedirectingEnvironment *)options->option.value.value_POINTER;
@@ -715,7 +715,7 @@ bool InterpreterInstance::processOptions(RexxOption *options)
                 for (int i = 0; handlers[i].name != NULL && handlers[i].handler != NULL; i++)
                 {
                     // add the handler to this setup
-                    addCommandHandler(handlers[i].name, (REXXPFN)handlers[i].handler);
+                    addCommandHandler(handlers[i].name, (REXXPFN)handlers[i].handler, HandlerType::REDIRECTING);
                 }
             }
         }
@@ -783,7 +783,7 @@ RexxObject *InterpreterInstance::getLocalEnvironment(RexxString *name)
  * @param entryPoint The entry point address of the handler.
  * @param type       The category of handler to add.
  */
-void InterpreterInstance::addCommandHandler(const char *name, REXXPFN entryPoint, HandlerType type)
+void InterpreterInstance::addCommandHandler(const char *name, REXXPFN entryPoint, HandlerType::Enum type)
 {
     RexxString *handlerName = new_upper_string(name);
     commandHandlers->put(new CommandHandler(entryPoint, type), handlerName);

@@ -72,7 +72,7 @@
 #include "SayInstruction.hpp"
 
 #include "AddressInstruction.hpp"             /* other instructions                */
-#include "AddressWithInstruction.hpp"         /* other instructions                */
+#include "CommandIOConfiguration.hpp"
 #include "DropInstruction.hpp"
 #include "ExposeInstruction.hpp"
 #include "ForwardInstruction.hpp"
@@ -679,7 +679,7 @@ CommandIOConfiguration *LanguageParser::parseAddressWith()
             case SUBKEY_INPUT:
             {
                 // not valid if we've had this before
-                if (ioConfig->inputType != DEFAULT_PROCESSING)
+                if (ioConfig->inputType != RedirectionType::DEFAULT)
                 {
                     syntaxError(Error_Invalid_subkeyword_address_input);
                 }
@@ -687,18 +687,20 @@ CommandIOConfiguration *LanguageParser::parseAddressWith()
                 // is this specified as NORMAL? we don't parse any further.
                 if (checkRedirectNormal(token))
                 {
-                    inputType = NORMAL;
+                    ioConfig->inputType = RedirectionType::NORMAL;
                 }
                 // need to parse further
                 else
                 {
-                    parseRedirectOptions(token, ioConfig->inputSource, ioConfig->inputType);
+                    previousToken();
+                    parseRedirectOptions(ioConfig->inputSource, ioConfig->inputType);
                 }
+                break;
             }
             case SUBKEY_OUTPUT:
             {
                 // not valid if we've had this before
-                if (ioConfig->outputType != DEFAULT_PROCESSING)
+                if (ioConfig->outputType != RedirectionType::DEFAULT)
                 {
                     syntaxError(Error_Invalid_subkeyword_address_output);
                 }
@@ -706,20 +708,21 @@ CommandIOConfiguration *LanguageParser::parseAddressWith()
                 // is this specified as NORMAL? we don't parse any further.
                 if (checkRedirectNormal(token))
                 {
-                    outputType = NORMAL;
+                    ioConfig->outputType = RedirectionType::NORMAL;
                 }
                 else
                 {
                     // backup and parse off the output options and targets
                     previousToken();
                     ioConfig->outputOption = parseRedirectOutputOptions();
-                    parseRedirectOptions(ioConfig->outoutTarget, ioConfig->outputType);
+                    parseRedirectOptions(ioConfig->outputTarget, ioConfig->outputType);
                 }
+                break;
             }
             case SUBKEY_ERROR:
             {
                 // not valid if we've had this before
-                if (ioConfig->errorType != DEFAULT_PROCESSING)
+                if (ioConfig->errorType != RedirectionType::DEFAULT)
                 {
                     syntaxError(Error_Invalid_subkeyword_address_error);
                 }
@@ -727,7 +730,7 @@ CommandIOConfiguration *LanguageParser::parseAddressWith()
                 // is this specified as NORMAL? we don't parse any further.
                 if (checkRedirectNormal(token))
                 {
-                    outputType = NORMAL;
+                    ioConfig->errorType = RedirectionType::NORMAL;
                 }
                 else
                 {
@@ -736,12 +739,18 @@ CommandIOConfiguration *LanguageParser::parseAddressWith()
                     ioConfig->errorOption = parseRedirectOutputOptions();
                     parseRedirectOptions(ioConfig->errorTarget, ioConfig->errorType);
                 }
+                break;
             }
-            syntaxError(Error_Invalid_subkeyword_address_with_option, token);
+            default:
+            {
+                syntaxError(Error_Invalid_subkeyword_address_with_option, token);
+            }
         }
         // step to the next token position
         token = nextReal();
     }
+    // and return the constructed configuration
+    return ioConfig;
 }
 
 
@@ -751,7 +760,7 @@ CommandIOConfiguration *LanguageParser::parseAddressWith()
  *
  * @return true if the next keyword is NORMAL, false for anything else.
  */
-bool LanguageParser::checkRedirectNormal(Token *token)
+bool LanguageParser::checkRedirectNormal(RexxToken *token)
 {
     return token->isSymbol() && token->subKeyword() == SUBKEY_NORMAL;
 }
@@ -768,34 +777,30 @@ OutputOption::Enum LanguageParser::parseRedirectOutputOptions()
 {
     // any option must be a symbol. The next token after the
     // option must also be a symbol, but we'll handle that elsewhere.
-    Token *token = nextReal();
+    RexxToken *token = nextReal();
     if (!token->isSymbol())
     {
         // back up and return the default
         previousToken();
-        return DEFAULT_REPLACE;
+        return OutputOption::DEFAULT;
     }
 
     // now see if this is one of our keyword values
     switch (token->subKeyword())
     {
-        case KEYWORD_REPLACE:
-            return REPLACE;
+        case SUBKEY_REPLACE:
+            return OutputOption::REPLACE;
 
-        case KEYWORD_APPEND:
-            return APPEND;
-
-        // do the default usual thing for this.
-        case SUBKEY_NORMAL:
-            return NORMAL;
+        case SUBKEY_APPEND:
+            return OutputOption::APPEND;
 
         // probably one of the target type keywords
         default:
             // back up and return the default
             previousToken();
-            return DEFAULT_REPLACE;
+            return OutputOption::DEFAULT;
     }
-    return DEFAULT_REPLACE;
+    return OutputOption::DEFAULT;
 }
 
 
@@ -807,14 +812,14 @@ OutputOption::Enum LanguageParser::parseRedirectOutputOptions()
  *
  * @param type   The type of redirection to apply
  */
-void LanguageParser::parseRedirectOptions(InstructionSubKeyword ioType, RexxInternalObject *&source, RedirectionType::Enum &type)
+void LanguageParser::parseRedirectOptions(RexxInternalObject *&source, RedirectionType::Enum &type)
 {
-    token = nextReal();
+    RexxToken *token = nextReal();
 
     // all options are symbol names,
     if (!token->isSymbol())
     {
-        syntaxError(Error_Invalid_subkeyword_address_with_option, token);
+        syntaxError(Error_Invalid_subkeyword_address_with_io_option, token);
     }
 
     // now handle the different I/O types.
@@ -823,52 +828,54 @@ void LanguageParser::parseRedirectOptions(InstructionSubKeyword ioType, RexxInte
         // using a stem variable from the context
         case SUBKEY_STEM:
         {
-            type = STEM_VARIABLE;
+            type = RedirectionType::STEM_VARIABLE;
             // this must be followed by a stem variable
             token = nextReal();
             if (!token->isStem())
             {
-                syntaxError(Error_Invalid_subkeyword_address_with_stem_expected, token);
+                syntaxError(Error_Symbol_expected_after_stem_keyword);
             }
             // resolve this to a variable expression type.
             source = addText(token);
+            break;
         }
 
         // a string stream name. Can be a literal or an expression
         case SUBKEY_STREAM:
         {
-            type = STREAM_NAME;
+            type = RedirectionType::STREAM_NAME;
 
             // we use the constant expression syntax here like the
             // RAISE instruction
             source = parseConstantExpression();
             if (source == OREF_NULL)
             {
-                syntaxError(Error_Invalid_expression_address_with_stream);
+                syntaxError(Error_Invalid_expression_missing_general, GlobalNames::STREAM, GlobalNames::ADDRESS);
             }
+            break;
         }
 
         // determined by evaluating an expression to an object and figuring
         // out what to do at run time.
         case SUBKEY_USING:
         {
-            type = USING_OBJECT;
+            type = RedirectionType::USING_OBJECT;
 
             // we use the constant expression syntax here like the
             // RAISE instruction
             source = parseConstantExpression();
             if (source == OREF_NULL)
             {
-                syntaxError(Error_Invalid_expression_address_with_using);
+                syntaxError(Error_Invalid_expression_missing_general, GlobalNames::USING, GlobalNames::ADDRESS);
             }
+            break;
         }
 
         default:
         {
-            syntaxError(Error_Invalid_subkeyword_address_with_option, token);
+            syntaxError(Error_Invalid_subkeyword_address_with_io_option, token);
         }
     }
-    break;
 }
 
 
