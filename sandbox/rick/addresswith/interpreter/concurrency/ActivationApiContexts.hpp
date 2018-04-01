@@ -90,7 +90,7 @@ typedef struct
 
 typedef struct
 {
-    RexxIORedirectorContext directorContext;  // the redirector context structure used for the API
+    RexxIORedirectorContext redirectorContext;// the redirector context structure used for the API
     Activity         *activity;               // The owning activation
     NativeActivation *context;                // a pointer back to the owning activation
     CommandIOContext *ioContext;              // a pointer to the address with data

@@ -713,7 +713,7 @@ typedef struct
 {
     wholenumber_t interfaceVersion;    // The interface version identifier
 
-    CSTRING (RexxEntry *GetInput)(RexxIORedirectorContext *);
+    CSTRING (RexxEntry *ReadInput)(RexxIORedirectorContext *);
     void    (RexxEntry *WriteOutput)(RexxIORedirectorContext *, CSTRING, size_t);
     void    (RexxEntry *WriteError)(RexxIORedirectorContext *, CSTRING, size_t);
     logical_t (RexxEntry *IsInputRedirected)(RexxIORedirectorContext *);
@@ -3681,9 +3681,9 @@ struct RexxIORedirectorContext_
     IORedirectorInterface *functions;
 
 #ifdef __cplusplus
-    CSTRING GetInput()
+    CSTRING ReadInput()
     {
-        return functions->GetInput(this);
+        return functions->ReadInput(this);
     }
     void WriteOutput(CSTRING data, size_t length)
     {

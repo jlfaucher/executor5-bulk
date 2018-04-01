@@ -302,6 +302,7 @@ class Activity : public RexxInternalObject
     void createMethodContext(MethodContext &context, NativeActivation *owner);
     void createCallContext(CallContext &context, NativeActivation *owner);
     void createExitContext(ExitContext &context, NativeActivation *owner);
+    void createRedirectorContext(RedirectorContext &context, NativeActivation *owner);
     RexxObject *getLocalEnvironment(RexxString *name);
     DirectoryClass *getLocal();
     CommandHandler *resolveCommandHandler(RexxString *);

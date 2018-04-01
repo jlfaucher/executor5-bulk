@@ -80,7 +80,7 @@ class OutputRedirector : public RexxInternalObject
 class StemOutputTarget : public OutputRedirector
 {
  public:
-    void        *operator new(size_t, size_t);
+    void        *operator new(size_t);
     inline void  operator delete(void *) { }
 
     inline StemOutputTarget(StemClass *stem, OutputOption::Enum o);
@@ -107,7 +107,7 @@ protected:
 class StreamObjectOutputTarget : public OutputRedirector
 {
  public:
-    void        *operator new(size_t, size_t);
+    void        *operator new(size_t);
     inline void  operator delete(void *) { }
 
     inline StreamObjectOutputTarget() { ; };
@@ -133,7 +133,7 @@ protected:
 class StreamOutputTarget : public StreamObjectOutputTarget
 {
  public:
-    void        *operator new(size_t, size_t);
+    void        *operator new(size_t);
     inline void  operator delete(void *) { }
 
     inline StreamOutputTarget(RexxString *n, OutputOption::Enum o);
@@ -160,7 +160,7 @@ protected:
 class CollectionOutputTarget : public OutputRedirector
 {
  public:
-    void        *operator new(size_t, size_t);
+    void        *operator new(size_t);
     inline void  operator delete(void *) { }
 
     inline CollectionOutputTarget(RexxObject *c, OutputOption::Enum o);
@@ -186,7 +186,7 @@ protected:
 class BufferingOutputTarget : public OutputRedirector
 {
  public:
-    void        *operator new(size_t, size_t);
+    void        *operator new(size_t);
     inline void  operator delete(void *) { }
 
     inline BufferingOutputTarget(OutputRedirector *t);

@@ -253,6 +253,7 @@
 #define Rexx_Error_Invalid_whole_number_user_defined                      26900
 #define Rexx_Error_Invalid_whole_number_compareto                         26902
 #define Rexx_Error_Invalid_whole_number_compare                           26903
+#define Rexx_Error_Invalid_whole_number_stem_array_index                  26904
 #define Rexx_Error_Invalid_do                                             27000
 #define Rexx_Error_Invalid_do_whileuntil                                  27001
 #define Rexx_Error_Invalid_do_forever                                     27901
@@ -606,6 +607,11 @@
 #define Rexx_Error_Execution_expose_method                                98992
 #define Rexx_Error_Execution_use_local_method                             98993
 #define Rexx_Error_Execution_no_supplier                                  98994
+#define Rexx_Error_Execution_address_input_source                         98995
+#define Rexx_Error_Execution_address_output_target                        98996
+#define Rexx_Error_Execution_using_stream_option                          98997
+#define Rexx_Error_Execution_missing_stem_array_index                     98998
+#define Rexx_Error_Execution_file_not_readable                            98999
 #define Rexx_Error_Translation                                            99000
 #define Rexx_Error_Translation_user_defined                               99900
 #define Rexx_Error_Translation_duplicate_class                            99901

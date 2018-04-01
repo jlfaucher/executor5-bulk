@@ -251,7 +251,7 @@ void ContextCommandHandlerDispatcher::handleError(DirectoryClass *c)
  */
 void RedirectingCommandHandlerDispatcher::run()
 {
-    RexxContextCommandHandler *handler_address = (RexxContextCommandHandler *)entryPoint;
+    RexxRedirectingCommandHandler *handler_address = (RexxRedirectingCommandHandler *)entryPoint;
 
     // we create two different contexts for this call. Each manages its own locks on
     // call backs
@@ -263,5 +263,5 @@ void RedirectingCommandHandlerDispatcher::run()
     activity->createRedirectorContext(redirectorContext, activation);
     redirectorContext.ioContext = ioContext;
 
-    result = (RexxObject *)(*handler_address)(&context.threadContext, (RexxStringObject)address, (RexxStringObject)command, (RexxIORedirector *)&redirectorContext.threadContext);
+    result = (RexxObject *)(*handler_address)(&context.threadContext, (RexxStringObject)address, (RexxStringObject)command, &redirectorContext.redirectorContext);
 }

@@ -55,7 +55,7 @@ namespace RedirectionType
     enum Enum
     {
         NONE,
-        DEFAULT_PROCESSING,
+        DEFAULT,
         NORMAL,
         STEM_VARIABLE,
         USING_OBJECT,
@@ -76,7 +76,7 @@ namespace OutputOption
     // the options for how how output is handled
     enum Enum
     {
-        DEFAULT_REPLACE,
+        DEFAULT,
         APPEND,
         REPLACE
     };
@@ -88,7 +88,7 @@ class CommandIOConfiguration : public RexxInternalObject
  friend class LanguageParser;
  public:
 
-    void        *operator new(size_t, size_t);
+    void        *operator new(size_t);
     inline void  operator delete(void *) { }
 
     inline CommandIOConfiguration();
@@ -96,15 +96,16 @@ class CommandIOConfiguration : public RexxInternalObject
 
     virtual void live(size_t);
     virtual void liveGeneral(MarkReason reason);
+    virtual void flatten(Envelope *);
 
     CommandIOContext *createIOContext(RexxActivation *context, ExpressionStack *stack, CommandIOConfiguration *commandConfig);
     InputRedirector  *createInputSource(RexxActivation *context, ExpressionStack *stack, CommandIOConfiguration *mainConfig);
-    OutputRedirector *createOutputSource(RexxActivation *context, ExpressionStack *stack, CommandIOConfiguration *mainConfig);
-    OutputRedirector *createErrorSource(RexxActivation *context, ExpressionStack *stack, CommandIOConfiguration *mainConfig);
+    OutputRedirector *createOutputTarget(RexxActivation *context, ExpressionStack *stack, CommandIOConfiguration *mainConfig);
+    OutputRedirector *createErrorTarget(RexxActivation *context, ExpressionStack *stack, CommandIOConfiguration *mainConfig);
     InputRedirector  *createInputSource(RexxActivation *context, ExpressionStack *stack);
     OutputRedirector *createOutputTarget(RexxActivation *context, ExpressionStack *stack);
     OutputRedirector *createErrorTarget(RexxActivation *context, ExpressionStack *stack);
-    OutputRedirector *createOutputSource(RexxActivation *context, ExpressionStack *stack, RexxInternalObject *outputTarget, RedirectionType::Enum type, OutputOption::Enum option);
+    OutputRedirector *createOutputTarget(RexxActivation *context, ExpressionStack *stack, RexxInternalObject *outputTarget, RedirectionType::Enum type, OutputOption::Enum option);
 
  protected:
     RexxInternalObject *inputSource;         // The input source expression

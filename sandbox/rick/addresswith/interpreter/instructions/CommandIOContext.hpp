@@ -49,11 +49,11 @@ class OutputRedirector;
 
 class CommandIOContext : public RexxInternalObject
 {
- friend class LanguageParser;
+ friend class CommandIOConfiguration;
  public:
 
 
-    void        *operator new(size_t, size_t);
+    void        *operator new(size_t);
     inline void  operator delete(void *) { }
 
     inline CommandIOContext() { ; }
@@ -62,7 +62,7 @@ class CommandIOContext : public RexxInternalObject
     virtual void live(size_t);
     virtual void liveGeneral(MarkReason reason);
 
-    const char *getInput();
+    const char *readInput();
     void        writeOutput(const char *v, size_t l);
     void        writeError(const char *v, size_t l);
     void        init();

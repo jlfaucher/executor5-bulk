@@ -42,7 +42,11 @@
 /******************************************************************************/
 
 #include "RexxCore.h"
-#include "InputRedirectors.hpp"
+#include "Activity.hpp"
+#include "ActivityManager.hpp"
+#include "InputRedirector.hpp"
+#include "ProtectedObject.hpp"
+#include "PackageClass.hpp"
 
 
 /**
@@ -63,7 +67,7 @@ void *StemInputSource::operator new(size_t size)
  *
  * @param stem      The stem oubect being used
  */
-StemInputSource::StemInputSource(RexxObject *s)
+StemInputSource::StemInputSource(StemClass *s)
 {
     stem = s;
 }
@@ -106,15 +110,15 @@ void StemInputSource::init()
     if (count == OREF_NULL)
     {
         // this is an error for input
-        reportException(Error_Invalid_missing_stem_array_index, stem);
+        reportException(Error_Execution_missing_stem_array_index, stem->getName());
     }
     // the stem.0 value must be an integer size. We'll start writing at the next position
     else
     {
         // a valid whole number index
-        if (!count->unsignedNumberValue(array_size, Numerics::ARGUMENT_DIGITS))
+        if (!count->unsignedNumberValue(arraySize, Numerics::ARGUMENT_DIGITS))
         {
-            reportException(Error_Invalid_stem_array_index, stem, count);
+            reportException(Error_Invalid_whole_number_stem_array_index, stem->getName(), count);
         }
     }
     // we always start at element 1
@@ -128,12 +132,13 @@ void StemInputSource::init()
 RexxString *StemInputSource::read()
 {
     // if we've reached the end, done reading, so return nothing.
-    if (index > arrayLength)
+    if (index > arraySize)
     {
+        lastValue = OREF_NULL;
         return OREF_NULL;
     }
     // get the next element
-    RexxObject *value = array->getElement(index++);
+    RexxObject *value = stem->getElement(index++);
     // this is not supposed to be a sparse array, but for safety,
     // we'll turn this into a null string
     if (value == OREF_NULL)
@@ -207,24 +212,25 @@ void StreamObjectInputSource::liveGeneral(MarkReason reason)
 /**
  * Read the next line from the stem source
  */
-RexxString *StemInputSource::read()
+RexxString *StreamObjectInputSource::read()
 {
     // if we previously hit the end, then return nothing
     if (hitEnd)
     {
+        lastValue = OREF_NULL;
         return OREF_NULL;
     }
 
     // read a line from the stream
     ProtectedObject result;
-    lastValue = streamClass->sendMessage(GlobalNames::LINEIN, result);
+    lastValue = stream->sendMessage(GlobalNames::LINEIN, result);
 
     // we can't trap a NOTREADY condition in this context, so if
     // the read result was a null string, then we need to check the
     // stream state to see if it is still in the ready state.
-    if (lastValue->length() == 0)
+    if (lastValue->getLength() == 0)
     {
-        RexxString *state = streamClass->sendMessage(GlobalNames::STATE);
+        RexxString *state = stream->sendMessage(GlobalNames::STATE);
         // anything other than READY means we've hit the end of the road.
         // Note this and return NULL
         if (!state->strCompare(GlobalNames::READY))
@@ -300,9 +306,8 @@ void StreamInputSource::init()
     ProtectedObject result;
     stream = streamClass->sendMessage(GlobalNames::NEW, name, result);
 
-    RexxString *openResult = OREF_NULL;
     // open for input only
-    openResult = stream->sendMessage(GlobalNames::OPEN, GlobalNames::READ, result);
+    RexxString *openResult = stream->sendMessage(GlobalNames::OPEN, GlobalNames::READ, result);
     // the open should return ready
     if (!openResult->strCompare(GlobalNames::READY))
     {
@@ -353,6 +358,7 @@ ArrayInputSource::ArrayInputSource(ArrayClass *a)
 void ArrayInputSource::live(size_t liveMark)
 {
     memory_mark(array);
+memory_mark(lastValue);
 }
 
 
@@ -366,6 +372,7 @@ void ArrayInputSource::live(size_t liveMark)
 void ArrayInputSource::liveGeneral(MarkReason reason)
 {
     memory_mark_general(array);
+    memory_mark_general(lastValue);
 }
 
 
@@ -391,9 +398,19 @@ RexxString *ArrayInputSource::read()
     // if we've already reached the end, return a null
     if (index > lastIndex)
     {
+        lastValue = OREF_NULL;
         return OREF_NULL;
     }
-    // return the current item
-    return array->get(index++);
+    // Conceptually, everything in here is supposed to be a string.
+    // However, if we unalaterally assume it is a string, they very bad things
+    // happen. Additionally, this value might be an integer or numberstring object
+    // pretending to be a string, so we need to force this to be a real string.
+
+    // Additionally, we keep a reference to this in case it is a newly
+    // allocated object that could be garbage collected unless we hold on
+    // to a reference
+    lastValue = array->get(index++)->requestString();
+
+    return lastValue;
 }
 

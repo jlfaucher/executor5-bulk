@@ -42,7 +42,11 @@
 /******************************************************************************/
 
 #include "RexxCore.h"
-#include "OutputRedirectors.hpp"
+#include "OutputRedirector.hpp"
+#include "Activity.hpp"
+#include "ActivityManager.hpp"
+#include "ProtectedObject.hpp"
+#include "PackageClass.hpp"
 
 
 /**

@@ -43,7 +43,11 @@
 #ifndef Included_InputRedirector
 #define Included_InputRedirector
 
+#include "RexxCore.h"
 #include "CommandIOConfiguration.hpp"
+#include "StemClass.hpp"
+
+class StemClass;
 
 /**
  * Base class for I/O redirectors.
@@ -66,12 +70,11 @@ class InputRedirector : public RexxInternalObject
 
 
 /**
- * Input handler for reading lines from a stem object
  */
 class StemInputSource : public InputRedirector
 {
  public:
-    void        *operator new(size_t, size_t);
+    void        *operator new(size_t);
     inline void  operator delete(void *) { }
 
     inline StemInputSource(StemClass *stem);
@@ -86,10 +89,10 @@ class StemInputSource : public InputRedirector
     virtual RexxObject *target() { return stem; }
 
 protected:
-    StemClass *stem;      // the stem we're handling
-    size_t     index;     // the current read index
-    size_t     arraySize; // the limit to where we write
-    RexxString*lastValue; // last value returned for GC protection
+    StemClass  *stem;      // the stem we're handling
+    RexxString *lastValue; // last value returned for GC protection
+    size_t      index;     // the current read index
+    size_t      arraySize; // the limit to where we write
 };
 
 
@@ -101,7 +104,7 @@ protected:
 class StreamObjectInputSource : public InputRedirector
 {
  public:
-    void        *operator new(size_t, size_t);
+    void        *operator new(size_t);
     inline void  operator delete(void *) { }
 
     inline StreamObjectInputSource() { ; }
@@ -118,6 +121,7 @@ class StreamObjectInputSource : public InputRedirector
 
 protected:
     RexxObject *stream;   // the stream object
+    RexxString *lastValue;// last value returned for GC protection
     bool        hitEnd;   // indicator that we're done reading
 };
 
@@ -129,7 +133,7 @@ protected:
 class StreamInputSource : public StreamObjectInputSource
 {
  public:
-    void        *operator new(size_t, size_t);
+    void        *operator new(size_t);
     inline void  operator delete(void *) { }
 
     inline StreamInputSource(RexxString *n);
@@ -156,7 +160,7 @@ protected:
 class ArrayInputSource : public InputRedirector
 {
  public:
-    void        *operator new(size_t, size_t);
+    void        *operator new(size_t);
     inline void  operator delete(void *) { }
 
     inline ArrayInputSource(ArrayClass *a);
@@ -172,6 +176,7 @@ class ArrayInputSource : public InputRedirector
 
 protected:
     ArrayClass *collection;     // the source array object
+    RexxObject *lastValue;      // string version of last value returned to protect from GC.
     size_t      index;          // current read index
     size_t      arraySize;      // read upper limit
 };

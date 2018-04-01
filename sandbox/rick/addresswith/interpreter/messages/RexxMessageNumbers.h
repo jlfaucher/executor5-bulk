@@ -700,6 +700,12 @@
 #define Error_Invalid_do_with_no_control_msg                         785
 #define Error_Invalid_do_with_no_over_msg                            786
 #define Error_Translation_bad_class_msg                              787
+#define Error_Execution_address_input_source_msg                     788
+#define Error_Execution_address_output_target_msg                    789
+#define Error_Execution_using_stream_option_msg                      790
+#define Error_Invalid_whole_number_stem_array_index_msg              791
+#define Error_Execution_missing_stem_array_index_msg                 792
+#define Error_Execution_file_not_readable_msg                        793
 
 
 #endif

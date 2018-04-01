@@ -40,8 +40,16 @@
 /* A configuration for issuing commands with I/O redirection                  */
 /*                                                                            */
 /******************************************************************************/
-#include "CommandIOConfiguration.hpp"
 
+#include "RexxCore.h"
+#include "Activity.hpp"
+#include "CommandIOConfiguration.hpp"
+#include "CommandIOContext.hpp"
+#include "InputRedirector.hpp"
+#include "OutputRedirector.hpp"
+#include "ProtectedObject.hpp"
+#include "RexxActivation.hpp"
+#include "SystemInterpreter.hpp"
 
 /**
  * Allocate a CommandIOConfiguration object
@@ -61,11 +69,11 @@ void  *CommandIOConfiguration::operator new(size_t size)
  */
 CommandIOConfiguration::CommandIOConfiguration()
 {
-    inputType = DEFAULT_PROCESSING;
-    outputType = DEFAULT_PROCESSING;
-    errorType = DEFAULT_PROCESSING;
-    outputOption = DEFAULT_REPLACE;
-    errorOption = DEFAULT_REPLACE;
+    inputType = RedirectionType::DEFAULT;
+    outputType = RedirectionType::DEFAULT;
+    errorType = RedirectionType::DEFAULT;
+    outputOption = OutputOption::DEFAULT;
+    errorOption = OutputOption::DEFAULT;
 }
 
 
@@ -89,11 +97,30 @@ void CommandIOConfiguration::live(size_t liveMark)
  *
  * @param reason The reason for the marking call.
  */
-void CommandIOContext::liveGeneral(MarkReason reason)
+void CommandIOConfiguration::liveGeneral(MarkReason reason)
 {
     memory_mark_general(inputSource);
     memory_mark_general(outputTarget);
     memory_mark_general(errorTarget);
+}
+
+
+/**
+ * Perform generalized live marking on an object.  This is
+ * used when mark-and-sweep processing is needed for purposes
+ * other than garbage collection.
+ *
+ * @param reason The reason for the marking call.
+ */
+void CommandIOConfiguration::flatten(Envelope *envelope)
+{
+    setUpFlatten(CommandIOConfiguration)
+
+    flattenRef(inputSource);
+    flattenRef(outputTarget);
+    flattenRef(errorTarget);
+
+    cleanUpFlatten
 }
 
 
@@ -112,27 +139,28 @@ void CommandIOContext::liveGeneral(MarkReason reason)
 CommandIOContext *CommandIOConfiguration::createIOContext(RexxActivation *context, ExpressionStack *stack, CommandIOConfiguration *commandConfig)
 {
     // create the runtime I/O context object and fill in the needed sections
-    Protected<CommandIOContext> ioContext = new ProtectedIOContext();
+    Protected<CommandIOContext> ioContext = new CommandIOContext();
 
     // we use a chaining strategy here. If we have a configuration from the command, then we ask
     // it to merge each item. Otherwise we create the item directly from us
     if (commandConfig != OREF_NULL)
     {
         ioContext->input = commandConfig->createInputSource(context, stack, this);
-        ioContext->output = commandConfig->createOutputSource(context, stack, this);
-        ioContext->error = commandConfig->createErrorSource(context, stack, this);
+        ioContext->output = commandConfig->createOutputTarget(context, stack, this);
+        ioContext->error = commandConfig->createErrorTarget(context, stack, this);
     }
     // we just use what we already have
     else
     {
         ioContext->input = createInputSource(context, stack);
-        ioContext->output = createOutputSource(context, stack);
-        ioContext->error = createErrorSource(context, stack);
+        ioContext->output = createOutputTarget(context, stack);
+        ioContext->error = createErrorTarget(context, stack);
     }
 
     // if the same objects are getting used for both input and output, then
     // we need to insert a buffering layer in front of the output object.
     ioContext->resolveConflicts();
+    return ioContext;
 }
 
 
@@ -152,7 +180,7 @@ InputRedirector *CommandIOConfiguration::createInputSource(RexxActivation *conte
 {
     // if we're explicitly configured for NORMAL, this is
     // a reset
-    if (inputType == NORMAL)
+    if (inputType == RedirectionType::NORMAL)
     {
         return OREF_NULL;
     }
@@ -180,23 +208,23 @@ InputRedirector *CommandIOConfiguration::createInputSource(RexxActivation *conte
  *
  * @return An appropriate OUTPUT object from this configuration.
  */
-OutputRedirector *CommandIOConfiguration::createOutputSource(RexxActivation *context, ExpressionStack *stack, CommandIOConfiguration *mainConfig)
+OutputRedirector *CommandIOConfiguration::createOutputTarget(RexxActivation *context, ExpressionStack *stack, CommandIOConfiguration *mainConfig)
 {
     // if we're explicitly configured for NORMAL, this is
     // a reset
-    if (outputType == NORMAL)
+    if (outputType == RedirectionType::NORMAL)
     {
         return OREF_NULL;
     }
 
     // if we have a configuration, return it
-    if (outputSource != OREF_NULL)
+    if (outputTarget != OREF_NULL)
     {
-        return createOutputSource(context, stack);
+        return createOutputTarget(context, stack);
     }
 
     // create from the main configuration
-    return mainConfig->createOutputSource(context, stack);
+    return mainConfig->createOutputTarget(context, stack);
 }
 
 
@@ -212,23 +240,23 @@ OutputRedirector *CommandIOConfiguration::createOutputSource(RexxActivation *con
  *
  * @return An appropriate ERROR object from this configuration.
  */
-OutputRedirector *CommandIOConfiguration::createErrorSource(RexxActivation *context, ExpressionStack *stack, CommandIOConfiguration *mainConfig)
+OutputRedirector *CommandIOConfiguration::createErrorTarget(RexxActivation *context, ExpressionStack *stack, CommandIOConfiguration *mainConfig)
 {
     // if we're explicitly configured for NORMAL, this is
     // a reset
-    if (outputType == NORMAL)
+    if (errorType == RedirectionType::NORMAL)
     {
         return OREF_NULL;
     }
 
     // if we have a configuration, return it
-    if (outputSource != OREF_NULL)
+    if (errorTarget != OREF_NULL)
     {
-        return createErrorSource(context, stack);
+        return createErrorTarget(context, stack);
     }
 
     // create from the main configuration
-    return mainConfig->createErrorSource(context, stack);
+    return mainConfig->createErrorTarget(context, stack);
 }
 
 
@@ -259,14 +287,13 @@ InputRedirector *CommandIOConfiguration::createInputSource(RexxActivation *conte
         // if STEM was specified, then the syntax checks requires a STEM variable
         // symbol follow the option. Therefore, we know this will have evaluated
         // to stem object. This is the easiest of the checks;
-        case STEM_VARIABLE:
+        case RedirectionType::STEM_VARIABLE:
         {
-            Protected<InputRedirector> redirector = new StemInputSource((StemClass *)inputObject);
-            return redirector;
+            return new StemInputSource((StemClass *)inputObject);
         }
         // a stream specified by name. This must be convertable to string form and
         // will be used to create a stream object.
-        case STREAM_NAME:
+        case RedirectionType::STREAM_NAME:
         {
             // this must be a string
             Protected<RexxString> streamName = inputObject->requestString();
@@ -275,8 +302,7 @@ InputRedirector *CommandIOConfiguration::createInputSource(RexxActivation *conte
             // we need to use the fully qualified file name here.
             streamName = SystemInterpreter::qualifyFileSystemName(streamName);
 
-            Protected<InputRedirector> redirector = new StreamInputSource(streamName);
-            return redirector;
+            return new StreamInputSource(streamName);
         }
 
         // this was ADDRESS .. WITH INPUT USING expr. We dynamically determine from
@@ -294,37 +320,34 @@ InputRedirector *CommandIOConfiguration::createInputSource(RexxActivation *conte
             if (::isString(inputObject))
             {
                 Protected<ArrayClass> source = new_array(inputObject);
-                Protected<InputRedirector> redirector = new ArrayInputSource(inputObject);
-                return redirector;
+                return new ArrayInputSource(source);
             }
             // an evaluated stem object
             if (::isStem(inputObject))
             {
-                Protected<InputRedirector> redirector = new StemInputSource((StemClass *)inputObject);
+                return new StemInputSource((StemClass *)inputObject);
             }
 
             // Now we need to check for input streams
             RexxClass *streamClass = TheRexxPackage->findClass(GlobalNames::INPUTSTREAM);
-            if (inputObject->instanceOf(streamClass))
+            if (inputObject->isInstanceOf(streamClass))
             {
-                Protected<InputRedirector> redirector = new StreamObjectInputSource(streamName);
-                return redirector;
+                return new StreamObjectInputSource(inputObject);
             }
 
             // OK, now try for a FILE object
             RexxClass *fileClass = TheRexxPackage->findClass(GlobalNames::FILE);
-            if (inputObject->instanceOf(fileClass))
+            if (inputObject->isInstanceOf(fileClass))
             {
                 ProtectedObject result;
                 // this just uses lineout
-                RexxString *streamName = inputObject->sendMessage(GlobalNames::ABSOLUTEPATH, result);
+                RexxString *streamName = (RexxString *)inputObject->sendMessage(GlobalNames::ABSOLUTEPATH, result);
 
-                Protected<InputRedirector> redirector = new StreamObjectInputSource(streamName);
-                return redirector;
+                return new StreamObjectInputSource(streamName);
             }
 
             // this must be convertable to some sort of array past this point
-            Protected<ArrayClass> *array;
+            Protected<ArrayClass> array;
             if (isArray(inputObject))
             {
                 array = ((ArrayClass *)inputObject)->makeArray();
@@ -338,11 +361,10 @@ InputRedirector *CommandIOConfiguration::createInputSource(RexxActivation *conte
                 // back something other than a real Rexx array.
                 if (!isArray(array))
                 {
-                    reportException(Error_Execution_inputsource, inputObject);
+                    reportException(Error_Execution_address_input_source, inputObject);
                 }
             }
-            Protected<InputRedirector> redirector = new ArrayInputSource(array);
-            return redirector;
+            return new ArrayInputSource(array);
         }
     }
     // nothing to create
@@ -403,19 +425,18 @@ OutputRedirector *CommandIOConfiguration::createErrorTarget(RexxActivation *cont
  *
  * @return A resolved and constructed output target.
  */
-OutputRedirector *CommandIOConfiguration::createOutputSource(RexxActivation *context, ExpressionStack *stack, RexxInternalObject *outputTarget, RedirectionType::Enum type, OutputOption::Enum option)
+OutputRedirector *CommandIOConfiguration::createOutputTarget(RexxActivation *context, ExpressionStack *stack, RexxInternalObject *outputTarget, RedirectionType::Enum type, OutputOption::Enum option)
 {
     RexxObject *outputObject = outputTarget->evaluate(context, stack);
     // need to trace this if on
     context->traceResult(outputObject);
     switch (type)
     {
-        case STEM_VARIABLE:
+        case RedirectionType::STEM_VARIABLE:
         {
-            Protected<OutputRedirector> redirector = new StemOutputTarget((StemClass *)outputObject, option);
-            return redirector;
+            return new StemOutputTarget((StemClass *)outputObject, option);
         }
-        case STREAM_NAME:
+        case RedirectionType::STREAM_NAME:
         {
             // this must be a string
             Protected<RexxString> streamName = outputObject->requestString();
@@ -423,55 +444,50 @@ OutputRedirector *CommandIOConfiguration::createOutputSource(RexxActivation *con
             // we need to use the fully qualified file name here.
             streamName = SystemInterpreter::qualifyFileSystemName(streamName);
 
-            Protected<OutputRedirector> redirector = new StreamOutputTarget(streamName, option);
-            return redirector;
+            return new StreamOutputTarget(streamName, option);
         }
         default:
         {
             // an evaluated stem object
             if (::isStem(outputObject))
             {
-                Protected<OutputRedirector> redirector = new StemOutputTarget((StemClass *)outputObject, option);
-                return redirector;
+                return new StemOutputTarget((StemClass *)outputObject, option);
             }
 
             // Now we need to check for output streams
             RexxClass *streamClass = TheRexxPackage->findClass(GlobalNames::OUTPUTSTREAM);
-            if (outputObject->instanceOf(streamClass))
+            if (outputObject->isInstanceOf(streamClass))
             {
                 // REPLACE or APPEND does not make sense for an arbitrary inputstream
                 // object that might not even be a file stream. raise an error for anything
                 // other than default
-                if (option != DEFAULT_REPLACE)
+                if (option != OutputOption::DEFAULT)
                 {
                     reportException(Error_Execution_using_stream_option);
                 }
 
-                Protected<InputRedirector> redirector = new StreamObjectOutputTarget(outputObject, option);
-                return redirector;
+                return new StreamObjectOutputTarget(outputObject, option);
             }
 
             // OK, now try for a FILE object
             RexxClass *fileClass = TheRexxPackage->findClass(GlobalNames::FILE);
-            if (inputObject->instanceOf(fileClass))
+            if (outputObject->isInstanceOf(fileClass))
             {
                 ProtectedObject result;
                 // this just uses lineout
-                RexxString *streamName = inputObject->sendMessage(GlobalNames::ABSOLUTEPATH, result, option);
+                RexxString *streamName = (RexxString *)outputObject->sendMessage(GlobalNames::ABSOLUTEPATH, result);
 
-                Protected<OutputRedirector> redirector = new StreamOutputTarget(streamName);
-                return redirector;
+                return new StreamOutputTarget(streamName, option);
             }
 
             // Now some sort of ordered collection
             RexxClass *orderedCollection = TheRexxPackage->findClass(GlobalNames::ORDEREDCOLLECTION);
-            if (outputObject->instanceOf(orderedCollection))
+            if (outputObject->isInstanceOf(orderedCollection))
             {
-                Protected<InputRedirector> redirector = new CollectionOutputTarget(outputObject, option);
-                return redirector;
+                return new CollectionOutputTarget(outputObject, option);
             }
             // an unknown type of target
-            reportException(Error_Execution_output_target, outputObject);
+            reportException(Error_Execution_address_output_target, outputObject);
         }
     }
     return OREF_NULL;

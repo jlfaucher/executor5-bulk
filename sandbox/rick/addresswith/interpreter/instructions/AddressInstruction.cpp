@@ -47,6 +47,8 @@
 #include "AddressInstruction.hpp"
 #include "SystemInterpreter.hpp"
 #include "MethodArguments.hpp"
+#include "CommandIOConfiguration.hpp"
+#include "CommandIOContext.hpp"
 
 /**
  * Constructor for an Address instruction object.
@@ -79,6 +81,7 @@ void RexxInstructionAddress::live(size_t liveMark)
     memory_mark(dynamicAddress);
     memory_mark(environment);
     memory_mark(command);
+    memory_mark(ioConfig);
 }
 
 
@@ -96,6 +99,7 @@ void RexxInstructionAddress::liveGeneral(MarkReason reason)
     memory_mark_general(dynamicAddress);
     memory_mark_general(environment);
     memory_mark_general(command);
+    memory_mark_general(ioConfig);
 }
 
 
@@ -114,9 +118,11 @@ void RexxInstructionAddress::flatten(Envelope *envelope)
     flattenRef(dynamicAddress);
     flattenRef(environment);
     flattenRef(command);
+    flattenRef(ioConfig);
 
     cleanUpFlatten
 }
+
 
 /**
  * Execute an addres instruction.

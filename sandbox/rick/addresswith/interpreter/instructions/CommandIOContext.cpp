@@ -40,7 +40,12 @@
 /* The processing context for ADDRESS WITH I/O interaction                    */
 /*                                                                            */
 /******************************************************************************/
+#include "RexxCore.h"
+#include "Activity.hpp"
 #include "CommandIOContext.hpp"
+#include "InputRedirector.hpp"
+#include "OutputRedirector.hpp"
+#include "ProtectedObject.hpp"
 
 
 /**
@@ -124,7 +129,7 @@ void CommandIOContext::resolveConflicts()
         }
     }
     // now we still could have a conflict beteen the input ane error, so check that too
-    if (!dualInput && error != OREF_NULL && error->needsBuffering(input))
+    if (!dualOutput && error != OREF_NULL && error->needsBuffering(input))
     {
         // make this buffered until the command returns
         output = new BufferingOutputTarget(output);
@@ -148,7 +153,7 @@ void CommandIOContext::init()
     }
     if (error != OREF_NULL)
     {
-        erre->init();
+        error->init();
     }
 }
 
@@ -170,7 +175,7 @@ void CommandIOContext::cleanup()
     }
     if (error != OREF_NULL)
     {
-        errer->cleanup();
+        error->cleanup();
     }
 }
 
@@ -181,14 +186,14 @@ void CommandIOContext::cleanup()
  *
  * @return The CSTRING value for the next line or NULL if we've hit EOF.
  */
-const char *CommandIOContext::getInput()
+const char *CommandIOContext::readInput()
 {
     // first make sure we have a source object
     if (input == OREF_NULL)
     {
         return NULL;
     }
-    RexxString *next = input->getInput();
+    RexxString *next = input->read();
     // no string means no input
     if (next == OREF_NULL)
     {
@@ -212,7 +217,7 @@ void CommandIOContext::writeOutput(const char *data, size_t len)
     // this shouldn't happen, but if not redirected, don't crash!
     if (output != OREF_NULL)
     {
-        Protected<RexxString> value = new_string(data, length);
+        Protected<RexxString> value = new_string(data, len);
         output->write(value);
     }
 }
@@ -229,7 +234,7 @@ void CommandIOContext::writeError(const char *data, size_t len)
     // this shouldn't happen, but if not redirected, don't crash!
     if (error != OREF_NULL)
     {
-        Protected<RexxString> value = new_string(data, length);
+        Protected<RexxString> value = new_string(data, len);
         error->write(value);
     }
 }

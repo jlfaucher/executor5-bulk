@@ -320,7 +320,7 @@ RexxClassObject RexxEntry FindCallContextClass(RexxCallContext *c, CSTRING n)
 }
 
 
-CSTRING RexxEntry GetInput(RexxIORedirectorContext *c)
+CSTRING RexxEntry ReadInput(RexxIORedirectorContext *c)
 {
     ApiContext context(c);
     try
@@ -337,7 +337,7 @@ CSTRING RexxEntry GetInput(RexxIORedirectorContext *c)
         // request the next input line. This will be NULL if we've reached the end.
         // Note that the string object is anchored by the ioContext, so
         // we don't need to add this to the context local reference table
-        return (CSTRING)ioContext->getInput();
+        return (CSTRING)ioContext->readInput();
     }
     catch (NativeActivation *)
     {
@@ -502,7 +502,7 @@ ExitContextInterface Activity::exitContextFunctions =
 IORedirectorInterface Activity::ioRedirectorContextFunctions =
 {
     REDIRECT_INTERFACE_VERSION,
-    GetInput,
+    ReadInput,
     WriteOutput,
     WriteError,
 };
