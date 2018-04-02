@@ -247,6 +247,7 @@
 #define TheStreamObjectInputSourceBehaviour      (&RexxBehaviour::primitiveBehaviours[T_StreamObjectInputSource])
 #define TheStreamInputSourceBehaviour      (&RexxBehaviour::primitiveBehaviours[T_StreamInputSource])
 #define TheArrayInputSourceBehaviour      (&RexxBehaviour::primitiveBehaviours[T_ArrayInputSource])
+#define TheRexxQueueOutputTargetBehaviour      (&RexxBehaviour::primitiveBehaviours[T_RexxQueueOutputTarget])
 
 
 /* -------------------------------------------------------------------------- */

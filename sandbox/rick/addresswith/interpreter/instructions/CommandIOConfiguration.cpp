@@ -469,6 +469,20 @@ OutputRedirector *CommandIOConfiguration::createOutputTarget(RexxActivation *con
                 return new StreamObjectOutputTarget(outputObject, option);
             }
 
+            // OK, now try for a RexxQueue object
+            RexxClass *rexxQueueClass = TheRexxPackage->findClass(GlobalNames::REXXQUEUE);
+            if (outputObject->isInstanceOf(rexxQueueClass))
+            {
+                // REPLACE or APPEND does not make sense for a queue
+                // object. raise an error for anything
+                // other than default
+                if (option != OutputOption::DEFAULT)
+                {
+                    reportException(Error_Execution_using_rexxqueue_option);
+                }
+                return new RexxQueueOutputTarget(outputObject);
+            }
+
             // OK, now try for a FILE object
             RexxClass *fileClass = TheRexxPackage->findClass(GlobalNames::FILE);
             if (outputObject->isInstanceOf(fileClass))

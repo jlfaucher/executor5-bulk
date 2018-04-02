@@ -257,6 +257,7 @@ RexxBehaviour RexxBehaviour::primitiveBehaviours[T_Last_Primitive_Class + 1] =
     RexxBehaviour(T_StreamObjectInputSource, (PCPPM *)RexxObject::operatorMethods),
     RexxBehaviour(T_StreamInputSource, (PCPPM *)RexxObject::operatorMethods),
     RexxBehaviour(T_ArrayInputSource, (PCPPM *)RexxObject::operatorMethods),
+    RexxBehaviour(T_RexxQueueOutputTarget, (PCPPM *)RexxObject::operatorMethods),
 };
 
 

@@ -716,6 +716,7 @@
 #define Error_Invalid_expression_missing_general_msg                 801
 #define Error_Symbol_expected_address_with_msg                       802
 #define Error_Execution_address_redirection_not_supported_msg        803
+#define Error_Execution_using_rexxqueue_option_msg                   804
 
 
 #endif

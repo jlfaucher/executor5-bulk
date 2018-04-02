@@ -262,10 +262,11 @@ typedef enum
     T_StreamObjectInputSource = 195,
     T_StreamInputSource = 196,
     T_ArrayInputSource = 197,
+    T_RexxQueueOutputTarget = 198,
 
-    T_Last_Transient_Class = 197,
-    T_Last_Primitive_Class = 197,
-    T_Last_Class_Type = 197,
+    T_Last_Transient_Class = 198,
+    T_Last_Primitive_Class = 198,
+    T_Last_Class_Type = 198,
     
 } ClassTypeCode;
 

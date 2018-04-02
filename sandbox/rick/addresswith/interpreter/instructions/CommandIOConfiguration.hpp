@@ -64,6 +64,7 @@ namespace RedirectionType
         STREAM_OBJECT,
         ARRAY_OBJECT,
         COLLECTION_OBJECT,
+        REXXQUEUE_OBJECT,
     };
 };
 

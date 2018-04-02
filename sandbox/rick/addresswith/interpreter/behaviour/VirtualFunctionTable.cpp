@@ -796,6 +796,9 @@ void MemoryObject::buildVirtualFunctionTable()
    objectPtr = ::new (objectLoc) ArrayInputSource(RESTOREIMAGE);
    virtualFunctionTable[T_ArrayInputSource] = getVftPointer(objectLoc);
    
+   objectPtr = ::new (objectLoc) RexxQueueOutputTarget(RESTOREIMAGE);
+   virtualFunctionTable[T_RexxQueueOutputTarget] = getVftPointer(objectLoc);
+   
 };
 
 

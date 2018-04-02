@@ -445,7 +445,7 @@ void CollectionOutputTarget::init()
     initialized = true;
 
     // If replace is specified, then empty the collection
-    if (option == OutputOption::REPLACE)
+    if (option == OutputOption::REPLACE || option == OutputOption::DEFAULT)
     {
         ProtectedObject result;
         // this just uses lineout
@@ -552,4 +552,66 @@ void BufferingOutputTarget::cleanup()
 
     // and finally the cleanup
     target->cleanup();
+}
+
+
+/**
+ * Allocate a new RexxQueue output target
+ *
+ * @param size   The size of the object.
+ *
+ * @return Storage for creating the object.
+ */
+void *RexxQueueOutputTarget::operator new(size_t size)
+{
+    return new_object(size, T_RexxQueueOutputTarget);
+}
+
+
+/**
+ * Construct a output target ogject
+ *
+ * @param stem      The RexxQueue objbect being used
+ */
+RexxQueueOutputTarget::RexxQueueOutputTarget(RexxObject *q)
+{
+    queue = q;
+}
+
+
+/**
+ * Perform garbage collection on a live object.
+ *
+ * @param liveMark The current live mark.
+ */
+void RexxQueueOutputTarget::live(size_t liveMark)
+{
+    memory_mark(queue);
+}
+
+
+/**
+ * Perform generalized live marking on an object.  This is
+ * used when mark-and-sweep processing is needed for purposes
+ * other than garbage collection.
+ *
+ * @param reason The reason for the marking call.
+ */
+void RexxQueueOutputTarget::liveGeneral(MarkReason reason)
+{
+    memory_mark_general(queue);
+}
+
+
+/**
+ * Write a value to the output redirector.
+ *
+ * @param value  The string value to write
+ */
+void RexxQueueOutputTarget::write(RexxString *value)
+{
+    // add the string to the next position
+    ProtectedObject result;
+    // this just uses lineout
+    queue->sendMessage(GlobalNames::QUEUE, value, result);
 }

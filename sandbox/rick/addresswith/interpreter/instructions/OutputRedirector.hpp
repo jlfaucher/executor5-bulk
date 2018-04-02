@@ -130,6 +130,32 @@ protected:
 
 
 /**
+ * Output handler for collecting lines in a RexxQueue object
+ *
+ */
+class RexxQueueOutputTarget : public OutputRedirector
+{
+ public:
+    void        *operator new(size_t);
+    inline void  operator delete(void *) { }
+
+    inline RexxQueueOutputTarget() { ; };
+    inline RexxQueueOutputTarget(RESTORETYPE restoreType) { ; };
+    RexxQueueOutputTarget(RexxObject *s);
+
+    virtual void live(size_t);
+    virtual void liveGeneral(MarkReason reason);
+
+    virtual void write(RexxString *v);
+    virtual RedirectionType::Enum type() { return RedirectionType::REXXQUEUE_OBJECT; }
+    virtual RexxObject *target() { return queue; }
+
+protected:
+    RexxObject *queue;   // the queue object
+};
+
+
+/**
  * Output handler for collecting lines in a named stream
  *
  */
