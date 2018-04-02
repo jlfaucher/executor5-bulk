@@ -3706,6 +3706,10 @@ struct RexxIORedirectorContext_
     {
         return functions->IsErrorRedirected(this);
     }
+    logical_t AreOutputAndErrorSameTarget()
+    {
+        return functions->AreOutputAndErrorSameTarget(this);
+    }
 #endif
 };
 

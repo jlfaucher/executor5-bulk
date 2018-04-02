@@ -632,6 +632,87 @@ RexxObjectPtr RexxEntry systemCommandHandler(RexxExitContext *context, RexxStrin
     return result;
 }
 
+#if 1
+RexxObjectPtr RexxEntry testCommandHandler(RexxExitContext *context, RexxStringObject address, RexxStringObject command, RexxIORedirectorContext *ioContext)
+{
+    CSTRING commandString = context->CString(command);
+
+    if (strcmp(commandString, "INPUTOUTPUT"))
+    {
+        CSTRING data;
+        size_t length;
+
+        ioContext->ReadInput(&data, &length);
+        while (data != NULL)
+        {
+            ioContext->WriteOutput(data, length);
+        }
+
+        return context->False();
+    }
+
+    if (strcmp(commandString, "INPUTERROR"))
+    {
+        CSTRING data;
+        size_t length;
+
+        ioContext->ReadInput(&data, &length);
+        while (data != NULL)
+        {
+            ioContext->WriteError(data, length);
+        }
+
+        return context->False();
+    }
+
+    if (strcmp(commandString, "INPUTBOTH"))
+    {
+        CSTRING data;
+        size_t length;
+        bool useError = false;
+
+        ioContext->ReadInput(&data, &length);
+        while (data != NULL)
+        {
+            if (useError)
+            {
+                ioContext->WriteError(data, length);
+            }
+            else
+            {
+                ioContext->WriteOutput(data, length);
+            }
+            useError = !useError;
+        }
+
+        return context->False();
+    }
+
+    if (strcmp(commandString, "INPUTREDIRECTED"))
+    {
+        return ioContext->IsInputRedirected() ? context->True() : context->False();
+    }
+
+    if (strcmp(commandString, "OUTPUTREDIRECTED"))
+    {
+        return ioContext->IsOutputRedirected() ? context->True() : context->False();
+    }
+
+    if (strcmp(commandString, "ERRORREDIRECTED"))
+    {
+        return ioContext->IsErrorRedirected() ? context->True() : context->False();
+    }
+
+    if (strcmp(commandString, "AREOUTPUTERRORTHESAME"))
+    {
+        return ioContext->AreOutputAndErrorSameTarget() ? context->True() : context->False();
+    }
+
+
+    return context->True();
+}
+
+#endif
 
 /**
  * Register the standard system command handlers.
@@ -645,4 +726,7 @@ void SysInterpreterInstance::registerCommandHandlers(InterpreterInstance *instan
     instance->addCommandHandler("CMD", (REXXPFN)systemCommandHandler, HandlerType::REDIRECTING);
     instance->addCommandHandler("COMMAND", (REXXPFN)systemCommandHandler, HandlerType::REDIRECTING);
     instance->addCommandHandler("", (REXXPFN)systemCommandHandler, HandlerType::REDIRECTING);
+#if 1
+    instance->addCommandHandler("TEST", (REXXPFN)testCommandHandler, HandlerType::REDIRECTING);
+#endif
 }

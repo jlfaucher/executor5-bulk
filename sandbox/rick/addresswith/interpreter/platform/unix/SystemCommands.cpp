@@ -575,7 +575,7 @@ bool scan_cmd(const char *parm_cmd, char **argPtr)
 /*             and invoke the shell indicated by the local_env_type argument. */
 /*             This is modeled after command handling done in Classic REXX.   */
 /******************************************************************************/
-RexxObjectPtr RexxEntry systemCommandHandler(RexxExitContext *context, RexxStringObject address, RexxStringObject command, RexxIORedirector *ioContext)
+RexxObjectPtr RexxEntry systemCommandHandler(RexxExitContext *context, RexxStringObject address, RexxStringObject command, RexxIORedirectorContext *ioContext)
 {
     const char *cmd = context->StringData(command);
     const char *envName = context->StringData(address);
@@ -767,14 +767,14 @@ RexxObjectPtr RexxEntry systemCommandHandler(RexxExitContext *context, RexxStrin
 void SysInterpreterInstance::registerCommandHandlers(InterpreterInstance *_instance)
 {
     // Unix has a whole collection of similar environments, services by a single handler
-    _instance->addCommandHandler("COMMAND", (REXXPFN)systemCommandHandler, CommandHandler::REDIRECTING);
-    _instance->addCommandHandler("", (REXXPFN)systemCommandHandler, CommandHandler::REDIRECTING);
-    _instance->addCommandHandler("SH", (REXXPFN)systemCommandHandler, CommandHandler::REDIRECTING);
-    _instance->addCommandHandler("KSH", (REXXPFN)systemCommandHandler, CommandHandler::REDIRECTING);
-    _instance->addCommandHandler("CSH", (REXXPFN)systemCommandHandler, CommandHandler::REDIRECTING);
-    _instance->addCommandHandler("BSH", (REXXPFN)systemCommandHandler, CommandHandler::REDIRECTING);
-    _instance->addCommandHandler("BASH", (REXXPFN)systemCommandHandler, CommandHandler::REDIRECTING);
-    _instance->addCommandHandler("NOSHELL", (REXXPFN)systemCommandHandler, CommandHandler::REDIRECTING);
+    _instance->addCommandHandler("COMMAND", (REXXPFN)systemCommandHandler, HandlerType::REDIRECTING);
+    _instance->addCommandHandler("", (REXXPFN)systemCommandHandler, HandlerType::REDIRECTING);
+    _instance->addCommandHandler("SH", (REXXPFN)systemCommandHandler, HandlerType::REDIRECTING);
+    _instance->addCommandHandler("KSH", (REXXPFN)systemCommandHandler, HandlerType::REDIRECTING);
+    _instance->addCommandHandler("CSH", (REXXPFN)systemCommandHandler, HandlerType::REDIRECTING);
+    _instance->addCommandHandler("BSH", (REXXPFN)systemCommandHandler, HandlerType::REDIRECTING);
+    _instance->addCommandHandler("BASH", (REXXPFN)systemCommandHandler, HandlerType::REDIRECTING);
+    _instance->addCommandHandler("NOSHELL", (REXXPFN)systemCommandHandler, HandlerType::REDIRECTING);
 }
 
 
