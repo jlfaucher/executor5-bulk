@@ -1,0 +1,516 @@
+#!/usr/bin/rexx
+/*
+  SVN Revision: $Rev: 11382 $
+  Change Date:  $Date: 2018-03-28 17:42:59 +0200 (Mi, 28 Mär 2018) $
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.ADDRESS.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "ADDRESS.testGroup" subclass ooTestCase public
+
+::method "test_1"
+   defenv=address()
+   Address ''                        /* use null string                */
+   self~assertSame(address(), '')
+   Address                           /* toggle back                    */
+   self~assertSame(address(), defenv)
+
+
+-- "exit" should return 0 for both Linux and Windows shells
+::constant command_exists "exit"
+
+-- "exit 2" should return 2 for both Linux and Windows shells
+::constant command_exists_rc_2 "exit 2"
+
+-- non-existent command (with shell messages suppressed for Windows and Unix)
+::attribute command_not_exists get
+  if .ooRexxUnit.OSName == "WINDOWS" then
+    return "command_not_exists 2>nul"
+  else
+    return "command_not_exists 2>/dev/null"
+
+::attribute rc_command_not_exists get
+  if .ooRexxUnit.OSName == "WINDOWS" then
+    return 1 -- CMD return code for an unknown command is 1
+  else
+    return 127 -- Linux shell return code for an unknown command is 127
+
+
+::method test_environment_symbol
+   address not_exists
+   self~assertSame("NOT_EXISTS", address())
+
+::method test_environment_string
+   address "not_exists"
+   self~assertSame("not_exists", address())
+
+::method test_environment_string_value
+   address "value"
+   self~assertSame("value", address())
+
+::method test_environment_value_missing
+  -- Missing expression following VALUE keyword of an ADDRESS instruction
+  self~assertSyntaxError(35.914, "address value")
+
+::method test_environment_value
+   environment = "not_exists"
+   address value environment
+   self~assertSame(environment, address())
+
+-- ADDRESS VALUE expression "command" isn't allowed
+::method test_environment_value_extra
+   environment = "not_exists"
+   address value environment "extra"
+   self~assertSame(environment "extra", address())
+
+-- ADDRESS (expression) "command" isn't allowed
+::method test_environment_expression_extra
+   environment = "not_exists"
+   address (environment) "extra"
+   self~assertSame(environment "extra", address())
+
+-- commands with zero return code should raise neither ERROR nor FAILURE
+::method test_environment_command_exists
+   defaultEnvironment = address()
+   signal on error
+   signal on failure
+
+   -- both the COMMAND and the "" environment should access
+   -- the default environment for Windows and Unix
+   address command self~command_exists
+   self~assertSame(0, rc)
+   self~assertSame(0, .rs)
+   self~assertSame(defaultEnvironment, address())
+
+   -- both the COMMAND and the "" environment should access
+   -- the default environment for Windows and Unix
+   address "" self~command_exists
+   self~assertSame(0, rc)
+   self~assertSame(0, .rs)
+   self~assertSame(defaultEnvironment, address())
+
+   return
+
+   error: failure:
+   self~assertFail("command '"self~command_exists"' shouldn't have raised" condition("condition"))
+
+-- commands with non-zero return code should raise ERROR (but not FAILURE)
+::method test_command_exists_rc_2
+   defaultEnvironment = address()
+   signal on error
+   signal on failure
+   address "" self~command_exists_rc_2
+   self~assertFail("command '"self~command_exists_rc_2"' should have raised ERROR")
+
+   error:
+   self~assertSame(2, rc)
+   self~assertSame(1, .rs)
+   self~assertSame(defaultEnvironment, address())
+   return
+
+   failure:
+   self~assertFail("command '"self~command_exists_rc_2"' shouldn't have raised FAILURE")
+
+-- invalid (non-existent) commands should raise FAILURE (not ERROR)
+-- on Windows, although rexxref says: "For the default Windows command processor,
+-- an attempt to enter an unknown command raises a FAILURE condition", this doesn't
+-- work.  See [bugs:#1490] Windows Command doesn't raise FAILURE 
+-- As this doesn't seem to be easily fixed, we'll run this as "known bug"
+::method test_command_not_exists
+   defaultEnvironment = address()
+   signal on error
+   signal on failure
+   trace off                           -- we don't want to see FAILURE trace output
+   address "" self~command_not_exists
+   self~assertFail("command '"self~command_not_exists"' should have raised FAILURE")
+
+   failure:
+   self~assertSame(self~rc_command_not_exists, rc)
+   self~assertSame(-1, .rs)
+   self~assertSame(defaultEnvironment, address())
+   return
+
+   error:
+   self~assertFail("tracker bug #1490 Windows Command doesn't raise FAILURE")
+
+-- an invalid environment should raise FAILURE
+-- rexxref says: "An attempt to enter a command in an unknown command environment
+-- also raises a FAILURE condition; in such a case, the variable RC is set to 30."
+::method test_environment_not_exists_command
+   defaultEnvironment = address()
+   signal on error
+   signal on failure
+   trace off                           -- we don't want to see FAILURE trace output
+   address "environment_not_exists" self~command_exists
+   self~assertFail("an invalid anvironment should have raised FAILURE")
+
+   failure:
+   self~assertSame(30, rc)
+   self~assertSame(-1, .rs)
+   self~assertSame(defaultEnvironment, address())
+   return
+
+   error:
+   self~assertFail("an invalid anvironment shouldn't raise ERROR")
+
+::method test_environment_max_length
+   environment = "x"~copies(250)
+   address value environment
+   self~assertSame(environment, address())
+
+::method test_environment_too_long
+   self~expectSyntax(29.1) -- Environment name exceeds 250 characters
+   address value "x"~copies(251)
+
+
+-- the initial environment should be in the list of Rexx-defined environments
+-- (but it shouldn't be the null string)
+::method test_environment_initial
+  if .ooRexxUnit.OSName == "WINDOWS" then
+    environments = ("CMD", "COMMAND")
+  else
+    environments = ("sh", "bsh", "bash", "csh", "ksh", "command", "noshell")
+  self~assertTrue(environments~hasItem(address()), "initial address() '" || address() || "' is not a Rexx-defined environment")
+
+::method test_environment_unix
+  if .ooRexxUnit.OSName == "WINDOWS" then
+    return
+
+  -- on a Unix platform Rexx defines a bunch of environments
+  -- we check if these environments call the appropriate shell (if installed)
+  -- if the shell for a given environment isn't installed, we expect a FAILURE
+  -- if the shell is available, we expect "echo $0" to return the shell name
+  -- (we don't test 'noshell' environment, as it doesn't support pipe redirection)
+  -- (we also don't test 'csh' as it doesn't support echo $0)
+  environments = ("1::" || address(), "1:sh", "0:bsh", "0:bash", "0:ksh", "1:command:sh")
+
+  cmd = .Command~new
+  do env over environments
+    parse var env required ":" shell ":" echo
+    if echo = "" then
+      echo = shell
+    if shell == address() then
+      required = .true
+    cmd~environment = shell            -- address (shell)
+    cmd~run("echo $0")                 -- "echo $0"
+
+    -- we do not expect all environments to find their shell actually installed
+    -- address(), "", "sh", "command" and "noshell" should work at all times,
+    -- all others (if not installed) will raise FAILURE, which is a valid outcome
+    if cmd~failed, \required then
+      iterate                          -- FAILURE is ok, shell not installed
+
+    -- environments deemed as required, should always work
+    if cmd~failed then
+      self~assertFalse(cmd~failed, "environment '"shell"' failed")
+
+    self~assertEquals(echo, cmd~stdOut[1], "environment '"shell"' expected to return" echo "for echo $0")  
+  end
+
+
+-- tests for "address-with" forms
+/*
+  ADDRESS (environment command | VALUE env_expression) WITH - fragment
+
+WITH - fragment allows up to three INPUT/OUTPUT/ERROR combinations of:
+  WITH INPUT                       NORMAL
+  WITH INPUT                       STEM stem / STREAM stream / USING ( object )
+  WITH OUTPUT/ERROR                NORMAL
+  WITH OUTPUT/ERROR                STEM stem / STREAM stream / USING ( object )
+  WITH OUTPUT/ERROR REPLACE/APPEND STEM stem / STREAM stream / USING ( object )
+
+address ::= 'ADDRESS' (  |
+                      environment expression? |
+                      'VALUE'? env_expression )
+                      ( WITH - fragment ) ?
+address_with ::=      ( 'WITH' ( 'INPUT' ( 'NORMAL' | 'STEM' stem | 'STREAM' stream | 'USING' ( literal | '(' expr ')' ) ) |
+                               ( 'OUTPUT' | 'ERROR' ) ( 'NORMAL' |
+                                                        ( | 'REPLACE' | 'APPEND' ) ( 'STEM' stem | 'STREAM' stream | 'USING'  ( literal | '(' expr ')' ) ) ) ) )+
+
+*/
+-- creates a file by writing a few lines
+::method createFile
+  use strict arg file
+  stream = .Stream~new(file)
+  stream~open("write replace shared")
+  do 3
+    stream~lineOut("line")
+  end
+  stream~close
+  return stream
+
+::method test_with_no_redirection
+-- @@ shouldn't this really fail?
+---self~assertSyntaxError(35.914, "address '' '' with")
+
+::method test_with_invalid_redirection
+  -- WITH must be followed by one of the keywords INPUT, OUTPUT, or ERROR
+  self~assertSyntaxError(25.934, "address '' '' with invalid stem s.")
+
+::method test_with_invalid_redirection_subkeyword
+  -- Acceptable ADDRESS WITH I/O types are STEM, STREAM, and USING
+  self~assertSyntaxError(25.933, "address '' '' with input array .Array~new")
+
+
+-- WITH INPUT
+
+::method test_with_duplicate_input_consecutive
+  -- Duplicate INPUT keyword found
+  self~assertSyntaxError(25.930, "address '' '' with input normal input normal")
+
+::method test_with_duplicate_input
+  -- Duplicate INPUT keyword found
+  self~assertSyntaxError(25.930, "address '' '' with input normal output normal input normal")
+
+::method test_with_input_invalid_io
+  -- Acceptable ADDRESS WITH I/O types are STEM, STREAM, and USING
+  self~assertSyntaxError(25.933, "address '' '' with input replace stem s.")
+
+::method test_with_input_stem_stem_object
+  stemObject = .Stem~of( (0, 2), (1, "line"), (2, "line") )
+  -- Stem symbol expected after STEM keyword
+  self~assertSyntaxError(20.930, "address '' '' with input stem stemObject")
+
+::method test_with_input_stem_nullstring
+  -- Stem symbol expected after STEM keyword
+  self~assertSyntaxError(20.930, "address '' '' with input stem ''")
+
+::method test_with_input_stream_nullstring
+  self~expectSyntax(98.999) -- Unable to open file .. for reading
+  address '' '' with input stream ''
+
+::method test_with_input_using_nil
+  self~expectSyntax(98.995) -- Object .. is not a valid ADDRESS WITH INPUT source
+  address '' '' with input using .nil
+
+::method test_with_input_using_supplier
+  self~expectSyntax(98.995) -- Object .. is not a valid ADDRESS WITH INPUT source
+  address '' '' with input using ( .Object~methods )
+
+::method test_with_input
+  line = "line"
+  stem. = line
+  stem.0 = 2
+  stemObject = .Stem~of( (0, 2), (1, line), (2, line) )
+  fileName = "address-with.tmp"
+  file = .File~new(filename)
+  stream = self~createFile(file)
+  address "" "" with input normal
+  address "" "" with input stem stem.
+  address "" "" with input stream ( fileName )
+  address "" "" with input using ""
+  address "" "" with input using "line"
+  address "" "" with input using ( line )
+  address "" "" with input using ( stem.1 )
+  address "" "" with input using ( stem. )
+  address "" "" with input using ( stemObject )
+  address "" "" with input using ( file )
+  address "" "" with input using ( stream )
+  address "" "" with input using ( .Array~of(line, line) )
+-- @@ might be nice if this worked
+--address "" "" with input using ( "line", "line" )
+  address "" "" with input using ( ("line", "line") )
+  address "" "" with input using .local
+  file~delete
+
+
+-- WITH OUTPUT
+
+::method test_with_output_invalid_io
+  -- Acceptable ADDRESS WITH I/O types are STEM, STREAM, and USING
+  self~assertSyntaxError(25.933, "address '' '' with output invalid stem s.")
+
+::method test_with_output_duplicate_consecutive
+  -- Duplicate OUTPUT keyword found
+  self~assertSyntaxError(25.931, "address '' '' with output normal output stem s.")
+
+::method test_with_output_duplicate
+  -- Duplicate OUTPUT keyword found
+  self~assertSyntaxError(25.931, "address '' '' with output normal input normal output normal")
+
+::method test_with_output_stem_stem_object
+  stemObject = .Stem~of( (0, 2), (1, "line"), (2, "line") )
+  -- Stem symbol expected after STEM keyword
+  self~assertSyntaxError(20.930, "address '' '' with output stem stemObject")
+
+::method test_with_output_stream_nullstring
+  self~expectSyntax(98.899) -- Unable to open file .. for writing
+  address '' '' with output stream ''
+
+::method test_with_output_using_nullstring
+  self~expectSyntax(98.996) -- Object .. is not a valid ADDRESS WITH OUTPUT or ERROR target 
+  address '' '' with output using ''
+
+::method test_with_output_using_literal_string
+  self~expectSyntax(98.996) -- Object .. is not a valid ADDRESS WITH OUTPUT or ERROR target 
+  address '' '' with output using 'line'
+
+::method test_with_output_using_string_variable
+  self~expectSyntax(98.996) -- Object .. is not a valid ADDRESS WITH OUTPUT or ERROR target 
+  string = ""
+  address '' '' with output using ( string )
+
+::method test_with_output_using_directory
+  self~expectSyntax(98.996) -- Object .. is not a valid ADDRESS WITH OUTPUT or ERROR target 
+  directory = .Directory~new
+  address '' '' with output using ( directory )
+
+::method test_with_output
+  line = "line"
+  stem. = line
+  stem.0 = 2
+  stemObject = .Stem~of( (0, 2), (1, line), (2, line) )
+  fileName = "address-with.tmp"
+  file = .File~new(filename)
+  stream = .Stream~new(file)
+  array = .Array~new
+  address "" "" with output normal
+  address "" "" with output stem stem.
+-- @@ this really should work, but gives 25.933: Acceptable ADDRESS WITH I/O types are STEM, STREAM, and USING 
+--address "" "" with output replace stem stem.
+  address "" "" with output append stem stem.
+  address "" "" with output stream ( fileName )
+-- @@ this really should work, but gives 25.933: Acceptable ADDRESS WITH I/O types are STEM, STREAM, and USING 
+--address "" "" with output replace stream ( fileName )
+  address "" "" with output append stream ( fileName )
+-- @@ might be nice if this worked
+--address "" "" with output using ( line )
+  address "" "" with output using ( stem. )
+  address "" "" with output append using ( stem. )
+-- @@ this really should work, but gives 25.933: Acceptable ADDRESS WITH I/O types are STEM, STREAM, and USING 
+--address "" "" with output replace using ( stem. )
+  address "" "" with output using ( stemObject )
+  address "" "" with output using ( file )
+  address "" "" with output using ( stream )
+-- @@ re devel discussion: this gives 98.997 REPLACE or APPEND cannot be specified with a Stream object USING target
+--address "" "" with output append using ( stream )
+-- @@ this really should work, but gives 25.933: Acceptable ADDRESS WITH I/O types are STEM, STREAM, and USING 
+--address "" "" with output replace using ( stream )
+  address "" "" with output using ( array )
+  address "" "" with output append using ( array )
+-- @@ this really should work, but gives 25.933: Acceptable ADDRESS WITH I/O types are STEM, STREAM, and USING 
+--address "" "" with output replace using ( array )
+
+  -- these tests work, but really make no sense
+  address "" "" with output using ( .Array~of(line, line) )
+  address "" "" with output using ( ("line", "line") )
+
+  file~delete
+
+
+-- WITH ERROR
+
+::method test_with_duplicate_redirection_different_
+  -- Duplicate ERROR keyword found
+  self~assertSyntaxError(25.932, "address '' '' with error normal output normal error stem s.")
+
+
+
+
+
+::attribute command_cat get
+  if .ooRexxUnit.OSName == "WINDOWS" then
+    return 'find /n "line"'
+  else
+    return "grep line"
+
+
+
+
+
+-- run an environment subcommand and capture its output
+::class Command
+
+::attribute environment
+::attribute returnCode get
+::attribute failed get
+
+::method init
+  use local
+  use strict arg environment = "" , rxqueue = "rxqueue"
+
+  queueName = .RexxQueue~create        -- a unique queue name, not a .RexxQueue object
+  queue = .RexxQueue~new(queueName)    -- the queue used to capture command output
+  returnCode = .nil
+  failed = .false
+
+-- run command in environment and pipe its output to queue
+::method run
+  use local
+  use strict arg command 
+
+  returnCode = .nil
+  failed = .false
+
+  signal on failure
+  address value environment
+  trace off                            -- don't trace command failures
+  command "|" rxqueue queueName
+  returnCode = rc
+  return
+
+  failure:
+  failed = .true
+
+-- Return output of any previous commands, and empty queue
+::method stdOut
+  expose queue
+  return queue~makeArray               -- also empties queue
+
+-- delete named queue upon instance destruction
+::method uninit
+  expose queue
+
+  queue~delete                         -- a named queue persists, need to delete it
+  forward class (super)
+
+
+
+::options novalue error
