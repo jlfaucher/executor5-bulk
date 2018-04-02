@@ -486,6 +486,14 @@ logical_t RexxEntry AreOutputAndErrorSameTarget(RexxIORedirectorContext *c)
 }
 
 
+logical_t RexxEntry IsRedirectionRequested(RexxIORedirectorContext *c)
+{
+    // we can perform this operaiton without getting a lock
+    CommandIOContext *ioContext = ((RedirectorContext *)c)->ioContext;
+    return ioContext != OREF_NULL;
+}
+
+
 END_EXTERN_C()
 
 /**
@@ -540,5 +548,6 @@ IORedirectorInterface Activity::ioRedirectorContextFunctions =
     IsOutputRedirected,
     IsErrorRedirected,
     AreOutputAndErrorSameTarget,
+    IsRedirectionRequested,
 };
 

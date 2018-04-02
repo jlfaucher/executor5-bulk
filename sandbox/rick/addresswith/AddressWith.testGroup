@@ -60,6 +60,9 @@ return testResult
 -- even if WITH is not specified. The commands we're invoking all will
 -- be calling the APIs.
 
+address test 'ISREDIRECTIONREQUESTED'
+self~assertSame(.false, rc)
+
 address test 'INPUTREDIRECTED'
 self~assertSame(.false, rc)
 
@@ -77,6 +80,30 @@ self~assertSame(.false, rc)
 
 address test 'INPUTERROR'
 self~assertSame(.false, rc)
+
+::method test_simple_with
+
+address test 'ISREDIRECTIONREQUESTED' with input using "This is a test"
+self~assertSame(.true, rc)
+
+-- just to see if the redirect is reported
+address test 'INPUTREDIRECTED' with input using "This is a test"
+self~assertSame(.true, rc)
+
+address test 'OUTPUTREDIRECTED' with input using "This is a test"
+self~assertSame(.false, rc)
+
+address test 'ERRORREDIRECTED' with input using "This is a test"
+self~assertSame(.false, rc)
+
+-- this will write a single line to the output...should not crash
+address test 'INPUTOUTPUT' with input using "This is a test"
+self~assertSame(1, rc)
+
+address test 'INPUTERROR' with input using "This is a test"
+self~assertSame(1, rc)
+
+
 
 
 ::options novalue error

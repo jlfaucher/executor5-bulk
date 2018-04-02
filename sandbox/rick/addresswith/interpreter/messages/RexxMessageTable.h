@@ -182,6 +182,7 @@ ERROR_MESSAGE Message_table[] = {      /* table of major and minor errors   */
       MINOR(Error_Symbol_expected_indirect)
       MINOR(Error_Symbol_expected_after_keyword)
       MINOR(Error_Symbol_expected_after_stem_keyword)
+      MINOR(Error_Symbol_expected_address_with)
   MAJOR(Error_Invalid_data)
       MINOR(Error_Invalid_data_user_defined)
       MINOR(Error_Invalid_data_nop)

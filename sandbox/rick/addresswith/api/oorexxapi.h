@@ -720,6 +720,7 @@ typedef struct
     logical_t (RexxEntry *IsOutputRedirected)(RexxIORedirectorContext *);
     logical_t (RexxEntry *IsErrorRedirected)(RexxIORedirectorContext *);
     logical_t (RexxEntry *AreOutputAndErrorSameTarget)(RexxIORedirectorContext *);
+    logical_t (RexxEntry *IsRedirectionRequested)(RexxIORedirectorContext *);
 } IORedirectorInterface;
 
 END_EXTERN_C()
@@ -3709,6 +3710,10 @@ struct RexxIORedirectorContext_
     logical_t AreOutputAndErrorSameTarget()
     {
         return functions->AreOutputAndErrorSameTarget(this);
+    }
+    logical_t IsRedirectionRequested()
+    {
+        return functions->IsRedirectionRequested(this);
     }
 #endif
 };

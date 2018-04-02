@@ -662,6 +662,12 @@ CommandIOConfiguration *LanguageParser::parseAddressWith()
     // step to the next token and start processing
     RexxToken *token = nextReal();
 
+    // we must have something after the WITH keyword, otherwise this is an error
+    if (token->isEndOfClause())
+    {
+        syntaxError(Error_Symbol_expected_address_with);
+    }
+
     // and check options until we reach the end of the clause
     while (!token->isEndOfClause())
     {

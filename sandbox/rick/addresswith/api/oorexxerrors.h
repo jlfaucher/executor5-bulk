@@ -178,6 +178,7 @@
 #define Rexx_Error_Symbol_expected_indirect                               20928
 #define Rexx_Error_Symbol_expected_after_keyword                          20929
 #define Rexx_Error_Symbol_expected_after_stem_keyword                     20930
+#define Rexx_Error_Symbol_expected_address_with                           20931
 #define Rexx_Error_Invalid_data                                           21000
 #define Rexx_Error_Invalid_data_user_defined                              21900
 #define Rexx_Error_Invalid_data_nop                                       21901

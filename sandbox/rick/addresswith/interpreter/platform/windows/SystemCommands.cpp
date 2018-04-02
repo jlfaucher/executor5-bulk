@@ -637,44 +637,51 @@ RexxObjectPtr RexxEntry testCommandHandler(RexxExitContext *context, RexxStringO
 {
     CSTRING commandString = context->CString(command);
 
-    if (strcmp(commandString, "INPUTOUTPUT"))
+    if (strcmp(commandString, "INPUTOUTPUT") == 0)
     {
         CSTRING data;
         size_t length;
+        size_t count = 0;
 
         ioContext->ReadInput(&data, &length);
         while (data != NULL)
         {
+            count++;
             ioContext->WriteOutput(data, length);
             ioContext->ReadInput(&data, &length);
         }
 
-        return context->False();
+        return context->StringSizeToObject(count);
     }
 
-    if (strcmp(commandString, "INPUTERROR"))
+    if (strcmp(commandString, "INPUTERROR") == 0)
     {
         CSTRING data;
         size_t length;
+        size_t count = 0;
 
         ioContext->ReadInput(&data, &length);
         while (data != NULL)
         {
+            count++;
             ioContext->WriteError(data, length);
+            ioContext->ReadInput(&data, &length);
         }
 
-        return context->False();
+        return context->StringSizeToObject(count);
     }
 
-    if (strcmp(commandString, "INPUTBOTH"))
+    if (strcmp(commandString, "INPUTBOTH") == 0)
     {
         CSTRING data;
         size_t length;
         bool useError = false;
+        size_t count = 0;
 
         ioContext->ReadInput(&data, &length);
         while (data != NULL)
         {
+            count++;
             if (useError)
             {
                 ioContext->WriteError(data, length);
@@ -684,31 +691,36 @@ RexxObjectPtr RexxEntry testCommandHandler(RexxExitContext *context, RexxStringO
                 ioContext->WriteOutput(data, length);
             }
             useError = !useError;
+            ioContext->ReadInput(&data, &length);
         }
 
-        return context->False();
+        return context->StringSizeToObject(count);
     }
 
-    if (strcmp(commandString, "INPUTREDIRECTED"))
+    if (strcmp(commandString, "INPUTREDIRECTED") == 0)
     {
         return ioContext->IsInputRedirected() ? context->True() : context->False();
     }
 
-    if (strcmp(commandString, "OUTPUTREDIRECTED"))
+    if (strcmp(commandString, "OUTPUTREDIRECTED") == 0)
     {
         return ioContext->IsOutputRedirected() ? context->True() : context->False();
     }
 
-    if (strcmp(commandString, "ERRORREDIRECTED"))
+    if (strcmp(commandString, "ERRORREDIRECTED") == 0)
     {
         return ioContext->IsErrorRedirected() ? context->True() : context->False();
     }
 
-    if (strcmp(commandString, "AREOUTPUTERRORTHESAME"))
+    if (strcmp(commandString, "AREOUTPUTERRORTHESAME") == 0)
     {
         return ioContext->AreOutputAndErrorSameTarget() ? context->True() : context->False();
     }
 
+    if (strcmp(commandString, "ISREDIRECTIONREQUESTED") == 0)
+    {
+        return ioContext->IsRedirectionRequested() ? context->True() : context->False();
+    }
 
     return context->True();
 }
