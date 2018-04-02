@@ -464,6 +464,28 @@ logical_t RexxEntry IsErrorRedirected(RexxIORedirectorContext *c)
 }
 
 
+logical_t RexxEntry AreOutputAndErrorSameTarget(RexxIORedirectorContext *c)
+{
+    ApiContext context(c);
+    try
+    {
+        CommandIOContext *ioContext = ((RedirectorContext *)c)->ioContext;
+
+        // The command handler does not get passed an operable context if
+        // this is not an ADDRESS WITH variant. If that's the case, we return
+        // nothing if this is called.
+        if (ioContext != OREF_NULL)
+        {
+            return ioContext->areOutputAndErrorSameTarget();
+        }
+    }
+    catch (NativeActivation *)
+    {
+    }
+    return false;
+}
+
+
 END_EXTERN_C()
 
 /**
@@ -514,5 +536,9 @@ IORedirectorInterface Activity::ioRedirectorContextFunctions =
     ReadInput,
     WriteOutput,
     WriteError,
+    IsInputRedirected,
+    IsOutputRedirected,
+    IsErrorRedirected,
+    AreOutputAndErrorSameTarget,
 };
 

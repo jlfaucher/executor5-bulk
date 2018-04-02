@@ -719,6 +719,7 @@ typedef struct
     logical_t (RexxEntry *IsInputRedirected)(RexxIORedirectorContext *);
     logical_t (RexxEntry *IsOutputRedirected)(RexxIORedirectorContext *);
     logical_t (RexxEntry *IsErrorRedirected)(RexxIORedirectorContext *);
+    logical_t (RexxEntry *AreOutputAndErrorSameTarget)(RexxIORedirectorContext *);
 } IORedirectorInterface;
 
 END_EXTERN_C()

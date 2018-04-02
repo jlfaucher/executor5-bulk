@@ -72,6 +72,7 @@ class CommandIOContext : public RexxInternalObject
     inline bool isInputRedirected() { return input != OREF_NULL; }
     inline bool isOutputRedirected() { return output != OREF_NULL; }
     inline bool isErrorRedirected() { return error != OREF_NULL; }
+    inline bool areOutputAndErrorSameTarget() { return output != OREF_NULL && error == output; }
 
  protected:
 
