@@ -103,6 +103,31 @@ self~assertSame(1, rc)
 address test 'INPUTERROR' with input using "This is a test"
 self~assertSame(1, rc)
 
+-- using an uninitialized stem variable
+address test 'INPUTOUTPUT' with input using "This is a test" output stem a.
+self~assertSame(1, rc)
+self~assertSame(1, a.0)
+self~assertSame("This is a test", a.1)
+
+-- default is replace
+address test 'INPUTOUTPUT' with input using "This is another test" output stem a.
+self~assertSame(1, rc)
+self~assertSame(1, a.0)
+self~assertSame("This is another test", a.1)
+
+-- explicit replace
+address test 'INPUTOUTPUT' with input using "This is a third test" output replace stem a.
+self~assertSame(1, rc)
+self~assertSame(1, a.0)
+self~assertSame("This is a third test", a.1)
+
+-- and finally append
+address test 'INPUTOUTPUT' with input using "This is a fourth test" output append stem a.
+self~assertSame(1, rc)
+self~assertSame(2, a.0)
+self~assertSame("This is a third test", a.1)
+self~assertSame("This is a fourth test", a.2)
+
 
 
 
