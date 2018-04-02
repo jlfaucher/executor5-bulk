@@ -98,6 +98,13 @@ void CommandHandler::call(Activity *activity, RexxActivation *activation, RexxSt
 {
     if (type == HandlerType::REGISTERED_NAME)
     {
+        // not all handlers support I/O redirection. Give an error
+        // if an attempt is made here
+        if (io != OREF_NULL)
+        {
+            reportException(Error_Execution_address_redirection_not_supported, address);
+        }
+
         CommandHandlerDispatcher dispatcher(activity, entryPoint, command);
 
         // run this and give back the return code
@@ -107,6 +114,13 @@ void CommandHandler::call(Activity *activity, RexxActivation *activation, RexxSt
     // new style command handler
     else if (type == HandlerType::DIRECT)
     {
+        // not all handlers support I/O redirection. Give an error
+        // if an attempt is made here
+        if (io != OREF_NULL)
+        {
+            reportException(Error_Execution_address_redirection_not_supported, address);
+        }
+
         ContextCommandHandlerDispatcher dispatcher(entryPoint, address, command, result, condition);
 
         // run this and give back the return code
@@ -122,6 +136,7 @@ void CommandHandler::call(Activity *activity, RexxActivation *activation, RexxSt
         activity->run(dispatcher);
     }
 }
+
 
 CommandHandlerDispatcher::CommandHandlerDispatcher(Activity *a, REXXPFN e, RexxString *command)
 {

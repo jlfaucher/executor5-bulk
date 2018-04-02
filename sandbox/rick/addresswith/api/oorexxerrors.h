@@ -621,6 +621,7 @@
 #define Rexx_Error_Execution_missing_stem_array_index                     98998
 #define Rexx_Error_Execution_file_not_readable                            98999
 #define Rexx_Error_Execution_file_not_writeable                           98899
+#define Rexx_Error_Execution_address_redirection_not_supported            98898
 #define Rexx_Error_Translation                                            99000
 #define Rexx_Error_Translation_user_defined                               99900
 #define Rexx_Error_Translation_duplicate_class                            99901

@@ -715,6 +715,7 @@
 #define Error_Symbol_expected_after_stem_keyword_msg                 800
 #define Error_Invalid_expression_missing_general_msg                 801
 #define Error_Symbol_expected_address_with_msg                       802
+#define Error_Execution_address_redirection_not_supported_msg        803
 
 
 #endif

@@ -625,6 +625,7 @@ ERROR_MESSAGE Message_table[] = {      /* table of major and minor errors   */
       MINOR(Error_Execution_missing_stem_array_index)
       MINOR(Error_Execution_file_not_readable)
       MINOR(Error_Execution_file_not_writeable)
+      MINOR(Error_Execution_address_redirection_not_supported)
   MAJOR(Error_Translation)
       MINOR(Error_Translation_user_defined)
       MINOR(Error_Translation_duplicate_class)
