@@ -325,8 +325,8 @@ void RexxEntry ReadInput(RexxIORedirectorContext *c, CSTRING *data, size_t *leng
     ApiContext context(c);
 
     // set the default
-    data = NULL;
-    length = 0;
+    *data = NULL;
+    *length = 0;
     try
     {
         CommandIOContext *ioContext = ((RedirectorContext *)c)->ioContext;

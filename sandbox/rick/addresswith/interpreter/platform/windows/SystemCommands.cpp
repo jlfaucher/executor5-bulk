@@ -646,6 +646,7 @@ RexxObjectPtr RexxEntry testCommandHandler(RexxExitContext *context, RexxStringO
         while (data != NULL)
         {
             ioContext->WriteOutput(data, length);
+            ioContext->ReadInput(&data, &length);
         }
 
         return context->False();

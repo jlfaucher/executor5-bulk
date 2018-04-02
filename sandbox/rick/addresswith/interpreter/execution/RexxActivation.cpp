@@ -3981,7 +3981,7 @@ void RexxActivation::command(RexxString *address, RexxString *commandString, Com
     IOContext t(ioContext);
 
     // if we got an io context back, it is time to initialized everthing
-    if (ioContext.isNull() != OREF_NULL)
+    if (!ioContext.isNull())
     {
         ioContext->init();
     }
