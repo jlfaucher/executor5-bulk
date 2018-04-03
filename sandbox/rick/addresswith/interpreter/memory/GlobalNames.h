@@ -159,7 +159,8 @@
   GLOBAL_NAME(RC, "RC")
   GLOBAL_NAME(REMAINDER, "//")
   GLOBAL_NAME(READ, "READ")
-  GLOBAL_NAME(READY, "READY:")
+  GLOBAL_NAME(READY, "READY")              // response from .Stream~state
+  GLOBAL_NAME(OPENREADY, "READY:")         // good open from .Stream~open
   GLOBAL_NAME(REXX, "REXX")
   GLOBAL_NAME(ASSIGNMENT_REMAINDER, "//=")
   GLOBAL_NAME(REQUEST, "REQUEST")

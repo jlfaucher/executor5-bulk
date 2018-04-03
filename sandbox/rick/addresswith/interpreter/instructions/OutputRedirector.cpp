@@ -349,7 +349,7 @@ void StreamOutputTarget::init()
         openResult = (RexxString *)stream->sendMessage(GlobalNames::OPEN, GlobalNames::WRITE_APPEND, result);
     }
     // the open should return ready
-    if (!openResult->strCompare(GlobalNames::READY))
+    if (!openResult->strCompare(GlobalNames::OPENREADY))
     {
         reportException(Error_Execution_file_not_writeable, name, openResult);
     }
