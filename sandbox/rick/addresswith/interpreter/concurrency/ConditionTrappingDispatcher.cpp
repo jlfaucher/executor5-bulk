@@ -35,94 +35,52 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/*                                                       CommandIOContext.hpp */
-/*                                                                            */
-/* The processing context for ADDRESS WITH I/O interaction                    */
-/*                                                                            */
-/******************************************************************************/
-#ifndef Included_CommandIOContext
-#define Included_CommandIOContext
 
-class InputRedirector;
-class OutputRedirector;
-class RexxString;
-class NativeActivation;
+#include "RexxCore.h"
+#include "ConditionTrappingDispatcher.hpp"
+#include "Activity.hpp"
+#include "ActivityManager.hpp"
+#include "NativeActivation.hpp"
 
-
-class CommandIOContext : public RexxInternalObject
-{
- friend class CommandIOConfiguration;
- public:
-
-    void        *operator new(size_t);
-    inline void  operator delete(void *) { }
-
-    inline CommandIOContext() { ; }
-    inline CommandIOContext(RESTORETYPE restoreType) { ; };
-
-    virtual void live(size_t);
-    virtual void liveGeneral(MarkReason reason);
-
-    RexxString *readInput(NativeActivation *);
-    void        writeOutput(NativeActivation *, const char *v, size_t l);
-    void        writeError(NativeActivation *, const char *v, size_t l);
-    void        init();
-    void        cleanup();
-    void        resolveConflicts();
-
-    inline bool isInputRedirected() { return input != OREF_NULL; }
-    inline bool isOutputRedirected() { return output != OREF_NULL; }
-    inline bool isErrorRedirected() { return error != OREF_NULL; }
-    inline bool areOutputAndErrorSameTarget() { return output != OREF_NULL && error == output; }
-
- protected:
-
-    InputRedirector *input;              // the input source
-    OutputRedirector *output;            // The standard output collector
-    OutputRedirector *error;             // The error output collector
-};
 
 
 /**
- * A stack-based IO context object used to ensure proper
- * post-command cleanup .
+ * Just invoke the supplied invoker object...this issues the
+ * method call, we handle all of the trapping
  */
-class IOContext
+void ConditionTrappingDispatcher::run()
 {
-public:
-    /**
-     * Initialize a context smart pointer from an command context
-     *
-     * @param c      The source context.
-     */
-    inline IOContext(CommandIOContext *c)
-    {
-        context = c;
-    }
+    invoker.invoke();
+}
 
-    /**
-     * Destructor for an io context.  performs post-command cleanup
-     * on the context
-     */
-    inline ~IOContext()
-    {
-        cleanup();
-    }
 
-    /**
-     * Perform cleanup on our terms.
-     */
-    void cleanup()
-    {
-        // if we really have something clean it up
-        if (context != OREF_NULL)
-        {
-           context->cleanup();
-        }
-        context = OREF_NULL;
-    }
+/**
+ * handler for any error conditions.  This just swallows the
+ * error.
+ *
+ * @param c      The condition information for the error.
+ */
+void ConditionTrappingDispatcher::handleError(wholenumber_t r, DirectoryClass *c)
+{
+    // clear the information in the activation
+    activation->clearException();
+    // save the exception information
+    errorCode = r;
+    conditionData = c;
+}
 
-    CommandIOContext *context;
-};
-#endif
+
+/**
+ * handler for any error conditions.  This just swallows the
+ * error.
+ *
+ * @param c      The condition information for the error.
+ */
+void ConditionTrappingDispatcher::handleError(DirectoryClass *c)
+{
+    // clear the information in the activation
+    activation->clearException();
+    // save the exception information
+    conditionData = c;
+}
 

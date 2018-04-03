@@ -184,32 +184,38 @@ void CommandIOContext::cleanup()
  * return the next line from the ADDRESS instruction
  * context as a CSTRING.
  *
+ * @param context The NativeActivation context for the command handler, which
+ *                will handler error/condition traps for this callback.
+ *
  * @return The CSTRING value for the next line or NULL if we've hit EOF.
  */
-RexxString *CommandIOContext::readInput()
+RexxString *CommandIOContext::readInput(NativeActivation *context)
 {
     // first make sure we have a source object
     if (input == OREF_NULL)
     {
         return OREF_NULL;
     }
-    return input->read();
+    return input->read(context);
 }
 
 
 /**
  * Write a line to the command output catcher
  *
+ *
+ * @param context The NativeActivation context for the command handler, which
+ *                will handler error/condition traps for this callback.
  * @param data   Pointer to the output data
  * @param len    Length of the output data
  */
-void CommandIOContext::writeOutput(const char *data, size_t len)
+void CommandIOContext::writeOutput(NativeActivation *context, const char *data, size_t len)
 {
     // this shouldn't happen, but if not redirected, don't crash!
     if (output != OREF_NULL)
     {
         Protected<RexxString> value = new_string(data, len);
-        output->write(value);
+        output->write(context, value);
     }
 }
 
@@ -217,15 +223,18 @@ void CommandIOContext::writeOutput(const char *data, size_t len)
 /**
  * Write a line to the command error catcher
  *
+ *
+ * @param context The NativeActivation context for the command handler, which
+ *                will handler error/condition traps for this callback.
  * @param data   Pointer to the output data
  * @param len    Length of the output data
  */
-void CommandIOContext::writeError(const char *data, size_t len)
+void CommandIOContext::writeError(NativeActivation *context, const char *data, size_t len)
 {
     // this shouldn't happen, but if not redirected, don't crash!
     if (error != OREF_NULL)
     {
         Protected<RexxString> value = new_string(data, len);
-        error->write(value);
+        error->write(context, value);
     }
 }

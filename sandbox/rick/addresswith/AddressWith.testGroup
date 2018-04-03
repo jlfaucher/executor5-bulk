@@ -162,7 +162,7 @@ self~assertSame("This is a fourth test", a.2)
 in.0 = 1
 in.1 = "This is a test"
 
-array = .array~of(1,2)
+array = .array~new
 
 address test 'INPUTOUTPUT' with input stem in. output using (array)
 
@@ -178,6 +178,144 @@ self~assertSame(1, rc)
 self~assertSame(2, array~items)
 self~assertSame("This is a test", array[1])
 self~assertSame("This is another test", array[2])
+
+::method test_file_input
+
+temp = .TemporaryTestFile~new(self, 'testinput')
+temp~create(("Line1","","Line3"))
+
+array = .array~new
+address test 'INPUTOUTPUT' with input stream (temp~fullName) output using (array)
+self~assertSame(3, rc)
+self~assertSame(3, array~items)
+self~assertSame("Line1", array[1])
+self~assertSame("", array[2])
+self~assertSame("Line3", array[3])
+
+temp~delete
+
+-- test non-destructive buffering when source and target are the same
+::method test_buffering
+
+
+temp = .TemporaryTestFile~new(self, 'testinput')
+temp~create(("Line1","","Line3","","Line5"))
+
+-- this tests buffering on output when the same stream is used as both
+address test 'NOBLANKOUTPUT' with input stream (temp~fullName) output stream(temp~fullName)
+
+-- this should read 5 lines (indicated by the rc) and write 3 lines to the file, replacing the file
+array = temp~arrayIn
+self~assertSame(5, rc)
+self~assertSame(3, array~items)
+self~assertSame("Line1", array[1])
+self~assertSame("Line3", array[2])
+self~assertSame("Line5", array[3])
+
+temp~delete
+
+
+::class ArrayInputStream public inherit InputStream
+::method init
+  expose currentLine lines
+  use strict arg lines
+
+  -- we want a copy of the array so that the content is
+  -- isolated from changes. This also allows lists, queues, etc. to be
+  -- converted to a stream
+  lines = lines~makearray
+  currentLine = 1
+
+-- open will reset to the beginning
+::method open
+  expose currentLine
+  use strict arg
+
+  currentLine = 1
+
+-- close will also reset to the beginning
+::method close
+  forward message('OPEN')
+
+-- character methods not supported
+::method charin
+  raise syntax 93.963  -- not supported
+::method chars
+  raise syntax 93.963  -- not supported
+
+::method linein
+  expose lines currentLine
+  -- we allow a line number to be specified.
+  use strict arg lineNumber = (currentLine)
+
+  -- are we trying to read beyond the end of the
+  -- array? This is a notready condition with a null
+  -- string return
+  if lineNumber > lines~items then do
+     raise notready additional(self) return("")
+  end
+
+  -- the next read is one line down
+  currentLine = lineNumber + 1
+  -- and complete the read
+  return lines[lineNumber]
+
+::method lines
+  expose lines currentLine
+  use strict arg  -- no arguments allowed
+
+  -- calculate the default number of lines
+  count = lines~items - currentLine + 1
+
+  -- everything has been read, so lines is zero
+  if count < 1 then do
+      return 0
+  end
+
+  return count
+
+::class ArrayOutputStream public inherit OutputStream
+-- the default initial array size
+::constant defaultArraySize 50
+-- we can create a default output array or can accept an existing array
+-- if given an array, we append any new items to the end.
+::method init
+  expose currentLine lines
+  use strict arg lines = (.array~new(self~defaultArraySize))
+
+  -- write this out following the last existing item
+  currentLine = lines~items + 1
+
+-- character operations not supported
+::method charout
+  raise syntax 93.963  -- not supported
+::method chars
+  raise syntax 93.963  -- not supported
+
+-- write a line to the next sequetial position
+::method lineout
+  expose currentLine lines
+
+  -- the line is optional, which is just a close operation
+  if arg() == 0 then do
+     return 0    -- this is a zero residual count
+  end
+
+  -- now get the line and do a full arg count check
+  use strict arg line
+
+  lines[currentLine] = line
+  currentLine += 1
+  return 0               -- the residual is always 0
+
+-- retrieve the output array from the steam
+::method array
+  expose lines
+  use strict arg
+
+  return lines
+
+
 
 
 

@@ -47,7 +47,7 @@
 #include "CommandIOConfiguration.hpp"
 #include "StemClass.hpp"
 
-class StemClass;
+class NativeActivation;
 
 /**
  * Base class for I/O redirectors.
@@ -62,7 +62,7 @@ class InputRedirector : public RexxInternalObject
     inline InputRedirector(RESTORETYPE restoreType) { ; };
 
     virtual void init () { ; }
-    virtual RexxString *read() { return OREF_NULL; }
+    virtual RexxString *read(NativeActivation *context) { return OREF_NULL; }
     virtual void cleanup() { ; }
     virtual RedirectionType::Enum type() { return RedirectionType::NONE; }
     virtual RexxObject *target() { return OREF_NULL; }
@@ -84,7 +84,7 @@ class StemInputSource : public InputRedirector
     virtual void liveGeneral(MarkReason reason);
 
     virtual void init ();
-    virtual RexxString *read();
+    virtual RexxString *read(NativeActivation *context);
     virtual RedirectionType::Enum type() { return RedirectionType::STEM_VARIABLE; }
     virtual RexxObject *target() { return stem; }
 
@@ -115,7 +115,7 @@ class StreamObjectInputSource : public InputRedirector
     virtual void liveGeneral(MarkReason reason);
 
     virtual void init() { hitEnd = false; }
-    virtual RexxString *read();
+    virtual RexxString *read(NativeActivation *context);
     virtual RedirectionType::Enum type() { return RedirectionType::STREAM_OBJECT; }
     virtual RexxObject *target() { return stream; }
 
@@ -169,7 +169,7 @@ class ArrayInputSource : public InputRedirector
     virtual void liveGeneral(MarkReason reason);
 
     virtual void init ();
-    virtual RexxString *read();
+    virtual RexxString *read(NativeActivation *context);
     virtual RedirectionType::Enum type() { return RedirectionType::ARRAY_OBJECT; }
     virtual RexxObject *target() { return array; }
 

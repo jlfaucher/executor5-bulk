@@ -35,94 +35,57 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/*                                                       CommandIOContext.hpp */
+/* REXX Kernel                                                                */
 /*                                                                            */
-/* The processing context for ADDRESS WITH I/O interaction                    */
+/* Allows calls to be made to methods with from internal code with condition  */
+/* trapping.                                                                  */
 /*                                                                            */
 /******************************************************************************/
-#ifndef Included_CommandIOContext
-#define Included_CommandIOContext
+#ifndef Included_ConditionTrappingDispatcher_hpp
+#define Included_ConditionTrappingDispatcher_hpp
 
-class InputRedirector;
-class OutputRedirector;
-class RexxString;
-class NativeActivation;
+#include "RexxCore.h"
+#include "TrappingDispatcher.hpp"
 
+class Activity;
+class DirectoryClass;
 
-class CommandIOContext : public RexxInternalObject
+/**
+ * A class used to wrap a message operation fed into a
+ * Trapping dispatcher. The calling context should create
+ * a subclass of this that holds whatever data is needed
+ * to make a method call.
+ */
+class TrapInvoker
 {
- friend class CommandIOConfiguration;
- public:
-
-    void        *operator new(size_t);
-    inline void  operator delete(void *) { }
-
-    inline CommandIOContext() { ; }
-    inline CommandIOContext(RESTORETYPE restoreType) { ; };
-
-    virtual void live(size_t);
-    virtual void liveGeneral(MarkReason reason);
-
-    RexxString *readInput(NativeActivation *);
-    void        writeOutput(NativeActivation *, const char *v, size_t l);
-    void        writeError(NativeActivation *, const char *v, size_t l);
-    void        init();
-    void        cleanup();
-    void        resolveConflicts();
-
-    inline bool isInputRedirected() { return input != OREF_NULL; }
-    inline bool isOutputRedirected() { return output != OREF_NULL; }
-    inline bool isErrorRedirected() { return error != OREF_NULL; }
-    inline bool areOutputAndErrorSameTarget() { return output != OREF_NULL && error == output; }
-
- protected:
-
-    InputRedirector *input;              // the input source
-    OutputRedirector *output;            // The standard output collector
-    OutputRedirector *error;             // The error output collector
+public:
+    virtual void invoke() { ; }
 };
 
 
 /**
- * A stack-based IO context object used to ensure proper
- * post-command cleanup .
+ * A generalized dispatcher that allows internal code to
+ * make a call with condition trapping.
  */
-class IOContext
+class ConditionTrappingDispatcher : public TrappingDispatcher
 {
 public:
-    /**
-     * Initialize a context smart pointer from an command context
-     *
-     * @param c      The source context.
-     */
-    inline IOContext(CommandIOContext *c)
-    {
-        context = c;
-    }
+    inline ConditionTrappingDispatcher(TrapInvoker &t) : invoker(t), errorCode(0) { }
+    virtual ~ConditionTrappingDispatcher() { ; }
 
-    /**
-     * Destructor for an io context.  performs post-command cleanup
-     * on the context
-     */
-    inline ~IOContext()
-    {
-        cleanup();
-    }
+    virtual void run();
+    virtual void handleError(wholenumber_t, DirectoryClass *);
+    virtual void handleError(DirectoryClass *);
+    virtual bool trapConditions() { return true; }
 
-    /**
-     * Perform cleanup on our terms.
-     */
-    void cleanup()
-    {
-        // if we really have something clean it up
-        if (context != OREF_NULL)
-        {
-           context->cleanup();
-        }
-        context = OREF_NULL;
-    }
+            bool errorOccurred()  { return errorCode != 0; }
+            bool conditionOccurred() { return conditionData != OREF_NULL; }
+            DirectoryClass *getCondition() { return conditionData; }
 
-    CommandIOContext *context;
+protected:
+    TrapInvoker &invoker;          // that invokes the method call.
+    wholenumber_t errorCode;       // any trapped error code
 };
+
 #endif
 

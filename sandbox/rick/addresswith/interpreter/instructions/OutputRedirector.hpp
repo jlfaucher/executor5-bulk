@@ -47,6 +47,7 @@
 #include "StemClass.hpp"
 
 class InputRedirector;
+class NativeActivation;
 
 /**
  * Base class for I/O redirectors.
@@ -62,12 +63,12 @@ class OutputRedirector : public RexxInternalObject
     inline OutputRedirector(RESTORETYPE restoreType) { ; };
 
     virtual void init () { ; }
-    virtual void write(RexxString *v)  { ; }
+    virtual void write(NativeActivation *c, RexxString *v)  { ; }
     virtual void cleanup() { ; }
     virtual RedirectionType::Enum type() { return RedirectionType::NONE; }
     virtual RexxObject *target() { return OREF_NULL; }
 
-    bool needsBuffering(InputRedirector *d);
+    virtual bool needsBuffering(InputRedirector *d);
     bool isSameTarget(OutputRedirector *e);
 
  protected:
@@ -93,7 +94,7 @@ class StemOutputTarget : public OutputRedirector
     virtual void liveGeneral(MarkReason reason);
 
     virtual void init ();
-    virtual void write(RexxString *v);
+    virtual void write(NativeActivation *c, RexxString *v);
     virtual RedirectionType::Enum type() { return RedirectionType::STEM_VARIABLE; }
     virtual RexxObject *target() { return stem; }
 
@@ -120,7 +121,7 @@ class StreamObjectOutputTarget : public OutputRedirector
     virtual void live(size_t);
     virtual void liveGeneral(MarkReason reason);
 
-    virtual void write(RexxString *v);
+    virtual void write(NativeActivation *c, RexxString *v);
     virtual RedirectionType::Enum type() { return RedirectionType::STREAM_OBJECT; }
     virtual RexxObject *target() { return stream; }
 
@@ -146,7 +147,7 @@ class RexxQueueOutputTarget : public OutputRedirector
     virtual void live(size_t);
     virtual void liveGeneral(MarkReason reason);
 
-    virtual void write(RexxString *v);
+    virtual void write(NativeActivation *c, RexxString *v);
     virtual RedirectionType::Enum type() { return RedirectionType::REXXQUEUE_OBJECT; }
     virtual RexxObject *target() { return queue; }
 
@@ -171,6 +172,7 @@ class StreamOutputTarget : public StreamObjectOutputTarget
     virtual void live(size_t);
     virtual void liveGeneral(MarkReason reason);
 
+    virtual bool needsBuffering(InputRedirector *d);
     virtual void init();
     virtual void cleanup();
     virtual RedirectionType::Enum type() { return RedirectionType::STREAM_NAME; }
@@ -198,7 +200,7 @@ class CollectionOutputTarget : public OutputRedirector
     virtual void liveGeneral(MarkReason reason);
 
     virtual void init();
-    virtual void write(RexxString *v);
+    virtual void write(NativeActivation *c, RexxString *v);
     virtual RedirectionType::Enum type() { return RedirectionType::COLLECTION_OBJECT; }
     virtual RexxObject *target() { return collection; }
 
@@ -225,7 +227,7 @@ class BufferingOutputTarget : public OutputRedirector
     virtual void liveGeneral(MarkReason reason);
 
     virtual void init();
-    virtual void write(RexxString *v);
+    virtual void write(NativeActivation *c, RexxString *v);
     virtual void cleanup();
 
 protected:

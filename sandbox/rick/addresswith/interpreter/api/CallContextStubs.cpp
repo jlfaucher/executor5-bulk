@@ -341,7 +341,7 @@ void RexxEntry ReadInput(RexxIORedirectorContext *c, CSTRING *data, size_t *leng
         // request the next input line. This will be NULL if we've reached the end.
         // Note that the string object is anchored by the ioContext, so
         // we don't need to add this to the context local reference table
-        RexxString *nextLine = ioContext->readInput();
+        RexxString *nextLine = ioContext->readInput(context.context);
         if (nextLine != OREF_NULL)
         {
             *data = (CSTRING)nextLine->getStringData();
@@ -367,7 +367,7 @@ void RexxEntry WriteOutput(RexxIORedirectorContext *c, const char *data, size_t 
         // nothing if this is called.
         if (ioContext != OREF_NULL)
         {
-            ioContext->writeOutput(data, length);
+            ioContext->writeOutput(context.context, data, length);
         }
     }
     catch (NativeActivation *)
@@ -389,7 +389,7 @@ void RexxEntry WriteError(RexxIORedirectorContext *c, const char *data, size_t l
         if (ioContext != OREF_NULL)
         {
             Protected<RexxString> value = new_string(data, length);
-            ioContext->writeError(data, length);
+            ioContext->writeError(context.context, data, length);
         }
     }
     catch (NativeActivation *)

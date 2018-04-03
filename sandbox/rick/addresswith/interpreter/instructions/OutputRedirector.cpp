@@ -186,9 +186,14 @@ void StemOutputTarget::init()
 /**
  * Write a value to the output redirector.
  *
+ * @param context The NativeActivation context for the command handler, which
+ *                will handler error/condition traps for this
+ *                callback.  Note that this argument can be NULL
+ *                if this call is generated to handle
+ *                post-command buffering.
  * @param value  The string value to write
  */
-void StemOutputTarget::write(RexxString *value)
+void StemOutputTarget::write(NativeActivation *c, RexxString *value)
 {
     stem->setElement(index, value);
     // update stem.0
@@ -251,11 +256,32 @@ void StreamObjectOutputTarget::liveGeneral(MarkReason reason)
 
 
 /**
+ * Test if an output redirector is using the same source
+ * as the input redirector, and thus needs buffering.
+ *
+ * @param in     The input redirector
+ *
+ * @return True if the input redirector and the output redirector
+ *         are using the same target object.
+ */
+bool StreamOutputTarget::needsBuffering(InputRedirector *in)
+{
+    // we need to do a string comparison here, not identity comparison
+    return type() == in->type() && name->strCompare((RexxString *)in->target());
+}
+
+
+/**
  * Write a value to the output redirector.
  *
+ * @param context The NativeActivation context for the command handler, which
+ *                will handler error/condition traps for this
+ *                callback.  Note that this argument can be NULL
+ *                if this call is generated to handle
+ *                post-command buffering.
  * @param value  The string value to write
  */
-void StreamObjectOutputTarget::write(RexxString *value)
+void StreamObjectOutputTarget::write(NativeActivation *c, RexxString *value)
 {
     // add the string to the next position
     ProtectedObject result;
@@ -420,9 +446,14 @@ void CollectionOutputTarget::liveGeneral(MarkReason reason)
 /**
  * Write a value to the output redirector.
  *
+ * @param context The NativeActivation context for the command handler, which
+ *                will handler error/condition traps for this
+ *                callback.  Note that this argument can be NULL
+ *                if this call is generated to handle
+ *                post-command buffering.
  * @param value  The string value to write
  */
-void CollectionOutputTarget::write(RexxString *value)
+void CollectionOutputTarget::write(NativeActivation *c, RexxString *value)
 {
     ProtectedObject result;
     // this just uses lineout
@@ -526,9 +557,14 @@ void BufferingOutputTarget::init()
 /**
  * Add the output item to our buffer
  *
+ * @param context The NativeActivation context for the command handler, which
+ *                will handler error/condition traps for this
+ *                callback.  Note that this argument can be NULL
+ *                if this call is generated to handle
+ *                post-command buffering.
  * @param value  The string value to add.
  */
-void BufferingOutputTarget::write(RexxString *value)
+void BufferingOutputTarget::write(NativeActivation *c, RexxString *value)
 {
     collector->append(value);
 }
@@ -547,7 +583,7 @@ void BufferingOutputTarget::cleanup()
 
     for (size_t i = 1; i <= count; i++)
     {
-        target->write((RexxString *)collector->get(i));
+        target->write(OREF_NULL, (RexxString *)collector->get(i));
     }
 
     // and finally the cleanup
@@ -606,9 +642,14 @@ void RexxQueueOutputTarget::liveGeneral(MarkReason reason)
 /**
  * Write a value to the output redirector.
  *
+ * @param context The NativeActivation context for the command handler, which
+ *                will handler error/condition traps for this
+ *                callback.  Note that this argument can be NULL
+ *                if this call is generated to handle
+ *                post-command buffering.
  * @param value  The string value to write
  */
-void RexxQueueOutputTarget::write(RexxString *value)
+void RexxQueueOutputTarget::write(NativeActivation *c, RexxString *value)
 {
     // add the string to the next position
     ProtectedObject result;

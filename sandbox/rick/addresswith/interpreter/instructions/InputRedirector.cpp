@@ -47,6 +47,8 @@
 #include "InputRedirector.hpp"
 #include "ProtectedObject.hpp"
 #include "PackageClass.hpp"
+#include "NativeActivation.hpp"
+#include "ConditionTrappingDispatcher.hpp"
 
 
 /**
@@ -128,8 +130,11 @@ void StemInputSource::init()
 
 /**
  * Read the next line from the stem source
+ *
+ * @param context The NativeActivation context for the command handler, which
+ *                will handler error/condition traps for this callback.
  */
-RexxString *StemInputSource::read()
+RexxString *StemInputSource::read(NativeActivation *context)
 {
     // if we've reached the end, done reading, so return nothing.
     if (index > arraySize)
@@ -158,6 +163,22 @@ RexxString *StemInputSource::read()
     return lastValue;
 }
 
+
+class LineinInvoker : public TrapInvoker
+{
+public:
+    LineinInvoker::LineinInvoker(RexxObject *s, RexxString *&returned) : stream(s), nextLine(returned) { ; }
+
+    virtual void invoke()
+    {
+        // read a line from the stream
+        ProtectedObject result;
+        nextLine = (RexxString *)stream->sendMessage(GlobalNames::LINEIN, result);
+    }
+
+    RexxObject *stream;         // the stream we're reading from
+    RexxString *&nextLine;       // the read line
+};
 
 /**
  * Allocate a new stream input source
@@ -211,8 +232,11 @@ void StreamObjectInputSource::liveGeneral(MarkReason reason)
 
 /**
  * Read the next line from the stem source
+ *
+ * @param context The NativeActivation context for the command handler, which
+ *                will handler error/condition traps for this callback.
  */
-RexxString *StreamObjectInputSource::read()
+RexxString *StreamObjectInputSource::read(NativeActivation *context)
 {
     // if we previously hit the end, then return nothing
     if (hitEnd)
@@ -223,22 +247,22 @@ RexxString *StreamObjectInputSource::read()
 
     // read a line from the stream
     ProtectedObject result;
-    lastValue = (RexxString *)stream->sendMessage(GlobalNames::LINEIN, result);
 
-    // we can't trap a NOTREADY condition in this context, so if
-    // the read result was a null string, then we need to check the
-    // stream state to see if it is still in the ready state.
-    if (lastValue->getLength() == 0)
+    // invoke LINEIN with trap protection
+    LineinInvoker invoker(stream, lastValue);
+    ConditionTrappingDispatcher dispatcher(invoker);
+
+    // invoke the method with appropriate trapping
+    context->getActivity()->run(dispatcher);
+
+    // this terminated due to a trapped condition (likely NOTREADY)
+    // treat this as an eof
+    if (dispatcher.conditionOccurred())
     {
-        RexxString *state = (RexxString *)stream->sendMessage(GlobalNames::STATE, result);
-        // anything other than READY means we've hit the end of the road.
-        // Note this and return NULL
-        if (!state->strCompare(GlobalNames::READY))
-        {
-            hitEnd = true;
-            return OREF_NULL;
-        }
+        hitEnd = true;
+        return OREF_NULL;
     }
+
     // return the read string
     return lastValue;
 }
@@ -391,9 +415,12 @@ void ArrayInputSource::init()
 /**
  * Read the next line from the array
  *
+ * @param context The NativeActivation context for the command handler, which
+ *                will handler error/condition traps for this callback.
+ *
  * @return The next line or OREF_NULL if we've reached the end
  */
-RexxString *ArrayInputSource::read()
+RexxString *ArrayInputSource::read(NativeActivation *context)
 {
     // if we've already reached the end, return a null
     if (index > arraySize)

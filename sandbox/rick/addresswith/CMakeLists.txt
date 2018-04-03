@@ -626,6 +626,7 @@ set (concurrency_sources ${build_concurrency_dir}/ActivityDispatcher.cpp
             ${build_concurrency_dir}/ActivationFrame.cpp
             ${build_concurrency_dir}/CallbackDispatcher.cpp
             ${build_concurrency_dir}/TrappingDispatcher.cpp
+            ${build_concurrency_dir}/ConditionTrappingDispatcher.cpp
             ${build_concurrency_dir}/ExitHandler.cpp
             ${build_concurrency_dir}/CommandHandler.cpp
             ${build_concurrency_dir}/MessageDispatcher.cpp

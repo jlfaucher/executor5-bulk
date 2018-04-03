@@ -161,7 +161,7 @@ return testResult
 -- invalid (non-existent) commands should raise FAILURE (not ERROR)
 -- on Windows, although rexxref says: "For the default Windows command processor,
 -- an attempt to enter an unknown command raises a FAILURE condition", this doesn't
--- work.  See [bugs:#1490] Windows Command doesn't raise FAILURE 
+-- work.  See [bugs:#1490] Windows Command doesn't raise FAILURE
 -- As this doesn't seem to be easily fixed, we'll run this as "known bug"
 ::method test_command_not_exists
    defaultEnvironment = address()
@@ -251,7 +251,7 @@ return testResult
     if cmd~failed then
       self~assertFalse(cmd~failed, "environment '"shell"' failed")
 
-    self~assertEquals(echo, cmd~stdOut[1], "environment '"shell"' expected to return" echo "for echo $0")  
+    self~assertEquals(echo, cmd~stdOut[1], "environment '"shell"' expected to return" echo "for echo $0")
   end
 
 
@@ -385,20 +385,20 @@ address_with ::=      ( 'WITH' ( 'INPUT' ( 'NORMAL' | 'STEM' stem | 'STREAM' str
   address '' '' with output stream ''
 
 ::method test_with_output_using_nullstring
-  self~expectSyntax(98.996) -- Object .. is not a valid ADDRESS WITH OUTPUT or ERROR target 
+  self~expectSyntax(98.996) -- Object .. is not a valid ADDRESS WITH OUTPUT or ERROR target
   address '' '' with output using ''
 
 ::method test_with_output_using_literal_string
-  self~expectSyntax(98.996) -- Object .. is not a valid ADDRESS WITH OUTPUT or ERROR target 
+  self~expectSyntax(98.996) -- Object .. is not a valid ADDRESS WITH OUTPUT or ERROR target
   address '' '' with output using 'line'
 
 ::method test_with_output_using_string_variable
-  self~expectSyntax(98.996) -- Object .. is not a valid ADDRESS WITH OUTPUT or ERROR target 
+  self~expectSyntax(98.996) -- Object .. is not a valid ADDRESS WITH OUTPUT or ERROR target
   string = ""
   address '' '' with output using ( string )
 
 ::method test_with_output_using_directory
-  self~expectSyntax(98.996) -- Object .. is not a valid ADDRESS WITH OUTPUT or ERROR target 
+  self~expectSyntax(98.996) -- Object .. is not a valid ADDRESS WITH OUTPUT or ERROR target
   directory = .Directory~new
   address '' '' with output using ( directory )
 
@@ -413,29 +413,29 @@ address_with ::=      ( 'WITH' ( 'INPUT' ( 'NORMAL' | 'STEM' stem | 'STREAM' str
   array = .Array~new
   address "" "" with output normal
   address "" "" with output stem stem.
--- @@ this really should work, but gives 25.933: Acceptable ADDRESS WITH I/O types are STEM, STREAM, and USING 
+-- @@ this really should work, but gives 25.933: Acceptable ADDRESS WITH I/O types are STEM, STREAM, and USING
 --address "" "" with output replace stem stem.
   address "" "" with output append stem stem.
   address "" "" with output stream ( fileName )
--- @@ this really should work, but gives 25.933: Acceptable ADDRESS WITH I/O types are STEM, STREAM, and USING 
+-- @@ this really should work, but gives 25.933: Acceptable ADDRESS WITH I/O types are STEM, STREAM, and USING
 --address "" "" with output replace stream ( fileName )
   address "" "" with output append stream ( fileName )
 -- @@ might be nice if this worked
 --address "" "" with output using ( line )
   address "" "" with output using ( stem. )
   address "" "" with output append using ( stem. )
--- @@ this really should work, but gives 25.933: Acceptable ADDRESS WITH I/O types are STEM, STREAM, and USING 
+-- @@ this really should work, but gives 25.933: Acceptable ADDRESS WITH I/O types are STEM, STREAM, and USING
 --address "" "" with output replace using ( stem. )
   address "" "" with output using ( stemObject )
   address "" "" with output using ( file )
   address "" "" with output using ( stream )
 -- @@ re devel discussion: this gives 98.997 REPLACE or APPEND cannot be specified with a Stream object USING target
 --address "" "" with output append using ( stream )
--- @@ this really should work, but gives 25.933: Acceptable ADDRESS WITH I/O types are STEM, STREAM, and USING 
+-- @@ this really should work, but gives 25.933: Acceptable ADDRESS WITH I/O types are STEM, STREAM, and USING
 --address "" "" with output replace using ( stream )
   address "" "" with output using ( array )
   address "" "" with output append using ( array )
--- @@ this really should work, but gives 25.933: Acceptable ADDRESS WITH I/O types are STEM, STREAM, and USING 
+-- @@ this really should work, but gives 25.933: Acceptable ADDRESS WITH I/O types are STEM, STREAM, and USING
 --address "" "" with output replace using ( array )
 
   -- these tests work, but really make no sense
@@ -484,7 +484,7 @@ address_with ::=      ( 'WITH' ( 'INPUT' ( 'NORMAL' | 'STEM' stem | 'STREAM' str
 -- run command in environment and pipe its output to queue
 ::method run
   use local
-  use strict arg command 
+  use strict arg command
 
   returnCode = .nil
   failed = .false
@@ -510,7 +510,6 @@ address_with ::=      ( 'WITH' ( 'INPUT' ( 'NORMAL' | 'STEM' stem | 'STREAM' str
 
   queue~delete                         -- a named queue persists, need to delete it
   forward class (super)
-
 
 
 ::options novalue error

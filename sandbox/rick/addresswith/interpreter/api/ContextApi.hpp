@@ -65,6 +65,7 @@ public:
     {
         // we need to cleanup on exit
         releaseLock = true;
+        clearConditions = false;
         activity = contextToActivity(c);
         context = activity->getApiContext();
         context->enableConditionTraps();
@@ -88,6 +89,7 @@ public:
 
         // we need to cleanup on exit
         releaseLock = blocking;
+        clearConditions = false;
         activity = contextToActivity(c);
         context = activity->getApiContext();
         context->enableConditionTraps();
@@ -102,6 +104,7 @@ public:
     {
         // we need to cleanup on exit
         releaseLock = true;
+        clearConditions = false;
         activity = contextToActivity(c);
         context = contextToActivation(c);
         context->enableConditionTraps();
@@ -122,6 +125,7 @@ public:
     {
         // we need to cleanup on exit
         releaseLock = true;
+        clearConditions = false;
         activity = contextToActivity(c);
         context = contextToActivation(c);
         context->enableConditionTraps();
@@ -144,10 +148,7 @@ public:
         releaseLock = true;
         activity = contextToActivity(c);
         context = contextToActivation(c);
-        // Processing here might cause a non-error condition to
-        // be raised. If our activation traps that, then it is
-        // propagated to the caller. We do not want that to
-        // happen, so we leave the condition trapping disabled.
+        clearConditions = true;
         activity->enterCurrentThread();
         // we need to validate the thread call context to ensure this
         // is the correct thread
@@ -164,6 +165,7 @@ public:
     {
         // we need to cleanup on exit
         releaseLock = true;
+        clearConditions = false;
         activity = contextToActivity(c);
         context = contextToActivation(c);
         context->enableConditionTraps();
@@ -180,6 +182,12 @@ public:
      */
     inline ~ApiContext()
     {
+        // clear the condition if we've been requested not to propagate
+        if (clearConditions)
+        {
+            context->clearCondition();
+        }
+
         // we only do this sort of cleanup if we really entered on the
         // activity
         if (releaseLock)
@@ -208,6 +216,11 @@ public:
      * Indicates whether we need to release the lock on return.
      */
     bool releaseLock;
+
+    /**
+     * Indicates whether conditions should be cleared on return.
+     */
+    bool clearConditions;
 };
 
 
