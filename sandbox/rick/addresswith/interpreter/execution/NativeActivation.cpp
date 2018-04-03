@@ -2535,9 +2535,9 @@ bool NativeActivation::willTrap(RexxString *condition)
 {
     // There are two possibilities here.  We're either seeing this because of a
     // propagating syntax condition.  for this case, we trap this and hold it.
-    // The other possibility is a condition being raised by an API callback.  That should
-    // be the only situation where we see any other condition type.  We also trap that
-    // one so it can be raised in the caller's context.
+    // The other possibility is a condition being raised by an API callback or we've
+    // been created by a trapping dispatcher. In either case, we will trap and hold
+    // the condition.
 
     // we end up seeing this a second time if we're raising the exception on
     // return from an external call or method.

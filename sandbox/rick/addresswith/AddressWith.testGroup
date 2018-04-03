@@ -212,7 +212,103 @@ self~assertSame("Line1", array[1])
 self~assertSame("Line3", array[2])
 self~assertSame("Line5", array[3])
 
+-- now again, with append specified
+address test 'NOBLANKOUTPUT' with input stream (temp~fullName) output append stream (temp~fullName)
+array = temp~arrayIn
+
+self~assertSame(3, rc)
+self~assertSame(6, array~items)
+self~assertSame("Line1", array[1])
+self~assertSame("Line3", array[2])
+self~assertSame("Line5", array[3])
+self~assertSame("Line1", array[4])
+self~assertSame("Line3", array[5])
+self~assertSame("Line5", array[6])
+
 temp~delete
+
+a.0 = 3
+a.1 = "Line1"
+a.2 = ""
+a.3 = "Line3"
+
+-- now same variants using a stem
+address test 'NOBLANKOUTPUT' with input stem a. output stem a.
+self~assertSame(3, rc)
+self~assertSame(2, a.0)
+self~assertSame("Line1", a.1)
+self~assertSame("Line3", a.2)
+
+-- same as above, with append
+address test 'NOBLANKOUTPUT' with input stem a. output append stem a.
+self~assertSame(2, rc)
+self~assertSame(4, a.0)
+self~assertSame("Line1", a.1)
+self~assertSame("Line3", a.2)
+self~assertSame("Line1", a.3)
+self~assertSame("Line3", a.4)
+
+
+-- now using a stem, but with the USING keyword
+drop a.
+a.0 = 3
+a.1 = "Line1"
+a.2 = ""
+a.3 = "Line3"
+
+-- now same variants using a stem
+address test 'NOBLANKOUTPUT' with input using (a.) output using (a.)
+self~assertSame(3, rc)
+self~assertSame(2, a.0)
+self~assertSame("Line1", a.1)
+self~assertSame("Line3", a.2)
+
+-- same as above, with append
+address test 'NOBLANKOUTPUT' with input using (a.) output append using (a.)
+self~assertSame(2, rc)
+self~assertSame(4, a.0)
+self~assertSame("Line1", a.1)
+self~assertSame("Line3", a.2)
+self~assertSame("Line1", a.3)
+self~assertSame("Line3", a.4)
+
+
+-- once more, but mixing up the variantes
+drop a.
+a.0 = 3
+a.1 = "Line1"
+a.2 = ""
+a.3 = "Line3"
+
+-- now same variants using a stem
+address test 'NOBLANKOUTPUT' with input using (a.) output stem a.
+self~assertSame(3, rc)
+self~assertSame(2, a.0)
+self~assertSame("Line1", a.1)
+self~assertSame("Line3", a.2)
+
+-- same as above, with append
+address test 'NOBLANKOUTPUT' with input stem a. output append using (a.)
+self~assertSame(2, rc)
+self~assertSame(4, a.0)
+self~assertSame("Line1", a.1)
+self~assertSame("Line3", a.2)
+self~assertSame("Line1", a.3)
+self~assertSame("Line3", a.4)
+
+::method test_input_output_stream
+
+instream = .ArrayInputStream~new(("Line1", "Line2"))
+outstream = .ArrayOutputStream~new
+
+address test 'INPUTOUTPUT' with input using (instream) output using(outstream)
+
+array = outstream~array
+
+self~assertSame(2, rc)
+self~assertSame(2, array~items)
+self~assertSame("Line1", array[1])
+self~assertSame("Line2", array[2])
 
 
 ::class ArrayInputStream public inherit InputStream

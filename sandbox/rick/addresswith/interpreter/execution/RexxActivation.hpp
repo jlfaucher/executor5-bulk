@@ -182,7 +182,7 @@ class RexxActivation : public ActivationBase
    void              toggleAddress();
    void              guardOn();
    void              raiseExit(RexxString *, RexxObject *, RexxString *, RexxObject *, RexxObject *, DirectoryClass *);
-   RexxActivation  * senderActivation();
+   ActivationBase  * senderActivation(RexxString *conditionName);
    RexxActivation  * external();
    void              interpret(RexxString *);
    void              signalTo(RexxInstruction *);

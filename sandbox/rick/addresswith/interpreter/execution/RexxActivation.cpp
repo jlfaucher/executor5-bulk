@@ -1671,7 +1671,7 @@ void RexxActivation::raise(RexxString *condition, RexxObject *rc, RexxString *de
     else
     {
         // find a predecessor Rexx activation
-        RexxActivation *_sender = senderActivation();
+        ActivationBase *_sender = senderActivation(condition);
         // see if the sender level is trapping this condition
         bool trapped = false;
         if (_sender != OREF_NULL)
@@ -2456,20 +2456,27 @@ void RexxActivation::unwindTrap(RexxActivation * child )
 
 /**
  * Retrieve the activation that activated this activation (whew)
+ * with the intent of doing condition trapping.
  *
  * @return The parent activation.
  */
-RexxActivation * RexxActivation::senderActivation()
+ActivationBase *RexxActivation::senderActivation(RexxString *conditionName)
 {
     // get the sender from the activity
     ActivationBase *_sender = getPreviousStackFrame();
     // spin down to non-native activation
     while (_sender != OREF_NULL && isOfClass(NativeActivation, _sender))
     {
+        // if this is a native activation that is actively trapping conditions,
+        // then use that as the condition trap target
+        if (_sender->willTrap(conditionName))
+        {
+            return _sender;
+        }
         _sender = _sender->getPreviousStackFrame();
     }
     // that is our sender
-    return(RexxActivation *)_sender;
+    return _sender;
 }
 
 
