@@ -310,6 +310,316 @@ self~assertSame(2, array~items)
 self~assertSame("Line1", array[1])
 self~assertSame("Line2", array[2])
 
+-- some RexxQueue tests
+::method test_rexxqueue
+
+.rexxqueue~create('ADDRESSWITH')
+queue = .rexxqueue~new('ADDRESSWITH')
+
+address test 'INPUTOUTPUT' with input using 'This is a test' output using(queue)
+self~assertSame(1, queue~queued)
+self~assertSame("This is a test", queue~pull)
+
+queue~queue('Line1')
+array = .array~new
+
+address test 'INPUTOUTPUT' with input using(queue) output using(array)
+self~assertSame(0, queue~queued)
+self~assertSame("Line1", array[1])
+
+-- and the overwrite protection
+queue~queue('Line1')
+queue~queue('')
+queue~queue('Line3')
+
+address test 'NOBLANKOUTPUT' with input using(queue) output using(queue)
+self~assertSame(2, queue~queued)
+self~assertSame("Line1", queue~pull)
+self~assertSame("Line3", queue~pull)
+
+queue~delete
+
+
+::method test_global_setting
+
+-- The base mechanisms have been tested above, here we're going to test
+-- that the global settings are used with commands and can be overridden on a base-by-case
+-- basis.
+
+signal off novalue
+
+address test with input using "This is a test" output stem a. error stem b.
+-- this will use the redirects
+address test 'INPUTOUTPUT'
+self~assertSame(1, a.0)
+self~assertSame("This is a test", a.1)
+self~assertSame(0, b.0)
+
+drop a. b.
+-- a command issued to this environment without using ADDRESS will also pick this up
+'INPUTERROR'
+
+self~assertSame(1, b.0)
+self~assertSame("This is a test", b.1)
+self~assertSame(0, a.0)
+
+drop a. b.
+
+-- override the INPUT source...this will use the global output ane error settings
+address test 'INPUTOUTPUT' with input using 'This is another test'
+self~assertSame(1, a.0)
+self~assertSame("This is another test", a.1)
+self~assertSame(0, b.0)
+
+drop a. b.
+
+-- now override OUTPUT and ERROR similarly
+address test 'INPUTOUTPUT' with output stem c.
+self~assertSame(1, c.0)
+self~assertSame("This is a test", c.1)
+self~assertSame(0, b.0)
+self~assertSame('A.0', a.0)      -- should be unchanged
+
+drop a. b. c.
+
+address test 'INPUTOUTPUT' with output stem c.
+self~assertSame(1, c.0)
+self~assertSame("This is a test", c.1)
+self~assertSame('A.0', a.0)
+self~assertSame(0, b.0)      -- should be unchanged
+
+drop a. b. c.
+
+-- now test NORMAL overrides
+
+address test 'INPUTOUTPUT' with input NORMAL
+-- this has nothing to read, but the output and error stems should reflect nothing written
+self~assertSame(0, a.0)
+self~assertSame(0, b.0)
+
+drop a. b.
+
+address test 'INPUTOUTPUT' with output NORMAL
+-- a. should be unchanged
+self~assertSame('A.0', a.0)
+self~assertSame(0, b.0)
+
+drop a. b.
+
+address test 'INPUTOUTPUT' with error NORMAL
+-- b. should be unchanged
+self~assertSame(1, a.0)
+self~assertSame("This is a test", a.1)
+self~assertSame('B.0', b.0)
+
+-- test the address toggle maintains the settings
+address command
+address
+
+drop a. b.
+
+-- this will use the redirects
+'INPUTOUTPUT'
+self~assertSame(1, a.0)
+self~assertSame("This is a test", a.1)
+self~assertSame(0, b.0)
+
+-- explicit switch back by name...still keeps the settings
+address command
+address test
+
+drop a. b.
+
+'INPUTOUTPUT'
+self~assertSame(1, a.0)
+self~assertSame("This is a test", a.1)
+self~assertSame(0, b.0)
+
+-- the address toggle only remembers two settings, but the override
+-- information should still be maintained as long as the context
+-- remains active.
+address xedit
+address command
+address test
+
+drop a. b.
+
+'INPUTOUTPUT'
+self~assertSame(1, a.0)
+self~assertSame("This is a test", a.1)
+self~assertSame(0, b.0)
+
+drop a. b.
+-- test that settings are saved on internal call return
+
+self~assertSame('A.0', a.0)
+self~assertSame('B.0', b.0)
+
+-- this should have been restored to the original settings
+'INPUTOUTPUT'
+self~assertSame(1, a.0)
+self~assertSame("This is a test", a.1)
+self~assertSame(0, b.0)
+
+return
+
+subroutine:
+
+
+address test with input using "This is another test" output stem c. error stem d.
+-- this will use the new redirects
+'INPUTOUTPUT'
+self~assertSame(1, c.0)
+self~assertSame("This is another test", c.1)
+self~assertSame(0, d.0)
+return
+
+::method test_write_buffer
+
+array = .array~new
+crlf = '0d0a'x
+lf = '0a'x
+cr = '0d'x
+
+-- one string, no linends
+address test 'BUFFEROUTPUT' with input using "This is a test" output using (array)
+self~assertSame(1, array~items)
+self~assertSame("This is a test", array[1])
+
+-- one string, crlf linend
+address test 'BUFFEROUTPUT' with input using ("Line1"||crlf) output using (array)
+self~assertSame(1, array~items)
+self~assertSame("Line1", array[1])
+
+-- one string, lf linend
+address test 'BUFFEROUTPUT' with input using ("Line2"||lf) output using (array)
+self~assertSame(1, array~items)
+self~assertSame("Line2", array[1])
+
+-- two strings, no linefeeds
+address test 'BUFFEROUTPUT' with input using (("Line1", "Line2")) output using (array)
+self~assertSame(1, array~items)
+self~assertSame("Line1Line2", array[1])
+
+-- three strings, no linefeeds
+address test 'BUFFEROUTPUT' with input using (("Line1", "Line2", "Line3")) output using (array)
+self~assertSame(1, array~items)
+self~assertSame("Line1Line2Line3", array[1])
+
+-- one string, crlf linend in the middle
+address test 'BUFFEROUTPUT' with input using ("Line1"||crlf||"Line2") output using (array)
+self~assertSame(2, array~items)
+self~assertSame("Line1", array[1])
+self~assertSame("Line2", array[2])
+
+-- one string, lf linend in the middle
+address test 'BUFFEROUTPUT' with input using ("Line3"||lf||"Line4") output using (array)
+self~assertSame(2, array~items)
+self~assertSame("Line3", array[1])
+self~assertSame("Line4", array[2])
+
+-- two strings, crlf linened split across two buffers
+address test 'BUFFEROUTPUT' with input using (("Line1"||cr, lf||"Line2")) output using (array)
+self~assertSame(2, array~items)
+self~assertSame("Line1", array[1])
+self~assertSame("Line2", array[2])
+
+-- one string, naked cr  in the middle
+address test 'BUFFEROUTPUT' with input using ("Line3"||cr||"Line4") output using (array)
+self~assertSame(1, array~items)
+self~assertSame("Line3"||cr||"Line4", array[1])
+
+-- two strings, naked crlf at end if first buffter
+address test 'BUFFEROUTPUT' with input using (("Line1"||cr, "Line2")) output using (array)
+self~assertSame(1, array~items)
+self~assertSame("Line1"||cr||"Line2", array[1])
+
+-- two strings, multiple line feeds, no line feed at buffer boundary
+address test 'BUFFEROUTPUT' with input using (("Line1"||crlf||"Line2"||crlf||"Li", "ne3"||crlf||"Line4")) output using (array)
+self~assertSame(4, array~items)
+self~assertSame("Line1", array[1])
+self~assertSame("Line2", array[2])
+self~assertSame("Line3", array[3])
+self~assertSame("Line4", array[4])
+
+-- two strings, multiple line feeds, no line feed at buffer boundary
+address test 'BUFFEROUTPUT' with input using (("Line5"||lf||"Line6"||lf||"Li", "ne7"||crlf||"Line8")) output using (array)
+self~assertSame(4, array~items)
+self~assertSame("Line5", array[1])
+self~assertSame("Line6", array[2])
+self~assertSame("Line7", array[3])
+self~assertSame("Line8", array[4])
+
+
+-- one string, no linends
+address test 'BUFFERERROR' with input using "This is a test" error using (array)
+self~assertSame(1, array~items)
+self~assertSame("This is a test", array[1])
+
+-- one string, crlf linend
+address test 'BUFFERERROR' with input using ("Line1"||crlf) error using (array)
+self~assertSame(1, array~items)
+self~assertSame("Line1", array[1])
+
+-- one string, lf linend
+address test 'BUFFERERROR' with input using ("Line2"||lf) error using (array)
+self~assertSame(1, array~items)
+self~assertSame("Line2", array[1])
+
+-- two strings, no linefeeds
+address test 'BUFFERERROR' with input using (("Line1", "Line2")) error using (array)
+self~assertSame(1, array~items)
+self~assertSame("Line1Line2", array[1])
+
+-- three strings, no linefeeds
+address test 'BUFFERERROR' with input using (("Line1", "Line2", "Line3")) error using (array)
+self~assertSame(1, array~items)
+self~assertSame("Line1Line2Line3", array[1])
+
+-- one string, crlf linend in the middle
+address test 'BUFFERERROR' with input using ("Line1"||crlf||"Line2") error using (array)
+self~assertSame(2, array~items)
+self~assertSame("Line1", array[1])
+self~assertSame("Line2", array[2])
+
+-- one string, lf linend in the middle
+address test 'BUFFERERROR' with input using ("Line3"||lf||"Line4") error using (array)
+self~assertSame(2, array~items)
+self~assertSame("Line3", array[1])
+self~assertSame("Line4", array[2])
+
+-- two strings, crlf linened split across two buffers
+address test 'BUFFERERROR' with input using (("Line1"||cr, lf||"Line2")) error using (array)
+self~assertSame(2, array~items)
+self~assertSame("Line1", array[1])
+self~assertSame("Line2", array[2])
+
+-- one string, naked cr  in the middle
+address test 'BUFFERERROR' with input using ("Line3"||cr||"Line4") error using (array)
+self~assertSame(1, array~items)
+self~assertSame("Line3"||cr||"Line4", array[1])
+
+-- two strings, naked crlf at end if first buffter
+address test 'BUFFERERROR' with input using (("Line1"||cr, "Line2")) error using (array)
+self~assertSame(1, array~items)
+self~assertSame("Line1"||cr||"Line2", array[1])
+
+-- two strings, multiple line feeds, no line feed at buffer boundary
+address test 'BUFFERERROR' with input using (("Line1"||crlf||"Line2"||crlf||"Li", "ne3"||crlf||"Line4")) error using (array)
+self~assertSame(4, array~items)
+self~assertSame("Line1", array[1])
+self~assertSame("Line2", array[2])
+self~assertSame("Line3", array[3])
+self~assertSame("Line4", array[4])
+
+-- two strings, multiple line feeds, no line feed at buffer boundary
+address test 'BUFFERERROR' with input using (("Line5"||lf||"Line6"||lf||"Li", "ne7"||crlf||"Line8")) error using (array)
+self~assertSame(4, array~items)
+self~assertSame("Line5", array[1])
+self~assertSame("Line6", array[2])
+self~assertSame("Line7", array[3])
+self~assertSame("Line8", array[4])
+
 
 ::class ArrayInputStream public inherit InputStream
 ::method init
@@ -410,7 +720,6 @@ self~assertSame("Line2", array[2])
   use strict arg
 
   return lines
-
 
 
 

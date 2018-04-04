@@ -741,6 +741,40 @@ RexxObjectPtr RexxEntry testCommandHandler(RexxExitContext *context, RexxStringO
         return context->StringSizeToObject(count);
     }
 
+    if (strcmp(commandString, "BUFFEROUTPUT") == 0)
+    {
+        CSTRING data;
+        size_t length;
+        size_t count = 0;
+
+        ioContext->ReadInput(&data, &length);
+        while (data != NULL)
+        {
+            count++;
+            ioContext->WriteOutputBuffer(data, length);
+            ioContext->ReadInput(&data, &length);
+        }
+
+        return context->StringSizeToObject(count);
+    }
+
+    if (strcmp(commandString, "BUFFERERROR") == 0)
+    {
+        CSTRING data;
+        size_t length;
+        size_t count = 0;
+
+        ioContext->ReadInput(&data, &length);
+        while (data != NULL)
+        {
+            count++;
+            ioContext->WriteErrorBuffer(data, length);
+            ioContext->ReadInput(&data, &length);
+        }
+
+        return context->StringSizeToObject(count);
+    }
+
     if (strcmp(commandString, "INPUTREDIRECTED") == 0)
     {
         return ioContext->IsInputRedirected() ? context->True() : context->False();

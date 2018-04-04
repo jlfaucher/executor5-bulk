@@ -82,6 +82,237 @@ bool OutputRedirector::isSameTarget(OutputRedirector *e)
 
 
 /**
+ * Write a buffer of data potentially consisting of multiple
+ * lines to the collector. We will parse out as many lines as
+ * we can, then will hold the remainder until we receive another
+ * buffer.
+ *
+ * @param data   The data buffer to process
+ * @param len    The length of the buffer.
+ */
+void OutputRedirector::writeBuffer(const char *data, size_t len)
+{
+    // seems silly, but this is easy
+    if (len == 0)
+    {
+        return;
+    }
+
+    const char *bufferEnd = data + len;
+    // we might have a buffer here. Need to merge this with the data, then we can
+    // chop up the rest of this buffer
+    resolveBuffer(data, bufferEnd);
+    // the process of resolving the buffer could have consumed all of this new
+    // data, so
+    if (data < bufferEnd)
+    {
+        consumeBuffer(data, bufferEnd);
+    }
+}
+
+
+/**
+ * Flush any remaining buffered data to the accumulator.
+ */
+void OutputRedirector::cleanup()
+{
+    if (bufferedData != OREF_NULL)
+    {
+        write(bufferedData);
+    }
+    bufferedData = OREF_NULL;
+}
+
+
+/**
+ * Check to see if we have the tail end of a previous buffer
+ * still left. We need to combine this with the front of the new
+ * buffer to create a complete line and add that to the
+ * accumulator.
+ *
+ * @param data      The start of the buffer.
+ * @param bufferEnd The end of the buffer.
+ */
+void OutputRedirector::resolveBuffer(const char *&data, const char *bufferEnd)
+{
+    // best case is we don't need to do anything.
+    if (bufferedData == OREF_NULL)
+    {
+        return;
+    }
+    // one complication of the scan is the possibility that our
+    // buffer ended with the first half of a linend pair. We need to check
+    // that possibility first
+    if (bufferedData->endsWith('\r'))
+    {
+        // rats, see if this was a true boundary condition
+        if (*data == '\n')
+        {
+            // change the buffer start
+            data++;
+            // yep, all but the last part of the tail is a complete line,
+            // and we need to step over the first buffer character
+            Protected<RexxString> newLine = new_string(bufferedData->getStringData(), bufferedData->getLength() - 1);
+            write(newLine);
+
+            // we no longer have a tail piece
+            bufferedData = OREF_NULL;
+            return;
+        }
+
+        // not a split, the '\r' is considered real data
+    }
+
+    const char *lineEnd = NULL;
+    const char *nextLine = NULL;
+
+    // scan for a line in the new buffer
+    scanLine(data, bufferEnd, lineEnd, nextLine);
+
+    // did we find a lineend? if not, we need to merge our old buffer with the new
+    // data and hold it again.
+    if (lineEnd == NULL)
+    {
+        // save this and cast off the previous buffer
+        bufferedData = new_string(bufferedData->getStringData(), bufferedData->getLength(), data, bufferEnd - data);
+        // mark that we've used up all of the new data
+        data = bufferEnd;
+        // and we're finished here
+        return;
+    }
+
+    // we have a complete line now split in two pieces
+    Protected<RexxString> newLine = new_string(bufferedData->getStringData(), bufferedData->getLength(), data, lineEnd - data);
+    write(newLine);
+
+    // we're done with this
+    bufferedData = OREF_NULL;
+
+    // now update the data buffer position
+    if (nextLine == NULL)
+    {
+        // end on a linend, we're done with this new buffer
+        data = bufferEnd;
+    }
+    else
+    {
+        // start scanning at the next position
+        data = nextLine;
+    }
+}
+
+
+/**
+ * Consume as much of a received buffer as individual
+ * lines as we can, saving the rest.
+ *
+ * @param data      The start of the buffer.
+ * @param bufferEnd The end of the buffer.
+ */
+void OutputRedirector::consumeBuffer(const char *data, const char *bufferEnd)
+{
+    const char *lineEnd = NULL;
+    const char *nextLine = NULL;
+
+    for (;;)
+    {
+        // scan for a line
+        scanLine(data, bufferEnd, lineEnd, nextLine);
+        // NULL lineEnd means we did not find a line terminator. We save the remainder
+        // of the buffer and quit
+        if (lineEnd == NULL)
+        {
+            // we just save this as a string object.
+            bufferedData = new_string(data, bufferEnd - data);
+            return;
+        }
+        // convert to a string object and add to the accumulator
+        Protected<RexxString> newLine = new_string(data, lineEnd - data);
+        write(newLine);
+
+        // the buffer could have ended with a linend
+        // we've magically used up the entire buffer and can leave now
+        if (nextLine == NULL)
+        {
+            return;
+        }
+        // step forward to that position and scan again
+        data = nextLine;
+    }
+}
+
+
+/**
+ * Useful method for scanning a buffer looking for logical
+ * lines with the buffer. This uses the same line termination
+ * rules as the platform.
+ *
+ * @param lineStart The start location for scanning.
+ * @param bufferLen The length of buffer we have to work with.
+ * @param lineEnd   The return pointer to the end of the scanned line. Returns
+ *                  NULL if no line end is found.
+ * @param nextLine  Pointer to the start of the next line (past the linend)
+ *                  returns NULL if this would be past the end of the buffer.
+ */
+void OutputRedirector::scanLine(const char *lineStart, const char *bufferEnd, const char *&lineEnd, const char *&nextLine)
+{
+    lineEnd = NULL;
+    nextLine = NULL;
+
+    // now scan the buffer looking for a line end.
+    for (; lineStart < bufferEnd; lineStart++)
+    {
+        // special handling for carriage return characters. we check the next character
+        // next character and if it is a newline, then we step over both characters and
+        // consider this a new line. Otherwise, we skip the character
+        // and leave the \r as data within the line.
+        if (*lineStart == '\r')
+        {
+
+            // this is a little bit of a quandry. We found a \r as the last character
+            // of the buffer. We can't make a decision here, so punt and say we don't have
+            // a line
+            if (lineStart == bufferEnd + 1)
+            {
+                return;
+            }
+
+            // is the next character a newline?
+            if (*(lineStart + 1) == '\n')
+            {
+                lineEnd = lineStart;
+                nextLine = lineStart + 2;
+                // did this happen at the end of the buffer?
+                // no next Line to note
+                if (nextLine == bufferEnd)
+                {
+                    nextLine = NULL;
+                }
+                return;
+            }
+        }
+
+        // Now check for a newline.
+        else if (*lineStart == '\n')
+        {
+            lineEnd = lineStart;
+            nextLine = lineStart + 1;
+            // did this happen at the end of the buffer?
+            // no next Line to note
+            if (nextLine == bufferEnd)
+            {
+                nextLine = NULL;
+            }
+            return;
+        }
+    }
+
+    // if we scan all of the buffer without finding a line,
+    // the returns are already set to NULL;
+}
+
+
+/**
  * Allocate a new stem output target
  *
  * @param size   The size of the object.
@@ -115,6 +346,7 @@ StemOutputTarget::StemOutputTarget(StemClass *s, OutputOption::Enum o)
  */
 void StemOutputTarget::live(size_t liveMark)
 {
+    memory_mark(bufferedData);
     memory_mark(stem);
 }
 
@@ -128,6 +360,7 @@ void StemOutputTarget::live(size_t liveMark)
  */
 void StemOutputTarget::liveGeneral(MarkReason reason)
 {
+    memory_mark_general(bufferedData);
     memory_mark_general(stem);
 }
 
@@ -186,14 +419,9 @@ void StemOutputTarget::init()
 /**
  * Write a value to the output redirector.
  *
- * @param context The NativeActivation context for the command handler, which
- *                will handler error/condition traps for this
- *                callback.  Note that this argument can be NULL
- *                if this call is generated to handle
- *                post-command buffering.
  * @param value  The string value to write
  */
-void StemOutputTarget::write(NativeActivation *c, RexxString *value)
+void StemOutputTarget::write(RexxString *value)
 {
     stem->setElement(index, value);
     // update stem.0
@@ -238,6 +466,7 @@ StreamObjectOutputTarget::StreamObjectOutputTarget(RexxObject *s, OutputOption::
  */
 void StreamObjectOutputTarget::live(size_t liveMark)
 {
+    memory_mark(bufferedData);
     memory_mark(stream);
 }
 
@@ -251,6 +480,7 @@ void StreamObjectOutputTarget::live(size_t liveMark)
  */
 void StreamObjectOutputTarget::liveGeneral(MarkReason reason)
 {
+    memory_mark_general(bufferedData);
     memory_mark_general(stream);
 }
 
@@ -274,14 +504,9 @@ bool StreamOutputTarget::needsBuffering(InputRedirector *in)
 /**
  * Write a value to the output redirector.
  *
- * @param context The NativeActivation context for the command handler, which
- *                will handler error/condition traps for this
- *                callback.  Note that this argument can be NULL
- *                if this call is generated to handle
- *                post-command buffering.
  * @param value  The string value to write
  */
-void StreamObjectOutputTarget::write(NativeActivation *c, RexxString *value)
+void StreamObjectOutputTarget::write(RexxString *value)
 {
     // add the string to the next position
     ProtectedObject result;
@@ -324,6 +549,7 @@ StreamOutputTarget::StreamOutputTarget(RexxString *n, OutputOption::Enum o)
  */
 void StreamOutputTarget::live(size_t liveMark)
 {
+    memory_mark(bufferedData);
     memory_mark(stream);
     memory_mark(name);
 }
@@ -338,6 +564,7 @@ void StreamOutputTarget::live(size_t liveMark)
  */
 void StreamOutputTarget::liveGeneral(MarkReason reason)
 {
+    memory_mark_general(bufferedData);
     memory_mark_general(stream);
     memory_mark_general(name);
 }
@@ -387,6 +614,9 @@ void StreamOutputTarget::init()
  */
 void StreamOutputTarget::cleanup()
 {
+    // perform the base class cleanup first
+    OutputRedirector::cleanup();
+
     ProtectedObject result;
     stream->sendMessage(GlobalNames::CLOSE, result);
 }
@@ -426,6 +656,7 @@ CollectionOutputTarget::CollectionOutputTarget(RexxObject *c, OutputOption::Enum
  */
 void CollectionOutputTarget::live(size_t liveMark)
 {
+    memory_mark(bufferedData);
     memory_mark(collection);
 }
 
@@ -439,6 +670,7 @@ void CollectionOutputTarget::live(size_t liveMark)
  */
 void CollectionOutputTarget::liveGeneral(MarkReason reason)
 {
+    memory_mark_general(bufferedData);
     memory_mark_general(collection);
 }
 
@@ -446,14 +678,9 @@ void CollectionOutputTarget::liveGeneral(MarkReason reason)
 /**
  * Write a value to the output redirector.
  *
- * @param context The NativeActivation context for the command handler, which
- *                will handler error/condition traps for this
- *                callback.  Note that this argument can be NULL
- *                if this call is generated to handle
- *                post-command buffering.
  * @param value  The string value to write
  */
-void CollectionOutputTarget::write(NativeActivation *c, RexxString *value)
+void CollectionOutputTarget::write(RexxString *value)
 {
     ProtectedObject result;
     // this just uses lineout
@@ -518,6 +745,7 @@ BufferingOutputTarget::BufferingOutputTarget(OutputRedirector *t)
  */
 void BufferingOutputTarget::live(size_t liveMark)
 {
+    memory_mark(bufferedData);
     memory_mark(collector);
     memory_mark(target);
 }
@@ -532,6 +760,7 @@ void BufferingOutputTarget::live(size_t liveMark)
  */
 void BufferingOutputTarget::liveGeneral(MarkReason reason)
 {
+    memory_mark_general(bufferedData);
     memory_mark_general(collector);
     memory_mark_general(target);
 }
@@ -557,14 +786,9 @@ void BufferingOutputTarget::init()
 /**
  * Add the output item to our buffer
  *
- * @param context The NativeActivation context for the command handler, which
- *                will handler error/condition traps for this
- *                callback.  Note that this argument can be NULL
- *                if this call is generated to handle
- *                post-command buffering.
  * @param value  The string value to add.
  */
-void BufferingOutputTarget::write(NativeActivation *c, RexxString *value)
+void BufferingOutputTarget::write(RexxString *value)
 {
     collector->append(value);
 }
@@ -575,6 +799,9 @@ void BufferingOutputTarget::write(NativeActivation *c, RexxString *value)
  */
 void BufferingOutputTarget::cleanup()
 {
+    // perform the base class cleanup first
+    OutputRedirector::cleanup();
+
     // we've hit the end of things, so now the target redirector
     // gets activated and pumped full of data
 
@@ -583,7 +810,7 @@ void BufferingOutputTarget::cleanup()
 
     for (size_t i = 1; i <= count; i++)
     {
-        target->write(OREF_NULL, (RexxString *)collector->get(i));
+        target->write((RexxString *)collector->get(i));
     }
 
     // and finally the cleanup
@@ -622,6 +849,7 @@ RexxQueueOutputTarget::RexxQueueOutputTarget(RexxObject *q)
  */
 void RexxQueueOutputTarget::live(size_t liveMark)
 {
+    memory_mark(bufferedData);
     memory_mark(queue);
 }
 
@@ -635,21 +863,16 @@ void RexxQueueOutputTarget::live(size_t liveMark)
  */
 void RexxQueueOutputTarget::liveGeneral(MarkReason reason)
 {
+    memory_mark_general(bufferedData);
     memory_mark_general(queue);
 }
 
 
 /**
  * Write a value to the output redirector.
- *
- * @param context The NativeActivation context for the command handler, which
- *                will handler error/condition traps for this
- *                callback.  Note that this argument can be NULL
- *                if this call is generated to handle
- *                post-command buffering.
  * @param value  The string value to write
  */
-void RexxQueueOutputTarget::write(NativeActivation *c, RexxString *value)
+void RexxQueueOutputTarget::write(RexxString *value)
 {
     // add the string to the next position
     ProtectedObject result;

@@ -127,12 +127,12 @@ void CommandIOContext::resolveConflicts()
                 error = output;
             }
         }
-    }
-    // now we still could have a conflict beteen the input ane error, so check that too
-    if (!dualOutput && error != OREF_NULL && error->needsBuffering(input))
-    {
-        // make this buffered until the command returns
-        output = new BufferingOutputTarget(output);
+        // now we still could have a conflict beteen the input ane error, so check that too
+        else if (error != OREF_NULL && error->needsBuffering(input))
+        {
+            // make this buffered until the command returns
+            output = new BufferingOutputTarget(output);
+        }
     }
 }
 
@@ -186,7 +186,6 @@ void CommandIOContext::cleanup()
  *
  * @param context The NativeActivation context for the command handler, which
  *                will handler error/condition traps for this callback.
- *
  * @return The CSTRING value for the next line or NULL if we've hit EOF.
  */
 RexxString *CommandIOContext::readInput(NativeActivation *context)
@@ -203,7 +202,6 @@ RexxString *CommandIOContext::readInput(NativeActivation *context)
 /**
  * Write a line to the command output catcher
  *
- *
  * @param context The NativeActivation context for the command handler, which
  *                will handler error/condition traps for this callback.
  * @param data   Pointer to the output data
@@ -215,14 +213,13 @@ void CommandIOContext::writeOutput(NativeActivation *context, const char *data, 
     if (output != OREF_NULL)
     {
         Protected<RexxString> value = new_string(data, len);
-        output->write(context, value);
+        output->write(value);
     }
 }
 
 
 /**
  * Write a line to the command error catcher
- *
  *
  * @param context The NativeActivation context for the command handler, which
  *                will handler error/condition traps for this callback.
@@ -235,6 +232,42 @@ void CommandIOContext::writeError(NativeActivation *context, const char *data, s
     if (error != OREF_NULL)
     {
         Protected<RexxString> value = new_string(data, len);
-        error->write(context, value);
+        error->write(value);
+    }
+}
+
+
+/**
+ * Write a a buffer of data to the output target
+ *
+ * @param context The NativeActivation context for the command handler, which
+ *                will handler error/condition traps for this callback.
+ * @param data   Pointer to the output data
+ * @param len    Length of the output data
+ */
+void CommandIOContext::writeOutputBuffer(NativeActivation *context, const char *data, size_t len)
+{
+    // this shouldn't happen, but if not redirected, don't crash!
+    if (output != OREF_NULL)
+    {
+        output->writeBuffer(data, len);
+    }
+}
+
+
+/**
+ * Write a buffer to the command error catcher
+ *
+ * @param context The NativeActivation context for the command handler, which
+ *                will handler error/condition traps for this callback.
+ * @param data   Pointer to the output data
+ * @param len    Length of the output data
+ */
+void CommandIOContext::writeErrorBuffer(NativeActivation *context, const char *data, size_t len)
+{
+    // this shouldn't happen, but if not redirected, don't crash!
+    if (error != OREF_NULL)
+    {
+        error->writeBuffer(data, len);
     }
 }

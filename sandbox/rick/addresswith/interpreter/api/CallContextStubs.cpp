@@ -398,6 +398,49 @@ void RexxEntry WriteError(RexxIORedirectorContext *c, const char *data, size_t l
 }
 
 
+void RexxEntry WriteOutputBuffer(RexxIORedirectorContext *c, const char *data, size_t length)
+{
+    ApiContext context(c);
+    try
+    {
+        CommandIOContext *ioContext = ((RedirectorContext *)c)->ioContext;
+
+        // The command handler does not get passed an operable context if
+        // this is not an ADDRESS WITH variant. If that's the case, we return
+        // nothing if this is called.
+        if (ioContext != OREF_NULL)
+        {
+            ioContext->writeOutputBuffer(context.context, data, length);
+        }
+    }
+    catch (NativeActivation *)
+    {
+    }
+}
+
+
+void RexxEntry WriteErrorBuffer(RexxIORedirectorContext *c, const char *data, size_t length)
+{
+    ApiContext context(c);
+    try
+    {
+        CommandIOContext *ioContext = ((RedirectorContext *)c)->ioContext;
+
+        // The command handler does not get passed an operable context if
+        // this is not an ADDRESS WITH variant. If that's the case, we return
+        // nothing if this is called.
+        if (ioContext != OREF_NULL)
+        {
+            Protected<RexxString> value = new_string(data, length);
+            ioContext->writeErrorBuffer(context.context, data, length);
+        }
+    }
+    catch (NativeActivation *)
+    {
+    }
+}
+
+
 logical_t RexxEntry IsInputRedirected(RexxIORedirectorContext *c)
 {
     ApiContext context(c);
@@ -544,6 +587,8 @@ IORedirectorInterface Activity::ioRedirectorContextFunctions =
     ReadInput,
     WriteOutput,
     WriteError,
+    WriteOutputBuffer,
+    WriteErrorBuffer,
     IsInputRedirected,
     IsOutputRedirected,
     IsErrorRedirected,

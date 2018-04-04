@@ -66,6 +66,8 @@ class CommandIOContext : public RexxInternalObject
     RexxString *readInput(NativeActivation *);
     void        writeOutput(NativeActivation *, const char *v, size_t l);
     void        writeError(NativeActivation *, const char *v, size_t l);
+    void        writeOutputBuffer(NativeActivation *, const char *v, size_t l);
+    void        writeErrorBuffer(NativeActivation *, const char *v, size_t l);
     void        init();
     void        cleanup();
     void        resolveConflicts();

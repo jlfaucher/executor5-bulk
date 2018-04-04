@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2017 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -716,6 +716,8 @@ typedef struct
     void    (RexxEntry *ReadInput)(RexxIORedirectorContext *, CSTRING *, size_t *);
     void    (RexxEntry *WriteOutput)(RexxIORedirectorContext *, CSTRING, size_t);
     void    (RexxEntry *WriteError)(RexxIORedirectorContext *, CSTRING, size_t);
+    void    (RexxEntry *WriteOutputBuffer)(RexxIORedirectorContext *, CSTRING, size_t);
+    void    (RexxEntry *WriteErrorBuffer)(RexxIORedirectorContext *, CSTRING, size_t);
     logical_t (RexxEntry *IsInputRedirected)(RexxIORedirectorContext *);
     logical_t (RexxEntry *IsOutputRedirected)(RexxIORedirectorContext *);
     logical_t (RexxEntry *IsErrorRedirected)(RexxIORedirectorContext *);
@@ -3694,6 +3696,14 @@ struct RexxIORedirectorContext_
     void WriteError(CSTRING data, size_t length)
     {
         functions->WriteError(this, data, length);
+    }
+    void WriteOutputBuffer(CSTRING data, size_t length)
+    {
+        functions->WriteOutputBuffer(this, data, length);
+    }
+    void WriteErrorBuffer(CSTRING data, size_t length)
+    {
+        functions->WriteErrorBuffer(this, data, length);
     }
     logical_t IsInputRedirected()
     {
