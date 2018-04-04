@@ -167,7 +167,7 @@ RexxString *StemInputSource::read(NativeActivation *context)
 class LineinInvoker : public TrapInvoker
 {
 public:
-    LineinInvoker::LineinInvoker(RexxObject *s, RexxString *&returned) : stream(s), nextLine(returned) { ; }
+    LineinInvoker(RexxObject *s, RexxString *&returned) : stream(s), nextLine(returned) { ; }
 
     virtual void invoke()
     {
