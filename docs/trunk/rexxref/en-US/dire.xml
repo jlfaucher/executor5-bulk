@@ -878,16 +878,15 @@ minus FUZZ digits during the comparison and are then compared with 0.
 </entry>
 <entry>
 <para>
-controls whether NOVALUE conditions will raise an ERROR rather than a
-NOVALUE condition.
+controls whether using an uninitialized variable will raise a NOVALUE condition
+or a SYNTAX condition.
 The setting will apply to all of the current source program and can help
-in debugging errors due to uninitialized variables.
+in debugging issues due to uninitialized variables.
 </para>
 <para>
-If ::OPTIONS NOVALUE CONDITION is in effect, NOVALUE conditions will be
+If ::OPTIONS NOVALUE CONDITION is in effect, a NOVALUE condition will be
 raised as usual.
-If ::OPTIONS NOVALUE ERROR is in effect, an ERROR condition is raised
-instead of any NOVALUE condition.
+If ::OPTIONS NOVALUE ERROR is in effect, a SYNTAX condition is raised instead.
 The default is ::OPTIONS NOVALUE CONDITION.
 </para>
 </entry></row>
