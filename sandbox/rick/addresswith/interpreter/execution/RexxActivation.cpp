@@ -3992,14 +3992,7 @@ void RexxActivation::command(RexxString *address, RexxString *commandString, Com
 
     // we possibly have local or global IO configurations in place for
     Protected<CommandIOContext> ioContext = resolveAddressIOConfig(address, ioConfig);
-    // ensure we perform cleanup if any errors occur
-    IOContext t(ioContext);
 
-    // if we got an io context back, it is time to initialized everthing
-    if (!ioContext.isNull())
-    {
-        ioContext->init();
-    }
 
     // give the command exit first pass at this.
     if (activity->callCommandExit(this, address, commandString, commandResult, condition))
@@ -4020,8 +4013,6 @@ void RexxActivation::command(RexxString *address, RexxString *commandString, Com
         }
     }
 
-    // perform the cleanup on the io configuration if it exists
-    t.cleanup();
 
     // now process the command result.
     RexxObject *rc = commandResult;

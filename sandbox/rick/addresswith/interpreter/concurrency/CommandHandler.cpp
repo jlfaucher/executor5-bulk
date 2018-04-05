@@ -49,6 +49,7 @@
 #include "SystemInterpreter.hpp"
 #include "DirectoryClass.hpp"
 #include "ActivityManager.hpp"
+#include "CommandIOContext.hpp"
 
 
 /**
@@ -94,13 +95,13 @@ void CommandHandler::resolve(const char *handlerName)
  * @param result     The returned RC value.
  * @param condition  A potential returned condition object.
  */
-void CommandHandler::call(Activity *activity, RexxActivation *activation, RexxString *address, RexxString *command, ProtectedObject &result, ProtectedObject &condition, CommandIOContext *io)
+void CommandHandler::call(Activity *activity, RexxActivation *activation, RexxString *address, RexxString *command, ProtectedObject &result, ProtectedObject &condition, CommandIOContext *ioContext)
 {
     if (type == HandlerType::REGISTERED_NAME)
     {
         // not all handlers support I/O redirection. Give an error
         // if an attempt is made here
-        if (io != OREF_NULL)
+        if (ioContext != OREF_NULL)
         {
             reportException(Error_Execution_address_redirection_not_supported, address);
         }
@@ -116,7 +117,7 @@ void CommandHandler::call(Activity *activity, RexxActivation *activation, RexxSt
     {
         // not all handlers support I/O redirection. Give an error
         // if an attempt is made here
-        if (io != OREF_NULL)
+        if (ioContext != OREF_NULL)
         {
             reportException(Error_Execution_address_redirection_not_supported, address);
         }
@@ -130,10 +131,22 @@ void CommandHandler::call(Activity *activity, RexxActivation *activation, RexxSt
     // the only one that uses the I/O context.
     else if (type == HandlerType::REDIRECTING)
     {
-        RedirectingCommandHandlerDispatcher dispatcher(entryPoint, address, command, result, condition, io);
+        RedirectingCommandHandlerDispatcher dispatcher(entryPoint, address, command, result, condition, ioContext);
 
+        // if we got an io context back, it is time to initialize everthing. This is the very
+        // last point before we exit the interpreter.
+        if (ioContext != OREF_NULL)
+        {
+            ioContext->init();
+        }
         // run this and give back the return code
         activity->run(dispatcher);
+
+        // and also perform clean up as soon as we get control back
+        if (ioContext != OREF_NULL)
+        {
+            ioContext->cleanup();
+        }
     }
 }
 

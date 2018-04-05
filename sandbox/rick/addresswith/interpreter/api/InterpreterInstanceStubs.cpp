@@ -112,4 +112,5 @@ RexxInstanceInterface InterpreterInstance::interfaceVector =
     LanguageLevel,
     Halt,
     SetTrace,
+    AddCommandEnvironment,
 };
