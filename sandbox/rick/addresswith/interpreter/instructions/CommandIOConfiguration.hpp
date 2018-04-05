@@ -106,7 +106,7 @@ class CommandIOConfiguration : public RexxInternalObject
     InputRedirector  *createInputSource(RexxActivation *context, ExpressionStack *stack);
     OutputRedirector *createOutputTarget(RexxActivation *context, ExpressionStack *stack);
     OutputRedirector *createErrorTarget(RexxActivation *context, ExpressionStack *stack);
-    OutputRedirector *createOutputTarget(RexxActivation *context, ExpressionStack *stack, RexxInternalObject *outputTarget, RedirectionType::Enum type, OutputOption::Enum option);
+    OutputRedirector *createOutputTarget(RexxString *keyword, RexxActivation *context, ExpressionStack *stack, RexxInternalObject *outputTarget, RedirectionType::Enum type, OutputOption::Enum option);
 
  protected:
     RexxInternalObject *inputSource;         // The input source expression

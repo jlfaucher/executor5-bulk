@@ -279,7 +279,7 @@ InputRedirector *CommandIOConfiguration::createInputSource(RexxActivation *conte
 
     RexxObject *inputObject = inputSource->evaluate(context, stack);
     // need to trace this if on
-    context->traceResult(inputObject);
+    context->traceKeywordResult(GlobalNames::INPUT, inputObject);
 
     // process based on the type of object we've been presented with.
     switch (inputType)
@@ -388,7 +388,7 @@ OutputRedirector *CommandIOConfiguration::createOutputTarget(RexxActivation *con
         return OREF_NULL;
     }
 
-    return createOutputTarget(context, stack, outputTarget, outputType, outputOption);
+    return createOutputTarget(GlobalNames::INPUT, context, stack, outputTarget, outputType, outputOption);
 }
 
 
@@ -408,7 +408,7 @@ OutputRedirector *CommandIOConfiguration::createErrorTarget(RexxActivation *cont
         return OREF_NULL;
     }
 
-    return createOutputTarget(context, stack, errorTarget, errorType, errorOption);
+    return createOutputTarget(GlobalNames::ERRORNAME, context, stack, errorTarget, errorType, errorOption);
 }
 
 
@@ -425,11 +425,11 @@ OutputRedirector *CommandIOConfiguration::createErrorTarget(RexxActivation *cont
  *
  * @return A resolved and constructed output target.
  */
-OutputRedirector *CommandIOConfiguration::createOutputTarget(RexxActivation *context, ExpressionStack *stack, RexxInternalObject *outputTarget, RedirectionType::Enum type, OutputOption::Enum option)
+OutputRedirector *CommandIOConfiguration::createOutputTarget(RexxString *keyword, RexxActivation *context, ExpressionStack *stack, RexxInternalObject *outputTarget, RedirectionType::Enum type, OutputOption::Enum option)
 {
     RexxObject *outputObject = outputTarget->evaluate(context, stack);
     // need to trace this if on
-    context->traceResult(outputObject);
+    context->traceKeywordResult(keyword, outputObject);
     switch (type)
     {
         case RedirectionType::STEM_VARIABLE:
