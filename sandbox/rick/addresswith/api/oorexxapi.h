@@ -462,7 +462,11 @@ typedef struct
   RexxArrayObject  additional;       // additional information
 } RexxCondition;
 
-#define INSTANCE_INTERFACE_VERSION 100
+#define INSTANCE_INTERFACE_VERSION_4_0_0 100
+#define INSTANCE_INTERFACE_VERSION 101
+
+#define DIRECT_COMMAND_ENVIRONMENT 1
+#define REDIRECTING_COMMAND_ENVIRONMENT 2
 
 typedef struct
 {
@@ -474,6 +478,7 @@ typedef struct
     size_t      (RexxEntry *LanguageLevel)(RexxInstance *);
     void        (RexxEntry *Halt)(RexxInstance *);
     void        (RexxEntry *SetTrace)(RexxInstance *, logical_t);
+    void        (RexxEntry *AddCommandEnvironment)(RexxInstance *, const char *, REXXPFN, int);
 } RexxInstanceInterface;
 
 #define THREAD_INTERFACE_VERSION_4_0_0 100
@@ -756,6 +761,10 @@ struct RexxInstance_
     {
         functions->SetTrace(this, s);
     }
+    void AddCommandEnvironment(const char *n, REXXPFN h, int t)
+    {
+        functions->AddCommandEnvironment(this, n, h, t);
+    }
 #endif
 };
 
@@ -776,6 +785,10 @@ struct RexxThreadContext_
     size_t LanguageLevel()
     {
         return instance->LanguageLevel();
+    }
+    void AddCommandEnvironment(const char *n, REXXPFN h, int t)
+    {
+        instance->AddCommandEnvironment(n, h, t);
     }
     void DetachThread()
     {
@@ -1472,6 +1485,10 @@ struct RexxMethodContext_
     size_t LanguageLevel()
     {
         return threadContext->LanguageLevel();
+    }
+    void AddCommandEnvironment(const char *n, REXXPFN h, int t)
+    {
+        threadContext->AddCommandEnvironment(n, h, t);
     }
     RexxObjectPtr RequestGlobalReference(RexxObjectPtr o)
     {
@@ -2235,6 +2252,10 @@ struct RexxCallContext_
     {
         return threadContext->LanguageLevel();
     }
+    void AddCommandEnvironment(const char *n, REXXPFN h, int t)
+    {
+        threadContext->AddCommandEnvironment(n, h, t);
+    }
     RexxObjectPtr RequestGlobalReference(RexxObjectPtr o)
     {
         return threadContext->RequestGlobalReference(o);
@@ -2986,6 +3007,10 @@ struct RexxExitContext_
     size_t LanguageLevel()
     {
         return threadContext->LanguageLevel();
+    }
+    void AddCommandEnvironment(const char *n, REXXPFN h, int t)
+    {
+        threadContext->AddCommandEnvironment(n, h, t);
     }
     RexxObjectPtr RequestGlobalReference(RexxObjectPtr o)
     {

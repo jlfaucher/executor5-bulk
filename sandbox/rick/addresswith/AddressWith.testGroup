@@ -543,12 +543,21 @@ self~assertSame("Line3", array[3])
 self~assertSame("Line4", array[4])
 
 -- two strings, multiple line feeds, no line feed at buffer boundary
-address test 'BUFFEROUTPUT' with input using (("Line5"||lf||"Line6"||lf||"Li", "ne7"||crlf||"Line8")) output using (array)
+address test 'BUFFEROUTPUT' with input using (("Line5"||lf||"Line6"||lf||"Li", "ne7"||lf||"Line8")) output using (array)
 self~assertSame(4, array~items)
 self~assertSame("Line5", array[1])
 self~assertSame("Line6", array[2])
 self~assertSame("Line7", array[3])
 self~assertSame("Line8", array[4])
+
+-- A number of null line variants
+address test 'BUFFEROUTPUT' with input using ((crlf"Line1"||crlf||crlf||"Line2"||cr, lf||"Line3")) output using (array)
+self~assertSame(5, array~items)
+self~assertSame("", array[1])
+self~assertSame("Line1", array[2])
+self~assertSame("", array[3])
+self~assertSame("Line2", array[4])
+self~assertSame("Line3", array[5])
 
 
 -- one string, no linends
