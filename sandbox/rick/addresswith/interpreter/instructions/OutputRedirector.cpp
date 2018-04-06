@@ -82,6 +82,22 @@ bool OutputRedirector::isSameTarget(OutputRedirector *e)
 
 
 /**
+ * Process a write to this output target
+ *
+ * @param line   The line to write.
+ */
+void OutputRedirector::write(RexxString *line)
+{
+    // if we've had a previous writeBuffer, we
+    // could have the tail end of the buffer still
+    // pending. Consider that a complete line, then
+    // write this new line
+    flushBuffer();
+    writeLine(line);
+}
+
+
+/**
  * Write a buffer of data potentially consisting of multiple
  * lines to the collector. We will parse out as many lines as
  * we can, then will hold the remainder until we receive another
@@ -114,11 +130,11 @@ void OutputRedirector::writeBuffer(const char *data, size_t len)
 /**
  * Flush any remaining buffered data to the accumulator.
  */
-void OutputRedirector::cleanup()
+void OutputRedirector::flushBuffer()
 {
     if (bufferedData != OREF_NULL)
     {
-        write(bufferedData);
+        writeLine(bufferedData);
     }
     bufferedData = OREF_NULL;
 }
@@ -153,7 +169,7 @@ void OutputRedirector::resolveBuffer(const char *&data, const char *bufferEnd)
             // yep, all but the last part of the tail is a complete line,
             // and we need to step over the first buffer character
             Protected<RexxString> newLine = new_string(bufferedData->getStringData(), bufferedData->getLength() - 1);
-            write(newLine);
+            writeLine(newLine);
 
             // we no longer have a tail piece
             bufferedData = OREF_NULL;
@@ -183,7 +199,7 @@ void OutputRedirector::resolveBuffer(const char *&data, const char *bufferEnd)
 
     // we have a complete line now split in two pieces
     Protected<RexxString> newLine = new_string(bufferedData->getStringData(), bufferedData->getLength(), data, lineEnd - data);
-    write(newLine);
+    writeLine(newLine);
 
     // we're done with this
     bufferedData = OREF_NULL;
@@ -228,7 +244,7 @@ void OutputRedirector::consumeBuffer(const char *data, const char *bufferEnd)
         }
         // convert to a string object and add to the accumulator
         Protected<RexxString> newLine = new_string(data, lineEnd - data);
-        write(newLine);
+        writeLine(newLine);
 
         // the buffer could have ended with a linend
         // we've magically used up the entire buffer and can leave now
@@ -421,7 +437,7 @@ void StemOutputTarget::init()
  *
  * @param value  The string value to write
  */
-void StemOutputTarget::write(RexxString *value)
+void StemOutputTarget::writeLine(RexxString *value)
 {
     stem->setElement(index, value);
     // update stem.0
@@ -506,7 +522,7 @@ bool StreamOutputTarget::needsBuffering(InputRedirector *in)
  *
  * @param value  The string value to write
  */
-void StreamObjectOutputTarget::write(RexxString *value)
+void StreamObjectOutputTarget::writeLine(RexxString *value)
 {
     // add the string to the next position
     ProtectedObject result;
@@ -615,7 +631,7 @@ void StreamOutputTarget::init()
 void StreamOutputTarget::cleanup()
 {
     // perform the base class cleanup first
-    OutputRedirector::cleanup();
+    flushBuffer();
 
     ProtectedObject result;
     stream->sendMessage(GlobalNames::CLOSE, result);
@@ -680,7 +696,7 @@ void CollectionOutputTarget::liveGeneral(MarkReason reason)
  *
  * @param value  The string value to write
  */
-void CollectionOutputTarget::write(RexxString *value)
+void CollectionOutputTarget::writeLine(RexxString *value)
 {
     ProtectedObject result;
     // this just uses lineout
@@ -788,7 +804,7 @@ void BufferingOutputTarget::init()
  *
  * @param value  The string value to add.
  */
-void BufferingOutputTarget::write(RexxString *value)
+void BufferingOutputTarget::writeLine(RexxString *value)
 {
     collector->append(value);
 }
@@ -800,7 +816,7 @@ void BufferingOutputTarget::write(RexxString *value)
 void BufferingOutputTarget::cleanup()
 {
     // perform the base class cleanup first
-    OutputRedirector::cleanup();
+    flushBuffer();
 
     // we've hit the end of things, so now the target redirector
     // gets activated and pumped full of data
@@ -810,7 +826,7 @@ void BufferingOutputTarget::cleanup()
 
     for (size_t i = 1; i <= count; i++)
     {
-        target->write((RexxString *)collector->get(i));
+        target->writeLine((RexxString *)collector->get(i));
     }
 
     // and finally the cleanup
@@ -872,7 +888,7 @@ void RexxQueueOutputTarget::liveGeneral(MarkReason reason)
  * Write a value to the output redirector.
  * @param value  The string value to write
  */
-void RexxQueueOutputTarget::write(RexxString *value)
+void RexxQueueOutputTarget::writeLine(RexxString *value)
 {
     // add the string to the next position
     ProtectedObject result;

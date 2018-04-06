@@ -62,18 +62,20 @@ class OutputRedirector : public RexxInternalObject
     inline OutputRedirector(RESTORETYPE restoreType) { ; };
 
     virtual void init () { ; }
-    virtual void write(RexxString *v)  { ; }
-    virtual void cleanup();
+    virtual void writeLine(RexxString *v)  { ; }
+    virtual void cleanup() { flushBuffer(); }
     virtual RedirectionType::Enum type() { return RedirectionType::NONE; }
     virtual RexxObject *target() { return OREF_NULL; }
 
     virtual bool needsBuffering(InputRedirector *d);
     bool isSameTarget(OutputRedirector *e);
 
+    void write(RexxString *l);
     void writeBuffer(const char *data, size_t len);
     static void scanLine(const char *data, const char *bufferEnd, const char *&lineEnd, const char *&nextLine);
 
  protected:
+    void flushBuffer();
     void resolveBuffer(const char *&data, const char *bufferEnd);
     void consumeBuffer(const char *data, const char *bufferEnd);
 
@@ -99,7 +101,7 @@ class StemOutputTarget : public OutputRedirector
     virtual void liveGeneral(MarkReason reason);
 
     virtual void init ();
-    virtual void write(RexxString *v);
+    virtual void writeLine(RexxString *v);
     virtual RedirectionType::Enum type() { return RedirectionType::STEM_VARIABLE; }
     virtual RexxObject *target() { return stem; }
 
@@ -126,7 +128,7 @@ class StreamObjectOutputTarget : public OutputRedirector
     virtual void live(size_t);
     virtual void liveGeneral(MarkReason reason);
 
-    virtual void write(RexxString *v);
+    virtual void writeLine(RexxString *v);
     virtual RedirectionType::Enum type() { return RedirectionType::STREAM_OBJECT; }
     virtual RexxObject *target() { return stream; }
 
@@ -152,7 +154,7 @@ class RexxQueueOutputTarget : public OutputRedirector
     virtual void live(size_t);
     virtual void liveGeneral(MarkReason reason);
 
-    virtual void write(RexxString *v);
+    virtual void writeLine(RexxString *v);
     virtual RedirectionType::Enum type() { return RedirectionType::REXXQUEUE_OBJECT; }
     virtual RexxObject *target() { return queue; }
 
@@ -205,7 +207,7 @@ class CollectionOutputTarget : public OutputRedirector
     virtual void liveGeneral(MarkReason reason);
 
     virtual void init();
-    virtual void write(RexxString *v);
+    virtual void writeLine(RexxString *v);
     virtual RedirectionType::Enum type() { return RedirectionType::COLLECTION_OBJECT; }
     virtual RexxObject *target() { return collection; }
 
@@ -232,7 +234,7 @@ class BufferingOutputTarget : public OutputRedirector
     virtual void liveGeneral(MarkReason reason);
 
     virtual void init();
-    virtual void write(RexxString *v);
+    virtual void writeLine(RexxString *v);
     virtual void cleanup();
 
 protected:
