@@ -200,6 +200,25 @@ RexxString *CommandIOContext::readInput(NativeActivation *context)
 
 
 /**
+ * Read all of the input data into a buffer, with appropriate
+ * line separation
+ *
+ * @param context The NativeActivation context for the command handler, which
+ *                will handler error/condition traps for this callback.
+ * @param data    The returned buffer pointer
+ * @param length  the returned data length
+ */
+void CommandIOContext::readInputBuffered(NativeActivation *context, const char *&data, size_t &length)
+{
+    // first make sure we have a source object
+    if (input != OREF_NULL)
+    {
+        input->readBuffered(context, data, length);
+    }
+}
+
+
+/**
  * Write a line to the command output catcher
  *
  * @param context The NativeActivation context for the command handler, which

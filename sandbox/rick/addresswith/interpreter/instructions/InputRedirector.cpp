@@ -49,6 +49,43 @@
 #include "PackageClass.hpp"
 #include "NativeActivation.hpp"
 #include "ConditionTrappingDispatcher.hpp"
+#include "MutableBufferClass.hpp"
+#include "SysFileSystem.hpp"
+
+
+/**
+ * Read all of the input data as a single buffer.
+ *
+ * @param data   The returned pointer to the data
+ * @param length The returned data length.
+ */
+void InputRedirector::readBuffered(NativeActivation *context, const char *&data, size_t &length)
+{
+    // ok, called a second time, we can return this data again.
+    if (inputBuffer != OREF_NULL)
+    {
+        data = inputBuffer->getStringData();
+        length = inputBuffer->getLength();
+        return;
+    }
+
+    // create a new mutable buffer instance to write into
+    inputBuffer = new MutableBuffer(defaultBufferSize, defaultBufferSize);
+    // now process all of the lines
+    for (;;)
+    {
+        // read the next line and break if we have nothing
+        RexxString *newLine = read(context);
+        if (newLine == OREF_NULL)
+        {
+            break;
+        }
+        inputBuffer->append(newLine);
+        inputBuffer->append(SysFileSystem::EOL_Marker);
+    }
+    data = inputBuffer->getStringData();
+    length = inputBuffer->getLength();
+}
 
 
 /**
@@ -82,6 +119,7 @@ StemInputSource::StemInputSource(StemClass *s)
  */
 void StemInputSource::live(size_t liveMark)
 {
+    memory_mark(inputBuffer);
     memory_mark(stem);
     memory_mark(lastValue);
 }
@@ -96,6 +134,7 @@ void StemInputSource::live(size_t liveMark)
  */
 void StemInputSource::liveGeneral(MarkReason reason)
 {
+    memory_mark_general(inputBuffer);
     memory_mark_general(stem);
     memory_mark_general(lastValue);
 }
@@ -211,6 +250,7 @@ StreamObjectInputSource::StreamObjectInputSource(RexxObject *s)
  */
 void StreamObjectInputSource::live(size_t liveMark)
 {
+    memory_mark(inputBuffer);
     memory_mark(stream);
     memory_mark(lastValue);
 }
@@ -225,6 +265,7 @@ void StreamObjectInputSource::live(size_t liveMark)
  */
 void StreamObjectInputSource::liveGeneral(MarkReason reason)
 {
+    memory_mark_general(inputBuffer);
     memory_mark_general(stream);
     memory_mark_general(lastValue);
 }
@@ -299,6 +340,7 @@ StreamInputSource::StreamInputSource(RexxString *n)
  */
 void StreamInputSource::live(size_t liveMark)
 {
+    memory_mark(inputBuffer);
     memory_mark(stream);
     memory_mark(lastValue);
     memory_mark(name);
@@ -314,6 +356,7 @@ void StreamInputSource::live(size_t liveMark)
  */
 void StreamInputSource::liveGeneral(MarkReason reason)
 {
+    memory_mark_general(inputBuffer);
     memory_mark_general(stream);
     memory_mark_general(lastValue);
     memory_mark_general(name);
@@ -381,6 +424,7 @@ ArrayInputSource::ArrayInputSource(ArrayClass *a)
  */
 void ArrayInputSource::live(size_t liveMark)
 {
+    memory_mark(inputBuffer);
     memory_mark(array);
     memory_mark(lastValue);
 }
@@ -395,6 +439,7 @@ void ArrayInputSource::live(size_t liveMark)
  */
 void ArrayInputSource::liveGeneral(MarkReason reason)
 {
+    memory_mark_general(inputBuffer);
     memory_mark_general(array);
     memory_mark_general(lastValue);
 }

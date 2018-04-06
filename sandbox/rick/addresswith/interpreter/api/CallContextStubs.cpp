@@ -355,6 +355,34 @@ void RexxEntry ReadInput(RexxIORedirectorContext *c, CSTRING *data, size_t *leng
 }
 
 
+void RexxEntry ReadInputBuffer(RexxIORedirectorContext *c, CSTRING *data, size_t *length)
+{
+    ApiContext context(c);
+
+    // set the default
+    *data = NULL;
+    *length = 0;
+    try
+    {
+        CommandIOContext *ioContext = ((RedirectorContext *)c)->ioContext;
+
+        // The command handler does not get passed an operable context if
+        // this is not an ADDRESS WITH variant. If that's the case, we return
+        // nothing if this is called.
+        if (ioContext == OREF_NULL)
+        {
+            return;
+        }
+        // go read everything into a buffer and return
+        ioContext->readInputBuffered(context.context, *data, *length);
+    }
+    catch (NativeActivation *)
+    {
+    }
+    return;
+}
+
+
 void RexxEntry WriteOutput(RexxIORedirectorContext *c, const char *data, size_t length)
 {
     ApiContext context(c);
@@ -585,6 +613,7 @@ IORedirectorInterface Activity::ioRedirectorContextFunctions =
 {
     REDIRECT_INTERFACE_VERSION,
     ReadInput,
+    ReadInputBuffer,
     WriteOutput,
     WriteError,
     WriteOutputBuffer,

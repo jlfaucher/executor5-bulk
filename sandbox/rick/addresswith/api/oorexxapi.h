@@ -719,6 +719,7 @@ typedef struct
     wholenumber_t interfaceVersion;    // The interface version identifier
 
     void    (RexxEntry *ReadInput)(RexxIORedirectorContext *, CSTRING *, size_t *);
+    void    (RexxEntry *ReadInputBuffer)(RexxIORedirectorContext *, CSTRING *, size_t *);
     void    (RexxEntry *WriteOutput)(RexxIORedirectorContext *, CSTRING, size_t);
     void    (RexxEntry *WriteError)(RexxIORedirectorContext *, CSTRING, size_t);
     void    (RexxEntry *WriteOutputBuffer)(RexxIORedirectorContext *, CSTRING, size_t);
@@ -3713,6 +3714,10 @@ struct RexxIORedirectorContext_
     void ReadInput(CSTRING *data, size_t *length)
     {
         functions->ReadInput(this, data, length);
+    }
+    void ReadInputBuffer(CSTRING *data, size_t *length)
+    {
+        functions->ReadInputBuffer(this, data, length);
     }
     void WriteOutput(CSTRING data, size_t length)
     {

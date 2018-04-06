@@ -630,6 +630,24 @@ self~assertSame("Line7", array[3])
 self~assertSame("Line8", array[4])
 
 
+::method test_buffered_input
+
+
+-- now using a stem, but with the USING keyword
+drop a.
+a.0 = 3
+a.1 = "Line1"
+a.2 = ""
+a.3 = "Line3"
+
+-- now same variants using a stem
+address test 'BUFFERINPUT' with input using (a.) output using (b.)
+self~assertSame(3, b.0)
+self~assertSame("Line1", b.1)
+self~assertSame("", b.2)
+self~assertSame("Line3", b.3)
+
+
 ::class ArrayInputStream public inherit InputStream
 ::method init
   expose currentLine lines

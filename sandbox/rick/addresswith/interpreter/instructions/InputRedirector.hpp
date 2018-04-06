@@ -48,6 +48,7 @@
 #include "StemClass.hpp"
 
 class NativeActivation;
+class MutableBuffer;
 
 /**
  * Base class for I/O redirectors.
@@ -58,14 +59,21 @@ class InputRedirector : public RexxInternalObject
     // Note, we never directly create instances of this
     // class so we don't need new, live, etc. These must
     // be implemented by the concrete classes
-    inline InputRedirector() { ; }
+    inline InputRedirector() : inputBuffer(OREF_NULL) { ; }
     inline InputRedirector(RESTORETYPE restoreType) { ; };
 
     virtual void init () { ; }
     virtual RexxString *read(NativeActivation *context) { return OREF_NULL; }
+    virtual void readBuffered(NativeActivation *context, const char *&data, size_t &length);
     virtual void cleanup() { ; }
     virtual RedirectionType::Enum type() { return RedirectionType::NONE; }
     virtual RexxObject *target() { return OREF_NULL; }
+
+protected:
+    MutableBuffer *inputBuffer;      // buffered version of the input
+
+    // a reasonable initial buffer size
+    static const size_t defaultBufferSize = 4096;
 };
 
 

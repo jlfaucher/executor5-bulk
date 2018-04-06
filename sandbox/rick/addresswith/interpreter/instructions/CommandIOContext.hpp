@@ -64,6 +64,7 @@ class CommandIOContext : public RexxInternalObject
     virtual void liveGeneral(MarkReason reason);
 
     RexxString *readInput(NativeActivation *);
+    void        readInputBuffered(NativeActivation *, const char *&v, size_t &l);
     void        writeOutput(NativeActivation *, const char *v, size_t l);
     void        writeError(NativeActivation *, const char *v, size_t l);
     void        writeOutputBuffer(NativeActivation *, const char *v, size_t l);
