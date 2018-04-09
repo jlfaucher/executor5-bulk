@@ -218,6 +218,7 @@
 #define ThePointerTableBehaviour      (&RexxBehaviour::primitiveBehaviours[T_PointerTable])
 #define TheSpecialDotVariableTermBehaviour      (&RexxBehaviour::primitiveBehaviours[T_SpecialDotVariableTerm])
 #define TheCommandIOConfigurationBehaviour      (&RexxBehaviour::primitiveBehaviours[T_CommandIOConfiguration])
+#define TheAddressWithInstructionBehaviour      (&RexxBehaviour::primitiveBehaviours[T_AddressWithInstruction])
 #define TheMemoryBehaviour      (&RexxBehaviour::primitiveBehaviours[T_Memory])
 #define TheInternalStackBehaviour      (&RexxBehaviour::primitiveBehaviours[T_InternalStack])
 #define TheLiveStackBehaviour      (&RexxBehaviour::primitiveBehaviours[T_LiveStack])

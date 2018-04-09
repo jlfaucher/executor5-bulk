@@ -53,7 +53,8 @@ class RexxInstructionAddress : public RexxInstruction
  public:
     inline void operator delete(void *) { }
 
-    RexxInstructionAddress(RexxInternalObject *, RexxString *, RexxInternalObject *, CommandIOConfiguration *);
+    RexxInstructionAddress() { ; }
+    RexxInstructionAddress(RexxInternalObject *, RexxString *, RexxInternalObject *);
     inline RexxInstructionAddress(RESTORETYPE restoreType) { ; };
 
     virtual void live(size_t);
@@ -61,10 +62,10 @@ class RexxInstructionAddress : public RexxInstruction
     virtual void flatten(Envelope *);
 
     virtual void execute(RexxActivation *, ExpressionStack *);
+    virtual CommandIOConfiguration *getIOConfig() { return OREF_NULL; }
 
     RexxInternalObject *dynamicAddress;      // ADDRESS VALUE expression
     RexxString *environment;                 // An environment string (static form)
     RexxInternalObject *command;             // A command expression
-    CommandIOConfiguration *ioConfig;         // a potential I/O configuration
 };
 #endif

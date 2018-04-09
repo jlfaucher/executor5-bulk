@@ -702,7 +702,7 @@ void LanguageParser::initializeForParsing()
 
 /**
  * Mark the package that it requires at least the given
- * language level to execut.
+ * language level to execute.
  *
  * @param l      The new language level.
  */

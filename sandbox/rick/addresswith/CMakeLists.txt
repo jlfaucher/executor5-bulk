@@ -650,6 +650,7 @@ set (expression_sources ${build_expression_dir}/BuiltinFunctions.cpp
             ${build_expression_dir}/ExpressionList.cpp
             ${build_expression_dir}/ExpressionLogical.cpp)
 set (instructions_sources  ${build_instructions_dir}/AddressInstruction.cpp
+            ${build_instructions_dir}/AddressWithInstruction.cpp
             ${build_instructions_dir}/AssignmentInstruction.cpp
             ${build_instructions_dir}/AddressInstruction.cpp
             ${build_instructions_dir}/BaseDoInstruction.cpp

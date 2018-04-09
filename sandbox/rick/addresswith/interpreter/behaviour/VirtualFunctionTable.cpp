@@ -153,6 +153,7 @@
 #include "PointerTable.hpp"
 #include "SpecialDotVariable.hpp"
 #include "CommandIOConfiguration.hpp"
+#include "AddressWithInstruction.hpp"
 #include "RexxMemory.hpp"
 #include "InternalStack.hpp"
 #include "MemoryStack.hpp"
@@ -708,6 +709,9 @@ void MemoryObject::buildVirtualFunctionTable()
    
    objectPtr = ::new (objectLoc) CommandIOConfiguration(RESTOREIMAGE);
    virtualFunctionTable[T_CommandIOConfiguration] = getVftPointer(objectLoc);
+   
+   objectPtr = ::new (objectLoc) RexxInstructionAddressWith(RESTOREIMAGE);
+   virtualFunctionTable[T_AddressWithInstruction] = getVftPointer(objectLoc);
    
    objectPtr = ::new (objectLoc) RexxObject(RESTOREIMAGE);
    virtualFunctionTable[T_Memory] = getVftPointer(objectLoc);

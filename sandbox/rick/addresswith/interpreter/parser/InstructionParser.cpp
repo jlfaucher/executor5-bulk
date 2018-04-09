@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2017 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -72,6 +72,7 @@
 #include "SayInstruction.hpp"
 
 #include "AddressInstruction.hpp"             /* other instructions                */
+#include "AddressWithInstruction.hpp"
 #include "CommandIOConfiguration.hpp"
 #include "DropInstruction.hpp"
 #include "ExposeInstruction.hpp"
@@ -639,9 +640,22 @@ RexxInstruction *LanguageParser::addressNew()
         }
     }
 
-    RexxInstruction *newObject = new_instruction(ADDRESS, Address);
-    ::new ((void *)newObject) RexxInstructionAddress(dynamicAddress, environment, command, ioConfig);
-    return newObject;
+    // if we don't have an io config, then use the older instruction version for
+    // program save/restore compatibility
+    if (ioConfig == OREF_NULL)
+    {
+        RexxInstruction *newObject = new_instruction(ADDRESS, Address);
+        ::new ((void *)newObject) RexxInstructionAddress(dynamicAddress, environment, command);
+        return newObject;
+    }
+    else
+    {
+        // we require a higher language level to run this.
+        requireLanguageLevel(LanguageLevel0606);
+        RexxInstruction *newObject = new_instruction(ADDRESS, AddressWith);
+        ::new ((void *)newObject) RexxInstructionAddressWith(dynamicAddress, environment, command, ioConfig);
+        return newObject;
+    }
 }
 
 
