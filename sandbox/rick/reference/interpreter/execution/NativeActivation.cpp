@@ -580,6 +580,17 @@ void NativeActivation::processArguments(size_t _argcount, RexxObject **_arglist,
                             break;
                         }
 
+                        case REXX_VALUE_RexxVariableReferenceObject:
+                        {
+                            // this must be a pointer object
+                            if (!argument->isInstanceOf(TheVariableReferenceClass))
+                            {
+                                reportException(Error_Invalid_argument_noclass, inputIndex + 1, TheVariableReferenceClass->getId());
+                            }
+                            descriptors[outputIndex].value.value_RexxVariableReferenceObject = (RexxVariableReferenceObject)argument;
+                            break;
+                        }
+
                         default:
                         {
                             reportSignatureError();
@@ -2715,7 +2726,7 @@ DirectoryClass *NativeActivation::getAllContextVariables()
 
 
 /**
- * Get nn object variable in the current method scope.  Returns
+ * Get an object variable in the current method scope.  Returns
  * a NULL object reference if the variable does not exist.
  *
  * @param name   The variable name.
@@ -2739,6 +2750,33 @@ RexxObject *NativeActivation::getObjectVariable(const char *name)
     }
     // retrieve the value
     return retriever->getRealValue(methodVariables());
+}
+
+
+/**
+ * Get a reference to an object variable in the current method
+ * scope. This will create the object if it does not already
+ * exist.
+ *
+ * @param name   The variable name.
+ *
+ * @return The variable reference object.
+ */
+VariableRefernece *NativeActivation::getObjectVariable(const char *name)
+{
+    Protected<RexxString> target = new_string(name);
+
+    // get the REXX activation for the target context
+    RexxVariableBase *retriever = VariableDictionary::getVariableRetriever(target);
+    // if this didn't parse, it's an illegal name
+    // we also don't allow compound variables here because the source for
+    // resolving the tail pieces is not defined.
+    if (retriever == OREF_NULL || isString(retriever) || isOfClassType(CompoundVariableTerm, retriever))
+    {
+        return OREF_NULL;
+    }
+    // retrieve the value
+    return new VariableReverence(retriever->getVariableReference(methodVariables());
 }
 
 

@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -46,6 +46,8 @@
 
 #include "StringClass.hpp"
 #include "ObjectClass.hpp"
+
+class VariableReference;
 
 class RexxVariable : public RexxInternalObject
 {
@@ -96,9 +98,9 @@ class RexxVariable : public RexxInternalObject
     // local variables that can never be part of oldspace;
     inline void setCreator(RexxActivation *creatorActivation) { creator = creatorActivation; }
     inline RexxVariable *getNext() { return (RexxVariable *)variableValue; }
-    inline void cache(RexxVariable *next) { reset(OREF_NULL); variableValue = (RexxObject *)next; }
     inline bool isLocal(RexxActivation *act) { return act == creator; }
     inline bool isStem() { return variableName->endsWith('.'); }
+    VariableReference *createReference();
 
 protected:
 

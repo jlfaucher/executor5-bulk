@@ -44,6 +44,9 @@
 #ifndef Included_RexxVariableBase
 #define Included_RexxVariableBase
 
+class RexxVariable;
+class VariableReference;
+
 /**
  * Base class definition for "variable" objects.  These
  * perform retrieval, assignment, etc. operations on
@@ -65,6 +68,9 @@ class RexxVariableBase : public RexxInternalObject
     virtual void clearGuard(RexxActivation *) {;}
     virtual void expose(RexxActivation *, VariableDictionary *) {;}
     virtual void procedureExpose(RexxActivation *, RexxActivation *) {;}
+    virtual void alias(RexxActivation *, RexxVariable *) {;}
+    virtual VariableReference *getVariableReference(RexxActivation *);
+    virtual VariableReference *getVariableReference(VariableDictionary *);
 };
 
 #endif

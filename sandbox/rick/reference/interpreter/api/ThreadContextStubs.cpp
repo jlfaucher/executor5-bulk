@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -1537,6 +1537,58 @@ logical_t RexxEntry IsPointer(RexxThreadContext *c, RexxObjectPtr o)
     return false;
 }
 
+logical_t RexxEntry IsVariableReference(RexxThreadContext *c, RexxObjectPtr o)
+{
+    ApiContext context(c);
+    try
+    {
+        return isOfClass(VariableReference, (RexxObject *)o);
+    }
+    catch (NativeActivation *)
+    {
+    }
+    return false;
+}
+
+RexxStringObject RexxEntry VariableReferenceName(RexxThreadContext *c, RexxVariableReferenceObject o)
+{
+    ApiContext context(c);
+    try
+    {
+        return (RexxStringObject)((RexxObject *)o)->getName();
+    }
+    catch (NativeActivation *)
+    {
+    }
+    return false;
+}
+
+RexxObjectPtr RexxEntry VariableReferenceValue(RexxThreadContext *c, RexxVariableReferenceObject o)
+{
+    ApiContext context(c);
+    try
+    {
+        return (RexxObjectPtr)((RexxObject *)o)->getValue();
+    }
+    catch (NativeActivation *)
+    {
+    }
+    return false;
+}
+
+void RexxEntry SetVariableReferenceValue(RexxThreadContext *c, RexxVariableReferenceObject o, RexxObjectPtr v)
+{
+    ApiContext context(c);
+    try
+    {
+        (RexxObjectPtr)((RexxObject *)o)->setValue(v);
+    }
+    catch (NativeActivation *)
+    {
+    }
+    return false;
+}
+
 RexxObjectPtr RexxEntry SupplierItem(RexxThreadContext *c, RexxSupplierObject o)
 {
     ApiContext context(c);
@@ -2110,4 +2162,8 @@ RexxThreadInterface Activity::threadContextFunctions =
     IsMutableBuffer,
     MutableBufferCapacity,
     SetMutableBufferCapacity,
+    VariableReferenceName,
+    VariableReferenceValue,
+    SetVariableReferenceValue,
+    IstVariableReference,
 };

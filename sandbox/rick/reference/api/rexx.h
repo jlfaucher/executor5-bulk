@@ -109,6 +109,7 @@ typedef _RexxDirectoryObject *RexxDirectoryObject;
 typedef _RexxSupplierObject *RexxSupplierObject;
 typedef _RexxStemObject *RexxStemObject;
 typedef _RexxMutableBufferObject *RexxMutableBufferObject;
+typedef _RexxVariableReferenceObject *RexxVariableReferenceObject;
 #else
 struct _RexxObjectPtr;
 struct _RexxStringObject;
@@ -123,6 +124,7 @@ struct _RexxDirectoryObject;
 struct _RexxSupplierObject;
 struct _RexxStemObject;
 struct _RexxMutableBufferObject;
+struct _RexxVariableReferenceObject;
 
 typedef struct _RexxObjectPtr *RexxObjectPtr;
 typedef struct _RexxStringObject *RexxStringObject;
@@ -138,6 +140,7 @@ typedef struct _RexxDirectoryObject *RexxDirectoryObject;
 typedef struct _RexxSupplierObject *RexxSupplierObject;
 typedef struct _RexxStemObject *RexxStemObject;
 typedef struct _RexxMutableBufferObject *RexxMutableBufferObject;
+typedef struct _RexxVariableReferenceObject *RexxVariableReferenceObject;
 #endif
 
 /******************************************************************************/
