@@ -46,6 +46,7 @@
 #include "ExpressionBaseVariable.hpp"
 #include "MethodArguments.hpp"
 #include "PackageClass.hpp"
+#include "VariableReference.hpp"
 
 #include <stdio.h>
 
@@ -1202,6 +1203,11 @@ CPPM(RexxInfo::getMaxExponent),
 CPPM(RexxInfo::getMinExponent),
 CPPM(RexxInfo::getMaxPathLength),
 CPPM(RexxInfo::getMaxArraySize),
+
+CPPM(VariableReference::newRexx),
+CPPM(VariableReference::getName),
+CPPM(VariableReference::getValue),
+CPPM(VariableReference::setValueRexx),
 // This NULL terminator is important to mark the end of the table.
 NULL
 };

@@ -53,7 +53,7 @@
  */
 void *UseArgVariableRef::operator new(size_t size)
 {
-    return new_object(size, T_UseArgVAriableRef);
+    return new_object(size, T_UseArgVariableRef);
 }
 
 
@@ -117,10 +117,10 @@ void UseArgVariableRef::flatten(Envelope *envelope)
  * @param var     The variable obtained from a VariableReference that we are
  *                going to alias.
  */
-void UseArgVariableRef::aliasLocalVariable(RexxActivation *context, RexxVariable *var)
+void UseArgVariableRef::aliasVariable(RexxActivation *context, RexxVariable *var)
 {
     // just send this
-    variable->aliasVariable(context, var);
+    variable->alias(context, var);
 }
 
 
@@ -131,6 +131,6 @@ void UseArgVariableRef::aliasLocalVariable(RexxActivation *context, RexxVariable
  */
 bool UseArgVariableRef::isStem()
 {
-    return variable->isOfClass(StemVariableTerm);
+    return isOfClass(StemVariableTerm, variable);
 }
 

@@ -107,7 +107,7 @@
 #include "OtherwiseInstruction.hpp"
 #include "SelectInstruction.hpp"
 #include "ProtectedObject.hpp"
-#include "UseArgVariableReference.hpp"
+#include "UseArgVariableRef.hpp"
 
 
 /**
@@ -4002,7 +4002,7 @@ RexxInstruction *LanguageParser::useNew()
                 token = nextReal();
                 if (!token->isSymbol() || !token->isNonCompoundVariable())
                 {
-                    syntaxError(Error_Symbol_expected_use_arg_reference, token);
+                    syntaxError(Error_Symbol_expected_after_use_arg_reference, token);
                 }
 
                 // get the variable retriever for this variable.
@@ -4026,7 +4026,7 @@ RexxInstruction *LanguageParser::useNew()
                 // put the token back for the next pass
                 previousToken();
                 // we wrap this in a special retriever to handle the aliasing
-                Protected<UseArgVariableReference> ref = new UseArgVariableReference(retriever);
+                Protected<UseArgVariableRef> ref = new UseArgVariableRef((RexxVariableBase *)retriever);
 
                 // add the reference proxy as the variable, and add a NULL to the defaults
                 // to keep them in sync.

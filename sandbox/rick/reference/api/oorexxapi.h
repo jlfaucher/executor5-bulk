@@ -93,7 +93,7 @@
 #define REXX_VALUE_RexxMutableBufferObject 37
 #define REXX_VALUE_positive_wholenumber_t 38
 #define REXX_VALUE_nonnegative_wholenumber_t 39
-#define REXX_VALUE_RexxVariableReference 40     // NB: These are never optional!
+#define REXX_VALUE_RexxVariableReferenceObject 40     // NB: These are never optional!
 
 #define REXX_OPTIONAL_ARGUMENT                 0x8000
 
@@ -311,6 +311,7 @@ typedef struct
         RexxStemObject        value_RexxStemObject;
         POINTER               value_POINTERSTRING;
         RexxMutableBufferObject value_RexxMutableBufferObject;
+        RexxVariableReferenceObject value_RexxVariableReferenceObject;
         wholenumber_t         value_positive_wholenumber_t;
         wholenumber_t         value_nonnegative_wholenumber_t;
 

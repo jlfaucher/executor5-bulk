@@ -47,7 +47,7 @@
 
 class RexxActivation;
 
-class UseArgVariableRef : public UseArgVariableRef
+class UseArgVariableRef : public RexxVariableBase
 {
  public:
     void *operator new(size_t);
@@ -59,7 +59,7 @@ class UseArgVariableRef : public UseArgVariableRef
     virtual void live(size_t);
     virtual void liveGeneral(MarkReason reason);
     virtual void flatten(Envelope *);
-    void aliasLVariable(RexxActivation *, RexxActivation *);
+    void aliasVariable(RexxActivation *, RexxVariable *);
     bool isStem();
 
 protected:

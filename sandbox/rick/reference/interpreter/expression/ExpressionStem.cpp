@@ -358,7 +358,7 @@ void RexxStemVariable::alias(RexxActivation *context, RexxVariable *variable)
 {
     // since we don't create the stem object here, we can treat the stem
     // variables and the simple variables the same.
-    context->aliasLocalVariable(variableName, index, variable);
+    context->aliasLocalVariable(stemName, stemIndex, variable);
 }
 
 
@@ -370,11 +370,11 @@ void RexxStemVariable::alias(RexxActivation *context, RexxVariable *variable)
  *
  * @return The variable reference for this variable.
  */
-RexxObject *RexxStemVariable::getVariableReference(VariableDictionary *dictionary)
+VariableReference *RexxStemVariable::getVariableReference(VariableDictionary *dictionary)
 {
     // look up the stem variable in the dictionary
     RexxVariable *variable = dictionary->getStemVariable(stemName);
-    return new VariableReference(variable);
+    return variable->createReference();
 }
 
 
@@ -386,11 +386,10 @@ RexxObject *RexxStemVariable::getVariableReference(VariableDictionary *dictionar
  *
  * @return A variable reference object for the variable.
  */
-VariableReference *RexxSimpleVariable::getVariableReference(RexxActivation *context)
+VariableReference *RexxStemVariable::getVariableReference(RexxActivation *context)
 {
-    // Look up the stem
     RexxVariable *variable = context->getLocalStemVariable(stemName, stemIndex);
-    return new VariableReference(variable);
+    return variable->createReference();
 }
 
 

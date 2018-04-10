@@ -65,11 +65,13 @@ public:
 
     virtual void live(size_t);
     virtual void liveGeneral(MarkReason reason);
+    virtual void flatten(Envelope *);
 
     RexxObject *newRexx(RexxObject **args, size_t argc);
 
     RexxObject *getValue();
     void        setValue(RexxObject *);
+    void        setValueRexx(RexxObject *);
     RexxString *getName();
     bool        isStem();
     RexxVariable *getVariable() { return variable; }

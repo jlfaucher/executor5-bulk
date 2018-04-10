@@ -548,7 +548,7 @@ class RexxToken : public RexxInternalObject
     inline void       setSubtype(TokenSubclass t) { subclass = t; }
     inline void       setValue(RexxString *v) { stringValue = v; }
     inline bool       isVariable() { return (subclass == SYMBOL_VARIABLE || subclass == SYMBOL_STEM || subclass == SYMBOL_COMPOUND); };
-    inline bool       isNonCompoundVariable() { return (subclass == SYMBOL_VARIABLE || subclass == SYMBOL_STEM; };
+    inline bool       isNonCompoundVariable() { return subclass == SYMBOL_VARIABLE || subclass == SYMBOL_STEM; };
     inline bool       isSimpleVariable() { return subclass == SYMBOL_VARIABLE; };
     inline bool       isVariableOrDot() { return isVariable() || subclass == SYMBOL_DOTSYMBOL; };
     inline bool       isDotSymbol() { return (subclass == SYMBOL_DOTSYMBOL); }

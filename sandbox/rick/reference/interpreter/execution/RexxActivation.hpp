@@ -531,8 +531,7 @@ class RexxActivation : public ActivationBase
 
    inline RexxVariable *newLocalVariable(RexxString *name)
    {
-       newVariable = new_variable(name);
-       newVariable->setCreator(this);
+       RexxVariable *newVariable = new_variable(name);
        return newVariable;
    }
 

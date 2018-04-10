@@ -69,8 +69,8 @@ class RexxVariableBase : public RexxInternalObject
     virtual void expose(RexxActivation *, VariableDictionary *) {;}
     virtual void procedureExpose(RexxActivation *, RexxActivation *) {;}
     virtual void alias(RexxActivation *, RexxVariable *) {;}
-    virtual VariableReference *getVariableReference(RexxActivation *);
-    virtual VariableReference *getVariableReference(VariableDictionary *);
+    virtual VariableReference *getVariableReference(RexxActivation *) { return OREF_NULL; }
+    virtual VariableReference *getVariableReference(VariableDictionary *) { return OREF_NULL; }
 };
 
 #endif

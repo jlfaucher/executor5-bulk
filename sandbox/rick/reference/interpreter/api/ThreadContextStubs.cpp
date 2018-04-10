@@ -66,6 +66,7 @@
 #include "LanguageParser.hpp"
 #include "StemClass.hpp"
 #include "NumberStringClass.hpp"
+#include "VariableReference.hpp"
 
 BEGIN_EXTERN_C()
 
@@ -1555,7 +1556,7 @@ RexxStringObject RexxEntry VariableReferenceName(RexxThreadContext *c, RexxVaria
     ApiContext context(c);
     try
     {
-        return (RexxStringObject)((RexxObject *)o)->getName();
+        return (RexxStringObject)context.ret(((VariableReference *)o)->getName());
     }
     catch (NativeActivation *)
     {
@@ -1568,7 +1569,7 @@ RexxObjectPtr RexxEntry VariableReferenceValue(RexxThreadContext *c, RexxVariabl
     ApiContext context(c);
     try
     {
-        return (RexxObjectPtr)((RexxObject *)o)->getValue();
+        return context.ret(((VariableReference *)o)->getValue());
     }
     catch (NativeActivation *)
     {
@@ -1581,12 +1582,11 @@ void RexxEntry SetVariableReferenceValue(RexxThreadContext *c, RexxVariableRefer
     ApiContext context(c);
     try
     {
-        (RexxObjectPtr)((RexxObject *)o)->setValue(v);
+        ((VariableReference *)o)->setValue((RexxObject *)v);
     }
     catch (NativeActivation *)
     {
     }
-    return false;
 }
 
 RexxObjectPtr RexxEntry SupplierItem(RexxThreadContext *c, RexxSupplierObject o)
@@ -2165,5 +2165,5 @@ RexxThreadInterface Activity::threadContextFunctions =
     VariableReferenceName,
     VariableReferenceValue,
     SetVariableReferenceValue,
-    IstVariableReference,
+    IsVariableReference,
 };

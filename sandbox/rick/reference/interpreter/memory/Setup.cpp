@@ -1255,8 +1255,9 @@ StartClassDefinition(VariableReference)
 
     CompleteClassMethodDefinitions();
 
+        AddMethod("Name", VariableReference::getName, 0);
         AddMethod("Value", VariableReference::getValue, 0);
-        AddMethod("Set", VariableReference::setValue, 1);
+        AddMethod("Set", VariableReference::setValueRexx, 1);
 
     CompleteMethodDefinitions();
 

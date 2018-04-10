@@ -47,6 +47,8 @@
 #include "RexxActivation.hpp"
 #include "UseInstruction.hpp"
 #include "ExpressionBaseVariable.hpp"
+#include "UseArgVariableRef.hpp"
+#include "VariableReference.hpp"
 
 
 /**
@@ -65,7 +67,7 @@ void UseVariable::handleArgument(RexxActivation *context, ExpressionStack *stack
     {
         // if this is a reference argument, this gets some special handling.
         // they are also strict by definition
-        if (isOfClass(UseArgVariableRef)))
+        if (isOfClass(UseArgVariableRef, variable))
         {
             handleReferenceArgument(context, stack, argument, argumentPos);
             return;
@@ -100,11 +102,11 @@ void UseVariable::handleArgument(RexxActivation *context, ExpressionStack *stack
                 {
                     if (context->inMethod())
                     {
-                        reportException(Error_Incorrect_method_noarg, argumentPos + 1);
+                        reportException(Error_Incorrect_method_noarg, argumentPos);
                     }
                     else
                     {
-                        reportException(Error_Incorrect_call_noarg, context->getCallname(), argumentPos + 1);
+                        reportException(Error_Incorrect_call_noarg, context->getCallname(), argumentPos);
                     }
                 }
             }
@@ -129,7 +131,7 @@ void UseVariable::handleReferenceArgument(RexxActivation *context, ExpressionSta
     // if we're expecteting a reference, then the argument is required
     if (argument == OREF_NULL)
     {
-        reportException(Error_Incorrect_argument_no_reference, argumentPos + 1);
+        reportException(Error_Invalid_argument_no_reference, argumentPos);
     }
 
     // to start, the received object must be a variable reference.
@@ -313,56 +315,7 @@ void RexxInstructionUse::execute(RexxActivation *context, ExpressionStack *stack
     // now we process each of the variable definitions left-to-right
     for (size_t i = 0; i < variableCount; i++)
     {
-        // get our current variable.  We're allowed to skip over variables, so
-        // there might not be anything here.
-        RexxVariableBase *variable = variables[i].variable;
-        if (variable != OREF_NULL)
-        {
-            // get the corresponding argument
-            RexxObject *argument = getArgument(arglist, argcount, i);
-            if (argument != OREF_NULL)
-            {
-                context->traceResult(argument);  // trace if necessary
-                // assign the value
-                variable->assign(context, argument);
-            }
-            else
-            {
-                // grab a potential default value
-                RexxInternalObject *defaultValue = variables[i].defaultValue;
-
-                // and omitted argument is only value if we've marked it as optional
-                // by giving it a default value
-                if (defaultValue != OREF_NULL)
-                {
-                    // evaluate the default value now
-                    RexxObject *value = defaultValue->evaluate(context, stack);
-                    context->traceResult(value);  // trace if necessary
-                    // assign the value
-                    variable->assign(context, value);
-                    stack->pop();    // remove the value from the stack
-                }
-                else
-                {
-                    // not doing strict checks, revert to old rules and drop the variable.
-                    if (!strictChecking)
-                    {
-                        variable->drop(context);
-                    }
-                    else
-                    {
-                        if (context->inMethod())
-                        {
-                            reportException(Error_Incorrect_method_noarg, i + 1);
-                        }
-                        else
-                        {
-                            reportException(Error_Incorrect_call_noarg, context->getCallname(), i + 1);
-                        }
-                    }
-                }
-            }
-        }
+        variables[i].handleArgument(context, stack, getArgument(arglist, argcount, i), i+1, strictChecking);
     }
     context->pauseInstruction();    // do debug pause if necessary
 }

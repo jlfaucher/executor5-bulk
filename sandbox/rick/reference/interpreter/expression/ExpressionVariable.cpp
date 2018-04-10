@@ -210,10 +210,25 @@ RexxObject *RexxSimpleVariable::getRealValue(VariableDictionary *dictionary)
  *
  * @return The variable reference for this variable.
  */
-RexxObject *RexxSimpleVariable::getVariableReference(VariableDictionary *dictionary)
+VariableReference *RexxSimpleVariable::getVariableReference(VariableDictionary *dictionary)
 {
     RexxVariable *variable = dictionary->getVariable(variableName);
-    return new VariableReference(variable);
+    return variable->createReference();
+}
+
+
+/**
+ * Get a variable reference to a variable from the given
+ * activation context.
+ *
+ * @param context The current context.
+ *
+ * @return A variable reference object for the variable.
+ */
+VariableReference *RexxSimpleVariable::getVariableReference(RexxActivation *context)
+{
+    RexxVariable *variable = context->getLocalVariable(variableName, index);
+    return variable->createReference();
 }
 
 
@@ -231,21 +246,6 @@ RexxObject  *RexxSimpleVariable::getRealValue(RexxActivation *context)
 {
     RexxVariable *variable = context->getLocalVariable(variableName, index);
     return variable->getVariableValue();
-}
-
-
-/**
- * Get a variable reference to a variable from the given
- * activation context.
- *
- * @param context The current context.
- *
- * @return A variable reference object for the variable.
- */
-VariableReference *RexxSimpleVariable::getVariableReference(RexxActivation *context)
-{
-    RexxVariable *variable = context->getLocalVariable(variableName, index);
-    return new VariableReference(variable);
 }
 
 

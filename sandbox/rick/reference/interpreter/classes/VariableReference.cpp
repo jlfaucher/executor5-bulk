@@ -42,8 +42,11 @@
 /*                                                                            */
 /******************************************************************************/
 #include "RexxCore.h"
+#include "ActivityManager.hpp"
 #include "VariableReference.hpp"
 #include "RexxVariable.hpp"
+#include "VariableDictionary.hpp"
+#include "MethodArguments.hpp"
 
 RexxClass *VariableReference::classInstance = OREF_NULL;   // singleton class instance
 
@@ -105,7 +108,8 @@ RexxObject *VariableReference::newRexx(RexxObject **args, size_t argc)
  */
 void VariableReference::live(size_t liveMark)
 {
-    memory_mark(variableReference);
+    memory_mark(objectVariables);
+    memory_mark(variable);
 }
 
 
@@ -116,7 +120,24 @@ void VariableReference::live(size_t liveMark)
  */
 void VariableReference::liveGeneral(MarkReason reason)
 {
-    memory_mark_general(variableReference);
+    memory_mark_general(objectVariables);
+    memory_mark_general(variable);
+}
+
+
+/**
+ * Flatten a source object.
+ *
+ * @param envelope The envelope that will hold the flattened object.
+ */
+void VariableReference::flatten (Envelope *envelope)
+{
+    setUpFlatten(VariableReference)
+
+    memory_mark_general(objectVariables);
+    memory_mark_general(variable);
+
+    cleanUpFlatten
 }
 
 
@@ -125,7 +146,7 @@ void VariableReference::liveGeneral(MarkReason reason)
  *
  * @return The name of the referenced variable.
  */
-RexxObject *VariableReference::getName()
+RexxString *VariableReference::getName()
 {
     return variable->getName();
 }
@@ -139,7 +160,7 @@ RexxObject *VariableReference::getName()
  */
 RexxObject *VariableReference::getValue()
 {
-    return variable->getValue();
+    return variable->getResolvedValue();
 }
 
 
@@ -153,3 +174,30 @@ bool VariableReference::isStem()
 {
     return variable->isStem();
 }
+
+
+/**
+ * Set a new value in the referenced variable
+ *
+ * @param v      The new variable value.
+ */
+void VariableReference::setValue(RexxObject *v)
+{
+    variable->set(v);
+}
+
+
+/**
+ * Set a new value in the referenced variable (rexx exported
+ * version)
+ *
+ * @param v      The new variable value.
+ */
+void VariableReference::setValueRexx(RexxObject *v)
+{
+    requiredArgument(v, "VALUE");
+
+    variable->set(v);
+}
+
+

@@ -77,6 +77,7 @@
 #include "TraceSetting.hpp"
 #include "ExpressionQualifiedFunction.hpp"
 #include "ExpressionClassResolver.hpp"
+#include "VariableReferenceOp.hpp"
 
 
 /**
@@ -3427,7 +3428,7 @@ RexxInternalObject *LanguageParser::parseMessageSubterm(int terminators)
                 token = nextReal();
                 if (!token->isSymbol() || !token->isNonCompoundVariable())
                 {
-                    syntaxError(Error_Symbol_expected_prefix_reference, token);
+                    syntaxError(Error_Symbol_expected_after_prefix_reference, token);
                 }
                 RexxVariableBase *retriever = OREF_NULL;
 

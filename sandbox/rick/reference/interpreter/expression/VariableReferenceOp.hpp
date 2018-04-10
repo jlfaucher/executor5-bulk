@@ -44,7 +44,7 @@
 #ifndef Included_VariableReferenceOp
 #define Included_VariableReferenceOp
 
-#include "ExpressionOperator.hpp"
+class RexxVariableBase;
 
 class VariableReferenceOp : public RexxInternalObject
 {
@@ -55,6 +55,10 @@ class VariableReferenceOp : public RexxInternalObject
     inline VariableReferenceOp(RexxVariableBase *var)
        : variable(var) { ; }
     inline VariableReferenceOp(RESTORETYPE restoreType) { ; };
+
+    virtual void live(size_t);
+    virtual void liveGeneral(MarkReason reason);
+    virtual void flatten(Envelope *);
 
     virtual RexxObject *evaluate(RexxActivation *, ExpressionStack *);
 

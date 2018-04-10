@@ -67,6 +67,7 @@
 #include "MutableBufferClass.hpp"
 #include "MethodArguments.hpp"
 #include "ExpressionStem.hpp"
+#include "VariableReference.hpp"
 
 #include <stdio.h>
 
@@ -720,6 +721,7 @@ RexxObject *NativeActivation::valueToObject(ValueDescriptor *value)
         case REXX_VALUE_RexxClassObject:
         case REXX_VALUE_RexxStemObject:
         case REXX_VALUE_RexxMutableBufferObject:
+        case REXX_VALUE_RexxVariableReferenceObject:
         {
             return (RexxObject *)value->value.value_RexxObjectPtr; // just return the object value
         }
@@ -892,6 +894,16 @@ bool NativeActivation::objectToValue(RexxObject *o, ValueDescriptor *value)
                 return false;
             }
             value->value.value_RexxMutableBufferObject = (RexxMutableBufferObject)o;
+            return true;
+        }
+        case REXX_VALUE_RexxVariableReferenceObject: // required variable reference object
+        {
+            // this must be a variablereference object
+            if (!o->isInstanceOf(TheVariableReferenceClass))
+            {
+                return false;
+            }
+            value->value.value_RexxVariableReferenceObject = (RexxVariableReferenceObject)o;
             return true;
         }
         case REXX_VALUE_int:
@@ -2762,7 +2774,7 @@ RexxObject *NativeActivation::getObjectVariable(const char *name)
  *
  * @return The variable reference object.
  */
-VariableRefernece *NativeActivation::getObjectVariable(const char *name)
+VariableReference *NativeActivation::getObjectVariableReference(const char *name)
 {
     Protected<RexxString> target = new_string(name);
 
@@ -2776,7 +2788,7 @@ VariableRefernece *NativeActivation::getObjectVariable(const char *name)
         return OREF_NULL;
     }
     // retrieve the value
-    return new VariableReverence(retriever->getVariableReference(methodVariables());
+    return retriever->getVariableReference(methodVariables());
 }
 
 

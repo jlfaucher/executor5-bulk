@@ -55,8 +55,8 @@ class RexxVariable : public RexxInternalObject
     void *operator new(size_t);
     inline void  operator delete(void *) { }
 
-    inline RexxVariable() : variableName(OREF_NULL), variableValue(OREF_NULL), creator(OREF_NULL), dependents(OREF_NULL) {;};
-    inline RexxVariable(RexxString *n) : variableName(n), variableValue(OREF_NULL), creator(OREF_NULL), dependents(OREF_NULL) {;};
+    inline RexxVariable() : variableName(OREF_NULL), variableValue(OREF_NULL), dependents(OREF_NULL) {;};
+    inline RexxVariable(RexxString *n) : variableName(n), variableValue(OREF_NULL), dependents(OREF_NULL) {;};
     inline RexxVariable(RESTORETYPE restoreType) { ; };
 
     virtual void live(size_t);
@@ -88,7 +88,6 @@ class RexxVariable : public RexxInternalObject
     // so setField is not needed.
     inline void reset(RexxString *name)
     {
-        creator       = OREF_NULL;        // this is unowned
         variableValue = OREF_NULL;        // clear out the hash value
         variableName  = name;             // fill in the name
         dependents = OREF_NULL;           // and the dependents
@@ -96,9 +95,7 @@ class RexxVariable : public RexxInternalObject
 
     // Note:  This does not use setField() since it will only occur with
     // local variables that can never be part of oldspace;
-    inline void setCreator(RexxActivation *creatorActivation) { creator = creatorActivation; }
     inline RexxVariable *getNext() { return (RexxVariable *)variableValue; }
-    inline bool isLocal(RexxActivation *act) { return act == creator; }
     inline bool isStem() { return variableName->endsWith('.'); }
     VariableReference *createReference();
 
@@ -106,7 +103,6 @@ protected:
 
     RexxString *variableName;            // the name of the variable
     RexxObject *variableValue;           // the assigned value of the variable.
-    RexxActivation *creator;             // the activation that created this variable
     IdentityTable  *dependents;          // guard expression dependents
 };
 

@@ -42,6 +42,9 @@
 /******************************************************************************/
 #include "RexxCore.h"
 #include "VariableReferenceOp.hpp"
+#include "ExpressionBaseVariable.hpp"
+#include "VariableReference.hpp"
+#include "RexxActivation.hpp"
 
 
 /**
@@ -108,9 +111,7 @@ void VariableReferenceOp::flatten(Envelope *envelope)
 RexxObject *VariableReferenceOp::evaluate(RexxActivation *context, ExpressionStack *stack)
 {
     // look up the variable
-    RexxVariable *variable->evaluate(context, stack);
-    // wrapper this in a variable object
-    RexxObject *value = new VariableReference(variable);
+    VariableReference *value = variable->getVariableReference(context);
     stack->push(value);
     // trace as an operator
     context->traceOperator("&", value->getName());

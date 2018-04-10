@@ -94,6 +94,7 @@ class _RexxDirectoryObject : public _RexxObjectPtr {};
 class _RexxSupplierObject : public _RexxObjectPtr {};
 class _RexxStemObject : public _RexxObjectPtr {};
 class _RexxMutableBufferObject : public _RexxObjectPtr {};
+class _RexxVariableReferenceObject : public _RexxObjectPtr {};
 
 typedef _RexxObjectPtr *RexxObjectPtr;
 typedef _RexxStringObject *RexxStringObject;
