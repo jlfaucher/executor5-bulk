@@ -4008,23 +4008,31 @@ RexxInstruction *LanguageParser::useNew()
                 // get the variable retriever for this variable.
                 RexxInternalObject *retriever = addText(token);
 
-                // some more error checking to do
+                // step to the next token, which should be a comma or a end of clause
                 token = nextReal();
-
-                // Check to see if a default is specified. This is not
-                // allowed for references.
-                if (token->isSubtype(OPERATOR_EQUAL))
+                // if this is not a comma, then we need to do some additional checking
+                if (!token->isComma())
                 {
-                    syntaxError(Error_Translation_use_arg_reference_no_default);
+                    // Check to see if a default is specified. This is not
+                    // allowed for references. We could give a generic error, but
+                    // it is better to be explicit about the problem,
+                    if (token->isSubtype(OPERATOR_EQUAL))
+                    {
+                        syntaxError(Error_Translation_use_arg_reference_no_default);
+                    }
+                    // anything other than a end of clause is a generic error
+                    else if (!token->isEndOfClause())
+                    {
+                        // if not an assignment, this needs to be a comma.
+                        syntaxError(Error_Variable_reference_use, token);
+                    }
                 }
-                else if (!token->isEndOfClause() && !token->isComma())
+                // we had a terminating comma, so step to the next token
+                else
                 {
-                    // if not an assignment, this needs to be a comma.
-                    syntaxError(Error_Variable_reference_use, token);
+                    token = nextReal();
                 }
 
-                // put the token back for the next pass
-                previousToken();
                 // we wrap this in a special retriever to handle the aliasing
                 Protected<UseArgVariableRef> ref = new UseArgVariableRef((RexxVariableBase *)retriever);
 
@@ -4032,11 +4040,13 @@ RexxInstruction *LanguageParser::useNew()
                 // to keep them in sync.
                 variable_list->push(ref);
                 defaults_list->push(OREF_NULL);
+                variableCount++;
                 // using this feature bumps the language level requirement.
                 requireLanguageLevel(LanguageLevel0606);
-                break;
+                // continue the loop. Note that token is already positioned for the
+                // next section
+                continue;
             }
-
 
             previousToken();       // push the current token back for term processing
             // see if we can get a variable or a message term from this
@@ -4095,7 +4105,6 @@ RexxInstruction *LanguageParser::useNew()
                 {
                     syntaxError(Error_Invalid_expression_use_arg_default);
                 }
-
             }
             else
             {

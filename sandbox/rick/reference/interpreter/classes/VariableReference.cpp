@@ -183,7 +183,8 @@ bool VariableReference::isStem()
  */
 void VariableReference::setValue(RexxObject *v)
 {
-    variable->set(v);
+    // NB: setValue sorts out the stem vs. simple assignment bits
+    variable->setValue(v);
 }
 
 
@@ -197,7 +198,8 @@ void VariableReference::setValueRexx(RexxObject *v)
 {
     requiredArgument(v, "VALUE");
 
-    variable->set(v);
+    // NB: setValue sorts out the stem vs. simple assignment bits
+    variable->setValue(v);
 }
 
 

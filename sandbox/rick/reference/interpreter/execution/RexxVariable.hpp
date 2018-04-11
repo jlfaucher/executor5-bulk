@@ -78,6 +78,8 @@ class RexxVariable : public RexxInternalObject
         }
     };
 
+    void setValue(RexxObject *value);
+
     inline RexxObject *getVariableValue() { return variableValue; };
     inline RexxObject *getResolvedValue() { return variableValue != OREF_NULL ? variableValue : variableName; };
     inline RexxString *getName() { return variableName; }

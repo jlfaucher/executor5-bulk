@@ -192,6 +192,28 @@ void RexxVariable::notify()
 
 
 /**
+ * A "safe" assignment method that sorts out the differeces
+ * between simple variable vs. stem variable assignment.
+ *
+ * @param value  The new value to assign.
+ */
+void RexxVariable::setValue(RexxObject *value)
+{
+    // if this is a stem variable, we need to sort out how the
+    // assignment works from the type of object.
+    if (isStem())
+    {
+        setStem(value);
+    }
+    else
+    {
+        // just a simple replacement of the existing value
+        set(value);
+    }
+}
+
+
+/**
  * Set a variable to a stem value.  This handles all of the
  * details of stem-to-stem assignment and stem variable
  * re-initialization.
