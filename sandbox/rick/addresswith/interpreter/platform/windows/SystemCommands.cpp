@@ -194,6 +194,42 @@ bool sys_process_cd(RexxExitContext *context, const char *command, const char * 
     return true;
 }
 
+void makePipe(PHANDLE readH, PHANDLE writeH,    // pointers to the handles
+              SECURITY_ATTRIBUTES* sAttr,       // pointer to the security attr.
+              CSTRING name,                     // name of the pipe
+              RexxExitContext* context)         // context for errors
+{
+    BOOL pipeOK;
+    HANDLE noInheritH;
+    int error;
+    char eMsg1[30] = "Unable to create ";        // start of error message 1
+    char eMsg2[30] = "Unable to modify ";        // start of error message 2
+
+    pipeOK = CreatePipe(readH, writeH, sAttr, 0);
+    if (!pipeOK) {
+        error = GetLastError();
+        strcat(eMsg1, name);                    // add pipe name to message
+        strcat(eMsg1, " pipe");                 // end of error message
+        context->RaiseCondition("FAILURE", context->String(eMsg1), NULLOBJECT,
+                                context->WholeNumberToObject(error));
+    }
+
+    // insure the "unconnected" end of the pipe is not inherited
+    if (strcmp(name, "Input") == 0)
+        noInheritH = *writeH;
+    else
+        noInheritH = *readH;
+
+    pipeOK = SetHandleInformation(noInheritH, HANDLE_FLAG_INHERIT, 0);
+    if (!pipeOK) {
+        error = GetLastError();
+        strcat(eMsg2, name);                    // add pipe name to message
+        strcat(eMsg2, " pipe");                 // end of error message
+        context->RaiseCondition("FAILURE", context->String(eMsg2), NULLOBJECT,
+                                context->WholeNumberToObject(error));
+    }
+}
+
 
 /*-----------------------------------------------------------------------------
  | Name:       sysCommandNT                                                   |
@@ -207,14 +243,38 @@ bool sys_process_cd(RexxExitContext *context, const char *command, const char * 
  | Notes:      Handles processing of a system command on a Windows NT system  |
  |                                                                      |
   ----------------------------------------------------------------------------*/
-bool sysCommandNT(RexxExitContext *context, const char *command, const char *cmdstring_ptr, bool direct, RexxObjectPtr &result)
+bool sysCommandNT(RexxExitContext *context,
+                  const char *command,
+                  const char *cmdstring_ptr,
+                  bool direct,
+                  RexxObjectPtr &result,
+                  RexxIORedirectorContext *ioContext)
 {
     DWORD rc;
     STARTUPINFO siStartInfo;                  // process startup info
     PROCESS_INFORMATION piProcInfo;           // returned process info
     char ctitle[256];
     DWORD creationFlags;
-    bool titleChanged;
+    BOOL titleChanged;
+
+    BOOL redirIn = ioContext->IsInputRedirected();      // Input redirected?
+    BOOL redirOut = ioContext->IsOutputRedirected();    // Output redirected?
+    BOOL redirErr = ioContext->IsErrorRedirected();     // Error redirected?
+    BOOL combo = ioContext->AreOutputAndErrorSameTarget();  // Err/Out combined?
+
+    const int READ_SIZE = 4096;         // size of chunks read from pipes
+    DWORD cntRead;
+    char pipeBuf[READ_SIZE];
+    BOOL readOK = false;
+    // handles for pipes if needed
+    HANDLE inPipeW, outPipeR, errPipeR;
+
+    // security attributes for pipes
+    SECURITY_ATTRIBUTES secAttr;
+    secAttr.nLength = sizeof(SECURITY_ATTRIBUTES);
+    // Set the bInheritHandle flag so pipe handles are inherited.
+    secAttr.bInheritHandle = TRUE;
+    secAttr.lpSecurityDescriptor = NULL;
 
     ZeroMemory(&siStartInfo, sizeof(siStartInfo));
     ZeroMemory(&piProcInfo, sizeof(piProcInfo));
@@ -222,7 +282,7 @@ bool sysCommandNT(RexxExitContext *context, const char *command, const char *cmd
     /* Invoke the system command handler to execute the command                 */
     /****************************************************************************/
     siStartInfo.cb = sizeof(siStartInfo);
-
+    // change the following if redirecting I/O
     siStartInfo.hStdInput = GetStdHandle(STD_INPUT_HANDLE);
     siStartInfo.hStdOutput = GetStdHandle(STD_OUTPUT_HANDLE);
     siStartInfo.hStdError = GetStdHandle(STD_ERROR_HANDLE);
@@ -258,18 +318,59 @@ bool sysCommandNT(RexxExitContext *context, const char *command, const char *cmd
         siStartInfo.wShowWindow = SHOWWINDOWFLAGS;
     }
 
+    if (ioContext->IsRedirectionRequested()) {
+        // create the pipes needed to implement the redirection
+        if (redirIn)
+            makePipe(&siStartInfo.hStdInput, &inPipeW, &secAttr, "Input", context);
+
+        if (redirOut)
+            makePipe(&outPipeR, &siStartInfo.hStdOutput, &secAttr, "Output", context);
+
+        if (redirErr) {
+            if (combo) {                // send output and error to the same stream
+                siStartInfo.hStdError = siStartInfo.hStdOutput;
+                redirErr = false;
+            }
+            else
+                makePipe(&errPipeR, &siStartInfo.hStdError, &secAttr, "Error", context);
+        }
+    }
+
     if (CreateProcess(NULL,           // address of module name
                       (LPSTR)cmdstring_ptr,// address of command line
                       NULL,                // address of process security attrs
                       NULL,                // address of thread security attrs
                       true,                // new process inherits handles?
-                      // creation flags
-                      creationFlags,
+                      creationFlags,       // creation flags
                       NULL,                // address of new environment block
                       NULL,                // address of current directory name
                       &siStartInfo,        // address of STARTUPINFO
                       &piProcInfo))        // address of PROCESS_INFORMATION
     {
+        // if Input is redirected, write the input data to the input pipe
+        if (redirIn) {
+            BOOL writeOK = false;
+            CSTRING in_data;
+            size_t in_strL;
+            int error;
+
+            ioContext->ReadInputBuffer(&in_data, &in_strL);
+            if (in_data != NULL)
+            {
+                writeOK = WriteFile(inPipeW, in_data, in_strL, NULL, NULL);
+                if (!writeOK) {
+                    error = GetLastError();
+                    CSTRING emsg = "Error writing to Input pipe!";
+                    context->RaiseCondition("FAILURE", context->String(emsg),
+                                            NULLOBJECT,
+                                            context->WholeNumberToObject(error));
+                    result = NULLOBJECT;
+                    return true;
+                }
+            }
+            CloseHandle(inPipeW);
+        }
+
         // CreateProcess succeeded, now wait for the process to end.
         if (titleChanged)
         {
@@ -299,6 +400,26 @@ bool sysCommandNT(RexxExitContext *context, const char *command, const char *cmd
         }
         CloseHandle(piProcInfo.hThread);
         CloseHandle(piProcInfo.hProcess);
+
+        // if Output is redirected, write the data from the output pipe
+        if (redirOut) {
+            CloseHandle(siStartInfo.hStdOutput);  // close the handle so readFile will stop
+            for (;;) {
+                readOK = ReadFile(outPipeR, pipeBuf, READ_SIZE, &cntRead, NULL);
+                if (!readOK || cntRead == 0) break;
+                ioContext->WriteOutputBuffer(pipeBuf, cntRead);
+            }
+        }
+
+        // if Error is redirected, write the data from the error pipe
+        if (redirErr) {
+            CloseHandle(siStartInfo.hStdError);  // close the handle so readPipe will stop
+            for (;;) {
+                readOK = ReadFile(errPipeR, pipeBuf, READ_SIZE, &cntRead, NULL);
+                if (!readOK || cntRead == 0) break;
+                ioContext->WriteErrorBuffer(pipeBuf, cntRead);
+            }
+        }
     }
     else
     {
@@ -339,7 +460,10 @@ bool sysCommandNT(RexxExitContext *context, const char *command, const char *cmd
 /*             command handler with the command to be executed                */
 /*                                                                            */
 /******************************************************************************/
-RexxObjectPtr RexxEntry systemCommandHandler(RexxExitContext *context, RexxStringObject address, RexxStringObject command, RexxIORedirectorContext *ioContext)
+RexxObjectPtr RexxEntry systemCommandHandler(RexxExitContext *context,
+                                             RexxStringObject address,
+                                             RexxStringObject command,
+                                             RexxIORedirectorContext *ioContext)
 {
     // address the command information
     const char *cmd = context->StringData(command);
@@ -559,10 +683,11 @@ RexxObjectPtr RexxEntry systemCommandHandler(RexxExitContext *context, RexxStrin
 
     // First check whether we can run the command directly as a program. (There
     // can be no file redirection when not using cmd.exe or command.com)
-    if (SystemInterpreter::explicitConsole || !noDirectInvoc)
+    //  N.B. ADDRESS ... WITH also implies redirection
+    if (SystemInterpreter::explicitConsole || (!noDirectInvoc && !ioContext->IsRedirectionRequested()))
     {
         // Invoke this directly.  If we fail, we fall through and try again.
-        if (sysCommandNT(context, cmd, &interncmd[j], true, result))
+        if (sysCommandNT(context, cmd, &interncmd[j], true, result, ioContext))
         {
             if ( cmdstring_ptr != cmdstring )
             {
@@ -610,7 +735,7 @@ RexxObjectPtr RexxEntry systemCommandHandler(RexxExitContext *context, RexxStrin
     }
 
     // Invoke the command
-    if (!sysCommandNT(context, cmd, cmdstring_ptr, false, result))
+    if (!sysCommandNT(context, cmd, cmdstring_ptr, false, result, ioContext))
     {
         // Failed, get error code and return
         context->RaiseCondition("FAILURE", context->String(cmd), NULLOBJECT, context->WholeNumberToObject(GetLastError()));
