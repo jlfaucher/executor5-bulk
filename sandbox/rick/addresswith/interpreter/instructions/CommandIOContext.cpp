@@ -98,17 +98,14 @@ void CommandIOContext::resolveConflicts()
     // not yet determined that we have dual output
     bool dualOutput = false;
 
-    // first check if error and output streams are the same.
-    if (output != OREF_NULL)
+    // if we have both error and output specified, we need to check that these
+    // are the same and collapse them to a single target
+    if (error != OREF_NULL && output != OREF_NULL && output->isSameTarget(error))
     {
-        // if these are the same, then use the same redirector for both streams
-        if (error != OREF_NULL && output->isSameTarget(error))
-        {
-            error = output;
-            // if we detect a conflict between the input and output, then
-            // we need to adjust both.
-            dualOutput = true;
-        }
+        error = output;
+        // if we detect a conflict between the input and output, then
+        // we need to adjust both.
+        dualOutput = true;
     }
 
     // now check if we have an input conflict

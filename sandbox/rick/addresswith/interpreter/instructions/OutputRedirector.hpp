@@ -68,7 +68,7 @@ class OutputRedirector : public RexxInternalObject
     virtual RexxObject *target() { return OREF_NULL; }
 
     virtual bool needsBuffering(InputRedirector *d);
-    bool isSameTarget(OutputRedirector *e);
+    virtual bool isSameTarget(OutputRedirector *e);
 
     void write(RexxString *l);
     void writeBuffer(const char *data, size_t len);
@@ -184,6 +184,7 @@ class StreamOutputTarget : public StreamObjectOutputTarget
     virtual void cleanup();
     virtual RedirectionType::Enum type() { return RedirectionType::STREAM_NAME; }
     virtual RexxObject *target() { return name; }
+    virtual bool isSameTarget(OutputRedirector *e);
 
 protected:
     RexxString *name;     // the stream name

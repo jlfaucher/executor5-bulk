@@ -518,6 +518,23 @@ bool StreamOutputTarget::needsBuffering(InputRedirector *in)
 
 
 /**
+ * Test if an output redirector is using the same target as the
+ * error redirector.
+ *
+ * @param e      The error redirector
+ *
+ * @return True if the error redirector and the output
+ *         redirector are using the same target object.
+ */
+bool StreamOutputTarget::isSameTarget(OutputRedirector *e)
+{
+    // we need to override this one because we need to use a string comparison
+    // to verify we're the same target.
+    return type() == e->type() && name->strCompare((RexxString *)e->target());
+}
+
+
+/**
  * Write a value to the output redirector.
  *
  * @param value  The string value to write
