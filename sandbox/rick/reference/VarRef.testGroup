@@ -60,7 +60,7 @@ ref = &A
 self~assertSame('A', ref~value)
 self~assertSame('A', ref~name)
 
-ref~set('B')
+ref~value='B'
 self~assertSame('B', a)
 self~assertSame('B', ref~value)
 self~assertSame('A', ref~name)
@@ -70,13 +70,13 @@ self~assertSame('A', ref~name)
 self~assertSame(a., ref~value)
 self~assertSame('A.', ref~name)
 b.1 = 123
-ref~set(b.)
+ref~value = b.
 self~assertSame(b., ref~value)
 self~assertSame(a., b.)
 self~assertSame('A.', ref~name)
 self~assertSame(a.1, 123)
 
-  ref~set('abc')
+  ref~value='abc'
   self~assertSame(a.1, 'abc')
   self~assertSame(b.1, '123')
 
