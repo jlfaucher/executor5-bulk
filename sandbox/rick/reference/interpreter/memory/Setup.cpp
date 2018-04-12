@@ -1258,6 +1258,18 @@ StartClassDefinition(VariableReference)
         AddMethod("Name", VariableReference::getName, 0);
         AddMethod("Value", VariableReference::getValue, 0);
         AddMethod("Value=", VariableReference::setValueRexx, 1);
+        AddMethod("Unknown", VariableReference::unknownRexx, 2);
+        AddMethod("Request", VariableReference::request, 1);
+
+    // We want various operator methods that we inherit from the object
+    // class to be redirected to our unknown method, so we block these methods
+    // in our instance method directory.
+        HideMethod("==");
+        HideMethod("=");
+        HideMethod("\\==");
+        HideMethod("\\=");
+        HideMethod("<>");
+        HideMethod("><");
 
     CompleteMethodDefinitions();
 

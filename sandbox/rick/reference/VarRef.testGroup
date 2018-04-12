@@ -101,6 +101,18 @@ call refStem2 &a., b.
 self~assertSame('789', a.0)
 
 
+::method test_unknown
+  a = 123
+  ref = &a
+  self~assertSame(124, 1+ref)
+  self~assertSame(124, ref+1)
+
+  self~assertSame("abc123", "abc"||ref)
+  self~assertSame("123%", ref||"%")
+
+  self~assertSame("2", substr(ref, 2, 1))
+
+
 ::routine refSimple
   use strict arg &a, newValue
 

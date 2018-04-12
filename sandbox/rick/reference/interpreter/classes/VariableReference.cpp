@@ -47,6 +47,7 @@
 #include "RexxVariable.hpp"
 #include "VariableDictionary.hpp"
 #include "MethodArguments.hpp"
+#include "ProtectedObject.hpp"
 
 RexxClass *VariableReference::classInstance = OREF_NULL;   // singleton class instance
 
@@ -200,6 +201,168 @@ void VariableReference::setValueRexx(RexxObject *v)
 
     // NB: setValue sorts out the stem vs. simple assignment bits
     variable->setValue(v);
+}
+
+
+/**
+ * Process UNKNOWN messages for a variable reference object,
+ * forwarding them to the referenced variable value.
+ *
+ * @param message   The message target.
+ * @param arguments The message arguments.
+ *
+ * @return The message result.
+ */
+RexxObject *VariableReference::unknownRexx(RexxString *message, ArrayClass *arguments)
+{
+    message = stringArgument(message, ARG_ONE);
+    arguments = arrayArgument(arguments, ARG_TWO);
+
+    ProtectedObject result;
+    // get the resolved variable value and forward this to the value
+    return variable->getResolvedValue()->sendMessage(message, arguments, result);
+}
+
+
+/**
+ * Process an unknown message condition on an object.  This is
+ * an optimized bypass for the Object default method that can
+ * bypass creating an array for the arguments and sending the
+ * UNKNOWN message to the object.  Since many things funnel
+ * through the integer unknown method, this is a big
+ * optimization.
+ *
+ * @param messageName
+ *                  The target message name.
+ * @param arguments The message arguments.
+ * @param count     The count of arguments.
+ * @param result    The return result protected object.
+ */
+void VariableReference::processUnknown(RexxString *messageName, RexxObject **arguments, size_t count, ProtectedObject &result)
+{
+    // just send this as a message indirect variable value
+    variable->getResolvedValue()->messageSend(messageName, arguments, count, result);
+}
+
+
+/**
+ * Get the string value for the variableReference, which is just
+ * the string value of our indirect value.
+ *
+ * @return The associated string value.
+ */
+RexxString *VariableReference::stringValue()
+{
+    return variable->getResolvedValue()->stringValue();
+}
+
+
+/**
+ * Convert the stem default value to a numeric value.
+ *
+ * @param result the place to put the converted number.
+ * @param digits The precision to convert under.
+ *
+ * @return true if this converted, false otherwise.
+ */
+bool VariableReference::numberValue(wholenumber_t &result, wholenumber_t digits)
+{
+    return variable->getResolvedValue()->numberValue(result, digits);
+}
+
+
+/**
+ * Convert the stem default value to a numeric value.
+ *
+ * @param result the place to put the converted number.
+ *
+ * @return true if this converted, false otherwise.
+ */
+bool VariableReference::numberValue(wholenumber_t &result)
+{
+    return variable->getResolvedValue()->numberValue(result);
+}
+
+
+/**
+ * Convert the stem default value to a numeric value.
+ *
+ * @param result the place to put the converted number.
+ * @param digits The precision to convert under.
+ *
+ * @return true if this converted, false otherwise.
+ */
+bool VariableReference::unsignedNumberValue(size_t &result, wholenumber_t digits)
+{
+    return variable->getResolvedValue()->unsignedNumberValue(result, digits);
+}
+
+
+/**
+ * Convert the stem default value to a numeric value.
+ *
+ * @param result the place to put the converted number.
+ *
+ * @return true if this converted, false otherwise.
+ */
+bool VariableReference::unsignedNumberValue(size_t &result)
+{
+    return variable->getResolvedValue()->unsignedNumberValue(result);
+}
+
+
+/**
+ * Convert the stem default value to a numeric value.
+ *
+ * @param result the place to put the converted number.
+ *
+ * @return true if this converted, false otherwise.
+ */
+bool VariableReference::doubleValue(double &result)
+{
+    return variable->getResolvedValue()->doubleValue(result);
+}
+
+
+/**
+ * Convert this stem object to a number string value.
+ *
+ * @return A number string object, or OREF_NULL if non-numeric
+ */
+NumberString *VariableReference::numberString()
+{
+   return variable->getResolvedValue()->numberString();
+}
+
+
+/**
+ * Convert the stem to an integer value.
+ *
+ * @param precision The precision to convert under.
+ *
+ * @return The Integer object or OREF_NULL if not valid.
+ */
+RexxInteger *VariableReference::integerValue(wholenumber_t precision)
+{
+    return variable->getResolvedValue()->integerValue(precision);
+}
+
+
+/**
+ * Forward all request requests to the target value.  We
+ * handle some of these directly, the rest are passed on
+ * to the default value.
+ *
+ * @param makeclass The name of the class for the request.
+ *
+ * @return The appropriate result for the request.
+ */
+RexxObject *VariableReference::request(RexxString *makeclass)
+{
+    ProtectedObject result;
+    // let the default value handle everything else
+    variable->getResolvedValue()->sendMessage(GlobalNames::REQUEST, makeclass, result);
+    return result;
 }
 
 

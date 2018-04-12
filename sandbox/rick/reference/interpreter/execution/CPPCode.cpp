@@ -1208,6 +1208,8 @@ CPPM(VariableReference::newRexx),
 CPPM(VariableReference::getName),
 CPPM(VariableReference::getValue),
 CPPM(VariableReference::setValueRexx),
+CPPM(VariableReference::unknownRexx),
+CPPM(VariableReference::request),
 // This NULL terminator is important to mark the end of the table.
 NULL
 };
