@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2017 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -47,6 +47,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <spawn.h>
 
 #include "RexxCore.h"
 #include "StringClass.hpp"
@@ -60,6 +61,17 @@
 #include <sys/types.h>
 #include <pwd.h>
 #include <limits.h>
+#include <errno.h>  //@@
+#include <fcntl.h>  //@@ O_* constant definitions
+#include <sys/stat.h>  //@@ fstat
+/*
+// select()
+#include <sys/ioctl.h>
+#include <sys/time.h>
+#if defined( HAVE_SYS_SELECT_H )
+#include <sys/select.h>
+#endif
+*/
 
 // "sh" should be our initial ADDRESS() environment across all Unix platforms
 #define SYSINITIALADDRESS "sh"
@@ -512,7 +524,7 @@ bool sys_process_cd(RexxExitContext *context, const char * cmd, RexxObjectPtr rc
 /* a shell to invoke its commands.                                   */
 /*********************************************************************/
 
-bool scan_cmd(const char *parm_cmd, char **argPtr)
+bool scan_cmd(const char *parm_cmd, char **argPtr, size_t i)
 {
     char *cmd = strdup(parm_cmd);        /* Allocate for copy          */
 
@@ -525,7 +537,6 @@ bool scan_cmd(const char *parm_cmd, char **argPtr)
     /* LOOP INVARIANT:                                                 */
     /* pos points to the next character of the command to be examined. */
     /* i indicates the next element of the args[] array to be loaded.  */
-    size_t i = 0;                               /* Start with args[0]         */
     for (char *pos = cmd; pos < end; pos++)
     {
         while (*pos==' ' || *pos=='\t')
@@ -727,7 +738,7 @@ RexxObjectPtr RexxEntry systemCommandHandler(RexxExitContext *context, RexxStrin
             else if (Utilities::strCaselessCompare("noshell", envName) == 0)
             {
                 char * args[MAX_COMMAND_ARGS+1];      /* Array for argument parsing */
-                if (scan_cmd(cmd, args))              /* Parse cmd into arguments   */
+                if (scan_cmd(cmd, args, 0))           /* Parse cmd into arguments   */
                 {
                     execvp(args[0], args);            /* Invoke command directly    */
                 }
@@ -760,6 +771,348 @@ RexxObjectPtr RexxEntry systemCommandHandler(RexxExitContext *context, RexxStrin
 
 
 /**
+ * Raise failure.
+ *
+ * @param ..
+ */
+RexxObjectPtr ErrorCommandFailure(RexxExitContext *context, CSTRING command, int errCode)
+{
+    context->RaiseCondition("FAILURE", context->String(command), NULLOBJECT, context->WholeNumberToObject(errCode));
+    return NULLOBJECT;
+}
+
+
+
+/**
+ * A redirecting test command handler.
+ *
+ * @param context    The Exit context.
+ * @param address    The environment name.
+ * @param command    The command name and arguments.
+ * @param ioContext  The IO Redirector context.
+ */
+RexxObjectPtr RexxEntry ioCommandHandler(RexxExitContext *context, RexxStringObject address, RexxStringObject command, RexxIORedirectorContext *ioContext)
+{
+// @@ TO DO
+// check interleaved output/error
+// supprt other shells
+// UNKNOWN_COMMAND -> rc from call
+
+    CSTRING commandString = context->CString(command);
+
+/*
+    char* argv[MAX_COMMAND_ARGS + 1];
+printf("io entry\n");
+    // parse command string into argv array, starting at index 2 to leave
+    // room for "/bin/sh" and "-c"
+    if (scan_cmd(commandString, argv, 2)) // parse commandString into argv[]
+    {
+    else
+    {   // too many arguments
+        return ErrorCommandFailure(context, commandString, UNKNOWN_COMMAND);
+    }
+*/
+    int pid;
+    int status;
+    char* argv[4];
+    argv[0] = (char*) "/bin/sh";
+    argv[1] = (char*) "-c";
+    argv[2] = (char*) commandString;
+    argv[3] = NULL;
+printf("io args %s %s %s\n", argv[0], argv[1], argv[2]);
+    if (ioContext->IsRedirectionRequested())
+    {
+printf("io redirection requested\n");
+        bool need_to_write_input = false;
+        bool need_to_read_output = false;
+        bool need_to_read_error = false;
+        int input[2], output[2], error[2];
+        posix_spawn_file_actions_t action;
+        posix_spawn_file_actions_init(&action);
+
+        // Create stdin, stdout, and stderr pipes as requested.  pipe() returns
+        // two file descriptors: [0] is the pipe read end, [1] is the pipe
+        // write end.  The child process (i. e. the command to be run) will
+        // inherit both the read and write end of all created pipes.  Of each
+        // end *we* will only ever use one end, and the child the other end.
+        // Therefore we and the child will close any unused ends.  In addition,
+        // we also prepare any file actions that are to be be done by the child.
+        // These actions are collected with posix_spawn_file_actions()
+
+        // is stdin redirection requested?
+        if (ioContext->IsInputRedirected())
+        {
+printf("io input redirection requested\n");
+            if (pipe2(input, O_NONBLOCK) != 0) // create stdin pipe
+//            if (pipe(input) != 0) // create stdin pipe
+            {
+                return ErrorCommandFailure(context, commandString, UNKNOWN_COMMAND);
+            }
+            posix_spawn_file_actions_adddup2(&action, input[0], 0); // stdin reads from pipe
+            posix_spawn_file_actions_addclose(&action, input[1]); // close unused write end in child
+            need_to_write_input = true;
+        }
+
+        // is stdout redirection requested?
+        if (ioContext->IsOutputRedirected())
+        {
+printf("io output redirection requested\n");
+            if (pipe2(output, O_NONBLOCK) != 0) // create stdout pipe
+//            if (pipe(output) != 0) // create stdout pipe
+            {
+                return ErrorCommandFailure(context, commandString, UNKNOWN_COMMAND);
+            }
+            // do we want interleaved stdout and stderr redirection?
+            // this is a special case .. we just redirect stderr to stdout upfront
+            if (ioContext->AreOutputAndErrorSameTarget())
+            {
+printf("io output and error are the same\n");
+                posix_spawn_file_actions_adddup2(&action, output[1], 2); //stderr writes to pipe
+            }
+            posix_spawn_file_actions_adddup2(&action, output[1], 1); //stdout writes to pipe
+            posix_spawn_file_actions_addclose(&action, output[0]); // close unused read end in child
+            need_to_read_output = true;
+        }
+
+        // now stderr redirection
+        // if both stdout and stderr are to be redireted to the same object, then
+        // everything was already setup in the previous stdout redirection step
+        if (ioContext->IsErrorRedirected() && !ioContext->AreOutputAndErrorSameTarget())
+        {
+printf("io error redirection requested\n");
+            if (pipe2(error, O_NONBLOCK) != 0) // create stderr pipe
+//            if (pipe(error) != 0) // create stderr pipe
+            {
+                return ErrorCommandFailure(context, commandString, UNKNOWN_COMMAND);
+            }
+            posix_spawn_file_actions_adddup2(&action, error[1], 2); // stderr writes to pipe
+            posix_spawn_file_actions_addclose(&action, error[0]); // close unused read end in child
+            need_to_read_error = true;
+        }
+
+        // ok, everything is setup accordingly, let's fork the redirected command
+        if (posix_spawnp(&pid, argv[0], &action, NULL, argv, NULL) != 0)
+            {
+                return ErrorCommandFailure(context, commandString, UNKNOWN_COMMAND);
+            }
+printf("io spawned command\n");
+
+        // Let's close all unneeded read- and write ends, but ...
+        // in a scenario, where we have redirected input for a command that
+        // really doesn't need any or much less of it, the command may
+        // finish before we could pipe all stdin input.  The spawned child
+        // exits, closing its stdin read end.  At least on Ubuntu 16.04,
+        // the following write() operation, instead of failing with an errno
+        // indication, will exit(!) the program without any indication for
+        // unknown reasons.  To avoid this, we don't close our read end now,
+        // which should keep the pipe open and alive for write().
+        /*
+        if (need_to_write_input)
+        {
+            close(input[0]); // we close our unused stdout pipe write end
+        }
+        */
+        if (need_to_read_output)
+        {
+            close(output[1]); // we close our unused stdout pipe write end
+        }
+        if (need_to_read_error)
+        {
+            close(error[1]); // we close our unused stderr pipe write end
+        }
+
+size_t IO_PIPE_BUF = PIPE_BUF; //@@ set our pipe buffer size
+        CSTRING input_buffer;
+        size_t input_offset = 0;
+        size_t input_length;
+        if (need_to_write_input)
+        {
+            // get all input data from the WITH INPUT clause
+            ioContext->ReadInputBuffer(&input_buffer, &input_length);
+printf("io input feed total buffer %zd bytes\n", input_length);
+        }
+
+int n = 0; //@@ loop counter; avoid endless loop
+        // now with the command forked and running, we start our pipe loop:
+        // with non-blocking reads and writes, we try to 1) write as much as
+        // possible until an error occurs, then 2) read from output until an
+        // error indication, and 3) read as much as possible from error.
+//@@ should we check if our spawned child is stll alive?
+        // we then wait a little and loop again
+        while (need_to_write_input || need_to_read_output || need_to_read_error)
+        {
+n++; if (n>5000) break; //@@ avoid endless loop
+printf("io loop #%d, input:%d output:%d error:%d\n", n, need_to_write_input, need_to_read_output, need_to_read_error);
+            // do we need to feed it any input lines?
+            if (need_to_write_input)
+            {
+                size_t length;
+                ssize_t written;
+
+                // generally, we're using PIPE_BUF for read() and write() buffer
+                // sizes, as this ensures atomic reads/writes.  According to
+                // POSIX.1 PIPE_BUF is at least 512 bytes; on Linux it's 4096 bytes.
+
+                // this is either the first chunk, or the last chunk which
+                // failed to write on the previous loop
+                length = input_length - input_offset >= IO_PIPE_BUF ? IO_PIPE_BUF : input_length - input_offset;
+                written = write(input[1], &input_buffer[input_offset], length);
+printf("io input feed write offset %zd, length %zd, written %zd bytes \n", input_offset, length, written);
+                // With atomic writes we really should only get either all bytes
+                // written (which might be zero just for the first write() if
+                // input_length = 0) or -1 as error indication.
+                // Repeat loop until write() fails or we exhaust our input buffer.
+                while (written > 0 && input_offset + IO_PIPE_BUF < input_length)
+                {
+                    input_offset += IO_PIPE_BUF; // chunk size is IO_PIPE_BUF
+                    length = input_length - input_offset >= IO_PIPE_BUF ? IO_PIPE_BUF : input_length - input_offset;
+                    written = write(input[1], &input_buffer[input_offset], length);
+printf("io input feed write offset %zd, length %zd, written %zd bytes \n", input_offset, length, written);
+                }
+if (written < 0) printf("io input feed write failure %s\n", strerror(errno));
+                // we retry only if this is just a temporary failure, otherwise
+                // this is either a FAILURE condition, or success
+//@@ don't retry if our spawned child has died
+//@@ waitpid(pid, &status, WNOHANG) == 0 &&
+                if (written == -1 && (errno == EAGAIN || errno == EWOULDBLOCK))
+                {   // just retry once more
+                    ;
+                }
+                else if (written == -1)
+                {   // for any other errno we raise FAILURE
+                    return ErrorCommandFailure(context, commandString, errno);
+printf("io input FAILURE %d\n", errno);
+                }
+                else
+                {   // success
+                    need_to_write_input = false; // we won't retry no more
+                    close(input[1]); // we're finished with stdin
+                    close(input[0]); // we also close our unused stdin pipe read end
+printf("io input feed closed\n");
+                }
+            }
+
+            // do we need to read OUTPUT from the stdout pipe?
+            // if we have stdout and sterr interleaved, we'll read both of them here
+            if (need_to_read_output)
+            {
+                char data[IO_PIPE_BUF];
+                // read pipe in chunks until read() fails
+                ssize_t bytes = read(output[0], data, IO_PIPE_BUF);
+                while (bytes > 0)
+                {
+printf("io output buffer %zd bytes read\n", bytes);
+                    ioContext->WriteOutputBuffer(data, bytes);
+                    bytes = read(output[0], data, IO_PIPE_BUF);
+                }
+printf("io output buffer %zd bytes read\n", bytes);
+                // we retry only if this is just a temporary failure, otherwise
+                // this is either a FAILURE condition, or an EOF and we're done
+                if (bytes == -1 && (errno == EAGAIN || errno == EWOULDBLOCK))
+                {   // just retry once more
+printf("io output retry: %s\n", strerror(errno));
+                    ;
+                }
+                else if (bytes == -1)
+                {   // for any other errno we raise FAILURE
+printf("io output FAILURE: %s\n", strerror(errno));
+                    return ErrorCommandFailure(context, commandString, errno);
+                }
+                else //
+                {   // bytes == 0, EOF on pipe, success
+                    need_to_read_output = false;
+                    close(output[0]); // we're finished with stdout
+printf("io output feed closed\n");
+                }
+            }
+
+            // do we need to read ERROR lines from the stderr pipe?
+            // interleaved stout/stderr output has already been covered above
+            if (need_to_read_error)
+            {
+                char data[IO_PIPE_BUF];
+                // read pipe in chunks until read() fails
+                ssize_t bytes = read(error[0], data, IO_PIPE_BUF);
+                while (bytes > 0)
+                {
+printf("io error buffer %zd bytes read\n", bytes);
+                    ioContext->WriteErrorBuffer(data, bytes);
+                    bytes = read(error[0], data, IO_PIPE_BUF);
+                }
+printf("io error buffer %zd bytes read\n", bytes);
+                // we retry only if this is just a temporary failure, otherwise
+                // this is either a FAILURE condition, or an EOF and we're done
+                if (bytes == -1 && (errno == EAGAIN || errno == EWOULDBLOCK))
+                {   // just retry once more
+printf("io error retry: %s\n", strerror(errno));
+                    ;
+                }
+                else if (bytes == -1)
+                {   // for any other errno we raise FAILURE
+printf("io error FAILURE %s\n", strerror(errno));
+                    return ErrorCommandFailure(context, commandString, errno);
+                }
+                else //
+                {   // bytes == 0, EOF on pipe, success
+                    need_to_read_error = false;
+                    close(error[0]); // we're finished with stderr
+printf("io error feed closed\n");
+                }
+            }
+
+            // we sleep 250 microseconds between retries
+            if (need_to_write_input || need_to_read_output || need_to_read_error)
+            {
+                timeval time;
+                time.tv_sec = 0;
+                time.tv_usec = 250; // 250 microseconds
+                select(0, NULL, NULL, NULL, &time); // select() seems to be most portable
+printf("io loop wait 250 usec done\n");
+            }
+        } // END while (need_to_write_input || need_to_read_output || need_to_read_error)
+
+        posix_spawn_file_actions_destroy(&action);
+    }
+    else
+    {   // no rediretcion requested
+printf("io no redirection\n");
+        if (posix_spawnp(&pid, argv[0], NULL, NULL, argv, NULL) != 0)
+        {
+printf("io spawnp != 0, %s\n", strerror(errno));
+            return ErrorCommandFailure(context, commandString, UNKNOWN_COMMAND);
+        }
+    }
+
+    // wait for our child, the forked command
+printf("io waitpid(%d) = %d\n", pid,
+    waitpid(pid, &status, 0));
+    int rc;
+    if (WIFEXITED(status)) // child process ended normal
+    {
+        rc = WEXITSTATUS(status); // set return code
+printf("io child ended with rc %d\n", rc);
+    }
+    else
+    {   // child process died
+        rc = -(WTERMSIG(status));
+        if (rc == 1) // process was stopped
+        {
+            rc = -1;
+printf("io child died");
+        }
+    }
+
+    if (rc != 0)
+    {
+        // non-zero is an error condition
+        context->RaiseCondition("ERROR", context->String(commandString), NULL, context->WholeNumberToObject(rc));
+    }
+printf("io returning\n");
+    return context->False(); // zero return code
+}
+
+
+/**
  * Register the standard system command handlers.
  *
  * @param instance The created instance.
@@ -775,9 +1128,7 @@ void SysInterpreterInstance::registerCommandHandlers(InterpreterInstance *_insta
     _instance->addCommandHandler("BSH", (REXXPFN)systemCommandHandler, HandlerType::REDIRECTING);
     _instance->addCommandHandler("BASH", (REXXPFN)systemCommandHandler, HandlerType::REDIRECTING);
     _instance->addCommandHandler("NOSHELL", (REXXPFN)systemCommandHandler, HandlerType::REDIRECTING);
+
+    _instance->addCommandHandler("IO", (REXXPFN)ioCommandHandler, HandlerType::REDIRECTING);
 }
-
-
-
-
 
