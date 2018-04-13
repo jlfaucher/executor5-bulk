@@ -57,6 +57,7 @@
 #include "InterpreterInstance.hpp"
 #include "SysInterpreterInstance.hpp"
 #include "CommandHandler.hpp"
+#include "SysThread.hpp"
 
 #define CMDBUFSIZE 8092                // maximum commandline length
 #define CMDDEFNAME "CMD.EXE"           // default Windows cmomand handler
@@ -68,6 +69,48 @@
 #define SHOWWINDOWFLAGS SW_HIDE        // determines visibility of cmd
                                        // window SHOW, HIDE etc...
                                        // function prototypes
+
+
+class InputWriterThread : public SysThread
+{
+
+public:
+    inline InputWriterThread() : SysThread(),
+        pipe(0), inputBuffer(NULL), bufferLength(0), error(0) { }
+    inline ~InputWriterThread() { terminate(); }
+
+    void start()
+    {
+        SysThread::createThread();
+    }
+    virtual void dispatch()
+    {
+        if (!WriteFile(pipe, inputBuffer, (DWORD)bufferLength, NULL, NULL))
+        {
+            error = GetLastError();
+        }
+        CloseHandle(pipe);
+    }
+
+    void handleError(RexxExitContext *context)
+    {
+        if (error != 0)
+        {
+            CSTRING emsg = "Error writing to Input pipe!";
+            context->RaiseCondition("FAILURE", context->String(emsg),
+                                    NULLOBJECT,
+                                    context->WholeNumberToObject(error));
+        }
+    }
+
+    const char *inputBuffer;      // the buffer of data to write
+    size_t      bufferLength;     // the length of the buffer
+    HANDLE      pipe;             // the pipe we write the data to
+    INT         error;            // and error that resulted.
+};
+
+
+
 /**
  * Retrieve the globally default initial address.
  *
@@ -257,10 +300,12 @@ bool sysCommandNT(RexxExitContext *context,
     DWORD creationFlags;
     BOOL titleChanged;
 
-    BOOL redirIn = ioContext->IsInputRedirected();      // Input redirected?
-    BOOL redirOut = ioContext->IsOutputRedirected();    // Output redirected?
-    BOOL redirErr = ioContext->IsErrorRedirected();     // Error redirected?
-    BOOL combo = ioContext->AreOutputAndErrorSameTarget();  // Err/Out combined?
+    logical_t redirIn = ioContext->IsInputRedirected();      // Input redirected?
+    logical_t redirOut = ioContext->IsOutputRedirected();    // Output redirected?
+    logical_t redirErr = ioContext->IsErrorRedirected();     // Error redirected?
+    logical_t combo = ioContext->AreOutputAndErrorSameTarget();  // Err/Out combined?
+
+    InputWriterThread inputThread;                           // used if need to write input
 
     const int READ_SIZE = 4096;         // size of chunks read from pipes
     DWORD cntRead;
@@ -348,27 +393,16 @@ bool sysCommandNT(RexxExitContext *context,
                       &piProcInfo))        // address of PROCESS_INFORMATION
     {
         // if Input is redirected, write the input data to the input pipe
-        if (redirIn) {
-            BOOL writeOK = false;
-            CSTRING in_data;
-            size_t in_strL;
-            int error;
-
-            ioContext->ReadInputBuffer(&in_data, &in_strL);
-            if (in_data != NULL)
+        if (redirIn)
+        {
+            ioContext->ReadInputBuffer(&inputThread.inputBuffer, &inputThread.bufferLength);
+            // only start the thread if we have real data
+            if (inputThread.inputBuffer != NULL)
             {
-                writeOK = WriteFile(inPipeW, in_data, in_strL, NULL, NULL);
-                if (!writeOK) {
-                    error = GetLastError();
-                    CSTRING emsg = "Error writing to Input pipe!";
-                    context->RaiseCondition("FAILURE", context->String(emsg),
-                                            NULLOBJECT,
-                                            context->WholeNumberToObject(error));
-                    result = NULLOBJECT;
-                    return true;
-                }
+                // we need the pipe handle to do this
+                inputThread.pipe = inPipeW;
+                inputThread.start();
             }
-            CloseHandle(inPipeW);
         }
 
         // CreateProcess succeeded, now wait for the process to end.
@@ -419,6 +453,15 @@ bool sysCommandNT(RexxExitContext *context,
                 if (!readOK || cntRead == 0) break;
                 ioContext->WriteErrorBuffer(pipeBuf, cntRead);
             }
+        }
+
+        // do we have input cleanup to perform?
+        if (redirIn)
+        {
+            // make sure the thread is really terminated
+            inputThread.terminate();
+            // give the input thead a chance to raise an error too.
+            inputThread.handleError(context);
         }
     }
     else
