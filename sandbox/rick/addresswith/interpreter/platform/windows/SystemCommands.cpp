@@ -410,6 +410,48 @@ bool sysCommandNT(RexxExitContext *context,
         {
             SetConsoleTitle(siStartInfo.lpTitle);
         }
+
+
+        // if Output is redirected, write the data from the output pipe
+        if (redirOut)
+        {
+            CloseHandle(siStartInfo.hStdOutput);  // close the handle so readFile will stop
+            for (;;)
+            {
+                readOK = ReadFile(outPipeR, pipeBuf, READ_SIZE, &cntRead, NULL);
+                if (!readOK || cntRead == 0)
+                {
+                    break;
+                }
+                ioContext->WriteOutputBuffer(pipeBuf, cntRead);
+            }
+        }
+
+        // if Error is redirected, write the data from the error pipe
+        if (redirErr)
+        {
+            CloseHandle(siStartInfo.hStdError);  // close the handle so readPipe will stop
+            for (;;)
+            {
+                readOK = ReadFile(errPipeR, pipeBuf, READ_SIZE, &cntRead, NULL);
+                if (!readOK || cntRead == 0)
+                {
+                    break;
+                }
+                ioContext->WriteErrorBuffer(pipeBuf, cntRead);
+            }
+        }
+
+        // do we have input cleanup to perform?
+        if (redirIn)
+        {
+            // make sure the thread is really terminated
+            inputThread.terminate();
+            // give the input thead a chance to raise an error too.
+            inputThread.handleError(context);
+        }
+
+
         SystemInterpreter::exceptionHostProcess = piProcInfo.hProcess;
         SystemInterpreter::exceptionHostProcessId = piProcInfo.dwProcessId;
 
@@ -434,35 +476,6 @@ bool sysCommandNT(RexxExitContext *context,
         }
         CloseHandle(piProcInfo.hThread);
         CloseHandle(piProcInfo.hProcess);
-
-        // if Output is redirected, write the data from the output pipe
-        if (redirOut) {
-            CloseHandle(siStartInfo.hStdOutput);  // close the handle so readFile will stop
-            for (;;) {
-                readOK = ReadFile(outPipeR, pipeBuf, READ_SIZE, &cntRead, NULL);
-                if (!readOK || cntRead == 0) break;
-                ioContext->WriteOutputBuffer(pipeBuf, cntRead);
-            }
-        }
-
-        // if Error is redirected, write the data from the error pipe
-        if (redirErr) {
-            CloseHandle(siStartInfo.hStdError);  // close the handle so readPipe will stop
-            for (;;) {
-                readOK = ReadFile(errPipeR, pipeBuf, READ_SIZE, &cntRead, NULL);
-                if (!readOK || cntRead == 0) break;
-                ioContext->WriteErrorBuffer(pipeBuf, cntRead);
-            }
-        }
-
-        // do we have input cleanup to perform?
-        if (redirIn)
-        {
-            // make sure the thread is really terminated
-            inputThread.terminate();
-            // give the input thead a chance to raise an error too.
-            inputThread.handleError(context);
-        }
     }
     else
     {
