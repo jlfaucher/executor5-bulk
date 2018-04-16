@@ -3420,9 +3420,9 @@ RexxInternalObject *LanguageParser::parseMessageSubterm(int terminators)
                 return new RexxUnaryOperator(token->subtype(), term);
                 break;
             }
-            // not a aperator in the normal sense, but & as a prefix creates
+            // not a aperator in the normal sense, but > as a prefix creates
             // a variable reference.
-            case OPERATOR_AND:
+            case OPERATOR_GREATERTHAN:
             {
                 // this must be either a simple variable or a stem.
                 token = nextReal();
