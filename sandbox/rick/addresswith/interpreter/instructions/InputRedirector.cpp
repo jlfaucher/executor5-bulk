@@ -182,7 +182,7 @@ RexxString *StemInputSource::read(NativeActivation *context)
         return OREF_NULL;
     }
     // get the next element
-    RexxObject *value = stem->getElement(index++);
+    RexxObject *value = stem->getFullElement(index++);
     // this is not supposed to be a sparse array, but for safety,
     // we'll turn this into a null string
     if (value == OREF_NULL)
