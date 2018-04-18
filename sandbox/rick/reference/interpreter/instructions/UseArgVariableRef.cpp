@@ -42,6 +42,7 @@
 /******************************************************************************/
 #include "RexxCore.h"
 #include "UseArgVariableRef.hpp"
+#include "RexxVariable.hpp"
 
 
 /**
@@ -134,3 +135,13 @@ bool UseArgVariableRef::isStem()
     return isOfClass(StemVariableTerm, variable);
 }
 
+
+/**
+ * Get the name of the indirect variable for tracing
+ *
+ * @return The string name of the variable
+ */
+RexxString *UseArgVariableRef::getName()
+{
+    return ((RexxVariable *)variable)->getName();
+}

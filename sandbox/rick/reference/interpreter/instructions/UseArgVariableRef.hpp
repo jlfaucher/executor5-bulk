@@ -61,6 +61,7 @@ class UseArgVariableRef : public RexxVariableBase
     virtual void flatten(Envelope *);
     void aliasVariable(RexxActivation *, RexxVariable *);
     bool isStem();
+    RexxString *getName();
 
 protected:
     RexxVariableBase *variable;          // The information for the variable we're going to alias

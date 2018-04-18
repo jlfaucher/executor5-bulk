@@ -163,7 +163,8 @@ void UseVariable::handleReferenceArgument(RexxActivation *context, ExpressionSta
 
     // do the aliasing.
     useRef->aliasVariable(context, reference->getVariable());
-    // TODO: Figure out how to trace this
+    // and trace the aliasing having taken place
+    context->traceVariableAlias(reference->getName(), useRef->getName());
 }
 
 
