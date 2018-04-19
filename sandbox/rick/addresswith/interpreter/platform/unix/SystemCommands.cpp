@@ -849,7 +849,7 @@ RexxObjectPtr RexxEntry ioCommandHandler(RexxExitContext *context, RexxStringObj
         }
         // posix_spawnp() will fault if argv[0] is NULL.  Fix this.
         if (argv[0] == NULL)
-        {   
+        {
             argv[0] = (char*)"";
             argv[1] = NULL;
         }

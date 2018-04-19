@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2017 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -70,6 +70,7 @@
                                        // window SHOW, HIDE etc...
                                        // function prototypes
 
+const int READ_SIZE = 4096;         // size of chunks read from pipes
 
 class InputWriterThread : public SysThread
 {
@@ -92,22 +93,93 @@ public:
         CloseHandle(pipe);
     }
 
-    void handleError(RexxExitContext *context)
-    {
-        if (error != 0)
-        {
-            CSTRING emsg = "Error writing to Input pipe!";
-            context->RaiseCondition("FAILURE", context->String(emsg),
-                                    NULLOBJECT,
-                                    context->WholeNumberToObject(error));
-        }
-    }
-
     const char *inputBuffer;      // the buffer of data to write
     size_t      bufferLength;     // the length of the buffer
     HANDLE      pipe;             // the pipe we write the data to
-    INT         error;            // and error that resulted.
+    int         error;            // and error that resulted.
 };
+
+
+// a thread that reads ERROR data from the command pipe
+class ErrorReaderThread : public SysThread
+{
+
+public:
+    inline ErrorReaderThread() : SysThread(),
+        pipe(0), pipeBuffer(NULL), dataLength(0), error(0) { }
+    inline ~ErrorReaderThread()
+    {
+        if (pipeBuffer != NULL)
+        {
+            free(pipeBuffer);
+            pipeBuffer = NULL;
+        }
+        terminate();
+    }
+
+    void start(HANDLE _pipe)
+    {
+        pipe = _pipe;
+        SysThread::createThread();
+    }
+
+    virtual void dispatch()
+    {
+        DWORD cntRead;
+        size_t bufferSize = READ_SIZE;       // current size of our buffer
+        pipeBuffer = (char *)malloc(READ_SIZE);  // allocate an initial buffer
+        if (pipeBuffer == NULL)
+        {
+            // use the Windows error code
+            error = ERROR_NOT_ENOUGH_MEMORY;
+            return;
+        }
+        for (;;)
+        {
+            if (!ReadFile(pipe, pipeBuffer + dataLength, (DWORD)(bufferSize - dataLength), &cntRead, NULL) || cntRead == 0)
+            {
+                break;
+            }
+
+            dataLength += cntRead;
+            // have we hit the end of the buffer?
+            if (dataLength >= bufferSize)
+            {
+                // increase the buffer by another increment
+                bufferSize += READ_SIZE;
+                char *largerBuffer = (char *)realloc(pipeBuffer, bufferSize);
+                if (largerBuffer == NULL)
+                {
+                    // use the Windows error code
+                    error = ERROR_NOT_ENOUGH_MEMORY;
+                    return;
+                }
+                pipeBuffer = largerBuffer;
+            }
+        }
+        CloseHandle(pipe);
+    }
+
+    HANDLE pipe;                  // the pipe we read the data from
+    char  *pipeBuffer;            // initally errorBuffer = firstBuffer
+    size_t dataLength;            // the length of data we've read
+    int    error;                 // and error that resulted.
+};
+
+
+/**
+ * Raises syntax error 98.896 Address command redirection failed.
+ *
+ * @param context    The Exit context.
+ * @param errCode    The operating system error code.
+ */
+RexxObjectPtr ErrorRedirection(RexxExitContext *context, int errCode)
+{
+    // raise 98.896 Address command redirection failed
+    context->RaiseException1(Error_Execution_address_redirection_failed,
+      context->Int32ToObject(errCode));
+    return NULLOBJECT;
+}
 
 
 
@@ -244,32 +316,29 @@ void makePipe(PHANDLE readH, PHANDLE writeH,    // pointers to the handles
 {
     BOOL pipeOK;
     HANDLE noInheritH;
-    int error;
-    char eMsg1[30] = "Unable to create ";        // start of error message 1
-    char eMsg2[30] = "Unable to modify ";        // start of error message 2
 
     pipeOK = CreatePipe(readH, writeH, sAttr, 0);
-    if (!pipeOK) {
-        error = GetLastError();
-        strcat(eMsg1, name);                    // add pipe name to message
-        strcat(eMsg1, " pipe");                 // end of error message
-        context->RaiseCondition("FAILURE", context->String(eMsg1), NULLOBJECT,
-                                context->WholeNumberToObject(error));
+    if (!pipeOK)
+    {
+        ErrorRedirection(context, GetLastError());
+        return;
     }
 
     // insure the "unconnected" end of the pipe is not inherited
     if (strcmp(name, "Input") == 0)
+    {
         noInheritH = *writeH;
+    }
     else
+    {
         noInheritH = *readH;
+    }
 
     pipeOK = SetHandleInformation(noInheritH, HANDLE_FLAG_INHERIT, 0);
-    if (!pipeOK) {
-        error = GetLastError();
-        strcat(eMsg2, name);                    // add pipe name to message
-        strcat(eMsg2, " pipe");                 // end of error message
-        context->RaiseCondition("FAILURE", context->String(eMsg2), NULLOBJECT,
-                                context->WholeNumberToObject(error));
+    if (!pipeOK)
+    {
+        ErrorRedirection(context, GetLastError());
+        return;
     }
 }
 
@@ -306,8 +375,8 @@ bool sysCommandNT(RexxExitContext *context,
     logical_t combo = ioContext->AreOutputAndErrorSameTarget();  // Err/Out combined?
 
     InputWriterThread inputThread;                           // used if need to write input
+    ErrorReaderThread errorThread; // separate thread if we need to read ERROR
 
-    const int READ_SIZE = 4096;         // size of chunks read from pipes
     DWORD cntRead;
     char pipeBuf[READ_SIZE];
     BOOL readOK = false;
@@ -366,18 +435,26 @@ bool sysCommandNT(RexxExitContext *context,
     if (ioContext->IsRedirectionRequested()) {
         // create the pipes needed to implement the redirection
         if (redirIn)
+        {
             makePipe(&siStartInfo.hStdInput, &inPipeW, &secAttr, "Input", context);
+        }
 
         if (redirOut)
+        {
             makePipe(&outPipeR, &siStartInfo.hStdOutput, &secAttr, "Output", context);
+        }
 
-        if (redirErr) {
-            if (combo) {                // send output and error to the same stream
+        if (redirErr)
+        {
+            if (combo)
+            {                // send output and error to the same stream
                 siStartInfo.hStdError = siStartInfo.hStdOutput;
                 redirErr = false;
             }
             else
+            {
                 makePipe(&errPipeR, &siStartInfo.hStdError, &secAttr, "Error", context);
+            }
         }
     }
 
@@ -392,6 +469,12 @@ bool sysCommandNT(RexxExitContext *context,
                       &siStartInfo,        // address of STARTUPINFO
                       &piProcInfo))        // address of PROCESS_INFORMATION
     {
+        // CreateProcess succeeded, change the title if needed
+        if (titleChanged)
+        {
+            SetConsoleTitle(siStartInfo.lpTitle);
+        }
+
         // if Input is redirected, write the input data to the input pipe
         if (redirIn)
         {
@@ -405,10 +488,10 @@ bool sysCommandNT(RexxExitContext *context,
             }
         }
 
-        // CreateProcess succeeded, now wait for the process to end.
-        if (titleChanged)
+        if (redirErr)
         {
-            SetConsoleTitle(siStartInfo.lpTitle);
+            // we start a separate thread to read ERROR data from the error pipe
+            errorThread.start(errPipeR);
         }
 
 
@@ -427,28 +510,31 @@ bool sysCommandNT(RexxExitContext *context,
             }
         }
 
-        // if Error is redirected, write the data from the error pipe
+        // did we start an ERROR thrad?
         if (redirErr)
         {
-            CloseHandle(siStartInfo.hStdError);  // close the handle so readPipe will stop
-            for (;;)
+            // wait for the ERROR thread to finish
+            errorThread.waitForTermination();
+            if (errorThread.dataLength > 0)
+            {   // return what the ERROR thread read from its pipe
+                ioContext->WriteErrorBuffer(errorThread.pipeBuffer, errorThread.dataLength);
+            }
+            // the ERROR thread may have encountered an error .. raise it now
+            if (errorThread.error != 0)
             {
-                readOK = ReadFile(errPipeR, pipeBuf, READ_SIZE, &cntRead, NULL);
-                if (!readOK || cntRead == 0)
-                {
-                    break;
-                }
-                ioContext->WriteErrorBuffer(pipeBuf, cntRead);
+                return ErrorRedirection(context, errorThread.error);
             }
         }
 
         // do we have input cleanup to perform?
         if (redirIn)
         {
-            // make sure the thread is really terminated
-            inputThread.terminate();
-            // give the input thead a chance to raise an error too.
-            inputThread.handleError(context);
+            inputThread.waitForTermination();
+            // the INPUT thread may have encountered an error .. raise it now
+            if (inputThread.error != 0)
+            {
+                return ErrorRedirection(context, inputThread.error);
+            }
         }
 
 
