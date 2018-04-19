@@ -627,6 +627,7 @@ ERROR_MESSAGE Message_table[] = {      /* table of major and minor errors   */
       MINOR(Error_Execution_file_not_writeable)
       MINOR(Error_Execution_address_redirection_not_supported)
       MINOR(Error_Execution_using_rexxqueue_option)
+      MINOR(Error_Execution_address_redirection_failed)
   MAJOR(Error_Translation)
       MINOR(Error_Translation_user_defined)
       MINOR(Error_Translation_duplicate_class)

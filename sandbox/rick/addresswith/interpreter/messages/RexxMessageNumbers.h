@@ -717,6 +717,7 @@
 #define Error_Symbol_expected_address_with_msg                       802
 #define Error_Execution_address_redirection_not_supported_msg        803
 #define Error_Execution_using_rexxqueue_option_msg                   804
+#define Error_Execution_address_redirection_failed_msg               805
 
 
 #endif
