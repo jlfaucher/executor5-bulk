@@ -513,6 +513,7 @@ bool sysCommandNT(RexxExitContext *context,
         // did we start an ERROR thrad?
         if (redirErr)
         {
+            CloseHandle(siStartInfo.hStdError);  // close the handle so readFile will stop
             // wait for the ERROR thread to finish
             errorThread.waitForTermination();
             if (errorThread.dataLength > 0)
