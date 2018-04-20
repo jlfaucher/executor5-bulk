@@ -335,6 +335,14 @@ InputRedirector *CommandIOConfiguration::createInputSource(RexxActivation *conte
                 return new StreamObjectInputSource(inputObject);
             }
 
+            // Now we treat monitors as if they are input streams.
+            RexxClass *monitorClass = TheRexxPackage->findClass(GlobalNames::MONITOR);
+            if (inputObject->isInstanceOf(monitorClass))
+            {
+                // for the purposes of this, a monitor and a stream object are treated the same.
+                return new StreamObjectInputSource(inputObject);
+            }
+
             // OK, now try for a FILE object
             RexxClass *fileClass = TheRexxPackage->findClass(GlobalNames::FILE);
             if (inputObject->isInstanceOf(fileClass))
@@ -456,7 +464,11 @@ OutputRedirector *CommandIOConfiguration::createOutputTarget(RexxString *keyword
 
             // Now we need to check for output streams
             RexxClass *streamClass = TheRexxPackage->findClass(GlobalNames::OUTPUTSTREAM);
-            if (outputObject->isInstanceOf(streamClass))
+            // Now we treat monitors as if they are input streams.
+            RexxClass *monitorClass = TheRexxPackage->findClass(GlobalNames::MONITOR);
+
+            // monitors are treated as if they are stream objects.
+            if (outputObject->isInstanceOf(streamClass) || outputObject->isInstanceOf(monitorClass))
             {
                 // REPLACE or APPEND does not make sense for an arbitrary inputstream
                 // object that might not even be a file stream. raise an error for anything
