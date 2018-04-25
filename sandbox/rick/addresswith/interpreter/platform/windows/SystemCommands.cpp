@@ -80,13 +80,15 @@ public:
         pipe(0), inputBuffer(NULL), bufferLength(0), error(0) { }
     inline ~InputWriterThread() { terminate(); }
 
-    void start()
+    void start(HANDLE _pipe)
     {
+        pipe = _pipe;
         SysThread::createThread();
     }
     virtual void dispatch()
     {
-        if (!WriteFile(pipe, inputBuffer, (DWORD)bufferLength, NULL, NULL))
+        DWORD bytesWritten = 0;
+        if (!WriteFile(pipe, inputBuffer, (DWORD)bufferLength, &bytesWritten, NULL))
         {
             error = GetLastError();
         }
@@ -483,8 +485,7 @@ bool sysCommandNT(RexxExitContext *context,
             if (inputThread.inputBuffer != NULL)
             {
                 // we need the pipe handle to do this
-                inputThread.pipe = inPipeW;
-                inputThread.start();
+                inputThread.start(inPipeW);
             }
         }
 
@@ -900,192 +901,6 @@ RexxObjectPtr RexxEntry systemCommandHandler(RexxExitContext *context,
     return result;
 }
 
-#if 1
-RexxObjectPtr RexxEntry testCommandHandler(RexxExitContext *context, RexxStringObject address, RexxStringObject command, RexxIORedirectorContext *ioContext)
-{
-    CSTRING commandString = context->CString(command);
-
-    if (strcmp(commandString, "INPUTOUTPUT") == 0)
-    {
-        CSTRING data;
-        size_t length;
-        size_t count = 0;
-
-        ioContext->ReadInput(&data, &length);
-        while (data != NULL)
-        {
-            count++;
-            ioContext->WriteOutput(data, length);
-            ioContext->ReadInput(&data, &length);
-        }
-
-        return context->StringSizeToObject(count);
-    }
-
-    if (strcmp(commandString, "INPUTERROR") == 0)
-    {
-        CSTRING data;
-        size_t length;
-        size_t count = 0;
-
-        ioContext->ReadInput(&data, &length);
-        while (data != NULL)
-        {
-            count++;
-            ioContext->WriteError(data, length);
-            ioContext->ReadInput(&data, &length);
-        }
-
-        return context->StringSizeToObject(count);
-    }
-
-    if (strcmp(commandString, "INPUTBOTH") == 0)
-    {
-        CSTRING data;
-        size_t length;
-        bool useError = false;
-        size_t count = 0;
-
-        ioContext->ReadInput(&data, &length);
-        while (data != NULL)
-        {
-            count++;
-            if (useError)
-            {
-                ioContext->WriteError(data, length);
-            }
-            else
-            {
-                ioContext->WriteOutput(data, length);
-            }
-            useError = !useError;
-            ioContext->ReadInput(&data, &length);
-        }
-
-        return context->StringSizeToObject(count);
-    }
-
-
-    if (strcmp(commandString, "NOBLANKOUTPUT") == 0)
-    {
-        CSTRING data;
-        size_t length;
-        size_t count = 0;
-
-        ioContext->ReadInput(&data, &length);
-        while (data != NULL)
-        {
-            count++;
-            // only write non blank lines
-            if (length > 0)
-            {
-                ioContext->WriteOutput(data, length);
-            }
-            ioContext->ReadInput(&data, &length);
-        }
-
-        return context->StringSizeToObject(count);
-    }
-
-
-    if (strcmp(commandString, "NOBLANKERROR") == 0)
-    {
-        CSTRING data;
-        size_t length;
-        size_t count = 0;
-
-        ioContext->ReadInput(&data, &length);
-        while (data != NULL)
-        {
-            count++;
-            // only write non blank lines
-            if (length > 0)
-            {
-                ioContext->WriteError(data, length);
-            }
-            ioContext->ReadInput(&data, &length);
-        }
-
-        return context->StringSizeToObject(count);
-    }
-
-    if (strcmp(commandString, "BUFFEROUTPUT") == 0)
-    {
-        CSTRING data;
-        size_t length;
-        size_t count = 0;
-
-        ioContext->ReadInput(&data, &length);
-        while (data != NULL)
-        {
-            count++;
-            ioContext->WriteOutputBuffer(data, length);
-            ioContext->ReadInput(&data, &length);
-        }
-
-        return context->StringSizeToObject(count);
-    }
-
-    if (strcmp(commandString, "BUFFERERROR") == 0)
-    {
-        CSTRING data;
-        size_t length;
-        size_t count = 0;
-
-        ioContext->ReadInput(&data, &length);
-        while (data != NULL)
-        {
-            count++;
-            ioContext->WriteErrorBuffer(data, length);
-            ioContext->ReadInput(&data, &length);
-        }
-
-        return context->StringSizeToObject(count);
-    }
-
-    if (strcmp(commandString, "BUFFERINPUT") == 0)
-    {
-        CSTRING data;
-        size_t length;
-
-        ioContext->ReadInputBuffer(&data, &length);
-        if (data != NULL)
-        {
-            ioContext->WriteOutputBuffer(data, length);
-        }
-
-        return context->StringSizeToObject(length);
-    }
-
-    if (strcmp(commandString, "INPUTREDIRECTED") == 0)
-    {
-        return ioContext->IsInputRedirected() ? context->True() : context->False();
-    }
-
-    if (strcmp(commandString, "OUTPUTREDIRECTED") == 0)
-    {
-        return ioContext->IsOutputRedirected() ? context->True() : context->False();
-    }
-
-    if (strcmp(commandString, "ERRORREDIRECTED") == 0)
-    {
-        return ioContext->IsErrorRedirected() ? context->True() : context->False();
-    }
-
-    if (strcmp(commandString, "AREOUTPUTERRORTHESAME") == 0)
-    {
-        return ioContext->AreOutputAndErrorSameTarget() ? context->True() : context->False();
-    }
-
-    if (strcmp(commandString, "ISREDIRECTIONREQUESTED") == 0)
-    {
-        return ioContext->IsRedirectionRequested() ? context->True() : context->False();
-    }
-
-    return context->True();
-}
-
-#endif
 
 /**
  * Register the standard system command handlers.
@@ -1099,7 +914,4 @@ void SysInterpreterInstance::registerCommandHandlers(InterpreterInstance *instan
     instance->addCommandHandler("CMD", (REXXPFN)systemCommandHandler, HandlerType::REDIRECTING);
     instance->addCommandHandler("COMMAND", (REXXPFN)systemCommandHandler, HandlerType::REDIRECTING);
     instance->addCommandHandler("", (REXXPFN)systemCommandHandler, HandlerType::REDIRECTING);
-#if 1
-    instance->addCommandHandler("TEST", (REXXPFN)testCommandHandler, HandlerType::REDIRECTING);
-#endif
 }

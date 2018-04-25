@@ -939,8 +939,8 @@ RexxObjectPtr RexxEntry ioCommandHandler(RexxExitContext *context, RexxStringObj
         }
 
         // now stderr redirection
-        // if both stdout and stderr are to be redireted to the same object, then
-        // everything was already setup in the previous stdout redirection step
+        // if both stdout and stderr are to be redirected to the same object, then
+        // everything was already set up in the previous stdout redirection step
         if (ioContext->IsErrorRedirected() && !ioContext->AreOutputAndErrorSameTarget())
         {
             if (pipe(error) != 0) // create stderr pipe
@@ -952,8 +952,8 @@ RexxObjectPtr RexxEntry ioCommandHandler(RexxExitContext *context, RexxStringObj
             need_to_read_error = true;
         }
 
-        // ok, everything is setup accordingly, let's fork the redirected command
-        if (posix_spawnp(&pid, argv[0], &action, NULL, argv, NULL) != 0)
+        // ok, everything is set up accordingly, let's fork the redirected command
+        if (posix_spawnp(&pid, argv[0], &action, NULL, argv, getEnvironment()) != 0)
             {
                 return ErrorFailure(context, commandString);
             }
@@ -1045,7 +1045,7 @@ RexxObjectPtr RexxEntry ioCommandHandler(RexxExitContext *context, RexxStringObj
         }
         else
         {   // to run the command we spawn another thread
-            if (posix_spawnp(&pid, argv[0], NULL, NULL, argv, NULL) != 0)
+            if (posix_spawnp(&pid, argv[0], NULL, NULL, argv, getEnvironment()) != 0)
             {
                 return ErrorFailure(context, commandString);
             }
