@@ -115,14 +115,14 @@ public:
 };
 
 
-// a thread that reads ERROR data from the command pipe
-class ErrorReaderThread : public SysThread
+// a thread that reads ERROR or OUTPUT data from the command pipe
+class ReaderThread : public SysThread
 {
 
 public:
-    inline ErrorReaderThread() : SysThread(),
+    inline ReaderThread() : SysThread(),
         pipe(0), pipeBuffer(NULL), dataLength(0), error(0) { }
-    inline ~ErrorReaderThread()
+    inline ~ReaderThread()
     {
         if (pipeBuffer != NULL)
         {
@@ -390,10 +390,9 @@ bool sysCommandNT(RexxExitContext *context,
     logical_t combo = ioContext->AreOutputAndErrorSameTarget();  // Err/Out combined?
 
     InputWriterThread inputThread;                           // used if need to write input
-    ErrorReaderThread errorThread; // separate thread if we need to read ERROR
+    ReaderThread outputThread;                               // separate thread if we need to read OUTPUT
+    ReaderThread errorThread;                                // separate thread if we need to read ERROR
 
-    DWORD cntRead;
-    char pipeBuf[READ_SIZE];
     BOOL readOK = false;
     // handles for pipes if needed
     HANDLE inPipeW, outPipeR, errPipeR;
@@ -512,33 +511,8 @@ bool sysCommandNT(RexxExitContext *context,
         // if Output is redirected, write the data from the output pipe
         if (redirOut)
         {
-            CloseHandle(siStartInfo.hStdOutput);  // close the handle so readFile will stop
-            for (;;)
-            {
-                readOK = ReadFile(outPipeR, pipeBuf, READ_SIZE, &cntRead, NULL);
-                if (!readOK || cntRead == 0)
-                {
-                    break;
-                }
-                ioContext->WriteOutputBuffer(pipeBuf, cntRead);
-            }
-        }
-
-        // did we start an ERROR thrad?
-        if (redirErr)
-        {
-            CloseHandle(siStartInfo.hStdError);  // close the handle so readFile will stop
-            // wait for the ERROR thread to finish
-            errorThread.waitForTermination();
-            if (errorThread.dataLength > 0)
-            {   // return what the ERROR thread read from its pipe
-                ioContext->WriteErrorBuffer(errorThread.pipeBuffer, errorThread.dataLength);
-            }
-            // the ERROR thread may have encountered an error .. raise it now
-            if (errorThread.error != 0)
-            {
-                return ErrorRedirection(context, errorThread.error);
-            }
+            // we start a separate thread to read OUTPUT data from the stdout pipe
+            outputThread.start(outPipeR);
         }
 
 
@@ -547,6 +521,8 @@ bool sysCommandNT(RexxExitContext *context,
 
         if (WAIT_FAILED != WaitForSingleObject ( piProcInfo.hProcess, INFINITE ) )
         {
+            // Completed ok, get termination rc
+            GetExitCodeProcess(piProcInfo.hProcess, &rc);
             // do we have input cleanup to perform?
             if (redirIn)
             {
@@ -564,8 +540,40 @@ bool sysCommandNT(RexxExitContext *context,
                     return ErrorRedirection(context, inputThread.error);
                 }
             }
-            // Completed ok, get termination rc
-            GetExitCodeProcess(piProcInfo.hProcess, &rc);
+
+            // did we start an ERROR thread?
+            if (redirOut)
+            {
+                CloseHandle(siStartInfo.hStdOutput);  // close the handle so readFile will stop
+                // wait for the ERROR thread to finish
+                outputThread.waitForTermination();
+                if (outputThread.dataLength > 0)
+                {   // return what the ERROR thread read from its pipe
+                    ioContext->WriteOutputBuffer(outputThread.pipeBuffer, outputThread.dataLength);
+                }
+                // the OUTPUT thread may have encountered an error .. raise it now
+                if (outputThread.error != 0)
+                {
+                    return ErrorRedirection(context, errorThread.error);
+                }
+            }
+
+            // did we start an ERROR thread?
+            if (redirErr)
+            {
+                CloseHandle(siStartInfo.hStdError);  // close the handle so readFile will stop
+                // wait for the ERROR thread to finish
+                errorThread.waitForTermination();
+                if (errorThread.dataLength > 0)
+                {   // return what the ERROR thread read from its pipe
+                    ioContext->WriteErrorBuffer(errorThread.pipeBuffer, errorThread.dataLength);
+                }
+                // the ERROR thread may have encountered an error .. raise it now
+                if (errorThread.error != 0)
+                {
+                    return ErrorRedirection(context, errorThread.error);
+                }
+            }
         }
         else
         {

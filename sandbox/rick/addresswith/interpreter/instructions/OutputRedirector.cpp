@@ -134,7 +134,21 @@ void OutputRedirector::flushBuffer()
 {
     if (bufferedData != OREF_NULL)
     {
-        writeLine(bufferedData);
+        // On Windows, there seems to be a boundary condition that causes
+        // a dangling '\r' on the last read buffer. If we have this at the end
+        // of the buffer, we need to chop that off.
+        if (bufferedData->endsWith('\r'))
+        {
+            // yep, all but the last part of the tail is a complete line,
+            // and we need to step over the first buffer character
+            Protected<RexxString> newLine = new_string(bufferedData->getStringData(), bufferedData->getLength() - 1);
+            writeLine(newLine);
+        }
+        // the dangling buffer is all data
+        else
+        {
+            writeLine(bufferedData);
+        }
     }
     bufferedData = OREF_NULL;
 }
@@ -288,7 +302,7 @@ void OutputRedirector::scanLine(const char *lineStart, const char *bufferEnd, co
             // this is a little bit of a quandry. We found a \r as the last character
             // of the buffer. We can't make a decision here, so punt and say we don't have
             // a line
-            if (lineStart == bufferEnd + 1)
+            if (lineStart == bufferEnd - 1)
             {
                 return;
             }

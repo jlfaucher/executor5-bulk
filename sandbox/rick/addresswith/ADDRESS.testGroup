@@ -430,7 +430,7 @@ address_with ::=      ( 'WITH' ( 'INPUT' ( 'NORMAL' | 'STEM' stem | 'STREAM' str
   stem. = line
   stem.0 = 2
   stemObject = .Stem~of( (0, 2), (1, line), (2, line) )
-  fileName = "address-with.tmp"
+  fileName = "address-with.tmp2"
   file = .File~new(filename)
   stream = .Stream~new(file)
   array = .Array~new
@@ -640,7 +640,7 @@ address_with ::=      ( 'WITH' ( 'INPUT' ( 'NORMAL' | 'STEM' stem | 'STREAM' str
 -- copy stdin to stdout ignoring blank lines
 ::attribute inputToOutputNoBlanks get
   if .ooRexxUnit.OSName == "WINDOWS" then
-    return 'find /v ""'
+    return 'findstr "."'
   else
     return "grep ."
 
