@@ -77,7 +77,7 @@ class InputWriterThread : public SysThread
 
 public:
     inline InputWriterThread() : SysThread(),
-        pipe(0), inputBuffer(NULL), bufferLength(0), error(0) { }
+        pipe(0), inputBuffer(NULL), bufferLength(0), error(0), wasShutdown(false) { }
     inline ~InputWriterThread() { terminate(); }
 
     void start(HANDLE _pipe)
@@ -90,11 +90,24 @@ public:
         DWORD bytesWritten = 0;
         if (!WriteFile(pipe, inputBuffer, (DWORD)bufferLength, &bytesWritten, NULL))
         {
-            error = GetLastError();
+            // if we've had a shutdown request after the process completes, no longer
+            // record errors
+            if (!wasShutdown)
+            {
+                error = GetLastError();
+            }
         }
         CloseHandle(pipe);
     }
 
+    void shutdown()
+    {
+        wasShutdown = true;
+    }
+
+
+
+    bool        wasShutdown;      // this is a shutdown request
     const char *inputBuffer;      // the buffer of data to write
     size_t      bufferLength;     // the length of the buffer
     HANDLE      pipe;             // the pipe we write the data to
@@ -528,23 +541,29 @@ bool sysCommandNT(RexxExitContext *context,
             }
         }
 
-        // do we have input cleanup to perform?
-        if (redirIn)
-        {
-            inputThread.waitForTermination();
-            // the INPUT thread may have encountered an error .. raise it now
-            if (inputThread.error != 0)
-            {
-                return ErrorRedirection(context, inputThread.error);
-            }
-        }
-
 
         SystemInterpreter::exceptionHostProcess = piProcInfo.hProcess;
         SystemInterpreter::exceptionHostProcessId = piProcInfo.dwProcessId;
 
         if (WAIT_FAILED != WaitForSingleObject ( piProcInfo.hProcess, INFINITE ) )
         {
+            // do we have input cleanup to perform?
+            if (redirIn)
+            {
+                // the process has returned, but the input thread may be stuck
+                // on a write for data that was never used. We need to close the
+                // pipe to force it to complete
+                inputThread.shutdown();
+                // close the process end of the pipe
+                CloseHandle(siStartInfo.hStdInput);
+                // wait for everything to complete
+                inputThread.waitForTermination();
+                // the INPUT thread may have encountered an error .. raise it now
+                if (inputThread.error != 0)
+                {
+                    return ErrorRedirection(context, inputThread.error);
+                }
+            }
             // Completed ok, get termination rc
             GetExitCodeProcess(piProcInfo.hProcess, &rc);
         }
