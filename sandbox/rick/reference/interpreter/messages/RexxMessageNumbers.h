@@ -710,6 +710,7 @@
 #define Error_Symbol_expected_after_prefix_reference_msg             795
 #define Error_Symbol_expected_after_use_arg_reference_msg            796
 #define Error_Translation_use_arg_reference_no_default_msg           797
+#define Error_Execution_reference_variable_in_use_msg                798
 
 
 #endif

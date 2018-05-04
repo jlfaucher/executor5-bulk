@@ -100,6 +100,14 @@ call refStem2 >a., b.
 
 self~assertSame('789', a.0)
 
+a = 2
+self~refLocal(>a)
+self~assertSame(1, a)
+
+a.1 = 2
+self~refLocalStem(>a.)
+self~assertSame(1, a.1)
+
 
 ::method test_unknown
   a = 123
@@ -129,3 +137,78 @@ self~assertSame('789', a.0)
   use strict arg >stem., newValue
 
   stem. = newValue
+
+::method testRefExposed
+   self~expectSyntax(98.995)
+  self~refExposed(>a)
+
+::method refExposed
+  expose abc
+  use arg >abc
+
+::method testRefAutoExposed
+   self~expectSyntax(98.995)
+  self~refAutoExposed(>a)
+
+::method refAutoExposed
+  use local
+  use arg >abc
+
+::method refLocal
+  use local abc
+  use arg >abc
+
+  abc = 1
+
+::method testRefInited
+   self~expectSyntax(98.995)
+  self~refInited(>a)
+
+::method refInited
+  abc = 1
+  use arg >abc
+
+::method testRefDoubleArg
+   self~expectSyntax(98.995)
+  self~refDoubleArg(1, >a)
+
+::method refDoubleArg
+  use arg abc, >abc
+
+::method testRefExposedStem
+   self~expectSyntax(98.995)
+  self~refExposedStem(>a.)
+
+::method refExposedStem
+  expose abc.
+  use arg >abc.
+
+::method testRefAutoExposedStem
+   self~expectSyntax(98.995)
+  self~refAutoExposedStem(>a.)
+
+::method refAutoExposedStem
+  use local
+  use arg >abc.
+
+::method refLocalStem
+  use local abc.
+  use arg >abc.
+
+  abc.1 = 1
+
+
+::method testRefInitedStem
+   self~expectSyntax(98.995)
+  self~refInitedStem(>a.)
+
+::method refInitedStem
+  abc.0 = 1
+  use arg >abc.
+
+::method testDoubleArgStem
+   self~expectSyntax(98.995)
+  self~refDoubleArgStem(a., >b.)
+
+::method refDoubleArgStem
+  use arg abc., >abc.

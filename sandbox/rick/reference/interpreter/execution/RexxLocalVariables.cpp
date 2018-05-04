@@ -131,6 +131,23 @@ RexxVariable *RexxLocalVariables::findVariable(RexxString *name, size_t index)
         // VALUE() or interpret, for example).  If we have a non-zero
         // index, store the value from the dictionary into the slot.
         RexxVariable *variable = dictionary->resolveVariable(name);
+
+        // if we've had a miss on the local directory but we're auto exposing,
+        // we need to check the object dictionary
+        if (variable == OREF_NULL && autoExpose())
+        {
+            // Important note: If we are auto exposing, then all additional references
+            // need to come from the object variables, creating one if needed, so
+            // we are using getVariable() rather than resolveVariable() here.
+            variable = objectVariables->getVariable(name);
+            // if we found this in the object variables, add to the
+            // local dictionary too
+            if (variable != OREF_NULL)
+            {
+                dictionary->addVariable(name, variable);
+            }
+        }
+
         // if we have an index, fill in the cache entry.
         if (index != 0)
         {
@@ -163,6 +180,35 @@ RexxVariable *RexxLocalVariables::findVariable(RexxString *name, size_t index)
                     }
                 }
             }
+        }
+        // we have an index, check the slot directly
+        else
+        {
+            // check the slot...it might be there
+            if (locals[index] != OREF_NULL)
+            {
+                return locals[index];
+            }
+        }
+
+        // not found in the local table, but this could be an autoexpose situation
+        // we need to check the object dictionary
+        if (autoExpose())
+        {
+            // Important note: If we are auto exposing, then all additional references
+            // need to come from the object variables, creating one if needed, so
+            // we are using getVariable() rather than resolveVariable() here.
+            RexxVariable *variable = objectVariables->getVariable(name);
+            // we did not have a dictionary up to this point, so create it now and
+            // add it.
+            createDictionary();
+            dictionary->addVariable(name, variable);
+            // add this to the slot now
+            if (index != 0)
+            {
+                locals[index] = variable;
+            }
+            return variable;
         }
         // a non-zero index with no created variable dictionary means this
         // variable cannot exist.  Just return NULL.
@@ -500,6 +546,20 @@ void RexxLocalVariables::aliasVariable(RexxString *name, size_t index, RexxVaria
     // Just requesting the dictionary is sufficient to do this.
     getDictionary();
 
+    // see if there is already a variable with this name in the context (which might be
+    // an autoExposed object variable
+    RexxVariable *oldVar = findVariable(name, index);
+
+    // we can only perform the aliasing if this an unassigned local variable
+    if (oldVar != OREF_NULL && !oldVar->isAliasable())
+    {
+        reportException(Error_Execution_reference_variable_in_use, name);
+    }
+
+    // if we have a local variable with no value, this would have been created
+    // with USE LOCAL, so just overwrite the existing variable with the aliased one
+
+
     // Put uses the name from the variable, so we repeat that here.
     // We will most likly have an index since this is only used on the USE ARG
     // instruction, which tends not to be interpreted.
@@ -511,7 +571,8 @@ void RexxLocalVariables::aliasVariable(RexxString *name, size_t index, RexxVaria
 
     // we already created the dictionary, so we can unconditionally add
     // this value. Note that we are using the alias name, not the name
-    // from the referenced variable.
+    // from the referenced variable. This will also replace any variable created via
+    // use arg.
     dictionary->addVariable(name, variable);
 }
 

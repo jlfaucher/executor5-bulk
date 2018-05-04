@@ -619,6 +619,7 @@ ERROR_MESSAGE Message_table[] = {      /* table of major and minor errors   */
       MINOR(Error_Execution_expose_method)
       MINOR(Error_Execution_use_local_method)
       MINOR(Error_Execution_no_supplier)
+      MINOR(Error_Execution_reference_variable_in_use)
   MAJOR(Error_Translation)
       MINOR(Error_Translation_user_defined)
       MINOR(Error_Translation_duplicate_class)

@@ -47,6 +47,7 @@
 #include "ActivityManager.hpp"
 #include "StemClass.hpp"
 #include "VariableReference.hpp"
+#include "RexxActivation.hpp"
 
 
 /**
@@ -71,6 +72,7 @@ void RexxVariable::live(size_t liveMark)
 {
     memory_mark(variableValue);
     memory_mark(variableName);
+    memory_mark(creator);
     memory_mark(dependents);
 }
 
@@ -86,6 +88,7 @@ void RexxVariable::liveGeneral(MarkReason reason)
 {
     memory_mark_general(variableValue);
     memory_mark_general(variableName);
+    memory_mark_general(creator);
     memory_mark_general(dependents);
 }
 
@@ -101,6 +104,7 @@ void RexxVariable::flatten(Envelope *envelope)
 
      flattenRef(variableValue);
      flattenRef(variableName);
+     flattenRef(creator);
      flattenRef(dependents);
 
     cleanUpFlatten
@@ -247,4 +251,25 @@ void RexxVariable::setStem(RexxObject *value)
 VariableReference *RexxVariable::createReference()
 {
     return new VariableReference(this);
+}
+
+
+bool RexxVariable::isAliasable()
+{
+    // this has to be a local variable
+    if (!isLocal())
+    {
+        return false;
+    }
+
+    // stems are a bit more complicated. We consider them uninitialized
+    // if they are empty and the default value is also the variable name
+    if (isStem())
+    {
+        StemClass *stem = (StemClass *)variableValue;
+        return stem->isEmpty() && stem->getValue() == variableName;
+    }
+
+    // local variable, it must be uninitialized
+    return isDropped();
 }

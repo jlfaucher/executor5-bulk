@@ -55,8 +55,8 @@ class RexxVariable : public RexxInternalObject
     void *operator new(size_t);
     inline void  operator delete(void *) { }
 
-    inline RexxVariable() : variableName(OREF_NULL), variableValue(OREF_NULL), dependents(OREF_NULL) {;};
-    inline RexxVariable(RexxString *n) : variableName(n), variableValue(OREF_NULL), dependents(OREF_NULL) {;};
+    inline RexxVariable() : variableName(OREF_NULL), variableValue(OREF_NULL), creator(OREF_NULL), dependents(OREF_NULL) {;};
+    inline RexxVariable(RexxString *n) : variableName(n), variableValue(OREF_NULL), creator(OREF_NULL), dependents(OREF_NULL) {;};
     inline RexxVariable(RESTORETYPE restoreType) { ; };
 
     virtual void live(size_t);
@@ -80,20 +80,14 @@ class RexxVariable : public RexxInternalObject
 
     void setValue(RexxObject *value);
 
+    inline void setCreator(RexxActivation *creatorActivation) { creator = creatorActivation; }
+    inline bool isLocal() { return creator != OREF_NULL; }
+           bool isAliasable();
     inline RexxObject *getVariableValue() { return variableValue; };
     inline RexxObject *getResolvedValue() { return variableValue != OREF_NULL ? variableValue : variableName; };
     inline RexxString *getName() { return variableName; }
     inline void setName(RexxString *name) { setField(variableName, name); }
     inline bool isDropped() { return variableValue == OREF_NULL; }
-
-    // NOTE:  this is only called for local variables, which will never be in oldspace,
-    // so setField is not needed.
-    inline void reset(RexxString *name)
-    {
-        variableValue = OREF_NULL;        // clear out the hash value
-        variableName  = name;             // fill in the name
-        dependents = OREF_NULL;           // and the dependents
-    }
 
     // Note:  This does not use setField() since it will only occur with
     // local variables that can never be part of oldspace;
@@ -105,6 +99,7 @@ protected:
 
     RexxString *variableName;            // the name of the variable
     RexxObject *variableValue;           // the assigned value of the variable.
+    RexxActivation *creator;             // the activation that created this variable
     IdentityTable  *dependents;          // guard expression dependents
 };
 

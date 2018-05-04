@@ -615,6 +615,7 @@
 #define Rexx_Error_Execution_expose_method                                98992
 #define Rexx_Error_Execution_use_local_method                             98993
 #define Rexx_Error_Execution_no_supplier                                  98994
+#define Rexx_Error_Execution_reference_variable_in_use                    98995
 #define Rexx_Error_Translation                                            99000
 #define Rexx_Error_Translation_user_defined                               99900
 #define Rexx_Error_Translation_duplicate_class                            99901
