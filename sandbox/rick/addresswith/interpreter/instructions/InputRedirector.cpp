@@ -51,6 +51,39 @@
 #include "ConditionTrappingDispatcher.hpp"
 #include "MutableBufferClass.hpp"
 #include "SysFileSystem.hpp"
+#include "DirectoryClass.hpp"
+
+
+/**
+ * A dispatcher for trapping and handling conditions and errors from
+ * method calls used in redirection. This will ensure the errors get
+ * propagated to the base native activation for the command call.
+ */
+class RedirectionDispatcher : public ConditionTrappingDispatcher
+{
+public:
+    inline RedirectionDispatcher(TrapInvoker &t) : ConditionTrappingDispatcher(t)
+    {
+
+    }
+    virtual ~RedirectionDispatcher() { ; }
+
+    virtual void handleError(DirectoryClass *conditionObj)
+    {
+        // we're only interested in NOTREADY or SYNTAX conditions. We swallow the
+        // NOTREADY's, and propagate the SYNTAX conditions
+        RexxString *conditionName = (RexxString *)conditionObj->get(GlobalNames::CONDITION);
+        if (conditionName->strCompare(GlobalNames::SYNTAX))
+        {
+            // set this in the base command callout activation so the error will get raised
+            // when the command completes.
+            ((NativeActivation *)(activation->getPreviousStackFrame()))->setConditionInfo(conditionObj);
+        }
+
+        // now take care of normal trapping processes.
+        ConditionTrappingDispatcher::handleError(conditionObj);
+    }
+};
 
 
 /**
@@ -291,7 +324,7 @@ RexxString *StreamObjectInputSource::read(NativeActivation *context)
 
     // invoke LINEIN with trap protection
     LineinInvoker invoker(stream, lastValue);
-    ConditionTrappingDispatcher dispatcher(invoker);
+    RedirectionDispatcher dispatcher(invoker);
 
     // invoke the method with appropriate trapping
     context->getActivity()->run(dispatcher);

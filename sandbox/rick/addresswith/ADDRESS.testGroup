@@ -596,16 +596,17 @@ address_with ::=      ( 'WITH' ( 'INPUT' ( 'NORMAL' | 'STEM' stem | 'STREAM' str
   self~assertSame(1, error~toString(, "")~length)
 
   -- around 4K
+  eol = .endofline~length
+  around4K = "-"~copies(4095 - eol).endOfline"--" -- 4097 bytes
   do length = 4095 to 4097
-    address "" self~inputToError with input using ("-"~copies(length)) error replace using (error )
-    self~assertSame(length, error ~toString(, "")~length)
+    address "" self~inputToError with input using (around4K~left(length)) error replace using (error )
+    self~assertSame(length, error~toString~length)
   end
 
   -- around 64K
   -- We're filling an array of lines such that the raw data (which includes
   -- line-end characters after each line) flowing through the redirection
   -- pipe, will be exactly 64K - 1, 64K, and 64K + 1 characters.
-  eol = .endofline~length
   in = .Array~new(655)~~fill("-"~copies(100 - eol)) -- 655 lines by 100 is 65500 chars
   in~append("-"~copies(35 - eol)) -- 65535 chars
   do length = 65535 to 65537
@@ -623,6 +624,8 @@ address_with ::=      ( 'WITH' ( 'INPUT' ( 'NORMAL' | 'STEM' stem | 'STREAM' str
   self~assertSame(.rs, -1, "address PATH null command is expected to fail")
 
 ::method test_environment_path_cat
+  if .ooRexxUnit.OSName == "WINDOWS" then
+      return    -- no PATH environment
   address "path" self~inputToOutput with input using "line" output stem out.
   self~assertSame(1, out.0, "address PATH" self~inputToOutput "line should return 'line'")
   self~assertSame("line", out.1, "address PATH" self~inputToOutput "line should return 'line'")
@@ -742,15 +745,19 @@ temp~delete
 -- test non-destructive buffering when source and target are the same
 ::method test_buffering
 
-
+array = "Line1","","Line3","","Line5"
 temp = .TemporaryTestFile~new(self, 'testinput')
-temp~create(("Line1","","Line3","","Line5"))
+temp~create(array)
 
 -- this tests buffering on output when the same stream is used as both
 address "" self~inputToOutputNoBlanks with input stream (temp~fullName) output stream(temp~fullName)
 
 -- this should write 3 lines to the file, replacing the file
-array = temp~arrayIn
+--array = temp~arrayIn  -- no arrayIn method for this class!
+-- need to create a stream object in order to do arrayin
+tempStream = .stream~new(temp~fullName)
+array = tempStream~arrayin
+tempStream~close
 self~assertSame(3, array~items)
 self~assertSame("Line1", array[1])
 self~assertSame("Line3", array[2])
@@ -758,7 +765,8 @@ self~assertSame("Line5", array[3])
 
 -- now again, with append specified
 address "" self~inputToOutputNoBlanks with input stream (temp~fullName) output append stream (temp~fullName)
-array = temp~arrayIn
+array = tempStream~arrayIn
+tempStream~close
 
 self~assertSame(6, array~items)
 self~assertSame("Line1", array[1])
@@ -1034,6 +1042,22 @@ self~assertSame("Line1", b.1)
 self~assertSame("", b.2)
 self~assertSame("Line3", b.3)
 
+::method test_input_input_stream_error
+self~expectSyntax(42.3)
+
+instream = .ErrorInputStream~new(("Line1", "Line2"))
+outstream = .ArrayOutputStream~new
+
+address "" self~inputToOutput with input using (instream) output using(outstream)
+
+::method test_input_output_stream_error
+self~expectSyntax(42.3)
+
+instream = .ArrayInputStream~new(("Line1", "Line2"))
+outstream = .ErrorOutputStream~new
+
+address "" self~inputToOutput with input using (instream) output using(outstream)
+
 
 ::class ArrayInputStream public inherit InputStream
 ::method init
@@ -1136,5 +1160,19 @@ self~assertSame("Line3", b.3)
   return lines
 
 
+::class ErrorInputStream public subclass ArrayInputStream
+-- line the base class, but raises a syntax error after the lines are read
+::method linein
+  if self~lines = 0 then
+     return 1/0   -- rasies a syntax error
+  -- do the real operation
+  return self~linein:super
+
+::class ErrorOutputStream public subclass ArrayOutputStream
+-- the default initial array size
+
+-- write a line to the next sequetial position
+::method lineout
+  return 1/0
 
 ::options novalue error
