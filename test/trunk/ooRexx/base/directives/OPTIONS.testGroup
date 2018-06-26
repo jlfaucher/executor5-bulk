@@ -164,14 +164,34 @@ return testResult
   self~assertEquals(1, value )
 
 ::method test_novalue_condition_simple
-  -- stems never raise novalue
+  -- uninitialized simple variable will raise novalue
   value = self~runDynamicSource(("signal on novalue", "return abc", "novalue: return .true", "::options novalue condition"))
   self~assertEquals(1, value)
 
 ::method test_novalue_condition_compound
-  -- stems never raise novalue
+  -- uninitialized compound variable will raise novalue
   value = self~runDynamicSource(("signal on novalue", "return abc.1.2", "novalue: return .true", "::options novalue condition"))
   self~assertEquals(1, value)
+
+::method test_novalue_error_override_signal_on_novalue
+  -- overriding ::options novalue error: uninitialized variable will raise novalue
+  value = self~runDynamicSource(("signal on novalue", "return abc", "novalue: return condition('c')", "::options novalue error"))
+  self~assertEquals("NOVALUE", value)
+
+::method test_novalue_error_override_signal_off_novalue
+  -- overriding ::options novalue error: uninitialized variable will not raise syntax
+  value = self~runDynamicSource(("signal off novalue", "return abc", "novalue: return condition('c')", "::options novalue error"))
+  self~assertEquals("ABC", value)
+
+::method test_novalue_error_override_signal_on_any
+  -- overriding ::options novalue error: uninitialized variable will raise novalue
+  value = self~runDynamicSource(("signal on any", "return abc", "any: return condition('c')", "::options novalue error"))
+  self~assertEquals("NOVALUE", value)
+
+::method test_novalue_error_override_signal_off_any
+  -- overriding ::options novalue error: uninitialized variable will raise novalue
+  value = self~runDynamicSource(("signal off any", "return abc", "novalue: return condition('c')", "::options novalue error"))
+  self~assertEquals("ABC", value)
 
 ::method test_novalue_bad_value
   self~assertSyntaxError(25.927, ("return abc.1.2", "::options novalue syntax"))

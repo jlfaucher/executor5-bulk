@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Reference XML File
     #
-    # Copyright (c) 2005-2017, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2018, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -1827,7 +1827,9 @@ for the result of arithmetic
 operations and built-in functions. This can be either SCIENTIFIC (in which
 case only one, nonzero digit appears before the decimal point) or ENGINEERING
 (in which case the power of 10 is always a multiple of 3). The default is
-SCIENTIFIC. The subkeywords SCIENTIFIC or ENGINEERING set the FORM directly,
+SCIENTIFIC, but can be overridden on a source-file basis using the
+<xref linkend="optionsd" xrefstyle="select:title"/> directive.
+The subkeywords SCIENTIFIC or ENGINEERING set the FORM directly,
 or it is taken from the character string result of evaluating the expression
 (<emphasis role="italic">expression2</emphasis>) that follows VALUE. The result
 in this case must be either <computeroutput>SCIENTIFIC</computeroutput> or
@@ -1849,7 +1851,9 @@ or parenthesis.</para>
 <listitem><para>controls how many digits, at full precision, are ignored during
 a <xref linkend="numcom" xrefstyle="template:numeric comparison"/> operation.
 If you omit <emphasis role="italic">expression3</emphasis>,
-the default is 0 digits. Otherwise, the character string value result
+the default is 0 digits, but can be overridden on a source-file basis using the
+<xref linkend="optionsd" xrefstyle="select:title"/> directive.
+Otherwise, the character string value result
 of <emphasis role="italic">expression3</emphasis> must evaluate
 to 0 or a positive whole number rounded,
 if necessary, according to the current NUMERIC DIGITS setting, and must be
@@ -3208,18 +3212,21 @@ must be a whole number.</para>
 <emphasis role="italic">expression</emphasis> evaluates to: </para>
 <itemizedlist>
 <listitem><para>A numeric option</para></listitem>
-<listitem><para>One of the valid prefix or alphabetic character (word) options
-described in
-<xref linkend="alphaco" /></para>
+<listitem><para>One of the valid
+<xref linkend="xpreop" xrefstyle="template:prefix"/> or
+<xref linkend="alphaco" xrefstyle="template:alphabetic character (word)"/> options
+</para>
 </listitem>
 <listitem><para>Null</para></listitem></itemizedlist>
 <para>The <emphasis role="italic">symbol</emphasis> is taken as a constant
 and is therefore:</para>
 <itemizedlist>
 <listitem><para>A numeric option</para></listitem>
-<listitem><para>One of the valid prefix or alphabetic character (word) options
-described in <xref linkend="alphaco" />
-</para></listitem></itemizedlist>
+<listitem><para>One of the valid
+<xref linkend="xpreop" xrefstyle="template:prefix"/> or
+<xref linkend="alphaco" xrefstyle="template:alphabetic character (word)"/> options
+</para>
+</listitem></itemizedlist>
 <para>The option that follows TRACE or the character string that is the result
 of evaluating <emphasis role="italic">expression</emphasis> determines the
 tracing action. You can omit
@@ -3247,23 +3254,24 @@ to as alphabetic character options.</para>
 <listitem><para>Traces (that is, displays) all clauses before execution.
 </para></listitem></varlistentry>
 <varlistentry><term><option>Commands</option></term>
-<listitem><para>Traces all commands before execution. If the command results
-in an error or failure (see <xref linkend="commnds" />),
+<listitem><para>Traces all <xref linkend="commnds" xrefstyle="template:commands"/>
+before execution.
+If the command results in an error or failure,
 tracing also displays the return code from the command.
 </para></listitem></varlistentry>
 <varlistentry><term><option>Error</option>
 <indexterm><primary>error</primary>
 <secondary>traceback after</secondary></indexterm>
 </term>
-<listitem><para>Traces any command resulting in an error or failure after
-execution (see <xref linkend="commnds" />), together with the
+<listitem><para>Traces any <xref linkend="commnds" xrefstyle="template:command"/>
+resulting in an error or failure after execution, together with the
 return code from the command.
 </para></listitem></varlistentry>
 <varlistentry><term><option>Failure</option></term>
-<listitem><para>Traces any command resulting in a failure after execution
-(see <xref linkend="commnds" />), together with the return
-code from the command. This is
-the same as the <computeroutput>Normal</computeroutput> option.
+<listitem><para>Traces any <xref linkend="commnds" xrefstyle="template:command"/>
+resulting in a failure after execution, together with the return
+code from the command.
+This is the same as the <computeroutput>Normal</computeroutput> option.
 </para></listitem></varlistentry>
 <varlistentry><term><option>Intermediates</option></term>
 <listitem><para>Traces all clauses before execution. Also traces intermediate
@@ -3277,7 +3285,9 @@ control because of the SIGNAL instruction.
 </para></listitem></varlistentry>
 <varlistentry><term><option>Normal</option></term>
 <listitem><para>Traces any failing command after execution, together with the
-return code from the command. This is the default setting. </para>
+return code from the command. This is the default setting, if not overridden
+using the <xref linkend="optionsd" xrefstyle="select:title"/> directive.
+</para>
 <para>For the default Windows command processor, an attempt
 to enter an unknown command raises a FAILURE condition. The CMD return code
 for an unknown command is 1. An attempt to enter a command in an unknown command

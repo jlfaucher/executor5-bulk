@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Reference XML File
     #
-    # Copyright (c) 2005-2017, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2018, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -783,8 +783,8 @@ class and use the same <emphasis role="italic">methodname</emphasis>.
 <indexterm><primary>directives</primary>
 <secondary>::OPTIONS</secondary></indexterm>
 
-<para>The ::OPTIONS directive defines default values for numeric and trace
-settings for all Rexx code contained within a package.
+<para>The ::OPTIONS directive defines default values for numeric, trace, and
+other runtime settings for all Rexx code contained within a package.
 </para>
 
 <mediaobject>
@@ -797,7 +797,7 @@ settings for all Rexx code contained within a package.
 order.  If an option is specified more than once, the last specified value
 will the be one used.  If more than one ::OPTIONS directive appears in a source
 file, the options are processed in the order they appear and the effect is
-accumulative. If a given option type is specified on more than directive, the
+accumulative. If a given option type is specified on more than one directive, the
 last specified will be the value used.
 </para>
 <para>The specified options will override the normal default settings for all Rexx
@@ -880,20 +880,23 @@ minus FUZZ digits during the comparison and are then compared with 0.
 <para>
 controls whether using an uninitialized variable will raise a NOVALUE condition
 or a SYNTAX condition.
-The setting will apply to all of the current source program and can help
-in debugging issues due to uninitialized variables.
 </para>
 <para>
-If ::OPTIONS NOVALUE CONDITION is in effect, a NOVALUE condition will be
-raised as usual.
-If ::OPTIONS NOVALUE ERROR is in effect, a SYNTAX condition is raised instead.
-The default is ::OPTIONS NOVALUE CONDITION.
+If ::OPTIONS NOVALUE CONDITION is in effect, which is the default,
+a NOVALUE condition will be raised as usual.
+If ::OPTIONS NOVALUE ERROR is in effect, a SYNTAX condition is raised instead,
+which can help debugging issues due to uninitialized variables.
+To override a package default of ::OPTIONS NOVALUE ERROR, you can use
+SIGNAL ON NOVALUE, SIGNAL OFF NOVALUE, SIGNAL ON ANY, or SIGNAL OFF ANY,
+in which case uninitialized variables will raise the usual NOVALUE condition.
 </para>
 </entry></row>
 
-<row revisionflag="added"><entry>&added50;<option>PROLOG</option>
+<row revisionflag="added"><entry>&added50;<option>PROLOG</option> / <option>NOPROLOG</option>
 <indexterm><primary>::OPTIONS directive</primary>
 <secondary>PROLOG option</secondary></indexterm>
+<indexterm><primary>::OPTIONS directive</primary>
+<secondary>NOPROLOG option</secondary></indexterm>
 </entry>
 <entry>
 <para>
@@ -917,8 +920,10 @@ The default is ::OPTIONS PROLOG.
 <entry>
 <para>controls the tracing action (that is, how much is displayed to the user) during the processing of
 all Rexx code contained in the package. Tracing describes some or all of the clauses in a program,
-producing descriptions of clauses as they are processed. TRACE is mainly used for debugging. The value
-<emphasis role="italic">trace</emphasis> must be one of the Trace Alphabetic (<xref linkend="alphaco" />)
+producing descriptions of clauses as they are processed. TRACE is mainly used for debugging.
+The value <emphasis role="italic">trace</emphasis> must be one of the
+<xref linkend="xpreop" xrefstyle="template:prefix"/> or
+<xref linkend="alphaco" xrefstyle="template:alphabetic character (word)"/> options
 valid for the <xref linkend="keyTrace" xrefstyle="select:title"/> instruction.
 The package value can be retrieved using the Package class
 <xref linkend="mthPackageTrace" xrefstyle="select:title"/> method.

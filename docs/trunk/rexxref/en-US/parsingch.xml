@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Reference XML File
     #
-    # Copyright (c) 2005-2017, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2018, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -693,7 +693,7 @@ parse value '12345.6789' with '.' -1 digit +1    -- digit -> "5"
 <para>If a template contains patterns that divide the source string into sections
 containing several words, string and positional patterns divide the source
 string into substrings. The language processor then applies a section of the
-template to each substring, following the rules for parsing into words.</para>
+template to each substring, following the rules for parsing into words.
 <indexterm><primary>examples</primary>
 <secondary>combining string pattern and parsing into words</secondary>
 </indexterm>
@@ -711,24 +711,23 @@ parse var name fn init "." ln        /* Assigns: fn="John"       */
 /*          ln="   Public"                                       */
 </programlisting>
 </example>
-<para>The pattern divides the template into two sections: </para>
-<itemizedlist>
+</para>
+<para>The pattern divides the template into two sections:
+<itemizedlist spacing="compact">
 <listitem><para><computeroutput>fn init</computeroutput></para></listitem>
 <listitem><para><computeroutput>ln</computeroutput></para></listitem>
 </itemizedlist>
-<para> The matching pattern splits the source string into two substrings:</para>
-<itemizedlist>
-<listitem><para>
-<programlisting>
-"    John      Q"
-</programlisting>
-</para></listitem>
-<listitem><para>
-<programlisting>
-"   Public"
-</programlisting>
-</para></listitem>
+</para>
+<para>The matching pattern splits the source string into two substrings:
+<itemizedlist spacing="compact">
+<listitem><para><computeroutput>
+"&nbsp;&nbsp;&nbsp;&nbsp;John&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Q"
+</computeroutput></para></listitem>
+<listitem><para><computeroutput>
+"&nbsp;&nbsp;&nbsp;Public"
+</computeroutput></para></listitem>
 </itemizedlist>
+</para>
 <para>The language processor parses these substrings into words based on the
 appropriate template section.</para>
 <para><computeroutput>John</computeroutput> has three leading blanks. All are
@@ -738,12 +737,12 @@ from the last variable.</para>
 removes one word-separator blank and keeps the rest because
 <computeroutput>init</computeroutput> is the last variable in that
 section of the template.</para>
-<para>For the substring <computeroutput>"   Public"</computeroutput>, parsing
+<para>For the substring <computeroutput>"&nbsp;&nbsp;&nbsp;Public"</computeroutput>, parsing
 assigns the entire string into <computeroutput>ln</computeroutput>
 without removing any blanks. This is because <computeroutput>ln</computeroutput>
 is the only variable in this section of the template.
 (For details about treatment of whitespace characters, see
-<xref linkend="simtem" />.)</para>
+<xref linkend="simtem" />.)
 <indexterm><primary>examples</primary>
 <secondary>combining positional pattern and parsing into words</secondary>
 </indexterm>
@@ -762,15 +761,16 @@ parse var string var1 var2 4 var3 6 var4   /* Assigns: var1="R"  */
 /*          var4=" X"                                            */
 </programlisting>
 </example>
+</para>
 <para>The pattern divides the template into three sections: </para>
-<itemizedlist>
+<itemizedlist spacing="compact">
 <listitem><para><computeroutput>var1 var2</computeroutput></para></listitem>
 <listitem><para><computeroutput>var3</computeroutput></para></listitem>
 <listitem><para><computeroutput>var4</computeroutput></para></listitem>
 </itemizedlist>
 <para>The matching patterns split the source string into three substrings that
 are individually parsed into words: </para>
-<itemizedlist>
+<itemizedlist spacing="compact">
 <listitem><para><computeroutput>"R E"</computeroutput></para></listitem>
 <listitem><para><computeroutput>" X"</computeroutput></para></listitem>
 <listitem><para><computeroutput>" X"</computeroutput></para></listitem>
@@ -812,22 +812,23 @@ This is a variable reference. Whitespace characters are not necessary inside or
 outside the parentheses, but you can add them if you wish.
 </para>
 <para>The template in the next parsing instruction contains the following
-literal string pattern <computeroutput>".&nbsp;"</computeroutput>.</para>
+literal string pattern <computeroutput>".&nbsp;"</computeroutput>.
 <programlisting>
 parse var name fn  init ". " ln
 </programlisting>
-<para>Here is how to specify that pattern as a variable string pattern:</para>
+</para>
+<para>Here is how to specify that pattern as a variable string pattern:
 <indexterm><primary>parentheses</primary>
 <secondary>in parsing templates</secondary></indexterm>
 <programlisting>
 strngptrn=". "
 parse var name fn init (strngptrn) ln
 </programlisting>
+</para>
 <para>If no equal, plus sign, minus sign, &gt;, or &lt; precedes the parenthesis that is before
 the variable name, the character string value of the variable is then treated
 as a string pattern. The expression can reference variables that have been set earlier in
-the same template.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+the same template.
 <indexterm><primary>examples</primary>
 <secondary>using a variable as a string pattern</secondary></indexterm>
 <indexterm><primary>parsing</primary>
@@ -847,14 +848,14 @@ parse var date month 3 delim +1 day +2 (delim) year
 /* Sets: month="11"; delim="/"; day="15"; year="98"  */
 </programlisting>
 </example>
+</para>
 
 <para>If an equal, a plus, a minus sign, &gt; or &lt; precedes the left parenthesis, the
 value of the expression is treated as an absolute, relative positional, or length positional pattern.
 The value of the expression must be a positive whole number or zero.</para>
 <para>The expression can reference variables that have has been set earlier in the same template.
 In the following example, the first two fields specify the starting-character
-positions of the last two fields.</para>
-<para><emphasis role="bold">Example:</emphasis></para>
+positions of the last two fields.
 <indexterm><primary>examples</primary>
 <secondary>using an expression as a positional pattern</secondary></indexterm>
 <indexterm><primary>parsing</primary>
@@ -870,7 +871,7 @@ positions of the last two fields.</para>
 <indexterm><primary>variable</primary>
 <secondary>patterns, parsing with positional</secondary></indexterm>
 <example>
-<title>Combining variables an positional patterns</title>
+<title>Combining variables and positional patterns</title>
 <programlisting>
 /* Using a variable as a positional pattern                      */
 dataline = "12 26 .....Samuel ClemensMark Twain"
@@ -878,6 +879,8 @@ parse var dataline pos1 pos2 6 =(pos1) realname =(pos2) pseudonym
 /* Assigns: realname="Samuel Clemens"; pseudonym="Mark Twain"    */
 </programlisting>
 </example>
+</para>
+
 <para>The positional pattern <computeroutput>6</computeroutput> is needed in
 the template for the following reason: Word parsing occurs after the language
 processor divides the source string into substrings using patterns. Therefore,
@@ -947,6 +950,8 @@ where the source string comes from.</para>
 <indexterm><primary>VERSION subkeyword</primary>
 <secondary>in a PARSE instruction</secondary></indexterm>
 <tgroup cols="2">
+<colspec colnum="1" colwidth="1*" />
+<colspec colnum="2" colwidth="3*" />
 <thead>
 <row>
 <entry>Instruction</entry>
