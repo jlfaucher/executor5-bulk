@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2017 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -232,6 +232,7 @@ return testResult
 
 -- check whether we have a console available in character mode
 ::method console_available
-    return .Stdout~query("streamtype") == "TRANSIENT"
+    return SysCurPos()~length > 0
+
 
 ::options novalue error

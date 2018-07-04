@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2017 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -58,7 +58,7 @@ return testResult
 /* Unfortunately there is a problem with this test group when it is run as part
  * of the automated suite.  The SysCurPos() function is dependent on it being
  * executed from a console window that is in character mode.  If it is not, then
- * the function does nothing and returns 0.  If the test suite is run with
+ * the function does nothing and returns the nullstring.  If the test suite is run with
  * stdout redirected, or if it were executed from some type graphical mode test
  * manager, then some of the tests, say testCurPos(), have different outcomes.
  *
@@ -76,7 +76,7 @@ return testResult
         self~assertTrue(col >= 0)
     end
     else do
-        self~assertSame(0, val)
+        self~assertSame("", val)
     end
 
 ::method 'testCurPos2'
@@ -87,7 +87,7 @@ return testResult
       rv = SysCurPos(-1,-1)
     end
     else do
-        self~assertSame(0, val)
+        self~assertSame("", val)
     end
 
 ::method test_nonnumeric_args
@@ -98,7 +98,7 @@ return testResult
       rv = SysCurPos("Ten","Ten")
     end
     else do
-        self~assertSame(0, val)
+        self~assertSame("", val)
     end
 
 
