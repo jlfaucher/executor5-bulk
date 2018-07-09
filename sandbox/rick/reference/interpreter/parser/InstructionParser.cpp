@@ -3995,8 +3995,8 @@ RexxInstruction *LanguageParser::useNew()
                     break;  // done parsing
                 }
             }
-            // this could be a '>' prefix used to indicate variable aliasing
-            else if (token->isOperator(OPERATOR_GREATERTHAN))
+            // this could be a '>' or ',' prefix used to indicate variable aliasing
+            else if (token->isOperator(OPERATOR_GREATERTHAN) || token->isOperator(OPERATOR_LESSTHAN))
             {
                 // this must be a simple variable symbol or stem symbol
                 token = nextReal();

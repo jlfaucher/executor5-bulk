@@ -85,6 +85,12 @@ self~assertSame(a.1, 123)
 vara = 123
 self~assertSame(123, refSimple(>vara, 'abc'))
 self~assertSame('abc', vara)
+self~assertSame('abc', refSimple(<vara, 'def'))
+self~assertSame('def', vara)
+self~assertSame('def', refSimpleLess(>vara, 'abc'))
+self~assertSame('abc', vara)
+self~assertSame('abc', refSimpleLess(<vara, 'def'))
+self~assertSame('def', vara)
 
 call refStem >a., 'def'
 self~assertSame('def', a.0)
@@ -123,6 +129,13 @@ self~assertSame(1, a.1)
 
 ::routine refSimple
   use strict arg >a, newValue
+
+  oldValue = a;
+  a = newValue
+  return oldValue
+
+::routine refSimpleLess
+  use strict arg <a, newValue
 
   oldValue = a;
   a = newValue
