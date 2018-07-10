@@ -1166,24 +1166,6 @@ install(TARGETS rxsock RUNTIME COMPONENT Core DESTINATION ${INSTALL_LIB_DIR}
                        LIBRARY DESTINATION ${INSTALL_LIB_DIR} COMPONENT Core)
 set_target_properties(rxsock PROPERTIES VERSION ${ORX_VERSION})
 
-#################### librxsock6.so ################
-# Sources for librxsock.so
-add_library(rxsock6 SHARED ${build_extensions_rxsock_dir}/orxsock6.cpp)
-# additional source files required by specific platforms
-if (WIN32)
-   set (platform_rxsock_sources
-            ${build_platform_dir}/rxsock6.def
-            ${build_platform_dir}/verinfo.rc)
-   # Extra link library definitions
-   target_link_libraries(rxsock6 rexx rexxapi ${platform_rxsock_libs} ws2_32)
-else ()
-   # Extra link library definitions
-   target_link_libraries(rxsock6 rexx rexxapi ${platform_rxsock_libs} ${CMAKE_REQUIRED_LIBRARIES})
-endif ()
-
-install(TARGETS rxsock6 RUNTIME COMPONENT Core DESTINATION ${INSTALL_LIB_DIR}
-                       LIBRARY DESTINATION ${INSTALL_LIB_DIR} COMPONENT Core)
-set_target_properties(rxsock6 PROPERTIES VERSION ${ORX_VERSION})
 
 #################### librxregexp.so ################
 # additional source files required by specific platforms
@@ -1532,13 +1514,11 @@ copy_build_file(rxftp.cls ${build_extensions_rxftp_dir})
 copy_build_file(csvStream.cls ${build_extensions_csvstream_dir})
 copy_build_file(json.cls ${build_extensions_json_dir})
 copy_build_file(socket.cls ${build_extensions_rxsock_dir})
-copy_build_file(socket6.cls ${build_extensions_rxsock_dir})
 copy_build_file(streamsocket.cls ${build_extensions_rxsock_dir})
-copy_build_file(streamsocket6.cls ${build_extensions_rxsock_dir})
 copy_build_file(mime.cls ${build_extensions_rxsock_dir})
 copy_build_file(smtp.cls ${build_extensions_rxsock_dir})
-copy_build_file(smtp6.cls ${build_extensions_rxsock_dir})
 copy_build_file(rexxtry.rex ${build_samples_dir})
+
 add_custom_target(class_files ALL DEPENDS
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/rxregexp.cls
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/rxftp.cls
@@ -1549,6 +1529,7 @@ add_custom_target(class_files ALL DEPENDS
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/mime.cls
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/smtp.cls
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/rexxtry.rex)
+
 
 install(FILES ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/rxregexp.cls COMPONENT Core DESTINATION ${INSTALL_CLS_DIR})
 
