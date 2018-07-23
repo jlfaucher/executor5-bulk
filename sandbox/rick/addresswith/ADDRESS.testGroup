@@ -289,7 +289,7 @@ address_with ::=      ( 'WITH' ( 'INPUT' ( 'NORMAL' | 'STEM' stem | 'STREAM' str
 
 ::method test_with_no_redirection
   -- Symbol expected after WITH keyword
-  self~assertSyntaxError(20.931, "address '' '' with")
+  self~assertSyntaxError(20.933, "address '' '' with")
 
 ::method test_with_invalid_redirection
   -- WITH must be followed by one of the keywords INPUT, OUTPUT, or ERROR
@@ -317,22 +317,22 @@ address_with ::=      ( 'WITH' ( 'INPUT' ( 'NORMAL' | 'STEM' stem | 'STREAM' str
 ::method test_with_input_stem_stem_object
   stemObject = .Stem~of( (0, 2), (1, "line"), (2, "line") )
   -- Stem symbol expected after STEM keyword
-  self~assertSyntaxError(20.930, "address '' '' with input stem stemObject")
+  self~assertSyntaxError(20.932, "address '' '' with input stem stemObject")
 
 ::method test_with_input_stem_nullstring
   -- Stem symbol expected after STEM keyword
-  self~assertSyntaxError(20.930, "address '' '' with input stem ''")
+  self~assertSyntaxError(20.932, "address '' '' with input stem ''")
 
 ::method test_with_input_stream_nullstring
   self~expectSyntax(98.999) -- Unable to open file .. for reading
   address '' '' with input stream ''
 
 ::method test_with_input_using_nil
-  self~expectSyntax(98.995) -- Object .. is not a valid ADDRESS WITH INPUT source
+  self~expectSyntax(98.924) -- Object .. is not a valid ADDRESS WITH INPUT source
   address '' '' with input using .nil
 
 ::method test_with_input_using_supplier
-  self~expectSyntax(98.995) -- Object .. is not a valid ADDRESS WITH INPUT source
+  self~expectSyntax(98.924) -- Object .. is not a valid ADDRESS WITH INPUT source
   address '' '' with input using ( .Object~methods )
 
 ::method test_with_input
@@ -384,10 +384,10 @@ address_with ::=      ( 'WITH' ( 'INPUT' ( 'NORMAL' | 'STEM' stem | 'STREAM' str
 ::method test_with_output_stem_stem_object
   stemObject = .Stem~of( (0, 2), (1, "line"), (2, "line") )
   -- Stem symbol expected after STEM keyword
-  self~assertSyntaxError(20.930, "address '' '' with output stem stemObject")
+  self~assertSyntaxError(20.932, "address '' '' with output stem stemObject")
 
 ::method test_with_output_stream_nullstring
-  self~expectSyntax(98.899) -- Unable to open file .. for writing
+  self~expectSyntax(98.920) -- Unable to open file .. for writing
   address '' '' with output stream ''
 
 ::method test_with_output_using_nullstring
@@ -507,10 +507,10 @@ address_with ::=      ( 'WITH' ( 'INPUT' ( 'NORMAL' | 'STEM' stem | 'STREAM' str
 ::method test_with_error_stem_stem_object
   stemObject = .Stem~of( (0, 2), (1, "line"), (2, "line") )
   -- Stem symbol expected after STEM keyword
-  self~assertSyntaxError(20.930, "address '' '' with error stem stemObject")
+  self~assertSyntaxError(20.932, "address '' '' with error stem stemObject")
 
 ::method test_with_error_stream_nullstring
-  self~expectSyntax(98.899) -- Unable to open file .. for writing
+  self~expectSyntax(98.920) -- Unable to open file .. for writing
   address '' '' with error stream ''
 
 ::method test_with_error_using_nullstring
