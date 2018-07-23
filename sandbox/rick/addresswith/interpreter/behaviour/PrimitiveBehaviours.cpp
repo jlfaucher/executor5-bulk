@@ -3,7 +3,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -115,6 +115,8 @@ RexxBehaviour RexxBehaviour::primitiveBehaviours[T_Last_Primitive_Class + 1] =
     RexxBehaviour(T_BagClass, (PCPPM *)RexxObject::operatorMethods),
     RexxBehaviour(T_RexxInfo, (PCPPM *)RexxObject::operatorMethods),
     RexxBehaviour(T_RexxInfoClass, (PCPPM *)RexxObject::operatorMethods),
+    RexxBehaviour(T_VariableReference, (PCPPM *)RexxObject::operatorMethods),
+    RexxBehaviour(T_VariableReferenceClass, (PCPPM *)RexxObject::operatorMethods),
     RexxBehaviour(T_NilObject, (PCPPM *)RexxObject::operatorMethods),
     RexxBehaviour(T_Behaviour, (PCPPM *)RexxObject::operatorMethods),
     RexxBehaviour(T_MethodDictionary, (PCPPM *)RexxObject::operatorMethods),
@@ -227,6 +229,8 @@ RexxBehaviour RexxBehaviour::primitiveBehaviours[T_Last_Primitive_Class + 1] =
     RexxBehaviour(T_PointerBucket, (PCPPM *)RexxObject::operatorMethods),
     RexxBehaviour(T_PointerTable, (PCPPM *)RexxObject::operatorMethods),
     RexxBehaviour(T_SpecialDotVariableTerm, (PCPPM *)RexxObject::operatorMethods),
+    RexxBehaviour(T_VariableReferenceOp, (PCPPM *)RexxObject::operatorMethods),
+    RexxBehaviour(T_UseArgVariableRef, (PCPPM *)RexxObject::operatorMethods),
     RexxBehaviour(T_CommandIOConfiguration, (PCPPM *)RexxObject::operatorMethods),
     RexxBehaviour(T_AddressWithInstruction, (PCPPM *)RexxObject::operatorMethods),
     RexxBehaviour(T_Memory, (PCPPM *)RexxObject::operatorMethods),

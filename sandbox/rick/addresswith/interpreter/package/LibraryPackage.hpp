@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -88,12 +88,14 @@ public:
     inline bool isLoaded() { return loaded; }
     inline bool isInternal() { return internal; }
     inline void makeInternal() { internal = true; }
+    inline StringTable *getRoutines() { return publicRoutines; }
 
 protected:
 
     RexxPackageEntry *package;  // loaded package information
     RexxString *libraryName;    // the name of the library
     StringTable    *routines;   // loaded routines
+    StringTable    *publicRoutines;   // loaded routines table
     StringTable    *methods;    // loaded methods
     SysLibrary  lib;            // the library management handle
     bool        loaded;         // we've at least been able to load the library

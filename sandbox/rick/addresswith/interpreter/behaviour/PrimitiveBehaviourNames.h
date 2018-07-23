@@ -3,7 +3,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -105,6 +105,8 @@
 #define TheBagClassBehaviour    (&RexxBehaviour::primitiveBehaviours[T_BagClass])
 #define TheRexxInfoBehaviour      (&RexxBehaviour::primitiveBehaviours[T_RexxInfo])
 #define TheRexxInfoClassBehaviour    (&RexxBehaviour::primitiveBehaviours[T_RexxInfoClass])
+#define TheVariableReferenceBehaviour      (&RexxBehaviour::primitiveBehaviours[T_VariableReference])
+#define TheVariableReferenceClassBehaviour    (&RexxBehaviour::primitiveBehaviours[T_VariableReferenceClass])
 #define TheNilObjectBehaviour      (&RexxBehaviour::primitiveBehaviours[T_NilObject])
 #define TheBehaviourBehaviour      (&RexxBehaviour::primitiveBehaviours[T_Behaviour])
 #define TheMethodDictionaryBehaviour      (&RexxBehaviour::primitiveBehaviours[T_MethodDictionary])
@@ -217,6 +219,8 @@
 #define ThePointerBucketBehaviour      (&RexxBehaviour::primitiveBehaviours[T_PointerBucket])
 #define ThePointerTableBehaviour      (&RexxBehaviour::primitiveBehaviours[T_PointerTable])
 #define TheSpecialDotVariableTermBehaviour      (&RexxBehaviour::primitiveBehaviours[T_SpecialDotVariableTerm])
+#define TheVariableReferenceOpBehaviour      (&RexxBehaviour::primitiveBehaviours[T_VariableReferenceOp])
+#define TheUseArgVariableRefBehaviour      (&RexxBehaviour::primitiveBehaviours[T_UseArgVariableRef])
 #define TheCommandIOConfigurationBehaviour      (&RexxBehaviour::primitiveBehaviours[T_CommandIOConfiguration])
 #define TheAddressWithInstructionBehaviour      (&RexxBehaviour::primitiveBehaviours[T_AddressWithInstruction])
 #define TheMemoryBehaviour      (&RexxBehaviour::primitiveBehaviours[T_Memory])

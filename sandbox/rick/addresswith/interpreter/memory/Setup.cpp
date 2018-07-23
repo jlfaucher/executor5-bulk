@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2017 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -90,6 +90,7 @@
 #include "BagClass.hpp"
 #include "ActivityManager.hpp"
 #include "ProgramSource.hpp"
+#include "VariableReference.hpp"
 
 
 /**
@@ -254,6 +255,7 @@ void MemoryObject::createImage()
     BagClass::createInstance();
     ListClass::createInstance();
     QueueClass::createInstance();
+    VariableReference::createInstance();
 
     // We keep handy references to a number of commonly used
     // integer objects.
@@ -294,6 +296,7 @@ void MemoryObject::createImage()
     WeakReference::createInstance();
     StackFrameClass::createInstance();
     RexxInfo::createInstance();
+    VariableReference::createInstance();
 
     // build the common retrievers table.  This is needed before we can parse an
     // Rexx code.
@@ -1159,6 +1162,7 @@ StartClassDefinition(Package)
         AddMethod("Trace", PackageClass::traceRexx, 0);
         AddMethod("Prolog", PackageClass::getMainRexx, 0);
         AddMethod("FindProgram", PackageClass::findProgramRexx, 1);
+        AddMethod("Local", PackageClass::getPackageLocal, 0);
 
     CompleteMethodDefinitions();
 
@@ -1239,6 +1243,39 @@ StartClassDefinition(RexxInfo)
     CompleteClassDefinition(RexxInfo);
 
 EndSpecialClassDefinition(RexxInfo);
+
+
+    /***************************************************************************/
+    /*           VariableReference                                             */
+    /***************************************************************************/
+
+StartClassDefinition(VariableReference)
+
+        AddClassMethod("New", VariableReference::newRexx, A_COUNT);
+
+    CompleteClassMethodDefinitions();
+
+        AddMethod("Name", VariableReference::getName, 0);
+        AddMethod("Value", VariableReference::getValue, 0);
+        AddMethod("Value=", VariableReference::setValueRexx, 1);
+        AddMethod("Unknown", VariableReference::unknownRexx, 2);
+        AddMethod("Request", VariableReference::request, 1);
+
+    // We want various operator methods that we inherit from the object
+    // class to be redirected to our unknown method, so we block these methods
+    // in our instance method directory.
+        HideMethod("==");
+        HideMethod("=");
+        HideMethod("\\==");
+        HideMethod("\\=");
+        HideMethod("<>");
+        HideMethod("><");
+
+    CompleteMethodDefinitions();
+
+    CompleteClassDefinition(VariableReference);
+
+EndClassDefinition(VariableReference);
 
 
     /***************************************************************************/
@@ -1590,7 +1627,6 @@ StartClassDefinition(StackFrame)
         // the string method just maps to TRACELINE
         AddMethod("String", StackFrameClass::getTraceLine, 0);
         AddMethod("MakeString", StackFrameClass::getTraceLine, 0);
-        AddMethod("context", StackFrameClass::getContextObject, 0);
 
     CompleteMethodDefinitions();
 

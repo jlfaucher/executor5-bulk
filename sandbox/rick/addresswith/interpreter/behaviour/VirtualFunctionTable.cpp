@@ -3,7 +3,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -82,6 +82,7 @@
 #include "SetClass.hpp"
 #include "BagClass.hpp"
 #include "RexxInfoClass.hpp"
+#include "VariableReference.hpp"
 #include "RexxBehaviour.hpp"
 #include "MethodDictionary.hpp"
 #include "LibraryPackage.hpp"
@@ -152,6 +153,8 @@
 #include "PointerBucket.hpp"
 #include "PointerTable.hpp"
 #include "SpecialDotVariable.hpp"
+#include "VariableReferenceOp.hpp"
+#include "UseArgVariableRef.hpp"
 #include "CommandIOConfiguration.hpp"
 #include "AddressWithInstruction.hpp"
 #include "RexxMemory.hpp"
@@ -370,6 +373,12 @@ void MemoryObject::buildVirtualFunctionTable()
    
    objectPtr = ::new (objectLoc) RexxClass(RESTOREIMAGE);
    virtualFunctionTable[T_RexxInfoClass] = getVftPointer(objectLoc);
+   
+   objectPtr = ::new (objectLoc) VariableReference(RESTOREIMAGE);
+   virtualFunctionTable[T_VariableReference] = getVftPointer(objectLoc);
+   
+   objectPtr = ::new (objectLoc) RexxClass(RESTOREIMAGE);
+   virtualFunctionTable[T_VariableReferenceClass] = getVftPointer(objectLoc);
    
    objectPtr = ::new (objectLoc) RexxNilObject(RESTOREIMAGE);
    virtualFunctionTable[T_NilObject] = getVftPointer(objectLoc);
@@ -706,6 +715,12 @@ void MemoryObject::buildVirtualFunctionTable()
    
    objectPtr = ::new (objectLoc) SpecialDotVariable(RESTOREIMAGE);
    virtualFunctionTable[T_SpecialDotVariableTerm] = getVftPointer(objectLoc);
+   
+   objectPtr = ::new (objectLoc) VariableReferenceOp(RESTOREIMAGE);
+   virtualFunctionTable[T_VariableReferenceOp] = getVftPointer(objectLoc);
+   
+   objectPtr = ::new (objectLoc) UseArgVariableRef(RESTOREIMAGE);
+   virtualFunctionTable[T_UseArgVariableRef] = getVftPointer(objectLoc);
    
    objectPtr = ::new (objectLoc) CommandIOConfiguration(RESTOREIMAGE);
    virtualFunctionTable[T_CommandIOConfiguration] = getVftPointer(objectLoc);

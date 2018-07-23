@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2017 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -46,6 +46,7 @@
 #include "ExpressionBaseVariable.hpp"
 #include "MethodArguments.hpp"
 #include "PackageClass.hpp"
+#include "VariableReference.hpp"
 
 #include <stdio.h>
 
@@ -837,6 +838,7 @@ CPPM(PackageClass::fuzzRexx),
 CPPM(PackageClass::traceRexx),
 CPPM(PackageClass::getMainRexx),
 CPPM(PackageClass::findProgramRexx),
+CPPM(PackageClass::getPackageLocal),
 
 CPPM(PackageClass::newRexx),
 
@@ -1174,7 +1176,6 @@ CPPM(StackFrameClass::getType),
 CPPM(StackFrameClass::getTarget),
 CPPM(StackFrameClass::getArguments),
 CPPM(StackFrameClass::newRexx),
-CPPM(StackFrameClass::getContextObject),
 
 CPPM(RexxInfo::newRexx),
 CPPM(RexxInfo::copyRexx),
@@ -1202,6 +1203,13 @@ CPPM(RexxInfo::getMaxExponent),
 CPPM(RexxInfo::getMinExponent),
 CPPM(RexxInfo::getMaxPathLength),
 CPPM(RexxInfo::getMaxArraySize),
+
+CPPM(VariableReference::newRexx),
+CPPM(VariableReference::getName),
+CPPM(VariableReference::getValue),
+CPPM(VariableReference::setValueRexx),
+CPPM(VariableReference::unknownRexx),
+CPPM(VariableReference::request),
 // This NULL terminator is important to mark the end of the table.
 NULL
 };

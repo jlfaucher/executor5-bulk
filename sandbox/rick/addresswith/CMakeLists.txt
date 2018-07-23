@@ -39,11 +39,7 @@
 #/*----------------------------------------------------------------------------*/
 #/* Global settings                                                            */
 #/*----------------------------------------------------------------------------*/
-cmake_minimum_required (VERSION 2.8)
-cmake_policy(SET CMP0010 OLD)
-if(POLICY CMP0042)
-  cmake_policy(SET CMP0042 NEW)
-endif()
+cmake_minimum_required (VERSION 3.8)
 include(CheckIncludeFile)
 include(CheckLibraryExists)
 include(CheckFunctionExists)
@@ -79,12 +75,10 @@ else ()
 endif ()
 
 find_package(Subversion)
-if(SUBVERSION_FOUND)
+if(SUBVERSION_FOUND AND (EXISTS ${PROJECT_SOURCE_DIR}/.svn))
   Subversion_WC_INFO(${PROJECT_SOURCE_DIR} ORX)
   set(ORX_BLD_LVL ${ORX_WC_REVISION})
 endif()
-
-
 message(STATUS "SVN Revision Number is ${ORX_BLD_LVL}")
 
 if (WIN32)
@@ -106,9 +100,10 @@ set (ORX_REVISION 0)
 set (ORX_AGE 0)
 # Please note that the version-info has nothing to do with the release version.
 # You need to know exactly what you are doing in order to get this correct.
-set(VERSION_INFO "-version-info ${ORX_CURRENT}:${ORX_REVISION}:${ORX_AGE}")
+set (VERSION_INFO "-version-info ${ORX_CURRENT}:${ORX_REVISION}:${ORX_AGE}")
 # This is version information set on library properties
-set(ORX_VERSION ${ORX_CURRENT}.${ORX_AGE}.${ORX_REVISION})
+set (ORX_VERSION ${ORX_CURRENT}.${ORX_AGE}.${ORX_REVISION})
+
 
 # The following are general settings
 # Always create shared libraries (DLLs)
@@ -195,20 +190,31 @@ if (WIN32)
    ENDMACRO ()
 
  else ()
-   if (APPLE )
-     set (CMAKE_INSTALL_PREFIX ~/Applications/ooRexx${ORX_MAJOR}.${ORX_MINOR}.${ORX_MOD_LVL})
-     set (INSTALL_LIB_DIR ${CMAKE_INSTALL_PREFIX}/bin)
-     set (CMAKE_INSTALL_RPATH @executable_path)
+   if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+     set(CMAKE_INSTALL_PREFIX
+       $<IF:$<PLATFORM_ID:Darwin>,$ENV{HOME}/Applications/ooRexx${ORX_MAJOR}.${ORX_MINOR}.${ORX_MOD_LVL},/usr>
+       CACHE
+       PATH
+       "Default install path"
+       FORCE)
+   endif()
+   if (APPLE)
+     if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+       set (INSTALL_LIB_DIR ${CMAKE_INSTALL_PREFIX}/bin)
+       set (CMAKE_INSTALL_RPATH @executable_path)
+     else ()
+       set (INSTALL_LIB_DIR ${CMAKE_INSTALL_PREFIX}/lib)
+       set (CMAKE_INSTALL_RPATH ${INSTALL_LIB_DIR})
+     endif ()
    else ()
      set (CMAKE_INSTALL_PREFIX /usr)
-        find_path(INSTALL_LIB_DIR libc.so PATHS ${CMAKE_INSTALL_PREFIX}/lib ${CMAKE_INSTALL_PREFIX}/lib64)
-   # at least on Ubuntu above doesn't seem to work; use fallback:
-   if (${INSTALL_LIB_DIR} STREQUAL "INSTALL_LIB_DIR-NOTFOUND")
-      set (INSTALL_LIB_DIR ${CMAKE_INSTALL_PREFIX}/lib)
+     find_path(INSTALL_LIB_DIR libc.so PATHS ${CMAKE_INSTALL_PREFIX}/lib ${CMAKE_INSTALL_PREFIX}/lib64)
+     # at least on Ubuntu above doesn't seem to work; use fallback:
+     if (${INSTALL_LIB_DIR} STREQUAL "INSTALL_LIB_DIR-NOTFOUND")
+       set (INSTALL_LIB_DIR ${CMAKE_INSTALL_PREFIX}/lib)
+     endif ()
    endif ()
 
-
-   endif ()
    set (INSTALL_EXECUTABLE_DIR ${CMAKE_INSTALL_PREFIX}/bin)
    set (catdir ${INSTALL_EXECUTABLE_DIR})
    set (INSTALL_CLS_DIR ${INSTALL_EXECUTABLE_DIR})
@@ -305,6 +311,8 @@ if (NOT WIN32)
   set(CMAKE_REQUIRED_LIBRARIES "pthread")
   set(CMAKE_REQUIRED_DEFINITIONS "-D_GNU_SOURCE=1")
   check_function_exists(pthread_mutexattr_settype HAVE_PTHREAD_MUTEXATTR_SETTYPE)
+# Some platforms use an enum for these values rather than defines
+# so we cannot use the simpler check_symbol_exists test to check for these.
   check_c_source_compiles("#include <pthread.h>
                            int main(int arg, char **argv) {
                            int tryme;
@@ -317,6 +325,7 @@ if (NOT WIN32)
                            tryme = PTHREAD_MUTEX_RECURSIVE;
                            return 0;}"
                           HAVE_PTHREAD_MUTEX_RECURSIVE)
+  check_symbol_exists(_PC_CASE_SENSITIVE unistd.h HAVE_PC_CASE_SENSITIVE)
   check_include_file(pwd.h HAVE_PWD_H)
   check_include_file(sched.h HAVE_SCHED_H)
   check_function_exists(sighold HAVE_SIGHOLD)
@@ -583,7 +592,8 @@ set (classes_sources ${build_classes_dir}/ArrayClass.cpp
             ${build_classes_dir}/TableClass.cpp
             ${build_classes_dir}/IdentityTableClass.cpp
             ${build_classes_dir}/WeakReferenceClass.cpp
-            ${build_classes_dir}/StackFrameClass.cpp)
+            ${build_classes_dir}/StackFrameClass.cpp
+            ${build_classes_dir}/VariableReference.cpp)
 set (package_sources ${build_package_dir}/LibraryPackage.cpp
             ${build_package_dir}/PackageManager.cpp)
 set (memory_sources ${build_memory_dir}/DeadObject.cpp
@@ -648,7 +658,8 @@ set (expression_sources ${build_expression_dir}/BuiltinFunctions.cpp
             ${build_expression_dir}/ExpressionVariable.cpp
             ${build_expression_dir}/IndirectVariableReference.cpp
             ${build_expression_dir}/ExpressionList.cpp
-            ${build_expression_dir}/ExpressionLogical.cpp)
+            ${build_expression_dir}/ExpressionLogical.cpp
+            ${build_expression_dir}/VariableReferenceOp.cpp)
 set (instructions_sources  ${build_instructions_dir}/AddressInstruction.cpp
             ${build_instructions_dir}/AddressWithInstruction.cpp
             ${build_instructions_dir}/AssignmentInstruction.cpp
@@ -704,6 +715,7 @@ set (instructions_sources  ${build_instructions_dir}/AddressInstruction.cpp
             ${build_instructions_dir}/ThenInstruction.cpp
             ${build_instructions_dir}/TraceInstruction.cpp
             ${build_instructions_dir}/UseInstruction.cpp
+            ${build_instructions_dir}/UseArgVariableRef.cpp
             ${build_instructions_dir}/UseLocalInstruction.cpp
             ${build_instructions_dir}/WhenCaseInstruction.cpp)
 set (parser_sources ${build_parser_dir}/Clause.cpp
@@ -1157,24 +1169,6 @@ install(TARGETS rxsock RUNTIME COMPONENT Core DESTINATION ${INSTALL_LIB_DIR}
                        LIBRARY DESTINATION ${INSTALL_LIB_DIR} COMPONENT Core)
 set_target_properties(rxsock PROPERTIES VERSION ${ORX_VERSION})
 
-#################### librxsock6.so ################
-# Sources for librxsock.so
-add_library(rxsock6 SHARED ${build_extensions_rxsock_dir}/orxsock6.cpp)
-# additional source files required by specific platforms
-if (WIN32)
-   set (platform_rxsock_sources
-            ${build_platform_dir}/rxsock6.def
-            ${build_platform_dir}/verinfo.rc)
-   # Extra link library definitions
-   target_link_libraries(rxsock6 rexx rexxapi ${platform_rxsock_libs} ws2_32)
-else ()
-   # Extra link library definitions
-   target_link_libraries(rxsock6 rexx rexxapi ${platform_rxsock_libs} ${CMAKE_REQUIRED_LIBRARIES})
-endif ()
-
-install(TARGETS rxsock6 RUNTIME COMPONENT Core DESTINATION ${INSTALL_LIB_DIR}
-                       LIBRARY DESTINATION ${INSTALL_LIB_DIR} COMPONENT Core)
-set_target_properties(rxsock6 PROPERTIES VERSION ${ORX_VERSION})
 
 #################### librxregexp.so ################
 # additional source files required by specific platforms
@@ -1251,18 +1245,23 @@ endif ()
 
 #################### liborxncurses.so ################
 if (NOT WIN32)
-# Sources for liborxncurses.so
-add_library(orxncurses SHARED ${build_extensions_dir}/orxncurses/orxncurses.cpp)
-# Include file definition
-target_include_directories(orxncurses PUBLIC
+   # need to copy this to the binary dir
+   copy_build_file(ncurses.cls ${build_extensions_orxncurses_dir})
+   # Sources for liborxncurses.so
+   add_library(orxncurses SHARED ${build_extensions_dir}/orxncurses/orxncurses.cpp)
+   # Include file definition
+   target_include_directories(orxncurses PUBLIC
              ${build_api_dir}
              ${build_api_platform_dir}
              ${build_extensions_dir}/orxncurses)
-# Extra link library definitions
-target_link_libraries(orxncurses rexx rexxapi ncurses ${CMAKE_REQUIRED_LIBRARIES})
-set_target_properties(orxncurses PROPERTIES VERSION ${ORX_VERSION})
-install(TARGETS orxncurses RUNTIME DESTINATION ${INSTALL_LIB_DIR}
+   # Extra link library definitions
+   target_link_libraries(orxncurses rexx rexxapi ncurses ${CMAKE_REQUIRED_LIBRARIES})
+   # Make sure ncurses.cls gets copied
+   add_custom_target(ncurses_cls  ALL DEPENDS ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/ncurses.cls)
+   set_target_properties(orxncurses PROPERTIES VERSION ${ORX_VERSION})
+   install(TARGETS orxncurses RUNTIME DESTINATION ${INSTALL_LIB_DIR}
                           LIBRARY DESTINATION ${INSTALL_LIB_DIR} COMPONENT Core)
+   install(FILES ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/ncurses.cls COMPONENT Core DESTINATION ${INSTALL_CLS_DIR})
 endif ()
 
 #################### orexxole.dll ################
@@ -1518,14 +1517,11 @@ copy_build_file(rxftp.cls ${build_extensions_rxftp_dir})
 copy_build_file(csvStream.cls ${build_extensions_csvstream_dir})
 copy_build_file(json.cls ${build_extensions_json_dir})
 copy_build_file(socket.cls ${build_extensions_rxsock_dir})
-copy_build_file(socket6.cls ${build_extensions_rxsock_dir})
 copy_build_file(streamsocket.cls ${build_extensions_rxsock_dir})
-copy_build_file(streamsocket6.cls ${build_extensions_rxsock_dir})
 copy_build_file(mime.cls ${build_extensions_rxsock_dir})
 copy_build_file(smtp.cls ${build_extensions_rxsock_dir})
-copy_build_file(smtp6.cls ${build_extensions_rxsock_dir})
-copy_build_file(ncurses.cls ${build_extensions_orxncurses_dir})
 copy_build_file(rexxtry.rex ${build_samples_dir})
+
 add_custom_target(class_files ALL DEPENDS
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/rxregexp.cls
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/rxftp.cls
@@ -1535,8 +1531,8 @@ add_custom_target(class_files ALL DEPENDS
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/streamsocket.cls
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/mime.cls
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/smtp.cls
-    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/ncurses.cls
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/rexxtry.rex)
+
 
 install(FILES ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/rxregexp.cls COMPONENT Core DESTINATION ${INSTALL_CLS_DIR})
 
@@ -1549,7 +1545,6 @@ install(FILES ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/socket.cls COMPONENT Core DESTIN
 install(FILES ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/streamsocket.cls COMPONENT Core DESTINATION ${INSTALL_CLS_DIR})
 install(FILES ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/mime.cls COMPONENT Core DESTINATION ${INSTALL_CLS_DIR})
 install(FILES ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/smtp.cls COMPONENT Core DESTINATION ${INSTALL_CLS_DIR})
-install(FILES ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/ncurses.cls COMPONENT Core DESTINATION ${INSTALL_CLS_DIR})
 # technically a sample, but this is so useful we add it to the binary dir
 install(PROGRAMS ${CMAKE_CURRENT_SOURCE_DIR}/${build_samples_dir}/rexxtry.rex COMPONENT Core DESTINATION ${INSTALL_EXECUTABLE_DIR})
 

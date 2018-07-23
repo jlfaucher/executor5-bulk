@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2017 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -80,6 +80,7 @@
 #include "RequiresDirective.hpp"
 #include "CommandIOConfiguration.hpp"
 #include "CommandIOContext.hpp"
+#include "LibraryPackage.hpp"
 
 
 // max instructions without a yield
@@ -1796,6 +1797,7 @@ RexxObject *RexxActivation::resolveStream(RexxString *name, bool input, Protecte
             // create an instance of the stream class and create a new
             // instance
             RexxClass *streamClass = TheRexxPackage->findClass(GlobalNames::STREAM);
+
             ProtectedObject result;
             stream = streamClass->sendMessage(GlobalNames::NEW, name, result);
 
@@ -2729,10 +2731,12 @@ bool RexxActivation::callMacroSpaceFunction(RexxString *target, RexxObject **arg
 
 
 /**
- * Main method for performing an external routine call.  This
- * orchestrates the search order for locating an external routine.
+ * Call an already resolved external routine. This occurs if a
+ * first call has suceeded using a package level resource. This
+ * short cuts the full call chain
  *
  * @param target    The target function name.
+ * @param routine   The resolved routine object
  * @param _argcount The count of arguments for the call.
  * @param _stack    The expression stack holding the arguments.
  * @param calltype  The type of call (FUNCTION or SUBROUTINE)
@@ -2741,13 +2745,39 @@ bool RexxActivation::callMacroSpaceFunction(RexxString *target, RexxObject **arg
  * @return The function result (also returned in the resultObj protected
  *         object reference.
  */
-RexxObject *RexxActivation::externalCall(RexxString *target, RexxObject **arguments, size_t argcount,
+RexxObject *RexxActivation::externalCall(RexxString *target, RoutineClass *routine, RexxObject **arguments, size_t argcount,
+    RexxString *calltype, ProtectedObject &resultObj)
+{
+    // call and return the result
+    routine->call(activity, target, arguments, argcount, calltype, OREF_NULL, EXTERNALCALL, resultObj);
+    return resultObj;
+}
+
+
+/**
+ * Main method for performing an external routine call.  This
+ * orchestrates the search order for locating an external routine.
+ *
+ * @param target    The target function name.
+ * @param resolvedTarget
+ *                  The resolved routine object for the call (if any), which
+ *                  is passed back for caching.
+ * @param arguments The pointer to the call arguments.
+ * @param argcount  The count of arguments.
+ * @param calltype  The type of call (FUNCTION or SUBROUTINE)
+ * @param resultObj The returned result.
+ *
+ * @return The function result (also returned in the resultObj protected
+ *         object reference.
+ */
+RexxObject *RexxActivation::externalCall(RoutineClass *&routine, RexxString *target, RexxObject **arguments, size_t argcount,
     RexxString *calltype, ProtectedObject &resultObj)
 {
     // Step 1: used to be the functions directory, which has been deprecated.
 
     // Step 2:  Check for a ::ROUTINE definition in the local context
-    RoutineClass *routine = settings.parentCode->findRoutine(target);
+    // If found, this also passes the result back for caching
+    routine = settings.parentCode->findRoutine(target);
     if (routine != OREF_NULL)
     {
         // call and return the result
@@ -2913,18 +2943,18 @@ RexxClass *RexxActivation::findClass(RexxString *name)
  *
  * @return The resolved class, or OREF_NULL if not found.
  */
-RexxObject *RexxActivation::resolveDotVariable(RexxString *name)
+RexxObject *RexxActivation::resolveDotVariable(RexxString *name, RexxObject *&cachedValue)
 {
     // if not an interpret, then resolve directly.
     if (!isInterpret())
     {
-        return getPackageObject()->findClass(name);
+        return getPackageObject()->findClass(name, cachedValue);
     }
     else
     {
         // otherwise, send this up the call chain and resolve in the
         // original source context
-        return parent->resolveDotVariable(name);
+        return parent->resolveDotVariable(name, cachedValue);
     }
 }
 
@@ -2948,16 +2978,20 @@ void RexxActivation::loadRequires(RequiresDirective *instruction)
  * Load a package defined by a ::REQUIRES name LIBRARY
  * directive.
  *
- * @param target The name of the package.
+ * @param target  The name of the package.
  * @param instruction
- *               The ::REQUIRES directive being loaded.
+ *                The ::REQUIRES directive being loaded.
+ * @param package The package that is loading this library
  */
-void RexxActivation::loadLibrary(RexxString *target, RexxInstruction *instruction)
+void RexxActivation::loadLibrary(RexxString *target, RexxInstruction *instruction, PackageClass *package)
 {
     // this will cause the correct location to be used for error reporting
     current = instruction;
-    // have the package manager resolve the package
-    PackageManager::getLibrary(target);
+    // have the package manager resolve the package. We then merge the
+    // routines into the package imported routines list
+    LibraryPackage *library = PackageManager::getLibrary(target);
+    // and merge this into the package name space
+    package->mergeLibrary(library);
 }
 
 
@@ -3257,6 +3291,7 @@ static const char * trace_prefix_table[] =
   ">I>",                               // TRACE_PREFIX_INVOCATION
   ">N>",                               // TRACE_PREFIX_NAMESPACE
   ">K>",                               // TRACE_PREFIX_KEYWORD
+  ">R>",                               // TRACE_PREFIX_ALIAS
 };
 
 // size of a line number
@@ -4618,7 +4653,7 @@ StackFrameClass *RexxActivation::createStackFrame()
     // to be inadvertently reclaimed if a GC is triggered while evaluating the constructor
     // arguments.
     RexxString *traceback = getTraceBack();
-    return new StackFrameClass(type, getMessageName(), getExecutableObject(), target, arguments, traceback, getContextLineNumber(), this);
+    return new StackFrameClass(type, getMessageName(), getExecutableObject(), target, arguments, traceback, getContextLineNumber());
 }
 
 /**
