@@ -80,7 +80,7 @@ return testResult
       when .CaselessColumnComparator, .ColumnComparator, .Method, .Routine then args = (1, 1)
       when .CircularQueue, .Class, .File, .InvertingComparator, .Stream, .String, .TimeSpan, .WeakReference then args = .Array~of(1)
       -- StackFrame is handled as a special case below; we ignore other listed classes
-      when .ArgUtil, .Buffer, .Pointer, .RexxContext, .StackFrame, .Validate then iterate
+      when .ArgUtil, .Buffer, .Pointer, .RexxContext, .StackFrame, .Validate, .VariableReference then iterate
       otherwise args = .Array~new
     end
     -- create instance and add to table
