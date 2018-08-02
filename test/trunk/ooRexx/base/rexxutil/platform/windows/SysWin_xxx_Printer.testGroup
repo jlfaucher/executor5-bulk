@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2017 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -192,7 +192,7 @@ return testResult
   parse var printer oldName ',' driver ',' port
 
   ret = SysWinSetDefaultPrinter(oldName)
-  self~assertSame(0, ret, "SysWinSetDefaultPrinter should succeed with a return of 0")
+  self~assertEitherOr(ret == 0, ret == 122, "SysWinSetDefaultPrinter may return 0 or (w/o admin) 122")
 
   -- Now getting the default printer should match the old default
   printer = SysWinGetDefaultPrinter()
