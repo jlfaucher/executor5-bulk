@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2006-2017 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2006-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -83,6 +83,16 @@ return testResult
    self~assertEquals(a, tmp)
    self~assertSame(a, tmp)
 
+-- test for [bugs:#1544] SAY raises NOTREADY
+::method test_say_notready
+  signal on notready
+  -- set output destination to an invalid stream to provoke NOTREADY
+  .Output~destination(.Stream~new(""))
+  say 123
+  return
+
+  notready:
+  self~assertFail("SAY must not raise NOTREADY")
 
 
    /* Class to be used for retrieving the output of the SAY statements. */
