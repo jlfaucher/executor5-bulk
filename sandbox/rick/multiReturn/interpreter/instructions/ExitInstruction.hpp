@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -54,5 +54,27 @@ class RexxInstructionExit : public RexxInstructionExpression
 
     virtual void execute(RexxActivation *, ExpressionStack *);
 
+};
+
+
+/**
+ * Class for a return or exit instruction that allows multiple return
+ * values.
+ */
+class RexxInstructionMultiExit : public RexxInstruction
+{
+ public:
+    RexxInstructionMultiExit(size_t count, QueueClass *e);
+    inline RexxInstructionMultiExit(RESTORETYPE restoreType) { ; };
+
+    virtual void live(size_t);
+    virtual void liveGeneral(MarkReason reason);
+    virtual void flatten(Envelope*);
+
+    virtual void execute(RexxActivation *, ExpressionStack *);
+
+protected:
+    size_t       expressionCount;            // number of return expressions
+    RexxInternalObject  *expressions[1];     // the list of return expressions
 };
 #endif

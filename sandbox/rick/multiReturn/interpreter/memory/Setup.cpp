@@ -356,6 +356,9 @@ void MemoryObject::createImage()
 // finalize a simple class definition
 #define CompleteClassDefinition(name) The##name##Class->buildFinalClassBehaviour();
 
+// finalize a class definition for a class that is a real subclass of a primitive class
+#define CompleteSubclassDefinition(name, subclass) The##name##Class->buildFinalClassBehaviour(The##subclass##Class);
+
 // Add the created class object to the environment under its name and close
 // the local variable scope
 #define EndClassDefinition(name) \
@@ -726,6 +729,24 @@ StartClassDefinition(Array);
     CompleteClassDefinition(Array);
 
 EndClassDefinition(Array);
+
+    /***************************************************************************/
+    /* RETURNLIST class -- a proper subset of ARRAY                            */
+    /***************************************************************************/
+
+StartClassDefinition(ReturnList);
+
+    // all class methods are inherited from Array
+
+    CompleteClassMethodDefinitions();
+
+    // all instance methods are inherited from Array
+
+    CompleteMethodDefinitions();
+
+    CompleteSubclassDefinition(ReturnList, Array);
+
+EndClassDefinition(ReturnList);
 
 
     /***************************************************************************/

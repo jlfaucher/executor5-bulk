@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -46,6 +46,14 @@
 #include "RexxActivation.hpp"
 #include "AssignmentInstruction.hpp"
 
+
+/**
+ * Constructor for a simple assignment instruction.
+ *
+ * @param target The assignment target
+ * @param _expression
+ *               The expression to be assigned.
+ */
 RexxInstructionAssignment::RexxInstructionAssignment(RexxVariableBase *target, RexxInternalObject *_expression)
 {
     variable = target;
@@ -109,6 +117,102 @@ void RexxInstructionAssignment::flatten(Envelope *envelope)
  * @param stack   The current evaluation stack.
  */
 void RexxInstructionAssignment::execute(RexxActivation *context, ExpressionStack *stack)
+{
+    // if tracing?  handle this via the slower path
+    if (context->tracingInstructions())
+    {
+        context->traceInstruction(this);
+        // get the expression value
+        RexxObject *result = expression->evaluate(context, stack);
+        // trace the result
+        context->traceResult(result);
+        // assign the variable
+        variable->assign(context, result);
+        // do debug pause
+        context->pauseInstruction();
+    }
+    // fast path for non-traced execution
+    else
+    {
+        variable->assign(context, expression->evaluate(context, stack));
+    }
+}
+
+
+
+/**
+ * Constructor for a multiple assignment
+ *
+ * @param target
+ * @param _expression
+ */
+RexxInstructionMultiAssignment::RexxInstructionMultiAssignment(size_t count, QueueClass  *varList, RexxInternalObject *_expression)
+{
+    expression = _expression;
+    variableCount = count;
+
+    // now copy any arguments from the sub term stack
+    // NOTE:  The arguments are in last-to-first order on the stack.
+    initializeObjectArray(variableCount, variables, RexxVariableBase, varList);
+}
+
+
+/**
+ * Perform garbage collection on a live object.
+ *
+ * @param liveMark The current live mark.
+ */
+void RexxInstructionMultiAssignment::live(size_t liveMark)
+{
+    memory_mark(nextInstruction);
+    memory_mark(expression);
+    memory_mark_array(variableCount, variables);
+}
+
+
+/**
+ * Perform generalized live marking on an object.  This is
+ * used when mark-and-sweep processing is needed for purposes
+ * other than garbage collection.
+ *
+ * @param reason The reason for the marking call.
+ */
+void RexxInstructionMultiAssignment::liveGeneral(MarkReason reason)
+{
+    // must be first object marked
+    memory_mark_general(nextInstruction);
+    memory_mark_general(variable);
+    memory_mark_general(expression);
+}
+
+
+/**
+ * Perform garbage collection on a live object.
+ *
+ * @param liveMark The current live mark.
+ */
+void RexxInstructionMultiAssignment::flatten(Envelope *envelope)
+{
+    setUpFlatten(RexxInstructionMultiAssignment)
+
+    flattenRef(nextInstruction);
+    flattenRef(variable);
+    flattenRef(expression);
+
+    cleanUpFlatten
+}
+
+/**
+ * Execute a REXX assignment instruction
+ * NOTE:  This instruction is implemented using two seperate paths
+ * for traced vs. non-traced execution.  This reduces the checks
+ * for non-traced execution to a single check in this very
+ * heavily executed instruction.
+ *
+ * @param context The current execution context.
+ * @param stack   The current evaluation stack.
+ */
+void RexxInstructionMultiAssignment::execute(RexxActivation *context, ExpressionStack *stack)
 {
     // if tracing?  handle this via the slower path
     if (context->tracingInstructions())

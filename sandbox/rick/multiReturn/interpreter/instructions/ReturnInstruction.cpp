@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -73,4 +73,92 @@ void RexxInstructionReturn::execute(RexxActivation *context, ExpressionStack *st
     // NOTE:  We don't do a debug pause after a RETURN because we're no longer
     // in that code context.
 }
+
+
+/**
+ * Constructor for a RETURN instruction.
+ *
+ * @param _expression
+ *               The optional value expression.
+ */
+RexxInstructionMultiReturn::RexxInstructionMultiReturn(size_t count, QueueClass  *expressionList)
+{
+    expressionCount = count;
+
+    // now copy any arguments from the sub term stack
+    // NOTE:  The arguments are in last-to-first order on the stack.
+    initializeObjectArray(expressionCount, expressions, RexxInternalObject, expressionList);
+}
+
+
+/**
+ * Perform garbage collection on a live object.
+ *
+ * @param liveMark The current live mark.
+ */
+void RexxInstructionMultiReturn::live(size_t liveMark)
+{
+    memory_mark(nextInstruction);  // must be first one marked
+    memory_mark_array(expressionCount, expressions);
+}
+
+
+/**
+ * Perform generalized live marking on an object.  This is
+ * used when mark-and-sweep processing is needed for purposes
+ * other than garbage collection.
+ *
+ * @param reason The reason for the marking call.
+ */
+void RexxInstructionMultiReturn::liveGeneral(MarkReason reason)
+{
+    // must be first one marked
+    memory_mark_general(nextInstruction);
+    memory_mark_general_array(expressionCount, expressionss);
+}
+
+
+/**
+ * Flatten a source object.
+ *
+ * @param envelope The envelope that will hold the flattened object.
+ */
+void RexxInstructionCall::flatten(Envelope *envelope)
+{
+    setUpFlatten(RexxInstructionCall)
+
+    flattenRef(nextInstruction);
+    flattenArrayRefs(expressionCount, expressions);
+
+    cleanUpFlatten
+}
+
+
+/**
+ * Execute a RETURN instruction with multiple return values
+ *
+ * @param context The current execution context.
+ * @param stack   The current evaluation stack.
+ */
+void RexxInstructionMultiReturn::execute(RexxActivation *context, ExpressionStack *stack)
+{
+    // trace the instruction if needed.
+    context->traceInstruction(this);
+    Protected<ResultList> resultList = new ResultList(expressionCount);
+
+    // evaluate all of the arguments
+    for (size_t i = 0; i < expressionCount; i++)
+    {
+        // evaluate the expression (and the argument is left on the stack)
+        RexxObject *result = argArray[i]->evaluate(context, stack);
+        context->traceResult(result);
+        resultList->append(result);
+    }
+
+    // evaluate the optional expression and tell the context to process a RETURN.
+    context->returnFrom(resultList);
+    // NOTE:  We don't do a debug pause after a RETURN because we're no longer
+    // in that code context.
+}
+
 

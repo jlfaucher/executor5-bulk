@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -46,6 +46,9 @@
 
 #include "RexxInstruction.hpp"
 
+/**
+ * An assignment instruction for a single variable
+ */
 class RexxInstructionAssignment : public RexxInstruction
 {
  public:
@@ -62,5 +65,28 @@ class RexxInstructionAssignment : public RexxInstruction
 
     RexxInternalObject *expression;      // assignment expression
     RexxVariableBase *variable;          // assignment target
+};
+
+
+/**
+ * An assignment instruction for a multi-valued assignment.
+ */
+class RexxInstructionMultiAssignment : public RexxInstruction
+{
+ public:
+    RexxMultiAssignment(size_t count, QueueClass *e, RexxInternalObject *);
+    inline RexxInstructionMultiAssignment(RESTORETYPE restoreType) { ; };
+
+    virtual void live(size_t);
+    virtual void liveGeneral(MarkReason reason);
+    virtual void flatten(Envelope *);
+
+    virtual void execute(RexxActivation *, ExpressionStack *);
+
+ protected:
+
+    RexxInternalObject *expression;      // assignment expression
+    size_t              variableCount;   // number of return expressions
+    RexxVariableBase   *variable;        // assignment target
 };
 #endif
