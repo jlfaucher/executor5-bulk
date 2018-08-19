@@ -48,8 +48,10 @@
 
 // the threshold to trigger expansion of the normal segment set.
 const double NormalSegmentSet::NormalMemoryExpansionThreshold = .30;
-// The point where we consider releasing segments
-const double NormalSegmentSet::NormalMemoryContractionThreshold = .70;
+// the threshold to trigger expansion of the large segment set. Since these
+// tend to be large blocks and can be frequently longer lived, we try to run with
+// a little more head room than the normal set
+const double LargeSegmentSet::LargeMemoryExpansionThreshold = .40;
 // the absolute smallest segment we will allocate.
 const size_t MemorySegmentSet::MinimumSegmentSize = (MemorySegment::SegmentSize/2);
 // amount of usable space in a minimum sized segment
@@ -61,7 +63,8 @@ const size_t MemorySegmentSet::LargeSegmentSize = (MemorySegment::SegmentSize * 
 const size_t MemorySegmentSet::SegmentDeadSpace = (MemorySegment::SegmentSize - MemorySegment::MemorySegmentOverhead);
 // space available in a larger allocation.
 const size_t MemorySegmentSet::LargeSegmentDeadSpace = (LargeSegmentSize - MemorySegment::MemorySegmentOverhead);
-const size_t NormalSegmentSet::InitialNormalSegmentSpace = ((LargeSegmentSize * 8) - MemorySegment::MemorySegmentOverhead);
+const size_t NormalSegmentSet::InitialNormalSegmentSpace = ((MemorySegment::SegmentSize * 12) - MemorySegment::MemorySegmentOverhead);
+const size_t LargeSegmentSet::InitialLargeSegmentSpace = (LargeSegmentSize - MemorySegment::MemorySegmentOverhead);
 
 /**
  * Dump information about an individual segment
@@ -273,6 +276,16 @@ void NormalSegmentSet::getInitialSet()
 {
     // get our first set of segments (well, one big one really)
     newSegment(InitialNormalSegmentSpace, InitialNormalSegmentSpace);
+}
+
+
+/**
+ * Set up the intial normal memory allocation.
+ */
+void LargeSegmentSet::getInitialSet()
+{
+    // get our first set of segments (well, one big one really)
+    newSegment(InitialLargeSegmentSpace, InitialLargeSegmentSpace);
 }
 
 
@@ -661,6 +674,41 @@ size_t NormalSegmentSet::suggestMemoryExpansion()
     // if we are less than 30% full, we should try to expand to the
     // 30% mark.
     if (freePercent < NormalMemoryExpansionThreshold)
+    {
+        // get a recommendation on how large the heap should be
+        size_t recommendedSize = recommendedMemorySize();
+        size_t newDeadBytes = recommendedSize - liveObjectBytes;
+        // calculate the number of new bytes we need to add reach
+        // our memory threshold.  It will be the job of others to
+        // translate this into segment sized units.
+        size_t expansionSize = newDeadBytes - deadObjectBytes;
+        return expansionSize;
+    }
+    // no expansion required yet.
+    return 0;
+}
+
+
+/**
+ * Decide if we should add additional segments to the normal heap
+ * based on the amount of free space we have after a garbage collection.  If
+ * we're starting to run full, then we should expand the heap to prevent
+ * recycling the garbage collector to reclaim minimal amounts of storage that
+ * is immediately reused, causing another GC cycle.
+ *
+ * @return A recommended expansion size.
+ */
+size_t LargeSegmentSet::suggestMemoryExpansion()
+{
+    // since we have just done a GC, we have metrics on the size of live
+    // and dead storage. Get the current percentage
+    float freePercent = freeMemoryPercentage();
+
+    memory->verboseMessage("Normal segment set free memory percentage is %d\n", (int)(freePercent * 100.0));
+
+    // We use different percentages for the large object pool and the normal
+    // pool, attempting to give the large pool a better opportunity to fit in large size blocks.
+    if (freePercent < LargeMemoryExpansionThreshold)
     {
         // get a recommendation on how large the heap should be
         size_t recommendedSize = recommendedMemorySize();
@@ -1171,14 +1219,17 @@ RexxInternalObject *LargeSegmentSet::findObject(size_t allocationLength)
  */
 RexxInternalObject *LargeSegmentSet::handleAllocationFailure(size_t allocationLength)
 {
-    // Step 1, decide to expand the heap or GC, or both
-    expandOrCollect(allocationLength);
+    // Step 1, force a GC
+    memory->collect();
+    // Step 2, now that we have good GC data, decide if we need to adjust
+    // the heap size.
+    adjustMemorySize();
     // Step 2, see if can allocate now
     RexxInternalObject *newObject = findObject(allocationLength);
     // Nothing in the current space?
     if (newObject == OREF_NULL)
     {
-        // Step 3, force a heap expansion, if we can
+        // Step 4, force a heap expansion, if we can
         // this is a more targeted size
         expandSegmentSet(allocationLength);
         // Step 4, see if can allocate now */
@@ -1359,34 +1410,6 @@ MemorySegment *MemorySegmentSet::largestActiveSegment()
     // we return this unconditionally, as our anchor segment will
     // report a size of zero.
     return largest;
-}
-
-
-/**
- * Handle the decision process for a failed large block allocation.
- * This function will decide whether to force a garbage collection, or add
- * additional segments to the heap.  The cheaper alternative is to avoid
- * forcing the mark and sweep operations, so we see if we can predict if a
- * garbage collection is likely to fail to find a block large enough.
- *
- * @param allocationLength
- *               The allocationLength that caused the current failure situation.
- */
-void LargeSegmentSet::expandOrCollect(size_t allocationLength)
-{
-    MemorySegment *largestActive = largestActiveSegment();
-
-    // if our largest segment can't hold this block, then this is a
-    // certain failure.  It is time to add more segments for large
-    // allocations.
-    if (largestActive->size() < allocationLength)
-    {
-        expandSegmentSet(allocationLength);
-        return;
-    }
-    // to ahead and do the collection. We might still need to expand
-    // to satisify this request
-    memory->collect();
 }
 
 

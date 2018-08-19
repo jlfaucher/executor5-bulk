@@ -460,8 +460,6 @@ class NormalSegmentSet : public MemorySegmentSet
 
     // the threshold to trigger expansion of the normal segment set.
     static const double NormalMemoryExpansionThreshold;
-    // The point where we consider releasing segments
-    static const double NormalMemoryContractionThreshold;
     // allocation request for the recovery segment
     static const size_t RecoverSegmentSize = ((MemorySegment::SegmentSize/2) - MemorySegment::MemorySegmentOverhead);
     // initial allocation size for normal space.
@@ -476,7 +474,6 @@ class NormalSegmentSet : public MemorySegmentSet
     inline size_t mapLengthToDeadPool(size_t length) { return length / Memory::ObjectGrain; }
     RexxInternalObject *findLargeDeadObject(size_t allocationLength);
     inline size_t recommendedMemorySize() { return (size_t)((float)liveObjectBytes/(1.0 - NormalMemoryExpansionThreshold)); }
-    inline size_t recommendedMaximumMemorySize() { return (size_t)((float)liveObjectBytes/(1.0 - NormalMemoryContractionThreshold)); }
     void checkObjectOverlap(DeadObject *obj);
     RexxInternalObject *findObject(size_t allocationLength);
     inline RexxInternalObject *splitNormalDeadObject(DeadObject *object, size_t allocationLength, size_t deadLength)
@@ -559,18 +556,26 @@ class LargeSegmentSet : public MemorySegmentSet
     }
 
     virtual DeadObject *donateObject(size_t allocationLength);
+    void    getInitialSet();
 
 protected:
+
+    // initial allocation size for large space.
+    static const size_t InitialLargeSegmentSpace;
 
     virtual void addDeadObject(DeadObject *object);
     virtual void addDeadObject(char *object, size_t length);
     virtual MemorySegment *allocateSegment(size_t requestLength, size_t minimumLength);
-    void expandOrCollect(size_t allocationLength);
+    virtual size_t suggestMemoryExpansion();
     void expandSegmentSet(size_t allocationLength);
     virtual void prepareForSweep();
             void completeSweepOperation();
 
   private:
+
+    // the threshold to trigger expansion of the normal segment set.
+    static const double LargeMemoryExpansionThreshold;
+    inline size_t recommendedMemorySize() { return (size_t)((float)liveObjectBytes/(1.0 - LargeMemoryExpansionThreshold)); }
 
     RexxInternalObject *findObject(size_t allocationLength);
 
@@ -603,8 +608,6 @@ protected:
     virtual void addDeadObject(DeadObject *object);
     virtual void addDeadObject(char *object, size_t length);
     virtual MemorySegment *allocateSegment(size_t requestLength, size_t minimumLength);
-    void expandOrCollect(size_t allocationLength);
-    void expandSegmentSet(size_t allocationLength);
     virtual void completeSweepOperation();
 
   private:

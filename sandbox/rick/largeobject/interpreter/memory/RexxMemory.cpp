@@ -180,6 +180,10 @@ void MemoryObject::initialize(bool restoringImage)
     // make sure we have an inital segment set to allocate from.
     newSpaceNormalSegments.getInitialSet();
 
+    // we also get an initial segment set for large object, since we
+    // will need this for the globalReferences table.
+    newSpaceLargeSegments.getInitialSet();
+
     // get the initial uninit table
     uninitTable = new_identity_table();
 
@@ -330,6 +334,7 @@ void  MemoryObject::runUninits()
 
     // ok, turn on the interlock
     processingUninits = true;
+    verboseMessage("Starting to process pending uninit methods\n");
 
     // get the current activity for running the uninits
     Activity *activity = ActivityManager::currentActivity;
@@ -365,6 +370,7 @@ void  MemoryObject::runUninits()
 
     // turn off the interlock
     processingUninits = false; ;
+    verboseMessage("Done processing pending uninit methods\n");
 }
 
 
@@ -546,21 +552,23 @@ void MemoryObject::freeSegment(MemorySegment *segment)
  */
 MemorySegment *MemoryObject::newSegment(size_t requestedBytes, size_t minBytes)
 {
-    verboseMessage("Allocating a new segment of %d bytes\n", requestedBytes);
     // first make sure we've got enough space for the control
-    // information, and round this to a proper boundary
-    requestedBytes = MemorySegment::roundSegmentBoundary(requestedBytes + MemorySegment::MemorySegmentOverhead);
-    verboseMessage("Allocating a boundary new segment of %d bytes\n", requestedBytes);
+    // information. We don't do any rounding. The segment set has already
+    // decided what the apropriate size should be. In some cases (i.e., the single object
+    // segment set), rounding would just waste memory.
+    requestedBytes = requestedBytes + MemorySegment::MemorySegmentOverhead;
+    verboseMessage("Allocating a new segment of %d bytes\n", requestedBytes);
     // try to allocate a new segment
     MemorySegment *segment = newSegment(requestedBytes);
     if (segment == NULL)
     {
+        verboseMessage("Allocating a boundary new segment of %d bytes\n", requestedBytes);
         // Segmentsize is the minimum size request we handle.  If
         // minbytes is small, then we're just adding a segment to the
         // small pool.  Reduce the request to SegmentSize and try again.
         // For all other requests, try once more with the minimum.
+        minBytes = minBytes + MemorySegment::MemorySegmentOverhead;
         verboseMessage("Allocating a fallback new segment of %d bytes\n", minBytes);
-        minBytes = MemorySegment::roundSegmentBoundary(minBytes + MemorySegment::MemorySegmentOverhead);
         // try to allocate once more...if this fails, the caller will
         // have to handle it.
         segment = newSegment(minBytes);
@@ -788,7 +796,7 @@ void MemoryObject::liveGeneral(MarkReason reason)
 void MemoryObject::collect()
 {
     collections++;
-    verboseMessage("Begin collecting memory, cycle #%d after %d allocations.\n", collections, allocations);
+    verboseMessage("Begin collecting memory, cycle #%zu after %zu allocations.\n", collections, allocations);
     allocations = 0;
 
     // change our marker to the next value so we can distinguish
@@ -1034,7 +1042,7 @@ void MemoryObject::scavengeSegmentSets(MemorySegmentSet *requestor, size_t alloc
     DeadObject *largeObject = donor->donateObject(allocationLength);
     if (largeObject != NULL)
     {
-        verboseMessage("Donating and object of %zu bytes from %s to %s\n", largeObject->getObjectSize(), donor->name, requestor->name);
+        verboseMessage("Donating an object of %zu bytes from %s to %s\n", largeObject->getObjectSize(), donor->name, requestor->name);
         // we need to insert this into the normal dead chain
         // locations.
         requestor->addDeadObject(largeObject);
