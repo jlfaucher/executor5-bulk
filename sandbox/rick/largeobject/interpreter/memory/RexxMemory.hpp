@@ -56,8 +56,8 @@
 // this can be enabled to switch on memory profiling info
 //#define MEMPROFILE
 
-// this caan be enabled to have major GC events chronicled.
-#define VERBOSE_GC
+// this can be enabled to have major GC events chronicled.
+//#define VERBOSE_GC
 
 class ActivationFrameBuffer;
 class MemorySegment;

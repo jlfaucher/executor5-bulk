@@ -704,7 +704,7 @@ size_t LargeSegmentSet::suggestMemoryExpansion()
     // and dead storage. Get the current percentage
     float freePercent = freeMemoryPercentage();
 
-    memory->verboseMessage("Normal segment set free memory percentage is %d\n", (int)(freePercent * 100.0));
+    memory->verboseMessage("Large segment set free memory percentage is %d\n", (int)(freePercent * 100.0));
 
     // We use different percentages for the large object pool and the normal
     // pool, attempting to give the large pool a better opportunity to fit in large size blocks.
@@ -1134,6 +1134,8 @@ RexxInternalObject *NormalSegmentSet::findObject(size_t allocationLength)
  */
 RexxInternalObject *NormalSegmentSet::handleAllocationFailure(size_t allocationLength)
 {
+    memory->verboseMessage("Normal allocation failure for %zu bytes\n", allocationLength);
+
     // Step 1, force a GC
     memory->collect();
     // Step 2, now that we have good GC data, decide if we need to adjust
@@ -1219,6 +1221,8 @@ RexxInternalObject *LargeSegmentSet::findObject(size_t allocationLength)
  */
 RexxInternalObject *LargeSegmentSet::handleAllocationFailure(size_t allocationLength)
 {
+    memory->verboseMessage("Large object allocation failure for %zu bytes\n", allocationLength);
+
     // Step 1, force a GC
     memory->collect();
     // Step 2, now that we have good GC data, decide if we need to adjust
@@ -1276,6 +1280,8 @@ RexxInternalObject *LargeSegmentSet::handleAllocationFailure(size_t allocationLe
  */
 RexxInternalObject *SingleObjectSegmentSet::handleAllocationFailure(size_t allocationLength)
 {
+    memory->verboseMessage("Single object allocation failure for %zu bytes\n", allocationLength);
+
     // to ahead and do the collection. If we're lucky, we can free up enough memory
     // to satisify this request.
     memory->collect();
@@ -1328,6 +1334,8 @@ RexxInternalObject *OldSpaceSegmentSet::findObject(size_t allocationLength)
  */
 RexxInternalObject *SingleObjectSegmentSet::allocateObject(size_t requestLength)
 {
+    memory->verboseMessage("Allocating a single segment object of %zu bytes to %s\n", requestLength, name);
+
     // it is possible that we could have a pattern where a large number of
     // short-lived objects get allocated without triggering a garbage collection. Since
     // this segment set expands for each object allocation, we would never trigger a GC
@@ -1336,6 +1344,7 @@ RexxInternalObject *SingleObjectSegmentSet::allocateObject(size_t requestLength)
     // accumulating
     if (allocationsSinceLastGC > ForceGCThreshold)
     {
+        memory->verboseMessage("Single object force threshold reached\n");
         return OREF_NULL;       // this will trigger the GC
     }
 
@@ -1349,6 +1358,8 @@ RexxInternalObject *SingleObjectSegmentSet::allocateObject(size_t requestLength)
 
     allocationsSinceLastGC++;          // update the allocation counters
     allocationCount++;
+
+    memory->verboseMessage("Adding a segment of %zu bytes to %s\n", segment->size(), name);
 
     // we don't attempt and recombinations in this set, so just push it on
     // to the head of our segment chain

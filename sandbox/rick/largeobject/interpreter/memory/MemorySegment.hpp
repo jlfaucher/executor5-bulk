@@ -612,7 +612,10 @@ protected:
 
   private:
 
-    static const size_t ForceGCThreshold = 8;  // the limit of new segments we will allocate before forcing a GC.
+    // the limit of new segments we will allocate before forcing a GC.
+    // this is kept fairly small, since repeated allocations is frequently a
+    // sign that we have segments we can release.
+    static const size_t ForceGCThreshold = 4;
 
     size_t         allocationsSinceLastGC;// number of objects allocated since the last GC.
     size_t         allocationCount;       // total number of allocations
