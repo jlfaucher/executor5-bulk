@@ -2229,6 +2229,16 @@ return 0
   end
   s~close
 
+-- read file into array
+::method arrayIn
+  expose file
+
+  s = .stream~new(file)
+  s~open("read shared")
+  array = s~arrayIn
+  s~close
+  return array
+
 -- create a file from a package resource
 ::method createFromResource
   expose package
