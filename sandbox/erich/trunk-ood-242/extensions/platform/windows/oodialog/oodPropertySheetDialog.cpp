@@ -48,6 +48,7 @@
 #include <dlgs.h>
 #include <shlwapi.h>
 #include "APICommon.hpp"
+#include "ooShapes.hpp"
 #include "oodCommon.hpp"
 #include "oodMessaging.hpp"
 #include "oodUser.hpp"
@@ -4788,7 +4789,7 @@ RexxMethod2(RexxObjectPtr, psp_setSize, ARGLIST, args, CSELF, pCSelf)
     size_t arraySize;
     size_t argsUsed;
     POINT  point;
-    if ( ! getPointFromArglist(context, args, &point, 1, 2, &arraySize, &argsUsed) )
+    if ( ! getPointFromArglist(context, args, (PORXPOINT)&point, 1, 2, &arraySize, &argsUsed) )
     {
         return TheOneObj;
     }
@@ -5675,8 +5676,13 @@ static LRESULT doTCNSelChange(pCTabOwnerDialog pctod, pCManagedTab pcmt)
 
             if ( pcmt->ownerWantsSelChange )
             {
-                RexxArrayObject args = c->ArrayOfTwo(pccdNew->rexxSelf, c->UnsignedInt32(cur + 1));
-                invokeDispatch(c, pcmt->rexxOwner, c->String(TABOWNERSELCHANGE_MSG), args);
+                RexxObjectPtr   tabIndex = c->UnsignedInt32(cur + 1);
+                RexxArrayObject args     = c->ArrayOfTwo(pccdNew->rexxSelf, tabIndex);
+
+                invokeDispatch(c, pcmt->pcpbd, TABOWNERSELCHANGE_MSG, args);
+
+                c->ReleaseLocalReference(tabIndex);
+                c->ReleaseLocalReference(args);
             }
             break;
 
@@ -6472,7 +6478,7 @@ static bool setCdiSize(RexxMethodContext *c, pCControlDialogInfo pccdi, RexxObje
 {
     if ( exists )
     {
-        SIZE *s = rxGetSize(c, _size, argPos);
+        SIZE *s = (PSIZE)rxGetSize(c, _size, argPos);
         if ( s == NULL )
         {
             return false;
