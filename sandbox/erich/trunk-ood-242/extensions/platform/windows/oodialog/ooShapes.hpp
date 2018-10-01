@@ -61,28 +61,28 @@ typedef struct tagORXSIZE
 } ORXSIZE, *PORXSIZE;
 
 
-extern bool rxIsNormalized(PORXRECT r);
-extern bool rxCopyRect(PORXRECT rect, PORXRECT r);
-extern bool rxSetRect(PORXRECT rect, long x, long y, long x2, long y2);
-extern bool rxPtInRect(PORXRECT r, PORXPOINT pt);
+__declspec(dllexport)  bool rxIsNormalized(PORXRECT r);
+__declspec(dllexport)  bool rxCopyRect(PORXRECT rect, PORXRECT r);
+__declspec(dllexport)  bool rxSetRect(PORXRECT rect, long x, long y, long x2, long y2);
+__declspec(dllexport)  bool rxPtInRect(PORXRECT r, PORXPOINT pt);
 
-extern PORXPOINT     rxGetPoint(RexxMethodContext *context, RexxObjectPtr p, size_t argPos);
-extern RexxObjectPtr rxNewPoint(RexxThreadContext *c, long x, long y);
-extern RexxObjectPtr rxNewPoint(RexxMethodContext *c, long x, long y);
-extern RexxObjectPtr rxNewPoint(RexxThreadContext *c, ORXPOINT *pt);
-extern RexxObjectPtr rxNewPoint(RexxMethodContext *c, ORXPOINT *pt);
-extern PORXRECT      rxGetRect(RexxMethodContext *context, RexxObjectPtr r, size_t argPos);
-extern RexxObjectPtr rxNewRect(RexxMethodContext *context, long l, long t, long r, long b);
-extern RexxObjectPtr rxNewRect(RexxThreadContext *context, PORXRECT r);
-extern RexxObjectPtr rxNewRect(RexxMethodContext *context, PORXRECT r);
-extern PORXSIZE      rxGetSize(RexxMethodContext *context, RexxObjectPtr s, size_t argPos);
-extern RexxObjectPtr rxNewSize(RexxThreadContext *c, long cx, long cy);
-extern RexxObjectPtr rxNewSize(RexxMethodContext *c, long cx, long cy);
-extern RexxObjectPtr rxNewSize(RexxMethodContext *c, PORXSIZE s);
+__declspec(dllexport)  PORXPOINT     rxGetPoint(RexxMethodContext *context, RexxObjectPtr p, size_t argPos);
+__declspec(dllexport)  RexxObjectPtr rxNewPoint(RexxThreadContext *c, long x, long y);
+__declspec(dllexport)  RexxObjectPtr rxNewPoint(RexxMethodContext *c, long x, long y);
+__declspec(dllexport)  RexxObjectPtr rxNewPoint(RexxThreadContext *c, ORXPOINT *pt);
+__declspec(dllexport)  RexxObjectPtr rxNewPoint(RexxMethodContext *c, ORXPOINT *pt);
+__declspec(dllexport)  PORXRECT      rxGetRect(RexxMethodContext *context, RexxObjectPtr r, size_t argPos);
+__declspec(dllexport)  RexxObjectPtr rxNewRect(RexxMethodContext *context, long l, long t, long r, long b);
+__declspec(dllexport)  RexxObjectPtr rxNewRect(RexxThreadContext *context, PORXRECT r);
+__declspec(dllexport)  RexxObjectPtr rxNewRect(RexxMethodContext *context, PORXRECT r);
+__declspec(dllexport)  PORXSIZE      rxGetSize(RexxMethodContext *context, RexxObjectPtr s, size_t argPos);
+__declspec(dllexport)  RexxObjectPtr rxNewSize(RexxThreadContext *c, long cx, long cy);
+__declspec(dllexport)  RexxObjectPtr rxNewSize(RexxMethodContext *c, long cx, long cy);
+__declspec(dllexport)  RexxObjectPtr rxNewSize(RexxMethodContext *c, PORXSIZE s);
 
-extern bool          goodMinMaxArgs(RexxMethodContext *c, RexxArrayObject args, size_t min, size_t max, size_t *arraySize);
-extern bool          getRectFromArglist(RexxMethodContext *, RexxArrayObject, PORXRECT, bool, int, int, size_t *, size_t *);
-extern bool          getPointFromArglist(RexxMethodContext *, RexxArrayObject, PORXPOINT, int, int, size_t *, size_t *);
-extern bool          getSizeFromArglist(RexxMethodContext *, RexxArrayObject, PORXPOINT, int, int, size_t *, size_t *);
+__declspec(dllexport)  bool          goodMinMaxArgs(RexxMethodContext *c, RexxArrayObject args, size_t min, size_t max, size_t *arraySize);
+__declspec(dllexport)  bool          getRectFromArglist(RexxMethodContext *, RexxArrayObject, PORXRECT, bool, int, int, size_t *, size_t *);
+__declspec(dllexport)  bool          getPointFromArglist(RexxMethodContext *, RexxArrayObject, PORXPOINT, int, int, size_t *, size_t *);
+__declspec(dllexport)  bool          getSizeFromArglist(RexxMethodContext *, RexxArrayObject, PORXPOINT, int, int, size_t *, size_t *);
 
 #endif

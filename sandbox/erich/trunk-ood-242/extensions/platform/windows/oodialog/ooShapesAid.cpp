@@ -96,7 +96,7 @@ static void getClasses(RexxMethodContext *c)
     c->RequestGlobalReference(ThePointClass);
 }
 
-bool rxCopyRect(PORXRECT rect, PORXRECT r)
+__declspec(dllexport) bool rxCopyRect(PORXRECT rect, PORXRECT r)
 {
     if ( rect == NULL || r == NULL )
     {
@@ -109,7 +109,7 @@ bool rxCopyRect(PORXRECT rect, PORXRECT r)
     return true;
 }
 
-bool rxSetRect(PORXRECT rect, long x, long y, long x2, long y2)
+__declspec(dllexport) bool rxSetRect(PORXRECT rect, long x, long y, long x2, long y2)
 {
     if ( rect == NULL )
     {
@@ -122,7 +122,7 @@ bool rxSetRect(PORXRECT rect, long x, long y, long x2, long y2)
     return true;
 }
 
-bool rxPtInRect(PORXRECT r, PORXPOINT pt)
+__declspec(dllexport) bool rxPtInRect(PORXRECT r, PORXPOINT pt)
 {
     if ( pt->x > r->top && pt->x < r->bottom && pt->y > r->left && pt->y < r->top )
     {
@@ -131,7 +131,7 @@ bool rxPtInRect(PORXRECT r, PORXPOINT pt)
     return false;
 }
 
-bool rxIsNormalized(PORXRECT r)
+__declspec(dllexport) bool rxIsNormalized(PORXRECT r)
 {
     if ( r->right > r->left && r->bottom > r->top )
     {
@@ -140,7 +140,7 @@ bool rxIsNormalized(PORXRECT r)
     return false;
 }
 
-PORXPOINT rxGetPoint(RexxMethodContext *context, RexxObjectPtr p, size_t argPos)
+__declspec(dllexport) PORXPOINT rxGetPoint(RexxMethodContext *context, RexxObjectPtr p, size_t argPos)
 {
     if ( requiredClass(context->threadContext, p, "Point", argPos) )
     {
@@ -150,7 +150,7 @@ PORXPOINT rxGetPoint(RexxMethodContext *context, RexxObjectPtr p, size_t argPos)
 }
 
 
-RexxObjectPtr rxNewPoint(RexxThreadContext *c, long x, long y)
+__declspec(dllexport) RexxObjectPtr rxNewPoint(RexxThreadContext *c, long x, long y)
 {
     if ( ThePointClass == NULLOBJECT )
     {
@@ -159,7 +159,7 @@ RexxObjectPtr rxNewPoint(RexxThreadContext *c, long x, long y)
     return c->SendMessage2(ThePointClass, "NEW", c->WholeNumber(x), c->WholeNumber(y));;
 }
 
-RexxObjectPtr rxNewPoint(RexxMethodContext *c, long x, long y)
+__declspec(dllexport) RexxObjectPtr rxNewPoint(RexxMethodContext *c, long x, long y)
 {
     if ( ThePointClass == NULLOBJECT )
     {
@@ -168,17 +168,17 @@ RexxObjectPtr rxNewPoint(RexxMethodContext *c, long x, long y)
     return c->SendMessage2(ThePointClass, "NEW", c->WholeNumber(x), c->WholeNumber(y));;
 }
 
-RexxObjectPtr rxNewPoint(RexxThreadContext *c, ORXPOINT *pt)
+__declspec(dllexport) RexxObjectPtr rxNewPoint(RexxThreadContext *c, ORXPOINT *pt)
 {
     return rxNewPoint(c, pt->x, pt->y);
 }
 
-RexxObjectPtr rxNewPoint(RexxMethodContext *c, ORXPOINT *pt)
+__declspec(dllexport) RexxObjectPtr rxNewPoint(RexxMethodContext *c, ORXPOINT *pt)
 {
     return rxNewPoint(c->threadContext, pt->x, pt->y);
 }
 
-PORXRECT rxGetRect(RexxMethodContext *context, RexxObjectPtr r, size_t argPos)
+__declspec(dllexport) PORXRECT rxGetRect(RexxMethodContext *context, RexxObjectPtr r, size_t argPos)
 {
     if ( requiredClass(context->threadContext, r, "Rect", argPos) )
     {
@@ -188,7 +188,7 @@ PORXRECT rxGetRect(RexxMethodContext *context, RexxObjectPtr r, size_t argPos)
 }
 
 
-RexxObjectPtr rxNewRect(RexxThreadContext *c, PORXRECT r)
+__declspec(dllexport) RexxObjectPtr rxNewRect(RexxThreadContext *c, PORXRECT r)
 {
     if ( TheRectClass == NULLOBJECT )
     {
@@ -203,7 +203,7 @@ RexxObjectPtr rxNewRect(RexxThreadContext *c, PORXRECT r)
 }
 
 
-RexxObjectPtr rxNewRect(RexxMethodContext *c, long l, long t, long r, long b)
+__declspec(dllexport) RexxObjectPtr rxNewRect(RexxMethodContext *c, long l, long t, long r, long b)
 {
     if ( TheRectClass == NULLOBJECT )
     {
@@ -218,12 +218,12 @@ RexxObjectPtr rxNewRect(RexxMethodContext *c, long l, long t, long r, long b)
 }
 
 
-RexxObjectPtr rxNewRect(RexxMethodContext *context, PORXRECT r)
+__declspec(dllexport) RexxObjectPtr rxNewRect(RexxMethodContext *context, PORXRECT r)
 {
     return rxNewRect(context, r->left, r->top, r->right, r->bottom);
 }
 
-PORXSIZE rxGetSize(RexxMethodContext *context, RexxObjectPtr s, size_t argPos)
+__declspec(dllexport) PORXSIZE rxGetSize(RexxMethodContext *context, RexxObjectPtr s, size_t argPos)
 {
     if ( requiredClass(context->threadContext, s, "Size", argPos) )
     {
@@ -232,7 +232,7 @@ PORXSIZE rxGetSize(RexxMethodContext *context, RexxObjectPtr s, size_t argPos)
     return NULL;
 }
 
-RexxObjectPtr rxNewSize(RexxThreadContext *c, long cx, long cy)
+__declspec(dllexport) RexxObjectPtr rxNewSize(RexxThreadContext *c, long cx, long cy)
 {
     if ( TheSizeClass == NULLOBJECT )
     {
@@ -241,7 +241,7 @@ RexxObjectPtr rxNewSize(RexxThreadContext *c, long cx, long cy)
     return c->SendMessage2(TheSizeClass, "NEW", c->WholeNumber(cx), c->WholeNumber(cy));
 }
 
-RexxObjectPtr rxNewSize(RexxMethodContext *c, long cx, long cy)
+__declspec(dllexport) RexxObjectPtr rxNewSize(RexxMethodContext *c, long cx, long cy)
 {
     if ( TheSizeClass == NULLOBJECT )
     {
@@ -250,7 +250,7 @@ RexxObjectPtr rxNewSize(RexxMethodContext *c, long cx, long cy)
     return c->SendMessage2(TheSizeClass, "NEW", c->WholeNumber(cx), c->WholeNumber(cy));
 }
 
-RexxObjectPtr rxNewSize(RexxMethodContext *c, PORXSIZE s)
+__declspec(dllexport) RexxObjectPtr rxNewSize(RexxMethodContext *c, PORXSIZE s)
 {
     return rxNewSize(c, s->cx, s->cx);
 }
@@ -271,7 +271,7 @@ RexxObjectPtr rxNewSize(RexxMethodContext *c, PORXSIZE s)
  * @return True if the check succeeds, otherwise false.  If false, an exception
  *         has been raised.
  */
-bool goodMinMaxArgs(RexxMethodContext *c, RexxArrayObject args, size_t min, size_t max, size_t *arraySize)
+__declspec(dllexport) bool goodMinMaxArgs(RexxMethodContext *c, RexxArrayObject args, size_t min, size_t max, size_t *arraySize)
 {
     *arraySize = c->ArraySize(args);
     if ( *arraySize > max )
@@ -330,7 +330,7 @@ bool goodMinMaxArgs(RexxMethodContext *c, RexxArrayObject args, size_t min, size
  * @return True on success, false otherwise.  If the return is false, an
  *         exception has been raised.
  */
-bool getRectFromArglist(RexxMethodContext *c, RexxArrayObject args, PORXRECT rect, bool boundingRect,
+__declspec(dllexport) bool getRectFromArglist(RexxMethodContext *c, RexxArrayObject args, PORXRECT rect, bool boundingRect,
                         int startArg, int maxArgs, size_t *arraySize, size_t *usedArgs)
 {
     if ( ! goodMinMaxArgs(c, args, startArg, maxArgs, arraySize) )
@@ -476,7 +476,7 @@ err_out:
  * @return True on success, false otherwise.  If the return is false, an
  *         exception has been raised.
  */
-bool getPointFromArglist(RexxMethodContext *c, RexxArrayObject args, PORXPOINT point, int startArg, int maxArgs,
+__declspec(dllexport) bool getPointFromArglist(RexxMethodContext *c, RexxArrayObject args, PORXPOINT point, int startArg, int maxArgs,
                          size_t *arraySize, size_t *usedArgs)
 {
     if ( ! goodMinMaxArgs(c, args, startArg, maxArgs, arraySize) )
@@ -569,7 +569,7 @@ err_out:
  * @return True on success, false otherwise.  If the return is false, an
  *         exception has been raised.
  */
-bool getSizeFromArglist(RexxMethodContext *c, RexxArrayObject args, PORXPOINT point, int startArg, int maxArgs,
+__declspec(dllexport) bool getSizeFromArglist(RexxMethodContext *c, RexxArrayObject args, PORXPOINT point, int startArg, int maxArgs,
                         size_t *arraySize, size_t *usedArgs)
 {
     return getPointFromArglist(c, args, point, startArg, maxArgs, arraySize, usedArgs);
