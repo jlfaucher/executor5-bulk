@@ -782,7 +782,7 @@ static void updateFullRowText(RexxThreadContext *c, pCLvFullRow pclvfr, uint32_t
  */
 static pCLvFullRow maybeGetFullRow(HWND hList, uint32_t itemIndex)
 {
-    LVITEM      lvi    = {LVIF_PARAM, itemIndex};
+    LVITEM      lvi    = {LVIF_PARAM, (int)itemIndex}; // cast avoids C4838
     pCLvFullRow pclvfr = NULL;
 
     if ( ListView_GetItem(hList, &lvi) != 0 )
@@ -1022,7 +1022,7 @@ static void mergeLviState(RexxMethodContext *c, pCLvFullRow pclvfr, LPLVITEM exi
  */
 static RexxObjectPtr getCurrentLviUserData(HWND hList, uint32_t index)
 {
-    LVITEM        lvi    = {LVIF_PARAM, index};
+    LVITEM        lvi    = {LVIF_PARAM, (int)index}; // cast avoids C4838
     RexxObjectPtr result = TheNilObj;
 
     if ( ListView_GetItem(hList, &lvi) != 0 )
@@ -4964,7 +4964,7 @@ RexxMethod2(RexxObjectPtr, lv_removeItemData, uint32_t, index, CSELF, pCSelf)
     RexxObjectPtr result = getCurrentLviUserData(pcdc->hCtrl, index);
     if ( result != TheNilObj )
     {
-        LVITEM lvi = {LVIF_PARAM, index};
+        LVITEM lvi = {LVIF_PARAM, (int)index}; // cast avoids C4838
 
         if ( ListView_SetItem(pcdc->hCtrl, &lvi) )
         {
@@ -5324,7 +5324,7 @@ err_out:
  */
 RexxMethod3(RexxObjectPtr, lv_setItemData, uint32_t, index, RexxObjectPtr, data, CSELF, pCSelf)
 {
-    LVITEM lvi = {LVIF_PARAM, index};
+    LVITEM lvi = {LVIF_PARAM, (int)index}; // cast avoids C4838
 
     pCDialogControl pcdc = validateDCCSelf(context, pCSelf);
     if ( pcdc == NULL )

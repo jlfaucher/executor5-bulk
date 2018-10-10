@@ -1770,7 +1770,7 @@ RexxMethod3(RexxObjectPtr, winex_fillRect, POINTERSTRING, _hDC, RexxObjectPtr, _
         {
             goto err_out;
         }
-        hBrush = (HBRUSH)(index + 1);
+        hBrush = (HBRUSH)(UINT_PTR)(index + 1); // double cast avoids C4312
     }
 
     PORXRECT pRect = rxGetRect(context, _rect, 2);
@@ -2468,7 +2468,7 @@ RexxMethod3(RexxObjectPtr, cw_createReBarWindow, RexxObjectPtr, rxID, OPTIONAL_C
     }
 
     HWND hRebar = CreateWindowEx(WS_EX_TOOLWINDOW | WS_EX_CONTROLPARENT, REBARCLASSNAME, NULL, style,
-                                 0, 0, 0, 0, pccw->hDlg, (HMENU)id, pccw->hinst, NULL);
+                                 0, 0, 0, 0, pccw->hDlg, (HMENU)(UINT_PTR)id, pccw->hinst, NULL); // double cast avoids C4312
     if ( hRebar == NULL )
     {
         oodSetSysErrCode(context->threadContext);
@@ -2532,7 +2532,7 @@ RexxMethod3(RexxObjectPtr, cw_createStatusBarWindow, RexxObjectPtr, rxID, OPTION
     }
 
     HWND hStatus = CreateWindowEx(0, STATUSCLASSNAME, NULL, style, 0, 0, 0, 0, pccw->hDlg,
-                                  (HMENU)id, pccw->hinst, NULL);
+                                  (HMENU)(UINT_PTR)id, pccw->hinst, NULL); // double cast avoids C4312
     if ( hStatus == NULL )
     {
         oodSetSysErrCode(context->threadContext);
@@ -2597,7 +2597,7 @@ RexxMethod3(RexxObjectPtr, cw_createToolBarWindow, RexxObjectPtr, rxID, OPTIONAL
     }
 
     HWND hToolbar = CreateWindowEx(0, TOOLBARCLASSNAME, NULL, style, 0, 0, 0, 0, pccw->hDlg,
-                                  (HMENU)id, pccw->hinst, NULL);
+                                  (HMENU)(UINT_PTR)id, pccw->hinst, NULL); // double cast avoids C4312
     if ( hToolbar == NULL )
     {
         oodSetSysErrCode(context->threadContext);

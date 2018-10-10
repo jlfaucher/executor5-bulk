@@ -1989,7 +1989,7 @@ RexxMethod1(RexxObjectPtr, tt_getTitle, CSELF, pCSelf)
     {
         SIZE s = {16, 16};
 
-        rxIcon = rxNewValidImage(context, (HWND)tt.uTitleBitmap, IMAGE_ICON, &s, 0, false);
+        rxIcon = rxNewValidImage(context, (HWND)(UINT_PTR)tt.uTitleBitmap, IMAGE_ICON, &s, 0, false); // double cast avoids C4312
         if ( rxIcon == NULLOBJECT )
         {
             rxIcon = TheNilObj;
