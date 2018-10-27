@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2017 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -69,6 +69,29 @@ return testResult
   t1 = testClass~new
   t1~setVar("abc")
   self~assertSame("VAR", t1~var)
+  self~assertSame("abc", t1~othervar)
+
+  -- two tests for [bugs:#1565] Procedure expose not working properly with USE LOCAL
+  testClass = self~runDynamicSource(("return .test", "::class test", -
+    "::method setVar", "use local", "use strict arg var", "otherVar = var", -
+    "call p", "return", -
+    "p: procedure expose var", "var = 'EXP'", "otherVar = 'EXP'", "return", -
+    "::attribute var", "::attribute othervar"))
+
+  t1 = testClass~new
+  t1~setVar("abc")
+  self~assertSame("EXP", t1~var)
+  self~assertSame("abc", t1~othervar)
+
+  testClass = self~runDynamicSource(("return .test", "::class test", -
+    "::method setVar", "use local unused", "use strict arg var", "otherVar = var", -
+    "call p", "return", -
+    "p: procedure", "var = 'EXP'", "otherVar = 'EXP'", "return", -
+    "::attribute var", "::attribute othervar"))
+
+  t1 = testClass~new
+  t1~setVar("abc")
+  self~assertSame("abc", t1~var)
   self~assertSame("abc", t1~othervar)
 
   -- expose a stem variable by default
