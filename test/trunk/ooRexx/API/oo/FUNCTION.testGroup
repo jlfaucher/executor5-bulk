@@ -1,11 +1,11 @@
-#!/usr/bin/rexx
+#!/usr/bin/env rexx
 /*
   SVN Revision: $Rev$
   Change Date:  $Date$
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2008 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2008-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -398,7 +398,7 @@ return .ooTestResult~new(5)~~addException(err)
   self~expectSyntax('88.907')
   TestUint64Arg('-1')
 
--- tests for [bugs:#1369] API RexxRoutine uint64_t issue 
+-- tests for [bugs:#1369] API RexxRoutine uint64_t issue
 
 -- test 123456789, 1.23456789E+9, .. 1.23456789E+19, which should all pass
 ::method test_uint64_bug1369_pass

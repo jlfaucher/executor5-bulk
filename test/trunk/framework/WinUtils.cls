@@ -1,4 +1,3 @@
-#!/usr/bin/rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 2007-2008 Rexx Language Association. All rights reserved.    */
@@ -37,8 +36,6 @@
 /*----------------------------------------------------------------------------*/
 /*
    name:             WinUtils.cls
-   authors:          Mark Miesfeld
-   last update:      2007-11-24
 
    purpose:          Provides public routines and utility classes to aid in the
                      creation of test units that are Windows specific.  (The

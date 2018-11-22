@@ -1,11 +1,11 @@
-#!/usr/bin/rexx
+#!/usr/bin/env rexx
 /*
   SVN Revision: $Rev$
   Change Date:  $Date$
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2017 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -824,7 +824,7 @@ makeColl: procedure
   .Bag~new~put(1, .nil)
 
 
--- removeItem(value, index) always returns .nil if index not identical to value 
+-- removeItem(value, index) always returns .nil if index not identical to value
 ::method test_removeitem_value_notequal_index
   c = .Bag~of(1, 1, 1)
   items = c~items
@@ -832,7 +832,7 @@ makeColl: procedure
   self~assertEquals(items, c~items)
 
 
--- hasItem(value, index) always returns .nil if index not identical to value 
+-- hasItem(value, index) always returns .nil if index not identical to value
 ::method test_hasitem_value_notequal_index
   c = .Bag~of(1, 1, 1)
   self~assertEquals(.nil, c~hasItem(1, .nil))

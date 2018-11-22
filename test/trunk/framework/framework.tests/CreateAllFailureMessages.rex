@@ -1,27 +1,7 @@
-#!/usr/bin/rexx
-/*
-   name:             ooRexx.framework.CreateAllFailureMessages.rex
-   author:           Rony G. Flatscher
-   date:             2006-12-28
-   version:          1.0.0
-
--- line commented lines are ignored, when building the directory of infos from this header
-   changed:
-
-   languageLevel:    6.0
-   purpose:          Cause all failure messages to occur
-   remark:           ---
-
-
-   license:          CPL 1.0 (Common Public License v1.0, see below)
-   link:
-
-   category1:        ooRexx
-   category2:        framework
-*/
+#!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2006 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2006-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */

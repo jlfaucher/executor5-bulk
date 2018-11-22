@@ -1,11 +1,11 @@
-#!/usr/bin/rexx
+#!/usr/bin/env rexx
 /*
   SVN Revision: $Rev$
   Change Date:  $Date$
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2005-2017 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -90,44 +90,44 @@ return testResult
   signal on any
   cond += 1
   select case cond
-    when 1 then do                     
+    when 1 then do
       expected = ("ERROR", "exit 1")
       "exit 1"                         -- ERROR, Windows/Linux
     end
-    when 2 then do                     
+    when 2 then do
       expected = ("FAILURE", "fails")
-      trace off                        -- avoid trace output from FAILURE 
+      trace off                        -- avoid trace output from FAILURE
       address a_failure "fails"        -- FAILURE
     end
-    when 3 then do                     
+    when 3 then do
       expected = ("HALT", "raised", "halt")
       call raiseHalt                   -- HALT
     end
-    when 4 then do                     
+    when 4 then do
       expected = ("LOSTDIGITS", 9999999999)
       a = 1 / 9999999999               -- LOSTDIGITS
     end
-    when 5 then do                     
+    when 5 then do
       expected = ("NOMETHOD", "NO_METHOD", "object")
       "object"~no_method               -- NOMETHOD
     end
-    when 6 then do                     
+    when 6 then do
       expected = ("NOSTRING", "a RexxInfo", .RexxInfo)
       call datatype .RexxInfo          -- NOSTRING
     end
-    when 7 then do                     
+    when 7 then do
       expected = ("NOTREADY", "/", "/")
       call charin "/"                  -- NOTREADY
     end
-    when 8 then do                     
+    when 8 then do
       expected = ("NOVALUE", "NO_VALUE")
       call datatype no_value           -- NOVALUE
     end
-    when 9 then do                     
+    when 9 then do
       expected = ("SYNTAX", "", .Array~of("NO_TARGET"))
       call no_target                   -- SYNTAX
     end
-    when 10 then do                     
+    when 10 then do
       expected = ("USER USER_CONDITION", "raised", "user")
       call raiseUser                   -- USER USER_CONDITION
     end
@@ -136,25 +136,25 @@ return testResult
   self~fail("condition" cond "didn't raise")  -- should never happen
 
   any:
-  -- say cond":" condition("C") "raised, desc '"condition("D")"', add '"condition("A")"', stat '"condition("S")"'" 
+  -- say cond":" condition("C") "raised, desc '"condition("D")"', add '"condition("A")"', stat '"condition("S")"'"
   -- we'll test both against CONDITION() bif and condition object
   object = condition("object")
 
-  -- CONDITION("I") must be the same as object["INSTRUCTION"] 
+  -- CONDITION("I") must be the same as object["INSTRUCTION"]
   self~assertSame(instruction, condition())         -- default is "Instruction"
   self~assertSame(instruction, condition("Instruction"), "CONDITION(I)")
   self~assertSame(instruction, object["INSTRUCTION"], "object[INSTRUCTION]")
 
-  -- CONDITION("C") must be the same as object["CONDITION"] 
+  -- CONDITION("C") must be the same as object["CONDITION"]
   self~assertSame(expected[1], condition("condition name"), "CONDITION(C)")
   self~assertSame(expected[1], object["CONDITION"], "object[CONDITION]")
 
-  -- CONDITION("D") must be the same as object["DESCRIPTION"] 
+  -- CONDITION("D") must be the same as object["DESCRIPTION"]
   self~assertSame(expected[2], condition("description"), "CONDITION(D)")
   self~assertSame(expected[2], object["DESCRIPTION"], "object[DESCRIPTION]")
 
-  -- CONDITION("A") must be the same as object["ADDITIONAL"] 
-  if expected[3]~isA(.Collection) then do 
+  -- CONDITION("A") must be the same as object["ADDITIONAL"]
+  if expected[3]~isA(.Collection) then do
     self~assertSameList(expected[3], condition("additional"), "CONDITION(A)")
     self~assertSameList(expected[3], object["ADDITIONAL"], "object[ADDITIONAL]")
   end
@@ -190,7 +190,7 @@ return testResult
 
   call on any
   expected = ("FAILURE", "fails")
-  trace off                            -- avoid trace output from FAILURE 
+  trace off                            -- avoid trace output from FAILURE
   address a_failure "fails"            -- FAILURE
   trace normal
 
@@ -207,31 +207,31 @@ return testResult
   call raiseUser                       -- USER USER_CONDITION
 
   self~assertSame(5, raised)           -- ANY should have been raised 5 times
- 
+
   return                               -- finished
 
   any:
   raised += 1                          -- count how often we've been called
 
-  -- say cond":" condition("C") "raised, desc '"condition("D")"', add '"condition("A")"', stat '"condition("S")"'" 
+  -- say cond":" condition("C") "raised, desc '"condition("D")"', add '"condition("A")"', stat '"condition("S")"'"
   -- we'll test both against CONDITION() bif and condition object
   object = condition("object")
 
-  -- CONDITION("I") must be the same as object["INSTRUCTION"] 
+  -- CONDITION("I") must be the same as object["INSTRUCTION"]
   self~assertSame(instruction, condition())         -- default is "Instruction"
   self~assertSame(instruction, condition("Instruction"), "CONDITION(I)")
   self~assertSame(instruction, object["INSTRUCTION"], "object[INSTRUCTION]")
 
-  -- CONDITION("C") must be the same as object["CONDITION"] 
+  -- CONDITION("C") must be the same as object["CONDITION"]
   self~assertSame(expected[1], condition("condition name"), "CONDITION(C)")
   self~assertSame(expected[1], object["CONDITION"], "object[CONDITION]")
 
-  -- CONDITION("D") must be the same as object["DESCRIPTION"] 
+  -- CONDITION("D") must be the same as object["DESCRIPTION"]
   self~assertSame(expected[2], condition("description"), "CONDITION(D)")
   self~assertSame(expected[2], object["DESCRIPTION"], "object[DESCRIPTION]")
 
-  -- CONDITION("A") must be the same as object["ADDITIONAL"] 
-  if expected[3]~isA(.Collection) then do 
+  -- CONDITION("A") must be the same as object["ADDITIONAL"]
+  if expected[3]~isA(.Collection) then do
     self~assertSameList(expected[3], condition("additional"), "CONDITION(A)")
     self~assertSameList(expected[3], object["ADDITIONAL"], "object[ADDITIONAL]")
   end
@@ -255,7 +255,7 @@ return testResult
   raise halt description "raised" additional "halt"
 
 ::routine raiseUser
-  raise user user_condition description "raised" additional "user"  
+  raise user user_condition description "raised" additional "user"
 
 
 -- rexxref documentation tests

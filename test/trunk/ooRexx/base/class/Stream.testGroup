@@ -1,11 +1,11 @@
-#!/usr/bin/rexx
+#!/usr/bin/env rexx
 /*
   SVN Revision: $Rev$
   Change Date:  $Date$
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2017 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -69,10 +69,10 @@ return testResult
   parse source . . filename            -- we just use this testGroup file
   forward class (super)
 
-::attribute filename get class               
+::attribute filename get class
 
 -- filename to test read operations (we just use this testGroup file)
-::attribute filename get               
+::attribute filename get
   return self~class~filename
 
 
@@ -1929,7 +1929,7 @@ notready:
   bug1472file = "stream_bug_1472.tmp"
   bug1472data = "x" || .String~cr~copies(2)
   -- make data at least 1K in length
-  bug1472data = bug1472data~copies(1024 % bug1472data~length + 1) 
+  bug1472data = bug1472data~copies(1024 % bug1472data~length + 1)
 
   s = .Stream~new(bug1472file)
   s~open("write replace")

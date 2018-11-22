@@ -1,11 +1,11 @@
-#!/usr/bin/rexx
+#!/usr/bin/env rexx
 /*
   SVN Revision: $Rev$
   Change Date:  $Date$
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2017 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -226,7 +226,7 @@ return testResult
   self~assertEquals("READY:", s~open("write replace"), "couldn't create test file '"f~name"'")
   s~lineOut("File.testGroup: test_file_lastmodified")
   s~close
- 
+
   -- ooRexx provides various interfaces to retrieve file time stamps:
   --   File~lastModified,
   --   Stream~query("timestamp") (we'll ignore Stream~query("datetime") as it doesn't provide a 4-digit year),
@@ -245,13 +245,13 @@ return testResult
     -- a. query a closed stream
     q = .Stream~new(f)
     t = q~query("timestamp")           -- e. g. 2015-06-06 15:12:08
-    tQuery = t~word(1)"T"t~word(2) 
+    tQuery = t~word(1)"T"t~word(2)
     self~assertEquals(tLastModified, tQuery, "~lastModified timestamp" tLastModified" should be equal to ~query('timestamp')" tQuery)
     -- b. query an opened stream (will only work if no read/write lock is applied)
     -- (we want to test both SysFile::getTimeStamp code paths)
     q~open("read shared")              -- will silently fail if locked
     t = q~query("timestamp")           -- e. g. 2015-06-06 15:12:08
-    tQuery = t~word(1)"T"t~word(2) 
+    tQuery = t~word(1)"T"t~word(2)
     self~assertEquals(tLastModified, tQuery, "~lastModified timestamp" tLastModified" should be equal to ~query('timestamp')" tQuery)
     q~close
 
@@ -275,13 +275,13 @@ return testResult
   f~delete
 
 
--- listRoot: too many arguments 
+-- listRoot: too many arguments
 ::method test_listroots_one_arg
   self~expectSyntax(88.922) -- Too many arguments in invocation
   .File~listRoots(.nil)
 
 
--- listRoot: too many arguments 
+-- listRoot: too many arguments
 ::method test_listroots
   roots = .File~listRoots
   self~assertIsA(roots, .Array, ".File~listRoots should return an Array; found" roots~class~id)
@@ -289,7 +289,7 @@ return testResult
     -- on Unix we expect a single-item Array of "/"
     self~assertEquals(1, roots~items, ".File~listRoots should return a single-item Array; found" roots~items "items")
     self~assertEquals("/", roots[1], ".File~listRoots should return '/'; found" roots[1])
-  end  
+  end
   else do
     -- on Windows we expect an Array of one or more uppercase "D:\" strings
     self~assertTrue(roots~items >= 1, ".File~listRoots should return an Array with one or more items; found" roots~items "items")
@@ -301,7 +301,7 @@ return testResult
   end
 
 
--- absolutePath: too many arguments 
+-- absolutePath: too many arguments
 ::method test_absolutepath_one_arg
   self~expectSyntax(93.902) -- Too many arguments in invocation of method
   .File~new(".")~absolutePath(.nil)
@@ -355,7 +355,7 @@ return testResult
   end
 
 
--- a specified root parent path must not cause duplicate separators 
+-- a specified root parent path must not cause duplicate separators
 ::method test_root_parent_path
   if .File~separator = "/" then do
 

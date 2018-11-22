@@ -1,11 +1,11 @@
-#!/usr/bin/rexx
+#!/usr/bin/env rexx
 /*
   SVN Revision: $Rev$
   Change Date:  $Date$
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2010-2017 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2010-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -98,7 +98,7 @@ return testResult
     self~assertNotEquals("", SysGetpwuid(uid, "NAME"))
     self~assertNotEquals("", SysGetpwuid(uid, "user"))
     self~assertNotEquals("", SysGetpwuid(uid, "Group"))
-    -- at least on zLinux "realname" may be empty, so we just test for String 
+    -- at least on zLinux "realname" may be empty, so we just test for String
     self~assertIsA(SysGetpwuid(uid, "real name"), .String)
     self~assertNotEquals("", SysGetpwuid(uid, "dir"))
     self~assertNotEquals("", SysGetpwuid(uid, "shell"))
@@ -109,7 +109,7 @@ return testResult
     self~assertNotEquals("", SysGetpwnam(nam, 'nam'))
     self~assertNotEquals("", SysGetpwnam(nam, 'usr'))
     self~assertNotEquals("", SysGetpwnam(nam, 'grp'))
-    -- at least on zLinux "realname" may be empty, so we just test for String 
+    -- at least on zLinux "realname" may be empty, so we just test for String
     self~assertIsA(SysGetpwnam(nam, 'real'), .String)
     self~assertNotEquals("", SysGetpwnam(nam, 'shell'))
     self~assertNotEquals("", SysGetpwnam(nam, 'dir'))
@@ -180,7 +180,7 @@ return testResult
 
 ::method test_SysGetservbyname
   -- we assume the following line exists in /etc/services
-  -- http            80/tcp          www 
+  -- http            80/tcp          www
   port = SysGetservbyname("http", "tcp", "port")
   self~assertEquals(80, port, "http port assumed to be 80, not" port);
 
@@ -224,7 +224,7 @@ return testResult
 
 ::method allowedCryptChars
   -- set [a-zA-Z0-9./]
-  return .String~alnum || "./" 
+  return .String~alnum || "./"
 
 
 ::options novalue error

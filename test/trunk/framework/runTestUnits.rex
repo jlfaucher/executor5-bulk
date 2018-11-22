@@ -1,31 +1,7 @@
-#!/usr/bin/rexx
-/*
-   name:             runTestUnits.rex
-   author:           Rony G. Flatscher
-   date:             2005-08-20
-   version:          1.0.5
-
-   changed:          2005-10-19, ---rgf, fixed a little bug: if "-r" is given without a directory,
-                                         start with current directory (instead of root directory!)
-                     2006-11-29, ---rgf, changed name to indicate what this program is meant for
-                     2006-12-12, ---rgf, changed title for brief test results slightly
-                     2006-12-13, ---rgf, added elapsed time information (for running all test units)
-                     2006-12-14, ---rgf, added hashbang line
-                     2007-08-17, ---rgf, using ooRexxUnit environment definitions
-                     2007-08-18, ---mm, add formatter option, refactor code
-
-   license:          CPL 1.0 (Common Public License v1.0, see below)
-
-   languageLevel:    6.02
-   purpose:          Load all ooRexx-base testUnits and run all the tests contained therein.
-
-   remark:           Serves as an example of how to use and drive the ooRexxUnit framework
-
-   category:
-*/
+#!/usr/bin/env rexx
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2005 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */

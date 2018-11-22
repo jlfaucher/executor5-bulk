@@ -1,11 +1,11 @@
-#!/usr/bin/rexx
+#!/usr/bin/env rexx
 /*
   SVN Revision: $Rev$
   Change Date:  $Date$
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -198,11 +198,11 @@ return testResult
   "exit 1"                   -- raises ERROR (Windows/Linux)
   return
   any: raise propagate
-                      
+
 ::method test_signal_any_condition_failure
   self~expectCondition("FAILURE")
   signal on any
-  trace off                  -- avoid trace output from FAILURE 
+  trace off                  -- avoid trace output from FAILURE
   address a_failure ""       -- raises FAILURE
   return
   any: raise propagate

@@ -1,4 +1,4 @@
-#!/usr/bin/rexx
+#!/usr/bin/env rexx
 /*
   SVN Revision: $Rev$
   Change Date:  $Date$
@@ -59,10 +59,10 @@ return testResult
 ::method test_no_console
   -- without a character-mode console all zeroes should be returned
   if \self~console_available then do
-    self~assertSame("0 0", SysTextScreenSize()) 
-    self~assertSame("0 0", SysTextScreenSize("buffersize")) 
-    self~assertSame("0 0", SysTextScreenSize("maxwindowsize")) 
-    self~assertSame("0 0 0 0", SysTextScreenSize("windowrect")) 
+    self~assertSame("0 0", SysTextScreenSize())
+    self~assertSame("0 0", SysTextScreenSize("buffersize"))
+    self~assertSame("0 0", SysTextScreenSize("maxwindowsize"))
+    self~assertSame("0 0 0 0", SysTextScreenSize("windowrect"))
   end
 
 ::method test_option_null
@@ -131,8 +131,8 @@ return testResult
   -- test on real console only
   if self~console_available then do
 
-    parse value SysTextScreenSize("buffersize") with bufferRows bufferCols 
-    parse value SysTextScreenSize("maxwindowsize") with maxRows maxCols 
+    parse value SysTextScreenSize("buffersize") with bufferRows bufferCols
+    parse value SysTextScreenSize("maxwindowsize") with maxRows maxCols
     parse value SysTextScreenSize("windowrect") with top left bottom right
 
     -- console buffer size should be whole numbers 1 .. n
@@ -180,7 +180,7 @@ return testResult
   -- test on real console only
   if self~console_available then do
 
-    parse value SysTextScreenSize("buffersize") with bufferRows bufferCols 
+    parse value SysTextScreenSize("buffersize") with bufferRows bufferCols
 
     -- set buffer size to the same value
     self~assertSame(0, SysTextScreenSize("buffersize", bufferRows, bufferCols))
@@ -193,7 +193,7 @@ return testResult
   -- test on real console only
   if self~console_available then do
 
-    parse value SysTextScreenSize("buffersize") with bufferRows bufferCols 
+    parse value SysTextScreenSize("buffersize") with bufferRows bufferCols
     parse value SysTextScreenSize("windowrect") with top left bottom right
 
     -- set buffer size one line smaller than our actual window size
@@ -219,7 +219,7 @@ return testResult
   -- test on real console only
   if self~console_available then do
 
-    parse value SysTextScreenSize("buffersize") with bufferRows bufferCols 
+    parse value SysTextScreenSize("buffersize") with bufferRows bufferCols
     parse value SysTextScreenSize("windowrect") with top left bottom right
 
     -- set actual window rectangle one column wider than the buffer size

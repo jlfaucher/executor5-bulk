@@ -1,11 +1,11 @@
-#!/usr/bin/rexx
+#!/usr/bin/env rexx
 /*
   SVN Revision: $Rev$
   Change Date:  $Date$
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2017 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -74,11 +74,11 @@ return testResult
 ::method 'testSearchPath_Invalid_Parameters_4'
     self~expectSyntax(40.1)
     rv = SysSearchPath("", "filename")
-    
+
 ::method 'testSearchPath_Invalid_Parameters_5'
     self~expectSyntax(40.1)
     rv = SysSearchPath("varname", "")
-    
+
 ------------------------------------
 -- Valid parameters are accepted
 ------------------------------------
@@ -111,7 +111,7 @@ return testResult
     self~assertNotEquals("", SysSearchPath("PATH", "rexx.exe", "n"))
 
 ------------------------------------
--- This script is necessarily in its own directory 
+-- This script is necessarily in its own directory
 ------------------------------------
 
 ::method 'testSearchPath_Current_Script'

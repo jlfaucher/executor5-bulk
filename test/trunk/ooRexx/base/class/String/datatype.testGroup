@@ -1,4 +1,4 @@
-#!/usr/bin/rexx
+#!/usr/bin/env rexx
 /*
   SVN Revision: $Rev$
   Change Date:  $Date$
@@ -410,7 +410,7 @@ return erg
   0~dataType(.nil)
 
 ::method test_datatype_internal
-  -- numbers up to 9 digits on 32-bit resp. 18 digits on 64-bit must pass 
+  -- numbers up to 9 digits on 32-bit resp. 18 digits on 64-bit must pass
   numeric digits .RexxInfo~internalDigits
   do digits = 1 to .RexxInfo~internalDigits
     number = 1~copies(digits)
