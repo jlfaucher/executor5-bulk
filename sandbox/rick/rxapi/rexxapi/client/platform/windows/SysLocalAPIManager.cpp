@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -416,4 +416,23 @@ void SysLocalAPIManager::setActiveSessionQueue(QueueHandle sessionQueue)
     // and set this as an environment variable for programs we call
     sprintf(envbuffer, "%p", (void *)sessionQueue);
     SetEnvironmentVariable("RXQUEUESESSION", (LPTSTR) envbuffer);
+}
+
+
+/**
+ * Create a new connection instance of the appropiate type for
+ * connection to the daemon process.
+ *
+ * @return A connection instance.
+ */
+ApiConnection *SysLocalAPIManager::newClientConnection()
+{
+    SysInetSocketConnection *connection = new SysInetSocketConnection();
+
+    // open the pipe to the connection->
+    if (!connection->connect("localhost", REXX_API_PORT))
+    {
+        throw new ServiceException(SERVER_FAILURE, "Failure connecting to rxapi server");
+    }
+    return connection;
 }

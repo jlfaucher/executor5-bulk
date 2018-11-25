@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -159,7 +159,7 @@ void LocalAPIManager::shutdownConnections()
     // clean up the connection pools
     while (!connections.empty())
     {
-        SysClientStream *connection = connections.front();
+        ApiConnection *connection = connections.front();
         connections.pop_front();
         // tell the server we're going away and clean up
         closeConnection(connection);
@@ -270,7 +270,7 @@ void LocalAPIManager::establishServerConnection()
  *
  * @return An active connection to the data server.
  */
-SysClientStream *LocalAPIManager::getConnection()
+ApiConnection *LocalAPIManager::getConnection()
 {
     {
         Lock lock(messageLock);                     // make sure we single thread this
@@ -278,20 +278,14 @@ SysClientStream *LocalAPIManager::getConnection()
         // reuse it.
         if (!connections.empty())
         {
-            SysClientStream *connection = connections.front();
+            ApiConnection *connection = connections.front();
             connections.pop_front();
             return connection;
         }
     }
 
-    SysClientStream *connection = new SysClientStream();
-
-    // open the pipe to the connection->
-    if (!connection->open("localhost", REXX_API_PORT))
-    {
-        throw new ServiceException(SERVER_FAILURE, "Failure connecting to rxapi server");
-    }
-    return connection;
+    // get an appropriately configured connection from the system definitions
+    return SysLocalAPIManager::newClientConnection();
 }
 
 
@@ -300,7 +294,7 @@ SysClientStream *LocalAPIManager::getConnection()
  *
  * @param connection The returned connection.
  */
-void LocalAPIManager::returnConnection(SysClientStream *connection)
+void LocalAPIManager::returnConnection(ApiConnection *connection)
 {
     // if we've encountered an error, then just delete the connection
     if (!connection->isClean())
@@ -327,7 +321,7 @@ void LocalAPIManager::returnConnection(SysClientStream *connection)
  *
  * @param connection The connection to close.
  */
-void LocalAPIManager::closeConnection(SysClientStream *connection)
+void LocalAPIManager::closeConnection(ApiConnection *connection)
 {
     ClientMessage message(APIManager, CLOSE_CONNECTION);
 

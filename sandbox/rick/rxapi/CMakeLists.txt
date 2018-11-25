@@ -510,6 +510,7 @@ set (common_rexxapi_sources
             ${build_rexxapi_client_platform_dir}/SysLocalAPIManager.cpp
             ${build_rexxapi_common_dir}/RegistrationTable.cpp
             ${build_rexxapi_common_dir}/ServiceMessage.cpp
+            ${build_rexxapi_common_dir}/CSStream.cpp
             ${build_rexxapi_common_platform_dir}/SysAPIManager.cpp
             ${build_rexxapi_common_platform_dir}/SysCSStream.cpp
             ${build_rexxapi_common_platform_dir}/SysProcess.cpp
@@ -955,6 +956,7 @@ add_executable(rxapi ${rxapi_executable_type}
          ${build_rexxapi_server_dir}/MacroSpaceManager.cpp
          ${build_rexxapi_server_dir}/QueueManager.cpp
          ${build_rexxapi_server_dir}/RegistrationManager.cpp
+         ${build_rexxapi_common_dir}/CSStream.cpp
          ${build_rexxapi_common_dir}/RegistrationTable.cpp
          ${build_rexxapi_common_dir}/ServiceMessage.cpp
          ${build_rexxapi_common_platform_dir}/SysAPIManager.cpp

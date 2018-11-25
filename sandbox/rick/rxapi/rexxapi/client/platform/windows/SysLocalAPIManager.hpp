@@ -41,12 +41,15 @@
 
 #include "LocalQueueManager.hpp"
 
+class ApiConnection;
+
 class SysLocalAPIManager
 {
 public:
     static void startServerProcess();
     static bool getActiveSessionQueue(QueueHandle &sessionQueue);
     static void setActiveSessionQueue(QueueHandle sessionQueue);
+    static ApiConnection *newClientConnection();
 };
 
 #endif

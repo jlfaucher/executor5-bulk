@@ -151,8 +151,20 @@ void Run (bool asService)
 {
     try
     {
-        apiServer.initServer();               // start up the server
-        apiServer.listenForConnections();     // go into the message loop
+        // create a connection object that will be the server target
+        SysServerInetSocketConnectionManager *c = new SysServerInetSocketConnectionManager();
+        // perform the setup required to act as a server passive socket.
+        // if this fails, there is likely another copy of the daemon running.
+        if (c->bind(REXX_API_PORT))
+        {
+            apiServer.initServer(c);              // start up the server
+            apiServer.listenForConnections();     // go into the message loop
+        }
+        else
+        {
+            // make sure this is deleted.
+            delete c;
+        }
     }
     catch (ServiceException *)
     {

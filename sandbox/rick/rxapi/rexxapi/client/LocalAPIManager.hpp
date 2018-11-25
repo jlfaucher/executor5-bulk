@@ -80,9 +80,9 @@ public:
     void establishServerConnection();
     RexxReturnCode processServiceException(ServerManager t, ServiceException *e);
     void shutdown();
-    SysClientStream *getConnection();
-    void returnConnection(SysClientStream *);
-    void closeConnection(SysClientStream *connection);
+    ApiConnection *getConnection();
+    void returnConnection(ApiConnection *);
+    void closeConnection(ApiConnection *connection);
 
 protected:
 
@@ -92,7 +92,7 @@ protected:
     bool           connectionEstablished;    // local initialization state
     SessionID      session;                  // the session identifier
     char           userid[MAX_USERID_LENGTH]; // name of the user
-    std::list<SysClientStream *> connections; // connection pool
+    std::list<ApiConnection *> connections; // connection pool
 
 public:                                  // let's make these public
     LocalQueueManager queueManager;      // our managers for the different API sets
