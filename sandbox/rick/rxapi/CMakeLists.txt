@@ -512,7 +512,6 @@ set (common_rexxapi_sources
             ${build_rexxapi_common_dir}/ServiceMessage.cpp
             ${build_rexxapi_common_dir}/CSStream.cpp
             ${build_rexxapi_common_platform_dir}/SysAPIManager.cpp
-            ${build_rexxapi_common_platform_dir}/SysCSStream.cpp
             ${build_rexxapi_common_platform_dir}/SysProcess.cpp
             ${build_common_dir}/Utilities.cpp
             ${build_common_platform_dir}/SysSemaphore.cpp
@@ -522,10 +521,13 @@ set (common_rexxapi_sources
 # additional source files required by specific platforms
 if (WIN32)
    set (platform_rexxapi_sources
+            ${build_rexxapi_common_platform_dir}/SysCSNamedPipeStream.cpp
             ${build_rexxapi_client_platform_dir}/rexxapi.def
             ${build_platform_dir}/verinfo.rc)
    set (platform_rexxapi_libs wsock32)
 else ()
+   set (platform_rexxapi_sources
+            ${build_rexxapi_common_platform_dir}/SysCSStream.cpp)
    set (platform_rexxapi_libs ${ORX_SYSLIB_DL} ${ORX_SYSLIB_PTHREAD})
 endif ()
 # Library definition
@@ -939,12 +941,14 @@ install(PROGRAMS ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/rexx.img COMPONENT Core DESTI
 if (WIN32)
    set (platform_rxapi_sources
             ${build_rexxapi_server_platform_dir}/APIService.cpp
+            ${build_rexxapi_common_platform_dir}/SysCSNamedPipeStream.cpp
             ${build_rexxapi_server_platform_dir}/rxapi.rc
             ${build_rexxapi_server_platform_dir}/rxapi.ico)
    set (rxapi_executable_type WIN32)
    set (platform_rxapi_libs wsock32 shlwapi)
 else ()
    set (platform_rxapi_sources
+            ${build_rexxapi_common_platform_dir}/SysCSStream.cpp
             ${build_rexxapi_server_platform_dir}/linux/APIService.cpp)
    set (platform_rxapi_libs ${ORX_SYSLIB_DL} ${ORX_SYSLIB_PTHREAD})
 endif ()
@@ -960,7 +964,6 @@ add_executable(rxapi ${rxapi_executable_type}
          ${build_rexxapi_common_dir}/RegistrationTable.cpp
          ${build_rexxapi_common_dir}/ServiceMessage.cpp
          ${build_rexxapi_common_platform_dir}/SysAPIManager.cpp
-         ${build_rexxapi_common_platform_dir}/SysCSStream.cpp
          ${build_rexxapi_common_platform_dir}/SysProcess.cpp
          ${build_common_dir}/Utilities.cpp
          ${build_common_platform_dir}/SysSemaphore.cpp

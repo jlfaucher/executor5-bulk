@@ -41,7 +41,7 @@
 
 #include "rexx.h"
 #include "ServiceException.hpp"
-#include "SysCSStream.hpp"
+#include "CSStream.hpp"
 #include "SysProcess.hpp"
 
 typedef enum
@@ -49,6 +49,7 @@ typedef enum
     QueueWait                 // deferred because of queue wait issues.
 
 } ExecutionDeferral;
+
 
 /**
  * Duplicate a C string using C++ new char[] to allocate the storage.

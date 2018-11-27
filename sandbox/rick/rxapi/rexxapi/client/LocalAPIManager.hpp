@@ -42,9 +42,9 @@
 #include "LocalRegistrationManager.hpp"
 #include "LocalQueueManager.hpp"
 #include "LocalMacroSpaceManager.hpp"
+#include "CSStream.hpp"
 #include "SysProcess.hpp"
 #include "SysSemaphore.hpp"
-#include "SysCSStream.hpp"
 
 #include <list>
 

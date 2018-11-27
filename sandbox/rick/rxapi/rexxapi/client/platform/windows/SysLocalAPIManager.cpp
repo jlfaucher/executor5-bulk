@@ -39,6 +39,7 @@
 #include "SysLocalAPIManager.hpp"
 #include "LocalAPIManager.hpp"
 #include <stdio.h>
+#include "SysCSNamedPipeStream.hpp"
 
 
 /* - - - - Temporary stuff for debugging help, will be removed  - - - - - - - */
@@ -427,10 +428,10 @@ void SysLocalAPIManager::setActiveSessionQueue(QueueHandle sessionQueue)
  */
 ApiConnection *SysLocalAPIManager::newClientConnection()
 {
-    SysInetSocketConnection *connection = new SysInetSocketConnection();
+    SysNamedPipeConnection *connection = new SysNamedPipeConnection();
 
-    // open the pipe to the connection->
-    if (!connection->connect("localhost", REXX_API_PORT))
+    // open the pipe to the server
+    if (!connection->connect(SysServerNamedPipeConnectionManager::generatePipeName()))
     {
         throw new ServiceException(SERVER_FAILURE, "Failure connecting to rxapi server");
     }
