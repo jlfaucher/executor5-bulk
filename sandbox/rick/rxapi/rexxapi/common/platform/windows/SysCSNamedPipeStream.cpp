@@ -304,12 +304,6 @@ bool SysServerNamedPipeConnectionManager::bind(const char *pipeName)
  */
 bool SysServerNamedPipeConnectionManager::disconnect()
 {
-    // this is only done when the server is shutting down prior
-    // to termination. We don't really need to get rid of this, but
-    // it is good practice
-    free((void *)userPipeName);
-    userPipeName = NULL;
-
     // we don't use the initial instance, but do keep the handle open to
     // ensure a second instance can't start up
     if (firstPipeHandle != INVALID_HANDLE_VALUE)
@@ -318,6 +312,11 @@ bool SysServerNamedPipeConnectionManager::disconnect()
         CloseHandle(firstPipeHandle);
         firstPipeHandle = INVALID_HANDLE_VALUE;
         boundPipeName = NULL;
+        // this is only done when the server is shutting down prior
+        // to termination. We don't really need to get rid of this, but
+        // it is good practice
+        free((void *)userPipeName);
+        userPipeName = NULL;
     }
 
     // this doesn't really rely on any persistent state for the connections, so

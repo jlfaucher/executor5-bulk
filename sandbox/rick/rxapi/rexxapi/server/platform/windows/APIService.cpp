@@ -84,8 +84,6 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
             delete c;
             return ERROR_ACCESS_DENIED;
         }
-        // there is no bind-type operation required prior to listening for connections,
-        // so just go ahead an initialize the server.
         apiServer.initServer(c);              // start up the server
         apiServer.listenForConnections();     // go into the message loop
     }

@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2017 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -50,53 +50,15 @@
 #include "APIServer.hpp"
 #include "stdio.h"
 
-// For testing purposes comment out the following line to force RXAPI to
-// run as a foreground process.
-#define RUN_AS_DAEMON
-
-#ifdef RUN_AS_DAEMON
-#define OOREXX_PIDFILE "/var/run/ooRexx.pid"
-bool run_as_daemon = true;
-#else
-#define OOREXX_PIDFILE "/tmp/ooRexx.pid"
-bool run_as_daemon = false;
-#endif
-
 APIServer apiServer;             // the real server instance
 
 
-/*==========================================================================*
- *  Function: Run
- *
- *  Purpose:
- *
- *  handles the original RXAPI functions.
- *    Perform the message loop
- *
- *
- *==========================================================================*/
-void Run (bool asService)
-{
-    try
-    {
-        apiServer.initServer();               // start up the server
-        apiServer.listenForConnections();     // go into the message loop
-    }
-    catch (ServiceException *)
-    {
-    }
-    apiServer.terminateServer();     // shut everything down
-}
 
-/*==========================================================================*
- *  Function: Stop
+/**
+ * Handle a server stop request
  *
- *  Purpose:
- *
- *  handles the stop request.
- *
- *
- *==========================================================================*/
+ * @param signo The signal number (not used)
+ */
 void Stop(int signo)
 {
     apiServer.terminateServer();     // shut everything down
@@ -104,141 +66,19 @@ void Stop(int signo)
     exit(1);
 }
 
-/////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////
-// Routines to run RXAPI as an daemon BEGIN
 
-
-/*==========================================================================*
- *  Function: morph2daemon
+/**
+ * The main entry point.
  *
- *  Purpose:
+ * @param argc   The command line arguments
+ * @param argv   The arguments
  *
- *  Turn this process into a daemon.
- *
- * Returns TRUE if a daemon, FALSE if not or an error
- *
- *==========================================================================*/
-static bool morph2daemon()
-{
-    char pid_buf[256];
-
-    if (run_as_daemon == false) {
-        return true; // go ahead and run in the foreground
-    }
-
-	if (signal(SIGPIPE, SIG_IGN) == SIG_ERR) {
-		return false;
-	}
-
-	pid_t pid = fork();
-	if (pid < 0) {
-		return false;
-	}
-    // if we are the parent process then we are done
-	if (pid != 0) {
-		exit( 0 );
-	}
-
-    // become the session leader
-	setsid();
-    // second fork to become a real daemon
-	pid = fork();
-	if (pid < 0) {
-		return false;
-	}
-    // if we are the parent process then we are done
-	if (pid != 0) {
-		exit(0);
-	}
-
-    // create the pid file (overwrite of old pid file is ok)
-    unlink(OOREXX_PIDFILE);
-    int pfile = open(OOREXX_PIDFILE, O_WRONLY | O_CREAT, 0640);
-    snprintf(pid_buf, sizeof(pid_buf), "%d\n", (int)getpid());
-    ssize_t ignore = write(pfile, pid_buf, strlen(pid_buf));
-    close(pfile);
-
-    // housekeeping
-	int ignore_int = chdir("/");
-	umask(0);
-	for(int i = 0; i < 1024; i++) {
-		close(i);
-	}
-
-	return true;
-}
-
-
-/*==========================================================================*
- *  Function: main
- *
- *  Purpose:
- *
- *  Main entry point.
- *
- *==========================================================================*/
+ * @return The completion return code.
+ */
 int main(int argc, char *argv[])
 {
-    char pid_buf[256];
-    int pfile, len;
     pid_t pid = 0;
     struct sigaction sa;
-    // Get the command line args
-    if (argc > 1) {
-        printf("Error: Invalid command line option(s).\n");
-        printf("       Aborting execution.\n\n");
-        return -1;
-    }
-
-    // see if we are already running
-    if ((pfile = open(OOREXX_PIDFILE, O_RDONLY)) > 0) {
-            len = read(pfile, pid_buf, sizeof(pid_buf) - 1);
-            close(pfile);
-            pid_buf[len] = '\0';
-            pid = (pid_t)atoi(pid_buf);
-            if (pid && (pid == getpid() || kill(pid, 0) < 0)) {
-                    unlink(OOREXX_PIDFILE);
-            } else {
-                    // there is already a server running
-                    printf("Error: There is already a server running.\n");
-                    printf("       Aborting execution.\n");
-                    return -1;
-            }
-    }
-
-    // write the pid file
-    pfile = open(OOREXX_PIDFILE, O_WRONLY | O_CREAT,
-                 S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
-    if (pfile == -1) {
-            // cannot open pid file
-            printf("Error: Cannot open PID file %s.\n", OOREXX_PIDFILE);
-            printf("       Aborting execution.\n\n");
-            return -1;
-    }
-    snprintf(pid_buf, sizeof(pid_buf), "%d\n", (int)getpid());
-    ssize_t ignore = write(pfile, pid_buf, strlen(pid_buf));
-    close(pfile);
-
-    // make ourselves a daemon
-    // - if this is AIX we check if the rxapi daemon was sarted via SRC
-    //   - if the daemon was started via SRC we do not morph - the SRC handles this
-    //
-    // - add to AIX SRC without auto restart:
-    //   mkssys -s rxapi -p /opt/ooRexx/bin/rxapi -i /dev/null -e /dev/console \
-    //          -o /dev/console -u 0 -S -n 15 -f 9 -O -Q
-    //
-    // - add to AIX SRC with auto restart:
-    //   mkssys -s rxapi -p /opt/ooRexx/bin/rxapi -i /dev/null -e /dev/console \
-    //          -o /dev/console -u 0 -S -n 15 -f 9 -R -Q
-        if (morph2daemon() == false) {
-            return -1;
-        }
-
-    // run the server
-    if (run_as_daemon == false) {
-        printf("Starting request processing loop.\n");
-    }
 
     // handle kill -15
     (void) sigemptyset(&sa.sa_mask);
@@ -249,7 +89,24 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    Run(false);
+    try
+    {
+        // create a connection object that will be the server target
+        SysServerLocalSocketConnectionManager *c = new SysServerLocalSocketConnectionManager();
+        // try to create the named pipe used for this server. If this fails, we
+        // likely have a instance of the daemon already running, so just fail quietly.
+        if (!c->bind(SysServerLocalSocketConnectionManager::generateServiceName()))
+        {
+            delete c;
+            return EACCESS;
+        }
+        apiServer.initServer();               // start up the server
+        apiServer.listenForConnections();     // go into the message loop
+    }
+    catch (ServiceException *)
+    {
+    }
+    apiServer.terminateServer();     // shut everything down
 
     return 0;
 }

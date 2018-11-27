@@ -75,6 +75,7 @@ void __cdecl DebugMsg(const char* pszFormat, ...)
   }
 }
 #endif
+
 /**
  * Check if the rxapi daemon process is running and start it up if not.
  */

@@ -182,14 +182,14 @@ bool SysSocketConnection::disconnect()
     {
         closesocket(c);
         c = -1;
+        errcode = CSERROR_OK;
+        return true;
     }
     else
     {
         errcode = CSERROR_INTERNAL;
         return false;
     }
-    errcode = CSERROR_OK;
-    return true;
 }
 
 
