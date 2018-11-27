@@ -44,6 +44,7 @@
 #include "SysCSNamedPipeStream.hpp"
 #include "ServiceException.hpp"
 #include "SysProcess.hpp"
+#include "oorexxapi.h"
 
 // the pipe name used for this userid
 const char *SysServerNamedPipeConnectionManager::userPipeName = NULL;
@@ -283,7 +284,7 @@ bool SysServerNamedPipeConnectionManager::bind(const char *pipeName)
     // We are creating a pipe instance using the FILE_FLAG_FIRST_PIPE_INSTANCE flag to ensure
     // we are the first creator of this pipe. We use this to detect if we have more
     // than one occurance of rxapi running for a given userid.
-    firstPipeHandle = CreateNamedPipe(generatePipeName(), PIPE_ACCESS_DUPLEX | FILE_FLAG_FIRST_PIPE_INSTANCE, PIPE_TYPE_BYTE |
+    firstPipeHandle = CreateNamedPipe(pipeName, PIPE_ACCESS_DUPLEX | FILE_FLAG_FIRST_PIPE_INSTANCE, PIPE_TYPE_BYTE |
         PIPE_WAIT | PIPE_REJECT_REMOTE_CLIENTS, PIPE_UNLIMITED_INSTANCES, 1024, 1024, 0, NULL);
 
     if (firstPipeHandle == INVALID_HANDLE_VALUE)
