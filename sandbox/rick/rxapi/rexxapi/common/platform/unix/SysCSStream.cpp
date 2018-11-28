@@ -52,6 +52,8 @@
 #include <sys/ioctl.h>
 #include <netdb.h>
 #include "sys/un.h"
+#include <pwd.h>
+#include <cstddef>
 
 #if defined( HAVE_STRINGS_H )
 # include <strings.h>
@@ -253,7 +255,7 @@ bool SysLocalSocketConnection::connect(const char *serviceName)
     // make sure this is null terminated
     name.sun_path[sizeof (name.sun_path) - 1] = '\0';
 
-    socklen_t size = (offsetof (struct sockaddr_un, sun_path)
+    socklen_t size = (offsetof(sockaddr_un, sun_path)
           + strlen (name.sun_path));
 
     if (::connect(c, (struct sockaddr *) &name, size) == -1)
@@ -353,7 +355,7 @@ bool SysServerLocalSocketConnectionManager::bind(const char *serviceName)
     // make sure this is null terminated
     name.sun_path[sizeof (name.sun_path) - 1] = '\0';
 
-    size_t size = (offsetof (struct sockaddr_un, sun_path)
+    size_t size = (offsetof(sockaddr_un, sun_path)
           + strlen (name.sun_path));
 
     // do the bind operation
@@ -450,7 +452,7 @@ const char *SysServerLocalSocketConnectionManager::generateServiceName()
     // if we can't get the home path from getenv(), fall back on getpwuid()
     if ( (homePath = getenv("HOME")) == NULL)
     {
-        homepath = getpwuid(getuid())->pw_dir;
+        homePath = getpwuid(getuid())->pw_dir;
     }
 
     // this creates a hidden file in the user's home directory.
