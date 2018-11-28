@@ -63,6 +63,8 @@
 #include "SysCSStream.hpp"
 #include "ServiceException.hpp"
 
+const char *SysServerLocalSocketConnectionManager::userServiceName = NULL;
+
 /**
  * Read from the connection.
  *

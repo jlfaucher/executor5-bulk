@@ -48,6 +48,7 @@
 #include <signal.h>
 #include <pwd.h>
 #include "APIServer.hpp"
+#include "SysCSStream.hpp"
 #include "stdio.h"
 
 APIServer apiServer;             // the real server instance
@@ -100,7 +101,7 @@ int main(int argc, char *argv[])
             delete c;
             return EACCESS;
         }
-        apiServer.initServer();               // start up the server
+        apiServer.initServer(c);              // start up the server
         apiServer.listenForConnections();     // go into the message loop
     }
     catch (ServiceException *)
