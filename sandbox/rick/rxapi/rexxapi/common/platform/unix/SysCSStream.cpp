@@ -45,6 +45,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -195,7 +196,7 @@ bool SysSocketConnection::disconnect()
 {
     if (c != -1)
     {
-        closesocket(c);
+        ::close(c);
         c = -1;
         errcode = CSERROR_OK;
         return true;
@@ -246,18 +247,18 @@ bool SysLocalSocketConnection::connect(const char *serviceName)
 
     // bind the server socket to a service name
     struct sockaddr_in name; // address structure
-    name.sun_family = AF_LOCAL;
-    strncpy (name.sun_path, serviceName, sizeof (name.sun_path));
+    name.sin_family = AF_LOCAL;
+    strncpy (name.sin_addr, serviceName, sizeof (name.sin_addr));
     // make sure this is null terminated
-    name.sun_path[sizeof (name.sun_path) - 1] = '\0';
+    name.sin_addr[sizeof (name.sin_addr) - 1] = '\0';
 
-    size_t size = (offsetof (struct sockaddr_un, sun_path)
-          + strlen (name.sun_path));
+    socklen_t size = (offsetof (struct sockaddr_un, sin_addr)
+          + strlen (name.sin_addr));
 
     if (::connect(c, (struct sockaddr *) &name, size) == -1)
     {
         errcode = CSERROR_OPEN_FAILED;
-        closesocket(c);
+        ::close(c);
         c = -1;
         return false;
     }
@@ -275,7 +276,7 @@ bool SysLocalSocketConnection::connect(const char *serviceName)
 ApiConnection *SysServerSocketConnectionManager::acceptConnection()
 {
     struct sockaddr_in addr; // address structure
-    int sz = sizeof(addr);
+    socklen_t sz = sizeof(addr);
 
     if (c == -1)
     {
@@ -304,7 +305,7 @@ bool SysServerSocketConnectionManager::disconnect()
 {
     if (c != -1)
     {
-        closesocket(c);
+        ::close(c);
         c = -1;
         // clean up service name from the file system before terminating
         unlink(boundServiceName);
@@ -351,13 +352,13 @@ bool SysServerLocalSocketConnectionManager::bind(const char *serviceName)
     }
     // bind the server socket to a service name
     struct sockaddr_in name; // address structure
-    name.sun_family = AF_LOCAL;
-    strncpy (name.sun_path, serviceName, sizeof (name.sun_path));
+    name.sin_family = AF_LOCAL;
+    strncpy (name.sin_addr, serviceName, sizeof (name.sin_addr));
     // make sure this is null terminated
-    name.sun_path[sizeof (name.sun_path) - 1] = '\0';
+    name.sin_addr[sizeof (name.sin_addr) - 1] = '\0';
 
-    size_t size = (offsetof (struct sockaddr_un, sun_path)
-          + strlen (name.sun_path));
+    size_t size = (offsetof (struct sockaddr_un, sin_addr)
+          + strlen (name.sin_addr));
 
     // do the bind operation
     if (::bind(c, (struct sockaddr *) &name, size) == -1)
