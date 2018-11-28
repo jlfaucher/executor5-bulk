@@ -51,6 +51,7 @@
 #include <arpa/inet.h>
 #include <sys/ioctl.h>
 #include <netdb.h>
+#include "sys/un.h"
 
 #if defined( HAVE_STRINGS_H )
 # include <strings.h>
@@ -444,12 +445,15 @@ const char *SysServerLocalSocketConnectionManager::generateServiceName()
     char pipeNameBuffer[256];
 
     // we create the file in the user's home path as a hidden file
-    const char *homePath
+    const char *homePath;
+
+    // if we can't get the home path from getenv(), fall back on getpwuid()
     if ( (homePath = getenv("HOME")) == NULL)
     {
         homepath = getpwuid(getuid())->pw_dir;
     }
 
+    // this creates a hidden file in the user's home directory.
     snprintf(pipeNameBuffer, sizeof(pipeNameBuffer), "%s/.ooRexx-%d.%d.%d-%s.service", homePath, ORX_VER, ORX_REL, ORX_MOD,
 #ifdef __REXX64__
 	    "64");
