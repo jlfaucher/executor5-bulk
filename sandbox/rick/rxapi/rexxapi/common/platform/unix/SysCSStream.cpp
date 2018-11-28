@@ -453,7 +453,7 @@ const char *SysServerLocalSocketConnectionManager::generatePipeName()
         homepath = getpwuid(getuid())->pw_dir;
     }
 
-    snprintf(pipeNameBuffer, sizeof(pipeNameBuffer), "%s/ooRexx-%d.%d.%d-%s.service", homePath, ORX_VER, ORX_REL, ORX_MOD,
+    snprintf(pipeNameBuffer, sizeof(pipeNameBuffer), "%s/.ooRexx-%d.%d.%d-%s.service", homePath, ORX_VER, ORX_REL, ORX_MOD,
 #ifdef __REXX64__
 	    "64");
 #else
