@@ -334,6 +334,13 @@ bool SysServerSocketConnectionManager::disconnect()
  */
 bool SysServerLocalSocketConnectionManager::bind(const char *serviceName)
 {
+    // make sure we can get the file name for the service. If not, there
+    // is likely another instance of the daemon running.
+    if (!checkServiceName(serviceName))
+    {
+        errcode = CSERROR_INTERNAL;
+        return false;
+    }
 
     // get a server socket
     c = socket(AF_LOCAL, SOCK_STREAM, 0);

@@ -111,6 +111,10 @@ public:
     static const char *generateServiceName();
 
 protected:
+
+    bool checkServiceName(const char *serviceName)
+
+    const char *boundServiceName;        // the service name this instance is bound to.
     static const char *userServiceName;  // the standard service name generated for each user.
 };
 #endif
