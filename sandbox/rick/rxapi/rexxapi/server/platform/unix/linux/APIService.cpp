@@ -47,6 +47,7 @@
 #include <fcntl.h>
 #include <signal.h>
 #include <pwd.h>
+#include <errno.h>
 #include "APIServer.hpp"
 #include "SysCSStream.hpp"
 #include "stdio.h"
@@ -99,7 +100,7 @@ int main(int argc, char *argv[])
         if (!c->bind(SysServerLocalSocketConnectionManager::generateServiceName()))
         {
             delete c;
-            return EACCESS;
+            return EACCES;
         }
         apiServer.initServer(c);              // start up the server
         apiServer.listenForConnections();     // go into the message loop
