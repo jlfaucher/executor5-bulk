@@ -246,14 +246,14 @@ bool SysLocalSocketConnection::connect(const char *serviceName)
     }
 
     // bind the server socket to a service name
-    struct sockaddr_in name; // address structure
-    name.sin_family = AF_LOCAL;
-    strncpy (name.sin_addr, serviceName, sizeof (name.sin_addr));
+    struct sockaddr_un name; // address structure
+    name.sun_family = AF_LOCAL;
+    strncpy(name.sun_path, serviceName, sizeof (name.sun_path));
     // make sure this is null terminated
-    name.sin_addr[sizeof (name.sin_addr) - 1] = '\0';
+    name.sun_path[sizeof (name.sun_path) - 1] = '\0';
 
-    socklen_t size = (offsetof (struct sockaddr_un, sin_addr)
-          + strlen (name.sin_addr));
+    socklen_t size = (offsetof (struct sockaddr_un, sun_path)
+          + strlen (name.sun_path));
 
     if (::connect(c, (struct sockaddr *) &name, size) == -1)
     {
@@ -311,11 +311,6 @@ bool SysServerSocketConnectionManager::disconnect()
         unlink(boundServiceName);
         boundServiceName = NULL;
         errcode = CSERROR_OK;
-        // this is only done when the server is shutting down prior
-        // to termination. We don't really need to get rid of this, but
-        // it is good practice
-        free((void *)userServiceName);
-        userServiceName = NULL;
         return true;
     }
     else
@@ -351,14 +346,14 @@ bool SysServerLocalSocketConnectionManager::bind(const char *serviceName)
         return false;
     }
     // bind the server socket to a service name
-    struct sockaddr_in name; // address structure
-    name.sin_family = AF_LOCAL;
-    strncpy (name.sin_addr, serviceName, sizeof (name.sin_addr));
+    struct sockaddr_un name; // address structure
+    name.sun_family = AF_LOCAL;
+    strncpy (name.sun_path, serviceName, sizeof (name.sun_path));
     // make sure this is null terminated
-    name.sin_addr[sizeof (name.sin_addr) - 1] = '\0';
+    name.sun_path[sizeof (name.sun_path) - 1] = '\0';
 
-    size_t size = (offsetof (struct sockaddr_un, sin_addr)
-          + strlen (name.sin_addr));
+    size_t size = (offsetof (struct sockaddr_un, sun_path)
+          + strlen (name.sun_path));
 
     // do the bind operation
     if (::bind(c, (struct sockaddr *) &name, size) == -1)
@@ -434,9 +429,10 @@ bool SysServerLocalSocketConnectionManager::checkServiceName(const char *service
 /**
  * Generate a unique string to be used for interprocess communications for this userid.
  *
- * @return A unique identifier used to create the named pipes.
+ * @return A unique identifier used to create the named
+ *         AF_LOCAL services.
  */
-const char *SysServerLocalSocketConnectionManager::generatePipeName()
+const char *SysServerLocalSocketConnectionManager::generateServiceName()
 {
     // if we've already generated this, we're done
     if (userServiceName != NULL)
