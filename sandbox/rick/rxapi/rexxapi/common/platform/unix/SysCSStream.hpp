@@ -40,6 +40,7 @@
 #define SysCSStream_Included
 
 #include <netinet/in.h>
+#include "CSStream.hpp"
 
 /**
  * A socket implementation of a CSStream for Unix. This is a

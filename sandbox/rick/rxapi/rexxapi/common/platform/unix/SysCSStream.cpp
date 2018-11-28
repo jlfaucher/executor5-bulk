@@ -282,7 +282,7 @@ ApiConnection *SysServerSocketConnectionManager::acceptConnection()
         errcode = CSERROR_INTERNAL;
         return NULL;
     }
-    SOCKET client = accept(c, (struct sockaddr *) &addr, &sz);
+    int client = accept(c, (struct sockaddr *) &addr, &sz);
     if (client == -1)
     {
         errcode = CSERROR_CONNX_FAILED;
