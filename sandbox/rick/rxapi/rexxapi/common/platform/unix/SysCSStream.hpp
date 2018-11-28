@@ -72,7 +72,7 @@ class SysLocalSocketConnection : public SysSocketConnection
 public:
     SysLocalSocketConnection() : SysSocketConnection() { };
     SysLocalSocketConnection(const char *service);
-    ~SysInetSocketConnection();
+    ~SysLocalSocketConnection();
 
     bool connect(const char *serviceName);
 };
@@ -103,7 +103,7 @@ protected:
 class SysServerLocalSocketConnectionManager : public SysServerSocketConnectionManager
 {
 public:
-    inline SysServerLocalInetSocketConnectionManager() { }
+    inline SysServerLocalSocketConnectionManager() { }
     inline ~SysServerLocalSocketConnectionManager() { }
 
     bool bind(const char *serviceName);
@@ -112,7 +112,7 @@ public:
 
 protected:
 
-    bool checkServiceName(const char *serviceName)
+    bool checkServiceName(const char *serviceName);
 
     const char *boundServiceName;        // the service name this instance is bound to.
     static const char *userServiceName;  // the standard service name generated for each user.
