@@ -451,8 +451,10 @@ const char *SysServerLocalSocketConnectionManager::generateServiceName()
     // we create the file in the user's home path as a hidden file
     const char *homePath;
 
-    // if we can't get the home path from getenv(), fall back on getpwuid()
-    if ( (homePath = getenv("HOME")) == NULL)
+    // The recommended location is the XDG_RUNTIME_DIR, which will do a lot of
+    // automatic cleanup functions for us. If for some reason this env var is not
+    // set, fall back to placing this in the user's home directory
+    if ( (homePath = getenv("XDG_RUNTIME_DIR")) == NULL)
     {
         homePath = getpwuid(getuid())->pw_dir;
     }
