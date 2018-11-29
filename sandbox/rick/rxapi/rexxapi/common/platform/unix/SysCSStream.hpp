@@ -73,7 +73,7 @@ class SysLocalSocketConnection : public SysSocketConnection
 public:
     SysLocalSocketConnection() : SysSocketConnection() { };
     SysLocalSocketConnection(const char *service);
-    ~SysLocalSocketConnection();
+    ~SysLocalSocketConnection() { };
 
     bool connect(const char *serviceName);
 };
