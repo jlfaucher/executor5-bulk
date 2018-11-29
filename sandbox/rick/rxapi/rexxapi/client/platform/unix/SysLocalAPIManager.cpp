@@ -149,6 +149,8 @@ ApiConnection *SysLocalAPIManager::newClientConnection()
     // open the pipe to the server
     if (!connection->connect(SysServerLocalSocketConnectionManager::generateServiceName()))
     {
+        // don't leak memory!
+        delete connection;
         throw new ServiceException(SERVER_FAILURE, "Failure connecting to rxapi server");
     }
     return connection;

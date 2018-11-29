@@ -79,7 +79,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
         SysServerNamedPipeConnectionManager *c = new SysServerNamedPipeConnectionManager();
         // try to create the named pipe used for this server. If this fails, we
         // likely have a instance of the daemon already running, so just fail quietly.
-        if (!c->bind(SysServerNamedPipeConnectionManager::generatePipeName()))
+        if (!c->bind())
         {
             delete c;
             return ERROR_ACCESS_DENIED;

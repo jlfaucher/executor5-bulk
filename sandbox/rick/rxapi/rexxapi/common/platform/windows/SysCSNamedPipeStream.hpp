@@ -38,6 +38,7 @@
 #ifndef SysCSPipeStream_Included
 #define SysCSPipeStream_Included
 
+#include <windows.h>
 #include "CSStream.hpp"
 
 class SysNamedPipeConnection : public ApiConnection
@@ -69,21 +70,21 @@ protected:
 class SysServerNamedPipeConnectionManager : public ServerConnectionManager
 {
 public:
-    inline SysServerNamedPipeConnectionManager() : firstPipeHandle(INVALID_HANDLE_VALUE), ServerConnectionManager() { }
+    inline SysServerNamedPipeConnectionManager() : serverMutexHandle(INVALID_HANDLE_VALUE), ServerConnectionManager() { generatePipeName(); }
     inline ~SysServerNamedPipeConnectionManager() { }
 
     virtual bool disconnect();
     virtual ApiConnection *acceptConnection();
 
-    bool bind(const char *pipeName);
+    bool bind();
 
     static const char *generatePipeName();
 
 protected:
     static const char *userPipeName;  // the standard pipe name generated for each user.
+    static const char *serverMutexName;  // the standard pipe name generated for each user.
 
-    HANDLE firstPipeHandle;           // the first pipe instance created during bind()
-    const char *boundPipeName;        // the pipe we are bound to
+    HANDLE serverMutexHandle;         // the handle of the mutex we create to ensure a single instance
 };
 
 #endif

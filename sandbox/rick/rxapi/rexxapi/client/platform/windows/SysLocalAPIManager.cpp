@@ -134,6 +134,8 @@ void SysLocalAPIManager::startServerProcess()
     {
         throw new ServiceException(API_FAILURE, "Unable to start API server");
     }
+    // give the process a chance to get established before trying to connect to it.
+    Sleep(50);
 }
 
 
@@ -188,6 +190,8 @@ ApiConnection *SysLocalAPIManager::newClientConnection()
     // open the pipe to the server
     if (!connection->connect(SysServerNamedPipeConnectionManager::generatePipeName()))
     {
+        // don't leak memory!
+        delete connection;
         throw new ServiceException(SERVER_FAILURE, "Failure connecting to rxapi server");
     }
     return connection;

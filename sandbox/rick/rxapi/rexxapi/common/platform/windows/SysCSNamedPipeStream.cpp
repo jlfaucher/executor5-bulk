@@ -40,7 +40,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <winsock2.h>
 #include "SysCSNamedPipeStream.hpp"
 #include "ServiceException.hpp"
 #include "SysProcess.hpp"
@@ -48,6 +47,8 @@
 
 // the pipe name used for this userid
 const char *SysServerNamedPipeConnectionManager::userPipeName = NULL;
+// the named mutex used for this userid
+const char *SysServerNamedPipeConnectionManager::serverMutexName = NULL;
 
 
 /**
@@ -242,7 +243,7 @@ bool SysNamedPipeConnection::connect(const char *pipeName)
 ApiConnection *SysServerNamedPipeConnectionManager::acceptConnection()
 {
     // We need to create a new named pipe instance for each inbound connection
-    HANDLE clientHandle = CreateNamedPipe(generatePipeName(), PIPE_ACCESS_DUPLEX, PIPE_TYPE_BYTE |
+    HANDLE clientHandle = CreateNamedPipe(userPipeName, PIPE_ACCESS_DUPLEX, PIPE_TYPE_BYTE |
         PIPE_WAIT | PIPE_REJECT_REMOTE_CLIENTS, PIPE_UNLIMITED_INSTANCES, 1024, 1024, 0, NULL);
 
     if (clientHandle == INVALID_HANDLE_VALUE)
@@ -273,23 +274,20 @@ ApiConnection *SysServerNamedPipeConnectionManager::acceptConnection()
  * Bind to the named pipe by creating the first instance of the
  * pipe with the given name.
  *
- * @param pipeName The pipe name to use.
- *
  * @return true if the pipe could be created successfully, false for any creation failures.
  */
-bool SysServerNamedPipeConnectionManager::bind(const char *pipeName)
+bool SysServerNamedPipeConnectionManager::bind()
 {
-    // save the bound name for when we need to create additional instances
-    boundPipeName = pipeName;
-    // We are creating a pipe instance using the FILE_FLAG_FIRST_PIPE_INSTANCE flag to ensure
+    // generate the unique name for this user.
+    generatePipeName();
+    // Try to create our unique named mutex. If this fails, there must be another instance running,
+    // se we'll just shutdown right now.
     // we are the first creator of this pipe. We use this to detect if we have more
     // than one occurance of rxapi running for a given userid.
-    firstPipeHandle = CreateNamedPipe(pipeName, PIPE_ACCESS_DUPLEX | FILE_FLAG_FIRST_PIPE_INSTANCE, PIPE_TYPE_BYTE |
-        PIPE_WAIT | PIPE_REJECT_REMOTE_CLIENTS, PIPE_UNLIMITED_INSTANCES, 1024, 1024, 0, NULL);
+    serverMutexHandle = CreateMutex(NULL, FALSE, serverMutexName);
 
-    if (firstPipeHandle == INVALID_HANDLE_VALUE)
+    if (serverMutexHandle == INVALID_HANDLE_VALUE)
     {
-        boundPipeName = NULL;
         errcode = CSERROR_CONNX_FAILED;
         return false;
     }
@@ -306,17 +304,17 @@ bool SysServerNamedPipeConnectionManager::disconnect()
 {
     // we don't use the initial instance, but do keep the handle open to
     // ensure a second instance can't start up
-    if (firstPipeHandle != INVALID_HANDLE_VALUE)
+    if (serverMutexHandle != INVALID_HANDLE_VALUE)
     {
-        DisconnectNamedPipe(firstPipeHandle);
-        CloseHandle(firstPipeHandle);
-        firstPipeHandle = INVALID_HANDLE_VALUE;
-        boundPipeName = NULL;
+        CloseHandle(serverMutexHandle);
+        serverMutexHandle = INVALID_HANDLE_VALUE;
         // this is only done when the server is shutting down prior
         // to termination. We don't really need to get rid of this, but
         // it is good practice
         free((void *)userPipeName);
         userPipeName = NULL;
+        free((void *)serverMutexName);
+        serverMutexName = NULL;
     }
 
     // this doesn't really rely on any persistent state for the connections, so
@@ -327,7 +325,9 @@ bool SysServerNamedPipeConnectionManager::disconnect()
 
 
 /**
- * Generate a unique string to be used for interprocess communications for this userid.
+ * Generate a unique string to be used for interprocess
+ * communications for this userid. Also generates the unique
+ * mutex name used to ensure only one instance exists.
  *
  * @return A unique identifier used to create the named pipes.
  */
@@ -340,7 +340,7 @@ const char *SysServerNamedPipeConnectionManager::generatePipeName()
     }
 
     // a buffer for generating the name
-    char pipeNameBuffer[256];
+    char pipeNameBuffer[MAX_PATH];
     char userid[MAX_USERID_LENGTH]; // name of the user
 
     // get the userid from the process
@@ -354,6 +354,18 @@ const char *SysServerNamedPipeConnectionManager::generatePipeName()
 #endif
         userid);
     userPipeName = strdup(pipeNameBuffer);
+    // we also create a named mutex to ensure we have a only a single instance running.
+    // we need a different name because backslashes are not allowed in mutex names.
+
+    snprintf(pipeNameBuffer, sizeof(pipeNameBuffer), "ooRexx %d.%d.%d-%s-%s", ORX_VER, ORX_REL, ORX_MOD,
+#ifdef __REXX64__
+	    "64",
+#else
+		"32",
+#endif
+        userid);
+
+    serverMutexName = strdup(pipeNameBuffer);
     return userPipeName;
 }
 
