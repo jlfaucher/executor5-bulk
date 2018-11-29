@@ -61,7 +61,7 @@ class ApiConnection
 {
 public:
     inline ApiConnection() : errcode(CSERROR_OK), messageBuffer(NULL) { }
-    inline ~ApiConnection() { disconnect(); if (messageBuffer != NULL) { free(messageBuffer); } }
+    virtual ~ApiConnection() { disconnect(); if (messageBuffer != NULL) { free(messageBuffer); } }
 
     inline CSErrorCodeT getError()
     {
@@ -103,7 +103,7 @@ class ServerConnectionManager
 {
 public:
     inline ServerConnectionManager() : errcode(CSERROR_OK) { }
-    inline ~ServerConnectionManager() { disconnect(); }
+    virtual ~ServerConnectionManager() { disconnect(); }
 
     inline CSErrorCodeT getError()
     {
@@ -119,7 +119,6 @@ public:
 
 protected:
     CSErrorCodeT errcode;  // error status
-
 };
 
 #endif
