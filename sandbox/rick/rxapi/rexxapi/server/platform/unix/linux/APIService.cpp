@@ -87,9 +87,14 @@ int main(int argc, char *argv[])
     (void) sigaddset(&sa.sa_mask, SIGTERM);
     sa.sa_flags = SA_RESTART;
     sa.sa_handler = Stop;
-    if (sigaction(SIGTERM, &sa, NULL) == -1) {
+    if (sigaction(SIGTERM, &sa, NULL) == -1)
+    {
         exit(1);
     }
+
+    // turn off SIGPIPE signals in case the other end of the
+    // pipe terminates on us.
+    signal(SIGPIPE, SIG_IGN);
 
     try
     {

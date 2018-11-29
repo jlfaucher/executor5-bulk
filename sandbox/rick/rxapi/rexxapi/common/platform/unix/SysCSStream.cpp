@@ -250,10 +250,6 @@ bool SysLocalSocketConnection::connect(const char *serviceName)
         return false;
     }
 
-    // tell the socket to not issue SIGPIPE signals
-    int value = 1;
-    setsockopt(c, SOL_SOCKET, SO_NOSIGPIPE, &value, sizeof(value));
-
     // bind the server socket to a service name
     struct sockaddr_un name; // address structure
     name.sun_family = AF_LOCAL;
@@ -298,10 +294,6 @@ ApiConnection *SysServerSocketConnectionManager::acceptConnection()
         errcode = CSERROR_CONNX_FAILED;
         return NULL;
     }
-
-    // tell the socket to not issue SIGPIPE signals
-    int value = 1;
-    setsockopt(client, SOL_SOCKET, SO_NOSIGPIPE, &value, sizeof(value));
 
     errcode = CSERROR_OK;
     // now create an object wrapper for this client connection.
@@ -358,10 +350,6 @@ bool SysServerLocalSocketConnectionManager::bind(const char *serviceName)
         errcode = CSERROR_UNKNOWN;
         return false;
     }
-
-    // tell the socket to not issue SIGPIPE signals
-    int value = 1;
-    setsockopt(c, SOL_SOCKET, SO_NOSIGPIPE, &value, sizeof(value));
 
     // bind the server socket to a service name
     struct sockaddr_un name; // address structure
