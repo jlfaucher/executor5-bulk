@@ -87,7 +87,6 @@ int acquireLock (const char *lockFileName)
     if (flock (lockFd, LOCK_EX | LOCK_NB) < 0)
     {
         close (lockFd);
-        unlink(lockFileName);
         return -1;
     }
 
