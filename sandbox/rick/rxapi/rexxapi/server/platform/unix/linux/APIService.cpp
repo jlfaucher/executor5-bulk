@@ -42,7 +42,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <sys/stat.h>
+#include <sys/file.h>
 #include <sys/types.h>
 #include <fcntl.h>
 #include <signal.h>
@@ -50,7 +50,6 @@
 #include <errno.h>
 #include "APIServer.hpp"
 #include "SysCSStream.hpp"
-#include "stdio.h"
 
 APIServer apiServer;             // the real server instance
 
@@ -70,6 +69,47 @@ void Stop(int signo)
 
 
 /**
+ * Acquire a lock on a special file to ensure we are the only running
+ * rxapi process for this user.
+ *
+ * @return The file descriptor the the lock for or -1 for any failure obtaining
+ *         the lock.
+ */
+int acquireLock (const char *lockFileName)
+{
+    int lockFd;
+
+    if ((lockFd = open(lockFileName, O_CREAT | O_RDWR, 0666))  < 0)
+    {
+        return -1;
+    }
+
+    if (flock (lockfd, LOCK_EX | LOCK_NB) < 0)
+    {
+        close (lockFd);
+        unlink(lockFileName);
+        return -1;
+    }
+
+    return lockFd;
+}
+
+/**
+ * Release the lock on the lock file.
+ *
+ * @param lockFileName
+ *               The name of the lock file.
+ * @param lockFd The file descriptor of the file.
+ */
+void releaseLock (const char *lockFileName, int lockFd)
+{
+    flock (lockFd, LOCK_UN);
+    close (lockFd);
+    unline(lockFileName);
+}
+
+
+/**
  * The main entry point.
  *
  * @param argc   The command line arguments
@@ -79,7 +119,36 @@ void Stop(int signo)
  */
 int main(int argc, char *argv[])
 {
-    pid_t pid = 0;
+    // a buffer for generating the name
+    char lockFileName[MAX_PATH];
+
+    // we create the file in the user's home path as a hidden file
+    const char *homePath;
+
+    // The recommended location is the XDG_RUNTIME_DIR, which will do a lot of
+    // automatic cleanup functions for us. If for some reason this env var is not
+    // set, fall back to placing this in the user's home directory
+    if ( (homePath = getenv("XDG_RUNTIME_DIR")) == NULL)
+    {
+        homePath = getpwuid(getuid())->pw_dir;
+    }
+
+    // this creates a hidden file in the user's home directory.
+    snprintf(lockFileName, sizeof(lockFileName), "%s/.ooRexx-%d.%d.%d-%s.lock", homePath, ORX_VER, ORX_REL, ORX_MOD,
+#ifdef __REXX64__
+	    "64");
+#else
+		"32");
+#endif
+
+    // see if we can get the lock file before proceeding. This is one
+    // file per user.
+    int fd;
+    if ((fd = acquireLock (lockFileName)) == -1)
+    {
+        return EACCES;
+    }
+
     struct sigaction sa;
 
     // handle kill -15
@@ -114,6 +183,7 @@ int main(int argc, char *argv[])
     {
     }
     apiServer.terminateServer();     // shut everything down
+    releaseLock(lockFileName, fd);   // release the exclusive lock
 
     return 0;
 }
