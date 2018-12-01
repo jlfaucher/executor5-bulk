@@ -84,7 +84,7 @@ int acquireLock (const char *lockFileName)
         return -1;
     }
 
-    if (flock (lockfd, LOCK_EX | LOCK_NB) < 0)
+    if (flock (lockFd, LOCK_EX | LOCK_NB) < 0)
     {
         close (lockFd);
         unlink(lockFileName);
@@ -103,9 +103,9 @@ int acquireLock (const char *lockFileName)
  */
 void releaseLock (const char *lockFileName, int lockFd)
 {
-    flock (lockFd, LOCK_UN);
-    close (lockFd);
-    unline(lockFileName);
+    flock(lockFd, LOCK_UN);
+    close(lockFd);
+    unlink(lockFileName);
 }
 
 
@@ -120,7 +120,7 @@ void releaseLock (const char *lockFileName, int lockFd)
 int main(int argc, char *argv[])
 {
     // a buffer for generating the name
-    char lockFileName[MAX_PATH];
+    char lockFileName[PATH_MAX];
 
     // we create the file in the user's home path as a hidden file
     const char *homePath;
