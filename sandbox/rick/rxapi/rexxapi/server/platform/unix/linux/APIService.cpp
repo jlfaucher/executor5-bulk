@@ -178,8 +178,9 @@ int main(int argc, char *argv[])
         apiServer.initServer(c);              // start up the server
         apiServer.listenForConnections();     // go into the message loop
     }
-    catch (ServiceException *)
+    catch (ServiceException *e)
     {
+        delete e;  // just ignore errors
     }
     apiServer.terminateServer();     // shut everything down
     releaseLock(lockFileName, fd);   // release the exclusive lock

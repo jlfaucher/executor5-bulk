@@ -87,8 +87,10 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
         apiServer.initServer(c);              // start up the server
         apiServer.listenForConnections();     // go into the message loop
     }
-    catch (ServiceException *)
+    catch (ServiceException *e)
     {
+        // we don't need this, so delete it now
+        delete e;
     }
     apiServer.terminateServer();     // shut everything down
 

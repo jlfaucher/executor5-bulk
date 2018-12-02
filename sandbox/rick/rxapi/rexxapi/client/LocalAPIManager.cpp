@@ -230,9 +230,10 @@ void LocalAPIManager::establishServerConnection()
             connectionEstablished = true;
             return;
         }
-        catch (ServiceException *)
+        catch (ServiceException *e)
         {
-            // just fall through.
+            // just fall through, but get rid of the exception object first.
+            delete e;
         }
 
         // Unable to connect, so try to start the server process.  We're unsynchronized at this point,
@@ -260,9 +261,10 @@ void LocalAPIManager::establishServerConnection()
                 connectionEstablished = true;
                 return;
             }
-            catch (ServiceException *)
+            catch (ServiceException *e)
             {
                 // just fall through.
+                delete e;
             }
 
             // use a minimal sleep time before trying again.
@@ -338,9 +340,11 @@ void LocalAPIManager::closeConnection(ApiConnection *connection)
     {
         // this is a one-way message...we don't expect a reply
         message.writeMessage(*connection);
-    } catch (ServiceException *)
+    }
+    catch (ServiceException *e)
     {
         // ignored
+        delete e;
     }
     delete connection;
 }

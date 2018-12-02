@@ -149,7 +149,8 @@ void APIServer::processMessages(ApiConnection *connection)
         {
             // read the message.
             message.readMessage(connection);
-        } catch (ServiceException *e)
+        }
+        catch (ServiceException *e)
         {
             // an error here is likely caused by the client closing the connection.
             // delete both the exception and the connection and terminate the thread.
