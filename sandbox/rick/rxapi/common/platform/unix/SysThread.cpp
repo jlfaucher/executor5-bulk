@@ -189,5 +189,6 @@ void SysThread::waitForTermination()
  */
 void SysThread::sleep(int msecs)
 {
-    usleep(msecs);
+    // usleep uses micro seconds, so we need to multiply.
+    usleep(msecs*1000);
 }
