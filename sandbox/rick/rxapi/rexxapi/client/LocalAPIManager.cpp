@@ -242,10 +242,10 @@ void LocalAPIManager::establishServerConnection()
         SysLocalAPIManager::startServerProcess();
 
         // give this a little time to get launched before trying to connect.
-        SysThread::sleep(50);
+        SysThread::sleep(100);
 
         // now loop multiple times, with a sleep interval, until we finally connect.
-        int count = 100;
+        int count = 200;
         while (count-- > 0)
         {
             try
@@ -270,7 +270,7 @@ void LocalAPIManager::establishServerConnection()
             // use a minimal sleep time before trying again.
             // if the server is truly casters up, this could result in a full
             // second delay on every launch, but that really should not happen.
-            SysThread::sleep(10);
+            SysThread::sleep(100);
         }
         throw new ServiceException(API_FAILURE, "Object REXX API Manager could not be started.  This could be due to a version conflict!");
     }
