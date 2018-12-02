@@ -134,8 +134,6 @@ void SysLocalAPIManager::startServerProcess()
     {
         throw new ServiceException(API_FAILURE, "Unable to start API server");
     }
-    // give the process a chance to get established before trying to connect to it.
-    Sleep(50);
 }
 
 
