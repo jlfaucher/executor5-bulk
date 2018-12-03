@@ -116,6 +116,18 @@ return testResult
    address (environment) "extra"
    self~assertSame(environment "extra", address())
 
+-- ADDRESS VALUE expression WITH should work
+::method test_environment_value_with
+   environment = "not_exists"
+   address value environment with input normal
+   self~assertSame(environment, address())
+
+-- ADDRESS (expression) WITH should work
+::method test_environment_expression_with
+   environment = "not_exists"
+   address (environment) with output normal error normal
+   self~assertSame(environment, address())
+
 -- commands with zero return code should raise neither ERROR nor FAILURE
 ::method test_environment_command_exists
    defaultEnvironment = address()
@@ -258,7 +270,8 @@ return testResult
 
 -- tests for "address-with" forms
 /*
-  ADDRESS (environment command | VALUE env_expression) WITH - fragment
+
+ADDRESS (environment command | VALUE env_expression) WITH - fragment
 
 WITH - fragment allows up to three INPUT/OUTPUT/ERROR combinations of:
   WITH INPUT                       NORMAL
@@ -268,12 +281,11 @@ WITH - fragment allows up to three INPUT/OUTPUT/ERROR combinations of:
   WITH OUTPUT/ERROR REPLACE/APPEND STEM stem / STREAM stream / USING ( object )
 
 address ::= 'ADDRESS' (  |
-                      environment expression? |
-                      'VALUE'? env_expression )
-                      ( WITH - fragment ) ?
-address_with ::=      ( 'WITH' ( 'INPUT' ( 'NORMAL' | 'STEM' stem | 'STREAM' stream | 'USING' ( literal | '(' expr ')' ) ) |
-                               ( 'OUTPUT' | 'ERROR' ) ( 'NORMAL' |
-                                                        ( | 'REPLACE' | 'APPEND' ) ( 'STEM' stem | 'STREAM' stream | 'USING'  ( literal | '(' expr ')' ) ) ) ) )+
+                         ( environment expression? |
+                           'VALUE'? env_expression ) ( WITH - fragment )? )
+address_with ::=      'WITH' ( 'INPUT' ( 'NORMAL' | 'STEM' stem | 'STREAM' stream | 'USING' expr ) |
+                             ( 'OUTPUT' | 'ERROR' ) ( 'NORMAL' |
+                                                    ( | 'REPLACE' | 'APPEND' ) ( 'STEM' stem | 'STREAM' stream | 'USING' expr ) ) )+
 
 */
 -- creates a file by writing a few lines
@@ -1057,6 +1069,115 @@ instream = .ArrayInputStream~new(("Line1", "Line2"))
 outstream = .ErrorOutputStream~new
 
 address "" self~inputToOutput with input using (instream) output using(outstream)
+
+
+-- permanent I/O redirection tests
+
+
+::method test_configuration_constant
+  -- set a permanent I/O configuration for the current environment
+  address value address() with input using 123 output stem s.
+
+  -- switch away from the current environment, and back again
+  address ""
+  address
+
+  -- this should honour the permanent I/O configuration
+  (self~inputToOutput)
+  self~assertSame(1, s.0)
+  self~assertSame(123, s.1)
+
+  call p
+  self~assertSame(1, s.0) -- must be unchanged
+  self~assertSame(123, s.1) -- must be unchanged
+
+  return
+
+  p: procedure expose self
+    -- we have inherited our permanent I/O configuration
+    -- constant input should still work, output should go to a local stem
+    (self~inputToOutput)
+    self~assertSame(1, s.0)
+    self~assertSame(123, s.1)
+    drop s.
+    return
+
+::method test_configuration_object
+  in = (1, 2, 3)
+  out = (4, 5)
+  -- set a permanent I/O configuration
+  address "" with input using (in) output using (out)
+  self~assertSame("1,2,3", in~toString(, ",")) -- must be unchanged
+  self~assertSame("4,5", out~toString(, ",")) -- must be unchanged
+
+  -- switch away from the current environment, and back again
+  address COMMAND
+  address
+
+  -- this should honour the permanent I/O configuration
+  (self~inputToOutput)
+  self~assertSame("1,2,3", in~toString(, ",")) -- still unchanged
+  self~assertSame("1,2,3", out~toString(, ",")) -- copied from input
+
+  -- now we override a part of our permanent I/O configuration
+  address "" self~inputToOutput with output stem s.
+  self~assertSame("1,2,3", in~toString(, ",")) -- still unchanged
+  self~assertSame("1,2,3", out~toString(, ",")) -- unchanged
+  self~assertSame(3, s.0) -- output override
+  self~assertSame(1, s.1)
+  self~assertSame(2, s.2)
+  self~assertSame(3, s.3)
+
+  -- our override was only temporary, we should be back to 'in' and 'out'
+  -- we change out from an Array to a Stem
+  in = .Stem~of( (0, 2), (1, "abc"), (2, "def") )
+  out = .Array~new
+  (self~inputToOutput)
+  self~assertSame("abc,def", out~toString(, ","))
+
+::method test_configuration_expression
+  defaultEnvironment = address()
+
+  -- set a permanent I/O configuration
+  address (defaultEnvironment) with input using (in~delete(n)) output append using (out)
+  self~assertFalse(var("n"))
+  self~assertFalse(var("in"))
+  self~assertFalse(var("out"))
+
+  -- switch away from the current environment, and back again
+  address "nonexisting"
+  address (defaultEnvironment)
+
+  in = "abcdef"~makeArray("")
+  out = .Array~new
+  do n = 1 to 3
+    (self~inputToOutput)
+    self~assertSame(6 - n, in~items)
+    self~assertSame(n, out~items)
+  end
+  self~assertSame("a,c,e", out~makeString(, ","))
+
+-- [bugs:#1578] ADDRESS WITH issues
+-- I/O configurations are associated with each environment
+-- environment name case shouldn't matter
+::method test_configuration_nocase
+  output = .Array~new
+  address "command" with input using "command" output using (output)
+  address command with input using "COMMAND" output using (output)
+  address "" with input using "" output using (output)
+
+  do env over "command", "Command", "COMMAND", ""
+    address (env)
+    (self~inputToOutput)
+    self~assertSame(1, output~items, "address" env":" output~items "items")
+    self~assertSame(env~upper, output[1], "address" env":" output[1])
+  end
+
+::method test_rexxref_example
+  address "" with input using (a) output using (a)
+  a = 4, 2, 3, 1
+  "sort"
+  self~assertSame("1,2,3,4", a~toString(, ","), "sort result 1,2,3,4 expected")
 
 
 ::class ArrayInputStream public inherit InputStream
