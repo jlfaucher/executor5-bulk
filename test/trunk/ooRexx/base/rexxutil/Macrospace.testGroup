@@ -101,14 +101,14 @@ return testResult
   forward class (super) continue
   -- 'macroName' should be in the same directory as this test is
   -- but in general, we will not be running with this as the current directory
-  -- so we need to figure out the absolute path to 'macroName' 
+  -- so we need to figure out the absolute path to 'macroName'
   parse source . . path
   macroPath = filespec('path', path) || self~macroName
 
 /* when run stand-alone the exception can be forced by adding load
    in a second thread
 */
-/*Dbg self~generateLoad*/
+  self~generateLoad
 
 -- generate load to provoke ooRexx exception
 ::method generateLoad class
@@ -151,7 +151,7 @@ return testResult
 ::method test_add_arg_path_not_existing
   self~assertEquals(self~sourceNotFound, SysAddRexxMacro("test_add_nopath", self~noMacroPath, "B"))
   self~assertEquals("", SysQueryRexxMacro("test_add_nopath"))
- 
+
 ::method test_add_arg_option_illegal
   self~expectSyntax(40.1)
   call SysAddRexxMacro "name", "path", "illegal-option"
@@ -160,27 +160,27 @@ return testResult
    run stand-alone, but gives an exception when run through testOOrexx
 
    TO DO: fix issue
-*/ 
+*/
 
 ::method test_add_two_args_default
   self~assertEquals(self~OK, SysClearRexxMacroSpace())
   self~assertEquals(self~OK, SysAddRexxMacro("test_add_def", self~macroPath))
   self~assertEquals(self~default, SysQueryRexxMacro("test_add_def"))
-/*Dbg self~assertEquals(self~macroRc, test_add_def())          -- run added macro*/
+  self~assertEquals(self~macroRc, test_add_def())          -- run added macro
 
 ::method test_add_three_args_option
   do option over "a", "b", "A", "B"
     self~assertEquals(self~OK, SysClearRexxMacroSpace())
     self~assertEquals(self~OK, SysAddRexxMacro("test_add", self~macroPath, option))
     self~assertEquals(option~upper, SysQueryRexxMacro("test_add"))
-/*Dbg self~assertEquals(self~macroRc, test_add())*/
+    self~assertEquals(self~macroRc, test_add())
   end
 
 ::method test_add_three_args_option_before
   -- check macro search order by adding a macro named "SysUtilVersion"
   self~assertEquals(self~OK, SysClearRexxMacroSpace())
   self~assertEquals(self~OK, SysAddRexxMacro("SysUtilVersion", self~macroPath, "b"))
-/*Dbg self~assertEquals(self~macroRc, SysUtilVersion(), "the macro, not the rexxutil version should run")*/
+  self~assertEquals(self~macroRc, SysUtilVersion(), "the macro, not the rexxutil version should run")
 
 ::method test_add_three_args_option_after
   -- check macro search order by adding a macro named "SysUtilVersion"
@@ -315,13 +315,13 @@ return testResult
   self~assertEquals(self~OK, SysAddRexxMacro("test_load_def", self~macroPath))
   self~assertEquals(self~OK, SysAddRexxMacro("SysUtilVersion", self~macroPath, "b"))
   self~assertEquals(self~OK, SysSaveRexxMacroSpace(self~macroSpacePath))
-/*Dbg self~assertEquals(self~macroRc, test_load_def())*/
-/*Dbg self~assertEquals(self~macroRc, SysUtilVersion(), "the macro should run, not the rexxutil version")*/
+  self~assertEquals(self~macroRc, test_load_def())
+  self~assertEquals(self~macroRc, SysUtilVersion(), "the macro should run, not the rexxutil version")
   self~assertEquals(self~OK, SysClearRexxMacroSpace())
 
   -- add a macro, then load (load is like add, not wipe & add)
   self~assertEquals(self~OK, SysAddRexxMacro("test_load_after", self~macroPath, "a"))
-/*Dbg self~assertEquals(self~macroRc, test_load_after())*/
+  self~assertEquals(self~macroRc, test_load_after())
   self~assertEquals(self~OK, SysLoadRexxMacroSpace(self~macroSpacePath))
 
   -- remove saved macrospace
@@ -331,9 +331,9 @@ return testResult
   self~assertEquals("A", SysQueryRexxMacro("test_load_after"), "macro 'test_load_after' should have survived load()")
   self~assertEquals(self~default, SysQueryRexxMacro("test_load_def"))
   self~assertEquals("B", SysQueryRexxMacro("SysUtilVersion"))
-/*Dbg self~assertEquals(self~macroRc, test_load_after())*/
-/*Dbg self~assertEquals(self~macroRc, test_load_def())*/
-/*Dbg self~assertEquals(self~macroRc, SysUtilVersion(), "the macro should run, not the rexxutil version")*/
+  self~assertEquals(self~macroRc, test_load_after())
+  self~assertEquals(self~macroRc, test_load_def())
+  self~assertEquals(self~macroRc, SysUtilVersion(), "the macro should run, not the rexxutil version")
 
 
 -- SysSaveRexxMacroSpace() tests
