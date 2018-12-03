@@ -111,7 +111,7 @@ the following example, although it would improve readability:
 ADDRESS VALUE"ENVIR"||number
 </programlisting>
 
-<section id="keyAddress"><title>ADDRESS</title>
+<section id="keyAddress" revisionflag="changed"><title>&changed50;ADDRESS</title>
 <indexterm><primary>ADDRESS instruction</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>command</primary>
@@ -136,13 +136,35 @@ ADDRESS VALUE"ENVIR"||number
 </imageobject>
 </mediaobject>
 
-<para>ADDRESS temporarily or permanently changes the destination of commands.
-Commands are strings sent to an external environment. You can send commands
-by specifying clauses consisting of only an expression or by using the ADDRESS
-instruction. (See
-<xref linkend="cmdhost" />.)</para>
-<para>To send a single command to a specified environment, code an
+<para><emphasis role="bold">WITH:</emphasis>
+<indexterm><primary>APPEND subkeyword</primary><secondary>in an ADDRESS instruction</secondary></indexterm>
+<indexterm><primary>ERROR subkeyword</primary><secondary>in an ADDRESS instruction</secondary></indexterm>
+<indexterm><primary>INPUT subkeyword</primary><secondary>in an ADDRESS instruction</secondary></indexterm>
+<indexterm><primary>NORMAL subkeyword</primary><secondary>in an ADDRESS instruction</secondary></indexterm>
+<indexterm><primary>OUTPUT subkeyword</primary><secondary>in an ADDRESS instruction</secondary></indexterm>
+<indexterm><primary>REPLACE subkeyword</primary><secondary>in an ADDRESS instruction</secondary></indexterm>
+<indexterm><primary>STEM subkeyword</primary><secondary>in an ADDRESS instruction</secondary></indexterm>
+<indexterm><primary>STREAM subkeyword</primary><secondary>in an ADDRESS instruction</secondary></indexterm>
+<indexterm><primary>USING subkeyword</primary><secondary>in an ADDRESS instruction</secondary></indexterm>
+<indexterm><primary>WITH subkeyword</primary><secondary>in an ADDRESS instruction</secondary></indexterm>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/keywords/address_with.svg" scale="55" />
+</imageobject>
+</mediaobject>
+</para>
 
+<para>ADDRESS permanently changes the destination or I/O redirection of
+commands, or temporarily changes the destination and sends a command with
+optional I/O redirection of standard input, standard output, and standard
+error from or to Rexx objects.
+</para>
+<para>Commands are strings sent to an external environment.
+You can send commands by specifying clauses consisting of only an expression
+or by using the ADDRESS instruction.
+(See <xref linkend="cmdhost" />.)
+</para>
+<para>To send a single command to a specified environment, code an
 <emphasis role="italic">environment</emphasis>,
 <indexterm><primary>environment</primary>
 <secondary>addressing of</secondary></indexterm>
@@ -160,25 +182,180 @@ is set back to its original state, thus
 temporarily changing the destination for a single command. The special variable
 RC and the environment symbol .RS are set and errors and failures in commands
 processed in this way are trapped or traced.
+</para>
+<para>The <option>WITH</option> subkeyword sets a command's I/O redirection.
+STDIN input can be redirected from a Rexx object to the command, and
+STDOUT and STDERR output from the command can be redirected to a Rexx object.
+</para>
+<para>I/O redirection is permanent when specified on an ADDRESS instruction
+without a command, and temporary if a command is specified.
+Any permanent I/O redirection is associated with the environment name and
+will be saved and restored across function and subroutine calls.
+For permanent I/O redirections, any redirection objects or expressions are
+not evaluated at the time the ADDRESS instruction is processed.
+Eeach time a command is sent to this environment, these objects and
+expressions will be evaluated in the then current variable context.
+</para>
+<para><variablelist>
+<varlistentry><term><option>WITH INPUT</option></term>
+<listitem><para>redirects data from a stem, a stream, or an other Rexx
+object to the command's input.
+</para>
+<para>If option <option>NORMAL</option> is specified, the command's
+standard input will be used.
+</para>
+<para>If option <option>STEM</option> is specified,
+<emphasis role="italic">stem</emphasis> must be a stem variable, where
+<emphasis role="italic">stem</emphasis><literal>.0</literal> specifies
+the number of input lines, and each
+<emphasis role="italic">stem.i</emphasis>
+(with <emphasis role="italic">i</emphasis> from <literal>1</literal>
+through <emphasis role="italic">stem</emphasis><literal>.0</literal>)
+specifies an input line.
+</para>
+<para>If option <option>STREAM</option> is specified,
+<emphasis role="italic">stream</emphasis> must be a literal string,
+a constant expression, or an expression enclosed in parentheses that
+evaluates to a string which is used as the stream name.
+Input lines for the command are read from
+<emphasis role="italic">stream</emphasis> using the
+<methodname>lineIn</methodname> method.
+</para>
+<para>If option <option>USING</option> is specified,
+<emphasis role="italic">expr</emphasis> must be a literal string,
+a constant expression, or an expression enclosed in parentheses that
+evaluates to a String, a Stem object, an InputStream, a Monitor or a File object,
+or an Array object or any other object that supports a
+<methodname>makeArray</methodname> method (e. g. a RexxQueue object).
+If the resulting object is a String, the command will receive a single input line,
+if it is a Stem, an InputStream, a Monitor, or a File object, input is redirected
+as described for options <option>STEM</option> and <option>STREAM</option>.
+If the resulting object is an Array object, all Array items are converted to
+strings and are sent to the command as input lines.
+Empty array items are ignored.
+</para>
+</listitem></varlistentry>
+
+<varlistentry><term><option>WITH OUTPUT</option> and <option>WITH ERROR</option></term>
+<listitem><para>redirect a command's standard output or error output to
+a stem, a stream, or other Rexx objects.
+</para>
+<para>If option <option>NORMAL</option> is specified,
+the command's default output destination, or default error destination is used.
+</para>
+<para>If option <option>STEM</option> is specified,
+<emphasis role="italic">stem</emphasis> must be a stem variable.
+If <option>REPLACE</option> is specified together with <option>STEM</option>,
+the number of output lines is stored in
+<emphasis role="italic">stem</emphasis><literal>.0</literal> and individual
+lines are stored as <emphasis role="italic">stem.i</emphasis>,
+with <emphasis role="italic">i</emphasis> running from <literal>1</literal>
+through <emphasis role="italic">stem</emphasis><literal>.0</literal>.
+<option>REPLACE</option> is the default.
+If <option>APPEND</option> is specified with <option>STEM</option>,
+individual lines are stored as <emphasis role="italic">stem.i</emphasis>,
+with <emphasis role="italic">i</emphasis> starting at the value of the
+existing <emphasis role="italic">stem</emphasis><literal>.0</literal>
+plus <literal>1</literal>.
+The initial <emphasis role="italic">stem</emphasis><literal>.0</literal>
+value is then incremented by the total number of output lines for the
+command.
+</para>
+<para>If option <option>STREAM</option> is specified,
+<emphasis role="italic">stream</emphasis> must be a literal string,
+a constant expression, or an expression enclosed in parentheses that
+evaluates to a string which is used as the stream name.
+Output or error lines from the command are written to the stream with the
+<methodname>lineOut</methodname> method.
+If <option>REPLACE</option> is specified with <option>STREAM</option>,
+<emphasis role="italic">stream</emphasis> is truncated  to zero length
+before any output lines are written.
+<option>REPLACE</option> is the default.
+If <option>APPEND</option> is specified with <option>STREAM</option>,
+output lines are appended to <emphasis role="italic">stream</emphasis>.
+</para>
+<para>If option <option>USING</option> is specified,
+<emphasis role="italic">expr</emphasis> must be
+a constant expression, or an expression enclosed in parentheses that
+evaluates to a Stem object, an OutputStream, a Monitor, a RexxQueue,
+a File object, or an OrderedCollection object.
+If the resulting object is a Stem or a File object, output lines are
+written as described for options <option>STEM</option> and
+<option>STREAM</option>.
+If it is an OutputStream or a Monitor object, output lines are always
+appended to the stream; neither <option>REPLACE</option> nor
+<option>APPEND</option> can be specified in this case.
+If the object is a RexxQueue, method <methodname>queue</methodname>
+is used for each output line.
+Neither <option>REPLACE</option> nor <option>APPEND</option> can be
+specified for a RexxQueue.
+If the resulting object is an OrderedCollection object, output lines
+are added to the collection using method <methodname>append</methodname>.
+If <option>REPLACE</option> is specified, the collection is emptied
+using method <methodname>emtpy</methodname> before any output lines
+are appended.
+</para>
+</listitem></varlistentry>
+</variablelist>
+</para>
+
+<para><emphasis role="bold">Notes:</emphasis></para>
+<orderedlist>
+<listitem><para>Specifying one of the <option>INPUT</option>,
+<option>OUTPUT</option>, or <option>ERROR</option> subkeywords more than once
+is an error.</para></listitem>
+<listitem><para>If an input source object and an output or error target object
+is the same, Rexx uses appropriate read and write buffering to make sure results
+are correct.
+</para></listitem>
+<listitem><para>If the standard output target and the standard error target object
+is the same object, Rexx will send interleaved output and error lines to the target.
+</para></listitem>
+<!--@@ Do we want any of these documented?
+<listitem><para>All environments currently supplied by ooRexx buffer (copy)
+any input redirection target before running the command.
+It is not possible to continue feeding input to a command that is already
+running.
+</para></listitem>
+<listitem><para>All Windows environments currently supplied by ooRexx
+buffer any redirected output so that it will only become available until
+after the command has finished.
+On Linux, redirected output (but not error output) is made available while
+the command is still running.
+These implementation details may change in the future.
+</para></listitem>
+<listitem><para>If a sparse Stem object is used for input redirection, any missing
+stems are converted to null lines.
+If a sparse Array object is used for input redirection, any missing
+items are ignored.
+</para></listitem>
+@@-->
+</orderedlist>
+
+<para>
 <indexterm><primary>ADDRESS instruction</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
 <secondary>ADDRESS instruction</secondary></indexterm>
 <indexterm><primary>CMD command environment</primary></indexterm>
+<indexterm><primary>sh command environment</primary></indexterm>
 <example>
-<title>Instructions &mdash; ADDRESS (Windows)</title>
+<title>Instructions &mdash; ADDRESS</title>
 <programlisting>
-ADDRESS CMD "DIR C:\CONFIG.SYS"
-</programlisting>
-</example>
-<example>
-<title>Instructions &mdash; ADDRESS (Linux)</title>
-<indexterm><primary>bash command environment</primary></indexterm>
-<programlisting>
-ADDRESS "bash" "ls /usr/lib"
+ADDRESS "CMD" 'dir "\Program Files"'            -- Windows
+ADDRESS "sh" "ls /usr/bin"                      -- Unix
+
+address "" "cat" with input using "single line" -- Unix: "single line"
+address "" "ver" with output stem v.; say v.2   -- "Microsoft Windows ..."
+
+address "" with input using (a) output using (a)
+a = 4, 2, 3, 1
+"sort"
+say a~toString(, " ")                           -- 1 2 3 4
 </programlisting>
 </example>
 </para>
+
 <para>If you specify only <emphasis role="italic">environment</emphasis>, a
 lasting change of destination occurs: all commands (see
 <xref linkend="commnds" />) that follow are routed to
@@ -620,7 +797,8 @@ it needs to use without affecting the caller.</para></listitem>
 <indexterm><primary>ADDRESS instruction</primary>
 <secondary>settings saved during subroutine calls</secondary></indexterm>
 <indexterm><primary>address setting</primary></indexterm>
-</emphasis>The current and previous destinations for commands
+</emphasis>The current and previous destinations for commands,
+including any associated I/O redirection configurations,
 are saved and then restored on return.</para></listitem>
 <listitem><para>
 <indexterm><primary>SIGNAL instruction</primary>
@@ -711,8 +889,8 @@ available to the caller.</para></listitem>
 
 <para>DO groups instructions and optionally processes them repetitively. During
 repetitive execution, control variables
-(<emphasis role="italic">control1</emphasis>, 
-<emphasis role="italic">control2</emphasis>, 
+(<emphasis role="italic">control1</emphasis>,
+<emphasis role="italic">control2</emphasis>,
 <emphasis role="italic">index</emphasis>, or
 <emphasis role="italic">item</emphasis>) can be stepped through some
 range of values.</para>
@@ -743,7 +921,7 @@ expression that evaluates to <computeroutput>1</computeroutput> or
 <computeroutput>0</computeroutput>.  This includes the list form of a conditional
 expression, which is
 a list of expressions separated by ",".
-The list of expressions is evaluated left-to-right. 
+The list of expressions is evaluated left-to-right.
 Each subexpression must evaluate to
 either <computeroutput>0</computeroutput> or <computeroutput>1</computeroutput>.
 Evaluation will stop with
@@ -1498,7 +1676,7 @@ line 5) and is then processed. Again a literal string is concatenated to the
 value of a variable (<computeroutput>NAME</computeroutput>) and another literal,
 and the final result (<computeroutput>Hello Kitty!</computeroutput>) is then
 displayed.</para></listitem>
-<listitem><para>For many purposes, you can use the 
+<listitem><para>For many purposes, you can use the
 <xref linkend="bifValue" xrefstyle="select:title"/> function
 instead of the INTERPRET instruction. The following line could, therefore,
 have replaced line 5 in the previous example:
@@ -1795,7 +1973,7 @@ and is, therefore, a valid target for the THEN clause.</para></note>
 operations. The options of this instruction are described in detail in
 <xref linkend="numarit" />.</para>
 <variablelist>
-            
+
 <varlistentry><term id="keyNumericDigits" xreflabel="NUMERIC DIGITS"><emphasis role="bold">NUMERIC DIGITS</emphasis>
 <indexterm><primary>NUMERIC instruction</primary>
 <secondary>DIGITS option</secondary></indexterm>
@@ -2754,7 +2932,7 @@ description of concurrency.</para>
 <para>RETURN returns control, and possibly a result, from a Rexx program,
 method, or routine to the point of its invocation.</para>
 <para>If no internal routine (subroutine or function) is active, RETURN and
-<xref linkend="keyExit" xrefstyle="select:title"/> 
+<xref linkend="keyExit" xrefstyle="select:title"/>
 are identical in their effect on the program that is run.
 </para>
 <para>If called as a routine, <emphasis role="italic">expression</emphasis>
@@ -2925,7 +3103,7 @@ the output data remains a single logical line.</para></listitem>
 
 <para>SELECT conditionally calls one of several alternative instructions.</para>
 <para>
-Evaluation of the <emphasis role="italic">expression</emphasis> list 
+Evaluation of the <emphasis role="italic">expression</emphasis> list
 after a WHEN is as follows:
 <variablelist>
  <varlistentry>
