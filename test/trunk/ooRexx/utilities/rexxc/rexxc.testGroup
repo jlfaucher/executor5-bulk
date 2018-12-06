@@ -59,6 +59,14 @@ return testResult
 ::constant testCompiled "test_rexxc.rexc"
 
 
+-- if a file path contains blanks, it needs to be quoted
+::method q
+  use strict arg path
+  if path~contains(" ") then
+    return '"' || path || '"'
+  else
+    return path
+
 ::method test_rexxc_no_arg
   address "" "rexxc" with output stem s.
   self~assertRc(-1, rc)
@@ -77,7 +85,7 @@ return testResult
 ::method test_rexxc_one_arg_syntax
   source = .TemporaryTestFile~new(self, self~testSource)
   source~create("/**/@")
-  address "" "rexxc" self~testSource with output stem s. error stem e.
+  address "" "rexxc" self~q(source~fullName) with output stem s. error stem e.
   -- Error 13.1:  Incorrect character in program "@" ('40'X)
   self~assertRc(-13, rc)
   self~assertTrue(s.0 > 0, "rexxc is expected to produce a few lines of output")
@@ -87,7 +95,7 @@ return testResult
   source = .TemporaryTestFile~new(self, self~testSource)
   do resource over .resources
     source~createFromResource(resource)
-    address "" "rexxc" self~testSource with output stem s. error stem e.
+    address "" "rexxc" self~q(source~fullName) with output stem s. error stem e.
     self~assertRc(0, rc, "'"resource"' Rexx code expected to compile with rc 0")
     self~assertTrue(s.0 > 0, "rexxc" self~testSource "is expected to produce a few lines of output")
     self~assertTrue(e.0 = 0, "rexxc" self~testSource "is expected to produce no error output")
@@ -97,7 +105,7 @@ return testResult
   source = .TemporaryTestFile~new(self, self~testSource)
   do resource over .resources
     source~createFromResource(resource)
-    address "" "rexxc" self~testSource "-s" with output stem s. error stem e.
+    address "" "rexxc" self~q(source~fullName) "-s" with output stem s. error stem e.
     self~assertRc(0, rc, "'"resource"' Rexx code expected to compile with rc 0")
     self~assertTrue(s.0 = 0, "'rexxc" self~testSource "-s' is expected to produce no output")
     self~assertTrue(e.0 = 0, "'rexxc" self~testSource "-s' is expected to produce no error output")
@@ -112,7 +120,7 @@ return testResult
   expectedHeader = "#!/usr/bin/env rexx" ||'0a'x || "/**/@REXX"
   do resource over .resources
     source~createFromResource(resource)
-    address "" "rexxc" self~testSource self~testCompiled with output using (o) error using (e)
+    address "" "rexxc" self~q(source~fullName) self~q(compiled~absolutePath) with output using (o) error using (e)
     self~assertRc(0, rc, "'"resource"' Rexx code expected to compile with rc 0")
     self~assertTrue(o~items > 0, "a few lines of output expected from rexxc '"resource"'")
     self~assertSame("", e~toString, "unexpected error output from rexxc '"resource"'")
@@ -127,7 +135,7 @@ return testResult
     self~assertSame(expectedHeader, actualHeader, "unexpected rexxc compiled output header")
 
     -- the code compiled by rexxc should run successfully
-    address "" "rexx" self~testCompiled with output using (o) error using (e)
+    address "" "rexx" self~q(compiled~absolutePath) with output using (o) error using (e)
     self~assertRc(resource~subWord(2), rc, "unexpected rc from compiled '"resource"'")
     self~assertSame("", o~toString, "unexpected output from compiled '"resource"'")
     self~assertSame("", e~toString, "unexpected error output from compiled '"resource"'")

@@ -50,7 +50,7 @@ datatype ::= 'DATATYPE(' string ( ',' type )? ')'
 
 date ::= 'DATE(' ( '"N"' | option | ) ',' ( ',' | string ',' ( '"N"' | option2 | ) ) ',' osep? (',' isep)? ')'
 
-delstr ::= 'DELSTR(' string ',' n ( ',' length )? ')'
+delstr ::= 'DELSTR(' string ',' n? ( ',' length )? ')'
 
 delword ::= 'DELWORD(' string ',' n ( ',' length )? ')'
 
@@ -126,7 +126,7 @@ sourceline ::= 'SOURCELINE(' n? ')'
 space ::= 'SPACE(' string ',' n? (',' pad)? ')'
 
 stream ::= 'STREAM(' name ',' ( |
-                                '"State"' |                    
+                                '"State"' |
                                 '"Command"' ',' stream_command |
                                 '"Description"' ) ')'
 
@@ -145,7 +145,7 @@ stream_command ::= ( 'Open' ( ( ( ( | 'BOth' | 'Write') ( | 'APpend' | 'REPlace'
                                'SIze' |
                                'STreamtype' |
                                'Timestamp' )
-                   ) ')' 
+                   ) ')'
 
 stream_options ::= ( | 'SHARED' | 'SHARERead' | 'SHAREWrite' ) 'NOBuffer'? ('BInary' ('REClength' length)? )?
 
@@ -157,7 +157,7 @@ subword ::= 'SUBWORD(' string ',' n ( ',' length )? ')'
 
 symbol ::= 'SYMBOL(' name ')'
 
-time ::= 'TIME(' ( '"N"' | option | )? ( | ',' string ',' ( '"N"' | option2 | )? ) ')' 
+time ::= 'TIME(' ( '"N"' | option | )? ( | ',' string ',' ( '"N"' | option2 | )? ) ')'
 
 trace ::= 'TRACE(' option? ')'
 
@@ -192,7 +192,7 @@ x2c ::= 'X2C(' hexstring ')'
 x2d ::= 'X2D(' hexstring ( ',' n )? ')'
 
 xrange ::= 'XRANGE('
-                ( (start? ',' end? | 'ALNUM' | 'ALPHA' | 'BLANK' | 'CNTRL' | 'DIGIT' | 'GRAPH' | 'LOWER' | 'PRINT' | 'PUNCT' | 'SPACE' | 'UPPER' | 'XDIGIT' ) 
+                ( (start? ',' end? | 'ALNUM' | 'ALPHA' | 'BLANK' | 'CNTRL' | 'DIGIT' | 'GRAPH' | 'LOWER' | 'PRINT' | 'PUNCT' | 'SPACE' | 'UPPER' | 'XDIGIT' )
              (',' (start? ',' end? | 'ALNUM' | 'ALPHA' | 'BLANK' | 'CNTRL' | 'DIGIT' | 'GRAPH' | 'LOWER' | 'PRINT' | 'PUNCT' | 'SPACE' | 'UPPER' | 'XDIGIT'))* )?
            ')'
 

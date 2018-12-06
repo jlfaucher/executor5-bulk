@@ -873,7 +873,7 @@ On computers with multimedia support the function plays the default sound
 event. On computers without soundcard, the function plays the standard system
 beep (if activated).</para></note>
 
-<para>Here is an example for Windows: 
+<para>Here is an example for Windows:
 <indexterm><primary>BEEP function</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
@@ -2321,7 +2321,7 @@ timestamp = date("f", "20170123", "S") + time("f", "08:14:22", "N")
 </example>
 </section>
 
-<section id="bifDelstr"><title>DELSTR (Delete String)</title>
+<section id="bifDelstr" revisionflag="changed"><title>&changed50;DELSTR (Delete String)</title>
 <para>
 <indexterm><primary>DELSTR function</primary>
 <secondary>description</secondary></indexterm>
@@ -2341,7 +2341,9 @@ timestamp = date("f", "20170123", "S") + time("f", "08:14:22", "N")
 </para>
 <para>Returns <emphasis role="italic">string</emphasis> after deleting the
 substring that begins at the <emphasis role="italic">n</emphasis>th character
-and is of <emphasis role="italic">length</emphasis> characters. If you omit
+and is of <emphasis role="italic">length</emphasis> characters.
+If <emphasis role="italic">n</emphasis> is omitted, it defaults to 1.
+If you omit
 <emphasis role="italic">length</emphasis>, or if
 <emphasis role="italic">length</emphasis> is greater than the number of
 characters from <emphasis role="italic">n</emphasis> to the end of
@@ -3269,7 +3271,7 @@ the current read position and the end of the character input stream
 It returns <computeroutput>0</computeroutput> if no data remains.
 As such, LINES reports whether a read action that
 <xref linkend="bifCharin" xrefstyle="template:CHARIN"/> or
-<xref linkend="bifLinein" xrefstyle="template:LINEIN"/> 
+<xref linkend="bifLinein" xrefstyle="template:LINEIN"/>
 performs will succeed.
 Option <option>Normal</option> is the default.
 </para>

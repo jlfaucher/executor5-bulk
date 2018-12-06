@@ -294,3 +294,58 @@ return testResult
     self~assertSame('abde', 'abcde'~delstr(3,1))
     self~assertSame('abcde', 'abcde'~delstr(9))
 
+
+::method test_arg_none
+  self~assertSame("", 123456~delstr)
+  self~assertSame("", ""~delstr)
+
+::method test_args_one_start_zero
+  -- 93.924:  Invalid position argument specified
+  self~expectSyntax(93.924)
+  123456~delstr(0)
+
+::method test_args_one_start
+  self~assertSame("", 123456~delstr(1))
+  self~assertSame(1, 123456~delstr(2))
+  self~assertSame(12345, 123456~delstr(6))
+  self~assertSame(123456, 123456~delstr(7))
+
+::method test_args_one_length_negative
+  -- 93.923:  Invalid length argument specified
+  self~expectSyntax(93.923)
+  123456~delstr(, -1)
+
+::method test_args_two_length
+  self~assertSame(123456, 123456~delstr(, 0))
+  self~assertSame( 23456, 123456~delstr(, 1))
+  self~assertSame(  3456, 123456~delstr(, 2))
+  self~assertSame(   "6", 123456~delstr(, 5))
+  self~assertSame(    "", 123456~delstr(, 6))
+  self~assertSame(    "", 123456~delstr(, 7))
+
+::method test_args_two_start_zero
+  -- 93.924:  Invalid position argument specified
+  self~expectSyntax(93.924)
+  123456~delstr(0, 1)
+
+::method test_args_two_length_negative
+  -- 93.923:  Invalid length argument specified
+  self~expectSyntax(93.923)
+  123456~delstr(1, -1)
+
+::method test_args_two_both
+  self~assertSame(123456, 123456~delstr(1, 0))
+  self~assertSame(123456, 123456~delstr(6, 0))
+  self~assertSame(123456, 123456~delstr(7, 0))
+  self~assertSame( 23456, 123456~delstr(1, 1))
+  self~assertSame(12345 , 123456~delstr(6, 1))
+  self~assertSame(123456, 123456~delstr(7, 1))
+  self~assertSame(    "", 123456~delstr(1, 6))
+  self~assertSame(12345 , 123456~delstr(6, 2))
+  self~assertSame(123456, 123456~delstr(7, 2))
+
+::method test_args_three
+  -- 93.902:  Too many arguments in invocation of method
+  self~expectSyntax(93.902)
+  123456~delstr(1, 1, 1)
+

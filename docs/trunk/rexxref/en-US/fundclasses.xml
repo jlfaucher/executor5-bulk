@@ -3449,7 +3449,7 @@ see <classname>Message</classname> class method
 world = .WorldObject~new
 -- these calls are equivalent and produce "Hello World, I'm Fred!"
 msg1 = world~startWith("HELLO", .Array~of("World", "Fred"))
-msg2 = .message~new(world,"HELLO", "a", .Array~of("World", "Fred"))~~start 
+msg2 = .message~new(world,"HELLO", "a", .Array~of("World", "Fred"))~~start
 say msg1~result
 say msg2~result
 
@@ -5203,7 +5203,7 @@ a character sequence representing the POSIX character class name <option>PUNCT</
 <literal>'09 0A 0B 0C 0D 20'x</literal>,
 a character sequence representing the POSIX character class name <option>SPACE</option>
 (whitespace characters horizontal tab, line feed, vertical tab, form feed,
-carriage return, and space). 
+carriage return, and space).
 </para>
 <para>See also class method
 <xref linkend="mthStringBlank" xrefstyle="template:blank"/>.
@@ -7580,7 +7580,7 @@ an error results.
 </example>
 </section>
 
-<section id="mthStringDelStr"><title>delStr</title>
+<section id="mthStringDelStr" revisionflag="changed"><title>&changed50;delStr</title>
 <indexterm><primary>delStr method</primary>
 <secondary>of String class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -7600,6 +7600,7 @@ an error results.
 <para>Returns a copy of the receiving string after deleting the substring that
 begins at the <emphasis role="italic">n</emphasis>th character and is of
 <emphasis role="italic">length</emphasis> characters.
+If <emphasis role="italic">n</emphasis> is omitted, it defaults to 1.
 If you omit <emphasis role="italic">length</emphasis>, or if
 <emphasis role="italic">length</emphasis> is greater than the number
 of characters from <emphasis role="italic">n</emphasis> to the end of
@@ -8351,8 +8352,8 @@ are non-negative whole numbers, the result is the same as the result of the
 <indexterm><primary>examples</primary><secondary>modulo method</secondary></indexterm>
 </title>
 <programlisting><![CDATA[
-say 10~modulo(3)    -- 1 
-say (-10)~modulo(3) -- 2 
+say 10~modulo(3)    -- 1
+say (-10)~modulo(3) -- 2
 ]]></programlisting></example></para>
 </section>
 
