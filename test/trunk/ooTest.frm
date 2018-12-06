@@ -723,12 +723,6 @@ return
     say "OS Name:"~left(width) osname
 
     versions = .Directory~new
-    -- if we've got SysWinVer() and it's result is unique, use it
-    if rxfuncquery("SysWinVer") = 0, \versions~hasItem(SysWinVer()) then
-      versions["SysWinVer"] = SysWinVer()
-    -- if we've got SysLinVer() and it's result is unique, use it
-    if rxfuncquery("SysLinVer") = 0, \versions~hasItem(SysLinVer()) then
-      versions["SysLinVer"] = SysLinVer()
     -- if SysVersion() result is unique, use it
     if \versions~hasItem(SysVersion()) then
       versions["SysVersion"] = SysVersion()

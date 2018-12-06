@@ -180,10 +180,6 @@ return testResult
 
 ::method test_SetDefaultPrinter_ret_new_style
 
-  -- Same basic idea as the previous test.  This is for W2k or later though.
-  parse value SysWinVer() with name ver
-  if name \== "WindowsNT" | ver < 5 then return
-
   printer = SysWinGetDefaultPrinter()
 
   self~assertTrue(printer~isA(.string))
