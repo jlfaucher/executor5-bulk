@@ -1374,6 +1374,27 @@ return str
   return r[]
 
 
+-- assert an external command return code
+-- on Windows, return codes in the range -32768 to 32767 are valid
+-- on Unix-like systems, return codes use just the 8 least significant bits
+-- of the returned value giving a range of 0 to 255
+::method assertRc
+  use strict arg expected, actual, msg = ""
+
+  -- if the expected rc is -1, the assert will pass
+  -- on Windows if actual rc is -1
+  -- on a Unix-like system if actual rc is 255
+
+  -- we pass if
+  -- * expected and actual match, or if
+  -- * on Unix, LSB of expected and actual match
+  if expected = actual |,
+     .ooRexxUnit.OSName \= "WINDOWS" & expected~d2c(2)~right(1)~c2d = actual then
+    self~fAssertions += 1
+  else
+    self~fail(self~makeFailure(expected, actual, msg, "assertRc"))
+
+
 /** fail()
  * Raise an application definable syntax condition with code 93.964.  The
  * exception handler for the test case method execution will check for this
@@ -2201,10 +2222,9 @@ return 0
   expose file
   use strict arg lines
 
-  -- make sure this is deleted
-  file~delete
-
   s = .stream~new(file)
+  -- allow to create zero-length files
+  s~open("write replace")
 
   if lines~isA(.String) then do
     s~lineout(lines)
@@ -2244,14 +2264,14 @@ return 0
   expose package
   use strict arg resourceName
 
-  self~create(package~resources~resourceName)
+  self~create(package~resources[resourceName~upper])
 
 -- append a package resource to a file
 ::method appendFromResource
   expose package
   use strict arg resourceName
 
-  self~append(package~resources~resourceName)
+  self~append(package~resources[resourceName~upper])
 
 -- allow the file to be deleted
 ::method delete
