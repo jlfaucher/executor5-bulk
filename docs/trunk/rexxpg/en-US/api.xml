@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Programming Guide XML file.
     #
-    # Copyright (c) 2005-2017, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2018, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -163,7 +163,7 @@ code will run a program using a created instance, checking for syntax errors upo
 </example>
 <para>The example above creates a Rexx String object for each program argument
 stores them in a Rexx array.  It then uses
-CallProgram() (<xref linkend="mthCallProgram" />) to call "myprogram.rex", passing the array object
+<xref linkend="mthCallProgram" xrefstyle="select:title"/> to call "myprogram.rex", passing the array object
 as the program arguments.  On return, if the program terminated with a Rexx SYNTAX error, it
 displays the error message to the console.  Finally, if the program
 exited normally and returned a value, the ASCII-Z value of that result is copied to a buffer.  As
@@ -244,7 +244,7 @@ options[1].optionName = NULL;
 <varlistentry><term>APPLICATION_DATA</term>
 <listitem><para>Contains a void * value that will be stored with the interpreter
 instance.  The application data can be retrieved using the
-GetApplicationData() (<xref linkend="mthGetApplicationData" />) API.  The application
+<xref linkend="mthGetApplicationData" xrefstyle="select:title"/> API.  The application
 data pointer allows methods, functions, exits, and command handlers to recover
 access to globally defined application data.
 </para>
@@ -762,12 +762,12 @@ must be obtained for each additional thread you wish to use.  A new thread conte
 by calling AttachThread() using the RexxInstance API vector returned from RexxCreateInterpreter().  Once
 a valid RexxThreadContext interface has been created for the thread, any of the thread context operations
 may be used from that thread.  Before the thread terminates,
-the DetachThread() (<xref linkend="mthDetachThread" />)
+the <xref linkend="mthDetachThread" xrefstyle="select:title"/>
 API must be called to remove the attached thread from the interpreter instance.</para>
 <para>The interpreter is capable of asynchronous calls to interpreter APIs from signal or event
 handlers.  When called in this manner, it is possible that AttachThread will be called while
 running on a thread that is already attached to the interpreter instance.  When a nested
-AttachThread() (<xref linkend="mthAttachThread" />) call is made, the previous thread context is
+<xref linkend="mthAttachThread" xrefstyle="select:title"/> call is made, the previous thread context is
 suspended and the newly created thread context is the active context for the source thread.  It is very
 important that DetachThread() be called to restore the original thread context before you return from the
 signal handler.
@@ -783,7 +783,7 @@ These object references are only
 valid until the current context is destroyed.  They cannot be stored in native code
 control blocks and be used in other thread contexts.  If you wish to store object references so
 that they can be accessed by other thread contexts, you can create a globally valid object
-reference using the RequestGlobalReference() (<xref linkend="mthRequestGlobalReference" />
+reference using the <xref linkend="mthRequestGlobalReference" xrefstyle="select:title"/>
 API.  A global reference will protect the
 object from the garbage collector until the interpreter instance is terminated.  Protecting
 the object will also protect any objects referenced by the protected object.  For example,
@@ -808,7 +808,7 @@ require will remove the local lock, and thus limit the overhead associated with 
 <para>The Interpreter Instance API is defined by the RexxInstance interface vector.  The RexxInstance
 defines methods that affect the global state of the interpreter instance.  Most of the instance APIs can
 be called from any thread without requiring any extra steps to access the instance. The two most
-important instance operations are AttachThread() (<xref linkend="mthAttachThread" />) and Terminate() (<xref
+important instance operations are <xref linkend="mthAttachThread" xrefstyle="select:title"/> and Terminate() (<xref
 linkend="mthTerminate" />).  AttachThread() allows additional externally identified
 threads to be included in the interpreter instance threadpool.  AttachThread returns a
 RexxThreadContext (<xref linkend="threadcontext" />) interface vector that enables a wider range of
@@ -836,7 +836,7 @@ so the single context vector is used to access both thread context
 and interpreter instance APIs.</para>
 <para>A RexxThreadContext instance is returned with the original
 RexxCreateInterpreter() (<xref linkend="createinterpreter" />) call that created the
-interpreter instance.  The AttachThread() (<xref linkend="mthAttachThread" /> method
+interpreter instance.  The <xref linkend="mthAttachThread" xrefstyle="select:title"/> method
 will create a RexxThreadContext instance for additional threads that you add to an interpreter
 instance.  Additionally, the RexxMethodContext (<xref linkend="methodcontext" />),
 RexxCallContext (<xref linkend="callcontext" />),
@@ -864,14 +864,14 @@ object created specifically for this environment.  The RexxThreadContext provide
 additional methods to the method environment.
 </para>
 <para>API calls made using the RexxMethodContext APIs may cause Rexx
-syntax errors or other condition to be raised.  These calls
-are invoked as if the current context is operating with SIGNAL ON ALL enabled.  Any
+syntax errors or other conditions to be raised.  These calls
+are invoked as if the current context is operating with SIGNAL ON ANY enabled.  Any
 conditions will be trapped and
 held in a pending condition until the current context returns.  At the return, if a
 condition is still pending, the appropriate condition is reraised in the caller's context.
 These
-errors can be checked using the CheckCondition() (<xref linkend="mthCheckCondition" />) API, and
-pending conditions can be cancelled using ClearCondition() (<xref linkend="mthClearCondition" />).
+errors can be checked using the <xref linkend="mthCheckCondition" xrefstyle="select:title"/> API, and
+pending conditions can be cancelled using <xref linkend="mthClearCondition" xrefstyle="select:title"/>.
 </para>
 </section>
 
@@ -891,20 +891,20 @@ a RexxThreadContext (<xref linkend="threadcontext" />)
 object created specifically for this environment.  The RexxThreadContext provides a large number of
 additional methods to the call environment.</para>
 <para>API calls made using the RexxCallContext APIs may cause Rexx
-syntax errors or other condition to be raised.  These calls are invoked
-as if the current context is operating with SIGNAL ON ALL enabled.  Any
+syntax errors or other conditions to be raised.  These calls are invoked
+as if the current context is operating with SIGNAL ON ANY enabled.  Any
 conditions will be trapped and
 held in a pending condition until the current context returns.  At the return, if a
 condition is still pending, the appropriate condition is reraised in the caller's context.
 These
-errors can be checked using the CheckCondition() (<xref linkend="mthCheckCondition" />) API, and
-pending conditions can be cancelled using ClearCondition() (<xref linkend="mthClearCondition" />).
+errors can be checked using the <xref linkend="mthCheckCondition" xrefstyle="select:title"/> API, and
+pending conditions can be cancelled using <xref linkend="mthClearCondition" xrefstyle="select:title"/>.
 </para>
 </section>
 
 <section id="exitcontext"><title>Rexx Exit Context Interface</title>
 <para>A RexxExitContext object is included as an argument to any
-systemexit (<xref linkend="contextexitdef" />) or
+system exit (<xref linkend="contextexitdef" />) or
 command handler (<xref linkend="commandapi" />).
 The exit context provides services that are specific to
 a exit call, including:
@@ -918,14 +918,37 @@ a RexxThreadContext (<xref linkend="threadcontext" />)
 object created specifically for this environment.  The RexxThreadContext provides a large number of
 additional methods to the exit environment.</para>
 <para>API calls made using the RexxExitContext APIs may cause Rexx
-syntax errors or other condition to be raised.  These calls are invoked
-as if the current context is operating with SIGNAL ON ALL enabled.  Any
+syntax errors or other conditions to be raised.  These calls are invoked
+as if the current context is operating with SIGNAL ON ANY enabled.  Any
 conditions will be trapped and
 held in a pending condition until the current context returns.  At the return, if a
 condition is still pending, the appropriate condition is reraised in the caller's context.
 These
-errors can be checked using the CheckCondition() (<xref linkend="mthCheckCondition" />) API, and
-pending conditions can be cancelled using ClearCondition() (<xref linkend="mthClearCondition" />).
+errors can be checked using the <xref linkend="mthCheckCondition" xrefstyle="select:title"/> API, and
+pending conditions can be cancelled using <xref linkend="mthClearCondition" xrefstyle="select:title"/>.
+</para>
+</section>
+
+<section id="redirectorcontext"><title>&added50;Rexx I/O Redirector Context Interface</title>
+<para>A RexxIORedirectorContext object is included as an argument to any
+command handler (<xref linkend="commandapi" />).
+The I/O Redirector context provides services that are specific to
+the redirection of stdin, stdout, and stderr of external commands, including:
+</para>
+<itemizedlist>
+<listitem><para>Providing information whether redirection was requested, and for which stream</para></listitem>
+<listitem><para>Retrieving input data for stdin redirection</para></listitem>
+<listitem><para>Returning output data from stdout and stderr redirection</para></listitem>
+</itemizedlist>
+<para>API calls made using the RexxIORedirectorContext APIs may cause Rexx
+syntax errors or other conditions to be raised.  These calls are invoked
+as if the current context is operating with SIGNAL ON ANY enabled.  Any
+conditions will be trapped and
+held in a pending condition until the current context returns.  At the return, if a
+condition is still pending, the appropriate condition is reraised in the caller's context.
+These
+errors can be checked using the <xref linkend="mthCheckCondition" xrefstyle="select:title"/> API, and
+pending conditions can be cancelled using <xref linkend="mthClearCondition" xrefstyle="select:title"/>.
 </para>
 </section>
 
@@ -1258,7 +1281,7 @@ special conversions on argument values.  The special types available to routines
 <listitem><para>The argument is passed as an ASCII-Z string.  The source argument must be
 one that is valid as a RexxStringObject value.  The RexxStringObject is converted into a
 pointer to an ASCII-Z string.  This is equivalent to the value returned from the
-StringValue() (<xref linkend="mthObjectToStringValue" />) API
+<xref linkend="mthObjectToStringValue" xrefstyle="select:title"/> API
 from a RexxStringObject value.  For an optional CSTRING argument, a NULL pointer
 is provided when the argument is omitted.</para>
 <para>When CSTRING is used as a return value, the ASCII-Z string value will be
@@ -1284,7 +1307,7 @@ RexxRoutine0(CSTRING, MyRoutine)
 </programlisting>
 </example>
 <para>A RexxStringObject return value and the
-String() (<xref linkend="mthString" />) API is more appropriate in this
+<xref linkend="mthString" xrefstyle="select:title"/> API is more appropriate in this
 situation.</para>
 <example>
 <title>API - RexxStringObject</title>
@@ -1495,7 +1518,7 @@ special conversions on argument values.  The special types available to routines
 <listitem><para>The argument is passed as an ASCII-Z string.  The source argument must be
 one that is valid as a RexxStringObject value.  The RexxStringObject is converted into a
  pointer to an ASCII-Z string.  This is equivalent to the value returned from the
-StringValue() (<xref linkend="mthObjectToStringValue" />) API
+<xref linkend="mthObjectToStringValue" xrefstyle="select:title"/> API
 from a RexxStringObject value.  For an optional CSTRING argument, a NULL pointer
 is provided when the argument is omitted.</para>
 <para>When CSTRING is used as a return value, the ASCII-Z string value will be
@@ -1640,14 +1663,14 @@ Rexx object space.  The memory is a part of the Buffer object instance, and will
 automatically when the Buffer object is garbage collected.  This means the programmer does not
 need to explicitly release a Buffer object.  It does, however,
 require that steps be taken to protect the Buffer object from garbage collection while it is
-still needed.  The usual protection mechanism it to store the buffer object in an object
-instance variable using SetObjectVariable() (<xref linkend="mthSetObjectVariable" />).  Once
+still needed.  The usual protection mechanism is to store the buffer object in an object
+instance variable using <xref linkend="mthSetObjectVariable" xrefstyle="select:title"/>.  Once
 assigned to a variable, the Buffer is protected from garbage collection until its associated
 object instance is also reclaimed.  The buffer is part of the internal state of the
 the object.</para>
-<para>Buffer objects are allocated using the NewBuffer() function (<xref linkend="mthNewBuffer" />) that's part
+<para>Buffer objects are allocated using the <xref linkend="mthNewBuffer" xrefstyle="select:title"/> function that's part
 of the RexxThreadContext interface.  Once created, you can access the Buffer's data area using
-BufferData() (<xref linkend="mthBufferData" />), which returns a pointer to the beginning of the
+<xref linkend="mthBufferData" xrefstyle="select:title"/>, which returns a pointer to the beginning of the
 data buffer.  The data buffer area is writeable storage, into which any data may be placed.  This
 is frequently used to allocate a C++ struct or class instance that is the native embodiment of the
 class implementation.  For example</para>
@@ -1887,7 +1910,7 @@ of a class using the CSELF convention to access the backing native data.
 </para>
 <para>Frequently, one class instance might need access to the native information associated with another
 object instance.  The other object instance might be of the same class or another class that is designed
-to interoperate with the current class.  The ObjectToCSelf() (<xref linkend="mthObjectToCSelf" />) allows
+to interoperate with the current class.  The <xref linkend="mthObjectToCSelf" xrefstyle="select:title"/> allows
 the CSELF information for an object other than the current active object to be retieved.</para>
 </section>
 </section>
@@ -1973,7 +1996,7 @@ processes the subfunction as if the exit handler were not called.
 <varlistentry><term>RXEXIT_RAISE_ERROR</term>
 <listitem><para>A fatal error occurred in the exit handler. The Rexx interpreter raises
 Rexx error 48 (&quot;Failure in system service&quot;).  Other errors can be
-raised using the RaiseException() (<xref linkend="mthRaiseException" />) API provided
+raised using the <xref linkend="mthRaiseException" xrefstyle="select:title"/> API provided
 by the exit context.
 </para></listitem></varlistentry>
 </variablelist>
@@ -2895,7 +2918,7 @@ signal handlers.</para></listitem>
 <note>
 <para>Because the RXTRC exit
 is called after every Rexx instruction, enabling this exit slows Rexx procedure
-execution. The SetThreadTrace() (<xref linkend="mthSetThreadTrace" />)
+execution. The <xref linkend="mthSetThreadTrace" xrefstyle="select:title"/>
 method can turn on Rexx tracing without the
 between-instruction polling.</para></note>
 <para></para>
@@ -2952,10 +2975,10 @@ Rexx procedure is interpreted.</para></listitem>
 <listitem><para>Exit action: The exit handler can perform additional
 initialization. For example:
 <itemizedlist>
-<listitem><para>Use SetContextVariable() (<xref linkend="mthSetContextVariable" />)
+<listitem><para>Use <xref linkend="mthSetContextVariable" xrefstyle="select:title"/>
 API to initialize application-specific
 variables.</para></listitem>
-<listitem><para>Use SetThreadTrace() (<xref linkend="mthSetThreadTrace" />) API
+<listitem><para>Use <xref linkend="mthSetThreadTrace" xrefstyle="select:title"/> API
 to switch on the interactive Rexx debug mode.
 </para></listitem>
 </itemizedlist>
@@ -2985,7 +3008,7 @@ procedure has been interpreted.</para></listitem>
 <listitem><para>Default action: None.</para></listitem>
 <listitem><para>Exit action: The exit handler can perform additional
 termination activities. For example, the exit handler can use
-SetContextVariable() (<xref linkend="mthSetContextVariable" />)
+<xref linkend="mthSetContextVariable" xrefstyle="select:title"/>
 to retrieve the Rexx variable values.</para></listitem>
 <listitem><para>Parameters: None.</para></listitem></itemizedlist>
 </para></listitem></varlistentry>
@@ -2996,7 +3019,7 @@ to retrieve the Rexx variable values.</para></listitem>
 
 <section id="commandapi"><title>Command Handler Interface</title>
 <para>Applications can create custom command handlers that function like operating command shell environments.
-These named evironments can be invoked with the Rexx ADDRESS instuction and applications can create
+These named evironments can be invoked with the Rexx ADDRESS instruction and applications can create
 Rexx instances that direct commands to custom application command handlers by default.
 </para>
 <para>Command handlers are registered with an interpreter instance when it is created.
@@ -3044,7 +3067,7 @@ An ERROR condition indicates there was some sort of error return state involved 
 These could be command syntax errors, semantic errors, etc.  FAILURE conditions are more serious conditions.
 One traditional FAILURE condition is the unknown command error.</para>
 <para>Command handlers raise ERROR and FAILURE conditions using the
-RaiseCondition() (<xref linkend="mthRaiseCondition" />) API provided by the RexxExitContext.  For
+<xref linkend="mthRaiseCondition" xrefstyle="select:title"/> API provided by the RexxExitContext.  For
 example:</para>
 <example>
 <title>API - Command handler interface</title>
@@ -3071,7 +3094,66 @@ return context->WholeNumber(rc);
 </section>
 
 <section id="apilisting"><title>Rexx Interface Methods Listing</title>
+
 <para>This section describes each available method and its associated context.</para>
+
+<section id="mthAddCommandEnvironment"><title>&added50;AddCommandEnvironment</title>
+<indexterm><primary>AddCommandEnvironment</primary></indexterm>
+<indexterm><primary>Rexx instance context methods</primary>
+<secondary>AddCommandEnvironment</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>No</entry></row>
+<row><entry>Method</entry><entry>No</entry></row>
+<row><entry>Function</entry><entry>No</entry></row>
+<row><entry>Exit</entry><entry>No</entry></row>
+<row><entry>Interpreter</entry><entry>Yes</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting language="C++">
+<![CDATA[
+CSTRING name;
+REXXPFN handler;
+size_t type;
+
+// Method Syntax Form(s)
+
+context->AddCommandEnvironment(name, handler, type);
+]]>
+</programlisting>
+
+<para>Adds a <xref linkend="commandapi" xrefstyle="template:command handler "/>
+to the Rexx interpreter instance.
+If a command handler with the specified <emphasis role="italic">name</emphasis>
+already exists, it is overwritten.
+</para>
+<para><emphasis role="bold">Arguments</emphasis></para>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
+    <row><entry><emphasis role="italic">name</emphasis></entry>
+    <entry><para>The ASCII-Z name of the command handler's environment name.</para></entry>
+    </row>
+    <row><entry><emphasis role="italic">handler</emphasis></entry>
+    <entry><para>The address of the subcommand handler entry point within the application executable code.</para></entry>
+    </row>
+    <row><entry><emphasis role="italic">type</emphasis></entry>
+    <entry><para>The type of command handler to add.
+      DIRECT_COMMAND_ENVIRONMENT for a command handler with no support for redirection.
+      REDIRECTING_COMMAND_ENVIRONMENT for a command handler that supports redirection.
+      </para></entry>
+    </row>
+</tbody></tgroup></informaltable>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Void.
+</para>
+</section>
 
 <section id="mthArray"><title>Array</title>
 <indexterm><primary>Array</primary></indexterm>
@@ -3742,7 +3824,7 @@ sz = context->ArraySize(arr);
 </informaltable>
 <programlisting language="C++">
 <![CDATA[
-RexxThreadContext *tc
+RexxThreadContext *tc;
 
 // Method Syntax Form(s)
 
@@ -3911,7 +3993,7 @@ str = context->BufferStringData(obj);
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>The C pointer to the RexxBufferString's data area.  This is a writable
 data area, but the RexxBufferString must be finalized using
-FinishBufferString() (<xref linkend="mthFinishBufferString" />) before
+<xref linkend="mthFinishBufferString" xrefstyle="select:title"/> before
 it can be used in any other context.
 </para>
 </section>
@@ -4019,7 +4101,7 @@ ret = context->CallProgram(name, arr);
 program does not return a value.
 Any errors involved with calling the program
 will will return a NULLOBJECT result.  The
-CheckCondition() (<xref linkend="mthCheckCondition" />).
+<xref linkend="mthCheckCondition" xrefstyle="select:title"/>
 can be used to check if any errors occurred during the call.
 </para>
 </section>
@@ -4077,7 +4159,7 @@ ret = context->CallRoutine(obj, arr);
 program does not return a value.
 Any errors involved with calling the program
 will will return a NULLOBJECT result.  The
-CheckCondition() (<xref linkend="mthCheckCondition" />).
+<xref linkend="mthCheckCondition" xrefstyle="select:title"/>
 can be used to check if any errors occurred during the call.
 </para>
 </section>
@@ -6799,7 +6881,7 @@ int32_t n;
 
 obj = context->Int32(n);
 
-logical_t = context->Int32(obj, &n);
+flag = context->Int32(obj, &n);
 ]]>
 </programlisting>
 <para>There a two forms of this method.
@@ -6908,7 +6990,7 @@ int64_t n;
 
 obj = context->Int64(n);
 
-logical_t = context->Int64(obj, &n);
+flag = context->Int64(obj, &n);
 ]]>
 </programlisting>
 <para>There a two forms of this method.
@@ -7754,9 +7836,9 @@ langlevel = context->LanguageLevel();
 The returned language level
 is encoded in the 2 least significant bytes of the returned value, using
 1 byte each for the interpreter version, release, and revision values.
-For example, on a 32-bit platform, this value would be 0x00000603 for
-language level 6.03.  The oorexxapi.h header file will have a define matching
-these values using a the naming convention REXX_LANGUAGE_6_03 and the
+For example, on a 32-bit platform, this value would be 0x00000605 for
+language level 6.05.  The oorexxapi.h header file will have a define matching
+these values using a the naming convention REXX_LANGUAGE_6_05 and the
 macro REXX_CURRENT_LANGUAGE_LEVEL will give the interpreter version
 used to compile your code.
 </para>
@@ -7867,7 +7949,7 @@ pkg = context->LoadPackage(name);
 <para>The loaded Package object.
 Any errors resulting from loading
 the package will return a NULLOBJECT value.  Information about errors
-can be retrieved using GetConditionInfo() (<xref linkend="mthGetConditionInfo" />).
+can be retrieved using <xref linkend="mthGetConditionInfo" xrefstyle="select:title"/>.
 </para>
 </section>
 
@@ -7927,7 +8009,7 @@ pkg = context->LoadPackageFromData(name, data, sz);
 <para>The loaded Package object.
 Any errors resulting from loading
 the package will return a NULLOBJECT value.  Information about errors
-can be retrieved using GetConditionInfo() (<xref linkend="mthGetConditionInfo" />).
+can be retrieved using <xref linkend="mthGetConditionInfo" xrefstyle="select:title"/>.
 </para>
 </section>
 
@@ -8325,7 +8407,7 @@ obj = context->NewBufferString(len);
 </programlisting>
 <para>Create a RexxBufferString with the indicated buffer size.  A RexxBufferString
 is a mutable String object that can be used to construct return values.  You
-must use FinishBufferString() (<xref linkend="mthFinishBufferString" />) to
+must use <xref linkend="mthFinishBufferString" xrefstyle="select:title"/> to
 transform this into a completed String object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
@@ -8438,7 +8520,7 @@ obj = context->NewMethod(name, code, sz);
 <para>The created Method object.
 Any errors resulting from creating the method
 will return a NULLOBJECT value.  Information about any error
-can be retrieved using GetConditionInfo() (<xref linkend="mthGetConditionInfo" />).
+can be retrieved using <xref linkend="mthGetConditionInfo" xrefstyle="select:title"/>.
 </para>
 </section>
 
@@ -8597,7 +8679,7 @@ obj = context->NewRoutine(name, code, sz);
 <para>The new Routine object.
 Any errors resulting from creating the
 the routine will return a NULLOBJECT value.  Information about errors
-can be retrieved using GetConditionInfo() (<xref linkend="mthGetConditionInfo" />).
+can be retrieved using <xref linkend="mthGetConditionInfo" xrefstyle="select:title"/>.
 </para>
 </section>
 
@@ -9638,7 +9720,9 @@ flag = context->ObjectToValue(obj, &desc);
 <para>Convert a Rexx object to another type.  The target type is identified
 by the ValueDescriptor structure, and can by any of the types that may be
 used as a method or routine return type.  For many conversions, it may be
-more appropriate to use more targeted routines such as ObjectToWholeNumber(). ObjectToValue() is capable
+more appropriate to use more targeted routines such as
+<xref linkend="mthObjectToWholeNumber" xrefstyle="select:title"/>.
+ObjectToValue() is capable
 of conversions to types such as int8_t for which there are no specific conversion APIs.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
@@ -10235,7 +10319,7 @@ ref = context->RequestGlobalReference(obj);
 The returned value may be saved in native code control blocks and used as an object reference
 in any API context.  The <emphasis role="italic">obj</emphasis> will be protected
 from garbage collection until the global reference is released with
-ReleaseGlobalReference() (<xref linkend="mthReleaseGlobalReference" />).
+<xref linkend="mthReleaseGlobalReference" xrefstyle="select:title"/>.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
@@ -10353,7 +10437,7 @@ ret = context->SendMessage(obj, meg, arr);
 then NULLOBJECT is returned.
 Any errors resulting from invoking the method
 will return a NULLOBJECT value.  The
-CheckCondition() (<xref linkend="mthCheckCondition" />).
+<xref linkend="mthCheckCondition" xrefstyle="select:title"/>
 can be used to check if an error occurred during the call.
 </para>
 </section>
@@ -10411,7 +10495,7 @@ This is a short cut method when no arguments are needed by the receiving object 
 then NULLOBJECT is returned.
 Any errors resulting from invoking the method
 will return a NULLOBJECT value.  The
-CheckCondition() (<xref linkend="mthCheckCondition" />).
+<xref linkend="mthCheckCondition" xrefstyle="select:title"/>
 can be used to check if an error occurred during the call.
 </para>
 </section>
@@ -10472,7 +10556,7 @@ This is a short cut method when only one argument is needed by the receiving obj
 then NULLOBJECT is returned.
 Any errors resulting from invoking the method
 will return a NULLOBJECT value.  The
-CheckCondition() (<xref linkend="mthCheckCondition" />).
+<xref linkend="mthCheckCondition" xrefstyle="select:title"/>
 can be used to check if an error occurred during the call.
 </para>
 </section>
@@ -10536,7 +10620,7 @@ This is a short cut method when only two arguments are needed by the receiving o
 then NULLOBJECT is returned.
 Any errors resulting from invoking the method
 will return a NULLOBJECT value.  The
-CheckCondition() (<xref linkend="mthCheckCondition" />).
+<xref linkend="mthCheckCondition" xrefstyle="select:title"/>
 can be used to check if an error occurred during the call.
 </para>
 </section>
@@ -10577,7 +10661,7 @@ context->SetContextVariable(name, obj);
 <para>Sets the value of a Rexx variable in the current function context.
 Only simple and stem variables may be set using SetContextVariable().
 Compound variable values may be set by retrieving the Stem object associated
-with a stem variable and using SetStemElement() (<xref linkend="mthSetStemElement" />)
+with a stem variable and using <xref linkend="mthSetStemElement" xrefstyle="select:title"/>
 to set the associated compound variable.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
@@ -10627,10 +10711,70 @@ context->SetGuardOff();
 <para>None.</para>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Void.</para>
+<para>See also methods
+<xref linkend="mthSetGuardOn" xrefstyle="select:title"/>,
+<xref linkend="mthSetGuardOnWhenUpdated" xrefstyle="select:title"/>, and
+<xref linkend="mthSetGuardOffWhenUpdated" xrefstyle="select:title"/>.
+</para>
 </section>
 
+
+<section id="mthSetGuardOffWhenUpdated" revisionflag="added"><title>&added50;SetGuardOffWhenUpdated</title>
+<indexterm><primary>SetGuardOffWhenUpdated</primary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>SetGuardOffWhenUpdated</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>No</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>No</entry></row>
+<row><entry>Exit</entry><entry>No</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting language="C++">
+<![CDATA[
+CSTRING name;
+RexxObjectPtr ret;
+
+// Method Syntax Form(s)
+
+ret = context->SetGuardOffWhenUpdated(name);
+]]>
+</programlisting>
+<para>Waits for an object variable to be updated and returns the new value.
+The guard state will be OFF on return.
+</para>
+<para><emphasis role="bold">Arguments</emphasis></para>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
+  <row><entry><emphasis role="italic">name</emphasis></entry>
+  <entry><para>The name of the variable to wait for.
+  Only simple variables or stem variables are allowed, no compound variables.
+  </para></entry>
+  </row>
+</tbody></tgroup></informaltable>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>The new value of the variable.
+Returns a NULLOBJECT if an error occurs.
+</para>
+<para>See also methods
+<xref linkend="mthSetGuardOn" xrefstyle="select:title"/>,
+<xref linkend="mthSetGuardOnWhenUpdated" xrefstyle="select:title"/>, and
+<xref linkend="mthSetGuardOff" xrefstyle="select:title"/>.
+</para>
+</section>
+
+
 <section id="mthSetGuardOn"><title>SetGuardOn</title>
-<indexterm><primary>SetGuardOnn</primary></indexterm>
+<indexterm><primary>SetGuardOn</primary></indexterm>
 <indexterm><primary>Method context methods</primary>
 <secondary>SetGuardOn</secondary></indexterm>
 <informaltable frame="all">
@@ -10663,7 +10807,67 @@ context->SetGuardOn();
 <para>None.</para>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Void.</para>
+<para>See also methods
+<xref linkend="mthSetGuardOnWhenUpdated" xrefstyle="select:title"/>,
+<xref linkend="mthSetGuardOff" xrefstyle="select:title"/>, and
+<xref linkend="mthSetGuardOffWhenUpdated" xrefstyle="select:title"/>.
+</para>
 </section>
+
+
+<section id="mthSetGuardOnWhenUpdated" revisionflag="added"><title>&added50;SetGuardOnWhenUpdated</title>
+<indexterm><primary>SetGuardOnWhenUpdated</primary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>SetGuardOnWhenUpdated</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>No</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>No</entry></row>
+<row><entry>Exit</entry><entry>No</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting language="C++">
+<![CDATA[
+CSTRING name;
+RexxObjectPtr ret;
+
+// Method Syntax Form(s)
+
+ret = context->SetGuardOnWhenUpdated(name);
+]]>
+</programlisting>
+<para>Waits for an object variable to be updated and returns the new value.
+The guard state will be ON on return.
+</para>
+<para><emphasis role="bold">Arguments</emphasis></para>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
+  <row><entry><emphasis role="italic">name</emphasis></entry>
+  <entry><para>The name of the variable to wait for.
+  Only simple variables or stem variables are allowed, no compound variables.
+  </para></entry>
+  </row>
+</tbody></tgroup></informaltable>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>The new value of the variable.
+Returns a NULLOBJECT if an error occurs.
+</para>
+<para>See also methods
+<xref linkend="mthSetGuardOn" xrefstyle="select:title"/>,
+<xref linkend="mthSetGuardOff" xrefstyle="select:title"/>, and
+<xref linkend="mthSetGuardOffWhenUpdated" xrefstyle="select:title"/>.
+</para>
+</section>
+
 
 <section id="mthSetMutableBufferCapacity"><title>SetMutableBufferCapacity</title>
 <indexterm><primary>SetMutableBufferCapacity</primary></indexterm>
@@ -10767,7 +10971,8 @@ the current capacity, then it will be capped at the current capacity.
 If <emphasis role="italic">len</emphasis> is longer than the buffer's current data length, data will be
 padded with '00'x characters for the additional length.  When adding characters to the buffer's data area, you
 should call SetMutableBufferLength() before copying the additional data into the buffer.  If additional capacity
-is required, SetMutableBufferCapacity to increase the buffer size.
+is required, use <xref linkend="mthSetMutableBufferCapacity" xrefstyle="select:title"/>
+to increase the buffer size.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
@@ -12156,7 +12361,8 @@ obj = context->ValueToObject(&desc);
 <para>Convert a type to an Object representation.  The source type is identified
 by the ValueDescriptor structure, and can by any of the types that may be
 used as a method or routine return types.  For many conversions, it may be
-more appropriate to use more targeted routines such as WholeNumberToObject().
+more appropriate to use more targeted routines such as
+<xref linkend="mthWholeNumberToObject" xrefstyle="select:title"/>.
 ValueToObject() is capable of converting to types such as int8_t for which
 there are no specific conversion APIs.
 </para>
