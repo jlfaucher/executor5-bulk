@@ -648,6 +648,43 @@ MethodClass *RexxObject::checkPrivate(MethodClass *method )
 
 
 /**
+ * Check a package method for accessibility.
+ *
+ * @param method The method object to check
+ *
+ * @return An executable method, or OREF_NULL if this cannot be called.
+ */
+MethodClass *RexxObject::checkPackage(MethodClass *method )
+{
+    // get the calling activation context
+    ActivationBase *activation = ActivityManager::currentActivity->getTopStackFrame();
+
+    // likely a topLevel call via SendMessage() API which is contextless.
+    if (activation == OREF_NULL)
+    {
+        return OREF_NULL;
+    }
+    // get the package from that frame.
+    PackageClass *callerPackage = activation->getPackage();
+
+    // it is possible this is a special native activation, which means there
+    // is no caller context. This is a no-go.
+    if (callerPackage == OREF_NULL)
+    {
+        return OREF_NULL;
+    }
+
+    // defined in the same package, this is good.
+    if (method->isSamePackage(callerPackage))
+    {
+        return method;
+    }
+    // can't touch this...
+    return OREF_NULL;
+}
+
+
+/**
  * Check that methods like RUN, SETMETHOD, and UNSETMETHOD are
  * issued from a method on the same object instance.
  *
@@ -821,6 +858,10 @@ RexxObject *RexxObject::messageSend(RexxString *msgname, RexxObject **arguments,
         if (method_save->isPrivate())
         {
             method_save = checkPrivate(method_save);
+        }
+        else if (method_save->isPackageScope())
+        {
+            method_save = checkPackage(method_save);
         }
         // a protected method...this gets special send handling
         if (method_save != OREF_NULL && method_save->isProtected())
