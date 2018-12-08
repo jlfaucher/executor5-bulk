@@ -59,11 +59,6 @@ arguments = arg(1)
    -- Set verbosity.
    testResult~setVerbosity(cl~getVerbosity)
 
-   if cl~buildFirst then do
-     -- TODO: Create a phase report here and send it along.
-     ret = buildExternalBins(testResult, file, cl~forceBuild)
-   end
-
    if cl~noTests then return finishTestRun(cl, testResult, overallPhase)
 
    searchPhase  = .PhaseReport~new(file, .PhaseReport~FILE_SEARCH_PHASE)
@@ -154,23 +149,7 @@ return finishTestRun(cl, testResult, overAllPhase, containers)
 
 return max(testResult~newFailureCount > 0, 2 * (testResult~errorCount > 0))
 
-::routine buildExternalBins
-  use arg testResult, file, force
-
-  signal on syntax name loadErr
-  .context~package~loadPackage('building.frm')
-
-  ret = buildBinaries(testResult, force)
-
 return .ooTestConstants~SUCCESS_RC
-
-loadErr:
-  err = .ExceptionData~new(timeStamp(), file, .ExceptionData~TRAP)
-  err~setLine(sigl)
-  err~conditionObject = condition('O')
-  err~msg = 'Error loading the required framework for compiling ("building.frm")'
-  testResult~addException(err)
-return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
 
 ::class 'CommandLine' public inherit ooTestConstants NoiseAdjustable
 
@@ -198,10 +177,6 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
 ::attribute suppressAllTicks set private
 ::attribute suppressTestcaseTicks get          -- u
 ::attribute suppressTestcaseTicks set private
-::attribute buildFirst get                     -- b
-::attribute buildFirst set private
-::attribute forceBuild get                     -- B
-::attribute forceBuild set private
 ::attribute logFile get                        -- l
 ::attribute logFile set private
 ::attribute noTests get                        -- n
@@ -305,13 +280,7 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
   self~suppressAllTicks = testOpts~suppressAllTicks
   self~noTests = testOpts~noTests
   self~waitAtCompletion = testOpts~waitAtCompletion
-  self~buildFirst = testOpts~buildFirst
-  self~forceBuild = testOpts~forceBuild
 
-  if self~forceBuild then do
-    self~buildFirst = .true
-    testOpts~buildFirst = .true
-  end
   /*
   if testOpts~singleFile == .nil, testOpts~fileList \== .nil, testOpts~fileList~items == 1 then do
     a = testOpts~fileList~makeArray
@@ -524,15 +493,6 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
     when word == '-a' then do
       testOpts~allTestTypes = .true
       testOpts~defaultTestTypes = .ooTestTypes~all
-    end
-
-    when word == '-b' then do
-      testOpts~buildFirst = .true
-    end
-
-    when word == '-B' then do
-      testOpts~buildFirst = .true
-      testOpts~forceBuild = .true
     end
 
     when word == '-d' then do
@@ -1128,13 +1088,11 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
   testOpts~version = self~version
 
   testOpts~allTestTypes = .false
-  testOpts~buildFirst = .false
   testOpts~debug = .false
   testOpts~defaultTestTypes = .ooTestTypes~defaultTestSet
   testOpts~excludeFileList = .nil
   testOpts~fileList = .nil
   testOpts~filesWithPattern = .nil
-  testOpts~forceBuild = .false
   testOpts~logFile = .nil
   testOpts~logFileAppend = .false
   testOpts~noOptionsFile = .false
@@ -1156,13 +1114,11 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
 
   optsTable = .Directory~new
   optsTable~allTestTypes          = "boolean"
-  optsTable~buildFirst            = "boolean"
   optsTable~debug                 = "boolean"
   optsTable~defaultTestTypes      = "testtypes"
   optsTable~excludeFileList       = "filelist"
   optsTable~fileList              = "filelist"
   optsTable~filesWithPattern      = "fileswithpattern"
-  optsTable~forceBuild            = "boolean"
   optsTable~logFile               = "string"
   optsTable~logFileAppend         = "boolean"
   optsTable~noOptionsFile         = "invalid"
@@ -1251,8 +1207,6 @@ return .ooTestConstants~FAILED_PACKAGE_LOAD_RC
   say
   say ' Test selection:'
   say '  -a  -DallTestTypes=bool           Include all test types'
-  say '  -b  -DbuildFirst=bool             Build external binaries before running tests'
-  say '  -B  -DforceBuild=bool             Force building (implies -b)'
   say '  -d  -DdefaultTestTypes=D1 D2 ...  change default test type set to D1 D2 ...'
   say '  -e  -DtestContainerExt=EXT        change default test container ext to EXT'
   say '  -f  -DsingleFile=NAME             Excute the single NAME test group'
