@@ -1174,10 +1174,10 @@ return str
 
   if expected~isA(.Collection), actual~isA(.Collection) then do
     if isCollectionEqual(expected, actual) then
-      self~fail(self~makeFailure(expected, actual, msg, "assertEquals"))
+      self~fail(self~makeFailure(expected, actual, msg, "assertNotEquals"))
   end
   else if expected = actual then
-    self~fail(self~makeFailure(expected, actual, msg, "assertEquals"))
+    self~fail(self~makeFailure(expected, actual, msg, "assertNotEquals"))
 
   -- Assertion holds
   self~fAssertions += 1
@@ -1215,7 +1215,7 @@ return str
 
   if expected~isA(.Collection), actual~isA(.Collection) then do
     if \isCollectionEqual(expected, actual) then
-      self~fail(self~makeFailure(expected, actual, msg, "assertEquals"))
+      self~fail(self~makeFailure(expected, actual, msg, "assertSameList"))
   end
 
   -- Assertion holds.

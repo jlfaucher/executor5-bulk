@@ -62,7 +62,7 @@ via the SysLoadFuncs function.</para>
 <section id="systemerrorcodes"><title>A Note on Error Codes</title>
 <indexterm><primary>Windows OS Error Codes</primary></indexterm>
 <para>On Windows, some of the REXXUTIL functions return operating system error
-codes on failure.  The <xref linkend="utlSysgeterrortext" xrefstyle="select:title"/> 
+codes on failure.  The <xref linkend="utlSysgeterrortext" xrefstyle="select:title"/>
 function can be used retrieve a description of system error code. In addition,
 the meaning of these error return codes can be looked up in the Windows
 Operating System documentation provided by Microsoft.
@@ -2132,7 +2132,7 @@ built-in function, SysGetKey does not wait until the Enter key is pressed.
 <para>The long version of <emphasis role="italic">path</emphasis>, or
 the null string, if <emphasis role="italic">path</emphasis> doesn't exist or
 the call to the Windows API <methodname>GetLongPathName</methodname> fails for
-any other reason.  
+any other reason.
 
 <indexterm><primary>rexxutil functions</primary><secondary>SysGetLongPathName</secondary><tertiary>example</tertiary></indexterm>
 <indexterm><primary>SysGetLongPathName</primary><secondary>example</secondary></indexterm>
@@ -2285,7 +2285,7 @@ Class "foo" not found.
 <para>The short version of <emphasis role="italic">path</emphasis>, or
 the null string, if <emphasis role="italic">path</emphasis> doesn't exist or
 the call to the Windows API <methodname>GetShortPathName</methodname> fails for
-any other reason.  
+any other reason.
 
 <indexterm><primary>rexxutil functions</primary><secondary>SysGetShortPathName</secondary><tertiary>example</tertiary></indexterm>
 <indexterm><primary>SysGetShortPathName</primary><secondary>example</secondary></indexterm>
@@ -2805,17 +2805,30 @@ else say "File is not Temporary."
 </mediaobject>
 
 <para>
-  Returns a string identifying the Linux system version. The first word of the returned string is "Linux"
-  and the second word in the string identifies the kernel version. A possible output for a Linux system
-  might be:
+  Returns a string identifying the Linux system version.
+  The first word of the returned string is <literal>Linux</literal>
+  and the remaining part of the string identifies the version.
+  Rexx code should not rely on the exact format returned.
 </para>
+<para>Possible output might be:
 <example id="ex.syslinver">
-<title>RexxUtil &mdash; SysLinver</title>
+<title>RexxUtil &mdash; SysLinVer</title>
 <programlisting>
-Say SysLinVer()   ->  "Linux 3.8.13.4-desktop-1.mga3"
+-- CentOS 7
+say SysLinVer()  -- "Linux 3.10.0-693.21.1.el7.x86_64"
+-- Ubuntu 16.04
+say SysLinVer()  -- "Linux 4.4.0-127-generic"
+-- Raspbian
+say SysLinVer()  -- "Linux 4.14.70-v7+"
 </programlisting>
 </example>
+</para>
+<para>See also functions
+<xref linkend="utlSysversion" xrefstyle="select:title"/> and
+<xref linkend="utlSyswinver" xrefstyle="select:title"/>.
+</para>
 </section>
+
 
 <section id="utlSysloadfuncs"><title>SysLoadFuncs</title>
 <indexterm><primary>SysLoadFuncs</primary></indexterm>
@@ -2884,7 +2897,7 @@ SysSaveRexxMacroSpace must have created the file.
 <varlistentry><term><emphasis role="italic">mode</emphasis> (Linux only)</term>
 <listitem><para>The file permission bits of the new directory.
 If not specified, <emphasis role="italic">mode</emphasis> defaults to the current
-<command>umask</command> setting. 
+<command>umask</command> setting.
 </para></listitem></varlistentry>
 </variablelist>
 <para><emphasis role="bold">Return codes:</emphasis></para>
@@ -4248,7 +4261,7 @@ returns the maximum possible console window size.
       <emphasis role="italic">left</emphasis>,
       <emphasis role="italic">bottom</emphasis>, and
       <emphasis role="italic">right</emphasis> are specified, the position of the current console window rectangle
-    is changed to the given 
+    is changed to the given
     (<emphasis role="italic">top</emphasis>, <emphasis role="italic">left</emphasis>) and
     (<emphasis role="italic">bottom</emphasis>, <emphasis role="italic">right</emphasis>)
     positions.
@@ -4465,24 +4478,30 @@ If RxFuncQuery("SysSetFileDateTime") = 1 Then
 <para>
   Returns a string to identify the operating system and version. The first word of the returned string
   contains the identifier for the operating system and the rest of the string contains an operating system
-  specific version string. Something like: <computeroutput>WindowsNT x</computeroutput> or
-  <computeroutput>Linux x</computeroutput>.
+  specific version string.
+  Rexx code should not rely on the exact format returned.
 </para>
-<para>
-  Some possible output for Rexx-supported operating systems might be:
-</para>
+<para>Possible output may be:
 <example id="ex.sysversion">
 <title>RexxUtil &mdash; SysVersion</title>
 <programlisting>
-Say SysVersion()   ->  "Linux #67~precise1-Ubuntu SMP Wed Nov 13 16:16:57 UTC 2013.3.5.0-44-generic"
-Say SysVersion()   ->  "WindowsNT 6.01"             /* Windows 7 */
+-- CentOS 7
+say SysVersion() -- "Linux #1 SMP Wed Mar 7 19:03:37 UTC 2018.3.10.0-693.21.1.el7.x86_64"
+-- Ubuntu 16.04
+say SysVersion() -- "Linux #153-Ubuntu SMP Sat May 19 10:58:46 UTC 2018.4.4.0-127-generic"
+-- macOS 10.13
+say SysVersion() -- "Darwin Darwin Kernel Version 17.7.0: Fri Nov  2 20:43:16 PDT 2018; root:xnu-4570.71.17~1/RELEASE_X86_64.17.7.0"
+-- Raspbian
+say SysVersion() -- "Linux #1144 SMP Tue Sep 18 17:34:46 BST 2018.4.14.70-v7+"
+-- Windows 10
+say SysVersion() -- "Windows 10.00.17134.1"
 </programlisting>
 </example>
-
-<note><title>Note</title><para>
-  This function can be used to replace the operating-system-specific functions SysWinVer(), and
-  SysLinVer().
-</para></note>
+</para>
+<para>See also functions
+<xref linkend="utlSyswinver" xrefstyle="select:title"/> and
+<xref linkend="utlSyslinver" xrefstyle="select:title"/>.
+</para>
 </section>
 
 <section id="utlSysvolumelabel"><title>SysVolumeLabel (Windows only)</title>
@@ -4878,15 +4897,21 @@ end
 </mediaobject>
 
 <para>Returns a string specifying the Windows operating system version
-information in the form <computeroutput>WindowsNT x.xx</computeroutput>.</para>
-<para>
-Some possible output might be:
+information.
+Rexx code should not rely on the exact format returned.
 </para>
+<para>Possible output might be:
 <example id="ex.syswinver">
 <title>RexxUtil &mdash; SysWinVer</title>
 <programlisting>
-Say SysWinVer()   ->  "WindowsNT 6.01"    /* Windows 7 */
+say SysWinVer()  -- "Windows 6.01.7601.24260" (Windows 7)
+say SysWinVer()  -- "Windows 10.00.17134.1"   (Windows 10)
 </programlisting>
 </example>
+</para>
+<para>See also functions
+<xref linkend="utlSysversion" xrefstyle="select:title"/> and
+<xref linkend="utlSyslinver" xrefstyle="select:title"/>.
+</para>
 </section>
 </chapter>
