@@ -3364,7 +3364,7 @@ void RexxActivation::traceEntry()
     // is a method or a routine.
     if (isMethod())
     {
-        info = new_array(getMessageName(), scope->getId(), getPackage()->getProgramName());
+        info = new_array(getMessageName(), (RexxObject *)scope == TheNilObject ? GlobalNames::DOTNIL : scope->getId(), getPackage()->getProgramName());
     }
     else
     {
