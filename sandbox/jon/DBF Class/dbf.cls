@@ -1,41 +1,3 @@
-#!/usr/bin/rexx
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.    */
-/*                                                                            */
-/* This program and the accompanying materials are made available under       */
-/* the terms of the Common Public License v1.0 which accompanies this         */
-/* distribution. A copy is also available at the following address:           */
-/* http://www.oorexx.org/license.html                          */
-/*                                                                            */
-/* Redistribution and use in source and binary forms, with or                 */
-/* without modification, are permitted provided that the following            */
-/* conditions are met:                                                        */
-/*                                                                            */
-/* Redistributions of source code must retain the above copyright             */
-/* notice, this list of conditions and the following disclaimer.              */
-/* Redistributions in binary form must reproduce the above copyright          */
-/* notice, this list of conditions and the following disclaimer in            */
-/* the documentation and/or other materials provided with the distribution.   */
-/*                                                                            */
-/* Neither the name of Rexx Language Association nor the names                */
-/* of its contributors may be used to endorse or promote products             */
-/* derived from this software without specific prior written permission.      */
-/*                                                                            */
-/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
-/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
-/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
-/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
-/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
-/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
-/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
-/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
-/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
-/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
-/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
 /* DBF.Cls ================================================================= */
 /* A suite of utility classes for dealing with dbf files                     */
 /* Author: Sahananda windhorse:evolution                            Nov 2008 */
@@ -56,11 +18,11 @@
 /* 3.01p  SN 06Dec12 Optimised createIndex (40x improvement)                 *//*{3.01p}*/
 /*           11Feb13 Bugfix: zap remembered no of items if instance reopened *//*{3.01p}*/
 /*                                                                           */
-/* 3.02   SN   Jan14 Major rewrite of dbfIndex class                         *//*{3.02}*/
+/* 3.02   SN   Jan14 Major rewrite of dbfIndex class                         */
 /*                   +  Complex keys allowed                                 */
 /*                   +  New methods [Last, RefreshIndex, MakeKey]            */
 /*                   Create made class method of .dbf                        */
-/*                                                                           */
+/* 5.0.0 SN  11Dec18 Create a bug due to changes in ooRexx 5.0.0             *//*{5.0.0}*/
 
 /* ------------------------------------------------------------------------- */
 /* NB: creating a dbf file with DBFUtils:                                    */
@@ -69,6 +31,11 @@
 /* fieldoffset is set to 0 so needs to be inserted with a hex editor         */
 /* (4 little endian bytes immediately after the field type).                 */
 /* ------------------------------------------------------------------------- */
+
+---<<<>>>--- diagnostic
+call sysfiledelete 'c:\dbfdiag.txt'
+---<<<>>>--- diagnostic
+
 
 /*                                     =                                     */
 /*                                    ===                                    */
@@ -351,11 +318,11 @@ if self~stream~chars < self~recordLength~text then return .nil
             mTxt = "if self~hasIndex(upper(arg(1)))  ",                        /*{3.02}*/
                    "then return self[upper(arg(1))]; ",                        /*{3.02}*/
                    "else return .nil                 "                         /*{3.02}*/
-                 dataset = .directory~new~~setmethod('UNKNOWN',mTxt)           /*{3.02}*/
+            dataset = .directory~new~~setmethod('UNKNOWN',mTxt)                /*{3.02}*/
          end /* DO */                                                          /*{3.02}*/
       when 'Table'~caselessAbbrev(returntype)
-         then    dataset = .table~new
-      otherwise  dataset = .stem~new
+         then dataset = .table~new
+      otherwise                                        dataset = .stem~new
    end /* select */
 
    do field over self~fieldArr
@@ -378,6 +345,7 @@ if self~stream~chars < self~recordLength~text then return .nil
 
    self~rowNumber += 1                                                         /*{3.01h}*/
 
+--return a.
   return dataset
 
 /* ------------------------------------------------------------------------- */
@@ -519,7 +487,7 @@ saved_read_pointer = self~stream~query('seek read char') -- save read pointer
                                   ~right(fieldobj~length~text)
                   end /* DO */
                otherwise
-                  nop            /* we only deal with the dbaseIV types here */
+                  nop               /* we only deal with the dbaseIV types here */
             end /* select */
          self~stream~charout(datum,displacement)
          end /* DO */
@@ -644,7 +612,7 @@ use arg definition, options, fast? = .false
 return .dbfIndex~new(self, definition, options)
 
 /* ------------------------------------------------------------------------- */
-::method dbfData  -- used in preparation of indexes                            /*{3.02}*/
+::method dbfData                                                               /*{3.02}*/
 /* ------------------------------------------------------------------------- */
 /* returns all the row data as a single string                               */
 
@@ -899,11 +867,10 @@ return text
 ::attribute relKey2Row              -- relation: key -> row (was called rel)   /*{3.02}*/
 ::attribute elements                -- rules to construct the key & comparator /*{3.02}*/
 ::attribute dbf                     -- the dbf object this index applies to
-::attribute definition              -- definition as passed
 /* ------------------------------------------------------------------------- */
 ::method init                       -- major rewrite                           /*{3.02}*/
 /* ------------------------------------------------------------------------- */
-expose dbf elements comparator keypos includeDeletes? currentIndex definition
+expose dbf elements comparator keypos includeDeletes? currentIndex
 use arg dbf, definition, options     -- nb: prev index had 4th parm dbfdata
 
    includeDeletes? = (options~caselesspos('del') > 0)
@@ -987,23 +954,7 @@ use arg dbf, definition, options     -- nb: prev index had 4th parm dbfdata
       elements~append(element)
    end /* DO */
 
-   if \.StringColumnComparator~hasMethod('NEW')
-   then do
-      signal on syntax name rgf_util2_not_found
-         rgf_util2_found? = .false
-            call 'rgf_util2.rex'
-         rgf_util2_found? = .true
-      rgf_util2_not_found:
-      signal off syntax
-
-      if \rgf_util2_found?
-      then do
-         errMsg = 'DBFIndex: Use of Indexes requires rgf_Util2.rex freely ',
-                  'downloadable from http://wi.wu-wien.ac.at:8002/rgf/rexx/orx20'
-         raise syntax 43.900 array (errMsg)
-      end /* DO */
-   end /* DO */
-
+   if \.StringColumnComparator~hasMethod('NEW') then call 'rgf_util2.rex'
    comparator = .StringColumnComparator~new(comparatorArgs)
 
    self~refreshIndex
@@ -1052,7 +1003,7 @@ expose dbf vector orderedrows relKey2Row comparator keypos includeDeletes? items
 /* data can be entire database or rowdataset                                 */
 expose elements
 use arg data
-  dataIsDir? = data~hasMethod('[]')
+  dataIsDir? = data~isA(.mapCollection)         -- was ~hasMethod('[]') before /*{5.0.0}*/
   key = .array~new
   do element over elements
      if dataIsDir?
@@ -1277,12 +1228,12 @@ use arg datacollection
    else return -1
 
 /* ========================================================================= */
-/*                                    ===                                    */
 /*                                     =                                     */
 
 
+
 /*                                     =                                     */
-/*                                    ===                                    */
+/* ========================================================================= */
 /* ========================================================================= */
 ::class dbfIndexElement    -- part of dbfIndex framework element               /*{3.02}*/
 /* ========================================================================= */
@@ -1334,6 +1285,415 @@ return .array~of(keypos,length,direction,case)
 
 
 
+/*                                     =                                     */
+/*                                    ===                                    */
+/* ========================================================================= */
+::class dbf4SQL     subclass dbf public
+/* ========================================================================= */
+::attribute RowParseTemplate  Private  -- SQL safe row parse template
+::attribute fields                     -- overwrite superclass field directory
+/* ------------------------------------------------------------------------- */
+::method init
+/* ------------------------------------------------------------------------- */
+use strict arg file,log = .nil
+
+self~init:super(file,log)
+
+myMy             = .MYSql~new          -- MySQL helper provides safe names
+fieldNames       = .set~new            -- set to prevent name duplication
+fields           = .directory~new
+self~name~text   = myMy~safeName(self~name~text)
+
+
+                  /* go through fields replacing names with MYSQL safe names */
+                  /* and build a new parse template using those names        */
+do field over self~fieldArr
+   fName            = field~name~text
+   field~Name       = .dbfAttribute~new(fName,myMy~safeName(fName,fieldNames))
+   self~fields[field~name~text~upper] = field -- put field obj where we can find it
+end /* DO */
+
+/* ------------------------------------------------------------------------- */
+::method next             -- returns a stem with safe names and trimmed values
+                          -- to get records with dbf names use ~next:super
+/* ------------------------------------------------------------------------- */
+use arg option
+if self~stream~chars < self~recordLength~text then return .nil  -- end of file
+
+skips = self~various~SKIP~upper
+
+row = self~stream~charin(,self~recordLength~text)       -- get row data
+self~curRowDeleted = (rowDeleted!? \= '20'x)            -- set deleted flag
+
+   select
+      when 'Directory'~caselessAbbrev(self~returntype) then dataset = .directory~new
+      when 'Table'~caselessAbbrev(self~returntype)     then dataset = .table~new
+      otherwise                                             dataset = .stem~new
+   end /* select */
+
+
+do field over self~fieldArr
+   if skips~wordpos(field~name~text~upper) then iterate
+
+   data      = row~substr(field~offset~text + 1, field~length~text)
+   fieldType = field~type~value  /* ~type~value = DBF type char */
+   select
+      when fieldType = 'C'
+         then data = "'"||data~strip('t')~changeStr("''",'"'),
+                                         ~changeStr("'","''"),
+                                         ~changeStr('\','\\')"'"
+      when fieldType = 'N'
+         then data = data~strip
+      when fieldType = 'D'
+         then if data = ''
+              then data = ''
+              else data = convdate(data)
+      when fieldType = 'L'
+         then data = "'"||(data = 'T'| data = 1)||"'"
+      otherwise
+           nop
+   end /* select */
+   dataset[field~name~text] = data
+end /* DO */
+
+
+if option = 'SQL'
+then do
+   cols = '(' ; vals = ' VALUES('
+   do col over dataset
+      if dataset[col]~strip('b','"')~strip('b',"'") \= ''
+      then do
+         cols = cols||col||','
+         vals = vals||dataset[col]||','
+      end
+   end /* DO */
+   cols = cols~strip('t',',')||')'
+   vals = vals~strip('t',',')||')'
+   return 'insert into' self~name cols vals
+end /* DO */
+
+RETURN dataset
+
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+convdate:
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+procedure
+arg SDate .
+
+signal on syntax name baddate
+retDate = "'"||date('s',sDate,'s','-')||"'"
+signal off syntax
+
+RETURN retDate
+-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+baddate:
+signal off syntax
+RETURN ''
+
+/* ------------------------------------------------------------------------- */
+::Method SqlToCreate
+/* ------------------------------------------------------------------------- */
+
+Qry='create table' self~name '(id int auto_increment, primary key (id), '
+
+do field over self~fieldArr
+   Qry = Qry||field~Name~text~lower space(self~sqlType(field) field~various~CREATE)||', '
+end /* DO */
+
+Qry = qry~strip~strip('t',',')||self~various~EXTRAFIELDS||');'
+
+return Qry
+
+/* ------------------------------------------------------------------------- */
+::METHOD SQLType private
+/* ------------------------------------------------------------------------- */
+use arg field
+
+select
+   when field~type~value = 'C' then return 'VARCHAR('||field~length~text||')'
+   when field~type~value~matchChar(1,'NIY')
+      then if field~dps~text = 0
+           then select
+                   when field~length~text < 3  then return 'TINYINT'
+                   when field~length~text < 5  then return 'SMALLINT'
+                   when field~length~text < 7  then return 'MEDIUMINT'
+                   when field~length~text < 10 then return 'INTEGER'
+                   otherwise                        return 'BIGINT'
+                end /* select */
+           else return 'DOUBLE('||field~length~text||','||field~dps||')'
+   when field~type~value = 'F'
+      then return 'FLOAT('||(field~length~text - field~dps~text)||','||,
+                                                 field~dps~text||')'
+   when field~type~value = 'D' then return 'DATE'
+   when field~type~value = 'L' then return 'BOOLEAN'
+   when field~type~value = 'M' then return 'TEXT'  -- ????? Is this correct?
+   when field~type~value = 'B' then return 'DOUBLE('||(field~length - field~dps)||','||field~dps||')'
+   when field~type~value = 'T' then return 'DATETIME'
+   when field~type~value = 'P' then return 'BLOB'
+   otherwise                        return 'VARCHAR('||field~length~text||')'
+end /* select */
+
+/* ------------------------------------------------------------------------- */
+::method translate
+/* given a dbf create string returns an sql create string                    */
+/* ------------------------------------------------------------------------- */
+use arg dbfstring
+
+myMy             = .MYSql~new          -- MySQL helper provides safe names
+
+sqlstring = ''
+fill = '00'x
+
+do while dbfstring \= ''
+   parse var dbfstring dbffield';'dbfstring
+   parse var dbffield fieldname','fieldtype','fieldlength','decimals
+   if \fieldlength~datatype('w') then fieldlength = 0
+   if \decimals~datatype('w')    then decimals    = 0
+
+   header    = fieldname~left(11,fill)||,
+               fieldtype~translate~strip~left(1)||,
+               copies(fill,4)||,
+               d2c(fieldlength,1)||,
+               d2c(decimals,1)||,
+               copies(fill,14)
+
+   field     = .dbffield~new(header)
+   sqlstring = sqlstring myMy~safeName(fieldname~strip) self~sqltype(field)||","
+end /* DO */
+
+return sqlstring~strip~strip('t',',')~strip
+
+/* ------------------------------------------------------------------------- */
+/* ========================================================================= */
+/*                                    ===                                    */
+/*                                     =                                     */
+
+
+
+/*                                     =                                     */
+/*                                    ===                                    */
+/* ========================================================================= */
+::class MySQL public
+/* ========================================================================= */
+::attribute reservedWords
+::attribute MYSqlVersion
+::attribute QuotedTypes
+/* ------------------------------------------------------------------------- */
+::method init
+/* ------------------------------------------------------------------------- */
+self~MYSQLVersion = '5.1'
+res = 'ACCESSIBLE ADD ALL ALTER ANALYZE AND AS ASC ASENSITIVE BEFORE     ',
+      'BETWEEN BIGINT BINARY BLOB BOTH BY CALL CASCADE CASE CHANGE CHAR  ',
+      'CHARACTER CHECK COLLATE COLUMN CONDITION CONSTRAINT CONTINUE      ',
+      'CONVERT CREATE CROSS CURRENT_DATE CURRENT_TIME CURRENT_TIMESTAMP  ',
+      'CURRENT_USER CURSOR DATABASE DATABASES DAY_HOUR DAY_MICROSECOND   ',
+      'DAY_MINUTE DAY_SECOND DATE DEC DECIMAL DECLARE DEFAULT DELAYED    ',
+      'DELETE DESC DESCRIBE DETERMINISTIC DISTINCT DISTINCTROW DIV       ',
+      'DOUBLE DROP DUAL EACH ELSE ELSEIF ENCLOSED ESCAPED EXISTS EXIT    ',
+      'EXPLAIN FALSE FETCH FLOAT FLOAT4 FLOAT8 FOR FORCE FOREIGN FROM    ',
+      'FULLTEXT GRANT GROUP HAVING HIGH_PRIORITY HOUR_MICROSECOND        ',
+      'HOUR_MINUTE HOUR_SECOND IF IGNORE IN INDEX INFILE INNER INOUT     ',
+      'INSENSITIVE INSERT INT INT1 INT2 INT3 INT4 INT8 INTEGER INTERVAL  ',
+      'INTO IS ITERATE JOIN KEY KEYS KILL LEADING LEAVE LEFT LIKE LIMIT  ',
+      'LINEAR LINES LOAD LOCALTIME LOCALTIMESTAMP LOCK LONG LONGBLOB     ',
+      'LONGTEXT LOOP LOW_PRIORITY MASTER_SSL_VERIFY_SERVER_CERT MATCH    ',
+      'MEDIUMBLOB MEDIUMINT MEDIUMTEXT MIDDLEINT MINUTE_MICROSECOND      ',
+      'MINUTE_SECOND MOD MODIFIES NATURAL NOT NO_WRITE_TO_BINLOG NULL    ',
+      'NUMERIC ON OPTIMIZE OPTION OPTIONALLY OR ORDER OUT OUTER OUTFILE  ',
+      'PRECISION PRIMARY PROCEDURE PURGE RANGE READ READS READ_ONLY      ',
+      'READ_WRITE REAL REFERENCES REGEXP RELEASE RENAME REPEAT REPLACE   ',
+      'REQUIRE RESTRICT RETURN REVOKE RIGHT RLIKE SCHEMA SCHEMAS         ',
+      'SECOND_MICROSECOND SELECT SENSITIVE SEPARATOR SET SHOW SMALLINT   ',
+      'SONAME SPATIAL SPECIFIC SQL SQLEXCEPTION SQLSTATE SQLWARNING      ',
+      'SQL_BIG_RESULT SQL_CALC_FOUND_ROWS SQL_SMALL_RESULT SSL STARTING  ',
+      'STRAIGHT_JOIN TABLE TERMINATED THEN TINYBLOB TINYINT TINYTEXT TO  ',
+      'TRAILING TRIGGER TRUE UNDO UNION UNIQUE UNLOCK UNSIGNED UPDATE    ',
+      'USAGE USE USING UTC_DATE UTC_TIME UTC_TIMESTAMP VALUES VARBINARY  ',
+      'VARCHAR VARCHARACTER VARYING WHEN WHERE WHILE WITH WRITE XOR      ',
+      'YEAR_MONTH ZEROFILL'
+
+self~reservedWords = .set~new~union(res~makeArray(' '))
+self~reservedWords~put('ID')          -- we use ID for our primary key column
+
+self~quotedTypes = .set~of('DATE','DATETIME','TIMESTAMP','TIME','CHAR',,
+                           'VARCHAR','TEXT','TINYTEXT','MEDIUMTEXT','LONGTEXT')
+
+/* ------------------------------------------------------------------------- */
+::method safeName       -- return a column name that is not reserved
+                        -- optional second arg column names already assigned
+/* ------------------------------------------------------------------------- */
+use arg name, names
+
+if \names~hasmethod('HASINDEX') | \names~hasMethod('PUT') then names = .set~new
+
+name = name~translate('_',' ')                   -- replace spaces by _
+do while self~reservedWords~hasindex(name~upper) | names~hasIndex(name~upper)
+   name = name||'_'                              -- suffix with _ till unique
+end /* DO */
+
+names~put(name~upper)
+
+return name
+
+/* ------------------------------------------------------------------------- */
+/* passed an REXXSQL describe stem returns a set of columns that require     */
+/* being passed within quotes to an update or insert statment                */
+::method LiteralSet
+/* ------------------------------------------------------------------------- */
+use arg stem.
+
+lits = .set~new
+if \stem.column.name.0~datatype('w') then return lits
+
+do i = 1 to stem.column.name.0
+   if self~quotedTypes~hasIndex(stem.column.type.i)
+   then lits~put(stem.column.name.i~upper)
+end /* DO */
+
+return lits
+
+/* ------------------------------------------------------------------------- */
+/* ========================================================================= */
+/*                                    ===                                    */
+/*                                     =                                     */
+
+
+
+/*                                     =                                     */
+/*                                    ===                                    */
+/* ========================================================================= */
+::class DBFChange public
+/* a queueable placeholder for defered changes to a dbf file                 */
+/* ========================================================================= */
+::attribute type                -- Append, Update, Delete
+::attribute dbf_id              -- Row no in dbf file (for update & delete)
+::attribute stem                -- stem holding values (for update & insert)
+/* ------------------------------------------------------------------------- */
+::method init
+/* ------------------------------------------------------------------------- */
+expose type dbf_id stem
+use arg type, dbf_id, stem
+type = type~strip~upper~left(1)
+/* ========================================================================= */
+/*                                    ===                                    */
+/*                                     =                                     */
+
+
+
+
+/*                                     =                                     */
+/*                                    ===                                    */
+/* ========================================================================= */
+::class DBFAppender subclass dbf public             -- DEPRECATED
+-- deprecated in favour of dbf append method
+/* ========================================================================= */
+::attribute fileChanged?
+/* ------------------------------------------------------------------------- */
+::method init
+/* ------------------------------------------------------------------------- */
+use arg DBFFile, data.       -- optional second argument for one shot append
+
+   self~init:super(DBFFile)
+   self~fileChanged? = .false
+
+   if data.~items > 0 & self~error = .false             -- this is a one shot
+   then do
+      self~simpleAppend(data.)
+      self~close
+      return self~items~text
+   end /* DO */
+
+/* ------------------------------------------------------------------------- */
+::method SimpleAppend  -- append to file (ignoring indexes)
+                       -- accepts a stem with field values
+/* ------------------------------------------------------------------------- */
+use arg data.
+
+-- build new row string to append
+   rowLen = self~recordLength~text + 1                 -- +1 for delete marker
+   row = .mutableBuffer~new(copies(' ',rowlen),rowLen)
+
+   /* insert the fields into the template */
+   do fieldName over data.
+      field     = self~fields[fieldname]
+      fieldType = field~type~value              -- ~type~value = DBF type char
+
+      select
+         when fieldType = 'C' then fieldData = data.fieldName~strip('T')
+         when fieldType = 'N'
+            then if data.fieldName~dataType('N')
+                 then fieldData = data.fieldName~format(,field~dps~text),
+                                                ~right(field~length~text)
+                 else fieldData = ''
+         when fieldType = 'D'                    -- accept YYYY-MM-DD or YYYYMMDD
+            then fieldData = space(data.fieldName,'0','-')
+         when fieldType = 'L'
+            then if (data.fieldName~verify('tT'||.true) = 0)
+                 then fieldData = 'T'
+                 else fieldData = 'F'
+         otherwise
+            fieldData = data.fieldName~strip('t') -- default for unknown fieldtype
+      end /* select */
+      row~overlay(fieldData,field~offset~text + 1) -- 1st char is delete marker
+   end /* DO */
+
+-- if this is the first record then replace the end of header marker           /*{3.01h}*/
+-- which is sometimes an endoffile in empty tables                             /*{3.01h}*/
+   if self~items~text = 0 then self~stream~charout('0d'x,self~dataOffset~text) /*{3.01h}*/
+
+-- write record at calculated end of file
+   displacement = self~dataoffset~text + ((self~items~text) * self~recordLength~text) + 1
+   self~stream~charout(row~string,displacement)
+
+   self~fileChanged? = .true
+   self~items~text = self~items~text + 1
+
+return self~items~text
+
+/* ------------------------------------------------------------------------- */
+::method close
+/* ------------------------------------------------------------------------- */
+
+   if self~fileChanged? = .true
+   then do
+   -- build new header string to overwrite lastupdate||items  YYMMDDrrrrrrrr
+      headerString = self~ISODate2DBF(date('s',,,'-')),
+                  || reverse(d2c(self~items~text,4))
+
+      self~stream~charout(headerString,2)
+      displacement = self~dataoffset~text + 1,
+                   + ((self~items~text) * self~recordLength~text)
+   --   self~stream~seek('<0 write')
+      self~stream~charout('1A'x,displacement)
+   end
+
+return self~close:super
+
+/* ========================================================================= */
+/*                                    ===                                    */
+/*                                     =                                     */
+
+
+
+
+/*                                     =                                     */
+/*                                    ===                                    */
+/* ========================================================================= */
+::class DBFCreator public                           -- DEPRECATED
+/* this class is DEPRECATED in favour of dbf create CLASS method             */
+/* ========================================================================= */
+/* ------------------------------------------------------------------------- */
+::method init
+/* ------------------------------------------------------------------------- */
+use strict arg filename, createstring
+  .dbf~create(filename,createString)
+/* ========================================================================= */
+/*                                    ===                                    */
+/*                                     =                                     */
+
+
+
+
 /* ========================================================================= */
 ::routine Valid_date
 /* ========================================================================= */
@@ -1352,9 +1712,11 @@ return .false
 /* ========================================================================= */
 
 
+
 /* ========================================================================= */
 ::routine insertIntoArray -- inserts key into arr[pos]
 /* ========================================================================= */
 use arg arr, key, pos
 return arr~section(1,pos-1)~union(.array~of(key))~union(arr~section(pos))
 /* ========================================================================= */
+
