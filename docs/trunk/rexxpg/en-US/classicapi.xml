@@ -1314,16 +1314,11 @@ external function routine within <emphasis role="italic">ModuleName</emphasis>.
 </section>
 
 <section id="regfudllremark"><title>Remarks</title>
-<para>On Windows, External functions that reside in a dynamic-link library routine
-must be exported. You can do this by specifying a module-definition
-(.DEF) file that lists the external functions in the EXPORT section.
-For example:</para>
-<programlisting>
-<![CDATA[
-EXPORTS
-   SYSMKDIR = SysMkDir
-]]>
-</programlisting>
+<para>Starting with ooRexx 5.0.0, on Windows, External functions that
+reside in a dynamic-link library routine no longer require a
+module-definition (.DEF) file that lists the external functions in
+the EXPORT section.
+</para>
 <para>A Rexx procedure can register dynamic-link library-external
 functions with the RXFUNCADD built-in function. For example: </para>
 <example>
