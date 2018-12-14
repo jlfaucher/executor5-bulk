@@ -1,16 +1,17 @@
 /*-- interpreter\parser\DirectiveParser.cpp --------------------------*/
 
-/* new in 5.0 */                   
+/* new in 5.0 */
 annotate ::= '::ANNOTATE' ( 'ATTRIBUTE' attribute |
                             'CLASS' class |
                             'CONSTANT' constant |
                             'METHOD' method |
                             'PACKAGE' |
-                            'ROUTINE' routine ) ( name value )*  
+                            'ROUTINE' routine ) ( name value )*
 
 /*-- LanguageParser::attributeDirective() ----------------------------*/
 attribute ::= '::ATTRIBUTE' name ( 'GET' | 'SET' )? ( 'CLASS' )?
-                            ( 'PUBLIC' | 'PRIVATE')? ( 'GUARDED' | 'UNGUARDED' )?
+                            ( 'PUBLIC' | 'PACKAGE' | 'PRIVATE' )?
+                            ( 'GUARDED' | 'UNGUARDED' )?
                             ( 'UNPROTECTED' | 'PROTECTED' )?
                             ( 'ABSTRACT' |
 /* new in 5.0 */              'DELEGATE' delegatename |
@@ -28,7 +29,8 @@ constant ::= '::CONSTANT' name value?
 
 /*-- LanguageParser::methodDirective() -------------------------------*/
 method ::= '::METHOD' methodname 'ATTRIBUTE'? 'CLASS'?
-                      ( 'PUBLIC' | 'PRIVATE' )? ( 'GUARDED' | 'UNGUARDED' )?
+                      ( 'PUBLIC' | 'PACKAGE' | 'PRIVATE' )?
+                      ( 'GUARDED' | 'UNGUARDED' )?
                       ( 'UNPROTECTED' | 'PROTECTED' )?
                       ( 'ABSTRACT' |
 /* new in 5.0 */        'DELEGATE' delegatename |
@@ -38,9 +40,9 @@ method ::= '::METHOD' methodname 'ATTRIBUTE'? 'CLASS'?
 options ::= '::OPTIONS' ( 'DIGITS' digits |
                           'FORM' ('ENGINEERING' | 'SCIENTIFIC') |
                           'FUZZ' fuzz |
-/* new in 5.0 */          'NOVALUE' ('CONDITION' | 'ERROR') | 
-/* new in 5.0 */          ( 'PROLOG' | 'NOPROLOG' ) |             
-                          'TRACE' trace 
+/* new in 5.0 */          'NOVALUE' ('CONDITION' | 'ERROR') |
+/* new in 5.0 */          ( 'PROLOG' | 'NOPROLOG' ) |
+                          'TRACE' trace
                         )*
 
 /*-- LanguageParser::requiresDirective() -----------------------------*/

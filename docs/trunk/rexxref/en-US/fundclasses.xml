@@ -2019,7 +2019,7 @@ was scheduled for 2015-12-18T16:54:15.545000
 It is a subclass of the <xref linkend="clsObject" xrefstyle="template:Object class"/>.
 </para>
 
-<!-- $GENERATED-20151005-START rexxrefClassTable(Method) -->
+<!-- $GENERATED-20181214-START rexxrefClassTable(Method) -->
 <table id="ooRexxMethodClass" frame="all" pgwide="1">
 <title>Method Class</title>
 <tgroup cols="1">
@@ -2043,6 +2043,7 @@ It is a subclass of the <xref linkend="clsObject" xrefstyle="template:Object cla
    <member><xref linkend="mthMethodIsAttribute" xrefstyle="select:title"/></member>
    <member><xref linkend="mthMethodIsConstant" xrefstyle="select:title"/></member>
    <member><xref linkend="mthMethodIsGuarded" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthMethodIsPackage" xrefstyle="select:title"/></member>
    <member><xref linkend="mthMethodIsPrivate" xrefstyle="select:title"/></member>
    <member><xref linkend="mthMethodIsProtected" xrefstyle="select:title"/></member>
    <member><xref linkend="mthMethodPackage" xrefstyle="select:title"/></member>
@@ -2058,7 +2059,7 @@ It is a subclass of the <xref linkend="clsObject" xrefstyle="template:Object cla
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20151005-END rexxrefClassTable(Method) -->
+<!-- $GENERATED-20181214-END rexxrefClassTable(Method) -->
 
 <section id="mthMethodNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
@@ -2298,6 +2299,27 @@ otherwise returns &false;.
 </para>
 </section>
 
+
+<!-- Class Method - method isPackage ======================== -->
+<section id="mthMethodIsPackage" revisionflag="added"><title>&added50;isPackage
+<indexterm><primary>isPackage method</primary><secondary>of Method class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>isPackage method</secondary><tertiary>of Method class</tertiary></indexterm>
+</title>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/method_ispackage.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns &true; if the method is a Package-scope method.
+Returns &false; for Public methods or Private methods.
+See <xref linkend="pubpri" />
+for details on package-scope method restrictions.
+</para>
+<para>See also method <xref linkend="mthMethodIsPrivate" xrefstyle="select:title"/>.
+</para>
+</section>
+
+
 <section id="mthMethodIsPrivate"><title>isPrivate</title>
 <indexterm><primary>isPrivate method</primary>
 <secondary>of Method class</secondary></indexterm>
@@ -2311,9 +2333,12 @@ otherwise returns &false;.
 </imageobject>
 </mediaobject>
 
-<para>Returns &true; if the method is a Private method.  Returns &false; for Public methods.
+<para>Returns &true; if the method is a Private method.
+Returns &false; for Public methods or Package-scope methods.
 See <xref linkend="pubpri" />
 for details on private method restrictions.
+</para>
+<para>See also method <xref linkend="mthMethodIsPackage" xrefstyle="select:title"/>.
 </para>
 </section>
 

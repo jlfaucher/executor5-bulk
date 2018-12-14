@@ -98,7 +98,7 @@ the object has, and the object instance completes the job of constructing the ob
 </para>
 <para>
 The <xref linkend="clsString" xrefstyle="template:String class"/> and the
-<xref linkend="clsArray" xrefstyle="template:Array class"/> 
+<xref linkend="clsArray" xrefstyle="template:Array class"/>
 are examples of object classes.</para>
 </section>
 
@@ -605,16 +605,25 @@ class, and adds the string <computeroutput>(savings)</computeroutput> to the
 results.</para>
 </section>
 
-<section id="pubpri"><title>Public and Private Methods</title>
+<section id="pubpri"><title>Public, Package-Scope, and Private Methods</title>
 <indexterm><primary>method</primary>
 <secondary>public</secondary></indexterm>
 <indexterm><primary>method</primary>
 <secondary>private</secondary></indexterm>
+<indexterm><primary>method</primary>
+<secondary>package-scope</secondary></indexterm>
 <indexterm><primary>public method</primary></indexterm>
 <indexterm><primary>private method</primary></indexterm>
-<para>A method can be public or private.
-Any object can send a message that runs a public method.
-A private method can only be invoked from specific calling contexts.  These contexts are:</para>
+<indexterm><primary>package-scope method</primary></indexterm>
+<para>A method can be public, package-scope, or private.
+</para>
+<para>Any object can send a message that runs a public method.
+</para>
+<para>A package-scope method can only be invoked from methods or routines
+defined in the same package as the package-scope method.
+</para>
+<para>A private method can only be invoked from specific calling contexts.
+These contexts are:
 <orderedlist>
 <listitem><para>From within a method owned by the same class as the target.  This is frequently
 the same object, accessed via the special variable SELF.  Private methods of an object can also
@@ -666,6 +675,7 @@ method of its class.  For example:</para>
 method of the .Savings class object because it is owned by an instance of the .Savings class.</para>
 </listitem>
 </orderedlist>
+</para>
 <para>Private methods include methods at different scopes within the same object.
 This allows superclasses to make methods available to their subclasses while
 hiding those methods from other objects. A private method is like an internal

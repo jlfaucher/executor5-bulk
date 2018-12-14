@@ -113,7 +113,7 @@ directive in the same source program.</para>
 
 <para>The annotation <emphasis role="italic">name</emphasis> must be a
 symbol that is taken as a constant; a literal string is not
-allowed. 
+allowed.
 The annotation <emphasis role="italic">value</emphasis> must be a
 single literal string, a symbol, or a valid number, optionally preceded
 by a plus or minus sign, that is taken as a constant.</para>
@@ -189,7 +189,7 @@ self~address = address
 </section>
 
 
-<section id="attrd"><title>::ATTRIBUTE</title>
+<section id="attrd" revisionflag="changed"><title>&changed50;::ATTRIBUTE</title>
 <indexterm><primary>::ATTRIBUTE directive</primary></indexterm>
 <indexterm><primary>directives</primary><secondary>::ATTRIBUTE</secondary></indexterm>
 <indexterm><primary>attribute</primary><secondary>creation</secondary></indexterm>
@@ -198,6 +198,7 @@ self~address = address
 <indexterm><primary>SET subkeyword</primary><secondary>in an ATTRIBUTE directive</secondary></indexterm>
 <indexterm><primary>CLASS subkeyword</primary><secondary>in an ATTRIBUTE directive</secondary></indexterm>
 <indexterm><primary>PRIVATE subkeyword</primary><secondary>in an ATTRIBUTE directive</secondary></indexterm>
+<indexterm><primary>PACKAGE subkeyword</primary><secondary>in an ATTRIBUTE directive</secondary></indexterm>
 <indexterm><primary>PUBLIC subkeyword</primary><secondary>in an ATTRIBUTE directive</secondary></indexterm>
 <indexterm><primary>GUARDED subkeyword</primary><secondary>in an ATTRIBUTE directive</secondary></indexterm>
 <indexterm><primary>UNGUARDED subkeyword</primary><secondary>in an ATTRIBUTE directive</secondary></indexterm>
@@ -356,14 +357,19 @@ name will be used unchanged.
 <orderedlist>
 <listitem><para>You can specify all options in any order.
 </para></listitem>
-<listitem><para>If you specify the <option>PRIVATE</option> option, the created methods are
-private methods.  Private methods have restricted access rules on how they can
-be invoked.
+
+<listitem><para>If you specify the <option>PACKAGE</option> option, the methods
+are created with a package-scope, if you specify the <option>PRIVATE</option>
+option, the created methods are private methods.
+Package-scope and private methods have restricted access rules on how
+they can be invoked.
 See <xref linkend="pubpri" />
-for details of how private methods can be used.
-If you omit the <option>PRIVATE</option> option or specify <option>PUBLIC</option>, the method is a public method
+for details of how these methods can be used.
+If you omit the <option>PACKAGE</option> or <option>PRIVATE</option> option,
+or specify <option>PUBLIC</option>, the method is a public method
 that any sender can activate.
 </para></listitem>
+
 <listitem><para>If you
 <indexterm><primary>UNGUARDED option of ::ATTRIBUTE</primary></indexterm>
 specify the <option>UNGUARDED</option> option, the methods can be called while other methods are
@@ -445,14 +451,14 @@ option, the class becomes a non-mixin subclass of the Object class.
 </para>
 <para>If you specify the <option>ABSTRACT</option> option, the class will be marked as an
 abstract class.
-Trying to create an instance of an abstract class will raise an error. 
+Trying to create an instance of an abstract class will raise an error.
 Only subclasses of abstract classes will allow to create instances from.
 </para>
 <para>If you specify the <option>INHERIT</option> option, the class inherits instance methods
 and class methods from the classes <emphasis role="italic">iclasses</emphasis>
 in their order of appearance
 (leftmost first). This is equivalent to sending a series of
-<xref linkend="mthClassInherit" xrefstyle="select:title"/> messages 
+<xref linkend="mthClassInherit" xrefstyle="select:title"/> messages
 to the class object, with each <methodname>inherit</methodname> message
 (except the first) specifying
 the preceding class in <emphasis role="italic">iclasses</emphasis>
@@ -585,6 +591,7 @@ say .Search~caseless             -- "CASELESS"
 <indexterm><primary>CLASS subkeyword</primary><secondary>in a METHOD directive</secondary></indexterm>
 <indexterm><primary>ATTRIBUTE subkeyword</primary><secondary>in a METHOD directive</secondary></indexterm>
 <indexterm><primary>PRIVATE subkeyword</primary><secondary>in a METHOD directive</secondary></indexterm>
+<indexterm><primary>PACKAGE subkeyword</primary><secondary>in a METHOD directive</secondary></indexterm>
 <indexterm><primary>PUBLIC subkeyword</primary><secondary>in a METHOD directive</secondary></indexterm>
 <indexterm><primary>GUARDED subkeyword</primary><secondary>in a METHOD directive</secondary></indexterm>
 <indexterm><primary>UNGUARDED subkeyword</primary><secondary>in a METHOD directive</secondary></indexterm>
@@ -749,14 +756,19 @@ setter attribute method, the name is appended to the string "SET".</para>
 <orderedlist>
 <listitem><para>You can specify all options in any order.
 </para></listitem>
-<listitem><para>If you specify the <option>PRIVATE</option> option, the created methods are
-private methods.  Private methods have restricted access rules on how they can
-be invoked.
+
+<listitem><para>If you specify the <option>PACKAGE</option> option, the method
+is created with a package-scope, if you specify the <option>PRIVATE</option>
+option, the created method is a private method.
+Package-scope and private methods have restricted access rules on how
+they can be invoked.
 See <xref linkend="pubpri" />
-for details of how private methods can be used.
-If you omit the <option>PRIVATE</option> option or specify <option>PUBLIC</option>, the method is a public method
+for details of how these methods can be used.
+If you omit the <option>PACKAGE</option> or <option>PRIVATE</option> option,
+or specify <option>PUBLIC</option>, the method is a public method
 that any sender can activate.
 </para></listitem>
+
 <listitem><para>If you
 <indexterm><primary>UNGUARDED option of ::METHOD</primary></indexterm> specify
 the <option>UNGUARDED</option> option, the method can be called while other methods are active on
@@ -801,7 +813,7 @@ accumulative. If a given option type is specified on more than one directive, th
 last specified will be the value used.
 </para>
 <para>The specified options will override the normal default settings for all Rexx
-code contained in the source file.  For example, 
+code contained in the source file.  For example,
 <programlisting>::OPTIONS DIGITS 20</programlisting>
 would direct that all method and routine code defined in this source package
 execute with an initial <xref linkend="keyNumeric" xrefstyle="select:title"/> DIGITS setting of
@@ -980,7 +992,7 @@ code of the Rexx packages.
 
 <para revisionflag="added">&added50;If the <option>NAMESPACE</option> option is specified,
 <emphasis role="italic">namespace</emphasis> must be a symbol that is
-taken as a constant; a literal string is not allowed. 
+taken as a constant; a literal string is not allowed.
 </para>
 <para>
 The <option>NAMESPACE</option> option will attach the name <emphasis role="italic">namespace</emphasis>
@@ -1064,7 +1076,7 @@ defaults to the string "::END".</para>
 <programlisting>
 ::resource greyCat end "-"
 La nuit, tous les chats sont gris
---------------------------------- 
+---------------------------------
 
 ::resource "brown fox"
 The quick brown fox jumps over the lazy dog
