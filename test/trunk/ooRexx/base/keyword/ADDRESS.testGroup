@@ -55,6 +55,14 @@ return testResult
 
 ::class "ADDRESS.testGroup" subclass ooTestCase public
 
+::constant temporaryFilename "address-with.tmp"
+
+-- make sure out temporary file gets removed
+::method activate class
+   expose temporaryFile
+   temporaryFile = .TemporaryTestFile~new(self, self~temporaryFilename)
+
+
 ::method "test_1"
    defenv=address()
    Address ''                        /* use null string                */
@@ -63,10 +71,10 @@ return testResult
    self~assertSame(address(), defenv)
 
 
--- "exit" should return 0 for both Linux and Windows shells
+-- "exit" should return 0 for both Unix and Windows shells
 ::constant command_exists "exit"
 
--- "exit 2" should return 2 for both Linux and Windows shells
+-- "exit 2" should return 2 for both Unix and Windows shells
 ::constant command_exists_rc_2 "exit 2"
 
 -- non-existent command (with shell messages suppressed for Windows and Unix)
@@ -80,7 +88,7 @@ return testResult
   if .ooRexxUnit.OSName == "WINDOWS" then
     return 1 -- CMD return code for an unknown command is 1
   else
-    return 127 -- Linux shell return code for an unknown command is 127
+    return 127 -- Unix shell return code for an unknown command is 127
 
 
 ::method test_environment_symbol
@@ -352,7 +360,7 @@ address_with ::=      'WITH' ( 'INPUT' ( 'NORMAL' | 'STEM' stem | 'STREAM' strea
   stem. = line
   stem.0 = 2
   stemObject = .Stem~of( (0, 2), (1, line), (2, line) )
-  fileName = "address-with.tmp"
+  fileName = self~temporaryFilename
   file = .File~new(filename)
   stream = self~createFile(file)
   address "" "" with input normal
@@ -369,7 +377,6 @@ address_with ::=      'WITH' ( 'INPUT' ( 'NORMAL' | 'STEM' stem | 'STREAM' strea
   address "" "" with input using ( .Array~of(line, line) )
   address "" "" with input using ( ("line", "line") )
   address "" "" with input using .local
-  file~delete
 
 ::method test_with_null_command_with_large_input
   -- A null command (or any command that ignores stdin) may well finish before
@@ -423,16 +430,14 @@ address_with ::=      'WITH' ( 'INPUT' ( 'NORMAL' | 'STEM' stem | 'STREAM' strea
 -- that APPEND USING ( stream_object ) doesn't work is an awkward exception
 -- see https://sourceforge.net/p/oorexx/mailman/message/36280561/
 ::method test_with_output_using_append_stream
-  file = .File~new("address-with.tmp")
-  stream = .Stream~new(file)
+  stream = .Stream~new(self~temporaryFilename)
   self~expectSyntax(98.997) -- REPLACE or APPEND cannot be specified with a Stream object USING target
   address '' '' with output append using ( stream )
 
 -- that REPLACE USING ( stream_object ) doesn't work is an awkward exception
 -- see https://sourceforge.net/p/oorexx/mailman/message/36280561/
 ::method test_with_output_using_replace_stream
-  file = .File~new("address-with.tmp")
-  stream = .Stream~new(file)
+  stream = .Stream~new(self~temporaryFilename)
   self~expectSyntax(98.997) -- REPLACE or APPEND cannot be specified with a Stream object USING target
   address '' '' with output replace using ( stream )
 
@@ -442,7 +447,7 @@ address_with ::=      'WITH' ( 'INPUT' ( 'NORMAL' | 'STEM' stem | 'STREAM' strea
   stem. = line
   stem.0 = 2
   stemObject = .Stem~of( (0, 2), (1, line), (2, line) )
-  fileName = "address-with.tmp2"
+  fileName = self~temporaryFilename
   file = .File~new(filename)
   stream = .Stream~new(file)
   array = .Array~new
@@ -470,8 +475,6 @@ address_with ::=      'WITH' ( 'INPUT' ( 'NORMAL' | 'STEM' stem | 'STREAM' strea
   -- these tests work, but really make no sense
   address "" "" with output using ( .Array~of(line, line) )
   address "" "" with output using ( ("line", "line") )
-
-  file~delete
 
 ::method test_with_output_data_lengths
   out = .Array~new
@@ -546,16 +549,14 @@ address_with ::=      'WITH' ( 'INPUT' ( 'NORMAL' | 'STEM' stem | 'STREAM' strea
 -- that APPEND USING ( stream_object ) doesn't work is an awkward exception
 -- see https://sourceforge.net/p/oorexx/mailman/message/36280561/
 ::method test_with_error_using_append_stream
-  file = .File~new("address-with.tmp")
-  stream = .Stream~new(file)
+  stream = .Stream~new(self~temporaryFilename)
   self~expectSyntax(98.997) -- REPLACE or APPEND cannot be specified with a Stream object USING target
   address '' '' with error append using ( stream )
 
 -- that REPLACE USING ( stream_object ) doesn't work is an awkward exception
 -- see https://sourceforge.net/p/oorexx/mailman/message/36280561/
 ::method test_with_error_using_replace_stream
-  file = .File~new("address-with.tmp")
-  stream = .Stream~new(file)
+  stream = .Stream~new(self~temporaryFilename)
   self~expectSyntax(98.997) -- REPLACE or APPEND cannot be specified with a Stream object USING target
   address '' '' with error replace using ( stream )
 
@@ -565,7 +566,7 @@ address_with ::=      'WITH' ( 'INPUT' ( 'NORMAL' | 'STEM' stem | 'STREAM' strea
   stem. = line
   stem.0 = 2
   stemObject = .Stem~of( (0, 2), (1, line), (2, line) )
-  fileName = "address-with.tmp"
+  fileName = self~temporaryFilename
   file = .File~new(filename)
   stream = .Stream~new(file)
   array = .Array~new
@@ -593,8 +594,6 @@ address_with ::=      'WITH' ( 'INPUT' ( 'NORMAL' | 'STEM' stem | 'STREAM' strea
   -- these tests work, but really make no sense
   address "" "" with error using ( .Array~of(line, line) )
   address "" "" with error using ( ("line", "line") )
-
-  file~delete
 
 ::method test_with_error_data_lengths
   error = .Array~new
