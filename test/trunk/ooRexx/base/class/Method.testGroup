@@ -405,6 +405,32 @@ return testResult
   self~expectSyntax('99.917')
   .method~loadExternalMethod("", "")
 
+
+-- test [bugs:#1373] Source method strips leading comments/whitespace
+-- testing leading "nop"
+::method test_routine_source_nop
+  nop
+  source = .context~stackFrames[1]~executable~source
+  self~assertSame("  nop", source[1])
+  self~assertTrue(source[source~last]~startsWith("  self~assertTrue"))
+
+-- test [bugs:#1373] Source method strips leading comments/whitespace
+-- testing leading comment
+::method test_routine_source_comment
+  -- comment
+  source = .context~stackFrames[1]~executable~source
+  self~assertSame("  -- comment", source[1])
+  self~assertTrue(source[source~last]~startsWith("  self~assertTrue"))
+
+-- test [bugs:#1373] Source method strips leading comments/whitespace
+-- testing leading whitespace
+::method test_routine_source_whitespace
+
+  source = .context~stackFrames[1]~executable~source
+  self~assertSame("", source[1])
+  self~assertTrue(source[source~last]~startsWith("  self~assertTrue"))
+
+
 ::class RunTester
 ::method setMethod
   forward class(super)

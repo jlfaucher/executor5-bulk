@@ -449,6 +449,35 @@ return testResult
   self~expectSyntax(93.952)
   r = .routine~new("test", ("x = something",.nil,"return 123"))
 
+-- test [bugs:#1373] Source method strips leading comments/whitespace
+::method test_routine_source
+  source = test_routine_source_nop()
+  self~assertSame("  nop", source[1])
+  self~assertTrue(source[source~last]~startsWith("  return .context"))
+
+  source = test_routine_source_comment()
+  self~assertSame("  -- comment", source[1])
+  self~assertTrue(source[source~last]~startsWith("  return .context"))
+
+  source = test_routine_source_whitespace()
+  self~assertSame("", source[1])
+  self~assertTrue(source[source~last]~startsWith("  return .context"))
+
+-- routines for [bugs:#1373] test
+-- test leading "nop"
+::routine test_routine_source_nop
+  nop
+  return .context~stackFrames[1]~executable~source~copy
+
+-- test leading comment
+::routine test_routine_source_comment
+  -- comment
+  return .context~stackFrames[1]~executable~source~copy
+
+-- test leading whitespace
+::routine test_routine_source_whitespace
+
+  return .context~stackFrames[1]~executable~source~copy
 
 
 -- source code of our context test routine
