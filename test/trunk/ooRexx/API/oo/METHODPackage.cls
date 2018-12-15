@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2008 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2008-2018 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -164,6 +164,11 @@
 ::method TestDirectoryRemove EXTERNAL "LIBRARY orxmethod TestDirectoryRemove"
 ::method TestNewDirectory EXTERNAL "LIBRARY orxmethod TestNewDirectory"
 ::method TestIsDirectory EXTERNAL "LIBRARY orxmethod TestIsDirectory"
+::method TestStringTablePut EXTERNAL "LIBRARY orxmethod TestStringTablePut"
+::method TestStringTableAt EXTERNAL "LIBRARY orxmethod TestStringTableAt"
+::method TestStringTableRemove EXTERNAL "LIBRARY orxmethod TestStringTableRemove"
+::method TestNewStringTable EXTERNAL "LIBRARY orxmethod TestNewStringTable"
+::method TestIsStringTable EXTERNAL "LIBRARY orxmethod TestIsStringTable"
 ::method TestSendMessage EXTERNAL "LIBRARY orxmethod TestSendMessage"
 ::method TestSendMessage0 EXTERNAL "LIBRARY orxmethod TestSendMessage0"
 ::method TestSendMessage1 EXTERNAL "LIBRARY orxmethod TestSendMessage1"

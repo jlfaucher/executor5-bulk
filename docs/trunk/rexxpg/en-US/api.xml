@@ -450,7 +450,7 @@ others are standard types defined by C++.  Many of the APIs involve conversion
 between types, while others require values of a specific type as arguments.
 This section explains the different types and the rules for using these types.
 </para>
-<section id="objecttypes"><title>Rexx Object Types</title>
+<section id="objecttypes" revisionflag="changed"><title>&changed50;Rexx Object Types</title>
 <para>Open Object Rexx is fundamentally an object-oriented language.  All data in
 the language (including strings and numbers) are represented by object instances.
 The ooRexx APIs use a number of opaque types that represent instances
@@ -483,6 +483,10 @@ in many places, and there are interfaces provided for direct array manipulation.
 <row><entry>RexxDirectoryObject</entry>
 <entry><para>An instance of Rexx Directory class.  Like arrays, there are
 APIs provided for access and manipulating data stored in a directory.
+</para></entry></row>
+<row><entry>RexxStringTableObject</entry>
+<entry><para>An instance of Rexx StringTable class.  Like for directories, there are
+APIs provided for access and manipulating data stored in a StringTable.
 </para></entry></row>
 <row><entry>RexxStemObject</entry>
 <entry><para>An instance of the Rexx Stem class.  The APIs include a number of
@@ -7794,6 +7798,65 @@ the RexxObjectPtr value may be safely cast to a RexxStringObject.
 <para>1 = is a String object, 0 = not a String object.</para>
 </section>
 
+
+<section id="mthIsStringTable" revisionflag="added"><title>&added50;IsStringTable</title>
+<indexterm><primary>IsStringTable</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>IsStringTable</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>IsStringTable</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>IsStringTable</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>IsStringTable</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Exit</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting language="C++">
+<![CDATA[
+RexxObjectPtr obj;
+logical_t flag;
+
+// Method Syntax Form(s)
+
+flag = context->IsStringTable(obj);
+]]>
+</programlisting>
+<para>Tests if an Object is a StringTable object.
+A true result indicates
+the RexxObjectPtr value may be safely cast to a RexxStringTableObject.
+</para>
+<para><emphasis role="bold">Arguments</emphasis></para>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
+    <row><entry><emphasis role="italic">obj</emphasis></entry>
+    <entry><para>The object to be tested.</para></entry>
+    </row>
+</tbody></tgroup></informaltable>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>1 = is a StringTable object, 0 = not a StringTable object.</para>
+<para>See also methods
+<xref linkend="mthNewStringTable" xrefstyle="select:title"/>,
+<xref linkend="mthStringTableAt" xrefstyle="select:title"/>,
+<xref linkend="mthStringTablePut" xrefstyle="select:title"/>, and
+<xref linkend="mthStringTableRemove" xrefstyle="select:title"/>.
+</para>
+</section>
+
+
 <section id="mthLanguageLevel"><title>LanguageLevel</title>
 <indexterm><primary>Language Level</primary></indexterm>
 <indexterm><primary>Rexx instance context methods</primary>
@@ -8836,6 +8899,58 @@ obj = context->NewStringFromAsciiz(str);
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>The new String object.</para>
 </section>
+
+
+<section id="mthNewStringTable" revisionflag="added"><title>&added50;NewStringTable</title>
+<indexterm><primary>NewStringTable</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>NewStringTable</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>NewStringTable</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>NewBStringTable</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>NewStringTable</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Exit</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting language="C++">
+<![CDATA[
+RexxStringTableObject obj;
+
+// Method Syntax Form(s)
+
+obj = context->NewStringTable();
+]]>
+</programlisting>
+<para>Create a StringTable object.
+</para>
+<para><emphasis role="bold">Arguments</emphasis></para>
+<para>None</para>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>The new StringTable object.</para>
+<para>See also methods
+<xref linkend="mthIsStringTable" xrefstyle="select:title"/>,
+<xref linkend="mthStringTableAt" xrefstyle="select:title"/>,
+<xref linkend="mthStringTablePut" xrefstyle="select:title"/>, and
+<xref linkend="mthStringTableRemove" xrefstyle="select:title"/>.
+</para>
+</section>
+
 
 <section id="mthNewSupplier"><title>NewSupplier</title>
 <indexterm><primary>NewSupplier</primary></indexterm>
@@ -11614,6 +11729,191 @@ obj = context->StringSizeToObject(sz);
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>an Object that represents the C stringsize_t value.</para>
 </section>
+
+
+<section id="mthStringTableAt" revisionflag="added"><title>&added50;StringTableAt</title>
+<indexterm><primary>StringTableAt</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>StringTableAt</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>StringTableAt</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>StringTableAt</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>StringTableAt</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Exit</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting language="C++">
+<![CDATA[
+RexxStringTableObject strtab_obj;
+RexxObjectPtr obj;
+CSTRING str;
+
+// Method Syntax Form(s)
+
+obj = context->StringTableAt(strtab_obj, str);
+]]>
+</programlisting>
+<para>Return the object at the specified index.
+</para>
+<para><emphasis role="bold">Arguments</emphasis></para>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
+    <row><entry><emphasis role="italic">strtab_obj</emphasis></entry>
+    <entry><para>The source StringTable object.</para></entry>
+    </row>
+    <row><entry><emphasis role="italic">str</emphasis></entry>
+    <entry><para>The index into the StringTable object.</para></entry>
+    </row>
+</tbody></tgroup></informaltable>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>The object at the specified index.  Returns NULLOBJECT if the given index does not exist.
+</para>
+<para>See also methods
+<xref linkend="mthIsStringTable" xrefstyle="select:title"/>,
+<xref linkend="mthNewStringTable" xrefstyle="select:title"/>,
+<xref linkend="mthStringTablePut" xrefstyle="select:title"/>, and
+<xref linkend="mthStringTableRemove" xrefstyle="select:title"/>.
+</para>
+</section>
+
+<section id="mthStringTablePut" revisionflag="added"><title>&added50;StringTablePut</title>
+<indexterm><primary>StringTablePut</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>StringTablePut</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>StringTablePut</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>StringTablePut</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>StringTablePut</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Exit</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting language="C++">
+<![CDATA[
+RexxStringTableObject strtab_obj;
+RexxObjectPtr item;
+CSTRING index;
+
+// Method Syntax Form(s)
+
+context->StringTablePut(strtab_obj, item, index);
+]]>
+</programlisting>
+<para>Replace/add an Object at the specified StringTable index.
+</para>
+<para><emphasis role="bold">Arguments</emphasis></para>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
+    <row><entry><emphasis role="italic">strtab_obj</emphasis></entry>
+    <entry><para>The source StringTable object.</para></entry>
+    </row>
+    <row><entry><emphasis role="italic">item</emphasis></entry>
+    <entry><para>The object instance to be stored at the index.</para></entry>
+    </row>
+    <row><entry><emphasis role="italic">index</emphasis></entry>
+    <entry><para>The ASCII-Z string index into the StringTable object.</para></entry>
+    </row>
+</tbody></tgroup></informaltable>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Void.</para>
+<para>See also methods
+<xref linkend="mthIsStringTable" xrefstyle="select:title"/>,
+<xref linkend="mthNewStringTable" xrefstyle="select:title"/>,
+<xref linkend="mthStringTableAt" xrefstyle="select:title"/>, and
+<xref linkend="mthStringTableRemove" xrefstyle="select:title"/>.
+</para>
+</section>
+
+<section id="mthStringTableRemove" revisionflag="added"><title>&added50;StringTableRemove</title>
+<indexterm><primary>StringTableRemove</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>StringTableRemove</secondary></indexterm>
+<indexterm><primary>Function context methods</primary>
+<secondary>StringTableRemove</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>StringTableRemove</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>StringTableRemove</secondary></indexterm>
+<informaltable frame="all">
+<tgroup cols="2">
+<colspec colnum="1" colwidth="3*" />
+<colspec colnum="2" colwidth="2*" />
+<tbody>
+<row>
+<entry><emphasis role="bold">Context</emphasis></entry>
+<entry><emphasis role="bold">Available</emphasis></entry>
+</row>
+<row><entry>Thread</entry><entry>Yes</entry></row>
+<row><entry>Method</entry><entry>Yes</entry></row>
+<row><entry>Function</entry><entry>Yes</entry></row>
+<row><entry>Exit</entry><entry>Yes</entry></row>
+<row><entry>Interpreter</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+<programlisting language="C++">
+<![CDATA[
+RexxStringTableObject strtab_obj;
+RexxObjectPtr obj;
+CSTRING str;
+
+// Method Syntax Form(s)
+
+obj = context->StringTableRemove(strtab_obj, str);
+]]>
+</programlisting>
+<para>Removes and returns the object at the specified StringTable index.
+</para>
+<para><emphasis role="bold">Arguments</emphasis></para>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
+    <row><entry><emphasis role="italic">strtab_obj</emphasis></entry>
+    <entry><para>The source StringTable object.</para></entry>
+    </row>
+    <row><entry><emphasis role="italic">str</emphasis></entry>
+    <entry><para>The ASCII-Z index into the StringTable object.</para></entry>
+    </row>
+</tbody></tgroup></informaltable>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>The object removed at the specified index.  Returns NULLOBJECT if the index
+did not exist in the target StringTable.
+</para>
+<para>See also methods
+<xref linkend="mthIsStringTable" xrefstyle="select:title"/>,
+<xref linkend="mthNewStringTable" xrefstyle="select:title"/>,
+<xref linkend="mthStringTableAt" xrefstyle="select:title"/>, and
+<xref linkend="mthStringTablePut" xrefstyle="select:title"/>.
+</para>
+</section>
+
 
 <section id="mthStringUpper"><title>StringUpper</title>
 <indexterm><primary>StringUpper</primary></indexterm>

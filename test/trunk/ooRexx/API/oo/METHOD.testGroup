@@ -1480,6 +1480,35 @@ return .ooTestResult~new(5)~~addException(err)
   d = .directory~new
   x = tester~TestDirectoryRemove(d, "abc")
 
+::method TestStringTable01
+  tester = .METHODTester~new
+  d = tester~TestNewStringTable
+  self~assertTrue(d~isA(.StringTable))
+  self~assertTrue(tester~TestIsStringTable(d))
+  tester~TestStringTablePut(d, 1, 'abc')
+  tester~TestStringTablePut(d, 2, 'ABC')
+  self~assertSame(1, d['abc'], "Test 1")
+  self~assertSame(2, d['ABC'], "Test 2")
+  self~assertSame(1, tester~TestStringTableAt(d, 'abc'), "Test 3")
+  self~assertSame(2, tester~TestStringTableAt(d, 'ABC'), "Test 4")
+  self~assertSame(1, tester~TestStringTableRemove(d, 'abc'))
+  self~assertSame(.nil, d['abc'], "Test 5")
+
+  self~assertFalse(tester~TestIsStringTable("abc"))
+  self~assertFalse(tester~TestIsStringTable(.nil))
+
+::method TestStringTable02
+  self~expectSyntax('88.900')
+  tester = .METHODTester~new
+  d = .directory~new
+  x = tester~TestStringTableAt(d, "abc")
+
+::method TestStringTable03
+  self~expectSyntax('88.900')
+  tester = .METHODTester~new
+  d = .directory~new
+  x = tester~TestStringTableRemove(d, "abc")
+
 ::method TestIsInstanceOf01
   tester = .METHODTester~new
   self~assertTrue(tester~TestIsInstanceOf("abc", .String))
