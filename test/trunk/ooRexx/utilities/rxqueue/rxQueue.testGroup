@@ -234,7 +234,121 @@ return testResult
   call deleteFile bug1471
 
 
--- End of class: rxQueue.testGroup
+::constant queueName "rxQueue.testGroup"
+
+-- test option clear
+::method test_rxqueue_clear
+  -- we want no RXQUEUE environment variable set
+  call value "RXQUEUE", .nil, "ENVIRONMENT"
+
+  .stdque~queue("line")
+  self~assertSame(1, .stdque~queued)
+  "rxqueue /clear"
+  self~assertSame(0, .stdque~queued)
+
+  q = .RexxQueue~new(self~queueName)
+  q~queue("line")
+  self~assertSame(1, q~queued)
+  "rxqueue" self~queueName "/clear"
+  self~assertSame(0, q~queued)
+
+-- test option fifo
+::method test_rxqueue_fifo
+  -- we want no RXQUEUE environment variable set
+  call value "RXQUEUE", .nil, "ENVIRONMENT"
+
+  .stdque~empty
+  address "" "rxqueue /fifo" with input using (("line 1", "line 2"))
+  self~assertSame(2, .stdque~queued)
+  self~assertSame("line 1", .stdque~pull)
+  self~assertSame("line 2", .stdque~pull)
+  self~assertSame(0, .stdque~queued)
+
+  q = .RexxQueue~new(self~queueName)
+  q~empty
+  address "" "rxqueue" self~queueName "/fifo" with input using (("line 1", "line 2"))
+  self~assertSame(2, q~queued)
+  self~assertSame("line 1", q~pull)
+  self~assertSame("line 2", q~pull)
+  self~assertSame(0, q~queued)
+
+-- test option lifo
+::method test_rxqueue_lifo
+  -- we want no RXQUEUE environment variable set
+  call value "RXQUEUE", .nil, "ENVIRONMENT"
+
+  .stdque~empty
+  address "" "rxqueue /lifo" with input using (("line 1", "line 2"))
+  self~assertSame(2, .stdque~queued)
+  self~assertSame("line 2", .stdque~pull)
+  self~assertSame("line 1", .stdque~pull)
+  self~assertSame(0, .stdque~queued)
+
+  q = .RexxQueue~new(self~queueName)
+  q~empty
+  address "" "rxqueue" self~queueName "/lifo" with input using (("line 1", "line 2"))
+  self~assertSame(2, q~queued)
+  self~assertSame("line 2", q~pull)
+  self~assertSame("line 1", q~pull)
+  self~assertSame(0, q~queued)
+
+
+-- the RXQUEUE environment variable should override the SESSION default
+::method test_rxqueue_environment_variable
+  self~assertSame("SESSION", .stdque~get)
+  .stdque~empty
+  self~assertSame(0, .stdque~queued)
+  q = .RexxQueue~new("rxqueue_environment_variable")
+  q~empty
+  self~assertSame(0, .stdque~queued)
+
+  file = .TemporaryTestFile~new(self, "rxqueue_environment_variable")
+  file~create(("line 1", "line 2", "line 3"))
+
+  -- RXQUEUE environment variable not set, default should be SESSION
+  "rxqueue <" file~fullName
+  self~assertSame(3, .stdque~queued)
+  self~assertSame(0, q~queued)
+  self~assertSame(3, .stdque~queued)
+
+  -- RXQUEUE environment variable set
+  call value "RXQUEUE", q~get, "ENVIRONMENT"
+  "rxqueue <" file~fullName
+  call value "RXQUEUE", .nil, "ENVIRONMENT"
+  self~assertSame(3, .stdque~queued)
+  self~assertSame(3, q~queued)
+
+  -- RXQUEUE environment variable set, but queue name argument specified
+  call value "RXQUEUE", q~get, "ENVIRONMENT"
+  "rxqueue session /fifo <" file~fullName
+  call value "RXQUEUE", .nil, "ENVIRONMENT"
+  self~assertSame(6, .stdque~queued)
+  self~assertSame(3, q~queued)
+
+  -- now again with piped input
+  cat = (.ooRexxUnit.OSName == "WINDOWS")~?("TYPE", "cat")
+  .stdque~empty
+  q~empty
+
+  -- RXQUEUE environment variable not set, default should be SESSION
+  cat file~fullName "| rxqueue"
+  self~assertSame(3, .stdque~queued)
+  self~assertSame(0, q~queued)
+
+  -- RXQUEUE environment variable set
+  call value "RXQUEUE", q~get, "ENVIRONMENT"
+  cat file~fullName "| rxqueue"
+  call value "RXQUEUE", .nil, "ENVIRONMENT"
+  self~assertSame(3, .stdque~queued)
+  self~assertSame(3, q~queued)
+
+  -- RXQUEUE environment variable set, but queue name argument specified
+  call value "RXQUEUE", q~get, "ENVIRONMENT"
+  cat file~fullName "| rxqueue session"
+  call value "RXQUEUE", .nil, "ENVIRONMENT"
+  self~assertSame(6, .stdque~queued)
+  self~assertSame(3, q~queued)
+
 
 
 ::options novalue error
