@@ -1,4 +1,3 @@
-#!/usr/bin/env rexx
 /*
   SVN Revision: $Rev$
   Change Date:  $Date$
