@@ -131,12 +131,6 @@ return testResult
 ::method testBadOption
   self~assertSyntaxError(25.902, "::method 'foo' yadayada")
 
-::method testAbstractAttribute
-  self~assertSyntaxError(25.902, "::method 'foo' abstract attribute")
-
-::method testAttributeAbstract
-  self~assertSyntaxError(25.902, "::method 'foo' attribute abstract")
-
 ::method testAttributeCodeBody
   self~assertSyntaxError(99.934, ("::method 'foo' attribute", "say hi"))
 
