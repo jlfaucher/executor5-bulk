@@ -239,5 +239,44 @@ return testResult
   -- Unknown keyword on ::OPTIONS directive
   self~assertSyntaxError(25.924, "::OPTIONS 'PROLOG'")
 
+-- [bugs:#1581] trace "all" crashes when the scope of a method is NIL
+::method test_options_trace_all_with_floating_method
+  -- we redirect 'trace all' output to an Array
+  trace = .Array~new
+  .error~destination(.ArrayStream~new(trace))
+
+  r = .Routine~new("", .Array~of(  -
+    '.c~r(.methods["FLOAT"])    ', -
+    '::method float             ', -
+    '::class c                  ', -
+    '::method r class           ', -
+    '    forward message "run"  ', -
+    '::options trace "a"        '))
+  r~call
+  /* this is the expected trace output:
+       >I> Routine "" in package "".
+       >I> Routine "" in package "".
+     1 *-* .c~r(.methods["FLOAT"])
+       >I> Method "R" with scope "C" in package "".
+     5 *-* forward message "run"
+       >I> Method "*UNNAMED*" with scope ".NIL" in package "".
+  */
+  -- we're not expected to crash (that's what the bug report is about)
+  -- but since we already collect the trace ouput, we can as well
+  -- check a few things
+
+  -- the floating method's (missing) name is displayed as *UNNAMED*
+  self~assertTrue(trace[trace~last]~contains("*UNNAMED*"))
+  -- the floating method's scope is displayed as ".NIL"
+  self~assertTrue(trace[trace~last]~contains('".NIL"'))
+
+::class ArrayStream subclass OutputStream
+::method init
+  expose output
+  use strict arg output
+::method lineout
+  expose output
+  output~append(arg(1))
+
 
 ::options novalue error
