@@ -606,18 +606,23 @@ return testResult
 -- Tests the command 'query' option, with an existing file, not yet opened.
 ::method test_queryFile_exists_notOpen
 
+  eSize = '1234567890'~length + .endOfLine~length
   fileName = createFile(.array~of('1234567890'), "delMe.test_stream_query")
+
+  -- we've just created the file, this time stamp is as close a possible
+  now = .DateTime~new
+
   self~assertTrue(fileName \== "")
   self~streamTestingFile = fileName
 
-  -- We just created the file, date and timestamp should be now.
-  parse value .DateTime~new~isoDate with d 'T' t '.' .
-  eTimeStamp = d t
-  eDateTime = d~substr(6) || '-' || d~substr(3, 2) t
-  eSize = '1234567890'~length + .endOfLine~length
-
-  ret = stream(fileName, 'c', 'query datetime')
-  self~assertSame(eDateTime, ret)
+  -- QUERY DATETIME returns mm-dd-yy hh:mm:ss with truncated fractions of seconds
+  -- so even if there was almost no time between file creation and the time we
+  -- take our 'now' timestamp, this may actually be as much as a full second later
+  -- so we must allow up to 1.1 seconds delta
+  parse value stream(fileName, 'c', 'query datetime') with date time
+  timeStamp = .DateTime~fromUsaDate(date, "-") + .TimeSpan~fromNormalTime(time)
+  delta = (now - timeStamp)~totalSeconds
+  self~assertTrue(delta >= 0 & delta <= 1.1, "query datetime" date time", now" now)
 
   ret = stream(fileName, 'c', 'query exists')
   self~assertSame(fileName, ret)
@@ -637,19 +642,25 @@ return testResult
   ret = stream(fileName, 'c', 'query streamtype')
   self~assertSame("UNKNOWN", ret)
 
-  ret = stream(fileName, 'c', 'query timestamp')
-  self~assertSame(eTimeStamp, ret)
+  -- QUERY TIMESTAMP returns yyyy-mm-dd hh:mm:ss with truncated fractions of seconds
+  -- so even if there was almost no time between file creation and the time we
+  -- take our 'now' timestamp, this may actually be as much as a full second later
+  -- so we must allow up to 1.1 seconds delta
+  parse value stream(fileName, "c", "query timestamp") with date time
+  timeStamp = .DateTime~fromStandardDate(date, "-") + .TimeSpan~fromNormalTime(time)
+  delta = (now - timeStamp)~totalSeconds
+  self~assertTrue(delta >= 0 & delta <= 1.1, "query timestamp" date time", now" now)
 
 -- Tests the command 'query' option, with an existing file, after stream is
 -- opened.  Query position in separate method
 ::method test_queryFile_exists_opened_01
 
   src = .array~of('1234567890')
+  eSize = '1234567890'~length + .endOfLine~length
   fileName = createFile(src, "delMe.test_queryFile_exists_opened01")
 
-  -- We just created the file, date and timestamp should be now.  We need to
-  -- capture the date / time as close to the file creation as possible.
-  parse value .DateTime~new~isoDate with d 'T' t '.' .
+  -- we've just created the file, this time stamp is as close a possible
+  now = .DateTime~new
 
   self~assertTrue(fileName \== "")
   self~streamTestingFile = fileName
@@ -658,19 +669,14 @@ return testResult
   ret = linein(fileName, 1, 0)
   self~assertSame("", ret)
 
-  -- Expected results. Note that if things hit just right the actual time could
-  -- be one second less than our expected time.  There is a gap between when
-  -- createFile() writes out the file and when we capture the time with
-  -- .DateTime.
-
-  eTimeStamp = d t
-  eDateTime = d~substr(6) || '-' || d~substr(3, 2) t
-  eSize = '1234567890'~length + .endOfLine~length
-
-  ret = stream(fileName, 'c', 'query datetime')
-  self~assertSame(eDateTime~left(eDateTime~length - 1), ret~left(ret~length - 1))
-  diff = eDateTime~right(1) - ret~right(1)
-  self~assertTrue(diff == 0 | diff == 1)
+  -- QUERY DATETIME returns mm-dd-yy hh:mm:ss with truncated fractions of seconds
+  -- so even if there was almost no time between file creation and the time we
+  -- take our 'now' timestamp, this may actually be as much as a full second later
+  -- so we must allow up to 1.1 seconds delta
+  parse value stream(fileName, 'c', 'query datetime') with date time
+  timeStamp = .DateTime~fromUsaDate(date, "-") + .TimeSpan~fromNormalTime(time)
+  delta = (now - timeStamp)~totalSeconds
+  self~assertTrue(delta >= 0 & delta <= 1.1, "query datetime" date time", now" now)
 
   ret = stream(fileName, 'c', 'query exists')
   self~assertSame(fileName, ret)
@@ -686,10 +692,14 @@ return testResult
   ret = stream(fileName, 'c', 'query streamtype')
   self~assertSame("PERSISTENT", ret)
 
-  ret = stream(fileName, 'c', 'query timestamp')
-  self~assertSame(eTimeStamp~left(eTimeStamp~length - 1), ret~left(ret~length - 1))
-  diff = eTimeStamp~right(1) - ret~right(1)
-  self~assertTrue(diff == 0 | diff == 1)
+  -- QUERY TIMESTAMP returns yyyy-mm-dd hh:mm:ss with truncated fractions of seconds
+  -- so even if there was almost no time between file creation and the time we
+  -- take our 'now' timestamp, this may actually be as much as a full second later
+  -- so we must allow up to 1.1 seconds delta
+  parse value stream(fileName, "c", "query timestamp") with date time
+  timeStamp = .DateTime~fromStandardDate(date, "-") + .TimeSpan~fromNormalTime(time)
+  delta = (now - timeStamp)~totalSeconds
+  self~assertTrue(delta >= 0 & delta <= 1.1, "query timestamp" date time", now" now)
 
 
 -- Tests the command 'query position read' option, with an existing file, after
