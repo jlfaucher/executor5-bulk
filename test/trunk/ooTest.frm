@@ -2469,10 +2469,10 @@ return
     use arg msg
 
     .stdout~charout(msg)
-
-    reply
     isTicking = .true
     self~endTicking = .false
+
+    reply
     dots = msg~length
 
     do while \ self~endTicking
