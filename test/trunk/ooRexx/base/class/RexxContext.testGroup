@@ -152,12 +152,51 @@ internal:  return .context~name
 ::method methodCall
   return .context~name
 
-
 ::routine testargs
   return .context~args
 
 ::routine routine
   return .context~name
+
+::method test_sourceline_full_file
+  parse source . . path
+  thisFile = .Stream~new(path)
+  thisFile~open("read shared")
+  lines = thisFile~ArrayIn
+  thisFile~close
+  thisPackage = .context~package
+  thisSource = thisPackage~source
+  self~assertSame(lines~last, thisSource~last)
+  do n = 1 to lines~last
+    self~assertSame(lines[n], thisPackage~sourceLine(n))
+  end
+
+::method test_sourceline_first_line
+  do first over "", .String~tab, "-- comment", "/* comment */"
+    r = .Routine~new("", (first, "return .context~package~sourceLine(1)"))
+    self~assertSame(first, r[])
+  end
+  first = "/* REXX"
+  r = .Routine~new("", (first, "*/", "return .context~package~sourceLine(1)"))
+  self~assertSame(first, r[])
+
+::method test_sourceline_last_line
+  do last over "", .String~tab, "-- comment", "/* comment */"
+    r = .Routine~new("", ("return .context~package~sourceLine(sourceline())", last))
+    self~assertSame(last, r[])
+  end
+  last = "*/"
+  r = .Routine~new("", ("return .context~package~sourceLine(sourceline())", "/*", last))
+  self~assertSame(last, r[])
+
+::method test_sourceline_hashbang
+  -- .Routine new() doesn't support a hashbang, so we create a temporary file
+  hashbang = .TemporaryTestFile~new(self, "test_sourceline_hashbang.rex")
+  do first over "#!", "#!/usr/bin/rexx"
+    hashbang~create((first, "return .context~package~sourceLine(1)"))
+    r = .Routine~newFile(hashbang~fullName)
+    self~assertSame(first, r[])
+  end
 
 
 ::options novalue error

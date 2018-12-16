@@ -49,7 +49,6 @@
 return testResult
 
 ::requires 'ooTest.frm'
-::requires "FileUtils.cls"
 
 -- class named exactly like file
 ::class "SOURCELINE.testGroup" subclass ooTestCase public
@@ -65,54 +64,6 @@ return testResult
 ::method 'test003'
     self~expectSyntax(40.14)
     xre = sourceLine(-1)
-
-::method 'test004'
-    self~assertSame("::method 'test003'", sourceLine(65))
-
-::method 'test005'
-    self~assertSame("::method 'test004'", sourceLine('105'~d2x))
-
-::method 'test006'
-    self~assertSame("::method 'test005'", sourceLine(80-8))
-
-::method 'test007'
-    self~assertSame("::method 'test002'", sourceLine(.61E+2))
-
-::method 'test008'
-    self~assertSame("::method 'test007'", sourceLine(000000000078))
-
-::method 'test009'
-    v127 = 63
-    self~assertSame("    xre = sourceLine("""")", sourceLine(v127))
-
-::method 'test_line_one'
-    -- The intent of this test is to assert that sourceline(1) returns the
-    -- correct text, that there is not an "off by one" error.  Because the
-    -- handling of a hashbang on the first line is not consistent for all
-    -- operating systems, we write out out own external function and test
-    -- sourceline(1) in that file.
-    fileSrc = .array~new
-    fileSrc[1]  = "/* This is a temporary ooRexx program */"
-    fileSrc[2]  = ""
-    fileSrc[3]  = "line1 = sourceline(1)"
-    fileSrc[4]  = "return line1"
-
-    fileName = .ooRexxUnit.dir || .ooRexxUnit.directory.separator || "test_line_one_temp"
-    fileName = createFile(fileSrc, fileName)
-    self~assertTrue(fileName <> "", "Source file must be created")
-    self~assertTrue(SysIsFile(fileName), "Source file must exist")
-
-    line1 = 'test_line_one_temp'()
-    j = deleteFile(fileName)
-
-    self~assertSame(fileSrc[1], line1, 'sourceline(1) must equal first line')
-
-::method 'test_line_two'
-   self~assertEquals("/*", sourceline(2), "sourceline(2) must equal second line")
-
-::method 'test_last_line'
-    lastLine = "/* End of file. Don't remove this marker.  Don't add lines after this line. */"
-    self~assertSame(lastLine, sourceLine(137))
 
 ::method 'test_negative_number'
     self~expectSyntax(40.14)
@@ -132,6 +83,44 @@ return testResult
 
 ::method "test_sourceline_with_no_args"
     self~assertTrue(sourceline()~datatype("N"), "sourceline() datatype must be a number")
-    self~assertSame(137, sourceline(), "sourceline() must return correct count of lines")
 
-/* End of file. Don't remove this marker.  Don't add lines after this line. */
+::method test_sourceline_full_file
+  parse source . . path
+  thisFile = .Stream~new(path)
+  thisFile~open("read shared")
+  lines = thisFile~ArrayIn
+  thisFile~close
+  self~assertSame(lines~last, sourceline())
+  do n = 1 to lines~last
+    self~assertSame(lines[n], sourceline(n))
+  end
+
+::method test_sourceline_first_line
+  do first over "", .String~tab, "-- comment", "/* comment */"
+    r = .Routine~new("", (first, "return sourceline(1)"))
+    self~assertSame(first, r[])
+  end
+  first = "/* REXX"
+  r = .Routine~new("", (first, "*/", "return sourceline(1)"))
+  self~assertSame(first, r[])
+
+::method test_sourceline_last_line
+  do last over "", .String~tab, "-- comment", "/* comment */"
+    r = .Routine~new("", ("return sourceline(sourceline())", last))
+    self~assertSame(last, r[])
+  end
+  last = "*/"
+  r = .Routine~new("", ("return sourceline(sourceline())", "/*", last))
+  self~assertSame(last, r[])
+
+::method test_sourceline_hashbang
+  -- .Routine new() doesn't support a hashbang, so we create a temporary file
+  hashbang = .TemporaryTestFile~new(self, "test_sourceline_hashbang.rex")
+  do first over "#!", "#!/usr/bin/rexx"
+    hashbang~create((first, "return sourceline(1)"))
+    r = .Routine~newFile(hashbang~fullName)
+    self~assertSame(first, r[])
+  end
+
+
+::options novalue error
