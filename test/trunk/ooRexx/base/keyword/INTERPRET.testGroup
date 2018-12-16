@@ -66,5 +66,30 @@ return testResult
    y='call intproc; return; intproc: x=1; return;'
    Interpret y
 
+::method test_interpret_no_expression
+  -- Missing expression following INTERPRET keyword
+  self~assertSyntaxError(35.912, "interpret")
+
+::method test_interpret_null
+  interpret ""
+
+-- INTERPRET allows no directives
+::method test_interpret_directive
+  -- these should still work
+  interpret "-- ::options digits 16"
+  interpret "/* ; ::options digits 16 */"
+
+  -- but this should fail
+  self~expectSyntax(99.914) -- INTERPRET data must not contain directive instructions
+  interpret "::options digits 16"
+
+::method test_interpret_code_directive_options
+  self~expectSyntax(99.914) -- INTERPRET data must not contain directive instructions
+  interpret "a = 123; ::options digits 16"
+
+::method test_interpret_code_directive_routine
+  self~expectSyntax(99.914) -- INTERPRET data must not contain directive instructions
+  interpret "nop; ::routine r"
+
 
 ::options novalue error
