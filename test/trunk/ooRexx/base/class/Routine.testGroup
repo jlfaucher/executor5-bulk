@@ -134,6 +134,11 @@ return testResult
   -- "0 expected" is rather strange
   .Routine~new("test", "nop", "programscope", "")
 
+::method test_new_hashbang
+  -- should be ok if code starts with a hashbang line
+  r = .Routine~new("test", .resources~hashBang)~call
+  self~assertTrue(r~startsWith("#!"), "'#!' expected; found" r)
+
 
 -- context is omitted
 ::method test_new_context_omitted
@@ -239,6 +244,13 @@ return testResult
 ::method test_newFile_three_args
   self~expectSyntax(93.902)            -- Too many arguments in invocation of method; 2 expected
   .Routine~newFile("filename", "programscope", "")
+
+::method test_newFile_hashbang
+  -- should be ok if code starts with a hashbang line
+  file = .TemporaryTestFile~new(self, "newFileHashbang.rex")
+  file~createFromResource("HASHBANG")
+  r = .Routine~newFile(file~fullName)~call
+  self~assertTrue(r~startsWith("#!"), "'#!' expected; found" r)
 
 
 -- context is REXX package
@@ -451,34 +463,40 @@ return testResult
 
 -- test [bugs:#1373] Source method strips leading comments/whitespace
 ::method test_routine_source
-  source = test_routine_source_nop()
+  source = routine_source_nop()
   self~assertSame("  nop", source[1])
   self~assertTrue(source[source~last]~startsWith("  return .context"))
 
-  source = test_routine_source_comment()
+  source = routine_source_comment()
   self~assertSame("  -- comment", source[1])
   self~assertTrue(source[source~last]~startsWith("  return .context"))
 
-  source = test_routine_source_whitespace()
+  source = routine_source_whitespace()
   self~assertSame("", source[1])
   self~assertTrue(source[source~last]~startsWith("  return .context"))
 
 -- routines for [bugs:#1373] test
 -- test leading "nop"
-::routine test_routine_source_nop
+::routine routine_source_nop
   nop
   return .context~stackFrames[1]~executable~source~copy
 
 -- test leading comment
-::routine test_routine_source_comment
+::routine routine_source_comment
   -- comment
   return .context~stackFrames[1]~executable~source~copy
 
 -- test leading whitespace
-::routine test_routine_source_whitespace
+::routine routine_source_whitespace
 
   return .context~stackFrames[1]~executable~source~copy
 
+
+-- hashbang sorce code
+::resource hashBang
+#!/usr/bin/rexx
+return sourceline(1)
+::END
 
 -- source code of our context test routine
 ::resource "tstDefined"

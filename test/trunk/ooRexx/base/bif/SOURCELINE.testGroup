@@ -96,10 +96,12 @@ return testResult
   end
 
 ::method test_sourceline_first_line
-  do first over "", .String~tab, "-- comment", "/* comment */"
+  -- test various first lines, including hashbangs
+  do first over "", .String~tab, "-- comment", "/* comment */", "#!", "#!/usr/bin/rexx"
     r = .Routine~new("", (first, "return sourceline(1)"))
     self~assertSame(first, r[])
   end
+  -- now a two-line comment
   first = "/* REXX"
   r = .Routine~new("", (first, "*/", "return sourceline(1)"))
   self~assertSame(first, r[])
@@ -112,15 +114,6 @@ return testResult
   last = "*/"
   r = .Routine~new("", ("return sourceline(sourceline())", "/*", last))
   self~assertSame(last, r[])
-
-::method test_sourceline_hashbang
-  -- .Routine new() doesn't support a hashbang, so we create a temporary file
-  hashbang = .TemporaryTestFile~new(self, "test_sourceline_hashbang.rex")
-  do first over "#!", "#!/usr/bin/rexx"
-    hashbang~create((first, "return sourceline(1)"))
-    r = .Routine~newFile(hashbang~fullName)
-    self~assertSame(first, r[])
-  end
 
 
 ::options novalue error

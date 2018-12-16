@@ -624,6 +624,16 @@ return testResult
   self~expectSyntax(93.952)
   r = .package~new("test", ("x = something",.nil,"return 123"))
 
+::method test_new_hashbang
+  -- should be ok if code starts with a hashbang line
+  .Package~new("", .resources~hashBang)
+
+-- hashbang sorce code
+::resource hashBang
+#!/usr/bin/rexx
+return
+::END
+
 ::method test_prolog
   self~assertSame(.nil, .object~package~prolog)
   package = .package~new("test", ("return 123", "::class test"))
