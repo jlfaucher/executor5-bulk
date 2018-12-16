@@ -89,14 +89,13 @@ return testResult
     self~assertSame(0, rxqueue("delete", name))
   end
 
-  -- known bug (testOOrexx -V 3 will display stats, -V 7 will make test fail)
   name = "_"~copies(250)
-  self~assertSame(0, rxqueue("open", name), "tracker bug #1547 RXQUEUE() issues")
+  self~assertSame(0, rxqueue("open", name))
 
 ::method test_rxqueue_exists
   -- SESSION should always exists
   -- known bug (testOOrexx -V 3 will display stats, -V 7 will make test fail)
-  self~assertTrue(rxqueue("exists", "SESSION"), "tracker bug #1547 RXQUEUE() issues")
+  self~assertTrue(rxqueue("exists", "SESSION"))
 
   -- a newly opeoned queue should exist
   name = self~queueName
@@ -169,7 +168,7 @@ return testResult
 ::method test_rxqueue_open
   -- SESSION should always exists
   -- known bug (testOOrexx -V 3 will display stats, -V 7 will make test fail)
-  self~assertSame(0, rxqueue("open", "session"), "tracker bug #1547 RXQUEUE() issues")
+  self~assertSame(0, rxqueue("open", "session"))
 
   -- 'open' returns 0 whether the queue existed before or was just created
   name = self~queueName
