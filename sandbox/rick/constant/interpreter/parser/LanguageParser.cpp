@@ -1033,12 +1033,10 @@ void LanguageParser::translate()
 
 
 /**
- * Translate a block of REXX code (delimited by possible
- * directive instructions
- *
- * @return A RexxCode object for this block.
+ * Initialize all of the fields that need to start clean for a new
+ * translation section.
  */
-RexxCode *LanguageParser::translateBlock()
+void LanguageParser::initializeForTranslation()
 {
     // initialize the parsing environment.
     firstInstruction = OREF_NULL;
@@ -1068,6 +1066,19 @@ RexxCode *LanguageParser::translateBlock()
     currentStack = 0;
     // we're not at the end yet
     flags.reset(noClause);
+}
+
+
+/**
+ * Translate a block of REXX code (delimited by possible
+ * directive instructions
+ *
+ * @return A RexxCode object for this block.
+ */
+RexxCode *LanguageParser::translateBlock()
+{
+    // reset for a fresh translation
+    initializeForTranslation();
 
     // add a dummy instruction at the front.  All other instructions get chained off of this.
     RexxInstruction *instruction = new RexxInstruction(OREF_NULL, KEYWORD_FIRST);
@@ -1482,7 +1493,7 @@ RexxCode *LanguageParser::translateBlock()
     }
 
     // the first instruction is just a dummy we use to anchor
-    // everything will parsing.  We can unchain that now.
+    // everything while parsing.  We can unchain that now.
     firstInstruction = firstInstruction->nextInstruction;
     // if this code block does not contain labels (pretty common if
     // using an oo style), get rid of those too
@@ -1514,6 +1525,37 @@ RexxCode *LanguageParser::translateBlock()
     labels = OREF_NULL;
     // and return the code object.
     return code;
+}
+
+
+/**
+ * Translate a expression of REXX code on a directive (already
+ * have an active clause, not not translating a block
+ * yet)
+ *
+ * @param token  The left paren delimiter for the expression. Required for error reporting.
+ *
+ * @return A translated expression for this directive.
+ */
+RexxInternalObject *LanguageParser::translateExpression(RexxToken *token, RexxErrorCodes error)
+{
+    // reset for a fresh translation
+    initializeForTranslation();
+
+    // parse out a subexpression, terminating on the end of clause or
+    // a right paren (the right paren is actually the required terminator)
+    // we get called here because we've already seen the left paren.
+    RexxInternalObject *exp = requiredExpression(TERM_RIGHT, error);
+    // now verify that the terminator token was a right paren.  If not,
+    // issue an error message using the original opening token so we know
+    // which one is an issue.
+    if (!nextToken()->isRightParen())
+    {
+        syntaxErrorAt(Error_Unmatched_parenthesis_paren, token);
+    }
+    // protect the expression from GC and return it.
+    holdObject(exp);
+    return exp;
 }
 
 
