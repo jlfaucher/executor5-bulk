@@ -340,7 +340,7 @@ class LanguageParser: public RexxInternalObject
     void        createAttributeGetterMethod(RexxString *name, RexxVariableBase *retriever, bool classMethod, AccessFlag privateMethod, ProtectedFlag protectedMethod, GuardFlag guardedMethod);
     void        createAttributeSetterMethod(RexxString *name, RexxVariableBase *retriever, bool classMethod, AccessFlag privateMethod, ProtectedFlag protectedMethod, GuardFlag guardedMethod);
     void        createDelegateMethod(RexxString *name, RexxVariableBase *retriever, bool classMethod, AccessFlag privateMethod, ProtectedFlag protectedMethod, GuardFlag guardedMethod, bool isAttribute);
-    void        createConstantGetterMethod(RexxString *name, RexxObject *value, RexxInternalObject *expression);
+    void        createConstantGetterMethod(RexxString *name, RexxObject *value, RexxInternalObject *expression, SourceLocation &location);
     void        createAbstractMethod(RexxString *name, bool classMethod, AccessFlag privateMethod, ProtectedFlag protectedMethod, GuardFlag guardedMethod, bool isAttribute);
     void        checkDuplicateMethod(RexxString *name, bool classMethod, RexxErrorCodes errorMsg);
     void        addMethod(RexxString *name, MethodClass *method, bool classMethod);

@@ -277,6 +277,8 @@ void RexxCode::addInstruction(RexxInstruction *i, size_t m, size_t v)
     if (start == OREF_NULL)
     {
         start = i;
+        // we have a single instruction, so that is the bounds of the source
+        location.setLocation(i->getLocation());
     }
     // run the chain and add this to the end
     else
@@ -288,6 +290,8 @@ void RexxCode::addInstruction(RexxInstruction *i, size_t m, size_t v)
         }
 
         current->setNext(i);
+        // update the bounds of the source location.
+        location.setLocation(i->getLocation());
     }
 
     // the max stack needs to be the largest value required by any of the

@@ -1655,6 +1655,10 @@ void LanguageParser::constantDirective()
     // nothing more permitted after this
     requiredEndOfClause(Error_Invalid_data_constant_dir);
 
+    // save the current location before checking for a body, since that
+    // gets the next clause, which will update the location.
+    SourceLocation directiveLocation = clause->getLocation();
+
     // this directive does not allow a body
     checkDirective(Error_Translation_constant_body);
 
@@ -1667,7 +1671,7 @@ void LanguageParser::constantDirective()
     }
 
     // create the method pair and quit.
-    createConstantGetterMethod(internalname, value, expression);
+    createConstantGetterMethod(internalname, value, expression, directiveLocation);
 }
 
 
@@ -2249,9 +2253,10 @@ void LanguageParser::createAbstractMethod(RexxString *name,
  *
  * @param name       The name of the attribute.
  * @param value      A potential expression that needs to be evaluated at run time.
- * @param expression
+ * @param expression An expression to evaluate if this is the dynamic form.
+ * @param location   The clause location information.
  */
-void LanguageParser::createConstantGetterMethod(RexxString *name, RexxObject *value, RexxInternalObject *expression)
+void LanguageParser::createConstantGetterMethod(RexxString *name, RexxObject *value, RexxInternalObject *expression, SourceLocation &location)
 {
     Protected<ConstantGetterCode> code = new ConstantGetterCode(name, value);
     // add this as an unguarded method
@@ -2282,6 +2287,8 @@ void LanguageParser::createConstantGetterMethod(RexxString *name, RexxObject *va
         {
             // this gets added to the active class for evaluation later
             Protected<ConstantDirective> directive = new ConstantDirective(code, expression, clause);
+            // the clause we provided is the wrong location, so set the correct position.
+            directive->setLocation(location);
             activeClass->addConstantMethod(name, method, directive, constantMaxStack, constantVariableIndex);
         }
         else
