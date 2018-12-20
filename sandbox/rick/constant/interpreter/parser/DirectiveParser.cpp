@@ -353,6 +353,18 @@ void LanguageParser::classDirective()
 
     // create a class directive and add this to the dependency list
     activeClass = new ClassDirective(name, public_name, clause);
+
+    // if we have any computed constants associated with this class, we need to
+    // keep some special information about the constant expressions.
+
+    // a table of variables...starting with the special variables we allocated space for.
+    // we use the initial "clean" version, then save it after each parse constant associated
+    // with the class.
+    constantVariables = OREF_NULL;
+    // also start with the default index counter
+    constantVariableIndex = RexxLocalVariables::FIRST_VARIABLE_INDEX;
+    // and also the largest stack needed to evaluate these.
+    constantMaxStack = 0;
     // add this to our directives list.
     addClassDirective(public_name, activeClass);
 
@@ -1609,7 +1621,7 @@ void LanguageParser::constantDirective()
     else if (token->isLeftParen())
     {
         // we have an expression in parens, parse it as a subexpression.
-        expression = translateExpression(token, Error_Invalid_expression_missing_constant);
+        expression = translateConstantExpression(token, Error_Invalid_expression_missing_constant);
     }
     // no a symbol or literal...we have special checks for signed numbers
     else if (!token->isSymbolOrLiteral())
@@ -2270,7 +2282,7 @@ void LanguageParser::createConstantGetterMethod(RexxString *name, RexxObject *va
         {
             // this gets added to the active class for evaluation later
             Protected<ConstantDirective> directive = new ConstantDirective(code, expression, clause);
-            activeClass->addConstantMethod(name, method, directive, maxStack);
+            activeClass->addConstantMethod(name, method, directive, constantMaxStack, constantVariableIndex);
         }
         else
         {

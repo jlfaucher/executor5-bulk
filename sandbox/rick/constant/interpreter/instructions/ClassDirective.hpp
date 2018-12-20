@@ -103,7 +103,7 @@ class ClassDirective : public RexxDirective
     void addInherits(ClassResolver *name);
     void addMethod(RexxString *name, MethodClass *method, bool classMethod);
     void addConstantMethod(RexxString *name, MethodClass *method);
-    void addConstantMethod(RexxString *name, MethodClass *method, RexxInstruction *directive, size_t maxStack);
+    void addConstantMethod(RexxString *name, MethodClass *method, RexxInstruction *directive, size_t maxStack, size_t variableIndex);
     bool checkDuplicateMethod(RexxString *name, bool classMethod);
     MethodClass *findMethod(RexxString *name);
     MethodClass *findClassMethod(RexxString *name);

@@ -530,7 +530,7 @@ void ClassDirective::addConstantMethod(RexxString *name, MethodClass *method)
  * @param method    The method object that maps to this name.
  * @param directive The directive instruction that will resolve the constant.
  */
-void ClassDirective::addConstantMethod(RexxString *name, MethodClass *method, RexxInstruction *directive, size_t maxStack)
+void ClassDirective::addConstantMethod(RexxString *name, MethodClass *method, RexxInstruction *directive, size_t maxStack, size_t variableIndex)
 {
     // this gets added as both a class and instance method
     addMethod(name, method, false);
@@ -546,7 +546,7 @@ void ClassDirective::addConstantMethod(RexxString *name, MethodClass *method, Re
         constantInitializer = new RexxCode(OREF_NULL, loc, OREF_NULL);
     }
     // add this instruction to the end of the initializer
-    constantInitializer->addInstruction(directive, maxStack);
+    constantInitializer->addInstruction(directive, maxStack, variableIndex);
 
     // the methods added will give an error when invoked. The initialization is done by
     // running a special method composed of a chain of ::CONSTANT directive instructions.

@@ -269,8 +269,9 @@ RexxCode *RexxCode::interpret(RexxString *source, size_t lineNumber)
  *
  * @param i      The instruction to add
  * @param m      The maximum stack size required by this instruction.
+ * @param v      The size of the variables frame.
  */
-void RexxCode::addInstruction(RexxInstruction *i, size_t m)
+void RexxCode::addInstruction(RexxInstruction *i, size_t m, size_t v)
 {
     // first instruction? just set the chain head
     if (start == OREF_NULL)
@@ -290,7 +291,10 @@ void RexxCode::addInstruction(RexxInstruction *i, size_t m)
     }
 
     // the max stack needs to be the largest value required by any of the
-    // instructions.
-    maxStack = Numerics::maxVal(maxStack, m + MINIMUM_STACK_FRAME);
+    // instructions. This is managed by the parser as the constants are
+    // processed, so just take the latest value.
+    maxStack = m + MINIMUM_STACK_FRAME;
+    // we also need to variable dictionary frame size.
+    vdictSize = v;
 }
 

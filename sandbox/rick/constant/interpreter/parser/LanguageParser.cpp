@@ -410,6 +410,7 @@ void LanguageParser::live(size_t liveMark)
     memory_mark(clause);
     memory_mark(holdStack);
     memory_mark(variables);
+    memory_mark(constantVariables);
     memory_mark(literals);
     memory_mark(dotVariables);
     memory_mark(labels);
@@ -456,6 +457,7 @@ void LanguageParser::liveGeneral(MarkReason reason)
     memory_mark_general(clause);
     memory_mark_general(holdStack);
     memory_mark_general(variables);
+    memory_mark_general(constantVariables);
     memory_mark_general(literals);
     memory_mark_general(dotVariables);
     memory_mark_general(labels);
@@ -1470,27 +1472,9 @@ RexxCode *LanguageParser::translateBlock()
         nextClause();
     }
 
-    // ok, we have a stack of pending call/function calls to handle.
-    // now that we've got all of the labels scanned off, we can figure out
-    // what sort of targets these calls will resolve to.
-
-    size_t count = calls->items();
-    for (size_t i = 1;  i <= count; i++)
-    {
-        instruction = (RexxInstruction *)calls->get(i);
-        // function calls are expression objects, while CALLs
-        // are instructions. Similar, but have different
-        // processing methods
-        if (isOfClass(FunctionCallTerm, instruction))
-        {
-            ((RexxExpressionFunction *)instruction)->resolve(labels);
-        }
-        else
-        {
-            // ok, technically, this could be either a CALL or a SIGNAL.
-            ((RexxInstructionCallBase *)instruction)->resolve(labels);
-        }
-    }
+    // we might have function calls or call instructions that had deferred resolution,
+    // take care of those now
+    resolveCalls();
 
     // the first instruction is just a dummy we use to anchor
     // everything while parsing.  We can unchain that now.
@@ -1529,6 +1513,35 @@ RexxCode *LanguageParser::translateBlock()
 
 
 /**
+ * Attempt to resolve and deferred function or call instructions.
+ */
+void LanguageParser::resolveCalls()
+{
+    // ok, we have a stack of pending call/function calls to handle.
+    // now that we've got all of the labels scanned off, we can figure out
+    // what sort of targets these calls will resolve to.
+
+    size_t count = calls->items();
+    for (size_t i = 1;  i <= count; i++)
+    {
+        RexxInstruction *instruction = (RexxInstruction *)calls->get(i);
+        // function calls are expression objects, while CALLs
+        // are instructions. Similar, but have different
+        // processing methods
+        if (isOfClass(FunctionCallTerm, instruction))
+        {
+            ((RexxExpressionFunction *)instruction)->resolve(labels);
+        }
+        else
+        {
+            // ok, technically, this could be either a CALL or a SIGNAL.
+            ((RexxInstructionCallBase *)instruction)->resolve(labels);
+        }
+    }
+}
+
+
+/**
  * Translate a expression of REXX code on a directive (already
  * have an active clause, not not translating a block
  * yet)
@@ -1537,15 +1550,30 @@ RexxCode *LanguageParser::translateBlock()
  *
  * @return A translated expression for this directive.
  */
-RexxInternalObject *LanguageParser::translateExpression(RexxToken *token, RexxErrorCodes error)
+RexxInternalObject *LanguageParser::translateConstantExpression(RexxToken *token, RexxErrorCodes error)
 {
     // reset for a fresh translation
     initializeForTranslation();
+
+    // since constants associated with a class are not translated in
+    // strictly back-to-back fashion, we need to restore accumulated values
+    maxStack = constantMaxStack;
+    variableIndex = constantVariableIndex;
+    if (constantVariables != OREF_NULL)
+    {
+        variables = constantVariables;
+    }
 
     // parse out a subexpression, terminating on the end of clause or
     // a right paren (the right paren is actually the required terminator)
     // we get called here because we've already seen the left paren.
     RexxInternalObject *exp = requiredExpression(TERM_RIGHT, error);
+
+    // now copy back the values we need to cache
+    constantMaxStack = maxStack;
+    constantVariableIndex = variableIndex;
+    constantVariables = variables;
+
     // now verify that the terminator token was a right paren.  If not,
     // issue an error message using the original opening token so we know
     // which one is an issue.
@@ -1555,6 +1583,9 @@ RexxInternalObject *LanguageParser::translateExpression(RexxToken *token, RexxEr
     }
     // protect the expression from GC and return it.
     holdObject(exp);
+
+    // resolve any function calls that might have been used on the constant
+    resolveCalls();
     return exp;
 }
 

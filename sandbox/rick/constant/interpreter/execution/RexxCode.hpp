@@ -98,7 +98,7 @@ class RexxCode : public BaseCode
    inline RexxString *resolveProgramName(Activity *activity, RexxString *name) { return package->resolveProgramName(activity, name); }
    inline void        mergeRequired(PackageClass *s) { package->mergeRequired(s); }
           RexxCode *interpret(RexxString *source, size_t lineNumber);
-          void addInstruction(RexxInstruction *i, size_t m);
+          void addInstruction(RexxInstruction *i, size_t m, size_t v);
 
 
 protected:
