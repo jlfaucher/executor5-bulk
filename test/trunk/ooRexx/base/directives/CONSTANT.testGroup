@@ -208,6 +208,10 @@ return testResult
   self~assertEquals("23.38885e-5", t~class~n7, "n7_instance_class")
   self~assertEquals(".NIL", t~class~c1, "c1_instance_class")
   self~assertEquals(".", t~class~c2, "c2_instance_class")
+  self~assertEquals("3.14159265", t~pi)
+  self~assertEquals("3.14159265", t~class~pi)
+  self~assertEquals("3.14159265"/2, t~piOverTwo)
+  self~assertEquals("3.14159265"/2, t~class~piOverTwo)
 
 ::method test_constant_method_properties
   m = .test~method('S1')
@@ -227,15 +231,6 @@ return testResult
  *  raised during the instantiation of the Package object, when the code is
  *  parsed.
  */
-::method test_bad_syntax_object
-  src = .array~new
-
-  src[1] = "return 0"
-  src[2] = "::class 'TestClass'"
-  src[3] = "::constant MESSAGE_PRODUCER (.Message~class)"
-
-  self~expectSyntax(19.916)
-  p = .Package~new("constant_TestGroup", src)
 
 ::method  test_duplicate_name
   src = .array~new
@@ -368,6 +363,145 @@ return testResult
   self~expectSyntax(19.915)
   p = .Package~new("constant_TestGroup", src)
 
+::method  test_no_expression
+  src = .array~new
+
+  src[1] = "return 0"
+  src[2] = ""
+  src[3] = "::class 'TestClass'"
+  src[4] = "::constant foo ()"
+
+  self~expectSyntax(35.936)
+  p = .Package~new("constant_TestGroup", src)
+
+::method  test_no_right_paren
+  src = .array~new
+
+  src[1] = "return 0"
+  src[2] = ""
+  src[3] = "::class 'TestClass'"
+  src[4] = "::constant foo (1+2"
+
+  self~expectSyntax(36.901)
+  p = .Package~new("constant_TestGroup", src)
+
+::method  test_expression_syntax_error
+  src = .array~new
+
+  src[1] = "return 0"
+  src[2] = ""
+  src[3] = "::class 'TestClass'"
+  src[4] = "::constant foo (1+)"
+
+  self~expectSyntax(35.1)
+  p = .Package~new("constant_TestGroup", src)
+
+::method  test_expression_extra
+  src = .array~new
+
+  src[1] = "return 0"
+  src[2] = ""
+  src[3] = "::class 'TestClass'"
+  src[4] = "::constant foo (1+2) 1"
+
+  self~expectSyntax(21.913)
+  p = .Package~new("constant_TestGroup", src)
+
+::method  test_expression_runtime_error
+  src = .array~new
+
+  src[1] = "return 0"
+  src[2] = ""
+  src[3] = "::class 'TestClass'"
+  src[4] = "::constant foo (1/0) "
+
+  self~expectSyntax(42.3)
+  p = .Package~new("constant_TestGroup", src)
+
+::method  test_expression_novalue_error
+  src = .array~new
+
+  src[1] = "return 0"
+  src[2] = ""
+  src[3] = "::class 'TestClass'"
+  src[4] = "::constant foo (1+b) "
+  src[5] = "::options novalue error"
+  -- will give an error because of the ::options directive
+  self~expectSyntax(98.986)
+  p = .Package~new("constant_TestGroup", src)
+
+::method  test_expression_novalue
+  src = .array~new
+
+  src[1] = "return 0"
+  src[2] = ""
+  src[3] = "::class 'TestClass'"
+  src[4] = "::constant foo (1+b) "
+
+  -- will just give an arithmetic runtime error because there's no NOVALUE option
+  self~expectSyntax(41.1)
+  p = .Package~new("constant_TestGroup", src)
+
+::method test_expression_body
+  -- Constant methods cannot have a method body
+  self~assertSyntaxError(99.938, ("::class c", "::constant d", "(2 * 2)"))
+
+::method test_expression_floating
+  -- A ::CONSTANT directive with an expression requires a matching ::CLASS directive
+  self~assertSyntaxError(99.906, "::constant d (2 * 2)")
+
+::method test_expression_parens_required
+  -- Data must not follow the ::CONSTANT value
+  self~assertSyntaxError(21.913, ("::class c", "::constant d .RexxInfo~platform"))
+
+::method test_expression_reference_forward
+  -- Constant "PI" of object "The C class" has not been initialized
+  self~assertSyntaxError(97.4, ("::class c", "::constant d (2 * self~pi)", "::constant pi (355 / 113)"))
+
+::method test_expression_self
+  -- expression constants are evaluated at class creation time
+  -- self must always return class, not instance
+  self~assertSame("The C class", self~runDynamicSource(("return .c~d~string", "::class c", "::constant d (self)")))
+  self~assertSame("The C class", self~runDynamicSource(("return .c~new~d~string", "::class c", "::constant d (self)")))
+
+::method test_expression_directives
+  self~assertIsA(.ExpressionDirective~primes, .Array)
+  self~assertSame("2, 3, 5, 7, 11, 13", .ExpressionDirective~primes~toString(, ", "))
+
+  if .RexxInfo~platform~caselessStartsWith("Windows") then
+    self~assertSame("type", .ExpressionDirective~command)
+  else
+    self~assertSame("cat", .ExpressionDirective~command)
+
+  self~assertSame("0." || 3~copies(20), .ExpressionDirective~multiClause)
+
+  -- make sure builtin functions have been resolved.
+  self~assertSame("B", .ExpressionDirective~substr)
+
+  -- constant expressions must have been evaluated before
+  self~assertSame(.ExpressionDirective~random, .ExpressionDirective~random)
+
+  -- real constants are initialized before expression constants
+  -- a forward reference from an expression constant to a real constant should work
+  self~assertSame(.ExpressionDirective~constant, .ExpressionDirective~constantRef)
+
+  self~assertSame(6.28318584, .ExpressionDirective~d)
+
+::resource activate
+return .c~return
+::class c
+  ::method activate class
+    expose return
+    return = self~d
+  ::attribute return class
+  ::constant d (2 * 2)
+::END
+
+::method test_expression_activate
+  -- expression constants are evaluated at class creation time
+  -- they should already be availabe to the class activate() method
+  self~assertSame(4, self~runDynamicSource(.resources~activate))
+
 ::method testConstantArguments
   self~expectSyntax(93.902)
   value = .test~s1(123)
@@ -395,9 +529,26 @@ return testResult
 ::constant novalue1
 ::constant 'NoValue2'
 
+::constant pi (rxcalcpi())
+::constant piOverTwo (self~pi/2)
+
 ::class test2 subclass test
 
 ::class test3 inherit test
 
+::class ExpressionDirective
+  ::constant primes (2, 3, 5, 7, 11, 13)
+  ::constant command (.RexxInfo~platform~caselessStartsWith("Windows")~?("type", "cat"))
+  ::constant multiClause (.Routine~new("r", ("numeric digits 20", "return 1 / 3"))~call)
+  ::constant random (random(0, 1e6))
+  ::constant substr (substr("ABC", 2, 1))
+  -- forward reference to real constant
+  ::constant constantRef (self~constant)
+  ::constant constant 123
+  -- constant expressions can reference backwards
+  ::constant pi (355 / 113)
+  ::constant d (2 * self~pi)
 
+
+::requires 'rxmath' LIBRARY
 ::options novalue error
