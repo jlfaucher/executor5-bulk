@@ -57,30 +57,30 @@ return testResult
 ::class "RexxInfo.testGroup" subclass ooTestCase public
 
   /*
-  .RexxInfo:
   architecture              64
-  casesensitiveFiles        0
-  date                      10 Oct 2016
+  casesensitivefiles        0
+  date                      22 Dec 2018
   digits                    9
-  directorySeparator        \
+  directoryseparator        \
   endOfLine                 '0D0A'x
   form                      SCIENTIFIC
   fuzz                      0
-  internalDigits            18
-  internalMaxNumber         999999999999999999
-  internalMinNumber         -999999999999999999
-  languageLevel             6.05
-  majorVersion              5
-  maxArraySize              99999999999999999
-  maxExponent               999999999
-  maxPathLength             259
-  minExponent               -999999999
-  name                      REXX-ooRexx_5.0.0(MT)_64-bit 6.05 9 Oct 2016
+  internaldigits            18
+  internalmaxnumber         999999999999999999
+  internalminnumber         -999999999999999999
+  languagelevel             6.05
+  majorversion              5
+  maxarraysize              99999999999999999
+  maxexponent               999999999
+  maxpathlength             259
+  minexponent               -999999999
+  modification              0
+  name                      REXX-ooRexx_5.0.0(MT)_64-bit 6.05 22 Dec 2018
   package                   The REXX Package
-  pathSeparator             ;
+  pathseparator             ;
   platform                  WindowsNT
   release                   0
-  revision                  0
+  revision                  11636
   version                   5.0.0
 
   parse version:
@@ -131,8 +131,11 @@ return testResult
 ::method test_rexxInfo_langaugeLevel
   self~assertTrue(.RexxInfo~languageLevel~length > 0, ".RexxInfo~languageLevel should return a non-null string")
 
-::method test_rexxInfo_majorVersion_release_revision_version
-  self~assertEquals(.RexxInfo~majorVersion||"."||.RexxInfo~release||"."||.RexxInfo~revision, .RexxInfo~version, ".RexxInfo~version should be equal to .RexxInfo~majorVersion . .RexxInfo~release . .RexxInfo~revision")
+::method test_rexxInfo_majorVersion_release_modification_version
+  self~assertEquals(.RexxInfo~version, .RexxInfo~majorVersion||"."||.RexxInfo~release||"."||.RexxInfo~modification, ".RexxInfo~version should be equal to .RexxInfo~majorVersion . .RexxInfo~release . .RexxInfo~revision")
+
+::method test_rexxInfo_revision
+  self~assertEquals("NUM", .RexxInfo~revision~dataType, ".RexxInfo~revision should be a number")
 
 ::method test_rexxInfo_date
   self~assertTrue(.RexxInfo~date~length > 0, ".RexxInfo~date should return a non-null string")

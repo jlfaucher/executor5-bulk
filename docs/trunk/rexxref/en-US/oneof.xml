@@ -171,7 +171,7 @@ The Local object contains
 objects, you can place objects into, or retrieve objects from, these environments
 by using any of the <classname>Directory</classname> methods <methodname>[]</methodname>,
 <methodname>[]=</methodname>, <methodname>put</methodname>, <methodname>at</methodname>,
-<methodname>setEntry</methodname>, <methodname>entry</methodname>, 
+<methodname>setEntry</methodname>, <methodname>entry</methodname>,
 or <methodname>setMethod</methodname>). To avoid potential name clashes with built-in objects and public
 objects that Rexx provides, each object that your programs add to these
 environments should have a period in its index.</para>
@@ -286,7 +286,7 @@ stream.</para>
 <secondary>.TRACEOUTPUT object</secondary></indexterm>
 <indexterm><primary>public object</primary>
 <secondary>.TRACEOUPUT object</secondary></indexterm>
-<para>This <xref linkend="clsMonitor" xrefstyle="template:Monitor"/> object 
+<para>This <xref linkend="clsMonitor" xrefstyle="template:Monitor"/> object
 holds the trace output target
 object. You can redirect the trace output in the same way as with the output
 object in the Monitor class example.</para>
@@ -368,7 +368,7 @@ say arg() "ARGs" arg(1, "A")~makeString(, ",")
 /* when called with command line parameters 1 "2 3" 4, displays:
 3 SysCArgs 1,2 3,4
 1 ARGs 1 "2 3" 4
-*/             
+*/
 </programlisting>
 </example>
 
@@ -412,8 +412,9 @@ instruction, the line number of INTERPRET instruction is returned.</para>
 <secondary>.METHODS object</secondary></indexterm>
 <para>The .METHODS environment symbol identifies a
 <xref linkend="clsStringTable" xrefstyle="template:StringTable"/> of methods that
-<xref linkend="methd" xrefstyle="select:title"/> or
-<xref linkend="attrd" xrefstyle="select:title"/>
+<xref linkend="attrd" xrefstyle="select:title"/>,
+<xref linkend="constantd" xrefstyle="select:title"/>, or
+<xref linkend="methd" xrefstyle="select:title"/>
 directives in the currently running program define.
 The StringTable indexes are the <xref linkend="clsMethod" xrefstyle="template:method"/> names.
 The StringTable values are the method objects.
@@ -492,7 +493,7 @@ end
 
 ::resource greyCat end "-"
 La nuit, tous les chats sont gris
---------------------------------- 
+---------------------------------
 
 ::resource "brown fox"
 The quick brown fox jumps over the lazy dog

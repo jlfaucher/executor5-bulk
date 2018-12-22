@@ -69,8 +69,8 @@
     <xref linkend="clsNumericComparator" xrefstyle="template:NumericComparator"/>, and
    </para></listitem>
    <listitem><para>other miscellaneous classes
-    <xref linkend="clsBuffer" xrefstyle="template:Buffer"/>,   
-    <xref linkend="clsMonitor" xrefstyle="template:Monitor"/>,   
+    <xref linkend="clsBuffer" xrefstyle="template:Buffer"/>,
+    <xref linkend="clsMonitor" xrefstyle="template:Monitor"/>,
     <xref linkend="clsPointer" xrefstyle="template:Pointer"/>,
     <xref linkend="clsRegularExpression" xrefstyle="template:RegularExpression"/>,
     <xref linkend="clsRexxContext" xrefstyle="template:RexxContext"/>,
@@ -2973,7 +2973,7 @@ and will not change if you change the default directory.
 <para>Returns &true; if the file system is case-sensitive. Otherwise returns &false;.
 If a Unix-like file system may have mounted both case-sensitive and case-insensitive
 file systems, this method returns &true; if the file system root "<literal>/</literal>"
-is case-sensitive, and otherwise &false;. 
+is case-sensitive, and otherwise &false;.
 </para>
 <para>See also instance method <xref linkend="mthFileIsCaseSensitive" xrefstyle="select:title"/>.
 </para>
@@ -6862,7 +6862,7 @@ other instances cannot be created or copied.
 </para>
 
 <!-- Modified: remove forbidden "mthRexxInfoNew" and "mthRexxInfoCopy" -->
-<!-- $GENERATED-20161012-START rexxrefClassTable(RexxInfo) -->
+<!-- $GENERATED-20181222-START rexxrefClassTable(RexxInfo) -->
 <table id="ooRexxRexxInfoClass" frame="all" pgwide="1">
 <title>RexxInfo Class</title>
 <tgroup cols="1">
@@ -6892,6 +6892,7 @@ other instances cannot be created or copied.
    <member><xref linkend="mthRexxInfoMaxExponent" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRexxInfoMaxPathLength" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRexxInfoMinExponent" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRexxInfoModification" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRexxInfoName" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRexxInfoPackage" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRexxInfoPathSeparator" xrefstyle="select:title"/></member>
@@ -6904,7 +6905,7 @@ other instances cannot be created or copied.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20161012-END rexxrefClassTable(RexxInfo) -->
+<!-- $GENERATED-20181222-END rexxrefClassTable(RexxInfo) -->
 
 <!-- Class RexxInfo - method architecture ========================== -->
 <section id="mthRexxInfoArchitecture" revisionflag="added"><title>&added50;architecture</title>
@@ -6938,7 +6939,7 @@ say .rexxinfo~architecture    -- 64 /* ooRexx 64-bit */
 <para>Returns &true; if the file system is case-sensitive. Otherwise returns &false;.
 If a Unix-like file system may have mounted both case-sensitive and case-insensitive
 file systems, this method returns &true; if the file system root "<literal>/</literal>"
-is case-sensitive, and otherwise &false;. 
+is case-sensitive, and otherwise &false;.
 </para>
 <para>See also <classname>File</classname> class method
 <xref linkend="mthFileIsCaseSensitiveClsMth" xrefstyle="template:isCaseSensitive"/>
@@ -7224,7 +7225,7 @@ which both also return the language level as the second token of their result.
 </para>
 <para><example>
 <title>RexxInfo class &mdash; languageLevel method</title>
-<programlisting><![CDATA[say .RexxInfo~languageLevel    -- 6.05 /* e. g. ooRexx 5.0 */
+<programlisting><![CDATA[say .RexxInfo~languageLevel    -- 6.05 /* e. g. ooRexx 5.0.0 */
 ]]></programlisting></example></para>
 </section>
 
@@ -7238,25 +7239,24 @@ which both also return the language level as the second token of their result.
 </imageobject></mediaobject>
 </para>
 <para>Returns the major version number of the language processor.
-The major version number is the integer part of the language processor
+The major version number is the first part of the language processor
 <xref linkend="mthRexxInfoVersion" xrefstyle="select:title"/>.
 </para>
 <para>See also
 <itemizedlist spacing="compact">
  <listitem>
   <para>methods
-   <xref linkend="mthRexxInfoVersion" xrefstyle="select:title"/> and
-   <xref linkend="mthRexxInfoName" xrefstyle="select:title"/>, and</para>
+   <xref linkend="mthRexxInfoRelease" xrefstyle="select:title"/> and
+   <xref linkend="mthRexxInfoModification" xrefstyle="select:title"/>, and</para>
  </listitem>
  <listitem>
-  <para>keyword instruction <xref linkend="keyParseVersion"/><!-- @@xreflabel -->,</para>
+  <para>keyword instruction <xref linkend="keyParseVersion"/>.</para>
  </listitem>
 </itemizedlist>
-which also return the major version number as part of their result.
 </para>
 <para><example>
 <title>RexxInfo class &mdash; majorVersion method</title>
-<programlisting><![CDATA[say .RexxInfo~majorVersion    -- 5 /* e. g. ooRexx 5.0 */
+<programlisting><![CDATA[say .RexxInfo~majorVersion    -- 5 /* e. g. ooRexx 5.0.0 */
 ]]></programlisting></example></para>
 </section>
 
@@ -7355,6 +7355,38 @@ say .RexxInfo~minExponent    -- -999999999
 </section>
 
 
+<!-- Class RexxInfo - method modification ======================== -->
+<section id="mthRexxInfoModification" revisionflag="added"><title>&added50;modification</title>
+<para>
+<indexterm><primary>modification method</primary><secondary>of RexxInfo class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>modification method</secondary><tertiary>of RexxInfo class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/rexxinfo_modification.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns the modification number of the language processor.
+The modification number is the third part of the language processor
+<xref linkend="mthRexxInfoVersion" xrefstyle="select:title"/> string.
+</para>
+<para>See also
+<itemizedlist spacing="compact">
+ <listitem>
+  <para>methods
+   <xref linkend="mthRexxInfoMajorVersion" xrefstyle="select:title"/> and
+   <xref linkend="mthRexxInfoRelease" xrefstyle="select:title"/>, and</para>
+ </listitem>
+ <listitem>
+  <para>keyword instruction <xref linkend="keyParseVersion"/>.</para>
+ </listitem>
+</itemizedlist>
+</para>
+<para><example>
+<title>RexxInfo class &mdash; modification method</title>
+<programlisting><![CDATA[say .RexxInfo~modification    -- 0 /* e. g. ooRexx 5.0.0 */
+]]></programlisting></example></para>
+</section>
+
+
 <!-- Class RexxInfo - method name ================================== -->
 <section id="mthRexxInfoName" revisionflag="added"><title>&added50;name</title>
 <para>
@@ -7388,7 +7420,7 @@ keyword instruction <xref linkend="keyParseVersion"/><!-- @@xreflabel -->.
 </para>
 <para><example>
 <title>RexxInfo class &mdash; name method</title>
-<programlisting><![CDATA[say .RexxInfo~name    -- REXX-ooRexx_5.0.0(MT)_64-bit 6.05 9 Dec 2016 /* e. g. */
+<programlisting><![CDATA[say .RexxInfo~name    -- REXX-ooRexx_5.0.0(MT)_64-bit 6.05 22 Dec 2018 /* e. g. */
 ]]></programlisting></example></para>
 </section>
 
@@ -7466,27 +7498,27 @@ say .RexxInfo~platform    -- LINUX
 </imageobject></mediaobject>
 </para>
 <para>Returns the release number of the language processor.
-The release number is the first decimal digit following the decimal point of the language processor
-<xref linkend="mthRexxInfoVersion" xrefstyle="select:title"/>.
+The release number is the second part of the language processor
+<xref linkend="mthRexxInfoVersion" xrefstyle="select:title"/> string.
 </para>
 <para>See also
 <itemizedlist spacing="compact">
  <listitem>
   <para>methods
-   <xref linkend="mthRexxInfoVersion" xrefstyle="select:title"/> and
-   <xref linkend="mthRexxInfoName" xrefstyle="select:title"/>, and</para>
+   <xref linkend="mthRexxInfoMajorVersion" xrefstyle="select:title"/> and
+   <xref linkend="mthRexxInfoModification" xrefstyle="select:title"/>, and</para>
  </listitem>
  <listitem>
-  <para>keyword instruction <xref linkend="keyParseVersion"/><!-- @@xreflabel -->,</para>
+  <para>keyword instruction <xref linkend="keyParseVersion"/>.</para>
  </listitem>
 </itemizedlist>
-which also return the release number as part of their result.
 </para>
 <para><example>
 <title>RexxInfo class &mdash; release method</title>
-<programlisting><![CDATA[say .RexxInfo~release    -- 0 /* e. g. ooRexx 5.0 */
+<programlisting><![CDATA[say .RexxInfo~release    -- 0 /* e. g. ooRexx 5.0.0 */
 ]]></programlisting></example></para>
 </section>
+
 
 <!-- Class RexxInfo - method revision ============================== -->
 <section id="mthRexxInfoRevision" revisionflag="added"><title>&added50;revision</title>
@@ -7497,26 +7529,15 @@ which also return the release number as part of their result.
 <imagedata fileref="images/classes/rexxinfo_revision.svg" scale="55" />
 </imageobject></mediaobject>
 </para>
-<para>Returns the revision number of the language processor.
-The revision number is the second decimal digit following the decimal point of the language processor
-<xref linkend="mthRexxInfoVersion" xrefstyle="select:title"/>.
+<para>Returns the source code version control system's revision from
+which this language processor was built.
+Rexx code should not rely on the format returned.
 </para>
-<para>See also
-<itemizedlist spacing="compact">
- <listitem>
-  <para>methods
-   <xref linkend="mthRexxInfoVersion" xrefstyle="select:title"/> and
-   <xref linkend="mthRexxInfoName" xrefstyle="select:title"/>, and</para>
- </listitem>
- <listitem>
-  <para>keyword instruction <xref linkend="keyParseVersion"/><!-- @@xreflabel -->,</para>
- </listitem>
-</itemizedlist>
-which also return the revision number as part of their result.
+<para>See also keyword instruction <xref linkend="keyParseVersion"/>.
 </para>
 <para><example>
 <title>RexxInfo class &mdash; revision method</title>
-<programlisting><![CDATA[say .RexxInfo~revision    -- 0 /* e. g. ooRexx 5.0.0 */
+<programlisting><![CDATA[say .RexxInfo~revision    -- 11636 /* e. g. */
 ]]></programlisting></example></para>
 </section>
 
@@ -7529,25 +7550,13 @@ which also return the revision number as part of their result.
 <imagedata fileref="images/classes/rexxinfo_version.svg" scale="55" />
 </imageobject></mediaobject>
 </para>
-<para>Returns the version number of the language processor as a decimal number.
+<para>Returns the version number of the language processor.
 The version number consists of the
 <xref linkend="mthRexxInfoMajorVersion" xrefstyle="select:title"/>,
 followed by a decimal point,
-the <xref linkend="mthRexxInfoRelease" xrefstyle="select:title"/> and
+the <xref linkend="mthRexxInfoRelease" xrefstyle="select:title"/>,
+followed by another decimal point, and
 the <xref linkend="mthRexxInfoRevision" xrefstyle="select:title"/>.
-</para>
-<para>See also
-<itemizedlist spacing="compact">
- <listitem>
-  <para>methods
-   <xref linkend="mthRexxInfoMajorVersion" xrefstyle="select:title"/>,
-   <xref linkend="mthRexxInfoRelease" xrefstyle="select:title"/> and
-   <xref linkend="mthRexxInfoRevision" xrefstyle="select:title"/>, and</para>
- </listitem>
- <listitem>
-  <para>keyword instruction <xref linkend="keyParseVersion"/><!-- @@xreflabel -->.</para>
- </listitem>
-</itemizedlist>
 </para>
 <para><example>
 <title>RexxInfo class &mdash; version method</title>
@@ -9815,7 +9824,7 @@ if the validation fails, else returns with no result.
 <para>Validates that <emphasis role="italic">number</emphasis> is zero or a
 positive whole number under NUMERIC DIGITS <emphasis role="italic">digits</emphasis>.
 If <emphasis role="italic">digits</emphasis> is not specfied, it defaults to
-<xref linkend="mthRexxInfoInternalDigits" xrefstyle="select:title"/>. 
+<xref linkend="mthRexxInfoInternalDigits" xrefstyle="select:title"/>.
 </para>
 <para>Raises a syntax error for argument <emphasis role="italic">name</emphasis>
 if the validation fails, else returns with no result.
@@ -9950,7 +9959,7 @@ if the validation fails, else returns with no result.
 <para>Validates that <emphasis role="italic">number</emphasis> is a
 positive whole number under NUMERIC DIGITS <emphasis role="italic">digits</emphasis>.
 If <emphasis role="italic">digits</emphasis> is not specfied, it defaults to
-<xref linkend="mthRexxInfoInternalDigits" xrefstyle="select:title"/>. 
+<xref linkend="mthRexxInfoInternalDigits" xrefstyle="select:title"/>.
 </para>
 <para>Raises a syntax error for argument <emphasis role="italic">name</emphasis>
 if the validation fails, else returns with no result.
