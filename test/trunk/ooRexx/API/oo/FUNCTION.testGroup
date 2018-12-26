@@ -1023,3 +1023,51 @@ return .ooTestResult~new(5)~~addException(err)
 ::method TestFindContextClass02
   self~expectSyntax('88.900')
   x = TestFindContextClass("Yada")
+
+::method test_AddCommandEnvironment_direct
+  -- add a direct subcommand environment
+  call TestAddCommandEnvironment "rc-direct", "direct"
+  address "rc-direct" ""
+  -- when installed as "direct", return code will always be -1
+  --   IsRedirectionRequested()
+  --   IsInputRedirected()
+  --   IsOutputRedirected()
+  --   IsErrorRedirected()
+  --   AreOutputAndErrorSameTarget()
+  self~assertEquals(rc, -1)
+
+  self~expectSyntax(98.921) -- Address environment does not support input/output redirection
+  address "rc-direct" "" with input using 123
+
+::method test_AddCommandEnvironment_redirecting
+  -- add a redirecting subcommand environment
+  call TestAddCommandEnvironment "rc-redirecting", "redirecting"
+  address "rc-redirecting" ""
+  -- when the handler is installed as "redirecting" its return code
+  -- is a five-digit number with digits 0 or 1 in sequence:
+  --   IsRedirectionRequested()
+  --   IsInputRedirected()
+  --   IsOutputRedirected()
+  --   IsErrorRedirected()
+  --   AreOutputAndErrorSameTarget()
+  self~assertEquals(rc, 00000)
+
+  address "rc-redirecting" "" with input using 123
+  self~assertSame(rc, 11000)
+  address "rc-redirecting" "" with output stem o.
+  self~assertSame(rc, 10100)
+  address "rc-redirecting" "" with error stem e.
+  self~assertSame(rc, 10010)
+  address "rc-redirecting" "" with input using 123 output stem o.
+  self~assertSame(rc, 11100)
+  address "rc-redirecting" "" with input using 123 error stem e.
+  self~assertSame(rc, 11010)
+  address "rc-redirecting" "" with output stem o. error stem e.
+  self~assertSame(rc, 10110)
+  address "rc-redirecting" "" with input using 123 output stem o. error stem e.
+  self~assertSame(rc, 11110)
+  address "rc-redirecting" "" with output stem s. error stem s.
+  self~assertSame(rc, 10111)
+  address "rc-redirecting" "" with input using 123 output stem s. error stem s.
+  self~assertSame(rc, 11111)
+
