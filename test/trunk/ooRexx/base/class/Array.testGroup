@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -2175,6 +2175,29 @@ makeColl: procedure
 ::method test_arrayterm_append
   a = (1, "two", 3)~~append("string")
   self~assertSameList(a, .Array~of(1, "two", 3, "string"))
+
+
+-- we have keyword instructions which accept expressions enclosed in parens
+-- array terms should be accepted without the need for additional parens
+-- see [bugs:#1586] Wrong error message while parsing a faulty "additional"
+::method test_arrayterm_raise_additional
+  self~expectSyntax(93.904)
+  raise syntax 93.904 additional ("one", "two")
+
+::method test_arrayterm_address_with_using
+  address "" "" with input using (1, 2, 3)
+
+::method test_arrayterm_forward_to
+  r = .Routine~new("", ("return .c~new~size", "::class c", "::method size", "forward to (1,2)"))
+  self~assertSame(2, r~call)
+
+::method test_arrayterm_forward_arguments
+  r = .Routine~new("", ("return .c~new~makeString", "::class c", "::method makeString", "forward to (1,2) arguments (, 3)"))
+  self~assertSame(132, r~call)
+
+::method test_arrayterm_use_default
+  use arg first = (1, 2, 3)
+  self~assertSameList((1, 2, 3), first)
 
 
 /* Test whether both collections contain the same entries.
