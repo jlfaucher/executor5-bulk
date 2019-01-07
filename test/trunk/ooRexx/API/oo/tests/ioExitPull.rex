@@ -43,13 +43,14 @@ trap = .PullTrap~new
 .input~destination(trap)
 
 parse pull line
-.input~destination
 return line
-
-syntax:
-.input~destination
-raise propagate
 
 ::class pullTrap
 ::method linein
   return "Goodnight moon"
+
+-- avoid test noise
+::class traceTrap
+::method activate class
+  .error~destination(self~new)
+::method lineout

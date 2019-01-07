@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2008-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2008-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -42,15 +42,9 @@
 trap = .SayTrap~new
 .output~destination(trap)
 
-signal on syntax
 say "HELLO"
 
-.output~destination
 return trap~line
-
-syntax:
-.output~destination
-raise propagate
 
 ::class sayTrap
 ::method init
@@ -62,3 +56,9 @@ raise propagate
 ::method say
   expose line
   use arg line
+
+-- avoid test noise
+::class traceTrap
+::method activate class
+  .error~destination(self~new)
+::method lineout

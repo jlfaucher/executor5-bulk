@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2008-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2008-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -41,19 +41,11 @@
 /*----------------------------------------------------------------------------*/
 trap = .PullTrap~new
 .input~destination(trap)
-.error~destination(.TraceTrap~new)
 
 address cmd "TRACEON"   -- the command exit handles this
 trace off               -- should also be turned off by the I/O trap
 
-.input~destination
-.error~destination
 return trap~result
-
-syntax:
-.input~destination
-.error~destination
-raise propagate
 
 ::class pullTrap
 ::method init
@@ -70,7 +62,8 @@ raise propagate
   if called then return "CALLED"
             else return "NOT CALLED"
 
-
+-- avoid test noise
 ::class traceTrap
+::method activate class
+  .error~destination(self~new)
 ::method lineout
-  -- just swallow the line
