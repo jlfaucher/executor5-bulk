@@ -68,6 +68,7 @@ RexxReturnCode RexxEntry RexxCreateSessionQueue();
 RexxReturnCode RexxEntry RexxDeleteSessionQueue();
 RexxReturnCode REXXENTRY RexxStemSort(const char *stemname, int order, int type,
     size_t start, size_t end, size_t firstcol, size_t lastcol);
+const char *REXXENTRY RexxGetErrorMessage(int number);
 
 #ifdef __cplusplus
 }

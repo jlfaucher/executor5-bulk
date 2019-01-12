@@ -39,7 +39,13 @@
 #/*----------------------------------------------------------------------------*/
 #/* Global settings                                                            */
 #/*----------------------------------------------------------------------------*/
-cmake_minimum_required (VERSION 2.8)
+if (APPLE)
+# apple build with lower cmake version have an @rpath problem
+    cmake_minimum_required (VERSION 3.12)
+else()
+#for other platforms
+    cmake_minimum_required (VERSION 2.8)
+endif()
 cmake_policy(VERSION 2.8...3.3)
 include(CheckIncludeFile)
 include(CheckLibraryExists)
@@ -248,7 +254,6 @@ if (WIN32)
    message(STATUS "INSTALL_LIB_DIR is ${INSTALL_LIB_DIR}")
 
    set (INSTALL_EXECUTABLE_DIR ${CMAKE_INSTALL_PREFIX}/bin)
-   set (catdir ${INSTALL_EXECUTABLE_DIR})
    set (INSTALL_CLS_DIR ${INSTALL_EXECUTABLE_DIR})
    set (INSTALL_INCLUDE_DIR ${CMAKE_INSTALL_PREFIX}/include)
    set (INSTALL_SAMPLES_DIR ${CMAKE_INSTALL_PREFIX}/share/${CMAKE_PROJECT_NAME})
@@ -264,7 +269,6 @@ if (WIN32)
             /DORX_VER_STR=${ORX_VER_STR}
             /DOOREXX_COPY_YEAR="${ORX_COPY_YEAR}"
             /DORX_SYS_STR="${ORX_SYS_STR}"
-            /DORX_CATDIR="${catdir}"
             /DORX_SHARED_LIBRARY_EXT="${CMAKE_SHARED_LIBRARY_SUFFIX}"
             /DORX_REXXPATH="${CMAKE_REXXPATH}"
 # suppress CRT_SECURE warnings
@@ -293,7 +297,7 @@ else ()
 
             -DOOREXX_COPY_YEAR="${ORX_COPY_YEAR}"
             -DORX_SYS_STR="${ORX_SYS_STR}"
-            -DORX_CATDIR="${catdir}" -D_GNU_SOURCE
+             -D_GNU_SOURCE
             -DORX_SHARED_LIBRARY_EXT="${CMAKE_SHARED_LIBRARY_SUFFIX}"
             -DORX_REXXPATH="${CMAKE_REXXPATH}"
             -D${ORX_SYS_STR} -DOPSYS_${ORX_SYS_STR} -DHAVE_CONFIG_H)
@@ -342,7 +346,7 @@ if (NOT WIN32)
   check_include_file(netinet/in.h HAVE_NETINET_IN_H)
   check_include_file(nl_types.h HAVE_NL_TYPES_H)
   check_include_file(pthread.h HAVE_PTHREAD_H)
-  set(CMAKE_REQUIRED_LIBRARIES "pthread")
+  set(CMAKE_REQUIRED_LIBRARIES pthread)
   set(CMAKE_REQUIRED_DEFINITIONS "-D_GNU_SOURCE=1")
   check_function_exists(pthread_mutexattr_settype HAVE_PTHREAD_MUTEXATTR_SETTYPE)
 # Some platforms use an enum for these values rather than defines
@@ -359,6 +363,14 @@ if (NOT WIN32)
                            tryme = PTHREAD_MUTEX_RECURSIVE;
                            return 0;}"
                           HAVE_PTHREAD_MUTEX_RECURSIVE)
+  # this requires -ldl on the link
+  set(CMAKE_REQUIRED_LIBRARIES dl)
+  check_c_source_compiles("#include <dlfcn.h>
+                           int main(int arg, char **argv) {
+                           Dl_info DlInfo;
+                           dladdr((void*)0, &DlInfo);
+                           return 0;}"
+                          HAVE_DLADDR)
   check_symbol_exists(_PC_CASE_SENSITIVE unistd.h HAVE_PC_CASE_SENSITIVE)
   check_include_file(pwd.h HAVE_PWD_H)
   check_include_file(sched.h HAVE_SCHED_H)
@@ -538,11 +550,11 @@ set (common_rexxapi_sources
             ${build_rexxapi_common_dir}/ServiceMessage.cpp
             ${build_rexxapi_common_dir}/CSStream.cpp
             ${build_rexxapi_common_platform_dir}/SysAPIManager.cpp
-            ${build_rexxapi_common_platform_dir}/SysProcess.cpp
             ${build_common_dir}/Utilities.cpp
             ${build_common_platform_dir}/SysSemaphore.cpp
             ${build_common_platform_dir}/SysLibrary.cpp
             ${build_common_platform_dir}/SysFile.cpp
+            ${build_common_platform_dir}/SysProcess.cpp
             ${build_common_platform_dir}/SysThread.cpp)
 # additional source files required by specific platforms
 if (WIN32)
@@ -782,6 +794,7 @@ set (platform_sources ${build_interpreter_platform_dir}/ErrorMessages.cpp
 set (common_sources ${build_common_dir}/Utilities.cpp
             ${build_common_platform_dir}/SysFile.cpp
             ${build_common_platform_dir}/SysLibrary.cpp
+            ${build_common_platform_dir}/SysProcess.cpp
             ${build_common_platform_dir}/SysSemaphore.cpp
             ${build_common_platform_dir}/SysThread.cpp)
 set (runtime_sources ${build_runtime_dir}/InternalPackage.cpp
@@ -993,8 +1006,8 @@ add_executable(rxapi ${rxapi_executable_type}
          ${build_rexxapi_common_dir}/RegistrationTable.cpp
          ${build_rexxapi_common_dir}/ServiceMessage.cpp
          ${build_rexxapi_common_platform_dir}/SysAPIManager.cpp
-         ${build_rexxapi_common_platform_dir}/SysProcess.cpp
          ${build_common_dir}/Utilities.cpp
+         ${build_common_platform_dir}/SysProcess.cpp
          ${build_common_platform_dir}/SysSemaphore.cpp
          ${build_common_platform_dir}/SysThread.cpp
          ${platform_rxapi_sources})
@@ -1050,6 +1063,7 @@ if (XALAN_EXECUTABLE)
     generate_message_file(${build_messages_dir}/RexxErrorCodes.h ${build_messages_dir}/RexxErrorCodes.xsl)
     generate_message_file(${build_messages_dir}/RexxMessageNumbers.h ${build_messages_dir}/RexxMessageNumbers.xsl)
     generate_message_file(${build_messages_dir}/RexxMessageTable.h ${build_messages_dir}/RexxMessageTable.xsl)
+    generate_message_file(${build_messages_dir}/RexxErrorMessages.h ${build_messages_dir}/RexxErrorMessages.xsl)
     generate_message_file(${build_api_dir}/oorexxerrors.h ${build_messages_dir}/ApiErrorCodes.xsl)
     generate_message_file(${build_messages_dir}/errnums.xml ${build_messages_dir}/errnums.xsl)
     generate_message_file(${build_messages_dir}/errnumsrxqueue.xml ${build_messages_dir}/errnumsrxqueue.xsl)
@@ -1065,6 +1079,7 @@ if (XALAN_EXECUTABLE)
 
     set (REXXMSG_FILES ${build_messages_dir}/RexxErrorCodes.h
                        ${build_messages_dir}/RexxMessageNumbers.h
+                       ${build_messages_dir}/RexxErrorMessages.h
                        ${build_messages_dir}/RexxMessageTable.h
                        ${build_api_dir}/oorexxerrors.h
                        ${build_messages_dir}/errnums.xml
@@ -1156,7 +1171,8 @@ install(TARGETS rxsubcom RUNTIME COMPONENT Core DESTINATION ${INSTALL_EXECUTABLE
 # additional source files required by specific platforms
 if (WIN32)
    set (platform_rexxutil_sources
-            ${build_platform_dir}/verinfo.rc)
+            ${build_platform_dir}/verinfo.rc
+            ${build_common_platform_dir}/SysProcess.cpp)
    set (platform_rexxutil_libs shlwapi version)
 else ()
    set (platform_rexxutil_libs ${ORX_SYSLIB_DL} ${ORX_SYSLIB_PTHREAD})
@@ -1717,13 +1733,6 @@ install(PROGRAMS ${SAMPLES_SOURCE}/treeDirectory.cls COMPONENT Samples DESTINATI
 install(FILES ${SAMPLES_SOURCE}/jabberwocky.txt COMPONENT Samples DESTINATION ${INSTALL_SAMPLES_DIR})
 
 if (NOT WIN32)
-   add_custom_command(OUTPUT rexx.cat
-              COMMAND gencat rexx.cat ${CMAKE_CURRENT_SOURCE_DIR}/${build_interpreter_dir}/platform/unix/gencat.inp
-              DEPENDS ${image_class_files} ${platform_rexx_img_depends}
-              WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-   add_custom_target(rexx_cat ALL DEPENDS rexx.cat)
-   install(FILES ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/rexx.cat DESTINATION ${catdir} PERMISSIONS OWNER_READ GROUP_READ WORLD_READ OWNER_EXECUTE GROUP_EXECUTE WORLD_EXECUTE)
-
    macro (add_manpage name cat)
       add_custom_command(OUTPUT ${name}.${cat}.gz
               COMMAND gzip -c
@@ -1820,8 +1829,6 @@ if (WIN32 AND DOC_SOURCE_DIR)
    install(FILES ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/rexxc.pdb COMPONENT Core DESTINATION ${INSTALL_EXECUTABLE_DIR}
        CONFIGURATIONS Debug RelWithDebInfo)
    install(FILES ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/rexxhide.pdb COMPONENT Core DESTINATION ${INSTALL_EXECUTABLE_DIR}
-       CONFIGURATIONS Debug RelWithDebInfo)
-   install(FILES ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/rexximage.pdb COMPONENT Core DESTINATION ${INSTALL_EXECUTABLE_DIR}
        CONFIGURATIONS Debug RelWithDebInfo)
    install(FILES ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/rexxpaws.pdb COMPONENT Core DESTINATION ${INSTALL_EXECUTABLE_DIR}
        CONFIGURATIONS Debug RelWithDebInfo)
