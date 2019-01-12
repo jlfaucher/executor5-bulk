@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -46,6 +46,7 @@
 
 #include "SysFileSystem.hpp"
 #include "SysFile.hpp"
+#include "FileNameBuffer.hpp"
 
 #define nbt_line_end "\n"
 #define nbt_line_end_size 1
@@ -168,7 +169,7 @@ protected:
                                        // specified stream name
    char stream_name[SysFileSystem::MaximumFileNameBuffer];
                                        // fully resolved stream name
-   char qualified_name[SysFileSystem::MaximumFileNameLength];
+   FileNameBuffer qualified_name;      // fully resolved stream name
    int64_t charReadPosition;          // current character position
    int64_t charWritePosition;         // current write position
    int64_t lineReadPosition;          // current read line number

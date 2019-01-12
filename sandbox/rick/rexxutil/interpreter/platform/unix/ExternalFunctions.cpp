@@ -112,100 +112,8 @@ int putflag = 0;                            /* static or dynamic env memory   */
 
 RexxRoutine2(CSTRING, sysBeep, OPTIONAL_wholenumber_t, Frequency, OPTIONAL_wholenumber_t, Duration)
 {
-
-
     printf("\a");
     return "";
-}
-
-
-/********************************************************************
-* Function:  resolve_tilde(path)                                    *
-*                                                                   *
-* Purpose:   Resolves path names including '~'.                     *
-*                                                                   *
-* RC:        Returns the absolute path in new allocated space.      *
-*                                                                   *
-*********************************************************************/
-char *resolve_tilde(const char *path)
-{
-    const char * st;
-    const char *home_dir = NULL;            /* home directory path        */
-    char  *dir_buf = NULL;             /* full directory path        */
-    const char * slash;
-    char   username[100];
-    struct passwd *ppwd;
-
-    st = path;
-    /* if no user name            */
-    if (*(st) == '~' && (*(st+1) == '\0' || *(st+1) == '/'|| *(st+1) == ' ' ))
-    {
-        if (*(st+1) == '/')
-        {              /* if there is a path         */
-            st +=2;                        /* jump over '~/'             */
-                                           /* get home directory path    */
-            home_dir = getenv("HOME");     /* from the environment       */
-            if (!home_dir)                  /* if no home dir info        */
-                return(0);
-            /* get space for the buf      */
-            dir_buf = (char *)malloc(strlen(home_dir)+strlen(st)+2);
-            if (!dir_buf)
-                return(0);
-            /* merge the strings          */
-            sprintf(dir_buf, "%s/%s", home_dir, st);
-            return dir_buf;
-        }
-        else
-        {
-            /* get home directory path    */
-            home_dir = getenv("HOME");     /* from the environment       */
-                                           /* get space for the buf      */
-            dir_buf = (char *)malloc(strlen(home_dir)+2);
-            if (!dir_buf)
-                return(0);
-            sprintf(dir_buf, "%s/", home_dir);
-            return dir_buf;
-        }
-    }
-    else if (*(st) == '~')
-    {             /* cmd is '~username...'      */
-        st++;                            /* jump over '~'              */
-        slash = strchr(st,'/');          /* search for '/'             */
-        if (!slash)
-        {                      /* if no '/'                  */
-                               /* rest of string is username */
-            ppwd = getpwnam(st);           /* get info about the user    */
-                                           /* get space for the buf      */
-            if (ppwd == NULL)
-            {                  /* no user                    */
-                return NULL;                     /* nothing happend            */
-            }
-            dir_buf = (char *)malloc(strlen(ppwd->pw_dir)+2);
-            if (!dir_buf)
-                return NULL;
-            /* merge the strings          */
-            sprintf(dir_buf, "%s/", ppwd->pw_dir);
-        }
-        else
-        {                            /* there is a slash           */
-                                     /* copy the username into a   */
-                                     /* local buffer; 100 bytes    */
-                                     /* should be big enough       */
-                                     /* fixes bug 1695834          */
-            memcpy(username, st, slash-st);
-            username[slash-st] = '\0';
-            ppwd = getpwnam(username);     /* get info about the user    */
-            slash++;                       /* step over the slash        */
-                                           /* get space for the buf      */
-            dir_buf = (char *)malloc(strlen(ppwd->pw_dir)+strlen(slash)+2);
-            if (!dir_buf)
-                return NULL;
-            /* merge the strings          */
-            sprintf(dir_buf, "%s/%s", ppwd->pw_dir, slash);
-        }
-        return dir_buf;                  /* directory change to        */
-    }
-    return NULL;
 }
 
 /****************************************************************************/
@@ -219,30 +127,19 @@ RexxRoutine1(RexxStringObject, sysDirectory, OPTIONAL_CSTRING, dir)
     rc = 0;
     if (dir != NO_CSTRING)               /* if new directory is not null,     */
     {
-        if (*dir == '~')
+        QualifiedName qualifiedName(dir);
+
+        // a null string indicates a change failure
+        if (chdir(qualifiedName) != 0)
         {
-            rdir = resolve_tilde(dir);
-            rc = chdir(rdir);
-            free(rdir);
-        }
-        else
-        {
-            rc = chdir(dir);                   /* change to the new directory     */
+            return context->NullString();
         }
     }
 
-    // if we couldn't change the directory, return a null string
-    if (rc != 0)
-    {
-        return context->NullString();
-    }
-    else
-    {
-        // get the current working directory and return it
-        char temp[PATH_MAX + 3];
-        SystemInterpreter::getCurrentWorkingDirectory(temp);
-        return context->NewStringFromAsciiz(temp);
-    }
+    // get the current working directory and return it
+    char temp[PATH_MAX + 3];
+    SystemInterpreter::getCurrentWorkingDirectory(temp);
+    return context->NewStringFromAsciiz(temp);
 }
 
 

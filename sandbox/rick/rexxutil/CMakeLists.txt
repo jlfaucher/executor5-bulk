@@ -772,6 +772,7 @@ set (platform_sources ${build_interpreter_platform_dir}/ErrorMessages.cpp
             ${build_interpreter_platform_dir}/SysActivity.cpp
             ${build_interpreter_platform_dir}/SysFileSystem.cpp
             ${build_interpreter_platform_dir}/SysInterpreterInstance.cpp
+            ${build_interpreter_platform_dir}/SysRexxUtil.cpp
             ${build_interpreter_platform_dir}/SystemCommands.cpp
             ${build_interpreter_platform_dir}/SystemInitialization.cpp
             ${build_interpreter_platform_dir}/SystemInterpreter.cpp
@@ -787,6 +788,7 @@ set (runtime_sources ${build_runtime_dir}/InternalPackage.cpp
             ${build_runtime_dir}/Interpreter.cpp
             ${build_runtime_dir}/InterpreterInstance.cpp
             ${build_runtime_dir}/Numerics.cpp
+            ${build_runtime_dir}/RexxutilCommon.cpp
             ${build_runtime_dir}/Version.cpp)
 set (streamlibrary_sources ${build_streamlibrary_dir}/StreamCommandParser.cpp
             ${build_streamlibrary_dir}/StreamNative.cpp

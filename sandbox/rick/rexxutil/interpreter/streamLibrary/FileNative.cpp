@@ -129,11 +129,9 @@ RexxMethod0(RexxArrayObject, file_list_roots)
  */
 RexxMethod1(RexxStringObject, file_qualify, CSTRING, name)
 {
-    char qualified_name[SysFileSystem::MaximumFileNameLength];
-    // qualifyStreamName will not expand if not a null string on entry.
-    qualified_name[0] = '\0';
-    SysFileSystem::qualifyStreamName(name, qualified_name, sizeof(qualified_name));
-    return context->String(qualified_name);
+    QualifiedName qualifiedName(name);
+
+    return context->String(qualifiedName);
 }
 
 
@@ -151,7 +149,7 @@ RexxMethod1(logical_t, file_exists, CSTRING, name)
  */
 RexxMethod1(logical_t, file_delete_file, CSTRING, name)
 {
-    return SysFileSystem::deleteFile(name);
+    return SysFileSystem::deleteFile(name) == 0;
 }
 
 
@@ -160,7 +158,7 @@ RexxMethod1(logical_t, file_delete_file, CSTRING, name)
  */
 RexxMethod1(logical_t, file_delete_directory, CSTRING, name)
 {
-    return SysFileSystem::deleteDirectory(name);
+    return SysFileSystem::deleteDirectory(name) == 0;
 }
 
 

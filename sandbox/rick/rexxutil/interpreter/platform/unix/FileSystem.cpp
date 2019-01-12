@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2017 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -54,6 +54,7 @@
 #include "InterpreterInstance.hpp"
 #include "SysFileSystem.hpp"
 #include "ActivityManager.hpp"
+#include "FileNameBuffer.hpp"
 
 #include <string.h>
 #include <stdio.h>
@@ -90,7 +91,7 @@
  */
 RexxString *SysInterpreterInstance::resolveProgramName(RexxString *_name, RexxString *_parentDir, RexxString *_parentExtension)
 {
-    char resolvedName[PATH_MAX + 3];    // finally resolved name
+    FileNameBuffer resolvedName;
 
     const char *name = _name->getStringData();
     const char *parentDir = _parentDir == OREF_NULL ? NULL : _parentDir->getStringData();
@@ -216,7 +217,7 @@ BufferClass *SystemInterpreter::readProgram(const char *file_name)
         fclose(handle);                      /* close the file                    */
     }
     if (readSize < buffersize) // read error?
-    {   
+    {
         return OREF_NULL;                  /* return nothing                    */
     }
     return buffer;                       /* return the program buffer         */
@@ -228,10 +229,9 @@ RexxString *SystemInterpreter::qualifyFileSystemName(
 /* Function:  Qualify a stream name for this system                */
 /*******************************************************************/
 {
-    char nameBuffer[SysFileSystem::MaximumFileNameBuffer];
-
+    FileNameBuffer name;
     /* clear out the block               */
-    memset(nameBuffer, 0, sizeof(nameBuffer));
+    memse;
     SysFileSystem::qualifyStreamName(name->getStringData(), nameBuffer, sizeof(nameBuffer)); /* expand the full name              */
     /* get the qualified file name       */
     return new_string(nameBuffer);

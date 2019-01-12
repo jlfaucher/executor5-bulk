@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -41,6 +41,15 @@
 
 // These are private APIs for communication between ooRexx components.
 
+/*********************************************************************/
+/* Defines used by SysStemSort --                                    */
+/*********************************************************************/
+#define SORT_CASESENSITIVE 0
+#define SORT_CASEIGNORE    1
+
+#define SORT_ASCENDING 0
+#define SORT_DECENDING 1
+
 
 #ifdef __cplusplus
 extern "C"
@@ -57,6 +66,8 @@ RexxReturnCode REXXENTRY RexxLoadSubcom(const char *, const char *);
 RexxReturnCode REXXENTRY RexxResolveSubcom(const char *name, REXXPFN *);
 RexxReturnCode RexxEntry RexxCreateSessionQueue();
 RexxReturnCode RexxEntry RexxDeleteSessionQueue();
+RexxReturnCode REXXENTRY RexxStemSort(const char *stemname, int order, int type,
+    size_t start, size_t end, size_t firstcol, size_t lastcol);
 
 #ifdef __cplusplus
 }

@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -45,12 +45,7 @@
 #define Included_StemClass
 
 #include "CompoundVariableTable.hpp"
-
-#define SORT_CASESENSITIVE 0
-#define SORT_CASEIGNORE    1
-
-#define SORT_ASCENDING 0
-#define SORT_DECENDING 1
+#include "RexxInternalApis.h"
 
 class SupplierClass;
 class CompoundVariableTail;

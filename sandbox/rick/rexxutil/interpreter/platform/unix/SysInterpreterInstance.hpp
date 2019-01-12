@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -43,6 +43,8 @@
 #ifndef Included_SysInterpreterInstance_hpp
 #define Included_SysInterpreterInstance_hpp
 
+#include "FileNameBuffer.hpp"
+
 class InterpreterInstance;
 class RexxActivation;
 
@@ -77,9 +79,20 @@ class SysSearchPath
 {
 public:
     SysSearchPath(const char *parent, const char *extension);
-    ~SysSearchPath();
+    ~SysSearchPath() {}
 
-    char *path;        // the constructed path
+    inline void addPath(const char *p)
+    {
+        if (p != NULL)
+        {
+            path += p;
+            if (p[strlen(p) - 1] != ';')
+            {
+                path += ";";
+            }
+        }
+    }
+    FileNameBuffer path;  // the constructed path
 };
 
 

@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -45,6 +45,7 @@
 #include "RexxCore.h"
 #include "SysFileSystem.hpp"
 #include "ActivityManager.hpp"
+#include "FileNameBuffer.hpp"
 
 int SysFileSystem::stdinHandle = 0;
 int SysFileSystem::stdoutHandle = 1;
@@ -92,47 +93,83 @@ void TicksToFileTime(uint64_t ticks, FILETIME &timeStamp)
  *
  * @param name     The input search name.
  * @param fullName The returned fully resolved name.
+ * @param fullNameLength
+ *                 length of the full name return buffer
  *
  * @return True if the file was located, false otherwise.
  */
-bool SysFileSystem::searchFileName(const char *name, char *fullName)
+bool SysFileSystem::searchFileName(const char *name, FileNameBuffer &fullName)
 {
-    DWORD dwFileAttrib;                  // file attributes
-    LPTSTR ppszFilePart=NULL;            // file name only in buffer
-    UINT   errorMode;
-
-    size_t nameLength = strlen(name);
-
-    // if name is tool small or big, this cannot be a valid name.
-    if (nameLength < 1 || nameLength > MAX_PATH)
+    // try to resolve the path name
+    if (getFullPathName(name, fullName))
     {
-        return false;
-    }
-    // now try for original name
-    errorMode = SetErrorMode(SEM_FAILCRITICALERRORS);
-    if (GetFullPathName(name, MAX_PATH, (LPTSTR)fullName, &ppszFilePart))
-    {
-        // if this is a good name, then make sure this really exists and it's not a directory.
-        // make sure it's not a directory
-        if (-1 != (dwFileAttrib=GetFileAttributes((LPTSTR)fullName)) && (dwFileAttrib != FILE_ATTRIBUTE_DIRECTORY))
-        {
-            SetErrorMode(errorMode);
-            return true;
-        }
-    }
-    // search on the path
-    if ( SearchPath(NULL, (LPCTSTR)name, NULL, MAX_PATH, (LPTSTR)fullName, &ppszFilePart) )
-    {
-        // and again, we need this to be a real file.
-        if (-1 != (dwFileAttrib=GetFileAttributes((LPTSTR)fullName)) && (dwFileAttrib != FILE_ATTRIBUTE_DIRECTORY))
-        {
-            SetErrorMode(errorMode);
-            return true;
-        }
+        // this must be a file.
+        return isFile(fullName);
     }
 
-    SetErrorMode(errorMode);
+    // search on the path...also must be a file
+    if (searchOnPath(name, NULL, NULL, fullName))
+    {
+        return isFile(fullName);
+    }
+
     return false;
+}
+
+
+/**
+ * Get the full path name of a file.
+ *
+ * @param name   The source name
+ * @param resolvedName
+ *               a buffer for returning the resolved name
+ *
+ * @return true if this could be resolved, false otherwise.
+ */
+bool SysFileSystem::getFullPathName(const char *name, FileBuffer *resolvedName)
+{
+    // now try for original name
+    UINT errorMode = SetErrorMode(SEM_FAILCRITICALERRORS);
+    LPTSTR  lpszLastNamePart;
+
+    DWORD rc = GetFullPathName(name, fullName.capacity(), (LPTSTR)fullName, &ppszFilePart)
+    // it is possible that the filename is good, but the buffer was too small to hold the result
+    if (rc > fullName.capacity())
+    {
+        // expand the buffer and try again.
+        fullName.ensureCapacity(rc);
+        rc = GetFullPathName(name, fullName.capacity(), (LPTSTR)fullName, &ppszFilePart)
+    }
+    SetErrorMode(errorMode);
+
+    return rc > 0;
+}
+
+/**
+ * Primitive search path with retry for buffer size problems.
+ *
+ * @param name   The name to search for
+ * @param resolvedName
+ *               The buffer for the return result
+ *
+ * @return true if there was a hit, false otherwise.
+ */
+bool SysFileSystem::searchOnPath(const char *name, const char *path, const char *extension, FileNameBuffer *resolvedName)
+{
+    // now try for original name
+    UINT errorMode = SetErrorMode(SEM_FAILCRITICALERRORS);
+    DWORD rc = SearchPath(path, name, extension, fullName.capacity(), fullName, &ppszFilePart);
+
+    // it is possible that the filename is good, but the buffer was too small to hold the result
+    if (rc > fullName.capacity())
+    {
+        fullName.ensureCapacity(rc);
+        rc = SearchPath(path, name, extension, fullName.capacity(), fullName, &ppszFilePart);
+    }
+    SetErrorMode(errorMode);
+
+    return rc > 0;
+
 }
 
 
@@ -140,14 +177,12 @@ bool SysFileSystem::searchFileName(const char *name, char *fullName)
  * Generate a fully qualified stream name.
  *
  * @param unqualifiedName
- *                   The starting name.
+ *               The starting name.
  * @param qualifiedName
- *                   The fully expanded and canonicalized file name.
- * @param bufferSize
+ *               The fully expanded and canonicalized file name.
  */
-void SysFileSystem::qualifyStreamName(const char *unqualifiedName, char *qualifiedName, size_t bufferSize)
+void SysFileSystem::qualifyStreamName(const char *unqualifiedName, FileNameBuffer &qualifiedName)
 {
-    LPTSTR  lpszLastNamePart;
     UINT errorMode;
 
     // If already expanded, there is nothing more to do.
@@ -156,34 +191,24 @@ void SysFileSystem::qualifyStreamName(const char *unqualifiedName, char *qualifi
         return;
     }
 
-    // get the fully expanded name
-    errorMode = SetErrorMode(SEM_FAILCRITICALERRORS);
     // similar to the Unix behaviour, we return the current directory
     // if 'unqualifiedName' is the null string
-    DWORD length = GetFullPathName((unqualifiedName[0] == '\0') ? "." : unqualifiedName,
-                               (DWORD)bufferSize, qualifiedName, &lpszLastNamePart);
-    if ((length == 0) || (length >= bufferSize))
+    if (getFullPathName((unqualifiedName[0] == '\0') ? "." : unqualifiedName, qualifiedName))
     {
-      // if GetFullPathName() failed or would need a larger buffer, return null string
-      qualifiedName[0] = '\0';
+        // qualifying a Windows device like "aux", "con" or "nul" (even when written in
+        // the form "xxx:" or /dir/xxx" etc.) will return the device name with a leading
+        // Win32 device namespace prefix "\\.\", e. g. QUALIFY("nul") --> "\\.\nul"
+        // (see https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247%28v=vs.85%29.aspx#win32_device_namespaces)
+        // the downside of a path with such a prefix is, that .File methods like exists(),
+        // isFile(), canRead(), or canWrite() will unconditionally return .false for it.
+        // To make things simple, we just remove such a prefix, if it hasn't already
+        // been there in 'unqualifiedName'
+        if ((strncmp(unqualifiedName, "\\\\.\\", 4) != 0) &&  // didn't start with "\\.\"
+            (strncmp(qualifiedName, "\\\\.\\", 4) == 0))      // starts with "\\.\"
+        {
+            memmove(qualifiedName, &qualifiedName[4], length - 4 + 1); // remove leading "\\.\"
+        }
     }
-    else
-    {
-      // qualifying a Windows device like "aux", "con" or "nul" (even when written in
-      // the form "xxx:" or /dir/xxx" etc.) will return the device name with a leading
-      // Win32 device namespace prefix "\\.\", e. g. QUALIFY("nul") --> "\\.\nul"
-      // (see https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247%28v=vs.85%29.aspx#win32_device_namespaces)
-      // the downside of a path with such a prefix is, that .File methods like exists(),
-      // isFile(), canRead(), or canWrite() will unconditionally return .false for it.
-      // To make things simple, we just remove such a prefix, if it hasn't already
-      // been there in 'unqualifiedName'
-      if ((strncmp(unqualifiedName, "\\\\.\\", 4) != 0) &&  // didn't start with "\\.\"
-          (strncmp(qualifiedName, "\\\\.\\", 4) == 0))      // starts with "\\.\"
-      {
-        memmove(qualifiedName, &qualifiedName[4], length - 4 + 1); // remove leading "\\.\"
-      }
-    }
-    SetErrorMode(errorMode);
 }
 
 
@@ -239,6 +264,21 @@ bool SysFileSystem::fileExists(const char *name)
          !((dwAttrib & FILE_ATTRIBUTE_SYSTEM)
           || (dwAttrib & FILE_ATTRIBUTE_HIDDEN)
           || (dwAttrib & FILE_ATTRIBUTE_DIRECTORY)));
+}
+
+
+/**
+ * Determine if the given file is a symbolic link to another file.
+ *
+ * @param name   The file name.
+ *
+ * @return True if the file is considered a link, false if this is the real
+ *         file object.
+ */
+bool SysFileSystem::isLink(const char *name)
+{
+    DWORD dwAttrs = GetFileAttributes(file);
+    return (dwAttrs != 0xffffffff) && (dwAttrs & FILE_ATTRIBUTE_REPARSE_POINT);
 }
 
 
@@ -379,7 +419,7 @@ bool SysFileSystem::hasExtension(const char *name)
  * Do a search for a single variation of a filename.
  *
  * @param name      The name to search for.
- * @param directory A specific directory to look in first (can be NULL).
+ * @param path      The path to search on (can be NULL)
  * @param extension A potential extension to add to the file name (can be NULL).
  * @param resolvedName
  *                  The buffer used to return the resolved file name.
@@ -387,7 +427,7 @@ bool SysFileSystem::hasExtension(const char *name)
  * @return true if the file was located.  A true returns indicates the
  *         resolved file name has been placed in the provided buffer.
  */
-bool SysFileSystem::searchName(const char *name, const char *path, const char *extension, char *resolvedName)
+bool SysFileSystem::searchName(const char *name, const char *path, const char *extension, FileNameBuffer &resolvedName)
 {
     UnsafeBlock releaser;
     return primitiveSearchName(name, path, extension, resolvedName);
@@ -406,23 +446,22 @@ bool SysFileSystem::searchName(const char *name, const char *path, const char *e
  * @param extension A potential extension to add to the file name (can be NULL).
  * @param resolvedName
  *                  The buffer used to return the resolved file name.
+ * @param resolvedNameLength
+ *                  The length of the resolved name.
  *
  * @return true if the file was located.  A true returns indicates the
  *         resolved file name has been placed in the provided buffer.
  */
-bool SysFileSystem::primitiveSearchName(const char *name, const char *path, const char *extension, char *resolvedName)
+bool SysFileSystem::primitiveSearchName(const char *name, const char *path, const char *extension, FileNameBuffer *resolvedName)
 {
     // this is for building a temporary name
-    char       tempName[MAX_PATH + 2];
+    FileNameBuffer tempName = name;
 
-    // construct the search name, potentially adding on an extension
-    strncpy(tempName, name, sizeof(tempName));
     if (extension != NULL)
     {
-        strncat(tempName, extension, sizeof(tempName) - strlen(tempName) - 1);
+        tempName += extension;
     }
 
-    *resolvedName = '\0';
     // if this appears to be a fully qualified name, then check it as-is and
     // quit.  The path searches might give incorrect results if performed with such
     // a name and this should only check on the raw name.
@@ -463,38 +502,26 @@ bool SysFileSystem::hasDirectory(const char *name)
  * opposed to searching along a path for the name.
  *
  * @param name   The name to use for the search.
+ * @param resolvedName
+ *               The returned resolved name.
+ * @param resolvedNameLength
+ *               The length of the resolved name buffer
  *
  * @return An RexxString version of the file name, iff the file was located. Returns
  *         OREF_NULL if the file did not exist.
  */
-bool SysFileSystem::checkCurrentFile(const char *name, char *resolvedName)
+bool SysFileSystem::checkCurrentFile(const char *name, FileNameBuffer *resolvedName)
 {
-    size_t nameLength = strlen(name); /* get length of incoming name       */
-
-    // make sure we have a valid length for even searching
-    if (nameLength < 1 || nameLength > MAX_PATH)
+    if (getFullPathName(name, resolvedName))
     {
-        return false;
-    }
-
-    // check the name in the current directory
-    unsigned int errorMode = SetErrorMode(SEM_FAILCRITICALERRORS);
-    LPTSTR ppszFilePart=NULL;            // file name only in buffer
-
-    if (GetFullPathName(name, MAX_PATH, (LPTSTR)resolvedName, &ppszFilePart))
-    {
-        DWORD fileAttrib = GetFileAttributes((LPTSTR)resolvedName);
-
         // if this is a real file vs. a directory, make sure we return
         // the long name value in the correct casing
-        if (fileAttrib != INVALID_FILE_ATTRIBUTES && fileAttrib != FILE_ATTRIBUTE_DIRECTORY)
+        if (isFile(resolvedName))
         {
-            getLongName(resolvedName, MAX_PATH);
-            SetErrorMode(errorMode);
+            getLongName(resolvedName);
             return true;
         }
     }
-    SetErrorMode(errorMode);
     return false;        // not found
 }
 
@@ -511,25 +538,18 @@ bool SysFileSystem::checkCurrentFile(const char *name, char *resolvedName)
  * @return Returns true if the file was located.  If true, the resolvedName
  *         buffer will contain the returned name.
  */
-bool SysFileSystem::searchPath(const char *name, const char *path, const char *extension, char *resolvedName)
+bool SysFileSystem::searchPath(const char *name, const char *path, const char *extension, FileNameBuffer &resolvedName)
 {
-    unsigned int errorMode = SetErrorMode(SEM_FAILCRITICALERRORS);
-
-    LPTSTR ppszFilePart=NULL;            // file name only in buffer
-    if (SearchPath((LPCTSTR)path, (LPCTSTR)name, (LPCTSTR)extension, MAX_PATH, (LPTSTR)resolvedName, &ppszFilePart))
+    if (searchOnPath(name, path, extension, resolvedName))
     {
-        DWORD fileAttrib = GetFileAttributes((LPTSTR)resolvedName);
-
-        // if this is a real file vs. a directory, make sure we return
-        // the long name value in the correct casing
-        if (fileAttrib != INVALID_FILE_ATTRIBUTES && fileAttrib != FILE_ATTRIBUTE_DIRECTORY)
+        // if this is a file, return the long name
+        if (isFile())
         {
-            getLongName(resolvedName, MAX_PATH);
-            SetErrorMode(errorMode);
+            getLongName(resolvedName);
             return true;
         }
+
     }
-    SetErrorMode(errorMode);
     return false;        // not found
 }
 
@@ -541,27 +561,28 @@ bool SysFileSystem::searchPath(const char *name, const char *path, const char *e
  * @param fullName The buffer used for the name.
  * @param size     The size of the buffer.
  */
-void SysFileSystem::getLongName(char *fullName, size_t size)
+void SysFileSystem::getLongName(FileNameBuffer *fullName)
 {
-    char           *p;
-
-    if (size >= MAX_PATH)
+    DWORD length = GetLongPathName(fullName, fullName, fullName.capacity());
+    if (length > fullName.capacity())
     {
-        DWORD length = GetLongPathName(fullName, fullName, (DWORD)size);
+        fullName.ensureCapacity(length);
+        length = GetLongPathName(fullName, fullName, fullName.capacity());
 
-        if ( 0 < length && length <= size )
+    }
+
+    if (length != 0)
+    {
+        WIN32_FIND_DATA findData;
+        HANDLE hFind = FindFirstFile(fullName, &findData);
+        if ( hFind != INVALID_HANDLE_VALUE )
         {
-            WIN32_FIND_DATA findData;
-            HANDLE hFind = FindFirstFile(fullName, &findData);
-            if ( hFind != INVALID_HANDLE_VALUE )
+            char *p = strrchr(fullName, '\\');
+            if (p != NULL)
             {
-                p = strrchr(fullName, '\\');
-                if ( p )
-                {
-                    strcpy(++p, findData . cFileName);
-                }
-                FindClose(hFind);
+                strcpy(++p, findData.cFileName);
             }
+            FindClose(hFind);
         }
     }
     return;
@@ -575,9 +596,9 @@ void SysFileSystem::getLongName(char *fullName, size_t size)
  *
  * @return The return code from the delete operation.
  */
-bool SysFileSystem::deleteFile(const char *name)
+int SysFileSystem::deleteFile(const char *name)
 {
-    return DeleteFile(name) != 0;
+    return DeleteFile(name) == 0 ? 0 : GetLastError();
 }
 
 /**
@@ -587,9 +608,9 @@ bool SysFileSystem::deleteFile(const char *name)
  *
  * @return The return code from the delete operation.
  */
-bool SysFileSystem::deleteDirectory(const char *name)
+int SysFileSystem::deleteDirectory(const char *name)
 {
-    return RemoveDirectory(name) != 0;
+    return RemoveDirectory(name) == 0 ? 0 : GetLastError();
 }
 
 
@@ -634,7 +655,7 @@ bool SysFileSystem::isWriteOnly(const char *name)
 {
     // attempt to open for read...if this fails, this is write only
     HANDLE handle = CreateFile(name, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, NULL);
-    if (handle == INVALID_HANDLE_VALUE)
+    if ( handle == INVALID_HANDLE_VALUE )
     {
         return true;
     }
@@ -685,15 +706,15 @@ bool SysFileSystem::exists(const char *name)
 int64_t SysFileSystem::getLastModifiedDate(const char *name)
 {
     HANDLE newHandle = CreateFile(name, FILE_READ_ATTRIBUTES, FILE_SHARE_READ | FILE_SHARE_WRITE,
-        NULL, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, NULL);
-    if (newHandle == INVALID_HANDLE_VALUE)
+                                  NULL, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, NULL);
+    if ( newHandle == INVALID_HANDLE_VALUE )
     {
         return -1;
     }
 
     FILETIME lastWriteGetTime, lastWriteTime;
-    if (!(GetFileTime(newHandle, NULL, NULL, &lastWriteGetTime) &&
-          FileTimeToLocalFileTime(&lastWriteGetTime, &lastWriteTime)))
+    if ( !(GetFileTime(newHandle, NULL, NULL, &lastWriteGetTime) &&
+           FileTimeToLocalFileTime(&lastWriteGetTime, &lastWriteTime)) )
     {
         CloseHandle(newHandle);
         return -1;
@@ -717,15 +738,15 @@ int64_t SysFileSystem::getLastModifiedDate(const char *name)
 int64_t SysFileSystem::getLastAccessDate(const char *name)
 {
     HANDLE newHandle = CreateFile(name, FILE_READ_ATTRIBUTES, FILE_SHARE_READ | FILE_SHARE_WRITE,
-        NULL, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, NULL);
-    if (newHandle == INVALID_HANDLE_VALUE)
+                                  NULL, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, NULL);
+    if ( newHandle == INVALID_HANDLE_VALUE )
     {
         return -1;
     }
 
     FILETIME fileLastAccessTime, lastAccessTime;
-    if (!(GetFileTime(newHandle, NULL, &fileLastAccessTime, NULL) &&
-          FileTimeToLocalFileTime(&fileLastAccessTime, &lastAccessTime)))
+    if ( !(GetFileTime(newHandle, NULL, &fileLastAccessTime, NULL) &&
+           FileTimeToLocalFileTime(&fileLastAccessTime, &lastAccessTime)) )
     {
         CloseHandle(newHandle);
         return -1;
@@ -749,7 +770,7 @@ int64_t SysFileSystem::getFileLength(const char *name)
 {
     WIN32_FILE_ATTRIBUTE_DATA stat;
 
-    if (GetFileAttributesEx(name, GetFileExInfoStandard, &stat) == 0)
+    if ( GetFileAttributesEx(name, GetFileExInfoStandard, &stat) == 0 )
     {
         return 0;
     }
@@ -819,12 +840,12 @@ bool SysFileSystem::setLastModifiedDate(const char *name, int64_t time)
      */
     DWORD flags = FILE_ATTRIBUTE_NORMAL;
     int result = GetFileAttributes(name);
-    if (result == 0xFFFFFFFF)
+    if ( result == 0xFFFFFFFF )
     {
         return false;
     }
 
-    if (result & FILE_ATTRIBUTE_DIRECTORY)
+    if ( result & FILE_ATTRIBUTE_DIRECTORY )
     {
         flags = FILE_FLAG_BACKUP_SEMANTICS;
     }
@@ -832,8 +853,8 @@ bool SysFileSystem::setLastModifiedDate(const char *name, int64_t time)
     // MSDN SetFileTime function: "The handle must have been created using
     // the CreateFile function with the FILE_WRITE_ATTRIBUTES"
     HANDLE hFile = CreateFile(name, FILE_WRITE_ATTRIBUTES, FILE_SHARE_READ | FILE_SHARE_WRITE,
-       NULL, OPEN_EXISTING, flags, NULL);
-    if (hFile == INVALID_HANDLE_VALUE)
+                              NULL, OPEN_EXISTING, flags, NULL);
+    if ( hFile == INVALID_HANDLE_VALUE )
     {
         return false;
     }
@@ -841,8 +862,8 @@ bool SysFileSystem::setLastModifiedDate(const char *name, int64_t time)
     // convert back to a file time
     TicksToFileTime(time, localFileTime);
 
-    if (LocalFileTimeToFileTime(&localFileTime, &fileTime) &&
-        SetFileTime(hFile, NULL, NULL, &fileTime))
+    if ( LocalFileTimeToFileTime(&localFileTime, &fileTime) &&
+         SetFileTime(hFile, NULL, NULL, &fileTime) )
     {
         CloseHandle(hFile);
         return true;
@@ -870,12 +891,12 @@ bool SysFileSystem::setLastAccessDate(const char *name, int64_t time)
      */
     DWORD flags = FILE_ATTRIBUTE_NORMAL;
     int result = GetFileAttributes(name);
-    if (result == 0xFFFFFFFF)
+    if ( result == 0xFFFFFFFF )
     {
         return false;
     }
 
-    if (result & FILE_ATTRIBUTE_DIRECTORY)
+    if ( result & FILE_ATTRIBUTE_DIRECTORY )
     {
         flags = FILE_FLAG_BACKUP_SEMANTICS;
     }
@@ -883,8 +904,8 @@ bool SysFileSystem::setLastAccessDate(const char *name, int64_t time)
     // MSDN SetFileTime function: "The handle must have been created using
     // the CreateFile function with the FILE_WRITE_ATTRIBUTES"
     HANDLE hFile = CreateFile(name, FILE_WRITE_ATTRIBUTES, FILE_SHARE_READ | FILE_SHARE_WRITE,
-       NULL, OPEN_EXISTING, flags, NULL);
-    if (hFile == INVALID_HANDLE_VALUE)
+                              NULL, OPEN_EXISTING, flags, NULL);
+    if ( hFile == INVALID_HANDLE_VALUE )
     {
         return false;
     }
@@ -892,8 +913,8 @@ bool SysFileSystem::setLastAccessDate(const char *name, int64_t time)
     // convert back to a file time
     TicksToFileTime(time, localFileTime);
 
-    if (LocalFileTimeToFileTime(&localFileTime, &fileTime) &&
-        SetFileTime(hFile, NULL, &fileTime, NULL))
+    if ( LocalFileTimeToFileTime(&localFileTime, &fileTime) &&
+         SetFileTime(hFile, NULL, &fileTime, NULL) )
     {
         CloseHandle(hFile);
         return true;
@@ -913,7 +934,7 @@ bool SysFileSystem::setLastAccessDate(const char *name, int64_t time)
 bool SysFileSystem::setFileReadOnly(const char *name)
 {
     DWORD attrs = GetFileAttributes(name);
-    if (attrs == 0xFFFFFFFF)
+    if ( attrs == 0xFFFFFFFF )
     {
         return false;
     }
@@ -951,9 +972,9 @@ bool SysFileSystem::isCaseSensitive(const char *name)
  *
  * @return The number of roots located.
  */
-int SysFileSystem::getRoots(char *roots)
+int SysFileSystem::getRoots(FileNameBuffer &roots)
 {
-    int length = GetLogicalDriveStrings(MAX_PATH, roots);
+    int length = GetLogicalDriveStrings(boots.capacity(), roots);
     // elements are returned in the form "d:\", with a null
     // separator.  Each root thus takes up 4 characters
     return length / 4;
@@ -1000,12 +1021,12 @@ const char *SysFileSystem::getLineEnd()
  */
 SysFileIterator::SysFileIterator(const char *p)
 {
-    char pattern[MAX_PATH + 1];
+    FileNameBuffer pattern:
 
     // save the pattern and convert into a wild card
     // search
-    strncpy(pattern, p, sizeof(pattern));
-    strncat(pattern, "\\*", sizeof(pattern) - strlen(pattern) - 1);
+    pattern = p;
+    pattern += "\\*";
 
     // this assumes we'll fail...if we find something,
     // we'll flip this
@@ -1057,17 +1078,18 @@ bool SysFileIterator::hasNext()
  *
  * @param buffer The buffer used to return the value.
  */
-void SysFileIterator::next(char *buffer)
+void SysFileIterator::next(FileNameBuffer *buffer)
 {
     if (completed)
     {
-        strcpy(buffer, "");
+        buffer = "";
     }
     else
     {
         // copy our current result over
-        strcpy(buffer, findFileData.cFileName);
+        buffer = findFileData.cFileName
     }
+
     // now locate the next one
     if (!FindNextFile (handle, &findFileData))
     {
@@ -1076,6 +1098,8 @@ void SysFileIterator::next(char *buffer)
         close();
     }
 }
+
+
 
 
 
