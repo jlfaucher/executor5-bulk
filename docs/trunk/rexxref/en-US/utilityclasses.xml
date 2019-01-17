@@ -2887,8 +2887,8 @@ This absolute path is memorized on the <classname>File</classname> object,
 and will not change if you change the default directory.
 </para>
 
-<!-- Modified: lastModified= combined into attribute -->
-<!-- $GENERATED-20150924-START rexxrefClassTable(File) -->
+<!-- Modified: lastAccessed= and lastModified= combined into attribute -->
+<!-- $GENERATED-20190117-START rexxrefClassTable(File) -->
 <table id="ooRexxFileClass" frame="all" pgwide="1">
 <title>File Class</title>
 <tgroup cols="1">
@@ -2932,8 +2932,12 @@ and will not change if you change the default directory.
    <member><xref linkend="mthFileIsDirectory" xrefstyle="select:title"/></member>
    <member><xref linkend="mthFileIsFile" xrefstyle="select:title"/></member>
    <member><xref linkend="mthFileIsHidden" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthFileLastAccessed" xrefstyle="select:title"/></member>
+<!-- lastAccessed= combined into attribute
+   <member><xref linkend="mthFileLastAccessedEquals" xrefstyle="select:title"/></member>
+-->
    <member><xref linkend="mthFileLastModified" xrefstyle="select:title"/></member>
-<!-- lastModified= combined into attribute
+<!-- lastAccessed= combined into attribute
    <member><xref linkend="mthFileLastModifiedEquals" xrefstyle="select:title"/></member>
 -->
    <member><xref linkend="mthFileLength" xrefstyle="select:title"/></member>
@@ -2955,7 +2959,7 @@ and will not change if you change the default directory.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20150924-END rexxrefClassTable(File) -->
+<!-- $GENERATED-20190117-END rexxrefClassTable(File) -->
 
 <section id="mthFileIsCaseSensitiveClsMth"><title>isCaseSensitive (Class Method)</title>
 <indexterm><primary>isCaseSensitive method</primary>
@@ -3390,11 +3394,61 @@ say .File~new("/tmp/.dir/file")~isHidden        -- 1
 </example>
 </section>
 
+
+<!-- Class File - method lastAccessed ============================== -->
+<section id="mthFileLastAccessed" revisionflag="added"><title>&added50;lastAccessed (Attribute)</title>
+<para>
+<indexterm><primary>lastAccessed attribute</primary><secondary>of File class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>lastAccessed attribute</secondary><tertiary>of File class</tertiary></indexterm>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/file_lastaccessed.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">lastAccessed get:</emphasis></term>
+  <listitem>
+    <para>Returns the last access date of the file or directory denoted by the
+    absolute path of the receiver object.
+    The result is a <xref linkend="clsDateTime" xrefstyle="template:DateTime"/>
+    object, or &nil; if the file or directory doesn't exist or the last access
+    time stamp cannot be retrieved.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">lastAccessed set:</emphasis></term>
+  <listitem>
+    <para>If the file or directory denoted by the absolute path of the receiver
+    object exists, this sets the last access date of the file or directory.
+    Otherwise it does nothing.
+    </para>
+    <para>The <emphasis role="italic">date</emphasis> parameter must be a
+    <classname>DateTime</classname> object.
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+<para>See also method <xref linkend="mthFileLastModified" xrefstyle="select:title"/>.
+</para>
+
+<note>
+<para>File last access time stamps may not be available on all file systems.
+Also, on Windows last access time is not updated for NTFS volumes by default.
+</para></note>
+
+<para><example id="ex.file-lastaccessed">
+<title>File class &mdash; lastAccessed attribute
+<indexterm><primary>examples</primary><secondary>lastAccessed attribute</secondary></indexterm>
+</title>
+<programlisting><![CDATA[
+say .File~new(".")~lastAccessed  -- e. g. 2019-01-07T20:03:14.000000
+]]>
+</programlisting></example></para>
+</section>
+
+
 <section id="mthFileLastModified"><title>lastModified (Attribute)</title>
 <indexterm><primary>lastModified attribute</primary>
 <secondary>of File class</secondary></indexterm>
 <indexterm><primary>method</primary>
-<secondary>lastModified method</secondary>
+<secondary>lastModified attribute</secondary>
 <tertiary>of File class</tertiary></indexterm>
 
 <mediaobject>
@@ -3406,26 +3460,34 @@ say .File~new("/tmp/.dir/file")~isHidden        -- 1
 <variablelist>
   <varlistentry><term><emphasis role="bold">lastModified get:</emphasis></term>
   <listitem>
-    <para>Returns the last modified date of the file/directory denoted by the absolute
-    path of the receiver object. The result is a DateTime object, or &nil; in case of error.
+    <para>Returns the last modified date of the file or directory denoted by the
+    absolute path of the receiver object.
+    The result is a <xref linkend="clsDateTime" xrefstyle="template:DateTime"/>
+    object, or &nil; if the file or directory doesn't exist or the last modified
+    time stamp cannot be retrieved.
     </para>
   </listitem></varlistentry>
   <varlistentry><term><emphasis role="bold">lastModified set:</emphasis></term>
   <listitem>
-    <para>Sets the last modified date of the file/directory denoted by the absolute path of the receiver object.
+    <para>If the file or directory denoted by the absolute path of the receiver
+    object exists, this sets the last modified date of the file or directory.
+    Otherwise it does nothing.
     </para>
-    <para>The <emphasis role="italic">date</emphasis> parameter is a DateTime object.
+    <para>The <emphasis role="italic">date</emphasis> parameter must be a
+    <classname>DateTime</classname> object.
     </para>
   </listitem></varlistentry>
-  <varlistentry><term><emphasis role="bold">Examples:</emphasis></term>
-  <listitem>
+</variablelist>
+<para>See also method <xref linkend="mthFileLastAccessed" xrefstyle="select:title"/>.
+</para>
+
 <example>
-<title>File class &mdash; lastModified method</title>
+<title>File class &mdash; lastModified attribute</title>
 <programlisting><![CDATA[
 /* On Windows */
 say .File~new("C:\Program Files")~lastModified~class  -- The DateTime class
-say .File~new("C:\Program Files")~lastModified        -- 2016-06-18T11:20:17.000000
-say .File~new("dummy")~lastModified                   -- The NIL object
+say .File~new("C:\Program Files")~lastModified        -- e.g. 2018-06-18T11:20:17.000000
+say .File~new("dummy")~lastModified                   -- e.g. The NIL object
 
 
 /* A possible implementation of : touch -c -m -r referenceFile file
@@ -3445,8 +3507,6 @@ file~lastModified = referenceDate
 return 0           -- OK
 ]]></programlisting>
 </example>
-  </listitem></varlistentry>
-</variablelist>
 </section>
 
 <section id="mthFileLength"><title>length</title>

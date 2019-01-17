@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -274,6 +274,101 @@ return testResult
   s~close
   f~delete
 
+::method test_file_lastmodified_one_arg
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  .File~new(".")~lastModified(.nil)
+
+::method test_file_lastmodified_set_no_args
+  self~expectSyntax(93.901) -- Not enough arguments for method; 1 expected
+  .File~new(".")~"lastModified="
+
+::method test_file_lastmodified_set_too_many_args
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method; 1 expected
+  .File~new(".")~"lastModified="(0, 0)
+
+::method test_file_lastmodified_set_invalid
+  self~expectSyntax(88.914) -- Argument date must be an instance of the DateTime class
+  .File~new(".")~lastModified = ""
+
+::method test_file_lastmodified_directory
+  -- current directory must exist, so lastModified should never be nil
+  self~assertTrue(.File~new(".")~lastModified~isA(.DateTime))
+
+::method test_file_lastmodified_nil
+  -- setting lastModified will not create a file
+  f = .File~new("doesnt-exist")
+  self~assertFalse(f~exists, f~name "should not exist")
+  self~assertSame(.nil, f~lastModified)
+  f~lastModified = .DateTime~new
+  self~assertFalse(f~exists, "setting lastModified() should not create" f~name)
+  self~assertSame(.nil, f~lastModified)
+
+
+::method test_file_lastaccessed_one_arg
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  .File~new(".")~lastAccessed(.nil)
+
+::method test_file_lastaccessed_set_no_args
+  self~expectSyntax(93.901) -- Not enough arguments for method; 1 expected
+  .File~new(".")~"lastAccessed="
+
+::method test_file_lastaccessed_set_too_many_args
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method; 1 expected
+  .File~new(".")~"lastAccessed="(0, 0)
+
+::method test_file_lastaccessed_set_invalid
+  self~expectSyntax(88.914) -- Argument date must be an instance of the DateTime class
+  .File~new(".")~lastAccessed = ""
+
+::method test_file_lastaccessed
+  f = .file~new("test_file_accessed")
+  self~addTempfile(f)                  -- schedule for automatic deletion
+
+  -- create the test file
+  s = .Stream~new(f)
+  self~assertEquals("READY:", s~open("write replace"), "couldn't create test file '"f~name"'")
+  s~lineOut("File.testGroup: test_file_accessed")
+  s~close
+
+  -- ooRexx provides two interfaces to retrieve last access time stamps:
+  --   File~lastAccessed and
+  --   SysGetFileDateTime(, "access")
+  -- check them for consistency
+  do 2 -- we'll run two iterations: first w/o, and then with a read/write lock
+
+    -- file time from File~lastAccessed
+    tLastAccessed = f~lastAccessed     -- e. g. 2015-06-06 15:12:08.000000
+    self~assertTrue(tLastAccessed~isA(.DateTime))
+    self~assertTrue(tLastAccessed <= .DateTime~new, "test timestamp" tLastAccessed" should be before" .DateTime~new)
+    tLastAccessed = tLastAccessed~string~left(19) -- we'll ignore fractions of seconds
+
+    -- file time from SysGetFileDateTime(, "access")
+    t = SysGetFileDateTime(f~absolutePath, "access") -- e. g. 2015-06-06 15:12:08
+    tSysGet = t~word(1)"T"t~word(2)
+    self~assertEquals(tLastAccessed, tSysGet, "~lastAccessed timestamp" tLastAccessed" should be equal to SysGetFileDateTime() timestamp" tSysGet)
+
+    -- now let's start a second iteration with:
+    -- a. an exclusive read/write lock on the test file, and
+    -- b. the test time stamp moved 180 days into the past
+    self~assertEquals("READY:", s~open("both"), "couldn't get read/write lock for test file '"f~name"'")
+    f~lastAccessed = f~lastAccessed - .TimeSpan~fromDays(180)
+  end
+  s~close
+  f~delete
+
+::method test_file_lastaccessed_directory
+  -- current directory must exist, so lastAccessed should never be nil
+  self~assertTrue(.File~new(".")~lastAccessed~isA(.DateTime))
+
+::method test_file_lastaccessed_nil
+  -- setting lastAccessed will not create a file
+  f = .File~new("doesnt-exist")
+  self~assertFalse(f~exists, f~name "should not exist")
+  self~assertSame(.nil, f~lastAccessed)
+  f~lastAccessed = .DateTime~new
+  self~assertFalse(f~exists, "setting lastAccessed() should not create" f~name)
+  self~assertSame(.nil, f~lastAccessed)
+
 
 -- listRoot: too many arguments
 ::method test_listroots_one_arg
@@ -375,9 +470,6 @@ return testResult
     self~assertEquals(expected, actual, ".File~new('User', 'C:\')~absolutePath should return" expected"; found" actual)
 
   end
-
-
--- End of class: File.testGroup
 
 
 ::options novalue error
