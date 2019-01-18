@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Reference XML File
     #
-    # Copyright (c) 2005-2018, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2019, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -526,7 +526,7 @@ Method <methodname>new</methodname> will raise an error if invoked.
 </table>
 <!-- $GENERATED-20150923-END rexxrefClassTable(Comparable) -->
 
-<section id="mthComparableCompareTo"><title>compareTo (Abstract Method)</title>
+<section id="mthComparableCompareTo"><title>&changed50;compareTo</title>
 <indexterm><primary>compareTo method</primary>
 <secondary>of Comparable class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -534,8 +534,14 @@ Method <methodname>new</methodname> will raise an error if invoked.
 <tertiary>of Comparable class</tertiary></indexterm>
 
 <para>This method compares the receiving object to the object supplied in the
-<emphasis role="italic">comparable</emphasis> argument.
-It is an abstract method and must be implemented in a subclass.
+<emphasis role="italic">other</emphasis> argument.
+<!--
+This used to be an abstract method, but provides a default implementation now
+See discussion in https://sourceforge.net/p/oorexx/bugs/1406/
+-->
+</para>
+<para>This is a default implementation which compares two items based on their
+<xref linkend="mthObjectIdentityHash" xrefstyle="select:title"/>.
 </para>
 
 <mediaobject>
@@ -550,6 +556,16 @@ It is an abstract method and must be implemented in a subclass.
 <literal>1</literal> if <emphasis role="italic">other</emphasis> is smaller
 than the receiving object.
 </para>
+<note><para>
+Classes inheriting from <classname>Comparable</classname>
+(like builtin classes
+<xref linkend="clsFile" xrefstyle="template:File"/>,
+<xref linkend="clsDateTime" xrefstyle="template:DateTime"/>, or
+<xref linkend="clsTimeSpan" xrefstyle="template:TimeSpan"/>)
+are strongly encouraged to forward to this default implementation for
+comparison cases not covered by their class-specific
+<methodname>compareTo</methodname> implementation.
+</para></note>
 </section>
 </section>
 
@@ -5707,7 +5723,7 @@ which the search is to be started.</para>
 </table>
 <!-- $GENERATED-20150923-END rexxrefClassTable(Orderable) -->
 
-<section id="mthOrderableCompareTo"><title>compareTo (Abstract Method)</title>
+<section id="mthOrderableCompareTo"><title>&changed50;compareTo</title>
 <indexterm><primary>compareTo method</primary>
 <secondary>of Orderable class</secondary></indexterm>
 <indexterm><primary>method</primary>
@@ -5715,8 +5731,14 @@ which the search is to be started.</para>
 <tertiary>of Orderable class</tertiary></indexterm>
 
 <para>This method compares the receiving object to the object supplied in the
-<emphasis role="italic">comparable</emphasis> argument.
-It is an abstract method and must be implemented in a subclass.
+<emphasis role="italic">other</emphasis> argument.
+<!--
+This used to be an abstract method, but provides a default implementation now
+See discussion in https://sourceforge.net/p/oorexx/bugs/1406/
+-->
+</para>
+<para>This is a default implementation which compares two items based on their
+<xref linkend="mthObjectIdentityHash" xrefstyle="select:title"/>.
 </para>
 
 <mediaobject>
@@ -5725,9 +5747,22 @@ It is an abstract method and must be implemented in a subclass.
 </imageobject>
 </mediaobject>
 
-<para>This method returns "-1" if the <emphasis role="italic">other</emphasis> is larger than the receiving
-object, "0" if the two objects are equal, and "1" if <emphasis role="italic">other</emphasis> is
-smaller than the receiving object.</para>
+<para>This method returns <literal>-1</literal> if the
+<emphasis role="italic">other</emphasis> is larger than the receiving object,
+<literal>0</literal> if the two objects are equal, and
+<literal>1</literal> if <emphasis role="italic">other</emphasis> is smaller
+than the receiving object.
+</para>
+<note><para>
+Classes inheriting from <classname>Orderable</classname>
+(like builtin classes
+<xref linkend="clsFile" xrefstyle="template:File"/>,
+<xref linkend="clsDateTime" xrefstyle="template:DateTime"/>, or
+<xref linkend="clsTimeSpan" xrefstyle="template:TimeSpan"/>)
+are strongly encouraged to forward to this default implementation for
+comparison cases not covered by their class-specific
+<methodname>compareTo</methodname> implementation.
+</para></note>
 </section>
 
 <section id="mthOrderableComparisonMethods"><title>Comparison Methods</title>
@@ -9419,8 +9454,10 @@ say t1 t2 (t1 + t2)
 </imageobject>
 </mediaobject>
 
-<para>This method returns "-1" if the <emphasis role="italic">other</emphasis> is larger than the receiving
-object, "0" if the two objects are equal, and "1" if <emphasis role="italic">other</emphasis> is
+<para>This method returns <literal>-1</literal> if the
+<emphasis role="italic">other</emphasis> is larger than the receiving object,
+<literal>0</literal> if the two objects are equal, and
+<literal>1</literal> if <emphasis role="italic">other</emphasis> is
 smaller than the receiving object.</para>
 </section>
 
