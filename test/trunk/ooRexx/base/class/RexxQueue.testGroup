@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -551,9 +551,14 @@ return testResult
       self~class~arrayOf100numbers = arr
     end
 
-  -- End setUp( )
 
--- End of class: Queue.testGroup
+-- https://sourceforge.net/p/oorexx/bugs/1379/
+::method test_bug_1379
+  self~expectSyntax(98.901) -- Object "a C" was not correctly initialized
+  say .c~new~queued
+
+  ::class c subclass RexxQueue
+  ::method init
 
 
 ::options novalue error
