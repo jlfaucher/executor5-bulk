@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Reference XML File
     #
-    # Copyright (c) 2005-2018, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2019, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -859,7 +859,7 @@ X2D(B2X("10111"))  ->   "23"   /* decimal 23 */
 </mediaobject>
 
 <para>Sounds the speaker at <emphasis role="italic">frequency</emphasis>
-(Hertz) for <emphasis role="italic">duration</emphasis> (milliseconds).
+Hertz for <emphasis role="italic">duration</emphasis> milliseconds.
 The <emphasis role="italic">frequency</emphasis> can be any whole number
 in the range 37 to 32767 Hertz.  The
 <emphasis role="italic">duration</emphasis> can be any whole number in
@@ -867,11 +867,19 @@ the range 0 to 60000 milliseconds.</para>
 <para>This routine is most useful when called as a subroutine.  A null string
 is returned.</para>
 
-<note><title>Note</title>
-<para>Both parameters (frequency, duration) are ignored on Windows 95 and Linux.
-On computers with multimedia support the function plays the default sound
-event. On computers without soundcard, the function plays the standard system
-beep (if activated).</para></note>
+<note><title>Notes</title>
+<para>On Unix-like systems both parameters,
+<emphasis role="italic">frequency</emphasis> and
+<emphasis role="italic">duration</emphasis>, are ignored.
+</para>
+<para>On Windows beeps may have been deactivated.
+To check the status of the Windows beep service, use the
+Service Control Manager command <code>sc qc beep</code>.
+To permanently enable the system beep service, run the command
+<code>sc config beep start= auto</code> in a Command window with
+Administrator rights, and then reboot your system.
+</para>
+</note>
 
 <para>Here is an example for Windows:
 <indexterm><primary>BEEP function</primary>
