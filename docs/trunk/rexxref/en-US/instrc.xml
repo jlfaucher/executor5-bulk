@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Reference XML File
     #
-    # Copyright (c) 2005-2018, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2019, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -193,7 +193,7 @@ Any permanent I/O redirection is associated with the environment name and
 will be saved and restored across function and subroutine calls.
 For permanent I/O redirections, any redirection objects or expressions are
 not evaluated at the time the ADDRESS instruction is processed.
-Eeach time a command is sent to this environment, these objects and
+Each time a command is sent to this environment, these objects and
 expressions will be evaluated in the then current variable context.
 </para>
 <para><variablelist>
@@ -289,11 +289,13 @@ If the object is a RexxQueue, method <methodname>queue</methodname>
 is used for each output line.
 Neither <option>REPLACE</option> nor <option>APPEND</option> can be
 specified for a RexxQueue.
-If the resulting object is an OrderedCollection object, output lines
-are added to the collection using method <methodname>append</methodname>.
-If <option>REPLACE</option> is specified, the collection is emptied
-using method <methodname>emtpy</methodname> before any output lines
-are appended.
+If the resulting object is an OrderedCollection object and
+<option>REPLACE</option> is specified, the collection is emptied using
+method <methodname>emtpy</methodname> before any output lines are added
+to the collection using method <methodname>append</methodname>.
+<option>REPLACE</option> is the default.
+If <option>APPEND</option> is specified, output lines are appended to
+the existing collection using method <methodname>append</methodname>.
 </para>
 </listitem></varlistentry>
 </variablelist>

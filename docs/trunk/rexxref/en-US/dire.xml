@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Reference XML File
     #
-    # Copyright (c) 2005-2018, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2019, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -536,31 +536,38 @@ This is useful for creating named constants associated with a class.
 <para>The <emphasis role="italic">name</emphasis> is a literal string or
 a symbol that is taken as a constant.  A method of the given name is created as
 both an instance method and a class method of the most recent ::CLASS directive.
-A ::CLASS directive is not required before a ::CONSTANT directive. If no ::CLASS
-directive precedes ::CONSTANT, a single constant method is created that
-is not associated with a class but is accessible to the main (executable) part
-of a program through the <xref linkend="methe" xrefstyle="template:.METHODS built-in object"/>.
+A ::CLASS directive is not required before a ::CONSTANT directive.
+If no ::CLASS directive precedes ::CONSTANT, a single &quot;floating&quot;
+constant method is created that is not associated with a class but is accessible
+through the <xref linkend="methe" xrefstyle="template:.METHODS built-in object"/>.
 Only one ::CONSTANT directive can appear for any method name not associated with a class.
 </para>
 <para>The methods created by a ::CONSTANT directive are UNGUARDED and will have
 a return result that is specified by <emphasis role="italic">value</emphasis>.
 If specified, the constant <emphasis role="italic">value</emphasis> must be a single
-literal string or symbol that is taken as a constant. Also permitted is the
-single character "-" or "+" followed by a literal string or symbol that is a
-valid number.
+literal string, a symbol that is taken as a constant, or an expression enclosed
+in parentheses.
+Also permitted is the single character &quot;<literal>-</literal>&quot; or
+&quot;<literal>+</literal>&quot; followed by a symbol that is a valid number.
 If <emphasis role="italic">value</emphasis> is omitted, the constant
 <emphasis role="italic">name</emphasis> will return its value in uppercase.
 </para>
 <para>Here are some examples of valid constants:
 <example id="ex.constant">
 <title>CONSTANT examples</title>
-<programlisting><![CDATA[::class MathConstants public
+<programlisting><![CDATA[
+::class MathConstants public
 ::constant pi 3.14159265
 ::constant author "Isaac Asimov"
 ::constant absolute_zero -273.15
+::constant e ( rxcalcexp(1) )
+::constant eSquare (self~e ** 2)
+::constant primes (2, 3, 5, 7, 11, 13)
 
 ::class Search
 ::constant caseless
+
+::requires rxmath library
 ]]></programlisting>
 </example>
 </para>
@@ -582,6 +589,28 @@ say .Search~caseless             -- "CASELESS"
 ::constant caseless
 ]]></programlisting>
 </example>
+
+<para><emphasis role="bold">Notes:</emphasis></para>
+<orderedlist>
+<listitem><para>Calculated ::CONSTANT directives (where
+<emphasis role="italic">value</emphasis> is an expression enclosed in
+parenthesis) can reference any other constant ::CONSTANT directives (where
+<emphasis role="italic">value</emphasis> is omitted, a single literal string,
+a symbol that is taken as a constant, or a valid number optionally preceded
+by &quot;<literal>-</literal>&quot; or &quot;<literal>+</literal>&quot;).
+For a calculated ::CONSTANT directive to reference another calculated
+::CONSTANT directive, the referenced directive must be defined earlier in
+order of appearance.
+Forward references to calculated ::CONSTANT directives are not allowed.
+</para></listitem>
+<listitem><para>For a floating ::CONSTANT directive the constant
+<emphasis role="italic">value</emphasis> must be a single literal string,
+or a symbol that is taken as a constant.
+An expression enclosed in parentheses is not allowed.
+</para></listitem>
+<listitem><para>A ::CONSTANT directive cannot have a method body.
+</para></listitem>
+</orderedlist>
 </section>
 
 <section id="methd"><title>::METHOD</title>
