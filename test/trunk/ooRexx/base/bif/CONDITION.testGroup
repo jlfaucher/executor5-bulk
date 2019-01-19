@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -80,6 +80,14 @@ return testResult
   self~expectSyntax(40.4)              -- Too many arguments in invocation of CONDITION
   call condition , .nil
 
+::constant validObjectIndexes ( -
+  "ADDITIONAL", "DESCRIPTION", "INSTRUCTION", "CONDITION", "RESULT", -
+  "RC", "CODE", "ERRORTEXT", "MESSAGE", "PACKAGE", "POSITION", -
+  "PROGRAM", "STACKFRAMES", "TRACEBACK", "PROPAGATED" )
+
+::constant mandatoryObjectIndexes ( -
+  self~validObjectIndexes~difference( -
+    ("ADDITIONAL", "RESULT", "RC", "CODE", "ERRORTEXT", "MESSAGE", "POSITION")) )
 
 -- SIGNAL trap all possible exceptions, and check CONDITION() results
 ::method test_condition_signal
@@ -139,6 +147,25 @@ return testResult
   -- say cond":" condition("C") "raised, desc '"condition("D")"', add '"condition("A")"', stat '"condition("S")"'"
   -- we'll test both against CONDITION() bif and condition object
   object = condition("object")
+
+say self~mandatoryObjectIndexes~sort~makeString(, ", ")
+  -- general condition object tests
+  self~assertIsA(object, .Directory)
+  objectIndexes = object~allIndexes
+  -- the condition object should return a subset of the allowed indexes
+  self~assertTrue(objectIndexes~subset(self~validObjectIndexes), condition("c") "condition object returns undocumented index(es)" objectIndexes~difference(validObjectIndexes)~toString(, ", "))
+  -- each condition should return a mandatory minimum set of indexes
+  self~assertTrue(self~mandatoryObjectIndexes~subset(objectIndexes), condition("c") "condition object misses mandatory index(es)" self~mandatoryObjectIndexes~difference(objectIndexes)~toString(, ", "))
+  do index over objectIndexes
+    select case index
+      when "CODE" then self~assertTrue(object[index]~dataType("number"))
+      when "POSITION" then self~assertTrue(object[index]~dataType("whole number"))
+      when "PROPAGATED" then self~assertTrue(object[index]~dataType("binary"))
+      when "STACKFRAMES" then self~assertIsA(object[index], .List)
+      when "TRACEBACK" then self~assertIsA(object[index], .List)
+      otherwise nop
+    end
+  end
 
   -- CONDITION("I") must be the same as object["INSTRUCTION"]
   self~assertSame(instruction, condition())         -- default is "Instruction"
@@ -216,6 +243,24 @@ return testResult
   -- say cond":" condition("C") "raised, desc '"condition("D")"', add '"condition("A")"', stat '"condition("S")"'"
   -- we'll test both against CONDITION() bif and condition object
   object = condition("object")
+
+  -- general condition object tests
+  self~assertIsA(object, .Directory)
+  objectIndexes = object~allIndexes
+  -- the condition object should return a subset of the allowed indexes
+  self~assertTrue(objectIndexes~subset(self~validObjectIndexes), condition("c") "condition object returns undocumented index(es)" objectIndexes~difference(validObjectIndexes)~toString(, ", "))
+  -- each condition should return a mandatory minimum set of indexes
+  self~assertTrue(self~mandatoryObjectIndexes~subset(objectIndexes), condition("c") "condition object misses mandatory index(es)" self~mandatoryObjectIndexes~difference(objectIndexes)~toString(, ", "))
+  do index over objectIndexes
+    select case index
+      when "CODE" then self~assertTrue(object[index]~dataType("number"))
+      when "POSITION" then self~assertTrue(object[index]~dataType("whole number"))
+      when "PROPAGATED" then self~assertTrue(object[index]~dataType("binary"))
+      when "STACKFRAMES" then self~assertIsA(object[index], .List)
+      when "TRACEBACK" then self~assertIsA(object[index], .List)
+      otherwise nop
+    end
+  end
 
   -- CONDITION("I") must be the same as object["INSTRUCTION"]
   self~assertSame(instruction, condition())         -- default is "Instruction"
