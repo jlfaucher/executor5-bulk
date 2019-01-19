@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2016-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2016-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -60,16 +60,13 @@ return testResult
 -- set up a Table of instances of all Rexx built-in - classes
 -- index is the instance, value is .true if it supports makeString(), .false otherwise
 ::method activate class
-
   expose allInstances
-  -- using .Table instead of .IdentityTable surfaces bugs when adding .DateTime or .TimeSpan instances
-  allInstances = .IdentityTable~new(.RexxInfo~package~classes~items + 3)
+
+  allInstances = .Table~new(.RexxInfo~package~classes~items + 3)
   do classname over .RexxInfo~package~classes
     class = .RexxInfo~package~classes[classname]
-    if class~isAbstract then do
-      say class~id "isAbstract"
-      iterate
-    end
+    if class~isAbstract then
+      iterate -- ignore abstract classes
     -- set up args to successfully create an instance with
     select case class
       when .Alarm, .Ticker then args = (1, .Message~new(.nil, "hashCode"))
@@ -85,13 +82,13 @@ return testResult
     end
     -- create instance and add to table
     instance = class~sendWith("new", args)
-    -- -- we don't want Alarm or Ticker to actually tick
+    -- we don't want Alarm or Ticker to actually tick
     if class == .Alarm | class == .Ticker then
       instance~cancel
 /*Dbg if instance~hasMethod("makeString") then say "activate:" class~id "has makeString"*/
     allInstances[instance] = instance~hasMethod("makeString")
   end
-  -- cover a few special cases: .nil, .RexxInfo, . StackFrame
+  -- cover a few special cases: .nil, .RexxInfo, .StackFrame
   allInstances[.nil] = .nil~hasMethod("makeString")
   allInstances[.RexxInfo] = .RexxInfo~hasMethod("makeString")
   allInstances[.Context~stackFrames[1]] = .Context~stackFrames[1]~hasMethod("makeString")
@@ -152,11 +149,13 @@ return testResult
 
 ::method test_request_string_string
 
+  -- concatenation, comparison, and arithmetic methods accept anything
+  -- i. e. these methods force any argument to a string
+  -- so we don't test e.g. append() or caslessEquals()
+
   self~checkRequestString(.String, "new")
   self~checkRequestString(1, "abbrev")
---self~checkRequestString(.String~new(1), "append") -- @@ BUG: accepts anything
   self~checkRequestString(1, "bitAnd")
---self~checkRequestString(1, "caselessEquals")      -- @@ BUG: accepts anything
   self~checkRequestString(1, "contains")
   self~checkRequestString(1, "endsWith")
   self~checkRequestString(1, "insert")

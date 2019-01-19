@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Reference XML File
     #
-    # Copyright (c) 2005-2017, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2019, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -825,9 +825,22 @@ say substr(d~string,3,6)  /* Displays "Direct" */
 </programlisting>
 </example>
 <para>For arguments to Rexx object methods, different rules apply.
-When a method expects a string as an argument, the argument object is sent the
-<code>request("STRING")</code> message.
-If <methodname>request</methodname> returns &nil;, then the method raises an error.
+<variablelist>
+<varlistentry><term>For <classname>String</classname> arithmetic, comparison, and concatenation methods:</term>
+<listitem><para>These methods always require a string argument, so first
+a <code>request("STRING")</code> message is sent to the argument object.
+If <methodname>request</methodname> returns &nil; because the argument object
+does not have a <methodname>makeString</methodname> method, and the NOSTRING
+condition is not being trapped, a
+<xref linkend="mthObjectString" xrefstyle="select:title"/> message is sent to
+the object to obtain its string representation.
+</para></listitem></varlistentry>
+<varlistentry><term>For all other methods:</term>
+<listitem><para>When a method expects a string as an argument, the
+argument object is sent the <code>request("STRING")</code> message.
+If <methodname>request</methodname> returns &nil;, the method raises an error.
+</para></listitem></varlistentry>
+</variablelist>
 </para>
 </section>
 
