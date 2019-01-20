@@ -91,6 +91,13 @@ return testResult
   else
     return "#"
 
+-- a no-shell command that returns 0
+::attribute command_noshell get
+  if .ooRexxUnit.OSName == "WINDOWS" then
+    return address() '/c ""'
+  else
+    return address() '-c ""'
+
 ::attribute rc_command_not_exists get
   if .ooRexxUnit.OSName == "WINDOWS" then
     return 1 -- CMD return code for an unknown command is 1
@@ -279,8 +286,8 @@ return testResult
 
 -- test no-shell environment
 ::method test_environment_noshell
-  -- both "sh /c" and "cmd /c" should return 0
-  address path address() "/c"
+  -- sh -c "" and cmd /c "" should return 0
+  address path self~command_noshell
   self~assertSame(0, rc)
   self~assertSame(0, .rs)
 
