@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Reference XML File
     #
-    # Copyright (c) 2005-2018, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2019, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -2123,7 +2123,7 @@ say ("here", "we", "go")~makeString(, " ")      -- here we go
 
 iso639 = .Directory~of(("de", "Deutsch"), ("en", "English"), ("fr", "fran&ccedil;ais"))
 
-do list over .environment, .local 
+do list over .environment, .local
   say list~items                                -- 65
 end                                             -- 10
 
@@ -2133,8 +2133,8 @@ sparse = ,,,0
 say "size" sparse~size"," sparse~items "items"  -- size 4, 1 items
 </programlisting>
 </para><para>
-If the array term has trailing commas, the returned array has a 
-bigger size than what <computeroutput>.Array~of(&hellip;)</computeroutput> 
+If the array term has trailing commas, the returned array has a
+bigger size than what <computeroutput>.Array~of(&hellip;)</computeroutput>
 would have returned:
 <programlisting>say (1, , 3, ,)~size .Array~of(1, , 3, ,)~size  -- 5 3
 say (,)~size .Array~of(,)~size                  -- 2 0
@@ -3029,17 +3029,41 @@ the argument expressions within any [] pairs from left to right.</para>
 <para>Issuing commands to the surrounding environment is an integral part of
 Rexx.</para>
 
-<section id="xenvir"><title>Environment</title>
+<section id="xenvir" revisionflag="added"><title>&added50;Environment</title>
 <indexterm><primary>default</primary>
 <secondary>environment</secondary></indexterm>
 <para>The base system for the language processor is assumed to include
 at least one environment for processing commands. An environment is selected by
 default on entry to a Rexx program. You can change the environment by using
-the ADDRESS instruction. You can find out the name of the current environment
-by using the ADDRESS built-in function. The underlying operating system defines
+the <xref linkend="keyAddress" xrefstyle="select:title"/> instruction.
+You can find out the name of the current environment by using the
+<xref linkend="bifAddress" xrefstyle="select:title"/> built-in function.
+The underlying operating system defines
 environments external to the Rexx program. The environments selected depend
 on the caller.
-The default environment is "CMD" on Windows and "sh" on Unix systems.
+The default environment is <literal>CMD</literal> on Windows and
+<literal>sh</literal> on Unix-based systems.
+There are three aliases for the default environment, <literal>""</literal>
+(null string), <literal>COMMAND</literal> and <literal>SYSTEM</literal>.
+These environments execute commands through the standard command
+interpreter or system shell, which is <literal>cmd.exe</literal> on
+Windows and <literal>sh</literal> on Unix-based systems.
+On Unix-based systems alternate environments
+<literal>bsh</literal>, <literal>bash</literal>, <literal>csh</literal>,
+<literal>ksh</literal>, <literal>tcsh</literal>, and <literal>zsh</literal>
+are available, which allow execution of commands through a shell named like
+the environment, if such a shell is installed on the system.
+</para>
+<para>An additional environment <literal>PATH</literal>&mdash;available on both
+Windows and Unix-based systems&mdash;provides an alternative to command
+interpreter- / shell-based environments.
+It executes commands directly, without the need for a command interpreter
+or shell by searching the environment variabe <literal>PATH</literal>
+to locate the command.
+Note that this environment cannot execute internal shell or
+command interpreter commands like <literal>set</literal>.
+</para>
+<para>
 If called from an editor that accepts subcommands from
 the language processor, the default environment can be that editor.</para>
 <para>A Rexx program can issue commands&mdash;called
@@ -3070,7 +3094,7 @@ of the form:</para>
 <programlisting>
 expression;
 </programlisting>
-<para>The expression (which must not be an expression that forms a valid 
+<para>The expression (which must not be an expression that forms a valid
 <xref linkend="msgi" xrefstyle="template:message instruction"/>)
 is evaluated, resulting in a character string value
 (which can be the null string), which is then prepared as appropriate
@@ -3204,7 +3228,7 @@ environment.</para>
 <para>Rexx programs can call other Rexx programs as external
 functions or subroutines with the
 <xref linkend="keyCall" xrefstyle="select:title"/> instruction.</para>
-<para>If a program is called with the 
+<para>If a program is called with the
 CALL instruction, the program runs in the same
 process as the calling program.
 If you call another program by a Rexx command, the program is executed in
@@ -3244,7 +3268,7 @@ installation location away from <literal>/usr/bin</literal> (including
 macOS), a new convention is used for the sample programs, which works
 if the Rexx
 interpreter is anywhere on the path. This convention uses the
-<literal>env</literal> command in the shebang, like this: 
+<literal>env</literal> command in the shebang, like this:
 <literal>#!/usr/bin/env rexx</literal>. This has the advantage that it
 is portable, and will use the first occurrence of
 <literal>rexx</literal> that is found on <literal>$PATH</literal>.
@@ -3259,7 +3283,7 @@ Rexx program, if it starts with the character sequence "<literal>#!</literal>".
 a line-break (ending one line and starting a new one) in a text file.
 While Windows uses the two-character sequence <literal>'0d 0a'x</literal>
 (carriage-return, line-feed), Unix-like systems use the character
-<literal>'0a'x</literal> (line-feed) as a line-end indicator. 
+<literal>'0a'x</literal> (line-feed) as a line-end indicator.
 </para>
 <para>Rexx supports both line-end indicators on each platform, both for the
 Rexx program itself, and for data manipulated with e. g. built-in functions
@@ -3273,7 +3297,7 @@ Rexx program itself, and for data manipulated with e. g. built-in functions
 This means, when moving from one platform to another, typically there should be
 no line-end conversions necessary for Rexx programs or data read by these programs.
 </para>
-<para>Note that you cannot include line-end characters 
+<para>Note that you cannot include line-end characters
 <literal>'0d'x</literal> or <literal>'0a'x</literal> in a
 <xref linkend="litstrings" xrefstyle="template:literal string"/>.
 </para>

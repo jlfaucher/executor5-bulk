@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -84,6 +84,13 @@ return testResult
   else
     return "command_not_exists 2>/dev/null"
 
+-- shell-internal command
+::attribute command_shell_only get
+  if .ooRexxUnit.OSName == "WINDOWS" then
+    return ":"
+  else
+    return "#"
+
 ::attribute rc_command_not_exists get
   if .ooRexxUnit.OSName == "WINDOWS" then
     return 1 -- CMD return code for an unknown command is 1
@@ -138,24 +145,19 @@ return testResult
 
 -- commands with zero return code should raise neither ERROR nor FAILURE
 ::method test_environment_command_exists
-   defaultEnvironment = address()
    signal on error
    signal on failure
 
-   -- both the COMMAND and the "" environment should access
-   -- the default environment for Windows and Unix
-   address command self~command_exists
-   self~assertSame(0, rc)
-   self~assertSame(0, .rs)
-   self~assertSame(defaultEnvironment, address())
-
-   -- both the COMMAND and the "" environment should access
-   -- the default environment for Windows and Unix
-   address "" self~command_exists
-   self~assertSame(0, rc)
-   self~assertSame(0, .rs)
-   self~assertSame(defaultEnvironment, address())
-
+   -- we have three aliases for the default environment:
+   -- "", "command", and "system"
+   -- we should be able to run a default command in each
+   do environment over address(), "", "command", "system"
+     address value environment
+     (self~command_exists)
+     self~assertSame(0, rc, address() self~command_exists)
+     self~assertSame(0, .rs)
+     self~assertSame(environment, address())
+   end
    return
 
    error: failure:
@@ -200,6 +202,31 @@ return testResult
    error:
    self~assertFail("tracker bug #1490 Windows Command doesn't raise FAILURE")
 
+-- invalid (non-existent) commands should raise FAILURE (not ERROR)
+-- same test as above, but for the no-shell environment "path"
+::method test_path_command_not_exists
+   signal on error
+   signal on failure
+   trace off                           -- we don't want to see FAILURE trace output
+   address "path"
+   (self~command_not_exists)
+   self~assertFail("command '"self~command_not_exists"' should have raised FAILURE")
+
+   failure:
+   self~assertSame(self~rc_command_not_exists, rc)
+   self~assertSame(-1, .rs)
+   self~assertSame("path", address())
+   return
+
+   error:
+   self~assertFail("an invalid command should raise FAILURE, not ERROR")
+
+-- invalid (non-existent) commands should raise FAILURE (not ERROR)
+-- test no-shell environment "path"
+::method test_path_command
+-- @@
+
+
 -- an invalid environment should raise FAILURE
 -- rexxref says: "An attempt to enter a command in an unknown command environment
 -- also raises a FAILURE condition; in such a case, the variable RC is set to 30."
@@ -209,7 +236,7 @@ return testResult
    signal on failure
    trace off                           -- we don't want to see FAILURE trace output
    address "environment_not_exists" self~command_exists
-   self~assertFail("an invalid anvironment should have raised FAILURE")
+   self~assertFail("an invalid environment should have raised FAILURE")
 
    failure:
    self~assertSame(30, rc)
@@ -218,7 +245,7 @@ return testResult
    return
 
    error:
-   self~assertFail("an invalid anvironment shouldn't raise ERROR")
+   self~assertFail("an invalid environment shouldn't raise ERROR")
 
 ::method test_environment_max_length
    environment = "x"~copies(250)
@@ -230,14 +257,32 @@ return testResult
    address value "x"~copies(251)
 
 
--- the initial environment should be in the list of Rexx-defined environments
--- (but it shouldn't be the null string)
+-- the initial environment should be "sh" on Unix and "cmd" on Windows
 ::method test_environment_initial
   if .ooRexxUnit.OSName == "WINDOWS" then
-    environments = ("CMD", "COMMAND")
+    self~assertSame("cmd", address()~lower) -- both CMD and cmd are acceptable
   else
-    environments = ("sh", "bsh", "bash", "csh", "ksh", "tcsh", "zsh", "command", "path")
-  self~assertTrue(environments~hasItem(address()), "initial address() '" || address() || "' is not a Rexx-defined environment")
+    self~assertSame("sh", address())
+
+-- test shell-based environments
+::method test_environment_shell
+  do environment over address(), "", "command", "system"
+    address (environment)
+    (self~command_exists)
+    self~assertSame(0, rc)
+    self~assertSame(0, .rs)
+    (self~command_shell_only)
+    self~assertSame(0, rc)
+    self~assertSame(0, .rs)
+    self~assertSame(environment, address())
+  end
+
+-- test no-shell environment
+::method test_environment_noshell
+  -- both "sh /c" and "cmd /c" should return 0
+  address path address() "/c"
+  self~assertSame(0, rc)
+  self~assertSame(0, .rs)
 
 ::method test_environment_unix
   if .ooRexxUnit.OSName == "WINDOWS" then
@@ -248,7 +293,8 @@ return testResult
   -- if the shell for a given environment isn't installed, we expect a FAILURE
   -- if the shell is available, we expect "echo $0" to return the shell name
   -- (we don't test 'csh' and 'path', as they don't support "echo $0")
-  environments = ("1::" || address(), "1:sh", "0:bsh", "0:bash", "0:ksh", "0:tcsh", "0:zsh", "1:command:sh")
+  environments = "1::" || address(), "1:sh", -
+    "0:bsh", "0:bash", "0:ksh", "0:tcsh", "0:zsh", "1:command:sh", "1:system:sh"
 
   trace off                            -- we don't want to see FAILURE trace output
   do env over environments
@@ -635,8 +681,6 @@ address_with ::=      'WITH' ( 'INPUT' ( 'NORMAL' | 'STEM' stem | 'STREAM' strea
   self~assertSame(.rs, -1, "address PATH null command is expected to fail")
 
 ::method test_environment_path_cat
-  if .ooRexxUnit.OSName == "WINDOWS" then
-      return    -- no PATH environment
   address "path" self~inputToOutput with input using "line" output stem out.
   self~assertSame(1, out.0, "address PATH" self~inputToOutput "line should return 'line'")
   self~assertSame("line", out.1, "address PATH" self~inputToOutput "line should return 'line'")
@@ -1295,4 +1339,4 @@ address "" self~inputToOutput with input using (instream) output using(outstream
 ::method lineout
   return 1/0
 
-::options novalue error
+--::options novalue error
