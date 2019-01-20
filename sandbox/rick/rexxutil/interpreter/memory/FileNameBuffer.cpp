@@ -58,7 +58,7 @@ FileNameBuffer::FileNameBuffer(size_t size = 0) : buffer(NULL), bufferSize(0)
     // if we can't allocate, then raise the error
     if (buffer == NULL)
     {
-        reportException(Error_System_resources);
+        handleMemoryError();
     }
     // By default, we make this a null ascii-z string
     buffer[0] = '\0';
@@ -82,7 +82,7 @@ void FileNameBuffer::ensureCapacity(size_t c)
         // if we can't allocate, then raise the error
         if (newBuffer == NULL)
         {
-            reportException(Error_System_resources);
+            handleMemoryError();
         }
 
         // copy old data over and release the old buffer
@@ -91,4 +91,14 @@ void FileNameBuffer::ensureCapacity(size_t c)
         delete buffer;
         buffer = newBuffer;
     }
+}
+
+
+/**
+ * Handle a memory error. Base implementation is for just raising a normal exception.
+ * This can only be used within internal code when the kernel lock is held.
+ */
+void FileNameBuffer::handleMemoryError()
+{
+    reportException(Error_System_resources);
 }

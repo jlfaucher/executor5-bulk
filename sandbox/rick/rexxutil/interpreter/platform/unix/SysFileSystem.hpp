@@ -132,15 +132,105 @@ public:
 class SysFileIterator
 {
 public:
-    SysFileIterator(const char *pattern);
+    SysFileIterator(const char *path, const char *pattern, FileNameBuffer &buffer, bool c = false);
     ~SysFileIterator();
     void close();
     bool hasNext();
     void next(char *buffer);
+
 protected:
+    bool findNextEntry();
+
     bool completed;       // the iteration completed flag
     struct dirent *entry;
     DIR    *handle;
+    bool    caseLess;     // indicates we do caseless searches
+    const char *patternSpec;   // the spec we test against
+};
+
+/**
+ * A simple class to ensure an open file is closed in error situations.
+ */
+class AutoClose
+{
+ public:
+     AutoClose() : value(-1)
+     { };
+     AutoClose(int fd) : value(fd)
+     { }
+     ~AutoClose()
+     {
+         close(false);
+     }
+     AutoClose & operator=(int fd)
+     {
+         close(false);
+         value = fd;
+         return *this;
+     }
+     operator int() const
+     {
+         return value;
+     }
+     int operator==(int fd)
+     {
+         return value == fd;
+     }
+     int close(bool returnError = true)
+     {
+         int closeStatus = 0;
+         if (returnError)
+         {
+             if (value >= 0)
+             {
+                 closeStatus = ::close(value);
+             }
+         }
+         else
+         {
+             if (value >= 0)
+             {
+                 int backup = errno;
+                 ::close(value);
+                 errno = backup;
+             }
+         }
+         value = -1;
+         return closeStatus;
+     }
+ private:
+     int value; // >= 0 if opened
+};
+
+/**
+ * A simple implemenation of a smart pointer to prevent memory leaks.
+ */
+class AutoFree
+{
+ public:
+     AutoFree() : value(NULL) { };
+     AutoFree(char *p) : value(p) { }
+     ~AutoFree()
+     {
+         if (value != NULL)
+         {
+             free(value);
+         }
+         value = NULL;
+         }
+     AutoFree & operator=(char *p)
+     {
+         if (value != NULL)
+         {
+             free(value);
+         }
+         value = p;
+         return *this;
+         }
+     operator char *() const { return value; }
+     int operator==(char *p) { return value == p; }
+ private:
+     char *value;
 };
 
 #endif

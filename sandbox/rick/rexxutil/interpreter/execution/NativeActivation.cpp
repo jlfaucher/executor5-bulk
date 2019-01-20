@@ -1248,7 +1248,7 @@ void NativeActivation::removeLocalReference(RexxInternalObject *objr)
  * @param resultObj The returned result object.
  */
 void NativeActivation::run(MethodClass *_method, NativeMethod *_code, RexxObject  *_receiver,
-    RexxString  *_msgname, RexxObject **_arglist, size_t _argcount, ProtectedObject &resultObj)
+                           RexxString  *_msgname, RexxObject **_arglist, size_t _argcount, ProtectedObject &resultObj)
 {
     // add the frame to the execution stack
     NativeActivationFrame frame(activity, this);
@@ -1288,7 +1288,7 @@ void NativeActivation::run(MethodClass *_method, NativeMethod *_code, RexxObject
     try
     {
         activity->releaseAccess();           /* force this to "safe" mode         */
-                                             /* process the method call           */
+        /* process the method call           */
         (*methp)((RexxMethodContext *)&context, arguments);
         activity->requestAccess();           /* now in unsafe mode again          */
 
@@ -1363,7 +1363,7 @@ void NativeActivation::run(MethodClass *_method, NativeMethod *_code, RexxObject
  * @param resultObj The return value.
  */
 void NativeActivation::callNativeRoutine(RoutineClass *_routine, NativeRoutine *_code, RexxString *functionName,
-    RexxObject **list, size_t count, ProtectedObject &resultObj)
+                                         RexxObject **list, size_t count, ProtectedObject &resultObj)
 {
     NativeActivationFrame frame(activity, this);
 
@@ -1450,7 +1450,7 @@ void NativeActivation::callNativeRoutine(RoutineClass *_routine, NativeRoutine *
  * @param result     A protected object to receive the function result.
  */
 void NativeActivation::callRegisteredRoutine(RoutineClass *_routine, RegisteredRoutine *_code, RexxString *functionName,
-    RexxObject **list, size_t count, ProtectedObject &resultObj)
+                                             RexxObject **list, size_t count, ProtectedObject &resultObj)
 {
     NativeActivationFrame frame(activity, this);
 
@@ -1484,7 +1484,7 @@ void NativeActivation::callRegisteredRoutine(RoutineClass *_routine, RegisteredR
     }
 
     // all of the arguments now need to be converted to string arguments
-    for (size_t argindex=0; argindex < count; argindex++)
+    for (size_t argindex = 0; argindex < count; argindex++)
     {
         /* get the next argument             */
         RexxObject *argument = list[argindex];
@@ -1587,7 +1587,7 @@ void NativeActivation::callRegisteredRoutine(RoutineClass *_routine, RegisteredR
         {
             resultObj = new_string(funcresult);
             // free the buffer if the user allocated a new one.
-            if (funcresult.strptr != default_return_buffer )
+            if (funcresult.strptr != default_return_buffer)
             {
                 SystemInterpreter::releaseResultMemory(funcresult.strptr);
             }

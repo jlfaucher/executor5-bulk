@@ -112,11 +112,11 @@ public:
 class SysFileIterator
 {
 public:
-    SysFileIterator(const char *pattern);
+    SysFileIterator(const char *path, const char *pattern, FileNameBuffer &buffer, bool c = false);
     ~SysFileIterator();
     void close();
     bool hasNext();
-    void next(char *buffer);
+    void next(FileNameBuffer &buffer);
 protected:
     bool completed;       // the iteration completed flag
     HANDLE handle;        // The handle for the FindFirst operation

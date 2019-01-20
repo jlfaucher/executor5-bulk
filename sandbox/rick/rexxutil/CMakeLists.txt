@@ -372,6 +372,7 @@ if (NOT WIN32)
                            return 0;}"
                           HAVE_DLADDR)
   check_symbol_exists(_PC_CASE_SENSITIVE unistd.h HAVE_PC_CASE_SENSITIVE)
+  check_symbol_exists(FNM_CASEFOLD fnmatch.h HAVE_FNM_CASEFOLD)
   check_include_file(pwd.h HAVE_PWD_H)
   check_include_file(sched.h HAVE_SCHED_H)
   check_function_exists(sighold HAVE_SIGHOLD)

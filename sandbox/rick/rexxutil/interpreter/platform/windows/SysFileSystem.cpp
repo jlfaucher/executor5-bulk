@@ -510,7 +510,7 @@ bool SysFileSystem::hasDirectory(const char *name)
  * @return An RexxString version of the file name, iff the file was located. Returns
  *         OREF_NULL if the file did not exist.
  */
-bool SysFileSystem::checkCurrentFile(const char *name, FileNameBuffer *resolvedName)
+bool SysFileSystem::checkCurrentFile(const char *name, FileNameBuffer &resolvedName)
 {
     if (getFullPathName(name, resolvedName))
     {
@@ -1015,19 +1015,96 @@ const char *SysFileSystem::getLineEnd()
 
 
 /**
+ * Retrieve the current working directory into a FileNameBuffer.
+ *
+ * @param directory The return directory name.
+ *
+ * @return true if this was retrieved, false otherwise.
+ */
+bool SysFileSystem::getCurrentDirectory(FileNameBuffer &directory)
+{
+    // Get the current directory.  First check that the path buffer is large
+    // enough.
+    uint32_t ret = GetCurrentDirectory(0, 0);
+    if (ret == 0)
+    {
+        // make a null string and return a failure.
+        directory = "";
+        return false;
+    }
+    else
+    {
+        directory.ensureCapacity(ret);
+        GetCurrentDirectory(directory, directory.capacity());
+        return true;
+    }
+}
+
+
+/**
+ * Set the current working directory
+ *
+ * @param directory The new directory set.
+ *
+ * @return True if this worked, false for any failures
+ */
+bool SysFileSystem::setCurrentDirectory(const char *directory)
+{
+    return SetCurrentDirectory(directory);
+}
+
+
+/**
+ * Implementation of a copy file operation.
+ *
+ * @param fromFile The from file of the copy operation
+ * @param toFile   The to file of the copy operation.
+ *
+ * @return Any error codes.
+ */
+int SysFileSystem::copyFile(const char *fromFile, const char *toFile)
+{
+    return CopyFile(fromFile, toFile, 0) ? 0 : GetLastError();
+}
+
+
+/**
+ * Move a file from one location to another. This is typically just a rename, but if necessary, the file will be copied and the original unlinked.
+ *
+ * @param fromFile The file we´re copying from.
+ * @param toFile   The target file.
+ *
+ * @return 0 if this was successful, otherwise the system error code.
+ */
+int SysFileSystem::moveFile(const char *fromFile, const char *toFile)
+{
+    return MoveFile(fromFile, toFile) ? 0 : GetLastError();
+}
+
+
+/**
  * Create a new SysFileIterator instance.
  *
- * @param p      The directory we're iterating over.
+ * @param path    The path we're going to be searching in
+ * @param pattern The pattern to use. If NULL, then everything in the path will be returned.
+ * @param buffer  A FileNameBuffer object used to construct the path name.
+ * @param c       the caseless flag (ignored for Windows)
  */
-SysFileIterator::SysFileIterator(const char *p)
+SysFileIterator::SysFileIterator(const char *path, const char *pattern, FileNameBuffer &buffer, bool c)
 {
-    FileNameBuffer pattern:
-
     // save the pattern and convert into a wild card
     // search
-    pattern = p;
-    pattern += "\\*";
-
+    buffer = path;
+    // if no pattern was given, then just use a wild card
+    if (pattern == NULL)
+    {
+        buffer += "\\*.*";
+    }
+    else
+    {
+        buffer += '\\';
+        buffer += pattern;
+    }
     // this assumes we'll fail...if we find something,
     // we'll flip this
     completed = true;

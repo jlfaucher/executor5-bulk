@@ -46,6 +46,142 @@
 
 
 
+/*
+ *  Class to perform SysFileTree functions
+ *
+ *  Note that in Windows the MAX_PATH define includes the terminating null.
+ */
+class TreeFinder
+{
+     typedef enum
+     {
+         RECURSE,        // recursive search
+         DO_DIRS,        // return directories
+         DO_FILES,       // return files
+         NAME_ONLY,      // only return the names
+         EDITABLE_TIME,  // return the time in "editable" format
+         LONG_TIME,      // return the long time
+         CASELESS,       // perform a caseless search
+         LONG_SIZE,      // return sizes greater than 4Gb
+     } OptionFlags;
+
+     class AttributeMask
+     {
+      public:
+
+          typedef enum
+          {
+              Archive,
+              Directory,
+              Hidden,
+              ReadOnly,
+              System,
+              Control,
+          } AttributeType;
+
+          AttributeMask()
+          {
+              memset(mask, 0, sizeof(mask));
+          }
+
+          bool parseMask(const char *maskArg)
+          {
+              // everything is off until a + or - is found in the mask
+              mask[Control] = IgnoreAll;
+              int y = 0;
+
+              while (*maskArg)
+              {
+                  select(*maskArg)
+                  {
+                      case '+':
+                  {
+                      mask[y] = AttributeOn;
+                      mask[Control] = HaveMask;
+                      break;
+                  }
+                      case '-':
+                  {
+                      mask[y] = AttributeOff;
+                      mask[Control] = HaveMask;
+                      break;
+                  }
+                      case '*':
+                  {
+                      mask[y] = AttributeIgnore;
+                      break;
+                  }
+                      default:
+                      return false;
+                  }
+
+                  y++;
+                  maskArg++;
+              }
+              return true;
+          }
+
+          bool noNewSettings() { return mask[Control] == IgnoreAll; }
+          bool isOn(AttributeType maskSetting) { return mask[maskSetting] == AttributeOn; }
+          bool isOff(AttributeType maskSetting) { return mask[maskSetting] == AttributeOff; }
+          bool isIgnored(AttributeType maskSetting) { return mask[maskSetting] == AttributeIgnore; }
+          void set(AttributeType maskSetting, bool on)  { mask[maskSetting] = on ? AttributeOn : AttributeOff; }
+          char mask(AttributeType maskSetting) { return mask[maskSetting] == AttributeOn ? maskChars[maskSetting] : '-'; }
+          bool isSelected(AttributeType maskSetting, bool value) { return value ? !isOff(maskSetting) : !isOn(maskSetting); }
+          bool acceptAll() { return mask[Control] == IgnoreAll; }
+
+      protected:
+
+          const char AttributeOff =  -1;
+          const char AttributeOn = 1;
+          const char AttributeIgnore = 0;
+          const char IgnoreAll = 0;
+          const char HaveMask = 1;
+          const char maskChars[6] = "ADHRS";
+
+          int8_t mask[8];      // our map for matching
+     };
+
+
+     TreeFinder(RexxCallContext *c, const char *f, RexxStemObject s, const char *opts, const char *targetAttr, const char *newAttr);
+
+     void validateFileSpec();
+     void adjustDirectory();
+     bool validateFileSpecChars();
+     void parseMask(const char *mask, AttributeMask &flags, size_t argPos);
+     void badSFTOptsException(const char *actual);
+     void badMaskException(size_t pos, const char *actual);
+     void getOptions(const char *opts);
+     bool goodOpts(const char *opts);
+     void formatFile(const char *fileName);
+     void getPath();
+     void expandNonPath2fullPath();
+     void expandPath2fullPath(size_t lastSlashPos);
+     void adjustFileSpec();
+     void recursiveFindFile(FileNameBuffer &path);
+
+
+
+     bool nameOnly() { return (options & NAME_ONLY) != 0; }
+     bool longTime() { return (options & LONG_TIME) != 0; }
+     bool editableTime() { return (options & EDITABLE_TIME) != 0; }
+     bool longSize() { return (options & LONG_SIZE) != 0; }
+
+     RexxCallContext *context;                     // the initial call context
+     size_t         count;                         // Number of found file lines
+     RexxStemObject files;                         // Stem that holds results.
+     RoutineFileNameBuffer filePath;               // the file path portion of the search. Will get updated with recursions.
+     RoutineFileNameBuffer fileSpec;               // File name portion of the search for file spec, may contain glob characters.
+     RoutineFileNameBuffer foundFile;              // Full path name of found file
+     RoutineFileNameBuffer foundFileLine;          // Buffer for found file line, includes foundFile, fileTime, and fileAttr
+     RoutineFileNameBuffer nameSpec;               // Starts out holding the file spec
+     FlagSet<OptionFlags, 8> options;              // the options for what we're looking for
+     AttributeMask targetAttributes;               // the specific attributes we're looking for
+     AttributeMask newAttributes;                  // the specific attributes we're setting
+};
+
+
+
 
 #endif
 

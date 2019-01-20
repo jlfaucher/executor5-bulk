@@ -715,11 +715,51 @@ void FileProgramSource::setup()
 {
     // read the file into a buffer object, reporting an error if this failed
     // for any reason
-    buffer = SystemInterpreter::readProgram(fileName->getStringData());
+    buffer = readProgram(fileName->getStringData());
     if (buffer == OREF_NULL)
     {
         reportException(Error_Program_unreadable_name, fileName);
     }
     // go set up all of the line information so the parser can read this.
     BufferProgramSource::setup();
+}
+
+
+/**
+ * Read a program, returning a buffer object.
+ *
+ * @param file_name The target file name.
+ *
+ * @return A buffer object holding the program data.
+ */
+BufferClass* FileProgramSource::readProgram(const char *file_name)
+{
+    SysFile programFile;          // the file we're reading
+
+    // if unable to open this, return false
+    if (!programFile.open(imageFile, RX_O_RDONLY, RX_SH_DENY_WR, RX_S_IREAD))
+    {
+        return OREF_NULL;
+    }
+
+    // get the size of the file
+    int64_t bufferSize = programFile.getSize();
+    int64_t readSize;
+
+    // get a buffer object to return the image
+    Protected<BufferClass> buffer = new_buffer(bufferSize);
+    {
+        UnsafeBlock releaser;
+
+        // read the data
+        programFile.read(buffer->getData(), bufferSize, readSize);
+        programFile.close();
+    }
+    // if there was a read error, return nothing
+    if (readSize < bufferSize)
+    {
+        return OREF_NULL;
+    }
+    // ready to run
+    return buffer;
 }

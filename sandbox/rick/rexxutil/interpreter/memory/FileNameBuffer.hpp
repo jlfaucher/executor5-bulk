@@ -57,6 +57,8 @@ class FileNameBuffer
          }
      }
 
+     virtual void handleMemoryError();
+
      size_t capacity() { return bufferSize; }
      size_t length() { return strlen(buffer); }
 
@@ -132,6 +134,11 @@ class FileNameBuffer
          return *(buffer + pos);
      }
 
+     typedef enum
+     {
+         FileBufferException,               // a problem reallocating a file buffer in external code
+     } MemoryException;
+
 
  protected:
      char *buffer;                 // the current buffer
@@ -153,7 +160,7 @@ class QualifiedName
      // cast conversion operators for some very common uses of protected object.
      inline operator const char *()
      {
-         return qualifiedName;
+         return (const char *)qualifiedName;
      }
 
 
@@ -180,7 +187,7 @@ class CanonicalName
      // cast conversion operators for some very common uses of protected object.
      inline operator const char *()
      {
-         return qualifiedName;
+         return (const char *)qualifiedName;
      }
 
 
@@ -189,6 +196,4 @@ class CanonicalName
      FileNameBuffer qualifiedName;
 
 };
-
-
 #endif

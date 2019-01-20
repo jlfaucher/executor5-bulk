@@ -2400,7 +2400,7 @@ const char *StreamInfo::streamOpen(const char *options)
             char work[32];
 
             /* format the error return           */
-            sprintf(work, "ERROR:%d", ENOENT);
+            snprintf(work, sizeof(work), "ERROR:%d", ENOENT);
             /* go raise a notready condition     */
             notreadyError(ENOENT, context->NewStringFromAsciiz(work));
         }
@@ -3669,7 +3669,7 @@ StreamInfo::StreamInfo(RexxObjectPtr s, const char *inputName)
 
     // initialize the default values
     resetFields();
-    strncpy(stream_name, inputName, SysFileSystem::MaximumPathLength);
+    stream_name = inputName;
     // this stream is in an unknown state now.
     state = StreamUnknown;
 }

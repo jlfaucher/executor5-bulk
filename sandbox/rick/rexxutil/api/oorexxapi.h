@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -494,172 +494,172 @@ BEGIN_EXTERN_C()
 
 typedef struct
 {
-    wholenumber_t interfaceVersion;    // The interface version identifier
+     wholenumber_t interfaceVersion;    // The interface version identifier
 
-    void             (RexxEntry *DetachThread)(RexxThreadContext *);
-    void             (RexxEntry *HaltThread)(RexxThreadContext *);
-    void             (RexxEntry *SetThreadTrace)(RexxThreadContext *, logical_t);
-    RexxObjectPtr    (RexxEntry *RequestGlobalReference)(RexxThreadContext *, RexxObjectPtr);
-    void             (RexxEntry *ReleaseGlobalReference)(RexxThreadContext *, RexxObjectPtr);
-    void             (RexxEntry *ReleaseLocalReference)(RexxThreadContext *, RexxObjectPtr);
+     void             (RexxEntry *DetachThread)(RexxThreadContext *);
+     void             (RexxEntry *HaltThread)(RexxThreadContext *);
+     void             (RexxEntry *SetThreadTrace)(RexxThreadContext *, logical_t);
+     RexxObjectPtr(RexxEntry *RequestGlobalReference)(RexxThreadContext *, RexxObjectPtr);
+     void             (RexxEntry *ReleaseGlobalReference)(RexxThreadContext *, RexxObjectPtr);
+     void             (RexxEntry *ReleaseLocalReference)(RexxThreadContext *, RexxObjectPtr);
 
-    RexxObjectPtr  (RexxEntry *SendMessage)(RexxThreadContext *, RexxObjectPtr, CSTRING, RexxArrayObject);
-    RexxObjectPtr  (RexxEntry *SendMessage0)(RexxThreadContext *, RexxObjectPtr, CSTRING);
-    RexxObjectPtr  (RexxEntry *SendMessage1)(RexxThreadContext *, RexxObjectPtr, CSTRING, RexxObjectPtr);
-    RexxObjectPtr  (RexxEntry *SendMessage2)(RexxThreadContext *, RexxObjectPtr, CSTRING, RexxObjectPtr, RexxObjectPtr);
+     RexxObjectPtr(RexxEntry *SendMessage)(RexxThreadContext *, RexxObjectPtr, CSTRING, RexxArrayObject);
+     RexxObjectPtr(RexxEntry *SendMessage0)(RexxThreadContext *, RexxObjectPtr, CSTRING);
+     RexxObjectPtr(RexxEntry *SendMessage1)(RexxThreadContext *, RexxObjectPtr, CSTRING, RexxObjectPtr);
+     RexxObjectPtr(RexxEntry *SendMessage2)(RexxThreadContext *, RexxObjectPtr, CSTRING, RexxObjectPtr, RexxObjectPtr);
 
-    RexxDirectoryObject (RexxEntry *GetLocalEnvironment)(RexxThreadContext *);
-    RexxDirectoryObject (RexxEntry *GetGlobalEnvironment)(RexxThreadContext *);
+     RexxDirectoryObject(RexxEntry *GetLocalEnvironment)(RexxThreadContext *);
+     RexxDirectoryObject(RexxEntry *GetGlobalEnvironment)(RexxThreadContext *);
 
-    logical_t        (RexxEntry *IsInstanceOf)(RexxThreadContext *, RexxObjectPtr, RexxClassObject);
-    logical_t        (RexxEntry *IsOfType)(RexxThreadContext *, RexxObjectPtr, CSTRING);
-    logical_t        (RexxEntry *HasMethod)(RexxThreadContext *, RexxObjectPtr, CSTRING);
+     logical_t(RexxEntry *IsInstanceOf)(RexxThreadContext *, RexxObjectPtr, RexxClassObject);
+     logical_t(RexxEntry *IsOfType)(RexxThreadContext *, RexxObjectPtr, CSTRING);
+     logical_t(RexxEntry *HasMethod)(RexxThreadContext *, RexxObjectPtr, CSTRING);
 
-    RexxPackageObject (RexxEntry *LoadPackage)(RexxThreadContext *, CSTRING d);
-    RexxPackageObject (RexxEntry *LoadPackageFromData)(RexxThreadContext *, CSTRING n, CSTRING d, size_t l);
-    logical_t         (RexxEntry *LoadLibrary)(RexxThreadContext *, CSTRING n);
-    logical_t         (RexxEntry *RegisterLibrary)(RexxThreadContext *, CSTRING n, RexxPackageEntry *);
-    RexxClassObject  (RexxEntry *FindClass)(RexxThreadContext *, CSTRING);
-    RexxClassObject  (RexxEntry *FindPackageClass)(RexxThreadContext *, RexxPackageObject, CSTRING);
-    RexxDirectoryObject (RexxEntry *GetPackageRoutines)(RexxThreadContext *, RexxPackageObject);
-    RexxDirectoryObject (RexxEntry *GetPackagePublicRoutines)(RexxThreadContext *, RexxPackageObject);
-    RexxDirectoryObject (RexxEntry *GetPackageClasses)(RexxThreadContext *, RexxPackageObject);
-    RexxDirectoryObject (RexxEntry *GetPackagePublicClasses)(RexxThreadContext *, RexxPackageObject);
-    RexxDirectoryObject (RexxEntry *GetPackageMethods)(RexxThreadContext *, RexxPackageObject);
-    RexxObjectPtr    (RexxEntry *CallRoutine)(RexxThreadContext *, RexxRoutineObject, RexxArrayObject);
-    RexxObjectPtr    (RexxEntry *CallProgram)(RexxThreadContext *, CSTRING, RexxArrayObject);
+     RexxPackageObject(RexxEntry *LoadPackage)(RexxThreadContext *, CSTRING d);
+     RexxPackageObject(RexxEntry *LoadPackageFromData)(RexxThreadContext *, CSTRING n, CSTRING d, size_t l);
+     logical_t(RexxEntry *LoadLibrary)(RexxThreadContext *, CSTRING n);
+     logical_t(RexxEntry *RegisterLibrary)(RexxThreadContext *, CSTRING n, RexxPackageEntry *);
+     RexxClassObject(RexxEntry *FindClass)(RexxThreadContext *, CSTRING);
+     RexxClassObject(RexxEntry *FindPackageClass)(RexxThreadContext *, RexxPackageObject, CSTRING);
+     RexxDirectoryObject(RexxEntry *GetPackageRoutines)(RexxThreadContext *, RexxPackageObject);
+     RexxDirectoryObject(RexxEntry *GetPackagePublicRoutines)(RexxThreadContext *, RexxPackageObject);
+     RexxDirectoryObject(RexxEntry *GetPackageClasses)(RexxThreadContext *, RexxPackageObject);
+     RexxDirectoryObject(RexxEntry *GetPackagePublicClasses)(RexxThreadContext *, RexxPackageObject);
+     RexxDirectoryObject(RexxEntry *GetPackageMethods)(RexxThreadContext *, RexxPackageObject);
+     RexxObjectPtr(RexxEntry *CallRoutine)(RexxThreadContext *, RexxRoutineObject, RexxArrayObject);
+     RexxObjectPtr(RexxEntry *CallProgram)(RexxThreadContext *, CSTRING, RexxArrayObject);
 
-    RexxMethodObject (RexxEntry *NewMethod)(RexxThreadContext *, CSTRING, CSTRING, size_t);
-    RexxRoutineObject (RexxEntry *NewRoutine)(RexxThreadContext *, CSTRING, CSTRING, size_t);
-    logical_t         (RexxEntry *IsRoutine)(RexxThreadContext *, RexxObjectPtr);
-    logical_t         (RexxEntry *IsMethod)(RexxThreadContext *, RexxObjectPtr);
-    RexxPackageObject (RexxEntry *GetRoutinePackage)(RexxThreadContext *, RexxRoutineObject);
-    RexxPackageObject (RexxEntry *GetMethodPackage)(RexxThreadContext *, RexxMethodObject);
+     RexxMethodObject(RexxEntry *NewMethod)(RexxThreadContext *, CSTRING, CSTRING, size_t);
+     RexxRoutineObject(RexxEntry *NewRoutine)(RexxThreadContext *, CSTRING, CSTRING, size_t);
+     logical_t(RexxEntry *IsRoutine)(RexxThreadContext *, RexxObjectPtr);
+     logical_t(RexxEntry *IsMethod)(RexxThreadContext *, RexxObjectPtr);
+     RexxPackageObject(RexxEntry *GetRoutinePackage)(RexxThreadContext *, RexxRoutineObject);
+     RexxPackageObject(RexxEntry *GetMethodPackage)(RexxThreadContext *, RexxMethodObject);
 
-    POINTER          (RexxEntry *ObjectToCSelf)(RexxThreadContext *, RexxObjectPtr);
-    RexxObjectPtr    (RexxEntry *WholeNumberToObject)(RexxThreadContext *, wholenumber_t);
-    RexxObjectPtr    (RexxEntry *UintptrToObject)(RexxThreadContext *, uintptr_t);
-    RexxObjectPtr    (RexxEntry *IntptrToObject)(RexxThreadContext *, intptr_t);
-    RexxObjectPtr    (RexxEntry *ValueToObject)(RexxThreadContext *, ValueDescriptor *);
-    RexxArrayObject  (RexxEntry *ValuesToObject)(RexxThreadContext *, ValueDescriptor *, size_t count);
-    logical_t        (RexxEntry *ObjectToValue)(RexxThreadContext *, RexxObjectPtr, ValueDescriptor *);
-    RexxObjectPtr    (RexxEntry *StringSizeToObject)(RexxThreadContext *, stringsize_t);
-    logical_t        (RexxEntry *ObjectToWholeNumber)(RexxThreadContext *, RexxObjectPtr, wholenumber_t *);
-    logical_t        (RexxEntry *ObjectToStringSize)(RexxThreadContext *, RexxObjectPtr, stringsize_t *);
-    RexxObjectPtr    (RexxEntry *Int64ToObject)(RexxThreadContext *, int64_t);
-    RexxObjectPtr    (RexxEntry *UnsignedInt64ToObject)(RexxThreadContext *, uint64_t);
-    logical_t        (RexxEntry *ObjectToInt64)(RexxThreadContext *, RexxObjectPtr, int64_t *);
-    logical_t        (RexxEntry *ObjectToUnsignedInt64)(RexxThreadContext *, RexxObjectPtr, uint64_t *);
-    RexxObjectPtr    (RexxEntry *Int32ToObject)(RexxThreadContext *, int32_t);
-    RexxObjectPtr    (RexxEntry *UnsignedInt32ToObject)(RexxThreadContext *, uint32_t);
-    logical_t        (RexxEntry *ObjectToInt32)(RexxThreadContext *, RexxObjectPtr, int32_t *);
-    logical_t        (RexxEntry *ObjectToUnsignedInt32)(RexxThreadContext *, RexxObjectPtr, uint32_t *);
-    logical_t        (RexxEntry *ObjectToUintptr)(RexxThreadContext *, RexxObjectPtr, uintptr_t *);
-    logical_t        (RexxEntry *ObjectToIntptr)(RexxThreadContext *, RexxObjectPtr, intptr_t *);
-    logical_t        (RexxEntry *ObjectToLogical)(RexxThreadContext *, RexxObjectPtr, logical_t *);
-    RexxObjectPtr    (RexxEntry *LogicalToObject)(RexxThreadContext *, logical_t);
-    RexxObjectPtr    (RexxEntry *DoubleToObject)(RexxThreadContext *, double);
-    RexxObjectPtr    (RexxEntry *DoubleToObjectWithPrecision)(RexxThreadContext *, double, size_t precision);
-    logical_t        (RexxEntry *ObjectToDouble)(RexxThreadContext *, RexxObjectPtr, double *);
+     POINTER(RexxEntry *ObjectToCSelf)(RexxThreadContext *, RexxObjectPtr);
+     RexxObjectPtr(RexxEntry *WholeNumberToObject)(RexxThreadContext *, wholenumber_t);
+     RexxObjectPtr(RexxEntry *UintptrToObject)(RexxThreadContext *, uintptr_t);
+     RexxObjectPtr(RexxEntry *IntptrToObject)(RexxThreadContext *, intptr_t);
+     RexxObjectPtr(RexxEntry *ValueToObject)(RexxThreadContext *, ValueDescriptor *);
+     RexxArrayObject(RexxEntry *ValuesToObject)(RexxThreadContext *, ValueDescriptor *, size_t count);
+     logical_t(RexxEntry *ObjectToValue)(RexxThreadContext *, RexxObjectPtr, ValueDescriptor *);
+     RexxObjectPtr(RexxEntry *StringSizeToObject)(RexxThreadContext *, stringsize_t);
+     logical_t(RexxEntry *ObjectToWholeNumber)(RexxThreadContext *, RexxObjectPtr, wholenumber_t *);
+     logical_t(RexxEntry *ObjectToStringSize)(RexxThreadContext *, RexxObjectPtr, stringsize_t *);
+     RexxObjectPtr(RexxEntry *Int64ToObject)(RexxThreadContext *, int64_t);
+     RexxObjectPtr(RexxEntry *UnsignedInt64ToObject)(RexxThreadContext *, uint64_t);
+     logical_t(RexxEntry *ObjectToInt64)(RexxThreadContext *, RexxObjectPtr, int64_t *);
+     logical_t(RexxEntry *ObjectToUnsignedInt64)(RexxThreadContext *, RexxObjectPtr, uint64_t *);
+     RexxObjectPtr(RexxEntry *Int32ToObject)(RexxThreadContext *, int32_t);
+     RexxObjectPtr(RexxEntry *UnsignedInt32ToObject)(RexxThreadContext *, uint32_t);
+     logical_t(RexxEntry *ObjectToInt32)(RexxThreadContext *, RexxObjectPtr, int32_t *);
+     logical_t(RexxEntry *ObjectToUnsignedInt32)(RexxThreadContext *, RexxObjectPtr, uint32_t *);
+     logical_t(RexxEntry *ObjectToUintptr)(RexxThreadContext *, RexxObjectPtr, uintptr_t *);
+     logical_t(RexxEntry *ObjectToIntptr)(RexxThreadContext *, RexxObjectPtr, intptr_t *);
+     logical_t(RexxEntry *ObjectToLogical)(RexxThreadContext *, RexxObjectPtr, logical_t *);
+     RexxObjectPtr(RexxEntry *LogicalToObject)(RexxThreadContext *, logical_t);
+     RexxObjectPtr(RexxEntry *DoubleToObject)(RexxThreadContext *, double);
+     RexxObjectPtr(RexxEntry *DoubleToObjectWithPrecision)(RexxThreadContext *, double, size_t precision);
+     logical_t(RexxEntry *ObjectToDouble)(RexxThreadContext *, RexxObjectPtr, double *);
 
-    RexxStringObject  (RexxEntry *ObjectToString)(RexxThreadContext *, RexxObjectPtr);
-    CSTRING (RexxEntry *ObjectToStringValue)(RexxThreadContext *, RexxObjectPtr);
-    size_t  (RexxEntry *StringGet)(RexxThreadContext *, RexxStringObject, size_t, POINTER, size_t);
-    size_t  (RexxEntry *StringLength)(RexxThreadContext *, RexxStringObject);
-    CSTRING (RexxEntry *StringData)(RexxThreadContext *, RexxStringObject);
-    RexxStringObject  (RexxEntry *NewString)(RexxThreadContext *, CSTRING, size_t);
-    RexxStringObject  (RexxEntry *NewStringFromAsciiz)(RexxThreadContext *, CSTRING);
-    RexxStringObject  (RexxEntry *StringUpper)(RexxThreadContext *, RexxStringObject);
-    RexxStringObject  (RexxEntry *StringLower)(RexxThreadContext *, RexxStringObject);
-    logical_t         (RexxEntry *IsString)(RexxThreadContext *, RexxObjectPtr);
+     RexxStringObject(RexxEntry *ObjectToString)(RexxThreadContext *, RexxObjectPtr);
+     CSTRING(RexxEntry *ObjectToStringValue)(RexxThreadContext *, RexxObjectPtr);
+     size_t(RexxEntry *StringGet)(RexxThreadContext *, RexxStringObject, size_t, POINTER, size_t);
+     size_t(RexxEntry *StringLength)(RexxThreadContext *, RexxStringObject);
+     CSTRING(RexxEntry *StringData)(RexxThreadContext *, RexxStringObject);
+     RexxStringObject(RexxEntry *NewString)(RexxThreadContext *, CSTRING, size_t);
+     RexxStringObject(RexxEntry *NewStringFromAsciiz)(RexxThreadContext *, CSTRING);
+     RexxStringObject(RexxEntry *StringUpper)(RexxThreadContext *, RexxStringObject);
+     RexxStringObject(RexxEntry *StringLower)(RexxThreadContext *, RexxStringObject);
+     logical_t(RexxEntry *IsString)(RexxThreadContext *, RexxObjectPtr);
 
-    RexxBufferStringObject  (RexxEntry *NewBufferString)(RexxThreadContext *, size_t);
-    size_t  (RexxEntry *BufferStringLength)(RexxThreadContext *, RexxBufferStringObject);
-    POINTER (RexxEntry *BufferStringData)(RexxThreadContext *, RexxBufferStringObject);
-    RexxStringObject  (RexxEntry *FinishBufferString)(RexxThreadContext *, RexxBufferStringObject, size_t);
+     RexxBufferStringObject(RexxEntry *NewBufferString)(RexxThreadContext *, size_t);
+     size_t(RexxEntry *BufferStringLength)(RexxThreadContext *, RexxBufferStringObject);
+     POINTER(RexxEntry *BufferStringData)(RexxThreadContext *, RexxBufferStringObject);
+     RexxStringObject(RexxEntry *FinishBufferString)(RexxThreadContext *, RexxBufferStringObject, size_t);
 
-    void             (RexxEntry *DirectoryPut)(RexxThreadContext *, RexxDirectoryObject, RexxObjectPtr, CSTRING);
-    RexxObjectPtr    (RexxEntry *DirectoryAt)(RexxThreadContext *, RexxDirectoryObject, CSTRING);
-    RexxObjectPtr    (RexxEntry *DirectoryRemove)(RexxThreadContext *, RexxDirectoryObject, CSTRING);
-    RexxDirectoryObject  (RexxEntry *NewDirectory)(RexxThreadContext *);
-    logical_t        (RexxEntry *IsDirectory)(RexxThreadContext *, RexxObjectPtr);
+     void             (RexxEntry *DirectoryPut)(RexxThreadContext *, RexxDirectoryObject, RexxObjectPtr, CSTRING);
+     RexxObjectPtr(RexxEntry *DirectoryAt)(RexxThreadContext *, RexxDirectoryObject, CSTRING);
+     RexxObjectPtr(RexxEntry *DirectoryRemove)(RexxThreadContext *, RexxDirectoryObject, CSTRING);
+     RexxDirectoryObject(RexxEntry *NewDirectory)(RexxThreadContext *);
+     logical_t(RexxEntry *IsDirectory)(RexxThreadContext *, RexxObjectPtr);
 
-    RexxObjectPtr   (RexxEntry *ArrayAt)(RexxThreadContext *, RexxArrayObject, size_t);
-    void            (RexxEntry *ArrayPut)(RexxThreadContext *, RexxArrayObject, RexxObjectPtr, size_t);
-    size_t          (RexxEntry *ArrayAppend)(RexxThreadContext *, RexxArrayObject, RexxObjectPtr);
-    size_t          (RexxEntry *ArrayAppendString)(RexxThreadContext *, RexxArrayObject, CSTRING, size_t);
-    size_t          (RexxEntry *ArraySize)(RexxThreadContext *, RexxArrayObject);
-    size_t          (RexxEntry *ArrayItems)(RexxThreadContext *, RexxArrayObject);
-    size_t          (RexxEntry *ArrayDimension)(RexxThreadContext *, RexxArrayObject);
-    RexxArrayObject (RexxEntry *NewArray)(RexxThreadContext *, size_t);
-    RexxArrayObject (RexxEntry *ArrayOfOne)(RexxThreadContext *, RexxObjectPtr);
-    RexxArrayObject (RexxEntry *ArrayOfTwo)(RexxThreadContext *, RexxObjectPtr, RexxObjectPtr);
-    RexxArrayObject (RexxEntry *ArrayOfThree)(RexxThreadContext *, RexxObjectPtr, RexxObjectPtr, RexxObjectPtr);
-    RexxArrayObject (RexxEntry *ArrayOfFour)(RexxThreadContext *, RexxObjectPtr, RexxObjectPtr, RexxObjectPtr, RexxObjectPtr);
-    logical_t       (RexxEntry *IsArray)(RexxThreadContext *, RexxObjectPtr);
+     RexxObjectPtr(RexxEntry *ArrayAt)(RexxThreadContext *, RexxArrayObject, size_t);
+     void            (RexxEntry *ArrayPut)(RexxThreadContext *, RexxArrayObject, RexxObjectPtr, size_t);
+     size_t(RexxEntry *ArrayAppend)(RexxThreadContext *, RexxArrayObject, RexxObjectPtr);
+     size_t(RexxEntry *ArrayAppendString)(RexxThreadContext *, RexxArrayObject, CSTRING, size_t);
+     size_t(RexxEntry *ArraySize)(RexxThreadContext *, RexxArrayObject);
+     size_t(RexxEntry *ArrayItems)(RexxThreadContext *, RexxArrayObject);
+     size_t(RexxEntry *ArrayDimension)(RexxThreadContext *, RexxArrayObject);
+     RexxArrayObject(RexxEntry *NewArray)(RexxThreadContext *, size_t);
+     RexxArrayObject(RexxEntry *ArrayOfOne)(RexxThreadContext *, RexxObjectPtr);
+     RexxArrayObject(RexxEntry *ArrayOfTwo)(RexxThreadContext *, RexxObjectPtr, RexxObjectPtr);
+     RexxArrayObject(RexxEntry *ArrayOfThree)(RexxThreadContext *, RexxObjectPtr, RexxObjectPtr, RexxObjectPtr);
+     RexxArrayObject(RexxEntry *ArrayOfFour)(RexxThreadContext *, RexxObjectPtr, RexxObjectPtr, RexxObjectPtr, RexxObjectPtr);
+     logical_t(RexxEntry *IsArray)(RexxThreadContext *, RexxObjectPtr);
 
-    POINTER (RexxEntry *BufferData)(RexxThreadContext *, RexxBufferObject);
-    size_t            (RexxEntry *BufferLength)(RexxThreadContext *, RexxBufferObject);
-    RexxBufferObject  (RexxEntry *NewBuffer)(RexxThreadContext *, size_t);
-    logical_t         (RexxEntry *IsBuffer)(RexxThreadContext *, RexxObjectPtr);
+     POINTER(RexxEntry *BufferData)(RexxThreadContext *, RexxBufferObject);
+     size_t(RexxEntry *BufferLength)(RexxThreadContext *, RexxBufferObject);
+     RexxBufferObject(RexxEntry *NewBuffer)(RexxThreadContext *, size_t);
+     logical_t(RexxEntry *IsBuffer)(RexxThreadContext *, RexxObjectPtr);
 
-    POINTER           (RexxEntry *PointerValue)(RexxThreadContext *, RexxPointerObject);
-    RexxPointerObject (RexxEntry *NewPointer)(RexxThreadContext *, POINTER);
-    logical_t         (RexxEntry *IsPointer)(RexxThreadContext *, RexxObjectPtr);
+     POINTER(RexxEntry *PointerValue)(RexxThreadContext *, RexxPointerObject);
+     RexxPointerObject(RexxEntry *NewPointer)(RexxThreadContext *, POINTER);
+     logical_t(RexxEntry *IsPointer)(RexxThreadContext *, RexxObjectPtr);
 
-    RexxObjectPtr    (RexxEntry *SupplierItem)(RexxThreadContext *, RexxSupplierObject);
-    RexxObjectPtr    (RexxEntry *SupplierIndex)(RexxThreadContext *, RexxSupplierObject);
-    logical_t        (RexxEntry *SupplierAvailable)(RexxThreadContext *, RexxSupplierObject);
-    void             (RexxEntry *SupplierNext)(RexxThreadContext *, RexxSupplierObject);
-    RexxSupplierObject (RexxEntry *NewSupplier)(RexxThreadContext *, RexxArrayObject values, RexxArrayObject names);
+     RexxObjectPtr(RexxEntry *SupplierItem)(RexxThreadContext *, RexxSupplierObject);
+     RexxObjectPtr(RexxEntry *SupplierIndex)(RexxThreadContext *, RexxSupplierObject);
+     logical_t(RexxEntry *SupplierAvailable)(RexxThreadContext *, RexxSupplierObject);
+     void             (RexxEntry *SupplierNext)(RexxThreadContext *, RexxSupplierObject);
+     RexxSupplierObject(RexxEntry *NewSupplier)(RexxThreadContext *, RexxArrayObject values, RexxArrayObject names);
 
-    RexxStemObject   (RexxEntry *NewStem)(RexxThreadContext *, CSTRING);
-    void             (RexxEntry *SetStemElement)(RexxThreadContext *, RexxStemObject, CSTRING, RexxObjectPtr);
-    RexxObjectPtr    (RexxEntry *GetStemElement)(RexxThreadContext *, RexxStemObject, CSTRING);
-    void             (RexxEntry *DropStemElement)(RexxThreadContext *, RexxStemObject, CSTRING);
-    void             (RexxEntry *SetStemArrayElement)(RexxThreadContext *, RexxStemObject, size_t, RexxObjectPtr);
-    RexxObjectPtr    (RexxEntry *GetStemArrayElement)(RexxThreadContext *, RexxStemObject, size_t);
-    void             (RexxEntry *DropStemArrayElement)(RexxThreadContext *, RexxStemObject, size_t);
-    RexxDirectoryObject (RexxEntry *GetAllStemElements)(RexxThreadContext *, RexxStemObject);
-    RexxObjectPtr    (RexxEntry *GetStemValue)(RexxThreadContext *, RexxStemObject);
-    logical_t        (RexxEntry *IsStem)(RexxThreadContext *, RexxObjectPtr);
+     RexxStemObject(RexxEntry *NewStem)(RexxThreadContext *, CSTRING);
+     void             (RexxEntry *SetStemElement)(RexxThreadContext *, RexxStemObject, CSTRING, RexxObjectPtr);
+     RexxObjectPtr(RexxEntry *GetStemElement)(RexxThreadContext *, RexxStemObject, CSTRING);
+     void             (RexxEntry *DropStemElement)(RexxThreadContext *, RexxStemObject, CSTRING);
+     void             (RexxEntry *SetStemArrayElement)(RexxThreadContext *, RexxStemObject, size_t, RexxObjectPtr);
+     RexxObjectPtr(RexxEntry *GetStemArrayElement)(RexxThreadContext *, RexxStemObject, size_t);
+     void             (RexxEntry *DropStemArrayElement)(RexxThreadContext *, RexxStemObject, size_t);
+     RexxDirectoryObject(RexxEntry *GetAllStemElements)(RexxThreadContext *, RexxStemObject);
+     RexxObjectPtr(RexxEntry *GetStemValue)(RexxThreadContext *, RexxStemObject);
+     logical_t(RexxEntry *IsStem)(RexxThreadContext *, RexxObjectPtr);
 
-    void             (RexxEntry *RaiseException0)(RexxThreadContext *, size_t);
-    void             (RexxEntry *RaiseException1)(RexxThreadContext *, size_t, RexxObjectPtr);
-    void             (RexxEntry *RaiseException2)(RexxThreadContext *, size_t, RexxObjectPtr, RexxObjectPtr);
-    void             (RexxEntry *RaiseException)(RexxThreadContext *, size_t, RexxArrayObject);
-    void             (RexxEntry *RaiseCondition)(RexxThreadContext *, CSTRING, RexxStringObject, RexxObjectPtr, RexxObjectPtr);
-    logical_t        (RexxEntry *CheckCondition)(RexxThreadContext *);
-    RexxDirectoryObject (RexxEntry *GetConditionInfo)(RexxThreadContext *);
-    void             (RexxEntry *DecodeConditionInfo)(RexxThreadContext *, RexxDirectoryObject, RexxCondition *);
-    void             (RexxEntry *ClearCondition)(RexxThreadContext *);
+     void             (RexxEntry *RaiseException0)(RexxThreadContext *, size_t);
+     void             (RexxEntry *RaiseException1)(RexxThreadContext *, size_t, RexxObjectPtr);
+     void             (RexxEntry *RaiseException2)(RexxThreadContext *, size_t, RexxObjectPtr, RexxObjectPtr);
+     void             (RexxEntry *RaiseException)(RexxThreadContext *, size_t, RexxArrayObject);
+     void             (RexxEntry *RaiseCondition)(RexxThreadContext *, CSTRING, RexxStringObject, RexxObjectPtr, RexxObjectPtr);
+     logical_t(RexxEntry *CheckCondition)(RexxThreadContext *);
+     RexxDirectoryObject(RexxEntry *GetConditionInfo)(RexxThreadContext *);
+     void             (RexxEntry *DecodeConditionInfo)(RexxThreadContext *, RexxDirectoryObject, RexxCondition *);
+     void             (RexxEntry *ClearCondition)(RexxThreadContext *);
 
-    RexxObjectPtr    RexxNil;
-    RexxObjectPtr    RexxTrue;
-    RexxObjectPtr    RexxFalse;
-    RexxStringObject RexxNullString;
+     RexxObjectPtr    RexxNil;
+     RexxObjectPtr    RexxTrue;
+     RexxObjectPtr    RexxFalse;
+     RexxStringObject RexxNullString;
 
-    POINTER          (RexxEntry *ObjectToCSelfScoped)(RexxThreadContext *, RexxObjectPtr, RexxObjectPtr);
-    wholenumber_t    (RexxEntry *DisplayCondition)(RexxThreadContext *);
+     POINTER(RexxEntry *ObjectToCSelfScoped)(RexxThreadContext *, RexxObjectPtr, RexxObjectPtr);
+     wholenumber_t(RexxEntry *DisplayCondition)(RexxThreadContext *);
 
-    POINTER          (RexxEntry *MutableBufferData)(RexxThreadContext *, RexxMutableBufferObject);
-    size_t           (RexxEntry *MutableBufferLength)(RexxThreadContext *, RexxMutableBufferObject);
-    size_t           (RexxEntry *SetMutableBufferLength)(RexxThreadContext *, RexxMutableBufferObject, size_t);
-    RexxMutableBufferObject  (RexxEntry *NewMutableBuffer)(RexxThreadContext *, size_t);
-    logical_t        (RexxEntry *IsMutableBuffer)(RexxThreadContext *, RexxObjectPtr);
-    size_t           (RexxEntry *MutableBufferCapacity)(RexxThreadContext *, RexxMutableBufferObject);
-    POINTER          (RexxEntry *SetMutableBufferCapacity)(RexxThreadContext *, RexxMutableBufferObject, size_t);
+     POINTER(RexxEntry *MutableBufferData)(RexxThreadContext *, RexxMutableBufferObject);
+     size_t(RexxEntry *MutableBufferLength)(RexxThreadContext *, RexxMutableBufferObject);
+     size_t(RexxEntry *SetMutableBufferLength)(RexxThreadContext *, RexxMutableBufferObject, size_t);
+     RexxMutableBufferObject(RexxEntry *NewMutableBuffer)(RexxThreadContext *, size_t);
+     logical_t(RexxEntry *IsMutableBuffer)(RexxThreadContext *, RexxObjectPtr);
+     size_t(RexxEntry *MutableBufferCapacity)(RexxThreadContext *, RexxMutableBufferObject);
+     POINTER(RexxEntry *SetMutableBufferCapacity)(RexxThreadContext *, RexxMutableBufferObject, size_t);
 
-    RexxStringObject  (RexxEntry *VariableReferenceName)(RexxThreadContext *, RexxVariableReferenceObject);
-    RexxObjectPtr     (RexxEntry *VariableReferenceValue)(RexxThreadContext *, RexxVariableReferenceObject);
-    void              (RexxEntry *SetVariableReferenceValue)(RexxThreadContext *, RexxVariableReferenceObject, RexxObjectPtr);
-    logical_t         (RexxEntry *IsVariableReference)(RexxThreadContext *, RexxObjectPtr);
+     RexxStringObject(RexxEntry *VariableReferenceName)(RexxThreadContext *, RexxVariableReferenceObject);
+     RexxObjectPtr(RexxEntry *VariableReferenceValue)(RexxThreadContext *, RexxVariableReferenceObject);
+     void              (RexxEntry *SetVariableReferenceValue)(RexxThreadContext *, RexxVariableReferenceObject, RexxObjectPtr);
+     logical_t(RexxEntry *IsVariableReference)(RexxThreadContext *, RexxObjectPtr);
 
-    void             (RexxEntry *StringTablePut)(RexxThreadContext *, RexxStringTableObject, RexxObjectPtr, CSTRING);
-    RexxObjectPtr    (RexxEntry *StringTableAt)(RexxThreadContext *, RexxStringTableObject, CSTRING);
-    RexxObjectPtr    (RexxEntry *StringTableRemove)(RexxThreadContext *, RexxStringTableObject, CSTRING);
-    RexxStringTableObject  (RexxEntry *NewStringTable)(RexxThreadContext *);
-    logical_t        (RexxEntry *IsStringTable)(RexxThreadContext *, RexxObjectPtr);
+     void             (RexxEntry *StringTablePut)(RexxThreadContext *, RexxStringTableObject, RexxObjectPtr, CSTRING);
+     RexxObjectPtr(RexxEntry *StringTableAt)(RexxThreadContext *, RexxStringTableObject, CSTRING);
+     RexxObjectPtr(RexxEntry *StringTableRemove)(RexxThreadContext *, RexxStringTableObject, CSTRING);
+     RexxStringTableObject(RexxEntry *NewStringTable)(RexxThreadContext *);
+     logical_t(RexxEntry *IsStringTable)(RexxThreadContext *, RexxObjectPtr);
 
 } RexxThreadInterface;
 
@@ -671,66 +671,83 @@ typedef struct
 
 typedef struct
 {
-    wholenumber_t interfaceVersion;    // The interface version identifier
+     wholenumber_t interfaceVersion;    // The interface version identifier
 
-    RexxArrayObject  (RexxEntry *GetArguments)(RexxMethodContext *);
-    RexxObjectPtr    (RexxEntry *GetArgument)(RexxMethodContext *, size_t);
-    CSTRING          (RexxEntry *GetMessageName)(RexxMethodContext *);
-    RexxMethodObject (RexxEntry *GetMethod)(RexxMethodContext *);
-    RexxObjectPtr    (RexxEntry *GetSelf)(RexxMethodContext *);
-    RexxClassObject  (RexxEntry *GetSuper)(RexxMethodContext *);
-    RexxObjectPtr    (RexxEntry *GetScope)(RexxMethodContext *);
-    void             (RexxEntry *SetObjectVariable)(RexxMethodContext *, CSTRING, RexxObjectPtr);
-    RexxObjectPtr    (RexxEntry *GetObjectVariable)(RexxMethodContext *, CSTRING);
-    void             (RexxEntry *DropObjectVariable)(RexxMethodContext *, CSTRING);
-    RexxObjectPtr    (RexxEntry *ForwardMessage)(RexxMethodContext *, RexxObjectPtr, CSTRING, RexxClassObject, RexxArrayObject);
-    void             (RexxEntry *SetGuardOn)(RexxMethodContext *);
-    void             (RexxEntry *SetGuardOff)(RexxMethodContext *);
-    RexxClassObject  (RexxEntry *FindContextClass)(RexxMethodContext *, CSTRING);
-    POINTER          (RexxEntry *GetCSelf)(RexxMethodContext *);
-    POINTER          (RexxEntry *AllocateObjectMemory)(RexxMethodContext *, size_t);
-    void             (RexxEntry *FreeObjectMemory)(RexxMethodContext *, POINTER);
-    POINTER          (RexxEntry *ReallocateObjectMemory)(RexxMethodContext *, POINTER, size_t);
-    RexxVariableReferenceObject (RexxEntry *GetObjectVariableReference)(RexxMethodContext *, CSTRING);
-    RexxObjectPtr    (RexxEntry *SetGuardOnWhenUpdated)(RexxMethodContext *, CSTRING);
-    RexxObjectPtr    (RexxEntry *SetGuardOffWhenUpdated)(RexxMethodContext *, CSTRING);
+     RexxArrayObject(RexxEntry *GetArguments)(RexxMethodContext *);
+     RexxObjectPtr(RexxEntry *GetArgument)(RexxMethodContext *, size_t);
+     CSTRING(RexxEntry *GetMessageName)(RexxMethodContext *);
+     RexxMethodObject(RexxEntry *GetMethod)(RexxMethodContext *);
+     RexxObjectPtr(RexxEntry *GetSelf)(RexxMethodContext *);
+     RexxClassObject(RexxEntry *GetSuper)(RexxMethodContext *);
+     RexxObjectPtr(RexxEntry *GetScope)(RexxMethodContext *);
+     void             (RexxEntry *SetObjectVariable)(RexxMethodContext *, CSTRING, RexxObjectPtr);
+     RexxObjectPtr(RexxEntry *GetObjectVariable)(RexxMethodContext *, CSTRING);
+     void             (RexxEntry *DropObjectVariable)(RexxMethodContext *, CSTRING);
+     RexxObjectPtr(RexxEntry *ForwardMessage)(RexxMethodContext *, RexxObjectPtr, CSTRING, RexxClassObject, RexxArrayObject);
+     void             (RexxEntry *SetGuardOn)(RexxMethodContext *);
+     void             (RexxEntry *SetGuardOff)(RexxMethodContext *);
+     RexxClassObject(RexxEntry *FindContextClass)(RexxMethodContext *, CSTRING);
+     POINTER(RexxEntry *GetCSelf)(RexxMethodContext *);
+     POINTER(RexxEntry *AllocateObjectMemory)(RexxMethodContext *, size_t);
+     void             (RexxEntry *FreeObjectMemory)(RexxMethodContext *, POINTER);
+     POINTER(RexxEntry *ReallocateObjectMemory)(RexxMethodContext *, POINTER, size_t);
+     RexxVariableReferenceObject(RexxEntry *GetObjectVariableReference)(RexxMethodContext *, CSTRING);
+     RexxObjectPtr(RexxEntry *SetGuardOnWhenUpdated)(RexxMethodContext *, CSTRING);
+     RexxObjectPtr(RexxEntry *SetGuardOffWhenUpdated)(RexxMethodContext *, CSTRING);
+     void (RexxEntry *ThrowException0)(RexxMethodContext *, size_t);
+     void (RexxEntry *ThrowException1)(RexxMethodContext *, size_t, RexxObjectPtr);
+     void (RexxEntry *ThrowException2)(RexxMethodContext *, size_t, RexxObjectPtr, RexxObjectPtr);
+     void (RexxEntry *ThrowException)(RexxMethodContext *, size_t, RexxArrayObject);
+     void (RexxEntry *ThrowCondition)(RexxMethodContext *, CSTRING, RexxStringObject, RexxObjectPtr, RexxObjectPtr);
 } MethodContextInterface;
 
 #define CALL_INTERFACE_VERSION_4_0_0 100
-#define CALL_INTERFACE_VERSION 100
+#define CALL_INTERFACE_VERSION_5_0_0 101
+#define CALL_INTERFACE_VERSION 101
 
 typedef struct
 {
-    wholenumber_t interfaceVersion;    // The interface version identifier
+     wholenumber_t interfaceVersion;    // The interface version identifier
 
-    RexxArrayObject  (RexxEntry *GetArguments)(RexxCallContext *);
-    RexxObjectPtr    (RexxEntry *GetArgument)(RexxCallContext *, size_t);
-    CSTRING          (RexxEntry *GetRoutineName)(RexxCallContext *);
-    RexxRoutineObject (RexxEntry *GetRoutine)(RexxCallContext *);
-    void             (RexxEntry *SetContextVariable)(RexxCallContext *, CSTRING, RexxObjectPtr);
-    RexxObjectPtr    (RexxEntry *GetContextVariable)(RexxCallContext *, CSTRING);
-    void             (RexxEntry *DropContextVariable)(RexxCallContext *, CSTRING);
-    RexxDirectoryObject (RexxEntry *GetAllContextVariables)(RexxCallContext *);
-    RexxStemObject   (RexxEntry *ResolveStemVariable)(RexxCallContext *, RexxObjectPtr);
-    void             (RexxEntry *InvalidRoutine)(RexxCallContext *);
-    stringsize_t     (RexxEntry *GetContextDigits)(RexxCallContext *);
-    stringsize_t     (RexxEntry *GetContextFuzz)(RexxCallContext *);
-    logical_t        (RexxEntry *GetContextForm)(RexxCallContext *);
-    RexxObjectPtr    (RexxEntry *GetCallerContext)(RexxCallContext *);
-    RexxClassObject  (RexxEntry *FindContextClass)(RexxCallContext *, CSTRING);
+     RexxArrayObject(RexxEntry *GetArguments)(RexxCallContext *);
+     RexxObjectPtr(RexxEntry *GetArgument)(RexxCallContext *, size_t);
+     CSTRING(RexxEntry *GetRoutineName)(RexxCallContext *);
+     RexxRoutineObject(RexxEntry *GetRoutine)(RexxCallContext *);
+     void             (RexxEntry *SetContextVariable)(RexxCallContext *, CSTRING, RexxObjectPtr);
+     RexxObjectPtr(RexxEntry *GetContextVariable)(RexxCallContext *, CSTRING);
+     void             (RexxEntry *DropContextVariable)(RexxCallContext *, CSTRING);
+     RexxDirectoryObject(RexxEntry *GetAllContextVariables)(RexxCallContext *);
+     RexxStemObject(RexxEntry *ResolveStemVariable)(RexxCallContext *, RexxObjectPtr);
+     void             (RexxEntry *InvalidRoutine)(RexxCallContext *);
+     stringsize_t(RexxEntry *GetContextDigits)(RexxCallContext *);
+     stringsize_t(RexxEntry *GetContextFuzz)(RexxCallContext *);
+     logical_t(RexxEntry *GetContextForm)(RexxCallContext *);
+     RexxObjectPtr(RexxEntry *GetCallerContext)(RexxCallContext *);
+     RexxClassObject(RexxEntry *FindContextClass)(RexxCallContext *, CSTRING);
+     void (RexxEntry *ThrowException0)(RexxCallContext *, size_t);
+     void (RexxEntry *ThrowException1)(RexxCallContext *, size_t, RexxObjectPtr);
+     void (RexxEntry *ThrowException2)(RexxCallContext *, size_t, RexxObjectPtr, RexxObjectPtr);
+     void (RexxEntry *ThrowException)(RexxCallContext *, size_t, RexxArrayObject);
+     void (RexxEntry *ThrowCondition)(RexxCallContext *, CSTRING, RexxStringObject, RexxObjectPtr, RexxObjectPtr);
 } CallContextInterface;
 
 #define EXIT_INTERFACE_VERSION_4_0_0 100
-#define EXIT_INTERFACE_VERSION 100
+#define EXIT_INTERFACE_VERSION_5_0_0 101
+#define EXIT_INTERFACE_VERSION 101
 
 typedef struct
 {
-    wholenumber_t interfaceVersion;    // The interface version identifier
-    void             (RexxEntry *SetContextVariable)(RexxExitContext *, CSTRING, RexxObjectPtr);
-    RexxObjectPtr    (RexxEntry *GetContextVariable)(RexxExitContext *, CSTRING);
-    void             (RexxEntry *DropContextVariable)(RexxExitContext *, CSTRING);
-    RexxDirectoryObject (RexxEntry *GetAllContextVariables)(RexxExitContext *);
-    RexxObjectPtr    (RexxEntry *GetCallerContext)(RexxExitContext *);
+     wholenumber_t interfaceVersion;    // The interface version identifier
+     void             (RexxEntry *SetContextVariable)(RexxExitContext *, CSTRING, RexxObjectPtr);
+     RexxObjectPtr(RexxEntry *GetContextVariable)(RexxExitContext *, CSTRING);
+     void             (RexxEntry *DropContextVariable)(RexxExitContext *, CSTRING);
+     RexxDirectoryObject(RexxEntry *GetAllContextVariables)(RexxExitContext *);
+     RexxObjectPtr(RexxEntry *GetCallerContext)(RexxExitContext *);
+     void (RexxEntry *ThrowException0)(RexxExitContext *, size_t);
+     void (RexxEntry *ThrowException1)(RexxExitContext *, size_t, RexxObjectPtr);
+     void (RexxEntry *ThrowException2)(RexxExitContext *, size_t, RexxObjectPtr, RexxObjectPtr);
+     void (RexxEntry *ThrowException)(RexxExitContext *, size_t, RexxArrayObject);
+     void (RexxEntry *ThrowCondition)(RexxExitContext *, CSTRING, RexxStringObject, RexxObjectPtr, RexxObjectPtr);
 } ExitContextInterface;
 
 

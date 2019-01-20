@@ -166,20 +166,18 @@ protected:
    RexxMethodContext *context;         // our current execution context
    RexxObjectPtr self;                 // our real Rexx object instance
    RexxObjectPtr defaultResult;        // default result used for notready conditions.
-                                       // specified stream name
-   char stream_name[SysFileSystem::MaximumFileNameBuffer];
-                                       // fully resolved stream name
+   FileNameBuffer stream_name;         // specified stream name
    FileNameBuffer qualified_name;      // fully resolved stream name
-   int64_t charReadPosition;          // current character position
-   int64_t charWritePosition;         // current write position
-   int64_t lineReadPosition;          // current read line number
-   int64_t lineWritePosition;         // current write line number
-   int64_t lineReadCharPosition;      // current line read position
-   int64_t lineWriteCharPosition;     // current line write position
-   int64_t stream_line_size;          // emulated stream size (lines)
-   StreamState state;                 // current stream state
-   int errorInfo;                     // error information about the last notready condition
-   size_t  binaryRecordLength;        // binary file record length
+   int64_t charReadPosition;           // current character position
+   int64_t charWritePosition;          // current write position
+   int64_t lineReadPosition;           // current read line number
+   int64_t lineWritePosition;          // current write line number
+   int64_t lineReadCharPosition;       // current line read position
+   int64_t lineWriteCharPosition;      // current line write position
+   int64_t stream_line_size;           // emulated stream size (lines)
+   StreamState state;                  // current stream state
+   int errorInfo;                      // error information about the last notready condition
+   size_t  binaryRecordLength;         // binary file record length
 
    char *bufferAddress;                // current read buffer
    size_t bufferLength;                // current read buffer size

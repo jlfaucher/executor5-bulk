@@ -116,32 +116,6 @@ RexxRoutine2(CSTRING, sysBeep, OPTIONAL_wholenumber_t, Frequency, OPTIONAL_whole
     return "";
 }
 
-/****************************************************************************/
-/* sysDirectory                                                             */
-/****************************************************************************/
-RexxRoutine1(RexxStringObject, sysDirectory, OPTIONAL_CSTRING, dir)
-{
-    RexxReturnCode rc;
-    char  *rdir;                         /* resolved path */
-
-    rc = 0;
-    if (dir != NO_CSTRING)               /* if new directory is not null,     */
-    {
-        QualifiedName qualifiedName(dir);
-
-        // a null string indicates a change failure
-        if (chdir(qualifiedName) != 0)
-        {
-            return context->NullString();
-        }
-    }
-
-    // get the current working directory and return it
-    char temp[PATH_MAX + 3];
-    SystemInterpreter::getCurrentWorkingDirectory(temp);
-    return context->NewStringFromAsciiz(temp);
-}
-
 
 /*****************************************************************************/
 /* sysFilespec                                                               */

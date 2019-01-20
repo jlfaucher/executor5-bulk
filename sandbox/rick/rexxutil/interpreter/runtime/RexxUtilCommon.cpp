@@ -45,6 +45,7 @@
 #include "PackageManager.hpp"
 #include "RexxUtilCommon.hpp"
 #include "RexxInternalApis.h"
+#include "ExternalFileNameBuffer.hpp"
 
 /**
  * A simple class for reading lines from a file.
@@ -303,6 +304,529 @@ class LineReader
      const char  *scan;            // current scan postion in the buffer
      SysFile file;                 // the file information we are reading
 };
+
+
+/**
+ * SysFileTree() implementation.  Searches for files in a directory tree
+ * matching the specified search pattern.
+ *
+ * @param  fSpec  [required] The search pattern, may contain glob characters
+ *                 and full or partial path informattion. E.g., *.bat, or
+ *                 ../../*.txt, or C:\temp.  May not contain illegal file name
+ *                 characters which are: ", <, >, |, and :  The semicolon is
+ *                 only legal if it is exactly the second character.  Do not use
+ *                 a double quote in fSpec, it is not needed and is taken as a
+ *                 character in a file name, which is an illegal character.
+ *
+ * @param  files  [required] A stem to contain the returned results.  On return,
+ *                files.0 contains the count N of found files and files.1
+ *                through files.N will contain the found files.
+ *
+ * @param  opts   [optional] Any combination of the following letters that
+ *                specify how the search takes place, or how the returned found
+ *                file line is formatted.  Case is not significant:
+ *
+ *                  'B' - Search for files and directories.
+ *                  'D' - Search for directories only.
+ *                  'F' - Search for files only.
+ *                  'O' - Only output file names.
+ *                  'S' - Recursively scan subdirectories.
+ *                  'T' - Combine time & date fields into one.
+ *                  'L' - Long time format
+ *                  'I' - Case Insensitive search.
+ *
+ *                The defualt is 'B' using normal time (neither 'T' nor 'L'.)
+ *                The 'I'option is meaningless on Windows.
+ *
+ * @param targetAttr  [optional] Target attribute mask.  Only files with these
+ *                    attributes will be searched for.  The default is to ignore
+ *                    the attributes of the files found, so all files found are
+ *                    returned.
+ *
+ * @param newAttr     [optional] New attribute mask.  Each found file will have
+ *                    its attributes set (changed) to match this mask.  The
+ *                    default is to not change any attributes.
+ *
+ * @return  0 on success, non-zero on error.  For all errors, a condition is
+ *          raised.
+ *
+ * @remarks  The original IBM code passed in fileSpec to recursiveFindFile(),
+ *           but then never used it in recursiveFineFile.  So, that has been
+ *           eliminated.
+ *
+ */
+RexxRoutine5(uint32_t, SysFileTree, CSTRING, fSpec, RexxStemObject, files, OPTIONAL_CSTRING, opts,
+             OPTIONAL_CSTRING, targetAttr, OPTIONAL_CSTRING, newAttr)
+{
+    // initialize the search finder with the argument data
+    TreeFinder finder(context, fSpec, files, opts, targetAttr, newAttr);
+
+    if (finder.validateFileSpecChars())
+    {
+        return ERROR_INVALID_NAME;
+    }
+
+    // Get the full path segment and the file name segment by expanding the
+    // file specification string.  It seems highly unlikely, but possible, that
+    // this could fail.
+    finder.getFullPath();
+
+    if (recursiveFindFile(context, path, &treeData, targetMask, newMask, options))
+    {
+        context->SetStemArrayElement(treeData.files, 0, context->WholeNumber(treeData.count));
+        result = 0;
+    }
+    return 0;
+}
+
+// this next section are platform-independent methods for the TreeFinder class.
+// platform-specific methods are located in the appropriate SysRexxUtil.cpp file.
+TreeFinder::TreeFinder(RexxCallContext *c, const char *f, RexxStemObject s, const char *opts, const char *targetAttr, const char *newAttr) :
+    context(c), count(0), RexxStemObject(s), fileSpec(c),
+    foundFile(c), foundFileLine(c), nameSpec(c)
+{
+    // save the initial file spec
+    fileSpec = f;
+    getOptions(opts);
+
+    // validate the new and target attributes
+    targetAttributes.parseMask(targetAttr, 4);
+    newAttributes.parseMask(newAttr, 5);
+    context->SetStemArrayElement(files, 0, context->WholeNumber(0));
+}
+
+/**
+ * The file specification consists of the search string as sent by the Rexx
+ * user, with possibly some glob characters added.
+ *
+ * If the file speicfication ends in a slash ('\') or a period ('.') or two
+ * periods ('..'), then a wild card specification ('*') is
+ * appended.
+ *
+ * However, note that there is also the case where a single '.' at the end of
+ * the file specification is not used as a directory specifier, but rather is
+ * tacked on to the end of a file name.
+ *
+ * Windows has a sometimes used convention that a '.' at the end of a file name
+ * can be used to indicate the file has no extension. For example, given a file
+ * named: MyFile a command of "dir MyFile." will produce a listing of "MyFile".
+ *
+ * In this case we want to leave the file specification alone. that is, do not
+ * append a "*.*". A command of "dir *." will produce a directory listing of all
+ * files that do not have an extension.
+ */
+void TreeFinder::validateFileSpec()
+{
+    size_t len = fileSpec.length();
+    if (len == 0)
+    {
+        nullStringException("SysFileTree", 1);
+    }
+
+    // apply platform rules to adjust for directories.
+    adjustDirectory();
+
+    // perform any adjustments needed to the spec
+    adjustFileSpec();
+}
+
+
+/**
+ * Checks the validity of an attribute mask argument and converts the character
+ * based mask into an integer based mask.
+ *
+ * @param mask   The mask specified on the call.
+ * @param flags  The set of flags to set.
+ * @param argPos The argument position for error reporting
+ */
+void TreeFinder::parseMask(const char *mask, AttributeMask &flags, size_t argPos)
+{
+    if (mask != NULL && strlen(mask) > 0)
+    {
+        if (strlen(mask) > 5)
+        {
+            badMaskException(argPos, mask);
+        }
+
+        if (!goodMask(mask, flags))
+        {
+            badMaskException(argPos, mask);
+        }
+    }
+}
+
+/**
+ * Throw an error for bad options.
+ *
+ * @param actual The specified options string
+ */
+void TreeFinder::badSFTOptsException(const char *actual)
+{
+    char buf[256] = { 0 };
+    snprintf(buf, sizeof(buf),
+             "SysFileTree options argument must be a combination of F, D, B, S, T, L, I, O, or Z; found \"%s\"",
+             actual);
+
+    context->ThrowException1(Rexx_Error_Incorrect_call_user_defined, c->String(buf));
+}
+
+/**
+ * Throw an exception for an invalid mask argument.
+ *
+ * @param pos    The argument position
+ * @param actual The specified argument
+ */
+void TreeFinder::badMaskException(size_t pos, const char *actual)
+{
+    char buf[256] = { 0 };
+    snprintf(buf, sizeof(buf),
+             "SysFileTree argument %zd must be 5 characters or less in length containing only '+', '-', or '*'; found \"%s\"",
+             pos, actual);
+
+    context->ThrowException1(Rexx_Error_Incorrect_call_user_defined, c->String(buf));
+}
+
+
+/**
+ * Checks the validity of the options argument to SysFileTree and converts the
+ * character based argument to the proper set of flags.
+ *
+ * @param opts   The call arguments
+ *
+ */
+void TreeFinder::getOptions(const char *opts)
+{
+    // by default, we return both file and directories
+    options.set(DO_FILES, DO_DIRS);
+
+    if (opts != NULL)
+    {
+        // a NULL string is not a valid option
+        if (strlen(opts) == 0)
+        {
+            nullStringException(context->threadContext, "SysFileTree", 3);
+        }
+
+        if (!goodOpts(context, opts, options))
+        {
+            badSFTOptsException(opts);
+        }
+    }
+}
+
+
+/**
+ * Determines the options by converting the character based argument to the
+ * correct set of flags.
+ *
+ * @param opts   The options string
+ *
+ * @return true if the options were ok, false if any invalid options were encountered.
+ */
+bool TreeFinder::goodOpts(const char *opts)
+{
+    while (*opts)
+    {
+        switch (toupper(*opts))
+        {
+            case 'S':                      // recurse into subdirectories
+                options[RECURSE] = true;
+                break;
+
+            case 'O':                      // only return names
+                options[NAME_ONLY] = true;
+                break;
+
+            case 'T':                      // use short time format, ignored if L is used
+                options[EDITABLE_TIME] = true;
+                break;
+
+            case 'L':                      // use long time format
+                options[LONG_TIME] = true;
+                options |= LONG_TIME;
+                break;
+
+            case 'F':                      // include only files
+                options[DO_DIRS] = false;
+                options[DO_FILES] = true;
+                break;
+
+            case 'D':                      // include only directories
+                options[DO_DIRS] = true;
+                options[DO_FILES] = false;
+                break;
+
+            case 'B':                      // include both files and directories
+                options[DO_DIRS] = true;
+                options[DO_FILES] = true;
+                break;
+
+            case 'I':                      // case insensitive? no op on Windows
+                options[CASELESS] = true;
+                break;
+
+            case 'H':                      // use a larger field for the file size.
+                options[LONG_SIZE] = true;
+                break;
+
+
+            default:                       // error, unknown option
+                return false;
+        }
+        opts++;
+    }
+
+    return true;
+}
+
+
+/**
+ * This function expands the file spec passed in to the funcition into its full
+ * path name.  The full path name is then split into the path portion and the
+ * file name portion.  The path portion is then returned in path and the file
+ * name portion is returned in fileName.
+ *
+ * The path portion will end with the '\' char if fSpec contains a path.
+ *
+ * @param fSpec
+ * @param path       Pointer to path buffer.  Path buffer is allocated memory,
+ *                   not a static buffer.
+ * @param filename
+ * @param pathLen    Pointer to size of the path buffer.
+ *
+ * @remarks  On entry, the buffer pointed to by fSpec is guaranteed to be at
+ *           least strlen(fSpec) + FNAMESPEC_BUF_EXTRA (8).  So, we can strcat
+ *           to it at least 7 characters and still have it null terminated.
+ *
+ *           In addition, the path buffer is guarenteed to be at least that size
+ *           also.
+ */
+void TreeFinder::getPath()
+{
+
+    // Find the position of the last slash in fSpec
+    int lastSlashPos = findDirectoryEnd()
+
+    // If lastSlashPos is less than 0, then there is no directory present in
+    // fileSpec.
+    if (lastSlashPos < 0)
+    {
+        // this does not have a path on it, so add one
+        expandNonPath2fullPath(&lastSlashPos);
+    }
+    else
+    {
+        // we need to split the path off from the file spec
+        expandPath2fullPath(fileSpec, lastSlashPos)
+    }
+
+    // Get the file name from fileSpec, the portion just after the last '\'
+    if (fileSpec[lastSlashPos + 1] != '\0')
+    {
+        // The position after the last slash is not the null terminator so there
+        // is something to copy over to the file name segment.
+        nameSpec = &fileSpec[lastSlashPos + 1];
+    }
+    else
+    {
+        // The last slash is the last character in fileSpec, just use wildcards for
+        // the file name segment.
+        nameSpec = "*";
+    }
+}
+
+
+/**
+ * Create a path from a file spec that does not include path information.
+ *
+ * @param path   The returned path
+ */
+void TreeFinder::expandNonPath2fullPath()
+{
+    // fileSpec could be a drive designator (Windows only)
+    if (!checkNonPathDrive())
+    {
+        // start out with the current directory for the file path
+        SysFileSystem::getCurrentDirectory(filePath);
+
+        // If fileSpec is exactly "." or ".." then add this to the end of the current path.
+        if (fileSpec == ".")
+        {
+            // just a wild card for the current name we're searching for
+            nameSpec = "*";
+        }
+        // previous directory, add the path delimiter to the
+        // end of the path and use "*" for the search path
+        else if (fileSpec = "..")
+        {
+            // make sure we have a path delimiter on the end
+            // add the .., the final path delimiter is added below
+            filePath += "..";
+            // the name spec if again a wild card
+            nameSpec = "*";
+        }
+        else
+        {
+            // copy every thing else over to the name spec
+            nameSpec = fileSpec;
+        }
+    }
+
+    // If we need a trailing slash in the file path, add one.
+    filePath.addFinalPathDelimiter();
+}
+
+
+/**
+ * Splits the the file spec into a path portion and a name
+ * portion. There is at least one directory delimiter in the
+ * fileSpec.
+ *
+ * @param lastSlashPos
+ *               Position of the last directory character in the file spec.
+ */
+void TreeFinder::expandPath2fullPath(size_t lastSlashPos)
+{
+    // we have a spec with at least one directory delimiter, so we need
+    // to split this into name and directory portion. The name part is easy,
+    // the path portion may require a little system work.
+    if (fileSpec.endsWith(SysFileSystem::PathDelimiter))
+    {
+        // the spec has no file portion, so use a wild card for the
+        // name specification
+        nameSpec = "*";
+    }
+    else
+    {
+        // copy over the trailing part
+        nameSpec = fileSpec + (lastSlashPos + 1);
+    }
+    // ok, the leading part we copy over to the filePath and then see if
+    // there are any additional platform-specific fixups required.
+    filePath.set(fileSpec, lastSlashPos + 1);
+
+    // now do any platform-specific resolution that might be needed here
+    fixupFilePath();
+}
+/**
+ * Finds all files matching a file specification, formats a file name line and
+ * adds the formatted line to a stem.  Much of the data to complete this
+ * operation is contained in the treeData struct.
+ *
+ * This is a recursive function that may search through subdirectories if the
+ * recurse option is used.
+ *
+ * @param path        Current directory we are searching.
+ *
+ * @remarks  For both targetMask and newMask, each index of the mask corresponds
+ *           to a different file attribute.  Each index and its associated
+ *           attribute are as follows:
+ *
+ *                        mask[0] = FILE_ARCHIVED
+ *                        mask[1] = FILE_DIRECTORY
+ *                        mask[2] = FILE_HIDDEN
+ *                        mask[3] = FILE_READONLY
+ *                        mask[4] = FILE_SYSTEM
+ *
+ *           A negative value at a given index indicates that the attribute bit
+ *           of the file is not set.  A positive number indicates that the
+ *           attribute should be set. A value of 0 indicates a "Don't Care"
+ *           setting.
+ *
+ *           A close reading of MSDN seems to indicate that as long as we are
+ *           compiled for ANSI, which we are, that MAX_PATH is sufficiently
+ *           large.  But, we will code for the possibility that it is not large
+ *           enough, by mallocing dynamic memory if _snprintf indicates a
+ *           failure.
+ *
+ *           We point dTmpFileName at the static buffer and nTmpFileName is set
+ *           to the size of the buffer.  If we have to allocate memory,
+ *           nTmpFileName will be set to the size we allocate and if
+ *           nTmpFileName does not equal what it is originally set to, we know
+ *           we have to free the allocated memory.
+ */
+void TreeFinder::recursiveFindFile(FileNameBuffer &path)
+{
+    RoutineFileNameBuffer tempFileName(context, path.length() + fileSpec.length());
+
+    // get a file iterator to search through the names
+    SysFileIterator finder(path, fileSpec, tempFileName, options[CASELESS]);
+
+    while (finder.hasNext())
+    {
+        // we can just use the temp name buffer now
+        finder.next(tempFileName);
+        // we skip the dot directories. We're already searching the first, and
+        // the second would send us backwards
+        if (tempFileName == "." || tempFileName == "..")
+        {
+            continue;
+        }
+
+        // compose the full name of the result
+        foundFile = filePath;
+        foundFile += tempFileName;
+
+        // go check this file to see if it is a good match. If it is, it will be
+        // directly added to the results.
+        checkFile(tempFileName);
+    }
+
+    finder.close();
+
+    // is this a recursive request?
+    //
+    if (options[RECURSE])
+    {
+        // reset the pattern to search for everything at this level.
+        tempFileName = path;
+        tempFileName += "*";
+        // get a file iterator to search through the names
+        SysFileIterator dirFinder(tempFileName);
+
+        RoutineFileNameBuffer directoryName(context);
+
+        while (dirFinder.hasNext())
+        {
+            // we can use the temp name buffer now
+            dirFinder.next(tempFileName);
+            // skip non directories
+            if (!SysFileSystem::isDirectory(tempFileName))
+            {
+                continue;
+            }
+
+            // we skip the dot directories. We're already searching the first, and
+            // the second would send us backwards
+            if (directoryName == "." || directoryName == "..")
+            {
+                continue;
+            }
+
+            // build a new search path
+            directoryName = path;
+            directoryName += directoryName;
+            directoryName += SysFileSystem::PathDelimiter;
+
+            // Search the next level.
+            recursiveFindFile(DirectoryName);
+        }
+        // close the directory finder
+        dirFinder.close();
+    }
+}
+
+
+// add a result to the return stem
+void addResult(const char *v)
+{
+    RexxStringObject t = context->String(v);
+
+    // Add the file name to the stem and be done with it.
+    count++;
+    context->SetStemArrayElement(files, count, t);
+    context->ReleaseLocalReference(t);
+}
 
 
 /**
@@ -1353,6 +1877,186 @@ RexxRoutine4(CSTRING, SysFileSearch, CSTRING, needle, CSTRING, file, RexxStemObj
     // make sure we update the count with the number of return items
     context->SetStemArrayElement(stem, 0, context->SizeToObject(currentStemIndex));
     return "";                           /* no error on call           */
+}
+
+
+/*************************************************************************
+* Function:  SysSearchPath                                               *
+*                                                                        *
+* Syntax:    call SysSearchPath path, file [, options]                   *
+*                                                                        *
+* Params:    path - Environment variable name which specifies a path     *
+*                    to be searched (ie 'PATH', 'DPATH', etc).           *
+*            file - The file to search for.                              *
+*            options -  'C' - Current directory search first (default).  *
+*                       'N' - No Current directory search. Only searches *
+*                             the path as specified.                     *
+*                                                                        *
+* Return:    other  - Full path and filespec of found file.              *
+*            ''     - Specified file not found along path.               *
+*************************************************************************/
+RexxRoutine3(RexxStringObject, SysSearchPath, CSTRING, path, CSTRING, file, OPTIONAL_CSTRING, options)
+{
+    RoutineFileNameBuffer fullPath;
+
+    char opt = 'C'; // this is the default
+    if (options != NULL)
+    {
+        opt = toupper(options[0]);
+        if (opt != 'C' && opt != 'N')
+        {
+            context->InvalidRoutine();
+            return NULL;
+        }
+    }
+
+    const pathString = NULL;
+
+    RoutineFileNameBuffer pathValue;
+    // get the name of the path variable
+    SystemInterpreter::getEnvironmentVariable(path, pathValue);
+
+    if (opt == 'N')
+    {
+        if (pathValue.length() != NULL)
+        {
+            pathString = pathValue;
+        }
+    }
+    // search current directory first. We construct the patch with the
+    // current directory in front of the path.
+    else if (opt == 'C')
+    {
+        RoutineFileNameBuffer currentDir;
+        SystemInterpreter::getCurrentDirectory(currentDir);
+        // if we have a path, add it to the end
+        if (pathValue.length() > 0)
+        {
+            fullPath = currentDir;
+            fullPath += SysFileSystem::getPathSeparator();
+            fullPath += pathValue;
+        }
+        // the current directory is everything
+        else
+        {
+            fullPath = pathValue;
+        }
+    }
+
+
+    RoutineFileNameBuffer resolvedFile;
+
+    // we can do this unconditionally since resolvedFile will be a null
+    // string if not found, which is our error return value.
+    SysFileSystem::searchPath(file, fullPath, NULL, resolvedFile);
+
+    return context->NewStringFromAsciiz(resolvedFile);
+}
+
+
+/*************************************************************************
+* Function:  SysSleep                                                    *
+*                                                                        *
+* Syntax:    call SysSleep secs                                          *
+*                                                                        *
+* Params:    secs - Number of seconds to sleep.                          *
+*                   must be in the range 0 .. 2147483                    *
+*                                                                        *
+* Return:    0                                                           *
+*************************************************************************/
+RexxRoutine1(int, SysSleep, RexxStringObject, delay)
+{
+    // it would be nice to pass this directly as a double, but if there is an error
+    // we need the original form to report the error.
+
+    double seconds;
+    // try to convert the provided delay to a valid floating point number
+    if (context->ObjectToDouble(delay, &seconds) == 0 ||
+        isnan(seconds) || seconds == HUGE_VAL || seconds == -HUGE_VAL)
+    {
+        // 88.902 The &1 argument must be a number; found "&2"
+        context->RaiseException2(Rexx_Error_Invalid_argument_number, context->String("delay"), delay);
+        return 1;
+    }
+
+    // there is a maximum delay that can be specifed of 0x7FFFFFF milliseconds
+    // according to MSDN the maximum is USER_TIMER_MAXIMUM (0x7FFFFFFF) milliseconds,
+    // which translates to 2147483.647 seconds
+    if (seconds < 0.0 || seconds > 2147483.0)
+    {
+        // 88.907 The &1 argument must be in the range &2 to &3; found "&4"
+        context->RaiseException(Rexx_Error_Invalid_argument_range,
+                                context->ArrayOfFour(context->String("delay"),
+                                                     context->String("0"), context->String("2147483"), delay));
+        return 1;
+    }
+
+    // convert to microseconds, no overflow possible
+    uint64_t microseconds = ((uint64_t)(seconds)) * 1000000;
+
+    // go do the sleep
+    SysThread::longSleep(microseconds);
+    return 0;
+}
+
+/****************************************************************************/
+/* sysDirectory                                                             */
+/****************************************************************************/
+RexxRoutine1(RexxStringObject, sysDirectory, OPTIONAL_CSTRING, dir)
+{
+    if (dir != NO_CSTRING)               /* if new directory is not null,     */
+    {
+        RoutineQualifiedName qualifiedName(context, dir);
+
+        // if we can't change, return a null string to indicate a failure
+        if (!SysFileSystem::setNewCurrentDirectory(qualifiedName))
+        {
+            return context->NullString();
+        }
+    }
+
+    // retrieve the current directory and return it.
+    RoutineFileNameBuffer currentDirectory(context);
+
+    SysFileSystem::getCurrentDirectory(currentDirectory);
+    return context->NewStringFromAsciiz(currentDirectory);
+}
+
+/*************************************************************************
+* Function:  SysFileCopy                                                 *
+*                                                                        *
+* Syntax:    call SysFileCopy FROMfile TOfile                            *
+*                                                                        *
+* Params:    FROMfile - file to be moved.                                *
+*            TOfile - target file of move operation.                     *
+*                                                                        *
+* Return:    Return code from from the copy operation                    *
+*************************************************************************/
+RexxRoutine2(int, SysFileCopy, CSTRING, from, CSTRING, to)
+{
+    RoutineQualifiedName fromFile(context, from);
+    RoutineQualifiedName toFile(context, to);
+
+    return SysFileSystem::copyFile(fromFile, toFile);
+}
+
+
+/*************************************************************************
+* Function:  SysFileMove                                                 *
+*                                                                        *
+* Syntax:    call SysFileMove FROMfile TOfile                            *
+*                                                                        *
+* Params:    FROMfile - file to be moved.                                *
+*            TOfile - target file of move operation.                     *
+*                                                                        *
+* Return:    Return code from MoveFile() function.                       *
+*************************************************************************/
+RexxRoutine2(int, SysFileMove, CSTRING, from, CSTRING, to)
+{
+    RoutineQualifiedName fromFile(context, from);
+    RoutineQualifiedName toFile(context, to);
+
+    return SysFileSystem::moveFile(fromFile, toFile);
 }
 
 

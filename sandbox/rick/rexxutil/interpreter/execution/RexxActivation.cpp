@@ -65,6 +65,7 @@
 #include "ActivityManager.hpp"
 #include "Interpreter.hpp"
 #include "SystemInterpreter.hpp"
+#include "Interpreter.hpp"
 #include "RexxInternalApis.h"
 #include "PackageManager.hpp"
 #include "CompoundVariableTail.hpp"
@@ -1772,10 +1773,8 @@ RexxObject *RexxActivation::resolveStream(RexxString *name, bool input, Protecte
     else
     {
         // get the fully qualified name
-        RexxString *qualifiedName = SystemInterpreter::qualifyFileSystemName(name);
+        RexxString *qualifiedName = Interpreter::qualifyFileSystemName(name);
         fullName = qualifiedName;
-        // protect from GC
-        ProtectedObject p(qualifiedName);
         // see if we have this in the table already.  If not opened yet, we need
         // to try to open it.
         RexxObject *stream = (RexxObject *)streamTable->get(qualifiedName);

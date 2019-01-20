@@ -2935,7 +2935,7 @@ bool Activity::callNovalueExit(RexxActivation *activation, RexxString *variableN
  * @return The handled flag.
  */
 bool Activity::callValueExit(RexxActivation *activation, RexxString *selector, RexxString *variableName,
-    RexxObject *newValue, RexxObject *&value)
+    RexxObject *newValue, ProtectedObject &value)
 {
     if (isExitEnabled(RXVALUE))         // is the exit enabled?
     {

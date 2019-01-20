@@ -1216,30 +1216,417 @@ bool SysFileSystem::getCurrentDirectory(FileNameBuffer &directory)
 
 
 /**
+ * Set the current working directory
+ *
+ * @param directory The new directory set.
+ *
+ * @return True if this worked, false for any failures
+ */
+bool SysFileSystem::setCurrentDirectory(const char *directory)
+{
+    return chdir(directory) == 0;
+}
+
+
+
+/**
+ * Check to see if two paths are identical
+ *
+ * @param path1  The the first path to check
+ * @param path2  The second path to check.
+ *
+ * @return true if these paths map to the same existing file, false if they are distinct.
+ */
+bool samePaths(const char *path1, const char *path2)
+{
+    char actualpath1[PATH_MAX + 1];
+    char actualpath2[PATH_MAX + 1];
+
+    // realpath() gives a NULL return if the file does not exist. For this operation
+    // at least one of the file must exist. If either does not exist, they cannot be bad.
+    if (realpath(path1, actualpath1) == NULL)
+    {
+        return false;
+    }
+    if (realpath(path2, actualpath2) == NULL)
+    {
+        return false;
+    }
+
+    // and compare them. Note that if we have a file in a case-insensitive file
+    // system, we need to perform a caseless compare.
+    if (!isCaseSensitive(actualpath1))
+    {
+        return stricmp(actualpath1, actualpath2) == 0;
+    }
+    else
+    {
+        return strcmp(actualpath1, actualpath2) == 0;
+    }
+}
+
+
+/**
+ * Copy a file to another file location with dereferencing of symbolic links.
+ *  If the source file is a symbolic link, the actual file copied is the target of the symbolic link.
+ *  If the destination file already exists and is a symbolic link, the target of the symbolic link is overwritten by the source file.
+ * If the destination file does not exist then it is created with the access mode of the source file (if possible).
+ *
+ * @param fromFile The file we're copying from.
+ * @param toFile   The file we're copying to
+ * @param preserveTimestamps
+ *                 if true, the copied file will have the same timestamps.
+ * @param preserveMode
+ *                 If true, the file modes are preserved in the new file.
+ *
+ * @return 0 if successful, or an error code for any failure.
+ */
+int SysFileSystem::copyFileDereferenceSymbolicLinks(const char *fromFile, const char *toFile, bool preserveTimestamps, bool preserveMode)
+{
+    // first verify we're not trying to copy a file onto itself.
+    if (samePaths(fromFile, toFile))
+    {
+        return EEXIST;
+    }
+
+    // the from file must exist
+    struct stat64 fromStat;
+    if (stat64(fromFile, &fromStat) == -1)
+    {
+        return errno;
+    }
+    // and we must be abl to open it for reading
+    AutoClose fromHandle = open64(fromFile, O_RDONLY);
+    if (fromHandle == -1)
+    {
+        return errno;
+    }
+
+    // and we need to be able to
+    struct stat64 toStat;
+    bool toFileCreated = (stat64(toFile, &toStat) == -1);
+    AutoClose toHandle = open64(toFile, O_WRONLY | O_CREAT | O_TRUNC, 0666); // default access mode for the moment (like fopen)
+    if (toHandle == -1)
+    {
+        return errno;
+    }
+
+
+    char buffer[4096];          // a buffer of reasonable size for copying
+    while (1)
+    {
+        int count = read(fromHandle, &buffer, sizeof(buffer));
+        if (count == -1)
+        {
+            return errno;
+        }
+        if (count == 0)
+        {
+            break; // EOF
+        }
+        if (write(toHandle, buffer, count) == -1)
+        {
+            return errno;
+        }
+    }
+
+    if (fromHandle.close() == -1)
+    {
+        return errno;
+    }
+    if (toHandle.close() == -1)
+    {
+        return errno;
+    }
+    // if asked to preserve the timestamps, then
+    // copy the stat information from the from file.
+    // NB, the access time is the last access before this copy operation.
+    if (preserveTimestamps)
+    {
+        struct utimbuf timebuf;
+        timebuf.actime = fromStat.st_atime;
+        timebuf.modtime = fromStat.st_mtime;
+        utime(toFile, &timebuf);
+    }
+
+    // if we created this file or preserveMode was specified,
+    // set the mode to the same as the from file.
+    if (toFileCreated || preserveMode)
+    {
+        chmod(toFile, fromStat.st_mode);
+    }
+    return 0;
+}
+
+
+/*
+Returns a new filename whose directory path is the same as filename's directory
+and that is not the same as the name of an existing file in this directory.
+Used to temporarily rename a file in place (i.e. in its directory).
+This new filename must be freed when no longer needed.
+*/
+char *temporaryFilename(const char *filename, int &errInfo)
+{
+    errInfo = 0;
+    AutoFree filenameCopy = strdup(filename); // dirname wants a writable string
+    if (filenameCopy != NULL)
+    {
+        AutoFree directory = strdup(dirname(filenameCopy)); // Dup because not clear from standard if filenameCopy can be freed just after the call
+        if (directory != NULL)
+        {
+            char *newFilename = tempnam(directory, NULL);
+            if (newFilename != NULL)
+            {
+                return newFilename;
+            }
+        }
+    }
+    errInfo = errno;
+    return NULL;
+}
+
+
+/**
+ * Copy a file without dereferencing the symbolic links.
+ *  If the source file is a symbolic link, the actual file copied is the symbolic link itself.
+ *  If the destination file already exists and is a symbolic link, the target of the symbolic link is not overwritten by the source file.
+ *
+ * again, the source and the target cannot be the same
+ *
+ * @param fromFile The file to copy from.
+ * @param toFile   The file to copy to
+ * @param force    Force the rename if the target exists as a symbolic link
+ * @param preserveTimestamps
+ *                 preserve the time stamps (if possible)
+ * @param preserveMode
+ *                 Preserve the file mode (if possible)
+ *
+ * @return 0 if successful, or the appropriate error code.
+ */
+int SysFileSystem::copyFileDontDereferenceSymbolicLinks(const char *fromFile, const char *toFile, bool force, bool preserveTimestamps, bool preserveMode)
+{
+    // again, the source and the target cannot be the same
+    if (samePaths(fromFile, toFile))
+    {
+        return EEXIST;
+    }
+
+    struct stat64 fromStat;
+    if (lstat64(fromFile, &fromStat) == -1)
+    {
+        return errno;
+    }
+
+    // remember if we are copying from a symbolic link
+    bool fromFileIsSymbolicLink = S_ISLNK(fromStat.st_mode);
+
+    // and also get the link state for the copy target.
+    struct stat64 toStat;
+    bool toFileExists = (lstat64(toFile, &toStat) == 0);
+    bool toFileIsSymbolicLink = (toFileExists && S_ISLNK(toStat.st_mode));
+
+    AutoFree toFileNewname;
+
+    // if we have an existing file and either is a symbolic link, we need to
+    // create a temporary file.
+    if (toFileExists && (fromFileIsSymbolicLink || toFileIsSymbolicLink))
+    {
+        // Must remove toFile when fromFile is a symbolic link, to let copy the link.
+        // Must remove toFile when toFile is a symbolic link, to not follow the link.
+        // But do that safely : first rename toFile, then do the copy and finally remove the renamed toFile.
+        if (force == false)
+        {
+            return EEXIST; // Not allowed by caller to remove it
+        }
+        int errInfo;
+        // create a temporary file name in the same path location as the toFile
+        toFileNewname = temporaryFilename(toFile, errInfo);
+        if (errInfo != 0)
+        {
+            return errInfo;
+        }
+    }
+
+    // we are dealing with a symbolic link for the source. We are going to create the target as
+    // a symbolic link back to the original file rather than copy the data
+    if (fromFileIsSymbolicLink)
+    {
+        off_t pathSize = fromStat.st_size; // The length in bytes of the pathname contained in the symbolic link
+        AutoFree pathBuffer = (char *)malloc(pathSize + 1);
+        if (pathBuffer == NULL)
+        {
+            return errno;
+        }
+        if (readlink(fromFile, pathBuffer, pathSize) == -1)
+        {
+            return errno;
+        }
+        pathBuffer[pathSize] = '\0';
+
+        // if the target file exists, rename to the temporary file name (if we can)
+        if (toFileNewname != NULL && rename(toFile, toFileNewname) == -1)
+        {
+            return errno;
+        }
+
+        // Now create a symbolic link between the linked name and the target file.
+        if (symlink(pathBuffer, toFile) == -1)
+        {
+            int errInfo = errno;
+            // Undo the renaming
+            if (toFileNewname != NULL)
+            {
+                rename(toFileNewname, toFile);
+            }
+            return errInfo;
+        }
+        // Note : there is no API to preserve the timestamps and mode of a symbolic link
+    }
+    else
+    {
+        // do we need to rename the target?
+        if (toFileNewname != NULL && rename(toFile, toFileNewname) == -1)
+        {
+            return errno;
+        }
+
+        // this is a real copy operation
+        int errInfo = copyFileDereferenceSymbolicLinks(fromFile, toFile, preserveTimestamps, preserveMode);
+        if (errInfo != 0)
+        {
+            // Undo the renaming
+            if (toFileNewname != NULL)
+            {
+                rename(toFileNewname, toFile);
+            }
+            return errInfo;
+        }
+    }
+
+    // The copy has been done, now can remove the backup
+    if (toFileNewname != NULL)
+    {
+        unlink(toFileNewname);
+    }
+    return 0;
+
+}
+
+
+/**
+ * Implementation of a copy file operation.
+ *
+ * @param fromFile The from file of the copy operation
+ * @param toFile   The to file of the copy operation.
+ *
+ * @return Any error codes.
+ */
+int SysFileSystem::copyFile(const char *fromFile, const char *toFile)
+{
+    // this is a direct copy operation. We preserve the timestamps, but not
+    // the mode.
+    copyFileDereferenceSymbolicLinks(fromFile, toFile, true, false);
+}
+
+
+/**
+ * Move a file from one location to another. This is typically just a rename, but if necessary, the file will be copied and the original unlinked.
+ *
+ * @param fromFile The file we´re copying from.
+ * @param toFile   The target file.
+ *
+ * @return 0 if this was successful, otherwise the system error code.
+ */
+int SysFileSystem::moveFile(const char *fromFile, const char *toFile)
+{
+    // rename does not return an error if both files resolve to the same file
+    // but we want to return an error in this case, to follow the behavior of mv
+    if (samePaths(fromFile, toFile))
+    {
+        return EEXIST; // did not find a better error code to return
+    }
+    if (rename(fromFile, toFile) == 0)
+    {
+        return 0; // move done
+    }
+    if (errno != EXDEV)
+    {
+        return errno; // move ko, no fallback
+    }
+
+    // Before trying the fallback copy+unlink, ensure that we can unlink fromFile.
+    // If we can rename it in place, then we can unlink it.
+    int errInfo;
+    AutoFree fromFileNewname = temporaryFilename(fromFile, errInfo);
+    if (errInfo != 0)
+    {
+        return errInfo;
+    }
+    if (rename(fromFile, fromFileNewname) == -1)
+    {
+        return errno;
+    }
+    // Good, here we know we can unlink fromFile, undo the rename
+    if (rename(fromFileNewname, fromFile) == -1)
+    {
+        return errno; // should not happen, but...
+    }
+
+    // The files are on different file systems and the implementation does not support that.
+    // Try to copy then unlink
+    int copyStatus = copyFileDontDereferenceSymbolicLinks(fromFile, toFile, false, true, true); // 3rd arg=false : dont't force (good choice ?)
+    if (copyStatus != 0)
+    {
+        return copyStatus; // fallback ko
+    }
+    // Note : no error returned if timestamps or mode not preserved
+
+    // copy to is ok, now unlink from
+    // in case of error, don't remove toFile, it's a bad idea !
+    return unlink(fromFile);
+}
+
+
+/**
  * Create a new SysFileIterator instance.
  *
- * @param p      The directory we're iterating over.
+ * @param path    The path we're going to be searching in
+ * @param pattern The pattern to use. If NULL, then everything in the path will be returned.
+ * @param buffer  A FileNameBuffer object used to construct the path name.
  */
-SysFileIterator::SysFileIterator(const char *p)
+SysFileIterator::SysFileIterator(const char *path, const char *pattern, FileNameBuffer &buffer, bool c)
 {
+    // save the pattern spec to check agains each path entry
+    patternSpec = pattern;
+    // caseLess can be explicit or implicit, based on the characteristics of the path.
+    // Mac file systems are generally case insensitive, but other unix variants are
+    // usually case sensitive.
+    caseLess = c || SysFileSystem::isCaseSensitive(path);
+
+#ifndef HAVE_FNM_CASEFOLD
+    // if we're tasked with doing a caseless search but the option is
+    // not available with fnmatch(), then we need to copy the pattern
+    // spec and uppercase it.
+    if (caseLess && patternSpec != NULL)
+    {
+        patternSpec = strdup(patternSpec);
+        strupr(patternSpec);
+    }
+#endif
+
     // this assumes we'll fail...if we find something,
     // we'll flip this
     completed = true;
-    handle = opendir(p);
+    handle = opendir(path);
     // if didn't open, this either doesn't exist or
     // isn't a directory
     if (handle == NULL)
     {
         return;
     }
-    entry = readdir(handle);
-    if (entry == NULL)
-    {
-        closedir(handle);
-        return;
-    }
-    // we have a value
-    completed = false;
+
+    // go locate the first matching entry (if it can)
+    findNextEntry();
 }
 
 
@@ -1262,6 +1649,14 @@ void SysFileIterator::close()
         closedir(handle);
         handle = 0;
     }
+#ifndef HAVE_FNM_CASEFOLD
+    // if we had to copy the patternSpec, make sure we free the copy up
+    if (caseLess && patternSpec != NULL)
+    {
+        free(patternSpec);
+        patternSpec = NULL;
+    }
+#endif
 }
 
 
@@ -1292,13 +1687,76 @@ void SysFileIterator::next(FileNameBuffer *buffer)
     {
         buffer = entry->d_name;
     }
+
+    findNextEntry();
+}
+
+
+/**
+ * Scan forward through the directory to find the next matching entry.
+ *
+ * @return true if a matching entry was found, false for any error or nothign found.
+ */
+void SysFileIterator::findNextEntry()
+{
     entry = readdir(handle);
     if (entry == NULL)
     {
         // we're done once we hit a failure
         completed = true;
         close();
+        return;
     }
+    // requesting everything? we've got what we want
+    if (patternSpec == NULL)
+    {
+        return;
+    }
+
+    int flags = FNM_NOESCAPE | FNM_PATHNAME | FNM_PERIOD;
+    const char *testName = entry->d_name;
+
+    // if this is a caseless search, there are two ways to
+    // implement this. The easy way is to use the FNM_CASEFOLD
+    // extension of fnmatch(). If this is not available, we need
+    // to create an uppercase version of the name we're matching against
+    // and compare against the already uppercased pattern.
+    if (caseLess)
+    {
+#ifdef HAVE_FNM_CASEFOLD
+        flags |= FNM_CASEFOLD;
+#else
+        char *upperName = strdup(testName);
+        strupr(upperName);
+        testName = upperName;
+#endif
+    }
+
+    // use fnmatch() to handle all of the globbing
+    while (fnmatch(patternSpec, testName, flags) != 0)
+    {
+#ifndef HAVE_FNM_CASEFOLD
+        // free the uppercase copy of the last test
+        free(testName);
+#endif
+        entry = readdir(handle);
+        if (entry == NULL)
+        {
+            // we're done once we hit a failure
+            completed = true;
+            close();
+            return;
+        }
+#ifndef HAVE_FNM_CASEFOLD
+        char *upperName = strdup(testName);
+        strupr(upperName);
+        testName = upperName;
+#endif
+    }
+#ifndef HAVE_FNM_CASEFOLD
+    // free the uppercase copy of the last test
+    free(testName);
+#endif
 }
 
 

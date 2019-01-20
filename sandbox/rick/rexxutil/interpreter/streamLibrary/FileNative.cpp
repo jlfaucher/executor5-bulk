@@ -256,15 +256,17 @@ RexxMethod1(RexxObjectPtr, file_list, CSTRING, name)
     // create an empty array to start
     RexxArrayObject result = context->NewArray(0);
 
-    SysFileIterator iterator(name);
+    RoutineFileNameBuffer buffer(context);
+    RoutineFileNameBuffer nextFile(context);
+
+    SysFileIterator iterator(name, NULL, buffer);
     while (iterator.hasNext())
     {
-        char buffer[SysFileSystem::MaximumPathLength];
-        iterator.next(buffer);
+        iterator.next(nextFile);
         // don't include the "." and ".." directories in this list
-        if (strcmp(buffer, ".") != 0 && strcmp(buffer, "..") != 0)
+        if (nextFile != "." && nextFile != "..")
         {
-            context->ArrayAppendString(result, buffer, strlen(buffer));
+            context->ArrayAppendString(result, nextFile, nextFile.length());
         }
     }
 

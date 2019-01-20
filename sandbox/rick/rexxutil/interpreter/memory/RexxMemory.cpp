@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -73,6 +73,8 @@
 #include "SetClass.hpp"
 #include "BagClass.hpp"
 #include "NumberStringClass.hpp"
+#include "SysProcess.hpp"
+#include "SysFile.hpp"
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -719,6 +721,87 @@ void MemoryObject::restoreImage()
     Activity::initializeThreadContext();
     // now we can restore the packages
     PackageManager::restore((ArrayClass *)saveArray->get(saveArray_PACKAGES));
+}
+
+
+/**
+ * Load the image file into storage
+ *
+ * @param imageBuffer
+ *                  The returned image buffer
+ * @param imageSize The returned image size.
+ */
+void MemoryObject::loadImage(char *&imageBuffer, size_t &imageSize)
+{
+    FileNameBuffer fullname;
+
+    // first try for a colocated image file
+    const char *installLocation =  SysProcess::getExecutableLocation();
+    if (installLocation != NULL)
+    {
+        fullname = installLocation;
+        fullname += BASEIMAGE;
+        if (loadImage(imageBuffer, imageSize, fullname))
+        {
+            return;
+        }
+    }
+
+    fullname = BASEIMAGE;
+
+    // colocation failed, try the current directory next
+    if (loadImage(imageBuffer, imageSize, fullname))
+    {
+        return;
+    }
+
+    // Now try to locate the file on the path if that fails
+    if (SysFileSystem::primitiveSearchName(BASEIMAGE, SystemInternpreter::getEnvironmentVariable("PATH"), NULL, fullname))
+    {
+        if (loadImage(imageBuffer, imageSize, fullname))
+        {
+            return;
+        }
+    }
+    Interpreter::logicError("no startup image");   /* open failure                      */
+}
+
+
+/**
+ * Load the image file into storage
+ *
+ * @param imageBuffer
+ *                  The returned image buffer
+ * @param imageSize The returned image size.
+ */
+bool MemoryObject::loadImage(char *&imageBuffer, size_t &imageSize, FileNameBuffer &imageFile)
+{
+    SysFile image;
+    // if unable to open this, return false
+    if (!image.open(imageFile, RX_O_RDONLY, RX_SH_DENY_WR, RX_S_IREAD))
+    {
+        return false;
+    }
+
+    size_t bytesRead = 0;
+    // read in for the size of the image
+    if (!image.read((char *)&imageSize, sizeof(imageSize), bytesRead))
+    {
+        return false;
+    }
+
+    // Create new segment for image
+    imageBuffer = (char *)memoryObject.allocateImageBuffer(imageSize);
+    // Create an object the size of the
+    // image. We will be overwriting the
+    // object header.
+    // read in the image, store the
+    // the size read
+    if (!image.read(imageBuffer, imageSize, imageSize))
+    {
+        Interpreter::logicError("could not read in the image");
+    }
+    return true;
 }
 
 
