@@ -70,6 +70,11 @@ class InterpreterInstance;
 class RexxActivation;
 class RexxDateTime;
 class BufferClass;
+class FileNameBuffer;
+
+/**
+ * A platform-specific class that implements a number of platform abstraction APIs as static methods.
+ */
 
 class SystemInterpreter
 {
@@ -102,7 +107,8 @@ public:
     static RexxString *getDefaultAddressName();
     static bool invokeExternalFunction(RexxActivation *, Activity *, RexxString *, RexxObject **, size_t, RexxString *, ProtectedObject &);
     static void validateAddressName(RexxString *name );
-    static int setEnvironmentVariable(RexxString *name, RexxString *value);
+    static int setEnvironmentVariable(const char *name, const char *value);
+    static bool getEnvironmentVariable(const char *variable, FileNameBuffer &buffer);
 
     static sigset_t oldmask;       // masks used for setting signal handlers
     static sigset_t newmask;

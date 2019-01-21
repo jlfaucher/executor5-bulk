@@ -328,8 +328,8 @@ void SystemInterpreter::restoreEnvironment(void *CurrentEnv)
 static bool addMBStyle(CSTRING other, ULONG *style)
 {
     char *token;
-    char *str = strdup(other);
-    if ( ! str )
+    AutoFree str = strdup(other);
+    if (str == NULL)
     {
         return false;
     }
@@ -389,7 +389,6 @@ static bool addMBStyle(CSTRING other, ULONG *style)
         if ( i == count )
         {
             // User sent a bad keyword.
-            free(str);
             return false;
         }
 
@@ -397,7 +396,6 @@ static bool addMBStyle(CSTRING other, ULONG *style)
     }
 
     *style = *style | extraStyle;
-    free(str);
     return true;
 }
 

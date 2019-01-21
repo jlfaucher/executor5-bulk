@@ -43,8 +43,42 @@
 #include "FileNameBuffer.hpp"
 
 
+/*********************************************************************/
+/* Numeric Error Return Strings                                      */
+/*********************************************************************/
 
+#define  ERROR_NOMEM      "2"          /* Insufficient memory        */
 
+/*********************************************************************/
+/* Alpha Numeric Return Strings                                      */
+/*********************************************************************/
+
+#define  ERROR_RETSTR   "ERROR:"
+
+/*********************************************************************/
+/****************  REXXUTIL Supporting Functions  ********************/
+/****************  REXXUTIL Supporting Functions  ********************/
+/****************  REXXUTIL Supporting Functions  ********************/
+/*********************************************************************/
+
+void inline outOfMemoryException(RexxCallContext *c)
+{
+    c->ThrowException1(Rexx_Error_System_service_user_defined, c->String("failed to allocate memory"));
+}
+
+/**
+ * <routineName> argument <argPos> must not be a null string
+ *
+ * SysFileTree argument 2 must not be a null string
+ *
+ * @param c      Threade context we are operating in.
+ * @param fName  Routine name.
+ * @param pos    Argument position.
+ */
+void inline nullStringException(RexxCallContext *c, const char *fName, size_t pos)
+{
+    c->ThrowException2(Rexx_Error_Incorrect_call_null, c->String(fName), c->StringSize(pos));
+}
 
 /*
  *  Class to perform SysFileTree functions

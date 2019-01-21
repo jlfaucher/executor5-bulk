@@ -39,10 +39,14 @@
 #ifndef FileNameBuffer_Included
 #define FileNameBuffer_Included
 
+#include "SysFileSystem.hpp"
 
 /**
  * A class for performing safer file name resolution that is expandable if needed. Replaces the
  * use of fixed-sized buffers for file operations.
+ *
+ * NOTE: This can only be used within code that runs
+ * while the interpreter has control.
  */
 class FileNameBuffer
 {
@@ -58,6 +62,7 @@ class FileNameBuffer
      }
 
      virtual void handleMemoryError();
+     virtual FileNameBuffer* allocateNewBuffer();
 
      size_t capacity() { return bufferSize; }
      size_t length() { return strlen(buffer); }
@@ -77,6 +82,20 @@ class FileNameBuffer
      void ensureCapacity(size_t size);
      inline void ensureCapacity(const char *add) { ensureCapacity(strlen(buffer) + strlen(add) + 1); }
      inline void expandCapacity(size_t c)  { ensureCapacity(bufferSize + c); }
+     inline void shiftLeft(size_t l)
+     {
+         size_t len = length();
+         // longer than the length? This becomes a null string
+         if (l > len)
+         {
+             buffer[0] = '\0';
+         }
+         else
+         {
+             // move the remainder plus the null.
+             memmove(buffer, buffer + l, len - l + 1);
+         }
+     }
 
      inline FileNameBuffer &operator=(const char *s)
      {
@@ -129,25 +148,18 @@ class FileNameBuffer
          return *(buffer + pos);
      }
 
-     inline const char & operator [](size_t pos) const
-     {
-         return *(buffer + pos);
-     }
-
-     typedef enum
-     {
-         FileBufferException,               // a problem reallocating a file buffer in external code
-     } MemoryException;
-
-
  protected:
      char *buffer;                 // the current buffer
      size_t bufferSize;            // the current buffer size
 
 };
 
+
 /**
  * Simple class for resolving qualified file names.
+ *
+ * NOTE: This can only be used within code that runs
+ * while the interpreter has control.
  */
 class QualifiedName
 {
@@ -170,30 +182,81 @@ class QualifiedName
 
 };
 
+
 /**
- * Simple class for creating a canonical name. This allows use
- * of wild cards
+ * A simple implemenation of a smart pointer to prevent memory
+ * leaks with dynamically allocated FileNameBuffer objects
  */
-class CanonicalName
+class AutoFileNameBuffer
 {
  public:
-     CanoicalName(const char *name)
+     AutoFileNameBuffer(FileNameBuffer &b)
      {
-         // copy into the buffer
-         qualifiedName = name;
-         SysFileSystem::canonicalizeName(qualifiedName);
+         // get a buffer of the same type as the input one
+         buffer = b.allocateNewBuffer();
+     };
+
+     ~AutoFileNameBuffer()
+     {
+         delete buffer;
      }
 
-     // cast conversion operators for some very common uses of protected object.
+     // . method access. Note that . cannot be overridden,
+     // but we can override ->, so method access will need be
+     // done using pointer notation.
+     inline FileNameBuffer &operator->()
+     {
+         return *buffer;
+     }
+
+     // cast conversion operators
+     inline operator FileNameBuffer &()
+     {
+         return *buffer;
+     }
+
+
+     // cast conversion operators
+     inline operator char *()
+     {
+         return (char *)buffer;
+     }
+
+     // cast conversion operators
      inline operator const char *()
      {
-         return (const char *)qualifiedName;
+         return (const char *)buffer;
+     }
+
+     inline FileNameBuffer &operator=(const char *s)
+     {
+         return *buffer = s;
+     }
+
+     inline FileNameBuffer &operator=(char *s)
+     {
+         return *buffer = s;
+     }
+
+     inline FileNameBuffer &operator+=(const char *s)
+     {
+         return *buffer += s;
+     }
+
+     inline FileNameBuffer &operator+=(char *s)
+     {
+         return *buffer += s;
+     }
+
+     // this is a mutable request, so we need to ensure the position is within the
+     // current buffer size
+     inline char & operator [](size_t pos)
+     {
+         return buffer->operator[](pos);
      }
 
 
- protected:
-     // buffer for holding the qualified name
-     FileNameBuffer qualifiedName;
-
+ private:
+     FileNameBuffer *buffer;
 };
 #endif

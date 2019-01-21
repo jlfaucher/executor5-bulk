@@ -630,7 +630,7 @@ void MemoryObject::restoreImage()
     size_t imageSize;
 
     // load the image file
-    SystemInterpreter::loadImage(restoredImage, imageSize);
+    loadImage(restoredImage, imageSize);
     // we write a size to the start of the image when the image is created.
     // the restoredImage buffer does not include that image size, so we
     // need to pretend the buffer is slightly before the start.
@@ -755,8 +755,12 @@ void MemoryObject::loadImage(char *&imageBuffer, size_t &imageSize)
         return;
     }
 
+    FileNameBuffer path;
+
+    SystemInterpreter::getEnvironmentVariable("PATH", path);
+
     // Now try to locate the file on the path if that fails
-    if (SysFileSystem::primitiveSearchName(BASEIMAGE, SystemInternpreter::getEnvironmentVariable("PATH"), NULL, fullname))
+    if (SysFileSystem::primitiveSearchName(BASEIMAGE, path, NULL, fullname))
     {
         if (loadImage(imageBuffer, imageSize, fullname))
         {
@@ -778,7 +782,7 @@ bool MemoryObject::loadImage(char *&imageBuffer, size_t &imageSize, FileNameBuff
 {
     SysFile image;
     // if unable to open this, return false
-    if (!image.open(imageFile, RX_O_RDONLY, RX_SH_DENY_WR, RX_S_IREAD))
+    if (!image.open(imageFile, RX_O_RDONLY, RX_SH_DENYWR, RX_S_IREAD))
     {
         return false;
     }

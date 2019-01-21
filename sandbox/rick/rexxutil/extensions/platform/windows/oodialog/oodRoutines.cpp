@@ -171,7 +171,6 @@ static char *searchSoundPath(CSTRING file, RexxCallContext *c)
     // We need a buffer for the path to search, a buffer for the returned full
     // file name, (if found,) and a pointer to char (an unused arg to
     // SearchPath().)
-    char *buf = NULL;
     char *fullFileName = NULL;
     char *pFileName;
 
@@ -189,7 +188,7 @@ static char *searchSoundPath(CSTRING file, RexxCallContext *c)
     }
 
     // Allocate our needed buffers.
-    buf = (char *)malloc(cchCWD + cchSoundPath + 3);
+    AutoFree buf = (char *)malloc(cchCWD + cchSoundPath + 3);
     fullFileName = (char *)malloc(_MAX_PATH);
     if ( buf == NULL || fullFileName == NULL )
     {
@@ -216,9 +215,8 @@ static char *searchSoundPath(CSTRING file, RexxCallContext *c)
         }
     }
 
-    uint32_t errorMode = SetErrorMode(SEM_FAILCRITICALERRORS);
+    AutoErrorMode errorMode(SEM_FAILCRITICALERRORS);
     cchSoundPath = SearchPath(buf, file, NULL, _MAX_PATH, fullFileName, &pFileName);
-    SetErrorMode(errorMode);
 
     if ( cchSoundPath == 0 || cchSoundPath >= _MAX_PATH )
     {
@@ -226,11 +224,9 @@ static char *searchSoundPath(CSTRING file, RexxCallContext *c)
         goto err_out;
     }
 
-    free(buf);
     return fullFileName;
 
 err_out:
-    safeFree(buf);
     safeFree(fullFileName);
     return NULL;
 }

@@ -121,26 +121,23 @@ bool SysFileSystem::searchFileName(const char *name, FileNameBuffer &fullName)
  * Get the full path name of a file.
  *
  * @param name   The source name
- * @param resolvedName
- *               a buffer for returning the resolved name
+ * @param fullName a buffer for returning the resolved name
  *
  * @return true if this could be resolved, false otherwise.
  */
-bool SysFileSystem::getFullPathName(const char *name, FileBuffer *resolvedName)
+bool SysFileSystem::getFullPathName(const char *name, FileNameBuffer &fullName)
 {
     // now try for original name
-    UINT errorMode = SetErrorMode(SEM_FAILCRITICALERRORS);
-    LPTSTR  lpszLastNamePart;
+    AutoErrorMode errorMode(SEM_FAILCRITICALERRORS);
 
-    DWORD rc = GetFullPathName(name, fullName.capacity(), (LPTSTR)fullName, &ppszFilePart)
+    DWORD rc = GetFullPathName(name, (DWORD)fullName.capacity(), (LPTSTR)fullName, NULL);
     // it is possible that the filename is good, but the buffer was too small to hold the result
     if (rc > fullName.capacity())
     {
         // expand the buffer and try again.
         fullName.ensureCapacity(rc);
-        rc = GetFullPathName(name, fullName.capacity(), (LPTSTR)fullName, &ppszFilePart)
+        rc = GetFullPathName(name, (DWORD)fullName.capacity(), (LPTSTR)fullName, NULL);
     }
-    SetErrorMode(errorMode);
 
     return rc > 0;
 }
@@ -154,19 +151,20 @@ bool SysFileSystem::getFullPathName(const char *name, FileBuffer *resolvedName)
  *
  * @return true if there was a hit, false otherwise.
  */
-bool SysFileSystem::searchOnPath(const char *name, const char *path, const char *extension, FileNameBuffer *resolvedName)
+bool SysFileSystem::searchOnPath(const char *name, const char *path, const char *extension, FileNameBuffer &fullName)
 {
     // now try for original name
-    UINT errorMode = SetErrorMode(SEM_FAILCRITICALERRORS);
-    DWORD rc = SearchPath(path, name, extension, fullName.capacity(), fullName, &ppszFilePart);
+    AutoErrorMode errorMode(SEM_FAILCRITICALERRORS);
+    LPSTR filePart;
+
+    DWORD rc = SearchPath(path, name, extension, (DWORD)fullName.capacity(), fullName, &filePart);
 
     // it is possible that the filename is good, but the buffer was too small to hold the result
     if (rc > fullName.capacity())
     {
         fullName.ensureCapacity(rc);
-        rc = SearchPath(path, name, extension, fullName.capacity(), fullName, &ppszFilePart);
+        rc = SearchPath(path, name, extension, (DWORD)fullName.capacity(), fullName, &filePart);
     }
-    SetErrorMode(errorMode);
 
     return rc > 0;
 
@@ -183,8 +181,6 @@ bool SysFileSystem::searchOnPath(const char *name, const char *path, const char 
  */
 void SysFileSystem::qualifyStreamName(const char *unqualifiedName, FileNameBuffer &qualifiedName)
 {
-    UINT errorMode;
-
     // If already expanded, there is nothing more to do.
     if (qualifiedName[0] != '\0')
     {
@@ -206,7 +202,7 @@ void SysFileSystem::qualifyStreamName(const char *unqualifiedName, FileNameBuffe
         if ((strncmp(unqualifiedName, "\\\\.\\", 4) != 0) &&  // didn't start with "\\.\"
             (strncmp(qualifiedName, "\\\\.\\", 4) == 0))      // starts with "\\.\"
         {
-            memmove(qualifiedName, &qualifiedName[4], length - 4 + 1); // remove leading "\\.\"
+            qualifiedName.shiftLeft(4);
         }
     }
 }
@@ -223,11 +219,9 @@ bool SysFileSystem::findFirstFile(const char *name)
 {
     HANDLE FindHandle;
     WIN32_FIND_DATA FindData;
-    UINT errorMode;
 
-    errorMode = SetErrorMode(SEM_FAILCRITICALERRORS);
+    AutoErrorMode errorMode(SEM_FAILCRITICALERRORS);
     FindHandle = FindFirstFile(name, &FindData);
-    SetErrorMode(errorMode);
 
     if (FindHandle != INVALID_HANDLE_VALUE)
     {
@@ -277,7 +271,7 @@ bool SysFileSystem::fileExists(const char *name)
  */
 bool SysFileSystem::isLink(const char *name)
 {
-    DWORD dwAttrs = GetFileAttributes(file);
+    DWORD dwAttrs = GetFileAttributes(name);
     return (dwAttrs != 0xffffffff) && (dwAttrs & FILE_ATTRIBUTE_REPARSE_POINT);
 }
 
@@ -442,20 +436,19 @@ bool SysFileSystem::searchName(const char *name, const char *path, const char *e
  * is set up.
  *
  * @param name      The name to search for.
- * @param path
+ * @param path      The path to be searched on
  * @param extension A potential extension to add to the file name (can be NULL).
  * @param resolvedName
  *                  The buffer used to return the resolved file name.
- * @param resolvedNameLength
- *                  The length of the resolved name.
  *
  * @return true if the file was located.  A true returns indicates the
  *         resolved file name has been placed in the provided buffer.
  */
-bool SysFileSystem::primitiveSearchName(const char *name, const char *path, const char *extension, FileNameBuffer *resolvedName)
+bool SysFileSystem::primitiveSearchName(const char *name, const char *path, const char *extension, FileNameBuffer &resolvedName)
 {
     // this is for building a temporary name
-    FileNameBuffer tempName = name;
+    AutoFileNameBuffer tempName(resolvedName);
+    tempName = name;
 
     if (extension != NULL)
     {

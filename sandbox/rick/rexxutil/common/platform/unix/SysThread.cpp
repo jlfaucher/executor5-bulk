@@ -184,7 +184,7 @@ void SysThread::sleep(int msecs)
  * @param microseconds
  *               The number of microseconds to delay.
  */
-void SysThread::sleep(uint64_t microseconds)
+void SysThread::longSleep(uint64_t microseconds)
 {
     // split into two part: secs and nanoseconds
     long secs = (long)microseconds / 1000000;

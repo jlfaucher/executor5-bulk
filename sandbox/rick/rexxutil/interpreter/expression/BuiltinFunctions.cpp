@@ -1883,10 +1883,10 @@ BUILTIN(VALUE)
         {
             Protected<RexxString> name = variable->upper();
 
-            FileNameBuffer *buffer;
+            FileNameBuffer buffer;
 
             // get the variable as set as a result
-            SystemInterpreter::getEnvironmentVariable(buffer);
+            SystemInterpreter::getEnvironmentVariable(name->getStringData(), buffer);
             result = new_string(buffer);
 
             // set the variable if we have a new value
@@ -1895,14 +1895,14 @@ BUILTIN(VALUE)
                 // .nil is special, it removes the variable
                 if (newvalue == TheNilObject)
                 {
-                    SystemInterpreter::setEnvironmentVariable(variable->getStringData(), NULL);
+                    SystemInterpreter::setEnvironmentVariable(name->getStringData(), NULL);
                 }
                 // we need a string value for the set.
                 else
                 {
                     Protected<RexxString> stringValue = stringArgument(newvalue, ARG_TWO);
 
-                    SystemInterpreter::setEnvironmentVariable(variable->getStringData(), stringValue->getStringData());
+                    SystemInterpreter::setEnvironmentVariable(name->getStringData(), stringValue->getStringData());
                 }
             }
             return result;

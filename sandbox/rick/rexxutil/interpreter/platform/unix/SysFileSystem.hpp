@@ -148,6 +148,7 @@ protected:
     const char *patternSpec;   // the spec we test against
 };
 
+
 /**
  * A simple class to ensure an open file is closed in error situations.
  */
@@ -200,37 +201,6 @@ class AutoClose
      }
  private:
      int value; // >= 0 if opened
-};
-
-/**
- * A simple implemenation of a smart pointer to prevent memory leaks.
- */
-class AutoFree
-{
- public:
-     AutoFree() : value(NULL) { };
-     AutoFree(char *p) : value(p) { }
-     ~AutoFree()
-     {
-         if (value != NULL)
-         {
-             free(value);
-         }
-         value = NULL;
-         }
-     AutoFree & operator=(char *p)
-     {
-         if (value != NULL)
-         {
-             free(value);
-         }
-         value = p;
-         return *this;
-         }
-     operator char *() const { return value; }
-     int operator==(char *p) { return value == p; }
- private:
-     char *value;
 };
 
 #endif

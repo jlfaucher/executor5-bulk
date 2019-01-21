@@ -70,7 +70,9 @@ public:
     static const char PathDelimiter;        // directory path delimiter
 
     static bool  searchFileName(const char * name, FileNameBuffer &fullName);
+    static bool  searchOnPath(const char *name, const char *path, const char *extension, FileNameBuffer &resolvedName);
     static void  qualifyStreamName(const char *unqualifiedName, FileNameBuffer &qualifiedName);
+    static bool  getFullPathName(const char *name, FileNameBuffer &resolvedName);
     static bool  fileExists(const char *name);
     static bool  hasExtension(const char *name);
     static bool  hasDirectory(const char *name);
@@ -89,6 +91,7 @@ public:
     static bool  isReadOnly(const char *name);
     static bool  isWriteOnly(const char *name);
     static bool  isFile(const char *name);
+    static bool  isLink(const char *name);
     static bool  exists(const char *name);
 
     static int64_t getLastModifiedDate(const char *name);
@@ -122,6 +125,21 @@ protected:
     HANDLE handle;        // The handle for the FindFirst operation
     WIN32_FIND_DATA findFileData;
 };
+
+
+/**
+ * A simple implementation to ensure the Windows error mode gets reset on a return.
+ */
+class AutoErrorMode
+{
+ public:
+     AutoErrorMode(UINT m) { errorMode = SetErrorMode(SEM_FAILCRITICALERRORS); }
+     ~AutoErrorMode() { SetErrorMode(SEM_FAILCRITICALERRORS); }
+ private:
+     UINT errorMode;   // the old error mode
+};
+
+
 
 #endif
 

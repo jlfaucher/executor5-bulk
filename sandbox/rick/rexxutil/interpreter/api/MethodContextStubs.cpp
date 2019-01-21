@@ -46,6 +46,7 @@
 #include "NativeActivation.hpp"
 #include "ProtectedObject.hpp"
 #include "MethodClass.hpp"
+#include "ActivityManager.hpp"
 
 BEGIN_EXTERN_C()
 
@@ -355,7 +356,7 @@ void RexxEntry ThrowException(RexxMethodContext *c, size_t n, RexxArrayObject a)
     reportException((RexxErrorCodes)n, (ArrayClass *)a);
 }
 
-void RexxEntry ThrowCondition(RexxThreadContext *c, CSTRING n, RexxStringObject desc, RexxObjectPtr add, RexxObjectPtr result)
+void RexxEntry ThrowCondition(RexxMethodContext *c, CSTRING n, RexxStringObject desc, RexxObjectPtr add, RexxObjectPtr result)
 {
     ApiContext context(c);
     Protected<RexxString> name = new_upper_string(n);

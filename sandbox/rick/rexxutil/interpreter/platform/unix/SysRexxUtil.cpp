@@ -46,26 +46,14 @@
 *   This program extends the REXX language by providing many          *
 *   REXX external functions.                                          *
 *   These are a partial list of functions included:                   *
-*       SysCls              -- Clear the screen in an OS/2 fullscreen *
-*                              or windowed command prompt session.    *
+*       SysCls              -- Clear the screen in a command prompt   *
+*                              session                                *
 *       SysCurPos           -- Set and/or Query the cursor position   *
 *                              in an OS/2 fullscreen or windowed      *
 *                              command prompt session.                *
 *       SysCurState         -- Make the cursor visible or invisible   *
 *                              in an OS/2 fullscreen or windowed      *
 *                              command prompt session.                *
-*       SysDriveInfo        -- Returns information about a specific   *
-*                              drive.                                 *
-*       SysDriveMap         -- Returns a list of the drives on the    *
-*                              machine                                *
-*       SysDropFuncs        -- Makes all functions in this package    *
-*                              unknown to REXX.                       *
-*       SysFileDelete       -- Deletes a file                         *
-*       SysFileSearch       -- Searches for a file matching a given   *
-*                              filespec.                              *
-*       SysFileTree         -- Searches for files matching a given    *
-*                              filespec, including files in           *
-*                              subdirectories.                        *
 *       SysGetKey           -- Returns one by of data indicating the  *
 *                              key which was pressed,                 *
 *                              in an OS/2 fullscreen or windowed      *
@@ -73,29 +61,10 @@
 *       SysGetMessage       -- Retrieves a message text from an OS/2  *
 *                              message file, substituting values      *
 *                              provided.                              *
-*       SysIni              -- Reads and/or updates entries in .INI   *
-*                              files.                                 *
-*       SysLoadFuncs        -- Makes all functions in this package    *
-*                              known to REXX so REXX programs may     *
-*                              call them.                             *
 *       SysMkDir            -- Creates a directory                    *
 *       SysVersion          -- Returns the system  Version number     *
 *       SysLinVer           -- Returns the Linux Version number       *
-*       SysRmDir            -- Removes a directory                    *
-*       SysSearchPath       -- Searches throught a specified path     *
-*                              for a file.                            *
-*       SysSleep            -- Suspends execution for a number of     *
-*                              seconds.                               *
-*       SysTempFilename     -- Creates a unique filename              *
-*       SysTextScreenRead   -- Reads characters from the screen,      *
-*                              in an OS/2 fullscreen or windowed      *
 *                              command prompt session.                *
-*       SysTextScreenSize   -- Returns the size of the window in      *
-*                              rows and columns,                      *
-*                              in an OS/2 fullscreen or windowed      *
-*                              command prompt session.                *
-*                              for a file.                            *
-*                              for a file.                            *
 *       SysCreateMutexSem   -- Create a Mutex semaphore               *
 *       SysOpenMutexSem     -- Open a Mutex semaphore                 *
 *       SysCloseMutexSem    -- Close a Mutex semaphore                *
@@ -107,42 +76,15 @@
 *       SysPostEventSem     -- Post an Event semaphore                *
 *       SysResetEventSem    -- Reset an Event semaphore               *
 *       SysWaitEventSem     -- Wait on an Event semaphore             *
-*       SysAddRexxMacro     -- Load program into macro space          *
-*       SysDropRexxMacro    -- Drop program from macro space          *
-*       SysReorderRexxMacro -- Reorder program in macro space         *
-*       SysQueryRexxMacro   -- Query ordering of macro space program  *
-*       SysClearRexxMacroSpace -- Remove all programs from macro space*
-*       SysLoadRexxMacroSpace  -- Load a Rexx macro space             *
-*       SysSaveRexxMacroSpace  -- Save a Rexx macro space             *
-*                              to the destination folder              *
-*                              to the destination folder              *
-*                              (Merlin only).                         *
-*                              (for SysSwitchSession)                 *
-*       SysDumpVariables    -- Dump current variables to a file       *
 *       SysSetFileDateTime  -- Set the last modified date of a file   *
 *       SysGetFileDateTime  -- Get the last modified date of a file   *
-*       SysStemSort         -- sort a stem array                      *
-*       SysStemDelete       -- delete items in a stem array           *
-*       SysStemInsert       -- insert items into a stem array         *
-*       SysStemCopy         -- copy items from one stem array to other*
 *       SysGetErrortext     -- Retrieve textual desc. of error number *
 *       SysQueryProcess     -- Get information on current proc/thread *
-*       SysUtilVersion      -- query version of REXXUTIL.DLL          *
 *                                                                     *
-*       SysAddFuncPkg       -- CREXX for AIX function support         *
-*       SysAddCmdPkg        -- CREXX for AIX function support         *
-*       SysDropFuncPkg      -- CREXX for AIX function support         *
-*       SysDropCmdPkg       -- CREXX for AIX function support         *
 *       SysGetpid           -- CREXX for AIX function support         *
 *       SysFork             -- CREXX for AIX function support         *
 *       SysWait             -- CREXX for AIX function support         *
 *       SysCreatePipe       -- CREXX for AIX function support         *
-*                                                                     *
-*       SysFileCopy         -- Copy files on the file system          *
-*       SysFileMove         -- Move / Rename files or directories     *
-*       SysIsFile           -- does file exist?                       *
-*       SysIsFileDirectory  -- is file a subdirectory?                *
-*       SysIsFileLink       -- is file a link?                        *
 *                                                                     *
 **********************************************************************/
 #ifdef HAVE_CONFIG_H
@@ -662,7 +604,7 @@ RexxRoutine0(int, SysCls)
 *************************************************************************/
 RexxRoutine1(int, SysMkDir, CSTRING, path, OPTIONAL_int32_t, mode)
 {
-    RoutineQualifiedName qualifiedName(path);
+    RoutineQualifiedName qualifiedName(context, path);
 
     /* Make the dir; standard permissions are rwxr-xr-x                */
     /* we do not restrict permission, this is done by root in the file */
@@ -1181,142 +1123,6 @@ RexxRoutine1(int, SysCloseMutexSem, uintptr_t, vhandle)
     }
     free(semdata);
     return 0;
-}
-
-
-/*************************************************************************
-* Function:  SysTempFileName                                             *
-*                                                                        *
-* Syntax:    call SysTempFileName template [,filler]                     *
-*                                                                        *
-* Params:    template - Description of filespec desired.  For example:   *
-*                        C:\TEMP\FILE.???                                *
-*            filler   - A character which when found in template will be *
-*                        replaced with random digits until a unique file *
-*                        or directory is found.  The default character   *
-*                        is '?'.                                         *
-*                                                                        *
-* Return:    other - Unique file/directory name.                         *
-*            ''    - No more files exist given specified template.       *
-*************************************************************************/
-
-RexxRoutine2(RexxStringObject, SysTempFileName, CSTRING, template, CSTRING, fillerOpt)
-{
-    char   filler = '?';                 /* filler character           */
-
-    if (strlen(template) > 512 || (fillerOpt != NULL && strlen(fillerOpt) != 1))
-    {
-        context->InvalidRoutine();
-        return NULLOBJECT;
-    }
-
-    if (fillerOpt != NULL)
-    {
-        filler = fillerOpt[0];
-    }
-
-    /* get the file id            */
-    AutoFree dir = (char *)strdup(template);
-    if (dir == NULL)                    /* if something went wrong    */
-    {
-        return context->NewStringFromAsciiz(ERROR_NOMEM);
-    }
-
-    char *tmp = dir;                    /* set temporary               */
-
-    /* search for filter        *********/
-    int j = 0;
-    size_t max = 1;
-
-    for (int x = 0; tmp[x] != 0; x++)
-    {
-        if (tmp[x] == filler)
-        {
-            max = max * 10;
-            j++;
-        }
-    }
-
-    if (j)
-    {
-        char numstr[6];
-        srand(time(0));
-        size_t num = rand();
-        num = num % max;
-
-        switch (j)
-        {
-            case 1:
-                sprintf(numstr, "%01u", (int)num);
-                break;
-            case 2:
-                sprintf(numstr, "%02u", (int)num);
-                break;
-            case 3:
-                sprintf(numstr, "%03u", (int)num);
-                break;
-            case 4:
-                sprintf(numstr, "%04u", (int)num);
-                break;
-            case 5:
-                sprintf(numstr, "%05u", (int)num);
-                break;
-            default:
-                context->InvalidRoutine();
-                return NULLOBJECT;
-        }                                            /* for compatibility     */
-
-        int i = 0;
-        for (int x = 0; tmp[x] != 0; x++)
-        {
-            if (tmp[x] == filler)
-            {
-                tmp[x] = numstr[i++];
-            }
-        }
-    }                                         /* if we need the filler */
-
-    while (*tmp != 0)                         /* lets start at the end */
-    {
-        tmp++;
-    }
-
-    while ((*tmp != '/') && (*tmp != '\\') && (tmp > dir))
-    {
-        --tmp;
-    }
-
-    char *file = NULL;
-    AutoFree array = NULL;
-
-    if (tmp == dir)
-    {                                 /* directory string is '' or '/' */
-        if (*dir == '\\')
-        {
-            file = dir + 1;
-            array = tempnam(NULL, file); /* call system routine    */
-        }
-        else if (*dir == '/')
-        {
-            file = dir + 1;
-            array = tempnam("/", file); /* call system routine     */
-        }
-        else
-        {
-            file = dir;
-            array = tempnam(NULL, file); /* call system routine     */
-        }
-    }
-    else
-    {                                /* directory string exists    */
-        file = tmp + 1;                      /* set filename prefix        */
-        *tmp = '\0';                       /* terminate directory string */
-        array = tempnam(dir, file); /* call system routine        */
-    }
-
-    RexxStringObject retstr = context->NewStringFromAsciiz(array);
-
-    return retstr;
 }
 
 
@@ -1928,7 +1734,7 @@ RexxRoutine2(RexxObjectPtr, SysGetFileDateTime, CSTRING, file, OPTIONAL_CSTRING,
     struct    tm *newtime;
 
 
-    QualifiedName qualifiedName(file);
+    RoutineQualifiedName qualifiedName(context, file);
 
     if (stat64(qualifiedName, &buf) < 0)
     {
@@ -1994,7 +1800,7 @@ RexxRoutine3(int, SysSetFileDateTime, CSTRING, filename, OPTIONAL_CSTRING, newda
     time_t ltime;
     struct stat64 buf;
 
-    QualifiedName qualifiedName(filename);
+    RoutineQualifiedName qualifiedName(context, filename);
 
     if (stat64(qualifiedName, &buf) < 0)
     {
@@ -2106,11 +1912,17 @@ RexxRoutine1(RexxObjectPtr, SysQueryProcess, OPTIONAL_CSTRING, selector)
         uiUsedHours   = uiUsedCPUTime / 3600;
         uiUsedMinutes = uiUsedCPUTime / 60;
         if (uiUsedMinutes >= 60)
+        {
             uiUsedMinutes = uiUsedMinutes % 60;
+        }
         if (uiUsedCPUTime >= 60)
+        {
             uiUsedSeconds = uiUsedCPUTime % 60;
+        }
         else
+        {
             uiUsedSeconds = uiUsedCPUTime;
+        }
 
         char buffer[200];
         snprintf(buffer, sizeof(buffer), "CPU_Time Summary: %2d:%.2d:%.2d:%.3d  Kernel:",
@@ -2121,11 +1933,17 @@ RexxRoutine1(RexxObjectPtr, SysQueryProcess, OPTIONAL_CSTRING, selector)
         uiUsedHours   = uiUsedCPUTime / 3600;
         uiUsedMinutes = uiUsedCPUTime / 60;
         if (uiUsedMinutes >= 60)
+        {
             uiUsedMinutes = uiUsedMinutes % 60;
+        }
         if (uiUsedCPUTime >= 60)
+        {
             uiUsedSeconds = uiUsedCPUTime % 60;
+        }
         else
+        {
             uiUsedSeconds = uiUsedCPUTime;
+        }
 
         size_t currLen = strlen(buffer);
 
@@ -2140,11 +1958,17 @@ RexxRoutine1(RexxObjectPtr, SysQueryProcess, OPTIONAL_CSTRING, selector)
         uiUsedHours   = uiUsedCPUTime / 3600;
         uiUsedMinutes = uiUsedCPUTime / 60;
         if (uiUsedMinutes >= 60)
+        {
             uiUsedMinutes = uiUsedMinutes % 60;
+        }
         if (uiUsedCPUTime >= 60)
+        {
             uiUsedSeconds = uiUsedCPUTime % 60;
+        }
         else
+        {
             uiUsedSeconds = uiUsedCPUTime;
+        }
 
         snprintf(buffer + currLen, sizeof(buffer) - currLen, " %2d:%.2d:%.2d:%.3d", uiUsedHours,
                  uiUsedMinutes, uiUsedSeconds, uiUsedCPUmsec);

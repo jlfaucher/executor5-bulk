@@ -35,9 +35,9 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
+#include "RexxCore.h"
 #include "FileNameBuffer.hpp"
-#include "Activity.hpp"
-#include "SysFileSystem.hpp"
+#include "ActivityManager.hpp"
 
 
 /**
@@ -45,14 +45,14 @@
  *
  * @param size   The initial size. If zero, then the default size is used.
  */
-FileNameBuffer::FileNameBuffer(size_t size = 0) : buffer(NULL), bufferSize(0)
+FileNameBuffer::FileNameBuffer(size_t initial) : buffer(NULL), bufferSize(0)
 {
-    if (size == 0)
+    if (initial == 0)
     {
-        size = SysFileSystem::MaximumPathLength;
+        initial = SysFileSystem::MaximumPathLength;
     }
 
-    bufferSize = size;
+    bufferSize = initial;
     buffer = new char[bufferSize];
 
     // if we can't allocate, then raise the error
@@ -77,7 +77,7 @@ void FileNameBuffer::ensureCapacity(size_t c)
 
     if (bufferSize < c + 1)
     {
-        newBuffer = new char[newSize];
+        char *newBuffer = new char[newSize];
 
         // if we can't allocate, then raise the error
         if (newBuffer == NULL)
@@ -101,4 +101,18 @@ void FileNameBuffer::ensureCapacity(size_t c)
 void FileNameBuffer::handleMemoryError()
 {
     reportException(Error_System_resources);
+}
+
+
+/**
+ * Allocates a FileNameBuffer instance of the same class as the
+ * the target object. Since error handling depends on context, routines
+ * sometimes need to create a new FileNameBuffer object with the
+ * same type as one passed to the routine.
+ *
+ * @return A FileNameBuffer object of the same type, initialized with appropriate defaults.
+ */
+FileNameBuffer *FileNameBuffer::allocateNewBuffer()
+{
+    return new FileNameBuffer();
 }

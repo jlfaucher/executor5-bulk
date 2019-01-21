@@ -54,7 +54,11 @@
 class InterpreterInstance;
 class RexxDateTime;
 class BufferClass;
+class FileNameBuffer;
 
+/**
+ * A platform-specific class that implements a number of platform abstraction APIs as static methods.
+ */
 class SystemInterpreter
 {
 public:
@@ -88,6 +92,8 @@ public:
     static bool invokeExternalFunction(RexxActivation *, Activity *, RexxString *, RexxObject **, size_t, RexxString *, ProtectedObject &);
     static void validateAddressName(RexxString *name );
     static bool processSignal(DWORD dwCtrlType);
+    static int setEnvironmentVariable(const char *name, const char *value);
+    static bool getEnvironmentVariable(const char *variable, FileNameBuffer &buffer);
 
     static ULONG exceptionHostProcessId;
     static HANDLE exceptionHostProcess;

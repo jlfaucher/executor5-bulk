@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -48,6 +48,7 @@
 #include "SystemInterpreter.hpp"
 #include "GlobalNames.hpp"
 #include "ActivityManager.hpp"
+#include "SysFile.hpp"
 
 
 /**
@@ -737,14 +738,16 @@ BufferClass* FileProgramSource::readProgram(const char *file_name)
     SysFile programFile;          // the file we're reading
 
     // if unable to open this, return false
-    if (!programFile.open(imageFile, RX_O_RDONLY, RX_SH_DENY_WR, RX_S_IREAD))
+    if (!programFile.open(file_name, RX_O_RDONLY, RX_SH_DENYWR, RX_S_IREAD))
     {
         return OREF_NULL;
     }
 
+    int64_t bufferSize = 0;
+
     // get the size of the file
-    int64_t bufferSize = programFile.getSize();
-    int64_t readSize;
+    programFile.getSize(bufferSize);
+    size_t readSize;
 
     // get a buffer object to return the image
     Protected<BufferClass> buffer = new_buffer(bufferSize);
@@ -756,7 +759,7 @@ BufferClass* FileProgramSource::readProgram(const char *file_name)
         programFile.close();
     }
     // if there was a read error, return nothing
-    if (readSize < bufferSize)
+    if ((int64_t)readSize < bufferSize)
     {
         return OREF_NULL;
     }

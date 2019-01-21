@@ -215,7 +215,7 @@ VOID CALLBACK SleepTimerProc(HWND hwnd, UINT uMsg, UINT idEvent, DWORD dwTime)
  * @param microseconds
  *               The number of microseconds to delay.
  */
-void SysThread::sleep(uint64_t microseconds)
+void SysThread::longSleep(uint64_t microseconds)
 {
 
     // convert to milliseconds, no overflow possible
@@ -230,10 +230,7 @@ void SysThread::sleep(uint64_t microseconds)
     {
         if (!(SetTimer(NULL, 0, milliseconds, (TIMERPROC)SleepTimerProc)))
         {
-            // no timer available, need to abort
-            context->RaiseException1(Rexx_Error_System_resources_user_defined,
-                                     context->String("System resources exhausted: cannot start timer"));
-            return 1;
+            return;
         }
 
         MSG msg;

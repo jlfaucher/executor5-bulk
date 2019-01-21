@@ -36,11 +36,11 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 /******************************************************************************/
-/* REXX Windows Support                                          rexxutil.c   */
 /*                                                                            */
-/* Windows system utility functions                                           */
+/* Windows-specific RexxUtil functions                                        */
 /*                                                                            */
 /******************************************************************************/
+
 /**********************************************************************
 *                                                                     *
 *   This program extends the REXX language by providing many          *
@@ -58,54 +58,25 @@
 *                              drive.                                 *
 *       SysDriveMap         -- Returns a list of the drives on the    *
 *                              machine                                *
-*       SysDropFuncs        -- Makes all functions in this package    *
-*                              unknown to REXX.                       *
-*       SysFileDelete       -- Deletes a file                         *
-*       SysFileSearch       -- Searches for a file matching a given   *
-*                              filespec.                              *
-*       SysFileTree         -- Searches for files matching a given    *
-*                              filespec, including files in           *
-*                              subdirectories.                        *
 *       SysGetKey           -- Returns one by of data indicating the  *
 *                              key which was pressed,                 *
-*                              in an OS/2 fullscreen or windowed      *
-*                              command prompt session.                *
+*                              in a command prompt session            *
 *       SysIni              -- Reads and/or updates entries in .INI   *
 *                              files.                                 *
-*       SysLoadFuncs        -- Makes all functions in this package    *
-*                              known to REXX so REXX programs may     *
-*                              call them.                             *
 *       SysMkDir            -- Creates a directory                    *
 *       SysWinVer           -- Returns the Win OS and Version number  *
 *       SysVersion          -- Returns the OS and Version number      *
-*       SysRmDir            -- Removes a directory                    *
-*       SysSearchPath       -- Searches throught a specified path     *
-*                              for a file.                            *
-*       SysSleep            -- Suspends execution for a number of     *
-*                              seconds and milliseconds.              *
-*       SysTempFilename     -- Creates a unique filename              *
 *       SysTextScreenRead   -- Reads characters from the screen,      *
-*                              in an OS/2 fullscreen or windowed      *
+*                              in a command prompt session            *
 *                              command prompt session.                *
 *       SysTextScreenSize   -- Returns the size of the window in      *
-*                              rows and columns,                      *
-*                              in an OS/2 fullscreen or windowed      *
+*                              rows and columns, in a                 *
 *                              command prompt session.                *
 *       SysWaitNamedPipe    -- Wait on a named pipe.                  *
-*       SysRegisterObjectClass -- Register a new object class         *
-*       SysDeregisterObjectClass -- Remove class registration         *
-*       SysQueryClassList   -- Get list of registered classes         *
-*       SysCreateObject     -- Create an object instance              *
-*       SysDestroyObject    -- Delete an object instance              *
-*       SysSetObjectData    -- Change object settings data            *
 *       SysBootDrive        -- Return the windows boot drive          *
 *       SysSystemDirectory  -- Return the Windows system directory    *
-*       SysQueryEAList      -- Return list of file EA names           *
-*       SysWildCard         -- Perform file wild card editting        *
 *       SysFileSystemType   -- Return drive file system type          *
 *       SysVolumeLabel      -- Return the drive label                 *
-*       SysAddFileHandle    -- Add file handles to a process          *
-*       SysSetFileHandle    -- Set file handles for a process         *
 *       SysCreateMutexSem   -- Create a Mutex semaphore               *
 *       SysOpenMutexSem     -- Open a Mutex semaphore                 *
 *       SysCloseMutexSem    -- Close a Mutex semaphore                *
@@ -120,29 +91,11 @@
 *       SysWaitEventSem     -- Wait on an Event semaphore             *
 *       SysProcessType      -- Return type of process                 *
 *       SysSetPriority      -- Set current thread priority            *
-*       SysGetCollate       -- Get country/codepage collating sequence*
-*       SysNationalLanguageCompare -- NLS strict compare              *
-*       SysMapCase          -- NLS uppercasing                        *
-*       SysSetProcessCodePage -- Set current code page                *
-*       SysQueryProcessCodePage -- Get current code page              *
-*       SysAddRexxMacro     -- Load program into macro space          *
-*       SysDropRexxMacro    -- Drop program from macro space          *
-*       SysReorderRexxMacro -- Reorder program in macro space         *
-*       SysQueryRexxMacro   -- Query ordering of macro space program  *
-*       SysClearRexxMacroSpace -- Remove all programs from macro space*
-*       SysLoadRexxMacroSpace  -- Load a Rexx macro space             *
-*       SysSaveRexxMacroSpace  -- Save a Rexx macro space             *
 *       SysShutDownSystem   -- Shutdown the system                    *
 *       SysSwitchSession    -- Switch to a named session              *
-*       SysDropLibrary      -- Drop a function package                *
 *       SysQueryProcess     -- Get information on current proc/thread *
-*       SysDumpVariables    -- Dump current variables to a file       *
 *       SysSetFileDateTime  -- Set the last modified date of a file   *
 *       SysGetFileDateTime  -- Get the last modified date of a file   *
-*       SysStemSort         -- sort a stem array                      *
-*       SysStemDelete       -- delete items in a stem array           *
-*       SysStemInsert       -- insert items into a stem array         *
-*       SysStemCopy         -- copy items from one stem array to other*
 *       SysUtilVersion      -- query version of REXXUTIL.DLL          *
 *       SysWinFileEncrypt   -- Encrypt file on a W2K-NTFS             *
 *       SysWinFileDecrypt   -- Decrypt file on a W2K-NTFS             *
@@ -150,11 +103,6 @@
 *       SysWinGetDefaultPrinter -- retrieve default printer           *
 *       SysWinGetPrinters   -- Obtain list of local printers          *
 *       SysWinSetDefaultPrinter -- set the local default printer      *
-*       SysFileCopy         -- Copy files on the file system          *
-*       SysFileMove         -- Move / Rename files or directories     *
-*       SysIsFile           -- Check for the existance of a file      *
-*       SysIsFileDirectory  -- Check for the existance of a directory *
-*       SysIsFileLink       -- Check for the existance of a link      *
 *       SysIsFileCompressed   -- Check for a file to be compressed    *
 *       SysIsFileEncrypted    -- Check for a file to be encrypted     *
 *       SysIsFileNotContentIndexed -- Check if a file should be indexed *
@@ -183,28 +131,6 @@
 /*  Various definitions used by various functions.                   */
 /*********************************************************************/
 
-#define RNDFACTOR      1664525L
-#define MAX_CREATEPROCESS_CMDLINE (32 * 1024)
-
-/*********************************************************************/
-/* Defines uses by SysTree                                           */
-/*********************************************************************/
-
-
-/*********************************************************************/
-/* Define used for Unicode translation. Not present in early Windows */
-/* SDKs.                                                             */
-/*********************************************************************/
-#ifndef WC_ERR_INVALID_CHARS
-#define WC_ERR_INVALID_CHARS      0x00000080
-#endif
-
-// Defines for various SysFileTree buffer.
-#define FNAMESPEC_BUF_EXTRA    8
-#define FNAMESPEC_BUF_LEN      MAX_PATH + FNAMESPEC_BUF_EXTRA
-#define FOUNDFILE_BUF_LEN      MAX_PATH
-#define FOUNDFILELINE_BUF_LEN  FOUNDFILE_BUF_LEN + FILETIME_BUF_LEN + FILEATTR_BUF_LEN
-
 
 /*********************************************************************/
 /* Structures used throughout REXXUTIL.C                             */
@@ -225,266 +151,11 @@ class RxStemData
      size_t count;                      // last set value
 }
 
-
 /*********************************************************************/
 /* Saved character status                                            */
 /*********************************************************************/
 static   int   ExtendedFlag = 0;       /* extended character saved   */
 static   char  ExtendedChar;           /* saved extended character   */
-
-/*********************************************************************/
-/* Numeric Error Return Strings                                      */
-/*********************************************************************/
-
-#define  NO_UTIL_ERROR    "0"          /* No error whatsoever        */
-#define  ERROR_NOMEM      "2"          /* Insufficient memory        */
-#define  ERROR_FILEOPEN   "3"          /* Error opening text file    */
-
-/*********************************************************************/
-/* Alpha Numeric Return Strings                                      */
-/*********************************************************************/
-
-#define  ERROR_RETSTR   "ERROR:"
-
-/*********************************************************************/
-/****************  REXXUTIL Supporting Functions  ********************/
-/****************  REXXUTIL Supporting Functions  ********************/
-/****************  REXXUTIL Supporting Functions  ********************/
-/*********************************************************************/
-
-void inline outOfMemoryException(RexxThreadContext *c)
-{
-    c->ThrowException1(Rexx_Error_System_service_user_defined, c->String("failed to allocate memory"));
-}
-
-/**
- * <routineName> argument <argPos> must not be a null string
- *
- * SysFileTree argument 2 must not be a null string
- *
- * @param c      Threade context we are operating in.
- * @param fName  Routine name.
- * @param pos    Argument position.
- */
-void inline nullStringException(RexxRoutineContext *c, CSTRING fName, size_t pos)
-{
-    c->ThrowException2(Rexx_Error_Incorrect_call_null, c->String(fName), c->StringSize(pos));
-}
-
-/**
- * Raises an exception for an unrecoverable system API failure.
- *
- * @param c    Call context we are operating in.
- * @param api  System API name.
- * @param rc   Return code from calling the API.
- */
-static void systemServiceExceptionCode(RexxRoutineContext *c, CSTRING api, uint32_t rc)
-{
-    char buf[256] = { 0 };
-    snprintf(buf, sizeof(buf),
-             "system API %s() failed; rc: %d last error code: %d", api, rc, GetLastError());
-
-    c->ThrowException1(Rexx_Error_System_service_user_defined, c->String(buf));
-}
-
-/**
- * Tests if the the current operating system version meets the specified
- * requirements. Really a front end to VerifyVersionInfo().  See MSDN docs for
- * type and condition flags.
- *
- * @param major       OS major number.
- * @param minor       OS minor number.
- * @param sp          Service pack level.
- * @param type        Further refines the test.  See MSDN for all the flags, but
- *                    for example there is VER_NT_WORKSTATION to differentiate
- *                    between NT desktop and NT server.
- * @param condition   The test condition.  Typical flags would be VER_EQUAL or
- *                    VER_GREATER_EQUAL.
- *
- * @return True if the condition is met by the current operating system, or
- *         false if not.
- */
-static bool isWindowsVersion(DWORD major, DWORD minor, unsigned int sp, unsigned int type, unsigned int condition)
-{
-    OSVERSIONINFOEX ver;
-    DWORDLONG       mask = 0;
-    DWORD           testForMask = VER_MAJORVERSION | VER_MINORVERSION;
-
-    ZeroMemory(&ver, sizeof(OSVERSIONINFOEX));
-
-    ver.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
-    ver.dwMajorVersion = major;
-    ver.dwMinorVersion = minor;
-
-    VER_SET_CONDITION(mask, VER_MAJORVERSION, condition);
-    VER_SET_CONDITION(mask, VER_MINORVERSION, condition);
-
-    if (condition != VER_EQUAL)
-    {
-        ver.wServicePackMajor = sp;
-        testForMask |= VER_SERVICEPACKMAJOR;
-        VER_SET_CONDITION(mask, VER_SERVICEPACKMAJOR, condition);
-    }
-
-    if (type != 0)
-    {
-        ver.wProductType = type;
-        testForMask |= VER_PRODUCT_TYPE;
-        VER_SET_CONDITION(mask, VER_PRODUCT_TYPE, condition);
-    }
-
-    if (VerifyVersionInfo(&ver, testForMask, mask))
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
-inline bool isAtLeastVista(void)
-{
-    return isWindowsVersion(6, 0, 0, 0, VER_GREATER_EQUAL);
-}
-
-
-/****************************************************************
-* Function: GetUniqueFileName(Template, Filler, file)           *
-*                                                               *
-* Purpose:  This function returns a unique temporary file name  *
-*           given a template and a filler character.            *
-*                                                               *
-* Params:   CHAR* Template - The template.  Must contain at     *
-*                            least one or more filler chars.    *
-*                                                               *
-*                            Example:  "C:\TEMP\FILE????.DAT    *
-*                                                               *
-*           CHAR Filler    - The character in the Template to   *
-*                            be replaced with numbers.  For     *
-*                            the above example, the filler char *
-*                            would be '?'.                      *
-*           CHAR* file     - file name produced (output)        *
-*                                                               *
-* Used By:  RxTempFileName()                                    *
-****************************************************************/
-
-VOID GetUniqueFileName(
-    CHAR  *Template,
-    CHAR   Filler,
-    CHAR  *file)
-{
-
-    CHAR numstr[6];
-    bool Unique = false;
-
-    ULONG x,                             /* loop index                 */
-        i,                             /*                            */
-        j = 0,                         /* number of filler chars     */
-        /* found                      */
-        num,                           /* temporary random number    */
-        start,                         /* first random number        */
-        max = 1;                       /* maximum random number      */
-
-    INT  seed;                           /* to get current time        */
-    WIN32_FIND_DATA wfdFinfo;            /* Windows Find data struct   */
-    /* Structure                  */
-    SYSTEMTIME DT;                       /* The date and time structure*/
-    UINT            fuErrorMode;         /* holds current file err mode*/
-    HANDLE hSearch;                      /* handle of file if found    */
-
-    /** Determine number of filler characters *                         */
-
-    for (x = 0; Template[x] != 0; x++)
-
-        if (Template[x] == Filler)
-        {
-            max = max * 10;
-            j++;
-        }
-
-    /** Return NULL string if less than 1 or greater than 4 *           */
-
-    if (j == 0 || j > 5)
-    {
-        Unique = true;
-        strcpy(file, "");
-        return;
-    }
-
-    /** Get a random number in the appropriate range                    */
-
-    /* Get the time               */
-    GetSystemTime(&DT);                  /* via Windows                */
-
-    seed = DT.wHour * 60 + DT.wMinute;     /* convert to hundreths       */
-    seed = seed * 60 + DT.wSecond;
-    seed = seed * 100 + (DT.wMilliseconds / (UINT)10);
-    seed = seed * RNDFACTOR + 1;
-    num = (ULONG)seed % max;
-    start = num;
-
-    /** Do until a unique name is found                                 */
-
-    while (!Unique)
-    {
-
-        /** Generate string which represents the number                  */
-
-        switch (j)
-        {
-            case 1 :
-                wsprintf(numstr, "%01u", num);
-                break;
-            case 2 :
-                wsprintf(numstr, "%02u", num);
-                break;
-            case 3 :
-                wsprintf(numstr, "%03u", num);
-                break;
-            case 4 :
-                wsprintf(numstr, "%04u", num);
-                break;
-            case 5 :
-                wsprintf(numstr, "%05u", num);
-                break;
-        }
-
-        /** Subsitute filler characters with numeric string              */
-
-        i = 0;
-
-        for (x = 0; Template[x] != 0; x++)
-
-            if (Template[x] == Filler)
-                file[x] = numstr[i++];
-
-            else
-                file[x] = Template[x];
-        file[x] = '\0';
-
-        /** See if the file exists                                       */
-        /* Disable Hard-Error popups  */
-        fuErrorMode = SetErrorMode(SEM_NOOPENFILEERRORBOX);
-        hSearch = FindFirstFile(file, &wfdFinfo);
-
-        if (hSearch == INVALID_HANDLE_VALUE) /* file not found?           */
-            Unique = true;                   /* got one                    */
-
-        FindClose(hSearch);
-        SetErrorMode(fuErrorMode);         /* Enable previous setting    */
-
-        /** Make sure we are not wasting our time                        */
-
-        num = (num + 1) % max;
-
-        if (num == start && !Unique)
-        {
-            Unique = true;
-            strcpy(file, "");
-        }
-    }
-}
 
 /**********************************************************************
 ***             <<<<<< REXXUTIL Functions Follow >>>>>>>            ***
@@ -499,7 +170,6 @@ VOID GetUniqueFileName(
 *                                                                     *
 * Return:    NO_UTIL_ERROR - Successful.                              *
 **********************************************************************/
-
 RexxRoutine0(int, SysCls)
 {
     DWORD dummy;
@@ -550,7 +220,7 @@ RexxRoutine2(RexxStringObject, SysCurPos, OPTIONAL_stringsize_t, inrow, OPTIONAL
     {
         char buffer[256];
 
-        sprintf(buffer, "%d %d", csbiInfo.dwCursorPosition.Y, csbiInfo.dwCursorPosition.X);
+        snprintf(buffer, sizeof(buffer), "%d %d", csbiInfo.dwCursorPosition.Y, csbiInfo.dwCursorPosition.X);
 
         if (argumentExists(2))
         {
@@ -649,7 +319,7 @@ RexxRoutine1(RexxStringObject, SysDriveInfo, CSTRING, drive)
 
     snprintf(chDriveLetter, sizeof(chDriveLetter), "%c:\\", drive[0]);
 
-    errorMode = SetErrorMode(SEM_FAILCRITICALERRORS);
+    AutoErrorMode errorMode(SEM_FAILCRITICALERRORS);
     /* get the volume name and file system type */
     bGVIrc = GetVolumeInformation(chDriveLetter,
                                   chVolumeName,
@@ -669,7 +339,6 @@ RexxRoutine1(RexxStringObject, SysDriveInfo, CSTRING, drive)
                                  (PULARGE_INTEGER)&i64FreeBytes);
 
     dwgle = GetLastError();
-    SetErrorMode(errorMode);
 
     if (bGVIrc && bGDFSrc)
     {
@@ -818,9 +487,8 @@ RexxRoutine2(RexxStringObject, SysDriveMap, CSTRING, drive, OPTIONAL_CSTRING, mo
             {      /* Check specific drive info  */
                 snprintf(DeviceName, sizeof(DeviceName), "%c:\\", dnum + 'A' - 1);
 
-                UINIT errorMode = SetErrorMode(SEM_FAILCRITICALERRORS);
+                AutoErrorMode errorMode(SEM_FAILCRITICALERRORS);
                 LONG rc = GetDriveType(DeviceName);
-                SetErrorMode(errorMode);
 
                 // looking for removable drives_
                 if (rc == DRIVE_REMOVABLE && Mode == REMOVABLE)
@@ -861,61 +529,6 @@ RexxRoutine2(RexxStringObject, SysDriveMap, CSTRING, drive, OPTIONAL_CSTRING, mo
     }
 
     return context->NewString(temp, driveLength);
-}
-
-
-
-/*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - *\
- *                                                                            *
- *   SysFileTree() implmentation and helper functions.                        *
- *                                                                            *
-\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-
-/**
- * This is a SysFileTree specific function.
- *
- * @param c
- * @param pos
- * @param actual
- */
-static void badSFTOptsException(RexxThreadContext *c, size_t pos, CSTRING actual)
-{
-    char buf[256] = { 0 };
-    _snprintf(buf, sizeof(buf),
-              "SysFileTree argument %zd must be a combination of F, D, B, S, T, L, I, or O; found \"%s\"",
-              pos, actual);
-
-    c->ThrowException1(Rexx_Error_Incorrect_call_user_defined, c->String(buf));
-}
-
-/**
- * This is a SysFile specific function.
- *
- * @param c
- * @param pos
- * @param actual
- */
-static void badMaskException(RexxThreadContext *c, size_t pos, CSTRING actual)
-{
-    char buf[256] = { 0 };
-    _snprintf(buf, sizeof(buf),
-              "SysFileTree argument %zd must be 5 characters or less in length containing only '+', '-', or '*'; found \"%s\"",
-              pos, actual);
-
-    c->ThrowException1(Rexx_Error_Incorrect_call_user_defined, c->String(buf));
-}
-
-/**
- * Returns a value that is greater than 'need' by doubling 'have' until that
- * value is reached.
- */
-inline size_t neededSize(size_t need, size_t have)
-{
-    while (have < need)
-    {
-        have *= 2;
-    }
-    return have;
 }
 
 
@@ -1498,12 +1111,11 @@ RexxRoutine4(RexxStringObject, SysIni, OPTIONAL_CSTRING, IniFile, CSTRING, App, 
 {
     bool        wildCard = false;        /* Set to true if a wildcard  */
     /* operation                  */
-    bool        queryApps;               /* Set to true if a query     */
+    bool        queryApps = false;       /* Set to true if a query     */
     /* operation                  */
     bool        terminate = true;        /* perform WinTerminate call  */
-    size_t      buffersize;              /* return buffer size         */
 
-    RXSTEMDATA  ldp(context);            // used to manipulate the stem variable for return values.
+    StemHandler stem(context);           // used to manipulate the stem variable for return values.
 
 
     // the ini file is optional and defaults to WIN.INI
@@ -1548,7 +1160,7 @@ RexxRoutine4(RexxStringObject, SysIni, OPTIONAL_CSTRING, IniFile, CSTRING, App, 
     // all is a special app name, this wants everything
     if (_stricmp(app, "ALL:") == 0)
     {
-        RXSTEMDATA  stemVariable(context);            // used to manipulate the stem variable for return values.
+        StemHandler stemVariable(context);            // used to manipulate the stem variable for return values.
 
         // the third arg is required and is the stem variable name.
         // the 4th argument cannot be specified
@@ -1559,7 +1171,7 @@ RexxRoutine4(RexxStringObject, SysIni, OPTIONAL_CSTRING, IniFile, CSTRING, App, 
         }
 
         // try to get the stem variable, raise an error if invalid
-        if (!ldp.setStem(key))
+        if (!setStemVariable.setStem(key))
         {
             context->InvalidRoutine();
             return 0;
@@ -1591,8 +1203,7 @@ RexxRoutine4(RexxStringObject, SysIni, OPTIONAL_CSTRING, IniFile, CSTRING, App, 
     // the val argument must be a stem variable name.
     if (!_stricmp(key, "ALL:"))
     {
-        RXSTEMDATA  stemVariable(context);            // used to manipulate the stem variable for return values.
-
+        StemHandler stemVariable(context);            // used to manipulate the stem variable for return values.
         // we need a stem variable name
         if (argumentOmitted(4) || !stemVariable.setStem(val))
         {
@@ -1701,9 +1312,11 @@ RexxRoutine4(RexxStringObject, SysIni, OPTIONAL_CSTRING, IniFile, CSTRING, App, 
 
 RexxRoutine1(int, SysMkDir, CSTRING, dir)
 {
+    RoutineQualifiedName directory(context, dir);
+
     // this could easily made a common function but the Linux version
     // takes an extra argument.
-    return CreateDirectory(dir, NULL) != 0 ? 0 : GetLastError();
+    return CreateDirectory(directory, NULL) != 0 ? 0 : GetLastError();
 }
 
 
@@ -1803,7 +1416,7 @@ RexxRoutine0(RexxStringObject, SysWinVer)
     // this should be there, but use the likely default if it isn't.
     if (windowsDirLength == 0)
     {
-        strcpy("C:\\Windows", windowsDir);
+        strncpy(windowsDir, "C:\\Windows", sizeof(windowsDir));
     }
 
     // get the full path name of the kernel32.dll
@@ -1854,43 +1467,6 @@ RexxRoutine0(RexxStringObject, SysWinVer)
 
     // just return a NULL if not able to get this
     return context->NullString();
-}
-
-/*************************************************************************
-* Function:  SysTempFileName                                             *
-*                                                                        *
-* Syntax:    call SysTempFileName template [,filler]                     *
-*                                                                        *
-* Params:    template - Description of filespec desired.  For example:   *
-*                        C:\TEMP\FILE.???                                *
-*            filler   - A character which when found in template will be *
-*                        replaced with random digits until a unique file *
-*                        or directory is found.  The default character   *
-*                        is '?'.                                         *
-*                                                                        *
-* Return:    other - Unique file/directory name.                         *
-*            ''    - No more files exist given specified template.       *
-*************************************************************************/
-
-RexxRoutine2(RexxStringObject, SysTempFileName, CSTRING, template, OPTIONAL_CSTRING, fillerOpt)
-{
-    CHAR   filler = '?';                     /* filler character           */
-
-    if (fillerOpt != NULL)
-    {
-        if (strlen(fillerOpt) != 1)
-        {
-            context->InvalidRoutine();
-            return NULLOBJECT;
-        }
-        filler = fillerOpt[0];
-    }
-
-    char retstr[PATH_MAX];
-    /* get the file id            */
-    GetUniqueFileName(const_cast<char *>(template), filler, retstr);
-
-    return context->NewStringFromAsciiz(retstr);
 }
 
 
@@ -2066,17 +1642,17 @@ RexxRoutine5(RexxStringObject, SysTextScreenSize,
     if (option == BUFFERSIZE && setArgs == 0)
     {
         // this is a BUFFERSIZE GET, returns two values
-        sprintf(buffer, "%d %d", csbi.dwSize.Y, csbi.dwSize.X);
+        snprintf(buffer, sizeof(buffer), "%d %d", csbi.dwSize.Y, csbi.dwSize.X);
     }
     else if (option == WINDOWRECT && setArgs == 0)
     {
         // this is a WINDOWRECT GET, returns four values
-        sprintf(buffer, "%d %d %d %d", csbi.srWindow.Top, csbi.srWindow.Left, csbi.srWindow.Bottom, csbi.srWindow.Right);
+        snprintf(buffer, sizeof(buffer), "%d %d %d %d", csbi.srWindow.Top, csbi.srWindow.Left, csbi.srWindow.Bottom, csbi.srWindow.Right);
     }
     else if (option == MAXWINDOWSIZE && setArgs == 0)
     {
         // this is a MAXWINDOWSIZE GET, returns two values
-        sprintf(buffer, "%d %d", csbi.dwMaximumWindowSize.Y, csbi.dwMaximumWindowSize.X);
+        snprintf(buffer, sizeof(buffer), "%d %d", csbi.dwMaximumWindowSize.Y, csbi.dwMaximumWindowSize.X);
     }
     else if (option == BUFFERSIZE && setArgs == 2)
     {
@@ -2085,7 +1661,7 @@ RexxRoutine5(RexxStringObject, SysTextScreenSize,
         consoleBuffer.Y = (SHORT)rows;
         consoleBuffer.X = (SHORT)columns;
         BOOL code = SetConsoleScreenBufferSize(hStdout, consoleBuffer);
-        sprintf(buffer, "%d", code == 0 ? GetLastError() : 0);
+        snprintf(buffer, sizeof(buffer), "%d", code == 0 ? GetLastError() : 0);
     }
     else if (option == WINDOWRECT  && setArgs == 4)
     {
@@ -2096,7 +1672,7 @@ RexxRoutine5(RexxStringObject, SysTextScreenSize,
         consoleWindow.Bottom = (SHORT)rows2;
         consoleWindow.Right =  (SHORT)columns2;
         BOOL code = SetConsoleWindowInfo(hStdout, 1, &consoleWindow);
-        sprintf(buffer, "%d", code == 0 ? GetLastError() : 0);
+        snprintf(buffer, sizeof(buffer), "%d", code == 0 ? GetLastError() : 0);
     }
     else
     {
@@ -2107,6 +1683,8 @@ RexxRoutine5(RexxStringObject, SysTextScreenSize,
     // return the buffer as result
     return context->NewStringFromAsciiz(buffer);
 }
+
+#define MAX_CREATEPROCESS_CMDLINE (32 * 1024)
 
 /*************************************************************************
 * Function:  RxWinExec                                                   *
@@ -2221,14 +1799,14 @@ RexxRoutine2(uint32_t, RxWinExec, CSTRING, command, OPTIONAL_CSTRING, show)
 *                                                                        *
 * Return:    'A: B: C: D: ...'                                           *
 *************************************************************************/
-
 RexxRoutine0(RexxStringObject, SysBootDrive)
 {
     char retstr[PATH_MAX];
 
     if (GetSystemDirectory(retstr, sizeof(retstr)) > 0)
     {
-        return context->NewString(retstr, 1);
+        // the drive is the first two characters of the system directory
+        return context->NewString(retstr, 2);
     }
     else
     {
@@ -2278,43 +1856,42 @@ RexxRoutine0(RexxStringObject, SysSystemDirectory)
 RexxRoutine1(RexxStringObject, SysFileSystemType, OPTIONAL_CSTRING, drive)
 {
     CHAR chDriveLetter[4];
-    UINT errorMode;
 
     if (drive != NULL)
     {
         size_t driveLen = strlen(drive);
 
-        if (driveLen == 0 || driveLen > 2 || driveLen == 2 && drive[1] != ':') )
-{
-    context->InvalidRoutine();
-    return NULLOBJECT;
-}
-snprintf(chDriveLetter, sizeof(chDriveLetter), "%c:\\", drive[0]);
-drive = chDriveLetter;
-}
+        if (driveLen == 0 || driveLen > 2 || (driveLen == 2 && drive[1] != ':'))
+        {
+            context->InvalidRoutine();
+            return NULLOBJECT;
+        }
+        snprintf(chDriveLetter, sizeof(chDriveLetter), "%c:\\", drive[0]);
+        drive = chDriveLetter;
+    }
 
-errorMode = SetErrorMode(SEM_FAILCRITICALERRORS);
 
-char fileSystemName[PATH_MAX];
+    AutoErrorMode errorMode(SEM_FAILCRITICALERRORS);
 
-RexxStringObject result = context->NullString();
+    char fileSystemName[PATH_MAX];
 
-if (GetVolumeInformation(
-        drive,    // address of root directory of the file system
-        NULL,    // address of name of the volume
-        0,    // length of lpVolumeNameBuffer
-        NULL,    // address of volume serial number
-        NULL,    // address of system's maximum filename length
-        NULL,    // address of file system flags
-        fileSystemName,    // address of name of file system
-        sizeof(FileSystemName)     // length of lpFileSystemNameBuffer
-        ))
-{
-    result = context->NewStringFromAsciiz(fileSystemName);
-}
+    RexxStringObject result = context->NullString();
 
-SetErrorMode(errorMode);
-return result;
+    if (GetVolumeInformation(
+            drive,    // address of root directory of the file system
+            NULL,    // address of name of the volume
+            0,    // length of lpVolumeNameBuffer
+            NULL,    // address of volume serial number
+            NULL,    // address of system's maximum filename length
+            NULL,    // address of file system flags
+            fileSystemName,    // address of name of file system
+            sizeof(fileSystemName)     // length of lpFileSystemNameBuffer
+            ))
+    {
+        result = context->NewStringFromAsciiz(fileSystemName);
+    }
+
+    return result;
 }
 
 
@@ -2859,7 +2436,7 @@ RexxRoutine1(RexxObjectPtr, SysQueryProcess, OPTIONAL_CSTRING, option)
 
             char buffer[256];
 
-            wsprintf(buffer, "Create: %4.4d/%2.2d/%2.2d %d:%2.2d:%2.2d:%3.3d  "\
+            snprintf(buffer, sizeof(buffer), "Create: %4.4d/%2.2d/%2.2d %d:%2.2d:%2.2d:%3.3d  "\
                          "Kernel: %d:%2.2d:%2.2d:%3.3d  User: %d:%2.2d:%2.2d:%3.3d",
                      createST.wYear, createST.wMonth, createST.wDay, createST.wHour, createST.wMinute,
                      createST.wSecond, createST.wMilliseconds,
@@ -3193,7 +2770,7 @@ RexxRoutine2(RexxObjectPtr, SysGetFileDateTime, CSTRING, name, OPTIONAL_CSTRING,
         if (fOk)
         {
             char buffer[256];
-            sprintf(buffer, "%4d-%02d-%02d %02d:%02d:%02d",
+            snprintf(buffer, sizeof(buffer), "%4d-%02d-%02d %02d:%02d:%02d",
                     sLocalSysTime.wYear,
                     sLocalSysTime.wMonth,
                     sLocalSysTime.wDay,
@@ -3207,22 +2784,6 @@ RexxRoutine2(RexxObjectPtr, SysGetFileDateTime, CSTRING, name, OPTIONAL_CSTRING,
 
 }
 
-
-/*************************************************************************
-* Function:  SysUtilVersion                                              *
-*                                                                        *
-* Syntax:    Say SysUtilVersion                                          *
-*                                                                        *
-* Return:    REXXUTIL.DLL Version                                        *
-*************************************************************************/
-
-RexxRoutine0(RexxStringObject, SysUtilVersion)
-{
-    char buffer[256];
-    /* format into the buffer     */
-    sprintf(buffer, "%d.%d.%d", ORX_VER, ORX_REL, ORX_MOD);
-    return context->String(buffer);
-}
 
 /**
  * Check if the dwFlags arguement to WideCharToMultiByte() can be used by the
@@ -3418,7 +2979,7 @@ RexxRoutine5(int, SysFromUniCode, RexxStringObject, sourceString, OPTIONAL_CSTRI
 
         if (StrStrI(mappingFlags, "ERR_INVALID") != NULL)
         {
-            if (codePage == CP_UTF8 && isAtLeastVista())
+            if (codePage == CP_UTF8)
             {
                 dwFlags |= WC_ERR_INVALID_CHARS;
             }
@@ -3722,7 +3283,7 @@ RexxRoutine1(uint32_t, SysWinGetPrinters, RexxStemObject, stem)
     while (entries--)
     {
         char  szBuffer[256];
-        sprintf(szBuffer, "%s,%s,%s", pResult[entries].pPrinterName, pResult[entries].pDriverName,
+        snprintf(szBuffer, sizeof(szBuffer), "%s,%s,%s", pResult[entries].pPrinterName, pResult[entries].pDriverName,
                 pResult[entries].pPortName);
         context->SetStemArrayElement(stem, entries + 1, context->String(szBuffer));
     }

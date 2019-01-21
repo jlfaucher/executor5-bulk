@@ -307,6 +307,85 @@ class LineReader
 
 
 /**
+ * Generate a unique file name based off of a template.
+ */
+void getUniqueFileName(const char *template, char filler, FileNameBuffer &file)
+{
+    int j = 0;
+    int max = 1;
+
+    for(int x = 0;
+        template[x] != 0;
+        x++)
+
+    if(template[x] == filler)
+    {
+        max = max * 10;
+        j++;
+    }
+
+    // Return NULL string if less than 1 or greater than 4
+    if (j == 0 || j > 5)
+    {
+        file = "";
+        return;
+    }
+
+    char numstr[6];
+    // generate a random starting point
+    srand(time(NULL));
+    size_t num = rand();
+    num = num % max;
+
+    // create a working copy of the template that we can alter
+    AutoFree buffer = (char *)strdup(template);
+    // remember our starthing number in case we loop around
+    size_t start = num;
+
+    // loop until we find a unique name
+    while (true)
+    {
+        char numstr[6];
+        // get the random number as a set of 5 character digits
+        snprintf(numstr, sizeof(numstr), %05u, num);
+
+        // copy the template over to our return buffer
+        file = template;
+        // now substitute our generated characters for the filler characters
+        int i = j;
+
+        for (int x = 0; file[x] != 0; x++)
+        {
+            // if we have a filler, fill it in
+            if (template[x] == filler)
+            {
+                buffer[x] = numstr[--i];
+            }
+        }
+
+        // get this as a fully qualified name
+        SysFileSystem::qualifiyName(buffer, file);
+
+        // if there's no matching file, we're finished.
+        if (!SysFileSystem::fileExists(file))
+        {
+            return;
+        }
+
+        // generate a new number for filling in the name
+        num = (num + 1)% max;
+
+        // if we've wrapped around to where we started, time to give up
+        if (num == start)
+        {
+            file = "";
+            return;
+        }
+    }
+}
+
+
+/**
  * SysFileTree() implementation.  Searches for files in a directory tree
  * matching the specified search pattern.
  *
@@ -378,6 +457,7 @@ RexxRoutine5(uint32_t, SysFileTree, CSTRING, fSpec, RexxStemObject, files, OPTIO
     }
     return 0;
 }
+
 
 // this next section are platform-independent methods for the TreeFinder class.
 // platform-specific methods are located in the appropriate SysRexxUtil.cpp file.
@@ -1603,7 +1683,7 @@ RexxRoutine1(int, SysDumpVariables, OPTIONAL_CSTRING, fileName)
 
     if (fileName != NULL)
     {
-        QualifiedName qualifiedName(fileName);
+        RoutineQualifiedName qualifiedName(context, fileName);
 
         if (!outfile.open(qualifiedName, RX_O_WRONLY | RX_O_APPEND | RX_O_CREAT, RX_S_IWUSR | RX_S_IRUSR | RX_S_IWGRP | RX_S_IRGRP | RX_S_IWOTH | RX_S_IROTH))
         {
@@ -1689,7 +1769,7 @@ RexxRoutine1(int, SysDumpVariables, OPTIONAL_CSTRING, fileName)
  */
 RexxRoutine1(logical_t, SysFileExists, CSTRING, name)
 {
-    QualifiedName qualifiedName(name);
+    RoutineQualifiedName qualifiedName(context, name);
 
     return SysFileSystem::exists(qualifiedName);
 }
@@ -1706,7 +1786,7 @@ RexxRoutine1(logical_t, SysFileExists, CSTRING, name)
 
 RexxRoutine1(logical_t, SysIsFileLink, CSTRING, file)
 {
-    QualifiedName qualifiedName(file);
+    RoutineQualifiedName qualifiedName(context, file);
 
     return SysFileSystem::isLink(qualifiedName);
 }
@@ -1723,9 +1803,9 @@ RexxRoutine1(logical_t, SysIsFileLink, CSTRING, file)
 *************************************************************************/
 RexxRoutine1(logical_t, SysIsFile, CSTRING, file)
 {
-    QualifiedName qualifiedName(file);
+    RoutineQualifiedName qualifiedName(context, file);
 
-    return SysFileSystem::isFile(QualifiedName);
+    return SysFileSystem::isFile(qualifiedName);
 }
 
 /*************************************************************************
@@ -1740,7 +1820,7 @@ RexxRoutine1(logical_t, SysIsFile, CSTRING, file)
 
 RexxRoutine1(logical_t, SysIsFileDirectory, CSTRING, file)
 {
-    QualifiedName qualifiedName(file);
+    RoutineQualifiedName qualifiedName(context, file);
 
     return SysFileSystem::isDirectory(file);
 }
@@ -1758,7 +1838,7 @@ RexxRoutine1(logical_t, SysIsFileDirectory, CSTRING, file)
 *************************************************************************/
 RexxRoutine1(int, SysRmDir, CSTRING, path)
 {
-    QualifiedName qualifiedName(path);
+    RoutineQualifiedName qualifiedName(context, path);
 
     return SysFileSystem::deleteDirectory(qualifiedName);
 }
@@ -1775,7 +1855,7 @@ RexxRoutine1(int, SysRmDir, CSTRING, path)
 
 RexxRoutine1(int, SysFileDelete, CSTRING, path)
 {
-    QualifiedName qualifiedName(path);
+    RoutineQualifiedName qualifiedName(context, path);
 
     return SysFileSystem::deleteFile(qualifiedName);
 }
@@ -1811,7 +1891,7 @@ RexxRoutine4(CSTRING, SysFileSearch, CSTRING, needle, CSTRING, file, RexxStemObj
     }
 
     LineReader fileSource;
-    QualifiedName qualifiedName(file);
+    RoutineQualifiedName qualifiedName(context, file);
 
     // if we can't open, return the error indicator
     if (!fileSource.open(qualifiedName))
@@ -2060,6 +2140,42 @@ RexxRoutine2(int, SysFileMove, CSTRING, from, CSTRING, to)
 }
 
 
+/*************************************************************************
+* Function:  SysTempFileName                                             *
+*                                                                        *
+* Syntax:    call SysTempFileName template [,filler]                     *
+*                                                                        *
+* Params:    template - Description of filespec desired.  For example:   *
+*                        C:\TEMP\FILE.???                                *
+*            filler   - A character which when found in template will be *
+*                        replaced with random digits until a unique file *
+*                        or directory is found.  The default character   *
+*                        is '?'.                                         *
+*                                                                        *
+* Return:    other - Unique file/directory name.                         *
+*            ''    - No more files exist given specified template.       *
+*************************************************************************/
+RexxRoutine2(RexxStringObject, SysTempFileName, CSTRING, template, OPTIONAL_CSTRING, fillerOpt)
+{
+    char filler = '?';
+
+    if (fillerOpt != NULL)
+    {
+        if (strlen(fillerOpt) != 1)
+        {
+            context->InvalidRoutine();
+            return NULLOBJECT;
+        }
+        filler = fillerOpt[0];
+    }
+
+    RoutineFileNameBuffer fileName;
+    getUniqueFileName(template, filler, fileName);
+
+    return context->NewStringFromAsciiz(fileName);
+}
+
+
 #define INTERNAL_ROUTINE(name, entry) REXX_TYPED_ROUTINE_PROTOTYPE(entry)
 
 #include "SysRexxutilFunctions.h"          // generate prototypes for the system functions.
@@ -2072,6 +2188,8 @@ RexxRoutine2(int, SysFileMove, CSTRING, from, CSTRING, to)
 // now build the actual entry list
 RexxRoutineEntry rexxutil_routines[] =
 {
+    REXX_TYPED_ROUTINE(SysFileTree,            SysFileTree),
+    REXX_TYPED_ROUTINE(SysUtilVersion,         SysUtilVersion),
     REXX_TYPED_ROUTINE(SysAddRexxMacro,        SysAddRexxMacro),
     REXX_TYPED_ROUTINE(SysDropRexxMacro,       SysDropRexxMacro),
     REXX_TYPED_ROUTINE(SysReorderRexxMacro,    SysReorderRexxMacro),
@@ -2089,7 +2207,18 @@ RexxRoutineEntry rexxutil_routines[] =
     REXX_TYPED_ROUTINE(SysUtilVersion,         SysUtilVersion),
     REXX_TYPED_ROUTINE(SysFileExists,          SysFileExists),
     REXX_TYPED_ROUTINE(SysFileIsLink,          SysFileIsLink),
-#include "SysRexxutilFunctions.hpp"
+    REXX_TYPED_ROUTINE(SysIsFile,              SysIsFile),
+    REXX_TYPED_ROUTINE(SysIsFileDirectory,     SysIsFileDirectory),
+    REXX_TYPED_ROUTINE(SysRmDir,               SysRmDir),
+    REXX_TYPED_ROUTINE(SysFileDelete,          SysFileDelete),
+    REXX_TYPED_ROUTINE(SysFileSearch,          SysFileSearch),
+    REXX_TYPED_ROUTINE(SysSearchPath,          SysSearchPath),
+    REXX_TYPED_ROUTINE(SysSleep,               SysSleep),
+    REXX_TYPED_ROUTINE(SysDirectory,           SysDirectory),
+    REXX_TYPED_ROUTINE(SysFileMove,            SysFileMove),
+    REXX_TYPED_ROUTINE(SysFileCopy,            SysFileCopy),
+    REXX_TYPED_ROUTINE(SysTempFileName,        SysTempFileName),
+#include "SysRexxutilFunctions.h"
     REXX_LAST_ROUTINE()
 };
 
