@@ -102,17 +102,3 @@ void FileNameBuffer::handleMemoryError()
 {
     reportException(Error_System_resources);
 }
-
-
-/**
- * Allocates a FileNameBuffer instance of the same class as the
- * the target object. Since error handling depends on context, routines
- * sometimes need to create a new FileNameBuffer object with the
- * same type as one passed to the routine.
- *
- * @return A FileNameBuffer object of the same type, initialized with appropriate defaults.
- */
-FileNameBuffer *FileNameBuffer::allocateNewBuffer()
-{
-    return new FileNameBuffer();
-}

@@ -62,7 +62,6 @@ class FileNameBuffer
      }
 
      virtual void handleMemoryError();
-     virtual FileNameBuffer* allocateNewBuffer();
 
      size_t capacity() { return bufferSize; }
      size_t length() { return strlen(buffer); }
@@ -97,6 +96,16 @@ class FileNameBuffer
          }
      }
 
+     inline void truncate(size_t l)
+     {
+         // longer than the length? This is a nop
+         if (l > length())
+         {
+             // add the null terminator at the new position
+             buffer[l] = '\0';
+         }
+     }
+
      inline FileNameBuffer &operator=(const char *s)
      {
          ensureCapacity(strlen(s));
@@ -125,6 +134,25 @@ class FileNameBuffer
          return *this;
      }
 
+
+     inline FileNameBuffer &operator+=(char c)
+     {
+         size_t currentLen = length();
+         ensureCapacity(currentLen + 1);
+
+         buffer[currentLen] = c;
+         buffer[currentLen + 1] = '\0';
+         return *this;
+     }
+
+
+     inline FileNameBuffer &operator+=(FileNameBuffer &s)
+     {
+         return *this += (const char *)s;
+     }
+
+
+
      inline FileNameBuffer& set(const char *s, size_t l)
      {
          ensureCapacity(l);
@@ -147,6 +175,39 @@ class FileNameBuffer
          ensureCapacity(pos + 1);
          return *(buffer + pos);
      }
+
+     inline bool startsWith(char c)
+     {
+         return buffer[0] == c;
+     }
+
+     inline bool endsWith(char c)
+     {
+         return length() > 0 && buffer[length() - 1] == c;
+     }
+
+     inline bool endsWith(const char *s)
+     {
+         size_t slen = strlen(s);
+         size_t len = length();
+         if (slen > len)
+         {
+             return false;
+         }
+
+         return strcmp(buffer + (len - slen), s) == 0;
+     }
+
+     inline void addFinalPathDelimiter()
+     {
+         if (!endsWith(SysFileSystem::PathDelimiter))
+         {
+             *this += SysFileSystem::PathDelimiter;
+         }
+     }
+
+
+
 
  protected:
      char *buffer;                 // the current buffer
@@ -184,79 +245,32 @@ class QualifiedName
 
 
 /**
- * A simple implemenation of a smart pointer to prevent memory
- * leaks with dynamically allocated FileNameBuffer objects
+ * A version of a FileNameBuffer that uses a parent FileNameBuffer for handling
+ * allocation error.
  */
-class AutoFileNameBuffer
+class AutoFileNameBuffer : public FileNameBuffer
 {
  public:
-     AutoFileNameBuffer(FileNameBuffer &b)
-     {
-         // get a buffer of the same type as the input one
-         buffer = b.allocateNewBuffer();
-     };
+     AutoFileNameBuffer(FileNameBuffer &b) : parent(b), FileNameBuffer() { }
 
-     ~AutoFileNameBuffer()
+     // for some reason, the compiler is not recognizing the super-class operators, so
+     // we reimplement them here using the class name.
+     inline AutoFileNameBuffer &operator=(const char *s)
      {
-         delete buffer;
+         FileNameBuffer::operator=(s);
+         return *this;
      }
 
-     // . method access. Note that . cannot be overridden,
-     // but we can override ->, so method access will need be
-     // done using pointer notation.
-     inline FileNameBuffer &operator->()
+     inline AutoFileNameBuffer &operator=(char *s)
      {
-         return *buffer;
-     }
-
-     // cast conversion operators
-     inline operator FileNameBuffer &()
-     {
-         return *buffer;
+         FileNameBuffer::operator=(s);
+         return *this;
      }
 
 
-     // cast conversion operators
-     inline operator char *()
-     {
-         return (char *)buffer;
-     }
-
-     // cast conversion operators
-     inline operator const char *()
-     {
-         return (const char *)buffer;
-     }
-
-     inline FileNameBuffer &operator=(const char *s)
-     {
-         return *buffer = s;
-     }
-
-     inline FileNameBuffer &operator=(char *s)
-     {
-         return *buffer = s;
-     }
-
-     inline FileNameBuffer &operator+=(const char *s)
-     {
-         return *buffer += s;
-     }
-
-     inline FileNameBuffer &operator+=(char *s)
-     {
-         return *buffer += s;
-     }
-
-     // this is a mutable request, so we need to ensure the position is within the
-     // current buffer size
-     inline char & operator [](size_t pos)
-     {
-         return buffer->operator[](pos);
-     }
-
+     void handleMemoryError() override { parent.handleMemoryError(); };
 
  private:
-     FileNameBuffer *buffer;
+     FileNameBuffer &parent;
 };
 #endif

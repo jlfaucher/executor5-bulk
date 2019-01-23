@@ -78,11 +78,16 @@ public:
         if (p != NULL)
         {
             path += p;
-            if (p[strlen(p) - 1] != ':')
-            {
-                path += ":";
-            }
+            checkPathSeparator();
         }
+    }
+
+    inline void checkPathSeparator()
+    {
+         if (!path.endsWith(';'))
+         {
+             path += ";";
+         }
     }
 
     FileNameBuffer path;        // the constructed path

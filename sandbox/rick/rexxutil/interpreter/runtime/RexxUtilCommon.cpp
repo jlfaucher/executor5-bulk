@@ -898,7 +898,7 @@ void TreeFinder::recursiveFindFile(FileNameBuffer &path)
 
 
 // add a result to the return stem
-void addResult(const char *v)
+void TreeFinder::addResult(const char *v)
 {
     RexxStringObject t = context->String(v);
 

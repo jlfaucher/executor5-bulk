@@ -983,20 +983,6 @@ bool SysFileSystem::makeDirectory(const char *name)
 
 
 /**
- * Move (rename) a file.
- *
- * @param oldName The name of an existing file.
- * @param newName The new file name.
- *
- * @return A success/failure flag.
- */
-bool SysFileSystem::moveFile(const char *oldName, const char *newName)
-{
-    return rename(oldName, newName) == 0;
-}
-
-
-/**
  * Test if a given file or directory is hidden.
  *
  * @param name   The target name.

@@ -288,7 +288,7 @@ RexxMethod1(logical_t, file_make_dir, CSTRING, name)
  */
 RexxMethod2(logical_t, file_rename, CSTRING, fromName, CSTRING, toName)
 {
-    return SysFileSystem::moveFile(fromName, toName);
+    return SysFileSystem::moveFile(fromName, toName) == 0;
 }
 
 

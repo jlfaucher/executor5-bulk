@@ -195,7 +195,7 @@ SysSearchPath::SysSearchPath(const char *parentDir, const char *extensionPath)
     size_t extensionSize = extensionPath == NULL ? 0 : strlen(extensionPath);
 
     // enough room for separators and a terminating null
-    path.ensureSpace(pathSize + rexxPathSize + parentSize + extensionSize + 16);
+    path.ensureCapacity(pathSize + rexxPathSize + parentSize + extensionSize + 16);
 
     // parent directory
     addPath(parentDir);
@@ -206,7 +206,7 @@ SysSearchPath::SysSearchPath(const char *parentDir, const char *extensionPath)
 
     // add on the Rexx path, then the normal path
     GetEnvironmentVariable("REXX_PATH", (char *)path + path.length(), (DWORD)rexxPathSize + 1);
-    if (path[path.length() - 1] != ';')
+    if (!path.endsWith(';'))
     {
         path += ";";
     }

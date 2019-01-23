@@ -40,8 +40,8 @@
 #define Included_RexxUtilCommon
 
 #include "SysFileSystem.hpp"
-#include "FileNameBuffer.hpp"
-
+#include "ExternalFileBuffer.hpp"
+#include "FlagSet.hpp"
 
 /*********************************************************************/
 /* Numeric Error Return Strings                                      */
@@ -60,6 +60,12 @@
 /****************  REXXUTIL Supporting Functions  ********************/
 /****************  REXXUTIL Supporting Functions  ********************/
 /*********************************************************************/
+
+const char* mystrstr(const char *haystack, const char *needle, size_t hlen, size_t nlen, bool sensitive);
+const char* mystrstr(const char *haystack, const char *needle, bool sensitive = true)
+{
+    return mystrstr(haystack, needle, strlen(haystack), strlen(needle), sensitive);
+}
 
 void inline outOfMemoryException(RexxCallContext *c)
 {
@@ -80,6 +86,77 @@ void inline nullStringException(RexxCallContext *c, const char *fName, size_t po
     c->ThrowException2(Rexx_Error_Incorrect_call_null, c->String(fName), c->StringSize(pos));
 }
 
+/**
+ * Simple class for managing returning results as a stem object.
+ */
+class StemHandler
+{
+ public:
+     StemHandler(RexxCallContext *c, RexxStemObject s = NULLOBJECT) : context(c), stem(s), arrayCount(0) { }
+     ~StemHandler()
+     {
+         complete();
+     }
+
+     void complete()
+     {
+         if (stem != NULLOBJECT)
+         {
+             context->SetStemArrayElement(stem, 0, context->StringSizeToObject(arrayCount));
+             stem = NULLOBJECT;
+         }
+     }
+
+     void setStem(const char *stemName)
+     {
+         // this is a required value...throw an error if not given
+         if (stem == NULL)
+         {
+             context->ThrowException0(Rexx_Error_Incorrect_call);
+         }
+
+         char buffer[256];
+         strncpy(buffer, stemName, sizeof(buffer));
+         if (buffer[strlen(buffer) - 1] != '.')
+         {
+             strncat(buffer, ".", sizeof(buffer));
+         }
+         // retrieve the stem object by name from the context
+         stem = (RexxStemObject)context->GetContextVariable(buffer);
+
+         if (stem == NULLOBJECT)
+         {
+             // TODO: flesh this out
+             context->ThrowException0(Rexx_Error_Incorrect_call);
+         }
+     }
+
+     void addList(const char *values)
+     {
+         // values is a list of null terminated string, terminated with a double null
+         while (*values != '\0')
+         {
+             addValue(values);
+             size_t valueLen = strlen(values);
+             values += strlen(values) + 1;
+         }
+     }
+
+     void addValue(const char *value)
+     {
+         size_t valueLen = strlen(value);
+         RexxStringObject s = context->NewString(value, valueLen);
+         context->SetStemArrayElement(stem, ++arrayCount, s);
+         context->ReleaseLocalReference(s);
+     }
+
+ protected:
+     RexxCallContext *context; // the call context
+     RexxStemObject stem;      // the stem we're managing
+     size_t arrayCount;        // the current arrayCount
+};
+
+
 /*
  *  Class to perform SysFileTree functions
  *
@@ -87,6 +164,7 @@ void inline nullStringException(RexxCallContext *c, const char *fName, size_t po
  */
 class TreeFinder
 {
+ public:
      typedef enum
      {
          RECURSE,        // recursive search
@@ -124,9 +202,9 @@ class TreeFinder
               mask[Control] = IgnoreAll;
               int y = 0;
 
-              while (*maskArg)
+              while (*maskArg != '\0')
               {
-                  select(*maskArg)
+                  switch(*maskArg)
                   {
                       case '+':
                   {
@@ -160,7 +238,7 @@ class TreeFinder
           bool isOff(AttributeType maskSetting) { return mask[maskSetting] == AttributeOff; }
           bool isIgnored(AttributeType maskSetting) { return mask[maskSetting] == AttributeIgnore; }
           void set(AttributeType maskSetting, bool on)  { mask[maskSetting] = on ? AttributeOn : AttributeOff; }
-          char mask(AttributeType maskSetting) { return mask[maskSetting] == AttributeOn ? maskChars[maskSetting] : '-'; }
+          char maskMarker(AttributeType maskSetting) { return mask[maskSetting] == AttributeOn ? maskChars[maskSetting] : '-'; }
           bool isSelected(AttributeType maskSetting, bool value) { return value ? !isOff(maskSetting) : !isOn(maskSetting); }
           bool acceptAll() { return mask[Control] == IgnoreAll; }
 
@@ -192,14 +270,28 @@ class TreeFinder
      void expandNonPath2fullPath();
      void expandPath2fullPath(size_t lastSlashPos);
      void adjustFileSpec();
+     void checkFile(const char *fileName);
      void recursiveFindFile(FileNameBuffer &path);
+     void addResult(const char *v);
+     int findDirectoryEnd();
+     bool checkNonPathDrive();
+     void fixupFilePath();
 
+     bool includeDirs() { return options[DO_DIRS]; }
+     bool includeFiles() { return options[DO_FILES]; }
+     bool acceptAll() { return targetAttributes.acceptAll(); }
+     bool nameOnly() { return options[NAME_ONLY]; }
+     bool longTime() { return options[LONG_TIME]; }
+     bool editableTime() { return options[EDITABLE_TIME]; }
+     bool longSize() { return options[LONG_SIZE]; }
 
+     bool archiveSelected(bool onOff) { return targetAttributes.isSelected(AttributeMask::Archive, onOff); }
+     bool directorySelected(bool onOff) { return targetAttributes.isSelected(AttributeMask::Directory, onOff); }
+     bool hiddenSelected(bool onOff) { return targetAttributes.isSelected(AttributeMask::Hidden, onOff); }
+     bool readOnlySelected(bool onOff) { return targetAttributes.isSelected(AttributeMask::ReadOnly, onOff); }
+     bool systemSelected(bool onOff) { return targetAttributes.isSelected(AttributeMask::System, onOff); }
 
-     bool nameOnly() { return (options & NAME_ONLY) != 0; }
-     bool longTime() { return (options & LONG_TIME) != 0; }
-     bool editableTime() { return (options & EDITABLE_TIME) != 0; }
-     bool longSize() { return (options & LONG_SIZE) != 0; }
+ protected:
 
      RexxCallContext *context;                     // the initial call context
      size_t         count;                         // Number of found file lines

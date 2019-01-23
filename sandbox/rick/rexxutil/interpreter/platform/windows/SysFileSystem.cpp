@@ -536,7 +536,7 @@ bool SysFileSystem::searchPath(const char *name, const char *path, const char *e
     if (searchOnPath(name, path, extension, resolvedName))
     {
         // if this is a file, return the long name
-        if (isFile())
+        if (isFile(resolvedName))
         {
             getLongName(resolvedName);
             return true;
@@ -554,26 +554,29 @@ bool SysFileSystem::searchPath(const char *name, const char *path, const char *e
  * @param fullName The buffer used for the name.
  * @param size     The size of the buffer.
  */
-void SysFileSystem::getLongName(FileNameBuffer *fullName)
+void SysFileSystem::getLongName(FileNameBuffer &fullName)
 {
-    DWORD length = GetLongPathName(fullName, fullName, fullName.capacity());
-    if (length > fullName.capacity())
+    DWORD length = GetLongPathName(fullName, fullName, (DWORD)fullName.capacity());
+    if (length > (DWORD)fullName.capacity())
     {
         fullName.ensureCapacity(length);
-        length = GetLongPathName(fullName, fullName, fullName.capacity());
+        length = GetLongPathName(fullName, fullName, length);
 
     }
 
+    // if we got a result, then do a search for the file and
+    // truncate this to just the file name.
     if (length != 0)
     {
         WIN32_FIND_DATA findData;
         HANDLE hFind = FindFirstFile(fullName, &findData);
-        if ( hFind != INVALID_HANDLE_VALUE )
+        if (hFind != INVALID_HANDLE_VALUE)
         {
-            char *p = strrchr(fullName, '\\');
+            const char *p = strrchr((const char *)fullName, '\\');
             if (p != NULL)
             {
-                strcpy(++p, findData.cFileName);
+                fullName.truncate((p - fullName) + 1);
+                fullName += findData.cFileName;
             }
             FindClose(hFind);
         }
@@ -788,20 +791,6 @@ bool SysFileSystem::makeDirectory(const char *name)
 
 
 /**
- * Move (rename) a file.
- *
- * @param oldName The name of an existing file.
- * @param newName The new file name.
- *
- * @return A success/failure flag.
- */
-bool SysFileSystem::moveFile(const char *oldName, const char *newName)
-{
-    return MoveFile(oldName, newName) != 0;
-}
-
-
-/**
  * Test if a given file or directory is hidden.
  *
  * @param name   The target name.
@@ -967,7 +956,7 @@ bool SysFileSystem::isCaseSensitive(const char *name)
  */
 int SysFileSystem::getRoots(FileNameBuffer &roots)
 {
-    int length = GetLogicalDriveStrings(boots.capacity(), roots);
+    int length = GetLogicalDriveStrings((DWORD)roots.capacity(), roots);
     // elements are returned in the form "d:\", with a null
     // separator.  Each root thus takes up 4 characters
     return length / 4;
@@ -1018,7 +1007,7 @@ bool SysFileSystem::getCurrentDirectory(FileNameBuffer &directory)
 {
     // Get the current directory.  First check that the path buffer is large
     // enough.
-    uint32_t ret = GetCurrentDirectory(0, 0);
+    uint32_t ret = GetCurrentDirectory(0, NULL);
     if (ret == 0)
     {
         // make a null string and return a failure.
@@ -1028,7 +1017,7 @@ bool SysFileSystem::getCurrentDirectory(FileNameBuffer &directory)
     else
     {
         directory.ensureCapacity(ret);
-        GetCurrentDirectory(directory, directory.capacity());
+        GetCurrentDirectory((DWORD)directory.capacity(), directory);
         return true;
     }
 }
@@ -1043,7 +1032,7 @@ bool SysFileSystem::getCurrentDirectory(FileNameBuffer &directory)
  */
 bool SysFileSystem::setCurrentDirectory(const char *directory)
 {
-    return SetCurrentDirectory(directory);
+    return SetCurrentDirectory(directory) == 0;
 }
 
 
@@ -1148,7 +1137,7 @@ bool SysFileIterator::hasNext()
  *
  * @param buffer The buffer used to return the value.
  */
-void SysFileIterator::next(FileNameBuffer *buffer)
+void SysFileIterator::next(FileNameBuffer &buffer)
 {
     if (completed)
     {
@@ -1157,7 +1146,7 @@ void SysFileIterator::next(FileNameBuffer *buffer)
     else
     {
         // copy our current result over
-        buffer = findFileData.cFileName
+        buffer = findFileData.cFileName;
     }
 
     // now locate the next one

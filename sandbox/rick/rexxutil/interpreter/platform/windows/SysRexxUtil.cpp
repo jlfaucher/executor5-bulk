@@ -125,31 +125,12 @@
 #include <limits.h>
 #include <shlwapi.h>
 #include <versionhelpers.h>
-#include "FlagSet.hpp"
-
-/*********************************************************************/
-/*  Various definitions used by various functions.                   */
-/*********************************************************************/
-
-
-/*********************************************************************/
-/* Structures used throughout REXXUTIL.C                             */
-/*********************************************************************/
+#include "SysFileSystem.hpp"
+#include "RexxUtilCommon.hpp"
+#include "FileNameBuffer.hpp"
+#include "Utilities.hpp"
 
 
-/*********************************************************************/
-/* RxStemData                                                        */
-/*   A class for manipulating repetive stem sets                     */
-/*   stem variable.                                                  */
-/*********************************************************************/
-
-class RxStemData
-{
-     RxStemData(RexxStemObject s) : stem(s), count(0) { }
-
-     RexxStemObject stem;               // the stem to process
-     size_t count;                      // last set value
-}
 
 /*********************************************************************/
 /* Saved character status                                            */
@@ -288,20 +269,6 @@ RexxRoutine1(int, SysCurState, CSTRING, option)
 
 RexxRoutine1(RexxStringObject, SysDriveInfo, CSTRING, drive)
 {
-    CHAR   chFileSysType[MAX_PATH],      /*  File system name          */
-        chVolumeName[MAX_PATH],       /*  volume label              */
-        chDriveLetter[4];             /*  drive_letter + : + \ + \0 */
-    BOOL   bGVIrc;                       /* rc from GVI                */
-
-    /* GetDiskFreeSpace calculations */
-    DWORD  dwSectorsPerCluster, dwBytesPerSector;
-    DWORD  dwFreeClusters, dwClusters;
-    BOOL   bGDFSrc;                      /* GDFS rc                    */
-    UINT   errorMode;
-
-    DWORD dwgle;
-    uint64_t i64FreeBytesToCaller, i64TotalBytes, i64FreeBytes;
-
     size_t driveLength = strlen(drive);
 
     if (driveLength == 0 || driveLength > 2 || (driveLength == 2 && drive[1] != ';'))
@@ -317,39 +284,39 @@ RexxRoutine1(RexxStringObject, SysDriveInfo, CSTRING, drive)
         return NULLOBJECT;
     }
 
-    snprintf(chDriveLetter, sizeof(chDriveLetter), "%c:\\", drive[0]);
+    char driveLetter[8];
+    snprintf(driveLetter, sizeof(driveLetter), "%c:\\", toupper(drive[0]));
 
     AutoErrorMode errorMode(SEM_FAILCRITICALERRORS);
-    /* get the volume name and file system type */
-    bGVIrc = GetVolumeInformation(chDriveLetter,
-                                  chVolumeName,
-                                  (DWORD)MAX_PATH,
-                                  NULL,
-                                  NULL,
-                                  NULL,
-                                  chFileSysType,
-                                  (DWORD)MAX_PATH);
+    char volumeName[MAX_PATH];
+    char fileSystemType[MAX_PATH];
 
-    dwgle = GetLastError();
+    /* get the volume name and file system type */
+    BOOL gotVolume = GetVolumeInformation(driveLetter, volumeName, (DWORD)sizeof(volumeName),
+                                  NULL, NULL, NULL,
+                                  fileSystemType, (DWORD)sizeof(fileSystemType));
+
+    DWORD gviError = GetLastError();
 
     /* use appropriate function */
-    bGDFSrc = GetDiskFreeSpaceEx(chDriveLetter,
-                                 (PULARGE_INTEGER)&i64FreeBytesToCaller,
-                                 (PULARGE_INTEGER)&i64TotalBytes,
-                                 (PULARGE_INTEGER)&i64FreeBytes);
+    uint64_t freeBytesToCaller;
+    uint64_t totalBytes;
+    uint64_t freeBytes;
 
-    dwgle = GetLastError();
+    BOOL gotDiskSpace = GetDiskFreeSpaceEx(driveLetter, (PULARGE_INTEGER)&freeBytesToCaller, (PULARGE_INTEGER)&totalBytes, (PULARGE_INTEGER)&freeBytes);
 
-    if (bGVIrc && bGDFSrc)
+    DWORD gdfsError = GetLastError();
+
+    if (gotVolume && gotDiskSpace)
     {
         char retstr[256];
-        /* use simplified display routine with 64 bit types */
+
         snprintf(retstr, sizeof(retstr),      // drive free total label
                  "%c%c  %-12I64u %-12I64u %-13s",
-                 chDriveLetter[0], chDriveLetter[1],
-                 i64FreeBytes, i64TotalBytes, chVolumeName);
+                 driveLetter[0], driveLetter[1],
+                 freeBytes, totalBytes, volumeName);
         /* create return string       */
-        return context->NewStringFromAsciiz(retstr);
+        return context->String(retstr);
     }
     else
     {
@@ -364,11 +331,7 @@ RexxRoutine1(RexxStringObject, SysDriveInfo, CSTRING, drive)
 
 #define  USED           0
 #define  FREE           1
-#define  CDROM          2
-#define  REMOTE         3
-#define  LOCAL          4
-#define  RAMDISK        5
-#define  REMOVABLE      6
+#define  SPECIFIC       3
 
 
 /*************************************************************************
@@ -386,30 +349,21 @@ RexxRoutine1(RexxStringObject, SysDriveInfo, CSTRING, drive)
 
 RexxRoutine2(RexxStringObject, SysDriveMap, CSTRING, drive, OPTIONAL_CSTRING, mode)
 {
-    char     temp[MAX];                  /* Entire drive map built here*/
+    ULONG selectMode = USED;             // Query mode USED, FREE,
+    ULONG driveType = DRIVE_UNKNOWN;     // checking for a particular type of drive
+    ULONG ordinal = 0;                   // Ordinal of entry in name list required
 
-    char     tmpstr[MAX];                /* Single drive entries built */
-    char     DeviceName[4];              /* Device name or drive letter*/
-    DWORD    DriveMap;                   /* Drive map                  */
-    ULONG    Ordinal;                    /* Ordinal of entry in name   */
-    /* list                       */
-    /* required                   */
-    ULONG    dnum;                       /* Disk num variable          */
-    ULONG    start = 3;                  /* Initial disk num           */
-    ULONG    Mode = USED;                /* Query mode USED, FREE,     */
-    UINT     errorMode;
-
-    Ordinal = (ULONG)0;
-
+    char     temp[MAX_PATH];             // Entire drive map built here
     temp[0] = '\0';
     /* check starting drive letter*/
     size_t driveLength = strlen(drive);
 
-    if (driveLength == 0 || driveLength > 2 || (driveLength == 2 && drive[1] != ';'))
+    if (driveLength == 0 || driveLength > 2 || (driveLength == 2 && drive[1] != ':'))
     {
         context->InvalidRoutine();
         return NULLOBJECT;
     }
+
     // make sure this is in range
     ULONG start = toupper(drive[0]) - 'A' + 1;
     if (start < 1 || start > 26)
@@ -420,34 +374,39 @@ RexxRoutine2(RexxStringObject, SysDriveMap, CSTRING, drive, OPTIONAL_CSTRING, mo
     /* check the mode             */
     if (mode != NULL)
     {
-
         if (!stricmp(mode, "FREE"))
         {
-            Mode = FREE;
+            selectMode = FREE;
         }
         else if (!stricmp(mode, "USED"))
         {
-            Mode = USED;
+            selectMode = USED;
         }
         else if (!stricmp(mode, "RAMDISK"))
         {
-            Mode = RAMDISK;
+            selectMode = SPECIFIC;
+            driveType = DRIVE_RAMDISK;
         }
         else if (!stricmp(mode, "REMOTE"))
         {
-            Mode = REMOTE;
+            selectMode = SPECIFIC;
+            driveType = DRIVE_REMOTE;
         }
+        // local drives are really fixed ones
         else if (!stricmp(mode, "LOCAL"))
         {
-            Mode = LOCAL;
+            selectMode = SPECIFIC;
+            driveType = DRIVE_FIXED;
         }
         else if (!stricmp(mode, "REMOVABLE"))
         {
-            Mode = REMOVABLE;
+            selectMode = SPECIFIC;
+            driveType = DRIVE_REMOVABLE;
         }
-        else if (!stricmp(mod, "CDROM"))
+        else if (!stricmp(mode, "CDROM"))
         {
-            Mode = CDROM;
+            selectMode = SPECIFIC;
+            driveType = DRIVE_CDROM;
         }
         else
         {
@@ -457,78 +416,61 @@ RexxRoutine2(RexxStringObject, SysDriveMap, CSTRING, drive, OPTIONAL_CSTRING, mo
     }
 
     /* perform the query          */
-    DWORD DriveMap = GetLogicalDrives();
-    DriveMap >>= start - 1;                  /* Shift to the first drive   */
-    FileNameBuffer driveMap;             // the map is built here
+    DWORD driveMap = GetLogicalDrives();
+    driveMap >>= start - 1;              // Shift to the first drive
+    FileNameBuffer driveMapBuffer;       // the map is built here
 
-    for (dnum = start; dnum <= 26; dnum++)
+    char driveStr[8];                    // just enough space to format a drive specifier
+
+    for (ULONG dnum = start; dnum <= 26; dnum++)
     {
-        /* Hey, we have a free drive  */
-        if (!(DriveMap & (DWORD)1) && Mode == FREE)
+        // Hey, we have a free drive
+        if (!(driveMap & (DWORD)1))
         {
-            if (Mode == FREE)
+            // is this what we're looking for?
+            if (selectMode == FREE)
             {
-                snprintf(tmpstr, sizeof(tmpstr), "%c: ", dnum + 'A' - 1);
-                driveMap += tempstr;
+                snprintf(driveStr, sizeof(driveStr), "%c: ", dnum + 'A' - 1);
+                driveMapBuffer += driveStr;
             }
         }
         /* Hey, we have a used drive  */
-        else if ((DriveMap & (DWORD)1) && Mode == USED)
+        else if ((driveMap & (DWORD)1))
         {
+            // format in advance in case we need to add this
+            snprintf(driveStr, sizeof(driveStr), "%c: ", dnum + 'A' - 1);
             // if we only want to know the used ones, we have all the
             // information we need
-            if (Mode == USED)
+            if (selectMode == USED)
             {
-                snprintf(tmpstr, sizeof(tmpstr), "%c: ", dnum + 'A' - 1);
-                driveMap += tmpstr;
+                driveMapBuffer += driveStr;
             }
             // need to check specific drive information
             else
-            {      /* Check specific drive info  */
-                snprintf(DeviceName, sizeof(DeviceName), "%c:\\", dnum + 'A' - 1);
+            {
+                char deviceName[8];
+                snprintf(deviceName, sizeof(deviceName), "%c:\\", dnum + 'A' - 1);
 
                 AutoErrorMode errorMode(SEM_FAILCRITICALERRORS);
-                LONG rc = GetDriveType(DeviceName);
-
-                // looking for removable drives_
-                if (rc == DRIVE_REMOVABLE && Mode == REMOVABLE)
+                // if this matches what we're looking for, add it to the list
+                if (driveType == GetDriveType(deviceName))
                 {
-                    snprintf(tmpstr, sizeof(tmpstr), "%c: ", dnum + 'A' - 1);
-                    driveMap += tmpstr;
-                }
-                else if (rc == DRIVE_CDROM && Mode == CDROM)
-                {
-                    snprintf(tmpstr, sizeof(tmpstr), "%c: ", dnum + 'A' - 1);
-                    driveMap += tmpstr;
-                }
-                else if (rc == DRIVE_FIXED && Mode == LOCAL)
-                {
-                    snprintf(tmpstr, sizeof(tmpstr), "%c: ", dnum + 'A' - 1);
-                    driveMap += tmpstr;
-                }
-                else if (rc == DRIVE_REMOTE && Mode == REMOTE)
-                {
-                    snprintf(tmpstr, sizeof(tmpstr), "%c: ", dnum + 'A' - 1);
-                    driveMap += tmpstr;
-                }
-                else if (rc == DRIVE_RAMDISK && Mode == RAMDISK)
-                {
-                    snprintf(tmpstr, sizeof(tmpstr), "%c: ", dnum + 'A' - 1);
-                    driveMap += tmpstr;
+                    driveMapBuffer += driveStr;
                 }
             }
         }
-        DriveMap >>= 1;                      /* Shift to the next drive    */
+        // shift to the next drive
+        driveMap >>= 1;
     }
 
-    driveLength = driveMap.length();
+    driveLength = driveMapBuffer.length();
     // if we are returning anything, then remove the last blank
     if (driveLength > 0)
     {
         driveLength--;
     }
 
-    return context->NewString(temp, driveLength);
+    return context->NewString(driveMapBuffer, driveLength);
 }
 
 
@@ -543,7 +485,7 @@ void TreeFinder::adjustDirectory()
     // if this ends in a directory separator, add a *.* wildcard to the end
     if (fileSpec.endsWith('\\'))
     {
-        fileSpec += "*.*"
+        fileSpec += "*.*";
     }
     // just a ' or .. is wildcarded also
     else if (fileSpec == "." || fileSpec == "..")
@@ -649,13 +591,13 @@ bool TreeFinder::validateFileSpecChars()
 
     for (size_t i = 0; i < sizeof(illegal); i++)
     {
-        if (strchr(fileSpec, illegal[i]) != NULL)
+        if (strchr((const char *)fileSpec, illegal[i]) != NULL)
         {
             return true;
         }
     }
 
-    const char *pos = strchr(fileSpec, ':');
+    const char *pos = strchr((const char *)fileSpec, ':');
     if (pos != NULL)
     {
         if (((int32_t)(pos - fileSpec + 1)) != 2)
@@ -679,7 +621,7 @@ bool TreeFinder::validateFileSpecChars()
  *
  * @return New attribute value.
  */
-uint32_t mergeAttrs(AttributeMask &mask, uint32_t attr)
+uint32_t mergeAttrs(TreeFinder::AttributeMask &mask, uint32_t attr)
 {
     // if no settings to process, return the old set
     if (mask.noNewSettings())
@@ -687,38 +629,38 @@ uint32_t mergeAttrs(AttributeMask &mask, uint32_t attr)
         return attr;
     }
 
-    if (mask.isOff(Archive))
+    if (mask.isOff(TreeFinder::AttributeMask::Archive))
     {
         attr &= ~FILE_ATTRIBUTE_ARCHIVE;   // Clear
     }
-    else if (mask.isOn(Archive))
+    else if (mask.isOn(TreeFinder::AttributeMask::Archive))
     {
         attr |= FILE_ATTRIBUTE_ARCHIVE;    // Set
     }
 
     // we can't really turn the directory bit on or off, so leave
     // this unchanged.
-    if (mask.isOff(Hidden))
+    if (mask.isOff(TreeFinder::AttributeMask::Hidden))
     {
         attr &= ~FILE_ATTRIBUTE_HIDDEN; // Clear
     }
-    else if (mask.isOn(Hidden))
+    else if (mask.isOn(TreeFinder::AttributeMask::Hidden))
     {
         attr |= FILE_ATTRIBUTE_HIDDEN;  // Set
     }
-    if (mask.isOff(ReadOnly))
+    if (mask.isOff(TreeFinder::AttributeMask::ReadOnly))
     {
         attr &= ~FILE_ATTRIBUTE_READONLY; // Clear
     }
-    else if (mask.isOn(ReadOnly))
+    else if (mask.isOn(TreeFinder::AttributeMask::ReadOnly))
     {
         attr |= FILE_ATTRIBUTE_READONLY;  // Set
     }
-    if (mask.isOff(System))
+    if (mask.isOff(TreeFinder::AttributeMask::System))
     {
         attr &= ~FILE_ATTRIBUTE_SYSTEM; // Clear
     }
-    else if (mask.isOn(System))
+    else if (mask.isOn(TreeFinder::AttributeMask::System))
     {
         attr |= FILE_ATTRIBUTE_SYSTEM;  // Set
     }
@@ -735,7 +677,7 @@ uint32_t mergeAttrs(AttributeMask &mask, uint32_t attr)
  *
  * @return A new attribute mask for the file.
  */
-TreeFinder::setFileAttributes(const char *fileName)
+void setFileAttributes(const char *fileName, TreeFinder::AttributeMask &newAttributes)
 {
     // The file attributes need to be changed before we format the found file
     // line.
@@ -750,7 +692,7 @@ TreeFinder::setFileAttributes(const char *fileName)
     {
         // try to set the attributes, but if it fails, just use the exsiting.
         // the directory flag is not settable, so make sure this flag is off
-        setAttr(foundFile, changedAttrs & ~FILE_ATTRIBUTE_DIRECTORY);
+        SetFileAttributes(fileName, changedAttrs & ~FILE_ATTRIBUTE_DIRECTORY);
     }
 }
 
@@ -762,11 +704,11 @@ TreeFinder::setFileAttributes(const char *fileName)
  * @param foundFile The buffer the result is formatted into
  * @param finfo     The system information about the file.
  */
-void formatFileAttributes(FileNameBuffer *foundFile, WIN32_FILE_INFORMATION_DATA *finfo)
+void formatFileAttributes(TreeFinder *finder, FileNameBuffer &foundFile, WIN32_FILE_ATTRIBUTE_DATA &finfo)
 {
     char fileAttr[256];                 // File attribute string of found file
 
-    FileTime lastWriteTime;
+    FILETIME lastWriteTime;
     FileTimeToLocalFileTime(&finfo.ftLastWriteTime, &lastWriteTime);
 
     // Convert UTC to local file time, and then to system format.
@@ -777,13 +719,13 @@ void formatFileAttributes(FileNameBuffer *foundFile, WIN32_FILE_INFORMATION_DATA
     // Since we can count the characters put into the buffer here, there is
     // no need to check for buffer overflow.
 
-    if (longTime())
+    if (finder->longTime())
     {
         snprintf(fileAttr, sizeof(fileAttr), "%4d-%02d-%02d %02d:%02d:%02d ",
                  systime.wYear, systime.wMonth, systime.wDay, systime.wHour, systime.wMinute,
                  systime.wSecond);
     }
-    else if (editableTime())
+    else if (finder->editableTime())
     {
         snprintf(fileAttr, sizeof(fileAttr), "%02d/%02d/%02d/%02d/%02d ",
                  (systime.wYear + 100) % 100, systime.wMonth, systime.wDay,
@@ -803,27 +745,27 @@ void formatFileAttributes(FileNameBuffer *foundFile, WIN32_FILE_INFORMATION_DATA
     foundFile = fileAttr;
 
     // now the size information
-    if (longSize())
+    if (finder->longSize())
     {
-        uint64_t longFileSize = finfo->nFileSizeHigh;
+        uint64_t longFileSize = finfo.nFileSizeHigh;
         longFileSize <<= 32;
-        longFileSize |= finfo->nFileSizeLow;
+        longFileSize |= finfo.nFileSizeLow;
         snprintf(fileAttr, sizeof(fileAttr), "%20llu ", longFileSize);
     }
     else
     {
-        snprintf(fileAttr, sizeof(fileAttr), "%10lu ", finfo->nFileSizeLow)
+        snprintf(fileAttr, sizeof(fileAttr), "%10lu ", finfo.nFileSizeLow);
     }
 
     // the order is time, size, attributes
     foundFile = fileAttr;
 
     snprintf(fileAttr, sizeof(fileAttr), "%c%c%c%c%c  ",
-             (finfo->dwFileAttributes & FILE_ATTRIBUTE_ARCHIVE) ? 'A' : '-',
-             (finfo->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ? 'D' : '-',
-             (finfo->dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) ? 'H' : '-',
-             (finfo->dwFileAttributes & FILE_ATTRIBUTE_READONLY) ? 'R' : '-',
-             (finfo->dwFileAttributes & FILE_ATTRIBUTE_SYSTEM) ? 'S' : '-');
+             (finfo.dwFileAttributes & FILE_ATTRIBUTE_ARCHIVE) ? 'A' : '-',
+             (finfo.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ? 'D' : '-',
+             (finfo.dwFileAttributes & FILE_ATTRIBUTE_HIDDEN) ? 'H' : '-',
+             (finfo.dwFileAttributes & FILE_ATTRIBUTE_READONLY) ? 'R' : '-',
+             (finfo.dwFileAttributes & FILE_ATTRIBUTE_SYSTEM) ? 'S' : '-');
 
     // add on this section
     foundFile += fileAttr;
@@ -838,18 +780,16 @@ void formatFileAttributes(FileNameBuffer *foundFile, WIN32_FILE_INFORMATION_DATA
  *
  * @return true if the file should be included, false otherwise.
  */
-bool checkInclusion(uint32_t attr)
+bool checkInclusion(TreeFinder *finder, uint32_t attr)
 {
-    AttrChecker checker(attr);
-
     // if this is a directory and we're not looking for dirs, this is a pass
-    if (checker.isDir() && !options[DO_DIRS])
+    if ((attr & FILE_ATTRIBUTE_DIRECTORY) && !finder->includeDirs())
     {
         return false;
     }
 
     // file is not a DIR and we're only looking for directories
-    if (checker.isNotDir() && !options[DO_FILES])
+    if (!(attr & FILE_ATTRIBUTE_DIRECTORY) && !finder->includeFiles())
     {
         return false;
     }
@@ -857,29 +797,29 @@ bool checkInclusion(uint32_t attr)
     // we've passed the file type checks, now see if we have attribute checks to make
 
     // if no mask is set, then everything is good
-    if (mask.acceptAll())
+    if (finder->acceptAll())
     {
         return true;
     }
 
-    if (!mask.isSelected(Archive, attr & FILE_ATTRIBUTE_ARCHIVE))
+    if (!finder->archiveSelected(attr & FILE_ATTRIBUTE_ARCHIVE))
     {
         return  false;
     }
     // a little silly since this overlaps with the options
-    if (!mask.isSelected(Directory, attr & FILE_ATTRIBUTE_DIRECTORY))
+    if (!finder->directorySelected(attr & FILE_ATTRIBUTE_DIRECTORY))
     {
         return  false;
     }
-    if (!mask.isSelected(Hidden, attr & FILE_ATTRIBUTE_HIDDEN))
+    if (!finder->hiddenSelected(attr & FILE_ATTRIBUTE_HIDDEN))
     {
         return  false;
     }
-    if (!mask.isSelected(ReadOnly, attr & FILE_ATTRIBUTE_READONLY))
+    if (!finder->readOnlySelected(attr & FILE_ATTRIBUTE_READONLY))
     {
         return  false;
     }
-    if (!mask.isSelected(System, attr & FILE_ATTRIBUTE_SYSTEM))
+    if (!finder->systemSelected(attr & FILE_ATTRIBUTE_SYSTEM))
     {
         return  false;
     }
@@ -899,18 +839,18 @@ void TreeFinder::checkFile(const char *fileName)
     // the filename we are passed is just the filename to check. The fully
     // qualified name of the file is in foundFile already.
 
-    WIN32_FILE_INFORMATION_DATA finfo;
+    WIN32_FILE_ATTRIBUTE_DATA finfo;
     // get the information for the file
     GetFileAttributesEx(foundFile, GetFileExInfoStandard, &finfo);
 
     // check to see if this one should be included. If not, we just return without doing anythign
-    if (!checkInclusion(finfo.dwFileAttributes))
+    if (!checkInclusion(this, finfo.dwFileAttributes))
     {
         return;
     }
 
     // handle setting of the new file attributes, if supported
-    setFileAttributes(foundFile);
+    setFileAttributes(foundFile, newAttributes);
 
     // if only the name is requested, create a string object and set the
     // stem varaiable
@@ -921,14 +861,13 @@ void TreeFinder::checkFile(const char *fileName)
     }
 
     // format all of the attributes and add them to the foundFile result
-    formatFileAttributes(finfo);
+    formatFileAttributes(this, foundFile, finfo);
 
     // and finally add on the file name
     foundFileLine += foundFile;
 
     // add this to the stem
     addResult(foundFileLine);
-    return true;
 }
 
 
@@ -950,7 +889,7 @@ int TreeFinder::findDirectoryEnd()
         --lastSlashPos;
     }
 
-    return lastSlash;
+    return lastSlashPos;
 }
 
 
@@ -965,7 +904,7 @@ bool TreeFinder::checkNonPathDrive()
 // fileSpec could be a drive designator.
     if (fileSpec[1] == ':')
     {
-        RoutineFileNameBuffer currentDirectory;
+        RoutineFileNameBuffer currentDirectory(context);
 
         SysFileSystem::getCurrentDirectory(currentDirectory);
 
@@ -982,7 +921,7 @@ bool TreeFinder::checkNonPathDrive()
         SysFileSystem::setCurrentDirectory(currentDirectory);
 
         // everything after the drive delimiter is the search name.
-        nameSpec = fileSpec + 2;
+        nameSpec = ((const char *)fileSpec) + 2;
         return true;
     }
     // not a drive, this will need to be prepended by the current directory
@@ -1007,10 +946,10 @@ void TreeFinder::fixupFilePath()
     {
         filePath = p;
     }
-    free(p);
+    free((void *)p);
 
     // make sure this is terminated with a path delimiter
-    addFinalPathDelimiter();
+    filePath.addFinalPathDelimiter();
 }
 
 
@@ -1026,13 +965,12 @@ void TreeFinder::fixupFilePath()
 * Return:    The key striked.                                            *
 *************************************************************************/
 
-RexxRoutine1(RexxStringObject, SysGetKey, OPTIONAL_CSTRING echoOpt)
+RexxRoutine1(RexxStringObject, SysGetKey, OPTIONAL_CSTRING, echoOpt)
 {
-    int       tmp;                       /* Temp var used to hold      */
-    /* keystroke value            */
-    bool      echo = true;               /* Set to false if we         */
+    bool echo = true;      // indicates if we're expected to echo the character.
 
-    if (numargs == 1)                  /* validate arguments         */
+    // if we have an option specified, validate it
+    if (echoOpt != NULL)
     {
         if (!_stricmp(echoOpt, "NOECHO"))
         {
@@ -1044,18 +982,24 @@ RexxRoutine1(RexxStringObject, SysGetKey, OPTIONAL_CSTRING echoOpt)
             return NULL;
         }
     }
-    if (ExtendedFlag)                  /* if have an extended        */
+
+    int       tmp;                       /* Temp var used to hold      */
+    // if we have the second part of an extended value, return that without
+    // doing a real read.
+    if (ExtendedFlag)
     {
         tmp = ExtendedChar;                /* get the second char        */
-        ExtendedFlag = false;              /* do a real read next time   */
+        ExtendedFlag = false;
     }
     else
     {
         tmp = _getch();                    /* read a character           */
 
-        /* If a function key or arrow */
+        // either of these characters indicate this is an extended character.
         if ((tmp == 0x00) || (tmp == 0xe0))
         {
+            // this character is saved for the next call. We return the marker
+            // character first.
             ExtendedChar = _getch();         /* Read another character     */
             ExtendedFlag = true;
         }
@@ -1069,7 +1013,8 @@ RexxRoutine1(RexxStringObject, SysGetKey, OPTIONAL_CSTRING echoOpt)
         _putch(tmp);                       /* write the character back   */
     }
 
-    return context->NewString(&tmp, 1);
+    char character = (char)tmp;
+    return context->NewString(&character, 1);
 }
 
 /*************************************************************************
@@ -1107,21 +1052,15 @@ RexxRoutine1(RexxStringObject, SysGetKey, OPTIONAL_CSTRING echoOpt)
 *            ERROR_RETSTR   - Error opening INI or querying/writing info.*
 *************************************************************************/
 
-RexxRoutine4(RexxStringObject, SysIni, OPTIONAL_CSTRING, IniFile, CSTRING, App, OPTIONAL_CSTRING, key, OPTIONAL_CSTRING, val)
+RexxRoutine4(RexxStringObject, SysIni, OPTIONAL_CSTRING, iniFile, CSTRING, app, OPTIONAL_CSTRING, key, OPTIONAL_CSTRING, val)
 {
-    bool        wildCard = false;        /* Set to true if a wildcard  */
-    /* operation                  */
-    bool        queryApps = false;       /* Set to true if a query     */
-    /* operation                  */
-    bool        terminate = true;        /* perform WinTerminate call  */
-
-    StemHandler stem(context);           // used to manipulate the stem variable for return values.
-
+    bool wildCard = false;    // indicates this is wildcard operation that returns multiple results
+    bool queryApps = false;   // indicates a query vs. a set operation
 
     // the ini file is optional and defaults to WIN.INI
-    if (IniFile == NULL)
+    if (iniFile == NULL)
     {
-        IniFile = "WIN.INI";
+        iniFile = "WIN.INI";
     }
 
     // if the key was not specified, use a null string
@@ -1133,30 +1072,6 @@ RexxRoutine4(RexxStringObject, SysIni, OPTIONAL_CSTRING, IniFile, CSTRING, App, 
     // Process first off of the app key. This could be a keyword command, which changes
     // the meaning of the following arguments.
 
-    // All is a wild card value asking for everything
-    if (_stricmp(app, "ALL:") == 0)
-    {
-
-        // the third arg is required and is the stem variable name.
-        // the 4th argument cannot be specified
-        if (argumentOmitted(3) || argumentExists(4))
-        {
-            context->InvalidRoutine();
-            return 0;
-        }
-        // try to get the stem variable, raise an error if invalid
-        if (!ldp.setStem(key))
-        {
-            context->InvalidRoutine();
-            return 0;
-        }
-    }
-
-
-
-    // all argument variables now have values...time to decode what
-    // was specified
-
     // all is a special app name, this wants everything
     if (_stricmp(app, "ALL:") == 0)
     {
@@ -1164,18 +1079,14 @@ RexxRoutine4(RexxStringObject, SysIni, OPTIONAL_CSTRING, IniFile, CSTRING, App, 
 
         // the third arg is required and is the stem variable name.
         // the 4th argument cannot be specified
-        if (argumentOmitted(3) || argumentExists(4))
+        if (argumentExists(4))
         {
             context->InvalidRoutine();
             return 0;
         }
 
-        // try to get the stem variable, raise an error if invalid
-        if (!setStemVariable.setStem(key))
-        {
-            context->InvalidRoutine();
-            return 0;
-        }
+        // Retrieve the stem variable using the key name
+        stemVariable.setStem(key);
 
         size_t lSize = 0x0000ffffL;
         // Allocate a large buffer for retrieving the information
@@ -1185,7 +1096,7 @@ RexxRoutine4(RexxStringObject, SysIni, OPTIONAL_CSTRING, IniFile, CSTRING, App, 
             return context->NewStringFromAsciiz(ERROR_NOMEM);
         }
         // now retrieve the application names.
-        lSize = GetPrivateProfileString(NULL, NULL, "", returnVal, (DWORD)lSize, IniFile);
+        lSize = GetPrivateProfileString(NULL, NULL, "", returnVal, (DWORD)lSize, iniFile);
         // zero indicates there was an error
         if (lSize == 0)
         {
@@ -1193,8 +1104,8 @@ RexxRoutine4(RexxStringObject, SysIni, OPTIONAL_CSTRING, IniFile, CSTRING, App, 
         }
 
         // parse this up into a list added to the stem variable
-        stemVariable.setList(returnVal);
-        return context->NullString;
+        stemVariable.addList(returnVal);
+        return context->NullString();
     }
 
     // ok, this is targetted at a particular app. Now decode what sort of operation this is.
@@ -1204,12 +1115,9 @@ RexxRoutine4(RexxStringObject, SysIni, OPTIONAL_CSTRING, IniFile, CSTRING, App, 
     if (!_stricmp(key, "ALL:"))
     {
         StemHandler stemVariable(context);            // used to manipulate the stem variable for return values.
-        // we need a stem variable name
-        if (argumentOmitted(4) || !stemVariable.setStem(val))
-        {
-            context->InvalidRoutine();
-            return 0;
-        }
+
+        // val is the stem variable for this case
+        stemVariable.setStem(val);
 
         size_t lSize = 0x0000ffffL;
         // Allocate a large buffer for retrieving the information
@@ -1220,7 +1128,7 @@ RexxRoutine4(RexxStringObject, SysIni, OPTIONAL_CSTRING, IniFile, CSTRING, App, 
         }
 
         // Retrieve all keys for a specific application
-        lSize = GetPrivateProfileString(app, NULL, "", returnVal, (DWORD)lSize, IniFile);
+        lSize = GetPrivateProfileString(app, NULL, "", returnVal, (DWORD)lSize, iniFile);
 
         // zero indicates there was an error
         if (lSize == 0)
@@ -1229,21 +1137,21 @@ RexxRoutine4(RexxStringObject, SysIni, OPTIONAL_CSTRING, IniFile, CSTRING, App, 
         }
 
         // parse this up into a list added to the stem variable
-        stemVariable.setList(returnVal);
-        return context->NullString;
+        stemVariable.addList(returnVal);
+        return context->NullString();
     }
 
     // this could be a DELETE: operation for a particular application
     if (stricmp(key, "DELETE:") == 0)
     {
         // A request to delete all keys for a given application
-        if (!WritePrivateProfileString(app, NULL, NULL, IniFile))
+        if (!WritePrivateProfileString(app, NULL, NULL, iniFile))
         {
             return context->NewStringFromAsciiz(ERROR_RETSTR);
         }
         else
         {
-            return context->NullString;
+            return context->NullString();
         }
     }
 
@@ -1262,7 +1170,7 @@ RexxRoutine4(RexxStringObject, SysIni, OPTIONAL_CSTRING, IniFile, CSTRING, App, 
         }
 
         // Retrieve just the given key value
-        lSize = GetPrivateProfileString(app, key, "", returnVal, (DWORD)lSize, IniFile);
+        lSize = GetPrivateProfileString(app, key, "", returnVal, (DWORD)lSize, iniFile);
 
         // zero indicates there was an error
         if (lSize == 0)
@@ -1270,31 +1178,31 @@ RexxRoutine4(RexxStringObject, SysIni, OPTIONAL_CSTRING, IniFile, CSTRING, App, 
             return context->NewStringFromAsciiz(ERROR_RETSTR);
         }
 
-        return context->NewString(returnValue, lSize);
+        return context->NewString(returnVal, lSize);
     }
 
     // this could be a key deletion request
     if (stricmp(val, "DELETE:") == 0)
     {
         // A request to delete all keys for a given application
-        if (!WritePrivateProfileString(app, key, NULL, IniFile))
+        if (!WritePrivateProfileString(app, key, NULL, iniFile))
         {
             return context->NewStringFromAsciiz(ERROR_RETSTR);
         }
         else
         {
-            return context->NullString;
+            return context->NullString();
         }
     }
 
     // we have a value specified and it is not the special key marker, this is a set operation
-    if (!WritePrivateProfileString(app, key, val, IniFile))
+    if (!WritePrivateProfileString(app, key, val, iniFile))
     {
         return context->NewStringFromAsciiz(ERROR_RETSTR);
     }
     else
     {
-        return context->NullString;
+        return context->NullString();
     }
 }
 
@@ -1373,7 +1281,9 @@ RexxRoutine1(RexxStringObject, SysGetErrorText, int32_t, errnum)
 
 RexxRoutine1(uint32_t, SysWinEncryptFile, CSTRING, fileName)
 {
-    ULONG rc = EncryptFile(fileName);
+    RoutineQualifiedName qualifiedName(context, fileName);
+
+    ULONG rc = EncryptFile(qualifiedName);
 
     return rc != 0 ? rc : GetLastError();
 }
@@ -1391,7 +1301,9 @@ RexxRoutine1(uint32_t, SysWinEncryptFile, CSTRING, fileName)
 
 RexxRoutine1(uint32_t, SysWinDecryptFile, CSTRING, fileName)
 {
-    ULONG rc = DecryptFile(fileName);
+    RoutineQualifiedName qualifiedName(context, fileName);
+
+    ULONG rc = DecryptFile(qualifiedName, 0);
 
     return rc != 0 ? rc : GetLastError();
 }
@@ -1546,7 +1458,6 @@ RexxRoutine3(RexxStringObject, SysTextScreenRead, int, row, int, col, OPTIONAL_i
     }
 
     return context->NewString(ptr, dwSumCharsRead);
-    return result;
 }
 
 /*************************************************************************
@@ -1801,7 +1712,7 @@ RexxRoutine2(uint32_t, RxWinExec, CSTRING, command, OPTIONAL_CSTRING, show)
 *************************************************************************/
 RexxRoutine0(RexxStringObject, SysBootDrive)
 {
-    char retstr[PATH_MAX];
+    char retstr[MAX_PATH];
 
     if (GetSystemDirectory(retstr, sizeof(retstr)) > 0)
     {
@@ -1827,7 +1738,7 @@ RexxRoutine0(RexxStringObject, SysBootDrive)
 
 RexxRoutine0(RexxStringObject, SysSystemDirectory)
 {
-    char retstr[PATH_MAX];
+    char retstr[MAX_PATH];
 
     if (GetSystemDirectory(retstr, sizeof(retstr)) > 0)
     {
@@ -1873,7 +1784,7 @@ RexxRoutine1(RexxStringObject, SysFileSystemType, OPTIONAL_CSTRING, drive)
 
     AutoErrorMode errorMode(SEM_FAILCRITICALERRORS);
 
-    char fileSystemName[PATH_MAX];
+    char fileSystemName[MAX_PATH];
 
     RexxStringObject result = context->NullString();
 
@@ -1921,7 +1832,7 @@ RexxRoutine1(RexxStringObject, SysVolumeLabel, OPTIONAL_CSTRING, drive)
         snprintf(chDriveLetter, sizeof(chDriveLetter), "%c:\\", drive[0]);
         drive = chDriveLetter;
     }
-    char volumeName[PATH_MAX];
+    char volumeName[MAX_PATH];
 
     RexxStringObject result = context->NullString();
 
@@ -1936,7 +1847,7 @@ RexxRoutine1(RexxStringObject, SysVolumeLabel, OPTIONAL_CSTRING, drive)
             0                            /* length of lpFileSystemNameBuffer */
             ))
     {
-        result = context->NewStringFromAsciiz(fileSystemName);
+        result = context->NewStringFromAsciiz(volumeName);
     }
 
     return result;
@@ -3034,7 +2945,7 @@ RexxRoutine5(int, SysFromUniCode, RexxStringObject, sourceString, OPTIONAL_CSTRI
     /* Query the number of bytes required to store the Dest string */
     int iBytesNeeded = WideCharToMultiByte(codePage,
                                            dwFlags,
-                                           (LPWSTR)strptr,
+                                           (LPWSTR)(char *)strptr,
                                            (int)(sourceLength / 2),
                                            NULL,
                                            0,
@@ -3057,7 +2968,7 @@ RexxRoutine5(int, SysFromUniCode, RexxStringObject, sourceString, OPTIONAL_CSTRI
     /* Do the conversion */
     int iBytesDestination = WideCharToMultiByte(codePage,           // codepage
                                                 dwFlags,                // conversion flags
-                                                (LPWSTR)strptr,        // source string
+                                                (LPWSTR)(char *)strptr, // source string
                                                 (int)(sourceLength / 2),  // source string length
                                                 str,                    // target string
                                                 (int)iBytesNeeded,      // size of target buffer
@@ -3227,7 +3138,7 @@ RexxRoutine4(int, SysToUniCode, RexxStringObject, source, OPTIONAL_CSTRING, code
     /* Do the conversion */
     ulWCharsNeeded = MultiByteToWideChar(codePage,  dwFlags,
                                          context->StringData(source), (int)context->StringLength(source),
-                                         lpwstr, ulWCharsNeeded);
+                                         (LPWSTR)(char *)lpwstr, ulWCharsNeeded);
 
     if (ulWCharsNeeded == 0) // call to function fails
     {
@@ -3257,7 +3168,7 @@ RexxRoutine1(uint32_t, SysWinGetPrinters, RexxStemObject, stem)
 
     while (true)
     {
-        if (EnumPrinters(PRINTER_ENUM_LOCAL | PRINTER_ENUM_CONNECTIONS, NULL, 2, (LPBYTE)pArray,
+        if (EnumPrinters(PRINTER_ENUM_LOCAL | PRINTER_ENUM_CONNECTIONS, NULL, 2, (LPBYTE)(char *)pArray,
                          currentSize, &realSize, &entries) == 0)
         {
             // this is not a failure if we get ERROR_INSUFFICIENT_BUFFER
@@ -3276,17 +3187,18 @@ RexxRoutine1(uint32_t, SysWinGetPrinters, RexxStemObject, stem)
         pArray = (char *)realloc(pArray, sizeof(char) * currentSize);
     }
 
-    PRINTER_INFO_2 *pResult = (PRINTER_INFO_2 *)pArray;
+    StemHandler stemVariable(context, stem);
 
-    // set stem.0 to the number of entries then add all the found printers
-    context->SetStemArrayElement(stem, 0, context->WholeNumber(entries));
+    PRINTER_INFO_2 *pResult = (PRINTER_INFO_2 *)(char *)pArray;
+
     while (entries--)
     {
-        char  szBuffer[256];
-        snprintf(szBuffer, sizeof(szBuffer), "%s,%s,%s", pResult[entries].pPrinterName, pResult[entries].pDriverName,
+        char  buffer[256];
+        snprintf(buffer, sizeof(buffer), "%s,%s,%s", pResult[entries].pPrinterName, pResult[entries].pDriverName,
                 pResult[entries].pPortName);
-        context->SetStemArrayElement(stem, entries + 1, context->String(szBuffer));
+        stemVariable.addValue(buffer);
     }
+    stemVariable.complete();   // set the final value
     return 0;          // a little reversed...success is false, failure is true
 }
 
@@ -3513,7 +3425,7 @@ RexxRoutine1(logical_t, SysIsFileTemporary, CSTRING, file)
 RexxRoutine1(RexxStringObject, SysGetLongPathName, CSTRING, path)
 {
     RoutineFileNameBuffer longPath(context);
-    DWORD requiredSize = GetLongPathName(path, longPath, longPath.capacity());
+    DWORD requiredSize = GetLongPathName(path, longPath, (DWORD)longPath.capacity());
     if (requiredSize == 0)    // call failed
     {
         return context->NullString();
@@ -3523,7 +3435,7 @@ RexxRoutine1(RexxStringObject, SysGetLongPathName, CSTRING, path)
     {
         // expand and retry (which should succeed this time)
         longPath.ensureCapacity(requiredSize);
-        if (GetLongPathName(path, longPath, longPath.capacity()))
+        if (GetLongPathName(path, longPath, (DWORD)longPath.capacity()))
         {
             return context->NullString();
         }
@@ -3548,7 +3460,7 @@ RexxRoutine1(RexxStringObject, SysGetLongPathName, CSTRING, path)
 RexxRoutine1(RexxStringObject, SysGetShortPathName, CSTRING, path)
 {
     RoutineFileNameBuffer shortPath(context);
-    DWORD requiredSize = GetShortPathName(path, shortPath, shortPath.capacity());
+    DWORD requiredSize = GetShortPathName(path, shortPath, (DWORD)shortPath.capacity());
     if (requiredSize == 0)    // call failed
     {
         return context->NullString();
@@ -3558,11 +3470,11 @@ RexxRoutine1(RexxStringObject, SysGetShortPathName, CSTRING, path)
     {
         // expand and retry (which should succeed this time)
         shortPath.ensureCapacity(requiredSize);
-        if (GetShortPathName(path, shortPath, shortPath.capacity()))
+        if (GetShortPathName(path, shortPath, (DWORD)shortPath.capacity()))
         {
             return context->NullString();
         }
     }
 
-    return context->NewStringFromAsciiz(longPath);
+    return context->NewStringFromAsciiz(shortPath);
 }
