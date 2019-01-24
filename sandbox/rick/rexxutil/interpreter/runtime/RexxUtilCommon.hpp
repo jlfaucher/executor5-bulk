@@ -47,13 +47,18 @@
 /* Numeric Error Return Strings                                      */
 /*********************************************************************/
 
-#define  ERROR_NOMEM      "2"          /* Insufficient memory        */
+const char *ERROR_NOMEM = "2";
 
 /*********************************************************************/
 /* Alpha Numeric Return Strings                                      */
 /*********************************************************************/
 
-#define  ERROR_RETSTR   "ERROR:"
+const char *ERROR_RETSTR = "ERROR:";
+
+// some standard constants
+const char CH_EOF = 0x1A;            // end of file marker
+const char CH_CR = '\r';             // carriage return character
+const char CH_NL = '\n';             // new line character
 
 /*********************************************************************/
 /****************  REXXUTIL Supporting Functions  ********************/
@@ -165,6 +170,7 @@ class StemHandler
 class TreeFinder
 {
  public:
+
      typedef enum
      {
          RECURSE,        // recursive search
@@ -176,6 +182,16 @@ class TreeFinder
          CASELESS,       // perform a caseless search
          LONG_SIZE,      // return sizes greater than 4Gb
      } OptionFlags;
+
+     /**
+      * A set of enumerations for catching exceptions that need to be
+      * reported as SysFileTree return values and not as Rexx error conditions.
+      */
+     typedef enum
+     {
+         InvalidFileName,          // the filespec failed name validation rules.
+     } TreeFinderException;
+
 
      class AttributeMask
      {
@@ -257,16 +273,17 @@ class TreeFinder
 
      TreeFinder(RexxCallContext *c, const char *f, RexxStemObject s, const char *opts, const char *targetAttr, const char *newAttr);
 
+     uint32_t findFiles();
      void validateFileSpec();
      void adjustDirectory();
-     bool validateFileSpecChars();
+     void validateFileSpecName();
      void parseMask(const char *mask, AttributeMask &flags, size_t argPos);
      void badSFTOptsException(const char *actual);
      void badMaskException(size_t pos, const char *actual);
      void getOptions(const char *opts);
      bool goodOpts(const char *opts);
      void formatFile(const char *fileName);
-     void getPath();
+     void getFullPath();
      void expandNonPath2fullPath();
      void expandPath2fullPath(size_t lastSlashPos);
      void adjustFileSpec();

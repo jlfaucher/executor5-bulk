@@ -1039,7 +1039,7 @@ RexxString* InterpreterInstance::resolveProgramName(RexxString *_name, RexxStrin
     const char *name = _name->getStringData();
     const char *parentDir = _parentDir == OREF_NULL ? NULL : _parentDir->getStringData();
     const char *parentExtension = _parentExtension == OREF_NULL ? NULL : _parentExtension->getStringData();
-    const char *pathExtension = instance->searchPath == OREF_NULL ? NULL : instance->searchPath->getStringData();
+    const char *pathExtension = searchPath == OREF_NULL ? NULL : searchPath->getStringData();
 
     SysSearchPath searchPath(parentDir, pathExtension);
 
@@ -1065,9 +1065,9 @@ RexxString* InterpreterInstance::resolveProgramName(RexxString *_name, RexxStrin
     }
 
     // ok, now time to try each of the individual extensions along the way.
-    for (size_t i = 1; i <= instance->searchExtensions->items(); i++)
+    for (size_t i = 1; i <= searchExtensions->items(); i++)
     {
-        RexxString *ext = (RexxString *)instance->searchExtensions->get(i);
+        RexxString *ext = (RexxString *)searchExtensions->get(i);
 
         if (SysFileSystem::searchName(name, searchPath.path, ext->getStringData(), resolvedName))
         {

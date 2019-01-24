@@ -377,12 +377,10 @@ void TreeFinder::adjustFileSpec()
  * forbidden characters in unix file names are '/' (which is allowed in
  * the path) and '\0' (which is the string terminator. This is really
  * a nop.
- *
- * @return always returns false.
  */
-bool TreeFinder::validateFileSpecChars()
+void TreeFinder::validateFileSpecName()
 {
-    return false;
+    // no extra validation required
 }
 
 

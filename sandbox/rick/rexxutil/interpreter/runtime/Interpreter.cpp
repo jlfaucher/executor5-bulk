@@ -659,5 +659,6 @@ wholenumber_t Interpreter::messageNumber(RexxString *errorcode)
 RexxString* Interpreter::qualifyFileSystemName(RexxString *name)
 {
     QualifiedName qualifiedName(name->getStringData());
-    return new_string(nameBuffer);
+
+    return new_string(qualifiedName);
 }

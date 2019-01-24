@@ -41,11 +41,15 @@
 /*                                                                            */
 /******************************************************************************/
 
+#include <time.h>
 #include "oorexxapi.h"
 #include "PackageManager.hpp"
 #include "RexxUtilCommon.hpp"
 #include "RexxInternalApis.h"
-#include "ExternalFileNameBuffer.hpp"
+#include "ExternalFileBuffer.hpp"
+#include "SysFile.hpp"
+
+
 
 /**
  * A simple class for reading lines from a file.
@@ -53,8 +57,8 @@
 class LineReader
 {
  public:
-     LineReader() buffer(null), bufferSize(0), fileSize(0), dataLength(0),
-     fileResidual(0), scan(null), file()
+     LineReader() : buffer(NULL), bufferSize(0), fileSize(0), dataLength(0),
+         fileResidual(0), scan(NULL), file()
      { }
      ~LineReader()
      {
@@ -71,19 +75,19 @@ class LineReader
      bool open(const char *fileName)
      {
          // if we can't open the file, return
-         if (!file.open(fileName, RX_O_RDONLY, RX_SH_DENY_WR, RX_S_IREAD))
+         if (!file.open(fileName, RX_O_RDONLY, RX_SH_DENYWR, RX_S_IREAD))
          {
              return false;
          }
          // also need to determine a size
-         if (~file.getSize(fileSize))
+         if (!file.getSize(fileSize))
          {
              return false;
          }
 
          // we read every thing initially
          fileResidual = fileSize;
-         bufferSize = min(fileSize, InitialBufferSize);
+         bufferSize = min((size_t)fileSize, InitialBufferSize);
          // allocate a buffer to hold the entire file.
          buffer = (char *)malloc(bufferSize);
          if (buffer == NULL)
@@ -123,7 +127,7 @@ class LineReader
              readLength = bufferSize - dataLength;
          }
 
-         readLength = min(fileResidual, readLength)
+         readLength = min(fileResidual, readLength);
          // if the read fails or we don't get anything, return a failure
          if (!file.read(buffer, readLength, dataLength) || dataLength == 0)
          {
@@ -174,7 +178,7 @@ class LineReader
          size_t newBufferSize = bufferSize + BufferExpansionSize;
 
          // try to expand
-         char *newBuffer = realloc(buffer, newBufferSize);
+         char *newBuffer = (char *)realloc(buffer, newBufferSize);
          // can't expand, then just return the end
          if (newBuffer == NULL)
          {
@@ -184,7 +188,7 @@ class LineReader
          // we're reallocated, adjust for the new reality
          buffer = newBuffer;
          bufferSize = newBufferSize;
-         scan = buffer + readOffset:
+         scan = buffer + readOffset;
 
          // read some more data
          return readNextBuffer();
@@ -265,7 +269,7 @@ class LineReader
 
              // reduce the length and bump the scan position
              dataLength -= size + 1;
-             scan = linend + 1''
+             scan = linend + 1;
 
              // we don't want the CR character in the result string
              if (*(linend - 1) == CH_CR)
@@ -298,7 +302,7 @@ class LineReader
 
      char *buffer;                 // the current buffer
      size_t bufferSize;            // current size of the buffer
-     size_t fileSize;              // full size of the file
+     int64_t fileSize;             // full size of the file
      size_t dataLength;            // the data left in the buffer
      size_t fileResidual;          // the amount of unread data in the file
      const char  *scan;            // current scan postion in the buffer
@@ -309,20 +313,20 @@ class LineReader
 /**
  * Generate a unique file name based off of a template.
  */
-void getUniqueFileName(const char *template, char filler, FileNameBuffer &file)
+void getUniqueFileName(const char *fileTemplate, char filler, FileNameBuffer &file)
 {
     int j = 0;
     int max = 1;
 
-    for(int x = 0;
-        template[x] != 0;
-        x++)
-
-    if(template[x] == filler)
+    for (int x = 0; fileTemplate[x] != 0; x++)
     {
-        max = max * 10;
-        j++;
+        if (fileTemplate[x] == filler)
+        {
+            max = max * 10;
+            j++;
+        }
     }
+
 
     // Return NULL string if less than 1 or greater than 4
     if (j == 0 || j > 5)
@@ -331,14 +335,13 @@ void getUniqueFileName(const char *template, char filler, FileNameBuffer &file)
         return;
     }
 
-    char numstr[6];
     // generate a random starting point
-    srand(time(NULL));
+    srand((int)time(NULL));
     size_t num = rand();
     num = num % max;
 
     // create a working copy of the template that we can alter
-    AutoFree buffer = (char *)strdup(template);
+    AutoFree buffer = (char *)strdup(fileTemplate);
     // remember our starthing number in case we loop around
     size_t start = num;
 
@@ -347,24 +350,24 @@ void getUniqueFileName(const char *template, char filler, FileNameBuffer &file)
     {
         char numstr[6];
         // get the random number as a set of 5 character digits
-        snprintf(numstr, sizeof(numstr), %05u, num);
+        snprintf(numstr, sizeof(numstr), "%05zu", num);
 
         // copy the template over to our return buffer
-        file = template;
+        file = fileTemplate;
         // now substitute our generated characters for the filler characters
         int i = j;
 
         for (int x = 0; file[x] != 0; x++)
         {
             // if we have a filler, fill it in
-            if (template[x] == filler)
+            if (fileTemplate[x] == filler)
             {
                 buffer[x] = numstr[--i];
             }
         }
 
         // get this as a fully qualified name
-        SysFileSystem::qualifiyName(buffer, file);
+        SysFileSystem::qualifyStreamName(buffer, file);
 
         // if there's no matching file, we're finished.
         if (!SysFileSystem::fileExists(file))
@@ -373,7 +376,7 @@ void getUniqueFileName(const char *template, char filler, FileNameBuffer &file)
         }
 
         // generate a new number for filling in the name
-        num = (num + 1)% max;
+        num = (num + 1) % max;
 
         // if we've wrapped around to where we started, time to give up
         if (num == start)
@@ -412,6 +415,7 @@ void getUniqueFileName(const char *template, char filler, FileNameBuffer &file)
  *                  'S' - Recursively scan subdirectories.
  *                  'T' - Combine time & date fields into one.
  *                  'L' - Long time format
+ *                  'H' - Long time format
  *                  'I' - Case Insensitive search.
  *
  *                The defualt is 'B' using normal time (neither 'T' nor 'L'.)
@@ -428,32 +432,24 @@ void getUniqueFileName(const char *template, char filler, FileNameBuffer &file)
  *
  * @return  0 on success, non-zero on error.  For all errors, a condition is
  *          raised.
- *
- * @remarks  The original IBM code passed in fileSpec to recursiveFindFile(),
- *           but then never used it in recursiveFineFile.  So, that has been
- *           eliminated.
- *
  */
-RexxRoutine5(uint32_t, SysFileTree, CSTRING, fSpec, RexxStemObject, files, OPTIONAL_CSTRING, opts,
+RexxRoutine5(uint32_t, SysFileTree, CSTRING, fileSpec, RexxStemObject, files, OPTIONAL_CSTRING, opts,
              OPTIONAL_CSTRING, targetAttr, OPTIONAL_CSTRING, newAttr)
 {
-    // initialize the search finder with the argument data
-    TreeFinder finder(context, fSpec, files, opts, targetAttr, newAttr);
-
-    if (finder.validateFileSpecChars())
+    try
     {
-        return ERROR_INVALID_NAME;
+        // initialize the search finder with the argument data
+        TreeFinder finder(context, fileSpec, files, opts, targetAttr, newAttr);
+
+        // go perform the search
+        return finder.findFiles();
     }
-
-    // Get the full path segment and the file name segment by expanding the
-    // file specification string.  It seems highly unlikely, but possible, that
-    // this could fail.
-    finder.getFullPath();
-
-    if (recursiveFindFile(context, path, &treeData, targetMask, newMask, options))
+    catch (TreeFinder::TreeFinderException e)
     {
-        context->SetStemArrayElement(treeData.files, 0, context->WholeNumber(treeData.count));
-        result = 0;
+        if (e == TreeFinder::InvalidFileName)
+        {
+            return ERROR_INVALID_NAME;
+        }
     }
     return 0;
 }
@@ -462,18 +458,42 @@ RexxRoutine5(uint32_t, SysFileTree, CSTRING, fSpec, RexxStemObject, files, OPTIO
 // this next section are platform-independent methods for the TreeFinder class.
 // platform-specific methods are located in the appropriate SysRexxUtil.cpp file.
 TreeFinder::TreeFinder(RexxCallContext *c, const char *f, RexxStemObject s, const char *opts, const char *targetAttr, const char *newAttr) :
-    context(c), count(0), RexxStemObject(s), fileSpec(c),
+    context(c), count(0), files(s), filePath(c), fileSpec(c),
     foundFile(c), foundFileLine(c), nameSpec(c)
 {
     // save the initial file spec
     fileSpec = f;
+    // validate the file specification
+    validateFileSpec();
+    // process the SysFileTreeOptions
     getOptions(opts);
 
     // validate the new and target attributes
-    targetAttributes.parseMask(targetAttr, 4);
-    newAttributes.parseMask(newAttr, 5);
+    parseMask(targetAttr, targetAttributes, 4);
+    parseMask(newAttr, newAttributes, 5);
+
+    // clear any existing count to be zero before we start looking
     context->SetStemArrayElement(files, 0, context->WholeNumber(0));
 }
+
+
+/**
+ * Main method for driving the validation of options and file names and
+ * then performing the file searches.
+ *
+ * @return Any approriate error codes, or 0 for success.
+ */
+uint32_t TreeFinder::findFiles()
+{
+    // Get the full path segment and the file name segment by expanding the
+    // file specification string.  It seems highly unlikely, but possible, that
+    // this could fail.
+    getFullPath();
+
+    // now start the search
+    recursiveFindFile(filePath);
+}
+
 
 /**
  * The file specification consists of the search string as sent by the Rexx
@@ -500,8 +520,11 @@ void TreeFinder::validateFileSpec()
     size_t len = fileSpec.length();
     if (len == 0)
     {
-        nullStringException("SysFileTree", 1);
+        nullStringException(context, "SysFileTree", 1);
     }
+
+    // apply any platform-specific rules to the file spec name.
+    validateFileSpecName();
 
     // apply platform rules to adjust for directories.
     adjustDirectory();
@@ -528,7 +551,7 @@ void TreeFinder::parseMask(const char *mask, AttributeMask &flags, size_t argPos
             badMaskException(argPos, mask);
         }
 
-        if (!goodMask(mask, flags))
+        if (!flags.parseMask(mask, flags))
         {
             badMaskException(argPos, mask);
         }
@@ -547,7 +570,7 @@ void TreeFinder::badSFTOptsException(const char *actual)
              "SysFileTree options argument must be a combination of F, D, B, S, T, L, I, O, or Z; found \"%s\"",
              actual);
 
-    context->ThrowException1(Rexx_Error_Incorrect_call_user_defined, c->String(buf));
+    context->ThrowException1(Rexx_Error_Incorrect_call_user_defined, context->String(buf));
 }
 
 /**
@@ -661,27 +684,16 @@ bool TreeFinder::goodOpts(const char *opts)
 
 
 /**
- * This function expands the file spec passed in to the funcition into its full
- * path name.  The full path name is then split into the path portion and the
- * file name portion.  The path portion is then returned in path and the file
- * name portion is returned in fileName.
+ * This function expands the file spec into its full path name.
+ * The full path name is then split into the path portion and
+ * the file name portion.  The path portion is then returned in
+ * filePath and the file name portion is returned in nameSpec.
  *
- * The path portion will end with the '\' char if fSpec contains a path.
+ * The filePOath portion will end with the PathDelimiter
+ * character if the filespec contains a path.
  *
- * @param fSpec
- * @param path       Pointer to path buffer.  Path buffer is allocated memory,
- *                   not a static buffer.
- * @param filename
- * @param pathLen    Pointer to size of the path buffer.
- *
- * @remarks  On entry, the buffer pointed to by fSpec is guaranteed to be at
- *           least strlen(fSpec) + FNAMESPEC_BUF_EXTRA (8).  So, we can strcat
- *           to it at least 7 characters and still have it null terminated.
- *
- *           In addition, the path buffer is guarenteed to be at least that size
- *           also.
  */
-void TreeFinder::getPath()
+void TreeFinder::getFullPath()
 {
 
     // Find the position of the last slash in fSpec
@@ -788,6 +800,8 @@ void TreeFinder::expandPath2fullPath(size_t lastSlashPos)
     // now do any platform-specific resolution that might be needed here
     fixupFilePath();
 }
+
+
 /**
  * Finds all files matching a file specification, formats a file name line and
  * adds the formatted line to a stem.  Much of the data to complete this
@@ -798,32 +812,6 @@ void TreeFinder::expandPath2fullPath(size_t lastSlashPos)
  *
  * @param path        Current directory we are searching.
  *
- * @remarks  For both targetMask and newMask, each index of the mask corresponds
- *           to a different file attribute.  Each index and its associated
- *           attribute are as follows:
- *
- *                        mask[0] = FILE_ARCHIVED
- *                        mask[1] = FILE_DIRECTORY
- *                        mask[2] = FILE_HIDDEN
- *                        mask[3] = FILE_READONLY
- *                        mask[4] = FILE_SYSTEM
- *
- *           A negative value at a given index indicates that the attribute bit
- *           of the file is not set.  A positive number indicates that the
- *           attribute should be set. A value of 0 indicates a "Don't Care"
- *           setting.
- *
- *           A close reading of MSDN seems to indicate that as long as we are
- *           compiled for ANSI, which we are, that MAX_PATH is sufficiently
- *           large.  But, we will code for the possibility that it is not large
- *           enough, by mallocing dynamic memory if _snprintf indicates a
- *           failure.
- *
- *           We point dTmpFileName at the static buffer and nTmpFileName is set
- *           to the size of the buffer.  If we have to allocate memory,
- *           nTmpFileName will be set to the size we allocate and if
- *           nTmpFileName does not equal what it is originally set to, we know
- *           we have to free the allocated memory.
  */
 void TreeFinder::recursiveFindFile(FileNameBuffer &path)
 {

@@ -49,6 +49,7 @@
 #include "RexxCore.h"
 #include "SystemInterpreter.hpp"
 #include "Interpreter.hpp"
+#include "FileNameBuffer.hpp"
 
 ULONG SystemInterpreter::exceptionHostProcessId = 0;
 HANDLE SystemInterpreter::exceptionHostProcess = NULL;
@@ -189,7 +190,7 @@ bool SystemInterpreter::getEnvironmentVariable(const char *variable, FileNameBuf
     {
         // now request the variable again
         buffer.ensureCapacity(dwSize);
-        GetEnvironmentVariable(variable, buffer, dwSize);
+        GetEnvironmentVariable(variable, (char *)buffer, dwSize);
         return true;
     }
     // make sure this is a null string
@@ -205,7 +206,7 @@ bool SystemInterpreter::getEnvironmentVariable(const char *variable, FileNameBuf
  *               The name of the environment variable.
  * @param value  The variable value.
  */
-void SystemInterpreter::setEnvironmentVariable(const char *variableName, const char *value)
+int SystemInterpreter::setEnvironmentVariable(const char *variableName, const char *value)
 {
-    SetEnvironmentVariable(variableName, value);
+    return SetEnvironmentVariable(variableName, value) == 0 ? 0 : GetLastError();
 }

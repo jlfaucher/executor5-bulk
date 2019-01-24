@@ -585,7 +585,7 @@ void TreeFinder::adjustFileSpec()
  *        probably don't know that.  Not sure if we should flag that as illegal
  *        or not.
  */
-bool TreeFinder::validateFileSpecChars()
+void TreeFinder::validateFileSpecName()
 {
     const char illegal[] = "<>|\"";
 
@@ -593,7 +593,7 @@ bool TreeFinder::validateFileSpecChars()
     {
         if (strchr((const char *)fileSpec, illegal[i]) != NULL)
         {
-            return true;
+            throw InvalidFileName;
         }
     }
 
@@ -602,16 +602,14 @@ bool TreeFinder::validateFileSpecChars()
     {
         if (((int32_t)(pos - fileSpec + 1)) != 2)
         {
-            return true;
+            throw InvalidFileName;
         }
 
         if (strchr(pos + 1, ':') != NULL)
         {
-            return true;
+            throw InvalidFileName;
         }
     }
-
-    return false;
 }
 
 
@@ -1615,13 +1613,6 @@ RexxRoutine5(RexxStringObject, SysTextScreenSize,
 
 RexxRoutine2(uint32_t, RxWinExec, CSTRING, command, OPTIONAL_CSTRING, show)
 {
-    int         CmdShow = SW_SHOWNORMAL; /* show window style flags    */
-    int         index;                   /* table index                */
-    ULONG       pid;                     /* PID or error return code   */
-    size_t      length;                  /* length of option           */
-    STARTUPINFO si;
-    PROCESS_INFORMATION procInfo;
-
     // Show window types.
     PSZ    show_styles[] =
     {
@@ -1651,16 +1642,20 @@ RexxRoutine2(uint32_t, RxWinExec, CSTRING, command, OPTIONAL_CSTRING, show)
         context->InvalidRoutine();
         return 0;
     }
+
+    int cmdShow = SW_SHOWNORMAL;    // The style is optional
+
     // Show type can be one and only one of the SW_XXX constants.
     if (show != NULL)
     {
         // Get length of option and search the style table.
 
+        int         index;                   /* table index                */
         for (index = 0; index < sizeof(show_styles) / sizeof(PSZ); index++)
         {
             if (_stricmp(show, show_styles[index]) == 0)
             {
-                CmdShow = show_flags[index];
+                cmdShow = show_flags[index];
                 break;
             }
         }
@@ -1672,11 +1667,15 @@ RexxRoutine2(uint32_t, RxWinExec, CSTRING, command, OPTIONAL_CSTRING, show)
         }
     }
 
+    ULONG       pid;                     /* PID or error return code   */
+    STARTUPINFO si;
+    PROCESS_INFORMATION procInfo;
+
     ZeroMemory(&procInfo, sizeof(procInfo));
     ZeroMemory(&si, sizeof(si));
     si.cb = sizeof(si);
     si.dwFlags = STARTF_USESHOWWINDOW;
-    si.wShowWindow = (WORD)CmdShow;
+    si.wShowWindow = (WORD)cmdShow;
 
     if (CreateProcess(NULL, (LPSTR)command, NULL, NULL, FALSE, 0, NULL,
                       NULL, &si, &procInfo))
