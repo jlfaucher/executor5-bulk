@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2008-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2008-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -260,6 +260,12 @@
 ::method TestSetMutableBufferCapacity EXTERNAL "LIBRARY orxmethod TestSetMutableBufferCapacity"
 ::method TestSetMutableBufferValue EXTERNAL "LIBRARY orxmethod TestSetMutableBufferValue"
 ::method TestGetMutableBufferValue EXTERNAL "LIBRARY orxmethod TestGetMutableBufferValue"
+
+::method TestAllocateObjectMemory   EXTERNAL "LIBRARY orxmethod"
+::method TestFreeObjectMemory       EXTERNAL "LIBRARY orxmethod"
+::method TestReallocateObjectMemory EXTERNAL "LIBRARY orxmethod"
+::method TestSetObjectMemory        EXTERNAL "LIBRARY orxmethod"
+::method TestGetObjectMemory        EXTERNAL "LIBRARY orxmethod"
 
 ::method TestRaiseExceptionX
   signal on syntax

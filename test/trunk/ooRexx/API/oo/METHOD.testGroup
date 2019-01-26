@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2008-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2008-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -1216,6 +1216,7 @@ return .ooTestResult~new(5)~~addException(err)
   a.1 = "abc"
   tester~TestDropStemElement(a., 1)
   self~assertFalse(var("A.1"))
+  signal off novalue
   self~assertSame("A.1", a.1)
   a.1.2.3 = "abc"
   tester~TestDropStemElement(a., 1.2.3)
@@ -1246,6 +1247,7 @@ return .ooTestResult~new(5)~~addException(err)
   tester = .METHODTester~new
   a.1 = "abc"
   tester~TestDropStemArrayElement(a., 1)
+  signal off novalue
   self~assertFalse(var("A.1"))
   self~assertSame("A.1", a.1)
   tester~TestDropStemArrayElement(a., 2)
@@ -2814,4 +2816,35 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame("12345678901234567890", tester~TestGetMutableBufferValue(buffer))
 
 
+-- test new APIs for [feature-requests:#634] Add a per-object storage management API
+-- AllocateObjectMemory, FreeObjectMemory, ReallocateObjectMemory
+::method test_ObjectMemory
+  tester = .METHODtester~new
 
+  p100 = tester~TestAllocateObjectMemory(100)
+  self~assertIsA(p100, .Pointer)
+  self~assertFalse(p100~isNull)
+  data = "x"~copies(99)
+  tester~TestSetObjectMemory(p100, data)
+  self~assertSame(data, tester~TestGetObjectMemory(p100))
+
+  -- reallocation to a smaller size should be a nop
+  p50 = tester~TestReallocateObjectMemory(p100, 50)
+  self~assertIsA(p50, .Pointer)
+  self~assertTrue(p50 = p100)
+  self~assertSame(data, tester~TestGetObjectMemory(p50))
+
+  -- reallocation to a larger size should return a new pointer
+  p250 = tester~TestReallocateObjectMemory(p100, 250)
+  self~assertIsA(p250, .Pointer)
+  self~assertFalse(p250~isNull)
+  self~assertFalse(p250 = p100)
+  self~assertSame(data, tester~TestGetObjectMemory(p250))
+  data = "x"~copies(249)
+  tester~TestSetObjectMemory(p250, data)
+  self~assertSame(data, tester~TestGetObjectMemory(p250))
+
+  tester~TestFreeObjectMemory(p250)
+
+
+::options novalue error
