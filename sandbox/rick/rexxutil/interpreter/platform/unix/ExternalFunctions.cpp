@@ -80,6 +80,7 @@
 #include "SystemInterpreter.hpp"
 #include "PackageManager.hpp"
 #include "BufferClass.hpp"
+#include "FileNameBuffer.hpp"
 
 
 #define DRVNUM          0x40                /* drive number subtractor        */
@@ -144,7 +145,7 @@ RexxRoutine2(RexxStringObject, sysFilespec, CSTRING, option, CSTRING, name)
             {                                /* everything to right of slash        */
                 return context->String(nameStart, endPtr - nameStart);
             }
-
+                                                     *
         case FILESPEC_DRIVE:                 /* extract the drive name               */
             {                                /* compatibility to windows, no drive   */
                 return context->NullString();
@@ -295,7 +296,6 @@ RexxObject *SystemInterpreter::buildEnvlist()
     BufferClass *newBuffer;               /* Buffer object to hold env  */
     char      **Environment;             /* environment pointer        */
     size_t      size = 0;                /* size of the new buffer     */
-    char       *curr_dir;                /* current directory          */
     char       *New;                     /* starting address of buffer */
     Environment = getEnvironment();      /* get the ptr to the environ */
 
@@ -308,14 +308,14 @@ RexxObject *SystemInterpreter::buildEnvlist()
     {
         return OREF_NULL;                  /* no envrionment !           */
     }
-    if (!(curr_dir=(char *)malloc(PATH_MAX + 3)))/* malloc storage for cwd*/
-    {
-        reportException(Error_System_service);
-    }
+
+    FileNameBuffer curr_dir;
 
     // start with a copy of the current working directory
-    SystemInterpreter::getCurrentWorkingDirectory(curr_dir);
-    size += strlen(curr_dir);            /* add the space for curr dir */
+    SystemInterpreter::getCurrentDirectory(curr_dir);
+    size_t dirLen = curr_dir.length();
+
+    size += dirLen;                      /* add the space for curr dir */
     size++;                              /* and its terminating '\0'   */
     size += sizeof(size_t);              /* this is for the size itself*/
                                          /* Now we have the size for   */
@@ -325,11 +325,8 @@ RexxObject *SystemInterpreter::buildEnvlist()
     New = newBuffer->getData();
     ((ENVENTRY*)New)->size = size;       /* first write the size       */
     New += sizeof(size_t);               /* update the pointer         */
-                                         /* now write the curr dir     */
-    memcpy(New,curr_dir,strlen(curr_dir));
-    New += strlen(curr_dir);             /* update the pointer         */
-    memcpy(New,"\0",1);                  /* write the terminator       */
-    New++;                               /* update the pointer         */
+    strcpy(New, (const char *)curr_dir); // add the current dir to the buffer
+    New += dirLen + 1;                   /* update the pointer         */
     Environment = getEnvironment();      /* reset to begin of environ  */
                                          /* Loop through environment   */
                                          /* and copy all entries to the*/
@@ -337,13 +334,11 @@ RexxObject *SystemInterpreter::buildEnvlist()
                                          /* with '\0'                  */
     for (;*Environment != NULL;Environment++)
     {
-        /* copy the entry             */
-        memcpy(New,*Environment,strlen(*Environment));
-        New += strlen(*Environment);       /* update the pointer         */
-        memcpy(New,"\0",1);                /* write the terminator       */
-        New++;                             /* update the pointer         */
+        // copy the entry and step over it
+        size_t len = strlen(*Environment);
+        strcpy(New, *Environment);
+        New += len + 1;
     }
-    free(curr_dir);                      /* free curr dir buffer       */
     return newBuffer;                    /* return the pointer         */
 }
 

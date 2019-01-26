@@ -551,7 +551,7 @@ void TreeFinder::parseMask(const char *mask, AttributeMask &flags, size_t argPos
             badMaskException(argPos, mask);
         }
 
-        if (!flags.parseMask(mask, flags))
+        if (!flags.parseMask(mask))
         {
             badMaskException(argPos, mask);
         }
@@ -586,7 +586,7 @@ void TreeFinder::badMaskException(size_t pos, const char *actual)
              "SysFileTree argument %zd must be 5 characters or less in length containing only '+', '-', or '*'; found \"%s\"",
              pos, actual);
 
-    context->ThrowException1(Rexx_Error_Incorrect_call_user_defined, c->String(buf));
+    context->ThrowException1(Rexx_Error_Incorrect_call_user_defined, context->String(buf));
 }
 
 
@@ -607,10 +607,10 @@ void TreeFinder::getOptions(const char *opts)
         // a NULL string is not a valid option
         if (strlen(opts) == 0)
         {
-            nullStringException(context->threadContext, "SysFileTree", 3);
+            nullStringException(context, "SysFileTree", 3);
         }
 
-        if (!goodOpts(context, opts, options))
+        if (!goodOpts(opts))
         {
             badSFTOptsException(opts);
         }
@@ -646,7 +646,6 @@ bool TreeFinder::goodOpts(const char *opts)
 
             case 'L':                      // use long time format
                 options[LONG_TIME] = true;
-                options |= LONG_TIME;
                 break;
 
             case 'F':                      // include only files
@@ -695,36 +694,23 @@ bool TreeFinder::goodOpts(const char *opts)
  */
 void TreeFinder::getFullPath()
 {
-
     // Find the position of the last slash in fSpec
-    int lastSlashPos = findDirectoryEnd()
+    int lastSlashPos = findDirectoryEnd();
 
     // If lastSlashPos is less than 0, then there is no directory present in
     // fileSpec.
     if (lastSlashPos < 0)
     {
         // this does not have a path on it, so add one
-        expandNonPath2fullPath(&lastSlashPos);
+        expandNonPath2fullPath();
     }
     else
     {
         // we need to split the path off from the file spec
-        expandPath2fullPath(fileSpec, lastSlashPos)
+        expandPath2fullPath(lastSlashPos);
     }
 
-    // Get the file name from fileSpec, the portion just after the last '\'
-    if (fileSpec[lastSlashPos + 1] != '\0')
-    {
-        // The position after the last slash is not the null terminator so there
-        // is something to copy over to the file name segment.
-        nameSpec = &fileSpec[lastSlashPos + 1];
-    }
-    else
-    {
-        // The last slash is the last character in fileSpec, just use wildcards for
-        // the file name segment.
-        nameSpec = "*";
-    }
+    // the above operations have also split off the nameSpec section
 }
 
 
@@ -749,7 +735,7 @@ void TreeFinder::expandNonPath2fullPath()
         }
         // previous directory, add the path delimiter to the
         // end of the path and use "*" for the search path
-        else if (fileSpec = "..")
+        else if (fileSpec == "..")
         {
             // make sure we have a path delimiter on the end
             // add the .., the final path delimiter is added below
@@ -791,7 +777,7 @@ void TreeFinder::expandPath2fullPath(size_t lastSlashPos)
     else
     {
         // copy over the trailing part
-        nameSpec = fileSpec + (lastSlashPos + 1);
+        nameSpec = (const char *)fileSpec + (lastSlashPos + 1);
     }
     // ok, the leading part we copy over to the filePath and then see if
     // there are any additional platform-specific fixups required.
@@ -848,9 +834,8 @@ void TreeFinder::recursiveFindFile(FileNameBuffer &path)
     {
         // reset the pattern to search for everything at this level.
         tempFileName = path;
-        tempFileName += "*";
         // get a file iterator to search through the names
-        SysFileIterator dirFinder(tempFileName);
+        SysFileIterator dirFinder(path, NULL, tempFileName, false);
 
         RoutineFileNameBuffer directoryName(context);
 
@@ -866,7 +851,7 @@ void TreeFinder::recursiveFindFile(FileNameBuffer &path)
 
             // we skip the dot directories. We're already searching the first, and
             // the second would send us backwards
-            if (directoryName == "." || directoryName == "..")
+            if (tempFileName == "." || tempFileName == "..")
             {
                 continue;
             }
@@ -877,7 +862,7 @@ void TreeFinder::recursiveFindFile(FileNameBuffer &path)
             directoryName += SysFileSystem::PathDelimiter;
 
             // Search the next level.
-            recursiveFindFile(DirectoryName);
+            recursiveFindFile(directoryName);
         }
         // close the directory finder
         dirFinder.close();
@@ -1183,8 +1168,9 @@ RexxRoutine1(int, SysLoadRexxMacroSpace, CSTRING, file)
 *            -1 - sort failed                                            *
 *************************************************************************/
 
-RexxRoutine7(int, SysStemSort, RexxStringObject, stem, OPTIONAL_CSTRING, order, OPTIONAL_CSTRING, type, OPTIONAL_size_t, first, OPTIONAL_size_t, last,
-    OPTIONAL_size_t, firstCol, OPTIONAL_size_t, lastCol)
+RexxRoutine7(int, SysStemSort, RexxStringObject, stem, OPTIONAL_CSTRING, order, OPTIONAL_CSTRING, type,
+    OPTIONAL_positive_wholenumber_t, first, OPTIONAL_positive_wholenumber_t, last,
+    OPTIONAL_positive_wholenumber_t, firstCol, OPTIONAL_positive_wholenumber_t, lastCol)
 {
     int           sortType = SORT_CASESENSITIVE;
     int           sortOrder = SORT_ASCENDING;
@@ -1197,14 +1183,14 @@ RexxRoutine7(int, SysStemSort, RexxStringObject, stem, OPTIONAL_CSTRING, order, 
     // a stem name because the old code was lax and it just happened to work. We need to process this
     // as a name and make sure it has a period at the end.
     memset(stemName, 0, sizeof(stemName));
-    strncpy(stemName, stem);
-    if (stemName[strlen(stem) - 1] != '.')
+    strncpy(stemName, context->ObjectToStringValue(stem), sizeof(stemName));
+    if (stemName[strlen(stemName) - 1] != '.')
     {
-        stemName[strlen(stem)] = '.';
+        stemName[strlen(stemName)] = '.';
     }
 
     // check other parameters.  sort order
-    if ( order != NULL)
+    if (order != NULL)
     {
         switch ( order[0] )
         {
@@ -1242,66 +1228,43 @@ RexxRoutine7(int, SysStemSort, RexxStringObject, stem, OPTIONAL_CSTRING, order, 
     }
 
     // first element to sort
-    if (argumentExists(4))
+    if (argumentOmitted(4))
     {
-        // must be positive
-        if ( first == 0 )
-        {
-            context->InvalidRoutine();
-            return 0;
-        }
-    }
-    // start with the first element if not specified
-    else
-    {
+        // start with the first element if not specified
         first = 1;
     }
 
     // last element to sort
-    if (argumentExists(5))
+    if (argumentOmitted(5))
     {
-        // can't go backwards
-        if (last < first)
-        {
-            context->InvalidRoutine();
-            return 0;
-        }
-    }
-    // do everything
-    else
-    {
+        // do everything
         last = SIZE_MAX;
     }
 
-    // first column to sort
-    if (argumentExists(6))
+    // can't go backwards
+    if (last < first)
     {
-        // must be positive
-        if ( firstCol == 0 )
-        {
-            context->InvalidRoutine();
-            return 0;
-        }
-        firstCol;
+        context->InvalidRoutine();
+        return 0;
     }
-    else
+
+    // first column to sort
+    if (argumentOmitted(6))
     {
         firstCol = 1;
     }
 
 
     // last column to sort
-    if (argumentExists(7))
+    if (argumentOmitted(7))
     {
-        if (lastCol == 0 || lastCol < firstCol)
-        {
-            context->InvalidRoutine();
-            return 0;
-        }
+        lastCol = SIZE_MAX;
     }
-    else
+
+    if (lastCol < firstCol)
     {
-        lastCol = SIZE_MAX
+        context->InvalidRoutine();
+        return 0;
     }
 
     // the sorting is done in the interpreter
@@ -1597,16 +1560,16 @@ int writeVariable(SysFile &file, RexxCallContext *context, RexxStringObject name
 
     RexxStringObject stringValue = context->ObjectToString(value);
 
-    size_t valueLength = context->StringLength(value);
-    const char *valueData = context->StringData(value);
+    size_t valueLength = context->StringLength(stringValue);
+    const char *valueData = context->StringData(stringValue);
 
     size_t bytesWritten;
 
-    file.write("Name=", sizeof("Name="), bytesWritten, NULL);
-    file.write(nameData, nameLength, bytesWritten, NULL);
-    file.write(", Value='", sizeof(", Value='"), bytesWritten, NULL);
-    file.write(valueData, valueLength, bytesWritten, NULL);
-    file.write("'\r\n", sizeof("'\r\n"), bytesWritten, NULL);
+    file.write("Name=", sizeof("Name="), bytesWritten);
+    file.write(nameData, nameLength, bytesWritten);
+    file.write(", Value='", sizeof(", Value='"), bytesWritten);
+    file.write(valueData, valueLength, bytesWritten);
+    file.write("'\r\n", sizeof("'\r\n"), bytesWritten);
 
     // now release the local references
 
@@ -1633,17 +1596,17 @@ int writeVariable(SysFile &file, RexxCallContext *context, const char *stem, Rex
 
     RexxStringObject stringValue = context->ObjectToString(value);
 
-    size_t valueLength = context->StringLength(value);
-    const char *valueData = context->StringData(value);
+    size_t valueLength = context->StringLength(stringValue);
+    const char *valueData = context->StringData(stringValue);
 
     size_t bytesWritten;
 
-    file.write("Name=", sizeof("Name="), bytesWritten, NULL);
-    file.write(stem, strlen(stem), bytesWritten, NULL);
-    file.write(nameData, nameLength, bytesWritten, NULL);
-    file.write(", Value='", sizeof(", Value='"), bytesWritten, NULL);
-    file.write(valueData, valueLength, bytesWritten, NULL);
-    file.write("'\r\n", sizeof("'\r\n"), bytesWritten, NULL);
+    file.write("Name=", sizeof("Name="), bytesWritten);
+    file.write(stem, strlen(stem), bytesWritten);
+    file.write(nameData, nameLength, bytesWritten);
+    file.write(", Value='", sizeof(", Value='"), bytesWritten);
+    file.write(valueData, valueLength, bytesWritten);
+    file.write("'\r\n", sizeof("'\r\n"), bytesWritten);
 
     // now release the local references
 
@@ -1667,18 +1630,16 @@ int writeVariable(SysFile &file, RexxCallContext *context, const char *stem, Rex
 RexxRoutine1(int, SysDumpVariables, OPTIONAL_CSTRING, fileName)
 {
     SysFile   outFile;;
-    bool      closeFile = false;
 
     if (fileName != NULL)
     {
         RoutineQualifiedName qualifiedName(context, fileName);
 
-        if (!outfile.open(qualifiedName, RX_O_WRONLY | RX_O_APPEND | RX_O_CREAT, RX_S_IWUSR | RX_S_IRUSR | RX_S_IWGRP | RX_S_IRGRP | RX_S_IWOTH | RX_S_IROTH))
+        if (!outFile.open(qualifiedName, RX_O_WRONLY | RX_O_APPEND | RX_O_CREAT, RX_SH_DENYRW, RX_S_IWRITE | RX_S_IREAD))
         {
             context->InvalidRoutine();
             return 0;
         }
-        closeFile = true;
     }
     else
     {
@@ -1686,14 +1647,14 @@ RexxRoutine1(int, SysDumpVariables, OPTIONAL_CSTRING, fileName)
     }
 
     // get a snapshot of the variables
-    RexxDirectoryObject variables = context->getAllContextVariables();
+    RexxDirectoryObject variables = context->GetAllContextVariables();
 
     // get a supplier for the variables
     RexxSupplierObject variableSupplier = (RexxSupplierObject)context->SendMessage0(variables, "SUPPLIER");
 
     while (context->SupplierAvailable(variableSupplier))
     {
-        RexxStringObject variableName = context->SupplierIndex(variableSupplier);
+        RexxObjectPtr variableName = context->SupplierIndex(variableSupplier);
         CSTRING name = context->ObjectToStringValue(variableName);
 
         // if the name ends in a period, this is a stem. We need to get the stem object
@@ -1701,7 +1662,7 @@ RexxRoutine1(int, SysDumpVariables, OPTIONAL_CSTRING, fileName)
         if (name[strlen(name) - 1] == '.')
         {
             // get the stem value
-            RexxStemObject stem = (RexxStemObject)context->SupplierValue(variableSupplier);
+            RexxStemObject stem = (RexxStemObject)context->SupplierItem(variableSupplier);
 
             RexxObjectPtr stemValue = context->GetStemValue(stem);
 
@@ -1718,7 +1679,7 @@ RexxRoutine1(int, SysDumpVariables, OPTIONAL_CSTRING, fileName)
             while (context->SupplierAvailable(compoundSupplier))
             {
                 RexxStringObject tailName = (RexxStringObject)context->SupplierIndex(compoundSupplier);
-                RexxObjectPtr compoundValue = context->SupplierValue(compoundSupplier);
+                RexxObjectPtr compoundValue = context->SupplierItem(compoundSupplier);
 
                 writeVariable(outFile, context, name, tailName, compoundValue);
 
@@ -1733,7 +1694,7 @@ RexxRoutine1(int, SysDumpVariables, OPTIONAL_CSTRING, fileName)
         else
         {
             // get the stem value
-            RexxObjectPtr value = context->SupplierValue(variableSupplier);
+            RexxObjectPtr value = context->SupplierItem(variableSupplier);
 
             // and write it out
             writeVariable(outFile, context, variableName, value);
@@ -1741,11 +1702,6 @@ RexxRoutine1(int, SysDumpVariables, OPTIONAL_CSTRING, fileName)
 
         // step to the next variable
         context->SupplierNext(variableSupplier);
-    }
-
-    if (closeFile)
-    {
-        close(outFile);
     }
 
     return 0

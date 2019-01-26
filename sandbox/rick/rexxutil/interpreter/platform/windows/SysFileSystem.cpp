@@ -1074,19 +1074,26 @@ int SysFileSystem::moveFile(const char *fromFile, const char *toFile)
  */
 SysFileIterator::SysFileIterator(const char *path, const char *pattern, FileNameBuffer &buffer, bool c)
 {
+    // we can bypass limits on length of the path if we prepend the file spec with
+    // the special marker
+    buffer = "\\\\?\\";
+
     // save the pattern and convert into a wild card
     // search
-    buffer = path;
+    buffer += path;
+    // make sure there is a trailing delimiter
+    buffer.addFinalPathDelimiter();
     // if no pattern was given, then just use a wild card
     if (pattern == NULL)
     {
-        buffer += "\\*.*";
+        buffer += "*.*";
     }
+    // add the pattern section to the fully-resolved buffer
     else
     {
-        buffer += '\\';
         buffer += pattern;
     }
+
     // this assumes we'll fail...if we find something,
     // we'll flip this
     completed = true;

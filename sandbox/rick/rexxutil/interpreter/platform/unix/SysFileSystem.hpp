@@ -49,6 +49,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <dirent.h>
++#include <errno.h>
 
 #if defined(PATH_MAX)
 # define MAXIMUM_PATH_LENGTH PATH_MAX + 1

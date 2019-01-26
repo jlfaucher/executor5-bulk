@@ -89,7 +89,7 @@ BufferClass* SystemInterpreter::readProgram(const char *file_name)
     SysFile programFile;          // the file we're reading
 
     // if unable to open this, return false
-    if (!programFile.open(imageFile, RX_O_RDONLY, RX_SH_DENY_WR, RX_S_IREAD))
+    if (!programFile.open(imageFile, RX_O_RDONLY, RX_SH_DENYWR, RX_S_IREAD))
     {
         return OREF_NULL;
     }
