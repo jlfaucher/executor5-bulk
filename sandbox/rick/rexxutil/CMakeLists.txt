@@ -787,7 +787,6 @@ set (parser_sources ${build_parser_dir}/Clause.cpp
             ${build_parser_dir}/Token.cpp)
 set (platform_sources ${build_interpreter_platform_dir}/ErrorMessages.cpp
             ${build_interpreter_platform_dir}/ExternalFunctions.cpp
-            ${build_interpreter_platform_dir}/FileSystem.cpp
             ${build_interpreter_platform_dir}/MemorySupport.cpp
             ${build_interpreter_platform_dir}/MiscSystem.cpp
             ${build_interpreter_platform_dir}/SysActivity.cpp

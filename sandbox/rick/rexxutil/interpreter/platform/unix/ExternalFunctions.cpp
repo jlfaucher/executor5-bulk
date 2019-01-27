@@ -86,7 +86,7 @@
 #define DRVNUM          0x40                /* drive number subtractor        */
 #define DIRLEN          256                 /* length of a directory          */
 #define FULLSEG         65536L              /* ^4K constant                   */
-                                            /* FILESPEC function options      */
+/* FILESPEC function options      */
 #define FILESPEC_PATH         'P'
 #define FILESPEC_NAME         'N'
 #define FILESPEC_LOCATION     'L'
@@ -96,7 +96,7 @@
 #define KIOCSOUND   0x4B2F              /* start sound generation (0 for off) */
 
 typedef struct _ENVENTRY {                  /* setlocal/endlocal structure    */
-  size_t   size;                            /* size of the saved memory       */
+     size_t   size;                            /* size of the saved memory       */
 } ENVENTRY;
 
 int putflag = 0;                            /* static or dynamic env memory   */
@@ -137,42 +137,42 @@ RexxRoutine2(RexxStringObject, sysFilespec, CSTRING, option, CSTRING, name)
     switch (toupper(*option))              /* process each option               */
     {
         case FILESPEC_PATH:                /* extract the path                  */
-            {
-                return context->String(pathStart, pathEnd - pathStart);
-            }
+        {
+            return context->String(pathStart, pathEnd - pathStart);
+        }
 
         case FILESPEC_NAME:                  /* extract the file name               */
-            {                                /* everything to right of slash        */
-                return context->String(nameStart, endPtr - nameStart);
-            }
-                                                     *
+        {                                /* everything to right of slash        */
+            return context->String(nameStart, endPtr - nameStart);
+        }
+
         case FILESPEC_DRIVE:                 /* extract the drive name               */
-            {                                /* compatibility to windows, no drive   */
-                return context->NullString();
-            }
+        {                                /* compatibility to windows, no drive   */
+            return context->NullString();
+        }
 
         case FILESPEC_LOCATION:          /* extract the file name               */
-            {                                /* everything to left of slash        */
-                return context->String(name, pathEnd - name);
-            }
+        {                                /* everything to left of slash        */
+            return context->String(name, pathEnd - name);
+        }
 
         case FILESPEC_EXTENSION:           // extract the file extension
+        {
+            // find the position of the last dot
+            const char *lastDot = strrchr(name, '.');
+
+            if (lastDot >= nameStart)
             {
-                // find the position of the last dot
-                const char *lastDot = strrchr(name, '.');
-
-                if (lastDot >= nameStart)
-                {
-                    // we don't extract the period
-                    lastDot++;
-                    return context->String(lastDot, endPtr - lastDot);
-                }
-                else
-                {
-                    return context->NullString();        // nothing found, return the empty string
-                }
-
+                // we don't extract the period
+                lastDot++;
+                return context->String(lastDot, endPtr - lastDot);
             }
+            else
+            {
+                return context->NullString();        // nothing found, return the empty string
+            }
+
+        }
         default:                           /* unknown option                    */
         {
             char optionChar[2];
@@ -180,7 +180,7 @@ RexxRoutine2(RexxStringObject, sysFilespec, CSTRING, option, CSTRING, name)
             optionChar[1] = '\0';
 
             RexxArrayObject subs = context->Array(context->String("FILESPEC"), context->WholeNumberToObject(1),
-                context->String("ELNP"), context->String(optionChar));
+                                                  context->String("ELNP"), context->String(optionChar));
             /* raise an error                    */
             context->RaiseException(Rexx_Error_Incorrect_call_list, subs);
             return NULLOBJECT;
@@ -201,13 +201,13 @@ RexxRoutine2(RexxStringObject, sysFilespec, CSTRING, option, CSTRING, name)
 /*               5) Macro-space post-order functions                          */
 /******************************************************************************/
 bool SystemInterpreter::invokeExternalFunction(
-  RexxActivation * activation,         /* Current Activation                */
-  Activity   * activity,           /* activity in use                   */
-  RexxString     * target,             /* Name of external function         */
-  RexxObject    ** arguments,          /* Argument array                    */
-  size_t           argcount,           /* count of arguments                */
-  RexxString     * calltype,           /* Type of call                      */
-  ProtectedObject &result)
+    RexxActivation *activation,         /* Current Activation                */
+    Activity   *activity,           /* activity in use                   */
+    RexxString     *target,             /* Name of external function         */
+    RexxObject    **arguments,          /* Argument array                    */
+    size_t           argcount,           /* count of arguments                */
+    RexxString     *calltype,           /* Type of call                      */
+    ProtectedObject &result)
 {
     if (activation->callMacroSpaceFunction(target, arguments, argcount, calltype, RXMACRO_SEARCH_BEFORE, result))
     {
@@ -241,7 +241,7 @@ bool SystemInterpreter::invokeExternalFunction(
  *
  * @return Returns TRUE if the environment was successfully pushed.
  */
-RexxObject *SystemInterpreter::pushEnvironment(RexxActivation *context)
+RexxObject* SystemInterpreter::pushEnvironment(RexxActivation *context)
 {
     RexxObject *Current = buildEnvlist(); /* build the new save block          */
     if (Current == OREF_NULL)           /* if unsuccessful return zero       */
@@ -263,9 +263,9 @@ RexxObject *SystemInterpreter::pushEnvironment(RexxActivation *context)
  *
  * @return Always returns FALSE.  This is a NOP on Windows.
  */
-RexxObject *SystemInterpreter::popEnvironment(RexxActivation *context)
+RexxObject* SystemInterpreter::popEnvironment(RexxActivation *context)
 {
-    BufferClass *Current =  (BufferClass *)context->popEnvironment();/*  block, if ixisted.               */
+    BufferClass *Current =  (BufferClass *)context->popEnvironment(); /*  block, if ixisted.               */
     if (TheNilObject == Current)         /* nothing saved?                    */
     {
         return TheFalseObject;             /* return failure value              */
@@ -291,7 +291,7 @@ RexxObject *SystemInterpreter::popEnvironment(RexxActivation *context)
 /*                                                                   */
 /*********************************************************************/
 
-RexxObject *SystemInterpreter::buildEnvlist()
+RexxObject* SystemInterpreter::buildEnvlist()
 {
     BufferClass *newBuffer;               /* Buffer object to hold env  */
     char      **Environment;             /* environment pointer        */
@@ -299,7 +299,7 @@ RexxObject *SystemInterpreter::buildEnvlist()
     char       *New;                     /* starting address of buffer */
     Environment = getEnvironment();      /* get the ptr to the environ */
 
-    for (;*Environment != NULL;Environment++)
+    for (; *Environment != NULL; Environment++)
     {
         size += strlen(*Environment);      /* calculate the size for all */
         size++;                            /* environment variables+'\0' */
@@ -312,27 +312,27 @@ RexxObject *SystemInterpreter::buildEnvlist()
     FileNameBuffer curr_dir;
 
     // start with a copy of the current working directory
-    SystemInterpreter::getCurrentDirectory(curr_dir);
+    SysFileSystem::getCurrentDirectory(curr_dir);
     size_t dirLen = curr_dir.length();
 
     size += dirLen;                      /* add the space for curr dir */
     size++;                              /* and its terminating '\0'   */
     size += sizeof(size_t);              /* this is for the size itself*/
-                                         /* Now we have the size for   */
-                                         /* allocating the new buffer  */
+    /* Now we have the size for   */
+    /* allocating the new buffer  */
     newBuffer = new_buffer(size);        /* let's do it                */
-                                         /* Get starting address of buf*/
+    /* Get starting address of buf*/
     New = newBuffer->getData();
-    ((ENVENTRY*)New)->size = size;       /* first write the size       */
+    ((ENVENTRY *)New)->size = size;       /* first write the size       */
     New += sizeof(size_t);               /* update the pointer         */
     strcpy(New, (const char *)curr_dir); // add the current dir to the buffer
     New += dirLen + 1;                   /* update the pointer         */
     Environment = getEnvironment();      /* reset to begin of environ  */
-                                         /* Loop through environment   */
-                                         /* and copy all entries to the*/
-                                         /* buffer, each terminating   */
-                                         /* with '\0'                  */
-    for (;*Environment != NULL;Environment++)
+    /* Loop through environment   */
+    /* and copy all entries to the*/
+    /* buffer, each terminating   */
+    /* with '\0'                  */
+    for (; *Environment != NULL; Environment++)
     {
         // copy the entry and step over it
         size_t len = strlen(*Environment);
@@ -355,7 +355,7 @@ RexxObject *SystemInterpreter::buildEnvlist()
 /*********************************************************************/
 
 void SystemInterpreter::restoreEnvironment(
-  void *CurrentEnv)                    /* saved environment          */
+    void *CurrentEnv)                    /* saved environment          */
 {
     char  *current;                      /* ptr to saved environment   */
     size_t size;                         /* size of the saved space    */
@@ -365,14 +365,14 @@ void SystemInterpreter::restoreEnvironment(
 
     char  *del = NULL;                   /* ptr to old unused memory   */
     char  *Env_Var_String;               /* enviornment entry          */
-    char   namebufsave[256],namebufcurr[256];
+    char   namebufsave[256], namebufcurr[256];
     char  *np;
     int i;
 
     Environment = getEnvironment();    /* get the current environment*/
 
-    begin = current = (char *)CurrentEnv;/* get the saved space        */
-    size = ((ENVENTRY*)current)->size;   /* first read out the size    */
+    begin = current = (char *)CurrentEnv; /* get the saved space        */
+    size = ((ENVENTRY *)current)->size;   /* first read out the size    */
     current += sizeof(size_t);           /* update the pointer         */
     if (chdir(current) == -1)             /* restore the curr dir       */
     {
@@ -384,47 +384,47 @@ void SystemInterpreter::restoreEnvironment(
     current++;                           /* jump over '\0'             */
     if (!putflag)
     {                        /* first change in the        */
-                             /* environment ?              */
+        /* environment ?              */
         /* copy all entries to dynamic memory                            */
         /*for all entries in the env  */
-        for (;*Environment != NULL;Environment++)
+        for (; *Environment != NULL; Environment++)
         {
-            length = strlen(*Environment)+1; /* get the size of the string */
-                                             /* and alloc space for it     */
+            length = strlen(*Environment) + 1; /* get the size of the string */
+            /* and alloc space for it     */
             Env_Var_String = (char *)malloc(length);
-            memcpy(Env_Var_String,*Environment,length);/* copy the string  */
+            memcpy(Env_Var_String, *Environment, length); /* copy the string  */
             putenv(Env_Var_String);          /* and make it part of env    */
         }
         putflag = 1;                       /* prevent do it again        */
     }
     /* Loop through the saved env */
     /* entries and restore them   */
-    for (;(size_t)(current-begin)<size;current+=(strlen(current)+1))
+    for (; (size_t)(current - begin) < size; current += (strlen(current) + 1))
     {
         Environment = getEnvironment();    /* get the environment        */
         del = NULL;
         np = current;
         /* extract the the name       */
         /* from the saved enviroment  */
-        for (i=0;(*np!='=')&&(i<255);np++,i++)
+        for (i = 0; (*np != '=') && (i < 255); np++, i++)
         {
-            memcpy(&(namebufsave[i]),np,1);  /* copy the character         */
+            memcpy(&(namebufsave[i]), np, 1);  /* copy the character         */
         }
-        memcpy(&(namebufsave[i]),"\0",1);  /* copy the terminator        */
-                                           /* find the entry in the env  */
-        for (;*Environment != NULL;Environment++)
+        memcpy(&(namebufsave[i]), "\0", 1);  /* copy the terminator        */
+        /* find the entry in the env  */
+        for (; *Environment != NULL; Environment++)
         {
             np = *Environment;
             /* extract the the name       */
             /* from the current env       */
-            for (i=0;(*np!='=')&&(i<255);np++,i++)
+            for (i = 0; (*np != '=') && (i < 255); np++, i++)
             {
-                memcpy(&(namebufcurr[i]),np,1);/* copy the character         */
+                memcpy(&(namebufcurr[i]), np, 1); /* copy the character         */
             }
-            memcpy(&(namebufcurr[i]),"\0",1);/* copy the terminator        */
+            memcpy(&(namebufcurr[i]), "\0", 1); /* copy the terminator        */
 
-            if (!strcmp(namebufsave,namebufcurr))
-            {/* have a match ?         */
+            if (!strcmp(namebufsave, namebufcurr))
+            { /* have a match ?         */
                 del = *Environment;            /* remember it for deletion   */
                 break;                         /* found, so get out of here  */
             }

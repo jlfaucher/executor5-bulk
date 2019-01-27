@@ -49,24 +49,24 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <dirent.h>
-+#include <errno.h>
+#include <errno.h>
 
 #if defined(PATH_MAX)
-# define MAXIMUM_PATH_LENGTH PATH_MAX + 1
+#define MAXIMUM_PATH_LENGTH PATH_MAX + 1
 #elif defined(_POSIX_PATH_MAX)
-# define MAXIMUM_PATH_LENGTH _POSIX_PATH_MAX + 1
+#define MAXIMUM_PATH_LENGTH _POSIX_PATH_MAX + 1
 #else
-# define MAXIMUM_PATH_LENGTH
+#define MAXIMUM_PATH_LENGTH
 #endif
 
 #if defined(FILENAME_MAX)
-# define MAXIMUM_FILENAME_LENGTH FILENAME_MAX + 1
+#define MAXIMUM_FILENAME_LENGTH FILENAME_MAX + 1
 #elif defined(_MAX_FNAME)
-# define MAXIMUM_FILENAME_LENGTH _MAX_FNAME + 1
+#define MAXIMUM_FILENAME_LENGTH _MAX_FNAME + 1
 #elif defined(_POSIX_NAME_MAX)
-# define MAXIMUM_FILENAME_LENGTH _POSIX_NAME_MAX + 1
+#define MAXIMUM_FILENAME_LENGTH _POSIX_NAME_MAX + 1
 #else
-# define MAXIMUM_FILENAME_LENGTH 256
+#define MAXIMUM_FILENAME_LENGTH 256
 #endif
 
 #define NAME_BUFFER_LENGTH (MAXIMUM_PATH_LENGTH + MAXIMUM_FILENAME_LENGTH)
@@ -111,6 +111,7 @@ public:
     static bool  isReadOnly(const char *name);
     static bool  isWriteOnly(const char *name);
     static bool  isFile(const char *name);
+    static bool  isLink(const char *name);
     static bool  exists(const char *name);
 
     static int64_t getLastModifiedDate(const char *name);
@@ -121,7 +122,6 @@ public:
     static uint64_t getFileLength(const char *name);
 
     static bool  makeDirectory(const char *name);
-    static bool  moveFile(const char *oldName, const char *newName);
     static bool  isHidden(const char *name);
     static bool  setFileReadOnly(const char *name);
     static bool  isCaseSensitive();
@@ -130,6 +130,11 @@ public:
     static const char *getSeparator();
     static const char *getPathSeparator();
     static const char *getLineEnd();
+    static bool  getCurrentDirectory(FileNameBuffer &directory);
+    static bool  setCurrentDirectory(const char *directory);
+    static int   copyFile(const char *fromFile, const char *toFile);
+    static int   moveFile(const char *fromFile, const char *toFile);
+    static bool  resolveTilde(FileNameBuffer &name);
 };
 
 class SysFileIterator
@@ -142,7 +147,7 @@ public:
     void next(char *buffer);
 
 protected:
-    bool findNextEntry();
+    void findNextEntry();
 
     bool completed;       // the iteration completed flag
     struct dirent *entry;

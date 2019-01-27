@@ -119,31 +119,31 @@ bool SysFileSystem::searchFileName(const char *name, FileNameBuffer &fullName)
     }
 
     // it was not in the current directory so search the PATH
-    const char *currentpath = getenv("PATH");
-    if (currentpath == NULL)
+    const char *currentPath = getenv("PATH");
+    if (currentPath == NULL)
     {
         fullName = "";
         return false;
     }
 
-    const char *sep = strchr(currentpath, ':');
+    const char *sep = strchr(currentPath, ':');
     while (sep != NULL)
     {
         /* try each entry in the PATH */
-        int i = sep - currentpath;
-        fullName.set(currentpath, i);
+        int i = sep - currentPath;
+        fullName.set(currentPath, i);
         fullName += "/";
         fullName += name;
         if (fileExists(fullName) == true)
         {
             return true;
         }
-        currentpath = sep + 1;
-        sep = strchr(currentpath, ':');
+        currentPath = sep + 1;
+        sep = strchr(currentPath, ':');
     }
 
     /* the last entry in the PATH might not be terminated by a colon */
-    if (*currentpath != '\0')
+    if (*currentPath != '\0')
     {
         fullName = currentPath;
         fullName += currentPath;
@@ -448,7 +448,7 @@ bool SysFileSystem::checkCurrentFile(const char *name, FileNameBuffer &resolvedN
     resolvedName = name;
     // take care of any special conditions in the name structure
     // a failure here means an invalid name of some sort
-    if (!canonicalizeName(resolvedName)
+    if (!canonicalizeName(resolvedName))
     {
         return false;
     }
@@ -497,7 +497,7 @@ bool SysFileSystem::searchPath(const char *name, const char *path, FileNameBuffe
         {
             q = pathEnd;
         }
-        size_t sublength = q - p;
+        size_t subLength = q - p;
 
         resolvedName.set(p, subLength);
         resolvedName += "/";
@@ -539,12 +539,12 @@ bool SysFileSystem::resolveTilde(FileNameBuffer &name)
     if (name[1] == '\0' || name[1] == '/')
     {
         // save a copy of the name
-        FileNameBuffer tempName = (const char *)name + 1;
+        FileNameBuffer tempName = ((const char *)name) + 1;
         // start with the home directory
         name = getenv("HOME");
         name += tempName;
         // We don't need to add a slash : If we have "~" alone, then no final slash expected (same as for "~user"). If "~/..." then we have the slash already
-        name + tempName;
+        name + (const char *)tempName;
     }
     else
     {
@@ -664,7 +664,7 @@ bool SysFileSystem::normalizePathName(const char *name, FileNameBuffer &resolved
     // we copy caracter-by-character
     size_t dest = 0;
     size_t previousSlash = dest;
-    resolvedName[dest] '/';
+    resolvedName[dest] = '/';
 
     // For each character in the path name, decide whether, and where, to copy.
     for (const char *p = name; *p != '\0'; p++)
@@ -674,7 +674,7 @@ bool SysFileSystem::normalizePathName(const char *name, FileNameBuffer &resolved
             // Only adjust previousSlash if we don't have a "." coming up next.
             if (*(p + 1) != '.')
             {
-                previouwSlash = dest;
+                previousSlash = dest;
             }
             if (resolvedName[dest] == '/')
             {
@@ -752,7 +752,7 @@ bool SysFileSystem::normalizePathName(const char *name, FileNameBuffer &resolved
  *
  * @return The return code from the delete operation.
  */
-bool SysFileSystem::deleteFile(const char *name)
+int SysFileSystem::deleteFile(const char *name)
 {
     return unlink(name) == 0 ? 0 : errno;
 }
@@ -764,7 +764,7 @@ bool SysFileSystem::deleteFile(const char *name)
  *
  * @return The return code from the delete operation.
  */
-bool SysFileSystem::deleteDirectory(const char *name)
+int SysFileSystem::deleteDirectory(const char *name)
 {
     return remove(name) == 0 ? 0 : errno;
 }
@@ -860,7 +860,7 @@ bool SysFileSystem::isLink(const char *name)
 {
     struct stat64 finfo;                   /* return buf for the finfo   */
 
-    int rc = lstat64(filename, &finfo);    /* read the info about it     */
+    int rc = lstat64(name, &finfo);        /* read the info about it     */
     return rc == 0 && S_ISLNK(finfo.st_mode);
 }
 
@@ -1243,7 +1243,7 @@ bool samePaths(const char *path1, const char *path2)
 
     // and compare them. Note that if we have a file in a case-insensitive file
     // system, we need to perform a caseless compare.
-    if (!isCaseSensitive(actualpath1))
+    if (!SysFileSystem::isCaseSensitive(actualpath1)
     {
         return stricmp(actualpath1, actualpath2) == 0;
     }
@@ -1269,7 +1269,7 @@ bool samePaths(const char *path1, const char *path2)
  *
  * @return 0 if successful, or an error code for any failure.
  */
-int SysFileSystem::copyFileDereferenceSymbolicLinks(const char *fromFile, const char *toFile, bool preserveTimestamps, bool preserveMode)
+int copyFileDereferenceSymbolicLinks(const char *fromFile, const char *toFile, bool preserveTimestamps, bool preserveMode)
 {
     // first verify we're not trying to copy a file onto itself.
     if (samePaths(fromFile, toFile))
@@ -1359,14 +1359,10 @@ char *temporaryFilename(const char *filename, int &errInfo)
     AutoFree filenameCopy = strdup(filename); // dirname wants a writable string
     if (filenameCopy != NULL)
     {
-        AutoFree directory = strdup(dirname(filenameCopy)); // Dup because not clear from standard if filenameCopy can be freed just after the call
-        if (directory != NULL)
+        char *newFilename = tempnam(filenameCopy, NULL);
+        if (newFilename != NULL)
         {
-            char *newFilename = tempnam(directory, NULL);
-            if (newFilename != NULL)
-            {
-                return newFilename;
-            }
+            return newFilename;
         }
     }
     errInfo = errno;
@@ -1391,7 +1387,7 @@ char *temporaryFilename(const char *filename, int &errInfo)
  *
  * @return 0 if successful, or the appropriate error code.
  */
-int SysFileSystem::copyFileDontDereferenceSymbolicLinks(const char *fromFile, const char *toFile, bool force, bool preserveTimestamps, bool preserveMode)
+int copyFileDontDereferenceSymbolicLinks(const char *fromFile, const char *toFile, bool force, bool preserveTimestamps, bool preserveMode)
 {
     // again, the source and the target cannot be the same
     if (samePaths(fromFile, toFile))
@@ -1665,7 +1661,7 @@ bool SysFileIterator::hasNext()
  *
  * @param buffer The buffer used to return the value.
  */
-void SysFileIterator::next(FileNameBuffer *buffer)
+void SysFileIterator::next(FileNameBuffer &buffer)
 {
     if (completed)
     {
