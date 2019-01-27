@@ -98,7 +98,7 @@ than the life of a single program, etc.  An application can create an interprete
 reuse it to run multiple programs.
 </para>
 <para>Interpreter environments are created using the
-RexxCreateInterpreter() (<xref linkend="createinterpreter" />) API:</para>
+<xref linkend="createinterpreter" xrefstyle="select:title"/> API:</para>
 <example>
 <title>API - Rexx CreateInterpreter</title>
 <programlisting language="C++">
@@ -477,7 +477,7 @@ RexxBufferStringObject instances must be finalized to be converted into a usable
 Rexx String object.
 </para></entry></row>
 <row><entry>RexxArrayObject</entry>
-<entry><para>An instance of a Rexx single-dimension array.  Arrays are used
+<entry><para>An instance of a Rexx &singledimarray;.  Arrays are used
 in many places, and there are interfaces provided for direct array manipulation.
 </para></entry></row>
 <row><entry>RexxDirectoryObject</entry>
@@ -667,7 +667,7 @@ struct RexxInstance_
 </example>
 <para>The field <emphasis role="italic">applicationData</emphasis> contains any
 value that was specified via the APPLICATION_DATA option on the RexxCreateInterpreter call.
-This provides easy access any application-specific data needed to interact with the interpreter.
+This provides easy access to any application-specific data needed to interact with the interpreter.
 All other interface contexts will include a pointer to the RexxInstance structure, so it is
 always possible to recover this data pointer.</para>
 <para>The <emphasis role="italic">functions</emphasis> field is a pointer to a second structure
@@ -728,7 +728,8 @@ function pointer for each of the defined services.
 The RexxThreadContext functions all require a RexxThreadContext pointer as
 the first argument.  The RexxThreadContext class also defines C++ convenience methods for accessing its
 own functions and the functions for the RexxInstance as well.  For example, to call the
-InterpreterVersion() API using a RexxThreadContext from C code, it is necessary to code</para>
+<xref linkend="mthInterpreterVersion" xrefstyle="select:title"/>
+API using a RexxThreadContext from C code, it is necessary to code</para>
 <programlisting language="C++">
 size_t version = context->instance->functions->InterpreterVersion(context->instance);
 </programlisting>
@@ -739,9 +740,9 @@ size_t version = context->InterpreterVersion();
 </programlisting>
 <para>When the Rexx interpreter makes calls to native code routines and methods, or invokes
 exit handlers, the calls use context structures specific to the call context.  These
-are the RexxCallContext (<xref linkend="callcontext" />),
-RexxMethodContext (<xref linkend="methodcontext" />), and
-RexxExitContext (<xref linkend="exitcontext" /> structures.  Each structure
+are the <xref linkend="callcontext" xrefstyle="template:RexxCallContext" />,
+<xref linkend="methodcontext" xrefstyle="template:RexxMethodContext" />, and
+<xref linkend="exitcontext" xrefstyle="template:RexxExitContext" /> structures.  Each structure
 contains a pointer to a RexxThreadContext instance that's valid until the call returns.
 Through the embedded RexxThreadContext, each call may use any of the
 RexxThreadContext or RexxInstance
@@ -756,7 +757,7 @@ call returns to the interpreter.</para>
 </section>
 
 <section id="instancethread"><title>Threading Considerations</title>
-<para>When using RexxCreateInterpreter() (<xref linkend="createinterpreter" />) to create a new
+<para>When using <xref linkend="createinterpreter" xrefstyle="select:title"/> to create a new
 interpreter instances, a RexxThreadContext pointer is returned with the interpreter instance.  The thread
 context vector allows you to perform operations such as running Rexx programs while in the same thread
 context as the RexxCreateInterpreter() call.
@@ -794,16 +795,16 @@ the object will also protect any objects referenced by the protected object.  Fo
 using RequestGlobalReference() to protect a Directory object will also protect all of the
 directory keys and values.
 The global reference can be used with any API context valid for the same interpreter instance. Once you
-are finished with a locked object, ReleaseGlobalReference() (<xref
-linkend="mthReleaseGlobalReference" />) removes the object lock and makes
-the object eligible for garbage collection.
+are finished with a locked object,
+<xref linkend="mthReleaseGlobalReference" xrefstyle="select:title"/> removes
+the object lock and makes the object eligible for garbage collection.
 </para>
 <para>On the flip side of this, sometimes it is desirable to remove the local API context
 protection from an object.  For example, if you use the ArrayAt() API to iterate through all
 of the elements of an Array, each object ArrayAt() returns will be added to the API context's protection
 table. There is a small overhead associated with each protected reference, so iterating through a large
-array would accumulate that overhead for each array element.  Using ReleaseLocalReference() (<xref
-linkend="mthReleaseLocalReference" /> on an object reference you no longer
+array would accumulate that overhead for each array element.
+Using <xref linkend="mthReleaseLocalReference" xrefstyle="select:title"/> on an object reference you no longer
 require will remove the local lock, and thus limit the overhead associated with tracking the object references.
 </para>
 </section>
@@ -812,10 +813,11 @@ require will remove the local lock, and thus limit the overhead associated with 
 <para>The Interpreter Instance API is defined by the RexxInstance interface vector.  The RexxInstance
 defines methods that affect the global state of the interpreter instance.  Most of the instance APIs can
 be called from any thread without requiring any extra steps to access the instance. The two most
-important instance operations are <xref linkend="mthAttachThread" xrefstyle="select:title"/> and Terminate() (<xref
-linkend="mthTerminate" />).  AttachThread() allows additional externally identified
+important instance operations are <xref linkend="mthAttachThread" xrefstyle="select:title"/>
+and <xref linkend="mthTerminate" xrefstyle="select:title" />.
+AttachThread() allows additional externally identified
 threads to be included in the interpreter instance threadpool.  AttachThread returns a
-RexxThreadContext (<xref linkend="threadcontext" />) interface vector that enables a wider range of
+<xref linkend="threadcontext" xrefstyle="template:RexxThreadContext"/> interface vector that enables a wider range of
 capability for the attached thread. The Terminate() API shuts down an interpreter instance when it is no
 longer needed.
 </para>
@@ -823,7 +825,7 @@ longer needed.
 
 <section id="threadcontext"><title>Rexx Thread Context Interface</title>
 <para>The RexxThreadContext interface vector provides a very wide range of functions
-to your application code.  There are roughly 180 functions defined on a RexxThreadContext.
+to your application code.  There are more than 170 functions defined on a RexxThreadContext.
 Among the services provided are:
 </para>
 <itemizedlist>
@@ -835,16 +837,17 @@ Among the services provided are:
 <listitem><para>Raising/handling Rexx syntax errors</para></listitem>
 </itemizedlist>
 <para>The C++ methods defined on a RexxThreadContext C++ object include the methods defined
-by the RexxInstance (<xref linkend="instanceapi" />) class,
+by the <xref linkend="instanceapi" xrefstyle="template:RexxInstance" /> class,
 so the single context vector is used to access both thread context
 and interpreter instance APIs.</para>
 <para>A RexxThreadContext instance is returned with the original
-RexxCreateInterpreter() (<xref linkend="createinterpreter" />) call that created the
+<xref linkend="createinterpreter" xrefstyle="select:title"/> call that created the
 interpreter instance.  The <xref linkend="mthAttachThread" xrefstyle="select:title"/> method
 will create a RexxThreadContext instance for additional threads that you add to an interpreter
-instance.  Additionally, the RexxMethodContext (<xref linkend="methodcontext" />),
-RexxCallContext (<xref linkend="callcontext" />),
-and RexxExitContext (<xref linkend="exitcontext" />)
+instance.
+Additionally, the <xref linkend="methodcontext" xrefstyle="template:RexxMethodContext" />,
+<xref linkend="callcontext" xrefstyle="template:RexxCallContext" />, and
+<xref linkend="exitcontext" xrefstyle="template:RexxExitContext" />
 objects embed a RexxThreadContext object the same way that a RexxThreadContext object embeds
 a RexxInstance object.</para>
 </section>
@@ -863,7 +866,7 @@ a method call, including:
 <listitem><para>Locating classes defined in the method's package scope</para></listitem>
 </itemizedlist>
 <para>In addition to the method-specific functions, the RexxMethodContext object has an embedded
-a RexxThreadContext (<xref linkend="threadcontext" />)
+a <xref linkend="threadcontext" xrefstyle="template:RexxThreadContext"/>
 object created specifically for this environment.  The RexxThreadContext provides a large number of
 additional methods to the method environment.
 </para>
@@ -891,7 +894,7 @@ a routine call, including:
 <listitem><para>Locating classes defined in the routine's package scope</para></listitem>
 </itemizedlist>
 <para>In addition to the call-specific functions, the RexxCallContext object has an embedded
-a RexxThreadContext (<xref linkend="threadcontext" />)
+a <xref linkend="threadcontext" xrefstyle="template:RexxThreadContext"/>
 object created specifically for this environment.  The RexxThreadContext provides a large number of
 additional methods to the call environment.</para>
 <para>API calls made using the RexxCallContext APIs may cause Rexx
@@ -908,17 +911,17 @@ pending conditions can be cancelled using <xref linkend="mthClearCondition" xref
 
 <section id="exitcontext"><title>Rexx Exit Context Interface</title>
 <para>A RexxExitContext object is included as an argument to any
-system exit (<xref linkend="contextexitdef" />) or
-command handler (<xref linkend="commandapi" />).
+<xref linkend="contextexitdef" xrefstyle="template:system exit" /> or
+<xref linkend="commandapi" xrefstyle="template:command handler "/>.
 The exit context provides services that are specific to
-a exit call, including:
+an exit call, including:
 </para>
 <itemizedlist>
 <listitem><para>Accessing caller context specific values such as the current numeric settings</para></listitem>
 <listitem><para>Manipulating variables in the caller's variable context</para></listitem>
 </itemizedlist>
 <para>In addition to the exit-specific functions, the RexxExitContext object has an embedded
-a RexxThreadContext (<xref linkend="threadcontext" />)
+a <xref linkend="threadcontext" xrefstyle="template:RexxThreadContext"/>
 object created specifically for this environment.  The RexxThreadContext provides a large number of
 additional methods to the exit environment.</para>
 <para>API calls made using the RexxExitContext APIs may cause Rexx
@@ -935,7 +938,7 @@ pending conditions can be cancelled using <xref linkend="mthClearCondition" xref
 
 <section id="redirectorcontext"><title>&added50;Rexx I/O Redirector Context Interface</title>
 <para>A RexxIORedirectorContext object is included as an argument to any
-command handler (<xref linkend="commandapi" />).
+<xref linkend="commandapi" xrefstyle="template:command handler "/>.
 The I/O Redirector context provides services that are specific to
 the redirection of stdin, stdout, and stderr of external commands, including:
 </para>
@@ -1130,7 +1133,7 @@ object-oriented interfaces for creating routines.  These routines can use
 the interpreter runtime to convert call arguments from Rexx objects into primitive
 types and return values converted from primitive types back into Rexx objects.  These
 routines are also given access to a rich set of services through the
-RexxCallContext (<xref linkend="callcontext" />)
+<xref linkend="callcontext" xrefstyle="template:RexxCallContext" />
 interface vector.</para>
 <para>The REXX_CLASSIC_ROUTINE() and REXX_TYPED_ROUTINE() macros take two arguments.  The
 first entry is the package table name for this routine.  The second argument is the
@@ -1252,7 +1255,7 @@ a Rexx String value or convertible to a Rexx String value using the request('Str
 mechanism.
 </para></listitem></varlistentry>
 <varlistentry><term>RexxArrayObject</term>
-<listitem><para>An instance of a Rexx single-dimension array.
+<listitem><para>An instance of a Rexx &singledimarray;.
 </para></listitem></varlistentry>
 <varlistentry><term>RexxClassObject</term>
 <listitem><para>An instance of Rexx Class class.
@@ -1455,14 +1458,14 @@ See below for details on the special argument types.
 <para>All method declarations have an undeclared special argument passed to the routine.  This
 special argument is named <emphasis role="italic">context</emphasis>.  The
 <emphasis role="italic">context</emphasis> is a pointer to a
-RexxMethodContext (<xref linkend="methodcontext" />) value and
+<xref linkend="methodcontext" xrefstyle="template:RexxMethodContext" /> value and
 provides access to all APIs valid from a method context.</para>
 <note><title>Note</title><para>
 void is not a valid return type for a method.  There must be a real return
 type specified on the method declaration.  If you wish to have a method without
 a return value, declare the method with a return type of RexxObjectPtr and
 return the value NULLOBJECT.  Methods that do not return a real value may not
-be invoked within expression, but may be used as standalone message instructions.
+be invoked within expressions, but may be used as standalone message instructions.
 </para></note>
 </section>
 
@@ -1493,7 +1496,7 @@ a Rexx String value or convertible to a Rexx String value using the request('Str
 mechanism.
 </para></listitem></varlistentry>
 <varlistentry><term>RexxArrayObject</term>
-<listitem><para>An instance of a Rexx single-dimension array.
+<listitem><para>An instance of a Rexx &singledimarray;.
 </para></listitem></varlistentry>
 <varlistentry><term>RexxClassObject</term>
 <listitem><para>An instance of Rexx Class class.
@@ -1549,7 +1552,8 @@ RexxMethod0(CSTRING, MyMethod)
 }
 </programlisting>
 </example>
-<para>A RexxStringObject return value and the String() API is more appropriate in this
+<para>A RexxStringObject return value and the
+<xref linkend="mthString" xrefstyle="select:title"/> API is more appropriate in this
 situation.</para>
 <example>
 <title>API - RexxStringObject</title>
@@ -1749,7 +1753,7 @@ only hold a single pointer value to native C/C++ resources.  A Pointer instance 
 effectively a Buffer object where the buffer data area is a single void * pointer.
 Like Buffer objects, Pointers can be stored in Rexx variables and retrieved in
 native methods.  Pointer object instances are garbage collected just like Buffer
-objects, but when a Pointer is reclaimed, whatever value refererenced by the
+objects, but when a Pointer is reclaimed, whatever value referenced by the
 Pointer instance are not cleaned up.  If additional cleanup is required, then
 it will be necessary to implement an UNINIT method to handle the cleanup.  Here
 are the Buffer examples above reworked for the Pointer class:</para>
@@ -1892,7 +1896,8 @@ since the runtime is managing the retrieval.</para>
 The example above is equivalent to the examples using Pointer and Buffer
 objects.  If, however, you were to create a subclass of the Buffer example and
 try to access the value stored in MYDATA from a subclass method, you'll find that
-GetObjectVariable("MYDATA") will return NULLOBJECT.  The GetObjectVariable() method
+GetObjectVariable("MYDATA") will return NULLOBJECT.
+The <xref linkend="mthGetObjectVariable" xrefstyle="select:title"/> method
 retrieves variables from the current method's variable scope.  Since the INIT method
 that set MYDATA originally and the subclass method that wishes to access the data
 are defined at different class scopes, GetObjectVariable() will access different variable
@@ -1901,7 +1906,8 @@ attribute method in the base class:</para>
 <programlisting>
 ::attribute mydata get private
 </programlisting>
-<para>The subclass method can then access the method using SendMessage() (<xref linkend="mthSendMessage0" />)
+<para>The subclass method can then access the method using
+<xref linkend="mthSendMessage0" xrefstyle="select:title"/>
 to access the value.</para>
 <programlisting language="C++">
 RexxObjectPtr self = context->GetSelf()
@@ -1915,7 +1921,7 @@ of a class using the CSELF convention to access the backing native data.
 <para>Frequently, one class instance might need access to the native information associated with another
 object instance.  The other object instance might be of the same class or another class that is designed
 to interoperate with the current class.  The <xref linkend="mthObjectToCSelf" xrefstyle="select:title"/> allows
-the CSELF information for an object other than the current active object to be retieved.</para>
+the CSELF information for an object other than the current active object to be retrieved.</para>
 </section>
 </section>
 </section>
@@ -3045,7 +3051,7 @@ RexxObjectPtr RexxEntry TestCommandHandler(RexxExitContext *context,
     <colspec colnum="2" colwidth="5*" />
     <tbody>
     <row><entry><emphasis role="italic">context</emphasis></entry>
-    <entry><para>A RexxExitContext (<xref linkend="exitcontext" />) interface vector for the handler call.
+    <entry><para>A <xref linkend="exitcontext" xrefstyle="template:RexxExitContext" /> interface vector for the handler call.
     The RexxExitContext provides access to runtime services appropriate to a command handler.  For example, the
     exit context can set or get Rexx variables, invoke methods on objects, and raise ERROR or FAILURE conditions.
     </para></entry>
@@ -3213,7 +3219,7 @@ arr = context->Array(obj1, obj2, obj3, obj4);
 ]]>
 </programlisting>
 <para>This method has four forms.
-It create a new one-dimension Array with the specified objects.
+It creates a new &singledimarray; with the specified objects.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
@@ -3437,7 +3443,7 @@ RexxObjectPtr obj1, obj2, obj3, obj4;
 arr = context->ArrayOfFour(obj1, obj2, obj3, obj4);
 ]]>
 </programlisting>
-<para>Create a new one-dimension Array with the specified objects.
+<para>Create a new &singledimarray; with the specified objects.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
@@ -3479,7 +3485,7 @@ RexxObjectPtr obj;
 arr = context->ArrayOfOne(obj);
 ]]>
 </programlisting>
-<para>Create a new one-dimension Array with the specified object.
+<para>Create a new &singledimarray; with the specified object.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
@@ -3512,7 +3518,7 @@ RexxObjectPtr obj1, obj2, obj3;
 arr = context->ArrayOfThree(obj1, obj2, obj3);
 ]]>
 </programlisting>
-<para>Create a new one-dimension Array with the specified objects.
+<para>Create a new &singledimarray; with the specified objects.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
@@ -3551,7 +3557,7 @@ RexxObjectPtr obj1, obj2;
 arr = context->ArrayOfTwo(obj1, obj2);
 ]]>
 </programlisting>
-<para>Create a new one-dimension Array with the specified objects..
+<para>Create a new &singledimarray; with the specified objects..
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
@@ -5002,6 +5008,42 @@ Compound variable values can be retrieved from the corresponding Stem values.
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>The value of the named variable.  Returns NULLOBJECT if the variable
 has not been assigned a value.</para>
+</section>
+
+<section id="mthGetCSelf"><title>&changed50;GetCSelf</title>
+<indexterm><primary>GetCSelf</primary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>GetCSelf</secondary></indexterm>
+<!-- GetSelf --><para>&contexts_method;.</para>
+<programlisting language="C++">
+<![CDATA[
+POINTER ptr;
+
+// Method Syntax Form(s)
+
+ptr = context->GetCSelf();
+]]>
+</programlisting>
+<para>Returns a pointer to the CSELF value for the current object.
+CSELF is a special argument type used for classes to store native
+pointers or structures inside an object instance.
+GetCSelf() will search all of the object's variable scopes for
+a variable named CSELF.
+If a CSELF variable is located and the value is an instance of either the
+Pointer or the Buffer class, the corresponding POINTER value will be
+returned as a void * value.
+Objects that rely on CSELF values typically set the variable CSELF inside
+an INIT method for the class.
+</para>
+<para><emphasis role="bold">Arguments</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>The CSELF value for the current object,
+or NULL if no CSELF value was found.
+</para>
+<para>See also method
+<xref linkend="mthObjectToCSelf" xrefstyle="select:title"/>.
+</para>
 </section>
 
 <section id="mthGetGlobalEnvironment"><title>GetGlobalEnvironment</title>
@@ -7253,7 +7295,7 @@ obj = context->NullString();
 <para>A null String object.</para>
 </section>
 
-<section id="mthObjectToCSelf"><title>ObjectToCSelf</title>
+<section id="mthObjectToCSelf"><title>&changed50;ObjectToCSelf</title>
 <indexterm><primary>ObjectToCSelf</primary></indexterm>
 <indexterm><primary>Thread context methods</primary>
 <secondary>ObjectToCSelf</secondary></indexterm>
@@ -7266,75 +7308,27 @@ obj = context->NullString();
 <!-- ObjectToCSelf --><para>&contexts_thread_method_call_exit;.</para>
 <programlisting language="C++">
 <![CDATA[
-RexxObjectPtr obj;
+RexxObjectPtr obj, scope;
 POINTER ptr;
 
 // Method Syntax Form(s)
 
 ptr = context->ObjectToCSelf(obj);
+ptr = context->ObjectToCSelf(obj, scope);
 ]]>
 </programlisting>
 <para>Returns a pointer to the CSELF value for another object.
-CSELF is a special argument type used for classes to store native pointers or structures inside an
-object instance.  ObjectToCSelf() will search all of the object's variable
-scopes searching for a variable named CSELF.  If a CSELF variable is located and the value is an instance
-of either the Pointer or the Buffer class, the corresponding POINTER value will be returned as a void * value.
-Objects that rely on CSELF values typically set the variable CSELF inside an INIT method for the class.
-</para>
-<para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
-    <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The source object.</para></entry>
-    </row>
-</tbody></tgroup></informaltable>
-<para><emphasis role="bold">Returns</emphasis></para>
-<para>The CSELF value for the object.  Returns NULL if no CSELF value was found in the target object.</para>
-</section>
-
-<section id="mthObjectToCSelfScoped"><title>ObjectToCSelfScoped</title>
-<indexterm><primary>ObjectToCSelfScoped</primary></indexterm>
-<indexterm><primary>Thread context methods</primary>
-<secondary>ObjectToCSelfScoped</secondary></indexterm>
-<indexterm><primary>Method context methods</primary>
-<secondary>ObjectToCSelfScoped</secondary></indexterm>
-<indexterm><primary>Call context methods</primary>
-<secondary>ObjectToCSelfScoped</secondary></indexterm>
-<indexterm><primary>Exit context methods</primary>
-<secondary>ObjectToCSelfScoped</secondary></indexterm>
-<informaltable frame="all">
-<tgroup cols="2">
-<colspec colnum="1" colwidth="3*" />
-<colspec colnum="2" colwidth="2*" />
-<tbody>
-<row>
-<entry><emphasis role="bold">Context</emphasis></entry>
-<entry><emphasis role="bold">Available</emphasis></entry>
-</row>
-<row><entry>Thread</entry><entry>Yes</entry></row>
-<row><entry>Method</entry><entry>Yes</entry></row>
-<row><entry>Function</entry><entry>Yes</entry></row>
-<row><entry>Exit</entry><entry>Yes</entry></row>
-<row><entry>Interpreter</entry><entry>No</entry></row>
-</tbody>
-</tgroup>
-</informaltable>
-<programlisting language="C++">
-<![CDATA[
-RexxObjectPtr obj;
-POINTER ptr;
-
-// Method Syntax Form(s)
-
-ptr = context->ObjectToCSelfScoped(obj,scope);
-]]>
-</programlisting>
-<para>Returns a pointer to the CSELF value for another object.
-CSELF is a special argument type used for classes to store native pointers or structures inside an
-object instance.  ObjectToCSelfScoped() will search
-scopes searching for a variable named CSELF, beginning with the indicated scope level.
-If a CSELF variable is located and the value is an instance
-of either the Pointer or the Buffer class, the corresponding POINTER value will be returned as a void * value.
-Objects that rely on CSELF values typically set the variable CSELF inside an INIT method for the class.
+CSELF is a special argument type used for classes to store native
+pointers or structures inside an object instance.
+ObjectToCSelf() will either search all of the object's variable scopes for
+a variable named CSELF, or, if <emphasis role="italic">scope</emphasis> is
+specified, will search for a variable named CSELF, beginning with the
+indicated scope level.
+If a CSELF variable is located and the value is an instance of either the
+Pointer or the Buffer class, the corresponding POINTER value will be
+returned as a void * value.
+Objects that rely on CSELF values typically set the variable CSELF inside
+an INIT method for the class.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
@@ -7347,6 +7341,9 @@ Objects that rely on CSELF values typically set the variable CSELF inside an INI
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>The CSELF value for the object.  Returns NULL if no CSELF value was found in the target object.</para>
+<para>See also method
+<xref linkend="mthGetCSelf" xrefstyle="select:title"/>.
+</para>
 </section>
 
 <section id="mthObjectToDouble"><title>ObjectToDouble</title>
