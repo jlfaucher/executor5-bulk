@@ -54,6 +54,8 @@ int SysFileSystem::stderrHandle = 2;
 const char SysFileSystem::EOF_Marker = 0x1a;    // the end-of-file marker
 const char *SysFileSystem::EOL_Marker = "\r\n"; // the end-of-line marker
 const char SysFileSystem::PathDelimiter = '\\'; // directory path delimiter
+const char SysFileSystem::NewLine = '\n';
+const char SysFileSystem::CarriageReturn = '\r';
 
 const int64_t EpochDate = 116444736000000000;   // the number of ticks to January 1, 1970.
 

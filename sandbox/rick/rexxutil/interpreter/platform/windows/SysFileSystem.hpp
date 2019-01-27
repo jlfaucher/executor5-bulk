@@ -68,6 +68,8 @@ class SysFileSystem
      static const char EOF_Marker;
      static const char *EOL_Marker;          // the end-of-line marker
      static const char PathDelimiter;        // directory path delimiter
+     static const char NewLine;
+     static const char CarriageReturn;
 
      static bool  searchFileName(const char *name, FileNameBuffer &fullName);
      static bool  searchOnPath(const char *name, const char *path, const char *extension, FileNameBuffer &resolvedName);

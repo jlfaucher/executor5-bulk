@@ -75,7 +75,7 @@ void FileNameBuffer::ensureCapacity(size_t c)
     // we always leave a space for a null terminator here
     size_t newSize = c + 1;
 
-    if (bufferSize < c + 1)
+    if (bufferSize < newSize)
     {
         char *newBuffer = new char[newSize];
 
@@ -86,7 +86,7 @@ void FileNameBuffer::ensureCapacity(size_t c)
         }
 
         // copy old data over and release the old buffer
-        memcmp(newBuffer, buffer, bufferSize);
+        memcpy(newBuffer, buffer, bufferSize);
         bufferSize = newSize;
         delete buffer;
         buffer = newBuffer;

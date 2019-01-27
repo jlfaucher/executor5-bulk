@@ -837,7 +837,7 @@ set (common_interpreter_sources ${classes_sources}
 if (WIN32)
    set (platform_interpreter_sources ${build_interpreter_platform_dir}/rexx.def
             ${build_interpreter_platform_dir}/winmsgtb.rc)
-   set (platform_interpreter_libs comctl32)
+   set (platform_interpreter_libs comctl32 shlwapi version)
 else ()
    set (platform_interpreter_sources ${build_interpreter_platform_dir}/RexxMain.cpp)
    set (platform_rexx_libs ${ORX_SYSLIB_DL} ${ORX_SYSLIB_PTHREAD})

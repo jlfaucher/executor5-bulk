@@ -782,7 +782,7 @@ bool MemoryObject::loadImage(char *&imageBuffer, size_t &imageSize, FileNameBuff
 {
     SysFile image;
     // if unable to open this, return false
-    if (!image.open(imageFile, RX_O_RDONLY, RX_SH_DENYWR, RX_S_IREAD))
+    if (!image.open(imageFile, RX_O_RDONLY, RX_S_IREAD, RX_SH_DENYWR))
     {
         return false;
     }

@@ -99,7 +99,7 @@
 *       SysUtilVersion      -- query version of REXXUTIL.DLL          *
 *       SysWinFileEncrypt   -- Encrypt file on a W2K-NTFS             *
 *       SysWinFileDecrypt   -- Decrypt file on a W2K-NTFS             *
-*       SysGetErrortext     -- Retrieve textual desc. of error number *
+*       SysGetErrorText     -- Retrieve textual desc. of error number *
 *       SysWinGetDefaultPrinter -- retrieve default printer           *
 *       SysWinGetPrinters   -- Obtain list of local printers          *
 *       SysWinSetDefaultPrinter -- set the local default printer      *
@@ -1227,7 +1227,7 @@ RexxRoutine1(int, SysMkDir, CSTRING, dir)
 
 
 /*************************************************************************
-* Function:  SysGetErrortext                                             *
+* Function:  SysGetErrorText                                             *
 *                                                                        *
 * Syntax:    call SysGetErrortext errnumber                              *
 *                                                                        *
@@ -3293,22 +3293,6 @@ RexxRoutine1(int, SysWinSetDefaultPrinter, CSTRING, printer)
     }
 }
 
-
-/*************************************************************************
-* Function:  SysFileMove                                                 *
-*                                                                        *
-* Syntax:    call SysFileMove FROMfile TOfile                            *
-*                                                                        *
-* Params:    FROMfile - file to be moved.                                *
-*            TOfile - target file of move operation.                     *
-*                                                                        *
-* Return:    Return code from MoveFile() function.                       *
-*************************************************************************/
-
-RexxRoutine2(int, SysFileMove, CSTRING, fromFile, CSTRING, toFile)
-{
-    return MoveFile(fromFile, toFile) ? 0 : GetLastError();
-}
 
 /*************************************************************************
 * Function:  SysIsFileCompressed                                         *

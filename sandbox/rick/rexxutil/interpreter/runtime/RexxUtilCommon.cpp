@@ -48,6 +48,8 @@
 #include "RexxInternalApis.h"
 #include "ExternalFileBuffer.hpp"
 #include "SysFile.hpp"
+#include "SysFileSystem.hpp"
+#include "SystemInterpreter.hpp"
 
 
 
@@ -75,7 +77,7 @@ class LineReader
      bool open(const char *fileName)
      {
          // if we can't open the file, return
-         if (!file.open(fileName, RX_O_RDONLY, RX_SH_DENYWR, RX_S_IREAD))
+         if (!file.open(fileName, RX_O_RDONLY, RX_S_IREAD, RX_SH_DENYWR))
          {
              return false;
          }
@@ -146,7 +148,7 @@ class LineReader
          }
 
          // scan for an eof character, if there is one
-         char *endptr = (char *)memchr(buffer, CH_EOF, dataLength);
+         char *endptr = (char *)memchr(buffer, SysFileSystem::EOF_Marker, dataLength);
          // if we have a hit, then we need to adjust the length downward
          if (endptr != NULL)
          {
@@ -258,7 +260,7 @@ class LineReader
      bool findLine(const char *&line, size_t &size)
      {
          // look for a line feed character for the end of the last line
-         const char *linend = (const char *)memchr(scan, CH_NL, dataLength);
+         const char *linend = (const char *)memchr(scan, SysFileSystem::NewLine, dataLength);
          // did we get a hit?
          if (linend != NULL)
          {
@@ -272,13 +274,14 @@ class LineReader
              scan = linend + 1;
 
              // we don't want the CR character in the result string
-             if (*(linend - 1) == CH_CR)
+             if (*(linend - 1) == SysFileSystem::CarriageReturn)
              {
                  size--;
              }
              // we got something
              return true;
          }
+         return false;
      }
 
      /**
@@ -442,7 +445,7 @@ RexxRoutine5(uint32_t, SysFileTree, CSTRING, fileSpec, RexxStemObject, files, OP
         TreeFinder finder(context, fileSpec, files, opts, targetAttr, newAttr);
 
         // go perform the search
-        return finder.findFiles();
+        finder.findFiles();
     }
     catch (TreeFinder::TreeFinderException e)
     {
@@ -483,7 +486,7 @@ TreeFinder::TreeFinder(RexxCallContext *c, const char *f, RexxStemObject s, cons
  *
  * @return Any approriate error codes, or 0 for success.
  */
-uint32_t TreeFinder::findFiles()
+void TreeFinder::findFiles()
 {
     // Get the full path segment and the file name segment by expanding the
     // file specification string.  It seems highly unlikely, but possible, that
@@ -1553,10 +1556,9 @@ RexxRoutine0(RexxStringObject, SysUtilVersion)
  *
  * @return an error code if there is a failure.
  */
-int writeVariable(SysFile &file, RexxCallContext *context, RexxStringObject name, RexxObjectPtr value)
+void writeVariable(SysFile &file, RexxCallContext *context, const char *name, RexxObjectPtr value)
 {
-    size_t nameLength = context->StringLength(name);
-    const char *nameData = context->StringData(name);
+    size_t nameLength = strlen(name);
 
     RexxStringObject stringValue = context->ObjectToString(value);
 
@@ -1566,14 +1568,13 @@ int writeVariable(SysFile &file, RexxCallContext *context, RexxStringObject name
     size_t bytesWritten;
 
     file.write("Name=", sizeof("Name="), bytesWritten);
-    file.write(nameData, nameLength, bytesWritten);
+    file.write(name, nameLength, bytesWritten);
     file.write(", Value='", sizeof(", Value='"), bytesWritten);
     file.write(valueData, valueLength, bytesWritten);
     file.write("'\r\n", sizeof("'\r\n"), bytesWritten);
 
     // now release the local references
 
-    context->ReleaseLocalReference(name);
     context->ReleaseLocalReference(stringValue);
     context->ReleaseLocalReference(value);
 }
@@ -1589,7 +1590,7 @@ int writeVariable(SysFile &file, RexxCallContext *context, RexxStringObject name
  *
  * @return an error code if there is a failure.
  */
-int writeVariable(SysFile &file, RexxCallContext *context, const char *stem, RexxStringObject tail, RexxObjectPtr value)
+void writeVariable(SysFile &file, RexxCallContext *context, const char *stem, RexxStringObject tail, RexxObjectPtr value)
 {
     size_t nameLength = context->StringLength(tail);
     const char *nameData = context->StringData(tail);
@@ -1629,13 +1630,14 @@ int writeVariable(SysFile &file, RexxCallContext *context, const char *stem, Rex
 *************************************************************************/
 RexxRoutine1(int, SysDumpVariables, OPTIONAL_CSTRING, fileName)
 {
-    SysFile   outFile;;
+    SysFile   outFile;
+    ;
 
     if (fileName != NULL)
     {
         RoutineQualifiedName qualifiedName(context, fileName);
 
-        if (!outFile.open(qualifiedName, RX_O_WRONLY | RX_O_APPEND | RX_O_CREAT, RX_SH_DENYRW, RX_S_IWRITE | RX_S_IREAD))
+        if (!outFile.open(qualifiedName, RX_O_WRONLY | RX_O_APPEND | RX_O_CREAT, RX_S_IWRITE | RX_S_IREAD, RX_SH_DENYRW))
         {
             context->InvalidRoutine();
             return 0;
@@ -1667,7 +1669,7 @@ RexxRoutine1(int, SysDumpVariables, OPTIONAL_CSTRING, fileName)
             RexxObjectPtr stemValue = context->GetStemValue(stem);
 
             // write out the stem name first
-            writeVariable(outFile, context, variableName, stemValue);
+            writeVariable(outFile, context, name, stemValue);
 
             // now iterate on the compound variables
             RexxDirectoryObject compoundVariables = context->GetAllStemElements(stem);
@@ -1697,14 +1699,15 @@ RexxRoutine1(int, SysDumpVariables, OPTIONAL_CSTRING, fileName)
             RexxObjectPtr value = context->SupplierItem(variableSupplier);
 
             // and write it out
-            writeVariable(outFile, context, variableName, value);
+            writeVariable(outFile, context, name, value);
         }
-
+        // release the reference to the variable name
+        context->ReleaseLocalReference(variableName);
         // step to the next variable
         context->SupplierNext(variableSupplier);
     }
 
-    return 0
+    return 0;
 }
 
 
@@ -1829,9 +1832,15 @@ RexxRoutine4(CSTRING, SysFileSearch, CSTRING, needle, CSTRING, file, RexxStemObj
     // was the option specified?
     if (opts != NULL)
     {
-        if (strstr(opts, "N") || strstr(opts, "n")) linenums = true;
+        if (strstr(opts, "N") || strstr(opts, "n"))
+        {
+            linenums = true;
+        }
 
-        if (strstr(opts, "C") || strstr(opts, "c")) sensitive = true;
+        if (strstr(opts, "C") || strstr(opts, "c"))
+        {
+            sensitive = true;
+        }
     }
 
     LineReader fileSource;
@@ -1853,7 +1862,7 @@ RexxRoutine4(CSTRING, SysFileSearch, CSTRING, needle, CSTRING, file, RexxStemObj
     size_t currentStemIndex = 0;
 
     // keep reading while we find lines
-    while (fileSource.getLine(line, lineLen))
+    while (fileSource.getLine(line, lineLength))
     {
         currentLine++;
         const char *ptr = mystrstr(line, needle, lineLength, needleLength, sensitive);
@@ -1863,32 +1872,30 @@ RexxRoutine4(CSTRING, SysFileSearch, CSTRING, needle, CSTRING, file, RexxStemObj
             if (linenums)
             {
                 char lineNumber[16];
-                snprintf(lineNumber, sizeof(lineNumber), "%d ", currentLine);
+                snprintf(lineNumber, sizeof(lineNumber), "%zu ", currentLine);
 
-                size_t totalLineSize = strlen(lineNumber) + size;
+                size_t totalLineSize = strlen(lineNumber) + lineLength;
 
-                char *lineBuffer = (char *)malloc();
+                AutoFree lineBuffer = (char *)malloc(totalLineSize);
                 if (lineBuffer == NULL)
                 {
                     // make sure we update the count with the number of return items
-                    context->SetStemArrayElement(stem, 0, context->SizeToObject(currentStemIndex));
+                    context->SetStemArrayElement(stem, 0, context->StringSizeToObject(currentStemIndex));
                     return ERROR_NOMEM;
                 }
 
                 // now build the return value
-                strncpy(lineBuffer, sizeof(lineBuffer), lineNumber);
-                memcpy(lineBuffer + strlen(lineNumber), line, size);
+                strncpy(lineBuffer, lineNumber, sizeof(lineBuffer));
+                memcpy(lineBuffer + strlen(lineNumber), line, lineLength);
 
                 RexxStringObject returnValue = context->NewString(lineBuffer, totalLineSize);
-
-                free(lineBuffer);
 
                 context->SetStemArrayElement(stem, ++currentStemIndex, returnValue);
                 context->ReleaseLocalReference(returnValue);
             }
             else
             {
-                RexxStringObject returnValue = context->NewString(line, size);
+                RexxStringObject returnValue = context->NewString(line, lineLength);
 
                 context->SetStemArrayElement(stem, ++currentStemIndex, returnValue);
                 context->ReleaseLocalReference(returnValue);
@@ -1899,7 +1906,7 @@ RexxRoutine4(CSTRING, SysFileSearch, CSTRING, needle, CSTRING, file, RexxStemObj
     fileSource.close();
 
     // make sure we update the count with the number of return items
-    context->SetStemArrayElement(stem, 0, context->SizeToObject(currentStemIndex));
+    context->SetStemArrayElement(stem, 0, context->StringSizeToObject(currentStemIndex));
     return "";                           /* no error on call           */
 }
 
@@ -1921,7 +1928,7 @@ RexxRoutine4(CSTRING, SysFileSearch, CSTRING, needle, CSTRING, file, RexxStemObj
 *************************************************************************/
 RexxRoutine3(RexxStringObject, SysSearchPath, CSTRING, path, CSTRING, file, OPTIONAL_CSTRING, options)
 {
-    RoutineFileNameBuffer fullPath;
+    RoutineFileNameBuffer fullPath(context);
 
     char opt = 'C'; // this is the default
     if (options != NULL)
@@ -1934,9 +1941,9 @@ RexxRoutine3(RexxStringObject, SysSearchPath, CSTRING, path, CSTRING, file, OPTI
         }
     }
 
-    const pathString = NULL;
+    const char *pathString = NULL;
 
-    RoutineFileNameBuffer pathValue;
+    RoutineFileNameBuffer pathValue(context);
     // get the name of the path variable
     SystemInterpreter::getEnvironmentVariable(path, pathValue);
 
@@ -1951,8 +1958,8 @@ RexxRoutine3(RexxStringObject, SysSearchPath, CSTRING, path, CSTRING, file, OPTI
     // current directory in front of the path.
     else if (opt == 'C')
     {
-        RoutineFileNameBuffer currentDir;
-        SystemInterpreter::getCurrentDirectory(currentDir);
+        RoutineFileNameBuffer currentDir(context);
+        SysFileSystem::getCurrentDirectory(currentDir);
         // if we have a path, add it to the end
         if (pathValue.length() > 0)
         {
@@ -1967,8 +1974,7 @@ RexxRoutine3(RexxStringObject, SysSearchPath, CSTRING, path, CSTRING, file, OPTI
         }
     }
 
-
-    RoutineFileNameBuffer resolvedFile;
+    RoutineFileNameBuffer resolvedFile(context);
 
     // we can do this unconditionally since resolvedFile will be a null
     // string if not found, which is our error return value.
@@ -2026,14 +2032,14 @@ RexxRoutine1(int, SysSleep, RexxStringObject, delay)
 /****************************************************************************/
 /* sysDirectory                                                             */
 /****************************************************************************/
-RexxRoutine1(RexxStringObject, sysDirectory, OPTIONAL_CSTRING, dir)
+RexxRoutine1(RexxStringObject, SysDirectory, OPTIONAL_CSTRING, dir)
 {
     if (dir != NO_CSTRING)               /* if new directory is not null,     */
     {
         RoutineQualifiedName qualifiedName(context, dir);
 
         // if we can't change, return a null string to indicate a failure
-        if (!SysFileSystem::setNewCurrentDirectory(qualifiedName))
+        if (!SysFileSystem::setCurrentDirectory(qualifiedName))
         {
             return context->NullString();
         }
@@ -2099,7 +2105,7 @@ RexxRoutine2(int, SysFileMove, CSTRING, from, CSTRING, to)
 * Return:    other - Unique file/directory name.                         *
 *            ''    - No more files exist given specified template.       *
 *************************************************************************/
-RexxRoutine2(RexxStringObject, SysTempFileName, CSTRING, template, OPTIONAL_CSTRING, fillerOpt)
+RexxRoutine2(RexxStringObject, SysTempFileName, CSTRING, fileTemplate, OPTIONAL_CSTRING, fillerOpt)
 {
     char filler = '?';
 
@@ -2113,8 +2119,8 @@ RexxRoutine2(RexxStringObject, SysTempFileName, CSTRING, template, OPTIONAL_CSTR
         filler = fillerOpt[0];
     }
 
-    RoutineFileNameBuffer fileName;
-    getUniqueFileName(template, filler, fileName);
+    RoutineFileNameBuffer fileName(context);
+    getUniqueFileName(fileTemplate, filler, fileName);
 
     return context->NewStringFromAsciiz(fileName);
 }
@@ -2150,7 +2156,7 @@ RexxRoutineEntry rexxutil_routines[] =
     REXX_TYPED_ROUTINE(SysStemCopy,            SysStemCopy),
     REXX_TYPED_ROUTINE(SysUtilVersion,         SysUtilVersion),
     REXX_TYPED_ROUTINE(SysFileExists,          SysFileExists),
-    REXX_TYPED_ROUTINE(SysFileIsLink,          SysFileIsLink),
+    REXX_TYPED_ROUTINE(SysIsFileLink,          SysIsFileLink),
     REXX_TYPED_ROUTINE(SysIsFile,              SysIsFile),
     REXX_TYPED_ROUTINE(SysIsFileDirectory,     SysIsFileDirectory),
     REXX_TYPED_ROUTINE(SysRmDir,               SysRmDir),

@@ -99,7 +99,7 @@ class FileNameBuffer
      inline void truncate(size_t l)
      {
          // longer than the length? This is a nop
-         if (l > length())
+         if (l <= length())
          {
              // add the null terminator at the new position
              buffer[l] = '\0';
@@ -158,6 +158,7 @@ class FileNameBuffer
          ensureCapacity(l);
          memcmp(buffer, s, l);
          buffer[l] = '\0';
+         return *this;
      }
 
      inline FileNameBuffer& append(const char *s, size_t l)
@@ -166,6 +167,7 @@ class FileNameBuffer
          ensureCapacity(currentLength + l);
          memcmp(buffer + currentLength, s, l);
          buffer[currentLength + l] = '\0';
+         return *this;
      }
 
      // this is a mutable request, so we need to ensure the position is within the
@@ -205,9 +207,6 @@ class FileNameBuffer
              *this += SysFileSystem::PathDelimiter;
          }
      }
-
-
-
 
  protected:
      char *buffer;                 // the current buffer

@@ -73,6 +73,8 @@
 const char SysFileSystem::EOF_Marker = 0x1A;
 const char *SysFileSystem::EOL_Marker = "\n";
 const char SysFileSystem::PathDelimiter = '/';
+const char SysFileSystem::NewLine = '\n';
+const char SysFileSystem::CarriageReturn = '\r';
 
 /**
  * Search for a given filename, returning the fully

@@ -738,7 +738,7 @@ BufferClass* FileProgramSource::readProgram(const char *file_name)
     SysFile programFile;          // the file we're reading
 
     // if unable to open this, return false
-    if (!programFile.open(file_name, RX_O_RDONLY, RX_SH_DENYWR, RX_S_IREAD))
+    if (!programFile.open(file_name, RX_O_RDONLY, RX_S_IREAD, RX_SH_DENYWR))
     {
         return OREF_NULL;
     }

@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -48,6 +48,7 @@
 #include <string.h>
 #include <errno.h>
 #include "SysFileSystem.hpp"
+#include "ExternalFileBuffer.hpp"
 
 /**
  * Return the file name separator used by the file system.
@@ -108,7 +109,8 @@ RexxMethod1(logical_t, file_can_write, CSTRING, name)
  */
 RexxMethod0(RexxArrayObject, file_list_roots)
 {
-    char rootBuffer[SysFileSystem::MaximumPathLength];
+    MethodFileNameBuffer rootBuffer(context);
+
     int count = SysFileSystem::getRoots(rootBuffer);
 
     const char *roots = rootBuffer;
@@ -256,8 +258,8 @@ RexxMethod1(RexxObjectPtr, file_list, CSTRING, name)
     // create an empty array to start
     RexxArrayObject result = context->NewArray(0);
 
-    RoutineFileNameBuffer buffer(context);
-    RoutineFileNameBuffer nextFile(context);
+    MethodFileNameBuffer buffer(context);
+    MethodFileNameBuffer nextFile(context);
 
     SysFileIterator iterator(name, NULL, buffer);
     while (iterator.hasNext())

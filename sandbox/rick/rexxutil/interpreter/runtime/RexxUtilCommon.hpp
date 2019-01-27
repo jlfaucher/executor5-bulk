@@ -47,18 +47,16 @@
 /* Numeric Error Return Strings                                      */
 /*********************************************************************/
 
-const char *ERROR_NOMEM = "2";
+#define ERROR_NOMEM "2"
+#define ERROR_FILEOPEN "3"
+
 
 /*********************************************************************/
 /* Alpha Numeric Return Strings                                      */
 /*********************************************************************/
 
-const char *ERROR_RETSTR = "ERROR:";
+#define ERROR_RETSTR "ERROR"
 
-// some standard constants
-const char CH_EOF = 0x1A;            // end of file marker
-const char CH_CR = '\r';             // carriage return character
-const char CH_NL = '\n';             // new line character
 
 /*********************************************************************/
 /****************  REXXUTIL Supporting Functions  ********************/
@@ -67,7 +65,7 @@ const char CH_NL = '\n';             // new line character
 /*********************************************************************/
 
 const char* mystrstr(const char *haystack, const char *needle, size_t hlen, size_t nlen, bool sensitive);
-const char* mystrstr(const char *haystack, const char *needle, bool sensitive = true)
+inline const char* mystrstr(const char *haystack, const char *needle, bool sensitive = true)
 {
     return mystrstr(haystack, needle, strlen(haystack), strlen(needle), sensitive);
 }
@@ -273,7 +271,7 @@ class TreeFinder
 
      TreeFinder(RexxCallContext *c, const char *f, RexxStemObject s, const char *opts, const char *targetAttr, const char *newAttr);
 
-     uint32_t findFiles();
+     void findFiles();
      void validateFileSpec();
      void adjustDirectory();
      void validateFileSpecName();

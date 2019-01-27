@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -49,6 +49,8 @@
 #include <dlgs.h>
 #include <shlwapi.h>
 #include "APICommon.hpp"
+#include "Utilities.hpp"
+#include "SysFileSystem.hpp"
 #include "oodCommon.hpp"
 #include "oodDeviceGraphics.hpp"
 #include "oodShared.hpp"
@@ -184,51 +186,50 @@ static char *searchSoundPath(CSTRING file, RexxCallContext *c)
     if ( cchSoundPath == 0 && rc != ERROR_ENVVAR_NOT_FOUND )
     {
         oodSetSysErrCode(c->threadContext, rc);
-        goto err_out;
+        return NULL;
     }
 
     // Allocate our needed buffers.
     AutoFree buf = (char *)malloc(cchCWD + cchSoundPath + 3);
     fullFileName = (char *)malloc(_MAX_PATH);
-    if ( buf == NULL || fullFileName == NULL )
+    if (buf == NULL || fullFileName == NULL)
     {
+        safeFree(fullFileName);
         outOfMemoryException(c->threadContext);
-        goto err_out;
     }
 
     // Now get the current directory and the sound path.
     cchCWD = GetCurrentDirectory(cchCWD + 1, buf);
-    if ( cchCWD == 0 )
+    if (cchCWD == 0)
     {
+        safeFree(fullFileName);
         oodSetSysErrCode(c->threadContext);
-        goto err_out;
+        return NULL;
     }
 
-    if ( cchSoundPath != 0 )
+    if (cchSoundPath != 0)
     {
         buf[cchCWD++] = ';';
         cchSoundPath = GetEnvironmentVariable("SOUNDPATH", buf + cchCWD, cchSoundPath + 1);
-        if ( cchSoundPath == 0 )
+        if (cchSoundPath == 0)
         {
+            safeFree(fullFileName);
             oodSetSysErrCode(c->threadContext);
-            goto err_out;
+            return NULL;
         }
     }
 
     AutoErrorMode errorMode(SEM_FAILCRITICALERRORS);
     cchSoundPath = SearchPath(buf, file, NULL, _MAX_PATH, fullFileName, &pFileName);
 
-    if ( cchSoundPath == 0 || cchSoundPath >= _MAX_PATH )
+    if (cchSoundPath == 0 || cchSoundPath >= _MAX_PATH)
     {
+        safeFree(fullFileName);
         oodSetSysErrCode(c->threadContext);
-        goto err_out;
+        return NULL;
     }
 
     return fullFileName;
-
-err_out:
-    safeFree(fullFileName);
-    return NULL;
 }
 
 /**
