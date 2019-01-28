@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2008-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2008-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -52,15 +52,16 @@ use arg testTypes
     else return group~suite~execute~~print
   end
 
+/*
   signal on syntax name packageErr
   .context~package~loadPackage('FUNCTIONPackage.cls')
-
+*/
   if group~isAutomatedTest then return group
 
   testResult = group~suite~execute~~print
 
 return testResult
-
+/*
 packageErr:
   err = .ExceptionData~new(timeStamp(), s, .ExceptionData~TRAP)
   err~setLine(sigl)
@@ -71,7 +72,7 @@ packageErr:
 
   err~print("Test group exception", .false)
 return .ooTestResult~new(5)~~addException(err)
-
+*/
 
 ::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
@@ -83,6 +84,9 @@ return .ooTestResult~new(5)~~addException(err)
 
   -- Over-ride the default test type
   self~ooTestType = .ooTestTypes~NATIVE_API_TEST
+
+  -- install test command handler "io"
+  call TestAddCommandEnvironment "io", "redirecting"
 
 -- The following tests the macros for 0-10 arguments
 ::method 'test000'
@@ -916,6 +920,7 @@ return .ooTestResult~new(5)~~addException(err)
 
   x = TestSetContextVariable('setStem.', .stem~new("FOOBAR."))
   self~assertSame("FOOBAR.", setStem.[])
+  signal off novalue
   self~assertSame("FOOBAR.1", setStem.1)
 
   x = TestSetContextVariable('setStem.', "Fred")
@@ -943,6 +948,7 @@ return .ooTestResult~new(5)~~addException(err)
 
   setStem.1 = "Mike"
   x = TestDropContextVariable("setStem.")
+  signal off novalue
   self~assertSame("SETSTEM.1", setStem.1, "Stem var 1")
   setStem.1 = "Mike"
   x = TestDropContextVariable("SETSTEM.")
@@ -1071,3 +1077,672 @@ return .ooTestResult~new(5)~~addException(err)
   address "rc-redirecting" "" with input using 123 output stem s. error stem s.
   self~assertSame(rc, 11111)
 
+::method test_simple_with
+
+  address io 'ISREDIRECTIONREQUESTED' with input using "This is a test"
+  self~assertSame(.true, rc)
+
+  -- just to see if the redirect is reported
+  address io 'INPUTREDIRECTED' with input using "This is a test"
+  self~assertSame(.true, rc)
+
+  address io 'OUTPUTREDIRECTED' with input using "This is a test"
+  self~assertSame(.false, rc)
+
+  address io 'ERRORREDIRECTED' with input using "This is a test"
+  self~assertSame(.false, rc)
+
+  -- this will write a single line to the output...should not crash
+  address io 'INPUTOUTPUT' with input using "This is a test"
+  self~assertSame(1, rc)
+
+  address io 'INPUTERROR' with input using "This is a test"
+  self~assertSame(1, rc)
+
+  -- using an uninitialized stem variable
+  address io 'INPUTOUTPUT' with input using "This is a test" output stem a.
+  self~assertSame(1, rc)
+  self~assertSame(1, a.0)
+  self~assertSame("This is a test", a.1)
+
+  -- default is replace
+  address io 'INPUTOUTPUT' with input using "This is another test" output stem a.
+  self~assertSame(1, rc)
+  self~assertSame(1, a.0)
+  self~assertSame("This is another test", a.1)
+
+  -- explicit replace
+  address io 'INPUTOUTPUT' with input using "This is a third test" output replace stem a.
+  self~assertSame(1, rc)
+  self~assertSame(1, a.0)
+  self~assertSame("This is a third test", a.1)
+
+  -- and finally append
+  address io 'INPUTOUTPUT' with input using "This is a fourth test" output append stem a.
+  self~assertSame(1, rc)
+  self~assertSame(2, a.0)
+  self~assertSame("This is a third test", a.1)
+  self~assertSame("This is a fourth test", a.2)
+
+  -- and finally append with an uninitialized stem
+  address io 'INPUTOUTPUT' with input using "This is a fourth test" output append stem b.
+  self~assertSame(1, rc)
+  self~assertSame(1, b.0)
+  self~assertSame("This is a fourth test", b.1)
+
+  -- same tests using ERROR
+  address io 'INPUTERROR' with input using "This is a test" error stem a.
+  self~assertSame(1, rc)
+  self~assertSame(1, a.0)
+  self~assertSame("This is a test", a.1)
+
+  -- default is replace
+  address io 'INPUTERROR' with input using "This is another test" error stem a.
+  self~assertSame(1, rc)
+  self~assertSame(1, a.0)
+  self~assertSame("This is another test", a.1)
+
+  -- explicit replace
+  address io 'INPUTERROR' with input using "This is a third test" error replace stem a.
+  self~assertSame(1, rc)
+  self~assertSame(1, a.0)
+  self~assertSame("This is a third test", a.1)
+
+  -- and finally append
+  address io 'INPUTERROR' with input using "This is a fourth test" error append stem a.
+  self~assertSame(1, rc)
+  self~assertSame(2, a.0)
+  self~assertSame("This is a third test", a.1)
+  self~assertSame("This is a fourth test", a.2)
+
+  in.0 = 1
+  in.1 = "This is a test"
+
+  array = .array~new
+
+  address io 'INPUTOUTPUT' with input stem in. output using (array)
+
+  self~assertSame(1, rc)
+  self~assertSame(1, array~items)
+  self~assertSame("This is a test", array[1])
+
+  in.1 = "This is another test"
+
+  address io 'INPUTOUTPUT' with input stem in. output append using (array)
+
+  self~assertSame(1, rc)
+  self~assertSame(2, array~items)
+  self~assertSame("This is a test", array[1])
+  self~assertSame("This is another test", array[2])
+
+::method test_file_input
+
+  temp = .TemporaryTestFile~new(self, 'testinput')
+  temp~create(("Line1","","Line3"))
+
+  array = .array~new
+  address io 'INPUTOUTPUT' with input stream (temp~fullName) output using (array)
+  self~assertSame(3, rc)
+  self~assertSame(3, array~items)
+  self~assertSame("Line1", array[1])
+  self~assertSame("", array[2])
+  self~assertSame("Line3", array[3])
+
+  temp~delete
+
+-- test non-destructive buffering when source and target are the same
+::method test_buffering
+
+  temp = .TemporaryTestFile~new(self, 'testinput')
+  temp~create(("Line1","","Line3","","Line5"))
+
+  -- this tests buffering on output when the same stream is used as both
+  address io 'NOBLANKOUTPUT' with input stream (temp~fullName) output stream(temp~fullName)
+
+  -- this should read 5 lines (indicated by the rc) and write 3 lines to the file, replacing the file
+  array = temp~arrayIn
+  self~assertSame(5, rc)
+  self~assertSame(3, array~items)
+  self~assertSame("Line1", array[1])
+  self~assertSame("Line3", array[2])
+  self~assertSame("Line5", array[3])
+
+  -- now again, with append specified
+  address io 'NOBLANKOUTPUT' with input stream (temp~fullName) output append stream (temp~fullName)
+  array = temp~arrayIn
+
+  self~assertSame(3, rc)
+  self~assertSame(6, array~items)
+  self~assertSame("Line1", array[1])
+  self~assertSame("Line3", array[2])
+  self~assertSame("Line5", array[3])
+  self~assertSame("Line1", array[4])
+  self~assertSame("Line3", array[5])
+  self~assertSame("Line5", array[6])
+
+  temp~delete
+
+  a.0 = 3
+  a.1 = "Line1"
+  a.2 = ""
+  a.3 = "Line3"
+
+  -- now same variants using a stem
+  address io 'NOBLANKOUTPUT' with input stem a. output stem a.
+  self~assertSame(3, rc)
+  self~assertSame(2, a.0)
+  self~assertSame("Line1", a.1)
+  self~assertSame("Line3", a.2)
+
+  -- same as above, with append
+  address io 'NOBLANKOUTPUT' with input stem a. output append stem a.
+  self~assertSame(2, rc)
+  self~assertSame(4, a.0)
+  self~assertSame("Line1", a.1)
+  self~assertSame("Line3", a.2)
+  self~assertSame("Line1", a.3)
+  self~assertSame("Line3", a.4)
+
+
+  -- now using a stem, but with the USING keyword
+  drop a.
+  a.0 = 3
+  a.1 = "Line1"
+  a.2 = ""
+  a.3 = "Line3"
+
+  -- now same variants using a stem
+  address io 'NOBLANKOUTPUT' with input using (a.) output using (a.)
+  self~assertSame(3, rc)
+  self~assertSame(2, a.0)
+  self~assertSame("Line1", a.1)
+  self~assertSame("Line3", a.2)
+
+  -- same as above, with append
+  address io 'NOBLANKOUTPUT' with input using (a.) output append using (a.)
+  self~assertSame(2, rc)
+  self~assertSame(4, a.0)
+  self~assertSame("Line1", a.1)
+  self~assertSame("Line3", a.2)
+  self~assertSame("Line1", a.3)
+  self~assertSame("Line3", a.4)
+
+
+  -- once more, but mixing up the variantes
+  drop a.
+  a.0 = 3
+  a.1 = "Line1"
+  a.2 = ""
+  a.3 = "Line3"
+
+  -- now same variants using a stem
+  address io 'NOBLANKOUTPUT' with input using (a.) output stem a.
+  self~assertSame(3, rc)
+  self~assertSame(2, a.0)
+  self~assertSame("Line1", a.1)
+  self~assertSame("Line3", a.2)
+
+  -- same as above, with append
+  address io 'NOBLANKOUTPUT' with input stem a. output append using (a.)
+  self~assertSame(2, rc)
+  self~assertSame(4, a.0)
+  self~assertSame("Line1", a.1)
+  self~assertSame("Line3", a.2)
+  self~assertSame("Line1", a.3)
+  self~assertSame("Line3", a.4)
+
+::method test_input_output_stream
+
+  instream = .ArrayInputStream~new(("Line1", "Line2"))
+  outstream = .ArrayOutputStream~new
+
+  address io 'INPUTOUTPUT' with input using (instream) output using(outstream)
+
+  array = outstream~array
+
+  self~assertSame(2, rc)
+  self~assertSame(2, array~items)
+  self~assertSame("Line1", array[1])
+  self~assertSame("Line2", array[2])
+
+-- some RexxQueue tests
+::method test_rexxqueue
+
+  .rexxqueue~create('ADDRESSWITH')
+  queue = .rexxqueue~new('ADDRESSWITH')
+
+  address io 'INPUTOUTPUT' with input using 'This is a test' output using(queue)
+  self~assertSame(1, queue~queued)
+  self~assertSame("This is a test", queue~pull)
+
+  queue~queue('Line1')
+  array = .array~new
+
+  address io 'INPUTOUTPUT' with input using(queue) output using(array)
+  self~assertSame(0, queue~queued)
+  self~assertSame("Line1", array[1])
+
+  -- and the overwrite protection
+  queue~queue('Line1')
+  queue~queue('')
+  queue~queue('Line3')
+
+  address io 'NOBLANKOUTPUT' with input using(queue) output using(queue)
+  self~assertSame(2, queue~queued)
+  self~assertSame("Line1", queue~pull)
+  self~assertSame("Line3", queue~pull)
+
+  queue~delete
+
+
+::method test_global_setting
+
+  -- The base mechanisms have been tested above, here we're going to test
+  -- that the global settings are used with commands and can be overridden on a base-by-case
+  -- basis.
+
+  signal off novalue
+
+  address io with input using "This is a test" output stem a. error stem b.
+  -- this will use the redirects
+  address io 'INPUTOUTPUT'
+  self~assertSame(1, a.0)
+  self~assertSame("This is a test", a.1)
+  self~assertSame(0, b.0)
+
+  drop a. b.
+  -- a command issued to this environment without using ADDRESS will also pick this up
+  'INPUTERROR'
+
+  self~assertSame(1, b.0)
+  self~assertSame("This is a test", b.1)
+  self~assertSame(0, a.0)
+
+  drop a. b.
+
+  -- override the INPUT source...this will use the global output ane error settings
+  address io 'INPUTOUTPUT' with input using 'This is another test'
+  self~assertSame(1, a.0)
+  self~assertSame("This is another test", a.1)
+  self~assertSame(0, b.0)
+
+  drop a. b.
+
+  -- now override OUTPUT and ERROR similarly
+  address io 'INPUTOUTPUT' with output stem c.
+  self~assertSame(1, c.0)
+  self~assertSame("This is a test", c.1)
+  self~assertSame(0, b.0)
+  self~assertSame('A.0', a.0)      -- should be unchanged
+
+  drop a. b. c.
+
+  address io 'INPUTOUTPUT' with output stem c.
+  self~assertSame(1, c.0)
+  self~assertSame("This is a test", c.1)
+  self~assertSame('A.0', a.0)
+  self~assertSame(0, b.0)      -- should be unchanged
+
+  drop a. b. c.
+
+  -- now test NORMAL overrides
+
+  address io 'INPUTOUTPUT' with input NORMAL
+  -- this has nothing to read, but the output and error stems should reflect nothing written
+  self~assertSame(0, a.0)
+  self~assertSame(0, b.0)
+
+  drop a. b.
+
+  address io 'INPUTOUTPUT' with output NORMAL
+  -- a. should be unchanged
+  self~assertSame('A.0', a.0)
+  self~assertSame(0, b.0)
+
+  drop a. b.
+
+  address io 'INPUTOUTPUT' with error NORMAL
+  -- b. should be unchanged
+  self~assertSame(1, a.0)
+  self~assertSame("This is a test", a.1)
+  self~assertSame('B.0', b.0)
+
+  -- test the address toggle maintains the settings
+  address command
+  address
+
+  drop a. b.
+
+  -- this will use the redirects
+  'INPUTOUTPUT'
+  self~assertSame(1, a.0)
+  self~assertSame("This is a test", a.1)
+  self~assertSame(0, b.0)
+
+  -- explicit switch back by name...still keeps the settings
+  address command
+  address io
+
+  drop a. b.
+
+  'INPUTOUTPUT'
+  self~assertSame(1, a.0)
+  self~assertSame("This is a test", a.1)
+  self~assertSame(0, b.0)
+
+  -- the address toggle only remembers two settings, but the override
+  -- information should still be maintained as long as the context
+  -- remains active.
+  address xedit
+  address command
+  address io
+
+  drop a. b.
+
+  'INPUTOUTPUT'
+  self~assertSame(1, a.0)
+  self~assertSame("This is a test", a.1)
+  self~assertSame(0, b.0)
+
+  drop a. b.
+  -- test that settings are saved on internal call return
+
+  self~assertSame('A.0', a.0)
+  self~assertSame('B.0', b.0)
+
+  -- this should have been restored to the original settings
+  'INPUTOUTPUT'
+  self~assertSame(1, a.0)
+  self~assertSame("This is a test", a.1)
+  self~assertSame(0, b.0)
+
+  return
+
+  subroutine:
+
+
+  address io with input using "This is another test" output stem c. error stem d.
+  -- this will use the new redirects
+  'INPUTOUTPUT'
+  self~assertSame(1, c.0)
+  self~assertSame("This is another test", c.1)
+  self~assertSame(0, d.0)
+  return
+
+::method test_write_buffer
+
+  array = .array~new
+  crlf = '0d0a'x
+  lf = '0a'x
+  cr = '0d'x
+
+  -- one string, no linends
+  address io 'BUFFEROUTPUT' with input using "This is a test" output using (array)
+  self~assertSame(1, array~items)
+  self~assertSame("This is a test", array[1])
+
+  -- one string, crlf linend
+  address io 'BUFFEROUTPUT' with input using ("Line1"||crlf) output using (array)
+  self~assertSame(1, array~items)
+  self~assertSame("Line1", array[1])
+
+  -- one string, lf linend
+  address io 'BUFFEROUTPUT' with input using ("Line2"||lf) output using (array)
+  self~assertSame(1, array~items)
+  self~assertSame("Line2", array[1])
+
+  -- two strings, no linefeeds
+  address io 'BUFFEROUTPUT' with input using (("Line1", "Line2")) output using (array)
+  self~assertSame(1, array~items)
+  self~assertSame("Line1Line2", array[1])
+
+  -- three strings, no linefeeds
+  address io 'BUFFEROUTPUT' with input using (("Line1", "Line2", "Line3")) output using (array)
+  self~assertSame(1, array~items)
+  self~assertSame("Line1Line2Line3", array[1])
+
+  -- one string, crlf linend in the middle
+  address io 'BUFFEROUTPUT' with input using ("Line1"||crlf||"Line2") output using (array)
+  self~assertSame(2, array~items)
+  self~assertSame("Line1", array[1])
+  self~assertSame("Line2", array[2])
+
+  -- one string, lf linend in the middle
+  address io 'BUFFEROUTPUT' with input using ("Line3"||lf||"Line4") output using (array)
+  self~assertSame(2, array~items)
+  self~assertSame("Line3", array[1])
+  self~assertSame("Line4", array[2])
+
+  -- two strings, crlf linened split across two buffers
+  address io 'BUFFEROUTPUT' with input using (("Line1"||cr, lf||"Line2")) output using (array)
+  self~assertSame(2, array~items)
+  self~assertSame("Line1", array[1])
+  self~assertSame("Line2", array[2])
+
+  -- one string, naked cr  in the middle
+  address io 'BUFFEROUTPUT' with input using ("Line3"||cr||"Line4") output using (array)
+  self~assertSame(1, array~items)
+  self~assertSame("Line3"||cr||"Line4", array[1])
+
+  -- two strings, naked crlf at end if first buffter
+  address io 'BUFFEROUTPUT' with input using (("Line1"||cr, "Line2")) output using (array)
+  self~assertSame(1, array~items)
+  self~assertSame("Line1"||cr||"Line2", array[1])
+
+  -- two strings, multiple line feeds, no line feed at buffer boundary
+  address io 'BUFFEROUTPUT' with input using (("Line1"||crlf||"Line2"||crlf||"Li", "ne3"||crlf||"Line4")) output using (array)
+  self~assertSame(4, array~items)
+  self~assertSame("Line1", array[1])
+  self~assertSame("Line2", array[2])
+  self~assertSame("Line3", array[3])
+  self~assertSame("Line4", array[4])
+
+  -- two strings, multiple line feeds, no line feed at buffer boundary
+  address io 'BUFFEROUTPUT' with input using (("Line5"||lf||"Line6"||lf||"Li", "ne7"||lf||"Line8")) output using (array)
+  self~assertSame(4, array~items)
+  self~assertSame("Line5", array[1])
+  self~assertSame("Line6", array[2])
+  self~assertSame("Line7", array[3])
+  self~assertSame("Line8", array[4])
+
+  -- A number of null line variants
+  address io 'BUFFEROUTPUT' with input using ((crlf"Line1"||crlf||crlf||"Line2"||cr, lf||"Line3")) output using (array)
+  self~assertSame(5, array~items)
+  self~assertSame("", array[1])
+  self~assertSame("Line1", array[2])
+  self~assertSame("", array[3])
+  self~assertSame("Line2", array[4])
+  self~assertSame("Line3", array[5])
+
+
+  -- one string, no linends
+  address io 'BUFFERERROR' with input using "This is a test" error using (array)
+  self~assertSame(1, array~items)
+  self~assertSame("This is a test", array[1])
+
+  -- one string, crlf linend
+  address io 'BUFFERERROR' with input using ("Line1"||crlf) error using (array)
+  self~assertSame(1, array~items)
+  self~assertSame("Line1", array[1])
+
+  -- one string, lf linend
+  address io 'BUFFERERROR' with input using ("Line2"||lf) error using (array)
+  self~assertSame(1, array~items)
+  self~assertSame("Line2", array[1])
+
+  -- two strings, no linefeeds
+  address io 'BUFFERERROR' with input using (("Line1", "Line2")) error using (array)
+  self~assertSame(1, array~items)
+  self~assertSame("Line1Line2", array[1])
+
+  -- three strings, no linefeeds
+  address io 'BUFFERERROR' with input using (("Line1", "Line2", "Line3")) error using (array)
+  self~assertSame(1, array~items)
+  self~assertSame("Line1Line2Line3", array[1])
+
+  -- one string, crlf linend in the middle
+  address io 'BUFFERERROR' with input using ("Line1"||crlf||"Line2") error using (array)
+  self~assertSame(2, array~items)
+  self~assertSame("Line1", array[1])
+  self~assertSame("Line2", array[2])
+
+  -- one string, lf linend in the middle
+  address io 'BUFFERERROR' with input using ("Line3"||lf||"Line4") error using (array)
+  self~assertSame(2, array~items)
+  self~assertSame("Line3", array[1])
+  self~assertSame("Line4", array[2])
+
+  -- two strings, crlf linened split across two buffers
+  address io 'BUFFERERROR' with input using (("Line1"||cr, lf||"Line2")) error using (array)
+  self~assertSame(2, array~items)
+  self~assertSame("Line1", array[1])
+  self~assertSame("Line2", array[2])
+
+  -- one string, naked cr  in the middle
+  address io 'BUFFERERROR' with input using ("Line3"||cr||"Line4") error using (array)
+  self~assertSame(1, array~items)
+  self~assertSame("Line3"||cr||"Line4", array[1])
+
+  -- two strings, naked crlf at end if first buffter
+  address io 'BUFFERERROR' with input using (("Line1"||cr, "Line2")) error using (array)
+  self~assertSame(1, array~items)
+  self~assertSame("Line1"||cr||"Line2", array[1])
+
+  -- two strings, multiple line feeds, no line feed at buffer boundary
+  address io 'BUFFERERROR' with input using (("Line1"||crlf||"Line2"||crlf||"Li", "ne3"||crlf||"Line4")) error using (array)
+  self~assertSame(4, array~items)
+  self~assertSame("Line1", array[1])
+  self~assertSame("Line2", array[2])
+  self~assertSame("Line3", array[3])
+  self~assertSame("Line4", array[4])
+
+  -- two strings, multiple line feeds, no line feed at buffer boundary
+  address io 'BUFFERERROR' with input using (("Line5"||lf||"Line6"||lf||"Li", "ne7"||crlf||"Line8")) error using (array)
+  self~assertSame(4, array~items)
+  self~assertSame("Line5", array[1])
+  self~assertSame("Line6", array[2])
+  self~assertSame("Line7", array[3])
+  self~assertSame("Line8", array[4])
+
+
+::method test_buffered_input
+
+  -- now using a stem, but with the USING keyword
+  drop a.
+  a.0 = 3
+  a.1 = "Line1"
+  a.2 = ""
+  a.3 = "Line3"
+
+  -- now same variants using a stem
+  address io 'BUFFERINPUT' with input using (a.) output using (b.)
+  self~assertSame(3, b.0)
+  self~assertSame("Line1", b.1)
+  self~assertSame("", b.2)
+  self~assertSame("Line3", b.3)
+
+
+
+::class ArrayInputStream public inherit InputStream
+::method init
+  expose currentLine lines
+  use strict arg lines
+
+  -- we want a copy of the array so that the content is
+  -- isolated from changes. This also allows lists, queues, etc. to be
+  -- converted to a stream
+  lines = lines~makearray
+  currentLine = 1
+
+-- open will reset to the beginning
+::method open
+  expose currentLine
+  use strict arg
+
+  currentLine = 1
+
+-- close will also reset to the beginning
+::method close
+  forward message('OPEN')
+
+-- character methods not supported
+::method charin
+  raise syntax 93.963  -- not supported
+::method chars
+  raise syntax 93.963  -- not supported
+
+::method linein
+  expose lines currentLine
+  -- we allow a line number to be specified.
+  use strict arg lineNumber = (currentLine)
+
+  -- are we trying to read beyond the end of the
+  -- array? This is a notready condition with a null
+  -- string return
+  if lineNumber > lines~items then do
+     raise notready additional(self) return("")
+  end
+
+  -- the next read is one line down
+  currentLine = lineNumber + 1
+  -- and complete the read
+  return lines[lineNumber]
+
+::method lines
+  expose lines currentLine
+  use strict arg  -- no arguments allowed
+
+  -- calculate the default number of lines
+  count = lines~items - currentLine + 1
+
+  -- everything has been read, so lines is zero
+  if count < 1 then do
+      return 0
+  end
+
+  return count
+
+::class ArrayOutputStream public inherit OutputStream
+-- the default initial array size
+::constant defaultArraySize 50
+-- we can create a default output array or can accept an existing array
+-- if given an array, we append any new items to the end.
+::method init
+  expose currentLine lines
+  use strict arg lines = (.array~new(self~defaultArraySize))
+
+  -- write this out following the last existing item
+  currentLine = lines~items + 1
+
+-- character operations not supported
+::method charout
+  raise syntax 93.963  -- not supported
+::method chars
+  raise syntax 93.963  -- not supported
+
+-- write a line to the next sequetial position
+::method lineout
+  expose currentLine lines
+
+  -- the line is optional, which is just a close operation
+  if arg() == 0 then do
+     return 0    -- this is a zero residual count
+  end
+
+  -- now get the line and do a full arg count check
+  use strict arg line
+
+  lines[currentLine] = line
+  currentLine += 1
+  return 0               -- the residual is always 0
+
+-- retrieve the output array from the steam
+::method array
+  expose lines
+  use strict arg
+
+  return lines
+
+
+::requires FUNCTIONPackage.cls
+::options novalue error

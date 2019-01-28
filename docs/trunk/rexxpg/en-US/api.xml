@@ -3191,6 +3191,44 @@ memory is garbage-collected together with the object.
 </para>
 </section>
 
+<section id="mthAreOutputAndErrorSameTarget"><title>&added50;AreOutputAndErrorSameTarget</title>
+<indexterm><primary>AreOutputAndErrorSameTarget</primary></indexterm>
+<indexterm><primary>I/O Redirector context methods</primary>
+<secondary>AreOutputAndErrorSameTarget</secondary></indexterm>
+<!-- AreOutputAndErrorSameTarget --><para>&contexts_ioredirector; &context_since_50;.</para>
+<programlisting language="C++">
+<![CDATA[
+logical_t flag;
+
+// Method Syntax Form(s)
+
+flag = context->AreOutputAndErrorSameTarget();
+]]>
+</programlisting>
+<para>Tests whether for the current command the output object and the
+error object specified by the WITH subkeyword of an ADDRESS instruction
+are the same objects.
+</para>
+<para><emphasis role="bold">Arguments</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para><literal>1</literal> if the output and the error object are te same,
+<literal>0</literal> otherwise.
+</para>
+<para>See also methods
+<xref linkend="mthIsErrorRedirected" xrefstyle="select:title"/>,
+<xref linkend="mthIsInputRedirected" xrefstyle="select:title"/>,
+<xref linkend="mthIsOutputRedirected" xrefstyle="select:title"/>,
+<xref linkend="mthIsRedirectionRequested" xrefstyle="select:title"/>,
+<xref linkend="mthReadInput" xrefstyle="select:title"/>,
+<xref linkend="mthReadInputBuffer" xrefstyle="select:title"/>,
+<xref linkend="mthWriteError" xrefstyle="select:title"/>,
+<xref linkend="mthWriteErrorBuffer" xrefstyle="select:title"/>,
+<xref linkend="mthWriteOutput" xrefstyle="select:title"/>, and
+<xref linkend="mthWriteOutputBuffer" xrefstyle="select:title"/>.
+</para>
+</section>
+
 <section id="mthArray"><title>Array</title>
 <indexterm><primary>Array</primary></indexterm>
 <indexterm><primary>Thread context methods</primary>
@@ -4702,8 +4740,7 @@ garbage-collected.
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
-<para>Void.
-</para>
+<para>Void.</para>
 <para>See also methods
 <xref linkend="mthAllocateObjectMemory" xrefstyle="select:title"/> and
 <xref linkend="mthReallocateObjectMemory" xrefstyle="select:title"/>.
@@ -5288,7 +5325,7 @@ using the .methods environment symbol from Rexx code.
 <secondary>GetPackagePublicClasses</secondary></indexterm>
 <indexterm><primary>Exit context methods</primary>
 <secondary>GetPackagePublicClasses</secondary></indexterm>
-<!-- GetPackageMethods --><para>&contexts_thread_method_call_exit;.</para>
+<!-- GetPackagePublicClasses --><para>&contexts_thread_method_call_exit;.</para>
 <programlisting language="C++">
 <![CDATA[
 RexxDirectoryObject dir;
@@ -6114,6 +6151,80 @@ the RexxObjectPtr value may be safely cast to a RexxDirectoryObject.
 <para>1 = is a Directory object, 0 = not a Directory object.</para>
 </section>
 
+<section id="mthIsErrorRedirected"><title>&added50;IsErrorRedirected</title>
+<indexterm><primary>IsErrorRedirected</primary></indexterm>
+<indexterm><primary>I/O Redirector context methods</primary>
+<secondary>IsErrorRedirected</secondary></indexterm>
+<!-- IsErrorRedirected --><para>&contexts_ioredirector; &context_since_50;.</para>
+<programlisting language="C++">
+<![CDATA[
+logical_t flag;
+
+// Method Syntax Form(s)
+
+flag = context->IsErrorRedirected();
+]]>
+</programlisting>
+<para>Tests whether for the current command error output redirection was
+requested using the WITH subkeyword of an ADDRESS instruction.
+</para>
+<para><emphasis role="bold">Arguments</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para><literal>1</literal> if error redirection was requested,
+<literal>0</literal> otherwise.
+</para>
+<para>See also methods
+<xref linkend="mthAreOutputAndErrorSameTarget" xrefstyle="select:title"/>,
+<xref linkend="mthIsInputRedirected" xrefstyle="select:title"/>,
+<xref linkend="mthIsOutputRedirected" xrefstyle="select:title"/>,
+<xref linkend="mthIsRedirectionRequested" xrefstyle="select:title"/>,
+<xref linkend="mthReadInput" xrefstyle="select:title"/>,
+<xref linkend="mthReadInputBuffer" xrefstyle="select:title"/>,
+<xref linkend="mthWriteError" xrefstyle="select:title"/>,
+<xref linkend="mthWriteErrorBuffer" xrefstyle="select:title"/>,
+<xref linkend="mthWriteOutput" xrefstyle="select:title"/>, and
+<xref linkend="mthWriteOutputBuffer" xrefstyle="select:title"/>.
+</para>
+</section>
+
+<section id="mthIsInputRedirected"><title>&added50;IsInputRedirected</title>
+<indexterm><primary>IsInputRedirected</primary></indexterm>
+<indexterm><primary>I/O Redirector context methods</primary>
+<secondary>IsInputRedirected</secondary></indexterm>
+<!-- IsInputRedirected --><para>&contexts_ioredirector; &context_since_50;.</para>
+<programlisting language="C++">
+<![CDATA[
+logical_t flag;
+
+// Method Syntax Form(s)
+
+flag = context->IsInputRedirected();
+]]>
+</programlisting>
+<para>Tests whether for the current command input redirection was requested
+using the WITH subkeyword of an ADDRESS instruction.
+</para>
+<para><emphasis role="bold">Arguments</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para><literal>1</literal> if input redirection was requested,
+<literal>0</literal> otherwise.
+</para>
+<para>See also methods
+<xref linkend="mthAreOutputAndErrorSameTarget" xrefstyle="select:title"/>,
+<xref linkend="mthIsErrorRedirected" xrefstyle="select:title"/>,
+<xref linkend="mthIsOutputRedirected" xrefstyle="select:title"/>,
+<xref linkend="mthIsRedirectionRequested" xrefstyle="select:title"/>,
+<xref linkend="mthReadInput" xrefstyle="select:title"/>,
+<xref linkend="mthReadInputBuffer" xrefstyle="select:title"/>,
+<xref linkend="mthWriteError" xrefstyle="select:title"/>,
+<xref linkend="mthWriteErrorBuffer" xrefstyle="select:title"/>,
+<xref linkend="mthWriteOutput" xrefstyle="select:title"/>, and
+<xref linkend="mthWriteOutputBuffer" xrefstyle="select:title"/>.
+</para>
+</section>
+
 <section id="mthIsInstanceOf"><title>IsInstanceOf</title>
 <indexterm><primary>IsInstanceOf</primary></indexterm>
 <indexterm><primary>Thread context methods</primary>
@@ -6261,6 +6372,43 @@ This method combines the operations of the FindClass() and IsInstanceOf() method
 <para>1 = is an instance, 0 = not an instance or the named class cannot be located.</para>
 </section>
 
+<section id="mthIsOutputRedirected"><title>&added50;IsOutputRedirected</title>
+<indexterm><primary>IsOutputRedirected</primary></indexterm>
+<indexterm><primary>I/O Redirector context methods</primary>
+<secondary>IsOutputRedirected</secondary></indexterm>
+<!-- IsOutputRedirected --><para>&contexts_ioredirector; &context_since_50;.</para>
+<programlisting language="C++">
+<![CDATA[
+logical_t flag;
+
+// Method Syntax Form(s)
+
+flag = context->IsOutputRedirected();
+]]>
+</programlisting>
+<para>Tests whether for the current command output redirection was requested
+using the WITH subkeyword of an ADDRESS instruction.
+</para>
+<para><emphasis role="bold">Arguments</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para><literal>1</literal> if output redirection was requested,
+<literal>0</literal> otherwise.
+</para>
+<para>See also methods
+<xref linkend="mthAreOutputAndErrorSameTarget" xrefstyle="select:title"/>,
+<xref linkend="mthIsErrorRedirected" xrefstyle="select:title"/>,
+<xref linkend="mthIsInputRedirected" xrefstyle="select:title"/>,
+<xref linkend="mthIsRedirectionRequested" xrefstyle="select:title"/>,
+<xref linkend="mthReadInput" xrefstyle="select:title"/>,
+<xref linkend="mthReadInputBuffer" xrefstyle="select:title"/>,
+<xref linkend="mthWriteError" xrefstyle="select:title"/>,
+<xref linkend="mthWriteErrorBuffer" xrefstyle="select:title"/>,
+<xref linkend="mthWriteOutput" xrefstyle="select:title"/>, and
+<xref linkend="mthWriteOutputBuffer" xrefstyle="select:title"/>.
+</para>
+</section>
+
 <section id="mthIsPointer"><title>IsPointer</title>
 <indexterm><primary>IsPointer</primary></indexterm>
 <indexterm><primary>Thread context methods</primary>
@@ -6294,6 +6442,43 @@ the RexxObjectPtr value may be safely cast to a RexxPointerObject.
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>1 = is a Pointer object, 0 = not a Pointer object.</para>
+</section>
+
+<section id="mthIsRedirectionRequested"><title>&added50;IsRedirectionRequested</title>
+<indexterm><primary>IsRedirectionRequested</primary></indexterm>
+<indexterm><primary>I/O Redirector context methods</primary>
+<secondary>IsRedirectionRequested</secondary></indexterm>
+<!-- IsRedirectionRequested --><para>&contexts_ioredirector; &context_since_50;.</para>
+<programlisting language="C++">
+<![CDATA[
+logical_t flag;
+
+// Method Syntax Form(s)
+
+flag = context->IsRedirectionRequested();
+]]>
+</programlisting>
+<para>Tests whether for the current command any redirection was requested
+using the WITH subkeyword of an ADDRESS instruction.
+</para>
+<para><emphasis role="bold">Arguments</emphasis></para>
+<para>None.</para>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para><literal>1</literal> if any redirection was requested,
+<literal>0</literal> otherwise.
+</para>
+<para>See also methods
+<xref linkend="mthAreOutputAndErrorSameTarget" xrefstyle="select:title"/>,
+<xref linkend="mthIsErrorRedirected" xrefstyle="select:title"/>,
+<xref linkend="mthIsInputRedirected" xrefstyle="select:title"/>,
+<xref linkend="mthIsOutputRedirected" xrefstyle="select:title"/>,
+<xref linkend="mthReadInput" xrefstyle="select:title"/>,
+<xref linkend="mthReadInputBuffer" xrefstyle="select:title"/>,
+<xref linkend="mthWriteError" xrefstyle="select:title"/>,
+<xref linkend="mthWriteErrorBuffer" xrefstyle="select:title"/>,
+<xref linkend="mthWriteOutput" xrefstyle="select:title"/>, and
+<xref linkend="mthWriteOutputBuffer" xrefstyle="select:title"/>.
+</para>
 </section>
 
 <section id="mthIsRoutine"><title>IsRoutine</title>
@@ -7314,21 +7499,24 @@ POINTER ptr;
 // Method Syntax Form(s)
 
 ptr = context->ObjectToCSelf(obj);
+
 ptr = context->ObjectToCSelf(obj, scope);
 ]]>
 </programlisting>
 <para>Returns a pointer to the CSELF value for another object.
 CSELF is a special argument type used for classes to store native
 pointers or structures inside an object instance.
-ObjectToCSelf() will either search all of the object's variable scopes for
-a variable named CSELF, or, if <emphasis role="italic">scope</emphasis> is
-specified, will search for a variable named CSELF, beginning with the
-indicated scope level.
+Objects that rely on CSELF values typically set the variable CSELF inside
+an INIT method for the class.
+</para>
+<para>This method has two forms.
+The first form searches all of the object's variable scopes for
+a variable named CSELF.
+The first form , searches for a variable named CSELF, beginning with the
+indicated <emphasis role="italic">scope</emphasis> level.
 If a CSELF variable is located and the value is an instance of either the
 Pointer or the Buffer class, the corresponding POINTER value will be
 returned as a void * value.
-Objects that rely on CSELF values typically set the variable CSELF inside
-an INIT method for the class.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
@@ -7783,7 +7971,7 @@ flag = context->ObjectToValue(obj, &desc);
 ]]>
 </programlisting>
 <para>Convert a Rexx object to another type.  The target type is identified
-by the ValueDescriptor structure, and can by any of the types that may be
+by the ValueDescriptor structure, and can be any of the types that may be
 used as a method or routine return type.  For many conversions, it may be
 more appropriate to use more targeted routines such as
 <xref linkend="mthObjectToWholeNumber" xrefstyle="select:title"/>.
@@ -7822,12 +8010,12 @@ value of the requested type.
 <programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
-wholenumber_t wn;
+wholenumber_t n;
 logical_t flag;
 
 // Method Syntax Form(s)
 
-flag = context->ObjectToWholeNumber(obj, &wn);
+flag = context->ObjectToWholeNumber(obj, &n);
 ]]>
 </programlisting>
 <para>Convert an Object to a whole number value.
@@ -8073,6 +8261,109 @@ context->RaiseException2(n, obj1, obj2);
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Void.</para>
+</section>
+
+<section id="mthReadInput"><title>&added50;ReadInput</title>
+<indexterm><primary>ReadInput</primary></indexterm>
+<indexterm><primary>I/O Redirector context methods</primary>
+<secondary>ReadInput</secondary></indexterm>
+<!-- ReadInput --><para>&contexts_ioredirector; &context_since_50;.</para>
+<programlisting language="C++">
+<![CDATA[
+CSTRING data;
+size_t  length;
+
+// Method Syntax Form(s)
+
+context->ReadInput(&data, &length);
+]]>
+</programlisting>
+<para>Returns the next item or line of data from an input redirection Rexx
+object that was specified using the WITH subkeyword of an ADDRESS instruction.
+Items are converted to strings and missing items are replaced by a null string.
+</para>
+<para><emphasis role="bold">Arguments</emphasis></para>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
+    <row><entry><emphasis role="italic">data</emphasis></entry>
+    <entry><para>The returned string.
+    If no more items or lines are available, NULL is returned.
+    </para></entry>
+    </row>
+    <row><entry><emphasis role="italic">length</emphasis></entry>
+    <entry><para>The returned length of <emphasis role="italic">data</emphasis>.
+    If an item is missing, or no more items or lines are available,
+    <literal>0</literal> is returned.
+    </para></entry>
+    </row>
+</tbody></tgroup></informaltable>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Void.
+Arguments <emphasis role="italic">data</emphasis> and
+<emphasis role="italic">length</emphasis> are updated.
+</para>
+<para>See also methods
+<xref linkend="mthAreOutputAndErrorSameTarget" xrefstyle="select:title"/>,
+<xref linkend="mthIsErrorRedirected" xrefstyle="select:title"/>,
+<xref linkend="mthIsInputRedirected" xrefstyle="select:title"/>,
+<xref linkend="mthIsOutputRedirected" xrefstyle="select:title"/>,
+<xref linkend="mthIsRedirectionRequested" xrefstyle="select:title"/>,
+<xref linkend="mthReadInputBuffer" xrefstyle="select:title"/>,
+<xref linkend="mthWriteError" xrefstyle="select:title"/>,
+<xref linkend="mthWriteErrorBuffer" xrefstyle="select:title"/>,
+<xref linkend="mthWriteOutput" xrefstyle="select:title"/>, and
+<xref linkend="mthWriteOutputBuffer" xrefstyle="select:title"/>.
+</para>
+</section>
+
+<section id="mthReadInputBuffer"><title>&added50;ReadInputBuffer</title>
+<indexterm><primary>ReadInputBuffer</primary></indexterm>
+<indexterm><primary>I/O Redirector context methods</primary>
+<secondary>ReadInputBuffer</secondary></indexterm>
+<!-- ReadInputBuffer --><para>&contexts_ioredirector; &context_since_50;.</para>
+<programlisting language="C++">
+<![CDATA[
+CSTRING data;
+size_t  length;
+
+// Method Syntax Form(s)
+
+context->ReadInputBuffer(&data, &length);
+]]>
+</programlisting>
+<para>Returns a string of all items or lines from an input redirection Rexx
+object that was specified using the WITH subkeyword of an ADDRESS instruction.
+Items are converted to strings and separated by the platform-specfic line-end
+characters.
+Missing items are replaced by a null string.
+</para>
+<para><emphasis role="bold">Arguments</emphasis></para>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
+    <row><entry><emphasis role="italic">data</emphasis></entry>
+    <entry><para>The returned string.
+    </para></entry>
+    </row>
+    <row><entry><emphasis role="italic">length</emphasis></entry>
+    <entry><para>The returned length of <emphasis role="italic">data</emphasis>.
+    </para></entry>
+    </row>
+</tbody></tgroup></informaltable>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Void.
+Arguments <emphasis role="italic">data</emphasis> and
+<emphasis role="italic">length</emphasis> are updated.
+</para>
+<para>See also methods
+<xref linkend="mthAreOutputAndErrorSameTarget" xrefstyle="select:title"/>,
+<xref linkend="mthIsErrorRedirected" xrefstyle="select:title"/>,
+<xref linkend="mthIsInputRedirected" xrefstyle="select:title"/>,
+<xref linkend="mthIsOutputRedirected" xrefstyle="select:title"/>,
+<xref linkend="mthIsRedirectionRequested" xrefstyle="select:title"/>,
+<xref linkend="mthReadInput" xrefstyle="select:title"/>,
+<xref linkend="mthWriteError" xrefstyle="select:title"/>,
+<xref linkend="mthWriteErrorBuffer" xrefstyle="select:title"/>,
+<xref linkend="mthWriteOutput" xrefstyle="select:title"/>, and
+<xref linkend="mthWriteOutputBuffer" xrefstyle="select:title"/>.
+</para>
 </section>
 
 <section id="mthReallocateObjectMemory"><title>&added50;ReallocateObjectMemory</title>
@@ -9106,7 +9397,7 @@ stringsize_t n;
 
 // Method Syntax Form(s)
 
-obj = context->StringSize(&n);
+obj = context->StringSize(n);
 
 flag = context->StringSize(obj, &n);
 ]]>
@@ -9811,7 +10102,7 @@ obj = context->ValueToObject(&desc);
 ]]>
 </programlisting>
 <para>Convert a type to an Object representation.  The source type is identified
-by the ValueDescriptor structure, and can by any of the types that may be
+by the ValueDescriptor structure, and can be any of the types that may be
 used as a method or routine return types.  For many conversions, it may be
 more appropriate to use more targeted routines such as
 <xref linkend="mthWholeNumberToObject" xrefstyle="select:title"/>.
@@ -9905,6 +10196,191 @@ obj = context->WholeNumberToObject(n);
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>An Object that represents the C whole number.</para>
+</section>
+
+<section id="mthWriteError"><title>&added50;WriteError</title>
+<indexterm><primary>WriteError</primary></indexterm>
+<indexterm><primary>I/O Redirector context methods</primary>
+<secondary>WriteError</secondary></indexterm>
+<!-- WriteError --><para>&contexts_ioredirector; &context_since_50;.</para>
+<programlisting language="C++">
+<![CDATA[
+CSTRING data;
+size_t  length;
+
+// Method Syntax Form(s)
+
+context->WriteError(data, length);
+]]>
+</programlisting>
+<para>Adds a string to an error output redirection Rexx object that was
+specified using the WITH subkeyword of an ADDRESS instruction.
+</para>
+<para><emphasis role="bold">Arguments</emphasis></para>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
+    <row><entry><emphasis role="italic">data</emphasis></entry>
+    <entry><para>The string to be written.
+    </para></entry>
+    </row>
+    <row><entry><emphasis role="italic">length</emphasis></entry>
+    <entry><para>The length of <emphasis role="italic">data</emphasis>.
+    </para></entry>
+    </row>
+</tbody></tgroup></informaltable>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Void.</para>
+<para>See also methods
+<xref linkend="mthAreOutputAndErrorSameTarget" xrefstyle="select:title"/>,
+<xref linkend="mthIsErrorRedirected" xrefstyle="select:title"/>,
+<xref linkend="mthIsInputRedirected" xrefstyle="select:title"/>,
+<xref linkend="mthIsOutputRedirected" xrefstyle="select:title"/>,
+<xref linkend="mthIsRedirectionRequested" xrefstyle="select:title"/>,
+<xref linkend="mthReadInput" xrefstyle="select:title"/>,
+<xref linkend="mthReadInputBuffer" xrefstyle="select:title"/>,
+<xref linkend="mthWriteErrorBuffer" xrefstyle="select:title"/>,
+<xref linkend="mthWriteOutput" xrefstyle="select:title"/>, and
+<xref linkend="mthWriteOutputBuffer" xrefstyle="select:title"/>.
+</para>
+</section>
+
+<section id="mthWriteErrorBuffer"><title>&added50;WriteErrorBuffer</title>
+<indexterm><primary>WriteErrorBuffer</primary></indexterm>
+<indexterm><primary>I/O Redirector context methods</primary>
+<secondary>WriteErrorBuffer</secondary></indexterm>
+<!-- WriteErrorBuffer --><para>&contexts_ioredirector; &context_since_50;.</para>
+<programlisting language="C++">
+<![CDATA[
+CSTRING data;
+size_t  length;
+
+// Method Syntax Form(s)
+
+context->WriteErrorBuffer(data, length);
+]]>
+</programlisting>
+<para>Adds a string composed of strings separated by the platform-specfic
+line-end characters as separate items or lines to an error output redirection
+Rexx object that was specified using the WITH subkeyword of an ADDRESS
+instruction.
+</para>
+<para><emphasis role="bold">Arguments</emphasis></para>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
+    <row><entry><emphasis role="italic">data</emphasis></entry>
+    <entry><para>The string of line-end separated strings to be written.
+    </para></entry>
+    </row>
+    <row><entry><emphasis role="italic">length</emphasis></entry>
+    <entry><para>The length of <emphasis role="italic">data</emphasis>.
+    <emphasis role="italic">data</emphasis> string.
+    </para></entry>
+    </row>
+</tbody></tgroup></informaltable>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Void.</para>
+<para>See also methods
+<xref linkend="mthAreOutputAndErrorSameTarget" xrefstyle="select:title"/>,
+<xref linkend="mthIsErrorRedirected" xrefstyle="select:title"/>,
+<xref linkend="mthIsInputRedirected" xrefstyle="select:title"/>,
+<xref linkend="mthIsOutputRedirected" xrefstyle="select:title"/>,
+<xref linkend="mthIsRedirectionRequested" xrefstyle="select:title"/>,
+<xref linkend="mthReadInput" xrefstyle="select:title"/>,
+<xref linkend="mthReadInputBuffer" xrefstyle="select:title"/>,
+<xref linkend="mthWriteError" xrefstyle="select:title"/>,
+<xref linkend="mthWriteOutput" xrefstyle="select:title"/>, and
+<xref linkend="mthWriteOutputBuffer" xrefstyle="select:title"/>.
+</para>
+</section>
+
+<section id="mthWriteOutput"><title>&added50;WriteOutput</title>
+<indexterm><primary>WriteOutput</primary></indexterm>
+<indexterm><primary>I/O Redirector context methods</primary>
+<secondary>WriteOutput</secondary></indexterm>
+<!-- WriteOutput --><para>&contexts_ioredirector; &context_since_50;.</para>
+<programlisting language="C++">
+<![CDATA[
+CSTRING data;
+size_t  length;
+
+// Method Syntax Form(s)
+
+context->WriteOutput(data, length);
+]]>
+</programlisting>
+<para>Adds a string to an output redirection Rexx object that was
+specified using the WITH subkeyword of an ADDRESS instruction.
+</para>
+<para><emphasis role="bold">Arguments</emphasis></para>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
+    <row><entry><emphasis role="italic">data</emphasis></entry>
+    <entry><para>The string to be written.
+    </para></entry>
+    </row>
+    <row><entry><emphasis role="italic">length</emphasis></entry>
+    <entry><para>The length of <emphasis role="italic">data</emphasis>.
+    </para></entry>
+    </row>
+</tbody></tgroup></informaltable>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Void.</para>
+<para>See also methods
+<xref linkend="mthAreOutputAndErrorSameTarget" xrefstyle="select:title"/>,
+<xref linkend="mthIsErrorRedirected" xrefstyle="select:title"/>,
+<xref linkend="mthIsInputRedirected" xrefstyle="select:title"/>,
+<xref linkend="mthIsOutputRedirected" xrefstyle="select:title"/>,
+<xref linkend="mthIsRedirectionRequested" xrefstyle="select:title"/>,
+<xref linkend="mthReadInput" xrefstyle="select:title"/>,
+<xref linkend="mthReadInputBuffer" xrefstyle="select:title"/>,
+<xref linkend="mthWriteError" xrefstyle="select:title"/>,
+<xref linkend="mthWriteErrorBuffer" xrefstyle="select:title"/>,
+<xref linkend="mthWriteOutputBuffer" xrefstyle="select:title"/>.
+</para>
+</section>
+
+<section id="mthWriteOutputBuffer"><title>&added50;WriteOutputBuffer</title>
+<indexterm><primary>WriteOutputBuffer</primary></indexterm>
+<indexterm><primary>I/O Redirector context methods</primary>
+<secondary>WriteOutputBuffer</secondary></indexterm>
+<!-- WriteOutputBuffer --><para>&contexts_ioredirector; &context_since_50;.</para>
+<programlisting language="C++">
+<![CDATA[
+CSTRING data;
+size_t  length;
+
+// Method Syntax Form(s)
+
+context->WriteOutputBuffer(data, length);
+]]>
+</programlisting>
+<para>Adds a string composed of strings separated by the platform-specfic
+line-end characters as separate items or lines to an output redirection
+Rexx object that was specified using the WITH subkeyword of an ADDRESS
+instruction.
+</para>
+<para><emphasis role="bold">Arguments</emphasis></para>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
+    <row><entry><emphasis role="italic">data</emphasis></entry>
+    <entry><para>The string of line-end separated strings to be written.
+    </para></entry>
+    </row>
+    <row><entry><emphasis role="italic">length</emphasis></entry>
+    <entry><para>The length of <emphasis role="italic">data</emphasis>.
+    <emphasis role="italic">data</emphasis> string.
+    </para></entry>
+    </row>
+</tbody></tgroup></informaltable>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Void.</para>
+<para>See also methods
+<xref linkend="mthAreOutputAndErrorSameTarget" xrefstyle="select:title"/>,
+<xref linkend="mthIsErrorRedirected" xrefstyle="select:title"/>,
+<xref linkend="mthIsInputRedirected" xrefstyle="select:title"/>,
+<xref linkend="mthIsOutputRedirected" xrefstyle="select:title"/>,
+<xref linkend="mthIsRedirectionRequested" xrefstyle="select:title"/>,
+<xref linkend="mthReadInput" xrefstyle="select:title"/>,
+<xref linkend="mthReadInputBuffer" xrefstyle="select:title"/>,
+<xref linkend="mthWriteError" xrefstyle="select:title"/>, and
+<xref linkend="mthWriteOutput" xrefstyle="select:title"/>.
+</para>
 </section>
 
 </section>
