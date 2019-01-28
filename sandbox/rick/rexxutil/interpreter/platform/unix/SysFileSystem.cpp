@@ -54,10 +54,12 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <fcntl.h>
 #include <unistd.h>
 #include <utime.h>
 #include <pwd.h>
 #include <errno.h>
+#include <fnmatch.h>
 #include "SysFileSystem.hpp"
 #include "Utilities.hpp"
 #include "ActivityManager.hpp"
@@ -533,41 +535,43 @@ bool SysFileSystem::searchPath(const char *name, const char *path, FileNameBuffe
  */
 bool SysFileSystem::resolveTilde(FileNameBuffer &name)
 {
+        // save a copy of the name
+    AutoFileNameBuffer tempName(name);
+
     // does it start with the user home marker?
     // this is the typical case.  This is a directory based off of
     // the current users home directory.
     if (name[1] == '\0' || name[1] == '/')
     {
-        // save a copy of the name
-        FileNameBuffer tempName = ((const char *)name) + 1;
+        // save everything after the first character
+        tempName = ((const char *)name) + 1;
         // start with the home directory
         name = getenv("HOME");
-        name += tempName;
         // We don't need to add a slash : If we have "~" alone, then no final slash expected (same as for "~user"). If "~/..." then we have the slash already
-        name + (const char *)tempName;
+        name += (const char *)tempName;
     }
     else
     {
         // referencing a file in some other user's home directory.
         // we need to extract the username and resolve that home directory
 
-        // save the name in a temporary buffer
-        FileNameBuffer tempName = name;
-        FileNameBuffer userName = name;
+        AutoFileNameBuffer userName(name);
+        // copy the whole original name into the temporary
+        tempName = (const char *)name;
 
         // look for the start of a directory
-        char *slash = strchr(tempName, '/');
+        const char *slash = strchr((const char *)tempName, '/');
         // if there is a directory after the username, we need
         // to copy just the name piece
         if (slash != NULL)
         {
-            size_t nameLen = slash - tempName - 1;
-            userName.set(tempName + 1, nameLen);
+            size_t nameLen = slash - ((const char *)tempName) - 1;
+            userName.set(((const char *)tempName) + 1, nameLen);
         }
         // all username, just copy
         else
         {
-            userName = tempName + 1;
+            userName = ((const char *)tempName) + 1;
         }
 
         // see if we can retrieve the information
@@ -581,6 +585,7 @@ bool SysFileSystem::resolveTilde(FileNameBuffer &name)
         // copy the home dir
         name = ppwd->pw_dir;
         // if we have a directory after the username, copy the whole thing
+        // from that point
         if (slash != NULL)
         {
             name += slash;
@@ -1227,29 +1232,31 @@ bool SysFileSystem::setCurrentDirectory(const char *directory)
  */
 bool samePaths(const char *path1, const char *path2)
 {
-    char actualpath1[PATH_MAX + 1];
-    char actualpath2[PATH_MAX + 1];
+    AutoFree actualPath1 = realpath(path1, NULL);
 
     // realpath() gives a NULL return if the file does not exist. For this operation
     // at least one of the file must exist. If either does not exist, they cannot be bad.
-    if (realpath(path1, actualpath1) == NULL)
+    if (actualPath1 == NULL)
     {
         return false;
     }
-    if (realpath(path2, actualpath2) == NULL)
+
+    AutoFree actualPath2 = realpath(path2, NULL);
+
+    if (actualPath2 == NULL)
     {
         return false;
     }
 
     // and compare them. Note that if we have a file in a case-insensitive file
     // system, we need to perform a caseless compare.
-    if (!SysFileSystem::isCaseSensitive(actualpath1)
+    if (!SysFileSystem::isCaseSensitive(actualPath1))
     {
-        return stricmp(actualpath1, actualpath2) == 0;
+        return strcasecmp((const char *)actualPath1, (const char *)actualPath2) == 0;
     }
     else
     {
-        return strcmp(actualpath1, actualpath2) == 0;
+        return strcmp((const char *)actualPath1, (const char *)actualPath2) == 0;
     }
 }
 
@@ -1509,7 +1516,7 @@ int SysFileSystem::copyFile(const char *fromFile, const char *toFile)
 {
     // this is a direct copy operation. We preserve the timestamps, but not
     // the mode.
-    copyFileDereferenceSymbolicLinks(fromFile, toFile, true, false);
+    return copyFileDereferenceSymbolicLinks(fromFile, toFile, true, false);
 }
 
 

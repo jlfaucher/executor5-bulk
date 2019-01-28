@@ -266,6 +266,20 @@ class AutoFileNameBuffer : public FileNameBuffer
          return *this;
      }
 
+     inline AutoFileNameBuffer &operator=(char s)
+     {
+         FileNameBuffer::operator=(s);
+         return *this;
+     }
+
+
+     inline AutoFileNameBuffer &operator+=(FileNameBuffer &s)
+     {
+         FileNameBuffer::operator=(s);
+         return *this;
+     }
+
+
 
      void handleMemoryError() override { parent.handleMemoryError(); };
 

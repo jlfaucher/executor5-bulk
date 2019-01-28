@@ -134,7 +134,7 @@ SysSearchPath::SysSearchPath(const char *parentDir, const char *extensionPath)
 
     addPath(parentDir);
     // add on the current directory after the parent dir
-    addPath(".:")
+    addPath(".:");
     // next comes the extension path defined on the instance
     addPath(extensionPath);
     // followed by the REXX_PATH

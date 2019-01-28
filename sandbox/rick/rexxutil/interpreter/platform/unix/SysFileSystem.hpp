@@ -144,7 +144,7 @@ public:
     ~SysFileIterator();
     void close();
     bool hasNext();
-    void next(char *buffer);
+    void next(FileNameBuffer &name);
 
 protected:
     void findNextEntry();
