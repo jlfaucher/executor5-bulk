@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2008-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2008-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -855,14 +855,14 @@ return .ooTestResult~new(5)~~addException(err)
 
 ::method TestCommandHandler
   tester = .ProcessTester~new
-  self~assertEquals("SUCCESS 0", tester~callInstanceProgram(self~resolveTestProgram('tests/commandHandlerGood.rex'), .array~of("TEST", "GOOD")))
-  self~assertEquals("ERROR 1", tester~callInstanceProgram(self~resolveTestProgram('tests/commandHandlerGood.rex'), .array~of("TEST", "ERROR")))
-  self~assertEquals("FAILURE -1", tester~callInstanceProgram(self~resolveTestProgram('tests/commandHandlerGood.rex'), .array~of("TEST", "FAILURE")))
-  tester~callInstanceProgram(self~resolveTestProgram('tests/commandHandlerGood.rex'), .array~of("TEST", "RAISE"))
+  self~assertEquals("SUCCESS 0", tester~callInstanceProgram(self~resolveTestProgram('tests/commandHandlerGood.rex'), .array~of("TESTDIRECT", "GOOD")))
+  self~assertEquals("ERROR 1", tester~callInstanceProgram(self~resolveTestProgram('tests/commandHandlerGood.rex'), .array~of("TESTDIRECT", "ERROR")))
+  self~assertEquals("FAILURE -1", tester~callInstanceProgram(self~resolveTestProgram('tests/commandHandlerGood.rex'), .array~of("TESTDIRECT", "FAILURE")))
+  tester~callInstanceProgram(self~resolveTestProgram('tests/commandHandlerGood.rex'), .array~of("TESTDIRECT", "RAISE"))
   self~assertEquals(48, tester~RC)
   self~assertEquals(48900, tester~code)
-  self~assertEquals("SUCCESS Hello World", tester~callInstanceProgram(self~resolveTestProgram('tests/commandHandlerSetvar.rex'), .array~of("TEST")))
-  self~assertEquals("SUCCESS Hello World", tester~callInstanceProgram(self~resolveTestProgram('tests/commandHandlerGetvar.rex'), .array~of("TEST")))
+  self~assertEquals("SUCCESS Hello World", tester~callInstanceProgram(self~resolveTestProgram('tests/commandHandlerSetvar.rex'), .array~of("TESTDIRECT")))
+  self~assertEquals("SUCCESS Hello World", tester~callInstanceProgram(self~resolveTestProgram('tests/commandHandlerGetvar.rex'), .array~of("TESTDIRECT")))
 
 ::method TestSubcomHandler
   tester = .ProcessTester~new

@@ -100,7 +100,7 @@ reuse it to run multiple programs.
 <para>Interpreter environments are created using the
 <xref linkend="createinterpreter" xrefstyle="select:title"/> API:</para>
 <example>
-<title>API - Rexx CreateInterpreter</title>
+<title>API &mdash; Rexx CreateInterpreter</title>
 <programlisting language="C++">
 RexxInstance *instance;
 RexxThreadContext *threadContext;
@@ -116,7 +116,7 @@ RexxInstance or RexxThreadContext interface to perform operations
 like running programs, loading class packages, etc.  For example, the following
 code will run a program using a created instance, checking for syntax errors upon completion:</para>
 <example>
-<title>API - RexxInstance and RexxThreadContext</title>
+<title>API &mdash; RexxInstance and RexxThreadContext</title>
 <programlisting language="C++">
 <![CDATA[
     // create an Array object to hold the program arguments
@@ -175,7 +175,7 @@ a final step, the interpreter instance is destroyed once we're finished using it
 <para>RexxCreateInterpreter creates an interpreter instance and an associated
 thread context interface for the current thread.</para>
 <example>
-<title>API - RexxInstance and RexxThreadContext</title>
+<title>API &mdash; RexxInstance and RexxThreadContext</title>
 <programlisting language="C++">
 RexxInstance *instance;
 RexxThreadContext *threadContext;
@@ -231,7 +231,7 @@ name terminates the option list.  The available interpreter options are:</para>
 <listitem><para>Contains the ASCII-Z name of the initial address environment
 that will be used for all Rexx programs run under this instance.</para>
 <example>
-<title>API - RexxOption</title>
+<title>API &mdash; RexxOption INITIAL_ADDRESS_ENVIRONMENT</title>
 <programlisting language="C++">
 RexxOption options[2];
 
@@ -249,7 +249,7 @@ data pointer allows methods, functions, exits, and command handlers to recover
 access to globally defined application data.
 </para>
 <example>
-<title>API - RexxOption</title>
+<title>API &mdash; RexxOption APPLICATION_DATA</title>
 <programlisting language="C++">
 RexxOption options[2];
 
@@ -266,7 +266,7 @@ format appropriate for the host platform environment.  On Windows, the path elem
 are separated by semicolons (;).  On Unix-based systems, a colon (:) is used.
 </para>
 <example>
-<title>API - RexxOption</title>
+<title>API &mdash; RexxOption EXTERNAL_CALL_PATH</title>
 <programlisting language="C++">
 RexxOption options[2];
 
@@ -282,7 +282,7 @@ be used when searching for Rexx program files.  The specified extensions must in
 the extension ".".  Multiple extensions are separated by a comma (,).
 </para>
 <example>
-<title>API - RexxOption</title>
+<title>API &mdash; RexxOption EXTERNAL_CALL_EXTENSIONS</title>
 <programlisting language="C++">
 RexxOption options[2];
 
@@ -299,7 +299,7 @@ with the library name in the same format used for ::REQUIRES LIBRARY.  Multiple 
 can be loaded by specifying this option multiple times.
 </para>
 <example>
-<title>API - RexxOption</title>
+<title>API &mdash; RexxOption LOAD_REQUIRED_LIBRARY</title>
 <programlisting language="C++">
 RexxOption options[2];
 
@@ -320,7 +320,7 @@ with the library name in the same format used for ::REQUIRES LIBRARY.  Multiple 
 can be registered by specifying this option multiple times.
 </para>
 <example>
-<title>API - RexxOption</title>
+<title>API &mdash; RexxOption REGISTER_LIBRARY</title>
 <programlisting language="C++">
 RexxOption options[2];
 RexxLibraryPackage package;
@@ -344,7 +344,7 @@ exit type of 0.  The direct exits are called using the RexxExitContext calling c
 See <xref linkend="exitsapi" /> for details.
 </para>
 <example>
-<title>API - RexxOption</title>
+<title>API &mdash; RexxOption DIRECT_EXITS</title>
 <programlisting language="C++">
 RexxContextExit exits[2];
 RexxOption options[2];
@@ -360,8 +360,8 @@ options[1].optionName = NULL;
 </programlisting>
 </example>
 </listitem></varlistentry>
-<varlistentry><term>DIRECT_ENVIRONMENTS</term>
-<listitem><para>Registers one or more subcommand handler environments with the interpreter
+<varlistentry><term id="instanceoptionDirect">DIRECT_ENVIRONMENTS</term>
+<listitem><para>Registers one or more direct subcommand handler environments with the interpreter
 instance.  The handlers are a list of RexxContextEnvironment structs.  Each enabled handler is
 specified in a single RexxContextEnvironment struct identifying the handler name and
 entry point.
@@ -370,7 +370,7 @@ handler name of NULL.  The direct environment handlers are called using the call
 described in <xref linkend="commandapi" />.
 </para>
 <example>
-<title>API - RexxOption</title>
+<title>API &mdash; RexxOption DIRECT_ENVIRONMENTS</title>
 <programlisting language="C++">
 RexxContextEnvironment environments[2];
 RexxOption options[2];
@@ -387,6 +387,34 @@ options[1].optionName = NULL;
 </programlisting>
 </example>
 </listitem></varlistentry>
+<varlistentry><term id="instanceoptionRedirecting">REDIRECTING_ENVIRONMENTS</term>
+<listitem><para>Registers one or more redirecting subcommand handler environments with the interpreter
+instance.  The handlers are a list of RexxRedirectingEnvironment structs.  Each enabled handler is
+specified in a single RexxRedirectingEnvironment struct identifying the handler name and
+entry point.
+The list is terminated by an instance using a handler entry point of NULL or a
+handler name of NULL.
+The redirecting environment handlers are called using the calling convention
+described in <xref linkend="commandapi" />.
+</para>
+<example>
+<title>API &mdash; RexxOption REDIRECTING_ENVIRONMENTS</title>
+<programlisting language="C++">
+RexxRedirectingEnvironment environments[2];
+RexxOption options[2];
+
+
+environments[0].handler = redirectingCommandHandler;
+environments[0].name = "SYSTEM";
+environments[1].handler = NULL;
+environments[1].name = NULL;
+
+options[0].optionName = REDIRECTING_ENVIRONMENTS;
+options[0].option = (void *)environments;
+options[1].optionName = NULL;
+</programlisting>
+</example>
+</listitem></varlistentry>
 <varlistentry><term>REGISTERED_EXITS</term>
 <listitem><para>Specifies a list of system exits that will be used with this interpreter
 instance.  The exits are a list of RexxContextExit structs.  Each enabled exit is
@@ -397,7 +425,7 @@ exit type of 0.  The registered exits are called using the RexxExitHandler calli
 See <xref linkend="sysex" /> for details.
 </para>
 <example>
-<title>API - RexxOption</title>
+<title>API &mdash; RexxOption REGISTERED_EXITS</title>
 <programlisting language="C++">
 RXSYSEXIT exits[2];
 RexxOption options[2];
@@ -423,7 +451,7 @@ handler name of NULL.  The direct environment handlers are called using the call
 described in <xref linkend="subcom" />.
 </para>
 <example>
-<title>API - RexxOption</title>
+<title>API &mdash; RexxOption REGISTERED_ENVIRONMENTS</title>
 <programlisting language="C++">
 RexxRegisteredEnvironment environments[2];
 RexxOption options[2];
@@ -656,7 +684,7 @@ the RexxInstance value returned by RexxCreateInterpreter.  The RexxInstance type
 as a struct when compiled for C code, or a C++ class when compiled for ++.  The
 struct version looks like this:</para>
 <example>
-<title>API - RexxInstance</title>
+<title>API &mdash; RexxInstance</title>
 <programlisting language="C++">
 struct RexxInstance_
 {
@@ -675,7 +703,7 @@ that defines the RexxInstance programming interfaces.  The RexxInstance services
 may be called from any thread and in any context.  The services are called using C function pointer
 fields in the interface structure.  The RexxInstanceInterface looks like this:</para>
 <example>
-<title>API - RexxInstanceInterface</title>
+<title>API &mdash; RexxInstanceInterface</title>
 <programlisting language="C++">
 typedef struct
 {
@@ -712,7 +740,7 @@ first object.  That's handled automatically by the C++ method.</para>
 <para>The RexxThreadContext pointer returned from RexxCreateInterpreter() functions the same way.
 RexxThreadContext looks like this:</para>
 <example>
-<title>API - RexxThreadContext</title>
+<title>API &mdash; RexxThreadContext</title>
 <programlisting language="C++">
 struct RexxThreadContext_
 {
@@ -937,15 +965,15 @@ pending conditions can be cancelled using <xref linkend="mthClearCondition" xref
 </section>
 
 <section id="redirectorcontext"><title>&added50;Rexx I/O Redirector Context Interface</title>
-<para>A RexxIORedirectorContext object is included as an argument to any
-<xref linkend="commandapi" xrefstyle="template:command handler "/>.
+<para>A RexxIORedirectorContext object is included as the last argument to any
+redirecting <xref linkend="commandapi" xrefstyle="template:command handler "/>.
 The I/O Redirector context provides services that are specific to
-the redirection of stdin, stdout, and stderr of external commands, including:
+the redirection of STDIN, STDOUT, and STDERR of external commands, including:
 </para>
 <itemizedlist>
-<listitem><para>Providing information whether redirection was requested, and for which stream</para></listitem>
-<listitem><para>Retrieving input data for stdin redirection</para></listitem>
-<listitem><para>Returning output data from stdout and stderr redirection</para></listitem>
+<listitem><para>Providing information whether redirection was requested, and for which standard stream</para></listitem>
+<listitem><para>Retrieving input data for STDIN redirection</para></listitem>
+<listitem><para>Returning output data from STDOUT and STDERR redirection</para></listitem>
 </itemizedlist>
 <para>API calls made using the RexxIORedirectorContext APIs may cause Rexx
 syntax errors or other conditions to be raised.  These calls are invoked
@@ -991,7 +1019,7 @@ routines and methods using addresses stored in the RexxPackageEntry table.</para
 package and descriptors of any methods and/or routines defined within
 the package.  The structure looks like this:</para>
 <example>
-<title>API - RexxPackageEntry</title>
+<title>API &mdash; RexxPackageEntry</title>
 <programlisting language="C++">
 typedef struct _RexxPackageEntry
 {
@@ -1071,7 +1099,7 @@ creating the exported method table.
 <para>Here is an example of a RexxPackageEntry table taken from the rxmath
 library package:</para>
 <example>
-<title>API - RexxPackageEntry and RexxRoutineEntry</title>
+<title>API &mdash; RexxPackageEntry and RexxRoutineEntry</title>
 <programlisting language="C++">
 // now build the actual entry list
 RexxRoutineEntry rxmath_functions[] =
@@ -1151,7 +1179,7 @@ The oorexxapi.h header file includes REXX_CLASSIC_ROUTINE_PROTOTYPE() and
 REXX_TYPED_ROUTINE_PROTOTYPE() macros to generate the appropriate declarations.
 For example,</para>
 <example>
-<title>API - REXX_TYPED_ROUTINE_PROTYPE</title>
+<title>API &mdash; REXX_TYPED_ROUTINE_PROTYPE</title>
 <programlisting language="C++">
 // create function declarations for the linker
 REXX_TYPED_ROUTINE_PROTOTYPE(RxCalcPi);
@@ -1177,7 +1205,7 @@ These macros are named "RexxRoutine<emphasis role="italic">n</emphasis>, where
 <emphasis role="italic">n</emphasis> is the number of arguments
 passed to your routine.  For example,</para>
 <example>
-<title>API - RexxRoutine2</title>
+<title>API &mdash; RexxRoutine2</title>
 <programlisting language="C++">
 RexxRoutine2(int, beep, wholenumber_t, frequency, wholenumber_t, duration)
 {
@@ -1193,7 +1221,7 @@ The return value is an <emphasis role="italic">int</emphasis> value.
 </para>
 <para>An argument can be made optional by prefixing the type with "OPTIONAL_".  For example,</para>
 <example>
-<title>API - RexxRoutine2</title>
+<title>API &mdash; RexxRoutine2</title>
 <programlisting language="C++">
 RexxRoutine2(int, beep, wholenumber_t, frequency, OPTIONAL_wholenumber_t, duration)
 {
@@ -1302,7 +1330,7 @@ CSTRING return values are best confined to
 returning C literal values.
 For example, the following is not valid:</para>
 <example>
-<title>API - CString</title>
+<title>API &mdash; CString</title>
 <programlisting language="C++">
 RexxRoutine0(CSTRING, MyRoutine)
 {
@@ -1317,7 +1345,7 @@ RexxRoutine0(CSTRING, MyRoutine)
 <xref linkend="mthString" xrefstyle="select:title"/> API is more appropriate in this
 situation.</para>
 <example>
-<title>API - RexxStringObject</title>
+<title>API &mdash; RexxStringObject</title>
 <programlisting language="C++">
 RexxRoutine0(RexxStringObject, MyRoutine)
 {
@@ -1392,7 +1420,7 @@ The oorexxapi.h header file includes
 a REXX_METHOD_PROTOTYPE() macro to generate the appropriate declarations.
 For example,</para>
 <example>
-<title>API - REXX_METHOD_PROTOTYPE</title>
+<title>API &mdash; REXX_METHOD_PROTOTYPE</title>
 <programlisting language="C++">
 // create function declarations for the linker
 REXX_METHOD_PROTOTYPE(point_init);
@@ -1418,7 +1446,7 @@ These macros are named "RexxMethod<emphasis role="italic">n</emphasis>, where
 <emphasis role="italic">n</emphasis> is the number of arguments you wish to
 be passed to your method.  For example,</para>
 <example>
-<title>API - RexxMethod2</title>
+<title>API &mdash; RexxMethod2</title>
 <programlisting language="C++">
 RexxMethod2(int, beep, wholenumber_t, frequency, wholenumber_t, duration)
 {
@@ -1434,7 +1462,7 @@ The return value is an <emphasis role="italic">int</emphasis> value.
 </para>
 <para>An argument can be made optional by prefixing the type with "OPTIONAL_".  For example,</para>
 <example>
-<title>API - RexxMethod2</title>
+<title>API &mdash; RexxMethod2</title>
 <programlisting language="C++">
 RexxMethod2(int, beep, wholenumber_t, frequency, OPTIONAL_wholenumber_t, duration)
 {
@@ -1541,7 +1569,7 @@ CSTRING return values are best confined to
 returning C literal values.
 For example, the following is not valid:</para>
 <example>
-<title>API - CString</title>
+<title>API &mdash; CString</title>
 <programlisting language="C++">
 RexxMethod0(CSTRING, MyMethod)
 {
@@ -1556,7 +1584,7 @@ RexxMethod0(CSTRING, MyMethod)
 <xref linkend="mthString" xrefstyle="select:title"/> API is more appropriate in this
 situation.</para>
 <example>
-<title>API - RexxStringObject</title>
+<title>API &mdash; RexxStringObject</title>
 <programlisting language="C++">
 RexxMethod0(RexxStringObject, MyMethod)
 {
@@ -1621,7 +1649,7 @@ of either the Pointer or Buffer class, the POINTER value will be passed to the m
 Objects that rely on CSELF values typically set the variable CSELF inside an init method for the object.  For
 example:</para>
 <example>
-<title>API - CSELF</title>
+<title>API &mdash; CSELF</title>
 <programlisting language="C++">
 RexxMethod2(RexxObjectPtr, stream_init, OSELF, self, CSTRING, name)
 {
@@ -1641,7 +1669,7 @@ is retrieved and cast to the correct type:
 </para>
 
 <example>
-<title>API - CSELF</title>
+<title>API &mdash; CSELF</title>
 <programlisting language="C++">
 RexxMethod3(size_t, stream_charout, CSELF, streamPtr, OPTIONAL_RexxStringObject, data, OPTIONAL_int64_t, position)
 {
@@ -1683,7 +1711,7 @@ data buffer.  The data buffer area is writeable storage, into which any data may
 is frequently used to allocate a C++ struct or class instance that is the native embodiment of the
 class implementation.  For example</para>
 <example>
-<title>API - RexxBufferObject</title>
+<title>API &mdash; RexxBufferObject</title>
 <programlisting language="C++">
 <![CDATA[
 RexxMethod0(RexxObjectPtr, myclass_init)
@@ -1708,7 +1736,7 @@ RexxMethod0(RexxObjectPtr, myclass_init)
 stores a reference to the Buffer in the MYDATA object variable.  Other C++ methods can access
 this instance by using the C++ equivalent to the Rexx EXPOSE instruction.</para>
 <example>
-<title>API - RexxBufferObject</title>
+<title>API &mdash; RexxBufferObject</title>
 <programlisting language="C++">
 <![CDATA[
 RexxMethod0(RexxObjectPtr, myclass_dosomething)
@@ -1730,7 +1758,7 @@ the Buffer, such as pointers to system allocated resources or dynamically alloca
 memory, it may be necessary to add an UNINIT method to your class to ensure the
 resources are not leaked.</para>
 <example>
-<title>API - RexxBufferObject</title>
+<title>API &mdash; RexxBufferObject</title>
 <programlisting language="C++">
 <![CDATA[
 RexxMethod0(RexxObjectPtr, myclass_uninit)
@@ -1758,7 +1786,7 @@ Pointer instance are not cleaned up.  If additional cleanup is required, then
 it will be necessary to implement an UNINIT method to handle the cleanup.  Here
 are the Buffer examples above reworked for the Pointer class:</para>
 <example>
-<title>API - RexxObjectPtr</title>
+<title>API &mdash; RexxObjectPtr</title>
 <programlisting language="C++">
 <![CDATA[
 RexxMethod0(RexxObjectPtr, myclass_init)
@@ -1812,7 +1840,7 @@ is generally used for private methods of a class where the Rexx versions of the 
 pass Pointer or Buffer references to the private native code.  For example, the Rexx
 code might look like this:</para>
 <example>
-<title>API - RexxObjectPtr</title>
+<title>API &mdash; RexxObjectPtr</title>
 <programlisting>
 ::method setTitle
   expose title prefix handle
@@ -1825,7 +1853,7 @@ code might look like this:</para>
 </example>
 <para>The corresponding C++ method would look like this:</para>
 <example>
-<title>API - RexxObjectPtr</title>
+<title>API &mdash; RexxObjectPtr</title>
 <programlisting language="C++">
 <![CDATA[
 RexxMethod2(RexxObjectPtr, setTitle, POINTER, handle, CSTRING, title)
@@ -1851,7 +1879,7 @@ is returned as the argument.  The CSELF type is most useful when just a single a
 native C++ data is backing an object instance and the backing data is created in the
 object INIT method.  Here's the Pointer example above reworked to use CSELF:</para>
 <example>
-<title>API - CSELF</title>
+<title>API &mdash; CSELF</title>
 <programlisting language="C++">
 <![CDATA[
 RexxMethod0(RexxObjectPtr, myclass_init)
@@ -1954,7 +1982,7 @@ reside as entry points within the application that creates the interpreter insta
 <para>The following is a sample exit handler
 declaration: </para>
 <example>
-<title>API - Rexx_IO_Exit</title>
+<title>API &mdash; Rexx_IO_Exit</title>
 <programlisting language="C++">
 <![CDATA[
 int REXXENTRY Rexx_IO_exit(
@@ -2254,7 +2282,7 @@ the usual external function search order.</para></listitem>
 or 44 (&quot;Function or message did not return data&quot;).</para></listitem>
 <listitem><para>Parameter list: </para>
 <example>
-<title>API - Rexx_IO_Exit parameter list</title>
+<title>API &mdash; Rexx_IO_Exit parameter list</title>
 <programlisting language="C++">
 <![CDATA[
 
@@ -2333,7 +2361,7 @@ function when no suitable call target has been located.</para></listitem>
 or 44 (&quot;Function or message did not return data&quot;).</para></listitem>
 <listitem><para>Parameter list: </para>
 <example>
-<title>API - Rexx_IO_Exit parameter list</title>
+<title>API &mdash; Rexx_IO_Exit parameter list</title>
 <programlisting language="C++">
 <![CDATA[
 
@@ -2410,7 +2438,7 @@ the usual external function search order.</para></listitem>
 or 44 (&quot;Function or message did not return data&quot;).</para></listitem>
 <listitem><para>Parameter list: </para>
 <example>
-<title>API - Rexx_IO_Exit parameter list</title>
+<title>API &mdash; Rexx_IO_Exit parameter list</title>
 <programlisting language="C++">
 <![CDATA[
 typedef struct {
@@ -2498,7 +2526,7 @@ handler.</para></listitem>
 when indicated by the parameter list flags.</para></listitem>
 <listitem><para>Parameter list: </para>
 <example>
-<title>API - Rexx_IO_Exit parameter list</title>
+<title>API &mdash; Rexx_IO_Exit parameter list</title>
 <programlisting language="C++">
 <![CDATA[
 typedef struct {
@@ -2558,7 +2586,7 @@ data queue.</para></listitem>
 the exit handler provided.</para></listitem>
 <listitem><para>Parameter list: </para>
 <example>
-<title>API - Rexx_IO_Exit parameter list</title>
+<title>API &mdash; Rexx_IO_Exit parameter list</title>
 <programlisting language="C++">
 <![CDATA[
 typedef struct {
@@ -2584,7 +2612,7 @@ data queue.</para></listitem>
 the exit handler provided.</para></listitem>
 <listitem><para>Parameter list: </para>
 <example>
-<title>API - Rexx_IO_Exit parameter list</title>
+<title>API &mdash; Rexx_IO_Exit parameter list</title>
 <programlisting language="C++">
 <![CDATA[
 typedef struct {
@@ -2614,7 +2642,7 @@ Rexx data queue.</para></listitem>
 the exit handler provided.</para></listitem>
 <listitem><para>Parameter list: </para>
 <example>
-<title>API - Rexx_IO_Exit parameter list</title>
+<title>API &mdash; Rexx_IO_Exit parameter list</title>
 <programlisting language="C++">
 <![CDATA[
 typedef struct {
@@ -2639,7 +2667,7 @@ to <emphasis role="italic">newname</emphasis>.</para></listitem>
 data queue that the exit handler provided.</para></listitem>
 <listitem><para>Parameter list:</para>
 <example>
-<title>API - Rexx_IO_Exit parameter list</title>
+<title>API &mdash; Rexx_IO_Exit parameter list</title>
 <programlisting language="C++">
 <![CDATA[
 typedef struct {
@@ -2679,7 +2707,7 @@ stream (STDOUT).</para></listitem>
 the exit handler provided.</para></listitem>
 <listitem><para>Parameter list:</para>
 <example>
-<title>API - Rexx_IO_Exit parameter list</title>
+<title>API &mdash; Rexx_IO_Exit parameter list</title>
 <programlisting language="C++">
 <![CDATA[
 typedef struct {
@@ -2706,7 +2734,7 @@ stream (.ERROR).</para></listitem>
 that the exit handler provided.</para></listitem>
 <listitem><para>Parameter list:</para>
 <example>
-<title>API - Rexx_IO_Exit parameter list</title>
+<title>API &mdash; Rexx_IO_Exit parameter list</title>
 <programlisting language="C++">
 <![CDATA[
 typedef struct {
@@ -2732,7 +2760,7 @@ stream (STDIN).</para></listitem>
 stream that the exit handler provided.</para></listitem>
 <listitem><para>Parameter list:</para>
 <example>
-<title>API - Rexx_IO_Exit parameter list</title>
+<title>API &mdash; Rexx_IO_Exit parameter list</title>
 <programlisting language="C++">
 <![CDATA[
 typedef struct {
@@ -2756,7 +2784,7 @@ stream (STDIN).</para></listitem>
 stream that the exit handler provided.</para></listitem>
 <listitem><para>Parameter list: </para>
 <example>
-<title>API - Rexx_IO_Exit parameter list</title>
+<title>API &mdash; Rexx_IO_Exit parameter list</title>
 <programlisting language="C++">
 <![CDATA[
 typedef struct {
@@ -2798,7 +2826,7 @@ the variable name will be returned as the value.
 </para></listitem>
 <listitem><para>Parameter list:</para>
 <example>
-<title>API - Rexx_IO_Exit parameter list</title>
+<title>API &mdash; Rexx_IO_Exit parameter list</title>
 <programlisting language="C++">
 <![CDATA[
 
@@ -2839,7 +2867,7 @@ returned as a result.
 .</para></listitem>
 <listitem><para>Parameter list:</para>
 <example>
-<title>API - Rexx_IO_Exit parameter list</title>
+<title>API &mdash; Rexx_IO_Exit parameter list</title>
 <programlisting language="C++">
 <![CDATA[
 
@@ -2888,7 +2916,7 @@ condition (either TRUE or FALSE).</para></listitem>
 exit handler returns TRUE.</para></listitem>
 <listitem><para>Parameter list:</para>
 <example>
-<title>API - Rexx_IO_Exit parameter list</title>
+<title>API &mdash; Rexx_IO_Exit parameter list</title>
 <programlisting language="C++">
 <![CDATA[
 typedef struct {
@@ -2947,7 +2975,7 @@ using TRACE ?R level of tracing. When the exit handler switches from TRUE
 to FALSE, the Rexx interpreter exits the interactive debug mode.</para></listitem>
 <listitem><para>Parameter list:</para>
 <example>
-<title>API - Rexx_IO_Exit parameter list</title>
+<title>API &mdash; Rexx_IO_Exit parameter list</title>
 <programlisting language="C++">
 <![CDATA[
 typedef struct {
@@ -3028,21 +3056,38 @@ to retrieve the Rexx variable values.</para></listitem>
 </section>
 
 <section id="commandapi"><title>Command Handler Interface</title>
-<para>Applications can create custom command handlers that function like operating command shell environments.
+<para>Applications can create custom command handlers that function like operating system command shell environments.
 These named evironments can be invoked with the Rexx ADDRESS instruction and applications can create
 Rexx instances that direct commands to custom application command handlers by default.
 </para>
-<para>Command handlers are registered with an interpreter instance when it is created.
-See <xref linkend="instanceoptions" /> for how to register a handler with
-an interpreter instance.</para>
-<para>The command handlers are registered as a function pointer to a handler routine.  When a Rexx program
-issues a command to the named ADDRESS target, the handler is called with the evaluated command string and the
-name of the address environment.  The handler is responsible for executing the command and returning a
-return code value back to the Rexx program.  Handlers are called using the following function signature:</para>
-
+<para>There are two types of command handlers: in addition to standard
+&quot;direct&quot; command handlers, &quot;redirecting&quot; command handlers
+offer optional redirection of STDIN from Rexx objects and redirection
+of STDOUT and STDERR to Rexx objects.
+Redirection is requested by using the WITH subkeyword of the ADDRESS instruction.
+</para>
+<para>Command handlers can be registered by using interpreter instance options
+<xref linkend="instanceoptionDirect" xrefstyle="select:title"/> or
+<xref linkend="instanceoptionRedirecting" xrefstyle="select:title"/>
+when the interpreter instance is created, or through the
+<xref linkend="mthAddCommandEnvironment" xrefstyle="select:title"/> API.
+</para>
+<para>The command handlers are registered as a function pointer to a handler routine.
+When a Rexx program issues a command to the named ADDRESS target, the handler is
+called with the evaluated command string and the name of the address environment.
+The handler is responsible for executing the command, returning a
+return code value back to the Rexx program, and, if requested, providing
+redirected input to the command and capturing command output.
+</para>
+<para>Handlers are called using two different function signatures, the first
+for direct handlers, and the second signature for redirecting command handlers:
+</para>
 <programlisting language="C++">
-RexxObjectPtr RexxEntry TestCommandHandler(RexxExitContext *context,
+RexxObjectPtr RexxEntry DirectCommandHandler(RexxExitContext *context,
      RexxStringObject address, RexxStringObject command)
+
+RexxObjectPtr RexxEntry RedirectingCommandHandler(RexxExitContext *context,
+     RexxStringObject address, RexxStringObject command, RexxIORedirectorContext *ioContext)
 </programlisting>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1">
@@ -3064,6 +3109,23 @@ RexxObjectPtr RexxEntry TestCommandHandler(RexxExitContext *context,
     <entry><para>A String object containing the issued command string.
     </para></entry>
     </row>
+    <row><entry><emphasis role="italic">ioContext</emphasis></entry>
+    <entry><para>(For redirecting command handlers only.)
+    A <xref linkend="redirectorcontext" xrefstyle="template:RexxIORedirectorContext" />
+    interface vector that provides access to redirection API methods
+    <xref linkend="mthAreOutputAndErrorSameTarget" xrefstyle="select:title"/>,
+    <xref linkend="mthIsErrorRedirected" xrefstyle="select:title"/>,
+    <xref linkend="mthIsInputRedirected" xrefstyle="select:title"/>,
+    <xref linkend="mthIsOutputRedirected" xrefstyle="select:title"/>,
+    <xref linkend="mthIsRedirectionRequested" xrefstyle="select:title"/>,
+    <xref linkend="mthReadInput" xrefstyle="select:title"/>,
+    <xref linkend="mthReadInputBuffer" xrefstyle="select:title"/>,
+    <xref linkend="mthWriteError" xrefstyle="select:title"/>,
+    <xref linkend="mthWriteErrorBuffer" xrefstyle="select:title"/>,
+    <xref linkend="mthWriteOutput" xrefstyle="select:title"/>, and
+    <xref linkend="mthWriteOutputBuffer" xrefstyle="select:title"/>.
+    </para></entry>
+    </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Any object that should be used as the command return code.  This value will be assigned to the
@@ -3080,7 +3142,7 @@ One traditional FAILURE condition is the unknown command error.</para>
 <xref linkend="mthRaiseCondition" xrefstyle="select:title"/> API provided by the RexxExitContext.  For
 example:</para>
 <example>
-<title>API - Command handler interface</title>
+<title>API &mdash; Command handler interface</title>
 <programlisting language="C++">
 <![CDATA[
 // if this was an unknown command, give our generic unknown command return code
@@ -3143,7 +3205,11 @@ already exists, it is overwritten.
     <entry><para>The ASCII-Z name of the command handler's environment name.</para></entry>
     </row>
     <row><entry><emphasis role="italic">handler</emphasis></entry>
-    <entry><para>The address of the subcommand handler entry point within the application executable code.</para></entry>
+    <entry><para>The address of the subcommand handler entry point within the application
+    executable code.
+    For a description of the required handler function signature see
+    <xref linkend="commandapi" xrefstyle="select:title"/>.
+    </para></entry>
     </row>
     <row><entry><emphasis role="italic">type</emphasis></entry>
     <entry><para>The type of command handler to add.
