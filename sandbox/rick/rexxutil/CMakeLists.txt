@@ -287,6 +287,7 @@ if (WIN32)
             /D_CRT_SECURE_NO_DEPRECATE
             /D_CRT_SECURE_NO_WARNINGS
             /D_CRT_NONSTDC_NO_DEPRECATE
+            /DNOMINMAX
 # suppress warning C4291: no matching operator delete found; memory will not be freed if initialization throws an exception
             /wd4291
 # give errors for missing override specifications or method hiding with warning level 3

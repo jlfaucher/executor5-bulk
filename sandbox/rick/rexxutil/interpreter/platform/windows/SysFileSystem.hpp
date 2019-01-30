@@ -73,6 +73,7 @@ class SysFileSystem
 
      static bool  searchFileName(const char *name, FileNameBuffer &fullName);
      static bool  searchOnPath(const char *name, const char *path, const char *extension, FileNameBuffer &resolvedName);
+     static bool  searchPath(const char *name, const char *path, FileNameBuffer &resolvedName);
      static void  qualifyStreamName(const char *unqualifiedName, FileNameBuffer &qualifiedName);
      static bool  getFullPathName(const char *name, FileNameBuffer &resolvedName);
      static bool  fileExists(const char *name);
@@ -84,7 +85,6 @@ class SysFileSystem
      static bool  searchName(const char *name, const char *path, const char *extension, FileNameBuffer &resolvedName);
      static bool  primitiveSearchName(const char *name, const char *path, const char *extension, FileNameBuffer &resolvedName);
      static bool  checkCurrentFile(const char *name, FileNameBuffer &resolvedName);
-     static bool  searchPath(const char *name, const char *path, const char *extension, FileNameBuffer &resolvedName);
      static void  getLongName(FileNameBuffer &name);
      static bool  findFirstFile(const char *name);
      static int   deleteFile(const char *name);

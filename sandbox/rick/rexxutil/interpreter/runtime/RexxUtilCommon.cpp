@@ -42,6 +42,7 @@
 /******************************************************************************/
 
 #include <time.h>
+#include <algorithm>
 #include "oorexxapi.h"
 #include "PackageManager.hpp"
 #include "RexxUtilCommon.hpp"
@@ -50,8 +51,10 @@
 #include "SysFile.hpp"
 #include "SysFileSystem.hpp"
 #include "SystemInterpreter.hpp"
+#include "Utilities.hpp"
 
 
+const int INVALID_FILE_NAME = 123;       // a return value for a SysFileTree name problem
 
 /**
  * A simple class for reading lines from a file.
@@ -89,7 +92,7 @@ class LineReader
 
          // we read every thing initially
          fileResidual = fileSize;
-         bufferSize = min((size_t)fileSize, InitialBufferSize);
+         bufferSize = std::min((size_t)fileSize, InitialBufferSize);
          // allocate a buffer to hold the entire file.
          buffer = (char *)malloc(bufferSize);
          if (buffer == NULL)
@@ -129,7 +132,7 @@ class LineReader
              readLength = bufferSize - dataLength;
          }
 
-         readLength = min(fileResidual, readLength);
+         readLength = std::min(fileResidual, readLength);
          // if the read fails or we don't get anything, return a failure
          if (!file.read(buffer, readLength, dataLength) || dataLength == 0)
          {
@@ -451,7 +454,7 @@ RexxRoutine5(uint32_t, SysFileTree, CSTRING, fileSpec, RexxStemObject, files, OP
     {
         if (e == TreeFinder::InvalidFileName)
         {
-            return ERROR_INVALID_NAME;
+            return INVALID_FILE_NAME;
         }
     }
     return 0;
@@ -946,7 +949,7 @@ const char* mystrstr(const char *haystack, const char *needle, size_t hlen, size
             if (firstChar == toupper(haystack[current]))
             {
                 // if everything compares, return the hit
-                if (memicmp(haystack + current, needle, nlen) == 0)
+                if (Utilities::memicmp(haystack + current, needle, nlen) == 0)
                 {
                     return haystack + current;
                 }
@@ -1949,7 +1952,7 @@ RexxRoutine3(RexxStringObject, SysSearchPath, CSTRING, path, CSTRING, file, OPTI
 
     if (opt == 'N')
     {
-        if (pathValue.length() != NULL)
+        if (pathValue.length() != 0)
         {
             pathString = pathValue;
         }
@@ -1978,7 +1981,7 @@ RexxRoutine3(RexxStringObject, SysSearchPath, CSTRING, path, CSTRING, file, OPTI
 
     // we can do this unconditionally since resolvedFile will be a null
     // string if not found, which is our error return value.
-    SysFileSystem::searchPath(file, fullPath, NULL, resolvedFile);
+    SysFileSystem::searchPath(file, fullPath, resolvedFile);
 
     return context->NewStringFromAsciiz(resolvedFile);
 }

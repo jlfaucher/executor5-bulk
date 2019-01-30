@@ -20,7 +20,7 @@
     INTERNAL_ROUTINE(SysGetMessageX,         SysGetMessageX)
     INTERNAL_ROUTINE(SysMkDir,               SysMkDir)
 #ifdef LINUX
-    INTERNAL_ROUTINE(SysLinVer,              SysLinVer)
+    INTERNAL_ROUTINE(SysLinVer,              SysVersion)
 #endif
     INTERNAL_ROUTINE(SysVersion,             SysVersion)
     INTERNAL_ROUTINE(SysSetFileDateTime,     SysSetFileDateTime)

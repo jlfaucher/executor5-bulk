@@ -838,7 +838,7 @@ void RexxActivation::debugSkip(wholenumber_t skipCount)
     }
 
     // mark the count to skip
-    settings.traceSkip = Numerics::abs(skipCount);
+    settings.traceSkip = std::abs(skipCount);
     // turn on the skip flag to suppress the tracing.
     // if the skip count is a negative value, we turn off all
     // tracing, not just the debug pauses.
@@ -3718,7 +3718,7 @@ RexxString *RexxActivation::formatTrace(RexxInstruction *instruction, PackageCla
     }
     // get the instruction location
     SourceLocation location = instruction->getLocation();
-    return package->traceBack(this, location, Numerics::minVal(settings.traceIndent, MAX_TRACEBACK_INDENT), true);
+    return package->traceBack(this, location, std::min(settings.traceIndent, MAX_TRACEBACK_INDENT), true);
 }
 
 

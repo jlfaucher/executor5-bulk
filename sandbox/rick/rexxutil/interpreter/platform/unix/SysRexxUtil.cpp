@@ -178,6 +178,9 @@
 #include <fnmatch.h>                   /* fnmatch()                  */
 #include <libgen.h>                    /* dirname, basename          */
 
+#include "RexxUtilCommon.hpp"
+#include "Utilities.hpp"
+
 #if !defined( HAVE_UNION_SEMUN )
 union semun
 {
@@ -350,7 +353,7 @@ void TreeFinder::adjustDirectory()
     // if this ends in a directory separator, add a * wildcard to the end
     else if (fileSpec.endsWith('/'))
     {
-        fileSpec += "*"
+        fileSpec += "*";
     }
     // if the end section is either /. or /.., we also add the wildcard
     else if (fileSpec.endsWith("/.") || fileSpec.endsWith(".."))
@@ -360,7 +363,7 @@ void TreeFinder::adjustDirectory()
     // if the spec starts with a ~, we need to expand the name.
     if (fileSpec.startsWith('~'))
     {
-        SysFileSystem.canonicalizeName(fileSpec);
+        SysFileSystem::canonicalizeName(fileSpec);
     }
 }
 /**
@@ -383,100 +386,76 @@ void TreeFinder::validateFileSpecName()
     // no extra validation required
 }
 
-
-/**
- * Set the file attributes using the new mask.
- *
- * @param fileName The target file name
- */
-void TreeFinder::setFileAttributes(const char *fileName)
-{
-    // this is a NOP for unix
-}
-
-
 /**
  * Format the system-specific file time, attribute mask, and size for
  * the given file.
  *
  * @param fileName The name of the file.
  */
-void formatFileAttributes(FileNameBuffer &foundFileLine, struct stat64 &finfo, FlagSet<OptionFlags, 8> &options);
+void formatFileAttributes(TreeFinder *finder, FileNameBuffer &foundFileLine, struct stat64 &finfo)
 {
     char fileAttr[256];                 // File attribute string of found file
 
 #ifdef AIX
     struct tm stTimestamp;
-    timestamp = localtime_r(&(finfo.st_mtime), &stTimestamp);
+    struct tm *timestamp = localtime_r(&(finfo.st_mtime), &stTimestamp);
 #else
-    timestamp = localtime(&(finfo.st_mtime));
+    struct tm *timestamp = localtime(&(finfo.st_mtime));
 #endif
-    if (options[LONG_TIME])
+    if (finder->longTime())
     {
 
         snprintf(fileAttr, sizeof(fileAttr), "%4d-%02d-%02d %02d:%02d:%02d  ",
-                 timestamp->tm_year + 1900,
-                 timestamp->tm_mon + 1,
-                 timestamp->tm_mday,
-                 timestamp->tm_hour,
-                 timestamp->tm_min,
-                 timestamp->tm_sec);
+                 timestamp->tm_year + 1900, timestamp->tm_mon + 1, timestamp->tm_mday,
+                 timestamp->tm_hour, timestamp->tm_min, timestamp->tm_sec);
     }
-    else if (options[EDITABLE_TIME])
+    else if (finder->editableTime())
     {
         snprintf(fileAttr, sizeof(fileAttr), "%02d/%02d/%02d/%02d/%02d  ",
-                 (timestamp->tm_year)% 100,
-                 timestamp->tm_mon + 1,
-                 timestamp->tm_mday,
-                 timestamp->tm_hour,
-                 timestamp->tm_min)
+                 (timestamp->tm_year) % 100, timestamp->tm_mon + 1, timestamp->tm_mday,
+                 timestamp->tm_hour, timestamp->tm_min);
     }
     else
     {
         snprintf(fileAttr, sizeof(fileAttr), "%2d/%02d/%02d  %2d:%02d%c  ",
-                 timestamp->tm_mon + 1,
-                 timestamp->tm_mday,
-                 timestamp->tm_year % 100,
+                 timestamp->tm_mon + 1, timestamp->tm_mday, timestamp->tm_year % 100,
                  timestamp->tm_hour < 13 ? timestamp->tm_hour : timestamp->tm_hour - 12,
-                 timestamp->tm_min,
-                 (timestamp->tm_hour < 12 || timestamp->tm_hour == 24)? 'a' : 'p',
-                 finfo->st_size);
+                 timestamp->tm_min, (timestamp->tm_hour < 12 || timestamp->tm_hour == 24) ? 'a' : 'p');
     }
 
     // this is the first part of the return value. Copy to the result buffer so we can
     // reuse the buffer
-    foundFile = fileAttr;
+    foundFileLine = fileAttr;
 
     // now the size information
-    if (options[LONG_SIZE])
+    if (finder->longSize())
     {
-        snprintf(fileAttr, sizeof(fileAttr), "%20llu ", finfo.st_size);
+        snprintf(fileAttr, sizeof(fileAttr), "%20zu ", finfo.st_size);
     }
     else
     {
-        snprintf(fileAttr, sizeof(fileAttr), "%10lu ", finfo.st_size)
+        snprintf(fileAttr, sizeof(fileAttr), "%10zu ", finfo.st_size);
     }
 
     // the order is time, size, attributes
-    foundFile += fileAttr;
-
+    foundFileLine += fileAttr;
 
     char tp = typeOfEntry(finfo.st_mode);
 
     snprintf(fileAttr, sizeof(fileAttr), "%c%c%c%c%c%c%c%c%c%c  ",
              tp,
-             (finfo.st_mode & S_IREAD)? 'r' : '-',
-             (finfo.st_mode & S_IWRITE)? 'w' : '-',
-             (finfo.st_mode & S_IEXEC)? 'x' : '-',
-             (finfo.st_mode & S_IRGRP)? 'r' : '-',
-             (finfo.st_mode & S_IWGRP)? 'w' : '-',
-             (finfo.st_mode & S_IXGRP)? 'x' : '-',
-             (finfo.st_mode & S_IROTH)? 'r' : '-',
-             (finfo.st_mode & S_IWOTH)? 'w' : '-',
-             (finfo.st_mode & S_IXOTH)? 'x' : '-');
+             (finfo.st_mode & S_IREAD) ? 'r' : '-',
+             (finfo.st_mode & S_IWRITE) ? 'w' : '-',
+             (finfo.st_mode & S_IEXEC) ? 'x' : '-',
+             (finfo.st_mode & S_IRGRP) ? 'r' : '-',
+             (finfo.st_mode & S_IWGRP) ? 'w' : '-',
+             (finfo.st_mode & S_IXGRP) ? 'x' : '-',
+             (finfo.st_mode & S_IROTH) ? 'r' : '-',
+             (finfo.st_mode & S_IWOTH) ? 'w' : '-',
+             (finfo.st_mode & S_IXOTH) ? 'x' : '-');
 
     // add on this section
-    foundFile += fileAttr;
+    foundFileLine += fileAttr;
 }
 
 
@@ -521,7 +500,7 @@ void TreeFinder::checkFile(const char *fileName)
     }
 
     // format all of the attributes and add them to the foundFile result
-    formatFileAttributes(foundFileLine, finfo, options);
+    formatFileAttributes(this, foundFileLine, finfo);
 
     // and finally add on the file name
     foundFileLine += foundFile;
@@ -549,20 +528,7 @@ int TreeFinder::findDirectoryEnd()
         --lastSlashPos;
     }
 
-    return lastSlash;
-}
-
-
-/**
- * Perform platform-specific drive checks on the file spec. This only
- * applies to Windows.
- *
- * @return true if this was processed, false if additional work is required.
- */
-bool TreeFinder::checkPathDrive()
-{
-    // not a drive, this will need to be prepended by the current directory
-    return false;
+    return lastSlashPos;
 }
 
 
@@ -572,7 +538,7 @@ bool TreeFinder::checkPathDrive()
  */
 void TreeFinder::fixupFilePath()
 {
-    // currently nothing needed here for Windows.
+    // currently nothing needed here for Linux,.
 }
 
 
@@ -600,7 +566,7 @@ RexxRoutine0(int, SysCls)
 * Return:    NO_UTIL_ERROR                                               *
 *                                                                        *
 *************************************************************************/
-RexxRoutine1(int, SysMkDir, CSTRING, path, OPTIONAL_int32_t, mode)
+RexxRoutine2(int, SysMkDir, CSTRING, path, OPTIONAL_int32_t, mode)
 {
     RoutineQualifiedName qualifiedName(context, path);
 
@@ -616,32 +582,6 @@ RexxRoutine1(int, SysMkDir, CSTRING, path, OPTIONAL_int32_t, mode)
 }
 
 
-#ifdef LINUX
-/*************************************************************************
-* Function:  SysLinVer                                                   *
-*                                                                        *
-* Syntax:    call SysLinVer                                              *
-*                                                                        *
-* Return:    Linux Version                                               *
-*************************************************************************/
-
-RexxRoutine0(RexxStringObject, SysLinVer)
-{
-    struct utsname info;                 /* info structur              */
-
-    if (uname(&info) < 0)
-    {
-        context->InvalidRoutine();
-        return NULLOBJECT;
-    }
-
-    char retstr[256];
-
-    snprintf(retstr, sizeof(retstr), "%s %s", info.sysname, info.release);
-    return context->NewStringFromAsciiz(retstr);
-}
-#endif
-
 /*************************************************************************
 * Function:  SysVersion                                                  *
 *                                                                        *
@@ -649,9 +589,10 @@ RexxRoutine0(RexxStringObject, SysLinVer)
 *                                                                        *
 * Return:    Operating System name (LINUX/AIX/WINDOWS) and Version       *
 *************************************************************************/
-
 RexxRoutine0(RexxStringObject, SysVersion)
 {
+    struct utsname info;                 /* info structur              */
+
     if (uname(&info) < 0)
     {                     /* if no info stored          */
         context->InvalidRoutine();
@@ -1143,35 +1084,31 @@ RexxRoutine2(int, SysSetPriority, int32_t, pclass, int32_t, level)
 {
     RexxReturnCode    rc;                        /* creation return code                */
 
-
     if (pclass == 0)                        /* class 0 -> no change               */
     {
         rc = 0;                             /* no error                           */
     }
     /* change the priority                */
     /* change according to delta          */
-    else if (pclass > 0)
-            &&pclass <= 4)
-{
-    int pid;                            /* PID                                */
-    pid = getpid();                     /* current PID                        */
+    else if (pclass > 0 && pclass <= 4)
+    {
+        int pid = getpid();                     /* current PID                        */
 
-    int priority;                       /* Priority                           */
-    /* current priority                   */
-    priority = getpriority(PRIO_PROCESS, getpid());
+        /* current priority                   */
+        int priority = getpriority(PRIO_PROCESS, getpid());
 
-    /* Set new priority                   */
-    setpriority(PRIO_PROCESS, getpid(), -level);
-    rc = 0;
-}
+        /* Set new priority                   */
+        setpriority(PRIO_PROCESS, getpid(), -level);
+        rc = 0;
+    }
 
-else
-{
-    context->InvalidRoutine();
-    return 0;
-}
+    else
+    {
+        context->InvalidRoutine();
+        return 0;
+    }
 
-return rc;
+    return rc;
 }
 
 
@@ -1199,20 +1136,6 @@ RexxRoutine3(RexxStringObject, SysGetMessage, uint32_t, msgnum, OPTIONAL_CSTRING
 
 #if defined( HAVE_CATOPEN )
     int setnum = 1;                      /* Set number (const 1)       */
-    nl_catd catalog;                     /* catalog handle             */
-    /* default error msg          */
-    const char *default_message = "Error: Message catalog not open";
-    /* msg not found  msg         */
-    const char *not_found_message = "Error: Message not found";
-    /* insertion error  msg       */
-    const char *error_insertions = "Error: Unable to generate message (wrong insertions)";
-    /* cat not found  msg         */
-    const char *cat_not_found_message = "Error: Message catalog not found";
-
-    int icount;                          /* number of insertions       */
-    char *temp;
-    int count = 0;                       /* number of '%s' in the msg  */
-
 
     size_t numargs = context->ArrayItems(args);
 
@@ -1233,33 +1156,31 @@ RexxRoutine3(RexxStringObject, SysGetMessage, uint32_t, msgnum, OPTIONAL_CSTRING
 #if defined( HAVE_SETLOCALE )
     setlocale(LC_ALL, "en_US");
 #endif
+    nl_catd catalog;                     /* catalog handle             */
     /* open the catalog           */
     if ((catalog = catopen(msgfile, NL_CAT_LOCALE)) == (nl_catd)-1)
     {
-        return context->NewStringFromAsciiz(cat_not_found_message);
+        return context->NewStringFromAsciiz("Error: Message catalog not found");
     }
 
     /* retrieve msg from catalog  */
-    char *msg = catgets(catalog, setnum, (int)msgnum, default_message);
+    char *msg = catgets(catalog, setnum, (int)msgnum, "Error: Message catalog not open");
     catclose(catalog);                   /* close the catalog          */
-
 
     if (*msg == '\0')                     /* if empty string returned   */
     {
-        return context->NewStringFromAsciiz(not_found_message);
+        return context->NewStringFromAsciiz("Error: Message not found");
     }
 
     // copy this so we can safely modify it
     AutoFree message = strdup(msg);
 
+    int icount = 0;                      // number of insertions
+
     /* set number of insertions   */
     if (numargs >= 2)
     {
         icount = numargs - 2;
-    }
-    else
-    {
-        icount = 0;
     }
 
     const char *substitutions[10];       // array of string values
@@ -1269,7 +1190,7 @@ RexxRoutine3(RexxStringObject, SysGetMessage, uint32_t, msgnum, OPTIONAL_CSTRING
     {
         // get each of the argument objects as a string value.
         // omitted arguments are not permitted.
-        RexxObjectPtr o = context->ArrayAt(i);
+        RexxObjectPtr o = context->ArrayAt(args, i);
         if (o == NULLOBJECT)
         {
             context->InvalidRoutine();
@@ -1281,7 +1202,11 @@ RexxRoutine3(RexxStringObject, SysGetMessage, uint32_t, msgnum, OPTIONAL_CSTRING
 
     msg_length += strlen(message);
     // make sure this has enough space for replacement messages
-    msg_length = max(msg_length + 1, 100);
+    msg_length = msg_length + 1;
+    if (msg_length < 100)
+    {
+        msg_length = 100;
+    }
 
     AutoFree retstr = (char *)malloc(msg_length);
     if (retstr == NULL)
@@ -1316,12 +1241,12 @@ RexxRoutine3(RexxStringObject, SysGetMessage, uint32_t, msgnum, OPTIONAL_CSTRING
     }
 
     /* generate full message with insertions                           */
-    switch (icount)
+    switch (count)
     {
         case(0):
         {
             // no substitutions
-            strncpy(retstr, msg_length, message);
+            strncpy(retstr, message, msg_length);
             break;
         }
         case(1):
@@ -1377,13 +1302,11 @@ RexxRoutine3(RexxStringObject, SysGetMessage, uint32_t, msgnum, OPTIONAL_CSTRING
         default:
         {
             // change the message for insertion errors
-            strncpy(retstr, msg_length, error_insertions);
-            break;
+            return context->NewStringFromAsciiz("Error: Unable to generate message (wrong number of insertions)");
         }
     }
 
-    RexxStringObject result = context->newStringFromAsciiz(retstr);
-    return result;
+    return context->NewStringFromAsciiz(retstr);
 #else
 
     return context->NewStringFromAsciiz("Error: Message catalog (catopen) not supported");
@@ -1410,7 +1333,7 @@ RexxRoutine3(RexxStringObject, SysGetMessage, uint32_t, msgnum, OPTIONAL_CSTRING
 *            supports the selection of a set in the msg catalog.         *
 *************************************************************************/
 
-RexxRoutine3(RexxStringObject, SysGetMessage, uint32_t, setnum, uint32_t, msgnum, OPTIONAL_CSTRING, msgfile, ARGLIST, args)
+RexxRoutine4(RexxStringObject, SysGetMessageX, uint32_t, setnum, uint32_t, msgnum, OPTIONAL_CSTRING, msgfile, ARGLIST, args)
 {
 #if defined( HAVE_CATOPEN )
     size_t numargs = context->ArrayItems(args);
@@ -1432,32 +1355,31 @@ RexxRoutine3(RexxStringObject, SysGetMessage, uint32_t, setnum, uint32_t, msgnum
     setlocale(LC_ALL, "en_US");
 #endif
     /* open the catalog           */
+    nl_catd catalog;                     /* catalog handle             */
     if ((catalog = catopen(msgfile, NL_CAT_LOCALE)) == (nl_catd)-1)
     {
-        return context->NewStringFromAsciiz(cat_not_found_message);
+        return context->NewStringFromAsciiz("Error: Message catalog not found");
     }
 
     /* retrieve msg from catalog  */
-    char *msg = catgets(catalog, setnum, (int)msgnum, default_message);
+    char *msg = catgets(catalog, setnum, (int)msgnum, "Error: Message catalog not open");
     catclose(catalog);                   /* close the catalog          */
 
 
     if (*msg == '\0')                     /* if empty string returned   */
     {
-        return context->NewStringFromAsciiz(not_found_message);
+        return context->NewStringFromAsciiz("Error: Message not found");
     }
 
     // copy this so we can safely modify it
     AutoFree message = strdup(msg);
 
+    int icount = 0;
+
     /* set number of insertions   */
     if (numargs >= 3)
     {
         icount = numargs - 3;
-    }
-    else
-    {
-        icount = 0;
     }
 
     const char *substitutions[10];       // array of string values
@@ -1467,7 +1389,7 @@ RexxRoutine3(RexxStringObject, SysGetMessage, uint32_t, setnum, uint32_t, msgnum
     {
         // get each of the argument objects as a string value.
         // omitted arguments are not permitted.
-        RexxObjectPtr o = context->ArrayAt(i);
+        RexxObjectPtr o = context->ArrayAt(args, i);
         if (o == NULLOBJECT)
         {
             context->InvalidRoutine();
@@ -1479,7 +1401,11 @@ RexxRoutine3(RexxStringObject, SysGetMessage, uint32_t, setnum, uint32_t, msgnum
 
     msg_length += strlen(message);
     // make sure this has enough space for replacement messages
-    msg_length = max(msg_length + 1, 100);
+    msg_length = msg_length + 1;
+    if (msg_length < 100)
+    {
+        msg_length = 100;
+    }
 
     AutoFree retstr = (char *)malloc(msg_length);
     if (retstr == NULL)
@@ -1506,7 +1432,7 @@ RexxRoutine3(RexxStringObject, SysGetMessage, uint32_t, setnum, uint32_t, msgnum
         }
     }
     /* now look for number of replacement variables                       */
-    temp =message;        /* reset temp pointer          */
+    temp = message;        /* reset temp pointer          */
     while ((temp = strstr(temp, "%s")))     /* search for the %s           */
     {
         count++;                            /* increment counter           */
@@ -1575,12 +1501,12 @@ RexxRoutine3(RexxStringObject, SysGetMessage, uint32_t, setnum, uint32_t, msgnum
         default:
         {
             // change the message for insertion errors
-            return context->NewStringFromAsciiz(error_insertions);
+            return context->NewStringFromAsciiz("Error: Unable to generate message (wrong number of insertions)");
             break;
         }
     }
 
-    return context->newStringFromAsciiz(retstr);
+    return context->NewStringFromAsciiz(retstr);
 #else
 
     return context->NewStringFromAsciiz("Error: Message catalog (catopen) not supported");
@@ -1600,17 +1526,17 @@ RexxRoutine3(RexxStringObject, SysGetMessage, uint32_t, setnum, uint32_t, msgnum
 * Return:    The key striked.                                            *
 *************************************************************************/
 
-RexxRoutine1(RexxStringObject, SysGetKey, OPTIONAL_CSTRING, echo)
+RexxRoutine1(RexxStringObject, SysGetKey, OPTIONAL_CSTRING, echoArg)
 {
-    bool      echo = true;               /* Set to false if we         */
+    bool echo = true;                  /* Set to false if we         */
 
-    if (echo != NULL)                  /* validate arguments         */
+    if (echoArg != NULL)                  /* validate arguments         */
     {
-        if (!strcasecmp(echo, "NOECHO"))
+        if (!strcasecmp(echoArg, "NOECHO"))
         {
             echo = false;
         }
-        else if (strcasecmp(echo, "ECHO"))
+        else if (strcasecmp(echoArg, "ECHO"))
         {
             context->InvalidRoutine();
             return NULLOBJECT;
@@ -1676,7 +1602,7 @@ RexxRoutine1(RexxStringObject, SysCreatePipe, OPTIONAL_CSTRING, blocking)
     if (blocking != NULL)
     {
         if (blocking[0] == 'n' || blocking[0] == 'N')
-        {`
+        {
             cBlocking = 0;                         // non blocking needed
         }
         /* One arg, first char is 'n'?    */
@@ -1867,9 +1793,8 @@ RexxRoutine1(RexxObjectPtr, SysQueryProcess, OPTIONAL_CSTRING, selector)
     unsigned int uiUsedSeconds  = 0;
     char timebuf[40];
     int iRc = 0;
-    struct rusage struResUse;
 
-    if ((selector == NULL) || (!strcasecmp(selector), "PID"))
+    if (selector == NULL || !strcasecmp(selector, "PID"))
     {
         return context->Int32ToObject(getpid());
     }
@@ -1885,6 +1810,8 @@ RexxRoutine1(RexxObjectPtr, SysQueryProcess, OPTIONAL_CSTRING, selector)
     {
         return context->Int32ToObject(getpriority(PRIO_PROCESS, 0));
     }
+
+    struct rusage struResUse;
 
     /* ----------------------------------------------------------------- */
     /* Get process usage data and keep calls together at the end of      */
@@ -1947,7 +1874,6 @@ RexxRoutine1(RexxObjectPtr, SysQueryProcess, OPTIONAL_CSTRING, selector)
 
         snprintf(buffer + currLen, sizeof(buffer) - currLen, " %2d:%.2d:%.2d:%.3d  User:", uiUsedHours,
                  uiUsedMinutes, uiUsedSeconds, uiUsedCPUmsec);
-        strncat(buffer, sizeof(buffer), timebuf);
 
         currLen = strlen(buffer);
 
@@ -1992,7 +1918,7 @@ RexxRoutine1(RexxObjectPtr, SysQueryProcess, OPTIONAL_CSTRING, selector)
         return context->NewStringFromAsciiz(buffer);
     }
 
-    context->InvalidRoutine()
+    context->InvalidRoutine();
     return NULLOBJECT;
 }
 

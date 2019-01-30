@@ -42,6 +42,7 @@
 #include "SystemInterpreter.hpp"
 #include "Interpreter.hpp"
 #include "GlobalNames.hpp"
+#include "FileNameBuffer.hpp"
 
 sigset_t SystemInterpreter::oldmask;
 sigset_t SystemInterpreter::newmask;

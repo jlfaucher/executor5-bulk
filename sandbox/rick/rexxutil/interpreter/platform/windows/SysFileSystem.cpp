@@ -466,7 +466,7 @@ bool SysFileSystem::primitiveSearchName(const char *name, const char *path, cons
         return checkCurrentFile(tempName, resolvedName);
     }
 
-    if (searchPath(name, path, extension, resolvedName))
+    if (searchOnPath(name, path, extension, resolvedName))
     {
         return true;
     }
@@ -526,16 +526,15 @@ bool SysFileSystem::checkCurrentFile(const char *name, FileNameBuffer &resolvedN
  *
  * @param name      The name to search for.
  * @param path      The search path to use.
- * @param extension Any extension that should be added to the search (can be NULL).
  * @param resolvedName
  *                  A buffer used for returning the resolved name.
  *
  * @return Returns true if the file was located.  If true, the resolvedName
  *         buffer will contain the returned name.
  */
-bool SysFileSystem::searchPath(const char *name, const char *path, const char *extension, FileNameBuffer &resolvedName)
+bool SysFileSystem::searchPath(const char *name, const char *path, FileNameBuffer &resolvedName)
 {
-    if (searchOnPath(name, path, extension, resolvedName))
+    if (searchOnPath(name, path, NULL, resolvedName))
     {
         // if this is a file, return the long name
         if (isFile(resolvedName))

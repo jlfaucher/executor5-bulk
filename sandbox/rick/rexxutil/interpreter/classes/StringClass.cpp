@@ -1637,7 +1637,7 @@ RexxString *RexxString::lowerRexx(RexxInteger *_start, RexxInteger *_length)
         return this;
     }
 
-    rangeLength = Numerics::minVal(rangeLength, getLength() - startPos);
+    rangeLength = std::min(rangeLength, getLength() - startPos);
 
     // a zero length value is also a non-change.
     if (rangeLength == 0)
@@ -1670,7 +1670,7 @@ RexxString *RexxString::upperRexx(RexxInteger *_start, RexxInteger *_length)
         return this;
     }
 
-    rangeLength = Numerics::minVal(rangeLength, getLength() - startPos);
+    rangeLength = std::min(rangeLength, getLength() - startPos);
 
     // a zero length value is also a non-change.
     if (rangeLength == 0)

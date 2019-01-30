@@ -120,7 +120,7 @@ RexxString *ProgramSource::getStringLine(size_t position, size_t startOffset, si
     }
 
     // protect from an overrun
-    startOffset = Numerics::minVal(startOffset, lineLength);
+    startOffset = std::min(startOffset, lineLength);
     // we frequently ask for the entire line by giving an offset of zero.
     if (endOffset == 0)
     {
@@ -128,7 +128,7 @@ RexxString *ProgramSource::getStringLine(size_t position, size_t startOffset, si
     }
     else
     {
-        endOffset = Numerics::minVal(endOffset, lineLength);
+        endOffset = std::min(endOffset, lineLength);
     }
 
     // we can use this to extract from a position to the end by
