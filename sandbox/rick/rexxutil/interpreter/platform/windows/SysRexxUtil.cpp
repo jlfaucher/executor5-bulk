@@ -247,9 +247,7 @@ RexxRoutine1(int, SysCurState, CSTRING, option)
     }
     else
     {
-        // this is an error, raise the condition and return
-        context->InvalidRoutine();
-        return 0;
+        invalidOptionException(context, "SysCurState", "option", "'ON' or 'OFF'", option);
     }
     /* Set the cursor info        */
     SetConsoleCursorInfo(hStdout, &CursorInfo);
@@ -273,15 +271,13 @@ RexxRoutine1(RexxStringObject, SysDriveInfo, CSTRING, drive)
 
     if (driveLength == 0 || driveLength > 2 || (driveLength == 2 && drive[1] != ';'))
     {
-        context->InvalidRoutine();
-        return NULLOBJECT;
+        context->ThrowException1(Rexx_Error_Incorrect_call_user_defined, context->String("Invalid drive specification"));
     }
 
     // This must be a valid alphabetic character
     if (drive[0] < 'A' || drive[0] > 'z')
     {
-        context->InvalidRoutine();
-        return NULLOBJECT;
+        context->ThrowException1(Rexx_Error_Incorrect_call_user_defined, context->String("Invalid drive specification"));
     }
 
     char driveLetter[8];
@@ -293,8 +289,8 @@ RexxRoutine1(RexxStringObject, SysDriveInfo, CSTRING, drive)
 
     /* get the volume name and file system type */
     BOOL gotVolume = GetVolumeInformation(driveLetter, volumeName, (DWORD)sizeof(volumeName),
-                                  NULL, NULL, NULL,
-                                  fileSystemType, (DWORD)sizeof(fileSystemType));
+                                          NULL, NULL, NULL,
+                                          fileSystemType, (DWORD)sizeof(fileSystemType));
 
     DWORD gviError = GetLastError();
 
@@ -360,16 +356,14 @@ RexxRoutine2(RexxStringObject, SysDriveMap, CSTRING, drive, OPTIONAL_CSTRING, mo
 
     if (driveLength == 0 || driveLength > 2 || (driveLength == 2 && drive[1] != ':'))
     {
-        context->InvalidRoutine();
-        return NULLOBJECT;
+        context->ThrowException1(Rexx_Error_Incorrect_call_user_defined, context->String("Invalid drive specification"));
     }
 
     // make sure this is in range
     ULONG start = toupper(drive[0]) - 'A' + 1;
     if (start < 1 || start > 26)
     {
-        context->InvalidRoutine();
-        return NULLOBJECT;
+        context->ThrowException1(Rexx_Error_Incorrect_call_user_defined, context->String("Invalid drive specification"));
     }
     /* check the mode             */
     if (mode != NULL)
@@ -410,8 +404,7 @@ RexxRoutine2(RexxStringObject, SysDriveMap, CSTRING, drive, OPTIONAL_CSTRING, mo
         }
         else
         {
-            context->InvalidRoutine();
-            return NULLOBJECT;
+            context->ThrowException1(Rexx_Error_Incorrect_call_user_defined, context->String("Invalid drive type"));
         }
     }
 
@@ -976,8 +969,7 @@ RexxRoutine1(RexxStringObject, SysGetKey, OPTIONAL_CSTRING, echoOpt)
         }
         else if (_stricmp(echoOpt, "ECHO"))
         {
-            context->InvalidRoutine();
-            return NULL;
+            invalidOptionException(context, "SysGetKey", "echo", "'ECHO' or 'NOECHO'", echoOpt);
         }
     }
 
@@ -1079,8 +1071,7 @@ RexxRoutine4(RexxStringObject, SysIni, OPTIONAL_CSTRING, iniFile, CSTRING, app, 
         // the 4th argument cannot be specified
         if (argumentExists(4))
         {
-            context->InvalidRoutine();
-            return 0;
+            maxArgException(context, "SysIni ALL:", 3);
         }
 
         // Retrieve the stem variable using the key name
@@ -1426,8 +1417,7 @@ RexxRoutine3(RexxStringObject, SysTextScreenRead, int, row, int, col, OPTIONAL_i
     AutoFree ptr = (char *)malloc(len);
     if (ptr == NULL)
     {
-        context->InvalidRoutine();
-        return NULL;
+        outOfMemoryException(context);
     }
 
     if (len < lBufferLen)
@@ -1497,8 +1487,7 @@ RexxRoutine5(RexxStringObject, SysTextScreenSize,
     }
     else
     {
-        context->InvalidRoutine();
-        return 0;
+        invalidOptionException(context, "SysTextScreenSize", "option", "BUFFERSIZE, WINDOWRECT, or MAXWINDOWSIZE", optionString);
     }
 
     // check for valid SET arguments: either none, or two more, or four more
@@ -1773,8 +1762,7 @@ RexxRoutine1(RexxStringObject, SysFileSystemType, OPTIONAL_CSTRING, drive)
 
         if (driveLen == 0 || driveLen > 2 || (driveLen == 2 && drive[1] != ':'))
         {
-            context->InvalidRoutine();
-            return NULLOBJECT;
+            context->ThrowException1(Rexx_Error_Incorrect_call_user_defined, context->String("Invalid drive specification"));
         }
         snprintf(chDriveLetter, sizeof(chDriveLetter), "%c:\\", drive[0]);
         drive = chDriveLetter;
@@ -1825,8 +1813,7 @@ RexxRoutine1(RexxStringObject, SysVolumeLabel, OPTIONAL_CSTRING, drive)
 
         if (driveLen == 0 || driveLen > 2 || (driveLen == 2 && drive[1] != ':'))
         {
-            context->InvalidRoutine();
-            return NULLOBJECT;
+            context->ThrowException1(Rexx_Error_Incorrect_call_user_defined, context->String("Invalid drive specification"));
         }
         snprintf(chDriveLetter, sizeof(chDriveLetter), "%c:\\", drive[0]);
         drive = chDriveLetter;
@@ -2656,8 +2643,7 @@ RexxRoutine2(RexxObjectPtr, SysGetFileDateTime, CSTRING, name, OPTIONAL_CSTRING,
                 psFileWritten = &sFileTime;
                 break;
             default:
-                context->InvalidRoutine();
-                return NULLOBJECT;
+                invalidOptionException(context, "SysGetFileDateTime", "time selector", "'A', 'C', or 'W'", selector);
         }
     }
     else
@@ -2935,8 +2921,7 @@ RexxRoutine5(int, SysFromUniCode, RexxStringObject, sourceString, OPTIONAL_CSTRI
     AutoFree strptr = (char *)malloc(sourceLength + 4);
     if (strptr == NULL)
     {
-        context->InvalidRoutine();
-        return 0;
+        outOfMemoryException(context);
     }
 
     memcpy(strptr, source, sourceLength);
@@ -2960,8 +2945,7 @@ RexxRoutine5(int, SysFromUniCode, RexxStringObject, sourceString, OPTIONAL_CSTRI
     AutoFree str = (char *)malloc(iBytesNeeded + 4);
     if (str == NULL)
     {
-        context->InvalidRoutine();
-        return 0;
+        outOfMemoryException(context);
     }
 
     /* Do the conversion */
@@ -3129,8 +3113,7 @@ RexxRoutine4(int, SysToUniCode, RexxStringObject, source, OPTIONAL_CSTRING, code
     // hard error, stop
     if (lpwstr == NULL)
     {
-        context->InvalidRoutine();
-        return 0;
+        outOfMemoryException(context);
     }
 
 
@@ -3167,6 +3150,11 @@ RexxRoutine1(uint32_t, SysWinGetPrinters, RexxStemObject, stem)
 
     while (true)
     {
+        if (pArray == NULL)
+        {
+            outOfMemoryException(context);
+        }
+
         if (EnumPrinters(PRINTER_ENUM_LOCAL | PRINTER_ENUM_CONNECTIONS, NULL, 2, (LPBYTE)(char *)pArray,
                          currentSize, &realSize, &entries) == 0)
         {

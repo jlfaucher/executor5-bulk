@@ -115,6 +115,8 @@ class SysFileSystem
      static bool  setCurrentDirectory(const char *directory);
      static int   copyFile(const char *fromFile, const char *toFile);
      static int   moveFile(const char *fromFile, const char *toFile);
+     static const char* getPathStart(const char *name);
+     static const char* getPathEnd(const char *name);
 };
 
 class SysFileIterator

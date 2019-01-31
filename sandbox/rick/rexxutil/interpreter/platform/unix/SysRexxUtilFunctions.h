@@ -26,4 +26,5 @@
     INTERNAL_ROUTINE(SysSetFileDateTime,     SysSetFileDateTime)
     INTERNAL_ROUTINE(SysGetFileDateTime,     SysGetFileDateTime)
     INTERNAL_ROUTINE(SysQueryProcess,        SysQueryProcess)
-    INTERNAL_ROUTINE(SysGetErrortext,        SysGetErrortext)
+    INTERNAL_ROUTINE(SysGetErrorText,        SysGetErrorText)
+

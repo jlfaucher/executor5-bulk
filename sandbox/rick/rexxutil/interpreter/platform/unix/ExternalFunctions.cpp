@@ -86,12 +86,6 @@
 #define DRVNUM          0x40                /* drive number subtractor        */
 #define DIRLEN          256                 /* length of a directory          */
 #define FULLSEG         65536L              /* ^4K constant                   */
-/* FILESPEC function options      */
-#define FILESPEC_PATH         'P'
-#define FILESPEC_NAME         'N'
-#define FILESPEC_LOCATION     'L'
-#define FILESPEC_EXTENSION    'E'
-#define FILESPEC_DRIVE        'D'
 
 #define KIOCSOUND   0x4B2F              /* start sound generation (0 for off) */
 
@@ -115,77 +109,6 @@ RexxRoutine2(CSTRING, sysBeep, OPTIONAL_wholenumber_t, Frequency, OPTIONAL_whole
 {
     printf("\a");
     return "";
-}
-
-
-/*****************************************************************************/
-/* sysFilespec                                                               */
-/*****************************************************************************/
-RexxRoutine2(RexxStringObject, sysFilespec, CSTRING, option, CSTRING, name)
-{
-    const char *endPtr = name + strlen(name);        // point to last character
-    const char *pathEnd = strrchr(name, '/');       // find the last slash in name
-    // get the end of the path portion (if any)
-    const char *pathStart = name;
-    // note that pathend is one character past the end of the path.
-    // this means the length is easily calculated as pathEnd - pathStart,
-    // even in the cases where there is no patch portion
-    pathEnd = pathEnd == NULL ? pathStart : pathEnd + 1;
-    // this one needs a little adjustment for the case where this is all name
-    const char *nameStart = pathEnd == name ? name : pathEnd;
-
-    switch (toupper(*option))              /* process each option               */
-    {
-        case FILESPEC_PATH:                /* extract the path                  */
-        {
-            return context->String(pathStart, pathEnd - pathStart);
-        }
-
-        case FILESPEC_NAME:                  /* extract the file name               */
-        {                                /* everything to right of slash        */
-            return context->String(nameStart, endPtr - nameStart);
-        }
-
-        case FILESPEC_DRIVE:                 /* extract the drive name               */
-        {                                /* compatibility to windows, no drive   */
-            return context->NullString();
-        }
-
-        case FILESPEC_LOCATION:          /* extract the file name               */
-        {                                /* everything to left of slash        */
-            return context->String(name, pathEnd - name);
-        }
-
-        case FILESPEC_EXTENSION:           // extract the file extension
-        {
-            // find the position of the last dot
-            const char *lastDot = strrchr(name, '.');
-
-            if (lastDot >= nameStart)
-            {
-                // we don't extract the period
-                lastDot++;
-                return context->String(lastDot, endPtr - lastDot);
-            }
-            else
-            {
-                return context->NullString();        // nothing found, return the empty string
-            }
-
-        }
-        default:                           /* unknown option                    */
-        {
-            char optionChar[2];
-            optionChar[0] = *option;
-            optionChar[1] = '\0';
-
-            RexxArrayObject subs = context->Array(context->String("FILESPEC"), context->WholeNumberToObject(1),
-                                                  context->String("ELNP"), context->String(optionChar));
-            /* raise an error                    */
-            context->RaiseException(Rexx_Error_Incorrect_call_list, subs);
-            return NULLOBJECT;
-        }
-    }
 }
 
 

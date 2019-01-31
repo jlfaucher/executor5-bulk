@@ -89,6 +89,77 @@ void inline nullStringException(RexxCallContext *c, const char *fName, size_t po
     c->ThrowException2(Rexx_Error_Incorrect_call_null, c->String(fName), c->StringSize(pos));
 }
 
+
+/**
+ * Raise an error for an invalid option.
+ *
+ * @param c       The call context
+ * @param fName   The function name
+ * @param aName   The argument name
+ * @param options The allowed options
+ * @param actual  The actual invalid option.
+ */
+void inline invalidOptionException(RexxCallContext *c, const char *fName, const char *aName, const char *options, const char *actual)
+{
+    RexxArrayObject subs = c->NewArray(4);
+    c->ArrayAppendString(subs, fName, strlen(fName));
+    c->ArrayAppendString(subs, aName, strlen(aName));
+    c->ArrayAppendString(subs, options, strlen(options));
+    c->ArrayAppendString(subs, actual, strlen(actual));
+
+    c->ThrowException(Rexx_Error_Incorrect_call_bad_option, subs);
+}
+
+
+/**
+ * Raise an error for two many arguments
+ *
+ * @param c      The call context
+ * @param fname  The name of the function.
+ * @param max    The maximum number of arguments
+ */
+void inline maxArgException(RexxCallContext *c, const char *fname, size_t max)
+{
+    c->ThrowException2(Rexx_Error_Incorrect_call_maxarg, c->String(fname), c->StringSizeToObject(max));
+}
+
+
+
+/**
+ * Raise an error for an error in relative values of two arguments.
+ *
+ * @param c      The call context
+ * @param arg1   The name of the first argument
+ * @param value1 The value of the first argument
+ * @param arg2   The name of the second argument
+ * @param value2 The value of the second argument
+ */
+void inline relativeOptionException(RexxCallContext *c, const char *arg1, size_t value1, const char *arg2, size_t value2)
+{
+    RexxArrayObject subs = c->NewArray(4);
+    c->ArrayAppendString(subs, arg1, strlen(arg1));
+    c->ArrayAppend(subs, c->StringSizeToObject(value1));
+    c->ArrayAppendString(subs, arg2, strlen(arg2));
+    c->ArrayAppend(subs, c->StringSizeToObject(value2));
+
+    c->ThrowException(Rexx_Error_Incorrect_call_relative, subs);
+}
+
+
+/**
+ * Raise an error for an error in relative values of two arguments.
+ *
+ * @param c      The call context
+ */
+void inline unsetStemException(RexxCallContext *c)
+{
+    c->ThrowException0(Rexx_Error_Incorrect_call_stem_size);
+}
+
+
+
+
+
 /**
  * Simple class for managing returning results as a stem object.
  */

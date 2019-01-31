@@ -1066,6 +1066,44 @@ int SysFileSystem::moveFile(const char *fromFile, const char *toFile)
 
 
 /**
+ * Locate the last directory delimiter in a file spec name
+ *
+ * @param name   The give name.
+ *
+ * @return The location of the last directory delimiter, or NULL if one is
+ *         not found.
+ */
+const char* SysFileSystem::getPathEnd(const char *name)
+{
+    const char *pathEnd = strrchr(name, '\\');       // find the last backslash in name
+    const char *altPathEnd = strrchr(name, '/');     // 3.2.0 also looked for a forward slash, so handle that also
+    if (altPathEnd > pathEnd)
+    {
+        pathEnd = altPathEnd;
+    }
+    return pathEnd;
+}
+
+
+/**
+ * Locate the last directory delimiter in a file spec name
+ *
+ * @param name   The give name.
+ *
+ * @return The location of the last directory delimiter, or NULL if one is
+ *         not found.
+ */
+const char* SysFileSystem::getPathStart(const char *name)
+{
+    // we look for the first colon, because this could also be a device specification
+    const char *driveEnd = strchr(name, ':');        // and first colon
+
+    return driveEnd == NULL ? name : driveEnd + 1;
+}
+
+
+
+/**
  * Create a new SysFileIterator instance.
  *
  * @param path    The path we're going to be searching in

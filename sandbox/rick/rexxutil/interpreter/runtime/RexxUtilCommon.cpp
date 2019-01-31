@@ -43,6 +43,7 @@
 
 #include <time.h>
 #include <algorithm>
+#include <math.h>
 #include "oorexxapi.h"
 #include "PackageManager.hpp"
 #include "RexxUtilCommon.hpp"
@@ -564,6 +565,7 @@ void TreeFinder::parseMask(const char *mask, AttributeMask &flags, size_t argPos
     }
 }
 
+
 /**
  * Throw an error for bad options.
  *
@@ -914,7 +916,7 @@ const char* mystrstr(const char *haystack, const char *needle, size_t hlen, size
     }
 
     // different loops for the sensitive and insensitive searches
-    if ( sensitive )
+    if (sensitive)
     {
         // we scan, looking for a hit on the first character
         char firstChar = needle[0];
@@ -922,13 +924,13 @@ const char* mystrstr(const char *haystack, const char *needle, size_t hlen, size
         size_t current = 0;
         // this is maximum number of places we can get a hit
         size_t limit = hlen - nlen + 1;
-        for ( current = 0; current < limit; current++ )
+        for (current = 0; current < limit; current++)
         {
             // if we have a hit on the first character, check the entire string
-            if ( firstChar == haystack[current] )
+            if (firstChar == haystack[current])
             {
                 // if everything compares, return the hit
-                if ( memcmp(haystack + current, needle, nlen) == 0 )
+                if (memcmp(haystack + current, needle, nlen) == 0)
                 {
                     return haystack + current;
                 }
@@ -1024,8 +1026,9 @@ RexxRoutine3(int, SysAddRexxMacro, CSTRING, name, CSTRING, file, OPTIONAL_CSTRIN
                 break;
 
             default:
-                context->InvalidRoutine();
-                return 0;
+            {
+                invalidOptionException(context, "SysAddRexxMacro", "order", "'A' or 'B'", option);
+            }
         }
     }
     // try to add the macro
@@ -1060,7 +1063,7 @@ RexxRoutine2(int, SysReorderRexxMacro, CSTRING, name, CSTRING, option)
             break;
 
         default:
-            context->InvalidRoutine();
+            invalidOptionException(context, "SysReorderRexxMacro", "order", "'A' or 'B'", option);
             return 0;
     }
     return (int)RexxReorderMacro(name, position);
@@ -1078,7 +1081,7 @@ RexxRoutine2(int, SysReorderRexxMacro, CSTRING, name, CSTRING, option)
 *************************************************************************/
 RexxRoutine1(int, SysDropRexxMacro, CSTRING, name)
 {
-   return (int)RexxDropMacro(name);
+    return (int)RexxDropMacro(name);
 }
 
 
@@ -1175,8 +1178,8 @@ RexxRoutine1(int, SysLoadRexxMacroSpace, CSTRING, file)
 *************************************************************************/
 
 RexxRoutine7(int, SysStemSort, RexxStringObject, stem, OPTIONAL_CSTRING, order, OPTIONAL_CSTRING, type,
-    OPTIONAL_positive_wholenumber_t, first, OPTIONAL_positive_wholenumber_t, last,
-    OPTIONAL_positive_wholenumber_t, firstCol, OPTIONAL_positive_wholenumber_t, lastCol)
+             OPTIONAL_positive_wholenumber_t, first, OPTIONAL_positive_wholenumber_t, last,
+             OPTIONAL_positive_wholenumber_t, firstCol, OPTIONAL_positive_wholenumber_t, lastCol)
 {
     int           sortType = SORT_CASESENSITIVE;
     int           sortOrder = SORT_ASCENDING;
@@ -1198,7 +1201,7 @@ RexxRoutine7(int, SysStemSort, RexxStringObject, stem, OPTIONAL_CSTRING, order, 
     // check other parameters.  sort order
     if (order != NULL)
     {
-        switch ( order[0] )
+        switch (order[0])
         {
             case 'A':
             case 'a':
@@ -1209,8 +1212,7 @@ RexxRoutine7(int, SysStemSort, RexxStringObject, stem, OPTIONAL_CSTRING, order, 
                 sortOrder = SORT_DECENDING;
                 break;
             default:
-                context->InvalidRoutine();
-                return 0;
+                invalidOptionException(context, "SysStemSort", "sort order", "'A' or 'D'", order);
         }
     }
 
@@ -1228,8 +1230,7 @@ RexxRoutine7(int, SysStemSort, RexxStringObject, stem, OPTIONAL_CSTRING, order, 
                 sortType = SORT_CASEIGNORE;
                 break;
             default:
-                context->InvalidRoutine();
-                return 0;
+                invalidOptionException(context, "SysStemSort", "sort type", "'C' or 'I'", type);
         }
     }
 
@@ -1250,8 +1251,7 @@ RexxRoutine7(int, SysStemSort, RexxStringObject, stem, OPTIONAL_CSTRING, order, 
     // can't go backwards
     if (last < first)
     {
-        context->InvalidRoutine();
-        return 0;
+        relativeOptionException(context, "last", last, "first", first);
     }
 
     // first column to sort
@@ -1269,12 +1269,11 @@ RexxRoutine7(int, SysStemSort, RexxStringObject, stem, OPTIONAL_CSTRING, order, 
 
     if (lastCol < firstCol)
     {
-        context->InvalidRoutine();
-        return 0;
+        relativeOptionException(context, "last column", lastCol, "first column", firstCol);
     }
 
     // the sorting is done in the interpreter
-    if ( !RexxStemSort(stemName, sortOrder, sortType, first, last, firstCol, lastCol) )
+    if (!RexxStemSort(stemName, sortOrder, sortType, first, last, firstCol, lastCol))
     {
         context->InvalidRoutine();
     }
@@ -1295,32 +1294,30 @@ RexxRoutine7(int, SysStemSort, RexxStringObject, stem, OPTIONAL_CSTRING, order, 
 * Return:    0 - delete was successful                                   *
 *            -1 - delete failed                                          *
 *************************************************************************/
-RexxRoutine3(int, SysStemDelete, RexxStemObject, toStem, stringsize_t, start, OPTIONAL_stringsize_t, count)
+RexxRoutine3(int, SysStemDelete, RexxStemObject, toStem, positive_wholenumber_t, start, OPTIONAL_positive_wholenumber_t, count)
 {
     if (argumentOmitted(3))
     {
         count = 1;
     }
 
-    stringsize_t items;
+    wholenumber_t items;
 
     RexxObjectPtr temp = context->GetStemArrayElement(toStem, 0);
-    if (temp == NULLOBJECT || !context->StringSize(temp, &items))
+    if (temp == NULLOBJECT || !context->WholeNumber(temp, &items) || items < 0)
     {
-        context->InvalidRoutine();
-        return 0;
+        unsetStemException(context);
     }
 
     // make sure the deletion site is within the bounds
     if (start + count - 1 > items)
     {
-        context->InvalidRoutine();
-        return 0;
+        context->ThrowException1(Rexx_Error_Incorrect_call_stem_range, context->StringSizeToObject(items));
     }
 
-    stringsize_t index;
+    wholenumber_t index;
     /* now copy the remaining indices up front */
-    for ( index = start;  index + count <= items; index++)
+    for (index = start;  index + count <= items; index++)
     {
         // copy from the old index to the new index
         RexxObjectPtr value = context->GetStemArrayElement(toStem, index + count);
@@ -1356,25 +1353,23 @@ RexxRoutine3(int, SysStemDelete, RexxStemObject, toStem, stringsize_t, start, OP
 * Return:    0 - insert was successful                                   *
 *            -1 - insert failed                                          *
 *************************************************************************/
-RexxRoutine3(int, SysStemInsert, RexxStemObject, toStem, stringsize_t, position, RexxObjectPtr, newValue)
+RexxRoutine3(int, SysStemInsert, RexxStemObject, toStem, positive_wholenumber_t, position, RexxObjectPtr, newValue)
 {
-    stringsize_t count;
+    wholenumber_t count;
 
     RexxObjectPtr temp = context->GetStemArrayElement(toStem, 0);
-    if (temp == NULLOBJECT || !context->StringSize(temp, &count))
+    if (temp == NULLOBJECT || !context->WholeNumber(temp, &count))
     {
-        context->InvalidRoutine();
-        return 0;
+        unsetStemException(context);
     }
 
-    /* check wether new position is within limits */
-    if (position == 0 || (position > count + 1))
+    /* check whether new position is within limits */
+    if (position > count + 1)
     {
-        context->InvalidRoutine();
-        return 0;
+        context->ThrowException1(Rexx_Error_Incorrect_call_stem_range, context->StringSizeToObject(count));
     }
 
-    for (size_t index = count; index >= position; index--)
+    for (wholenumber_t index = count; index >= position; index--)
     {
         // copy from the old index to the new index
         RexxObjectPtr value = context->GetStemArrayElement(toStem, index);
@@ -1411,8 +1406,8 @@ RexxRoutine3(int, SysStemInsert, RexxStemObject, toStem, stringsize_t, position,
 *            -1 - stem copy failed                                       *
 *************************************************************************/
 RexxRoutine6(int, SysStemCopy, RexxStemObject, fromStem, RexxStemObject, toStem,
-    OPTIONAL_stringsize_t, from, OPTIONAL_stringsize_t, to, OPTIONAL_stringsize_t, count,
-    OPTIONAL_CSTRING, option)
+             OPTIONAL_positive_wholenumber_t, from, OPTIONAL_positive_wholenumber_t, to, OPTIONAL_positive_wholenumber_t, count,
+             OPTIONAL_CSTRING, option)
 {
     bool inserting = false;
 
@@ -1431,19 +1426,17 @@ RexxRoutine6(int, SysStemCopy, RexxStemObject, fromStem, RexxStemObject, toStem,
                 break;
             default:
             {
-                context->InvalidRoutine();
-                return 0;
+                invalidOptionException(context, "SysStemCopy", "sort type", "'I' or 'O'", option);
             }
         }
     }
 
-    stringsize_t fromCount;
+    wholenumber_t fromCount;
 
     RexxObjectPtr temp = context->GetStemArrayElement(fromStem, 0);
-    if (temp == NULLOBJECT || !context->StringSize(temp, &fromCount))
+    if (temp == NULLOBJECT || !context->WholeNumber(temp, &fromCount))
     {
-        context->InvalidRoutine();
-        return 0;
+        unsetStemException(context);
     }
 
     // default from location is the first element
@@ -1463,8 +1456,7 @@ RexxRoutine6(int, SysStemCopy, RexxStemObject, fromStem, RexxStemObject, toStem,
         // this must be in range
         if ((count > (fromCount - from + 1)) || (fromCount == 0))
         {
-            context->InvalidRoutine();
-            return 0;
+            context->ThrowException1(Rexx_Error_Incorrect_call_stem_range, context->WholeNumberToObject(fromCount));
         }
     }
     else
@@ -1473,26 +1465,24 @@ RexxRoutine6(int, SysStemCopy, RexxStemObject, fromStem, RexxStemObject, toStem,
         count = fromCount - from + 1;
     }
 
-    stringsize_t toCount = 0;
+    wholenumber_t toCount = 0;
     // but if it is set, then use that value
     temp = context->GetStemArrayElement(toStem, 0);
-    if (temp != NULLOBJECT && !context->StringSize(temp, &toCount))
+    if (temp != NULLOBJECT && !context->WholeNumber(temp, &toCount))
     {
-        context->InvalidRoutine();
-        return 0;
+        unsetStemException(context);
     }
 
     // copying out of range?  Error
     if (to > toCount + 1)
     {
-        context->InvalidRoutine();
-        return 0;
+        context->ThrowException1(Rexx_Error_Incorrect_call_stem_range, context->WholeNumberToObject(toCount));
     }
 
     if (inserting)
     {
         /* if we are about to insert the items we have to make room */
-        for (size_t index = toCount; index >= to; index--)
+        for (wholenumber_t index = toCount; index >= to; index--)
         {
             // copy from the old index to the new index
             RexxObjectPtr value = context->GetStemArrayElement(toStem, index);
@@ -1508,10 +1498,10 @@ RexxRoutine6(int, SysStemCopy, RexxStemObject, fromStem, RexxStemObject, toStem,
 
         // set the new count value in the target
         toCount += count;
-        context->SetStemArrayElement(toStem, 0, context->StringSize(toCount));
+        context->SetStemArrayElement(toStem, 0, context->WholeNumberToObject(toCount));
     }
     /* now do the actual copying from the source to target */
-    for (size_t index = 0; index < count; index++)
+    for (wholenumber_t index = 0; index < count; index++)
     {
         // just retrieve and copy
         RexxObjectPtr value = context->GetStemArrayElement(fromStem, from + index);
@@ -1543,7 +1533,7 @@ RexxRoutine6(int, SysStemCopy, RexxStemObject, fromStem, RexxStemObject, toStem,
 RexxRoutine0(RexxStringObject, SysUtilVersion)
 {
     char buffer[256];
-                                       /* format into the buffer     */
+    /* format into the buffer     */
     snprintf(buffer, sizeof(buffer), "%d.%d.%d", ORX_VER, ORX_REL, ORX_MOD);
     return context->String(buffer);
 }
@@ -1939,8 +1929,7 @@ RexxRoutine3(RexxStringObject, SysSearchPath, CSTRING, path, CSTRING, file, OPTI
         opt = toupper(options[0]);
         if (opt != 'C' && opt != 'N')
         {
-            context->InvalidRoutine();
-            return NULL;
+            invalidOptionException(context, "SysSearchPath", "option", "'C' or 'N'", options);
         }
     }
 
@@ -2116,8 +2105,12 @@ RexxRoutine2(RexxStringObject, SysTempFileName, CSTRING, fileTemplate, OPTIONAL_
     {
         if (strlen(fillerOpt) != 1)
         {
-            context->InvalidRoutine();
-            return NULLOBJECT;
+            RexxArrayObject subs = context->NewArray(3);
+            context->ArrayAppendString(subs, "SysTempFileName", strlen("SysTempFileName"));
+            context->ArrayAppendString(subs, "filler", strlen("filler"));
+            context->ArrayAppendString(subs, fillerOpt, strlen(fillerOpt));
+
+            context->ThrowException(Rexx_Error_Incorrect_call_pad, subs);
         }
         filler = fillerOpt[0];
     }

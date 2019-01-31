@@ -39,6 +39,7 @@
 #ifndef FileNameBuffer_Included
 #define FileNameBuffer_Included
 
+#include <cstring>
 #include "SysFileSystem.hpp"
 
 /**

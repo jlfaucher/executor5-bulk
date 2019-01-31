@@ -76,65 +76,67 @@ class FileNameBuffer;
 
 class SysFileSystem
 {
-public:
-    enum
-    {
-        MaximumPathLength = MAXIMUM_PATH_LENGTH,
-        MaximumFileNameLength = MAXIMUM_FILENAME_LENGTH,
-        MaximumFileNameBuffer = MAXIMUM_PATH_LENGTH + MAXIMUM_FILENAME_LENGTH
-    };
+ public:
+     enum
+     {
+         MaximumPathLength = MAXIMUM_PATH_LENGTH,
+         MaximumFileNameLength = MAXIMUM_FILENAME_LENGTH,
+         MaximumFileNameBuffer = MAXIMUM_PATH_LENGTH + MAXIMUM_FILENAME_LENGTH
+     };
 
-    static const char EOF_Marker;
-    static const char *EOL_Marker;    // the end-of-line marker
-    static const char PathDelimiter;  // directory path delimiter
-    static const char NewLine;
-    static const char CarriageReturn;
+     static const char EOF_Marker;
+     static const char *EOL_Marker;    // the end-of-line marker
+     static const char PathDelimiter;  // directory path delimiter
+     static const char NewLine;
+     static const char CarriageReturn;
 
-    static bool  searchFileName(const char *name, FileNameBuffer &fileName);
-    static void  qualifyStreamName(const char *unqualifiedName, FileNameBuffer &qualifiedName);
-    static bool  fileExists(const char *name);
-    static bool  searchName(const char *name, const char *path, const char *extension, FileNameBuffer &resolvedName);
-    static bool  searchPath(const char *name, const char *path, FileNameBuffer& resolvedName);
-    static bool  primitiveSearchName(const char *name, const char *path, const char *extension, FileNameBuffer &resolvedName);
-    static bool  checkCurrentFile(const char *name, FileNameBuffer &resolvedName);
-    static bool  hasExtension(const char *name);
-    static bool  hasDirectory(const char *name);
-    static bool  canonicalizeName(FileNameBuffer &resolvedName);
-    static bool  normalizePathName(const char *name, FileNameBuffer &resolvedName);
-    static RexxString *extractDirectory(RexxString *file);
-    static RexxString *extractExtension(RexxString *file);
-    static RexxString *extractFile(RexxString *file);
+     static bool  searchFileName(const char *name, FileNameBuffer &fileName);
+     static void  qualifyStreamName(const char *unqualifiedName, FileNameBuffer &qualifiedName);
+     static bool  fileExists(const char *name);
+     static bool  searchName(const char *name, const char *path, const char *extension, FileNameBuffer &resolvedName);
+     static bool  searchPath(const char *name, const char *path, FileNameBuffer &resolvedName);
+     static bool  primitiveSearchName(const char *name, const char *path, const char *extension, FileNameBuffer &resolvedName);
+     static bool  checkCurrentFile(const char *name, FileNameBuffer &resolvedName);
+     static bool  hasExtension(const char *name);
+     static bool  hasDirectory(const char *name);
+     static bool  canonicalizeName(FileNameBuffer &resolvedName);
+     static bool  normalizePathName(const char *name, FileNameBuffer &resolvedName);
+     static RexxString* extractDirectory(RexxString *file);
+     static RexxString* extractExtension(RexxString *file);
+     static RexxString* extractFile(RexxString *file);
 
-    static int   deleteFile(const char *name);
-    static int   deleteDirectory(const char *name);
-    static bool  isDirectory(const char *name);
-    static bool  isReadOnly(const char *name);
-    static bool  isWriteOnly(const char *name);
-    static bool  isFile(const char *name);
-    static bool  isLink(const char *name);
-    static bool  exists(const char *name);
+     static int   deleteFile(const char *name);
+     static int   deleteDirectory(const char *name);
+     static bool  isDirectory(const char *name);
+     static bool  isReadOnly(const char *name);
+     static bool  isWriteOnly(const char *name);
+     static bool  isFile(const char *name);
+     static bool  isLink(const char *name);
+     static bool  exists(const char *name);
 
-    static int64_t getLastModifiedDate(const char *name);
-    static int64_t getLastAccessDate(const char *name);
-    static bool  setLastModifiedDate(const char *name, int64_t time);
-    static bool  setLastAccessDate(const char *name, int64_t time);
+     static int64_t getLastModifiedDate(const char *name);
+     static int64_t getLastAccessDate(const char *name);
+     static bool  setLastModifiedDate(const char *name, int64_t time);
+     static bool  setLastAccessDate(const char *name, int64_t time);
 
-    static uint64_t getFileLength(const char *name);
+     static uint64_t getFileLength(const char *name);
 
-    static bool  makeDirectory(const char *name);
-    static bool  isHidden(const char *name);
-    static bool  setFileReadOnly(const char *name);
-    static bool  isCaseSensitive();
-    static bool  isCaseSensitive(const char *name);
-    static int   getRoots(FileNameBuffer &roots);
-    static const char *getSeparator();
-    static const char *getPathSeparator();
-    static const char *getLineEnd();
-    static bool  getCurrentDirectory(FileNameBuffer &directory);
-    static bool  setCurrentDirectory(const char *directory);
-    static int   copyFile(const char *fromFile, const char *toFile);
-    static int   moveFile(const char *fromFile, const char *toFile);
-    static bool  resolveTilde(FileNameBuffer &name);
+     static bool  makeDirectory(const char *name);
+     static bool  isHidden(const char *name);
+     static bool  setFileReadOnly(const char *name);
+     static bool  isCaseSensitive();
+     static bool  isCaseSensitive(const char *name);
+     static int   getRoots(FileNameBuffer &roots);
+     static const char* getSeparator();
+     static const char* getPathSeparator();
+     static const char* getLineEnd();
+     static bool  getCurrentDirectory(FileNameBuffer &directory);
+     static bool  setCurrentDirectory(const char *directory);
+     static int   copyFile(const char *fromFile, const char *toFile);
+     static int   moveFile(const char *fromFile, const char *toFile);
+     static bool  resolveTilde(FileNameBuffer &name);
+     static const char* getPathStart(const char *name);
+     static const char* getPathEnd(const char *name);
 };
 
 class SysFileIterator

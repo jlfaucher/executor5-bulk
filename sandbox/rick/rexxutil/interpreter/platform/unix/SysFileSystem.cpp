@@ -526,40 +526,6 @@ bool SysFileSystem::searchPath(const char *name, const char *path, FileNameBuffe
 
 
 /**
- * Do a path search for a file.
- *
- * @param name      The name to search for.
- * @param path      The search path to use.
- * @param extension Any extension that should be added to the search (can be NULL).
- * @param resolvedName
- *                  A buffer used for returning the resolved name.
- *
- * @return Returns true if the file was located.  If true, the resolvedName
- *         buffer will contain the returned name.
- */
-bool SysFileSystem::searchPath(const char *name, const char *path, const char *extension, FileNameBuffer &resolvedName)
-{
-    if (extension != NULL)
-    {
-        return searchPath
-    }
-    AutoFileNameBuffer
-
-    if (searchOnPath(name, path, extension, resolvedName))
-    {
-        // if this is a file, return the long name
-        if (isFile(resolvedName))
-        {
-            getLongName(resolvedName);
-            return true;
-        }
-
-    }
-    return false;        // not found
-}
-
-
-/**
  * resolve the user home directory portion of a file name
  *
  * @param name       The current working name. This is updated in place.
@@ -1609,6 +1575,35 @@ int SysFileSystem::moveFile(const char *fromFile, const char *toFile)
     // copy to is ok, now unlink from
     // in case of error, don't remove toFile, it's a bad idea !
     return unlink(fromFile);
+}
+
+
+/**
+ * Locate the last directory delimiter in a file spec name
+ *
+ * @param name   The give name.
+ *
+ * @return The location of the last directory delimiter, or NULL if one is
+ *         not found.
+ */
+const char* SysFileSystem::getPathEnd(const char *name)
+{
+    return strrchr(name, PathDelimiter);             // find the last backslash in name
+}
+
+
+/**
+ * Locate the last directory delimiter in a file spec name
+ *
+ * @param name   The give name.
+ *
+ * @return The location of the last directory delimiter, or NULL if one is
+ *         not found.
+ */
+const char* SysFileSystem::getPathStart(const char *name)
+{
+    // this always starts with the name
+    return name;
 }
 
 

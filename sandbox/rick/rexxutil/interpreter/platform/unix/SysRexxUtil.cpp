@@ -386,6 +386,19 @@ void TreeFinder::validateFileSpecName()
     // no extra validation required
 }
 
+
+/**
+ * Perform platform-specific drive checks on the file spec. This only
+ * applies to Windows.
+ *
+ * @return true if this was processed, false if additional work is required.
+ */
+bool TreeFinder::checkNonPathDrive()
+{
+    // not a drive, this will need to be prepended by the current directory
+    return false;
+}
+
 /**
  * Format the system-specific file time, attribute mask, and size for
  * the given file.
@@ -1538,8 +1551,7 @@ RexxRoutine1(RexxStringObject, SysGetKey, OPTIONAL_CSTRING, echoArg)
         }
         else if (strcasecmp(echoArg, "ECHO"))
         {
-            context->InvalidRoutine();
-            return NULLOBJECT;
+            invalidOptionException(context, "SysGetKey", "echo", "'ECHO' or 'NOECHO'", echoArg);
         }
     }
 
@@ -1608,8 +1620,7 @@ RexxRoutine1(RexxStringObject, SysCreatePipe, OPTIONAL_CSTRING, blocking)
         /* One arg, first char is 'n'?    */
         else if (blocking[0] != 'b' && blocking[0] != 'B')
         {
-            context->InvalidRoutine();
-            return NULLOBJECT;
+            invalidOptionException(context, "SysCreatePipe", "blocking", "'B' or 'N'", blocking);
         }
     }
 
@@ -1679,6 +1690,7 @@ RexxRoutine2(RexxObjectPtr, SysGetFileDateTime, CSTRING, file, OPTIONAL_CSTRING,
 
                 break;
             default:
+                invalidOptionException(context, "SysGetFileDateTime", "time selector", "'A' or 'W'", echoOpt);
                 context->InvalidRoutine();
                 return NULLOBJECT;
         }
