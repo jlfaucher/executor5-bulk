@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2012-2013 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2012-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -303,7 +303,7 @@ static inline RexxStringObject ooSQLiteErr(RexxThreadContext *c, wholenumber_t r
 {
     char buf[64];
 
-    snprintf(buf, sizeof(buf), "%s Error: %d", isSQLiteErr ? "SQLite" : "ooSQLite", rc);
+    snprintf(buf, sizeof(buf), "%s Error: %zd", isSQLiteErr ? "SQLite" : "ooSQLite", rc);
     return c->String(buf);
 }
 
@@ -322,7 +322,7 @@ static inline RexxStringObject ooSQLiteErr(RexxThreadContext *c, wholenumber_t r
 {
     char buf[512];
 
-    snprintf(buf, sizeof(buf), "%s Error: rc = %d, %s",
+    snprintf(buf, sizeof(buf), "%s Error: rc = %zd, %s",
              isSQLiteErr ? "SQLite" : "ooSQLite", rc, msg);
     return c->String(buf);
 }
@@ -884,7 +884,7 @@ static RexxStemObject getRecordsClassicStem(RexxThreadContext *c, sqlite3_stmt *
 
         for ( int i = 0; i < count; i++ )
         {
-            snprintf(buf, sizeof(buf) - 1, "%d.%s", item, headers[i]);
+            snprintf(buf, sizeof(buf) - 1, "%zd.%s", item, headers[i]);
 
             CSTRING       data  = (CSTRING)sqlite3_column_text(stmt, i);
             RexxObjectPtr value = (data == NULL) ? nullObj : c->String(data);
@@ -932,12 +932,12 @@ RexxStringObject genGetVersion(RexxThreadContext *c, logical_t full, logical_t m
     {
         if ( strlen(encrypt) > 0 )
         {
-            snprintf(buf, sizeof(buf), "ooSQLite: ooSQLite Version %d.%d.%d.%d (%d bit) %s\n",
+            snprintf(buf, sizeof(buf), "ooSQLite: ooSQLite Version %d.%d.%d.%d (%zd bit) %s\n",
                      OOSQLITE_VER_MAJOR, OOSQLITE_VER_MINOR, OOSQLITE_VER_LEVEL, OOSQLITE_VER_BUILD, bits, encrypt);
         }
         else
         {
-            snprintf(buf, sizeof(buf), "ooSQLite: ooSQLite Version %d.%d.%d.%d (%d bit)\n",
+            snprintf(buf, sizeof(buf), "ooSQLite: ooSQLite Version %d.%d.%d.%d (%zd bit)\n",
                      OOSQLITE_VER_MAJOR, OOSQLITE_VER_MINOR, OOSQLITE_VER_LEVEL, OOSQLITE_VER_BUILD, bits);
         }
 
@@ -950,7 +950,7 @@ RexxStringObject genGetVersion(RexxThreadContext *c, logical_t full, logical_t m
 
         size_t rx = c->InterpreterVersion();
 
-        snprintf(buf1, sizeof(buf1), "Rexx:     Open Object Rexx Version %d.%d.%d\n\n",
+        snprintf(buf1, sizeof(buf1), "Rexx:     Open Object Rexx Version %zd.%zd.%zd\n\n",
                  (rx >> 16) & 0xff, (rx >> 8) & 0xff, rx & 0x0000ff);
         strcat(buf, buf1);
 
@@ -969,12 +969,12 @@ RexxStringObject genGetVersion(RexxThreadContext *c, logical_t full, logical_t m
         {
             if ( strlen(encrypt) > 0 )
             {
-                snprintf(buf, sizeof(buf), "ooSQLite Version %d.%d.%d.%d (%d bit) %s\n",
+                snprintf(buf, sizeof(buf), "ooSQLite Version %d.%d.%d.%d (%zd bit) %s\n",
                          OOSQLITE_VER_MAJOR, OOSQLITE_VER_MINOR, OOSQLITE_VER_LEVEL, OOSQLITE_VER_BUILD, bits, encrypt);
             }
             else
             {
-                snprintf(buf, sizeof(buf), "ooSQLite Version %d.%d.%d.%d (%d bit)\n",
+                snprintf(buf, sizeof(buf), "ooSQLite Version %d.%d.%d.%d (%zd bit)\n",
                          OOSQLITE_VER_MAJOR, OOSQLITE_VER_MINOR, OOSQLITE_VER_LEVEL, OOSQLITE_VER_BUILD, bits);
             }
         }
@@ -2989,11 +2989,11 @@ void dbNotOpenException(RexxMethodContext *c, pCooSQLiteConn pConn, size_t pos)
     char buffer[256];
     if ( pConn->fileName != NULL )
     {
-        snprintf(buffer, sizeof(buffer), "Argument %d, the %s data base connection, is not open", pos, pConn->fileName);
+        snprintf(buffer, sizeof(buffer), "Argument %zd, the %s data base connection, is not open", pos, pConn->fileName);
     }
     else
     {
-        snprintf(buffer, sizeof(buffer), "Argument %d, the data base connection, is not open", pos);
+        snprintf(buffer, sizeof(buffer), "Argument %zd, the data base connection, is not open", pos);
     }
     executionErrorException(c->threadContext, buffer);
 }
@@ -3010,7 +3010,7 @@ void invalidDbStateException(RexxMethodContext *c, pCooSQLiteConn pConn, size_t 
         }
         else
         {
-            snprintf(buffer, sizeof(buffer), "Argument %d, the %s data base connection, is a backup destination target",
+            snprintf(buffer, sizeof(buffer), "Argument %zd, the %s data base connection, is a backup destination target",
                      pos, pConn->fileName);
         }
     }
@@ -3022,7 +3022,7 @@ void invalidDbStateException(RexxMethodContext *c, pCooSQLiteConn pConn, size_t 
         }
         else
         {
-            snprintf(buffer, sizeof(buffer), "Argument %d, the data base connection, is a backup destination target", pos);
+            snprintf(buffer, sizeof(buffer), "Argument %zd, the data base connection, is a backup destination target", pos);
         }
     }
     executionErrorException(c->threadContext, buffer);
@@ -7536,7 +7536,7 @@ RexxObjectPtr pragmaGetTest(RexxMethodContext *c, pCooSQLiteConn pConn, CSTRING 
     }
     else
     {
-        snprintf(buf, sizeof(buf), "Unexpected result, err=%d returned for pragma %s", name);
+        snprintf(buf, sizeof(buf), "Unexpected result, err=%d returned for pragma %s", rc, name);
         result = ooSQLiteErr(c, pConn, OO_UNEXPECTED_RESULT, buf, false);
     }
 
@@ -10263,7 +10263,7 @@ static void tooManyAutoRegistrations(RexxMethodContext *c, pCooSQLExtensions pce
 {
     char buf[256];
 
-    snprintf(buf, 256, "the number of automatically registered %s can not exceed %d", type, n);
+    snprintf(buf, 256, "the number of automatically registered %s can not exceed %zd", type, n);
 
     pcext->lastErrCode = c->Int32(SQLITE_MISUSE);
     pcext->lastErrMsg  = c->String(buf);
@@ -10599,10 +10599,10 @@ RexxObjectPtr listBuiltinsClassicStem(RexxMethodContext *c, bool print)
     {
         char buf[1024] = {0};
 
-        snprintf(buf, sizeof(buf) - 1, "%d.%s", item, "NAME");
+        snprintf(buf, sizeof(buf) - 1, "%zd.%s", item, "NAME");
         c->SetStemElement(records, buf, c->String(builtinNames[i]));
 
-        snprintf(buf, sizeof(buf) - 1, "%d.%s", item, "DESCRIPTION");
+        snprintf(buf, sizeof(buf) - 1, "%zd.%s", item, "DESCRIPTION");
         c->SetStemElement(records, buf, c->String(builtinDescription[i]));
 
         c->SetStemArrayElement(records, 0, c->StringSize(item++));  // Update number of records in the stem.

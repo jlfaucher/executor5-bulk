@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2012-2013 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2012-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -52,7 +52,7 @@
 
 #define strcasecmp                 _stricmp
 #define strncasecmp                _strnicmp
-#define snprintf                   _snprintf
+//efine snprintf                   _snprintf
 #define oosqlGetCurrentThreadId()  GetCurrentThreadId()
 
 #define MAX_LIBRARY_NAME_LENGTH     255

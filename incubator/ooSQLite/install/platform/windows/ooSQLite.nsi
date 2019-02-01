@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2012-2013 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2012-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -89,7 +89,7 @@
 ;General
 
   Name "ooSQLite ${VERSION}"
-  OutFile "ooOOSQLite-${VERSION}-${CPU}${DEBUGPKG}.exe"
+  OutFile "ooSQLite-${VERSION}-${CPU}${DEBUGPKG}.exe"
   ShowInstdetails show
   SetOverwrite on
   SetPluginUnload alwaysoff
@@ -546,7 +546,9 @@ Function DetermineRexxVersion
 
   StrCpy $ooRexxVersion "$R2.$R3.$R4.$R5"
 
-  ${If} $R2 >= 4
+  ${If} $R2 >= 5
+    StrCpy $isMinimumRequiredRexx "true"
+  ${ElseIf} $R2 >= 4
   ${AndIf} $R3 >= 1
     StrCpy $isMinimumRequiredRexx "true"
   ${Else}
