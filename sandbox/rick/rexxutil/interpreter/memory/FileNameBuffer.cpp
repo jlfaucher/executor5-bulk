@@ -47,6 +47,29 @@
  */
 FileNameBuffer::FileNameBuffer(size_t initial) : buffer(NULL), bufferSize(0)
 {
+    init(initial);
+}
+
+
+/**
+ * Copy constructor for a FileNameBuffer object
+ *
+ * @param o      The source object.
+ */
+FileNameBuffer::FileNameBuffer(const FileNameBuffer &o)
+{
+    init(o.bufferSize);
+    strncpy(buffer, o.buffer, bufferSize);
+}
+
+
+/**
+ * Do the initial setup for a FileNameBuffer object.
+ *
+ * @param initial The initial capacity.
+ */
+void FileNameBuffer::init(size_t initial)
+{
     if (initial == 0)
     {
         initial = SysFileSystem::MaximumPathLength;

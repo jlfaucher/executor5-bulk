@@ -1994,7 +1994,7 @@ RexxRoutine1(int, SysSleep, RexxStringObject, delay)
     double seconds;
     // try to convert the provided delay to a valid floating point number
     if (context->ObjectToDouble(delay, &seconds) == 0 ||
-        isnan(seconds) || seconds == HUGE_VAL || seconds == -HUGE_VAL)
+        std::isnan(seconds) || seconds == HUGE_VAL || seconds == -HUGE_VAL)
     {
         // 88.902 The &1 argument must be a number; found "&2"
         context->RaiseException2(Rexx_Error_Invalid_argument_number, context->String("delay"), delay);
@@ -2124,7 +2124,7 @@ RexxRoutine2(RexxStringObject, SysTempFileName, CSTRING, fileTemplate, OPTIONAL_
 
 #define INTERNAL_ROUTINE(name, entry) REXX_TYPED_ROUTINE_PROTOTYPE(entry)
 
-#include "SysRexxutilFunctions.h"          // generate prototypes for the system functions.
+#include "SysRexxUtilFunctions.h"          // generate prototypes for the system functions.
 
 // now redefine to generate the table entries
 #undef  INTERNAL_ROUTINE
@@ -2164,7 +2164,7 @@ RexxRoutineEntry rexxutil_routines[] =
     REXX_TYPED_ROUTINE(SysFileMove,            SysFileMove),
     REXX_TYPED_ROUTINE(SysFileCopy,            SysFileCopy),
     REXX_TYPED_ROUTINE(SysTempFileName,        SysTempFileName),
-#include "SysRexxutilFunctions.h"
+#include "SysRexxUtilFunctions.h"
     REXX_LAST_ROUTINE()
 };
 

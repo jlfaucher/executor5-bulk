@@ -67,8 +67,10 @@
 
 #if defined __APPLE__
 // avoid warning: '(f)stat64' is deprecated: first deprecated in macOS 10.6
-# define stat64 stat
-# define fstat64 fstat
+#define stat64 stat
+#define fstat64 fstat
+#define open64 open
+#define lstat64 lstat
 #endif
 
 

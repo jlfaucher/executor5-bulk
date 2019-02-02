@@ -85,12 +85,13 @@ public:
         if (p != NULL)
         {
             path += p;
-            if (p[strlen(p) - 1] != ';')
+            if (p[strlen(p) - 1] != ':')
             {
-                path += ";";
+                path += ':';
             }
         }
     }
+
     FileNameBuffer path;  // the constructed path
 };
 

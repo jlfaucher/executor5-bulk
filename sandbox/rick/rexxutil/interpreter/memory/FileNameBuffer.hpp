@@ -53,6 +53,7 @@ class FileNameBuffer
 {
  public:
      FileNameBuffer(size_t initial = 0);
+     FileNameBuffer(const FileNameBuffer &o);
      inline ~FileNameBuffer()
      {
          if (buffer != NULL)
@@ -61,6 +62,8 @@ class FileNameBuffer
              buffer = NULL;
          }
      }
+
+     void init(size_t initial);
 
      virtual void handleMemoryError();
 
@@ -109,14 +112,29 @@ class FileNameBuffer
 
      inline FileNameBuffer &operator=(const char *s)
      {
-         ensureCapacity(strlen(s));
+         ensureCapacity(strlen(s) + 1);
          strncpy(buffer, s, bufferSize);
+         return *this;
+     }
+
+     inline FileNameBuffer &operator=(const FileNameBuffer &s)
+     {
+         // prevent self assignment
+         if (this == &s)
+         {
+             return *this;
+         }
+
+         const char *str = (const char *)s.buffer;
+
+         ensureCapacity(strlen(str) + 1);
+         strncpy(buffer, str, bufferSize);
          return *this;
      }
 
      inline FileNameBuffer &operator=(char *s)
      {
-         ensureCapacity(strlen(s));
+         ensureCapacity(strlen(s) + 1);
          strncpy(buffer, s, bufferSize);
          return *this;
      }
@@ -139,7 +157,7 @@ class FileNameBuffer
      inline FileNameBuffer &operator+=(char c)
      {
          size_t currentLen = length();
-         ensureCapacity(currentLen + 1);
+         ensureCapacity(currentLen + 2);
 
          buffer[currentLen] = c;
          buffer[currentLen + 1] = '\0';
@@ -156,8 +174,8 @@ class FileNameBuffer
 
      inline FileNameBuffer& set(const char *s, size_t l)
      {
-         ensureCapacity(l);
-         memcmp(buffer, s, l);
+         ensureCapacity(l + 1);
+         memcpy(buffer, s, l);
          buffer[l] = '\0';
          return *this;
      }
@@ -165,8 +183,8 @@ class FileNameBuffer
      inline FileNameBuffer& append(const char *s, size_t l)
      {
          size_t currentLength = length();
-         ensureCapacity(currentLength + l);
-         memcmp(buffer + currentLength, s, l);
+         ensureCapacity(currentLength + 1 + 1);
+         memcpy(buffer + currentLength, s, l);
          buffer[currentLength + l] = '\0';
          return *this;
      }
