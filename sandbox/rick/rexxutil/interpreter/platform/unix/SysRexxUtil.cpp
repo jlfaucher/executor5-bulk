@@ -1690,7 +1690,7 @@ RexxRoutine2(RexxObjectPtr, SysGetFileDateTime, CSTRING, file, OPTIONAL_CSTRING,
 
                 break;
             default:
-                invalidOptionException(context, "SysGetFileDateTime", "time selector", "'A' or 'W'", echoOpt);
+                invalidOptionException(context, "SysGetFileDateTime", "time selector", "'A' or 'W'", timesel);
                 context->InvalidRoutine();
                 return NULLOBJECT;
         }
