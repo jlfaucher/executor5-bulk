@@ -267,6 +267,12 @@
 ::method TestSetObjectMemory        EXTERNAL "LIBRARY orxmethod"
 ::method TestGetObjectMemory        EXTERNAL "LIBRARY orxmethod"
 
+::method TestGetObjectVariableReference EXTERNAL "LIBRARY orxmethod"
+::method TestIsVariableReference        EXTERNAL "LIBRARY orxmethod"
+::method TestSetVariableReferenceValue  EXTERNAL "LIBRARY orxmethod"
+::method TestVariableReferenceName      EXTERNAL "LIBRARY orxmethod"
+::method TestVariableReferenceValue     EXTERNAL "LIBRARY orxmethod"
+
 ::method TestRaiseExceptionX
   signal on syntax
   forward message(TestRaiseException) continue

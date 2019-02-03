@@ -5113,6 +5113,49 @@ Compound variable values can be retrieved from the corresponding Stem values.
 has not been assigned a value.</para>
 </section>
 
+
+<section id="mthGetContextVariableReference" revisionflag="added"><title>&added50;GetContextVariableReference</title>
+<indexterm><primary>GetContextVariableReference</primary></indexterm>
+<indexterm><primary>Call context methods</primary>
+<secondary>GetContextVariableReference</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>GetContextVariableReference</secondary></indexterm>
+<!-- GetContextVariableReference --><para>&contexts_call_exit; &context_since_50;.</para>
+<programlisting language="C++">
+<![CDATA[
+CSTRING name;
+RexxVariableReferenceObject obj;
+
+// Method Syntax Form(s)
+
+obj = context->GetContextVariableReference(name);
+]]>
+</programlisting>
+<para>Creates a VariableReference instance from a context variable name.
+</para>
+<para><emphasis role="bold">Arguments</emphasis></para>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
+    <row><entry><emphasis role="italic">name</emphasis></entry>
+    <entry><para>The name of a simple or a stem context variable for which
+    a reference should be created.
+    A compound variable name is not allowed.
+    </para></entry>
+    </row>
+</tbody></tgroup></informaltable>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>A VariableReference object referencing
+<emphasis role="italic">name</emphasis>.
+</para>
+<para>See also methods
+<xref linkend="mthGetObjectVariableReference" xrefstyle="select:title"/>,
+<xref linkend="mthIsVariableReference" xrefstyle="select:title"/>,
+<xref linkend="mthSetVariableReferenceValue" xrefstyle="select:title"/>,
+<xref linkend="mthVariableReferenceName" xrefstyle="select:title"/>, and
+<xref linkend="mthVariableReferenceValue" xrefstyle="select:title"/>.
+</para>
+</section>
+
+
 <section id="mthGetCSelf"><title>&changed50;GetCSelf</title>
 <indexterm><primary>GetCSelf</primary></indexterm>
 <indexterm><primary>Method context methods</primary>
@@ -5312,6 +5355,47 @@ Compound variable values can be retrieved from the corresponding Stem values.
 <para>The object assigned to the named object variable.  Returns NULLOBJECT if the
 variable has not been assigned a value.</para>
 </section>
+
+
+<section id="mthGetObjectVariableReference" revisionflag="added"><title>&added50;GetObjectVariableReference</title>
+<indexterm><primary>GetObjectVariableReference</primary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>GetObjectVariableReference</secondary></indexterm>
+<!-- GetObjectVariableReference --><para>&contexts_method; &context_since_50;.</para>
+<programlisting language="C++">
+<![CDATA[
+CSTRING name;
+RexxVariableReferenceObject obj;
+
+// Method Syntax Form(s)
+
+obj = context->GetObjectVariableReference(name);
+]]>
+</programlisting>
+<para>Creates a VariableReference instance from an object variable name.
+</para>
+<para><emphasis role="bold">Arguments</emphasis></para>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
+    <row><entry><emphasis role="italic">name</emphasis></entry>
+    <entry><para>The name of a simple or a stem object variable for which
+    a reference should be created.
+    A compound variable name is not allowed.
+    </para></entry>
+    </row>
+</tbody></tgroup></informaltable>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>A VariableReference object referencing
+<emphasis role="italic">name</emphasis>.
+</para>
+<para>See also methods
+<xref linkend="mthGetObjectVariableReference" xrefstyle="select:title"/>,
+<xref linkend="mthIsVariableReference" xrefstyle="select:title"/>,
+<xref linkend="mthSetVariableReferenceValue" xrefstyle="select:title"/>,
+<xref linkend="mthVariableReferenceName" xrefstyle="select:title"/>, and
+<xref linkend="mthVariableReferenceValue" xrefstyle="select:title"/>.
+</para>
+</section>
+
 
 <section id="mthGetPackageClasses"><title>GetPackageClasses</title>
 <indexterm><primary>GetPackageClasses</primary></indexterm>
@@ -6663,7 +6747,7 @@ the RexxObjectPtr value may be safely cast to a RexxStringObject.
 <secondary>IsStringTable</secondary></indexterm>
 <indexterm><primary>Exit context methods</primary>
 <secondary>IsStringTable</secondary></indexterm>
-<!-- IsStringTable --><para>&contexts_thread_method_call_exit; &context_since_50;</para>
+<!-- IsStringTable --><para>&contexts_thread_method_call_exit; &context_since_50;.</para>
 <programlisting language="C++">
 <![CDATA[
 RexxObjectPtr obj;
@@ -6691,6 +6775,49 @@ the RexxObjectPtr value may be safely cast to a RexxStringTableObject.
 <xref linkend="mthStringTableAt" xrefstyle="select:title"/>,
 <xref linkend="mthStringTablePut" xrefstyle="select:title"/>, and
 <xref linkend="mthStringTableRemove" xrefstyle="select:title"/>.
+</para>
+</section>
+
+
+<section id="mthIsVariableReference" revisionflag="added"><title>&added50;IsVariableReference</title>
+<indexterm><primary>IsVariableReference</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>IsVariableReference</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>IsVariableReference</secondary></indexterm>
+<indexterm><primary>Call context methods</primary>
+<secondary>IsVariableReference</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>IsVariableReference</secondary></indexterm>
+<!-- IsVariableReference --><para>&contexts_thread_method_call_exit; &context_since_50;.</para>
+<programlisting language="C++">
+<![CDATA[
+RexxObjectPtr obj;
+logical_t flag;
+
+// Method Syntax Form(s)
+
+flag = context->IsVariableReference(obj);
+]]>
+</programlisting>
+<para>Tests if an Object is a VariableReference object.
+A true result indicates
+the RexxObjectPtr value may be safely cast to a RexxVariableReferenceObject.
+</para>
+<para><emphasis role="bold">Arguments</emphasis></para>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
+    <row><entry><emphasis role="italic">obj</emphasis></entry>
+    <entry><para>The object to be tested.</para></entry>
+    </row>
+</tbody></tgroup></informaltable>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>1 = is a VariableReference object, 0 = not a VariableReference object.</para>
+<para>See also methods
+<xref linkend="mthGetContextVariableReference" xrefstyle="select:title"/>,
+<xref linkend="mthGetObjectVariableReference" xrefstyle="select:title"/>,
+<xref linkend="mthSetVariableReferenceValue" xrefstyle="select:title"/>,
+<xref linkend="mthVariableReferenceName" xrefstyle="select:title"/>, and
+<xref linkend="mthVariableReferenceValue" xrefstyle="select:title"/>.
 </para>
 </section>
 
@@ -7429,7 +7556,7 @@ obj = context->NewStringFromAsciiz(str);
 <secondary>NewBStringTable</secondary></indexterm>
 <indexterm><primary>Exit context methods</primary>
 <secondary>NewStringTable</secondary></indexterm>
-<!-- NewStringTable --><para>&contexts_thread_method_call_exit; &context_since_50;</para>
+<!-- NewStringTable --><para>&contexts_thread_method_call_exit; &context_since_50;.</para>
 <programlisting language="C++">
 <![CDATA[
 RexxStringTableObject obj;
@@ -9255,6 +9382,55 @@ all active threads for the interpreter instance.
 <para>Void.</para>
 </section>
 
+
+<section id="mthSetVariableReferenceValue" revisionflag="added"><title>&added50;SetVariableReferenceValue</title>
+<indexterm><primary>SetVariableReferenceValue</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>SetVariableReferenceValue</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>SetVariableReferenceValue</secondary></indexterm>
+<indexterm><primary>Call context methods</primary>
+<secondary>SetVariableReferenceValue</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>SetVariableReferenceValue</secondary></indexterm>
+<!-- SetVariableReferenceValue --><para>&contexts_thread_method_call_exit; &context_since_50;.</para>
+<programlisting language="C++">
+<![CDATA[
+RexxVariableReferenceObject ref;
+RexxObjectPtr value;
+
+// Method Syntax Form(s)
+
+context->SetVariableReferenceValue(ref, value);
+]]>
+</programlisting>
+<para>Sets the value of VariableReference object
+<emphasis role="italic">ref</emphasis> to
+<emphasis role="italic">value</emphasis>.
+</para>
+<para><emphasis role="bold">Arguments</emphasis></para>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
+    <row><entry><emphasis role="italic">ref</emphasis></entry>
+    <entry><para>The VariableReference object.
+    </para></entry>
+    </row>
+    <row><entry><emphasis role="italic">value</emphasis></entry>
+    <entry><para>The object instance to be set as the value.
+    </para></entry>
+    </row>
+</tbody></tgroup></informaltable>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Void.</para>
+<para>See also methods
+<xref linkend="mthGetContextVariableReference" xrefstyle="select:title"/>,
+<xref linkend="mthGetObjectVariableReference" xrefstyle="select:title"/>,
+<xref linkend="mthIsVariableReference" xrefstyle="select:title"/>,
+<xref linkend="mthVariableReferenceName" xrefstyle="select:title"/>, and
+<xref linkend="mthVariableReferenceValue" xrefstyle="select:title"/>.
+</para>
+</section>
+
+
 <section id="mthString"><title>String</title>
 <indexterm><primary>String</primary></indexterm>
 <indexterm><primary>Thread context methods</primary>
@@ -9534,7 +9710,7 @@ obj = context->StringSizeToObject(sz);
 <secondary>StringTableAt</secondary></indexterm>
 <indexterm><primary>Exit context methods</primary>
 <secondary>StringTableAt</secondary></indexterm>
-<!-- StringTableAt --><para>&contexts_thread_method_call_exit; &context_since_50;</para>
+<!-- StringTableAt --><para>&contexts_thread_method_call_exit; &context_since_50;.</para>
 <programlisting language="C++">
 <![CDATA[
 RexxStringTableObject strtab_obj;
@@ -9578,7 +9754,7 @@ obj = context->StringTableAt(strtab_obj, str);
 <secondary>StringTablePut</secondary></indexterm>
 <indexterm><primary>Exit context methods</primary>
 <secondary>StringTablePut</secondary></indexterm>
-<!-- StringTablePut --><para>&contexts_thread_method_call_exit; &context_since_50;</para>
+<!-- StringTablePut --><para>&contexts_thread_method_call_exit; &context_since_50;.</para>
 <programlisting language="C++">
 <![CDATA[
 RexxStringTableObject strtab_obj;
@@ -9624,7 +9800,7 @@ context->StringTablePut(strtab_obj, item, index);
 <secondary>StringTableRemove</secondary></indexterm>
 <indexterm><primary>Exit context methods</primary>
 <secondary>StringTableRemove</secondary></indexterm>
-<!-- StringTableRemove --><para>&contexts_thread_method_call_exit; &context_since_50;</para>
+<!-- StringTableRemove --><para>&contexts_thread_method_call_exit; &context_since_50;.</para>
 <programlisting language="C++">
 <![CDATA[
 RexxStringTableObject strtab_obj;
@@ -10184,6 +10360,91 @@ there are no specific conversion APIs.
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>The object representing the converted value.</para>
 </section>
+
+
+<section id="mthVariableReferenceName" revisionflag="added"><title>&added50;VariableReferenceName</title>
+<indexterm><primary>VariableReferenceName</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>VariableReferenceName</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>VariableReferenceName</secondary></indexterm>
+<indexterm><primary>Call context methods</primary>
+<secondary>VariableReferenceName</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>VariableReferenceName</secondary></indexterm>
+<!-- VariableReferenceName --><para>&contexts_thread_method_call_exit; &context_since_50;.</para>
+<programlisting language="C++">
+<![CDATA[
+RexxVariableReferenceObject ref;
+RexxStringObject name;
+
+// Method Syntax Form(s)
+
+name = context->VariableReferenceName(ref);
+]]>
+</programlisting>
+<para>Returns the name of VariableReference object
+<emphasis role="italic">ref</emphasis>.
+</para>
+<para><emphasis role="bold">Arguments</emphasis></para>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
+    <row><entry><emphasis role="italic">ref</emphasis></entry>
+    <entry><para>The VariableReference object instance.</para></entry>
+    </row>
+</tbody></tgroup></informaltable>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>The name of the VariableReference as a String.</para>
+<para>See also methods
+<xref linkend="mthGetContextVariableReference" xrefstyle="select:title"/>,
+<xref linkend="mthGetObjectVariableReference" xrefstyle="select:title"/>,
+<xref linkend="mthIsVariableReference" xrefstyle="select:title"/>,
+<xref linkend="mthSetVariableReferenceValue" xrefstyle="select:title"/>, and
+<xref linkend="mthVariableReferenceValue" xrefstyle="select:title"/>.
+</para>
+</section>
+
+
+<section id="mthVariableReferenceValue" revisionflag="added"><title>&added50;VariableReferenceValue</title>
+<indexterm><primary>VariableReferenceValue</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>VariableReferenceValue</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>VariableReferenceValue</secondary></indexterm>
+<indexterm><primary>Call context methods</primary>
+<secondary>VariableReferenceValue</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>VariableReferenceValue</secondary></indexterm>
+<!-- VariableReferenceValue --><para>&contexts_thread_method_call_exit; &context_since_50;.</para>
+<programlisting language="C++">
+<![CDATA[
+RexxVariableReferenceObject ref;
+RexxObjectPtr value;
+
+// Method Syntax Form(s)
+
+value = context->VariableReferenceValue(ref);
+]]>
+</programlisting>
+<para>Returns the name of VariableReference object
+<emphasis role="italic">ref</emphasis>.
+</para>
+<para><emphasis role="bold">Arguments</emphasis></para>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
+    <row><entry><emphasis role="italic">ref</emphasis></entry>
+    <entry><para>The VariableReference object instance.</para></entry>
+    </row>
+</tbody></tgroup></informaltable>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>The value of the VariableReference.</para>
+<para>See also methods
+<xref linkend="mthGetContextVariableReference" xrefstyle="select:title"/>,
+<xref linkend="mthGetObjectVariableReference" xrefstyle="select:title"/>,
+<xref linkend="mthIsVariableReference" xrefstyle="select:title"/>,
+<xref linkend="mthSetVariableReferenceValue" xrefstyle="select:title"/>, and
+<xref linkend="mthVariableReferenceName" xrefstyle="select:title"/>.
+</para>
+</section>
+
 
 <section id="mthWholeNumber"><title>WholeNumber</title>
 <indexterm><primary>WholeNumber</primary></indexterm>

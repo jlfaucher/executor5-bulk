@@ -79,6 +79,7 @@
     <xref linkend="clsStackFrame" xrefstyle="template:StackFrame"/>,
     <xref linkend="clsStreamSupplier" xrefstyle="template:StreamSupplier"/>,
     <xref linkend="clsSupplier" xrefstyle="template:Supplier"/>,
+    <xref linkend="clsVariableReference" xrefstyle="template:VariableReference"/>,
     <xref linkend="clsValidate" xrefstyle="template:Validate"/>, and
     <xref linkend="clsWeakReference" xrefstyle="template:WeakReference"/>.
    </para></listitem>
@@ -10162,6 +10163,151 @@ if the validation fails, else returns with no result.
 </para>
 <para>See also method <xref linkend="mthValidateNumberRange" xrefstyle="template:numberRange"/>.
 </para>
+</section>
+
+</section>
+
+
+
+<section id="clsVariableReference" revisionflag="added"><title>&added50;VariableReference Class</title>
+<indexterm><primary>VariableReference class</primary></indexterm>
+<indexterm><primary>class</primary>
+<secondary>VariableReference class</secondary></indexterm>
+<para>A <classname>VariableReference</classname> instance maintains a reference
+to another object.
+It can only be created using a
+<xref linkend="varrefterm" xrefstyle="select:title" />.
+Calling the <methodname>new</methodname> method to create VariableReference
+instance is not allowed.
+</para>
+
+<!-- modified: removed new() and combined value= into attribute -->
+<!-- $GENERATED-20190203-START rexxrefClassTable(VariableReference) -->
+<table id="ooRexxVariableReferenceClass" frame="all" pgwide="1">
+<title>VariableReference Class</title>
+<tgroup cols="1">
+<tbody>
+ <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">VariableReference</emphasis></entry>
+ </row>
+ <row><entry>
+<!--
+  <simplelist>
+   <member><xref linkend="mthVariableReferenceNew" xrefstyle="select:title"/></member>
+  </simplelist>
+-->
+  <simplelist columns="3">
+   <member><xref linkend="mthVariableReferenceName" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthVariableReferenceRequest" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthVariableReferenceUnknown" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthVariableReferenceValue" xrefstyle="select:title"/></member>
+<!--
+   <member><xref linkend="mthVariableReferenceValueEquals" xrefstyle="select:title"/></member>
+-->
+  </simplelist>
+ </entry></row>
+</tbody>
+</tgroup>
+</table>
+<!-- $GENERATED-20190203-END rexxrefClassTable(VariableReference) -->
+
+
+<!-- Class VariableReference - method name ========================= -->
+<section id="mthVariableReferenceName" revisionflag="added"><title>&added50;name</title>
+<indexterm><primary>name method</primary><secondary>of VariableReference class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>name method</secondary><tertiary>of VariableReference class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/variablereference_name.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns the name of the variable referenced.
+</para>
+<para>See also method <xref linkend="mthVariableReferenceValue" xrefstyle="select:title"/>.
+</para>
+<para><example id="ex.variablereference-name">
+<title>VariableReference class &mdash; name method
+<indexterm><primary>examples</primary><secondary>name method</secondary></indexterm>
+</title>
+<programlisting><![CDATA[
+variable = 123
+say >variable~name    -- VARIABLE
+]]></programlisting></example></para>
+</section>
+
+
+<!-- Class VariableReference - method request ====================== -->
+<section id="mthVariableReferenceRequest" revisionflag="added"><title>&added50;request</title>
+<indexterm><primary>request method</primary><secondary>of VariableReference class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>request method</secondary><tertiary>of VariableReference class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/variablereference_request.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Forwards to the <methodname>request</methodname> method of the
+referenced variable.
+</para>
+</section>
+
+
+<!-- Class VariableReference - method unknown ====================== -->
+<section id="mthVariableReferenceUnknown" revisionflag="added"><title>&added50;unknown</title>
+<indexterm><primary>unknown method</primary><secondary>of VariableReference class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>unknown method</secondary><tertiary>of VariableReference class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/variablereference_unknown.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Forwards to the <methodname>unknown</methodname> method of the
+referenced variable.
+</para>
+</section>
+
+
+<!-- Class VariableReference - method value ======================== -->
+<section id="mthVariableReferenceValue" revisionflag="added"><title>&added50;value (Attribute)</title>
+<indexterm><primary>value method</primary><secondary>of VariableReference class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>value method</secondary><tertiary>of VariableReference class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/variablereference_value.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>
+<variablelist>
+  <varlistentry><term><emphasis role="bold">value get:</emphasis></term>
+  <listitem>
+    <para>Returns the current value of the referenced variable.
+    </para>
+  </listitem></varlistentry>
+  <varlistentry><term><emphasis role="bold">value set:</emphasis></term>
+  <listitem>
+    <para>Sets the value of the referenced variable to
+    <emphasis role="italic">object</emphasis>.
+    </para>
+  </listitem></varlistentry>
+</variablelist>
+</para>
+<para>See also method <xref linkend="mthVariableReferenceName" xrefstyle="select:title"/>.
+</para>
+<para><example id="ex.variablereference-value">
+<title>VariableReference class &mdash; value method
+<indexterm><primary>examples</primary><secondary>value method</secondary></indexterm>
+</title>
+<programlisting><![CDATA[
+variable = 123
+call double >variable
+say variable      -- 246
+
+::routine double
+  use strict arg >n
+  n *= 2
+]]></programlisting></example></para>
 </section>
 
 </section>

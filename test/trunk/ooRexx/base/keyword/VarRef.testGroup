@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2017 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2018-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -54,6 +54,162 @@ return testResult
 ::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
 ::class "VARIABLE.REFERENCE.testGroup" subclass ooTestCase public
+
+::method test_new
+  self~expectSyntax(93.967) -- NEW method is not supported for the VariableReference class
+  .VariableReference~new
+
+::method test_create_null
+  -- Simple variable or stem symbol expected after > or < prefix operator
+  self~assertSyntaxError(20.930, "a = >")
+
+::method test_create_number
+  -- Simple variable or stem symbol expected after > or < prefix operator
+  self~assertSyntaxError(20.930, "a = >123")
+
+::method test_create_nullstring
+  -- Simple variable or stem symbol expected after > or < prefix operator
+  self~assertSyntaxError(20.930, "a = >''")
+
+::method test_create_nil
+  -- Simple variable or stem symbol expected after > or < prefix operator
+  self~assertSyntaxError(20.930, "a = >.nil")
+
+::method test_create_array
+  -- Simple variable or stem symbol expected after > or < prefix operator
+  self~assertSyntaxError(20.930, "a = >.Array")
+
+::method test_create_double
+  -- Incorrect expression detected
+  self~assertSyntaxError(35.1, "a = >>a")
+
+::method test_create_compound
+  -- Simple variable or stem symbol expected after > or < prefix operator
+  self~assertSyntaxError(20.930, "a = >stem.0")
+
+::method test_create
+  -- both greater-than and less-than work
+  self~assertIsA(>var, .VariableReference)
+  self~assertIsA(<stem., .VariableReference)
+  self~assertIsA(<stem., .VariableReference)
+
+-- method copy() works
+::method test_copy
+  v = >var
+  self~assertSame(v, v~copy)
+
+::method test_name_too_many
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  >var~name(.nil)
+
+::method test_name
+  self~assertSame("VAR", >var~name)
+  self~assertSame("STEM.", <stem.~name)
+
+::method test_value_too_many
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  >var~value(.nil)
+
+::method test_value
+  self~assertSame("VAR", >var~value)
+  var = 123
+  self~assertSame(123, <var~value)
+
+::method test_valueEquals_too_few
+  self~expectSyntax(88.901) -- Missing argument; the VALUE argument is required
+  >var~"value="
+
+::method test_valueEquals_too_many
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  >var~"value="(.nil, .nil)
+
+::method test_valueEquals
+  >var~value = 123
+  self~assertSame(123, var)
+
+::method test_request_too_few
+  self~expectSyntax(93.903) -- Missing argument in method; argument 1 is required
+  >var~request
+
+::method test_request_too_many
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  >var~request(.nil, .nil)
+
+::method test_request_nostring
+  self~expectSyntax(93.938) -- Method argument 1 must have a string value
+  >var~request(.nil)
+
+::method test_request
+  self~assertIsA(>var~request("ARRAY"), .Array)
+  self~assertIsA(<var~request("STRING"), .String)
+
+::method test_unknown_too_few_none
+  self~expectSyntax(93.903) -- Missing argument in method; argument 1 is required
+  >var~unknown
+
+::method test_unknown_too_few_one
+  self~expectSyntax(93.903) -- Missing argument in method; argument 2 is required
+  >var~unknown("")
+
+::method test_unknown_too_many
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  >var~unknown("", "", "")
+
+::method test_unknown_ok
+ self~assertSame("AR", >var~unknown("SUBSTR", 2))
+
+::method test_default_simple
+  -- A USE ARG default value is not allowed for variable references
+  self~assertSyntaxError(99.950, "use arg >s = 123")
+
+::method test_default_stem
+  -- A USE ARG default value is not allowed for variable references
+  self~assertSyntaxError(99.950, "use arg >s. = 123")
+
+::method test_type_mismatch_reference
+  self~expectSyntax(88.928) -- The 1 argument must be a VariableReference instance
+  call p self
+  return
+
+  p: procedure
+  use arg >s
+
+::method test_type_mismatch_simple
+  self~expectSyntax(88.930) -- The 1 argument must be a VariableReference for a Simple variable
+  call p >s.
+  return
+
+  p: procedure
+  use arg >s
+
+::method test_type_mismatch_stem
+  self~expectSyntax(88.929) -- The 1 argument must be a VariableReference for a Stem variable
+  call p >s
+  return
+
+  p: procedure
+  use arg >s.
+
+::method test_parse
+  a = 1, 2, 3
+  self~assertIsA(useArg(>a), .VariableReference)
+  self~assertIsA(useArgRef(>a), .Array)
+  self~assertIsA(parseArg(>a), .String)
+  return
+
+  useArg: procedure
+  use arg arg
+  return arg
+
+  useArgRef: procedure
+  use arg >arg
+  return arg
+
+  parseArg: procedure
+  parse arg arg
+  return arg
+
+
 ::method test_base_reference
 
 ref = >A
@@ -225,3 +381,6 @@ self~assertSame(1, a.1)
 
 ::method refDoubleArgStem
   use arg abc., >abc.
+
+
+::options novalue error

@@ -2847,4 +2847,61 @@ return .ooTestResult~new(5)~~addException(err)
   tester~TestFreeObjectMemory(p250)
 
 
+-- test new APIs for [feature-requests:#735] Add Variable References
+-- GetContextVariableReference, GetObjectVariableReference, IsVariableReference,
+-- SetVariableReferenceValue, VariableReferenceName, VariableReferenceValue
+
+-- GetContextVariableReference() is for Call and Exit contexts only
+
+::method test_GetObjectVariableReference
+  expose simple stem.
+
+  tester = .METHODtester~new
+
+  simple = 456
+  stem. = 789
+  -- we need to set these as object variables for 'tester'
+  tester~TestSetObjectVariable("SIMPLE", simple)
+  tester~TestSetObjectVariable("STEM.", stem.)
+  do name over "SIMPLE", "STEM."
+    varRef = tester~TestGetObjectVariableReference(name)
+    self~assertIsA(varRef, .VariableReference)
+    self~assertSame(name, varRef~name)
+    self~assertSame(value(name), varRef~value)
+  end
+
+::method test_IsVariableReference
+  tester = .METHODtester~new
+
+  self~assertFalse(tester~TestIsVariableReference(.nil))
+  self~assertFalse(tester~TestIsVariableReference(""))
+  self~assertFalse(tester~TestIsVariableReference(.Array))
+  self~assertTrue(tester~TestIsVariableReference(>var))
+  var = 123
+  self~assertTrue(tester~TestIsVariableReference(>var))
+
+::method test_SetVariableReferenceValue
+  tester = .METHODtester~new
+
+  tester~TestSetVariableReferenceValue(>var, 123)
+  self~assertSame(123, var)
+  tester~TestSetVariableReferenceValue(>stem., 456)
+  self~assertSame(456, stem.)
+
+::method test_VariableReferenceName
+  tester = .METHODtester~new
+
+--@@ creashes
+--self~assertSame("", tester~TestVariableReferenceName(""))
+  self~assertSame("VAR", tester~TestVariableReferenceName(>var))
+  self~assertSame("S.", tester~TestVariableReferenceName(>s.))
+
+::method test_VariableReferenceValue
+  tester = .METHODtester~new
+
+  self~assertSame("VAR", tester~TestVariableReferenceValue(>var))
+  var = 123
+  self~assertSame(123, tester~TestVariableReferenceValue(>var))
+
+
 ::options novalue error

@@ -3806,7 +3806,7 @@ in error is always traced.</para>
 </section>
 </section>
 
-<section id="keyUse"><title>USE</title>
+<section id="keyUse" revisionflag="changed"><title>&changed50;USE</title>
 <para>
 <indexterm><primary>USE instruction</primary>
 <secondary>description</secondary></indexterm>
@@ -3828,7 +3828,7 @@ The USE instruction can be used to
 </itemizedlist>
 </para>
 
-<section id="keyUseArg"><title>USE ARG, USE STRICT ARG</title>
+<section id="keyUseArg" revisionflag="changed"><title>&changed50;USE ARG, USE STRICT ARG</title>
 <para>
 <mediaobject>
 <imageobject>
@@ -3838,14 +3838,19 @@ The USE instruction can be used to
 </para>
 
 <para>USE ARG retrieves the argument objects provided in a program, routine,
-function, or method and assigns them to variables or message term assignments.</para>
+function, or method and assigns them to variables,
+<xref linkend="varrefterm" xrefstyle="template:variable references"/>, or
+<xref linkend="mssg" xrefstyle="template:message term assignments"/>.
+</para>
 <para>Each <emphasis role="italic">name</emphasis> must be a valid variable
-name or an assignment message term. The <emphasis role="italic">name</emphasis>s are
+name, variable reference or an assignment message term.
+The <emphasis role="italic">name</emphasis>s are
 assigned from left to right. For each <emphasis role="italic">name</emphasis>
 you specify, the language processor assigns it a corresponding argument from
 the program, routine, function, or method call. If there is no corresponding
 argument, <emphasis role="italic">name</emphasis> is assigned the value
 of <emphasis role="italic">expr</emphasis>.
+For a variable reference name the corresponding argument must never be omitted.
 If <literal>=</literal> <emphasis role="italic">expr</emphasis> is not specified for
 the given argument, the variable <emphasis role="italic">name</emphasis> is dropped.
 If the assignment target is a message term, no action is taken for omitted arguments.
@@ -3857,9 +3862,10 @@ for an argument, the expression is evaluated to provide a default value for an
 argument when the corresponding argument does not exist.
 The default <emphasis role="italic">expr</emphasis> must be a literal string,
 a constant expression, or an expression enclosed in parentheses.
+No default value is allowed for variable references.
 </para>
-<para>The <emphasis role="italic">name</emphasis>s may be any valid symbol or
-message term which
+<para>The <emphasis role="italic">name</emphasis>s may be any valid symbol,
+variable reference, or message term which
 can appear on the left side of an assignment statement (See
 <xref linkend="assinmt" />).
 </para>
