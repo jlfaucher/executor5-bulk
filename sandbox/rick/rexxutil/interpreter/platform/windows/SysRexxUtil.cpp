@@ -582,7 +582,7 @@ void TreeFinder::validateFileSpecName()
 {
     const char illegal[] = "<>|\"";
 
-    for (size_t i = 0; i < sizeof(illegal); i++)
+    for (size_t i = 0; i < strlen(illegal); i++)
     {
         if (strchr((const char *)fileSpec, illegal[i]) != NULL)
         {
@@ -749,7 +749,7 @@ void formatFileAttributes(TreeFinder *finder, FileNameBuffer &foundFile, WIN32_F
     }
 
     // the order is time, size, attributes
-    foundFile = fileAttr;
+    foundFile += fileAttr;
 
     snprintf(fileAttr, sizeof(fileAttr), "%c%c%c%c%c  ",
              (finfo.dwFileAttributes & FILE_ATTRIBUTE_ARCHIVE) ? 'A' : '-',
@@ -822,10 +822,8 @@ bool checkInclusion(TreeFinder *finder, uint32_t attr)
 /**
  * Checks if this file should be part of the included result and adds it to the result set
  * if it should be returned.
- *
- * @param fileName The filename to check.
  */
-void TreeFinder::checkFile(const char *fileName)
+void TreeFinder::checkFile()
 {
     // the filename we are passed is just the filename to check. The fully
     // qualified name of the file is in foundFile already.
@@ -852,7 +850,7 @@ void TreeFinder::checkFile(const char *fileName)
     }
 
     // format all of the attributes and add them to the foundFile result
-    formatFileAttributes(this, foundFile, finfo);
+    formatFileAttributes(this, foundFileLine, finfo);
 
     // and finally add on the file name
     foundFileLine += foundFile;

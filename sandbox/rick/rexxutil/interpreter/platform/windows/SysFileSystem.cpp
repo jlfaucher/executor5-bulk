@@ -1115,7 +1115,8 @@ SysFileIterator::SysFileIterator(const char *path, const char *pattern, FileName
 {
     // we can bypass limits on length of the path if we prepend the file spec with
     // the special marker
-    buffer = "\\\\?\\";
+//    buffer = "\\\\?\\";
+    buffer = "";
 
     // save the pattern and convert into a wild card
     // search
@@ -1125,24 +1126,29 @@ SysFileIterator::SysFileIterator(const char *path, const char *pattern, FileName
     // if no pattern was given, then just use a wild card
     if (pattern == NULL)
     {
+        extension = NULL;  // all wild cards, so no long vs. short name considerations
         buffer += "*.*";
     }
     // add the pattern section to the fully-resolved buffer
     else
     {
+        checkExtension(pattern);    // see if we have an extension on the end and save the pointer
         buffer += pattern;
     }
 
     // this assumes we'll fail...if we find something,
     // we'll flip this
     completed = true;
-    handle = FindFirstFile (pattern, &findFileData);
+    handle = FindFirstFile (buffer, &findFileData);
     if (handle != INVALID_HANDLE_VALUE)
     {
         // we can still return data
         completed = false;
+        // scan forward until we get a real long filename match
+        findNextEntry();
     }
 }
+
 
 /**
  * Destructor for the iteration operation.
@@ -1150,6 +1156,45 @@ SysFileIterator::SysFileIterator(const char *path, const char *pattern, FileName
 SysFileIterator::~SysFileIterator()
 {
     close();
+}
+
+
+/**
+ * Check the pattern for a fully-qualified extension. Because FileFirstFile will
+ * return hits that match on the short name as well, we need to ensure
+ * that we only return file that have an exact match on the extension.
+ *
+ * @param pattern The pattern we are searching on
+ */
+void SysFileIterator::checkExtension(const char *pattern)
+{
+    extension = NULL;
+
+    // scan backwards looking for the period. We stop if we find a directory
+    // delimiter or a wildcard character before we find the period for the extension`
+    for (const char *end = pattern + strlen(pattern) - 1; end >= pattern; end--)
+    {
+        switch (*end)
+        {
+            // we have an unwildcarded extension. Use this to check later
+            case '.':
+            {
+                extension = end;
+                return;
+            }
+
+            // stop scanning if we hit a directory marker, a drive marker, or either
+            // of the glob characters.
+            case '\\':
+            case '/':
+            case '*':
+            case '?':
+            case ':':
+            {
+                return;
+            }
+        }
+    }
 }
 
 
@@ -1196,11 +1241,51 @@ void SysFileIterator::next(FileNameBuffer &buffer)
     }
 
     // now locate the next one
-    if (!FindNextFile (handle, &findFileData))
+    if (!FindNextFile(handle, &findFileData))
     {
         // we're done once we hit a failure
         completed = true;
         close();
+    }
+
+    // but we need to filter out the short name hits
+    findNextEntry();
+}
+
+
+/**
+ * Scan forward through the directory to find the next matching entry.
+ */
+void SysFileIterator::findNextEntry()
+{
+    // if there is no extension on the pattern (or wildcards were used),
+    // so accept this file
+    if (extension == NULL)
+    {
+        return;
+    }
+
+    while (true)
+    {
+        // we know we have a match on the pattern and the extension is a fixed size,
+        // so the returned name must be at least as long as the extension, which simplifieds
+        // things.
+        const char *fileExtension = findFileData.cFileName + strlen(findFileData.cFileName) - strlen(extension);
+
+        // the extension matches, so this should be a long file name
+        if (stricmp(extension, fileExtension) == 0)
+        {
+            return;
+        }
+
+        // now locate the next one
+        if (!FindNextFile(handle, &findFileData))
+        {
+            // we're done once we hit a failure
+            completed = true;
+            close();
+            return;
+        }
     }
 }
 

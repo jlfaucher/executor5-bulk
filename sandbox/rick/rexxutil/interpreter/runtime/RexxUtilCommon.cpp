@@ -468,6 +468,8 @@ TreeFinder::TreeFinder(RexxCallContext *c, const char *f, RexxStemObject s, cons
     context(c), count(0), files(s), filePath(c), fileSpec(c),
     foundFile(c), foundFileLine(c), nameSpec(c)
 {
+    // clear any existing count to be zero before we start looking
+    context->SetStemArrayElement(files, 0, context->WholeNumber(0));
     // save the initial file spec
     fileSpec = f;
     // validate the file specification
@@ -478,9 +480,16 @@ TreeFinder::TreeFinder(RexxCallContext *c, const char *f, RexxStemObject s, cons
     // validate the new and target attributes
     parseMask(targetAttr, targetAttributes, 4);
     parseMask(newAttr, newAttributes, 5);
+}
 
-    // clear any existing count to be zero before we start looking
-    context->SetStemArrayElement(files, 0, context->WholeNumber(0));
+
+/**
+ * The destructor for the tree finder, which finalizes the return stem value.
+ */
+TreeFinder::~TreeFinder()
+{
+    // make sure we finalized the count before returning.
+    context->SetStemArrayElement(files, 0, context->WholeNumber(count));
 }
 
 
@@ -809,10 +818,10 @@ void TreeFinder::expandPath2fullPath(size_t lastSlashPos)
  */
 void TreeFinder::recursiveFindFile(FileNameBuffer &path)
 {
-    RoutineFileNameBuffer tempFileName(context, path.length() + fileSpec.length());
+    RoutineFileNameBuffer tempFileName(context, path.length() + nameSpec.length() + 1);
 
     // get a file iterator to search through the names
-    SysFileIterator finder(path, fileSpec, tempFileName, options[CASELESS]);
+    SysFileIterator finder(path, nameSpec, tempFileName, options[CASELESS]);
 
     while (finder.hasNext())
     {
@@ -826,12 +835,12 @@ void TreeFinder::recursiveFindFile(FileNameBuffer &path)
         }
 
         // compose the full name of the result
-        foundFile = filePath;
+        foundFile = path;
         foundFile += tempFileName;
 
         // go check this file to see if it is a good match. If it is, it will be
         // directly added to the results.
-        checkFile(tempFileName);
+        checkFile();
     }
 
     finder.close();
@@ -851,11 +860,6 @@ void TreeFinder::recursiveFindFile(FileNameBuffer &path)
         {
             // we can use the temp name buffer now
             dirFinder.next(tempFileName);
-            // skip non directories
-            if (!SysFileSystem::isDirectory(tempFileName))
-            {
-                continue;
-            }
 
             // we skip the dot directories. We're already searching the first, and
             // the second would send us backwards
@@ -866,7 +870,15 @@ void TreeFinder::recursiveFindFile(FileNameBuffer &path)
 
             // build a new search path
             directoryName = path;
-            directoryName += directoryName;
+            directoryName += tempFileName;
+
+            // skip non directories
+            if (!SysFileSystem::isDirectory(directoryName))
+            {
+                continue;
+            }
+
+            // add a path delimiter to the end for the search
             directoryName += SysFileSystem::PathDelimiter;
 
             // Search the next level.

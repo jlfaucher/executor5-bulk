@@ -189,6 +189,11 @@ class FileNameBuffer
          return *this;
      }
 
+     inline bool operator==(const char *s)
+     {
+         return strcmp(buffer, s) == 0;
+     }
+
      // this is a mutable request, so we need to ensure the position is within the
      // current buffer size
      inline char & operator [](size_t pos)

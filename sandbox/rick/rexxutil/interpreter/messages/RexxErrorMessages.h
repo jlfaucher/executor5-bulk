@@ -627,7 +627,7 @@ ERROR_MESSAGE Message_table[] = {      /* table of major and minor errors   */
     MESSAGE(Error_Execution_sparse_array, "Missing array element at position &1.")
     MESSAGE(Error_Execution_nostem, "Stem object default value cannot be another stem object.")
     MESSAGE(Error_Execution_library_method, "Unable to load method \"&1\" from library \"&1\".")
-    MESSAGE(Error_Execution_library_routine, "Unable to load routine \"&1\" from library \"&1\".")
+    MESSAGE(Error_Execution_library_routine, "Unable to load routine \"&1\" from library \"&2\".")
     MESSAGE(Error_Execution_native_routine, "Unable to load native routine \"&1\".")
     MESSAGE(Error_Execution_context_not_active, "Target RexxContext is no longer active.")
     MESSAGE(Error_Execution_library_version, "Library \"&1\" is not compatible with current interpreter version.")

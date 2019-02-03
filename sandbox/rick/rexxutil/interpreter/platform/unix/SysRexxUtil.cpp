@@ -475,10 +475,8 @@ void formatFileAttributes(TreeFinder *finder, FileNameBuffer &foundFileLine, str
 /**
  * Checks if this file should be part of the included result and adds it to the result set
  * if it should be returned.
- *
- * @param fileName The filename to check.
  */
-void TreeFinder::checkFile(const char *fileName)
+void TreeFinder::checkFile()
 {
     // the filename we are passed is just the filename to check. The fully
     // qualified name of the file is in foundFile already.

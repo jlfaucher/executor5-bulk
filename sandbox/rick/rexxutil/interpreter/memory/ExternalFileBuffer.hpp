@@ -73,6 +73,11 @@ class RoutineFileNameBuffer : public FileNameBuffer
          return *this;
      }
 
+     inline bool operator==(const char *s)
+     {
+         return strcmp(buffer, s) == 0;
+     }
+
 
  protected:
      RexxCallContext *context;
@@ -109,6 +114,12 @@ class MethodFileNameBuffer : public FileNameBuffer
          FileNameBuffer::operator=(s);
          return *this;
      }
+
+     inline bool operator==(const char *s)
+     {
+         return strcmp(buffer, s) == 0;
+     }
+
 
 
  protected:

@@ -147,8 +147,17 @@ void PackageManager::restore()
         }
         else
         {
-            // the only internal package is the Rexx one
-            package->reload(rexxPackage);
+            // we just have two internal packages to worry about
+            if (package->isPackage(GlobalNames::REXX))
+            {
+                // the main REXX package
+                package->reload(rexxPackage);
+            }
+            else
+            {
+                // the only other choice is the REXXUTIL package
+                package->reload(rexxutilPackage);
+            }
         }
     }
 }

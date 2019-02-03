@@ -127,10 +127,16 @@ public:
     void close();
     bool hasNext();
     void next(FileNameBuffer &buffer);
+
 protected:
+
+    void findNextEntry();
+    void checkExtension(const char *pattern);
+
     bool completed;       // the iteration completed flag
     HANDLE handle;        // The handle for the FindFirst operation
     WIN32_FIND_DATA findFileData;
+    const char *extension;  // a fully qualified extension for the pattern.
 };
 
 
