@@ -1572,11 +1572,11 @@ void writeVariable(SysFile &file, RexxCallContext *context, const char *name, Re
 
     size_t bytesWritten;
 
-    file.write("Name=", sizeof("Name="), bytesWritten);
+    file.write("Name=", strlen("Name="), bytesWritten);
     file.write(name, nameLength, bytesWritten);
-    file.write(", Value='", sizeof(", Value='"), bytesWritten);
+    file.write(", Value='", strlen(", Value='"), bytesWritten);
     file.write(valueData, valueLength, bytesWritten);
-    file.write("'\r\n", sizeof("'\r\n"), bytesWritten);
+    file.write("'\n", strlen("'\n"), bytesWritten);
 
     // now release the local references
 
@@ -2026,7 +2026,7 @@ RexxRoutine1(int, SysSleep, RexxStringObject, delay)
     }
 
     // convert to microseconds, no overflow possible
-    uint64_t microseconds = ((uint64_t)(seconds)) * 1000000;
+    uint64_t microseconds = (uint64_t)(seconds * 1000000);
 
     // go do the sleep
     SysThread::longSleep(microseconds);
