@@ -2891,8 +2891,6 @@ return .ooTestResult~new(5)~~addException(err)
 ::method test_VariableReferenceName
   tester = .METHODtester~new
 
---@@ creashes
---self~assertSame("", tester~TestVariableReferenceName(""))
   self~assertSame("VAR", tester~TestVariableReferenceName(>var))
   self~assertSame("S.", tester~TestVariableReferenceName(>s.))
 

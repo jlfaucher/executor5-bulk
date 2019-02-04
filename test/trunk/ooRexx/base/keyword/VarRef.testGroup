@@ -190,6 +190,14 @@ return testResult
   p: procedure
   use arg >s.
 
+::method test_parse_missing
+  self~expectSyntax(88.931) -- Argument .. was omitted. A VariableReference argument is required
+  call useArg
+
+  useArg: procedure
+  use arg >ref
+  return
+
 ::method test_parse
   a = 1, 2, 3
   self~assertIsA(useArg(>a), .VariableReference)
