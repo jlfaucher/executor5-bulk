@@ -53,6 +53,7 @@
 #include "SysFileSystem.hpp"
 #include "SystemInterpreter.hpp"
 #include "Utilities.hpp"
+#include "Numerics.hpp"
 
 
 const int INVALID_FILE_NAME = 123;       // a return value for a SysFileTree name problem
@@ -1189,25 +1190,64 @@ RexxRoutine1(int, SysLoadRexxMacroSpace, CSTRING, file)
 *            -1 - sort failed                                            *
 *************************************************************************/
 
-RexxRoutine7(int, SysStemSort, RexxStringObject, stem, OPTIONAL_CSTRING, order, OPTIONAL_CSTRING, type,
+RexxRoutine7(int, SysStemSort, RexxObjectPtr, stemArgument, OPTIONAL_CSTRING, order, OPTIONAL_CSTRING, type,
              OPTIONAL_positive_wholenumber_t, first, OPTIONAL_positive_wholenumber_t, last,
              OPTIONAL_positive_wholenumber_t, firstCol, OPTIONAL_positive_wholenumber_t, lastCol)
 {
-    int           sortType = SORT_CASESENSITIVE;
-    int           sortOrder = SORT_ASCENDING;
+    int sortType = SORT_CASESENSITIVE;
+    int sortOrder = SORT_ASCENDING;
 
-    char          stemName[255];
+    RexxStemObject stem;     // the resolved stem object we're going to sort
+    const char *tailExtension = NULL;    // any compound tail section to add to the
 
+    // try to resolve this directly. This is normally either a stem object already or a
+    // valid stem name.
+    stem = context->ResolveStemVariable(stemArgument);
 
-    // This is a bit of a pain. It would be nice to create this argument as a stem
-    // object, but people have been coding stem sorts using a compound variable rather than
-    // a stem name because the old code was lax and it just happened to work. We need to process this
-    // as a name and make sure it has a period at the end.
-    memset(stemName, 0, sizeof(stemName));
-    strncpy(stemName, context->ObjectToStringValue(stem), sizeof(stemName));
-    if (stemName[strlen(stemName) - 1] != '.')
+    // this could be an invalid argument, but it might be a name like "a.1", where the
+    // tail needs to be extracted
+    if (stem == NULLOBJECT)
     {
-        stemName[strlen(stemName)] = '.';
+        // This is a bit of a pain. It would be nice to create this argument as a stem
+        // object, but people have been coding stem sorts using a compound variable rather than
+        // a stem name because the old code was lax and it just happened to work. We need to process this
+        // as a name and make sure it has a period at the end.
+
+        // we need to get a stem name, and also check for extension. We only process this if it
+        // is a string object
+        if (!context->IsString(stemArgument))
+        {
+            context->ThrowException2(Rexx_Error_Incorrect_call_nostem, context->WholeNumberToObject(1), stemArgument);
+        }
+
+        // now get the name
+        const char *stemName = context->ObjectToStringValue(stemArgument);
+        size_t stemLength = strlen(stemName);
+        // find the location of the first period
+        const char *periodLocation = strstr(stemName, ".");
+
+        // if this does not have a period at all or the first period is at the end, this is
+        // easy, this must be an invalid name
+        if (periodLocation == NULL || periodLocation == stemName + stemLength - 1)
+        {
+            context->ThrowException2(Rexx_Error_Incorrect_call_nostem, context->WholeNumberToObject(1), stemArgument);
+        }
+        // we have a stem plus a section of tail. We need to separate these.
+        else
+        {
+            // copy the tail part
+            tailExtension = periodLocation + 1;
+            // the resolve call requires a RexxObject, so make a string version of it
+            RexxStringObject stemString = context->NewString(stemName, (periodLocation - stemName) + 1);
+            // go resolve the stem using the argument directly.
+            stem = context->ResolveStemVariable(stemString);
+
+            // this is a error if we can't resolve this
+            if (stem == NULLOBJECT)
+            {
+                context->ThrowException2(Rexx_Error_Incorrect_call_nostem, context->WholeNumberToObject(1), stemArgument);
+            }
+        }
     }
 
     // check other parameters.  sort order
@@ -1257,7 +1297,7 @@ RexxRoutine7(int, SysStemSort, RexxStringObject, stem, OPTIONAL_CSTRING, order, 
     if (argumentOmitted(5))
     {
         // do everything
-        last = SIZE_MAX;
+        last = Numerics::MAX_WHOLENUMBER;
     }
 
     // can't go backwards
@@ -1276,7 +1316,7 @@ RexxRoutine7(int, SysStemSort, RexxStringObject, stem, OPTIONAL_CSTRING, order, 
     // last column to sort
     if (argumentOmitted(7))
     {
-        lastCol = SIZE_MAX;
+        lastCol = Numerics::MAX_WHOLENUMBER;
     }
 
     if (lastCol < firstCol)
@@ -1285,7 +1325,7 @@ RexxRoutine7(int, SysStemSort, RexxStringObject, stem, OPTIONAL_CSTRING, order, 
     }
 
     // the sorting is done in the interpreter
-    if (!RexxStemSort(stemName, sortOrder, sortType, first, last, firstCol, lastCol))
+    if (!RexxStemSort(stem, tailExtension, sortOrder, sortType, first, last, firstCol, lastCol))
     {
         context->InvalidRoutine();
     }

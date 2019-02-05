@@ -1033,7 +1033,7 @@ bool SysFileSystem::getCurrentDirectory(FileNameBuffer &directory)
  */
 bool SysFileSystem::setCurrentDirectory(const char *directory)
 {
-    return SetCurrentDirectory(directory) == 0;
+    return SetCurrentDirectory(directory) != 0;
 }
 
 

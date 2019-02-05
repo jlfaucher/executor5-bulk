@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -1607,7 +1607,7 @@ bool StemClass::sort(RexxString *prefix, int order, int type, size_t _first, siz
     }
 
     // if this is not specified, sort to the end
-    if (last == SIZE_MAX)
+    if (last == (size_t)Numerics::MAX_WHOLENUMBER)
     {
         last = count;
     }
@@ -1631,7 +1631,8 @@ bool StemClass::sort(RexxString *prefix, int order, int type, size_t _first, siz
         CompoundVariableTail nextStem(prefix, (size_t)i);
         CompoundTableElement *next_element = findCompoundVariable(nextStem);
 
-        if (next_element == OREF_NULL) {
+        if (next_element == OREF_NULL)
+        {
             return false;
         }
 
@@ -1658,7 +1659,7 @@ bool StemClass::sort(RexxString *prefix, int order, int type, size_t _first, siz
         // All the rest of the operations are thread safe.
         UnsafeBlock block;
 
-        if ((firstcol == 0) && (lastcol == SIZE_MAX))
+        if ((firstcol == 1) && (lastcol == (size_t)Numerics::MAX_WHOLENUMBER))
         {
             /* no special columns to check */
             switch (type)
@@ -1676,7 +1677,7 @@ bool StemClass::sort(RexxString *prefix, int order, int type, size_t _first, siz
         else
         {
             /* set columns to sort */
-            sd.startColumn = firstcol;
+            sd.startColumn = firstcol - 1;   // zero base for the sort compare
             sd.columnLength = lastcol - firstcol + 1;
 
             switch (type)
