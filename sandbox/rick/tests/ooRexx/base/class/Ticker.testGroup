@@ -1,0 +1,264 @@
+#!/usr/bin/rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2017 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
+
+  group = .TestGroup~new(fileSpec)
+  group~add(.Ticker.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "Ticker.testGroup" subclass ooTestCase public
+
+::method test_ticker_two_args_string_cancel
+  t1 = .tickerWaiter~new
+  ticker = .Ticker~new(1, t1)
+  self~assertTrue(t1~triggerCount = 0) -- shouldn't have triggered yet
+  ticker~cancel
+  self~assertTrue(t1~triggerCount = 0) -- should still not have triggered yet
+  self~assertTrue(t1~stopped)
+  self~assertSame(ticker, t1~stoppedTicker)
+  self~assertSame(.nil, t1~stoppedAttached)
+
+::method test_ticker_two_args_string_trigger
+  t1 = .tickerWaiter~new
+  ticker = .Ticker~new(0.5, t1)
+  self~assertTrue(t1~triggerCount = 0) -- shouldn't have triggered yet
+  call syssleep 0.75                   -- let Ticker trigger once
+  self~assertTrue(t1~triggerCount = 1, "should have triggered once, but triggered" t1~triggerCount "times")
+  self~assertSame(ticker, t1~triggerTicker)
+  self~assertSame(.nil, t1~triggerAttached)
+  ticker~cancel
+  self~assertTrue(t1~stopped)
+  self~assertSame(ticker, t1~stoppedTicker)
+  self~assertSame(.nil, t1~stoppedAttached)
+
+-- same two tests as above, but with TimeSpan instead of string
+::method test_ticker_two_args_timespan_cancel
+  t1 = .tickerWaiter~new
+  ticker = .Ticker~new(.TimeSpan~fromSeconds(1), t1)
+  self~assertTrue(t1~triggerCount = 0) -- shouldn't have triggered yet
+  ticker~cancel
+  self~assertTrue(t1~triggerCount = 0) -- should still not have triggered yet
+  self~assertTrue(t1~stopped)
+  self~assertSame(ticker, t1~stoppedTicker)
+  self~assertSame(.nil, t1~stoppedAttached)
+
+::method test_ticker_two_args_timespan_trigger
+  t1 = .tickerWaiter~new
+  ticker = .Ticker~new(.TimeSpan~fromSeconds(0.5), t1)
+  self~assertTrue(t1~triggerCount = 0) -- shouldn't have triggered yet
+  call syssleep 0.75                   -- let Ticker trigger once
+  self~assertTrue(t1~triggerCount = 1, "should have triggered once, but triggered" t1~triggerCount "times")
+  self~assertSame(ticker, t1~triggerTicker)
+  self~assertSame(.nil, t1~triggerAttached)
+  ticker~cancel
+  self~assertTrue(t1~stopped)
+  self~assertSame(ticker, t1~stoppedTicker)
+  self~assertSame(.nil, t1~stoppedAttached)
+
+-- same four tests as above, but now with three args (attachment added)
+::method test_ticker_three_args_string_cancel
+  t1 = .tickerWaiter~new
+  ticker = .Ticker~new(1, t1, "attachment")
+  self~assertTrue(t1~triggerCount = 0) -- shouldn't have triggered yet
+  ticker~cancel
+  self~assertTrue(t1~triggerCount = 0) -- should still not have triggered yet
+  self~assertTrue(t1~stopped)
+  self~assertSame(ticker, t1~stoppedTicker)
+  self~assertSame("attachment", t1~stoppedAttached)
+
+::method test_ticker_three_args_string_trigger
+  t1 = .tickerWaiter~new
+  ticker = .Ticker~new(0.5, t1, "attachment")
+  self~assertTrue(t1~triggerCount = 0) -- shouldn't have triggered yet
+  call syssleep 0.75                   -- let Ticker trigger once
+  self~assertTrue(t1~triggerCount = 1, "should have triggered once, but triggered" t1~triggerCount "times")
+  self~assertSame(ticker, t1~triggerTicker)
+  self~assertSame("attachment", t1~triggerAttached)
+  ticker~cancel
+  self~assertTrue(t1~stopped)
+  self~assertSame(ticker, t1~stoppedTicker)
+  self~assertSame("attachment", t1~stoppedAttached)
+
+::method test_ticker_three_args_timespan_cancel
+  t1 = .tickerWaiter~new
+  ticker = .Ticker~new(.TimeSpan~fromSeconds(1), t1, "attachment")
+  self~assertTrue(t1~triggerCount = 0) -- shouldn't have triggered yet
+  ticker~cancel
+  self~assertTrue(t1~triggerCount = 0) -- should still not have triggered yet
+  self~assertTrue(t1~stopped)
+  self~assertSame(ticker, t1~stoppedTicker)
+  self~assertSame("attachment", t1~stoppedAttached)
+
+::method test_ticker_three_args_timespan_trigger
+  t1 = .tickerWaiter~new
+  ticker = .Ticker~new(.TimeSpan~fromSeconds(0.5), t1, "attachment")
+  self~assertTrue(t1~triggerCount = 0) -- shouldn't have triggered yet
+  call syssleep 0.75                   -- let Ticker trigger once
+  self~assertTrue(t1~triggerCount = 1, "should have triggered once, but triggered" t1~triggerCount "times")
+  self~assertSame(ticker, t1~triggerTicker)
+  self~assertSame("attachment", t1~triggerAttached)
+  ticker~cancel
+  self~assertTrue(t1~stopped)
+  self~assertSame(ticker, t1~stoppedTicker)
+  self~assertSame("attachment", t1~stoppedAttached)
+
+-- now let Ticker trigger multiple times
+::method test_ticker_three_args_timespan_trigger_multiple
+  t1 = .tickerWaiter~new
+  ticker = .Ticker~new(.TimeSpan~fromMicroseconds(270000), t1, "attachment")
+  self~assertTrue(t1~triggerCount = 0) -- shouldn't have triggered yet
+  call syssleep 1                      -- let Ticker trigger multiple times
+  self~assertTrue(t1~triggerCount = 3, "should have triggered three times, but triggered" t1~triggerCount "times")
+  self~assertSame(ticker, t1~triggerTicker)
+  self~assertSame("attachment", t1~triggerAttached)
+  ticker~cancel
+  self~assertTrue(t1~stopped)
+  self~assertSame(ticker, t1~stoppedTicker)
+  self~assertSame("attachment", t1~stoppedAttached)
+
+-- now a test with a message object.  This does not
+-- pass along the ticker object
+::method test_ticker_three_args_string_trigger_message
+  t1 = .tickerWaiter~new
+  m1 = .Message~new(t1, "triggered")
+  ticker = .Ticker~new(0.5, m1, "attachment")
+  self~assertTrue(t1~triggerCount = 0) -- shouldn't have triggered yet
+  call syssleep 0.75                   -- let Ticker trigger once
+  self~assertTrue(t1~triggerCount = 1, "should have triggered once, but triggered" t1~triggerCount "times")
+  self~assertSame(.nil, t1~triggerTicker)   -- .Message doesn't pass
+  self~assertSame(.nil, t1~triggerAttached) -- no ticker, so no attachment
+  ticker~cancel
+  self~assertFalse(t1~stopped)         -- .Message doesn't send a cancel() message
+
+
+-- these tests should all fail
+::method test_ticker_no_args
+  self~expectSyntax(93.901)
+  ticker = .Ticker~new()
+
+::method test_ticker_no_time
+  self~expectSyntax(93.903)
+  ticker = .Ticker~new(, .AlarmNotification~new)
+
+::method test_ticker_no_target
+  self~expectSyntax(93.901)
+  ticker = .Ticker~new(5)
+
+::method test_ticker_bad_time
+  self~expectSyntax(93.951)
+  ticker = .Ticker~new('Foobar', .AlarmNotification~new)
+
+::method test_ticker_negative_time
+  self~expectSyntax(93.951)
+  ticker = .Ticker~new(-1, .AlarmNotification~new)
+
+::method test_ticker_alarm_time
+  self~expectSyntax(93.951)
+  ticker = .Ticker~new("00:00:01", .AlarmNotification~new)
+
+::method test_ticker_datetime_time
+  self~expectSyntax(93.951)
+  ticker = .Ticker~new(.DateTime~new, .AlarmNotification~new)
+
+::method test_ticker_negative_timespan_time
+  self~expectSyntax(93.951)
+  ticker = .Ticker~new(.TimeSpan~fromSeconds(-1), .AlarmNotification~new)
+
+::method test_ticker_bad_target
+  self~expectSyntax(88.914)
+  ticker = .Ticker~new(5, "Sometarget")
+
+::method test_ticker_message_notification_target
+  self~expectSyntax(88.914)
+  ticker = .Ticker~new(1, .MessageNotification~new)
+
+::method test_ticker_four_args
+  self~expectSyntax(93.902)
+  ticker = .Ticker~new(1, .AlarmNotification~new, "attachment", 4)
+
+
+::class TickerWaiter inherit AlarmNotification
+::method init
+  expose stopped triggerCount triggerTicker triggerAttached cancelTicker cancelAttached
+
+  stopped = .false
+  triggerCount = 0
+  triggerTicker = .nil
+  triggerAttached = .nil
+  cancelTicker = .nil
+  cancelAttached = .nil
+
+::attribute stopped
+::attribute triggerCount
+::attribute triggerTicker
+::attribute triggerAttached
+::attribute stoppedTicker
+::attribute stoppedAttached
+
+::method triggered unguarded
+  expose ticker triggerCount triggerTicker triggerAttached
+  use strict arg ticker = .nil         -- Ticker will send source with its triggered() message
+                                       -- but for Message triggered() doesn't pass on source
+  triggerCount += 1
+  triggerTicker = ticker
+  if .nil \== ticker then
+    triggerAttached = ticker~attachment
+
+::method cancel unguarded
+  expose stopped stoppedTicker stoppedAttached
+  use strict arg ticker = .nil         -- see comment above
+
+  stopped = .true
+  stoppedTicker = ticker
+  if .nil \== ticker then
+    stoppedAttached = ticker~attachment
+
+
+::options novalue error

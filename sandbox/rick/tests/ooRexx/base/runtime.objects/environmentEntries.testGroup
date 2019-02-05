@@ -1,0 +1,295 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
+
+  group = .TestGroup~new(fileSpec)
+  group~add(.environmentEntries.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "environmentEntries.testGroup" subclass ooTestCase public
+
+::method "test_line_entry"
+     self~assertTrue(.line~isA(.string), "for datatype to work, object must be a string object")
+     self~assertTrue(.line~datatype("Whole"), "subTest # 1: is [.LINE] a wholeNumber?")
+
+   tmpLine = .line + 2  -- Test that .line is reasonably correct.
+   --
+   self~assertSame(tmpLine, .LINE)
+
+
+   -- ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !
+   -- ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !  ATTENTION !
+   -- Here tmpLine is hard coded for an absolute test.  It lines are added or
+   -- or removed above this, the test will fail.  Then the hard coded value
+   -- must be adjusted.
+   tmpLine = 75
+   --
+   --
+   --
+   self~assertSame(tmpLine, .line)
+
+
+::method "test_local_directory_entries"
+  entries= -
+        "ERROR"                        -
+        "INPUT"                        -
+        "OUTPUT"                       -
+        "STDERR"                       -
+        "STDIN"                        -
+        "STDOUT"                       -
+        "STDQUE"
+
+  do i=1 to words(entries)
+     w=word(entries,i)        -- extract word
+     self~assertTrue(.local~hasEntry(w), "subTest" i "entry=["w"]")
+  end
+
+
+::method "test_environment_directory_entries"
+  entries= -
+        "ALARM"                        -
+        "ARRAY"                        -
+        "BAG"                          -
+        "BUFFER"                       -
+        "CASELESSCOLUMNCOMPARATOR"     -
+        "CASELESSCOMPARATOR"           -
+        "CASELESSDESCENDINGCOMPARATOR" -
+        "CIRCULARQUEUE"                -
+        "CLASS"                        -
+        "COLLECTION"                   -
+        "COLUMNCOMPARATOR"             -
+        "COMPARABLE"                   -
+        "COMPARATOR"                   -
+        "DATETIME"                     -
+        "DESCENDINGCOMPARATOR"         -
+        "DIRECTORY"                    -
+        "ENDOFLINE"                    -
+        "ENVIRONMENT"                  -
+        "FALSE"                        -
+        "INPUTOUTPUTSTREAM"            -
+        "INPUTSTREAM"                  -
+        "INVERTINGCOMPARATOR"          -
+        "LIST"                         -
+        "LOCAL"                        -
+        "MAPCOLLECTION"                -
+        "MESSAGE"                      -
+        "METHOD"                       -
+        "MONITOR"                      -
+        "MUTABLEBUFFER"                -
+        "NIL"                          -
+        "OBJECT"                       -
+        "ORDEREDCOLLECTION"            -
+        "OUTPUTSTREAM"                 -
+        "PACKAGE"                      -
+        "POINTER"                      -
+        "PROPERTIES"                   -
+        "QUEUE"                        -
+        "RELATION"                     -
+        "REXXQUEUE"                    -
+        "ROUTINE"                      -
+        "SET"                          -
+        "SETCOLLECTION"                -
+        "STEM"                         -
+        "STREAM"                       -
+        "STREAMSUPPLIER"               -
+        "STRING"                       -
+        "SUPPLIER"                     -
+        "TABLE"                        -
+        "TIMESPAN"                     -
+        "TRUE"                         -
+        "WEAKREFERENCE"
+
+  do i=1 to words(entries)
+     w=word(entries,i)        -- extract word
+     self~assertTrue(.environment~hasEntry(w), "subTest #" i "entry=["w"]")
+  end
+
+::method "test_environment_directory_class_object_entries"
+
+  entries =                            -
+        "ALARM"                        -
+        "ARRAY"                        -
+        "BAG"                          -
+        "BUFFER"                       -
+        "CASELESSCOLUMNCOMPARATOR"     -
+        "CASELESSCOMPARATOR"           -
+        "CASELESSDESCENDINGCOMPARATOR" -
+        "CIRCULARQUEUE"                -
+        "CLASS"                        -
+        "COLLECTION"                   -
+        "COLUMNCOMPARATOR"             -
+        "COMPARABLE"                   -
+        "COMPARATOR"                   -
+        "DESCENDINGCOMPARATOR"         -
+        "DIRECTORY"                    -
+        "INPUTOUTPUTSTREAM"            -
+        "INPUTSTREAM"                  -
+        "INVERTINGCOMPARATOR"          -
+        "LIST"                         -
+        "MAPCOLLECTION"                -
+        "MESSAGE"                      -
+        "METHOD"                       -
+        "MONITOR"                      -
+        "MUTABLEBUFFER"                -
+        "OBJECT"                       -
+        "ORDEREDCOLLECTION"            -
+        "OUTPUTSTREAM"                 -
+        "PACKAGE"                      -
+        "POINTER"                      -
+        "PROPERTIES"                   -
+        "QUEUE"                        -
+        "RELATION"                     -
+        "REXXQUEUE"                    -
+        "ROUTINE"                      -
+        "SET"                          -
+        "SETCOLLECTION"                -
+        "STEM"                         -
+        "STREAM"                       -
+        "STREAMSUPPLIER"               -
+        "STRING"                       -
+        "SUPPLIER"                     -
+        "TABLE"                        -
+        "WEAKREFERENCE"
+
+  if .ooRexxUnit.OSName="WINDOWS" then    -- add Windows-specific entries
+  do
+     entries=entries "OLEOBJECT OLEVARIANT"
+  end
+
+  do i=1 to words(entries)
+     w=word(entries,i)        -- extract word
+     self~assertTrue(.environment~Entry(w)~isA(.class), "subTest #" i "is entry=["w"] a class object?")
+  end
+
+::method "test_error_monitor"
+  self~assertTrue(.error~current=.stdErr, ".error~current=.stdErr")
+
+::method "test_input_monitor"
+  self~assertTrue(.input~current=.stdIn, ".input~current=.stdIn")
+
+::method "test_output_monitor"
+  self~assertTrue(.output~current=.stdOut, ".output~current=.stdOut")
+
+
+::method "test_local_monitor_objects"
+  entries="ERROR INPUT OUTPUT"
+  do i=1 to words(entries)
+     w=word(entries,i)        -- extract word
+     self~assertTrue(value("."w)~isA(.monitor), "subTest #" i "is [."w"] a monitor object?")
+  end
+
+::method "test_local_stream_objects"
+  entries="STDERR STDIN STDOUT"
+  do i=1 to words(entries)
+     w=word(entries,i)        -- extract word
+     self~assertTrue(value("."w)~isA(.stream), "subTest #" i "is [."w"] a stream object?")
+  end
+
+::method "test_stdqueue"
+  self~assertTrue(.STDQUE~isA(.RexxQueue))
+
+::method "test_true"
+  self~assertTrue(.true, ".true")
+
+::method "test_false"
+  self~assertFalse(.false, ".false")
+
+
+
+::method "test_rs"
+
+  self~assertEquals(".RS", .RS, "subTest_01: .RS not set")
+
+   /* test command execution without error/failure */
+  select
+    when .ooRexxUnit.shellName~translate == "CMD" then do
+      address cmd "exit"
+      self~assertEquals(0, .RS)
+    end
+    when .ooRexxUnit.shellName~translate == "BASH" then do
+      address "bash" "exit"
+      self~assertEquals(0, .RS)
+    end
+    when .ooRexxUnit.shellName~translate == "CSH" then do
+      address "csh" "exit"
+      self~assertEquals(0, .RS)
+    end
+    otherwise do
+      -- Don't address to a specific environment.
+      "exit"
+      self~assertEquals(0, .RS)
+    end
+  end
+  -- End select
+
+   /* test ERROR condition */
+  signal on error name error_label
+  self~expectCondition("ERROR")
+  call error_proc
+  self~fail("subTest_02: .RS not '0'")
+  self~fail("subTest_02: ERROR condition not trapped by 'SIGNAL ON ERROR' !")
+error_label:
+  self~assertEquals(1, .RS, "subTest_02: .RS=1 (command raised an ERROR condition)")
+
+
+   /* test FAILURE condition */
+  signal on failure name failure_label
+  call failure_proc
+  self~fail("subTest_03: FAILURE condition not trapped by 'SIGNAL ON FAILURE' !")
+failure_label:
+  self~assertEquals(-1, .RS, "subTest_03: .RS=-1 (command raised an FAILURE condition)")
+
+  return
+
+error_proc: procedure
+  raise error 99
+
+failure_proc: procedure
+  raise failure 99
+

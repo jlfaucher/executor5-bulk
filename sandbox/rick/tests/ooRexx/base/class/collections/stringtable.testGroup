@@ -1,0 +1,419 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 - 2018 Rexx Language Association. All rights reserved.  */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.Collection_stringTableMethod.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "Collection_stringTableMethod.testGroup" subclass ooTestCase public
+
+::method "test_1"
+   dir = .stringtable~new()
+   self~assertEquals('a StringTable', dir)
+   self~assertEquals(0, dir~items)
+   self~assertEquals(1, dir~isEmpty)
+
+::method "test_2"
+   dir = .stringtable~new()
+   dir['Mike'] = 'Shrek'
+   self~assertEquals(0, dir~isEmpty)
+   self~assertEquals(1, dir~items)
+   self~assertEquals('Shrek', dir['Mike'])
+   arr = .array~new
+   dir['Dennis'] = arr
+   self~assertEquals(2, dir~items)
+   self~assertSame(arr, dir['Dennis'])
+   q = .queue~new
+   dir~put(q, 'Linda')
+   self~assertEquals(3, dir~items)
+   self~assertSame(q, dir~at('Linda'))
+
+::method "test_3"
+   dir = .stringtable~new()
+   dir['Mike'] = 'Shrek'
+   dir['Dennis'] = .array~new()
+   dir~put(.queue~new(), 'Linda')
+   arr = dir~allIndexes()
+   self~assertEquals(3, arr~items)
+   self~assertTrue(arr~equivalent(.array~of('Mike', 'Dennis', 'Linda')))
+
+::method "test_4"
+   dir = .stringtable~new()
+   dir~setEntry('Mike', 'Shrek')
+   arr = .array~new
+   dir['Dennis'] = arr
+   queue = .queue~new
+   dir~put(queue, 'Linda')
+   items = dir~allItems()
+   self~assertEquals(3, items~items)
+   self~assertTrue(items~equivalent(.array~of('Shrek', arr, queue)))
+
+::method "test_5"
+   dir = .stringtable~new()
+   dir['Mike'] = 'Shrek'
+   dir['Dennis'] = .array~new()
+   dir~put(.queue~new(), 'Linda')
+   self~assertEquals(3, dir~items)
+   dir~empty
+   self~assertEquals(0, dir~items)
+
+::method "test_6"
+   dir = .stringtable~new()
+   dir['MIKE'] = 'Shrek'
+   dir['Dennis'] = 'Miller'
+   dir['DAVID'] = 'West'
+   self~assertEquals('Shrek', dir~entry('Mike'))
+   self~assertEquals(.nil, dir~entry('Dennis'))
+   self~assertEquals('West', dir~entry('David'))
+   self~assertEquals(.nil, dir~entry('Linda'))
+
+::method "test_7"
+   dir = .stringtable~new()
+   dir['MIKE'] = 'Shrek'
+   dir['Dennis'] = 'Miller'
+   dir['DAVID'] = 'West'
+   self~assertEquals(1, dir~hasEntry('MIKE'))
+   self~assertEquals(0, dir~hasEntry('Dennis'))
+   self~assertEquals(1, dir~hasEntry('David'))
+   self~assertEquals(0, dir~hasEntry('Linda'))
+
+::method "test_8"
+   dir = .stringtable~new()
+   dir['MIKE'] = 'Shrek'
+   dir['Dennis'] = 'Miller'
+   dir['DAVID'] = 'West'
+   self~assertEquals(1, dir~hasIndex('MIKE'))
+   self~assertEquals(1, dir~hasIndex('Dennis'))
+   self~assertEquals(0, dir~hasIndex('David'))
+   self~assertEquals(0, dir~hasIndex('Linda'))
+
+::method "test_9"
+   dir = .stringtable~new()
+   dir['MIKE'] = 'Shrek'
+   dir['Dennis'] = 'Miller'
+   dir['DAVID'] = 'West'
+   self~assertEquals(1, dir~hasItem('Shrek'))
+   self~assertEquals(1, dir~hasItem('West'))
+   self~assertEquals(0, dir~hasItem('MILLER'))
+   self~assertEquals(0, dir~hasItem('McCall'))
+
+::method "test_10"
+   dir = .stringtable~new()
+   dir['MIKE'] = 'Shrek'
+   dir['Dennis'] = 'Miller'
+   dir['DAVID'] = 'West'
+   dir['Larry'] = 'Miller'
+   self~assertEquals('MIKE', dir~index('Shrek'))
+   idx = dir~index('Miller')
+   self~assertEquals(1, idx = 'Dennis' | idx = 'Larry')
+   self~assertEquals(.nil, dir~index('McCall'))
+
+::method "test_11"
+   dir = .stringtable~new()
+   dir['MIKE'] = 'Shrek'
+   dir['Dennis'] = 'Miller'
+   dir['DAVID'] = 'West'
+   arr = dir~makeArray()
+   self~assertEquals(3, arr~items)
+   self~assertEquals(1, arr~hasItem('DAVID'))
+   self~assertEquals(1, arr~hasItem('Dennis'))
+   self~assertEquals(1, arr~hasItem('MIKE'))
+
+::method "test_12"
+   dir = .stringtable~new()
+   dir['MIKE'] = 'Shrek'
+   dir['Dennis'] = 'Miller'
+   dir['DAVID'] = 'West'
+   self~assertEquals(3, dir~items)
+   item = dir~remove('Dennis')
+   self~assertEquals(2, dir~items)
+   self~assertEquals('Miller', item)
+
+::method "test_13"
+   dir = .stringtable~new()
+   dir['MIKE'] = 'Shrek'
+   dir['Dennis'] = 'Miller'
+   dir['DAVID'] = 'West'
+   self~assertEquals(3, dir~items)
+   item = dir~removeItem('Miller')
+   self~assertEquals(2, dir~items)
+   self~assertEquals('Miller', item)
+
+::method "test_14"
+   dir = .stringtable~new()
+   dir['MIKE'] = 'Shrek'
+   dir['Dennis'] = 'Miller'
+   dir['DAVID'] = 'West'
+   self~assertEquals(3, dir~items)
+   dir~setEntry('Mike', 'Humperdink')
+   self~assertEquals(3, dir~items)
+   self~assertEquals('Humperdink', dir['MIKE'])
+   dir~setEntry('David')
+   self~assertEquals(2, dir~items)
+   dir~setEntry('Dennis')
+   self~assertEquals(2, dir~items)
+
+::method "test_16"
+   dir = .stringtable~new()
+   dir['MIKE'] = 'Shrek'
+   dir['Dennis'] = 'Miller'
+   sup = dir~supplier
+   self~assertEquals('a Supplier', sup)
+   self~assertEquals(1, sup~available)
+   if sup~index = 'MIKE' then self~assertEquals('Shrek', sup~item)
+   else if sup~index = 'Dennis' then self~assertEquals('Miller', sup~item)
+   sup~next
+   self~assertEquals(1, sup~available)
+   if sup~index = 'MIKE' then self~assertEquals('Shrek', sup~item)
+   else if sup~index = 'Dennis' then self~assertEquals('Miller', sup~item)
+   sup~next
+   self~assertEquals(0, sup~available)
+   self~expectSyntax(93.937)
+   sup~next
+
+::method "test_17"
+   dir = .stringtable~new()
+   dir['MIKE'] = 'Shrek'
+   dir['Dennis'] = 'Miller'
+   dir['DAVID'] = 'West'
+   self~assertEquals('Shrek', dir~unknown('MIKE', .array~new()))
+   dir~unknown('MIKE=', .array~of('Kinder'))
+   self~assertEquals('Kinder', dir~unknown('MIKE', .array~new()))
+
+::method "test_18"
+   -- xor
+   dir = .stringtable~new()
+   dir['MIKE'] = 'Shrek'
+   dir['Dennis'] = 'Miller'
+   dir['Linda'] = 'Miller'
+   arr = .array~of('MIKE', 'Dennis')
+   -- Note: The array is converted to a bag in the xor method and the
+   --       array indexes are lost
+   newdir = dir~xor(arr)
+   self~assertEquals('Miller', newdir['Linda'])
+   self~assertEquals(1, newdir~items)
+
+::method "test_20"
+  dir = .stringtable~new
+
+  dir~setEntry('foo', 'bar')
+  self~assertTrue(dir~allIndexes~equivalent(.array~of("FOO")))
+  self~assertEquals("bar", dir['FOO'])
+  self~assertEquals("bar", dir~entry('foo'))
+  self~assertTrue(dir~hasentry('foo'))
+  self~assertEquals("bar", dir~removeEntry('foo'))
+  self~assertSame(.nil, dir['FOO'])
+
+::method "test_21"
+   self~expectSyntax(88.909)
+  dir = .stringtable~new
+  dir[.object~new] = 1
+
+::method "test_22"
+   self~expectSyntax(88.909)
+  dir = .stringtable~new
+  x = dir[.object~new]
+
+::method "test_23"
+   self~expectSyntax(88.909)
+  dir = .stringtable~new
+  x = dir~at(.object~new)
+
+::method "test_24"
+   self~expectSyntax(88.909)
+  dir = .stringtable~new
+  x = dir~put(1, .object~new)
+
+::method "test_25"
+   self~expectSyntax(88.909)
+  dir = .stringtable~new
+  x = dir~remove(.object~new)
+
+::method "test_26"
+   self~expectSyntax(88.909)
+  dir = .stringtable~new
+  x = dir~hasIndex(.object~new)
+
+::method "test_27"
+   self~expectSyntax(88.909)
+  dir = .stringtable~new
+  x = dir~entry(.object~new)
+
+::method "test_28"
+   self~expectSyntax(88.909)
+  dir = .stringtable~new
+  x = dir~setentry(.object~new, 1)
+
+::method "test_29"
+   self~expectSyntax(88.909)
+  dir = .stringtable~new
+  x = dir~hasentry(.object~new)
+
+::method "test_30"
+   self~expectSyntax(88.909)
+  dir = .stringtable~new
+  x = dir~removeentry(.object~new)
+
+
+/* add test cases for of and do over for 12.10.2014 Walter Pachl */
+
+
+::method "test_of_01"
+  self~expectSyntax(97.1)
+                              -- Object "The NIL object" does not understand message "+".
+  d1=.stringtable~of()
+
+::method "test_of_02"
+  self~expectSyntax(93.903)
+                              -- Missing argument in method; argument 1 is required.
+  d2=.stringtable~of(,(a,b),)
+
+
+::method "test_of_03"
+  self~expectSyntax(93.903)
+                              -- Missing argument in method; argument 3 is required.
+  d3=.stringtable~of((a,b),(c,d),,(e,f))
+
+::method "test_of_04"
+  self~expectSyntax(88.909)
+                              -- Method argument 2 must have a string value.
+  d=.stringtable~new
+  d=.stringtable~of((d,1))
+
+::method "test_of_05"          -- ok
+  d3=.stringtable~of((a,b),(c,d),(e,f))
+  d4=.stringtable~new
+  d4~put(b,a); d4~put(d,c); d4~put(f,e)
+  d5=.stringtable~new
+  d5[a]=b; d5[c]=d; d5[e]=f
+  d6=.stringtable~new
+  d6~a=b; d6~c=d; d6~e=f
+  ilist=.array~of(b,d,f)
+  self~assertSame(d3~items,d4~items)
+  Do i=1 To ilist~items
+    ix=ilist[i]
+    self~assertSame(d4[ix],d3[ix])
+    self~assertSame(d5[ix],d4[ix])
+    self~assertSame(d6[ix],d5[ix])
+    End
+
+::method "test_of_06"
+  self~expectSyntax(88.923)
+                              -- OF argument 1 must be a single-dimensional array;
+                              -- found "The NIL object".
+  d=.stringtable~of(.nil)       -- not an array
+
+::method "test_of_07"
+  a=.array~of(x,y)
+  d=.stringtable~of(a)
+  self~assertSame(y,d[x])
+
+::method "test_of_08"
+  self~expectSyntax(88.909)
+                              -- Method argument 2 must have a string value.
+  a=.array~of(.nil,u)
+  d=.stringtable~of(a)
+
+::method "test_of_09"
+  a=.array~of(v,.nil)
+  d=.stringtable~of(a)          -- an array
+  self~assertSame(.nil,d[v])
+
+::method "test_of_10"
+  self~expectSyntax(88.924)
+                              -- OF argument 1 must be an array with exactly 2 items.
+  d=.stringtable~of((1,))       -- index no value
+
+::method "test_of_11"
+  self~expectSyntax(88.924)
+                              -- OF argument 1 must be an array with exactly 2 items.
+  d=.stringtable~of((,2))       -- value, no index
+
+::method "test_of_12"
+  self~expectSyntax(88.924)
+                              -- OF argument 1 must be an array with exactly 2 items.
+  d=.stringtable~of((1,2,3))    -- too many items in the array
+
+::method "test_of_13"         -- pairs are applied left to right
+  d=.stringtable~of((x,y),(x,y),(x,z))
+  self~assertSame(1,d~items)
+  self~assertSame(z,d[x])
+  d~put(1,2)
+  self~assertSame(2,d~items)
+  self~assertSame(1,d[2])
+  d~remove(x)
+  self~assertSame(1,d~items)
+  self~assertSame(1,d[2])
+
+
+::method "test_for_01"
+  d1=.stringtable~of((a,b),(c,d),(e,f))
+  a=.array~new
+  loop el over d1 for 2
+    a~append(el)
+    End
+  self~assertSame(2,a~items)
+
+::method "test_for_02"
+  el='undefined'
+  d2=.stringtable~of((a,b),(c,d),(e,f))
+  a=.array~new
+  loop el over d2 for 0
+    a~append(el)
+    End
+  self~assertSame(0,a~items)
+
+::method "test_for_03"
+  d3=.stringtable~of((a,b),(c,d),(e,f))
+  a=.array~new
+  loop el over d3 for 10
+    a~append(el)
+    End
+  self~assertSame(3,a~items)
+

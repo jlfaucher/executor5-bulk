@@ -1,0 +1,239 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
+  group = .TestGroup~new(fileSpec)
+
+  group~addWithSuite(.length.testGroup, .lengthSuite)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class 'lengthSuite' public subclass ooTestSuite
+::method setUp
+    .local~v1 = 'a'
+    .local~v30 = copies('8',28)||'  '
+    .local~v255 = xrange('01'x,'ff'x)
+    .local~v256 = xrange('88'x,'87'x)
+    .local~v32768 = copies('*',32768)
+    .local~v100000 = right('z',100000)
+
+::method tearDown
+    .local~remove("V1")
+    .local~remove("V30")
+    .local~remove("V255")
+    .local~remove("V256")
+    .local~remove("V32768")
+    .local~remove("V100000")
+
+
+::class "length.testGroup" subclass ooTestCase public
+
+::method 'test001'
+    mb = .mutablebuffer~new('')
+    self~assertSame('0', mb~length())
+    self~assertSame(mb~length(),''~length())
+
+::method 'test002'
+    mb = .mutablebuffer~new(''x)
+    self~assertSame('0', mb~length())
+    self~assertSame(mb~length(),''x~length())
+
+::method 'test0003'
+    mb = .mutablebuffer~new('00'x)
+    self~assertSame('1', mb~length())
+    self~assertSame(mb~length(),'00'x~length())
+
+::method 'test004'
+    mb = .mutablebuffer~new('00')
+    self~assertSame('2', mb~length())
+    self~assertSame(mb~length(),'00'~length())
+
+::method 'test005'
+    mb = .mutablebuffer~new(.v1)
+    self~assertSame('1', mb~length())
+    self~assertSame(mb~length(),.v1~length())
+
+::method 'test006'
+    mb = .mutablebuffer~new(.v30)
+    self~assertSame('30', mb~length())
+    self~assertSame(mb~length(),.v30~length())
+
+::method 'test007'
+    mb = .mutablebuffer~new(.v255)
+    self~assertSame('255', mb~length())
+    self~assertSame(mb~length(),.v255~length())
+
+::method 'test008'
+    mb = .mutablebuffer~new(.v256)
+    self~assertSame('256', mb~length())
+    self~assertSame(mb~length(),.v256~length())
+
+::method 'test009'
+    mb = .mutablebuffer~new(.v32768)
+    self~assertSame('32768', mb~length())
+    self~assertSame(mb~length(),.v32768~length())
+
+::method 'test010'
+    mb = .mutablebuffer~new(.v100000)
+    self~assertSame('100000', mb~length())
+    self~assertSame(mb~length(),.v100000~length())
+
+::method 'test011'
+    mb = .mutablebuffer~new('zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz')
+    self~assertSame('250', mb~length())
+    self~assertSame(mb~length(),'zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz'~length())
+
+::method 'test012'
+    zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz = '1'
+    mb = .mutablebuffer~new(zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz)
+    self~assertSame('1', mb~length())
+    self~assertSame(mb~length(),zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz~length())
+
+::method 'test013'
+    zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz = '1'
+    mb = .mutablebuffer~new((zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz||'...'))
+    self~assertSame('4', mb~length())
+    self~assertSame(mb~length(),(zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz||'...')~length())
+
+::method 'test014'
+    zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz = '1'
+    mb = .mutablebuffer~new((zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz||.v100000))
+    self~assertSame('100001', mb~length())
+    self~assertSame(mb~length(),(zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz||.v100000)~length())
+
+::method 'test015'
+    xre = '200'
+    mb = .mutablebuffer~new('8888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888'X)
+    self~assertSame(.true, mb~length() == xre)
+    self~assertSame(mb~length() == xre,'8888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888'X~length() == xre)
+
+::method 'test016'
+    mb = .mutablebuffer~new(.v100000~length())
+    self~assertSame('6', mb~length())
+    self~assertSame(mb~length(),.v100000~length()~length())
+
+::method 'test017'
+    mb = .mutablebuffer~new(.v100000~length()||'abc')
+    self~assertSame('9', mb~length())
+    self~assertSame(mb~length(),(.v100000~length()||'abc')~length())
+
+::method 'test018'
+    mb = .mutablebuffer~new(17+4)
+    self~assertSame('2', mb~length())
+    self~assertSame(mb~length(),(17+4)~length())
+
+::method 'test019'
+    numeric digits 9
+    mb = .mutablebuffer~new(+10000000000000000000000000000000000)
+    self~assertSame('14', mb~length())
+    self~assertSame(mb~length(),(+10000000000000000000000000000000000)~length())
+
+::method 'test020'
+    mb = .mutablebuffer~new('+10000000000000000000000000000000000')
+    self~assertSame('36', mb~length())
+    self~assertSame(mb~length(),'+10000000000000000000000000000000000'~length())
+
+::method 'test021'
+    len1 = 1
+    numeric digits 9
+    mb = .mutablebuffer~new(1.0000000001**1000000)
+    self~assertSame(len1, mb~length())
+    self~assertSame(mb~length(),1.0000000001**1000000~length())
+
+::method 'test022'
+    mb = .mutablebuffer~new(1111)
+    self~assertSame('4', mb~length())
+    self~assertSame(mb~length(),1111~length())
+
+::method 'test023'
+    mb = .mutablebuffer~new('1111')
+    self~assertSame('4', mb~length())
+    self~assertSame(mb~length(),'1111'~length())
+
+::method 'test024'
+    mb = .mutablebuffer~new('f1f1f1f1'x)
+    self~assertSame('4', mb~length())
+    self~assertSame(mb~length(),'f1f1f1f1'x~length())
+
+::method 'test025'
+    mb = .mutablebuffer~new(...)
+    self~assertSame('3', mb~length())
+    self~assertSame(mb~length(),...~length())
+
+::method 'test030'
+    mb = .mutablebuffer~new('abcdefgh')
+    self~assertSame(8, mb~length())
+    self~assertSame(mb~length(),'abcdefgh'~length())
+
+::method 'testLength'
+   b = .mutableBuffer~new("1234")
+   self~assertEquals(4, b~length, "Wrong length")
+
+   b = .mutableBuffer~new("123")
+   self~AssertEquals(3, b~length, "Length incorrect before")
+
+   b~append("abc")
+   self~AssertEquals(6, b~length, "Length incorrect after")
+
+   b = .mutableBuffer~new("123456")
+   self~AssertEquals(6, b~length, "Length incorrect before")
+
+   b = .mutableBuffer~new("123456")
+   b~insert("abc")
+   b~insert("abc",7,,"+")
+   b~insert("abc",1,0,"+")
+   self~AssertEquals(12, b~length, "Length incorrect after")
+
+   b = .mutableBuffer~new("1234567890")
+   self~AssertEquals(10, b~length, "Length incorrect before")
+   b~delete(11)
+   b~delete(1,2)
+   self~AssertEquals(8, b~length, "Length incorrect after")
+
+
+::options novalue error

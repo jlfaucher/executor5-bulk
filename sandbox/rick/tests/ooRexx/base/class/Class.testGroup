@@ -1,0 +1,1428 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2006-2018 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+
+  group = .TestGroup~new(s)
+  group~add(.Class.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+   /* the following "floating" methods define their own object scope and
+      are stored in a directory by the runtime system and can be retrieved
+      via the ".method" environment symbol   */
+::method fm_object            -- getter method
+  expose fm_object
+  return fm_object
+
+::method "FM_OBJECT="         -- setter method
+  expose fm_object
+  use arg fm_object
+
+::method floating_Method_1
+  expose fm_object
+  fm_object="set by floating_method_1"
+  return fm_object
+
+::method floating_Method_2
+  expose fm_object
+  fm_object="set by floating_method_2"
+  return fm_object
+
+::method floating_Method_3
+  expose fm_object
+  fm_object="set by floating_method_3"
+  return fm_object
+
+
+/* ************************************************************************* */
+
+
+::class "Class.testGroup" subclass ooTestCase public
+
+::method test_class_package
+  -- pre-defined classes have package name "REXX"
+  self~assertEquals("REXX", .Class~package~name)
+
+  -- subclasses created via subclass() method have package .nil
+  self~assertEquals(.nil, .Class~subclass("tst_subcls")~package)
+
+  -- dynamically compiled routine, static class
+  self~assertEquals("tst_rtn_cls", -
+   .Routine~new("tst_rtn_cls", (("return .tst_cls~package~name", "::class tst_cls")))~call)
+
+  -- dynamically compiled routine, subclass
+  self~assertEquals(.nil, -
+   .Routine~new("tst_rtn_subcls", (("return .Class~subclass('tst_subcls')~package")))~call)
+
+  -- the current package should have the source file name as its package name
+  parse source . . sourceFile
+  self~assertEquals(sourceFile, .Context~package~name)
+
+  -- all classes within the current package should have the current package as their package
+  do class over .Context~package~classes~allItems
+    self~assertEquals(.Context~package, class~package)
+  end
+
+::method test_class_package_one_arg
+  self~expectSyntax(93.902)
+  .Class~package(.nil)
+
+
+::method test_class_isAbstract
+  self~assertTrue(.acbase~isAbstract)
+  self~assertFalse(.ac1~isAbstract)
+  self~assertFalse(.ac2~isAbstract)
+
+  self~assertFalse(.Class~isAbstract)
+  self~assertFalse(.Object~isAbstract)
+  self~assertFalse(.vehicle~isAbstract)
+  self~assertFalse(.roadvehicle~isAbstract)
+  self~assertFalse(.Amphibianvehicle~isAbstract)
+
+::method test_class_isAbstract_one_arg
+  self~expectSyntax(93.902)
+  .Class~isAbstract(.nil)
+
+
+::method test_class_isMetaclass
+  self~assertTrue(.Class~isMetaclass)
+  self~assertTrue(.mcbase~isMetaclass)
+  self~assertTrue(.mc1~isMetaclass)
+  self~assertTrue(.mc2~isMetaclass)
+  self~assertTrue(.mc3~isMetaclass)
+
+  self~assertFalse(.Object~isMetaclass)
+  self~assertFalse(.vehicle~isMetaclass)
+  self~assertFalse(.roadvehicle~isMetaclass)
+  self~assertFalse(.Amphibianvehicle~isMetaclass)
+
+::method test_class_isMetaclass_one_arg
+  self~expectSyntax(93.902)
+  .Class~isMetaclass(.nil)
+
+
+::method test_issubclassof
+  self~assertTrue(.vehicle~issubclassof(.object))
+  self~assertFalse(.vehicle~issubclassof(.class))
+
+  self~assertTrue(.roadvehicle~issubclassof(.object))
+  self~assertTrue(.roadvehicle~issubclassof(.vehicle))
+  self~assertTrue(.roadvehicle~issubclassof(.roadvehicle))
+
+  self~assertTrue(.Amphibianvehicle~issubclassof(.object))
+  self~assertTrue(.Amphibianvehicle~issubclassof(.vehicle))
+  self~assertTrue(.Amphibianvehicle~issubclassof(.roadvehicle))
+  self~assertTrue(.Amphibianvehicle~issubclassof(.watervehicle))
+
+::method test_issubclassof_no_arg
+  self~expectSyntax(88.901)
+  x = .vehicle~issubclassof
+
+::method test_issubclassof_two_args
+  self~expectSyntax(93.902)
+  x = .vehicle~issubclassof(.object, .array)
+
+::method test_issubclassof_non_class
+  self~expectSyntax(88.914)
+  x = .vehicle~issubclassof("object")
+
+
+::METHOD "test_BASECLASS"
+
+  self~assertSame(.object, .object~baseclass)
+  self~assertSame(.Vehicle, .RoadVehicle~baseclass)
+  self~assertSame(.Vehicle, .WaterVehicle~baseclass)
+  self~assertSame(.AmphibianVehicle, .AmphibianVehicle~baseclass)
+
+
+
+::METHOD "test_DEFAULTNAME"
+
+  self~assertEquals("The Object class", .object~defaultName)
+  self~assertEquals("The FAHRZEUG class", .fahrzeug~defaultName)
+  self~assertEquals("The WasserFahrzeug class", .wasserfahrzeug~defaultName)
+
+
+::METHOD "test_DEFINE"
+
+  .test_a~define("TESTMETHOD", "return 'test'" )  -- define a method
+  o1=.test_a~new                 -- create an instance
+  self~assertEquals("test", o1~testmethod)
+  self~assertTrue(o1~hasmethod("TESTMETHOD"))
+
+  self~assertNotNull(.test_a~method("testmethod"))
+
+      -- "unaccessible" means that from now on the method cannot resolved, even if it existed in a superclass!
+  .test_a~define("testmethod")   -- make it unaccessible for new instances
+  self~assertNull(.test_a~method("testmethod"))
+
+  self~assertEquals("test", o1~testmethod)
+  self~assertTrue(o1~hasmethod("TESTMETHOD"))
+
+  o2=.test_a~new                 -- create an instance
+  self~assertFalse(o2~hasmethod("TESTMETHOD"))
+  self~assertTrue(test_method_not_available(o2))
+  return
+
+test_method_not_available: procedure
+  use arg o
+  signal on any
+  o~testmethod
+  return .false
+any:
+  return .true
+
+
+::METHOD "test_DELETE"
+
+  .test_b2~define("TESTMETHOD", "return self~testMethod:super 'test'" )  -- define a method
+  o1=.test_b2~new                 -- create an instance
+  self~assertEquals("test_b1 test", o1~testmethod)
+  self~assertTrue(o1~hasmethod("TESTMETHOD"))
+  self~assertTrue(o1~hasmethod("someMethod"))
+
+     -- make TESTMETHOD unaccessible for new instances, even if superclass implements it!
+  .test_b2~define("testmethod")
+
+   -- existing instance not affected
+  self~assertEquals("test_b1 test", o1~testmethod)
+  self~assertTrue(o1~hasmethod("TESTMETHOD"))
+  self~assertTrue(o1~hasmethod("someMethod"))
+
+   -- new instance has no access to "TESTMETHOD"
+  o2=.test_b2~new                 -- create an instance
+  self~assertFalse(o2~hasmethod("TESTMETHOD"))
+  self~assertTrue(test_method_not_available(o2))
+
+   -- now testing DELETE
+     -- this should nullify the effect of making method unavailable via DEFINE()
+  .test_b2~delete("testmethod")  -- method gets deleted from .TEST_B2, not from .TEST_B1 !
+  o3=.test_b2~new
+
+  self~assertEquals("test_b1", o3~testmethod)
+  self~assertTrue(o3~hasmethod("TESTMETHOD"))
+  self~assertTrue(o3~hasmethod("someMethod"))
+
+  return
+
+test_method_not_available: procedure
+  use arg o
+  signal on any
+  o~testmethod
+  return .false
+any:
+  return .true
+
+
+::method "test_ENHANCED"
+
+  o=.test_c~enhanced(.methods)      -- create an instance enhanced with the floating methods
+  self~assertEquals("set by floating_method_1", o~floating_method_1)
+  self~assertEquals("set by floating_method_2", o~floating_method_2)
+  self~assertEquals("set by floating_method_3", o~floating_method_3)
+  self~assertEquals("set by floating_method_3", o~fm_object)
+  tmp="   olah! oho! ah-sooo! "
+  o~fm_object=tmp
+  self~assertEquals(tmp, o~fm_object)
+  self~assertSame(tmp, o~fm_object)
+
+  tmpArg="This is an argument text."
+  o2=.test_c~enhanced(.methods, tmpArg)
+  self~assertEquals("set by floating_method_1", o2~floating_method_1)
+  self~assertEquals("set by floating_method_2", o2~floating_method_2)
+  self~assertEquals("set by floating_method_3", o2~floating_method_3)
+  self~assertEquals("set by floating_method_3", o2~fm_object)
+  tmp="   olah! oho! ah-sooo! "
+  o2~fm_object=tmp
+  self~assertEquals(tmp, o2~fm_object)
+  self~assertSame(tmp, o2~fm_object)
+
+  self~assertEquals(tmpArg, o2~rgf)
+  o2~rgf=tmp
+  self~assertEquals(tmp, o2~rgf)
+  self~assertSame(tmp, o2~rgf)
+
+
+::method "test_ID"
+
+  self~assertEquals("Object", .object~id)
+  self~assertEquals("FAHRZEUG", .fahrzeug~id)
+  self~assertEquals("WasserFahrzeug", .wasserFahrzeug~id)
+
+
+::method "test_INIT_INHERIT_UNINHERIT_SUBCLASS_MIXINCLASS_QUERYMIXINCLASS"
+
+   -- create a base test_class
+   vehicle_Name="RGF_VEHICLE"
+   rgf_vehicle=.object~subclass(vehicle_Name)
+         -- define the instance methods
+   rgf_vehicle~define("NAME",     "expose name; return  name")
+   rgf_vehicle~define("NAME=",    "expose name; use arg name")
+   rgf_vehicle~define("INIT",     "self~name=(arg(1))")
+
+   rgf_vehicle_show_off="RGF_VEHICLE_SHOW_OFF"   -- text to return
+   rgf_vehicle~define("SHOW_OFF", "return" en_quote(rgf_vehicle_show_off))
+
+   rgf_vehicle_drive="RGF_VEHICLE_DRIVE"   -- text to return
+   rgf_vehicle~define("DRIVE", "return" en_quote(rgf_vehicle_drive))
+
+   rgf_vehicle_swim ="RGF_VEHICLE_SWIM"   -- text to return
+   rgf_vehicle~define("SWIM", "return" en_quote(rgf_vehicle_swim ))
+
+   -- create RoadVehicle
+   road_Vehicle_Name="RGF_ROADVEHICLE"
+   rgf_road_vehicle=rgf_vehicle~mixinclass(road_Vehicle_Name)
+         -- define the instance methods
+   drive_string=": I drive now..."
+   rgf_road_vehicle~define("drive", "return self~name ||" en_quote(drive_string))
+
+   -- create WaterVehicle
+   water_Vehicle_Name="RGF_WaterVehicle"
+   rgf_water_vehicle=rgf_vehicle~mixinclass(water_Vehicle_Name)
+         -- define the instance methods
+   swim_string=": I swim now..."
+   rgf_water_vehicle~define("swim", "return self~name ||" en_quote(swim_string))
+
+   -- create AmphibianVehicle
+   amphibian_Vehicle_Name="RgF_AmPhIbIaNvEhIcLe"
+   rgf_amphibian_vehicle=rgf_road_vehicle~subclass(amphibian_Vehicle_Name)
+   rgf_amphibian_vehicle~inherit(rgf_water_vehicle)
+         -- define the instance methods
+   rgf_amphibian_vehicle~define("SHOW_OFF", "return self~swim self~drive" )
+
+
+   -- create instances
+   vo_name="SomeVehicle"
+   vo=rgf_vehicle~new(vo_name)
+
+   rvo_name="Truck"
+   rvo=rgf_road_vehicle~new(rvo_name)
+
+   wvo_name="Boat"
+   wvo=rgf_water_vehicle~new(wvo_name)
+
+   avo_name="SwimCar"
+   avo=rgf_amphibian_vehicle~new(avo_name)
+
+   ------------ assertions
+      -- assert BASECLASS
+   self~assertSame(rgf_vehicle, rgf_vehicle~baseclass)
+   self~assertSame(rgf_vehicle, rgf_road_vehicle~baseclass)
+   self~assertSame(rgf_vehicle, rgf_water_vehicle~baseclass)
+   self~assertSame(rgf_amphibian_vehicle, rgf_amphibian_vehicle~baseclass)
+
+      -- assert DEFAULTNAME
+   self~assertEquals("The" vehicle_Name "class", rgf_vehicle~defaultname)
+   self~assertEquals("The" road_Vehicle_Name "class", rgf_road_vehicle~defaultname)
+   self~assertEquals("The" water_Vehicle_Name "class", rgf_water_vehicle~defaultname)
+   self~assertEquals("The" amphibian_Vehicle_Name "class", rgf_amphibian_vehicle~defaultname)
+
+      -- assert ID
+   self~assertEquals(vehicle_Name, rgf_vehicle~id)
+   self~assertEquals(road_Vehicle_Name, rgf_road_vehicle~id)
+   self~assertEquals(water_Vehicle_Name, rgf_water_vehicle~id)
+   self~assertEquals(amphibian_Vehicle_Name, rgf_amphibian_vehicle~id)
+
+      -- assert method lookup
+   self~assertEquals(rgf_vehicle_show_off, vo~show_off)
+   self~assertEquals(rgf_vehicle_drive, vo~drive)
+   self~assertEquals(rgf_vehicle_swim, vo~swim)
+
+   self~assertEquals(rgf_vehicle_show_off, rvo~show_off)
+   self~assertEquals(rvo_name || drive_string, rvo~drive)
+   self~assertEquals(rgf_vehicle_swim, rvo~swim)
+
+   self~assertEquals(rgf_vehicle_show_off, wvo~show_off)
+   self~assertEquals(rgf_vehicle_drive, wvo~drive)
+   self~assertEquals(wvo_name || swim_string, wvo~swim)
+
+   tmp_drive=avo_name || drive_string
+   tmp_swim =avo_name || swim_string
+   tmp_amph = tmp_swim tmp_drive
+   self~assertEquals(tmp_amph, avo~show_off)
+   self~assertEquals(tmp_drive, avo~drive)
+   self~assertEquals(tmp_swim, avo~swim)
+
+   self~assertFalse(rgf_vehicle~queryMixinclass)
+   self~assertTrue(rgf_road_vehicle~queryMixinclass)
+   self~assertTrue(rgf_water_vehicle~queryMixinclass)
+   self~assertFalse(rgf_amphibian_vehicle~queryMixinclass)
+
+
+   ------------ uninherit "RGF_WATER_VEHICLE"
+   rgf_amphibian_vehicle~uninherit(rgf_water_vehicle)
+   ------------ assertions
+   tmp_drive= avo_name || drive_string
+   tmp_swim = rgf_vehicle_swim
+   tmp_amph = tmp_swim tmp_drive
+   self~assertEquals(tmp_amph, avo~show_off)
+   self~assertEquals(tmp_drive, avo~drive)
+   self~assertEquals(tmp_swim, avo~swim)
+
+
+   ------------ inherit "RGF_WATER_VEHICLE" again !
+   rgf_amphibian_vehicle~inherit(rgf_water_vehicle)
+   ------------ assertions
+   tmp_drive=avo_name || drive_string
+   tmp_swim =avo_name || swim_string
+   tmp_amph = tmp_swim tmp_drive
+   self~assertEquals(tmp_amph, avo~show_off)
+   self~assertEquals(tmp_drive, avo~drive)
+   self~assertEquals(tmp_swim, avo~swim)
+
+::METHOD "test_REXX_DEFINED_01"
+   self~expectSyntax(98.985)
+   .object~inherit(.String)
+
+::METHOD "test_REXX_DEFINED_02"
+   self~expectSyntax(98.985)
+   -- make sure non-primitive classes are also marked as rexx defined
+   .datetime~inherit(.String)
+
+::METHOD "test_REXX_DEFINED_03"
+   self~expectSyntax(98.985)
+   .array~uninherit(.Collection)
+
+::METHOD "test_REXX_DEFINED_04"
+   self~expectSyntax(98.985)
+   .object~define("FOO", "RETURN 123")
+
+::METHOD "test_REXX_DEFINED_05"
+   self~expectSyntax(98.985)
+   .object~delete("OBJECTNAME=")
+
+::METHOD "test_REXX_DEFINED_06"
+   self~expectSyntax(98.985)
+   .object~delete("OBJECTNAME=")
+
+::METHOD "test_REXX_DEFINED_07"
+   self~expectSyntax(98.985)
+   .object~defineMethods(.stringtable~of(("NewMethod", "return 123")))
+
+::METHOD "test_INHERIT_02"
+   self~expectSyntax(98.942)
+   .amphibianVehicle~inherit(.object)
+
+::METHOD "test_INHERIT_03"
+    self~expectSyntax(98.944)
+   .amphibianVehicle~inherit(.roadVehicle)
+
+::METHOD "test_INHERIT_non_class"
+   self~expectSyntax(98.942)
+   .amphibianVehicle~inherit("object")
+
+::METHOD "test_INHERIT_no_arg"
+   self~expectSyntax(88.901)
+   .amphibianVehicle~inherit
+
+::METHOD "test_INHERIT_no_bad_target"
+   self~expectSyntax(98.945)
+   .amphibianVehicle~inherit(.transportation, .object)
+
+::METHOD "test_INHERIT_self_recursive"
+   self~expectSyntax(98.944)
+   .transportation~inherit(.transportation)
+
+::METHOD "test_INHERIT_recursive"
+   self~expectSyntax(98.944)
+   .amphibianVehicle~inherit(.waterVehicle)
+
+::METHOD "test_INHERIT_subclass"
+   self~expectSyntax(98.944)
+   .Vehicle~inherit(.waterVehicle)
+
+::METHOD "test_INHERIT_bad_position"
+   self~expectSyntax(98.945)
+   .amphibianVehicle~inherit(.transportation, .aircraft)
+
+::METHOD "test_INHERIT_bad_position_class"
+   self~expectSyntax(98.945)
+   .amphibianVehicle~inherit(.transportation, .vehicle)
+
+::METHOD "test_INHERIT_extra_arg"
+   self~expectSyntax(93.902)
+   .amphibianVehicle~inherit(.transportation, .waterVehicle, .object)
+
+::method test_uninherit_no_arg
+   self~expectSyntax(88.901)
+   .amphibianVehicle~uninherit
+
+::method test_uninherit_two_args
+   self~expectSyntax(93.902)
+   .amphibianVehicle~uninherit(.waterVehicle, .transportation)
+
+::method test_uninherit_not_inherited
+   self~expectSyntax(98.945)
+   .amphibianVehicle~uninherit(.collection)
+
+::method test_uninherit_not_class
+   self~expectSyntax(98.942)
+   .amphibianVehicle~uninherit("Foobar")
+
+::method test_uninherit_self
+   self~expectSyntax(98.945)
+   .transportation~uninherit(.transportation)
+
+
+
+::method "test_INIT_01"
+  self~expectSyntax(93.901)
+  cl=.class~new
+
+
+::method "test_INIT_02"
+  self~expectSyntax(93.902)
+  cl=.class~new("what a wonderful world!", "oops.")
+
+
+::method "test_METACLASS"
+   self~assertSame(.class, .object~metaclass)
+   self~assertSame(.class, .class~metaclass)
+
+   cl=.object~mixinclass("test_mixin_01",    .counter)
+   self~assertSame(.counter, cl~metaclass)
+   cl=.object~mixinclass("test_mixin_01",    .singleton)
+   self~assertSame(.singleton, cl~metaclass)
+
+   self~assertSame(.class, .counter~class)
+
+
+
+::method "test_METACLASS_CounterSingleton_via_normal_inheritance"
+      -- test counter metaclass
+   cl=.object~mixinclass("test_01", .SingletonCounter_via_normal_inheritance)
+   a1=cl~new
+   i=4
+   do i
+      a2=cl~new      -- create an object
+   end
+   self~assertEquals(5, cl~counter)  -- test whether five instances have been created
+   self~assertSame(a1, a2)  -- test whether singleton instances
+
+
+::method "test_METACLASS_SingletonCounter_via_normal_inheritance"
+      -- test counter metaclass
+   cl=.object~mixinclass("test_01", .CounterSingleton_via_normal_inheritance)
+   a1=cl~new
+   i=4
+   do i
+      a2=cl~new      -- create an object
+   end
+   self~assertSame(a1, a2)  -- test whether singleton instances
+   self~assertEquals(1, cl~counter)  -- test whether five instances have been created
+
+
+
+
+::method "test_METHOD"
+
+   self~assertNotNull(.WaterVehicle~method("swim"))
+
+   -- testing for undefined method took place in "test_DEFINE" above
+
+   self~expectSyntax(97.1)
+   self~assertNull(.WaterVehicle~method("swimmolilily"))
+
+
+
+
+::method "test_METHODS"
+   a_o =getBags(.Object~methods(.nil))       -- get only Object methods
+   a_v =getBags(.Vehicle~methods(.nil))      -- get only Vehicle methods
+   a_wv=getBags(.WaterVehicle~methods(.nil)) -- get only WaterVehicle methods
+   a_wv_all=getBags(.WaterVehicle~methods)   -- get all methods
+
+   self~assertTrue(a_o[1]~Subset(a_wv_all[1]))
+   self~assertTrue(a_o[2]~Subset(a_wv_all[2]))
+
+   self~assertTrue(a_v[1]~Subset(a_wv_all[1]))
+   self~assertTrue(a_v[2]~Subset(a_wv_all[2]))
+
+   self~assertTrue(a_wv[1]~Subset(a_wv_all[1]))
+   self~assertTrue(a_wv[2]~Subset(a_wv_all[2]))
+
+   do i=1 to 2
+      tmp=.bag~new~union(a_o[i])~union(a_v[i])~union(a_wv[i])
+      self~assertTrue(tmp~subset(a_wv_all[i]))
+      self~assertTrue(a_wv_all[i]~subset(tmp))
+   end
+
+   self~assertEquals(a_wv_all[1]~items, a_o[1]~items + a_v[1]~items + a_wv[1]~items)
+
+   return
+
+getBags: procedure         -- return indices in an index bag, and method items in a method bag
+   use arg s
+   a=.array~new
+
+   if s~available then
+   do
+      a[1]=.bag~new    -- index
+      a[2]=.bag~new    -- item (object)
+   end
+
+   do while s~available
+      a[1]~put(s~index)
+      a[2]~put(s~item)
+      s~next
+   end
+   return a
+
+
+
+::method "test_MIXINCLASS"    -- just the arguments, rest already tested
+      -- test counter metaclass
+   cl=.object~mixinclass("test_mixin_01", .counter)
+   i=5
+   do i
+      cl~new      -- create an object
+   end
+   self~assertTrue(cl~counter=5)  -- test whether five instances have been created
+
+
+      -- test counter metaclass, enhance class methods
+   cl=.object~mixinclass("test_mixin_02", .counter, .methods)
+   str=cl~floating_Method_1    -- is class method available?
+   i=5
+   do i
+      a1=cl~new      -- create an object
+   end
+   self~assertTrue(cl~counter=5)  -- test whether five instances have been created
+   self~assertEquals(str, cl~fm_object)
+
+
+      -- test singleton metaclass
+   cl=.object~mixinclass("test_mixin_03", .singleton)
+   i=5
+   a1=cl~new
+   do i
+      a2=cl~new      -- create an object
+   end
+   self~assertSame(a1, a2)  -- test whether instances are singletons
+
+
+::method "test_MIXINCLASS_01"
+   self~expectSyntax(99.927)
+   cl=.object~mixinclass("subTest_01", "not_an_existing_class")
+
+
+::method "test_MIXINCLASS_02"
+   self~expectSyntax(99.927)
+   cl=.object~mixinclass("subTest_01", .object)
+
+
+
+::method "test_MIXINCLASS_MULTIPLE_INHERITANCE_ON_METACLASSES_01"    -- just the arguments, rest already tested
+
+      -- cf. working ::method "test_METACLASS_CounterSingleton_via_normal_inheritance" above !
+      -- test counter metaclass
+   cl=.object~mixinclass("test_mixin_01", .counterSingleton_mixinclass)
+   a1=cl~new
+   i=4
+   do i
+      a2=cl~new      -- create an object
+   end
+   self~assertEquals(5, cl~counter)  -- test whether five instances have been created
+   self~assertSame(a1, a2)  -- test whether singleton instances
+
+
+::method "test_MIXINCLASS_MULTIPLE_INHERITANCE_ON_METACLASSES_02"    -- just the arguments, rest already tested
+
+      -- cf. working ::method "test_METACLASS_SingletonCounter_via_normal_inheritance" above !
+      -- test counter metaclass
+   cl=.object~mixinclass("test_mixin_01", .SingletonCounter_mixinclass)
+   a1=cl~new
+   i=4
+   do i
+      a2=cl~new      -- create an object
+   end
+   self~assertSame(a1, a2)  -- test whether singleton instances
+   self~assertEquals(1, cl~counter)  -- test whether five instances have been created
+
+
+::method "test_MIXINCLASS_MULTIPLE_INHERITANCE_ON_METACLASSES_03"    -- just the arguments, rest already tested
+
+      -- cf. working ::method "test_METACLASS_CounterSingleton_via_normal_inheritance" above !
+      -- test counter metaclass
+   cl=.object~mixinclass("test_subclass_01", .counterSingleton_subclass)
+   a1=cl~new
+   i=4
+   do i
+      a2=cl~new      -- create an object
+   end
+   self~assertEquals(5, cl~counter)  -- test whether five instances have been created
+   self~assertSame(a1, a2)  -- test whether singleton instances
+
+
+::method "test_MIXINCLASS_MULTIPLE_INHERITANCE_ON_METACLASSES_04"    -- just the arguments, rest already tested
+
+      -- cf. working ::method "test_METACLASS_SingletonCounter_via_normal_inheritance" above !
+      -- test counter metaclass
+   cl=.object~mixinclass("test_subclass_01", .SingletonCounter_subclass)
+   a1=cl~new
+   i=4
+   do i
+      a2=cl~new      -- create an object
+   end
+   self~assertSame(a1, a2)  -- test whether singleton instances
+   self~assertEquals(1, cl~counter)  -- test whether five instances have been created
+
+
+::method "test_MULTIPLE_INHERITANCE_WITH_MULTIPLE_METACLASSES"
+
+   self~assertEquals("'123.'", .class123~info)
+
+
+::method "test_NEW"
+
+
+::method "test_SUBCLASS"      -- just the arguments, rest already tested
+
+      -- test counter metaclass
+   cl=.object~subclass("test_mixin_01", .counter)
+   i=5
+   do i
+      cl~new      -- create an object
+   end
+   self~assertTrue(cl~counter=5)  -- test whether five instances have been created
+   -- dynamically created classes don't have an attached package.
+   self~assertSame(.nil, cl~package)
+
+
+      -- test counter metaclass, enhance class methods
+   cl=.object~subclass("test_mixin_02", .counter, .methods)
+   str=cl~floating_Method_1    -- is class method available?
+   i=5
+   do i
+      a1=cl~new      -- create an object
+   end
+   self~assertTrue(cl~counter=5)  -- test whether five instances have been created
+   self~assertEquals(str, cl~fm_object)
+
+
+      -- test singleton metaclass
+   cl=.object~subclass("test_mixin_03", .singleton)
+   i=5
+   a1=cl~new
+   do i
+      a2=cl~new      -- create an object
+   end
+   self~assertSame(a1, a2)  -- test whether instances are singletons
+
+
+::method "test_SUBCLASS_01"
+   self~expectSyntax(99.927)
+   cl=.object~subclass("subtest_01", "not_an_existing_class")
+
+::method "test_SUBCLASS_02"
+   self~expectSyntax(99.927)
+   cl=.object~subclass("subtest_01", .object)
+
+::method test_subclass_no_id
+   self~expectSyntax(88.901)
+   cl=.object~subclass
+
+::method test_subclass_id_not_string
+   self~expectSyntax(88.909)
+   cl=.object~subclass(.object)
+
+::method test_subclass_metaclass_not_metaclass
+   self~expectSyntax(99.927)
+   cl=.object~subclass("someid", .object)
+
+::method test_subclass_class_methods_not_collection
+   self~expectSyntax(97.1)
+   cl=.object~subclass("someid",, .nil)
+
+::method test_subclass_sparse_array_source
+  self~expectSyntax(93.952)
+  cl=.object~subclass("someid",, .stringTable~of(("somemethod", ("x = something",,"return 123"))))
+
+::method test_subclass_bad_method
+  self~expectSyntax(93.974)
+  cl=.object~subclass("someid",, .stringTable~of(("somemethod", .array)))
+
+::method test_subclass_non_string_array_value
+  self~expectSyntax(93.952)
+  cl=.object~subclass("someid",, .stringTable~of(("somemethod", ("x = something",.nil,"return 123"))))
+
+::method test_mixinclass_no_id
+   self~expectSyntax(88.901)
+   cl=.object~mixinclass
+
+::method test_mixinclass_id_not_string
+   self~expectSyntax(88.909)
+   cl=.object~mixinclass(.object)
+
+::method test_mixinclass_metaclass_not_metaclass
+   self~expectSyntax(99.927)
+   cl=.object~mixinclass("someid", .object)
+
+::method test_mixinclass_class_methods_not_collection
+   self~expectSyntax(97.1)
+   cl=.object~mixinclass("someid",, .nil)
+
+::method test_mixinclass_sparse_array_source
+  self~expectSyntax(93.952)
+  cl=.object~mixinclass("someid",, .stringTable~of(("somemethod", ("x = something",,"return 123"))))
+
+::method test_mixinclass_bad_method
+  self~expectSyntax(93.974)
+  cl=.object~mixinclass("someid",, .stringTable~of(("somemethod", .array)))
+
+::method test_mixinclass_non_string_array_value
+  self~expectSyntax(93.952)
+  cl=.object~mixinclass("someid",, .stringTable~of(("somemethod", ("x = something",.nil,"return 123"))))
+
+
+::method "test_SUBCLASS_MULTIPLE_INHERITANCE_ON_METACLASSES_01"    -- just the arguments, rest already tested
+
+      -- cf. working ::method "test_METACLASS_CounterSingleton_via_normal_inheritance" above !
+      -- test counter metaclass
+   cl=.object~subclass("test_mixin_01", .counterSingleton_mixinclass)
+   a1=cl~new
+   i=4
+   do i
+      a2=cl~new      -- create an object
+   end
+   self~assertEquals(5, cl~counter)  -- test whether five instances have been created
+   self~assertSame(a1, a2)  -- test whether singleton instances
+
+
+::method "test_SUBCLASS_MULTIPLE_INHERITANCE_ON_METACLASSES_02"    -- just the arguments, rest already tested
+
+      -- cf. working ::method "test_METACLASS_SingletonCounter_via_normal_inheritance" above !
+      -- test counter metaclass
+   cl=.object~subclass("test_mixin_01", .SingletonCounter_mixinclass)
+   a1=cl~new
+   i=4
+   do i
+      a2=cl~new      -- create an object
+   end
+   self~assertSame(a1, a2)  -- test whether singleton instances
+   self~assertEquals(1, cl~counter)  -- test whether five instances have been created
+
+
+::method "test_SUBCLASS_MULTIPLE_INHERITANCE_ON_METACLASSES_03"    -- just the arguments, rest already tested
+
+      -- cf. working ::method "test_METACLASS_CounterSingleton_via_normal_inheritance" above !
+      -- test counter metaclass
+   cl=.object~subclass("test_subclass_01", .counterSingleton_subclass)
+   a1=cl~new
+   i=4
+   do i
+      a2=cl~new      -- create an object
+   end
+   self~assertEquals(5, cl~counter)  -- test whether five instances have been created
+   self~assertSame(a1, a2)  -- test whether singleton instances
+
+
+::method "test_SUBCLASS_MULTIPLE_INHERITANCE_ON_METACLASSES_04"    -- just the arguments, rest already tested
+
+      -- cf. working ::method "test_METACLASS_SingletonCounter_via_normal_inheritance" above !
+      -- test counter metaclass
+   cl=.object~subclass("test_subclass_01", .SingletonCounter_subclass)
+   a1=cl~new
+   i=4
+   do i
+      a2=cl~new      -- create an object
+   end
+   self~assertSame(a1, a2)  -- test whether singleton instances
+   self~assertEquals(1, cl~counter)  -- test whether five instances have been created
+
+
+
+::method "test_SUBCLASSES"
+
+   self~assertTrue(.object~subclasses~items>15)
+   self~assertTrue(.alarm~subclasses~items=0)
+
+   subclasses = .fahrzeug~subclasses
+   self~assertEquals(2, subclasses~items)
+   self~assertTrue(subclasses~equivalent(.array~of(.StrassenFahrzeug, .WasserFahrzeug)))
+
+::method "test_SUPERCLASSES"
+
+   self~assertTrue(.object~superclasses~items=0)
+   self~assertEquals(2, .relation~superclasses~items)
+
+
+
+::method "test_UNINHERIT_01"
+   -- create a base test_class
+   vehicle_Name="RGF_VEHICLE"
+   rgf_vehicle=.object~subclass(vehicle_Name)
+
+   -- create RoadVehicle
+   road_Vehicle_Name="RGF_ROADVEHICLE"
+   rgf_road_vehicle=rgf_vehicle~mixinclass(road_Vehicle_Name)
+
+   -- create WaterVehicle
+   water_Vehicle_Name="RGF_WaterVehicle"
+   rgf_water_vehicle=rgf_vehicle~mixinclass(water_Vehicle_Name)
+
+   -- create AmphibianVehicle
+   amphibian_Vehicle_Name="RgF_AmPhIbIaNvEhIcLe"
+   rgf_amphibian_vehicle=rgf_road_vehicle~subclass(amphibian_Vehicle_Name)
+   rgf_amphibian_vehicle~inherit(rgf_water_vehicle)
+
+   self~expectSyntax(98.942)
+   rgf_amphibian_vehicle~uninherit("class that does not exist")
+
+
+::method "test_UNINHERIT_02"
+   -- create a base test_class
+   vehicle_Name="RGF_VEHICLE"
+   rgf_vehicle=.object~subclass(vehicle_Name)
+
+   -- create RoadVehicle
+   road_Vehicle_Name="RGF_ROADVEHICLE"
+   rgf_road_vehicle=rgf_vehicle~mixinclass(road_Vehicle_Name)
+
+   -- create WaterVehicle
+   water_Vehicle_Name="RGF_WaterVehicle"
+   rgf_water_vehicle=rgf_vehicle~mixinclass(water_Vehicle_Name)
+
+   -- create AmphibianVehicle
+   amphibian_Vehicle_Name="RgF_AmPhIbIaNvEhIcLe"
+   rgf_amphibian_vehicle=rgf_road_vehicle~subclass(amphibian_Vehicle_Name)
+   rgf_amphibian_vehicle~inherit(rgf_water_vehicle)
+
+   rgf_amphibian_vehicle~uninherit(rgf_water_vehicle)
+
+   self~expectSyntax(98.945)
+   rgf_amphibian_vehicle~uninherit(rgf_water_vehicle)
+
+::method test_activate
+  -- create a directory that the loaded package can store results in
+  .local~class.testgroup = .directory~new
+  -- now load a package to trigger the activate tests
+  .context~package~loadPackage("class.testgroup.cls")
+  -- give an assertion failure if something was detected
+  self~assertTrue(.local~class.testgroup~assertFail \= .true, .local~class.testgroup~assertFailReason)
+  -- and verify that the activate methods were even called
+  self~assertTrue(.local~class.testgroup~class1 == .true)
+  self~assertTrue(.local~class.testgroup~class2 == .true)
+  self~assertTrue(.local~class.testgroup~class3 == .true)
+
+  .local~remove("class.testgroup"~upper)
+
+::method test_class_define
+  t1 = .testDefine1~new
+  self~assertFalse(t1~hasMethod('test1'))
+  .testDefine1~define('test1', "return 123")
+  self~assertFalse(t1~hasMethod('test1'))
+  t2 = .testDefine1~new
+  self~assertTrue(t2~hasMethod('test1'))
+  self~assertEquals(123, t2~test1)
+  t3 = .testDefine2~new
+  self~assertTrue(t3~hasMethod('test1'))
+  self~assertEquals(123, t3~test1)
+  .testDefine2~define('test1', .array~of("return 456"))
+  self~assertEquals(123, t3~test1)
+  t4 = .testDefine2~new
+  self~assertEquals(456, t4~test1)
+  .testDefine2~delete('test1')
+  self~assertEquals(456, t4~test1)
+  t5 = .testDefine2~new
+  self~assertEquals(123, t5~test1)
+  -- replace the method in the original
+  .testDefine1~define('test1', .method~new('test1', "return .context~executable~scope"))
+  t1 = .testDefine1~new
+  t2 = .testDefine2~new
+  self~assertSame(.testDefine1, t1~test1)
+  self~assertSame(.testDefine1, t2~test1)
+  -- hide test1 in testDefine2
+  .testDefine2~define('TEST1')
+  t2 = .testDefine2~new
+  self~expectSyntax(97.1)
+  t2~test1
+
+::method test_class_copy
+  self~expectSyntax(93.970)
+  c = .array~copy
+--say c
+
+::method test_define_delete
+  newClass = .DefineTesterBase~subclass('TestClass')
+  newClass~define('newMethod', "return 123")
+  self~assertIsA(newClass~method('NEWMETHOD'), .Method)
+  self~assertSame(newClass, newClass~method('NEWMETHOD')~scope)
+
+  t1 = newClass~new
+  self~assertTrue(t1~hasMethod('NEWMETHOD'))
+  self~assertEquals(123, t1~newMethod)
+  -- now replace that method
+  newClass~define('newMethod', ("/**/", "return 456"))
+  t2 = newClass~new
+  -- the t1 object is unchanged, t2 has the new method
+  self~assertEquals(123, t1~newMethod)
+  self~assertEquals(456, t2~newMethod)
+
+  -- this will hide the method
+  newClass~define('newMethod')
+  t3 = newClass~new
+  self~assertSame(.nil, newClass~method('NEWMETHOD'))
+  self~assertFalse(t3~hasMethod('NEWMETHOD'))
+  self~assertTrue(t2~hasMethod('NEWMETHOD'))
+
+  -- and the third style of adding a method
+  newClass~define('newMethod', .method~new('test', "return 789"))
+  t4 = newClass~new
+  self~assertTrue(t4~hasMethod('NEWMETHOD'))
+  self~assertEquals(789, t4~newMethod)
+
+  -- we're going to make changes to the mixin and check that the
+  -- inheriting class gets the methods.
+  mixin = .DefineTesterMixin~mixinclass('aMixin')
+  newClass = .DefineTesterBase~subclass('TestClass')
+  newClass~inherit(mixin)
+
+  mixin~define('newMethod', "return 'abc'")
+  t1 = newClass~new
+  self~assertTrue(t1~hasMethod('NEWMETHOD'))
+  self~assertEquals('abc', t1~newMethod)
+
+  -- now repeat all of these tests, but use defineMethods
+  -- to define the method
+  newClass = .DefineTesterBase~subclass('TestClass')
+  newClass~defineMethods(.stringtable~of(('newMethod', "return 123")))
+  self~assertIsA(newClass~method('NEWMETHOD'), .Method)
+  self~assertSame(newClass, newClass~method('NEWMETHOD')~scope)
+
+  t1 = newClass~new
+  self~assertTrue(t1~hasMethod('NEWMETHOD'))
+  self~assertEquals(123, t1~newMethod)
+  -- now replace that method
+  newClass~defineMethods(.stringTable~of(('newMethod', ("/**/", "return 456"))))
+  t2 = newClass~new
+  -- the t1 object is unchanged, t2 has the new method
+  self~assertEquals(123, t1~newMethod)
+  self~assertEquals(456, t2~newMethod)
+
+
+  -- this will hide the method
+  newClass~defineMethods(.stringTable~of(('newMethod', .nil)))
+  t3 = newClass~new
+  self~assertSame(.nil, newClass~method('NEWMETHOD'))
+  self~assertFalse(t3~hasMethod('NEWMETHOD'))
+  self~assertTrue(t2~hasMethod('NEWMETHOD'))
+
+  -- and the third style of adding a method
+  newClass~defineMethods(.stringTable~of(('newMethod', .method~new('test', "return 789"))))
+  t4 = newClass~new
+  self~assertTrue(t4~hasMethod('NEWMETHOD'))
+  self~assertEquals(789, t4~newMethod)
+
+  -- we're going to make changes to the mixin and check that the
+  -- inheriting class gets the methods.
+  mixin = .DefineTesterMixin~mixinclass('aMixin')
+  newClass = .DefineTesterBase~subclass('TestClass')
+  newClass~inherit(mixin)
+
+  mixin~defineMethods(.stringTable~of(('newMethod', "return 'abc'")))
+  t1 = newClass~new
+  self~assertTrue(t1~hasMethod('NEWMETHOD'))
+  self~assertEquals('abc', t1~newMethod)
+
+::method test_define_no_args
+  self~expectSyntax(88.901)
+  .defineTesterBase~define
+
+::method test_define_no_name
+  self~expectSyntax(88.901)
+  .defineTesterBase~define(, "return 123")
+
+::method test_define_extra_arg
+  self~expectSyntax(93.902)
+  .defineTesterBase~define("somemethod", ("x = something",,"return 123"), "huh?")
+
+::method test_define_bad_name
+  self~expectSyntax(88.909)
+  .defineTesterBase~define(.nil, "return 123")
+
+::method test_define_sparse_array_source
+  self~expectSyntax(93.952)
+  .defineTesterBase~define("somemethod", ("x = something",,"return 123"))
+
+::method test_define_bad_method
+  self~expectSyntax(93.974)
+  .defineTesterBase~define("somemethod", .array)
+
+::method test_define_non_string_array_value
+  self~expectSyntax(93.952)
+  .defineTesterBase~define("somemethod", ("x = something",.nil,"return 123"))
+
+::method test_defineMethods_no_args
+  self~expectSyntax(88.901)
+  .defineTesterBase~defineMethods
+
+::method test_definemethods_not_collection
+  self~expectSyntax(97.1)
+  .defineTesterBase~defineMethods(.stringtable)
+
+::method test_defineMethods_extra_arg
+  self~expectSyntax(93.902)
+  .defineTesterBase~defineMethods(.stringTable~of(('newMethod', "return 'abc'")), "huh?")
+
+::method test_definemethods_bad_name
+  self~expectSyntax(88.909)
+  .defineTesterBase~defineMethods(.stringTable~of((.nil, "return 'abc'")))
+
+::method test_definemethods_sparse_array_source
+  self~expectSyntax(93.952)
+  .defineTesterBase~defineMethods(.stringTable~of(("somemethod", ("x = something",,"return 123"))))
+
+::method test_definemethods_bad_method
+  self~expectSyntax(93.974)
+  .defineTesterBase~defineMethods(.stringTable~of(("somemethod", .array)))
+
+::method test_definemethods_non_string_array_value
+  self~expectSyntax(93.952)
+  .defineTesterBase~defineMethods(.stringTable~of(("somemethod", ("x = something",.nil,"return 123"))))
+
+::method test_delete_no_args
+  self~expectSyntax(88.901)
+  .defineTesterBase~delete
+
+::method test_delete_extra_arg
+  self~expectSyntax(93.902)
+  .defineTesterBase~delete("somemethod", "huh?")
+
+::method test_subclasses_gc
+signal off novalue
+  cl = .DefineTester~subclass('aSubclass')
+  ref = .weakreference~new(cl)
+  -- make sure this shows up as a subclass
+  self~assertSame(1, .DefineTester~subclasses~items)
+
+  drop cl
+  loop while ref~value \= .nil
+     x = copies('abc', 100000)
+  end
+
+  self~assertSame(0, .DefineTester~subclasses~items)
+
+-- some classes to test the effects of define
+::Class DefineTesterBase
+::method testOverride
+  return "Base"
+
+::class DefineTesterMixin mixinclass Object
+::method testOverride
+  return "Mixin"
+
+::class DefineTester subclass DefineTesterBase
+
+::class MixinDefineTester inherit DefineTesterMixin
+
+
+/* ************************************************************************* */
+/* ************************************************************************* */
+/* ************************************************************************* */
+
+
+/* ************************************************************************* */
+::CLASS test_a    -- used in test case method "test_DEFINE"
+
+
+/* ************************************************************************* */
+::CLASS test_b1   -- used in test case method "test_DELETE"
+::method testMethod
+  return 'test_b1'
+
+::CLASS test_b2 subclass test_b1 -- used in test case method "test_DELETE"
+::method someMethod
+  return 'hello'
+
+
+/* ************************************************************************* */
+::CLASS test_c    -- used in test case method "test_ENHANCED"
+::method init
+  expose rgf
+  use arg rgf
+
+::method rgf attribute
+
+/* ************************************************************************* */
+
+
+/* ************************************************************************* */
+/*    Single inheritance                                                     */
+/* ************************************************************************* */
+
+::CLASS  Fahrzeug
+::METHOD name    ATTRIBUTE
+::METHOD INIT
+  self~name = ARG(1)
+
+::CLASS  StrassenFahrzeug  SUBCLASS Fahrzeug
+::METHOD drive
+  RETURN self~name": 'Ich fahre jetzt...'"
+
+::CLASS  "WasserFahrzeug"  SUBCLASS Fahrzeug
+::METHOD swim
+  RETURN self~name": 'Ich schwimme jetzt...'"
+
+/* ************************************************************************* */
+
+
+
+/* ************************************************************************* */
+/*    Multiple Inheritance: DO NOT CHANGE CLASS DEFINITION                   */
+/* ************************************************************************* */
+
+/*
+/* Multiple Inheritance */
+.RoadVehicle      ~new("Truck")   ~drive
+.WaterVehicle     ~new("Boat")    ~swim
+.AmphibianVehicle ~new("SwimCar") ~show_off
+*/
+
+::method test_issubclassof
+  self~assertTrue(.vehicle~issubclassof(.object))
+  self~assertFalse(.vehicle~issubclassof(.class))
+
+  self~assertTrue(.roadvehicle~issubclassof(.object))
+  self~assertTrue(.roadvehicle~issubclassof(.vehicle))
+
+  self~assertTrue(.Amphibianvehicle~issubclassof(.object))
+  self~assertTrue(.Amphibianvehicle~issubclassof(.vehicle))
+  self~assertTrue(.Amphibianvehicle~issubclassof(.roadvehicle))
+  self~assertTrue(.Amphibianvehicle~issubclassof(.watervehicle))
+
+::CLASS  Vehicle                                   -- base class
+::METHOD name    ATTRIBUTE
+::METHOD INIT
+  self~name = ARG(1)
+
+::METHOD show_off
+  return "Vehicle's SHOW_OFF method"
+
+::CLASS  RoadVehicle   MIXINCLASS Vehicle
+::METHOD drive
+  RETURN self~name": 'I drive now...'"
+
+::CLASS  WaterVehicle     MIXINCLASS Vehicle
+::METHOD swim
+  RETURN self~name": 'I swim now...'"
+
+::CLASS AmphibianVehicle SUBCLASS RoadVehicle INHERIT WaterVehicle
+::METHOD show_off
+  RETURN self~drive self~swim
+
+::class Transportation mixinclass object
+
+::class AirCraft mixinclass object
+
+/* ************************************************************************* */
+
+
+
+/* ************************************************************************* */
+/*    Metaclasses, Multiple Inheritance                                      */
+/* ************************************************************************* */
+
+   /* Metaclass: count number of new messages (to create instances) */
+::class counter mixinclass class
+::method init                 -- initialize attribute
+  expose counter
+  counter=0
+  forward class (super)       -- let the superclass initialize
+
+::method counter attribute    -- define attribute
+
+::method new                  -- count number of instances
+  expose counter
+  counter=counter+1
+  forward class (super)
+
+
+   /* Metaclass: make sure that only one and only one instance is created and returned */
+::class singleton mixinclass class
+::method init                 -- initialize attribute
+  expose singleton
+  singleton=.nil
+  forward class (super)       -- let the superclass initialize
+
+::method singleton attribute  -- define attribute
+
+::method new                  -- implement singleton semantics
+  expose singleton
+
+  if .nil=singleton then      -- an instance has not been created
+  do
+     forward class (super) continue    -- create an instance
+     singleton=result                  -- save the instance
+  end
+  return singleton            -- return the (singleton) instance
+
+
+
+   /* Count number of new-messages, return singleton instance.
+      Uses MIXINCLASS. */
+::class CounterSingleton_mixinclass mixinclass Counter inherit Singleton
+
+
+   /* Return singleton instance, count number of instances (<=1)
+      Uses MIXINCLASS. */
+::class SingletonCounter_mixinclass mixinclass Singleton inherit Counter
+
+
+   /* Count number of new-messages, return singleton instance.
+      Uses SUBCLASS. */
+::class CounterSingleton_subclass subclass Counter inherit Singleton
+
+
+   /* Return singleton instance, count number of instances (<=1)
+      Uses SUBCLASS. */
+::class SingletonCounter_subclass subclass Singleton inherit Counter
+
+
+
+   /* This time do not use multiple inheritance, but physically copy the
+      singleton code, such that the semantics are: count number of new-messages,
+      return singleton instance
+   */
+::class CounterSingleton_via_normal_inheritance mixinclass counter
+::method init                 -- initialize attribute
+  expose singleton
+  singleton=.nil
+  forward class (super)       -- let the superclass initialize
+
+::method singleton attribute  -- define attribute
+
+::method new                  -- implement singleton semantics
+  expose singleton
+
+  if .nil=singleton then      -- an instance has not been created
+  do
+     forward class (super) continue    -- create an instance
+     singleton=result                  -- save the instance
+  end
+  return singleton            -- return the (singleton) instance
+
+
+
+   /* This time do not use multiple inheritance, but physically copy the
+      counter code, such that the semantics are: return singleton instance,
+      count number of instances (<=1)
+   */
+::class SingletonCounter_via_normal_inheritance mixinclass singleton
+::method init                 -- initialize attribute
+  expose counter
+  counter=0
+  forward class (super)       -- let the superclass initialize
+
+::method counter attribute    -- define attribute
+
+::method new                  -- count number of instances
+  expose counter
+  counter=counter+1
+  forward class (super)
+
+
+
+
+/* ************************************************************************* */
+
+
+::routine en_quote   -- returns string enquoted (escaping quotes within string)
+  parse arg str
+  q='"'     -- define quote
+  return '"' || str~changestr('"', '"'||'"') || '"'
+
+
+
+/* ************************************************************************* */
+/* do not change: used to test sequence of method resolution   */
+/* ------------------------------------------------------ */
+::class class123 metaclass mc123
+
+/* ------------------------------------------------------ */
+::class mc123 mixinclass mc1 inherit mc2 mc3
+
+
+/* ------------------------------------------------------ */
+::class mcbase subclass Class       -- base (meta) class
+
+::method info
+  parse arg string
+  return "'"||(string".")~strip||"'"          -- append dot
+
+/* ------------------------------------------------------ */
+::class mc1 mixinclass mcbase       -- an inheritable (meta) class
+::method info
+  parse arg string
+  forward class (super) array (string"1") -- append '1'
+
+/* ------------------------------------------------------ */
+::class mc2 mixinclass mcbase       -- an inheritable (meta) class
+::method info
+  parse arg string
+  forward class (super) array (string"2") -- append '2'
+
+/* ------------------------------------------------------ */
+::class mc3 mixinclass mcbase       -- an inheritable (meta) class
+::method info
+  parse arg string
+  forward class (super) array (string"3") -- append '3'
+
+
+::class acbase abstract
+::class ac1 mixinclass acbase
+::class ac2 subclass acbase
+
+
+-- a couple of classes for testing define/delete
+::class testDefine1
+::class testDefine2 subclass testDefine1
+
+
+::options novalue error

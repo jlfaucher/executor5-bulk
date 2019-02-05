@@ -1,0 +1,716 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+  parse source . . fileSpec
+
+  group = .TestGroup~new(fileSpec)
+  group~add(.IdentityTable.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "IdentityTable.testGroup" subclass ooTestCase public
+
+::method init
+  expose indexes values
+  forward class (super) continue    -- let superclass initialize
+
+  indexes = .array~of("22", "2"||"2", .object~new, .array~new)
+  values = .array~of(1,2,3,4)
+
+::method buildTable
+  expose indexes values
+  coll = .IdentityTable~new
+  do i = 1 to indexes~size
+      coll[indexes[i]] = values[i]
+  end
+  return coll
+
+
+::method "test_AT01"
+  expose indexes values
+  coll = self~buildTable
+
+  do i = 1 to indexes~size
+      self~assertSame(values[i], coll~at(indexes[i]))
+  end
+
+  self~assertNull(coll~at("2"||"2"))    -- different index object
+  self~assertNull(coll~at(.object~new)) -- different index object
+
+::method "test_[]"
+  expose indexes values
+  coll = self~buildTable
+
+  do i = 1 to indexes~size
+      self~assertSame(values[i], coll[indexes[i]])
+  end
+
+  self~assertNull(coll["2"||"2"])    -- different index object
+  self~assertNull(coll[.object~new]) -- different index object
+
+::method "test_allIndexes"
+  expose indexes
+  coll = self~buildTable
+
+  i = coll~allIndexes
+  self~assertSame(4, coll~items)
+
+  self~assertTrue(indexes~difference(i)~isempty)
+
+  tmp=.IdentityTable~new~allIndexes
+  self~assertTrue(tmp~isInstanceOf(.array))
+  self~assertEquals(0, tmp~items)
+  self~assertEquals(0, tmp~size)
+
+
+::method "test_allItems"
+  expose values
+  coll = self~buildTable
+
+  i = coll~allItems
+  self~assertSame(4, coll~items)
+
+  self~assertTrue(values~difference(i)~isempty)
+
+  tmp=.IdentityTable~new~allItems
+  self~assertTrue(tmp~isInstanceOf(.array))
+  self~assertEquals(0, tmp~items)
+  self~assertEquals(0, tmp~size)
+
+::method "test_difference"
+  expose values indexes
+  coll = self~buildTable
+
+  ce = .IdentityTable~new
+
+  self~assertTrue(self~sameContent(ce, ce~difference(ce)))
+  self~assertTrue(self~sameContent(coll, coll~difference(ce)))
+  self~assertTrue(self~sameContent(ce, coll~difference(coll)))
+
+  coll2 = coll~copy
+
+  diff = .IdentityTable~new
+  diff[indexes[1]] = coll2~remove(indexes[1])
+
+  self~assertTrue(self~sameContent(diff, coll~difference(coll2)))
+  self~assertTrue(self~sameContent(ce, coll2~difference(coll)))
+
+   -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
+   self~assertTrue(self~sameContent(ce, coll~difference(indexes)))
+
+   i2 = .array~of(indexes[1], indexes[2])
+   coll2 = coll~copy
+   coll2~remove(indexes[1])
+   coll2~remove(indexes[2])
+   self~assertTrue(self~sameContent(coll2, coll~difference(i2)))
+
+::method "test_empty"
+  coll = self~buildTable
+  ce = .IdentityTable~new
+
+  self~assertTrue(self~sameContent(ce, ce~copy~~empty))
+  self~assertTrue(self~sameContent(ce, coll~copy~~empty))
+
+::method "test_hasIndex"
+  expose indexes
+  coll = self~buildTable
+
+  do i = 1 to indexes~size
+     self~assertTrue(coll~hasIndex(indexes[i]))
+  end
+
+  self~assertFalse(coll~hasIndex("1223"~substr(2,2)))
+
+::method "test_hasItem"
+  expose values
+  coll = self~buildTable
+
+  do i = 1 to values~size
+     self~assertTrue(coll~hasItem(values[i]))
+  end
+
+  self~assertFalse(coll~hasItem("1223"~substr(2,1)))
+
+::method "test_index"
+  expose values indexes
+  coll = self~buildTable
+
+  do i = 1 to values~size
+     self~assertIdentical(indexes[i], coll~index(values[i]))
+  end
+
+  self~assertNull(coll~index("1223"~substr(2,1)))
+
+::method "test_interSection"
+  expose indexes values
+
+  ce = .IdentityTable~new
+  c1 = self~buildTable
+  ci = c1~copy
+  ci~remove(indexes[1])
+  ci~remove(indexes[2])
+  c2 = ci~copy
+  c2[123] = "fred"
+
+  self~assertTrue(self~sameContent(ce, ce~interSection(ce)))
+
+  self~assertTrue(self~sameContent(ce, c1~interSection(ce)))
+  self~assertTrue(self~sameContent(ce, c2~interSection(ce)))
+
+  self~assertTrue(self~sameContent(ci, c1~interSection(c2)))
+  self~assertTrue(self~sameContent(ci, c2~interSection(c1)))
+
+  self~assertTrue(self~sameContent(c1, c1~interSection(c1)))
+  self~assertTrue(self~sameContent(c2, c2~interSection(c2)))
+
+   -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
+
+  ai = .array~of(indexes[2], indexes[3])
+  c = .IdentityTable~new~~put(indexes[2], indexes[2])~~put(indexes[3], indexes[3])
+
+  d2=c1~interSection(ai)
+
+  self~assertTrue(self~sameContent(c, d2), "subtest8: 'other' is an 'OrderedCollection'")
+
+   -- now test where other is a MapCollection: "makeArray" returns "allItems"
+  other=.table~new
+  other[indexes[1]]=values[3]
+  other[indexes[2]]=values[4]
+  other["a"] ="a"
+
+                 -- expected result
+  c = .IdentityTable~new~~put(values[3], indexes[1])~~put(values[4], indexes[1])
+  d2=c1~interSection(other)
+  self~assertTrue(self~sameContent(c, d2), "subtest9: 'other' is a 'MapCollection'")
+
+
+::method "test_isInstanceOf"     -- test whether collection object is of the correct kind (class)
+
+  o = self~buildTable
+
+  self~assertTrue(o~isInstanceOf(.Object), "01: subclass of .Object")
+  self~assertTrue(o~isInstanceOf(.IdentityTable), "02: subclass of .Object")
+
+  self~assertTrue(o~isInstanceOf(.Collection), "03: subclass of .OrderedCollection")
+  self~assertTrue(o~isInstanceOf(.MapCollection), "03: subclass of .OrderedCollection")
+
+::method "test_isEmpty"
+
+  self~assertTrue(.identityTable~new~isempty)
+  c = self~buildTable
+  self~assertFalse(c~isEmpty)
+  c~empty
+  self~assertTrue(c~isEmpty)
+
+
+::method "test_items"
+
+  self~assertEquals(0, .identityTable~new~items)
+  c = self~buildTable
+  self~assertEquals(4, c~items)
+  c~empty
+  self~assertEquals(0, c~items)
+
+
+::method "test_makeArray"
+  expose indexes
+
+  coll = self~buildTable
+  tmp = coll~makeArray
+  self~assertTrue(tmp~isInstanceOf(.array))
+  self~assertSame(4, tmp~items)
+  self~assertTrue(indexes~difference(tmp)~isempty)
+
+  tmp= .identityTable~new~makeArray
+  self~assertTrue(tmp~isInstanceOf(.array))
+  self~assertEquals(0, tmp~items)
+
+
+::method "test_PUT"
+  expose indexes values
+
+  tmpColl = .identityTable~new
+  self~assertEquals(0, tmpColl~items)
+
+  tmpColl~put(values[1], indexes[1])
+  self~assertEquals(1, tmpColl~items)
+  self~assertTrue(tmpColl~hasindex(indexes[1]))
+  self~assertTrue(tmpColl~hasitem(values[1]))
+
+  tmpColl~put(values[2], indexes[2])
+  self~assertEquals(2, tmpColl~items)
+  self~assertTrue(tmpColl~hasindex(indexes[2]))
+  self~assertTrue(tmpColl~hasitem(values[2]))
+
+
+::method "test_[]="
+  expose indexes values
+
+  tmpColl = .identityTable~new
+  self~assertEquals(0, tmpColl~items)
+
+  tmpColl[indexes[1]] = values[1]
+  self~assertEquals(1, tmpColl~items)
+  self~assertTrue(tmpColl~hasindex(indexes[1]))
+  self~assertTrue(tmpColl~hasitem(values[1]))
+
+  tmpColl[indexes[2]] = values[2]
+  self~assertEquals(2, tmpColl~items)
+  self~assertTrue(tmpColl~hasindex(indexes[2]))
+  self~assertTrue(tmpColl~hasitem(values[2]))
+
+
+::method "test_putAll"
+  expose indexes values
+
+  ce = .identityTable~new
+  c1 = self~buildTable
+
+  self~assertTrue(self~sameContent(ce, ce~copy~~putAll(ce)))
+  self~assertTrue(self~sameContent(c1, c1~copy~~putAll(ce)))
+
+  self~assertTrue(self~sameContent(c1, .identityTable~new~~putAll(c1)))
+
+::method "test_remove"
+  expose indexes values
+
+  ce = .identityTable~new
+  c1 = self~buildTable
+
+  self~assertNull(ce~remove("1"))
+  self~assertNull(ce~remove(.nil))
+
+  self~assertNull(c1~remove("99"))
+
+  self~assertSame(values[1], c1~remove(indexes[1]))
+  self~assertSame(3, c1~items)
+  self~assertNull(c1~remove(indexes[1]))
+  self~assertSame(3, c1~items)
+
+  self~assertSame(values[2], c1~remove(indexes[2]))
+  self~assertSame(2, c1~items)
+
+::method "test_removeItem"
+  expose indexes values
+
+  ce = .identityTable~new
+  c1 = self~buildTable
+
+  self~assertNull(ce~removeItem("1"))
+  self~assertNull(ce~removeItem(.nil))
+
+  self~assertNull(c1~removeItem("99"))
+
+  self~assertSame(values[1], c1~removeItem(values[1]))
+  self~assertSame(3, c1~items)
+  self~assertNull(c1~removeItem(values[1]))
+
+  self~assertSame(values[2], c1~removeItem(values[2]))
+  self~assertSame(2, c1~items)
+  self~assertNull(c1~removeItem(values[2]))
+
+
+::method "test_subset"
+  expose indexes values
+
+  ce = .identityTable~new
+  c1 = self~buildTable
+  c2 = c1~copy
+  c2~remove(indexes[1])
+  c2~remove(indexes[4])
+
+  self~assertTrue(ce~subset(ce))
+  self~assertTrue(ce~subset(c1))
+
+  self~assertTrue(c1~subset(c1))
+
+  self~assertTrue(c2~subset(c1))
+
+  self~assertFalse(c1~subset(ce))
+  self~assertFalse(c1~subset(c2))
+
+   -- now test where other is an 'OrderedCollection'
+
+  self~assertTrue(c1~subset(indexes))
+  self~assertFalse(c1~subset(.array~of(indexes[1], indexes[2], indexes[3])))
+
+::method "test_Supplier"
+  ce = .identityTable~new
+  c1 = self~buildTable
+
+  self~assertTrue(self~sameContent(ce, makeColl(.IdentityTable, ce)))
+  self~assertTrue(self~sameContent(c1, makeColl(.IdentityTable, c1)))
+
+  return
+
+makeColl: procedure
+  use arg clz, tmpColl
+
+  new=clz~new
+  s=tmpColl~supplier
+  do while s~available
+     new~put(s~item, s~index)
+     s~next
+  end
+  return new
+
+::method "test_union"
+  expose indexes values
+
+  ce = .identityTable~new
+  c1 = self~buildTable
+  res = c1~copy
+  res[1] = "Fred"
+  c2 = .identitytable~new
+  c2[1] = "Fred"
+
+
+  self~assertTrue(self~sameContent(ce, ce~union(ce)))
+
+  self~assertTrue(self~sameContent(c1, c1~union(ce)))
+
+  self~assertTrue(self~sameContent(c1, ce~union(c1)))
+
+  self~assertTrue(self~sameContent(res, c1~union(c2)))
+  self~assertTrue(self~sameContent(res, c2~union(c1)))
+
+
+   -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
+  res = c1~copy
+  res[1] = 1
+  res["Fred"] = "Fred"
+  other=.array~new
+  other[104]="1"
+  other[106]="Fred"
+
+      -- expected result
+  d2=c1~union(other)
+  self~assertTrue(self~sameContent(res, d2), "subtest8: 'other' is an 'OrderedCollection'")
+
+::method "test_xor"
+  expose indexes values
+
+  ce = .identityTable~new
+  c1 = self~buildTable
+
+  c2 = c1~copy
+  c2~remove(indexes[1])
+  c2~remove(indexes[2])
+
+  c3 = c1~copy
+  c3~remove(indexes[3])
+  c3~remove(indexes[4])
+
+  self~assertTrue(self~sameContent(ce, ce~xor(ce)))
+
+  self~assertTrue(self~sameContent(c1, c1~xor(ce)))
+  self~assertTrue(self~sameContent(c1, ce~xor(c1)))
+
+  self~assertTrue(self~sameContent(c3, c1~xor(c2)))
+  self~assertTrue(self~sameContent(c3, c2~xor(c1)))
+
+  self~assertTrue(self~sameContent(c2, c1~xor(c3)))
+  self~assertTrue(self~sameContent(c2, c3~xor(c1)))
+
+  self~assertTrue(self~sameContent(ce, c1~xor(c1)))
+  self~assertTrue(self~sameContent(ce, c2~xor(c2)))
+
+
+   -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
+  other=.array~new
+  other[104]=indexes[1]
+  other[106]=indexes[2]
+  d2=c1~xor(other)
+  self~assertTrue(self~sameContent(c2, d2), "subtest8: 'other' is an 'OrderedCollection'")
+
+::method "test_equivalent"
+  emptytable = .identitytable~new
+  table1 = .identitytable~new
+  table1[1] = "a"
+  table1[2] = "b"
+  table1[3] = "c"
+
+  table2 = table1~copy
+
+  -- empty tables of two different sizes...still equivalent
+
+
+  self~assertTrue(emptytable~equivalent(.identitytable~new))
+  -- empty vs. non-empty, two ways
+  self~assertFalse(table1~equivalent(emptytable))
+  self~assertFalse(emptytable~equivalent(table1))
+  -- simple true test
+  self~assertTrue(table1~equivalent(table2))
+  table2[2] = 'z'
+  -- same number of items, different values
+  self~assertFalse(table1~equivalent(table2))
+  -- same values, different indexes
+  table3 = table1~copy
+  table3~remove(2)
+  table3[4] = "b"
+  self~assertFalse(table1~equivalent(table3))
+  -- different number of items
+  table3~remove(4)
+  self~assertFalse(table1~equivalent(table3))
+  self~assertFalse(table3~equivalent(table1))
+
+::method "test_disjoint"
+  emptyTable = .identityTable~new
+  table1 = .identityTable~new
+  table1[1] = "a"
+  table1[2] = "b"
+  table1[3] = "c"
+
+  table2 = table1~copy
+  -- same indexes, different values
+  table3 = .identityTable~new
+  table1[1] = "x"
+  table1[2] = "y"
+  table1[3] = "z"
+
+  -- empty tables of two different sizes...still equivalent
+
+
+  self~assertTrue(emptyTable~disjoint(.identityTable~new))
+  -- empty vs. non-empty, two ways
+  self~assertTrue(table1~disjoint(emptyTable))
+  self~assertTrue(emptytable~disjoint(table1))
+  -- simple overlap test
+  self~assertFalse(table1~disjoint(table2))
+  -- same indices, different values
+  self~assertTrue(table1~disjoint(table3))
+  -- same values, different indexes
+  table3~empty
+  table3[4] = "a"
+  table3[5] = "b"
+  table3[6] = "c"
+  self~assertTrue(table1~disjoint(table3))
+  -- different number of items
+  table2~remove(3)
+  self~assertFalse(table1~disjoint(table2))
+
+::method "test_of_01"
+  self~expectSyntax(97.1)     --[SYNTAX 97.1]
+                              -- Object "The NIL object" does not understand message "+".
+  d1=.identitytable~of()
+
+::method "test_of_02"
+  self~expectSyntax(93.903)   --[SYNTAX 93.903]
+                              -- Missing argument in method; argument 1 is required.
+  d2=.identitytable~of(,(a,b),)
+
+
+::method "test_of_03"
+  self~expectSyntax(93.903)   --[SYNTAX 93.903]
+                              -- Missing argument in method; argument 3 is required.
+  d3=.identitytable~of((a,b),(c,d),,(e,f))
+
+::method "test_of_04"
+  d=.identitytable~new
+  d2=.identitytable~of((d,1))
+  self~assertSame(1, d2[d])
+
+::method "test_of_05"          -- ok
+  d3=.identitytable~of((a,b),(c,d),(e,f))
+  d4=.identitytable~new
+  d4~put(b,a); d4~put(d,c); d4~put(f,e)
+  d5=.identitytable~new
+  d5[a]=b; d5[c]=d; d5[e]=f
+  ilist=.array~of(b,d,f)
+  self~assertSame(d3~items,d4~items)
+  Do i=1 To ilist~items
+    ix=ilist[i]
+    self~assertSame(d4[ix],d3[ix])
+    self~assertSame(d5[ix],d4[ix])
+    --self~assertSame(d6[ix],d5[ix])
+    End
+
+::method "test_of_05a"
+  self~expectSyntax(97.1)     --[SYNTAX 97.1] raised unexpectedly.
+                              -- Object "an IdentityTable" does not understand message "A=".
+  d6=.identitytable~new
+  d6~a=b; d6~c=d; d6~e=f
+
+::method "test_of_06"
+  self~expectSyntax(88.923)   --[SYNTAX 88.923] raised unexpectedly.
+                              -- OF argument 1 must be a single-dimensional array;
+                              -- found "The NIL object".
+  d=.identitytable~of(.nil)
+
+::method "test_of_07"
+  a=.array~of(x,y)
+  d=.identitytable~of(a)
+  self~assertSame(y,d[x])
+
+::method "test_of_08"
+  a=.array~of(.nil,u)
+  d=.identitytable~of(a)
+  self~assertSame("U", d[.nil])
+
+::method "test_of_09"
+  a=.array~of(v,.nil)
+  d=.identitytable~of(a)          -- an array
+  self~assertSame(.nil,d[v])
+
+::method "test_of_10"
+  self~expectSyntax(88.924)   --[SYNTAX 88.924]
+                              -- OF argument 1 must be an array with exactly 2 items.
+  d=.identitytable~of((1,))       -- index no value
+
+::method "test_of_11"
+  self~expectSyntax(88.924)   --[SYNTAX 88.924]
+                              -- OF argument 1 must be an array with exactly 2 items.
+  d=.identitytable~of((,2))       -- value, no index
+
+::method "test_of_12"
+  self~expectSyntax(88.924)   --[SYNTAX 88.924]
+                              -- OF argument 1 must be an array with exactly 2 items.
+  d=.identitytable~of((1,2,3))    -- too many items in the array
+
+::method "test_of_13"         -- pairs are applied left to right
+  d=.identitytable~of((x,y),(x,y),(x,z))
+  self~assertSame(1,d~items)
+  self~assertSame(z,d[x])
+  d~put(1,2)
+  self~assertSame(2,d~items)
+  self~assertSame(1,d[2])
+  d~remove(x)
+  self~assertSame(1,d~items)
+  self~assertSame(1,d[2])
+
+
+::method "test_for_01"
+  d1=.identitytable~of((a,b),(c,d),(e,f))
+  a=.array~new
+  loop el over d1 for 2
+    a~append(el)
+    End
+  self~assertSame(2,a~items)
+
+::method "test_for_02"
+  el='undefined'
+  d2=.identitytable~of((a,b),(c,d),(e,f))
+  a=.array~new
+  loop el over d2 for 0
+    a~append(el)
+    End
+  self~assertSame(0,a~items)
+
+::method "test_for_03"
+  d3=.identitytable~of((a,b),(c,d),(e,f))
+  a=.array~new
+  loop el over d3 for 10
+    a~append(el)
+    End
+  self~assertSame(3,a~items)
+
+
+-- in contrast to a Table, an IdentityTable should see two object
+-- instances which compare true with == as different indexes (or items),
+-- because they are really different objects
+-- see https://sourceforge.net/p/oorexx/bugs/1468
+::method test_bug_1468
+  t = .IdentityTable~new
+  f1 = .File~new(1)
+  f2 = .File~new(1)
+  -- f1 and f2 compare true for = and == ..
+  self~assertTrue(f1 = f2)
+  self~assertTrue(f1 == f2)
+  -- .. but compare false for f1~identityHash == f2~identityHash
+  self~assertFalse(f1~identityHash == f2~identityHash)
+  -- an IdentityTable should see them as two different indexes
+  t[f1] = .true
+  t[f2] = f2
+  self~assertEquals(2, t~items)
+  self~assertTrue(t~hasIndex(f1))
+  self~assertTrue(t~hasIndex(f2))
+
+  -- same goes for item equality
+  self~assertFalse(t~hasItem(f1))
+  self~assertTrue(t~hasItem(f2))
+
+
+/* Test whether both collections contain the same entries.
+   returns .true, if the same, .false else
+*/
+::method "sameContent"
+  use arg coll_1, coll_2
+  -- must be same class also
+  if coll_1~class \== coll_2~class then
+     return .false
+
+  if coll_1~items<>coll_2~items then do   -- not the same amount of objects
+     say "collections are different sizes:" coll_1~items "vs." coll_2~items
+     return .false
+  end
+
+   -- work on a copy
+  tmp=coll_1~copy
+  do o over coll_2
+     if \tmp~hasindex(o) then do          -- no entry anymore ?
+        say "mismatch on index" o
+        return .false
+     end
+
+     tmp~remove(o)                        -- remove object
+  end
+
+  return (tmp~isEmpty)                    -- if the same, then no items left
+
+
+::routine "dumpColl"
+  use arg coll, title
+  if arg(2, "o") then title=o~class~id "object ("coll~items" entries)"
+
+  .output~charout(">>>" title": [")
+  do o over coll
+     .output~charout("" o~string)
+  end
+  say "] <<<"
+  say
+

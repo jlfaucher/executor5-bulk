@@ -1,0 +1,182 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.Comparator.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "Comparator.testGroup" subclass ooTestCase public
+::method TestComparator
+  c = .Comparator~new
+  self~assertSame(0, c~compare("abc", "abc"))
+  self~assertSame(1, c~compare("dbc", "abc"))
+  self~assertSame(-1, c~compare("abc", "dbc"))
+  self~assertSame(-1, c~compare("ab", "abc"))
+  self~assertSame(1, c~compare("abc", "ab"))
+
+  self~assertSame(0, c~compare(.TestComparable~new("abc"), .TestComparable~new("abc")))
+  self~assertSame(1, c~compare(.TestComparable~new("dbc"), .TestComparable~new("abc")))
+  self~assertSame(-1, c~compare(.TestComparable~new("abc"), .TestComparable~new("dbc")))
+  self~assertSame(-1, c~compare(.TestComparable~new("ab"), .TestComparable~new("abc")))
+  self~assertSame(1, c~compare(.TestComparable~new("abc"), .TestComparable~new("ab")))
+
+::method TestDescendingComparator
+  c = .DescendingComparator~new
+  self~assertSame(0, c~compare("abc", "abc"))
+  self~assertSame(-1, c~compare("dbc", "abc"))
+  self~assertSame(1, c~compare("abc", "dbc"))
+  self~assertSame(1, c~compare("ab", "abc"))
+  self~assertSame(-1, c~compare("abc", "ab"))
+
+  self~assertSame(0, c~compare(.TestComparable~new("abc"), .TestComparable~new("abc")))
+  self~assertSame(-1, c~compare(.TestComparable~new("dbc"), .TestComparable~new("abc")))
+  self~assertSame(1, c~compare(.TestComparable~new("abc"), .TestComparable~new("dbc")))
+  self~assertSame(1, c~compare(.TestComparable~new("ab"), .TestComparable~new("abc")))
+  self~assertSame(-1, c~compare(.TestComparable~new("abc"), .TestComparable~new("ab")))
+
+::method TestCaselessComparator
+  c = .CaselessComparator~new
+  self~assertSame(0, c~compare("abc", "abc"))
+  self~assertSame(1, c~compare("dbc", "abc"))
+  self~assertSame(-1, c~compare("abc", "dbc"))
+  self~assertSame(-1, c~compare("ab", "abc"))
+  self~assertSame(1, c~compare("abc", "ab"))
+
+  self~assertSame(0, c~compare("ABC", "abc"))
+  self~assertSame(1, c~compare("DBC", "abc"))
+  self~assertSame(-1, c~compare("ABC", "dbc"))
+  self~assertSame(-1, c~compare("AB", "abc"))
+  self~assertSame(1, c~compare("ABC", "ab"))
+
+::method TestCaselessDescendingComparator
+  c = .CaselessDescendingComparator~new
+  self~assertSame(0, c~compare("abc", "abc"))
+  self~assertSame(-1, c~compare("dbc", "abc"))
+  self~assertSame(1, c~compare("abc", "dbc"))
+  self~assertSame(1, c~compare("ab", "abc"))
+  self~assertSame(-1, c~compare("abc", "ab"))
+
+  self~assertSame(0, c~compare("ABC", "abc"))
+  self~assertSame(-1, c~compare("DBC", "abc"))
+  self~assertSame(1, c~compare("ABC", "dbc"))
+  self~assertSame(1, c~compare("AB", "abc"))
+  self~assertSame(-1, c~compare("ABC", "ab"))
+
+::method TestColumnComparator
+  c = .ColumnComparator~new(4, 3)
+  self~assertSame(0, c~compare("xxxabcxxx", "xxxabcxxx"))
+  self~assertSame(1, c~compare("xxxdbcxxx", "xxxabcxxx"))
+  self~assertSame(-1, c~compare("xxxabcxxx", "xxxdbcxxx"))
+  self~assertSame(-1, c~compare("xxxab", "xxxabcxxx"))
+  self~assertSame(1, c~compare("xxxabcxxx", "xxxab"))
+
+::method TestCaselessColumnComparator
+  c = .CaselessColumnComparator~new(4, 3)
+  self~assertSame(0, c~compare("xxxabcxxx", "xxxabcxxx"))
+  self~assertSame(1, c~compare("xxxdbcxxx", "xxxabcxxx"))
+  self~assertSame(-1, c~compare("xxxabcxxx", "xxxdbcxxx"))
+  self~assertSame(-1, c~compare("xxxab", "xxxabcxxx"))
+  self~assertSame(1, c~compare("xxxabcxxx", "xxxab"))
+
+  self~assertSame(0, c~compare("xxxABCxxx", "XXXabcXXX"))
+  self~assertSame(1, c~compare("xxxDBCxxx", "XXXabcXXX"))
+  self~assertSame(-1, c~compare("xxxABCxxx", "XXXdbcXXX"))
+  self~assertSame(-1, c~compare("XXXAB", "xxxabcxxx"))
+  self~assertSame(1, c~compare("xxxABCxxx", "XXXab"))
+
+::method TestInvertingComparator
+  c = .InvertingComparator~new(.Comparator~new)
+  self~assertSame(0, c~compare("abc", "abc"))
+  self~assertSame(-1, c~compare("dbc", "abc"))
+  self~assertSame(1, c~compare("abc", "dbc"))
+  self~assertSame(1, c~compare("ab", "abc"))
+  self~assertSame(-1, c~compare("abc", "ab"))
+
+  self~assertSame(0, c~compare(.TestComparable~new("abc"), .TestComparable~new("abc")))
+  self~assertSame(-1, c~compare(.TestComparable~new("dbc"), .TestComparable~new("abc")))
+  self~assertSame(1, c~compare(.TestComparable~new("abc"), .TestComparable~new("dbc")))
+  self~assertSame(1, c~compare(.TestComparable~new("ab"), .TestComparable~new("abc")))
+  self~assertSame(-1, c~compare(.TestComparable~new("abc"), .TestComparable~new("ab")))
+
+::method TestNumericComparator
+  c = .NumericComparator~new
+  -- a whole series of equivalent numeric values
+  self~assertSame(0, c~compare(1, 1e0))
+  self~assertSame(0, c~compare(1.00000, 10e-1))
+  -- these should compare equal under numeric digits 9
+  self~assertSame(0, c~compare(1.000e+0, 1.000000001))
+  -- now some greater options
+  self~assertSame(1, c~compare("1", "-0.0"))
+  self~assertSame(1, c~compare("-4e2", "-401"))
+  self~assertSame(1, c~compare("+6", "5.99999999"))
+  -- and some less than tests...we'll just invert the previous tests
+  self~assertSame(-1, c~compare("-0.0", "1"))
+  self~assertSame(-1, c~compare("-401", "-4e2"))
+  self~assertSame(-1, c~compare("5.99999999", "+6"))
+
+  c2 = .NumericComparator~new(12)
+  -- some examples that would compare equal under default digits
+  self~assertSame(0, c~compare(123456789000, 123456789001))
+  self~assertSame(-1, c2~compare(123456789000, 123456789001))
+
+
+::class TestComparable
+::method init
+  expose value
+  use arg value
+
+::method compareTo
+  expose value
+  use arg other
+  return value~compareTo(other~value)
+
+::attribute value
+
+
+::options novalue error

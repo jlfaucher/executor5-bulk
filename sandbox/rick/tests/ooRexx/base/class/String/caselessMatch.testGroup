@@ -1,0 +1,137 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.caselessMatch.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "caselessMatch.testGroup" subclass ooTestCase public
+
+::method "test_Match_caseless"
+
+  str = .String~new("abcDEFghi")
+  null = .String~new("")
+  abc = .String~new("abc")
+  self~assertTrue(str~caselessMatch(2, "bc"))
+  self~assertTrue(str~caselessMatch(2, "bcD"))
+  self~assertTrue(str~caselessMatch(2, "bcd"))
+  self~assertFalse(str~caselessMatch(2, "ab"))
+  self~assertFalse(str~caselessMatch(2, "cD"))
+
+  self~assertFalse(null~caselessMatch(1, "Abc"))
+  self~assertFalse(abc~caselessMatch(4, "abc"))
+  self~assertFalse(abc~caselessMatch(1, "abcd"))
+
+  self~assertTrue(str~caselessMatch(2, "dbc", 2))
+  self~assertTrue(str~caselessMatch(2, "dbce", 2, 2))
+  self~assertFalse(abc~caselessMatch(1, ""))
+  self~assertFalse(abc~caselessMatch(1, "abc", 1, 0))
+
+  -- out of bounds should all be false
+  self~assertFalse(str~caselessMatch(str~length + 1, "i"))
+  self~assertFalse(str~caselessMatch(1, "abc", 4))
+  self~assertFalse(str~caselessMatch(1, "abc", 1, 4))
+
+::method testZeroPos
+  abc = .String~new("abc")
+  self~expectSyntax(93.924)
+  x = abc~caselessMatch(0, "abc")
+
+::method testNegativePos
+  abc = .String~new("abc")
+  self~expectSyntax(93.924)
+  x = abc~caselessMatch(-1, "abc")
+
+::method testNonIntegerPos
+  abc = .String~new("abc")
+  self~expectSyntax(93.924)
+  x = abc~caselessMatch(1.1, "abc")
+
+::method testNonNumericPos
+  abc = .String~new("abc")
+  self~expectSyntax(93.924)
+  x = abc~caselessMatch('a', "abc")
+
+::method testZeroN
+  abc = .String~new("abc")
+  self~expectSyntax(93.924)
+  x = abc~caselessMatch(1, "abc", 0)
+
+::method testNegativeN
+  abc = .String~new("abc")
+  self~expectSyntax(93.924)
+  x = abc~caselessMatch(1, "abc", -1)
+
+::method testNonIntegerN
+  abc = .String~new("abc")
+  self~expectSyntax(93.924)
+  x = abc~caselessMatch(1, "abc", 1.1)
+
+::method testNonNumericN
+  abc = .String~new("abc")
+  self~expectSyntax(93.924)
+  x = abc~caselessMatch(1, "abc", 'a')
+
+::method testNegativeLength
+  abc = .String~new("abc")
+  self~expectSyntax(93.923)
+  x = abc~caselessMatch(1, "abc", 1, -1)
+
+::method testNonIntegerLength
+  abc = .String~new("abc")
+  self~expectSyntax(93.923)
+  x = abc~caselessMatch(1, "abc", 1, 1.1)
+
+::method testNonNumericLength
+  abc = .String~new("abc")
+  self~expectSyntax(93.923)
+  x = abc~caselessMatch(1, "abc", 1, 'a')
+
+
+::options novalue error

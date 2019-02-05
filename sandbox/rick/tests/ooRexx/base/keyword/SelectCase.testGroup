@@ -1,0 +1,310 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.SelectCase.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "SelectCase.testGroup" subclass ooTestCase public
+
+-- some tests of different linend rules
+::method "test_1"
+   Do i=3 to 1 by -1
+      SELECT case i;WHEN 1;THEN;R1='1';WHEN 2;Then;R2='2';OTHERWISE;R3='3';END
+   End
+   self~assertSameList((1, 2, 3), (r1, r2, r3))
+
+::method "test_2"
+   Do i=3 to 1 by -1
+      SELECT case i;WHEN 1 THEN R1='1';WHEN 2 Then R2='2';OTHERWISE R3='3';END
+      End
+   self~assertSameList((1, 2, 3), (r1, r2, r3))
+
+::method "test_3"
+   Do i=3 to 1 by -1
+      SELECT case i
+         WHEN 1 THEN R1='1'
+         WHEN 2 Then R2='2'
+         OTHERWISE R3='3'
+         END
+      End
+   self~assertSameList((1, 2, 3), (r1, r2, r3))
+
+-- comments embedded in different places
+::method "test_4"
+   Do i=3 to 1 by -1
+      SELECT   /* comm1 */ case i; WHEN 1 THEN R1='1'    /*     comm2           */
+         /* comm3 */   WHEN 2 Then R2='2'    /*     comm4           */
+         /* comm5 */   OTHERWISE R3='3'        /*     comm6           */
+         END                                            /*     comm7           */
+      SELECT case /* comm1 */ i;  WHEN 1 THEN R4='4'    /*     comm2           */
+         /* comm3 */   WHEN 2 Then R5='5'    /*     comm4           */
+         /* comm5 */   OTHERWISE R6='6'        /*     comm6           */
+         END                                            /*     comm7           */
+      End
+   self~assertSameList((1, 2, 3, 4, 5, 6), (r1, r2, r3, r4, r5, r6))
+
+::method "test_6"
+   SELECT case .true;
+      WHEN i=k THEN self~assertTrue(0)
+      WHEN i=j Then self~assertTrue(0)
+      OTHERWISE     self~assertTrue(1)
+      END
+
+::method "test_7"
+   SELECT case .true ;
+      WHEN i=k THEN nop
+      OTHERWISE     self~assertTrue(1)
+      END
+
+::method "test_8"
+   r1 = 0
+   r2 = 0
+
+   SELECT case 1;
+      WHEN ff(1) THEN R1= 1 ;      /*function ref to check If evaluat*/
+      OTHERWISE       R2 =2 ;
+      END;
+   self~assertSameList((1, 0), (r1, r2))
+   return
+   ff:                                  /* check,which WHEN is executed?*/
+   return arg(1)
+
+
+::method "test_9"
+
+   test = 2
+
+   -- little more of an expression on the select
+   select case test - 1
+      when 3, 2, 1 then do
+         match = 1
+      end
+      -- also matches, but first should get this
+      when 5, 4, 1 then do
+         match = 2
+      end
+      otherwise
+         match = 3
+   end
+
+   self~assertSame(1, match)
+
+::method "test_10"
+  -- testing objects that override "=="
+
+  caseObj = .testEquals~new("ABC")
+
+  whenObj1 = .testEquals~new("DEF")
+  whenObj2 = .testEquals~new("ABC")
+
+   select case caseObj
+      when whenObj1 then do
+         match = 1
+      end
+      -- this one should match
+      when whenObj2 then do
+         match = 2
+      end
+      otherwise
+         match = 3
+   end
+
+   self~assertSame(2, match)
+
+   select case caseObj
+      when whenObj1 then do
+         match = 1
+      end
+      -- this one should match
+      when whenObj1, whenObj2 then do
+         match = 2
+      end
+      otherwise
+         match = 3
+   end
+
+   self~assertSame(2, match)
+
+::method "test_11"
+  -- testing using object identity
+
+  caseObj = .object~new
+
+  whenObj1 = .object~new
+
+   select case caseObj
+      when whenObj1, .nil then do
+         match = 1
+      end
+      -- this one should match
+      when "abc", caseObj then do
+         match = 2
+      end
+      otherwise
+         match = 3
+   end
+
+   self~assertSame(2, match)
+
+   -- some class object tests
+
+   select case .array
+      when object, .class then do
+         match = 1
+      end
+      -- this one should match
+      when "abc", .array, .collection then do
+         match = 2
+      end
+      otherwise
+         match = 3
+   end
+
+   self~assertSame(2, match)
+
+::method 'test_12'
+  self~assertSyntaxError(35.933, ("select case", "when 1 then x = 1", "end"))
+
+::method 'test_13'
+  self~assertSyntaxError(35.934, ("select case 1", "when then x = 1", "end"))
+
+::method 'test_14'
+  self~assertSyntaxError(35.934, ("select case 1", "when , then x = 1", "end"))
+
+::method 'test_16'
+  self~assertSyntaxError(35.934, ("select case 1", "when 1, then x = 1", "end"))
+
+::method 'test_17'
+  self~assertSyntaxError(35.934, ("select case 1", "when ,1 then x = 1", "end"))
+
+::method 'test_18'
+  self~assertSyntaxError(35.934, ("select case 1", "when 1,,2 then x = 1", "end"))
+
+::method 'test_19'
+  self~expectSyntax(7.3)
+  select case 3
+    when 1,2 then x = 1
+  end
+
+::method "test_20"
+  self~expectSyntax(97.1)
+  -- testing objects that override "=="
+
+  caseObj = .testBadEquals1~new("ABC")
+
+   select case caseObj
+      -- this should raise an error
+      when .nil then do
+         match = 2
+      end
+      otherwise
+         match = 3
+   end
+
+::method "test_21"
+  self~expectSyntax(91.999)
+  -- testing objects that override "=="
+
+  caseObj = .testBadEquals2~new("ABC")
+
+  whenObj1 = .testBadEquals2~new("DEF")
+  whenObj2 = .testBadEquals2~new("ABC")
+
+   select case caseObj
+      when whenObj1 then do
+         match = 1
+      end
+      -- this one should match
+      when whenObj2, .nil then do
+         match = 2
+      end
+      otherwise
+         match = 3
+   end
+
+
+::class testEquals
+::method init
+  expose value
+  use strict arg value
+
+::attribute value
+
+::method "=="
+  expose value
+  use strict arg other
+  if \other~isa(.testEQuals) then return .false
+
+  return value == other~value
+
+::class testBadEquals1
+::method init
+  expose value
+  use strict arg value
+
+::attribute value
+
+::method "=="
+  expose value
+  use strict arg other
+  return value == other~value
+
+::class testBadEquals2
+::method init
+  expose value
+  use strict arg value
+
+::attribute value
+
+::method "=="
+  -- no return value
+  return
+
+

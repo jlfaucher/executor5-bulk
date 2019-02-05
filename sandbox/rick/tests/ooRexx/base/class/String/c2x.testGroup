@@ -1,0 +1,182 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.String_c2xMethod.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "String_c2xMethod.testGroup" subclass ooTestCase public
+
+::method "test_1"
+   self~assertSame(''~c2x(), '')
+
+::method "test_2"
+   self~assertSame('*'~c2x(), '2A')
+
+::method "test_3"
+   v30='AbCdEfGhIjKlMnOpQrStUvWxYz1234'
+   self~assertSame(v30~c2x(), '4162436445664768496A4B6C4D6E4F705172537455765778597A31323334')
+
+::method "test_4"
+   self~assertSame('ªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªªª'~c2x(), COPIES('AA',250))
+
+::method "test_5"
+   v100000=COPIES('JR',50000)
+   self~assertSame(v100000~c2x(), COPIES('4A52',50000))
+
+::method "test_6"
+   XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX='International Business Machines'
+   self~assertSame(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~c2x(), '496E7465726E6174696F6E616C20427573696E657373204D616368696E6573')
+
+::method "test_7"
+   self~assertSame('D1D9'x~c2x(), 'D1D9')
+
+::method "test_8"
+   self~assertSame((+00000000000000000000000000000000000000000000000000000000000000042)~c2x(), '3432')
+
+::method "test_9"
+   self~assertSame((21*2)~c2x(), '3432')
+
+::method "test_10"
+   self~assertSame((2.1E+1*.2E+1)~c2x(), '3432')
+
+::method "test_11"
+   self~assertSame(((7*3)*2)~c2x(), '3432')
+
+::method "test_12"
+   vn42=42
+   self~assertSame(vn42~c2x(), '3432')
+
+::method "test_13"
+   vn2=2
+   vn21=21
+   self~assertSame((vn21*vn2)~c2x(), '3432')
+
+::method "test_14"
+   vn2=2
+   vn3=3
+   vn7=7
+   self~assertSame(((vn7*vn3)*vn2)~c2x(), '3432')
+
+::method "test_15"
+   NUMERIC DIGITS 1
+   self~assertSame((21*2)~c2x(), '34452B31')
+
+::method "test_16"
+   NUMERIC DIGITS 1
+   self~assertSame((2.1E+1*.2E+1)~c2x(), '34452B31')
+
+::method "test_17"
+   NUMERIC DIGITS 1
+   self~assertSame(((7*3)*2)~c2x(), '34452B31')
+
+::method "test_18"
+   NUMERIC DIGITS 1
+   vn42=42
+   self~assertSame(vn42~c2x(), '3432')
+
+::method "test_19"
+   NUMERIC DIGITS 1
+   vn2=2
+   vn21=21
+   self~assertSame((vn21*vn2)~c2x(), '34452B31')
+
+::method "test_20"
+   NUMERIC DIGITS 1
+   vn2=2
+   vn3=3
+   vn7=7
+   self~assertSame(((vn7*vn3)*vn2)~c2x(), '34452B31')
+
+::method "test_25"
+   self~assertSame(DATATYPE(6)~c2x(), '4E554D')
+
+::method "test_26"
+   self~assertSame(SUBSTR('John R. Buckley',2,13)~c2x(), '6F686E20522E204275636B6C65')
+
+::method "test_27"
+   self~assertSame(WORD('Now is the time',4)~c2x(), '74696D65')
+
+::method "test_28"
+   self~assertSame(SUBWORD('Now is the time',2,2)~c2x(), '697320746865')
+
+::method "test_29"
+   self~assertSame(MAX(0,2,4,6,8,10)~c2x(), '3130')
+
+::method "test_30"
+   self~assertSame('John'~c2x(), '4A6F686E')
+
+::method "test_31"
+   self~assertSame(copies('John',2)~c2x(), '4A6F686E4A6F686E')
+
+::method "test_32"
+   self~assertSame(X2C(('JR')~c2x), 'JR')
+
+::method "test_33"
+   self~assertSame(X2C('D1D9')~c2x(), 'D1D9')
+
+::method "test_34"
+   self~assertSame(C2X('1')~c2x(), '3331')
+
+::method "test_35"
+   self~expectSyntax(93.902)
+   self~assertSame('1'~c2x(1), '3331')
+
+-- rexxref documentation tests
+::method "test_101"
+    self~assertSame("", ''~c2x())
+
+::method "test_102"
+    self~assertSame('0123', '0123'X~c2x()) /* '30313233'X in ASCII */
+
+::method "test_103"
+    self~assertSame('5A4438', 'ZD8'~c2x()) /* '354134343338'X in ASCII */
+
+
+::options novalue error

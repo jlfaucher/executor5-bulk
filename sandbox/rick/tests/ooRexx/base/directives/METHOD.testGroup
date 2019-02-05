@@ -1,0 +1,798 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
+  group = .TestGroup~new(fileSpec)
+
+  group~add(.Method.Directive.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires 'ooTest.frm'
+
+-- a floating method (must precede the first class definition!)
+::method unattachedMethod
+  return "unattached"
+
+::class "Method.Directive.testGroup" subclass ooTestCase public
+
+::method testNoName
+  self~assertSyntaxError(19.902, "::method")
+
+::method testBadName
+  self~assertSyntaxError(19.902, "::method *")
+
+::method testDuplicate
+  self~assertSyntaxError(99.902, ("::method foo", "::method FOO"))
+
+::method testDuplicate2
+  self~assertSyntaxError(99.902, ("::method 'foo'", "::method FOO"))
+
+::method testStringOption
+  self~assertSyntaxError(25.902, "::method 'foo' 'PUBLIC'")
+
+::method testPublicTwice
+  self~assertSyntaxError(25.902, "::method 'foo' Public public")
+
+::method testPackageTwice
+  self~assertSyntaxError(25.902, "::method 'foo' Package package")
+
+::method testPrivateTwice
+  self~assertSyntaxError(25.902, "::method 'foo' private PRIVATE")
+
+::method testPublicPrivate
+  self~assertSyntaxError(25.902, "::method 'foo' public PRIVATE")
+
+::method testPublicPackage
+  self~assertSyntaxError(25.902, "::method 'foo' public PACKAGE")
+
+::method testPackagePublic
+  self~assertSyntaxError(25.902, "::method 'foo' PACKAGE public")
+
+::method testPackagePrivate
+  self~assertSyntaxError(25.902, "::method 'foo' PACKAGE private")
+
+::method testPrivatePublic
+  self~assertSyntaxError(25.902, "::method 'foo' private public")
+
+::method testPrivatePackage
+  self~assertSyntaxError(25.902, "::method 'foo' private package")
+
+::method testGuardedTwice
+  self~assertSyntaxError(25.902, "::method 'foo' guarded GUARDED")
+
+::method testUnguardedTwice
+  self~assertSyntaxError(25.902, "::method 'foo' UnGuarded unguarded")
+
+::method testGuardedUnguarded
+  self~assertSyntaxError(25.902, "::method 'foo' guarded unguarded")
+
+::method testProtectedTwice
+  self~assertSyntaxError(25.902, "::method 'foo' Protected protected")
+
+::method testUnprotectedTwice
+  self~assertSyntaxError(25.902, "::method 'foo' unprotected UNPROTECTED")
+
+::method testProtectedUnprotected
+  self~assertSyntaxError(25.902, "::method 'foo' public PRIVATE")
+
+::method testClassTwice
+  self~assertSyntaxError(25.902, ("::class test", "::method 'foo' Class Class"))
+
+::method testAttributeTwice
+  self~assertSyntaxError(25.902, "::method 'foo' attribute attribute")
+
+::method testAbstractTwice
+  self~assertSyntaxError(25.902, "::method 'foo' attribute attribute")
+
+::method testBadOption
+  self~assertSyntaxError(25.902, "::method 'foo' yadayada")
+
+::method testAttributeCodeBody
+  self~assertSyntaxError(99.934, ("::method 'foo' attribute", "say hi"))
+
+::method testMisplacedClassMethod
+  self~assertSyntaxError(99.905, ("::method 'foo' class", "say hi"))
+
+::method testExternalTwice
+  self~assertSyntaxError(25.902, "::METHOD isCaseSensitive EXTERNAL 'LIBRARY REXX file_case_sensitivexxxxx' EXTERNAL 'LIBRARY REXX file_case_sensitivexxxxx'")
+
+::method testAbstractExternal
+  self~assertSyntaxError(25.902, "::METHOD isCaseSensitive Abstract EXTERNAL 'LIBRARY REXX file_case_sensitivexxxxx'")
+
+::method testExternalAbstract
+  self~assertSyntaxError(25.902, "::METHOD isCaseSensitive EXTERNAL 'LIBRARY REXX file_case_sensitivexxxxx' abstract")
+
+-- some tests of external routines.  NOTE:  tests of registered
+-- external routines need to be done in the API tests so that we have
+-- a reliable library to map to.
+
+::method testExternalLibraryBadName
+  self~assertSyntaxError(90.998, "::METHOD isCaseSensitive EXTERNAL 'LIBRARY REXX file_case_sensitivexxxxx'")
+
+::method testExternalLibraryBadLibraryName
+  self~assertSyntaxError(98.903, "::METHOD isCaseSensitive EXTERNAL 'LIBRARY REXXxxxxxxxx file_case_sensitive'")
+
+::method testExternalLibraryMissingLibraryName
+  self~assertSyntaxError(99.917, "::method foo external 'LIBRARY'")
+
+::method testExternalLibraryMissingSpec
+  self~assertSyntaxError(19.905, "::method foo external")
+
+::method testExternalLibraryBadSpecType
+  self~assertSyntaxError(19.905, "::method foo external library")
+
+::method testExternalLibraryBadRoutineType
+  self~assertSyntaxError(99.917, "::method foo external 'LIB REXX file_case_sensitive'")
+
+::method testExternalLibraryExtraToken
+  self~assertSyntaxError(99.917, "::method foo external 'LIBRARY REXX file_case_sensitive xxxx'")
+
+-- this exists, but is a routine definition
+::method testExternalLibraryNotMethod
+  self~assertSyntaxError(90.998, "::method foo external 'LIBRARY rxmath RxCalxPi'")
+
+::method testExternalCodeBody
+  self~assertSyntaxError(99.936, ("::method foo public external 'LIBRARY REXX file_case_sensitive'", "say hi"))
+
+::method testCallType
+  self~assertEquals("METHOD", .methodTest~new~calltype)
+
+::method testArgCount
+  t = .methodTest~new
+
+  self~assertEquals(0, t~argCount)
+  self~assertEquals(1, t~argCount(1))
+  self~assertEquals(3, t~argCount(1,,3))
+  self~assertEquals(3, t~argCount(1,,3,,,,,,))
+
+::method testContextName
+  self~assertEquals('CONTEXTNAME', .methodTest~new~contextName)
+
+::method testExecutable
+  m = .methodTest~method('EXECUTABLE')
+
+  self~assertSame(m, .methodTest~new~executable)
+
+::method testContextPackage
+
+  self~assertSame(.context~package, .methodTest~new~contextPackage)
+
+::method testArgumentPassing
+  a = 1
+  self~assertIdentical(a, .methodTest~new~getarg(2, a))
+
+::method testPackage
+  package = .context~package
+  self~assertTrue(.methods~equivalent(package~definedMethods))
+
+  self~assertEquals(1, .methods~items)
+  self~assertIsA(.methods~unattachedMethod, .method)
+
+::method testAttributeMethods
+  t = .methodTest~new
+  self~assertTrue(t~hasmethod('anattribute'))
+  self~assertTrue(t~hasmethod('anattribute='))
+  getter = t~instanceMethod('ANATTRIBUTE')
+  setter = t~instanceMethod('ANATTRIBUTE=')
+  self~assertTrue(getter~isAttribute)
+  self~assertTrue(setter~isAttribute)
+
+  self~assertEquals("ANATTRIBUTE", t~anAttribute)
+  t~anattribute = .nil
+  self~assertTrue(\var('RESULT'))
+  self~assertSame(.nil, t~anattribute)
+  t~setAnAttribute(.array)
+  self~assertSame(.array, t~anattribute)
+  t~anattribute = .object
+  self~assertSame(.object, t~getanattribute)
+
+  self~assertTrue(t~hasmethod('privateAttribute'))
+  self~assertTrue(t~hasmethod('privateAttribute='))
+
+  t~setprivateAttribute(.class)
+  self~assertSame(.class, t~getPrivateAttribute)
+
+  self~assertTrue(t~hasmethod('packageattribute'))
+  self~assertTrue(t~hasmethod('packageattribute='))
+  getter = t~instanceMethod('PACKAGEATTRIBUTE')
+  setter = t~instanceMethod('PACKAGEATTRIBUTE=')
+  self~assertTrue(getter~isAttribute)
+  self~assertTrue(setter~isAttribute)
+  self~assertTrue(getter~isPackage)
+  self~assertTrue(setter~isPackage)
+
+  self~assertEquals("PACKAGEATTRIBUTE", t~packageAttribute)
+  t~packageAttribute = .nil
+  self~assertTrue(\var('RESULT'))
+  self~assertSame(.nil, t~packageAttribute)
+
+::method testPrivateGetAttribute
+  self~expectSyntax(97.2)
+  value = .methodTest~new~privateAttribute
+
+::method testPrivateSetAttribute
+  self~expectSyntax(97.2)
+  .methodTest~new~privateAttribute = .nil
+
+::method testPackageGetAttribute
+  self~expectSyntax(97.3)
+  class = self~buildTestClass('test', ("::class test", "::method init", "expose target", "use strict arg target", -
+      "::method test", "expose target", "return target~packageAttribute"))
+  class~new(.methodTest~new)~test
+
+::method testPackageSetAttribute
+  self~expectSyntax(97.3)
+  class = self~buildTestClass('test', ("::class test", "::method init", "expose target", "use strict arg target", -
+      "::method test", "expose target", "target~packageAttribute = 123"))
+  class~new(.methodTest~new)~test
+
+::method testGetAttributeArguments
+  self~expectSyntax(93.902)
+  value = .methodTest~new~anAttribute(123)
+
+::method testSetAttributeNoArgument
+  self~expectSyntax(93.903)
+  .methodTest~new~'ANATTRIBUTE='
+
+::method testSetAttributeTwoArguments
+  self~expectSyntax(93.902)
+  .methodTest~new~'ANATTRIBUTE='(1, 2)
+
+::method testClassAndInstance
+  self~assertEquals(.true, .methodTest~dupClass)
+  self~assertEquals(.false, .methodTest~new~dupClass)
+
+::method testPrivateClassMethod
+  self~expectSyntax(97.2)
+  self~assertTrue(.methodTest~hasmethod('PRIVATECLASSMETHOD'))
+  .methodTest~privateClassMethod
+
+::method testPrivateClassMethodUsage
+  self~assertEquals("privateClassMethod", .methodTest~callPrivateClassMethod)
+  self~assertEquals("privateClassMethod", .methodTest~new~callPrivateClassMethod)
+
+::method testPrivateInstanceMethod
+  self~expectSyntax(97.2)
+  self~assertTrue(.methodTest~new~hasmethod('PRIVATEMETHOD'))
+  .methodTest~new~privateMethod
+
+::method testPrivateInstanceMethodUsage
+  self~assertEquals("privateMethod", .methodTest~callPrivate)
+  self~assertEquals("privateMethod", .methodTest~new~callPrivate)
+
+::method testPackageClassMethod
+  self~expectSyntax(97.3)
+  self~assertTrue(.methodTest~hasmethod('PACKAGECLASSMETHOD'))
+  class = self~buildTestClass('test', ("::class test", "::method init", "expose target", "use strict arg target", -
+      "::method test", "expose target", "return target~packageClassMethod"))
+  class~new(.methodTest)~test
+
+::method testPackageClassMethodUsage
+  self~assertEquals("packageClassMethod", .methodTest~packageClassMethod)
+
+::method testPackageInstanceMethod
+  self~expectSyntax(97.3)
+  self~assertTrue(.methodTest~new~hasmethod('PACKAGEMETHOD'))
+  class = self~buildTestClass('test', ("::class test", "::method init", "expose target", "use strict arg target", -
+      "::method test", "expose target", "return target~packageMethod"))
+  class~new(.methodTest~new)~test
+
+::method testPackageInstanceMethodUsage
+  self~assertEquals("packageMethod", .methodTest~new~packageMethod)
+
+-- method created using a string name with lowercase characters
+::method testStringName
+  t = .methodTest~new
+  self~assertTrue(t~hasMethod('stringMethod'))
+  self~assertEquals('STRINGMETHOD', t~stringMethod)
+
+-- test guarded access, including attribute methods
+::method testGuardedAccess
+  t = .methodTest~new
+  -- start the concurrent access
+  t~aConcurrentMethod
+  -- this will block and wait until the first method terminates
+  t~getGuardedAttribute
+
+  -- accessing an unguarded attribute on the same scope
+  loop while t~unguardedAttribute < 20
+     call syssleep .1
+  end
+  -- send the shutdown signal
+  t~endConcurrentMethod
+  -- sleep to avoid a race condition
+  call syssleep .5
+  -- these two should be the same now
+  self~assertEquals(t~unguardedAttribute, t~finalAttribute)
+
+-- method with no value
+::method testEmptyMethod
+  t = .methodTest~new
+  t~emptyMethod
+  -- result should be dropped now
+  self~assertTrue(\var('RESULT'))
+
+-- test an abstract method
+::method testAbstractMethod
+  self~expectSyntax(93.965)
+  t = .methodTest~new
+  m = t~instanceMethod('ABSTRACTMETHOD')
+  self~assertTrue(m~isAbstract)
+  t~abstractMethod
+
+::method testExternalMethod
+  -- we are calling the same external routine here, so the result should be the same
+  res = .File~isCaseSensitive
+  t = .methodTest~new
+  self~assertEquals(res, .methodTest~isCaseSensitive)
+  self~assertEquals(res, t~isCaseSensitive)
+  -- call to a private version
+  self~assertEquals(res, t~callIsCaseSensitivePrivate)
+  -- call to package version
+  self~assertEquals(res, t~IsCaseSensitivePackage)
+  -- call the method from a routine of the same package
+  self~assertEquals(res, CallIsCaseSensitivePackage(t))
+
+::method testPrivateExternalMethod
+  self~expectSyntax(97.2)
+  self~assertTrue(.methodTest~new~hasmethod('isCaseSensitivePrivate'))
+  .methodTest~new~isCaseSensitivePrivate
+
+::method testPackageExternalMethod
+  self~expectSyntax(97.3)
+  -- create a caller in a different package
+  class = self~buildTestClass('test', ("::class test", "::method init", "expose target", "use strict arg target", -
+      "::method testPackage", "expose target", "return target~isCaseSensitivePackage"))
+
+  test = class~new(.MethodTest~new)
+  test~testPackage
+
+::method testDelegate
+  class = self~buildTestClass('test', ("::class test", "::method init", "expose target", "use strict arg target", -
+      "::method returnValue delegate target", "::method noReturnValue delegate target"))
+
+  test = class~new(.DelegateTarget~new)
+  self~assertTrue(test~hasMethod('returnValue'))
+  self~assertTrue(test~hasMethod('noReturnValue'))
+  self~assertEquals(123, test~returnValue)
+  test~noReturnValue
+  self~assertFalse(var('RESULT'))
+
+  method = test~instanceMethod('returnValue')
+  self~assertFalse(method~isPrivate)
+  self~assertFalse(method~isProtected)
+  self~assertFalse(method~isPackage)
+  self~assertFalse(method~isAbstract)
+  self~assertFalse(method~isAttribute)
+  self~assertTrue(method~isGuarded)
+
+  class = self~buildTestClass('test', ("::class test", "::attribute target class", -
+      "::method returnValue class delegate target", "::method noReturnValue delegate target class"))
+
+  class~target = .DelegateTarget~new
+
+  self~assertTrue(class~hasMethod('returnValue'))
+  self~assertTrue(class~hasMethod('noReturnValue'))
+  self~assertEquals(123, class~returnValue)
+  class~noReturnValue
+  self~assertFalse(var('RESULT'))
+
+  method = class~instanceMethod('returnValue')
+  self~assertFalse(method~isPrivate)
+  self~assertFalse(method~isProtected)
+  self~assertFalse(method~isPackage)
+  self~assertFalse(method~isAbstract)
+  self~assertFalse(method~isAttribute)
+  self~assertTrue(method~isGuarded)
+
+  class = self~buildTestClass('test', ("::class test", "::method init", "expose target", "use strict arg target", -
+      "::method anAttribute delegate target attribute"))
+
+  target = .DelegateTarget~new
+  test = class~new(target)
+  self~assertTrue(test~hasMethod('anAttribute'))
+  self~assertTrue(test~hasMethod('anAttribute='))
+  target~anAttribute = 'abc'
+  self~assertEquals('abc', test~anAttribute)
+  test~anAttribute = 'def'
+  self~assertEquals('def', test~anAttribute)
+  self~assertEquals('def', target~anAttribute)
+
+  method = test~instanceMethod('anAttribute')
+  self~assertFalse(method~isPrivate)
+  self~assertFalse(method~isProtected)
+  self~assertFalse(method~isPackage)
+  self~assertFalse(method~isAbstract)
+  self~assertTrue(method~isAttribute)
+  self~assertTrue(method~isGuarded)
+
+  method = test~instanceMethod('anAttribute=')
+  self~assertFalse(method~isPrivate)
+  self~assertFalse(method~isProtected)
+  self~assertFalse(method~isPackage)
+  self~assertFalse(method~isAbstract)
+  self~assertTrue(method~isAttribute)
+  self~assertTrue(method~isGuarded)
+
+
+  class = self~buildTestClass('test', ("::class test", "::attribute target class", -
+      "::method anAttribute attribute delegate target class"))
+
+  target = .DelegateTarget~new
+  class~target = target
+  self~assertTrue(class~hasMethod('anAttribute'))
+  self~assertTrue(class~hasMethod('anAttribute='))
+  target~anAttribute = 'abc'
+  self~assertEquals('abc', class~anAttribute)
+  class~anAttribute = 'def'
+  self~assertEquals('def', class~anAttribute)
+  self~assertEquals('def', target~anAttribute)
+
+  method = class~instanceMethod('anAttribute')
+  self~assertFalse(method~isPrivate)
+  self~assertFalse(method~isProtected)
+  self~assertFalse(method~isPackage)
+  self~assertFalse(method~isAbstract)
+  self~assertTrue(method~isAttribute)
+  self~assertTrue(method~isGuarded)
+
+  method = class~instanceMethod('anAttribute=')
+  self~assertFalse(method~isPrivate)
+  self~assertFalse(method~isProtected)
+  self~assertFalse(method~isPackage)
+  self~assertFalse(method~isAbstract)
+  self~assertTrue(method~isAttribute)
+  self~assertTrue(method~isGuarded)
+
+  -- now test a bunch of explicit attributes on the methods.  These
+  -- can be simpler, since we're just testing the attributes of the created methods
+  class = self~buildTestClass('test', ("::class test", "::method classDelegate delegate target class private protected unguarded", -
+      "::method delegate private delegate target unguarded protected"))
+
+  method = class~instanceMethod('classDelegate')
+  self~assertTrue(method~isPrivate)
+  self~assertTrue(method~isProtected)
+  self~assertFalse(method~isPackage)
+  self~assertFalse(method~isAbstract)
+  self~assertFalse(method~isAttribute)
+  self~assertFalse(method~isGuarded)
+
+  method = class~method('delegate')
+  self~assertTrue(method~isPrivate)
+  self~assertTrue(method~isProtected)
+  self~assertFalse(method~isPackage)
+  self~assertFalse(method~isAbstract)
+  self~assertFalse(method~isAttribute)
+  self~assertFalse(method~isGuarded)
+
+  -- now test a bunch of explicit attributes on the methods.  These
+  -- can be simpler, since we're just testing the attributes of the created methods
+  class = self~buildTestClass('test', ("::class test", "::method classDelegate public delegate target guarded class unprotected", -
+      "::method delegate guarded delegate target unprotected public"))
+
+  method = class~instanceMethod('classDelegate')
+  self~assertFalse(method~isPrivate)
+  self~assertFalse(method~isProtected)
+  self~assertFalse(method~isPackage)
+  self~assertFalse(method~isAbstract)
+  self~assertFalse(method~isAttribute)
+  self~assertTrue(method~isGuarded)
+
+  method = class~method('delegate')
+  self~assertFalse(method~isPrivate)
+  self~assertFalse(method~isPackage)
+  self~assertFalse(method~isProtected)
+  self~assertFalse(method~isAbstract)
+  self~assertFalse(method~isAttribute)
+  self~assertTrue(method~isGuarded)
+
+  -- now test a bunch of explicit attributes on the methods.  These
+  -- can be simpler, since we're just testing the attributes of the created methods
+  class = self~buildTestClass('test', ("::class test", "::method classDelegate attribute public delegate target guarded class unprotected", -
+      "::method delegate guarded delegate target attribute unprotected public", "::method packageDelegate guarded delegate target protected package", ))
+
+  method = class~instanceMethod('classDelegate')
+  self~assertFalse(method~isPrivate)
+  self~assertFalse(method~isProtected)
+  self~assertFalse(method~isPackage)
+  self~assertFalse(method~isAbstract)
+  self~assertTrue(method~isAttribute)
+  self~assertTrue(method~isGuarded)
+
+  method = class~method('delegate')
+  self~assertFalse(method~isPrivate)
+  self~assertFalse(method~isPackage)
+  self~assertFalse(method~isProtected)
+  self~assertFalse(method~isAbstract)
+  self~assertTrue(method~isAttribute)
+  self~assertTrue(method~isGuarded)
+
+  method = class~instanceMethod('classDelegate=')
+  self~assertFalse(method~isPrivate)
+  self~assertFalse(method~isPackage)
+  self~assertFalse(method~isProtected)
+  self~assertFalse(method~isAbstract)
+  self~assertTrue(method~isAttribute)
+  self~assertTrue(method~isGuarded)
+
+  method = class~method('delegate=')
+  self~assertFalse(method~isPrivate)
+  self~assertFalse(method~isPackage)
+  self~assertFalse(method~isProtected)
+  self~assertFalse(method~isAbstract)
+  self~assertTrue(method~isAttribute)
+  self~assertTrue(method~isGuarded)
+
+  method = class~method('packageDelegate')
+  self~assertFalse(method~isPrivate)
+  self~assertTrue(method~isPackage)
+  self~assertTrue(method~isProtected)
+  self~assertFalse(method~isAbstract)
+  self~assertFalse(method~isAttribute)
+  self~assertTrue(method~isGuarded)
+
+  -- a package scope delegate test
+  class = self~buildTestClass('test', ("::class test", "::method init", "expose target", "use strict arg target", -
+      "::method returnValue delegate target package", "::method testReturnValue", "return self~returnValue"))
+
+  test = class~new(.DelegateTarget~new)
+  self~assertTrue(test~hasMethod('returnValue'))
+  self~assertEquals(123, test~testReturnValue)
+
+  method = test~instanceMethod('returnValue')
+  self~assertFalse(method~isPrivate)
+  self~assertFalse(method~isProtected)
+  self~assertTrue(method~isPackage)
+  self~assertFalse(method~isAbstract)
+  self~assertFalse(method~isAttribute)
+  self~assertTrue(method~isGuarded)
+
+::method test_delegate_no_name
+  self~assertSyntaxError(20.926, "::method test delegate")
+
+::method test_delegate_bad_name
+  self~assertSyntaxError(20.926, "::method test delegate 'target'")
+
+::method test_delegate_twice
+  self~assertSyntaxError(25.902, "::method test delegate target delegate another")
+
+::method test_delegate_abstract
+  self~assertSyntaxError(25.902, "::method test delegate target abstract")
+
+::method test_abstract_delegate
+  self~assertSyntaxError(25.902, "::method test abstract delegate target")
+
+::method test_delegate_external
+  self~assertSyntaxError(25.902, "::method test delegate target external 'LIBRARY REXX file_case_sensitive'")
+
+::method test_delegate_no_body
+  self~assertSyntaxError(99.946, ("::method test delegate target", "return 123"))
+
+
+-- simple method for generating a test class
+::method buildTestClass
+  use strict arg name, source
+
+  p = .package~new('test', source)
+  return p~findClass(name)
+
+
+-- a test class will lots of different methods with valid syntaxes and some different semantics
+::class methodTest
+-- a class method and an instance method with the same name
+::method dupClass class
+  return .true
+
+-- a method that duplicates a method on the class, but returning a
+-- different value.
+::method dupClass protected
+  return .false
+
+-- a private method defined at the class level
+::method privateClassMethod class private
+  return "privateClassMethod"
+
+-- a package method defined at the class level
+::method packageClassMethod class package
+  return "packageClassMethod"
+
+-- a class method to call the private class method
+::method callPrivateClassMethod class
+  return self~privateClassMethod
+
+-- a private method
+::method privateMethod private
+  return "privateMethod"
+
+-- a package method
+::method packageMethod package
+  return "packageMethod"
+
+-- some methods to call private methods
+::method callPrivate class
+  return self~new~privateMethod
+
+::method callPrivate
+  return self~privateMethod
+
+::method callPrivateClassMethod
+  return self~class~privateClassMethod
+
+-- using a string name
+::method 'stringMethod' public
+  return .context~name
+
+-- an attribute method
+::method anAttribute attribute
+
+-- a set method to test the effects of attribute methods
+::method setAnAttribute
+  expose anAttribute
+  use strict arg anAttribute
+
+::method getAnAttribute
+  expose anAttribute
+  return anAttribute
+
+-- a private attribute method
+::method privateAttribute private attribute
+
+::method getprivateAttribute
+  return self~privateAttribute
+
+::method setprivateattribute
+  use strict arg value
+  self~privateAttribute = value
+
+-- unguarded attribute method for testing concurrency
+::method unguardedAttribute attribute unguarded
+::method finalAttribute attribute unguarded
+
+-- main concurrent method...will loop for a bit until it gets
+-- a termiinate
+::method aConcurrentMethod guarded
+  expose finished
+
+  finished = .false
+
+  -- this method is guarded and so is the attribute
+  -- method.  This will work because we already a have the lock
+  self~anAttribute = "BAD"
+  self~unguardedAttribute = 0
+
+  -- go concurrent
+  reply
+
+  loop while \finished
+     call SysSleep .1
+     self~unguardedAttribute += 1
+  end
+
+  -- set the guarded attribute to the final value and terminate
+  self~anAttribute = self~unguardedAttribute
+
+-- another concurrent method that should block on a guarded attribute method
+::method getGuardedAttribute unguarded
+  expose finalAttribute
+  reply
+
+  -- this will block on the guarded attribute, so it should pick up the final
+  -- assignment
+  finalAttribute = self~anAttribute
+
+
+-- a method to end the current method
+::method endConcurrentMethod unguarded
+  expose finished
+
+  finished = .true
+
+-- a completely empty method
+::method emptyMethod
+
+-- an abstract method
+::method abstractMethod abstract
+
+-- some external method tests...this is a safe method to add to any class, so
+-- we'll use it a lot
+::METHOD isCaseSensitive CLASS UNGUARDED EXTERNAL 'LIBRARY REXX file_case_sensitive'
+::METHOD isCaseSensitive PUBLIC PROTECTED GUARDED EXTERNAL 'LIBRARY REXX file_case_sensitive'
+::METHOD isCaseSensitivePrivate PRIVATE EXTERNAL 'LIBRARY REXX file_case_sensitive'
+::METHOD isCaseSensitivePackage Package EXTERNAL 'LIBRARY REXX file_case_sensitive'
+
+-- a method to test the calling of the private external method
+::method callIsCaseSensitivePrivate
+  return self~isCaseSensitivePrivate
+
+-- test the parse source call type
+::method callType
+  parse source . calltype .
+  return calltype
+
+-- argument passing test
+::method 'argCount' public
+  return arg()
+
+-- another form of argument passing
+::method getArg
+  use strict arg number, ...
+  return arg(number)
+
+-- get the context name for a method
+::method contextName
+  return .context~name
+
+-- get the context package for a method
+::method contextPackage
+  return .context~package
+
+-- get the context executable
+::method executable
+  return .context~executable
+
+-- method with package protection
+::method packageTest package
+  return .true
+
+-- declared attribute pair with package protection
+::method packageAttribute package attribute
+
+-- simple delegate target for testing DELEGATE keyword
+::class DelegateTarget
+::method returnValue
+  return 123
+
+::method noReturnValue
+  return
+
+::attribute anAttribute
+
+::options novalue error
+
+::routine callIsCaseSensitivePackage
+  use strict arg target
+  return target~isCaseSensitivePackage

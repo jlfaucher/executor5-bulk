@@ -1,0 +1,255 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.String_signMethod.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "String_signMethod.testGroup" subclass ooTestCase public
+
+::method 'test001'
+    self~assertSame('0', 0~sign())
+
+::method 'test002'
+    self~assertSame('0', +0~sign())
+
+::method 'test003'
+    self~assertSame('0', -0~sign())
+
+::method 'test004'
+    self~assertSame('0', '+0'~sign())
+
+::method 'test005'
+    self~assertSame('0', '-0'~sign())
+
+::method 'test006'
+    self~assertSame('0', 0e-12~sign())
+
+::method 'test007'
+    self~assertSame('0', 0E999999999~sign())
+
+::method 'test008'
+    self~assertSame('1', 1~sign())
+
+::method 'test009'
+    self~assertSame('1', +1.~sign())
+
+::method 'test010'
+    self~assertSame('-1', -2.0000000000000000~sign())
+
+::method 'test011'
+    self~assertSame('1', 2.0000000000000005~sign())
+
+::method 'test012'
+    self~assertSame('1', 333333333333333333~sign())
+
+::method 'test013'
+    self~assertSame('-1', -4444444444444444444e12~sign())
+
+::method 'test014'
+    self~assertSame('1', 9e999999999~sign())
+
+::method 'test015'
+    self~expectSyntax(93.943)
+    if .ooRexxUnit.architecture == 32 then
+        xre = '999999999e999999999'~sign()
+    else
+        xre = '999999999e999999999999999999'~sign()
+
+::method 'test016'
+    self~expectSyntax(93.943)
+    if .ooRexxUnit.architecture == 32 then
+        xre = '-1.0e-999999999'~sign()
+    else
+        xre = '-1.0e-999999999999999999'~sign()
+
+::method 'test017'
+    self~expectSyntax(93.943)
+    if .ooRexxUnit.architecture == 32 then
+        xre = '0.1e-999999999'~sign()
+    else
+        xre = '0.1e-999999999999999999'~sign()
+
+::method 'test018'
+    self~expectSyntax(93.943)
+    if .ooRexxUnit.architecture == 32 then
+        xre = '0.1e-9999999999'~sign()
+    else
+        xre = '0.1e-9999999999999999999'~sign()
+
+::method 'test019'
+    self~expectSyntax(93.943)
+    if .ooRexxUnit.architecture == 32 then
+        xre = '0.1e9999999999'~sign()
+    else
+        xre = '0.1e9999999999999999999'~sign()
+
+::method 'test020'
+    self~assertSame('1', '3132'x~sign())
+
+::method 'test021'
+    self~expectSyntax(93.943)
+    if .ooRexxUnit.architecture == 32 then
+        xre = 999e999999999~sign()
+    else
+        xre = 999e999999999999999999~sign()
+
+::method 'test022'
+    self~expectSyntax(93.943)
+    if .ooRexxUnit.architecture == 32 then
+        xre = -0.1e-999999999~sign()
+    else
+        xre = -0.1e-999999999999999999~sign()
+
+::method 'test023'
+    self~assertSame('1', "123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789"~sign())
+
+::method 'test024'
+    self~assertSame('-1', -"123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789"~sign())
+
+::method 'test025'
+    self~assertSame('1', - -"123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789"~sign())
+
+::method 'test026'
+    self~assertSame('1', "123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789"~sign())
+
+::method 'test027'
+    self~assertSame('-1', - - -"123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789"~sign())
+
+::method 'test028'
+    v = 12
+    s. = -13
+    s.v = .1
+    self~assertSame('1', v~sign())
+
+::method 'test029'
+    v = 12
+    s. = -13
+    s.v = .1
+    self~assertSame('-1', s.~sign())
+
+::method 'test030'
+    v = 12
+    s. = -13
+    s.v = .1
+    self~assertSame('1', s.12~sign())
+
+::method 'test031'
+    self~assertSame(1, substr('route 66',7,2)~sign())
+
+::method 'test032'
+    self~assertSame(1, (17+4)~sign())
+
+::method 'test033'
+    self~assertSame(-1, (17-21)~sign)
+
+::method 'test034'
+    numeric digits 9
+    self~assertSame(0, (17+4-21.000000000000005)~sign)
+
+::method 'test035'
+    self~assertSame('-1', (0.999999995-1)~sign)
+
+::method 'test036'
+    numeric digits 9
+    self~assertSame('0', (0.999999996-1)~sign)
+
+::method 'test037'
+    self~assertSame('0', (1.000000000-1)~sign)
+
+::method 'test038'
+    numeric digits 9
+    self~assertSame('0', (1.000000004-1)~sign)
+
+::method 'test039'
+    self~assertSame('1', (1.000000005-1)~sign)
+
+::method 'test040'
+    self~assertSame('-1', ('-'||'12')~sign)
+
+::method 'test041'
+    self~expectSyntax(93.943)
+    xre = ('-'||'-12')~sign
+
+::method 'test042'
+    self~assertSame('1', ('1'||'23'||'456'||'7890')~sign)
+
+::method 'test043'
+    self~expectSyntax(93.943)
+    xre = 'a'~sign()
+
+::method 'test044'
+    self~expectSyntax(41.1)
+    xre = (17+'c')~sign
+
+::method 'test045'
+    self~assertSame('-1', ('17'-'1.e2')~sign)
+
+::method 'test046'
+    self~expectSyntax(93.943)
+    xre = ('17-1.e2')~sign
+
+::method 'test047'
+    x = 0.00001e-12
+    v = x
+    x = x~sign()
+    self~assertSame(1, x)
+
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_SIGN"
+    self~assertEquals(1, '12.3'~SIGN())
+    self~assertEquals(-1, ' -0.307'~SIGN())
+    self~assertEquals(0, 0.0~SIGN())
+
+   -- new tests
+    self~assertEquals(0, -0.0~SIGN())
+
+
+::options novalue error

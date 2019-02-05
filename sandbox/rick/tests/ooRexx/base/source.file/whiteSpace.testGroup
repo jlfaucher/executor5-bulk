@@ -1,0 +1,364 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
+
+  group = .TestGroup~new(fileSpec)
+
+  group~add(.whiteSpace.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+  Directives, Classes, or Routines.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::requires 'ooTest.frm'
+
+/* class: whiteSpace.testGroup - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class "whiteSpace.testGroup" public subclass ooTestCase
+
+   -- starting with 3.2 TAB chars are treated like blanks
+::method "test_TABs"
+    TAB  ="09"x
+    TAB2 =TAB||TAB
+
+    PLANK=" "
+    PLANK2=PLANK||PLANK
+
+      -- test equality of TAB and blank, Rexx-philosophy
+    self~assertTrue(PLANK = TAB)
+    self~assertTrue(PLANK = "")
+    self~assertTrue(""    = TAB)
+
+    self~assertFalse(PLANK ==TAB)
+    self~assertFalse(""    ==TAB)
+    self~assertFalse(PLANK =="")
+
+    self~assertTrue(PLANK2= TAB2)
+    self~assertTrue(""    = TAB2)
+    self~assertTrue(PLANK2= "")
+
+    self~assertFalse(PLANK2==TAB2)
+    self~assertFalse(""    ==TAB2)
+    self~assertFalse(PLANK2=="")
+
+    self~assertEquals(3, words("word1" TAB "word2" "word3"))
+    self~assertEquals("a", PLANK "a" PLANK2)
+    self~assertEquals("a", PLANK "a" TAB2)
+    self~assertEquals("a", TAB "a" TAB2)
+
+
+   -- starting with 3.2 TAB chars are treated like blanks
+::method "test_TABs_DELWORD"
+    TAB  ="09"x
+    TAB2 =TAB||TAB
+
+    PLANK=" "
+    PLANK2=PLANK||PLANK
+
+      -- test DELWORD
+    s0  ="hey"
+    s0_p="hey you"
+    s0_p2="hey  you"
+    s0_t="hey"TAB"you"
+    s0_t2="hey"TAB2"you"
+
+    s1="hey"PLANK"is-this"PLANK2"you"
+    s2="hey"TAB"is-this"PLANK2"you"
+    s3="hey"PLANK"is-this"TAB"you"
+    s4="hey"PLANK2"is-this"TAB2"you"
+    s5="hey"TAB"is-this"TAB2"you"
+    s6="hey"TAB2"is-this"TAB2"you"
+
+      -- delete second word
+    self~assertSame(s0_p, delword(s1, 2, 1))
+    self~assertSame(s0_t, delword(s2, 2, 1))
+    self~assertSame(s0_p, delword(s3, 2, 1))
+    self~assertSame(s0_p2, delword(s4, 2, 1))
+    self~assertSame(s0_t, delword(s5, 2, 1))
+    self~assertSame(s0_t2, delword(s6, 2, 1))
+
+      -- delete everything starting and including the second word
+    self~assertSame(s0||PLANK, delword(s1, 2))
+    self~assertSame(s0||TAB, delword(s2, 2))
+    self~assertSame(s0||PLANK, delword(s3, 2))
+    self~assertSame(s0||PLANK2, delword(s4, 2))
+    self~assertSame(s0||TAB, delword(s5, 2))
+    self~assertSame(s0||TAB2, delword(s6, 2))
+
+
+   -- starting with 3.2 TAB chars are treated like blanks
+::method "test_TABs_PARSE"
+    TAB  ="09"x
+    TAB2 =TAB||TAB
+
+    PLANK=" "
+    PLANK2=PLANK||PLANK
+
+    str=plank2 "This" plank "is" plank "a" plank2 "test." || plank2
+    word5exp=PLANK
+
+    parse var str word1 word2 word3 word4 .
+    self~assertSame("This", word1)
+    self~assertSame("is", word2)
+    self~assertSame("a", word3)
+    self~assertSame("test.", word4)
+
+    parse var str word1 word2 word3 word4 word5 .
+    self~assertSame("This", word1)
+    self~assertSame("is", word2)
+    self~assertSame("a", word3)
+    self~assertSame("test.", word4)
+    self~assertSame("", word5)
+
+    parse var str word1 word2 word3 word4 word5
+    self~assertSame("This", word1)
+    self~assertSame("is", word2)
+    self~assertSame("a", word3)
+    self~assertSame("test.", word4)
+    self~assertSame(word5exp, word5)
+
+
+    str=plank2 "This" plank "is" tab "a" plank2 "test."   || tab2
+    word5exp=TAB
+
+    parse var str word1 word2 word3 word4 .
+    self~assertSame("This", word1)
+    self~assertSame("is", word2)
+    self~assertSame("a", word3)
+    self~assertSame("test.", word4)
+
+    parse var str word1 word2 word3 word4 word5 .
+    self~assertSame("This", word1)
+    self~assertSame("is", word2)
+    self~assertSame("a", word3)
+    self~assertSame("test.", word4)
+    self~assertSame("", word5)
+
+    parse var str word1 word2 word3 word4 word5
+    self~assertSame("This", word1)
+    self~assertSame("is", word2)
+    self~assertSame("a", word3)
+    self~assertSame("test.", word4)
+    self~assertSame(word5exp, word5)
+
+
+   -- starting with 3.2 TAB chars are treated like blanks
+::method "test_TABs_SPACE"
+    TAB  ="09"x
+    TAB2 =TAB||TAB
+
+    PLANK=" "
+    PLANK2=PLANK||PLANK
+
+    str0=plank2 "This" plank "is" tab "a" plank2 "test." tab2
+
+    str1="This" || plank || "is" || plank || "a" || plank || "test."
+    str2="This" || tab   || "is" || tab   || "a" || tab   || "test."
+    str3="Thisisatest."
+
+    self~assertSame(str1, space(str0))
+    self~assertSame(str2, space(str0,1,TAB))
+    self~assertSame(str3, space(str0,0))
+
+
+   -- starting with 3.2 TAB chars are treated like blanks
+::method "test_TABs_STRIP"
+    TAB  ="09"x
+    TAB2 =TAB||TAB
+
+    PLANK=" "
+    PLANK2=PLANK||PLANK
+
+    str0a=plank2 "This" plank "is" tab "a" plank2 "test." plank2
+    str0b=tab2   "This" plank "is" tab "a" plank2 "test." tab2
+
+    str1="This" plank "is" tab "a" plank2 "test."
+
+    str2a="This" plank "is" tab "a" plank2 "test." plank2
+    str2b="This" plank "is" tab "a" plank2 "test." tab2
+
+    str3a=plank2 "This" plank "is" tab "a" plank2 "test."
+    str3b=tab2   "This" plank "is" tab "a" plank2 "test."
+
+
+    self~assertSame(str1, strip(str0a))
+    self~assertSame(str1, strip(str0a,'B'))
+    self~assertSame(str2a, strip(str0a,'L'))
+    self~assertSame(str3a, strip(str0a,'T'))
+
+    self~assertSame(str1, strip(str0b))
+    self~assertSame(str1, strip(str0b,'B'))
+    self~assertSame(str2b, strip(str0b,'L'))
+    self~assertSame(str3b, strip(str0b,'T'))
+
+
+   -- starting with 3.2 TAB chars are treated like blanks
+::method "test_TABs_SUBWORD"
+    TAB  ="09"x
+    TAB2 =TAB||TAB
+
+    PLANK=" "
+    PLANK2=PLANK||PLANK
+
+    str0=plank2 "This" plank "is" tab "a" plank2 "test." tab2
+
+    str1="This" plank "is"
+    str2="is" tab "a" plank2 "test."
+    str3="This" plank "is" tab "a"
+    str4="This" plank "is" tab "a" plank2 "test."
+
+    self~assertSame("This", subword(str0,1,1))
+
+
+   -- starting with 3.2 TAB chars are treated like blanks
+::method "test_TABs_WORD"
+    TAB  ="09"x
+    TAB2 =TAB||TAB
+
+    PLANK=" "
+    PLANK2=PLANK||PLANK
+
+    str0=plank2 "This" plank "is" tab "a" plank2 "test." tab2
+
+    self~assertSame("This", word(str0,1))
+    self~assertSame("is", word(str0,2))
+    self~assertSame("a", word(str0,3))
+    self~assertSame("test.", word(str0,4))
+    self~assertSame("", word(str0,5))
+
+
+   -- starting with 3.2 TAB chars are treated like blanks
+::method "test_TABs_WORDINDEX"
+    TAB  ="09"x
+    TAB2 =TAB||TAB
+
+    PLANK=" "
+    PLANK2=PLANK||PLANK
+
+      --            1
+      --  123456789 +   123    45678
+    str0=" This  is"tab"a"tab2"test."tab2
+
+    self~assertEquals(2, wordIndex(str0,1))
+    self~assertEquals(8, wordIndex(str0,2))
+    self~assertEquals(11, wordIndex(str0,3))
+    self~assertEquals(14, wordIndex(str0,4))
+    self~assertEquals(0, wordIndex(str0,5))
+
+
+   -- starting with 3.2 TAB chars are treated like blanks
+::method "test_TABs_WORDLENGTH"
+    TAB  ="09"x
+    TAB2 =TAB||TAB
+
+    PLANK=" "
+    PLANK2=PLANK||PLANK
+
+      --            1
+      --  123456789 +   123    45678
+    str0=" This  is"tab"a"tab2"test."tab2
+
+    self~assertEquals(4, wordLength(str0,1))
+    self~assertEquals(2, wordLength(str0,2))
+    self~assertEquals(1, wordLength(str0,3))
+    self~assertEquals(5, wordLength(str0,4))
+    self~assertEquals(0, wordLength(str0,5))
+
+
+   -- starting with 3.2 TAB chars are treated like blanks
+::method "test_TABs_WORDPOS"
+    TAB  ="09"x
+    TAB2 =TAB||TAB
+
+    PLANK=" "
+    PLANK2=PLANK||PLANK
+
+      --            1
+      --  123456789 +   123    45678
+    str0=" This  is"tab"a"tab2"test."tab2
+
+    self~assertEquals(1, wordPos("This" , str0))
+    self~assertEquals(2, wordPos("is"   , str0))
+    self~assertEquals(3, wordPos("a"    , str0))
+    self~assertEquals(4, wordPos("test.", str0))
+    self~assertEquals(0, wordPos("t"    , str0))
+
+
+   -- starting with 3.2 TAB chars are treated like blanks
+::method "test_TABs_WORDS"
+    TAB  ="09"x
+    TAB2 =TAB||TAB
+
+    PLANK=" "
+    PLANK2=PLANK||PLANK
+
+      --            1
+      --  123456789 +   123    45678
+    str0=" This  is"tab"a"tab2"test."tab2
+
+    self~assertEquals(4, words(str0))
+
+::method "test_TABS_Numbers"
+    tab = '09'x
+    number = tab||tab||1||tab||tab
+    self~assertSame(1, number + 0)
+    number = tab||"+"||tab||1||tab||tab
+    self~assertSame(1, number + 0)
+    number = tab||"-"||tab||1||tab||tab
+    self~assertSame(-1, number + 0)
+
+::method "test_SOURCE_whitespace"
+    tab = '09'x
+    interpret tab"x"tab"="tab"1"tab"+"tab"2"tab
+    self~assertSame(3, x)
+    interpret tab"x"tab"="tab"1"tab"2"tab
+    self~assertSame("1 2", x)
+
+
+::options novalue error

@@ -1,0 +1,700 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 - 2018 Rexx Language Association. All rights reserved.  */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.caselessWordPos.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "caselessWordPos.testGroup" subclass ooTestCase public
+
+
+::method "test_WORDPOS_caseless"
+   b = .mutablebuffer~new('now is the time')
+   self~assertEquals(3, b~caselessWordPos('the'))
+   self~assertEquals(3, b~caselessWordPos('The'))
+   self~assertEquals(2, b~caselessWordPos('is tHE'))
+   self~assertEquals(2, b~caselessWordPos('Is ThE'))
+   self~assertEquals(2, b~caselessWordPos('is   the'))
+   self~assertEquals(2, b~caselessWordPos('iS   ThE'))
+   b = .mutablebuffer~new('now is   the time')
+   self~assertEquals(0, b~caselessWordPos('is    time '))
+   b = .mutablebuffer~new('To be or not to be')
+   self~assertEquals(2, b~caselessWordPos('be'))
+   self~assertEquals(2, b~caselessWordPos('Be'))
+   self~assertEquals(6, b~caselessWordPos('be',3))
+   self~assertEquals(6, b~caselessWordPos('bE',3))
+
+::method 'test000'
+    .local~v26 = 'A B C D E F G H I J K L M N O P Q R S T U V W X Y Z'
+    .local~v8 = 'one two  three   four    five     six      seven       eight'
+    .local~v10000 = COPIES('J ',9999)||'K '
+    .local~vwbw = 'John'||COPIES(' ',10000)||'Buckley'
+    .local~vwbwwbw = 'J'||COPIES(' ',5000)||COPIES('*',10000)||COPIES(' ',5000)||'R'
+    .local~vc1x = '412042'x
+    .local~vc140x = '41202042'x
+    .local~vc7x = '472048'x
+    .local~vc740x = '47202048'x
+    .local~vxnx = '7a786376000000000041534446'x
+
+::method 'test001'
+    self~assertSame('0', .mutablebuffer~new('')~caselessWordPos(''))
+
+::method 'test002'
+    self~assertSame('0', .mutablebuffer~new(' ')~caselessWordPos(' '))
+
+::method 'test003'
+    self~assertSame('1', .mutablebuffer~new('WORD1 WORD2')~caselessWordPos('WORD1'))
+
+::method 'test004'
+    self~assertSame('2', .mutablebuffer~new('WORD1 WORD2')~caselessWordPos('WORD2'))
+
+::method 'test005'
+    self~assertSame('0', .mutablebuffer~new('WORD1 WORD2')~caselessWordPos('WORD3'))
+
+::method 'test006'
+    self~assertSame('1', .mutablebuffer~new('4a'x)~caselessWordPos('4a'x))
+
+::method 'test007'
+    self~assertSame('0', .mutablebuffer~new('4a'x)~caselessWordPos('4b'x))
+
+::method 'test008'
+    self~assertSame('1', .mutablebuffer~new('WORD')~caselessWordPos('WORD'))
+
+::method 'test009'
+    self~assertSame('0', .mutablebuffer~new('WORD')~caselessWordPos('DROW'))
+
+::method 'test010'
+    self~assertSame('1', .mutablebuffer~new('4a52'x)~caselessWordPos('20202020204a522020202020'x))
+
+::method 'test011'
+    self~assertSame('0', .mutablebuffer~new('4a52'x)~caselessWordPos('20202020204a20522020202020'x))
+
+::method 'test012'
+    self~assertSame('1', .mutablebuffer~new('4120422043204420452046204720482049204a204b204c204d'x)~caselessWordPos(.vc1x))
+
+::method 'test013'
+    self~assertSame('1', .mutablebuffer~new('4120422043204420452046204720482049204a204b204c204d'x)~caselessWordPos(.vc140x))
+
+::method 'test014'
+    self~assertSame('7', .mutablebuffer~new('4120422043204420452046204720482049204a204b204c204d'x)~caselessWordPos(.vc7x))
+
+::method 'test015'
+    self~assertSame('7', .mutablebuffer~new('4120422043204420452046204720482049204a204b204c204d'x)~caselessWordPos(.vc740x))
+
+::method 'test016'
+    self~assertSame('1', .mutablebuffer~new(.v26)~caselessWordPos('A'))
+
+::method 'test017'
+    self~assertSame('10', .mutablebuffer~new(.v26)~caselessWordPos('J'))
+
+::method 'test018'
+    self~assertSame('26', .mutablebuffer~new(.v26)~caselessWordPos('Z'))
+
+::method 'test019'
+    self~assertSame('0', .mutablebuffer~new(.v26)~caselessWordPos('0'))
+
+::method 'test020'
+    self~assertSame('0', .mutablebuffer~new(.v26)~caselessWordPos('()'))
+
+::method 'test021'
+    self~assertSame('1', .mutablebuffer~new(.v26)~caselessWordPos('A     B     C     D     E     '))
+
+::method 'test022'
+    self~assertSame('22', .mutablebuffer~new(.v26)~caselessWordPos('V     W     X     Y     Z     '))
+
+::method 'test023'
+    self~assertSame('0', .mutablebuffer~new(.v26)~caselessWordPos('X     Y     Z     A     B     '))
+
+::method 'test024'
+    numeric digits 1
+    self~assertSame('1', .mutablebuffer~new((12+6 12+7 12+8 12+9))~caselessWordPos(+19))
+
+::method 'test025'
+    numeric digits 1
+    self~assertSame('0', .mutablebuffer~new('12+6 12+7 12+8 12+9')~caselessWordPos(+19))
+
+::method 'test026'
+    numeric digits 1
+    self~assertSame('1', .mutablebuffer~new((12+1 12+2 12+3 12+4))~caselessWordPos(+14))
+
+::method 'test027'
+    numeric digits 1
+    self~assertSame('0', .mutablebuffer~new('12+1 12+2 12+3 12+4')~caselessWordPos(+14))
+
+::method 'test028'
+    self~assertSame('2', .mutablebuffer~new((12+6 12+7 12+8 12+9))~caselessWordPos(+19))
+
+::method 'test029'
+    self~assertSame('0', .mutablebuffer~new('12+6 12+7 12+8 12+9')~caselessWordPos(+19))
+
+::method 'test030'
+    self~assertSame('2', .mutablebuffer~new((12+1 12+2 12+3 12+4))~caselessWordPos(+14))
+
+::method 'test031'
+    self~assertSame('0', .mutablebuffer~new('12+1 12+2 12+3 12+4')~caselessWordPos(+14))
+
+::method 'test032'
+    self~assertSame('1', .mutablebuffer~new('NV')~caselessWordPos(nv))
+
+::method 'test033'
+    self~expectSyntax(93.938)
+    xre = .mutablebuffer~new('NV.')~caselessWordPos(nv.)
+
+::method 'test034'
+    self~assertSame('1', .mutablebuffer~new('NV.10')~caselessWordPos(nv.10))
+
+::method 'test035'
+    self~assertSame('1', .mutablebuffer~new(nv)~caselessWordPos('NV'))
+
+::method 'test037'
+    self~assertSame('1', .mutablebuffer~new(nv.10)~caselessWordPos('NV.10'))
+
+::method 'test038'
+    self~assertSame('2', .mutablebuffer~new('     asdf qwer zxcv     ASDF QWER ZXCV')~caselessWordPos('qwer zxcv ASDF'))
+
+::method 'test039'
+    self~assertSame('1', .mutablebuffer~new(.v8)~caselessWordPos('one'))
+
+::method 'test040'
+    self~assertSame('2', .mutablebuffer~new(.v8)~caselessWordPos('two                three four'))
+
+::method 'test041'
+    self~assertSame('0', .mutablebuffer~new(.v8)~caselessWordPos('seven eight nine'))
+
+::method 'test042'
+    self~assertSame('1', .mutablebuffer~new('6173646620717765722041534446205157455220'x)~caselessWordPos('41534446202020'x))
+
+::method 'test043'
+    self~assertSame('1', .mutablebuffer~new('6173646620717765722041534446205157455220'x)~caselessWordPos('20202041534446'x))
+
+::method 'test044'
+    self~assertSame('1', .mutablebuffer~new('6173646620717765722041534446205157455220'x)~caselessWordPos('204153444620'x))
+
+::method 'test045'
+    self~assertSame('3', .mutablebuffer~new('61736466207a786376000000000041534446205a584356'x)~caselessWordPos('7a786376'x))
+
+::method 'test046'
+    self~assertSame('1', .mutablebuffer~new('61736466207a786376000000000041534446205a584356'x)~caselessWordPos('41534446'x))
+
+::method 'test047'
+    self~assertSame('2', .mutablebuffer~new('61736466207a786376000000000041534446205a584356'x)~caselessWordPos(.vxnx))
+
+::method 'test048'
+    self~assertSame('1', .mutablebuffer~new(.v10000)~caselessWordPos('J'))
+
+::method 'test049'
+    self~assertSame('9999', .mutablebuffer~new(.v10000)~caselessWordPos('J  K'))
+
+::method 'test050'
+    self~assertSame('9999', .mutablebuffer~new(.v10000)~caselessWordPos('J K'))
+
+::method 'test051'
+    self~assertSame('10000', .mutablebuffer~new(.v10000)~caselessWordPos('K'))
+
+::method 'test052'
+    self~assertSame('0', .mutablebuffer~new(.v10000)~caselessWordPos('K J'))
+
+::method 'test053'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~assertSame('1', .mutablebuffer~new(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX)~caselessWordPos('1'))
+
+::method 'test054'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~assertSame('5', .mutablebuffer~new(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX)~caselessWordPos('35'x))
+
+::method 'test055'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~assertSame('5', .mutablebuffer~new(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX)~caselessWordPos('35202020202020202020203620372020202020202020202038'x))
+
+::method 'test056'
+    self~assertSame('1', .mutablebuffer~new(.vwbwwbw)~caselessWordPos('J '||copies('*',10000)))
+
+::method 'test057'
+    self~assertSame('2', .mutablebuffer~new(.vwbwwbw)~caselessWordPos(copies('*',10000)||' R'))
+
+::method 'test058'
+    self~assertSame('1', .mutablebuffer~new(.vwbwwbw)~caselessWordPos('J'))
+
+::method 'test059'
+    self~assertSame('2', .mutablebuffer~new(.vwbwwbw)~caselessWordPos(copies('*',10000)))
+
+::method 'test060'
+    self~assertSame('3', .mutablebuffer~new(.vwbwwbw)~caselessWordPos('R'))
+
+::method 'test061'
+    self~assertSame('1', .mutablebuffer~new(.vwbw)~caselessWordPos('John'))
+
+::method 'test062'
+    self~assertSame('2', .mutablebuffer~new(.vwbw)~caselessWordPos('Buckley'))
+
+::method 'test063'
+    self~assertSame('1', .mutablebuffer~new(.vwbw)~caselessWordPos('John Buckley'))
+
+::method 'test064'
+    self~assertSame('0', .mutablebuffer~new(.vwbw)~caselessWordPos('Buckley John'))
+
+::method 'test065'
+    self~assertSame('1', .mutablebuffer~new((00345 03450 34500))~caselessWordPos(00345))
+
+::method 'test066'
+    self~assertSame('1', .mutablebuffer~new((00345 03450 34500))~caselessWordPos(00345          03450))
+
+::method 'test067'
+    self~assertSame('3', .mutablebuffer~new((00345 03450 34500))~caselessWordPos(34500))
+
+::method 'test068'
+    self~assertSame('0', .mutablebuffer~new((00345 03450 34500))~caselessWordPos(34500                    00))
+
+::method 'test069'
+    self~assertSame('1', .mutablebuffer~new((3 4 5))~caselessWordPos(3 4||copies(' ',10000)||5,))
+
+::method 'test070'
+    self~assertSame('0', .mutablebuffer~new(.v8)~caselessWordPos('one two three five'))
+
+::method 'test071'
+    self~assertSame('4', .mutablebuffer~new(.v8)~caselessWordPos('four'||copies(' ',50000)||'five six'))
+
+::method 'test072'
+    v8. = .v8
+    self~assertSame('3', .mutablebuffer~new(v8.10)~caselessWordPos('three four five'))
+
+::method 'test073'
+    v8. = .v8
+    self~assertSame('0', .mutablebuffer~new(v8.10)~caselessWordPos('seven eight nine'))
+
+::method 'test074'
+    v8. = .v8
+    self~assertSame('0', .mutablebuffer~new(v8.10)~caselessWordPos('ten'))
+
+::method 'test075'
+    self~assertSame('26', .mutablebuffer~new((.v26||' '||reverse(.v26)))~caselessWordPos('Z Z'))
+
+::method 'test076'
+    self~assertSame('25', .mutablebuffer~new((.v26' 'reverse(.v26)))~caselessWordPos('Y Z Z Y',))
+
+::method 'test077'
+    self~assertSame('24', .mutablebuffer~new((.v26 reverse(.v26)))~caselessWordPos('X Y Z Z Y',))
+
+::method 'test078'
+    self~assertSame('26', .mutablebuffer~new((.v26||' '||reverse(.v26)))~caselessWordPos('z z',))
+
+::method 'test079'
+    self~assertSame('25', .mutablebuffer~new((.v26' 'reverse(.v26)))~caselessWordPos('y z z y'))
+
+::method 'test080'
+    self~assertSame('24', .mutablebuffer~new((.v26 reverse(.v26)))~caselessWordPos('x y z z y'))
+
+::method 'test081'
+    self~assertSame('1', .mutablebuffer~new(subStr('one two three four',5,9))~caselessWordPos('two three'))
+
+::method 'test082'
+    self~assertSame('1', .mutablebuffer~new((dataType(6) dataType('A')))~caselessWordPos('NUM                       CHAR'))
+
+::method 'test083'
+    self~assertSame('1', .mutablebuffer~new((dataType(6) dataType('A')))~caselessWordPos('num                       char'))
+
+::method 'test084'
+    self~assertSame('3', .mutablebuffer~new('WORD1 WORD2 WORD1 WORD2')~caselessWordPos('WORD1',3))
+
+::method 'test085'
+    self~assertSame('4', .mutablebuffer~new('WORD1 WORD2 WORD1 WORD2')~caselessWordPos('WORD2',3))
+
+::method 'test086'
+    self~assertSame('0', .mutablebuffer~new('WORD1 WORD2 WORD1 WORD2')~caselessWordPos('WORD3',3))
+
+::method 'test087'
+    self~assertSame('1', .mutablebuffer~new('4a'x)~caselessWordPos('4a'x,1))
+
+::method 'test088'
+    self~assertSame('0', .mutablebuffer~new('4a'x)~caselessWordPos('4a'x,2))
+
+::method 'test089'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new('4a'x)~caselessWordPos('4b'x,0)
+
+::method 'test090'
+    self~assertSame('0', .mutablebuffer~new('4a'x)~caselessWordPos('4b'x,1))
+
+::method 'test091'
+    self~assertSame('1', .mutablebuffer~new('4a52'x)~caselessWordPos('20202020204a522020202020'x,1))
+
+::method 'test092'
+    self~assertSame('0', .mutablebuffer~new('4a52'x)~caselessWordPos('20202020204a522020202020'x,2))
+
+::method 'test093'
+    self~assertSame('1', .mutablebuffer~new('4120422043204420452046204720482049204a204b204c204d'x)~caselessWordPos(.vc1x,1))
+
+::method 'test094'
+    self~assertSame('0', .mutablebuffer~new('4120422043204420452046204720482049204a204b204c204d'x)~caselessWordPos(.vc1x,2))
+
+::method 'test095'
+    self~assertSame('1', .mutablebuffer~new('4120422043204420452046204720482049204a204b204c204d'x)~caselessWordPos(.vc140x,1))
+
+::method 'test096'
+    self~assertSame('0', .mutablebuffer~new('4120422043204420452046204720482049204a204b204c204d'x)~caselessWordPos(.vc140x,2))
+
+::method 'test097'
+    self~assertSame('0', .mutablebuffer~new('4120422043204420452046204720482049204a204b204c204d'x)~caselessWordPos(.vc7x,13))
+
+::method 'test098'
+    self~assertSame('0', .mutablebuffer~new('4120422043204420452046204720482049204a204b204c204d'x)~caselessWordPos(.vc740x,14))
+
+::method 'test099'
+    self~assertSame('1', .mutablebuffer~new(.v26)~caselessWordPos('A',1))
+
+::method 'test100'
+    self~assertSame('0', .mutablebuffer~new(.v26)~caselessWordPos('A',2))
+
+::method 'test101'
+    self~assertSame('10', .mutablebuffer~new(.v26)~caselessWordPos('J','39'x))
+
+::method 'test102'
+    self~assertSame('10', .mutablebuffer~new(.v26)~caselessWordPos('J',X2D('A')))
+
+::method 'test103'
+    self~assertSame('0', .mutablebuffer~new(.v26)~caselessWordPos('J','3131'x))
+
+::method 'test104'
+    self~assertSame('26', .mutablebuffer~new(.v26)~caselessWordPos('Z',' 25 '))
+
+::method 'test105'
+    self~assertSame('0', .mutablebuffer~new(.v26)~caselessWordPos('0',1))
+
+::method 'test106'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new(.v26)~caselessWordPos('A     B     C     D     E     ',-1)
+
+::method 'test107'
+    self~assertSame('22', .mutablebuffer~new(.v26)~caselessWordPos('V     W     X     Y     Z     ',.22E02+0))
+
+::method 'test108'
+    self~assertSame('22', .mutablebuffer~new(.v26)~caselessWordPos('V     W     X     Y     Z     ',.22E02))
+
+::method 'test109'
+    self~assertSame('0', .mutablebuffer~new(.v26)~caselessWordPos('X     Y     Z     A     B     ','.22E02'))
+
+::method 'test110'
+    numeric digits 1
+    self~assertSame('24', .mutablebuffer~new('A Z C E G H I J K L M N O P Q R S T U V W X Y Z')~caselessWordPos('Z',+19))
+
+::method 'test111'
+    numeric digits 1
+    self~assertSame('24', .mutablebuffer~new('A Z C D F H I J K L M N O P Q R S T U V W X Y Z')~caselessWordPos('Z',+14))
+
+::method 'test112'
+    self~assertSame('26', .mutablebuffer~new('A Z C D E F G H I J K L M N O P Q R S T U V W X Y Z')~caselessWordPos('Z',+19))
+
+::method 'test113'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new('NV')~caselessWordPos('NV',nv)
+
+::method 'test114'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new('NV.')~caselessWordPos('NV.',nv.)
+
+::method 'test115'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new('NV.10')~caselessWordPos('NV.10',nv.10)
+
+::method 'test116'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new(noval2)~caselessWordPos(noval1,noval3)
+
+::method 'test117'
+    self~assertSame('1', .mutablebuffer~new('NV')~caselessWordPos(nv,1))
+
+::method 'test118'
+    self~expectSyntax(93.938)
+    xre = .mutablebuffer~new('NV.')~caselessWordPos(nv.,1)
+
+::method 'test119'
+    self~assertSame('1', .mutablebuffer~new('NV.10')~caselessWordPos(nv.10,1))
+
+::method 'test120'
+    self~assertSame('1', .mutablebuffer~new(nv)~caselessWordPos('NV',1))
+
+::method 'test122'
+    self~assertSame('1', .mutablebuffer~new(nv.10)~caselessWordPos('NV.10',1))
+
+::method 'test123'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new('NV')~caselessWordPos('NV',nv)
+
+::method 'test124'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new('NV.')~caselessWordPos('NV.',nv.)
+
+::method 'test125'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new('NV.10')~caselessWordPos('NV.10',nv.10)
+
+::method 'test126'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new(noval2)~caselessWordPos(noval1,noval3)
+
+::method 'test127'
+    self~assertSame('2', .mutablebuffer~new('     asdf qwer zxcv     ASDF QWER ZXCV')~caselessWordPos('qwer zxcv ASDF',2))
+
+::method 'test128'
+    self~assertSame('0', .mutablebuffer~new('     asdf qwer zxcv     ASDF QWER ZXCV')~caselessWordPos('qwer zxcv ASDF',5))
+
+::method 'test129'
+    self~assertSame('1', .mutablebuffer~new(.v8)~caselessWordPos('one',1*1))
+
+::method 'test130'
+    self~assertSame('0', .mutablebuffer~new(.v8)~caselessWordPos('one',2*1))
+
+::method 'test131'
+    self~assertSame('2', .mutablebuffer~new(.v8)~caselessWordPos('two                three four','000001'))
+
+::method 'test132'
+    self~assertSame('2', .mutablebuffer~new(.v8)~caselessWordPos('two                three four',000002))
+
+::method 'test133'
+    self~assertSame("0", .mutablebuffer~new(.v8)~caselessWordPos('two                three four',3.00))
+
+::method 'test134'
+    self~assertSame('3', .mutablebuffer~new('6173646620717765722041534446205157455220'x)~caselessWordPos('41534446202020'x,2))
+
+::method 'test135'
+    self~assertSame('3', .mutablebuffer~new('6173646620717765722041534446205157455220'x)~caselessWordPos('41534446202020'x,3))
+
+::method 'test136'
+    self~assertSame('0', .mutablebuffer~new('6173646620717765722041534446205157455220'x)~caselessWordPos('41534446202020'x,4))
+
+::method 'test137'
+    self~assertSame('3', .mutablebuffer~new('6173646620717765722041534446205157455220'x)~caselessWordPos('20202041534446'x,3))
+
+::method 'test138'
+    self~assertSame('0', .mutablebuffer~new('6173646620717765722041534446205157455220'x)~caselessWordPos('20202041534446'x,4))
+
+::method 'test139'
+    self~assertSame('0', .mutablebuffer~new('6173646620717765722041534446205157455220'x)~caselessWordPos('20202041534446'x,5))
+
+::method 'test140'
+    self~assertSame('1', .mutablebuffer~new('6173646620717765722041534446205157455220'x)~caselessWordPos('204153444620'x,1))
+
+::method 'test141'
+    self~assertSame('3', .mutablebuffer~new('6173646620717765722041534446205157455220'x)~caselessWordPos('204153444620'x,2))
+
+::method 'test142'
+    self~assertSame('0', .mutablebuffer~new('6173646620717765722041534446205157455220'x)~caselessWordPos('204153444620'x,4))
+
+::method 'test143'
+    self~assertSame('3', .mutablebuffer~new('61736466207a786376000000000041534446205a584356'x)~caselessWordPos('7a786376'x))
+
+::method 'test144'
+    self~assertSame('1', .mutablebuffer~new('61736466207a786376000000000041534446205a584356'x)~caselessWordPos('41534446'x))
+
+::method 'test145'
+    self~assertSame('2', .mutablebuffer~new('61736466207a786376000000000041534446205a584356'x)~caselessWordPos(.vxnx))
+
+::method 'test146'
+    self~assertSame('9999', .mutablebuffer~new(.v10000)~caselessWordPos('J',9999))
+
+::method 'test147'
+    self~assertSame('9999', .mutablebuffer~new(.v10000)~caselessWordPos('J  K','39393939'x))
+
+::method 'test148'
+    self~assertSame('9999', .mutablebuffer~new(.v10000)~caselessWordPos('J K','9999'))
+
+::method 'test149'
+    self~assertSame('10000', .mutablebuffer~new(.v10000)~caselessWordPos('K',009999))
+
+::method 'test150'
+    self~assertSame('0', .mutablebuffer~new(.v10000)~caselessWordPos('K J','009999'))
+
+::method 'test151'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~assertSame('1', .mutablebuffer~new(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX)~caselessWordPos('1',1))
+
+::method 'test152'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~assertSame('0', .mutablebuffer~new(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX)~caselessWordPos('1',9))
+
+::method 'test153'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~assertSame('5', .mutablebuffer~new(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX)~caselessWordPos('35'x,'34'x))
+
+::method 'test154'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~assertSame('5', .mutablebuffer~new(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX)~caselessWordPos('35'x,'35'x))
+
+::method 'test155'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~assertSame('0', .mutablebuffer~new(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX)~caselessWordPos('35'x,'36'x))
+
+::method 'test156'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX)~caselessWordPos('352020202020202020203620372020202020202020202038'x,"'34'x")
+
+::method 'test157'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX)~caselessWordPos('352020202020202020203620372020202020202020202038'x,"'35'x")
+
+::method 'test158'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~expectSyntax(93.924)
+    xre = .mutablebuffer~new(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX)~caselessWordPos('352020202020202020203620372020202020202020202038'x,"'36'x")
+
+::method 'test159'
+    self~assertSame('1', .mutablebuffer~new(.vwbwwbw)~caselessWordPos('J '||copies('*',10000),1))
+
+::method 'test160'
+    self~assertSame('0', .mutablebuffer~new(.vwbwwbw)~caselessWordPos('J '||copies('*',10000),0+2))
+
+::method 'test161'
+    self~assertSame('0', .mutablebuffer~new(.vwbwwbw)~caselessWordPos(copies('*',10000)||' R','3'))
+
+::method 'test162'
+    self~assertSame('0', .mutablebuffer~new(.vwbwwbw)~caselessWordPos(copies('*',10000)||' R','04'))
+
+::method 'test163'
+    self~assertSame('1', .mutablebuffer~new(.vwbwwbw)~caselessWordPos('J',1))
+
+::method 'test164'
+    self~assertSame('0', .mutablebuffer~new(.vwbwwbw)~caselessWordPos('J',2))
+
+::method 'test165'
+    self~assertSame('2', .mutablebuffer~new(.vwbwwbw)~caselessWordPos(copies('*',10000),'32'x))
+
+::method 'test166'
+    self~assertSame('0', .mutablebuffer~new(.vwbwwbw)~caselessWordPos(copies('*',10000),'33'x))
+
+::method 'test167'
+    self~assertSame('0', .mutablebuffer~new(.vwbwwbw)~caselessWordPos('R','000004'))
+
+::method 'test168'
+    self~assertSame('0', .mutablebuffer~new(.vwbwwbw)~caselessWordPos('R','000005'))
+
+::method 'test169'
+    self~assertSame('1', .mutablebuffer~new(.vwbw)~caselessWordPos('John',1))
+
+::method 'test170'
+    self~assertSame('0', .mutablebuffer~new(.vwbw)~caselessWordPos('John',2))
+
+::method 'test171'
+    self~assertSame('2', .mutablebuffer~new(.vwbw)~caselessWordPos('Buckley',1))
+
+::method 'test172'
+    self~assertSame('2', .mutablebuffer~new(.vwbw)~caselessWordPos('Buckley',2))
+
+::method 'test173'
+    self~assertSame('1', .mutablebuffer~new(.vwbw)~caselessWordPos('John Buckley',1))
+
+::method 'test174'
+    self~assertSame('0', .mutablebuffer~new(.vwbw)~caselessWordPos('John Buckley',2))
+
+::method 'test175'
+    self~assertSame('1', .mutablebuffer~new((3 4 5))~caselessWordPos(3 4||copies(' ',10000)||5,1))
+
+::method 'test176'
+    self~assertSame('0', .mutablebuffer~new((3 4 5))~caselessWordPos(3 4||copies(' ',10000)||5,2))
+
+::method 'test177'
+    self~assertSame('4', .mutablebuffer~new(.v8)~caselessWordPos('four'||copies(' ',50000)||'five six',3))
+
+::method 'test178'
+    self~assertSame('4', .mutablebuffer~new(.v8)~caselessWordPos('four'||copies(' ',50000)||'five six',4))
+
+::method 'test179'
+    self~assertSame('0', .mutablebuffer~new(.v8)~caselessWordPos('four'||copies(' ',50000)||'five six',5))
+
+::method 'test180'
+    v8. = .v8
+    self~assertSame('3', .mutablebuffer~new(v8.10)~caselessWordPos('three four five',1))
+
+::method 'test181'
+    v8. = .v8
+    self~assertSame('3', .mutablebuffer~new(v8.10)~caselessWordPos('three four five',3))
+
+::method 'test182'
+    v8. = .v8
+    self~assertSame('0', .mutablebuffer~new(v8.10)~caselessWordPos('three four five',8))
+
+::method 'test183'
+    self~assertSame('26', .mutablebuffer~new((.v26||' '||reverse(.v26)))~caselessWordPos('Z Z',23))
+
+::method 'test184'
+    self~assertSame('25', .mutablebuffer~new((.v26' 'reverse(.v26)))~caselessWordPos('Y Z Z Y',25))
+
+::method 'test185'
+    self~assertSame('0', .mutablebuffer~new((.v26 (reverse(.v26))))~caselessWordPos('X Y Z Z Y',25))
+
+::method 'test186'
+    self~assertSame('1', .mutablebuffer~new(subStr('one two three four',5,9))~caselessWordPos('two three',1))
+
+::method 'test187'
+    self~assertSame('0', .mutablebuffer~new(subStr('one two three four',5,9))~caselessWordPos('two three',2))
+
+::method 'test188'
+    self~assertSame('1', .mutablebuffer~new((dataType(6) dataType('A')))~caselessWordPos('NUM                       CHAR',1))
+
+::method 'test189'
+    self~assertSame('0', .mutablebuffer~new((dataType(6) dataType('A')))~caselessWordPos('NUM                       CHAR',2))
+
+::method 'test190'
+    self~assertSame('0', .mutablebuffer~new((dataType(6) dataType('A')))~caselessWordPos('NUM                       CHAR',3))
+
+::method 'test191'
+    .local~remove(v26)
+    .local~remove(v8)
+    .local~remove(v10000)
+    .local~remove(vwbw)
+    .local~remove(vwbwwbw)
+    .local~remove(vc1x)
+    .local~remove(vc140x)
+    .local~remove(vc7x)
+    .local~remove(vc740x)
+    .local~remove(vxnx)
+
+
+

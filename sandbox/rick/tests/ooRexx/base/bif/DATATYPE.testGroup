@@ -1,0 +1,434 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.DATATYPE.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+-- class named exactly like file
+::class "DATATYPE.testGroup" subclass ooTestCase public
+
+::method 'test01'
+    s = ''
+    self~assertSame('010000001C', dts(s))
+
+::method 'test02'
+--    say mydts(' ') dts(' ')
+--    say mydts(.string~tab) dts(.string~tab)
+
+
+
+    do i = 0 to 255
+        s = d2c(i)
+        self~assertSame(mydts(s), dts(s), "Character" i d2x(i))
+    end
+
+::method 'test03'
+    self~doDts('A',                           '100101101C')
+    self~doDts('ABCDEFGHIJKLMNOPQRSTUVWXYZ',  '100101100C')
+    self~doDts('a',                           '101101001C')
+    self~doDts('abcdefghijklmnopqrstuvwxyz',  '101101000C')
+    self~doDts('aBCDEFGHIJKLMNOPQRSTUVWXYZ',  '100101000C')
+    self~doDts('ABCdEFGHIJKLMNOPQRSTUVWXYZ',  '100101000C')
+    self~doDts('Abcdefghijklmnopqrstuvwxyz',  '100101000C')
+    self~doDts('abcDefghijklmnopqrstuvwxyz',  '100101000C')
+    self~doDts(' bcdeFghijklmnopqrstuvwxyz',  '000000000C')
+    self~doDts('abc efGhijklmnopqrstuvwxyz',  '000000000C')
+    self~doDts('abcdefgHijklmnopqrstuvwxy ',  '000000000C')
+    self~doDts('abcdefghI     opqrstuvwxyz',  '000000000C')
+    self~doDts(copies('a',100000),            '101100001C')
+    self~doDts('{',                           '000000000C')
+    self~doDts('º',                           '000000000C')
+    self~doDts('}',                           '000000000C')
+    self~doDts('›',                           '000000000C')
+    self~doDts('\',                           '000000000C')
+    self~doDts('!',                           '000001000C')
+    self~doDts('~',                           '000000000C')
+    self~doDts('%',                           '000000000C')
+    self~doDts('ª',                           '000000000C')
+    self~doDts('&',                           '000000000C')
+    self~doDts('*',                           '000000000C')
+    self~doDts('$',                           '000000000C')
+    self~doDts('cba@',                        '000000000C')
+    self~doDts('@aBc',                        '000000000C')
+    self~doDts('?',                           '000001000C')
+    self~doDts('!?!',                         '000001000C')
+    self~doDts('!?|',                         '000000000C')
+    self~doDts('.',                           '000001000C')
+    self~doDts('-',                           '000000000C')
+    self~doDts('+',                           '000000000C')
+    self~doDts('1.1.',                        '000001000C')
+    self~doDts('+1.1.',                       '000000000C')
+    self~doDts('-1.1.',                       '000000000C')
+    self~doDts('1.e.1',                       '000001000C')
+    self~doDts('1e.1',                        '000001000C')
+    self~doDts('+',                           '000000000C')
+    self~doDts('@',                           '000000000C')
+    self~doDts(copies('0',100000),            '110010011N')
+    self~doDts(copies('1',100000),            '110010001N')
+    self~doDts(1,                             '110011011N')
+    self~doDts(1.0,                           '000011010N')
+    self~doDts(.0,                            '000011010N')
+    self~doDts('1',                           '110011011N')
+    self~doDts('-1',                          '000010010N')
+    self~doDts('+1',                          '000010010N')
+    self~doDts('2',                           '100011011N')
+    self~doDts('-1.4142',                     '000010000N')
+    self~doDts('+1.4142',                     '000010000N')
+    self~doDts('+1.733e+5',                   '000010010N')
+    self~doDts('-1.733e+5',                   '000010010N')
+    self~doDts('+1.733e-5',                   '000010000N')
+    self~doDts('-1.733e-5',                   '000010000N')
+    self~doDts('2.7172718536',                '000011000N')
+    self~doDts('123.456789',                  '000011000N')
+    self~doDts('1230.456789',                 '000011000N')
+    self~doDts('1e-3',                        '000011000N')
+    self~doDts('1E-3',                        '000011000N')
+    self~doDts('1e+3',                        '000011010N')
+    self~doDts('1E+3',                        '000011010N')
+    self~doDts('1E -3',                       '000000000C')
+    self~doDts('1e 3',                        '000000000C')
+    self~doDts('1.e3',                        '000011010N')
+    self~doDts('1e3',                         '100011011N')
+    self~doDts('1E3',                         '100011011N')
+    self~doDts(' 1E+3',                       '000010010N')
+    self~doDts(' 1e3',                        '000010010N')
+    self~doDts('1E+3 ',                       '000010010N')
+    self~doDts('1e3 ',                        '000010010N')
+    self~doDts('1e',                          '100001001C')
+    self~doDts('e3',                          '100001001C')
+    self~doDts(copies('1234567890',25),       '100011001N')
+    self~doDts(copies('1234567890',25)'1',    '100010001N')
+    self~doDts(copies('1234567890',24)'e3',   '100011001N')
+    self~doDts(copies('1234567890',25)'e3',   '100010001N')
+    self~doDts(copies('1234567890', 5000)'.'copies('1234567890', 5000),                                '000010000N')
+    self~doDts(copies('1234567890', 5000)'.'copies('1234567890', 5000)'e3',                            '000010000N')
+    self~doDts(copies('1234567890', 3333)'.'copies('1234567890', 3333)'e'copies('1234567890', 3333),   '000000000C')
+    self~doDts(copies('1234567890',10000)'e+3',                                                        '000010000N')
+    self~doDts(copies('1234567890',10000)'e-3',                                                        '000010000N')
+    self~doDts(copies('1234567890', 5000)'.'copies('1234567890', 5000)'e+3',                           '000010000N')
+    self~doDts(copies('1234567890', 5000)'.'copies('1234567890', 5000)'e-3',                           '000010000N')
+    self~doDts('0123456789abcdef',     '100001001C')
+    self~doDts('0123456789ABCDEF',     '100001001C')
+    self~doDts('C2 0DAB',              '000000001C')
+    self~doDts('C2 DAB',               '000000000C')
+    self~doDts('c2 0dab',              '000000001C')
+    self~doDts('c2 dab',               '000000000C')
+    self~doDts('C2 0dab',              '000000001C')
+    self~doDts('c2 0Dab',              '000000001C')
+    self~doDts('C2  0d ab',            '000000001C')
+    self~doDts('c2   0D       ab',     '000000001C')
+    self~doDts(' c2   0D       ab',    '000000000C')
+    self~doDts('  c2   0D       ab',   '000000000C')
+    self~doDts('c2   0D       ab  ',   '000000000C')
+    self~doDts('c2   0D       ab ',    '000000000C')
+    self~doDts(' c2   0D       ab  ',  '000000000C')
+    self~doDts('  c2   0D       ab ',  '000000000C')
+
+    self~doDts('123456789',                   '100011011N')
+    self~doDts('1234567890',                  '100011001N')
+    self~doDts('12345678901',                 '100011001N')
+    self~doDts('1e999999999',                 '100011001N')
+    self~doDts('1e1000000000',                '100001001C')
+    self~doDts('1e+999999999',                '000011000N')
+    self~doDts('1e+1000000000',               '000001000C')
+    self~doDts('1e-999999999',                '000011000N')
+    self~doDts('1e-1000000000',               '000001000C')
+
+::method doDts
+  use arg test, expected
+    self~assertSame(expected, dts(test), 'Datatype test "'test'"')
+
+
+::method 'test04'  -- Additional tests added by Lee
+    self~assertTrue(datatype(0,'O'))
+
+::method 'test05'
+    self~assertTrue(datatype(1,'O'))
+
+::method 'test06'
+    self~assertFalse(datatype(2,'O'))
+
+::method 'test07'
+    self~assertFalse(datatype(-1,'O'))
+
+::method 'test08'
+    self~assertFalse(datatype('','O'))
+
+-- Found some more tests to add
+::method 'test09'
+    numeric digits 3
+    a0 = 0
+    a1 = 1
+    self~assertSame('1', datatype(999,'w'))
+    self~assertSame(a1, datatype(1.004,'w'))
+    self~assertSame('0', datatype(1.005,'w'))
+    self~assertSame(a0, datatype(1.00E+3,'w'))
+    self~assertSame('0', datatype(-1.23456789012345E-2,'w'))
+
+::method 'test10'
+    numeric digits 4
+    self~assertSame('1', datatype(1000,'w'))
+
+::routine dts
+    parse arg a
+    x = 'DATATYPE'(a)
+return 'DATATYPE'(a,'A')||-
+       'DATATYPE'(a,'B')||-
+       'DATATYPE'(a,'L')||-
+       'DATATYPE'(a,'M')||-
+       'DATATYPE'(a,'N')||-
+       'DATATYPE'(a,'S')||-
+       'DATATYPE'(a,'U')||-
+       'DATATYPE'(a,'W')||-
+       'DATATYPE'(a,'X')||left(x,1)
+
+::routine mydts
+    parse Arg a
+    notype = mydt(a,'N')
+    res = mydt(a,'A')||-
+          mydt(a,'B')||-
+          mydt(a,'L')||-
+          mydt(a,'M')||-
+          mydt(a,'N')||-
+          mydt(a,'S')||-
+          mydt(a,'U')||-
+          mydt(a,'W')||-
+          mydt(a,'X')
+    if notype then
+        return res||'N'
+    else
+        return res||'C'
+
+::routine mydt
+    parse arg what,opt
+    g.0numc = '0123456789'
+    g.0alpl = 'abcdefghijklmnopqrstuvwxyz'
+    g.0alpu = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    g.0soze = '.!?_'
+
+    signal on Syntax name mysyntax
+    select
+        when opt == 'A' then              /* DATATYPE(what,'A')             */
+            return verify(what,g.0numc||g.0alpl||g.0alpu)=0
+        when opt == 'B' then              /* DATATYPE(what,'B')             */
+            return verify(what,'01')=0
+        when opt == 'L' then              /* DATATYPE(what,'L')             */
+            return verify(what,g.0alpl)=0
+        when opt == 'M' then              /* DATATYPE(what,'M')             */
+            return verify(what,g.0alpl||g.0alpu)=0
+        when opt == 'N' then              /* DATATYPE(what,'N')             */
+            do
+                erg='1'
+                dummy=what+0
+                return erg
+            end
+        when opt == 'S' then              /* DATATYPE(what,'S')             */
+            return verify(what,g.0numc||g.0alpl||g.0alpu||g.0soze)=0
+        when opt == 'U' then              /* DATATYPE(what,'U')             */
+            return verify(what,g.0alpu)=0
+        when opt == 'W' then              /* DATATYPE(what,'W')             */
+            do
+                erg='1'
+                dummy=left('ABC',what)
+                return erg
+            end
+        when opt == 'X' then              /* DATATYPE(what,'X')             */
+            do
+                erg='1'
+                dummy=x2c(what)
+                return erg
+            end
+        otherwise
+            nop
+    end
+return
+
+mysyntax:
+    erg = '0'
+return erg
+
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_DATATYPE"
+    self~assertEquals('NUM', DATATYPE(' 12 '))
+    self~assertEquals('CHAR', DATATYPE(""))
+    self~assertEquals('CHAR', DATATYPE('123*'))
+
+    self~assertTrue(DATATYPE('12.3','N'))
+    self~assertFalse(DATATYPE('12.3','W'))
+    self~assertTrue(DATATYPE('Fred','M'))
+    self~assertFalse(DATATYPE('Fred','U')) -- changed, syntax error in documentation !
+    self~assertFalse(DATATYPE('Fred','L'))
+    self~assertTrue(DATATYPE('?20K','s'))
+    self~assertTrue(DATATYPE('BCd3','X'))
+    self~assertTrue(DATATYPE('BC d3','X'))
+
+   -- new tests
+    self~assertTrue(DATATYPE('',     'X'))
+
+    self~assertTrue(DATATYPE('BCd3' ,'A')) -- alphanumeric
+    self~assertFalse(DATATYPE('BC-d3','A'))
+
+    self~assertTrue(DATATYPE('a1'   ,'s')) -- symbol
+    self~assertTrue(DATATYPE('.a1'  ,'s'))
+    self~assertTrue(DATATYPE('_'    ,'s'))
+    self~assertTrue(DATATYPE('!'    ,'s'))
+    self~assertTrue(DATATYPE('?'    ,'s'))
+    self~assertTrue(DATATYPE('.'    ,'s'))
+    self~assertTrue(DATATYPE('1'    ,'s'))
+    self~assertTrue(DATATYPE('1b_!?','s'))
+    self~assertFalse(DATATYPE('. .'  ,'s'))
+
+    self~assertTrue(DATATYPE('abc'  ,'v')) -- variable
+    self~assertTrue(DATATYPE('?'    ,'v'))
+    self~assertTrue(DATATYPE('_'    ,'v'))
+    self~assertTrue(DATATYPE('!'    ,'v'))
+    self~assertTrue(DATATYPE('a1!_?','v'))
+    self~assertFalse(DATATYPE('.'    ,'v'))
+    self~assertFalse(DATATYPE('.a'   ,'v'))
+    self~assertFalse(DATATYPE('1'    ,'v'))
+
+
+    a=digits()          -- get digits
+    numeric digits 9
+    self~assertTrue(DATATYPE('0'    ,'W')) -- whole number
+    self~assertTrue(DATATYPE('1'    ,'W'))
+    self~assertTrue(DATATYPE('-1'   ,'W'))
+    self~assertTrue(DATATYPE('12345','W'))
+    self~assertTrue(DATATYPE('1E3'  ,'W'))
+    self~assertFalse(DATATYPE('1E9'  ,'W'))
+
+    numeric digits a
+
+    self~assertFalse(DATATYPE('z'  ,'X'))    -- heX-digits
+    self~assertTrue(DATATYPE(''  ,'X'))
+
+    self~assertFalse(DATATYPE('z'  ,'B'))   -- binary digits
+    self~assertTrue(DATATYPE(''  ,'B'))
+    self~assertTrue(DATATYPE('01'  ,'B'))
+    self~assertTrue(DATATYPE('01101001'  ,'B'))
+    self~assertTrue(DATATYPE('0110 1001'  ,'B'))
+    self~assertFalse(DATATYPE('011 01001'  ,'B'))
+
+    numeric digits 9
+    self~assertEquals('NUM', DATATYPE(' 1e3       '))
+    self~assertEquals('NUM', DATATYPE(' 123456789 '))
+    self~assertEquals('NUM', DATATYPE(' 1234567891 '))
+    self~assertEquals('CHAR', DATATYPE(""))
+    self~assertEquals('CHAR', DATATYPE("a"))
+    self~assertEquals('CHAR', DATATYPE("abc"))
+    self~assertEquals('CHAR', DATATYPE("1A0"))
+
+    self~assertTrue(DATATYPE("123456789012345", "N" )) -- Numeric
+    self~assertTrue(DATATYPE("0"              , "N" )) -- Numeric
+    self~assertTrue(DATATYPE("1234567890.1234", "N" )) -- Numeric
+    self~assertFalse(DATATYPE(""               , "N" )) -- Numeric
+    numeric digits a
+
+    self~assertTrue(DATATYPE(0,  "O"))  -- Logical (Boolean)
+    self~assertTrue(DATATYPE(1,  "O"))  -- Logical (Boolean)
+    self~assertFalse(DATATYPE(2,  "O"))  -- Logical (Boolean)
+    self~assertFalse(DATATYPE(-1, "O"))  -- Logical (Boolean)
+    self~assertFalse(DATATYPE("", "O"))  -- Logical (Boolean)
+
+
+   -- test the BIF, using examples from the documentation
+::method "test_DATATYPE_WITH_OPTION_9"
+    a=digits()          -- get digits
+
+    numeric digits 2    -- make sure that numeric digits is not set to 9
+    self~assertTrue(DATATYPE('0'    ,'9')) -- whole number under 9 digits (?)
+    self~assertTrue(DATATYPE('1'    ,'9'))
+    self~assertTrue(DATATYPE('-1'   ,'9'))
+    self~assertTrue(DATATYPE('12345' ,'9')) -- ?
+    self~assertTrue(DATATYPE('1E3'   ,'9')) -- ?
+    if .ooRexxUnit.architecture == 32 then
+        self~assertFalse(DATATYPE('1E9'  ,'9')) -- ?
+    else
+        self~assertFalse(DATATYPE('1E18'  ,'9')) -- ?
+    numeric digits a
+
+::method test_datatype_no_args
+  self~expectSyntax(40.3) -- Not enough arguments in invocation of DATATYPE
+  a = datatype()
+
+::method test_datatype_too_many_args
+  self~expectSyntax(40.4) -- Too many arguments in invocation of DATATYPE
+  a = datatype(0, "n", 1)
+
+::method test_datatype_option_invalid_letter
+  -- NOTE: "Method option" isn't really appropriate here
+  self~expectSyntax(93.915) -- Method option must be one of "ABILMNOSUVWX9"
+  a = datatype(0, "q")
+
+::method test_datatype_option_null
+  self~expectSyntax(93.915) -- Method option must be one of "ABILMNOSUVWX9"
+  a = datatype(0, "")
+
+::method test_datatype_internal
+  -- numbers up to 9 digits on 32-bit resp. 18 digits on 64-bit must pass
+  numeric digits .RexxInfo~internalDigits
+  do digits = 1 to .RexxInfo~internalDigits
+    number = 1~copies(digits)
+    self~assertTrue(datatype(number, "i"))
+    self~assertTrue(datatype(number * 9, "i"))
+    self~assertTrue(datatype(-number, "i"))
+    self~assertTrue(datatype(-number * 9, "i"))
+  end
+
+  -- with a total of internalDigits + 1 digits, this number must fail
+  number = 1~copies(digits)
+  self~assertFalse(datatype(number, "Internal whole"))
+  self~assertFalse(datatype(number * 9, "Internal whole"))
+  self~assertFalse(datatype(-number, "Internal whole"))
+  self~assertFalse(datatype(-number * 9, "Internal whole"))
+
+
+::options novalue error

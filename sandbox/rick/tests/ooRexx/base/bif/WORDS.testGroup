@@ -1,0 +1,210 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYright HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYright   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.WORDS.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+-- class named exactly like file
+::class "WORDS.testGroup" subclass ooTestCase public
+
+::method 'test000'
+    .local~vblank = ' '
+    .local~v26 = 'A B C D E F G H I J K L M N O P Q R S T U V W X Y Z'
+    .local~v30c = 'asdfQWERzxcvASDFqwerZXCVJRjrJR'
+    .local~v250c = copies('*',250)
+    .local~v8 = 'one two  three   four    five     six      seven       eight'
+    .local~v10000 = copies('J ',9999)||'K '
+    .local~vwbw = 'John'||copies(' ',10000)||'Buckley'
+    .local~vwbwwbw = 'J'||copies(' ',5000)||copies('*',10000)||copies(' ',5000)||'R'
+    .local~v19 = '19'
+    .local~v14 = '14'
+
+::method 'test001'
+    self~assertSame('0', words(''))
+
+::method 'test002'
+    self~assertSame('2', words('WORD1 WORD2'))
+
+::method 'test003'
+    self~assertSame('1', words('4a'x))
+
+::method 'test004'
+    self~assertSame('0', words(.vblank))
+
+::method 'test005'
+    self~assertSame('1', words('WORD'))
+
+::method 'test006'
+    self~assertSame('0', words(' '))
+
+::method 'test007'
+    self~assertSame('1', words('4a52'x))
+
+::method 'test008'
+    self~assertSame('1', words(.v30c))
+
+::method 'test009'
+    self~assertSame('15', words('4120422043204420452046204720482049204a204b204c204d204e204f'x))
+
+::method 'test010'
+    self~assertSame('26', words(.v26))
+
+::method 'test011'
+    self~assertSame('1', words(12 + 6))
+
+::method 'test012'
+    self~assertSame('3', words('12 + 6'))
+
+::method 'test013'
+    self~assertSame('1', words(.v250c))
+
+::method 'test014'
+    self~assertSame('1', words('.v250c'))
+
+::method 'test015'
+    self~assertSame('6', words('     asdf qwer zxcv     ASDF QWER ZXCV'))
+
+::method 'test016'
+    self~assertSame('8', words(.v8))
+
+::method 'test017'
+    self~assertSame('4', words('6173646620717765722041534446205157455220'x))
+
+::method 'test018'
+    self~assertSame('3', words('61736466207a786376000000000041534446205a584356'x))
+
+::method 'test019'
+    self~assertSame('1', words(nv))
+
+::method 'test020'
+    self~assertSame('1', words(nv.))
+
+::method 'test021'
+    self~assertSame('1', words(nv.10))
+
+::method 'test022'
+    self~assertSame('10000', words(.v10000))
+
+::method 'test023'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~assertSame('10', words(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX))
+
+::method 'test024'
+    self~assertSame('3', words(.vwbwwbw))
+
+::method 'test025'
+    self~assertSame('2', words(.vwbw))
+
+::method 'test026'
+    self~assertSame('1', words((00345)))
+
+::method 'test027'
+    self~assertSame('3', words((3 4 5)))
+
+::method 'test028'
+    self~assertSame('8', words((.v8)))
+
+::method 'test029'
+    v8. = .v8
+    self~assertSame('8', words((v8.)))
+
+::method 'test030'
+    v8. = .v8
+    self~assertSame('8', words((v8.10)))
+
+::method 'test031'
+    self~assertSame('52', words(.v26||' '||reverse(.v26)))
+
+::method 'test032'
+    self~assertSame('52', words(.v26' 'reverse(.v26)))
+
+::method 'test033'
+    self~assertSame('52', words(.v26 reverse(.v26)))
+
+::method 'test034'
+    self~assertSame('125', words('* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * '))
+
+::method 'test035'
+    self~assertSame('2', words(subStr('one two three four',5,9)))
+
+::method 'test036'
+    self~assertSame('26', words(translate(.v26,'',' ')))
+
+::method 'test037'
+    self~assertSame('2', words(dataType(6) dataType('A')))
+
+::method 'test038'
+    self~assertSame('4', words(errorText(40)))
+
+::method 'test039'
+    self~assertSame(1, words(words('John Robert Buckley')))
+
+::method 'test040'
+    .local~remove(vblank)
+    .local~remove(v26)
+    .local~remove(v30c)
+    .local~remove(v250c)
+    .local~remove(v8)
+    .local~remove(v10000)
+    .local~remove(vwbw)
+    .local~remove(vwbwwbw)
+    .local~remove(v19)
+    .local~remove(v14)
+
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_WORDS"
+    self~assertEquals(4, WORDS('Now is the time'))
+    self~assertEquals(0, WORDS(' '))
+
+   -- new tests
+    self~assertEquals(0, WORDS(''))
+
+

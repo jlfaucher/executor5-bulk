@@ -1,0 +1,165 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.String_reverseMethod.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "String_reverseMethod.testGroup" subclass ooTestCase public
+
+::method 'test001'
+    self~assertSame('', ''~reverse())
+
+::method 'test002'
+    self~assertSame('$', '$'~reverse())
+
+::method 'test003'
+    self~assertSame('Za', 'aZ'~reverse())
+
+::method 'test004'
+    self~assertSame('4321zyxwvutsrqponmlkjihgfedcba', 'abcdefghijklmnopqrstuvwxyz1234'~reverse())
+
+::method 'test005'
+    self~assertSame('AA'X||'zyxwvuts'||'a1'X, 'a1737475767778797aaa'x~reverse())
+
+::method 'test006'
+    self~assertSame(copies('0987654321',25), "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"~reverse())
+
+::method 'test007'
+    v20000 = copies('abcde67890',2000)
+    w20000 = copies('09876edcba',2000)
+    self~assertSame(w20000, v20000~reverse())
+
+::method 'test008'
+    v20000 = copies('abcde67890',2000)
+    w20000 = copies('09876edcba',2000)
+    self~assertSame('1'||w20000, (v20000||'1')~reverse())
+
+::method 'test009'
+    self~assertSame(12, (17+4)~reverse())
+
+::method 'test010'
+    self~assertSame('3210987654321', 1234567890123~reverse())
+
+::method 'test011'
+    numeric digits 9
+    self~assertSame('31+E98765432.1', (+12345678901234)~reverse())
+
+::method 'test012'
+    numeric digits 9
+    self~assertSame('31+E98765432.1-', (-12345678901234)~reverse())
+
+::method 'test013'
+    numeric form Engineering
+    numeric digits 10
+    self~assertSame('21+E09876543.21', (+12345678901234)~reverse())
+
+::method 'test014'
+    numeric form Engineering
+    numeric digits 10
+    self~assertSame('21+E09876543.21-', (-12345678901234)~reverse())
+
+::method 'test015'
+    numeric form Engineering
+    numeric digits 10
+    self~assertSame('fed441 cbaa', ("a"||'abc' (12*12) ||'def')~reverse())
+
+::method 'test016'
+    numeric form Engineering
+    numeric digits 10
+    self~assertSame('e d c b a', ('a' 'b' 'c'  'd'   'e')~reverse())
+
+::method 'test017'
+    numeric form Engineering
+    numeric digits 10
+    self~assertSame('TSNOCYNNUF.', .funnyconst~reverse())
+
+::method 'test021'
+    numeric form Engineering
+    numeric digits 10
+    self~assertSame('TSNOCYNNUF.', .funnyconst~reverse())
+
+::method 'test022'
+    numeric form Engineering
+    numeric digits 10
+    x = 'anystring'
+    self~assertSame(x, x~reverse()~reverse())
+
+::method 'test023'
+    numeric form Engineering
+    numeric digits 10
+    self~assertSame(17E+3, '17E+3'~reverse()~reverse())
+
+::method 'test024'
+    numeric form Engineering
+    numeric digits 10
+    self~assertSame(12, (3*4)~reverse()~reverse())
+
+::method 'test026'
+    numeric form Engineering
+    numeric digits 10
+    hansjako. = 13
+    self~assertSame('31', value(.okajsnah~reverse())~reverse())
+
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_REVERSE"
+    self~assertSame('.cBA', 'ABc.'~REVERSE())
+    self~assertSame(' ZYX', 'XYZ '~REVERSE())
+
+   -- new tests
+    self~assertSame('', ''~REVERSE(    ))
+
+
+::method test_one_arg
+   self~expectSyntax(93.902) -- Too many arguments in invocation of method; 0 expected
+   ""~reverse(1)
+
+
+::options novalue error

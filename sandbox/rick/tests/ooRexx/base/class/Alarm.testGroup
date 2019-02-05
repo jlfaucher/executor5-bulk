@@ -1,0 +1,303 @@
+#!/usr/bin/rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2017 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
+
+  group = .TestGroup~new(fileSpec)
+  group~add(.Alarm.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "Alarm.testGroup" subclass ooTestCase public
+
+::method test_base_alarm
+  t1 = .alarmWaiter~new
+  delay = .timespan~fromSeconds(2.0001)
+  alarm = .alarm~new(delay, t1, "My Label")
+
+  self~assertFalse(alarm~triggered)    -- shouldn't have triggered yet
+  self~assertFalse(alarm~canceled)     -- wasn't yet cancelled
+  self~assertFalse(alarm~cancelled)    -- wasn't yet cancelled
+
+  -- wait at most 3 seconds
+  t1~wait(3)
+
+  self~assertTrue(alarm~triggered)     -- should have triggered by now
+  self~assertFalse(alarm~canceled)     -- wasn't cancelled
+  self~assertFalse(alarm~cancelled)    -- wasn't cancelled
+  self~assertTrue(t1~istriggered)
+  self~assertSame(alarm, t1~alarm)
+  self~assertSame("My Label", alarm~attachment)
+  -- verify we got at least the requested delay
+  -- we're sometimes seeing slightly early triggers .. relax test by allowing 5ms fuzz
+  self~assertTrue((t1~triggerTime - alarm~scheduledTime)~totalSeconds >= -0.005, "trigger time" t1~triggerTime "should be after" alarm~scheduledTime)
+
+  -- this should not be an error
+  alarm~cancel
+
+  t1 = .alarmWaiter~new
+  -- just use numeric seconds
+  delay = 1.9
+  alarm = .alarm~new(delay, t1)
+
+  self~assertFalse(alarm~triggered)    -- shouldn't have triggered yet
+  self~assertFalse(alarm~canceled)     -- wasn't yet cancelled
+  self~assertFalse(alarm~cancelled)    -- wasn't yet cancelled
+
+  -- wait at most 3 seconds
+  t1~wait(3)
+
+  self~assertTrue(alarm~triggered)     -- should have triggered by now
+  self~assertFalse(alarm~canceled)     -- wasn't cancelled
+  self~assertFalse(alarm~cancelled)    -- wasn't cancelled
+  self~assertTrue(t1~istriggered)
+  self~assertSame(alarm, t1~alarm)
+
+  t1 = .alarmWaiter~new
+  -- just use now use a date time object.
+  delay = .datetime~new~addSeconds(2)
+  alarm = .alarm~new(delay, t1)
+
+  self~assertFalse(alarm~triggered)    -- shouldn't have triggered yet
+  self~assertFalse(alarm~canceled)     -- wasn't yet cancelled
+  self~assertFalse(alarm~cancelled)    -- wasn't yet cancelled
+
+  -- wait at most 3 seconds
+  t1~wait(3)
+
+  self~assertTrue(alarm~triggered)     -- should have triggered by now
+  self~assertFalse(alarm~canceled)     -- wasn't cancelled
+  self~assertFalse(alarm~cancelled)    -- wasn't cancelled
+  self~assertTrue(t1~istriggered)
+  self~assertSame(alarm, t1~alarm)
+  -- these should be the same
+  self~assertEquals(delay, alarm~scheduledTime)
+
+  t1 = .alarmWaiter~new
+  -- just use now use a time string
+  delay = .datetime~new~addSeconds(2)~normalTime
+  alarm = .alarm~new(delay, t1)
+
+  self~assertFalse(alarm~triggered)    -- shouldn't have triggered yet
+  self~assertFalse(alarm~canceled)     -- wasn't yet cancelled
+  self~assertFalse(alarm~cancelled)    -- wasn't yet cancelled
+
+  -- wait at most 3 seconds
+  t1~wait(3)
+
+  self~assertTrue(alarm~triggered)     -- should have triggered by now
+  self~assertFalse(alarm~canceled)     -- wasn't cancelled
+  self~assertFalse(alarm~cancelled)    -- wasn't cancelled
+  self~assertTrue(t1~istriggered)
+  self~assertSame(alarm, t1~alarm)
+
+  t1 = .alarmWaiter~new
+  -- just use now use a time + date string
+  date = .datetime~new~addSeconds(2)
+  delay = date~normalTime date~normalDate
+  alarm = .alarm~new(delay, t1)
+
+  self~assertFalse(alarm~triggered)    -- shouldn't have triggered yet
+  self~assertFalse(alarm~canceled)     -- wasn't yet cancelled
+  self~assertFalse(alarm~cancelled)    -- wasn't yet cancelled
+
+  -- wait at most 3 seconds
+  t1~wait(3)
+
+  self~assertTrue(alarm~triggered)     -- should have triggered by now
+  self~assertFalse(alarm~canceled)     -- wasn't cancelled
+  self~assertFalse(alarm~cancelled)    -- wasn't cancelled
+  self~assertTrue(t1~istriggered)
+  self~assertSame(alarm, t1~alarm)
+
+  -- now a cancel operation
+  t1 = .alarmWaiter~new
+  -- use a little longer delay
+  delay = 3
+  alarm = .alarm~new(delay, t1)
+  -- cancel after 2 seconds
+  t1~cancelAlarm(alarm, 2)
+
+  self~assertFalse(alarm~triggered)    -- shouldn't have triggered yet
+  self~assertFalse(alarm~canceled)     -- wasn't yet cancelled
+  self~assertFalse(alarm~cancelled)    -- wasn't yet cancelled
+
+  -- wait at most 3 seconds
+  t1~wait(3)
+
+  self~assertFalse(alarm~triggered)    -- was cancelled, hasn't triggered
+  self~assertTrue(alarm~canceled)      -- should have been cancelled
+  self~assertTrue(alarm~cancelled)     -- should have been cancelled
+  self~assertFalse(t1~istriggered)
+  self~assertTrue(t1~stopped)
+  self~assertSame(alarm, t1~alarm)
+
+  -- now a test with a message object.  This does not
+  -- pass along the alarm object
+  t1 = .alarmWaiter~new
+  m = .message~new(t1, 'triggered')
+  self~assertIsA(m, .AlarmNotification)
+  delay = .timespan~fromSeconds(2)
+  alarm = .alarm~new(delay, m)
+
+  self~assertFalse(alarm~triggered)    -- shouldn't have triggered yet
+  self~assertFalse(alarm~canceled)     -- wasn't yet cancelled
+  self~assertFalse(alarm~cancelled)    -- wasn't yet cancelled
+
+  -- wait at most 3 seconds
+  t1~wait(3)
+
+  self~assertTrue(alarm~triggered)     -- should have triggered by now
+  self~assertFalse(alarm~canceled)     -- wasn't cancelled
+  self~assertFalse(alarm~cancelled)    -- wasn't cancelled
+  self~assertTrue(t1~istriggered)
+  self~assertSame(.nil, t1~alarm)
+
+
+  t1 = .alarmWaiter~new
+  -- We're going to use string time format, where the time
+  -- is in the past.
+  time = .datetime~new~addSeconds(-1)
+
+  delay = time~normalTime
+  tomorrowTime = time~addDays(1)~date + .timespan~fromNormalTime(delay)
+  alarm = .alarm~new(delay, t1)
+
+  self~assertFalse(t1~istriggered)
+  -- this should be scheduled
+  self~assertEquals(tomorrowTime, alarm~scheduledTime)
+  -- cancel the alarm now
+  alarm~cancel
+
+::method test_alarm_no_time
+  self~expectSyntax(93.903)
+  t1 = .alarmWaiter~new
+  alarm = .alarm~new(, t1)
+
+::method test_alarm_no_target
+  self~expectSyntax(93.901)
+  t1 = .alarmWaiter~new
+  alarm = .alarm~new(5)
+
+::method test_alarm_bad_time
+  self~expectSyntax(93.951)
+  t1 = .alarmWaiter~new
+  alarm = .alarm~new('Foobar', t1)
+
+::method test_alarm_negative_time
+  self~expectSyntax(93.951) -- Incorrect alarm time
+  t1 = .alarmWaiter~new
+  alarm = .alarm~new(-1, t1)
+
+::method test_alarm_bad_target
+  self~expectSyntax(88.914)
+  t1 = .alarmWaiter~new
+  alarm = .alarm~new(5, "Sometarget")
+
+
+::class AlarmWaiter inherit AlarmNotification
+::method init
+  expose ended istriggered stopped timedOut alarm
+
+  istriggered = .false
+  stopped = .false
+  timedOut = .false
+  ended = .false
+  alarm = .nil
+
+::attribute istriggered
+::attribute stopped
+::attribute timedOut
+::attribute alarm
+::attribute triggerTime
+
+::method triggered unguarded
+  expose ended istriggered alarm triggerTime
+  use strict arg alarm = .nil
+
+  istriggered = .true
+  ended = .true
+  triggerTime = .datetime~new
+
+::method cancel unguarded
+  expose stopped alarm
+  use strict arg alarm = .nil
+
+  stopped = .true
+  ended = .true
+
+::method wait unguarded
+  expose ended
+  use strict arg time
+
+  self~timer(time)   -- start a time out timer
+
+  guard on when ended   -- wait for something to trigger.
+
+::method timer unguarded
+  expose ended timedOut
+  use strict arg time
+
+  reply  -- spin off a new thread to wait
+
+  call syssleep time
+
+  if \ended then do
+      timedOut = .true
+      ended = .true
+  end
+
+::method cancelAlarm
+  use strict arg alarm, time
+
+  reply
+  call syssleep time
+  alarm~cancel
+
+
+::options novalue error

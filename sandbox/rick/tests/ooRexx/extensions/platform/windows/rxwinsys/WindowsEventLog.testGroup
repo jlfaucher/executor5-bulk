@@ -1,0 +1,551 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2008-2018 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+
+  group = .TestGroup~new(s)
+  group~restrictOS("WINDOWS")
+  group~addWithSuite(.WindowsEventLog.testGroup, .WindowsEventLog.Suite)
+  --group~addWithSuite(.WindowsEventLog_Long.testGroup, .WindowsEventLog_Long.Suite)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return group
+-- End of entry point.
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::requires 'ooTest.frm'
+::requires "FileUtils.cls"
+
+::class 'WindowsEventLog.Suite' subclass ooTestSuite
+
+::method setUp
+  use strict arg testResult
+
+  if \ isSubClassOf(testResult~class, "ooTestCollectingParameter") then
+     raise syntax 88.914 array ("1 'testResult'", "ooTestCollectingParameter")
+
+  signal on any name loadErr
+  .context~package~loadPackage('winsystm.cls')
+  return
+
+loadErr:
+  err = .ExceptionData~new(timeStamp(), s, .ExceptionData~TRAP)
+  err~setLine(sigl)
+  err~conditionObject = condition('O')
+  err~msg = "Could not load 'winsystm.cls' the package needed for this test group."
+  err~severity = "Unrecoverable"
+
+  testResult~addException(err)
+  testResult~stop
+  return
+
+-- End of class WindowsEventLogSuite
+
+::class "WindowsEventLog.testGroup" subclass ooTestCase public
+
+::method test_new
+  log = .WindowsEventLog~new
+
+  self~assertEquals("a WindowsEventLog", log)
+  self~assertTrue(log~isA(.WindowsEventLog))
+
+::method test_new_args
+  self~expectSyntax(88.922)
+  log = .WindowsEventLog~new("Application")
+
+::method test_events_attribute
+  l = .WindowsEventLog~new
+  obj = l~events
+  self~assertTrue(obj~isA(.array))
+  self~assertSame(0, obj~items)
+
+::method test_events_attribute_set
+  l = .WindowsEventLog~new
+  self~expectSyntax(97.1)
+  l~events = .array~new
+
+::method test_minimumReadMin_attribute
+  l = .WindowsEventLog~new
+
+  -- This is what is now documented, if it changes, test must change.
+  self~assertSame(16, l~minimumReadMin)
+
+::method test_minimumReadMin_attribute_set
+  l = .WindowsEventLog~new
+  self~expectSyntax(97.1)
+  l~minimumReadMin = 32
+
+::method test_minimumReadMax_attribute
+  l = .WindowsEventLog~new
+
+  -- This is what is now documented, if it changes, test must change.
+  self~assertSame(256, l~minimumReadMax)
+
+::method test_minimumReadMax_attribute_set
+  l = .WindowsEventLog~new
+  self~expectSyntax(97.1)
+  l~minimumReadMax = 512
+
+::method test_minimumReadBuffer_attribute
+  l = .WindowsEventLog~new
+  obj = l~minimumReadBuffer
+  self~assertTrue(obj~datatype('W'))
+
+  -- minimum read buffer is in bytes, must be a multiple of 1024
+  kb = obj / 1024
+  self~assertTrue(kb~datatype('W'))
+
+::method test_minimumReadBuffer_attribute_set
+  l = .WindowsEventLog~new
+  self~expectSyntax(97.1)
+  l~minimumReadBuffer = 4096
+
+::method test_currentHandle_attribute
+  l = .WindowsEventLog~new
+
+  -- currentHandle is a private attribute.
+  self~expectSyntax(97.1)
+  obj = l~currentHandle
+
+::method test_initCode_attribute
+  -- initCode is deprecated, but needed for backwards compatibility, should always be 0.
+
+  l = .WindowsEventLog~new
+  self~assertTrue(l~hasMethod("initCode"))
+  self~assertSame(0, l~initCode)
+
+  self~expectSyntax(97.1)
+  l~initCode = 99
+
+::method test_deinstall
+  -- Another deprecated method
+  l = .WindowsEventLog~new
+  self~assertTrue(l~hasMethod("deinstall"))
+
+::method test_minimumRead
+  l = .WindowsEventLog~new
+  num = l~minimumRead
+  self~assertTrue(num~datatype('W'))
+
+  self~assertTrue(num <= l~minimumReadMax)
+  self~assertTrue(num >= l~minimumReadMin)
+  self~assertSame(l~minimumReadBuffer, num * 1024)
+
+::method test_minimumReadEquals01
+  l = .WindowsEventLog~new
+  l~minimumRead = 32
+  self~assertSame(32, l~minimumRead)
+  self~assertSame(32 * 1024, l~minimumReadBuffer)
+
+::method test_minimumReadEquals02
+  l = .WindowsEventLog~new
+  l~minimumRead = l~minimumReadMin
+  self~assertSame(l~minimumReadMin, l~minimumRead)
+  self~assertSame(l~minimumReadMin * 1024, l~minimumReadBuffer)
+
+::method test_minimumReadEquals03
+  l = .WindowsEventLog~new
+  l~minimumRead = l~minimumReadMax
+  self~assertSame(l~minimumReadMax, l~minimumRead)
+  self~assertSame(l~minimumReadMax * 1024, l~minimumReadBuffer)
+
+::method test_minimumReadEquals04
+  l = .WindowsEventLog~new
+  self~expectSyntax(88.907)
+  l~minimumRead = l~minimumReadMin - 1
+
+::method test_minimumReadEquals05
+  l = .WindowsEventLog~new
+  self~expectSyntax(88.907)
+  l~minimumRead = l~minimumReadMax + 1
+
+::method test_getNumber01
+  l = .WindowsEventLog~new
+
+  -- Default is to get the Application log
+  num = l~getNumber
+  self~assertTrue(num~datatype('W'))
+  self~assertTrue(num >= 0)
+
+  appNum = l~getNumber( , "Application")
+  self~assertSame(num, appNum)
+
+::method test_getNumber02
+  l = .WindowsEventLog~new
+
+  logs = .array~new
+  ret = l~getLogNames(logs)
+  self~assertSame(0, ret)
+
+  do n over logs
+    num = l~getNumber( , n)
+    self~assertTrue(num~datatype('W'), "Working with" n "log")
+    self~assertTrue(num >= 0, "Working with" n "log")
+  end
+
+::method test_getNumber03
+  l = .WindowsEventLog~new
+
+  self~expectSyntax(88.922)
+  num = l~getNumber( , , "HowMany")
+
+::method test_getLast01
+  l = .WindowsEventLog~new
+
+  -- Default is to get the Application log
+  num = l~getLast
+  self~assertTrue(num~datatype('W'))
+  self~assertTrue(num >= 0)
+
+  appNum = l~getLast( , "Application")
+  self~assertSame(num, appNum)
+
+::method test_getLast02
+  l = .WindowsEventLog~new
+
+  logs = .array~new
+  ret = l~getLogNames(logs)
+  self~assertSame(0, ret)
+
+  do n over logs
+    num = l~getLast( , n)
+    self~assertTrue(num~datatype('W'), "Working with" n "log")
+    self~assertTrue(num >= 0, "Working with" n "log")
+  end
+
+::method test_getLast03
+  l = .WindowsEventLog~new
+
+  self~expectSyntax(88.922)
+  num = l~getNumber( , , "too many")
+
+::method test_getFirst01
+  l = .WindowsEventLog~new
+
+  -- Default is to get the Application log
+  num = l~getFirst
+  self~assertTrue(num~datatype('W'))
+  self~assertTrue(num >= 0)
+
+  appNum = l~getFirst( , "Application")
+  self~assertSame(num, appNum)
+
+::method test_getFirst02
+  l = .WindowsEventLog~new
+
+  logs = .array~new
+  ret = l~getLogNames(logs)
+  self~assertSame(0, ret)
+
+  do n over logs
+    num = l~getFirst( , n)
+    self~assertTrue(num~datatype('W'), "Working with" n "log")
+    self~assertTrue(num >= 0, "Working with" n "log")
+  end
+
+::method test_getFirst03
+  l = .WindowsEventLog~new
+
+  self~expectSyntax(88.922)
+  num = l~getFirst( , , "only 2 args")
+
+::method test_isFull01
+  l = .WindowsEventLog~new
+
+  -- No way of knowing ahead of time if the log is full or not.  So we just
+  -- test that we get a logical back.
+  val = l~isFull
+  self~assertTrue(val~datatype('O'))
+
+  appVal = l~isFull( , "Application")
+  self~assertSame(val, appVal)
+
+::method test_isFull02
+  l = .WindowsEventLog~new
+
+  logs = .array~new
+  ret = l~getLogNames(logs)
+  self~assertSame(0, ret)
+
+  do n over logs
+    val = l~isFull( , n)
+    self~assertTrue(val~datatype('O'), "Working with" n "log")
+  end
+
+::method test_isFull03
+  l = .WindowsEventLog~new
+
+  self~expectSyntax(88.922)
+  val = l~isFull( , , "")
+
+::method test_getLogNames01
+  l = .WindowsEventLog~new
+  names = .array~new
+  ret = l~getLogNames(names)
+
+  self~assertSame(0, ret)
+  self~assertFalse(names~isEmpty)
+
+::method test_getLogNames02
+  l = .WindowsEventLog~new
+
+  -- We know for sure there should be Application, System, and Security
+  names = .array~new
+  ret = l~getLogNames(names)
+
+  self~assertSame(0, ret)
+  self~assertTrue(names~items >= 3)
+
+  holder = .set~new
+  do n over names
+    holder~put(n)
+  end
+
+  self~assertTrue(holder~hasItem("Application"))
+  self~assertTrue(holder~hasItem("Security"))
+  self~assertTrue(holder~hasItem("System"))
+
+::method test_getLogNames03
+  l = .WindowsEventLog~new
+
+  names = .array~new
+  ret = l~getLogNames(names)
+
+  self~assertSame(0, ret)
+
+  holder = .set~new
+  do n over names
+    holder~put(n)
+  end
+
+  -- Shouldn't be any duplicates, so the number of items in the set and the
+  -- number of items in the array should be the same.
+  self~assertSame(names~items, holder~items)
+
+::method test_getLogNames04
+  l = .WindowsEventLog~new
+
+  names = .set~new
+  self~expectSyntax(93.948)
+  ret = l~getLogNames(names)
+
+::method test_getLogNames05
+  l = .WindowsEventLog~new
+
+  self~expectSyntax(88.901)
+  ret = l~getLogNames
+
+::method test_getLogNames06
+  l = .WindowsEventLog~new
+
+  names = .set~new
+  logs  = .array~new
+  self~expectSyntax(88.922)
+  ret = l~getLogNames(logs, names)
+
+/*
+ *  NOTE NOTE.  Some of the following 'open' tests could fail if an event record
+ *              is written to the log in the middle of the test.  I don't think
+ *              it likely that could happen.
+ */
+
+::method test_open01
+  l = .WindowsEventLog~new
+
+  -- With no args, open should open the application log.  So, first get the
+  -- numbers for the application log, the do the open, then get the numbers
+  -- again and they should match.  This will not prove absolutely that the open
+  -- with no args opened the application log, but it will be a good indication.
+  -- And, if the test fails, it will show that something is not working.
+
+  appNum = l~getNumber( , "Application")
+  appFirst = l~getFirst( , "Application")
+  appLast = l~getLast( , "Application")
+
+  ret = l~open
+  self~assertSame(0, ret)
+
+  lNum = l~getNumber
+  lFirst = l~getFirst
+  lLast = l~getLast
+
+  self~assertSame(appNum, lNum)
+  self~assertSame(appFirst, lFirst)
+  self~assertSame(appLast, lLast)
+
+::method test_open02
+  l = .WindowsEventLog~new
+
+  sysNum = l~getNumber( , "System")
+  sysFirst = l~getFirst( , "System")
+  sysLast = l~getLast( , "System")
+
+  ret = l~open( , "System")
+  self~assertSame(0, ret)
+
+  -- Once a log is opened with open, that log should be used for all successive
+  -- methods, until it is closed.  Again, not necessarily proof, but a good
+  -- indication.
+
+  lNum = l~getNumber
+  lFirst = l~getFirst
+  lLast = l~getLast
+
+  self~assertSame(sysNum, lNum)
+  self~assertSame(sysFirst, lFirst)
+  self~assertSame(sysLast, lLast)
+
+::method test_open03
+  l = .WindowsEventLog~new
+
+  appNum = l~getNumber( , "Application")
+  appFirst = l~getFirst( , "Application")
+  appLast = l~getLast( , "Application")
+
+  ret = l~open( , "System")
+  self~assertSame(0, ret)
+
+  -- If we open when another log has already been opened, that log should be
+  -- closed and the new log opened.  Can't prove that System is closed, but...
+  ret = l~open
+  self~assertSame(0, ret)
+
+  self~assertSame(appNum, l~getNumber)
+  self~assertSame(appFirst, l~getFirst)
+  self~assertSame(appLast, l~getLast)
+
+::method test_open04
+  l = .WindowsEventLog~new
+
+  self~expectSyntax(88.922)
+  l~open( , , "ReadOnly")
+
+::method test_open_close
+  l = .WindowsEventLog~new
+
+  names = .array~new
+  ret = l~getLogNames(names)
+  self~assertSame(0, ret)
+
+  do n over names
+    ret = l~open( , n)
+    self~assertSame(0, ret, 'Working with' n)
+
+    ret = l~close
+    self~assertSame(0, ret, 'Working with' n)
+  end
+
+::method test_close01
+  l = .WindowsEventLog~new
+  ret = l~close
+  self~assertSame(0, ret)
+
+::method test_close02
+  l = .WindowsEventLog~new
+
+  self~expectSyntax(88.922)
+  l~close("now")
+
+::method test_readRecords01
+  l = .WindowsEventLog~new
+
+  ret = l~readRecords
+  self~assertSame(0, ret)
+  self~assertSame(l~getNumber, l~events~items)
+
+::method test_readRecords02
+  l = .WindowsEventLog~new
+
+  ret = l~readRecords( , , "Application")
+  self~assertSame(0, ret)
+  self~assertSame(l~getNumber( , "Application"), l~events~items)
+
+::method test_readRecords03
+  l = .WindowsEventLog~new
+
+  ret = l~readRecords( , , "System")
+  self~assertSame(0, ret)
+  self~assertSame(l~getNumber( , "System"), l~events~items)
+
+::method test_readRecords04
+  l = .WindowsEventLog~new
+
+  ret = l~readRecords( , , "Security")
+  self~assertSame(0, ret)
+  self~assertSame(l~getNumber( , "Security"), l~events~items)
+
+::method test_readRecords05
+  l = .WindowsEventLog~new
+
+  ret = l~readRecords("FORWARDS" , , "System")
+  self~assertSame(0, ret)
+  self~assertSame(l~getNumber( , "System"), l~events~items)
+
+::method test_readRecords06
+  l = .WindowsEventLog~new
+
+  ret = l~readRecords("BACKWARDS" , , "System")
+  self~assertSame(0, ret)
+  self~assertSame(l~getNumber( , "System"), l~events~items)
+
+
+
+::class 'WindowsEventLog_Long.Suite' subclass WindowsEventLog.Suite
+
+::class "WindowsEventLog_Long.testGroup" subclass ooTestCase public
+
+::method init class
+  forward class (super) continue
+  self~ooTestType = .ooTestTypes~UNIT_LONG_TEST
+
+::method test_getNumber04
+  l = .WindowsEventLog~new
+
+  -- No such server, should get negated system error code. The event logging
+  -- service will try to find a server on the network by this name and time out.
+  -- Can take a little bit of time.
+  num = l~getNumber(324, "nonsense")
+  self~assertTrue(num < 0)
+

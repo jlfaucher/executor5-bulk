@@ -1,0 +1,572 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 - 2018 Rexx Language Association. All rights reserved.  */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
+  group = .TestGroup~new(fileSpec)
+
+  group~addWithSuite(.substr.testGroup, .substrSuite)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class 'substrSuite' subclass ooTestSuite public
+::method setUp
+    .local~vblank = ' '
+    .local~v1 = '*'
+    .local~v30 = 'abcdefghijklmnopqrstuvwxyz1234'
+    .local~v256 = copies('12345678',32)
+    .local~v10000 = copies('\',10000)
+
+::method tearDown
+    .local~remove(vblank)
+    .local~remove(v1)
+    .local~remove(v30)
+    .local~remove(v256)
+    .local~remove(v10000)
+
+
+::class "substr.testGroup" subclass ooTestCase public
+
+::method 'test001'
+    mb = .mutablebuffer~new()
+    self~expectSyntax(93.924)
+    xre = .vblank~substr(0)
+
+::method 'test002'
+    mb = .mutablebuffer~new('')
+    self~assertSame("", mb~substr(1))
+    self~assertSame(mb~substr(1),''~subStr(1))
+
+::method 'test003'
+    mb = .mutablebuffer~new(.vblank)
+    self~assertSame(' ', mb~substr('31'x))
+    self~assertSame(mb~substr('31'x),.vblank~subStr('31'x))
+
+::method 'test004'
+    mb = .mutablebuffer~new('2A'x)
+    self~assertSame('', mb~substr(0002))
+    self~assertSame(mb~substr(0002),'2A'x~subStr(0002))
+
+::method 'test005'
+    mb = .mutablebuffer~new('abcdefghijklmnopqrstuvwxyz1234')
+    self~assertSame('4', mb~substr('00030'))
+    self~assertSame(mb~substr('00030'),'abcdefghijklmnopqrstuvwxyz1234'~subStr('00030'))
+
+::method 'test006'
+    mb = .mutablebuffer~new(.v256)
+    self~assertSame('2345678', mb~substr(2.5E+2))
+    self~assertSame(mb~substr(2.5E+2),.v256~subStr(2.5E+2))
+
+::method 'test007'
+    mb = .mutablebuffer~new(copies('5C'x,10000))
+    self~assertSame('', mb~substr('5E+4'))
+    self~assertSame(mb~substr('5E+4'),copies('5C'x,10000)~subStr('5E+4'))
+
+::method 'test008'
+    mb = .mutablebuffer~new(copies('5C'x,10000))
+    self~assertSame("", mb~substr('+999999999'))
+    self~assertSame(mb~substr('+999999999'),copies('5C'x,10000)~subStr('+999999999'))
+
+::method 'test009'
+    self~expectSyntax(93.924)
+    mb = .mutablebuffer~new(copies('5C'x,10000))
+    xre = mb~substr('5E+9999')
+
+::method 'test010'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1234567890'
+    mb = .mutablebuffer~new(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX)
+    self~assertSame('1234567890', mb~substr(1))
+    self~assertSame(mb~substr(1),XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~subStr(1))
+
+::method 'test011'
+    xre = copies('68'x,200)
+    mb = .mutablebuffer~new('6868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868'X)
+    self~assertSame(.true, mb~substr(1) == xre)
+    self~assertSame(mb~substr(1) == xre,'6868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868686868'X~subStr(1) == xre)
+
+::method 'test012'
+    mb = .mutablebuffer~new(.v30)
+    self~assertSame('34', mb~substr(29))
+    self~assertSame(mb~substr(29),.v30~subStr(29))
+
+::method 'test013'
+    mb = .mutablebuffer~new(.v30)
+    self~assertSame('4', mb~substr(30))
+    self~assertSame(mb~substr(30),.v30~subStr(30))
+
+::method 'test014'
+    mb = .mutablebuffer~new(.v30)
+    self~assertSame('', mb~substr(31))
+    self~assertSame(mb~substr(31),.v30~subStr(31))
+
+::method 'test015'
+    mb = .mutablebuffer~new(.v30)
+    self~assertSame('klmnopqrstuvwxyz1234', mb~substr('+'||'30303131'x||'.'||'3030'x||'e'||'30'x||000))
+    self~assertSame(mb~substr('+'||'30303131'x||'.'||'3030'x||'e'||'30'x||000),.v30~subStr('+'||'30303131'x||'.'||'3030'x||'e'||'30'x||000))
+
+::method 'test016'
+    self~expectSyntax(93.924)
+    mb = .mutablebuffer~new(.v30)
+    xre = mb~substr(1.2)
+
+::method 'test017'
+    self~expectSyntax(93.924)
+    mb = .mutablebuffer~new(.v30)
+    xre = mb~substr('-31')
+
+::method 'test018'
+    self~expectSyntax(93.924)
+    mb = .mutablebuffer~new('hasdghj')
+    if .ooRexxUnit.architecture == 32 then
+       xre = mb~substr(1E10)
+    else
+       xre = mb~substr(1E19)
+
+::method 'test019'
+    self~expectSyntax(93.924)
+    mb = .mutablebuffer~new('hasdghj')
+    xre = mb~substr('cc'x)
+
+::method 'test020'
+    mb = .mutablebuffer~new('hasdghj')
+    self~assertSame('sdghj', mb~substr(000000000000000000000000000000000000000000003))
+    self~assertSame(mb~substr(000000000000000000000000000000000000000000003),'hasdghj'~subStr(000000000000000000000000000000000000000000003))
+
+::method 'test021'
+    mb = .mutablebuffer~new('hasdghj')
+    self~assertSame('has', mb~substr(1,000000000000000000000000000000000000000000003))
+    self~assertSame(mb~substr(1,000000000000000000000000000000000000000000003),'hasdghj'~subStr(1,000000000000000000000000000000000000000000003))
+
+::method 'test022'
+    mb = .mutablebuffer~new('hasdghj')
+    self~assertSame('hasdghj33', mb~substr(1,9,+000000000000000000000000000000000000000000003))
+    self~assertSame(mb~substr(1,9,+000000000000000000000000000000000000000000003),'hasdghj'~subStr(1,9,+000000000000000000000000000000000000000000003))
+
+::method 'test023'
+    mb = .mutablebuffer~new(.v10000)
+    self~assertSame(copies('\\\\\\\\\',1111), mb~substr(2))
+    self~assertSame(mb~substr(2),.v10000~subStr(2))
+
+::method 'test024'
+    mb = .mutablebuffer~new(.v10000)
+    self~assertSame(copies('\\\\\\\\\\',1000), mb~substr(0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001))
+    self~assertSame(mb~substr(0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001),.v10000~subStr(0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001))
+
+::method 'test025'
+    mb = .mutablebuffer~new('')
+    self~assertSame('', mb~substr(2-1,0))
+    self~assertSame(mb~substr(2-1,0),''~subStr(2-1,0))
+
+::method 'test026'
+    mb = .mutablebuffer~new(.vblank)
+    self~expectSyntax(93.924)
+    xre = mb~substr(0,'31'x)
+
+::method 'test027'
+    mb = .mutablebuffer~new('2A'x)
+    self~assertSame('*', mb~substr('31'x,0001))
+    self~assertSame(mb~substr('31'x,0001),'2A'x~subStr('31'x,0001))
+
+::method 'test028'
+    xre = '*'
+    mb = .mutablebuffer~new('2A'x)
+    self~assertSame(.true, mb~substr('31'x,'3030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303031'x) == xre)
+    self~assertSame(mb~substr('31'x,'3030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303031'x) == xre,'2A'x~subStr('31'x,'3030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303031'x) == xre)
+
+::method 'test029'
+    xre = '* '
+    mb = .mutablebuffer~new('2A'x)
+    self~assertSame(.true, mb~substr('31'x,'3030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303032'x) == xre)
+    self~assertSame(mb~substr('31'x,'3030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303032'x) == xre,'2A'x~subStr('31'x,'3030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303032'x) == xre)
+
+::method 'test030'
+    mb = .mutablebuffer~new('abcdefghijklmnopqrstuvwxyz1234')
+    self~assertSame('         ', mb~substr(0035,'9'))
+    self~assertSame(mb~substr(0035,'9'),'abcdefghijklmnopqrstuvwxyz1234'~subStr(0035,'9'))
+
+::method 'test031'
+    mb = .mutablebuffer~new('abcdefghijklmnopqrstuvwxyz1234')
+    self~assertSame('z1234    ', mb~substr(0026,'9'))
+    self~assertSame(mb~substr(0026,'9'),'abcdefghijklmnopqrstuvwxyz1234'~subStr(0026,'9'))
+
+::method 'test032'
+    mb = .mutablebuffer~new(.v256)
+    self~assertSame('          ', mb~substr('10000','0010'))
+    self~assertSame(mb~substr('10000','0010'),.v256~subStr('10000','0010'))
+
+::method 'test033'
+    mb = .mutablebuffer~new(copies('5C'x,10000))
+    self~assertSame('\\\\\\\\\\\', mb~substr('000001',1.1E+1))
+    self~assertSame(mb~substr('000001',1.1E+1),copies('5C'x,10000)~subStr('000001',1.1E+1))
+
+::method 'test034'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1234567890'
+    mb = .mutablebuffer~new(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX)
+    self~assertSame('12345', mb~substr(1,5))
+    self~assertSame(mb~substr(1,5),XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~subStr(1,5))
+
+::method 'test035'
+    mb = .mutablebuffer~new(.v10000)
+    self~assertSame('\\', mb~substr(1,0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002))
+    self~assertSame(mb~substr(1,0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002),.v10000~subStr(1,0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002))
+
+::method 'test036'
+    mb = .mutablebuffer~new(.v10000)
+    self~assertSame('\\', mb~substr(9998,+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002))
+    self~assertSame(mb~substr(9998,+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002),.v10000~subStr(9998,+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002))
+
+::method 'test037'
+    mb = .mutablebuffer~new(.v10000)
+    self~assertSame('\\', mb~substr(1||'007',+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002))
+    self~assertSame(mb~substr(1||'007',+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002),.v10000~subStr(1||'007',+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002))
+
+::method 'test038'
+    mb = .mutablebuffer~new(.v10000)
+    self~assertSame('\\\22222222222222', mb~substr(9998,17,+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002))
+    self~assertSame(mb~substr(9998,17,+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002),.v10000~subStr(9998,17,+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002))
+
+::method 'test039'
+    mb = .mutablebuffer~new('')
+    self~assertSame(copies('|',255), mb~substr((2*3)-1,'2.55E+2','|'))
+    self~assertSame(mb~substr((2*3)-1,'2.55E+2','|'),''~subStr((2*3)-1,'2.55E+2','|'))
+
+::method 'test040'
+    mb = .mutablebuffer~new(.vblank)
+    self~assertSame(' '||copies('@',255), mb~substr(1,200+50+6,'@'))
+    self~assertSame(mb~substr(1,200+50+6,'@'),.vblank~subStr(1,200+50+6,'@'))
+
+::method 'test041'
+    mb = .mutablebuffer~new('2A'x)
+    self~assertSame('*'||copies('7',32767), mb~substr('31'x,32768,4+3))
+    self~assertSame(mb~substr('31'x,32768,4+3),'2A'x~subStr('31'x,32768,4+3))
+
+::method 'test042'
+    mb = .mutablebuffer~new('abcdefghijklmnopqrstuvwxyz1234')
+    self~assertSame('', mb~substr(00015,'30'x,')'))
+    self~assertSame(mb~substr(00015,'30'x,')'),'abcdefghijklmnopqrstuvwxyz1234'~subStr(00015,'30'x,')'))
+
+::method 'test043'
+    mb = .mutablebuffer~new(copies('3132333435363738'x,32))
+    self~assertSame('8', mb~substr('256',1,':'))
+    self~assertSame(mb~substr('256',1,':'),copies('3132333435363738'x,32)~subStr('256',1,':'))
+
+::method 'test044'
+    mb = .mutablebuffer~new(copies('\',10000))
+    self~assertSame('\********', mb~substr('00010000','39'x,'2A'x))
+    self~assertSame(mb~substr('00010000','39'x,'2A'x),copies('\',10000)~subStr('00010000','39'x,'2A'x))
+
+::method 'test045'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1234567890'
+    mb = .mutablebuffer~new(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX)
+    self~assertSame('1234567890************', mb~substr(1,22,'*'))
+    self~assertSame(mb~substr(1,22,'*'),XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX~subStr(1,22,'*'))
+
+::method 'test046'
+    self~expectSyntax(93.922)
+    mb = .mutablebuffer~new(.v30)
+    xre = mb~substr(1,40,'11')
+
+::method 'test047'
+    self~expectSyntax(93.922)
+    mb = .mutablebuffer~new(.v30)
+    xre = mb~substr(1,04,'11')
+
+::method 'test048'
+    self~expectSyntax(93.922)
+    mb = .mutablebuffer~new(.v30)
+    xre = mb~substr(1,04,'012'X)
+
+::method 'test049'
+    mb = .mutablebuffer~new(.v30)
+    self~assertSame('abcd', mb~substr(1,04,))
+    self~assertSame(mb~substr(1,04,),.v30~subStr(1,04,))
+
+::method 'test050'
+    mb = .mutablebuffer~new(2*7 7+7+7+7+7+7 84/4 700-699)
+    self~assertSame('14 42 21 1', mb~substr(699-698,5*2))
+    self~assertSame(mb~substr(699-698,5*2),(2*7 7+7+7+7+7+7 84/4 700-699)~subStr(699-698,5*2))
+
+::method 'test051'
+    mb = .mutablebuffer~new('2*7 7+7+7+7+7+7 84/4 700-699')
+    self~assertSame('2*7 7+7+7+', mb~substr(699-698,5*2))
+    self~assertSame(mb~substr(699-698,5*2),'2*7 7+7+7+7+7+7 84/4 700-699'~subStr(699-698,5*2))
+
+::method 'test052'
+    mb = .mutablebuffer~new('2*7 7+7+7+7+7+7 84/4 700-699')
+    self~expectSyntax(93.924)
+    xre = mb~substr('699-698',5*2)
+
+::method 'test053'
+    self~expectSyntax(93.922)
+    mb = .mutablebuffer~new(2*7 7+7+7+7+7+7 84/4 700-699)
+    xre = mb~substr(699-698,5*3,21*2)
+
+::method 'test054'
+    mb = .mutablebuffer~new(2*7 7+7+7+7+7+7 84/4 700-699)
+    self~assertSame('14 42 21 144444', mb~substr(699-698,5*3,2*2))
+    self~assertSame(mb~substr(699-698,5*3,2*2),(2*7 7+7+7+7+7+7 84/4 700-699)~subStr(699-698,5*3,2*2))
+
+::method 'test055'
+    numeric digits 1
+    mb = .mutablebuffer~new(2*7 7+7+7+7+7+7 84/4 700-699)
+    self~assertSame('1E+1 5E+1 ', mb~substr(6.99-6.00,5*2))
+    self~assertSame(mb~substr(6.99-6.00,5*2),(2*7 7+7+7+7+7+7 84/4 700-699)~subStr(6.99-6.00,5*2))
+
+::method 'test056'
+    numeric digits 1
+    mb = .mutablebuffer~new('2*7 7+7+7+7+7+7 84/4 700-699')
+    self~assertSame('2*7 7+7+7+', mb~subStr(6.99-6.00,5*2))
+    self~assertSame(mb~subStr(6.99-6.00,5*2),'2*7 7+7+7+7+7+7 84/4 700-699'~subStr(6.99-6.00,5*2))
+
+::method 'test057'
+    numeric digits 1
+    mb = .mutablebuffer~new(2*7 7+7+7+7+7+7 84/4 700-699)
+    self~assertSame('1E+1 5E+1 2E+1 04444', mb~substr(6.99-6.00,5*3,2*2))
+    self~assertSame(mb~substr(6.99-6.00,5*3,2*2),(2*7 7+7+7+7+7+7 84/4 700-699)~subStr(6.99-6.00,5*3,2*2))
+
+::method 'test058'
+    mb = .mutablebuffer~new(nv)
+    self~assertSame('NV*', mb~substr(1,3,'*'))
+    self~assertSame(mb~substr(1,3,'*'),nv~subStr(1,3,'*'))
+
+::method 'test059'
+    mb = .mutablebuffer~new(nv.~string)
+    self~assertSame('NV.'||copies('*',10000), mb~substr(1,10003,'*'))
+    self~assertSame(mb~substr(1,10003,'*'),nv.~subStr(1,10003,'*'))
+
+::method 'test060'
+    mb = .mutablebuffer~new(nv.10)
+    self~assertSame('NV.10*******************************************************', mb~substr(1,60,'*'))
+    self~assertSame(mb~substr(1,60,'*'),nv.10~subStr(1,60,'*'))
+
+::method 'test061'
+    self~expectSyntax(93.924)
+    mb = .mutablebuffer~new('nv')
+    xre = mb~substr(nv,3,'*')
+
+::method 'test062'
+    mb = .mutablebuffer~new('nv.')
+    self~expectSyntax(93.924)
+    xre = mb~substr(nv.,4,'*')
+
+::method 'test063'
+    mb = .mutablebuffer~new('nv.10')
+    self~expectSyntax(93.924)
+    xre = mb~substr(nv.10,6,'*')
+
+::method 'test064'
+    mb = .mutablebuffer~new('nv')
+    self~expectSyntax(93.923)
+    xre = mb~substr(1,nv,'*')
+
+::method 'test065'
+    mb = .mutablebuffer~new('nv.')
+    self~expectSyntax(93.923)
+    xre = mb~substr(1,nv.,'*')
+
+::method 'test066'
+    mb = .mutablebuffer~new('nv.10')
+    self~expectSyntax(93.923)
+    xre = mb~substr(1,nv.10,'*')
+
+::method 'test067'
+    mb = .mutablebuffer~new('nv')
+    self~expectSyntax(93.922)
+    xre = mb~substr(1,3,nv)
+
+::method 'test068'
+    mb = .mutablebuffer~new('nv.')
+    self~expectSyntax(93.938)
+    xre = mb~substr(1,4,nv.)
+
+::method 'test069'
+    mb = .mutablebuffer~new('nv.10')
+    self~expectSyntax(93.922)
+    xre = mb~substr(1,6,nv.10)
+
+::method 'test070'
+    mb = .mutablebuffer~new(noval1)
+    self~expectSyntax(93.924)
+    xre = mb~substr(noval2,noval3,noval4)
+
+::method 'test071'
+    mb = .mutablebuffer~new('nv')
+    self~expectSyntax(93.924)
+    xre = mb~substr(nv,3,'*')
+
+::method 'test072'
+    mb = .mutablebuffer~new('nv.')
+    self~expectSyntax(93.924)
+    xre = mb~substr(nv.,4,'*')
+
+::method 'test073'
+    mb = .mutablebuffer~new('nv.10')
+    self~expectSyntax(93.924)
+    xre = mb~substr(nv.10,6,'*')
+
+::method 'test074'
+    mb = .mutablebuffer~new('nv')
+    self~expectSyntax(93.923)
+    xre = mb~substr(1,nv,'*')
+
+::method 'test075'
+    mb = .mutablebuffer~new('nv.')
+    self~expectSyntax(93.923)
+    xre = mb~substr(1,nv.,'*')
+
+::method 'test076'
+    mb = .mutablebuffer~new('nv.10')
+    self~expectSyntax(93.923)
+    xre = mb~substr(1,nv.10,'*')
+
+::method 'test077'
+    mb = .mutablebuffer~new('nv')
+    self~expectSyntax(93.922)
+    xre = mb~substr(1,3,nv)
+
+::method 'test078'
+    mb = .mutablebuffer~new('nv.')
+    self~expectSyntax(93.938)
+    xre = mb~substr(1,4,nv.)
+
+::method 'test079'
+    mb = .mutablebuffer~new('nv.10')
+    self~expectSyntax(93.922)
+    xre = mb~substr(1,6,nv.10)
+
+::method 'test080'
+    mb = .mutablebuffer~new(noval1)
+    self~expectSyntax(93.924)
+    xre = mb~substr(noval2,noval3,noval4)
+
+::method 'test081'
+    mb = .mutablebuffer~new(word('ABCD BCDE CDEF DEFG',2))
+    self~assertSame('CDE', mb~substr(left(subWord('10 20 30 40',2,1),1)))
+    self~assertSame(mb~substr(left(subWord('10 20 30 40',2,1),1)),word('ABCD BCDE CDEF DEFG',2)~subStr(left(subWord('10 20 30 40',2,1),1)))
+
+::method 'test082'
+    mb = .mutablebuffer~new(reverse('ABCD BCDE CDEF'))
+    self~assertSame('FEDC EDCB DCBAXXXXXXXX', mb~substr(dataType(7,'N'),x2d(16),left('XYZ',1)))
+    self~assertSame(mb~substr(dataType(7,'N'),x2d(16),left('XYZ',1)),reverse('ABCD BCDE CDEF')~subStr(dataType(7,'N'),x2d(16),left('XYZ',1)))
+
+::method 'test083'
+    mb = .mutablebuffer~new(subWord('AB BC CD ',2,5))
+    self~assertSame('C CD', mb~substr(pos('O','WORD'),compare('1234','123')))
+    self~assertSame(mb~substr(pos('O','WORD'),compare('1234','123')),subWord('AB BC CD ',2,5)~subStr(pos('O','WORD'),compare('1234','123')))
+
+::method 'test084'
+    mb = .mutablebuffer~new(dataType(7))
+    self~assertSame('NUM'||'d1d1d1d1'X, mb~substr(compare('X','Y'),pos('X','      X'),d2c(209)))
+    self~assertSame(mb~substr(compare('X','Y'),pos('X','      X'),d2c(209)),dataType(7)~subStr(compare('X','Y'),pos('X','      X'),d2c(209)))
+
+::method 'test085'
+    mb = .mutablebuffer~new('1234567890')
+    self~assertSame('56', mb~substr(2,8)~subStr(2,6)~subStr(2,4)~subStr(2,2))
+    self~assertSame(mb~substr(2,8)~subStr(2,6)~subStr(2,4)~subStr(2,2),'1234567890'~subStr(2,8)~subStr(2,6)~subStr(2,4)~subStr(2,2))
+
+::method 'test086'
+    mb = .mutablebuffer~new('AB BC CD DE EF')
+    self~assertSame(' EFYYYYYYYYYYYYYYYYYYY', mb~substr('1234567890'~subStr(1,2),22,'XYZ'~subStr(2,1)))
+    self~assertSame(mb~substr('1234567890'~subStr(1,2),22,'XYZ'~subStr(2,1)),'AB BC CD DE EF'~subStr('1234567890'~subStr(1,2),22,'XYZ'~subStr(2,1)))
+
+::method 'test087'
+    mb = .mutablebuffer~new('AB BC CD DE EF')
+    self~assertSame(' EF**********************', mb~substr(12,'123'~subStr(2,1)||'456'~subStr(2,1),'*'))
+    self~assertSame(mb~substr(12,'123'~subStr(2,1)||'456'~subStr(2,1),'*'),'AB BC CD DE EF'~subStr(12,'123'~subStr(2,1)||'456'~subStr(2,1),'*'))
+
+::method 'test088'
+    mb = .mutablebuffer~new(.v30)
+    self~assertSame('yz1234', mb~substr(1)~subStr('123'~subStr(2,1)||'456'~subStr(2,1),567~subStr(2,1)))
+    self~assertSame(mb~substr(1)~subStr('123'~subStr(2,1)||'456'~subStr(2,1),567~subStr(2,1)),.v30~subStr(1)~subStr('123'~subStr(2,1)||'456'~subStr(2,1),567~subStr(2,1)))
+
+::METHOD "testSubStr"
+   b = .mutableBuffer~new("1234567890")
+
+   self~assertEquals("234567890", b~substr(2), "Wrong string 1")
+   self~assertEquals("1", b~substr(1,1), "Wrong string 2")
+   self~assertEquals("4", b~substr(4,1,"#"), "Wrong string 3")
+   self~assertEquals("0#", b~substr(10,2,"#"), "Wrong string 4")
+::METHOD "testSubStrSyntax1"
+   b = .mutableBuffer~new("1234567890")
+   self~expectSyntax(93.903)
+   b~subStr()
+
+::METHOD "testSubStrSyntax2"
+   b = .mutableBuffer~new("1234567890")
+   self~expectSyntax(93.924)
+   b~subStr(.nil)
+
+::METHOD "testSubStrSyntax3"
+   b = .mutableBuffer~new("1234567890")
+   self~expectSyntax(93.924)
+   b~subStr(0)
+
+::METHOD "testSubStrSyntax4"
+   b = .mutableBuffer~new("1234567890")
+   self~expectSyntax(93.924)
+   b~subStr(.nil,0)
+
+::METHOD "testSubStrSyntax5"
+   b = .mutableBuffer~new("1234567890")
+   self~expectSyntax(93.923)
+   b~subStr(1,.nil)
+
+::METHOD "testSubStrSyntax6"
+   b = .mutableBuffer~new("1234567890")
+   self~expectSyntax(93.923)
+   b~subStr(1,-1)
+
+::METHOD "testSubStrSyntax7"
+   b = .mutableBuffer~new("1234567890")
+   self~expectSyntax(93.938)
+   b~subStr(1,1,.nil)
+
+::METHOD "testSubStrSyntax8"
+   b = .mutableBuffer~new("1234567890")
+   self~expectSyntax(93.922)
+   b~subStr(1,1,"  ")
+

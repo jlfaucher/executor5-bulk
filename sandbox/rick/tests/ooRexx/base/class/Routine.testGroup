@@ -1,0 +1,530 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
+
+  group = .TestGroup~new(fileSpec)
+  group~add(.Routine.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::method TstFloatMethod -- test method, used with test_new_context_floatingmethod
+
+::class "Routine.testGroup" subclass ooTestCase public
+
+::constant newFileTestName "newFile.rex"         -- should be in the same directory as this test
+::attribute newFileTest get                      -- full path of "newFile.rex"
+  return self~class~newFileTest
+::attribute newFileTest get class
+
+-- set up 'newFileTest'
+::method activate class
+  expose arg newFileTest
+  -- 'newFileTest' should be in the same directory as this test is
+  -- but in general, we will not be running with this as the current directory
+  -- so we need to figure out the absolute path to 'newFileTest'
+  parse source . . path
+  newFileTest = filespec('path', path) || self~newFileTestName
+  forward class (super)
+
+
+-- new()
+
+::method test_new_no_args
+  self~expectSyntax(88.901)            -- Missing argument; the name argument is required
+  .Routine~new
+
+::method test_new_one_arg_nil
+  self~expectSyntax(88.909)            -- Argument name must have a string value
+  .Routine~new(.nil)
+
+::method test_new_one_arg
+  self~expectSyntax(88.901)            -- Missing argument; the source argument is required
+  .Routine~new("test")
+
+::method test_new_two_args_omitted_string
+  self~expectSyntax(88.901)            -- Missing argument; the name argument is required
+  .Routine~new(, "")
+
+::method test_new_two_args_string_nil
+  self~expectSyntax(93.961)            -- The source argument must be a string or array object
+  .Routine~new("test", .nil)
+
+-- rexxref says, 'source' must be an Array, but in fact any object with a
+-- makeArray() method is accepted
+::method test_new_two_args_string_non_array
+  self~expectSyntax(93.961)            -- The source argument must be a string or array object
+  .Routine~new("test", .DateTime~new)
+
+::method test_new_two_args_string_sparse_array
+  self~expectSyntax(93.952)            -- Method argument source is an array and does not contain all string values
+  .Routine~new("test", ("nop", , "return"))
+
+::method test_new_two_args_string_array_non_string
+  self~expectSyntax(93.952)            -- Method argument source is an array and does not contain all string values
+  .Routine~new("test", ("nop", .nil))
+
+::method test_new_three_args_omitted_string_string
+  self~expectSyntax(88.901)            -- Missing argument; the name argument is required
+  .Routine~new(, "nop", "programscope")
+
+::method test_new_three_args_string_omitted_string
+  self~expectSyntax(88.901)            -- Missing argument; the source argument is required
+  .Routine~new("test", , "programscope")
+
+::method test_new_three_args_string_string_nil
+  self~expectSyntax(40.904)            -- NEW argument 3 must be one of "PROGRAMSCOPE", Method, Routine, Package object
+  .Routine~new("test", "nop", .nil)
+
+::method test_new_three_args_string_string_null
+  self~expectSyntax(40.904)            -- NEW argument 3 must be one of "PROGRAMSCOPE", Method, Routine, Package object
+  .Routine~new("test", "nop", "")
+
+::method test_new_three_args_string_omitted_buffer
+  self~expectSyntax(40.904)            -- NEW argument 3 must be one of "PROGRAMSCOPE", Method, Routine, Package object
+  .Routine~new("test", "nop", .MutableBuffer~new)
+
+::method test_new_four_args
+  self~expectSyntax(93.902)            -- Too many arguments in invocation of method; 0 expected
+  -- "0 expected" is rather strange
+  .Routine~new("test", "nop", "programscope", "")
+
+::method test_new_hashbang
+  -- should be ok if code starts with a hashbang line
+  r = .Routine~new("test", .resources~hashBang)~call
+  self~assertTrue(r~startsWith("#!"), "'#!' expected; found" r)
+
+
+-- context is omitted
+::method test_new_context_omitted
+  -- "programscope" is default .. local public/private classes/routines are visible
+  r = .Routine~new("", .resources~tstDefined)
+  self~assertEquals("ClassPublic RoutinePublic Class Routine", r[])
+
+-- context is "programscope"
+::method test_new_context_programscope
+  -- within "programscope" local public/private classes/routines are visible
+  r = .Routine~new("", .resources~tstDefined, "programscope")
+  self~assertEquals("ClassPublic RoutinePublic Class Routine", r[])
+
+-- context is REXX package
+::method test_new_context_rexxpackage
+  -- within scope "REXX" no local classes/routines are visible
+  r = .Routine~new("", .resources~tstDefined, .rexxcontext~package)
+  self~assertEquals("", r[])
+
+-- context is an imported package
+::method test_new_context_importedpackage
+  -- within the scope of an imported package (here 'ooTest.frm' or 'FileUtils.cls')
+  --  no local classes/routines are visible
+  r = .Routine~new("", .resources~tstDefined, .context~package~importedPackages[1])
+  -- when run stand-alone, no local classes/routines are visible, but
+  -- when run via testOORexx.rex, the TstClassPublic and TstRoutinePublic are visible
+  -- not sure why - until decided, we'll just accept both outcomes
+  self~assertOneOrAnother("", "ClassPublic RoutinePublic", r[], .context~package~importedPackages[1]~name)
+
+-- context is this package
+::method test_new_context_thispackage
+  -- within scope .context~package local public/private classes/routines are visible
+  r = .Routine~new("", .resources~tstDefined, .context~package)
+  self~assertEquals("ClassPublic RoutinePublic Class Routine", r[])
+
+-- context is a method of a public class in this package
+::method test_new_context_methodpublic
+  -- within the scope of a method local public/private classes/routines are visible
+  r = .Routine~new("", .resources~tstDefined, .TstClassPublic~method("TSTMETHOD"))
+  self~assertEquals("ClassPublic RoutinePublic Class Routine", r[])
+
+-- context is an inherited method of a public class in this package
+::method test_new_context_methodpublicinherited
+  -- within the scope of an inherited method no local public/private classes/routines are visible
+  do with index name item method over .TstClassPublic~methods until name = "CLASS"
+  end
+  r = .Routine~new("", .resources~tstDefined, method)
+  self~assertEquals("", r[])
+
+-- context is a method in this package
+::method test_new_context_method
+  -- within the scope of a method local public/private classes/routines are visible
+  r = .Routine~new("", .resources~tstDefined, .TstClass~method("TSTMETHOD"))
+  self~assertEquals("ClassPublic RoutinePublic Class Routine", r[])
+
+-- context is an inherited method in this package
+::method test_new_context_methodinherited
+  -- within the scope of an inherited method no public/private classes/routines are visible
+  do with index name item method over .TstClassPublic~methods until name = "CLASS"
+  end
+  r = .Routine~new("", .resources~tstDefined, method)
+  self~assertEquals("", r[])
+
+-- context is a floating method in this package
+::method test_new_context_floatingmethod
+  -- within the scope of a floating method local public/private classes/routines are visible
+  r = .Routine~new("", .resources~tstDefined, .methods["TSTFLOATMETHOD"])
+  self~assertEquals("ClassPublic RoutinePublic Class Routine", r[])
+
+-- context is a routine in this package
+::method test_new_context_routine
+  -- within the scope of a local routine our local public/private classes/routines are visible
+  r = .Routine~new("", .resources~tstDefined, .routines["TSTROUTINE"])
+  self~assertEquals("ClassPublic RoutinePublic Class Routine", r[])
+
+
+-- newFile()
+
+::method test_newFile_no_args
+  self~expectSyntax(88.901)            -- Missing argument; the name argument is required
+  .Routine~newFile
+
+::method test_newFile_one_arg_nil
+  self~expectSyntax(88.909)            -- Argument name must have a string value
+  .Routine~newFile(.nil)
+
+::method test_newFile_two_args_omitted_string
+  self~expectSyntax(88.901)            -- Missing argument; the name argument is required
+  .Routine~newFile(, "programscope")
+
+::method test_newFile_two_args_string_nil
+  self~expectSyntax(40.904)            -- NEWFILE argument 2 must be one of "PROGRAMSCOPE", Method, Routine, or Package object
+  .Routine~newFile("filename", .nil)
+
+::method test_newFile_two_args_string_null
+  self~expectSyntax(40.904)            -- NEWFILE argument 2 must be one of "PROGRAMSCOPE", Method, Routine, or Package object
+  .Routine~newFile("filename", "")
+
+::method test_newFile_two_args_string_buffer
+  self~expectSyntax(40.904)            -- NEWFILE argument 2 must be one of "PROGRAMSCOPE", Method, Routine, or Package object
+  .Routine~newFile("filename", .MutableBuffer~new)
+
+::method test_newFile_three_args
+  self~expectSyntax(93.902)            -- Too many arguments in invocation of method; 2 expected
+  .Routine~newFile("filename", "programscope", "")
+
+::method test_newFile_hashbang
+  -- should be ok if code starts with a hashbang line
+  file = .TemporaryTestFile~new(self, "newFileHashbang.rex")
+  file~createFromResource("HASHBANG")
+  r = .Routine~newFile(file~fullName)~call
+  self~assertTrue(r~startsWith("#!"), "'#!' expected; found" r)
+
+
+-- context is REXX package
+::method test_newFile_context_rexxpackage
+  -- within scope "REXX" no local classes/routines are visible
+  r = .Routine~newFile(self~newFileTest, .rexxcontext~package)
+  self~assertEquals("", r[])
+
+-- context is an imported package
+::method test_newFile_context_importedpackage
+  -- within the scope of an imported package (here 'ooTest.frm' or 'FileUtils.cls')
+  --  no local classes/routines are visible
+  r = .Routine~newFile(self~newFileTest, .context~package~importedPackages[1])
+  -- when run stand-alone, no local classes/routines are visible, but
+  -- when run via testOORexx.rex, the TstClassPublic and TstRoutinePublic are visible
+  -- not sure why - until decided, we'll just accept both outcomes
+  self~assertOneOrAnother("", "ClassPublic RoutinePublic", r[], .context~package~importedPackages[1]~name)
+
+-- context is this package
+::method test_newFile_context_thispackage
+  -- within scope .context~package local public/private classes/routines are visible
+  r = .Routine~newFile(self~newFileTest, .context~package)
+  self~assertEquals("ClassPublic RoutinePublic Class Routine", r[])
+
+-- context is a method of a public class in this package
+::method test_newFile_context_methodpublic
+  -- within the scope of a method local public/private classes/routines are visible
+  r = .Routine~newFile(self~newFileTest, .TstClassPublic~method("TSTMETHOD"))
+  self~assertEquals("ClassPublic RoutinePublic Class Routine", r[])
+
+-- context is an inherited method of a public class in this package
+::method test_newFile_context_methodpublicinherited
+  -- within the scope of an inherited method no local public/private classes/routines are visible
+  do with index name item method over .TstClassPublic~methods until name = "CLASS"
+  end
+  r = .Routine~newFile(self~newFileTest, method)
+  self~assertEquals("", r[])
+
+-- context is a method in this package
+::method test_newFile_context_method
+  -- within the scope of a method local public/private classes/routines are visible
+  r = .Routine~newFile(self~newFileTest, .TstClass~method("TSTMETHOD"))
+  self~assertEquals("ClassPublic RoutinePublic Class Routine", r[])
+
+-- context is an inherited method in this package
+::method test_newFile_context_methodinherited
+  -- within the scope of an inherited method no public/private classes/routines are visible
+  do with index name item method over .TstClassPublic~methods until name = "CLASS"
+  end
+  r = .Routine~newFile(self~newFileTest, method)
+  self~assertEquals("", r[])
+
+-- context is a floating method in this package
+::method test_newFile_context_floatingmethod
+  -- within the scope of a floating method local public/private classes/routines are visible
+  r = .Routine~newFile(self~newFileTest, .methods["TSTFLOATMETHOD"])
+  self~assertEquals("ClassPublic RoutinePublic Class Routine", r[])
+
+-- context is a routine in this package
+::method test_newFile_context_routine
+  -- within the scope of a local routine our local public/private classes/routines are visible
+  r = .Routine~newFile(self~newFileTest, .routines["TSTROUTINE"])
+  self~assertEquals("ClassPublic RoutinePublic Class Routine", r[])
+
+
+
+::method "test_New_And_Source"
+  name="AHA"
+  value="say 'hello'; say; say 'hallo';"
+  r=.routine~new(name, value)
+  self~assertSame(value, r~source~at(1))
+
+
+  value2=.array~of("say 'hello';", "say;", "say 'hallo';")
+  r2=.routine~new(name, value2)
+  self~assertEquals(value2, r2~source)
+
+
+  value3=.array~of("parse arg logLevel;" ,-
+                   "a=b",- -- <-- *NO* semi-colon at end!
+                   "-- some line comment " ,-
+                   "say 'hello world' " )
+  r3=.routine~new(name, value3)
+  self~assertEquals(value3, r3~source)
+
+
+  value4=.array~of("parse arg logLevel;" ,-
+                   "a=b;",- -- <-- semi-colon at end!
+                   "-- some line comment " ,-
+                   "say 'hello world' " )
+  r4=.routine~new(name, value4)
+  src4=r4~source
+  do i=1 to value4~items
+     self~assertEquals(value4[i], src4[i])
+  end
+
+  self~assertEquals(value4, r4~source)
+
+::method testDirectives
+  a = .array~new
+  a~append("return testRoutine()")
+  a~append("::class test1")
+  a~append("::routine testRoutine")
+  a~append("  return .test1")
+  routine = .routine~new("Testing", a)
+  self~assertTrue(routine[]~isA(.class))
+  self~assertTrue(routine~call~isA(.class))
+  package = routine~package
+
+  self~assertSame(package~classes["TEST1"], routine[])
+  self~assertSame(package~classes["TEST1"], routine~call)
+
+::method testCall
+  routine = .routine~new("Test", "return .context~args")
+  a = routine[]
+  self~assertEquals(a, .array~new(0))
+  a = routine~call
+  self~assertEquals(a, .array~new(0))
+
+  a = routine["abc"]
+  self~assertEquals(a, .array~of("abc"))
+  a = routine~call("abc")
+  self~assertEquals(a, .array~of("abc"))
+
+  a = routine[1,2,3,4,5]
+  self~assertEquals(a, .array~of(1,2,3,4,5))
+  a = routine~call(1,2,3,4,5)
+  self~assertEquals(a, .array~of(1,2,3,4,5))
+
+  test = .array~new(3)
+  test[1] = "Fred"
+  test[3] = "Mike"
+  a = routine["Fred",,"Mike"]
+  self~assertEquals(a, test)
+  a = routine~call("Fred",,"Mike")
+  self~assertEquals(a, test)
+
+::method testCallWith
+  routine = .routine~new("Test", "return .context~args")
+  args = .array~new(0)
+  a = routine~callWith(args)
+  self~assertEquals(args, a)
+
+  args = .array~of("abc")
+  a = routine~callWith(args)
+  self~assertEquals(args, a)
+
+  args = .array~of(1,2,3,4,5)
+  a = routine~callWith(args)
+  self~assertEquals(args, a)
+
+  args = .array~of("Fred",,"Mike")
+  a = routine~callWith(args)
+  self~assertEquals(args, a)
+
+::method TestLoadExternalRoutine01
+  routine = .routine~loadExternalRoutine("SQRT", "LIBRARY rxmath RxCalcSqrt")
+  self~assertTrue(routine~isA(.routine))
+  self~assertSame(2, routine~call(4))
+
+  routine = .routine~loadExternalRoutine("RxCalcSqrt", "LIBRARY rxmath")
+  self~assertTrue(routine~isA(.routine))
+  self~assertSame(2, routine~call(4))
+
+  routine = .routine~loadExternalRoutine("RxCalcSqrt", "LIBRARY rxmath not_one_we_have")
+  self~assertSame(.nil, routine)
+
+  routine = .routine~loadExternalRoutine("RxCalcSqrt", "LIBRARY not_one_we_have")
+  self~assertSame(.nil, routine)
+
+::method TestLoadExternalRoutine02
+  self~expectSyntax('88.901')
+  .routine~loadExternalRoutine
+
+::method TestLoadExternalRoutine03
+  self~expectSyntax('88.901')
+  .routine~loadExternalRoutine("FOO")
+
+::method TestLoadExternalRoutine04
+  self~expectSyntax('93.902')
+  .routine~loadExternalRoutine("FOO", "Bar", "And Then Some")
+
+::method TestLoadExternalRoutine05
+  self~expectSyntax('88.901')
+  .routine~loadExternalRoutine(,"FOO")
+
+::method TestLoadExternalRoutine06
+  self~expectSyntax('99.917')
+  .routine~loadExternalRoutine("FOO","PACKAGE rxmath RxCalcSqrt")
+
+::method TestLoadExternalRoutine07
+  self~expectSyntax('99.917')
+  .routine~loadExternalRoutine("FOO","LIBRARY")
+
+::method TestLoadExternalRoutine08
+  self~expectSyntax('99.917')
+  .routine~loadExternalRoutine("FOO","PACKAGE rxmath RxCalcSqrt AndExtra")
+
+::method TestLoadExternalRoutine09
+  self~expectSyntax('99.917')
+  .routine~loadExternalRoutine("", "")
+
+::method test_sparse_array_source
+  self~expectSyntax(93.952)
+  r = .routine~new("test", ("x = something",,"return 123"))
+
+::method test_non_string_array_value
+  self~expectSyntax(93.952)
+  r = .routine~new("test", ("x = something",.nil,"return 123"))
+
+-- test [bugs:#1373] Source method strips leading comments/whitespace
+::method test_routine_source
+  source = routine_source_nop()
+  self~assertSame("  nop", source[1])
+  self~assertTrue(source[source~last]~startsWith("  return .context"))
+
+  source = routine_source_comment()
+  self~assertSame("  -- comment", source[1])
+  self~assertTrue(source[source~last]~startsWith("  return .context"))
+
+  source = routine_source_whitespace()
+  self~assertSame("", source[1])
+  self~assertTrue(source[source~last]~startsWith("  return .context"))
+
+-- routines for [bugs:#1373] test
+-- test leading "nop"
+::routine routine_source_nop
+  nop
+  return .context~stackFrames[1]~executable~source~copy
+
+-- test leading comment
+::routine routine_source_comment
+  -- comment
+  return .context~stackFrames[1]~executable~source~copy
+
+-- test leading whitespace
+::routine routine_source_whitespace
+
+  return .context~stackFrames[1]~executable~source~copy
+
+
+-- hashbang sorce code
+::resource hashBang
+#!/usr/bin/rexx
+return sourceline(1)
+::END
+
+-- source code of our context test routine
+::resource "tstDefined"
+
+  defined = ""
+  if .context~package~findPublicClass("TSTCLASSPUBLIC") \= .nil then
+    defined = defined .TstClassPublic~TstMethod
+  if .context~package~findPublicRoutine("TSTROUTINEPUBLIC") \= .nil then
+    defined = defined TstRoutinePublic()
+  if .context~package~findClass("TSTCLASS") \= .nil then
+    defined = defined .TstClass~TstMethod
+  if .context~package~findRoutine("TSTROUTINE") \= .nil then
+    defined = defined TstRoutine()
+  return defined~strip("L")
+
+::END
+
+::class TstClassPublic public
+  ::constant TstMethod "ClassPublic"
+
+::routine TstRoutinePublic public
+  return "RoutinePublic"
+
+::class TstClass
+  ::constant TstMethod "Class"
+
+::routine TstRoutine
+  return "Routine"
+
+
+::options novalue error

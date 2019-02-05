@@ -1,0 +1,205 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2014-2018 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+
+  group = .TestGroup~new(s)
+  group~add(.Mutablebuffer_contains.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "Mutablebuffer_contains.testGroup" subclass ooTestCase public
+
+::method 'test001'
+    mbtobe=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    self~assertSame(1,mbtobe~isA(.mutablebuffer))
+    self~assertSame('The MutableBuffer class',mbtobe~class)
+    self~assertSame('To be or not to be ( Hamlet )',mbtobe~string)
+
+::method 'test002'
+    mbtobe=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    self~assertSame(1,mbtobe~contains('To be'))
+
+::method 'test003'
+    mbtobe=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    self~assertSame(0,mbtobe~contains('To bE'))
+
+::method 'test004'   --rexxref pos in mutable buffer
+    x1 = .mutablebuffer~new("Saturday")
+    self~assertSame(1,x1~contains("day"))
+    x1 = .mutablebuffer~new("abc def ghi")
+    self~assertSame(000/1,x1~contains("x"))
+    self~assertSame(1,x1~contains(" "))
+    self~assertSame(1,x1~contains(" ",5))
+
+::method test011
+    m011=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    self~assertSame('1',m011~contains('be',))
+
+::method test012
+    m012=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    self~assertSame('1',m012~contains('be o',))
+
+::method test013
+    m013=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    self~assertSame('1',m013~contains('Ham',))
+
+::method test014
+    m014=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    self~assertSame('1',m014~contains('Ham',21))
+
+::method test015
+    m015=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    self~assertSame('1',m015~contains('Ham',22))
+
+::method test016
+    m016=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    self~assertSame('0',m016~contains('Ham',23))
+
+::method test017
+    m017=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    self~assertSame('0',m017~contains('Ham',1e2))
+
+::method test018
+    m018=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    self~assertSame('1',m018~contains('(',19))
+
+::method test019
+    m019=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    self~assertSame('1',m019~contains('(',20))
+
+::method test020
+    m020=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    self~assertSame('0',m020~contains('(',21))
+
+::method test021
+    m021=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    self~assertSame('1',m021~contains('be o',))
+
+::method test022
+    m022=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    self~assertSame('1',m022~contains('be o',))
+
+::method test023
+    m023=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    self~assertSame('0',m023~contains('be o',999999999))
+
+::method test024
+    self~expectSyntax(93.924)
+    m024=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    if .rexxinfo~internaldigits = 9 then
+       self~assertSame('1',m024~contains('be o',1e10))
+    else
+       self~assertSame('1',m024~contains('be o',1e19))
+
+::method test025
+    m025=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    self~assertSame('1',m025~contains('be o',))
+
+::method test026
+    self~expectSyntax(93.924)
+    m026=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    xre=m026~contains('be o',"a")
+
+::method test027
+    self~expectSyntax(93.924)
+    m027=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    xre=m027~contains('be o',0)
+
+::method test028
+    self~expectSyntax(93.924)
+    m028=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    xre=m028~contains('be o',-1)
+
+::method test029
+    m029=.mutablebuffer~new('')
+    self~assertSame('0',m029~contains(''))
+
+::method test030
+    m030=.mutablebuffer~new('')
+    self~assertSame('0',m030~contains('a'))
+
+::method test031
+    x00ff=xrange('00'x,'ff'x)
+    m031=.mutablebuffer~new(x00ff)
+    Do i=0 To 255
+      self~assertSame(.true,m031~contains(i~d2c))
+      End
+    m031[1,0]='A'
+--  say m031~string~left(2)~c2x
+--  say m031~length
+    self~assertSame(.true,m031~contains('00'x))
+    m031[1,2]='AA'
+--  say m031~string~left(2)~c2x
+--  say m031~length
+    self~assertSame(.false,m031~contains('00'x))
+
+::method test032
+    self~expectSyntax(93.903)
+    m032=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    xre=m032~contains()
+
+::method test033
+    self~expectSyntax(93.902)
+    m033=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    xre=m033~contains('be o',33,33,18)
+
+::method test034             -- 1234567890123456
+    m034=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    self~assertSame(.true,m034~contains('be',4,2))
+    self~assertSame(.false,m034~contains('be',5,2))
+    self~assertSame(.true,m034~contains('be',3,15))
+    self~assertSame(.true,m034~contains('be',,20))
+    self~assertSame(.true,m034~contains('be'))
+
+::method test035
+    self~expectSyntax(93.923)
+    m035=.mutablebuffer~new('To be or not to be ( Hamlet )')
+    xre=m035~contains('be o',1,"aaa")
+
+
+::options novalue error

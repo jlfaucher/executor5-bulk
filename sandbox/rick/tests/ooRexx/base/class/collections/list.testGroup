@@ -1,0 +1,235 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.Collection_listMethod.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "Collection_listMethod.testGroup" subclass ooTestCase public
+
+::method "test_1"
+   lst = .list~new()
+   self~assertEquals('a List', lst)
+
+::method "test_2"
+   lst = .list~of()
+   self~assertEquals(0, lst~items)
+   lst1 = .list~of(1)
+   self~assertEquals(1, lst1~items)
+   lst2 = .list~of(1,1)
+   self~assertEquals(2, lst2~items)
+   lst3 = .list~of(1,1,1)
+   self~assertEquals(3, lst3~items)
+   lst4 = .list~of(1,1,1,1,1,1,1,1,1,1,,
+                   2,2,2,2,2,2,2,2,2,2,,
+                   3,3,3,3,3,3,3,3,3,3,,
+                   4,4,4,4,4,4,4,4,4,4,,
+                   5,5,5,5,5,5,5,5,5,5,,
+                   6,6,6,6,6,6,6,6,6,6,,
+                   7,7,7,7,7,7,7,7,7,7,,
+                   8,8,8,8,8,8,8,8,8,8,,
+                   9,9,9,9,9,9,9,9,9,9,,
+                   0,0,0,0,0,0,0,0,0,0)
+   self~assertEquals(100, lst4~items)
+
+::method "test_3"
+   lst = .list~of("Mike", "Rick", "Fred", "Rick")
+   idxs = lst~allIndexes
+   self~assertEquals(4, idxs~items)
+   items = lst~allItems
+   self~assertEquals(4, items~items)
+
+::method "test_4"
+   lst = .list~of(1,2,3)
+   idxs = lst~allIndexes
+   do z over idxs
+      self~assertNotEquals(.nil, lst[z])
+   end
+
+::method "test_5"
+   lst = .list~of(1,2,3)
+   lst~append('Mike')
+   self~assertEquals(4, lst~items)
+   self~assertEquals(1, lst~hasItem('Mike'))
+   lst~append('Tom')
+   self~assertEquals(5, lst~items)
+   self~assertEquals(1, lst~hasItem('Tom'))
+
+::method "test_6"
+   lst = .list~of(1,2,3)
+   idxs = lst~allIndexes
+   do z over idxs
+      self~assertNotEquals(.nil, lst~at(z))
+   end
+
+::method "test_7"
+   lst = .list~of(1,2,3)
+   self~assertEquals(3, lst~items)
+   self~assertEquals(0, lst~isEmpty)
+   lst~empty
+   self~assertEquals(0, lst~items)
+   self~assertEquals(1, lst~isEmpty)
+
+::method "test_8"
+   lst = .list~of(1,2,3)
+   first = lst~first
+   self~assertEquals(1, lst~hasIndex(first))
+
+::method "test_9"
+   lst = .list~of(1,2,3)
+   first = lst~firstItem
+   self~assertEquals(1, lst~hasItem(first))
+
+::method "test_10"
+   lst = .list~of(1,2,3)
+   idx = lst~index(1)
+   self~assertEquals(1, lst~hasIndex(idx))
+
+::method "test_11"
+   lst = .list~of(1,2,3)
+   idx = lst~first()
+   nxt = lst~insert('Mike', idx)
+   self~assertEquals('Mike', lst[nxt])
+   self~assertEquals(1, lst~firstItem)
+   lst~insert('Tom', .nil)
+   self~assertEquals('Tom', lst~firstItem)
+   idx = lst~last()
+   lst~insert('Linda', idx)
+   self~assertEquals('Linda', lst~lastItem)
+   lst~insert('Debbie')
+   self~assertEquals('Debbie', lst~lastItem)
+
+::method "test_12"
+   lst = .list~of(1,2,3)
+   idx = lst~first()
+   lst~first()
+   nxt = lst~insert('Mike', idx)
+   idx = lst~next(lst~first)
+   self~assertEquals('Mike', lst[idx])
+
+::method "test_13"
+   lst = .list~of(1,2,3)
+   idx = lst~first()
+   lst~first()
+   nxt = lst~insert('Mike', idx)
+   idx = lst~next(lst~first)
+   self~assertEquals(1, lst[lst~previous(idx)])
+
+::method "test_14"
+   lst = .list~of(1,2,3)
+   idx = lst~first()
+   lst~put('Mike', idx)
+   self~assertEquals('Mike', lst[idx])
+   lst[idx] = 'Tom'
+   self~assertEquals('Tom', lst[idx])
+
+::method "test_15"
+   lst = .list~of(1,2,3)
+   idx = lst~first()
+   self~assertEquals(1, lst~remove(idx))
+   self~assertEquals(2, lst~items)
+   self~assertFalse(lst~hasIndex(idx))
+   self~assertNull(lst[idx])
+   idx = lst~first()
+   self~assertEquals(2, lst[idx])
+
+::method "test_delete"
+   lst = .list~of(1,2,3)
+   idx = lst~first()
+   self~assertEquals(1, lst~delete(idx))
+   self~assertEquals(2, lst~items)
+   self~assertFalse(lst~hasIndex(idx))
+   self~assertNull(lst[idx])
+   idx = lst~first()
+   self~assertEquals(2, lst[idx])
+
+::method "test_16"
+   lst = .list~of(1,2,3)
+   lst~removeItem(1)
+   self~assertEquals(2, lst~items)
+   idx = lst~first()
+   self~assertEquals(2, lst[idx])
+
+::method "test_17"
+   lst = .list~of(1,2,3)
+   sidx = lst~first
+   newlst = lst~section(sidx)
+   self~assertEquals(3, newlst~items)
+   self~assertEquals(1, newlst~firstItem)
+   self~assertEquals(3, newlst~lastItem)
+   newlst = lst~section(sidx, 2)
+   self~assertEquals(2, newlst~items)
+   self~assertEquals(1, newlst~firstItem)
+   self~assertEquals(2, newlst~lastItem)
+   sidx = lst~next(sidx)
+   newlst = lst~section(sidx)
+   self~assertEquals(2, newlst~items)
+   self~assertEquals(2, newlst~firstItem)
+   self~assertEquals(3, newlst~lastItem)
+   newlst = lst~section(sidx, 2)
+   self~assertEquals(2, newlst~items)
+   self~assertEquals(2, newlst~firstItem)
+   self~assertEquals(3, newlst~lastItem)
+
+::method "test_18"
+   lst = .list~of("David", "Rick")
+   sup = lst~supplier
+   self~assertEquals('a Supplier', sup)
+   self~assertEquals(1, sup~available)
+   self~assertEquals('David', sup~item)
+   sup~next
+   self~assertEquals(1, sup~available)
+   self~assertEquals('Rick', sup~item)
+   sup~next
+   self~assertEquals(0, sup~available)
+   self~expectSyntax(93.937)
+   sup~next
+
+
+::options novalue error

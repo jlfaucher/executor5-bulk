@@ -1,0 +1,561 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.ASSIGNMENT.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "ASSIGNMENT.testGroup" subclass ooTestCase public
+
+::method "test_1"
+   id=0010; ABBREV     =0010; self~assertSame(abbrev, id)
+   id=0020; ABS        =0020; self~assertSame(abs, id)
+   id=0030; ADDRESS    =0030; self~assertSame(address, id)
+   id=0040; AND        =0040; self~assertSame(and, id)
+   id=0050; ARG        =0050; self~assertSame(arg, id)
+   id=0060; BITAND     =0060; self~assertSame(bitand, id)
+   id=0070; BITOR      =0070; self~assertSame(bitor, id)
+   id=0080; BITXOR     =0080; self~assertSame(bitxor, id)
+   id=0090; BY         =0090; self~assertSame(by, id)
+   id=0100; CALL       =0100; self~assertSame(call, id)
+   id=0110; CENTER     =0110; self~assertSame(center, id)
+   id=0120; CHARIN     =0120; self~assertSame(charin, id)
+   id=0130; CHAROUT    =0130; self~assertSame(charout, id)
+   id=0140; CHARS      =0140; self~assertSame(chars, id)
+   id=0150; COMPARE    =0150; self~assertSame(compare, id)
+   id=0160; CONDITION  =0160; self~assertSame(condition, id)
+   id=0170; COPIES     =0170; self~assertSame(copies, id)
+   id=0180; C2D        =0180; self~assertSame(c2d, id)
+   id=0190; C2X        =0190; self~assertSame(c2x, id)
+   id=0200; DATATYPE   =0200; self~assertSame(datatype, id)
+   id=0210; DATE       =0210; self~assertSame(date, id)
+   id=0220; DELSTR     =0220; self~assertSame(delstr, id)
+   id=0230; DELWORD    =0230; self~assertSame(delword, id)
+   id=0240; DIGITS     =0240; self~assertSame(digits, id)
+   id=0250; DO         =0250; self~assertSame(do, id)
+   id=0260; DROP       =0260; self~assertSame(drop, id)
+   id=0270; D2C        =0270; self~assertSame(d2c, id)
+   id=0280; D2X        =0280; self~assertSame(d2x, id)
+   id=0290; ELSE       =0290; self~assertSame(else, id)
+   id=0300; END        =0300; self~assertSame(end, id)
+   id=0310; ERROR      =0310; self~assertSame(error, id)
+   id=0320; ERRORTEXT  =0320; self~assertSame(errortext, id)
+   id=0330; EXIT       =0330; self~assertSame(exit, id)
+   id=0340; EXPOSE     =0340; self~assertSame(expose, id)
+   id=0350; FAILURE    =0350; self~assertSame(failure, id)
+   id=0360; FOR        =0360; self~assertSame(for, id)
+   id=0370; FOREVER    =0370; self~assertSame(forever, id)
+   id=0380; FORM       =0380; self~assertSame(form, id)
+   id=0390; FORMAT     =0390; self~assertSame(format, id)
+   id=0400; FUZZ       =0400; self~assertSame(fuzz, id)
+   id=0410; HALT       =0410; self~assertSame(halt, id)
+   id=0420; IF         =0420; self~assertSame(if, id)
+   id=0430; INSERT     =0430; self~assertSame(insert, id)
+   id=0440; INTERPRET  =0440; self~assertSame(interpret, id)
+   id=0450; ITERATE    =0450; self~assertSame(iterate, id)
+   id=0460; LASTPOS    =0460; self~assertSame(lastpos, id)
+   id=0470; LEAVE      =0470; self~assertSame(leave, id)
+   id=0480; LEFT       =0480; self~assertSame(left, id)
+   id=0490; LENGTH     =0490; self~assertSame(length, id)
+   id=0500; LINEIN     =0500; self~assertSame(linein, id)
+   id=0510; LINEOUT    =0510; self~assertSame(lineout, id)
+   id=0520; LINES      =0520; self~assertSame(lines, id)
+   id=0530; MAX        =0530; self~assertSame(max, id)
+   id=0540; MIN        =0540; self~assertSame(min, id)
+   id=0550; NAME       =0550; self~assertSame(name, id)
+   id=0560; NOP        =0560; self~assertSame(nop, id)
+   id=0570; NOVALUE    =0570; self~assertSame(novalue, id)
+   id=0580; OFF        =0580; self~assertSame(off, id)
+   id=0590; ON         =0590; self~assertSame(on, id)
+   id=0600; OPTIONS    =0600; self~assertSame(options, id)
+   id=0610; OR         =0610; self~assertSame(or, id)
+   id=0620; OTHERWISE  =0620; self~assertSame(otherwise, id)
+   id=0630; OVERLAY    =0630; self~assertSame(overlay, id)
+   id=0640; PARSE      =0640; self~assertSame(parse, id)
+   id=0650; POS        =0650; self~assertSame(pos, id)
+   id=0660; PROCEDURE  =0660; self~assertSame(procedure, id)
+   id=0670; PULL       =0670; self~assertSame(pull, id)
+   id=0680; PUSH       =0680; self~assertSame(push, id)
+   id=0690; QUEUE      =0690; self~assertSame(queue, id)
+   id=0700; RANDOM     =0700; self~assertSame(random, id)
+   id=0710; RC         =0710; self~assertSame(rc, id)
+   id=0720; RESULT     =0720; self~assertSame(result, id)
+   id=0730; RETURN     =0730; self~assertSame(return, id)
+   id=0740; REVERSE    =0740; self~assertSame(reverse, id)
+   id=0750; RIGHT      =0750; self~assertSame(right, id)
+   id=0760; SAY        =0760; self~assertSame(say, id)
+   id=0770; SELECT     =0770; self~assertSame(select, id)
+   id=0780; SIGL       =0780; self~assertSame(sigl, id)
+   id=0790; SIGN       =0790; self~assertSame(sign, id)
+   id=0800; SIGNAL     =0800; self~assertSame(signal, id)
+   id=0810; SOURCE     =0810; self~assertSame(source, id)
+   id=0820; SOURCELINE =0820; self~assertSame(sourceline, id)
+   id=0830; SPACE      =0830; self~assertSame(space, id)
+   id=0840; STRIP      =0840; self~assertSame(strip, id)
+   id=0850; SUBSTR     =0850; self~assertSame(substr, id)
+   id=0860; SUBWORD    =0860; self~assertSame(subword, id)
+   id=0870; SYMBOL     =0870; self~assertSame(symbol, id)
+   id=0880; SYNTAX     =0880; self~assertSame(syntax, id)
+   id=0890; THEN       =0890; self~assertSame(then, id)
+   id=0900; TIME       =0900; self~assertSame(time, id)
+   id=0910; TO         =0910; self~assertSame(to, id)
+   id=0920; TRACE      =0920; self~assertSame(trace, id)
+   id=0930; TRANSLATE  =0930; self~assertSame(translate, id)
+   id=0940; TRUNC      =0940; self~assertSame(trunc, id)
+   id=0950; UNTIL      =0950; self~assertSame(until, id)
+   id=0960; UPPER      =0960; self~assertSame(upper, id)
+   id=0970; VALUE      =0970; self~assertSame(value, id)
+   id=0980; VAR        =0980; self~assertSame(var, id)
+   id=0990; VERIFY     =0990; self~assertSame(verify, id)
+   id=1000; WHEN       =1000; self~assertSame(when, id)
+   id=1010; WHILE      =1010; self~assertSame(while, id)
+   id=1020; WORD       =1020; self~assertSame(word, id)
+   id=1030; WORDINDEX  =1030; self~assertSame(wordindex, id)
+   id=1040; WORDLENGTH =1040; self~assertSame(wordlength, id)
+   id=1050; WORDPOS    =1050; self~assertSame(wordpos, id)
+   id=1060; WORDS      =1060; self~assertSame(words, id)
+   id=1070; XOR        =1070; self~assertSame(xor, id)
+   id=1080; XRANGE     =1080; self~assertSame(xrange, id)
+   id=1090; X2C        =1090; self~assertSame(x2c, id)
+   id=1100; X2D        =1100; self~assertSame(x2d, id)
+
+::method "test_2"
+   a=''
+   id=0003; b = ''               ; self~assertSame(b, '')
+   id=0004; c = ''x              ; self~assertSame(c, '')
+   id=0005; xi=1 ; d = ''xi      ; self~assertSame(d, '1')
+   id=0006; e = a||b||c||d       ; self~assertSame(e, 1)
+   id=0007; f = substr('abc',4)  ; self~assertSame(f, '')
+   id=0010; i = 'IBM'            ; self~assertSame(i, 'IBM')
+   id=0011; j = 1bcde            ; self~assertSame(j, '1BCDE')
+   id=0015; l = abcde            ; self~assertSame(l, 'ABCDE')
+   Drop a
+   achar='A'
+   id=0018; stem.a = 'val'       ; self~assertSame(stem.ACHAR, 'val')
+   id=0019; stem.  = 'all'       ; self~assertSame(stem.ACHAR, 'all')
+                                   self~assertSame(stem., 'all')
+                                   self~assertSame(stem.noval, 'all')
+   tail='R.S.T.U'
+   id=0020; stem.tail=4711       ; self~assertSame(stem.r.s.t.u, 4711)
+   id=0021; x=stem.              ; self~assertSame(x, 'all')
+   nil=''
+   id=0022; x=stem.nil           ; self~assertSame(x, 'all')
+   id=0025; x=reverse('abc')     ; self~assertSame(x, 'cba')
+   term.=1; term.2=2; term.3=3; term.4=4
+   id=0026; x=term.*2+term.2      ; self~assertSame(x, 4)
+   id=0027; x=term.2*(2+term.)    ; self~assertSame(x, 6)
+   id=0028; y=((term.2*(2+term.))); self~assertSame(y, 6)
+   id=0029;
+   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx=1
+   z=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx+,
+     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx+,
+     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx+,
+     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx+,
+     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+                                    self~assertSame(z, 5)
+   id=0030; zz=z=z;               ; self~assertSame(zz, 1)
+   id=0032; zzz=(1=(0=(0=1)))     ; self~assertSame(zzz, 1)
+   id=0033; zzz=(((1=0)=0)=1)     ; self~assertSame(zzz, 1)
+
+::method "test_3"
+   /* most ways to assign '123' to compound variables */
+   cnt.=0
+   g_.=''
+   c.=':-)'
+   three=3
+   aha=123
+   c.1=123
+   c.2='123'
+   c.3=-' - 123 '
+   c.4=abs('  -  123.000e+0000   ') /1 /* get rid of .000                */
+   c.5='12'three
+   c.6=100+23
+   c.7=1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+,
+       1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+1+,
+       2+2+2+2+2+2+2+2+2+2+2+2+2+2+2+2+2+2+2+2+2+2+2+2+2+2+2+2+2+2+,
+       1+1+1+0
+   Numeric Digits 3
+   c.8=+122.5
+   c.9=+122.5+0
+   Numeric Digits 9
+   c.10=left(+123.49999999999999999999,3)
+   c.11=left(123456789,3)
+   c.12=left(12,3,3)
+   c.13=right(987654123,3)
+   c.14=right(23,3,1)
+   c.15=random(123,123)     /* 910922 PA removed trailing comma */
+   c.16=reverse(321)
+   c.17=substr(999123999,4,3)
+   c.18=aha
+   c.19=c.1
+   ii=20;c.ii=c.2
+   c.21=substr(substr(012345,2),1,3)
+   c.22=123
+   aerr=1
+   c.23=aerr*123
+   c.24=120+3
+   c.25=130-7
+   c.26=25*5-2
+   c.27=246/2
+   c.28=2**7-5
+   c.29=abbrev(1234,123)+122
+   c.30=abs(-00123.00) / 1             /* get rid of .00                 */
+   address ''
+   c.31='12'address()'3'
+   c.33=123
+   c.34=123
+   c.35=bitand(123,'333333'x)
+   c.36=bitor('010203'x,'303030'x)
+   c.37=bitxor('010203'x,'303030'x)
+   c.38=center(' 123  ',3)
+   c.39=centre('  123  ',3)
+   c.40=compare(copies('a',122),copies('a',122)'b')
+   c.41=right(cd,3)
+   c.42=copies('123',1)
+   c.43=c2d('7B'x)
+   c.44=right(c2x('0123'x),3)
+   c.45=left(c2x('1230'x),3)
+   c.46=123*datatype(123,'w')
+   c.47=120+length(word(date(),2))
+   c.48=delstr(delstr(012345,1,1),4)
+   c.49=strip(delword(delword(0 123 4 5,1,1),2))
+   Numeric Digits 123
+   c.50=123
+   c.51=d2c(3224115)
+   c.52=d2x(291)
+   c.53=errortext(0)123
+   c.54=123
+   c.55=format(000123.39999,3,0)
+   Numeric Digits 124
+   Numeric Fuzz   123
+   c.56=123
+   Numeric Fuzz   0
+   Numeric Digits 9
+   c.57=insert(2,13,1)
+   c.58=insert('',13,1,1,2)
+   c.59=lastpos('a',copies('a',123))
+   c.60=length(copies('.',120+3))
+   c.61=max(111,123,-123)
+   c.62=min(999,123,100000)
+   c.63=overlay(2,'153',2)
+   c.64=pos('aa',copies('b',122)'aa')
+   Signal Off Error
+   Do While queued()>0; Pull .; End
+   Do     123; Queue ' '; End
+   c.65=queued()
+   Do While queued()>0; Pull .; End
+   c.66=random(1,1,1)+122
+   c.67=reverse(21)3
+   c.68=right(0099123,3)
+   c.69=sign(123)+122
+   c.70=sign(123)23
+   c.71=-sign(-1)23
+   c.72=123
+   c.73=space('  1   2   3   ',0)
+   c.74=strip('$$123$$$',,'$')
+   c.75=substr('abc123123',4,3)
+   c.76=subword('11 22 33 123 55',4,1)
+   c.77=(symbol('C.1')='VAR')+122
+   c.78=Length(Time())+115
+   Trace   'O'
+   c.79=(trace()='O')23
+   c.80=translate('cba','132','cab')
+   c.81=trunc(123.49999999999)
+   ccc='aaa'; aaa=123
+   c.82=value(ccc)
+   c.83=12''verify('ABXC','ABC')
+   c.84=word(copies('12 ',122)' 123',123)
+   c.85=wordindex(copies('1',121)' 2',2)
+   c.86=wordlength(copies('1',122)' 'copies('2',123)' **',2)
+   c.87=wordpos('abc',copies('1 ',122)' abc def ghi')
+   c.88=12''words(' a  b   c     ')
+   c.89=xrange('1','3')
+   c.90=x2c(strip(strip("'313233'x",,'x'),,"'"))
+   c.91=x2d('7B')
+   Parse Value '123' With c.92 1 c.93 1 c.94 1 c.95 1 c.96
+   Queue '123'
+   Pull c.97
+   c.98=result
+   c.99=result
+   c.100=246%2
+   c.101=1122//999
+   c.102=-(-1*123)
+   c.103=+.123e+3
+   c.104=1''2''3
+   c.105=1||2||3
+   c.106=123.0000000000000000000005/(122<123)
+   Do id=1 By 1 While c.id<>':-)'
+     If c.id<>123 Then Do
+       Say 'id='id '->' c.id
+       End
+     self~assertSame(c.id, 123)
+     End
+
+::method "test_4"
+   b=''
+   cl='"" 123' copies('T',200)
+   vl='"" 12 abcde.' copies('v',1000)
+   Do ci=1 to words(cl)
+     c=word(cl,ci)
+     Do vi=1 to words(vl)
+       val=word(vl,vi)
+       id=c'.'val
+       a..c=val
+       self~assertSame(a..c, val)
+       self~assertSame(a.b.c, val)
+       b=''X
+       self~assertSame(a.b.c, val)
+       t='.'c
+       self~assertSame(a.t, val)
+       End
+     End
+   null=''
+   b.='bstem'
+   b.null='bnull'
+   self~assertSame(b., 'bstem')
+   self~assertSame(b.null, 'bnull')
+   b.='bstema'
+   self~assertSame(b.null, 'bstema')
+
+::method "test_5"
+   a=8; a.=8; a.8=88;
+   b=4; b.=4; b.4=44;
+   numeric digits 9
+   id=1 ; i = 8 + 4  ;   self~assertSame(i, 12)
+   id=2 ; i = 8 + b  ;   self~assertSame(i, 12)
+   id=3 ; i = 8 + b.4  ;   self~assertSame(i, 52)
+   id=4 ; i = 8 + b.  ;   self~assertSame(i, 12)
+   id=5 ; i = 8 - 4  ;   self~assertSame(i, 4)
+   id=6 ; i = 8 - b  ;   self~assertSame(i, 4)
+   id=7 ; i = 8 - b.4  ;   self~assertSame(i, -36)
+   id=8 ; i = 8 - b.  ;   self~assertSame(i, 4)
+   id=9 ; i = 8 * 4  ;   self~assertSame(i, 32)
+   id=10 ; i = 8 * b  ;   self~assertSame(i, 32)
+   id=11 ; i = 8 * b.4  ;   self~assertSame(i, 352)
+   id=12 ; i = 8 * b.  ;   self~assertSame(i, 32)
+   id=13 ; i = 8 / 4  ;   self~assertSame(i, 2)
+   id=14 ; i = 8 / b  ;   self~assertSame(i, 2)
+   id=15 ; i = 8 / b.4  ;   self~assertSame(i, 0.181818182)
+   id=16 ; i = 8 / b.  ;   self~assertSame(i, 2)
+   id=17 ; i = 8 || 4  ;   self~assertSame(i, 84)
+   id=18 ; i = 8 || b  ;   self~assertSame(i, 84)
+   id=19 ; i = 8 || b.4  ;   self~assertSame(i, 844)
+   id=20 ; i = 8 || b.  ;   self~assertSame(i, 84)
+   id=21 ; i = 8 = 4  ;   self~assertSame(i, 0)
+   id=22 ; i = 8 = b  ;   self~assertSame(i, 0)
+   id=23 ; i = 8 = b.4  ;   self~assertSame(i, 0)
+   id=24 ; i = 8 = b.  ;   self~assertSame(i, 0)
+   id=25 ; i = a + 4  ;   self~assertSame(i, 12)
+   id=26 ; i = a + b  ;   self~assertSame(i, 12)
+   id=27 ; i = a + b.4  ;   self~assertSame(i, 52)
+   id=28 ; i = a + b.  ;   self~assertSame(i, 12)
+   id=29 ; i = a - 4  ;   self~assertSame(i, 4)
+   id=30 ; i = a - b  ;   self~assertSame(i, 4)
+   id=31 ; i = a - b.4  ;   self~assertSame(i, -36)
+   id=32 ; i = a - b.  ;   self~assertSame(i, 4)
+   id=33 ; i = a * 4  ;   self~assertSame(i, 32)
+   id=34 ; i = a * b  ;   self~assertSame(i, 32)
+   id=35 ; i = a * b.4  ;   self~assertSame(i, 352)
+   id=36 ; i = a * b.  ;   self~assertSame(i, 32)
+   id=37 ; i = a / 4  ;   self~assertSame(i, 2)
+   id=38 ; i = a / b  ;   self~assertSame(i, 2)
+   id=39 ; i = a / b.4  ;   self~assertSame(i, 0.181818182)
+   id=40 ; i = a / b.  ;   self~assertSame(i, 2)
+   id=41 ; i = a || 4  ;   self~assertSame(i, 84)
+   id=42 ; i = a || b  ;   self~assertSame(i, 84)
+   id=43 ; i = a || b.4  ;   self~assertSame(i, 844)
+   id=44 ; i = a || b.  ;   self~assertSame(i, 84)
+   id=45 ; i = a = 4  ;   self~assertSame(i, 0)
+   id=46 ; i = a = b  ;   self~assertSame(i, 0)
+   id=47 ; i = a = b.4  ;   self~assertSame(i, 0)
+   id=48 ; i = a = b.  ;   self~assertSame(i, 0)
+   id=49 ; i = a.8 + 4  ;   self~assertSame(i, 92)
+   id=50 ; i = a.8 + b  ;   self~assertSame(i, 92)
+   id=51 ; i = a.8 + b.4  ;   self~assertSame(i, 132)
+   id=52 ; i = a.8 + b.  ;   self~assertSame(i, 92)
+   id=53 ; i = a.8 - 4  ;   self~assertSame(i, 84)
+   id=54 ; i = a.8 - b  ;   self~assertSame(i, 84)
+   id=55 ; i = a.8 - b.4  ;   self~assertSame(i, 44)
+   id=56 ; i = a.8 - b.  ;   self~assertSame(i, 84)
+   id=57 ; i = a.8 * 4  ;   self~assertSame(i, 352)
+   id=58 ; i = a.8 * b  ;   self~assertSame(i, 352)
+   id=59 ; i = a.8 * b.4  ;   self~assertSame(i, 3872)
+   id=60 ; i = a.8 * b.  ;   self~assertSame(i, 352)
+   id=61 ; i = a.8 / 4  ;   self~assertSame(i, 22)
+   id=62 ; i = a.8 / b  ;   self~assertSame(i, 22)
+   id=63 ; i = a.8 / b.4  ;   self~assertSame(i, 2)
+   id=64 ; i = a.8 / b.  ;   self~assertSame(i, 22)
+   id=65 ; i = a.8 || 4  ;   self~assertSame(i, 884)
+   id=66 ; i = a.8 || b  ;   self~assertSame(i, 884)
+   id=67 ; i = a.8 || b.4  ;   self~assertSame(i, 8844)
+   id=68 ; i = a.8 || b.  ;   self~assertSame(i, 884)
+   id=69 ; i = a.8 = 4  ;   self~assertSame(i, 0)
+   id=70 ; i = a.8 = b  ;   self~assertSame(i, 0)
+   id=71 ; i = a.8 = b.4  ;   self~assertSame(i, 0)
+   id=72 ; i = a.8 = b.  ;   self~assertSame(i, 0)
+   id=73 ; i = a. + 4  ;   self~assertSame(i, 12)
+   id=74 ; i = a. + b  ;   self~assertSame(i, 12)
+   id=75 ; i = a. + b.4  ;   self~assertSame(i, 52)
+   id=76 ; i = a. + b.  ;   self~assertSame(i, 12)
+   id=77 ; i = a. - 4  ;   self~assertSame(i, 4)
+   id=78 ; i = a. - b  ;   self~assertSame(i, 4)
+   id=79 ; i = a. - b.4  ;   self~assertSame(i, -36)
+   id=80 ; i = a. - b.  ;   self~assertSame(i, 4)
+   id=81 ; i = a. * 4  ;   self~assertSame(i, 32)
+   id=82 ; i = a. * b  ;   self~assertSame(i, 32)
+   id=83 ; i = a. * b.4  ;   self~assertSame(i, 352)
+   id=84 ; i = a. * b.  ;   self~assertSame(i, 32)
+   id=85 ; i = a. / 4  ;   self~assertSame(i, 2)
+   id=86 ; i = a. / b  ;   self~assertSame(i, 2)
+   id=87 ; i = a. / b.4  ;   self~assertSame(i, 0.181818182)
+   id=88 ; i = a. / b.  ;   self~assertSame(i, 2)
+   id=89 ; i = a. || 4  ;   self~assertSame(i, 84)
+   id=90 ; i = a. || b  ;   self~assertSame(i, 84)
+   id=91 ; i = a. || b.4  ;   self~assertSame(i, 844)
+   id=92 ; i = a. || b.  ;   self~assertSame(i, 84)
+   id=93 ; i = a. = 4  ;   self~assertSame(i, 0)
+   id=94 ; i = a. = b  ;   self~assertSame(i, 0)
+   id=95 ; i = a. = b.4  ;   self~assertSame(i, 0)
+   id=96 ; i = a. = b.  ;   self~assertSame(i, 0)
+
+::method "test_6"
+   y=0
+   x=y
+   a=17
+   Address nowhere
+   /*1*/a/*2*/=/*3*/2/*4*/;
+   ,
+
+   b=3
+   c,
+   =4
+   d=,
+   5
+   e=6,
+
+   self~assertSame((a b c d e), (2 3 4 5 6))
+   e=7
+   address     =2
+   arg         =4
+   call        =6
+   do          =8
+   drop        =10
+   exit        =12
+   if          =14
+   interpret   =16
+   iterate     =18
+   leave       =20
+   nop         =22
+   numeric     =24
+   options     =26
+   parse       =28
+   procedure   =30
+   pull        =32
+   push        =34
+   queue       =36
+   return      =38
+   say         =40
+   select      =42
+   signal      =44
+   trace       =46
+   upper       =48
+   self~assertSame(address, 2)
+   self~assertSame(arg, 4)
+   self~assertSame(call, 6)
+   self~assertSame(do, 8)
+   self~assertSame(drop, 10)
+   self~assertSame(exit, 12)
+   self~assertSame(if, 14)
+   self~assertSame(interpret, 16)
+   self~assertSame(iterate, 18)
+   self~assertSame(leave, 20)
+   self~assertSame(nop, 22)
+   self~assertSame(numeric, 24)
+   self~assertSame(options, 26)
+   self~assertSame(parse, 28)
+   self~assertSame(procedure, 30)
+   self~assertSame(pull, 32)
+   self~assertSame(push, 34)
+   self~assertSame(queue, 36)
+   self~assertSame(return, 38)
+   self~assertSame(say, 40)
+   self~assertSame(select, 42)
+   self~assertSame(signal, 44)
+   self~assertSame(trace, 46)
+   self~assertSame(upper, 48)
+
+::method "test_7"
+   /* check all 256 possible bit combinations */
+   Do i=0 To 255
+      id=i||'-th'
+      Parse Value 256 i With val n b
+      Do j=1 To 8
+         val=val/2
+         x=n%val; n=n-x*val; b=b||x
+         End
+      z=b2x(b)
+      self~assertSame(x2c(z), d2c(i))
+      Interpret 'x='''||left(b,4)||copies(' ',random(3))||right(b,4)||'''b'
+      self~assertSame(x2c(z), x)
+      End
+
+::method "test_8"
+   Numeric Digits 1000
+   maxbits=800              /* the longest bit string accepted by OS/2 */
+                            /* and OS/400, and the SAA stated minimum  */
+   b=copies('1',maxbits)
+   Interpret 'x='''||b||'''b'
+   n=0; Do i=1 To length(b); n=n*2+1; End
+   self~assertSame(c2d(x), n)
+   b=b||1
+   id=201s; xrc=30
+   Interpret 'x='''||b||'''b'
+

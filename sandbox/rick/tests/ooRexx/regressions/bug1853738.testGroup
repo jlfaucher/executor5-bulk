@@ -1,0 +1,147 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.bug1853738.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+  Directives, Classes, or Routines.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::requires 'ooTest.frm'
+
+/* class: bug1853738.testGroup - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class "bug1853738.testGroup" public subclass ooTestCase
+
+  ::method test_initClass_property01
+
+    data = "value1,value2,value3,value4,value5,value6,value7,value8,value9,"  || -
+           "value10,value11,value12,value13,value14,value15,value16,value17," || -
+           "value18,value19,value20"
+    a = .helper~new(data)
+    self~assertEquals("value1", a~property01, "Class attribute property01 should equal value1")
+
+  ::method test_initClass_property20
+
+    data = "value1,value2,value3,value4,value5,value6,value7,value8,value9,"  || -
+           "value10,value11,value12,value13,value14,value15,value16,value17," || -
+           "value18,value19,value20"
+    a = .helper~new(data)
+    self~assertEquals("value20", a~property20, "Class attribute property20 should equal value20")
+
+  ::method test_initClass_property_middlle
+
+    data = "value1,value2,value3,value4,value5,value6,value7,value8,value9,"  || -
+           "value10,value11,value12,value13,value14,value15,value16,value17," || -
+           "value18,value19,value20"
+    a = .helper~new(data)
+    self~assertEquals("value10", a~property10, "Class attribute property10 should equal value10")
+
+  ::method test_initClass_property_pastData
+
+    data = "value1,value2,value3,value4,value5,value6,value7,value8,value9,"  || -
+           "value10,value11,value12,value13,value14,value15,value16,value17," || -
+           "value18,value19,value20"
+    a = .helper~new(data)
+    self~assertEquals("", a~property21, "Class attribute property21 should equal the empty string")
+
+-- End of class: bug1853738.testGroup
+
+/** Helper class for the test case. */
+::class helper
+
+::attribute property01
+::attribute property02
+::attribute property03
+::attribute property04
+::attribute property05
+::attribute property06
+::attribute property07
+::attribute property08
+::attribute property09
+::attribute property10
+::attribute property11
+::attribute property12
+::attribute property13
+::attribute property14
+::attribute property15
+::attribute property16
+::attribute property17
+::attribute property18
+::attribute property19
+::attribute property20
+::attribute property21
+
+::method init
+use arg argString
+
+parse var argstring self~property01',' -
+                    self~property02',' -
+                    self~property03',' -
+                    self~property04',' -
+                    self~property05',' -
+                    self~property06',' -
+                    self~property07',' -
+                    self~property08',' -
+                    self~property09',' -
+                    self~property10',' -
+                    self~property11',' -
+                    self~property12',' -
+                    self~property13',' -
+                    self~property14',' -
+                    self~property15',' -
+                    self~property16',' -
+                    self~property17',' -
+                    self~property18',' -
+                    self~property19',' -
+                    self~property20 self~property21
+
+
+::options novalue error

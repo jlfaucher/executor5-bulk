@@ -1,0 +1,179 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.Collection_propertiesMethod.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "Collection_propertiesMethod.testGroup" subclass ooTestCase public
+
+::method "test_1"
+   prop = .properties~new()
+   self~assertEquals('a Properties', prop)
+
+::method "test_2"
+   prop = .properties~new()
+   prop['path'] = '/home/me'
+   self~assertEquals(1, prop~items)
+   prop['libpath'] = '/home/me/lib'
+   self~assertEquals(2, prop~items)
+
+::method "test_3"
+   prop = .properties~new()
+   prop['path'] = '/home/me'
+   prop['libpath'] = '/home/me/lib'
+   self~assertEquals('/home/me', prop['path'])
+   self~assertEquals('/home/me/lib', prop['libpath'])
+   self~assertNotEquals('/home/me/lib', prop['LIBPATH'])
+
+::method "test_4"
+   prop = .properties~new()
+   prop~put('/home/me', 'path')
+   prop~put('/home/me/lib', 'libpath')
+   self~assertEquals('/home/me', prop~at('path'))
+   self~assertEquals(.nil, prop~at('Path'))
+   self~assertEquals('/home/me/lib', prop~at('libpath'))
+   self~assertEquals(.nil, prop~at('LIBPATH'))
+
+::method "test_5"
+   propfile = 'testproperties.txt'
+   prop = .properties~new()
+   prop['path'] = '/home/me'
+   prop['libpath'] = '/home/me/lib'
+   prop~save(propfile)
+   propfile = 'testproperties.txt'
+   prop1 = .properties~new()
+   prop1~load(propfile)
+   self~assertEquals('/home/me', prop1['path'])
+   self~assertEquals('/home/me/lib', prop1['libpath'])
+   prop2 = .properties~new()
+   prop2['name'] = 'Mike'
+   prop2~load(propfile)
+   self~assertEquals('/home/me', prop2['path'])
+   self~assertEquals('/home/me/lib', prop2['libpath'])
+   self~assertEquals('Mike', prop2['name'])
+   call SysFileDelete propfile
+
+::method "test_6"
+   prop = .properties~new()
+   prop['true'] = 1
+   prop['false'] = 0
+   self~assertEquals(1, prop~getLogical('true'))
+   self~assertEquals(0, prop~getLogical('false'))
+   prop['true'] = 'true'
+   prop['false'] = 'false'
+   self~assertEquals(1, prop~getLogical('true'))
+   self~assertEquals(0, prop~getLogical('false'))
+   self~assertEquals(1, prop~getLogical('xxx', 1))
+   self~assertEquals(0, prop~getLogical('yyy', 0))
+   prop['true'] = 6
+   self~expectSyntax(34.904)
+   self~assertEquals(1, prop~getLogical('true'))
+
+::method "test_7"
+   prop = .properties~new()
+   prop['path'] = '/home/me'
+   prop['libpath'] = '/home/me/lib'
+   self~assertEquals('/home/me', prop~getProperty('path'))
+   self~assertEquals('/home/me/lib', prop~getProperty('libpath'))
+   self~assertEquals('yyy', prop~getProperty('xxx', 'yyy'))
+   self~assertEquals(.nil, prop~getProperty('true'))
+
+::method "test_8"
+   prop = .properties~new()
+   prop['value1'] = 2
+   prop['value2'] = 100
+   prop['value3'] = 'Mike'
+   self~assertEquals(2, prop~getWhole('value1'))
+   self~assertEquals(100, prop~getWhole('value2'))
+   self~assertEquals(300, prop~getWhole('value4', 300))
+   self~expectSyntax(26.901)
+   self~assertEquals(200, prop~getWhole('value3', 200))
+
+::method "test_9"
+   prop = .properties~new()
+   prop~setLogical('value1', 1)
+   self~assertEquals(1, prop~getLogical('value1'))
+   self~assertEquals('true', prop['value1'])
+   prop~setLogical('value1', 0)
+   self~assertEquals(0, prop~getLogical('value1'))
+   self~assertEquals('false', prop['value1'])
+   prop~setLogical('value1', .true)
+   self~assertEquals(1, prop~getLogical('value1'))
+   self~assertEquals('true', prop['value1'])
+   prop~setLogical('value1', .false)
+   self~assertEquals(0, prop~getLogical('value1'))
+   self~assertEquals('false', prop['value1'])
+
+::method "test_10"
+   prop = .properties~new()
+   prop~setProperty('value1', 1)
+   self~assertEquals(1, prop~getLogical('value1'))
+   self~assertEquals(1, prop['value1'])
+   prop~setProperty('value1', 'Mike')
+   self~assertEquals('Mike', prop['value1'])
+   prop~setProperty('value1', 'Mike is my best friend')
+   self~assertEquals('Mike is my best friend', prop['value1'])
+
+::method "test_11"
+   prop = .properties~new()
+   prop~setWhole('value1', 2)
+   prop~setWhole('value2', 100)
+   prop~setWhole('value3', -1)
+   self~assertEquals(2, prop~getWhole('value1'))
+   self~assertEquals(100, prop~getWhole('value2'))
+   self~assertEquals(-1, prop~getWhole('value3'))
+   self~assertEquals(2, prop['value1'])
+   self~assertEquals(100, prop['value2'])
+   self~assertEquals(-1, prop['value3'])
+   self~expectSyntax(93.905)
+   prop~setWhole('value3', 'Mike')
+
+
+::options novalue error

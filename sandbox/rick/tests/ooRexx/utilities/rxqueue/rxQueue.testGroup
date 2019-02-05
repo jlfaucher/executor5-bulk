@@ -1,0 +1,354 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+
+  group = .TestGroup~new(s)
+  group~add(.rxQueue.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+  Directives, Classes, or Routines.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::requires 'ooTest.frm'
+::requires 'FileUtils.cls'
+
+/* class: rxQueue.testGroup- - - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class "rxQueue.testGroup" public subclass ooTestCase
+
+-- Set up is used to be sure the queue is empty before the start of each
+-- test.
+::method setup
+  do queued()
+    pull .
+  end
+
+::method test_current_dir_filter
+
+  -- Use a select to allow for expansion.  When this test fails on a plaform
+  -- because cmd is not set correctly, then whoever investigates can add the
+  -- appropriate command for that platform.  Note it is possible that we will
+  -- also need to test for the appropriate shell.
+  os = .ooRexxUnit.OSName
+  select
+    when os == 'WINDOWS' then cmd = 'cd'
+    -- other platforms are expected to be Unix-like and support "pwd"
+    otherwise cmd = 'pwd'
+  end
+
+  cmd "| rxqueue"
+  count = queued()
+
+  self~assertSame(1, count)
+
+  -- Be sure we don't hang on the parse pull. If the assert fails the test ends
+  -- and we won't hit the parse pull line.
+  self~assertTrue(count > 0)
+
+  parse pull line
+  trueCurrentDir = directory()
+
+  -- on a case-insensitive file system, pwd and directory()
+  -- might actually return strings with different upper/lower-case
+  if .File~new(line)~isCaseSensitive then
+    self~assertSame(trueCurrentDir, line)
+  else
+    self~assertSame(trueCurrentDir~lower, line~lower)
+
+::method  test_multi_lines
+
+  -- In order to work on different platforms, it is easier to just create our
+  -- own program so we can control the number of lines of output.
+  src = .array~new
+  src[1] = "do i = 1 to 5"
+  src[2] = "  say 'line' i"
+  src[3] = "end"
+  src[4] = "return 5"
+
+  prg = createRexxPrgFile(src, "TestRxQueue")
+
+  -- Assert the file was created okay
+  self~assertNotSame('', prg)
+
+  prg = '"' || prg ||  '"'
+
+  'rexx' prg '| rxqueue'
+
+  -- Delete the temp file
+  j = deleteFile(prg)
+
+  -- Now assert what should be true
+  count = queued()
+  self~assertSame(5, count)
+
+  do i = 1 to 5
+    parse pull line
+    expected = 'line' i
+    self~assertSame(expected, line)
+  end
+
+/** test_stderr_to_rxqueue()
+ * This tests that stderr can be redirected and both stderr and stdout end up
+ * in the queue.  This works on 3.2.0 in Windows and it seems reasonable to
+ * ensure it keeps working in the future.  Note, that it is conceivable that
+ * this may not work on all platforms that ooRexx works on.
+ */
+::method test_stderr_to_rxqueue
+
+  -- Note to someone investigating a failure here.  Add the code to get this
+  -- to work on your platform.
+
+  -- This redirects stderr correctly on Windows, Linux (sh), and AIX (ksh).
+  -- We may need to add a test for the proper shell in use.
+  stdErrToStdOut = '2>&1'
+
+  src = .array~new
+  src[1] = ".stdout~lineout('stdout line 1')"
+  src[2] = ".stdout~lineout('stdout line 2')"
+  src[3] = ".stderr~lineout('stderr line 3')"
+  src[4] = ".stderr~lineout('stderr line 4')"
+  src[5] = "return 0"
+
+  prg = createRexxPrgFile(src, "TestRxQueue")
+  self~assertNotSame('', prg)
+
+  prg = '"' || prg ||  '"'
+
+  'rexx' prg stdErrToStdOut '| rxqueue'
+  j = deleteFile(prg)
+
+  -- Now test.
+  count = queued()
+  self~assertSame(4, count)
+
+  parse pull line
+  self~assertSame("stdout line 1", line)
+  parse pull line
+  self~assertSame("stdout line 2", line)
+  parse pull line
+  self~assertSame("stderr line 3", line)
+  parse pull line
+  self~assertSame("stderr line 4", line)
+
+
+-- test maximum RXQUEUE line length allowed
+::method test_rxqueue_maximum_line_length
+
+  -- rexref says, 65472 chars allowed
+  a = .Array~new(2)~fill("x"~copies(65472))
+  long = createFile(a, "rxqueue_maximum_line_length")
+  .stdque~empty
+
+  -- test piping stdin
+  select case .ooRexxUnit.OSName
+    when "WINDOWS" then
+      "type" long "| rxqueue"
+    otherwise
+      "cat" long "| rxqueue"
+  end
+  self~assertEquals(2, queued())
+  self~assertEquals(a~makeString("c"), .stdque~makeArray~makeString("c"))
+  self~assertEquals(0, queued())
+
+  -- test redirecting stdin
+  "rxqueue <" long
+  self~assertEquals(2, queued())
+  self~assertEquals(a~makeString("c"), .stdque~makeArray~makeString("c"))
+  self~assertEquals(0, queued())
+
+  call deleteFile long
+
+
+-- test for [bugs:#1471] RXQUEUE loses lineends every 4096 chars
+::method test_rxqueue_bug_1471
+
+  -- a rather obscure bug, seen on Windows, maybe starting with MSVC 2015
+  -- when RXQUEUE reads piped(*) stdin, a Cr-Lf sequence that happens to be
+  -- exactly at position 8193 will simply get lost
+  -- (*) this only happens if stdin is *piped* to rxqueue,
+  --   e. g. "type abc.txt | rxqueue"
+  --   not when read directly, e. g. "rxqueue < abc.txt"
+
+  if .ooRexxUnit.OSName \== "WINDOWS" then
+    return
+
+  -- we create a file with 500 lines, 15 chars each
+  -- the Cr-Lf sequence of line 482 will be exactly at position 8193:
+  -- 481 lines of length 17 (including Cr-Lf), plus 15 chars = 8192
+  -- the Cr-Lf sequence following line 482 gets lost due to [bugs:#1471]
+  a = .Array~new(500)~fill("0123456789ABCDE")
+
+  bug1471 = createFile(a, "rxqueue_bug_1471")
+  .stdque~empty
+  "type" bug1471 "| rxqueue"
+  self~assertEquals(500, queued())
+  self~assertEquals(a~makeString("c"), .stdque~makeArray~makeString("c"))
+  self~assertEquals(0, queued())
+
+  call deleteFile bug1471
+
+
+::constant queueName "rxQueue.testGroup"
+
+-- test option clear
+::method test_rxqueue_clear
+  -- we want no RXQUEUE environment variable set
+  call value "RXQUEUE", .nil, "ENVIRONMENT"
+
+  .stdque~queue("line")
+  self~assertSame(1, .stdque~queued)
+  "rxqueue /clear"
+  self~assertSame(0, .stdque~queued)
+
+  q = .RexxQueue~new(self~queueName)
+  q~queue("line")
+  self~assertSame(1, q~queued)
+  "rxqueue" self~queueName "/clear"
+  self~assertSame(0, q~queued)
+
+-- test option fifo
+::method test_rxqueue_fifo
+  -- we want no RXQUEUE environment variable set
+  call value "RXQUEUE", .nil, "ENVIRONMENT"
+
+  .stdque~empty
+  address "" "rxqueue /fifo" with input using (("line 1", "line 2"))
+  self~assertSame(2, .stdque~queued)
+  self~assertSame("line 1", .stdque~pull)
+  self~assertSame("line 2", .stdque~pull)
+  self~assertSame(0, .stdque~queued)
+
+  q = .RexxQueue~new(self~queueName)
+  q~empty
+  address "" "rxqueue" self~queueName "/fifo" with input using (("line 1", "line 2"))
+  self~assertSame(2, q~queued)
+  self~assertSame("line 1", q~pull)
+  self~assertSame("line 2", q~pull)
+  self~assertSame(0, q~queued)
+
+-- test option lifo
+::method test_rxqueue_lifo
+  -- we want no RXQUEUE environment variable set
+  call value "RXQUEUE", .nil, "ENVIRONMENT"
+
+  .stdque~empty
+  address "" "rxqueue /lifo" with input using (("line 1", "line 2"))
+  self~assertSame(2, .stdque~queued)
+  self~assertSame("line 2", .stdque~pull)
+  self~assertSame("line 1", .stdque~pull)
+  self~assertSame(0, .stdque~queued)
+
+  q = .RexxQueue~new(self~queueName)
+  q~empty
+  address "" "rxqueue" self~queueName "/lifo" with input using (("line 1", "line 2"))
+  self~assertSame(2, q~queued)
+  self~assertSame("line 2", q~pull)
+  self~assertSame("line 1", q~pull)
+  self~assertSame(0, q~queued)
+
+
+-- the RXQUEUE environment variable should override the SESSION default
+::method test_rxqueue_environment_variable
+  self~assertSame("SESSION", .stdque~get)
+  .stdque~empty
+  self~assertSame(0, .stdque~queued)
+  q = .RexxQueue~new("rxqueue_environment_variable")
+  q~empty
+  self~assertSame(0, .stdque~queued)
+
+  file = .TemporaryTestFile~new(self, "rxqueue_environment_variable")
+  file~create(("line 1", "line 2", "line 3"))
+
+  -- RXQUEUE environment variable not set, default should be SESSION
+  "rxqueue <" file~fullName
+  self~assertSame(3, .stdque~queued)
+  self~assertSame(0, q~queued)
+  self~assertSame(3, .stdque~queued)
+
+  -- RXQUEUE environment variable set
+  call value "RXQUEUE", q~get, "ENVIRONMENT"
+  "rxqueue <" file~fullName
+  call value "RXQUEUE", .nil, "ENVIRONMENT"
+  self~assertSame(3, .stdque~queued)
+  self~assertSame(3, q~queued)
+
+  -- RXQUEUE environment variable set, but queue name argument specified
+  call value "RXQUEUE", q~get, "ENVIRONMENT"
+  "rxqueue session /fifo <" file~fullName
+  call value "RXQUEUE", .nil, "ENVIRONMENT"
+  self~assertSame(6, .stdque~queued)
+  self~assertSame(3, q~queued)
+
+  -- now again with piped input
+  cat = (.ooRexxUnit.OSName == "WINDOWS")~?("TYPE", "cat")
+  .stdque~empty
+  q~empty
+
+  -- RXQUEUE environment variable not set, default should be SESSION
+  cat file~fullName "| rxqueue"
+  self~assertSame(3, .stdque~queued)
+  self~assertSame(0, q~queued)
+
+  -- RXQUEUE environment variable set
+  call value "RXQUEUE", q~get, "ENVIRONMENT"
+  cat file~fullName "| rxqueue"
+  call value "RXQUEUE", .nil, "ENVIRONMENT"
+  self~assertSame(3, .stdque~queued)
+  self~assertSame(3, q~queued)
+
+  -- RXQUEUE environment variable set, but queue name argument specified
+  call value "RXQUEUE", q~get, "ENVIRONMENT"
+  cat file~fullName "| rxqueue session"
+  call value "RXQUEUE", .nil, "ENVIRONMENT"
+  self~assertSame(6, .stdque~queued)
+  self~assertSame(3, q~queued)
+
+
+
+::options novalue error

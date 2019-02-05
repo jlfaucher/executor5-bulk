@@ -1,0 +1,577 @@
+#!/usr/bin/rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2017 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYright HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYright   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.SecurityManagerRoutine.testGroup)
+  group~add(.SecurityManagerPackage.testGroup)
+  group~add(.SecurityManagerMethod.testGroup)
+-- for now, we ignore all INTERPRET tests,
+-- because .context~executable~setSecurityManager(manager) doesn't work as expected
+--group~add(.SecurityManagerInterpret.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+
+
+::class SecurityManagerRoutine.testGroup subclass SecurityManager.testGroup public
+
+-- create a routine from the code, set the given Security Manager, and run it
+::method runWithSecMgr
+  use strict arg code, manager
+  r = .Routine~new("", code)
+  r~setSecurityManager(manager)
+  r~call
+  if var("RESULT") then
+    return result
+
+::constant requiresPath "SecurityManagerRoutine" -- "requires" files name prefix
+
+
+::class SecurityManagerPackage.testGroup subclass SecurityManager.testGroup public
+
+-- create a package from the code (without running the prolog)
+-- then set the given Security Manager, and run the prolog
+::method runWithSecMgr
+  use strict arg code, manager
+  p = .Package~new("", code "; ::options noprolog") -- don't run the prolog yet
+  p~setSecurityManager(manager)
+  p~prolog~call
+  if var("RESULT") then
+    return result
+
+::constant requiresPath "SecurityManagerPackage" -- "requires" files name prefix
+
+
+::class SecurityManagerMethod.testGroup subclass SecurityManager.testGroup public
+
+-- create a method from the code, set the given Security Manager, and run it
+::method runWithSecMgr
+  use strict arg code, manager
+  m = .Method~new("", code)
+  m~setSecurityManager(manager)
+  self~setMethod("RUNMETHOD", m)
+  self~runMethod
+  if var("RESULT") then
+    return result
+
+::constant requiresPath "SecurityManagerMethod" -- "requires" files name prefix
+
+
+::class SecurityManagerInterpret.testGroup subclass SecurityManager.testGroup public
+
+-- set the given Security Manager, and 'interpret' the code
+::method runWithSecMgr
+  use strict arg code, manager
+  -- avoid a LOCAL/ENVIRONMENT trigger pair when removing the security manager later
+  c = .context
+  c~executable~setSecurityManager(manager)
+  call run
+  if var("RESULT") then
+    code = result
+  c~executable~setSecurityManager
+  if var("CODE") then
+    return code
+  else
+    return
+
+  run:
+  interpret code
+  return
+
+::constant requiresPath "SecurityManagerInterpret" -- "requires" files name prefix
+
+
+
+::class SecurityManager.testGroup subclass ooTestCase public
+
+-- test Security Manager CALL events
+
+::method test_call_pass_no_args
+  mgr = .Collector~new
+  -- SysDropFuncs() is a no-op; just good for testing
+  self~runWithSecMgr("call SysDropFuncs", mgr)
+  self~assertSame("CALL", mgr~allMessages, "Security manager CALL event expected")
+  self~assertSame("ARGUMENTS NAME", mgr~allEntries("CALL"))
+  self~assertSame("SysDropFuncs"~upper, mgr~Entry("CALL", "NAME"))
+  self~assertIsA(mgr~Entry("CALL", "ARGUMENTS"), .Array)
+  self~assertSame(0, mgr~Entry("CALL", "ARGUMENTS")~items)
+
+::method test_call_pass_three_args
+  mgr = .Collector~new
+  -- SysDropFuncs() is a no-op; doesn't check args; always returns a Nullstring
+  code = self~runWithSecMgr("return SysDropFuncs(1, 2, 3)", mgr)
+  self~assertSame("CALL", mgr~allMessages, "Security manager CALL event expected")
+  self~assertSame("ARGUMENTS NAME", mgr~allEntries("CALL"))
+  self~assertSame("SysDropFuncs"~upper, mgr~Entry("CALL", "NAME"))
+  self~assertIsA(mgr~Entry("CALL", "ARGUMENTS"), .Array)
+  self~assertSame(3, mgr~Entry("CALL", "ARGUMENTS")~items)
+  self~assertSame("", code)
+
+::method test_call_handle_result
+  mgr = .Collector~new
+  mgr~actionPut("CALL", "RESULT", 42)  -- handle call, give rc 42
+  -- SysDropFuncs() always returns a Nullstring, but we handle and return 42
+  code = self~runWithSecMgr("return SysDropFuncs()", mgr)
+  self~assertSame("CALL", mgr~allMessages, "Security manager CALL event expected")
+  self~assertSame("ARGUMENTS NAME", mgr~allEntries("CALL"))
+  self~assertSame(42, code)
+
+::method test_call_handle_no_result
+  mgr = .Collector~new
+  mgr~actionHandle("CALL")             -- handle call, but without a return value
+  -- SysDropFuncs() always returns Nullstring, but we hande and return nothing
+  haveResult = self~runWithSecMgr("call SysDropFuncs; return var('result')", mgr)
+  self~assertSame("CALL", mgr~allMessages, "Security manager CALL event expected")
+  self~assertSame("ARGUMENTS NAME", mgr~allEntries("CALL"))
+  self~assertFalse(haveResult)
+
+::method test_call_handle_not_exists
+  mgr = .Collector~new
+  mgr~actionPut("CALL", "RESULT", "handled")
+  -- we intercept the call to a non-existing external function and return a result
+  code = self~runWithSecMgr("call SysDoesNotExist; return result", mgr)
+  self~assertSame("CALL", mgr~allMessages, "Security manager CALL event expected")
+  self~assertSame("ARGUMENTS NAME", mgr~allEntries("CALL"))
+  self~assertSame("handled", code)
+
+
+-- test Security Manager COMMAND events
+
+::method test_command_pass
+  mgr = .Collector~new
+  -- "exit" should work for both Linux and Windows shells
+  self~runWithSecMgr("'exit'", mgr)
+  self~assertSame("COMMAND", mgr~allMessages, "Security manager COMMAND event expected")
+  self~assertSame("ADDRESS COMMAND", mgr~allEntries("COMMAND"))
+  self~assertSame("exit", mgr~Entry("COMMAND", "COMMAND"))
+
+::method test_command_handle_rc
+  mgr = .Collector~new
+  mgr~actionPut("COMMAND", "RC", 42)
+  -- "exit 0" should work for both Linux and Windows shells
+  code = self~runWithSecMgr("'exit 0'; return rc", mgr)
+  self~assertSame("COMMAND", mgr~allMessages, "Security manager COMMAND event expected")
+  self~assertSame("ADDRESS COMMAND", mgr~allEntries("COMMAND"))
+  self~assertSame(42, code)
+
+::method test_command_handle_error
+  mgr = .Collector~new
+  mgr~actionPut("COMMAND", "ERROR")
+  -- "exit 0" should work for both Linux and Windows shells
+  -- we handle this by setting ERROR, which will raise error although rc is still zero
+  code = self~runWithSecMgr("signal on error; 'exit 0'; return rc; error: return condition('c') rc", mgr)
+  self~assertSame("COMMAND", mgr~allMessages, "Security manager COMMAND event expected")
+  self~assertSame("ADDRESS COMMAND", mgr~allEntries("COMMAND"))
+  self~assertSame("ERROR" 0, code)
+
+::method test_command_handle_failure
+  mgr = .Collector~new
+  mgr~actionPut("COMMAND", "FAILURE")
+  mgr~actionPut("COMMAND", "RC", 42)
+  -- "exit 0" should work for both Linux and Windows shells
+  -- we handle this by setting RC and FAILURE
+  -- to avoid the default failure trace output, we turn trace off
+  code = self~runWithSecMgr("signal on failure; trace off; 'exit 1'; return rc; failure: return condition('c') rc", mgr)
+  self~assertSame("COMMAND", mgr~allMessages, "Security manager COMMAND event expected")
+  self~assertSame("ADDRESS COMMAND", mgr~allEntries("COMMAND"))
+  self~assertSame("FAILURE" 42, code)
+
+
+-- test Security Manager LOCAL events
+
+::method test_local_pass
+  mgr = .Collector~new
+  self~runWithSecMgr(".Stdin~class", mgr)
+  self~assertSame("LOCAL", mgr~allMessages, "Security manager LOCAL event expected")
+  self~assertSame("NAME", mgr~allEntries("LOCAL"))
+  self~assertSame("STDIN", mgr~Entry("LOCAL", "NAME"))
+
+::method test_local_handle_result
+  mgr = .Collector~new
+  mgr~actionPut("LOCAL", "RESULT", .Stdout)
+  var = self~runWithSecMgr("return .Stderr", mgr)
+  self~assertSame("LOCAL", mgr~allMessages, "Security manager LOCAL event expected")
+  self~assertSame("NAME", mgr~allEntries("LOCAL"))
+  self~assertSame("STDERR", mgr~Entry("LOCAL", "NAME"))
+  self~assertSame(.Stdout, var)
+
+
+-- test Security Manager ENVIRONMENT events
+-- ENVIRONMENT will always be preceded by a LOCAL event
+
+::method test_environment_pass
+  mgr = .Collector~new
+  return = self~runWithSecMgr("return .RexxInfo", mgr)
+  self~assertSame("ENVIRONMENT LOCAL", mgr~allMessages, "Security manager ENVIRONMENT event expected")
+  self~assertSame("NAME", mgr~allEntries("ENVIRONMENT"))
+  self~assertSame("REXXINFO", mgr~Entry("ENVIRONMENT", "NAME"))
+
+::method test_environment_handle
+  mgr = .Collector~new
+  mgr~actionPut("ENVIRONMENT", "RESULT", .nil)
+  var = self~runWithSecMgr("return .RexxInfo", mgr)
+  self~assertSame("ENVIRONMENT LOCAL", mgr~allMessages, "Security manager ENVIRONMENT event expected")
+  self~assertSame("NAME", mgr~allEntries("ENVIRONMENT"))
+  self~assertSame(.nil, var)
+
+
+-- test Security Manager METHOD events
+
+::method test_method_no_event
+  mgr = .Collector~new
+  -- calling a plain, unprotected method should not trigger an event
+  self~runWithSecMgr(".Directory~new", mgr)
+  self~assertSame("", mgr~allMessages, "No Security manager METHOD event expected")
+
+::method test_method_pass
+  mgr = .Collector~new
+  -- run Directory's setMethod(), which is protected and should trigger a METHOD event
+  self~runWithSecMgr(".Directory~new~setMethod('unknown')", mgr)
+  self~assertSame("METHOD", mgr~allMessages, "Security manager METHOD event expected")
+  self~assertSame("ARGUMENTS NAME OBJECT", mgr~allEntries("METHOD"))
+  self~assertSame("setMethod"~upper, mgr~Entry("METHOD", "NAME"))
+  self~assertIsA(mgr~Entry("METHOD", "ARGUMENTS"), .Array)
+  self~assertSame(1, mgr~Entry("METHOD", "ARGUMENTS")~items)
+  self~assertSame("unknown", mgr~Entry("METHOD", "ARGUMENTS")[1])
+  self~assertIsA(mgr~Entry("METHOD", "OBJECT"), .Directory)
+
+-- intercept the method call and supply a result
+::method test_method_handle_result
+  mgr = .Collector~new
+  mgr~actionPut("METHOD", "RESULT", "intercepted")
+  -- run Method's or Package's setSecurityManager(), which is protected
+  -- and should trigger a METHOD event
+  return = self~runWithSecMgr(".Context~executable~setSecurityManager; return result", mgr)
+  -- in addition to METHOD, access to .Context will also trigger LOCAL and ENVIRONMENT events
+  self~assertSame("ENVIRONMENT LOCAL METHOD", mgr~allMessages, "Security manager METHOD event expected")
+  self~assertSame("ARGUMENTS NAME OBJECT", mgr~allEntries("METHOD"))
+  self~assertSame("setSecurityManager"~upper, mgr~Entry("METHOD", "NAME"))
+  self~assertIsA(mgr~Entry("METHOD", "ARGUMENTS"), .Array)
+  self~assertSame(0, mgr~Entry("METHOD", "ARGUMENTS")~items)
+  self~assertSame("intercepted", return)
+
+-- intercept the method call, but don't supply a result
+::method test_method_handle_no_result
+  mgr = .Collector~new
+  mgr~actionHandle("METHOD")           -- we handle the METHOD event, but have no RETURN entry
+  -- we run Class's superclasses(), which is protected and should trigger a METHOD event
+  haveResult = self~runWithSecMgr(".Array~superclasses; return var('result')", mgr)
+  self~assertSame("METHOD", mgr~allMessages, "Security manager METHOD event expected")
+  self~assertSame("ARGUMENTS NAME OBJECT", mgr~allEntries("METHOD"))
+  self~assertSame("superclasses"~upper, mgr~Entry("METHOD", "NAME"))
+  self~assertIsA(mgr~Entry("METHOD", "ARGUMENTS"), .Array)
+  self~assertSame(0, mgr~Entry("METHOD", "ARGUMENTS")~items)
+  self~assertFalse(haveResult)
+
+
+-- test Security Manager REQUIRES events
+-- for all REQUIRES tests, we expect to receive two REQUIRES events:
+--   one for the short name and another for the resolved name
+
+::method test_requires_pass
+  filename = self~createRequires("pass")
+  mgr = .Collector~new
+  return = self~runWithSecMgr("return .Package~new('" || filename || "')~name", mgr)
+  self~assertSame("REQUIRES REQUIRES", mgr~allMessages, "Security manager REQUIRES event expected")
+  self~assertSame("NAME", mgr~allEntries("REQUIRES"))
+  self~assertTrue(mgr~Entry("REQUIRES", "NAME")~endsWith(filename))
+  self~assertTrue(return~endsWith(filename))
+
+-- REQUIRES is somewhat an exception .. instead of expecting any result to be
+-- returned in the information directory entry RESULT, it expects the original
+-- item NAME to be changed accordingly.
+::method test_requires_handle_forbidden
+  filename = self~createRequires("handle_forbidden")
+  mgr = .Collector~new
+  -- make the package load fail by handling the REQUIRES while removing NAME 
+  mgr~actionRemove("REQUIRES", "NAME")
+  code = self~runWithSecMgr("signal on syntax; return .Package~new('" || filename || "')~name; syntax: return condition('o')~code", mgr)
+  self~assertSame("REQUIRES", mgr~allMessages, "Security manager REQUIRES event expected")
+  self~assertSame("NAME", mgr~allEntries("REQUIRES"))
+  self~assertSame(filename, mgr~Entry("REQUIRES", "NAME"))
+  self~assertSame(43.901, code) -- Could not find file filename for ::REQUIRES
+
+::method test_requires_handle
+  replacedFilename = self~createRequires("replaced")
+  filename = self~createRequires("handle")
+  mgr = .Collector~new
+  -- as we're being called twice (for short name and for resolved name), we don't
+  -- just set NAME to some value, but only change the last part of the existing NAME
+  mgr~actionChange("REQUIRES", "NAME", filename, replacedFilename)
+  return = self~runWithSecMgr("return .Package~new('', '')~loadPackage('" || filename || "')~name", mgr)
+  self~assertSame("REQUIRES REQUIRES", mgr~allMessages, "Security manager REQUIRES event expected")
+  self~assertSame("NAME", mgr~allEntries("REQUIRES"))
+  self~assertTrue(mgr~Entry("REQUIRES", "NAME")~endsWith(filename))
+  self~assertTrue(return~endsWith(replacedFilename))
+
+-- we handle the REQUIRES event by setting a security manager for the loaded package
+::method test_requires_handle_security_manager
+  filename = self~createRequires("handle_security_manager")
+  mgr = .Collector~new
+  mgr~actionPut("REQUIRES", "SECURITYMANAGER", mgr)
+  self~runWithSecMgr( -
+   ".context~package~loadPackage('" || filename || "');" -
+   ".test_requires~trigger_local;" -
+   ".test_requires~trigger_stream", -
+  mgr)
+  -- we expect
+  --   a pair of REQUIRES triggers (short/long name),
+  --   a pair of LOCAL/ENVIRONMENT triggers for .context,
+  --   a CALL trigger for SysDropFuncs() from running the prolog
+  --   a LOCAL trigger from method trigger_local(), and finally
+  --   a STREAM trigger from method trigger_stream()
+  self~assertSame("CALL ENVIRONMENT LOCAL LOCAL REQUIRES REQUIRES STREAM", mgr~allMessages, "Security manager REQUIRES event expected")
+  self~assertSame("NAME", mgr~allEntries("REQUIRES"))
+  self~assertTrue(mgr~Entry("REQUIRES", "NAME")~endsWith(filename))
+
+
+-- test Security Manager STREAM events
+-- as a dummy for testing, all STREAM tests use a stream name "." as this
+-- should work on both Linux and Windows
+
+::method test_stream_pass_bif_stream_open
+  mgr = .Collector~new
+  self~runWithSecMgr("call stream '.', 'c', 'open read shared'", mgr)
+  self~assertSame("STREAM", mgr~allMessages, "Security manager STREAM event expected")
+  self~assertSame("NAME", mgr~allEntries("STREAM"))
+  self~assertSame(directory(), mgr~Entry("STREAM", "NAME"))
+
+::method test_stream_pass_bif_chars
+  mgr = .Collector~new
+  self~runWithSecMgr("return chars('.')", mgr)
+  self~assertSame("STREAM", mgr~allMessages, "Security manager STREAM event expected")
+  self~assertSame("NAME", mgr~allEntries("STREAM"))
+  self~assertSame(directory(), mgr~Entry("STREAM", "NAME"))
+
+::method test_stream_pass_bif_charin
+  mgr = .Collector~new
+  self~runWithSecMgr("call charin '.'", mgr)
+  self~assertSame("STREAM", mgr~allMessages, "Security manager STREAM event expected")
+  self~assertSame("NAME", mgr~allEntries("STREAM"))
+  self~assertSame(directory(), mgr~Entry("STREAM", "NAME"))
+
+::method test_stream_pass_bif_charout
+  mgr = .Collector~new
+  self~runWithSecMgr("call charout '.', ''", mgr)
+  self~assertSame("STREAM", mgr~allMessages, "Security manager STREAM event expected")
+  self~assertSame("NAME", mgr~allEntries("STREAM"))
+  self~assertSame(directory(), mgr~Entry("STREAM", "NAME"))
+
+::method test_stream_pass_bif_lines
+  mgr = .Collector~new
+  self~runWithSecMgr("return lines('.')", mgr)
+  self~assertSame("STREAM", mgr~allMessages, "Security manager STREAM event expected")
+  self~assertSame("NAME", mgr~allEntries("STREAM"))
+  self~assertSame(directory(), mgr~Entry("STREAM", "NAME"))
+
+::method test_stream_pass_bif_linein
+  mgr = .Collector~new
+  self~runWithSecMgr("call linein '.'", mgr)
+  self~assertSame("STREAM", mgr~allMessages, "Security manager STREAM event expected")
+  self~assertSame("NAME", mgr~allEntries("STREAM"))
+  self~assertSame(directory(), mgr~Entry("STREAM", "NAME"))
+
+::method test_stream_pass_bif_lineout
+  mgr = .Collector~new
+  self~runWithSecMgr("call lineout '.', ''", mgr)
+  self~assertSame("STREAM", mgr~allMessages, "Security manager STREAM event expected")
+  self~assertSame("NAME", mgr~allEntries("STREAM"))
+  self~assertSame(directory(), mgr~Entry("STREAM", "NAME"))
+
+::method test_stream_replace
+  parse source . . this
+  mgr = .Collector~new
+  mgr~actionPut("STREAM", "STREAM", .Stream~new(this))
+  stream = self~runWithSecMgr("return chars('.')", mgr)
+  self~assertSame("STREAM", mgr~allMessages, "Security manager STREAM event expected")
+  self~assertSame("NAME", mgr~allEntries("STREAM"))
+  self~assertSame(chars(this), stream)
+
+-- @@disabled@@ Security manager only triggers on stream BIFs, not for .Stream methods
+::method disabled_test_stream_class
+  mgr = .Collector~new
+  self~runWithSecMgr(".Stream~new('.')~~open('read shared')", mgr)
+  self~assertSame("STREAM", mgr~allMessages, "Security manager STREAM event expected")
+  self~assertSame("NAME", mgr~allEntries("STREAM"))
+
+
+-- as all REQUIRES tests need a requires file to load, and
+-- (a) ooRexx caches loaded REQUIRES files and
+-- (b) the Security Manager doesn't trigger for files already in the cache,
+-- we need to create individual "requires" files for each test
+::method createRequires
+  use strict arg trailing
+  file = .File~new(self~requiresPath || "_" || trailing || ".cls")
+  s = .Stream~new(file)
+  s~open("write replace")
+  s~arrayOut(.resources~requiresFile)
+  s~close
+  self~class~toBeDeleted~append(file)
+  return file~name
+
+::method activate class
+  expose toBeDeleted
+  toBeDeleted = .Array~new
+
+::attribute toBeDeleted get class
+
+::method uninit class
+  expose toBeDeleted
+  do file over toBeDeleted
+    file~delete
+  end
+
+
+-- a Security manager that collects all sent messages for later inspection
+::class Collector
+
+::method init
+  use local                            -- expose all variables
+  messages = .Relation~new             -- collected Security manager events
+  actionPut = .Directory~new           -- entry changes for a given event
+  actionChange = .Directory~new        -- entry string replacement for a given event
+  actionRemove = .Directory~new        -- entry removal for a given event
+  actionHandle = .Set~new              -- handle or pass a given event
+
+-- "unknown" captures all Security manager events:
+-- CALL, COMMAND, ENVIRONMENT, LOCAL, METHOD, REQUIRES, and STREAM
+::method unknown
+  expose messages actionPut actionChange actionRemove actionHandle
+  use arg name, args
+  info = args[1]                       -- this is the information directory supplied
+  messages[name] = info~copy           -- save it for later inspection
+  -- are we expected to change directory entries?
+  if actionPut~hasIndex(name) then
+    info~putAll(actionPut[name])
+  -- are we expected to remove directory entries?
+  if actionRemove~hasIndex(name) then
+    info~remove(actionRemove[name])
+  -- are we expected to replace an existing entry?
+  if actionChange~hasIndex(name) then do
+    parse value actionChange[name] with entry from to 
+    info[entry] = info[entry]~changeStr(from, to)
+  end
+  if actionHandle~hasIndex(name) then
+    return 1                           -- we took action
+  else
+    return 0                           -- we didn't handle - proceed
+
+-- information directory changes to be done for a Security manager event
+::method actionPut
+  expose actionPut
+  use strict arg name, entry, value = .true
+  -- actionPut is a Directory of Directories
+  if \actionPut~hasIndex(name) then    -- nothing here yet?
+    actionPut[name] = .Directory~new   -- then add a new Directory
+  actionPut[name][entry] = value       -- add the requested entry/value pair
+  self~actionHandle(name)              -- we handle this event
+
+-- information directory string replacement to be done for a Security manager event
+::method actionChange
+  expose actionChange
+  use strict arg name, entry, from, to
+  -- we currently support just a single string change
+  if actionChange~hasIndex(name) then
+    raise syntax 93.900 array("Just a single entry string change action is supported") 
+  actionChange[name] = entry from to
+  self~actionHandle(name)              -- we handle this event
+
+-- information directory entry removal to be done for a Security manager event
+::method actionRemove
+  expose actionRemove
+  use strict arg name, entry
+  -- we currently support just a single entry removal
+  if actionRemove~hasIndex(name) then
+    raise syntax 93.900 array("Just a single entry remove action is supported") 
+  actionRemove[name] = entry
+  self~actionHandle(name)              -- we handle this event
+
+-- handle the given Security manager event 
+::method actionHandle
+  expose actionHandle
+  use strict arg name, handle = .true
+  if handle then
+    actionHandle~put(name)             -- we handle this event
+
+-- returns a sorted string of all Security manager messages received 
+::method allMessages
+  expose messages
+  use strict arg
+  return messages~allIndexes~sort~makeString(, " ")
+
+-- returns a sorted string of all entries of the given Security manager event 
+::method allEntries
+  expose messages
+  use strict arg msg
+  if .nil == messages[msg] then
+    return ""
+  else
+    return messages[msg]~allIndexes~sort~makeString(, " ")
+
+-- returns a specific Security manager information directory entry
+::method entry
+  expose messages
+  use strict arg msg, name
+  return messages[msg][name]
+
+
+
+-- definition of a "requires" file for testing
+-- the REQUIRES tests will create multiple file copies of it, as needed
+::resource requiresFile
+  call SysDropFuncs                    -- prolog triggers a CALL event
+  ::class test_requires public
+  ::method trigger_local class
+    .stdout~class                      -- triggers an LOCAL/ENVIRONMENT event pair
+  ::method trigger_stream class
+    call chars "."                     -- triggers a STREAM event
+::END
+
+
+
+::options novalue error

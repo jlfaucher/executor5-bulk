@@ -1,0 +1,1748 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2008-2019 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYright HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYright   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+use arg testTypes
+
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.FUNCTION.testGroup)
+
+  if arg(1, 'E'), \ group~hasTestTypes(testTypes) then do
+    group~markNoTests("This is a native API test and not included in the test types to execute.")
+
+    if group~isAutomatedTest then return group
+    else return group~suite~execute~~print
+  end
+
+/*
+  signal on syntax name packageErr
+  .context~package~loadPackage('FUNCTIONPackage.cls')
+*/
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+/*
+packageErr:
+  err = .ExceptionData~new(timeStamp(), s, .ExceptionData~TRAP)
+  err~setLine(sigl)
+  err~conditionObject = condition('O')
+  err~msg = "Failed to load the external API package needed for this test group."
+
+  if group~isAutomatedTest then return err
+
+  err~print("Test group exception", .false)
+return .ooTestResult~new(5)~~addException(err)
+*/
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+-- class named exactly like file
+::class "FUNCTION.testGroup" subclass ooTestCase public
+
+::method init class
+  forward class (super) continue
+
+  -- Over-ride the default test type
+  self~ooTestType = .ooTestTypes~NATIVE_API_TEST
+
+  -- install test command handler "io"
+  call TestAddCommandEnvironment "io", "redirecting"
+
+-- The following tests the macros for 0-10 arguments
+::method 'test000'
+  self~assertSame(0, TestZeroIntArgs())
+
+::method 'test001'
+  self~assertSame(1, TestOneIntArg(1))
+
+::method 'test002'
+  self~assertSame(3, TestTwoIntArgs(1,2))
+
+::method 'test003'
+  self~assertSame(6, TestThreeIntArgs(1,2,3))
+
+::method 'test004'
+  self~assertSame(10, TestFourIntArgs(1,2,3,4))
+
+::method 'test005'
+  self~assertSame(15, TestFiveIntArgs(1,2,3,4,5))
+
+::method 'test006'
+  self~assertSame(21, TestSixIntArgs(1,2,3,4,5,6))
+
+::method 'test007'
+  self~assertSame(28, TestSevenIntArgs(1,2,3,4,5,6,7))
+
+::method 'test008'
+  self~assertSame(36, TestEightIntArgs(1,2,3,4,5,6,7,8))
+
+::method 'test009'
+  self~assertSame(45, TestNineIntArgs(1,2,3,4,5,6,7,8,9))
+
+::method 'test010'
+  self~assertSame(55, TestTenIntArgs(1,2,3,4,5,6,7,8,9,10))
+
+-- The following error tests the macros for 0-10 arguments
+::method 'test011'
+  self~expectSyntax('88.922')
+  x = TestZeroIntArgs(1)
+
+::method 'test012'
+  self~expectSyntax('88.922')
+  x = TestOneIntArg(1,1)
+
+::method 'test013'
+  self~expectSyntax('88.922')
+  x = TestTwoIntArgs(1,1,1)
+
+::method 'test014'
+  self~expectSyntax('88.922')
+  x = TestThreeIntArgs(1,1,1,1)
+
+::method 'test015'
+  self~expectSyntax('88.922')
+  x = TestFourIntArgs(1,1,1,1,1)
+
+::method 'test016'
+  self~expectSyntax('88.922')
+  x = TestFiveIntArgs(1,1,1,1,1,1)
+
+::method 'test017'
+  self~expectSyntax('88.922')
+  x = TestSixIntArgs(1,1,1,1,1,1,1)
+
+::method 'test018'
+  self~expectSyntax('88.922')
+  x = TestSevenIntArgs(1,1,1,1,1,1,1,1)
+
+::method 'test019'
+  self~expectSyntax('88.922')
+  x = TestEightIntArgs(1,1,1,1,1,1,1,1,1)
+
+::method 'test020'
+  self~expectSyntax('88.922')
+  x = TestNineIntArgs(1,1,1,1,1,1,1,1,1,1)
+
+::method 'test021'
+  self~expectSyntax('88.922')
+  x = TestTenIntArgs(1,1,1,1,1,1,1,1,1,1,1)
+
+-- The following error tests the macros for 0-10 arguments
+::method 'test022'
+  self~expectSyntax('88.901')
+  x = TestOneIntArg()
+
+::method 'test023'
+  self~expectSyntax('88.901')
+  x = TestTwoIntArgs(1)
+
+::method 'test023a'
+  self~expectSyntax('88.901')
+  x = TestTwoIntArgs(,1)
+
+::method 'test024'
+  self~expectSyntax('88.901')
+  x = TestThreeIntArgs(1,1)
+
+::method 'test024a'
+  self~expectSyntax('88.901')
+  x = TestThreeIntArgs(1,,1)
+
+::method 'test025'
+  self~expectSyntax('88.901')
+  x = TestFourIntArgs(1,1,1)
+
+::method 'test026'
+  self~expectSyntax('88.901')
+  x = TestFiveIntArgs(1,1,1,1)
+
+::method 'test027'
+  self~expectSyntax('88.901')
+  x = TestSixIntArgs(1,1,1,1,1)
+
+::method 'test028'
+  self~expectSyntax('88.901')
+  x = TestSevenIntArgs(1,1,1,1,1,1)
+
+::method 'test029'
+  self~expectSyntax('88.901')
+  x = TestEightIntArgs(1,1,1,1,1,1,1)
+
+::method 'test030'
+  self~expectSyntax('88.901')
+  x = TestNineIntArgs(1,1,1,1,1,1,1,1)
+
+::method 'test031'
+  self~expectSyntax('88.901')
+  x = TestTenIntArgs(1,1,1,1,1,1,1,1,1)
+
+-- test int
+::method 'testint01'
+  numeric digits 11
+  val = 0
+  self~assertSame(val, TestIntArg(val))
+  val = 2147483647
+  self~assertSame(val, TestIntArg(val))
+  val = 1
+  self~assertSame(val, TestIntArg(val))
+  val = -1
+  self~assertSame(val, TestIntArg(val))
+  val = -2147483647
+  self~assertSame(val, TestIntArg(val))
+  self~assertSame(1,TestIntArg(1.0))
+  self~assertSame(1,TestIntArg(1e0))
+
+::method 'testint02'
+  numeric digits 11
+  self~expectSyntax('88.907')
+  x = TestIntArg(2147483648)
+
+::method 'testint03'
+  numeric digits 11
+  self~expectSyntax('88.907')
+  x = TestIntArg('-2147483649')
+
+-- test int32_t
+::method 'testint3201'
+  numeric digits 11
+  val = 0
+  self~assertSame(val, TestInt32Arg(val))
+  val = 2147483647
+  self~assertSame(val, TestInt32Arg(val))
+  val = 1
+  self~assertSame(val, TestInt32Arg(val))
+  val = -1
+  self~assertSame(val, TestInt32Arg(val))
+  val = -2147483647
+  self~assertSame(val, TestInt32Arg(val))
+  self~assertSame(1, TestInt32Arg(1.0))
+  self~assertSame(1, TestInt32Arg(2.1 - 1.1))    -- forces this to be a number string
+  self~assertSame(1, TestInt32Arg(word("2 1 3", 2)))   -- forces this to be a character string
+  self~assertSame(1, TestInt32Arg(1e0))
+
+::method 'testint3202'
+  self~expectSyntax('88.907')
+  x = TestInt32Arg(2147483648)
+
+::method 'testint3203'
+  self~expectSyntax('88.907')
+  x = TestInt32Arg('-2147483649')
+
+-- test uint32_t
+::method 'testuint3201'
+  numeric digits 11
+  val = 0
+  self~assertSame(val, TestUint32Arg(val))
+  val = 4294967295
+  self~assertSame(val, TestUint32Arg(val))
+  val = 1
+  self~assertSame(val, TestUint32Arg(val))
+
+::method 'testuint3202'
+  self~expectSyntax('88.907')
+  TestUint32Arg(4294967296)
+
+::method 'testuint3203'
+  self~expectSyntax('88.907')
+  TestUint32Arg(-1)
+
+-- test int8_t
+::method 'testint801'
+  val = 0
+  self~assertSame(val, TestInt8Arg(val))
+  val = 127
+  self~assertSame(val, TestInt8Arg(val))
+  val = 1
+  self~assertSame(val, TestInt8Arg(val))
+  val = -1
+  self~assertSame(val, TestInt8Arg(val))
+  val = -128
+  self~assertSame(val, TestInt8Arg(val))
+
+::method 'testint802'
+  self~expectSyntax('88.907')
+  TestInt8Arg(128)
+
+::method 'testint803'
+  self~expectSyntax('88.907')
+  TestInt8Arg(-129)
+
+-- test uint8_t
+::method 'testuint801'
+  val = 0
+  self~assertSame(val, TestUint8Arg(val))
+  val = 255
+  self~assertSame(val, TestUint8Arg(val))
+  val = 1
+  self~assertSame(val, TestUint8Arg(val))
+
+::method 'testuint802'
+  self~expectSyntax('88.907')
+  TestUint8Arg(256)
+
+::method 'testuint803'
+  self~expectSyntax('88.907')
+  TestUint8Arg(-1)
+
+-- test int16_t
+::method 'testint1601'
+  val = 0
+  self~assertSame(val, TestInt16Arg(val))
+  val = 32767
+  self~assertSame(val, TestInt16Arg(val))
+  val = 1
+  self~assertSame(val, TestInt16Arg(val))
+  val = -1
+  self~assertSame(val, TestInt16Arg(val))
+  val = -32768
+  self~assertSame(val, TestInt16Arg(val))
+
+::method 'testint1602'
+  self~expectSyntax('88.907')
+  TestInt16Arg(32768)
+
+::method 'testint1603'
+  self~expectSyntax('88.907')
+  TestInt16Arg(-32769)
+
+-- test uint16_t
+::method 'testuint1601'
+  val = 0
+  self~assertSame(val, TestUint16Arg(val))
+  val = 65535
+  self~assertSame(val, TestUint16Arg(val))
+  val = 1
+  self~assertSame(val, TestUint16Arg(val))
+
+::method 'testuint1602'
+  self~expectSyntax('88.907')
+  TestUint16Arg(65536)
+
+::method 'testuint1603'
+  self~expectSyntax('88.907')
+  TestUint16Arg(-1)
+
+-- test int64_t
+::method 'testint6401'
+  numeric digits 20
+  val = 0
+  self~assertSame(val, TestInt64Arg(val))
+  val = 9223372036854775807
+  self~assertSame(val, TestInt64Arg(val))
+  val = 1
+  self~assertSame(val, TestInt64Arg(val))
+  val = -1
+  self~assertSame(val, TestInt64Arg(val))
+  val = '-9223372036854775808'
+  self~assertSame(val, TestInt64Arg(val))
+
+::method 'testint6402'
+  self~expectSyntax('88.907')
+  TestInt64Arg(9223372036854775808)
+
+::method 'testint6403'
+  self~expectSyntax('88.907')
+  TestInt64Arg('-9223372036854775809')
+
+-- test uint64_t
+::method 'testuint6401'
+  numeric digits 21
+  val = 0
+  self~assertSame(val, TestUint64Arg(val))
+  val = 18446744073709551615
+  self~assertSame(val, TestUint64Arg(val))
+  val = 1
+  self~assertSame(val, TestUint64Arg(val))
+
+::method 'testuint6402'
+  self~expectSyntax('88.907')
+  TestUint64Arg(18446744073709551616)
+
+::method 'testuint6403'
+  self~expectSyntax('88.907')
+  TestUint64Arg('-1')
+
+-- tests for [bugs:#1369] API RexxRoutine uint64_t issue
+
+-- test 123456789, 1.23456789E+9, .. 1.23456789E+19, which should all pass
+::method test_uint64_bug1369_pass
+  val = 123456789
+  do exponent = 8 to 19
+    -- we need to compare in exponential form
+    self~assertEquals(val, 0 + TestUint64Arg(val))
+    val *= 10
+  end
+
+-- test 1.23456789E+20, which should fail
+::method test_uint64_bug1369_fail_e20
+  self~expectSyntax('88.907')
+  TestUint64Arg(1.23456789E+20)
+
+-- test 1.23456789E+21, which should fail
+::method test_uint64_bug1369_fail_e21
+  self~expectSyntax('88.907')
+  TestUint64Arg(1.23456789E+21)
+
+-- test 1.23456789E+22, which should fail
+::method test_uint64_bug1369_fail_e22
+  self~expectSyntax('88.907')
+  TestUint64Arg(1.23456789E+22)
+
+-- test 1.23456789E+23, which should fail
+::method test_uint64_bug1369_fail_e23
+  self~expectSyntax('88.907')
+  TestUint64Arg(1.23456789E+23)
+
+-- test 1.23456789E+24, which should fail
+::method test_uint64_bug1369_fail_e24
+  self~expectSyntax('88.907')
+  TestUint64Arg(1.23456789E+24)
+
+-- test 1.23456789E+25, which should fail
+::method test_uint64_bug1369_fail_e25
+  self~expectSyntax('88.907')
+  TestUint64Arg(1.23456789E+25)
+
+-- test 1.23456789E+26, which should fail
+::method test_uint64_bug1369_fail_e26
+  self~expectSyntax('88.907')
+  TestUint64Arg(1.23456789E+26)
+
+-- test 1.23456789E+27, which should fail
+::method test_uint64_bug1369_fail_e27
+  self~expectSyntax('88.907')
+  TestUint64Arg(1.23456789E+27)
+
+-- test 1.23456789E+28, which should fail
+::method test_uint64_bug1369_fail_e28
+  self~expectSyntax('88.907')
+  TestUint64Arg(1.23456789E+28)
+
+-- test 1.23456789E+29, which should always fail, with or without bug 1369
+::method test_uint64_bug1369_fail_e29
+  self~expectSyntax('88.907')
+  TestUint64Arg(1.23456789E+29)
+
+-- test wholenumber_t
+::method 'testWholenumber01'
+  val = 0
+  self~assertSame(val, TestWholeNumberArg(val))
+  val = 65535
+  self~assertSame(val, TestWholeNumberArg(val))
+  val = 1
+  self~assertSame(val, TestWholeNumberArg(val))
+  val = -1
+  self~assertSame(val, TestWholeNumberArg(val))
+  if .ooRexxUnit.architecture == 32 then
+      val = 999999999
+  else
+      val = 999999999999999999
+  self~assertSame(val, TestWholeNumberArg(val))
+  if .ooRexxUnit.architecture == 32 then
+      val = -999999999
+  else
+      val = '-999999999999999999'
+  self~assertSame(val, TestWholeNumberArg(val))
+
+::method 'testWholenumber02'
+  self~expectSyntax('88.907')
+  if .ooRexxUnit.architecture == 32 then
+      TestWholeNumberArg(1000000000)
+  else
+      TestWholeNumberArg(1000000000000000000)
+
+::method 'testWholenumber03'
+  self~expectSyntax('88.907')
+  if .ooRexxUnit.architecture == 32 then
+      TestWholeNumberArg(-1000000000)
+  else
+      TestWholeNumberArg(-1000000000000000000)
+
+-- test stringsize_t
+::method 'testStringsize01'
+  val = 0
+  self~assertSame(val, TestStringSizeArg(val))
+  val = 65535
+  self~assertSame(val, TestStringSizeArg(val))
+  val = 1
+  self~assertSame(val, TestStringSizeArg(val))
+  if .ooRexxUnit.architecture == 32 then
+      val = 999999999
+  else
+      val = 999999999999999999
+  self~assertSame(val, TestStringSizeArg(val))
+
+::method 'testStringsize03'
+  self~expectSyntax('88.907')
+      TestStringSizeArg(-1)
+
+-- test positive_wholenumber_t
+::method 'testPositiveWholeNumber01'
+  val = 1.0
+  self~assertSame(1, TestPositiveWholeNumberArg(val))
+  val = 65535
+  self~assertSame(val, TestPositiveWholeNumberArg(val))
+  val = 1
+  self~assertSame(val, TestPositiveWholeNumberArg(val))
+  if .ooRexxUnit.architecture == 32 then
+      val = 999999999
+  else
+      val = 999999999999999999
+  self~assertSame(val, TestPositiveWholeNumberArg(val))
+
+::method 'testPositiveWholeNumber02'
+  self~expectSyntax('88.905')
+  if .ooRexxUnit.architecture == 32 then
+      TestPositiveWholeNumberArg(1000000000)
+  else
+      TestPositiveWholeNumberArg(1000000000000000000)
+
+::method 'testPositiveWholeNumber03'
+  self~expectSyntax('88.905')
+  TestPositiveWholeNumberArg(0)
+
+::method 'testPositiveWholeNumber04'
+  self~expectSyntax('88.905')
+  TestPositiveWholeNumberArg(-1)
+
+-- test size_t
+::method 'testSize01'
+  numeric digits 20
+  val = 0
+  self~assertSame(val, TestSizeArg(val))
+  val = 65535
+  self~assertSame(val, TestSizeArg(val))
+  val = 1
+  self~assertSame(val, TestSizeArg(val))
+  if .ooRexxUnit.architecture == 32 then
+      val = 2**32-1
+  else
+      val = 2**64-1
+  self~assertSame(val, TestSizeArg(val))
+
+::method 'testSize02'
+  self~expectSyntax('88.907')
+  numeric digits 20
+  if .ooRexxUnit.architecture == 32 then
+      val = 2**32
+  else
+      val = 2**64
+  TestSizeArg(val)
+
+::method 'testSize03'
+  self~expectSyntax('88.907')
+  TestSizeArg(-1)
+
+-- test ssize_t
+::method 'testSSize01'
+  numeric digits 20
+  val = 0
+  self~assertSame(val, TestSSizeArg(val))
+  val = 65535
+  self~assertSame(val, TestSSizeArg(val))
+  val = 1
+  self~assertSame(val, TestSSizeArg(val))
+  if .ooRexxUnit.architecture == 32 then
+      val = 2**31-1
+  else
+      val = 2**63-1
+  self~assertSame(val, TestSSizeArg(val))
+  if .ooRexxUnit.architecture == 32 then
+      val = -2**31
+  else
+      val = -2**63
+  self~assertSame(val, TestSSizeArg(val))
+
+::method 'testSSize02'
+  self~expectSyntax('88.907')
+  numeric digits 20
+  if .ooRexxUnit.architecture == 32 then
+      val = 2**31
+  else
+      val = 2**63
+  TestSSizeArg(val)
+
+::method 'testSSize03'
+  self~expectSyntax('88.907')
+  numeric digits 20
+  if .ooRexxUnit.architecture == 32 then
+      val = -2**31 - 1
+  else
+      val = -2**63 - 1
+  TestSSizeArg(val)
+
+-- test logical_t
+::method 'testLogical01'
+  val = .true
+  self~assertSame(val, TestLogicalArg(val))
+  val = .false
+  self~assertSame(val, TestLogicalArg(val))
+  val = 2
+  self~expectSyntax('34.901')
+  self~assertSame(val, TestLogicalArg(val))
+  self~assertSame(.false, TestLogicalArg('0'||""))
+  self~assertSame(.false, TestLogicalArg(0))
+  self~assertSame(.true, TestLogicalArg('1'||""))
+  self~assertSame(.true, TestLogicalArg(1))
+
+::method 'testLogical02'
+  self~expectSyntax('34.901')
+  TestLogicalArg(2)
+
+::method 'testLogical03'
+  self~expectSyntax('34.901')
+  TestLogicalArg(1.0)
+
+-- test float
+::method 'testFloat01'
+  numeric digits 15
+  val = 3.40282347E+38
+  self~assertFuzzyEquals(val, TestFloatArg(val), 9)
+  val = 1.17549435E-38
+  self~assertFuzzyEquals(val, TestFloatArg(val), 9)
+  val = 0
+  self~assertFuzzyEquals(val, TestFloatArg(val), 9)
+  val = 1
+  self~assertFuzzyEquals(val, TestFloatArg(val), 9)
+  val = -1
+  self~assertFuzzyEquals(val, TestFloatArg(val), 6)
+  val = "nan"
+  self~assertSame(val, TestFloatArg(val))
+  val = "+infinity"
+  self~assertSame(val, TestFloatArg(val))
+  val = "-infinity"
+  self~assertSame(val, TestFloatArg(val))
+  val = 3.40282347E+40
+  self~assertSame("+infinity", TestFloatArg(val))
+  val = -3.40282347E+40
+  self~assertSame("-infinity", TestFloatArg(val))
+  val = 3.40282347E-50
+  self~assertFuzzyEquals(0, TestFloatArg(val), 9)
+  val = -3.40282347E-50
+  self~assertFuzzyEquals(0, TestFloatArg(val), 9)
+
+::method 'testFloat02'
+  self~expectSyntax('88.921')
+  TestFloatArg('abc')
+
+-- test double
+::method 'testDouble01'
+  numeric digits 23
+  val = 1.79769313E+308
+  self~assertSame(val, TestDoubleArg(val))
+  val = 2.22507386E-308
+  self~assertSame(val, TestDoubleArg(val))
+  val = 0
+  self~assertSame(val, TestDoubleArg(val))
+  val = 1
+  self~assertSame(val, TestDoubleArg(val))
+  val = -1
+  self~assertSame(val, TestDoubleArg(val))
+  val = "nan"
+  self~assertSame(val, TestDoubleArg(val))
+  val = "+infinity"
+  self~assertSame(val, TestDoubleArg(val))
+  val = "-infinity"
+  self~assertSame(val, TestDoubleArg(val))
+  val = 1.79769313E+310
+  self~assertSame("+infinity", TestDoubleArg(val))
+  val = -1.79769313E+310
+  self~assertSame("-infinity", TestDoubleArg(val))
+  val = 1.79769313E-350
+  self~assertSame(0, TestDoubleArg(val))
+  val = -1.79769313E-350
+  self~assertSame(0, TestDoubleArg(val))
+
+::method 'testDouble02'
+  self~expectSyntax('88.921')
+  TestDoubleArg('abc')
+
+-- test CSTRING
+::method 'test045'
+  val = ''
+  self~assertSame(val, TestCstringArg(val))
+  val = copies('AbCdEfGhIjKlMnOpQrStUvWxYz0123456789', 1)
+  self~assertSame(val, TestCstringArg(val))
+  val = copies('AbCdEfGhIjKlMnOpQrStUvWxYz0123456789', 10)
+  self~assertSame(val, TestCstringArg(val))
+  val = copies('AbCdEfGhIjKlMnOpQrStUvWxYz0123456789', 100)
+  self~assertSame(val, TestCstringArg(val))
+  val = copies('AbCdEfGhIjKlMnOpQrStUvWxYz0123456789', 1000)
+  self~assertSame(val, TestCstringArg(val))
+
+-- test POINTER
+::method 'test046'
+  val = TestPointerValue()
+  self~assertTrue(TestPointerArg(val))
+  val = TestNullPointerValue()
+  self~assertTrue(val~isNull())
+
+-- test RexxStemObject
+::method 'testStem01'
+  a.1 = 2
+  b. = TestStemArg(a.)
+  self~assertSame(2, b.1)
+  b.2 = 3
+  self~assertSame(3, a.2)    -- verify same object
+  b. = TestStemArg('a.')
+  self~assertSame(2, b.1)
+  b. = TestStemArg('A.')
+  self~assertSame(2, b.1)
+  b. = TestStemArg('a')      -- no period on name
+  self~assertSame(2, b.1)
+
+  d. = TestStemArg(c.)   -- uninitialized stem variable
+  d.1 = 2
+  self~assertSame(2, c.1)    -- verify same object
+
+  d. = TestStemArg('cc.')   -- uninitialized stem variable
+  d.1 = 2
+  self~assertSame(2, cc.1)    -- verify same object
+
+  e = .stem~new("FRED.")
+  e. = TestStemArg(e)
+  e.1 = 2
+  self~assertSame(2, e[1])    -- verify same object
+
+::method 'testStem02'
+  self~expectSyntax('40.919')
+  TestStemArg(.nil)
+
+
+::method 'testStem03'
+  a.1 = 2
+  b. = TestObjectToValue(a., .TypeConstants~StemType)
+  self~assertSame(2, b.1)
+  b.2 = 3
+  self~assertSame(3, a.2)    -- verify same object
+  b. = TestObjectToValue('a.', .TypeConstants~StemType)
+  self~assertSame(2, b.1)
+  b. = TestObjectToValue('A.', .TypeConstants~StemType)
+  self~assertSame(2, b.1)
+  b. = TestObjectToValue('a', .TypeConstants~StemType)      -- no period on name
+  self~assertSame(2, b.1)
+
+  d. = TestObjectToValue(c., .TypeConstants~StemType)   -- uninitialized stem variable
+  d.1 = 2
+  self~assertSame(2, c.1)    -- verify same object
+
+  d. = TestObjectToValue('cc.', .TypeConstants~StemType)   -- uninitialized stem variable
+  d.1 = 2
+  self~assertSame(2, cc.1)    -- verify same object
+  d. = TestObjectToValue(c., .TypeConstants~StemType) -- uninitialized stem variable
+  d.1 = 2
+  self~assertSame(2, c.1)    -- verify same object
+  e = .stem~new("FRED.")
+  e. = TestObjectToValue(e, .TypeConstants~StemType)
+  e.1 = 2
+  self~assertSame(2, e[1])    -- verify same object
+
+::method 'testStem04'
+  self~expectSyntax('88.900')
+  TestObjectToValue(.nil, .TypeConstants~StemType)
+
+::method 'testName01'
+  self~assertSame('TESTNAMEARG', TestNameArg());
+  self~assertSame('TESTNAMEARG2', TestNameArg2());   -- same native method, different name
+
+::method 'testName02'
+  self~assertSame('TESTGETROUTINENAME', TestGetRoutineName());
+  self~assertSame('TESTGETROUTINENAME2', TestGetRoutineName2());   -- same native method, different name
+
+::method 'testArglist01'
+  args = TestArglistArg()
+  self~assertSame(0, args~items)
+  self~assertSame(0, args~size)
+  args = TestArglistArg(1, 2)
+  self~assertSame(2, args~items)
+  self~assertSame(2, args~size)
+  self~assertSame(1, args[1])
+  self~assertSame(2, args[2])
+  args = TestArglistArg(1,,2)
+  self~assertSame(2, args~items)
+  self~assertSame(3, args~size)
+  self~assertSame(1, args[1])
+  self~assertSame(.nil, args[2])
+  self~assertSame(2, args[3])
+
+  args = TestArglistArg(,2)
+  self~assertSame(1, args~items)
+  self~assertSame(2, args~size)
+  self~assertSame(.nil, args[1])
+  self~assertSame(2, args[2])
+
+  args = TestArglistArg(,)
+  self~assertSame(0, args~items)
+  self~assertSame(0, args~size)
+  self~assertSame(.nil, args[1])
+  self~assertSame(.nil, args[2])
+
+  args = TestArglistArg(1,)
+  self~assertSame(1, args~items)
+  self~assertSame(1, args~size)
+  self~assertSame(1, args[1])
+  self~assertSame(.nil, args[2])
+
+::method 'testGetArguments01'
+  args = TestGetArguments()
+  self~assertSame(0, args~items)
+  self~assertSame(0, args~size)
+  args = TestGetArguments(1, 2)
+  self~assertSame(2, args~items)
+  self~assertSame(2, args~size)
+  self~assertSame(1, args[1])
+  self~assertSame(2, args[2])
+  args = TestGetArguments(1,,2)
+  self~assertSame(2, args~items)
+  self~assertSame(3, args~size)
+  self~assertSame(1, args[1])
+  self~assertSame(.nil, args[2])
+  self~assertSame(2, args[3])
+
+  args = TestGetArguments(,2)
+  self~assertSame(1, args~items)
+  self~assertSame(2, args~size)
+  self~assertSame(.nil, args[1])
+  self~assertSame(2, args[2])
+
+  args = TestGetArguments(,)
+  self~assertSame(0, args~items)
+  self~assertSame(0, args~size)
+  self~assertSame(.nil, args[1])
+  self~assertSame(.nil, args[2])
+
+  args = TestGetArguments(1,)
+  self~assertSame(1, args~items)
+  self~assertSame(1, args~size)
+  self~assertSame(1, args[1])
+  self~assertSame(.nil, args[2])
+
+  args = TestGetArguments(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20)
+  self~assertSame(20, args~items)
+  self~assertSame(20, args~size)
+  self~assertSame(20, args[20])
+
+::method 'testGetArgument01'
+  arg = TestGetArgument(1)
+  self~assertSame(1, arg)
+  arg = TestGetArgument(2, 'abc')
+  self~assertSame('abc', arg)
+  arg = TestGetArgument(3,,'abc')
+  self~assertSame('abc', arg)
+
+::method 'testGetArgument02'
+  self~expectSyntax('88.900')
+  arg = TestGetArgument(2)
+
+::method 'testGetArgument03'
+  self~expectSyntax('88.900')
+  arg = TestGetArgument(2,,'abc')
+
+::method 'testGetArgument04'
+  self~expectSyntax('88.900')
+  arg = TestGetArgument(100,,'abc')
+
+
+::method TestGetVariable01
+
+  var1 = "Hello"
+  self~assertSame("Hello", TestGetContextVariable('VAR1'))
+  self~assertSame("Hello", TestGetContextVariable('var1'))
+
+  stem1.1 = "World"
+
+  a = TestGetContextVariable('stem1.')
+  self~assertTrue(a~isA(.Stem))
+  self~assertSame("World", a[1])
+
+  a = TestGetContextVariable('STEM1.')
+  self~assertTrue(a~isA(.Stem))
+  self~assertSame("World", a[1])
+
+  a = TestGetContextVariable('STEM1.1')
+  self~assertSame("World", a)
+
+::method TestGet02
+  self~expectSyntax('88.900')
+  x = TestGetContextVariable("FOOBAR");
+
+::method TestGet03
+  self~expectSyntax('88.900')
+  x = TestGetContextVariable("STEM1.1");
+
+::method TestSetVariable01
+
+  x = TestSetContextVariable('setVar1', "abc")
+  self~assertSame("abc", setVar1)
+
+  x = TestSetContextVariable('setVar1', "def")
+  self~assertSame("def", setVar1)
+
+  x = TestSetContextVariable('setStem.', .stem~new("FOOBAR."))
+  self~assertSame("FOOBAR.", setStem.[])
+  signal off novalue
+  self~assertSame("FOOBAR.1", setStem.1)
+
+  x = TestSetContextVariable('setStem.', "Fred")
+  self~assertSame("Fred", setStem.[])
+  self~assertSame("Fred", setStem.1)
+
+  -- This is different than object variables.  All forms are
+  -- supported here.
+  Stem1.1 = "Mike"
+  x = TestSetContextVariable("STEM1.1", "George");
+
+  self~assertSame("George", Stem1.1)
+
+::method TestDrop01
+  expose setVar1 setStem.
+  use arg testgroup
+
+  setVar1 = "Mike"
+  x = TestDropContextVariable("setVar1")
+  self~assertFalse(var("SETVAR1"), "Simple var 1")
+
+  setVar1 = "Mike"
+  x = TestDropContextVariable("SETVAR1")
+  self~assertFalse(var("SETVAR1"), "Simple var 2")
+
+  setStem.1 = "Mike"
+  x = TestDropContextVariable("setStem.")
+  signal off novalue
+  self~assertSame("SETSTEM.1", setStem.1, "Stem var 1")
+  setStem.1 = "Mike"
+  x = TestDropContextVariable("SETSTEM.")
+  self~assertSame("SETSTEM.1", setStem.1, "Stem var 1")
+
+::method TestGetAllVariables1
+  d = TestGetAllContextVariables()
+  self~assertSame(self, d['SELF'])
+  self~assertSame(super, d['SUPER'])
+  self~assertSame(.nil, d['FOO'])
+  foo = "bar"
+  d = TestGetAllContextVariables()
+  self~assertSame("bar", d['FOO'])
+
+::method TestGetRoutine01
+  routine = .context~package~FindRoutine('TESTGETROUTINE')
+  self~assertSame(routine, TestGetRoutine());
+  routine = .context~package~FindRoutine('TESTGETROUTINE2')
+  self~assertSame(routine, TestGetRoutine2());
+
+::method TestGetDigits01
+  self~assertSame(digits(), TestGetContextDigits())
+  numeric digits 9
+  self~assertSame(9, TestGetContextDigits())
+  numeric digits 100
+  self~assertSame(100, TestGetContextDigits())
+
+::method TestGetFuzz01
+  self~assertSame(fuzz(), TestGetContextFuzz())
+  numeric fuzz 1
+  self~assertSame(1, TestGetContextFuzz())
+
+::method TestGetForm01
+  self~assertSame(form() == 'ENGINEERING', TestGetContextForm(), "First fuzz test")
+  numeric form ENGINEERING
+  self~assertSame(1, TestGetContextForm(), "Second fuzz test")
+  numeric form SCIENTIFIC
+  self~assertSame(0, TestGetContextForm(), "Third fuzz test")
+
+
+::method testResolveStem01
+  a.1 = 2
+  b. = TestResolveStemVariable(a.)
+  self~assertSame(2, b.1)
+  b.2 = 3
+  self~assertSame(3, a.2)    -- verify same object
+  b. = TestResolveStemVariable('a.')
+  self~assertSame(2, b.1)
+  b. = TestResolveStemVariable('A.')
+  self~assertSame(2, b.1)
+  b. = TestResolveStemVariable('a')      -- no period on name
+  self~assertSame(2, b.1)
+
+  d. = TestResolveStemVariable(c.)   -- uninitialized stem variable
+  d.1 = 2
+  self~assertSame(2, c.1)    -- verify same object
+
+  d. = TestResolveStemVariable('cc.')   -- uninitialized stem variable
+  d.1 = 2
+  self~assertSame(2, cc.1)    -- verify same object
+  d. = TestResolveStemVariable(c.) -- uninitialized stem variable
+  d.1 = 2
+  self~assertSame(2, c.1)    -- verify same object
+  e = .stem~new("FRED.")
+  e. = TestResolveStemVariable(e)
+  e.1 = 2
+  self~assertSame(2, e[1])    -- verify same object
+
+::method 'testResolveStem02'
+  self~expectSyntax('88.900')
+  x = TestResolveStemVariable(.nil)
+
+::method TestFindContextClass01
+  self ~assertSame(.Array, TestFindContextClass("ARRAY"))
+  self ~assertSame(.Array, TestFindContextClass("array"))
+  self ~assertSame(.TypeConstants, TestFindContextClass("typeconstants"))
+
+::method TestFindContextClass02
+  self~expectSyntax('88.900')
+  x = TestFindContextClass("Yada")
+
+::method test_AddCommandEnvironment_direct
+  -- add a direct subcommand environment
+  call TestAddCommandEnvironment "rc-direct", "direct"
+  address "rc-direct" ""
+  -- when installed as "direct", return code will always be -1
+  --   IsRedirectionRequested()
+  --   IsInputRedirected()
+  --   IsOutputRedirected()
+  --   IsErrorRedirected()
+  --   AreOutputAndErrorSameTarget()
+  self~assertEquals(rc, -1)
+
+  self~expectSyntax(98.921) -- Address environment does not support input/output redirection
+  address "rc-direct" "" with input using 123
+
+::method test_AddCommandEnvironment_redirecting
+  -- add a redirecting subcommand environment
+  call TestAddCommandEnvironment "rc-redirecting", "redirecting"
+  address "rc-redirecting" ""
+  -- when the handler is installed as "redirecting" its return code
+  -- is a five-digit number with digits 0 or 1 in sequence:
+  --   IsRedirectionRequested()
+  --   IsInputRedirected()
+  --   IsOutputRedirected()
+  --   IsErrorRedirected()
+  --   AreOutputAndErrorSameTarget()
+  self~assertEquals(rc, 00000)
+
+  address "rc-redirecting" "" with input using 123
+  self~assertSame(rc, 11000)
+  address "rc-redirecting" "" with output stem o.
+  self~assertSame(rc, 10100)
+  address "rc-redirecting" "" with error stem e.
+  self~assertSame(rc, 10010)
+  address "rc-redirecting" "" with input using 123 output stem o.
+  self~assertSame(rc, 11100)
+  address "rc-redirecting" "" with input using 123 error stem e.
+  self~assertSame(rc, 11010)
+  address "rc-redirecting" "" with output stem o. error stem e.
+  self~assertSame(rc, 10110)
+  address "rc-redirecting" "" with input using 123 output stem o. error stem e.
+  self~assertSame(rc, 11110)
+  address "rc-redirecting" "" with output stem s. error stem s.
+  self~assertSame(rc, 10111)
+  address "rc-redirecting" "" with input using 123 output stem s. error stem s.
+  self~assertSame(rc, 11111)
+
+::method test_simple_with
+
+  address io 'ISREDIRECTIONREQUESTED' with input using "This is a test"
+  self~assertSame(.true, rc)
+
+  -- just to see if the redirect is reported
+  address io 'INPUTREDIRECTED' with input using "This is a test"
+  self~assertSame(.true, rc)
+
+  address io 'OUTPUTREDIRECTED' with input using "This is a test"
+  self~assertSame(.false, rc)
+
+  address io 'ERRORREDIRECTED' with input using "This is a test"
+  self~assertSame(.false, rc)
+
+  -- this will write a single line to the output...should not crash
+  address io 'INPUTOUTPUT' with input using "This is a test"
+  self~assertSame(1, rc)
+
+  address io 'INPUTERROR' with input using "This is a test"
+  self~assertSame(1, rc)
+
+  -- using an uninitialized stem variable
+  address io 'INPUTOUTPUT' with input using "This is a test" output stem a.
+  self~assertSame(1, rc)
+  self~assertSame(1, a.0)
+  self~assertSame("This is a test", a.1)
+
+  -- default is replace
+  address io 'INPUTOUTPUT' with input using "This is another test" output stem a.
+  self~assertSame(1, rc)
+  self~assertSame(1, a.0)
+  self~assertSame("This is another test", a.1)
+
+  -- explicit replace
+  address io 'INPUTOUTPUT' with input using "This is a third test" output replace stem a.
+  self~assertSame(1, rc)
+  self~assertSame(1, a.0)
+  self~assertSame("This is a third test", a.1)
+
+  -- and finally append
+  address io 'INPUTOUTPUT' with input using "This is a fourth test" output append stem a.
+  self~assertSame(1, rc)
+  self~assertSame(2, a.0)
+  self~assertSame("This is a third test", a.1)
+  self~assertSame("This is a fourth test", a.2)
+
+  -- and finally append with an uninitialized stem
+  address io 'INPUTOUTPUT' with input using "This is a fourth test" output append stem b.
+  self~assertSame(1, rc)
+  self~assertSame(1, b.0)
+  self~assertSame("This is a fourth test", b.1)
+
+  -- same tests using ERROR
+  address io 'INPUTERROR' with input using "This is a test" error stem a.
+  self~assertSame(1, rc)
+  self~assertSame(1, a.0)
+  self~assertSame("This is a test", a.1)
+
+  -- default is replace
+  address io 'INPUTERROR' with input using "This is another test" error stem a.
+  self~assertSame(1, rc)
+  self~assertSame(1, a.0)
+  self~assertSame("This is another test", a.1)
+
+  -- explicit replace
+  address io 'INPUTERROR' with input using "This is a third test" error replace stem a.
+  self~assertSame(1, rc)
+  self~assertSame(1, a.0)
+  self~assertSame("This is a third test", a.1)
+
+  -- and finally append
+  address io 'INPUTERROR' with input using "This is a fourth test" error append stem a.
+  self~assertSame(1, rc)
+  self~assertSame(2, a.0)
+  self~assertSame("This is a third test", a.1)
+  self~assertSame("This is a fourth test", a.2)
+
+  in.0 = 1
+  in.1 = "This is a test"
+
+  array = .array~new
+
+  address io 'INPUTOUTPUT' with input stem in. output using (array)
+
+  self~assertSame(1, rc)
+  self~assertSame(1, array~items)
+  self~assertSame("This is a test", array[1])
+
+  in.1 = "This is another test"
+
+  address io 'INPUTOUTPUT' with input stem in. output append using (array)
+
+  self~assertSame(1, rc)
+  self~assertSame(2, array~items)
+  self~assertSame("This is a test", array[1])
+  self~assertSame("This is another test", array[2])
+
+::method test_file_input
+
+  temp = .TemporaryTestFile~new(self, 'testinput')
+  temp~create(("Line1","","Line3"))
+
+  array = .array~new
+  address io 'INPUTOUTPUT' with input stream (temp~fullName) output using (array)
+  self~assertSame(3, rc)
+  self~assertSame(3, array~items)
+  self~assertSame("Line1", array[1])
+  self~assertSame("", array[2])
+  self~assertSame("Line3", array[3])
+
+  temp~delete
+
+-- test non-destructive buffering when source and target are the same
+::method test_buffering
+
+  temp = .TemporaryTestFile~new(self, 'testinput')
+  temp~create(("Line1","","Line3","","Line5"))
+
+  -- this tests buffering on output when the same stream is used as both
+  address io 'NOBLANKOUTPUT' with input stream (temp~fullName) output stream(temp~fullName)
+
+  -- this should read 5 lines (indicated by the rc) and write 3 lines to the file, replacing the file
+  array = temp~arrayIn
+  self~assertSame(5, rc)
+  self~assertSame(3, array~items)
+  self~assertSame("Line1", array[1])
+  self~assertSame("Line3", array[2])
+  self~assertSame("Line5", array[3])
+
+  -- now again, with append specified
+  address io 'NOBLANKOUTPUT' with input stream (temp~fullName) output append stream (temp~fullName)
+  array = temp~arrayIn
+
+  self~assertSame(3, rc)
+  self~assertSame(6, array~items)
+  self~assertSame("Line1", array[1])
+  self~assertSame("Line3", array[2])
+  self~assertSame("Line5", array[3])
+  self~assertSame("Line1", array[4])
+  self~assertSame("Line3", array[5])
+  self~assertSame("Line5", array[6])
+
+  temp~delete
+
+  a.0 = 3
+  a.1 = "Line1"
+  a.2 = ""
+  a.3 = "Line3"
+
+  -- now same variants using a stem
+  address io 'NOBLANKOUTPUT' with input stem a. output stem a.
+  self~assertSame(3, rc)
+  self~assertSame(2, a.0)
+  self~assertSame("Line1", a.1)
+  self~assertSame("Line3", a.2)
+
+  -- same as above, with append
+  address io 'NOBLANKOUTPUT' with input stem a. output append stem a.
+  self~assertSame(2, rc)
+  self~assertSame(4, a.0)
+  self~assertSame("Line1", a.1)
+  self~assertSame("Line3", a.2)
+  self~assertSame("Line1", a.3)
+  self~assertSame("Line3", a.4)
+
+
+  -- now using a stem, but with the USING keyword
+  drop a.
+  a.0 = 3
+  a.1 = "Line1"
+  a.2 = ""
+  a.3 = "Line3"
+
+  -- now same variants using a stem
+  address io 'NOBLANKOUTPUT' with input using (a.) output using (a.)
+  self~assertSame(3, rc)
+  self~assertSame(2, a.0)
+  self~assertSame("Line1", a.1)
+  self~assertSame("Line3", a.2)
+
+  -- same as above, with append
+  address io 'NOBLANKOUTPUT' with input using (a.) output append using (a.)
+  self~assertSame(2, rc)
+  self~assertSame(4, a.0)
+  self~assertSame("Line1", a.1)
+  self~assertSame("Line3", a.2)
+  self~assertSame("Line1", a.3)
+  self~assertSame("Line3", a.4)
+
+
+  -- once more, but mixing up the variantes
+  drop a.
+  a.0 = 3
+  a.1 = "Line1"
+  a.2 = ""
+  a.3 = "Line3"
+
+  -- now same variants using a stem
+  address io 'NOBLANKOUTPUT' with input using (a.) output stem a.
+  self~assertSame(3, rc)
+  self~assertSame(2, a.0)
+  self~assertSame("Line1", a.1)
+  self~assertSame("Line3", a.2)
+
+  -- same as above, with append
+  address io 'NOBLANKOUTPUT' with input stem a. output append using (a.)
+  self~assertSame(2, rc)
+  self~assertSame(4, a.0)
+  self~assertSame("Line1", a.1)
+  self~assertSame("Line3", a.2)
+  self~assertSame("Line1", a.3)
+  self~assertSame("Line3", a.4)
+
+::method test_input_output_stream
+
+  instream = .ArrayInputStream~new(("Line1", "Line2"))
+  outstream = .ArrayOutputStream~new
+
+  address io 'INPUTOUTPUT' with input using (instream) output using(outstream)
+
+  array = outstream~array
+
+  self~assertSame(2, rc)
+  self~assertSame(2, array~items)
+  self~assertSame("Line1", array[1])
+  self~assertSame("Line2", array[2])
+
+-- some RexxQueue tests
+::method test_rexxqueue
+
+  .rexxqueue~create('ADDRESSWITH')
+  queue = .rexxqueue~new('ADDRESSWITH')
+
+  address io 'INPUTOUTPUT' with input using 'This is a test' output using(queue)
+  self~assertSame(1, queue~queued)
+  self~assertSame("This is a test", queue~pull)
+
+  queue~queue('Line1')
+  array = .array~new
+
+  address io 'INPUTOUTPUT' with input using(queue) output using(array)
+  self~assertSame(0, queue~queued)
+  self~assertSame("Line1", array[1])
+
+  -- and the overwrite protection
+  queue~queue('Line1')
+  queue~queue('')
+  queue~queue('Line3')
+
+  address io 'NOBLANKOUTPUT' with input using(queue) output using(queue)
+  self~assertSame(2, queue~queued)
+  self~assertSame("Line1", queue~pull)
+  self~assertSame("Line3", queue~pull)
+
+  queue~delete
+
+
+::method test_global_setting
+
+  -- The base mechanisms have been tested above, here we're going to test
+  -- that the global settings are used with commands and can be overridden on a base-by-case
+  -- basis.
+
+  signal off novalue
+
+  address io with input using "This is a test" output stem a. error stem b.
+  -- this will use the redirects
+  address io 'INPUTOUTPUT'
+  self~assertSame(1, a.0)
+  self~assertSame("This is a test", a.1)
+  self~assertSame(0, b.0)
+
+  drop a. b.
+  -- a command issued to this environment without using ADDRESS will also pick this up
+  'INPUTERROR'
+
+  self~assertSame(1, b.0)
+  self~assertSame("This is a test", b.1)
+  self~assertSame(0, a.0)
+
+  drop a. b.
+
+  -- override the INPUT source...this will use the global output ane error settings
+  address io 'INPUTOUTPUT' with input using 'This is another test'
+  self~assertSame(1, a.0)
+  self~assertSame("This is another test", a.1)
+  self~assertSame(0, b.0)
+
+  drop a. b.
+
+  -- now override OUTPUT and ERROR similarly
+  address io 'INPUTOUTPUT' with output stem c.
+  self~assertSame(1, c.0)
+  self~assertSame("This is a test", c.1)
+  self~assertSame(0, b.0)
+  self~assertSame('A.0', a.0)      -- should be unchanged
+
+  drop a. b. c.
+
+  address io 'INPUTOUTPUT' with output stem c.
+  self~assertSame(1, c.0)
+  self~assertSame("This is a test", c.1)
+  self~assertSame('A.0', a.0)
+  self~assertSame(0, b.0)      -- should be unchanged
+
+  drop a. b. c.
+
+  -- now test NORMAL overrides
+
+  address io 'INPUTOUTPUT' with input NORMAL
+  -- this has nothing to read, but the output and error stems should reflect nothing written
+  self~assertSame(0, a.0)
+  self~assertSame(0, b.0)
+
+  drop a. b.
+
+  address io 'INPUTOUTPUT' with output NORMAL
+  -- a. should be unchanged
+  self~assertSame('A.0', a.0)
+  self~assertSame(0, b.0)
+
+  drop a. b.
+
+  address io 'INPUTOUTPUT' with error NORMAL
+  -- b. should be unchanged
+  self~assertSame(1, a.0)
+  self~assertSame("This is a test", a.1)
+  self~assertSame('B.0', b.0)
+
+  -- test the address toggle maintains the settings
+  address command
+  address
+
+  drop a. b.
+
+  -- this will use the redirects
+  'INPUTOUTPUT'
+  self~assertSame(1, a.0)
+  self~assertSame("This is a test", a.1)
+  self~assertSame(0, b.0)
+
+  -- explicit switch back by name...still keeps the settings
+  address command
+  address io
+
+  drop a. b.
+
+  'INPUTOUTPUT'
+  self~assertSame(1, a.0)
+  self~assertSame("This is a test", a.1)
+  self~assertSame(0, b.0)
+
+  -- the address toggle only remembers two settings, but the override
+  -- information should still be maintained as long as the context
+  -- remains active.
+  address xedit
+  address command
+  address io
+
+  drop a. b.
+
+  'INPUTOUTPUT'
+  self~assertSame(1, a.0)
+  self~assertSame("This is a test", a.1)
+  self~assertSame(0, b.0)
+
+  drop a. b.
+  -- test that settings are saved on internal call return
+
+  self~assertSame('A.0', a.0)
+  self~assertSame('B.0', b.0)
+
+  -- this should have been restored to the original settings
+  'INPUTOUTPUT'
+  self~assertSame(1, a.0)
+  self~assertSame("This is a test", a.1)
+  self~assertSame(0, b.0)
+
+  return
+
+  subroutine:
+
+
+  address io with input using "This is another test" output stem c. error stem d.
+  -- this will use the new redirects
+  'INPUTOUTPUT'
+  self~assertSame(1, c.0)
+  self~assertSame("This is another test", c.1)
+  self~assertSame(0, d.0)
+  return
+
+::method test_write_buffer
+
+  array = .array~new
+  crlf = '0d0a'x
+  lf = '0a'x
+  cr = '0d'x
+
+  -- one string, no linends
+  address io 'BUFFEROUTPUT' with input using "This is a test" output using (array)
+  self~assertSame(1, array~items)
+  self~assertSame("This is a test", array[1])
+
+  -- one string, crlf linend
+  address io 'BUFFEROUTPUT' with input using ("Line1"||crlf) output using (array)
+  self~assertSame(1, array~items)
+  self~assertSame("Line1", array[1])
+
+  -- one string, lf linend
+  address io 'BUFFEROUTPUT' with input using ("Line2"||lf) output using (array)
+  self~assertSame(1, array~items)
+  self~assertSame("Line2", array[1])
+
+  -- two strings, no linefeeds
+  address io 'BUFFEROUTPUT' with input using (("Line1", "Line2")) output using (array)
+  self~assertSame(1, array~items)
+  self~assertSame("Line1Line2", array[1])
+
+  -- three strings, no linefeeds
+  address io 'BUFFEROUTPUT' with input using (("Line1", "Line2", "Line3")) output using (array)
+  self~assertSame(1, array~items)
+  self~assertSame("Line1Line2Line3", array[1])
+
+  -- one string, crlf linend in the middle
+  address io 'BUFFEROUTPUT' with input using ("Line1"||crlf||"Line2") output using (array)
+  self~assertSame(2, array~items)
+  self~assertSame("Line1", array[1])
+  self~assertSame("Line2", array[2])
+
+  -- one string, lf linend in the middle
+  address io 'BUFFEROUTPUT' with input using ("Line3"||lf||"Line4") output using (array)
+  self~assertSame(2, array~items)
+  self~assertSame("Line3", array[1])
+  self~assertSame("Line4", array[2])
+
+  -- two strings, crlf linened split across two buffers
+  address io 'BUFFEROUTPUT' with input using (("Line1"||cr, lf||"Line2")) output using (array)
+  self~assertSame(2, array~items)
+  self~assertSame("Line1", array[1])
+  self~assertSame("Line2", array[2])
+
+  -- one string, naked cr  in the middle
+  address io 'BUFFEROUTPUT' with input using ("Line3"||cr||"Line4") output using (array)
+  self~assertSame(1, array~items)
+  self~assertSame("Line3"||cr||"Line4", array[1])
+
+  -- two strings, naked crlf at end if first buffter
+  address io 'BUFFEROUTPUT' with input using (("Line1"||cr, "Line2")) output using (array)
+  self~assertSame(1, array~items)
+  self~assertSame("Line1"||cr||"Line2", array[1])
+
+  -- two strings, multiple line feeds, no line feed at buffer boundary
+  address io 'BUFFEROUTPUT' with input using (("Line1"||crlf||"Line2"||crlf||"Li", "ne3"||crlf||"Line4")) output using (array)
+  self~assertSame(4, array~items)
+  self~assertSame("Line1", array[1])
+  self~assertSame("Line2", array[2])
+  self~assertSame("Line3", array[3])
+  self~assertSame("Line4", array[4])
+
+  -- two strings, multiple line feeds, no line feed at buffer boundary
+  address io 'BUFFEROUTPUT' with input using (("Line5"||lf||"Line6"||lf||"Li", "ne7"||lf||"Line8")) output using (array)
+  self~assertSame(4, array~items)
+  self~assertSame("Line5", array[1])
+  self~assertSame("Line6", array[2])
+  self~assertSame("Line7", array[3])
+  self~assertSame("Line8", array[4])
+
+  -- A number of null line variants
+  address io 'BUFFEROUTPUT' with input using ((crlf"Line1"||crlf||crlf||"Line2"||cr, lf||"Line3")) output using (array)
+  self~assertSame(5, array~items)
+  self~assertSame("", array[1])
+  self~assertSame("Line1", array[2])
+  self~assertSame("", array[3])
+  self~assertSame("Line2", array[4])
+  self~assertSame("Line3", array[5])
+
+
+  -- one string, no linends
+  address io 'BUFFERERROR' with input using "This is a test" error using (array)
+  self~assertSame(1, array~items)
+  self~assertSame("This is a test", array[1])
+
+  -- one string, crlf linend
+  address io 'BUFFERERROR' with input using ("Line1"||crlf) error using (array)
+  self~assertSame(1, array~items)
+  self~assertSame("Line1", array[1])
+
+  -- one string, lf linend
+  address io 'BUFFERERROR' with input using ("Line2"||lf) error using (array)
+  self~assertSame(1, array~items)
+  self~assertSame("Line2", array[1])
+
+  -- two strings, no linefeeds
+  address io 'BUFFERERROR' with input using (("Line1", "Line2")) error using (array)
+  self~assertSame(1, array~items)
+  self~assertSame("Line1Line2", array[1])
+
+  -- three strings, no linefeeds
+  address io 'BUFFERERROR' with input using (("Line1", "Line2", "Line3")) error using (array)
+  self~assertSame(1, array~items)
+  self~assertSame("Line1Line2Line3", array[1])
+
+  -- one string, crlf linend in the middle
+  address io 'BUFFERERROR' with input using ("Line1"||crlf||"Line2") error using (array)
+  self~assertSame(2, array~items)
+  self~assertSame("Line1", array[1])
+  self~assertSame("Line2", array[2])
+
+  -- one string, lf linend in the middle
+  address io 'BUFFERERROR' with input using ("Line3"||lf||"Line4") error using (array)
+  self~assertSame(2, array~items)
+  self~assertSame("Line3", array[1])
+  self~assertSame("Line4", array[2])
+
+  -- two strings, crlf linened split across two buffers
+  address io 'BUFFERERROR' with input using (("Line1"||cr, lf||"Line2")) error using (array)
+  self~assertSame(2, array~items)
+  self~assertSame("Line1", array[1])
+  self~assertSame("Line2", array[2])
+
+  -- one string, naked cr  in the middle
+  address io 'BUFFERERROR' with input using ("Line3"||cr||"Line4") error using (array)
+  self~assertSame(1, array~items)
+  self~assertSame("Line3"||cr||"Line4", array[1])
+
+  -- two strings, naked crlf at end if first buffter
+  address io 'BUFFERERROR' with input using (("Line1"||cr, "Line2")) error using (array)
+  self~assertSame(1, array~items)
+  self~assertSame("Line1"||cr||"Line2", array[1])
+
+  -- two strings, multiple line feeds, no line feed at buffer boundary
+  address io 'BUFFERERROR' with input using (("Line1"||crlf||"Line2"||crlf||"Li", "ne3"||crlf||"Line4")) error using (array)
+  self~assertSame(4, array~items)
+  self~assertSame("Line1", array[1])
+  self~assertSame("Line2", array[2])
+  self~assertSame("Line3", array[3])
+  self~assertSame("Line4", array[4])
+
+  -- two strings, multiple line feeds, no line feed at buffer boundary
+  address io 'BUFFERERROR' with input using (("Line5"||lf||"Line6"||lf||"Li", "ne7"||crlf||"Line8")) error using (array)
+  self~assertSame(4, array~items)
+  self~assertSame("Line5", array[1])
+  self~assertSame("Line6", array[2])
+  self~assertSame("Line7", array[3])
+  self~assertSame("Line8", array[4])
+
+
+::method test_buffered_input
+
+  -- now using a stem, but with the USING keyword
+  drop a.
+  a.0 = 3
+  a.1 = "Line1"
+  a.2 = ""
+  a.3 = "Line3"
+
+  -- now same variants using a stem
+  address io 'BUFFERINPUT' with input using (a.) output using (b.)
+  self~assertSame(3, b.0)
+  self~assertSame("Line1", b.1)
+  self~assertSame("", b.2)
+  self~assertSame("Line3", b.3)
+
+
+
+::class ArrayInputStream public inherit InputStream
+::method init
+  expose currentLine lines
+  use strict arg lines
+
+  -- we want a copy of the array so that the content is
+  -- isolated from changes. This also allows lists, queues, etc. to be
+  -- converted to a stream
+  lines = lines~makearray
+  currentLine = 1
+
+-- open will reset to the beginning
+::method open
+  expose currentLine
+  use strict arg
+
+  currentLine = 1
+
+-- close will also reset to the beginning
+::method close
+  forward message('OPEN')
+
+-- character methods not supported
+::method charin
+  raise syntax 93.963  -- not supported
+::method chars
+  raise syntax 93.963  -- not supported
+
+::method linein
+  expose lines currentLine
+  -- we allow a line number to be specified.
+  use strict arg lineNumber = (currentLine)
+
+  -- are we trying to read beyond the end of the
+  -- array? This is a notready condition with a null
+  -- string return
+  if lineNumber > lines~items then do
+     raise notready additional(self) return("")
+  end
+
+  -- the next read is one line down
+  currentLine = lineNumber + 1
+  -- and complete the read
+  return lines[lineNumber]
+
+::method lines
+  expose lines currentLine
+  use strict arg  -- no arguments allowed
+
+  -- calculate the default number of lines
+  count = lines~items - currentLine + 1
+
+  -- everything has been read, so lines is zero
+  if count < 1 then do
+      return 0
+  end
+
+  return count
+
+::class ArrayOutputStream public inherit OutputStream
+-- the default initial array size
+::constant defaultArraySize 50
+-- we can create a default output array or can accept an existing array
+-- if given an array, we append any new items to the end.
+::method init
+  expose currentLine lines
+  use strict arg lines = (.array~new(self~defaultArraySize))
+
+  -- write this out following the last existing item
+  currentLine = lines~items + 1
+
+-- character operations not supported
+::method charout
+  raise syntax 93.963  -- not supported
+::method chars
+  raise syntax 93.963  -- not supported
+
+-- write a line to the next sequetial position
+::method lineout
+  expose currentLine lines
+
+  -- the line is optional, which is just a close operation
+  if arg() == 0 then do
+     return 0    -- this is a zero residual count
+  end
+
+  -- now get the line and do a full arg count check
+  use strict arg line
+
+  lines[currentLine] = line
+  currentLine += 1
+  return 0               -- the residual is always 0
+
+-- retrieve the output array from the steam
+::method array
+  expose lines
+  use strict arg
+
+  return lines
+
+
+::requires "FUNCTIONPackage.cls"
+::options novalue error

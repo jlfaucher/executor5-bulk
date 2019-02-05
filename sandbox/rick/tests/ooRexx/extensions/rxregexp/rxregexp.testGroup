@@ -1,0 +1,744 @@
+#!/usr/bin/rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2005-2017 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
+
+  group = .TestGroup~new(fileSpec)
+  group~add(.rxregexp.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires "ooTest.frm"     -- load the ooRexxUnit classes
+::requires "rxregexp.cls"
+
+::class "rxregexp.testGroup" subclass ooTestCase public
+
+
+::method matches
+  use arg pattern, string
+  return pattern~match(string)
+
+::method startsWith
+  use arg pattern, string
+  return pattern~pos(string) = 1
+
+::method find
+  use arg pattern, string
+  return pattern~pos(string)
+
+-- utility method to perform tests on character class
+-- tests to ensure they will only match characters
+-- in the given set
+::method checkIncludedCharacters
+  use strict arg p, includes, pattern = ""
+
+  if pattern \= "" then
+    pattern = "using" pattern
+  do i = 0 to 255
+      ch = d2c(i)
+      -- this is in the target set, this must match
+      if includes~pos(ch) > 0 then do
+          self~assertTrue(p~match(ch), "Checking included character" ch "('"ch~c2x"'x)" pattern)
+      end
+      -- this is in NOT in the target set
+      else do
+          self~assertFalse(p~match(ch), "Checking excluded character" ch "('"ch~c2x"'x)" pattern)
+      end
+  end
+
+-- utility method to perform tests on character class
+-- tests to ensure they will not only match characters
+-- in the given set
+::method checkExcludedCharacters
+  use strict arg p, excludes, pattern = ""
+
+  if pattern \= "" then
+    pattern = "using" pattern
+  do i = 0 to 255
+      ch = d2c(i)
+      -- this is in NOT in the target set
+      if excludes~pos(ch) > 0 then do
+          self~assertFalse(p~match(ch), "Checking excluded character" ch "('"ch~c2x"'x)" pattern)
+      end
+      -- this is in the target set, this must match
+      else do
+          self~assertTrue(p~match(ch), "Checking included character" ch "('"ch~c2x"'x)" pattern)
+      end
+  end
+
+-- utilty method to verify a match result
+::method verifyMatchResult
+  use strict arg r, p, start, end
+
+  res = r == start & p~position + 1 == end
+  -- if this fails, redo the comparisons with trace on to help diagnose the failure
+  if \res then do
+      -- rerun the compare with tracing so we know what is off
+      trace i
+      return r == start & p~position + 1 == end
+  end
+  return .true
+
+-- Perform a test on one of the class family sets
+::method verifyClassFamily
+  use arg name, characters
+
+  p = .RegularExpression~new
+  pattern = "[:"||name||":]"
+  p~parse(pattern)
+  self~checkIncludedCharacters(p, characters, pattern)
+  pattern = "[^:"||name||":]"
+  p~parse(pattern)
+  self~checkExcludedCharacters(p, characters, pattern)
+
+/* RegularExpression implements greedy matching through option "MAXIMAL" and lazy
+   matching through option "MINIMAL". match() / pos() are implemented as follows:
+   - "MAXIMAL" match() will match the whole 'string' or return 0
+   - "MINIMAL" match() will match from the start, but not necessarily up to the end, so
+               the resulting match will always be a leading part of 'string'
+   - "MINIMAL" pos() will try match() with successive substrings starting at each
+               character of 'haystack'.  If successful, the match may be a real
+               substring of 'haystack'.
+   - "MAXIMAL" pos() will try a MINIMAL pos() first, and, if successful at character 'n',
+               will try successive match(haystack~subStr(n, length), "MAXIMAL") with
+               decreasing 'length'
+
+   Note the following quirk(?):
+     s = 'abbbc'
+     p = .RegularExpression~new('b+', 'maximal')
+     start = p~pos(s); end = p~position; say s~subStr(start, end - start +1) --> bbb
+     p = .RegularExpression~new('b+', 'minimal')                     --> b
+     p = .RegularExpression~new('b*', 'maximal')                     --> ""
+     p = .RegularExpression~new('b*', 'minimal')                     --> ""
+*/
+
+-- test method new() and parse() args and option
+::method test_new_no_args
+  p = .RegularExpression~new
+  -- should default to "maximal")
+  self~assertEquals(0, p~parse("ab+"))
+  self~assertEquals(1, p~pos("abbbbb"))
+  self~assertEquals(6, p~position) -- must have matched whole string
+
+  -- keep default by specifying "current")
+  self~assertEquals(0, p~parse("ab+", "CURRENT"))
+  self~assertEquals(1, p~pos("abbbbb"))
+  self~assertEquals(6, p~position) -- must have matched whole string
+
+  -- override default by specifying "minimal")
+  self~assertEquals(0, p~parse("ab+", "minimal"))
+  self~assertEquals(1, p~pos("abbbbb"))
+  self~assertEquals(2, p~position) -- should have just matched "ab"
+
+-- new() will accept omitted template, but will fail with null template
+::method test_new_arg_one_null
+  self~expectSyntax(38) -- Invalid template or pattern.
+  .RegularExpression~new("")
+
+::method test_new_arg_two_maximal
+  p = .RegularExpression~new("ab+", "maximal")
+  self~assertEquals(1, p~pos("abbbbb"))
+  self~assertEquals(6, p~position) -- greedy, must have matched whole string
+
+  -- keep it greedy by specifying "current")
+  self~assertEquals(0, p~parse("ab+", "Current"))
+  self~assertEquals(1, p~pos("abbbbb"))
+  self~assertEquals(6, p~position) -- must have matched whole string
+
+  -- override greedy by specifying "minimal")
+  self~assertEquals(0, p~parse("ab+", "Minimal"))
+  self~assertEquals(1, p~pos("abbbbb"))
+  self~assertEquals(2, p~position) -- should have just matched "ab"
+
+::method test_new_arg_two_minimal
+  p = .RegularExpression~new("ab+", "MINimal")
+  self~assertEquals(1, p~pos("abbbbb"))
+  self~assertEquals(2, p~position) -- lazy, should have just matched "ab"
+
+  -- keep it lazy by specifying "current")
+  self~assertEquals(0, p~parse("ab+", "Current"))
+  self~assertEquals(1, p~pos("abbbbb"))
+  self~assertEquals(2, p~position) -- should have just matched "ab"
+
+  -- make it greedy by specifying "maximal")
+  self~assertEquals(0, p~parse("ab+", "MAXIMAL"))
+  self~assertEquals(1, p~pos("abbbbb"))
+  self~assertEquals(6, p~position) -- must have matched whole string
+
+::method test_new_arg_two_invalid
+  self~expectSyntax(93) -- Incorrect call to method
+  .RegularExpression~new(, "invalid")
+
+::method test_new_three_args
+  self~expectSyntax(88.922) -- Too many arguments in invocation; 2 expected
+  .RegularExpression~new(, , "")
+
+::method test_parse_no_args
+  p = .RegularExpression~new
+  self~expectSyntax(88.901) -- Missing argument; the 1 argument is required
+  p~parse
+
+-- 'parse()' will fail with omitted template
+::method test_parse_arg_one_omitted
+  p = .RegularExpression~new
+  self~expectSyntax(88.901) -- Missing argument; the 1 argument is required
+  p~parse(, "minimal")
+
+-- 'parse("")' won't fail but return error for null template
+::method test_parse_arg_one_null
+  p = .RegularExpression~new
+  self~assertEquals(1, p~parse(""))
+
+::method parse_arg_two_invalid
+  p = .RegularExpression~new
+  self~expectSyntax(93) -- Incorrect call to method
+  p~parse("", "invalid")
+
+::method test_parse_three_args
+  p = .RegularExpression~new
+  self~expectSyntax(88.922) -- Too many arguments in invocation; 2 expected
+  p~parse("a", , "")
+
+::method test_pos_no_args
+  p = .RegularExpression~new
+  self~expectSyntax(88.901) -- Missing argument; the 1 argument is required
+  p~pos
+
+::method test_pos_two_args
+  p = .RegularExpression~new
+  self~expectSyntax(88.922) -- Too many arguments in invocation; 2 expected
+  p~pos("", "")
+
+::method test_position_one_arg
+  p = .RegularExpression~new
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method; 0 expected
+  p~position("")
+
+
+-- simple classes that are just sequences of characters
+::method testSimpleClass
+  p = .RegularExpression~new
+  self~assertEquals(0, p~parse("[abc]"))
+
+  -- verify the entire included set
+  self~checkIncludedCharacters(p, "abc")
+
+  self~assertTrue(self~startsWith(p, 'abc'))
+  self~assertTrue(self~startsWith(p, 'bye-bye'))
+  self~assertTrue(self~startsWith(p, 'caldera'))
+  self~assertFalse(self~startsWith(p, 'estuary'))
+
+  r = self~find(p, 'abc')
+  self~assertTrue(self~verifyMatchResult(r, p, 1, 2))
+
+  r = self~find(p, 'xbc')
+  self~assertTrue(self~verifyMatchResult(r, p, 2, 3))
+
+  r = self~find(p, 'xxc')
+  self~assertTrue(self~verifyMatchResult(r, p, 3, 4))
+
+  p = .RegularExpression~new
+  self~assertEquals(0, p~parse("a[abc]c"))
+
+  r = self~find(p, 'xxabcyy')
+  self~assertTrue(self~verifyMatchResult(r, p, 3, 6))
+
+
+-- simple classes that are just sequences of characters, with negation
+::method testSimpleNotClass
+  p = .RegularExpression~new
+  self~assertEquals(0, p~parse("[^abc]"))
+
+  -- verify the entire excluded set
+  self~checkExcludedCharacters(p, "abc")
+
+  self~assertFalse(self~startsWith(p, 'abc'))
+  self~assertFalse(self~startsWith(p, 'bye-bye'))
+  self~assertFalse(self~startsWith(p, 'caldera'))
+  self~assertTrue(self~startsWith(p, 'estuary'))
+
+  r = self~find(p, 'eabc')
+  self~assertTrue(self~verifyMatchResult(r, p, 1, 2))
+
+  r = self~find(p, 'aebc')
+  self~assertTrue(self~verifyMatchResult(r, p, 2, 3))
+
+  r = self~find(p, 'abce')
+  self~assertTrue(self~verifyMatchResult(r, p, 4, 5))
+
+  p = .RegularExpression~new
+  self~assertEquals(0, p~parse("a[^abc]c"))
+
+  r = self~find(p, 'abcaecyy')
+  self~assertTrue(self~verifyMatchResult(r, p, 4, 7))
+
+
+-- simple classes that are just sequences of characters, with negation
+::method testRangeNotClass
+  p = .RegularExpression~new
+  self~assertEquals(0, p~parse("[^a-c]"))
+
+  -- verify the entire excluded set
+  self~checkExcludedCharacters(p, "abc")
+
+  self~assertFalse(self~startsWith(p, 'abc'))
+  self~assertFalse(self~startsWith(p, 'bye-bye'))
+  self~assertFalse(self~startsWith(p, 'caldera'))
+  self~assertTrue(self~startsWith(p, 'estuary'))
+
+  r = self~find(p, 'eabc')
+  self~assertTrue(self~verifyMatchResult(r, p, 1, 2))
+
+  r = self~find(p, 'aebc')
+  self~assertTrue(self~verifyMatchResult(r, p, 2, 3))
+
+  r = self~find(p, 'abce')
+  self~assertTrue(self~verifyMatchResult(r, p, 4, 5))
+
+  p = .RegularExpression~new
+  self~assertEquals(0, p~parse("a[^a-c]c"))
+
+  r = self~find(p, 'abcaecyy')
+  self~assertTrue(self~verifyMatchResult(r, p, 4, 7))
+
+-- simple classes that use a range of characters
+::method testRangeClass
+  p = .RegularExpression~new
+  self~assertEquals(0, p~parse("[a-c]"))
+
+  -- verify the entire included set
+  self~checkIncludedCharacters(p, "abc")
+
+  self~assertTrue(self~startsWith(p, 'abc'))
+  self~assertTrue(self~startsWith(p, 'bye-bye'))
+  self~assertTrue(self~startsWith(p, 'caldera'))
+  self~assertFalse(self~startsWith(p, 'estuary'))
+
+  r = self~find(p, 'abc')
+  self~assertTrue(self~verifyMatchResult(r, p, 1, 2))
+
+  r = self~find(p, 'xbc')
+  self~assertTrue(self~verifyMatchResult(r, p, 2, 3))
+
+  r = self~find(p, 'xxc')
+  self~assertTrue(self~verifyMatchResult(r, p, 3, 4))
+
+  p = .RegularExpression~new
+  self~assertEquals(0, p~parse("a[a-c]c"))
+
+  r = self~find(p, 'xxabcyy')
+  self~assertTrue(self~verifyMatchResult(r, p, 3, 6))
+
+
+-- simple classes that use multiple ranges of
+::method testMultipleRangeClass
+  p = .RegularExpression~new
+  self~assertEquals(0, p~parse("[a-bA-B]"))
+
+  -- verify the entire included set
+  self~checkIncludedCharacters(p, "abAB")
+
+  self~assertTrue(self~startsWith(p, 'abc'))
+  self~assertTrue(self~startsWith(p, 'bye-bye'))
+  self~assertTrue(self~startsWith(p, 'Abc'))
+  self~assertTrue(self~startsWith(p, 'Bye-bye'))
+  self~assertFalse(self~startsWith(p, 'estuary'))
+
+  r = self~find(p, 'abc')
+  self~assertTrue(self~verifyMatchResult(r, p, 1, 2))
+
+  r = self~find(p, 'ABC')
+  self~assertTrue(self~verifyMatchResult(r, p, 1, 2))
+
+  r = self~find(p, 'xb')
+  self~assertTrue(self~verifyMatchResult(r, p, 2, 3))
+
+  r = self~find(p, 'xB')
+  self~assertTrue(self~verifyMatchResult(r, p, 2, 3))
+
+  r = self~find(p, 'xxb')
+  self~assertTrue(self~verifyMatchResult(r, p, 3, 4))
+
+  p = .RegularExpression~new
+  self~assertEquals(0, p~parse("a[a-bC-D]c"))
+
+  r = self~find(p, 'aBcabcyy')
+  self~assertTrue(self~verifyMatchResult(r, p, 4, 7))
+
+
+-- tests of the * pattern modifier
+::method testStarModifier
+  p = .RegularExpression~new
+  self~assertEquals(0, p~parse("a*"))     -- zero or more occurrances of a
+  self~assertTrue(self~matches(p, ""))  -- null string should match
+  self~assertTrue(self~matches(p, "a")) -- single a should match
+  self~assertTrue(self~matches(p, "aaaaaa")) -- multiple a's should match
+  self~assertFalse(self~matches(p, "aaaaaaq")) -- the trailing one should not
+
+  -- a few starts tests.  These are all true
+  self~assertTrue(self~startsWith(p, ""))  -- null string should match
+  self~assertTrue(self~startsWith(p, "a")) -- single a should match
+  self~assertTrue(self~startsWith(p, "aaaaaa")) -- multiple a's should match
+  self~assertTrue(self~startsWith(p, "aaaaaaq")) -- This should also match
+
+  r = self~find(p, "xyzaxyz")
+  -- because this matches no characters, this will be a zero length match
+  -- at the beginning
+  self~assertTrue(self~verifyMatchResult(r, p, 1, 1))
+
+  r = self~find(p, "aaaaxyz")
+  -- because this matches all of the a characters at the beginning
+  -- at the beginning
+  self~assertTrue(self~verifyMatchResult(r, p, 1, 5))
+
+  p = .RegularExpression~new
+  self~assertEquals(0, p~parse("ab*c"))    -- repetive in the middle
+  self~assertTrue(self~matches(p, "ac"))  -- no b's are fine
+  self~assertTrue(self~matches(p, "abc"))  -- one should be ok too
+  self~assertTrue(self~matches(p, "abbbbbbbbbbbbbbbbbc"))  -- and a whole bunch
+
+  -- example from the online tutorial
+
+  p = .RegularExpression~new
+  self~assertEquals(0, p~parse("?*foo"))     -- ".*foo": this is a greedy pattern
+  self~assertTrue(self~matches(p, "xfooxxxxxxfoo"))  -- should consume the entire string
+  self~assertTrue(self~startsWith(p, "xfooxxxxxxfoo"))  -- one should be ok too
+  -- this should match the entire string
+  r = self~find(p, "xfooxxxxxxfoo")
+  self~assertTrue(self~verifyMatchResult(r, p, 1, 14))
+
+  -- example from the online tutorial
+
+  p = .RegularExpression~new
+  self~assertEquals(0, p~parse("?*foo", "minimal")) -- ".*?foo" rewritten; this is a reluctant pattern
+  self~assertTrue(self~matches(p, "xfooxxxxxxfoo"))  -- should consume the entire string
+  self~assertTrue(self~startsWith(p, "xfooxxxxxxfoo"))  -- one should be ok too, but it really only matches the beginning
+
+  -- this one is different from the typical standard
+  -- "MINIMAL" match() may match a leading part of 'string', here: "xfoo"
+  self~assertTrue(self~matches(p, "xfooxxxxxxfo"))  -- typically should NOT work because it will not match everything
+  self~assertTrue(self~startsWith(p, "xfooxxxxxxfo"))  -- this is really the same as the first one
+
+  r = self~find(p, "xfooxxxxxxfoo")
+
+  -- this will stop at the first match rather than
+  -- consuming everything.
+  self~assertTrue(self~verifyMatchResult(r, p, 1, 5))
+
+
+-- tests of the + pattern modifier
+::method testPlusModifier
+  p = .RegularExpression~new
+  self~assertEquals(0, p~parse("a+"))     -- one or more occurrances of a
+  self~assertFalse(self~matches(p, ""))  -- null string should not match
+  self~assertTrue(self~matches(p, "a")) -- single a should match
+  self~assertTrue(self~matches(p, "aaaaaa")) -- multiple a's should match
+  self~assertFalse(self~matches(p, "aaaaaaq")) -- the trailing one should not
+
+  -- a few starts tests.  These are all true
+  self~assertFalse(self~startsWith(p, ""))  -- null string not should match
+  self~assertTrue(self~startsWith(p, "a")) -- single a should match
+  self~assertTrue(self~startsWith(p, "aaaaaa")) -- multiple a's should match
+  self~assertTrue(self~startsWith(p, "aaaaaaq")) -- should also match
+
+  r = self~find(p, "xyzaxyz")
+  -- because this must match at least one character, it will locate the a
+  -- in the middle
+  self~assertTrue(self~verifyMatchResult(r, p, 4, 5))
+
+  r = self~find(p, "aaaaxyz")
+  -- because this matches all of the a characters at the beginning
+  -- at the beginning
+  self~assertTrue(self~verifyMatchResult(r, p, 1, 5))
+
+  p = .RegularExpression~new
+  self~assertEquals(0, p~parse("ab+c"))    -- repetitive in the middle
+  self~assertFalse(self~matches(p, "ac"))  -- must have at least one b
+  self~assertTrue(self~matches(p, "abc"))  -- one should be ok too
+  self~assertTrue(self~matches(p, "abbbbbbbbbbbbbbbbbc"))  -- and a whole bunch
+
+
+-- tests of the ? pattern modifier
+-- RegularExpression class doesn't have a ? modifier, we need to rewrite the templates
+::method testQuestionModifier
+  p = .RegularExpression~new
+  self~assertEquals(0, p~parse("a|!*")) -- "a?" rewritten; zero or more occurrances of a
+  self~assertTrue(self~matches(p, ""))  -- null string should match
+  self~assertTrue(self~matches(p, "a")) -- single a should match
+  self~assertFalse(self~matches(p, "aa")) -- multiple a's should not
+
+  -- a few startsWith tests.  These are all true
+  self~assertTrue(self~startsWith(p, ""))  -- null string should match
+  self~assertTrue(self~startsWith(p, "a")) -- single a should match
+  self~assertTrue(self~startsWith(p, "aa")) -- multiple a's should match
+
+  r = self~find(p, "xyzaxyz")
+  -- because this can match "nothing", this will be a zero length match at the beginning
+  self~assertTrue(self~verifyMatchResult(r, p, 1, 1))
+
+  r = self~find(p, "aaaaxyz")
+  -- because this will only match the first a at the beginning
+  self~assertTrue(self~verifyMatchResult(r, p, 1, 2))
+
+  p = .RegularExpression~new
+  self~assertEquals(0, p~parse("a(bc|c)")) -- "ab?c" rewritten; repetitive in the middle
+  self~assertTrue(self~matches(p, "ac"))  -- need not have a b
+  self~assertTrue(self~matches(p, "abc"))  -- one should be ok too
+  self~assertFalse(self~matches(p, "abbbbbbbbbbbbbbbbbc"))  -- only zero or 1 b works
+
+
+-- tests of the {n} pattern modifier
+::method testGreedyExactCountModifier
+  p = .RegularExpression~new
+  self~assertEquals(0, p~parse("a{3}"))  -- exactly 3 occurrances of a
+  self~assertFalse(self~matches(p, ""))  -- null string should not match
+  self~assertFalse(self~matches(p, "a")) -- single a should not match
+  self~assertFalse(self~matches(p, "aa")) -- one less than the required
+  self~assertTrue(self~matches(p, "aaa")) -- The required number
+  self~assertFalse(self~matches(p, "aaaa")) -- One required number
+
+  -- a few startsWith tests.
+  self~assertFalse(self~startsWith(p, ""))  -- null string should not match
+  self~assertFalse(self~startsWith(p, "aa")) -- still not enough
+  self~assertTrue(self~startsWith(p, "aaa")) -- this is ok
+  self~assertTrue(self~startsWith(p, "aaaa")) -- as is this
+
+  r = self~find(p, "xaaxaaaxyz")
+  -- this will only match at the second grouping of a's
+  self~assertTrue(self~verifyMatchResult(r, p, 5, 8))
+
+  p = .RegularExpression~new
+  self~assertEquals(0, p~parse("ab{2}c"))  -- repetitive in the middle
+  self~assertFalse(self~matches(p, "ac"))  -- must have 2 a's
+  self~assertFalse(self~matches(p, "abc"))  -- also bad
+  self~assertTrue(self~matches(p, "abbc"))  -- this is good
+  self~assertFalse(self~matches(p, "abbbc"))  -- overshot the mark
+
+
+-- tests of the {n}? pattern modifier
+-- RegularExpression supports reluctant (lazy) modifiers through "minimal"
+::method testReluctantExactCountModifier
+  -- Since this only matches an exact number of times, these are
+  -- really identical to greedy.  It either matches or it doesn't.
+
+  p = .RegularExpression~new
+  self~assertEquals(0, p~parse("a{3}", "minimal")) -- "a{3}?" rewritten; exactly 3 occurrances of a
+  self~assertFalse(self~matches(p, ""))  -- null string should not match
+  self~assertFalse(self~matches(p, "a")) -- single a should not match
+  self~assertFalse(self~matches(p, "aa")) -- one less than the required
+  self~assertTrue(self~matches(p, "aaa")) -- The required number
+  -- this one is different from the typical standard
+  -- "MINIMAL" match() may match a leading part of 'string', here: "aaa"
+  self~assertTrue(self~matches(p, "aaaa")) -- typically would be false
+
+  -- a few startsWith tests.
+  self~assertFalse(self~startsWith(p, ""))  -- null string should not match
+  self~assertFalse(self~startsWith(p, "aa")) -- still not enough
+  self~assertTrue(self~startsWith(p, "aaa")) -- this is ok
+  self~assertTrue(self~startsWith(p, "aaaa")) -- as is this
+
+  r = self~find(p, "xaaxaaaxyz")
+  -- this will only match at the second grouping of a's
+  self~assertTrue(self~verifyMatchResult(r, p, 5, 8))
+
+  p = .RegularExpression~new
+  self~assertEquals(0, p~parse("a(b{2}|b{2}c)"))  -- "ab{2}?c" rewritten; repetitive in the middle
+  self~assertFalse(self~matches(p, "ac"))  -- must have 2 a's
+  self~assertFalse(self~matches(p, "abc"))  -- also bad
+  self~assertTrue(self~matches(p, "abbc"))  -- this is good
+  self~assertFalse(self~matches(p, "abbbc"))  -- overshot the mark
+
+
+::method testEscapes
+  p = .RegularExpression~new
+
+  -- escaped backslash character
+  self~assertEquals(0, p~parse("\\"))
+  self~checkIncludedCharacters(p, "\")
+
+  -- escaped dot character
+  self~assertEquals(0, p~parse("\."))
+  self~checkIncludedCharacters(p, ".")
+
+  -- escaped dollar sign
+  self~assertEquals(0, p~parse("\$"))
+  self~checkIncludedCharacters(p, "$")
+
+  -- escaped caret
+  self~assertEquals(0, p~parse("\^"))
+  self~checkIncludedCharacters(p, "^")
+
+  -- escaped bracket
+  self~assertEquals(0, p~parse("\["))
+  self~checkIncludedCharacters(p, "[")
+
+  -- escaped bracket
+  self~assertEquals(0, p~parse("\]"))
+  self~checkIncludedCharacters(p, "]")
+
+  -- escaped paren
+  self~assertEquals(0, p~parse("\("))
+  self~checkIncludedCharacters(p, "(")
+
+  -- escaped paren
+  self~assertEquals(0, p~parse("\)"))
+  self~checkIncludedCharacters(p, ")")
+
+  -- escaped brace
+  self~assertEquals(0, p~parse("\{"))
+  self~checkIncludedCharacters(p, "{")
+
+  -- escaped brace
+  self~assertEquals(0, p~parse("\}"))
+  self~checkIncludedCharacters(p, "}")
+
+  -- escaped star
+  self~assertEquals(0, p~parse("\*"))
+  self~checkIncludedCharacters(p, "*")
+
+  -- escaped question
+  self~assertEquals(0, p~parse("\?"))
+  self~checkIncludedCharacters(p, "?")
+
+  -- escaped plus
+  self~assertEquals(0, p~parse("\+"))
+  self~checkIncludedCharacters(p, "+")
+
+  -- escaped OR
+  self~assertEquals(0, p~parse("\|"))
+  self~checkIncludedCharacters(p, "|")
+
+  -- as a whole
+  chars = "!""#$%&'()*+,-./:;<=>?@[\]^_`{|}~" || xrange('a', 'z') || xrange('A', 'Z') || xrange(0, 9)
+  escChars = chars~makeArray("")~makeString(, "\")
+  self~assertEquals(0, p~parse(escChars))
+  r = self~find(p, chars)
+  self~assertTrue(self~verifyMatchResult(r, p, 1, chars~length + 1))
+
+
+-- Named class families
+::method testClassFamilies
+  do name over "lower", "upper", "alpha", "digit", "alnum", "punct", "graph", "print", "blank", "cntrl", "xdigit", "space"
+    self~verifyClassFamily(name, xrange(name))
+  end
+
+
+::method test_named_class_plus_range
+  p = .RegularExpression~new
+  self~assertEquals(0, p~parse("[:digit:a-f]"))
+  self~checkIncludedCharacters(p, "0123456789abcdef")
+
+  self~assertEquals(0, p~parse("[^ :xdigit:]"))
+  self~checkExcludedCharacters(p, " " || xrange("xdigit"))
+
+
+-- enum RE_ERROR { E_UNEXPECTED_SYMBOL = 1, E_MISSING_PAREN_CLOSE, E_ILLEGAL_SET,
+--                 E_UNEXPECTED_EOP, E_ILLEGAL_NUMBER, E_ILLEGAL_SYMBOLIC_NAME };
+-- test pattern parse errors
+::method test_pattern_unexpected_symbol
+  p = .RegularExpression~new
+  self~assertEquals(1, p~parse("*"))
+  self~assertEquals(1, p~parse("(A|+)"))
+  self~assertEquals(1, p~parse("A({})"))
+
+::method deactivated_test_pattern_missing_paren_close
+  p = .RegularExpression~new
+  -- none of these actually return paren_close parse error
+  -- they all return unexpected_symbol
+  -- not sure how to create a paren_close
+  self~assertEquals(2, p~parse("("))
+  self~assertEquals(2, p~parse("(A|(+)"))
+  self~assertEquals(2, p~parse("A())"))
+
+::method test_pattern_illegal_set
+  p = .RegularExpression~new
+  self~assertEquals(3, p~parse("["))
+  self~assertEquals(3, p~parse("[]"))
+  self~assertEquals(3, p~parse("A[\"))
+
+::method test_pattern_unexpected_eop
+  p = .RegularExpression~new
+  self~assertEquals(4, p~parse("\"))
+  self~assertEquals(4, p~parse("A(?{2"))
+
+::method test_pattern_illegal_number
+  p = .RegularExpression~new
+  self~assertEquals(5, p~parse("!{0}"))
+  self~assertEquals(5, p~parse("!{1}"))
+  self~assertEquals(5, p~parse("!{-1}"))
+  self~assertEquals(5, p~parse("!{e3}"))
+
+::method test_pattern_illegal_symbolic_name
+  p = .RegularExpression~new
+  self~assertEquals(6, p~parse("[:]"))
+  self~assertEquals(6, p~parse("A[::]"))
+  self~assertEquals(6, p~parse("([: :])"))
+  self~assertEquals(6, p~parse("[:BLANKS:]"))
+
+
+::method test_bug_1045
+  p = .RegularExpression~new
+  self~assertEquals(0, p~parse("(BB|AA)[:SPACE:]*[:DIGIT:]"))
+  self~assertEquals(2, p~pos(" AA2012 "))
+  self~assertEquals(2, p~pos(" BB2012 "))
+
+  self~assertEquals(0, p~parse("(A|B)!*"))
+  self~assertEquals(1, p~match("A"))
+  self~assertEquals(1, p~match("B"))
+
+::method test_pattern_csv
+  p = .RegularExpression~new
+  self~assertEquals(0, p~parse('("[^"]*" *, *)*"[^"]*"'))
+  self~assertFalse(p~match(''))
+  self~assertTrue(p~match('""'))
+  self~assertTrue(p~match('"abc"'))
+  self~assertTrue(p~match('"", "abc"'))
+  self~assertTrue(p~match('"123" , "abc"'))
+  self~assertTrue(p~match('"123" , "abc" , ""'))
+  self~assertTrue(p~match(('" " ,')~copies(20) ' "final"'), "unmatched at" p~position)
+
+
+::options novalue error

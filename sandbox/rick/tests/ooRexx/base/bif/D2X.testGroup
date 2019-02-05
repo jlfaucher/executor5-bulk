@@ -1,0 +1,272 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.D2X.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+-- class named exactly like file
+::class "D2X.testGroup" subclass ooTestCase public
+
+::method 'test01'
+    self~assertSame('0', d2x(0))
+
+::method 'test02'
+    self~assertSame('D1', d2x(209))
+
+::method 'test03'
+    num217 = 217
+    self~assertSame('D9', d2x(num217))
+
+::method 'test04'
+    self~assertSame('1F4', d2x('353030'x))
+
+::method 'test05'
+    self~assertSame('74049A8', d2x(121653672))
+
+::method 'test06'
+    numeric digits 1
+    self~expectSyntax(93.928)
+    r = d2x(209)
+
+::method 'test07'
+    numeric digits 1
+    self~expectSyntax(93.928)
+    r = d2x(217)
+
+::method 'test08'
+    numeric digits 1
+    self~expectSyntax(93.928)
+    r = d2x(500)
+
+::method 'test09'
+    numeric digits 1
+    self~expectSyntax(93.928)
+    r = d2x(1216536725)
+
+::method 'test10'
+    numeric digits 602
+    v01 = '574065347637127262116416600588840992011158851044347600238821'
+    v02 = '368412883130696185156928329743158253134959222982319493731386'
+    v03 = '723559480431527665712965678083326592695649945726561400003443'
+    v04 = '895741200224357144634950317431223908077318231941819736585130'
+    v05 = '202331769854524982790811994044723148028116558247680821109851'
+    v06 = '663406720844544922292528011897424039570294504673882502145013'
+    v07 = '583533129152610040661181406458806339416586032994976982090635'
+    v08 = '108899292020210799265916257704447169510459602774788917948360'
+    v09 = '195800409786083152913776902127918630077641743932097160272544'
+    v10 = '57637891941312587717764400411421385408982726881092425574514687'
+    vlong = v01||v02||v03||v04||v05||v06||v07||v08||v09||v10
+    self~assertSame('7F'||copies('F',498), d2x(vlong))
+
+::method 'test11'
+-- call VER d2x(13.0000000000000000009),'D'; R0060:
+    self~assertSame('D', d2x(13.0000000000000000009))
+
+::method 'test12'
+    self~expectSyntax(93.928)
+    r = d2x(13.00000009)
+
+::method 'test13'
+    self~assertSame('D1', d2x(200+00+9))
+
+::method 'test14'
+    num200 = 200
+    num10  = 10
+    num7   = 7
+    self~assertSame('D9', d2x(num200+num10+num7))
+
+::method 'test15'
+    self~expectSyntax(93.927)
+    r = d2x(-1)
+
+::method 'test16'
+    self~expectSyntax(93.927)
+    r = d2x(-209)
+
+::method 'test17'
+    self~assertSame('D1', d2x(000000000000000000000000000000000000000000000000000000000000000209))
+
+::method 'test18'
+    self~assertSame('D1', d2x(2.09E+2))
+
+::method 'test19'
+    self~expectSyntax(93.928)
+    r = d2x('7474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474747474')
+
+::method 'test20'
+    v251 = copies('74',125)||'7'
+    self~expectSyntax(93.928)
+    r = d2x(v251)
+
+::method 'test21'
+    v100000z = copies('0',100000)||'209'
+    self~assertSame('D1', d2x(v100000z))
+
+::method 'test22'
+    numeric digits 10
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX=3520514261
+    self~assertSame('D1D6C8D5', d2x(XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX))
+
+::method 'test23'
+    numeric digits 150
+    self~expectSyntax(93.928)
+    r = d2x(d2x('4500281302334194382577'))
+
+::method 'test24'
+    self~assertSame('0D0C', d2x(3340,4))
+
+::method 'test25'
+    v1 = 3340
+    v2 = 8
+    l1 = 7
+    l2 = 1
+    self~assertSame('0000D0C', d2x(v1,l1))
+    self~assertSame('C', d2x(v1,l2))
+    self~assertSame('0000008', d2x(v2,l1))
+    self~assertSame('8', d2x(v2,l2))
+
+::method 'test26'
+    self~assertSame('', d2x(0,0))
+
+::method 'test27'
+    self~assertSame('', d2x(209,0))
+
+::method 'test28'
+    self~assertSame('1', d2x(209,1))
+
+::method 'test29'
+    self~assertSame('0D1', d2x(209,3))
+
+::method 'test30'
+    self~assertSame(copies('00',124)||'D1', d2x(209,250))
+
+::method 'test31'
+    self~assertSame(copies('00',124)||'0D1', d2x(209,251))
+
+::method 'test32'
+    self~assertSame(copies('00',4999)||'D1', d2x(209,10000))
+
+::method 'test33'
+    self~assertSame(copies('FF',124)||'2F', d2x(-209,250))
+
+::method 'test34'
+    self~assertSame(copies('FF',124)||'F2F', d2x(-209,251))
+
+::method 'test35'
+    self~assertSame(copies('F',9998)||'2F', d2x(-209,10000))
+
+::method 'test36'
+    self~assertSame('', d2x('323137'x,0))
+
+::method 'test37'
+    self~assertSame('9', d2x('323137'x,1))
+
+::method 'test38'
+    self~assertSame('0D9', d2x('323137'x,3))
+
+::method 'test39'
+    self~assertSame(copies('0',248)||'D9', d2x('323137'x,250))
+
+::method 'test40'
+    self~assertSame(copies('0',249)||'D9', d2x('323137'x,251))
+
+::method 'test41'
+    self~assertSame(copies('0',9998)||'D9', d2x('323137'x,10000))
+
+::method 'test42'
+    self~assertSame(copies('F',248)||'27', d2x(-'323137'x,250))
+
+::method 'test43'
+    self~assertSame(copies('F',249)||'27', d2x(-'323137'x,251))
+
+::method 'test44'
+    self~assertSame(copies('F',9998)||'27', d2x(-'323137'x,10000))
+
+::method 'test45'
+    numeric digits 10
+    num121etc=1216536753
+    num3 = 3
+    num4 = 4
+    num5 = 5
+    self~assertSame('', d2x(num121etc,0))
+    self~assertSame('1', d2x(num121etc,'31'x))
+    self~assertSame('0B1', d2x(num121etc,num3))
+    self~assertSame('E0B1', d2x(num121etc,num4))
+    self~assertSame('2E0B1', d2x(num121etc,num5))
+    self~assertSame(copies('00',121)||'4882E0B1', d2x(num121etc,2.50E+2))
+    self~assertSame(copies('0',243)||'4882E0B1', d2x(num121etc,251))
+    self~assertSame(copies('0',9992)||'4882E0B1', d2x(num121etc,1000*10))
+
+::method 'test46'
+    numeric digits 10
+    self~assertSame('5', d2x(SUBSTR('0822643520514261219862623',7,10),DATATYPE(6,'N')))
+
+::method 'test47'
+    numeric digits 10
+    self~assertSame('', d2x(WORD('082264 3520514261 219862623',2),DATATYPE('A','N')))
+
+::method 'test48'
+    self~assertSame('00014FBE105', d2x(SUBWORD('082264 352051461 219862623',2,1),copies('1',2)))
+
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_D2X"
+    self~assertSame('9', D2X(9))
+    self~assertSame('81', D2X(129))
+    self~assertSame('1', D2X(129,1))
+    self~assertSame('81', D2X(129,2))
+    self~assertSame('0081', D2X(129,4))
+    self~assertSame('01', D2X(257,2))
+    self~assertSame('81', D2X(-127,2))
+    self~assertSame('FF81', D2X(-127,4))
+    self~assertSame("", D2X(12,0))
+
+
+::options novalue error

@@ -1,0 +1,349 @@
+#!/usr/bin/rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2017 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
+
+  group = .TestGroup~new(fileSpec)
+  group~add(.LoopWith.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+::requires 'FileUtils.cls'
+
+::class "LoopWith.testGroup" subclass ooTestCase public
+::method test_loop_with
+
+  indexes = .array~new
+  items = .array~new
+  loop with index i item v over ('a', 'b', 'c')
+     indexes~append(i)
+     items~append(v)
+  end
+
+  self~assertSameList((1,2,3), indexes)
+  self~assertSameList(('a', 'b', 'c'), items)
+
+  indexes = .array~new
+  loop with index i over ('a', 'b', 'c')
+     indexes~append(i)
+  end
+
+  self~assertSameList((1,2,3), indexes)
+
+  items = .array~new
+  loop with item v over ('a', 'b', 'c')
+     items~append(v)
+  end
+
+  self~assertSameList(('a', 'b', 'c'), items)
+
+  indexes = .array~new
+  items = .array~new
+  loop with index i item v over ('a', 'b', 'c') for 2
+     indexes~append(i)
+     items~append(v)
+  end
+
+  self~assertSameList((1,2), indexes)
+  self~assertSameList(('a', 'b'), items)
+
+  -- verify the control variables are set before the for test
+  self~assertSame(3, i)
+  self~assertSame('c', v)
+
+  indexes = .array~new
+  items = .array~new
+  loop with index i item v over ('a', 'b', 'c') while i < 3
+     indexes~append(i)
+     items~append(v)
+  end
+
+  self~assertSameList((1,2), indexes)
+  self~assertSameList(('a', 'b'), items)
+
+  -- verify the control variables are set before the for test
+  self~assertSame(3, i)
+  self~assertSame('c', v)
+
+  indexes = .array~new
+  items = .array~new
+  loop with index i item v over ('a', 'b', 'c') until i = 2
+     indexes~append(i)
+     items~append(v)
+  end
+
+  self~assertSameList((1,2), indexes)
+  self~assertSameList(('a', 'b'), items)
+
+  -- The until test happens before the control variables are set
+  self~assertSame(2, i)
+  self~assertSame('b', v)
+
+  -- test using a provided supplier...check the state after the loop
+  arr = ('a', 'b', 'c')
+  sup = arr~supplier
+
+  indexes = .array~new
+  items = .array~new
+  loop with index i item v over sup
+     indexes~append(i)
+     items~append(v)
+  end
+
+  self~assertSameList((1,2,3), indexes)
+  self~assertSameList(('a', 'b', 'c'), items)
+  self~assertFalse(sup~available)
+
+
+  -- supplier is at the termination position after the loop
+  sup = arr~supplier
+  indexes = .array~new
+  items = .array~new
+  loop with index i item v over sup for 2
+     indexes~append(i)
+     items~append(v)
+  end
+
+  self~assertSameList((1,2), indexes)
+  self~assertSameList(('a', 'b'), items)
+  self~assertTrue(sup~available)
+  self~assertEquals(3, sup~index)
+  self~assertEquals('c', sup~item)
+
+  -- supplier begins at current position
+  sup = arr~supplier
+  -- step the the supplier
+  sup~next
+  indexes = .array~new
+  items = .array~new
+  loop with index i item v over sup
+     indexes~append(i)
+     items~append(v)
+  end
+
+  self~assertSameList((2,3), indexes)
+  self~assertSameList(('b', 'c'), items)
+  self~assertFalse(sup~available)
+
+
+  -- create a temporary file for testing a file supplier
+  file = .TemporaryTestFile~new(self, "stream_supplier")
+  file~create(('d', 'e', 'f'))
+
+  stream = .stream~new(file~fullName)
+
+  indexes = .array~new
+  items = .array~new
+  loop with index i item v over stream
+     indexes~append(i)
+     items~append(v)
+  end
+
+  self~assertSameList((1,2,3), indexes)
+  self~assertSameList(('d', 'e', 'f'), items)
+
+  -- label keyword tests
+
+  indexes = .array~new
+  items = .array~new
+  loop label foo with index i item v over ('a', 'b', 'c')
+     if i = 2 then iterate foo
+     indexes~append(i)
+     items~append(v)
+  end foo
+
+  self~assertSameList((1,3), indexes)
+  self~assertSameList(('a', 'c'), items)
+
+  indexes = .array~new
+  items = .array~new
+  loop label foo with index i item v over ('a', 'b', 'c')
+     indexes~append(i)
+     items~append(v)
+     if i = 2 then leave foo
+  end foo
+
+  self~assertSameList((1,2), indexes)
+  self~assertSameList(('a', 'b'), items)
+
+  -- test with an empty array
+  arr = .array~new
+  indexes = .array~new
+  items = .array~new
+
+  i = 'xyz'
+  v = 'def'
+
+  loop label foo with index i item v over arr
+     indexes~append(i)
+     items~append(v)
+  end foo
+
+  self~assertEquals(0, indexes~items)
+  self~assertEquals(0, items~items)
+  self~assertEquals("xyz", i)
+  self~assertEquals("def", v)
+
+::method test_no_supplier
+  self~expectSyntax(97.1)
+  loop with index i over "abc"
+  end
+
+::method test_no_control
+
+  -- this is actually a DO over loop, since the control variable/OVER combination is checked
+  -- first
+  loop with over "abc"
+  end
+
+  self~assertEquals("abc", with)
+
+::method test_no_over1
+  self~assertSyntaxError(27.904, ("loop with index i", "end"))
+
+::method test_no_over2
+  self~assertSyntaxError(27.904, ("loop with item i", "end"))
+
+::method test_no_over3
+  self~assertSyntaxError(27.904, ("loop with index i item i", "end"))
+
+::method test_no_over4
+  self~assertSyntaxError(27.904, ("loop with item i index i", "end"))
+
+::method test_item_dot_var
+  self~assertSyntaxError(31.3, ("loop with item . over (1,2)", "end"))
+
+::method test_item_num_var
+  self~assertSyntaxError(31.2, ("loop with item 1 over (1,2)", "end"))
+
+::method test_item_env_var
+  self~assertSyntaxError(31.3, ("loop with item .a over (1,2)", "end"))
+
+::method test_item_no_symbol
+  self~assertSyntaxError(20.929, ("loop with item 'i' over (1,2)", "end"))
+
+::method test_index_dot_var
+  self~assertSyntaxError(31.3, ("loop with index . over (1,2)", "end"))
+
+::method test_index_num_var
+  self~assertSyntaxError(31.2, ("loop with index 1 over (1,2)", "end"))
+
+::method test_index_env_var
+  self~assertSyntaxError(31.3, ("loop with index .a over (1,2)", "end"))
+
+::method test_index_no_symbol
+  self~assertSyntaxError(20.929, ("loop with index 'i' over (1,2)", "end"))
+
+::method test_with_no_variables
+  self~assertSyntaxError(27.903, ("loop with", "end"))
+
+::method test_with_over_no_expr
+  self~assertSyntaxError(35.911, ("loop with index i over", "end"))
+
+::method test_with_over_no_expr2
+  self~assertSyntaxError(35.911, ("loop with index i over for 3", "end"))
+
+::method test_with_over_no_expr3
+  self~assertSyntaxError(35.911, ("loop with index i over while .true", "end"))
+
+::method test_with_over_no_expr4
+  self~assertSyntaxError(35.911, ("loop with index i over until .true", "end"))
+
+::method test_with_for_no_expr
+  self~assertSyntaxError(35.907, ("loop with index i over sup for", "end"))
+
+::method test_with_while_no_expr
+  self~assertSyntaxError(35.929, ("loop with index i over sup while", "end"))
+
+::method test_with_until_no_expr
+  self~assertSyntaxError(35.929, ("loop with index i over sup until", "end"))
+
+::method test_with_dup_item
+  self~assertSyntaxError(27.902, ("loop with item i item v over sup ", "end"))
+
+::method test_with_dup_index
+  self~assertSyntaxError(27.902, ("loop with index i index v over sup ", "end"))
+
+::method test_with_dup_for
+  self~assertSyntaxError(27.902, ("loop with index i item v over sup for 3 for 4", "end"))
+
+::method test_with_dup_while
+  self~assertSyntaxError(27.1, ("loop with index i item v over sup while .true while .false", "end"))
+
+::method test_with_dup_until
+  self~assertSyntaxError(27.1, ("loop with index i item v over sup until .true until .false", "end"))
+
+::method test_with_while_until
+  self~assertSyntaxError(27.1, ("loop with index i item v over sup until .true while .false", "end"))
+
+::method test_for_negative
+  self~expectSyntax(26.3)
+  loop with index i over (1,2) for -1
+  end
+
+::method test_for_non_integer
+  self~expectSyntax(26.3)
+  loop with index i over (1,2) for 1.1
+  end
+
+::method test_for_non_numeric
+  self~expectSyntax(26.3)
+  loop with index i over (1,2) for 'a'
+  end
+
+::method test_while_bad_truth
+  self~expectSyntax(34.3)
+  loop with index i over (1,2) while 1.0
+  end
+
+::method test_until_bad_truth
+  self~expectSyntax(34.4)
+  loop with index i over (1,2) until 1.0
+  end
+
+
+::options novalue error

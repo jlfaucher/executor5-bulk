@@ -1,0 +1,2208 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+
+  group = .TestGroup~new(s)
+  group~add(.shortTimeBIFTests)
+  group~add(.TIME.long.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "shortTimeBIFTests" subclass ooTestCase public
+
+::method "test_1"
+   Numeric Digits 20                   /* PA 881104 added                */
+
+   tx=TIME( )||'**'||TIME('l')||'*'||TIME('h')||'*'||TIME('m')||'*'||,
+    TIME('s')||'*'||TIME('e')||'*'||TIME('r')||'*'||,
+    TIME('c')||'*'||TIME('n')'**'||,
+    TIME('L')||'*'||TIME('H')||'*'||TIME('M')||'*'||,
+    TIME('S')||'*'||TIME('E')||'*'||TIME('R')||'*'||,
+    TIME('C')||'*'||TIME('N')
+   Parse Var tx tt '**' tx '**' ty
+   Parse Var tt tth ':' ttm ':' tts
+   Parse Var tx txl '*' txh '*' txm '*' txs '*' txe '*' txr '*' txc '*' txn
+   Parse Var ty tyl '*' tyh '*' tym '*' tys '*' tye '*' tyr '*' tyc '*' tyn
+   v.1='l'; v.2='h'; v.3='m'; v.4='s'; v.5='e'; v.6='r'; v.7='c'
+   v.8='L'; v.9='H'; v.a='M'; v.b='s'; v.c='E'; v.d='R'; v.e='C'
+   v.f='n'; v.g='N'
+   vx=TIME( )||'**'||TIME(v.1)||'*'||TIME(v.2)||'*'||TIME(v.3)||'*'||,
+    TIME(v.4)||'*'||TIME(v.5)||'*'||TIME(v.6)||'*'||,
+    TIME(v.7)||'*'||TIME(v.f)'**'||,
+    TIME(v.8)||'*'||TIME(v.9)||'*'||TIME(v.a)||'*'||,
+    TIME(v.b)||'*'||TIME(v.c)||'*'||TIME(v.d)||'*'||,
+    TIME(v.e)||'*'||TIME(v.g)
+   Parse Var vx vt '**' vx '**' vy
+   Parse Var vt vth ':' vtm ':' vts
+   Parse Var vx vxl '*' vxh '*' vxm '*' vxs '*' vxe '*' vxr '*' vxc '*' vxn
+   Parse Var vy vyl '*' vyh '*' vym '*' vys '*' vye '*' vyr '*' vyc '*' vyn
+
+   self~assertSame(tt, txn)
+   self~assertSame(txn, tyn)
+   self~assertSame(vt, vxn)
+   self~assertSame(vxn, vyn)
+
+   self~assertSame(tx, ty)
+   self~assertSame(txm, ttm+60*tth)
+   self~assertSame(txs, tts+60*(ttm+60*tth))
+   If tth<10 Then self~assertSame(txh, right(tth, 1))
+   else self~assertSame(txh, tth)
+
+   self~assertSame(vx, vy)
+   self~assertSame(vxm, vtm+60*vth)
+   self~assertSame(vxs, vts+60*(vtm+60*vth))
+   If vth<10 Then self~assertSame(vxh, right(vth,1))
+   else self~assertSame(vxh, vth)
+
+   self~assertSame(txe, txr)
+   self~assertSame(txe, '0')
+
+   self~assertSame(vxe, vxr)
+
+   self~assertSame(txl, tyl)
+   self~assertSame(vxl, vyl)
+
+   Parse Var txl txlh ':' txlm ':' txls '.' txlms
+   Parse Var vxl vxlh ':' vxlm ':' vxls '.' vxlms
+   tmsc=SUBSTR(txl,9,7)
+   vmsc=SUBSTR(vxl,9,7)
+   Numeric Digits 20
+   txlc=txls+60*(txlm+60*txlh)+tmsc
+   vxlc=vxls+60*(vxlm+60*vxlh)+vmsc
+   xlc=vxlc-txlc
+
+   self~assertSame(vxr, xlc)
+
+   Parse Var txc txch ':' txcx
+   txcm=SUBSTR(txcx,1,2)
+   txct=SUBSTR(txcx,3,2)
+   tth1=RIGHT(tth,1)
+   Select
+     When tth=0  Then self~assertSame(txch txct, 12 'am')
+     When tth<10 Then self~assertSame(txch txct, tth1 'am')
+     When tth<12 Then self~assertSame(txch txct, tth 'am')
+     When tth=12 Then self~assertSame(txch txct, tth 'pm')
+     When tth>12 Then self~assertSame(txch+12 txct, tth 'pm')
+     Otherwise self~assertFalse(1)
+   End
+   self~assertSame(txcm, ttm)
+
+   Parse Var txc txch ':' txcx
+   txcm=SUBSTR(txcx,1,2)
+   txct=SUBSTR(txcx,3,2)
+   tth1=RIGHT(tth,1)
+   Select
+     When tth=0  Then self~assertSame((txch txct), '12 am')
+     When tth<10 Then self~assertSame((txch txct), (tth1 'am'))
+     When tth<12 Then self~assertSame((txch txct), (tth 'am'))
+     When tth=12 Then self~assertSame((txch txct), (tth 'pm'))
+     When tth>12 Then self~assertSame((txch+12 txct), (tth 'pm'))
+     Otherwise self~assertFalse(1)
+   End
+   self~assertSame(txcm, ttm)
+
+
+::method "test_7"
+   Call time 'r'                       /* reset the timer for the next  */
+   xxyy=1                              /* do very little work           */
+   tx=TIME( )||'**'||TIME('life')||'*'||TIME('honour')||'*'||,
+    TIME('micro')||'*'||TIME('short')||'*'||,
+    TIME('europe')||'*'||TIME('rage')||'*'||,
+    TIME('carbon')||'**'||,
+    TIME('LIFE')||'*'||TIME('HONOUR')||'*'||,
+    TIME('MICRO')||'*'||TIME('SHORT')||'*'||,
+    TIME('EUROPE')||'*'||TIME('RAGE')||'*'||,
+    TIME('CARBON')
+   Parse Var tx tt '**' tx '**' ty
+   Parse Var tt tth ':' ttm ':' tts
+   Parse Var tx txl '*' txh '*' txm '*' txs '*' txe '*' txr '*' txc
+   Parse Var ty tyl '*' tyh '*' tym '*' tys '*' tye '*' tyr '*' tyc
+   v.1='life'; v.2='honour'; v.3='micro'; v.4='short'; v.5='europe';
+   v.6='rage'; v.7='carbon'; v.8='LIFE'; v.9='HONOUR'; v.a='MICRO';
+   v.b='SHORT'; v.c='EUROPE'; v.d='RAGE'; v.e='CARBON'
+   vx=TIME( )||'**'||TIME(v.1)||'*'||TIME(v.2)||'*'||TIME(v.3)||'*'||,
+    TIME(v.4)||'*'||TIME(v.5)||'*'||TIME(v.6)||'*'||,
+    TIME(v.7)||'**'||,
+    TIME(v.8)||'*'||TIME(v.9)||'*'||TIME(v.a)||'*'||,
+    TIME(v.b)||'*'||TIME(v.c)||'*'||TIME(v.d)||'*'||,
+    TIME(v.e)
+   Parse Var vx vt '**' vx '**' vy
+   Parse Var vt vth ':' vtm ':' vts
+   Parse Var vx vxl '*' vxh '*' vxm '*' vxs '*' vxe '*' vxr '*' vxc
+   Parse Var vy vyl '*' vyh '*' vym '*' vys '*' vye '*' vyr '*' vyc
+
+   self~assertSame(tx, ty)
+   self~assertSame(txm, ttm+60*tth)
+   self~assertSame(txs, tts+60*(ttm+60*tth))
+   If tth<10 Then self~assertSame(txh, right(tth, 1))
+   else self~assertSame(txh, tth)
+
+   self~assertSame(vx, vy)
+   self~assertSame(vxm, vtm+60*vth)
+   self~assertSame(vxs, vts+60*(vtm+60*vth))
+   If vth<10 Then self~assertSame(vxh, right(vth, 1))
+   else self~assertSame(vxh, vth)
+
+   self~assertSame(txe, txr)
+   self~assertTrue(txe<='1')
+
+   self~assertSame(vxe, vxr)
+
+   self~assertSame(txl, tyl)
+   self~assertSame(vxl, vyl)
+
+   Parse Var txl txlh ':' txlm ':' txls '.' txlms
+   Parse Var vxl vxlh ':' vxlm ':' vxls '.' vxlms
+   tmsc=SUBSTR(txl,9,7)
+   vmsc=SUBSTR(vxl,9,7)
+   Numeric Digits 20
+   txlc=txls+60*(txlm+60*txlh)+tmsc
+   vxlc=vxls+60*(vxlm+60*vxlh)+vmsc
+   xlc=vxlc-txlc
+
+   self~assertSame(vxr, xlc)
+
+
+::method "test_12"
+   parse value time() time('C') with hh":"mm":"ss h1":"m1 +3 ampm
+   self~assertTrue((hh>11 & ampm="pm") | (hh<12 & ampm="am"))  -- check for correct usage of am/pm
+
+
+::method "test_13"
+   parse value time() time('H') with hh":"mm":"ss h1
+   self~assertTrue((hh=h1))
+
+
+::method "test_14"
+   parse value time() time('L') with hh":"mm":"ss"."uu
+   self~assertTrue((datatype(uu,"w") & (length(uu)=6)))
+
+
+::method "test_15"
+   parse value time() time('M') with hh":"mm":"ss m1
+   self~assertTrue(((hh*60+mm)=m1))
+
+
+::method "test_16"
+   parse value time() time('N') with t1 t2
+   self~assertTrue((t1==t2))
+
+
+::method "test_17"
+   parse value time() time('S') with hh":"mm":"ss s1
+   self~assertTrue(((hh*60*60+mm*60+ss)=s1))
+
+
+::method "test_18"
+   self~assertEquals(17, TIME('H','5:00pm','C'))
+   self~assertEquals(61200, TIME('S','5:00pm','C'))
+
+/**
+ * Methods below here, in this class, test all possible characters as options to
+ * time.  The method text was generated with a simple Rexx program.
+ *
+ * validopts = 'CEFHLMNRST'
+ */
+::method test_invalidOpt_hex_0
+   a = d2c(0)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_1
+   a = d2c(1)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_2
+   a = d2c(2)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_3
+   a = d2c(3)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_4
+   a = d2c(4)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_5
+   a = d2c(5)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_6
+   a = d2c(6)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_7
+   a = d2c(7)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_8
+   a = d2c(8)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_9
+   a = d2c(9)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_A
+   a = d2c(10)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_B
+   a = d2c(11)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_C
+   a = d2c(12)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_D
+   a = d2c(13)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_E
+   a = d2c(14)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_F
+   a = d2c(15)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_10
+   a = d2c(16)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_11
+   a = d2c(17)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_12
+   a = d2c(18)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_13
+   a = d2c(19)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_14
+   a = d2c(20)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_15
+   a = d2c(21)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_16
+   a = d2c(22)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_17
+   a = d2c(23)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_18
+   a = d2c(24)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_19
+   a = d2c(25)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_1A
+   a = d2c(26)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_1B
+   a = d2c(27)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_1C
+   a = d2c(28)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_1D
+   a = d2c(29)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_1E
+   a = d2c(30)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_1F
+   a = d2c(31)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_20
+   a = d2c(32)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_21
+   a = d2c(33)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_22
+   a = d2c(34)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_23
+   a = d2c(35)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_24
+   a = d2c(36)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_25
+   a = d2c(37)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_26
+   a = d2c(38)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_27
+   a = d2c(39)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_28
+   a = d2c(40)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_29
+   a = d2c(41)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_2A
+   a = d2c(42)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_2B
+   a = d2c(43)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_2C
+   a = d2c(44)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_2D
+   a = d2c(45)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_2E
+   a = d2c(46)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_2F
+   a = d2c(47)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_30
+   a = d2c(48)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_31
+   a = d2c(49)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_32
+   a = d2c(50)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_33
+   a = d2c(51)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_34
+   a = d2c(52)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_35
+   a = d2c(53)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_36
+   a = d2c(54)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_37
+   a = d2c(55)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_38
+   a = d2c(56)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_39
+   a = d2c(57)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_3A
+   a = d2c(58)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_3B
+   a = d2c(59)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_3C
+   a = d2c(60)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_3D
+   a = d2c(61)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_3E
+   a = d2c(62)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_3F
+   a = d2c(63)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_40
+   a = d2c(64)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_41
+   a = d2c(65)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_42
+   a = d2c(66)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_validOpt_bigChar_C
+   a = d2c(67)
+   y = time(a); z = time(a)
+   self~assertEquals(y, z)
+
+::method test_invalidOpt_hex_44
+   a = d2c(68)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_validOpt_bigChar_E
+   a = d2c(69)
+   y = time(a); z = time(a)
+   -- On a fast system and since the above is 2 separate instructions, z can be
+   -- slightly greate than y
+   self~assertTrue(y <= z)
+
+::method test_validOpt_bigChar_F
+   a = d2c(70)
+   y = time(a); z = time(a)
+   -- On a fast system and since the above is 2 separate instructions, z can be
+   -- slightly greate than y
+   self~assertTrue(y <= z)
+
+::method test_invalidOpt_hex_47
+   a = d2c(71)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_validOpt_bigChar_H
+   a = d2c(72)
+   y = time(a); z = time(a)
+   self~assertEquals(y, z)
+
+::method test_invalidOpt_hex_49
+   a = d2c(73)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_4A
+   a = d2c(74)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_4B
+   a = d2c(75)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_validOpt_bigChar_L
+   a = d2c(76)
+   y = time(a); z = time(a)
+   -- On a fast system and since the above is 2 separate instructions, z can be
+   -- slightly greate than y
+   self~assertTrue(y <= z)
+
+::method test_validOpt_bigChar_M
+   a = d2c(77)
+   y = time(a); z = time(a)
+   self~assertEquals(y, z)
+
+::method test_validOpt_bigChar_N
+   a = d2c(78)
+   y = time(a); z = time(a)
+   self~assertEquals(y, z)
+
+::method test_validOpt_bigChar_O
+   a = d2c(79)
+   y = time(a); z = time(a)
+   self~assertEquals(y, z)
+
+::method test_invalidOpt_hex_50
+   a = d2c(80)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_51
+   a = d2c(81)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_validOpt_bigChar_R
+   a = d2c(82)
+   y = time(a); z = time(a)
+   -- On a fast system and since the above is 2 separate instructions, z can be
+   -- slightly greate than y
+   self~assertTrue(y <= z)
+
+::method test_validOpt_bigChar_S
+   a = d2c(83)
+   y = time(a); z = time(a)
+   self~assertEquals(y, z)
+
+::method test_validOpt_bigChar_T
+   a = d2c(84)
+   y = time(a); z = time(a)
+   self~assertEquals(y, z)
+
+::method test_invalidOpt_hex_55
+   a = d2c(85)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_56
+   a = d2c(86)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_57
+   a = d2c(87)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_58
+   a = d2c(88)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_59
+   a = d2c(89)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_5A
+   a = d2c(90)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_5B
+   a = d2c(91)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_5C
+   a = d2c(92)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_5D
+   a = d2c(93)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_5E
+   a = d2c(94)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_5F
+   a = d2c(95)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_60
+   a = d2c(96)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_61
+   a = d2c(97)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_62
+   a = d2c(98)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_validOpt_littleChar_c
+   a = d2c(99)
+   y = time(a); z = time(a)
+   self~assertEquals(y, z)
+
+::method test_invalidOpt_hex_64
+   a = d2c(100)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_validOpt_littleChar_e
+   a = d2c(101)
+   y = time(a); z = time(a)
+   -- On a fast system and since the above is 2 separate instructions, z can be
+   -- slightly greate than y
+   self~assertTrue(y <= z)
+
+::method test_validOpt_littleChar_f
+   a = d2c(102)
+   y = time(a); z = time(a)
+   -- On a fast system and since the above is 2 separate instructions, z can be
+   -- slightly greate than y
+   self~assertTrue(y <= z)
+
+::method test_invalidOpt_hex_67
+   a = d2c(103)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_validOpt_littleChar_h
+   a = d2c(104)
+   y = time(a); z = time(a)
+   self~assertEquals(y, z)
+
+::method test_invalidOpt_hex_69
+   a = d2c(105)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_6A
+   a = d2c(106)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_6B
+   a = d2c(107)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_validOpt_littleChar_l
+   a = d2c(108)
+   y = time(a); z = time(a)
+   -- On a fast system and since the above is 2 separate instructions, z can be
+   -- slightly greate than y
+   self~assertTrue(y <= z)
+
+::method test_validOpt_littleChar_m
+   a = d2c(109)
+   y = time(a); z = time(a)
+   self~assertEquals(y, z)
+
+::method test_validOpt_littleChar_n
+   a = d2c(110)
+   y = time(a); z = time(a)
+   self~assertEquals(y, z)
+
+::method test_validOpt_littleChar_o
+   a = d2c(111)
+   y = time(a); z = time(a)
+   self~assertEquals(y, z)
+
+::method test_invalidOpt_hex_70
+   a = d2c(112)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_71
+   a = d2c(113)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_validOpt_littleChar_r
+   a = d2c(114)
+   y = time(a); z = time(a)
+   -- On a fast system and since the above is 2 separate instructions, z can be
+   -- slightly greate than y
+   self~assertTrue(y <= z)
+
+::method test_validOpt_littleChar_s
+   a = d2c(115)
+   y = time(a); z = time(a)
+   self~assertEquals(y, z)
+
+::method test_validOpt_littleChar_t
+   a = d2c(116)
+   y = time(a); z = time(a)
+   self~assertEquals(y, z)
+
+::method test_invalidOpt_hex_75
+   a = d2c(117)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_76
+   a = d2c(118)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_77
+   a = d2c(119)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_78
+   a = d2c(120)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_79
+   a = d2c(121)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_7A
+   a = d2c(122)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_7B
+   a = d2c(123)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_7C
+   a = d2c(124)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_7D
+   a = d2c(125)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_7E
+   a = d2c(126)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_7F
+   a = d2c(127)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_80
+   a = d2c(128)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_81
+   a = d2c(129)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_82
+   a = d2c(130)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_83
+   a = d2c(131)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_84
+   a = d2c(132)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_85
+   a = d2c(133)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_86
+   a = d2c(134)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_87
+   a = d2c(135)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_88
+   a = d2c(136)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_89
+   a = d2c(137)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_8A
+   a = d2c(138)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_8B
+   a = d2c(139)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_8C
+   a = d2c(140)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_8D
+   a = d2c(141)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_8E
+   a = d2c(142)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_8F
+   a = d2c(143)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_90
+   a = d2c(144)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_91
+   a = d2c(145)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_92
+   a = d2c(146)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_93
+   a = d2c(147)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_94
+   a = d2c(148)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_95
+   a = d2c(149)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_96
+   a = d2c(150)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_97
+   a = d2c(151)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_98
+   a = d2c(152)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_99
+   a = d2c(153)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_9A
+   a = d2c(154)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_9B
+   a = d2c(155)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_9C
+   a = d2c(156)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_9D
+   a = d2c(157)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_9E
+   a = d2c(158)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_9F
+   a = d2c(159)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_A0
+   a = d2c(160)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_A1
+   a = d2c(161)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_A2
+   a = d2c(162)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_A3
+   a = d2c(163)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_A4
+   a = d2c(164)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_A5
+   a = d2c(165)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_A6
+   a = d2c(166)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_A7
+   a = d2c(167)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_A8
+   a = d2c(168)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_A9
+   a = d2c(169)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_AA
+   a = d2c(170)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_AB
+   a = d2c(171)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_AC
+   a = d2c(172)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_AD
+   a = d2c(173)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_AE
+   a = d2c(174)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_AF
+   a = d2c(175)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_B0
+   a = d2c(176)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_B1
+   a = d2c(177)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_B2
+   a = d2c(178)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_B3
+   a = d2c(179)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_B4
+   a = d2c(180)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_B5
+   a = d2c(181)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_B6
+   a = d2c(182)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_B7
+   a = d2c(183)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_B8
+   a = d2c(184)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_B9
+   a = d2c(185)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_BA
+   a = d2c(186)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_BB
+   a = d2c(187)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_BC
+   a = d2c(188)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_BD
+   a = d2c(189)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_BE
+   a = d2c(190)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_BF
+   a = d2c(191)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_C0
+   a = d2c(192)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_C1
+   a = d2c(193)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_C2
+   a = d2c(194)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_C3
+   a = d2c(195)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_C4
+   a = d2c(196)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_C5
+   a = d2c(197)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_C6
+   a = d2c(198)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_C7
+   a = d2c(199)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_C8
+   a = d2c(200)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_C9
+   a = d2c(201)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_CA
+   a = d2c(202)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_CB
+   a = d2c(203)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_CC
+   a = d2c(204)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_CD
+   a = d2c(205)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_CE
+   a = d2c(206)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_CF
+   a = d2c(207)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_D0
+   a = d2c(208)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_D1
+   a = d2c(209)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_D2
+   a = d2c(210)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_D3
+   a = d2c(211)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_D4
+   a = d2c(212)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_D5
+   a = d2c(213)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_D6
+   a = d2c(214)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_D7
+   a = d2c(215)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_D8
+   a = d2c(216)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_D9
+   a = d2c(217)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_DA
+   a = d2c(218)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_DB
+   a = d2c(219)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_DC
+   a = d2c(220)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_DD
+   a = d2c(221)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_DE
+   a = d2c(222)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_DF
+   a = d2c(223)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_E0
+   a = d2c(224)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_E1
+   a = d2c(225)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_E2
+   a = d2c(226)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_E3
+   a = d2c(227)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_E4
+   a = d2c(228)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_E5
+   a = d2c(229)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_E6
+   a = d2c(230)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_E7
+   a = d2c(231)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_E8
+   a = d2c(232)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_E9
+   a = d2c(233)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_EA
+   a = d2c(234)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_EB
+   a = d2c(235)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_EC
+   a = d2c(236)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_ED
+   a = d2c(237)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_EE
+   a = d2c(238)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_EF
+   a = d2c(239)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_F0
+   a = d2c(240)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_F1
+   a = d2c(241)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_F2
+   a = d2c(242)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_F3
+   a = d2c(243)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_F4
+   a = d2c(244)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_F5
+   a = d2c(245)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_F6
+   a = d2c(246)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_F7
+   a = d2c(247)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_F8
+   a = d2c(248)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_F9
+   a = d2c(249)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_FA
+   a = d2c(250)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_FB
+   a = d2c(251)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_FC
+   a = d2c(252)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_FD
+   a = d2c(253)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_FE
+   a = d2c(254)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+::method test_invalidOpt_hex_FF
+   a = d2c(255)
+   self~expectSyntax(40.904)
+   z = time(a)
+
+-- test civil hours range
+::method test_time_civil_hour13am
+  self~expectSyntax(40.19)
+  a = time(, "13:00am", 'c')
+
+-- test civil hours range
+::method test_time_civil_hour13pm
+  self~expectSyntax(40.19)
+  a = time(, "13:00pm", 'c')
+
+-- test civil minutes range
+::method test_time_civil_min60am
+  self~expectSyntax(40.19)
+  a = time(, "00:60am", 'c')
+
+-- test civil minutes range
+::method test_time_civil_min60pm
+  self~expectSyntax(40.19)
+  a = time(, "00:60pm", 'c')
+
+-- test 'hour' hour range
+::method test_time_hour_hour24
+  self~expectSyntax(40.19)
+  a = time(, "24", 'h')
+
+-- test 'long' hour range
+::method test_time_long_hour24
+  self~expectSyntax(40.19)
+  a = time(, "24:00:00.000000", 'l')
+
+-- test 'long' minutes range
+::method test_time_long_min60
+  self~expectSyntax(40.19)
+  a = time(, "00:60:00.000000", 'l')
+
+-- test 'long' seconds range
+::method test_time_long_sec60
+  self~expectSyntax(40.19)
+  a = time(, "00:00:60.000000", 'l')
+
+-- test 'normal' hour range
+::method test_time_normal_hour24
+  self~expectSyntax(40.19)
+  a = time(, "24:00:00", 'n')
+
+-- test 'normal' minutes range
+::method test_time_normal_min60
+  self~expectSyntax(40.19)
+  a = time(, "00:60:00", 'n')
+
+-- test 'normal' seconds range
+::method test_time_normal_sec60
+  self~expectSyntax(40.19)
+  a = time(, "00:00:60", 'n')
+
+-- from time.testgroup 12/18/07 Lee Peedin
+::METHOD 'test_civil_morning'
+time = '4:47am'
+format = 'C'
+self~assertSame(time('C', time, format), "4:47am", "civil / subtest # 1")
+self~assertSame(time('H', time, format), "4", "hours / subtest # 2")
+self~assertSame(time('L', time, format), "04:47:00.000000", "long  / subtest # 3")
+self~assertSame(time('M', time, format), "287", "long  / subtest # 4")
+self~assertSame(time('N', time, format), "04:47:00", "long  / subtest # 5")
+self~assertSame(time('S', time, format), "17220", "long  / subtest # 6")
+
+::METHOD 'test_civil_afternoon'
+time = '4:47pm'
+format = 'C'
+self~assertSame(time('C', time, format), "4:47pm", "civil / subtest # 1")
+self~assertSame(time('H', time, format), "16", "hours / subtest # 2")
+self~assertSame(time('L', time, format), "16:47:00.000000", "long  / subtest # 3")
+self~assertSame(time('M', time, format), "1007", "long  / subtest # 4")
+self~assertSame(time('N', time, format), "16:47:00", "long  / subtest # 5")
+self~assertSame(time('S', time, format), "60420", "long  / subtest # 6")
+
+::METHOD 'test_hours_morning'
+time = '4'
+format = 'H'
+self~assertSame(time('C', time, format), "4:00am", "civil / subtest # 1")
+self~assertSame(time('H', time, format), "4", "hours / subtest # 2")
+self~assertSame(time('L', time, format), "04:00:00.000000", "long  / subtest # 3")
+self~assertSame(time('M', time, format), "240", "long  / subtest # 4")
+self~assertSame(time('N', time, format), "04:00:00", "long  / subtest # 5")
+self~assertSame(time('S', time, format), "14400", "long  / subtest # 6")
+
+::METHOD 'test_hours_afternoon'
+time = '16'
+format = 'H'
+self~assertSame(time('C', time, format), "4:00pm", "civil / subtest # 1")
+self~assertSame(time('H', time, format), "16", "hours / subtest # 2")
+self~assertSame(time('L', time, format), "16:00:00.000000", "long  / subtest # 3")
+self~assertSame(time('M', time, format), "960", "long  / subtest # 4")
+self~assertSame(time('N', time, format), "16:00:00", "long  / subtest # 5")
+self~assertSame(time('S', time, format), "57600", "long  / subtest # 6")
+
+::METHOD 'test_long_morning'
+time = '06:47:49.384783'
+format = 'L'
+self~assertSame(time('C', time, format), "6:47am", "civil / subtest # 1")
+self~assertSame(time('H', time, format), "6", "hours / subtest # 2")
+self~assertSame(time('L', time, format), "06:47:49.384783", "long  / subtest # 3")
+self~assertSame(time('M', time, format), "407", "long  / subtest # 4")
+self~assertSame(time('N', time, format), "06:47:49", "long  / subtest # 5")
+self~assertSame(time('S', time, format), "24469", "long  / subtest # 6")
+
+::METHOD 'test_long_afternoon'
+time = '16:47:49.387902'
+format = 'L'
+self~assertSame(time('C', time, format), "4:47pm", "civil / subtest # 1")
+self~assertSame(time('H', time, format), "16", "hours / subtest # 2")
+self~assertSame(time('L', time, format), "16:47:49.387902", "long  / subtest # 3")
+self~assertSame(time('M', time, format), "1007", "long  / subtest # 4")
+self~assertSame(time('N', time, format), "16:47:49", "long  / subtest # 5")
+self~assertSame(time('S', time, format), "60469", "long  / subtest # 6")
+
+::METHOD 'test_minutes_morning'
+time = '250'
+format = 'M'
+self~assertSame(time('C', time, format), "4:10am", "civil / subtest # 1")
+self~assertSame(time('H', time, format), "4", "hours / subtest # 2")
+self~assertSame(time('L', time, format), "04:10:00.000000", "long  / subtest # 3")
+self~assertSame(time('M', time, format), "250", "long  / subtest # 4")
+self~assertSame(time('N', time, format), "04:10:00", "long  / subtest # 5")
+self~assertSame(time('S', time, format), "15000", "long  / subtest # 6")
+
+::METHOD 'test_minutes_afternoon'
+time = '1012'
+format = 'M'
+self~assertSame(time('C', time, format), "4:52pm", "civil / subtest # 1")
+self~assertSame(time('H', time, format), "16", "hours / subtest # 2")
+self~assertSame(time('L', time, format), "16:52:00.000000", "long  / subtest # 3")
+self~assertSame(time('M', time, format), "1012", "long  / subtest # 4")
+self~assertSame(time('N', time, format), "16:52:00", "long  / subtest # 5")
+self~assertSame(time('S', time, format), "60720", "long  / subtest # 6")
+
+::METHOD 'test_normal_morning'
+time = '06:47:49'
+format = 'N'
+self~assertSame(time('C', time, format), "6:47am", "civil / subtest # 1")
+self~assertSame(time('H', time, format), "6", "hours / subtest # 2")
+self~assertSame(time('L', time, format), "06:47:49.000000", "long  / subtest # 3")
+self~assertSame(time('M', time, format), "407", "long  / subtest # 4")
+self~assertSame(time('N', time, format), "06:47:49", "long  / subtest # 5")
+self~assertSame(time('S', time, format), "24469", "long  / subtest # 6")
+
+::METHOD 'test_normal_afternoon'
+time = '16:47:49'
+format = 'N'
+self~assertSame(time('C', time, format), "4:47pm", "civil / subtest # 1")
+self~assertSame(time('H', time, format), "16", "hours / subtest # 2")
+self~assertSame(time('L', time, format), "16:47:49.000000", "long  / subtest # 3")
+self~assertSame(time('M', time, format), "1007", "long  / subtest # 4")
+self~assertSame(time('N', time, format), "16:47:49", "long  / subtest # 5")
+self~assertSame(time('S', time, format), "60469", "long  / subtest # 6")
+
+::METHOD 'test_seconds_morning'
+time = '1517'
+format = 'S'
+self~assertSame(time('C', time, format), "12:25am", "civil / subtest # 1")
+self~assertSame(time('H', time, format), "0", "hours / subtest # 2")
+self~assertSame(time('L', time, format), "00:25:17.000000", "long  / subtest # 3")
+self~assertSame(time('M', time, format), "25", "long  / subtest # 4")
+self~assertSame(time('N', time, format), "00:25:17", "long  / subtest # 5")
+self~assertSame(time('S', time, format), "1517", "long  / subtest # 6")
+
+::METHOD 'test_seconds_afternoon'
+time = '60801'
+format = 'S'
+self~assertSame(time('C', time, format), "4:53pm", "civil / subtest # 1")
+self~assertSame(time('H', time, format), "16", "hours / subtest # 2")
+self~assertSame(time('L', time, format), "16:53:21.000000", "long  / subtest # 3")
+self~assertSame(time('M', time, format), "1013", "long  / subtest # 4")
+self~assertSame(time('N', time, format), "16:53:21", "long  / subtest # 5")
+self~assertSame(time('S', time, format), "60801", "long  / subtest # 6")
+
+::METHOD 'test_start_day'
+time = '00:00:00.000000'
+format = 'L'
+self~assertSame(time('C', time, format), "12:00am", "civil / subtest # 1")
+self~assertSame(time('H', time, format), "0", "hours / subtest # 2")
+self~assertSame(time('L', time, format), "00:00:00.000000", "long  / subtest # 3")
+self~assertSame(time('M', time, format), "0", "long  / subtest # 4")
+self~assertSame(time('N', time, format), "00:00:00", "long  / subtest # 5")
+self~assertSame(time('S', time, format), "0", "long  / subtest # 6")
+
+::METHOD 'test_past_start_day'
+time = '00:00:00.000001'
+format = 'L'
+self~assertSame(time('C', time, format), "12:00am", "civil / subtest # 1")
+self~assertSame(time('H', time, format), "0", "hours / subtest # 2")
+self~assertSame(time('L', time, format), "00:00:00.000001", "long  / subtest # 3")
+self~assertSame(time('M', time, format), "0", "long  / subtest # 4")
+self~assertSame(time('N', time, format), "00:00:00", "long  / subtest # 5")
+self~assertSame(time('S', time, format), "0", "long  / subtest # 6")
+
+::METHOD 'test_ten_morning'
+time = '10:00:00.000000'
+format = 'L'
+self~assertSame(time('C', time, format), "10:00am", "civil / subtest # 1")
+self~assertSame(time('H', time, format), "10", "hours / subtest # 2")
+self~assertSame(time('L', time, format), "10:00:00.000000", "long  / subtest # 3")
+self~assertSame(time('M', time, format), "600", "long  / subtest # 4")
+self~assertSame(time('N', time, format), "10:00:00", "long  / subtest # 5")
+self~assertSame(time('S', time, format), "36000", "long  / subtest # 6")
+
+::METHOD 'test_almost_noon'
+time = '11:59:59.999999'
+format = 'L'
+self~assertSame(time('C', time, format), "11:59am", "civil / subtest # 1")
+self~assertSame(time('H', time, format), "11", "hours / subtest # 2")
+self~assertSame(time('L', time, format), "11:59:59.999999", "long  / subtest # 3")
+self~assertSame(time('M', time, format), "719", "long  / subtest # 4")
+self~assertSame(time('N', time, format), "11:59:59", "long  / subtest # 5")
+self~assertSame(time('S', time, format), "43199", "long  / subtest # 6")
+
+::METHOD 'test_noon'
+time = '12:00:00.000000'
+format = 'L'
+self~assertSame(time('C', time, format), "12:00pm", "civil / subtest # 1")
+self~assertSame(time('H', time, format), "12", "hours / subtest # 2")
+self~assertSame(time('L', time, format), "12:00:00.000000", "long  / subtest # 3")
+self~assertSame(time('M', time, format), "720", "long  / subtest # 4")
+self~assertSame(time('N', time, format), "12:00:00", "long  / subtest # 5")
+self~assertSame(time('S', time, format), "43200", "long  / subtest # 6")
+
+::METHOD 'test_past_noon'
+time = '12:00:00.000001'
+format = 'L'
+self~assertSame(time('C', time, format), "12:00pm", "civil / subtest # 1")
+self~assertSame(time('H', time, format), "12", "hours / subtest # 2")
+self~assertSame(time('L', time, format), "12:00:00.000001", "long  / subtest # 3")
+self~assertSame(time('M', time, format), "720", "long  / subtest # 4")
+self~assertSame(time('N', time, format), "12:00:00", "long  / subtest # 5")
+self~assertSame(time('S', time, format), "43200", "long  / subtest # 6")
+
+::METHOD 'test_ten_night'
+time = '22:00:00.000000'
+format = 'L'
+self~assertSame(time('C', time, format), "10:00pm", "civil / subtest # 1")
+self~assertSame(time('H', time, format), "22", "hours / subtest # 2")
+self~assertSame(time('L', time, format), "22:00:00.000000", "long  / subtest # 3")
+self~assertSame(time('M', time, format), "1320", "long  / subtest # 4")
+self~assertSame(time('N', time, format), "22:00:00", "long  / subtest # 5")
+self~assertSame(time('S', time, format), "79200", "long  / subtest # 6")
+
+::METHOD 'test_end_day'
+time = '23:59:59.999999'
+format = 'L'
+self~assertSame(time('C', time, format), "11:59pm", "civil / subtest # 1")
+self~assertSame(time('H', time, format), "23", "hours / subtest # 2")
+self~assertSame(time('L', time, format), "23:59:59.999999", "long  / subtest # 3")
+self~assertSame(time('M', time, format), "1439", "long  / subtest # 4")
+self~assertSame(time('N', time, format), "23:59:59", "long  / subtest # 5")
+self~assertSame(time('S', time, format), "86399", "long  / subtest # 6")
+
+
+::class "TIME.long.testGroup" subclass ooTestCase public
+
+::method init class
+  forward class (super) continue
+  self~ooTestType = self~UNIT_LONG_TEST
+
+/** midnightDidNotHappen()  Used to ensure a test involving the elapsed time
+ *  clock does not start before midnight and finish after midnight.
+ */
+::method midnightDidNotHappen private
+   use strict arg startTime
+   return (time() > startTime)
+
+/** ensureEmptyQueue()  Make sure the queue is empty at this point.
+ */
+::method ensureEmptyQueue private
+  do while queued()
+    pull
+  end
+
+::method "test_2"
+   currentTime = time()
+
+   cb1=TIME('r')||'*'||TIME('R')
+   Call sysSLEEP '1.1'
+   Call SUB1
+   Call sysSLEEP '1.1'
+   cb4=TIME('r')||'*'||TIME('R')
+   Parse Var cb1 cb1a '*' cb1b
+   Parse Var cb2 cb2a '*' cb2b
+   Parse Var cb3 cb3a '*' cb3b
+   Parse Var cb4 cb4a '*' cb4b
+
+   -- Ensure we did not cross midnight.
+   self~assertTrue(self~midnightDidNotHappen(currentTime), 'Midnight did not occur while this test case was running.')
+
+   self~assertSame(cb1a, cb1b)
+   self~assertSame(cb2a, cb2b)
+   self~assertSame(cb3a, cb3b)
+   self~assertSame(cb4a, cb4b)
+
+   self~assertTrue(cb2a>='1', 'cb2a should be greater than or equal to 1, cb2a is:' cb2a)
+   self~assertTrue(cb3a>='5', 'cb3a should be greater than or equal to 5, cb3a is:' cb3a)
+   self~assertTrue(cb4a>='7', 'cb4a should be greater than or equal to 7, cb4a is:' cb4a)
+   return
+
+   SUB1:
+   cb2=TIME('r')||'*'||TIME('R')
+   Call sysSLEEP '5.1'
+   cb3='54494d45'x('r')||'*'||TIME('R')
+   Return
+
+
+::method "test_3"
+   currentTime = time()
+
+   cb1=TIME('r')||'*'||TIME('R')
+   Call sysSLEEP '1.1'
+   Call SUB2
+   Call sysSLEEP '1.1'
+   cb4=TIME('r')||'*'||TIME('R')
+   Parse Var cb1 cb1a '*' cb1b
+   Parse Var cb2 cb2a '*' cb2b
+   Parse Var cb3 cb3a '*' cb3b
+   Parse Var cb4 cb4a '*' cb4b
+   Parse Var cb5 cb5a '*' cb5b
+   Parse Var cb6 cb6a '*' cb6b
+
+   -- Ensure we did not cross midnight.
+   self~assertTrue(self~midnightDidNotHappen(currentTime), 'Midnight did not occur while this test case was running.')
+
+   self~assertSame(cb1a, cb1b)
+   self~assertSame(cb2a, cb2b)
+   self~assertSame(cb3a, cb3b)
+   self~assertSame(cb4a, cb4b)
+   self~assertSame(cb5a, cb5b)
+   self~assertSame(cb6a, cb6b)
+
+   self~assertTrue(cb5a>='1', 'cb5a should be greater than or equal to 1, cb5a is:' cb5a)
+   self~assertTrue(cb6a>='5', 'cb6a should be greater than or equal to 5, cb6a is:' cb6a)
+   self~assertTrue(cb2a>='1', 'cb2a should be greater than or equal to 1, cb2a is:' cb2a)
+   self~assertTrue(cb3a>='5', 'cb3a should be greater than or equal to 5, cb3a is:' cb3a)
+   self~assertTrue(cb4a>='13', 'cb4a should be greater than or equal to 13, cb4a is:' cb4a)
+   return
+
+   SUB1:
+   cb2=TIME('r')||'*'||TIME('R')
+   Call sysSLEEP '5.1'
+   cb3='54494d45'x('r')||'*'||TIME('R')
+   Return
+   SUB2:
+   cb5='TIME'('r')||'*'||TIME('R')
+   Call sysSLEEP '5.1'
+   cb6="TIME"('r')||'*'||TIME('R')
+   Call sysSLEEP '1.1'
+   Call SUB1
+   Return
+
+
+::method "test_4"
+   self~ensureEmptyQueue
+   currentTime = time()
+
+   currentTime = time()
+   cb1=TIME('r')||'*'||TIME('R')
+   Call sysSLEEP '1.1'
+   Call SCBTIMEA
+   Call sysSLEEP '1.1'
+   cb4=TIME('r')||'*'||TIME('R')
+   Pull cb2 cb3
+   Parse Var cb1 cb1a '*' cb1b
+   Parse Var cb2 cb2a '*' cb2b
+   Parse Var cb3 cb3a '*' cb3b
+   Parse Var cb4 cb4a '*' cb4b
+
+   -- Ensure we did not cross midnight.
+   self~assertTrue(self~midnightDidNotHappen(currentTime), 'Midnight did not occur while this test case was running.')
+
+   self~assertSame(cb1a, cb1b)
+   self~assertSame(cb2a, cb2b)
+   self~assertSame(cb3a, cb3b)
+   self~assertSame(cb4a, cb4b)
+
+   self~assertSame(cb2a, '0')
+   self~assertTrue(cb3a>='5', 'cb3a should be greater than or equal to 5, cb3a is:' cb3a)
+   self~assertTrue(cb4a>='7', 'cb4a should be greater than or equal to 7, cb4a is:' cb4a)
+
+
+::method "test_5"
+   self~ensureEmptyQueue
+   currentTime = time()
+
+   cb1=TIME('r')||'*'||TIME('R')
+   Call sysSLEEP '1.1'
+   Call SCBTIMEB
+   Call sysSLEEP '1.1'
+   Pull cb5 cb6
+   Pull cb2 cb3
+   cb4=TIME('r')||'*'||TIME('R')
+   Parse Var cb1 cb1a '*' cb1b
+   Parse Var cb2 cb2a '*' cb2b
+   Parse Var cb3 cb3a '*' cb3b
+   Parse Var cb4 cb4a '*' cb4b
+   Parse Var cb5 cb5a '*' cb5b
+   Parse Var cb6 cb6a '*' cb6b
+
+   -- Ensure we did not cross midnight.
+   self~assertTrue(self~midnightDidNotHappen(currentTime), 'Midnight did not occur while this test case was running.')
+
+   self~assertSame(cb1a, cb1b)
+   self~assertSame(cb2a, cb2b)
+   self~assertSame(cb3a, cb3b)
+   self~assertSame(cb4a, cb4b)
+   self~assertSame(cb5a, cb5b)
+   self~assertSame(cb6a, cb6b)
+
+   self~assertSame(cb5a, '0', 'cb5a should be 0, cb5a is:' cb5a)
+   self~assertTrue(cb6a>='5', 'cb6a should be greater than or equal to 5, cb6a is:' cb6a)
+   self~assertSame(cb2a, '0', 'cb2a should be 0, cb2a is:' cb2a)
+   self~assertTrue(cb3a>='5', 'cb3a should be greater than or equal to 5, cb3a is:' cb3a)
+   self~assertTrue(cb4a>='13', 'cb4a should be greater than or equal to 13, cb4a is:' cb4a)
+
+
+::method "test_8"
+   currentTime = time()
+
+   cb1=TIME('rage')||'*'||TIME('RAGE')
+   Call sysSLEEP '1.1'
+   Call SUB3
+   Call sysSLEEP '1.1'
+   cb4=TIME('rage')||'*'||TIME('RAGE')
+   Parse Var cb1 cb1a '*' cb1b
+   Parse Var cb2 cb2a '*' cb2b
+   Parse Var cb3 cb3a '*' cb3b
+   Parse Var cb4 cb4a '*' cb4b
+
+   -- Ensure we did not cross midnight.
+   self~assertTrue(self~midnightDidNotHappen(currentTime), 'Midnight did not occur while this test case was running.')
+
+   self~assertSame(cb1a, cb1b)
+   self~assertSame(cb2a, cb2b)
+   self~assertSame(cb3a, cb3b)
+   self~assertSame(cb4a, cb4b)
+
+   self~assertTrue(cb2a>='1', 'cb2a should be greater than or equal to 1, cb2a is:' cb2a)
+   self~assertTrue(cb3a>='5', 'cb3a should be greater than or equal to 5, cb3a is:' cb3a)
+   self~assertTrue(cb4a>='7', 'cb4a should be greater than or equal to 7, cb4a is:' cb4a)
+
+   SUB1:
+   cb2=TIME('r')||'*'||TIME('R')
+   Call sysSLEEP '5.1'
+   cb3='54494d45'x('r')||'*'||TIME('R')
+   Return
+   SUB2:
+   cb5='TIME'('r')||'*'||TIME('R')
+   Call sysSLEEP '5.1'
+   cb6="TIME"('r')||'*'||TIME('R')
+   Call sysSLEEP '1.1'
+   Call SUB1
+   Return
+   SUB3:
+   cb2=TIME('rage')||'*'||TIME('RAGE')
+   Call sysSLEEP '5.1'
+   cb3=TIME('rage')||'*'||TIME('R-12')
+   Return
+
+
+::method "test_9"
+   currentTime = time()
+
+   cb1=TIME('rage')||'*'||TIME('RAGE')
+   Call sysSLEEP '1.1'
+   Call SUB4
+   Call sysSLEEP '1.1'
+   cb4=TIME('rage')||'*'||TIME('RAGE')
+   Parse Var cb1 cb1a '*' cb1b
+   Parse Var cb2 cb2a '*' cb2b
+   Parse Var cb3 cb3a '*' cb3b
+   Parse Var cb4 cb4a '*' cb4b
+   Parse Var cb5 cb5a '*' cb5b
+   Parse Var cb6 cb6a '*' cb6b
+
+   -- Ensure we did not cross midnight.
+   self~assertTrue(self~midnightDidNotHappen(currentTime), 'Midnight did not occur while this test case was running.')
+
+   self~assertSame(cb1a, cb1b)
+   self~assertSame(cb2a, cb2b)
+   self~assertSame(cb3a, cb3b)
+   self~assertSame(cb4a, cb4b)
+   self~assertSame(cb5a, cb5b)
+   self~assertSame(cb6a, cb6b)
+
+   self~assertTrue(cb5a>='1', 'cb5a should be greater than or equal to 1, cb5a is:' cb5a)
+   self~assertTrue(cb6a>='5', 'cb6a should be greater than or equal to 5, cb6a is:' cb6a)
+   self~assertTrue(cb2a>='1', 'cb2a should be greater than or equal to 1, cb2a is:' cb2a)
+   self~assertTrue(cb3a>='5', 'cb3a should be greater than or equal to 5, cb3a is:' cb3a)
+   self~assertTrue(cb4a>='13', 'cb4a should be greater than or equal to 13, cb4a is:' cb4a)
+
+   SUB1:
+   cb2=TIME('r')||'*'||TIME('R')
+   Call sysSLEEP '5.1'
+   cb3='54494d45'x('r')||'*'||TIME('R')
+   Return
+   SUB2:
+   cb5='TIME'('r')||'*'||TIME('R')
+   Call sysSLEEP '5.1'
+   cb6="TIME"('r')||'*'||TIME('R')
+   Call sysSLEEP '1.1'
+   Call SUB1
+   Return
+   SUB3:
+   cb2=TIME('rage')||'*'||TIME('RAGE')
+   Call sysSLEEP '5.1'
+   cb3=TIME('rage')||'*'||TIME('R-12')
+   Return
+   SUB4:
+   cb5=TIME('rage')||'*'||TIME('RAGE 27')
+   Call sysSLEEP '5.1'
+   cb6=TIME('rage')||'*'||TIME('RAGE')
+   Call sysSLEEP '1.1'
+   Call SUB1
+   Return
+
+
+::method "test_10"
+   self~ensureEmptyQueue
+   currentTime = time()
+
+   cb1=TIME('rage')||'*'||TIME('RAGE')
+   Call sysSLEEP '1.1'
+   Call SCBTIMEC
+   Call sysSLEEP '1.1'
+   cb4=TIME('rage')||'*'||TIME('RAGE')
+   Pull cb2 cb3
+   Parse Var cb1 cb1a '*' cb1b
+   Parse Var cb2 cb2a '*' cb2b
+   Parse Var cb3 cb3a '*' cb3b
+   Parse Var cb4 cb4a '*' cb4b
+
+   -- Ensure we did not cross midnight.
+   self~assertTrue(self~midnightDidNotHappen(currentTime), 'Midnight did not occur while this test case was running.')
+
+   self~assertSame(cb1a, cb1b)
+   self~assertSame(cb2a, cb2b)
+   self~assertSame(cb3a, cb3b)
+   self~assertSame(cb4a, cb4b)
+
+   self~assertSame(cb2a, '0')
+   self~assertTrue(cb3a>='5', 'cb3a should be greater than or equal to 5, cb3a is:' cb3a)
+   self~assertTrue(cb4a>='7', 'cb4a should be greater than or equal to 7, cb4a is:' cb4a)
+
+
+::method "test_11"
+   self~ensureEmptyQueue
+   currentTime = time()
+
+   cb1=TIME('rage')||'*'||TIME('RAGE')
+   Call sysSLEEP '1.1'
+   Call SCBTIMED
+   Call sysSLEEP '1.1'
+   Pull cb5 cb6
+   Pull cb2 cb3
+   cb4=TIME('rage')||'*'||TIME('RAGE')
+   Parse Var cb1 cb1a '*' cb1b
+   Parse Var cb2 cb2a '*' cb2b
+   Parse Var cb3 cb3a '*' cb3b
+   Parse Var cb4 cb4a '*' cb4b
+   Parse Var cb5 cb5a '*' cb5b
+   Parse Var cb6 cb6a '*' cb6b
+
+   -- Ensure we did not cross midnight.
+   self~assertTrue(self~midnightDidNotHappen(currentTime), 'Midnight did not occur while this test case was running.')
+
+   self~assertSame(cb1a, cb1b)
+   self~assertSame(cb2a, cb2b)
+   self~assertSame(cb3a, cb3b)
+   self~assertSame(cb4a, cb4b)
+   self~assertSame(cb5a, cb5b)
+   self~assertSame(cb6a, cb6b)
+
+   self~assertSame(cb5a, '0', 'cb5a should be 0, cb5a is:' cb5a)
+   self~assertTrue(cb6a>='5', 'cb6a should be greater than or equal to 5, cb6a is:' cb6a)
+   self~assertSame(cb2a, '0', 'cb2a should be 0, cb2a is:' cb2a)
+   self~assertTrue(cb3a>='5', 'cb3a should be greater than or equal to 5, cb3a is:' cb3a)
+   self~assertTrue(cb4a>='13', 'cb4a should be greater than or equal to 13, cb4a is:' cb4a)
+
+
+
+-- rexxref documentation tests
+
+::method "test_101"
+   self~assertSame("11:27am", time('C','11:27:21'))
+   self~assertSame("11:27:00", time('N','11:27am','C'))
+   self~assertEquals(1020, TIME('M','5:00pm','C'))
+
+
+
+
+
+
+::routine SCBTIMEA
+   /* Test elapsed clock: time('R')
+   *  Notes: Midnight must not occur during the execution of this exec.
+   *         This is an external subroutine for test of Elapsed clock
+   *         integrity.
+   */
+   Parse Version version
+   Parse Source fn
+   cb2=TIME('r')||'*'||TIME('R')
+   Call sysSLEEP(5.1)
+   cb3=TIME('r')||'*'||TIME('R')
+   Queue cb2 cb3
+   return
+
+
+::routine SCBTIMEB
+   /* Test elapsed clock: time('R')
+   *  Notes: Midnight must not occur during the execution of this exec.
+   *         This is an external subroutine for test of Elapsed clock
+   *         integrity.
+   */
+   Parse Version version
+   Parse Source fn
+   cb5=TIME('r')||'*'||TIME('R')
+   Call sysSLEEP(5.1)
+   cb6=TIME('r')||'*'||TIME('R')
+   Call sysSLEEP(1.1)
+   Queue cb5 cb6
+   Call SCBTIMEA
+   return
+
+
+::routine SCBTIMEC
+   /* Test elapsed clock: time('RAGE')
+   *  Notes: Midnight must not occur during the execution of this exec.
+   *         This is an external subroutine for test of Elapsed clock
+   *         integrity.
+   */
+   Parse Version version
+   Parse Source fn
+   cb2=TIME('rage')||'*'||TIME('RAGE')
+   Call sysSLEEP(5.1)
+   cb3=TIME('rage')||'*'||TIME('RAGE')
+   Queue cb2 cb3
+   return
+
+
+::routine SCBTIMED
+   /* Test elapsed clock: time('RAGE')
+   *  Notes: Midnight must not occur during the execution of this exec.
+   *         This is an external subroutine for test of Elapsed clock
+   *         integrity.
+   */
+   Parse Version version
+   Parse Source fn
+   cb5=TIME('rage')||'*'||TIME('RAGE')
+   Call sysSLEEP(5.1)
+   cb6=TIME('rage')||'*'||TIME('RAGE')
+   Call sysSLEEP(1.1)
+   Queue cb5 cb6
+   Call SCBTIMEA
+   return
+
+
+::options novalue error

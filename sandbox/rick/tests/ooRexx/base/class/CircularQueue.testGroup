@@ -1,0 +1,812 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2006-2018 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+
+  group = .TestGroup~new(s)
+  group~add(.CircularQueue.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "CircularQueue.testGroup" subclass ooTestCase public
+::method init
+  expose collDir clz bUserDefinedIndex bSingleItem o1 o2
+  forward class (super) continue    -- let superclass initialize
+
+  clz=.CircularQueue                -- collection class object to use
+  bUserDefinedIndex=.false          -- user defined index? (determines what MAKEARRAY returns)
+  bSingleItem      =.true           -- index associates only one item
+
+  collDir=.directory~new            -- define directory containing predefined collections
+  collDir~emptyColl=clz~new(5)
+
+  o1=.object~new
+  o2=.object~new
+
+  collDir~coll_1   =clz~of("1v", "2v", "2v", "2v", o1, o1)
+  collDir~coll_2   =clz~of(            "2v", "2v", o1, o1, o2, o2, "3v")
+
+  collDir~allIndexes1=.array~of(0, 1, 2, 3, 4, 5)
+  collDir~allIndexes2=.array~of(0, 1, 2, 3, 4, 5, 6)
+
+  collDir~allItems1=.array~of("1v", "2v", "2v", "2v", o1, o1)
+  collDir~allItems2=.array~of(            "2v", "2v", o1, o1, o2, o2, "3v")
+
+
+   /* determine resulting collection   */
+  collDir~difference1 =clz~of("1v","2v")  /* coll_1~difference(coll_2) */
+  collDir~difference2 =clz~of(o2, o2, "3v")       /* coll_2~difference(coll_1) */
+
+
+  collDir~interSectionColl=clz~of("2v", "2v", o1, o1)
+
+  collDir~unionColl1      =clz~of("1v", "2v", "2v", "2v", "2v", "2v", o1, o1, o1, o1, o2, o2, "3v")
+  collDir~unionColl2      =clz~of("2v", "2v", "3v", "1v", "2v", "2v", "2v", o1, o1, o2, o2, o1, o1)
+
+  collDir~xorColl1        =clz~of("1v", "2v", o2, o2, "3v")
+  collDir~xorColl2        =clz~of(o2, o2, "3v", "1v", "2v")
+
+
+   -- test INIT arguments (sent via NEW) ---------------------------------------------
+::method "test_INIT_ARG_1"
+   self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
+   u=.CircularQueue~new
+
+::method "test_INIT_ARG_2"
+   self~expectSyntax(93.902)     -- too many arguments
+   u=.CircularQueue~new("one", "two")
+
+::method "test_INIT_ARG_3a"
+   self~expectSyntax(93.906)     -- not numeric, smaller than 0
+   u=.CircularQueue~new("max")
+
+::method "test_INIT_ARG_3b"
+   self~expectSyntax(93.906)     -- not numeric, smaller than 0
+   u=.CircularQueue~new(-1)
+
+::method "test_INIT_ARG_4"
+   self~assertEquals(3, .CircularQueue~new(3)~size)
+   self~assertEquals(0, .CircularQueue~new(0)~size)
+
+
+   -- test OF (class method) ---------------------------------------------
+::method "test_OF"
+   u0=.CircularQueue~of
+   u3=.CircularQueue~of(1,2,3)
+   self~assertEquals(0, u0~items)
+   self~assertEquals(0, u0~size)
+   self~assertEquals(3, u3~items)
+   self~assertEquals(3, u3~size)
+
+
+   -- test SIZE method ---------------------------------------------
+::method "test_SIZE_1a"
+   self~expectSyntax(93.902)        -- too many arguments
+   u=.CircularQueue~new(3)~size(3)  -- no arguments expected!
+
+::method "test_SIZE_1b"
+   self~expectSyntax(93.902)           -- too many arguments
+   u=.CircularQueue~new(3)~size(.nil)  -- no arguments expected!
+
+::method "test_SIZE_1c"
+   self~expectSyntax(93.902)        -- too many arguments
+   u=.CircularQueue~new(3)~size(1, 2)  -- no arguments expected!
+
+::method "test_SIZE_2"
+   u0=.CircularQueue~of
+   u3=.CircularQueue~of(1,2,3)
+
+   self~assertEquals(0, u0~size)
+   self~assertEquals(3, u3~size)
+
+
+   -- test RESIZE method ---------------------------------------------
+::method "test_RESIZE_1a"
+   self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
+   u=.CircularQueue~new(3)~resize   -- omit mandatory argument
+
+::method "test_RESIZE_1b"
+   self~expectSyntax(93.902)        -- too many arguments
+   u=.CircularQueue~new(3)~resize(1, 2, 3)
+
+::method "test_RESIZE_1c"
+   self~expectSyntax(93.914)        -- wrong second argument
+   u=.CircularQueue~new(3)~resize(1, 2)
+
+::method "test_RESIZE_1d"
+   self~expectSyntax(93.906)     -- not numeric, smaller than 0
+   u=.CircularQueue~new(3)~resize("max")
+
+::method "test_RESIZE_1e"
+   self~expectSyntax(93.906)     -- not numeric, smaller than 0
+   u=.CircularQueue~new(3)~resize(-1)
+
+::method "test_RESIZE_2"
+   u0=.CircularQueue~of
+   u3=.CircularQueue~of(1,2,3)
+   self~assertEquals(0, u0~items)
+   self~assertEquals(0, u0~size)
+   u0~resize(1)
+   self~assertEquals(0, u0~items)
+   self~assertEquals(1, u0~size)
+
+   u3~resize(2, "LIFO")
+   self~assertEquals(2, u3~items)
+   self~assertEquals(2, u3~size)
+
+   u3~resize(0)
+   self~assertEquals(0, u3~items)
+   self~assertEquals(0, u3~size)
+
+
+   -- test QUEUE method ---------------------------------------------
+::method "test_QUEUE_1a"
+   self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
+   u=.CircularQueue~new(3)~queue    -- omit mandatory argument
+
+::method "test_QUEUE_1b"
+   self~expectSyntax(93.902)        -- too many arguments
+   u=.CircularQueue~new(3)~queue(1, 2, 3)
+
+::method "test_QUEUE_2"
+   u0=.CircularQueue~new(0)         -- empty queue (size=0, items=0)
+   self~assertEquals(0, u0~~queue(1)~items)
+
+   u3=.CircularQueue~of(1,2,3)      -- queue of three elements
+   a=.array~of(1,2,3)               -- test sequence #1
+   self~assertTrue(testSequence(u3, a))
+
+   u3~~queue(4)~~queue(5)
+   a=.array~of(3,4,5)               -- test sequence #1
+   self~assertTrue(testSequence(u3, a))
+
+::method "test_QUEUE_unique"        -- sahananda 20080731
+   u3=.CircularQueue~of(1,2,3)      -- queue of three elements
+   a=.array~of(1,2,3)               -- test sequence #1
+   self~assertTrue(testSequence(u3, a))
+
+   u3~~queue(4,'Unique')~~queue(5,'Unique')
+   a=.array~of(3,4,5)               -- test sequence #1
+   self~assertTrue(testSequence(u3, a))
+
+   u3~~queue(5,'Unique')~~queue(4,'Unique')
+   a=.array~of(3,5,4)               -- test sequence #1
+   self~assertTrue(testSequence(u3, a))
+
+   -- test PUSH method ---------------------------------------------
+::method "test_PUSH_1a"
+   self~expectSyntax(93.901)     -- reflect USE STRICT ARG error message
+   u=.CircularQueue~new(3)~queue    -- omit mandatory argument
+
+::method "test_PUSH_1b"
+   self~expectSyntax(93.902)        -- too many arguments
+   u=.CircularQueue~new(3)~queue(1, 2, 3)
+
+::method "test_PUSH_2"
+   u0=.CircularQueue~new(0)         -- empty queue (size=0, items=0)
+   self~assertEquals(0, u0~~push(1)~items)
+
+   u3=.CircularQueue~of(1,2,3)      -- queue of three elements
+   a=.array~of(1,2,3)               -- test sequence #1
+   self~assertTrue(testSequence(u3, a))
+
+   u3~~push(4)~~push(5)
+   a=.array~of(5,4,3)               -- test sequence #1
+   self~assertTrue(testSequence(u3, a))
+
+::method "test_PUSH_unique"
+   u3=.CircularQueue~of(1,2,3)      -- queue of three elements
+   a=.array~of(1,2,3)               -- test sequence #1
+   self~assertTrue(testSequence(u3, a))
+
+   u3~~push(4,'Unique')~~push(5,'Unique')
+   a=.array~of(5,4,1)               -- test sequence #1
+   self~assertTrue(testSequence(u3, a))
+
+   u3~~push(5,'Unique')~~push(4,'Unique')
+   a=.array~of(4,5,1)               -- test sequence #1
+   self~assertTrue(testSequence(u3, a))
+
+   -- test MAKEARRAY method ---------------------------------------------
+::method "test_MAKEARRAY_1a"
+   self~expectSyntax(93.902)        -- too many arguments
+   u=.CircularQueue~new(3)~makearray(1, 2)
+
+::method "test_MAKEARRAY_1b"
+   self~expectSyntax(93.914)        -- wrong argument
+   u=.CircularQueue~new(3)~makearray("wrong")
+
+::method "test_MAKEARRAY_2"
+   u0=.CircularQueue~of
+   self~assertEquals(0, u0~makearray~items)
+
+   u3=.CircularQueue~of(1,2,3)
+   m=u3~makearray
+   self~assertEquals(3, m~items)
+   a=.array~of(1,2,3)
+   self~assertTrue(testSequence(m, a))
+   -- self~assertTrue(testSequence(m, .array~of(1,2,3)))
+
+   m=u3~makearray("FIFO")
+   self~assertEquals(3, m~items)
+   self~assertTrue(testSequence(m, .array~of(1,2,3)))
+
+   m=u3~makearray("FIFO")
+   self~assertEquals(3, m~items)
+   self~assertFalse(testSequence(m, .array~of(3,2,1)))
+
+   m=u3~makearray("LIFO")
+   self~assertEquals(3, m~items)
+   self~assertFalse(testSequence(m, .array~of(1,5,3)))
+
+   m=u3~makearray("LIFO")
+   self~assertEquals(3, m~items)
+   self~assertTrue(testSequence(m, .array~of(3,2,1)))
+
+
+
+   -- test SUPPLIER method ---------------------------------------------
+::method "test_SUPPLIER_1a"
+   self~expectSyntax(93.902)        -- too many arguments
+   u=.CircularQueue~new(3)~SUPPLIER(1, 2)
+
+::method "test_SUPPLIER_1b"
+   self~expectSyntax(93.914)        -- wrong argument
+   u=.CircularQueue~new(3)~SUPPLIER("wrong")
+
+::method "test_SUPPLIER_2"
+   u0=.CircularQueue~of
+   self~assertEquals(0, countSupplierItems(u0~supplier))
+
+   u3=.CircularQueue~of(1,2,3)
+   m=u3~SUPPLIER
+   self~assertEquals(3, countSupplierItems(m))
+   self~assertTrue(testSequence(m, .array~of(1,2,3)))
+   -- self~assertTrue(testSequence(m, .array~of(1,2,3)))
+
+   m=u3~SUPPLIER("FIFO")
+   self~assertEquals(3, countSupplierItems(m))
+   -- self~assertEquals(3, countSupplierItems(u3~supplier("FIFO")))
+   self~assertTrue(testSequence(m, .array~of(1,2,3)))
+
+   m=u3~SUPPLIER
+   self~assertEquals(3, countSupplierItems(m))
+   self~assertFalse(testSequence(m, .array~of(3,2,1)))
+
+   m=u3~SUPPLIER("LIFO")
+   self~assertEquals(3, countSupplierItems(m))
+   self~assertFalse(testSequence(m, .array~of(1,5,3)))
+
+   m=u3~SUPPLIER("LIFO")
+   self~assertEquals(3, countSupplierItems(m))
+   self~assertTrue(testSequence(m, .array~of(3,2,1)))
+   return
+
+
+testSequence: procedure
+   use arg s, a
+   bSame=.true
+   i=0
+   do while s~available & bSame
+      i=i+1
+      bSame=(bSame & (s~item=a[i]))
+      s~next
+   end
+   return bSame
+
+countSupplierItems: procedure
+   use arg s
+
+   i=0
+   s=s~copy    -- work on the copy, otherwise supplier gets "exhausted" by this loop
+   do while s~available
+      i=i+1
+      s~next
+   end
+   return i
+
+
+   -- test STRING method ---------------------------------------------
+::method "test_STRING_1a"
+   self~expectSyntax(93.902)        -- too many arguments
+   u=.CircularQueue~of(3)~STRING(1, 2, 3)
+
+::method "test_STRING_1b"
+   self~expectSyntax(93.914)        -- wrong second argument
+   u=.CircularQueue~of(3)~STRING(1, 2)
+
+::method "test_STRING_2"
+   u0=.CircularQueue~of
+   u3=.CircularQueue~of(1,2,3)
+   self~assertEquals("", u0~string)
+   self~assertEquals("1,2,3", u3~string)
+
+   self~assertEquals("", u0~string("-"))
+   self~assertEquals("", u0~string("-", "FIFO"))
+   self~assertEquals("", u0~string("-", "LIFO"))
+   self~assertEquals("", u0~string("-", "L"   ))
+
+   self~assertEquals("1-2-3", u3~string("-"))
+   self~assertEquals("123", u3~string(""))
+   self~assertEquals("321", u3~string("", "LIFO"))
+   self~assertEquals("3-2-1", u3~string("-", "LIFO"))
+   self~assertEquals("3,2,1", u3~string(, "LIFO"))
+
+
+::method "test_Queue_Push_Empty"
+   u0=.CircularQueue~of
+   self~assertEquals(.nil, u0~queue("1"))
+   self~assertEquals(.nil, u0~queue("2"))
+   self~assertEquals(.nil, u0~ push("1"))
+   self~assertEquals(.nil, u0~ push("2"))
+
+::method "test_Queue_Fill"
+   u1=.CircularQueue~new(2)
+   self~assertEquals(.nil, u1~queue("1"))
+   self~assertEquals(.nil, u1~queue("2"))
+   self~assertEquals(1, u1~queue("3"))
+   self~assertEquals(2, u1~queue("4"))
+   self~assertEquals(3, u1~queue("5"))
+
+::method "test_Queue_Push"
+   u1=.CircularQueue~new(2)
+   self~assertEquals(.nil, u1~push("1"))
+   self~assertEquals(.nil, u1~push("2"))
+   self~assertEquals(1, u1~push("3"))
+   self~assertEquals(2, u1~push("4"))
+   self~assertEquals(3, u1~push("5"))
+
+
+
+
+
+::routine testSequence           -- test whether both collections have the items in the same sequence
+   use arg x, y
+   bSame=(x~items=y~items)
+   do i=1 to y~items while bSame
+      bSame=(bSame & y[1]=x[1])  -- same element in same position ?
+   end
+   return bSame
+
+::method "test_first_last_next_previous"
+
+  a=.circularqueue~new(10)       -- empty queue
+  self~assertNull(a~first)
+  self~assertNull(a~last)
+  self~assertNull(a~firstItem)
+  self~assertNull(a~lastItem)
+  -- next and previous must use valid indices, so these won't work yet
+  -- self~assertNull(a~next(1))
+  -- self~assertNull(a~previous(1))
+
+  a~push("1v")          -- single item
+  self~assertEquals(1, a~first)
+  self~assertEquals(1, a~last)
+  self~assertEquals("1v", a~firstItem)
+  self~assertEquals("1v", a~lastItem)
+  self~assertNull(a~next(1))
+  self~assertNull(a~previous(1))
+
+
+  a~queue("2v")
+  self~assertEquals(1, a~first)
+  self~assertEquals("1v", a~firstItem)
+  self~assertEquals(2, a~last)
+  self~assertEquals("2v", a~lastItem)
+  self~assertEquals(2, a~next(1))
+  self~assertEquals(1, a~previous(2))
+
+
+::method "test_append"
+
+  a = .circularqueue~new(3)
+
+  self~assertEquals(1, a~append(1))
+  self~assertEquals(3, a~size)
+  self~assertEquals(1, a~items)
+  self~assertSame(1, a~firstitem)
+  self~assertSame(1, a~lastitem)
+
+  self~assertEquals(2, a~append(2))
+  self~assertEquals(3, a~size)
+  self~assertEquals(2, a~items)
+  self~assertSame(1, a~firstitem)
+  self~assertSame(2, a~lastitem)
+
+  self~assertEquals(3, a~append(3))
+  self~assertEquals(3, a~size)
+  self~assertEquals(3, a~items)
+  self~assertSame(1, a~firstitem)
+  self~assertSame(3, a~lastitem)
+
+  self~assertEquals(3, a~append(4))
+  self~assertEquals(3, a~size)
+  self~assertEquals(3, a~items)
+  self~assertSame(2, a~firstitem)
+  self~assertSame(4, a~lastitem)
+
+  a~appendAll(.array~of(5, 6))
+  self~assertEquals(3, a~size)
+  self~assertEquals(3, a~items)
+  self~assertSame(4, a~firstitem)
+  self~assertSame(6, a~lastitem)
+
+  a~appendAll(.array~of(7, 8, 9, 10))
+  self~assertEquals(3, a~size)
+  self~assertEquals(3, a~items)
+  self~assertSame(8, a~firstitem)
+  self~assertSame(10, a~lastitem)
+
+
+::method "test_equivalent"
+  -- empty arrays of two different sizes...still equivalent
+  self~assertTrue(.circularqueue~new(5)~equivalent(.circularqueue~new(4)))
+  -- empty vs. non-empty, two ways
+  self~assertFalse(.circularqueue~of(1,2,3)~equivalent(.circularqueue~new(3)))
+  self~assertFalse(.circularqueue~new(10)~equivalent(.circularqueue~of(1,2,3)))
+  -- simple true test
+  self~assertTrue(.circularqueue~of(1,2,3)~equivalent(.circularqueue~of(1,2,3)))
+  -- same number of items, different values
+  self~assertFalse(.circularqueue~of(1,2,3)~equivalent(.circularqueue~of(1,2,4)))
+  -- mismatch on number of arguments, tested both ways
+  self~assertFalse(.circularqueue~of(1,2,3)~equivalent(.circularqueue~of(1,2,3,4)))
+  self~assertFalse(.circularqueue~of(1,2,3,4)~equivalent(.circularqueue~of(1,2,3)))
+  -- simple test between list and array
+  self~assertTrue(.circularqueue~of(1,2,3)~equivalent(.array~of(1,2,3)))
+
+::method "test_disjoint"
+  -- empty circularqueues are disjoint because they have no elements in common.
+  self~assertTrue(.circularqueue~new(5)~disjoint(.circularqueue~new(4)))
+  -- empty vs. non-empty, two ways.  Both disjoint
+  self~assertTrue(.circularqueue~of(1,2,3)~disjoint(.circularqueue~new(10)))
+  self~assertTrue(.circularqueue~new(2)~disjoint(.circularqueue~of(1,2,3)))
+  -- simple true test
+  self~assertTrue(.circularqueue~of(1,2,3)~disjoint(.circularqueue~of(4,5,6)))
+  -- equal errays
+  self~assertFalse(.circularqueue~of(1,2,3)~disjoint(.circularqueue~of(1,2,3)))
+  -- single element overlap
+  self~assertFalse(.circularqueue~of(1,2,3)~disjoint(.circularqueue~of(3,4,5)))
+
+::method "test_interSection"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  ce=collDir~emptyColl
+  c1=collDir~coll_1
+  c2=collDir~coll_2
+  res=collDir~interSectionColl
+
+  self~assertEquals(ce, ce~interSection(ce))
+
+  self~assertEquals(ce, c1~interSection(ce))
+  self~assertEquals(ce, c2~interSection(ce))
+
+  self~assertEquals(res, c1~interSection(c2))
+  self~assertEquals(res, c2~interSection(c1))
+
+  self~assertEquals(c1, c1~interSection(c1))
+  self~assertEquals(c2, c2~interSection(c2))
+
+
+   -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
+  o1=.object~new
+  c =clz~new(5)~~append(o1)~~append("1")~~append("2")
+  other=.array~new
+  other[104]="2"
+  other[106]=o1
+  d1=clz~of("2", o1)          -- expected result
+  d2=c~interSection(other)
+  self~assertTrue(sameContent(d1, d2), "subtest8: 'other' is an 'OrderedCollection'")
+
+  -- Simplistic test of list intersection table
+  receiverList = .queue~of('w', 'x', 'y', 'z')
+  argumentTable = .table~new
+  argumentTable['w'] = 'w'
+  argumentTable['y'] = 'y'
+  argumentTable['z'] = 'z'
+
+  resultObj = receiverList~intersection(argumentTable)
+  self~assertSame(.queue, resultObj~class, "(1.) After intersection operation result must be same class as receiver")
+  self~assertSame(3, resultObj~items, 'w x y z intersect w y z should result in 3 items')
+  self~assertTrue(resultObj~hasItem('w'), 'w x y z intersect w y z result should contain an item of w')
+
+::method "test_subset"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  ce=collDir~emptyColl
+  c1=collDir~coll_1
+  c2=collDir~coll_2
+  cu1=collDir~unionColl1
+  cu2=collDir~unionColl2
+
+  self~assertTrue(ce~subset(ce))
+  self~assertTrue(ce~subset(c1))
+  self~assertTrue(ce~subset(c2))
+
+  self~assertTrue(c1~subset(c1))
+  self~assertTrue(c2~subset(c2))
+
+  self~assertTrue(ce~subset(cu1))
+
+  self~assertTrue(c1~subset(cu1))
+  self~assertTrue(c1~subset(cu2))
+
+  self~assertTrue(c2~subset(cu1))
+  self~assertTrue(c2~subset(cu2))
+
+  self~assertFalse(c1~subset(ce))
+  self~assertFalse(c1~subset(c2))
+
+  self~assertFalse(c2~subset(ce))
+  self~assertFalse(c2~subset(c1))
+
+
+   -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
+  o1=.object~new
+  c =clz~new(5)~~append(o1)~~append("1")~~append("2")
+  other=.array~new
+  other[104]="2"
+  other[106]=o1
+  d2=c~subSet(other)
+  self~assertFalse(d2, "subtest14: 'other' is an 'OrderedCollection'")
+
+  -- Simplistic test of list subset table
+  receiverList = clz~of('w', 'x', 'y', 'z')
+  argumentTable = .table~new
+  argumentTable['w'] = 'w'
+  argumentTable['y'] = 'y'
+  argumentTable['z'] = 'z'
+
+  self~assertFalse(receiverList~subset(argumentTable), 'w x y z is not a subset of w y z')
+  receiverList~removeItem('x')
+  receiverList~removeItem('z')
+  self~assertTrue(receiverList~subset(argumentTable), 'w y is a subset of w y z')
+
+   -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
+  other=.array~new
+  other[101]="1"
+  other[102]="2"
+  other[103]="3"
+  other[104]="2"
+  other[106]=o1
+  other[107]=o1
+  d2=c~subSet(other)
+  self~assertTrue(d2, "subtest16: 'other' is an 'OrderedCollection'")
+
+::method "test_union"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  ce=collDir~emptyColl
+  c1=collDir~coll_1
+  c2=collDir~coll_2
+
+  self~assertEquals(ce, ce~union(ce))
+
+  self~assertEquals(c1, c1~union(ce))
+  self~assertEquals(c2, c2~union(ce))
+
+  self~assertEquals(c1, ce~union(c1))
+  self~assertEquals(c2, ce~union(c2))
+
+  self~assertEquivalentList(collDir~unionColl1, c1~union(c2))
+  self~assertEquivalentList(collDir~unionColl2, c2~union(c1))
+
+   -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
+  o1=.object~new
+  c =clz~new(5)~~append(o1)~~append("1")~~append("2")
+  other=.array~new
+  other[104]="2"
+  other[106]=o1
+  d1=clz~of("1", "2", "2", o1, o1)  -- expected result
+  d2=c~union(other)
+  self~assertTrue(sameContent(d1, d2), "subtest8: 'other' is an 'OrderedCollection'")
+
+  -- Simplistic test of list union table
+  receiverList = clz~of('x', 'y')
+  argumentTable = .table~new
+  argumentTable['w'] = 'w'
+  argumentTable['z'] = 'z'
+
+  resultObj = receiverList~union(argumentTable)
+  self~assertSame(clz, resultObj~class, "(1.) After union operation result must be same class as receiver")
+  self~assertSame(4, resultObj~items, 'w x y z union w y z should result in 4 items')
+  self~assertTrue(resultObj~hasItem('x'), 'w x y z union w y z result should contain an item of x')
+
+
+
+
+::method "test_xor"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  ce=collDir~emptyColl
+  c1=collDir~coll_1
+  c2=collDir~coll_2
+  res=collDir~xorColl
+
+  self~assertEquals(ce, ce~xor(ce))
+
+  self~assertEquals(c1, c1~xor(ce))
+  self~assertEquals(c2, c2~xor(ce))
+
+  self~assertEquals(collDir~xorColl1, c1~xor(c2))
+  self~assertEquals(collDir~xorColl2, c2~xor(c1))
+
+  self~assertEquals(ce, c1~xor(c1))
+  self~assertEquals(ce, c2~xor(c2))
+
+
+   -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
+  o1=.object~new
+  c =clz~new(5)~~append(o1)~~append("1")~~append("2")
+  other=.array~new
+  other[104]="2"
+  other[106]=o1
+  d1=clz~of("1")          -- expected result
+  d2=c~xor(other)
+  self~assertTrue(sameContent(d1, d2), "subtest8: 'other' is an 'OrderedCollection'")
+
+  -- Simplistic test of list XOR table
+  receiverList = .list~of('w', 'x', 'y', 'z')
+  argumentTable = .table~new
+  argumentTable['w'] = 'w'
+  argumentTable['y'] = 'y'
+  argumentTable['z'] = 'z'
+
+  resultObj = receiverList~xor(argumentTable)
+  self~assertSame(.list, resultObj~class, "(1.) After xor operation result must be same class as receiver")
+  self~assertSame(1, resultObj~items, 'w x y z xor w y z should result in 1 item')
+  self~assertTrue(resultObj~hasItem('x'), 'w x y z xor w y z result should contain an item of x')
+
+::method "test_difference"
+  expose collDir clz bUserDefinedIndex bSingleItem
+
+  ce=collDir~emptyColl
+  c1=collDir~coll_1
+  c2=collDir~coll_2
+
+  self~assertEquals(ce, ce~difference(ce))
+
+  self~assertEquals(c1, c1~difference(ce))
+  self~assertEquals(c2, c2~difference(ce))
+
+  self~assertEquals(collDir~difference1, c1~difference(c2))
+  self~assertEquals(collDir~difference2, c2~difference(c1))
+
+  self~assertEquals(ce, c1~difference(c1))
+  self~assertEquals(ce, c2~difference(c2))
+
+
+   -- now test where other is an 'OrderedCollection': "makeArray" returns "allItems"
+  o1=.object~new
+  c =clz~new(5)~~append(o1)~~append("1")~~append("2")
+  other=.array~new
+  other[104]="2"
+  other[106]=o1
+  d1=clz~of("1")     -- expected result
+  d2=c~difference(other)
+  self~assertTrue(sameContent(d1, d2), "subtest8: 'other' is an 'OrderedCollection'")
+
+  -- Simplistic test of list difference table
+  receiverList = clz~of('w', 'x', 'y', 'z')
+  argumentTable = .table~new
+  argumentTable['w'] = 'w'
+  argumentTable['y'] = 'y'
+  argumentTable['z'] = 'z'
+
+  resultObj = receiverList~difference(argumentTable)
+  self~assertSame(clz, resultObj~class, "(1.) After difference operation result must be same class as receiver")
+  self~assertSame(1, resultObj~items, 'w x y z difference w y z should result in 1 item')
+  self~assertTrue(resultObj~hasItem('x'), 'w x y z difference w y z result should contain an item of x')
+
+::method test_bug_1211
+
+  union = .circularqueue~of(1,2,3)~union(.circularqueue~of(4,5,6))
+
+  self~assertSame(6, union~size)
+  self~assertSame(6, union~items)
+  self~assertTrue(sameContent(union, .circularqueue~of(1,2,3,4,5,6)))
+
+  xor = .circularqueue~of(1,2,3)~xor(.circularqueue~of(4,5,6))
+
+  self~assertSame(6, xor~size)
+  self~assertSame(6, xor~items)
+  self~assertTrue(sameContent(xor, .circularqueue~of(1,2,3,4,5,6)))
+
+::method test_bug_1210
+
+  c = .circularqueue~of(1,2,3)~intersection(.circularqueue~of(2,3,4))
+
+  self~assertSame(3, c~size)
+  self~assertSame(2, c~items)
+  self~assertTrue(sameContent(c, .circularqueue~of(2,3)))
+
+::method test_bug_1184
+
+  c = .circularqueue~of(1,2,3,4,5,6)
+  c~resize(3)
+
+  self~assertSame(3, c~size)
+  self~assertSame(3, c~items)
+  self~assertTrue(sameContent(c, .circularqueue~of(4,5,6)))
+
+  c = .circularqueue~of(1,2,3,4,5,6)
+  c~resize(3, "L")
+
+  self~assertSame(3, c~size)
+  self~assertSame(3, c~items)
+  self~assertTrue(sameContent(c, .circularqueue~of(1,2,3)))
+
+::method test_bug_1183
+
+  c = .circularqueue~of(1,2,3)
+  c~insert('a', 2)
+
+  self~assertSame(3, c~size)
+  self~assertSame(3, c~items)
+  self~assertTrue(sameContent(c, .circularqueue~of(1,'a',2)))
+
+/* Test whether both collections contain the same entries.
+   returns .true, if the same, .false else
+*/
+::routine "sameContent"
+  use arg coll_1, coll_2
+
+  if coll_1~items<>coll_2~items then      -- not the same amount of objects
+     return .false
+   -- work on a copy
+  tmp=coll_1~copy
+  do o over coll_2
+     if \tmp~hasItem(o) then             -- no entry anymore ?
+        return .false
+
+     tmp~removeItem(o)                        -- remove object
+  end
+
+  return (tmp~items=0)                    -- if the same, then no items left
+
+
+::options novalue error

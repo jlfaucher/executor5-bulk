@@ -1,0 +1,554 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
+  group = .TestGroup~new(fileSpec)
+
+  group~add(.CONSTANT.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires 'ooTest.frm'
+
+::class "CONSTANT.testGroup" subclass ooTestCase public
+
+::method "test_direct_definition"
+
+  self~assertEquals("Fred", .test~s1, "s1_class")
+  self~assertEquals("Rick", .test~s2, "s2_class")
+  self~assertEquals(" ", .test~s3, "s3_class")
+  self~assertEquals(" ", .test~s4, "s4_class")
+  self~assertEquals("1", .test~n1, "n1_class")
+  self~assertEquals("1.00000000000000000000", .test~n2, "n2_class")
+  self~assertEquals(".23", .test~n3, "n3_class")
+  self~assertEquals("1E4", .test~n4, "n4_class")
+  self~assertEquals("1E-4", .test~n5, "n5_class")
+  self~assertEquals("1E+4", .test~n6, "n6_class")
+  self~assertEquals("23.38885e-5", .test~n7, "n7_class")
+  self~assertEquals("-1E-4", .test~n8, "n8_class")
+  self~assertEquals("+1E+4", .test~n9, "n9_class")
+  self~assertEquals("-1E-4", .test~n10, "n10_class")
+  self~assertEquals("+1E+4", .test~n11, "n11_class")
+  self~assertEquals(".NIL", .test~c1, "c1_class")
+  self~assertEquals(".", .test~c2, "c2_class")
+  self~assertEquals("-1", .test~minusOne, "minusOne_class")
+  self~assertEquals("+1", .test~plusOne, "plusOne_class")
+  self~assertEquals("NOVALUE1", .test~novalue1, "novalue1_class")
+  self~assertEquals("NoValue2", .test~novalue2, "novalue2_class")
+
+  t = .test~new
+
+  self~assertEquals("Fred", t~s1, "s1_instance")
+  self~assertEquals("Rick", t~s2, "s2_instance")
+  self~assertEquals(" ", t~s3, "s3_instance")
+  self~assertEquals(" ", t~s4, "s4_instance")
+  self~assertEquals("1", t~n1, "n1_instance")
+  self~assertEquals("1.00000000000000000000", t~n2, "n2_instance")
+  self~assertEquals(".23", t~n3, "n3_instance")
+  self~assertEquals("1E4", t~n4, "n4_instance")
+  self~assertEquals("1E-4", t~n5, "n5_instance")
+  self~assertEquals("1E+4", t~n6, "n6_instance")
+  self~assertEquals("23.38885e-5", t~n7, "n7_instance")
+  self~assertEquals("-1E-4", t~n8, "n8_instance")
+  self~assertEquals("+1E+4", t~n9, "n9_instance")
+  self~assertEquals("-1E-4", t~n10, "n10_instance")
+  self~assertEquals("+1E+4", t~n11, "n11_instance")
+  self~assertEquals(".NIL", t~c1, "c1_instance")
+  self~assertEquals(".", t~c2, "c2_instance")
+  self~assertEquals("-1", t~minusOne, "minusOne_instance")
+  self~assertEquals("+1", t~plusOne, "plusOne_instance")
+
+  self~assertEquals("Fred", t~class~s1, "s1_instance_class")
+  self~assertEquals("Rick", t~class~s2, "s2_instance_class")
+  self~assertEquals(" ", t~class~s3, "s3_instance_class")
+  self~assertEquals(" ", t~class~s4, "s4_instance_class")
+  self~assertEquals("1", t~class~n1, "n1_instance_class")
+  self~assertEquals("1.00000000000000000000", t~class~n2, "n2_instance_class")
+  self~assertEquals(".23", t~class~n3, "n3_instance_class")
+  self~assertEquals("1E4", t~class~n4, "n4_instance_class")
+  self~assertEquals("1E-4", t~class~n5, "n5_instance_class")
+  self~assertEquals("1E+4", t~class~n6, "n6_instance_class")
+  self~assertEquals("23.38885e-5", t~class~n7, "n7_instance_class")
+  self~assertEquals(".NIL", t~class~c1, "c1_instance_class")
+  self~assertEquals(".", t~class~c2, "c2_instance_class")
+
+
+::method "test_subclass_definition"
+
+  self~assertEquals("Fred", .test2~s1, "s1_class")
+  self~assertEquals("Rick", .test2~s2, "s2_class")
+  self~assertEquals(" ", .test2~s3, "s3_class")
+  self~assertEquals(" ", .test2~s4, "s4_class")
+  self~assertEquals("1", .test2~n1, "n1_class")
+  self~assertEquals("1.00000000000000000000", .test2~n2, "n2_class")
+  self~assertEquals(".23", .test2~n3, "n3_class")
+  self~assertEquals("1E4", .test2~n4, "n4_class")
+  self~assertEquals("1E-4", .test2~n5, "n5_class")
+  self~assertEquals("1E+4", .test2~n6, "n6_class")
+  self~assertEquals("23.38885e-5", .test2~n7, "n7_class")
+  self~assertEquals(".NIL", .test2~c1, "c1_class")
+  self~assertEquals(".", .test2~c2, "c2_class")
+
+  t = .test2~new
+
+  self~assertEquals("Fred", t~s1, "s1_instance")
+  self~assertEquals("Rick", t~s2, "s2_instance")
+  self~assertEquals(" ", t~s3, "s3_instance")
+  self~assertEquals(" ", t~s4, "s4_instance")
+  self~assertEquals("1", t~n1, "n1_instance")
+  self~assertEquals("1.00000000000000000000", t~n2, "n2_instance")
+  self~assertEquals(".23", t~n3, "n3_instance")
+  self~assertEquals("1E4", t~n4, "n4_instance")
+  self~assertEquals("1E-4", t~n5, "n5_instance")
+  self~assertEquals("1E+4", t~n6, "n6_instance")
+  self~assertEquals("23.38885e-5", t~n7, "n7_instance")
+  self~assertEquals(".NIL", t~c1, "c1_instance")
+  self~assertEquals(".", t~c2, "c2_instance")
+
+  self~assertEquals("Fred", t~class~s1, "s1_instance_class")
+  self~assertEquals("Rick", t~class~s2, "s2_instance_class")
+  self~assertEquals(" ", t~class~s3, "s3_instance_class")
+  self~assertEquals(" ", t~class~s4, "s4_instance_class")
+  self~assertEquals("1", t~class~n1, "n1_instance_class")
+  self~assertEquals("1.00000000000000000000", t~class~n2, "n2_instance_class")
+  self~assertEquals(".23", t~class~n3, "n3_instance_class")
+  self~assertEquals("1E4", t~class~n4, "n4_instance_class")
+  self~assertEquals("1E-4", t~class~n5, "n5_instance_class")
+  self~assertEquals("1E+4", t~class~n6, "n6_instance_class")
+  self~assertEquals("23.38885e-5", t~class~n7, "n7_instance_class")
+  self~assertEquals(".NIL", t~class~c1, "c1_instance_class")
+  self~assertEquals(".", t~class~c2, "c2_instance_class")
+
+
+::method "test_mixinclass_definition"
+
+  self~assertEquals("Fred", .test3~s1, "s1_class")
+  self~assertEquals("Rick", .test3~s2, "s2_class")
+  self~assertEquals(" ", .test3~s3, "s3_class")
+  self~assertEquals(" ", .test3~s4, "s4_class")
+  self~assertEquals("1", .test3~n1, "n1_class")
+  self~assertEquals("1.00000000000000000000", .test3~n2, "n2_class")
+  self~assertEquals(".23", .test3~n3, "n3_class")
+  self~assertEquals("1E4", .test3~n4, "n4_class")
+  self~assertEquals("1E-4", .test3~n5, "n5_class")
+  self~assertEquals("1E+4", .test3~n6, "n6_class")
+  self~assertEquals("23.38885e-5", .test3~n7, "n7_class")
+  self~assertEquals(".NIL", .test3~c1, "c1_class")
+  self~assertEquals(".", .test3~c2, "c2_class")
+
+  t = .test3~new
+
+  self~assertEquals("Fred", t~s1, "s1_instance")
+  self~assertEquals("Rick", t~s2, "s2_instance")
+  self~assertEquals(" ", t~s3, "s3_instance")
+  self~assertEquals(" ", t~s4, "s4_instance")
+  self~assertEquals("1", t~n1, "n1_instance")
+  self~assertEquals("1.00000000000000000000", t~n2, "n2_instance")
+  self~assertEquals(".23", t~n3, "n3_instance")
+  self~assertEquals("1E4", t~n4, "n4_instance")
+  self~assertEquals("1E-4", t~n5, "n5_instance")
+  self~assertEquals("1E+4", t~n6, "n6_instance")
+  self~assertEquals("23.38885e-5", t~n7, "n7_instance")
+  self~assertEquals(".NIL", t~c1, "c1_instance")
+  self~assertEquals(".", t~c2, "c2_instance")
+
+  self~assertEquals("Fred", t~class~s1, "s1_instance_class")
+  self~assertEquals("Rick", t~class~s2, "s2_instance_class")
+  self~assertEquals(" ", t~class~s3, "s3_instance_class")
+  self~assertEquals(" ", t~class~s4, "s4_instance_class")
+  self~assertEquals("1", t~class~n1, "n1_instance_class")
+  self~assertEquals("1.00000000000000000000", t~class~n2, "n2_instance_class")
+  self~assertEquals(".23", t~class~n3, "n3_instance_class")
+  self~assertEquals("1E4", t~class~n4, "n4_instance_class")
+  self~assertEquals("1E-4", t~class~n5, "n5_instance_class")
+  self~assertEquals("1E+4", t~class~n6, "n6_instance_class")
+  self~assertEquals("23.38885e-5", t~class~n7, "n7_instance_class")
+  self~assertEquals(".NIL", t~class~c1, "c1_instance_class")
+  self~assertEquals(".", t~class~c2, "c2_instance_class")
+  self~assertEquals("3.14159265", t~pi)
+  self~assertEquals("3.14159265", t~class~pi)
+  self~assertEquals("3.14159265"/2, t~piOverTwo)
+  self~assertEquals("3.14159265"/2, t~class~piOverTwo)
+
+::method test_constant_method_properties
+  m = .test~method('S1')
+
+  self~assertTrue(m~isConstant)
+  self~assertFalse(m~isPrivate)
+  self~assertFalse(m~isGuarded)
+  self~assertFalse(m~isAttribute)
+  self~assertFalse(m~isProtected)
+  self~assertFalse(m~isAbstract)
+
+
+/** The following are tests syntax errors with the constant directive.  Since
+ *  putting incorrect syntax for the directive in this file would cause the test
+ *  group to not run, the bad syntax tests are done by using the .Package class.
+ *  A package is created with the code for the test.  The syntax errors are then
+ *  raised during the instantiation of the Package object, when the code is
+ *  parsed.
+ */
+
+::method  test_duplicate_name
+  src = .array~new
+
+  src[1] = "return 0"
+  src[2] = ""
+  src[3] = "::class 'TestClass'"
+  src[4] = "::constant PI 3.14195"
+  src[5] = "::constant ZERO 0.0"
+  src[6] = "::constant PI 3.14195"
+
+  self~expectSyntax(99.932)
+  p = .Package~new("constant_TestGroup", src)
+
+::method  test_duplicate_name_floating_methods
+  src = .array~new
+
+  src[1] = "return 0"
+  src[2] = ""
+  src[3] = "::constant MAX_DOGS_PER_HOUSEHOLD 6"
+  src[4] = "::constant MAX_CATS_PER_HOUSEHOLD 0"
+  src[5] = "::constant MAX_CATS_PER_HOUSEHOLD 0"
+  src[6] = ""
+  src[7] = "::class 'TestClass'"
+  src[8] = "::constant PI 3.14195"
+  src[9] = "::constant ZERO 0.0"
+
+  self~expectSyntax(99.932)
+  p = .Package~new("constant_TestGroup", src)
+
+::method  test_code_after_directive
+  src = .array~new
+
+  src[1] = "return .TestClass~MAX_DOGS_PER_HOUSEHOLD"
+  src[2] = ""
+  src[3] = "::class 'TestClass'"
+  src[4] = "::constant PI 3.14195"
+  src[5] = "::constant ZERO 0.0"
+  src[6] = "::constant MAX_DOGS_PER_HOUSEHOLD 6"
+  src[7] = "  return 14"
+  src[8] = "::constant MAX_CATS_PER_HOUSEHOLD 0"
+
+  self~expectSyntax(99.938)
+  p = .Package~new("constant_TestGroup", src)
+
+::method  test_code_after_directive_floating_method
+  src = .array~new
+
+  src[1] = "::constant MAX_DOGS_PER_HOUSEHOLD 6"
+  src[2] = "::constant MAX_CATS_PER_HOUSEHOLD 0"
+  src[3] = ""
+  src[4] = "return 0"
+  src[5] = ""
+  src[6] = "::class 'TestClass'"
+  src[7] = "::constant PI 3.14195"
+  src[8] = "::constant ZERO 0.0"
+
+  self~expectSyntax(99.938)
+  p = .Package~new("constant_TestGroup", src)
+
+::method  test_extra_values
+  src = .array~new
+
+  src[1] = "return 0"
+  src[2] = ""
+  src[3] = "::class 'TestClass'"
+  src[4] = "::constant PI 3.14195"
+  src[5] = "::constant ZERO 0.0"
+  src[6] = "::constant MAX_NUMS 5 6 7"
+
+  self~expectSyntax(21.913)
+  p = .Package~new("constant_TestGroup", src)
+
+::method  test_math_expression
+  src = .array~new
+
+  src[1] = "return 0"
+  src[2] = ""
+  src[3] = "::class 'TestClass'"
+  src[4] = "::constant NO_ERR_RC       0"
+  src[5] = "::constant BAD_FILENAME_RC 0 + 1"
+  src[6] = "::constant READONLY_RC     0 + 2"
+  src[7] = "::constant ZERO 0.0"
+  src[8] = "::constant MAX_NUMS 5"
+
+  self~expectSyntax(21.913)
+  p = .Package~new("constant_TestGroup", src)
+
+::method  test_bad_positive
+  src = .array~new
+
+  src[1] = "return 0"
+  src[2] = ""
+  src[3] = "::class 'TestClass'"
+  src[4] = "::constant NO_ERR_RC       +a"
+
+  self~expectSyntax(19.916)
+  p = .Package~new("constant_TestGroup", src)
+
+::method  test_bad_positive2
+  src = .array~new
+
+  src[1] = "return 0"
+  src[2] = ""
+  src[3] = "::class 'TestClass'"
+  src[4] = "::constant NO_ERR_RC       +"
+
+  self~expectSyntax(19.916)
+  p = .Package~new("constant_TestGroup", src)
+
+::method  test_bad_negative
+  src = .array~new
+
+  src[1] = "return 0"
+  src[2] = ""
+  src[3] = "::class 'TestClass'"
+  src[4] = "::constant NO_ERR_RC       -a"
+
+  self~expectSyntax(19.916)
+  p = .Package~new("constant_TestGroup", src)
+
+::method  test_no_name
+  src = .array~new
+
+  src[1] = "return 0"
+  src[2] = ""
+  src[3] = "::class 'TestClass'"
+  src[4] = "::constant"
+
+  self~expectSyntax(19.915)
+  p = .Package~new("constant_TestGroup", src)
+
+::method  test_no_expression
+  src = .array~new
+
+  src[1] = "return 0"
+  src[2] = ""
+  src[3] = "::class 'TestClass'"
+  src[4] = "::constant foo ()"
+
+  self~expectSyntax(35.936)
+  p = .Package~new("constant_TestGroup", src)
+
+::method  test_no_right_paren
+  src = .array~new
+
+  src[1] = "return 0"
+  src[2] = ""
+  src[3] = "::class 'TestClass'"
+  src[4] = "::constant foo (1+2"
+
+  self~expectSyntax(36.901)
+  p = .Package~new("constant_TestGroup", src)
+
+::method  test_expression_syntax_error
+  src = .array~new
+
+  src[1] = "return 0"
+  src[2] = ""
+  src[3] = "::class 'TestClass'"
+  src[4] = "::constant foo (1+)"
+
+  self~expectSyntax(35.1)
+  p = .Package~new("constant_TestGroup", src)
+
+::method  test_expression_extra
+  src = .array~new
+
+  src[1] = "return 0"
+  src[2] = ""
+  src[3] = "::class 'TestClass'"
+  src[4] = "::constant foo (1+2) 1"
+
+  self~expectSyntax(21.913)
+  p = .Package~new("constant_TestGroup", src)
+
+::method  test_expression_runtime_error
+  src = .array~new
+
+  src[1] = "return 0"
+  src[2] = ""
+  src[3] = "::class 'TestClass'"
+  src[4] = "::constant foo (1/0) "
+
+  self~expectSyntax(42.3)
+  p = .Package~new("constant_TestGroup", src)
+
+::method  test_expression_novalue_error
+  src = .array~new
+
+  src[1] = "return 0"
+  src[2] = ""
+  src[3] = "::class 'TestClass'"
+  src[4] = "::constant foo (1+b) "
+  src[5] = "::options novalue error"
+  -- will give an error because of the ::options directive
+  self~expectSyntax(98.986)
+  p = .Package~new("constant_TestGroup", src)
+
+::method  test_expression_novalue
+  src = .array~new
+
+  src[1] = "return 0"
+  src[2] = ""
+  src[3] = "::class 'TestClass'"
+  src[4] = "::constant foo (1+b) "
+
+  -- will just give an arithmetic runtime error because there's no NOVALUE option
+  self~expectSyntax(41.1)
+  p = .Package~new("constant_TestGroup", src)
+
+::method test_expression_body
+  -- Constant methods cannot have a method body
+  self~assertSyntaxError(99.938, ("::class c", "::constant d", "(2 * 2)"))
+
+::method test_expression_floating
+  -- A ::CONSTANT directive with an expression requires a matching ::CLASS directive
+  self~assertSyntaxError(99.906, "::constant d (2 * 2)")
+
+::method test_expression_parens_required
+  -- Data must not follow the ::CONSTANT value
+  self~assertSyntaxError(21.913, ("::class c", "::constant d .RexxInfo~platform"))
+
+::method test_expression_reference_forward
+  -- Constant "PI" of object "The C class" has not been initialized
+  self~assertSyntaxError(97.4, ("::class c", "::constant d (2 * self~pi)", "::constant pi (355 / 113)"))
+
+::method test_expression_self
+  -- expression constants are evaluated at class creation time
+  -- self must always return class, not instance
+  self~assertSame("The C class", self~runDynamicSource(("return .c~d~string", "::class c", "::constant d (self)")))
+  self~assertSame("The C class", self~runDynamicSource(("return .c~new~d~string", "::class c", "::constant d (self)")))
+
+::method test_expression_directives
+  self~assertIsA(.ExpressionDirective~primes, .Array)
+  self~assertSame("2, 3, 5, 7, 11, 13", .ExpressionDirective~primes~toString(, ", "))
+
+  if .RexxInfo~platform~caselessStartsWith("Windows") then
+    self~assertSame("type", .ExpressionDirective~command)
+  else
+    self~assertSame("cat", .ExpressionDirective~command)
+
+  self~assertSame("0." || 3~copies(20), .ExpressionDirective~multiClause)
+
+  -- make sure builtin functions have been resolved.
+  self~assertSame("B", .ExpressionDirective~substr)
+
+  -- constant expressions must have been evaluated before
+  self~assertSame(.ExpressionDirective~random, .ExpressionDirective~random)
+
+  -- real constants are initialized before expression constants
+  -- a forward reference from an expression constant to a real constant should work
+  self~assertSame(.ExpressionDirective~constant, .ExpressionDirective~constantRef)
+
+  self~assertSame(6.28318584, .ExpressionDirective~d)
+
+::resource activate
+return .c~return
+::class c
+  ::method activate class
+    expose return
+    return = self~d
+  ::attribute return class
+  ::constant d (2 * 2)
+::END
+
+::method test_expression_activate
+  -- expression constants are evaluated at class creation time
+  -- they should already be availabe to the class activate() method
+  self~assertSame(4, self~runDynamicSource(.resources~activate))
+
+::method testConstantArguments
+  self~expectSyntax(93.902)
+  value = .test~s1(123)
+
+::class test mixinclass object
+::CONSTANT s1 'Fred'
+::constant S2 "Rick"
+::constant s3 '20'x
+::ConStanT 'S4' '00100000'b
+::constant 'n1' 1
+::constant 'n2' 1.00000000000000000000
+::constant 'N3' .23
+::constant n4 1e4
+::constant n5 1e-4
+::constant n6 1e+4
+::constant n7 23.38885e-5
+::constant n8 -1e-4
+::constant n9 +1e+4
+::constant n10 - 1e-4
+::constant n11 + 1e+4
+::constant c1 .nil
+::constant c2 .
+::constant minusOne -1
+::constant plusOne +1
+::constant novalue1
+::constant 'NoValue2'
+
+::constant pi (rxcalcpi())
+::constant piOverTwo (self~pi/2)
+
+::class test2 subclass test
+
+::class test3 inherit test
+
+::class ExpressionDirective
+  ::constant primes (2, 3, 5, 7, 11, 13)
+  ::constant command (.RexxInfo~platform~caselessStartsWith("Windows")~?("type", "cat"))
+  ::constant multiClause (.Routine~new("r", ("numeric digits 20", "return 1 / 3"))~call)
+  ::constant random (random(0, 1e6))
+  ::constant substr (substr("ABC", 2, 1))
+  -- forward reference to real constant
+  ::constant constantRef (self~constant)
+  ::constant constant 123
+  -- constant expressions can reference backwards
+  ::constant pi (355 / 113)
+  ::constant d (2 * self~pi)
+
+
+::requires 'rxmath' LIBRARY
+::options novalue error

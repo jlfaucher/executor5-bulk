@@ -1,0 +1,138 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.MutableBuffer_changeStr.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "MutableBuffer_changeStr.testGroup" subclass ooTestCase public
+
+::method "test_1"
+   self~assertSame('101100', .mutablebuffer~new('101100')~CHANGESTR('','X')~string)
+
+::method "test_2"
+   self~assertSame('', .mutablebuffer~new('')~CHANGESTR('1','X')~string)
+
+::method "test_4"
+   self~assertSame('ha-lo', .mutablebuffer~new('hallo')~CHANGESTR('l','-',1)~string)
+
+::method "test_5"
+   self~assertSame('ha--o', .mutablebuffer~new('hallo')~CHANGESTR('l','-',2)~string)
+
+::method "test_6"
+   self~assertSame('ha--o', .mutablebuffer~new('hallo')~CHANGESTR('l','-',3)~string)
+
+-- rexxref documentation tests
+
+::method "test_101"
+   self~assertSame('000', .mutablebuffer~new('101100')~CHANGESTR('1',"")~string)
+
+::method "test_102"
+   self~assertSame('X0XX00', .mutablebuffer~new('101100')~CHANGESTR('1','X')~string)
+
+::method "test_CHANGESTR"
+   -- new tests
+    self~assertSame('101100', .mutablebuffer~new('101100')~changestr('','X')~string)
+    self~assertSame('', .mutablebuffer~new('')~changestr('1','X')~string)
+
+   -- new tests: optional, trailing "count" argument
+    self~assertSame('ha-lo', .mutablebuffer~new('hallo')~changeStr('l','-',1)~string)
+    self~assertSame('ha--o', .mutablebuffer~new('hallo')~changeStr('l','-',2)~string)
+    self~assertSame('ha--o', .mutablebuffer~new('hallo')~changestr('l','-',3)~string)
+
+::method test_count_zero
+   self~assertSame("Test", .MutableBuffer~new("Test")~changeStr("t", "-", 0))
+
+::method test_count_negative
+   self~expectSyntax(93.906) -- Method argument .. must be zero or a positive whole number
+   .MutableBuffer~new("Test")~changeStr("t", "-", -1)
+
+::method test_changestr_no_args
+   self~expectSyntax(93.903) -- Missing argument in method; argument 1 is required
+   .MutableBuffer~new("")~changeStr
+
+::method test_changestr_one_arg
+   self~expectSyntax(93.903) -- Missing argument in method; argument 2 is required
+   .MutableBuffer~new("")~changeStr("")
+
+::method test_changestr_four_args
+   self~expectSyntax(93.902) -- Too many arguments in invocation of method; 3 expected
+   .MutableBuffer~new("")~changeStr("", "", 0, .nil)
+
+::method test_changestr_needle_nullstring
+  string = "string"
+  m = .MutableBuffer~new(string)
+  self~assertSame(string, m~changeStr("", ""))
+  self~assertSame(string, m~changeStr("", "", 0))
+  self~assertSame(string, m~changeStr("", "", 1))
+  self~assertSame(string, m~changeStr("", "newneedle"))
+  self~assertSame(string, m~changeStr("", "newneedle", 0))
+  self~assertSame(string, m~changeStr("", "newneedle", 1))
+
+-- changeStr() has three code paths which we test here:
+--   needle and newneedle are of the same length
+--   newneedle is shorter than needle: result string will get shorter
+--   newneedle is longer than needle: result string will get longer
+::method test_changestr_needles_three_paths
+  str = "birdbird1bird"
+  needle = "bird"
+  do newNeedle over "", "cat", "fish", "mouse"
+    do string over str, str || "_", "_" || str, "_" || str || "_"
+      m = .MutableBuffer~new(string)
+      -- use the changeStr() BIF (with a very different implementation) as reference
+      self~assertSame(changeStr(needle, string, newNeedle), m~changeStr(needle, newNeedle))
+      do count = 0 to 4
+        m = .MutableBuffer~new(string)
+        self~assertSame(changeStr(needle, string, newNeedle, count), m~changeStr(needle, newNeedle, count))
+      end
+    end
+  end
+
+
+::options novalue error

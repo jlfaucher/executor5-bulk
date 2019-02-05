@@ -1,0 +1,171 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+
+  group = .TestGroup~new(s)
+  group~restrictOS("WINDOWS")
+  group~addWithSuite(.Clipboard.testGroup, .ClipboardSuite)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return group
+-- End of entry point.
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::requires 'ooTest.frm'
+::requires "FileUtils.cls"
+
+::class 'ClipboardSuite' subclass ooTestSuite
+
+::method setUp
+  use strict arg testResult
+
+  if \ isSubClassOf(testResult~class, "ooTestCollectingParameter") then
+     raise syntax 88.914 array ("1 'testResult'", "ooTestCollectingParameter")
+
+  signal on any name loadErr
+  .context~package~loadPackage('winsystm.cls')
+  return
+
+loadErr:
+  err = .ExceptionData~new(timeStamp(), s, .ExceptionData~TRAP)
+  err~setLine(sigl)
+  err~conditionObject = condition('O')
+  err~msg = "Could not load 'winsystm.cls' the package needed for this test group."
+  err~severity = "Unrecoverable"
+
+  testResult~addException(err)
+  testResult~stop
+  return
+
+-- End of class ClipboardSuite
+
+::class "Clipboard.testGroup" subclass ooTestCase public
+
+::method 'test_01Create'
+    .local~cp = .WindowsClipBoard~new
+    expected = 'a WindowsClipboard'
+    self~assertEquals(expected, .cp)
+    self~assertTrue(.cp~isA(.WindowsClipBoard))
+
+::method 'test_02empty'
+    expected = 0
+    self~assertEquals(expected, .cp~empty)
+
+::method 'test_03isDataAvailable'
+    expected = 0
+    self~assertEquals(expected, .cp~isDataAvailable)
+
+::method 'test_04copy'
+    some_test = 'This is line 1'.endOfLine'This is line 2'.endOfLine'This is line 3'
+    .cp~copy(some_test)
+    expected = 1
+    self~assertEquals(expected, .cp~isDataAvailable)
+
+::method 'test_05makeArray'
+    some_test = 'This is line 1'.endOfLine'This is line 2'.endOfLine'This is line 3'
+    .cp~copy(some_test)
+    expected = 1
+    self~assertEquals(expected, .cp~isDataAvailable)
+
+    a_array = .cp~makeArray
+    expected = 3
+    self~assertEquals(expected, a_array~items)
+
+::method 'test_06paste'
+    expected = 'This is line 1'.endOfLine'This is line 2'.endOfLine'This is line 3'
+    self~assertEquals(expected, .cp~paste)
+
+::method 'test_07copyPaste'
+    cb1 = .WindowsClipboard~new
+    cb2 = .WindowsClipboard~new
+
+    self~assertTrue(cb1~isA(.WindowsClipBoard))
+    self~assertTrue(cb2~isA(.WindowsClipBoard))
+
+    -- Place text on the clipboard.
+    cb1~copy("This is only a test")
+
+    -- Assert that data is available
+    self~assertTrue(cb1~isDataAvailable)
+    self~assertTrue(cb2~isDataAvailable)
+
+    -- Pull the data off the clipboard...
+    text = cb2~paste
+
+    -- ... and assert that it is the same as what was put on their.
+    self~assertEquals("This is only a test", text, 'Text retrieved from clipboard should equal text put on clipboard')
+
+::method 'test_08cleanUp'
+-- Be nice and empty the clipboard.
+    expected = 0
+    self~assertEquals(expected, .cp~empty)
+    self~assertEquals(.false, .cp~isDataAvailable, 'Empty clipboard must not have data')
+    text = .cp~paste
+    self~assertEquals("", text, "Empty clipboard should return the empty string")
+
+    -- Remove it from the .local directory, asset that it was removed.
+    obj = .local~remove("CP")
+    self~assertNotNull(obj, 'Removed cp from .local, it should be an object')
+    self~assertTrue(obj~isA(.WindowsClipboard), 'Removed cp should be a WindowsClipboard object')
+
+
+
+
+
+
+
+/*
+paste
+
+>>-paste-------------------------------------------------------><
+
+Retrieves the text data stored on the clipboard.
+empty
+
+*/
+
+
+::options novalue error

@@ -1,0 +1,557 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007 - 2018 Rexx Language Association. All rights reserved.  */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.String_abbrevMethod.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "String_abbrevMethod.testGroup" subclass ooTestCase public
+
+::method "test_1"
+   self~assertSame(.true, ''~abbrev(''))
+
+::method "test_2"
+   self~assertSame(.false, ''~abbrev('a'))
+
+::method "test_3"
+   self~assertSame(.true, 'a'~abbrev(''))
+
+::method "test_4"
+   self~assertSame(.true, 'a'~abbrev('a'))
+
+::method "test_5"
+   self~assertSame(.false, 'a'~abbrev('b'))
+
+::method "test_6"
+   s="XRANGE"('00'x,'FF'x)
+   Do i=0 To 256
+      s30="SUBSTR"(s,1,30)
+      t="SUBSTR"(s,1,i)
+      self~assertSame(.true, s~abbrev(t))
+      r="ABBREV"(s30,t)
+      If i<=30 Then
+         self~assertSame(.true, s30~abbrev(t))
+      Else                 /* longer string is never abbrev of shorter */
+         self~assertSame(.false, s30~abbrev(t))
+      End
+
+::method "test_7"
+   do i=0 to 255
+      do j=0 to 255
+         s=d2c(i)||d2c(j)                /* s='0000'X...'FFFF'X            */
+         t=d2c(j)                        /* t='00'X...'FF'X                */
+         self~assertSame((i = j), s~abbrev(t, 1))
+         End
+      End
+
+::method "test_8"
+   li=10000
+   s='abcdefghijklmnopqrstuvwxyz1234567890 '
+   slong="COPIES"(s,li)
+   tlong="COPIES"(s,li-1)
+   self~assertSame(.true, slong~abbrev(slong))
+
+::method "test_9"
+   li=10000
+   slong="COPIES"(s,li)
+   tlong="COPIES"(s,li-1)
+   self~assertSame(.true, slong~abbrev(tlong))
+
+::method "test_10"
+   li=10000
+   tlong=tlong||'x'
+   tlong="COPIES"(s,li-1)
+   self~assertSame(.false, slong~abbrev('00'x))
+
+::method "test_11"
+   self~assertSame(.false, slong~abbrev(tlong))
+
+::method "test_12"
+   self~assertSame(.true, ''~abbrev('', 0))
+
+::method "test_13"
+   self~assertSame(.false, ''~abbrev('', 1))
+
+::method "test_14"
+   self~assertSame(.false, ''~abbrev('a', 1))
+
+::method "test_15"
+   self~assertSame(.false, 'a'~abbrev('', 1))
+
+::method "test_16"
+   self~assertSame(.true, 'a'~abbrev('a', 0))
+
+::method "test_17"
+   self~assertSame(.true, 'a'~abbrev('a', 1))
+
+::method "test_18"
+   self~assertSame(.false, 'a'~abbrev('a', 2))
+
+::method "test_19"
+   self~assertSame(.false, 'a'~abbrev('b', 1))
+
+::method "test_20"
+   s="XRANGE"('00'x,'FF'x)
+   Do i=0 To 256
+      s30="SUBSTR"(s,1,30)
+      t="SUBSTR"(s,1,i)
+      i1="MAX"(i-1,0)
+      i2=i+1
+      self~assertSame(.true, s~abbrev(t, i1))
+      self~assertSame(.true, s~abbrev(t, i))
+      self~assertSame(.false, s~abbrev(t, i2))
+      If 15<=i & i<=30 Then
+         self~assertSame(.true, s30~abbrev(t, 15))
+      Else
+         self~assertSame(.false, s30~abbrev(t, 15))
+      End
+
+::method "test_21"
+   li=10000
+   s='abcdefghijklmnopqrstuvwxyz1234567890 '
+   slong="COPIES"(s,li)
+   tlong="COPIES"(s,li-1)
+   self~assertSame(.true, slong~abbrev(slong, 30*li))
+
+::method "test_23"
+   li=10000
+   ll=2**29-1
+   s='abcdefghijklmnopqrstuvwxyz1234567890 '
+   slong="COPIES"(s,li)
+   self~assertSame(.false, slong~abbrev(slong, ll))
+
+::method "test_24"
+   li=10000
+   s='abcdefghijklmnopqrstuvwxyz1234567890 '
+   slong="COPIES"(s,li)
+   tlong="COPIES"(s,li-1)
+   self~assertSame(.true, slong~abbrev(tlong, (li-1)*length(s)))
+
+::method "test_25"
+   li=10000
+   s='abcdefghijklmnopqrstuvwxyz1234567890 '
+   slong="COPIES"(s,li)
+   tlong="COPIES"(s,li-1)
+   tlong=tlong||'x'
+   self~assertSame(.false, slong~abbrev('00'x, 1))
+
+::method "test_26"
+   li=10000
+   s='abcdefghijklmnopqrstuvwxyz1234567890 '
+   slong="COPIES"(s,li)
+   tlong="COPIES"(s,li-1)
+   tlong=tlong||'x'
+   self~assertSame(.false, slong~abbrev(tlong, 0000100))
+
+::method "test_27"
+   inform='Walter Pachl'
+   info='Wal'
+   self~assertSame(.true, inform~abbrev(info, 3))
+
+::method "test_28"
+   inform='Walter Pachl'
+   info='Wal'
+   self~assertSame(.false, inform~abbrev(info, 004))
+
+::method "test_29"
+   inform='Walter Pachl'
+   info='Wal'
+   self~assertSame(.true, inform~abbrev(info, 2E0))
+
+::method "test_30"
+   inform='Walter Pachl'
+   info='Wal'
+   self~assertSame(.false, inform~abbrev(info, 02E+00000002))
+
+::method "test_31"
+   inform='Walter Pachl'
+   info='Wal'
+   self~assertSame(.true, inform~abbrev(info, '      3    '))
+
+::method "test_32"
+   inform='Walter Pachl'
+   info='Wal'
+   self~assertSame(.true, inform~abbrev(info, '20202B2033'x))
+
+::method "test_35"
+   inform='Walter Pachl'
+   info='Wal'
+   a=3
+   self~assertSame(.true, inform~abbrev(info, a))
+
+::method "test_36"
+   inform='Walter Pachl'
+   info='Wal'
+   a=3
+   self~assertSame(.true, inform~abbrev(info, a-1))
+
+::method "test_42"
+   inform='Walter Pachl'
+   info='Wal'
+   do i=0 to 255
+      x="D2C"(i)
+      info=x||x||x
+      self~assertSame(.true, info~abbrev(x))
+      If "ABBREV"(info,'  ') Then
+         self~assertSame(.true, info~abbrev('  '))
+      End
+
+::method "test_43"
+   self~assertSame(.true, '1.000003'~abbrev(1.000, 5))
+
+::method "test_44"
+   self~assertSame(.true, '12345678'x~abbrev('123456'x, 2))
+
+::method "test_45"
+   n='translator'
+   self~assertSame(.true, n~abbrev('tr', 2))
+
+::method "test_46"
+   n=17+4
+   self~assertSame(.true, n~abbrev(+.2e1, 1))
+
+::method "test_47"
+   self~assertSame(.true, novalue~abbrev('NOV'))
+
+::method "test_48"
+   self~assertSame(.true, 'NOVALUE'~abbrev(nov))
+
+::method "test_49"
+   self~expectSyntax(93.923)
+   self~assertSame(.false, 'NOVALUE'~abbrev('NOV', novalue))
+
+::method "test_50"
+   self~assertSame(.true, novalue~abbrev('NOV'))
+
+::method "test_51"
+   self~assertSame(.true, ''~abbrev(''))
+
+::method "test_52"
+   self~assertSame(.true, 'a'~abbrev(''))
+
+::method "test_53"
+   self~assertSame(.true, v30~abbrev(''))
+
+::method "test_54"
+   self~assertSame(.true, v250~abbrev(''))
+
+::method "test_55"
+   v255="XRANGE"('00'x,'FF'x)
+   self~assertSame(.true, v255~abbrev(''))
+
+::method "test_56"
+   v10000 ="COPIES"('123456789Z',1000)
+   self~assertSame(.true, v10000~abbrev(''))
+
+::method "test_57"
+   self~assertSame(.true, (12+4)~abbrev(''))
+
+::method "test_58"
+   self~assertSame(.false, ''~abbrev('X'))
+
+::method "test_59"
+   self~assertSame(.true, 'a'~abbrev('a'))
+
+::method "test_60"
+   v30    ='abcdefghijklmnopqrstuvwxyz1234'
+   self~assertSame(.true, v30~abbrev('abc'))
+
+::method "test_61"
+   v250='"'||"XRANGE"('00'x,'7E'x)||'""'||"XRANGE"('80'x,'F9'x)||'"'
+   self~assertSame(.false, v250~abbrev('0001'x))
+
+::method "test_62"
+   v255="XRANGE"('00'x,'FF'x)
+   self~assertSame(.true, v255~abbrev('0001'x))
+
+::method "test_63"
+   v10000 ="COPIES"('123456789Z',1000)
+   v9999  ="LEFT"(v10000,9999)
+   self~assertSame(.true, v10000~abbrev(v9999))
+
+::method "test_64"
+   self~assertSame(.true, (12+4)~abbrev('1'))
+
+::method "test_65"
+   self~assertSame(.false, 'a'~abbrev('b'))
+
+::method "test_66"
+   v30    ='abcdefghijklmnopqrstuvwxyz1234'
+   self~assertSame(.false, v30~abbrev('acb'))
+
+::method "test_67"
+   v250='"'||"XRANGE"('00'x,'7E'x)||'""'||"XRANGE"('80'x,'F9'x)||'"'
+   self~assertSame(.false, v250~abbrev('0102'x))
+
+::method "test_68"
+   v255="XRANGE"('00'x,'FF'x)
+   self~assertSame(.false, v255~abbrev('fffe'x))
+
+::method "test_69"
+   v10000 ="COPIES"('123456789Z',1000)
+   v9998  ="RIGHT"(v10000,9998)
+   self~assertSame(.false, v10000~abbrev(v9998))
+
+::method "test_70"
+   self~assertSame(.false, (12+4)~abbrev('2'))
+
+::method "test_71"
+   self~assertSame(.false, 'aa'~abbrev('bb'))
+
+::method "test_72"
+   v30    ='abcdefghijklmnopqrstuvwxyz1234'
+   self~assertSame(.true, v30~abbrev(v30))
+
+::method "test_73"
+   v250='"'||"XRANGE"('00'x,'7E'x)||'""'||"XRANGE"('80'x,'F9'x)||'"'
+   self~assertSame(.true, v250~abbrev(v250))
+
+::method "test_74"
+   v255="XRANGE"('00'x,'FF'x)
+   self~assertSame(.true, v255~abbrev(v255))
+
+::method "test_75"
+   v10000 ="COPIES"('123456789Z',1000)
+   self~assertSame(.true, v10000~abbrev(v10000))
+
+::method "test_76"
+   self~assertSame(.true, (12+4)~abbrev('16'))
+
+::method "test_77"
+   self~assertSame(.false, 'aa'~abbrev('aaa'))
+
+::method "test_78"
+   v30    ='abcdefghijklmnopqrstuvwxyz1234'
+   self~assertSame(.false, v30~abbrev(v30||'5'))
+
+::method "test_79"
+   v250='"'||"XRANGE"('00'x,'7E'x)||'""'||"XRANGE"('80'x,'F9'x)||'"'
+   self~assertSame(.false, v250~abbrev(v250||'.'))
+
+::method "test_80"
+   v255="XRANGE"('00'x,'FF'x)
+   v10000 ="COPIES"('123456789Z',1000)
+   self~assertSame(.false, v255~abbrev(v10000))
+
+::method "test_81"
+   v10000 ="COPIES"('123456789Z',1000)
+   v10001.=v10000.||'*'
+   self~assertSame(.false, v10000~abbrev(v10001))
+
+::method "test_82"
+   self~assertSame(.false, (12+4)~abbrev('16 '))
+
+::method "test_83"
+   self~assertSame(.false, (12+4)~abbrev('4+11+1'))
+
+::method "test_84"
+   self~assertSame(.true, 'aa'~abbrev('a', 0))
+
+::method "test_85"
+   v30    ='abcdefghijklmnopqrstuvwxyz1234'
+   self~assertSame(.true, v30~abbrev('abc', 0))
+
+::method "test_86"
+   v250='"'||"XRANGE"('00'x,'7E'x)||'""'||"XRANGE"('80'x,'F9'x)||'"'
+   self~assertSame(.false, v250~abbrev('0001'x, 0))
+
+::method "test_87"
+   v255="XRANGE"('00'x,'FF'x)
+   self~assertSame(.true, v255~abbrev('0001'x, 0))
+
+::method "test_88"
+   v10000 ="COPIES"('123456789Z',1000)
+   v9999  ="LEFT"(v10000,9999)
+   self~assertSame(.true, v10000~abbrev(v9999, 0))
+
+::method "test_89"
+   self~assertSame(.true, (12+4)~abbrev('1', 0))
+
+::method "test_90"
+   self~assertSame(.true, 'aba'~abbrev('ab', 1))
+
+::method "test_91"
+   v30    ='abcdefghijklmnopqrstuvwxyz1234'
+   self~assertSame(.true, v30~abbrev('abc', 2))
+
+::method "test_92"
+   v250='"'||"XRANGE"('00'x,'7E'x)||'""'||"XRANGE"('80'x,'F9'x)||'"'
+   self~assertSame(.false, v250~abbrev('0001'x, 1))
+
+::method "test_93"
+   v255="XRANGE"('00'x,'FF'x)
+   self~assertSame(.true, v255~abbrev('000102'x, 2))
+
+::method "test_94"
+   v10000 ="COPIES"('123456789Z',1000)
+   v9999  ="LEFT"(v10000,9999)
+   self~assertSame(.true, v10000~abbrev(v9999, 9998))
+
+::method "test_95"
+   self~assertSame(.true, (123+4)~abbrev('12', 1))
+
+::method "test_96"
+   self~assertSame(.true, 'aba'~abbrev('ab', 2))
+
+::method "test_97"
+   v30    ='abcdefghijklmnopqrstuvwxyz1234'
+   self~assertSame(.true, v30~abbrev('abc', 3))
+
+::method "test_98"
+   v250='"'||"XRANGE"('00'x,'7E'x)||'""'||"XRANGE"('80'x,'F9'x)||'"'
+   self~assertSame(.false, v250~abbrev('0001'x, 2))
+
+::method "test_99"
+   v255="XRANGE"('00'x,'FF'x)
+   self~assertSame(.true, v255~abbrev('000102'x, 03))
+
+::method "test_100"
+   v10000 ="COPIES"('123456789Z',1000)
+   v9999  ="LEFT"(v10000,9999)
+   self~assertSame(.true, v10000~abbrev(v9999, 9999))
+
+::method "test_101"
+   self~assertSame(.true, (123+4)~abbrev('12', 2))
+
+::method "test_102"
+   self~assertSame(.false, 'aba'~abbrev('ab', 4))
+
+::method "test_103"
+   v30    ='abcdefghijklmnopqrstuvwxyz1234'
+   self~assertSame(.false, v30~abbrev('abc', 4))
+
+::method "test_104"
+   v250='"'||"XRANGE"('00'x,'7E'x)||'""'||"XRANGE"('80'x,'F9'x)||'"'
+   self~assertSame(.false, v250~abbrev('0001'x, 3))
+
+::method "test_105"
+   v255="XRANGE"('00'x,'FF'x)
+   self~assertSame(.false, v255~abbrev('000102'x, 4))
+
+::method "test_106"
+   v10000 ="COPIES"('123456789Z',1000)
+   v9999  ="LEFT"(v10000,9999)
+   self~assertSame(.false, v10000~abbrev(v9999, 10000))
+
+::method "test_107"
+   self~assertSame(.false, (123+4)~abbrev('12', 4))
+
+::method "test_108"
+   self~assertSame(.true, 1.00000000000003~abbrev(1.00))
+
+::method "test_109"
+   self~assertSame(.true, 1.00000000000003~abbrev(1.00, 1.00))
+
+::method "test_110"
+   self~assertSame(.true, '   1.2E+99999999999999    '~abbrev('   1.2E+99', 3))
+
+::method "test_111"
+   self~assertSame(.true, noval~abbrev(n))
+
+::method "test_112"
+   self~expectSyntax(93.923)
+   self~assertSame(.false, noval~abbrev(1, n))
+
+::method "test_113"
+   self~assertSame(.true, n~abbrev(n))
+
+::method "test_114"
+   self~assertSame(.false, 'N.NN'~abbrev(n, 3))
+
+::method "test_115"
+   self~expectSyntax(93.923)
+   self~assertSame(.false, 'NNNN'~abbrev('N', n))
+
+::method "test_116"
+   three=3
+   self~assertSame(.false, 'NNNN'~abbrev('N', three))
+
+::method "test_117"
+   self~assertSame(.true, noval.1~abbrev(n))
+
+::method "test_118"
+   self~assertSame(.true, 'NNNN'~abbrev(n))
+
+::method "test_119"
+   self~assertSame(.true, 'N.NN'~abbrev(n))
+
+::method "test_120"
+   self~assertSame(.false, 'N.3N'~abbrev(n, 3))
+
+::method "test_121"
+   Numeric Digits 1
+   self~assertSame(.false, '12345678900987654321'~abbrev('1234567890012', 12))
+
+::method "test_122"
+   Numeric Digits 1
+   self~assertSame(.true, '12345678900987654321'~abbrev('12345678900', +12))
+
+::method "test_123"
+   Numeric Digits 1
+   self~assertSame(.false, '12345678900987654321'~abbrev('1234567890012', 1e1))
+
+::method "test_124"
+   Numeric Digits 1
+   self~assertSame(.false, '12345678900987654321'~abbrev('1234567890012', +0.01e2))
+
+::method "test_125"
+   self~expectSyntax(93.923)
+   self~assertSame(.false, '12345678900987654321'~abbrev('1234567890012', +0.01e1))
+
+   -- rexxref documentation tests
+   word="Print"
+   self~assertSame(.true, word~abbrev("Pri"))
+   word="PRINT"
+   self~assertSame(.false, word~abbrev("Pri"))
+   self~assertSame(.false, word~abbrev("PRI", 4))
+   self~assertSame(.false, word~abbrev("PRY"))
+   self~assertSame(.true, word~abbrev(""))
+   self~assertSame(.false, word~abbrev("", 1))
+
+

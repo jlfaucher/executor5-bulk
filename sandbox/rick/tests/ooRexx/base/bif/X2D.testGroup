@@ -1,0 +1,414 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYright HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYright   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.X2D.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+-- class named exactly like file
+::class "X2D.testGroup" subclass ooTestCase public
+
+::method 'test000'
+    .local~x500 = copies('a',500)
+    .local~x501 = x500||'a'
+    .local~a501 = '0'||x500
+    .local~a502 = '00'||x500
+    .local~f504 = copies('Ff',250)||'1234'
+
+::method 'test001'
+    self~assertSame('0', x2d(''))
+
+::method 'test002'
+    self~assertSame('0', x2d(''X))
+
+::method 'test003'
+    self~assertSame('10', x2d('a'))
+
+::method 'test004'
+    self~assertSame('15', x2d('0f'))
+
+::method 'test005'
+    self~assertSame('128', x2d('80'))
+
+::method 'test006'
+    self~expectSyntax(93.935)
+    numeric digits 9
+    xre = x2d('1123456789')
+
+::method 'test006b'
+    self~expectSyntax(93.935)
+    numeric digits 18
+    xre = x2d('1123456789999999999')
+
+::method 'test007'
+    self~expectSyntax(93.935)
+    numeric digits 9
+    xre = x2d('11 23 4567 89')
+
+::method 'test007b'
+    self~expectSyntax(93.935)
+    numeric digits 18
+    xre = x2d('11 23 4567 89 99 99 99 99')
+
+::method 'test008'
+    self~expectSyntax(93.935)
+    numeric digits 9
+    xre = x2d('123456789')
+
+::method 'test008b'
+    self~expectSyntax(93.935)
+    numeric digits 18
+    xre = x2d('123456789999999999')
+
+::method 'test009'
+    self~expectSyntax(93.935)
+    numeric digits 9
+    xre = x2d('1 23 4567 89')
+
+::method 'test009b'
+    self~expectSyntax(93.935)
+    numeric digits 18
+    xre = x2d('1 23 4567 89 99 99 99 99')
+
+::method 'test010'
+    self~assertSame('1893', x2d('765'))
+
+::method 'test011'
+    self~expectSyntax(93.935)
+    xre = x2d(.x500)
+
+::method 'test012'
+    self~expectSyntax(93.933)
+    xre = x2d(.x501)
+
+::method 'test013'
+    self~expectSyntax(93.933)
+    xre = x2d(.a501)
+
+::method 'test014'
+    self~expectSyntax(93.933)
+    xre = x2d(.a502)
+
+::method 'test015'
+    self~expectSyntax(93.935)
+    xre = x2d(.f504)
+
+::method 'test016'
+    self~assertSame('-60876', x2d(.f504,5))
+
+::method 'test017'
+    numeric digits 1000
+    cc250 = x2d("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
+    self~assertSame(cc250, x2d("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"))
+
+::method 'test018'
+    numeric digits 1000
+    self~assertSame('4660', x2d(01234))
+
+::method 'test019'
+    numeric digits 1000
+    self~assertSame('482', x2d(1E2))
+
+::method 'test020'
+    numeric digits 1000
+    self~expectSyntax(93.933)
+    xre = x2d(1E+2)
+
+::method 'test021'
+    numeric digits 1000
+    self~expectSyntax(93.933)
+    xre = x2d(.1E2)
+
+::method 'test022'
+    numeric digits 1000
+    self~assertSame('256', x2d(+1E+2))
+
+::method 'test023'
+    numeric digits 1000
+    self~assertSame('16', x2d(+.1E2))
+
+::method 'test024'
+    numeric digits 1000
+    vnull = ''
+    vstem. = 'a'
+    vstem.1 = 'ab'
+    vstem.vnull = 'ab cd'
+    vnull = ''
+    self~assertSame('0', x2d(vnull))
+    self~assertSame('10', x2d(vstem.))
+    self~assertSame('43981', x2d(vstem.vnull))
+    self~assertSame('0', x2d(vnull))
+
+::method 'test025'
+    numeric digits 1000
+    self~assertSame('47802', x2d(baba))
+
+::method 'test026'
+    numeric digits 1000
+    self~expectSyntax(93.933)
+    xre = x2d(baba.)
+
+::method 'test027'
+    numeric digits 1000
+    self~expectSyntax(93.933)
+    xre = x2d(baba.caca)
+
+::method 'test028'
+    numeric digits 1000
+    self~assertSame('256', x2d( + 1E+2 ))
+
+::method 'test029'
+    numeric digits 1000
+    self~assertSame('257', x2d(1 + 1E+2 ))
+
+::method 'test030'
+    numeric digits 1000
+    self~assertSame('733294087186', x2d('aa' 'bbbb' 'cc' '3132'x))
+
+::method 'test031'
+    numeric digits 1000
+    self~assertSame(x2d('aabbbbcc12'), x2d('aa' 'bbbb' 'cc' '3132'x))
+
+::method 'test032'
+    numeric digits 1000
+    self~assertSame(0, x2d('',0))
+
+::method 'test033'
+    numeric digits 1000
+    self~assertSame('0', x2d('',12))
+
+::method 'test034'
+    numeric digits 1000
+    self~assertSame(0, x2d('abc',0))
+
+::method 'test035'
+    numeric digits 1000
+    self~assertSame('-4', x2d('abc',1))
+
+::method 'test036'
+    numeric digits 1000
+    self~assertSame('-1348', x2d('abc',3))
+
+::method 'test037'
+    numeric digits 1000
+    self~assertSame('2748', x2d('abc',5))
+
+::method 'test038'
+    numeric digits 1000
+    self~assertSame('2748', x2d('abc',5))
+
+::method 'test039'
+    numeric digits 1000
+    self~expectSyntax(93.923)
+    xre = x2d('abc',-17)
+
+::method 'test040'
+    numeric digits 1000
+    self~expectSyntax(40.12)
+    xre = x2d('abc',12.3)
+
+::method 'test041'
+    numeric digits 1000
+    self~assertSame('4', x2d(1+3,1+3))
+
+::method 'test042'
+    numeric digits 1000
+    self~assertSame('616', x2d(256+12,10+2))
+
+::method 'test043'
+    numeric digits 1000
+    self~assertSame('-120', x2d('888','32'x))
+
+::method 'test044'
+    numeric digits 1000
+    self~assertSame(0, '583244'x('111','30'x))
+
+::method 'test045'
+    numeric digits 1000
+    self~assertSame(1, '583244'x('111','31'x))
+
+::method 'test046'
+    numeric digits 1000
+    self~assertSame(17, '583244'x('111','32'x))
+
+::method 'test047'
+    numeric digits 1000
+    self~assertSame(273, '583244'x('1 11','33'x))
+
+::method 'test048'
+    numeric digits 1000
+    self~assertSame(273, '583244'x('111','34'x))
+
+::method 'test049'
+    numeric digits 1000
+    self~assertSame(0, '583244'x('E       EE','30'x))
+
+::method 'test050'
+    numeric digits 1000
+    self~assertSame(-2, '583244'x('e EE','31'x))
+
+::method 'test051'
+    numeric digits 1000
+    self~assertSame(-18, '583244'x('eeE','32'x))
+
+::method 'test052'
+    numeric digits 1000
+    self~assertSame(-274, '583244'x('eee','33'x))
+
+::method 'test053'
+    numeric digits 1000
+    self~assertSame(3822, '583244'x('eee','34'x))
+
+::method 'test054'
+    numeric digits 3
+    self~expectSyntax(40.12)
+    xre = x2d('abc',+12.5)
+
+::method 'test055'
+    numeric digits 3
+    self~expectSyntax(40.12)
+    xre = x2d('a',+12.5)
+
+::method 'test056'
+    self~assertSame('12345', d2x(x2d('12345')))
+
+::method 'test057'
+    x = '44'
+    v = x
+    x = x2d(x)
+    self~assertSame(v, d2x(x))
+
+::method 'test058'
+    x = '44'
+    v = x
+    x = x2d(x)
+    x = v
+    x = x2d(x,x)
+    self~assertSame(x, x2d(v,v))
+
+::method 'test059'
+    self~expectSyntax(93.933)
+    xre = x2d('abcdefg')
+
+::method 'test060'
+    self~expectSyntax(93.931)
+    xre = x2d(' a')
+
+::method 'test061'
+    self~expectSyntax(93.931)
+    xre = x2d('b ')
+
+::method 'test062'
+    self~expectSyntax(93.931)
+    xre = x2d(' c ')
+
+::method 'test063'
+    self~expectSyntax(93.931)
+    xre = x2d('ab c')
+
+::method 'test064'
+    self~assertSame('23', x2d(x2d('11')))
+
+::method 'test065'
+    self~assertSame('24868', x2d(c2x('a$')))
+
+::method 'test066'
+    .local~remove(x500)
+    .local~remove(x501)
+    .local~remove(a501)
+    .local~remove(a502)
+    .local~remove(f504)
+
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_X2D"
+    self~assertEquals(14, X2D('0E'))
+    self~assertEquals(129, X2D('81'))
+    self~assertEquals(3969, X2D('F81'))
+    self~assertEquals(65409, X2D('FF81'))
+    self~assertEquals(240 /* ASCII */, X2D('46 30'X))
+    self~assertEquals(240 /* ASCII */, X2D('66 30'X))
+
+    self~assertEquals(-127, X2D('81',2)) --
+    self~assertEquals(129, X2D('81',4))
+    self~assertEquals(-3967, X2D('F081',4))
+    self~assertEquals(129, X2D('F081',3))
+    self~assertEquals(-127, X2D('F081',2))
+    self~assertEquals(1, X2D('F081',1))
+    self~assertEquals(0, X2D('0031',0))
+
+   -- new tests
+    self~assertEquals(0, X2D(''))
+    self~assertEquals(0, X2D('',1))
+    self~assertEquals(0, X2D('',17))
+
+-- tests for [bugs:#1424] X2D() returns incorrect result
+::method test_x2d_bug1424
+  self~assertSame(     0, x2d(8001, 0))
+  self~assertSame(     1, x2d(8001, 1))
+  self~assertSame(     1, x2d(8001, 2))
+  self~assertSame(     1, x2d(8001, 3))
+  self~assertSame(-32767, x2d(8001, 4))
+  self~assertSame( 32769, x2d(8001, 5))
+  self~assertSame( 32769, x2d(8001, 6))
+  self~assertSame( 32769, x2d(8001, 7))
+  self~assertSame( 32769, x2d(8001, 8))
+  self~assertSame( 32769, x2d(8001, 9))
+
+  self~assertSame(    0, x2d("ffff", 0))
+  self~assertSame(   -1, x2d("ffff", 1))
+  self~assertSame(   -1, x2d("ffff", 2))
+  self~assertSame(   -1, x2d("ffff", 3))
+  self~assertSame(   -1, x2d("ffff", 4))
+  self~assertSame(65535, x2d("ffff", 5))
+  self~assertSame(65535, x2d("ffff", 6))
+  self~assertSame(65535, x2d("ffff", 7))
+  self~assertSame(65535, x2d("ffff", 8))
+  self~assertSame(65535, x2d("ffff", 9))
+

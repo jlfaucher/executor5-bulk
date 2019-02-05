@@ -1,0 +1,475 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2019 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+
+  group = .TestGroup~new(s)
+  group~add(.File.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+  Directives, Classes, or Routines.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::requires 'ooTest.frm'
+::requires 'FileUtils.cls'
+
+/* class: File.testGroup - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class "File.testGroup" public subclass ooTestCase
+
+::method setup
+  expose tempFiles
+  tempFiles = .array~new
+
+::method tearDown
+  expose tempFiles
+
+  do file over tempFiles
+      file~delete
+  end
+
+::method cleanup
+  use strict arg file
+
+  if \file~exists then return
+
+  if file~isFile then do
+      file~delete
+      return
+  end
+
+  if \file~delete then do
+      do child over file~listFiles
+          self~cleanup(child)
+      end
+  end
+
+  file~delete
+
+::method addTempFile
+  expose tempFiles
+  use arg file
+
+  tempFiles~append(file)
+
+::method test_relative
+  f = .file~new("XXXXXXXX")   -- this should not exist
+
+  self~addTempfile(f)            -- this will delete at the end
+  self~cleanup(f)                -- but also delete this now
+
+  self~assertEquals("XXXXXXXX", f~path)
+  self~assertEquals(f~string, f~path)
+  self~assertEquals("XXXXXXXX", f~name)
+  self~assertEquals(directory()||.File~separator||"XXXXXXXX", f~absolutePath)
+  self~assertEquals(directory(), f~parent)
+  self~assertEquals(.File~new(directory()), f~parentFile)
+  self~assertEquals(0, f~length)
+
+  -- some assertions on the various is tests
+  self~assertFalse(f~exists)
+  self~assertFalse(f~isDirectory)
+  self~assertFalse(f~isFile)   -- returns false because it doesn't exit)
+  self~assertFalse(f~isHidden) -- returns false because it doesn't exit)
+  self~assertFalse(f~canRead)  -- returns false because it doesn't exit)
+  self~assertFalse(f~canWrite,)  -- returns false, because it doesn't exist
+  self~assertFalse(f~delete)   -- should fail because it doesn't exist
+
+  self~assertSame(.nil, f~lastModified)  -- should fail because it doesn't exist
+  self~assertSame(.nil, f~list)          -- should fail because it doesn't exist
+  self~assertSame(.nil, f~listFiles)     -- should fail because it doesn't exist
+
+  -- now create this and repeat a few of the tests
+  self~assertTrue(f~makeDir)
+  self~assertTrue(f~exists)
+  self~assertTrue(f~isDirectory)
+  self~assertFalse(f~isFile)
+  self~assertTrue(f~lastModified~isA(.DateTime))
+
+  date = f~lastModified
+  date = date~addYears(-1)
+  date = .DateTime~new(date~year, date~month, date~day, date~hours, date~minutes, date~seconds)
+  f~lastModified = date
+
+  self~assertEquals(date, f~lastModified)
+
+  self~assertFalse(f~makeDir)  -- should fail because it exists
+
+  self~assertTrue(f~delete)
+  self~assertFalse(f~exists)
+
+  self~assertTrue(f~makeDirs)
+  self~assertTrue(f~exists)
+  self~assertTrue(f~isDirectory)
+  list = f~list
+  self~assertTrue(list~isA(.Array))
+  self~assertEquals(0, list~items)
+  subfile = .File~new("A_real_file", f)
+  s = .stream~new(subfile)
+  s~lineout('xyz')
+  s~close
+
+  self~assertTrue(subfile~exists)
+  self~assertFalse(subfile~isDirectory)
+  self~assertTrue(subfile~isFile)
+  self~assertEquals(3 + .endofline~length, subfile~length)
+
+  list = f~list
+  self~assertTrue(list~isA(.Array))
+  self~assertEquals(1, list~items)
+  self~assertEquals('A_real_file', list[1])
+
+  list = f~listFiles
+  self~assertTrue(list~isA(.Array))
+  self~assertEquals(1, list~items)
+  self~assertEquals(subFile, list[1])
+  self~assertEquals(subFile~absolutePath, list[1]~path)
+
+  self~assertTrue(subfile~delete)
+  self~assertFalse(subfile~exists)
+
+  self~assertTrue(f~delete)
+
+  subdir = .File~new("Y/Z", f)
+
+  if .File~separator == "\" then      -- verify the separator translation
+      self~assertEquals(f~absolutePath||"\Y\Z", subdir~path)
+
+  if \.File~isCaseSensitive then do
+      subdir2 = .File~new("y\z", f)
+      self~assertEquals(subdir, subdir2)
+  end
+
+  self~assertFalse(subdir~makeDir)
+  self~assertFalse(subdir~exists)
+  self~assertTrue(subdir~makeDirs)
+  self~assertTrue(subdir~exists)
+  self~assertTrue(subdir~parentFile~exists)
+
+  list = f~list
+  self~assertTrue(list~isA(.Array))
+  self~assertEquals(1, list~items)
+  self~assertEquals('Y', list[1])
+
+  list = f~listFiles
+  self~assertTrue(list~isA(.Array))
+  self~assertEquals(1, list~items)
+  self~assertEquals(subdir~parentFile, list[1])
+  self~assertEquals(subdir~parent, list[1]~path)
+
+  self~assertFalse(subdir~parentFile~delete)  -- this should fail
+  self~assertTrue(subdir~delete)
+  self~assertTrue(subdir~parentFile~delete)
+  self~assertFalse(subdir~exists)
+  self~assertFalse(subdir~parentFile~exists)
+
+  f2 = .file~new("XXXXXXXX", directory())   -- this should be the same file
+  self~assertEquals(f, f2)
+  f3 = .file~new("XXXXXXXX", .File~new(directory()))   -- this should be the same file
+  self~assertEquals(f, f3)
+  f4 = .file~new("XXXXXXXX", f~parentFile)   -- this should be the same file
+  self~assertEquals(f, f4)
+
+
+-- additional timestamp tests
+::method test_file_lastmodified
+  f = .file~new("test_file_lastmodified")
+  self~addTempfile(f)                  -- schedule for automatic deletion
+
+  -- create the test file
+  s = .Stream~new(f)
+  self~assertEquals("READY:", s~open("write replace"), "couldn't create test file '"f~name"'")
+  s~lineOut("File.testGroup: test_file_lastmodified")
+  s~close
+
+  -- ooRexx provides various interfaces to retrieve file time stamps:
+  --   File~lastModified,
+  --   Stream~query("timestamp") (we'll ignore Stream~query("datetime") as it doesn't provide a 4-digit year),
+  --   SysGetFileDateTime(, "write"), and
+  --   SysFileTree(dir, , "FL")
+  -- check them all for consistency
+  do 2 -- we'll run two iterations: first w/o, and then with a read/write lock
+
+    -- file time from File~lastModified
+    tLastModified = f~lastModified     -- e. g. 2015-06-06 15:12:08.000000
+    self~assertTrue(tLastModified~isA(.DateTime))
+    self~assertTrue(tLastModified <= .DateTime~new, "test timestamp" tLastModified" should be before" .DateTime~new)
+    tLastModified = tLastModified~string~left(19) -- we'll ignore fractions of seconds
+
+    -- file time from Stream~query("timestamp")
+    -- a. query a closed stream
+    q = .Stream~new(f)
+    t = q~query("timestamp")           -- e. g. 2015-06-06 15:12:08
+    tQuery = t~word(1)"T"t~word(2)
+    self~assertEquals(tLastModified, tQuery, "~lastModified timestamp" tLastModified" should be equal to ~query('timestamp')" tQuery)
+    -- b. query an opened stream (will only work if no read/write lock is applied)
+    -- (we want to test both SysFile::getTimeStamp code paths)
+    q~open("read shared")              -- will silently fail if locked
+    t = q~query("timestamp")           -- e. g. 2015-06-06 15:12:08
+    tQuery = t~word(1)"T"t~word(2)
+    self~assertEquals(tLastModified, tQuery, "~lastModified timestamp" tLastModified" should be equal to ~query('timestamp')" tQuery)
+    q~close
+
+    -- file time from SysGetFileDateTime(, "write")
+    t = SysGetFileDateTime(f~absolutePath, "write") -- e. g. 2015-06-06 15:12:08
+    tSysGet = t~word(1)"T"t~word(2)
+    self~assertEquals(tLastModified, tSysGet, "~lastModified timestamp" tLastModified" should be equal to SysGetFileDateTime() timestamp" tSysGet)
+
+    -- file time from SysFileTree(dir, , "FL")
+    call SysFileTree f~absolutePath, "FILE.", "FL" -- list files only; use long timestamps
+    tTree = file.1~word(1)"T"file.1~word(2) -- e. g. 2015-06-06 15:12:08
+    self~assertEquals(tLastModified, tTree, "~lastModified timestamp" tLastModified" should be equal to SysFileTree() timestamp" tTree)
+
+    -- now let's start a second iteration with:
+    -- a. an exclusive read/write lock on the test file, and
+    -- b. the test time stamp moved 180 days into the past
+    self~assertEquals("READY:", s~open("both"), "couldn't get read/write lock for test file '"f~name"'")
+    f~lastModified = f~lastModified - .TimeSpan~fromDays(180)
+  end
+  s~close
+  f~delete
+
+::method test_file_lastmodified_one_arg
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  .File~new(".")~lastModified(.nil)
+
+::method test_file_lastmodified_set_no_args
+  self~expectSyntax(93.901) -- Not enough arguments for method; 1 expected
+  .File~new(".")~"lastModified="
+
+::method test_file_lastmodified_set_too_many_args
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method; 1 expected
+  .File~new(".")~"lastModified="(0, 0)
+
+::method test_file_lastmodified_set_invalid
+  self~expectSyntax(88.914) -- Argument date must be an instance of the DateTime class
+  .File~new(".")~lastModified = ""
+
+::method test_file_lastmodified_directory
+  -- current directory must exist, so lastModified should never be nil
+  self~assertTrue(.File~new(".")~lastModified~isA(.DateTime))
+
+::method test_file_lastmodified_nil
+  -- setting lastModified will not create a file
+  f = .File~new("doesnt-exist")
+  self~assertFalse(f~exists, f~name "should not exist")
+  self~assertSame(.nil, f~lastModified)
+  f~lastModified = .DateTime~new
+  self~assertFalse(f~exists, "setting lastModified() should not create" f~name)
+  self~assertSame(.nil, f~lastModified)
+
+
+::method test_file_lastaccessed_one_arg
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  .File~new(".")~lastAccessed(.nil)
+
+::method test_file_lastaccessed_set_no_args
+  self~expectSyntax(93.901) -- Not enough arguments for method; 1 expected
+  .File~new(".")~"lastAccessed="
+
+::method test_file_lastaccessed_set_too_many_args
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method; 1 expected
+  .File~new(".")~"lastAccessed="(0, 0)
+
+::method test_file_lastaccessed_set_invalid
+  self~expectSyntax(88.914) -- Argument date must be an instance of the DateTime class
+  .File~new(".")~lastAccessed = ""
+
+::method test_file_lastaccessed
+  f = .file~new("test_file_accessed")
+  self~addTempfile(f)                  -- schedule for automatic deletion
+
+  -- create the test file
+  s = .Stream~new(f)
+  self~assertEquals("READY:", s~open("write replace"), "couldn't create test file '"f~name"'")
+  s~lineOut("File.testGroup: test_file_accessed")
+  s~close
+
+  -- ooRexx provides two interfaces to retrieve last access time stamps:
+  --   File~lastAccessed and
+  --   SysGetFileDateTime(, "access")
+  -- check them for consistency
+  do 2 -- we'll run two iterations: first w/o, and then with a read/write lock
+
+    -- file time from File~lastAccessed
+    tLastAccessed = f~lastAccessed     -- e. g. 2015-06-06 15:12:08.000000
+    self~assertTrue(tLastAccessed~isA(.DateTime))
+    self~assertTrue(tLastAccessed <= .DateTime~new, "test timestamp" tLastAccessed" should be before" .DateTime~new)
+    tLastAccessed = tLastAccessed~string~left(19) -- we'll ignore fractions of seconds
+
+    -- file time from SysGetFileDateTime(, "access")
+    t = SysGetFileDateTime(f~absolutePath, "access") -- e. g. 2015-06-06 15:12:08
+    tSysGet = t~word(1)"T"t~word(2)
+    self~assertEquals(tLastAccessed, tSysGet, "~lastAccessed timestamp" tLastAccessed" should be equal to SysGetFileDateTime() timestamp" tSysGet)
+
+    -- now let's start a second iteration with:
+    -- a. an exclusive read/write lock on the test file, and
+    -- b. the test time stamp moved 180 days into the past
+    self~assertEquals("READY:", s~open("both"), "couldn't get read/write lock for test file '"f~name"'")
+    f~lastAccessed = f~lastAccessed - .TimeSpan~fromDays(180)
+  end
+  s~close
+  f~delete
+
+::method test_file_lastaccessed_directory
+  -- current directory must exist, so lastAccessed should never be nil
+  self~assertTrue(.File~new(".")~lastAccessed~isA(.DateTime))
+
+::method test_file_lastaccessed_nil
+  -- setting lastAccessed will not create a file
+  f = .File~new("doesnt-exist")
+  self~assertFalse(f~exists, f~name "should not exist")
+  self~assertSame(.nil, f~lastAccessed)
+  f~lastAccessed = .DateTime~new
+  self~assertFalse(f~exists, "setting lastAccessed() should not create" f~name)
+  self~assertSame(.nil, f~lastAccessed)
+
+
+-- listRoot: too many arguments
+::method test_listroots_one_arg
+  self~expectSyntax(88.922) -- Too many arguments in invocation
+  .File~listRoots(.nil)
+
+
+-- listRoot: too many arguments
+::method test_listroots
+  roots = .File~listRoots
+  self~assertIsA(roots, .Array, ".File~listRoots should return an Array; found" roots~class~id)
+  if .File~separator = "/" then do
+    -- on Unix we expect a single-item Array of "/"
+    self~assertEquals(1, roots~items, ".File~listRoots should return a single-item Array; found" roots~items "items")
+    self~assertEquals("/", roots[1], ".File~listRoots should return '/'; found" roots[1])
+  end
+  else do
+    -- on Windows we expect an Array of one or more uppercase "D:\" strings
+    self~assertTrue(roots~items >= 1, ".File~listRoots should return an Array with one or more items; found" roots~items "items")
+    do root over roots
+      self~assertEquals(3, root~length, ".File~listRoots should return roots of the form 'D:\'; found" root)
+      self~assertTrue(root~endsWith(":\"), ".File~listRoots should return roots of the form 'D:\'; found" root)
+      self~assertTrue(root[1]~dataType("UPPER"), ".File~listRoots should return roots of the form 'D:\'; found" root)
+    end
+  end
+
+
+-- absolutePath: too many arguments
+::method test_absolutepath_one_arg
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  .File~new(".")~absolutePath(.nil)
+
+
+-- absolutePath: normalization
+::method test_absolutepath
+  -- normalization should remove trailing slashes
+  current = .File~new(".")~absolutePath
+  do path over ".", "./", ".//"
+    current = .File~new(path)~absolutePath
+    self~assertEquals(directory(), current, ".File~new('" || path || "')~absolutePath should return current directory" directory()"; found" current)
+  end
+
+  if .File~separator = "/" then do
+
+    -- Unix-only
+
+    -- normalization should remove trailing or duplicate slashes
+    expected = "/usr"
+    do path over "/usr", "/usr/", "/usr//", "//usr", "//usr/", "//usr//"
+      actual = .File~new(path)~absolutePath
+      self~assertEquals(expected, actual, ".File~new('" || path || "')~absolutePath should return" expected"; found" actual)
+    end
+
+  end
+  else do
+
+    -- Windows-only
+
+    -- normalization should remove trailing or duplicate backslashes and slashes
+    -- all slashes should be converted to backslashes
+    expected = "C:\Users"
+    do path over "C:\Users", "C:\\Users", "C:\Users\", "C:\Users\\", "C:/Users", "C://Users", "C:/Users/", "C:/Users/\", "C:\/Users/\"
+      actual = .File~new(path)~absolutePath
+      self~assertEquals(expected, actual, ".File~new('" || path || "')~absolutePath should return" expected"; found" actual)
+    end
+
+    -- normalization should NOT change a naked drive specification D:
+    drive = filespec("drive", directory())
+    current = .File~new(drive)~absolutePath
+    self~assertEquals(directory(), current, ".File~new('" || drive || "')~absolutePath should return current directory" directory()"; found" current)
+
+    -- normalization should NOT remove the last trailing slash for root D:\
+    expected = drive || "\"
+    do path over expected, expected || "/", expected || "//", expected || "\", expected || "\\"
+      actual = .File~new(path)~absolutePath
+      self~assertEquals(expected, actual, ".File~new('" || path || "')~absolutePath should return" expected"; found" actual)
+    end
+
+  end
+
+
+-- a specified root parent path must not cause duplicate separators
+::method test_root_parent_path
+  if .File~separator = "/" then do
+
+    -- Unix-only
+
+    expected = "/usr"
+    actual = .File~new("usr", "/")~absolutePath
+    self~assertEquals(expected, actual, ".File~new('usr', '/')~absolutePath should return" expected"; found" actual)
+
+  end
+  else do
+
+    -- Windows-only
+
+    expected = "C:\User"
+    actual = .File~new("User", "C:\")~absolutePath
+    self~assertEquals(expected, actual, ".File~new('User', 'C:\')~absolutePath should return" expected"; found" actual)
+
+  end
+
+
+::options novalue error

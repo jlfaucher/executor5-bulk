@@ -1,0 +1,398 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.comparisonOperators.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "comparisonOperators.testGroup" subclass ooTestCase public
+
+::method "test_comparison_operators"
+   -- none of these should raise nostring conditions
+   signal on nostring
+
+   self~assertTrue(5=5) /* equal */
+   self~assertTrue(42\=41) /* All of these are */
+   self~assertTrue(42><41) /* "not equal" */
+   self~assertTrue(42<>41)
+   self~assertTrue(13>12) /* Variations of */
+   self~assertTrue(12<13) /* less than and */
+   self~assertTrue(13>=12) /* greater than */
+   self~assertFalse(12\<13)
+   self~assertTrue(12<=13)
+   self~assertTrue(12\>13)
+
+   self~assertTrue(5~'='(5)) /* equal */
+   self~assertTrue(42~'\='(41)) /* All of these are */
+   self~assertTrue(42~'><'(41)) /* "not equal" */
+   self~assertTrue(42~'<>'(41))
+   self~assertTrue(13~'>'(12)) /* Variations of */
+   self~assertTrue(12~'<'(13)) /* less than and */
+   self~assertTrue(13~'>='(12)) /* greater than */
+   self~assertFalse(12~'\<'(13))
+   self~assertTrue(12~'<='(13))
+   self~assertTrue(12~'\>'(13))
+
+
+   -- testcases added for [bugs:#1358] Strict comparison gives unexpected result
+   -- numeric standard integer/integer
+   self~assertFalse(2=12)
+   self~assertTrue(2\=12)
+   self~assertTrue(2<>12)
+   self~assertTrue(2><12)
+   self~assertFalse(2>12)
+   self~assertFalse(2>=12)
+   self~assertFalse(2\<12)
+   self~assertTrue(2<12)
+   self~assertTrue(2<=12)
+   self~assertTrue(2\>12)
+
+   -- numeric strict integer/integer
+   self~assertFalse(2==12)
+   self~assertTrue(2\==12)
+   self~assertTrue(2>>12)
+   self~assertTrue(2>>=12)
+   self~assertTrue(2\<<12)
+   self~assertFalse(2<<12)
+   self~assertFalse(2<<=12)
+   self~assertFalse(2\>>12)
+
+   -- numeric standard integer/string
+   self~assertFalse(2="12")
+   self~assertTrue(2\="12")
+   self~assertTrue(2<>"12")
+   self~assertTrue(2><"12")
+   self~assertFalse(2>"12")
+   self~assertFalse(2>="12")
+   self~assertFalse(2\<"12")
+   self~assertTrue(2<"12")
+   self~assertTrue(2<="12")
+   self~assertTrue(2\>"12")
+
+   -- numeric strict integer/string
+   self~assertFalse(2=="12")
+   self~assertTrue(2\=="12")
+   self~assertTrue(2>>"12")
+   self~assertTrue(2>>="12")
+   self~assertTrue(2\<<"12")
+   self~assertFalse(2<<"12")
+   self~assertFalse(2<<="12")
+   self~assertFalse(2\>>"12")
+
+   -- numeric standard string/integer
+   self~assertFalse("2"=12)
+   self~assertTrue("2"\=12)
+   self~assertTrue("2"<>12)
+   self~assertTrue("2"><12)
+   self~assertFalse("2">12)
+   self~assertFalse("2">=12)
+   self~assertFalse("2"\<12)
+   self~assertTrue("2"<12)
+   self~assertTrue("2"<=12)
+   self~assertTrue("2"\>12)
+
+   -- numeric strict string/integer
+   self~assertFalse("2"==12)
+   self~assertTrue("2"\==12)
+   self~assertTrue("2">>12)
+   self~assertTrue("2">>=12)
+   self~assertTrue("2"\<<12)
+   self~assertFalse("2"<<12)
+   self~assertFalse("2"<<=12)
+   self~assertFalse("2"\>>12)
+
+   -- numeric standard string/string
+   self~assertFalse("2"="12")
+   self~assertTrue("2"\="12")
+   self~assertTrue("2"<>"12")
+   self~assertTrue("2"><"12")
+   self~assertFalse("2">"12")
+   self~assertFalse("2">="12")
+   self~assertFalse("2"\<"12")
+   self~assertTrue("2"<"12")
+   self~assertTrue("2"<="12")
+   self~assertTrue("2"\>"12")
+
+   -- numeric strict integer/integer
+   self~assertFalse("2"=="12")
+   self~assertTrue("2"\=="12")
+   self~assertTrue("2">>"12")
+   self~assertTrue("2">>="12")
+   self~assertTrue("2"\<<"12")
+   self~assertFalse("2"<<"12")
+   self~assertFalse("2"<<="12")
+   self~assertFalse("2"\>>"12")
+   -- END testcases added for [bugs:#1358]
+
+
+   -- number string comparisons
+   self~assertTrue(5.5=5.5) /* equal */
+   self~assertTrue(42.1\=41.1) /* All of these are */
+   self~assertTrue(42.1><41.1) /* "not equal" */
+   self~assertTrue(42.1<>41.1)
+   self~assertTrue(13.1>12.1) /* Variations of */
+   self~assertTrue(12.1<13.1) /* less than and */
+   self~assertTrue(13.1>=12.1) /* greater than */
+   self~assertFalse(12.1\<13.1)
+   self~assertTrue(12.1<=13.1)
+   self~assertTrue(12.1\>13.1)
+
+   self~assertTrue(5.5~'='(5.5)) /* equal */
+   self~assertTrue(42.1~'\='(41.1)) /* All of these are */
+   self~assertTrue(42.1~'><'(41.1)) /* "not equal" */
+   self~assertTrue(42.1~'<>'(41.1))
+   self~assertTrue(13.1~'>'(12.1)) /* Variations of */
+   self~assertTrue(12.1~'<'(13.1)) /* less than and */
+   self~assertTrue(13.1~'>='(12.1)) /* greater than */
+   self~assertFalse(12.1~'\<'(13.1))
+   self~assertTrue(12.1~'<='(13.1))
+   self~assertTrue(12.1~'\>'(13.1))
+
+   -- repeat all of these with the left-hand side being explicitly
+   -- a string value.  Because there are special hidden integer and numberstring
+   -- classes used internally, this can make an actual different
+
+   self~assertTrue('5'=5) /* equal */
+   self~assertTrue('42'\=41) /* All of these are */
+   self~assertTrue('42'><41) /* "not equal" */
+   self~assertTrue('42'<>41)
+   self~assertTrue('13'>12) /* Variations of */
+   self~assertTrue('12'<13) /* less than and */
+   self~assertTrue('13'>=12) /* greater than */
+   self~assertFalse('12'\<13)
+   self~assertTrue('12'<=13)
+   self~assertTrue('12'\>13)
+
+   self~assertTrue('5'~'='(5)) /* equal */
+   self~assertTrue('42'~'\='(41)) /* All of these are */
+   self~assertTrue('42'~'><'(41)) /* "not equal" */
+   self~assertTrue('42'~'<>'(41))
+   self~assertTrue('13'~'>'(12)) /* Variations of */
+   self~assertTrue('12'~'<'(13)) /* less than and */
+   self~assertTrue('13'~'>='(12)) /* greater than */
+   self~assertFalse('12'~'\<'(13))
+   self~assertTrue('12'~'<='(13))
+   self~assertTrue('12'~'\>'(13))
+
+   -- number string comparisons
+   self~assertTrue('5.5'=5.5) /* equal */
+   self~assertTrue('42.1'\=41.1) /* All of these are */
+   self~assertTrue('42.1'><41.1) /* "not equal" */
+   self~assertTrue('42.1'<>41.1)
+   self~assertTrue('13.1'>12.1) /* Variations of */
+   self~assertTrue('12.1'<13.1) /* less than and */
+   self~assertTrue('13.1'>=12.1) /* greater than */
+   self~assertFalse('12.1'\<13.1)
+   self~assertTrue('12.1'<=13.1)
+   self~assertTrue('12.1'\>13.1)
+
+   self~assertTrue('5.5'~'='(5.5)) /* equal */
+   self~assertTrue('42.1'~'\='(41.1)) /* All of these are */
+   self~assertTrue('42.1'~'><'(41.1)) /* "not equal" */
+   self~assertTrue('42.1'~'<>'(41.1))
+   self~assertTrue('13.1'~'>'(12.1)) /* Variations of */
+   self~assertTrue('12.1'~'<'(13.1)) /* less than and */
+   self~assertTrue('13.1'~'>='(12.1)) /* greater than */
+   self~assertFalse('12.1'~'\<'(13.1))
+   self~assertTrue('12.1'~'<='(13.1))
+   self~assertTrue('12.1'~'\>'(13.1))
+
+   -- identical
+   self~assertTrue('space'  ==  'space')  /* Strictly equal */
+   self~assertTrue('space'  \== ' space')  /* Strictly not equal */
+   self~assertTrue('space'  >>  ' space')  /* Variations of */
+   self~assertTrue(' space' <<  'space')  /* strictly greater */
+   self~assertTrue('space'  >>= ' space')  /* than and less than */
+   self~assertTrue('space'  \<< ' space')
+   self~assertTrue(' space' <<= 'space')
+   self~assertTrue(' space' \>> 'space')
+
+   self~assertTrue('space'~'=='('space'))  /* Strictly equal */
+   self~assertTrue('space'~'\=='(' space'))  /* Strictly not equal */
+   self~assertTrue('space'~'>>'(' space'))  /* Variations of */
+   self~assertTrue(' space'~'<<'('space'))  /* strictly greater */
+   self~assertTrue('space'~'>>='(' space'))  /* than and less than */
+   self~assertTrue('space'~'\<<'(' space'))
+   self~assertTrue(' space'~'<<='('space'))
+   self~assertTrue(' space'~'\>>'('space'))
+
+   return
+   nostring:
+   self~assertTrue(.false, "Unexpected NOSTRING condition raised at" sigl)
+
+::method test_nil
+  signal on nostring
+
+  -- verify the various tests against .nil.
+  test = .nil~string   -- test against the string version of .nil to make sure we don't get false positives
+
+  self~assertFalse(test = .nil)
+  self~assertTrue(test \= .nil)
+  self~assertFalse(test == .nil)
+  self~assertTrue(test \== .nil)
+  self~assertTrue(test <> .nil)
+  self~assertTrue(test >< .nil)
+  self~assertFalse(test > .nil)
+  self~assertFalse(test < .nil)
+  self~assertFalse(test >= .nil)
+  self~assertFalse(test <= .nil)
+  self~assertFalse(test \> .nil)
+  self~assertFalse(test \< .nil)
+  self~assertFalse(test << .nil)
+  self~assertFalse(test >> .nil)
+  self~assertFalse(test >>= .nil)
+  self~assertFalse(test <<= .nil)
+  self~assertFalse(test \<< .nil)
+  self~assertFalse(test \>> .nil)
+  -- because of the internal classes, test also with integer and decimal numbers
+  test = 120
+
+  self~assertFalse(test = .nil)
+  self~assertTrue(test \= .nil)
+  self~assertFalse(test == .nil)
+  self~assertTrue(test \== .nil)
+  self~assertTrue(test <> .nil)
+  self~assertTrue(test >< .nil)
+  self~assertFalse(test > .nil)
+  self~assertFalse(test < .nil)
+  self~assertFalse(test >= .nil)
+  self~assertFalse(test <= .nil)
+  self~assertFalse(test \> .nil)
+  self~assertFalse(test \< .nil)
+  self~assertFalse(test << .nil)
+  self~assertFalse(test >> .nil)
+  self~assertFalse(test >>= .nil)
+  self~assertFalse(test <<= .nil)
+  self~assertFalse(test \<< .nil)
+  self~assertFalse(test \>> .nil)
+
+  test = 120.1
+
+  self~assertFalse(test = .nil)
+  self~assertTrue(test \= .nil)
+  self~assertFalse(test == .nil)
+  self~assertTrue(test \== .nil)
+  self~assertTrue(test <> .nil)
+  self~assertTrue(test >< .nil)
+  self~assertFalse(test > .nil)
+  self~assertFalse(test < .nil)
+  self~assertFalse(test >= .nil)
+  self~assertFalse(test <= .nil)
+  self~assertFalse(test \> .nil)
+  self~assertFalse(test \< .nil)
+  self~assertFalse(test << .nil)
+  self~assertFalse(test >> .nil)
+  self~assertFalse(test >>= .nil)
+  self~assertFalse(test <<= .nil)
+  self~assertFalse(test \<< .nil)
+  self~assertFalse(test \>> .nil)
+  return
+
+  nostring:
+  self~assertTrue(.false, "Unexpected NOSTRING condition raised at" sigl)
+
+::method test_nostring
+  test = .object~new~string
+
+  self~assertTrue(test == .object~new)
+  -- this should never return for this next one
+  signal on nostring
+  self~assertFalse(test == .object~new, "NOSTRING not raised")
+  return
+
+  nostring: return -- should get here
+
+-- added for [bugs:#1542] "3 == .object" bombs
+::method test_numeric_strict_nonstring
+  do op1 over 123, 1/3, 1e3, '123', 'a'
+    op2 = .Object~new
+    -- op1 < an Object
+    self~assertTrue(op1 \== op2)
+    self~assertTrue(op1 <> op2)
+    self~assertTrue(op1 >< op2)
+    self~assertTrue(op1 < op2)
+    self~assertTrue(op1 \= op2)
+    self~assertTrue(op1 <= op2)
+    self~assertTrue(op1 \> op2)
+    self~assertTrue(op1 << op2)
+    self~assertTrue(op1 <<= op2)
+    self~assertTrue(op1 \>> op2)
+    self~assertFalse(op1 = op2)
+    self~assertFalse(op1 == op2)
+    self~assertFalse(op1 > op2)
+    self~assertFalse(op1 >= op2)
+    self~assertFalse(op1 \< op2)
+    self~assertFalse(op1 >> op2)
+    self~assertFalse(op1 >>= op2)
+    self~assertFalse(op1 \<< op2)
+
+    op2 = .File~new(op1)
+    -- op1 = .File~new(op1)
+    self~assertTrue(op1 = op2)
+    self~assertTrue(op1 == op2)
+    self~assertTrue(op1 <= op2)
+    self~assertTrue(op1 <<= op2)
+    self~assertTrue(op1 >= op2)
+    self~assertTrue(op1 >>= op2)
+    self~assertTrue(op1 \> op2)
+    self~assertTrue(op1 \< op2)
+    self~assertTrue(op1 \>> op2)
+    self~assertTrue(op1 \<< op2)
+    self~assertFalse(op1 \== op2)
+    self~assertFalse(op1 <> op2)
+    self~assertFalse(op1 >< op2)
+    self~assertFalse(op1 < op2)
+    self~assertFalse(op1 \= op2)
+    self~assertFalse(op1 << op2)
+    self~assertFalse(op1 > op2)
+    self~assertFalse(op1 >> op2)
+  end
+
+
+::options novalue error

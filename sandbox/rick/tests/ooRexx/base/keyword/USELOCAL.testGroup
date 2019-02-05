@@ -1,0 +1,164 @@
+#!/usr/bin/rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.USELOCAL.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+::requires 'FileUtils.cls'
+
+::class "USELOCAL.testGroup" subclass ooTestCase public
+
+::method test_use_local
+  testClass = self~runDynamicSource(("return .test", "::class test", "::method setVar", "use local", "use strict arg var", "otherVar = var", "::attribute var", "::attribute othervar"))
+
+  t1 = testClass~new
+  t1~setVar("abc")
+  self~assertSame("abc", t1~var)
+  self~assertSame("abc", t1~othervar)
+
+  testClass = self~runDynamicSource(("return .test", "::class test", "::method setVar", "use local var", "use strict arg var", "otherVar = var", "::attribute var", "::attribute othervar"))
+
+  t1 = testClass~new
+  t1~setVar("abc")
+  self~assertSame("VAR", t1~var)
+  self~assertSame("abc", t1~othervar)
+
+  -- two tests for [bugs:#1565] Procedure expose not working properly with USE LOCAL
+  testClass = self~runDynamicSource(("return .test", "::class test", -
+    "::method setVar", "use local", "use strict arg var", "otherVar = var", -
+    "call p", "return", -
+    "p: procedure expose var", "var = 'EXP'", "otherVar = 'EXP'", "return", -
+    "::attribute var", "::attribute othervar"))
+
+  t1 = testClass~new
+  t1~setVar("abc")
+  self~assertSame("EXP", t1~var)
+  self~assertSame("abc", t1~othervar)
+
+  testClass = self~runDynamicSource(("return .test", "::class test", -
+    "::method setVar", "use local unused", "use strict arg var", "otherVar = var", -
+    "call p", "return", -
+    "p: procedure", "var = 'EXP'", "otherVar = 'EXP'", "return", -
+    "::attribute var", "::attribute othervar"))
+
+  t1 = testClass~new
+  t1~setVar("abc")
+  self~assertSame("abc", t1~var)
+  self~assertSame("abc", t1~othervar)
+
+  -- expose a stem variable by default
+  testClass = self~runDynamicSource(("return .test", "::class test", "::method setStem", "use local", "use strict arg tail, value", -
+     "stem.tail = value", "::method getStem", "expose stem.", "use strict arg tail", "return stem.tail"))
+
+  t1 = testClass~new
+  t1~setStem(1, "abc")
+
+  self~assertSame("abc", t1~getStem(1))
+  self~assertSame("STEM.2", t1~getStem(2))
+
+  t1~setStem(2, "def")
+
+  self~assertSame("abc", t1~getStem(1))
+  self~assertSame("def", t1~getStem(2))
+
+  -- restrict a stem variable
+  testClass = self~runDynamicSource(("return .test", "::class test", "::method setStem", "use local stem.", "use strict arg tail, value", -
+     "stem.tail = value", "::method getStem", "expose stem.", "use strict arg tail", "return stem.tail"))
+
+  t1 = testClass~new
+  t1~setStem(1, "abc")
+
+  self~assertSame("STEM.1", t1~getStem(1))
+  self~assertSame("STEM.2", t1~getStem(2))
+
+  -- verify that the special variables are protected automatically
+  testValue = self~runDynamicSource((".test~test1", "return .test~test2", "::class test", "::method test1 class", "use local", "result = 1; rc = 2; self = 3; super = 4; sigl = 5;", -
+     "::method test2 class", "return self~result self~rc self~self self~super self~sigl", "::attribute result class", "::attribute rc class", "::attribute self class", "::attribute super class", "::attribute sigl class"))
+
+  -- verify that dynamically create variables are also object variables
+  testClass = self~runDynamicSource(("return .test", "::class test", "::method setVar", "use local", "use strict arg name, value", "call value name, value", -
+     "::method getVar", "use local", "use strict arg name", "return value(name)"))
+
+  t1 = testClass~new
+
+  t1~setVar("FOO", 123)
+  self~assertEquals(123, t1~getVar("FOO"))
+
+  self~assertEquals("RESULT RC SELF SUPER SIGL", testValue)
+
+
+::method test_use_local_number
+  self~assertSyntaxError(31.2, ("::method test", "use local 1"))
+
+::method test_use_local_dot
+  self~assertSyntaxError(31.3, ("::method test", "use local ."))
+
+::method test_use_local_dot_symbol
+  self~assertSyntaxError(31.3, ("::method test", "use local .foo"))
+
+::method test_use_local_bad_variable
+  self~assertSyntaxError(20.927, ("::method test", "use local *"))
+
+::method test_use_local_indirect
+  self~assertSyntaxError(20.927, ("::method test", "use local (foo)"))
+
+::method test_use_local_compound
+  self~assertSyntaxError(99.948, ("::method test", "use local a.1"))
+
+::method test_misplaced_use_local
+  self~assertSyntaxError(99.910, ("::method test", "use strict arg x", "use local foo bar"))
+
+::method test_use_local_non_method
+  self~expectSyntax(98.993)
+  self~runDynamicSource(("return test()", "::routine test", "use local xyz", "return 123"))
+
+
+::options novalue error

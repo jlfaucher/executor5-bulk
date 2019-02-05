@@ -1,0 +1,423 @@
+author:  Rony G. Flatscher
+date:    2005-08-20, 2006-04-08
+license: CPL 1.0 (Common Public License v1.0, see below)
+
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2005 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+
+This is a brief description of "ooRexxUnit", an ooRexx implementation of "junit"
+--------------------------------------------------------------------------------
+
+A. "ooRexxUnit.cls"
+
+A.1 Classes and their Purpose
+
+There are four public classes defined in this module: Assert, TestCase, TestSuite,
+and TestResult:
+
+- "Assert" defines the assertion methods and a fail method.
+
+- "TestCase" is a specialization of "Assert" and therefore inherits all of its
+  methods.
+
+- "TestSuite" is a specialization of "TestCase" and therefore inherits all of its
+  methods (including of course all of the methods of "Assert").
+
+- "TestResult" allows the storing and querying of test results and information
+  about the test runs.
+
+
+A.1.1 Class "Assert"
+
+This class contains the assertion methods and a "fail" method. If an assertion does
+not hold, then it fails and the test unit is not carried on anymore. The following
+methods are defined:
+
+        - method "assertEquals": 'value1' and 'value2' must be equal to pass
+
+          assertEquals(errorMessage, value1, value2)
+          assertEquals(value1, value2)
+
+        - method "assertFalse": 'value1' must be .false (0) to pass
+
+          assertFalse(errorMessage, value1)
+          assertFalse(value1)
+
+        - method "assertNotNull": 'value1' must not be .nil to pass
+
+          assertNotNull(errorMessage, value1)
+          assertNotNull(value1)
+
+        - method "assertNotSame": 'value1' must not be identical to 'value2' to pass
+
+          assertNotSame(errorMessage, value1, value2)
+          assertNotSame(value1, value2)
+
+        - method "assertNull": 'value1' must be .nil to pass
+
+          assertNull(errorMessage, value1)
+          assertNull(value1)
+
+        - method "assertSame": 'value1' must be identical to 'value2' to pass
+
+          assertSame(errorMessage, value1)
+          assertSame(value1)
+
+        - method "assertTrue": 'value1' must be .true (1) to pass
+
+          assertTrue(errorMessage, value1)
+          assertTrue(value1)
+
+        - method "fail": fails a test unit (e.g. if conducting a test for which none
+          of the above assertion methods apply semantically); if possible use the
+          assertion methods above as in the ooRexxUnit implementation they get
+          counted
+
+          fail(errorMessage)
+          fail()
+
+
+A.1.2 Class "TestCase"
+
+This is a subclass of the class "Assert".  Therefore all methods of the class
+"Assert" are available as well (just send the assert-messages to 'self'). It defines
+methods to setUp, run, tearDown tests.
+
+If you create a test of your own, then you need to create a class that subclasses
+"TestCase". Each method in that class of yours, that starts with "test" can be
+automatically chosen by the ooRexxUnit framework to run.
+
+Methods "TestCase" defines:
+
+        - method "init": one argument, denominating the name of the method to be
+          run as a test (for each testmethod one needs to create an instance of
+          this class, supplying the name of the testmethod to run)
+
+        - method "countTestCases": returns the number of the "TestCase", will be "1"
+
+        - method "createResult": creates an instance of the class "TestResult", used
+          for creating and using a default "TestResult" object by instantiating the
+          default "TestResult" class stored in the class attribute
+          "defaultTestResultClass"
+
+        - method "defaultTestResultClass" (class attribute method): stores the class
+          object to be used to create the default "TestResult" object, default:
+          "TestResult" class of this module. If you want to use another subclass of
+          "TestResult" then assign this class attribute the appropriate class object
+
+        - method "getName": returns the name of the test method which gets executed
+          when "run" is invoked
+
+        - method "run": runs the testcase (the denominated testmethod supplied at
+          creation time); optional argument: a "TestResult" object which will receive
+          the results of running the test; if not supplied, the "createResult" method
+          is used to create a default "TestResult" object for that purpose; returns
+          the used "TestResult" object
+
+        - method "setName": allows to change the name of the testmethod this object
+          should execute
+
+        - method "setUp": will be invoked in the run method right before the test is
+          run; overload it to create an environment a particular test may need, if
+          necessary at all (e.g. setting up a network connection)
+
+        - method "string": used for creating the default string value for instances
+          of this class (using the routine "makeTestCaseString")
+
+        - method "tearDown": will be invoked in the run method right after the test
+          was run; overload it to remove your changes to the environment (in method
+          "setUp"), such that neither the system nor other tests are affected (e.g.
+          shutting down a network connection)
+
+        - method "TestCaseInfo" (class attribute method), an ooRexx directory object
+          containing information about the program in which this testCase is defined:
+          this class attribute is used by the public routine "makeDirTestInfo()";
+          the routine needs to be called from your TestCase subclass and will parse
+          the information in the very first block comment at the top of the program
+
+
+
+
+A.1.3 Class "TestSuite"
+
+This is a subclass of "TestCase" and allows collecting multiple test cases. Sending
+"run" to a test suite will cause it to run all collected test cases. Due to its
+design it is possible to collect even test suites.
+
+Methods "TestCase" defines:
+
+        - method "init": returns an instance of the class; if a class object is given
+          as an argument, then all instance methods of that class that start with the
+          string "test" will be used to create individual test cases, which are added
+          to the test suite
+
+        - method "getTestMethods" (class method): expects a class object as argument
+          and returns a sorted array containing all test methods (methods that start
+          with the string "test")
+
+        - method "addTest": adds the given test case to the suite
+
+        - method "run": iterates over all collected test cases and runs them one
+          after the other; returns the used "TestResult" object
+
+        - method "countTestCases": returns the number of test cases in the suite
+
+
+
+A.1.4 Class "TestResult"
+
+This class is used by the test runs to communicate the results of the tests
+run. This class creates statistics about the running tests and even supplies ooRexx
+collections for further analysis of the execution of the tests.
+
+If you need your own rendering/analysis of the test results you merely need to create
+a subclass, re-defining the methods which should give you different renderings of the
+results. This way it is rather easy to create a test result class that renders the
+results of test runs, e.g. in HTML, XML or simply differently to the default
+implementation.
+
+Methods "TestResult" defines:
+
+        - method "addError", ooRexxUnit only: receives the testCase and the ooRexx
+          condition object; logs the event and adds the ooRexx condition object to
+          the errors collection; one entry is named "ooRexxUnit.condition" and
+          contains a string indicating the testCase
+
+        - method "addFailure", ooRexxUnit only: receives the testCase and the ooRexx
+          condition object; logs the event and adds the ooRexx condition object to
+          the failures collection; one entry is named "ooRexxUnit.condition" and
+          contains a string indicating the testCase
+
+        - method "assertCount", ooRexxUnit only: returns the number of successful
+          assertions that have taken place
+
+        - method "endTest": receives the testCase object for which the test has ended
+
+        - method "errorCount": returns the number of errors that have occurred so far
+
+        - method "errors": returns the queue containing all ooRexx condition objects,
+          containing an additional entry "ooRexxUnit.condition"
+
+        - method "failureCount": returns the number of failures (failed tests)
+
+        - method "failures": returns the queue containing all ooRexx condition
+          objects, containing an additional entry "ooRexxUnit.condition"
+
+        - method "run": runs the received testCase
+
+        - method "runCount": returns the number run tests
+
+        - method "shouldStop": returns .true ("1"), if the testing should stop
+
+        - method "startTest": supplies the testCase for which the testing is about to
+          start
+
+        - method "stop": will cause "shouldStop" to return .true ("1")
+
+        - method "wasSuccessful": will return .true ("1") if no failures and no
+          errors have occurred, .false ("0") else
+
+        - method "logQueue" (attribute method): a directory object containing entries
+          for every test case event "start", "error", "failure" and "end". Can be
+          used to analyze the sequence and duration of the run test cases
+
+        - method "TestCaseTable" (attribute method): a table object, where the
+          "index" is the test case object, and the "item" is a queue containing the
+          the "ooRexxUnit.Condition" strings which indicate date, time and event
+          name ("start", "error", "failure", "end").
+
+
+
+A.2 Public Routines an their Purpose
+
+The following public routines are available:
+
+A.2.1 "iif"
+
+This is a routine mimickring the Visual Basic IIF-function: if the first argument
+evaluates to .true (1), then the second supplied argument is returned, else the third
+supplied argument.
+
+A.2.2 "makeTestSuiteFromFileList"
+
+This routine creates and returns a testSuite object, created according to a list of
+filenames referring to testCase programs, which contain testCase classes. Those
+programs need to be modelled according to the ".testUnit"-nutshell examples in the
+directory "example".
+
+The first argument needs to be a list of file-names (they can be fully qualified and
+even possess a drive letter on DOS-like systems), the optional second argument must
+be a testSuite object. If the second argument is omitted an instance of class
+"TestSuite" will be created.
+
+A.2.3 "pp"
+
+This is a simple routine enclosing the argument's string value into square brackets.
+Sort of a very simple "pretty print".
+
+A.2.4 "simpleDumpTestResults"
+
+This routine expects a "TestResult" object and a "title". Using the "TestResult"
+object a simple printout to stdout is conducted, informing about the number of
+test runs, successful assertions, errors, and failures.
+
+
+A.2.5 "simpleFormatTestResults"
+
+This routine is a variation of the simpleDumpTestResults routine.  It takes the
+same arguments (a "TestResult" object and an optional "Title") and prints the
+same general information to stdout.  However, it formats the information
+differently, in a more 'console-friendly' manner.   It breaks the information up
+into separate lines and attempts to keep the lines less than 80 characters wide.
+
+
+A.2.6 "makeDirTestInfo"
+
+This routine expects the class object of the TestCase class in a file and an array
+object containing the lines of the very first comment block in the program which
+contains information about the file.  The routine will analyze the lines and create a
+directory object which gets stored with the supplied TestCase class object in the
+class attribute named "TestCaseInfo".  This information can then be used to create
+automated reports and supply information about the file from where the test cases
+came from.
+
+
+B. Further Sources
+
+The ooRexxUnit implementation follows the "junit" framework as laid out in:
+
+        - The "junit" project homepage:
+        <http://www.junit.org>
+
+        - A "cookbook" introduction to JUnit can be found at:
+          <http://junit.sourceforge.net/doc/cookbook/cookbook.htm>
+
+        - The initial implementation of ooRexxUnit follows the JUnit cookbook
+          framework description found at:
+          <http://junit.sourceforge.net/doc/cookstour/cookstour.htm>
+
+
+C. Nutshell Examples
+
+The "ooRexxUnit"-package comes with nutshell examples supplied with the "examples"
+directory.  All samples need access to the module "ooRexxUnit.cls":
+
+Sample test units:
+
+        - ooRexxBaseString.testUnit
+          ... a sample testUnit for the ooRexx String functions, contains tests
+          to test string BIFs
+
+        - ooRexxBaseClassString.testUnit
+          ... a sample testUnit for the ooRexx String class, contains tests to
+          test the String class
+
+Sample test runs:
+
+        - ooRexxBase.runTests
+          ... controls the runnning of the testUnits
+
+        - ooRexxBaseRunOnlyABS.runTests
+          ... runs the test case in the method "testABS" only
+
+Sample testing everything a little bit chaotically:
+
+        - firstOoRexxUnitTest.rex
+          ... tests the testUnitFramework, also demos how to create a TestResult
+          class ("myTestResult") and what it can do
+
+D. History
+
+
+2005-08-06, ---rgf
+
+        - Initial work on ooRexxUnit started, an implmentation of <http://www.junit.org> for ooRexx.
+
+        - An "cookbook" introduction to JUnit can be found at:
+          <http://junit.sourceforge.net/doc/cookbook/cookbook.htm>
+
+        - The initial implementation of ooRexxUnit follows the JUnit cookbook framework description
+          found at: <http://junit.sourceforge.net/doc/cookstour/cookstour.htm>
+
+2005-08-07, ---rgf
+
+        - Changed framework to match junit also by making the assertion class "Assert" the superclass
+          of "TestCase"
+
+        - Further testing of the framework and bug-fixing
+
+        - Created a little package to demonstrate how to use the ooRexxUnit framework:
+
+             - ooRexxBase.runTests
+               ... controls the runnning of the testUnits
+
+             - ooRexxBaseString.testUnit
+               ... the testUnit for the ooRexx String functions, contains all the tests
+               to test string BIFs (needs to be completed)
+
+             - ooRexxBaseClassString.testUnit
+               ... the testUnit for the ooRexx String class, contains all the tests to
+               test the class (needs to be completed)
+
+             - firstOoRexxUnitTest.rex
+               ... tests the testUnitFramework, also demos how to create a TestResult
+               class ("myTestResult") and what it can do
+
+2005-08-20, ---rgf
+        - Added counter to count successful assertions
+
+        - Created an additional test run to demo how one can define and run just a
+          particular test case: ooRexxBaseRunOnlyABS.runTests
+          ... runs the test case in the method "testABS" only
+
+2005-10-11, ---rgf
+        - "testUnits\ooRexx\base\ooRexx.Base.BIF.testUnit", all BIF (built-in-functions)
+          examples added, with the exception of:
+
+          CHARIN, CHAROUT, CHARS, CONDITION, DIRECTORY, ENDLOCAL, FILESPEC, LINEIN,
+          LINEOUT, LINES, QUEUED, RXFUNCADD, RXFUNCDROP, RXFUNCQUERY, RXQUEUE,
+          SETLOCAL, STREAM, TRACE, USERID
+
+        - start it either with "rexx ooRexx.Base.BIF.testUnit" or you could use the
+          control program: "rexx ooRexx.Base.runTests"
+
+2006-04-08, ---rgf
+
+        - documentation updated to reflect latest changes
+
+

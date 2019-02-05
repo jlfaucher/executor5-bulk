@@ -1,0 +1,259 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev: 11374 $
+  Change Date:  $Date: 2018-03-20 20:17:35 +0100 (Di, 20 Mär 2018) $
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2018 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYright HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYright   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.RXQUEUE.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+-- class named exactly like file
+::class "RXQUEUE.testGroup" subclass ooTestCase public
+
+::method test_rxqueue_noarg
+  self~expectSyntax(40.3) -- Not enough arguments in invocation of RXQUEUE
+  call rxqueue
+
+::method test_rxqueue_get_two_args
+  self~expectSyntax(40.4) -- Too many arguments in invocation of RXQUEUE;
+  call rxqueue "get", "session"
+
+::method test_rxqueue_three_args
+  self~expectSyntax(40.4) -- Too many arguments in invocation of RXQUEUE;
+  call rxqueue "e", "session", .nil
+
+::method test_rxqueue_option_invalid
+  self~expectSyntax(40.904) -- RXQUEUE argument 1 must be one of CDEGOS
+  call rxqueue "x", "session"
+
+::method test_rxqueue_name_nullstring
+  self~expectSyntax(40.26) -- RXQUEUE argument 2 must be a valid symbol
+  call rxqueue "c", ""
+
+::method test_rxqueue_name_invalid
+  self~expectSyntax(40.26) -- RXQUEUE argument 2 must be a valid symbol
+  call rxqueue "c", ":"
+
+::method test_rxqueue_name_too_long
+  self~expectSyntax(40.26) -- RXQUEUE argument 2 must be a valid symbol
+  call rxqueue "c", "Q"~copies(251)
+
+::method test_rxqueue_names_valid
+  -- according to rexxref "The maximum length of queuename can be 250 characters"
+  do name over (0, "?", "!", ".", "QUEUE", "RXQUEUE", "QUEUE.0", "_"~copies(249))
+    self~assertSame(0, rxqueue("open", name), "queue '" || name || "' should be valid")
+    self~assertSame(0, rxqueue("delete", name))
+  end
+
+  name = "_"~copies(250)
+  self~assertSame(0, rxqueue("open", name))
+
+::method test_rxqueue_exists
+  -- SESSION should always exists
+  -- known bug (testOOrexx -V 3 will display stats, -V 7 will make test fail)
+  self~assertTrue(rxqueue("exists", "SESSION"))
+
+  -- a newly opeoned queue should exist
+  name = self~queueName
+  call rxqueue "open", name
+  self~assertTrue(rxqueue("exists", name))
+
+  -- a non-existing queue should return false
+  self~assertFalse(rxqueue("exists", "non_existing_queue"))
+
+::method test_rxqueue_get
+  self~assertSame("SESSION", rxqueue("get"))
+
+::method test_rxqueue_create_one_arg
+  name = rxqueue("CREATE")
+  self~assertTrue(name~length > 0, "created queue name shouldn't be the nullstring")
+  self~assertEquals(0, name~verify(xrange("alnum") || "?!._"), "created queue name should be composed of valid chars only, found" name)
+  self~assertSame(0, rxqueue("delete", name))
+
+::method test_rxqueue_create_two_args
+  name = self~queueName
+  -- intended or not, 'create' returns queue name in original casing, not upperase
+  self~assertSame(name, rxqueue("create", name))
+  -- at this point, 'name' exists and 'create' will return a new queue
+  new = rxqueue("create", name)
+  self~assertNotEquals(name, new)
+  self~assertNotEquals(name~upper, new)
+  self~assertNotEquals(0, new~length, "created queue name shouldn't be the nullstring")
+  self~assertEquals(0, new~verify(xrange("alnum") || "?!-_"), "created queue name should be composed of valid chars only, found" name)
+  self~assertSame(0, rxqueue("delete", new))
+
+-- [bugs:#1547] RXQUEUE() issues
+::method test_rxqueue_create_session
+  -- intended or not, 'create' SESSION returns the nullstring
+  self~assertSame("", rxqueue("create", "SESSION"))
+
+-- make sure created queue names are always unique
+::method test_rxqueue_create_unique
+  rounds = 100
+  name = self~queueName
+  unique = .Set~new
+
+  -- we run a uniqueness test for three types of 'create'
+  -- 1. with a single argument
+  -- 2. with two arguments and a constant name
+  -- 2. with two arguments and a "rolling" name
+  do type over "single", "initial", "rolling"
+    unique~empty
+    do rounds
+      select case type
+        when "single" then
+          unique~put(rxqueue("create"))
+        when "initial" then
+          unique~put(rxqueue("create", name))
+        when "rolling" then do
+          name = rxqueue("create", name)
+          unique~put(name)
+        end
+      end
+    end
+    -- we should have collected unique names only
+    self~assertSame(rounds, unique~items)
+    -- check queue name validity and delete all queues we've created
+    do name over unique
+      self~assertNotEquals(0, name~length, "created queue name shouldn't be the nullstring")
+      self~assertEquals(0, name~verify(xrange("alnum") || "?!-_"), "created queue name should be composed of valid chars only, found" name)
+      self~assertSame(0, rxqueue("del", name))
+    end
+  end
+
+::method test_rxqueue_open
+  -- SESSION should always exists
+  -- known bug (testOOrexx -V 3 will display stats, -V 7 will make test fail)
+  self~assertSame(0, rxqueue("open", "session"))
+
+  -- 'open' returns 0 whether the queue existed before or was just created
+  name = self~queueName
+  self~assertSame(0, rxqueue("o", name)) -- was just created
+  self~assertSame(0, rxqueue("o", name)) -- already existed
+
+::method test_rxqueue_set
+  -- replace SESSION with 'session'
+  -- current queue (here SESSION) is returned in uppercase
+  do 2
+    self~assertSame("SESSION", rxqueue("set", "session"))
+    -- confirm it has been set by using 'get' and the .Stdque object
+    self~assertSame("SESSION", rxqueue("GET"))
+    self~assertSame("SESSION", .StdQue~get)
+  end
+
+  -- now replace SESSION with our test queue
+  name = self~queueName
+  self~assertSame(0, rxqueue("open", name))
+  self~assertSame("SESSION", rxqueue("set", name))
+  -- confirm it has been set by using 'get' and the .Stdque object
+  self~assertSame(name~upper, rxqueue("GET"))
+  self~assertSame(name~upper, .StdQue~get)
+
+  -- the current queue setting is instance-wide, so we need to reset it to SESSION
+  self~assertSame(name~upper, rxqueue("set", "SESSION"))
+
+::method test_rxqueue_delete
+  name = self~queueName
+  self~assertSame(0, rxqueue("open", name))
+  self~assertSame(0, rxqueue("delete", name))
+  self~assertSame(5, rxqueue("delete", "session")) -- tried to delete queue named "SESSION"
+  self~assertSame(9, rxqueue("delete", "non_existing_queue")) -- specified queue does not exist
+
+-- test changing the external data queue
+-- we also test the special "queue:" stream name
+::method test_rxqueue_switch
+  -- default external queue is SESSION .. we queue a few lines
+  self~assertSame("SESSION", rxqueue("GET"))
+  self~assertSame("SESSION", .StdQue~get)
+  .StdQue~empty
+  self~assertSame(0, queued())
+  push "session-queue"
+  queue "session-queue"
+  call lineout "queue:", "session-queue"
+  self~assertSame(3, queued())
+
+  -- create a named queue and queue some lines to it
+  name = self~queueName
+  self~assertSame("0", rxqueue("open", name)) -- creates named queue
+  self~assertTrue(rxqueue("Exists", name)) -- verify it was created
+  self~assertSame("SESSION", rxqueue("set", name)) -- set it as the external queue
+  self~assertSame(name~upper, rxqueue("get")) -- verify it was set
+  self~assertSame(name~upper, .StdQue~get) -- also verify against .StdQue
+  self~assertSame(0, queued()) -- a newly created named queue must be empty
+  push "named-queue"
+  queue "named-queue"
+  call lineout "queue:", "named-queue"
+  push "named-queue"
+  self~assertSame(4, queued())
+
+  -- switch the external queues .. queues' content must stay unchanged
+  self~assertSame(name~upper, rxqueue("set", "SESSION"))
+  self~assertSame("SESSION", rxqueue("get"))
+  self~assertSame(3, queued()) -- SESSION must have three lines queued
+  self~assertSame("SESSION", rxqueue("set", name))
+  self~assertSame(name~upper, rxqueue("get"))
+  self~assertSame(4, queued()) -- our named queue must still have four lines queued
+
+  -- clean up
+  self~assertSame(0, rxqueue("delete", name))
+  self~assertSame(0, queued())
+  call rxqueue "set", "SESSION" -- external queue is instance-wide, switch back
+  .StdQue~empty
+  self~assertSame(0, queued())
+
+
+-- returns a test queue name and makes a queue of this name doesn't exist
+::method queueName
+  use strict arg
+  name = "RXQUEUE.testGroup"
+  -- for our tests we want to make sure that this queue doesn't exist
+  if rxqueue("exists", name) then
+    call rxqueue "delete", name
+  return name
+
+
+::options novalue error

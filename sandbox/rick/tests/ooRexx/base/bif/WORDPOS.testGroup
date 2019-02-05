@@ -1,0 +1,702 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYright HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYright   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . fileSpec
+
+  group = .TestGroup~new(fileSpec)
+  group~add(.WORDPOS.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "WORDPOS.testGroup" subclass ooTestCase public
+
+::method 'test000'
+    .local~v26 = 'A B C D E F G H I J K L M N O P Q R S T U V W X Y Z'
+    .local~v8 = 'one two  three   four    five     six      seven       eight'
+    .local~v10000 = COPIES('J ',9999)||'K '
+    .local~vwbw = 'John'||COPIES(' ',10000)||'Buckley'
+    .local~vwbwwbw = 'J'||COPIES(' ',5000)||COPIES('*',10000)||COPIES(' ',5000)||'R'
+    .local~vc1x = '412042'x
+    .local~vc140x = '41202042'x
+    .local~vc7x = '472048'x
+    .local~vc740x = '47202048'x
+    .local~vxnx = '7a786376000000000041534446'x
+
+::method 'test001'
+    self~assertSame('0', wordPos('',''))
+
+::method 'test002'
+    self~assertSame('0', wordPos(' ',' '))
+
+::method 'test003'
+    self~assertSame('1', wordPos('WORD1','WORD1 WORD2'))
+
+::method 'test004'
+    self~assertSame('2', wordPos('WORD2','WORD1 WORD2'))
+
+::method 'test005'
+    self~assertSame('0', wordPos('WORD3','WORD1 WORD2'))
+
+::method 'test006'
+    self~assertSame('1', wordPos('4a'x,'4a'x))
+
+::method 'test007'
+    self~assertSame('0', wordPos('4b'x,'4a'x))
+
+::method 'test008'
+    self~assertSame('1', wordPos('WORD','WORD'))
+
+::method 'test009'
+    self~assertSame('0', wordPos('DROW','WORD'))
+
+::method 'test010'
+    self~assertSame('1', wordPos('20202020204a522020202020'x,'4a52'x))
+
+::method 'test011'
+    self~assertSame('0', wordPos('20202020204a20522020202020'x,'4a52'x))
+
+::method 'test012'
+    self~assertSame('1', wordPos(.vc1x,'4120422043204420452046204720482049204a204b204c204d'x))
+
+::method 'test013'
+    self~assertSame('1', wordPos(.vc140x,'4120422043204420452046204720482049204a204b204c204d'x))
+
+::method 'test014'
+    self~assertSame('7', wordPos(.vc7x,'4120422043204420452046204720482049204a204b204c204d'x))
+
+::method 'test015'
+    self~assertSame('7', wordPos(.vc740x,'4120422043204420452046204720482049204a204b204c204d'x))
+
+::method 'test016'
+    self~assertSame('1', wordPos('A',.v26))
+
+::method 'test017'
+    self~assertSame('10', wordPos('J',.v26))
+
+::method 'test018'
+    self~assertSame('26', wordPos('Z',.v26))
+
+::method 'test019'
+    self~assertSame('0', wordPos('0',.v26))
+
+::method 'test020'
+    self~assertSame('0', wordPos('()',.v26))
+
+::method 'test021'
+    self~assertSame('1', wordPos('A     B     C     D     E     ',.v26))
+
+::method 'test022'
+    self~assertSame('22', wordPos('V     W     X     Y     Z     ',.v26))
+
+::method 'test023'
+    self~assertSame('0', wordPos('X     Y     Z     A     B     ',.v26))
+
+::method 'test024'
+    numeric digits 1
+    self~assertSame('1', wordPos(+19,12+6 12+7 12+8 12+9))
+
+::method 'test025'
+    numeric digits 1
+    self~assertSame('0', wordPos(+19,'12+6 12+7 12+8 12+9'))
+
+::method 'test026'
+    numeric digits 1
+    self~assertSame('1', wordPos(+14,12+1 12+2 12+3 12+4))
+
+::method 'test027'
+    numeric digits 1
+    self~assertSame('0', wordPos(+14,'12+1 12+2 12+3 12+4'))
+
+::method 'test028'
+    self~assertSame('2', wordPos(+19,12+6 12+7 12+8 12+9))
+
+::method 'test029'
+    self~assertSame('0', wordPos(+19,'12+6 12+7 12+8 12+9'))
+
+::method 'test030'
+    self~assertSame('2', wordPos(+14,12+1 12+2 12+3 12+4))
+
+::method 'test031'
+    self~assertSame('0', wordPos(+14,'12+1 12+2 12+3 12+4'))
+
+::method 'test032'
+    self~assertSame('1', wordPos(nv,'NV'))
+
+::method 'test033'
+    self~assertSame('1', wordPos(nv.,'NV.'))
+
+::method 'test034'
+    self~assertSame('1', wordPos(nv.10,'NV.10'))
+
+::method 'test035'
+    self~assertSame('1', wordPos('NV',nv))
+
+::method 'test036'
+    self~assertSame('1', wordPos('NV.',nv.))
+
+::method 'test037'
+    self~assertSame('1', wordPos('NV.10',nv.10))
+
+::method 'test038'
+    self~assertSame('2', wordPos('qwer zxcv ASDF','     asdf qwer zxcv     ASDF QWER ZXCV'))
+
+::method 'test039'
+    self~assertSame('1', wordPos('one',.v8))
+
+::method 'test040'
+    self~assertSame('2', wordPos('two                three four',.v8))
+
+::method 'test041'
+    self~assertSame('0', wordPos('seven eight nine',.v8))
+
+::method 'test042'
+    self~assertSame('3', wordPos('41534446202020'x,'6173646620717765722041534446205157455220'x))
+
+::method 'test043'
+    self~assertSame('3', wordPos('20202041534446'x,'6173646620717765722041534446205157455220'x))
+
+::method 'test044'
+    self~assertSame('3', wordPos('204153444620'x,'6173646620717765722041534446205157455220'x))
+
+::method 'test045'
+    self~assertSame('0', wordPos('7a786376'x,'61736466207a786376000000000041534446205a584356'x))
+
+::method 'test046'
+    self~assertSame('0', wordPos('41534446'x,'61736466207a786376000000000041534446205a584356'x))
+
+::method 'test047'
+    self~assertSame('2', wordPos(.vxnx,'61736466207a786376000000000041534446205a584356'x))
+
+::method 'test048'
+    self~assertSame('1', wordPos('J',.v10000))
+
+::method 'test049'
+    self~assertSame('9999', wordPos('J  K',.v10000))
+
+::method 'test050'
+    self~assertSame('9999', wordPos('J K',.v10000))
+
+::method 'test051'
+    self~assertSame('10000', wordPos('K',.v10000))
+
+::method 'test052'
+    self~assertSame('0', wordPos('K J',.v10000))
+
+::method 'test053'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~assertSame('1', wordPos('1',XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX))
+
+::method 'test054'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~assertSame('5', wordPos('35'x,XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX))
+
+::method 'test055'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~assertSame('5', wordPos('35202020202020202020203620372020202020202020202038'x,XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX))
+
+::method 'test056'
+    self~assertSame('1', wordPos('J '||copies('*',10000),.vwbwwbw))
+
+::method 'test057'
+    self~assertSame('2', wordPos(copies('*',10000)||' R',.vwbwwbw))
+
+::method 'test058'
+    self~assertSame('1', wordPos('J',.vwbwwbw))
+
+::method 'test059'
+    self~assertSame('2', wordPos(copies('*',10000),.vwbwwbw))
+
+::method 'test060'
+    self~assertSame('3', wordPos('R',.vwbwwbw))
+
+::method 'test061'
+    self~assertSame('1', wordPos('John',.vwbw))
+
+::method 'test062'
+    self~assertSame('2', wordPos('Buckley',.vwbw))
+
+::method 'test063'
+    self~assertSame('1', wordPos('John Buckley',.vwbw))
+
+::method 'test064'
+    self~assertSame('0', wordPos('Buckley John',.vwbw))
+
+::method 'test065'
+    self~assertSame('1', wordPos(00345,(00345 03450 34500)))
+
+::method 'test066'
+    self~assertSame('1', wordPos(00345          03450,(00345 03450 34500)))
+
+::method 'test067'
+    self~assertSame('3', wordPos(34500,(00345 03450 34500)))
+
+::method 'test068'
+    self~assertSame('0', wordPos(34500                    00,(00345 03450 34500)))
+
+::method 'test069'
+    self~assertSame('1', wordPos(3 4||copies(' ',10000)||5,(3 4 5)))
+
+::method 'test070'
+    self~assertSame('0', wordPos('one two three five',(.v8)))
+
+::method 'test071'
+    v8. = .v8
+    self~assertSame('4', wordPos('four'||copies(' ',50000)||'five six',(v8.)))
+
+::method 'test072'
+    v8. = .v8
+    self~assertSame('3', wordPos('three four five',(v8.10)))
+
+::method 'test073'
+    v8. = .v8
+    self~assertSame('0', wordPos('seven eight nine',(v8.10)))
+
+::method 'test074'
+    v8. = .v8
+    self~assertSame('0', wordPos('ten',(v8.10)))
+
+::method 'test075'
+    self~assertSame('26', wordPos('Z Z',.v26||' '||reverse(.v26)))
+
+::method 'test076'
+    self~assertSame('25', wordPos('Y Z Z Y',.v26' 'reverse(.v26)))
+
+::method 'test077'
+    self~assertSame('24', wordPos('X Y Z Z Y',.v26 reverse(.v26)))
+
+::method 'test078'
+    self~assertSame('0', wordPos('z z',.v26||' '||reverse(.v26)))
+
+::method 'test079'
+    self~assertSame('0', wordPos('y z z y',.v26' 'reverse(.v26)))
+
+::method 'test080'
+    self~assertSame('0', wordPos('x y z z y',.v26 reverse(.v26)))
+
+::method 'test081'
+    self~assertSame('1', wordPos('two three',subStr('one two three four',5,9)))
+
+::method 'test082'
+    self~assertSame('1', wordPos('NUM                       CHAR',dataType(6) dataType('A')))
+
+::method 'test083'
+    self~assertSame('0', wordPos('num                       char',dataType(6) dataType('A')))
+
+::method 'test084'
+    self~assertSame('3', wordPos('WORD1','WORD1 WORD2 WORD1 WORD2',3))
+
+::method 'test085'
+    self~assertSame('4', wordPos('WORD2','WORD1 WORD2 WORD1 WORD2',3))
+
+::method 'test086'
+    self~assertSame('0', wordPos('WORD3','WORD1 WORD2 WORD1 WORD2',3))
+
+::method 'test087'
+    self~assertSame('1', wordPos('4a'x,'4a'x,1))
+
+::method 'test088'
+    self~assertSame('0', wordPos('4a'x,'4a'x,2))
+
+::method 'test089'
+    self~expectSyntax(93.924)
+    xre = wordPos('4b'x,'4a'x,0)
+
+::method 'test090'
+    self~assertSame('0', wordPos('4b'x,'4a'x,1))
+
+::method 'test091'
+    self~assertSame('1', wordPos('20202020204a522020202020'x,'4a52'x,1))
+
+::method 'test092'
+    self~assertSame('0', wordPos('20202020204a522020202020'x,'4a52'x,2))
+
+::method 'test093'
+    self~assertSame('1', wordPos(.vc1x,'4120422043204420452046204720482049204a204b204c204d'x,1))
+
+::method 'test094'
+    self~assertSame('0', wordPos(.vc1x,'4120422043204420452046204720482049204a204b204c204d'x,2))
+
+::method 'test095'
+    self~assertSame('1', wordPos(.vc140x,'4120422043204420452046204720482049204a204b204c204d'x,1))
+
+::method 'test096'
+    self~assertSame('0', wordPos(.vc140x,'4120422043204420452046204720482049204a204b204c204d'x,2))
+
+::method 'test097'
+    self~assertSame('0', wordPos(.vc7x,'4120422043204420452046204720482049204a204b204c204d'x,13))
+
+::method 'test098'
+    self~assertSame('0', wordPos(.vc740x,'4120422043204420452046204720482049204a204b204c204d'x,14))
+
+::method 'test099'
+    self~assertSame('1', wordPos('A',.v26,1))
+
+::method 'test100'
+    self~assertSame('0', wordPos('A',.v26,2))
+
+::method 'test101'
+    self~assertSame('10', wordPos('J',.v26,'39'x))
+
+::method 'test102'
+    self~assertSame('10', wordPos('J',.v26,X2D('A')))
+
+::method 'test103'
+    self~assertSame('0', wordPos('J',.v26,'3131'x))
+
+::method 'test104'
+    self~assertSame('26', wordPos('Z',.v26,' 25 '))
+
+::method 'test105'
+    self~assertSame('0', wordPos('0',.v26,1))
+
+::method 'test106'
+    self~expectSyntax(93.924)
+    xre = wordPos('A     B     C     D     E     ',.v26,-1)
+
+::method 'test107'
+    self~assertSame('22', wordPos('V     W     X     Y     Z     ',.v26,.22E02+0))
+
+::method 'test108'
+    self~assertSame('22', wordPos('V     W     X     Y     Z     ',.v26,.22E02))
+
+::method 'test109'
+    self~assertSame('0', wordPos('X     Y     Z     A     B     ',.v26,'.22E02'))
+
+::method 'test110'
+    numeric digits 1
+    self~assertSame('24', wordPos('Z','A Z C E G H I J K L M N O P Q R S T U V W X Y Z',+19))
+
+::method 'test111'
+    numeric digits 1
+    self~assertSame('24', wordPos('Z','A Z C D F H I J K L M N O P Q R S T U V W X Y Z',+14))
+
+::method 'test112'
+    self~assertSame('26', wordPos('Z','A Z C D E F G H I J K L M N O P Q R S T U V W X Y Z',+19))
+
+::method 'test113'
+    self~expectSyntax(40.12)
+    xre = wordPos('NV','NV',nv)
+
+::method 'test114'
+    self~expectSyntax(40.12)
+    xre = wordPos('NV.','NV.',nv.)
+
+::method 'test115'
+    self~expectSyntax(40.12)
+    xre = wordPos('NV.10','NV.10',nv.10)
+
+::method 'test116'
+    self~expectSyntax(40.12)
+    xre = wordPos(noval1,noval2,noval3)
+
+::method 'test117'
+    self~assertSame('1', wordPos(nv,'NV',1))
+
+::method 'test118'
+    self~assertSame('1', wordPos(nv.,'NV.',1))
+
+::method 'test119'
+    self~assertSame('1', wordPos(nv.10,'NV.10',1))
+
+::method 'test120'
+    self~assertSame('1', wordPos('NV',nv,1))
+
+::method 'test121'
+    self~assertSame('1', wordPos('NV.',nv.,1))
+
+::method 'test122'
+    self~assertSame('1', wordPos('NV.10',nv.10,1))
+
+::method 'test123'
+    self~expectSyntax(40.12)
+    xre = wordPos('NV','NV',nv)
+
+::method 'test124'
+    self~expectSyntax(40.12)
+    xre = wordPos('NV.','NV.',nv.)
+
+::method 'test125'
+    self~expectSyntax(40.12)
+    xre = wordPos('NV.10','NV.10',nv.10)
+
+::method 'test126'
+    self~expectSyntax(40.12)
+    xre = wordPos(noval1,noval2,noval3)
+
+::method 'test127'
+    self~assertSame('2', wordPos('qwer zxcv ASDF','     asdf qwer zxcv     ASDF QWER ZXCV',2))
+
+::method 'test128'
+    self~assertSame('0', wordPos('qwer zxcv ASDF','     asdf qwer zxcv     ASDF QWER ZXCV',5))
+
+::method 'test129'
+    self~assertSame('1', wordPos('one',.v8,1*1))
+
+::method 'test130'
+    self~assertSame('0', wordPos('one',.v8,2*1))
+
+::method 'test131'
+    self~assertSame('2', wordPos('two                three four',.v8,'000001'))
+
+::method 'test132'
+    self~assertSame('2', wordPos('two                three four',.v8,000002))
+
+::method 'test133'
+    self~assertSame("0", wordPos('two                three four',.v8,3.00))
+
+::method 'test134'
+    self~assertSame('3', wordPos('41534446202020'x,'6173646620717765722041534446205157455220'x,2))
+
+::method 'test135'
+    self~assertSame('3', wordPos('41534446202020'x,'6173646620717765722041534446205157455220'x,3))
+
+::method 'test136'
+    self~assertSame('0', wordPos('41534446202020'x,'6173646620717765722041534446205157455220'x,4))
+
+::method 'test137'
+    self~assertSame('3', wordPos('20202041534446'x,'6173646620717765722041534446205157455220'x,3))
+
+::method 'test138'
+    self~assertSame('0', wordPos('20202041534446'x,'6173646620717765722041534446205157455220'x,4))
+
+::method 'test139'
+    self~assertSame('0', wordPos('20202041534446'x,'6173646620717765722041534446205157455220'x,5))
+
+::method 'test140'
+    self~assertSame('3', wordPos('204153444620'x,'6173646620717765722041534446205157455220'x,1))
+
+::method 'test141'
+    self~assertSame('3', wordPos('204153444620'x,'6173646620717765722041534446205157455220'x,2))
+
+::method 'test142'
+    self~assertSame('0', wordPos('204153444620'x,'6173646620717765722041534446205157455220'x,4))
+
+::method 'test143'
+    self~assertSame('0', wordPos('7a786376'x,'61736466207a786376000000000041534446205a584356'x))
+
+::method 'test144'
+    self~assertSame('0', wordPos('41534446'x,'61736466207a786376000000000041534446205a584356'x))
+
+::method 'test145'
+    self~assertSame('2', wordPos(.vxnx,'61736466207a786376000000000041534446205a584356'x))
+
+::method 'test146'
+    self~assertSame('9999', wordPos('J',.v10000,9999))
+
+::method 'test147'
+    self~assertSame('9999', wordPos('J  K',.v10000,'39393939'x))
+
+::method 'test148'
+    self~assertSame('9999', wordPos('J K',.v10000,'9999'))
+
+::method 'test149'
+    self~assertSame('10000', wordPos('K',.v10000,009999))
+
+::method 'test150'
+    self~assertSame('0', wordPos('K J',.v10000,'009999'))
+
+::method 'test151'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~assertSame('1', wordPos('1',XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,1))
+
+::method 'test152'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~assertSame('0', wordPos('1',XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,9))
+
+::method 'test153'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~assertSame('5', wordPos('35'x,XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,'34'x))
+
+::method 'test154'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~assertSame('5', wordPos('35'x,XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,'35'x))
+
+::method 'test155'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~assertSame('0', wordPos('35'x,XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,'36'x))
+
+::method 'test156'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~expectSyntax(40.12)
+    xre = wordPos('352020202020202020203620372020202020202020202038'x,XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,"'34'x")
+
+::method 'test157'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~expectSyntax(40.12)
+    xre = wordPos('352020202020202020203620372020202020202020202038'x,XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,"'35'x")
+
+::method 'test158'
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX = '1 2 3 4 5 6 7 8 9 0'
+    self~expectSyntax(40.12)
+    xre = wordPos('352020202020202020203620372020202020202020202038'x,XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX,"'36'x")
+
+::method 'test159'
+    self~assertSame('1', wordPos('J '||copies('*',10000),.vwbwwbw,1))
+
+::method 'test160'
+    self~assertSame('0', wordPos('J '||copies('*',10000),.vwbwwbw,0+2))
+
+::method 'test161'
+    self~assertSame('0', wordPos(copies('*',10000)||' R',.vwbwwbw,'3'))
+
+::method 'test162'
+    self~assertSame('0', wordPos(copies('*',10000)||' R',.vwbwwbw,'04'))
+
+::method 'test163'
+    self~assertSame('1', wordPos('J',.vwbwwbw,1))
+
+::method 'test164'
+    self~assertSame('0', wordPos('J',.vwbwwbw,2))
+
+::method 'test165'
+    self~assertSame('2', wordPos(copies('*',10000),.vwbwwbw,'32'x))
+
+::method 'test166'
+    self~assertSame('0', wordPos(copies('*',10000),.vwbwwbw,'33'x))
+
+::method 'test167'
+    self~assertSame('0', wordPos('R',.vwbwwbw,'000004'))
+
+::method 'test168'
+    self~assertSame('0', wordPos('R',.vwbwwbw,'000005'))
+
+::method 'test169'
+    self~assertSame('1', wordPos('John',.vwbw,1))
+
+::method 'test170'
+    self~assertSame('0', wordPos('John',.vwbw,2))
+
+::method 'test171'
+    self~assertSame('2', wordPos('Buckley',.vwbw,1))
+
+::method 'test172'
+    self~assertSame('2', wordPos('Buckley',.vwbw,2))
+
+::method 'test173'
+    self~assertSame('1', wordPos('John Buckley',.vwbw,1))
+
+::method 'test174'
+    self~assertSame('0', wordPos('John Buckley',.vwbw,2))
+
+::method 'test175'
+    self~assertSame('1', wordPos(3 4||copies(' ',10000)||5,(3 4 5),1))
+
+::method 'test176'
+    self~assertSame('0', wordPos(3 4||copies(' ',10000)||5,(3 4 5),2))
+
+::method 'test177'
+    v8. = .v8
+    self~assertSame('4', wordPos('four'||copies(' ',50000)||'five six',(v8.),3))
+
+::method 'test178'
+    v8. = .v8
+    self~assertSame('4', wordPos('four'||copies(' ',50000)||'five six',(v8.),4))
+
+::method 'test179'
+    v8. = .v8
+    self~assertSame('0', wordPos('four'||copies(' ',50000)||'five six',(v8.),5))
+
+::method 'test180'
+    v8. = .v8
+    self~assertSame('3', wordPos('three four five',(v8.10),1))
+
+::method 'test181'
+    v8. = .v8
+    self~assertSame('3', wordPos('three four five',(v8.10),3))
+
+::method 'test182'
+    v8. = .v8
+    self~assertSame('0', wordPos('three four five',(v8.10),8))
+
+::method 'test183'
+    self~assertSame('26', wordPos('Z Z',.v26||' '||reverse(.v26),23))
+
+::method 'test184'
+    self~assertSame('25', wordPos('Y Z Z Y',.v26' 'reverse(.v26),25))
+
+::method 'test185'
+    self~assertSame('0', wordPos('X Y Z Z Y',.v26 reverse(.v26),25))
+
+::method 'test186'
+    self~assertSame('1', wordPos('two three',subStr('one two three four',5,9),1))
+
+::method 'test187'
+    self~assertSame('0', wordPos('two three',subStr('one two three four',5,9),2))
+
+::method 'test188'
+    self~assertSame('1', wordPos('NUM                       CHAR',dataType(6) dataType('A'),1))
+
+::method 'test189'
+    self~assertSame('0', wordPos('NUM                       CHAR',dataType(6) dataType('A'),2))
+
+::method 'test190'
+    self~assertSame('0', wordPos('NUM                       CHAR',dataType(6) dataType('A'),3))
+
+::method 'test191'
+    .local~remove(v26)
+    .local~remove(v8)
+    .local~remove(v10000)
+    .local~remove(vwbw)
+    .local~remove(vwbwwbw)
+    .local~remove(vc1x)
+    .local~remove(vc140x)
+    .local~remove(vc7x)
+    .local~remove(vc740x)
+    .local~remove(vxnx)
+
+-- from bif.testgroup
+   -- test the BIF, using examples from the documentation
+::method "test_WORDPOS"
+    self~assertEquals(3, WORDPOS('the','now is the time'))
+    self~assertEquals(0, WORDPOS('The','now is the time'))
+    self~assertEquals(2, WORDPOS('is the','now is the time'))
+    self~assertEquals(2, WORDPOS('is the','now is the time'))
+    self~assertEquals(0, WORDPOS('is time ','now is the time'))
+    self~assertEquals(2, WORDPOS('be','To be or not to be'))
+    self~assertEquals(6, WORDPOS('be','To be or not to be',3))
+

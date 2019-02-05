@@ -1,0 +1,230 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2010-2018 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+    parse source . . fileSpec
+
+    group = .TestGroup~new(fileSpec)
+
+    group~add(.SysUnix.testGroup)
+    -- try to run on any Unix, which we translate to "anything except Windows"
+    group~restrictOS(group~knownOSes~~removeItem("WINDOWS"))
+
+    .context~package~loadLibrary("rxunixsys")
+
+    if group~isAutomatedTest then return group
+
+    testResult = group~suite~execute~~print
+
+return testResult
+
+-- End of entry point.
+
+::requires 'ooTest.frm'
+::class 'SysUnix.testgroup' subclass ooTestCase public
+
+::method 'testSysUname_1'
+    self~assertNotEquals("", SysUname("SYSTEM"))
+    self~assertNotEquals("", SysUname("NODE"))
+    self~assertNotEquals("", SysUname("RELEASE"))
+    self~assertNotEquals("", SysUname("VERSION"))
+    self~assertNotEquals("", SysUname("MACHINE"))
+    self~assertNotEquals("", SysUname())
+
+::method 'testSysGetpid_1'
+    self~assertEquals("NUM", SysGetpid()~datatype())
+
+::method 'testSysGetppid_1'
+    self~assertEquals("NUM", SysGetppid()~datatype())
+
+::method 'testSysGettid_1'
+    self~assertEquals("NUM", SysGettid()~datatype())
+
+::method 'testSysGetsid_1'
+    pid = SysGetpid()
+    self~assertEquals("NUM", SysGetsid(pid)~datatype())
+
+::method 'testSysGetuid_1'
+    self~assertEquals("NUM", SysGetuid()~datatype())
+
+::method 'testSysGeteuid_1'
+    self~assertEquals("NUM", SysGeteuid()~datatype())
+
+::method 'testSysGetgid_1'
+    self~assertEquals("NUM", SysGetgid()~datatype())
+
+::method 'testSysGetegid_1'
+    self~assertEquals("NUM", SysGetegid()~datatype())
+
+::method 'testSysGetpwuid_1'
+    uid = SysGetuid()
+    self~assertNotEquals("", SysGetpwuid(uid, "NAME"))
+    self~assertNotEquals("", SysGetpwuid(uid, "user"))
+    self~assertNotEquals("", SysGetpwuid(uid, "Group"))
+    -- at least on zLinux "realname" may be empty, so we just test for String
+    self~assertIsA(SysGetpwuid(uid, "real name"), .String)
+    self~assertNotEquals("", SysGetpwuid(uid, "dir"))
+    self~assertNotEquals("", SysGetpwuid(uid, "shell"))
+    self~assertEquals("", SysGetpwuid(uid, "PASSSWORD"))
+
+::method 'testSysGetpwnam_1'
+    nam = SysGetpwuid(SysGetuid(), 'name')
+    self~assertNotEquals("", SysGetpwnam(nam, 'nam'))
+    self~assertNotEquals("", SysGetpwnam(nam, 'usr'))
+    self~assertNotEquals("", SysGetpwnam(nam, 'grp'))
+    -- at least on zLinux "realname" may be empty, so we just test for String
+    self~assertIsA(SysGetpwnam(nam, 'real'), .String)
+    self~assertNotEquals("", SysGetpwnam(nam, 'shell'))
+    self~assertNotEquals("", SysGetpwnam(nam, 'dir'))
+    self~assertEquals("", SysGetpwnam(nam, 'pw'))
+
+::method 'testSysGetgrgid_1'
+    gid = SysGetgid()
+    self~assertNotEquals("", SysGetgrgid(gid, 'name'))
+    self~assertNotEquals("", SysGetgrgid(gid, 'group'))
+    self~assertEquals("", SysGetgrgid(gid, 'password'))
+    self~assertIsA(SysGetgrgid(gid, 'members'), .Array)
+
+::method 'testSysGetgrnam_1'
+    gid = SysGetgid()
+    self~assertNotEquals("", SysGetgrnam(SysGetgrgid(gid, 'N'), 'NAME'))
+    self~assertNotEquals("", SysGetgrnam(SysGetgrgid(gid, 'N'), 'GROUP'))
+    self~assertEquals("", SysGetgrnam(SysGetgrgid(gid, 'N'), 'PW'))
+    self~assertTrue(SysGetgrnam(SysGetgrgid(gid, 'N'), 'MEMBER')~isa(.array))
+
+::method 'testSysStat_1'
+    parse source . . file
+    self~assertNotEquals("", SysStat(file, 'device'))
+    self~assertNotEquals("", SysStat(file, 'inode'))
+    self~assertNotEquals("", SysStat(file, 'permissions'))
+    self~assertNotEquals("", SysStat(file, 'numberlinks'))
+    self~assertNotEquals("", SysStat(file, 'UID'))
+    self~assertNotEquals("", SysStat(file, 'GID'))
+    self~assertNotEquals("", SysStat(file, 'realdev'))
+    self~assertNotEquals("", SysStat(file, 'size'))
+    self~assertNotEquals("", SysStat(file, 'access'))
+    self~assertNotEquals("", SysStat(file, 'modified'))
+    self~assertNotEquals("", SysStat(file, 'changed'))
+
+::method 'testSysAccess_1'
+    parse source . . file
+    self~assertEquals("NUM", SysAccess(file, 0)~datatype())
+    self~assertEquals("NUM", SysAccess(file, 1)~datatype())
+    self~assertEquals("NUM", SysAccess(file, 2)~datatype())
+    self~assertEquals("NUM", SysAccess(file, 4)~datatype())
+
+::method 'testSysWordexp_1'
+    parse source . . file
+    self~assertTrue(SysWordexp('~/*')~isa(.array))
+
+::method 'testSysSetxattr'
+    parse source . . file
+    if rxfuncquery("SysSetxattr") then -- may be unavailable on some systems
+      return
+    self~assertEquals("NUM", SysSetxattr(file, 'user.mime_type', 'rexx/exec')~datatype())
+
+::method 'testSysGetxattr'
+    parse source . . file
+    if rxfuncquery("SysGetxattr") then -- may be unavailable on some systems
+      return
+    self~assertNotEquals("", SysGetxattr(file, 'user.mime_type'))
+
+::method 'testSysListxattr'
+    parse source . . file
+    if rxfuncquery("SysListxattr") then -- may be unavailable on some systems
+      return
+    self~assertTrue(SysListxattr(file)~isa(.array))
+
+::method 'testSysRemovexattr'
+    parse source . . file
+    if rxfuncquery("SysRemovexattr") then -- may be unavailable on some systems
+      return
+    self~assertEquals("NUM", SysRemovexattr(file, 'user.mime_type')~datatype())
+
+::method test_SysGetservbyname
+  -- we assume the following line exists in /etc/services
+  -- http            80/tcp          www
+  port = SysGetservbyname("http", "tcp", "port")
+  self~assertEquals(80, port, "http port assumed to be 80, not" port);
+
+  name = SysGetservbyname("http", "tcp", "name")
+  self~assertEquals(80, port, "http name assumed to be 'http', not" name);
+  name = SysGetservbyname("www", "tcp", "n")
+  self~assertEquals(80, port, "www name assumed to be 'http', not" name);
+
+::method test_SysGetservbyport
+  -- we assume the following line exists in /etc/services
+  -- http            80/tcp          www
+  port = SysGetservbyport(80, "tcp", "port")
+  self~assertEquals(80, port, "port 80 assumed to be 80, not" port);
+
+  name = SysGetservbyport(80, "tcp", "name")
+  self~assertEquals(80, port, "port 80 assumed to be 'http', not" name);
+
+
+::method test_SysCrypt_DES
+  salt = "3a"
+  des = SysCrypt("passsw", salt)
+  self~assertEquals(13, des~length, "13 chars DES-encoded password expected")
+  self~assertTrue(des~startsWith(salt), "DES-encoded password should start with salt '3a'")
+  self~assertEquals(0, des~verify(self~allowedCryptChars), "DES-encoded chars expected from set [a-zA-Z0-9./]")
+
+::method test_SysCrypt_MD5
+
+  -- Darwin not only doesn't support MD5,
+  -- (https://en.wikipedia.org/wiki/Crypt_(C)#Support_in_operating_systems)
+  -- it will also just happily return a 13-chars DES-encrypted string instead
+  if .ooRexxUnit.OSName == "DARWIN" then
+    return
+
+  salt = "$1$salt"                     -- MD5 id is 1, salt may be up to 16 chars
+  md5 = SysCrypt("passsw", salt)
+  if md5~length \= 0 then do           -- MD5 might not be supported
+    self~assertEquals(salt~length + 1 + 22, md5~length, salt~length + 1 + 22 "chars MD5-encoded password expected")
+    self~assertTrue(md5~startsWith(salt), "MD5-encoded password should start with '"salt"'")
+    self~assertEquals(0, md5~verify(self~allowedCryptChars, , salt~length + 2), "MD5-encoded chars expected from set [a-zA-Z0-9./]")
+  end
+
+::method allowedCryptChars
+  -- set [a-zA-Z0-9./]
+  return .String~alnum || "./"
+
+
+::options novalue error

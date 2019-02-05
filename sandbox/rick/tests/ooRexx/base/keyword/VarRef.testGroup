@@ -1,0 +1,394 @@
+#!/usr/bin/rexx
+/*
+  SVN Revision: $Rev: 11313 $
+  Change Date:  $Date: 2017-10-16 15:05:54 -0400 (Mon, 16 Oct 2017) $
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2018-2019 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.VARIABLE.REFERENCE.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "VARIABLE.REFERENCE.testGroup" subclass ooTestCase public
+
+::method test_new
+  self~expectSyntax(93.967) -- NEW method is not supported for the VariableReference class
+  .VariableReference~new
+
+::method test_create_null
+  -- Simple variable or stem symbol expected after > or < prefix operator
+  self~assertSyntaxError(20.930, "a = >")
+
+::method test_create_number
+  -- Simple variable or stem symbol expected after > or < prefix operator
+  self~assertSyntaxError(20.930, "a = >123")
+
+::method test_create_nullstring
+  -- Simple variable or stem symbol expected after > or < prefix operator
+  self~assertSyntaxError(20.930, "a = >''")
+
+::method test_create_nil
+  -- Simple variable or stem symbol expected after > or < prefix operator
+  self~assertSyntaxError(20.930, "a = >.nil")
+
+::method test_create_array
+  -- Simple variable or stem symbol expected after > or < prefix operator
+  self~assertSyntaxError(20.930, "a = >.Array")
+
+::method test_create_double
+  -- Incorrect expression detected
+  self~assertSyntaxError(35.1, "a = >>a")
+
+::method test_create_compound
+  -- Simple variable or stem symbol expected after > or < prefix operator
+  self~assertSyntaxError(20.930, "a = >stem.0")
+
+::method test_create
+  -- both greater-than and less-than work
+  self~assertIsA(>var, .VariableReference)
+  self~assertIsA(<stem., .VariableReference)
+  self~assertIsA(<stem., .VariableReference)
+
+-- method copy() works
+::method test_copy
+  v = >var
+  self~assertSame(v, v~copy)
+
+::method test_name_too_many
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  >var~name(.nil)
+
+::method test_name
+  self~assertSame("VAR", >var~name)
+  self~assertSame("STEM.", <stem.~name)
+
+::method test_value_too_many
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  >var~value(.nil)
+
+::method test_value
+  self~assertSame("VAR", >var~value)
+  var = 123
+  self~assertSame(123, <var~value)
+
+::method test_valueEquals_too_few
+  self~expectSyntax(88.901) -- Missing argument; the VALUE argument is required
+  >var~"value="
+
+::method test_valueEquals_too_many
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  >var~"value="(.nil, .nil)
+
+::method test_valueEquals
+  >var~value = 123
+  self~assertSame(123, var)
+
+::method test_request_too_few
+  self~expectSyntax(93.903) -- Missing argument in method; argument 1 is required
+  >var~request
+
+::method test_request_too_many
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  >var~request(.nil, .nil)
+
+::method test_request_nostring
+  self~expectSyntax(93.938) -- Method argument 1 must have a string value
+  >var~request(.nil)
+
+::method test_request
+  self~assertIsA(>var~request("ARRAY"), .Array)
+  self~assertIsA(<var~request("STRING"), .String)
+
+::method test_unknown_too_few_none
+  self~expectSyntax(93.903) -- Missing argument in method; argument 1 is required
+  >var~unknown
+
+::method test_unknown_too_few_one
+  self~expectSyntax(93.903) -- Missing argument in method; argument 2 is required
+  >var~unknown("")
+
+::method test_unknown_too_many
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  >var~unknown("", "", "")
+
+::method test_unknown_ok
+ self~assertSame("AR", >var~unknown("SUBSTR", 2))
+
+::method test_default_simple
+  -- A USE ARG default value is not allowed for variable references
+  self~assertSyntaxError(99.950, "use arg >s = 123")
+
+::method test_default_stem
+  -- A USE ARG default value is not allowed for variable references
+  self~assertSyntaxError(99.950, "use arg >s. = 123")
+
+::method test_type_mismatch_reference
+  self~expectSyntax(88.928) -- The 1 argument must be a VariableReference instance
+  call p self
+  return
+
+  p: procedure
+  use arg >s
+
+::method test_type_mismatch_simple
+  self~expectSyntax(88.930) -- The 1 argument must be a VariableReference for a Simple variable
+  call p >s.
+  return
+
+  p: procedure
+  use arg >s
+
+::method test_type_mismatch_stem
+  self~expectSyntax(88.929) -- The 1 argument must be a VariableReference for a Stem variable
+  call p >s
+  return
+
+  p: procedure
+  use arg >s.
+
+::method test_parse_missing
+  self~expectSyntax(88.931) -- Argument .. was omitted. A VariableReference argument is required
+  call useArg
+
+  useArg: procedure
+  use arg >ref
+  return
+
+::method test_parse
+  a = 1, 2, 3
+  self~assertIsA(useArg(>a), .VariableReference)
+  self~assertIsA(useArgRef(>a), .Array)
+  self~assertIsA(parseArg(>a), .String)
+  return
+
+  useArg: procedure
+  use arg arg
+  return arg
+
+  useArgRef: procedure
+  use arg >arg
+  return arg
+
+  parseArg: procedure
+  parse arg arg
+  return arg
+
+
+::method test_base_reference
+
+ref = >A
+self~assertSame('A', ref~value)
+self~assertSame('A', ref~name)
+
+ref~value='B'
+self~assertSame('B', a)
+self~assertSame('B', ref~value)
+self~assertSame('A', ref~name)
+
+  ref = >a.
+
+self~assertSame(a., ref~value)
+self~assertSame('A.', ref~name)
+b.1 = 123
+ref~value = b.
+self~assertSame(b., ref~value)
+self~assertSame(a., b.)
+self~assertSame('A.', ref~name)
+self~assertSame(a.1, 123)
+
+  ref~value='abc'
+  self~assertSame(a.1, 'abc')
+  self~assertSame(b.1, '123')
+
+::method test_use_arg
+
+vara = 123
+self~assertSame(123, refSimple(>vara, 'abc'))
+self~assertSame('abc', vara)
+self~assertSame('abc', refSimple(<vara, 'def'))
+self~assertSame('def', vara)
+self~assertSame('def', refSimpleLess(>vara, 'abc'))
+self~assertSame('abc', vara)
+self~assertSame('abc', refSimpleLess(<vara, 'def'))
+self~assertSame('def', vara)
+
+call refStem >a., 'def'
+self~assertSame('def', a.0)
+
+call refStem >a., 'xyz'
+self~assertSame('xyz', a.0)
+
+call refStem2 >a., 456
+self~assertSame('456', a.0)
+b.0 = '789'
+
+call refStem2 >a., b.
+
+self~assertSame('789', a.0)
+
+a = 2
+self~refLocal(>a)
+self~assertSame(1, a)
+
+a.1 = 2
+self~refLocalStem(>a.)
+self~assertSame(1, a.1)
+
+
+::method test_unknown
+  a = 123
+  ref = >a
+  self~assertSame(124, 1+ref)
+  self~assertSame(124, ref+1)
+
+  self~assertSame("abc123", "abc"||ref)
+  self~assertSame("123%", ref||"%")
+
+  self~assertSame("2", substr(ref, 2, 1))
+
+
+::routine refSimple
+  use strict arg >a, newValue
+
+  oldValue = a;
+  a = newValue
+  return oldValue
+
+::routine refSimpleLess
+  use strict arg <a, newValue
+
+  oldValue = a;
+  a = newValue
+  return oldValue
+
+::routine refStem
+  use strict arg >stem., newValue
+
+  stem.0 = newValue
+
+::routine refStem2
+  use strict arg >stem., newValue
+
+  stem. = newValue
+
+::method testRefExposed
+   self~expectSyntax(98.995)
+  self~refExposed(>a)
+
+::method refExposed
+  expose abc
+  use arg >abc
+
+::method testRefAutoExposed
+   self~expectSyntax(98.995)
+  self~refAutoExposed(>a)
+
+::method refAutoExposed
+  use local
+  use arg >abc
+
+::method refLocal
+  use local abc
+  use arg >abc
+
+  abc = 1
+
+::method testRefInited
+   self~expectSyntax(98.995)
+  self~refInited(>a)
+
+::method refInited
+  abc = 1
+  use arg >abc
+
+::method testRefDoubleArg
+   self~expectSyntax(98.995)
+  self~refDoubleArg(1, >a)
+
+::method refDoubleArg
+  use arg abc, >abc
+
+::method testRefExposedStem
+   self~expectSyntax(98.995)
+  self~refExposedStem(>a.)
+
+::method refExposedStem
+  expose abc.
+  use arg >abc.
+
+::method testRefAutoExposedStem
+   self~expectSyntax(98.995)
+  self~refAutoExposedStem(>a.)
+
+::method refAutoExposedStem
+  use local
+  use arg >abc.
+
+::method refLocalStem
+  use local abc.
+  use arg >abc.
+
+  abc.1 = 1
+
+
+::method testRefInitedStem
+   self~expectSyntax(98.995)
+  self~refInitedStem(>a.)
+
+::method refInitedStem
+  abc.0 = 1
+  use arg >abc.
+
+::method testDoubleArgStem
+   self~expectSyntax(98.995)
+  self~refDoubleArgStem(a., >b.)
+
+::method refDoubleArgStem
+  use arg abc., >abc.
+
+
+::options novalue error

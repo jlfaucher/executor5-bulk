@@ -1,0 +1,276 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.CHARIN.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+::requires 'FileUtils.cls'
+
+::class "CHARIN.testGroup" subclass ooTestCase public
+
+-- This test group uses a lot of temporary files.  To ensure the files get
+-- deleted, the test case sets the name of the temporary file in this attribute
+-- when it is created.  setup() sets the attribute to .nil before the start of
+-- every test case.  tearDown() checks the attribute at the end of every test
+-- case, if not .nil the file is closed and deleted.
+::attribute charInTestingFile
+
+::method setup
+  self~charInTestingFile = .nil
+
+::method tearDown
+  fileName = self~charInTestingFile
+  if fileName \== .nil then do
+    -- Close the file and delete it
+    ret = lineout(fileName)
+    j = deleteFile(fileName)
+  end
+
+-- Test some simple charins
+::method "test_charin_simple"
+
+  -- Non-existent file
+  r = charin("bogusZZZ___T")
+  self~assertSame("", r)
+
+  -- Read the first line of this file, but you need to remember that the !# is
+  -- changed to -- by the interpreter.
+  parse source . . fName
+  line1 = sourceline(1)~overlay("#!")
+  r = charin(fName, , line1~length)
+  self~assertSame(line1, r)
+
+  -- Do it again, but need to specifiy from position 1
+  r = charin(fName, 1, line1~length)
+  self~assertSame(line1, r)
+
+  j = lineout(fName) -- Close the file
+
+
+-- Test reading a large number of bytes from a file, about 600K.
+::method test_charin_alot
+
+  stuff = '12345678901234567890'
+  src = .array~new(30)
+  count = 0
+  do i = 1 to 30
+    src[i] = stuff~copies(1024)
+    count += (1024 * 20) + .endOfLine~length
+  end
+
+  fileName = createFile(src, "delMe.test_charin_alot")
+  self~assertTrue(fileName \== "")
+  self~charInTestingFile = fileName
+
+  r = charin(fileName, , count)
+  self~assertSame(count, r~length)
+  self~assertSame(0, chars(fileName))
+
+  -- Tear down deletes the file
+
+
+-- Tests setting a start position reading from a non-existent stream.
+::method test_charin_noerr_1
+
+  -- Non-existent file, seems like there should be an error, but there isn't.
+  -- This ensures the behavior doesn't change.
+  r = charin("bogusAAA___T", 1)
+  self~assertSame("", r)
+
+
+-- Tests setting a start position and a length reading from a non-existent
+-- stream.
+::method test_charin_noerr_2
+
+  -- Non-existent file, seems like there should be an error, but there isn't.
+  -- This ensures the behavior doesn't change.
+  r = charin("bogusAAA___T", 1, 25)
+  self~assertSame("", r)
+
+
+-- Test using a start position with a transient stream.
+::method test_charin_syntax_1
+
+  self~expectSyntax(93.958)
+  r = charin( , 1)
+
+
+-- Tests trying to read more characters that are in the file
+::method test_charin_too_much
+
+  fileName = createFile(.array~of('1234567890'), "delMe.test_charin_too_much")
+  self~assertTrue(fileName \== "")
+  self~charInTestingFile = fileName
+
+  expected = 10 + .endOfLine~length
+
+  r = charin(fileName, , 20)
+  self~assertSame(expected, r~length)
+  self~assertSame('1234567890' || .endOfLine, r)
+  self~assertSame(0, chars(fileName))
+
+
+-- Tests reading with a start position past the end of the file. NOTREADY
+-- condition should be raised.
+::method test_charin_too_far
+
+  fileName = createFile(.array~of('1234567890'), "delMe.test_charin_too_far")
+  self~assertTrue(fileName \== "")
+  self~charInTestingFile = fileName
+
+  r = "dog"
+  signal on notready
+
+  len = 10 + .endOfLine~length
+  r = charin(fileName, 20, len)
+
+  self~assertSame("cat", r, "Error notready not raised")
+  return
+
+notready:
+  self~assertSame("dog", r, "Test case passes notready raised")
+
+
+-- Tests using a negative number for start position.
+::method test_charin_negative_start
+
+  fileName = createFile(.array~of('1234567890'), "delMe.test_charin_negative_start")
+  self~assertTrue(fileName \== "")
+  self~charInTestingFile = fileName
+
+  self~expectSyntax(93.907)
+  r = charin(fileName, -3, 6)
+
+
+-- Tests using a negative number for length, start position at 1.
+::method test_charin_negative_length
+
+  fileName = createFile(.array~of('1234567890'), "delMe.test_charin_negative_length")
+  self~assertTrue(fileName \== "")
+  self~charInTestingFile = fileName
+
+  self~expectSyntax(88.907)
+  r = charin(fileName, , -6)
+
+
+-- Tests using a negative number for length start position at the end of the file.
+::method test_charin_negative_length2
+
+  fileName = createFile(.array~of('1234567890'), "delMe.test_charin_negative_length2")
+  self~assertTrue(fileName \== "")
+  self~charInTestingFile = fileName
+
+  len = '1234567890'~length + .endOfLine~length
+  self~expectSyntax(88.907)
+  r = charin(fileName, len, -3)
+
+
+-- Tests using 0 for start position.
+::method test_charin_0_start
+
+  fileName = createFile(.array~of('1234567890'), "delMe.test_charin_0_start")
+  self~assertTrue(fileName \== "")
+  self~charInTestingFile = fileName
+
+  self~expectSyntax(93.907)
+  r = charin(fileName, 0, 6)
+
+-- Tests using 0 for length.
+::method test_charin_0_length
+
+  fileName = createFile(.array~of('1234567890'), "delMe.test_charin_0_length")
+  self~assertTrue(fileName \== "")
+  self~charInTestingFile = fileName
+
+  r = charin(fileName, , 0)
+  self~assertSame("", r)
+
+  len = '1234567890'~length + .endOfLine~length
+
+  -- Should still be at position 1 and should be able to read whole file
+  r = charin(fileName, , len)
+  self~assertTrue(r~length == len)
+  self~assertSame('1234567890' || .endOfLine, r)
+
+  -- Position to end of line character.
+  r = charin(fileName, '1234567890'~length + 1, 0)
+  self~assertSame("", r)
+
+  r = charin(fileName,  , .endOfLine~length)
+  self~assertTrue(r~length == .endOfLine~length)
+  self~assertSame(.endOfLine, r)
+  self~assertTrue(chars(fileName) == 0)
+
+
+-- Tests some defaults
+::method test_charin_defaults_01
+
+  fileName = createFile(.array~of('1234567890'), "delMe.test_charin_defualts_01")
+  self~assertTrue(fileName \== "")
+  self~charInTestingFile = fileName
+
+  -- default is to read 1 character from start of file when first opened.
+  r = charin(fileName)
+  self~assertTrue(r~length == 1)
+  self~assertTrue(r == 1)
+
+  -- default is to read 1 character when positioned.
+  r = charin(fileName, 9)
+  self~assertTrue(r~length == 1)
+  self~assertTrue(r == 9)
+
+  -- default is to read 1 character from current position.
+  r = charin(fileName)
+  self~assertTrue(r~length == 1)
+  self~assertTrue(r == 0)
+  self~assertTrue(chars(fileName) == .endOfLine~length)
+
+
+::options novalue error

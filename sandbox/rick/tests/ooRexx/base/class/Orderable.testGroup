@@ -1,0 +1,460 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+  parse source . . fileSpec
+
+  group = .TestGroup~new(fileSpec)
+  group~add(.OrderableOrderable.testGroup)
+  group~add(.OrderableString.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class OrderableOrderable.testGroup subclass Orderable.testGroup public
+::method other
+  return .TestOrderable
+
+::class OrderableString.testGroup subclass Orderable.testGroup public
+::method other
+  return .String
+
+::class "Orderable.testGroup" subclass ooTestCase public
+
+::method testCompares
+  plus = .TestOrderable~new(1)
+  zero = .TestOrderable~new(0)
+  minus = .TestOrderable~new(-1)
+
+  otherPlus = self~other~new(1)
+  otherZero = self~other~new(0)
+  otherMinus = self~other~new(-1)
+
+  self~assertTrue(plus = otherPlus)
+  self~assertTrue(plus == otherPlus)
+  self~assertFalse(plus \= otherPlus)
+  self~assertFalse(plus \== otherPlus)
+  self~assertFalse(plus ª= otherPlus)
+  self~assertFalse(plus ª== otherPlus)
+  self~assertFalse(plus ¬= otherPlus)
+  self~assertFalse(plus ¬== otherPlus)
+  self~assertFalse(plus <> otherPlus)
+  self~assertFalse(plus >< otherPlus)
+
+  self~assertFalse(plus < otherPlus)
+  self~assertFalse(plus << otherPlus)
+  self~assertTrue(plus <= otherPlus)
+  self~assertTrue(plus <<= otherPlus)
+  self~assertTrue(plus \< otherPlus)
+  self~assertTrue(plus \<< otherPlus)
+  self~assertTrue(plus ª< otherPlus)
+  self~assertTrue(plus ª<< otherPlus)
+  self~assertTrue(plus ¬< otherPlus)
+  self~assertTrue(plus ¬<< otherPlus)
+
+  self~assertFalse(plus > otherPlus)
+  self~assertFalse(plus >> otherPlus)
+  self~assertTrue(plus >= otherPlus)
+  self~assertTrue(plus >>= otherPlus)
+  self~assertTrue(plus \> otherPlus)
+  self~assertTrue(plus \>> otherPlus)
+  self~assertTrue(plus ª> otherPlus)
+  self~assertTrue(plus ª>> otherPlus)
+  self~assertTrue(plus ¬> otherPlus)
+  self~assertTrue(plus ¬>> otherPlus)
+
+  self~assertFalse(plus = otherZero)
+  self~assertFalse(plus == otherZero)
+  self~assertTrue(plus \= otherZero)
+  self~assertTrue(plus \== otherZero)
+  self~assertTrue(plus ª= otherZero)
+  self~assertTrue(plus ª== otherZero)
+  self~assertTrue(plus ¬= otherZero)
+  self~assertTrue(plus ¬== otherZero)
+  self~assertTrue(plus <> otherZero)
+  self~assertTrue(plus >< otherZero)
+
+  self~assertFalse(plus < otherZero)
+  self~assertFalse(plus << otherZero)
+  self~assertFalse(plus <= otherZero)
+  self~assertFalse(plus <<= otherZero)
+  self~assertTrue(plus \< otherZero)
+  self~assertTrue(plus \<< otherZero)
+  self~assertTrue(plus ª< otherZero)
+  self~assertTrue(plus ª<< otherZero)
+  self~assertTrue(plus ¬< otherZero)
+  self~assertTrue(plus ¬<< otherZero)
+
+  self~assertTrue(plus > otherZero)
+  self~assertTrue(plus >> otherZero)
+  self~assertTrue(plus >= otherZero)
+  self~assertTrue(plus >>= otherZero)
+  self~assertFalse(plus \> otherZero)
+  self~assertFalse(plus \>> otherZero)
+  self~assertFalse(plus ª> otherZero)
+  self~assertFalse(plus ª>> otherZero)
+  self~assertFalse(plus ¬> otherZero)
+  self~assertFalse(plus ¬>> otherZero)
+
+  self~assertFalse(plus = otherMinus)
+  self~assertFalse(plus == otherMinus)
+  self~assertTrue(plus \= otherMinus)
+  self~assertTrue(plus \== otherMinus)
+  self~assertTrue(plus ª= otherMinus)
+  self~assertTrue(plus ª== otherMinus)
+  self~assertTrue(plus ¬= otherMinus)
+  self~assertTrue(plus ¬== otherMinus)
+  self~assertTrue(plus <> otherMinus)
+  self~assertTrue(plus >< otherMinus)
+
+  self~assertFalse(plus < otherMinus)
+  self~assertFalse(plus << otherMinus)
+  self~assertFalse(plus <= otherMinus)
+  self~assertFalse(plus <<= otherMinus)
+  self~assertTrue(plus \< otherMinus)
+  self~assertTrue(plus \<< otherMinus)
+  self~assertTrue(plus ª< otherMinus)
+  self~assertTrue(plus ª<< otherMinus)
+  self~assertTrue(plus ¬< otherMinus)
+  self~assertTrue(plus ¬<< otherMinus)
+
+  self~assertTrue(plus > otherMinus)
+  self~assertTrue(plus >> otherMinus)
+  self~assertTrue(plus >= otherMinus)
+  self~assertTrue(plus >>= otherMinus)
+  self~assertFalse(plus \> otherMinus)
+  self~assertFalse(plus \>> otherMinus)
+  self~assertFalse(plus ª> otherMinus)
+  self~assertFalse(plus ª>> otherMinus)
+  self~assertFalse(plus ¬> otherMinus)
+  self~assertFalse(plus ¬>> otherMinus)
+
+  self~assertFalse(zero = otherPlus)
+  self~assertFalse(zero == otherPlus)
+  self~assertTrue(zero \= otherPlus)
+  self~assertTrue(zero \== otherPlus)
+  self~assertTrue(zero ª= otherPlus)
+  self~assertTrue(zero ª== otherPlus)
+  self~assertTrue(zero ¬= otherPlus)
+  self~assertTrue(zero ¬== otherPlus)
+  self~assertTrue(zero <> otherPlus)
+  self~assertTrue(zero >< otherPlus)
+
+  self~assertTrue(zero < otherPlus)
+  self~assertTrue(zero << otherPlus)
+  self~assertTrue(zero <= otherPlus)
+  self~assertTrue(zero <<= otherPlus)
+  self~assertFalse(zero \< otherPlus)
+  self~assertFalse(zero \<< otherPlus)
+  self~assertFalse(zero ª< otherPlus)
+  self~assertFalse(zero ª<< otherPlus)
+  self~assertFalse(zero ¬< otherPlus)
+  self~assertFalse(zero ¬<< otherPlus)
+
+  self~assertFalse(zero > otherPlus)
+  self~assertFalse(zero >> otherPlus)
+  self~assertFalse(zero >= otherPlus)
+  self~assertFalse(zero >>= otherPlus)
+  self~assertTrue(zero \> otherPlus)
+  self~assertTrue(zero \>> otherPlus)
+  self~assertTrue(zero ª> otherPlus)
+  self~assertTrue(zero ª>> otherPlus)
+  self~assertTrue(zero ¬> otherPlus)
+  self~assertTrue(zero ¬>> otherPlus)
+
+  self~assertTrue(zero = otherZero)
+  self~assertTrue(zero == otherZero)
+  self~assertFalse(zero \= otherZero)
+  self~assertFalse(zero \== otherZero)
+  self~assertFalse(zero ª= otherZero)
+  self~assertFalse(zero ª== otherZero)
+  self~assertFalse(zero ¬= otherZero)
+  self~assertFalse(zero ¬== otherZero)
+  self~assertFalse(zero <> otherZero)
+  self~assertFalse(zero >< otherZero)
+
+  self~assertFalse(zero < otherZero)
+  self~assertFalse(zero << otherZero)
+  self~assertTrue(zero <= otherZero)
+  self~assertTrue(zero <<= otherZero)
+  self~assertTrue(zero \< otherZero)
+  self~assertTrue(zero \<< otherZero)
+  self~assertTrue(zero ª< otherZero)
+  self~assertTrue(zero ª<< otherZero)
+  self~assertTrue(zero ¬< otherZero)
+  self~assertTrue(zero ¬<< otherZero)
+
+  self~assertFalse(zero > otherZero)
+  self~assertFalse(zero >> otherZero)
+  self~assertTrue(zero >= otherZero)
+  self~assertTrue(zero >>= otherZero)
+  self~assertTrue(zero \> otherZero)
+  self~assertTrue(zero \>> otherZero)
+  self~assertTrue(zero ª> otherZero)
+  self~assertTrue(zero ª>> otherZero)
+  self~assertTrue(zero ¬> otherZero)
+  self~assertTrue(zero ¬>> otherZero)
+
+  self~assertFalse(zero = otherMinus)
+  self~assertFalse(zero == otherMinus)
+  self~assertTrue(zero \= otherMinus)
+  self~assertTrue(zero \== otherMinus)
+  self~assertTrue(zero ª= otherMinus)
+  self~assertTrue(zero ª== otherMinus)
+  self~assertTrue(zero ¬= otherMinus)
+  self~assertTrue(zero ¬== otherMinus)
+  self~assertTrue(zero <> otherMinus)
+  self~assertTrue(zero >< otherMinus)
+
+  self~assertFalse(zero < otherMinus)
+  self~assertFalse(zero << otherMinus)
+  self~assertFalse(zero <= otherMinus)
+  self~assertFalse(zero <<= otherMinus)
+  self~assertTrue(zero \< otherMinus)
+  self~assertTrue(zero \<< otherMinus)
+  self~assertTrue(zero ª< otherMinus)
+  self~assertTrue(zero ª<< otherMinus)
+  self~assertTrue(zero ¬< otherMinus)
+  self~assertTrue(zero ¬<< otherMinus)
+
+  self~assertTrue(zero > otherMinus)
+  self~assertTrue(zero >> otherMinus)
+  self~assertTrue(zero >= otherMinus)
+  self~assertTrue(zero >>= otherMinus)
+  self~assertFalse(zero \> otherMinus)
+  self~assertFalse(zero \>> otherMinus)
+  self~assertFalse(zero ª> otherMinus)
+  self~assertFalse(zero ª>> otherMinus)
+  self~assertFalse(zero ¬> otherMinus)
+  self~assertFalse(zero ¬>> otherMinus)
+
+  self~assertFalse(minus = otherPlus)
+  self~assertFalse(minus == otherPlus)
+  self~assertTrue(minus \= otherPlus)
+  self~assertTrue(minus \== otherPlus)
+  self~assertTrue(minus ª= otherPlus)
+  self~assertTrue(minus ª== otherPlus)
+  self~assertTrue(minus ¬= otherPlus)
+  self~assertTrue(minus ¬== otherPlus)
+  self~assertTrue(minus <> otherPlus)
+  self~assertTrue(minus >< otherPlus)
+
+  self~assertTrue(minus < otherPlus)
+  self~assertTrue(minus << otherPlus)
+  self~assertTrue(minus <= otherPlus)
+  self~assertTrue(minus <<= otherPlus)
+  self~assertFalse(minus \< otherPlus)
+  self~assertFalse(minus \<< otherPlus)
+  self~assertFalse(minus ª< otherPlus)
+  self~assertFalse(minus ª<< otherPlus)
+  self~assertFalse(minus ¬< otherPlus)
+  self~assertFalse(minus ¬<< otherPlus)
+
+  self~assertFalse(minus > otherPlus)
+  self~assertFalse(minus >> otherPlus)
+  self~assertFalse(minus >= otherPlus)
+  self~assertFalse(minus >>= otherPlus)
+  self~assertTrue(minus \> otherPlus)
+  self~assertTrue(minus \>> otherPlus)
+  self~assertTrue(minus ª> otherPlus)
+  self~assertTrue(minus ª>> otherPlus)
+  self~assertTrue(minus ¬> otherPlus)
+  self~assertTrue(minus ¬>> otherPlus)
+
+  self~assertFalse(minus = otherZero)
+  self~assertFalse(minus == otherZero)
+  self~assertTrue(minus \= otherZero)
+  self~assertTrue(minus \== otherZero)
+  self~assertTrue(minus ª= otherZero)
+  self~assertTrue(minus ª== otherZero)
+  self~assertTrue(minus ¬= otherZero)
+  self~assertTrue(minus ¬== otherZero)
+  self~assertTrue(minus <> otherZero)
+  self~assertTrue(minus >< otherZero)
+
+  self~assertTrue(minus < otherZero)
+  self~assertTrue(minus << otherZero)
+  self~assertTrue(minus <= otherZero)
+  self~assertTrue(minus <<= otherZero)
+  self~assertFalse(minus \< otherZero)
+  self~assertFalse(minus \<< otherZero)
+  self~assertFalse(minus ª< otherZero)
+  self~assertFalse(minus ª<< otherZero)
+  self~assertFalse(minus ¬< otherZero)
+  self~assertFalse(minus ¬<< otherZero)
+
+  self~assertFalse(minus > otherZero)
+  self~assertFalse(minus >> otherZero)
+  self~assertFalse(minus >= otherZero)
+  self~assertFalse(minus >>= otherZero)
+  self~assertTrue(minus \> otherZero)
+  self~assertTrue(minus \>> otherZero)
+  self~assertTrue(minus ª> otherZero)
+  self~assertTrue(minus ª>> otherZero)
+  self~assertTrue(minus ¬> otherZero)
+  self~assertTrue(minus ¬>> otherZero)
+
+  self~assertTrue(minus = otherMinus)
+  self~assertTrue(minus == otherMinus)
+  self~assertFalse(minus \= otherMinus)
+  self~assertFalse(minus \== otherMinus)
+  self~assertFalse(minus ª= otherMinus)
+  self~assertFalse(minus ª== otherMinus)
+  self~assertFalse(minus ¬= otherMinus)
+  self~assertFalse(minus ¬== otherMinus)
+  self~assertFalse(minus <> otherMinus)
+  self~assertFalse(minus >< otherMinus)
+
+  self~assertFalse(minus < otherMinus)
+  self~assertFalse(minus << otherMinus)
+  self~assertTrue(minus <= otherMinus)
+  self~assertTrue(minus <<= otherMinus)
+  self~assertTrue(minus \< otherMinus)
+  self~assertTrue(minus \<< otherMinus)
+  self~assertTrue(minus ª< otherMinus)
+  self~assertTrue(minus ª<< otherMinus)
+  self~assertTrue(minus ¬< otherMinus)
+  self~assertTrue(minus ¬<< otherMinus)
+
+  self~assertFalse(minus > otherMinus)
+  self~assertFalse(minus >> otherMinus)
+  self~assertTrue(minus >= otherMinus)
+  self~assertTrue(minus >>= otherMinus)
+  self~assertTrue(minus \> otherMinus)
+  self~assertTrue(minus \>> otherMinus)
+  self~assertTrue(minus ª> otherMinus)
+  self~assertTrue(minus ª>> otherMinus)
+  self~assertTrue(minus ¬> otherMinus)
+  self~assertTrue(minus ¬>> otherMinus)
+
+::method test_orderable_sort
+  -- random, but reproducible within the same day
+  call random , , date('b') + (self~other~id == "String")
+  a = .Array~new(100)
+  do a~size
+    a~append(.TestOrderable~new(random(-1000, 1000)))
+  end
+  a~sort
+  do i = 2 to a~size
+    self~assertTrue(a[i - 1] <= a[i], "array of Sortable instances must be sorted in ascending order")
+  end
+
+-- .nil equal/not equal comparisons should work
+::method test_orderable_nil
+  self~assertFalse(.TestOrderable~new(0) == .nil)
+  self~assertFalse(.TestOrderable~new(0) = .nil)
+  self~assertTrue(.TestOrderable~new(0) \== .nil)
+  self~assertTrue(.TestOrderable~new(0) \= .nil)
+  self~assertTrue(.TestOrderable~new(0) <> .nil)
+  self~assertTrue(.TestOrderable~new(0) >< .nil)
+
+-- other .nil comparisons shouldn't work
+::method test_orderable_nil_less_than
+  self~expectSyntax(93.973)
+  r = .TestOrderable~new(0) < .nil
+
+::method test_orderable_nil_less_than_or_equal
+  self~expectSyntax(93.973)
+  r = .TestOrderable~new(0) <= .nil
+
+::method test_orderable_nil_strictly_less_than
+  self~expectSyntax(93.973)
+  r = .TestOrderable~new(0) << .nil
+
+::method test_orderable_nil_strictly_less_than_or_equal
+  self~expectSyntax(93.973)
+  r = .TestOrderable~new(0) <<= .nil
+
+::method test_orderable_nil_greater_than
+  self~expectSyntax(93.973)
+  r = .TestOrderable~new(0) > .nil
+
+::method test_orderable_nil_greater_than_or_equal
+  self~expectSyntax(93.973)
+  r = .TestOrderable~new(0) >= .nil
+
+::method test_orderable_nil_strictly_greater_than
+  self~expectSyntax(93.973)
+  r = .TestOrderable~new(0) >> .nil
+
+::method test_orderable_nil_strictly_greater_than_or_equal
+  self~expectSyntax(93.973)
+  r = .TestOrderable~new(0) >>= .nil
+
+::method test_orderable_nil_not_greater_than
+  self~expectSyntax(93.973)
+  r = .TestOrderable~new(0) \> .nil
+
+::method test_orderable_nil_not_less_than
+  self~expectSyntax(93.973)
+  r = .TestOrderable~new(0) \< .nil
+
+::method test_orderable_nil_not_strictly_greater_than
+  self~expectSyntax(93.973)
+  r = .TestOrderable~new(0) \>> .nil
+
+::method test_orderable_nil_not_strictly_less_than
+  self~expectSyntax(93.973)
+  r = .TestOrderable~new(0) \<< .nil
+
+
+::class TestOrderable inherit Orderable Comparable
+::method init
+  expose value
+  use arg value
+
+::method compareTo
+  expose value
+  use arg other
+  return (value - other~string)~sign
+
+::attribute string get
+  expose value
+  return value
+
+
+::options novalue error

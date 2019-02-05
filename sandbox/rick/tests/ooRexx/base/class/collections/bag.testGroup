@@ -1,0 +1,174 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.Collection_bagMethod.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "Collection_bagMethod.testGroup" subclass ooTestCase public
+
+::method "test_1"
+   bag1 = .bag~new()
+   self~assertEquals('a Bag', bag1)
+
+::method "test_2"
+   bag1 = .bag~new()
+   bag1["Mike"] = "Mike"
+   bag1["David"] = "David"
+   bag1["Sam"] = "Sam"
+   self~assertEquals('Mike', bag1['Mike'])
+   self~assertEquals('David', bag1['David'])
+   self~assertEquals('Sam', bag1['Sam'])
+   self~assertEquals('Mike', bag1~at('Mike'))
+   self~assertEquals('David', bag1~at('David'))
+   self~assertEquals('Sam', bag1~at('Sam'))
+
+::method "test_3"
+   bag1 = .bag~of("Mike", "David", "Sam")
+   self~assertEquals('Mike', bag1['Mike'])
+   self~assertEquals('David', bag1['David'])
+   self~assertEquals('Sam', bag1['Sam'])
+   self~assertEquals('Mike', bag1~at('Mike'))
+   self~assertEquals('David', bag1~at('David'))
+   self~assertEquals('Sam', bag1~at('Sam'))
+
+::method "test_4"
+   bag1 = .bag~of("Mike", "David", "Sam")
+   bag2 = .bag~of("Sam")
+   bag3 = .bag~of("Mike", "David")
+   self~assertEquals(bag2, bag1~difference(bag3))
+   self~assertEquals(bag3, bag1~difference(bag2))
+
+::method "test_5"
+   bag1 = .bag~of("Mike", "David", "Sam")
+   self~assertEquals(1, bag1~hasIndex("Mike"))
+   self~assertEquals(0, bag1~hasIndex("Linda"))
+
+::method "test_6"
+   bag1 = .bag~of("Mike", "David", "Sam")
+   bag2 = .bag~of("Sam")
+   bag3 = .bag~of("Sam", "Linda")
+   bag4 = .bag~of("Mike", "David")
+   bag5 = .bag~of("Mike", "David", "Linda")
+   bag6 = .bag~of("Linda")
+   self~assertEquals(1, self~bag_compare(bag1~intersection(bag2), bag2))
+   self~assertEquals(1, self~bag_compare(bag1~intersection(bag3), bag2))
+   self~assertEquals(1, self~bag_compare(bag1~intersection(bag4), bag4))
+   self~assertEquals(1, self~bag_compare(bag1~intersection(bag5), bag4))
+   self~assertEquals(0, self~bag_compare(bag1~intersection(bag6), bag6))
+   self~assertEquals(0, self~bag_compare(bag1~intersection(bag6), bag1))
+
+::method "test_7"
+   bag1 = .bag~of("Mike", "David", "Sam")
+   self~assertEquals(1, bag1~hasIndex("Mike"))
+   bag1~put("Mike", "Mike")
+   self~assertEquals(1, bag1~hasIndex("Mike"))
+   bag1~put("Pete", "Pete")
+   self~assertEquals(1, bag1~hasIndex("Pete"))
+   bag1~put("Pete", "Pete")
+   self~assertEquals(1, bag1~hasIndex("Pete"))
+   self~assertEquals(6, bag1~items) -- make sure we have the duplicate indexes
+   self~expectSyntax(93.949)
+   bag1~put("Mike", "Linda")
+
+::method "test_8"
+   bag1 = .bag~of("Mike", "David", "Sam")
+   bag2 = .bag~of("Linda", "Lynn")
+   bag1~putAll(bag2)
+   self~assertEquals(5, bag1~items)
+   self~assertEquals(1, bag1~hasIndex("Linda"))
+   self~assertEquals(1, bag1~hasIndex("Lynn"))
+   arr = .array~of("Linda", "Pam")  -- this adds one duplicate index
+   bag1~putAll(arr)
+   self~assertEquals(7, bag1~items)
+   self~assertEquals(1, bag1~hasIndex("Linda"))
+   self~assertEquals(1, bag1~hasIndex("Pam"))
+   self~assertEquals(0, bag1~hasIndex("Debbie"))
+
+::method "test_9"
+   bag1 = .bag~of("Mike", "David", "Sam", "Debbie")
+   bag2 = .bag~of("Mike", "David", "Sam")
+   bag3 = .bag~of("Linda", "Lynn")
+   self~assertEquals(1, bag2~subset(bag1))
+   self~assertEquals(0, bag3~subset(bag1))
+
+::method "test_10"
+   bag0 = .bag~of()
+   bag1 = .bag~of("Mike", "David", "Sam", "Debbie")
+   bag2 = .bag~of("Linda")
+   bag3 = .bag~of("Mike", "David", "Sam", "Debbie", "Linda")
+   bag4 = .bag~of("Mike", "Linda")
+   bag5 = .bag~of("Mike", "David", "Sam", "Debbie", "Linda", "Mike")
+   self~assertEquals(1, self~bag_compare(bag3, bag1~union(bag2)))
+   self~assertEquals(1, self~bag_compare(bag5, bag1~union(bag4)))
+   self~assertEquals(1, self~bag_compare(bag1, bag1~union(bag0)))
+
+::method "test_11"
+   bag1 = .bag~of("Mike", "David", "Sam", "Debbie")
+   bag2 = .bag~of("Linda")
+   bag3 = .bag~of("Mike", "David", "Sam", "Debbie", "Linda")
+   bag4 = .bag~of("Linda", "David")
+   bag5 = .bag~of("Mike", "Sam", "Debbie", "Linda")
+   self~assertEquals(1, self~bag_compare(bag3, bag1~xor(bag2)))
+   self~assertEquals(1, self~bag_compare(bag2, bag1~xor(bag3)))
+   self~assertEquals(1, self~bag_compare(bag5, bag1~xor(bag4)))
+
+
+
+
+::method "bag_compare" private
+   use strict arg bag1, bag2
+   if bag1~items <> bag2~items then return 0
+   do item over bag1
+      if bag2~hasItem(item) = 0 then return 0
+   end
+   return 1
+
+
+::options novalue error

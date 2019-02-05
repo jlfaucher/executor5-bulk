@@ -1,0 +1,210 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.Collection_circularqueueMethod.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "Collection_circularqueueMethod.testGroup" subclass ooTestCase public
+
+::method "test_1"
+   que = .circularqueue~of('Mike', 'David', 'Tom')
+   self~assertEquals(3, que~items)
+   self~assertEquals('Mike,David,Tom', que)
+   self~assertEquals(3, que~size)
+   que1 = .circularqueue~new(3)
+   self~assertEquals(0, que1~items)
+   self~assertEquals('', que1)
+   self~assertEquals(3, que1~size)
+
+::method "test_2"
+   que = .circularqueue~of('Mike', 'David', 'Tom')
+   arr = que~makeArray()
+   self~assertEquals(3, arr~items)
+   self~assertEquals('Mike', arr[1])
+   self~assertEquals('David', arr[2])
+   self~assertEquals('Tom', arr[3])
+   arr = que~makeArray('F')  -- FIFO
+   self~assertEquals(3, arr~items)
+   self~assertEquals('Mike', arr[1])
+   self~assertEquals('David', arr[2])
+   self~assertEquals('Tom', arr[3])
+   arr = que~makeArray('L')  -- LIFO
+   self~assertEquals(3, arr~items)
+   self~assertEquals('Tom', arr[1])
+   self~assertEquals('David', arr[2])
+   self~assertEquals('Mike', arr[3])
+
+::method "test_3"
+   que = .circularqueue~of('Mike', 'David', 'Tom')
+   que~resize(5)
+   self~assertEquals(3, que~items)
+   self~assertEquals('Mike', que[1])
+   self~assertEquals('David', que[2])
+   self~assertEquals('Tom', que[3])
+
+::method "test_4"
+   que = .circularqueue~of('Mike', 'David', 'Tom')
+   que~resize(5)
+   self~assertEquals(3, que~items)
+   self~assertEquals(.nil, que[4])
+   self~assertEquals(.nil, que[5])
+   que~push('Tony')
+   self~assertEquals(4, que~items)
+   self~assertEquals('Tony', que[1])
+   self~assertEquals('Mike', que[2])
+   self~assertEquals('David', que[3])
+   self~assertEquals('Tom', que[4])
+   self~assertEquals(.nil, que[5])
+   que~push('Bill')
+   self~assertEquals(5, que~items)
+   self~assertEquals('Bill', que[1])
+   self~assertEquals('Tony', que[2])
+   self~assertEquals('Mike', que[3])
+   self~assertEquals('David', que[4])
+   self~assertEquals('Tom', que[5])
+   self~assertEquals(.nil, que[6])
+   que~push('Linda')
+   self~assertEquals(5, que~items)
+   self~assertEquals('Linda', que[1])
+   self~assertEquals('Bill', que[2])
+   self~assertEquals('Tony', que[3])
+   self~assertEquals('Mike', que[4])
+   self~assertEquals('David', que[5])
+   self~assertEquals(.nil, que[6])
+
+::method "test_5"
+   que = .circularqueue~of('Mike', 'David', 'Tom')
+   que~resize(5)
+   self~assertEquals(3, que~items)
+   self~assertEquals(.nil, que[4])
+   self~assertEquals(.nil, que[5])
+   que~queue('Tony')
+   self~assertEquals(4, que~items)
+   self~assertEquals('Mike', que[1])
+   self~assertEquals('David', que[2])
+   self~assertEquals('Tom', que[3])
+   self~assertEquals('Tony', que[4])
+   self~assertEquals(.nil, que[5])
+   que~queue('Bill')
+   self~assertEquals('Mike', que[1])
+   self~assertEquals('David', que[2])
+   self~assertEquals('Tom', que[3])
+   self~assertEquals('Tony', que[4])
+   self~assertEquals('Bill', que[5])
+   self~assertEquals(.nil, que[6])
+   que~queue('Linda')
+   self~assertEquals('David', que[1])
+   self~assertEquals('Tom', que[2])
+   self~assertEquals('Tony', que[3])
+   self~assertEquals('Bill', que[4])
+   self~assertEquals('Linda', que[5])
+   self~assertEquals(.nil, que[6])
+
+::method "test_6"
+   que = .circularqueue~of("David", "Rick")
+   sup = que~supplier
+   self~assertEquals('a Supplier', sup)
+   self~assertEquals(1, sup~available)
+   self~assertEquals(1, sup~index)
+   self~assertEquals('David', sup~item)
+   sup~next
+   self~assertEquals(1, sup~available)
+   self~assertEquals(2, sup~index)
+   self~assertEquals('Rick', sup~item)
+   sup~next
+   self~assertEquals(0, sup~available)
+   self~expectSyntax(93.937)
+   sup~next
+
+::method "test_section"
+  a1=.circularqueue~of(1)
+  a2=a1~section(1)
+  self~assertEquals(1, a2~items)
+  self~assertTrue(a2~isa(.circularqueue))
+  self~assertTrue(testSeq(.circularqueue~of(1), a2))
+
+  a2=a1~section(1,1)
+  self~assertEquals(1, a2~items)
+  self~assertTrue(testSeq(.circularqueue~of(1), a2))
+
+  a2=a1~section(1,5)
+  self~assertEquals(1, a2~items)
+  self~assertTrue(testSeq(.circularqueue~of(1), a2))
+
+  a1=.queue~of(1,2,3,4,5)
+  a2=a1~section(2)
+  self~assertEquals(4, a2~items)
+  self~assertTrue(testSeq(.circularqueue~of(2,3,4,5), a2))
+  a2=a1~section(2,2)
+  self~assertEquals(2, a2~items)
+  self~assertTrue(testSeq(.circularqueue~of(2,3), a2))
+
+  return
+
+::routine testseq
+  use arg a1, a2, start=1
+
+  a1index = a1~first
+  loop while start > 1
+      a1index = a1~next(a1index)
+      start -= 1
+  end
+
+  a2index = a2~first
+
+  do i=1 to a2~items
+     if a1[a1index]<>a2[a2index] then return .false
+     a1index = a1~next(a1index)
+     a2index = a2~next(a2index)
+  end
+  return .true
+
+
+::options novalue error

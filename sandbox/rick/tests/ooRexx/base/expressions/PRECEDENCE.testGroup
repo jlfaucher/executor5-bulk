@@ -1,0 +1,4407 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev$
+  Change Date:  $Date$
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+  parse source . . s
+  group = .TestGroup~new(s)
+  group~add(.PRECEDENCE.testGroup)
+
+  if group~isAutomatedTest then return group
+
+  testResult = group~suite~execute~~print
+
+return testResult
+
+
+
+::requires 'ooTest.frm' -- load the ooRexxUnit classes
+
+::class "PRECEDENCE.testGroup" subclass ooTestCase public
+
+::method "test_1"
+   self~assertSame(0*0, '0')
+
+::method "test_2"
+   self~assertSame(0*1, '0')
+
+::method "test_3"
+   self~assertSame(0*17, '0')
+
+::method "test_4"
+   self~assertSame(0*-17, '0')
+
+::method "test_5"
+   self~assertSame(1*0, '0')
+
+::method "test_6"
+   self~assertSame(17*0, '0')
+
+::method "test_7"
+   self~assertSame(-17*0, '0')
+
+::method "test_8"
+   self~assertSame(1*1, '1')
+
+::method "test_9"
+   self~assertSame(1*17, '17')
+
+::method "test_10"
+   self~assertSame(1*-17, '-17')
+
+::method "test_11"
+   self~assertSame(17*1, '17')
+
+::method "test_12"
+   self~assertSame(-17*1, '-17')
+
+::method "test_13"
+   self~assertSame(17*17, '289')
+
+::method "test_14"
+   self~assertSame(17*-17, '-289')
+
+::method "test_15"
+   self~assertSame(-17*17, '-289')
+
+::method "test_16"
+   self~assertSame(-17*-17, '289')
+
+::method "test_17"
+   self~expectSyntax(42.3)
+   xre=0/0
+
+::method "test_18"
+   self~assertSame(0/1, '0')
+
+::method "test_19"
+   self~assertSame(0/17, '0')
+
+::method "test_20"
+   self~assertSame(0/-17, '0')
+
+::method "test_21"
+   self~expectSyntax(42.3)
+   xre=1/0
+
+::method "test_22"
+   self~expectSyntax(42.3)
+   xre=17/0
+
+::method "test_23"
+   self~expectSyntax(42.3)
+   xre=-17/0
+
+::method "test_24"
+   self~assertSame(1/1, '1')
+
+::method "test_25"
+   numeric digits 9
+   self~assertSame(1/17, '0.0588235294')
+
+::method "test_26"
+   numeric digits 9
+   self~assertSame(1/-17, '-0.0588235294')
+
+::method "test_27"
+   self~assertSame(17/1, '17')
+
+::method "test_28"
+   self~assertSame(-17/1, '-17')
+
+::method "test_29"
+   self~assertSame(17/17, '1')
+
+::method "test_30"
+   self~assertSame(17/-17, '-1')
+
+::method "test_31"
+   self~assertSame(-17/17, '-1')
+
+::method "test_32"
+   self~assertSame(-17/-17, '1')
+
+::method "test_33"
+   self~expectSyntax(42.3)
+   xre=0%0
+
+::method "test_34"
+   self~assertSame(0%1, '0')
+
+::method "test_35"
+   self~assertSame(0%17, '0')
+
+::method "test_36"
+   self~assertSame(0%-17, '0')
+
+::method "test_37"
+   self~expectSyntax(42.3)
+   xre=1%0
+
+::method "test_38"
+   self~expectSyntax(42.3)
+   xre=17%0
+
+::method "test_39"
+   self~expectSyntax(42.3)
+   xre=-17%0
+
+::method "test_40"
+   self~assertSame(1%1, '1')
+
+::method "test_41"
+   self~assertSame(1%17, '0')
+
+::method "test_42"
+   self~assertSame(1%-17, '0')
+
+::method "test_43"
+   self~assertSame(17%1, '17')
+
+::method "test_44"
+   self~assertSame(-17%1, '-17')
+
+::method "test_45"
+   self~assertSame(17%17, '1')
+
+::method "test_46"
+   self~assertSame(17%-17, '-1')
+
+::method "test_47"
+   self~assertSame(-17%17, '-1')
+
+::method "test_48"
+   self~assertSame(-17%-17, '1')
+
+::method "test_49"
+   self~expectSyntax(42.3)
+   xre=0//0
+
+::method "test_50"
+   self~assertSame(0//1, '0')
+
+::method "test_51"
+   self~assertSame(0//17, '0')
+
+::method "test_52"
+   self~assertSame(0//-17, '0')
+
+::method "test_53"
+   self~expectSyntax(42.3)
+   xre=1//0
+
+::method "test_54"
+   self~expectSyntax(42.3)
+   xre=17//0
+
+::method "test_55"
+   self~expectSyntax(42.3)
+   xre=-17//0
+
+::method "test_56"
+   self~assertSame(1//1, '0')
+
+::method "test_57"
+   self~assertSame(1//17, '1')
+
+::method "test_58"
+   self~assertSame(1//-17, '1')
+
+::method "test_59"
+   self~assertSame(17//1, '0')
+
+::method "test_60"
+   self~assertSame(-17//1, '0')
+
+::method "test_61"
+   self~assertSame(17//17, '0')
+
+::method "test_62"
+   self~assertSame(17//-17, '0')
+
+::method "test_63"
+   self~assertSame(-17//17, '0')
+
+::method "test_64"
+   self~assertSame(-17//-17, '0')
+
+::method "test_65"
+   self~assertSame(0*17*0, '0')
+
+::method "test_66"
+   self~assertSame(0*-17*0, '0')
+
+::method "test_67"
+   self~assertSame(1*0*17, '0')
+
+::method "test_68"
+   self~assertSame(1*0*-17, '0')
+
+::method "test_69"
+   self~assertSame(17*0*-17, '0')
+
+::method "test_70"
+   self~assertSame(-17*0*17, '0')
+
+::method "test_71"
+   self~assertSame(1*17*1, '17')
+
+::method "test_72"
+   self~assertSame(1*17*-17, '-289')
+
+::method "test_73"
+   self~assertSame(1*-17*17, '-289')
+
+::method "test_74"
+   self~assertSame(17*1*17, '289')
+
+::method "test_75"
+   self~assertSame(-17*1*17, '-289')
+
+::method "test_76"
+   self~expectSyntax(42.3)
+   xre=0/17/0
+
+::method "test_77"
+   self~expectSyntax(42.3)
+   xre=0/-17/0
+
+::method "test_78"
+   self~expectSyntax(42.3)
+   xre=1/0/17
+
+::method "test_79"
+   self~expectSyntax(42.3)
+   xre=1/0/-17
+
+::method "test_80"
+   self~expectSyntax(42.3)
+   xre=17/0/-17
+
+::method "test_81"
+   self~expectSyntax(42.3)
+   xre=-17/0/17
+
+::method "test_82"
+   numeric digits 9
+   self~assertSame(1/17/1, '0.0588235294')
+
+::method "test_83"
+   numeric digits 9
+   self~assertSame(1/17/-17, '-0.00346020761')
+
+::method "test_84"
+   numeric digits 9
+   self~assertSame(1/-17/17, '-0.00346020761')
+
+::method "test_85"
+   self~assertSame(17/1/17, '1')
+
+::method "test_86"
+   self~assertSame(-17/1/17, '-1')
+
+::method "test_87"
+   self~expectSyntax(42.3)
+   xre=0%17%0
+
+::method "test_88"
+   self~expectSyntax(42.3)
+   xre=0%-17%0
+
+::method "test_89"
+   self~expectSyntax(42.3)
+   xre=1%0%17
+
+::method "test_90"
+   self~expectSyntax(42.3)
+   xre=1%0%-17
+
+::method "test_91"
+   self~expectSyntax(42.3)
+   xre=17%0%-17
+
+::method "test_92"
+   self~expectSyntax(42.3)
+   xre=-17%0%17
+
+::method "test_93"
+   self~assertSame(1%17%1, '0')
+
+::method "test_94"
+   self~assertSame(1%17%-17, '0')
+
+::method "test_95"
+   self~assertSame(1%-17%17, '0')
+
+::method "test_96"
+   self~assertSame(17%1%17, '1')
+
+::method "test_97"
+   self~assertSame(-17%1%17, '-1')
+
+::method "test_98"
+   self~expectSyntax(42.3)
+   xre=0//17//0
+
+::method "test_99"
+   self~expectSyntax(42.3)
+   xre=0//-17//0
+
+::method "test_100"
+   self~expectSyntax(42.3)
+   xre=1//0//17
+
+::method "test_101"
+   self~expectSyntax(42.3)
+   xre=1//0//-17
+
+::method "test_102"
+   self~expectSyntax(42.3)
+   xre=17//0//-17
+
+::method "test_103"
+   self~expectSyntax(42.3)
+   xre=-17//0//17
+
+::method "test_104"
+   self~assertSame(1//17//1, '0')
+
+::method "test_105"
+   self~assertSame(1//17//-17, '1')
+
+::method "test_106"
+   self~assertSame(1//-17//17, '1')
+
+::method "test_107"
+   self~assertSame(17//1//17, '0')
+
+::method "test_108"
+   self~assertSame(-17//1//17, '0')
+
+::method "test_109"
+   self~assertSame((0/17)*0, '0')
+
+::method "test_110"
+   self~expectSyntax(42.3)
+   xre=0/(17*0)
+
+::method "test_111"
+   self~expectSyntax(42.3)
+   xre=(0*17)/0
+
+::method "test_112"
+   self~expectSyntax(42.3)
+   xre=0*(17/0)
+
+::method "test_113"
+   self~expectSyntax(42.3)
+   xre=(0*-17)/0
+
+::method "test_114"
+   self~expectSyntax(42.3)
+   xre=0*-(17/0)
+
+::method "test_115"
+   self~expectSyntax(42.3)
+   xre=0*(-17/0)
+
+::method "test_116"
+   self~assertSame((1*0)/17, '0')
+
+::method "test_117"
+   self~assertSame(1*(0/17), '0')
+
+::method "test_118"
+   self~expectSyntax(42.3)
+   xre=(1/0)*-17
+
+::method "test_119"
+   self~expectSyntax(42.3)
+   xre=1/(0*-17)
+
+::method "test_120"
+   self~assertSame((17*0)/-17, '0')
+
+::method "test_121"
+   self~assertSame(17*(0/-17), '0')
+
+::method "test_122"
+   self~assertSame((1*17)/1, '17')
+
+::method "test_123"
+   self~assertSame(1*(17/1), '17')
+
+::method "test_124"
+   numeric digits 9
+   self~assertSame((1/17)*-17, '-1.00000000')
+
+::method "test_125"
+   numeric digits 9
+   self~assertSame(1/(17*-17), '-0.00346020761')
+
+::method "test_126"
+   self~assertSame((1*-17)/17, '-1')
+
+::method "test_127"
+   self~assertSame(1*-(17/17), '-1')
+
+::method "test_128"
+   self~assertSame((17/1)*17, '289')
+
+::method "test_129"
+   self~assertSame(17/(1*17), '1')
+
+::method "test_130"
+   self~assertSame((-17*1)/17, '-1')
+
+::method "test_131"
+   numeric digits 9
+   self~assertSame(-17*(1/17), '-1.00000000')
+
+::method "test_132"
+   self~assertSame(0%17*0, '0')
+
+::method "test_133"
+   self~expectSyntax(42.3)
+   xre=0*17%0
+
+::method "test_134"
+   self~expectSyntax(42.3)
+   xre=0*-17%0
+
+::method "test_135"
+   self~assertSame(1*0%17, '0')
+
+::method "test_136"
+   self~expectSyntax(42.3)
+   xre=1%0*-17
+
+::method "test_137"
+   self~assertSame(17*0%-17, '0')
+
+::method "test_138"
+   self~assertSame(1*17%1, '17')
+
+::method "test_139"
+   self~assertSame(1%17*-17, '0')
+
+::method "test_140"
+   self~assertSame(1*-17%17, '-1')
+
+::method "test_141"
+   self~assertSame(17%1*17, '289')
+
+::method "test_142"
+   self~assertSame(-17*1%17, '-1')
+
+::method "test_143"
+   self~assertSame(0//17*0, '0')
+
+::method "test_144"
+   self~expectSyntax(42.3)
+   xre=0*17//0
+
+::method "test_145"
+   self~expectSyntax(42.3)
+   xre=0*-17//0
+
+::method "test_146"
+   self~assertSame(1*0//17, '0')
+
+::method "test_147"
+   self~expectSyntax(42.3)
+   xre=1//0*-17
+
+::method "test_148"
+   self~assertSame(17*0//-17, '0')
+
+::method "test_149"
+   self~assertSame(1*17//1, '0')
+
+::method "test_150"
+   self~assertSame(1//17*-17, '-17')
+
+::method "test_151"
+   self~assertSame(1*-17//17, '0')
+
+::method "test_152"
+   self~assertSame(17//1*17, '0')
+
+::method "test_153"
+   self~assertSame(-17*1//17, '0')
+
+::method "test_154"
+   self~expectSyntax(42.3)
+   xre=0/(17*0)
+
+::method "test_155"
+   self~assertSame(0/17*0, '0')
+
+::method "test_156"
+   self~assertSame(3/2*2, '3.0')
+
+::method "test_157"
+   self~assertSame((1/17)*-17, 1/17*-17)
+
+::method "test_158"
+   numeric digits 9
+   self~assertSame(1/(17*-17), '-0.00346020761')
+
+::method "test_159"
+   self~assertSame(1/17*-17, (1/17)*-17)
+
+::method "test_160"
+   self~assertSame((17/1)*17, 17/1*17)
+
+::method "test_161"
+   self~assertSame(17/(1*17), '1')
+
+::method "test_162"
+   self~assertSame(17/1*17, (17/1)*17)
+
+::method "test_163"
+   self~expectSyntax(42.3)
+   xre=0%(17*0)
+
+::method "test_164"
+   self~assertSame(0%17*0, (0%17)*0)
+
+::method "test_165"
+   self~assertSame((1%17)*-17, 1%17*-17)
+
+::method "test_166"
+   self~assertSame(1%(17*-17), '0')
+
+::method "test_167"
+   self~assertSame(1%17*-17, (1%17)*-17)
+
+::method "test_168"
+   self~assertSame((17%1)*17, 17%1*17)
+
+::method "test_169"
+   self~assertSame(17%(1*17), '1')
+
+::method "test_170"
+   self~assertSame(17%1*17, (17%1)*17)
+
+::method "test_171"
+   self~expectSyntax(42.3)
+   xre=0//(17*0)
+
+::method "test_172"
+   self~assertSame(0//17*0, (0//17)*0)
+
+::method "test_173"
+   self~assertSame((1//17)*-17, 1//17*-17)
+
+::method "test_174"
+   self~assertSame(1//(17*-17), 1)
+
+::method "test_175"
+   self~assertSame(1//17*-17, (1//17)*-17)
+
+::method "test_176"
+   self~assertSame((17//1)*17, 17//1*17)
+
+::method "test_177"
+   self~assertSame(17//(1*17), 0)
+
+::method "test_178"
+   self~assertSame(17//1*17, (17//1)*17)
+
+::method "test_179"
+   self~expectSyntax(42.3)
+   xre=0*(17//0)
+
+::method "test_180"
+   self~expectSyntax(42.3)
+   xre=0*17//0
+
+::method "test_181"
+   self~assertSame((1*17)//-17, 1*17//-17)
+
+::method "test_182"
+   self~assertSame(1*(17//-17), 0)
+
+::method "test_183"
+   self~assertSame(1*17//-17, (1*17)//-17)
+
+::method "test_184"
+   self~assertSame((17*1)//17, 17*1//17)
+
+::method "test_185"
+   self~assertSame(17*(1//17), 17)
+
+::method "test_186"
+   self~assertSame(17*1//17, (17*1)//17)
+
+::method "test_187"
+   self~assertSame(1%(17/-17), '-1')
+
+::method "test_188"
+   self~assertSame(1%17/-17, '0')
+
+::method "test_189"
+   self~assertSame((17%1)/17, 17%1/17)
+
+::method "test_190"
+   numeric digits 9
+   self~assertSame(17%(1/17), '289')
+
+::method "test_191"
+   self~assertSame(12%(3/4), '16')
+
+::method "test_192"
+   self~assertSame(17%1/17, (17%1)/17)
+
+::method "test_193"
+   self~assertSame((1/17)%-17, 1/17%-17)
+
+::method "test_194"
+   self~assertSame(1/(17%-17), '-1')
+
+::method "test_195"
+   self~assertSame(1/17%-17, (1/17)%-17)
+
+::method "test_196"
+   self~assertSame((17/1)%17, 17/1%17)
+
+::method "test_197"
+   self~assertSame(17/1%17, (17/1)%17)
+
+::method "test_198"
+   self~assertSame(-3, '-3')
+
+::method "test_199"
+   self~assertSame(- - - -3, '3')
+
+::method "test_200"
+   self~assertSame(+4, '4')
+
+::method "test_201"
+   self~assertSame(++++4.12, '4.12')
+
+::method "test_202"
+   self~assertSame(-0000003, '-3')
+
+::method "test_203"
+   self~assertSame(+000045.12e36, '4.512E+37')
+
+::method "test_204"
+   self~assertSame(-000002.3e00000000000000000000001, -23)
+
+::method "test_205"
+   self~assertSame(\1, '0')
+
+::method "test_206"
+   self~expectSyntax(34.901)
+   xre=\-1
+
+::method "test_207"
+   self~assertSame(\0, '1')
+
+::method "test_208"
+   self~assertSame(\+0000, '1')
+
+::method "test_209"
+   self~expectSyntax(34.901)
+   xre=\00
+
+::method "test_211"
+   self~assertSame('00'**00, '1')
+
+::method "test_212"
+   self~assertSame('01'**00, '1')
+
+::method "test_213"
+   self~assertSame('0'**00, '1')
+
+::method "test_214"
+   self~assertSame('1'**00, '1')
+
+::method "test_215"
+   self~assertSame('00'**01, '0')
+
+::method "test_216"
+   self~assertSame('01'**01, '1')
+
+::method "test_217"
+   self~assertSame('0'**01, '0')
+
+::method "test_218"
+   self~assertSame('1'**01, '1')
+
+::method "test_219"
+   self~assertSame('00'**0, '1')
+
+::method "test_220"
+   self~assertSame('01'**0, '1')
+
+::method "test_221"
+   self~assertSame('0'**0, '1')
+
+::method "test_222"
+   self~assertSame('1'**0, '1')
+
+::method "test_223"
+   self~assertSame('00'**1, '0')
+
+::method "test_224"
+   self~assertSame('01'**1, '1')
+
+::method "test_225"
+   self~assertSame('0'**1, '0')
+
+::method "test_226"
+   self~assertSame('1'**1, '1')
+
+::method "test_227"
+   self~assertSame('00'*00, '0')
+
+::method "test_228"
+   self~assertSame('01'*00, '0')
+
+::method "test_229"
+   self~assertSame('0'*00, '0')
+
+::method "test_230"
+   self~assertSame('1'*00, '0')
+
+::method "test_231"
+   self~assertSame('00'*01, '0')
+
+::method "test_232"
+   self~assertSame('01'*01, '1')
+
+::method "test_233"
+   self~assertSame('0'*01, '0')
+
+::method "test_234"
+   self~assertSame('1'*01, '1')
+
+::method "test_235"
+   self~assertSame('00'*0, '0')
+
+::method "test_236"
+   self~assertSame('01'*0, '0')
+
+::method "test_237"
+   self~assertSame('0'*0, '0')
+
+::method "test_238"
+   self~assertSame('1'*0, '0')
+
+::method "test_239"
+   self~assertSame('00'*1, '0')
+
+::method "test_240"
+   self~assertSame('01'*1, '1')
+
+::method "test_241"
+   self~assertSame('0'*1, '0')
+
+::method "test_242"
+   self~assertSame('1'*1, '1')
+
+::method "test_243"
+   self~expectSyntax(42.3)
+   xre='00'/00
+
+::method "test_244"
+   self~expectSyntax(42.3)
+   xre='01'/00
+
+::method "test_245"
+   self~expectSyntax(42.3)
+   xre='0'/00
+
+::method "test_246"
+   self~expectSyntax(42.3)
+   xre='1'/00
+
+::method "test_247"
+   self~assertSame('00'/01, '0')
+
+::method "test_248"
+   self~assertSame('01'/01, '1')
+
+::method "test_249"
+   self~assertSame('0'/01, '0')
+
+::method "test_250"
+   self~assertSame('1'/01, '1')
+
+::method "test_251"
+   self~expectSyntax(42.3)
+   xre='00'/0
+
+::method "test_252"
+   self~expectSyntax(42.3)
+   xre='01'/0
+
+::method "test_253"
+   self~expectSyntax(42.3)
+   xre='0'/0
+
+::method "test_254"
+   self~expectSyntax(42.3)
+   xre='1'/0
+
+::method "test_255"
+   self~assertSame('00'/1, '0')
+
+::method "test_256"
+   self~assertSame('01'/1, '1')
+
+::method "test_257"
+   self~assertSame('0'/1, '0')
+
+::method "test_258"
+   self~assertSame('1'/1, '1')
+
+::method "test_259"
+   self~expectSyntax(42.3)
+   xre='00'%00
+
+::method "test_260"
+   self~expectSyntax(42.3)
+   xre='01'%00
+
+::method "test_261"
+   self~expectSyntax(42.3)
+   xre='0'%00
+
+::method "test_262"
+   self~expectSyntax(42.3)
+   xre='1'%00
+
+::method "test_263"
+   self~assertSame('00'%01, '0')
+
+::method "test_264"
+   self~assertSame('01'%01, '1')
+
+::method "test_265"
+   self~assertSame('0'%01, '0')
+
+::method "test_266"
+   self~assertSame('1'%01, '1')
+
+::method "test_267"
+   self~expectSyntax(42.3)
+   xre='00'%0
+
+::method "test_268"
+   self~expectSyntax(42.3)
+   xre='01'%0
+
+::method "test_269"
+   self~expectSyntax(42.3)
+   xre='0'%0
+
+::method "test_270"
+   self~expectSyntax(42.3)
+   xre='1'%0
+
+::method "test_271"
+   self~assertSame('00'%1, '0')
+
+::method "test_272"
+   self~assertSame('01'%1, '1')
+
+::method "test_273"
+   self~assertSame('0'%1, '0')
+
+::method "test_274"
+   self~assertSame('1'%1, '1')
+
+::method "test_275"
+   self~expectSyntax(42.3)
+   xre='00'//00
+
+::method "test_276"
+   self~expectSyntax(42.3)
+   xre='01'//00
+
+::method "test_277"
+   self~expectSyntax(42.3)
+   xre='0'//00
+
+::method "test_278"
+   self~expectSyntax(42.3)
+   xre='1'//00
+
+::method "test_279"
+   self~assertSame('00'//01, '0')
+
+::method "test_280"
+   self~assertSame('01'//01, '0')
+
+::method "test_281"
+   self~assertSame('0'//01, '0')
+
+::method "test_282"
+   self~assertSame('1'//01, '0')
+
+::method "test_283"
+   self~expectSyntax(42.3)
+   xre='00'//0
+
+::method "test_284"
+   self~expectSyntax(42.3)
+   xre='01'//0
+
+::method "test_285"
+   self~expectSyntax(42.3)
+   xre='0'//0
+
+::method "test_286"
+   self~expectSyntax(42.3)
+   xre='1'//0
+
+::method "test_287"
+   self~assertSame('00'//1, '0')
+
+::method "test_288"
+   self~assertSame('01'//1, '0')
+
+::method "test_289"
+   self~assertSame('0'//1, '0')
+
+::method "test_290"
+   self~assertSame('1'//1, '0')
+
+::method "test_291"
+   self~assertSame('00'-00, '0')
+
+::method "test_292"
+   self~assertSame('01'-00, '1')
+
+::method "test_293"
+   self~assertSame('0'-00, '0')
+
+::method "test_294"
+   self~assertSame('1'-00, '1')
+
+::method "test_295"
+   self~assertSame('00'-01, '-1')
+
+::method "test_296"
+   self~assertSame('01'-01, '0')
+
+::method "test_297"
+   self~assertSame('0'-01, '-1')
+
+::method "test_298"
+   self~assertSame('1'-01, '0')
+
+::method "test_299"
+   self~assertSame('00'-0, '0')
+
+::method "test_300"
+   self~assertSame('01'-0, '1')
+
+::method "test_301"
+   self~assertSame('0'-0, '0')
+
+::method "test_302"
+   self~assertSame('1'-0, '1')
+
+::method "test_303"
+   self~assertSame('00'-1, '-1')
+
+::method "test_304"
+   self~assertSame('01'-1, '0')
+
+::method "test_305"
+   self~assertSame('0'-1, '-1')
+
+::method "test_306"
+   self~assertSame('1'-1, '0')
+
+::method "test_307"
+   self~assertSame('00'+00, '0')
+
+::method "test_308"
+   self~assertSame('01'+00, '1')
+
+::method "test_309"
+   self~assertSame('0'+00, '0')
+
+::method "test_310"
+   self~assertSame('1'+00, '1')
+
+::method "test_311"
+   self~assertSame('00'+01, '1')
+
+::method "test_312"
+   self~assertSame('01'+01, '2')
+
+::method "test_313"
+   self~assertSame('0'+01, '1')
+
+::method "test_314"
+   self~assertSame('1'+01, '2')
+
+::method "test_315"
+   self~assertSame('00'+0, '0')
+
+::method "test_316"
+   self~assertSame('01'+0, '1')
+
+::method "test_317"
+   self~assertSame('0'+0, '0')
+
+::method "test_318"
+   self~assertSame('1'+0, '1')
+
+::method "test_319"
+   self~assertSame('00'+1, '1')
+
+::method "test_320"
+   self~assertSame('01'+1, '2')
+
+::method "test_321"
+   self~assertSame('0'+1, '1')
+
+::method "test_322"
+   self~assertSame('1'+1, '2')
+
+::method "test_323"
+   self~assertSame('00' 00, '00 00')
+
+::method "test_324"
+   self~assertSame('01' 00, '01 00')
+
+::method "test_325"
+   self~assertSame('0' 00, '0 00')
+
+::method "test_326"
+   self~assertSame('1' 00, '1 00')
+
+::method "test_327"
+   self~assertSame('00' 01, '00 01')
+
+::method "test_328"
+   self~assertSame('01' 01, '01 01')
+
+::method "test_329"
+   self~assertSame('0' 01, '0 01')
+
+::method "test_330"
+   self~assertSame('1' 01, '1 01')
+
+::method "test_331"
+   self~assertSame('00' 0, '00 0')
+
+::method "test_332"
+   self~assertSame('01' 0, '01 0')
+
+::method "test_333"
+   self~assertSame('0' 0, '0 0')
+
+::method "test_334"
+   self~assertSame('1' 0, '1 0')
+
+::method "test_335"
+   self~assertSame('00' 1, '00 1')
+
+::method "test_336"
+   self~assertSame('01' 1, '01 1')
+
+::method "test_337"
+   self~assertSame('0' 1, '0 1')
+
+::method "test_338"
+   self~assertSame('1' 1, '1 1')
+
+::method "test_339"
+   self~assertSame('00'||00, '0000')
+
+::method "test_340"
+   self~assertSame('01'||00, '0100')
+
+::method "test_341"
+   self~assertSame('0'||00, '000')
+
+::method "test_342"
+   self~assertSame('1'||00, '100')
+
+::method "test_343"
+   self~assertSame('00'||01, '0001')
+
+::method "test_344"
+   self~assertSame('01'||01, '0101')
+
+::method "test_345"
+   self~assertSame('0'||01, '001')
+
+::method "test_346"
+   self~assertSame('1'||01, '101')
+
+::method "test_347"
+   self~assertSame('00'||0, '000')
+
+::method "test_348"
+   self~assertSame('01'||0, '010')
+
+::method "test_349"
+   self~assertSame('0'||0, '00')
+
+::method "test_350"
+   self~assertSame('1'||0, '10')
+
+::method "test_351"
+   self~assertSame('00'||1, '001')
+
+::method "test_352"
+   self~assertSame('01'||1, '011')
+
+::method "test_353"
+   self~assertSame('0'||1, '01')
+
+::method "test_354"
+   self~assertSame('1'||1, '11')
+
+::method "test_355"
+   self~assertSame('00'00, '0000')
+
+::method "test_356"
+   self~assertSame('01'00, '0100')
+
+::method "test_357"
+   self~assertSame('0'00, '000')
+
+::method "test_358"
+   self~assertSame('1'00, '100')
+
+::method "test_359"
+   self~assertSame('00'01, '0001')
+
+::method "test_360"
+   self~assertSame('01'01, '0101')
+
+::method "test_361"
+   self~assertSame('0'01, '001')
+
+::method "test_362"
+   self~assertSame('1'01, '101')
+
+::method "test_363"
+   self~assertSame('00'0, '000')
+
+::method "test_364"
+   self~assertSame('01'0, '010')
+
+::method "test_365"
+   self~assertSame('0'0, '00')
+
+::method "test_366"
+   self~assertSame('1'0, '10')
+
+::method "test_367"
+   self~assertSame('00'1, '001')
+
+::method "test_368"
+   self~assertSame('01'1, '011')
+
+::method "test_369"
+   self~assertSame('0'1, '01')
+
+::method "test_370"
+   self~assertSame('1'1, '11')
+
+::method "test_371"
+   self~assertSame('00'=00, '1')
+
+::method "test_372"
+   self~assertSame('01'=00, '0')
+
+::method "test_373"
+   self~assertSame('0'=00, '1')
+
+::method "test_374"
+   self~assertSame('1'=00, '0')
+
+::method "test_375"
+   self~assertSame('00'=01, '0')
+
+::method "test_376"
+   self~assertSame('01'=01, '1')
+
+::method "test_377"
+   self~assertSame('0'=01, '0')
+
+::method "test_378"
+   self~assertSame('1'=01, '1')
+
+::method "test_379"
+   self~assertSame('00'=0, '1')
+
+::method "test_380"
+   self~assertSame('01'=0, '0')
+
+::method "test_381"
+   self~assertSame('0'=0, '1')
+
+::method "test_382"
+   self~assertSame('1'=0, '0')
+
+::method "test_383"
+   self~assertSame('00'=1, '0')
+
+::method "test_384"
+   self~assertSame('01'=1, '1')
+
+::method "test_385"
+   self~assertSame('0'=1, '0')
+
+::method "test_386"
+   self~assertSame('1'=1, '1')
+
+::method "test_387"
+   self~assertSame('00'>00, '0')
+
+::method "test_388"
+   self~assertSame('01'>00, '1')
+
+::method "test_389"
+   self~assertSame('0'>00, '0')
+
+::method "test_390"
+   self~assertSame('1'>00, '1')
+
+::method "test_391"
+   self~assertSame('00'>01, '0')
+
+::method "test_392"
+   self~assertSame('01'>01, '0')
+
+::method "test_393"
+   self~assertSame('0'>01, '0')
+
+::method "test_394"
+   self~assertSame('1'>01, '0')
+
+::method "test_395"
+   self~assertSame('00'>0, '0')
+
+::method "test_396"
+   self~assertSame('01'>0, '1')
+
+::method "test_397"
+   self~assertSame('0'>0, '0')
+
+::method "test_398"
+   self~assertSame('1'>0, '1')
+
+::method "test_399"
+   self~assertSame('00'>1, '0')
+
+::method "test_400"
+   self~assertSame('01'>1, '0')
+
+::method "test_401"
+   self~assertSame('0'>1, '0')
+
+::method "test_402"
+   self~assertSame('1'>1, '0')
+
+::method "test_403"
+   self~assertSame('00'<00, '0')
+
+::method "test_404"
+   self~assertSame('01'<00, '0')
+
+::method "test_405"
+   self~assertSame('0'<00, '0')
+
+::method "test_406"
+   self~assertSame('1'<00, '0')
+
+::method "test_407"
+   self~assertSame('00'<01, '1')
+
+::method "test_408"
+   self~assertSame('01'<01, '0')
+
+::method "test_409"
+   self~assertSame('0'<01, '1')
+
+::method "test_410"
+   self~assertSame('1'<01, '0')
+
+::method "test_411"
+   self~assertSame('00'<0, '0')
+
+::method "test_412"
+   self~assertSame('01'<0, '0')
+
+::method "test_413"
+   self~assertSame('0'<0, '0')
+
+::method "test_414"
+   self~assertSame('1'<0, '0')
+
+::method "test_415"
+   self~assertSame('00'<1, '1')
+
+::method "test_416"
+   self~assertSame('01'<1, '0')
+
+::method "test_417"
+   self~assertSame('0'<1, '1')
+
+::method "test_418"
+   self~assertSame('1'<1, '0')
+
+::method "test_419"
+   self~assertSame('00'==00, '1')
+
+::method "test_420"
+   self~assertSame('01'==00, '0')
+
+::method "test_421"
+   self~assertSame('0'==00, '0')
+
+::method "test_422"
+   self~assertSame('1'==00, '0')
+
+::method "test_423"
+   self~assertSame('00'==01, '0')
+
+::method "test_424"
+   self~assertSame('01'==01, '1')
+
+::method "test_425"
+   self~assertSame('0'==01, '0')
+
+::method "test_426"
+   self~assertSame('1'==01, '0')
+
+::method "test_427"
+   self~assertSame('00'==0, '0')
+
+::method "test_428"
+   self~assertSame('01'==0, '0')
+
+::method "test_429"
+   self~assertSame('0'==0, '1')
+
+::method "test_430"
+   self~assertSame('1'==0, '0')
+
+::method "test_431"
+   self~assertSame('00'==1, '0')
+
+::method "test_432"
+   self~assertSame('01'==1, '0')
+
+::method "test_433"
+   self~assertSame('0'==1, '0')
+
+::method "test_434"
+   self~assertSame('1'==1, '1')
+
+::method "test_435"
+   self~assertSame('00'>>00, '0')
+
+::method "test_436"
+   self~assertSame('01'>>00, '1')
+
+::method "test_437"
+   self~assertSame('0'>>00, '0')
+
+::method "test_438"
+   self~assertSame('1'>>00, '1')
+
+::method "test_439"
+   self~assertSame('00'>>01, '0')
+
+::method "test_440"
+   self~assertSame('01'>>01, '0')
+
+::method "test_441"
+   self~assertSame('0'>>01, '0')
+
+::method "test_442"
+   self~assertSame('1'>>01, '1')
+
+::method "test_443"
+   self~assertSame('00'>>0, '1')
+
+::method "test_444"
+   self~assertSame('01'>>0, '1')
+
+::method "test_445"
+   self~assertSame('0'>>0, '0')
+
+::method "test_446"
+   self~assertSame('1'>>0, '1')
+
+::method "test_447"
+   self~assertSame('00'>>1, '0')
+
+::method "test_448"
+   self~assertSame('01'>>1, '0')
+
+::method "test_449"
+   self~assertSame('0'>>1, '0')
+
+::method "test_450"
+   self~assertSame('1'>>1, '0')
+
+::method "test_451"
+   self~assertSame('00'<<00, '0')
+
+::method "test_452"
+   self~assertSame('01'<<00, '0')
+
+::method "test_453"
+   self~assertSame('0'<<00, '1')
+
+::method "test_454"
+   self~assertSame('1'<<00, '0')
+
+::method "test_455"
+   self~assertSame('00'<<01, '1')
+
+::method "test_456"
+   self~assertSame('01'<<01, '0')
+
+::method "test_457"
+   self~assertSame('0'<<01, '1')
+
+::method "test_458"
+   self~assertSame('1'<<01, '0')
+
+::method "test_459"
+   self~assertSame('00'<<0, '0')
+
+::method "test_460"
+   self~assertSame('01'<<0, '0')
+
+::method "test_461"
+   self~assertSame('0'<<0, '0')
+
+::method "test_462"
+   self~assertSame('1'<<0, '0')
+
+::method "test_463"
+   self~assertSame('00'<<1, '1')
+
+::method "test_464"
+   self~assertSame('01'<<1, '1')
+
+::method "test_465"
+   self~assertSame('0'<<1, '1')
+
+::method "test_466"
+   self~assertSame('1'<<1, '0')
+
+::method "test_467"
+   self~assertSame('00'>=00, '1')
+
+::method "test_468"
+   self~assertSame('01'>=00, '1')
+
+::method "test_469"
+   self~assertSame('0'>=00, '1')
+
+::method "test_470"
+   self~assertSame('1'>=00, '1')
+
+::method "test_471"
+   self~assertSame('00'>=01, '0')
+
+::method "test_472"
+   self~assertSame('01'>=01, '1')
+
+::method "test_473"
+   self~assertSame('0'>=01, '0')
+
+::method "test_474"
+   self~assertSame('1'>=01, '1')
+
+::method "test_475"
+   self~assertSame('00'>=0, '1')
+
+::method "test_476"
+   self~assertSame('01'>=0, '1')
+
+::method "test_477"
+   self~assertSame('0'>=0, '1')
+
+::method "test_478"
+   self~assertSame('1'>=0, '1')
+
+::method "test_479"
+   self~assertSame('00'>=1, '0')
+
+::method "test_480"
+   self~assertSame('01'>=1, '1')
+
+::method "test_481"
+   self~assertSame('0'>=1, '0')
+
+::method "test_482"
+   self~assertSame('1'>=1, '1')
+
+::method "test_483"
+   self~assertSame('00'>>=00, '1')
+
+::method "test_484"
+   self~assertSame('01'>>=00, '1')
+
+::method "test_485"
+   self~assertSame('0'>>=00, '0')
+
+::method "test_486"
+   self~assertSame('1'>>=00, '1')
+
+::method "test_487"
+   self~assertSame('00'>>=01, '0')
+
+::method "test_488"
+   self~assertSame('01'>>=01, '1')
+
+::method "test_489"
+   self~assertSame('0'>>=01, '0')
+
+::method "test_490"
+   self~assertSame('1'>>=01, '1')
+
+::method "test_491"
+   self~assertSame('00'>>=0, '1')
+
+::method "test_492"
+   self~assertSame('01'>>=0, '1')
+
+::method "test_494"
+   self~assertSame('0'>>=0, '1')
+
+::method "test_495"
+   self~assertSame('1'>>=0, '1')
+
+::method "test_496"
+   self~assertSame('00'>>=1, '0')
+
+::method "test_497"
+   self~assertSame('01'>>=1, '0')
+
+::method "test_498"
+   self~assertSame('0'>>=1, '0')
+
+::method "test_499"
+   self~assertSame('1'>>=1, '1')
+
+::method "test_500"
+   self~assertSame('00'<=00, '1')
+
+::method "test_501"
+   self~assertSame('01'<=00, '0')
+
+::method "test_502"
+   self~assertSame('0'<=00, '1')
+
+::method "test_503"
+   self~assertSame('1'<=00, '0')
+
+::method "test_504"
+   self~assertSame('00'<=01, '1')
+
+::method "test_505"
+   self~assertSame('01'<=01, '1')
+
+::method "test_506"
+   self~assertSame('0'<=01, '1')
+
+::method "test_507"
+   self~assertSame('1'<=01, '1')
+
+::method "test_508"
+   self~assertSame('00'<=0, '1')
+
+::method "test_509"
+   self~assertSame('01'<=0, '0')
+
+::method "test_510"
+   self~assertSame('0'<=0, '1')
+
+::method "test_511"
+   self~assertSame('1'<=0, '0')
+
+::method "test_512"
+   self~assertSame('00'<=1, '1')
+
+::method "test_513"
+   self~assertSame('01'<=1, '1')
+
+::method "test_514"
+   self~assertSame('0'<=1, '1')
+
+::method "test_515"
+   self~assertSame('1'<=1, '1')
+
+::method "test_516"
+   self~assertSame('00'<<=00, '1')
+
+::method "test_517"
+   self~assertSame('01'<<=00, '0')
+
+::method "test_518"
+   self~assertSame('0'<<=00, '1')
+
+::method "test_519"
+   self~assertSame('1'<<=00, '0')
+
+::method "test_520"
+   self~assertSame('00'<<=01, '1')
+
+::method "test_521"
+   self~assertSame('01'<<=01, '1')
+
+::method "test_522"
+   self~assertSame('0'<<=01, '1')
+
+::method "test_523"
+   self~assertSame('1'<<=01, '0')
+
+::method "test_524"
+   self~assertSame('00'<<=0, '0')
+
+::method "test_525"
+   self~assertSame('01'<<=0, '0')
+
+::method "test_526"
+   self~assertSame('0'<<=0, '1')
+
+::method "test_527"
+   self~assertSame('1'<<=0, '0')
+
+::method "test_528"
+   self~assertSame('00'<<=1, '1')
+
+::method "test_529"
+   self~assertSame('01'<<=1, '1')
+
+::method "test_530"
+   self~assertSame('0'<<=1, '1')
+
+::method "test_531"
+   self~assertSame('1'<<=1, '1')
+
+::method "test_532"
+   self~assertSame('00'<>00, '0')
+
+::method "test_533"
+   self~assertSame('01'<>00, '1')
+
+::method "test_534"
+   self~assertSame('0'<>00, '0')
+
+::method "test_535"
+   self~assertSame('1'<>00, '1')
+
+::method "test_536"
+   self~assertSame('00'<>01, '1')
+
+::method "test_537"
+   self~assertSame('01'<>01, '0')
+
+::method "test_538"
+   self~assertSame('0'<>01, '1')
+
+::method "test_539"
+   self~assertSame('1'<>01, '0')
+
+::method "test_540"
+   self~assertSame('00'<>0, '0')
+
+::method "test_541"
+   self~assertSame('01'<>0, '1')
+
+::method "test_542"
+   self~assertSame('0'<>0, '0')
+
+::method "test_543"
+   self~assertSame('1'<>0, '1')
+
+::method "test_544"
+   self~assertSame('00'<>1, '1')
+
+::method "test_545"
+   self~assertSame('01'<>1, '0')
+
+::method "test_546"
+   self~assertSame('0'<>1, '1')
+
+::method "test_547"
+   self~assertSame('1'<>1, '0')
+
+::method "test_548"
+   self~assertSame('00'><00, '0')
+
+::method "test_549"
+   self~assertSame('01'><00, '1')
+
+::method "test_550"
+   self~assertSame('0'><00, '0')
+
+::method "test_551"
+   self~assertSame('1'><00, '1')
+
+::method "test_552"
+   self~assertSame('00'><01, '1')
+
+::method "test_553"
+   self~assertSame('01'><01, '0')
+
+::method "test_554"
+   self~assertSame('0'><01, '1')
+
+::method "test_555"
+   self~assertSame('1'><01, '0')
+
+::method "test_556"
+   self~assertSame('00'><0, '0')
+
+::method "test_557"
+   self~assertSame('01'><0, '1')
+
+::method "test_558"
+   self~assertSame('0'><0, '0')
+
+::method "test_559"
+   self~assertSame('1'><0, '1')
+
+::method "test_560"
+   self~assertSame('00'><1, '1')
+
+::method "test_561"
+   self~assertSame('01'><1, '0')
+
+::method "test_562"
+   self~assertSame('0'><1, '1')
+
+::method "test_563"
+   self~assertSame('1'><1, '0')
+
+::method "test_564"
+   self~expectSyntax(34.901)
+   xre='00'&00
+
+::method "test_565"
+   self~expectSyntax(34.901)
+   xre='01'&00
+
+::method "test_566"
+   self~expectSyntax(34.901)
+   xre='0'&00
+
+::method "test_567"
+   self~expectSyntax(34.901)
+   xre='1'&00
+
+::method "test_568"
+   self~expectSyntax(34.901)
+   xre='00'&01
+
+::method "test_569"
+   self~expectSyntax(34.901)
+   xre='01'&01
+
+::method "test_570"
+   self~expectSyntax(34.901)
+   xre='0'&01
+
+::method "test_571"
+   self~expectSyntax(34.901)
+   xre='1'&01
+
+::method "test_572"
+   self~expectSyntax(34.901)
+   xre='00'&0
+
+::method "test_573"
+   self~expectSyntax(34.901)
+   xre='01'&0
+
+::method "test_574"
+   self~assertSame('0'&0, '0')
+
+::method "test_575"
+   self~assertSame('1'&0, '0')
+
+::method "test_576"
+   self~expectSyntax(34.901)
+   xre='00'&1
+
+::method "test_577"
+   self~expectSyntax(34.901)
+   xre='01'&1
+
+::method "test_578"
+   self~assertSame('0'&1, '0')
+
+::method "test_579"
+   self~assertSame('1'&1, '1')
+
+::method "test_580"
+   self~expectSyntax(34.901)
+   xre='00'|00
+
+::method "test_581"
+   self~expectSyntax(34.901)
+   xre='01'|00
+
+::method "test_582"
+   self~expectSyntax(34.901)
+   xre='0'|00
+
+::method "test_583"
+   self~expectSyntax(34.901)
+   xre='1'|00
+
+::method "test_584"
+   self~expectSyntax(34.901)
+   xre='00'|01
+
+::method "test_585"
+   self~expectSyntax(34.901)
+   xre='01'|01
+
+::method "test_586"
+   self~expectSyntax(34.901)
+   xre='0'|01
+
+::method "test_587"
+   self~expectSyntax(34.901)
+   xre='1'|01
+
+::method "test_588"
+   self~expectSyntax(34.901)
+   xre='00'|0
+
+::method "test_589"
+   self~expectSyntax(34.901)
+   xre='01'|0
+
+::method "test_590"
+   self~assertSame('0'|0, '0')
+
+::method "test_591"
+   self~assertSame('1'|0, '1')
+
+::method "test_592"
+   self~expectSyntax(34.901)
+   xre='00'|1
+
+::method "test_593"
+   self~expectSyntax(34.901)
+   xre='01'|1
+
+::method "test_594"
+   self~assertSame('0'|1, '1')
+
+::method "test_595"
+   self~assertSame('1'|1, '1')
+
+::method "test_596"
+   self~expectSyntax(34.901)
+   xre='00'&&00
+
+::method "test_597"
+   self~expectSyntax(34.901)
+   xre='01'&&00
+
+::method "test_598"
+   self~expectSyntax(34.901)
+   xre='0'&&00
+
+::method "test_599"
+   self~expectSyntax(34.901)
+   xre='1'&&00
+
+::method "test_600"
+   self~expectSyntax(34.901)
+   xre='00'&&01
+
+::method "test_601"
+   self~expectSyntax(34.901)
+   xre='01'&&01
+
+::method "test_602"
+   self~expectSyntax(34.901)
+   xre='0'&&01
+
+::method "test_603"
+   self~expectSyntax(34.901)
+   xre='1'&&01
+
+::method "test_604"
+   self~expectSyntax(34.901)
+   xre='00'&&0
+
+::method "test_605"
+   self~expectSyntax(34.901)
+   xre='01'&&0
+
+::method "test_606"
+   self~assertSame('0'&&0, '0')
+
+::method "test_607"
+   self~assertSame('1'&&0, '1')
+
+::method "test_608"
+   self~expectSyntax(34.901)
+   xre='00'&&1
+
+::method "test_609"
+   self~expectSyntax(34.901)
+   xre='01'&&1
+
+::method "test_610"
+   self~assertSame('0'&&1, '1')
+
+::method "test_611"
+   self~assertSame('1'&&1, '0')
+
+::method "test_613"
+   self~assertSame(4 "2" 3, '4 2 3')
+
+::method "test_614"
+   self~assertSame(4 "2"||3, '4 23')
+
+::method "test_615"
+   self~assertSame(4 "2"3, '4 23')
+
+::method "test_616"
+   blank=" "
+   self~assertSame(blank "2"+122, '  124')
+
+::method "test_617"
+   blank=" "
+   self~assertSame(blank "2"-3, '  -1')
+
+::method "test_618"
+   blank=" "
+   self~assertSame(blank "2"*3, '  6')
+
+::method "test_619"
+   blank=" "
+   numeric digits 9
+   self~assertSame(blank "2"/3, '  0.666666667')
+
+::method "test_620"
+   blank=" "
+   self~assertSame(blank "2"%3, '  0')
+
+::method "test_621"
+   blank=" "
+   self~assertSame(blank "2"//3, '  2')
+
+::method "test_622"
+   blank=" "
+   self~assertSame(blank "2"**3, '  8')
+
+::method "test_623"
+   self~assertSame(4 "2"=3, '0')
+
+::method "test_624"
+   self~assertSame(4 "2"<3, '0')
+
+::method "test_625"
+   self~assertSame(4 "2">3, '1')
+
+::method "test_626"
+   self~assertSame(4 "2"\=3, '1')
+
+::method "test_627"
+   self~assertSame(4 "2"==3, '0')
+
+::method "test_628"
+   self~assertSame(4 "2"<<3, '0')
+
+::method "test_629"
+   self~assertSame(4 "2">>3, '1')
+
+::method "test_630"
+   self~assertSame(4 "2"\==3, '1')
+
+::method "test_631"
+   self~assertSame(4 "2"\<3, '1')
+
+::method "test_632"
+   self~assertSame(4 "2"\<<3, '1')
+
+::method "test_633"
+   self~assertSame(4 "2"\>3, '0')
+
+::method "test_634"
+   self~assertSame(4 "2"\>>3, '0')
+
+::method "test_635"
+   self~expectSyntax(34.901)
+   blank=" "
+   xre=blank 1&1
+
+::method "test_636"
+   self~expectSyntax(34.901)
+   blank=" "
+   xre=blank 1|1
+
+::method "test_637"
+   self~expectSyntax(34.901)
+   blank=" "
+   xre=blank 1&&1
+
+::method "test_639"
+   self~assertSame(4||"2" 3, '42 3')
+
+::method "test_640"
+   self~assertSame(4||"2"||3, '423')
+
+::method "test_641"
+   self~assertSame(4||"2"3, '423')
+
+::method "test_642"
+   self~assertSame(4||"2"+122, '4124')
+
+::method "test_643"
+   self~assertSame(4||"2"-3, '4-1')
+
+::method "test_644"
+   self~assertSame(4||"2"*3, '46')
+
+::method "test_645"
+   numeric digits 9
+   self~assertSame(4||"2"/3, '40.666666667')
+
+::method "test_646"
+   self~assertSame(4||"2"%3, '40')
+
+::method "test_647"
+   self~assertSame(4||"2"//3, '42')
+
+::method "test_648"
+   self~assertSame(4||"2"**3, '48')
+
+::method "test_649"
+   self~assertSame(4||"2"=3, '0')
+
+::method "test_650"
+   self~assertSame(4||"2"<3, '0')
+
+::method "test_651"
+   self~assertSame(4||"2">3, '1')
+
+::method "test_652"
+   self~assertSame(4||"2"\=3, '1')
+
+::method "test_653"
+   self~assertSame(4||"2"==3, '0')
+
+::method "test_654"
+   self~assertSame(4||"2"<<3, '0')
+
+::method "test_655"
+   self~assertSame(4||"2">>3, '1')
+
+::method "test_656"
+   self~assertSame(4||"2"\==3, '1')
+
+::method "test_657"
+   self~assertSame(4||"2"\<3, '1')
+
+::method "test_658"
+   self~assertSame(4||"2"\<<3, '1')
+
+::method "test_659"
+   self~assertSame(4||"2"\>3, '0')
+
+::method "test_660"
+   self~assertSame(4||"2"\>>3, '0')
+
+::method "test_661"
+   self~expectSyntax(34.901)
+   blank=" "
+   xre=blank||1&1
+
+::method "test_662"
+   self~expectSyntax(34.901)
+   blank=" "
+   xre=blank||1|1
+
+::method "test_663"
+   self~expectSyntax(34.901)
+   blank=" "
+   xre=blank||1&&1
+
+::method "test_664"
+   self~assertSame(4"2" 3, '42 3')
+
+::method "test_665"
+   self~assertSame(4"2"||3, '423')
+
+::method "test_666"
+   self~assertSame(4"2"3, '423')
+
+::method "test_667"
+   self~assertSame(4"2"+122, '4124')
+
+::method "test_668"
+   self~assertSame(4"2"-3, '4-1')
+
+::method "test_669"
+   self~assertSame(4"2"*3, '46')
+
+::method "test_670"
+   numeric digits 9
+   self~assertSame(4"2"/3, '40.666666667')
+
+::method "test_671"
+   self~assertSame(4"2"%3, '40')
+
+::method "test_672"
+   self~assertSame(4"2"//3, '42')
+
+::method "test_673"
+   self~assertSame(4"2"**3, '48')
+
+::method "test_674"
+   self~assertSame(4"2"=3, '0')
+
+::method "test_675"
+   self~assertSame(4"2"<3, '0')
+
+::method "test_676"
+   self~assertSame(4"2">3, '1')
+
+::method "test_677"
+   self~assertSame(4"2"\=3, '1')
+
+::method "test_678"
+   self~assertSame(4"2"==3, '0')
+
+::method "test_679"
+   self~assertSame(4"2"<<3, '0')
+
+::method "test_680"
+   self~assertSame(4"2">>3, '1')
+
+::method "test_681"
+   self~assertSame(4"2"\==3, '1')
+
+::method "test_682"
+   self~assertSame(4"2"\<3, '1')
+
+::method "test_683"
+   self~assertSame(4"2"\<<3, '1')
+
+::method "test_684"
+   self~assertSame(4"2"\>3, '0')
+
+::method "test_685"
+   self~assertSame(4"2"\>>3, '0')
+
+::method "test_686"
+   self~expectSyntax(34.901)
+   xre=' '1&1
+
+::method "test_687"
+   self~expectSyntax(34.901)
+   xre=' '1|1
+
+::method "test_688"
+   self~expectSyntax(34.901)
+   xre=' '1&&1
+
+::method "test_689"
+   self~assertSame(4+"2" " ", '6  ')
+
+::method "test_690"
+   self~assertSame(4+"2"||3, '63')
+
+::method "test_691"
+   self~assertSame(4+"2"3, '63')
+
+::method "test_692"
+   maxnum= 9.E+999999999
+   negmaxnum= -9E+999999999
+   self~assertSame(negmaxnum+maxnum+maxnum, '9E+999999999')
+
+::method "test_693"
+   maxnum= 9.E+999999999
+   minnum= 9.E-999999999
+   self~assertSame(minnum+maxnum-maxnum, '0')
+
+::method "test_694"
+   self~assertSame(4+"2"*3, '10')
+
+::method "test_695"
+   numeric digits 9
+   self~assertSame(4+"2"/3, '4.66666667')
+
+::method "test_696"
+   self~assertSame(4+"2"%3, '4')
+
+::method "test_697"
+   self~assertSame(4+"2"//3, '6')
+
+::method "test_698"
+   self~assertSame(4+"2"**3, '12')
+
+::method "test_699"
+   self~assertSame(4+"2"=3, '0')
+
+::method "test_700"
+   self~assertSame(4+"2"<3, '0')
+
+::method "test_701"
+   self~assertSame(4+"2">3, '1')
+
+::method "test_702"
+   self~assertSame(4+"2"\=3, '1')
+
+::method "test_703"
+   self~assertSame(4+"2"==3, '0')
+
+::method "test_704"
+   self~assertSame(4+"2"<<3, '0')
+
+::method "test_705"
+   self~assertSame(4+"2">>3, '1')
+
+::method "test_706"
+   self~assertSame(4+"2"\==3, '1')
+
+::method "test_707"
+   self~assertSame(4+"2"\<3, '1')
+
+::method "test_708"
+   self~assertSame(4+"2"\<<3, '1')
+
+::method "test_709"
+   self~assertSame(4+"2"\>3, '0')
+
+::method "test_710"
+   self~assertSame(4+"2"\>>3, '0')
+
+::method "test_711"
+   self~assertSame(1+0&0, '0')
+
+::method "test_712"
+   self~assertSame(1+0|1, '1')
+
+::method "test_713"
+   self~assertSame(1+0&&1, '0')
+
+::method "test_714"
+   self~assertSame(4-"2" " ", '2  ')
+
+::method "test_715"
+   self~assertSame(4-"2"||3, '23')
+
+::method "test_716"
+   self~assertSame(4-"2"3, '23')
+
+::method "test_717"
+   self~assertSame(4-"2"+3, '5')
+
+::method "test_718"
+   self~assertSame(1-1-1, '-1')
+
+::method "test_719"
+   self~assertSame(4-"2"*3, '-2')
+
+::method "test_720"
+   numeric digits 9
+   self~assertSame(4-"2"/3, '3.33333333')
+
+::method "test_721"
+   self~assertSame(4-"2"%3, '4')
+
+::method "test_722"
+   self~assertSame(1-1//1, '1')
+
+::method "test_723"
+   self~assertSame(4-"2"**3, '-4')
+
+::method "test_724"
+   self~assertSame(4-"2"=3, '0')
+
+::method "test_725"
+   self~assertSame(4-"2"<3, '1')
+
+::method "test_726"
+   self~assertSame(4-"2">3, '0')
+
+::method "test_727"
+   self~assertSame(4-"2"\=3, '1')
+
+::method "test_728"
+   self~assertSame(4-"2"==3, '0')
+
+::method "test_729"
+   self~assertSame(4-"2"<<3, '1')
+
+::method "test_730"
+   self~assertSame(4-"2">>3, '0')
+
+::method "test_731"
+   self~assertSame(4-"2"\==3, '1')
+
+::method "test_732"
+   self~assertSame(4-"2"\<3, '0')
+
+::method "test_733"
+   self~assertSame(4-"2"\<<3, '0')
+
+::method "test_734"
+   self~assertSame(4-"2"\>3, '1')
+
+::method "test_735"
+   self~assertSame(4-"2"\>>3, '1')
+
+::method "test_736"
+   self~assertSame(1-1&0, '0')
+
+::method "test_737"
+   self~assertSame(1-0|1, '1')
+
+::method "test_738"
+   self~assertSame(0-0&&1, '1')
+
+::method "test_739"
+   self~assertSame(4*"2" " ", '8  ')
+
+::method "test_740"
+   self~assertSame(4*"2"||3, '83')
+
+::method "test_741"
+   self~assertSame(4*"2"3, '83')
+
+::method "test_742"
+   self~assertSame(4*"2"+3, '11')
+
+::method "test_743"
+   self~assertSame(4*"2"-3, '5')
+
+::method "test_744"
+   maxnum= 9.E+999999999
+   minnum= 9.E-999999999
+   self~assertSame(maxnum*minnum*minnum, '7.29E-999999997')
+
+::method "test_745"
+   self~assertSame(.5*6/3, '1')
+
+::method "test_746"
+   self~assertSame(4*"2"%3, '2')
+
+::method "test_747"
+   self~assertSame(4*"2"//3, '2')
+
+::method "test_748"
+   self~assertSame(4*"2"**3, '32')
+
+::method "test_749"
+   self~assertSame(0*1=0, '1')
+
+::method "test_750"
+   self~assertSame(4*"2"<3, '0')
+
+::method "test_751"
+   self~assertSame(4*"2">3, '1')
+
+::method "test_752"
+   self~assertSame(4*"2"\=3, '1')
+
+::method "test_753"
+   self~assertSame(0*1==0, '1')
+
+::method "test_754"
+   self~assertSame(4*"2"<<3, '0')
+
+::method "test_755"
+   self~assertSame(4*"2">>3, '1')
+
+::method "test_756"
+   self~assertSame(4*"2"\==3, '1')
+
+::method "test_757"
+   self~assertSame(4*"2"\<3, '1')
+
+::method "test_758"
+   self~assertSame(4*"2"\<<3, '1')
+
+::method "test_759"
+   self~assertSame(4*"2"\>3, '0')
+
+::method "test_760"
+   self~assertSame(4*"2"\>>3, '0')
+
+::method "test_761"
+   negone= -1
+   self~assertSame(negone*negone&1, '1')
+
+::method "test_762"
+   self~assertSame(0*1|1, '1')
+
+::method "test_763"
+   self~assertSame(0*1&&1, '1')
+
+::method "test_764"
+   self~assertSame(4/"2" " ", '2  ')
+
+::method "test_765"
+   self~assertSame(4/"2"||3, '23')
+
+::method "test_766"
+   self~assertSame(4/"2"3, '23')
+
+::method "test_767"
+   self~assertSame(4/"2"+3, '5')
+
+::method "test_768"
+   self~assertSame(4/"2"-3, '-1')
+
+::method "test_769"
+   self~assertSame(4/"2"*3, '6')
+
+::method "test_770"
+   numeric digits 9
+   self~assertSame(4/"2"/3, '0.666666667')
+
+::method "test_771"
+   self~assertSame(.5/3%1, '0')
+
+::method "test_772"
+   numeric digits 9
+   self~assertSame(12/13//3, '0.923076923')
+
+::method "test_773"
+   self~assertSame(4/"2"**3, '0.5')
+
+::method "test_774"
+   self~assertSame(4/3=3, '0')
+
+::method "test_775"
+   self~assertSame(4/2<3, '1')
+
+::method "test_776"
+   self~assertSame(4/4>3, '0')
+
+::method "test_777"
+   self~assertSame(4/4\=3, '1')
+
+::method "test_778"
+   self~assertSame(4/3==3, '0')
+
+::method "test_779"
+   self~assertSame(4/2<<3, '1')
+
+::method "test_780"
+   self~assertSame(4/4>>3, '0')
+
+::method "test_781"
+   self~assertSame(4/4\==3, '1')
+
+::method "test_782"
+   self~assertSame(4/4\<3, '0')
+
+::method "test_783"
+   self~assertSame(4/4\<<3, '0')
+
+::method "test_784"
+   self~assertSame(4/2\>3, '1')
+
+::method "test_785"
+   self~assertSame(4/2\>>3, '1')
+
+::method "test_786"
+   negone= -1
+   self~assertSame(negone/negone&1, '1')
+
+::method "test_787"
+   self~assertSame(0/1|1, '1')
+
+::method "test_788"
+   negone= -1
+   self~assertSame(negone/negone&&1, '0')
+
+::method "test_789"
+   self~assertSame(4%"2" " ", '2  ')
+
+::method "test_790"
+   self~assertSame(4%"2"||3, '23')
+
+::method "test_791"
+   self~assertSame(4%"2"3, '23')
+
+::method "test_792"
+   self~assertSame(4%"2"+3, '5')
+
+::method "test_793"
+   self~assertSame(4%"2"-3, '-1')
+
+::method "test_794"
+   self~assertSame(4%"2"*3, '6')
+
+::method "test_795"
+   numeric digits 9
+   self~assertSame(4%"2"/3, '0.666666667')
+
+::method "test_796"
+   maxnum= 9.E+999999999
+   self~assertSame(maxnum%maxnum%maxnum, '0')
+
+::method "test_797"
+   self~assertSame(12%13//3, '0')
+
+::method "test_798"
+   self~assertSame(4%"2"**3, '0')
+
+::method "test_799"
+   self~assertSame(4%3=3, '0')
+
+::method "test_800"
+   self~assertSame(4%2<3, '1')
+
+::method "test_801"
+   self~assertSame(4%4>3, '0')
+
+::method "test_802"
+   self~assertSame(4%4\=3, '1')
+
+::method "test_803"
+   self~assertSame(4%3==3, '0')
+
+::method "test_804"
+   self~assertSame(4%2<<3, '1')
+
+::method "test_805"
+   self~assertSame(4%4>>3, '0')
+
+::method "test_806"
+   self~assertSame(4%4\==3, '1')
+
+::method "test_807"
+   self~assertSame(4%4\<3, '0')
+
+::method "test_808"
+   self~assertSame(4%4\<<3, '0')
+
+::method "test_809"
+   self~assertSame(4%2\>3, '1')
+
+::method "test_810"
+   self~assertSame(4%2\>>3, '1')
+
+::method "test_811"
+   negone= -1
+   self~assertSame(negone%negone&1, '1')
+
+::method "test_812"
+   self~assertSame(0%1|1, '1')
+
+::method "test_813"
+   negone= -1
+   self~assertSame(negone%negone&&1, '0')
+
+::method "test_814"
+   self~assertSame(4//"2" " ", '0  ')
+
+::method "test_815"
+   self~assertSame(4//"2"||3, '03')
+
+::method "test_816"
+   self~assertSame(4//"2"3, '03')
+
+::method "test_817"
+   self~assertSame(4//"2"+3, '3')
+
+::method "test_818"
+   self~assertSame(4//"2"-3, '-3')
+
+::method "test_819"
+   self~assertSame(4//"2"*3, '0')
+
+::method "test_820"
+   self~assertSame(4//"2"/3, '0')
+
+::method "test_821"
+   self~assertSame(.5//3%1, '0')
+
+::method "test_822"
+   self~assertSame(17//5//3, '2')
+
+::method "test_823"
+   self~assertSame(4//"2"**3, '4')
+
+::method "test_824"
+   maxnum= 9.E+999999999
+   minnum= 9.E-999999999
+   self~assertSame(minnum//maxnum=maxnum, '0')
+
+::method "test_825"
+   self~assertSame(4//2<3, '1')
+
+::method "test_826"
+   self~assertSame(.5//3>1, '0')
+
+::method "test_827"
+   self~assertSame(4//4\=3, '1')
+
+::method "test_828"
+   maxnum= 9.E+999999999
+   minnum= 9.E-999999999
+   self~assertSame(minnum//maxnum==maxnum, '0')
+
+::method "test_829"
+   self~assertSame(4//2<<3, '1')
+
+::method "test_830"
+   self~assertSame(.5//3>>1, '0')
+
+::method "test_831"
+   self~assertSame(4//4\==3, '1')
+
+::method "test_832"
+   self~assertSame(1//1\<0, '1')
+
+::method "test_833"
+   self~assertSame(1//1\<<0, '1')
+
+::method "test_834"
+   self~assertSame(4//2\>3, '1')
+
+::method "test_835"
+   self~assertSame(4//2\>>3, '1')
+
+::method "test_836"
+   negone= -1
+   self~assertSame(negone//negone&1, '0')
+
+::method "test_837"
+   self~assertSame(1//1|1, '1')
+
+::method "test_838"
+   negone= -1
+   self~assertSame(negone//negone&&1, '1')
+
+::method "test_839"
+   self~assertSame(4**"2" " ", '16  ')
+
+::method "test_840"
+   self~assertSame(4**"2"||3, '163')
+
+::method "test_841"
+   self~assertSame(4**"2"3, '163')
+
+::method "test_842"
+   self~assertSame(4**"2"+3, '19')
+
+::method "test_843"
+   self~assertSame(4**"2"-3, '13')
+
+::method "test_844"
+   self~assertSame(4**"2"*3, '48')
+
+::method "test_845"
+   numeric digits 9
+   self~assertSame(.5**6/3, '0.00520833333')
+
+::method "test_846"
+   self~assertSame(4**"2"%3, '5')
+
+::method "test_847"
+   self~assertSame(4**"2"//3, '1')
+
+::method "test_848"
+   self~assertSame(4**"2"**3, '4096')
+
+::method "test_849"
+   self~assertSame(4**"2"=3, '0')
+
+::method "test_850"
+   self~assertSame(4**"2"<3, '0')
+
+::method "test_851"
+   self~assertSame(1**1>1, '0')
+
+::method "test_852"
+   self~assertSame(4**"2"\=3, '1')
+
+::method "test_853"
+   self~assertSame(4**"2"==3, '0')
+
+::method "test_854"
+   self~assertSame(4**"2"<<3, '1')
+
+::method "test_855"
+   self~assertSame(1**1>>1, '0')
+
+::method "test_856"
+   self~assertSame(4**"2"\==3, '1')
+
+::method "test_857"
+   self~assertSame(0**1\<0, '1')
+
+::method "test_858"
+   self~assertSame(4**"2"\<<3, '0')
+
+::method "test_859"
+   self~assertSame(4**"2"\>3, '0')
+
+::method "test_860"
+   self~assertSame(4**"2"\>>3, '1')
+
+::method "test_861"
+   self~assertSame(1**1&0, '0')
+
+::method "test_862"
+   self~assertSame(0**1|1, '1')
+
+::method "test_863"
+   self~assertSame(1**1&&1, '0')
+
+::method "test_864"
+   self~assertSame(4="2" 3, '0')
+
+::method "test_865"
+   self~assertSame(4="2"||3, '0')
+
+::method "test_866"
+   self~assertSame(4="2"3, '0')
+
+::method "test_867"
+   self~assertSame(4="2"+3, '0')
+
+::method "test_868"
+   self~assertSame(4="2"-3, '0')
+
+::method "test_869"
+   self~assertSame(0=1*0, '1')
+
+::method "test_870"
+   self~assertSame(3=6/2, '1')
+
+::method "test_871"
+   self~assertSame(3=6%2, '1')
+
+::method "test_872"
+   self~assertSame(0=1//1, '1')
+
+::method "test_873"
+   self~assertSame(0=1**0, '0')
+
+::method "test_874"
+   negone= -1
+   self~assertSame(negone=1=0, '1')
+
+::method "test_875"
+   self~assertSame(4="2"<3, '1')
+
+::method "test_876"
+   self~assertSame(0=1>1, '0')
+
+::method "test_877"
+   self~assertSame(4="2"\=3, '1')
+
+::method "test_878"
+   negone= -1
+   self~assertSame(negone=1==0, '1')
+
+::method "test_879"
+   self~assertSame(4="2"<<3, '1')
+
+::method "test_880"
+   self~assertSame(0=1>>1, '0')
+
+::method "test_881"
+   self~assertSame(4="2"\==3, '1')
+
+::method "test_882"
+   self~assertSame(0=1\<0, '1')
+
+::method "test_883"
+   self~assertSame(0=1\<<0, '1')
+
+::method "test_884"
+   self~assertSame(4="2"\>3, '1')
+
+::method "test_885"
+   self~assertSame(4="2"\>>3, '1')
+
+::method "test_886"
+   self~assertSame(0=1&0, '0')
+
+::method "test_887"
+   self~assertSame(0=1|1, '1')
+
+::method "test_888"
+   negone= -1
+   self~assertSame(negone=1&&1, '1')
+
+::method "test_889"
+   self~assertSame(4<"2" 3, '0')
+
+::method "test_890"
+   self~assertSame(4<"2"||3, '1')
+
+::method "test_891"
+   self~assertSame(4<"2"3, '1')
+
+::method "test_892"
+   self~assertSame(4<"2"+3, '1')
+
+::method "test_893"
+   self~assertSame(4<"2"-3, '0')
+
+::method "test_894"
+   self~assertSame(4<"2"*3, '1')
+
+::method "test_895"
+   self~assertSame(.5<6/3, '1')
+
+::method "test_896"
+   self~assertSame(.5<6%3, '1')
+
+::method "test_897"
+   self~assertSame(.5<6//3, '0')
+
+::method "test_898"
+   self~assertSame(4<"2"**3, '1')
+
+::method "test_899"
+   self~assertSame(1<1=0, '1')
+
+::method "test_900"
+   self~assertSame(4<"2"<3, '1')
+
+::method "test_901"
+   self~assertSame(.5<3>1, '0')
+
+::method "test_902"
+   self~assertSame(4<"2"\=3, '1')
+
+::method "test_903"
+   self~assertSame(1<1==0, '1')
+
+::method "test_904"
+   self~assertSame(4<"2"<<3, '1')
+
+::method "test_905"
+   self~assertSame(.5<3>>1, '0')
+
+::method "test_906"
+   self~assertSame(4<"2"\==3, '1')
+
+::method "test_907"
+   self~assertSame(1<1\<0, '1')
+
+::method "test_908"
+   self~assertSame(1<1\<<0, '1')
+
+::method "test_909"
+   self~assertSame(4<"2"\>3, '1')
+
+::method "test_910"
+   self~assertSame(4<"2"\>>3, '1')
+
+::method "test_911"
+   negone= -1
+   self~assertSame(negone<1&0, '0')
+
+::method "test_912"
+   self~assertSame(1<1|1, '1')
+
+::method "test_913"
+   self~assertSame(1<1&&1, '1')
+
+::method "test_914"
+   self~assertSame(4>"2" 3, '1')
+
+::method "test_915"
+   self~assertSame(4>"2"||3, '0')
+
+::method "test_916"
+   self~assertSame(4>"2"3, '0')
+
+::method "test_917"
+   self~assertSame(4>"2"+3, '0')
+
+::method "test_918"
+   self~assertSame(4>"2"-3, '1')
+
+::method "test_919"
+   self~assertSame(4>"2"*3, '0')
+
+::method "test_920"
+   self~assertSame(4>"2"/3, '1')
+
+::method "test_921"
+   self~assertSame(4>"2"%3, '1')
+
+::method "test_922"
+   self~assertSame(1>1//1, '1')
+
+::method "test_923"
+   self~assertSame(4>"2"**3, '0')
+
+::method "test_924"
+   self~assertSame(4>"2"=3, '0')
+
+::method "test_925"
+   self~assertSame(1>1<0, '0')
+
+::method "test_926"
+   self~assertSame(4>"2">3, '0')
+
+::method "test_927"
+   self~assertSame(0>1\=1, '1')
+
+::method "test_928"
+   self~assertSame(4>"2"==3, '0')
+
+::method "test_929"
+   self~assertSame(1>1<<0, '0')
+
+::method "test_930"
+   self~assertSame(4>"2">>3, '0')
+
+::method "test_931"
+   self~assertSame(0>1\==1, '1')
+
+::method "test_932"
+   self~assertSame(4>"2"\<3, '0')
+
+::method "test_933"
+   self~assertSame(4>"2"\<<3, '0')
+
+::method "test_934"
+   self~assertSame(1>1\>1, '1')
+
+::method "test_935"
+   self~assertSame(1>1\>>1, '1')
+
+::method "test_936"
+   self~assertSame(1>1&0, '0')
+
+::method "test_937"
+   self~assertSame(1>1|1, '1')
+
+::method "test_938"
+   self~assertSame(0>1&&1, '1')
+
+::method "test_939"
+   self~assertSame(4\="2" 3, '1')
+
+::method "test_940"
+   self~assertSame(4\="2"||3, '1')
+
+::method "test_941"
+   self~assertSame(4\="2"3, '1')
+
+::method "test_942"
+   self~assertSame(4\="2"+3, '1')
+
+::method "test_943"
+   self~assertSame(4\="2"-3, '1')
+
+::method "test_944"
+   self~assertSame(4\="2"*3, '1')
+
+::method "test_945"
+   self~assertSame(4\="2"/3, '1')
+
+::method "test_946"
+   self~assertSame(4\="2"%3, '1')
+
+::method "test_947"
+   self~assertSame(1\=1//1, '1')
+
+::method "test_948"
+   self~assertSame(1\=1**0, '0')
+
+::method "test_949"
+   self~assertSame(4\="2"=3, '0')
+
+::method "test_950"
+   self~assertSame(1\=1<0, '0')
+
+::method "test_951"
+   self~assertSame(4\="2">3, '0')
+
+::method "test_952"
+   self~assertSame(.5\=3\=1, '0')
+
+::method "test_953"
+   self~assertSame(4\="2"==3, '0')
+
+::method "test_954"
+   self~assertSame(1\=1<<0, '0')
+
+::method "test_955"
+   self~assertSame(4\="2">>3, '0')
+
+::method "test_956"
+   self~assertSame(.5\=3\==1, '0')
+
+::method "test_957"
+   self~assertSame(4\="2"\<3, '0')
+
+::method "test_958"
+   self~assertSame(4\="2"\<<3, '0')
+
+::method "test_959"
+   self~assertSame(1\=1\>1, '1')
+
+::method "test_960"
+   self~assertSame(1\=1\>>1, '1')
+
+::method "test_961"
+   self~assertSame(1\=1&0, '0')
+
+::method "test_962"
+   self~assertSame(1\=1|1, '1')
+
+::method "test_963"
+   negone= -1
+   self~assertSame(negone\=1&&1, '0')
+
+::method "test_964"
+   self~assertSame(4=="2" 3, '0')
+
+::method "test_965"
+   self~assertSame(4=="2"||3, '0')
+
+::method "test_966"
+   self~assertSame(4=="2"3, '0')
+
+::method "test_967"
+   self~assertSame(4=="2"+3, '0')
+
+::method "test_968"
+   self~assertSame(4=="2"-3, '0')
+
+::method "test_969"
+   self~assertSame(0==1*0, '1')
+
+::method "test_970"
+   self~assertSame(3==6/2, '1')
+
+::method "test_971"
+   self~assertSame(3==6%2, '1')
+
+::method "test_972"
+   self~assertSame(0==1//1, '1')
+
+::method "test_973"
+   self~assertSame(0==1**0, '0')
+
+::method "test_974"
+   negone= -1
+   self~assertSame(negone==1=0, '1')
+
+::method "test_975"
+   self~assertSame(4=="2"<3, '1')
+
+::method "test_976"
+   self~assertSame(0==1>1, '0')
+
+::method "test_977"
+   self~assertSame(4=="2"\=3, '1')
+
+::method "test_978"
+   negone= -1
+   self~assertSame(negone==1==0, '1')
+
+::method "test_979"
+   self~assertSame(4=="2"<<3, '1')
+
+::method "test_980"
+   self~assertSame(0==1>>1, '0')
+
+::method "test_981"
+   self~assertSame(4=="2"\==3, '1')
+
+::method "test_982"
+   self~assertSame(0==1\<0, '1')
+
+::method "test_983"
+   self~assertSame(0==1\<<0, '1')
+
+::method "test_984"
+   self~assertSame(4=="2"\>3, '1')
+
+::method "test_985"
+   self~assertSame(4=="2"\>>3, '1')
+
+::method "test_986"
+   self~assertSame(0==1&0, '0')
+
+::method "test_987"
+   self~assertSame(0==1|1, '1')
+
+::method "test_988"
+   negone= -1
+   self~assertSame(negone==1&&1, '1')
+
+::method "test_989"
+   self~assertSame(4<<"2" 3, '0')
+
+::method "test_990"
+   self~assertSame(4<<"2"||3, '0')
+
+::method "test_991"
+   self~assertSame(4<<"2"3, '0')
+
+::method "test_992"
+   self~assertSame(4<<"2"+3, '1')
+
+::method "test_993"
+   self~assertSame(4<<"2"-3, '0')
+
+::method "test_994"
+   self~assertSame(4<<"2"*3, '1')
+
+::method "test_995"
+   self~assertSame(.5<<6/3, '1')
+
+::method "test_996"
+   self~assertSame(.5<<6%3, '1')
+
+::method "test_997"
+   self~assertSame(.5<<3//1, '1')
+
+::method "test_998"
+   self~assertSame(4<<"2"**3, '1')
+
+::method "test_999"
+   self~assertSame(1<<1=0, '1')
+
+::method "test_1000"
+   self~assertSame(4<<"2"<3, '1')
+
+::method "test_1001"
+   self~assertSame(.5<<3>1, '0')
+
+::method "test_1002"
+   self~assertSame(4<<"2"\=3, '1')
+
+::method "test_1003"
+   self~assertSame(1<<1==0, '1')
+
+::method "test_1004"
+   self~assertSame(4<<"2"<<3, '1')
+
+::method "test_1005"
+   self~assertSame(.5<<3>>1, '0')
+
+::method "test_1006"
+   self~assertSame(4<<"2"\==3, '1')
+
+::method "test_1007"
+   self~assertSame(1<<1\<0, '1')
+
+::method "test_1008"
+   self~assertSame(1<<1\<<0, '1')
+
+::method "test_1009"
+   self~assertSame(4<<"2"\>3, '1')
+
+::method "test_1010"
+   self~assertSame(4<<"2"\>>3, '1')
+
+::method "test_1011"
+   negone= -1
+   self~assertSame(negone<<1&0, '0')
+
+::method "test_1012"
+   self~assertSame(1<<1|1, '1')
+
+::method "test_1013"
+   self~assertSame(1<<1&&1, '1')
+
+::method "test_1014"
+   self~assertSame(4>>"2" 3, '1')
+
+::method "test_1015"
+   self~assertSame(4>>"2"||3, '1')
+
+::method "test_1016"
+   self~assertSame(4>>"2"3, '1')
+
+::method "test_1017"
+   self~assertSame(4>>"2"+3, '0')
+
+::method "test_1018"
+   self~assertSame(4>>"2"-3, '1')
+
+::method "test_1019"
+   self~assertSame(4>>"2"*3, '0')
+
+::method "test_1020"
+   self~assertSame(4>>"2"/3, '1')
+
+::method "test_1021"
+   self~assertSame(4>>"2"%3, '1')
+
+::method "test_1022"
+   self~assertSame(1>>1//1, '1')
+
+::method "test_1023"
+   self~assertSame(4>>"2"**3, '0')
+
+::method "test_1024"
+   self~assertSame(4>>"2"=3, '0')
+
+::method "test_1025"
+   self~assertSame(1>>1<0, '0')
+
+::method "test_1026"
+   self~assertSame(4>>"2">3, '0')
+
+::method "test_1027"
+   self~assertSame(0>>1\=1, '1')
+
+::method "test_1028"
+   self~assertSame(4>>"2"==3, '0')
+
+::method "test_1029"
+   self~assertSame(1>>1<<0, '0')
+
+::method "test_1030"
+   self~assertSame(4>>"2">>3, '0')
+
+::method "test_1031"
+   self~assertSame(0>>1\==1, '1')
+
+::method "test_1032"
+   self~assertSame(4>>"2"\<3, '0')
+
+::method "test_1033"
+   self~assertSame(4>>"2"\<<3, '0')
+
+::method "test_1034"
+   self~assertSame(1>>1\>1, '1')
+
+::method "test_1035"
+   self~assertSame(1>>1\>>1, '1')
+
+::method "test_1036"
+   self~assertSame(1>>1&0, '0')
+
+::method "test_1037"
+   self~assertSame(1>>1|1, '1')
+
+::method "test_1038"
+   self~assertSame(0>>1&&1, '1')
+
+::method "test_1039"
+   self~assertSame(4\=="2" 3, '1')
+
+::method "test_1040"
+   self~assertSame(4\=="2"||3, '1')
+
+::method "test_1041"
+   self~assertSame(4\=="2"3, '1')
+
+::method "test_1042"
+   self~assertSame(4\=="2"+3, '1')
+
+::method "test_1043"
+   self~assertSame(4\=="2"-3, '1')
+
+::method "test_1044"
+   self~assertSame(4\=="2"*3, '1')
+
+::method "test_1045"
+   self~assertSame(4\=="2"/3, '1')
+
+::method "test_1046"
+   self~assertSame(4\=="2"%3, '1')
+
+::method "test_1047"
+   self~assertSame(1\==1//1, '1')
+
+::method "test_1048"
+   self~assertSame(1\==1**0, '0')
+
+::method "test_1049"
+   self~assertSame(4\=="2"=3, '0')
+
+::method "test_1050"
+   self~assertSame(1\==1<0, '0')
+
+::method "test_1051"
+   self~assertSame(4\=="2">3, '0')
+
+::method "test_1052"
+   self~assertSame(.5\==3\=1, '0')
+
+::method "test_1053"
+   self~assertSame(4\=="2"==3, '0')
+
+::method "test_1054"
+   self~assertSame(1\==1<<0, '0')
+
+::method "test_1055"
+   self~assertSame(4\=="2">>3, '0')
+
+::method "test_1056"
+   self~assertSame(.5\==3\==1, '0')
+
+::method "test_1057"
+   self~assertSame(4\=="2"\<3, '0')
+
+::method "test_1058"
+   self~assertSame(4\=="2"\<<3, '0')
+
+::method "test_1059"
+   self~assertSame(1\==1\>1, '1')
+
+::method "test_1060"
+   self~assertSame(1\==1\>>1, '1')
+
+::method "test_1061"
+   self~assertSame(1\==1&0, '0')
+
+::method "test_1062"
+   self~assertSame(1\==1|1, '1')
+
+::method "test_1063"
+   negone= -1
+   self~assertSame(negone\==1&&1, '0')
+
+::method "test_1064"
+   self~assertSame(4\<"2" 3, '1')
+
+::method "test_1065"
+   self~assertSame(4\<"2"||3, '0')
+
+::method "test_1066"
+   self~assertSame(4\<"2"3, '0')
+
+::method "test_1067"
+   self~assertSame(4\<"2"+3, '0')
+
+::method "test_1068"
+   self~assertSame(4\<"2"-3, '1')
+
+::method "test_1069"
+   self~assertSame(4\<"2"*3, '0')
+
+::method "test_1070"
+   self~assertSame(4\<"2"/3, '1')
+
+::method "test_1071"
+   self~assertSame(4\<"2"%3, '1')
+
+::method "test_1072"
+   self~assertSame(1\<1//1, '1')
+
+::method "test_1073"
+   self~assertSame(4\<"2"**3, '0')
+
+::method "test_1074"
+   self~assertSame(4\<"2"=3, '0')
+
+::method "test_1075"
+   self~assertSame(1\<1<1, '0')
+
+::method "test_1076"
+   self~assertSame(4\<"2">3, '0')
+
+::method "test_1077"
+   self~assertSame(1\<1\=1, '0')
+
+::method "test_1078"
+   self~assertSame(4\<"2"==3, '0')
+
+::method "test_1079"
+   self~assertSame(1\<1<<1, '0')
+
+::method "test_1080"
+   self~assertSame(4\<"2">>3, '0')
+
+::method "test_1081"
+   self~assertSame(1\<1\==1, '0')
+
+::method "test_1082"
+   self~assertSame(4\<"2"\<3, '0')
+
+::method "test_1083"
+   self~assertSame(4\<"2"\<<3, '0')
+
+::method "test_1084"
+   self~assertSame(1\<1\>0, '0')
+
+::method "test_1085"
+   self~assertSame(1\<1\>>0, '0')
+
+::method "test_1086"
+   self~assertSame(1\<1&0, '0')
+
+::method "test_1087"
+   self~assertSame(0\<1|1, '1')
+
+::method "test_1088"
+   self~assertSame(1\<1&&1, '0')
+
+::method "test_1089"
+   self~assertSame(4\<<"2" 3, '1')
+
+::method "test_1090"
+   self~assertSame(4\<<"2"||3, '1')
+
+::method "test_1091"
+   self~assertSame(4\<<"2"3, '1')
+
+::method "test_1092"
+   self~assertSame(4\<<"2"+3, '0')
+
+::method "test_1093"
+   self~assertSame(4\<<"2"-3, '1')
+
+::method "test_1094"
+   self~assertSame(4\<<"2"*3, '0')
+
+::method "test_1095"
+   self~assertSame(4\<<"2"/3, '1')
+
+::method "test_1096"
+   self~assertSame(4\<<"2"%3, '1')
+
+::method "test_1097"
+   self~assertSame(1\<<1//1, '1')
+
+::method "test_1098"
+   self~assertSame(4\<<"2"**3, '0')
+
+::method "test_1099"
+   self~assertSame(4\<<"2"=3, '0')
+
+::method "test_1100"
+   self~assertSame(1\<<1<1, '0')
+
+::method "test_1101"
+   self~assertSame(4\<<"2">3, '0')
+
+::method "test_1102"
+   self~assertSame(1\<<1\=1, '0')
+
+::method "test_1103"
+   self~assertSame(4\<<"2"==3, '0')
+
+::method "test_1104"
+   self~assertSame(1\<<1<<1, '0')
+
+::method "test_1105"
+   self~assertSame(4\<<"2">>3, '0')
+
+::method "test_1106"
+   self~assertSame(1\<<1\==1, '0')
+
+::method "test_1107"
+   self~assertSame(4\<<"2"\<3, '0')
+
+::method "test_1108"
+   self~assertSame(4\<<"2"\<<3, '0')
+
+::method "test_1109"
+   self~assertSame(1\<<1\>0, '0')
+
+::method "test_1110"
+   self~assertSame(1\<<1\>>0, '0')
+
+::method "test_1111"
+   self~assertSame(1\<<1&0, '0')
+
+::method "test_1112"
+   self~assertSame(0\<<1|1, '1')
+
+::method "test_1113"
+   self~assertSame(1\<<1&&1, '0')
+
+::method "test_1114"
+   self~assertSame(4\>"2" 3, '0')
+
+::method "test_1115"
+   self~assertSame(4\>"2"||3, '1')
+
+::method "test_1116"
+   self~assertSame(4\>"2"3, '1')
+
+::method "test_1117"
+   self~assertSame(4\>"2"+3, '1')
+
+::method "test_1118"
+   self~assertSame(4\>"2"-3, '0')
+
+::method "test_1119"
+   self~assertSame(4\>"2"*3, '1')
+
+::method "test_1120"
+   self~assertSame(.5\>6/3, '1')
+
+::method "test_1121"
+   self~assertSame(.5\>6%3, '1')
+
+::method "test_1122"
+   self~assertSame(0\>1//1, '1')
+
+::method "test_1123"
+   self~assertSame(4\>"2"**3, '1')
+
+::method "test_1124"
+   self~assertSame(0\>1=0, '0')
+
+::method "test_1125"
+   self~assertSame(4\>"2"<3, '1')
+
+::method "test_1126"
+   self~assertSame(0\>1>1, '0')
+
+::method "test_1127"
+   self~assertSame(4\>"2"\=3, '1')
+
+::method "test_1128"
+   self~assertSame(0\>1==0, '0')
+
+::method "test_1129"
+   self~assertSame(4\>"2"<<3, '1')
+
+::method "test_1130"
+   self~assertSame(0\>1>>1, '0')
+
+::method "test_1131"
+   self~assertSame(4\>"2"\==3, '1')
+
+::method "test_1132"
+   self~assertSame(.5\>6\<3, '0')
+
+::method "test_1133"
+   self~assertSame(.5\>6\<<3, '0')
+
+::method "test_1134"
+   self~assertSame(4\>"2"\>3, '1')
+
+::method "test_1135"
+   self~assertSame(4\>"2"\>>3, '1')
+
+::method "test_1136"
+   self~assertSame(0\>1&0, '0')
+
+::method "test_1137"
+   negone= -1
+   self~assertSame(1\>negone|1, '1')
+
+::method "test_1138"
+   self~assertSame(0\>1&&1, '0')
+
+::method "test_1139"
+   self~assertSame(4\>>"2" 3, '0')
+
+::method "test_1140"
+   self~assertSame(4\>>"2"||3, '0')
+
+::method "test_1141"
+   self~assertSame(4\>>"2"3, '0')
+
+::method "test_1142"
+   self~assertSame(4\>>"2"+3, '1')
+
+::method "test_1143"
+   self~assertSame(4\>>"2"-3, '0')
+
+::method "test_1144"
+   self~assertSame(4\>>"2"*3, '1')
+
+::method "test_1145"
+   negone= -1
+   self~assertSame(negone\>>negone/1, '1')
+
+::method "test_1146"
+   negone= -1
+   self~assertSame(negone\>>negone%1, '1')
+
+::method "test_1147"
+   self~assertSame(0\>>1//1, '1')
+
+::method "test_1148"
+   self~assertSame(4\>>"2"**3, '1')
+
+::method "test_1149"
+   self~assertSame(0\>>1=0, '0')
+
+::method "test_1150"
+   self~assertSame(4\>>"2"<3, '1')
+
+::method "test_1151"
+   self~assertSame(0\>>1>1, '0')
+
+::method "test_1152"
+   self~assertSame(4\>>"2"\=3, '1')
+
+::method "test_1153"
+   self~assertSame(0\>>1==0, '0')
+
+::method "test_1154"
+   self~assertSame(4\>>"2"<<3, '1')
+
+::method "test_1155"
+   self~assertSame(0\>>1>>1, '0')
+
+::method "test_1156"
+   self~assertSame(4\>>"2"\==3, '1')
+
+::method "test_1157"
+   negone= -1
+   self~assertSame(negone\>>1\<0, '1')
+
+::method "test_1158"
+   negone= -1
+   self~assertSame(negone\>>1\<<0, '1')
+
+::method "test_1159"
+   self~assertSame(4\>>"2"\>3, '1')
+
+::method "test_1160"
+   self~assertSame(4\>>"2"\>>3, '1')
+
+::method "test_1161"
+   self~assertSame(0\>>1&0, '0')
+
+::method "test_1162"
+   negone= -1
+   self~assertSame(negone\>>1|1, '1')
+
+::method "test_1163"
+   self~assertSame(0\>>1&&1, '0')
+
+::method "test_1164"
+   self~expectSyntax(34.901)
+   blank=" "
+   xre=1&1 blank
+
+::method "test_1165"
+   self~expectSyntax(34.901)
+   blank=" "
+   xre=1&1||blank
+
+::method "test_1166"
+   self~expectSyntax(34.901)
+   xre=1&1' '
+
+::method "test_1167"
+   self~assertSame(0&0+1, '0')
+
+::method "test_1168"
+   self~assertSame(0&1-1, '0')
+
+::method "test_1169"
+   self~expectSyntax(34.901)
+   negone= -1
+   xre=1&1*negone
+
+::method "test_1170"
+   self~expectSyntax(34.901)
+   negone= -1
+   xre=1&1/negone
+
+::method "test_1171"
+   self~expectSyntax(34.901)
+   negone= -1
+   xre=1&1%negone
+
+::method "test_1172"
+   negone= -1
+   self~assertSame(1&1//negone, '0')
+
+::method "test_1173"
+   self~assertSame(0&1**0, '0')
+
+::method "test_1174"
+   self~assertSame(0&1=0, '0')
+
+::method "test_1175"
+   self~assertSame(0&1<1, '0')
+
+::method "test_1176"
+   negone= -1
+   self~assertSame(0&1>negone, '0')
+
+::method "test_1177"
+   self~assertSame(0&1\=1, '0')
+
+::method "test_1178"
+   self~assertSame(0&1==0, '0')
+
+::method "test_1179"
+   self~assertSame(0&1<<1, '0')
+
+::method "test_1180"
+   negone= -1
+   self~assertSame(0&1>>negone, '0')
+
+::method "test_1181"
+   self~assertSame(0&1\==1, '0')
+
+::method "test_1182"
+   self~assertSame(0&1\<0, '0')
+
+::method "test_1183"
+   self~assertSame(0&1\<<0, '0')
+
+::method "test_1184"
+   self~assertSame(0&1\>1, '0')
+
+::method "test_1185"
+   self~assertSame(0&1\>>1, '0')
+
+::method "test_1186"
+   self~assertSame(1&1&1, '1')
+
+::method "test_1187"
+   self~assertSame(0&1|1, '1')
+
+::method "test_1188"
+   self~assertSame(0&1&&1, '1')
+
+::method "test_1189"
+   self~expectSyntax(34.901)
+   blank=" "
+   xre=1|1 blank
+
+::method "test_1190"
+   self~expectSyntax(34.901)
+   blank=" "
+   xre=1|1||blank
+
+::method "test_1191"
+   self~expectSyntax(34.901)
+   xre=1|1' '
+
+::method "test_1192"
+   self~assertSame(1|0+1, '1')
+
+::method "test_1193"
+   self~assertSame(1|1-1, '1')
+
+::method "test_1194"
+   self~assertSame(1|1*0, '1')
+
+::method "test_1195"
+   self~expectSyntax(34.901)
+   negone= -1
+   xre=1|1/negone
+
+::method "test_1196"
+   self~expectSyntax(34.901)
+   negone= -1
+   xre=1|1%negone
+
+::method "test_1197"
+   self~assertSame(1|1//1, '1')
+
+::method "test_1198"
+   negone= -1
+   self~assertSame(1|negone**2, '1')
+
+::method "test_1199"
+   self~assertSame(1|1=0, '1')
+
+::method "test_1200"
+   self~assertSame(1|1<1, '1')
+
+::method "test_1201"
+   self~assertSame(1|1>1, '1')
+
+::method "test_1202"
+   self~assertSame(1|1\=1, '1')
+
+::method "test_1203"
+   self~assertSame(1|1==0, '1')
+
+::method "test_1204"
+   self~assertSame(1|1<<1, '1')
+
+::method "test_1205"
+   self~assertSame(1|1>>1, '1')
+
+::method "test_1206"
+   self~assertSame(1|1\==1, '1')
+
+::method "test_1207"
+   negone = -1
+   self~assertSame(1|negone\<1, '1')
+
+::method "test_1208"
+   negone = -1
+   self~assertSame(1|negone\<<1, '1')
+
+::method "test_1209"
+   self~assertSame(1|1\>0, '1')
+
+::method "test_1210"
+   self~assertSame(1|1\>>0, '1')
+
+::method "test_1211"
+   self~assertSame(1|1&0, '1')
+
+::method "test_1212"
+   self~assertSame(1|1|1, '1')
+
+::method "test_1213"
+   self~assertSame(1|1&&1, '0')
+
+::method "test_1214"
+   self~expectSyntax(34.901)
+   blank=" "
+   xre=1&&1 blank
+
+::method "test_1215"
+   self~expectSyntax(34.901)
+   blank=" "
+   xre=1&&1||blank
+
+::method "test_1216"
+   self~expectSyntax(34.901)
+   xre=1&&1' '
+
+::method "test_1217"
+   self~assertSame(1&&0+1, '0')
+
+::method "test_1218"
+   self~assertSame(1&&1-1, '1')
+
+::method "test_1219"
+   self~assertSame(1&&1*0, '1')
+
+::method "test_1220"
+   negone= -1
+   self~assertSame(1&&negone/negone, '0')
+
+::method "test_1221"
+   negone= -1
+   self~assertSame(1&&negone%negone, '0')
+
+::method "test_1222"
+   self~assertSame(1&&1//1, '1')
+
+::method "test_1223"
+   self~assertSame(1&&1**0, '0')
+
+::method "test_1224"
+   negone= -1
+   self~assertSame(1&&negone=negone, '0')
+
+::method "test_1225"
+   self~assertSame(1&&1<0, '1')
+
+::method "test_1226"
+   self~assertSame(1&&1>1, '1')
+
+::method "test_1227"
+   negone= -1
+   self~assertSame(1&&negone\=negone, '1')
+
+::method "test_1228"
+   negone= -1
+   self~assertSame(1&&negone==negone, '0')
+
+::method "test_1229"
+   self~assertSame(1&&1<<0, '1')
+
+::method "test_1230"
+   self~assertSame(1&&1>>1, '1')
+
+::method "test_1231"
+   negone= -1
+   self~assertSame(1&&negone\==negone, '1')
+
+::method "test_1232"
+   self~assertSame(1&&1\<0, '0')
+
+::method "test_1233"
+   self~assertSame(1&&1\<<0, '0')
+
+::method "test_1234"
+   self~assertSame(1&&1\>1, '0')
+
+::method "test_1235"
+   self~assertSame(1&&1\>>1, '0')
+
+::method "test_1236"
+   self~assertSame(1&&1&0, '1')
+
+::method "test_1237"
+   self~assertSame(1&&1|1, '1')
+
+::method "test_1238"
+   self~assertSame(1&&1&&1, '1')
+
+::method "test_1239"
+   self~assertSame(0**0, '1')
+
+::method "test_1240"
+   self~assertSame(0**1, '0')
+
+::method "test_1241"
+   self~assertSame(0**2, '0')
+
+::method "test_1242"
+   self~assertSame(0**17, '0')
+
+::method "test_1243"
+   self~assertSame(1**0, '1')
+
+::method "test_1244"
+   self~assertSame(1**1, '1')
+
+::method "test_1245"
+   self~assertSame(1**2, '1')
+
+::method "test_1246"
+   self~assertSame(1**17, '1')
+
+::method "test_1247"
+   self~assertSame(17**0, '1')
+
+::method "test_1248"
+   self~assertSame(17**1, '17')
+
+::method "test_1249"
+   numeric digits 9
+   self~assertSame(17**24, '3.39448671E+29')
+
+::method "test_1250"
+   self~assertSame(-2**3, '-8')
+
+::method "test_1251"
+   self~assertSame(2**-3, '0.125')
+
+::method "test_1252"
+   self~assertSame(-2**-3, '-0.125')
+
+::method "test_1253"
+   self~assertSame(4**3**2, '4096')
+
+::method "test_1254"
+   self~assertSame(4**-3**2, '0.000244140625')
+
+::method "test_1255"
+   self~assertSame(4**3**-2, '0.000244140625')
+
+::method "test_1256"
+   self~assertSame(4**-3**-2, '4096')
+
+::method "test_1257"
+   self~assertSame(-4**3**2, '4096')
+
+::method "test_1258"
+   self~assertSame(-4**-3**2, '0.000244140625')
+
+::method "test_1259"
+   self~assertSame(-4**3**-2, '0.000244140625')
+
+::method "test_1260"
+   self~assertSame(-4**-3**-2, '4096')
+
+::method "test_1261"
+   self~assertSame(3**2+1, '10')
+
+::method "test_1262"
+   self~assertSame(2+3**3, '29')
+
+::method "test_1263"
+   self~assertSame(2+3**3+1, '30')
+
+::method "test_1264"
+   self~assertSame(2**-2*3, '0.75')
+
+::method "test_1265"
+   self~assertSame(2**-2*-3, '-0.75')
+
+::method "test_1266"
+   self~assertSame(2**3*-1, '-8')
+
+::method "test_1267"
+   self~assertSame(-1*2**3, '-8')
+
+::method "test_1268"
+   self~assertSame((3**2)/(2**3), '1.125')
+
+::method "test_1269"
+   self~assertSame(3**2/2**3, '1.125')
+
+::method "test_1270"
+   self~assertSame(3*(4**2)/12//5, '4')
+
+::method "test_1271"
+   self~assertSame(3*4**2/12//5, '4')
+
+::method "test_1272"
+   self~assertSame(3*((4**2)+12)//5, '4')
+
+::method "test_1273"
+   self~assertSame(3*4**2+12//5, '50')
+
+::method "test_1274"
+   self~assertSame(3*2**3+4-2, '26')
+
+::method "test_1275"
+   self~assertSame(3*2**3//(2+3)+4-2, '6')
+
+::method "test_1276"
+   self~assertSame((3*((4**2)+12)//5%3)||2, '12')
+
+::method "test_1277"
+   self~assertSame(3*4**2+12//5%3||2, '482')
+
+::method "test_1278"
+   self~assertSame(7**(1-(10>9))&1, '1')
+
+::method "test_1279"
+   self~assertSame(7**(1-(10>9))&2*3//2+10**0, '1')
+
+::method "test_1280"
+   self~expectSyntax(43.1)
+   xre=1""((3*(4**2))+(12//5%3))||2
+
+::method "test_1281"
+   self~assertSame(1||((3*(4**2))+(12//5%3))||2, '1482')
+
+::method "test_1282"
+   self~assertSame(1""3*4**2+12//5%3||2, '1482')
+
+::method "test_1283"
+   self~assertSame(2*3+4- -2**3||3*4""12>11, '1')
+
+::method "test_1284"
+   self~expectSyntax(43.1)
+   xre=2*3+4- -2**3||3*4""(12>11)
+
+::method "test_1285"
+   self~assertSame(2*3+4- -2**3||3*4||(12>11), '18121')
+
+::method "test_1286"
+   self~assertSame(2*3**-(-7//4)||12>11&&11<11, '1')
+
+::method "test_1287"
+   self~assertSame(2*3**-(-7//4)||(12>11&&11<11), '541')
+
+::method "test_1288"
+   self~assertSame(-+-+\1, '0')
+
+::method "test_1289"
+   self~assertSame(-+\+\1, '-1')
+
+::method "test_1290"
+   self~assertSame(- -\+\1, '1')
+
+::method "test_1291"
+   self~expectSyntax(34.901)
+   xre=- -\+\0.00000000e50
+
+::method "test_1292"
+   self~expectSyntax(34.901)
+   xre=- -\+\(0.0e+10)
+
+::method "test_1293"
+   self~assertSame(- -\+\(000**10), '0')
+
+::method "test_1294"
+   self~assertSame(- -\+\(+0.0e+10), '0')
+
+::method "test_1295"
+   self~assertSame(- -\+\(0.0e+10+1), '1')
+
+::method "test_1296"
+   self~assertSame(- -\+\+00, '0')
+
+::method "test_1297"
+   self~assertSame(-1/-12*12+-1, '0')
+
+::method "test_1298"
+   self~assertSame(\(-1/-12*12+-1), '1')
+
+::method "test_1299"
+   self~assertSame(\1*10000, '0')
+
+::method "test_1300"
+   self~assertSame(\1**2, '0')
+
+::method "test_1301"
+   self~assertSame(2**-\0, '0.5')
+
+::method "test_1302"
+   self~assertSame(-2**-\0, '-0.5')
+
+::method "test_1303"
+   self~assertSame(-2**-\0**2, '0.25')
+
+::method "test_1304"
+   self~assertSame(-2**-\0*2**2, '-2.0')
+
+::method "test_1305"
+   self~assertSame(-2- -3- -4, '5')
+
+::method "test_1306"
+   self~assertSame(-\1=0, '1')
+
+::method "test_1307"
+   self~assertSame(-\0=1, '0')
+
+::method "test_1308"
+   self~assertSame(-(\1=0), '-1')
+
+::method "test_1309"
+   self~assertSame(-\1>-\0, '1')
+
+::method "test_1310"
+   self~assertSame(-\1>0&\1=2, '0')
+
+::method "test_1311"
+   self~assertSame(\1>=2|1, '1')
+
+::method "test_1312"
+   self~assertSame(\0>=0||1, '1')
+
+::method "test_1313"
+   self~assertSame(\0=000000||1, '1')
+
+::method "test_1314"
+   self~assertSame(\0&000000||1=1, '1')
+
+::method "test_1315"
+   self~assertSame(-\1>0+1&\1=2, '0')
+
+::method "test_1316"
+   self~assertSame(\- -\(24//6), '0')
+
+::method "test_1317"
+   self~assertSame(\- -\(17%24), '0')
+
+::method "test_1318"
+   self~assertSame(\- -\(17%24)&1, '0')
+
+::method "test_1319"
+   self~assertSame(\- -\(17%24)&&1&1, '1')
+
+::method "test_1320"
+   minval=1e-999999999
+   self~assertSame(minval // 5 // (2+3), '1E-999999999')
+
+::method "test_1321"
+   self~expectSyntax(42.1)
+   minval=1e-999999999
+   maxval=1e+999999999
+   xre=maxval // minval ** 2
+
+::method "test_1322"
+   minval=1e-999999999
+   maxval=1e+999999999
+   self~assertSame(maxval // maxval // minval, '0')
+
+::method "test_1323"
+   minval=1e-999999999
+   maxval=1e+999999999
+   self~assertSame(minval // maxval // minval, '0')
+
+::method "test_1324"
+   minval=1e-999999999
+   maxval=1e+999999999
+   self~assertSame(minval // 100 + minval -100, '-100')
+
+::method "test_1325"
+   minval=1e-999999999
+   maxval=1e+999999999
+   self~assertSame(maxval // (100 + maxval -100), '0')
+
+::method "test_1326"
+   minv=1e+999999999
+   maxval=1e+999999999
+   self~assertSame(maxval // minv || 'al', '0al')
+
+::method "test_1327"
+   minv=1e+999999999
+   al=1e+999999999
+   maxval=1e+999999999
+   self~assertSame(minv || al // maxval, '1E+9999999990')
+
+::method "test_1328"
+   self~assertSame(17//2=2, '0')
+
+::method "test_1329"
+   self~assertSame(12=12//5, '0')
+
+::method "test_1330"
+   self~assertSame(17//12>3, '1')
+
+::method "test_1331"
+   self~assertSame(3>2//5, '1')
+
+::method "test_1332"
+   self~assertSame(17//2<3, '1')
+
+::method "test_1333"
+   self~assertSame(2<5//3, '0')
+
+::method "test_1334"
+   self~assertSame(17//2<>2, '1')
+
+::method "test_1335"
+   self~assertSame(2<>2//17, '0')
+
+::method "test_1336"
+   self~assertSame(17//2><2, '1')
+
+::method "test_1337"
+   self~assertSame(2><2//17, '0')
+
+::method "test_1338"
+   self~assertSame(5//3>=2, '1')
+
+::method "test_1339"
+   self~assertSame(5//3>=3, '0')
+
+::method "test_1340"
+   self~assertSame(3>=3//5, '1')
+
+::method "test_1341"
+   self~assertSame(3>=2//5, '1')
+
+::method "test_1342"
+   self~assertSame(17//2<=3, '1')
+
+::method "test_1343"
+   self~assertSame(17//2<=2, '1')
+
+::method "test_1344"
+   self~assertSame(2<=3//5, '1')
+
+::method "test_1345"
+   self~assertSame(2<=2//5, '1')
+
+::method "test_1346"
+   self~assertSame(17//2==2, '0')
+
+::method "test_1347"
+   self~assertSame(2==2//17, '1')
+
+::method "test_1348"
+   self~assertSame(17//1&0, '0')
+
+::method "test_1349"
+   self~assertSame(0&1//17, '0')
+
+::method "test_1350"
+   self~assertSame(17//1|0, '0')
+
+::method "test_1351"
+   self~assertSame(0|1//17, '1')
+
+::method "test_1352"
+   self~assertSame(17//1&&0, '0')
+
+::method "test_1353"
+   self~assertSame(1&&0//17, '1')
+
+::method "test_1354"
+   self~assertSame(17//2\=2, '1')
+
+::method "test_1355"
+   self~assertSame(3\=3//3, '1')
+
+::method "test_1356"
+   self~assertSame(5//3\<2, '1')
+
+::method "test_1357"
+   self~assertSame(5//3\<3, '0')
+
+::method "test_1358"
+   self~assertSame(3\<3//5, '1')
+
+::method "test_1359"
+   self~assertSame(3\<2//5, '1')
+
+::method "test_1360"
+   self~assertSame(17//2\>3, '1')
+
+::method "test_1361"
+   self~assertSame(17//2\>2, '1')
+
+::method "test_1362"
+   self~assertSame(2\>3//5, '1')
+
+::method "test_1363"
+   self~assertSame(2\>2//5, '1')
+
+::method "test_1364"
+   self~assertSame(17//2\==2, '1')
+
+::method "test_1365"
+   self~assertSame(2\==2//17, '0')
+
+::method "test_1366"
+   self~assertSame(17//2\=2, '1')
+
+::method "test_1367"
+   self~assertSame(2\=2//17, '0')
+
+::method "test_1368"
+   self~assertSame(17//2\==2, '1')
+
+::method "test_1369"
+   self~assertSame(2\==2//17, '0')
+
+::method 'test_='
+   tab = '09'x
+   self~assertTrue(" " = '')
+   self~assertTrue("9"x = '')
+   self~assertTrue("9"x = ' ')
+   self~assertTrue((tab||"abc"||tab) = "abc")
+   self~assertTrue((" "||tab||" abc "||tab||" ") = "abc")
+
+
+::options novalue error

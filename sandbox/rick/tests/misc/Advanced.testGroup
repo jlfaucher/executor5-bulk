@@ -1,0 +1,431 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev: 3047 $
+  Change Date:  $Date: 2008-08-22 19:56:58 -0700 (Fri, 22 Aug 2008) $
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+  -- Test cases are returned in a test group object.  To create a test group
+  -- you need the complete name of the file the test group comes from (this
+  -- file.)  By using parse source to get the file name rather than hard coding
+  -- the name, you allow this file to be moved around in the file system without
+  -- having to edit this file.
+  parse source . . fileSpec
+
+  -- Now create the test group object.
+  group = .TestGroup~new(fileSpec)
+
+  -- This is a Windows specific test, so we tell the group object to not
+  -- produce any tests unless the local system is Windows.
+
+  group~restrictOS("WINDOWS")
+
+  -- In addition, this is a test of a sample shipped with the release ooRexx.
+  -- We would like to require that ooRexx be installed normally. However, this
+  -- prevents a developer from running the test from the build directory without
+  -- a regular install.
+  --
+  -- Since that has shown in the past to let bugs escape, we attempt to work
+  -- around it. The framework provides (in FileUtils.cls) a function that can be
+  -- used to locate sample programs.  It will return .nil if the sample can not
+  -- be located by any means known to mankind.
+
+  if group~machineOS == "WINDOWS" then do
+    if locateSamplePrg("fileNameDialog_demo.rex") == .nil then do
+      -- The sample program can not be located, so give up and mark this test
+      -- group as having no executable tests.  To do that it is required that a
+      --reason be supplied.
+        group~markNoTests("This is a test of a sample program, but the program can not be located.")
+    end
+  end
+
+
+  -- 1.) The test cases in this GUI test need to execute in order.  So we use a
+  -- method that places the individual test cases into the test suite in the
+  -- order we specify. fetchMethodNames() is a convenience routine in this file
+  -- that returns an array of the test method names.  The order of the names in
+  -- the array will be the order the tests are executed.
+  --
+  -- 2.) The test cases require the 'winsystm.cls' file.  Since this file only
+  -- exists in a Windows ooRexx installation, a normal ::requires directive
+  -- causes an ugly error if this .testGroup is run on a non-Windows system.  To
+  -- fix this, a custom TestSuite (.FNDlgTestSuite) is used.  The custom test
+  -- suite provides a setUp() method.  The setUp() method of a TestSuite is
+  -- invoked immediately prior to the exeuction of the tests in the test suite.
+  -- The setUp() method for .FNDlgTestSuite performs the necessary work to get
+  -- the winsystm.cls classes loaded.
+  --
+  -- 3.) To add the test cases in this file to the test group object we use the
+  -- addWithCollection() method.
+  --
+  -- a.) The first arg is the test case class.
+  -- b.) The second arg is the test case names.  This can be either a string
+  -- with the blank separted names, or any collection object whose items are the
+  -- names.  Note that the order the test case will be executed in is the order
+  -- that the collection object produces them.  So, if you use an ordered
+  -- collection, the test cases will be executed in that order.  But, if you
+  -- use an un-ordered collection, then the order the test cases execute in will
+  -- be undefined.
+  -- c.) The last arg is a test suite.  This arg is optional, it is only used
+  -- here because we need the set up method in the test suite.  If we did not
+  -- need a set up, we could skip the test suite arg.
+  group~addWithCollection(.fileNameDialog_demo.testGroup, fetchMethodNames(), .FNDlgTestSuite)
+
+  -- The test group object knows if an automated test is being run, or if this
+  -- test group file is being executed as a stand alone test.  We simply query
+  -- the test group to see what is what.  If this is an automated test, we
+  -- return the test group object.
+  if group~isAutomatedTest then return group
+
+  -- Not an automated test, execute the tests now.  The steps are this:
+  -- 1.) Ask the test group to produce a test suite of its executable tests.
+  --
+  --   testSuite = group~suite
+  --
+  -- 2.) Ask the test suite to execute the tests and return a test result object
+  --
+  --   testResult = testSuite~execute
+  --
+  -- 3.) Ask the test result object to print the test results using its default
+  -- formatter.
+  --
+  --   testResult~print
+  --
+  -- 4.) Return the test result object.  This is not currently used, but could
+  -- be useful in the future, for some as yet unimagined purpose.  <grin>
+  --
+  -- return testResult
+  --
+  -- The above 4 steps can be condensed into the following two lines.
+
+  testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
+  Directives, Classes, or Routines.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::requires 'ooTest.frm'
+::requires "FileUtils.cls"
+
+/** fetchMehodNames()
+ * This is a helper function that creates an array of the test methods.  The
+ * order of the tests in the array is the order they will be executed.
+ */
+::routine fetchMethodNames
+  tests = .array~new
+  tests[1] = 'test_exampleExists'
+  tests[2] = 'test_exampleStart'
+  tests[3] = 'test_mainScreen'
+  tests[4] = 'test_firstOption'
+  tests[5] = 'test_exampleQuit'
+return tests
+
+/** FNDlgTestSuite subclasses ooTestSuite and adds a setUp() method.  We use
+ * that method to load the WinSystm.cls file.  We don't need a tearDown() method
+ * to run at the end of the test so we just skip it.
+ */
+::class 'FNDlgTestSuite' subclass ooTestSuite
+
+/** In the ooTest framework, a test result object is passed to the setUp()
+ * method.  This can just be ignored in most cases.  But, here it is useful.
+ * If some type of unexpected error happens, we use the test result object to
+ * pass back a notification of the error.  And, by calling the stop() method,
+ * we signal the automated test that it should not execute the test cases in
+ * this test group
+ */
+::method setUp
+  use strict arg testResult
+
+  -- We need an ooTestCollectingParameter in case of error.  Enforcing that the
+  -- argument is passed correctly to us ensures that the test suite maintainers
+  -- fix any deviations from what is expected.  Chance are there won't be an
+  -- error.
+  if \ isSubClassOf(testResult~class, "ooTestCollectingParameter") then
+     raise syntax 88.914 array ("1 'testResult'", "ooTestCollectingParameter")
+
+  -- Now we use a new feature in ooRexx 4.0.0.  We use the .context object to
+  -- get the package instance object for this context.  We then use the package
+  -- object to add the WinUtils.cls package to the current context.
+  --
+  -- This test case uses services provided by the WinUtils.cls package.  The
+  -- WinUtils.cls file requires the WinSystm.cls, so we just need to load the
+  -- WinUtils package and we are good to go.
+  --
+  -- If we did not need any of the services in WinUtils.cls, we would just use
+  -- the package instance to load the WinSystm package.
+
+  -- It is possible, but unklikely, that loading the WinUtils package will
+  -- encounter some kind of error.  We trap for errors, and if it does happen,
+  -- we create an exception data object to report what happened.  Then, add it
+  -- to the test result object, and tell the test result object it should stop
+  -- executing this test.  (Recall that a Test is the primary abstraction used
+  -- in ooRexxUnit.  A test case method is a Test, a TestCase class is a
+  -- Test, and a test suite is a Test.)  If there is no error, we just return.
+
+  signal on any name loadErr
+  .context~package~loadPackage('WinUtils.cls')
+  return
+
+loadErr:
+  err = .ExceptionData~new(timeStamp(), s, .ExceptionData~TRAP)
+  err~setLine(sigl)
+  err~conditionObject = condition('O')
+  err~msg = "Could not load 'WinUtils.cls' the package needed for this test group."
+  err~severity = "Unrecoverable"
+
+  testResult~addException(err)
+  testResult~stop
+  return
+
+/* We do not need a tearDown() method, so I have it commented out.  I just left
+   it here as a reminder that it is available.
+::method tearDown
+*/
+
+/* class: fileNameDialog_demo.testGroup- - - - - - - - - - - - - - - - - - - -*\
+
+  The test group class will start the example program and then use the
+  WindowObject class to locate the various Windows created by the program and
+  push buttons to drive the program.
+
+  The test cases need to execute in a specific order.  The test case methods are
+  invoked in order, sorted by method name, by the framework.  This fact is
+  used to ensure the correct order of execution.
+\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+::class 'fileNameDialog_demo.testGroup' public subclass ooTestCase
+
+  /** init() class method
+   * Over-ride init so that we can set the test type for this test case.
+   */
+  ::method init class
+    forward class (super) continue
+
+    self~ooTestType = self~GUI_SAMPLE_TEST
+
+    self~prgPath = ""
+    self~launcher = ""
+    self~stop = .false
+    self~windowFinder = ""
+
+
+  ::method test_exampleExists
+    self~class~stop = .true
+
+    prgPathName = locateSamplePrg("fileNameDialog_demo.rex")
+
+    self~assertNotNull(prgPathName)
+    self~assertTrue(.stream~new(prgPathName)~query("EXISTS")~length <> 0)
+    self~class~prgPath = prgPathName
+    self~class~stop = .false
+
+  ::method test_exampleStart
+    if self~class~stop then self~fail("Failure of one test causes all tests to fail.")
+    self~class~stop = .true
+
+    launcher = .ProgramLauncher~new(self~class~prgPath)
+    ret = launcher~startProgram
+
+    self~assertEquals(0, ret, 'launcher~startProgram should return 0')
+
+    wf = .WindowFinder~new
+
+    -- Set the default pause and repetitions to pause longer and repeate less
+    wf~setPause(1)
+    wf~setRepetitions(5)
+
+    -- We know the example program first puts up an InfoDialog first.
+    wnd = wf~getWindow("Information")
+
+    self~assertEquals(.WindowObject, wnd~class, 'Must have a WindowObject object')
+    self~assertEquals("Information", wnd~title, 'Window must have Information title')
+
+    -- Click the okay button to close the InfoDialog and bring up the main screen.
+    wnd~pushButton("OK")
+
+    self~class~launcher = launcher
+    self~class~windowFinder = wf
+    self~class~stop = .false
+
+  ::method test_mainScreen
+    if self~class~stop then self~fail("Failure of one test causes all tests to fail.")
+    self~class~stop = .true
+
+    wf = self~class~windowFinder
+
+    -- We know the example program has this title.  That's how we can find it.
+    wnd = wf~getWindow("FileNameDialog Demonstration")
+
+    -- Assert that we found the main window of the program.
+    self~assertEquals(wnd~class, .WindowObject, 'Must have a WindowObject object')
+    self~assertEquals("FileNameDialog Demonstration", wnd~title, 'Window must have proper program title')
+
+    self~class~stop = .false
+
+  ::method test_firstOption
+    if self~class~stop then self~fail("Failure of one test causes all tests to fail.")
+    self~class~stop = .true
+
+    wf = self~class~windowFinder
+    wnd = wf~getWindow("FileNameDialog Demonstration")
+    self~assertEquals("FileNameDialog Demonstration", wnd~title, 'Window must have proper program title')
+
+    -- First option is radio button, ID 101.  But it should be already selected,
+    -- so we just need to click the Ok button.  OK button has ID 1, so sending
+    -- a command of 1 has the effect of clicking that button.
+    wnd~sendCommand(1)
+
+    wnd = wf~getWindow("Open a File")
+
+    self~assertEquals(.WindowObject, wnd~class, 'Must have a WindowObject object')
+    self~assertNotNull(wnd, 'Open File dialog must be active (option 1 clicked.)')
+
+    -- The cancel button has ID of 2, sending a command of 2 has the effect of
+    -- clicking the cancel button.  In the sample program, if the user did not
+    -- select a file, an error dialog is put up. (Since we click cancel, we do
+    -- not select a file and therefore we should get an Error dialog window
+    -- next.)
+    wnd~sendCommand(2)
+
+    wnd = wf~getWindow("Error")
+    self~assertNotNull(wnd, 'Open File dialog canceled (option 1) must have ErrorDialog')
+
+    -- Push OK button, should be back to main screen.
+    wnd~pushButton("OK")
+    self~class~stop = .false
+
+  -- End test_004_firstOption( )
+
+  /* Note: we could continue to test more of the options on the sample dialog,
+   * but we just end here.  We drop through to the last test which should end
+   * the sample program.
+   *
+   * A little bit sticky here for an automated test framework.  If we can not
+   * end the sample program, the automated testing will hang.  Yikes!
+   */
+
+  -- test_999_exampleQuit()
+  ::method test_exampleQuit
+
+    -- It is possible that we failed right off the bat and the WindowFinder
+    -- object was never even created.  If so, just abort.
+    if self~class~windowFinder == "" then return
+
+    wf = self~class~windowFinder
+
+    if self~class~stop then do
+      -- Some previous test failed.  So, we are not sure what state the example
+      -- program is in, which window is open.  Use a generic function to end
+      -- the example
+      self~killExample(wf)
+    end
+    else do
+      wnd = wf~getWindow("FileNameDialog Demonstration")
+      if wnd <> .nil then wnd~sendCommand(2)
+    end
+
+    -- Wait for the example program to end and get its return code.  The example
+    -- program returns a distinctive code when it ends without error.
+    ret = self~class~launcher~getResult
+
+    -- Step 4 assert that we get the correct return code for a successful
+    -- execution of the example program.
+    self~assertEquals(ret, 37, "fileNameDialog_demo return code should be 37")
+
+  -- End test_999_exampleQuit()
+
+
+  ::method killExample private
+    use arg wf
+
+    -- Try each possible window created by the example.  When we find an open
+    -- one, proceed from that known spot.
+    wnd = wf~getWindow("FileNameDialog Demonstration")
+    if wnd <> .nil then do
+      wnd~sendCommand(2)
+      return 0
+    end
+
+    wnd = wf~getWindow("Error")
+    if wnd <> .nil then return self~closeFromMsgBox(wf, wnd)
+
+    wnd = wf~getWindow("Information")
+    if wnd <> .nil then return self~closeFromMsgBox(wf, wnd)
+
+  return self~findAndCloseFNDlg(wf)
+
+  ::method findAndCloseFNDlg
+    use arg wf
+
+    wnd = wf~getWindow("Open a File")
+    if wnd <> .nil then return self~closeFromFNDlg(wf, wnd)
+
+    title = "FileNameDialog-Option"
+    do i = 2 to 7
+      wndTitle = title || i
+      wnd = wf~getWindow(wndTitle)
+      if wnd <> .nil then return self~closeFromFNDlg(wf, wnd)
+    end
+
+    -- Yikes, we are stuck.
+  return -1
+
+  -- Have a message box window (errorDialog or infoDialog) assume we can close
+  -- with things working from here.  Because if we can not, we are stuck.
+  ::method closeFromMsgBox private
+    use arg wf, wnd
+    wnd~pushButton("OK")
+    wnd = wf~getWindow("FileNameDialog Demonstration")
+    wnd~sendCommand(2)
+  return 0
+
+  -- Have one of the FileNameDialogs, assume we can close with things working
+  -- from here.  Because if we can not, we are stuck.
+  ::method closeFromFNDlg private
+    use arg wf, wnd
+    wnd~sendCommand(2)
+    wnd = wf~getWindow("Error")
+  return self~closeFromMsgBox(wf, wnd)
+
+  ::method prgPath      attribute class
+  ::method stop         attribute class
+  ::method windowFinder attribute class
+  ::method launcher     attribute class
+
+-- End of class: fileNameDialog_demo.testGroup
