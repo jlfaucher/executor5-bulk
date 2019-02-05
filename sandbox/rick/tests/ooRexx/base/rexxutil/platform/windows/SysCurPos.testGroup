@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -107,6 +107,11 @@ return testResult
 
     self~expectSyntax(40.1)
     rv = SysCurPos(19)
+
+::method test_cur_wrong_arg_count_2
+
+    self~expectSyntax(40.1)
+    rv = SysCurPos(,10)
 
 
 -- This test is always valid.

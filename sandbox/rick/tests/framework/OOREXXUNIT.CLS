@@ -1627,7 +1627,13 @@ return str
  .error~destination(.stderr)
  .traceoutput~destination(.error)
 
+ -- save the current directory in case the test cases change it
+  currentDirectory = directory()
+
   self~doTheTest(fName, aTestResult)  -- carry out the testmethod
+
+  -- restore the current directory
+  call directory(currentDirectory)
 
  -- make sure the output streams are in default state
  .output~destination(.stdout)
