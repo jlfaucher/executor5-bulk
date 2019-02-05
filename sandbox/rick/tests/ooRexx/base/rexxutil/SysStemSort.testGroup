@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -120,17 +120,12 @@ return testResult
   s.1 = 'b'
   s.2 = 'a'
 
-  self~expectSyntax(40.1)
+  self~expectSyntax(40.920)
 
   ret = SysStemSort(s., 'F')
   self~assertTrue(ret == 0)
 
 ::method test_too_many
-
-  e.1 = 'a'
-  e.2 = 'b'
-  e.2 = 'c'
-  e.2 = 'd'
 
   s.0 = 4
   s.1 = 'b'
@@ -215,7 +210,7 @@ return testResult
   return
 
 ::method "test_invalid_order"
-  self~expectSyntax("40.1")
+  self~expectSyntax("40.920")
 
   source.0 = 3;
   source.1 = 2
@@ -223,6 +218,61 @@ return testResult
   source.3 = 3
 
   r = SysStemSort('source.', "F")
+
+::method "test_invalid_first_last"
+
+  source.0 = 3;
+  source.1 = 2
+  source.2 = 1
+  source.3 = 3
+
+  self~expectSyntax("40.921")
+  r = SysStemSort('source.',,, 4, 3)
+
+::method "test_invalid_firstCol_lastCol"
+
+  source.0 = 3;
+  source.1 = 2
+  source.2 = 1
+  source.3 = 3
+
+  self~expectSyntax("40.921")
+  r = SysStemSort('source.',,,,, 4, 3)
+
+::method "test_invalid_stem"
+  self~expectSyntax("40.919")
+  r = SysStemSort("*")
+
+
+::method test_compound_name
+
+  -- Set up out expected values
+  e.1 = 'a'
+  e.2 = 'b'
+  e.3 = 'c'
+  e.4 = 'd'
+  e.5 = 'e'
+  e.6 = 'f'
+
+  -- Set up the values to sort
+  s.foo.1 = 'c'
+  s.foo.2 = 'b'
+  s.foo.3 = 'a'
+  s.foo.4 = 'f'
+  s.foo.5 = 'd'
+  s.foo.6 = 'e'
+  s.foo.0 = 6
+
+  -- Do the sort.
+  ret = SysStemSort('s.foo')
+
+  -- This tests that the return is equal to 0
+  self~assertTrue(ret == 0)
+
+  -- This tests the stem values are in the expected order
+  do i = 1 to s.foo.0
+    self~assertEquals(e.i, s.foo.i)
+  end
 
 ::method verifySeq
   use arg source., result.
