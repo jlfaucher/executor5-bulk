@@ -410,6 +410,7 @@ ERROR_MESSAGE Message_table[] = {      /* table of major and minor errors   */
       MINOR(Error_Incorrect_call_relative)
       MINOR(Error_Incorrect_call_stem_size)
       MINOR(Error_Incorrect_call_stem_range)
+      MINOR(Error_Incorrect_call_stem_sparse_array)
   MAJOR(Error_Conversion)
       MINOR(Error_Conversion_operator)
       MINOR(Error_Conversion_prefix)

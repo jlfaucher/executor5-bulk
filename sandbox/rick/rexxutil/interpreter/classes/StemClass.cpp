@@ -1587,11 +1587,13 @@ bool StemClass::sort(RexxString *prefix, int order, int type, size_t _first, siz
     CompoundTableElement *size_element = findCompoundVariable(stem_size);
     if (size_element == OREF_NULL)
     {
+        reportException(Error_Incorrect_call_stem_size);
         return false;
     }
     RexxInternalObject *size_value = size_element->getVariableValue();
     if (size_value == OREF_NULL)
     {
+        reportException(Error_Incorrect_call_stem_size);
         return false;
     }
 
@@ -1599,6 +1601,7 @@ bool StemClass::sort(RexxString *prefix, int order, int type, size_t _first, siz
     // get the integer value of this.  It must be a valid numeric value.
     if (!size_value->unsignedNumberValue(count, Numerics::DEFAULT_DIGITS))
     {
+        reportException(Error_Incorrect_call_stem_size);
         return false;
     }
     if (count == 0)         // if the count is zero, sorting is easy!
@@ -1615,6 +1618,7 @@ bool StemClass::sort(RexxString *prefix, int order, int type, size_t _first, siz
     // verify we're fully within the bounds
     if (_first > count || last > count)
     {
+        reportException(Error_Incorrect_call_stem_range, count);
         return false;
     }
     size_t bounds = last - _first + 1;
@@ -1633,12 +1637,14 @@ bool StemClass::sort(RexxString *prefix, int order, int type, size_t _first, siz
 
         if (next_element == OREF_NULL)
         {
+            reportException(Error_Incorrect_call_stem_sparse_array, i);
             return false;
         }
 
         RexxInternalObject *nextValue = next_element->getVariableValue();
         if (nextValue == OREF_NULL)
         {
+            reportException(Error_Incorrect_call_stem_sparse_array, i);
             return false;
         }
         // force this to a string value.

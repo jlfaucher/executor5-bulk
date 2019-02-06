@@ -740,6 +740,7 @@
 #define Error_Incorrect_call_relative_msg                            825
 #define Error_Incorrect_call_stem_size_msg                           826
 #define Error_Incorrect_call_stem_range_msg                          827
+#define Error_Incorrect_call_stem_sparse_array_msg                   828
 
 
 #endif
