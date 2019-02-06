@@ -351,6 +351,27 @@ return testResult
   self~assertEquals(0, SysStemSort('a.',,,,3))
   self~verifySeq(a., e.)
 
+::method 'test_sort_cols'
+
+  self~of(a., 'eca', 'abe', 'fad', 'bfc', 'cdb', 'def')
+  self~of(e., 'fad', 'abe', 'eca', 'cdb', 'def', 'bfc', )
+  self~assertEquals(0, SysStemSort('a.',,,,,2,2))
+  self~verifySeq(a., e.)
+
+  self~of(a., 'ec2', 'aa1', 'fb2', 'bc1', 'cb1', 'da2')
+  self~of(e., 'aa1', 'da2', 'cb1', 'fb2', 'bc1', 'ec2', )
+  self~assertEquals(0, SysStemSort('a.',,,,,2))
+  self~verifySeq(a., e.)
+
+  self~of(a., 'c2e', 'a1a', 'b2f', 'c1b', 'b1c', 'a2d')
+  self~of(e., 'a1a', 'a2d', 'b1c', 'b2f', 'c1b', 'c2e', )
+  self~assertEquals(0, SysStemSort('a.',,,,,,2))
+  self~verifySeq(a., e.)
+
+  self~of(a., 'eca', 'aBe', 'fad', 'bFc', 'cDb', 'def')
+  self~of(e., 'bFc', 'def', 'cDb', 'eca', 'aBe', 'fad', )
+  self~assertEquals(0, SysStemSort('a.','d','i',,,2,2))
+  self~verifySeq(a., e.)
 
 ::method test_unset_count
   a.1 = 'a'
