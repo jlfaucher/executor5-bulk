@@ -793,24 +793,24 @@ bool checkInclusion(TreeFinder *finder, uint32_t attr)
         return true;
     }
 
-    if (!finder->archiveSelected(attr & FILE_ATTRIBUTE_ARCHIVE))
+    if (!finder->archiveSelected((attr & FILE_ATTRIBUTE_ARCHIVE) != 0))
     {
         return  false;
     }
     // a little silly since this overlaps with the options
-    if (!finder->directorySelected(attr & FILE_ATTRIBUTE_DIRECTORY))
+    if (!finder->directorySelected((attr & FILE_ATTRIBUTE_DIRECTORY) != 0))
     {
         return  false;
     }
-    if (!finder->hiddenSelected(attr & FILE_ATTRIBUTE_HIDDEN))
+    if (!finder->hiddenSelected((attr & FILE_ATTRIBUTE_HIDDEN) != 0))
     {
         return  false;
     }
-    if (!finder->readOnlySelected(attr & FILE_ATTRIBUTE_READONLY))
+    if (!finder->readOnlySelected((attr & FILE_ATTRIBUTE_READONLY) != 0))
     {
         return  false;
     }
-    if (!finder->systemSelected(attr & FILE_ATTRIBUTE_SYSTEM))
+    if (!finder->systemSelected((attr & FILE_ATTRIBUTE_SYSTEM) != 0))
     {
         return  false;
     }
@@ -3169,7 +3169,8 @@ RexxRoutine1(uint32_t, SysWinGetPrinters, RexxStemObject, stem)
         }
         currentSize = realSize;
         realSize = 0;
-        pArray = (char *)realloc(pArray, sizeof(char) * currentSize);
+        // adjust to the new size
+        pArray.realloc(currentSize);
     }
 
     StemHandler stemVariable(context, stem);

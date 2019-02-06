@@ -82,6 +82,12 @@ class AutoFree
      }
      operator char *() const { return value; }
      int operator==(char *p) { return value == p; }
+
+     char *realloc(size_t newLen)
+     {
+         value = (char *)::realloc(value, newLen);
+         return value;
+     }
  private:
      char *value;
 };
