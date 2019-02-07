@@ -1377,7 +1377,7 @@ RexxRoutine3(int, SysStemDelete, RexxStemObject, toStem, positive_wholenumber_t,
         if (value == NULLOBJECT)
         {
             // return this as a failure
-            return -1;
+            context->ThrowException1(Rexx_Error_Incorrect_call_stem_sparse_array, context->WholeNumberToObject(index));
         }
         context->SetStemArrayElement(toStem, index, value);
     }
@@ -1418,7 +1418,7 @@ RexxRoutine3(int, SysStemInsert, RexxStemObject, toStem, positive_wholenumber_t,
     /* check whether new position is within limits */
     if (position > count + 1)
     {
-        context->ThrowException1(Rexx_Error_Incorrect_call_stem_range, context->StringSizeToObject(count));
+        context->ThrowException1(Rexx_Error_Incorrect_call_stem_range, context->WholeNumberToObject(count));
     }
 
     for (wholenumber_t index = count; index >= position; index--)
@@ -1428,8 +1428,7 @@ RexxRoutine3(int, SysStemInsert, RexxStemObject, toStem, positive_wholenumber_t,
         // is this a sparse array?
         if (value == NULLOBJECT)
         {
-            // return this as a failure
-            return -1;
+            context->ThrowException1(Rexx_Error_Incorrect_call_stem_sparse_array, context->WholeNumberToObject(index));
         }
         context->SetStemArrayElement(toStem, index + 1, value);
     }
@@ -1541,8 +1540,7 @@ RexxRoutine6(int, SysStemCopy, RexxStemObject, fromStem, RexxStemObject, toStem,
             // is this a sparse array?
             if (value == NULLOBJECT)
             {
-                // return this as a failure
-                return -1;
+                context->ThrowException1(Rexx_Error_Incorrect_call_stem_sparse_array, context->WholeNumberToObject(index));
             }
             context->SetStemArrayElement(toStem, index + count, value);
         }
@@ -1560,8 +1558,7 @@ RexxRoutine6(int, SysStemCopy, RexxStemObject, fromStem, RexxStemObject, toStem,
         // is this a sparse array?
         if (value == NULLOBJECT)
         {
-            // return this as a failure
-            return -1;
+            context->ThrowException1(Rexx_Error_Incorrect_call_stem_sparse_array, context->WholeNumberToObject(index));
         }
         context->SetStemArrayElement(toStem, to + index, value);
     }
