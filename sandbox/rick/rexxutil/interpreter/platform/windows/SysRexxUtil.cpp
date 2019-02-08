@@ -269,7 +269,7 @@ RexxRoutine1(RexxStringObject, SysDriveInfo, CSTRING, drive)
 {
     size_t driveLength = strlen(drive);
 
-    if (driveLength == 0 || driveLength > 2 || (driveLength == 2 && drive[1] != ';'))
+    if (driveLength == 0 || driveLength > 2 || (driveLength == 2 && drive[1] != ':'))
     {
         context->ThrowException1(Rexx_Error_Incorrect_call_user_defined, context->String("Invalid drive specification"));
     }
@@ -343,7 +343,7 @@ RexxRoutine1(RexxStringObject, SysDriveInfo, CSTRING, drive)
 * Return:    'A: B: C: D: ...'                                           *
 *************************************************************************/
 
-RexxRoutine2(RexxStringObject, SysDriveMap, CSTRING, drive, OPTIONAL_CSTRING, mode)
+RexxRoutine2(RexxStringObject, SysDriveMap, OPTIONAL_CSTRING, drive, OPTIONAL_CSTRING, mode)
 {
     ULONG selectMode = USED;             // Query mode USED, FREE,
     ULONG driveType = DRIVE_UNKNOWN;     // checking for a particular type of drive
@@ -352,18 +352,22 @@ RexxRoutine2(RexxStringObject, SysDriveMap, CSTRING, drive, OPTIONAL_CSTRING, mo
     char     temp[MAX_PATH];             // Entire drive map built here
     temp[0] = '\0';
     /* check starting drive letter*/
-    size_t driveLength = strlen(drive);
-
-    if (driveLength == 0 || driveLength > 2 || (driveLength == 2 && drive[1] != ':'))
+    ULONG start = 3;
+    if (drive != NULL)
     {
-        context->ThrowException1(Rexx_Error_Incorrect_call_user_defined, context->String("Invalid drive specification"));
-    }
+        size_t driveLength = strlen(drive);
 
-    // make sure this is in range
-    ULONG start = toupper(drive[0]) - 'A' + 1;
-    if (start < 1 || start > 26)
-    {
-        context->ThrowException1(Rexx_Error_Incorrect_call_user_defined, context->String("Invalid drive specification"));
+        if (driveLength == 0 || driveLength > 2 || (driveLength == 2 && drive[1] != ':'))
+        {
+            context->ThrowException1(Rexx_Error_Incorrect_call_user_defined, context->String("Invalid drive specification"));
+        }
+
+        // make sure this is in range
+        start = toupper(drive[0]) - 'A' + 1;
+        if (start < 1 || start > 26)
+        {
+            context->ThrowException1(Rexx_Error_Incorrect_call_user_defined, context->String("Invalid drive specification"));
+        }
     }
     /* check the mode             */
     if (mode != NULL)
@@ -456,7 +460,7 @@ RexxRoutine2(RexxStringObject, SysDriveMap, CSTRING, drive, OPTIONAL_CSTRING, mo
         driveMap >>= 1;
     }
 
-    driveLength = driveMapBuffer.length();
+    size_t driveLength = driveMapBuffer.length();
     // if we are returning anything, then remove the last blank
     if (driveLength > 0)
     {

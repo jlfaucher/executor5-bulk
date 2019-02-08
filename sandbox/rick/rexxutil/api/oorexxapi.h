@@ -4069,7 +4069,7 @@ END_EXTERN_C()
 #define ARGUMENT_TYPE_POINTERSTRING         POINTER
 #define ARGUMENT_TYPE_RexxMutableBufferObject RexxMutableBufferObject
 #define ARGUMENT_TYPE_positive_wholenumber_t wholenumber_t
-#define ARGUMENT_TYPE_nonnegative_wholenumber_t nonnegative_t
+#define ARGUMENT_TYPE_nonnegative_wholenumber_t wholenumber_t
 
 #define ARGUMENT_TYPE_OPTIONAL_RexxObjectPtr         RexxObjectPtr
 #define ARGUMENT_TYPE_OPTIONAL_int                   int
@@ -4099,7 +4099,7 @@ END_EXTERN_C()
 #define ARGUMENT_TYPE_OPTIONAL_RexxClassObject       RexxClassObject
 #define ARGUMENT_TYPE_OPTIONAL_RexxMutableBufferObject   RexxMutableBufferObject
 #define ARGUMENT_TYPE_OPTIONAL_positive_wholenumber_t wholenumber_t
-#define ARGUMENT_TYPE_OPTIONAL_nonnegative_wholenumber_t nonnegative_t
+#define ARGUMENT_TYPE_OPTIONAL_nonnegative_wholenumber_t wholenumber_t
 
 #define ARGUMENT_TYPE(t) ((t) & ~REXX_OPTIONAL_ARGUMENT)
 #define IS_OPTIONAL_ARGUMENT(t) (((t) & REXX_OPTIONAL_ARGUMENT) != 0)

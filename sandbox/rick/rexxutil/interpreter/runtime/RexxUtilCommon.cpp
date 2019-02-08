@@ -1457,7 +1457,7 @@ RexxRoutine3(int, SysStemInsert, RexxStemObject, toStem, positive_wholenumber_t,
 *            -1 - stem copy failed                                       *
 *************************************************************************/
 RexxRoutine6(int, SysStemCopy, RexxStemObject, fromStem, RexxStemObject, toStem,
-             OPTIONAL_positive_wholenumber_t, from, OPTIONAL_positive_wholenumber_t, to, OPTIONAL_positive_wholenumber_t, count,
+             OPTIONAL_positive_wholenumber_t, from, OPTIONAL_positive_wholenumber_t, to, OPTIONAL_nonnegative_wholenumber_t, count,
              OPTIONAL_CSTRING, option)
 {
     bool inserting = false;
