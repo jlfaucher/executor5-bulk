@@ -141,7 +141,7 @@ return testResult
   self~assertEquals("", SysQueryRexxMacro("test_add_nopath"))
 
 ::method test_add_arg_option_illegal
-  self~expectSyntax(40.1)
+  self~expectSyntax(40.920)
   call SysAddRexxMacro "name", "path", "illegal-option"
 
 ::method test_add_two_args_default
@@ -240,7 +240,7 @@ return testResult
   call SysReorderRexxMacro "", "", ""
 
 ::method test_reorder_arg_option_illegal
-  self~expectSyntax(40.1)
+  self~expectSyntax(40.920)
   call SysReorderRexxMacro "name", "illegal-option"
 
 ::method test_reorder

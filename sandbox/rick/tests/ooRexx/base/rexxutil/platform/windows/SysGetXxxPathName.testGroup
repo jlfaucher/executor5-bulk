@@ -116,8 +116,8 @@ return testResult
   self~assertTrue(longFile~exists, "zero-length temp file should have been created")
 
   path = longFile~absolutePath
-  long = SysGetLongPathName(path) 
-  short = SysGetShortPathName(path) 
+  long = SysGetLongPathName(path)
+  short = SysGetShortPathName(path)
   self~assertEquals(path, long)
   self~assertEquals(259, long~length)
   self~assertEquals(SysGetShortPathName(directory())~length + 1 + 8, short~length)
