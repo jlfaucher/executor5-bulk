@@ -454,7 +454,7 @@ ERROR_MESSAGE Message_table[] = {      /* table of major and minor errors   */
     MESSAGE(Error_Interpretation_user_defined, "&1.")
     MESSAGE(Error_Invalid_argument, "Invalid argument.")
     MESSAGE(Error_Invalid_argument_user_defined, "&1.")
-    MESSAGE(Error_Invalid_argument_noarg, "Missing argument; the &1 argument is required.")
+    MESSAGE(Error_Invalid_argument_noarg, "Missing argument; argument &1 is required.")
     MESSAGE(Error_Invalid_argument_number, "The &1 argument must be a number; found \"&2\".")
     MESSAGE(Error_Invalid_argument_whole, "The &1 argument must be a whole number; found \"&2\".")
     MESSAGE(Error_Invalid_argument_nonnegative, "The &1 argument must be zero or a positive whole number; found \"&2\".")

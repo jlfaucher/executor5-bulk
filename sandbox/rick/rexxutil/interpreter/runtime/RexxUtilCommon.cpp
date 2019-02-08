@@ -1982,18 +1982,13 @@ RexxRoutine3(RexxStringObject, SysSearchPath, CSTRING, path, CSTRING, file, OPTI
         }
     }
 
-    const char *pathString = NULL;
-
     RoutineFileNameBuffer pathValue(context);
     // get the name of the path variable
     SystemInterpreter::getEnvironmentVariable(path, pathValue);
 
     if (opt == 'N')
     {
-        if (pathValue.length() != 0)
-        {
-            pathString = pathValue;
-        }
+        fullPath = pathValue;
     }
     // search current directory first. We construct the patch with the
     // current directory in front of the path.
@@ -2001,17 +1996,13 @@ RexxRoutine3(RexxStringObject, SysSearchPath, CSTRING, path, CSTRING, file, OPTI
     {
         RoutineFileNameBuffer currentDir(context);
         SysFileSystem::getCurrentDirectory(currentDir);
+        // place the current dir at the front
+        fullPath = currentDir;
         // if we have a path, add it to the end
         if (pathValue.length() > 0)
         {
-            fullPath = currentDir;
             fullPath += SysFileSystem::getPathSeparator();
             fullPath += pathValue;
-        }
-        // the current directory is everything
-        else
-        {
-            fullPath = pathValue;
         }
     }
 
