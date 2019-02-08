@@ -891,7 +891,11 @@ void TreeFinder::recursiveFindFile(FileNameBuffer &path)
 }
 
 
-// add a result to the return stem
+/**
+ * add a result to the return stem
+ *
+ * @param v      The string value to add as the next stem element.
+ */
 void TreeFinder::addResult(const char *v)
 {
     RexxStringObject t = context->String(v);
@@ -1763,6 +1767,7 @@ RexxRoutine1(logical_t, SysFileExists, CSTRING, name)
     return SysFileSystem::exists(qualifiedName);
 }
 
+
 /*************************************************************************
 * Function:  SysIsFileLink                                               *
 *                                                                        *
@@ -1811,7 +1816,7 @@ RexxRoutine1(logical_t, SysIsFileDirectory, CSTRING, file)
 {
     RoutineQualifiedName qualifiedName(context, file);
 
-    return SysFileSystem::isDirectory(file);
+    return SysFileSystem::isDirectory(qualifiedName);
 }
 
 
