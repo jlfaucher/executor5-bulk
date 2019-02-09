@@ -1879,14 +1879,38 @@ RexxRoutine4(CSTRING, SysFileSearch, CSTRING, needle, CSTRING, file, RexxStemObj
     // was the option specified?
     if (opts != NULL)
     {
-        if (strstr(opts, "N") || strstr(opts, "n"))
+        for (int i = 0; i < strlen(opts); i++)
         {
-            linenums = true;
-        }
+            switch (toupper(opts[i]))
+            {
+                case 'N':
+                {
+                    linenums = true;
+                    break;
+                }
 
-        if (strstr(opts, "C") || strstr(opts, "c"))
-        {
-            sensitive = true;
+                case 'I':
+                {
+                    sensitive = false;
+                    break;
+                }
+
+                case 'C':
+                {
+                    sensitive = true;
+                    break;
+                }
+
+                default:
+                {
+                    char buf[256] = { 0 };
+                    snprintf(buf, sizeof(buf),
+                             "SysFileSearch options argument must be a combination of C, I, or N; found \"%s\"",
+                             opts);
+
+                    context->ThrowException1(Rexx_Error_Incorrect_call_user_defined, context->String(buf));
+                }
+            }
         }
     }
 
@@ -2066,29 +2090,6 @@ RexxRoutine1(int, SysSleep, RexxStringObject, delay)
     return 0;
 }
 
-/****************************************************************************/
-/* sysDirectory                                                             */
-/****************************************************************************/
-RexxRoutine1(RexxStringObject, SysDirectory, OPTIONAL_CSTRING, dir)
-{
-    if (dir != NO_CSTRING)               /* if new directory is not null,     */
-    {
-        RoutineQualifiedName qualifiedName(context, dir);
-
-        // if we can't change, return a null string to indicate a failure
-        if (!SysFileSystem::setCurrentDirectory(qualifiedName))
-        {
-            return context->NullString();
-        }
-    }
-
-    // retrieve the current directory and return it.
-    RoutineFileNameBuffer currentDirectory(context);
-
-    SysFileSystem::getCurrentDirectory(currentDirectory);
-    return context->NewStringFromAsciiz(currentDirectory);
-}
-
 /*************************************************************************
 * Function:  SysFileCopy                                                 *
 *                                                                        *
@@ -2205,7 +2206,6 @@ RexxRoutineEntry rexxutil_routines[] =
     REXX_TYPED_ROUTINE(SysFileSearch,          SysFileSearch),
     REXX_TYPED_ROUTINE(SysSearchPath,          SysSearchPath),
     REXX_TYPED_ROUTINE(SysSleep,               SysSleep),
-    REXX_TYPED_ROUTINE(SysDirectory,           SysDirectory),
     REXX_TYPED_ROUTINE(SysFileMove,            SysFileMove),
     REXX_TYPED_ROUTINE(SysFileCopy,            SysFileCopy),
     REXX_TYPED_ROUTINE(SysTempFileName,        SysTempFileName),
