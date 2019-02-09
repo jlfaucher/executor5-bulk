@@ -117,7 +117,102 @@ return testResult
     tempFile~setWritable
     self~assertEquals(0, SysFileDelete('testinput4'))
 
+    temp = .TemporaryTestDirectory~new(self, "testdir")
+
+    say temp~fullName
+
+    self~assertEquals(0, SysMkDir(temp~fullName))
+    self~assertTrue(SysIsFileDirectory(temp~fullName))
+    self~assertEquals(0, SysRmDir(temp~fullName))
+    self~assertFalse(SysFileExists(temp~fullName))
+
+    self~assertEquals(0, SysMkDir("testdir"))
+    self~assertTrue(SysIsFileDirectory("testDir"))
+    self~assertEquals(0, SysRmDir("testDir"))
+    self~assertFalse(SysFileExists("testDir"))
+
     call directory currentDir
+
+::method test_file_copy
+    parse source . . me
+
+    directory = filespec('Location', me)
+
+    lines = ("Line1","","Line3")
+    temp = .TemporaryTestFile~new(self, 'copysource')
+    temp~create(lines)
+
+    temp2 = .TemporaryTestFile~new(self, 'copytarget')
+
+    self~assertEquals(0, SysFileCopy(temp~fullName, temp2~fullname))
+    self~assertTrue(SysFileExists(temp~fullName));
+    self~assertTrue(SysFileExists(temp2~fullName));
+
+    s = .stream~new(temp2~fullName)
+    self~assertEquivalentList(lines, s~arrayIn)
+    s~close
+
+    currentDir = Directory(directory)
+
+    lines = ("Line4","","Line6")
+    temp~create(lines)
+
+    self~assertEquals(0, SysFileCopy('copysource', 'copytarget'))
+    self~assertTrue(SysFileExists('copysource'));
+    self~assertTrue(SysFileExists('copytarget'));
+
+    s = .stream~new('copytarget')
+    self~assertEquivalentList(lines, s~arrayIn)
+    s~close
+
+::method test_file_move
+    parse source . . me
+
+    directory = filespec('Location', me)
+
+    lines = ("Line1","","Line3")
+    temp = .TemporaryTestFile~new(self, 'movesource')
+    temp~create(lines)
+
+    temp2 = .TemporaryTestFile~new(self, 'movetarget')
+
+    self~assertEquals(0, SysFileMove(temp~fullName, temp2~fullname))
+    self~assertFalse(SysFileExists(temp~fullName));
+    self~assertTrue(SysFileExists(temp2~fullName));
+
+    s = .stream~new(temp2~fullName)
+    self~assertEquivalentList(lines, s~arrayIn)
+    s~close
+
+    call SysFileDelete(temp2~fullName)
+
+    currentDir = Directory(directory)
+
+    lines = ("Line4","","Line6")
+    temp~create(lines)
+
+self~assertEquals(0, SysFileMove('movesource', 'movetarget'))
+    self~assertFalse(SysFileExists('movesource'));
+    self~assertTrue(SysFileExists('movetarget'));
+
+    s = .stream~new('movetarget')
+    self~assertEquivalentList(lines, s~arrayIn)
+    s~close
+
+    temp~create(("Line7","","Line8"))
+
+    -- now try to do the move when the file already exists
+    self~assertNotEquals(0, SysFileMove('movesource', 'movetarget'))
+    self~assertTrue(SysFileExists('movesource'));
+    self~assertTrue(SysFileExists('movetarget'));
+
+    s = .stream~new('movetarget')
+    self~assertEquivalentList(lines, s~arrayIn)
+    s~close
+
+    self~assertNotEquals(0, SysFileMove('movesourcexxxx', 'movetargetxxxx'))
+    self~assertFalse(SysFileExists('movesourcexxxx'));
+    self~assertFalse(SysFileExists('movetargetxxxx'));
 
 ::options novalue error
 
