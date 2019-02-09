@@ -1088,6 +1088,29 @@ bool SysFileSystem::setFileReadOnly(const char *name)
 
 
 /**
+ * Set the write attribute on a file or directory.
+ *
+ * @param name   The target name.
+ *
+ * @return true if the attribute was set, false otherwise.
+ */
+bool SysFileSystem::setFileWritable(const char *name)
+{
+    struct stat64 buffer;
+    if (stat64(name, &buffer) != 0)
+    {
+        return false;
+    }
+    mode_t mode = buffer.st_mode;
+    // this really turns on the write permissions
+    mode = mode | 00222;
+
+    return chmod(name, mode) == 0;
+}
+
+
+
+/**
  * indicate whether the file system is case sensitive.
  *
  * @return For Unix systems, always returns true. For MacOS,

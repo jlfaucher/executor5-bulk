@@ -105,6 +105,7 @@ class SysFileSystem
      static bool  makeDirectory(const char *name);
      static bool  isHidden(const char *name);
      static bool  setFileReadOnly(const char *name);
+     static bool  setFileWritable(const char *name);
      static bool  isCaseSensitive();
      static bool  isCaseSensitive(const char *name);
      static int   getRoots(FileNameBuffer &roots);

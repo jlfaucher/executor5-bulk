@@ -237,6 +237,16 @@ RexxMethod1(logical_t, file_set_read_only, CSTRING, name)
 
 
 /**
+ * Set the read-only flag for the target file
+ */
+RexxMethod1(logical_t, file_set_writable, CSTRING, name)
+{
+    return SysFileSystem::setFileWritable(name);
+}
+
+
+
+/**
  * Return the last modified date as a Ticks time value.
  */
 RexxMethod1(uint64_t, file_length, CSTRING, name)

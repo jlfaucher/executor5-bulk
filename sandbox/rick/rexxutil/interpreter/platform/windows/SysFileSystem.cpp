@@ -595,7 +595,7 @@ void SysFileSystem::getLongName(FileNameBuffer &fullName)
  */
 int SysFileSystem::deleteFile(const char *name)
 {
-    return DeleteFile(name) == 0 ? 0 : GetLastError();
+    return DeleteFile(name) != 0 ? 0 : GetLastError();
 }
 
 /**
@@ -607,7 +607,7 @@ int SysFileSystem::deleteFile(const char *name)
  */
 int SysFileSystem::deleteDirectory(const char *name)
 {
-    return RemoveDirectory(name) == 0 ? 0 : GetLastError();
+    return RemoveDirectory(name) != 0 ? 0 : GetLastError();
 }
 
 
@@ -874,12 +874,12 @@ bool SysFileSystem::setLastAccessDate(const char *name, int64_t time)
      */
     DWORD flags = FILE_ATTRIBUTE_NORMAL;
     int result = GetFileAttributes(name);
-    if ( result == 0xFFFFFFFF )
+    if (result == 0xFFFFFFFF)
     {
         return false;
     }
 
-    if ( result & FILE_ATTRIBUTE_DIRECTORY )
+    if (result & FILE_ATTRIBUTE_DIRECTORY)
     {
         flags = FILE_FLAG_BACKUP_SEMANTICS;
     }
@@ -888,7 +888,7 @@ bool SysFileSystem::setLastAccessDate(const char *name, int64_t time)
     // the CreateFile function with the FILE_WRITE_ATTRIBUTES"
     HANDLE hFile = CreateFile(name, FILE_WRITE_ATTRIBUTES, FILE_SHARE_READ | FILE_SHARE_WRITE,
                               NULL, OPEN_EXISTING, flags, NULL);
-    if ( hFile == INVALID_HANDLE_VALUE )
+    if (hFile == INVALID_HANDLE_VALUE)
     {
         return false;
     }
@@ -896,8 +896,8 @@ bool SysFileSystem::setLastAccessDate(const char *name, int64_t time)
     // convert back to a file time
     TicksToFileTime(time, localFileTime);
 
-    if ( LocalFileTimeToFileTime(&localFileTime, &fileTime) &&
-         SetFileTime(hFile, NULL, &fileTime, NULL) )
+    if (LocalFileTimeToFileTime(&localFileTime, &fileTime) &&
+        SetFileTime(hFile, NULL, &fileTime, NULL))
     {
         CloseHandle(hFile);
         return true;
@@ -917,7 +917,7 @@ bool SysFileSystem::setLastAccessDate(const char *name, int64_t time)
 bool SysFileSystem::setFileReadOnly(const char *name)
 {
     DWORD attrs = GetFileAttributes(name);
-    if ( attrs == 0xFFFFFFFF )
+    if (attrs == 0xFFFFFFFF)
     {
         return false;
     }
@@ -925,6 +925,27 @@ bool SysFileSystem::setFileReadOnly(const char *name)
     attrs = attrs | FILE_ATTRIBUTE_READONLY;
     return SetFileAttributes(name, attrs) != 0;
 }
+
+
+/**
+ * Set the read-only attribute on a file or directory.
+ *
+ * @param name   The target name.
+ *
+ * @return true if the attribute was set, false otherwise.
+ */
+bool SysFileSystem::setFileWritable(const char *name)
+{
+    DWORD attrs = GetFileAttributes(name);
+    if (attrs == 0xFFFFFFFF)
+    {
+        return false;
+    }
+
+    attrs = attrs & ~FILE_ATTRIBUTE_READONLY;
+    return SetFileAttributes(name, attrs) != 0;
+}
+
 
 
 /**
@@ -1047,7 +1068,7 @@ bool SysFileSystem::setCurrentDirectory(const char *directory)
  */
 int SysFileSystem::copyFile(const char *fromFile, const char *toFile)
 {
-    return CopyFile(fromFile, toFile, 0) ? 0 : GetLastError();
+    return CopyFile(fromFile, toFile, 0) != 0 ? 0 : GetLastError();
 }
 
 
@@ -1061,7 +1082,7 @@ int SysFileSystem::copyFile(const char *fromFile, const char *toFile)
  */
 int SysFileSystem::moveFile(const char *fromFile, const char *toFile)
 {
-    return MoveFile(fromFile, toFile) ? 0 : GetLastError();
+    return MoveFile(fromFile, toFile) != 0 ? 0 : GetLastError();
 }
 
 
