@@ -91,6 +91,32 @@ return testResult
 
     self~assertFalse(SysIsFileDirectory(directory||'xxxxx'))
 
+    temp = .TemporaryTestFile~new(self, 'testinput')
+    temp~create(("Line1","","Line3"))
+
+    self~assertTrue(SysFileExists('testinput'))
+    self~assertEquals(0, SysFileDelete(temp~fullName))
+    self~assertFalse(SysFileExists('testinput'))
+
+    temp = .TemporaryTestFile~new(self, 'testinput2')
+    temp~create(("Line1","","Line3"))
+
+    self~assertTrue(SysFileExists('testinput2'))
+    self~assertEquals(0, SysFileDelete('testinput2'))
+    self~assertFalse(SysFileExists('testinput2'))
+
+    self~assertNotEquals(0, SysFileDelete('testinput3'))
+    self~assertNotEquals(0, SysFileDelete(directory))
+
+    temp = .TemporaryTestFile~new(self, 'testinput4')
+    temp~create(("Line1","","Line3"))
+
+    tempFile = .File~new(temp~fullName)
+    tempFile~setReadOnly
+    self~assertNotEquals(0, SysFileDelete('testinput4'))
+    tempFile~setWritable
+    self~assertEquals(0, SysFileDelete('testinput4'))
+
     call directory currentDir
 
 ::options novalue error
