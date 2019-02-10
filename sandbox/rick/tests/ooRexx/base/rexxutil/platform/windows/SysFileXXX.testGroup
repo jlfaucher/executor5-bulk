@@ -191,7 +191,7 @@ return testResult
     lines = ("Line4","","Line6")
     temp~create(lines)
 
-self~assertEquals(0, SysFileMove('movesource', 'movetarget'))
+    self~assertEquals(0, SysFileMove('movesource', 'movetarget'))
     self~assertFalse(SysFileExists('movesource'));
     self~assertTrue(SysFileExists('movetarget'));
 
@@ -213,6 +213,89 @@ self~assertEquals(0, SysFileMove('movesource', 'movetarget'))
     self~assertNotEquals(0, SysFileMove('movesourcexxxx', 'movetargetxxxx'))
     self~assertFalse(SysFileExists('movesourcexxxx'));
     self~assertFalse(SysFileExists('movetargetxxxx'));
+
+::method test_search_file
+
+    parse source . . me
+
+    directory = filespec('Location', me)
+    currentDir = Directory(directory)
+
+    lines = ("line1","","Line3")
+    temp = .TemporaryTestFile~new(self, 'searchfile')
+
+    temp~create(lines)
+
+    self~of(e., "line1", "Line3")
+
+    self~assertEquals("", SysFileSearch("l", temp~fullName, a.))
+    self~assertEquals(2, a.0)
+    self~verifySeq(a., e.)
+
+    drop a.
+
+    self~assertEquals("", SysFileSearch("L", 'searchfile', a., 'i'))
+    self~assertEquals(2, a.0)
+    self~verifySeq(a., e.)
+
+    drop a.
+    self~of(e., "Line3")
+
+    self~assertEquals("", SysFileSearch("L", temp~fullName, a., 'c'))
+    self~assertEquals(1, a.0)
+    self~verifySeq(a., e.)
+
+    drop a.
+    self~of(e., "line1")
+
+    self~assertEquals("", SysFileSearch("l", 'searchfile', a., 'c'))
+    self~assertEquals(1, a.0)
+    self~verifySeq(a., e.)
+
+    drop a.
+    self~of(e., "1 line1", "3 Line3")
+
+    self~assertEquals("", SysFileSearch("l", temp~fullName, a., 'n'))
+    self~assertEquals(2, a.0)
+    self~verifySeq(a., e.)
+
+    drop a.
+    self~of(e., "1 line1", "3 Line3")
+
+    self~assertEquals("", SysFileSearch("L", temp~fullName, a., 'ni'))
+    self~assertEquals(2, a.0)
+    self~verifySeq(a., e.)
+
+    drop a.
+    self~of(e., "3 Line3")
+
+    self~assertEquals("", SysFileSearch("L", temp~fullName, a., 'cn'))
+    self~assertEquals(1, a.0)
+    self~verifySeq(a., e.)
+
+    temp~create(("Line1", copies('y', 20000)||'X', "Line2"))
+    self~of(e., copies('y', 20000)||'X')
+
+    self~assertEquals("", SysFileSearch("X", temp~fullName, a., 'c'))
+    self~assertEquals(1, a.0)
+    self~verifySeq(a., e.)
+
+
+::method verifySeq
+  use arg source., result.
+
+  do i=0 to result.0
+     self~assertEquals(source.i, result.i)
+  end
+
+::method of
+  use arg target.
+  values = arg(2, 'a')
+
+  target.0 = values~items
+  do i = 1 to target.0
+      target.i = values[i]
+  end
 
 ::options novalue error
 
