@@ -65,7 +65,7 @@ class LineReader
 {
  public:
      LineReader() : buffer(NULL), bufferSize(0), fileSize(0), dataLength(0),
-         fileResidual(0), scan(NULL), file()
+         fileResidual(0), scanOffset(0), lineStart(0), file()
      { }
      ~LineReader()
      {
@@ -94,8 +94,8 @@ class LineReader
 
          // we read every thing initially
          fileResidual = fileSize;
+         // allocate a buffer to hold the entire file, but cap at a pretty good size
          bufferSize = std::min((size_t)fileSize, InitialBufferSize);
-         // allocate a buffer to hold the entire file.
          buffer = (char *)malloc(bufferSize);
          if (buffer == NULL)
          {
@@ -128,32 +128,45 @@ class LineReader
          // do we have data still in the buffer? We need to shift this to the front.
          if (dataLength > 0)
          {
-             // shift the data in the buffer
-             memmove(buffer, scan, dataLength);
+             // any leading part?
+             if (lineStart != 0)
+             {
+                 // shift the data in the buffer
+                 memmove(buffer, buffer + lineStart, dataLength);
+                 // we need to adjust our current positions
+                 scanOffset -= lineStart;
+                 lineStart = 0;
+             }
+
              readLocation = buffer + dataLength;
              readLength = bufferSize - dataLength;
          }
 
          readLength = std::min(fileResidual, readLength);
+
+         size_t actualLength = 0;
          // if the read fails or we don't get anything, return a failure
-         if (!file.read(buffer, readLength, dataLength) || dataLength == 0)
+         if (!file.read(readLocation, readLength, actualLength) || actualLength == 0)
          {
              return false;
          }
 
          // if we got less than expected, we're done reading
-         if (dataLength < readLength)
+         if (actualLength < readLength)
          {
              fileResidual = 0;
          }
          else
          {
              // adjust the residual size for the amount read
-             fileResidual -= dataLength;
+             fileResidual -= readLength;
          }
 
+         // add in any length left from the original buffer.
+         dataLength += actualLength;
+
          // scan for an eof character, if there is one
-         char *endptr = (char *)memchr(buffer, SysFileSystem::EOF_Marker, dataLength);
+         char *endptr = (char *)memchr(buffer + scanOffset, SysFileSystem::EOF_Marker, actualLength);
          // if we have a hit, then we need to adjust the length downward
          if (endptr != NULL)
          {
@@ -161,8 +174,6 @@ class LineReader
              dataLength = endptr - buffer;
              fileResidual = 0;
          }
-         // set scan position to the beginning
-         scan = buffer;
          return true;
      }
 
@@ -185,17 +196,14 @@ class LineReader
          size_t newBufferSize = bufferSize + BufferExpansionSize;
 
          // try to expand
-         char *newBuffer = (char *)realloc(buffer, newBufferSize);
+         buffer.realloc(newBufferSize);
          // can't expand, then just return the end
-         if (newBuffer == NULL)
+         if (buffer == NULL)
          {
              return false;
          }
 
-         // we're reallocated, adjust for the new reality
-         buffer = newBuffer;
          bufferSize = newBufferSize;
-         scan = buffer + readOffset;
 
          // read some more data
          return readNextBuffer();
@@ -222,6 +230,9 @@ class LineReader
                  return false;
              }
          }
+         // the last line left the offset already set up us
+         lineStart = scanOffset;
+
          // look for a line
          if (findLine(line, size))
          {
@@ -247,8 +258,11 @@ class LineReader
          }
 
          // no longer possible to expand the buffer... return what we have
-         line = scan;
+         line = buffer + lineStart;
          size = dataLength;
+
+         // no more data to process
+         dataLength = 0;
 
          return true;
      }
@@ -265,18 +279,18 @@ class LineReader
      bool findLine(const char *&line, size_t &size)
      {
          // look for a line feed character for the end of the last line
-         const char *linend = (const char *)memchr(scan, SysFileSystem::NewLine, dataLength);
+         const char *linend = (const char *)memchr(buffer + scanOffset, SysFileSystem::NewLine, bufferSize - scanOffset);
          // did we get a hit?
          if (linend != NULL)
          {
              // calculate the return length
-             size = linend - scan;
+             size = linend - (buffer + lineStart);
              // this is the start of the line
-             line = scan;
+             line = buffer + lineStart;
 
              // reduce the length and bump the scan position
              dataLength -= size + 1;
-             scan = linend + 1;
+             scanOffset = (linend - buffer) + 1;
 
              // we don't want the CR character in the result string
              if (*(linend - 1) == SysFileSystem::CarriageReturn)
@@ -286,6 +300,11 @@ class LineReader
              // we got something
              return true;
          }
+
+         // we will scan from the current end location on the next scan
+         // rather than rescanning the part we already have in the buffer.
+         scanOffset = bufferSize;
+
          return false;
      }
 
@@ -294,26 +313,23 @@ class LineReader
       */
      void close()
      {
-         if (buffer != NULL)
-         {
-             free(buffer);
-         }
          file.close();
      }
 
 
  protected:
      // the initial size of our buffer
-     const size_t InitialBufferSize = 0x0001000;
+     const size_t InitialBufferSize = 0x01000;
      // amount we extend the buffer by if a line is longer
-     const size_t BufferExpansionSize = 0x0000800;
+     const size_t BufferExpansionSize = 0x01000;
 
-     char *buffer;                 // the current buffer
+     AutoFree buffer;              // the current buffer
      size_t bufferSize;            // current size of the buffer
      int64_t fileSize;             // full size of the file
      size_t dataLength;            // the data left in the buffer
      size_t fileResidual;          // the amount of unread data in the file
-     const char  *scan;            // current scan postion in the buffer
+     size_t lineStart;             // start of the line in the current buffer
+     size_t scanOffset;            // the current scan offset
      SysFile file;                 // the file information we are reading
 };
 
@@ -1947,7 +1963,7 @@ RexxRoutine4(CSTRING, SysFileSearch, CSTRING, needle, CSTRING, file, RexxStemObj
 
                 size_t totalLineSize = strlen(lineNumber) + lineLength;
 
-                AutoFree lineBuffer = (char *)malloc(totalLineSize);
+                AutoFree lineBuffer = (char *)malloc(totalLineSize + 8);
                 if (lineBuffer == NULL)
                 {
                     // make sure we update the count with the number of return items
@@ -1956,8 +1972,8 @@ RexxRoutine4(CSTRING, SysFileSearch, CSTRING, needle, CSTRING, file, RexxStemObj
                 }
 
                 // now build the return value
-                strncpy(lineBuffer, lineNumber, sizeof(lineBuffer));
-                memcpy(lineBuffer + strlen(lineNumber), line, lineLength);
+                strncpy((char *)lineBuffer, lineNumber, sizeof(totalLineSize));
+                memcpy((char *)lineBuffer + strlen(lineNumber), line, lineLength);
 
                 RexxStringObject returnValue = context->NewString(lineBuffer, totalLineSize);
 
