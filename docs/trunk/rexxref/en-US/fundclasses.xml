@@ -2227,9 +2227,9 @@ otherwise returns &false;.
 </para>
 <para><example>
 <title>Method class &mdash; isAbstract method</title>
-<programlisting><![CDATA[say .Orderable~method("CompareTo")~isAbstract    -- 1
-say .Comparable~method("CompareTo")~isAbstract   -- 1
-say .TimeSpan~method("CompareTo")~isAbstract     -- 0
+<programlisting><![CDATA[
+say .InputStream~method("lines")~isAbstract    -- 1
+say .Stream~method("lines")~isAbstract         -- 0
 ]]></programlisting></example></para>
 </section>
 
