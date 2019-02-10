@@ -4,7 +4,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -548,7 +548,7 @@ return
     self~setUp(testResult)
 
     do test over tests while \ testResult~shouldStop
-       if show then say "Executing tests from" pathCompact(test~definedInFile, 57)
+       if show then say "Executing" pathCompact(test~definedInFile, 70)
        test~execute(testResult, verbose)
     end
 
@@ -725,7 +725,13 @@ return
     -- if SysVersion() result is unique, use it
     if \versions~hasItem(SysVersion()) then
       versions["SysVersion"] = SysVersion()
-    do version over .Array~of("SysWinVer", "SysLinVer", "SysVersion")
+    -- if we've got SysWinVer() and its result is unique, use it
+    if rxfuncquery("SysWinVer") = 0, \versions~hasItem(SysWinVer()) then
+      versions["SysWinVer"] = SysWinVer()
+    -- if we've got SysLinVer() and its result is unique, use it
+    if rxfuncquery("SysLinVer") = 0, \versions~hasItem(SysLinVer()) then
+      versions["SysLinVer"] = SysLinVer()
+    do version over .Array~of("SysVersion", "SysWinVer", "SysLinVer")
       if versions~hasIndex(version) then
         say (version":")~left(width) versions[version]
     end
@@ -735,15 +741,14 @@ return
     say "Tests ran:"~left(width)  stats~tests
     say "Assertions:"~left(width) stats~asserts
 
-    select
-      when verbose < 3 then say "Failures:"~left(width) stats~newFails
-      when verbose < 7 then do
-        say "Failures:"~left(width) stats~newFails
-        say "  (Known failures:)"~left(width) stats~knownFails
-      end
-      otherwise say "Failures:"~left(width) stats~totalFails
+    -- show known failure count starting with -V 3
+    -- (known failing tests are only printed starting with -V 7)
+    if verbose <= 2 then
+      say "Failures:"~left(width) stats~newFails
+    else do
+      say "Failures:"~left(width) stats~newFails
+      say "  (Known failures:)"~left(width) stats~knownFails
     end
-    -- End select
 
     if verbose < 3 then say "Errors:"~left(width) stats~totalErrs
     else do
@@ -2159,7 +2164,7 @@ return
       select
         when searchType == self~ALL then do i = 1 to files.0
           -- If the file is not excluded then use it.
-          if \ self~isExcludedFile(files.i) then f[i] = files.i
+          if \ self~isExcludedFile(files.i) then f~append(files.i)
         end
 
         when searchType == self~PATTERN then do i = 1 to files.0
@@ -2180,7 +2185,7 @@ return
 
     self~totalFound = f~items
 
-  return f
+  return f~sort
   -- End findFiles()
 
   /** isExcludedFile()

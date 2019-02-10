@@ -124,7 +124,7 @@
 
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -358,11 +358,11 @@ return .false
   -- Find a position of the directory separator in the trailing part, such that
   -- when the trailing part starts there, the overall length of the resulting
   -- string is the specified length, or shorter.
-  trailPos = trailing~pos(sl, trailing~length - (len - leading~length))
+  trailPos = trailing~pos(sl, trailing~length - (len - leading~length) + 1)
   if trailPos == 0 then do
     -- The last component of the path is too long, shorten the leading.
     leading = "..."
-    trailPos = trailing~pos(sl, trailing~length - (len - leading~length))
+    trailPos = trailing~pos(sl, trailing~length - (len - leading~length) + 1)
   end
 
   if trailPos == 0 then do

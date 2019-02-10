@@ -52,16 +52,14 @@ use arg testTypes
     else return group~suite~execute~~print
   end
 
-/*
   signal on syntax name packageErr
   .context~package~loadPackage('FUNCTIONPackage.cls')
-*/
   if group~isAutomatedTest then return group
 
   testResult = group~suite~execute~~print
 
 return testResult
-/*
+
 packageErr:
   err = .ExceptionData~new(timeStamp(), s, .ExceptionData~TRAP)
   err~setLine(sigl)
@@ -72,7 +70,6 @@ packageErr:
 
   err~print("Test group exception", .false)
 return .ooTestResult~new(5)~~addException(err)
-*/
 
 ::requires 'ooTest.frm' -- load the ooRexxUnit classes
 
@@ -85,8 +82,13 @@ return .ooTestResult~new(5)~~addException(err)
   -- Over-ride the default test type
   self~ooTestType = .ooTestTypes~NATIVE_API_TEST
 
+
+-- tests are run in alphabetic order of method name
+-- by naming it 'test' it will run before any of the 'io' handler tests
+::method test
   -- install test command handler "io"
   call TestAddCommandEnvironment "io", "redirecting"
+
 
 -- The following tests the macros for 0-10 arguments
 ::method 'test000'
@@ -1744,5 +1746,4 @@ return .ooTestResult~new(5)~~addException(err)
   return lines
 
 
-::requires "FUNCTIONPackage.cls"
 ::options novalue error
