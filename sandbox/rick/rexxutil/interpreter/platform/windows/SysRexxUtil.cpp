@@ -1044,11 +1044,8 @@ RexxRoutine1(RexxStringObject, SysGetKey, OPTIONAL_CSTRING, echoOpt)
 *            ERROR_RETSTR   - Error opening INI or querying/writing info.*
 *************************************************************************/
 
-RexxRoutine4(RexxStringObject, SysIni, OPTIONAL_CSTRING, iniFile, CSTRING, app, OPTIONAL_CSTRING, key, OPTIONAL_CSTRING, val)
+RexxRoutine4(RexxStringObject, SysIni, OPTIONAL_CSTRING, iniFile, CSTRING, app, OPTIONAL_RexxObjectPtr, key, OPTIONAL_RexxObjectPtr, val)
 {
-    bool wildCard = false;    // indicates this is wildcard operation that returns multiple results
-    bool queryApps = false;   // indicates a query vs. a set operation
-
     // the ini file is optional and defaults to WIN.INI
     if (iniFile == NULL)
     {
@@ -1056,9 +1053,9 @@ RexxRoutine4(RexxStringObject, SysIni, OPTIONAL_CSTRING, iniFile, CSTRING, app, 
     }
 
     // if the key was not specified, use a null string
-    if (key == NULL)
+    if (key == NULLOBJECT)
     {
-        key = "";
+        key = context->NullString();
     }
 
     // Process first off of the app key. This could be a keyword command, which changes
@@ -1077,7 +1074,7 @@ RexxRoutine4(RexxStringObject, SysIni, OPTIONAL_CSTRING, iniFile, CSTRING, app, 
         }
 
         // Retrieve the stem variable using the key name
-        stemVariable.setStem(key);
+        stemVariable.setStem(key, 3);
 
         size_t lSize = 0x0000ffffL;
         // Allocate a large buffer for retrieving the information
@@ -1100,15 +1097,17 @@ RexxRoutine4(RexxStringObject, SysIni, OPTIONAL_CSTRING, iniFile, CSTRING, app, 
     }
 
     // ok, this is targetted at a particular app. Now decode what sort of operation this is.
+    // the key needs
+    const char *keyName = context->ObjectToStringValue(key);
 
     // this could be a request for all keys of a given app
     // the val argument must be a stem variable name.
-    if (!_stricmp(key, "ALL:"))
+    if (!_stricmp(keyName, "ALL:"))
     {
         StemHandler stemVariable(context);            // used to manipulate the stem variable for return values.
 
         // val is the stem variable for this case
-        stemVariable.setStem(val);
+        stemVariable.setStem(val, 4);
 
         size_t lSize = 0x0000ffffL;
         // Allocate a large buffer for retrieving the information
@@ -1133,7 +1132,7 @@ RexxRoutine4(RexxStringObject, SysIni, OPTIONAL_CSTRING, iniFile, CSTRING, app, 
     }
 
     // this could be a DELETE: operation for a particular application
-    if (stricmp(key, "DELETE:") == 0)
+    if (stricmp(keyName, "DELETE:") == 0)
     {
         // A request to delete all keys for a given application
         if (!WritePrivateProfileString(app, NULL, NULL, iniFile))
@@ -1161,7 +1160,7 @@ RexxRoutine4(RexxStringObject, SysIni, OPTIONAL_CSTRING, iniFile, CSTRING, app, 
         }
 
         // Retrieve just the given key value
-        lSize = GetPrivateProfileString(app, key, "", returnVal, (DWORD)lSize, iniFile);
+        lSize = GetPrivateProfileString(app, keyName, "", returnVal, (DWORD)lSize, iniFile);
 
         // zero indicates there was an error
         if (lSize == 0)
@@ -1172,11 +1171,14 @@ RexxRoutine4(RexxStringObject, SysIni, OPTIONAL_CSTRING, iniFile, CSTRING, app, 
         return context->NewString(returnVal, lSize);
     }
 
+    // this argument must be a string from this point
+    const char *valueString = context->ObjectToStringValue(val);
+
     // this could be a key deletion request
-    if (stricmp(val, "DELETE:") == 0)
+    if (stricmp(valueString, "DELETE:") == 0)
     {
         // A request to delete all keys for a given application
-        if (!WritePrivateProfileString(app, key, NULL, iniFile))
+        if (!WritePrivateProfileString(app, keyName, NULL, iniFile))
         {
             return context->NewStringFromAsciiz(ERROR_RETSTR);
         }
@@ -1187,7 +1189,7 @@ RexxRoutine4(RexxStringObject, SysIni, OPTIONAL_CSTRING, iniFile, CSTRING, app, 
     }
 
     // we have a value specified and it is not the special key marker, this is a set operation
-    if (!WritePrivateProfileString(app, key, val, iniFile))
+    if (!WritePrivateProfileString(app, keyName, valueString, iniFile))
     {
         return context->NewStringFromAsciiz(ERROR_RETSTR);
     }

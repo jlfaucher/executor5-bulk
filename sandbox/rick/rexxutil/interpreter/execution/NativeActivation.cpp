@@ -2788,6 +2788,13 @@ RexxClass *NativeActivation::getScope()
  */
 StemClass *NativeActivation::resolveStemVariable(RexxObject *s)
 {
+    // a NULL argument is not resolvable
+    if (s == OREF_NULL)
+    {
+        return OREF_NULL;
+    }
+
+
     // is this a stem already?
     if (isStem(s))
     {

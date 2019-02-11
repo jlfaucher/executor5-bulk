@@ -181,28 +181,26 @@ class StemHandler
          }
      }
 
-     void setStem(const char *stemName)
+     void setStem(RexxObjectPtr stemArgument, int position)
      {
-         // this is a required value...throw an error if not given
-         if (stem == NULL)
-         {
-             context->ThrowException0(Rexx_Error_Incorrect_call);
-         }
+         // try to resolve this directly. This is normally either a stem object already or a
+         // valid stem name.
+         stem = context->ResolveStemVariable(stemArgument);
 
-         char buffer[256];
-         strncpy(buffer, stemName, sizeof(buffer));
-         if (buffer[strlen(buffer) - 1] != '.')
-         {
-             strncat(buffer, ".", sizeof(buffer));
-         }
-         // retrieve the stem object by name from the context
-         stem = (RexxStemObject)context->GetContextVariable(buffer);
-
+         // this could be an invalid argument, but it might be a name like "a.1", where the
+         // tail needs to be extracted
          if (stem == NULLOBJECT)
          {
-             // TODO: flesh this out
-             context->ThrowException0(Rexx_Error_Incorrect_call);
+             // This is a bit of a pain. It would be nice to create this argument as a stem
+             // object, but people have been coding stem sorts using a compound variable rather than
+             // a stem name because the old code was lax and it just happened to work. We need to process this
+             // as a name and make sure it has a period at the end.
+
+             // we need to get a stem name, and also check for extension. We only process this if it
+             // is a string object
+             context->ThrowException2(Rexx_Error_Incorrect_call_nostem, context->WholeNumberToObject(position), stemArgument);
          }
+             // this is a required value...throw an error if not given
      }
 
      void addList(const char *values)
