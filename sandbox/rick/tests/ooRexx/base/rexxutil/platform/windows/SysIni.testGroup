@@ -1,0 +1,166 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev: 11720 $
+  Change Date:  $Date: 2019-02-05 11:50:21 -0500 (Tue, 05 Feb 2019) $
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2019 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+    parse source . . fileSpec;
+
+    group = .TestGroup~new(fileSpec)
+    group~add(.SysIni.testGroup)
+    group~restrictOS("WINDOWS")
+
+    if group~isAutomatedTest then return group
+
+    testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires 'ooTest.frm'
+::class 'SysIni.testgroup' subclass ooTestCase public
+
+::method test_app_functions
+
+  temp = .TemporaryTestFile~new(self, "TestFile.ini")
+  temp~createFromResource('iniFile')
+
+  self~of(e., "app1", "app2", "app3")
+
+  self~assertEquals("", SysIni(temp~fullName, 'all:', a.))
+  self~verifySeq(e., a.)
+
+  self~assertEquals("", SysIni(temp~fullName, 'all:', 'a.'))
+  self~verifySeq(e., a.)
+  self~assertEquals("", SysIni(temp~fullName, 'all:', 'a'))
+  self~verifySeq(e., a.)
+
+  self~of(e., "key1", "key2", "key3")
+
+  self~assertEquals("", SysIni(temp~fullName, 'app2', 'All:', a.))
+  self~verifySeq(e., a.)
+
+  self~assertEquals("", SysIni(temp~fullName, 'app2', 'All:', 'a'))
+  self~verifySeq(e., a.)
+
+  self~assertEquals("ERROR", SysIni(temp~fullName, 'app3', 'All:', 'a.'))
+
+  self~assertEquals("", SysIni(temp~fullName, 'app1', 'DEleTE:'))
+
+  self~assertEquals("val1.2", SysIni(temp~fullName, 'app2', 'key1'))
+
+  self~assertEquals("", SysIni(temp~fullName, 'app2', 'key1', "delete:"))
+
+  self~assertEquals("ERROR", SysIni(temp~fullName, 'app2', 'key1'))
+
+  self~of(e., "key2", "key3")
+
+  self~assertEquals("", SysIni(temp~fullName, 'app2', 'All:', a.))
+  self~verifySeq(e., a.)
+
+  self~assertEquals("", SysIni(temp~fullName, 'app2', 'key1', "new value"))
+  self~assertEquals("new value", SysIni(temp~fullName, 'app2', 'key1'))
+
+  self~of(e., "key2", "key3", "key1")
+
+  self~assertEquals("", SysIni(temp~fullName, 'app2', 'All:', a.))
+  self~verifySeq(e., a.)
+
+::method test_all_apps_no_stem
+  temp = .TemporaryTestFile~new(self, "TestFile.ini")
+  temp~createFromResource('iniFile')
+
+  self~expectSyntax(40.919)
+  rv = SysIni(temp~fullName, 'all:')
+
+::method test_all_apps_bad_stem
+  temp = .TemporaryTestFile~new(self, "TestFile.ini")
+  temp~createFromResource('iniFile')
+
+  self~expectSyntax(40.919)
+  rv = SysIni(temp~fullName, 'all:', 'a.1')
+
+::method test_all_apps_extra_arg
+  temp = .TemporaryTestFile~new(self, "TestFile.ini")
+  temp~createFromResource('iniFile')
+
+  self~expectSyntax(40.4)
+  rv = SysIni(temp~fullName, 'all:', 'a.', "foo")
+
+::method test_all_keys_no_stem
+  temp = .TemporaryTestFile~new(self, "TestFile.ini")
+  temp~createFromResource('iniFile')
+
+  self~expectSyntax(40.919)
+  rv = SysIni(temp~fullName, 'app2', 'all:')
+
+::method test_all_keys_bad_stem
+  temp = .TemporaryTestFile~new(self, "TestFile.ini")
+  temp~createFromResource('iniFile')
+
+  self~expectSyntax(40.919)
+  rv = SysIni(temp~fullName, 'app2', 'all:', 'a.1')
+
+
+::method verifySeq
+  use arg source., result.
+
+  do i=0 to result.0
+     self~assertEquals(source.i, result.i)
+  end
+
+::method of
+  use arg target.
+  values = arg(2, 'a')
+
+  target.0 = values~items
+  do i = 1 to target.0
+      target.i = values[i]
+  end
+
+
+::resource iniFile
+[app1]
+key1=val1.1
+[app2]
+key1=val1.2
+key2=val2.2
+key3=val3.2
+[app3]
+::END
