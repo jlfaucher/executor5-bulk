@@ -280,6 +280,49 @@ return testResult
     self~assertEquals(1, a.0)
     self~verifySeq(a., e.)
 
+::method test_temp_file_name
+    parse source . . me
+
+    directory = filespec('Location', me)
+    currentDir = Directory(directory)
+
+    n = SysTempFileName("foo?.bar?")
+    self~assertEquals(0, n~pos('?'))
+    self~assertFalse(SysFileExists(n))
+
+    lines = ("Line1","","Line3")
+    tempfiles = .array~new(10)
+
+    loop i = 0 to 9
+       temp = .TemporaryTestFile~new(self, 'foo'||i)
+       temp~create(lines)
+       tempfiles~append(temp)
+    end
+
+    -- this should ensure this can't be created
+    n = SysTempFileName("foo?")
+    self~assertEquals("", n)
+
+    n = SysTempFileName("foo*.bar*", '*')
+    self~assertEquals(0, n~pos('*'))
+    self~assertFalse(SysFileExists(n))
+
+
+    -- next two tests should return a null string because of too-many or too-few filler spaces
+
+    self~assertEquals("", SysTempFileName("foo"))
+    self~assertEquals("", SysTempFileName("foo??????"))
+
+
+::method test_null_filler
+  self~expectSyntax(40.23)
+  rv = SysTempFileName("foo?", "")
+
+
+::method test_long_filler
+  self~expectSyntax(40.23)
+  rv = SysTempFileName("foo?", "??")
+
 
 ::method verifySeq
   use arg source., result.
