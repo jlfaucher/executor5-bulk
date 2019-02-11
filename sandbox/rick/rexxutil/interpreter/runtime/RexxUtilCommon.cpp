@@ -376,12 +376,10 @@ void getUniqueFileName(const char *fileTemplate, char filler, FileNameBuffer &fi
         // get the random number as a set of 5 character digits
         snprintf(numstr, sizeof(numstr), "%05zu", num);
 
-        // copy the template over to our return buffer
-        file = fileTemplate;
         // now substitute our generated characters for the filler characters
         int i = j;
 
-        for (int x = 0; file[x] != 0; x++)
+        for (int x = 0; fileTemplate[x] != 0; x++)
         {
             // if we have a filler, fill it in
             if (fileTemplate[x] == filler)
