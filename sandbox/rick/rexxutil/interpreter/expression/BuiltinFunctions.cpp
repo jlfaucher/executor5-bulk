@@ -1881,7 +1881,7 @@ BUILTIN(VALUE)
     // The selector ENVIRONMENT means the same on every system, so we handle this here
         if (selector->strCaselessCompare("ENVIRONMENT"))
         {
-            Protected<RexxString> name = variable->upper();
+            Protected<RexxString> name = variable;
 
             FileNameBuffer buffer;
 

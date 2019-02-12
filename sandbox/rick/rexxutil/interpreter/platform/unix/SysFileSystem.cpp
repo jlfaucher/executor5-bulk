@@ -519,10 +519,12 @@ bool SysFileSystem::searchPath(const char *name, const char *path, FileNameBuffe
                 {
                     return true;
                 }
+                resolvedName = "";
                 return false;
             }
         }
     }
+    resolvedName = "";
     return false;
 }
 
@@ -1565,6 +1567,7 @@ int SysFileSystem::moveFile(const char *fromFile, const char *toFile)
     {
         return 0; // move done
     }
+
     if (errno != EXDEV)
     {
         return errno; // move ko, no fallback
