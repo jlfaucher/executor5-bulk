@@ -2287,7 +2287,64 @@ return 0
 -- clean up the temporary file after termination.
 ::method uninit
   expose file
+  file~setWritable
   file~delete
+
+-- a class for creating/deleting temporary test directories.
+::class TemporaryTestDirectory public
+::method init
+  expose file package
+  use strict arg host, name
+
+  -- get the package the class is defined in
+  package = host~class~package
+
+  dir = .File~new(package~name)~parentFile
+  file = .File~new(name, dir)
+
+-- get the full resolved name of this file
+::method fullName
+  expose file
+  return file~absolutePath
+
+-- create the directory
+::method create
+  expose file
+  file~makeDir
+
+-- delete the directory and all files
+::method delete
+  expose file
+  self~deleteDir(file)
+  file~setWritable
+  file~delete
+
+-- delete a directory and all of the files in the directory
+::method deleteDir private
+  use arg dir
+
+  files = dir~listFiles
+  if files == .nil then do
+    return
+  end
+
+  do f over files
+    -- recursively delete directories
+    if f~isDirectory then do
+      self~deleteDir(f)
+    end
+    -- make sure this is a writable file
+    if f~isReadOnly then do
+      f~setWritable
+    end
+    -- delete the file now
+    f~delete
+  end
+
+-- clean up the temporary directory after termination.
+::method uninit
+  expose file
+  self~delete
 
 -- a dummy class for disabling output to .output or .debugoutput
 ::class NullOutput

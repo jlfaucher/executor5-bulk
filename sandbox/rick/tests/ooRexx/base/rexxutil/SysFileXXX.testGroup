@@ -201,15 +201,6 @@ return testResult
 
     temp~create(("Line7","","Line8"))
 
-    -- now try to do the move when the file already exists
-    self~assertNotEquals(0, SysFileMove('movesource', 'movetarget'))
-    self~assertTrue(SysFileExists('movesource'));
-    self~assertTrue(SysFileExists('movetarget'));
-
-    s = .stream~new('movetarget')
-    self~assertEquivalentList(lines, s~arrayIn)
-    s~close
-
     self~assertNotEquals(0, SysFileMove('movesourcexxxx', 'movetargetxxxx'))
     self~assertFalse(SysFileExists('movesourcexxxx'));
     self~assertFalse(SysFileExists('movetargetxxxx'));
