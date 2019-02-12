@@ -61,6 +61,7 @@
 ::routine TestUintPtrArg PUBLIC EXTERNAL "LIBRARY orxfunction TestUintPtrArg"
 ::routine TestWholeNumberArg PUBLIC EXTERNAL "LIBRARY orxfunction TestWholeNumberArg"
 ::routine TestPositiveWholeNumberArg PUBLIC EXTERNAL "LIBRARY orxfunction TestPositiveWholeNumberArg"
+::routine TestNonnegativeWholeNumberArg PUBLIC EXTERNAL "LIBRARY orxfunction TestNonnegativeWholeNumberArg"
 ::routine TestStringSizeArg PUBLIC EXTERNAL "LIBRARY orxfunction TestStringSizeArg"
 ::routine TestSizeArg PUBLIC EXTERNAL "LIBRARY orxfunction TestSizeArg"
 ::routine TestSSizeArg PUBLIC EXTERNAL "LIBRARY orxfunction TestSSizeArg"

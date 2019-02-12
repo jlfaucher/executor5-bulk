@@ -652,6 +652,37 @@ return .ooTestResult~new(5)~~addException(err)
   self~expectSyntax('88.905')
   tester~TestPositiveWholeNumberArg(0)
 
+-- test nonnegative_wholenumber_t
+::method 'testNonnegativeWholeNumber01'
+  tester = .METHODtester~new
+
+  self~assertSame(1, tester~TestNonnegativeWholeNumberArg(1.0))
+  val = 65535
+  self~assertSame(val, tester~TestNonnegativeWholeNumberArg(val))
+  val = 1
+  self~assertSame(val, tester~TestNonnegativeWholeNumberArg(val))
+  if .ooRexxUnit.architecture == 32 then
+      val = 999999999
+  else
+      val = 999999999999999999
+  self~assertSame(val, tester~TestNonnegativeWholeNumberArg(val))
+  self~assertSame(1, tester~TestOptionalNonnegativeWholeNumberArg(1))
+  self~assertSame(0, tester~TestOptionalNonnegativeWholeNumberArg(0))
+  self~assertSame(0, tester~TestOptionalNonnegativeWholeNumberArg())
+
+::method 'testNonnegativeWholeNumber02'
+  tester = .METHODtester~new
+  self~expectSyntax('88.905')
+  if .ooRexxUnit.architecture == 32 then
+      tester~TestNonnegativeWholeNumberArg(1000000000)
+  else
+      tester~TestNonnegativeWholeNumberArg(1000000000000000000)
+
+::method 'testNonnegativeWholeNumber03'
+  tester = .METHODtester~new
+  self~expectSyntax('88.905')
+  tester~TestNonnegativeWholeNumberArg(-1)
+
 -- test size_t
 ::method 'testSize01'
   numeric digits 20
@@ -2891,6 +2922,8 @@ return .ooTestResult~new(5)~~addException(err)
 ::method test_VariableReferenceName
   tester = .METHODtester~new
 
+--@@ creashes
+--self~assertSame("", tester~TestVariableReferenceName(""))
   self~assertSame("VAR", tester~TestVariableReferenceName(>var))
   self~assertSame("S.", tester~TestVariableReferenceName(>s.))
 
