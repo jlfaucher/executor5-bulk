@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2008-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2008-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -240,6 +240,13 @@ RexxMethod1(uintptr_t,                 // Return type
 RexxMethod1(wholenumber_t,             // Return type
             TestWholeNumberArg,         // Function routine name
             wholenumber_t, arg1)       // Argument
+{
+    return arg1;
+}
+
+RexxMethod1(wholenumber_t,                // Return type
+            TestNonnegativeWholeNumberArg,   // Function routine name
+            nonnegative_wholenumber_t, arg1) // Argument
 {
     return arg1;
 }
@@ -1498,7 +1505,7 @@ RexxMethod1(uintptr_t,                 // Return type
 }
 
 RexxMethod1(wholenumber_t,             // Return type
-            TestOptionalWholeNumberArg,// Function routine name
+            TestOptionalWholeNumberArg, // Function routine name
             OPTIONAL_wholenumber_t, arg1)       // Argument
 {
     if (argumentOmitted(1))
@@ -1512,7 +1519,7 @@ RexxMethod1(wholenumber_t,             // Return type
 }
 
 RexxMethod1(positive_wholenumber_t,             // Return type
-            TestOptionalPositiveWholeNumberArg,// Function routine name
+            TestOptionalPositiveWholeNumberArg, // Function routine name
             OPTIONAL_positive_wholenumber_t, arg1)       // Argument
 {
     if (argumentOmitted(1))
@@ -1524,6 +1531,21 @@ RexxMethod1(positive_wholenumber_t,             // Return type
     }
     return arg1;
 }
+
+RexxMethod1(wholenumber_t,             // Return type
+            TestOptionalNonnegativeWholeNumberArg, // Function routine name
+            OPTIONAL_nonnegative_wholenumber_t, arg1)       // Argument
+{
+    if (argumentOmitted(1))
+    {
+        if (arg1 != 0)
+        {
+            context->RaiseException1(Rexx_Error_Invalid_argument_user_defined, context->NewStringFromAsciiz("Conversion error"));
+        }
+    }
+    return arg1;
+}
+
 
 RexxMethod1(stringsize_t,              // Return type
             TestOptionalStringSizeArg,          // Function routine name
@@ -2176,6 +2198,94 @@ RexxMethod1(positive_wholenumber_t,     // Return type
     return arg1;
 }
 
+// [feature-requests:#634] Add a per-object storage management API
+
+// POINTER (RexxEntry *AllocateObjectMemory)(RexxMethodContext *, size_t);
+RexxMethod1(POINTER,                   // Return type
+            TestAllocateObjectMemory,  // Function name
+            size_t, bytes)             // Argument
+{
+    return context->AllocateObjectMemory(bytes);
+}
+
+// void    (RexxEntry *FreeObjectMemory)(RexxMethodContext *, POINTER);
+RexxMethod1(RexxObjectPtr,             // Return type
+            TestFreeObjectMemory,      // Function name
+            POINTER, ptr)              // Argument
+{
+    context->FreeObjectMemory(ptr);
+    return NULLOBJECT;
+}
+
+// POINTER (RexxEntry *ReallocateObjectMemory)(RexxMethodContext *, POINTER, size_t);
+RexxMethod2(POINTER,                   // Return type
+            TestReallocateObjectMemory,// Function name
+            POINTER, ptr,              // Argument
+            size_t, bytes)             // Argument
+{
+    return context->ReallocateObjectMemory(ptr, bytes);
+}
+
+// helper: set object memory content; must be null-terminated
+RexxMethod2(RexxObjectPtr,             // Return type
+            TestSetObjectMemory,       // Function name
+            POINTER, ptr,              // Argument
+            CSTRING, data)             // Argument
+{
+    memcpy(ptr, data, strlen(data));
+    return NULLOBJECT;
+}
+
+// helper: get object memory content; must be null-terminated
+RexxMethod1(CSTRING,                   // Return type
+            TestGetObjectMemory,       // Function name
+            POINTER, ptr)              // Argument
+{
+    return (char *)ptr;
+}
+
+// RexxVariableReferenceObject (RexxEntry *GetObjectVariableReference)(RexxMethodContext *, CSTRING);
+RexxMethod1(RexxVariableReferenceObject,    // Return type
+            TestGetObjectVariableReference, // Function name
+            CSTRING, name)                  // Argument
+{
+    return context->GetObjectVariableReference(name);
+}
+
+// logical_t (RexxEntry *IsVariableReference)(RexxThreadContext *, RexxObjectPtr);
+RexxMethod1(logical_t,                      // Return type
+            TestIsVariableReference,        // Function name
+            RexxObjectPtr, o)               // Argument
+{
+    return context->IsVariableReference(o);
+}
+
+// void (RexxEntry *SetVariableReferenceValue)(RexxThreadContext *, RexxVariableReferenceObject, RexxObjectPtr);
+RexxMethod2(RexxObjectPtr,                  // Return type
+            TestSetVariableReferenceValue,  // Function name
+            RexxVariableReferenceObject, o, // Argument
+            RexxObjectPtr, val)             // Argument
+{
+    context->SetVariableReferenceValue((RexxVariableReferenceObject)o, val);
+    return NULLOBJECT;
+}
+
+// RexxStringObject (RexxEntry *VariableReferenceName)(RexxThreadContext *, RexxVariableReferenceObject);
+RexxMethod1(RexxStringObject,               // Return type
+            TestVariableReferenceName,      // Function name
+            RexxVariableReferenceObject, o) // Argument
+{
+    return context->VariableReferenceName((RexxVariableReferenceObject)o);
+}
+
+// RexxObjectPtr (RexxEntry *VariableReferenceValue)(RexxThreadContext *, RexxVariableReferenceObject);
+RexxMethod1(RexxObjectPtr,                  // Return type
+            TestVariableReferenceValue,     // Function name
+            RexxVariableReferenceObject, o) // Argument
+{
+    return context->VariableReferenceValue((RexxVariableReferenceObject)o);
+}
+
 RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(TestIsBuffer,          TestIsBuffer),
     REXX_METHOD(TestBufferInit,        TestBufferInit),
@@ -2207,6 +2317,7 @@ RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(TestWholeNumberArg,    TestWholeNumberArg),
     REXX_METHOD(TestStringSizeArg,     TestStringSizeArg),
     REXX_METHOD(TestPositiveWholeNumberArg,     TestPositiveWholeNumberArg),
+    REXX_METHOD(TestNonnegativeWholeNumberArg,     TestNonnegativeWholeNumberArg),
     REXX_METHOD(TestSizeArg,           TestSizeArg),
     REXX_METHOD(TestSSizeArg,          TestSSizeArg),
     REXX_METHOD(TestLogicalArg,        TestLogicalArg),
@@ -2231,11 +2342,11 @@ RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(TestObjectToInt64,           TestObjectToInt64),
     REXX_METHOD(TestObjectToInt64Alt,        TestObjectToInt64Alt),
     REXX_METHOD(TestObjectToUnsignedInt64,   TestObjectToUnsignedInt64),
-    REXX_METHOD(TestObjectToUnsignedInt64Alt,TestObjectToUnsignedInt64Alt),
+    REXX_METHOD(TestObjectToUnsignedInt64Alt, TestObjectToUnsignedInt64Alt),
     REXX_METHOD(TestObjectToInt32,           TestObjectToInt32),
     REXX_METHOD(TestObjectToInt32Alt,        TestObjectToInt32Alt),
     REXX_METHOD(TestObjectToUnsignedInt32,   TestObjectToUnsignedInt32),
-    REXX_METHOD(TestObjectToUnsignedInt32Alt,TestObjectToUnsignedInt32Alt),
+    REXX_METHOD(TestObjectToUnsignedInt32Alt, TestObjectToUnsignedInt32Alt),
     REXX_METHOD(TestObjectToIntptr,          TestObjectToIntptr),
     REXX_METHOD(TestObjectToIntptrAlt,       TestObjectToIntptrAlt),
     REXX_METHOD(TestObjectToUintptr,         TestObjectToUintptr),
@@ -2251,11 +2362,11 @@ RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(TestInt64ToObject,           TestInt64ToObject),
     REXX_METHOD(TestInt64ToObjectAlt,        TestInt64ToObjectAlt),
     REXX_METHOD(TestUnsignedInt64ToObject,   TestUnsignedInt64ToObject),
-    REXX_METHOD(TestUnsignedInt64ToObjectAlt,TestUnsignedInt64ToObjectAlt),
+    REXX_METHOD(TestUnsignedInt64ToObjectAlt, TestUnsignedInt64ToObjectAlt),
     REXX_METHOD(TestInt32ToObject,           TestInt32ToObject),
     REXX_METHOD(TestInt32ToObjectAlt,        TestInt32ToObjectAlt),
     REXX_METHOD(TestUnsignedInt32ToObject,   TestUnsignedInt32ToObject),
-    REXX_METHOD(TestUnsignedInt32ToObjectAlt,TestUnsignedInt32ToObjectAlt),
+    REXX_METHOD(TestUnsignedInt32ToObjectAlt, TestUnsignedInt32ToObjectAlt),
     REXX_METHOD(TestIntptrToObject,          TestIntptrToObject),
     REXX_METHOD(TestIntptrToObjectAlt,       TestIntptrToObjectAlt),
     REXX_METHOD(TestUintptrToObject,         TestUintptrToObject),
@@ -2278,6 +2389,7 @@ RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(TestOptionalUintPtrArg,        TestOptionalUintPtrArg),
     REXX_METHOD(TestOptionalWholeNumberArg,    TestOptionalWholeNumberArg),
     REXX_METHOD(TestOptionalPositiveWholeNumberArg,    TestOptionalPositiveWholeNumberArg),
+    REXX_METHOD(TestOptionalNonnegativeWholeNumberArg,    TestOptionalNonnegativeWholeNumberArg),
     REXX_METHOD(TestOptionalStringSizeArg,     TestOptionalStringSizeArg),
     REXX_METHOD(TestOptionalSizeArg,           TestOptionalSizeArg),
     REXX_METHOD(TestOptionalSSizeArg,          TestOptionalSSizeArg),
@@ -2403,6 +2515,16 @@ RexxMethodEntry orxtest_methods[] = {
     REXX_METHOD(TestSetMutableBufferCapacity,TestSetMutableBufferCapacity),
     REXX_METHOD(TestSetMutableBufferValue,   TestSetMutableBufferValue),
     REXX_METHOD(TestGetMutableBufferValue,   TestGetMutableBufferValue),
+    REXX_METHOD(TestAllocateObjectMemory,    TestAllocateObjectMemory),
+    REXX_METHOD(TestFreeObjectMemory,        TestFreeObjectMemory),
+    REXX_METHOD(TestReallocateObjectMemory,  TestReallocateObjectMemory),
+    REXX_METHOD(TestSetObjectMemory,         TestSetObjectMemory),
+    REXX_METHOD(TestGetObjectMemory,         TestGetObjectMemory),
+    REXX_METHOD(TestGetObjectVariableReference, TestGetObjectVariableReference),
+    REXX_METHOD(TestIsVariableReference,     TestIsVariableReference),
+    REXX_METHOD(TestSetVariableReferenceValue, TestSetVariableReferenceValue),
+    REXX_METHOD(TestVariableReferenceName,   TestVariableReferenceName),
+    REXX_METHOD(TestVariableReferenceValue,  TestVariableReferenceValue),
     REXX_LAST_METHOD()
 };
 

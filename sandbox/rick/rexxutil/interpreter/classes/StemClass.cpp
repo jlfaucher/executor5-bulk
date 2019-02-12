@@ -381,13 +381,28 @@ RexxObject *StemClass::hasItem(RexxInternalObject *target)
 }
 
 
+/**
+ * Remove the target object from the stem.
+ *
+ * @param target The target object.
+ *
+ * @return The removed object (same as target).
+ */
+RexxInternalObject *StemClass::removeItemRexx(RexxObject *target)
+{
+    // we require the index to be there.
+    requiredArgument(target, ARG_ONE);
+    // do the removal
+    return removeItem(target);
+}
+
 
 /**
- * Remove an item from the collection.
+ * Remove the target object from the stem.
  *
- * @param target The object of interest.
+ * @param target The target object.
  *
- * @return .true if the object is in the collection, .false otherwise.
+ * @return The removed object (same as target).
  */
 RexxInternalObject *StemClass::removeItem(RexxInternalObject *target)
 {

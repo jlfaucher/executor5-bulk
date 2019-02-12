@@ -1,6 +1,6 @@
 #/*----------------------------------------------------------------------------*/
 #/*                                                                            */
-#/* Copyright (c) 2014-2018 Rexx Language Association. All rights reserved.    */
+#/* Copyright (c) 2014-2019 Rexx Language Association. All rights reserved.    */
 #/*                                                                            */
 #/* This program and the accompanying materials are made available under       */
 #/* the terms of the Common Public License v1.0 which accompanies this         */
@@ -39,6 +39,7 @@
 #/*----------------------------------------------------------------------------*/
 #/* Global settings                                                            */
 #/*----------------------------------------------------------------------------*/
+message(STATUS "CMake version is ${CMAKE_VERSION}")
 if (APPLE)
 # apple build with lower cmake version have an @rpath problem
     cmake_minimum_required (VERSION 3.12)
@@ -52,9 +53,9 @@ include(CheckLibraryExists)
 include(CheckFunctionExists)
 include(CheckSymbolExists)
 include(CheckCSourceCompiles)
-set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
+set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib)
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
-set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
+set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib)
 set (CMAKE_PDB_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
 set (CMAKE_SAMPLES_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/samples)
 #/*----------------------------------------------------------------------------*/
@@ -81,6 +82,11 @@ else ()
     set(ORX_ARCHITECTURE "32")
     message(STATUS "Building for a 32-bit architecture")
 endif ()
+
+
+# Unix: used in macro create_install_symlink()
+set(SYM_LINK_CREATE_FROM     3)                # define lower bound
+math(EXPR SYM_LINK_CREATE_TO "${ORX_MAJOR}-1") # define upper bound is dependent on ${ORX_MAJOR}
 
 
 # OOREXX_SHEBANG_PROGRAM default:
@@ -229,6 +235,27 @@ if (WIN32)
    ENDMACRO ()
 
  else ()
+
+# ------------->
+   # 2019-01-08, as per Enrico Sorichetti's advice about applying the RPATH settings for maximum flexibility
+   # do not skip the full RPATH for the build tree
+   SET( CMAKE_SKIP_BUILD_RPATH  FALSE)
+
+   # when building, don't use the install RPATH
+   # only later on when installing
+   SET( CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+
+   if( APPLE )
+       SET( CMAKE_INSTALL_RPATH "@executable_path/../lib")
+   else()
+       SET( CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
+   endif()
+
+   # add the automatically determined parts of the RPATH
+   # which point to directories outside the build tree to the install RPATH
+   SET( CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+# <------------
+
    # if the user didn't specify a CMAKE_INSTALL_PREFIX
    # we override the CMake default of /usr/local, instead using:
    # * $HOME/Applications/ooRexxV.R.M on macOS
@@ -239,7 +266,6 @@ if (WIN32)
          CACHE PATH "Default install path" FORCE)
      endif()
      set (INSTALL_LIB_DIR ${CMAKE_INSTALL_PREFIX}/lib)
-     set (CMAKE_INSTALL_RPATH ${INSTALL_LIB_DIR})
    else ()
      if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
        set (CMAKE_INSTALL_PREFIX /usr CACHE PATH "Default install path" FORCE)
@@ -269,6 +295,15 @@ else ()
 endif ()
 
 # Set compiler and linker flags common to all build environments
+# current trunk uses the C++ "override" keyword, which requires C++11
+if (CMAKE_VERSION VERSION_LESS "3.1")
+  if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")
+  endif ()
+else ()
+  set (CMAKE_CXX_STANDARD 11)
+endif ()
+
 include_directories(${PROJECT_BINARY_DIR})
 if (WIN32)
    add_definitions(/DORX_VER=${ORX_MAJOR}
@@ -541,6 +576,38 @@ endif ()
 #/* Build targets                                                              */
 #/*----------------------------------------------------------------------------*/
 
+# 2019-01-04: macro to create and install symbolic links on Unix
+macro(create_install_symlink target)
+   if (UNIX)   # checking for UNIX here simplifies invocation of this macro (no need to check operating system for the invoker)
+      set(baseName   "${CMAKE_SHARED_LIBRARY_PREFIX}${target}")
+      set(targetName "${baseName}${CMAKE_SHARED_LIBRARY_SUFFIX}")
+
+      foreach(loop_var RANGE ${SYM_LINK_CREATE_FROM} ${SYM_LINK_CREATE_TO})
+         if (APPLE)   # Darwin has version numbers before ".dylib"
+            set(linkName "${baseName}.${loop_var}${CMAKE_SHARED_LIBRARY_SUFFIX}")
+         else ()
+            set(linkName "${baseName}${CMAKE_SHARED_LIBRARY_SUFFIX}.${loop_var}")
+         endif ()
+
+         # message(STATUS "---> macro create_install_symlink() ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}: ln -sf targetName=[${targetName}] linkName=[${linkName}]")
+
+         add_custom_command(
+             TARGET ${target}
+             POST_BUILD
+             COMMAND ${CMAKE_COMMAND} -E chdir ${CMAKE_LIBRARY_OUTPUT_DIRECTORY} ln -sf ${targetName} ${linkName}
+             DEPENDS ${target}
+             # COMMENT "--> ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}: [ln -sf ${targetName} ${linkName} DEPENDS ${target}]"
+         )
+
+         install(FILES ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${linkName}
+                 COMPONENT Core
+                 DESTINATION ${INSTALL_LIB_DIR}
+         )
+      endforeach(loop_var)
+   endif ()
+endmacro(create_install_symlink)
+
+
 #################### librexxapi.so ##########################
 # Full set of files used in all platforms.
 set (common_rexxapi_sources
@@ -597,6 +664,7 @@ install(TARGETS rexxapi RUNTIME DESTINATION ${INSTALL_LIB_DIR} COMPONENT Core
                         LIBRARY DESTINATION ${INSTALL_LIB_DIR} COMPONENT Core
                         ARCHIVE DESTINATION ${INSTALL_INCLUDE_DIR} COMPONENT DevLib)
 set_target_properties(rexxapi PROPERTIES VERSION ${ORX_VERSION})
+create_install_symlink(rexxapi)
 
 #################### librexx.so ##########################
 # Sources for librexx.so
@@ -879,6 +947,7 @@ install(TARGETS rexx RUNTIME DESTINATION ${INSTALL_LIB_DIR} COMPONENT Core
                      LIBRARY DESTINATION ${INSTALL_LIB_DIR} COMPONENT Core
                      ARCHIVE DESTINATION ${INSTALL_INCLUDE_DIR} COMPONENT DevLib)
 set_target_properties(rexx PROPERTIES VERSION ${ORX_VERSION})
+create_install_symlink(rexx)
 
 #################### orexx (executable) ##########################
 if (WIN32)
@@ -985,7 +1054,7 @@ add_custom_command(OUTPUT ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/rexx.img
            DEPENDS rexximage rxapi ${image_class_files} ${platform_rexx_img_depends}
            WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 add_custom_target(rexx_img ALL DEPENDS ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/rexx.img)
-install(PROGRAMS ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/rexx.img COMPONENT Core DESTINATION ${INSTALL_EXECUTABLE_DIR} PERMISSIONS OWNER_EXECUTE GROUP_EXECUTE WORLD_EXECUTE OWNER_READ GROUP_READ WORLD_READ)
+install(PROGRAMS ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/rexx.img COMPONENT Core DESTINATION ${INSTALL_LIB_DIR} PERMISSIONS OWNER_EXECUTE GROUP_EXECUTE WORLD_EXECUTE OWNER_READ GROUP_READ WORLD_READ)
 
 #################### rxapi (executable) #########################
 # additional source files required by specific platforms
@@ -1196,6 +1265,7 @@ target_link_libraries(rxmath rexx rexxapi ${platform_rxmath_libs} ${CMAKE_REQUIR
 install(TARGETS rxmath RUNTIME COMPONENT Core DESTINATION ${INSTALL_LIB_DIR}
                        LIBRARY DESTINATION ${INSTALL_LIB_DIR} COMPONENT Core)
 set_target_properties(rxmath PROPERTIES VERSION ${ORX_VERSION})
+create_install_symlink(rxmath)
 
 #################### librxsock.so ################
 # additional source files required by specific platforms
@@ -1213,6 +1283,7 @@ target_link_libraries(rxsock rexx rexxapi ${platform_rxsock_libs} ${CMAKE_REQUIR
 install(TARGETS rxsock RUNTIME COMPONENT Core DESTINATION ${INSTALL_LIB_DIR}
                        LIBRARY DESTINATION ${INSTALL_LIB_DIR} COMPONENT Core)
 set_target_properties(rxsock PROPERTIES VERSION ${ORX_VERSION})
+create_install_symlink(rxsock)
 
 
 #################### librxregexp.so ################
@@ -1238,6 +1309,7 @@ target_link_libraries(rxregexp rexx rexxapi ${platform_rxregexp_libs} ${CMAKE_RE
 install(TARGETS rxregexp RUNTIME COMPONENT Core DESTINATION ${INSTALL_LIB_DIR}
                          LIBRARY DESTINATION ${INSTALL_LIB_DIR} COMPONENT Core)
 set_target_properties(rxregexp PROPERTIES VERSION ${ORX_VERSION})
+create_install_symlink(rxregexp)
 
 #################### libhostemu.so ################
 # additional source files required by specific platforms
@@ -1262,6 +1334,7 @@ target_link_libraries(hostemu rexx rexxapi ${platform_hostemu_libs} ${CMAKE_REQU
 install(TARGETS hostemu RUNTIME COMPONENT Core DESTINATION ${INSTALL_LIB_DIR}
                         LIBRARY DESTINATION ${INSTALL_LIB_DIR} COMPONENT Core)
 set_target_properties(hostemu PROPERTIES VERSION ${ORX_VERSION})
+create_install_symlink(hostemu)
 
 #################### librxunixsys.so ################
 if (NOT WIN32)
@@ -1278,19 +1351,17 @@ target_include_directories(rxunixsys PUBLIC
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     target_link_libraries(rxunixsys rexx rexxapi crypt ${CMAKE_REQUIRED_LIBRARIES})
 else ()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++")
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++ -lc++abi")
-
     target_link_libraries(rxunixsys rexx rexxapi ${CMAKE_REQUIRED_LIBRARIES})
 endif ()
 
 set_target_properties(rxunixsys PROPERTIES VERSION ${ORX_VERSION})
 install(TARGETS rxunixsys RUNTIME DESTINATION ${INSTALL_LIB_DIR}
                           LIBRARY DESTINATION ${INSTALL_LIB_DIR} COMPONENT Core)
+   create_install_symlink(rxunixsys)
 endif ()
 
 #################### liborxncurses.so ################
-if (NOT WIN32)
+if (HAVE_NCURSES_H)
    # need to copy this to the binary dir
    copy_build_file(ncurses.cls ${build_extensions_orxncurses_dir})
    # Sources for liborxncurses.so
@@ -1308,6 +1379,7 @@ if (NOT WIN32)
    install(TARGETS orxncurses RUNTIME DESTINATION ${INSTALL_LIB_DIR}
                           LIBRARY DESTINATION ${INSTALL_LIB_DIR} COMPONENT Core)
    install(FILES ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/ncurses.cls COMPONENT Core DESTINATION ${INSTALL_CLS_DIR})
+   create_install_symlink(orxncurses)
 endif ()
 
 #################### orexxole.dll ################
@@ -2060,7 +2132,7 @@ if (BUILD_RPM)
 #  set(CPACK_RPM_PACKAGE_REQUIRES "csh")
    if (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "s390x")
       set(orx_install_arch "s390x")
-   elseif (${INSTALL_LIB_DIR} STREQUAL ${CMAKE_INSTALL_PREFIX}/lib64)
+   elseif (${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64") # fix by using same logic as for BUILD_DEB
       set(orx_install_arch "x86_64")
    else ()
       set(orx_install_arch "i386")

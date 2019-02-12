@@ -110,6 +110,7 @@ class StemClass : public RexxObject
     RexxObject *itemsRexx();
     RexxObject *unknownRexx(RexxString *message, ArrayClass  *arguments);
     RexxInternalObject *removeItem(RexxInternalObject *);
+    RexxInternalObject *removeItemRexx(RexxObject *);
 
 
     RexxString *tail(ArrayClass *, size_t);

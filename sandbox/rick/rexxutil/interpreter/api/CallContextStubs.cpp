@@ -144,7 +144,22 @@ void RexxEntry DropContextVariable(RexxCallContext *c, CSTRING n)
     }
 }
 
-RexxDirectoryObject RexxEntry GetAllContextVariables(RexxCallContext *c)
+
+RexxVariableReferenceObject RexxEntry GetContextVariableReference(RexxCallContext * c, CSTRING n)
+{
+    ApiContext context(c);
+    try
+    {
+        return (RexxVariableReferenceObject)context.context->getContextVariableReference((const char *)n);
+    }
+    catch (NativeActivation *)
+    {
+    }
+    return NULLOBJECT;
+}
+
+
+RexxDirectoryObject RexxEntry GetAllContextVariables(RexxCallContext * c)
 {
     ApiContext context(c);
     try
@@ -157,7 +172,7 @@ RexxDirectoryObject RexxEntry GetAllContextVariables(RexxCallContext *c)
     return NULLOBJECT;
 }
 
-RexxStemObject RexxEntry ResolveStemVariable(RexxCallContext *c, RexxObjectPtr s)
+RexxStemObject RexxEntry ResolveStemVariable(RexxCallContext * c, RexxObjectPtr s)
 {
     ApiContext context(c);
     try
@@ -258,6 +273,21 @@ void RexxEntry DropExitContextVariable(RexxExitContext *c, CSTRING n)
     {
     }
 }
+
+RexxVariableReferenceObject RexxEntry GetExitContextVariableReference(RexxExitContext *c, CSTRING n)
+{
+    ApiContext context(c);
+    try
+    {
+        return (RexxVariableReferenceObject)context.context->getContextVariableReference((const char *)n);
+    }
+    catch (NativeActivation *)
+    {
+    }
+    return NULLOBJECT;
+}
+
+
 
 RexxDirectoryObject RexxEntry GetAllExitContextVariables(RexxExitContext *c)
 {
@@ -660,6 +690,7 @@ CallContextInterface Activity::callContextFunctions =
     GetContextForm,
     GetCallerContext,
     FindCallContextClass,
+    GetContextVariableReference,
     CallThrowException0,
     CallThrowException1,
     CallThrowException2,
@@ -679,6 +710,7 @@ ExitContextInterface Activity::exitContextFunctions =
     DropExitContextVariable,
     GetAllExitContextVariables,
     GetExitCallerContext,
+    GetExitContextVariableReference,
     ExitThrowException0,
     ExitThrowException1,
     ExitThrowException2,

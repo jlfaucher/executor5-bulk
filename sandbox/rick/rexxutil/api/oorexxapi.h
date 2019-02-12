@@ -724,6 +724,7 @@ typedef struct
      logical_t(RexxEntry *GetContextForm)(RexxCallContext *);
      RexxObjectPtr(RexxEntry *GetCallerContext)(RexxCallContext *);
      RexxClassObject(RexxEntry *FindContextClass)(RexxCallContext *, CSTRING);
+     RexxVariableReferenceObject(RexxEntry * GetContextVariableReference)(RexxCallContext * , CSTRING);
      void (RexxEntry *ThrowException0)(RexxCallContext *, size_t);
      void (RexxEntry *ThrowException1)(RexxCallContext *, size_t, RexxObjectPtr);
      void (RexxEntry *ThrowException2)(RexxCallContext *, size_t, RexxObjectPtr, RexxObjectPtr);
@@ -743,6 +744,7 @@ typedef struct
      void             (RexxEntry *DropContextVariable)(RexxExitContext *, CSTRING);
      RexxDirectoryObject(RexxEntry *GetAllContextVariables)(RexxExitContext *);
      RexxObjectPtr(RexxEntry *GetCallerContext)(RexxExitContext *);
+     RexxVariableReferenceObject(RexxEntry * GetContextVariableReference)(RexxExitContext * , CSTRING);
      void (RexxEntry *ThrowException0)(RexxExitContext *, size_t);
      void (RexxEntry *ThrowException1)(RexxExitContext *, size_t, RexxObjectPtr);
      void (RexxEntry *ThrowException2)(RexxExitContext *, size_t, RexxObjectPtr, RexxObjectPtr);
@@ -2151,6 +2153,12 @@ struct RexxMethodContext_
          return threadContext->VariableReferenceValue(vr);
      }
 
+     void SetVariableReferenceValue(RexxVariableReferenceObject vr, RexxObjectPtr v)
+     {
+         threadContext->SetVariableReferenceValue(vr, v);
+     }
+
+
      logical_t IsVariableReference(RexxObjectPtr o)
      {
          return threadContext->IsVariableReference(o);
@@ -2987,6 +2995,12 @@ struct RexxCallContext_
          return threadContext->VariableReferenceValue(vr);
      }
 
+     void SetVariableReferenceValue(RexxVariableReferenceObject vr, RexxObjectPtr v)
+     {
+         threadContext->SetVariableReferenceValue(vr, v);
+     }
+
+
      logical_t IsVariableReference(RexxObjectPtr o)
      {
          return threadContext->IsVariableReference(o);
@@ -3160,6 +3174,10 @@ struct RexxCallContext_
      void DropContextVariable(CSTRING s)
      {
          functions->DropContextVariable(this, s);
+     }
+     RexxVariableReferenceObject GetContextVariableReference(CSTRING s)
+     {
+         return functions->GetContextVariableReference(this, s);
      }
      RexxStemObject ResolveStemVariable(RexxObjectPtr v)
      {
@@ -3800,6 +3818,11 @@ struct RexxExitContext_
          return threadContext->VariableReferenceValue(vr);
      }
 
+     void SetVariableReferenceValue(RexxVariableReferenceObject vr, RexxObjectPtr v)
+     {
+         threadContext->SetVariableReferenceValue(vr, v);
+     }
+
      logical_t IsVariableReference(RexxObjectPtr o)
      {
          return threadContext->IsVariableReference(o);
@@ -3928,43 +3951,46 @@ struct RexxExitContext_
          functions->ThrowCondition(this, s1, s2, ao, o);
      }
 
-
-    RexxObjectPtr Nil()
-    {
-        return threadContext->Nil();
-    }
-    RexxObjectPtr True()
-    {
-        return threadContext->True();
-    }
-    RexxObjectPtr False()
-    {
-        return threadContext->False();
-    }
-    RexxStringObject NullString()
-    {
-        return threadContext->NullString();
-    }
-    void SetContextVariable(CSTRING s, RexxObjectPtr o)
-    {
-        functions->SetContextVariable(this, s, o);
-    }
-    RexxObjectPtr GetContextVariable(CSTRING s)
-    {
-        return functions->GetContextVariable(this, s);
-    }
-    void DropContextVariable(CSTRING s)
-    {
-        functions->DropContextVariable(this, s);
-    }
-    RexxDirectoryObject GetAllContextVariables()
-    {
-        return functions->GetAllContextVariables(this);
-    }
-    RexxObjectPtr GetCallerContext()
-    {
-        return functions->GetCallerContext(this);
-    }
+     RexxObjectPtr Nil()
+     {
+         return threadContext->Nil();
+     }
+     RexxObjectPtr True()
+     {
+         return threadContext->True();
+     }
+     RexxObjectPtr False()
+     {
+         return threadContext->False();
+     }
+     RexxStringObject NullString()
+     {
+         return threadContext->NullString();
+     }
+     void SetContextVariable(CSTRING s, RexxObjectPtr o)
+     {
+         functions->SetContextVariable(this, s, o);
+     }
+     RexxObjectPtr GetContextVariable(CSTRING s)
+     {
+         return functions->GetContextVariable(this, s);
+     }
+     void DropContextVariable(CSTRING s)
+     {
+         functions->DropContextVariable(this, s);
+     }
+     RexxVariableReferenceObject GetContextVariableReference(CSTRING s)
+     {
+         return functions->GetContextVariableReference(this, s);
+     }
+     RexxDirectoryObject GetAllContextVariables()
+     {
+         return functions->GetAllContextVariables(this);
+     }
+     RexxObjectPtr GetCallerContext()
+     {
+         return functions->GetCallerContext(this);
+     }
 
 #endif
 };
@@ -4070,6 +4096,7 @@ END_EXTERN_C()
 #define ARGUMENT_TYPE_RexxMutableBufferObject RexxMutableBufferObject
 #define ARGUMENT_TYPE_positive_wholenumber_t wholenumber_t
 #define ARGUMENT_TYPE_nonnegative_wholenumber_t wholenumber_t
+#define ARGUMENT_TYPE_RexxVariableReferenceObject RexxVariableReferenceObject
 
 #define ARGUMENT_TYPE_OPTIONAL_RexxObjectPtr         RexxObjectPtr
 #define ARGUMENT_TYPE_OPTIONAL_int                   int
@@ -4100,6 +4127,7 @@ END_EXTERN_C()
 #define ARGUMENT_TYPE_OPTIONAL_RexxMutableBufferObject   RexxMutableBufferObject
 #define ARGUMENT_TYPE_OPTIONAL_positive_wholenumber_t wholenumber_t
 #define ARGUMENT_TYPE_OPTIONAL_nonnegative_wholenumber_t wholenumber_t
+#define ARGUMENT_TYPE_OPTIONAL_RexxVariableReferenceObject RexxVariableReferenceObject
 
 #define ARGUMENT_TYPE(t) ((t) & ~REXX_OPTIONAL_ARGUMENT)
 #define IS_OPTIONAL_ARGUMENT(t) (((t) & REXX_OPTIONAL_ARGUMENT) != 0)

@@ -146,6 +146,7 @@ class NativeActivation : public ActivationBase
     inline RexxString *getMessageName()   {return messageName;}
     RexxObject *getContextStem(RexxString *name);
     RexxObject *getContextVariable(const char *name);
+    VariableReference *getContextVariableReference(const char *name);
     void dropContextVariable(const char *name);
     void setContextVariable(const char *name, RexxObject *value);
     RexxObject *getObjectVariable(const char *name);
