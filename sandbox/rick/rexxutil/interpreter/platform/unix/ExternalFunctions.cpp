@@ -107,7 +107,6 @@ int putflag = 0;                            /* static or dynamic env memory   */
 
 RexxRoutine2(CSTRING, sysBeep, OPTIONAL_wholenumber_t, Frequency, OPTIONAL_wholenumber_t, Duration)
 {
-#if HAVE_
     printf("\a");
     return "";
 }
