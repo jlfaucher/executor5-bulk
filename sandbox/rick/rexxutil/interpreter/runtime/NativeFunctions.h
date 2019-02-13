@@ -47,4 +47,5 @@
 
 INTERNAL_ROUTINE(Directory, sysDirectory)
 INTERNAL_ROUTINE(Filespec, sysFilespec)
+INTERNAL_ROUTINE(Beep, sysBeep)
 

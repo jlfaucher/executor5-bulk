@@ -83,33 +83,11 @@
 #include "FileNameBuffer.hpp"
 
 
-#define DRVNUM          0x40                /* drive number subtractor        */
-#define DIRLEN          256                 /* length of a directory          */
-#define FULLSEG         65536L              /* ^4K constant                   */
-
-#define KIOCSOUND   0x4B2F              /* start sound generation (0 for off) */
-
 typedef struct _ENVENTRY {                  /* setlocal/endlocal structure    */
      size_t   size;                            /* size of the saved memory       */
 } ENVENTRY;
 
 int putflag = 0;                            /* static or dynamic env memory   */
-
-/*********************************************************************/
-/*                                                                   */
-/*   Subroutine Name:   sysBeep                                      */
-/*                                                                   */
-/*   Descriptive Name:  BEEP function                                */
-/*                                                                   */
-/*   Function:          sounds the speaker if possible, else flash   */
-/*                      the screen                                   */
-/*********************************************************************/
-
-RexxRoutine2(CSTRING, sysBeep, OPTIONAL_wholenumber_t, Frequency, OPTIONAL_wholenumber_t, Duration)
-{
-    printf("\a");
-    return "";
-}
 
 
 /******************************************************************************/

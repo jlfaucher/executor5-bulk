@@ -97,10 +97,13 @@
 #cmakedefine HAVE_DLADDR
 
 /* Define to 1 if _PC_HAVE_CASE_SENSITIVE is a valid value */
-#cmakedefine HAVE_DLADDR
+#cmakedefine HAVE_PC_HAVE_CASE_SENSITIVE
 
 /* Define to 1 if FNM_CASEFOLD is a valid value */
 #cmakedefine HAVE_FNM_CASEFOLD
+
+/* Define to 1 if KDMKTONE is a valid value */
+#cmakedefine HAVE_KDMKTONE
 
 /* Define to 1 if you have the <pwd.h> header file. */
 #cmakedefine HAVE_PWD_H

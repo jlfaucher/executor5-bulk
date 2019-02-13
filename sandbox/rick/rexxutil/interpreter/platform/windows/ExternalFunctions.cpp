@@ -66,63 +66,12 @@
 
 #define DIRLEN        256                   /* length of a directory          */
 
-#define  MAX_FREQUENCY 32767
-#define  MIN_FREQUENCY    37
-#define  MAX_DURATION  60000
-#define  MIN_DURATION      0
-
-                                            /* FILESPEC function options      */
-#define FILESPEC_DRIVE        'D'
-#define FILESPEC_PATH         'P'
-#define FILESPEC_NAME         'N'
-#define FILESPEC_LOCATION     'L'
-#define FILESPEC_EXTENSION    'E'
-
 typedef struct _ENVENTRY {                  /* setlocal/endlocal structure    */
   size_t   DriveNumber;                     /* saved drive                    */
-  char     Directory[DIRLEN];               /* saved current directory        */
+  char     Directory[MAX_PATH];             /* saved current directory        */
   char    *Environment;                     /* saved environment segment      */
   char     Variables[1];                    /* start of variable values       */
 } ENVENTRY;
-
-/*********************************************************************/
-/*                                                                   */
-/*   Subroutine Name:   sysBeep                                      */
-/*                                                                   */
-/*   Descriptive Name:  BEEP function                                */
-/*                                                                   */
-/*   Function:          sounds the speaker at frequency Hertz for    */
-/*                      specified duration (in milliseconds)         */
-/*********************************************************************/
-
-RexxRoutine2(CSTRING, sysBeep, wholenumber_t, Frequency, wholenumber_t, Duration)
-{
-                                         /* out of range?              */
-    if (Frequency > MAX_FREQUENCY || Frequency < MIN_FREQUENCY)
-    {
-        RexxArrayObject subs = context->NewArray(4);
-        context->ArrayAppend(subs, context->NewStringFromAsciiz("frequency"));
-        context->ArrayAppend(subs, context->WholeNumberToObject(MIN_FREQUENCY));
-        context->ArrayAppend(subs, context->WholeNumberToObject(MAX_FREQUENCY));
-        context->ArrayAppend(subs, context->WholeNumberToObject(Frequency));
-        context->RaiseException(Rexx_Error_Invalid_argument_range, subs);
-        return NULL;
-    }
-                                         /* out of range?              */
-    if (Duration > MAX_DURATION || Duration < MIN_DURATION)
-    {
-        RexxArrayObject subs = context->NewArray(4);
-        context->ArrayAppend(subs, context->NewStringFromAsciiz("duration"));
-        context->ArrayAppend(subs, context->WholeNumberToObject(MIN_DURATION));
-        context->ArrayAppend(subs, context->WholeNumberToObject(MAX_DURATION));
-        context->ArrayAppend(subs, context->WholeNumberToObject(Duration));
-        context->RaiseException(Rexx_Error_Invalid_argument_range, subs);
-        return NULL;
-    }
-
-    Beep((DWORD)Frequency, (DWORD)Duration);  /* sound beep                 */
-    return "";                           /* always returns a null      */
-}
 
 
 /******************************************************************************/

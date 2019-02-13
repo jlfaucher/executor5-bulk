@@ -46,6 +46,7 @@
 #include "PackageManager.hpp"
 #include "SysFileSystem.hpp"
 #include "ExternalFileBuffer.hpp"
+#include "SysProcess.hpp"
 
 // FILESPEC function options
 #define FILESPEC_PATH         'P'
@@ -151,6 +152,50 @@ RexxRoutine2(RexxStringObject, sysFilespec, CSTRING, option, CSTRING, name)
             return NULLOBJECT;
         }
     }
+}
+
+
+#define  MAX_FREQUENCY 32767
+#define  MIN_FREQUENCY    37
+#define  MAX_DURATION  60000
+#define  MIN_DURATION      0
+
+/*********************************************************************/
+/*                                                                   */
+/*   Subroutine Name:   sysBeep                                      */
+/*                                                                   */
+/*   Descriptive Name:  BEEP function                                */
+/*                                                                   */
+/*   Function:          sounds the speaker at frequency Hertz for    */
+/*                      specified duration (in milliseconds)         */
+/*********************************************************************/
+RexxRoutine2(CSTRING, sysBeep, wholenumber_t, Frequency, wholenumber_t, Duration)
+{
+    /* out of range?              */
+    if (Frequency > MAX_FREQUENCY || Frequency < MIN_FREQUENCY)
+    {
+        RexxArrayObject subs = context->NewArray(4);
+        context->ArrayAppend(subs, context->NewStringFromAsciiz("frequency"));
+        context->ArrayAppend(subs, context->WholeNumberToObject(MIN_FREQUENCY));
+        context->ArrayAppend(subs, context->WholeNumberToObject(MAX_FREQUENCY));
+        context->ArrayAppend(subs, context->WholeNumberToObject(Frequency));
+        context->RaiseException(Rexx_Error_Invalid_argument_range, subs);
+        return NULL;
+    }
+    /* out of range?              */
+    if (Duration > MAX_DURATION || Duration < MIN_DURATION)
+    {
+        RexxArrayObject subs = context->NewArray(4);
+        context->ArrayAppend(subs, context->NewStringFromAsciiz("duration"));
+        context->ArrayAppend(subs, context->WholeNumberToObject(MIN_DURATION));
+        context->ArrayAppend(subs, context->WholeNumberToObject(MAX_DURATION));
+        context->ArrayAppend(subs, context->WholeNumberToObject(Duration));
+        context->RaiseException(Rexx_Error_Invalid_argument_range, subs);
+        return NULL;
+    }
+
+    SysProcess::beep((int)Frequency, (int)Duration);
+    return "";                           /* always returns a null      */
 }
 
 

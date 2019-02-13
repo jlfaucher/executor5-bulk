@@ -43,5 +43,4 @@
 /******************************************************************************/
 
 
-INTERNAL_ROUTINE(Beep, sysBeep)
 INTERNAL_ROUTINE(RxMessageBox, sysMessageBox)
