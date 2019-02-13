@@ -143,11 +143,11 @@ return testResult
 
 ::method test_call_pass_three_args
   mgr = .Collector~new
-  -- SysDropFuncs() is a no-op; doesn't check args; always returns a Nullstring
-  code = self~runWithSecMgr("return SysDropFuncs(1, 2, 3)", mgr)
+  -- SysSearchPath() always returns a Nullstring when no file is found
+  code = self~runWithSecMgr("return SysSearchPath('foo', 'bar', 'c')", mgr)
   self~assertSame("CALL", mgr~allMessages, "Security manager CALL event expected")
   self~assertSame("ARGUMENTS NAME", mgr~allEntries("CALL"))
-  self~assertSame("SysDropFuncs"~upper, mgr~Entry("CALL", "NAME"))
+  self~assertSame("SYSSEARCHPATH"~upper, mgr~Entry("CALL", "NAME"))
   self~assertIsA(mgr~Entry("CALL", "ARGUMENTS"), .Array)
   self~assertSame(3, mgr~Entry("CALL", "ARGUMENTS")~items)
   self~assertSame("", code)
@@ -328,7 +328,7 @@ return testResult
 ::method test_requires_handle_forbidden
   filename = self~createRequires("handle_forbidden")
   mgr = .Collector~new
-  -- make the package load fail by handling the REQUIRES while removing NAME 
+  -- make the package load fail by handling the REQUIRES while removing NAME
   mgr~actionRemove("REQUIRES", "NAME")
   code = self~runWithSecMgr("signal on syntax; return .Package~new('" || filename || "')~name; syntax: return condition('o')~code", mgr)
   self~assertSame("REQUIRES", mgr~allMessages, "Security manager REQUIRES event expected")
@@ -493,7 +493,7 @@ return testResult
     info~remove(actionRemove[name])
   -- are we expected to replace an existing entry?
   if actionChange~hasIndex(name) then do
-    parse value actionChange[name] with entry from to 
+    parse value actionChange[name] with entry from to
     info[entry] = info[entry]~changeStr(from, to)
   end
   if actionHandle~hasIndex(name) then
@@ -517,7 +517,7 @@ return testResult
   use strict arg name, entry, from, to
   -- we currently support just a single string change
   if actionChange~hasIndex(name) then
-    raise syntax 93.900 array("Just a single entry string change action is supported") 
+    raise syntax 93.900 array("Just a single entry string change action is supported")
   actionChange[name] = entry from to
   self~actionHandle(name)              -- we handle this event
 
@@ -527,24 +527,24 @@ return testResult
   use strict arg name, entry
   -- we currently support just a single entry removal
   if actionRemove~hasIndex(name) then
-    raise syntax 93.900 array("Just a single entry remove action is supported") 
+    raise syntax 93.900 array("Just a single entry remove action is supported")
   actionRemove[name] = entry
   self~actionHandle(name)              -- we handle this event
 
--- handle the given Security manager event 
+-- handle the given Security manager event
 ::method actionHandle
   expose actionHandle
   use strict arg name, handle = .true
   if handle then
     actionHandle~put(name)             -- we handle this event
 
--- returns a sorted string of all Security manager messages received 
+-- returns a sorted string of all Security manager messages received
 ::method allMessages
   expose messages
   use strict arg
   return messages~allIndexes~sort~makeString(, " ")
 
--- returns a sorted string of all entries of the given Security manager event 
+-- returns a sorted string of all entries of the given Security manager event
 ::method allEntries
   expose messages
   use strict arg msg
