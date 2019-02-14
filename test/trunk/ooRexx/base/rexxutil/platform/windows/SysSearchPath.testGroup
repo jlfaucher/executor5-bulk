@@ -60,24 +60,16 @@ return testResult
 -- Wrong parameters are detected
 ------------------------------------
 ::method 'testSearchPath_Invalid_Parameters_1'
-    self~expectSyntax(40.1)
+    self~expectSyntax(88.901)
     rv = SysSearchPath()
 
 ::method 'testSearchPath_Invalid_Parameters_2'
-    self~expectSyntax(40.1)
+    self~expectSyntax(88.901)
     rv = SysSearchPath("varname")
 
 ::method 'testSearchPath_Invalid_Parameters_3'
-    self~expectSyntax(40.1)
+    self~expectSyntax(40.920)
     rv = SysSearchPath("varname", "filename", "bad option")
-
-::method 'testSearchPath_Invalid_Parameters_4'
-    self~expectSyntax(40.1)
-    rv = SysSearchPath("", "filename")
-
-::method 'testSearchPath_Invalid_Parameters_5'
-    self~expectSyntax(40.1)
-    rv = SysSearchPath("varname", "")
 
 ------------------------------------
 -- Valid parameters are accepted

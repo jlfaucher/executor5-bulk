@@ -139,3 +139,35 @@ return testResult
         self~assertEquals(0, rv)
         self~assertTrue(cat.0 > 0, 'pattern is:' patterns[i] 'file count is:' cat.0 'dir is:' directory())
     end
+
+::method 'testNullFileName'
+    self~expectSyntax(40.21)
+    rv = SysFileTree("", files.)
+
+::method 'testShortName'
+  temp = .TemporaryTestFile~new(self, 'test.rex')
+  temp~create(("Line1","","Line3"))
+  temps = .TemporaryTestFile~new(self, 'test.rex1')
+  temps~create(("Line1","","Line3"))
+
+  dir = .file~new(temp~fullName)~parent
+
+    -- 1 is a valid fileSpec
+    rv = SysFileTree(dir"\*.rex", files.)
+    self~assertEquals(0, rv)
+    self~assertEquals(1, files.0)
+
+::method 'testCurrentDirectory'
+  temp = .TemporaryTestFile~new(self, 'test.file')
+  temp~create(("Line1","","Line3"))
+
+  dir = .file~new(temp~fullName)~parent
+
+  olddir = directory(dir)
+
+    -- 1 is a valid fileSpec
+    rv = SysFileTree("*.file", files.)
+    self~assertEquals(0, rv)
+    self~assertEquals(1, files.0)
+
+  call directory olddir

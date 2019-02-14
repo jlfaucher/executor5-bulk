@@ -98,6 +98,22 @@ return testResult
   self~assertEquals(1, s.0)
   self~assertEquals('test', s.1)
 
+
+::method test_insert_out_of_range
+  s.0 = 3
+  self~expectSyntax("40.923")
+  ret = SysStemInsert(s., 5, 55)
+
+::method test_stem_size_not_set
+  self~expectSyntax("40.922")
+  ret = SysStemInsert(s., 5, 55)
+
+::method test_stem_size_bad_value
+  s.0 = 'a'
+  self~expectSyntax("40.922")
+  ret = SysStemInsert(s., 5, 55)
+
+
 -- End of class: SysStemSort.testGroup
 
 

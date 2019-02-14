@@ -430,6 +430,7 @@ address_with ::=      'WITH' ( 'INPUT' ( 'NORMAL' | 'STEM' stem | 'STREAM' strea
   address "" "" with input using ( .Array~of(line, line) )
   address "" "" with input using ( ("line", "line") )
   address "" "" with input using .local
+  stream~close
 
 ::method test_with_null_command_with_large_input
   -- A null command (or any command that ignores stdin) may well finish before
@@ -528,6 +529,8 @@ address_with ::=      'WITH' ( 'INPUT' ( 'NORMAL' | 'STEM' stem | 'STREAM' strea
   -- these tests work, but really make no sense
   address "" "" with output using ( .Array~of(line, line) )
   address "" "" with output using ( ("line", "line") )
+
+  stream~close
 
 ::method test_with_output_data_lengths
   out = .Array~new
@@ -647,6 +650,8 @@ address_with ::=      'WITH' ( 'INPUT' ( 'NORMAL' | 'STEM' stem | 'STREAM' strea
   -- these tests work, but really make no sense
   address "" "" with error using ( .Array~of(line, line) )
   address "" "" with error using ( ("line", "line") )
+
+  stream~close
 
 ::method test_with_error_data_lengths
   error = .Array~new

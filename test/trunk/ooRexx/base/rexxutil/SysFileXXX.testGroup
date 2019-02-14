@@ -1,0 +1,333 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev: 11734 $
+  Change Date:  $Date: 2019-02-08 15:41:41 -0500 (Fri, 08 Feb 2019) $
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2019 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+    parse source . . fileSpec;
+
+    group = .TestGroup~new(fileSpec)
+    group~add(.SysFileXXX.testGroup)
+
+    if group~isAutomatedTest then return group
+
+    testResult = group~suite~execute~~print
+
+return testResult
+-- End of entry point.
+
+::requires 'ooTest.frm'
+::class 'SysFileXXX.testgroup' subclass ooTestCase public
+
+::method test_file_exists
+
+    parse source . . me
+
+    directory = filespec('Location', me)
+    filename = filespec('Name', me)
+
+    -- the fully resolve directory and file should exist
+    self~assertTrue(sysFileExists(me))
+    self~assertTrue(sysFileExists(directory))
+
+    currentDir = Directory(directory)
+    self~assertTrue(SysFileExists(filename))
+
+    self~assertFalse(SysFileExists(filename||'xxxxx'))
+    -- this is the same as the current directory
+    self~assertTrue(SysFileExists(""))
+
+    self~assertTrue(SysIsFile(me))
+    self~assertTrue(SysIsFile(fileName))
+    self~assertFalse(SysIsFile(directory))
+    self~assertFalse(SysIsFile(""))
+    self~assertFalse(SysIsFile("."))
+    self~assertFalse(SysIsFile(".."))
+
+    self~assertFalse(SysIsFile(filename||'xxxxx'))
+
+    self~assertFalse(SysIsFileDirectory(me))
+    self~assertFalse(SysIsFileDirectory(fileName))
+    self~assertTrue(SysIsFileDirectory(directory))
+    self~assertTrue(SysIsFileDirectory(""))
+    self~assertTrue(SysIsFileDirectory("."))
+    self~assertTrue(SysIsFileDirectory(".."))
+
+    self~assertFalse(SysIsFileDirectory(directory||'xxxxx'))
+
+    temp = .TemporaryTestFile~new(self, 'testinput')
+    temp~create(("Line1","","Line3"))
+
+    self~assertTrue(SysFileExists('testinput'))
+    self~assertEquals(0, SysFileDelete(temp~fullName))
+    self~assertFalse(SysFileExists('testinput'))
+
+    temp = .TemporaryTestFile~new(self, 'testinput2')
+    temp~create(("Line1","","Line3"))
+
+    self~assertTrue(SysFileExists('testinput2'))
+    self~assertEquals(0, SysFileDelete('testinput2'))
+    self~assertFalse(SysFileExists('testinput2'))
+
+    self~assertNotEquals(0, SysFileDelete('testinput3'))
+    self~assertNotEquals(0, SysFileDelete(directory))
+
+    temp = .TemporaryTestFile~new(self, 'testinput4')
+    temp~create(("Line1","","Line3"))
+
+    tempFile = .File~new(temp~fullName)
+    tempFile~setReadOnly
+    self~assertNotEquals(0, SysFileDelete('testinput4'))
+    tempFile~setWritable
+    self~assertEquals(0, SysFileDelete('testinput4'))
+
+    temp = .TemporaryTestDirectory~new(self, "testdir")
+
+    self~assertEquals(0, SysMkDir(temp~fullName))
+    self~assertTrue(SysIsFileDirectory(temp~fullName))
+    self~assertEquals(0, SysRmDir(temp~fullName))
+    self~assertFalse(SysFileExists(temp~fullName))
+
+    self~assertEquals(0, SysMkDir("testdir"))
+    self~assertTrue(SysIsFileDirectory("testDir"))
+    self~assertEquals(0, SysRmDir("testDir"))
+    self~assertFalse(SysFileExists("testDir"))
+
+    call directory currentDir
+
+::method test_file_copy
+    parse source . . me
+
+    directory = filespec('Location', me)
+
+    lines = ("Line1","","Line3")
+    temp = .TemporaryTestFile~new(self, 'copysource')
+    temp~create(lines)
+
+    temp2 = .TemporaryTestFile~new(self, 'copytarget')
+
+    self~assertEquals(0, SysFileCopy(temp~fullName, temp2~fullname))
+    self~assertTrue(SysFileExists(temp~fullName));
+    self~assertTrue(SysFileExists(temp2~fullName));
+
+    s = .stream~new(temp2~fullName)
+    self~assertEquivalentList(lines, s~arrayIn)
+    s~close
+
+    currentDir = Directory(directory)
+
+    lines = ("Line4","","Line6")
+    temp~create(lines)
+
+    self~assertEquals(0, SysFileCopy('copysource', 'copytarget'))
+    self~assertTrue(SysFileExists('copysource'));
+    self~assertTrue(SysFileExists('copytarget'));
+
+    s = .stream~new('copytarget')
+    self~assertEquivalentList(lines, s~arrayIn)
+    s~close
+
+::method test_file_move
+    parse source . . me
+
+    directory = filespec('Location', me)
+
+    lines = ("Line1","","Line3")
+    temp = .TemporaryTestFile~new(self, 'movesource')
+    temp~create(lines)
+
+    temp2 = .TemporaryTestFile~new(self, 'movetarget')
+
+    self~assertEquals(0, SysFileMove(temp~fullName, temp2~fullname))
+    self~assertFalse(SysFileExists(temp~fullName));
+    self~assertTrue(SysFileExists(temp2~fullName));
+
+    s = .stream~new(temp2~fullName)
+    self~assertEquivalentList(lines, s~arrayIn)
+    s~close
+
+    call SysFileDelete(temp2~fullName)
+
+    currentDir = Directory(directory)
+
+    lines = ("Line4","","Line6")
+    temp~create(lines)
+
+    self~assertEquals(0, SysFileMove('movesource', 'movetarget'))
+    self~assertFalse(SysFileExists('movesource'));
+    self~assertTrue(SysFileExists('movetarget'));
+
+    s = .stream~new('movetarget')
+    self~assertEquivalentList(lines, s~arrayIn)
+    s~close
+
+    temp~create(("Line7","","Line8"))
+
+    self~assertNotEquals(0, SysFileMove('movesourcexxxx', 'movetargetxxxx'))
+    self~assertFalse(SysFileExists('movesourcexxxx'));
+    self~assertFalse(SysFileExists('movetargetxxxx'));
+
+::method test_search_file
+
+    parse source . . me
+
+    directory = filespec('Location', me)
+    currentDir = Directory(directory)
+
+    lines = ("line1","","Line3")
+    temp = .TemporaryTestFile~new(self, 'searchfile')
+
+    temp~create(lines)
+
+    self~of(e., "line1", "Line3")
+
+    self~assertEquals("", SysFileSearch("l", temp~fullName, a.))
+    self~assertEquals(2, a.0)
+    self~verifySeq(a., e.)
+
+    drop a.
+
+    self~assertEquals("", SysFileSearch("L", 'searchfile', a., 'i'))
+    self~assertEquals(2, a.0)
+    self~verifySeq(a., e.)
+
+    drop a.
+    self~of(e., "Line3")
+
+    self~assertEquals("", SysFileSearch("L", temp~fullName, a., 'c'))
+    self~assertEquals(1, a.0)
+    self~verifySeq(a., e.)
+
+    drop a.
+    self~of(e., "line1")
+
+    self~assertEquals("", SysFileSearch("l", 'searchfile', a., 'c'))
+    self~assertEquals(1, a.0)
+    self~verifySeq(a., e.)
+
+    drop a.
+    self~of(e., "1 line1", "3 Line3")
+
+    self~assertEquals("", SysFileSearch("l", temp~fullName, a., 'n'))
+    self~assertEquals(2, a.0)
+    self~verifySeq(a., e.)
+
+    drop a.
+    self~of(e., "1 line1", "3 Line3")
+
+    self~assertEquals("", SysFileSearch("L", temp~fullName, a., 'ni'))
+    self~assertEquals(2, a.0)
+    self~verifySeq(a., e.)
+
+    drop a.
+    self~of(e., "3 Line3")
+
+    self~assertEquals("", SysFileSearch("L", temp~fullName, a., 'cn'))
+    self~assertEquals(1, a.0)
+    self~verifySeq(a., e.)
+
+    temp~create(("Line1", copies('y', 20000)||'X', "Line2"))
+    self~of(e., copies('y', 20000)||'X')
+
+    self~assertEquals("", SysFileSearch("X", temp~fullName, a., 'c'))
+    self~assertEquals(1, a.0)
+    self~verifySeq(a., e.)
+
+::method test_temp_file_name
+    parse source . . me
+
+    directory = filespec('Location', me)
+    currentDir = Directory(directory)
+
+    n = SysTempFileName("foo?.bar?")
+    self~assertEquals(0, n~pos('?'))
+    self~assertFalse(SysFileExists(n))
+
+    lines = ("Line1","","Line3")
+    tempfiles = .array~new(10)
+
+    loop i = 0 to 9
+       temp = .TemporaryTestFile~new(self, 'foo'||i)
+       temp~create(lines)
+       tempfiles~append(temp)
+    end
+
+    -- this should ensure this can't be created
+    n = SysTempFileName("foo?")
+    self~assertEquals("", n)
+
+    n = SysTempFileName("foo*.bar*", '*')
+    self~assertEquals(0, n~pos('*'))
+    self~assertFalse(SysFileExists(n))
+
+
+    -- next two tests should return a null string because of too-many or too-few filler spaces
+
+    self~assertEquals("", SysTempFileName("foo"))
+    self~assertEquals("", SysTempFileName("foo??????"))
+
+
+::method test_null_filler
+  self~expectSyntax(40.23)
+  rv = SysTempFileName("foo?", "")
+
+
+::method test_long_filler
+  self~expectSyntax(40.23)
+  rv = SysTempFileName("foo?", "??")
+
+
+::method verifySeq
+  use arg source., result.
+
+  do i=0 to result.0
+     self~assertEquals(source.i, result.i)
+  end
+
+::method of
+  use arg target.
+  values = arg(2, 'a')
+
+  target.0 = values~items
+  do i = 1 to target.0
+      target.i = values[i]
+  end
+
+::options novalue error
+

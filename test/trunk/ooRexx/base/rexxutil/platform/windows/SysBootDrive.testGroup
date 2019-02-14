@@ -57,10 +57,10 @@ return testResult
 ::class 'SysBootDrive.testgroup' subclass ooTestCase public
 
 ::method 'testBootDrive'
-    self~assertNotNull(SysBootDrive())
+    self~assertEquals(value("SystemDrive",, "ENVIRONMENT"), SysBootDrive())
 
 ::method 'testBootDrive2'
-    self~expectSyntax(40.1)
+    self~expectSyntax(88.922)
     rv = SysBootDrive('c:')
 
 

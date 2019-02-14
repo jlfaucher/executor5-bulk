@@ -60,24 +60,16 @@ return testResult
 -- Wrong parameters are detected
 ------------------------------------
 ::method 'testSearchPath_Invalid_Parameters_1'
-    self~expectSyntax(40.1)
+    self~expectSyntax(88.901)
     rv = SysSearchPath()
 
 ::method 'testSearchPath_Invalid_Parameters_2'
-    self~expectSyntax(40.1)
+    self~expectSyntax(88.901)
     rv = SysSearchPath("varname")
 
 ::method 'testSearchPath_Invalid_Parameters_3'
-    self~expectSyntax(40.1)
+    self~expectSyntax(40.920)
     rv = SysSearchPath("varname", "filename", "bad option")
-
-::method 'testSearchPath_Invalid_Parameters_4'
-    self~expectSyntax(40.1)
-    rv = SysSearchPath("", "filename")
-
-::method 'testSearchPath_Invalid_Parameters_5'
-    self~expectSyntax(40.1)
-    rv = SysSearchPath("varname", "")
 
 ------------------------------------
 -- Valid parameters are accepted
@@ -120,6 +112,8 @@ return testResult
     filename = me~substr(lastSlash + 1)
 
     oldval = value("varname", , "ENVIRONMENT")
+
+    say "Setting directory to" directory
     call value "varname", directory, "ENVIRONMENT"
     self~assertNotEquals("", SysSearchPath("varname", filename), "01 : Must be found because current dir is in path")
     call value "varname", "*dummy before*:"directory":*dummy after*", "ENVIRONMENT"
