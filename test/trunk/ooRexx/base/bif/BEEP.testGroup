@@ -60,36 +60,18 @@ return testResult
 
 -- Duration and frequency are ignored on *nix
 ::method "test_2"
-  if .ooRexxUnit.OSName == "WINDOWS" then do
     self~expectSyntax(88.901)
     retc = beep()
-  end
-  else do
-    retc = beep()
-   self~assertSame('', retc)
-  end
 
 -- Duration and frequency are ignored on *nix
 ::method "test_3"
-  if .ooRexxUnit.OSName == "WINDOWS" then do
     self~expectSyntax(88.901)
     retc = beep( , 1)
-  end
-  else do
-    retc = beep( , 1)
-    self~assertSame('', retc)
-  end
 
 -- Duration and frequency are ignored on *nix
 ::method "test_4"
-  if .ooRexxUnit.OSName == "WINDOWS" then do
     self~expectSyntax(88.901)
     retc = beep(38, )
-  end
-  else do
-    retc = beep(38, )
-    self~assertSame('', retc)
-  end
 
 ::method "test_5"
   retc = beep(37, 1)
@@ -97,14 +79,8 @@ return testResult
 
 -- Duration and frequency are ignored on *nix
 ::method "test_6"
-  if .ooRexxUnit.OSName == "WINDOWS" then do
     self~expectSyntax(88.907);
     retc = beep(36, 1)
-  end
-  else do
-    retc = beep(36, 1)
-    self~assertSame('', retc)
-  end
 
 ::method "test_7"
   retc = beep(32767, 1)
@@ -112,14 +88,7 @@ return testResult
 
 -- Duration and frequency are ignored on *nix
 ::method "test_8"
-  if .ooRexxUnit.OSName == "WINDOWS" then do
     self~expectSyntax(88.907)
     retc = beep(32768, 1)
-  end
-  else do
-    retc = beep(32768, 1)
-    self~assertSame('', retc)
-  end
-
 
 ::options novalue error
