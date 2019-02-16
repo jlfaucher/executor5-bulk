@@ -111,11 +111,21 @@ return testResult
     temp = .TemporaryTestFile~new(self, 'testinput4')
     temp~create(("Line1","","Line3"))
 
-    tempFile = .File~new(temp~fullName)
-    tempFile~setReadOnly
-    self~assertNotEquals(0, SysFileDelete('testinput4'))
-    tempFile~setWritable
-    self~assertEquals(0, SysFileDelete('testinput4'))
+    -- this only applies to Windows
+    if .ooRexxUnit.OSName == "WINDOWS" | .ooRexxUnit.OSName == 'LINUX' then do
+       tempFile = .File~new(temp~fullName)
+       tempFile~setReadOnly
+       self~assertNotEquals(0, SysFileDelete('testinput4'))
+       self~assertTrue(SysFileExists('testinput4'))
+       tempFile~setWritable
+       self~assertEquals(0, SysFileDelete('testinput4'))
+    end
+    else if .ooRexxUnit.OSName == "DARWIN" then do
+       tempFile = .File~new(temp~fullName)
+       tempFile~setReadOnly
+       self~assertEquals(0, SysFileDelete('testinput4'))
+       self~assertFalse(SysFileExists('testinput4'))
+    end
 
     temp = .TemporaryTestDirectory~new(self, "testdir")
 
