@@ -129,11 +129,6 @@ return testResult
     self~assertEquals(0, SysRmDir(temp~fullName))
     self~assertFalse(SysFileExists(temp~fullName))
 
-    self~assertEquals(0, SysMkDir("testdir"))
-    self~assertTrue(SysIsFileDirectory("testDir"))
-    self~assertEquals(0, SysRmDir("testDir"))
-    self~assertFalse(SysFileExists("testDir"))
-
     call directory currentDir
 
 ::method test_file_copy
