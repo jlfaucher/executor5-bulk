@@ -114,10 +114,10 @@ return testResult
   -- some assertions on the various is tests
   self~assertFalse(f~exists)
   self~assertFalse(f~isDirectory)
-  self~assertFalse(f~isFile)   -- returns false because it doesn't exit)
-  self~assertFalse(f~isHidden) -- returns false because it doesn't exit)
-  self~assertFalse(f~canRead)  -- returns false because it doesn't exit)
-  self~assertFalse(f~canWrite,)  -- returns false, because it doesn't exist
+  self~assertFalse(f~isFile)   -- returns false because it doesn't exit
+  self~assertFalse(f~isHidden) -- returns false because it doesn't exit
+  self~assertFalse(f~canRead)  -- returns false because it doesn't exit
+  self~assertFalse(f~canWrite) -- returns false because it doesn't exist
   self~assertFalse(f~delete)   -- should fail because it doesn't exist
 
   self~assertSame(.nil, f~lastModified)  -- should fail because it doesn't exist
@@ -470,6 +470,94 @@ return testResult
     self~assertEquals(expected, actual, ".File~new('User', 'C:\')~absolutePath should return" expected"; found" actual)
 
   end
+
+
+-- canRead/Write and setReadOnly/Writable tests
+
+::method test_file_canread_one_arg
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  .File~new(".")~canRead(.nil)
+
+::method test_file_canwrite_one_arg
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  .File~new(".")~canWrite(.nil)
+
+::method test_file_setreadonly_one_arg
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  .File~new(".")~setReadOnly(.nil)
+
+::method test_file_setwritable_one_arg
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  .File~new(".")~setWritable(.nil)
+
+-- nothing should work with a non-existing file
+::method test_file_readwrite_file_not_exist
+  f = .File~new("file_not_exist") -- shouldn't exist
+
+  self~assertFalse(f~isFile)
+  self~assertFalse(f~isDirectory)
+  self~assertFalse(f~canRead)
+  self~assertFalse(f~canWrite)
+
+  f~setReadOnly
+  self~assertFalse(f~isFile)
+  self~assertFalse(f~isDirectory)
+  self~assertFalse(f~canRead)
+  self~assertFalse(f~canWrite)
+
+  f~setWritable
+  self~assertFalse(f~isFile)
+  self~assertFalse(f~isDirectory)
+  self~assertFalse(f~canRead)
+  self~assertFalse(f~canWrite)
+
+-- test with an existing file
+::method test_file_readwrite_file_exist
+  f = .TemporaryTestFile~new(self, "file_exist")
+  f~create("line")
+
+  self~assertTrue(f~isFile)
+  self~assertFalse(f~isDirectory)
+  self~assertTrue(f~canRead)
+  self~assertTrue(f~canWrite)
+
+  f~setReadOnly
+  self~assertTrue(f~isFile)
+  self~assertFalse(f~isDirectory)
+  self~assertTrue(f~canRead)
+  self~assertFalse(f~canWrite)
+
+  f~setWritable
+  self~assertTrue(f~isFile)
+  self~assertFalse(f~isDirectory)
+  self~assertTrue(f~canRead)
+  self~assertTrue(f~canWrite)
+
+-- test with an existing directory
+::method test_file_readwrite_directory_exist
+  f = .TemporaryTestDirectory~new(self, "directory_exist")
+  f~create
+
+  self~assertFalse(f~isFile)
+  self~assertTrue(f~isDirectory)
+  self~assertTrue(f~canRead)
+  self~assertTrue(f~canWrite)
+
+  f~setReadOnly
+  self~assertFalse(f~isFile)
+  self~assertTrue(f~isDirectory)
+  self~assertTrue(f~canRead)
+  self~assertFalse(f~canWrite)
+
+  f~setWritable
+  self~assertFalse(f~isFile)
+  self~assertTrue(f~isDirectory)
+  self~assertTrue(f~canRead)
+  self~assertTrue(f~canWrite)
+
+
+
+
 
 
 ::options novalue error

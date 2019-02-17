@@ -2207,28 +2207,26 @@ pp: procedure
 return 0
 
 -- a class for creating/deleting temporary test files
-::class TemporaryTestFile public
+::class TemporaryTestFile subclass File public
 ::method init
-  expose file package
+  expose package
   use strict arg host, name
 
   -- get the package the class is defined in
   package = host~class~package
 
   dir = .File~new(package~name)~parentFile
-  file = .File~new(name, dir)
+  self~init:super(name, dir)
 
 -- get the full resolved name of this file
 ::method fullName
-  expose file
-  return file~absolutePath
+  forward message "absolutePath"
 
 -- create a file from an array of lines
 ::method create
-  expose file
   use strict arg lines
 
-  s = .stream~new(file)
+  s = .stream~new(self)
   -- allow to create zero-length files
   s~open("write replace")
 
@@ -2242,10 +2240,9 @@ return 0
 
 -- append an array of lines to a file
 ::method append
-  expose file
   use strict arg lines
 
-  s = .stream~new(file)
+  s = .stream~new(self)
   s~open('WRITE APPEND')
   if lines~isA(.String) then do
     s~lineout(lines)
@@ -2257,9 +2254,9 @@ return 0
 
 -- read file into array
 ::method arrayIn
-  expose file
+  use strict arg
 
-  s = .stream~new(file)
+  s = .stream~new(self)
   s~open("read shared")
   array = s~arrayIn
   s~close
@@ -2279,48 +2276,41 @@ return 0
 
   self~append(package~resources[resourceName~upper])
 
--- allow the file to be deleted
-::method delete
-  expose file
-  file~delete
-
 -- clean up the temporary file after termination.
 ::method uninit
-  expose file
-  file~setWritable
-  file~delete
+  self~setWritable
+  self~delete
 
 -- a class for creating/deleting temporary test directories.
-::class TemporaryTestDirectory public
+::class TemporaryTestDirectory subclass File public
 ::method init
-  expose file package
+  expose package
   use strict arg host, name
 
   -- get the package the class is defined in
   package = host~class~package
 
   dir = .File~new(package~name)~parentFile
-  file = .File~new(name, dir)
+  self~init:super(name, dir)
 
--- get the full resolved name of this file
+-- get the full resolved name of this directory
 ::method fullName
-  expose file
-  return file~absolutePath
+  forward message "absolutePath"
 
 -- create the directory
 ::method create
-  expose file
-  file~makeDir
+  forward message "makeDir"
 
 -- delete the directory and all files
 ::method delete
-  expose file
-  self~deleteDir(file)
-  file~setWritable
-  file~delete
+  use strict arg
+
+--self~deleteDir(self) -- a full tree delete is way too dangerous
+  self~setWritable
+  self~delete
 
 -- delete a directory and all of the files in the directory
-::method deleteDir private
+::method XXX_deleteDir private
   use arg dir
 
   files = dir~listFiles
@@ -2343,7 +2333,6 @@ return 0
 
 -- clean up the temporary directory after termination.
 ::method uninit
-  expose file
   self~delete
 
 -- a dummy class for disabling output to .output or .debugoutput

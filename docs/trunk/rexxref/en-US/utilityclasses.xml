@@ -2905,7 +2905,7 @@ and will not change if you change the default directory.
 </para>
 
 <!-- Modified: lastAccessed= and lastModified= combined into attribute -->
-<!-- $GENERATED-20190117-START rexxrefClassTable(File) -->
+<!-- $GENERATED-20190217-START rexxrefClassTable(File) -->
 <table id="ooRexxFileClass" frame="all" pgwide="1">
 <title>File Class</title>
 <tgroup cols="1">
@@ -2954,7 +2954,7 @@ and will not change if you change the default directory.
    <member><xref linkend="mthFileLastAccessedEquals" xrefstyle="select:title"/></member>
 -->
    <member><xref linkend="mthFileLastModified" xrefstyle="select:title"/></member>
-<!-- lastAccessed= combined into attribute
+<!-- lastModified= combined into attribute
    <member><xref linkend="mthFileLastModifiedEquals" xrefstyle="select:title"/></member>
 -->
    <member><xref linkend="mthFileLength" xrefstyle="select:title"/></member>
@@ -2970,13 +2970,14 @@ and will not change if you change the default directory.
    <member><xref linkend="mthFileRenameTo" xrefstyle="select:title"/></member>
    <member><xref linkend="mthFileSeparator" xrefstyle="select:title"/></member>
    <member><xref linkend="mthFileSetReadOnly" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthFileSetWritable" xrefstyle="select:title"/></member>
    <member><xref linkend="mthFileString" xrefstyle="select:title"/></member>
   </simplelist>
  </entry></row>
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20190117-END rexxrefClassTable(File) -->
+<!-- $GENERATED-20190217-END rexxrefClassTable(File) -->
 
 <section id="mthFileIsCaseSensitiveClsMth"><title>isCaseSensitive (Class Method)</title>
 <indexterm><primary>isCaseSensitive method</primary>
@@ -3167,6 +3168,11 @@ say .File~new("../my file")~absolutePath           -- /opt/my file
 
 <para>Returns &true; if the file exists and is readable. Otherwise returns &false;.
 </para>
+<para>See also methods
+<xref linkend="mthFileCanWrite" xrefstyle="select:title"/>.
+<xref linkend="mthFileSetReadOnly" xrefstyle="select:title"/>.
+<xref linkend="mthFileSetWritable" xrefstyle="select:title"/>.
+</para>
 </section>
 
 <section id="mthFileCanWrite"><title>canWrite</title>
@@ -3183,6 +3189,11 @@ say .File~new("../my file")~absolutePath           -- /opt/my file
 </mediaobject>
 
 <para>Returns &true; if the file exists and is writable. Otherwise returns &false;.
+</para>
+<para>See also methods
+<xref linkend="mthFileCanRead" xrefstyle="select:title"/>, and
+<xref linkend="mthFileSetReadOnly" xrefstyle="select:title"/>.
+<xref linkend="mthFileSetWritable" xrefstyle="select:title"/>.
 </para>
 </section>
 
@@ -3864,11 +3875,36 @@ The new name is <emphasis role="italic">dest</emphasis>.
 </imageobject>
 </mediaobject>
 
-<para>Sets the read-only flag of the file/directory denoted by the absolute path of the target object.
+<para>Sets the read-only flag of the file or directory denoted by the
+absolute path of the target object.
 </para>
-<para>Returns &true; if the attribute was set, otherwise returns &false;.
+<para>See also methods
+<xref linkend="mthFileSetWritable" xrefstyle="select:title"/>,
+<xref linkend="mthFileCanRead" xrefstyle="select:title"/>, and
+<xref linkend="mthFileCanWrite" xrefstyle="select:title"/>.
 </para>
 </section>
+
+
+<!-- Class File - method setWritable ======================== -->
+<section id="mthFileSetWritable" revisionflag="added"><title>&added50;setWritable</title>
+<indexterm><primary>setWritable method</primary><secondary>of File class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>setWritable method</secondary><tertiary>of File class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/file_setwritable.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Clears the read-only flag of the file or directory denoted by the
+absolute path of the target object.
+</para>
+<para>See also methods
+<xref linkend="mthFileSetReadOnly" xrefstyle="select:title"/>.
+<xref linkend="mthFileCanRead" xrefstyle="select:title"/>, and
+<xref linkend="mthFileCanWrite" xrefstyle="select:title"/>.
+</para>
+</section>
+
 
 <section id="mthFileString"><title>string</title>
 <indexterm><primary>string method</primary>
