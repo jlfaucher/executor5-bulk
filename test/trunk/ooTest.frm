@@ -536,7 +536,7 @@ return
       raise syntax 88.916 array ("2 'verbose'", "true or false", verbose)
 
     if verbose then
-      say "Executing testSuite" pp(self~string"@"self~identityHash) "with" pp(self~countTestCases) "test cases ..."
+      say "Executing" self~getName "with" self~countTestCases "test cases"
 
     tests = self~testQueue
 

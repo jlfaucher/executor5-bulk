@@ -344,25 +344,32 @@ return .false
 ::routine pathCompact public
   use strict arg path, len
 
+  -- typically there should be no need to print a drive specification
+  if path~subStr(2, 1) = ":" then
+    path = path~subStr(3)
+
   if path~length <= len then return path
 
   sl = .ooRexxUnit.directory.separator
 
-  -- Get position of directory separator after character 15
-  fp = path~pos(sl, 15)
+  -- we want at least seven characters leading part
+  fp = path~pos(sl, 8)
 
   -- Divide into leading and trailing pieces.  Leading piece, add "..."
   leading = path~left(fp) || "..."
   trailing = path~substr(fp)
+  fp = trailing~pos(sl || "ooRexx" || sl)
+  if fp > 0 then
+    trailing = trailing~substr(fp)
 
   -- Find a position of the directory separator in the trailing part, such that
   -- when the trailing part starts there, the overall length of the resulting
   -- string is the specified length, or shorter.
-  trailPos = trailing~pos(sl, trailing~length - (len - leading~length) + 1)
+  trailPos = trailing~pos(sl, max(1, trailing~length - (len - leading~length - 2)))
   if trailPos == 0 then do
     -- The last component of the path is too long, shorten the leading.
     leading = "..."
-    trailPos = trailing~pos(sl, trailing~length - (len - leading~length) + 1)
+    trailPos = trailing~pos(sl, max(1, trailing~length - (len - leading~length - 2)))
   end
 
   if trailPos == 0 then do
@@ -1620,7 +1627,7 @@ return str
   aTestResult~startTest(self)       -- remember test started
   self~setUp                        -- make sure setup is invoked before test
   if bGiveFeedback then
-     .error~say( "... running TestCase object" pp(self~string) "..." )
+     .error~say(".. Executing" self~string)
 
  -- make sure the output streams are in default state
  .output~destination(.stdout)
@@ -1736,8 +1743,7 @@ exceptionHandler:
  */
 ::method string
   className=self~class~id   -- get class name
-  return "testCase:" pp(self~getName) "(a" || addN(className) className || "@" || -
-          self~definedInFile")"
+  return filespec("name", self~definedInFile) "test case" self~getName
 
 
 /** setUp()
