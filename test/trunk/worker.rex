@@ -147,7 +147,7 @@ return finishTestRun(cl, testResult, overAllPhase, containers)
     pull
   end
 
-return max(testResult~newFailureCount > 0, 2 * (testResult~errorCount > 0))
+return max(testResult~newFailureCount > 0, 2 * (testResult~errorCount > 0), 3 * (testResult~exceptionCount > 0))
 
 return .ooTestConstants~SUCCESS_RC
 
