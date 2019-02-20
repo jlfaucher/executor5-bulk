@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -73,6 +73,7 @@ class ActivationFrame;
 class ActivationBase;
 class NativeActivation;
 class RexxActivation;
+class MutexSemaphoreClass;
 
 typedef enum
 {
@@ -329,6 +330,9 @@ class Activity : public RexxInternalObject
     RexxObject *getLocalEnvironment(RexxString *name);
     DirectoryClass *getLocal();
     CommandHandler *resolveCommandHandler(RexxString *);
+    void addMutex(MutexSemaphoreClass *m);
+    void removeMutex(MutexSemaphoreClass *m);
+    void cleanupMutexes();
 
     static void initializeThreadContext();
 
@@ -392,7 +396,8 @@ class Activity : public RexxInternalObject
     uint64_t    randomSeed;             // random number seed
     ProtectedBase *protectedObjects;    // list of stack-based object protectors
     ActivationFrame *activationFrames;  // list of stack-based object protectors
-    Activity *nestedActivity;       // used to push down activities in threads with more than one instance
+    Activity *nestedActivity;           // used to push down activities in threads with more than one instance
+    IdentityTable *heldMutexes;         // a list of Mutex objects owned by this activity.
 
     // structures containing the various interface vectors
     static RexxThreadInterface threadContextFunctions;
