@@ -109,9 +109,9 @@ class SysMutex
      ~SysMutex() {; }
      void create(bool critical = false);
      void close();
-     inline void request()
+     inline bool request()
      {
-         waitHandle(mutexMutex, bypassMessageLoop || SysSemaphore::noMessageLoop());
+         return waitHandle(mutexMutex, bypassMessageLoop || SysSemaphore::noMessageLoop());
      }
 
      inline bool request(uint32_t timeout)
@@ -121,7 +121,11 @@ class SysMutex
 
      inline bool release()
      {
-         return ReleaseMutex(mutexMutex) != 0;
+         if (mutexMutex != 0)
+         {
+             return ReleaseMutex(mutexMutex) != 0;
+         }
+         return false;
      }
 
      inline bool requestImmediate()

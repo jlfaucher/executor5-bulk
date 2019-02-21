@@ -3507,7 +3507,7 @@ void Activity::cleanupMutexes()
         {
             MutexSemaphoreClass *mutex = (MutexSemaphoreClass *)semaphores->get(i);
             // release the semaphore until we get a failure so the nesting is unwound.
-            while (mutex->release());
+            mutex->forceLockRelease();
         }
 
         // clear out the mutex list.

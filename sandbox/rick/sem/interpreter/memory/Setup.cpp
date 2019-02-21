@@ -1343,7 +1343,7 @@ CompleteClassMethodDefinitions();
 AddUnguardedMethod("Close", MutexSemaphoreClass::close, 0);
 AddMethod("Uninit", MutexSemaphoreClass::close, 0);
 AddUnguardedMethod("Release", MutexSemaphoreClass::release, 0);
-AddUnguardedMethod("Request", MutexSemaphoreClass::request, 1);
+AddUnguardedMethod("Acquire", MutexSemaphoreClass::request, 1);
 
 CompleteMethodDefinitions();
 

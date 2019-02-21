@@ -80,9 +80,9 @@ public:
      void create(bool critical = false);
      inline void open() { ; }
      void close();
-     void request(uint32_t t);
-     inline void request() { pthread_mutex_lock(&mutexMutex); }
-     inline void release() { pthread_mutex_unlock(&mutexMutex) == 0; }
+     bool request(uint32_t t);
+     inline bool request() { return pthread_mutex_lock(&mutexMutex) == 0; }
+     inline bool release() { return pthread_mutex_unlock(&mutexMutex) == 0; }
      inline bool requestImmediate() { return pthread_mutex_trylock(&mutexMutex) == 0;}
 
 protected:
