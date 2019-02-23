@@ -275,6 +275,12 @@
 ::method TestVariableReferenceName      EXTERNAL "LIBRARY orxmethod"
 ::method TestVariableReferenceValue     EXTERNAL "LIBRARY orxmethod"
 
+::method TestThrowException             EXTERNAL "LIBRARY orxmethod"
+::method TestThrowException0            EXTERNAL "LIBRARY orxmethod"
+::method TestThrowException1            EXTERNAL "LIBRARY orxmethod"
+::method TestThrowException2            EXTERNAL "LIBRARY orxmethod"
+
+
 ::method TestRaiseExceptionX
   signal on syntax
   forward message(TestRaiseException) continue
@@ -302,6 +308,39 @@
 ::method TestRaiseException2X
   signal on syntax
   forward message(TestRaiseException2) continue
+  return .nil
+
+  syntax:
+     return condition('o')
+
+
+::method TestThrowExceptionX
+  signal on syntax
+  forward message(TestThrowException) continue
+  return .nil
+
+  syntax:
+     return condition('o')
+
+::method TestThrowException0X
+  signal on syntax
+  forward message(TestThrowException0) continue
+  return .nil
+
+  syntax:
+     return condition('o')
+
+::method TestThrowException1X
+  signal on syntax
+  forward message(TestThrowException1) continue
+  return .nil
+
+  syntax:
+     return condition('o')
+
+::method TestThrowException2X
+  signal on syntax
+  forward message(TestThrowException2) continue
   return .nil
 
   syntax:

@@ -8308,7 +8308,7 @@ Rexx code.
 <para>Void.</para>
 </section>
 
-<section id="mthRaiseException"><title>RaiseException</title>
+<section id="mthRaiseException"><title>RaiseException/0/1/2</title>
 <indexterm><primary>RaiseException</primary></indexterm>
 <indexterm><primary>Thread context methods</primary>
 <secondary>RaiseException</secondary></indexterm>
@@ -8318,15 +8318,52 @@ Rexx code.
 <secondary>RaiseException</secondary></indexterm>
 <indexterm><primary>Exit context methods</primary>
 <secondary>RaiseException</secondary></indexterm>
+<indexterm><primary>RaiseException0</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>RaiseException0</secondary></indexterm>
+<indexterm><primary>Call context methods</primary>
+<secondary>RaiseException0</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>RaiseException0</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>RaiseException0</secondary></indexterm>
+<indexterm><primary>RaiseException1</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>RaiseException1</secondary></indexterm>
+<indexterm><primary>Call context methods</primary>
+<secondary>RaiseException1</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>RaiseException1</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>RaiseException1</secondary></indexterm>
+<indexterm><primary>RaiseException2</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>RaiseException2</secondary></indexterm>
+<indexterm><primary>Call context methods</primary>
+<secondary>RaiseException2</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>RaiseException2</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>RaiseException2</secondary></indexterm>
 <!-- RaiseException --><para>&contexts_thread_method_call_exit;.</para>
+<!-- RaiseException0   <para>&contexts_thread_method_call_exit;.</para> -->
+<!-- RaiseException1   <para>&contexts_thread_method_call_exit;.</para> -->
+<!-- RaiseException1   <para>&contexts_thread_method_call_exit;.</para> -->
+<!-- RaiseException2   <para>&contexts_thread_method_call_exit;.</para> -->
 <programlisting language="C++">
 <![CDATA[
 size_t n;
-RexxObjectPtr obj;
+RexxObjectPtr array, obj1, obj2;
 
 // Method Syntax Form(s)
 
-context->RaiseException(n, obj);
+context->RaiseException(n, array);
+
+context->RaiseException0(n);
+
+context->RaiseException1(n, obj1);
+
+context->RaiseException2(n, obj1, obj2);
 ]]>
 </programlisting>
 <para>Raise a SYNTAX condition.  The raised condition is held in a pending
@@ -8341,119 +8378,21 @@ Rexx code.
     recognized condition errors in the oorexxerrors.h include file.
     </para></entry>
     </row>
-    <row><entry><emphasis role="italic">obj</emphasis></entry>
+    <row><entry><emphasis role="italic">array</emphasis></entry>
     <entry><para>An Array of error message substitution values.</para></entry>
     </row>
-</tbody></tgroup></informaltable>
-<para><emphasis role="bold">Returns</emphasis></para>
-<para>Void.</para>
-</section>
-
-<section id="mthRaiseException0"><title>RaiseException0</title>
-<indexterm><primary>RaiseException0</primary></indexterm>
-<indexterm><primary>Thread context methods</primary>
-<secondary>RaiseException0</secondary></indexterm>
-<indexterm><primary>Call context methods</primary>
-<secondary>RaiseException0</secondary></indexterm>
-<indexterm><primary>Method context methods</primary>
-<secondary>RaiseException0</secondary></indexterm>
-<indexterm><primary>Exit context methods</primary>
-<secondary>RaiseException0</secondary></indexterm>
-<!-- RaiseException0 --><para>&contexts_thread_method_call_exit;.</para>
-<programlisting language="C++">
-<![CDATA[
-size_t n;
-
-// Method Syntax Form(s)
-
-context->RaiseException0(n);
-]]>
-</programlisting>
-<para>Raise an exception condition with no message substitution values.
-</para>
-<para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
-    <row><entry><emphasis role="italic">n</emphasis></entry>
-    <entry><para>The exception condition number.</para></entry>
-    </row>
-</tbody></tgroup></informaltable>
-<para><emphasis role="bold">Returns</emphasis></para>
-<para>Void.</para>
-</section>
-
-<section id="mthRaiseException1"><title>RaiseException1</title>
-<indexterm><primary>RaiseException1</primary></indexterm>
-<indexterm><primary>Thread context methods</primary>
-<secondary>RaiseException1</secondary></indexterm>
-<indexterm><primary>Call context methods</primary>
-<secondary>RaiseException1</secondary></indexterm>
-<indexterm><primary>Method context methods</primary>
-<secondary>RaiseException1</secondary></indexterm>
-<indexterm><primary>Exit context methods</primary>
-<secondary>RaiseException1</secondary></indexterm>
-<!-- RaiseException1 --><para>&contexts_thread_method_call_exit;.</para>
-<programlisting language="C++">
-<![CDATA[
-size_t n;
-RexxObjectPtr obj;
-
-// Method Syntax Form(s)
-
-context->RaiseException1(n, obj);
-]]>
-</programlisting>
-<para>Raise an exception condition with a single message substitution value.
-</para>
-<para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
-    <row><entry><emphasis role="italic">n</emphasis></entry>
-    <entry><para>The exception condition number.</para></entry>
-    </row>
-    <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>A substitution value for the condition error message.</para></entry>
-    </row>
-</tbody></tgroup></informaltable>
-<para><emphasis role="bold">Returns</emphasis></para>
-<para>Void.</para>
-</section>
-
-<section id="mthRaiseException2"><title>RaiseException2</title>
-<indexterm><primary>RaiseException2</primary></indexterm>
-<indexterm><primary>Thread context methods</primary>
-<secondary>RaiseException2</secondary></indexterm>
-<indexterm><primary>Call context methods</primary>
-<secondary>RaiseException2</secondary></indexterm>
-<indexterm><primary>Method context methods</primary>
-<secondary>RaiseException2</secondary></indexterm>
-<indexterm><primary>Exit context methods</primary>
-<secondary>RaiseException2</secondary></indexterm>
-<!-- RaiseException2 --><para>&contexts_thread_method_call_exit;.</para>
-<programlisting language="C++">
-<![CDATA[
-size_t n;
-RexxObjectPtr obj1, obj2;
-
-// Method Syntax Form(s)
-
-context->RaiseException2(n, obj1, obj2);
-]]>
-</programlisting>
-<para>Raise an exception condition with two message substitution values.
-</para>
-<para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
-    <row><entry><emphasis role="italic">n</emphasis></entry>
-    <entry><para>The exception condition number.</para></entry>
+    <row><entry><emphasis role="italic">obj1</emphasis></entry>
+    <entry><para>The first substitution value for the error message.</para></entry>
     </row>
     <row><entry><emphasis role="italic">obj1</emphasis></entry>
-    <entry><para>The first substitution value.</para></entry>
-    </row>
-    <row><entry><emphasis role="italic">obj2</emphasis></entry>
-    <entry><para>The second substitution value.</para></entry>
+    <entry><para>The second substitution value for the error message.</para></entry>
     </row>
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Void.</para>
+<para>See also methods
+<xref linkend="mthThrowException" xrefstyle="select:title"/>.
+</para>
 </section>
 
 <section id="mthReadInput"><title>&added50;ReadInput</title>
@@ -10021,6 +9960,94 @@ returning.
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Void.</para>
 </section>
+
+
+<section id="mthThrowException" revisionflag="changed"><title>&changed50;ThrowException/0/1/2</title>
+<indexterm><primary>ThrowException</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>ThrowException</secondary></indexterm>
+<indexterm><primary>Call context methods</primary>
+<secondary>ThrowException</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>ThrowException</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>ThrowException</secondary></indexterm>
+<indexterm><primary>ThrowException0</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>ThrowException0</secondary></indexterm>
+<indexterm><primary>Call context methods</primary>
+<secondary>ThrowException0</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>ThrowException0</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>ThrowException0</secondary></indexterm>
+<indexterm><primary>ThrowException1</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>ThrowException1</secondary></indexterm>
+<indexterm><primary>Call context methods</primary>
+<secondary>ThrowException1</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>ThrowException1</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>ThrowException1</secondary></indexterm>
+<indexterm><primary>ThrowException2</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>ThrowException2</secondary></indexterm>
+<indexterm><primary>Call context methods</primary>
+<secondary>ThrowException2</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>ThrowException2</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>ThrowException2</secondary></indexterm>
+<!-- ThrowException --><para>&contexts_method_call_exit; &context_since_50;.</para>
+<!-- ThrowException0   <para>&contexts_method_call_exit; &context_since_50;.</para> -->
+<!-- ThrowException1   <para>&contexts_method_call_exit; &context_since_50;.</para> -->
+<!-- ThrowException2   <para>&contexts_method_call_exit; &context_since_50;.</para> -->
+<programlisting language="C++">
+<![CDATA[
+size_t n;
+RexxObjectPtr array, obj1, obj2;
+
+// Method Syntax Form(s)
+
+context->ThrowException(n, array);
+
+context->ThrowException0(n);
+
+context->ThrowException1(n, obj1);
+
+context->ThrowException2(n, obj1, obj2);
+]]>
+</programlisting>
+<para>Throw a SYNTAX condition.
+The API call doesn't return and the current method, routine, or exit is
+exited immediately.
+</para>
+<para><emphasis role="bold">Arguments</emphasis></para>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
+    <row><entry><emphasis role="italic">n</emphasis></entry>
+    <entry><para>The exception condition number.  There are #defines for the
+    recognized condition errors in the oorexxerrors.h include file.
+    </para></entry>
+    </row>
+    <row><entry><emphasis role="italic">array</emphasis></entry>
+    <entry><para>An Array of error message substitution values.</para></entry>
+    </row>
+    <row><entry><emphasis role="italic">obj1</emphasis></entry>
+    <entry><para>The first substitution value for the error message.</para></entry>
+    </row>
+    <row><entry><emphasis role="italic">obj1</emphasis></entry>
+    <entry><para>The second substitution value for the error message.</para></entry>
+    </row>
+</tbody></tgroup></informaltable>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Void.</para>
+<para>See also methods
+<xref linkend="mthRaiseException" xrefstyle="select:title"/>.
+</para>
+</section>
+
+
 
 <section id="mthTrue"><title>True</title>
 <indexterm><primary>True</primary></indexterm>

@@ -1946,6 +1946,72 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(100, c~additional[3])
   self~assertSame(0, c~additional[4])
 
+::method TestThrowException001
+  tester = .METHODTester~new
+  c = tester~TestThrowException0X(3000)
+  self~assertSame(3, c~rc)
+  self~assertSame(3.0, c~code)
+  self~assertSame(0, c~additional~size)
+
+  c = tester~TestThrowException0X(6002)
+  self~assertSame(6, c~rc)
+  self~assertSame(6.2, c~code)
+  self~assertSame(0, c~additional~size)
+
+::method TestThrowException101
+  tester = .METHODTester~new
+  c = tester~TestThrowException1X(99925, "Fred")
+  self~assertSame(99, c~rc)
+  self~assertSame(99.925, c~code)
+  self~assertSame(1, c~additional~size)
+  self~assertSame("Fred", c~additional[1])
+
+::method TestThrowException201
+  tester = .METHODTester~new
+  c = tester~TestThrowException2X(13001, "F", c2x("F"))
+  self~assertSame(13, c~rc)
+  self~assertSame(13.1, c~code)
+  self~assertSame(2, c~additional~size)
+  self~assertSame("F", c~additional[1])
+  self~assertSame(c2x("F"), c~additional[2])
+
+::method TestThrowException01
+  tester = .METHODTester~new
+  c = tester~TestThrowExceptionX(3000, .array~new(0))
+  self~assertSame(3, c~rc)
+  self~assertSame(3.0, c~code)
+  self~assertSame(0, c~additional~size)
+
+  c = tester~TestThrowExceptionX(99925, .array~of("Fred"))
+  self~assertSame(99, c~rc)
+  self~assertSame(99.925, c~code)
+  self~assertSame(1, c~additional~size)
+  self~assertSame("Fred", c~additional[1])
+
+  c = tester~TestThrowExceptionX(13001, .array~of("F", c2x("F")))
+  self~assertSame(13, c~rc)
+  self~assertSame(13.1, c~code)
+  self~assertSame(2, c~additional~size)
+  self~assertSame("F", c~additional[1])
+  self~assertSame(c2x("F"), c~additional[2])
+
+  c = tester~TestThrowExceptionX(40901, .array~of("FRED", 80, "yada"))
+  self~assertSame(40, c~rc)
+  self~assertSame(40.901, c~code)
+  self~assertSame(3, c~additional~size)
+  self~assertSame("FRED", c~additional[1])
+  self~assertSame(80, c~additional[2])
+  self~assertSame("yada", c~additional[3])
+
+  c = tester~TestThrowExceptionX(88907, .array~of("min", 80, 100, 0))
+  self~assertSame(88, c~rc)
+  self~assertSame(88.907, c~code)
+  self~assertSame(4, c~additional~size)
+  self~assertSame("min", c~additional[1])
+  self~assertSame(80, c~additional[2])
+  self~assertSame(100, c~additional[3])
+  self~assertSame(0, c~additional[4])
+
 ::method TestBuffer01
   tester = .BufferTester~new(123)
   buffer = tester~getBuffer
