@@ -5160,7 +5160,7 @@ obj = context->GetContextVariableReference(name);
 <indexterm><primary>GetCSelf</primary></indexterm>
 <indexterm><primary>Method context methods</primary>
 <secondary>GetCSelf</secondary></indexterm>
-<!-- GetSelf --><para>&contexts_method;.</para>
+<!-- GetCSelf --><para>&contexts_method;.</para>
 <programlisting language="C++">
 <![CDATA[
 POINTER ptr;
@@ -8298,7 +8298,7 @@ Rexx code.
     <entry><para>The optional condition description as a String object.</para></entry>
     </row>
     <row><entry><emphasis role="italic">add</emphasis></entry>
-    <entry><para>A optional object containing additional condition information.</para></entry> </row>
+    <entry><para>An optional object containing additional condition information.</para></entry> </row>
     <row><entry><emphasis role="italic">obj</emphasis></entry>
     <entry><para>A Object that will be returned as a routine or
     method result if the raised condition is not trapped by the caller.</para></entry>
@@ -8306,6 +8306,10 @@ Rexx code.
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>Void.</para>
+<para>See also methods
+<xref linkend="mthThrowCondition" xrefstyle="select:title"/> and
+<xref linkend="mthRaiseException" xrefstyle="select:title"/>.
+</para>
 </section>
 
 <section id="mthRaiseException"><title>RaiseException/0/1/2</title>
@@ -8347,7 +8351,6 @@ Rexx code.
 <secondary>RaiseException2</secondary></indexterm>
 <!-- RaiseException --><para>&contexts_thread_method_call_exit;.</para>
 <!-- RaiseException0   <para>&contexts_thread_method_call_exit;.</para> -->
-<!-- RaiseException1   <para>&contexts_thread_method_call_exit;.</para> -->
 <!-- RaiseException1   <para>&contexts_thread_method_call_exit;.</para> -->
 <!-- RaiseException2   <para>&contexts_thread_method_call_exit;.</para> -->
 <programlisting language="C++">
@@ -9962,7 +9965,58 @@ returning.
 </section>
 
 
-<section id="mthThrowException" revisionflag="changed"><title>&changed50;ThrowException/0/1/2</title>
+<section id="mthThrowCondition" revisionflag="added"><title>&added50;ThrowCondition</title>
+<indexterm><primary>ThrowCondition</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>ThrowCondition</secondary></indexterm>
+<indexterm><primary>Call context methods</primary>
+<secondary>ThrowCondition</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>ThrowCondition</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>ThrowCondition</secondary></indexterm>
+<!-- ThrowCondition --><para>&contexts_method_call_exit; &context_since_50;.</para>
+<programlisting language="C++">
+<![CDATA[
+CSTRING str;
+RexxStringObject sobj;
+RexxArrayObject arr;
+RexxObjectPtr obj;
+
+// Method Syntax Form(s)
+
+context->ThrowCondition(str, sobj, add, obj);
+]]>
+</programlisting>
+<para>Throw a condition.
+The API call doesn't return and the current method, routine, or exit is
+exited immediately.
+</para>
+<para><emphasis role="bold">Arguments</emphasis></para>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
+    <row><entry><emphasis role="italic">str</emphasis></entry>
+    <entry><para>The condition name.</para></entry>
+    </row>
+    <row><entry><emphasis role="italic">sobj</emphasis></entry>
+    <entry><para>The optional condition description as a String object.</para></entry>
+    </row>
+    <row><entry><emphasis role="italic">add</emphasis></entry>
+    <entry><para>An optional object containing additional condition information.</para></entry> </row>
+    <row><entry><emphasis role="italic">obj</emphasis></entry>
+    <entry><para>A Object that will be returned as a routine or
+    method result if the raised condition is not trapped by the caller.</para></entry>
+    </row>
+</tbody></tgroup></informaltable>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>Void.</para>
+<para>See also methods
+<xref linkend="mthRaiseCondition" xrefstyle="select:title"/> and
+<xref linkend="mthThrowException" xrefstyle="select:title"/>.
+</para>
+</section>
+
+
+<section id="mthThrowException" revisionflag="added"><title>&added50;ThrowException/0/1/2</title>
 <indexterm><primary>ThrowException</primary></indexterm>
 <indexterm><primary>Thread context methods</primary>
 <secondary>ThrowException</secondary></indexterm>

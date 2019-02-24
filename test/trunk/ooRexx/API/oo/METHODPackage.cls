@@ -279,6 +279,8 @@
 ::method TestThrowException0            EXTERNAL "LIBRARY orxmethod"
 ::method TestThrowException1            EXTERNAL "LIBRARY orxmethod"
 ::method TestThrowException2            EXTERNAL "LIBRARY orxmethod"
+::method TestThrowCondition             EXTERNAL "LIBRARY orxmethod"
+::method TestGetObjectVariableOrNil     EXTERNAL "LIBRARY orxmethod"
 
 
 ::method TestRaiseExceptionX

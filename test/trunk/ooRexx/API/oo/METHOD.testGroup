@@ -1886,6 +1886,8 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(3, c~rc)
   self~assertSame(3.0, c~code)
   self~assertSame(0, c~additional~size)
+  -- native code must have continued after Raise.. call
+  self~assertSame(.true, tester~TestGetObjectVariableOrNil("CONTINUE"))
 
   c = tester~TestRaiseException0X(6002)
   self~assertSame(6, c~rc)
@@ -1899,6 +1901,8 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(99.925, c~code)
   self~assertSame(1, c~additional~size)
   self~assertSame("Fred", c~additional[1])
+  -- native code must have continued after Raise.. call
+  self~assertSame(.true, tester~TestGetObjectVariableOrNil("CONTINUE"))
 
 ::method TestRaiseException201
   tester = .METHODTester~new
@@ -1908,6 +1912,8 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(2, c~additional~size)
   self~assertSame("F", c~additional[1])
   self~assertSame(c2x("F"), c~additional[2])
+  -- native code must have continued after Raise.. call
+  self~assertSame(.true, tester~TestGetObjectVariableOrNil("CONTINUE"))
 
 ::method TestRaiseException01
   tester = .METHODTester~new
@@ -1915,6 +1921,8 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(3, c~rc)
   self~assertSame(3.0, c~code)
   self~assertSame(0, c~additional~size)
+  -- native code must have continued after Raise.. call
+  self~assertSame(.true, tester~TestGetObjectVariableOrNil("CONTINUE"))
 
   c = tester~TestRaiseExceptionX(99925, .array~of("Fred"))
   self~assertSame(99, c~rc)
@@ -1952,6 +1960,8 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(3, c~rc)
   self~assertSame(3.0, c~code)
   self~assertSame(0, c~additional~size)
+  -- native code must not have continued after Throw.. call
+  self~assertSame(.nil, tester~TestGetObjectVariableOrNil("CONTINUE"))
 
   c = tester~TestThrowException0X(6002)
   self~assertSame(6, c~rc)
@@ -1965,6 +1975,8 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(99.925, c~code)
   self~assertSame(1, c~additional~size)
   self~assertSame("Fred", c~additional[1])
+  -- native code must not have continued after Throw.. call
+  self~assertSame(.nil, tester~TestGetObjectVariableOrNil("CONTINUE"))
 
 ::method TestThrowException201
   tester = .METHODTester~new
@@ -1974,6 +1986,8 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(2, c~additional~size)
   self~assertSame("F", c~additional[1])
   self~assertSame(c2x("F"), c~additional[2])
+  -- native code must not have continued after Throw.. call
+  self~assertSame(.nil, tester~TestGetObjectVariableOrNil("CONTINUE"))
 
 ::method TestThrowException01
   tester = .METHODTester~new
@@ -1981,6 +1995,8 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(3, c~rc)
   self~assertSame(3.0, c~code)
   self~assertSame(0, c~additional~size)
+  -- native code must not have continued after Throw.. call
+  self~assertSame(.nil, tester~TestGetObjectVariableOrNil("CONTINUE"))
 
   c = tester~TestThrowExceptionX(99925, .array~of("Fred"))
   self~assertSame(99, c~rc)
