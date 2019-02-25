@@ -1580,8 +1580,8 @@ file descriptions (date, time, size, attributes, and file specification) space d
 a Rexx stem variable collection. The default format for date and time is platform specific.</para>
 <para>
   <emphasis role="italic">SysFileTree</emphasis> uses operating system APIs to find the files. The found files are
-  placed in the returned stem in the order they are found by the operating system. This documentation does not attempt
-  to define what that order might be.
+  placed in the returned stem in the order they are found by the operating system.
+  No specific order can be assumed.
 </para>
 <para><emphasis role="bold">Parameters:</emphasis></para>
 <variablelist>
@@ -1591,13 +1591,14 @@ a Rexx stem variable collection. The default format for date and time is platfor
   The search pattern, the search file specification. This can not be the empty string.
 </para>
 <para>
-  The search pattern may contain glob characters and full or partial path
+  The search pattern can be a full or partial path and glob wildcard characters
+  in the last part of the path
   information, e. g. <literal>*.bat</literal>, or <literal>../../*.sh</literal>,
   or <literal>c:\temp</literal>.
-  On Windows the search pattern may not contain illegal file name characters
-  <literal>&lt;</literal>, <literal>&gt;</literal>, <literal>"</literal>,
-  <literal>/</literal>, <literal>|</literal>, and a <literal>:</literal> can
-  only be used as the second character after a drive specification.
+  Windows supports wildcard characters <literal>*</literal> and <literal>?</literal>,
+  Unix-like systems additionally support character classes in <literal>[ ]</literal>
+  brackets, including <emphasis role="italic">-</emphasis> for ranges and
+  <literal>!</literal> for negation.
 </para>
 </listitem></varlistentry>
 <varlistentry><term><emphasis role="italic">stem [required]</emphasis></term>
@@ -1611,46 +1612,57 @@ Note: <emphasis role="italic">stem</emphasis> can be specified as
 (with or without the trailing period)
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="italic">options [optional]</emphasis></term>
-<listitem><para>A string with any combination of the following. If this argument is omitted, it defaults to <emphasis
-role="italic">B</emphasis>.</para>
+<listitem><para>A string with any combination of the following.
+If this argument is omitted, it defaults to <literal>B</literal>.
+</para>
 <variablelist>
-<varlistentry><term>"F"</term>
-<listitem><para>Search only for files.
-</para></listitem></varlistentry>
-<varlistentry><term>"D"</term>
-<listitem><para>Search only for directories.
-</para></listitem></varlistentry>
-<varlistentry><term>"B"</term>
+<varlistentry><term><literal>B</literal></term>
 <listitem><para>Search for both files and directories. This is the default.
 </para></listitem></varlistentry>
-<varlistentry><term>"S"</term>
-<listitem><para>Search subdirectories recursively.
+<varlistentry><term><literal>D</literal></term>
+<listitem><para>Search only for directories.
 </para></listitem></varlistentry>
-<varlistentry><term>"T"</term>
-<listitem><para>Returns the time and date in the form YY/MM/DD/HH/MM. If the "L" option is also specified
-then this option will be ignored.
+<varlistentry><term><literal>F</literal></term>
+<listitem><para>Search only for files.
 </para></listitem></varlistentry>
-<varlistentry><term>"L"</term>
-<listitem><para>Returns the time and date in the form YYYY-MM-DD HH:MM:SS.
+<varlistentry><term><literal>&added50;H</literal></term>
+<listitem><para>Returns correct file sizes for files larger than 9999999999
+bytes (approx. 10 GB).
+Without this option, the maximum file size returned is 9999999999, even if the
+file is larger than this.
 </para></listitem></varlistentry>
-<varlistentry><term>"I"</term>
+<varlistentry><term><literal>I</literal></term>
 <listitem><para>Perform a case-insensitive search for file names/directories.
 This option is only used on system that support case-sensitive file names and
 is ignored on systems like Windows where the file system is case-insensitive
 by default.
 </para></listitem></varlistentry>
-<varlistentry><term>"O"</term>
-<listitem><para>Returns only the fully-qualified file name.</para></listitem></varlistentry>
+<varlistentry><term><literal>L</literal></term>
+<listitem><para>Returns the time and date in the form <literal>YYYY-MM-DD HH:MM:SS</literal>.
+</para></listitem></varlistentry>
+<varlistentry><term><literal>O</literal></term>
+<listitem><para>Returns only the fully-qualified file name.
+</para></listitem></varlistentry>
+<varlistentry><term><literal>S</literal></term>
+<listitem><para>Search subdirectories recursively.
+</para></listitem></varlistentry>
+<varlistentry><term><literal>T</literal></term>
+<listitem><para>Returns the time and date in the form <literal>YY/MM/DD/HH/MM</literal>.
+If the <literal>L</literal> option is also specified
+then this option will be ignored.
+</para></listitem></varlistentry>
+</variablelist>
+</listitem></varlistentry>
+
 <varlistentry><term><emphasis role="italic">tattrib [optional] [Windows only]</emphasis></term>
 <listitem><para>The target attribute mask for file specification matches. Only
-files that match the target mask are returned. The default mask is "*****".
+files that match the target mask are returned. The default mask is <literal>*****</literal>.
 This returns all files regardless of the settings (clear or set) of the Archive,
 Directory, Hidden, Read-Only, and System attributes. The target mask attributes
-must appear in the order "ADHRS". This argument is Windows only. It is allowed but ignored on Unix-like operating
-systems.</para></listitem></varlistentry>
-</variablelist>
-<para>Target Mask
-Options </para>
+must appear in the order <literal>ADHRS</literal>. This argument is Windows only. It is allowed but ignored on Unix-like operating
+systems.</para>
+<para>Target Mask Options
+</para>
 <variablelist>
 <varlistentry><term>*</term>
 <listitem><para>The file attribute may be any state.
@@ -1664,25 +1676,26 @@ Options </para>
 </variablelist>
 <para>Target Mask Examples </para>
 <variablelist>
-<varlistentry><term>"***+*"</term>
+<varlistentry><term><literal>***+*</literal></term>
 <listitem><para>Find all files with the Read-Only attribute set.
 </para></listitem></varlistentry>
-<varlistentry><term>"+**+*"</term>
+<varlistentry><term><literal>+**+*</literal></term>
 <listitem><para>Find all files with the Read-Only and Archive attributes set.
 </para></listitem></varlistentry>
-<varlistentry><term>"*++**"</term>
+<varlistentry><term><literal>*++**</literal></term>
 <listitem><para>Find all hidden subdirectories.
 </para></listitem></varlistentry>
-<varlistentry><term>"---+-"</term>
+<varlistentry><term><literal>---+-</literal></term>
 <listitem><para>Find all files with only the Read-Only attribute set.
 </para></listitem></varlistentry>
 </variablelist>
 </listitem></varlistentry>
+
 <varlistentry><term><emphasis role="italic">nattrib [optional] [Windows only]</emphasis></term>
 <listitem><para>The new attribute mask for setting the attributes of each
-matching file. The default mask is "*****". This means not to change the
+matching file. The default mask is <literal>*****</literal>. This means not to change the
 Archive, Directory, Hidden, Read-Only, and System attributes. The target mask
-attributes must appear in the order "ADHRS". This argument is Windows only. It is allowed but ignored on Unix-like
+attributes must appear in the order <literal>ADHRS</literal>. This argument is Windows only. It is allowed but ignored on Unix-like
 operating systems.</para>
 <para>New Attribute
 Mask Options </para>
@@ -1699,16 +1712,16 @@ Mask Options </para>
 </variablelist>
 <para>New Attribute Mask Examples</para>
 <variablelist>
-<varlistentry><term>"***+*"</term>
+<varlistentry><term><literal>***+*</literal></term>
 <listitem><para>Set the Read-Only attribute on all files.
 </para></listitem></varlistentry>
-<varlistentry><term>"-**+*"</term>
+<varlistentry><term><literal>-**+*</literal></term>
 <listitem><para>Set the Read-Only attribute and clear the Archive attribute
 of each file.</para></listitem></varlistentry>
-<varlistentry><term>"+*+++"</term>
+<varlistentry><term><literal>+*+++</literal></term>
 <listitem><para>Set all file attributes, except the directory attribute.
 </para></listitem></varlistentry>
-<varlistentry><term>"-----"</term>
+<varlistentry><term><literal>-----</literal></term>
 <listitem><para>Clear all attributes on all files.
 
 <note><title>Note</title>
@@ -2109,7 +2122,7 @@ built-in function, SysGetKey does not wait until the Enter key is pressed.
 </section>
 
 
-<section id="utlSysgetlongpathname"><title>&added50;SysGetLongPathName (Windows only)</title>
+<section id="utlSysgetlongpathname" revisionflag="added"><title>&added50;SysGetLongPathName (Windows only)</title>
 <indexterm><primary>SysGetLongPathNamey</primary></indexterm>
 <indexterm><primary>rexxutil functions</primary>
 <secondary>SysGetLongPathName</secondary></indexterm>
@@ -2262,7 +2275,7 @@ Class "foo" not found.
 </section>
 
 
-<section id="utlSysgetshortpathname"><title>&added50;SysGetShortPathName (Windows only)</title>
+<section id="utlSysgetshortpathname" revisionflag="added"><title>&added50;SysGetShortPathName (Windows only)</title>
 <indexterm><primary>SysGetShortPathNamey</primary></indexterm>
 <indexterm><primary>rexxutil functions</primary>
 <secondary>SysGetShortPathName</secondary></indexterm>
@@ -4190,7 +4203,7 @@ line = SysTextScreenRead(2, 0, 80)
 </example>
 </section>
 
-<section id="utlSystextscreensize"><title>&changed50;SysTextScreenSize (Windows only)</title>
+<section id="utlSystextscreensize" revisionflag="changed"><title>&changed50;SysTextScreenSize (Windows only)</title>
 <indexterm><primary>SysTextScreenSize</primary></indexterm>
 <indexterm><primary>rexxutil functions</primary>
 <secondary>SysTextScreenSize</secondary></indexterm>
