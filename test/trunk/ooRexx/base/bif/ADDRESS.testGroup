@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -62,13 +62,11 @@ return testResult
    self~assertNotSame(addr, .nil)             -- make sure something is returned
 
    -- test for default command processor
-   parse source os .                  -- get name of operating system
-   os1=os~left(1)~translate           -- get first character in uppercase
-   if pos(os1, "O W") > 0 then do     -- OS2, Windows ?
-      self~assertSame("CMD", addr, "default address environment for" pp(os)"="pp(addr) "not" pp("CMD"))
+   if .RexxInfo~platform~caselessStartsWith("Windows") then do
+      self~assertSame("CMD", addr, .RexxInfo~platform "default address environment should be 'CMD'")
       end
    else do                            -- all Unix platforms should default to "sh"
-      self~assertSame("sh", addr, "default address environment for" pp(os)"="pp(addr) "not" pp("sh"))
+      self~assertSame("sh", addr, .RexxInfo~platform "default address environment should be 'sh'")
       end
 
 

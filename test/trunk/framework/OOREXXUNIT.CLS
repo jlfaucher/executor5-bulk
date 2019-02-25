@@ -325,64 +325,40 @@ return .false
 
 /* pathCompact( path, len )- - - - - - - - - - - - - - - - - - - - - - - - - -*\
 
-  Takes a long path name and compacts it to a shorter path name by removing some
-  path components in the middle of the path name and replacing them with
-  ellipses (...)
+  Takes a path name and compacts it to a shorter path name by removing some
+  path components as required.
 
   Input:
     path REQUIRED
       The path name to compact.
 
     len  REQUIRED
-      The maximum length of the returned compacted path.
+      used as an indication for the maximum path length to be returned.
 
   Returns:
-    A compacted path no longer than specified.  If the input path name is
-    already less than or equal to the specified length, it is returned
-    unchanged.
+    A compacted path.
 \* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::routine pathCompact public
   use strict arg path, len
 
-  -- typically there should be no need to print a drive specification
-  if path~subStr(2, 1) = ":" then
-    path = path~subStr(3)
+  -- best readability is achieved by always starting with /ooRexx directory
+  -- in this case we simply ignore any supplied 'len' value
+  p = path~caselessPos(.File~separator || "ooRexx" || .File~separator)
+  if p > 0 then
+    return "..." || path~subStr(p)
 
-  if path~length <= len then return path
+  -- return path as-is if it fits the supplied 'len'
+  if path~length <= len then
+    return path
 
-  sl = .ooRexxUnit.directory.separator
-
-  -- we want at least seven characters leading part
-  fp = path~pos(sl, 8)
-
-  -- Divide into leading and trailing pieces.  Leading piece, add "..."
-  leading = path~left(fp) || "..."
-  trailing = path~substr(fp)
-  fp = trailing~pos(sl || "ooRexx" || sl)
-  if fp > 0 then
-    trailing = trailing~substr(fp)
-
-  -- Find a position of the directory separator in the trailing part, such that
-  -- when the trailing part starts there, the overall length of the resulting
-  -- string is the specified length, or shorter.
-  trailPos = trailing~pos(sl, max(1, trailing~length - (len - leading~length - 2)))
-  if trailPos == 0 then do
-    -- The last component of the path is too long, shorten the leading.
-    leading = "..."
-    trailPos = trailing~pos(sl, max(1, trailing~length - (len - leading~length - 2)))
-  end
-
-  if trailPos == 0 then do
-    -- Still too long, just use the last len characters.
-    leading = ""
-    trailing = trailing~right(len)
-  end
-  else do
-    trailing = trailing~substr(trailPos)
-  end
-
-return leading || trailing
--- End pathCompact( path, len )
+  -- try to cut path short
+  head = "..."
+  tail = path~right(len - head~length)
+  p = tail~pos(.File~separator)
+  if p > 0 then
+    return head || tail~subStr(p)
+  else
+    return head || tail
 
 
 /** addToPath()

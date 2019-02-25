@@ -548,7 +548,7 @@ return
     self~setUp(testResult)
 
     do test over tests while \ testResult~shouldStop
-       if show then say "Executing" pathCompact(test~definedInFile, 70)
+       if show then say "Executing" pathCompact(test~definedInFile, 69)
        test~execute(testResult, verbose)
     end
 
