@@ -273,6 +273,7 @@ ERROR_MESSAGE Message_table[] = {      /* table of major and minor errors   */
       MINOR(Error_Invalid_do_duplicate)
       MINOR(Error_Invalid_do_with_no_control)
       MINOR(Error_Invalid_do_with_no_over)
+      MINOR(Error_Invalid_do_simple_do_counter)
   MAJOR(Error_Invalid_leave)
       MINOR(Error_Invalid_leave_leave)
       MINOR(Error_Invalid_leave_iterate)
