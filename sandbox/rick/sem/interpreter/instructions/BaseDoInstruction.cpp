@@ -1,7 +1,7 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 1995, 2004 IBM Corporation. All rights reserved.             */
-/* Copyright (c) 2005-2014 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -81,6 +81,83 @@ void RexxBlockInstruction::handleDebugPause(RexxActivation *context, DoBlock *do
 }
 
 
+/**
+ * Perform parse-time match ups between a DO block and
+ * an END instruction.  This performs all appropriate label name
+ * matching and
+ *
+ * @param partner The matched up END instruction.
+ * @param parser  The current parser context.
+ */
+void RexxBaseBlockInstruction::matchEnd(RexxInstructionEnd *partner, LanguageParser *parser)
+{
+    // make sure we have a good name match
+    matchLabel(partner, parser);
+    // hook up the END as our partner in crime.
+    end = partner;
+    // let the END instruction know what action it needs to perform at instruction
+    // end.
+    partner->setStyle(getEndStyle());
+}
+
+
+/**
+ * Terminate a DO or LOOP.  This is really the same for all loop
+ * types, so is implemented in the base class
+ *
+ * @param context The current execution context.
+ * @param doblock Our doblock, provided by the context.
+ */
+void RexxBaseBlockInstruction::terminate(RexxActivation *context, DoBlock *doblock)
+{
+    // reset the DO block
+    context->terminateBlockInstruction(doblock->getIndent());
+    // The next instruction is the one after the END
+    context->setNext(end->nextInstruction);
+}
+
+
+/**
+ * Verify that the name on an END instructon and
+ * the instruction label match.
+ *
+ * @param _end   The candidate end statement.
+ * @param parser The LanguageParser context (used for error reporting).
+ */
+void RexxBaseBlockInstruction::matchLabel(RexxInstructionEnd *_end, LanguageParser *parser)
+{
+    // get the END name.
+    RexxString *name = _end->endName();
+
+    // if there a name on the END?  If no name, we
+    // will always match up ok.
+    if (name != OREF_NULL)
+    {
+
+        // get the location for error reporting
+        SourceLocation location = _end->getLocation();
+        // and we include our line number so they know which two entities don't match.
+        size_t lineNum = getLineNumber();
+        // now get my label for comparisons.
+        RexxString *myLabel = getLabel();
+
+        // if we don't have a label, then the END cannot
+        if (myLabel == OREF_NULL)
+        {
+            // report the error
+            parser->error(Error_Unexpected_end_nocontrol, location, new_array(name, new_integer(lineNum)));
+        }
+        // we both have names, but they mismatch.
+        // NOTE:  We deal with interned names here, so a pointer comparison will suffice for identity.
+        else if (name != myLabel)
+        {
+            parser->error(Error_Unexpected_end_control, location, new_array(name, myLabel, new_integer(lineNum)));
+        }
+    }
+}
+
+
+
 // NOTE:  some of the DO instructions don't add additional references, so they can
 // just inherit these base marking methods.  Subclasses that do add additional
 // references will need to also mark these objects.
@@ -156,12 +233,17 @@ void RexxInstructionBaseLoop::execute(RexxActivation *context, ExpressionStack *
     setup(context, stack, doblock);
 
     // update the iteration counters
-    doblock->newIteration(context);
+    doblock->newIteration();
     // now perform the initial iteration checks
     if (!iterate(context, stack, doblock, true))
     {
         // nothing to process, terminate the loop now
         terminate(context, doblock);
+    }
+    else
+    {
+        // we only set the counter variable if we are entering the loop body
+        doblock->setCounter(context);
     }
 
     // handle a debug pause that might cause re-execution
@@ -185,11 +267,12 @@ void RexxInstructionBaseLoop::reExecute(RexxActivation *context, ExpressionStack
     context->indent();
 
     // update the iteration counters
-    doblock->newIteration(context);
+    doblock->newIteration();
 
     // now perform the loop iteration checkes now...if we're good, we just return
     if (iterate(context, stack, doblock, false))
     {
+        doblock->setCounter(context);
         // we're all good.
         return;
     }
@@ -232,82 +315,6 @@ bool RexxInstructionBaseLoop::iterate(RexxActivation *context, ExpressionStack *
 {
     // the default is basically a DO FOREVER loop.
     return true;
-}
-
-
-/**
- * Verify that the name on an END instructon and
- * the instruction label match.
- *
- * @param _end   The candidate end statement.
- * @param parser The LanguageParser context (used for error reporting).
- */
-void RexxInstructionBaseLoop::matchLabel(RexxInstructionEnd *_end, LanguageParser *parser)
-{
-    // get the END name.
-    RexxString *name = _end->endName();
-
-    // if there a name on the END?  If no name, we
-    // will always match up ok.
-    if (name != OREF_NULL)
-    {
-
-        // get the location for error reporting
-        SourceLocation location = _end->getLocation();
-        // and we include our line number so they know which two entities don't match.
-        size_t lineNum = getLineNumber();
-        // now get my label for comparisons.
-        RexxString *myLabel = getLabel();
-
-        // if we don't have a label, then the END cannot
-        if (myLabel == OREF_NULL)
-        {
-            // report the error
-            parser->error(Error_Unexpected_end_nocontrol, location, new_array(name, new_integer(lineNum)));
-        }
-        // we both have names, but they mismatch.
-        // NOTE:  We deal with interned names here, so a pointer comparison will suffice for identity.
-        else if (name != myLabel)
-        {
-            parser->error(Error_Unexpected_end_control, location, new_array(name, myLabel, new_integer(lineNum)));
-        }
-    }
-}
-
-
-/**
- * Perform parse-time match ups between a DO block and
- * an END instruction.  This performs all appropriate label name
- * matching and
- *
- * @param partner The matched up END instruction.
- * @param parser  The current parser context.
- */
-void RexxInstructionBaseLoop::matchEnd(RexxInstructionEnd *partner, LanguageParser *parser)
-{
-    // make sure we have a good name match
-    matchLabel(partner, parser);
-    // hook up the END as our partner in crime.
-    end = partner;
-    // let the END instruction know what action it needs to perform at instruction
-    // end.
-    partner->setStyle(getEndStyle());
-}
-
-
-/**
- * Terminate a DO or LOOP.  This is really the same for all loop
- * types, so is implemented in the base class
- *
- * @param context The current execution context.
- * @param doblock Our doblock, provided by the context.
- */
-void RexxInstructionBaseLoop::terminate(RexxActivation *context, DoBlock *doblock )
-{
-    // reset the DO block
-    context->terminateBlockInstruction(doblock->getIndent());
-    // The next instruction is the one after the END
-    context->setNext(end->nextInstruction);
 }
 
 

@@ -50,11 +50,23 @@
 
 class LanguageParser;
 
+class RexxBaseBlockInstruction : public RexxBlockInstruction
+{
+ public:
+     inline RexxBaseBlockInstruction() {; }
+     inline RexxBaseBlockInstruction(RESTORETYPE restoreType) {; };
+
+     // methods required by RexxBlockInstruction;
+     void terminate(RexxActivation *, DoBlock *)override;
+     void matchEnd(RexxInstructionEnd *, LanguageParser *)override;
+     void matchLabel(RexxInstructionEnd *_end, LanguageParser *parser);
+};
+
 /**
  * The simplest form of DO BLOCK.  This is a non-looping block.
  * It may have a label, but no other expressions to handle.
  */
-class RexxInstructionSimpleDo : public RexxBlockInstruction
+class RexxInstructionSimpleDo : public RexxBaseBlockInstruction
 {
  public:
      inline RexxInstructionSimpleDo() {; }
@@ -76,7 +88,7 @@ class RexxInstructionSimpleDo : public RexxBlockInstruction
  * the common END-matching behavior and label definitions.
  *
  */
-class RexxInstructionBaseLoop : public RexxBlockInstruction
+class RexxInstructionBaseLoop : public RexxBaseBlockInstruction
 {
  public:
      inline RexxInstructionBaseLoop() {;}
@@ -89,25 +101,21 @@ class RexxInstructionBaseLoop : public RexxBlockInstruction
      // is sufficient.
      void execute(RexxActivation *, ExpressionStack *)override;
 
-     // methods required by RexxBlockInstruction;
-     void matchEnd(RexxInstructionEnd *, LanguageParser *)override;
      // most DO blocks are loops.  The simple styles will need to override.
      EndBlockType getEndStyle()override { return LOOP_BLOCK; }
      // Most DOs are loops...Simple DO will override again.
      bool isLoop()override { return true; };
-     RexxVariableBase *getCountVariable() override { return countVariable; }
+     RexxVariableBase* getCountVariable()override { return countVariable; }
 
-    // specific to Do loops.  Most subclasses can rely on the default
-    virtual void reExecute(RexxActivation *, ExpressionStack *, DoBlock *);
-    void terminate(RexxActivation *, DoBlock *) override;
+     // specific to Do loops.  Most subclasses can rely on the default
+     virtual void reExecute(RexxActivation *, ExpressionStack *, DoBlock *);
 
-    // most loops will want to override these two
-    virtual void setup(RexxActivation *context, ExpressionStack *stack, DoBlock *doblock);
-    virtual bool iterate(RexxActivation *context, ExpressionStack *stack, DoBlock *doblock, bool first);
+     // most loops will want to override these two
+     virtual void setup(RexxActivation *context, ExpressionStack *stack, DoBlock *doblock);
+     virtual bool iterate(RexxActivation *context, ExpressionStack *stack, DoBlock *doblock, bool first);
 
-    void matchLabel(RexxInstructionEnd *end, LanguageParser *source );
-    void endLoop(RexxActivation *context);
-    inline void setCountVariable(RexxVariableBase *v) { countVariable = v; }
+     void endLoop(RexxActivation *context);
+     inline void setCountVariable(RexxVariableBase *v) { countVariable = v; }
 
  protected:
      RexxVariableBase *countVariable;       // optional variable for a counter

@@ -84,7 +84,8 @@ class DoBlock : public RexxInternalObject
     inline bool checkFor() { return counter <= forCount; };
     bool checkControl(RexxActivation *context, ExpressionStack *stack, bool increment);
     bool checkOver(RexxActivation *context, ExpressionStack *stack);
-    void newIteration(RexxActivation *context);
+    inline void newIteration() { counter++; };
+    void setCounter(RexxActivation *context);
 
 
 protected:
