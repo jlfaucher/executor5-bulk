@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Programming Guide XML file.
     #
-    # Copyright (c) 2005-2017, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2019, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -48,226 +48,104 @@
 Rexx gives you a basic class hierarchy to start with. All of the classes in
 the hierarchy are described in detail in the
 <citetitle pubwork="book">Open Object Rexx: Reference</citetitle>.
-The following list shows the classes Rexx provides (there may be others
-in the system). The classes indented are subclasses:</para>
-<indexterm><primary>classes</primary>
-<secondary>Alarm class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>Buffer class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>Class class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>Collection class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>MapCollection class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>Directory class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>Properties class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>Relation class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>Stem class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>Table class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>IdentityTable class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>OrderedCollection class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>Array class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>List class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>Queue class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>CircularQueue class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>SetCollection class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>Bag class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>Set class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>Comparable class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>Comparator class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>CaselessColumnComparator class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>CaselessComparator class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>CaselessDescendingComparator class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>ColumnComparator class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>DescendingComparator class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>InvertingComparator class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>NumericComparator class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>DateTime class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>File class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>InputOutputStream class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>Stream class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>InputStream class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>Message class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>Method class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>Monitor class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>MutableBuffer class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>OutputStream class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>Orderable class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>Package class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>Pointer class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>RegularExpression class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>RexxContext class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>RexxQueue class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>Routine class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>String class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>Supplier class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>StreamSupplier class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>TimeSpan class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>WeakReference class</secondary></indexterm>
-
-<indexterm><primary>classes</primary>
-<secondary>provided by Rexx</secondary></indexterm>
-
-<programlisting>
-Object
-    Alarm
-    Buffer
-    Class
-    Collection classes
-        MapCollection
-            Directory
-                Properties
-            Relation
-            Stem
-            Table
-            IdentityTable
-        OrderedCollection
-            Array
-            List
-            Queue
-            CircularQueue
-        SetCollection
-            Bag
-            Set
-    Comparable
-    Comparator
-        CaselessColumnComparator
-        CaselessComparator
-        CaselessDescendingComparator
-        ColumnComparator
-        DescendingComparator
-        InvertingComparator
-        NumericComparator
-    DateTime
-    File
-    InputOutputStream
-        Stream
-    InputStream
-    Message
-    Method
-    Monitor
-    MutableBuffer
-    OutputStream
-    Orderable
-    Package
-    Pointer
-    RegularExpression
-    RexxContext
-    RexxQueue
-    Routine
-    String
-    Supplier
-        StreamSupplier
-    TimeSpan
-    WeakReference
-</programlisting>
+</para>
+<para>Rexx provides the following classes belonging to the
+<classname>Object</classname> class.
+</para>
+<para>The classes are in a class hierarchy with an inheriting class indented below its
+superclass or mixin class.
+Classes inheriting from multiple mixin classes are only listed below one of these mixin classes.
+</para>
+<para>
+  <!-- commented ArgUtil (deprecated, won't document) -->
+  <!-- $GENERATED-20190301-START rexxrefClassHierarchy rexxpg -->
+  <simplelist>
+  <member>Alarm</member>
+  <member>AlarmNotification</member>
+<!--
+  <member>ArgUtil</member>
+-->
+  <member>Buffer</member>
+  <member>Class</member>
+  <member>Collection</member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MapCollection</member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bag</member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Directory</member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Properties</member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IdentityTable</member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Relation</member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Set</member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Stem</member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;StringTable</member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Table</member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OrderedCollection</member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Array</member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;List</member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Queue</member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CircularQueue</member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SetCollection</member>
+  <member>Comparable</member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DateTime</member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;File</member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String</member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TimeSpan</member>
+  <member>Comparator</member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CaselessColumnComparator</member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CaselessComparator</member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CaselessDescendingComparator</member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ColumnComparator</member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DescendingComparator</member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InvertingComparator</member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NumericComparator</member>
+  <member>InputStream</member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InputOutputStream</member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Stream</member>
+  <member>MessageNotification</member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Message</member>
+  <member>Method</member>
+  <member>Monitor</member>
+  <member>MutableBuffer</member>
+  <member>Object</member>
+  <member>Orderable</member>
+  <member>OutputStream</member>
+  <member>Package</member>
+  <member>Pointer</member>
+  <member>RexxContext</member>
+  <member>RexxInfo</member>
+  <member>RexxQueue</member>
+  <member>Routine</member>
+  <member>StackFrame</member>
+  <member>Supplier</member>
+  <member>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;StreamSupplier</member>
+  <member>Ticker</member>
+  <member>Validate</member>
+  <member>VariableReference</member>
+  <member>WeakReference</member>
+  </simplelist>
+  <!-- $GENERATED-20190301-END rexxrefClassHierarchy rexxpg -->
+</para>
+<para>Note that there might also be other classes available, depending
+on the operating system.
+</para>
 
 <section id="progcl"><title>Rexx Classes for Programming</title>
 <para>The classes Rexx supplies provide the starting point for object-oriented
 programming. Some key classes that you are likely to work with are described
 in the following sections.</para>
 
-<section id="alarmcl"><title>The Alarm Class</title>
+<section id="clsAlarm"><title>The Alarm Class</title>
 <indexterm><primary>classes</primary>
 <secondary>Alarm class</secondary></indexterm>
 <para>The Alarm class is used to create objects with timing and notification capability.
 An alarm object is able to send a message to an object at any time in the
 future, and until then, you can cancel the alarm.</para>
+</section>
+
+<section id="clsAlarmNotification" revisionflag="added"><title>&added50;AlarmNotification Class</title>
+<indexterm><primary>classes</primary><secondary>AlarmNotification class</secondary></indexterm>
+<para>Implements the notification interface for the
+<xref linkend="clsAlarm" xrefstyle="template:Alarm"/> class.
+</para>
 </section>
 
 <section id="buffercl"><title>The Buffer Class</title>
@@ -413,6 +291,13 @@ can be any object (as with the Table class) and each index is unique.
 <indexterm><primary>classes</primary>
 <secondary>Stem class</secondary></indexterm>
 <para>A stem object is a collection with unique indexes that are character strings.
+</para></listitem></varlistentry>
+
+<varlistentry><term>StringTable</term>
+<listitem>
+<indexterm><primary>classes</primary><secondary>StringTable class</secondary></indexterm>
+<para>A collection using unique character string indexes.
+The items of a StringTable can be any valid Rexx object.
 </para></listitem></varlistentry>
 
 <varlistentry><term>Table</term>
@@ -693,12 +578,33 @@ gives access to each index/value pair stored in the collection as a sequence.
 </para>
 </section>
 
+<section id="clsTicker" revisionflag="added"><title>&added50;Ticker Class</title>
+<indexterm><primary>class</primary><secondary>Ticker class</secondary></indexterm>
+<para>Provides a repeating notification capability by sending a
+notification message to a notification target each trigger interval.
+</para>
+</section>
+
 <section id="timespancl"><title>The TimeSpan Class</title>
 <indexterm><primary>classes</primary>
 <secondary>TimeSpan class</secondary></indexterm>
 <para>A TimeSpan object represents a point in between 1 January 0001 at 00:00.000000 and 31 December
 9999 at 23:59:59.999999. A TimeSpan object has methods to allow formatting a date or time in various
 formats, as well as allowing arithmetic operations between dates.
+</para>
+</section>
+
+<section id="clsValidate" revisionflag="added"><title>&added50;Validate Class</title>
+<indexterm><primary>classes</primary><secondary>Validate class</secondary></indexterm>
+<para>A class that provides helper methods
+to validate arguments being of correct class, logical or numeric type,
+or within a numeric range.
+</para>
+</section>
+
+<section id="clsVariableReference" revisionflag="added"><title>&added50;VariableReference Class</title>
+<indexterm><primary>classes</primary><secondary>VariableReference class</secondary></indexterm>
+<para>A object that maintains a reference to another object.
 </para>
 </section>
 

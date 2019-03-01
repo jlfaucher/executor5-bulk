@@ -1591,7 +1591,7 @@ a Rexx stem variable collection. The default format for date and time is platfor
   The search pattern, the search file specification. This can not be the empty string.
 </para>
 <para>
-  The search pattern can be a full or partial path and glob wildcard characters
+  The search pattern can be a full or partial path with wildcard characters
   in the last part of the path
   information, e. g. <literal>*.bat</literal>, or <literal>../../*.sh</literal>,
   or <literal>c:\temp</literal>.
@@ -1620,10 +1620,10 @@ If this argument is omitted, it defaults to <literal>B</literal>.
 <listitem><para>Search for both files and directories. This is the default.
 </para></listitem></varlistentry>
 <varlistentry><term><literal>D</literal></term>
-<listitem><para>Search only for directories.
+<listitem><para>Search for directories only.
 </para></listitem></varlistentry>
 <varlistentry><term><literal>F</literal></term>
-<listitem><para>Search only for files.
+<listitem><para>Search for files only.
 </para></listitem></varlistentry>
 <varlistentry><term><literal>&added50;H</literal></term>
 <listitem><para>Returns correct file sizes for files larger than 9999999999
@@ -1632,13 +1632,13 @@ Without this option, the maximum file size returned is 9999999999, even if the
 file is larger than this.
 </para></listitem></varlistentry>
 <varlistentry><term><literal>I</literal></term>
-<listitem><para>Perform a case-insensitive search for file names/directories.
+<listitem><para>Perform a case-insensitive search for file names or directories.
 This option is only used on system that support case-sensitive file names and
 is ignored on systems like Windows where the file system is case-insensitive
 by default.
 </para></listitem></varlistentry>
 <varlistentry><term><literal>L</literal></term>
-<listitem><para>Returns the time and date in the form <literal>YYYY-MM-DD HH:MM:SS</literal>.
+<listitem><para>Returns the file date and time in the form <literal>YYYY-MM-DD HH:MM:SS</literal>.
 </para></listitem></varlistentry>
 <varlistentry><term><literal>O</literal></term>
 <listitem><para>Returns only the fully-qualified file name.
@@ -1647,7 +1647,7 @@ by default.
 <listitem><para>Search subdirectories recursively.
 </para></listitem></varlistentry>
 <varlistentry><term><literal>T</literal></term>
-<listitem><para>Returns the time and date in the form <literal>YY/MM/DD/HH/MM</literal>.
+<listitem><para>Returns the file date and time in the form <literal>YY/MM/DD/HH/MM</literal>.
 If the <literal>L</literal> option is also specified
 then this option will be ignored.
 </para></listitem></varlistentry>
@@ -1664,13 +1664,13 @@ systems.</para>
 <para>Target Mask Options
 </para>
 <variablelist>
-<varlistentry><term>*</term>
+<varlistentry><term><literal>*</literal></term>
 <listitem><para>The file attribute may be any state.
 </para></listitem></varlistentry>
-<varlistentry><term>+</term>
+<varlistentry><term><literal>+</literal></term>
 <listitem><para>The file attribute must be set.
 </para></listitem></varlistentry>
-<varlistentry><term>-</term>
+<varlistentry><term><literal>-</literal></term>
 <listitem><para>The file attribute must be cleared.
 </para></listitem></varlistentry>
 </variablelist>
@@ -1700,13 +1700,13 @@ operating systems.</para>
 <para>New Attribute
 Mask Options </para>
 <variablelist>
-<varlistentry><term>*</term>
+<varlistentry><term><literal>*</literal></term>
 <listitem><para>Do not change the file attribute.
 </para></listitem></varlistentry>
-<varlistentry><term>+</term>
+<varlistentry><term><literal>+</literal></term>
 <listitem><para>Set the file attribute.
 </para></listitem></varlistentry>
-<varlistentry><term>-</term>
+<varlistentry><term><literal>-</literal></term>
 <listitem><para>Clear the file attribute.
 </para></listitem></varlistentry>
 </variablelist>
@@ -1741,7 +1741,7 @@ applied.</para></note>
 <varlistentry><term>2</term>
 <listitem><para>Not enough memory.
 </para></listitem></varlistentry>
-<varlistentry><term>2</term>
+<varlistentry><term>other</term>
 <listitem>
 <para>
   On Windows, the return code may be any System Error Code returned by the operating system.
