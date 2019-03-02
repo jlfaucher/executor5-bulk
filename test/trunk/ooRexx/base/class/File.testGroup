@@ -175,12 +175,15 @@ return testResult
 
   self~assertTrue(f~delete)
 
-  subdir = .File~new("Y/Z", f)
+  -- verify the separator translation
+  thisSep = .File~separator
+  otherSep = thisSep~translate("\/", "/\")
+  subdir = .File~new("Y" || otherSep || "Z", f)
+  self~assertEquals(f~absolutePath || thisSep || "Y" || thisSep || "Z", subdir~path)
 
-  if .File~separator == "\" then      -- verify the separator translation
-      self~assertEquals(f~absolutePath||"\Y\Z", subdir~path)
-
-  if \.File~isCaseSensitive then do
+  -- qualify will translate / to \ on Windows only
+  -- on Unix-like systems \ isn't translated to /
+  if .RexxInfo~platform~caselessStartsWith("Windows") then do
       subdir2 = .File~new("y\z", f)
       self~assertEquals(subdir, subdir2)
   end
