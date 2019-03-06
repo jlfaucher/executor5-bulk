@@ -60,6 +60,8 @@
 
 const int INVALID_FILE_NAME = 123;       // a return value for a SysFileTree name problem
 
+const char TreeFinder::AttributeMask::maskChars[6] = "ADHRS";
+
 /**
  * A simple class for reading lines from a file.
  */
@@ -344,6 +346,7 @@ void getUniqueFileName(const char *fileTemplate, char filler, FileNameBuffer &fi
     int j = 0;
     int max = 1;
 
+    // count the number of filler chars we have
     for (int x = 0; fileTemplate[x] != 0; x++)
     {
         if (fileTemplate[x] == filler)
@@ -353,48 +356,52 @@ void getUniqueFileName(const char *fileTemplate, char filler, FileNameBuffer &fi
         }
     }
 
-
-    // Return NULL string if less than 1 or greater than 4
-    if (j == 0 || j > 5)
+    // return NULL string if no or more than the allowed number of filler chars
+    if (j == 0 || j > 9)
     {
         file = "";
         return;
     }
 
     // generate a random starting point
-    srand((int)time(NULL));
+    // we don't seed as this gives us a better distribution
     size_t num = rand();
+    if (RAND_MAX < max)
+    {   // MAX_RAND is guaranteed to be at least 32767
+        num = num * 32768 + rand();
+    }
     num = num % max;
 
     // create a working copy of the template that we can alter
     AutoFree buffer = (char *)strdup(fileTemplate);
-    // remember our starthing number in case we loop around
+    // remember our starting number in case we loop around
     size_t start = num;
 
     // loop until we find a unique name
     while (true)
     {
-        char numstr[6];
-        // get the random number as a set of 5 character digits
-        snprintf(numstr, sizeof(numstr), "%05zu", num);
+        char numstr[10];
+        // get the random number as a set of 9 character digits
+        snprintf(numstr, sizeof(numstr), "%09zu", num);
 
         // now substitute our generated characters for the filler characters
-        int i = j;
+        int i = 9 - j;
 
         for (int x = 0; fileTemplate[x] != 0; x++)
         {
             // if we have a filler, fill it in
             if (fileTemplate[x] == filler)
             {
-                buffer[x] = numstr[--i];
+                buffer[x] = numstr[i++];
             }
         }
 
         // get this as a fully qualified name
+        file.truncate(0); // qualifyStreamName requires empty string
         SysFileSystem::qualifyStreamName(buffer, file);
 
-        // if there's no matching file, we're finished.
-        if (!SysFileSystem::fileExists(file))
+        // if there's no matching file or directory, we're finished.
+        if (!SysFileSystem::exists(file))
         {
             return;
         }
@@ -418,7 +425,7 @@ void getUniqueFileName(const char *fileTemplate, char filler, FileNameBuffer &fi
  *
  * @param  fSpec  [required] The search pattern, may contain glob characters
  *                 and full or partial path informattion. E.g., *.bat, or
- *                 ../../*.txt, or C:\temp.  May not contain illegal file name
+ *                 ../../abc*.txt, or C:\temp.  May not contain illegal file name
  *                 characters which are: ", <, >, |, and :  The semicolon is
  *                 only legal if it is exactly the second character.  Do not use
  *                 a double quote in fSpec, it is not needed and is taken as a
@@ -439,10 +446,10 @@ void getUniqueFileName(const char *fileTemplate, char filler, FileNameBuffer &fi
  *                  'S' - Recursively scan subdirectories.
  *                  'T' - Combine time & date fields into one.
  *                  'L' - Long time format
- *                  'H' - Long time format
+ *                  'H' - Large file size format
  *                  'I' - Case Insensitive search.
  *
- *                The defualt is 'B' using normal time (neither 'T' nor 'L'.)
+ *                The default is 'B' using normal time (neither 'T' nor 'L'.)
  *                The 'I'option is meaningless on Windows.
  *
  * @param targetAttr  [optional] Target attribute mask.  Only files with these
@@ -601,7 +608,7 @@ void TreeFinder::badSFTOptsException(const char *actual)
 {
     char buf[256] = { 0 };
     snprintf(buf, sizeof(buf),
-             "SysFileTree options argument must be a combination of F, D, B, S, T, L, I, O, or Z; found \"%s\"",
+             "SysFileTree options argument must be a combination of F, D, B, S, T, L, I, O, or H; found \"%s\"",
              actual);
 
     context->ThrowException1(Rexx_Error_Incorrect_call_user_defined, context->String(buf));
@@ -2184,6 +2191,151 @@ RexxRoutine2(RexxStringObject, SysTempFileName, CSTRING, fileTemplate, OPTIONAL_
 }
 
 
+/**
+ * Format a message using passed in arguments.
+ *
+ * @param context The call context.
+ * @param message The message test
+ * @param args    The array of arguments to the function.
+ * @param firstSubstitution
+ *                The first substitution argument in the array.
+ *
+ * @return The formated test as a Rexx String object.
+ */
+RexxStringObject formatMessage(RexxCallContext *context, const char *message, RexxArrayObject args, size_t firstSubstitution)
+{
+    size_t numargs = context->ArraySize(args);
+
+    size_t subcount = numargs >= firstSubstitution ? numargs - firstSubstitution + 1 : 0;
+
+    // we only support 9 substitution values
+    if (subcount > 9)
+    {
+        context->ThrowException1(Rexx_Error_Incorrect_call_external, context->String("SysFormatMessage"));
+    }
+
+    // array of string values
+    const char *substitutions[9];
+    size_t msg_length = 0;               // length of the return msg
+
+    // get the string value for each of the substitutions
+    for (size_t i = firstSubstitution; i <= numargs; i++)
+    {
+        // get each of the argument objects as a string value.
+        // omitted arguments are not permitted.
+        RexxObjectPtr o = context->ArrayAt(args, i);
+        if (o == NULLOBJECT)
+        {
+            // use a null string for any omitted ones
+            substitutions[i - firstSubstitution] = "";
+        }
+        else
+        {
+            substitutions[i - firstSubstitution] = context->ObjectToStringValue(o);
+        }
+    }
+
+    // now scan the message calculating the size of the final message
+    size_t messageLength = strlen(message);
+
+    // scan for the substitutions and figure out how much is added
+    const char *temp = message;
+
+    while ((temp = strstr(temp, "&")))
+    {
+        char sub = *(temp + 1);
+        if (sub >= '1' && sub <= '9')
+        {
+            int subPosition = sub - '1';
+            // if we have a substitution value for this, use the
+            // real length
+            if (subPosition < subcount)
+            {
+                messageLength += strlen(substitutions[subPosition]);
+            }
+            // subtract out the substitution characters from the length
+            messageLength -= 2;
+            temp += 2;
+        }
+        else
+        {
+            // just step over the character
+            temp++;
+        }
+    }
+
+    // now we know how long the final message is going to be, we can
+    // get a raw string object and fill it in.
+
+    RexxBufferStringObject result = context->NewBufferString(messageLength);
+
+    char *resultBuffer = (char *)context->BufferStringData(result);
+
+    const char *start = message;
+    temp = start;
+
+    // now go and make the substitutions
+    while ((temp = strstr(temp, "&")))
+    {
+        char sub = *(temp + 1);
+        if (sub >= '1' && sub <= '9')
+        {
+            int subPosition = sub - '1';
+            // copy the next section of message text
+            size_t leadSize = temp - start;
+            if (leadSize > 0)
+            {
+                memcpy(resultBuffer, start, leadSize);
+                resultBuffer += leadSize;
+            }
+            // if we have a substitution value for this, use the
+            // real length
+            if (subPosition < subcount)
+            {
+                size_t sublen = strlen(substitutions[subPosition]);
+                memcpy(resultBuffer, substitutions[subPosition], sublen);
+                resultBuffer += sublen;
+            }
+            // subtract out the substitution characters from the length
+            start = temp + 2;
+            temp = start;
+        }
+        else
+        {
+            // just step over the character
+            temp++;
+        }
+    }
+    // handle any trailing message part
+    size_t tailLength = strlen(message) - (start - message);
+    if (tailLength > 0)
+    {
+        memcpy(resultBuffer, start, tailLength);
+    }
+
+    return context->FinishBufferString(result, messageLength);
+}
+
+
+/*************************************************************************
+* Function:  SysFormatMessage                                            *
+*                                                                        *
+* Syntax:    call SysFormatMessage message, subs                         *
+*                                                                        *
+* Params:    message        - String error message with insertion        *
+*                             indicators.                                *
+*            subs           - Insertion strings.  For messages which     *
+*                              contain %1, %2, etc, the subs[1]. sibs[2] *
+*                              strings will be inserted (if given).      *
+*                                                                        *
+* Return:    The message with the inserted strings (if given).           *
+*************************************************************************/
+RexxRoutine2(RexxStringObject, SysFormatMessage, CSTRING, message, RexxArrayObject, substitutions)
+{
+    return formatMessage(context, message, substitutions, 1);
+}
+
+
 #define INTERNAL_ROUTINE(name, entry) REXX_TYPED_ROUTINE_PROTOTYPE(entry)
 
 #include "SysRexxUtilFunctions.h"          // generate prototypes for the system functions.
@@ -2225,6 +2377,7 @@ RexxRoutineEntry rexxutil_routines[] =
     REXX_TYPED_ROUTINE(SysFileMove,            SysFileMove),
     REXX_TYPED_ROUTINE(SysFileCopy,            SysFileCopy),
     REXX_TYPED_ROUTINE(SysTempFileName,        SysTempFileName),
+    REXX_TYPED_ROUTINE(SysFormatMessage,       SysFormatMessage),
 #include "SysRexxUtilFunctions.h"
     REXX_LAST_ROUTINE()
 };

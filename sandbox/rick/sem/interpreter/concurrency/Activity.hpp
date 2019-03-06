@@ -73,6 +73,7 @@ class ActivationFrame;
 class ActivationBase;
 class NativeActivation;
 class RexxActivation;
+class GlobalProtectedObject;
 class MutexSemaphoreClass;
 
 typedef enum
@@ -103,8 +104,7 @@ class Activity : public RexxInternalObject
     inline void  operator delete(void *) { ; }
 
     inline Activity(RESTORETYPE restoreType) { ; };
-    Activity();
-    Activity(bool);
+    Activity(GlobalProtectedObject &, bool);
 
     void live(size_t) override;
     void liveGeneral(MarkReason reason) override;

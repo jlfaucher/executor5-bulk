@@ -75,6 +75,8 @@ void inline outOfMemoryException(RexxCallContext *c)
     c->ThrowException1(Rexx_Error_System_service_user_defined, c->String("failed to allocate memory"));
 }
 
+RexxStringObject formatMessage(RexxCallContext *context, const char *message, RexxArrayObject args, size_t firstSubstitution);
+
 /**
  * <routineName> argument <argPos> must not be a null string
  *
@@ -332,7 +334,7 @@ class TreeFinder
           const char AttributeIgnore = 0;
           const char IgnoreAll = 0;
           const char HaveMask = 1;
-          const char maskChars[6] = "ADHRS";
+          static const char maskChars[6];
 
           int8_t mask[8];      // our map for matching
      };

@@ -506,7 +506,7 @@ void TreeFinder::adjustFileSpec()
     size_t i = 0;
 
     // Skip leading blanks.
-    while (fileSpec[i] == ' ')
+    while (fileSpec.at(i) == ' ')
     {
         i++;
     }
@@ -520,26 +520,26 @@ void TreeFinder::adjustFileSpec()
 
         // now check the special cases. First, we start with
         // a directory marker
-        if (fileSpec[i] == '\\' || fileSpec[i] == '/')                         // The "\" case
+        if (fileSpec.at(i) == '\\' || fileSpec.at(i) == '/')                         // The "\" case
         {
             // perform a left shift on the buffer
             fileSpec.shiftLeft(i);
         }
         // starts with "." (or potentially "..")
-        else if (fileSpec[i] == '.')
+        else if (fileSpec.at(i) == '.')
         {
             // if this is not at the end, look for ".\" or "..\"
             if (i + 1 < len)
             {
-                if (fileSpec[i + 1] == '\\' || fileSpec[i + 1] == '/')         // The ".\" case
+                if (fileSpec.at(i + 1) == '\\' || fileSpec.at(i + 1) == '/')         // The ".\" case
                 {
                     // perform a left shift on the buffer
                     fileSpec.shiftLeft(i);
                 }
                 else if (i + 2 < len)
                 {
-                    if (fileSpec[i + 1] == '.' &&
-                        (fileSpec[i + 2] == '\\' || fileSpec[i + 2] == '/'))   // The "..\" case
+                    if (fileSpec.at(i + 1) == '.' &&
+                        (fileSpec.at(i + 2) == '\\' || fileSpec.at(i + 2) == '/'))   // The "..\" case
                     {
                         // perform a left shift on the buffer
                         fileSpec.shiftLeft(i);
@@ -547,7 +547,7 @@ void TreeFinder::adjustFileSpec()
                 }
             }
         }
-        else if (i + 1 < len && fileSpec[i + 1] == ':')                     // The "z:' case
+        else if (i + 1 < len && fileSpec.at(i + 1) == ':')                     // The "z:' case
         {
             // perform a left shift on the buffer
             fileSpec.shiftLeft(i);
@@ -716,19 +716,19 @@ void formatFileAttributes(TreeFinder *finder, FileNameBuffer &foundFile, WIN32_F
 
     if (finder->longTime())
     {
-        snprintf(fileAttr, sizeof(fileAttr), "%4d-%02d-%02d %02d:%02d:%02d ",
+        snprintf(fileAttr, sizeof(fileAttr), "%4d-%02d-%02d %02d:%02d:%02d  ",
                  systime.wYear, systime.wMonth, systime.wDay, systime.wHour, systime.wMinute,
                  systime.wSecond);
     }
     else if (finder->editableTime())
     {
-        snprintf(fileAttr, sizeof(fileAttr), "%02d/%02d/%02d/%02d/%02d ",
+        snprintf(fileAttr, sizeof(fileAttr), "%02d/%02d/%02d/%02d/%02d  ",
                  (systime.wYear + 100) % 100, systime.wMonth, systime.wDay,
                  systime.wHour, systime.wMinute);
     }
     else
     {
-        snprintf(fileAttr, sizeof(fileAttr), "%2d/%02d/%02d  %2d:%02d%c ",
+        snprintf(fileAttr, sizeof(fileAttr), "%2d/%02d/%02d  %2d:%02d%c  ",
                  systime.wMonth, systime.wDay, (systime.wYear + 100) % 100,
                  (systime.wHour < 13 && systime.wHour != 0 ?
                   systime.wHour : (abs(systime.wHour - (SHORT)12))),
@@ -739,17 +739,22 @@ void formatFileAttributes(TreeFinder *finder, FileNameBuffer &foundFile, WIN32_F
     // reuse the buffer
     foundFile = fileAttr;
 
+    uint64_t longFileSize = finfo.nFileSizeHigh;
+    longFileSize <<= 32;
+    longFileSize |= finfo.nFileSizeLow;
+
     // now the size information
     if (finder->longSize())
     {
-        uint64_t longFileSize = finfo.nFileSizeHigh;
-        longFileSize <<= 32;
-        longFileSize |= finfo.nFileSizeLow;
-        snprintf(fileAttr, sizeof(fileAttr), "%20llu ", longFileSize);
+        snprintf(fileAttr, sizeof(fileAttr), "%20llu  ", longFileSize);
     }
     else
     {
-        snprintf(fileAttr, sizeof(fileAttr), "%10lu ", finfo.nFileSizeLow);
+        if (longFileSize > 9999999999)
+        {
+            longFileSize = 9999999999;
+        }
+        snprintf(fileAttr, sizeof(fileAttr), "%10llu  ", longFileSize);
     }
 
     // the order is time, size, attributes
@@ -877,7 +882,7 @@ int TreeFinder::findDirectoryEnd()
     int lastSlashPos = (int)fileSpec.length();
 
     // Step back through fileSpec until at its beginning or at a '\' or '/' character
-    while (fileSpec[lastSlashPos] != '\\' && fileSpec[lastSlashPos] != '/' && lastSlashPos >= 0)
+    while (fileSpec.at(lastSlashPos) != '\\' && fileSpec.at(lastSlashPos) != '/' && lastSlashPos >= 0)
     {
         --lastSlashPos;
     }
@@ -895,7 +900,7 @@ int TreeFinder::findDirectoryEnd()
 bool TreeFinder::checkNonPathDrive()
 {
 // fileSpec could be a drive designator.
-    if (fileSpec[1] == ':')
+    if (fileSpec.at(1) == ':')
     {
         RoutineFileNameBuffer currentDirectory(context);
 

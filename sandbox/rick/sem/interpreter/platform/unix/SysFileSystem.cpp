@@ -73,7 +73,6 @@
 #define lstat64 lstat
 #endif
 
-
 const char SysFileSystem::EOF_Marker = 0x1A;
 const char *SysFileSystem::EOL_Marker = "\n";
 const char SysFileSystem::PathDelimiter = '/';
@@ -101,7 +100,7 @@ bool SysFileSystem::searchFileName(const char *name, FileNameBuffer &fullName)
         bool done = canonicalizeName(fullName);
         if (done == false || fileExists(fullName) == false)
         {
-            fullName[0] = '\0';
+            fullName.at(0) = '\0';
             return false;
         }
         return true;
@@ -539,13 +538,13 @@ bool SysFileSystem::searchPath(const char *name, const char *path, FileNameBuffe
  */
 bool SysFileSystem::resolveTilde(FileNameBuffer &name)
 {
-        // save a copy of the name
+    // save a copy of the name
     AutoFileNameBuffer tempName(name);
 
     // does it start with the user home marker?
     // this is the typical case.  This is a directory based off of
     // the current users home directory.
-    if (name[1] == '\0' || name[1] == '/')
+    if (name.at(1) == '\0' || name.at(1) == '/')
     {
         // save everything after the first character
         tempName = ((const char *)name) + 1;
@@ -612,7 +611,7 @@ bool SysFileSystem::resolveTilde(FileNameBuffer &name)
 bool SysFileSystem::canonicalizeName(FileNameBuffer &name)
 {
     // does it start with the user home marker?
-    if (name[0] == '~')
+    if (name.startsWith('~'))
     {
         resolveTilde(name);
     }
@@ -620,7 +619,7 @@ bool SysFileSystem::canonicalizeName(FileNameBuffer &name)
     // current working directory.  This will also handle the
     // "." and ".." cases, which will be removed by the canonicalization
     // process.
-    else if (name[0] != '/')
+    else if (!name.startsWith('/'))
     {
         // copy the name
         FileNameBuffer tempName = name;
@@ -673,7 +672,7 @@ bool SysFileSystem::normalizePathName(const char *name, FileNameBuffer &resolved
     // we copy caracter-by-character
     size_t dest = 0;
     size_t previousSlash = dest;
-    resolvedName[dest] = '/';
+    resolvedName.at(dest) = '/';
 
     // For each character in the path name, decide whether, and where, to copy.
     for (const char *p = name; *p != '\0'; p++)
@@ -685,16 +684,16 @@ bool SysFileSystem::normalizePathName(const char *name, FileNameBuffer &resolved
             {
                 previousSlash = dest;
             }
-            if (resolvedName[dest] == '/')
+            if (resolvedName.at(dest) == '/')
             {
                 // Remove double "/"
                 continue;
             }
-            resolvedName[++dest] = *p;
+            resolvedName.at(++dest) = *p;
         }
         else if (*p == '.')
         {
-            if (resolvedName[dest] == '/')
+            if (resolvedName.at(dest) == '/')
             {
                 char next = *(p + 1);
                 if (next == '\0' || next == '/')
@@ -719,7 +718,7 @@ bool SysFileSystem::normalizePathName(const char *name, FileNameBuffer &resolved
                         // are at the root of the file system.
                         while (previousSlash > 0)
                         {
-                            if (resolvedName[--previousSlash] == '/')
+                            if (resolvedName.at(--previousSlash) == '/')
                             {
                                 break;
                             }
@@ -727,28 +726,28 @@ bool SysFileSystem::normalizePathName(const char *name, FileNameBuffer &resolved
                         continue;
                     }
                 }
-                resolvedName[++dest] = *p;
+                resolvedName.at(++dest) = *p;
             }
             else
             {
-                resolvedName[++dest] = *p;
+                resolvedName.at(++dest) = *p;
             }
         }
         else
         {
-            resolvedName[++dest] = *p;
+            resolvedName.at(++dest) = *p;
         }
     }
 
     // Terminate. Where, depends on several things.
-    if (resolvedName[dest] == '/' && dest != 0)
+    if (resolvedName.at(dest) == '/' && dest != 0)
     {
         // overwrite a trailing slash
-        resolvedName[dest] = '\0';
+        resolvedName.at(dest) = '\0';
     }
     else
     {
-        resolvedName[++dest] = '\0';
+        resolvedName.at(++dest) = '\0';
     }
     return true;
 }
@@ -877,11 +876,11 @@ bool SysFileSystem::isFile(const char *name)
 
 
 /**
- * Test if a file exists using a fully qualified name.
+ * Test if a file or directory exists using a fully qualified name.
  *
- * @param name   The target file name.
+ * @param name   The target file or directory name.
  *
- * @return True if the file exists, false if it is unknown.
+ * @return True if the file or directory exists, false if it is unknown.
  */
 bool SysFileSystem::exists(const char *name)
 {
@@ -1157,13 +1156,13 @@ bool SysFileSystem::setFileWritable(const char *name)
  */
 bool SysFileSystem::isCaseSensitive()
 {
-#ifndef _HAVE_PC_CASE_SENSITIVE
+#ifndef HAVE_PC_CASE_SENSITIVE
     return true;
 #else
     long res = pathconf("/", _PC_CASE_SENSITIVE);
-    if (res \= -1)
+    if (res != -1)
     {
-        return res == 1;
+        return (res == 1);
     }
     // any error means this value is not supported for this file system
     // so the result is most likely true (unix standard)
@@ -1180,17 +1179,40 @@ bool SysFileSystem::isCaseSensitive()
  */
 bool SysFileSystem::isCaseSensitive(const char *name)
 {
-#ifndef _HAVE_PC_CASE_SENSITIVE
+#ifndef HAVE_PC_CASE_SENSITIVE
     return true;
 #else
-    long res = pathconf(name, _PC_CASE_SENSITIVE);
+    AutoFree tmp = strdup(name);
 
-    if (res \= -1)
+    while (!SysFileSystem::exists(tmp))
     {
-        return res == 1;
+        size_t len = strlen(tmp);
+        // scan backwards to find the previous directory delimiter
+        for (; len > 0; len --)
+        {
+            // is this the directory delimiter?
+            if (tmp[len] == '/')
+            {
+                tmp[len] = '\0';
+                break;
+            }
+        }
+        // ugly hack . . . to preserve the "/"
+        if (len == 0)
+        {
+            tmp[len+1] = '\0';
+            break;
+        }
     }
-    // any error means this the value is not supported for this file system
-    // so the result is most likely true (unix standard)
+
+    // at this point the tmp variable contains something that exists
+    long res = pathconf(tmp, _PC_CASE_SENSITIVE);
+    if (res != -1)
+    {
+        return (res == 1);
+    }
+
+    // non-determined, just return true
     return true;
 #endif
 }
@@ -1423,7 +1445,7 @@ and that is not the same as the name of an existing file in this directory.
 Used to temporarily rename a file in place (i.e. in its directory).
 This new filename must be freed when no longer needed.
 */
-char *temporaryFilename(const char *filename, int &errInfo)
+char* temporaryFilename(const char *filename, int &errInfo)
 {
     // allocate a buffer large enough to hold the file name plus the extra characters
     // we add to the end.
@@ -1611,7 +1633,7 @@ int SysFileSystem::copyFile(const char *fromFile, const char *toFile)
 /**
  * Move a file from one location to another. This is typically just a rename, but if necessary, the file will be copied and the original unlinked.
  *
- * @param fromFile The file we´re copying from.
+ * @param fromFile The file we're copying from.
  * @param toFile   The target file.
  *
  * @return 0 if this was successful, otherwise the system error code.
@@ -1718,7 +1740,7 @@ SysFileIterator::SysFileIterator(const char *path, const char *pattern, FileName
     // caseLess can be explicit or implicit, based on the characteristics of the path.
     // Mac file systems are generally case insensitive, but other unix variants are
     // usually case sensitive.
-    caseLess = c || SysFileSystem::isCaseSensitive(path);
+    caseLess = c || !SysFileSystem::isCaseSensitive(path);
 
 #ifndef HAVE_FNM_CASEFOLD
     // if we're tasked with doing a caseless search but the option is
@@ -1726,8 +1748,9 @@ SysFileIterator::SysFileIterator(const char *path, const char *pattern, FileName
     // spec and uppercase it.
     if (caseLess && patternSpec != NULL)
     {
-        patternSpec = strdup(patternSpec);
-        strupr(patternSpec);
+        char *upperString = strdup(patternSpec);
+        Utilities::strupper(upperString);
+        patternSpec = upperString;
     }
 #endif
 
@@ -1771,7 +1794,7 @@ void SysFileIterator::close()
     // if we had to copy the patternSpec, make sure we free the copy up
     if (caseLess && patternSpec != NULL)
     {
-        free(patternSpec);
+        free((void *)patternSpec);
         patternSpec = NULL;
     }
 #endif
@@ -1845,7 +1868,7 @@ void SysFileIterator::findNextEntry()
         flags |= FNM_CASEFOLD;
 #else
         char *upperName = strdup(testName);
-        strupr(upperName);
+        Utilities::strupper(upperName);
         testName = upperName;
 #endif
     }
@@ -1855,7 +1878,7 @@ void SysFileIterator::findNextEntry()
     {
 #ifndef HAVE_FNM_CASEFOLD
         // free the uppercase copy of the last test
-        free(testName);
+        free((void *)testName);
 #endif
         entry = readdir(handle);
         if (entry == NULL)
@@ -1868,13 +1891,13 @@ void SysFileIterator::findNextEntry()
         testName = entry->d_name;
 #ifndef HAVE_FNM_CASEFOLD
         char *upperName = strdup(testName);
-        strupr(upperName);
+        Utilities::strupper(upperName);
         testName = upperName;
 #endif
     }
 #ifndef HAVE_FNM_CASEFOLD
     // free the uppercase copy of the last test
-    free(testName);
+    free((void *)testName);
 #endif
 }
 
