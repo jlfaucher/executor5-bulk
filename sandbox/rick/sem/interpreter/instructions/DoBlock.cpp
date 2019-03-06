@@ -45,6 +45,7 @@
 #include "DoInstruction.hpp"
 #include "DoBlock.hpp"
 #include "RexxActivation.hpp"
+#include "Numerics.hpp"
 
 /**
  * Allocate a new DoBlock object.
@@ -125,7 +126,7 @@ void DoBlock::setCounter(RexxActivation *context)
     if (countVariable != OREF_NULL)
     {
         // assign the control variable and trace this result
-        Protected<RexxInteger> c = new_integer(counter);
+        Protected<RexxObject> c =  Numerics::uint64ToObject(counter);
         countVariable->assign(context, c);
         context->traceKeywordResult(GlobalNames::COUNTER, c);
     }
