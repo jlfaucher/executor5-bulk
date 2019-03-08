@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -206,7 +206,111 @@ return testResult
    self~assertEquals(1, i, "subtest_12: leaving 'aha1'!")
 
 
-::method "test_DO_lable_works_with_interpret"
+::method test_DO_counter
+
+  do counter i k = 1 to 3
+  end
+
+  self~assertEquals(3, i)
+  self~assertEquals(4, k)
+
+  do counter i k = 3 to 1
+  end
+
+  self~assertEquals(0, i)
+  self~assertEquals(3, k)
+
+  do label abc counter i k = 1 to 3
+  end abc
+
+  self~assertEquals(3, i)
+  self~assertEquals(4, k)
+
+  do counter i label abc k = 3 to 1
+  end abc
+
+  self~assertEquals(0, i)
+  self~assertEquals(3, k)
+
+  do counter = 1 to 3
+  end
+
+  self~assertEquals(4, counter)
+
+  -- uses the counter variable in the condition
+  do counter i while i < 3
+  end
+
+  self~assertEquals(3, i)
+
+  -- uses the counter variable in the condition
+  do counter i until i > 3
+  end
+
+  self~assertEquals(4, i)
+
+  -- uses the counter variable in the condition
+  do counter i while .false
+  end
+
+  self~assertEquals(0, i)
+
+  -- uses the counter variable in the condition
+  do counter i until .true
+  end
+
+  self~assertEquals(1, i)
+
+  do counter i 3
+  end
+
+  self~assertEquals(3, i)
+
+  do counter i item over (1,2,3)
+  end
+
+  self~assertEquals(3, i)
+  self~assertEquals(3, item)
+
+  do counter i with item item index index over (4,5,6)
+  end
+
+  self~assertEquals(3, i)
+  self~assertEquals(3, index)
+  self~assertEquals(6, item)
+
+  do counter i forever while i < 3
+  end
+
+  self~assertEquals(3, i)
+
+  do counter i forever until i > 3
+  end
+
+  self~assertEquals(4, i)
+
+  do counter i forever while .false
+  end
+
+  self~assertEquals(0, i)
+
+  do counter i forever until .true
+  end
+
+  self~assertEquals(1, i)
+
+::method test_simple_do_no_counter
+  self~expectSyntax(27.905)
+  interpret "do counter i; end"
+
+::method test_multiple_counter
+  -- this gets parsed as FOR count loop, with an invalid
+  -- count for the second occurrence.
+  self~expectSyntax(26.2)
+  interpret "do counter x counter y while .true; end"
+
+
+::method "test_DO_label_works_with_interpret"
    str="i=0                                                                    ;" -
    "DO label aha1                                                              ;" -
    "   i=i+1                                                                   ;" -
