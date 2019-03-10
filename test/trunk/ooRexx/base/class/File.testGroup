@@ -240,7 +240,12 @@ return testResult
     -- file time from File~lastModified
     tLastModified = f~lastModified     -- e. g. 2015-06-06 15:12:08.000000
     self~assertTrue(tLastModified~isA(.DateTime))
-    self~assertTrue(tLastModified <= .DateTime~new, "test timestamp" tLastModified" should be before" .DateTime~new)
+    -- When comparing with the current time, we need to ignore anything smaller than milliseconds
+    -- because Windows returns the current time with only a milllisecond resolution
+    -- e. g. .DateTime~new -- 2019-03-10T17:52:10.198000
+    now = .DateTime~new~string~left(23) -- keep milliseconds, ignore microseconds
+    tLastModified = tLastModified~string~left(23) -- keep milliseconds, ignore microseconds
+    self~assertTrue(tLastModified <= now, "test timestamp" tLastModified" should be before" now)
     tLastModified = tLastModified~string~left(19) -- we'll ignore fractions of seconds
 
     -- file time from Stream~query("timestamp")
@@ -341,7 +346,12 @@ return testResult
     -- file time from File~lastAccessed
     tLastAccessed = f~lastAccessed     -- e. g. 2015-06-06 15:12:08.000000
     self~assertTrue(tLastAccessed~isA(.DateTime))
-    self~assertTrue(tLastAccessed <= .DateTime~new, "test timestamp" tLastAccessed" should be before" .DateTime~new)
+    -- When comparing with the current time, we need ignore to anything smaller than milliseconds
+    -- because Windows returns the current time with only a milllisecond resolution
+    -- e. g. .DateTime~new -- 2019-03-10T17:52:10.198000
+    now = .DateTime~new~string~left(23) -- keep milliseconds, ignore microseconds
+    tLastAccessed = tLastAccessed~string~left(23) -- keep milliseconds, ignore microseconds
+    self~assertTrue(tLastAccessed <= now, "test timestamp" tLastAccessed" should be before" now)
     tLastAccessed = tLastAccessed~string~left(19) -- we'll ignore fractions of seconds
 
     -- file time from SysGetFileDateTime(, "access")
