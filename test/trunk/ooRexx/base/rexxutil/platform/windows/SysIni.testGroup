@@ -79,7 +79,7 @@ return testResult
   self~assertEquals("", SysIni(temp~fullName, 'app2', 'All:', 'a'))
   self~verifySeq(e., a.)
 
-  self~assertEquals("ERROR", SysIni(temp~fullName, 'app3', 'All:', 'a.'))
+  self~assertEquals("ERROR:", SysIni(temp~fullName, 'app3', 'All:', 'a.'))
 
   self~assertEquals("", SysIni(temp~fullName, 'app1', 'DEleTE:'))
 
@@ -87,7 +87,7 @@ return testResult
 
   self~assertEquals("", SysIni(temp~fullName, 'app2', 'key1', "delete:"))
 
-  self~assertEquals("ERROR", SysIni(temp~fullName, 'app2', 'key1'))
+  self~assertEquals("ERROR:", SysIni(temp~fullName, 'app2', 'key1'))
 
   self~of(e., "key2", "key3")
 
