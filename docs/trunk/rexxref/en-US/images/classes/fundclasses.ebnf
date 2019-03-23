@@ -49,8 +49,8 @@ object_sendwith ::= 'sendWith(' messagename ',' arguments ')'
 
 /*-- interpreter\classes\ObjectClass.cpp -----------------------------*/
 /*-- RexxObject::setMethod() -----------------------------------------*/
-object_setmethod ::= 'setMethod(' ( methodname |
-                                    methodname ',' method ( | ',' '"FLOAT"' | ',' '"OBJECT"' ) ) ')'
+object_setmethod ::= 'setMethod(' methodname
+                                  ( ',' method ( | ',' '"FLOAT"' | ',' '"OBJECT"' ) )? ')'
 
 object_start ::= 'start(' messagename ( ',' argument? )* ')'
 

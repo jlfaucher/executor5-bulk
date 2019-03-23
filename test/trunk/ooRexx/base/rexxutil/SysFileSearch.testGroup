@@ -1,0 +1,192 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev: 11734 $
+  Change Date:  $Date: 2019-02-08 15:41:41 -0500 (Fri, 08 Feb 2019) $
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2007-2019 Rexx Language Association. All rights reserved.    */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+parse source . . fileSpec
+
+group = .TestGroup~new(fileSpec)
+group~add(.SysFileSearch.testGroup)
+
+if group~isAutomatedTest then return group
+
+testResult = group~suite~execute~~print
+
+return testResult
+
+::requires 'ooTest.frm'
+::class 'SysFileSearch.testgroup' subclass ooTestCase public
+
+::constant tempFileName "SysFileSearch.tmp"
+
+::method test_no_args
+  self~expectSyntax(88.901) -- Missing argument; argument 1 is required
+  call SysFileSearch
+
+::method test_one_arg_too_few
+  self~expectSyntax(88.901) -- Missing argument; argument 2 is required
+  call SysFileSearch ""
+
+::method test_two_args_too_few
+  self~expectSyntax(88.901) -- Missing argument; argument 3 is required
+  call SysFileSearch "", ""
+
+::method test_no_stem
+  self~expectSyntax(40.919) -- Argument 3 must have a stem object or stem name value
+  call SysFileSearch "", "", ""
+
+::method test_invalid_option
+  self~expectSyntax(40.900) -- SysFileSearch options argument must be a combination of C, I, or N
+  call SysFileSearch "", "", s., "X"
+
+::method test_five_args_too_many
+  self~expectSyntax(88.922) -- Too many arguments in invocation; 4 expected
+  call SysFileSearch "", "", s., "", ""
+
+::method test_no_file
+  self~assertSame(3, SysFileSearch("", "", s.)) -- Error opening file
+
+::method test_stem_name
+  temp = .TemporaryTestFile~new(self, self~tempFileName)
+  temp~create(("line1", "", "Line3"))
+
+  self~assertEquals(0, SysFileSearch("l", temp~fullName, stem.))
+  self~assertSame("line1, Line3", self~toString(stem.))
+
+  self~assertEquals(0, SysFileSearch("L", temp~fullname, stem., 'i'))
+  self~assertSame("line1, Line3", self~toString(stem.))
+
+  self~assertEquals(0, SysFileSearch("L", temp~fullname, stem., 'c'))
+  self~assertSame("Line3", self~toString(stem.))
+
+  self~assertEquals(0, SysFileSearch("l", temp~fullname, stem., 'c'))
+  self~assertSame("line1", self~toString(stem.))
+
+  self~assertEquals(0, SysFileSearch("l", temp~fullName, stem., 'n'))
+  self~assertSame("1 line1, 3 Line3", self~toString(stem.))
+
+  self~assertEquals(0, SysFileSearch("L", temp~fullName, stem., 'ni'))
+  self~assertSame("1 line1, 3 Line3", self~toString(stem.))
+
+  self~assertEquals(0, SysFileSearch("L", temp~fullName, stem., 'cn'))
+  self~assertSame("3 Line3", self~toString(stem.))
+
+  temp~delete
+
+::method test_stem_object
+  temp = .TemporaryTestFile~new(self, self~tempFileName)
+  temp~create(("", "line2", "Line3", ""))
+
+  stem = .Stem~new
+
+  self~assertEquals(0, SysFileSearch("l", temp~fullName, stem))
+  self~assertSame("line2, Line3", self~toString(stem))
+
+  self~assertEquals(0, SysFileSearch("L", temp~fullname, stem, 'I'))
+  self~assertSame("line2, Line3", self~toString(stem))
+
+  self~assertEquals(0, SysFileSearch("L", temp~fullname, stem, 'C'))
+  self~assertSame("Line3", self~toString(stem))
+
+  self~assertEquals(0, SysFileSearch("l", temp~fullname, stem, 'C'))
+  self~assertSame("line2", self~toString(stem))
+
+  self~assertEquals(0, SysFileSearch("l", temp~fullName, stem, 'N'))
+  self~assertSame("2 line2, 3 Line3", self~toString(stem))
+
+  self~assertEquals(0, SysFileSearch("L", temp~fullName, stem, 'Ni'))
+  self~assertSame("2 line2, 3 Line3", self~toString(stem))
+
+  self~assertEquals(0, SysFileSearch("L", temp~fullName, stem, 'Cn'))
+  self~assertSame("3 Line3", self~toString(stem))
+
+  temp~delete
+
+::method test_nul_character
+  temp = .TemporaryTestFile~new(self, self~tempFileName)
+  data = '00'x || "line1", '00'x, "Line3" || '00'x
+  temp~create(data)
+
+  self~assertEquals(0, SysFileSearch('00'x, temp~fullName, stem.))
+  self~assertSame(data~toString(, ", "), self~toString(stem.))
+
+  temp~delete
+
+-- test typical edge cases
+::method test_buffer_size
+  temp = .TemporaryTestFile~new(self, self~tempFileName)
+
+  do bufferSize over (256, 512, 1024, 2048, 4096, 8192)
+    do size = bufferSize - 3 to bufferSize + 3
+      line1 = "x"~copies(size)
+      line3 = "x"~copies(size * 2)
+      temp~create((line1, "", line3))
+      self~assertEquals(0, SysFileSearch("x", temp~fullName, stem.))
+      self~assertSame(line1"," line3, self~toString(stem.))
+    end
+  end
+
+  temp~delete
+
+::method test_long_line
+  temp = .TemporaryTestFile~new(self, self~tempFileName)
+  line = "x"~copies(20000) || "y"
+  temp~create(("", line, ""))
+
+  self~assertEquals(0, SysFileSearch("y", temp~fullName, stem.))
+  self~assertSame(line, self~toString(stem.))
+
+  temp~delete
+
+
+::method toString
+  use strict arg stem
+
+  s = ""
+  do i = 1 to stem[0]
+    if i = 1 then
+      s = stem[1]
+    else
+      s ||= "," stem[i]
+  end
+  return s
+
+
+::options novalue error

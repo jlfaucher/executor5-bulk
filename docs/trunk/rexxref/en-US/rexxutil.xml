@@ -1424,16 +1424,6 @@ call SysFileMove "c:\temp\myfile.txt", "d:\myfolder"
 <para>Finds all file lines containing the target string and returns the file
 lines in a Rexx stem variable collection.</para>
 
-<note><title>Restrictions</title>
-<para>The maximum supported file line length is 4095 characters.
-Any part of a line beyond 4095 characters is neither searched nor returned.
-</para>
-<para>For the purpose of searching, any <literal>'00'x</literal> character
-is replaced by a blank in both the <emphasis role="italic">target</emphasis>,
-and the <emphasis role="italic">file</emphasis> line.
-</para>
-</note>
-
 <para><emphasis role="bold">Parameters:</emphasis></para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">target</emphasis></term>
@@ -1444,18 +1434,21 @@ and the <emphasis role="italic">file</emphasis> line.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="italic">stem</emphasis></term>
 <listitem><para>The result stem variable name. SysFileSearch sets Rexx variable
-<emphasis role="italic">stem.0</emphasis> to the number of lines returned and
+<emphasis role="italic">stem</emphasis><literal>.0</literal> to the number of lines returned and
 stores the individual lines in variables
-<emphasis role="italic">stem.1</emphasis> to
+<emphasis role="italic">stem</emphasis><literal>.1</literal> to
 <emphasis role="italic">stem.n</emphasis>.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="italic">options</emphasis></term>
 <listitem><para>Any combination of the following one-character options:
 <variablelist>
-<varlistentry><term>"C"</term>
+<varlistentry><term><literal>C</literal></term>
 <listitem><para>Conducts a case-sensitive search.
 </para></listitem></varlistentry>
-<varlistentry><term>"N"</term>
+<varlistentry><term><literal>I</literal></term>
+<listitem><para>Conducts a case-insensitive search.
+</para></listitem></varlistentry>
+<varlistentry><term><literal>N</literal></term>
 <listitem><para>Prepends file line numbers to any returned lines.
 </para></listitem></varlistentry>
 </variablelist>
