@@ -1990,10 +1990,10 @@ is returned.  This may be one of the following, but could be others.
 </variablelist>
 </section>
 
-<section id="utlSysgeterrortext"><title>SysGetErrortext</title>
-<indexterm><primary>SysGetErrortext</primary></indexterm>
+<section id="utlSysgeterrortext"><title>SysGetErrorText</title>
+<indexterm><primary>SysGetErrorText</primary></indexterm>
 <indexterm><primary>rexxutil functions</primary>
-<secondary>SysGetErrortext</secondary></indexterm>
+<secondary>SysGetErrorText</secondary></indexterm>
 
 <mediaobject>
 <imageobject>
@@ -2005,29 +2005,34 @@ is returned.  This may be one of the following, but could be others.
 number.</para>
 <para>Returns a string with the description of the error, or an empty string
 if no description is available.</para>
+<para><emphasis role="bold">Parameter:</emphasis></para>
+<variablelist>
+<varlistentry><term><emphasis role="italic">errornumber</emphasis></term>
+<listitem><para>The error number for which a description is to be retrieved.
+Note that both the error number and the descriptive text are operating-system
+specific.
+</para></listitem></varlistentry>
+</variablelist>
+
+<para>
 <indexterm><primary>rexxutil functions</primary>
-<secondary>SysGetErrortext</secondary>
+<secondary>SysGetErrorText</secondary>
 <tertiary>example</tertiary></indexterm>
-<indexterm><primary>SysGetErrortext</primary>
+<indexterm><primary>SysGetErrorText</primary>
 <secondary>example</secondary></indexterm>
 <indexterm><primary>examples</primary>
-<secondary>SysGetErrortext</secondary></indexterm>
+<secondary>SysGetErrorText</secondary></indexterm>
 <example id="ex.sysgeterrortext-1">
-<title>RexxUtil &mdash; SysGeterrortext (Windows)</title>
+<title>RexxUtil &mdash; SysGetErrorText</title>
 <programlisting>
-err=SysMkDir("c:\temp")
-if err \= 0 then
-say "Error" err":"SysGetErrortext(err)
+-- Windows: Cannot create a file when that file already exists.
+say SysGetErrorText(SysMkDir("\Users"))
+
+-- Unix: File exists
+say SysGetErrorText(SysMkDir("/usr"))
 </programlisting>
 </example>
-<example id="ex.sysgeterrortext-2">
-<title>RexxUtil &mdash; SysGeterrortext (Unix)</title>
-<programlisting>
-err=SysMkDir("/home/NotKnown/temp")
-if err \= 0 then
-say "Error" err":"SysGetErrortext(err)
-</programlisting>
-</example>
+</para>
 </section>
 
 <section id="utlSysgetfiledatetime"><title>SysGetFileDateTime</title>
@@ -2888,23 +2893,30 @@ SysSaveRexxMacroSpace must have created the file.
 </imageobject>
 </mediaobject>
 
-<para><emphasis role="bold">Linux:</emphasis></para>
+<para><emphasis role="bold">Unix:</emphasis></para>
 <mediaobject>
 <imageobject>
 <imagedata fileref="images/rexxutil/sysmkdir_unix.svg" scale="55" />
 </imageobject>
 </mediaobject>
 
-<para>Creates a specified directory.</para>
+<para>Creates the specified directory.
+This function will only create the final directory in the path,
+all intermediate directories must already exist.
+</para>
 <para><emphasis role="bold">Parameter:</emphasis></para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">dirspec</emphasis></term>
 <listitem><para>The directory to be created.
 </para></listitem></varlistentry>
-<varlistentry><term><emphasis role="italic">mode</emphasis> (Linux only)</term>
-<listitem><para>The file permission bits of the new directory.
-If not specified, <emphasis role="italic">mode</emphasis> defaults to the current
-<command>umask</command> setting.
+<varlistentry><term><emphasis role="italic">mode</emphasis> (Unix only)</term>
+<listitem><para>The file permission bits of the new directory as a decimal
+number between 0 (octal 000) and 511 (octal 777).
+If not specified, <emphasis role="italic">mode</emphasis> defaults to 511
+(octal 777).
+</para>
+<para>Any mode restrictions specified by <command>umask</command>
+will always be taken into account.
 </para></listitem></varlistentry>
 </variablelist>
 <para><emphasis role="bold">Return codes:</emphasis></para>
@@ -4811,8 +4823,8 @@ only)</title>
 <listitem><para>Success
 </para></listitem></varlistentry>
 <varlistentry><term>non-zero</term>
-<listitem><para>A  <xref linkend="systemerrorcodes" xrefstyle="template:Windows System Error code"/>.
-You can use SysGetErrortext() to get a description of the error.
+<listitem><para>A <xref linkend="systemerrorcodes" xrefstyle="template:Windows System Error code"/>.
+You can use <xref linkend="utlSysgeterrortext" xrefstyle="select:title"/> to get a description of the error.
 </para></listitem></varlistentry>
 </variablelist>
 <indexterm><primary>rexxutil functions</primary>
