@@ -50,6 +50,8 @@ sysfiletree ::= 'SysFileTree(' filespec ',' stem ',' options? ',' tattrib? ',' n
 
 sysfork ::= 'SysFork()'
 
+sysformatmessage ::= 'SysFormatMessage(' message ',' substitutions ')'
+
 sysfromunicode ::= 'SysFromUnicode(' string ',' codepage? ',' mappingflags? ',' defaultchar? ',' outstem ')'
 
 sysgeterrortext ::= 'SysGetErrorText(' errornumber ')'
@@ -60,11 +62,9 @@ sysgetkey ::= 'SysGetKey(' ( opt )? ')'
 
 sysgetlongpathname ::= 'SysGetLongPathName(' path ')'
 
-sysgetmessage ::= 'SysGetMessage(' num ( ',' filename ( ',' str ( ( ',' str )+ )? )? |
-                                         ',' str ( ( ',' str )+ )? )? ')'
+sysgetmessage ::= 'SysGetMessage(' num ',' filename? ( ',' str )*
 
-sysgetmessagex ::= 'SysGetMessageX(' set ',' num ( ',' filename ( ',' str ( ( ',' str )+ )? )? |
-                                         ',' str ( ( ',' str )+ )? )? ')'
+sysgetmessagex ::= 'SysGetMessage(' set ',' num ',' filename? ( ',' str )*
 
 sysgetshortpathname ::= 'SysGetShortPathName(' path ')'
 

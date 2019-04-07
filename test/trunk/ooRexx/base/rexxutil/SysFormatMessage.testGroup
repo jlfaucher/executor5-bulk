@@ -49,20 +49,25 @@
   testResult = group~suite~execute~~print
 
 return testResult
--- End of entry point.
 
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
-  Directives, Classes, or Routines.
-\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::requires 'ooTest.frm'
 
-/* class: SysFormatMessage.testGroup   - - - - - - - - - - - - - - - - - - - -*\
 
-\* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 ::class "SysFormatMessage.testGroup" public subclass ooTestCase
 
-::method test_substitutions
+::method test_no_args_too_few
+  self~expectSyntax(88.901) -- Missing argument; argument 1 is required
+  call SysFormatMessage
 
+::method test_one_arg_too_few
+  self~expectSyntax(88.901) -- Missing argument; argument 2 is required
+  call SysFormatMessage ""
+
+::method test_too_many_subs
+  self~expectSyntax(40.1) -- External routine "SysFormatMessage" failed
+  call sysformatmessage "&1", (1,2,3,4,5,6,7,8,9,0)
+
+::method test_substitutions
   self~assertEquals("abc", SysFormatMessage("&1", "abc"))
   self~assertEquals("abc", SysFormatMessage("&1", ("abc", "def")))
   self~assertEquals("abc + def", SysFormatMessage("&1 + &2", ("abc", "def")))
@@ -73,8 +78,21 @@ return testResult
   self~assertEquals("123", SysFormatMessage("123", ("abc", "def")))
   self~assertEquals("&0 abc", SysFormatMessage("&0 &1", "abc"))
   self~assertEquals("", SysFormatMessage("&1", .array~new))
+  self~assertSame("", SysFormatMessage("", ""))
+  self~assertSame("&&&", SysFormatMessage("&&1&", "&"))
+  self~assertSame(" leading...", SysFormatMessage(" leading&1", "..."))
+  self~assertSame(">>trailing  ", SysFormatMessage("&1trailing  ", ">>"))
+  self~assertSame(" leading-trailing ", SysFormatMessage(" leading&1trailing ", "-"))
+  self~assertSame("9 8 7 6 5 4 3 2 1 &0", SysFormatMessage("&9 &8 &7 &6 &5 &4 &3 &2 &1 &0", .Array~new(9)~fill(0)~allIndexes))
+
+::method test_long_substitutions
+  subs = .Array~new
+  len = 32
+  do 9
+    subs~append(1~copies(len))
+    len *= 2
+  end
+  self~assertSame(1~copies(32 * (2**9 - 1)), SysFormatMessage("&2&4&6&8&1&3&5&7&9", subs))
 
 
-::method test_too_many_subs
-  self~expectSyntax(40.1)
-  call sysformatmessage "&1", (1,2,3,4,5,6,7,8,9,0)
+::options novalue error
