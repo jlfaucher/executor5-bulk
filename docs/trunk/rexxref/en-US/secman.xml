@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Reference XML File
     #
-    # Copyright (c) 2005-2017, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2019, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -262,15 +262,14 @@ function).</para>
 <example><title>Agent Program</title>
 <programlisting>
 /* Agent */
-interpret "echo Hello There"
-"dir foo.bar"
+"echo Hello There"
 call rxfuncadd sysloadfuncs, rexxutil, sysloadfuncs
 say result
 say syssleep(1)
-say linein("c:\profile")
-say .array
-.object~setmethod("SETMETHOD")
-::requires agent2.cmd
+say linein("./profile")
+say .methods
+.json~define("")
+::requires json.cls
 </programlisting>
 </example>
 <para>The following server implements the security manager with three levels
@@ -290,86 +289,97 @@ action.</para></listitem>
 <programlisting>
 /* Server implements security manager */
 parse arg program
-method = .method~newfile(program)
+routine = .Routine~newFile(program)
 say "Calling program" program "with an audit manager:"
 pull
-method~setSecurityManager(.dumper~new(.output))
-.go~new~~run(method)
+routine~setSecurityManager(.Dumper~new(.stderr))
+routine~call
 say "Calling program" program "with a function replacement execution environment:"
 pull
-method~setSecurityManager(.replacer~new)
-.go~new~~run(method)
+routine~setSecurityManager(.Replacer~new)
+routine~call
 say "Calling program" program "with a closed cell manager:"
 pull
+routine~setSecurityManager(.noWay~new)
 signal on syntax
-method~setSecurityManager(.noWay~new)
-.go~new~~run(method)
+routine~call
 exit
 
 syntax:
   say "Agent program terminated with an authorization failure"
+  say condition("additional")
   exit
 
-::class go subclass object
-
-::method run         -- this is a NON-PRIVATE method!
-  use arg m
-  self~run:super(m)  -- a PRIVATE method is called here!
-
-::class dumper
+-- A Security Manager that keeps an audit record, and permits the request to run
+::class Dumper public
 ::method init
-  expose stream                        /* target stream for output          */
-  use arg stream                       /* hook up the output stream         */
-::method unknown                       /* generic unknown method            */
-  expose stream                        /* need the global stream            */
-  use arg name, args                   /* get the message and arguments     */
-                                       /* write out the audit event         */
-  stream~lineout(time() date() "Called for event" name)
-  stream~lineout("Arguments are:")     /* write out the arguments           */
-  info = args[1]                       /* info directory is the first arg   */
-  do name over info                    /* dump the info directory           */
-    stream~lineout("Item" name":" info[name])
-  end
-return 0                               /* allow this to proceed             */
+  -- save our target stream for output
+  expose stream
+  use arg stream
 
+-- unknown will trap all Security Manager checkpoints
+::method unknown
+  expose stream                  -- we write to our target stream
+  use arg name, args             -- actual message name and arguments
+  -- write an audit record
+  stream~lineout(.DateTime~new "Called for event" name)
+  info = args[1]                 -- info directory is the first arg
+  do name over info              -- write the info directory contents
+    stream~lineout(.DateTime~new "Info item" name":" info[name])
+  end
+return 0                         -- allow this to proceed
+
+
+-- A closed cell Security Manager blocking all requests
 ::class noWay
-::method unknown                       /* everything trapped by unknown     */
-                                       /* and everything is an error        */
-  raise syntax 98.948 array("You didn&apos;t say the magic word!")
-::class replacer subclass noWay        /* inherit restrictive UNKNOWN method*/
-::method command                       /* issuing commands                  */
-  use arg info                         /* access the directory              */
-  info~rc = 1234                       /* set the command return code       */
-  info~failure = .true                 /* raise a FAILURE condition         */
-  return 1                             /* return "handled" return value     */
-::method call                          /* external function/routine call    */
-  use arg info                         /* access the directory              */
-                                       /* all results are the same          */
-  info~setentry("RESULT","uh, uh, uh...you didn&apos;t say the magic word")
-  return 1                              /* return "handled" return value    */
-::method stream                        /* I/O function stream lookup        */
-  use arg info                         /* access the directory              */
-                                       /* replace with a different stream   */
-  info~stream = .stream~new("c:\sample.txt")
-return 1
-                                       /* return "handled" return value     */
-::method local                         /* .LOCAL variable lookup            */
-                                       /* no value returned at all          */
-  return 1                             /* return "handled" return value     */
-::method environment                   /* .ENVIRONMENT variable lookup      */
-                                       /* no value returned at all          */
-  return 1                             /* return "handled" return value     */
-::method method                        /* protected method invocation       */
-  use arg info                         /* access the directory              */
-                                       /* all results are the same          */
-  info~setentry("RESULT","uh, uh, uh...you didn&apos;t say the magic word")
-  return 1                             /* return "handled" return value     */
-::method requires                      /* REQUIRES directive                */
-  use arg info                         /* access the directory              */
-                                       /* switch to load a different file   */
-  info~name = "c:\samples\agent.cmd"
-  info~securitymanager = self          /* load under this authority         */
-  return 1                             /* return "handled" return value     */
+-- unknown will trap all Security Manager checkpoints
+::method unknown
+  -- raise an error for each checkpoint
+  raise syntax 98.948 array(arg(1) "blocked by Security manager")
+
+
+-- A Security Manager that replaces prohibited actions with a different one
+::class Replacer subclass noWay  -- inherit restrictive UNKNOWN method
+-- command checkpoint
+::method command
+  use arg info
+  info~rc = 1234                 -- replace the command return code
+  info~failure = .true           -- raise a FAILURE condition
+  return 1 -- we handled this
+
+-- external call checkpoint
+::method call
+  use arg info
+  info~result = "blocked"
+  return 1 -- we handled this
+
+-- STREAM checkpoint
+::method stream
+  use arg info
+  -- always replace with a different stream
+  info~stream = .stream~new("SecurityManager.txt")
+  return 1 -- we handled this
+
+-- .local variable lookup
+::method local
+  return 1 -- handle. but return no value
+
+-- .environment variable lookup
+::method environment
+  return 1 -- handle. but return no value
+
+-- protected method invocation
+::method method
+  use arg info
+  info~result = "blocked"
+  return 1 -- we handled this
+
+-- ::REQUIRES directove
+::method requires
+  use arg info
+  info~name = "SecurityManager.cls"
+  info~securitymanager = self -- load under this authority
+  return 1 -- we handled this
 </programlisting>
 </example>
 </section>
