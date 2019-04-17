@@ -964,7 +964,7 @@ pending conditions can be cancelled using <xref linkend="mthClearCondition" xref
 </para>
 </section>
 
-<section id="redirectorcontext"><title>&added50;Rexx I/O Redirector Context Interface</title>
+<section id="redirectorcontext" revisionflag="added"><title>&added50;Rexx I/O Redirector Context Interface</title>
 <para>A RexxIORedirectorContext object is included as the last argument to any
 redirecting <xref linkend="commandapi" xrefstyle="template:command handler "/>.
 The I/O Redirector context provides services that are specific to
@@ -1935,7 +1935,7 @@ attribute method in the base class:</para>
 ::attribute mydata get private
 </programlisting>
 <para>The subclass method can then access the method using
-<xref linkend="mthSendMessage0" xrefstyle="select:title"/>
+<xref linkend="mthSendMessage" xrefstyle="template:SendMessage0" />
 to access the value.</para>
 <programlisting language="C++">
 RexxObjectPtr self = context->GetSelf()
@@ -3167,9 +3167,46 @@ return context->WholeNumber(rc);
 
 <section id="apilisting"><title>Rexx Interface Methods Listing</title>
 
-<para>This section describes each available method and its associated context.</para>
+<para>This section describes each available method and its associated context.
+</para>
+<para>ooRexx 5.0.0 has introduced the following new APIs.
+<simplelist columns="2">
+<member><xref linkend="mthAddCommandEnvironment" xrefstyle="select:title" /></member>
+<member><xref linkend="mthAllocateObjectMemory" xrefstyle="select:title" /></member>
+<member><xref linkend="mthAreOutputAndErrorSameTarget" xrefstyle="select:title" /></member>
+<member><xref linkend="mthFreeObjectMemory" xrefstyle="select:title" /></member>
+<member><xref linkend="mthGetContextVariableReference" xrefstyle="select:title" /></member>
+<member><xref linkend="mthGetObjectVariableReference" xrefstyle="select:title" /></member>
+<member><xref linkend="mthIsErrorRedirected" xrefstyle="select:title" /></member>
+<member><xref linkend="mthIsInputRedirected" xrefstyle="select:title" /></member>
+<member><xref linkend="mthIsOutputRedirected" xrefstyle="select:title" /></member>
+<member><xref linkend="mthIsRedirectionRequested" xrefstyle="select:title" /></member>
+<member><xref linkend="mthIsStringTable" xrefstyle="select:title" /></member>
+<member><xref linkend="mthIsVariableReference" xrefstyle="select:title" /></member>
+<member><xref linkend="mthNewStringTable" xrefstyle="select:title" /></member>
+<member><xref linkend="mthReadInput" xrefstyle="select:title" /></member>
+<member><xref linkend="mthReadInputBuffer" xrefstyle="select:title" /></member>
+<member><xref linkend="mthReallocateObjectMemory" xrefstyle="select:title" /></member>
+<member><xref linkend="mthSendMessageScoped" xrefstyle="select:title" /></member>
+<member><xref linkend="mthSetGuardOffWhenUpdated" xrefstyle="select:title" /></member>
+<member><xref linkend="mthSetGuardOnWhenUpdated" xrefstyle="select:title" /></member>
+<member><xref linkend="mthSetVariableReferenceValue" xrefstyle="select:title" /></member>
+<member><xref linkend="mthStringTableAt" xrefstyle="select:title" /></member>
+<member><xref linkend="mthStringTablePut" xrefstyle="select:title" /></member>
+<member><xref linkend="mthStringTableRemove" xrefstyle="select:title" /></member>
+<member><xref linkend="mthThrowCondition" xrefstyle="select:title" /></member>
+<member><xref linkend="mthThrowException" xrefstyle="select:title" /></member>
+<member><xref linkend="mthVariableReferenceName" xrefstyle="select:title" /></member>
+<member><xref linkend="mthVariableReferenceValue" xrefstyle="select:title" /></member>
+<member><xref linkend="mthWriteError" xrefstyle="select:title" /></member>
+<member><xref linkend="mthWriteErrorBuffer" xrefstyle="select:title" /></member>
+<member><xref linkend="mthWriteOutput" xrefstyle="select:title" /></member>
+<member><xref linkend="mthWriteOutputBuffer" xrefstyle="select:title" /></member>
+</simplelist>
+</para>
 
-<section id="mthAddCommandEnvironment"><title>&added50;AddCommandEnvironment</title>
+
+<section id="mthAddCommandEnvironment" revisionflag="added"><title>&added50;AddCommandEnvironment</title>
 <indexterm><primary>AddCommandEnvironment</primary></indexterm>
 <indexterm><primary>Rexx instance context methods</primary>
 <secondary>AddCommandEnvironment</secondary></indexterm>
@@ -3223,7 +3260,7 @@ already exists, it is overwritten.
 </para>
 </section>
 
-<section id="mthAllocateObjectMemory"><title>&added50;AllocateObjectMemory</title>
+<section id="mthAllocateObjectMemory" revisionflag="added"><title>&added50;AllocateObjectMemory</title>
 <indexterm><primary>AllocateObjectMemory</primary></indexterm>
 <indexterm><primary>Method context methods</primary>
 <secondary>AllocateObjectMemory</secondary></indexterm>
@@ -3257,7 +3294,7 @@ memory is garbage-collected together with the object.
 </para>
 </section>
 
-<section id="mthAreOutputAndErrorSameTarget"><title>&added50;AreOutputAndErrorSameTarget</title>
+<section id="mthAreOutputAndErrorSameTarget" revisionflag="added"><title>&added50;AreOutputAndErrorSameTarget</title>
 <indexterm><primary>AreOutputAndErrorSameTarget</primary></indexterm>
 <indexterm><primary>I/O Redirector context methods</primary>
 <secondary>AreOutputAndErrorSameTarget</secondary></indexterm>
@@ -4765,7 +4802,7 @@ equivalent to using a FORWARD CONTINUE instruction from Rexx code.
     </para></entry>
     </row>
     <row><entry><emphasis role="italic">arr</emphasis></entry>
-    <entry><para>The Array of message arguments.  If NULL, the same arguments
+    <entry><para>An array of message arguments.  If NULL, the same arguments
     that were used on the current method invocation will be used.
     </para></entry>
     </row>
@@ -4775,7 +4812,7 @@ equivalent to using a FORWARD CONTINUE instruction from Rexx code.
 target method does not return a result.</para>
 </section>
 
-<section id="mthFreeObjectMemory"><title>&added50;FreeObjectMemory</title>
+<section id="mthFreeObjectMemory" revisionflag="added"><title>&added50;FreeObjectMemory</title>
 <indexterm><primary>FreeObjectMemory</primary></indexterm>
 <indexterm><primary>Method context methods</primary>
 <secondary>FreeObjectMemory</secondary></indexterm>
@@ -5156,7 +5193,7 @@ obj = context->GetContextVariableReference(name);
 </section>
 
 
-<section id="mthGetCSelf"><title>&changed50;GetCSelf</title>
+<section id="mthGetCSelf" revisionflag="changed"><title>&changed50;GetCSelf</title>
 <indexterm><primary>GetCSelf</primary></indexterm>
 <indexterm><primary>Method context methods</primary>
 <secondary>GetCSelf</secondary></indexterm>
@@ -6301,7 +6338,7 @@ the RexxObjectPtr value may be safely cast to a RexxDirectoryObject.
 <para>1 = is a Directory object, 0 = not a Directory object.</para>
 </section>
 
-<section id="mthIsErrorRedirected"><title>&added50;IsErrorRedirected</title>
+<section id="mthIsErrorRedirected" revisionflag="added"><title>&added50;IsErrorRedirected</title>
 <indexterm><primary>IsErrorRedirected</primary></indexterm>
 <indexterm><primary>I/O Redirector context methods</primary>
 <secondary>IsErrorRedirected</secondary></indexterm>
@@ -6338,7 +6375,7 @@ requested using the WITH subkeyword of an ADDRESS instruction.
 </para>
 </section>
 
-<section id="mthIsInputRedirected"><title>&added50;IsInputRedirected</title>
+<section id="mthIsInputRedirected" revisionflag="added"><title>&added50;IsInputRedirected</title>
 <indexterm><primary>IsInputRedirected</primary></indexterm>
 <indexterm><primary>I/O Redirector context methods</primary>
 <secondary>IsInputRedirected</secondary></indexterm>
@@ -6522,7 +6559,7 @@ This method combines the operations of the FindClass() and IsInstanceOf() method
 <para>1 = is an instance, 0 = not an instance or the named class cannot be located.</para>
 </section>
 
-<section id="mthIsOutputRedirected"><title>&added50;IsOutputRedirected</title>
+<section id="mthIsOutputRedirected" revisionflag="added"><title>&added50;IsOutputRedirected</title>
 <indexterm><primary>IsOutputRedirected</primary></indexterm>
 <indexterm><primary>I/O Redirector context methods</primary>
 <secondary>IsOutputRedirected</secondary></indexterm>
@@ -6594,7 +6631,7 @@ the RexxObjectPtr value may be safely cast to a RexxPointerObject.
 <para>1 = is a Pointer object, 0 = not a Pointer object.</para>
 </section>
 
-<section id="mthIsRedirectionRequested"><title>&added50;IsRedirectionRequested</title>
+<section id="mthIsRedirectionRequested" revisionflag="added"><title>&added50;IsRedirectionRequested</title>
 <indexterm><primary>IsRedirectionRequested</primary></indexterm>
 <indexterm><primary>I/O Redirector context methods</primary>
 <secondary>IsRedirectionRequested</secondary></indexterm>
@@ -7433,7 +7470,7 @@ obj = context->NewRoutine(name, code, sz);
 </tbody></tgroup></informaltable>
 <para><emphasis role="bold">Returns</emphasis></para>
 <para>The new Routine object.
-Any errors resulting from creating the
+Any errors resulting from creating
 the routine will return a NULLOBJECT value.  Information about errors
 can be retrieved using <xref linkend="mthGetConditionInfo" xrefstyle="select:title"/>.
 </para>
@@ -7673,7 +7710,7 @@ obj = context->NullString();
 <para>A null String object.</para>
 </section>
 
-<section id="mthObjectToCSelf"><title>&changed50;ObjectToCSelf</title>
+<section id="mthObjectToCSelf" revisionflag="changed"><title>&changed50;ObjectToCSelf</title>
 <indexterm><primary>ObjectToCSelf</primary></indexterm>
 <indexterm><primary>Thread context methods</primary>
 <secondary>ObjectToCSelf</secondary></indexterm>
@@ -8398,7 +8435,7 @@ Rexx code.
 </para>
 </section>
 
-<section id="mthReadInput"><title>&added50;ReadInput</title>
+<section id="mthReadInput" revisionflag="added"><title>&added50;ReadInput</title>
 <indexterm><primary>ReadInput</primary></indexterm>
 <indexterm><primary>I/O Redirector context methods</primary>
 <secondary>ReadInput</secondary></indexterm>
@@ -8450,7 +8487,7 @@ Arguments <emphasis role="italic">data</emphasis> and
 </para>
 </section>
 
-<section id="mthReadInputBuffer"><title>&added50;ReadInputBuffer</title>
+<section id="mthReadInputBuffer" revisionflag="added"><title>&added50;ReadInputBuffer</title>
 <indexterm><primary>ReadInputBuffer</primary></indexterm>
 <indexterm><primary>I/O Redirector context methods</primary>
 <secondary>ReadInputBuffer</secondary></indexterm>
@@ -8501,7 +8538,7 @@ Arguments <emphasis role="italic">data</emphasis> and
 </para>
 </section>
 
-<section id="mthReallocateObjectMemory"><title>&added50;ReallocateObjectMemory</title>
+<section id="mthReallocateObjectMemory" revisionflag="added"><title>&added50;ReallocateObjectMemory</title>
 <indexterm><primary>ReallocateObjectMemory</primary></indexterm>
 <indexterm><primary>Method context methods</primary>
 <secondary>ReallocateObjectMemory</secondary></indexterm>
@@ -8726,7 +8763,7 @@ stem variable is returned as a result.
 <para>The resolved Stem object.</para>
 </section>
 
-<section id="mthSendMessage"><title>SendMessage</title>
+<section id="mthSendMessage"><title>SendMessage/0/1/2</title>
 <indexterm><primary>SendMessage</primary></indexterm>
 <indexterm><primary>Thread context methods</primary>
 <secondary>SendMessage</secondary></indexterm>
@@ -8736,18 +8773,61 @@ stem variable is returned as a result.
 <secondary>SendMessage</secondary></indexterm>
 <indexterm><primary>Exit context methods</primary>
 <secondary>SendMessage</secondary></indexterm>
+<indexterm><primary>SendMessage0</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>SendMessage0</secondary></indexterm>
+<indexterm><primary>Call context methods</primary>
+<secondary>SendMessage0</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>SendMessage0</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>SendMessage0</secondary></indexterm>
+<indexterm><primary>SendMessage1</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>SendMessage1</secondary></indexterm>
+<indexterm><primary>Call context methods</primary>
+<secondary>SendMessage1</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>SendMessage1</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>SendMessage1</secondary></indexterm>
+<indexterm><primary>SendMessage2</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>SendMessage2</secondary></indexterm>
+<indexterm><primary>Call context methods</primary>
+<secondary>SendMessage2</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>SendMessage2</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>SendMessage2</secondary></indexterm>
 <!-- SendMessage --><para>&contexts_thread_method_call_exit;.</para>
+<!-- SendMessage0   <para>&contexts_thread_method_call_exit;.</para> -->
+<!-- SendMessage1   <para>&contexts_thread_method_call_exit;.</para> -->
+<!-- SendMessage2   <para>&contexts_thread_method_call_exit;.</para> -->
 <programlisting language="C++">
 <![CDATA[
-RexxObjectPtr obj, ret;
+RexxObjectPtr obj, ret, arg1, arg2;
+CSTRING msg;
 RexxArrayObject arr;
 
 // Method Syntax Form(s)
 
-ret = context->SendMessage(obj, meg, arr);
+ret = context->SendMessage(obj, msg, arr);
+
+ret = context->SendMessage0(obj, msg);
+
+ret = context->SendMessage1(obj, msg, arg1);
+
+ret = context->SendMessage2(obj, msg, arg1, arg2);
 ]]>
 </programlisting>
-<para>Send a message to an Object.
+<para>Send a message to an object.
+Message arguments can be specified as an array of objects,
+or for cases where no argument, one argument, or two arguments are needed,
+short cut methods
+<methodname>SendMessage0</methodname>,
+<methodname>SendMessage1</methodname>, and
+<methodname>SendMessage2</methodname> can be used.
 </para>
 <para><emphasis role="bold">Arguments</emphasis></para>
 <informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
@@ -8758,136 +8838,7 @@ ret = context->SendMessage(obj, meg, arr);
     <entry><para>An ASCII-Z string containing the message name. This argument will be converted to upper case automatically.</para></entry>
     </row>
     <row><entry><emphasis role="italic">arr</emphasis></entry>
-    <entry><para>The Array of message arguments.</para></entry>
-    </row>
-</tbody></tgroup></informaltable>
-<para><emphasis role="bold">Returns</emphasis></para>
-<para>The returned object. If the method does not return an object
-then NULLOBJECT is returned.
-Any errors resulting from invoking the method
-will return a NULLOBJECT value.  The
-<xref linkend="mthCheckCondition" xrefstyle="select:title"/>
-can be used to check if an error occurred during the call.
-</para>
-</section>
-
-<section id="mthSendMessage0"><title>SendMessage0</title>
-<indexterm><primary>SendMessage0</primary></indexterm>
-<indexterm><primary>Thread context methods</primary>
-<secondary>SendMessage0</secondary></indexterm>
-<indexterm><primary>Call context methods</primary>
-<secondary>SendMessage0</secondary></indexterm>
-<indexterm><primary>Method context methods</primary>
-<secondary>SendMessage0</secondary></indexterm>
-<indexterm><primary>Exit context methods</primary>
-<secondary>SendMessage0</secondary></indexterm>
-<!-- SendMessage0 --><para>&contexts_thread_method_call_exit;.</para>
-<programlisting language="C++">
-<![CDATA[
-RexxObjectPtr obj, ret;
-
-// Method Syntax Form(s)
-
-ret = context->SendMessage0(obj, meg);
-]]>
-</programlisting>
-<para>Send a message to an Object.
-This is a short cut method when no arguments are needed by the receiving object method.
-</para>
-<para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
-    <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The object to receive the message.</para></entry>
-    </row>
-    <row><entry><emphasis role="italic">msg</emphasis></entry>
-    <entry><para>An ASCII-Z string containing the message name. This argument will be converted to upper case automatically.</para></entry>
-    </row>
-</tbody></tgroup></informaltable>
-<para><emphasis role="bold">Returns</emphasis></para>
-<para>The returned object. If the method does not return an object
-then NULLOBJECT is returned.
-Any errors resulting from invoking the method
-will return a NULLOBJECT value.  The
-<xref linkend="mthCheckCondition" xrefstyle="select:title"/>
-can be used to check if an error occurred during the call.
-</para>
-</section>
-
-<section id="mthSendMessage1"><title>SendMessage1</title>
-<indexterm><primary>SendMessage1</primary></indexterm>
-<indexterm><primary>Thread context methods</primary>
-<secondary>SendMessage1</secondary></indexterm>
-<indexterm><primary>Call context methods</primary>
-<secondary>SendMessage1</secondary></indexterm>
-<indexterm><primary>Method context methods</primary>
-<secondary>SendMessage1</secondary></indexterm>
-<indexterm><primary>Exit context methods</primary>
-<secondary>SendMessage1</secondary></indexterm>
-<!-- SendMessage1 --><para>&contexts_thread_method_call_exit;.</para>
-<programlisting language="C++">
-<![CDATA[
-RexxObjectPtr obj, ret, arg1;
-
-// Method Syntax Form(s)
-
-ret = context->SendMessage2(obj, meg, arg1);
-]]>
-</programlisting>
-<para>Send a message to an Object.
-This is a short cut method when only one argument is needed by the receiving object method.
-</para>
-<para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
-    <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The object to receive the message.</para></entry>
-    </row>
-    <row><entry><emphasis role="italic">msg</emphasis></entry>
-    <entry><para>An ASCII-Z string containing the message name. This argument will be converted to upper case automatically.</para></entry>
-    </row>
-    <row><entry><emphasis role="italic">arg1</emphasis></entry>
-    <entry><para>The first argument to the receiving method.</para></entry>
-    </row>
-</tbody></tgroup></informaltable>
-<para><emphasis role="bold">Returns</emphasis></para>
-<para>The returned object. If the method does not return an object
-then NULLOBJECT is returned.
-Any errors resulting from invoking the method
-will return a NULLOBJECT value.  The
-<xref linkend="mthCheckCondition" xrefstyle="select:title"/>
-can be used to check if an error occurred during the call.
-</para>
-</section>
-
-<section id="mthSendMessage2"><title>SendMessage2</title>
-<indexterm><primary>SendMessage2</primary></indexterm>
-<indexterm><primary>Thread context methods</primary>
-<secondary>SendMessage2</secondary></indexterm>
-<indexterm><primary>Call context methods</primary>
-<secondary>SendMessage2</secondary></indexterm>
-<indexterm><primary>Method context methods</primary>
-<secondary>SendMessage2</secondary></indexterm>
-<indexterm><primary>Exit context methods</primary>
-<secondary>SendMessage2</secondary></indexterm>
-<!-- SendMessage2 --><para>&contexts_thread_method_call_exit;.</para>
-<programlisting language="C++">
-<![CDATA[
-RexxObjectPtr obj, ret, arg1, arg2;
-
-// Method Syntax Form(s)
-
-ret = context->SendMessage2(obj, meg, arg1, arg2);
-]]>
-</programlisting>
-<para>Send a message to an Object.
-This is a short cut method when only two arguments are needed by the receiving object method.
-</para>
-<para><emphasis role="bold">Arguments</emphasis></para>
-<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
-    <row><entry><emphasis role="italic">obj</emphasis></entry>
-    <entry><para>The object to receive the message.</para></entry>
-    </row>
-    <row><entry><emphasis role="italic">msg</emphasis></entry>
-    <entry><para>An ASCII-Z string containing the message name. This argument will be converted to upper case automatically.</para></entry>
+    <entry><para>An array of message arguments to the receiving method.</para></entry>
     </row>
     <row><entry><emphasis role="italic">arg1</emphasis></entry>
     <entry><para>The first argument to the receiving method.</para></entry>
@@ -8900,7 +8851,57 @@ This is a short cut method when only two arguments are needed by the receiving o
 <para>The returned object. If the method does not return an object
 then NULLOBJECT is returned.
 Any errors resulting from invoking the method
-will return a NULLOBJECT value.  The
+will return a NULLOBJECT value.
+<xref linkend="mthCheckCondition" xrefstyle="select:title"/>
+can be used to check if an error occurred during the call.
+</para>
+</section>
+
+<section id="mthSendMessageScoped" revisionflag="added"><title>&added50;SendMessageScoped</title>
+<indexterm><primary>SendMessageScoped</primary></indexterm>
+<indexterm><primary>Thread context methods</primary>
+<secondary>SendMessageScoped</secondary></indexterm>
+<indexterm><primary>Call context methods</primary>
+<secondary>SendMessageScoped</secondary></indexterm>
+<indexterm><primary>Method context methods</primary>
+<secondary>SendMessageScoped</secondary></indexterm>
+<indexterm><primary>Exit context methods</primary>
+<secondary>SendMessageScoped</secondary></indexterm>
+<!-- SendMessageScoped --><para>&contexts_thread_method_call_exit; &context_since_50;.</para>
+<programlisting language="C++">
+<![CDATA[
+RexxObjectPtr obj, ret;
+CSTRING msg;
+RexxClassObject class;
+RexxArrayObject arr;
+
+// Method Syntax Form(s)
+
+ret = context->SendMessageScoped(obj, msg, class, arr);
+]]>
+</programlisting>
+<para>Send a message to an object with a scope override.
+</para>
+<para><emphasis role="bold">Arguments</emphasis></para>
+<informaltable frame="none" colsep="0" rowsep="0" pgwide="1"><tgroup cols="2"><colspec colnum="1" colwidth="1*" /><colspec colnum="2" colwidth="5*" /><tbody>
+    <row><entry><emphasis role="italic">obj</emphasis></entry>
+    <entry><para>The object to receive the message.</para></entry>
+    </row>
+    <row><entry><emphasis role="italic">msg</emphasis></entry>
+    <entry><para>An ASCII-Z string containing the message name. This argument will be converted to upper case automatically.</para></entry>
+    </row>
+    <row><entry><emphasis role="italic">class</emphasis></entry>
+    <entry><para>A class object where to start searching for <emphasis role="italic">msg</emphasis>.</para></entry>
+    </row>
+    <row><entry><emphasis role="italic">arr</emphasis></entry>
+    <entry><para>An array of message arguments.</para></entry>
+    </row>
+</tbody></tgroup></informaltable>
+<para><emphasis role="bold">Returns</emphasis></para>
+<para>The returned object. If the method does not return an object
+then NULLOBJECT is returned.
+Any errors resulting from invoking the method
+will return a NULLOBJECT value.
 <xref linkend="mthCheckCondition" xrefstyle="select:title"/>
 can be used to check if an error occurred during the call.
 </para>
@@ -10606,7 +10607,7 @@ obj = context->WholeNumberToObject(n);
 <para>An Object that represents the C whole number.</para>
 </section>
 
-<section id="mthWriteError"><title>&added50;WriteError</title>
+<section id="mthWriteError" revisionflag="added"><title>&added50;WriteError</title>
 <indexterm><primary>WriteError</primary></indexterm>
 <indexterm><primary>I/O Redirector context methods</primary>
 <secondary>WriteError</secondary></indexterm>
@@ -10651,7 +10652,7 @@ specified using the WITH subkeyword of an ADDRESS instruction.
 </para>
 </section>
 
-<section id="mthWriteErrorBuffer"><title>&added50;WriteErrorBuffer</title>
+<section id="mthWriteErrorBuffer" revisionflag="added"><title>&added50;WriteErrorBuffer</title>
 <indexterm><primary>WriteErrorBuffer</primary></indexterm>
 <indexterm><primary>I/O Redirector context methods</primary>
 <secondary>WriteErrorBuffer</secondary></indexterm>
@@ -10699,7 +10700,7 @@ instruction.
 </para>
 </section>
 
-<section id="mthWriteOutput"><title>&added50;WriteOutput</title>
+<section id="mthWriteOutput" revisionflag="added"><title>&added50;WriteOutput</title>
 <indexterm><primary>WriteOutput</primary></indexterm>
 <indexterm><primary>I/O Redirector context methods</primary>
 <secondary>WriteOutput</secondary></indexterm>
@@ -10744,7 +10745,7 @@ specified using the WITH subkeyword of an ADDRESS instruction.
 </para>
 </section>
 
-<section id="mthWriteOutputBuffer"><title>&added50;WriteOutputBuffer</title>
+<section id="mthWriteOutputBuffer" revisionflag="added"><title>&added50;WriteOutputBuffer</title>
 <indexterm><primary>WriteOutputBuffer</primary></indexterm>
 <indexterm><primary>I/O Redirector context methods</primary>
 <secondary>WriteOutputBuffer</secondary></indexterm>

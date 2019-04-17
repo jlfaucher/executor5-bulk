@@ -3017,4 +3017,28 @@ return .ooTestResult~new(5)~~addException(err)
   self~assertSame(123, tester~TestVariableReferenceValue(>var))
 
 
+::method testSendMessageScoped
+  tester = .METHODTester~new
+  o = .Scoped3~new
+  self~assertSame("S3 1 2 3",  tester~TestSendMessageScoped(o, "STRING", .Scoped3, .Array~of(1, 2, 3)))
+  self~assertSame("S2",        tester~TestSendMessageScoped(o, "STRING", .Scoped2, .Array~new(0)))
+  self~assertSame("S1",        tester~TestSendMessageScoped(o, "STRING", .Scoped1, .Array~new))
+  self~assertSame("a SCOPED3", tester~TestSendMessageScoped(o, "STRING", .Object,  .Array~new(0)))
+
+-- test class for SendMessageScoped
+::class Scoped1
+::constant string "S1"
+
+::class Scoped2 subclass Scoped1
+::method init
+  expose string
+  string = "S2"
+::attribute string get
+
+::class Scoped3 subclass Scoped2
+::method string
+  use strict arg one, two, three
+  return "S3" one two three
+
+
 ::options novalue error

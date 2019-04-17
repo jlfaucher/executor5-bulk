@@ -282,6 +282,8 @@
 ::method TestThrowCondition             EXTERNAL "LIBRARY orxmethod"
 ::method TestGetObjectVariableOrNil     EXTERNAL "LIBRARY orxmethod"
 
+::method TestSendMessageScoped          EXTERNAL "LIBRARY orxmethod"
+
 
 ::method TestRaiseExceptionX
   signal on syntax
