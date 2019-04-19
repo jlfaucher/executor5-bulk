@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: RexxExtensions Library XML File
     #
-    # Copyright (c) 2010-2017, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2010-2019, Rexx Language Association. All rights reserved.
     #
     # This program and the accompanying materials are made available under
     # the terms of the Common Public License v1.0 which accompanies this
@@ -55,9 +55,9 @@ The csvStream Class is a subclass of the Stream Class.
 <title>Translation of data involved in the csvStream class</title>
 <para>
 CSV file literals are surrounded by quotes "". These are removed by CSVLineIn and inserted by CSVLineOut.
-Quotes within CSV data are represented self escaped ie: " appears as "". These are translated by the CSVLineIn 
+Quotes within CSV data are represented self escaped ie: " appears as "". These are translated by the CSVLineIn
 and CSVLineOut methods. CSVLineOut encapsulates non-numeric fields in "" unless they already are.
-CSV literal strings can contain line-end sequences. To create multi-line fields use the line-end character provided 
+CSV literal strings can contain line-end sequences. To create multi-line fields use the line-end character provided
 by the operating system dependant ooRexx local variable .endofline.
 </para>
 </section>
@@ -167,9 +167,9 @@ The Stream class also has available class methods that its metaclass, the Class 
 </mediaobject>
 
 <para>
-Closes the stream that receives the message. CLOSE returns READY: if closing the stream is 
-successful, or an appropriate error message. If you have tried to close an unopened file, then the 
-CLOSE method returns a null string (""). If you specified headersExist when you created this instance 
+Closes the stream that receives the message. CLOSE returns READY: if closing the stream is
+successful, or an appropriate error message. If you have tried to close an unopened file, then the
+CLOSE method returns a null string (""). If you specified headersExist when you created this instance
 then the headers will be updated to the stream at this point if they have been changed.
 </para>
 </section>
@@ -188,8 +188,8 @@ then the headers will be updated to the stream at this point if they have been c
 </mediaobject>
 
 <para>
-Reads and returns a row of CSV data from the stream. Note that a row of data may be stored in more 
-than one logical line of the stream. An array is returned, the nth element of which contains the nth field 
+Reads and returns a row of CSV data from the stream. Note that a row of data may be stored in more
+than one logical line of the stream. An array is returned, the nth element of which contains the nth field
 from the Row.
 </para>
 <para>
@@ -199,16 +199,16 @@ Two other attributes exist after performing a CSVLineIn
 <emphasis>Rawtext</emphasis> is a String Object containing the raw text that the row consists of.
 </para>
 <para>
-<emphasis>Values</emphasis> is a Table Object mapping field data onto field-names. This is only available if headersExist is 
+<emphasis>Values</emphasis> is a Table Object mapping field data onto field-names. This is only available if headersExist is
 specified on the init method.
 </para>
 <para>
 <emphasis>Badly formed CSV data.</emphasis>
-Where the data read in by CSVLineIn is not well formed CSV data the results are unpredictable.    
-The class can detect some errors in the incoming data, and where such an error is detected the 
+Where the data read in by CSVLineIn is not well formed CSV data the results are unpredictable.
+The class can detect some errors in the incoming data, and where such an error is detected the
 STATE method will return ERROR and the DESCRIPTION method will give extra error information.
-Where the provenance of the data is outside your control it would be well to check the STATE after every 
-CSVLineIn.  Subsequent calls to CSVLineIn may be able to recover and return subsequent rows from the file 
+Where the provenance of the data is outside your control it would be well to check the STATE after every
+CSVLineIn.  Subsequent calls to CSVLineIn may be able to recover and return subsequent rows from the file
 but this should not be expected to be the norm.  Subsequent calls to CSVLineIn after an error will not
 return the STATE to READY.  It will remain at ERROR until the Stream class resets it (ie: when you close
 the CSVStream)
@@ -229,15 +229,15 @@ the CSVStream)
 </mediaobject>
 
 <para>
-Writes a row of CSV data to a stream. Note that a row of data may be stored in more than one logical 
-line of the stream. If the stream was instantiated with headersExist as .true then the collection-object 
-may be a directory, table or stem object mapping headers onto CSV fields. Otherwise the collection-object must 
-be an array or a collection with a makeArray method and the nth element of the collection will be 
-placed in the nth field of the CSV file. Any occurrences of the Nil Object are stored as null strings in 
+Writes a row of CSV data to a stream. Note that a row of data may be stored in more than one logical
+line of the stream. If the stream was instantiated with headersExist as .true then the collection-object
+may be a directory, table or stem object mapping headers onto CSV fields. Otherwise the collection-object must
+be an array or a collection with a makeArray method and the nth element of the collection will be
+placed in the nth field of the CSV file. Any occurrences of the Nil Object are stored as null strings in
 the file.
 </para>
 <note><para>
-If the collection object is a Stem then a tail of 0 is ignored as by convention the 0 tail stores the 
+If the collection object is a Stem then a tail of 0 is ignored as by convention the 0 tail stores the
 number of tails on the stem.
 </para></note>
 </section>
@@ -259,8 +259,8 @@ number of tails on the stem.
 Returns a csvStreamHeader object.
 </para>
 <para>
-Get headers will return a csvStreamHeader object containing details of the column header names and whether 
-they are literal values or not. Column header names that exist before the csvStream is opened are present as soon 
+Get headers will return a csvStreamHeader object containing details of the column header names and whether
+they are literal values or not. Column header names that exist before the csvStream is opened are present as soon
 as the file is opened, but literal information will not be present till the first CSVLineIn or CSVLineOut is issued.
 </para>
 </section>
@@ -282,9 +282,9 @@ as the file is opened, but literal information will not be present till the firs
 Initializes a stream object for a stream named name, but does not open the stream.
 </para>
 <para>
-The second optional parameter if passed a value of 'H' (or .true) indicates that the first row of the 
-stream is (or is to be) a row of headers containing the names of the CSV fields. Note that header fields 
-are case sensitive. This means that 'name' and 'Name' and 'NAME' will all be treated as separate 
+The second optional parameter if passed a value of 'H' (or .true) indicates that the first row of the
+stream is (or is to be) a row of headers containing the names of the CSV fields. Note that header fields
+are case sensitive. This means that 'name' and 'Name' and 'NAME' will all be treated as separate
 columns.
 </para>
 </section>
@@ -307,13 +307,13 @@ See the Stream Class Open Method for a fuller description.
 <section>
 <title>Changing the behaviour of a csvStream object</title>
 <para>
-Before issuing the Open message, you can affect the csvStream's behaviour by setting the attribute skipHeaders 
-to .false. This will mean that the first row returned by CSVLineIn on a csvStream where headers exist is the 
+Before issuing the Open message, you can affect the csvStream's behaviour by setting the attribute skipHeaders
+to .false. This will mean that the first row returned by CSVLineIn on a csvStream where headers exist is the
 header row, rather than the default behaviour which is to return the first row of data.
 </para>
 <para>
-After issuing the OPEN message to a csvStream which has been opened with headers exist, the class will attempt 
-to learn the nature of the fields by analysing the data. You can teach it by setting the headers field attributes name 
+After issuing the OPEN message to a csvStream which has been opened with headers exist, the class will attempt
+to learn the nature of the fields by analysing the data. You can teach it by setting the headers field attributes name
 and literal. For instance:
 </para>
 <example>
@@ -322,15 +322,15 @@ and literal. For instance:
 /* set the name of the second field to 'Height' */
 MyCsvStream~headers~field(2)~name='Height'
 
-/* tell the stream to treat the 
+/* tell the stream to treat the
 third column as literal data rather than numeric */
 MyCsvStream~headers~field(3)~literal= .true
 </programlisting>
 </example>
 <para>
-By default the delimiter csvStream expects is a comma (after all CSV stands for Comma Separated Variables) 
-and literals are qualified by a double inverted comma. However you can create and read files with other delimiters 
-or qualifiers by changing the attributes delimiter and qualifier after instantiating A csvStream object. For 
+By default the delimiter csvStream expects is a comma (after all CSV stands for Comma Separated Variables)
+and literals are qualified by a double inverted comma. However you can create and read files with other delimiters
+or qualifiers by changing the attributes delimiter and qualifier after instantiating A csvStream object. For
 instance, to use ; as a delimiter and ' as a qualifier do the following:
 </para>
 <example>
@@ -338,12 +338,12 @@ instance, to use ; as a delimiter and ' as a qualifier do the following:
 <programlisting>
 MyCsvStream = .csvStream~new
 MyCsvStream~delimiter=";"
-MyCsvStream~qualifier="'" 
+MyCsvStream~qualifier="'"
 </programlisting>
 </example>
 <para>
-If the attribute StripOption is set to 'L', 'T' or 'B' then data is stripped using that option before 
-CSVLineIn inserts it in the returned array. The default of 'N' means no stripping is performed. One 
+If the attribute StripOption is set to 'L', 'T' or 'B' then data is stripped using that option before
+CSVLineIn inserts it in the returned array. The default of 'N' means no stripping is performed. One
 can specify which character to strip using the attribute stripChar which defaults to blank.
 </para>
 <example>
@@ -358,7 +358,7 @@ or
 <example>
 <title>Removing leading zeros</title>
 <programlisting>
-MyCsvStream~StripOption = 'L' 
+MyCsvStream~StripOption = 'L'
 MyCsvStream~stripChar = '0' /* strip Leading zeroes */
 </programlisting>
 </example>
@@ -379,7 +379,7 @@ MyCsvStream~stripChar = '0' /* strip Leading zeroes */
 </mediaobject>
 
 <para>
-Passed a csvStreamHeader object will apply it to the csvStream. Together with Get Headers this allows you to 
+Passed a csvStreamHeader object will apply it to the csvStream. Together with Get Headers this allows you to
 base one CSV file on another.
 </para>
 </section>
@@ -395,8 +395,8 @@ base one CSV file on another.
 <indexterm><primary>DELIMETER attribute</primary>
 <secondary>scvStream</secondary></indexterm>
 <para>
-This is the character which delimits the fields (as long as it does not appear within a 
-literal). In a standard CSV file it is a comma ,. See Changing the behaviour of a 
+This is the character which delimits the fields (as long as it does not appear within a
+literal). In a standard CSV file it is a comma ,. See Changing the behaviour of a
 csvStream object under the OPEN method for an example of changing the delimiter.
 </para>
 </section>
@@ -408,11 +408,11 @@ csvStream object under the OPEN method for an example of changing the delimiter.
 <indexterm><primary>HEADERS attribute</primary>
 <secondary>scvStream</secondary></indexterm>
 <para>
-Access is available to the Field definition table for files with headers. There are two 
-entries, NAME &amp; LITERAL. NAME is the Name for that particular column. If 
-LITERAL is .true then that column will be treated as a literal even if the data in it is 
-numeric. If any entry in a column is non-numeric then the entire column is treated as 
-a literal. See Changing the behaviour of a csvStream object under the OPEN method 
+Access is available to the Field definition table for files with headers. There are two
+entries, NAME &amp; LITERAL. NAME is the Name for that particular column. If
+LITERAL is .true then that column will be treated as a literal even if the data in it is
+numeric. If any entry in a column is non-numeric then the entire column is treated as
+a literal. See Changing the behaviour of a csvStream object under the OPEN method
 for an example of accessing the table.
 </para>
 </section>
@@ -424,9 +424,9 @@ for an example of accessing the table.
 <indexterm><primary>QUALIFIER attribute</primary>
 <secondary>scvStream</secondary></indexterm>
 <para>
-The Qualifier is the character that surrounds literal fields. Delimiters that appear 
-within literal fields are ignored. In a standard CSV file the qualifier is a double 
-quotation mark ("). See Changing the behaviour of a csvStream object under the 
+The Qualifier is the character that surrounds literal fields. Delimiters that appear
+within literal fields are ignored. In a standard CSV file the qualifier is a double
+quotation mark ("). See Changing the behaviour of a csvStream object under the
 OPEN method for an example of changing the qualifier.
 </para>
 </section>
@@ -450,14 +450,13 @@ See <emphasis>Changing the behaviour of a csvStream object</emphasis> under the 
 <example>
 <title>Files without headers</title>
 <programlisting>
-<![CDATA[
 csv = .csvStream~new('c:\MyData.csv') /* 2nd arg defaults to no headers */
 /* csv~skipHeaders = .false                UnNoOp to return header line */
 
 csv~open('write')                       /*=File looks like this=*/
 csv~CSVLineOut(.array~of('red','stop')) /* "red","stop"         */
 csv~CSVLineOut(.array~of('green','go')) /* "green","go"         */
-csv~close                               /*======================*/ 
+csv~close                               /*======================*/
 
 csv~open('read')                        /*=======Returns========*/
 do while csv~chars > 0                  /* New record           */
@@ -471,9 +470,10 @@ csv~close
 
 ::requires 'csvstream.cls'
 </programlisting>
-<para>
-Files with headers:
-</para>
+</example>
+
+<example>
+<title>Files with headers</title>
 <programlisting>
 csv = .csvStream~new('c:\headered.csv',.true)
 csv~open          /* Stream class defaults to both ie:readWrite */
@@ -483,13 +483,13 @@ myTable~put('stop','action')
 csv~CSVLineout(myTable)
 myTable~put('green','colour')
 myTable~put('go','action')
-csv~CSVLineout(myTable) 
+csv~CSVLineout(myTable)
 csv~close
 
 Csv~open('read')                        /*=======Returns========*/
 Do while csv~chars > 0                  /* new record           */
    Csv~csvLineIn                        /* colour: red          */
-   Say 'new record'                     /* action: stop         */ 
+   Say 'new record'                     /* action: stop         */
    Do field over csv~values             /* new record           */
       Say field':' csv~values~at(field) /* colour: green        */
    End                                  /* action: go           */
@@ -498,33 +498,33 @@ csv~close
 
 ::requires 'csvstream.cls'
 </programlisting>
-<para>
-Example with error checking 
-</para>
+</example>
+
+<example>
+<title>Example with error checking</title>
 <programlisting>
 csv = .csvStream~new('c:\BadData.csv')
 
 csv~open('read')
 if csv~state = 'READY'
-then do              
-   do while csv~chars > 0             
+then do
+   do while csv~chars > 0
       dataArr = csv~CSVLineIn
       if csv~state = 'ERROR'
       then do
          say 'BAD DATA IN CSV FILE -' csv~description
          leave
       end
-      say 'New record'                
-      do I = 1 to dataArr~last        
-      say 'field' I':' dataArr[I]     
-      end                             
+      say 'New record'
+      do I = 1 to dataArr~last
+      say 'field' I':' dataArr[I]
+      end
    end
    csv~close
 end
-else say 'COULD NOT OPEN CSV FILE -' csv~description                                
+else say 'COULD NOT OPEN CSV FILE -' csv~description
 
 ::requires 'csvstream.cls'
-]]>
 </programlisting>
 </example>
 </section>
