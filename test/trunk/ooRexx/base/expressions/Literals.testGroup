@@ -110,22 +110,22 @@ return testResult
 ::method test_hexadecimal_inner_blank_2_b_1
    -- Only 0-9, a-f, A-F, and whitespace characters are valid in a hexadecimal string
    -- this message really isn't appropriate
-   self~assertSyntaxError(15.3, "s =" self~quoteHex("41 4"))
+   self~assertSyntaxError(15.5, "s =" self~quoteHex("41 4"))
 
 ::method test_hexadecimal_inner_tab_2_t_1
    -- Only 0-9, a-f, A-F, and whitespace characters are valid in a hexadecimal string
    -- this message really isn't appropriate
-   self~assertSyntaxError(15.3, "s =" self~quoteHex("41" || .String~tab || "4"))
+   self~assertSyntaxError(15.5, "s =" self~quoteHex("41" || .String~tab || "4"))
 
 ::method test_hexadecimal_inner_blank_1_b_3
    -- Only 0-9, a-f, A-F, and whitespace characters are valid in a hexadecimal string
    -- this message really isn't appropriate
-   self~assertSyntaxError(15.3, "s =" self~quoteHex("4 142"))
+   self~assertSyntaxError(15.5, "s =" self~quoteHex("4 142"))
 
 ::method test_hexadecimal_inner_tab_1_t_3
    -- Only 0-9, a-f, A-F, and whitespace characters are valid in a hexadecimal string
    -- this message really isn't appropriate
-   self~assertSyntaxError(15.3, "s =" self~quoteHex("4" || .String~tab || "142"))
+   self~assertSyntaxError(15.5, "s =" self~quoteHex("4" || .String~tab || "142"))
 
 ::method test_hexadecimal_single
    -- '0'x .. 'f'x
@@ -203,19 +203,19 @@ return testResult
 
 ::method test_binary_inner_blank_4_b_3
    -- Incorrect location of whitespace character in position 5 in binary string
-   self~assertSyntaxError(15.2, "s =" self~quoteBin("0000 111"))
+   self~assertSyntaxError(15.6, "s =" self~quoteBin("0000 111"))
 
 ::method test_binary_inner_tab_4_t_3
    -- Incorrect location of whitespace character in position 5 in binary string
-   self~assertSyntaxError(15.2, "s =" self~quoteBin("0000" || .String~tab || "111"))
+   self~assertSyntaxError(15.6, "s =" self~quoteBin("0000" || .String~tab || "111"))
 
 ::method test_binary_inner_blank_1_b_5
    -- Incorrect location of whitespace character in position 2 in binary string
-   self~assertSyntaxError(15.2, "s =" self~quoteBin("0 11111"))
+   self~assertSyntaxError(15.6, "s =" self~quoteBin("0 11111"))
 
 ::method test_binary_inner_tab_1_t_5
    -- Incorrect location of whitespace character in position 2 in binary string
-   self~assertSyntaxError(15.2, "s =" self~quoteBin("0" || .String~tab || "11111"))
+   self~assertSyntaxError(15.6, "s =" self~quoteBin("0" || .String~tab || "11111"))
 
 ::method test_binary_single
    -- '0'b, '1'b
