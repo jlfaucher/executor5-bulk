@@ -16,7 +16,7 @@ call_on  ::= 'CALL'  'ON' ( 'ANY' | 'ERROR' | 'FAILURE' | 'HALT' | 'NOTREADY' | 
 
 funct_call ::= 'result' '=' name '(' expression? (',' expression?)* ')'
 
-do_start       ::= ('DO' | 'LOOP') ( 'LABEL' name )? ( REPETITOR - fragment )? ( CONDITIONAL - fragment )?
+do_start       ::= ('DO' | 'LOOP') ( 'COUNTER' ctr | 'LABEL' name )? ( REPETITOR - fragment )? ( CONDITIONAL - fragment )?
 do_instruction ::= ( instruction )*
 do_end         ::= 'END' ( name )?
 

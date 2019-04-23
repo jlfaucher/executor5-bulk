@@ -198,7 +198,7 @@ expressions will be evaluated in the then current variable context.
 </para>
 <para><variablelist>
 <varlistentry><term><option>WITH INPUT</option></term>
-<listitem><para>redirects data from a stem, a stream, or an other Rexx
+<listitem><para>redirects data from a stem, a stream, or other Rexx
 object to the command's input.
 </para>
 <para>If option <option>NORMAL</option> is specified, the command's
@@ -836,7 +836,7 @@ available to the caller.</para></listitem>
 </itemizedlist>
 </section>
 
-<section id="keyDo"><title>DO</title>
+<section id="keyDo" revisionflag="changed"><title>&changed50;DO</title>
 <indexterm><primary>DO instruction</primary>
 <secondary>description</secondary></indexterm>
 <indexterm><primary>flow of control</primary>
@@ -844,6 +844,8 @@ available to the caller.</para></listitem>
 <indexterm><primary>grouping instructions to run repetitively</primary></indexterm>
 <indexterm><primary>infinite loops</primary></indexterm>
 <indexterm><primary>instructions</primary><secondary>DO</secondary></indexterm>
+<indexterm><primary>LABEL subkeyword</primary><secondary>in a DO instruction</secondary></indexterm>
+<indexterm><primary>COUNTER subkeyword</primary><secondary>in a DO instruction</secondary></indexterm>
 <indexterm><primary>END subkeyword</primary><secondary>in a DO instruction</secondary></indexterm>
 <indexterm><primary>TO subkeyword</primary><secondary>in a DO instruction</secondary></indexterm>
 <indexterm><primary>BY subkeyword</primary><secondary>in a DO instruction</secondary></indexterm>
@@ -902,8 +904,19 @@ case, which is equivalent to DO FOREVER ... END.</para>
 
 <para><emphasis role="bold">Notes:</emphasis></para>
 <orderedlist>
-<listitem><para>The LABEL phrase, if used, must precede any
+<listitem><para>The LABEL and COUNTER phrases, if used, must precede any
 <emphasis role="italic">repetitor</emphasis> or <emphasis role="italic">conditional</emphasis>.
+</para></listitem>
+<listitem><para>The COUNTER phrase is only valid with a repetitive DO or LOOP,
+it cannot be used on a simple DO group.
+</para></listitem>
+<listitem><para>
+<emphasis role="italic">control1</emphasis>,
+<emphasis role="italic">control2</emphasis>,
+<emphasis role="italic">index</emphasis>,
+<emphasis role="italic">item</emphasis>, and
+<emphasis role="italic">ctr</emphasis>
+must be symbols that are valid variable names.
 </para></listitem>
 <listitem><para>The <emphasis role="italic">exprr</emphasis>,
 <emphasis role="italic">expri</emphasis>,
@@ -1854,6 +1867,8 @@ LEAVE selects the innermost block.</para></listitem>
 <indexterm><primary>grouping instructions to run repetitively</primary></indexterm>
 <indexterm><primary>infinite loops</primary></indexterm>
 <indexterm><primary>instructions</primary><secondary>LOOP</secondary></indexterm>
+<indexterm><primary>LABEL subkeyword</primary><secondary>in a LOOP instruction</secondary></indexterm>
+<indexterm><primary>COUNTER subkeyword</primary><secondary>in a LOOP instruction</secondary></indexterm>
 <indexterm><primary>END subkeyword</primary><secondary>in a LOOP instruction</secondary></indexterm>
 <indexterm><primary>TO subkeyword</primary><secondary>in a LOOP instruction</secondary></indexterm>
 <indexterm><primary>BY subkeyword</primary><secondary>in a LOOP instruction</secondary></indexterm>
