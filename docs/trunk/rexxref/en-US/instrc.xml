@@ -183,6 +183,50 @@ temporarily changing the destination for a single command. The special variable
 RC and the environment symbol .RS are set and errors and failures in commands
 processed in this way are trapped or traced.
 </para>
+<para>The following evironments are available in ooRexx:
+<variablelist>
+  <varlistentry>
+    <term><literal>sh</literal> (Unix only)</term>
+    <listitem><para>This is the default environment on Unix systems.
+      It uses <literal>sh</literal> as a shell program to execute the command.
+      Shell features like redirection, piping, or glob characters can be used.
+    </para></listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><literal>bsh</literal>, <literal>bash</literal>, <literal>csh</literal>,
+      <literal>ksh</literal>, <literal>tcsh</literal>, <literal>zsh</literal>
+      (Unix only)</term>
+    <listitem><para>These environments use alternate Unix shells
+      <literal>bsh</literal>, <literal>bash</literal>, <literal>csh</literal>,
+      <literal>ksh</literal>, <literal>tcsh</literal>, or <literal>zsh</literal>
+      to execute the command.
+      If the appropriate shell is not installed on the system, executing a
+      command in any of these enviroments will raise a failure.
+    </para></listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><literal>cmd</literal> (Windows only)</term>
+    <listitem><para>This is the default environment on Windows systems.
+      It uses <literal>cmd.exe</literal> as a shell program to execute the command.
+      Shell features like redirection or piping can be used.
+    </para></listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><literal>command</literal>, <literal>system</literal>, <literal>""</literal></term>
+    <listitem><para>These environment names are synonyms for the default environments
+      <literal>sh</literal> on Unix and <literal>cmd</literal> on Windows.
+    </para></listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><literal>path</literal></term>
+    <listitem><para>This environment executes commands directly,
+      without using an intermediate shell program.
+      It searches the environment variable PATH to find the command to execute.
+      No shell features like redirection or piping are available.
+    </para></listitem>
+  </varlistentry>
+</variablelist>
+</para>
 <para>The <option>WITH</option> subkeyword sets a command's I/O redirection.
 STDIN input can be redirected from a Rexx object to the command, and
 STDOUT and STDERR output from the command can be redirected to a Rexx object.
