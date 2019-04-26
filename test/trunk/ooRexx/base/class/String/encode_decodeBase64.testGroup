@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -53,25 +53,6 @@ return testResult
 
 ::class "Encode_DecodeBase64.testGroup" subclass ooTestCase public
 
-::method setup       -- add entries to .local
-      /* define data needed for the Rexx implementation of encodeBase64 and decodeBase64  */
-   .local~base64.padChar="="                    -- use equal sign as a pad char
-   .local~base64.mimeTable= "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
-   .local~base64.base64  = xrange("00"x, "3F"x) -- all 64 possible 6-bits values
-
-::method tearDown    -- remove entries from .local
-   .local~remove("BASE64.PADCHAR")
-   .local~remove("BASE64.MIMETABLE")
-   .local~remove("BASE64.BASE64")
-
-  -- test {de|en}codeBase64
-  /* based on newsgroup article:
-         From: "Salvador Parra Camacho" <sparrac@gmail.com>
-         Newsgroups: comp.lang.rexx
-         Subject: encodebase64 method of the String class in ooRexx 3.1
-         Date: 14 Oct 2006 12:31:13 -0700
-         Organization: http://groups.google.com
-  */
 ::method "test_EncodeBase64_DecodeBase64"
    allChars=xrange("00"x, "ff"x) -- create a string with all 8-Bit chars
    do i=1 to allChars~length
@@ -91,98 +72,179 @@ return testResult
    self~assertSame(a, a2~decodeBase64)
    self~assertSame(a, a1~decodeBase64)
 
-::method "used_to_test_rexx_enDecoding" -- "test_Enbase64_Debase64"
-   allChars=xrange("00"x, "ff"x) -- create a string with all 8-Bit chars
-   do i=1 to allChars~length
-      a=allChars~left(i)         -- create a string from the left
-      self~assertSame(a, debase64(enbase64(a)))  -- test whether same value
 
-      b=allChars~right(i)        -- create a string from the right
-      self~assertSame(b, debase64(enbase64(b)))  -- test whether same value
-   end
+::method test_encode_no_arg
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method; 0 expected
+  ""~encodeBase64(1)
 
+::method test_decode_one_arg
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method; 0 expected
+  ""~decodeBase64(1)
 
+::method test_decode_invalid_length_one
+  self~expectSyntax(93.962) -- Invalid Base64 encoded string
+  "a"~decodeBase64
 
-/* Systematically test built-in method vs. a Rexx-solution (c) Rony G. Flatscher */
-::method "test_EncodeBase64"
-   allChars=xrange("00"x, "ff"x) -- create a string with all 8-Bit chars
+::method test_decode_invalid_length_two
+  self~expectSyntax(93.962) -- Invalid Base64 encoded string
+  "ab"~decodeBase64
 
-   do i=1 to allChars~length
-      a=allChars~left(i)         -- create a string from the left
-      self~assertSame(enbase64(a), a~encodeBase64)  -- test whether same value
-      -- self~assertEquals(enbase64(a), a~encodeBase64)  -- test whether same value
-   end
+::method test_decode_invalid_length_three
+  self~expectSyntax(93.962) -- Invalid Base64 encoded string
+  "abc"~decodeBase64
 
+::method test_decode_invalid_length_three_equals
+  self~expectSyntax(93.962) -- Invalid Base64 encoded string
+  "A==="~decodeBase64
 
-/* Systematically test built-in method vs. a Rexx-solution (c) Rony G. Flatscher */
-::method "test_DecodeBase64"
-   allChars=xrange("00"x, "ff"x) -- create a string with all 8-Bit chars
+::method test_decode_invalid_length_four_equals
+  self~expectSyntax(93.962) -- Invalid Base64 encoded string
+  "===="~decodeBase64
 
-   do i=1 to allChars~length
-      a=allChars~left(i)         -- create a string from the left
-      a2=enbase64(a)             -- base64 encode it
-      self~assertSame(a, a2~decodeBase64)  -- test whether same value
-      -- self~assertEquals(a, a2~decodeBase64)  -- test whether same value
-   end
+::method test_decode_invalid_length_four_interleaved
+  self~expectSyntax(93.962) -- Invalid Base64 encoded string
+  "a=b="~decodeBase64
 
+::method test_decode_invalid_char_00
+  self~expectSyntax(93.962) -- Invalid Base64 encoded string
+  ("AA" || '00'x || "A")~decodeBase64
 
+::method test_decode_invalid_char_80
+  self~expectSyntax(93.962) -- Invalid Base64 encoded string
+  ("AA" || '80'x || "A")~decodeBase64
 
-/* Systematically test built-in method vs. a Rexx-solution (c) Rony G. Flatscher */
--- enbase64: procedure expose mimeTable padChar base64
-::routine enbase64
-     parse arg data
+::method test_decode_invalid_char_minus
+  self~expectSyntax(93.962) -- Invalid Base64 encoded string
+  "AA-A"~copies(4)~decodeBase64
 
-           -- do we need to pad the data at the end?
-     pad = 3-length(data) // 3   -- get rest of integer division
-     if pad<>3 then data=data || copies("00"x, pad)      -- add blanks to get to multiple of 3's
-     data=x2b(c2x(data))         -- turn all data into a bitstring
+::method test_encode_null_string
+  self~assertSame("", ""~encodeBase64)
 
-     new=.mutableBuffer~new
-     do while data <> ""
-        parse var data nr1 +6 nr2 +6 nr3 +6 nr4 +6 data    -- get data of 3 bytes in six-bit-packs
+::method test_decode_null_string
+  self~assertSame("", ""~encodeBase64)
 
-        -- new = new || x2c(b2x(nr1)) || x2c(b2x(nr2)) || x2c(b2x(nr3)) || x2c(b2x(nr4))  -- add them to result
-        new~~append(x2c(b2x(nr1))) ~~append(x2c(b2x(nr2))) ~~append(x2c(b2x(nr3)))
-        new~~append(x2c(b2x(nr4)))  -- add them to result
-     end
-
-     new=translate(new~string, .base64.mimeTable, .base64.base64)     -- translate to table chars
-
-     if pad<>3 then         -- not a multiple of 3, then indicate pads with "="
-        new = overlay( copies(.base64.padChar, pad), new, (length(new)-pad+1) )
-     return new
-
-
-::routine deBase64 public
-  use arg data
-
-  pos=pos(.base64.padChar,data)        -- find pad character
-  if pos<>0 then
-  do
-     pnum = length(data) - pos + 1   -- how many are there (1 or 2) ?
-     if pnum>2 then pnum=0   -- something went wrong, there shouldn't be more than two, reset
+::method test_encode_one_char
+  do c over xrange('00'x, 'ff'x)~makeArray("")
+    b64 = c~encodeBase64
+    self~assertSame(self~encodeBase64(c), b64)
+    self~assertSame(c, b64~decodeBase64)
   end
-  else
-     pnum = 0
 
-  data=translate(data, .base64.base64, .base64.mimetable)    -- translate from table
-
-        -- check if data is missing, if so pad with "00"x
-  pad = length(data) // 4       -- get rest of integer division
-  if pad<>0 then data=data || copies("00"x, 4-pad)      -- add blanks to get to multiple of 4's
-
-  data=x2b(c2x(data))   -- now turn data into a bitstring
-
-  new=.mutableBuffer~new
-  do while data<>""
-     parse var data . +2 nr5 +6 . +2 nr6 +6 . +2 nr7 +6 .+2 nr8 +6 data
-
-     if data = "" then  -- last round, nothing left after this one
-        new~append(left( x2c(b2x(nr5 ||nr6 || nr7 || nr8)), 3-pnum)) -- use only non-chunked bytes
-     else
-        new~append(x2c(b2x(nr5 ||nr6 || nr7 || nr8)))
+::method test_encode_two_chars
+  call random , , 123
+  do 200
+    s = random(0, 256 ** 2 -1)~d2c(2)
+    b64 = s~encodeBase64
+    self~assertSame(self~encodeBase64(s), b64)
+    self~assertSame(s, b64~decodeBase64)
   end
-  return new~string
+
+::method test_encode_three_chars
+  call random , , 123
+  do 200
+    s = random(0, 256 ** 3 -1)~d2c(3)
+    b64 = s~encodeBase64
+    self~assertSame(self~encodeBase64(s), b64)
+    self~assertSame(s, b64~decodeBase64)
+  end
+
+::method test_encode_strings
+  do set over "alnum", "alpha", "blank", "cntrl", "digit", "graph", "lower", "print", "punct", "space", "upper", "xdigit"
+    s = xrange(set)
+    b64 = s~encodeBase64
+    self~assertSame(self~encodeBase64(s), b64)
+    self~assertSame(s, b64~decodeBase64)
+  end
+
+  do s over xrange('00'x, 'ff'x), self~base64, " ", " "~copies(64)
+    b64 = s~encodeBase64
+    self~assertSame(self~encodeBase64(s), b64)
+    self~assertSame(s, b64~decodeBase64)
+  end
+
+::method test_encode_string_long
+  call random , , 123
+  long = 20000
+  m = .MutableBuffer~new(, long)
+  do long % 2
+    m~append(random(0, 256 ** 2 -1)~d2c(2))
+  end
+  s = m~string
+  b64 = s~encodeBase64
+  self~assertSame(self~encodeBase64(s), b64)
+  self~assertSame(s, b64~decodeBase64)
+
+::method test_decode_two_chars
+  do c over self~base64~makeArray("")
+    b64 = c || "A=="
+    string = b64~decodeBase64
+    self~assertSame(self~decodeBase64(b64), string)
+    self~assertSame(b64, self~encodeBase64(string))
+  end
+
+::method test_decode_three_chars
+  do c over self~base64~makeArray("")
+    b64 = c || "AA="
+    string = b64~decodeBase64
+    self~assertSame(self~decodeBase64(b64), string)
+    self~assertSame(b64, self~encodeBase64(string))
+  end
+
+::method test_decode_four_chars
+  do c over self~base64~makeArray("")
+    b64 = c || "AAA"
+    string = b64~decodeBase64
+    self~assertSame(self~decodeBase64(b64), string)
+    self~assertSame(b64, self~encodeBase64(string))
+  end
+
+::method test_decode_string_long
+  call random , , 123
+  long = 20000
+  m = .MutableBuffer~new(, long)
+  do long
+    m~append(random(0, 63)~d2c)
+  end
+  b64 = m~translate(self~base64, xrange('00'x, '3f'x))~string
+  string = b64~decodeBase64
+  self~assertSame(self~decodeBase64(b64), string)
+  self~assertSame(b64, string~encodeBase64)
+
+
+::constant base64 (xrange("alpha", "digit") || "+/")
+
+-- Convert string to base64 encoded string (RFC 2045)
+::method encodeBase64 public
+  use strict arg string
+
+  new = (string~length + 2) % 3
+  tail = (3 - string~length // 3) // 3                -- 0 -> 0, 1 -> 2, 2 -> 1
+
+  return -
+    string~left(new * 3, '00'x) -                     -- make length a multiple of 3
+    ~c2x~x2b -                                        -- convert to binary string
+    ~changeStr("0", "0000")~changeStr("1", "0001") -  -- change bits to nibbles
+    ~bitAnd( -                                        -- mark unwanted bits
+      'FFFF00FF000000FF000000FF000000FF000000FF000000FF'x~copies(new * 4)) -                                            -- mark unwanted bits
+    ~changeStr('00'x, "") -                           -- remove unwanted bits
+    ~b2x~x2c -                                        -- now 3 bytes are 4
+    ~translate(self~base64, xrange('00'x, '3F'x)) -   -- convert to base-64
+    ~overlay("==", new * 4 - tail + 1, tail)          -- fix tail of "=" pads
+
+
+-- Convert string from base64 encoded string (RFC 2045)
+::method decodeBase64 public
+  use strict arg string
+
+  return -
+    string~translate( -                               -- convert base-64 to hex
+      xrange('00'x, '3F'x) || '00'x, self~base64 || "=") -
+    ~c2x~x2b -                                        -- convert to binary string
+    ~bitAnd( -                                        -- mark unwanted bits
+      '0000 FFFFFFFFFFFF'x~copies(string~length)) -
+    ~changeStr('00'x, "") -                           -- remove unwanted bits
+    ~b2x~x2c -                                        -- 4 bytes are back to 3
+    ~left(string~length / 4 * 3 - string~countStr("=")) -- fix final string length
 
 
 ::options novalue error
