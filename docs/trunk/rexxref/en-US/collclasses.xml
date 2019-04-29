@@ -47,12 +47,12 @@
 <indexterm><primary>Collection classes</primary></indexterm>
 <para>A <classname>Collection</classname> is an object that contains a number of
 <emphasis role="italic">items</emphasis>, which can be any objects.
-Every item stored in a <classname>Collection</classname> has an associated
+Every item stored in a  Collection has an associated
 <emphasis role="italic">index</emphasis> that you can use to retrieve the item from the
 collection with the <methodname>at</methodname> or <methodname>[]</methodname> methods.
 </para>
-<para>Each <classname>Collection</classname> defines its own acceptable index types.
-Rexx provides the following <classname>Collection</classname> classes:</para>
+<para>Each Collection defines its own acceptable index types.
+Rexx provides the following Collection classes:</para>
 
 <variablelist>
 <varlistentry><term><xref linkend="clsArray" xrefstyle="select:title"/></term>
@@ -175,7 +175,7 @@ Many of the Collection class methods are abstract and must be implemented
 by the inheriting subclasses.
 </para>
 
-<!-- $GENERATED-20150704-START rexxrefClassTable(Collection) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(Collection) -->
 <table id="ooRexxCollectionClass" frame="all" pgwide="1">
 <title>Collection Class</title>
 <tgroup cols="1">
@@ -183,6 +183,10 @@ by the inheriting subclasses.
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">Collection (Mixin Class)</emphasis></entry>
  </row>
@@ -212,7 +216,7 @@ by the inheriting subclasses.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20150704-END rexxrefClassTable(Collection) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(Collection) -->
 
 <section id="mthCollectionAtGet"><title>[] (Abstract Method)</title>
 <indexterm><primary>[] method</primary>
@@ -611,7 +615,7 @@ index values in the receiver collection.</para>
 defines the basic set of methods implemented by all collections that create
 a mapping from an index object to a value.
 </para>
-<para>This class is defined as a <classname>MIXIN</classname> class.
+<para>This class is defined as a MIXIN class.
 The following classes inherit from <classname>MapCollection</classname>:
 <xref linkend="clsDirectory" xrefstyle="template:Directory"/>,
 <xref linkend="clsIdentityTable" xrefstyle="template:IdentityTable"/>,
@@ -625,7 +629,7 @@ The following classes inherit from <classname>MapCollection</classname>:
 <xref linkend="clsSet" xrefstyle="template:Set"/>.
 </para>
 
-<!-- $GENERATED-20150704-START rexxrefClassTable(MapCollection) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(MapCollection) -->
 <table id="ooRexxMapCollectionClass" frame="all" pgwide="1">
 <title>MapCollection Class</title>
 <tgroup cols="1">
@@ -633,6 +637,10 @@ The following classes inherit from <classname>MapCollection</classname>:
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">+ Collection (Mixin Class)</emphasis></entry>
  </row>
@@ -654,7 +662,7 @@ The following classes inherit from <classname>MapCollection</classname>:
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20150704-END rexxrefClassTable(MapCollection) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(MapCollection) -->
 
 <!-- Class MapCollection - method of =============================== -->
 <section id="mthMapCollectionOf" revisionflag="added"><title>&added50;of (Class Method)</title>
@@ -671,7 +679,7 @@ Each <emphasis role="italic">pair</emphasis> must be a &singledimarray;
 with exactly two items: the index as the first Array item, and the value
 as the second item.
 The <emphasis role="italic">pair</emphasis>s are processed left-to-right and
-added to the <classname>MapCollection</classname> object.
+added to the MapCollection object.
 </para>
 <para><example>
 <title>MapCollection class &mdash; of method</title>
@@ -737,14 +745,14 @@ that defines the basic set of methods implemented by all collections that
 have an inherent index ordering.
 </para>
 <para>This class is defined as a MIXIN class.
-The following classes inherit from <classname>OrderedCollection</classname>:
+The following classes inherit from OrderedCollection:
 <xref linkend="clsArray" xrefstyle="template:Array"/>,
 <xref linkend="clsCircularQueue" xrefstyle="template:CircularQueue"/>,
 <xref linkend="clsList" xrefstyle="template:List"/>, and
 <xref linkend="clsQueue" xrefstyle="template:Queue"/>.
 </para>
 
-<!-- $GENERATED-20150704-START rexxrefClassTable(OrderedCollection) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(OrderedCollection) -->
 <table id="ooRexxOrderedCollectionClass" frame="all" pgwide="1">
 <title>OrderedCollection Class</title>
 <tgroup cols="1">
@@ -752,6 +760,10 @@ The following classes inherit from <classname>OrderedCollection</classname>:
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">+ Collection (Mixin Class)</emphasis></entry>
  </row>
@@ -788,7 +800,7 @@ The following classes inherit from <classname>OrderedCollection</classname>:
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20150704-END rexxrefClassTable(OrderedCollection) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(OrderedCollection) -->
 
 <section id="mthOrderedCollectionAppend"><title>append (Abstract Method)</title>
 <indexterm><primary>append method</primary>
@@ -1216,12 +1228,12 @@ Collections that implement <classname>SetCollection</classname> are
 that constrain the index and item to be be the same object.
 </para>
 <para>This class is defined as a MIXIN class.
-The following classes inherit from <classname>SetCollection</classname>:
+The following classes inherit from SetCollection:
 <xref linkend="clsBag" xrefstyle="template:Bag"/> and
 <xref linkend="clsSet" xrefstyle="template:Set"/>.
 </para>
 
-<!-- $GENERATED-20150924-START rexxrefClassTable(SetCollection) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(SetCollection) -->
 <table id="ooRexxSetCollectionClass" frame="all" pgwide="1">
 <title>SetCollection Class</title>
 <tgroup cols="1">
@@ -1229,6 +1241,10 @@ The following classes inherit from <classname>SetCollection</classname>:
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">+ Collection (Mixin Class)</emphasis></entry>
  </row>
@@ -1239,12 +1255,12 @@ The following classes inherit from <classname>SetCollection</classname>:
  <row><entry align="center"><emphasis role="bold">SetCollection (Mixin Class)</emphasis></entry>
  </row>
  <row><entry>
-  (no class or instance methods)
+   (no class or instance methods)
  </entry></row>
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20150924-END rexxrefClassTable(SetCollection) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(SetCollection) -->
 
 </section>
 
@@ -1257,15 +1273,14 @@ The following classes inherit from <classname>SetCollection</classname>:
 
 <para> An <classname>Array</classname> is a possibly sparse collection
 with indexes that are positive whole numbers.
-You can reference <classname>Array</classname> items by using one or more indexes.
-The number of indexes is the same as the number of dimensions of the
-<classname>Array</classname>.
-This number is called the dimensionality of the <classname>Array</classname>.
+You can reference Array items by using one or more indexes.
+The number of indexes is the same as the number of dimensions of the Array.
+This number is called the dimensionality of the Array.
 </para>
-<para><classname>Array</classname> items can be any valid Rexx object.
+<para>Array items can be any valid Rexx object.
 </para>
 
-<!-- $GENERATED-20150924-START rexxrefClassTable(Array) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(Array) -->
 <table id="ooRexxArrayClass" frame="all" pgwide="1">
 <title>Array Class</title>
 <tgroup cols="1">
@@ -1273,6 +1288,10 @@ This number is called the dimensionality of the <classname>Array</classname>.
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">+ Collection (Mixin Class)</emphasis></entry>
  </row>
@@ -1335,7 +1354,7 @@ This number is called the dimensionality of the <classname>Array</classname>.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20150924-END rexxrefClassTable(Array) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(Array) -->
 
 <para>Array objects are variable-sized. The dimensionality of an array is fixed,
 but the size of each dimension is variable. When you create an array, you
@@ -2586,12 +2605,11 @@ end
 
 <para>A <classname>Bag</classname> is a non-sparse collection that
 restricts the elements to having an item that is the same as the index.
-Any object can be placed in a <classname>Bag</classname>, and the same
-object can be placed in a <classname>Bag</classname> several times.
+Any object can be placed in a Bag, and the same
+object can be placed in a Bag several times.
 </para>
 
-<!-- modified: added from BagMixin class: difference, intersection, putAll, subset, union, xor (see interpreter\RexxClasses\CoreClasses.orx) -->
-<!-- $GENERATED-20150924-START rexxrefClassTable(Bag) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(Bag) -->
 <table id="ooRexxBagClass" frame="all" pgwide="1">
 <title>Bag Class</title>
 <tgroup cols="1">
@@ -2599,6 +2617,10 @@ object can be placed in a <classname>Bag</classname> several times.
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">+ SetCollection (Mixin Class)</emphasis></entry>
  </row>
@@ -2638,6 +2660,9 @@ object can be placed in a <classname>Bag</classname> several times.
    <member><xref linkend="mthBagHasIndex" xrefstyle="select:title"/></member>
    <member><xref linkend="mthBagHasItem" xrefstyle="select:title"/></member>
    <member><xref linkend="mthBagIndex" xrefstyle="select:title"/></member>
+   <!-- see new()
+   <member><xref linkend="mthBagInit" xrefstyle="select:title"/></member>
+   -->
    <member><xref linkend="mthBagIntersection" xrefstyle="select:title"/></member>
    <member><xref linkend="mthBagIsEmpty" xrefstyle="select:title"/></member>
    <member><xref linkend="mthBagItems" xrefstyle="select:title"/></member>
@@ -2657,7 +2682,7 @@ object can be placed in a <classname>Bag</classname> several times.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20150924-END rexxrefClassTable(Bag) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(Bag) -->
 
 
 <!-- Class Bag - method new ======================================== -->
@@ -3278,7 +3303,7 @@ The collected objects can be processed in FIFO (first-in, first-out) or in a
 stack-like LIFO (last-in, first-out) order.
 </para>
 
-<!-- $GENERATED-20151104-START rexxrefClassTable(CircularQueue) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(CircularQueue) -->
 <table id="ooRexxCircularQueueClass" frame="all" pgwide="1">
 <title>CircularQueue Class</title>
 <tgroup cols="1">
@@ -3286,6 +3311,10 @@ stack-like LIFO (last-in, first-out) order.
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">+ Collection (Mixin Class)</emphasis></entry>
  </row>
@@ -3332,7 +3361,7 @@ stack-like LIFO (last-in, first-out) order.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20151104-END rexxrefClassTable(CircularQueue) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(CircularQueue) -->
 
 <section id="mthCircularQueueOf"><title>of (Class Method)</title>
 <indexterm><primary>of method</primary>
@@ -3958,7 +3987,7 @@ content: [3,2], content (LIFO): [2->3]
 <para>A <classname>Directory</classname> is a
 <xref linkend="clsMapCollection" xrefstyle="template:MapCollection"/>
 using unique character string indexes.
-The items of a <classname>Directory</classname> can be any valid Rexx object.
+The items of a Directory can be any valid Rexx object.
 </para>
 <para>See also <xref linkend="clsStringTable" xrefstyle="select:title"/>, a
 <classname>MapCollection</classname> similar to <classname>Directory</classname>,
@@ -3966,7 +3995,7 @@ but without methods <methodname>setMethod</methodname> and
 <methodname>unsetMethod</methodname>.
 </para>
 
-<!-- $GENERATED-20170518-START rexxrefClassTable(Directory) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(Directory) -->
 <table id="ooRexxDirectoryClass" frame="all" pgwide="1">
 <title>Directory Class</title>
 <tgroup cols="1">
@@ -3974,6 +4003,10 @@ but without methods <methodname>setMethod</methodname> and
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">+ Collection (Mixin Class)</emphasis></entry>
  </row>
@@ -4025,7 +4058,7 @@ but without methods <methodname>setMethod</methodname> and
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20170518-END rexxrefClassTable(Directory) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(Directory) -->
 
 <para>In addition to the standard <methodname>put</methodname>,
 <methodname>[]=</methodname>, <methodname>at</methodname>, and
@@ -4620,13 +4653,13 @@ Exit
 
 <para>An <classname>IdentityTable</classname> is a collection with indexes
 that can be any object.
-In an <classname>IdentityTable</classname>, each item is associated with a
+In an IdentityTable, each item is associated with a
 single index, and there can be only one item for each index.
 Index and item matches are made using an object identity comparison.
 That is, an index will only match if the same instance is used in the collection.
 </para>
 
-<!-- $GENERATED-20150704-START rexxrefClassTable(IdentityTable) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(IdentityTable) -->
 <table id="ooRexxIdentityTableClass" frame="all" pgwide="1">
 <title>IdentityTable Class</title>
 <tgroup cols="1">
@@ -4634,6 +4667,10 @@ That is, an index will only match if the same instance is used in the collection
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">+ Collection (Mixin Class)</emphasis></entry>
  </row>
@@ -4678,7 +4715,7 @@ That is, an index will only match if the same instance is used in the collection
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20150704-END rexxrefClassTable(IdentityTable) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(IdentityTable) -->
 
 <section id="mthIdentityTableNew" revisionflag="changed"><title>&changed50;new (Class Method)</title>
 <indexterm><primary>new method</primary>
@@ -5004,15 +5041,15 @@ The supplier iterates over the items in an unspecified order.
 <para>A <classname>List</classname> is a non-sparse sequenced collection similar
 to the <xref linkend="clsArray" xrefstyle="template:Array class"/> to which you
 can add new items at any position in the sequence.
-The <classname>List</classname> creates a new index value whenever an item is
-added to the <classname>List</classname> and the associated index value remains
+The List creates a new index value whenever an item is
+added to the List and the associated index value remains
 valid for that item regardless of other additions or removals.
-Only indexes the <classname>List</classname> object generates are valid, i.e.
-the <classname>List</classname> is never a sparse list and the
-<classname>List</classname> object will not modify indexes for items in the list.
+Only indexes the List object generates are valid, i.e.
+the List is never a sparse list and the
+List object will not modify indexes for items in the list.
 </para>
 
-<!-- $GENERATED-20150704-START rexxrefClassTable(List) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(List) -->
 <table id="ooRexxListClass" frame="all" pgwide="1">
 <title>List Class</title>
 <tgroup cols="1">
@@ -5020,6 +5057,10 @@ the <classname>List</classname> is never a sparse list and the
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">+ Collection (Mixin Class)</emphasis></entry>
  </row>
@@ -5075,7 +5116,7 @@ the <classname>List</classname> is never a sparse list and the
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20150704-END rexxrefClassTable(List) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(List) -->
 
 <section id="mthListNew" revisionflag="changed"><title>&changed50;new (Class Method)</title>
 <indexterm><primary>new method</primary><secondary>of List class</secondary></indexterm>
@@ -5671,11 +5712,11 @@ order as the list sequence order.</para>
 <para>A <classname>Properties</classname> object is a collection with unique
 indexes that are character strings representing names and items that
 are also restricted to character string values.
-<classname>Properties</classname> objects are useful for processing bundles
+Properties objects are useful for processing bundles
 of application option values.
 </para>
 
-<!-- $GENERATED-20151006-START rexxrefClassTable(Properties) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(Properties) -->
 <table id="ooRexxPropertiesClass" frame="all" pgwide="1">
 <title>Properties Class</title>
 <tgroup cols="1">
@@ -5683,6 +5724,10 @@ of application option values.
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">+ Collection (Mixin Class)</emphasis></entry>
  </row>
@@ -5724,7 +5769,7 @@ of application option values.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20151006-END rexxrefClassTable(Properties) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(Properties) -->
 
 <section id="mthPropertiesLoadClsMth"><title>load (Class method)</title>
 <indexterm><primary>load method</primary>
@@ -5988,7 +6033,7 @@ Adding or removing an item changes the association of an index to its queue item
 You can add items at either the tail or the head of the queue.
 </para>
 
-<!-- $GENERATED-20170518-START rexxrefClassTable(Queue) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(Queue) -->
 <table id="ooRexxQueueClass" frame="all" pgwide="1">
 <title>Queue Class</title>
 <tgroup cols="1">
@@ -5996,6 +6041,10 @@ You can add items at either the tail or the head of the queue.
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">+ Collection (Mixin Class)</emphasis></entry>
  </row>
@@ -6056,7 +6105,7 @@ You can add items at either the tail or the head of the queue.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20170518-END rexxrefClassTable(Queue) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(Queue) -->
 
 <section id="mthQueueNew" revisionflag="changed"><title>&changed50;new (Class Method)</title>
 <indexterm><primary>new method</primary>
@@ -6153,7 +6202,8 @@ This method is the same as the
 <para>Returns an array of all index values for the
 queue.
 </para>
-<para>For the <classname>Queue</classname> class, the indices are integers 1 - items.
+<para>For the Queue class, the indices are integers from
+<literal>1</literal> to <emphasis role="italic">items</emphasis>.
 </para>
 </section>
 
@@ -6740,14 +6790,13 @@ the queue first.</para>
 
 <para>A <classname>Relation</classname> is a collection with indexes that can
 be any object.
-In a <classname>Relation,</classname> each item is associated with a single
+In a Relation, each item is associated with a single
 index, but there can be more than one item with the same index (unlike a
 <xref linkend="clsTable" xrefstyle="template:Table"/>, which can contain only
 one item for any index).
 </para>
 
-<!-- modified: added from ManyItemsMixin class: difference, intersection, subset, union, xor (see interpreter\RexxClasses\CoreClasses.orx) -->
-<!-- $GENERATED-20151005-START rexxrefClassTable(Relation) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(Relation) -->
 <table id="ooRexxRelationClass" frame="all" pgwide="1">
 <title>Relation Class</title>
 <tgroup cols="1">
@@ -6755,6 +6804,10 @@ one item for any index).
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">+ Collection (Mixin Class)</emphasis></entry>
  </row>
@@ -6787,6 +6840,9 @@ one item for any index).
    <member><xref linkend="mthRelationHasIndex" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRelationHasItem" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRelationIndex" xrefstyle="select:title"/></member>
+   <!-- see new()
+   <member><xref linkend="mthRelationInit" xrefstyle="select:title"/></member>
+   -->
    <member><xref linkend="mthRelationIntersection" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRelationIsEmpty" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRelationItems" xrefstyle="select:title"/></member>
@@ -6795,17 +6851,17 @@ one item for any index).
    <member><xref linkend="mthRelationRemove" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRelationRemoveAll" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRelationRemoveItem" xrefstyle="select:title"/></member>
-   <member><xref linkend="mthRelationSupplier" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRelationSubset" xrefstyle="select:title"/></member>
-   <member><xref linkend="mthRelationUniqueIndexes" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRelationSupplier" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRelationUnion" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRelationUniqueIndexes" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRelationXor" xrefstyle="select:title"/></member>
   </simplelist>
  </entry></row>
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20151005-END rexxrefClassTable(Relation) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(Relation) -->
 
 <section id="mthRelationNew" revisionflag="changed"><title>&changed50;new (Class Method)</title>
 <indexterm><primary>new method</primary>
@@ -7410,14 +7466,13 @@ End
 <para>A <classname>Set</classname> is a collection containing member items
 where the index is the same as the item (similar to a
 <xref linkend="clsBag" xrefstyle="template:Bag"/> collection).
-Any object can be placed in a <classname>Set</classname>.
-There can be only one occurrence of any object in a <classname>Set</classname>
+Any object can be placed in a Set.
+There can be only one occurrence of any object in a Set
 (unlike a <classname>Bag</classname> collection).
 Item equality is determined by using the <methodname>==</methodname> method.
 </para>
 
-<!-- modified: added from SetMixin class: intersection, putAll, subset, union, xor (see interpreter\RexxClasses\CoreClasses.orx) -->
-<!-- $GENERATED-20151005-START rexxrefClassTable(Set) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(Set) -->
 <table id="ooRexxSetClass" frame="all" pgwide="1">
 <title>Set Class</title>
 <tgroup cols="1">
@@ -7425,6 +7480,10 @@ Item equality is determined by using the <methodname>==</methodname> method.
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">+ SetCollection (Mixin Class)</emphasis></entry>
  </row>
@@ -7461,6 +7520,9 @@ Item equality is determined by using the <methodname>==</methodname> method.
    <member><xref linkend="mthSetHasIndex" xrefstyle="select:title"/></member>
    <member><xref linkend="mthSetHasItem" xrefstyle="select:title"/></member>
    <member><xref linkend="mthSetIndex" xrefstyle="select:title"/></member>
+   <!-- see new()
+   <member><xref linkend="mthSetInit" xrefstyle="select:title"/></member>
+   -->
    <member><xref linkend="mthSetIntersection" xrefstyle="select:title"/></member>
    <member><xref linkend="mthSetIsEmpty" xrefstyle="select:title"/></member>
    <member><xref linkend="mthSetItems" xrefstyle="select:title"/></member>
@@ -7478,7 +7540,7 @@ Item equality is determined by using the <methodname>==</methodname> method.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20151005-END rexxrefClassTable(Set) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(Set) -->
 
 <section id="mthSetOf"><title>of (Class Method)</title>
 <indexterm><primary>of method</primary>
@@ -7949,7 +8011,7 @@ index values in the receiver collection.</para>
 <para>A <classname>Stem</classname> object is a collection with unique indexes
 that are character strings.</para>
 
-<!-- $GENERATED-20151005-START rexxrefClassTable(Stem) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(Stem) -->
 <table id="ooRexxStemClass" frame="all" pgwide="1">
 <title>Stem Class</title>
 <tgroup cols="1">
@@ -7957,6 +8019,10 @@ that are character strings.</para>
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">+ Collection (Mixin Class)</emphasis></entry>
  </row>
@@ -8001,7 +8067,7 @@ that are character strings.</para>
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20151005-END rexxrefClassTable(Stem) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(Stem) -->
 
 <para>Stems are automatically created whenever a Rexx stem variable or Rexx
 compound variable is used. For example:
@@ -8447,7 +8513,7 @@ messages to the stem's current default value.  For additional information, see
 <para>A <classname>StringTable</classname> is a
 <xref linkend="clsMapCollection" xrefstyle="template:MapCollection"/>
 using unique character string indexes.
-The items of a <classname>StringTable</classname> can be any valid Rexx object.
+The items of a StringTable can be any valid Rexx object.
 </para>
 <para>See also <xref linkend="clsDirectory" xrefstyle="select:title"/>, a
 <classname>MapCollection</classname> similar to <classname>StringTable</classname>,
@@ -8455,7 +8521,7 @@ but with additional methods <methodname>setMethod</methodname> and
 <methodname>unsetMethod</methodname>.
 </para>
 
-<!-- $GENERATED-20151006-START rexxrefClassTable(StringTable) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(StringTable) -->
 <table id="ooRexxStringTableClass" frame="all" pgwide="1">
 <title>StringTable Class</title>
 <tgroup cols="1">
@@ -8463,6 +8529,10 @@ but with additional methods <methodname>setMethod</methodname> and
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">+ Collection (Mixin Class)</emphasis></entry>
  </row>
@@ -8494,6 +8564,9 @@ but with additional methods <methodname>setMethod</methodname> and
    <member><xref linkend="mthStringTableHasIndex" xrefstyle="select:title"/></member>
    <member><xref linkend="mthStringTableHasItem" xrefstyle="select:title"/></member>
    <member><xref linkend="mthStringTableIndex" xrefstyle="select:title"/></member>
+   <!-- see new()
+   <member><xref linkend="mthStringTableInit" xrefstyle="select:title"/></member>
+   -->
    <member><xref linkend="mthStringTableIsEmpty" xrefstyle="select:title"/></member>
    <member><xref linkend="mthStringTableItems" xrefstyle="select:title"/></member>
    <member><xref linkend="mthStringTableMakeArray" xrefstyle="select:title"/></member>
@@ -8509,7 +8582,7 @@ but with additional methods <methodname>setMethod</methodname> and
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20151006-END rexxrefClassTable(StringTable) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(StringTable) -->
 
 <para>In addition to the standard <methodname>put</methodname>,
 <methodname>[]=</methodname>, <methodname>at</methodname>, and
@@ -8985,14 +9058,14 @@ case, <methodname>unknown</methodname> returns no result.</para>
 
 <para>A <classname>Table</classname> is a collection with indexes
 that can be any object.
-In a <classname>Table</classname>, each item is associated with a single
+In a Table, each item is associated with a single
 index, and there can be only one item for each index (unlike a
 <xref linkend="clsRelation" xrefstyle="template:Relation"/>,
 which can contain more than one item with the same index).
 Index equality is determined by using the <methodname>==</methodname> method.
 </para>
 
-<!-- $GENERATED-20151005-START rexxrefClassTable(Table) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(Table) -->
 <table id="ooRexxTableClass" frame="all" pgwide="1">
 <title>Table Class</title>
 <tgroup cols="1">
@@ -9000,6 +9073,10 @@ Index equality is determined by using the <methodname>==</methodname> method.
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">+ Collection (Mixin Class)</emphasis></entry>
  </row>
@@ -9029,6 +9106,9 @@ Index equality is determined by using the <methodname>==</methodname> method.
    <member><xref linkend="mthTableHasIndex" xrefstyle="select:title"/></member>
    <member><xref linkend="mthTableHasItem" xrefstyle="select:title"/></member>
    <member><xref linkend="mthTableIndex" xrefstyle="select:title"/></member>
+   <!-- see new()
+   <member><xref linkend="mthTableInit" xrefstyle="select:title"/></member>
+   -->
    <member><xref linkend="mthTableIsEmpty" xrefstyle="select:title"/></member>
    <member><xref linkend="mthTableItems" xrefstyle="select:title"/></member>
    <member><xref linkend="mthTableMakeArray" xrefstyle="select:title"/></member>
@@ -9041,7 +9121,7 @@ Index equality is determined by using the <methodname>==</methodname> method.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20151005-END rexxrefClassTable(Table) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(Table) -->
 
 <section id="mthTableNew" revisionflag="added"><title>&added50;new (Class Method)</title>
 <indexterm><primary>new method</primary>

@@ -189,7 +189,7 @@ processed in this way are trapped or traced.
     <term><literal>sh</literal> (Unix only)</term>
     <listitem><para>This is the default environment on Unix systems.
       It uses <literal>sh</literal> as a shell program to execute the command.
-      Shell features like redirection, piping, or glob characters can be used.
+      All shell features such as redirection or piping can be used.
     </para></listitem>
   </varlistentry>
   <varlistentry>
@@ -207,8 +207,10 @@ processed in this way are trapped or traced.
   <varlistentry>
     <term><literal>cmd</literal> (Windows only)</term>
     <listitem><para>This is the default environment on Windows systems.
-      It uses <literal>cmd.exe</literal> as a shell program to execute the command.
-      Shell features like redirection or piping can be used.
+      It uses <literal>cmd.exe</literal> as a command interpreter to
+      execute the command.
+      Command interpreter features such as internal commands, redirection or
+      piping can be used.
     </para></listitem>
   </varlistentry>
   <varlistentry>
@@ -220,9 +222,10 @@ processed in this way are trapped or traced.
   <varlistentry>
     <term><literal>path</literal></term>
     <listitem><para>This environment executes commands directly,
-      without using an intermediate shell program.
-      It searches the environment variable PATH to find the command to execute.
-      No shell features like redirection or piping are available.
+      without using an intermediate command interpreter or shell program.
+      It searches the environment variable PATH to locate the command to execute.
+      No shell features such as internal commands, redirection, piping or
+      environment variable substitution are available.
     </para></listitem>
   </varlistentry>
 </variablelist>

@@ -3073,7 +3073,7 @@ the argument expressions within any [] pairs from left to right.</para>
 <para>Issuing commands to the surrounding environment is an integral part of
 Rexx.</para>
 
-<section id="xenvir" revisionflag="added"><title>&added50;Environment</title>
+<section id="xenvir" revisionflag="changed"><title>&changed50;Environment</title>
 <indexterm><primary>default</primary>
 <secondary>environment</secondary></indexterm>
 <para>The base system for the language processor is assumed to include
@@ -3104,8 +3104,9 @@ interpreter- / shell-based environments.
 It executes commands directly, without the need for a command interpreter
 or shell by searching the environment variabe <literal>PATH</literal>
 to locate the command.
-Note that this environment cannot execute internal shell or
-command interpreter commands like <literal>set</literal>.
+Note that this environment does not provide shell or command interpreter
+features such as internal commands, redirection, piping, environment variable
+substitution or wildcard expansion.
 </para>
 <para>
 If called from an editor that accepts subcommands from

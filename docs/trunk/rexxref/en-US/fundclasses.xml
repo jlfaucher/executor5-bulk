@@ -7,7 +7,7 @@
     #
     # Description: Open Object Rexx: Reference XML File
     #
-    # Copyright (c) 2005-2018, Rexx Language Association. All rights reserved.
+    # Copyright (c) 2005-2019, Rexx Language Association. All rights reserved.
     # Portions Copyright (c) 2004, IBM Corporation. All rights reserved.
     #
     # This program and the accompanying materials are made available under
@@ -44,19 +44,8 @@
     #########################################################################
 -->
 <section id="fundclasses"><title>Fundamental Classes</title>
-<para>This section describes the Rexx fundamental classes.</para>
-<para>
-   <!-- NOTE: don't change, copy from classes.xml -->
-   <itemizedlist spacing="compact">
-    <listitem><para><xref linkend="clsObject" xrefstyle="template:Object"/> and
-     <xref linkend="clsClass" xrefstyle="template:Class"/> class,</para></listitem>
-    <listitem><para><xref linkend="clsString" xrefstyle="select:title"/>,</para></listitem>
-    <listitem><para><xref linkend="clsMethod" xrefstyle="template:Method"/>,
-     <xref linkend="clsPackage" xrefstyle="template:Package"/>, and
-     <xref linkend="clsRoutine" xrefstyle="template:Routine"/> class, and</para></listitem>
-    <listitem><para><xref linkend="clsMessage" xrefstyle="template:Message"/> class.</para></listitem>
-   </itemizedlist>
-   <!-- NOTE: see note above -->
+<para>This section describes the Rexx fundamental classes.
+<xi:include href="fundclassesintro.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
 </para>
 
 <section id="clsClass"><title>Class Class</title>
@@ -1130,7 +1119,7 @@ method of the Message class or the
 Object class.
 </para>
 
-<!-- $GENERATED-20151014-START rexxrefClassTable(Message) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(Message) -->
 <table id="ooRexxMessageClass" frame="all" pgwide="1">
 <title>Message Class</title>
 <tgroup cols="1">
@@ -1138,6 +1127,10 @@ Object class.
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">+ AlarmNotification (Mixin Class)</emphasis></entry>
  </row>
@@ -1182,7 +1175,7 @@ Object class.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20151014-END rexxrefClassTable(Message) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(Message) -->
 
 
 <section id="mthMessageNew"><title>new (Class Method)</title>
@@ -2019,7 +2012,7 @@ was scheduled for 2015-12-18T16:54:15.545000
 It is a subclass of the <xref linkend="clsObject" xrefstyle="template:Object class"/>.
 </para>
 
-<!-- $GENERATED-20181214-START rexxrefClassTable(Method) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(Method) -->
 <table id="ooRexxMethodClass" frame="all" pgwide="1">
 <title>Method Class</title>
 <tgroup cols="1">
@@ -2027,6 +2020,10 @@ It is a subclass of the <xref linkend="clsObject" xrefstyle="template:Object cla
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">Method</emphasis></entry>
  </row>
@@ -2059,7 +2056,7 @@ It is a subclass of the <xref linkend="clsObject" xrefstyle="template:Object cla
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20181214-END rexxrefClassTable(Method) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(Method) -->
 
 <section id="mthMethodNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
@@ -2544,14 +2541,20 @@ items.</para>
 <para>The Object class is the root of the class hierarchy. The instance methods
 of the Object class are, therefore, available on all objects.</para>
 
-<!-- modified: removed all class methods except new(), uncommented init(), added private methods run(), setMethod(), unsetMethod() -->
+<!-- modified: removed all class methods except new() -->
+<!-- modified: uncomment init() -->
+<!-- modified: added private methods run(), setMethod(),  and unset() -->
 <!-- modified: removed "Methods inherited from the Object class" -->
-<!-- modified: made Concat/Comparison single-column -->
-<!-- $GENERATED-20171018-START rexxrefClassTable(Object) -->
+<!-- modified: made ComparisonMethods/ConcatenationMethods single-column -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(Object) -->
 <table id="ooRexxObjectClass" frame="all" pgwide="1">
 <title>Object Class</title>
 <tgroup cols="1">
 <tbody>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
+ </row>
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>
@@ -2569,7 +2572,9 @@ of the Object class are, therefore, available on all objects.</para>
    <member><xref linkend="mthObjectHashCode" xrefstyle="select:title"/></member>
    <member><xref linkend="mthObjectHasMethod" xrefstyle="select:title"/></member>
    <member><xref linkend="mthObjectIdentityHash" xrefstyle="select:title"/></member>
+   <!-- see new()
    <member><xref linkend="mthObjectInit" xrefstyle="select:title"/></member>
+   -->
    <member><xref linkend="mthObjectInstanceMethod" xrefstyle="select:title"/></member>
    <member><xref linkend="mthObjectInstanceMethods" xrefstyle="select:title"/></member>
    <member><xref linkend="mthObjectIsA" xrefstyle="select:title"/></member>
@@ -2591,7 +2596,7 @@ of the Object class are, therefore, available on all objects.</para>
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20171018-END rexxrefClassTable(Object) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(Object) -->
 
 <section id="mthObjectNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
@@ -3582,7 +3587,7 @@ directives.  The files loaded by ::REQUIRES are also contained in Package class
 instances.  It is a subclass of the <xref linkend="clsObject" xrefstyle="template:Object class"/>.
 </para>
 
-<!-- $GENERATED-20180222-START rexxrefClassTable(Package) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(Package) -->
 <table id="ooRexxPackageClass" frame="all" pgwide="1">
 <title>Package Class</title>
 <tgroup cols="1">
@@ -3590,6 +3595,10 @@ instances.  It is a subclass of the <xref linkend="clsObject" xrefstyle="templat
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">Package</emphasis></entry>
  </row>
@@ -3640,7 +3649,7 @@ instances.  It is a subclass of the <xref linkend="clsObject" xrefstyle="templat
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20180222-END rexxrefClassTable(Package) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(Package) -->
 
 <section id="mthPackageNew" revisionflag="changed"><title>&changed50;new (Class Method)</title>
 <indexterm><primary>new method</primary>
@@ -4525,7 +4534,7 @@ It is a subclass of the
 <xref linkend="clsObject" xrefstyle="template:Object class"/>.</para>
 
 <!-- modified: mthRoutineAtGet -> mthRoutineCallBrackets -->
-<!-- $GENERATED-20161003-START rexxrefClassTable(Routine) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(Routine) -->
 <table id="ooRexxRoutineClass" frame="all" pgwide="1">
 <title>Routine Class</title>
 <tgroup cols="1">
@@ -4533,6 +4542,10 @@ It is a subclass of the
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">Routine</emphasis></entry>
  </row>
@@ -4556,7 +4569,7 @@ It is a subclass of the
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20161003-END rexxrefClassTable(Routine) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(Routine) -->
 
 <section id="mthRoutineNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
@@ -4824,8 +4837,10 @@ items.</para>
 string value can have any length and contain any characters.
 </para>
 
-<!-- modified: add hashCode(); centre() removed/combined with center(); sort Arith/Compare/Concat/LogicalMethods and make single-column -->
-<!-- $GENERATED-20171210-START rexxrefClassTable(String) -->
+<!-- modified: add hashCode() -->
+<!-- modified: combine centre()/center() -->
+<!-- sort aggregated methods and make single-column -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(String) -->
 <table id="ooRexxStringClass" frame="all" pgwide="1">
 <title>String Class</title>
 <tgroup cols="1">
@@ -4833,6 +4848,10 @@ string value can have any length and contain any characters.
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">+ Comparable (Mixin Class)</emphasis></entry>
  </row>
@@ -4897,6 +4916,9 @@ string value can have any length and contain any characters.
    <member><xref linkend="mthStringCaselessWordPos" xrefstyle="select:title"/></member>
    <member><xref linkend="mthStringCeiling" xrefstyle="select:title"/></member>
    <member><xref linkend="mthStringCenter" xrefstyle="select:title"/></member>
+<!--
+   <member><xref linkend="mthStringCentre" xrefstyle="select:title"/></member>
+-->
    <member><xref linkend="mthStringChangeStr" xrefstyle="select:title"/></member>
    <member><xref linkend="mthStringCompare" xrefstyle="select:title"/></member>
    <member><xref linkend="mthStringCompareTo" xrefstyle="select:title"/></member>
@@ -4959,7 +4981,7 @@ string value can have any length and contain any characters.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20171210-END rexxrefClassTable(String) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(String) -->
 
 
 <section id="mthStringNew"><title>new (Class Method)</title>

@@ -45,46 +45,8 @@
 -->
 <section id="miscclasses"><title>Utility Classes</title>
 <para>This section describes
-  <!-- NOTE: don't change, copy from classes.xml -->
-  <itemizedlist spacing="compact">
-   <listitem><para><xref linkend="clsMutableBuffer" xrefstyle="select:title"/>,</para></listitem>
-   <listitem><para><xref linkend="clsFile" xrefstyle="select:title"/>,</para></listitem>
-   <listitem><para>Date-, time-, and timing-related classes
-    <xref linkend="clsDateTime" xrefstyle="template:DateTime"/>,
-    <xref linkend="clsTimeSpan" xrefstyle="template:TimeSpan"/>,
-    <xref linkend="clsAlarm" xrefstyle="template:Alarm"/>,
-    <xref linkend="clsTicker" xrefstyle="template:Ticker"/>,
-    and the notification classes
-    <xref linkend="clsAlarmNotification" xrefstyle="template:AlarmNotification"/>, and
-    <xref linkend="clsMessageNotification" xrefstyle="template:MessageNotification"/>,
-   </para></listitem>
-   <listitem><para><xref linkend="clsComparable" xrefstyle="template:Comparable"/> and
-    <xref linkend="clsOrderable" xrefstyle="template:Orderable"/> class,
-   </para></listitem>
-   <listitem><para>eight <xref linkend="clsComparator" xrefstyle="template:Comparator"/> classes used for sorting
-    <xref linkend="clsCaselessComparator" xrefstyle="template:(Caseless)"/><xref linkend="clsComparator" xrefstyle="template:Comparator"/>,
-    <xref linkend="clsCaselessColumnComparator" xrefstyle="template:(Caseless)"/><xref linkend="clsColumnComparator" xrefstyle="template:ColumnComparator"/>,
-    <xref linkend="clsCaselessDescendingComparator" xrefstyle="template:(Caseless)"/><xref linkend="clsDescendingComparator" xrefstyle="template:DescendingComparator"/>,
-    <xref linkend="clsInvertingComparator" xrefstyle="template:InvertingComparator"/>, and
-    <xref linkend="clsNumericComparator" xrefstyle="template:NumericComparator"/>, and
-   </para></listitem>
-   <listitem><para>other miscellaneous classes
-    <xref linkend="clsBuffer" xrefstyle="template:Buffer"/>,
-    <xref linkend="clsMonitor" xrefstyle="template:Monitor"/>,
-    <xref linkend="clsPointer" xrefstyle="template:Pointer"/>,
-    <xref linkend="clsRegularExpression" xrefstyle="template:RegularExpression"/>,
-    <xref linkend="clsRexxContext" xrefstyle="template:RexxContext"/>,
-    <xref linkend="clsRexxInfo" xrefstyle="template:RexxInfo"/>,
-    <xref linkend="clsRexxQueue" xrefstyle="template:RexxQueue"/>,
-    <xref linkend="clsStackFrame" xrefstyle="template:StackFrame"/>,
-    <xref linkend="clsStreamSupplier" xrefstyle="template:StreamSupplier"/>,
-    <xref linkend="clsSupplier" xrefstyle="template:Supplier"/>,
-    <xref linkend="clsVariableReference" xrefstyle="template:VariableReference"/>,
-    <xref linkend="clsValidate" xrefstyle="template:Validate"/>, and
-    <xref linkend="clsWeakReference" xrefstyle="template:WeakReference"/>.
-   </para></listitem>
-  </itemizedlist></para>
-  <!-- NOTE: see above -->
+  <xi:include href="utilityclassesintro.xml" xmlns:xi="http://www.w3.org/2001/XInclude" />
+</para>
 
 <section id="clsAlarm"><title>Alarm Class</title>
 <indexterm><primary>Alarm class</primary></indexterm>
@@ -101,7 +63,7 @@ message to the notification target.
 </para>
 
 <!-- Modified: remove separate alias "cancelled" -->
-<!-- $GENERATED-20150704-START rexxrefClassTable(Alarm) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(Alarm) -->
 <table id="ooRexxAlarmClass" frame="all" pgwide="1">
 <title>Alarm Class</title>
 <tgroup cols="1">
@@ -109,6 +71,10 @@ message to the notification target.
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">Alarm</emphasis></entry>
  </row>
@@ -128,7 +94,7 @@ message to the notification target.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20150704-END rexxrefClassTable(Alarm) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(Alarm) -->
 
 <!-- Class Alarm - method attachment =============================== -->
 <section id="mthAlarmAttachment" revisionflag="added"><title>&added50;attachment</title>
@@ -373,7 +339,7 @@ message is sent to the notification target.
 <para>This class is defined as a MIXIN class.
 </para>
 
-<!-- $GENERATED-20151016-START rexxrefClassTable(AlarmNotification) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(AlarmNotification) -->
 <table id="ooRexxAlarmNotificationClass" frame="all" pgwide="1">
 <title>AlarmNotification Class</title>
 <tgroup cols="1">
@@ -381,6 +347,10 @@ message is sent to the notification target.
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">AlarmNotification (Mixin Class)</emphasis></entry>
  </row>
@@ -393,8 +363,7 @@ message is sent to the notification target.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20151016-END rexxrefClassTable(AlarmNotification) -->
-
+<!-- $GENERATED-20190429-END rexxrefClassTable(AlarmNotification) -->
 
 <!-- Class AlarmNotification - method cancel ======================= -->
 <section id="mthAlarmNotificationCancel" revisionflag="added"><title>&added50;cancel
@@ -456,7 +425,7 @@ The <xref linkend="mthBufferNew" xrefstyle="select:title"/> method will raise
 an error if invoked.
 </para>
 
-<!-- $GENERATED-20150924-START rexxrefClassTable(Buffer) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(Buffer) -->
 <table id="ooRexxBufferClass" frame="all" pgwide="1">
 <title>Buffer Class</title>
 <tgroup cols="1">
@@ -464,6 +433,10 @@ an error if invoked.
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">Buffer</emphasis></entry>
  </row>
@@ -475,7 +448,7 @@ an error if invoked.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20150924-END rexxrefClassTable(Buffer) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(Buffer) -->
 
 <section id="mthBufferNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
@@ -506,7 +479,7 @@ Method <methodname>new</methodname> will raise an error if invoked.
 
 <para>This class is defined as a MIXIN class.</para>
 
-<!-- $GENERATED-20150923-START rexxrefClassTable(Comparable) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(Comparable) -->
 <table id="ooRexxComparableClass" frame="all" pgwide="1">
 <title>Comparable Class</title>
 <tgroup cols="1">
@@ -514,6 +487,10 @@ Method <methodname>new</methodname> will raise an error if invoked.
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">Comparable (Mixin Class)</emphasis></entry>
  </row>
@@ -525,7 +502,7 @@ Method <methodname>new</methodname> will raise an error if invoked.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20150923-END rexxrefClassTable(Comparable) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(Comparable) -->
 
 <section id="mthComparableCompareTo" revisionflag="changed"><title>&changed50;compareTo</title>
 <indexterm><primary>compareTo method</primary>
@@ -596,7 +573,7 @@ particular object types.
 </para>
 <para>It is defined as a MIXIN class.</para>
 
-<!-- $GENERATED-20150923-START rexxrefClassTable(Comparator) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(Comparator) -->
 <table id="ooRexxComparatorClass" frame="all" pgwide="1">
 <title>Comparator Class</title>
 <tgroup cols="1">
@@ -604,6 +581,10 @@ particular object types.
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">Comparator (Mixin Class)</emphasis></entry>
  </row>
@@ -615,7 +596,7 @@ particular object types.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20150923-END rexxrefClassTable(Comparator) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(Comparator) -->
 
 <section id="mthComparatorCompare"><title>compare</title>
 <indexterm><primary>compare method</primary>
@@ -657,7 +638,7 @@ caseless orderings of string objects.
 </para>
 <para>It is defined as a MIXIN class.</para>
 
-<!-- $GENERATED-20150923-START rexxrefClassTable(CaselessComparator) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(CaselessComparator) -->
 <table id="ooRexxCaselessComparatorClass" frame="all" pgwide="1">
 <title>CaselessComparator Class</title>
 <tgroup cols="1">
@@ -665,6 +646,10 @@ caseless orderings of string objects.
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">+ Comparator (Mixin Class)</emphasis></entry>
  </row>
@@ -682,7 +667,7 @@ caseless orderings of string objects.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20150923-END rexxrefClassTable(CaselessComparator) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(CaselessComparator) -->
 
 <section id="mthCaselessComparatorCompare"><title>compare</title>
 <indexterm><primary>compare method</primary>
@@ -721,7 +706,7 @@ orderings based on specific substrings of string objects.
 </para>
 <para>It is defined as a MIXIN class.</para>
 
-<!-- $GENERATED-20150923-START rexxrefClassTable(ColumnComparator) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(ColumnComparator) -->
 <table id="ooRexxColumnComparatorClass" frame="all" pgwide="1">
 <title>ColumnComparator Class</title>
 <tgroup cols="1">
@@ -729,6 +714,10 @@ orderings based on specific substrings of string objects.
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">+ Comparator (Mixin Class)</emphasis></entry>
  </row>
@@ -747,7 +736,7 @@ orderings based on specific substrings of string objects.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20150923-END rexxrefClassTable(ColumnComparator) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(ColumnComparator) -->
 
 <section id="mthColumnComparatorCompare"><title>compare</title>
 <indexterm><primary>compare method</primary>
@@ -806,7 +795,7 @@ caseless orderings of specific substrings of string objects.
 </para>
 <para>It is defined as a MIXIN class.</para>
 
-<!-- $GENERATED-20150923-START rexxrefClassTable(CaselessColumnComparator) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(CaselessColumnComparator) -->
 <table id="ooRexxCaselessColumnComparatorClass" frame="all" pgwide="1">
 <title>CaselessColumnComparator Class</title>
 <tgroup cols="1">
@@ -814,6 +803,10 @@ caseless orderings of specific substrings of string objects.
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">+ Comparator (Mixin Class)</emphasis></entry>
  </row>
@@ -832,7 +825,7 @@ caseless orderings of specific substrings of string objects.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20150923-END rexxrefClassTable(CaselessColumnComparator) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(CaselessColumnComparator) -->
 
 <section id="mthCaselessColumnComparatorCompare"><title>compare</title>
 <indexterm><primary>compare method</primary>
@@ -896,7 +889,7 @@ sort order.
 </para>
 <para>This class is defined as a MIXIN class.</para>
 
-<!-- $GENERATED-20150923-START rexxrefClassTable(DescendingComparator) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(DescendingComparator) -->
 <table id="ooRexxDescendingComparatorClass" frame="all" pgwide="1">
 <title>DescendingComparator Class</title>
 <tgroup cols="1">
@@ -904,6 +897,10 @@ sort order.
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">+ Comparator (Mixin Class)</emphasis></entry>
  </row>
@@ -921,7 +918,7 @@ sort order.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20150923-END rexxrefClassTable(DescendingComparator) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(DescendingComparator) -->
 
 <section id="mthDescendingComparatorCompare"><title>compare</title>
 <indexterm><primary>compare method</primary>
@@ -968,7 +965,7 @@ sort order.
 </para>
 <para>This class is defined as a MIXIN class.</para>
 
-<!-- $GENERATED-20150923-START rexxrefClassTable(CaselessDescendingComparator) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(CaselessDescendingComparator) -->
 <table id="ooRexxCaselessDescendingComparatorClass" frame="all" pgwide="1">
 <title>CaselessDescendingComparator Class</title>
 <tgroup cols="1">
@@ -976,6 +973,10 @@ sort order.
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">+ Comparator (Mixin Class)</emphasis></entry>
  </row>
@@ -993,7 +994,7 @@ sort order.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20150923-END rexxrefClassTable(CaselessDescendingComparator) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(CaselessDescendingComparator) -->
 
 <section id="mthCaselessDescendingComparatorCompare"><title>compare</title>
 <indexterm><primary>compare method</primary>
@@ -1033,7 +1034,7 @@ results of another Comparator object to reverse the resulting sort order.
 </para>
 <para>This class is defined as a MIXIN class.</para>
 
-<!-- $GENERATED-20150923-START rexxrefClassTable(InvertingComparator) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(InvertingComparator) -->
 <table id="ooRexxInvertingComparatorClass" frame="all" pgwide="1">
 <title>InvertingComparator Class</title>
 <tgroup cols="1">
@@ -1041,6 +1042,10 @@ results of another Comparator object to reverse the resulting sort order.
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">+ Comparator (Mixin Class)</emphasis></entry>
  </row>
@@ -1059,7 +1064,7 @@ results of another Comparator object to reverse the resulting sort order.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20150923-END rexxrefClassTable(InvertingComparator) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(InvertingComparator) -->
 
 <section id="mthInvertingComparatorCompare"><title>compare</title>
 <indexterm><primary>compare method</primary>
@@ -1128,7 +1133,7 @@ wine~sortWith(.InvertingComparator~new(.LengthComparator~new))
 rather than string comparison rules.</para>
 <para>It is defined as a MIXIN class.</para>
 
-<!-- $GENERATED-20150923-START rexxrefClassTable(NumericComparator) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(NumericComparator) -->
 <table id="ooRexxNumericComparatorClass" frame="all" pgwide="1">
 <title>NumericComparator Class</title>
 <tgroup cols="1">
@@ -1136,6 +1141,10 @@ rather than string comparison rules.</para>
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">+ Comparator (Mixin Class)</emphasis></entry>
  </row>
@@ -1154,7 +1163,7 @@ rather than string comparison rules.</para>
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20150923-END rexxrefClassTable(NumericComparator) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(NumericComparator) -->
 
 <section id="mthNumericComparatorCompare"><title>compare</title>
 <indexterm><primary>compare method</primary>
@@ -1226,7 +1235,7 @@ December 31, 2016 at 23:59:60 UTC.
 
 <!-- modified: change class methods list to 2-column format for better fit -->
 <!-- modified: added link to "new (Inherited Class Method)" pointing to init() -->
-<!-- $GENERATED-20150923-START rexxrefClassTable(DateTime) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(DateTime) -->
 <table id="ooRexxDateTimeClass" frame="all" pgwide="1">
 <title>DateTime Class</title>
 <tgroup cols="1">
@@ -1234,6 +1243,10 @@ December 31, 2016 at 23:59:60 UTC.
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">+ Orderable (Mixin Class)</emphasis></entry>
  </row>
@@ -1325,7 +1338,7 @@ December 31, 2016 at 23:59:60 UTC.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20150923-END rexxrefClassTable(DateTime) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(DateTime) -->
 
 <section id="mthDateTimeMinDate"><title>minDate (Class Method)</title>
 <indexterm><primary>minDate method</primary>
@@ -2905,7 +2918,7 @@ and will not change if you change the default directory.
 </para>
 
 <!-- Modified: lastAccessed= and lastModified= combined into attribute -->
-<!-- $GENERATED-20190217-START rexxrefClassTable(File) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(File) -->
 <table id="ooRexxFileClass" frame="all" pgwide="1">
 <title>File Class</title>
 <tgroup cols="1">
@@ -2913,6 +2926,10 @@ and will not change if you change the default directory.
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">+ Orderable (Mixin Class)</emphasis></entry>
  </row>
@@ -2977,7 +2994,7 @@ and will not change if you change the default directory.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20190217-END rexxrefClassTable(File) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(File) -->
 
 <section id="mthFileIsCaseSensitiveClsMth"><title>isCaseSensitive (Class Method)</title>
 <indexterm><primary>isCaseSensitive method</primary>
@@ -3946,7 +3963,7 @@ message is sent to the notification target.
 <para>This class is defined as a MIXIN class.
 </para>
 
-<!-- $GENERATED-20151016-START rexxrefClassTable(MessageNotification) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(MessageNotification) -->
 <table id="ooRexxMessageNotificationClass" frame="all" pgwide="1">
 <title>MessageNotification Class</title>
 <tgroup cols="1">
@@ -3954,6 +3971,10 @@ message is sent to the notification target.
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">MessageNotification (Mixin Class)</emphasis></entry>
  </row>
@@ -3965,8 +3986,7 @@ message is sent to the notification target.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20151016-END rexxrefClassTable(MessageNotification) -->
-
+<!-- $GENERATED-20190429-END rexxrefClassTable(MessageNotification) -->
 
 <!-- Class MessageNotification - method messageComplete ============ -->
 <section id="mthMessageNotificationMessageComplete" revisionflag="added"><title>&added50;messageComplete (Abstract Method)
@@ -4001,7 +4021,7 @@ Messages sent to the Monitor object are forwarded to a different target object.
 The message target can be changed dynamically.
 </para>
 
-<!-- $GENERATED-20150923-START rexxrefClassTable(Monitor) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(Monitor) -->
 <table id="ooRexxMonitorClass" frame="all" pgwide="1">
 <title>Monitor Class</title>
 <tgroup cols="1">
@@ -4009,6 +4029,10 @@ The message target can be changed dynamically.
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">Monitor</emphasis></entry>
  </row>
@@ -4023,7 +4047,7 @@ The message target can be changed dynamically.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20150923-END rexxrefClassTable(Monitor) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(Monitor) -->
 
 <section id="mthMonitorCurrent"><title>current</title>
 <indexterm><primary>current method</primary>
@@ -4129,7 +4153,7 @@ longer string objects because it creates fewer intermediate objects.
 </para>
 
 <!-- modified: combined delete()/delStr() -->
-<!-- $GENERATED-20170214-START rexxrefClassTable(MutableBuffer) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(MutableBuffer) -->
 <table id="ooRexxMutableBufferClass" frame="all" pgwide="1">
 <title>MutableBuffer Class</title>
 <tgroup cols="1">
@@ -4137,6 +4161,10 @@ longer string objects because it creates fewer intermediate objects.
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">MutableBuffer</emphasis></entry>
  </row>
@@ -4163,7 +4191,9 @@ longer string objects because it creates fewer intermediate objects.
    <member><xref linkend="mthMutableBufferContains" xrefstyle="select:title"/></member>
    <member><xref linkend="mthMutableBufferContainsWord" xrefstyle="select:title"/></member>
    <member><xref linkend="mthMutableBufferCountStr" xrefstyle="select:title"/></member>
-<!-- <member><xref linkend="mthMutableBufferDelete" xrefstyle="select:title"/></member> -->
+<!--
+   <member><xref linkend="mthMutableBufferDelete" xrefstyle="select:title"/></member>
+-->
    <member><xref linkend="mthMutableBufferDelStr" xrefstyle="select:title"/></member>
    <member><xref linkend="mthMutableBufferDelWord" xrefstyle="select:title"/></member>
    <member><xref linkend="mthMutableBufferEndsWith" xrefstyle="select:title"/></member>
@@ -4201,7 +4231,7 @@ longer string objects because it creates fewer intermediate objects.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20170214-END rexxrefClassTable(MutableBuffer) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(MutableBuffer) -->
 
 <section id="mthMutableBufferNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
@@ -5738,7 +5768,7 @@ which the search is to be started.</para>
 <para>The <classname>Orderable</classname> class is defined as a MIXIN class.
 </para>
 
-<!-- $GENERATED-20150923-START rexxrefClassTable(Orderable) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(Orderable) -->
 <table id="ooRexxOrderableClass" frame="all" pgwide="1">
 <title>Orderable Class</title>
 <tgroup cols="1">
@@ -5747,18 +5777,22 @@ which the search is to be started.</para>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
  </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
+ </row>
  <row><entry align="center"><emphasis role="bold">Orderable (Mixin Class)</emphasis></entry>
  </row>
  <row><entry>
   <simplelist>
-   <member><xref linkend="mthOrderableComparisonMethods" xrefstyle="select:title"/> = == &lt; &lt;= &lt;&lt; &lt;&lt;= &lt;&gt; &gt; &gt;= &gt;&lt; &gt;&gt; &gt;&gt;= \= \== \&lt; \&lt;&lt; \&gt; \&gt;&gt;</member>
+   <member><xref linkend="mthOrderableComparisonMethods" xrefstyle="select:title"/> = == &lt; &lt;= &lt;&lt; &lt;&lt;= &lt;> > >= >&lt; >> >>= \= \== \&lt; \&lt;&lt; \> \>></member>
    <member><xref linkend="mthOrderableCompareTo" xrefstyle="select:title"/></member>
   </simplelist>
  </entry></row>
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20150923-END rexxrefClassTable(Orderable) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(Orderable) -->
 
 <section id="mthOrderableCompareTo" revisionflag="changed"><title>&changed50;compareTo</title>
 <indexterm><primary>compareTo method</primary>
@@ -5985,7 +6019,7 @@ and can only be created using the native code application programming interfaces
 The Pointer class new method will raise an error if invoked.
 </para>
 
-<!-- $GENERATED-20150924-START rexxrefClassTable(Pointer) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(Pointer) -->
 <table id="ooRexxPointerClass" frame="all" pgwide="1">
 <title>Pointer Class</title>
 <tgroup cols="1">
@@ -5993,6 +6027,10 @@ The Pointer class new method will raise an error if invoked.
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">Pointer</emphasis></entry>
  </row>
@@ -6008,7 +6046,7 @@ The Pointer class new method will raise an error if invoked.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20150924-END rexxrefClassTable(Pointer) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(Pointer) -->
 
 <section id="mthPointerNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
@@ -6123,7 +6161,7 @@ Use <code>::requires "rxregexp.cls"</code> to activate its functionality.
 </para></note>
 
 <!-- modified: commented undocumented method uninit() -->
-<!-- $GENERATED-20150923-START rexxrefClassTable(RegularExpression) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(RegularExpression) -->
 <table id="ooRexxRegularExpressionClass" frame="all" pgwide="1">
 <title>RegularExpression Class</title>
 <tgroup cols="1">
@@ -6131,6 +6169,10 @@ Use <code>::requires "rxregexp.cls"</code> to activate its functionality.
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">RegularExpression</emphasis></entry>
  </row>
@@ -6146,15 +6188,15 @@ Use <code>::requires "rxregexp.cls"</code> to activate its functionality.
    <member><xref linkend="mthRegularExpressionParse" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRegularExpressionPos" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRegularExpressionPosition" xrefstyle="select:title"/></member>
-   <!-- not documented
+<!--
    <member><xref linkend="mthRegularExpressionUninit" xrefstyle="select:title"/></member>
-   -->
+-->
   </simplelist>
  </entry></row>
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20150923-END rexxrefClassTable(RegularExpression) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(RegularExpression) -->
 
 <para>Here is a description of the syntax:</para>
 
@@ -6608,7 +6650,7 @@ It is a subclass of the <xref linkend="clsObject" xrefstyle="template:Object cla
 </para>
 
 <!-- Modified: new() and copy() are forbidden -->
-<!-- $GENERATED-20150924-START rexxrefClassTable(RexxContext) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(RexxContext) -->
 <table id="ooRexxRexxContextClass" frame="all" pgwide="1">
 <title>RexxContext Class</title>
 <tgroup cols="1">
@@ -6616,6 +6658,10 @@ It is a subclass of the <xref linkend="clsObject" xrefstyle="template:Object cla
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">RexxContext</emphasis></entry>
  </row>
@@ -6646,7 +6692,7 @@ It is a subclass of the <xref linkend="clsObject" xrefstyle="template:Object cla
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20150924-END rexxrefClassTable(RexxContext) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(RexxContext) -->
 
 <section id="mthRexxContextArgs"><title>args</title>
 <indexterm><primary>args method</primary>
@@ -6995,8 +7041,8 @@ other instances cannot be created or copied.
 </itemizedlist>
 </para>
 
-<!-- Modified: remove forbidden "mthRexxInfoNew" and "mthRexxInfoCopy" -->
-<!-- $GENERATED-20181222-START rexxrefClassTable(RexxInfo) -->
+<!-- Modified: new() and copy() are forbidden -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(RexxInfo) -->
 <table id="ooRexxRexxInfoClass" frame="all" pgwide="1">
 <title>RexxInfo Class</title>
 <tgroup cols="1">
@@ -7005,12 +7051,24 @@ other instances cannot be created or copied.
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
  </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
+ </row>
  <row><entry align="center"><emphasis role="bold">RexxInfo</emphasis></entry>
  </row>
  <row><entry>
+<!-- new() is forbidden
+  <simplelist>
+   <member><xref linkend="mthRexxInfoNew" xrefstyle="select:title"/></member>
+  </simplelist>
+-->
   <simplelist columns="3">
    <member><xref linkend="mthRexxInfoArchitecture" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRexxInfoCaseSensitiveFiles" xrefstyle="select:title"/></member>
+<!-- copy() is forbidden
+   <member><xref linkend="mthRexxInfoCopy" xrefstyle="select:title"/></member>
+-->
    <member><xref linkend="mthRexxInfoDate" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRexxInfoDigits" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRexxInfoDirectorySeparator" xrefstyle="select:title"/></member>
@@ -7039,7 +7097,7 @@ other instances cannot be created or copied.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20181222-END rexxrefClassTable(RexxInfo) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(RexxInfo) -->
 
 <!-- Class RexxInfo - method architecture ========================== -->
 <section id="mthRexxInfoArchitecture" revisionflag="added"><title>&added50;architecture</title>
@@ -7711,7 +7769,7 @@ Rexx external data queues.
 </para>
 
 <!-- modified: added link to "new (Inherited Class Method)" pointing to init() -->
-<!-- $GENERATED-20150923-START rexxrefClassTable(RexxQueue) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(RexxQueue) -->
 <table id="ooRexxRexxQueueClass" frame="all" pgwide="1">
 <title>RexxQueue Class</title>
 <tgroup cols="1">
@@ -7719,6 +7777,10 @@ Rexx external data queues.
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">RexxQueue</emphasis></entry>
  </row>
@@ -7749,7 +7811,7 @@ Rexx external data queues.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20150923-END rexxrefClassTable(RexxQueue) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(RexxQueue) -->
 
 <section id="mthRexxQueueCreate"><title>create (Class Method)</title>
 <indexterm><primary>create method</primary>
@@ -8086,8 +8148,8 @@ are useful for debugging and problem determination.
 StackFrame instances cannot be directly created by the user.
 </para>
 
-<!-- Modified: "new" forbidden -->
-<!-- $GENERATED-20170929-START rexxrefClassTable(StackFrame) -->
+<!-- Modified: new() is forbidden  -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(StackFrame) -->
 <table id="ooRexxStackFrameClass" frame="all" pgwide="1">
 <title>StackFrame Class</title>
 <tgroup cols="1">
@@ -8096,10 +8158,14 @@ StackFrame instances cannot be directly created by the user.
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
  </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
+ </row>
  <row><entry align="center"><emphasis role="bold">StackFrame</emphasis></entry>
  </row>
  <row><entry>
-<!-- "new" forbidden
+<!-- new() is forbidden
   <simplelist>
    <member><xref linkend="mthStackFrameNew" xrefstyle="select:title"/></member>
   </simplelist>
@@ -8119,7 +8185,7 @@ StackFrame instances cannot be directly created by the user.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20170929-END rexxrefClassTable(StackFrame) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(StackFrame) -->
 
 <section id="mthStackFrameArguments"><title>arguments</title>
 <indexterm><primary>arguments method</primary>
@@ -8400,7 +8466,7 @@ PROGRAM C:\stackFrame.rex() 1: 1 *-* interpret "call level2" 21
   iteration progresses.
 </para>
 
-<!-- $GENERATED-20150924-START rexxrefClassTable(StreamSupplier) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(StreamSupplier) -->
 <table id="ooRexxStreamSupplierClass" frame="all" pgwide="1">
 <title>StreamSupplier Class</title>
 <tgroup cols="1">
@@ -8408,6 +8474,10 @@ PROGRAM C:\stackFrame.rex() 1: 1 *-* interpret "call level2" 21
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">Supplier</emphasis></entry>
  </row>
@@ -8429,7 +8499,7 @@ PROGRAM C:\stackFrame.rex() 1: 1 *-* interpret "call level2" 21
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20150924-END rexxrefClassTable(StreamSupplier) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(StreamSupplier) -->
 
 <section id="mthStreamSupplierAvailable"><title>available</title>
 <indexterm><primary>available method</primary>
@@ -8546,7 +8616,7 @@ instruction.
 The iteration results are not affected by later changes to the source Collection object.
 </para>
 
-<!-- $GENERATED-20150924-START rexxrefClassTable(Supplier) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(Supplier) -->
 <table id="ooRexxSupplierClass" frame="all" pgwide="1">
 <title>Supplier Class</title>
 <tgroup cols="1">
@@ -8554,6 +8624,10 @@ The iteration results are not affected by later changes to the source Collection
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">Supplier</emphasis></entry>
  </row>
@@ -8577,7 +8651,7 @@ The iteration results are not affected by later changes to the source Collection
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20150924-END rexxrefClassTable(Supplier) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(Supplier) -->
 
 <section id="mthSupplierNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
@@ -8806,8 +8880,8 @@ If cancelled, a cancel notification message will be sent to the
 notification target.
 </para>
 
-<!-- Modified: remove separate alias "cancelled" -->
-<!-- $GENERATED-20151026-START rexxrefClassTable(Ticker) -->
+<!-- modified: combined canceled()/cancelled() -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(Ticker) -->
 <table id="ooRexxTickerClass" frame="all" pgwide="1">
 <title>Ticker Class</title>
 <tgroup cols="1">
@@ -8816,6 +8890,10 @@ notification target.
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
  </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
+ </row>
  <row><entry align="center"><emphasis role="bold">Ticker</emphasis></entry>
  </row>
  <row><entry>
@@ -8823,7 +8901,7 @@ notification target.
    <member><xref linkend="mthTickerAttachment" xrefstyle="select:title"/></member>
    <member><xref linkend="mthTickerCancel" xrefstyle="select:title"/></member>
    <member><xref linkend="mthTickerCanceled" xrefstyle="select:title"/></member>
-<!-- already covered by "mthTickerCanceled"
+<!--
    <member><xref linkend="mthTickerCancelled" xrefstyle="select:title"/></member>
 -->
    <member><xref linkend="mthTickerInit" xrefstyle="select:title"/></member>
@@ -8833,7 +8911,7 @@ notification target.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20151026-END rexxrefClassTable(Ticker) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(Ticker) -->
 
 
 <!-- Class Ticker - method attachment ============================== -->
@@ -9073,7 +9151,7 @@ operations between TimeSpan objects.
 
 <!-- modified: changed class method list from 3- to 2-column for a better fit -->
 <!-- modified: added link to "new (Inherited Class Method)" pointing to init() -->
-<!-- $GENERATED-20150923-START rexxrefClassTable(TimeSpan) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(TimeSpan) -->
 <table id="ooRexxTimeSpanClass" frame="all" pgwide="1">
 <title>TimeSpan Class</title>
 <tgroup cols="1">
@@ -9081,6 +9159,10 @@ operations between TimeSpan objects.
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">+ Orderable (Mixin Class)</emphasis></entry>
  </row>
@@ -9138,7 +9220,7 @@ operations between TimeSpan objects.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20150923-END rexxrefClassTable(TimeSpan) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(TimeSpan) -->
 
 <section id="mthTimeSpanFromDays"><title>fromDays (Class Method)</title>
 <indexterm><primary>fromDays method</primary>
@@ -9897,7 +9979,7 @@ or within a numeric range.
 </para>
 
 <!-- modified: columns="2" -->
-<!-- $GENERATED-20180226-START rexxrefClassTable(Validate) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(Validate) -->
 <table id="ooRexxValidateClass" frame="all" pgwide="1">
 <title>Validate Class</title>
 <tgroup cols="1">
@@ -9905,6 +9987,10 @@ or within a numeric range.
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">Validate</emphasis></entry>
  </row>
@@ -9927,7 +10013,7 @@ or within a numeric range.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20180226-END rexxrefClassTable(Validate) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(Validate) -->
 
 
 <!-- Class Validate - method classType ======================== -->
@@ -10218,7 +10304,7 @@ instance is not allowed.
 </para>
 
 <!-- modified: removed new() and combined value= into attribute -->
-<!-- $GENERATED-20190203-START rexxrefClassTable(VariableReference) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(VariableReference) -->
 <table id="ooRexxVariableReferenceClass" frame="all" pgwide="1">
 <title>VariableReference Class</title>
 <tgroup cols="1">
@@ -10226,6 +10312,10 @@ instance is not allowed.
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">VariableReference</emphasis></entry>
  </row>
@@ -10248,7 +10338,7 @@ instance is not allowed.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20190203-END rexxrefClassTable(VariableReference) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(VariableReference) -->
 
 
 <!-- Class VariableReference - method name ========================= -->
@@ -10363,7 +10453,7 @@ cleared and the VALUE method will return &nil; on all subsequent calls.
 WeakReferences are useful for maintaining caches of objects without preventing
 the objects from being reclaimed by the garbage collector when needed.</para>
 
-<!-- $GENERATED-20150924-START rexxrefClassTable(WeakReference) -->
+<!-- $GENERATED-20190429-START rexxrefClassTable(WeakReference) -->
 <table id="ooRexxWeakReferenceClass" frame="all" pgwide="1">
 <title>WeakReference Class</title>
 <tgroup cols="1">
@@ -10371,6 +10461,10 @@ the objects from being reclaimed by the garbage collector when needed.</para>
  <row><entry align="center"><emphasis role="bold">Object</emphasis></entry>
  </row>
  <row><entry>Methods inherited from the <xref linkend="clsObject" xrefstyle="template:Object class"/></entry>
+ </row>
+ <row><entry align="center"><emphasis role="bold">Class (Metaclass)</emphasis></entry>
+ </row>
+ <row><entry>Methods inherited from the <xref linkend="clsClass" xrefstyle="template:Class class"/></entry>
  </row>
  <row><entry align="center"><emphasis role="bold">WeakReference</emphasis></entry>
  </row>
@@ -10385,7 +10479,7 @@ the objects from being reclaimed by the garbage collector when needed.</para>
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20150924-END rexxrefClassTable(WeakReference) -->
+<!-- $GENERATED-20190429-END rexxrefClassTable(WeakReference) -->
 
 <section id="mthWeakReferenceNew"><title>new (Class Method)</title>
 <indexterm><primary>new method</primary>
