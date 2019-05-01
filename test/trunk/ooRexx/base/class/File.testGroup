@@ -567,9 +567,32 @@ return testResult
   self~assertTrue(f~canRead)
   self~assertTrue(f~canWrite)
 
+-- temporaryPath tests
 
+::method test_temporaryPath_one_arg
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  .File~temporaryPath(.nil)
 
-
+::method test_temporaryPath
+  if .RexxInfo~platform~caselessStartsWith("Windows") then
+    do
+      do name over "TMP", "TEMP", "USERPROFILE"
+        temp = value(name, , "environment")
+        if temp == "" then
+          iterate
+        self~assertSame(temp, .File~temporaryPath)
+        return
+      end
+      self~assertSame(directory(), .File~temporaryPath)
+    end
+  else
+    do
+      temp = value("TMPDIR", , "environment")
+      if temp \= "" then
+        self~assertSame(temp, .File~temporaryPath)
+      else
+        self~assertSame("/tmp", .File~temporaryPath)
+    end
 
 
 ::options novalue error
