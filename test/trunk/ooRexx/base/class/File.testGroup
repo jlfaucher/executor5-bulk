@@ -567,32 +567,59 @@ return testResult
   self~assertTrue(f~canRead)
   self~assertTrue(f~canWrite)
 
+
 -- temporaryPath tests
 
 ::method test_temporaryPath_one_arg
   self~expectSyntax(93.902) -- Too many arguments in invocation of method
   .File~temporaryPath(.nil)
 
-::method test_temporaryPath
+::method test_temporaryPath_file
+  self~assertIsA(.File~temporaryPath, .File)
+
+::method test_temporaryPath_accessible
+  temp = .File~temporaryPath
+  self~assertTrue(temp~isDirectory, "temporaryPath" temp "should be a directory")
+  self~assertTrue(temp~canRead, "temporaryPath" temp "should be readable")
+  self~assertTrue(temp~canWrite, "temporaryPath" temp "should be writable")
+
+-- on Windows environment variables TMP, TEMP, USERPROFILE are checked in sequence
+::method test_temporaryPath_environment_variables_windows
+  if \.RexxInfo~platform~caselessStartsWith("Windows") then
+    return
+
+  tmp = value("TMP", "c:\testtmp", "environment")
+  self~assertSame("c:\testtmp", .File~temporaryPath)
+  call value "TMP", .nil, "environment"
+
+  -- if TMP isn't set, TEMP is checked
+  temp = value("TEMP", "c:\testtemp", "environment")
+  self~assertSame("c:\testtemp", .File~temporaryPath)
+  call value "TEMP", .nil, "environment"
+
+  -- if neither TMP nor TEMP is set, USERPROFILE is checked
+  user = value("USERPROFILE", "c:\testuser", "environment")
+  self~assertSame("c:\testuser", .File~temporaryPath)
+
+  -- restore environment
+  call value "TMP", tmp, "environment"
+  call value "TEMP", temp, "environment"
+  call value "USERPROFILE", user, "environment"
+
+-- on Unix environment variable TMPDIR is checked
+::method test_temporaryPath_environment_variables_unix
   if .RexxInfo~platform~caselessStartsWith("Windows") then
-    do
-      do name over "TMP", "TEMP", "USERPROFILE"
-        temp = value(name, , "environment")
-        if temp == "" then
-          iterate
-        self~assertSame(temp, .File~temporaryPath)
-        return
-      end
-      self~assertSame(directory(), .File~temporaryPath)
-    end
-  else
-    do
-      temp = value("TMPDIR", , "environment")
-      if temp \= "" then
-        self~assertSame(temp, .File~temporaryPath)
-      else
-        self~assertSame("/tmp", .File~temporaryPath)
-    end
+    return
+
+  tmpDir = value("TMPDIR", "/testtmpdir", "environment")
+  self~assertSame("/testtmpdir", .File~temporaryPath)
+  call value "TMPDIR", .nil, "environment"
+
+  -- if TMPDIR isn't set, "/tmp" is returned unconditionally
+  self~assertSame("/tmp", .File~temporaryPath)
+
+  -- restore environment
+  call value "TMPDIR", tmpDir, "environment"
 
 
 ::options novalue error
