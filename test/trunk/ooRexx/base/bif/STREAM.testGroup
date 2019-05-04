@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007 - 2018 Rexx Language Association. All rights reserved.  */
+/* Copyright (c) 2007-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -398,7 +398,7 @@ return testResult
   call deleteFile fileName
   fileName = createFile(.array~new, fileName)
   self~assertTrue(fileName \== "")
-  setWriteOnly fileName
+  setWriteOnly '"' || filename || '"'
   self~streamTestingFile = fileName
   line = "line1"
   ret = charout(fileName, line)
@@ -429,7 +429,7 @@ return testResult
   call deleteFile fileName
   fileName = createFile(.array~of("line1"), fileName)
   self~assertTrue(fileName \== "")
-  setWriteOnly fileName
+  setWriteOnly '"' || filename || '"'
   self~streamTestingFile = fileName
   line = "line2"
   ret = charout(fileName, line)
@@ -460,7 +460,7 @@ return testResult
   call deleteFile fileName
   fileName = createFile(.array~new, fileName)
   self~assertTrue(fileName \== "")
-  setWriteOnly fileName
+  setWriteOnly '"' || filename || '"'
   self~streamTestingFile = fileName
   ret = stream(fileName, "c", "open write append")
   self~assertSame("READY:", ret) -- ko before fix
@@ -493,7 +493,7 @@ return testResult
   call deleteFile fileName
   fileName = createFile(.array~of("line1"), fileName)
   self~assertTrue(fileName \== "")
-  setWriteOnly fileName
+  setWriteOnly '"' || filename || '"'
   self~streamTestingFile = fileName
   ret = stream(fileName, "c", "open write append")
   self~assertSame("READY:", ret) -- ko before fix

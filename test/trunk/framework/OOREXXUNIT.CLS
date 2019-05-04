@@ -1,127 +1,4 @@
 #!/usr/bin/env rexx
-/*
--- this is a ooRexx line comment, will get ignored by pre-processor which analyzes this header
--- enclosed between the very first block comment, i.e. everything between the first "/*" .. "*/"
-
-   name:             ooRexxUnit.cls
-   author:           Rony G. Flatscher, Rick McGuire
-   date:             2005-08-07
-   version:          2.0.0
-   changed1:         2005-08-07, ---rgf, moved assertion routines to a class "Assert", which
-                                 serves as a superclass for TestCase: this is the junit-approach
-                     2005-08-20, ---rgf, added license, assertCount, corrected some little bugs
-                     2005-08-21, ---rgf, added public routine "makeTestSuiteFromFileList()"
-                     2005-08-30, ---rgf, changed some comments from "ooRexx" to "ooRexxUnit"
-                     2005-10-09, ---rgf, only count assertions, if successful
-                     2005-10-14, ---rgf, changed failure-message string slightly to improve understandibility
-                     2005-10-27, ---rgf, added ability to report which assertion failed for what reason
-                                         (suggested by Walter Pachl)
-                     2005-10-28, ---rgf, added @assertFailure attribute to lead-in the report on
-                                         the assertion failure, removed angle-brackets from that added text
-                     2006-03-25, ---rgf, removed 'private' attribute from TestResult's ooRexx only attributes
-                                         "logQueue" and "TestCaseTable"
-                     2006-04-11, Rick McGuire, added condition-handling to Assert and TestCase.run()
-                     2006-05-17, ---rgf, altered Rick's code slightly,
-                                            expectSyntax(errorCode) and
-                                            expectCondition(conditionName)
-                     2006-10-17, ---rgf, escape non-printable chars in error/failure string information to
-                                         a Rexx style string literal (concatenating hexadecimal strings);
-                                         use new syntax error # 93.964 (application error) instead of
-                                         error # 40.1, which had to be used prior to ooRexx 3.1.1
-                     2006-11-05, ---rgf, - moved initialisation of "defaultTestResultClass" to the class'
-                                           constructor; *but* this also needs the definition of the "TestResult"
-                                           class to be moved physically before the "TestCase" class (otherwise
-                                           the class is not known yet and the string ".TESTREUSLT" is stored
-                                           instead of the class object!!);
-                                         - error message encodings now always add a colon to the word "ERROR"; the
-                                           the error message after the eye catcher string "--->" is not enquoted
-                                           in square brackets anymore
-                                         - failure message encodings, if given, now use the string "--->"
-                                           as an eye catcher for parsing and is not enquoted in square brackets anymore
-                     2006-11-27, ---rgf, - changed Assert[Not]Same to show ObjectID in failure message to ease comparison
-                     2006-11-28, ---rgf, - corrected logic to intercept any condition from running a test case
-                     2006-12-13, ---rgf, - changed wording from "expected condition...was not received" to
-                                           "expected condition...was not raised"
-                                         - made sure that "makeTestSuiteFromFileList()" will create an own test suite per
-                                           test class for which mandatory test methods got listed
-                     2006-12-14, ---rgf, added hashbang line
-                     2006-12-26/27/28, ---rgf, - removed "bWalterPachl" flag (to show reason of failure) as
-                                           reason of failures are always shown; even if no failure message
-                                           is supplied the assertion methods will still supply the "@assertionFailure"
-                                           string to indicate expected and (not matching) received values
-                                         - enhanced "assertEquals" to work on ordered and unordered collections:
-                                           - unordered collections (of any type) are regarded to be equal, if both contain
-                                             the same number of the same index/value pairs;
-                                           - ordered collections (of any type) are regarded to be equal, if the items
-                                             in the MAKEARRAY object are the same in the same order
-                     2006-12-30, ---rgf, added method assertNotEquals to Assert class (ooRexxUnit only, makes it easier
-                                         to test for unequal collection values)
-                     2007-01-24, ---rgf, - changed EOL to Unix style (to make hash-bang work on Unix)
-                                         - added a function ooRexxUnit.getShellName(): central routine to return
-                                           the name of the shell to ADDRESS to
-                     2007-01-??, Mark Miesfeld, - added ooRexxUnit.getShellName()
-                                                - added ooRexxUnit.getOSName()
-                     2007-04-28, ---rgf, - makeTestSuiteFromFileList(): if required files are missing
-                                           in testUnit's, then program does not abend, rather it ignores
-                                           that testUnit, displying the condition on STDERR
-                                         - added ooRexxUnit.formatConditionObject()
-                     2007-05-27, ---rgf, - added environment symbols ".oorexxunit.interpreterName",
-                                           ".oorexxunit.languageLevel" and ".oorexxunit.interpreterDate",
-                                           retrieved from "PARSE VERSION"
-                     2007-05-30, ---rgf, - added environment symbols ".ooRexxUnit.shellName", "ooRexxUnit.OSName",
-                                           ".ooRexxUnit.line.separator", ".ooRexxUnit.directory.separator",
-                                           ".ooRexxUnit.path.separator"
-                     2007-07-12, ---rgf, - added attribute 'definedInFile' to 'TestCase' class
-                                         - 'TestResult': new directory entry in queue for 'startTest' and 'endTest'
-                                           named 'OOREXXUNIT.CLASS_TESTCASEINFO', which refers to the class object's
-                                           'testCaseInfo' directory
-                                         - 'makeTestCaseString()': now returns fully qualified filename after
-                                           '@' marker or the string "n/a_XXXXXXXX", where "XXXXXX" is o~"=="~c2x
-                     2007-07-19, ---rgf, - added option to "TestCase" and "TestSuite"'s 'run' method to
-                                           display information about the test case to be run about to stderr;
-                                           this can be used to present the user a feedback about the proceedings
-                                           of the tests
-                     2007-08-17, ---rgf, - corrected a small typo; now that we have a release version removing pre 3.2
-                                           code and tests, using new features
-                     2007-08-18, ---mm,  - add public routine simpleFormatTestResults()
-                     2007-10-10, ---rgf, - enhanced framework to allow accepting testSuite objects at testSuite
-                                           creation time (and also collections of test cases)
-                     2008-01-07  ---mm,  - Major re-work of the framework, bumping level to 2.0.0
-
-
-   language-level:   6.0.2
-   needs:            ooRexx 3.2 or later
--- determines the minimum ooRexx language level (6.02 = ooRexx, IBM Object REXX)
-
-   purpose:          Supply the base classes for a JUnit compliant testing framework for ooRexx
-
-   remark:           The original design tried, wherever possible, to use the JUnit class and
-                     method names in an effort to make ooRexxUnit easier to understand.  However,
-                     this lead to some poor design choices in spots and this design goal no
-                     longer has a high priority in ooRexxUnit 2.0.0.
-
-                     Nevetheless, ooRexxUnitstill sticks closely to the design of JUnit 3.8.x
-                     and persons familiar with JUnit should have no trouble in understanding
-                     ooRexxUnit.  For an excellent overview of this design read the cookstour
-                     document, the link to which is provided below.
-
-   license:          CPL 1.0 (Common Public License v1.0, see below)
-
-   link:             http://www.junit.org
-                     http://junit.sourceforge.net/doc/cookbook/cookbook.htm
-                     http://junit.sourceforge.net/doc/cookstour/cookstour.htm
-
-
--- there may be any number of subcategories, most important listed first, second important second, ...
--- no need to append numbers, but may be easier to realize the category level easily
-
--- this is the main categorization
-   category0:        ooRexxUnit
-
--- this is the next concrete categorization
-   category1:        framework
-*/
-
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /* Copyright (c) 2005-2019 Rexx Language Association. All rights reserved.    */
@@ -129,7 +6,7 @@
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
 /* distribution. A copy is also available at the following address:           */
-/* http://www.opensource.org/licenses/cpl1.0.php                              */
+/* http://www.oorexx.org/license.html                                         */
 /*                                                                            */
 /* Redistribution and use in source and binary forms, with or                 */
 /* without modification, are permitted provided that the following            */
@@ -158,6 +35,28 @@
 /* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
+/*
+   name:             ooRexxUnit.cls
+
+   purpose:          Supply the base classes for a JUnit compliant testing framework for ooRexx
+
+   remark:           The original design tried, wherever possible, to use the JUnit class and
+                     method names in an effort to make ooRexxUnit easier to understand.  However,
+                     this lead to some poor design choices in spots and this design goal no
+                     longer has a high priority in ooRexxUnit 2.0.0.
+
+                     Nevetheless, ooRexxUnitstill sticks closely to the design of JUnit 3.8.x
+                     and persons familiar with JUnit should have no trouble in understanding
+                     ooRexxUnit.  For an excellent overview of this design read the cookstour
+                     document, the link to which is provided below.
+
+   link:             http://www.junit.org
+                     http://junit.sourceforge.net/doc/cookbook/cookbook.htm
+                     http://junit.sourceforge.net/doc/cookstour/cookstour.htm
+
+   category0:        ooRexxUnit
+   category1:        framework
+*/
 
   -- Define the version number with: x.x.x_y.y.y  Where x is the ooRexxUnit.cls
   -- version, and y is the minimum ooRexx interpreter level required.
@@ -2203,6 +2102,10 @@ return 0
 -- get the full resolved name of this file
 ::method fullName
   forward message "absolutePath"
+
+-- get the quoted name of this file
+::method quotedName
+  return '"' || self~absolutePath || '"'
 
 -- create a file from an array of lines
 ::method create
