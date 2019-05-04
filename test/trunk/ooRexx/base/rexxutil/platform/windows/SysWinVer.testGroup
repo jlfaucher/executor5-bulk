@@ -43,6 +43,7 @@
 
   group = .TestGroup~new(s)
   group~add(.SysWinVer.testGroup)
+  group~restrictOS("WINDOWS")
 
   if group~isAutomatedTest then return group
 
