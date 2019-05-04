@@ -19,7 +19,9 @@ For Windows, instead of GMP, we're using MPIR, a GMP drop-in replacement.
 (on http://mpir.org/ download and unpack "Source zip file", download "Documentation"
 and follow steps 2.4 Building with Microsoft Visual Studio:
 1. from http://yasm.tortall.net/Download.html download "Win64 VS2010 .zip", unpack and
-   copy vsyasm.exe to "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin"
+   copy vsyasm.exe to "C:\Program Files\yasm" (you'll need to create this directory)
+   (the following used to work, but now doesn't seem to work any more:
+    copy vsyasm.exe to "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin")
 2. from unpacked MPIR source start build.vc14\mpir.sln (which opens VS 2015)
 3. On VS 2015 pulldown "Build" select "Configuration Manager", select "Release/Debug"
    and "Win32/x64", then unselect all but a single dll_mpir project, e.g. dll_mpir_gc
@@ -52,7 +54,7 @@ TO DO:
   5.11 Logical and Bit Manipulation Functions
   5.12 Input and Output Functions
 - add function result(), which returns "lost" results from e. g. mod(), root(), remove()
-- it seems that the isInstanceOf() teest is relatively expensive (1 microsec each?):
+- it seems that the isInstanceOf() test is relatively expensive (1 microsec each?):
   instead we might a) mark our 'MPZ' struct with (e. g.) "mpz"mpz' and use
   CSELF (or CselfToObject) to see if we can access such a struct, or NULL is returned
 - add additional non-GMP convenience methods startsWith, endsWith(), contains()
@@ -66,17 +68,18 @@ TO DO:
     else if (isNumberString(argument
       return((NumberString *)argument)->abs();
 - can we catch exceptions? we currently explicitly check args instead, because
-  there seems to be no portable way of cathing zero-divide
+  there seems to be no portable way of catching zero-divide
 - add public method to return shortened Z string representation
-- we generally create new result Z instance before checking for valid argmuments; we meight want to defer this (low prio)
+- we generally create new result Z instance before checking for valid argmuments; we might want to defer this (low prio)
 - find out why we can't use the dynamic MPZ version, instead of the static one
 - check how to supprt mpz_xxx_d functions
 
 
 KNOWN BUGS:
 
-- ooRexx issue with comparisons like .z[17] = 17, which doesn't call compareTo()
-  (TO DO: report / fix bug, or circumvent with explicit "=" method)
+- ooRexx issue with comparisons like .z[17] = 17, which don't call compareTo(); see [bugs:#1365]
+  we currently circumvent this with explicit "=" and "\=" methods in mpzlib
+  TO DO: fix bug?
 - endsWith() doesn't work with negative numbers
 - if we just make a single mpz function available by e. g. using
   ::routine mpz_add_ui public external 'library mpz z_rtn_add_ui'
@@ -109,43 +112,19 @@ gmp_randstate_t RandomState;
 // ---------------------------------------------------------------------
 // Routine interface
 
-// void mpz_add_ui (mpz_t rop, const mpz_t op1, unsigned long int op2)
-RexxRoutine3(RexxObjectPtr, z_rtn_add2_ui, // routine mpz_add2_ui
-             RexxObjectPtr, rop,
-             RexxObjectPtr, op1,
-             MPZ_unsigned_long_int, op2)
-{
-  MPZ *ropSelf = (MPZ *)context->ObjectToCSelf(rop);
-  MPZ *op1Self = (MPZ *)context->ObjectToCSelf(op1);
-  if (ropSelf == NULL || ropSelf->id != ID_MPZ)
-    return wrongArgClassException(context, "rop", TheZClass);
-  if (op1Self == NULL || op1Self->id != ID_MPZ)
-    return wrongArgClassException(context, "op1", TheZClass);
 
-  mpz_add_ui(ropSelf->z, op1Self->z, op2); // rop := op1 + op2
-  return NULLOBJECT;                   // no return value
-}
-
-RexxRoutine3(RexxObjectPtr, z_rtn_add2, // routine mpz_add2
-             RexxObjectPtr, rop,
-             RexxObjectPtr, op1,
-             RexxObjectPtr, op2)
-{
-  MPZ *ropSelf = (MPZ *)context->ObjectToCSelf(rop);
-  MPZ *op1Self = (MPZ *)context->ObjectToCSelf(op1);
-  MPZ *op2Self = (MPZ *)context->ObjectToCSelf(op2);
-  if (ropSelf == NULL || ropSelf->id != ID_MPZ)
-    return wrongArgClassException(context, "rop", TheZClass);
-  if (op1Self == NULL || op1Self->id != ID_MPZ)
-    return wrongArgClassException(context, "op1", TheZClass);
-  if (op2Self == NULL || op2Self->id != ID_MPZ)
-    return wrongArgClassException(context, "op2", TheZClass);
-
-  mpz_add(ropSelf->z, op1Self->z, op2Self->z); // rop := op1 + op2
-  return NULLOBJECT;                   // no return value
-}
-
-
+// 5.2 Assignment Functions
+// void mpz_set (mpz_t rop, const mpz_t op)
+// void mpz_set_ui (mpz_t rop, unsigned long int op)
+// void mpz_set_si (mpz_t rop, signed long int op)
+// void mpz_set_d (mpz_t rop, double op)
+// void mpz_set_q (mpz_t rop, const mpq_t op)
+// void mpz_set_f (mpz_t rop, const mpf_t op)
+// int mpz_set_str (mpz_t rop, const char *str, int base)
+// void mpz_swap (mpz_t rop1, mpz_t rop2)
+REXX_ROUTINE_2(RXO, set,       RXO, rop, RXO,     op)
+REXX_ROUTINE_2(RXO, set_ui,    RXO, rop, RXULONG, op)
+REXX_ROUTINE_2(RXO, set_si,    RXO, rop, RXLONG,  op)
 
 /*
 // void mpz_add_ui (mpz_t rop, const mpz_t op1, unsigned long int op2)
@@ -1342,7 +1321,7 @@ RexxMethod2(RexxObjectPtr, z_lcm,      // method lcm()
   RexxObjectPtr rop = context->SendMessage0(TheZClass, "NEW");
 
   // we support two lcm() forms:
-  //   lcm(z), handled by mpz_lcm_ui
+  //   lcm(z), handled by mpz_lcm
   //   lcm(unsigned), handled by mpz_lcm_ui
   if (context->IsInstanceOf(op2, TheZClass))
   {
@@ -1381,7 +1360,7 @@ RexxMethod2(RexxObjectPtr, z_remove,   // method remove()
   // create new result Z instance
   RexxObjectPtr rop = context->SendMessage0(TheZClass, "NEW");
 
-  // mpz_remove() result value 'a' (how man factors) will be lost
+  // mpz_remove() result value (how many factors) will be lost
   mpz_remove(OBJ_SELF_Z(rop), SELF_Z(op), OBJ_SELF_Z(f)); // rop := op % f^a
   return rop;                          // return result instance
 }
@@ -1840,9 +1819,13 @@ RexxMethod3(RexxObjectPtr, z_test_cls, // class method test()
 // ::routine mpz_add_ui public external 'library mpz rtn_add_ui'
 // do the renaming
 RexxRoutineEntry mpz_routines[] = {
-  TYPED_ROUTINE(add2           ),  // development only
-  TYPED_ROUTINE(add2_ui        ),  // development only
 
+  // 5.2 Assignment Functions
+  TYPED_ROUTINE(set            ),
+  TYPED_ROUTINE(set_ui         ),
+  TYPED_ROUTINE(set_si         ),
+
+  // 5.5 Arithmetic Functions
   TYPED_ROUTINE(add            ),
   TYPED_ROUTINE(add_ui         ),
   TYPED_ROUTINE(sub            ),

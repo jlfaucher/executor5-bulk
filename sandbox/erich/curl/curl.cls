@@ -70,28 +70,33 @@ usage examples:
   call CurlCleanup handle
   call CurlDropFuncs "UNLOAD"
 
--- access class attribute 'id'
-::attribute handle class get
 -- class attributes
 ::attribute supports class get    -- e. g. .cUrl~supports~ssl
 ::attribute protocols class get   -- e. g. .cUrl~protocols~hasItem("https")
 ::attribute version class get     -- e. g. .cUrl~version~libcurl
 ::attribute host class get        -- e. g. .cUrl~host
 
+
+-- returns string converted to encoded URL
+-- all chars except [-._~a-zA-Z0-9] are converted to %nn
 ::method escape class
   expose handle
 
   use strict arg url
-  call CurlEscape handle, url
+  string = CurlEscape(handle, url)
   call testForFailure "Escape", curlerror.
+  return string
 
 
+-- returns encoded URL converted to plain URL
+-- all %nn - encoded chars are converted to their binary representation
 ::method unEscape class
   expose handle
 
   use strict arg url
-  call CurlUnescape handle, url
+  string = CurlUnescape(handle, url)
   call testForFailure "Unescape", curlerror.
+  return string
 
 
 ------------------------------------------------------------------------
@@ -101,7 +106,7 @@ usage examples:
 ::method init
   expose handle url
 
-  use strict arg url
+  use strict arg url = ""
 
   -- each Url instance gets its own cUrl handle
   -- "CurlLoadFuncs" function has been made available at class init time
@@ -129,10 +134,24 @@ usage examples:
   do option over options
     -- 'option' may be of the form "type [value]"
     -- if value isn't specified, it defaults to '1'
-    -- we don't support options which require a stem value 
-    if option~words = 1 then
-      option = option "1"
-    call CurlSetopt handle, option~word(1), option~subWord(2)
+    -- we really don't yet support options which read from or write to a stem
+    -- except for:
+    --   HTTPHEADER, for which we allow a single string only
+    --   HTTPPOSTFIELDS, supported by individual method setOptPostFields()
+    first = option~word(1) 
+    remainder = option~subWord(2) 
+    select
+      when first~caselessEquals("HTTPHEADER") then do
+        httpHeader.0 = 1 
+        httpHeader.1 = remainder 
+        call CurlSetopt handle, first, "httpHeader."
+      end
+      otherwise
+        if remainder = "" then
+          call CurlSetopt handle, first, 1
+        else
+          call CurlSetopt handle, first, remainder
+    end
     call testForFailure "Setopt", curlerror.
   end
 
@@ -219,7 +238,7 @@ usage examples:
 
   self~setOpt("SSLVERIFYPEER 0")
 
-  -- let get() handle everything else, including individual options
+  -- let post() handle everything else, including individual options
   forward message "POST"
 
 
@@ -247,6 +266,11 @@ usage examples:
   use strict arg
 
   forward message "GETINFO" ARRAY ("RESPONSE_CODE")
+
+
+-- returns result for an option requiring a stem, requested with setOpt()
+::method not_implemented_getOpt
+  use strict arg 
 
 
 -- private routine to test Rexx/Curl calls for failure return

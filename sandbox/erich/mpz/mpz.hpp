@@ -57,6 +57,29 @@ typedef struct MPZ
 // ---------------------------------------------------------------------
 // Macros to convert GMP functions to RexxRoutine's
 
+/* e. g.
+REXX_ROUTINE_3(RXO, add_ui,    RXO, rop, RXO, op1, RXULONG, op2)
+
+will expand to:
+
+RexxRoutine3(RexxObjectPtr, z_rtn_add_ui,
+             RexxObjectPtr, rop,
+             RexxObjectPtr, op1,
+             MPZ_unsigned_long_int, op2)
+{
+  MPZ *ropSelf = (MPZ *)context->ObjectToCSelf(rop);
+  if (ropSelf == NULL || ropSelf->id != ID_MPZ)
+    return wrongArgClassException(context, "rop", TheZClass);
+
+  MPZ *op1Self = (MPZ *)context->ObjectToCSelf(op1);
+  if (op1Self == NULL || op1Self->id != ID_MPZ)
+    return wrongArgClassException(context, "op1", TheZClass);
+
+  mpz_add_ui(ropSelf->z, op1Self->z, op2);
+  return NULLOBJECT;
+}
+*/
+
 #define REXX_ROUTINE_1(ret, name, t1, n1) \
 RexxRoutine1(ret, z_rtn_##name, t1, n1) \
 { CHECK_IF_Z_##ret##t1(n1) \
@@ -98,27 +121,50 @@ RexxRoutine5(ret, z_rtn_##name, t1, n1, t2, n2, t3, n3, t4, n4, t5, n5) \
   RETURN_NULL_IF_##ret \
 }
 
-#define CHECK_IF_Z_RXORXO(NAME)     if (!context->IsInstanceOf(NAME, TheZClass)) return wrongArgClassException(context, #NAME, TheZClass);
+// helper macros to check for valid arg type
+//
+// we don't check the argument type by using IsInstanceOf() ..
+//
+//   if (!context->IsInstanceOf(name, TheZClass)) return wrongArgClassException(context, "name", TheZClass);
+//
+// .. because it's somewhat slower than this
+//
+//   MPZ *nameSelf = (MPZ *)context->ObjectToCSelf(name);
+//   if (nameSelf == NULL || nameSelf->id != ID_MPZ)
+//     return wrongArgClassException(context, #NAME, TheZClass);
+#define CHECK_IF_Z_RXORXO(NAME)     MPZ*##NAME##Self = (MPZ *)context->ObjectToCSelf(NAME); if (NAME##Self == NULL || NAME##Self->id != ID_MPZ) return wrongArgClassException(context, #NAME, TheZClass);
 #define CHECK_IF_Z_RXORXULONG(NAME)
 #define CHECK_IF_Z_RXORXLONG(NAME)
 #define CHECK_IF_Z_RXORXLONG(NAME)
 #define CHECK_IF_Z_RXORXINT(NAME)
-#define CHECK_IF_Z_RXINTRXO(NAME)   if (!context->IsInstanceOf(NAME, TheZClass)) { wrongArgClassException(context, #NAME, TheZClass); return 0; }
+#define CHECK_IF_Z_RXINTRXO(NAME)   MPZ*##NAME##Self = (MPZ *)context->ObjectToCSelf(NAME); if (NAME##Self == NULL || NAME##Self->id != ID_MPZ) { wrongArgClassException(context, #NAME, TheZClass); return 0; }
 #define CHECK_IF_Z_RXINTRXULONG(NAME)
 #define CHECK_IF_Z_RXINTRXLONG(NAME)
 #define CHECK_IF_Z_RXINTRXLONG(NAME)
 #define CHECK_IF_Z_RXINTRXINT(NAME)
-#define CHECK_IF_Z_RXULONGRXO(NAME) if (!context->IsInstanceOf(NAME, TheZClass)) { wrongArgClassException(context, #NAME, TheZClass); return 0; }
+#define CHECK_IF_Z_RXULONGRXO(NAME) MPZ*##NAME##Self = (MPZ *)context->ObjectToCSelf(NAME); if (NAME##Self == NULL || NAME##Self->id != ID_MPZ) { wrongArgClassException(context, #NAME, TheZClass); return 0; }
 #define CHECK_IF_Z_RXULONGRXULONG(NAME)
 #define CHECK_IF_Z_RXULONGRXLONG(NAME)
 #define CHECK_IF_Z_RXULONGRXLONG(NAME)
 #define CHECK_IF_Z_RXULONGRXINT(NAME)
 
-#define MAKE_ARG_RXO(NAME)      OBJ_SELF_Z(NAME)
+// helper macros for function arguments
+//
+// for RexxObjectPtr expansion will be 'nameSelf->z'
+// for any other type expansion will be jusr 'name'
+#define MAKE_ARG_RXO(NAME)      NAME##Self->z
 #define MAKE_ARG_RXULONG(NAME)  NAME
 #define MAKE_ARG_RXLONG(NAME)   NAME
 #define MAKE_ARG_RXINT(NAME)    NAME
 
+// helper macros for function return
+//
+// final expansion for functions with no return value will be ..
+//   mpz_add_ui(ropSelf->z, op1Self->z, op2);
+//   return NULLOBJECT;
+//
+// .. or, for functions with a return value:
+//   return mpz_mod_ui(rSelf->z, nSelf->z, d);
 #define RETURN_IF_RXO
 #define RETURN_IF_RXINT         return
 #define RETURN_IF_RXULONG       return
@@ -127,6 +173,7 @@ RexxRoutine5(ret, z_rtn_##name, t1, n1, t2, n2, t3, n3, t4, n4, t5, n5) \
 #define RETURN_NULL_IF_RXINT
 #define RETURN_NULL_IF_RXULONG
 
+// helper macros to allow shorter macro definitions
 #define RXO                     RexxObjectPtr
 #define RXULONG                 MPZ_unsigned_long_int
 #define RXLONG                  MPZ_long_int
