@@ -3040,12 +3040,8 @@ On Unix, there is just one root ( <literal>/</literal> ).
 <title>File class</title>
 <programlisting>
 <![CDATA[
-say .File~listRoots~toString
-/* Possible output on Windows : /*
-C:\
-D:\
-E:\
-R:\
+say .File~listRoots~toString(, " ")   -- C:\ D:\ E:\ R:\ (e. g. on Windows)
+say .File~listRoots~toString(, " ")   -- / (Unix)
 ]]>
 </programlisting>
 </example>

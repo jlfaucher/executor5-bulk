@@ -754,14 +754,11 @@ name is used.  The target package method name is case insensitive.</para>
 <example id="ex.method-external-1">
 <title>METHOD EXTERNAL examples</title>
 <programlisting>
-
--- creates method INIT from method RegExp_Init
--- in library rxregexp
+-- creates method INIT from method RegExp_Init in library rxregexp
 ::METHOD INIT EXTERNAL "LIBRARY rxregexp RegExp_Init"
 
--- creates method INIT from method POS
--- in library rxregexp
-::METHOD POS EXTERNAL "LIBRARY rxregexp"
+-- creates method RegExp_Parse from library rxregexp
+::METHOD RegExp_Parse EXTERNAL "LIBRARY rxregexp"
 </programlisting>
 </example>
 
