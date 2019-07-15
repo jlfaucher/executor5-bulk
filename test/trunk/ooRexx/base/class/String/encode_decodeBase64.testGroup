@@ -93,25 +93,29 @@ return testResult
   self~expectSyntax(93.962) -- Invalid Base64 encoded string
   "abc"~decodeBase64
 
-::method test_decode_invalid_length_three_equals
+::method test_decode_invalid_three_equals
   self~expectSyntax(93.962) -- Invalid Base64 encoded string
   "A==="~decodeBase64
 
-::method test_decode_invalid_length_four_equals
+::method test_decode_invalid_four_equals
   self~expectSyntax(93.962) -- Invalid Base64 encoded string
   "===="~decodeBase64
 
-::method test_decode_invalid_length_four_interleaved
+::method test_decode_invalid_interleaved
   self~expectSyntax(93.962) -- Invalid Base64 encoded string
   "a=b="~decodeBase64
 
+::method test_decode_invalid_equals
+  self~expectSyntax(93.962) -- Invalid Base64 encoded string
+  "aa=a"~decodeBase64
+
 ::method test_decode_invalid_char_00
   self~expectSyntax(93.962) -- Invalid Base64 encoded string
-  ("AA" || '00'x || "A")~decodeBase64
+  ("AAAA" || '00'x || "AAA")~decodeBase64
 
 ::method test_decode_invalid_char_80
   self~expectSyntax(93.962) -- Invalid Base64 encoded string
-  ("AA" || '80'x || "A")~decodeBase64
+  ("AAAA" || '80'x || "AAA")~decodeBase64
 
 ::method test_decode_invalid_char_minus
   self~expectSyntax(93.962) -- Invalid Base64 encoded string
