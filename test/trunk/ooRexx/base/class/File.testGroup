@@ -621,5 +621,53 @@ return testResult
   -- restore environment
   call value "TMPDIR", tmpDir, "environment"
 
+::method test_searchpath1
+
+  self~assertNull(.file~searchPath("*non existent filename*", "."))
+  self~assertNull(.file~searchPath("*non existent filename*", (".", "..")))
+
+  -- the following assumes the executable is on the path
+  executable = .file~new(.rexxinfo~executable)
+
+  rexxLocation = executable~parent
+  currentPath = Value("PATH",,"ENVIRONMENT")
+
+  file = .file~searchPath(executable~name, currentPath)
+
+  self~assertTrue(file~isa(.File))
+  self~assertEquals(executable~absolutePath, file~absolutePath)
+
+  currentPath = currentPath~makeArray(.File~pathSeparator)
+
+  file = .file~searchPath(executable~name, currentPath)
+
+  self~assertTrue(file~isa(.File))
+  self~assertEquals(executable~absolutePath, file~absolutePath)
+
+  loop i = 1 to currentPath~items
+     currentPath[i] = .File~new(currentPath[i])
+  end
+
+  file = .file~searchPath(executable~name, currentPath)
+
+  self~assertTrue(file~isa(.File))
+  self~assertEquals(executable~absolutePath, file~absolutePath)
+
+  parse source . . thisFile
+  me = .file~new(thisFile)
+
+  filename = me~name
+  directory = me~parent
+
+  self~assertNotNull(.file~searchPath(filename, directory), "01 : Must be found because current dir is in path")
+  self~assertNotNull(.file~searchPath(filename, .array~of(.file~new(directory))), "01 : Must be found because current dir is in path")
+  self~assertNotNull(.file~searchPath(filename, ("dummy before", directory, "dummy after")), "02 : Must be found because current dir is in path")
+  self~assertNotNull(.file~searchPath(filename, ("dummy before", .file~new(directory), "dummy after")), "02 : Must be found because current dir is in path")
+
+  curdir = directory(directory)
+  self~assertNotNull(.file~searchPath(filename, "."), "04 : Must be found because current dir is searched")
+  call directory curdir -- restore
+
+
 
 ::options novalue error
