@@ -768,6 +768,49 @@ return testResult
 
     self~assertSame(.TimeSpan~new(0), d - d2)
 
+::method testWeekNumber
+  self~checkWeekNumber('20080926', 39, 5, 52, '2008-W39-5')
+
+  -- a number of edge cases from the Wikipedia article:
+  -- https://en.wikipedia.org/wiki/ISO_week_date
+
+  self~checkWeekNumber('20050101', 53, 6, 52, '2004-W53-6')
+  self~checkWeekNumber('20050102', 53, 7, 52, '2004-W53-7')
+  self~checkWeekNumber('20051231', 52, 6, 52, '2005-W52-6')
+  self~checkWeekNumber('20060101', 52, 7, 52, '2005-W52-7')
+  self~checkWeekNumber('20060102', 1, 1, 52, '2006-W01-1')
+  self~checkWeekNumber('20061231', 52, 7, 52, '2006-W52-7')
+  self~checkWeekNumber('20070101', 1, 1, 52, '2007-W01-1')
+  self~checkWeekNumber('20071230', 52, 7, 52, '2007-W52-7')
+  self~checkWeekNumber('20071231', 1, 1, 52, '2008-W01-1')
+  self~checkWeekNumber('20080101', 1, 2, 52, '2008-W01-2')
+  self~checkWeekNumber('20081228', 52, 7, 52, '2008-W52-7')
+  self~checkWeekNumber('20081229', 1, 1, 52, '2009-W01-1')
+  self~checkWeekNumber('20081230', 1, 2, 52, '2009-W01-2')
+  self~checkWeekNumber('20081231', 1, 3, 52, '2009-W01-3')
+  self~checkWeekNumber('20090101', 1, 4, 53, '2009-W01-4')
+  self~checkWeekNumber('20091231', 53, 4, 53, '2009-W53-4')
+  self~checkWeekNumber('20100101', 53, 5, 52, '2009-W53-5')
+  self~checkWeekNumber('20100102', 53, 6, 52, '2009-W53-6')
+  self~checkWeekNumber('20100103', 53, 7, 52, '2009-W53-7')
+
+  -- a couple of real boundary cases
+  self~checkWeekNumber('00010101', 1, 1, 52, '0001-W01-1')
+  self~checkWeekNumber('99991231', 52, 5, 52, '9999-W52-5')
+
+::method checkWeekNumber
+  use strict arg date, weekNumber, dayNumber, weekCount, formatted
+
+  d = .datetime~fromStandardDate(date)
+
+  self~assertSame(weekNumber, d~weekNumber, "Incorrect weekNumber for date" date)
+  self~assertSame(dayNumber, d~weekDayNumber, "Incorrect weekDayNumber for date" date)
+  self~assertSame(weekCount, d~weeksInYear, "Incorrect weeksInYear for date" date)
+  self~assertSame(formatted, d~weekNumberDate, "Incorrect weekNumberDate for date" date)
+
+  self~assertSame(d, .DateTime~fromWeekNumberDate(d~weekNumberDate), "Incorrect weekNumberDate parsing for date" date)
+
+
 
 ::method getUtcTime
   numeric digits 20
@@ -795,8 +838,5 @@ return testResult
 
 ::method getLocalModifier
   return self~getOffsetModifier(self~getLocalOffset)
-
-::method formatDate
-
 
 ::options novalue error
