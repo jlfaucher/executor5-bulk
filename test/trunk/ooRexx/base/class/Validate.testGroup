@@ -301,7 +301,7 @@ return testResult
 ::method test_validate_length_fails_not_whole
   self~expectSyntax(88.911) -- Argument .. is an invalid length value
   .Validate~length("", 1.5)
- 
+
 ::method test_validate_length_fails_too_large
   self~expectSyntax(88.911) -- Argument .. is an invalid length value
   max = .RexxInfo~internalDigits -- 9 on 32-bit, 18 on 64-bit
@@ -336,7 +336,7 @@ return testResult
 ::method test_validate_position_fails_not_whole
   self~expectSyntax(88.912) -- Argument .. is an invalid position value
   .Validate~position("", 1.5)
- 
+
 ::method test_validate_position_fails_too_large
   self~expectSyntax(88.912) -- Argument .. is an invalid position value
   max = .RexxInfo~internalDigits -- 9 on 32-bit, 18 on 64-bit
@@ -395,6 +395,11 @@ return testResult
 ::method test_validate_logical
   .Validate~logical("", .true)
   .Validate~logical("", .false)
+
+::method test_validate_class_request
+  self~assertSame("Abc", .Validate~requestClassType("", "Abc", .String))
+  self~assertSame("Abc", .Validate~requestClassType("", .MutableBuffer~new("Abc"), .String))
+  self~assertSame("Abc", .Validate~requestClassType("", .Array~of("Abc"), .String))
 
 
 
