@@ -1,0 +1,8 @@
+
+// append.bat appends this to the sqlite-amalgamation file sqlite3.c
+
+#ifdef OOSQLITE_BUILD
+SQLITE_API const sqlite3_api_routines* oosqlite3_get_routines(void){
+    return &sqlite3Apis;
+}
+#endif

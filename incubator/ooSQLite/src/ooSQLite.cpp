@@ -181,6 +181,19 @@ void resetRoutineErrMsg(RexxThreadContext *c)
  */
 static inline RexxObjectPtr safeColumnText(RexxThreadContext *c, sqlite3_stmt *stmt, int col, RexxObjectPtr nullObj)
 {
+    // For BLOBs, sqlite3_column_text() will only return bytes up to the first
+    // embedded NUL character, if any.  To return the full BLOB data, we use
+    // sqlite3_column_blob() instead of sqlite3_column_text() for such a case.
+    if ( sqlite3_column_type(stmt, col) == SQLITE_BLOB )
+    {
+        const void *b = sqlite3_column_blob(stmt, col);
+        size_t      s = sqlite3_column_bytes(stmt, col);
+
+        // The return value from sqlite3_column_blob() for a zero-length BLOB
+        // is a NULL pointer
+        return (b == NULL ? c->NullString() : c->String((CSTRING)b, s));
+    }
+
     CSTRING data = (CSTRING)sqlite3_column_text(stmt, col);
     return (data == NULL ? nullObj : c->String(data));
 }
@@ -7731,16 +7744,12 @@ RexxMethod2(int, oosqlconn_test, POINTER, functPointer, CSELF, pCSelf)
  */
 RexxMethod1(RexxObjectPtr, oosqlval_blob, POINTER, sqlValue)
 {
-    // TODO not sure what is needed here?  Should we copy the blob to a
-    // RexxBuffer? Or what?  We need to create an ooSQLiteBlob class and use
-    // that.
-
     const void *b = sqlite3_value_blob((sqlite3_value *)sqlValue);
-    if ( b == NULL )
-    {
-        return TheNilObj;
-    }
-    return context->NewPointer((POINTER)b);
+    size_t      s = sqlite3_value_bytes((sqlite3_value *)sqlValue);
+
+    // The return value from sqlite3_column_blob() for a zero-length BLOB
+    // is a NULL pointer
+    return (b == NULL ? context->NullString() : context->String((CSTRING)b, s));
 }
 
 /** ooSQLValue::bytes()
@@ -8444,7 +8453,7 @@ RexxMethod3(int, oosqlstmt_bindText, int32_t, index, CSTRING, text, CSELF, pCSel
 RexxMethod3(int, oosqlstmt_bindValue, int32_t, index, POINTER, value, CSELF, pCSelf)
 {
     pCooSQLiteStmt pCstmt = requiredStmt(context, pCSelf);
-    if ( pCstmt != NULL )
+    if ( pCstmt == NULL )
     {
         return SQLITE_MISUSE;
     }
@@ -8505,17 +8514,9 @@ RexxMethod2(RexxObjectPtr, oosqlstmt_columnBlob, int32_t, col, CSELF, pCSelf)
     const void *b = sqlite3_column_blob(pCstmt->stmt, col);
     size_t      s = sqlite3_column_bytes(pCstmt->stmt, col);
 
-    RexxBufferObject result = context->NewBuffer(s);
-    if ( result == NULLOBJECT )
-    {
-        outOfMemoryException(context->threadContext);
-        return NULLOBJECT;
-    }
-
-    POINTER data = context->BufferData(result);
-    memcpy(data, b, s);
-
-    return result;
+    // The return value from sqlite3_column_blob() for a zero-length BLOB
+    // is a NULL pointer
+    return (b == NULL ? context->NullString() : context->String((CSTRING)b, s));
 }
 
 
@@ -8897,7 +8898,7 @@ RexxMethod2(int, oosqlstmt_columnType, int32_t, col, CSELF, pCSelf)
 RexxMethod2(RexxObjectPtr, oosqlstmt_columnValue, int32_t, col, CSELF, pCSelf)
 {
     pCooSQLiteStmt pCstmt = requiredStmt(context, pCSelf);
-    if ( pCstmt != NULL )
+    if ( pCstmt == NULL )
     {
         return context->WholeNumber(SQLITE_MISUSE);
     }
@@ -13403,17 +13404,9 @@ RexxRoutine2(RexxObjectPtr, oosqlColumnBlob_rtn, POINTER, _stmt, int32_t, col)
     const void *b = sqlite3_column_blob(stmt, col);
     size_t      s = sqlite3_column_bytes(stmt, col);
 
-    RexxBufferObject result = context->NewBuffer(s);
-    if ( result == NULLOBJECT )
-    {
-        outOfMemoryException(context->threadContext);
-        return NULLOBJECT;
-    }
-
-    POINTER data = context->BufferData(result);
-    memcpy(data, b, s);
-
-    return result;
+    // The return value from sqlite3_column_blob() for a zero-length BLOB
+    // is a NULL pointer
+    return (b == NULL ? context->NullString() : context->String((CSTRING)b, s));
 }
 
 /** oosqlColumnBytes()

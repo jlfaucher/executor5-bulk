@@ -1,4 +1,4 @@
-                  ooSQLite Version 1.0.0.9974 (Preview)
+                  ooSQLite Version 1.0.0.11910 (Preview)
                   ========================================
 
 ooSQLite is an ooRexx extension that provides an interface to the SQLite
@@ -219,6 +219,21 @@ the entire user community.
 
                           Cumulative Changes:
                           ===================
+
+Changes since ooSQLite Version 1.0.0.9974 (Preview)
+------------------------------------------------------------------------
+
+
+The SQLite library is updated to version 3.29.0.  No new features
+introduced after 3.8.0 have been implemented in ooSQLite.
+
+ooSQLite was updated as follows:
+* return BLOBs as ooRexx String (instead of Buffer) objects
+* method columnText() and its equivalent routine now return all data
+  bytes of a BLOB instead of truncating it at the first NUL character
+* fixed a bug in method columnValue() and its equivalent routine which
+  always caused error SQLITE_MISUSE
+
 
 Changes since ooSQLite Version 1.0.0.9908 (Preview)
 ------------------------------------------------------------------------

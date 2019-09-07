@@ -1,0 +1,17 @@
+
+// append.bat appends this to the sqlite-amalgamation file sqlite3.h
+
+#ifdef OOSQLITE_BUILD
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+typedef struct sqlite3_api_routines sqlite3_api_routines;
+extern SQLITE_API const sqlite3_api_routines *oosqlite3_get_routines(void);
+
+#ifdef __cplusplus
+}  /* end of the 'extern "C"' block */
+#endif
+
+#endif /* end if OOSQLITE_BUILD */
