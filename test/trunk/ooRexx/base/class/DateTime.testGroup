@@ -200,13 +200,25 @@ return testResult
     self~assertSame(expected, d)
     self~assertSame(.TimeSpan~fromMinutes(0), d~offset)
 
-    d = .datetime~fromUtcIsoDate('2007-10-08T17:47:26.000000-0400')
+    d = .datetime~fromUtcIsoDate('2007-10-08T13:47:26.000000-04:00')
     self~assertSame(expected, d)
     self~assertSame(.TimeSpan~fromMinutes(-240), d~offset)
+    self~assertSame('2007-10-08T13:47:26.000000-04:00', d~utcIsoDate)
 
-    d = .datetime~fromUtcIsoDate('2007-10-08T09:47:26.000000+0400')
+    d = .datetime~fromUtcIsoDate('2007-10-08T13:47:26.000000+04:00')
     self~assertSame(expected, d)
     self~assertSame(.TimeSpan~fromMinutes(240), d~offset)
+    self~assertSame('2007-10-08T13:47:26.000000+04:00', d~utcIsoDate)
+
+    d = .datetime~fromUtcIsoDate('2007-10-08T13:47:26.000000-04:30')
+    self~assertSame(expected, d)
+    self~assertSame(.TimeSpan~fromMinutes(-270), d~offset)
+    self~assertSame('2007-10-08T13:47:26.000000-04:30', d~utcIsoDate)
+
+    d = .datetime~fromUtcIsoDate('2007-10-08T13:47:26.000000+04:30')
+    self~assertSame(expected, d)
+    self~assertSame(.TimeSpan~fromMinutes(270), d~offset)
+    self~assertSame('2007-10-08T13:47:26.000000+04:30', d~utcIsoDate)
 
 ::method 'test_compareTo'
     a_dateTime1 = .DateTime~fromIsoDate('2007-10-08T13:47:26.000000')
@@ -415,12 +427,12 @@ return testResult
 
     a_dateTime = .dateTime~new(2007,10,8,13,10,5,123456,-240)
 
-    expected = '2007-10-08T17:10:05.123456-0400'
+    expected = '2007-10-08T13:10:05.123456-04:00'
     self~assertSame(expected, a_dateTime~utcIsoDate)
 
     a_dateTime = .dateTime~new(2007,10,8,13,10,5,123456,240)
 
-    expected = '2007-10-08T09:10:05.123456+0400'
+    expected = '2007-10-08T13:10:05.123456+04:00'
     self~assertSame(expected, a_dateTime~utcIsoDate)
 
 ::method 'test_SyntaxBadDate1'
@@ -752,8 +764,8 @@ return testResult
 ::method testToTimeZone
     d = .dateTime~new(2007,10,8,13,10,5,123456,0)
     self~assertSame('2007-10-08T13:10:05.123456Z', d~toTimeZone(0)~utcIsoDate)
-    self~assertSame('2007-10-08T13:10:05.123456-0400', d~toTimeZone(-240)~utcIsoDate)
-    self~assertSame('2007-10-08T13:10:05.123456+0400', d~toTimeZone(240)~utcIsoDate)
+    self~assertSame('2007-10-08T09:10:05.123456-04:00', d~toTimeZone(-240)~utcIsoDate)
+    self~assertSame('2007-10-08T17:10:05.123456+04:00', d~toTimeZone(240)~utcIsoDate)
 
 ::method testPlus
     d = .dateTime~new(2007,10,8,13,10,5,123456,0)
