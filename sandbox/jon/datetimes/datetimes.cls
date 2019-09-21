@@ -62,7 +62,7 @@ t         C   The one-letter AM/PM abbreviation (that is, AM is displayed as A.)
 tt        C   The two-letter AM/PM abbreviation (that is, AM is displayed as AM.)
 yy            The last two digits of the year (that is, 2019 would be displayed as 19.)
 yyyy          The full year (that is, 2019 would be displayed as 2019.)
-u...  new     The microseconds.  Precision by number of 'u's up to 6
+f...  new     Fraction of a second.  Precision by number of 'f's up to 6
 
       * Not present in DTP definition - added for this class
       x - a civil format element
@@ -101,7 +101,7 @@ use arg Weekday
 expose formatChars civilElements charElements monthAbbrevs monthNames         -
        dayNames weekStart
 
-   formatChars   = 'd','D','h','H','m','M','q','s','t','y','u'
+   formatChars   = 'd','D','f','h','H','m','M','q','s','t','y'
    civilElements = 'd','D','h','H','m','M','s'
    charElements  = 'ddd','dddd','MMM','MMMM','t','tt'
    monthAbbrevs  = 'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'
@@ -254,7 +254,7 @@ use arg format_element
                       call inject 2,  0, 0
                  end /* DO */
      otherwise
-        if data_element~verify('u') = 0
+        if data_element~verify('f') = 0
         then call inject data_element~length, 21, data_element~length
   end /* select */
 
@@ -367,7 +367,7 @@ use strict arg format, esc = ''
                when 'yy'   then out~append(self~year~right(2))
                when 'yyyy' then out~append(self~year)
                otherwise
-                  if element~verify('u') = 0
+                  if element~verify('f') = 0
                   then out~append(self~isoDate~substr(21,element~length))
             end /* select */
             i += element~length
@@ -386,7 +386,7 @@ use arg text, delim
 RETURN prefix
 
 /* ------------------------------------------------------------------------- */
-::method suffix                                                      private
+::method suffix                                                      public
 /* ------------------------------------------------------------------------- */
 use arg dayNo
 
