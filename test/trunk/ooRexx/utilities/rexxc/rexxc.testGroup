@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2018 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2018-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -72,14 +72,16 @@ return testResult
   self~assertRc(-1, rc)
   self~assertTrue(s.0 > 0, "'rexxc' is expected to produce a few lines of output")
 
-::method test_rexxc_no_arg_option_s
-  address "" "rexxc -s" with output stem s.
-  self~assertRc(-1, rc)
+::method test_rexxc_one_arg_not_found
+  address "" "rexxc" self~testSourceNotExist with output stem s. error stem e.
+  -- Error 3.901:  Failure during initialization: Program .. was not found
+  self~assertRc(-3, rc)
   self~assertTrue(s.0 > 0, "'rexxc -s' is expected to produce a few lines of output")
+  self~assertTrue(e.0 > 0, "'rexxc" self~testSourceNotExist"' is expected to produce some lines of syntax error output")
 
 ::method test_rexxc_three_args
   address "" "rexxc" self~testSourceNotExist self~testSourceNotExist with output stem s.
-  self~assertRc(-2, rc)
+  self~assertRc(-2, rc) -- Output file name must be different from input file name
   self~assertTrue(s.0 > 0, "'rexxc' with three args is expected to produce a few lines of output")
 
 ::method test_rexxc_one_arg_syntax
@@ -89,7 +91,7 @@ return testResult
   -- Error 13.1:  Incorrect character in program "@" ('40'X)
   self~assertRc(-13, rc)
   self~assertTrue(s.0 > 0, "rexxc is expected to produce a few lines of output")
-  self~assertTrue(e.0 > 0, "'/**/@' is expected to produce a some lines of syntax error output")
+  self~assertTrue(e.0 > 0, "'/**/@' is expected to produce some lines of syntax error output")
 
 ::method test_rexxc_one_arg
   source = .TemporaryTestFile~new(self, self~testSource)
