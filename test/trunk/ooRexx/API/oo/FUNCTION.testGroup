@@ -738,6 +738,78 @@ return .ooTestResult~new(5)~~addException(err)
   val = copies('AbCdEfGhIjKlMnOpQrStUvWxYz0123456789', 1000)
   self~assertSame(val, TestCstringArg(val))
 
+::method test_OptionalCSTRING
+  self~assertSame("OMITTED", TestOptionalCStringArg())
+
+-- .nil doesn't honour request("string")
+::method test_CSTRING_nil
+  self~expectSyntax('93.938') -- Method argument 1 must have a string value
+  call TestCstringArg .nil
+
+-- an object with neither a string nor a makeString method
+::method test_CSTRING_no_string_no_makestring
+  self~expectSyntax('93.938') -- Method argument 1 must have a string value
+  call TestOptionalCstringArg .NoString_NoMakestring~new
+
+-- an object with a string but no makeString method
+::method test_CSTRING_string_no_makestring
+  self~expectSyntax('93.938') -- Method argument 1 must have a string value
+  call TestCstringArg .String_NoMakestring~new
+
+-- all classes with a makeString method should work
+::method test_CSTRING_makeString
+  self~assertSame("makeString", TestCstringArg(.NoString_Makestring~new))
+  self~assertSame("makeString", TestOptionalCstringArg(.String_Makestring~new))
+  self~assertSame("123", TestCstringArg(.Array~of(123)))
+  self~assertSame("123", TestCstringArg(.CircularQueue~of(123)))
+  self~assertSame("123", TestOptionalCstringArg(.MutableBuffer~new(123)))
+
+-- any '00'x in a CSTRING will terminate the CSTRING
+::method test_CSTRING_no_hex00
+  self~assertSame("", TestCstringArg('00'x))
+  self~assertSame("", TestOptionalCstringArg(xrange('00'x, 'ff'x)))
+  self~assertSame(xrange('80'x, 'ff'x), TestCstringArg(xrange('80'x, '7f'x)))
+
+
+-- test StringObject
+
+::method test_RexxString
+  self~assertSame("", TestOptionalCStringArg(""))
+  self~assertSame(123, TestOptionalCStringArg(123))
+
+::method test_OptionalRexxString
+  self~assertSame("OMITTED", TestOptionalCStringArg())
+
+-- .nil doesn't honour request("string")
+::method test_RexxString_nil
+  self~expectSyntax('93.938') -- Method argument 1 must have a string value
+  call TestStringArg .nil
+
+-- an object with neither a string nor a makeString method
+::method test_RexxString_no_string_no_makestring
+  self~expectSyntax('93.938') -- Method argument 1 must have a string value
+  call TestOptionalStringArg .NoString_NoMakestring~new
+
+-- an object with a string but no makeString method
+::method test_RexxString_string_no_makestring
+  self~expectSyntax('93.938') -- Method argument 1 must have a string value
+  call TestStringArg .String_NoMakestring~new
+
+-- all classes with a makeString method should work
+::method test_RexxString_makeString
+  self~assertSame("makeString", TestStringArg(.NoString_Makestring~new))
+  self~assertSame("makeString", TestOptionalStringArg(.String_Makestring~new))
+  self~assertSame("123", TestStringArg(.Array~of(123)))
+  self~assertSame("123", TestStringArg(.CircularQueue~of(123)))
+  self~assertSame("123", TestOptionalStringArg(.MutableBuffer~new(123)))
+
+-- RexxString must be able to handle embedded '00'x characters
+::method test_RexxString_hex00
+  self~assertSame('00'x, TestStringArg('00'x))
+  self~assertSame(xrange('00'x, 'ff'x), TestOptionalStringArg(xrange('00'x, 'ff'x)))
+  self~assertSame(xrange('80'x, '7f'x), TestStringArg(xrange('80'x, '7f'x)))
+
+
 -- test POINTER
 ::method 'test046'
   val = TestPointerValue()
@@ -1770,6 +1842,22 @@ return .ooTestResult~new(5)~~addException(err)
   use strict arg
 
   return lines
+
+::class NoString_NoMakeString
+
+::class String_NoMakeString
+::method string
+  return "string"
+
+::class NoString_MakeString
+::method makeString
+  return "makeString"
+
+::class String_MakeString
+::method string
+  return "string"
+::method makeString
+  return "makeString"
 
 
 ::options novalue error

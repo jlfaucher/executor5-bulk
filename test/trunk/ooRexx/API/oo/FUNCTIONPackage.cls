@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2008-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2008-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -69,6 +69,9 @@
 ::routine TestFloatArg PUBLIC EXTERNAL "LIBRARY orxfunction TestFloatArg"
 ::routine TestDoubleArg PUBLIC EXTERNAL "LIBRARY orxfunction TestDoubleArg"
 ::routine TestCstringArg PUBLIC EXTERNAL "LIBRARY orxfunction TestCstringArg"
+::routine TestOptionalCstringArg PUBLIC EXTERNAL "LIBRARY orxfunction"
+::routine TestStringArg          PUBLIC EXTERNAL "LIBRARY orxfunction"
+::routine TestOptionalStringArg  PUBLIC EXTERNAL "LIBRARY orxfunction"
 ::routine TestPointerValue PUBLIC EXTERNAL "LIBRARY orxfunction TestPointerValue"
 ::routine TestPointerArg PUBLIC EXTERNAL "LIBRARY orxfunction TestPointerArg"
 ::routine TestNullPointerValue PUBLIC EXTERNAL "LIBRARY orxfunction TestNullPointerValue"
