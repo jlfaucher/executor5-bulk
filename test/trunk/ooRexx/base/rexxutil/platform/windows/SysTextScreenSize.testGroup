@@ -67,26 +67,26 @@ return testResult
 
 ::method test_option_null
     self~expectSyntax(40.920)
-    call SysTextScreenSize ""
+    call SysTextScreenSize "" -- argument option must be one of "BUFFERSIZE, WINDOWRECT, or MAXWINDOWSIZE"
 
 ::method test_option_nil
-    self~expectSyntax(40.920)
+    self~expectSyntax(93.938) -- Method argument 1 must have a string value
     call SysTextScreenSize .nil
 
 ::method test_option_invalid
-    self~expectSyntax(40.920)
+    self~expectSyntax(40.920) -- argument option must be one of "BUFFERSIZE, WINDOWRECT, or MAXWINDOWSIZE"
     call SysTextScreenSize "does-not-exist"
 
 ::method test_set_default_too_few_args
-    self~expectSyntax(40.1)
+    self~expectSyntax(40.1) -- External routine failed
     call SysTextScreenSize , 1
 
 ::method test_set_default_omitted_arg
-    self~expectSyntax(40.1)
+    self~expectSyntax(40.1) -- External routine failed
     call SysTextScreenSize , , 2
 
 ::method test_set_default_too_many_args
-    self~expectSyntax(40.1)
+    self~expectSyntax(40.1) -- External routine failed
     call SysTextScreenSize , 1, 2, 3
 
 ::method test_set_buffersize_negative
