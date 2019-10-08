@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2013-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2013-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -44,12 +44,7 @@
 
     group = .TestGroup~new(fileSpec)
     group~addWithSuite(.SysFileTree.testGroup, .SysFileTreeSuite)
-
-    -- knownOSes is a set.  We need a copy because we are going to remove
-    -- Windows from the set.
-    oses = group~knownOSes~copy
-    w = oses~remove("WINDOWS")
-    group~restrictOS(oses)
+    group~restrictOS("UNIX")
 
     if group~isAutomatedTest then return group
 

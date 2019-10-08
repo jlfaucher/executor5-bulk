@@ -1315,12 +1315,17 @@ return
    *   A set of OS words that this test group should be restricted to.  This can
    *   be either a string of blank separated OS words, or a collection of the OS
    *   words. Case is not significant.  The collection must be a subset of the
-   *   known OS words.
+   *   known OS words, or the string "UNIX", in which case it translates to
+   *   anything except Windows.
    *
    */
   ::method restrictOS
     expose knownOSes
     use strict arg acceptable
+
+    -- special case "UNIX"
+    if acceptable = "UNIX" then
+      acceptable = knownOSes~copy~~removeItem("WINDOWS")
 
     s = makeSetOfWords(acceptable)
     if s == .nil then
