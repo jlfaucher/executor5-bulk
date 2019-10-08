@@ -1,0 +1,187 @@
+#!/usr/bin/env rexx
+/*
+  SVN Revision: $Rev: 11775 $
+  Change Date:  $Date: 2019-02-17 20:41:37 +0100 (So., 17 Feb 2019) $
+*/
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/* Copyright (c) 2019 Rexx Language Association. All rights reserved.         */
+/*                                                                            */
+/* This program and the accompanying materials are made available under       */
+/* the terms of the Common Public License v1.0 which accompanies this         */
+/* distribution. A copy is also available at the following address:           */
+/* http://www.oorexx.org/license.html                                         */
+/*                                                                            */
+/* Redistribution and use in source and binary forms, with or                 */
+/* without modification, are permitted provided that the following            */
+/* conditions are met:                                                        */
+/*                                                                            */
+/* Redistributions of source code must retain the above copyright             */
+/* notice, this list of conditions and the following disclaimer.              */
+/* Redistributions in binary form must reproduce the above copyright          */
+/* notice, this list of conditions and the following disclaimer in            */
+/* the documentation and/or other materials provided with the distribution.   */
+/*                                                                            */
+/* Neither the name of Rexx Language Association nor the names                */
+/* of its contributors may be used to endorse or promote products             */
+/* derived from this software without specific prior written permission.      */
+/*                                                                            */
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS        */
+/* "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT          */
+/* LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS          */
+/* FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT   */
+/* OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,      */
+/* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED   */
+/* TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,        */
+/* OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY     */
+/* OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING    */
+/* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS         */
+/* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.               */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+parse source . . fileSpec
+
+group = .TestGroup~new(fileSpec)
+group~add(.SysGetMessage.testGroup)
+group~restrictOS("UNIX")
+
+if group~isAutomatedTest then return group
+
+testResult = group~suite~execute~~print
+return testResult
+
+::requires 'ooTest.frm'
+
+::class SysGetMessage.testgroup subclass ooTestCase public
+
+::constant rexxCat "rexx.cat"
+::constant messageNotFound "Error: Message not found"
+::constant catalogNotFound "Error: Message catalog not found"
+::constant catopenNotSupported "Error: Message catalog (catopen) not supported"
+
+::constant message5 (errortext(5)) -- "System resources exhausted."
+::constant message99 (errortext(99)) -- "Translation error."
+
+-- is catopen() available?
+-- we cannot use ::CONSTANT as SysGetMessage() is available on Unix only
+::method catOpenSupported class
+  if rxfuncquery("SysGetMessage") == 1 then
+    return .false
+  return SysGetMessage(1, "") \= "Error: Message catalog (catopen) not supported"
+
+::method catOpenSupported
+  return self~class~catOpenSupported
+
+
+::method test_no_args
+  self~expectSyntax(88.901) -- Missing argument; argument 1 is required.
+  call SysGetMessage
+
+::method test_x_no_args
+  self~expectSyntax(88.901) -- Missing argument; argument 2 is required.
+  call SysGetMessageX 1
+
+::method test_catalog_invalid
+  -- depending on whether this build supports catopen() we may see
+  -- one of two messages for any not existing catalog
+  message = self~catopenSupported~?(self~catalogNotFound, self~catopenNotSupported)
+  self~assertSame(message, SysGetMessage(1, "doesnt_exist.cat"))
+  self~assertSame(message, SysGetMessageX(1, 1, "doesnt_exist.cat"))
+
+::method test_no_message
+  self~assertSame(self~messageNotFound, SysGetMessage(1))
+  self~assertSame(self~messageNotFound, SysGetMessageX(1, 1))
+  self~assertSame(self~messageNotFound, SysGetMessage(1, self~rexxCat))
+  self~assertSame(self~messageNotFound, SysGetMessageX(1, 1, self~rexxCat))
+
+::method test_message
+  self~assertSame(self~message5, SysGetMessage(5))
+  self~assertSame(self~message5, SysGetMessageX(1, 5))
+  self~assertSame(self~message5, SysGetMessage(5, self~rexxCat))
+  self~assertSame(self~message5, SysGetMessageX(1, 5, self~rexxCat))
+
+::method test_message_set
+  -- omitted catalog or "rexx.cat" messages are only valid for set 1
+  self~assertSame(self~messageNotFound, SysGetMessageX(2, 5))
+  self~assertSame(self~messageNotFound, SysGetMessageX(2, 5, self~rexxCat))
+
+::method test_message_surplus_inserts
+  self~assertSame(self~message99, SysGetMessage(99, , 1, 2, 3))
+  self~assertSame(self~message99, SysGetMessageX(1, 99, , 1, 2, 3))
+  self~assertSame(self~message99, SysGetMessage(99, self~rexxCat, 1, 2, 3))
+  self~assertSame(self~message99, SysGetMessageX(1, 99, self~rexxCat, 1, 2, 3))
+
+::method test_message_inserts
+  -- 678: Argument &1 must be in the range &2 to &3; found "&4".
+  self~assertSame('Argument  must be in the range  to ; found "".', SysGetMessage(678))
+  self~assertSame('Argument 1 must be in the range  to ; found "".', SysGetMessage(678, , 1))
+  self~assertSame('Argument 1 must be in the range 2 to ; found "4".', SysGetMessage(678, , 1, 2, , 4))
+  self~assertSame('Argument 1 must be in the range 2 to 3; found "4".', SysGetMessage(678, , 1, 2, 3, 4))
+  self~assertSame('Argument  must be in the range  to 3; found "4".', SysGetMessage(678, , , , 3, 4, 5))
+
+::method test_rexx_major
+  do n = 1 to 99
+    msg = SysGetMessage(n)
+    self~assertSame(msg, SysGetMessageX(1, n, self~rexxCat))
+    if msg \= self~messageNotFound then
+      self~assertSame(msg, errortext(n))
+  end
+
+::method test_rexx_all
+  total = 0
+  totalX = 0
+  do n = 1 to 999
+    if SysGetMessage(n) \= self~messageNotFound then
+      total += 1
+    if SysGetMessageX(1, n) \= self~messageNotFound then
+      totalX += 1
+  end
+  -- currently ooRexx has more than 670 messages
+  self~assertTrue(total > 670)
+  self~assertTrue(totalX > 670)
+
+-- compile a catalog and see if we can read it
+::method test_gencat
+  -- we must have a gencat command available
+  if \self~catopenSupported | SysSearchpath("PATH", "gencat") == "" then
+    return
+
+  input = .TemporaryTestFile~new(self, "test_catalog.inp")
+  input~createFromResource("test_catalog")
+  catalog = .TemporaryTestFile~new(self, "test_catalog.cat")
+
+  address "" "gencat" catalog input with output stem ignore. error stem ignore.
+  if rc \= 0 then
+    return
+
+  input~delete
+  self~assertSame("set 1, message 1", SysgetMessage(1, catalog~string))
+  self~assertSame("set 1, message 2, insert 321", SysgetMessage(2, catalog~string, 1, 2, 3))
+  self~assertSame(self~messageNotFound, SysgetMessage(3, catalog~string))
+  self~assertSame("set 1, message 1", SysgetMessageX(1, 1, catalog~string))
+  self~assertSame("set 1, message 2, insert 321", SysgetMessageX(1, 2, catalog~string, 1, 2, 3))
+  self~assertSame(self~messageNotFound, SysgetMessageX(1, 3, catalog~string))
+
+  self~assertSame("set 2, message 5", SysgetMessageX(2, 5, catalog~string))
+  self~assertSame("set 100, message 1, insert 2, insert 1", SysgetMessageX(100, 1, catalog~string, 1, 2, 3, 4, 5))
+  self~assertSame("set 100, message 2, insert 5", SysgetMessageX(100, 2, catalog~string, 1, 2, 3, 4, 5))
+  self~assertSame("set 100, no insert %s %2$s  %1$s", SysgetMessageX(100, 3, catalog~string, 1, 2, 3))
+  self~assertSame(self~messageNotFound, SysgetMessageX(3, 1, catalog~string))
+  catalog~delete
+
+::resource test_catalog
+$set 1
+1 set 1, message 1
+2 set 1, message 2, insert &3&2&1
+$set 2
+5 set 2, message 5
+$set 100
+1 set 100, message 1, insert &2, insert &1
+2 set 100, message 2, insert &5
+3 set 100, no insert %s %2$s  %1$s
+::END
+
+
+::options novalue error
+
