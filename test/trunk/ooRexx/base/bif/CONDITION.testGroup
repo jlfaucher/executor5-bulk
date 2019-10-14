@@ -152,7 +152,7 @@ return testResult
   self~assertIsA(object, .Directory)
   objectIndexes = object~allIndexes
   -- the condition object should return a subset of the allowed indexes
-  self~assertTrue(objectIndexes~subset(self~validObjectIndexes), condition("c") "condition object returns undocumented index(es)" objectIndexes~difference(validObjectIndexes)~toString(, ", "))
+  self~assertTrue(objectIndexes~subset(self~validObjectIndexes), condition("c") "condition object returns undocumented index(es)" objectIndexes~difference(self~validObjectIndexes)~toString(, ", "))
   -- each condition should return a mandatory minimum set of indexes
   self~assertTrue(self~mandatoryObjectIndexes~subset(objectIndexes), condition("c") "condition object misses mandatory index(es)" self~mandatoryObjectIndexes~difference(objectIndexes)~toString(, ", "))
   do index over objectIndexes
@@ -189,6 +189,7 @@ return testResult
     self~assertSame(expected[3], object["ADDITIONAL"], "object[ADDITIONAL]")
   end
 
+  -- for SIGNAL ON nnnnn the condition status is always OFF
   -- not sure when CONDITION("S") would ever be "ON" or "DELAY"
   self~assertSame("OFF", condition("status"), "CONDITION(S)")
 
@@ -210,29 +211,29 @@ return testResult
   instruction = "CALL"
   raised = 0
 
-  call on any
+  call on error name any
   expected = ("ERROR", "exit 1")
   "exit 1"                             -- ERROR, Windows/Linux
 
-  call on any
+  call on failure name any
   expected = ("FAILURE", "fails")
   trace off                            -- avoid trace output from FAILURE
   address a_failure "fails"            -- FAILURE
   trace normal
 
-  call on any
+  call on halt name any
   expected = ("HALT", "raised", "halt")
   call raiseHalt                       -- HALT
 
-  call on any
+  call on notready name any
   expected = ("NOTREADY", "/", "/")
   call charin "/"                      -- NOTREADY
 
-  call on any
+  call on user USER_CONDITION name any
   expected = ("USER USER_CONDITION", "raised", "user")
   call raiseUser                       -- USER USER_CONDITION
 
-  self~assertSame(5, raised)           -- ANY should have been raised 5 times
+  self~assertSame(5, raised)           -- a condition should have been raised 5 times
 
   return                               -- finished
 
@@ -243,11 +244,21 @@ return testResult
   -- we'll test both against CONDITION() bif and condition object
   object = condition("object")
 
+  -- for CALL ON the trap is called with one argument: the condition object
+  -- it should be the same as our condition object here
+  self~assertSame(1, arg(), "we expect one argument: the condition object")
+  conditionArg = arg(1)
+  self~assertIsA(conditionArg, .Directory)
+  self~assertTrue(conditionArg~equivalent(object))
+  do index over conditionArg~allIndexes
+    self~assertSame(conditionArg[index], object[index], "condition object index" index "values should be the same")
+  end
+
   -- general condition object tests
   self~assertIsA(object, .Directory)
   objectIndexes = object~allIndexes
   -- the condition object should return a subset of the allowed indexes
-  self~assertTrue(objectIndexes~subset(self~validObjectIndexes), condition("c") "condition object returns undocumented index(es)" objectIndexes~difference(validObjectIndexes)~toString(, ", "))
+  self~assertTrue(objectIndexes~subset(self~validObjectIndexes), condition("c") "condition object returns undocumented index(es)" objectIndexes~difference(self~validObjectIndexes)~toString(, ", "))
   -- each condition should return a mandatory minimum set of indexes
   self~assertTrue(self~mandatoryObjectIndexes~subset(objectIndexes), condition("c") "condition object misses mandatory index(es)" self~mandatoryObjectIndexes~difference(objectIndexes)~toString(, ", "))
   do index over objectIndexes
@@ -284,13 +295,68 @@ return testResult
     self~assertSame(expected[3], object["ADDITIONAL"], "object[ADDITIONAL]")
   end
 
-  -- not sure when CONDITION("S") would ever be "ON" or "DELAY"
-  self~assertSame("OFF", condition("status"), "CONDITION(S)")
+  -- for CALL ON ANY the condition status is always OFF (maybe a bug)
+  -- for CALL ON nnnnn the condition status is always DELAY
+  -- not sure when CONDITION("S") would ever be "ON"
+  self~assertSame("DELAY", condition("status"), "CONDITION(S)")
 
   -- assert that CONDITION('R') works as expected
   call condition "reset"
   self~assertSame("", condition("status"), "CONDITION(S) should be null string after a CONDITION(R)")
   self~assertSame(.nil, condition("object"), "CONDITION(O) should be .nil after a CONDITION(R)")
+
+  return
+
+-- the CALL trap can also be an external routine
+::method test_condition_call_external
+  .external~raised = 0
+  .external~self = self
+  call on any name external
+
+  .external~expected = ("ERROR", "exit 1")
+  "exit 1"                             -- ERROR, Windows/Linux
+
+  .external~expected = ("FAILURE", "fails")
+  trace off                            -- avoid trace output from FAILURE
+  address a_failure "fails"            -- FAILURE
+  trace normal
+
+  .external~expected = ("HALT", "raised", "halt")
+  call raiseHalt                       -- HALT
+
+  .external~expected = ("NOTREADY", "/", "/")
+  call charin "/"                      -- NOTREADY
+
+  .external~expected = ("USER USER_CONDITION", "raised", "user")
+  call raiseUser                       -- USER USER_CONDITION
+
+  self~assertSame(5, .external~raised) -- ANY should have been raised 5 times
+
+  return
+
+
+-- the CALL trap can also be a BIF, although there's really no known use case
+::method test_condition_call_bif
+  -- we cannot run any real tests here, but the reverse BIF would raise
+  -- an error if it didn't receive exactly one argument
+  call on any name reverse
+
+  .external~expected = ("ERROR", "exit 1")
+  "exit 1"                             -- ERROR, Windows/Linux
+
+  .external~expected = ("FAILURE", "fails")
+  trace off                            -- avoid trace output from FAILURE
+  address a_failure "fails"            -- FAILURE
+  trace normal
+
+  .external~expected = ("HALT", "raised", "halt")
+  call raiseHalt                       -- HALT
+
+  .external~expected = ("NOTREADY", "/", "/")
+  call charin "/"                      -- NOTREADY
+
+  .external~expected = ("USER USER_CONDITION", "raised", "user")
+  call raiseUser                       -- USER USER_CONDITION
 
   return
 
@@ -301,7 +367,60 @@ return testResult
 ::routine raiseUser
   raise user user_condition description "raised" additional "user"
 
+-- an external routine as a trap for CALL ON
+::routine external
+  use strict arg condition
 
--- rexxref documentation tests
+  .external~raised += 1                -- count how often we've been called
+  expected = .external~expected
+  self = .external~self
 
+  -- the trap is called with one argument: the condition object
+  self~assertSame(1, arg(), "we expect one argument: the condition object")
+  object = arg(1)
+
+  -- general condition object tests
+  self~assertIsA(object, .Directory)
+  objectIndexes = object~allIndexes
+  -- the condition object should return a subset of the allowed indexes
+  self~assertTrue(objectIndexes~subset(self~validObjectIndexes), object["CONDITION"] "condition object returns undocumented index(es)" objectIndexes~difference(self~validObjectIndexes)~toString(, ", "))
+  -- each condition should return a mandatory minimum set of indexes
+  self~assertTrue(self~mandatoryObjectIndexes~subset(objectIndexes), object["CONDITION"] "condition object misses mandatory index(es)" self~mandatoryObjectIndexes~difference(objectIndexes)~toString(, ", "))
+  do index over objectIndexes
+    select case index
+      when "CODE" then self~assertTrue(object[index]~dataType("number"))
+      when "POSITION" then self~assertTrue(object[index]~dataType("whole number"))
+      when "PROPAGATED" then self~assertTrue(object[index]~dataType("binary"))
+      when "STACKFRAMES" then self~assertIsA(object[index], .List)
+      when "TRACEBACK" then self~assertIsA(object[index], .List)
+      otherwise nop
+    end
+  end
+
+  -- object["INSTRUCTION"] must be "CALL"
+  self~assertSame("CALL", object["INSTRUCTION"], "object[INSTRUCTION]")
+
+  -- object["CONDITION"] must be as expected
+  self~assertSame(expected[1], object["CONDITION"], "object[CONDITION]")
+
+  -- object["DESCRIPTION"] must be as expected
+  self~assertSame(expected[2], object["DESCRIPTION"], "object[DESCRIPTION]")
+
+  -- object["ADDITIONAL"] must be as expected
+  if expected[3]~isA(.Collection) then do
+    self~assertSameList(expected[3], object["ADDITIONAL"], "object[ADDITIONAL]")
+  end
+  else do
+    self~assertSame(expected[3], object["ADDITIONAL"], "object[ADDITIONAL]")
+  end
+
+  return
+
+::class external
+::attribute raised class
+::attribute expected class
+::attribute self class
+
+
+::options novalue error
 
