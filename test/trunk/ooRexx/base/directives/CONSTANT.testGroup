@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -62,7 +62,7 @@ return testResult
   self~assertEquals(" ", .test~s3, "s3_class")
   self~assertEquals(" ", .test~s4, "s4_class")
   self~assertEquals("1", .test~n1, "n1_class")
-  self~assertEquals("1.00000000000000000000", .test~n2, "n2_class")
+  self~assertSame("1.00000000000000000000", .test~n2, "n2_class")
   self~assertEquals(".23", .test~n3, "n3_class")
   self~assertEquals("1E4", .test~n4, "n4_class")
   self~assertEquals("1E-4", .test~n5, "n5_class")
@@ -86,7 +86,7 @@ return testResult
   self~assertEquals(" ", t~s3, "s3_instance")
   self~assertEquals(" ", t~s4, "s4_instance")
   self~assertEquals("1", t~n1, "n1_instance")
-  self~assertEquals("1.00000000000000000000", t~n2, "n2_instance")
+  self~assertSame("1.00000000000000000000", t~n2, "n2_instance")
   self~assertEquals(".23", t~n3, "n3_instance")
   self~assertEquals("1E4", t~n4, "n4_instance")
   self~assertEquals("1E-4", t~n5, "n5_instance")
@@ -106,7 +106,7 @@ return testResult
   self~assertEquals(" ", t~class~s3, "s3_instance_class")
   self~assertEquals(" ", t~class~s4, "s4_instance_class")
   self~assertEquals("1", t~class~n1, "n1_instance_class")
-  self~assertEquals("1.00000000000000000000", t~class~n2, "n2_instance_class")
+  self~assertSame("1.00000000000000000000", t~class~n2, "n2_instance_class")
   self~assertEquals(".23", t~class~n3, "n3_instance_class")
   self~assertEquals("1E4", t~class~n4, "n4_instance_class")
   self~assertEquals("1E-4", t~class~n5, "n5_instance_class")
@@ -123,7 +123,7 @@ return testResult
   self~assertEquals(" ", .test2~s3, "s3_class")
   self~assertEquals(" ", .test2~s4, "s4_class")
   self~assertEquals("1", .test2~n1, "n1_class")
-  self~assertEquals("1.00000000000000000000", .test2~n2, "n2_class")
+  self~assertSame("1.00000000000000000000", .test2~n2, "n2_class")
   self~assertEquals(".23", .test2~n3, "n3_class")
   self~assertEquals("1E4", .test2~n4, "n4_class")
   self~assertEquals("1E-4", .test2~n5, "n5_class")
@@ -139,7 +139,7 @@ return testResult
   self~assertEquals(" ", t~s3, "s3_instance")
   self~assertEquals(" ", t~s4, "s4_instance")
   self~assertEquals("1", t~n1, "n1_instance")
-  self~assertEquals("1.00000000000000000000", t~n2, "n2_instance")
+  self~assertSame("1.00000000000000000000", t~n2, "n2_instance")
   self~assertEquals(".23", t~n3, "n3_instance")
   self~assertEquals("1E4", t~n4, "n4_instance")
   self~assertEquals("1E-4", t~n5, "n5_instance")
@@ -153,7 +153,7 @@ return testResult
   self~assertEquals(" ", t~class~s3, "s3_instance_class")
   self~assertEquals(" ", t~class~s4, "s4_instance_class")
   self~assertEquals("1", t~class~n1, "n1_instance_class")
-  self~assertEquals("1.00000000000000000000", t~class~n2, "n2_instance_class")
+  self~assertSame("1.00000000000000000000", t~class~n2, "n2_instance_class")
   self~assertEquals(".23", t~class~n3, "n3_instance_class")
   self~assertEquals("1E4", t~class~n4, "n4_instance_class")
   self~assertEquals("1E-4", t~class~n5, "n5_instance_class")
@@ -170,7 +170,7 @@ return testResult
   self~assertEquals(" ", .test3~s3, "s3_class")
   self~assertEquals(" ", .test3~s4, "s4_class")
   self~assertEquals("1", .test3~n1, "n1_class")
-  self~assertEquals("1.00000000000000000000", .test3~n2, "n2_class")
+  self~assertSame("1.00000000000000000000", .test3~n2, "n2_class")
   self~assertEquals(".23", .test3~n3, "n3_class")
   self~assertEquals("1E4", .test3~n4, "n4_class")
   self~assertEquals("1E-4", .test3~n5, "n5_class")
@@ -186,7 +186,7 @@ return testResult
   self~assertEquals(" ", t~s3, "s3_instance")
   self~assertEquals(" ", t~s4, "s4_instance")
   self~assertEquals("1", t~n1, "n1_instance")
-  self~assertEquals("1.00000000000000000000", t~n2, "n2_instance")
+  self~assertSame("1.00000000000000000000", t~n2, "n2_instance")
   self~assertEquals(".23", t~n3, "n3_instance")
   self~assertEquals("1E4", t~n4, "n4_instance")
   self~assertEquals("1E-4", t~n5, "n5_instance")
@@ -200,7 +200,7 @@ return testResult
   self~assertEquals(" ", t~class~s3, "s3_instance_class")
   self~assertEquals(" ", t~class~s4, "s4_instance_class")
   self~assertEquals("1", t~class~n1, "n1_instance_class")
-  self~assertEquals("1.00000000000000000000", t~class~n2, "n2_instance_class")
+  self~assertSame("1.00000000000000000000", t~class~n2, "n2_instance_class")
   self~assertEquals(".23", t~class~n3, "n3_instance_class")
   self~assertEquals("1E4", t~class~n4, "n4_instance_class")
   self~assertEquals("1E-4", t~class~n5, "n5_instance_class")
@@ -551,4 +551,4 @@ return .c~return
 
 
 ::requires 'rxmath' LIBRARY
-::options novalue error
+::options any syntax

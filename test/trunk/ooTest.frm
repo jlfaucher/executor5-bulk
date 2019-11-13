@@ -700,10 +700,10 @@ return
         -- End select
       end
 
-      if holder[2] \== .nil then say 'File search:       ' holder[2]~duration
-      if holder[3] \== .nil then say 'Suite construction:' holder[3]~duration
-      if holder[4] \== .nil then say 'Test execution:    ' holder[4]~duration
-      if holder[1] \== .nil then say 'Total time:        ' holder[1]~duration
+      if holder[2] \== .nil then say 'File search:       ' holder[2]~duration~string
+      if holder[3] \== .nil then say 'Suite construction:' holder[3]~duration~string
+      if holder[4] \== .nil then say 'Test execution:    ' holder[4]~duration~string
+      if holder[1] \== .nil then say 'Total time:        ' holder[1]~duration~string
 
       if holder~items > 0 then say
     end

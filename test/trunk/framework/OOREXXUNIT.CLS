@@ -427,18 +427,7 @@ return .false
  */
 ::routine getAddressingMode
 
-  tmpOutFile = 'tmpXXX_delete.me'
-
-  'rexx -v >' tmpOutFile '2>&1'
-
-  fsObj = .stream~new(tmpOutFile)
-  tmpArray = fsObj~arrayin
-  parse value tmpArray[3] with . . mode
-  fsObj~close
-
-  j = SysFileDelete(tmpOutFile)
-
-return mode
+return .Rexxinfo~architecture
 
 
 /* class: TestUtil - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*\
@@ -1309,6 +1298,7 @@ return str
 ::attribute conditionName private
 ::attribute conditionCode private
 ::attribute conditionMsg private
+::attribute conditionAdditional private
 
 
 ::method clearCondition
@@ -1316,16 +1306,25 @@ return str
   self~conditionName = .nil
   self~conditionCode = .nil
   self~conditionMsg = .nil
+  self~conditionAdditional = .nil
 
 /** expectSyntax()
  * The syntax error code to expect is required.
+   We allow both a String specifying the error code or an Array with
+   the first item being the error code and any following items the
+   message inserts.
  */
 ::method expectSyntax
   use strict arg errorCode, msg = .nil
 
   self~conditionExpected = .true
   self~conditionName = "SYNTAX"
-  self~conditionCode = errorCode
+  if errorCode~isA(.String) then       -- error code only
+    self~conditionCode = errorCode
+  else do                              -- error code plus message inserts
+    self~conditionCode = errorCode[1]
+    self~conditionAdditional = errorCode~section(2)
+  end
   self~conditionMsg = msg
 
 
@@ -1351,14 +1350,36 @@ return str
 
   if self~conditionExpected, self~conditionName == receivedCondition~condition then do
      -- For a syntax error, the actual error code has to match the expected error code.
-     if self~conditionName == "SYNTAX", self~conditionCode <> receivedCondition~code then
-        return .false
-
-     self~fAssertions += 1
-     return .true
+     -- We also check if any given message inserts match the returned additional object.
+     if self~conditionName == "SYNTAX", -
+      self~conditionCode == receivedCondition~code, -
+      self~checkAdditional(receivedCondition, self~conditionAdditional) then do
+        self~fAssertions += 1
+        return .true
+      end
   end
   return .false
 
+
+/** checkAdditional()
+ * Returns true if expected additional info matches received additional info.
+ */
+::method checkAdditional
+  use strict arg conditionReceived, additionalExpected
+
+  if additionalExpected~isNil then -- no message inserts were supplied
+     return .true
+  additionalReceived = conditionReceived["ADDITIONAL"]
+  if \additionalReceived~isA(.Array) then
+     return .false -- a SYNTAX error should always supply an ADDITIONAL Array
+
+  if additionalReceived~items \== additionalExpected~items then
+     return .false
+  do i = 1 to additionalReceived~items
+     if additionalReceived[i] \== additionalExpected[i] then
+        return .false
+  end
+  return .true
 
 /** check4ConditionFailure()
  * Forces an assert failure if a condition is expected to be raised.  The
@@ -1448,10 +1469,8 @@ return str
 
 ::method init        -- constructor
   expose fName fCountTestCases    -- name of Testcase (method) to carry out
-  parse arg fName
-  if fname == "" & self~class~id == "text.testgroup" then do
-    say 1/0
-  end
+  use strict arg fName = ""
+  fName = fName~string
 
   fCountTestCases=1  -- default: individual test
   self~caseInfo=.directory~new -- directory to contain information on test

@@ -84,17 +84,13 @@ return testResult
 
 ::method test_rxqueue_names_valid
   -- according to rexxref "The maximum length of queuename can be 250 characters"
-  do name over (0, "?", "!", ".", "QUEUE", "RXQUEUE", "QUEUE.0", "_"~copies(249))
+  do name over (0, "?", "!", ".", "QUEUE", "RXQUEUE", "QUEUE.0", "_"~copies(250))
     self~assertSame(0, rxqueue("open", name), "queue '" || name || "' should be valid")
     self~assertSame(0, rxqueue("delete", name))
   end
 
-  name = "_"~copies(250)
-  self~assertSame(0, rxqueue("open", name))
-
 ::method test_rxqueue_exists
   -- SESSION should always exists
-  -- known bug (testOOrexx -V 3 will display stats, -V 7 will make test fail)
   self~assertTrue(rxqueue("exists", "SESSION"))
 
   -- a newly opeoned queue should exist
@@ -129,7 +125,7 @@ return testResult
 -- [bugs:#1547] RXQUEUE() issues
 ::method test_rxqueue_create_session
   -- intended or not, 'create' SESSION returns the nullstring
-  self~assertSame("", rxqueue("create", "SESSION"))
+  self~assertSame("", rxqueue("create", "SESSION"), "tracker bug #1547 RXQUEUE() issues")
 
 -- make sure created queue names are always unique
 ::method test_rxqueue_create_unique
@@ -140,7 +136,7 @@ return testResult
   -- we run a uniqueness test for three types of 'create'
   -- 1. with a single argument
   -- 2. with two arguments and a constant name
-  -- 2. with two arguments and a "rolling" name
+  -- 3. with two arguments and a "rolling" name
   do type over "single", "initial", "rolling"
     unique~empty
     do rounds
@@ -166,8 +162,7 @@ return testResult
   end
 
 ::method test_rxqueue_open
-  -- SESSION should always exists
-  -- known bug (testOOrexx -V 3 will display stats, -V 7 will make test fail)
+  -- SESSION should always exist
   self~assertSame(0, rxqueue("open", "session"))
 
   -- 'open' returns 0 whether the queue existed before or was just created
