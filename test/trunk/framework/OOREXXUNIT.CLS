@@ -1352,11 +1352,11 @@ return str
      -- For a syntax error, the actual error code has to match the expected error code.
      -- We also check if any given message inserts match the returned additional object.
      if self~conditionName == "SYNTAX", -
-      self~conditionCode == receivedCondition~code, -
-      self~checkAdditional(receivedCondition, self~conditionAdditional) then do
-        self~fAssertions += 1
-        return .true
-      end
+      self~conditionCode \== receivedCondition~code & -
+      \self~checkAdditional(receivedCondition, self~conditionAdditional) then
+         return .false
+      self~fAssertions += 1
+      return .true
   end
   return .false
 
