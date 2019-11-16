@@ -344,7 +344,7 @@ return testResult
 ::method test_notready_syntax_override
   self~assertSame("", self~runDynamicSource(("return charin('/')", "::options notready syntax notready condition")))
   self~assertSame("", self~runDynamicSource(("signal off notready", "return .Stream~new('/')~charIn", "::options notready syntax")))
-  self~assertSame("NOTREADY", self~runDynamicSource(("signal on notready", "return chars('/')", "notready:", "return 'NOTREADY'", "::options notready syntax")))
+  self~assertSame("NOTREADY", self~runDynamicSource(("signal on notready", "return chars('*')", "notready:", "return 'NOTREADY'", "::options notready syntax")))
 
 ::method test_notready_syntax_bif
   -- 98.974:  Stream "..." is not ready
@@ -378,7 +378,7 @@ return testResult
   self~assertSame(30, self~runDynamicSource(("address 'non-existing' 'command'", "return rc", "::options trace off any syntax failure condition error condition")))
   self~assertSame(1, self~runDynamicSource(("return 1234567890 / 1234567890", "::options any syntax lostdigits condition")))
   self~assertSame("CHAR", self~runDynamicSource(("return datatype(.nil)", "::options any syntax nostring condition")))
-  self~assertSame(0, self~runDynamicSource(("return chars('/')", "::options any syntax notready condition")))
+  self~assertSame(0, self~runDynamicSource(("return chars('*')", "::options any syntax notready condition")))
   self~assertSame("NOVALUE", self~runDynamicSource(("return novalue", "::options any syntax novalue condition")))
 
 ::resource anySimple
@@ -386,7 +386,7 @@ return testResult
   address "non-existing" "command"; failure = rc
   lostdigits = 1234567890 / 1234567890
   nostring = datatype(.nil)
-  notready = chars('/')
+  notready = chars('*')
   novalue = novalue
   return error failure lostdigits nostring notready novalue
   ::options any syntax trace off
@@ -403,7 +403,7 @@ return testResult
     when 2 then address "non-existing" "command"
     when 3 then lostdigits = 1234567890 / 1234567890
     when 4 then nostring = datatype(.nil)
-    when 5 then notready = chars('/')
+    when 5 then notready = chars('*')
     when 6 then novalue = novalue
     otherwise return r~strip
   end
@@ -435,7 +435,7 @@ return testResult
 
 ::method test_any_syntax_notready
   -- 98.974:  Stream "..." is not ready
-  self~assertSyntaxError((98.974, "/"), ("return chars('/')", "::options any syntax"))
+  self~assertSyntaxError((98.974, "/"), ("return chars('*')", "::options any syntax"))
 
 ::method test_any_syntax_novalue
   -- 98.986:  Reference to unassigned variable "...".
