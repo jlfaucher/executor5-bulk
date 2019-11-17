@@ -175,11 +175,15 @@ return testResult
 ::method test_rexxInfo_executable
   -- in the wild .RexxInfo~executable may be .nil or may not point to rexx(.exe)
   -- but for a typical test scenario this should not happen, so we really want
-  -- know when and why this happens
+  -- to know if this happens
+  -- currently our CMake-based build will build the rexx resp. rxqueue
+  -- executables as rexx-oorexx resp. rxqueue-oorexx to make it easier to
+  -- have concurrent installations of ooRexx versions or other Rexx interpreters
+  -- (update-alternatives is then used to link a selected Rexx interpreter)
   if .RexxInfo~platform~caselessStartsWith("Windows") then
     self~assertTrue(.RexxInfo~executable~endsWith("\rexx.exe"), ".RexxInfo~executable '" || .RexxInfo~executable || "' should end in '\rexx.exe'")
   else
-    self~assertTrue(.RexxInfo~executable~endsWith("/rexx"), ".RexxInfo~executable '" || .RexxInfo~executable || "' should end in '/rexx'")
+    self~assertOneOrAnother("rexx", "rexx-oorexx", .File~new(.RexxInfo~executable)~name, ".RexxInfo~executable '" || .RexxInfo~executable || "' is expected to end in 'rexx' or 'rexx-oorexx'")
   self~assertTrue(.File~new(.RexxInfo~executable)~exists, ".RexxInfo~executable '" || .RexxInfo~executable || "' should exist")
   self~assertTrue(.File~new(.RexxInfo~executable)~isFile, ".RexxInfo~executable '" || .RexxInfo~executable || "' should be an existing file")
 
