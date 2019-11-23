@@ -1,6 +1,3 @@
-/*-- interpreter\parser\DirectiveParser.cpp --------------------------*/
-
-/* new in 5.0 */
 annotate ::= '::ANNOTATE' ( 'ATTRIBUTE' attribute |
                             'CLASS' class |
                             'CONSTANT' constant |
@@ -8,54 +5,45 @@ annotate ::= '::ANNOTATE' ( 'ATTRIBUTE' attribute |
                             'PACKAGE' |
                             'ROUTINE' routine ) ( name value )*
 
-/*-- LanguageParser::attributeDirective() ----------------------------*/
 attribute ::= '::ATTRIBUTE' name ( 'GET' | 'SET' )? ( 'CLASS' )?
                             ( 'PUBLIC' | 'PACKAGE' | 'PRIVATE' )?
                             ( 'GUARDED' | 'UNGUARDED' )?
                             ( 'UNPROTECTED' | 'PROTECTED' )?
                             ( 'ABSTRACT' |
-/* new in 5.0 */              'DELEGATE' delegatename |
+                              'DELEGATE' delegatename |
                               'EXTERNAL' spec )?
 
-/*-- LanguageParser::classDirective() --------------------------------*/
 class ::= '::CLASS' classname ( 'METACLASS' metaclass )?
                     ( 'PRIVATE' | 'PUBLIC' )?
                     ( 'MIXINCLASS' mclass | 'SUBCLASS' sclass )?
                     ( 'ABSTRACT' )?
                     ( 'INHERIT' iclass+ )?
 
-/*-- LanguageParser::constantDirective() -----------------------------*/
 constant ::= '::CONSTANT' name value?
 
-/*-- LanguageParser::methodDirective() -------------------------------*/
 method ::= '::METHOD' methodname 'ATTRIBUTE'? 'CLASS'?
                       ( 'PUBLIC' | 'PACKAGE' | 'PRIVATE' )?
                       ( 'GUARDED' | 'UNGUARDED' )?
                       ( 'UNPROTECTED' | 'PROTECTED' )?
                       ( 'ABSTRACT' |
-/* new in 5.0 */        'DELEGATE' delegatename |
+                        'DELEGATE' delegatename |
                         'EXTERNAL' spec )?
 
-/*-- LanguageParser::optionsDirective() ------------------------------*/
 options ::= '::OPTIONS' ( 'DIGITS' digits |
                           'FORM' ('ENGINEERING' | 'SCIENTIFIC') |
                           'FUZZ' fuzz |
-/* new in 5.0 */          'NOVALUE' ('CONDITION' | 'ERROR') |
-/* new in 5.0 */          ( 'PROLOG' | 'NOPROLOG' ) |
+                          'NOVALUE' ('CONDITION' | 'ERROR') |
+                          ( 'PROLOG' | 'NOPROLOG' ) |
                           'TRACE' trace
                         )*
 
-/*-- LanguageParser::requiresDirective() -----------------------------*/
 requires ::= '::REQUIRES' programname ( 'LIBRARY' |
-/* new in 5.0 */                        'NAMESPACE' namespace
+                                        'NAMESPACE' namespace
                                       )?
 
-/*-- LanguageParser::resourceDirective() -----------------------------*/
-/* new in 5.0 */
-resource ::= '::RESOURCE' name ( 'END' delimiter )?/* new in 5.0 */
+resource ::= '::RESOURCE' name ( 'END' delimiter )?
 resourcedata ::= resource_data*
 resourceend ::= ( '::END' | delimiter ) ignored_data?
 
-/*-- LanguageParser::routineDirective() ------------------------------*/
 routine ::= '::ROUTINE' routinename ( 'PRIVATE' | 'PUBLIC' )? ( 'EXTERNAL' spec )?
 

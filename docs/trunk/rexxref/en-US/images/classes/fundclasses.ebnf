@@ -1,7 +1,5 @@
-/* new in 5.0, class, method, routine, package */
 all_annotation ::= 'annotation(' name ')'
 
-/* new in 5.0, class, method, routine, package */
 all_annotations ::= 'annotations'
 
 object_new ::= 'new'
@@ -47,8 +45,6 @@ object_send ::= 'send(' messagename ( ',' argument? )* ')'
 
 object_sendwith ::= 'sendWith(' messagename ',' arguments ')'
 
-/*-- interpreter\classes\ObjectClass.cpp -----------------------------*/
-/*-- RexxObject::setMethod() -----------------------------------------*/
 object_setmethod ::= 'setMethod(' methodname
                                   ( ',' method ( | ',' '"FLOAT"' | ',' '"OBJECT"' ) )? ')'
 
@@ -60,7 +56,6 @@ object_string ::= 'string'
 
 object_unsetmethod ::= 'unsetMethod(' methodname ')'
 
-/* new in 5.0 */
 class_comparison_operator ::= 'comparison_operator(' argument ')'
 
 class_activate ::= 'activate'
@@ -71,7 +66,6 @@ class_defaultname ::= 'defaultName'
 
 class_define ::= 'define(' methodname ( ',' method )? ')'
 
-/* new in 5.0 */
 class_definemethods ::= 'defineMethods(' methods ')'
 
 class_delete ::= 'delete(' methodname ')'
@@ -82,7 +76,6 @@ class_id ::= 'id'
 
 class_inherit ::= 'inherit(' classobj ( ',' classpos )? ')'
 
-/* new in 5.0 */
 class_isabstract ::= 'isAbstract'
 class_ismetaclass ::= 'isMetaclass'
 
@@ -98,7 +91,6 @@ class_mixinclass ::= 'mixinClass(' classid ',' metaclass? (',' methods)? ')'
 
 class_new ::= 'new(' arg? (',' arg?)* ')'
 
-/* new in 5.0 */
 class_package ::= 'package'
 
 class_querymixinclass ::= 'queryMixinClass'
@@ -114,16 +106,11 @@ class_superclasses ::= 'superClasses'
 class_uninherit ::= 'uninherit(' classobj ')'
 
 string_new ::= 'new(' stringvalue ')'
-
 string_nl ::= 'nl'
-
 string_cr ::= 'cr'
-
 string_null ::= 'null'
-
 string_tab ::= 'tab'
 
-/* new in 5.0 - start */
 string_class_alnum ::= 'alnum'
 string_class_alpha ::= 'alpha'
 string_class_blank ::= 'blank'
@@ -136,7 +123,6 @@ string_class_punct ::= 'punct'
 string_class_space ::= 'space'
 string_class_upper ::= 'upper'
 string_class_xdigit ::= 'xdigit'
-/* new in 5.0 - end */
 
 string_arithmetic_operator ::= arithmetic_operator '(' argument ')'
 
@@ -146,7 +132,6 @@ string_logical_operator ::= 'logical_operator(' argument ')'
 
 string_concatenation_operator ::= 'concatentation_operator(' argument ')'
 
-/* new in 5.0 - start */
 string_atget                ::= '[' n ( ',' length )? ']'
 string_iif                  ::= '?(' first ',' second ')'
 string_append               ::= 'append(' string ')'
@@ -160,7 +145,6 @@ string_contains             ::= 'contains(' other ',' start? ( ',' length )? ')'
 string_caselesscontains     ::= 'caselessContains(' other ',' start? ( ',' length )? ')'
 string_containsword         ::= 'containsWord(' phrase ( ',' start )? ')'
 string_caselesscontainsword ::= 'caselessContainsWord(' phrase ( ',' start )? ')'
-/* new in 5.0 - end */
 
 string_abbrev ::= 'abbrev(' info ( ',' length )? ')'
 
@@ -341,7 +325,6 @@ method_newfile ::= 'newFile(' filename ( ',' context )? ')'
 
 method_loadexternalmethod ::= 'loadExternalMethod(' name ',' descriptor ')'
 
-/* new in 5.0 */
 method_isabstract ::= 'isAbstract'
 method_isattribute ::= 'isAttribute'
 method_isconstant ::= 'isConstant'
@@ -356,7 +339,6 @@ method_isprotected ::= 'isProtected'
 
 method_package ::= 'package'
 
-/* new in 5.0 */
 method_scope ::= 'scope'
 
 method_setguarded ::= 'setGuarded'
@@ -378,7 +360,6 @@ routine_newfile ::= 'newFile(' filename ( ',' context )? ')'
 routine_loadexternalroutine ::= 'loadExternalRoutine(' name ',' descriptor ')'
 
 routine_call ::= 'call(' argument? ( ',' argument? )* ')'
-/* new in 5.0 */
 routine_callbrackets ::= '[' argument? ( ',' argument? )* ']'
 
 routine_callwith ::= 'callWith(' array ')'
@@ -389,12 +370,11 @@ routine_setsecuritymanager ::= 'setSecurityManager(' security_manager_object? ')
 
 routine_source ::= 'source'
 
-/*-- Package class ---------------------------------------------------*/
+
 package_new ::= 'new(' name ',' source? ( ',' context )? ')'
 
 package_addclass ::= 'addClass(' name ',' class ')'
 
-/* chg in 5.0 */
 package_addpackage ::= 'addPackage(' package (',' namespace)? ')'
 
 package_addpublicclass ::= 'addPublicClass(' name ',' class ')'
@@ -411,12 +391,10 @@ package_digits ::= 'digits'
 
 package_findclass ::= 'findClass(' name ')'
 
-/* New in 5.0 - start */
 package_findnamespace ::= 'findNamespace(' name ')'
 package_findprogram ::= 'findProgram(' name ')'
 package_findpublicclass ::= 'findPublicClass(' name ')'
 package_findpublicroutine ::= 'findPublicRoutine(' name ')'
-/* New in 5.0 - end */
 
 package_findroutine ::= 'findRoutine(' name ')'
 
@@ -438,19 +416,15 @@ package_loadpackage ::= 'loadPackage(' name ( ',' source )? ')'
 
 package_name ::= 'name'
 
-/* New in 5.0 - start */
 package_namespaces ::= 'namespaces'
 package_prolog ::= 'prolog'
-/* New in 5.0 - end */
 
 package_publicclasses ::= 'publicClasses'
 
 package_publicroutines ::= 'publicRoutines'
 
-/* New in 5.0 - start */
 package_resource ::= 'resource(' name ')'
 package_resources ::= 'resources'
-/* New in 5.0 - end */
 
 package_routines ::= 'routines'
 
@@ -464,7 +438,6 @@ package_sourcesize ::= 'sourceSize'
 
 package_trace ::= 'trace'
 
-/* new in 5.0 - start */
 message_halt      ::= 'halt(' description? ')'
 message_hasresult ::= 'hasResult'
 message_messagecomplete ::= 'messageComplete(' source? ')'
@@ -474,7 +447,6 @@ message_sendwith  ::= 'sendWith(' target? ',' arguments ')'
 message_startwith ::= 'startWith(' target? ',' arguments ')'
 message_triggered ::= 'triggered(' source? ')'
 message_wait      ::= 'wait'
-/* new in 5.0 - end */
 
 
 message_new ::= 'new(' target ',' messagename ( ',' '"Individual"' ( ',' argument? )* |
@@ -490,15 +462,12 @@ message_haserror ::= 'hasError'
 
 message_messagename ::= 'messageName'
 
-/* chg in 5.0: changed "message" to (notification) "target" */
 message_notify ::= 'notify(' target ')'
 
 message_result ::= 'result'
 
-/* chg in 5.0 */
 message_send ::= 'send(' target? ( ',' argument? )* ')'
 
-/* chg in 5.0 */
 message_start ::= 'start(' target? ( ',' argument? )* ')'
 
 message_target ::= 'target'
