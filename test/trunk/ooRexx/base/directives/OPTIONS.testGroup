@@ -230,7 +230,7 @@ return testResult
   -- also test syntax error message inserts
   -- this only works on Unix-like systems .. see comment above
   if \.RexxInfo~platform~caselessAbbrev("WINDOWS") then
-    self~assertSyntaxError((98.971, "non-existing-command", 30), ("address '' 'non-existing' with error using (.Array~new)", "::options trace off failure syntax"))
+    self~assertSyntaxError((98.971, "non-existing", 127), ("address '' 'non-existing' with error using (.Array~new)", "::options trace off failure syntax"))
 
 ::method test_failure_syntax_address
   self~assertSyntaxError((98.971, "command", 30), ("address 'invalid' 'command'", "::options trace off failure syntax"))
