@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -286,7 +286,27 @@ return testResult
       self~expectSyntax("40.904")
       j = lines(, "")
 
--- End of class: LINES.testGroup
+-- see also [bugs:#1663] CHARS/LINES BIFs inconsistent regarding NOTREADY
+::method test_lines_notready_invalid
+  signal on notready
+  call lines "*"
+  self~assertFail("LINES should raise NOTREADY")
+  notready:
+  self~assertSame("*", condition("additional"))
+
+::method test_lines_notready_directory
+  signal on notready
+  call lines "/"
+  self~assertFail("LINES should raise NOTREADY")
+  notready:
+  self~assertSame("/", condition("additional"))
+
+::method test_lines_notready_nonexisting
+  signal on notready
+  call lines "non-existing-file"
+  self~assertFail("LINES should raise NOTREADY")
+  notready:
+  self~assertSame("non-existing-file", condition("additional"))
 
 
 ::options novalue error

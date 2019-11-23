@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2005-2018 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2005-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -248,5 +248,27 @@ return testResult
   ret = chars(fileName)
   self~assertSame(total_len - (4 * len), ret)
 
+
+-- see also [bugs:#1663] CHARS/LINES BIFs inconsistent regarding NOTREADY
+::method test_chars_notready_invalid
+  signal on notready
+  call chars "*"
+  self~assertFail("CHARS should raise NOTREADY")
+  notready:
+  self~assertSame("*", condition("additional"))
+
+::method test_chars_notready_directory
+  signal on notready
+  call chars "/"
+  self~assertFail("CHARS should raise NOTREADY")
+  notready:
+  self~assertSame("/", condition("additional"))
+
+::method test_chars_notready_nonexisting
+  signal on notready
+  call chars "non-existing-file"
+  self~assertFail("CHARS should raise NOTREADY")
+  notready:
+  self~assertSame("non-existing-file", condition("additional"))
 
 ::options novalue error
