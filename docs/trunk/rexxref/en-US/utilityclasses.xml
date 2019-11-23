@@ -3899,7 +3899,7 @@ absolute path of the target object.
 </section>
 
 
-<!-- Class File - method setWritable ======================== -->
+<!-- Class File - method setWritable =============================== -->
 <section id="mthFileSetWritable" revisionflag="added"><title>&added50;setWritable</title>
 <indexterm><primary>setWritable method</primary><secondary>of File class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>setWritable method</secondary><tertiary>of File class</tertiary></indexterm>
@@ -5082,7 +5082,7 @@ If <emphasis role="italic">separator</emphasis> isn't specified, any
 </section>
 
 
-<!-- Class MutableBuffer - method makeString ======================== -->
+<!-- Class MutableBuffer - method makeString ======================= -->
 <section id="mthMutableBufferMakeString" revisionflag="added"><title>&added50;makeString
 <indexterm><primary>makeString method</primary><secondary>of MutableBuffer class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>makeString method</secondary><tertiary>of MutableBuffer class</tertiary></indexterm>
@@ -7021,8 +7021,10 @@ other instances cannot be created or copied.
   </para></listitem>
   <listitem><para>
     the interpreter's
-    <xref linkend="mthRexxInfoPlatform" xrefstyle="select:title"/>, and
-    the addressing mode of its <xref linkend="mthRexxInfoArchitecture" xrefstyle="select:title"/>,
+    <xref linkend="mthRexxInfoPlatform" xrefstyle="select:title"/>,
+    addressing mode of its <xref linkend="mthRexxInfoArchitecture" xrefstyle="select:title"/>,
+    full <xref linkend="mthRexxInfoExecutable" xrefstyle="select:title"/> path, and
+    shared/dynamic <xref linkend="mthRexxInfoLibraryPath" xrefstyle="select:title"/>,
   </para></listitem>
   <listitem><para>
     and the platform-specific values for
@@ -7037,7 +7039,7 @@ other instances cannot be created or copied.
 </para>
 
 <!-- Modified: new() and copy() are forbidden -->
-<!-- $GENERATED-20190429-START rexxrefClassTable(RexxInfo) -->
+<!-- $GENERATED-20191022-START rexxrefClassTable(RexxInfo) -->
 <table id="ooRexxRexxInfoClass" frame="all" pgwide="1">
 <title>RexxInfo Class</title>
 <tgroup cols="1">
@@ -7068,12 +7070,14 @@ other instances cannot be created or copied.
    <member><xref linkend="mthRexxInfoDigits" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRexxInfoDirectorySeparator" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRexxInfoEndofline" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRexxInfoExecutable" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRexxInfoForm" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRexxInfoFuzz" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRexxInfoInternalDigits" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRexxInfoInternalMaxNumber" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRexxInfoInternalMinNumber" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRexxInfoLanguageLevel" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthRexxInfoLibraryPath" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRexxInfoMajorVersion" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRexxInfoMaxArraySize" xrefstyle="select:title"/></member>
    <member><xref linkend="mthRexxInfoMaxExponent" xrefstyle="select:title"/></member>
@@ -7092,7 +7096,7 @@ other instances cannot be created or copied.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20190429-END rexxrefClassTable(RexxInfo) -->
+<!-- $GENERATED-20191022-END rexxrefClassTable(RexxInfo) -->
 
 <!-- Class RexxInfo - method architecture ========================== -->
 <section id="mthRexxInfoArchitecture" revisionflag="added"><title>&added50;architecture</title>
@@ -7245,6 +7249,29 @@ say .RexxInfo~endofline    -- '0a'x /* Unix */
 ]]></programlisting></example></para>
 </section>
 
+<!-- Class RexxInfo - method executable ============================ -->
+<section id="mthRexxInfoExecutable" revisionflag="added"><title>&added50;executable</title>
+<indexterm><primary>executable method</primary><secondary>of RexxInfo class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>executable method</secondary><tertiary>of RexxInfo class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/rexxinfo_executable.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns the full path of the currently executing interpreter.
+</para>
+<para>See also method <xref linkend="mthRexxInfoLibraryPath" xrefstyle="select:title"/>.
+</para>
+<para><example id="ex.rexxinfo-executable">
+<title>RexxInfo class &mdash; executable method
+<indexterm><primary>examples</primary><secondary>executable method</secondary></indexterm>
+</title>
+<programlisting><![CDATA[
+say .RexxInfo~executable    -- e.g. Windows: C:\Program Files\ooRexx\rexx.exe
+say .RexxInfo~executable    -- e.g. Unix: /usr/bin/rexx
+]]></programlisting></example></para>
+</section>
+
 <!-- Class RexxInfo - method form ================================== -->
 <section id="mthRexxInfoForm" revisionflag="added"><title>&added50;form</title>
 <para>
@@ -7328,7 +7355,7 @@ say .RexxInfo~internalDigits    -- 18 /* 64-bit addressing mode */
 </section>
 
 
-<!-- Class RexxInfo - method internalMaxNumber ======================== -->
+<!-- Class RexxInfo - method internalMaxNumber ===================== -->
 <section id="mthRexxInfoInternalMaxNumber" revisionflag="added"><title>&added50;internalMaxNumber</title>
 <para>
 <indexterm><primary>internalMaxNumber method</primary><secondary>of RexxInfo class</secondary></indexterm>
@@ -7358,7 +7385,7 @@ say .RexxInfo~internalMaxNumber  -- 999999999999999999 /* 64-bit addressing mode
 </section>
 
 
-<!-- Class RexxInfo - method internalMinNumber ======================== -->
+<!-- Class RexxInfo - method internalMinNumber ===================== -->
 <section id="mthRexxInfoInternalMinNumber" revisionflag="added"><title>&added50;internalMinNumber</title>
 <para>
 <indexterm><primary>internalMinNumber method</primary><secondary>of RexxInfo class</secondary></indexterm>
@@ -7416,6 +7443,29 @@ which both also return the language level as the second token of their result.
 ]]></programlisting></example></para>
 </section>
 
+<!-- Class RexxInfo - method libraryPath =========================== -->
+<section id="mthRexxInfoLibraryPath" revisionflag="added"><title>&added50;libraryPath</title>
+<indexterm><primary>libraryPath method</primary><secondary>of RexxInfo class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>libraryPath method</secondary><tertiary>of RexxInfo class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/rexxinfo_librarypath.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns the path of the shared or dynamic libraries for the currently running Rexx interpreter.
+</para>
+<para>See also method <xref linkend="mthRexxInfoExecutable" xrefstyle="select:title"/>.
+</para>
+<para><example id="ex.rexxinfo-librarypath">
+<title>RexxInfo class &mdash; libraryPath method
+<indexterm><primary>examples</primary><secondary>libraryPath method</secondary></indexterm>
+</title>
+<programlisting><![CDATA[
+say .RexxInfo~libraryPath    -- e. g. Windows: C:\Program Files\ooRexx
+say .RexxInfo~libraryPath    -- e. g. Unix: /usr/lib/
+]]></programlisting></example></para>
+</section>
+
 <!-- Class RexxInfo - method majorVersion ========================== -->
 <section id="mthRexxInfoMajorVersion" revisionflag="added"><title>&added50;majorVersion</title>
 <para>
@@ -7448,7 +7498,7 @@ The major version number is the first part of the language processor
 </section>
 
 
-<!-- Class RexxInfo - method maxArraySize ======================== -->
+<!-- Class RexxInfo - method maxArraySize ========================== -->
 <section id="mthRexxInfoMaxArraySize" revisionflag="added"><title>&added50;maxArraySize</title>
 <para>
 <indexterm><primary>maxArraySize method</primary><secondary>of RexxInfo class</secondary></indexterm>
@@ -7471,7 +7521,7 @@ say .RexxInfo~maxArraySize  -- 999999999999999999 /* 64-bit addressing mode */
 </section>
 
 
-<!-- Class RexxInfo - method maxExponent ======================== -->
+<!-- Class RexxInfo - method maxExponent =========================== -->
 <section id="mthRexxInfoMaxExponent" revisionflag="added"><title>&added50;maxExponent</title>
 <para>
 <indexterm><primary>maxExponent method</primary><secondary>of RexxInfo class</secondary></indexterm>
@@ -7495,7 +7545,7 @@ say .RexxInfo~maxExponent    -- 999999999
 </section>
 
 
-<!-- Class RexxInfo - method maxPathLength ======================== -->
+<!-- Class RexxInfo - method maxPathLength ========================= -->
 <section id="mthRexxInfoMaxPathLength" revisionflag="added"><title>&added50;maxPathLength</title>
 <para>
 <indexterm><primary>maxPathLength method</primary><secondary>of RexxInfo class</secondary></indexterm>
@@ -7518,7 +7568,7 @@ say .RexxInfo~maxPathLength    -- 4096 /* e. g. on Linux */
 </section>
 
 
-<!-- Class RexxInfo - method minExponent ======================== -->
+<!-- Class RexxInfo - method minExponent =========================== -->
 <section id="mthRexxInfoMinExponent" revisionflag="added"><title>&added50;minExponent</title>
 <para>
 <indexterm><primary>minExponent method</primary><secondary>of RexxInfo class</secondary></indexterm>
@@ -7542,7 +7592,7 @@ say .RexxInfo~minExponent    -- -999999999
 </section>
 
 
-<!-- Class RexxInfo - method modification ======================== -->
+<!-- Class RexxInfo - method modification ========================== -->
 <section id="mthRexxInfoModification" revisionflag="added"><title>&added50;modification</title>
 <para>
 <indexterm><primary>modification method</primary><secondary>of RexxInfo class</secondary></indexterm>
@@ -10012,7 +10062,7 @@ or within a numeric range.
 <!-- $GENERATED-20191122-END rexxrefClassTable(Validate) -->
 
 
-<!-- Class Validate - method classType ======================== -->
+<!-- Class Validate - method classType ============================= -->
 <section id="mthValidateClassType" revisionflag="added"><title>&added50;classType (Class Method)</title>
 <indexterm><primary>classType method</primary><secondary>of Validate class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>classType method</secondary><tertiary>of Validate class</tertiary></indexterm>
@@ -10032,7 +10082,7 @@ if the validation fails, else returns with no result.
 </section>
 
 
-<!-- Class Validate - method length ======================== -->
+<!-- Class Validate - method length ================================ -->
 <section id="mthValidateLength" revisionflag="added"><title>&added50;length (Class Method)</title>
 <indexterm><primary>length method</primary><secondary>of Validate class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>length method</secondary><tertiary>of Validate class</tertiary></indexterm>
@@ -10056,7 +10106,7 @@ if the validation fails, else returns with no result.
 </section>
 
 
-<!-- Class Validate - method logical ======================== -->
+<!-- Class Validate - method logical =============================== -->
 <section id="mthValidateLogical" revisionflag="added"><title>&added50;logical (Class Method)</title>
 <indexterm><primary>logical method</primary><secondary>of Validate class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>logical method</secondary><tertiary>of Validate class</tertiary></indexterm>
@@ -10074,7 +10124,7 @@ if the validation fails, else returns with no result.
 </section>
 
 
-<!-- Class Validate - method nonNegativeNumber ======================== -->
+<!-- Class Validate - method nonNegativeNumber ===================== -->
 <section id="mthValidateNonNegativeNumber" revisionflag="added"><title>&added50;nonNegativeNumber (Class Method)</title>
 <indexterm><primary>nonNegativeNumber method</primary><secondary>of Validate class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>nonNegativeNumber method</secondary><tertiary>of Validate class</tertiary></indexterm>
@@ -10098,7 +10148,7 @@ if the validation fails, else returns with no result.
 </section>
 
 
-<!-- Class Validate - method nonNegativeWholeNumber ======================== -->
+<!-- Class Validate - method nonNegativeWholeNumber ================ -->
 <section id="mthValidateNonNegativeWholeNumber" revisionflag="added"><title>&added50;nonNegativeWholeNumber (Class Method)</title>
 <indexterm><primary>nonNegativeWholeNumber method</primary><secondary>of Validate class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>nonNegativeWholeNumber method</secondary><tertiary>of Validate class</tertiary></indexterm>
@@ -10122,7 +10172,7 @@ if the validation fails, else returns with no result.
 </section>
 
 
-<!-- Class Validate - method number ======================== -->
+<!-- Class Validate - method number ================================ -->
 <section id="mthValidateNumber" revisionflag="added"><title>&added50;number (Class Method)</title>
 <indexterm><primary>number method</primary><secondary>of Validate class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>number method</secondary><tertiary>of Validate class</tertiary></indexterm>
@@ -10142,7 +10192,7 @@ if the validation fails, else returns with no result.
 </section>
 
 
-<!-- Class Validate - method numberRange ======================== -->
+<!-- Class Validate - method numberRange =========================== -->
 <section id="mthValidateNumberRange" revisionflag="added"><title>&added50;numberRange (Class Method)</title>
 <indexterm><primary>numberRange method</primary><secondary>of Validate class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>numberRange method</secondary><tertiary>of Validate class</tertiary></indexterm>
@@ -10167,7 +10217,7 @@ if the validation fails, else returns with no result.
 </section>
 
 
-<!-- Class Validate - method position ======================== -->
+<!-- Class Validate - method position ============================== -->
 <section id="mthValidatePosition" revisionflag="added"><title>&added50;position (Class Method)</title>
 <indexterm><primary>position method</primary><secondary>of Validate class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>position method</secondary><tertiary>of Validate class</tertiary></indexterm>
@@ -10215,7 +10265,7 @@ if the validation fails, else returns with no result.
 </section>
 
 
-<!-- Class Validate - method requestClassType ======================== -->
+<!-- Class Validate - method requestClassType ====================== -->
 <section id="mthValidateRequestClassType" revisionflag="added"><title>&added50;requestClassType (Class Method)</title>
 <indexterm><primary>requestClassType method</primary><secondary>of Validate class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>requestClassType method</secondary><tertiary>of Validate class</tertiary></indexterm>
@@ -10236,7 +10286,7 @@ raises a syntax error for argument <emphasis role="italic">name</emphasis>.
 </section>
 
 
-<!-- Class Validate - method positiveWholeNumber ======================== -->
+<!-- Class Validate - method positiveWholeNumber =================== -->
 <section id="mthValidatePositiveWholeNumber" revisionflag="added"><title>&added50;positiveWholeNumber (Class Method)</title>
 <indexterm><primary>positiveWholeNumber method</primary><secondary>of Validate class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>positiveWholeNumber method</secondary><tertiary>of Validate class</tertiary></indexterm>
@@ -10260,7 +10310,7 @@ if the validation fails, else returns with no result.
 </section>
 
 
-<!-- Class Validate - method wholeNumber ======================== -->
+<!-- Class Validate - method wholeNumber =========================== -->
 <section id="mthValidateWholeNumber" revisionflag="added"><title>&added50;wholeNumber (Class Method)</title>
 <indexterm><primary>wholeNumber method</primary><secondary>of Validate class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>wholeNumber method</secondary><tertiary>of Validate class</tertiary></indexterm>
@@ -10282,7 +10332,7 @@ if the validation fails, else returns with no result.
 </section>
 
 
-<!-- Class Validate - method wholeNumberRange ======================== -->
+<!-- Class Validate - method wholeNumberRange ====================== -->
 <section id="mthValidateWholeNumberRange" revisionflag="added"><title>&added50;wholeNumberRange (Class Method)</title>
 <indexterm><primary>wholeNumberRange method</primary><secondary>of Validate class</secondary></indexterm>
 <indexterm><primary>method</primary><secondary>wholeNumberRange method</secondary><tertiary>of Validate class</tertiary></indexterm>
