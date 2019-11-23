@@ -1,36 +1,27 @@
-/* new in 5.0 - start */
 alarmnotification_cancel    ::= 'cancel(' source ')'
 alarmnotification_triggered ::= 'triggered(' source ')'
 
 messagenotification_messagecomplete ::= 'messageComplete(' source ')'
-/* new in 5.0 - end */
 
 
-/* new in 5.0 */
 alarm_attachment ::= 'attachment'
 
 alarm_cancel ::= 'cancel'
 
-/* new in 5.0 */
 alarm_canceled ::= 'canceled' | 'cancelled'
 
-/* chg in 5.0: changed "message" to (notification) "target" */
 alarm_init ::= 'init(' atime ',' target (',' attachment)? ')'
 
-/* new in 5.0 */
 alarm_scheduledtime ::= 'scheduledTime'
 
-/* new in 5.0 */
 alarm_triggered ::= 'triggered'
 
 
-/* new in 5.0 - start */
 ticker_attachment ::= 'attachment'
 ticker_cancel     ::= 'cancel'
 ticker_canceled   ::= 'canceled' | 'cancelled'
 ticker_init       ::= 'init(' interval ',' target (',' attachment)? ')'
 ticker_interval   ::= 'interval'
-/* new in 5.0 - end */
 
 
 datetime_mindate ::= 'minDate'
@@ -466,7 +457,6 @@ file_setwritable ::= 'setWritable'
 file_string ::= 'string'
 
 
-/* new in 5.0 - start */
 rexxinfo_architecture       ::= 'architecture'
 rexxinfo_casesensitivefiles ::= 'caseSensitiveFiles'
 rexxinfo_date               ::= 'date'
@@ -503,6 +493,7 @@ validate_numberrange            ::= 'numberRange(' name ',' number ',' min ',' m
 validate_position               ::= 'position(' name ',' number ',' digits? ')'
 validate_positivenumber         ::= 'positiveNumber(' name ',' number ',' digits? ')'
 validate_positivewholenumber    ::= 'positiveWholeNumber(' name ',' number ',' digits? ')'
+validate_requestclasstype       ::= 'requestClassType(' name ',' object ',' class ')'
 validate_wholenumber            ::= 'wholeNumber(' name ',' number ',' digits? ')'
 validate_wholenumberrange       ::= 'wholeNumberRange(' name ',' number ',' min ',' max ',' digits? ')'
 
@@ -512,4 +503,3 @@ variablereference_unknown   ::= 'unknown'
 variablereference_value     ::= 'value'
 variablereference_value     ::= 'value' '=' object
 
-/* new in 5.0 - end */

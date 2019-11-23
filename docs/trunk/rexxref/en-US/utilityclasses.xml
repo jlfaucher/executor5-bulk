@@ -9974,7 +9974,7 @@ or within a numeric range.
 </para>
 
 <!-- modified: columns="2" -->
-<!-- $GENERATED-20190429-START rexxrefClassTable(Validate) -->
+<!-- $GENERATED-20191122-START rexxrefClassTable(Validate) -->
 <table id="ooRexxValidateClass" frame="all" pgwide="1">
 <title>Validate Class</title>
 <tgroup cols="1">
@@ -10001,6 +10001,7 @@ or within a numeric range.
    <member><xref linkend="mthValidatePosition" xrefstyle="select:title"/></member>
    <member><xref linkend="mthValidatePositiveNumber" xrefstyle="select:title"/></member>
    <member><xref linkend="mthValidatePositiveWholeNumber" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthValidateRequestClassType" xrefstyle="select:title"/></member>
    <member><xref linkend="mthValidateWholeNumber" xrefstyle="select:title"/></member>
    <member><xref linkend="mthValidateWholeNumberRange" xrefstyle="select:title"/></member>
   </simplelist>
@@ -10008,7 +10009,7 @@ or within a numeric range.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20190429-END rexxrefClassTable(Validate) -->
+<!-- $GENERATED-20191122-END rexxrefClassTable(Validate) -->
 
 
 <!-- Class Validate - method classType ======================== -->
@@ -10025,6 +10026,8 @@ class <emphasis role="italic">class</emphasis>.
 </para>
 <para>Raises a syntax error for argument <emphasis role="italic">name</emphasis>
 if the validation fails, else returns with no result.
+</para>
+<para>See also method <xref linkend="mthValidateRequestClassType" xrefstyle="select:title"/>.
 </para>
 </section>
 
@@ -10208,6 +10211,27 @@ if the validation fails, else returns with no result.
 <para>See also methods
 <xref linkend="mthValidateNonNegativeNumber" xrefstyle="template:nonNegativeNumber"/> and
 <xref linkend="mthValidatePositiveWholeNumber" xrefstyle="template:positiveWholeNumber"/>.
+</para>
+</section>
+
+
+<!-- Class Validate - method requestClassType ======================== -->
+<section id="mthValidateRequestClassType" revisionflag="added"><title>&added50;requestClassType (Class Method)</title>
+<indexterm><primary>requestClassType method</primary><secondary>of Validate class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>requestClassType method</secondary><tertiary>of Validate class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/validate_requestclasstype.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Validates that <emphasis role="italic">object</emphasis> can be
+converted to an instance of class <emphasis role="italic">class</emphasis>
+by sending it a <methodname>request</methodname> message.
+</para>
+<para>If successful, it returns the converted object, otherwise it
+raises a syntax error for argument <emphasis role="italic">name</emphasis>.
+</para>
+<para>See also method <xref linkend="mthValidateClassType" xrefstyle="select:title"/>.
 </para>
 </section>
 

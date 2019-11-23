@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2018 Rexx Language Association. All rights reserved.         */
+/* Copyright (c) 2018-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -396,11 +396,33 @@ return testResult
   .Validate~logical("", .true)
   .Validate~logical("", .false)
 
-::method test_validate_class_request
+
+-- requestClassType
+::method test_validate_request_class_no_args
+  self~expectSyntax(93.901) -- Not enough arguments for method
+  .Validate~requestClassType
+
+::method test_validate_request_class_too_few_args_one
+  self~expectSyntax(93.901) -- Not enough arguments for method
+  .Validate~requestClassType("")
+
+::method test_validate_request_class_too_many_args_four
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  .Validate~requestClassType("", 123, .String, .nil)
+
+::method test_validate_request_class_fails_file
+  self~expectSyntax((93.978, "name", .File~id, "filename")) -- Method argument ... could not be converted to type ...; found "..."
+  .Validate~requestClassType("name", "filename", .File)
+
+::method test_validate_request_class_fails_string
+  self~expectSyntax((93.978, 1, .String~id, .nil)) -- Method argument ... could not be converted to type ...; found "..."
+  .Validate~requestClassType(1, .nil, .String)
+
+::method test_validate_request_class
   self~assertSame("Abc", .Validate~requestClassType("", "Abc", .String))
   self~assertSame("Abc", .Validate~requestClassType("", .MutableBuffer~new("Abc"), .String))
   self~assertSame("Abc", .Validate~requestClassType("", .Array~of("Abc"), .String))
 
 
 
-::options novalue error
+::options novalue syntax
