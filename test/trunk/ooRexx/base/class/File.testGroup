@@ -600,6 +600,10 @@ return testResult
   -- if neither TMP nor TEMP is set, USERPROFILE is checked
   user = value("USERPROFILE", "c:\testuser", "environment")
   self~assertSame("c:\testuser", .File~temporaryPath)
+  call value "USERPROFILE", .nil, "environment"
+
+  -- if neither of those three is set, the current directory is returned
+  self~assertSame(directory(), .File~temporaryPath)
 
   -- restore environment
   call value "TMP", tmp, "environment"
@@ -621,6 +625,62 @@ return testResult
   -- restore environment
   call value "TMPDIR", tmpDir, "environment"
 
+
+::method test_searchPath_no_arg
+  self~expectSyntax(93.901) -- Not enough arguments for method
+  .File~searchPath
+
+::method test_searchPath_two_args_first_omitted
+  self~expectSyntax(93.903) -- Missing argument in method
+  .File~searchPath(, "")
+
+::method test_searchPath_three_args_too_many
+  self~expectSyntax(93.902) -- Too many arguments in invocation of method
+  .File~searchPath("", "", "")
+
+::method test_searchPath_one_arg_not_valid
+  self~assertNull(.File~searchPath(""))
+  self~assertNull(.File~searchPath("*"))
+  self~assertNull(.File~searchPath("/"))
+  self~assertNull(.File~searchPath("\"))
+  self~assertNull(.File~searchPath("C:"))
+  firstDir = value("PATH", , "environment")~makeArray(.File~pathSeparator)[1]
+  self~assertNull(.File~searchPath(firstDir))
+
+::method test_searchPath_two_args_not_valid
+  self~assertNull(.File~searchPath("", ""))
+  self~assertNull(.File~searchPath("*", "*"))
+  self~assertNull(.File~searchPath("/", value("PATH", , "environment")))
+  self~assertNull(.File~searchPath("\", value("LIBPATH", , "environment")))
+  path = value("PATH", , "environment")
+  firstDir = path~makeArray(.File~pathSeparator)[1]
+  self~assertNull(.File~searchPath(firstDir, path))
+
+::method test_searchPath_one_arg
+  -- we assume that the default shell is in PATH
+  shell = .RexxInfo~platform~caselessStartsWith("Windows")~?("cmd.exe", "sh")
+  found = .File~searchPath(shell)
+  self~assertIsA(found, .File)
+  self~assertTrue(found~absolutePath~caselessEndsWith(shell))
+
+::method test_searchPath_two_args
+  -- searchPath will search for files with or without path
+  -- if this file's path was /dir1/dir2/dir3/File.testgroup, we'd test
+  -- searchPath("dir1/dir2/dir3/File.testgroup", "/")
+  -- searchPath("dir2/dir3/File.testgroup", "/dir1")
+  -- searchPath("dir3/File.testgroup", "/dir1/dir2")
+  -- searchPath("File.testgroup", "/dir1/dir2/dir3")
+  slash = .File~separator
+  parse source . . this
+  components = this~makeArray(slash)~~delete(1)
+  root = .Array~of(filespec("drive", this) || slash)
+  do while components~items > 0
+    found = .File~searchPath(components~toString(, slash), root~toString(, slash))
+    self~assertIsA(found, .File)
+    self~assertTrue(found~absolutePath~caselessEndsWith(components~lastItem))
+    root~append(components~delete(1))
+  end
+
 ::method test_searchpath1
 
   self~assertNull(.file~searchPath("*non existent filename*", "."))
@@ -629,7 +689,6 @@ return testResult
   -- the following assumes the executable is on the path
   executable = .file~new(.rexxinfo~executable)
 
-  rexxLocation = executable~parent
   currentPath = Value("PATH",,"ENVIRONMENT")
 
   file = .file~searchPath(executable~name, currentPath)
@@ -670,4 +729,4 @@ return testResult
 
 
 
-::options novalue error
+::options novalue syntax

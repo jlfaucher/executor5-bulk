@@ -2917,8 +2917,9 @@ This absolute path is memorized on the <classname>File</classname> object,
 and will not change if you change the default directory.
 </para>
 
+<!-- Modified: class columns="2" -->
 <!-- Modified: lastAccessed= and lastModified= combined into attribute -->
-<!-- $GENERATED-20190429-START rexxrefClassTable(File) -->
+<!-- $GENERATED-20191124-START rexxrefClassTable(File) -->
 <table id="ooRexxFileClass" frame="all" pgwide="1">
 <title>File Class</title>
 <tgroup cols="1">
@@ -2946,11 +2947,13 @@ and will not change if you change the default directory.
  <row><entry align="center"><emphasis role="bold">File</emphasis></entry>
  </row>
  <row><entry>
-  <simplelist>
+  <simplelist columns="2">
    <member><xref linkend="mthFileIsCaseSensitiveClsMth" xrefstyle="select:title"/></member>
    <member><xref linkend="mthFileListRoots" xrefstyle="select:title"/></member>
    <member><xref linkend="mthFilePathSeparatorClsMth" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthFileSearchPath" xrefstyle="select:title"/></member>
    <member><xref linkend="mthFileSeparatorClsMth" xrefstyle="select:title"/></member>
+   <member><xref linkend="mthFileTemporaryPath" xrefstyle="select:title"/></member>
   </simplelist>
   <simplelist columns="3">
    <member><xref linkend="mthFileAbsoluteFile" xrefstyle="select:title"/></member>
@@ -2994,7 +2997,7 @@ and will not change if you change the default directory.
 </tbody>
 </tgroup>
 </table>
-<!-- $GENERATED-20190429-END rexxrefClassTable(File) -->
+<!-- $GENERATED-20191124-END rexxrefClassTable(File) -->
 
 <section id="mthFileIsCaseSensitiveClsMth"><title>isCaseSensitive (Class Method)</title>
 <indexterm><primary>isCaseSensitive method</primary>
@@ -3066,6 +3069,44 @@ say .File~listRoots~toString(, " ")   -- / (Unix)
 </para>
 </section>
 
+
+<!-- Class File - method searchPath ================================ -->
+<section id="mthFileSearchPath" revisionflag="added"><title>&added50;searchPath (Class Method)</title>
+<indexterm><primary>searchPath method</primary><secondary>of File class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>searchPath method</secondary><tertiary>of File class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/file_searchpath.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns a new File instance of the file
+<emphasis role="italic">name</emphasis>, if it can be located along
+<emphasis role="italic">path</emphasis>.
+Returns &nil; otherwise.
+</para>
+<para>The <emphasis role="italic">name</emphasis> must be a valid file name
+without wildcard characters and may optionally include a relative path.
+The <emphasis role="italic">path</emphasis> must be a String, a Collection,
+or any object that provides a <methodname>makeArray</methodname> method.
+Specified <emphasis role="italic">path</emphasis> items must be valid
+directories separated by the platform's
+<xref linkend="mthFilePathSeparatorClsMth" xrefstyle="template:path separator"/>.
+If omitted, <emphasis role="italic">path</emphasis> defaults to the value
+of the <literal>PATH</literal> environment variable.
+</para>
+<para>See also Rexxutil function <xref linkend="utlSyssearchpath" xrefstyle="select:title"/>.
+</para>
+<para><example id="ex.file-searchpath">
+<title>File class &mdash; searchPath method
+<indexterm><primary>examples</primary><secondary>searchPath method</secondary></indexterm>
+</title>
+<programlisting><![CDATA[
+say .File~searchPath("rexx.exe")     -- e. g. C:\Program Files\ooRexx\rexx.exe
+say .File~searchPath("rexx")         -- e. g. /usr/local/bin/rexx
+]]></programlisting></example></para>
+</section>
+
+
 <section id="mthFileSeparatorClsMth"><title>separator (Class Method)</title>
 <indexterm><primary>separator method</primary>
 <secondary>of File class</secondary></indexterm>
@@ -3093,6 +3134,40 @@ file = .File~new("dir1" || .File~separator || "dir2" || .File~separator || "file
 </programlisting>
 </example>
 </section>
+
+
+<!-- Class File - method temporaryPath ============================= -->
+<section id="mthFileTemporaryPath" revisionflag="added"><title>&added50;temporaryPath (Class Method)</title>
+<indexterm><primary>temporaryPath method</primary><secondary>of File class</secondary></indexterm>
+<indexterm><primary>method</primary><secondary>temporaryPath method</secondary><tertiary>of File class</tertiary></indexterm>
+<para>
+<mediaobject><imageobject>
+<imagedata fileref="images/classes/file_temporarypath.svg" scale="55"/>
+</imageobject></mediaobject>
+</para>
+<para>Returns the full path to the user's temporary directory.
+</para>
+<para>On Windows this method returns the value of the environment variable
+<literal>TMP</literal>, <literal>TEMP</literal> or
+<literal>USERPROFILE</literal>, whichever is defined in this sequence.
+If none of them are defined it returns the current directory.
+On Unix-like systems it returns the value of the environment variable
+<literal>TMPDIR</literal>, or returns <literal>/tmp</literal> if
+<literal>TMPDIR</literal> is undefined.
+</para>
+<para>See also Rexxutil function
+<xref linkend="utlSystempfilename" xrefstyle="select:title"/>.
+</para>
+<para><example id="ex.file-temporarypath">
+<title>File class &mdash; temporaryPath method
+<indexterm><primary>examples</primary><secondary>temporaryPath method</secondary></indexterm>
+</title>
+<programlisting><![CDATA[
+say .File~temporaryPath    -- (Windows e.g.) C:\Users\USER~1\AppData\Local\Temp
+say .File~temporaryPath    -- (Unix e.g.) /tmp
+]]></programlisting></example></para>
+</section>
+
 
 <section id="mthFileAbsoluteFile"><title>absoluteFile</title>
 <indexterm><primary>absoluteFile method</primary>
