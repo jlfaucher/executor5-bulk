@@ -45,6 +45,12 @@
 <para>Failure during initialization: Program "<emphasis role="italic">program</emphasis>" needs to be tokenized. To run untokenized scripts you need a full version of Object REXX.</para>
 </listitem>
 </varlistentry>
+<varlistentry>
+<term>905</term>
+<listitem>
+<para>Encoded compiled program "<emphasis role="italic">program_name</emphasis>" cannot be decoded.</para>
+</listitem>
+</varlistentry>
 </variablelist>
 </section>
 <section id="ERR4">
@@ -187,12 +193,12 @@ construction. For example:</para>
 <programlisting>
 WRONG                     RIGHT
 
-If a=c then do;           If a=c then do;
-Say EQUALS                Say EQUALS
-exit                      exit
-else                        end
-Say NOT EQUALS            else
-Say NOT EQUALS
+if a = b then do          if a = b then do
+  say "equals"              say "equals"
+  exit                      exit
+else                      end
+  say "not equals"        else
+                            say "not equals"
 </programlisting>
 <para>The associated subcodes are: </para>
 <variablelist>
@@ -430,6 +436,18 @@ Say NOT EQUALS
 <term>004</term>
 <listitem>
 <para>Only 0, 1, and whitespace characters are valid in a binary string; found "<emphasis role="italic">character</emphasis>".</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>005</term>
+<listitem>
+<para>Hexadecimal strings must be grouped in units that are multiples of two characters.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>006</term>
+<listitem>
+<para>Binary strings must be grouped in units that are multiples of four characters.</para>
 </listitem>
 </varlistentry>
 </variablelist>
@@ -899,6 +917,12 @@ special character (such as a parenthesis).
 <term>933</term>
 <listitem>
 <para>Symbol expected after WITH keyword.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>934</term>
+<listitem>
+<para>Symbol expected after COUNTER keyword.</para>
 </listitem>
 </varlistentry>
 </variablelist>
@@ -1491,6 +1515,12 @@ special character (such as a parenthesis).
 <term>904</term>
 <listitem>
 <para>OVER keyword expected for a WITH loop.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>905</term>
+<listitem>
+<para>COUNTER keyword not allowed on a simple DO instruction.</para>
 </listitem>
 </varlistentry>
 </variablelist>
@@ -2949,6 +2979,18 @@ special character (such as a parenthesis).
 <para>Argument <emphasis role="italic">argument</emphasis> was omitted. A VariableReference argument is required.</para>
 </listitem>
 </varlistentry>
+<varlistentry>
+<term>932</term>
+<listitem>
+<para>Date template <emphasis role="italic">template</emphasis> contains an invalid pattern; found "<emphasis role="italic">value</emphasis>".</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>933</term>
+<listitem>
+<para>Unable to parse date "<emphasis role="italic">date</emphasis>" with template "<emphasis role="italic">template</emphasis>".</para>
+</listitem>
+</varlistentry>
 </variablelist>
 </section>
 <section id="ERR89">
@@ -2968,7 +3010,7 @@ special character (such as a parenthesis).
 <varlistentry>
 <term>002</term>
 <listitem>
-<para>The PARSE was expecting a variable or a message term.</para>
+<para>The PARSE instruction was expecting a variable or a message term.</para>
 </listitem>
 </varlistentry>
 </variablelist>
@@ -3547,6 +3589,24 @@ special character (such as a parenthesis).
 <para>Invalid <emphasis role="italic">option</emphasis> value; found "<emphasis role="italic">value</emphasis>".</para>
 </listitem>
 </varlistentry>
+<varlistentry>
+<term>976</term>
+<listitem>
+<para>Hexadecimal strings must be grouped in units that are multiples of two characters.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>977</term>
+<listitem>
+<para>Binary strings must be grouped in units that are multiples of four characters.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>978</term>
+<listitem>
+<para>Method argument <emphasis role="italic">argument</emphasis> could not be converted to type <emphasis role="italic">type</emphasis>; found "<emphasis role="italic">value</emphasis>".</para>
+</listitem>
+</varlistentry>
 </variablelist>
 </section>
 <section id="ERR97">
@@ -3579,6 +3639,12 @@ special character (such as a parenthesis).
 <term>004</term>
 <listitem>
 <para>Constant "<emphasis role="italic">name</emphasis>" of object "<emphasis role="italic">object</emphasis>" has not been initialized.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>005</term>
+<listitem>
+<para>An unhandled NOMETHOD condition has been raised.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
@@ -3819,6 +3885,36 @@ special character (such as a parenthesis).
 <term>951</term>
 <listitem>
 <para>Concurrency not supported.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>970</term>
+<listitem>
+<para>External command "<emphasis role="italic">command</emphasis>" ended with return code <emphasis role="italic">rc</emphasis>.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>971</term>
+<listitem>
+<para>External command "<emphasis role="italic">command</emphasis>" failed with return code <emphasis role="italic">rc</emphasis>.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>972</term>
+<listitem>
+<para>Number <emphasis role="italic">number</emphasis> has more digits than the current precision.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>973</term>
+<listitem>
+<para>Object "<emphasis role="italic">object</emphasis>" does not have a string representation.</para>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>974</term>
+<listitem>
+<para>Stream "<emphasis role="italic">object</emphasis>" is not ready.</para>
 </listitem>
 </varlistentry>
 <varlistentry>
