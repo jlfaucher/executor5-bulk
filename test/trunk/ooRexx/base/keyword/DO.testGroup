@@ -2720,3 +2720,7 @@ return testResult
    self~expectSyntax(41.1)
    Do i=1 By a; If i=2 Then self~assertTrue(0); End;
 
+::method test_no_end
+   -- DO instruction on line .. requires matching END
+   self~assertSyntaxError(14.1, ("do"))
+

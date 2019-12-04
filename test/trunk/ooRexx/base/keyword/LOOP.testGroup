@@ -355,8 +355,12 @@ return testResult
   self~expectSyntax(26.2)
   interpret "loop counter x counter y while .true; end"
 
+::method test_no_end
+   -- DO or LOOP instruction on line .. requires matching END
+   self~assertSyntaxError(14.5, ("loop"))
+
+::method test_no_end_counter
+   self~assertSyntaxError(14.5, ("loop counter i"))
+
 
 ::options novalue error
-
-::method test_wakeup
-  expose step

@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007-2017 Rexx Language Association. All rights reserved.    */
+/* Copyright (c) 2007-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -417,6 +417,20 @@ return testResult
 
 ::method test_until_no_expr2
   self~assertSyntaxError(35.929, ("do i = 1 until while", "end"))
+
+::method test_no_end_to
+   -- DO or LOOP instruction on line .. requires matching END
+   self~assertSyntaxError(14.5, ("do i = 1 to 3"))
+
+::method test_no_end_for
+   self~assertSyntaxError(14.5, ("do for 3"))
+
+::method test_no_end_while
+   self~assertSyntaxError(14.5, ("do while .true"))
+
+::method test_no_end_until
+   self~assertSyntaxError(14.5, ("do until .true"))
+
 
 -- keyword parsing does not carry into subexpressions, so variables can be
 -- sub keyword names if they are protected by expressions.  Check all of

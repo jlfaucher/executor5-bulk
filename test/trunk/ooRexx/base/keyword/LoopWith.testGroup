@@ -320,6 +320,17 @@ return testResult
 ::method test_with_while_until
   self~assertSyntaxError(27.1, ("loop with index i item v over sup until .true while .false", "end"))
 
+::method test_no_end_index
+   -- DO or LOOP instruction on line .. requires matching END
+   self~assertSyntaxError(14.5, ("loop with index i over sup"))
+
+::method test_no_end_item
+   self~assertSyntaxError(14.5, ("loop with item i over sup"))
+
+::method test_no_end_both
+   self~assertSyntaxError(14.5, ("loop with index i item j over sup"))
+
+
 ::method test_for_negative
   self~expectSyntax(26.3)
   loop with index i over (1,2) for -1
