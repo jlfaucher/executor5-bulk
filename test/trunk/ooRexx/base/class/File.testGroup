@@ -728,5 +728,86 @@ return testResult
   call directory curdir -- restore
 
 
+-- parent/parentFile tests
+
+::method test_parent_one_arg_too_many
+  self~expectSyntax((93.902, 0)) -- Too many arguments in invocation of method; 0 expected
+  .File~new("name")~parent("")
+
+::method test_parentFile_one_arg_too_many
+  self~expectSyntax((93.902, 0)) -- Too many arguments in invocation of method; 0 expected
+  .File~new("name")~parentFile("")
+
+::method test_parent_root
+  root = .File~listRoots[1]
+  file = .File~new("name", root)
+  -- parent of /root/name must be /root
+  self~assertSame(root, file~parent)
+  -- grand parent of /root/name must be .nil
+  self~assertNull(file~parentFile~parent)
+
+  -- repeat for parentFile method
+  root = .File~new(root)
+  self~assertSame(root, file~parentFile)
+  self~assertNull(file~parentFile~parentFile)
+
+::method test_parent_current_directory
+  dir = directory()
+  file = .File~new(dir)
+  separator = .File~separator
+  do dir~countStr(separator) - 1
+    dir = dir~left(dir~lastPos(separator) - 1)
+    file = file~parentFile
+    self~assertSame(dir, file~absolutePath)
+  end
+
+-- UNC path, Windows-only
+::method test_parent_windows_unc
+  if \.RexxInfo~platform~caselessStartsWith("WINDOWS") then
+    return
+
+  dir = "\\localhost\c$\Program Files\WindowsPowerShell"
+  file = .File~new(dir)
+  separator = .File~separator
+  do 2 -- after two parent operations we've reached UNC root
+    dir = dir~left(dir~lastPos(separator) - 1)
+    self~assertSame(dir, file~parent)
+    self~assertSame(dir, file~parentFile)
+    file = file~parentFile
+  end
+  self~assertNull(file~parent)
+  self~assertNull(file~parentFile)
+
+  -- incomplete UNC paths don't allow parent
+  self~assertNull(.File~new("\\localhost")~parent)
+  self~assertNull(.File~new("\\127.0.0.1")~parent)
+
+-- Win32 namespaces, Windows-only
+::method test_parent_windows_namespace
+  if \.RexxInfo~platform~caselessStartsWith("WINDOWS") then
+    return
+
+  -- Win32 file namespace
+  dir = "\\?\C:\Windows\System32"
+  file = .File~new(dir)
+  separator = .File~separator
+  do 2 -- after two parent operations we've reached \\?\ root
+    dir = dir~left(dir~lastPos(separator) - 1)
+    self~assertSame(dir, file~parent)
+    self~assertSame(dir, file~parentFile)
+    file = file~parentFile
+  end
+  root = dir~left(4)
+  self~assertSame(root, file~parent)
+  self~assertSame(root, file~parentFile)
+  file = file~parentFile
+  self~assertNull(file~parent)
+  self~assertNull(file~parentFile)
+
+  -- Win32 device namespace
+  self~assertSame("\\.\", .File~new("\\.\NUL")~parent)
+  self~assertNull(.File~new("\\.\")~parent)
+  self~assertNull(.File~new("con")~parent)
+
 
 ::options novalue syntax
