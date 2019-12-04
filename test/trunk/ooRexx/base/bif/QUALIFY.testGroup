@@ -5,7 +5,7 @@
 */
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
-/* Copyright (c) 2007 - 2018 Rexx Language Association. All rights reserved.  */
+/* Copyright (c) 2007-2019 Rexx Language Association. All rights reserved.    */
 /*                                                                            */
 /* This program and the accompanying materials are made available under       */
 /* the terms of the Common Public License v1.0 which accompanies this         */
@@ -231,12 +231,14 @@ return testResult
   self~expectSyntax(40.4) -- Too many arguments in invocation of QUALIFY; maximum expected is 1
   call qualify '', ''
 
-::method test_qualify_arg_null
-  self~assertSame(directory(), qualify(""))
+::method test_qualify_arg_dot
+  self~assertSame(directory(), qualify("."))
+  self~assertSame(directory(), qualify("./."))
 
 ::method test_qualify_arg_short
-  name = "xxxxxxxx"
-  self~assertSame(directory() || .File~separator || name, qualify(name))
+  do name over "*", "??", "xxxxxxxx"
+    self~assertSame(directory() || .File~separator || name, qualify(name))
+  end
 
 ::method test_qualify_arg_long
   -- a name to make currentDirectory"/"name as long as allowed
@@ -264,7 +266,11 @@ return testResult
     drive = filespec("drive", directory())
     self~assertSame(directory(), qualify(drive), "qualify("drive") should be" directory())
   end
+  else do
+    -- on a Unix-like system qualify("~") should return the home directory
+    home = value("HOME", , "environment")
+    self~assertSame(home, qualify("~"), "qualify("~") should be $HOME("home")")
+  end
 
 
--- End of class: qualify.testGroup
 ::options novalue error

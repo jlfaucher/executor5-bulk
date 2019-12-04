@@ -55,6 +55,30 @@ return testResult
 ::requires 'ooTest.frm'
 ::class 'SysFileXXX.testgroup' subclass ooTestCase public
 
+::method test_fileexists_no_arg
+  self~expectSyntax(88.901) -- Missing argument; argument 1 is required
+  call SysFileExists
+
+::method test_fileexists_two_args
+  self~expectSyntax((88.922, 1)) -- Too many arguments in invocation; 1 expected
+  call SysFileExists "", ""
+
+::method test_fileexists_invalid
+  self~assertFalse(SysFileExists(""))
+  self~assertFalse(SysFileExists("*"))
+  self~assertFalse(SysFileExists("??"))
+
+::method test_fileexists_valid
+  self~assertTrue(SysFileExists("."))
+  self~assertTrue(SysFileExists("/."))
+  self~assertTrue(SysFileExists("./"))
+  self~assertTrue(SysFileExists("./."))
+  self~assertTrue(SysFileExists(".."))
+  self~assertTrue(SysFileExists("../"))
+  self~assertTrue(SysFileExists("../."))
+  self~assertTrue(SysFileExists("/.."))
+  self~assertTrue(SysFileExists("./.."))
+
 ::method test_file_exists
 
     parse source . . me
@@ -70,8 +94,6 @@ return testResult
     self~assertTrue(SysFileExists(filename))
 
     self~assertFalse(SysFileExists(filename||'xxxxx'))
-    -- this is the same as the current directory
-    self~assertTrue(SysFileExists(""))
 
     self~assertTrue(SysIsFile(me))
     self~assertTrue(SysIsFile(fileName))
@@ -85,7 +107,6 @@ return testResult
     self~assertFalse(SysIsFileDirectory(me))
     self~assertFalse(SysIsFileDirectory(fileName))
     self~assertTrue(SysIsFileDirectory(directory))
-    self~assertTrue(SysIsFileDirectory(""))
     self~assertTrue(SysIsFileDirectory("."))
     self~assertTrue(SysIsFileDirectory(".."))
 
