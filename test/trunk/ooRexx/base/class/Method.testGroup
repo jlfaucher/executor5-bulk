@@ -428,7 +428,57 @@ return testResult
 
   source = .context~stackFrames[1]~executable~source
   self~assertSame("", source[1])
-  self~assertSame("", source[source~last])
+  self~assertSame("-- test source() method", source[source~last])
+
+-- test source() method
+::method test_source
+  do with index name item method over self~instanceMethods
+    if name~caselessStartsWith("source") then do
+      parse var name ":" expected
+      actual = method~source~makeString(, ",")
+      self~assertSame(expected, actual, 'method "'name'" should be like name')
+    end
+  end
+
+-- test cases for method "test_source"
+-- all method names must be a concatenation of SOURCE[n]: and
+-- the string form of their source code
+::method "source1:"
+::method "source2:" -- ignored, not part of method body
+::method "source3:"/* ignored,
+not part of method body */
+::method "source4:";::method "source5:"
+
+
+::method "source6:";::attribute a1
+::attribute a2;::method "source7:"
+::method "source1:/**/"/*ignored*/;/**/
+::method "source2:/**/"
+/**/
+::method "source:,/**/"
+
+/**/
+::method "source1:--"-- ignored
+--
+::method "source2:--"
+--
+
+::method "source1:nop";NOP
+::method "source2:nop" -- ignored
+NOP
+::method "source: nop"; NOP
+::method "source:,nop" /* ignored */
+
+NOP
+::method "source:,,nop"
+
+
+NOP
+::method "source:,,,,nop,";
+
+
+
+NOP
 
 
 ::class RunTester
