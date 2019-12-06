@@ -310,6 +310,12 @@ return testResult
   self~assertFalse(f~exists, "setting lastModified() should not create" f~name)
   self~assertSame(.nil, f~lastModified)
 
+-- fractions of seconds should work
+::method test_file_lastmodified_fractions
+  file = .TemporaryTestFile~new(self, "fractions")~~create("")
+  now = .DateTime~new
+  file~lastModified = now
+  self~assertSame(now, file~lastModified)
 
 ::method test_file_lastaccessed_one_arg
   self~expectSyntax(93.902) -- Too many arguments in invocation of method
@@ -380,6 +386,13 @@ return testResult
   f~lastAccessed = .DateTime~new
   self~assertFalse(f~exists, "setting lastAccessed() should not create" f~name)
   self~assertSame(.nil, f~lastAccessed)
+
+-- fractions of seconds should work
+::method test_file_accessed_fractions
+  file = .TemporaryTestFile~new(self, "fractions")~~create("")
+  now = .DateTime~new
+  file~lastAccessed = now
+  self~assertSame(now, file~lastAccessed)
 
 
 -- listRoot: too many arguments
