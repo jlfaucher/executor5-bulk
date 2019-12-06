@@ -152,6 +152,18 @@ return testResult
 
     call directory currentDir
 
+-- (Windows-only) UNC filename tests
+::method test_name_UNC
+  if \.RexxInfo~platform~caselessStartsWith("Windows") then
+      return
+  parse source . . this
+  thisFile = .File~new(this~changeStr(':', '$'), '\\localhost')
+  thisDir = thisFile~parentFile
+  self~assertTrue(SysFileExists(thisFile~absolutePath), thisFile~absolutePath "should exist")
+  self~assertTrue(SysIsFile(thisFile~absolutePath), thisFile~absolutePath "should exist")
+  self~assertTrue(SysFileExists(thisDir~absolutePath), thisDir~absolutePath "should exist")
+  self~assertTrue(SysIsFileDirectory(thisDir~absolutePath), thisDir~absolutePath "should exist")
+
 ::method test_file_copy
     parse source . . me
 
