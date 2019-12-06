@@ -2218,7 +2218,7 @@ say SysGetLongPathName("\windows\explorer.exe")  -- \Windows\explorer.exe
 </section>
 
 
-<section id="utlSysgetmessage"><title>SysGetMessage (Unix only)</title>
+<section id="utlSysgetmessage" revisionflag="changed"><title>&changed50;SysGetMessage (Unix only)</title>
 <indexterm><primary>SysGetMessage</primary></indexterm>
 <indexterm><primary>rexxutil functions</primary>
 <secondary>SysGetMessage</secondary></indexterm>
@@ -2229,25 +2229,41 @@ say SysGetLongPathName("\windows\explorer.exe")  -- \Windows\explorer.exe
 </imageobject>
 </mediaobject>
 
-<para>Retrieves a message from a catalog file and replaces the placeholder
-<computeroutput>%s</computeroutput> with the text you specify. SysGetMessage
-can replace up to 9 placeholders.</para>
-<para>This utility is implemented for Unix only.</para>
-<para>To create catalog files, consult your system documentation.</para>
+<para>Returns a message retrieved from a Unix message catalog,
+with placeholders replaced with specified message inserts.
+</para>
+<para>SysGetMessage is implemented on Unix-like systems only.
+It always retrieves messages from the catalog's message set 1.
+To retrieves messages from a specified message set, use
+<xref linkend="utlSysgetmessagex" xrefstyle="select:title"/>.
+</para>
+<para>To create a Unix message catalog use the
+<literal>gencat</literal> command.
+</para>
 <para><emphasis role="bold">Parameters:</emphasis></para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">num</emphasis></term>
 <listitem><para>The message number.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="italic">filename</emphasis></term>
-<listitem><para>The name of the catalog file containing the message. The
-default message catalog is <emphasis role="bold">rexx.cat</emphasis>.
-SysGetMessage searches along the NLSPATH or uses the absolute path name.
+<listitem><para>The name of the catalog file containing the message.
+If <emphasis role="italic">filename</emphasis> is omitted or specified as
+<literal>rexx.cat</literal> the internal Rexx message catalog is searched.
+Otherwise the Unix message catalog is located using the absolute
+<emphasis role="italic">filename</emphasis> path or
+searched along the <literal>NLSPATH</literal> environment variable.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="italic">str</emphasis></term>
-<listitem><para>The text for a placeholder (%) in the message. The message can
-contain up to 9 placeholders. You must specify as many strings as there are
-placeholders in the message.
+<listitem><para>Zero to nine replacement strings for placeholders
+in the message.
+The first replacement string is for placeholder <literal>&amp;1</literal>,
+the second for <literal>&amp;2</literal>, up to placeholder
+<literal>&amp;9</literal>.
+If a placeholder has no replacement string specified, it is replaced by
+the nullstring.
+Any unused replacement string is ignored.
+Other placeholders like <literal>%s</literal> are not replaced and are
+returned unchanged with the message.
 </para></listitem></varlistentry>
 </variablelist>
 <indexterm><primary>rexxutil functions</primary>
@@ -2261,17 +2277,14 @@ placeholders in the message.
 <title>RexxUtil &mdash; SysGetMessage</title>
 <programlisting>
 <![CDATA[
-/* sample code segment using SysGetMessage */
-msg = SysGetMessage(485, "rexx.cat", foo)
-say msg
-/*** Output ***/
-Class "foo" not found.
+say SysGetMessage(485, "rexx.cat", "foo") -- Class "foo" not found.
 ]]>
 </programlisting>
 </example>
 </section>
 
-<section id="utlSysgetmessagex"><title>SysGetMessageX (Unix only)</title>
+
+<section id="utlSysgetmessagex" revisionflag="changed"><title>&changed50;SysGetMessageX (Unix only)</title>
 <indexterm><primary>SysGetMessageX</primary></indexterm>
 <indexterm><primary>rexxutil functions</primary>
 <secondary>SysGetMessageX</secondary></indexterm>
@@ -2282,13 +2295,14 @@ Class "foo" not found.
 </imageobject>
 </mediaobject>
 
-<para>Retrieves a message from a specific set of
-Unix catalog file and replaces the placeholder
-<computeroutput>%s</computeroutput> with the text you specify. SysGetMessageX
-can replace up to 9 placeholders.</para>
-<para>This utility is implemented for Unix only. Do not use it for
-platform-independent programs.</para>
-<para>To create catalog files, consult your system documentation.</para>
+<para>Returns a message retrieved from a Unix message catalog,
+with placeholders replaced with specified message inserts.
+</para>
+<para>SysGetMessageX is implemented on Unix-like systems only.
+</para>
+<para>To create a Unix message catalog use the
+<literal>gencat</literal> command.
+</para>
 <para><emphasis role="bold">Parameters:</emphasis></para>
 <variablelist>
 <varlistentry><term><emphasis role="italic">set</emphasis></term>
@@ -2298,14 +2312,24 @@ platform-independent programs.</para>
 <listitem><para>The message number.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="italic">filename</emphasis></term>
-<listitem><para>The name of the catalog file containing the message. The
-default message catalog is <emphasis role="bold">rexx.cat</emphasis>.
-SysGetMessageX searches along the NLSPATH or uses the absolute path name.
+<listitem><para>The name of the catalog file containing the message.
+If <emphasis role="italic">filename</emphasis> is omitted or specified as
+<literal>rexx.cat</literal> the internal Rexx message catalog is searched.
+Otherwise the Unix message catalog is located using the absolute
+<emphasis role="italic">filename</emphasis> path or
+searched along the <literal>NLSPATH</literal> environment variable.
 </para></listitem></varlistentry>
 <varlistentry><term><emphasis role="italic">str</emphasis></term>
-<listitem><para>The text for a placeholder (%) in the message. The message can
-contain up to 9 placeholders. You must specify as many strings as there are
-placeholders in the message.
+<listitem><para>Zero to nine replacement strings for placeholders
+in the message.
+The first replacement string is for placeholder <literal>&amp;1</literal>,
+the second for <literal>&amp;2</literal>, up to placeholder
+<literal>&amp;9</literal>.
+If a placeholder has no replacement string specified, it is replaced by
+the nullstring.
+Any unused replacement string is ignored.
+Other placeholders like <literal>%s</literal> are not replaced and are
+returned unchanged with the message.
 </para></listitem></varlistentry>
 </variablelist>
 <indexterm><primary>rexxutil functions</primary>
@@ -2316,14 +2340,10 @@ placeholders in the message.
 <indexterm><primary>examples</primary>
 <secondary>SysGetMessageX</secondary></indexterm>
 <example id="ex.sysgetmessagex">
-<title>RexxUtil &mdash; SysGetmessagex</title>
+<title>RexxUtil &mdash; SysGetMessageX</title>
 <programlisting>
 <![CDATA[
-/* sample code segment using SysGetMessage */
-msg = SysGetMessageX(1, 485, "rexx.cat", foo)
-say msg
-/*** Output ***/
-Class "foo" not found.
+say SysGetMessageX(1, 485, "rexx.cat", "foo") -- Class "foo" not found.
 ]]>
 </programlisting>
 </example>
