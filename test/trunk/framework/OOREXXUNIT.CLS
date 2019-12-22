@@ -2113,7 +2113,10 @@ return 0
   use strict arg host, name
 
   -- get the package the class is defined in
-  package = host~class~package
+  if host~isA(.Class) then
+    package = host~package -- we've been called from a class method
+  else
+    package = host~class~package
 
   dir = .File~new(package~name)~parentFile
   self~init:super(name, dir)
@@ -2128,19 +2131,20 @@ return 0
 
 -- create a file from an array of lines
 ::method create
-  use strict arg lines
+  use strict arg lines = ""
 
   s = .stream~new(self)
   -- allow to create zero-length files
   s~open("write replace")
 
   if lines~isA(.String) then do
-    s~lineout(lines)
+    s~charOut(lines)
   end
   else do
     s~arrayout(lines)
   end
   s~close
+  return self
 
 -- append an array of lines to a file
 ::method append
@@ -2155,6 +2159,7 @@ return 0
     s~arrayout(lines)
   end
   s~close
+  return self
 
 -- read file into array
 ::method arrayIn
@@ -2171,14 +2176,20 @@ return 0
   expose package
   use strict arg resourceName
 
-  self~create(package~resources[resourceName~upper])
+  return self~create(package~resources[resourceName~upper])
 
 -- append a package resource to a file
 ::method appendFromResource
   expose package
   use strict arg resourceName
 
-  self~append(package~resources[resourceName~upper])
+  return self~append(package~resources[resourceName~upper])
+
+-- delete the file
+::method delete
+  use strict arg
+  self~setWritable
+  forward class (super)
 
 -- clean up the temporary file after termination.
 ::method uninit
@@ -2192,7 +2203,10 @@ return 0
   use strict arg host, name
 
   -- get the package the class is defined in
-  package = host~class~package
+  if host~isA(.Class) then
+    package = host~package -- we've been called from a class method
+  else
+    package = host~class~package
 
   dir = .File~new(package~name)~parentFile
   self~init:super(name, dir)
@@ -2203,15 +2217,16 @@ return 0
 
 -- create the directory
 ::method create
-  forward message "makeDir"
+  self~makeDir
+  return self
 
--- delete the directory and all files
+-- delete the directory
 ::method delete
   use strict arg
 
 --self~deleteDir(self) -- a full tree delete is way too dangerous
   self~setWritable
-  self~delete
+  forward class (super)
 
 -- delete a directory and all of the files in the directory
 ::method XXX_deleteDir private
