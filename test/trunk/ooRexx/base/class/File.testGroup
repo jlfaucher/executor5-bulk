@@ -619,9 +619,9 @@ return testResult
   self~assertSame(directory(), .File~temporaryPath)
 
   -- restore environment
-  call value "TMP", tmp, "environment"
-  call value "TEMP", temp, "environment"
-  call value "USERPROFILE", user, "environment"
+  call value "TMP", (tmp == "")~?(.nil, tmp), "environment"
+  call value "TEMP", (temp == "")~?(.nil, temp), "environment"
+  call value "USERPROFILE", (user == "")~?(.nil, user), "environment"
 
 -- on Unix environment variable TMPDIR is checked
 ::method test_temporaryPath_environment_variables_unix
@@ -636,7 +636,7 @@ return testResult
   self~assertSame("/tmp", .File~temporaryPath)
 
   -- restore environment
-  call value "TMPDIR", tmpDir, "environment"
+  call value "TMPDIR", (tmpDir == "")~?(.nil, tmpDir), "environment"
 
 
 ::method test_searchPath_no_arg
